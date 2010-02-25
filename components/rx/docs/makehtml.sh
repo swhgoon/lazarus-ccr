@@ -12,5 +12,6 @@ fpdoc --package=rxfpc --format=html  \
   --input=../tooledit.pas --descr=rxfpc.xml \
   --input=../pickdate.pas --descr=rxfpc.xml \
   --input=../rxversinfo.pas --descr=rxfpc.xml \
+  --input=../rxtoolbar.pas --descr=rxfpc.xml \
   --input=../rxfileutils.pas --descr=rxfpc.xml 
   

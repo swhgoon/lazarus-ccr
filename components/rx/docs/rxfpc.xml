@@ -681,6 +681,8 @@ TRxDBCalcEdit является наследником TDBCalcEdit и имеет 
           
           
           
+          
+          
           <b>Count</b>
         </descr>
         <seealso>
@@ -701,6 +703,8 @@ TRxDBCalcEdit является наследником TDBCalcEdit и имеет 
         <descr>
           <b>property FileFolder:string</b>
 Свойство FileFolder определяет каталог с файлами, который будет сканироваться при вызове метода 
+          
+          
           
           
           
@@ -1123,7 +1127,13 @@ Description
       <element name="TToolPanel.ToolBarStyle"/>
       <element name="TToolPanel.Options"/>
       <element name="TToolPanel.Version"/>
-      <element name="TToolPanel.ButtonAllign"/>
+      <element name="TToolPanel.ButtonAllign">
+        <short>Выравнивание кнопок на панели инструментов</short>
+        <descr>Определяет выравнивание кнопок на панели инструментов</descr>
+        <seealso>
+          <link id="TToolButtonAllign"/>
+        </seealso>
+      </element>
       <element name="TToolPanel.Align"/>
       <element name="TToolPanel.Alignment"/>
       <element name="TToolPanel.Anchors"/>
@@ -1163,6 +1173,117 @@ Description
       <element name="TToolPanel.OnMouseUp"/>
       <element name="TToolPanel.OnResize"/>
       <element name="TToolPanel.OnStartDrag"/>
+      <element name="TToolbarButtonStyle">
+        <short>Стиль поведения кнопки на панели инструментов</short>
+        <descr>Стиль поведения кнопки на панели инструментов
+<table>
+            <th>
+              <td>Стиль</td>
+              <td>Описание</td>
+            </th>
+            <tr>
+              <td>tbrButton</td>
+              <td/>
+            </tr>
+            <tr>
+              <td>tbrCheck</td>
+              <td/>
+            </tr>
+            <tr>
+              <td>tbrDropDown</td>
+              <td/>
+            </tr>
+            <tr>
+              <td>tbrSeparator</td>
+              <td/>
+            </tr>
+            <tr>
+              <td>tbrDivider</td>
+              <td/>
+            </tr>
+            <tr>
+              <td>tbrDropDownExtra</td>
+              <td/>
+            </tr>
+          </table>
+        </descr>
+      </element>
+      <element name="TToolBarStyle">
+        <short>Стиль отображения на панели инструментов</short>
+        <descr>
+          <p>Стиль отображения на панели инструментов</p>
+          <table>
+            <th>
+              <td>Сталь</td>
+              <td>Описание</td>
+            </th>
+            <tr>
+              <td>tbsStandart</td>
+              <td>Отображение кнопок обёмными и квадратными (как было в Windows 95-2000)</td>
+            </tr>
+            <tr>
+              <td>tbsWindowsXP</td>
+              <td>Отображение "плоских" голубых кнопок (как в Windows XP)</td>
+            </tr>
+            <tr>
+              <td>tbsNative</td>
+              <td>При отображении кнопок используется внешний вид согласно текущей системной темы отрисовки элементов интерфейса</td>
+            </tr>
+          </table>
+        </descr>
+      </element>
+      <element name="TToolButtonAllign">
+        <short>Выравнивание кнопок на панели инструментов</short>
+        <descr>
+          <p>Выравнивание кнопок на панели инструментов</p>
+          <table>
+            <th>
+              <td>Выравнивание</td>
+              <td>Описание</td>
+            </th>
+            <tr>
+              <td>tbaNone</td>
+              <td>Нет автоматического выравнивания кнопок</td>
+            </tr>
+            <tr>
+              <td>tbaLeft</td>
+              <td>Выравнивани по левому краю</td>
+            </tr>
+            <tr>
+              <td>tbaRignt</td>
+              <td>Выравнивание по правому краю</td>
+            </tr>
+          </table>
+        </descr>
+        <seealso>
+          <link id="TToolPanel.ButtonAllign"/>
+        </seealso>
+      </element>
+      <element name="TToolPanelOption"/>
+      <element name="TToolPanelOptions"/>
+      <element name="DefButtonWidth">
+        <short>Ширина кнопки по умолчанию</short>
+        <descr>Ширина кнопки по умолчанию</descr>
+        <seealso>
+          <link id="TToolbarItem.Width"/>
+          <link id="TToolPanel.BtnWidth"/>
+        </seealso>
+      </element>
+      <element name="DefButtonHeight">
+        <short>Высота кнопки по умолчанию</short>
+        <descr>Высота кнопки по умолчанию</descr>
+        <seealso>
+          <link id="TToolbarItem"/>
+          <link id="TToolPanel.BtnHeight"/>
+        </seealso>
+      </element>
+      <element name="DropDownExtraBtnWidth">
+        <short>Ширина вспомогательной кнопки по умолчанию</short>
+        <descr>Ширина вспомогательной кнопки по умолчанию</descr>
+        <seealso>
+          <link id="TToolbarItem.ButtonStyle"/>
+        </seealso>
+      </element>
     </module>
     <module name="rxlogin">
       <element name="TRxLoginDialog"/>
@@ -1786,7 +1907,11 @@ Description
             
             
             
+            
+            
             <b>const</b> SearchDomain, FileName:
+            
+            
             
             
             
@@ -1798,7 +1923,11 @@ Description
             
             
             
+            
+            
             <b>out</b> UserName, DomainName:
+            
+            
             
             
             
@@ -1829,15 +1958,9 @@ Description
           <p>
             <b>function</b> NormalizeDirectoryName(
             
-            
-            
             <b>const</b> DirName:
             
-            
-            
             <b>string</b>):
-            
-            
             
             <b>string</b>;</p>
           <p>Функция проверяет все разделители каталогов в указанном имени файла/каталога и, если нужно, меняет их на значение константы<b>DirectorySeparator</b>.</p>
@@ -1849,6 +1972,8 @@ Description
         <descr>
           <p>
             <b>function</b> GetUserName: 
+            
+            
             
             
             
