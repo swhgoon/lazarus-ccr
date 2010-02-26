@@ -1309,7 +1309,7 @@ begin
         begin
           C.Width:=FPropertyStorageLink.Storage.ReadInteger(S1+sWidth, C.Width);
           C.Visible:=FPropertyStorageLink.Storage.ReadInteger(S1+sVisible, Ord(C.Visible)) = 1;
-          C.Index:=FPropertyStorageLink.Storage.ReadInteger(S1+sIndex, C.Index);
+          C.Index:=Min(FPropertyStorageLink.Storage.ReadInteger(S1+sIndex, C.Index), Columns.Count-1);
         end;
       end;
     end;
