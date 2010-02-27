@@ -1,6 +1,5 @@
+{$INCLUDE wst_global.inc}  
 unit wst_initialization;
-
-{$mode objfpc}{$H+}
 
 interface
 
@@ -38,15 +37,15 @@ end;
 procedure wst_add_init_proc(const AProc : TwstInitializationProc);
 begin
   wst_prepare();
-  if ( AProc <> nil ) and ( InitProcs.IndexOf(AProc) = -1 ) then
-    InitProcs.Add(AProc);
+  if Assigned(AProc) and ( InitProcs.IndexOf(@AProc) = -1 ) then
+    InitProcs.Add(@AProc);
 end;
 
 procedure wst_add_final_proc(const AProc : TwstFinalizationProc);
 begin
   wst_prepare();
-  if ( AProc <> nil ) and ( FinalProcs.IndexOf(AProc) = -1 ) then
-    FinalProcs.Add(AProc);
+  if ( @AProc <> nil ) and ( FinalProcs.IndexOf(@AProc) = -1 ) then
+    FinalProcs.Add(@AProc);
 end;
 
 procedure wst_add_procs(const AInitProc : TwstInitializationProc; const AFinalProc : TwstFinalizationProc);
@@ -88,6 +87,7 @@ begin
   FreeAndNil(InitProcs);
 end;
 
+initialization
 finalization
   wst_finalize();
   
