@@ -579,6 +579,7 @@ begin
   hdrB := TSampleSimpleContentHeaderBlock_B.Create();
   cc.AddHeader(hdrB,True);
   hdrB.Direction := hdOut;
+  hdrB.mustUnderstand := 1;
   hdrB.Value := 'another content';
   hdrB.intAtt := 1210;
 
