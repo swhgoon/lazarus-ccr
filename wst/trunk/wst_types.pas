@@ -14,6 +14,8 @@
 unit wst_types;
 
 interface
+uses
+  Types;
 
 {$INCLUDE wst.inc}
 {$INCLUDE wst_delphi.inc}
@@ -27,7 +29,7 @@ type
   TBinaryString = ansistring;
 {$ENDIF}
 
-  TByteDynArray = array of Byte;
+  TByteDynArray = Types.TByteDynArray;
 
   { TDataObject }
 
