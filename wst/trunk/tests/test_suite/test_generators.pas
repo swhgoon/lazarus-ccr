@@ -118,7 +118,7 @@ begin
     CreateWstInterfaceSymbolTable(tr);
     mdl := TPasModule(tr.CreateElement(TPasModule,'class_properties_default',tr.Package,visDefault,'',0));
     tr.Package.Modules.Add(mdl);
-    mdl.InterfaceSection := TPasSection(tr.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    mdl.InterfaceSection := TInterfaceSection(tr.CreateElement(TInterfaceSection,'',mdl,visDefault,'',0));
     cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TClassSampleType',mdl.InterfaceSection,visDefault,'',0));
       cltyp.ObjKind := okClass;
       mdl.InterfaceSection.Declarations.Add(cltyp);
@@ -188,7 +188,7 @@ begin
     CreateWstInterfaceSymbolTable(tr);
     mdl := TPasModule(tr.CreateElement(TPasModule,'urn:wst-test',tr.Package,visDefault,'',0));
     tr.Package.Modules.Add(mdl);
-    mdl.InterfaceSection := TPasSection(tr.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    mdl.InterfaceSection := TInterfaceSection(tr.CreateElement(TInterfaceSection,'',mdl,visDefault,'',0));
     cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TClassSampleType',mdl.InterfaceSection,visDefault,'',0));
       cltyp.ObjKind := okClass;
       mdl.InterfaceSection.Declarations.Add(cltyp);
@@ -253,7 +253,7 @@ begin
     CreateWstInterfaceSymbolTable(tr);
     mdl := TPasModule(tr.CreateElement(TPasModule,'class_extent_native_type',tr.Package,visDefault,'',0));
     tr.Package.Modules.Add(mdl);
-    mdl.InterfaceSection := TPasSection(tr.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    mdl.InterfaceSection := TInterfaceSection(tr.CreateElement(TInterfaceSection,'',mdl,visDefault,'',0));
     cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TExtendString',mdl.InterfaceSection,visDefault,'',0));
       cltyp.ObjKind := okClass;
       cltyp.AncestorType := tr.FindElementNS('TComplexStringContentRemotable',sXSD_NS) as TPasType;
@@ -323,7 +323,7 @@ begin
     CreateWstInterfaceSymbolTable(tr);
     mdl := TPasModule(tr.CreateElement(TPasModule,'class_headerblock_derived',tr.Package,visDefault,'',0));
     tr.Package.Modules.Add(mdl);
-    mdl.InterfaceSection := TPasSection(tr.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    mdl.InterfaceSection := TInterfaceSection(tr.CreateElement(TInterfaceSection,'',mdl,visDefault,'',0));
     cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TEmptyHeader',mdl.InterfaceSection,visDefault,'',0));
       cltyp.ObjKind := okClass;
       cltyp.AncestorType := tr.FindElementNS('THeaderBlock',s_xs) as TPasType;
@@ -396,7 +396,7 @@ begin
     CreateWstInterfaceSymbolTable(tr);
     mdl := TPasModule(tr.CreateElement(TPasModule,'class_headerblock_simplecontent_derived',tr.Package,visDefault,'',0));
     tr.Package.Modules.Add(mdl);
-    mdl.InterfaceSection := TPasSection(tr.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    mdl.InterfaceSection := TInterfaceSection(tr.CreateElement(TInterfaceSection,'',mdl,visDefault,'',0));
     cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TSampleHeader',mdl.InterfaceSection,visDefault,'',0));
       cltyp.ObjKind := okClass;
       cltyp.AncestorType := tr.FindElementNS('TSimpleContentHeaderBlock',s_xs) as TPasType;
@@ -459,7 +459,7 @@ begin
     CreateWstInterfaceSymbolTable(tr);
     mdl := TPasModule(tr.CreateElement(TPasModule,'class_widestring_property',tr.Package,visDefault,'',0));
     tr.Package.Modules.Add(mdl);
-    mdl.InterfaceSection := TPasSection(tr.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    mdl.InterfaceSection := TInterfaceSection(tr.CreateElement(TInterfaceSection,'',mdl,visDefault,'',0));
     cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TSampleClass',mdl.InterfaceSection,visDefault,'',0));
       cltyp.ObjKind := okClass;
       mdl.InterfaceSection.Declarations.Add(cltyp);
@@ -521,7 +521,7 @@ begin
     CreateWstInterfaceSymbolTable(tr);
     mdl := TPasModule(tr.CreateElement(TPasModule,'class_unicodestring_property',tr.Package,visDefault,'',0));
     tr.Package.Modules.Add(mdl);
-    mdl.InterfaceSection := TPasSection(tr.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    mdl.InterfaceSection := TInterfaceSection(tr.CreateElement(TInterfaceSection,'',mdl,visDefault,'',0));
     cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TSampleClass',mdl.InterfaceSection,visDefault,'',0));
       cltyp.ObjKind := okClass;
       mdl.InterfaceSection.Declarations.Add(cltyp);
@@ -560,7 +560,7 @@ begin
     mdl := TPasModule(tr.CreateElement(TPasModule,'array_sequence_collection',tr.Package,visDefault,'',0));
     tr.RegisterExternalAlias(mdl,'urn:wst-test');
     tr.Package.Modules.Add(mdl);
-    mdl.InterfaceSection := TPasSection(tr.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    mdl.InterfaceSection := TInterfaceSection(tr.CreateElement(TInterfaceSection,'',mdl,visDefault,'',0));
     cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TComplexType',mdl.InterfaceSection,visDefault,'',0));
       cltyp.ObjKind := okClass;
       cltyp.AncestorType := tr.FindElementNS('TBaseComplexRemotable',s_xs) as TPasType;
@@ -625,7 +625,7 @@ begin
     mdl := TPasModule(tr.CreateElement(TPasModule,'open_type_module',tr.Package,visDefault,'',0));
     tr.RegisterExternalAlias(mdl,'urn:wst-test');
     tr.Package.Modules.Add(mdl);
-    mdl.InterfaceSection := TPasSection(tr.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    mdl.InterfaceSection := TInterfaceSection(tr.CreateElement(TInterfaceSection,'',mdl,visDefault,'',0));
     cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TComplexType',mdl.InterfaceSection,visDefault,'',0));
       cltyp.ObjKind := okClass;
       cltyp.AncestorType := tr.FindElementNS('TBaseComplexRemotable',s_xs) as TPasType;
@@ -713,7 +713,7 @@ begin
     mdl := TPasModule(tr.CreateElement(TPasModule,'open_type_module',tr.Package,visDefault,'',0));
     tr.RegisterExternalAlias(mdl,'urn:wst-test');
     tr.Package.Modules.Add(mdl);
-    mdl.InterfaceSection := TPasSection(tr.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    mdl.InterfaceSection := TInterfaceSection(tr.CreateElement(TInterfaceSection,'',mdl,visDefault,'',0));
     cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TComplexType',mdl.InterfaceSection,visDefault,'',0));
       cltyp.ObjKind := okClass;
       cltyp.AncestorType := tr.FindElementNS('TBaseComplexRemotable',s_xs) as TPasType;
@@ -804,7 +804,7 @@ begin
     mdl := TPasModule(tr.CreateElement(TPasModule,'open_type_module',tr.Package,visDefault,'',0));
     tr.RegisterExternalAlias(mdl,'urn:wst-test');
     tr.Package.Modules.Add(mdl);
-    mdl.InterfaceSection := TPasSection(tr.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    mdl.InterfaceSection := TInterfaceSection(tr.CreateElement(TInterfaceSection,'',mdl,visDefault,'',0));
     cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TComplexType',mdl.InterfaceSection,visDefault,'',0));
       cltyp.ObjKind := okClass;
       cltyp.AncestorType := tr.FindElementNS('TBaseComplexRemotable',s_xs) as TPasType;
@@ -874,7 +874,7 @@ begin
     mdl := TPasModule(tr.CreateElement(TPasModule,'type_alias_widestring',tr.Package,visDefault,'',0));
     tr.RegisterExternalAlias(mdl,'urn:wst-test');
     tr.Package.Modules.Add(mdl);
-    mdl.InterfaceSection := TPasSection(tr.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    mdl.InterfaceSection := TInterfaceSection(tr.CreateElement(TInterfaceSection,'',mdl,visDefault,'',0));
     aliasType := TPasAliasType(tr.CreateElement(TPasAliasType,'AliasedType',mdl.InterfaceSection,visDefault,'',0));
       aliasType.DestType := tr.FindElementNS('WideString',s_xs) as TPasType;
       aliasType.DestType.AddRef();
@@ -910,7 +910,7 @@ begin
     mdl := TPasModule(tr.CreateElement(TPasModule,'type_hint_array_item',tr.Package,visDefault,'',0));
     tr.RegisterExternalAlias(mdl,'urn:wst-test');
     tr.Package.Modules.Add(mdl);
-    mdl.InterfaceSection := TPasSection(tr.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    mdl.InterfaceSection := TInterfaceSection(tr.CreateElement(TInterfaceSection,'',mdl,visDefault,'',0));
     aliasType := tr.CreateArray('AliasedType',tr.FindElementNS('WideString',s_xs) as TPasType,'Item','Item',asScoped);
       mdl.InterfaceSection.Declarations.Add(aliasType);
       mdl.InterfaceSection.Types.Add(aliasType);
@@ -966,7 +966,7 @@ begin
     CreateWstInterfaceSymbolTable(tr);
     mdl := TPasModule(tr.CreateElement(TPasModule,'type_hint_record_item',tr.Package,visDefault,'',0));
     tr.Package.Modules.Add(mdl);
-    mdl.InterfaceSection := TPasSection(tr.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    mdl.InterfaceSection := TInterfaceSection(tr.CreateElement(TInterfaceSection,'',mdl,visDefault,'',0));
     cltyp := TPasRecordType(tr.CreateElement(TPasRecordType,'TSampleRecord',mdl.InterfaceSection,visDefault,'',0));
       mdl.InterfaceSection.Declarations.Add(cltyp);
       mdl.InterfaceSection.Types.Add(cltyp);
@@ -1031,7 +1031,7 @@ begin
     CreateWstInterfaceSymbolTable(tr);
     mdl := TPasModule(tr.CreateElement(TPasModule,'class_ansichar_property',tr.Package,visDefault,'',0));
     tr.Package.Modules.Add(mdl);
-    mdl.InterfaceSection := TPasSection(tr.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    mdl.InterfaceSection := TInterfaceSection(tr.CreateElement(TInterfaceSection,'',mdl,visDefault,'',0));
     cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TSampleClass',mdl.InterfaceSection,visDefault,'',0));
       cltyp.ObjKind := okClass;
       mdl.InterfaceSection.Declarations.Add(cltyp);
@@ -1092,7 +1092,7 @@ begin
     CreateWstInterfaceSymbolTable(tr);
     mdl := TPasModule(tr.CreateElement(TPasModule,'class_widechar_property',tr.Package,visDefault,'',0));
     tr.Package.Modules.Add(mdl);
-    mdl.InterfaceSection := TPasSection(tr.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    mdl.InterfaceSection := TInterfaceSection(tr.CreateElement(TInterfaceSection,'',mdl,visDefault,'',0));
     cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TSampleClass',mdl.InterfaceSection,visDefault,'',0));
       cltyp.ObjKind := okClass;
       mdl.InterfaceSection.Declarations.Add(cltyp);
@@ -1153,7 +1153,7 @@ begin
     CreateWstInterfaceSymbolTable(tr);
     mdl := TPasModule(tr.CreateElement(TPasModule,'class_currency_property',tr.Package,visDefault,'',0));
     tr.Package.Modules.Add(mdl);
-    mdl.InterfaceSection := TPasSection(tr.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    mdl.InterfaceSection := TInterfaceSection(tr.CreateElement(TInterfaceSection,'',mdl,visDefault,'',0));
     cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TSampleClass',mdl.InterfaceSection,visDefault,'',0));
       cltyp.ObjKind := okClass;
       mdl.InterfaceSection.Declarations.Add(cltyp);
@@ -1233,7 +1233,7 @@ begin
     mdl := TPasModule(tr.CreateElement(TPasModule,'echo_service',tr.Package,visDefault,'',0));
     tr.Package.Modules.Add(mdl);
     tr.RegisterExternalAlias(mdl,'uri:echo-service');
-    mdl.InterfaceSection := TPasSection(tr.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    mdl.InterfaceSection := TInterfaceSection(tr.CreateElement(TInterfaceSection,'',mdl,visDefault,'',0));
     cltyp := TPasClassType(tr.CreateElement(TPasClassType,'IEchoService',mdl.InterfaceSection,visDefault,'',0));
       cltyp.ObjKind := okInterface;
       cltyp.InterfaceGUID := '{FCD0F68F-3023-46C6-AD09-1DDA4A2989EB}';

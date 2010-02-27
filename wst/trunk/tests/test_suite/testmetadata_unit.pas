@@ -85,13 +85,13 @@ function TTestMetadata.CreateSymbolTable(): TwstPasTreeContainer;
   
 var
   inft : TPasClassType;
-  sct : TPasSection;
+  sct : TInterfaceSection;
   locProc : TPasProcedure;
 begin
   Result := TwstPasTreeContainer.Create();
   CreateWstInterfaceSymbolTable(Result);
   Result.Package.Modules.Add(Result.CreateElement(TPasModule,'test_unit_name',Result.Package,visDefault,'',0));
-  sct := TPasSection(Result.CreateElement(TPasSection,'',Result.CurrentModule,visDefault,'',0));
+  sct := TInterfaceSection(Result.CreateElement(TInterfaceSection,'',Result.CurrentModule,visDefault,'',0));
   Result.CurrentModule.InterfaceSection := sct;
 
   inft := TPasClassType(Result.CreateElement(TPasClassType,'service_1',sct,visDefault,'',0));

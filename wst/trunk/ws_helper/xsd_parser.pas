@@ -734,7 +734,7 @@ begin
     FModule := TPasModule(SymbolTable.CreateElement(TPasModule,FModuleName,SymbolTable.Package,visDefault,'',0));
     SymbolTable.Package.Modules.Add(FModule);
     SymbolTable.RegisterExternalAlias(FModule,FTargetNameSpace);
-    FModule.InterfaceSection := TPasSection(SymbolTable.CreateElement(TPasSection,'',FModule,visDefault,'',0));
+    FModule.InterfaceSection := TInterfaceSection(SymbolTable.CreateElement(TInterfaceSection,'',FModule,visDefault,'',0));
   end;
 end;
 

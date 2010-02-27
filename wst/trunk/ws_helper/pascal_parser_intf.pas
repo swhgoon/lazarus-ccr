@@ -31,6 +31,11 @@ const
   sARRAY_IS_COLLECTION = 'ARRAY_COLLECTION';
   
   sXSD_NS = 'http://www.w3.org/2001/XMLSchema';
+
+{$IF not Declared(TInterfaceSection) }
+type             
+  TInterfaceSection = TPasSection;
+{$IFEND}
   
 type
 
@@ -407,7 +412,7 @@ begin
   try
     AContainer.Package.Modules.Add(Result);
     AContainer.RegisterExternalAlias(Result,sXSD_NS);
-    Result.InterfaceSection := TPasSection(AContainer.CreateElement(TPasSection,'',Result,visDefault,'',0));
+    Result.InterfaceSection := TInterfaceSection(AContainer.CreateElement(TInterfaceSection,'',Result,visDefault,'',0));
     AddSystemSymbol(Result,AContainer);
     AddClassDef(Result,'TBaseRemotable','',TPasNativeClassType);
       AContainer.RegisterExternalAlias(AddClassDef(Result,'anyType_Type','TBaseRemotable',TPasNativeClassType),'anyType');
