@@ -24,7 +24,7 @@ uses
 
 const
   ProgramName    = 'MakePasX';
-  ProgramVersion = '0.02';
+  ProgramVersion = '0.03';
   
   PasFileExt     = '.pas';  {Pascal code file extension}
   DelProjFileExt = '.dpr';  {Delphi project file extension}
@@ -112,7 +112,8 @@ begin
         WriteLn(NewFileVar, InStr);
         WriteLn(NewFileVar, 
                 '  {$IFNDEF LCL} Windows, Messages, ',
-                '{$ELSE} LclIntf, LMessages, LclType, LResources, {$ENDIF}');
+                '{$ELSE} LclIntf, LMessages, LclType, {$ENDIF}');  //LResources not needed anymore
+//                '{$ELSE} LclIntf, LMessages, LclType, LResources, {$ENDIF}');
         ReadLn(OldFileVar, InStr);
         repeat
           UnitPos := Pos('WINDOWS,', UpperCase(InStr));
@@ -147,12 +148,15 @@ begin
         begin
         WriteLn(NewFileVar, '{$IFNDEF LCL}');
         WriteLn(NewFileVar, InStr);
+        WriteLn(NewFileVar, '{$ELSE}');     //Added this   
+        WriteLn(NewFileVar, '{$R *.lfm}');  //Added this              
         WriteLn(NewFileVar, '{$ENDIF}');
         HasForm := True;
         end  
 
       else if (CompareText(InStr, 'end.') = 0) and HasForm then  {End of unit?}
         begin
+(*  // not needed anymore
          {Note: Make sure IFDEF goes after initialization since Delphi
            inserts new event handlers immediately before initialization line.}
         WriteLn(NewFileVar, 'initialization');
@@ -161,6 +165,7 @@ begin
                             '.lrs}  {Include form''s resource file}'));
         WriteLn(NewFileVar, '{$ENDIF}');
         WriteLn(NewFileVar);
+*)
         WriteLn(NewFileVar, InStr);
         end
 
