@@ -15,7 +15,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="2">
+    <Files Count="3">
       <Item1>
         <Filename Value="src\ugradtabcontrol.pas"/>
         <HasRegisterProc Value="True"/>
@@ -26,6 +26,10 @@
         <HasRegisterProc Value="True"/>
         <UnitName Value="ugradbtn"/>
       </Item2>
+      <Item3>
+        <Filename Value="src\urotatebitmap.pas"/>
+        <UnitName Value="uRotateBitmap"/>
+      </Item3>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">

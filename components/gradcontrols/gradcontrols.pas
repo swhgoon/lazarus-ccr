@@ -1,16 +1,13 @@
-{ Diese Datei wurde automatisch von Lazarus erzeugt. Sie darf nicht bearbeitet 
-  werden!
-  Dieser Quelltext dient nur dem Übersetzen und Installieren des Packages.
+{ This file was automatically created by Lazarus. do not edit ! 
+  This source is only used to compile and install the package.
  }
 
 unit gradcontrols; 
 
 interface
 
-
-
 uses
-  ugradtabcontrol, ugradbtn, LazarusPackageIntf;
+  ugradtabcontrol, ugradbtn, uRotateBitmap, LazarusPackageIntf;
 
 implementation
 

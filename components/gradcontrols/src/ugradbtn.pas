@@ -46,7 +46,6 @@ type
     FNormalBackgroundCache, FHotBackgroundCache,
     FDownBackgroundCache, FDisabledBackgroundCache : TBitmap;
     FRotatedGlyph : TRotatedGlyph;
-    FRotatedText : TRotatedText;
     FTextGlyphSpacing: Integer;
     FGradientType : TGradientType;
     FShowFocusBorder, FOnlyBackground,
@@ -216,7 +215,6 @@ end;
 procedure TGradButton.TextChanged;
 begin
   inherited TextChanged;
-  FRotatedText.Text := Caption;
 
   if FAutoWidth then
     UpdateButton
@@ -287,9 +285,15 @@ begin
   tempGS.cy:=FRotatedGlyph.Height;
   end;
 
-  //tempTS := Canvas.TextExtent(Caption);
-  tempTS.cx:= FRotatedText.Width;
-  tempTS.cy:= FRotatedText.Height;
+  tempTS := bm.Canvas.TextExtent(Caption);
+  if FRotateDirection <> rdNormal then
+  begin
+    FTextSize.cx := tempTS.cy;
+    FTextSize.cy := tempTS.cx;
+    tempTS := FTextSize;
+  end
+  else
+    FTextSize := tempTS;
 
   tempBL := FButtonLayout;
 
@@ -356,9 +360,6 @@ begin
   WritePoint(FGlyphPoint);
   {$ENDIF}
 
-  //tempTS := Canvas.TextExtent(Caption);
-
-  FTextSize:=tempTS;
   FGlyphSize:=tempGS;
 end;
 
@@ -366,11 +367,11 @@ function TGradButton.GetAutoWidth: Integer;
 begin
   if FShowGlyph then begin
     if FButtonLayout in [blGlyphLeft,blGlyphRight] then
-       Result := FRotatedText.Width+ FRotatedGlyph.Width+FTextGlyphSpacing+FAutoWidthBorderSpacing
+       Result := FTextSize.cx+ FRotatedGlyph.Width+FTextGlyphSpacing+FAutoWidthBorderSpacing
     else
-       Result := Max(FRotatedText.Width,FRotatedGlyph.Width)+FAutoWidthBorderSpacing;
+       Result := Max(FTextSize.cx,FRotatedGlyph.Width)+FAutoWidthBorderSpacing;
   end else begin
-    Result := FRotatedText.Width+FAutoWidthBorderSpacing;
+    Result := FTextSize.cx+FAutoWidthBorderSpacing;
   end;
 end;
 
@@ -378,11 +379,11 @@ function TGradButton.GetAutoHeight: Integer;
 begin
   if FShowGlyph then begin
     if FButtonLayout in [blGlyphTop,blGlyphBottom] then
-       Result := FRotatedText.Height+ FRotatedGlyph.Height+FTextGlyphSpacing+FAutoHeightBorderSpacing
+       Result := FTextSize.cy+ FRotatedGlyph.Height+FTextGlyphSpacing+FAutoHeightBorderSpacing
     else
-       Result := Max(FRotatedText.Height,FRotatedGlyph.Height)+FAutoHeightBorderSpacing;
+       Result := Max(FTextSize.cy,FRotatedGlyph.Height)+FAutoHeightBorderSpacing;
   end else begin
-    Result := FRotatedText.Height+FAutoHeightBorderSpacing;
+    Result := FTextSize.cy+FAutoHeightBorderSpacing;
   end;
 end;
 
@@ -676,7 +677,6 @@ begin
     FRotateDirection:=Value;
 
     //Rotate and Cache
-    FRotatedText.Direction:=FRotateDirection;
     FRotatedGlyph.Direction:=FRotateDirection;
     
     UpdatePositions;
@@ -861,7 +861,6 @@ begin
 
   FRotatedGlyph := TRotatedGlyph.Create;
   FRotatedGlyph.OnChange := @GlyphChanged;
-  FRotatedText := TRotatedText.Create;
   FButtonLayout:=blGlyphLeft;
   FGlyphBackgroundColor:=clWhite;
     
@@ -873,6 +872,7 @@ begin
   FBorderSides:=[bsTopLine,bsBottomLine,bsLeftLine,bsRightLine];
 
   bm := TBitmap.Create;
+  bm.Canvas.Brush.Style := bsClear;
 
   UpdateBackground;
     
@@ -885,8 +885,6 @@ begin
    bm.Free;
    //DebugLn('FRotatedGlyph.Free');
    FRotatedGlyph.Free;
-   //DebugLn('FRotatedText.Free');
-   FRotatedText.Free;
    //DebugLn('FBackground.Free');
    FBackground.Free;
    //DebugLn('FNormalBackgroundCache.Free');
@@ -992,7 +990,7 @@ procedure TGradButton.FontChanged(Sender: TObject);
 begin
   inherited FontChanged(Sender);
 
-  FRotatedText.Font := Font;
+  bm.Canvas.Font := Font;
   UpdatePositions;
 end;
 
@@ -1031,19 +1029,12 @@ end;
 
 procedure TGradButton.Paint;
 var
-   radius, r,t,p,x,y : Integer;
-   rt,pr : TRect;
-   t1,t2,t3 : TColor;
-   s : String;
-   r1,r2 : Extended;
-   tempState : TButtonState;
-   temp : TBitmap;
+  TextOffset : Integer;
+  tempState: TButtonState;
 begin
    if not HasParent then
       Exit;
 
-   tempState:=FState;
-      
    with bm do
    begin
      Width := Self.Width;
@@ -1055,13 +1046,10 @@ begin
      Canvas.Brush.Color:=clBlack;
      Canvas.FillRect(0,0,Width, Height);
 
-     p := 0;
-
-     if tempState = bsDown then
-        p := 1;
-
-     if not FEnabled then tempState := bsDisabled;
-
+     if not FEnabled then
+       tempState := bsDisabled
+     else
+       tempState := FState;
      case tempState of
        bsUp  : Canvas.Draw(0,0,FNormalBackgroundCache);
        bsDown: Canvas.Draw(0,0,FDownBackgroundCache);
@@ -1069,28 +1057,25 @@ begin
        else Canvas.Draw(0,0,FDisabledBackgroundCache);
      end;
 
-     if Caption <> '' then
-        FRotatedText.Draw(bm.Canvas, FTextPoint.x+p, FTextPoint.y+p);
+     TextOffset := IfThen(tempState = bsDown, 1);
 
-     if FShowGlyph AND FRotatedGlyph.IsBitmapStored then
+     DrawRotatedText(Canvas, FTextPoint.x + TextOffset, FTextPoint.y + TextOffset,
+       FTextSize.cx, FTextSize.cy, Caption, FRotateDirection);
+
+     if FShowGlyph and FRotatedGlyph.IsBitmapStored then
      begin
-        if not FEnabled then
-           tempState := bsDisabled
-        else
-           tempState := FState;
-
-        FRotatedGlyph.State:=tempState;
-        FRotatedGlyph.Draw(bm.Canvas, FGlyphPoint.x+p, FGlyphPoint.y+p);
+        FRotatedGlyph.State := FState;
+        FRotatedGlyph.Draw(bm.Canvas, FGlyphPoint.x+TextOffset, FGlyphPoint.y+TextOffset);
      end;
 
      if not (csDesigning in ComponentState) then
-       if FFocused AND FShowFocusBorder then
+       if FFocused and FShowFocusBorder then
           Canvas.DrawFocusRect(RECT(FBackgroundRect.Left+2, FBackgroundRect.Top+2,
             FBackgroundRect.Right-2, FBackgroundRect.Bottom-2));
    end;
    
    Canvas.Draw(0,0,bm);
-   
+
    inherited Paint;
 end;
 

@@ -74,24 +74,10 @@ type
     property Transparent;
   end;
 
-  { TRotatedText }
-
-  TRotatedText = class (TCustomRotatedBitmap)
-  private
-    FText : String;
-    procedure SetFont(const AValue: TFont);
-    procedure SetText(const Value: String);
-    procedure UpdateText;
-  protected
-    function GetWidth: Integer; override;
-    function GetHeight: Integer; override;
-  public
-    constructor Create; override;
-    property Font: TFont write SetFont;
-    property Text: String read FText write SetText;
-  end;
-
 function CreateRotatedBitmap(SrcImage: TRasterImage; Direction: TRotateDirection): TBitmap;
+
+procedure DrawRotatedText(Canvas: TCanvas; X, Y, TextWidth, TextHeight: Integer;
+  const Text: String; Direction: TRotateDirection);
 
 implementation
 
@@ -138,6 +124,28 @@ begin
 
   RotateImg.Free;
   NormalImg.Free;
+end;
+
+procedure DrawRotatedText(Canvas: TCanvas; X, Y, TextWidth, TextHeight: Integer;
+  const Text: String; Direction: TRotateDirection);
+begin
+  case Direction of
+    rdNormal:
+    begin
+      Canvas.Font.Orientation := 0;
+      Canvas.TextOut(X, Y, Text);
+    end;
+    rdLeft:
+    begin
+      Canvas.Font.Orientation := 900;
+      Canvas.TextOut(X, Y + TextHeight, Text);
+    end;
+    rdRight:
+    begin
+      Canvas.Font.Orientation := -900;
+      Canvas.TextOut(X + TextWidth, Y, Text);
+    end;
+  end;
 end;
 
 { TCustomRotatedBitmap }
@@ -282,74 +290,6 @@ begin
   //DebugLn(DbgS(P));
   //DebugLn('Transparent: '+BoolToStr(Transparent, true));
   FGlyph.Draw(Canvas, R, P, FButtonState, Transparent, 0);
-end;
-
-{ TRotatedText }
-
-procedure TRotatedText.SetText(const Value: String);
-begin
-  if Value = FText then
-    Exit;
-  FText := Value;
-  UpdateText;
-end;
-
-procedure TRotatedText.SetFont(const AValue: TFont);
-begin
-  FNormalBitmap.Canvas.Font := AValue;
-  FNormalBitmap.Canvas.Font.Quality := fqNonAntialiased;
-
-  UpdateText;
-end;
-
-procedure TRotatedText.UpdateText;
-var
-  TextSize : TSize;
-  TransColor: TColor;
-begin
-  FNormalBitmap.Canvas.Font.Quality := fqNonAntialiased;
-
-  with FNormalBitmap, Canvas do
-  begin
-    TextSize := TextExtent(FText);
-    {$if defined(LCLWin32) or defined (LCLQt)}
-    //win32 and Qt does not comput correct text extent when Italic style is set.
-    //gtk1/2 does not support Italic at all
-    if fsItalic in Font.Style then
-      Inc(TextSize.cx, 4);
-    {$endif}
-    SetSize(TextSize.cx, TextSize.cy);
-    if Font.Color <> clFuchsia then
-      TransColor := clFuchsia
-    else
-      TransColor := clWhite;
-    Brush.Color := TransColor;
-    FillRect(0, 0, FNormalBitmap.Width, FNormalBitmap.Height);
-    TextOut(0, 0, FText);
-    Mask(TransColor);
-  end;
-end;
-
-function TRotatedText.GetWidth: Integer;
-begin
-  if FText <> '' then
-    Result := inherited GetWidth
-  else
-    Result := 0;
-end;
-
-function TRotatedText.GetHeight: Integer;
-begin
-  if FText <> '' then
-    Result := inherited GetHeight
-  else
-    Result := 0;
-end;
-
-constructor TRotatedText.Create;
-begin
-  inherited Create;
-  Transparent := True;
 end;
 
 end.
