@@ -1,6 +1,14 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
+#: rxconst.sabout
+msgid "About"
+msgstr "О системе"
+
+#: rxconst.sappversion
+msgid "Version : "
+msgstr "Версия : "
+
 #: rxconst.savaliablebuttons
 msgid "Avaliable buttons"
 msgstr "Доступные кнопки"
@@ -24,6 +32,10 @@ msgstr "Влево"
 #: rxconst.sbuttonalign3
 msgid "Rignt"
 msgstr "Вправо"
+
+#: rxconst.scarbonwidgetset
+msgid "Carbon widget set"
+msgstr "Графический интерфейс Carbon"
 
 #: rxconst.sdatedlgtitle
 msgid "Select a Date"
@@ -57,6 +69,34 @@ msgstr "Указанный файл не исполняемый, не библи
 msgid "Flat buttons"
 msgstr "Плавающие кнопки"
 
+#: rxconst.sfpcversion
+msgid "FPC version : "
+msgstr "Версия FPC : "
+
+#: rxconst.sfpguiwidgetset
+msgid "FpGUI widget set"
+msgstr "Графический интерфейс FpGUI"
+
+#: rxconst.sgeneral
+msgid "General"
+msgstr "Общее"
+
+#: rxconst.sgtk2widgetset
+msgid "GTK 2 widget set"
+msgstr "Графический интерфейс GTK 2"
+
+#: rxconst.sgtkwidgetset
+msgid "GTK widget set"
+msgstr "Графический интерфейс GTK"
+
+#: rxconst.slclversion
+msgid "LCL Version: "
+msgstr "Версия LCL : "
+
+#: rxconst.slicense
+msgid "License"
+msgstr "Лицензия"
+
 #: rxconst.sloadliberror
 msgid "Could not load '%s' library"
 msgstr "Невозможно загрузить библиотеку '%s'"
@@ -77,6 +117,10 @@ msgstr "Функция не реализована"
 msgid "Options"
 msgstr "Параметры"
 
+#: rxconst.sotherguiwidgetset
+msgid "Other gui"
+msgstr "Неизвестный графический интерфейс"
+
 #: rxconst.sprevmonth
 msgid "Previous Month|"
 msgstr "Превыдущий месяц|"
@@ -85,6 +129,10 @@ msgstr "Превыдущий месяц|"
 msgid "Previous Year|"
 msgstr "Превыдущий год|"
 
+#: rxconst.sqtwidgetset
+msgid "QT widget set"
+msgstr "Графический интерфейс QT"
+
 #: rxconst.sshowcaption
 msgid "Show caption"
 msgstr "Отображать заголовок"
@@ -92,6 +140,14 @@ msgstr "Отображать заголовок"
 #: rxconst.sshowhint
 msgid "Show hint"
 msgstr "Отображать подсказки"
+
+#: rxconst.stargetcpu
+msgid "Target CPU : "
+msgstr "Целевой процессор : "
+
+#: rxconst.stargetos
+msgid "Target OS : "
+msgstr "Целевая ОС : "
 
 #: rxconst.stocurdate
 msgid "Set current date"
@@ -124,6 +180,14 @@ msgstr "Прозрачно"
 #: rxconst.svisiblebuttons
 msgid "Visible buttons"
 msgstr "Отображаемые конпки"
+
+#: rxconst.swin32_64widgetset
+msgid "Win32/Win64 widget set"
+msgstr "Графический интерфейс Win32/Win64"
+
+#: rxconst.swincewidgetset
+msgid "WinCE widget set"
+msgstr "Графический интерфейс WinCE"
 
 #: rxconst.swindowsicofiles
 msgid "Windows Ico files (*.ico)|*.ico|All files (*.*)|*.*"

@@ -10,7 +10,7 @@ object rxDBGridFindForm: TrxDBGridFindForm
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poDesktopCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object Label1: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -33,7 +33,7 @@ object rxDBGridFindForm: TrxDBGridFindForm
     AnchorSideBottom.Side = asrBottom
     Left = 6
     Height = 18
-    Top = 63
+    Top = 65
     Width = 80
     BorderSpacing.Around = 6
     Caption = 'Find at filed'
@@ -84,7 +84,7 @@ object rxDBGridFindForm: TrxDBGridFindForm
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 18
-    Height = 27
+    Height = 29
     Top = 30
     Width = 469
     Anchors = [akTop, akLeft, akRight]
@@ -99,7 +99,7 @@ object rxDBGridFindForm: TrxDBGridFindForm
     AnchorSideRight.Side = asrBottom
     Left = 12
     Height = 31
-    Top = 87
+    Top = 89
     Width = 475
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
@@ -112,9 +112,9 @@ object rxDBGridFindForm: TrxDBGridFindForm
     AnchorSideTop.Control = ComboBox1
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 21
-    Top = 124
-    Width = 129
+    Height = 19
+    Top = 126
+    Width = 126
     BorderSpacing.Around = 6
     Caption = 'Case sensetive'
     TabOrder = 2
@@ -126,10 +126,10 @@ object rxDBGridFindForm: TrxDBGridFindForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 141
+    Left = 138
     Height = 52
-    Top = 124
-    Width = 346
+    Top = 126
+    Width = 349
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
     AutoSize = True
@@ -143,8 +143,8 @@ object rxDBGridFindForm: TrxDBGridFindForm
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 3
-    ClientHeight = 33
-    ClientWidth = 342
+    ClientHeight = 31
+    ClientWidth = 341
     Columns = 3
     Items.Strings = (
       'All'
@@ -159,9 +159,9 @@ object rxDBGridFindForm: TrxDBGridFindForm
     AnchorSideTop.Control = CheckBox1
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 21
+    Height = 19
     Top = 151
-    Width = 91
+    Width = 88
     BorderSpacing.Around = 6
     Caption = 'Partial key'
     TabOrder = 3

@@ -16,13 +16,6 @@ type
     ActionList1: TActionList;
     Datasource1: TDatasource;
     Dbf1: TDbf;
-    Dbf1ICQ1: TStringField;
-    Dbf1ID1: TLongintField;
-    Dbf1MEMO1: TMemoField;
-    Dbf1NAME1: TStringField;
-    Dbf1PATRONYMIC1: TStringField;
-    Dbf1PHONE1: TStringField;
-    Dbf1SURNAME1: TStringField;
     ImageList1: TImageList;
     ImageList2: TImageList;
     MainMenu1: TMainMenu;
@@ -40,17 +33,20 @@ var
   pbMainForm: TpbMainForm;
 
 implementation
+uses FileUtil;
+
+{$R *.lfm}
 
 { TpbMainForm }
 
 procedure TpbMainForm.FormCreate(Sender: TObject);
+var
+  S:string;
 begin
-  Dbf1.FilePathFull:=ExtractFilePath(ParamStr(0))+DirectorySeparator+'bases';
+  S:=AppendPathDelim(ExtractFilePath(ParamStr(0)))+'bases';
+  Dbf1.FilePathFull:=S;
   Dbf1.Open;
 end;
-
-initialization
-  {$I pbmainunit.lrs}
 
 end.
 

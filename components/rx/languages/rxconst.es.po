@@ -1,6 +1,14 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
+#: rxconst.sabout
+msgid "About"
+msgstr ""
+
+#: rxconst.sappversion
+msgid "Version : "
+msgstr ""
+
 #: rxconst.savaliablebuttons
 msgid "Avaliable buttons"
 msgstr "Botones disponibles"
@@ -24,6 +32,10 @@ msgstr "Izquierdo"
 #: rxconst.sbuttonalign3
 msgid "Rignt"
 msgstr "Derecho"
+
+#: rxconst.scarbonwidgetset
+msgid "Carbon widget set"
+msgstr ""
 
 #: rxconst.sdatedlgtitle
 msgid "Select a Date"
@@ -57,6 +69,34 @@ msgstr "Fichero especificado no es un fichero ejecutable, vinculo dinamico, o fi
 msgid "Flat buttons"
 msgstr "Botones planos"
 
+#: rxconst.sfpcversion
+msgid "FPC version : "
+msgstr ""
+
+#: rxconst.sfpguiwidgetset
+msgid "FpGUI widget set"
+msgstr ""
+
+#: rxconst.sgeneral
+msgid "General"
+msgstr ""
+
+#: rxconst.sgtk2widgetset
+msgid "GTK 2 widget set"
+msgstr ""
+
+#: rxconst.sgtkwidgetset
+msgid "GTK widget set"
+msgstr ""
+
+#: rxconst.slclversion
+msgid "LCL Version: "
+msgstr ""
+
+#: rxconst.slicense
+msgid "License"
+msgstr ""
+
 #: rxconst.sloadliberror
 msgid "Could not load '%s' library"
 msgstr "No se puede cargar la libreria '%s'"
@@ -77,6 +117,10 @@ msgstr "Funcion no esta aun implementada"
 msgid "Options"
 msgstr "Opciones"
 
+#: rxconst.sotherguiwidgetset
+msgid "Other gui"
+msgstr ""
+
 #: rxconst.sprevmonth
 msgid "Previous Month|"
 msgstr "Anterior Mes|"
@@ -85,6 +129,10 @@ msgstr "Anterior Mes|"
 msgid "Previous Year|"
 msgstr "Anterior Año|"
 
+#: rxconst.sqtwidgetset
+msgid "QT widget set"
+msgstr ""
+
 #: rxconst.sshowcaption
 msgid "Show caption"
 msgstr "Mostrar titulo"
@@ -92,6 +140,14 @@ msgstr "Mostrar titulo"
 #: rxconst.sshowhint
 msgid "Show hint"
 msgstr "Mostrar consejo"
+
+#: rxconst.stargetcpu
+msgid "Target CPU : "
+msgstr ""
+
+#: rxconst.stargetos
+msgid "Target OS : "
+msgstr ""
 
 #: rxconst.stocurdate
 msgid "Set current date"
@@ -124,6 +180,14 @@ msgstr "Transparente"
 #: rxconst.svisiblebuttons
 msgid "Visible buttons"
 msgstr "Botones visibles"
+
+#: rxconst.swin32_64widgetset
+msgid "Win32/Win64 widget set"
+msgstr ""
+
+#: rxconst.swincewidgetset
+msgid "WinCE widget set"
+msgstr ""
 
 #: rxconst.swindowsicofiles
 msgid "Windows Ico files (*.ico)|*.ico|All files (*.*)|*.*"

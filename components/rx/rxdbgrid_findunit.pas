@@ -80,14 +80,20 @@ var
   FieldName:string;
   LOptions: TLocateOptions;
 begin
-  FieldName:=FGrid.Columns[ComboBox1.ItemIndex].FieldName;
-  LOptions:=[];
-  if not CheckBox1.Checked then
-    LOptions:=LOptions+[loCaseInsensitive];
+  if Edit1.Text<>'' then
+  begin
+    try
+      FieldName:=FGrid.Columns[ComboBox1.ItemIndex].FieldName;
+      LOptions:=[];
+      if not CheckBox1.Checked then
+        LOptions:=LOptions+[loCaseInsensitive];
 
-  if CheckBox2.Checked then
-    LOptions:=LOptions+[loPartialKey];
-  DataSetLocateThrough(FDataSet, FieldName, Edit1.Text, LOptions);
+      if CheckBox2.Checked then
+        LOptions:=LOptions+[loPartialKey];
+      DataSetLocateThrough(FDataSet, FieldName, Edit1.Text, LOptions);
+    finally
+    end;
+  end;
 end;
 
 type

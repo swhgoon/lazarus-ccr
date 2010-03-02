@@ -9,12 +9,15 @@
       </Flags>
       <MainUnit Value="0"/>
       <TargetFileExt Value=".exe"/>
+      <ResourceType Value="res"/>
       <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <VersionInfo>
-      <ProjectVersion Value=""/>
+      <UseVersionInfo Value="True"/>
+      <AutoIncrementBuild Value="True"/>
       <Language Value=""/>
       <CharSet Value=""/>
+      <StringTable Comments="" CompanyName="" FileDescription="" FileVersion="0.0.0.0" InternalName="" LegalCopyright="" LegalTrademarks="" OriginalFilename="" ProductName="" ProductVersion=""/>
     </VersionInfo>
     <PublishOptions>
       <Version Value="2"/>
@@ -45,7 +48,7 @@
         <PackageName Value="LCL"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="5">
       <Unit0>
         <Filename Value="PhoneBookDemo.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -56,83 +59,120 @@
       </Unit0>
       <Unit1>
         <Filename Value="pbmainunit.pas"/>
-        <ComponentName Value="pbMainForm"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="pbMainForm"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="pbMainUnit"/>
-        <CursorPos X="12" Y="49"/>
-        <TopLine Value="23"/>
-        <EditorIndex Value="0"/>
+        <CursorPos X="11" Y="9"/>
+        <TopLine Value="1"/>
         <UsageCount Value="20"/>
-        <Loaded Value="True"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="usr\local\share\lazarus\components\rxnew\Demos\PhoneBookDemo\pbmainunit.pas"/>
+        <ComponentName Value="pbMainForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="pbMainUnit"/>
+        <CursorPos X="5" Y="9"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="usr\local\share\lazarus\components\rxnew\rxdbgrid.pas"/>
+        <UnitName Value="rxdbgrid"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="\usr\local\share\lazarus\components\rxnew\Demos\PhoneBookDemo\pbmainunit.pas"/>
+        <ComponentName Value="pbMainForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="pbMainUnit"/>
+        <CursorPos X="1" Y="48"/>
+        <TopLine Value="19"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit4>
     </Units>
-    <JumpHistory Count="15" HistoryIndex="14">
+    <JumpHistory Count="16" HistoryIndex="15">
       <Position1>
-        <Filename Value="pbmainunit.pas"/>
-        <Caret Line="11" Column="14" TopLine="1"/>
+        <Filename Value="\usr\local\share\lazarus\components\rxnew\Demos\PhoneBookDemo\pbmainunit.pas"/>
+        <Caret Line="52" Column="1" TopLine="26"/>
       </Position1>
       <Position2>
-        <Filename Value="pbmainunit.pas"/>
-        <Caret Line="14" Column="3" TopLine="1"/>
+        <Filename Value="\usr\local\share\lazarus\components\rxnew\Demos\PhoneBookDemo\pbmainunit.pas"/>
+        <Caret Line="53" Column="1" TopLine="26"/>
       </Position2>
       <Position3>
-        <Filename Value="pbmainunit.pas"/>
-        <Caret Line="15" Column="28" TopLine="1"/>
+        <Filename Value="\usr\local\share\lazarus\components\rxnew\Demos\PhoneBookDemo\pbmainunit.pas"/>
+        <Caret Line="54" Column="1" TopLine="26"/>
       </Position3>
       <Position4>
-        <Filename Value="pbmainunit.pas"/>
-        <Caret Line="16" Column="28" TopLine="1"/>
+        <Filename Value="\usr\local\share\lazarus\components\rxnew\Demos\PhoneBookDemo\pbmainunit.pas"/>
+        <Caret Line="55" Column="1" TopLine="26"/>
       </Position4>
       <Position5>
-        <Filename Value="pbmainunit.pas"/>
-        <Caret Line="18" Column="26" TopLine="1"/>
+        <Filename Value="\usr\local\share\lazarus\components\rxnew\Demos\PhoneBookDemo\pbmainunit.pas"/>
+        <Caret Line="52" Column="1" TopLine="26"/>
       </Position5>
       <Position6>
-        <Filename Value="pbmainunit.pas"/>
-        <Caret Line="19" Column="28" TopLine="1"/>
+        <Filename Value="\usr\local\share\lazarus\components\rxnew\Demos\PhoneBookDemo\pbmainunit.pas"/>
+        <Caret Line="53" Column="1" TopLine="26"/>
       </Position6>
       <Position7>
-        <Filename Value="pbmainunit.pas"/>
-        <Caret Line="16" Column="30" TopLine="1"/>
+        <Filename Value="\usr\local\share\lazarus\components\rxnew\Demos\PhoneBookDemo\pbmainunit.pas"/>
+        <Caret Line="54" Column="1" TopLine="26"/>
       </Position7>
       <Position8>
-        <Filename Value="pbmainunit.pas"/>
-        <Caret Line="19" Column="26" TopLine="1"/>
+        <Filename Value="\usr\local\share\lazarus\components\rxnew\Demos\PhoneBookDemo\pbmainunit.pas"/>
+        <Caret Line="55" Column="1" TopLine="26"/>
       </Position8>
       <Position9>
-        <Filename Value="pbmainunit.pas"/>
-        <Caret Line="17" Column="16" TopLine="1"/>
+        <Filename Value="\usr\local\share\lazarus\components\rxnew\Demos\PhoneBookDemo\pbmainunit.pas"/>
+        <Caret Line="54" Column="1" TopLine="25"/>
       </Position9>
       <Position10>
-        <Filename Value="pbmainunit.pas"/>
-        <Caret Line="18" Column="28" TopLine="1"/>
+        <Filename Value="\usr\local\share\lazarus\components\rxnew\Demos\PhoneBookDemo\pbmainunit.pas"/>
+        <Caret Line="53" Column="1" TopLine="24"/>
       </Position10>
       <Position11>
-        <Filename Value="pbmainunit.pas"/>
-        <Caret Line="19" Column="29" TopLine="1"/>
+        <Filename Value="\usr\local\share\lazarus\components\rxnew\Demos\PhoneBookDemo\pbmainunit.pas"/>
+        <Caret Line="52" Column="1" TopLine="23"/>
       </Position11>
       <Position12>
-        <Filename Value="pbmainunit.pas"/>
-        <Caret Line="21" Column="30" TopLine="1"/>
+        <Filename Value="\usr\local\share\lazarus\components\rxnew\Demos\PhoneBookDemo\pbmainunit.pas"/>
+        <Caret Line="51" Column="1" TopLine="22"/>
       </Position12>
       <Position13>
-        <Filename Value="pbmainunit.pas"/>
-        <Caret Line="18" Column="28" TopLine="1"/>
+        <Filename Value="\usr\local\share\lazarus\components\rxnew\Demos\PhoneBookDemo\pbmainunit.pas"/>
+        <Caret Line="50" Column="1" TopLine="21"/>
       </Position13>
       <Position14>
-        <Filename Value="pbmainunit.pas"/>
-        <Caret Line="20" Column="27" TopLine="1"/>
+        <Filename Value="\usr\local\share\lazarus\components\rxnew\Demos\PhoneBookDemo\pbmainunit.pas"/>
+        <Caret Line="49" Column="1" TopLine="20"/>
       </Position14>
       <Position15>
-        <Filename Value="pbmainunit.pas"/>
-        <Caret Line="32" Column="43" TopLine="5"/>
+        <Filename Value="\usr\local\share\lazarus\components\rxnew\Demos\PhoneBookDemo\pbmainunit.pas"/>
+        <Caret Line="48" Column="1" TopLine="19"/>
       </Position15>
+      <Position16>
+        <Filename Value="\usr\local\share\lazarus\components\rxnew\Demos\PhoneBookDemo\pbmainunit.pas"/>
+        <Caret Line="49" Column="1" TopLine="19"/>
+      </Position16>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="8"/>
     <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="PhoneBookDemo"/>
+    </Target>
+    <SearchPaths>
+      <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+    </SearchPaths>
     <Linking>
       <Options>
         <Win32>
@@ -145,7 +185,7 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <BreakPoints Count="2">
+    <BreakPoints Count="4">
       <Item1>
         <Source Value="..\..\rxlookup.pas"/>
         <Line Value="1013"/>
@@ -154,6 +194,14 @@
         <Source Value="..\..\rxpopupunit.pas"/>
         <Line Value="267"/>
       </Item2>
+      <Item3>
+        <Source Value="usr\local\share\lazarus\components\rxnew\Demos\PhoneBookDemo\pbmainunit.pas"/>
+        <Line Value="51"/>
+      </Item3>
+      <Item4>
+        <Source Value="pbmainunit.pas"/>
+        <Line Value="51"/>
+      </Item4>
     </BreakPoints>
     <Watches Count="1">
       <Item1>

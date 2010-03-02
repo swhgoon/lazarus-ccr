@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, rxmemds,
-  DB, rxdbgrid, ExtCtrls, Buttons, Menus, ActnList, StdCtrls, DBGrids,
-  XMLPropStorage, IDEWindowIntf;
+  DB, rxdbgrid, RxAboutDialog, ExtCtrls, Buttons, Menus, ActnList, StdCtrls,
+  DBGrids, XMLPropStorage;
 
 type
 
@@ -15,10 +15,18 @@ type
 
   TRxDBGridMainForm = class(TForm)
     actCalcTotal: TAction;
+    MenuItem10: TMenuItem;
+    MenuItem11: TMenuItem;
+    MenuItem8: TMenuItem;
+    MenuItem9: TMenuItem;
+    RxAboutDialog1: TRxAboutDialog;
+    sysExit: TAction;
+    hlpAbout: TAction;
     CheckBox2: TCheckBox;
     CheckBox3: TCheckBox;
     CheckBox4: TCheckBox;
     ImageList1: TImageList;
+    MainMenu1: TMainMenu;
     MenuItem5: TMenuItem;
     MenuItem6: TMenuItem;
     MenuItem7: TMenuItem;
@@ -61,11 +69,13 @@ type
     procedure CheckBox4Change(Sender: TObject);
     procedure ComboBox1Change(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure hlpAboutExecute(Sender: TObject);
     procedure RxDBGrid1Filtred(Sender: TObject);
     procedure RxMemoryData1FilterRecordEx(DataSet: TDataSet; var Accept: Boolean
       );
     procedure showColumnsDialogExecute(Sender: TObject);
     procedure showFindDialogExecute(Sender: TObject);
+    procedure sysExitExecute(Sender: TObject);
   private
     procedure DoFillFilters;
   public
@@ -75,13 +85,27 @@ type
 var
   RxDBGridMainForm: TRxDBGridMainForm;
 
+procedure LocalizeApp;
 implementation
-uses rxsortmemds;
+uses rxsortmemds, FileUtil, gettext, translations, rxFileUtils;
+
+procedure LocalizeApp;
+var
+  Lang, FallbackLang: String;
+begin
+  GetLanguageIDs(Lang,FallbackLang); // in unit gettext
+  TranslateUnitResourceStrings('rxconst',NormalizeDirectoryName('../../languages/rxconst.%s.po'), Lang, FallbackLang);
+  TranslateUnitResourceStrings('rxdconst',NormalizeDirectoryName('../../languages/rxdconst.%s.po'), Lang, FallbackLang);
+end;
+
+{$R *.lfm}
 
 { TRxDBGridMainForm }
 
 procedure TRxDBGridMainForm.FormCreate(Sender: TObject);
 begin
+  RxAboutDialog1.LicenseFileName:=AppendPathDelim(AppendPathDelim(ExtractFileDir(ParamStrUTF8(0))) + 'docs')+'COPYING.GPL.txt';
+
   RxMemoryData2.Open;
   RxMemoryData2.AppendRecord([1, 'Open source']);
   RxMemoryData2.AppendRecord([2, 'Borland']);
@@ -107,6 +131,11 @@ begin
 //  DoFillFilters;
   RxMemoryData1.First;
   RxDBGrid1.CalcStatTotals; //fix error in GotoBookmark
+end;
+
+procedure TRxDBGridMainForm.hlpAboutExecute(Sender: TObject);
+begin
+  RxAboutDialog1.Execute;
 end;
 
 procedure TRxDBGridMainForm.RxDBGrid1Filtred(Sender: TObject);
@@ -139,6 +168,11 @@ end;
 procedure TRxDBGridMainForm.showFindDialogExecute(Sender: TObject);
 begin
   RxDBGrid1.ShowFindDialog;
+end;
+
+procedure TRxDBGridMainForm.sysExitExecute(Sender: TObject);
+begin
+  Close;
 end;
 
 procedure TRxDBGridMainForm.DoFillFilters;
@@ -216,9 +250,7 @@ begin
   RxDBGrid1.ReadOnly:=ComboBox1.ItemIndex <> 0;
 end;
 
-
-initialization
-  {$I rxdbgridmainunit.lrs}
+//TRxAboutDialog
 
 end.
 

@@ -683,6 +683,8 @@ TRxDBCalcEdit является наследником TDBCalcEdit и имеет 
           
           
           
+          
+          
           <b>Count</b>
         </descr>
         <seealso>
@@ -703,6 +705,8 @@ TRxDBCalcEdit является наследником TDBCalcEdit и имеет 
         <descr>
           <b>property FileFolder:string</b>
 Свойство FileFolder определяет каталог с файлами, который будет сканироваться при вызове метода 
+          
+          
           
           
           
@@ -1103,7 +1107,10 @@ Description
       <element name="TToolbarItem.Top"/>
       <element name="TToolbarItem.Width"/>
       <element name="TToolbarItem.DropDownMenu"/>
-      <element name="TToolbarItem.ShowCaption"/>
+      <element name="TToolbarItem.ShowCaption">
+        <short>Отображать заголовок кнопки</short>
+        <descr>Отображать заголовок кнопки</descr>
+      </element>
       <element name="TToolbarItem.GroupIndex"/>
       <element name="TToolbarItem.Layout"/>
       <element name="TToolbarItem.ButtonStyle"/>
@@ -1125,7 +1132,10 @@ Description
       <element name="TToolPanel.BtnWidth"/>
       <element name="TToolPanel.BtnHeight"/>
       <element name="TToolPanel.ToolBarStyle"/>
-      <element name="TToolPanel.Options"/>
+      <element name="TToolPanel.Options">
+        <descr>Свойство определяет поведение панели инструментов согласно типа 
+<link id="TToolPanelOption">TToolPanelOption</link>.</descr>
+      </element>
       <element name="TToolPanel.Version"/>
       <element name="TToolPanel.ButtonAllign">
         <short>Выравнивание кнопок на панели инструментов</short>
@@ -1183,27 +1193,27 @@ Description
             </th>
             <tr>
               <td>tbrButton</td>
-              <td/>
+              <td>Кнопка</td>
             </tr>
             <tr>
               <td>tbrCheck</td>
-              <td/>
+              <td>Чек-бокс</td>
             </tr>
             <tr>
               <td>tbrDropDown</td>
-              <td/>
+              <td>Выпадающее меню</td>
             </tr>
             <tr>
               <td>tbrSeparator</td>
-              <td/>
+              <td>Разделитель</td>
             </tr>
             <tr>
               <td>tbrDivider</td>
-              <td/>
+              <td>Разделитель с линией</td>
             </tr>
             <tr>
               <td>tbrDropDownExtra</td>
-              <td/>
+              <td>Кнопка с выпадающим меню</td>
             </tr>
           </table>
         </descr>
@@ -1259,8 +1269,44 @@ Description
           <link id="TToolPanel.ButtonAllign"/>
         </seealso>
       </element>
-      <element name="TToolPanelOption"/>
-      <element name="TToolPanelOptions"/>
+      <element name="TToolPanelOption">
+        <descr>Параметры поведения панели инструментов
+
+<table>
+            <th>
+              <td>Элемент</td>
+              <td>Описание</td>
+            </th>
+            <tr>
+              <td>tpFlatBtns</td>
+              <td>Всплывающие кнопки</td>
+            </tr>
+            <tr>
+              <td>tpTransparentBtns</td>
+              <td>Прозрачные кнопки, актуально если сама панель инструментов отрисовывется не стандартно, например с фоновым рисунком</td>
+            </tr>
+            <tr>
+              <td>tpStretchBitmap</td>
+              <td>Растягивать изображения</td>
+            </tr>
+            <tr>
+              <td>tpCustomizable</td>
+              <td>Доступно во время работы приложения возможность настройки панели (скрывать или отображать кнопки)</td>
+            </tr>
+            <tr>
+              <td>tpGlyphPopup</td>
+              <td>При наведении указателя мышки изображения на кнопках будут "приподниматься"</td>
+            </tr>
+            <tr>
+              <td>tpCaptionPopup</td>
+              <td>При наведении указателя мышки текст на кнопках будет "приподниматься"</td>
+            </tr>
+          </table>
+        </descr>
+      </element>
+      <element name="TToolPanelOptions">
+        <descr>Комплексное тип, содержащий в себе множество элементов типа <link id="TToolPanelOption">TToolPanelOption</link>.</descr>
+      </element>
       <element name="DefButtonWidth">
         <short>Ширина кнопки по умолчанию</short>
         <descr>Ширина кнопки по умолчанию</descr>
@@ -1909,7 +1955,11 @@ Description
             
             
             
+            
+            
             <b>const</b> SearchDomain, FileName:
+            
+            
             
             
             
@@ -1925,7 +1975,11 @@ Description
             
             
             
+            
+            
             <b>out</b> UserName, DomainName:
+            
+            
             
             
             
@@ -1958,9 +2012,15 @@ Description
           <p>
             <b>function</b> NormalizeDirectoryName(
             
+            
+            
             <b>const</b> DirName:
             
+            
+            
             <b>string</b>):
+            
+            
             
             <b>string</b>;</p>
           <p>Функция проверяет все разделители каталогов в указанном имени файла/каталога и, если нужно, меняет их на значение константы<b>DirectorySeparator</b>.</p>
@@ -1972,6 +2032,8 @@ Description
         <descr>
           <p>
             <b>function</b> GetUserName: 
+            
+            
             
             
             
@@ -2072,5 +2134,75 @@ Description
       </element>
       <element name="TRxVersionInfo.VerFileDate"/>
     </module>
+    <module name="RxAboutDialog">
+      <element name="TRxAboutDialogOption">
+        <descr>
+          <table>
+            <th>
+              <td>Значение</td>
+              <td>Описание</td>
+            </th>
+            <tr>
+              <td>radHelpButton</td>
+              <td>Отображать кнопку "Помощь"</td>
+            </tr>
+            <tr>
+              <td>radLicenseTab</td>
+              <td>Отображать закладку лицензии</td>
+            </tr>
+            <tr>
+              <td>radShowImageLogo</td>
+              <td>Отображать логотип на первой закладке</td>
+            </tr>
+          </table>
+        </descr>
+      </element>
+      <element name="TRxAboutDialogOptions">
+        <short>Параметры окна "О программе"</short>
+        <descr>Параметры отображения окна информации о программе</descr>
+      </element>
+      <element name="TRxAboutDialog">
+        <descr>Компонента TRXAboutDialog предназначена для отображения информации о программе.</descr>
+      </element>
+      <element name="TRxAboutDialog.Create">
+        <short>Конструктор создаёт экземпляр класса</short>
+        <descr>Конструктор создаёт экземпляр класса</descr>
+      </element>
+      <element name="TRxAboutDialog.Destroy">
+        <short>Уничтожает экземпляр класса</short>
+        <descr>Уничтожает экземпляр класса</descr>
+      </element>
+      <element name="TRxAboutDialog.Execute">
+        <short>Метод отображет окно "О программе"</short>
+        <descr>Метод отображет окно "О программе"</descr>
+      </element>
+      <element name="TRxAboutDialog.Options"/>
+      <element name="TRxAboutDialog.ApplicationTitle">
+        <short>Заголовок программы</short>
+        <descr>Заголовок программы, выводимый на первой странице она</descr>
+      </element>
+      <element name="TRxAboutDialog.LicenseFileName">
+        <descr>Файл лицензии</descr>
+      </element>
+      <element name="TRxAboutDialog.Caption">
+        <short>Заголовок окна</short>
+        <descr>Заголовок окна</descr>
+      </element>
+      <element name="TRxAboutDialog.Picture">
+        <short>Логотип, отображаемый в окне "О программе"</short>
+        <descr>Изображение логотипа</descr>
+      </element>
+    </module>
+    <module name="rxAboutFormUnit">
+      <element name="TrxAboutFormForm">
+        <short>Класс представляет собой форму "О программе"</short>
+        <descr>Класс представляет собой форму "О программе"</descr>
+      </element>
+      <element name="TrxAboutFormForm.LoadLicense">
+        <descr>Загружает на страницу "Лицензия" формы "О программе" файл лицензионного соглашения</descr>
+      </element>
+    </module>
+    <module name="rxdbgrid_findunit"/>
+    <module name="rxdbgrid_columsunit"/>
   </package>
 </fpdoc-descriptions>

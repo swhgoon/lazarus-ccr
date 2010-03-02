@@ -74,13 +74,29 @@ resourcestring
   sButtonAlign1         = 'None';
   sButtonAlign2         = 'Left';
   sButtonAlign3         = 'Rignt';
+  sGTKWidgetSet         = 'GTK widget set';
+  sGTK2WidgetSet        = 'GTK 2 widget set';
+  sWin32_64WidgetSet    = 'Win32/Win64 widget set';
+  sWinCEWidgetSet       = 'WinCE widget set';
+  sCarbonWidgetSet      = 'Carbon widget set';
+  sQTWidgetSet          = 'QT widget set';
+  sFpGUIWidgetSet       = 'FpGUI widget set';
+  sOtherGUIWidgetSet    = 'Other gui';
+  sAppVersion           = 'Version : ';
+  sLCLVersion           = 'LCL Version: ';
+  sFpcVersion           = 'FPC version : ';
+  sTargetCPU            = 'Target CPU : ';
+  sTargetOS             = 'Target OS : ';
+  sAbout                = 'About';
+  sGeneral              = 'General';
+  sLicense              = 'License';
 
 
 implementation
 
 uses Forms;
 
-initialization
-{  Screen.Cursors[crHand] := LoadCursor(hInstance, 'RX_HANDCUR');
+{initialization
+  Screen.Cursors[crHand] := LoadCursor(hInstance, 'RX_HANDCUR');
   Screen.Cursors[crDragHand] := LoadCursor(hInstance, 'RX_DRAGCUR'); }
 end.

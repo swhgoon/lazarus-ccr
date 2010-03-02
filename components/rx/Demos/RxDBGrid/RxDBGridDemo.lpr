@@ -10,11 +10,11 @@ uses
   Forms,
   RxDBGridMainUnit;
 
-{$IFDEF WINDOWS}{$R RxDBGridDemo.rc}{$ENDIF}
-
 {$R RxDBGridDemo.res}
 
 begin
+  LocalizeApp;
+  //
   Application.Title:='RxDBGrid demo';
   Application.Initialize;
   Application.CreateForm(TRxDBGridMainForm, RxDBGridMainForm);

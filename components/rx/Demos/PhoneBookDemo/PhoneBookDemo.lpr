@@ -10,6 +10,8 @@ uses
   Forms,
   pbMainUnit;
 
+{$R PhoneBookDemo.res}
+
 begin
   Application.Initialize;
   Application.CreateForm(TpbMainForm, pbMainForm);

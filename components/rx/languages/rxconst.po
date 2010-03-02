@@ -1,6 +1,14 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
+#: rxconst.sabout
+msgid "About"
+msgstr ""
+
+#: rxconst.sappversion
+msgid "Version : "
+msgstr ""
+
 #: rxconst.savaliablebuttons
 msgid "Avaliable buttons"
 msgstr ""
@@ -23,6 +31,10 @@ msgstr ""
 
 #: rxconst.sbuttonalign3
 msgid "Rignt"
+msgstr ""
+
+#: rxconst.scarbonwidgetset
+msgid "Carbon widget set"
 msgstr ""
 
 #: rxconst.sdatedlgtitle
@@ -57,6 +69,34 @@ msgstr ""
 msgid "Flat buttons"
 msgstr ""
 
+#: rxconst.sfpcversion
+msgid "FPC version : "
+msgstr ""
+
+#: rxconst.sfpguiwidgetset
+msgid "FpGUI widget set"
+msgstr ""
+
+#: rxconst.sgeneral
+msgid "General"
+msgstr ""
+
+#: rxconst.sgtk2widgetset
+msgid "GTK 2 widget set"
+msgstr ""
+
+#: rxconst.sgtkwidgetset
+msgid "GTK widget set"
+msgstr ""
+
+#: rxconst.slclversion
+msgid "LCL Version: "
+msgstr ""
+
+#: rxconst.slicense
+msgid "License"
+msgstr ""
+
 #: rxconst.sloadliberror
 msgid "Could not load '%s' library"
 msgstr ""
@@ -77,6 +117,10 @@ msgstr ""
 msgid "Options"
 msgstr ""
 
+#: rxconst.sotherguiwidgetset
+msgid "Other gui"
+msgstr ""
+
 #: rxconst.sprevmonth
 msgid "Previous Month|"
 msgstr ""
@@ -85,12 +129,24 @@ msgstr ""
 msgid "Previous Year|"
 msgstr ""
 
+#: rxconst.sqtwidgetset
+msgid "QT widget set"
+msgstr ""
+
 #: rxconst.sshowcaption
 msgid "Show caption"
 msgstr ""
 
 #: rxconst.sshowhint
 msgid "Show hint"
+msgstr ""
+
+#: rxconst.stargetcpu
+msgid "Target CPU : "
+msgstr ""
+
+#: rxconst.stargetos
+msgid "Target OS : "
 msgstr ""
 
 #: rxconst.stocurdate
@@ -123,6 +179,14 @@ msgstr ""
 
 #: rxconst.svisiblebuttons
 msgid "Visible buttons"
+msgstr ""
+
+#: rxconst.swin32_64widgetset
+msgid "Win32/Win64 widget set"
+msgstr ""
+
+#: rxconst.swincewidgetset
+msgid "WinCE widget set"
 msgstr ""
 
 #: rxconst.swindowsicofiles

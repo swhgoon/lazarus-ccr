@@ -70,6 +70,7 @@ type
     function GetVersionLanguage: TVersionLanguage;
     function GetVersionNum: Longint;
     function GetVerValue(const VerName: string): string;
+    function GetWidgetName: string;
     procedure SetFileName(const AValue: string);
     procedure DoVersionInfo(V:TVersionResource);
   protected
@@ -103,12 +104,12 @@ type
     property Values[const Name: string]: string read GetVerValue;
     property VerFileDate: TDateTime read GetVerFileDate;
   published
-    //
+    property WidgetName:string read GetWidgetName;
   end;
 
 
 implementation
-uses FileUtil, resource, resreader,
+uses FileUtil, resource, resreader, InterfaceBase, rxconst,
 {$IFDEF WINDOWS}
   winpeimagereader
 {$ENDIF}
@@ -289,6 +290,21 @@ end;
 function TRxVersionInfo.GetVerValue(const VerName: string): string;
 begin
   Result:=FValues.Values[VerName];
+end;
+
+function TRxVersionInfo.GetWidgetName: string;
+begin
+  case WidgetSet.LCLPlatform of
+    lpGtk:Result:=sGTKWidgetSet;
+    lpGtk2:Result:=sGTK2WidgetSet;
+    lpWin32:Result:=sWin32_64WidgetSet;
+    lpWinCE:Result:=sWinCEWidgetSet;
+    lpCarbon:Result:=sCarbonWidgetSet;
+    lpQT:Result:=sQTWidgetSet;
+    lpfpGUI:Result:=sFpGUIWidgetSet;
+  else
+    Result:=sOtherGUIWidgetSet;
+  end;
 end;
 
 end.
