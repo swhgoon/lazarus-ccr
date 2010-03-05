@@ -357,6 +357,7 @@ type
     FFont: TPdfFont;
     FLeading: Single;
     FHorizontalScaling: Word;
+    FFontUnderline: boolean;
     procedure SetWordSpace(Value: Single);
     procedure SetCharSpace(Value: Single);
     procedure SetFontSize(Value: Single);
@@ -372,6 +373,7 @@ type
     property Leading: Single read FLeading write SetLeading;
     property FontSize: Single read FFontSize write SetFontSize;
     property Font: TPdfFont read FFont write FFont;
+    property FontUnderline: boolean read FFontUnderline write FFontUnderline;
   end;
 
   { TPdfCanvas }
@@ -541,9 +543,13 @@ type
     property Pages: TPdfDictionary read GetPages write SetPages;
   end;
 
+  { TPdfFont }
+
   TPdfFont = class(TPdfDictionaryWrapper)
   private
     FName: string;
+    FUnderlinePosition: Integer;
+    FUnderlineThickness: Integer;
   protected
     procedure AddStrElements(ADic: TPdfDictionary; ATable: array of TPDF_STR_TBL);
     procedure AddIntElements(ADic: TPdfDictionary; ATable: array of TPDF_INT_TBL);
@@ -551,6 +557,8 @@ type
     constructor Create(AXref: TPdfXref; AName: string); virtual;
     function GetCharWidth(AText: string; APos: integer): integer; virtual;
     property Name: string read FName;
+    property UnderlinePosition: Integer read FUnderlinePosition write FUnderlinePosition;
+    property UnderlineThickness: Integer read FUnderlineThickness write FUnderlineThickness;
   end;
 
   TPdfDestination = class(TObject)
@@ -1500,11 +1508,22 @@ end;
 
 // TextOut
 procedure TPdfCanvas.TextOut(X, Y: Single; Text: string);
+var
+  UPos, UWidth: Single;
 begin
   BeginText;
   MoveTextPoint(X, Y);
   ShowText(Text);
   EndText;
+
+  //TODO: Check Underline
+  if FAttr.FontUnderline then
+  begin
+    UPos := FAttr.Font.UnderlinePosition/1000*FAttr.FontSize;
+    UWidth := FAttr.Font.UnderlineThickness/1000*FAttr.FontSize;
+    Rectangle(X, Y+UPos, FAttr.TextWidth(Text), UWidth);
+    Fill;
+  end;
 end;
 
 // TextRect
@@ -1512,7 +1531,7 @@ procedure TPdfCanvas.TextRect(ARect: TPdfRect; Text: string;
                             Alignment: TPdfAlignment; Clipping: boolean);
 var
   tmpWidth: Single;
-  XPos: Single;
+  XPos,YPos,UPos,UWidth: Single;
 begin
   // calculate text width.
   tmpWidth := TextWidth(Text);
@@ -1540,22 +1559,32 @@ begin
     NewPath;
   end;
 
+  YPos := ARect.Top - FAttr.FontSize * 0.85;
   BeginText;
-  MoveTextPoint(ARect.Left + XPos, ARect.Top - FAttr.FontSize * 0.85);
+  MoveTextPoint(ARect.Left + XPos, YPos);
   ShowText(Text);
   EndText;
+
+  //TODO: Check Underline
+  if FAttr.FontUnderline then
+  begin
+    UPos := FAttr.Font.UnderlinePosition/1000*FAttr.FontSize;
+    UWidth := FAttr.Font.UnderlineThickness/1000*FAttr.FontSize;
+    Rectangle(ARect.Left + XPos, YPos + UPos, FAttr.TextWidth(Text), UWidth);
+    Fill;
+  end;
 
   if Clipping then
     GRestore;
 end;
 
 // MultilineTextRect
-procedure TPdfCanvas.MultilineTextRect(ARect: TPdfRect;
-            Text: string; WordWrap: boolean);
+procedure TPdfCanvas.MultilineTextRect(ARect: TPdfRect; Text: string;
+  WordWrap: boolean);
 var
   i: integer;
   S1, S2: string;
-  XPos, YPos: Single;
+  XPos, YPos, UPos, UWidth: Single;
   tmpXPos: Single;
   tmpWidth: Single;
   ln: integer;
@@ -1571,14 +1600,36 @@ var
     ShowText(S);
   end;
 
+  procedure WriteText;
+  begin
+    if FAttr.FontUnderline then
+    begin
+      BeginText;
+      MoveTextPoint(ARect.Left, YPos);
+      InternalShowText(S2, ARect.Right - ARect.Left);
+      EndText;
+      Rectangle(ARect.Left, YPos+UPos, XPos-ARect.Left, UWidth);
+      Fill;
+    end else
+      InternalShowText(S2, ARect.Right - ARect.Left);
+  end;
+
 begin
+
   YPos := ARect.Top - FAttr.FontSize*0.85;
   XPos := ARect.Left;
   FText := Text;
 
-  BeginText;
+  if FAttr.FontUnderline then
+  begin
+    UPos := FAttr.Font.UnderlinePosition/1000*FAttr.FontSize;
+    UWidth := FAttr.Font.UnderlineThickness/1000*FAttr.FontSize;
+  end else
+  begin
+    BeginText;
+    MoveTextPoint(XPos, YPos);
+  end;
 
-  MoveTextPoint(XPos, YPos);
   i := 1;
   S2 := GetNextWord(FText, i);
   XPos := XPos +  TextWidth(S2);
@@ -1604,9 +1655,13 @@ begin
       FourceReturn then
     begin
       if S2 <> '' then
-        InternalShowText(S2, ARect.Right - ARect.Left);
+        WriteText;
+
       S2 := '';
-      MoveToNextLine;
+
+      if not FAttr.FontUnderline then
+        MoveToNextLine;
+
       ARect.Top := ARect.Top - FAttr.Leading;
       if ARect.Top < ARect.Bottom + FAttr.FontSize then
         Break;
@@ -1619,8 +1674,10 @@ begin
   end;
 
   if S2 <> '' then
-    InternalShowText(S2, ARect.Right - ARect.Left);
-  EndText;
+    WriteText;
+
+  if not FAttr.FontUnderline then
+    EndText;
 end;
 
 // DrawXObject
@@ -2559,6 +2616,8 @@ constructor TPdfFont.Create(AXref: TPdfXref; AName: string);
 begin
   inherited Create;
   FName := AName;
+  FUnderlinePosition := -150;
+  FUnderlineThickness := 50;
 end;
 
 { PdfDestination }

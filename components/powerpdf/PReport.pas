@@ -338,8 +338,10 @@ type
     FFontBold: boolean;
     FFontItalic: boolean;
     FCharSpace: Single;
+    FFontUnderLine: boolean;
     FWordSpace: Single;
     procedure SetCharSpace(Value: Single);
+    procedure SetFontUnderline(const Value: boolean);
     procedure SetWordSpace(Value: Single);
     procedure SetFontColor(Value: TColor);
     function GetFontClassName: string;
@@ -363,6 +365,7 @@ type
     property FontSize: Single read FFontSize write SetFontSize;
     property FontBold: boolean read FFontBold write SetFontBold default false;
     property FontItalic: boolean read FFontItalic write SetFontItalic default false;
+    property FontUnderline: boolean read FFontUnderLine write SetFontUnderline default false;
     property CharSpace: Single read FCharSpace write SetCharSpace;
     property WordSpace: Single read FWordSpace write SetWordSpace;
   end;
@@ -1798,7 +1801,7 @@ end;
 // GetText
 function TPRText.GetText: string;
 begin
-  result := Trim(FLines.Text);
+  result := TrimRight(FLines.Text);
 end;
 
 // Create
@@ -1918,6 +1921,7 @@ begin
     SetCharSpace(CharSpace);
     SetWordSpace(WordSpace);
     SetLeading(Leading);
+    Attribute.FontUnderline:=FontUnderline;
 
     with ARect do
       MultilineTextRect(_PdfRect(Left, GetPage.Height- Top, Right, GetPage.Height- Bottom),
@@ -1931,6 +1935,19 @@ begin
   if (Value <> FCharSpace) then
   begin
     FCharSpace := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TPRCustomLabel.SetFontUnderline(const Value: boolean);
+begin
+  if FFontUnderLine <> Value then
+  begin
+    FFontUnderLine := Value;
+    if Value then
+      Font.Style := Font.Style + [fsUnderline]
+    else
+      Font.Style := Font.Style - [fsUnderline];
     Invalidate;
   end;
 end;

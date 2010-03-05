@@ -490,6 +490,9 @@ const
   SCRIPT_BBOX: array[0..3] of Integer = (-184,-363,505,758);
 
 type
+
+  { TPdfType1Font }
+
   TPdfType1Font = class(TPdfFont)
   private
     FFirstChar: Byte;
@@ -578,6 +581,7 @@ var
   i: integer;
   DefaultWidth: Word;
   Widths: TPdfArray;
+  ANumber: TPdfNumber;
 begin
   inherited SetData(Value);
 
@@ -700,6 +704,8 @@ begin
   FWidths := TPdfArray.CreateNumArray(AXref, ARIAL_W_ARRAY);
   FFont.AddInternalItem('Widths', FWidths);
 
+  UnderlinePosition := -151;
+
   SetData(FFont);
 end;
 
@@ -719,6 +725,9 @@ begin
 
   FWidths := TPdfArray.CreateNumArray(AXref, ARIAL_BOLD_W_ARRAY);
   FFont.AddInternalItem('Widths', FWidths);
+
+  UnderlinePosition := -155;
+  UnderlineThickness := 69;
 
   SetData(FFont);
 end;
@@ -740,6 +749,8 @@ begin
   FWidths := TPdfArray.CreateNumArray(AXref, ARIAL_ITALIC_W_ARRAY);
   FFont.AddInternalItem('Widths', FWidths);
 
+  UnderlinePosition := -151;
+
   SetData(FFont);
 end;
 
@@ -759,6 +770,9 @@ begin
 
   FWidths := TPdfArray.CreateNumArray(AXref, ARIAL_BOLDITALIC_W_ARRAY);
   FFont.AddInternalItem('Widths', FWidths);
+
+  UnderlinePosition := -111;
+  UnderlineThickness := 69;
 
   SetData(FFont);
 end;
