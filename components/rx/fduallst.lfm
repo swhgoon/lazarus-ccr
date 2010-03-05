@@ -1,7 +1,7 @@
 object DualListForm: TDualListForm
-  Left = 428
+  Left = 451
   Height = 344
-  Top = 233
+  Top = 264
   Width = 552
   ActiveControl = IncBtn
   BorderIcons = []
@@ -11,7 +11,7 @@ object DualListForm: TDualListForm
   OnActivate = ListClick
   OnShow = ListClick
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object SrcLabel: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -42,7 +42,7 @@ object DualListForm: TDualListForm
     AnchorSideRight.Control = IncAllBtn
     AnchorSideBottom.Control = ButtonPanel1
     Left = 6
-    Height = 260
+    Height = 262
     Top = 30
     Width = 242
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -67,7 +67,7 @@ object DualListForm: TDualListForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel1
     Left = 304
-    Height = 260
+    Height = 262
     Top = 30
     Width = 242
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -166,8 +166,8 @@ object DualListForm: TDualListForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 42
-    Top = 296
+    Height = 40
+    Top = 298
     Width = 540
     TabOrder = 6
     ShowButtons = [pbOK, pbCancel, pbHelp]

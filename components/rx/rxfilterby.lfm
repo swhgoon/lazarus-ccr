@@ -9,7 +9,7 @@ object rxFilterByForm: TrxFilterByForm
   ClientWidth = 644
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object Label1: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -129,7 +129,7 @@ object rxFilterByForm: TrxFilterByForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = ComboBox3
     Left = 271
-    Height = 27
+    Height = 29
     Top = 54
     Width = 250
     Anchors = [akTop, akLeft, akRight]
@@ -199,7 +199,7 @@ object rxFilterByForm: TrxFilterByForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = ComboBox3
     Left = 270
-    Height = 27
+    Height = 29
     Top = 91
     Width = 251
     Anchors = [akTop, akLeft, akRight]
@@ -270,7 +270,7 @@ object rxFilterByForm: TrxFilterByForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = ComboBox3
     Left = 270
-    Height = 27
+    Height = 29
     Top = 130
     Width = 251
     Anchors = [akTop, akLeft, akRight]
@@ -341,7 +341,7 @@ object rxFilterByForm: TrxFilterByForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = ComboBox3
     Left = 270
-    Height = 27
+    Height = 29
     Top = 169
     Width = 251
     Anchors = [akTop, akLeft, akRight]
@@ -412,7 +412,7 @@ object rxFilterByForm: TrxFilterByForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = ComboBox3
     Left = 270
-    Height = 27
+    Height = 29
     Top = 208
     Width = 251
     Anchors = [akTop, akLeft, akRight]
@@ -483,7 +483,7 @@ object rxFilterByForm: TrxFilterByForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = ComboBox3
     Left = 270
-    Height = 27
+    Height = 29
     Top = 247
     Width = 251
     Anchors = [akTop, akLeft, akRight]
@@ -554,7 +554,7 @@ object rxFilterByForm: TrxFilterByForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = ComboBox3
     Left = 270
-    Height = 27
+    Height = 29
     Top = 286
     Width = 251
     Anchors = [akTop, akLeft, akRight]
@@ -625,7 +625,7 @@ object rxFilterByForm: TrxFilterByForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = ComboBox3
     Left = 270
-    Height = 27
+    Height = 29
     Top = 325
     Width = 251
     Anchors = [akTop, akLeft, akRight]
@@ -696,7 +696,7 @@ object rxFilterByForm: TrxFilterByForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = ComboBox3
     Left = 270
-    Height = 27
+    Height = 29
     Top = 364
     Width = 251
     Anchors = [akTop, akLeft, akRight]

@@ -1,6 +1,7 @@
 { rxFileUtils is part of RxFPC library
 
-  Copyright (C) 2010 Lagunov A.A. alexs75@hotbox.ru
+  Copyright (C) 2005-2010 Lagunov Aleksey alexs@hotbox.ru and Lazarus team
+  original conception from rx library for Delphi (c)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Library General Public License as published by

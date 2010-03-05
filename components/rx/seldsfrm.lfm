@@ -9,14 +9,14 @@ object SelectDataSetForm: TSelectDataSetForm
   ClientWidth = 400
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object Label1: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = CheckBox1
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 18
-    Top = 33
+    Top = 31
     Width = 106
     BorderSpacing.Around = 6
     Caption = 'Sourse dataset'
@@ -27,9 +27,9 @@ object SelectDataSetForm: TSelectDataSetForm
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
-    Height = 21
+    Height = 19
     Top = 6
-    Width = 159
+    Width = 156
     BorderSpacing.Around = 6
     Caption = 'Copy only metadata'
     OnChange = CheckBox1Change
@@ -43,8 +43,8 @@ object SelectDataSetForm: TSelectDataSetForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel1
     Left = 6
-    Height = 204
-    Top = 57
+    Height = 208
+    Top = 55
     Width = 388
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
@@ -56,8 +56,8 @@ object SelectDataSetForm: TSelectDataSetForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 42
-    Top = 267
+    Height = 40
+    Top = 269
     Width = 388
     TabOrder = 2
     ShowButtons = [pbOK, pbCancel, pbHelp]

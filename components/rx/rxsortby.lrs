@@ -1,4 +1,4 @@
-{ Это - файл ресурсов, автоматически созданный lazarus }
+{ This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TrxSortByForm','FORMDATA',[
   'TPF0'#13'TrxSortByForm'#12'rxSortByForm'#4'Left'#3#194#1#6'Height'#3#155#1#3
