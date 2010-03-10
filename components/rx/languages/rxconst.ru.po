@@ -17,6 +17,10 @@ msgstr "Доступные кнопки"
 msgid "Browse"
 msgstr "Обзор"
 
+#: rxconst.sbuilddate
+msgid "Build date : "
+msgstr "Дата сборки : "
+
 #: rxconst.sbuttonalign
 msgid "Button align"
 msgstr "Выравнивание кнопок"

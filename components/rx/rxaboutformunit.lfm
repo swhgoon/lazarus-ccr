@@ -12,16 +12,16 @@ object rxAboutFormForm: TrxAboutFormForm
   LCLVersion = '0.9.29'
   object PageControl1: TPageControl
     Left = 0
-    Height = 334
+    Height = 332
     Top = 0
     Width = 498
-    ActivePage = TabSheet1
+    ActivePage = TabSheet2
     Align = alClient
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'General'
-      ClientHeight = 303
+      ClientHeight = 301
       ClientWidth = 494
       object lblAppTitle: TLabel
         AnchorSideLeft.Control = Image1
@@ -69,7 +69,7 @@ object rxAboutFormForm: TrxAboutFormForm
     end
     object TabSheet2: TTabSheet
       Caption = 'Detail'
-      ClientHeight = 303
+      ClientHeight = 301
       ClientWidth = 494
       object lblBuildDate: TLabel
         AnchorSideLeft.Control = TabSheet2
@@ -168,11 +168,11 @@ object rxAboutFormForm: TrxAboutFormForm
     end
     object TabSheet3: TTabSheet
       Caption = 'License'
-      ClientHeight = 303
+      ClientHeight = 301
       ClientWidth = 494
       object Memo1: TMemo
         Left = 0
-        Height = 303
+        Height = 301
         Top = 0
         Width = 494
         Align = alClient
@@ -185,8 +185,8 @@ object rxAboutFormForm: TrxAboutFormForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 340
+    Height = 42
+    Top = 338
     Width = 486
     TabOrder = 1
     ShowButtons = [pbClose, pbHelp]

@@ -151,6 +151,9 @@
           <p>
             <link id="TOptionRx">Набор флагов</link>, управлюящих поведением 
   
+            
+            
+            
             <link id="TRxDBGrid">RxDBGrid</link>-а.</p>
         </descr>
       </element>
@@ -544,6 +547,9 @@
         <descr>
           <p>
             <link id="TOptionRx">Набор флагов</link>, управлюящих поведением 
+            
+            
+            
             <link id="TRxDBGrid">RxDBGrid</link>-а.</p>
         </descr>
         <seealso>
@@ -1089,6 +1095,9 @@ TRxDBCalcEdit является наследником TDBCalcEdit и имеет 
           
           
           
+          
+          
+          
           <b>Count</b>
         </descr>
         <seealso>
@@ -1109,6 +1118,9 @@ TRxDBCalcEdit является наследником TDBCalcEdit и имеет 
         <descr>
           <b>property FileFolder:string</b>
 Свойство FileFolder определяет каталог с файлами, который будет сканироваться при вызове метода 
+          
+          
+          
           
           
           
@@ -2365,7 +2377,13 @@ Description
             
             
             
+            
+            
+            
             <b>const</b> SearchDomain, FileName:
+            
+            
+            
             
             
             
@@ -2389,7 +2407,13 @@ Description
             
             
             
+            
+            
+            
             <b>out</b> UserName, DomainName:
+            
+            
+            
             
             
             
@@ -2430,13 +2454,22 @@ Description
             
             
             
+            
+            
+            
             <b>const</b> DirName:
             
             
             
             
             
+            
+            
+            
             <b>string</b>):
+            
+            
+            
             
             
             
@@ -2452,6 +2485,9 @@ Description
         <descr>
           <p>
             <b>function</b> GetUserName: 
+            
+            
+            
             
             
             
@@ -2558,7 +2594,9 @@ Description
     </module>
     <module name="RxAboutDialog">
       <element name="TRxAboutDialogOption">
+        <short>Параметры отображени окна информации о программе</short>
         <descr>
+          <p>Параметры отображени окна информации о программе</p>
           <table>
             <th>
               <td>Значение</td>
@@ -2581,7 +2619,14 @@ Description
       </element>
       <element name="TRxAboutDialogOptions">
         <short>Параметры окна "О программе"</short>
-        <descr>Параметры отображения окна информации о программе</descr>
+        <descr>
+          <p>Набор флагов, определяющий 
+<link id="TRxAboutDialogOption">параметры</link> отображения окна информации о программе</p>
+        </descr>
+        <seealso>
+          <link id="TRxAboutDialogOption"/>
+          <link id="TRxAboutDialog.Options"/>
+        </seealso>
       </element>
       <element name="TRxAboutDialog">
         <descr>Компонента TRXAboutDialog предназначена для отображения информации о программе.</descr>
@@ -2599,6 +2644,11 @@ Description
         <descr>Метод отображет окно "О программе"</descr>
       </element>
       <element name="TRxAboutDialog.Options">
+        <short>Параметры окна "О программе"</short>
+        <descr>
+          <p>Набор флагов, определяющий 
+<link id="TRxAboutDialogOption">параметры</link> отображения окна информации о программе</p>
+        </descr>
         <seealso>
           <link id="TRxAboutDialogOptions"/>
         </seealso>

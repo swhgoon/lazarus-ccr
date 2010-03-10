@@ -17,6 +17,10 @@ msgstr ""
 msgid "Browse"
 msgstr ""
 
+#: rxconst.sbuilddate
+msgid "Build date : "
+msgstr ""
+
 #: rxconst.sbuttonalign
 msgid "Button align"
 msgstr ""

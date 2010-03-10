@@ -50,7 +50,7 @@ uses
 {$ENDIF}
    FileUtil;
 
-{$IFDEF WINDOWS}
+{$IF DEFINED(WINDOWS) AND NOT DEFINED(WINCE)}
 function LStrError(const Ernum: Longint; const UseUTF8: Boolean = False): string;
 const
   MAX_ERROR = 1024;
@@ -139,7 +139,7 @@ function GetFileOwnerUser(const SearchDomain, FileName: String): String;
 var
   S:string;
 begin
-  {$IFDEF WINDOWS}
+  {$IF DEFINED(WINDOWS) AND NOT DEFINED(WINCE)}
   GetFileNameOwner(UTF8ToSys(SearchDomain), UTF8ToSys(FileName), Result, S);
   Result:=UTF8Encode(Result);
   {$ELSE}
@@ -150,7 +150,7 @@ end;
 procedure GetFileOwnerData(const SearchDomain, FileName: String; out UserName,
   DomainName: string);
 begin
-  {$IFDEF WINDOWS}
+  {$IF DEFINED(WINDOWS) AND NOT DEFINED(WINCE)}
   GetFileNameOwner(UTF8ToSys(SearchDomain), UTF8ToSys(FileName), UserName, DomainName);
   UserName:=UTF8Encode(UserName);
   DomainName:=UTF8Encode(DomainName);
@@ -172,13 +172,13 @@ begin
 end;
 
 function GetUserName: string;
-{$IFDEF WINDOWS}
+{$IF DEFINED(WINDOWS) AND NOT DEFINED(WINCE)}
 var
   A:array [0..256] of Char;
   L:DWORD;
 {$ENDIF}
 begin
-  {$IFDEF WINDOWS}
+  {$IF DEFINED(WINDOWS) AND NOT DEFINED(WINCE)}
   FillChar(A, SizeOf(A), 0);
   L:=SizeOf(A)-1;
   if Windows.GetUserNameA(@A, L) then

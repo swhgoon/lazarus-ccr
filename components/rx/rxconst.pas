@@ -109,6 +109,7 @@ resourcestring
   sFpcVersion           = 'FPC version : ';
   sTargetCPU            = 'Target CPU : ';
   sTargetOS             = 'Target OS : ';
+  sBuildDate            = 'Build date : ';
   sAbout                = 'About';
   sGeneral              = 'General';
   sLicense              = 'License';

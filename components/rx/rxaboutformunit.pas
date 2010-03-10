@@ -88,6 +88,7 @@ begin
   lblFPCVersion.Caption:=sFpcVersion + {$I %FPCVERSION%};
   lblTargCPU.Caption:=sTargetCPU + {$I %FPCTARGETCPU%};
   lblTargetOS.Caption:=sTargetOS + {$I %FPCTARGETOS%};
+  lblBuildDate.Caption:=sBuildDate + {$I %DATE%};
   TabSheet1.Caption:=sGeneral;
   TabSheet2.Caption:=sDetails;
   TabSheet3.Caption:=sLicense;

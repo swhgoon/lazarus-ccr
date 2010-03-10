@@ -17,6 +17,10 @@ msgstr "Botones disponibles"
 msgid "Browse"
 msgstr "Vista"
 
+#: rxconst.sbuilddate
+msgid "Build date : "
+msgstr ""
+
 #: rxconst.sbuttonalign
 msgid "Button align"
 msgstr "Alineación de Botones"
