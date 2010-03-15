@@ -2400,10 +2400,21 @@ var
   P:TBookmark;
   DS:TDataSet;
   i:integer;
-//  J:integer;
+  APresent:boolean;
 begin
   if (not ((rdgFooterRows in OptionsRx) and DatalinkActive)) or (Columns.Count = 0) then
     Exit;
+  //Дополнительно проверим - а стоит ли делать пробег по данным - есть ли агрегатные функции
+  APresent:=false;
+  for i:=0 to Columns.Count - 1 do
+  begin
+    APresent:=TRxColumn(Columns[i]).Footer.FValueType in [fvtSum, fvtAvg, fvtMax, fvtMin];
+    if APresent then break;
+  end;
+
+  if not APresent then
+    exit;
+
   inc(FInProcessCalc);
   DS:=DataSource.DataSet;;
   P := Ds.GetBookMark;

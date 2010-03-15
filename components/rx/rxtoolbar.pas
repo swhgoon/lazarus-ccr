@@ -224,6 +224,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Customize(HelpCtx: Longint);
+    procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
   published
     property Items:TToolbarItems read GetItems write SetItems;
     property ImageList:TImageList read FImageList write SetImageList;
@@ -715,6 +716,7 @@ procedure TToolbarButton.SetBounds(aLeft, aTop, aWidth, aHeight: integer);
 var
   TextSize:TSize;
   ImgH, ImgW:integer;
+  tmpCanvas: TCanvas;
 begin
   if Assigned(Parent) and not (csLoading in TToolPanel(Parent).ComponentState) then
   begin
@@ -750,19 +752,26 @@ begin
 
       if ShowCaption then
       begin
-        TextSize:=Canvas.TextExtent(Caption);
-        if (Layout in [blGlyphLeft, blGlyphRight]) and Assigned(FImageList) then
-        begin
-          aWidth:=ImgW + 4 + TextSize.cx;
-          aHeight:=Max(TextSize.cy + 8, ImgH);
-        end
-        else
-        begin
-          aWidth:=Max(8 + TextSize.cx, ImgW);
-          aHeight:=ImgH + TextSize.cy + 4;
+        tmpCanvas := GetWorkingCanvas(Canvas);
+
+        try
+          TextSize:=tmpCanvas.TextExtent(Caption);
+          if (Layout in [blGlyphLeft, blGlyphRight]) and Assigned(FImageList) then
+          begin
+            aWidth:=ImgW + 4 + TextSize.cx;
+            aHeight:=Max(TextSize.cy + 8, ImgH);
+          end
+          else
+          begin
+            aWidth:=Max(8 + TextSize.cx, ImgW);
+            aHeight:=ImgH + TextSize.cy + 4;
+          end;
+          if aHeight < TToolPanel(Parent).BtnHeight then
+            aHeight:=TToolPanel(Parent).BtnHeight;
+        finally
+          if TmpCanvas<>Canvas then
+            FreeWorkingCanvas(tmpCanvas);
         end;
-        if aHeight < TToolPanel(Parent).BtnHeight then
-          aHeight:=TToolPanel(Parent).BtnHeight;
       end
       else
       begin
@@ -1009,11 +1018,16 @@ procedure TToolPanel.ReAlignToolBtn;
 var
   i, L:integer;
 begin
+{  for i:=0 to FToolbarItems.Count - 1 do
+  begin
+    FToolbarItems[i].FButton.Align:=alNone;
+  end;
+ }
   L:=BorderWidth;
   for i:=0 to FToolbarItems.Count - 1 do
   begin
     FToolbarItems[i].FButton.Left:=L;
-    FToolbarItems[i].FButton.Align:=BtnAl2Align[FButtonAllign];
+//    FToolbarItems[i].FButton.Align:=BtnAl2Align[FButtonAllign];
     L:=L + FToolbarItems[i].FButton.Width;
   end;
 end;
@@ -1057,7 +1071,7 @@ var
   i, H:integer;
   
 begin
-
+{
   if not AutoSizeCanStart then exit;
   if csDesigning in ComponentState then exit;
 
@@ -1078,7 +1092,7 @@ begin
     end
 //    Exclude(FControlFlags,cfAutoSizeNeeded);
   end
-  else
+  else        }
   inherited DoAutoSize;
 end;
 
@@ -1091,13 +1105,13 @@ begin
 end;
 
 procedure TToolPanel.RequestAlign;
-var
-  i, L:integer;
+{var
+  i, L:integer;}
 begin
   inherited RequestAlign;
 {  if (Parent = nil) or (csDestroying in ComponentState) or (csLoading in ComponentState) or (not Parent.HandleAllocated) then
     exit;
-  if not Parent.HandleAllocated then exit;
+//  if not Parent.HandleAllocated then exit;
   ReAlignToolBtn;}
 end;
 
@@ -1105,12 +1119,18 @@ procedure TToolPanel.Loaded;
 var
   i, L:integer;
 begin
-  if csDesigning in ComponentState then
+{  if csDesigning in ComponentState then
   begin
      for i:=0 to FToolbarItems.Count - 1 do
        FToolbarItems[i].UpdateLeftAfterLoad;
-  end;
+  end;            }
   inherited Loaded;
+  for i:=0 to FToolbarItems.Count - 1 do
+  begin
+    FToolbarItems[i].UpdateLeftAfterLoad;
+    FToolbarItems[i].FButton.Align:=BtnAl2Align[FButtonAllign];
+  end;
+  ReAlignToolBtn;
 end;
 
 constructor TToolPanel.Create(AOwner: TComponent);
@@ -1128,7 +1148,7 @@ begin
   FDefButtonHeight:=DefButtonHeight;
   FToolBarStyle:=tbsStandart;
   BorderWidth:=4;
-  ControlStyle:=ControlStyle - [csSetCaption];
+  ControlStyle:=ControlStyle - [csSetCaption] + [csAcceptsControls];
   Caption:='';
 end;
 
@@ -1152,6 +1172,15 @@ begin
   FCustomizer.HelpContext:=HelpCtx;
   FCustomizer.Show;
   SetCustomizing(true);
+end;
+
+procedure TToolPanel.SetBounds(aLeft, aTop, aWidth, aHeight: integer);
+begin
+  if Assigned(FImageList) then
+    aHeight:=FImageList.Height+8  + BorderWidth * 2
+  else
+    aHeight:=FDefButtonHeight + BorderWidth * 2;
+  inherited SetBounds(aLeft, aTop, aWidth, aHeight);
 end;
 
 { TToolbarItem }
@@ -1345,8 +1374,11 @@ end;
 constructor TToolbarItem.Create(ACollection: TCollection);
 var
   i, W:integer;
+  TB:TToolPanel;
 begin
   inherited Create(ACollection);
+  TB:=TToolbarItems(ACollection).FToolPanel;
+
   FButton:=TToolbarButton.Create(TToolbarItems(ACollection).FToolPanel);
 
   FButton.Align:=BtnAl2Align[TToolbarItems(ACollection).FToolPanel.ButtonAllign];
@@ -1361,15 +1393,19 @@ begin
   FButton.FFullPush:=true;
 //  if not (csLoading in TToolbarItems(ACollection).FToolPanel.ComponentState) then
 //    FButton.Align:=BtnAl2Align[TToolbarItems(ACollection).FToolPanel.ButtonAllign];
-{  if TToolbarItems(ACollection).FToolPanel.ButtonAllign = tbaLeft then
+
+  if (not (csLoading in TB.ComponentState)) and (csDesigning in TB.ComponentState)  then
   begin
-    W:=0;
-    for i:=0 to ACollection.Count - 1 do
+    if TToolbarItems(ACollection).FToolPanel.ButtonAllign = tbaLeft then
     begin
-      W:=Max(W, TToolbarItems(ACollection).Items[I].Width + TToolbarItems(ACollection).Items[I].Left);
+      W:=0;
+      for i:=0 to ACollection.Count - 1 do
+      begin
+        W:=Max(W, TToolbarItems(ACollection).Items[I].Width + TToolbarItems(ACollection).Items[I].Left);
+      end;
+      Left:=W+1;
     end;
-    Left:=W+1;
-  end;}
+  end;
 end;
 
 destructor TToolbarItem.Destroy;

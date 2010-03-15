@@ -2,8 +2,10 @@
 <fpdoc-descriptions>
   <package name="dcl_rx_fpc">
     <short>Пакет времени разработки</short>
-    <descr>Данный пакет содержит в себе вспомогательные классы и утилиты, которые необходимы во время разработки программы.
-Все эти данные не испошльзуются во время работы готовой программы, поэтому этот код е включается в финальнуе версии программ</descr>
+    <descr>
+      <p>Данный пакет содержит в себе вспомогательные классы и утилиты, которые необходимы во время разработки программы.</p>
+      <p>Все эти данные не используются во время работы готовой программы, поэтому этот код не включается в финальные версии программ.</p>
+    </descr>
   </package>
   <package name="rxfpc">
     <module name="rxdbgrid">
@@ -151,6 +153,7 @@
           <p>
             <link id="TOptionRx">Набор флагов</link>, управлюящих поведением 
   
+            
             
             
             
@@ -547,6 +550,7 @@
         <descr>
           <p>
             <link id="TOptionRx">Набор флагов</link>, управлюящих поведением 
+            
             
             
             
@@ -1098,6 +1102,7 @@ TRxDBCalcEdit является наследником TDBCalcEdit и имеет 
           
           
           
+          
           <b>Count</b>
         </descr>
         <seealso>
@@ -1118,6 +1123,7 @@ TRxDBCalcEdit является наследником TDBCalcEdit и имеет 
         <descr>
           <b>property FileFolder:string</b>
 Свойство FileFolder определяет каталог с файлами, который будет сканироваться при вызове метода 
+          
           
           
           
@@ -2380,7 +2386,9 @@ Description
             
             
             
+            
             <b>const</b> SearchDomain, FileName:
+            
             
             
             
@@ -2410,7 +2418,9 @@ Description
             
             
             
+            
             <b>out</b> UserName, DomainName:
+            
             
             
             
@@ -2457,6 +2467,7 @@ Description
             
             
             
+            
             <b>const</b> DirName:
             
             
@@ -2466,7 +2477,9 @@ Description
             
             
             
+            
             <b>string</b>):
+            
             
             
             
@@ -2485,6 +2498,7 @@ Description
         <descr>
           <p>
             <b>function</b> GetUserName: 
+            
             
             
             
