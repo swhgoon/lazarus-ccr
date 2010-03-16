@@ -157,6 +157,7 @@
             
             
             
+            
             <link id="TRxDBGrid">RxDBGrid</link>-а.</p>
         </descr>
       </element>
@@ -550,6 +551,7 @@
         <descr>
           <p>
             <link id="TOptionRx">Набор флагов</link>, управлюящих поведением 
+            
             
             
             
@@ -1103,6 +1105,7 @@ TRxDBCalcEdit является наследником TDBCalcEdit и имеет 
           
           
           
+          
           <b>Count</b>
         </descr>
         <seealso>
@@ -1123,6 +1126,7 @@ TRxDBCalcEdit является наследником TDBCalcEdit и имеет 
         <descr>
           <b>property FileFolder:string</b>
 Свойство FileFolder определяет каталог с файлами, который будет сканироваться при вызове метода 
+          
           
           
           
@@ -1387,10 +1391,12 @@ Description
     </module>
     <module name="rxdice">
       <element name="TRxDice">
-        <descr>Unit
-RxDice
-Description
-Компонента из числа "безделушек", позволяющая вам использовать в формах изображения игральных костей в различных положениях. Текущее состояние компоненты (положение игральной кости) задается свойством Value, которое может изменяться от 1 до 6. Вы можете установить свойство Value в случайное значение, вызвав метод RandomValue. Если вы установите свойство Rotate в значение True, изображение игральной кости начнет случайным образом "вращаться", изменяя значение Value, с частотой, задаваемой свойством Interval. Остановить вращение можно, присвоив значение False свойству Rotate. Если свойство AutoStopInterval отлично от 0, то по прошествии этого времени вращение будет остановлено автоматически. При изменении значения Value происходит событие OnChange.</descr>
+        <short>Компонента позволяющая вам использовать в формах изображения игральных костей в различных положениях.</short>
+        <descr>
+          <p>Компонента из числа "безделушек", позволяющая вам использовать в формах изображения игральных костей в различных положениях. </p>
+          <p>Текущее состояние компоненты (положение игральной кости) задается свойством <link id="TRxDice.Value">Value</link>, которое может изменяться от 1 до 6. Вы можете установить свойство <link id="TRxDice.Value">Value</link> в случайное значение, вызвав метод <link id="TRxDice.RandomValue">RandomValue</link>. Если вы установите свойство <link id="TRxDice.Rotate">Rotate</link> в значение True, изображение игральной кости начнет случайным образом "вращаться", изменяя значение <link id="TRxDice.Value">Value</link>, с частотой, задаваемой свойством <link id="TRxDice.Interval">Interval</link>. Остановить вращение можно, присвоив значение False свойству <printshort id="TRxDice.Rotate"/>. Если свойство <link id="TRxDice.AutoStopInterval">AutoStopInterval</link> отлично от 0, то по прошествии этого времени вращение будет остановлено автоматически. </p>
+          <p>При изменении значения Value происходит событие OnChange.</p>
+        </descr>
       </element>
       <element name="TRxDice.Create"/>
       <element name="TRxDice.Destroy"/>
@@ -1401,9 +1407,11 @@ Description
       <element name="TRxDice.Align"/>
       <element name="TRxDice.AutoSize"/>
       <element name="TRxDice.AutoStopInterval">
-        <short>property AutoStopInterval: Cardinal;</short>
-        <descr>Свойство задает интервал (в мсек), по прошествии которого после установки свойства Rotate в значение True вращение игральной кости будет остановлено. 
-Если значение AutoStopInterval = 0, то вращение автоматически не останавливается и может быть прекращено присваиванием Rotate = False.</descr>
+        <short>Свойство задает интервал (в мсек), по прошествии которого после установки свойства Rotate в значение True вращение игральной кости будет остановлено</short>
+        <descr>
+          <p>Свойство задает интервал (в мсек), по прошествии которого после установки свойства <link id="TRxDice.Rotate">Rotate</link> в значение True вращение игральной кости будет остановлено. </p>
+          <p>Если значение AutoStopInterval = 0, то вращение автоматически не останавливается и может быть прекращено присваиванием <link id="TRxDice.Rotate">Rotate</link> = False.</p>
+        </descr>
       </element>
       <element name="TRxDice.Color"/>
       <element name="TRxDice.Cursor"/>
@@ -1411,9 +1419,11 @@ Description
       <element name="TRxDice.DragCursor"/>
       <element name="TRxDice.Enabled"/>
       <element name="TRxDice.Interval">
-        <short>property Interval: Word;</short>
-        <descr>Свойство определяет временной интервал (в милисекундах), с которым происходит смена изображений в компоненте. 
-при Rotate = True это частота смены битовых изображений.</descr>
+        <short>Свойство определяет временной интервал (в милисекундах), с которым происходит смена изображений в компоненте.</short>
+        <descr>
+          <p>Свойство определяет временной интервал (в милисекундах), с которым происходит смена изображений в компоненте. </p>
+          <p>при <link id="TRxDice.Rotate">Rotate</link> = True это частота смены битовых изображений.</p>
+        </descr>
         <seealso>
           <link id="TRxDice.Rotate"/>
         </seealso>
@@ -2387,7 +2397,9 @@ Description
             
             
             
+            
             <b>const</b> SearchDomain, FileName:
+            
             
             
             
@@ -2419,7 +2431,9 @@ Description
             
             
             
+            
             <b>out</b> UserName, DomainName:
+            
             
             
             
@@ -2468,7 +2482,9 @@ Description
             
             
             
+            
             <b>const</b> DirName:
+            
             
             
             
@@ -2488,6 +2504,7 @@ Description
             
             
             
+            
             <b>string</b>;</p>
           <p>Функция проверяет все разделители каталогов в указанном имени файла/каталога и, если нужно, меняет их на значение константы<b>DirectorySeparator</b>.</p>
         </descr>
@@ -2498,6 +2515,7 @@ Description
         <descr>
           <p>
             <b>function</b> GetUserName: 
+            
             
             
             
