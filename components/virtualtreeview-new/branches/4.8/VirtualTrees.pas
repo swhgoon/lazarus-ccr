@@ -500,8 +500,6 @@ type
     Result: Integer;
   end;
 
-  TLMContextMenu = TLMMouse;
-
   // Be careful when adding new states as this might change the size of the type which in turn
   // changes the alignment in the node record as well as the stream chunks.
   // Do not reorder the states and always add new states at the end of this enumeration in order to avoid
