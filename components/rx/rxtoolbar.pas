@@ -665,12 +665,25 @@ begin
   FAutoSize:=AValue;
   if csLoading in ComponentState then exit;
   UpdateSize;
-  Invalidate;
+  //Invalidate;
 end;
 
 procedure TToolbarButton.UpdateSize;
+var
+  AWidth:integer;
 begin
-  SetBounds(Left, Top, Width, Height);
+  if csLoading in TToolbarItems(FOwnerItem.Collection).FToolPanel.ComponentState then exit;
+
+  if Assigned(TToolbarItems(FOwnerItem.Collection).FToolPanel.FImageList) then
+  begin
+    AWidth:=TToolbarItems(FOwnerItem.Collection).FToolPanel.FImageList.Width + 8;
+    if ShowCaption then
+      AWidth:= AWidth + Canvas.TextWidth(Caption) + Spacing;
+  end
+  else
+    AWidth:=Canvas.TextWidth(Caption);
+
+  SetBounds(Left, Top, AWidth, Height);
   Invalidate;
 end;
 
@@ -857,6 +870,8 @@ begin
   if FDefButtonHeight<>AValue then
   begin
     FDefButtonHeight:=AValue;
+    if csLoading in ComponentState then exit;
+
     for i:=0 to FToolbarItems.Count - 1 do
       FToolbarItems[i].FButton.UpdateSize;
   end;
@@ -869,6 +884,8 @@ begin
   if FDefButtonWidth<>AValue then
   begin
     FDefButtonWidth:=AValue;
+    if csLoading in ComponentState then exit;
+
     for i:=0 to FToolbarItems.Count - 1 do
       FToolbarItems[i].FButton.UpdateSize;
   end;
@@ -1118,6 +1135,7 @@ end;
 procedure TToolPanel.Loaded;
 var
   i, L:integer;
+  B:TToolbarItem;
 begin
 {  if csDesigning in ComponentState then
   begin
@@ -1127,8 +1145,10 @@ begin
   inherited Loaded;
   for i:=0 to FToolbarItems.Count - 1 do
   begin
-    FToolbarItems[i].UpdateLeftAfterLoad;
-    FToolbarItems[i].FButton.Align:=BtnAl2Align[FButtonAllign];
+    B:=FToolbarItems[i];
+    B.UpdateLeftAfterLoad;
+    B.FButton.Align:=BtnAl2Align[FButtonAllign];
+ //   B.FButton.UpdateSize;
   end;
   ReAlignToolBtn;
 end;
@@ -1176,10 +1196,13 @@ end;
 
 procedure TToolPanel.SetBounds(aLeft, aTop, aWidth, aHeight: integer);
 begin
-  if Assigned(FImageList) then
-    aHeight:=FImageList.Height+8  + BorderWidth * 2
-  else
-    aHeight:=FDefButtonHeight + BorderWidth * 2;
+  if not (csLoading in ComponentState) then
+  begin
+    if Assigned(FImageList) then
+      aHeight:=FImageList.Height+8  + BorderWidth * 2
+    else
+      aHeight:=FDefButtonHeight + BorderWidth * 2;
+  end;
   inherited SetBounds(aLeft, aTop, aWidth, aHeight);
 end;
 
@@ -1192,6 +1215,7 @@ begin
 {    if Assigned(FButton.Action) then
       FButton.Action.UnRegisterChanges(FActionLink);}
     FButton.Action:=AValue;
+    if csLoading in TToolbarItems(Collection).FToolPanel.ComponentState then exit;
     FButton.UpdateSize;
 {    if Assigned(AValue) then
       AValue.RegisterChanges(FActionLink);}
@@ -1254,8 +1278,9 @@ begin
   if FButton.ShowCaption<>AValue then
   begin
     FButton.ShowCaption:=AValue;
-    FButton.UpdateSize;
-    FButton.Invalidate;
+    if not (csLoading in TToolbarItems(Collection).FToolPanel.ComponentState) then
+      FButton.UpdateSize;
+//    FButton.Invalidate;
   end;
 end;
 
@@ -1388,7 +1413,7 @@ begin
   FButton.Flat:=tpFlatBtns in TToolbarItems(ACollection).FToolPanel.Options;
   FButton.Transparent:=tpTransparentBtns in TToolbarItems(ACollection).FToolPanel.Options;
   FButton.ShowCaption:=false;
-  FButton.FAutoSize:=true;
+  FButton.FAutoSize:=false;
   FButton.FOwnerItem:=Self;
   FButton.FFullPush:=true;
 //  if not (csLoading in TToolbarItems(ACollection).FToolPanel.ComponentState) then

@@ -158,6 +158,7 @@
             
             
             
+            
             <link id="TRxDBGrid">RxDBGrid</link>-а.</p>
         </descr>
       </element>
@@ -551,6 +552,7 @@
         <descr>
           <p>
             <link id="TOptionRx">Набор флагов</link>, управлюящих поведением 
+            
             
             
             
@@ -1106,6 +1108,7 @@ TRxDBCalcEdit является наследником TDBCalcEdit и имеет 
           
           
           
+          
           <b>Count</b>
         </descr>
         <seealso>
@@ -1115,7 +1118,9 @@ TRxDBCalcEdit является наследником TDBCalcEdit и имеет 
       </element>
       <element name="TFolderLister.Count">
         <short>Количество прочитанных файлов/каталогов</short>
-        <descr>Свойство содержит в себе кол-во прочитанных файлов</descr>
+        <descr>
+          <p>Свойство содержит в себе кол-во прочитанных файлов</p>
+        </descr>
         <seealso>
           <link id="TFolderLister.Files"/>
         </seealso>
@@ -1125,34 +1130,8 @@ TRxDBCalcEdit является наследником TDBCalcEdit и имеет 
         <short>Свойство FileFolder</short>
         <descr>
           <b>property FileFolder:string</b>
-Свойство FileFolder определяет каталог с файлами, который будет сканироваться при вызове метода 
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          <b>Execute</b> и по содержимому которого будет произведено заполнение массива Files</descr>
+          <p>Свойство FileFolder определяет каталог с файлами, который будет сканироваться при вызове метода <link id="TFolderLister.Execute">Execute</link> и по содержимому которого будет произведено заполнение массива Files</p>
+        </descr>
         <seealso>
           <link id="TFolderLister.Execute"/>
         </seealso>
@@ -1161,13 +1140,17 @@ TRxDBCalcEdit является наследником TDBCalcEdit и имеет 
         <short>Свойство OnExecuteItem</short>
         <descr>
           <b>property OnExecuteItem:TNotifyEvent</b>
-Свойство OnExecuteItem вызывается при выборе пункта меню, которые было сформировано по элементам массива Files</descr>
+          <p>Свойство OnExecuteItem вызывается при выборе пункта меню, которые было сформировано по элементам массива <link id="TFolderLister.Files">Files</link>
+          </p>
+        </descr>
       </element>
       <element name="TFolderLister.MenuItem">
         <short>Свойство MenuItem</short>
         <descr>
           <b>property MenuItem:TMenuItem;</b>
-Данное свойство определяет место в меню, где будет добавлено в виде подменю содержимое каталога FileFolder</descr>
+          <p>Данное свойство определяет место в меню, где будет добавлено в виде подменю содержимое каталога <link id="TFolderLister.FileFolder">FileFolder</link>
+          </p>
+        </descr>
         <seealso>
           <link id="TFolderLister.Execute"/>
         </seealso>
@@ -2398,7 +2381,9 @@ Description
             
             
             
+            
             <b>const</b> SearchDomain, FileName:
+            
             
             
             
@@ -2432,7 +2417,9 @@ Description
             
             
             
+            
             <b>out</b> UserName, DomainName:
+            
             
             
             
@@ -2483,7 +2470,9 @@ Description
             
             
             
+            
             <b>const</b> DirName:
+            
             
             
             
@@ -2505,6 +2494,7 @@ Description
             
             
             
+            
             <b>string</b>;</p>
           <p>Функция проверяет все разделители каталогов в указанном имени файла/каталога и, если нужно, меняет их на значение константы<b>DirectorySeparator</b>.</p>
         </descr>
@@ -2515,6 +2505,7 @@ Description
         <descr>
           <p>
             <b>function</b> GetUserName: 
+            
             
             
             
