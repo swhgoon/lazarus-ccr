@@ -27,6 +27,8 @@ unit VirtualTrees;
 // (C) 1999-2001 digital publishing AG. All Rights Reserved.
 //----------------------------------------------------------------------------------------------------------------------
 //
+//  January 2010 (j.wielicki@sotecware.net)
+//   - Improvement: Introduced 64-bit compatibility.
 //  May 2009
 //   - Improvement: new TVTMiscOption toEditOnClick, toEditOnDblClick to control if editing can be started with a single
 //                  click or a double click
@@ -303,6 +305,10 @@ interface
 
 {$if defined(Gtk)}
 {$define ManualClipNeeded}
+{$endif}
+
+{$ifdef CPU64}
+{$asmmode ATT}
 {$endif}
 
 uses
@@ -1997,9 +2003,9 @@ type
   TVTDragAllowedEvent = procedure(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
     var Allowed: Boolean) of object;
   TVTDragOverEvent = procedure(Sender: TBaseVirtualTree; Source: TObject; Shift: TShiftState; State: TDragState;
-    const Pt: TPoint; Mode: TDropMode; var Effect: Integer; var Accept: Boolean) of object;
+    const Pt: TPoint; Mode: TDropMode; var Effect: PtrUInt; var Accept: Boolean) of object;
   TVTDragDropEvent = procedure(Sender: TBaseVirtualTree; Source: TObject; DataObject: IDataObject;
-    Formats: TFormatArray; Shift: TShiftState; const Pt: TPoint; var Effect: Integer; Mode: TDropMode) of object;
+    Formats: TFormatArray; Shift: TShiftState; const Pt: TPoint; var Effect: PtrUInt; Mode: TDropMode) of object;
   TVTRenderOLEDataEvent = procedure(Sender: TBaseVirtualTree; const FormatEtcIn: TFormatEtc; out Medium: TStgMedium;
     ForClipboard: Boolean; var Result: HRESULT) of object;
   TVTGetUserClipboardFormatsEvent = procedure(Sender: TBaseVirtualTree; var Formats: TFormatEtcArray) of object;
@@ -2156,7 +2162,7 @@ type
     FDragHeight: Integer;                        // size of the drag image, the larger the more CPU power is needed
     FClipboardFormats: TClipboardFormats;        // a list of clipboard format descriptions enabled for this tree
     FLastVCLDragTarget: PVirtualNode;            // A node cache for VCL drag'n drop (keywords: DragLeave on DragDrop).
-    FVCLDragEffect: LongWord;                     // A cache for VCL drag'n drop to keep the current drop effect.
+    FVCLDragEffect: PtrUInt;                     // A cache for VCL drag'n drop to keep the current drop effect.
 
     // scroll support
     FScrollBarOptions: TScrollBarOptions;        // common properties of horizontal and vertical scrollbar
@@ -2576,9 +2582,9 @@ type
     function DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint;
       ADragObject: TDragObject; ATarget: TControl; ADocking: Boolean): LRESULT; override;
     function DoDragOver(Source: TObject; Shift: TShiftState; State: TDragState; const Pt: TPoint; Mode: TDropMode;
-      var Effect: LongWord): Boolean; virtual;
+      var Effect: PtrUInt): Boolean; virtual;
     procedure DoDragDrop(Source: TObject; DataObject: IDataObject; Formats: TFormatArray; Shift: TShiftState; const Pt: TPoint;
-      var Effect: LongWord; Mode: TDropMode); virtual;
+      var Effect: PtrUInt; Mode: TDropMode); virtual;
     procedure DoEdit; virtual;
     procedure DoEndDrag(Target: TObject; X, Y: Integer); override;
     function DoEndEdit: Boolean; virtual;
@@ -2649,12 +2655,12 @@ type
       DragEffect: Integer); virtual;
     procedure DragCanceled; override;
     function DragDrop(const DataObject: IDataObject; KeyState: Integer; Pt: TPoint;
-      var Effect: LongWord): HResult; reintroduce; virtual;
-    function DragEnter(KeyState: Integer; Pt: TPoint; var Effect: LongWord): HResult; virtual;
+      var Effect: PtrUInt): HResult; reintroduce; virtual;
+    function DragEnter(KeyState: Integer; Pt: TPoint; var Effect: PtrUInt): HResult; virtual;
     procedure DragFinished; virtual;
     procedure DragLeave; virtual;
     function DragOver(Source: TObject; KeyState: Integer; DragState: TDragState; Pt: TPoint;
-      var Effect: LongWord): HResult; reintroduce; virtual;
+      var Effect: PtrUInt): HResult; reintroduce; virtual;
     procedure DrawDottedHLine(const PaintInfo: TVTPaintInfo; Left, Right, Top: Integer); virtual;
     procedure DrawDottedVLine(const PaintInfo: TVTPaintInfo; Top, Bottom, Left: Integer); virtual;
     procedure EndOperation;
@@ -4827,7 +4833,7 @@ end;
 function HasMMX: Boolean;
 
 // Helper method to determine whether the current processor supports MMX.
-
+{$IFDEF CPU32}
 asm
         PUSH    EBX
         XOR     EAX, EAX     // Result := False
@@ -4856,6 +4862,12 @@ asm
 @1:
         POP     EBX
 end;
+{$ELSE}
+begin
+  //todo: should not all cpu64 have mmx?
+  Result := False;
+end;
+{$ENDIF}
 
 //----------------------------------------------------------------------------------------------------------------------
 {$ifdef EnablePrint}
@@ -13131,6 +13143,51 @@ function TBaseVirtualTree.PackArrayAsm(TheArray: TNodeArray; Count: Integer): In
 // The returned value is the number of remaining entries in the array, so the caller can reallocate (shorten)
 // the selection array if needed or -1 if nothing needs to be changed.
 
+{$IFDEF CPU64}
+label
+  PreScan, DoMainLoop, MainLoop, Skip, Finish;
+asm
+  push %rbx
+  push %rdi
+  push %rsi
+  mov %rdx, %rsi
+  mov $-1, %rdx
+  cmpq $0, %rcx
+  jz Finish
+  inc %rdx
+  mov %rsi, %rdi
+  movq $1, %rbx
+PreScan:
+  testq (%rsi), %rbx
+
+  jnz DoMainLoop
+  inc %rdx
+  add $8, %rsi
+  dec %rcx
+  jnz PreScan
+  jmp Finish
+DoMainLoop:
+  mov %rsi, %rdi
+MainLoop:
+  test (%rsi), %rbx
+  jne Skip
+  movq (%rsi), %r10
+  movq %r10, (%rdi)
+  inc %rdx
+  dec %rcx
+  jnz MainLoop
+  jmp Finish
+Skip:
+  add $8, %rsi
+  dec %rcx
+  jnz MainLoop
+Finish:
+  mov %rdx, %rax
+  pop %rsi
+  pop %rdi
+  pop %rbx
+end;
+{$ELSE}
 asm
         PUSH    EBX
         PUSH    EDI
@@ -13172,6 +13229,7 @@ asm
         POP     EDI
         POP     EBX
 end;
+{$ENDIF}
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -14686,7 +14744,7 @@ begin
 
           // Allowed drop effects are simulated for VCL dd.
           Result := DROPEFFECT_MOVE or DROPEFFECT_COPY;
-          DragOver(S, ShiftState, TDragState(ADragMessage), APosition, LongWord(Result));
+          DragOver(S, ShiftState, TDragState(ADragMessage), APosition, PtrUInt(Result));
           FLastVCLDragTarget := FDropTargetNode;
           FVCLDragEffect := Result;
           if (ADragMessage = dmDragLeave) and Assigned(FDropTargetNode) then
@@ -18406,7 +18464,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 function TBaseVirtualTree.DoDragOver(Source: TObject; Shift: TShiftState; State: TDragState; const Pt: TPoint; Mode: TDropMode;
-  var Effect: LongWord): Boolean;
+  var Effect: PtrUInt): Boolean;
 
 begin
   Result := False;
@@ -18417,7 +18475,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TBaseVirtualTree.DoDragDrop(Source: TObject; DataObject: IDataObject; Formats: TFormatArray;
-  Shift: TShiftState; const Pt: TPoint; var Effect: LongWord; Mode: TDropMode);
+  Shift: TShiftState; const Pt: TPoint; var Effect: PtrUInt; Mode: TDropMode);
 
 begin
   if Assigned(FOnDragDrop) then
@@ -19599,7 +19657,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 function TBaseVirtualTree.DragDrop(const DataObject: IDataObject; KeyState: Integer; Pt: TPoint;
-  var Effect: LongWord): HResult;
+  var Effect: PtrUInt): HResult;
 
 var
   Shift: TShiftState;
@@ -19665,7 +19723,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TBaseVirtualTree.DragEnter(KeyState: Integer; Pt: TPoint; var Effect: LongWord): HResult;
+function TBaseVirtualTree.DragEnter(KeyState: Integer; Pt: TPoint; var Effect: PtrUInt): HResult;
 
 // callback routine for the drop target interface
 
@@ -19756,7 +19814,7 @@ end;
 procedure TBaseVirtualTree.DragLeave;
 
 var
-  Effect: LongWord;
+  Effect: PtrUInt;
 
 begin
   KillTimer(Handle, ExpandTimer);
@@ -19778,7 +19836,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 function TBaseVirtualTree.DragOver(Source: TObject; KeyState: Integer; DragState: TDragState; Pt: TPoint;
-  var Effect: LongWord): HResult;
+  var Effect: PtrUInt): HResult;
 
 // callback routine for the drop target interface
 
@@ -32105,7 +32163,7 @@ var
     I: Integer;
 
   begin
-    I := Colors.IndexOf(Pointer(Color));
+    I := Colors.IndexOf(Pointer(ptruint(Color)));
     if I > -1 then
     begin
       // Color has already been used
@@ -32118,7 +32176,7 @@ var
     end
     else
     begin
-      I := Colors.Add(Pointer(Color));
+      I := Colors.Add(Pointer(ptruint(Color)));
       Buffer.Add('\cf');
       Buffer.Add(IntToStr(I + 1));
       CurrentFontColor := I;
@@ -32372,7 +32430,7 @@ begin
     S := S + '{\colortbl;';
     for I := 0 to Colors.Count - 1 do
     begin
-      J := ColorToRGB(TColor(Colors[I]));
+      J := ColorToRGB(TColor(ptruint(Colors[I])));
       S := S + Format('\red%d\green%d\blue%d;', [J and $FF, (J shr 8) and $FF, (J shr 16) and $FF]);
     end;
     S := S + '}';
