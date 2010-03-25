@@ -271,6 +271,7 @@ begin
     DoNotify(mtInfo,Format('Parsing file %s ...',[AFileName]));
     CreateWstInterfaceSymbolTable(Result);
     ParseSource(Result,AFileName,s_ostype,'');
+    CreateDefaultBindingForIntf(Result);
     DoNotify(mtInfo,Format('File parsed %s .',[AFileName]));
   except
     on e : Exception do begin
@@ -503,7 +504,7 @@ begin
   try
     CreateWstInterfaceSymbolTable(Result);
     mdl := TPasModule(Result.CreateElement(TPasModule,AName,Result.Package,visDefault,'',0));
-    mdl.InterfaceSection := TPasSection(Result.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    mdl.InterfaceSection := TInterfaceSection(Result.CreateElement(TInterfaceSection,'',mdl,visDefault,'',0));
     Result.Package.Modules.Add(mdl);
   except
     FreeAndNil(Result);

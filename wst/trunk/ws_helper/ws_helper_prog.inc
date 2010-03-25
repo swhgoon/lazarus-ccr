@@ -83,6 +83,8 @@ var
     procedure ParsePascalFile();
     begin
       ParseSource(symtable,inFileName,osParam,targetParam);
+      if ( symtable <> nil ) then
+        CreateDefaultBindingForIntf(symtable);
     end;
 
     function GetParserSimpleOptions( ) : TParserOptions;

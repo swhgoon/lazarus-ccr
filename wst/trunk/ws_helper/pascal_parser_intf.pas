@@ -212,6 +212,7 @@ type
 
 
   function CreateWstInterfaceSymbolTable(AContainer : TwstPasTreeContainer) : TPasModule;
+  procedure CreateDefaultBindingForIntf(ATree : TwstPasTreeContainer);
   
 implementation
 uses 
@@ -577,6 +578,36 @@ begin
   end;
 end;
 
+procedure CreateDefaultBindingForIntf(ATree : TwstPasTreeContainer);
+var
+  e : TPasElement;
+  ct : TPasClassType;
+  c, i : Integer;
+  m : TPasModule;
+  ls : TList;
+begin        
+  if ( ATree.CurrentModule <> nil ) then begin
+    m := ATree.CurrentModule;
+    if ( m.InterfaceSection <> nil ) and 
+       ( m.InterfaceSection.Declarations <> nil ) and
+       ( m.InterfaceSection.Declarations.Count > 0 ) 
+    then begin
+      ls := m.InterfaceSection.Declarations;
+      c := ls.Count;
+      for i := 0 to Pred(c) do begin
+        e := TPasElement(ls[i]);
+        if e.InheritsFrom(TPasClassType) then begin
+          ct := TPasClassType(e);
+          if ( ct.ObjKind = okInterface ) and
+             ( ATree.FindBinding(ct) = nil )
+          then begin
+            ATree.AddBinding(Format('%sBinding',[ct.Name]),ct).BindingStyle := bsRPC;
+          end;
+        end;
+      end;
+    end;
+  end;
+end;
 
 { TwstPasTreeContainer }
 

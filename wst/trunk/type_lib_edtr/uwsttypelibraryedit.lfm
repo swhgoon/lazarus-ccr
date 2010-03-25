@@ -1,7 +1,7 @@
 object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
-  Left = 200
+  Left = 158
   Height = 644
-  Top = 136
+  Top = 112
   Width = 833
   ActiveControl = trvSchema
   Caption = '[Web Services Toolkit ] Type Library Editor'
@@ -69,7 +69,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
         Caption = '&Interface'
         ClientHeight = 437
         ClientWidth = 501
-        object srcInterface: TSynEdit
+        inline srcInterface: TSynEdit
           Left = 0
           Height = 437
           Top = 0
@@ -557,7 +557,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
             end>
           ReadOnly = True
           BracketHighlightStyle = sbhsBoth
-          object TSynGutterPartList
+          inline TSynGutterPartList
             object TSynGutterMarks
               Width = 23
             end
@@ -670,7 +670,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
         Caption = '&WSDL'
         ClientHeight = 437
         ClientWidth = 501
-        object srcWSDL: TSynEdit
+        inline srcWSDL: TSynEdit
           Left = 0
           Height = 437
           Top = 0
@@ -1159,7 +1159,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
             end>
           ReadOnly = True
           BracketHighlightStyle = sbhsBoth
-          object TSynGutterPartList
+          inline TSynGutterPartList
             object TSynGutterMarks
               Width = 23
             end
@@ -1272,7 +1272,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
         Caption = '&Proxy'
         ClientHeight = 437
         ClientWidth = 501
-        object srcProxy: TSynEdit
+        inline srcProxy: TSynEdit
           Left = 0
           Height = 437
           Top = 0
@@ -1289,6 +1289,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 56
+          BookMarkOptions.OnChange = nil
           Gutter.Width = 57
           Gutter.MouseActions = <          
             item
@@ -1760,7 +1761,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
             end>
           ReadOnly = True
           BracketHighlightStyle = sbhsBoth
-          object TSynGutterPartList
+          inline TSynGutterPartList
             object TSynGutterMarks
               Width = 23
             end
@@ -1873,7 +1874,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
         Caption = 'Im&plementation Skeleton'
         ClientHeight = 437
         ClientWidth = 501
-        object srcImp: TSynEdit
+        inline srcImp: TSynEdit
           Left = 0
           Height = 437
           Top = 0
@@ -1890,6 +1891,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 56
+          BookMarkOptions.OnChange = nil
           Gutter.Width = 57
           Gutter.MouseActions = <          
             item
@@ -2361,7 +2363,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
             end>
           ReadOnly = True
           BracketHighlightStyle = sbhsBoth
-          object TSynGutterPartList
+          inline TSynGutterPartList
             object TSynGutterMarks
               Width = 23
             end
@@ -2474,7 +2476,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
         Caption = '&Binder'
         ClientHeight = 437
         ClientWidth = 501
-        object srcBinder: TSynEdit
+        inline srcBinder: TSynEdit
           Left = 0
           Height = 437
           Top = 0
@@ -2491,6 +2493,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 56
+          BookMarkOptions.OnChange = nil
           Gutter.Width = 57
           Gutter.MouseActions = <          
             item
@@ -2962,7 +2965,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
             end>
           ReadOnly = True
           BracketHighlightStyle = sbhsBoth
-          object TSynGutterPartList
+          inline TSynGutterPartList
             object TSynGutterMarks
               Width = 23
             end
@@ -3119,7 +3122,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
         Caption = 'XML Schema Definition ( XSD )'
         ClientHeight = 102
         ClientWidth = 501
-        object edtXSD: TSynEdit
+        inline edtXSD: TSynEdit
           Left = 0
           Height = 102
           Top = 0
@@ -3134,6 +3137,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           ParentFont = False
           TabOrder = 0
           BookMarkOptions.Xoffset = -18
+          BookMarkOptions.OnChange = nil
           Gutter.Visible = False
           Gutter.Width = 0
           Gutter.MouseActions = <          
@@ -3606,12 +3610,12 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
             end>
           ReadOnly = True
           BracketHighlightStyle = sbhsBoth
-          object TSynGutterPartList
+          inline TSynGutterPartList
             object TSynGutterMarks
               Width = 23
             end
             object TSynGutterLineNumber
-              Width = 17
+              Width = 25
               MouseActions = <>
               MarkupInfo.Background = clBtnFace
               MarkupInfo.Foreground = clNone
