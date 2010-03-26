@@ -1812,8 +1812,9 @@ begin
       FSortOrder:=smUp;
     end;
     FSortEngine.Sort(FSortField, DataSource.DataSet, FSortOrder=smUp, SortEngineOptions);
-  end;
-//  if Assigned(FOnTitleBtnClick) then FOnTitleBtnClick(Self, ACol, AField);
+  end
+  else
+    HeaderClick(true, ACol);
 end;
 
 procedure TRxDBGrid.MouseMove(Shift: TShiftState; X, Y: Integer);

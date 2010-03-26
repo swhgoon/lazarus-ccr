@@ -82,7 +82,7 @@ type
 //    FShowCaption:boolean;
     FToolbarButtonStyle:TToolbarButtonStyle;
     FLastDrawFlagsA:integer;
-    FAutoSize:boolean;
+    //FAutoSize:boolean;
     FOwnerItem:TToolbarItem;
     FFullPush:boolean;
     function IsDesignMode:boolean;
@@ -98,7 +98,7 @@ type
     procedure Click; override;
     procedure UpdateState(InvalidateOnChange: boolean); override;
     procedure SetDesign(AValue:boolean; AToolbarItem:TToolbarItem);
-    procedure SetAutoSize(AValue:boolean);
+    //procedure SetAutoSize(AValue:boolean);
     procedure UpdateSize;
     procedure SetEnabled(NewEnabled: boolean); override;
     function GetActionLinkClass: TControlActionLinkClass; override;
@@ -116,7 +116,7 @@ type
     FSaveLeft:integer;
 //    FActionLink:TActionLink;
     function GetAction: TBasicAction;
-    function GetAutoSize: boolean;
+    //function GetAutoSize: boolean;
     function GetButtonStyle: TToolbarButtonStyle;
     function GetDropDownMenu: TPopupMenu;
     function GetGroupIndex: Integer;
@@ -130,7 +130,7 @@ type
     function GetWidth: Integer;
 //    procedure OnActionChanges(Sender: TObject);
     procedure SetAction(const AValue: TBasicAction);
-    procedure SetAutoSize(const AValue: boolean);
+    //procedure SetAutoSize(const AValue: boolean);
     procedure SetButtonStyle(const AValue: TToolbarButtonStyle);
     procedure SetDropDownMenu(const AValue: TPopupMenu);
     procedure SetGroupIndex(const AValue: Integer);
@@ -151,7 +151,7 @@ type
     destructor Destroy; override;
   published
     property Action:TBasicAction read GetAction write SetAction;
-    property AutoSize:boolean read GetAutoSize write SetAutoSize default true;
+    //property AutoSize:boolean read GetAutoSize write SetAutoSize default true;
     property Visible:boolean read GetVisible write SetVisible;
     property Left: Integer read GetLeft write SetLeft;
     property Height: Integer read GetHeight write SetHeight;
@@ -240,7 +240,7 @@ type
     property Align;
     property Alignment;
     property Anchors;
-    property AutoSize;
+    //property AutoSize;
     property BorderSpacing;
     property BevelInner;
     property BevelOuter;
@@ -279,7 +279,8 @@ type
   end;
 
 implementation
-uses Math, RxTBRSetup, LCLProc, vclutils, Dialogs, typinfo, rxdconst, GraphType;
+uses Math, RxTBRSetup, LCLProc, vclutils, Dialogs, typinfo, rxdconst, GraphType,
+  LResources;
 
 const
   BtnAl2Align:array [TToolButtonAllign] of TAlign = (alNone, alLeft, alRight);
@@ -660,6 +661,7 @@ begin
   end;
 end;
 
+{
 procedure TToolbarButton.SetAutoSize(AValue: boolean);
 begin
   FAutoSize:=AValue;
@@ -667,7 +669,7 @@ begin
   UpdateSize;
   //Invalidate;
 end;
-
+}
 procedure TToolbarButton.UpdateSize;
 var
   AWidth:integer;
@@ -742,7 +744,7 @@ begin
         aHeight:=TToolPanel(Parent).BtnHeight;
     end
     else
-    if FAutoSize and Assigned(Canvas) then
+    //if FAutoSize and Assigned(Canvas) then
     begin
       if Assigned(FImageList) then
       begin
@@ -1157,7 +1159,7 @@ constructor TToolPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FArrowBmp:=CreateArrowBitmap;
-  AutoSize:=true;
+  AutoSize:=false;
   FToolbarItems:=TToolbarItems.Create(Self);
   Align:=alTop;
   Height:=DefButtonHeight;
@@ -1222,12 +1224,12 @@ begin
   end;
 end;
 
-procedure TToolbarItem.SetAutoSize(const AValue: boolean);
+{procedure TToolbarItem.SetAutoSize(const AValue: boolean);
 begin
   if FButton.FAutoSize<>AValue then
     FButton.SetAutoSize(AValue);
 end;
-
+}
 procedure TToolbarItem.SetButtonStyle(const AValue: TToolbarButtonStyle);
 begin
   if FButton.FToolbarButtonStyle<>AValue then
@@ -1299,11 +1301,12 @@ begin
   Result:=FButton.Action;
 end;
 
+{
 function TToolbarItem.GetAutoSize: boolean;
 begin
   Result:=FButton.FAutoSize;
 end;
-
+}
 function TToolbarItem.GetButtonStyle: TToolbarButtonStyle;
 begin
   Result:=FButton.FToolbarButtonStyle;
@@ -1413,7 +1416,7 @@ begin
   FButton.Flat:=tpFlatBtns in TToolbarItems(ACollection).FToolPanel.Options;
   FButton.Transparent:=tpTransparentBtns in TToolbarItems(ACollection).FToolPanel.Options;
   FButton.ShowCaption:=false;
-  FButton.FAutoSize:=false;
+  FButton.AutoSize:=false;
   FButton.FOwnerItem:=Self;
   FButton.FFullPush:=true;
 //  if not (csLoading in TToolbarItems(ACollection).FToolPanel.ComponentState) then
@@ -1466,5 +1469,10 @@ begin
   (FClient as TToolbarButton).UpdateSize;
 end;
 
+initialization
+  //DebugLn('controls.pp - initialization');
+  RegisterPropertyToSkip(TToolbarButton, 'AutoSize', 'Old stile AutoSize in button', '');
+  RegisterPropertyToSkip(TToolbarItem, 'AutoSize', 'Old stile AutoSize in button', '');
+  RegisterPropertyToSkip(TToolPanel, 'AutoSize', 'Old stile AutoSize in button', '');
 end.
 
