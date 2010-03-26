@@ -312,14 +312,6 @@ interface
 
 {$I VTConfig.inc}
 
-{$if defined(LCLGtk) or defined(LCLGtk2)}
-{$define Gtk}
-{$endif}
-
-{$if defined(Gtk)}
-{$define ManualClipNeeded}
-{$endif}
-
 uses
   {$ifdef Windows}
   Windows,
@@ -350,6 +342,17 @@ uses
 
 const
   {$I lclconstants.inc}
+
+  {$if defined(LCLGtk) or defined(LCLGtk2)}
+    {$define Gtk}
+  {$endif}
+
+  {$if defined(Gtk)}
+    {$define ManualClipNeeded}
+    {$ifdef lcl_release > 28}
+      {$define InvertDCOrigin}
+    {$endif}
+  {$endif}
 
   VTVersion = '4.8.6';
   VTTreeStreamVersion = 2;
@@ -28188,7 +28191,7 @@ begin
                   SetMapMode(Canvas.Handle, GetMapMode(TargetCanvas.Handle));
                   {$endif}
                   //Workaround to LCL bug 8626
-                  SetWindowOrgEx(Canvas.Handle, {$ifdef Gtk}-{$endif}Window.Left, 0, nil);
+                  SetWindowOrgEx(Canvas.Handle, {$ifdef InvertDCOrigin}-{$endif}Window.Left, 0, nil);
                   R.Bottom := PaintInfo.Node.NodeHeight;
                 end;
                 // Set the origin of the canvas' brush. This depends on the node heights.
