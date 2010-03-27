@@ -35,6 +35,8 @@ type
   { TManualDocker }
 
   TManualDocker = class(TObject)
+  private
+    FCurrentSrcWin: TWinControl;
   protected
     procedure ChangeDocking(DockingEnabled: Boolean);
     procedure LoadState(cfg: TXMLConfig; var Astate: TDockState; const StateName: string);
@@ -43,8 +45,12 @@ type
     procedure SaveStates;
 
     procedure AllocControls(AParent: TWinControl);
+    procedure DeallocControls;
     procedure RealignControls;
     procedure UpdateDockState(var astate: TDockState; wnd: TWinControl);
+
+    procedure SourceWindowCreated(Sender: TObject);
+    procedure SourceWindowDestroyed(Sender: TObject);
   public
     ConfigPath  : AnsiString;
     split       : TSplitter;
@@ -87,8 +93,10 @@ var
   i  : Integer;
 begin
   if DockingEnabled then begin
-    if not Assigned(SourceEditorWindow) or not Assigned(IDEMessagesWindow) then Exit;
-    if not Assigned(panel) then AllocControls(SourceEditorWindow);
+    if not (Assigned(SourceEditorManagerIntf) and Assigned(SourceEditorManagerIntf.ActiveSourceWindow))
+       or not Assigned(IDEMessagesWindow)
+    then Exit;
+    if not Assigned(panel) then AllocControls(SourceEditorManagerIntf.ActiveSourceWindow);
     split.visible:=true;
     panel.visible:=true;
     with IDEMessagesWindow do
@@ -117,6 +125,7 @@ begin
       IDEMessagesWindow.BorderStyle := FloatBrd;
     end;
     IDEMessagesWindow.TabStop := true;
+    IDEMessagesWindow.Show;
   end;
   MsgWnd.docked := DockingEnabled;
   cmd.Checked := DockingEnabled;
@@ -127,6 +136,11 @@ var
   pths  : array [0..1] of String;
   i     : Integer;
 begin
+  if SourceEditorManagerIntf <> nil then begin
+    SourceEditorManagerIntf.RegisterChangeEvent(semWindowCreate, @SourceWindowCreated);
+    SourceEditorManagerIntf.RegisterChangeEvent(semWindowDestroy, @SourceWindowDestroyed);
+  end;
+
   pths[0]:= LazarusIDE.GetPrimaryConfigPath;
   pths[1]:= LazarusIDE.GetSecondaryConfigPath;
   for i := 0 to length(pths)-1 do begin
@@ -169,6 +183,7 @@ end;
 
 procedure TManualDocker.AllocControls(AParent: TWinControl);
 begin
+  FCurrentSrcWin := AParent;
   panel := TPanel.Create(nil);
   panel.Parent := AParent;
   panel.BorderStyle := bsNone;
@@ -177,6 +192,12 @@ begin
   split.Parent := AParent;
 
   RealignControls;
+end;
+
+procedure TManualDocker.DeallocControls;
+begin
+  FreeAndNil(split);
+  FreeAndNil(panel);
 end;
 
 procedure TManualDocker.RealignControls;
@@ -191,6 +212,34 @@ procedure TManualDocker.UpdateDockState(var astate: TDockState; wnd: TWinControl
 begin
   astate.DockSize.cx := wnd.ClientWidth;
   astate.DockSize.cy := wnd.ClientHeight;
+end;
+
+procedure TManualDocker.SourceWindowCreated(Sender: TObject);
+begin
+  if Assigned(FCurrentSrcWin) or (SourceEditorManagerIntf.SourceWindowCount > 1) then
+    exit;
+  if MsgWnd.Docked then
+    ChangeDocking(true);
+end;
+
+procedure TManualDocker.SourceWindowDestroyed(Sender: TObject);
+var
+  IsDocked: Boolean;
+begin
+  IsDocked := MsgWnd.docked;
+  if FCurrentSrcWin <> Sender then exit;
+  if IsDocked then
+    ChangeDocking(False);
+  FCurrentSrcWin := nil;
+  DeallocControls;
+  if IsDocked then begin
+    if (SourceEditorManagerIntf.SourceWindowCount >= 1) then
+      ChangeDocking(True)
+    else
+    if Assigned(IDEMessagesWindow) then
+      IDEMessagesWindow.Hide;
+    MsgWnd.Docked := IsDocked;
+  end;
 end;
 
 procedure TManualDocker.LoadState(cfg: TXMLConfig; var Astate: TDockState;
