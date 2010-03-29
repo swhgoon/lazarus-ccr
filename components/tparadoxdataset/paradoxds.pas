@@ -611,9 +611,9 @@ begin
     end;
   pxfDate:
     begin
-      i := int-693594;
+      i := int;
       Move(i,Buffer^,sizeof(Integer));
-//      Result := True;
+      Result := True;
     end;
   pxfShort:
     begin
@@ -641,9 +641,9 @@ begin
     end;
   pxfTime:
     begin
-      i := int-693594;
+      i := int;
       Move(i,Buffer^,sizeof(Integer));
-//      Result := True;
+      Result := True;
     end;
   pxfTimestamp:
     begin
