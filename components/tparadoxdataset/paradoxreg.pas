@@ -5,7 +5,7 @@ unit paradoxreg;
 interface
 
 uses
-  Classes, SysUtils, LResources, Paradox, LazarusPackageIntf, PropEdits;
+  Classes, SysUtils, LResources, Paradoxds, LazarusPackageIntf, PropEdits;
 
 resourcestring
   dbfsAllparadoxfiles = 'Paradox Files';
@@ -35,7 +35,7 @@ end;
 
 procedure Register;
 begin
-  RegisterUnit('paradox',@RegisterUnitParadox);
+  RegisterUnit('paradoxds',@RegisterUnitParadox);
 end;
 
 initialization

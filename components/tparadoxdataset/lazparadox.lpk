@@ -1,18 +1,15 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="2">
+  <Package Version="3">
     <PathDelim Value="\"/>
     <Name Value="lazparadox"/>
     <Author Value="Christian Ulrich"/>
     <CompilerOptions>
-      <Version Value="5"/>
+      <Version Value="8"/>
       <PathDelim Value="\"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <CodeGeneration>
-        <Generate Value="Faster"/>
-      </CodeGeneration>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
@@ -27,7 +24,8 @@
         <UnitName Value="paradoxreg"/>
       </Item1>
       <Item2>
-        <Filename Value="paradox.pas"/>
+        <Filename Value="paradoxds.pas"/>
+        <UnitName Value="paradoxds"/>
       </Item2>
     </Files>
     <Type Value="RunAndDesignTime"/>

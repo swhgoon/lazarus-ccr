@@ -1,4 +1,4 @@
-unit paradox;
+unit paradoxds;
 
 { TParadoxdataSet
   Christian Ulrich christian@ullihome.de
@@ -356,7 +356,7 @@ begin
     begin
       case F^.fType of
       pxfAlpha:    Fielddefs.Add(StrPas(FNamesStart),ftString,F^.fSize);
-      pxfDate:     Fielddefs.Add(StrPas(FNamesStart),ftDate,F^.fSize);
+      pxfDate:     Fielddefs.Add(StrPas(FNamesStart),ftDate,0);
       pxfShort:    Fielddefs.Add(StrPas(FNamesStart),ftSmallInt,F^.fSize);
       pxfLong:     Fielddefs.Add(StrPas(FNamesStart),ftInteger,F^.fSize);
       pxfCurrency: Fielddefs.Add(StrPas(FNamesStart),ftFloat,F^.fSize);
