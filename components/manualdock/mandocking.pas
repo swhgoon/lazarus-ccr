@@ -96,7 +96,8 @@ begin
     if not (Assigned(SourceEditorManagerIntf) and Assigned(SourceEditorManagerIntf.ActiveSourceWindow))
        or not Assigned(IDEMessagesWindow)
     then Exit;
-    if not Assigned(panel) then AllocControls(SourceEditorManagerIntf.ActiveSourceWindow);
+    if not Assigned(panel) then
+      AllocControls(SourceEditorManagerIntf.ActiveSourceWindow);
     split.visible:=true;
     panel.visible:=true;
     with IDEMessagesWindow do
@@ -158,8 +159,7 @@ destructor TManualDocker.Destroy;
 begin
   if Assigned(panel) then UpdateDockState(MsgWnd, panel);
   SaveStates;
-  split.Free;
-  panel.Free;
+  DeallocControls;
   inherited Destroy;
 end;
 
@@ -184,11 +184,11 @@ end;
 procedure TManualDocker.AllocControls(AParent: TWinControl);
 begin
   FCurrentSrcWin := AParent;
-  panel := TPanel.Create(nil);
+  panel := TPanel.Create(AParent);
   panel.Parent := AParent;
   panel.BorderStyle := bsNone;
 
-  split := TSplitter.Create(nil);
+  split := TSplitter.Create(AParent);
   split.Parent := AParent;
 
   RealignControls;
@@ -196,8 +196,8 @@ end;
 
 procedure TManualDocker.DeallocControls;
 begin
-  FreeAndNil(split);
-  FreeAndNil(panel);
+  split:=nil;
+  panel:=nil;
 end;
 
 procedure TManualDocker.RealignControls;
@@ -228,16 +228,13 @@ var
 begin
   IsDocked := MsgWnd.docked;
   if FCurrentSrcWin <> Sender then exit;
-  if IsDocked then
-    ChangeDocking(False);
-  FCurrentSrcWin := nil;
+  if IsDocked then ChangeDocking(False);
   DeallocControls;
+  FCurrentSrcWin := nil;
+
   if IsDocked then begin
     if (SourceEditorManagerIntf.SourceWindowCount >= 1) then
-      ChangeDocking(True)
-    else
-    if Assigned(IDEMessagesWindow) then
-      IDEMessagesWindow.Hide;
+      ChangeDocking(True);
     MsgWnd.Docked := IsDocked;
   end;
 end;
