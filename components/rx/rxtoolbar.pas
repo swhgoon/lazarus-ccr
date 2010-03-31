@@ -913,6 +913,8 @@ begin
   FImageList:=AValue;
   for i:=0 to FToolbarItems.Count - 1 do
     FToolbarItems[i].FButton.FImageList:=AValue;
+
+  ReAlignToolBtn;
 end;
 
 procedure TToolPanel.SetImageListSelected(const AValue: TImageList);
@@ -1037,16 +1039,11 @@ procedure TToolPanel.ReAlignToolBtn;
 var
   i, L:integer;
 begin
-{  for i:=0 to FToolbarItems.Count - 1 do
-  begin
-    FToolbarItems[i].FButton.Align:=alNone;
-  end;
- }
   L:=BorderWidth;
   for i:=0 to FToolbarItems.Count - 1 do
   begin
     FToolbarItems[i].FButton.Left:=L;
-//    FToolbarItems[i].FButton.Align:=BtnAl2Align[FButtonAllign];
+    FToolbarItems[i].FButton.UpdateSize;
     L:=L + FToolbarItems[i].FButton.Width;
   end;
 end;
@@ -1128,10 +1125,10 @@ procedure TToolPanel.RequestAlign;
   i, L:integer;}
 begin
   inherited RequestAlign;
-{  if (Parent = nil) or (csDestroying in ComponentState) or (csLoading in ComponentState) or (not Parent.HandleAllocated) then
+  if (Parent = nil) or (csDestroying in ComponentState) or (csLoading in ComponentState) {or (not Parent.HandleAllocated) }then
     exit;
 //  if not Parent.HandleAllocated then exit;
-  ReAlignToolBtn;}
+//  ReAlignToolBtn;}
 end;
 
 procedure TToolPanel.Loaded;
@@ -1150,9 +1147,8 @@ begin
     B:=FToolbarItems[i];
     B.UpdateLeftAfterLoad;
     B.FButton.Align:=BtnAl2Align[FButtonAllign];
- //   B.FButton.UpdateSize;
   end;
-  ReAlignToolBtn;
+  //ReAlignToolBtn;
 end;
 
 constructor TToolPanel.Create(AOwner: TComponent);
@@ -1161,7 +1157,8 @@ begin
   FArrowBmp:=CreateArrowBitmap;
   AutoSize:=false;
   FToolbarItems:=TToolbarItems.Create(Self);
-  Align:=alTop;
+  if Assigned(AOwner) and not (csLoading in AOwner.ComponentState) then
+    Align:=alTop;
   Height:=DefButtonHeight;
   FPropertyStorageLink:=TPropertyStorageLink.Create;
   FPropertyStorageLink.OnSave:=@OnIniSave;
