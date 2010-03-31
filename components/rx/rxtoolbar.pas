@@ -674,7 +674,7 @@ procedure TToolbarButton.UpdateSize;
 var
   AWidth:integer;
 begin
-  if csLoading in TToolbarItems(FOwnerItem.Collection).FToolPanel.ComponentState then exit;
+{  if csLoading in TToolbarItems(FOwnerItem.Collection).FToolPanel.ComponentState then exit;
 
   if Assigned(TToolbarItems(FOwnerItem.Collection).FToolPanel.FImageList) then
   begin
@@ -683,9 +683,9 @@ begin
       AWidth:= AWidth + Canvas.TextWidth(Caption) + Spacing;
   end
   else
-    AWidth:=Canvas.TextWidth(Caption);
+    AWidth:=Canvas.TextWidth(Caption);}
 
-  SetBounds(Left, Top, AWidth, Height);
+  SetBounds(Left, Top, Width, Height);
   Invalidate;
 end;
 
