@@ -289,7 +289,7 @@ begin
   FButton.OnTopClick := @UpClick;
   FButton.OnBottomClick := @DownClick;
 
-  EditMask:='##'+TimeSeparator + '##'+TimeSeparator + '##';
+  EditMask:='!#0'+TimeSeparator + '00'+TimeSeparator + '00;1;_';
 end;
 
 destructor TCustomRxTimeEdit.Destroy;
