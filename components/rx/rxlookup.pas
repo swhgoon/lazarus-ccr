@@ -230,9 +230,10 @@ type
     procedure UpdateData;
     procedure NeedUpdateData;
   protected
+    procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
+                                     WithThemeSpace: Boolean); override;
     procedure ShowList; virtual;
     procedure OnClosePopup(AResult:boolean);virtual;
-    procedure DoAutoSize; override;
     procedure SetEnabled(Value: Boolean); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: char); override;
@@ -1118,6 +1119,24 @@ begin
   end;
 end;
 
+procedure TRxCustomDBLookupCombo.CalculatePreferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+var
+  tmpCanvas: TCanvas;
+begin
+  inherited CalculatePreferredSize(PreferredWidth, PreferredHeight,
+    WithThemeSpace);
+  // ignore width
+  PreferredWidth:=0;
+  tmpCanvas := GetWorkingCanvas(Canvas);
+  try
+    PreferredHeight:=Canvas.TextHeight('Wg')+12;
+  finally
+    if TmpCanvas<>Canvas then
+      FreeWorkingCanvas(tmpCanvas);
+  end;
+end;
+
 procedure TRxCustomDBLookupCombo.OnClosePopup(AResult: boolean);
 begin
   if Assigned(FRxPopUpForm) and AResult and (pfgColumnResize in FPopUpFormOptions.Options) then
@@ -1149,11 +1168,6 @@ begin
 
   if (AResult) and (Assigned(FOnSelect)) then
     FOnSelect(Self);
-end;
-
-procedure TRxCustomDBLookupCombo.DoAutoSize;
-begin
-  Height:=Canvas.TextHeight('Wg')+12;
 end;
 
 procedure TRxCustomDBLookupCombo.SetEnabled(Value: Boolean);

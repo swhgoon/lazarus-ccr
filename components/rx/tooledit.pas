@@ -787,6 +787,7 @@ begin
     FPopup := CreatePopupCalendar(Self {$IFDEF USED_BiDi}, BiDiMode {$ENDIF});
     FPopup.OnCloseUp := @PopupCloseUp;
     FPopup.Color := FPopupColor;
+    FPopup.Visible:=false;
 {$ELSE}
     FPopup:=nil;
 {$ENDIF DEFAULT_POPUP_CALENDAR}
