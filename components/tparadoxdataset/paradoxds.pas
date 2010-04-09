@@ -368,7 +368,7 @@ begin
       pxfOLE:      Fielddefs.Add(StrPas(FNamesStart),ftBlob,F^.fSize);
       pxfGraphic:  Fielddefs.Add(StrPas(FNamesStart),ftBlob,F^.fSize);
       pxfTime:     Fielddefs.Add(StrPas(FNamesStart),ftTime,F^.fSize);
-      pxfTimestamp:Fielddefs.Add(StrPas(FNamesStart),ftdateTime,F^.fSize);
+      pxfTimestamp:Fielddefs.Add(StrPas(FNamesStart),ftdateTime,0);
       pxfAutoInc:  Fielddefs.Add(StrPas(FNamesStart),ftAutoInc,F^.fSize);
       pxfBCD:      Fielddefs.Add(StrPas(FNamesStart),ftBCD,F^.fSize);
       pxfBytes:    Fielddefs.Add(StrPas(FNamesStart),ftString,F^.fSize);
