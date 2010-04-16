@@ -1290,7 +1290,11 @@ var
   tmpWidth: Single;
 begin
   Result := 0;
-
+  {$IFDEF LAZ_POWERPDF}
+  // for invalid char, any value less than 32 will make FFont.GetCharWidth
+  // to return a default missing width for that font.
+  Text := _UTF8ToWinAnsi(Text, #31);
+  {$ENDIF}
   // calculate width of specified text from current attributes
   for i := 1 to Length(Text) do
   begin
@@ -1320,6 +1324,10 @@ var
 begin
   Result := 0;
   tmpTotalWidth := 0;
+
+  {$IFDEF LAZ_POWERPDF}
+  Text := _UTF8ToWinAnsi(Text, #31);
+  {$ENDIF}
 
   // calculate number of charactor contain in the specified width.
   for i := 1 to Length(Text) do
@@ -2159,7 +2167,7 @@ end;
 
 procedure TPdfCanvas.RoundRect(x, y, width, height, rx, ry: Single);
 var
-  hm,wm,h1,w1:single;
+  h1,w1:single;
 begin
   h1 := ry*11/20;
   w1 := rx*11/20;

@@ -300,6 +300,7 @@ type
 
 {$IFDEF LAZ_POWERPDF}
   function _UTF8StrToUnicodeHex(const Value:string): string;
+  function _UTF8ToWinAnsi(const value:string; InvalidChar:char='?'): string;
   procedure PdfLazRegisterClassAlias(aClass: TPersistentClass; Alias: string);
   function  PdfLazFindClass(aClassName: string):TPersistentClass;
 {$ENDIF}
@@ -1052,7 +1053,7 @@ end;
 //type
 //  TConvFunc=function(const W:Word): char;
 
-function CP1252(const W: Word): Char;
+function CP1252(const W: Word; const InvalidChar: Char): Char;
 begin
   case W of
     $00..$7F,$A0..$FF: result := char(W);
@@ -1084,17 +1085,8 @@ begin
     $017E: result := #$9E;
     $0178: result := #$9F;
   else
-    result:='?';
+    result:=InvalidChar;
   end;
-end;
-
-function UnicodeToWinAnsi(W: widestring): string;
-var
-  i: Integer;
-begin
-  result := '';
-  for i:=1 to length(w) do
-    result := result + CP1252(word(w[i]));
 end;
 
 // _EscapeText
@@ -1106,15 +1098,17 @@ var
   i, j: integer;
   flg: boolean;
   S: string;
-  W: widestring;
 begin
   //  If text contains chars to need escape, replace text using "\".
   //
   // TODO: implement UNICODE support in powerpdf. Currently we can't do
   // any better than converting utf-8 strings to unicode.
-  W := UTF8Decode(Value);
-  S := UnicodeToWinAnsi(W);
   result := '';
+  {$IFDEF LAZ_POWERPDF}
+  S := _UTF8ToWinAnsi(Value);
+  {$ELSE}
+  S := Value;
+  {$ENDIF}
   for i := 1 to Length(S) do
   begin
     flg := false;
@@ -1205,6 +1199,17 @@ begin
   for i:=1 to Length(W) do begin
     Result := Result + IntTohex(Word(W[i]), 4);
   end;
+end;
+
+function _UTF8ToWinAnsi(const value: string; InvalidChar:char='?'): string;
+var
+  W: widestring;
+  i: Integer;
+begin
+  W := UTF8Decode(Value);
+  result := '';
+  for i:=1 to length(w) do
+    result := result + CP1252(word(w[i]), InvalidChar);
 end;
 
 procedure PdfLazRegisterClassAlias(aClass: TPersistentClass; Alias: string);
