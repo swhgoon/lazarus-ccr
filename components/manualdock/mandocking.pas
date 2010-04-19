@@ -36,9 +36,9 @@ type
 
   TManualDocker = class(TObject)
   private
-    FCurrentSrcWin: TWinControl;
+    FCurrentSrcWin  : TWinControl;
   protected
-    procedure ChangeDocking(DockingEnabled: Boolean);
+    function DoChangeDocking(DockingEnabled: Boolean): Boolean;
     procedure LoadState(cfg: TXMLConfig; var Astate: TDockState; const StateName: string);
     procedure SaveState(cfg: TXMLConfig; const Astate: TDockState; const StateName: string);
     procedure LoadStates;
@@ -88,11 +88,12 @@ begin
   else Result := b;
 end;
 
-procedure TManualDocker.ChangeDocking(DockingEnabled: Boolean);
+function TManualDocker.DoChangeDocking(DockingEnabled:Boolean):Boolean;
 var
   i : Integer;
 begin
   if DockingEnabled then begin
+    Result:=False;
     if not (Assigned(SourceEditorManagerIntf) and Assigned(SourceEditorManagerIntf.ActiveSourceWindow))
        or not Assigned(IDEMessagesWindow)
     then Exit;
@@ -100,8 +101,10 @@ begin
     if not Assigned(panel) then
       AllocControls(SourceEditorManagerIntf.ActiveSourceWindow);
 
-    if panel.Parent <> SourceEditorManagerIntf.ActiveSourceWindow then
+    if panel.Parent <> SourceEditorManagerIntf.ActiveSourceWindow then begin
+      split.Parent:=SourceEditorManagerIntf.ActiveSourceWindow;
       panel.Parent:=SourceEditorManagerIntf.ActiveSourceWindow;
+    end;
 
     split.visible:=true;
     panel.visible:=true;
@@ -113,17 +116,18 @@ begin
     IDEMessagesWindow.Parent := panel;
     IDEMessagesWindow.Align := alClient;
     IDEMessagesWindow.BorderStyle := bsNone;
-    IDEMessagesWindow.TabStop := false;
-    for i := 0 to IDEMessagesWindow.ControlCount - 1 do 
-      if IDEMessagesWindow.Controls[i] is TWinControl then 
-        TWinControl(IDEMessagesWindow.Controls[i]).TabStop := false;
+    IDEMessagesWindow.TabStop := False;
+    for i := 0 to IDEMessagesWindow.ControlCount - 1 do
+      if IDEMessagesWindow.Controls[i] is TWinControl then
+        TWinControl(IDEMessagesWindow.Controls[i]).TabStop := False;
     panel.Height := MsgWnd.DockSize.cy;
+    Result:=True;
   end else begin
     if Assigned(panel) then begin
-      panel.visible := false;
+      panel.visible := False;
       UpdateDockState(MsgWnd, panel);
     end;
-    if Assigned(split) then split.visible := false;
+    if Assigned(split) then split.visible := False;
     IDEMessagesWindow.Parent := nil;
     with MsgWnd do begin
       IDEMessagesWindow.BoundsRect := SafeRect(FloatRect,
@@ -132,9 +136,10 @@ begin
     end;
     IDEMessagesWindow.TabStop := true;
     IDEMessagesWindow.Show;
+
+    {undocking is always succesfull}
+    Result:=True;
   end;
-  MsgWnd.docked := DockingEnabled;
-  cmd.Checked := DockingEnabled;
 end;
 
 constructor TManualDocker.Create;
@@ -169,13 +174,18 @@ begin
 end;
 
 procedure TManualDocker.OnCmdClick(Sender: TObject);
+var
+  NeedDocking: Boolean;
 begin
-  ChangeDocking(not Cmd.Checked );
+  NeedDocking:=not Cmd.Checked;
+  DoChangeDocking(NeedDocking);
+  MsgWnd.docked:=NeedDocking;
+  cmd.Checked:=NeedDocking;
 end;
 
 function TManualDocker.OnProjectOpen(Sender: TObject; AProject: TLazProject): TModalResult;
 begin
-  if MsgWnd.Docked then ChangeDocking(true);
+  DoChangeDocking(MsgWnd.Docked);
   Result := mrOK;
 end;
 
@@ -223,35 +233,27 @@ procedure TManualDocker.SourceWindowCreated(Sender: TObject);
 begin
   if Assigned(FCurrentSrcWin) or (SourceEditorManagerIntf.SourceWindowCount > 1) then
     Exit;
-  if MsgWnd.Docked then
-    ChangeDocking(true);
+  if MsgWnd.Docked then DoChangeDocking(true);
 end;
 
 procedure TManualDocker.SourceWindowDestroyed(Sender: TObject);
 var
-  IsDocked: Boolean;
   i : Integer;
 begin
-  IsDocked := MsgWnd.docked;
   if FCurrentSrcWin <> Sender then Exit;
-  if IsDocked then ChangeDocking(False);
+  DoChangeDocking(False);
   DeallocControls;
   FCurrentSrcWin := nil;
 
-  if IsDocked then begin
-    for i:=0 to SourceEditorManagerIntf.SourceWindowCount-1 do
-      if SourceEditorManagerIntf.SourceWindows[i]<>Sender then begin
-        // any window is dockable!
-        ChangeDocking(True);
-        Break;
-      end;
-  end;
+  // avoid re-docking to the window being destroyed
+  if MsgWnd.Docked and (SourceEditorManagerIntf.ActiveSourceWindow<>Sender) then
+    DoChangeDocking(True);
 end;
 
 procedure TManualDocker.LoadState(cfg: TXMLConfig; var Astate: TDockState;
   const StateName: string);
 begin
-  AState.docked := cfg.GetValue(StateName+'/docked', false);
+  AState.Docked := cfg.GetValue(StateName+'/docked', False);
   AState.FloatRect.Left := cfg.GetValue(StateName+'/float/left', -1);
   AState.FloatRect.Top := cfg.GetValue(StateName+'/float/top', -1);
   AState.FloatRect.Right := cfg.GetValue(StateName+'/float/right', -1);
@@ -262,7 +264,7 @@ end;
 
 procedure TManualDocker.SaveState(cfg: TXMLConfig; const Astate: TDockState; const StateName: string);
 begin
-  cfg.SetValue(StateName+'/docked', AState.docked);
+  cfg.SetValue(StateName+'/docked', AState.Docked);
   cfg.SetValue(StateName+'/float/left', AState.FloatRect.Left);
   cfg.SetValue(StateName+'/float/top', AState.FloatRect.Top);
   cfg.SetValue(StateName+'/float/right', AState.FloatRect.Right);
@@ -302,7 +304,7 @@ procedure Register;
 begin
   docker := TManualDocker.Create;
   cmd := RegisterIDEMenuCommand(itmViewMainWindows, 'makeMessagesDocked', mnuDockMsgWindow, @docker.OnCmdClick, nil, nil, '');
-  LazarusIDE.AddHandlerOnProjectOpened(@docker.OnProjectOpen, false);
+  LazarusIDE.AddHandlerOnProjectOpened(@docker.OnProjectOpen, False);
 end;
 
 initialization
