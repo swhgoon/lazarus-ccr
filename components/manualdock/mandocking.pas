@@ -90,14 +90,19 @@ end;
 
 procedure TManualDocker.ChangeDocking(DockingEnabled: Boolean);
 var
-  i  : Integer;
+  i : Integer;
 begin
   if DockingEnabled then begin
     if not (Assigned(SourceEditorManagerIntf) and Assigned(SourceEditorManagerIntf.ActiveSourceWindow))
        or not Assigned(IDEMessagesWindow)
     then Exit;
+
     if not Assigned(panel) then
       AllocControls(SourceEditorManagerIntf.ActiveSourceWindow);
+
+    if panel.Parent <> SourceEditorManagerIntf.ActiveSourceWindow then
+      panel.Parent:=SourceEditorManagerIntf.ActiveSourceWindow;
+
     split.visible:=true;
     panel.visible:=true;
     with IDEMessagesWindow do
@@ -217,7 +222,7 @@ end;
 procedure TManualDocker.SourceWindowCreated(Sender: TObject);
 begin
   if Assigned(FCurrentSrcWin) or (SourceEditorManagerIntf.SourceWindowCount > 1) then
-    exit;
+    Exit;
   if MsgWnd.Docked then
     ChangeDocking(true);
 end;
@@ -225,17 +230,21 @@ end;
 procedure TManualDocker.SourceWindowDestroyed(Sender: TObject);
 var
   IsDocked: Boolean;
+  i : Integer;
 begin
   IsDocked := MsgWnd.docked;
-  if FCurrentSrcWin <> Sender then exit;
+  if FCurrentSrcWin <> Sender then Exit;
   if IsDocked then ChangeDocking(False);
   DeallocControls;
   FCurrentSrcWin := nil;
 
   if IsDocked then begin
-    if (SourceEditorManagerIntf.SourceWindowCount >= 1) then
-      ChangeDocking(True);
-    MsgWnd.Docked := IsDocked;
+    for i:=0 to SourceEditorManagerIntf.SourceWindowCount-1 do
+      if SourceEditorManagerIntf.SourceWindows[i]<>Sender then begin
+        // any window is dockable!
+        ChangeDocking(True);
+        Break;
+      end;
   end;
 end;
 
