@@ -76,7 +76,8 @@ type
     FFormatting: Boolean;
     FPopupVisible: Boolean;
     FPopupAlign: TPopupAlign;
-    function GetCalendarStyle: TCalendarStyle;
+    FCalendarStyle: TCalendarStyle;
+    //function GetCalendarStyle: TCalendarStyle;
     function GetDate: TDateTime;
     function GetPopupColor: TColor;
     function GetPopupVisible: Boolean;
@@ -110,6 +111,7 @@ type
     procedure KeyPress(var Key: Char); override;
     procedure DoButtonClick (Sender: TObject); override;
     function GetDefaultGlyphName: String; override;
+    function CreatePopupForm:TPopupCalendar;
 
     property BlanksChar: Char read FBlanksChar write SetBlanksChar default ' ';
     property DialogTitle:TCaption Read FDialogTitle Write FDialogTitle Stored IsStoreTitle;
@@ -124,7 +126,7 @@ type
     property YearDigits: TYearDigits read FYearDigits write SetYearDigits default dyDefault;
     property PopupColor: TColor read GetPopupColor write SetPopupColor
       default clBtnFace;
-    property CalendarStyle: TCalendarStyle read GetCalendarStyle
+    property CalendarStyle: TCalendarStyle read FCalendarStyle//GetCalendarStyle
       write SetCalendarStyle default dcsDefault;
     property PopupVisible: Boolean read GetPopupVisible;
     property PopupAlign: TPopupAlign read FPopupAlign write FPopupAlign default epaLeft;
@@ -368,6 +370,7 @@ begin
   UpdateMask;
 end;
 
+{
 function TCustomRxDateEdit.GetCalendarStyle: TCalendarStyle;
 begin
   if FPopup <> nil then
@@ -375,7 +378,7 @@ begin
   else
     Result := csDialog;
 end;
-
+}
 function TCustomRxDateEdit.GetDate: TDateTime;
 begin
   if DefaultToday then Result := SysUtils.Date
@@ -407,9 +410,10 @@ end;
 
 procedure TCustomRxDateEdit.SetCalendarStyle(const AValue: TCalendarStyle);
 begin
-  if AValue <> CalendarStyle then
+  if AValue <> FCalendarStyle then
   begin
-    case AValue of
+    FCalendarStyle:=AValue;
+{    case AValue of
       csPopup:
         begin
           if FPopup = nil then
@@ -425,7 +429,7 @@ begin
           FPopup.Free;
           FPopup := nil;
         end;
-    end;
+    end;}
   end;
 end;
 
@@ -567,6 +571,8 @@ begin
 end;
 
 begin
+  if not Assigned(FPopup) then
+    FPopup:=CreatePopupForm;
   if (FPopup <> nil) and not (ReadOnly {or FPopupVisible}) then
   begin
     P := Parent.ClientToScreen(Point(Left, Top));
@@ -645,6 +651,8 @@ procedure TCustomRxDateEdit.ShowPopup(AOrigin: TPoint);
 var
   FAccept:boolean;
 begin
+  if not Assigned(FPopup) then
+    FPopup:=CreatePopupForm;
   FPopup.Left:=AOrigin.X;
   FPopup.Top:=AOrigin.Y;
   FPopup.AutoSizeForm;
@@ -734,7 +742,8 @@ var
   A: Boolean;
 begin
   inherited DoButtonClick(Sender);
-  if FPopup <> nil then
+  if CalendarStyle <> csDialog then
+//  if FPopup <> nil then
   begin
 {    if FPopupVisible then
       PopupCloseUp(FPopup, True)
@@ -766,6 +775,14 @@ begin
   Result:='picDateEdit';
 end;
 
+function TCustomRxDateEdit.CreatePopupForm: TPopupCalendar;
+begin
+  Result := CreatePopupCalendar(Self {$IFDEF USED_BiDi}, BiDiMode {$ENDIF});
+  Result.OnCloseUp := @PopupCloseUp;
+  Result.Color := FPopupColor;
+  TRxCalendarGrid(Result.Calendar).NotInThisMonthColor:=FNotInThisMonthColor;
+end;
+
 constructor TCustomRxDateEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -783,6 +800,7 @@ begin
   ControlState := ControlState + [csCreating];
   try
     UpdateFormat;
+(*
 {$IFDEF DEFAULT_POPUP_CALENDAR}
     FPopup := CreatePopupCalendar(Self {$IFDEF USED_BiDi}, BiDiMode {$ENDIF});
     FPopup.OnCloseUp := @PopupCloseUp;
@@ -791,6 +809,8 @@ begin
 {$ELSE}
     FPopup:=nil;
 {$ENDIF DEFAULT_POPUP_CALENDAR}
+*)
+    FPopup:=nil;
 //    GlyphKind := gkDefault; { force update }
   finally
     ControlState := ControlState - [csCreating];

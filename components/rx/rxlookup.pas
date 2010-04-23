@@ -1513,8 +1513,9 @@ var
   ArrowBmp:TBitmap;
 begin
   inherited Create(AOwner);
-  Height := 23;
+  //Height := 23;
   Width := 100;
+  AutoSize:=true;
   FUnfindedValue:=rxufNone;
   FFieldList := TStringList.Create;
   FValuesList:= TStringList.Create;

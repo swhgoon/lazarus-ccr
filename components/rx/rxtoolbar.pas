@@ -235,7 +235,7 @@ type
     property ToolBarStyle:TToolBarStyle read FToolBarStyle write SetToolBarStyle default tbsStandart;
     property Options:TToolPanelOptions read FOptions write SetOptions;
     property Version: Integer read FVersion write FVersion default 0;
-    property ButtonAllign:TToolButtonAllign read FButtonAllign write SetButtonAllign;
+    property ButtonAllign:TToolButtonAllign read FButtonAllign write SetButtonAllign default tbaLeft;
 
     property Align;
     property Alignment;
@@ -1156,6 +1156,7 @@ begin
   inherited Create(AOwner);
   FArrowBmp:=CreateArrowBitmap;
   AutoSize:=false;
+  FButtonAllign:=tbaLeft;
   FToolbarItems:=TToolbarItems.Create(Self);
   if Assigned(AOwner) and not (csLoading in AOwner.ComponentState) then
     Align:=alTop;
