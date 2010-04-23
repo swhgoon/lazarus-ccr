@@ -47,6 +47,8 @@ type
   TRxCustomDBLookupCombo = class;
   TRxCustomDBLookupEdit = class;
 
+  TClosePopup = procedure(Sender: TObject; SearchResult:boolean) of object;
+
   {For deciding, what we need to show in combobox in case we cannot find curvalue in lookup table.}
   TRxDBValueVariant = (rxufNone, rxufLastSuccessful, rxufOriginal);
 
@@ -86,6 +88,7 @@ type
     //
     FLookupDataLink:TLookupSourceLink;
     FLocateObject:TLocateObject;
+    FOnClosePopup: TClosePopup;
     //
     FRxPopUpForm:TPopUpForm;
 
@@ -112,11 +115,12 @@ type
     procedure DoButtonClick (Sender: TObject); override;
     function GetDefaultGlyphName: String; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure OnClosePopup(AResult:boolean);virtual;
+    procedure InternalClosePopup(AResult:boolean);virtual;
     //
     procedure LookupDataSetChanged(Sender: TObject);  virtual;
     procedure ListLinkActiveChanged(Sender: TObject); virtual;
     //
+    property OnClosePopup:TClosePopup read FOnClosePopup write FOnClosePopup;
     property DropDownCount: Integer read GetDropDownCount write SetDropDownCount default 8;
     property DropDownWidth: Integer read GetDropDownWidth write SetDropDownWidth default 0;
     property LookupDisplay: string read FLookupDisplay write SetLookupDisplay;
@@ -138,6 +142,7 @@ type
     property LookupField;
     property LookupSource;
     property PopUpFormOptions;
+    property OnClosePopup;
   end;
 
   { TRxCustomDBLookupCombo }
@@ -489,15 +494,15 @@ begin
 
       FLocateObject.Locate(FLookupField, FValue, true, false);
 
-      FRxPopUpForm:=ShowRxDBPopUpForm(Self, FLookupDataLink.DataSet, @OnClosePopup,
-        FPopUpFormOptions, FLookupDisplay, LookupDisplayIndex, 0 {ButtonWidth}, Font);
+(*     FRxPopUpForm:=ShowRxDBPopUpForm(Self, FLookupDataLink.DataSet, @OnClosePopup,
+        FPopUpFormOptions, FLookupDisplay, LookupDisplayIndex, 0 {ButtonWidth}, Font);*)
 
-      FRxPopUpForm:=ShowRxDBPopUpForm(Self, FLookupDataLink.DataSet, @OnClosePopup,
+      FRxPopUpForm:=ShowRxDBPopUpForm(Self, FLookupDataLink.DataSet, @InternalClosePopup,
         FPopUpFormOptions, FLookupDisplay, LookupDisplayIndex, 0 {ButtonWidth}, Font);
   {$IFDEF LINUX}
       TempF:=FRxPopUpForm;
       if FRxPopUpForm.ShowModal = mrOk then
-        OnClosePopup(true);
+        InternalClosePopup(true);
       TempF.Free;
       FRxPopUpForm:=nil
   {$ENDIF}
@@ -557,9 +562,10 @@ begin
   end;
 end;
 
-procedure TRxCustomDBLookupEdit.OnClosePopup(AResult: boolean);
+procedure TRxCustomDBLookupEdit.InternalClosePopup(AResult: boolean);
 begin
-
+  if Assigned(FOnClosePopup) then
+    FOnClosePopup(Self, AResult);
 end;
 
 procedure TRxCustomDBLookupEdit.LookupDataSetChanged(Sender: TObject);
