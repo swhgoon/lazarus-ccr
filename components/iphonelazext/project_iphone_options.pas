@@ -28,6 +28,7 @@ type
   { TiPhoneProjectOptionsEditor }
 
   TiPhoneProjectOptionsEditor = class(TAbstractIDEOptionsEditor)
+    btnShowInFinder:TButton;
     Label5:TLabel;
     mnuOpenIB:TMenuItem;
     nibFilesBox:TCheckListBox;
@@ -44,6 +45,7 @@ type
     lblAppIDHint: TLabel;
     lblSDKVer: TLabel;
     nibsPopup:TPopupMenu;
+    procedure btnShowInFinderClick(Sender:TObject);
     procedure cmbSDKsChange(Sender: TObject);
     procedure edtExcludeChange(Sender: TObject);
     procedure edtResDirChange(Sender:TObject);
@@ -122,6 +124,23 @@ end;
 procedure TiPhoneProjectOptionsEditor.cmbSDKsChange(Sender: TObject);
 begin
 
+end;
+
+procedure TiPhoneProjectOptionsEditor.btnShowInFinderClick(Sender:TObject);
+var
+  path: AnsiString;
+  tmp : AnsiString;
+begin
+  path:=Trim(edtResDir.Text);
+  if (path='') or (path[1]<>PathDelim) then // project relative path
+    LazarusIDE.ActiveProject.LongenFilename(path);
+
+  while (path<>'') and (not DirectoryExistsUTF8(path)) do begin
+    tmp:=path;
+    path:=ExtractFileDir(path);
+    if tmp=path then Break;
+  end;
+  if DirectoryExistsUTF8(path) then ExecCmdLineNoWait('open "'+path +'"');
 end;
 
 procedure TiPhoneProjectOptionsEditor.edtExcludeChange(Sender: TObject);

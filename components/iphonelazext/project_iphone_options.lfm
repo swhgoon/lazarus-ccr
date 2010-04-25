@@ -60,11 +60,13 @@ inherited iPhoneProjectOptionsEditor: TiPhoneProjectOptionsEditor
     TabOrder = 2
   end
   object edtResDir: TEdit[6]
+    AnchorSideRight.Control = btnShowInFinder
     Left = 120
     Height = 22
-    Top = 176
-    Width = 482
+    Top = 174
+    Width = 355
     Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Right = 10
     OnChange = edtResDirChange
     OnExit = edtResDirExit
     TabOrder = 3
@@ -140,7 +142,18 @@ inherited iPhoneProjectOptionsEditor: TiPhoneProjectOptionsEditor
     ParentColor = False
     ParentFont = False
   end
-  object nibsPopup: TPopupMenu[14]
+  object btnShowInFinder: TButton[14]
+    Left = 485
+    Height = 20
+    Top = 176
+    Width = 117
+    Anchors = [akTop, akRight]
+    AutoSize = True
+    Caption = 'Show in Finder'
+    OnClick = btnShowInFinderClick
+    TabOrder = 6
+  end
+  object nibsPopup: TPopupMenu[15]
     OnPopup = nibsPopupPopup
     left = 256
     top = 288
