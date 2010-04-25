@@ -1,12 +1,11 @@
 inherited iPhoneProjectOptionsEditor: TiPhoneProjectOptionsEditor
-  Height = 374
-  Width = 618
-  ClientHeight = 374
-  ClientWidth = 618
+  Height = 474
+  Width = 620
+  ClientHeight = 474
+  ClientWidth = 620
   OnClick = FrameClick
-  TabOrder = 0
-  DesignLeft = 355
-  DesignTop = 224
+  DesignLeft = 246
+  DesignTop = 121
   object chkisPhone: TCheckBox[0]
     Left = 16
     Height = 18
@@ -27,7 +26,7 @@ inherited iPhoneProjectOptionsEditor: TiPhoneProjectOptionsEditor
     Left = 112
     Height = 22
     Top = 85
-    Width = 488
+    Width = 490
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 1
     Text = 'com.mycompany.myapp'
@@ -64,8 +63,10 @@ inherited iPhoneProjectOptionsEditor: TiPhoneProjectOptionsEditor
     Left = 120
     Height = 22
     Top = 176
-    Width = 480
+    Width = 482
     Anchors = [akTop, akLeft, akRight]
+    OnChange = edtResDirChange
+    OnExit = edtResDirExit
     TabOrder = 3
     Text = 'Resources'
   end
@@ -81,7 +82,7 @@ inherited iPhoneProjectOptionsEditor: TiPhoneProjectOptionsEditor
     Left = 120
     Height = 22
     Top = 224
-    Width = 480
+    Width = 482
     Anchors = [akTop, akLeft, akRight]
     OnChange = edtExcludeChange
     TabOrder = 4
@@ -104,5 +105,48 @@ inherited iPhoneProjectOptionsEditor: TiPhoneProjectOptionsEditor
     Font.Height = -10
     ParentColor = False
     ParentFont = False
+  end
+  object Label4: TLabel[11]
+    Left = 16
+    Height = 18
+    Top = 256
+    Width = 54
+    Caption = 'Nib files:'
+    ParentColor = False
+  end
+  object nibFilesBox: TCheckListBox[12]
+    Left = 120
+    Height = 180
+    Top = 256
+    Width = 482
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ItemHeight = 0
+    OnClickCheck = nibFilesBoxClickCheck
+    OnItemClick = nibFilesBoxItemClick
+    OnMouseDown = nibFilesBoxMouseDown
+    OnMouseUp = nibFilesBoxMouseUp
+    PopupMenu = nibsPopup
+    TabOrder = 5
+  end
+  object Label5: TLabel[13]
+    AnchorSideTop.Control = nibFilesBox
+    AnchorSideTop.Side = asrBottom
+    Left = 120
+    Height = 14
+    Top = 436
+    Width = 246
+    Caption = 'The checked one is the main Nib of the application'
+    Font.Height = -10
+    ParentColor = False
+    ParentFont = False
+  end
+  object nibsPopup: TPopupMenu[14]
+    OnPopup = nibsPopupPopup
+    left = 256
+    top = 288
+    object mnuOpenIB: TMenuItem
+      Caption = 'Open Interface Builder'
+      OnClick = mnuOpenIBClick
+    end
   end
 end

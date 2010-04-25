@@ -35,6 +35,10 @@ resourcestring
   strWNoSDKSelected = 'Warning: SDK is not selected using %s';
   strWNoSDK         = 'Warning: No SDK available. Linking might fail.';
 
+
+  strOpenXibAtIB    = 'Open "%s" at Interface Builder';
+  strOpenAtIB       = 'Open at Interface Builder';
+
 implementation
 
 end.

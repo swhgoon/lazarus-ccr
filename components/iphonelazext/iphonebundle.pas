@@ -35,6 +35,7 @@ type
     iPlatform   : WideString;
     SDKVersion  : WideString;
     AppID       : WideString;
+    MainNib     : WideString;
   end;
 
 function GetUserHomeDir: WideString;
@@ -215,12 +216,20 @@ const
     '	<key>CFBundlePackageType</key>'#10+           '	<string>APPL</string>'#10+
     '	<key>CFBundleSignature</key>'#10+             '	<string>????</string>'#10+
     '	<key>CFBundleSupportedPlatforms</key>'#10+    '	<array>'#10+'		<string>%s</string>'#10+'	</array>'#10+ {platform}
+    '%s'+ // optional MainNib name
     '	<key>CFBundleVersion</key>'#10+               '	<string>1.0</string>'#10+
     '	<key>DTPlatformName</key>'#10+                '	<string>%s</string>'#10+     {platform}
     '	<key>DTSDKName</key>'#10+                     '	<string>%s</string>'#10+     {sdk version}
     '	<key>LSRequiresIPhoneOS</key>'#10+            '	<true/>'#10+
     '</dict>'#10+
     '</plist>';
+
+  function MainNibString(const NibName: WideString): AnsiString;
+  begin
+    if NibName='' then Result:=''
+    else Result:='<key>NSMainNibFile</key><string>'+UTF8Encode(NibName)+'</string>'#10;
+  end;
+
 var
   dispName : WideString;
   s        : String;
@@ -239,10 +248,12 @@ begin
         UTF8Encode(AppID),
         UTF8Encode(BundleName),
         UTF8Encode(iPlatform),
+        MainNibString(info.MainNib),
         UTF8Encode(iPlatform),
         UTF8Encode(SDKVersion)
       ]);
   if FileExists(InfoFileName) then DeleteFile(InfoFileName);
+
   fs:=TFileStream.Create(InfoFileName, fmCreate or fmOpenWrite);
   try
     if s<>'' then fs.Write(s[1], length(s));

@@ -94,6 +94,7 @@ begin
   Info.DisplayName:=LazarusIDE.ActiveProject.Title;
   Info.iPlatform:=EnvOptions.GetSDKName(ProjOptions.SDK, forSimulator);
   Info.SDKVersion:=ProjOptions.SDK;
+  Info.MainNib:=UTF8Decode(ProjOptions.MainNib);
 end;
 
 procedure TiPhoneExtension.InstallAppToSim;
@@ -117,6 +118,7 @@ begin
   nm:=GetProjectExeName(LazarusIDE.ActiveProject);
 
   FillBunldeInfo(true, Info);
+
   CreateBundle(bundleName, Space, ExtractFileName(nm), Info, RealSpace, bundlepath, exepath);
 
   WriteIconTo( IncludeTrailingPathDelimiter(bundlepath)+'Icon.png');

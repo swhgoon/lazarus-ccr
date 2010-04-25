@@ -28,26 +28,28 @@ type
 
   TiPhoneProjectOptions = class(TAbstractIDEProjectOptions)
   private
-    fisiPhone   : Boolean;
-    fAppID      : string;
-    fSDK        : string;
-    DataWritten : Boolean;
-    fSpaceName  : string;
-    fResourceDir  : string;
-    fExcludeMask  : string;
+    fisiPhone     : Boolean;
+    fAppID        : String;
+    fSDK          : String;
+    DataWritten   : Boolean;
+    fSpaceName    : String;
+    fResourceDir  : String;
+    fExcludeMask  : String;
+    fMainNib      : String;
   public
     constructor Create;
-    class function GetGroupCaption: string; override;
+    class function GetGroupCaption: String; override;
     class function GetInstance: TAbstractIDEOptions; override;
     function Load: Boolean;
     function Save: Boolean;
     procedure Reset;
     property isIPhoneApp: Boolean read fisIPhone write fisIPhone;
-    property SDK: string read fSDK write fSDK;
-    property AppID: string read fAppID write fAppID;
-    property SpaceName: string read fSpaceName write fSpaceName;
-    property ResourceDir: string read fResourceDir write fResourceDir;
-    property ExcludeMask: string read fExcludeMask write fExcludeMask;
+    property SDK: String read fSDK write fSDK;
+    property AppID: String read fAppID write fAppID;
+    property SpaceName: String read fSpaceName write fSpaceName;
+    property ResourceDir: String read fResourceDir write fResourceDir;
+    property ExcludeMask: String read fExcludeMask write fExcludeMask;
+    property MainNib: String read fMainNib write fMainNib;
   end;
 
   { TiPhoneEnvironmentOptions }
@@ -62,17 +64,17 @@ type
 
   TiPhoneEnvironmentOptions = class(TAbstractIDEEnvironmentOptions)
   private
-    fPlatformsBaseDir : string;
-    fCompilerPath     : string;
-    fBaseRTLPath      : string;
-    fCommonOpt        : string;
-    fSimAppsPath      : string;
-    fSimBundle        : string;
-    fDefaultSDK       : string;
+    fPlatformsBaseDir : String;
+    fCompilerPath     : String;
+    fBaseRTLPath      : String;
+    fCommonOpt        : String;
+    fSimAppsPath      : String;
+    fSimBundle        : String;
+    fDefaultSDK       : String;
 
     fVersions  : TStringList;
   protected
-    function XMLFileName: string;
+    function XMLFileName: String;
 
     procedure ClearVersionsInfo;
     procedure FoundSDK(const Version, DevSDKName, DevSDKPath, SimSDKName, SimSDKPath: String);
@@ -80,27 +82,27 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    class function GetGroupCaption: string; override;
+    class function GetGroupCaption: String; override;
     class function GetInstance: TAbstractIDEOptions; override;
 
     function Load: Boolean;
     function Save: Boolean;
 
-    function GetSDKName(const SDKVer: string; simulator: Boolean): string;
-    function GetSDKFullPath(const SDKVer: string; simulator: Boolean): string;
+    function GetSDKName(const SDKVer: String; simulator: Boolean): String;
+    function GetSDKFullPath(const SDKVer: String; simulator: Boolean): String;
 
     procedure GetSDKVersions(Strings: TStrings);
     procedure RefreshVersions;
 
-    property PlatformsBaseDir: string read fPlatformsBaseDir write fPlatformsBaseDir;
-    property CompilerPath: string read fCompilerPath write fCompilerPath;
-    property BaseRTLPath: string read fBaseRTLPath write fBaseRTLPath;
-    property CommonOpt: string read fCommonOpt write fCommonOpt;
+    property PlatformsBaseDir: String read fPlatformsBaseDir write fPlatformsBaseDir;
+    property CompilerPath: String read fCompilerPath write fCompilerPath;
+    property BaseRTLPath: String read fBaseRTLPath write fBaseRTLPath;
+    property CommonOpt: String read fCommonOpt write fCommonOpt;
 
-    property SimBundle: string read fSimBundle write fSimBundle;
-    property SimAppsPath: string read fSimAppsPath write fSimAppsPath;
+    property SimBundle: String read fSimBundle write fSimBundle;
+    property SimAppsPath: String read fSimAppsPath write fSimAppsPath;
 
-    property DefaultSDK: string read fDefaultSDK write fDefaultSDK;
+    property DefaultSDK: String read fDefaultSDK write fDefaultSDK;
   end;
 
 function EnvOptions: TiPhoneEnvironmentOptions;
@@ -109,7 +111,7 @@ function ProjOptions: TiPhoneProjectOptions;
 
 type
   TSDKFoundEvent = procedure (const Version: String;
-    const DeviceSDKName, DeviceSDKPath, SimSDKName, SimSDKPath: string) of object;
+    const DeviceSDKName, DeviceSDKPath, SimSDKName, SimSDKPath: String) of object;
 
 function ScanForSDK(const PlatformDir: String; FoundProc: TSDKFoundEvent): Boolean;
 
@@ -132,6 +134,7 @@ const
   optSpaceName   = 'iPhone/SimSpaceName';
   optResourceDir = 'iPhone/ResourceDir';
   optExcludeMask = 'iPhone/ExcludeMask';
+  optMainNib     = 'iPhone/MainNib';
 
 function EnvOptions: TiPhoneEnvironmentOptions;
 begin
@@ -162,7 +165,7 @@ end;
 
 { TiPhoneEnvironmentOptions }
 
-class function TiPhoneEnvironmentOptions.GetGroupCaption: string;
+class function TiPhoneEnvironmentOptions.GetGroupCaption: String;
 begin
   Result:='iPhone Environment';
 end;
@@ -303,7 +306,7 @@ begin
 
 end;
 
-function TiPhoneEnvironmentOptions.GetSDKName(const SDKVer: string; simulator: Boolean): string;
+function TiPhoneEnvironmentOptions.GetSDKName(const SDKVer: String; simulator: Boolean): String;
 var
   info : TSDKInfo;
 begin
@@ -315,7 +318,7 @@ begin
   end;
 end;
 
-function TiPhoneEnvironmentOptions.GetSDKFullPath(const SDKVer: string; simulator: Boolean): string;
+function TiPhoneEnvironmentOptions.GetSDKFullPath(const SDKVer: String; simulator: Boolean): String;
 var
   info : TSDKInfo;
 begin
@@ -358,7 +361,7 @@ begin
   Reset;
 end;
 
-class function TiPhoneProjectOptions.GetGroupCaption: string;
+class function TiPhoneProjectOptions.GetGroupCaption: String;
 begin
   Result:='iPhone';
 end;
@@ -380,12 +383,13 @@ begin
     if fSpaceName='' then fSpaceName:=RandomSpaceName;
     if CustomData.Contains(optResourceDir) then fResourceDir:=CustomData.Values[optResourceDir];
     if CustomData.Contains(optExcludeMask) then fExcludeMask:=CustomData.Values[optExcludeMask];
+    if CustomData.Contains(optMainNib) then fMainNib:=CustomData.Values[optMainNib];
   end;
 end;
 
 function TiPhoneProjectOptions.Save: Boolean;
 const
-  BoolStr : array[Boolean] of string = ('false', 'true');
+  BoolStr : array[Boolean] of String = ('false', 'true');
 begin
   Result:=True;
   {do not write iPhone related info to non-iPhone projects}
@@ -397,6 +401,7 @@ begin
       CustomData.Values[optSpaceName]:=fSpaceName;
       CustomData.Values[optResourceDir]:=fResourceDir;
       CustomData.Values[optExcludeMask]:=fExcludeMask;
+      CustomData.Values[optMainNib]:=fMainNib;
     end;
 end;
 
@@ -410,7 +415,7 @@ type
   end;
 
 // todo: implement reading .plist via OSX functions! (in case a .plist format changes)
-function ReadSDKSettings(const FileName: string; var Descr: TSDKDescription): Boolean;
+function ReadSDKSettings(const FileName: String; var Descr: TSDKDescription): Boolean;
 var
   plist : TPListFile;
 begin
@@ -426,7 +431,7 @@ end;
 
 function isSDKDir(const SDKDir: String; var d: TSDKDescription): Boolean;
 var
-  plist : string;
+  plist : String;
 begin
   plist := IncludeTrailingPathDelimiter(SDKDir)+'SDKSettings.plist';
   Result:=FileExists(plist);
@@ -437,17 +442,17 @@ end;
 
 function ScanForSDK(const PlatformDir: String; FoundProc: TSDKFoundEvent): Boolean;
 const
-  PlatformName: array [Boolean] of string = ('iPhoneOS.platform','iPhoneSimulator.platform');
+  PlatformName: array [Boolean] of String = ('iPhoneOS.platform','iPhoneSimulator.platform');
   SDKSubDir = PathDelim+'Developer'+PathDelim+'SDKs'+PathDelim;
 var
-  isSim : Boolean;
-  dir   : string;
-  sr    : TSearchRec;
-  sdks  : array of TSDKDescription;
-  descr : TSDKDescription;
-  cnt   : Integer;
-  simname : string;
-  simpath : string;
+  isSim   : Boolean;
+  dir     : String;
+  sr      : TSearchRec;
+  sdks    : array of TSDKDescription;
+  descr   : TSDKDescription;
+  cnt     : Integer;
+  simname : String;
+  simpath : String;
   i,j     : Integer;
 
   procedure AddDescription(const d: TSDKDescription);

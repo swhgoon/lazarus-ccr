@@ -15,10 +15,9 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Description Value="iPhone Development Lazarus extension
-"/>
+    <Description Value="iPhone Development Lazarus extension"/>
     <License Value="LGPL"/>
-    <Version Minor="5"/>
+    <Version Minor="6"/>
     <Files Count="11">
       <Item1>
         <Filename Value="ideext.pas"/>
