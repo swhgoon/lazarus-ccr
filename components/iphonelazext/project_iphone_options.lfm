@@ -4,8 +4,8 @@ inherited iPhoneProjectOptionsEditor: TiPhoneProjectOptionsEditor
   ClientHeight = 474
   ClientWidth = 620
   OnClick = FrameClick
-  DesignLeft = 246
-  DesignTop = 121
+  DesignLeft = 611
+  DesignTop = 128
   object chkisPhone: TCheckBox[0]
     Left = 16
     Height = 18

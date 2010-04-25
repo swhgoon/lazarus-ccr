@@ -103,14 +103,15 @@ var
   bundlepath  : WideString;
   exepath     : WideString;
   nm          : String;
-  symlink     : String;
+  dstpath     : String;
   Space       : WideString;
   RealSpace   : WideString;
   Info        : TiPhoneBundleInfo;
+
+  xiblist : TStringList;
+  i       : Integer;
 begin
   Space:=ProjOptions.SpaceName; // LazarusIDE.ActiveProject.CustomData.;
-
-  {todo:}
 
   bundleName:=ExtractFileName(LazarusIDE.ActiveProject.ProjectInfoFile);
   bundleName:=Copy(bundleName, 1, length(bundleName)-length(ExtractFileExt(bundleName)));
@@ -126,14 +127,30 @@ begin
   CopySymLinks(
     ResolveProjectPath(ProjOptions.ResourceDir),
     bundlepath,
-    ProjOptions.ExcludeMask
+    // don't copy .xib files, they're replaced by compiled nibs
+    '*.xib; '+ ProjOptions.ExcludeMask
   );
 
   if nm<>'' then begin
-    symlink:=UTF8Encode(exepath);
-    FpUnlink(symlink);
-    fpSymlink(PChar(nm), PChar(symlink));
+    dstpath:=UTF8Encode(exepath);
+    FpUnlink(dstpath);
+    fpSymlink(PChar(nm), PChar(dstpath));
   end;
+
+  xiblist := TStringList.Create;
+  try
+    EnumFilesAtDir(ResolveProjectPath(ProjOptions.ResourceDir), '*.xib', xiblist);
+    for i:=0 to xiblist.Count-1 do begin
+      dstpath:=IncludeTrailingPathDelimiter(bundlepath)+ChangeFileExt(ExtractFileName(xiblist[i]), '.nib');
+      ExecCmdLineNoWait(Format('ibtool --compile "%s" "%s"', [dstpath, xiblist[i]]));
+      writeln('compile from: ', xiblist[i]);
+      writeln('          to: ', dstpath);
+    end;
+  finally
+    xiblist.free;
+  end;
+
+  //todo: compile .xib files to .nibs
 end;
 
 function FindParam(const Source, ParamKey: String; var idx: Integer; var Content: String): Boolean;

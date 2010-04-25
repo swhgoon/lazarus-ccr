@@ -20,7 +20,8 @@ interface
 
 uses
   Classes,SysUtils,FileUtil,LResources,Forms,StdCtrls,Masks,CheckLst,Buttons,
-  Menus,IDEOptionsIntf,ProjectIntf,LazIDEIntf,iPhoneExtStr,iPhoneExtOptions, process, Controls;
+  Menus,IDEOptionsIntf,ProjectIntf,LazIDEIntf,iPhoneExtStr,
+  iPhoneExtOptions, process, Controls;
 
 type
 
@@ -75,6 +76,9 @@ type
     property OnChanged: TNotifyEvent read fOnChanged write fOnChanged;
   end;
 
+procedure EnumFilesAtDir(const PathUtf8, AMask : AnsiString; Dst: TStrings);
+procedure ExecCmdLineNoWait(const CmdLineUtf8: AnsiString);
+
 implementation
 
 procedure EnumFilesAtDir(const PathUtf8, AMask : AnsiString; Dst: TStrings);
@@ -99,7 +103,7 @@ begin
   end;
 end;
 
-procedure ExecCmdLine(const CmdLineUtf8: AnsiString; WaitExit: Boolean);
+procedure ExecCmdLineNoWait(const CmdLineUtf8: AnsiString);
 var
   proc  : TProcess;
 begin
@@ -169,7 +173,7 @@ var
 begin
   path:=ChangeFileExt(IncludeTrailingPathDelimiter(edtResDir.Text)+SelXibFile,'.xib');
   LazarusIDE.ActiveProject.LongenFilename(path);
-  ExecCmdLine('open ' + path, false);
+  ExecCmdLineNoWait('open ' + path);
 end;
 
 procedure TiPhoneProjectOptionsEditor.nibFilesBoxClickCheck(Sender:TObject);
