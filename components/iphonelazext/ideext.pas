@@ -48,11 +48,11 @@ type
     function ProjectOpened(Sender: TObject; AProject: TLazProject): TModalResult;
     procedure OnProjOptionsChanged(Sender: TObject);
   public
-    isiPhoneMenu    :TIDEMenuCommand;
+    //isiPhoneMenu    :TIDEMenuCommand;
     constructor Create;
     procedure UpdateXCode(Sender: TObject);
     procedure SimRun(Sender: TObject);
-    procedure isProjectClicked(Sender: TObject);
+    //procedure isProjectClicked(Sender: TObject);
   end;
 
 var
@@ -249,7 +249,7 @@ begin
 
   RegisterIDEMenuCommand(itmProjectWindowSection, 'mnuiPhoneSeparator', '-', nil, nil);
 
-  isiPhoneMenu:=RegisterIDEMenuCommand(itmProjectWindowSection, 'mnuiPhoneProject', striPhoneProject, @isProjectClicked, nil);
+  //isiPhoneMenu:=RegisterIDEMenuCommand(itmProjectWindowSection, 'mnuiPhoneProject', striPhoneProject, @isProjectClicked, nil);
 
   RegisterIDEMenuCommand(itmProjectWindowSection, 'mnuiPhoneToXCode', strStartAtXCode, @UpdateXCode, nil);
   RegisterIDEMenuCommand(itmProjectWindowSection, 'mnuiPhoneRunSim', strRunSimulator, @SimRun, nil);
@@ -275,7 +275,7 @@ function TiPhoneExtension.ProjectOpened(Sender: TObject; AProject: TLazProject):
 begin
   ProjOptions.Reset;
   ProjOptions.Load;
-  isiPhoneMenu.Checked:=ProjOptions.isIPhoneApp;
+  //isiPhoneMenu.Checked:=ProjOptions.isIPhoneApp;
   Result:=mrOk;
 end;
 
@@ -336,7 +336,7 @@ end;
 
 procedure TiPhoneExtension.OnProjOptionsChanged(Sender: TObject);
 begin
-  isiPhoneMenu.Checked:=ProjOptions.isIPhoneApp;
+  //isiPhoneMenu.Checked:=ProjOptions.isIPhoneApp;
 end;
 
 procedure TiPhoneExtension.UpdateXCode(Sender: TObject);
@@ -466,13 +466,13 @@ begin
   t.Free;
 end;
 
-procedure TiPhoneExtension.isProjectClicked(Sender: TObject);
+{procedure TiPhoneExtension.isProjectClicked(Sender: TObject);
 begin
   if not Assigned(Sender) or not Assigned(LazarusIDE.ActiveProject) then Exit;
   TIDEMenuCommand(Sender).Checked:=not TIDEMenuCommand(Sender).Checked;
   ProjOptions.isiPhoneApp:=TIDEMenuCommand(Sender).Checked;
   ProjOptions.Save;
-end;
+end;}
 
 procedure Register;
 begin

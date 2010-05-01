@@ -46,6 +46,7 @@ type
     lblSDKVer: TLabel;
     nibsPopup:TPopupMenu;
     procedure btnShowInFinderClick(Sender:TObject);
+    procedure chkisPhoneChange(Sender:TObject);
     procedure cmbSDKsChange(Sender: TObject);
     procedure edtExcludeChange(Sender: TObject);
     procedure edtResDirChange(Sender:TObject);
@@ -68,6 +69,8 @@ type
     procedure DoChanged;
 
     procedure RefreshXIBList;
+
+    procedure SetControlsEnabled(AEnabled: Boolean);
   public
     { public declarations }
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
@@ -135,12 +138,19 @@ begin
   if (path='') or (path[1]<>PathDelim) then // project relative path
     LazarusIDE.ActiveProject.LongenFilename(path);
 
+  ForceDirectoriesUTF8(path);
+
   while (path<>'') and (not DirectoryExistsUTF8(path)) do begin
     tmp:=path;
     path:=ExtractFileDir(path);
     if tmp=path then Break;
   end;
   if DirectoryExistsUTF8(path) then ExecCmdLineNoWait('open "'+path +'"');
+end;
+
+procedure TiPhoneProjectOptionsEditor.chkisPhoneChange(Sender:TObject);
+begin
+  SetControlsEnabled(chkisPhone.Checked);
 end;
 
 procedure TiPhoneProjectOptionsEditor.edtExcludeChange(Sender: TObject);
@@ -262,6 +272,15 @@ begin
   end;
 end;
 
+procedure TiPhoneProjectOptionsEditor.SetControlsEnabled(AEnabled:Boolean);
+var
+  i : Integer;
+begin
+  for i:=0 to ControlCount-1 do
+    if not (Controls[i] is TLabel) and (Controls[i]<>chkisPhone) then
+      Controls[i].Enabled:=AEnabled;
+end;
+
 function TiPhoneProjectOptionsEditor.GetTitle: String;
 begin
   Result:=strPrjOptTitle;
@@ -279,7 +298,6 @@ procedure TiPhoneProjectOptionsEditor.ReadSettings(AOptions: TAbstractIDEOptions
 var
   i : Integer;
 begin
-
   with TiPhoneProjectOptions(AOptions) do
   begin
     Load;
@@ -300,6 +318,7 @@ begin
     i:=nibFilesBox.Items.IndexOf(TiPhoneProjectOptions(AOptions).MainNib);
     if i>=0 then nibFilesBox.Checked[i]:=True;
   end;
+  SetControlsEnabled(chkisPhone.Checked); // is iPhone project
 end;
 
 procedure TiPhoneProjectOptionsEditor.WriteSettings(AOptions: TAbstractIDEOptions);

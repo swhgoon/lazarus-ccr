@@ -22,6 +22,9 @@ interface
 uses
   Classes, SysUtils, IDEOptionsIntf, LazIDEIntf, ProjectIntf, iPhoneBundle, DOM, XMLRead, XMLConf, PlistFile;
 
+const
+  DefaultResourceDir = 'Resources';
+
 type
 
   { TiPhoneProjectOptions }
@@ -381,7 +384,8 @@ begin
     if CustomData.Contains(optAppID) then fAppID:=CustomData.Values[optAppID];
     fSpaceName:=CustomData.Values[optSpaceName];
     if fSpaceName='' then fSpaceName:=RandomSpaceName;
-    if CustomData.Contains(optResourceDir) then fResourceDir:=CustomData.Values[optResourceDir];
+    if CustomData.Contains(optResourceDir) then fResourceDir:=CustomData.Values[optResourceDir]
+    else fResourceDir:=DefaultResourceDir;
     if CustomData.Contains(optExcludeMask) then fExcludeMask:=CustomData.Values[optExcludeMask];
     if CustomData.Contains(optMainNib) then fMainNib:=CustomData.Values[optMainNib];
   end;

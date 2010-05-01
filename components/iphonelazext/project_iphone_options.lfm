@@ -12,6 +12,7 @@ inherited iPhoneProjectOptionsEditor: TiPhoneProjectOptionsEditor
     Top = 16
     Width = 199
     Caption = 'is iPhone application project'
+    OnChange = chkisPhoneChange
     TabOrder = 0
   end
   object lblAppID: TLabel[1]
