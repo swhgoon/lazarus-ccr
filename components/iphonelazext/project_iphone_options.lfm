@@ -4,8 +4,8 @@ inherited iPhoneProjectOptionsEditor: TiPhoneProjectOptionsEditor
   ClientHeight = 474
   ClientWidth = 620
   OnClick = FrameClick
-  DesignLeft = 611
-  DesignTop = 128
+  DesignLeft = 463
+  DesignTop = 306
   object chkisPhone: TCheckBox[0]
     Left = 16
     Height = 18
@@ -154,7 +154,31 @@ inherited iPhoneProjectOptionsEditor: TiPhoneProjectOptionsEditor
     OnClick = btnShowInFinderClick
     TabOrder = 6
   end
-  object nibsPopup: TPopupMenu[15]
+  object btnAddXib: TButton[15]
+    AnchorSideLeft.Control = btnRemoveXib
+    AnchorSideRight.Control = btnRemoveXib
+    AnchorSideRight.Side = asrBottom
+    Left = 40
+    Height = 20
+    Top = 283
+    Width = 74
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    Caption = 'Add'
+    OnClick = btnAddXibClick
+    TabOrder = 7
+  end
+  object btnRemoveXib: TButton[16]
+    Left = 40
+    Height = 20
+    Top = 312
+    Width = 74
+    AutoSize = True
+    Caption = 'Remove'
+    OnClick = btnRemoveXibClick
+    TabOrder = 8
+  end
+  object nibsPopup: TPopupMenu[17]
     OnPopup = nibsPopupPopup
     left = 256
     top = 288

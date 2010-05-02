@@ -12,7 +12,7 @@
  *                                                                           *
  *****************************************************************************
 }
-unit lazfilesutils;
+unit LazFilesUtils;
 
 {$mode objfpc}{$H+}
 
@@ -21,8 +21,7 @@ interface
 uses
   {$ifdef Unix}BaseUnix,{$endif}
   Classes, SysUtils, FileUtil, Masks,
-  LazIDEIntf,ProjectIntf;
-
+  LazIDEIntf, ProjectIntf, process;
 
 function ResolveProjectPath(const path: string; project: TLazProject = nil): string;
 
@@ -32,6 +31,10 @@ function RelativeToFullPath(const BasePath, Relative: string): String;
 function NeedQuotes(const path: string): Boolean;
 
 function CopySymLinks(const SrcDir, DstDir, FilterMask: string): Boolean;
+
+procedure EnumFilesAtDir(const PathUtf8 : AnsiString; Dst: TStrings);
+procedure EnumFilesAtDir(const PathUtf8, AMask : AnsiString; Dst: TStrings);
+procedure ExecCmdLineNoWait(const CmdLineUtf8: AnsiString);
 
 implementation
 
@@ -176,6 +179,48 @@ begin
     Result:=Result+' ' + Switch + QuoteStrIfNeeded(fixed, quotes);
   end;
 end;
+
+procedure EnumFilesAtDir(const PathUtf8, AMask : AnsiString; Dst: TStrings);
+var
+  mask  : TMask;
+  sr    : TSearchRec;
+  path  : AnsiString;
+begin
+  if (AMask='') or (trim(AMask)='*') then mask:=nil else mask:=TMask.Create(AMask);
+  try
+    path:=IncludeTrailingPathDelimiter(PathUtf8);
+    if FindFirstUTF8(path+AllFilesMask, faAnyFile, sr) = 0 then begin
+      repeat
+        if (sr.Name<>'.') and (sr.Name<>'..') then
+          if not Assigned(mask) or mask.Matches(sr.Name) then
+            Dst.Add(path+sr.Name);
+      until FindNextUTF8(sr)<>0;
+      FindCloseUTF8(sr);
+    end;
+  finally
+    mask.Free;
+  end;
+end;
+
+procedure EnumFilesAtDir(const PathUtf8 : AnsiString; Dst: TStrings);
+begin
+  EnumFilesAtDir(PathUTF8, AllFilesMask, Dst);
+end;
+
+procedure ExecCmdLineNoWait(const CmdLineUtf8: AnsiString);
+var
+  proc  : TProcess;
+begin
+  proc:=TProcess.Create(nil);
+  try
+    proc.CommandLine:=CmdLineUtf8;
+    //proc.WaitOnExit:=WaitExit;
+    proc.Execute;
+  finally
+    proc.Free;
+  end;
+end;
+
 
 end.
 

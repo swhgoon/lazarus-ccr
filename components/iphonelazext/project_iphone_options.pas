@@ -19,9 +19,9 @@ unit project_iphone_options;
 interface
 
 uses
-  Classes,SysUtils,FileUtil,LResources,Forms,StdCtrls,Masks,CheckLst,Buttons,
+  Classes,SysUtils,FileUtil,LResources,Forms,StdCtrls,CheckLst,Buttons, Dialogs,
   Menus,IDEOptionsIntf,ProjectIntf,LazIDEIntf,iPhoneExtStr,
-  iPhoneExtOptions, process, Controls;
+  iPhoneExtOptions, Controls, LazFilesUtils, XcodeUtils, newXibDialog;
 
 type
 
@@ -29,6 +29,8 @@ type
 
   TiPhoneProjectOptionsEditor = class(TAbstractIDEOptionsEditor)
     btnShowInFinder:TButton;
+    btnAddXib:TButton;
+    btnRemoveXib:TButton;
     Label5:TLabel;
     mnuOpenIB:TMenuItem;
     nibFilesBox:TCheckListBox;
@@ -45,7 +47,10 @@ type
     lblAppIDHint: TLabel;
     lblSDKVer: TLabel;
     nibsPopup:TPopupMenu;
+    procedure btnAddXibClick(Sender:TObject);
+    procedure btnRemoveXibClick(Sender:TObject);
     procedure btnShowInFinderClick(Sender:TObject);
+    procedure Button1Click(Sender:TObject);
     procedure chkisPhoneChange(Sender:TObject);
     procedure cmbSDKsChange(Sender: TObject);
     procedure edtExcludeChange(Sender: TObject);
@@ -81,46 +86,7 @@ type
     property OnChanged: TNotifyEvent read fOnChanged write fOnChanged;
   end;
 
-procedure EnumFilesAtDir(const PathUtf8, AMask : AnsiString; Dst: TStrings);
-procedure ExecCmdLineNoWait(const CmdLineUtf8: AnsiString);
-
 implementation
-
-procedure EnumFilesAtDir(const PathUtf8, AMask : AnsiString; Dst: TStrings);
-var
-  mask  : TMask;
-  sr    : TSearchRec;
-  path  : AnsiString;
-begin
-  if (AMask='') or (trim(AMask)='*') then mask:=nil else mask:=TMask.Create(AMask);
-  try
-    path:=IncludeTrailingPathDelimiter(PathUtf8);
-    if FindFirstUTF8(path+AllFilesMask, faAnyFile, sr) = 0 then begin
-      repeat
-        if (sr.Name<>'.') and (sr.Name<>'..') then
-          if not Assigned(mask) or mask.Matches(sr.Name) then
-            Dst.Add(path+sr.Name);
-      until FindNextUTF8(sr)<>0;
-      FindCloseUTF8(sr);
-    end;
-  finally
-    mask.Free;
-  end;
-end;
-
-procedure ExecCmdLineNoWait(const CmdLineUtf8: AnsiString);
-var
-  proc  : TProcess;
-begin
-  proc:=TProcess.Create(nil);
-  try
-    proc.CommandLine:=CmdLineUtf8;
-    //proc.WaitOnExit:=WaitExit;
-    proc.Execute;
-  finally
-    proc.Free;
-  end;
-end;
 
 { TiPhoneProjectOptionsEditor }
 
@@ -146,6 +112,49 @@ begin
     if tmp=path then Break;
   end;
   if DirectoryExistsUTF8(path) then ExecCmdLineNoWait('open "'+path +'"');
+end;
+
+procedure TiPhoneProjectOptionsEditor.btnAddXibClick(Sender:TObject);
+var
+  FileName  : AnsiString;
+  SrcXib    : AnsiString;
+
+  ResDir    : AnsiString;
+begin
+  newXibForm:=TnewXibForm.Create(Self);
+  ScanForXibTemplates(
+    XibTemplateDir(  IncludeTrailingPathDelimiter(EnvOptions.PlatformsBaseDir)+iPhoneOSplatform),
+    @newXibForm.AddTemplate);
+
+  if (newXibForm.Execute(FileName, SrcXib)) and (SrcXib<>'')then begin
+    ResDir:=edtResDir.Text;
+    LazarusIDE.ActiveProject.LongenFilename(ResDir);
+
+    ForceDirectoriesUTF8(ResDir);
+    if not CopyFile(SrcXib, ChangeFileExt(IncludeTrailingPathDelimiter(ResDir)+FileName,'.xib')) then
+      ShowMessage('Failed to create Nib file');
+    RefreshXIBList;
+  end;
+  newXibForm.Free;
+  newXibForm:=nil;
+end;
+
+procedure TiPhoneProjectOptionsEditor.btnRemoveXibClick(Sender:TObject);
+var
+  XibName : AnsiString;
+begin
+  if nibFilesBox.ItemIndex<0 then Exit;
+
+  XibName:=edtResDir.Text;
+  LazarusIDE.ActiveProject.LongenFilename(XibName);
+
+  XibName:=ChangeFileExt(IncludeTrailingPathDelimiter(XibName)+nibFilesBox.Items[nibFilesBox.ItemIndex],'.xib');
+  if FileExistsUTF8(XibName) then DeleteFileUTF8(XibName);
+  RefreshXIBList;
+end;
+
+procedure TiPhoneProjectOptionsEditor.Button1Click(Sender:TObject);
+begin
 end;
 
 procedure TiPhoneProjectOptionsEditor.chkisPhoneChange(Sender:TObject);

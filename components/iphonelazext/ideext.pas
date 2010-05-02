@@ -50,7 +50,7 @@ type
   public
     //isiPhoneMenu    :TIDEMenuCommand;
     constructor Create;
-    procedure UpdateXCode(Sender: TObject);
+    procedure UpdateXcode(Sender: TObject);
     procedure SimRun(Sender: TObject);
     //procedure isProjectClicked(Sender: TObject);
   end;
@@ -339,7 +339,7 @@ begin
   //isiPhoneMenu.Checked:=ProjOptions.isIPhoneApp;
 end;
 
-procedure TiPhoneExtension.UpdateXCode(Sender: TObject);
+procedure TiPhoneExtension.UpdateXcode(Sender: TObject);
 var
   templates : TStringList;
   build     : TStringList;

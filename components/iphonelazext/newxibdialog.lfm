@@ -1,0 +1,81 @@
+object newXibForm: TnewXibForm
+  Left = 583
+  Height = 447
+  Top = 195
+  Width = 477
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
+  Caption = 'Choose a template'
+  ClientHeight = 447
+  ClientWidth = 477
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '0.9.29'
+  object Edit1: TEdit
+    Left = 94
+    Height = 22
+    Top = 24
+    Width = 370
+    OnKeyPress = Edit1KeyPress
+    TabOrder = 0
+    Text = 'Edit1'
+  end
+  object Label1: TLabel
+    Left = 16
+    Height = 18
+    Top = 24
+    Width = 61
+    Caption = 'FileName:'
+    ParentColor = False
+  end
+  object DrawGrid1: TDrawGrid
+    Left = 16
+    Height = 200
+    Top = 64
+    Width = 448
+    ColCount = 1
+    DefaultColWidth = 80
+    DefaultDrawing = False
+    DefaultRowHeight = 96
+    ExtendedSelect = False
+    FixedCols = 0
+    FixedRows = 0
+    GridLineWidth = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goSmoothScroll]
+    ScrollBars = ssVertical
+    TabOrder = 1
+    OnDrawCell = DrawGrid1DrawCell
+    OnSelection = DrawGrid1Selection
+    OnSelectCell = DrawGrid1SelectCell
+  end
+  object Button1: TButton
+    Left = 160
+    Height = 20
+    Top = 400
+    Width = 70
+    AutoSize = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 2
+  end
+  object Button2: TButton
+    Left = 248
+    Height = 20
+    Top = 400
+    Width = 71
+    AutoSize = True
+    Caption = 'Choose'
+    ModalResult = 1
+    OnClick = Button2Click
+    TabOrder = 3
+  end
+  object Memo1: TMemo
+    Left = 16
+    Height = 112
+    Top = 272
+    Width = 448
+    ReadOnly = True
+    ScrollBars = ssAutoVertical
+    TabOrder = 4
+  end
+end
