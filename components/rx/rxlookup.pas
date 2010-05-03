@@ -165,6 +165,7 @@ type
     FEmptyItemColor: TColor;
     FEmptyValue: string;
     FOnChange: TNotifyEvent;
+    FOnClosePopup: TClosePopup;
     FPopUpFormOptions: TPopUpFormOptions;
     //
     FRxPopUpForm:TPopUpForm;
@@ -238,7 +239,7 @@ type
     procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
                                      WithThemeSpace: Boolean); override;
     procedure ShowList; virtual;
-    procedure OnClosePopup(AResult:boolean);virtual;
+    procedure OnInternalClosePopup(AResult:boolean);virtual;
     procedure SetEnabled(Value: Boolean); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: char); override;
@@ -291,6 +292,7 @@ type
     property Value: string read FValue write SetValue stored False;
     property KeyValue: Variant read GetKeyValue write SetKeyValue stored False;
     property OnSelect: TNotifyEvent read FOnSelect write FOnSelect;
+    property OnClosePopup:TClosePopup read FOnClosePopup write FOnClosePopup;
 
     property UnfindedValue : TRxDBValueVariant read FUnfindedValue write FUnfindedValue default rxufNone;
   public
@@ -302,7 +304,7 @@ type
   { TRxDBLookupCombo }
   TRxDBLookupCombo = class(TRxCustomDBLookupCombo)
   protected
-    procedure OnClosePopup(AResult:boolean);override;
+    procedure OnInternalClosePopup(AResult:boolean);override;
   public
     property Value;
     property KeyValue;
@@ -332,6 +334,7 @@ type
     Property OnButtonClick;
     property OnChange;
     property OnClick;
+    property OnClosePopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -1054,12 +1057,12 @@ begin
       if FLookupDataLink.Active then
         FLookupDataLink.DataSet.First;
 
-      FRxPopUpForm:=ShowRxDBPopUpForm(Self, FLookupDataLink.DataSet, @OnClosePopup,
+      FRxPopUpForm:=ShowRxDBPopUpForm(Self, FLookupDataLink.DataSet, @OnInternalClosePopup,
         FPopUpFormOptions, FLookupDisplay, LookupDisplayIndex, 0 {ButtonWidth}, Font);
 {$IFDEF LINUX}
       TempF:=FRxPopUpForm;
       if FRxPopUpForm.ShowModal = mrOk then
-        OnClosePopup(true);
+        OnInternalClosePopup(true);
       TempF.Free;
       FRxPopUpForm:=nil
 {$ENDIF}
@@ -1143,16 +1146,20 @@ begin
   end;
 end;
 
-procedure TRxCustomDBLookupCombo.OnClosePopup(AResult: boolean);
+procedure TRxCustomDBLookupCombo.OnInternalClosePopup(AResult: boolean);
 begin
   if Assigned(FRxPopUpForm) and AResult and (pfgColumnResize in FPopUpFormOptions.Options) then
     FillPopupWidth(FPopUpFormOptions, FRxPopUpForm);
     
+  if Assigned(FOnClosePopup) then
+    FOnClosePopup(Self, AResult);
+
   if FRxPopUpForm=nil then
   begin
     SetFocus;
     Exit;
   end;
+
   FRxPopUpForm:=nil;
   if not AResult then
     UpdateKeyValue
@@ -1638,9 +1645,9 @@ end;
 
 { TRxDBLookupCombo }
 
-procedure TRxDBLookupCombo.OnClosePopup(AResult: boolean);
+procedure TRxDBLookupCombo.OnInternalClosePopup(AResult: boolean);
 begin
-  inherited OnClosePopup(AResult);
+  inherited OnInternalClosePopup(AResult);
 //  SetFocus;
 {  if (Owner is TWinControl) then
     TWinControl(Owner).Repaint

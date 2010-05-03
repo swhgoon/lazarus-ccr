@@ -159,6 +159,7 @@
             
             
             
+            
             <link id="TRxDBGrid">RxDBGrid</link>-а.</p>
         </descr>
       </element>
@@ -552,6 +553,7 @@
         <descr>
           <p>
             <link id="TOptionRx">Набор флагов</link>, управлюящих поведением 
+            
             
             
             
@@ -1038,6 +1040,12 @@ TRxDBLookupCombo позволяет использовать в качестве
         <p>The RxLookup unit contains the declarations for the certain components on the RX DBAware page of the Component palette and their associated objects, types, and constants.
 When you add a component declared in this unit to a form, the unit is automatically added to the uses clause of that form's unit.</p>
       </descr>
+      <element name="TRxLookupEdit.OnClosePopup">
+        <descr>Событие возникает при закрытии PopUp окна выбора данных.</descr>
+      </element>
+      <element name="TRxDBLookupCombo.OnClosePopup">
+        <descr>Событие возникает при закрытии PopUp окна выбора данных.</descr>
+      </element>
     </module>
     <module name="dbdateedit">
       <element name="TDBDateEdit">
@@ -1082,6 +1090,7 @@ TRxDBCalcEdit является наследником TDBCalcEdit и имеет 
         <descr>
           <p>Свойство - массив, содержит в себе список всех файлов и каталогов, которые были обнаружены в указанной папке.</p>
 Кол-во элементов данного массива находится в свойстве 
+          
           
           
           
@@ -2382,7 +2391,9 @@ Description
             
             
             
+            
             <b>const</b> SearchDomain, FileName:
+            
             
             
             
@@ -2418,7 +2429,9 @@ Description
             
             
             
+            
             <b>out</b> UserName, DomainName:
+            
             
             
             
@@ -2471,7 +2484,9 @@ Description
             
             
             
+            
             <b>const</b> DirName:
+            
             
             
             
@@ -2495,6 +2510,7 @@ Description
             
             
             
+            
             <b>string</b>;</p>
           <p>Функция проверяет все разделители каталогов в указанном имени файла/каталога и, если нужно, меняет их на значение константы<b>DirectorySeparator</b>.</p>
         </descr>
@@ -2505,6 +2521,7 @@ Description
         <descr>
           <p>
             <b>function</b> GetUserName: 
+            
             
             
             
