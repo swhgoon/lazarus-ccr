@@ -62,7 +62,7 @@ object newXibForm: TnewXibForm
     Left = 248
     Height = 20
     Top = 400
-    Width = 71
+    Width = 75
     AutoSize = True
     Caption = 'Choose'
     ModalResult = 1

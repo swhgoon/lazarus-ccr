@@ -197,6 +197,7 @@ var
   i : Integer;
 begin
   for i:=0 to Items.Count-1 do TObject(Items[i]).Free;
+  Items.Free;
 end;
 
 procedure TnewXibForm.AddTemplate(const AName,SourceXibFile,ADescr, IconFile:AnsiString);
@@ -206,7 +207,7 @@ end;
 
 function TnewXibForm.Execute(var FileName,SourceXibFile:AnsiString):Boolean;
 var
-  w   : integer;
+  w,h : integer;
 begin
   if Items.Count=0 then begin
     Result:=False;
@@ -215,7 +216,9 @@ begin
   w:=DrawGrid1.ClientWidth div DrawGrid1.DefaultColWidth;
   if w=0 then w:=1;
   DrawGrid1.ColCount:=w;
-  DrawGrid1.RowCount:=Items.Count div w;
+  h:=Items.Count div w;
+  if h=0 then h:=1;
+  DrawGrid1.RowCount:=h;
   CustomName:=False;
   Result:=ShowModal = mrOK;
   if Result then begin
