@@ -143,8 +143,6 @@ begin
     for i:=0 to xiblist.Count-1 do begin
       dstpath:=IncludeTrailingPathDelimiter(bundlepath)+ChangeFileExt(ExtractFileName(xiblist[i]), '.nib');
       ExecCmdLineNoWait(Format('ibtool --compile "%s" "%s"', [dstpath, xiblist[i]]));
-      writeln('compile from: ', xiblist[i]);
-      writeln('          to: ', dstpath);
     end;
   finally
     xiblist.free;
