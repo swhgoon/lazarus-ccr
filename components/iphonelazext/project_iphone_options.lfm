@@ -4,8 +4,9 @@ inherited iPhoneProjectOptionsEditor: TiPhoneProjectOptionsEditor
   ClientHeight = 474
   ClientWidth = 620
   OnClick = FrameClick
-  DesignLeft = 463
-  DesignTop = 306
+  TabOrder = 0
+  DesignLeft = 513
+  DesignTop = 97
   object chkisPhone: TCheckBox[0]
     Left = 16
     Height = 18
@@ -180,11 +181,15 @@ inherited iPhoneProjectOptionsEditor: TiPhoneProjectOptionsEditor
   end
   object nibsPopup: TPopupMenu[17]
     OnPopup = nibsPopupPopup
-    left = 256
-    top = 288
+    left = 160
+    top = 272
     object mnuOpenIB: TMenuItem
       Caption = 'Open Interface Builder'
       OnClick = mnuOpenIBClick
+    end
+    object mnuDump: TMenuItem
+      Caption = 'Dump classes to Pascal'
+      OnClick = mnuDumpClick
     end
   end
 end

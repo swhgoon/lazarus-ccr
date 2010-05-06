@@ -9,7 +9,8 @@ interface
 uses
     ideext, iPhoneExtStr, iPhoneBundle, XCodeProject, 
   environment_iphone_options, project_iphone_options, iPhoneExtOptions, 
-  xcodetemplate, LazFilesUtils, XcodeUtils, newXibDialog, LazarusPackageIntf;
+  xcodetemplate, LazFilesUtils, XcodeUtils, newXibDialog, xibfile, 
+  LazarusPackageIntf;
 
 implementation
 

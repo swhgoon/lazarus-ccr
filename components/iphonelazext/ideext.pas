@@ -147,8 +147,6 @@ begin
   finally
     xiblist.free;
   end;
-
-  //todo: compile .xib files to .nibs
 end;
 
 function FindParam(const Source, ParamKey: String; var idx: Integer; var Content: String): Boolean;

@@ -21,7 +21,7 @@ interface
 uses
   Classes,SysUtils,FileUtil,LResources,Forms,StdCtrls,CheckLst,Buttons, Dialogs,
   Menus,IDEOptionsIntf,ProjectIntf,LazIDEIntf,iPhoneExtStr,
-  iPhoneExtOptions, Controls, LazFilesUtils, XcodeUtils, newXibDialog;
+  iPhoneExtOptions, Controls, LazFilesUtils, XcodeUtils, newXibDialog, xibfile;
 
 type
 
@@ -32,6 +32,7 @@ type
     btnAddXib:TButton;
     btnRemoveXib:TButton;
     Label5:TLabel;
+    mnuDump:TMenuItem;
     mnuOpenIB:TMenuItem;
     nibFilesBox:TCheckListBox;
     chkisPhone: TCheckBox;
@@ -57,6 +58,7 @@ type
     procedure edtResDirChange(Sender:TObject);
     procedure edtResDirExit(Sender:TObject);
     procedure FrameClick(Sender: TObject);
+    procedure mnuDumpClick(Sender:TObject);
     procedure mnuOpenIBClick(Sender:TObject);
     procedure nibFilesBoxClickCheck(Sender:TObject);
     procedure nibFilesBoxItemClick(Sender:TObject;Index:integer);
@@ -76,6 +78,7 @@ type
     procedure RefreshXIBList;
 
     procedure SetControlsEnabled(AEnabled: Boolean);
+    procedure DumpClasses(const XibFileName: AnsiString; var PascalFileName: AnsiString);
   public
     { public declarations }
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
@@ -205,6 +208,25 @@ begin
 
 end;
 
+procedure TiPhoneProjectOptionsEditor.mnuDumpClick(Sender:TObject);
+var
+  s   : AnsiString;
+  pas : AnsiString;
+  p   : TControl;
+begin
+  if SelXibFile ='' then Exit;
+  s:=ChangeFileExt(IncludeTrailingPathDelimiter (edtResDir.Text) + SelXibFile,'.xib');
+  LazarusIDE.ActiveProject.LongenFilename(s);
+  DumpClasses(s, pas);
+
+  p:=Parent;
+  while Assigned(p) and (not (p is TForm)) do
+    p:=p.Parent;
+  if Assigned(p) then TForm(p).ModalResult:=mrOK;
+
+  LazarusIDE.DoOpenEditorFile(pas, -1,-1, [ofOnlyIfExists]);
+end;
+
 procedure TiPhoneProjectOptionsEditor.mnuOpenIBClick(Sender:TObject);
 var
   path  : AnsiString;
@@ -255,6 +277,7 @@ begin
     mnuOpenIB.Caption:=Format(strOpenXibAtIB, [SelXibFile])
   else
     mnuOpenIB.Caption:=strOpenAtIB;
+  mnuDump.Enabled:=SelXibFile<>''
 end;
 
 procedure TiPhoneProjectOptionsEditor.DoChanged;
@@ -288,6 +311,181 @@ begin
   for i:=0 to ControlCount-1 do
     if not (Controls[i] is TLabel) and (Controls[i]<>chkisPhone) then
       Controls[i].Enabled:=AEnabled;
+end;
+
+function MethodName(const msg: AnsiString): String;
+var
+  i : Integer;
+begin
+  Result:=msg;
+  for i:=0 to length(Result) do if Result[i]=':' then Result[i]:='_';
+end;
+
+function ActionParams(const ActionName: AnsiString): String;
+var
+  i : integer;
+  c : Integer;
+begin
+  c:=0;
+  for i:=1 to length(ActionName) do if ActionName[i]=':' then inc(c);
+  case c of
+    1 : Result:=('(sender: id)');
+    2 : Result:=('(sender: id; keyEvent: SEL)');
+  end;
+end;
+
+function SetMethodName(const propName: AnsiString): String;
+begin
+  if propName<>'' then
+    Result:='set'+AnsiUpperCase(propName[1])+Copy(propName, 2, length(propName)-1)
+  else
+    Result:='';
+end;
+
+procedure XibClassToInterface(cls: TXibClassDescr; intf: TStrings);
+var
+  i : Integer;
+begin
+  if not Assigned(cls) or not Assigned(intf) then Exit;
+
+  intf.Add('  { ' +cls.Name + ' }');
+  intf.Add('');
+  intf.Add('  ' +cls.Name + '=objcclass(NSObject)');
+  if length(cls.Outlets)>0 then begin
+    intf.Add('  private');
+    for i:=0 to length(cls.Outlets) - 1 do
+      intf.Add('    f'+cls.Outlets[i].Key+' : '+ cls.Outlets[i].Value+';');
+  end;
+
+  intf.Add('  public');
+  for i:=0 to length(cls.Actions) - 1 do
+    with cls.Actions[i] do
+      intf.Add(Format('    function %s%s: %s; message ''%s'';', [MethodName(Key), ActionParams(Key), Value, Key]));
+  for i:=0 to length(cls.Outlets) - 1 do
+    with cls.Outlets[i] do begin
+      intf.Add(Format('    function %s: %s; message ''%s'';', [Key, Value, Key]));
+      intf.Add(Format('    procedure %s(a%s: %s); message ''%s'';',
+        [SetMethodName(Key), Key, Value, SetMethodName(Key)+':']));
+    end;
+  if length(cls.Outlets) > 0 then
+    intf.Add('    procedure dealloc; override;');
+  intf.Add('  end;');
+  intf.Add('');
+end;
+
+procedure XibClassToImplementation(cls: TXibClassDescr; st: TStrings);
+var
+  i : Integer;
+begin
+  if not Assigned(cls) or not Assigned(st) then Exit;
+  if (length(cls.Actions)=0) and (length(cls.Outlets)=0) then exit;
+  st.Add('  { ' +cls.Name + ' }');
+  st.Add('');
+  for i:=0 to length(cls.Actions)-1 do
+    with cls.Actions[i] do begin
+      st.Add(Format('function %s.%s%s: %s;', [cls.Name, MethodName(Key), ActionParams(Key), Value]));
+      st.Add('begin');
+      st.Add('  // put action''s code here');
+      st.Add('  Result:=nil;');
+      st.Add('end;');
+      st.Add('');
+    end;
+
+  for i:=0 to length(cls.Outlets) - 1 do
+    with cls.Outlets[i] do begin
+      st.Add(Format('function %s.%s: %s;', [cls.Name, Key, Value]));
+      st.Add(       'begin');
+      st.Add(Format('  Result:=f%s;', [Key]));
+      st.Add(       'end;');
+      st.Add(       '');
+      st.Add(Format('procedure %s.%s(a%s: %s);', [cls.Name, SetMethodName(Key), Key, Value]));
+      st.Add(       'begin');
+      st.Add(Format('  f%s:=a%s;', [Key, Key]));
+      st.Add(Format('  f%s.retain;', [Key]));
+      st.Add(       'end;');
+      st.Add(       '');
+    end;
+
+  if length(cls.Outlets)>0 then begin
+    st.Add(Format('procedure %s.dealloc; ', [cls.Name]));
+    st.Add(       'begin');
+    for i:=0 to length(cls.Outlets) - 1 do
+      st.Add(Format('  f%s.release;',[cls.Outlets[i].Key]));
+    st.Add(       '  inherited;');
+    st.Add(       'end;');
+    st.Add('');
+  end;
+
+end;
+
+procedure TiPhoneProjectOptionsEditor.DumpClasses(const XibFileName: AnsiString;
+  var PascalFileName: AnsiString);
+var
+  unitNm    : AnsiString;
+  fs        : TFileStream;
+  xibcls    : TList;
+  i         : Integer;
+
+  intfPart  : TStringList;
+  implPart  : TStringList;
+
+  cls       : TXibClassDescr;
+
+const
+  le   : Ansistring = LineEnding;
+
+  procedure wln(const s: AnsiString);
+  begin
+    if s <>'' then
+      fs.Write(s[1], length(s));
+    fs.Write(le[1], length(le));
+  end;
+
+begin
+  if not FileExists(XibFileName) then Exit;
+
+  intfPart:=TStringList.Create;
+  implPart:=TStringList.Create;
+
+  xibcls:=TList.Create;
+  ListClassesDescr(XibFileName, xibcls);
+
+  for i:=0 to xibcls.Count-1 do begin
+    cls:=TXibClassDescr(xibcls[i]);
+    XibClassToInterface(cls, intfPart);
+    XibClassToImplementation(cls, implPart);
+    cls.Free;
+  end;
+  xibcls.Free;
+
+  unitNm:='dump'+ChangeFileExt(ExtractFileName(XibFileName),'');
+  PascalFileName:=unitNm+'.pas';
+  LazarusIDE.ActiveProject.LongenFilename(PascalFileName);
+
+  fs:=TFileStream.Create(PascalFileName, fmCreate);
+
+  wln('unit ' + unitNm+';');
+  wln('');
+  wln('{$mode objfpc}{$h+}');
+  wln('{$modeswitch objectivec1}');
+  wln('');
+  wln('interface');
+  wln('');
+  if intfPart.Count>0 then begin
+    wln('type');
+    for i:=0 to intfPart.Count-1 do wln(intfPart[i]);
+  end;
+  wln('');
+  wln('implementation');
+  wln('');
+  if implPart.Count>0 then
+    for i:=0 to implPart.Count-1 do wln(implPart[i]);
+  wln('');
+  wln('end.');
+
+  intfPart.Free;
+  implPart.Free;
+  fs.Free;
 end;
 
 function TiPhoneProjectOptionsEditor.GetTitle: String;

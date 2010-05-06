@@ -1,7 +1,7 @@
 object newXibForm: TnewXibForm
-  Left = 583
+  Left = 462
   Height = 447
-  Top = 195
+  Top = 164
   Width = 477
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog

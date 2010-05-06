@@ -18,7 +18,7 @@
     <Description Value="iPhone Development Lazarus extension"/>
     <License Value="LGPL"/>
     <Version Minor="6"/>
-    <Files Count="13">
+    <Files Count="14">
       <Item1>
         <Filename Value="ideext.pas"/>
         <HasRegisterProc Value="True"/>
@@ -72,6 +72,10 @@
         <Filename Value="newxibdialog.pas"/>
         <UnitName Value="newxibdialog"/>
       </Item13>
+      <Item14>
+        <Filename Value="xibfile.pas"/>
+        <UnitName Value="xibfile"/>
+      </Item14>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">

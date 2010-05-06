@@ -51,11 +51,59 @@ type
 procedure DoReadXibDoc(ADoc: TXMLDocument; var Obj: TXibObject);
 
 function FindXibObject(root: TXibObject; const ObjName: String; Recursive: Boolean=False): TXibObject;
-procedure ListActionsAndOutlets(root: TXibObject;
-  actionsNames, actionsTypes: TStrings;
-  outletsNames, outletsTypes: TStrings);
+
+type
+  TXibKeyValue = record
+    Key   : AnsiString;
+    Value : AnsiString;
+  end;
+
+  { TXibClassDescr }
+
+  TXibClassDescr = class(TObject)
+    Name    : AnsiString;
+    Actions : array of TXibKeyValue;
+    Outlets : array of TXibKeyValue;
+    constructor Create(const AName: AnsiString);
+  end;
+
+procedure ListClassesDescr(root: TXibObject; DstList : TList); overload;
+procedure ListClassesDescr(const FileName: AnsiString; DstList : TList); overload;
 
 implementation
+
+function Min(a,b: integer): Integer;
+begin
+  if a<b then Result:=a
+  else Result:=b;
+end;
+
+procedure SetActions(names, types: TStrings; descr: TXibClassDescr);
+var
+  i : integer;
+begin
+  if not Assigned(names) or not Assigned(types) then Exit;
+
+  SetLength(descr.Actions, Min(names.Count, types.Count));
+  for i:=0 to length(descr.Actions)- 1 do begin
+    descr.Actions[i].Key:=names[i];
+    descr.Actions[i].Value:=types[i];
+  end;
+end;
+
+procedure SetOutlets(names, types: TStrings; descr: TXibClassDescr);
+var
+  i : integer;
+begin
+  if not Assigned(names) or not Assigned(types) then Exit;
+
+  SetLength(descr.Outlets, Min(names.Count, types.Count));
+  for i:=0 to length(descr.Outlets)- 1 do begin
+    descr.Outlets[i].Key:=names[i];
+    descr.Outlets[i].Value:=types[i];
+  end;
+end;
+
 
 procedure ListDictionary(dict: TXibObject; keys, values: TStrings);
 var
@@ -72,19 +120,22 @@ begin
   end;
 end;
 
-procedure ListActionsAndOutlets(root: TXibObject;
-
-  actionsNames, actionsTypes: TStrings;
-  outletsNames, outletsTypes: TStrings);
+procedure ListClassesDescr(root: TXibObject; DstList : TList);
 var
-  obj : TXibObject;
-  act : TXibObject;
+  obj   : TXibObject;
+  act   : TXibObject;
   outs  : TXibObject;
-  cls   : AnsiString;
+  cls   : TXibClassDescr;
+  names : TStringList;
+  types : TStringList;
 begin
+  if not Assigned(DstList) then Exit;
+
   obj:=FindXibObject(root, 'IBDocument.Classes', true);
   if not Assigned(obj) then Exit;
 
+  names := TStringList.Create;
+  types := TStringList.Create;
   obj:=FindXibObject(obj, 'referencedPartialClassDescriptions', true);
 
   obj:=obj.ChildObject;
@@ -95,17 +146,26 @@ begin
       Continue;
     end;
 
-    cls:=obj.StrProp['className'];
+    cls:=TXibClassDescr.Create(obj.StrProp['className']);
     act:=FindXibObject(obj, 'actions');
-    if Assigned(act) then ListDictionary(act, actionsNames, actionsTypes);
+    if Assigned(act) then begin
+      names.Clear; types.Clear;
+      ListDictionary(act, names, types);
+      SetActions(names, types, cls);
+    end;
 
     outs:=FindXibObject(obj, 'outlets');
-    if Assigned(outs) then ListDictionary(outs, outletsNames, outletsTypes);
+    if Assigned(outs) then begin
+      names.Clear; types.Clear;
+      ListDictionary(outs, names, types);
+      SetOutlets(names, types, cls);
+    end;
+    DstList.Add(cls);
 
-    //todo: enum all classes in Xib file!
-    Break;
     obj:=obj.NextObject;
   end;
+  names.Free;
+  types.Free;
 end;
 
 function FindXibObject(root: TXibObject; const ObjName: String; Recursive: Boolean): TXibObject;
@@ -294,6 +354,27 @@ begin
     Exit;
   end;
   Result:=TDOMElement(fXibNode).AttribStrings['class'];
+end;
+
+procedure ListClassesDescr(const FileName: AnsiString; DstList : TList); overload;
+var
+  xib : TXibFile;
+begin
+  xib := TXibFile.Create;
+  try
+    xib.LoadFromFile(FileName);
+    ListClassesDescr(xib.FirstObject, DstList);
+  finally
+    xib.Free;
+  end;
+end;
+
+{ TXibClassDescr }
+
+constructor TXibClassDescr.Create(const AName:AnsiString);
+begin
+  inherited Create;
+  Name:=AName;
 end;
 
 end.
