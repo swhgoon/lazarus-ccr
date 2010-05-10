@@ -40,7 +40,7 @@ uses
   LCLProc, LMessages, ExtCtrls, StdCtrls, Buttons, Forms, Menus;
 
 { TRxCalendar }
-
+{
 const
   //TRxShortDaysWeek: array[0..6] of string = ('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
   TRxShortDaysOfWeek: array[0..6] of string =
@@ -48,7 +48,7 @@ const
   TRxLongMonthNames: array[0..11] of string =
     ('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August',
     'September', 'October', 'November', 'December');
-
+}
 type
   TDayOfWeek = 0..6;
 
@@ -292,10 +292,19 @@ begin
   else
 {$ENDIF}
 *)
-  with AFont do begin
+  with AFont do
+  begin
     Color := clWindowText;
+{$IFDEF WINDOWS}
     Name := 'MS Sans Serif';
     Size := 8;
+{$ELSE}
+    if Assigned(Application) and Assigned(Application.MainForm) then
+      Size := Application.MainForm.Font.Size
+    else
+      Size := 9;
+    Name := 'default';
+{$ENDIF}
     Style := [];
   end;
 end;
@@ -309,11 +318,7 @@ begin
   for i:=1 to 12 do
   begin
     MI:=TMenuItem.Create(Result);
-    (*
-    // Old variant
-    // MI.Caption:=LongMonthNames[i];
-    *)
-    MI.Caption := TRxLongMonthNames[i - 1];
+    MI.Caption := LongMonthNames[i - 1];
     MI.OnClick:=AOnClick;
     MI.Tag:=i;
     Result.Items.Add(MI);
@@ -660,8 +665,8 @@ begin
   if (FShortDaysOfWeek <> nil) and (FShortDaysOfWeek.Count = 0) then begin
     //OldNotify := FDaysOfWeek.OnChange;
     //TStringList(FShortDays).OnChange := nil;
-    for Ind := Low(TRxShortDaysOfWeek) to High(TRxShortDaysOfWeek) do
-      FShortDaysOfWeek.Add(TRxShortDaysOfWeek[Ind]);
+    for Ind := 1 to 7 do
+      FShortDaysOfWeek.Add(SysUtils.ShortDayNames[Ind]);
     //FShortDaysOfWeek.OnChange := OldNotify;
   end;
 end;
@@ -979,8 +984,8 @@ begin
 
   FMonthNames := TStringList.Create;
   if FMonthNames.Count = 0 then begin
-    for i := Low(TRxLongMonthNames) to High(TRxLongMonthNames) do
-      FMonthNames.Add(TRxLongMonthNames[i]);
+    for i := Low(LongMonthNames) to High(LongMonthNames) do
+      FMonthNames.Add(LongMonthNames[i]);
   end;
 
   BackPanel := TPanel.Create(Self);
@@ -1121,7 +1126,7 @@ procedure TPopupCalendar.AutoSizeForm;
 begin
   FControlPanel.Height:=FCalendar.Canvas.TextHeight('Wg')+4;
   Height:=(FCalendar.Canvas.TextHeight('Wg')+4)*7+FControlPanel.Height + FCloseBtn.Height;
-  Width:=FCalendar.Canvas.TextWidth('WWW')*7;
+  Width:=FCalendar.Canvas.TextWidth(' WWW')*7;
   FCalendar.AutoFillColumns:=true;
 end;
 
@@ -1240,7 +1245,7 @@ var
   AYear, AMonth, ADay: Word;
 begin
   DecodeDate(FCalendar.CalendarDate, AYear, AMonth, ADay);
-  s := Format('%s, %d', [TRxLongMonthNames[AMonth - 1], AYear]);
+  s := Format('%s, %d', [LongMonthNames[AMonth - 1], AYear]);
   FTitleLabel.Caption := s; //
   // FTitleLabel.Caption := FormatDateTime('MMMM, YYYY', FCalendar.CalendarDate);
 end;
