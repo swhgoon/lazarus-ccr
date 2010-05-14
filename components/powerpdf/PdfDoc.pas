@@ -50,12 +50,16 @@ interface
 //{$DEFINE NOZLIB}
 
 uses
-  SysUtils, Classes, PdfTypes
+  SysUtils, Classes
   {$IFDEF LINUX}
   , Types
   {$ELSE}
   , Windows
   {$ENDIF}
+  {$IFDEF LAZ_POWERPDF}
+  , LCLProc
+  {$ENDIF}
+  , PdfTypes
   ;
 
 const
@@ -1604,7 +1608,11 @@ var
     i: Integer;
   begin
     i := MeasureText(S, AWidth);
+    {$IFDEF LAZ_POWERPDF}
+    S := UTF8Copy(S, 1, i);
+    {$ELSE}
     S := Copy(S, 1, i);
+    {$ENDIF}
     ShowText(S);
   end;
 
