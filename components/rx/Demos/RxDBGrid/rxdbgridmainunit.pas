@@ -131,6 +131,8 @@ begin
 //  DoFillFilters;
   RxMemoryData1.First;
   RxDBGrid1.CalcStatTotals; //fix error in GotoBookmark
+
+
 end;
 
 procedure TRxDBGridMainForm.hlpAboutExecute(Sender: TObject);
@@ -142,6 +144,7 @@ procedure TRxDBGridMainForm.RxDBGrid1Filtred(Sender: TObject);
 begin
   RxMemoryData1.First;
 end;
+
 
 procedure TRxDBGridMainForm.RxMemoryData1FilterRecordEx(DataSet: TDataSet;
   var Accept: Boolean);

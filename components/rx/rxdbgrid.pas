@@ -87,11 +87,57 @@ type
   TDisplayLookup = TNotifyEvent;
 //  TDataSetClass = class of TDataSet;
 
+  TRxDBGridCommand = (rxgcNone, rxgcShowFindDlg, rxgcShowColumnsDlg,
+                      rxgcShowFilterDlg, rxgcShowSortDlg, rxgcShowQuickFilter,
+                      rxgcHideQuickFilter
+                     );
+
+  { TRxDBGridKeyStroke }
+
+  TRxDBGridKeyStroke = class(TCollectionItem)
+  private
+    FCommand: TRxDBGridCommand;
+    FEnabled: boolean;
+    FShortCut: TShortCut;
+    FKey: word;          // Virtual keycode, i.e. VK_xxx
+    FShift: TShiftState;
+    procedure SetCommand(const AValue: TRxDBGridCommand);
+    procedure SetShortCut(const AValue: TShortCut);
+  protected
+    function GetDisplayName: string; override;
+  public
+    //
+  published
+    property Command: TRxDBGridCommand read FCommand write SetCommand;
+    property ShortCut: TShortCut read FShortCut write SetShortCut;
+    property Enabled:boolean read FEnabled write FEnabled;
+  end;
+
+  { TRxDBGridKeyStrokes }
+
+  TRxDBGridKeyStrokes = class(TCollection)
+  private
+    FOwner: TPersistent;
+    function GetItem(Index: Integer): TRxDBGridKeyStroke;
+    procedure SetItem(Index: Integer; const AValue: TRxDBGridKeyStroke);
+  protected
+    procedure Update(Item: TCollectionItem); override;
+  public
+    constructor Create(AOwner: TPersistent);
+    function Add: TRxDBGridKeyStroke;
+    function AddE(ACommand: TRxDBGridCommand; AShortCut: TShortCut): TRxDBGridKeyStroke;
+    procedure ResetDefaults;
+    function FindRxCommand(AKey:word; AShift: TShiftState):TRxDBGridCommand;
+    function FindRxKeyStrokes(ACommand:TRxDBGridCommand):TRxDBGridKeyStroke;
+  public
+    property Items[Index: Integer]: TRxDBGridKeyStroke read GetItem
+      write SetItem; default;
+  end;
+
   TRxColumn = class;
 
   { TRxDBGridSortEngine }
-  TRxSortEngineOption =
-       (seoCaseInsensitiveSort);
+  TRxSortEngineOption = (seoCaseInsensitiveSort);
   TRxSortEngineOptions = set of TRxSortEngineOption;
 
   TRxDBGridSortEngine = class
@@ -273,6 +319,7 @@ type
     FAllowedOperations: TRxDBGridAllowedOperations;
     FFooterColor: TColor;
     FFooterRowCount: integer;
+    FKeyStrokes: TRxDBGridKeyStrokes;
     FOnGetCellProps: TGetCellPropsEvent;
     FOptionsRx: TOptionsRx;
 //    FTitleLines: Integer;
@@ -328,6 +375,7 @@ type
     procedure SetColumns(const AValue: TRxDbGridColumns);
     procedure SetFooterColor(const AValue: TColor);
     procedure SetFooterRowCount(const AValue: integer);
+    procedure SetKeyStrokes(const AValue: TRxDBGridKeyStrokes);
     procedure SetOptionsRx(const AValue: TOptionsRx);
     procedure SetPropertyStorage(const AValue: TCustomPropertyStorage);
     procedure SetTitleButtons(const AValue: boolean);
@@ -342,6 +390,7 @@ type
     procedure OutCaptionSortMarker(const  aRect: TRect; ASortMarker: TSortMarker);
     procedure OutCaptionMLCellText(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState; MLI:TMLCaptionItem);
     procedure UpdateJMenuStates;
+    procedure UpdateJMenuKeys;
     function  SortEngineOptions:TRxSortEngineOptions;
 
 
@@ -391,6 +440,7 @@ type
     Procedure OnFilterClose(Sender: TObject);
     Procedure OnSortBy(Sender: TObject);
     Procedure OnChooseVisibleFields(Sender: TObject);
+    procedure Loaded; override;
   public
     procedure FilterRec(DataSet : TDataSet;var Accept: Boolean);
 
@@ -427,6 +477,7 @@ type
     property OnGetCellProps: TGetCellPropsEvent read FOnGetCellProps
       write FOnGetCellProps;
     property Columns: TRxDbGridColumns read GetColumns write SetColumns stored IsColumnsStored;
+    property KeyStrokes:TRxDBGridKeyStrokes read FKeyStrokes write SetKeyStrokes;
 
     //storage
     property PropertyStorage:TCustomPropertyStorage read GetPropertyStorage write SetPropertyStorage;
@@ -490,6 +541,7 @@ type
     property TitleStyle;
     property UseXORFeatures;
     property Visible;
+
     property OnCellClick;
     property OnColEnter;
     property OnColExit;
@@ -529,7 +581,19 @@ implementation
 uses Math, rxdconst, rxstrutils, rxdbgrid_findunit, rxdbgrid_columsunit,
   rxlookup, tooledit, LCLProc, rxfilterby, rxsortby;
 
-var
+const
+  EditorCommandStrs: array[0..6] of TIdentMapEntry =
+  (
+    (Value: ord(rxgcNone); Name: 'rxcgNone'),
+    (Value: ord(rxgcShowFindDlg); Name: 'rxgcShowFindDlg'),
+    (Value: ord(rxgcShowColumnsDlg); Name: 'rxgcShowColumnsDlg'),
+    (Value: ord(rxgcShowFilterDlg); Name: 'rxgcShowFilterDlg'),
+    (Value: ord(rxgcShowSortDlg); Name: 'rxgcShowSortDlg'),
+    (Value: ord(rxgcShowQuickFilter); Name: 'rxgcShowQuickFilter'),
+    (Value: ord(rxgcHideQuickFilter); Name: 'rxgcHideQuickFilter')
+  );
+
+  var
   RxDBGridSortEngineList:TStringList;
 
 procedure RegisterRxDBGridSortEngine(RxDBGridSortEngineClass:TRxDBGridSortEngineClass; DataSetClass:TDataSetClass);
@@ -974,6 +1038,16 @@ begin
 //  Invalidate;
 end;
 
+procedure TRxDBGrid.SetKeyStrokes(const AValue: TRxDBGridKeyStrokes);
+begin
+  if Assigned(AValue) then
+    FKeyStrokes.Assign(AValue)
+  else
+    FKeyStrokes.Clear;
+
+  UpdateJMenuKeys;
+end;
+
 procedure TRxDBGrid.SetOptionsRx(const AValue: TOptionsRx);
 var
   OldOpt:TOptionsRx;
@@ -1280,6 +1354,28 @@ begin
   F_PopupMenu.Items[3].Enabled:=(rdgFilter in FOptionsRx) or (rdgAllowFilterForm in FOptionsRx);
   F_PopupMenu.Items[5].Enabled:=rdgAllowSortForm in FOptionsRx;
   F_PopupMenu.Items[6].Enabled:=rdgAllowColumnsForm in FOptionsRx;
+end;
+
+procedure TRxDBGrid.UpdateJMenuKeys;
+
+function DoShortCut(Cmd:TRxDBGridCommand):TShortCut;
+var
+  K:TRxDBGridKeyStroke;
+begin
+  K:=FKeyStrokes.FindRxKeyStrokes(Cmd);
+  if Assigned(K) and K.Enabled then
+    Result:=K.ShortCut
+  else
+    Result:=0;
+end;
+
+begin
+  F_PopupMenu.Items[0].ShortCut:=DoShortCut(rxgcShowFindDlg);
+  F_PopupMenu.Items[1].ShortCut:=DoShortCut(rxgcShowFilterDlg);
+  F_PopupMenu.Items[2].ShortCut:=DoShortCut(rxgcShowQuickFilter);
+  F_PopupMenu.Items[3].ShortCut:=DoShortCut(rxgcHideQuickFilter);
+  F_PopupMenu.Items[5].ShortCut:=DoShortCut(rxgcShowSortDlg);
+  F_PopupMenu.Items[6].ShortCut:=DoShortCut(rxgcShowColumnsDlg);
 end;
 
 function TRxDBGrid.SortEngineOptions: TRxSortEngineOptions;
@@ -2078,58 +2174,34 @@ end;
 procedure TRxDBGrid.KeyDown(var Key: Word; Shift: TShiftState);
 var
   FTmpReadOnly:boolean;
+
+procedure DoShowFindDlg;
+begin
+  if not (rdgAllowDialogFind in OptionsRx) then exit;
+  if Length(QuickUTF8Search) > 0 then QuickUTF8Search := '';
+  ShowFindDialog;
+end;
+
+procedure DoShowColumnsDlg;
+begin
+  if not (rdgAllowColumnsForm in OptionsRx) then exit;
+  if Length(QuickUTF8Search) > 0 then QuickUTF8Search := '';
+  ShowColumnsDialog;
+end;
+
+procedure DoShowQuickFilter;
+begin
+  if not (rdgAllowQuickFilter in FOptionsRx) then exit;
+  OnFilter(Self);
+end;
+
 begin
   //DebugLn('RxDBGrid.KeyDown ',Name,' INIT Key= ',IntToStr(Key));
   if (Key in CCancelQuickSearchKeys) then
     if Length(QuickUTF8Search) > 0 then QuickUTF8Search := '';
   case Key of
-    ord('F'):begin
-               if (ssCtrl in Shift) and (rdgAllowDialogFind in OptionsRx) then
-               begin
-                 if Length(QuickUTF8Search) > 0 then QuickUTF8Search := '';
-                 ShowFindDialog;
-                 exit;
-               end;
-             end;
-    ord('W'):begin
-               if (ssCtrl in Shift) and (rdgAllowColumnsForm in OptionsRx) then
-               begin
-                 if Length(QuickUTF8Search) > 0 then QuickUTF8Search := '';
-                 ShowColumnsDialog;
-                 exit;
-               end;
-             end;
     VK_DELETE:if not (aoDelete in FAllowedOperations) then exit;
     VK_INSERT:if not (aoInsert in FAllowedOperations) then exit;
-
-    ord('T'):begin
-               if ssCtrl in Shift then
-               begin
-                 OnFilterBy(Self);
-                 exit;
-               end;
-             end;
-    ord('E'):begin
-               if (ssCtrl in Shift) and (rdgAllowQuickFilter in FOptionsRx) then
-               begin
-                 OnFilter(Self);
-                 exit;
-               end;
-             end;
-    ord('Q'):begin
-               if ssCtrl in Shift then
-               begin
-                 OnFilterClose(Self);
-                 exit;
-               end;
-             end;
-    ord('C'):begin
-               if ssCtrl in Shift then
-               begin
-                 OnSortBy(Self);
-                 exit;
-               end;
-             end;
     VK_RETURN:if (aoAppend in FAllowedOperations) and (EditorMode) and (Col=ColCount-1) and (Row=RowCount-1) then
        if DataSource.DataSet.State=dsInsert then
        begin
@@ -2157,6 +2229,20 @@ begin
       end;
   end;
   inherited KeyDown(Key, Shift);
+  if Key <> 0 then
+  begin
+    case FKeyStrokes.FindRxCommand(Key, Shift) of
+      rxgcShowFindDlg : DoShowFindDlg;
+      rxgcShowColumnsDlg : DoShowColumnsDlg;
+      rxgcShowFilterDlg : OnFilterBy(Self);
+      rxgcShowQuickFilter : DoShowQuickFilter;
+      rxgcHideQuickFilter : OnFilterClose(Self);
+      rxgcShowSortDlg : OnSortBy(Self);
+    else
+      exit;
+    end;
+    Key:=0;
+  end;
 end;
 
 function TRxDBGrid.CreateColumns: TGridColumns;
@@ -2682,6 +2768,12 @@ begin
     ShowColumnsDialog;
 end;
 
+procedure TRxDBGrid.Loaded;
+begin
+  inherited Loaded;
+  UpdateJMenuKeys;
+end;
+
 Procedure TRxDBGrid.GetOnCreateLookup;
 begin
   if Assigned(F_CreateLookup) then
@@ -2700,6 +2792,9 @@ begin
 {$IFDEF RXDBGRID_OPTIONS_WO_CANCEL_ON_EXIT}
   Options:=Options - [dgCancelOnExit];
 {$ENDIF}
+
+  FKeyStrokes:=TRxDBGridKeyStrokes.Create(Self);
+  FKeyStrokes.ResetDefaults;
 
   FMarkerUp := LoadLazResBitmapImage('rx_markerup');
   FMarkerDown := LoadLazResBitmapImage('rx_markerdown');
@@ -2749,6 +2844,8 @@ begin
   FRxDbGridDateEditor:=TRxDBGridDateEditor.Create(nil);
   FRxDbGridDateEditor.Name:='RxDbGridDateEditor';
   FRxDbGridDateEditor.Visible:=false;
+
+  UpdateJMenuKeys;
 end;
 
 destructor TRxDBGrid.Destroy;
@@ -2765,6 +2862,7 @@ begin
   FreeAndNil(F_LastFilter);
   FreeAndNil(F_SortListField);
 
+  FreeAndNil(FKeyStrokes);
   inherited Destroy;
 end;
 
@@ -3428,6 +3526,116 @@ procedure TRxDBGridSortEngine.SortList(ListField: string; ADataSet: TDataSet;
   Asc: boolean);
 begin
 
+end;
+
+{ TRxDBGridKeyStroke }
+
+procedure TRxDBGridKeyStroke.SetCommand(const AValue: TRxDBGridCommand);
+begin
+  if FCommand=AValue then exit;
+  FCommand:=AValue;
+  Changed(false);
+end;
+
+procedure TRxDBGridKeyStroke.SetShortCut(const AValue: TShortCut);
+begin
+  if FShortCut=AValue then exit;
+  FShortCut:=AValue;
+  Menus.ShortCutToKey(FShortCut, FKey, FShift);
+  Changed(false);
+end;
+
+function TRxDBGridKeyStroke.GetDisplayName: string;
+begin
+  IntToIdent(Ord(FCommand), Result, EditorCommandStrs);
+  Result:=Result + ' - ' + ShortCutToText(FShortCut);
+end;
+
+{ TRxDBGridKeyStrokes }
+
+function TRxDBGridKeyStrokes.GetItem(Index: Integer): TRxDBGridKeyStroke;
+begin
+  Result := TRxDBGridKeyStroke(inherited GetItem(Index));
+end;
+
+procedure TRxDBGridKeyStrokes.SetItem(Index: Integer;
+  const AValue: TRxDBGridKeyStroke);
+begin
+  inherited SetItem(Index, AValue);
+end;
+
+procedure TRxDBGridKeyStrokes.Update(Item: TCollectionItem);
+begin
+  inherited Update(Item);
+  if (UpdateCount = 0) and Assigned(Owner) and Assigned(TRxDBGrid(Owner).FKeyStrokes) then
+    TRxDBGrid(Owner).UpdateJMenuKeys;
+end;
+
+
+constructor TRxDBGridKeyStrokes.Create(AOwner: TPersistent);
+begin
+  inherited Create(TRxDBGridKeyStroke);
+  FOwner := AOwner;
+end;
+
+function TRxDBGridKeyStrokes.Add: TRxDBGridKeyStroke;
+begin
+  Result := TRxDBGridKeyStroke(inherited Add);
+  Result.Enabled:=true;
+end;
+
+function TRxDBGridKeyStrokes.AddE(ACommand: TRxDBGridCommand; AShortCut: TShortCut
+  ): TRxDBGridKeyStroke;
+begin
+  Result:=nil;
+  Result:=Add;
+  Result.FShortCut:=AShortCut;
+  Result.FCommand:=ACommand;
+end;
+
+procedure TRxDBGridKeyStrokes.ResetDefaults;
+begin
+  Clear;
+  AddE(rxgcShowFindDlg, Menus.ShortCut(Ord('F'), [ssCtrl]));
+  AddE(rxgcShowColumnsDlg, Menus.ShortCut(Ord('W'), [ssCtrl]));
+  AddE(rxgcShowFilterDlg, Menus.ShortCut(Ord('T'), [ssCtrl]));
+  AddE(rxgcShowSortDlg, Menus.ShortCut(Ord('S'), [ssCtrl]));
+  AddE(rxgcShowQuickFilter, Menus.ShortCut(Ord('Q'), [ssCtrl]));
+  AddE(rxgcHideQuickFilter, Menus.ShortCut(Ord('H'), [ssCtrl]));
+end;
+
+function TRxDBGridKeyStrokes.FindRxCommand(AKey: word; AShift: TShiftState
+  ): TRxDBGridCommand;
+var
+  i:integer;
+  K:TRxDBGridKeyStroke;
+begin
+  Result:=rxgcNone;
+  for i:=0 to Count-1 do
+  begin
+    K:=Items[i];
+    if (K.FKey = AKey) and (K.FShift = AShift) and (K.FEnabled) then
+    begin
+      Result:=K.FCommand;
+      exit;
+    end;
+  end;
+end;
+
+function TRxDBGridKeyStrokes.FindRxKeyStrokes(ACommand: TRxDBGridCommand
+  ): TRxDBGridKeyStroke;
+var
+  i:integer;
+begin
+  Result:=nil;
+  for i:=0 to Count-1 do
+  begin
+    if (Items[i].Command = ACommand) then
+    begin
+      Result:=Items[i];
+      exit;
+    end;
+  end;
 end;
 
 initialization

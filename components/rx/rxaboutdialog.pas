@@ -45,11 +45,13 @@ type
 
   TRxAboutDialog = class(TComponent)
   private
+    FAdditionalInfo: TStrings;
     FApplicationTitle: string;
     FCaption: string;
     FLicenseFileName: string;
     FOptions: TRxAboutDialogOptions;
     FPicture: TPicture;
+    procedure SetAdditionalInfo(const AValue: TStrings);
     procedure SetPicture(const AValue: TPicture);
     procedure SetRxAboutDialogOptions(const AValue: TRxAboutDialogOptions);
   protected
@@ -64,6 +66,7 @@ type
     property LicenseFileName:string read FLicenseFileName write FLicenseFileName;
     property Caption:string read FCaption write FCaption;
     property Picture: TPicture read FPicture write SetPicture;
+    property AdditionalInfo:TStrings read FAdditionalInfo write SetAdditionalInfo;
   end;
 
 
@@ -85,15 +88,22 @@ begin
   FPicture.Assign(AValue);
 end;
 
+procedure TRxAboutDialog.SetAdditionalInfo(const AValue: TStrings);
+begin
+  FAdditionalInfo.Assign(AValue);
+end;
+
 constructor TRxAboutDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FPicture := TPicture.Create;
   FCaption:=sAbout;
+  FAdditionalInfo:= TStringList.Create;
 end;
 
 destructor TRxAboutDialog.Destroy;
 begin
+  FAdditionalInfo.Free;
   FPicture.Graphic := nil;
   FPicture.Free;
   inherited Destroy;
@@ -125,6 +135,8 @@ begin
   else
   begin
   end;
+
+  rxAboutFormForm.Memo2.Lines.Assign(FAdditionalInfo);
 
   try
     rxAboutFormForm.ShowModal;

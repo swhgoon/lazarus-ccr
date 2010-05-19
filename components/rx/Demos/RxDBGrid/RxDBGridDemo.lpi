@@ -13,7 +13,7 @@
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
       <Icon Value="0"/>
-      <ActiveEditorIndexAtStart Value="1"/>
+      <ActiveWindowIndexAtStart Value="0"/>
     </General>
     <VersionInfo>
       <UseVersionInfo Value="True"/>
@@ -52,14 +52,14 @@
         <MinVersion Major="1" Release="18" Build="56" Valid="True"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="51">
+    <Units Count="59">
       <Unit0>
         <Filename Value="RxDBGridDemo.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="RxDBGridDemo"/>
-        <CursorPos X="5" Y="17"/>
         <TopLine Value="1"/>
-        <UsageCount Value="40"/>
+        <CursorPos X="5" Y="17"/>
+        <UsageCount Value="44"/>
       </Unit0>
       <Unit1>
         <Filename Value="rxdbgridmainunit.pas"/>
@@ -67,37 +67,38 @@
         <ComponentName Value="RxDBGridMainForm"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="RxDBGridMainUnit"/>
-        <CursorPos X="9" Y="175"/>
-        <TopLine Value="173"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="40"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="148"/>
+        <CursorPos X="15" Y="157"/>
+        <UsageCount Value="44"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="../../../../fpcsrc/fcl/db/db.pp"/>
         <UnitName Value="db"/>
-        <CursorPos X="17" Y="1116"/>
         <TopLine Value="1112"/>
+        <CursorPos X="17" Y="1116"/>
         <UsageCount Value="9"/>
       </Unit2>
       <Unit3>
         <Filename Value="../../../../fpcsrc/fcl/db/dataset.inc"/>
-        <CursorPos X="21" Y="1139"/>
         <TopLine Value="1134"/>
+        <CursorPos X="21" Y="1139"/>
         <UsageCount Value="9"/>
       </Unit3>
       <Unit4>
         <Filename Value="../../rxmemds.pas"/>
         <UnitName Value="rxmemds"/>
-        <CursorPos X="1" Y="356"/>
         <TopLine Value="337"/>
+        <CursorPos X="1" Y="356"/>
         <UsageCount Value="9"/>
       </Unit4>
       <Unit5>
         <Filename Value="../../rxdbgrid.pas"/>
         <UnitName Value="rxdbgrid"/>
-        <CursorPos X="51" Y="1022"/>
         <TopLine Value="1007"/>
+        <CursorPos X="51" Y="1022"/>
         <UsageCount Value="13"/>
         <Bookmarks Count="2">
           <Item0 X="1" Y="1089" ID="1"/>
@@ -107,74 +108,74 @@
       <Unit6>
         <Filename Value="../../../../lcl/lresources.pp"/>
         <UnitName Value="LResources"/>
-        <CursorPos X="1" Y="2644"/>
         <TopLine Value="2626"/>
+        <CursorPos X="1" Y="2644"/>
         <UsageCount Value="9"/>
       </Unit6>
       <Unit7>
         <Filename Value="../../../../lcl/grids.pas"/>
         <UnitName Value="Grids"/>
-        <CursorPos X="33" Y="394"/>
         <TopLine Value="385"/>
+        <CursorPos X="33" Y="394"/>
         <UsageCount Value="10"/>
       </Unit7>
       <Unit8>
         <Filename Value="../../../../lcl/dbgrids.pas"/>
         <UnitName Value="DBGrids"/>
-        <CursorPos X="30" Y="199"/>
         <TopLine Value="187"/>
+        <CursorPos X="30" Y="199"/>
         <UsageCount Value="10"/>
       </Unit8>
       <Unit9>
         <Filename Value="../../rxpopupunit.pas"/>
         <UnitName Value="rxpopupunit"/>
-        <CursorPos X="15" Y="249"/>
         <TopLine Value="246"/>
+        <CursorPos X="15" Y="249"/>
         <UsageCount Value="10"/>
       </Unit9>
       <Unit10>
         <Filename Value="../../../../lcl/include/wincontrol.inc"/>
-        <CursorPos X="1" Y="7236"/>
         <TopLine Value="7217"/>
+        <CursorPos X="1" Y="7236"/>
         <UsageCount Value="9"/>
       </Unit10>
       <Unit11>
         <Filename Value="../../../../lcl/include/control.inc"/>
-        <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
         <UsageCount Value="9"/>
       </Unit11>
       <Unit12>
         <Filename Value="../../../../lcl/lclmessageglue.pas"/>
         <UnitName Value="LCLMessageGlue"/>
-        <CursorPos X="46" Y="96"/>
         <TopLine Value="92"/>
+        <CursorPos X="46" Y="96"/>
         <UsageCount Value="9"/>
       </Unit12>
       <Unit13>
         <Filename Value="../../../../lcl/controls.pp"/>
         <UnitName Value="Controls"/>
-        <CursorPos X="60" Y="1798"/>
         <TopLine Value="1779"/>
+        <CursorPos X="60" Y="1798"/>
         <UsageCount Value="9"/>
       </Unit13>
       <Unit14>
         <Filename Value="../../../../../../install/2/rxdbgrid.diff"/>
-        <CursorPos X="1" Y="21"/>
         <TopLine Value="1"/>
-        <UsageCount Value="9"/>
+        <CursorPos X="1" Y="21"/>
         <SyntaxHighlighter Value="None"/>
+        <UsageCount Value="9"/>
       </Unit14>
       <Unit15>
         <Filename Value="../../../../lcl/interfaces/gtk/gtkdevicecontext.inc"/>
-        <CursorPos X="1" Y="644"/>
         <TopLine Value="626"/>
+        <CursorPos X="1" Y="644"/>
         <UsageCount Value="9"/>
       </Unit15>
       <Unit16>
         <Filename Value="../../../../lcl/interfaces/gtk2/gtk2winapi.inc"/>
-        <CursorPos X="1" Y="577"/>
         <TopLine Value="559"/>
+        <CursorPos X="1" Y="577"/>
         <UsageCount Value="9"/>
       </Unit16>
       <Unit17>
@@ -183,76 +184,76 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="rxdbgrid_columsunit"/>
-        <CursorPos X="46" Y="45"/>
         <TopLine Value="26"/>
+        <CursorPos X="46" Y="45"/>
         <UsageCount Value="9"/>
       </Unit17>
       <Unit18>
         <Filename Value="../../rxdconst.pas"/>
         <UnitName Value="rxdconst"/>
-        <CursorPos X="15" Y="155"/>
         <TopLine Value="126"/>
+        <CursorPos X="15" Y="155"/>
         <UsageCount Value="9"/>
       </Unit18>
       <Unit19>
         <Filename Value="../../../../lcl/include/winapih.inc"/>
-        <CursorPos X="10" Y="223"/>
         <TopLine Value="211"/>
+        <CursorPos X="10" Y="223"/>
         <UsageCount Value="9"/>
       </Unit19>
       <Unit20>
         <Filename Value="../../backup/rxdbgrid.pas"/>
         <UnitName Value="rxdbgrid"/>
-        <CursorPos X="1" Y="1227"/>
         <TopLine Value="1207"/>
+        <CursorPos X="1" Y="1227"/>
         <UsageCount Value="9"/>
       </Unit20>
       <Unit21>
         <Filename Value="/usr/local/share/lazarus/components/rxnew/rxaboutdialog.pas"/>
         <UnitName Value="RxAboutDialog"/>
-        <CursorPos X="73" Y="30"/>
         <TopLine Value="10"/>
+        <CursorPos X="73" Y="30"/>
         <UsageCount Value="10"/>
       </Unit21>
       <Unit22>
         <Filename Value="/usr/local/share/lazarus/components/rxnew/registerrx.pas"/>
         <UnitName Value="registerrx"/>
-        <CursorPos X="18" Y="201"/>
         <TopLine Value="174"/>
+        <CursorPos X="18" Y="201"/>
         <UsageCount Value="10"/>
       </Unit22>
       <Unit23>
         <Filename Value="/usr/local/share/lazarus/ideintf/idewindowintf.pas"/>
         <UnitName Value="IDEWindowIntf"/>
-        <CursorPos X="1" Y="1"/>
         <TopLine Value="31"/>
+        <CursorPos X="1" Y="1"/>
         <UsageCount Value="9"/>
       </Unit23>
       <Unit24>
         <Filename Value="/usr/local/share/lazarus/lcl/extdlgs.pas"/>
         <UnitName Value="ExtDlgs"/>
-        <CursorPos X="35" Y="122"/>
         <TopLine Value="105"/>
+        <CursorPos X="35" Y="122"/>
         <UsageCount Value="9"/>
       </Unit24>
       <Unit25>
         <Filename Value="/usr/local/share/lazarus/lcl/dialogs.pp"/>
         <UnitName Value="Dialogs"/>
-        <CursorPos X="21" Y="79"/>
         <TopLine Value="62"/>
+        <CursorPos X="21" Y="79"/>
         <UsageCount Value="9"/>
       </Unit25>
       <Unit26>
         <Filename Value="/usr/local/share/lazarus/lcl/include/commondialog.inc"/>
-        <CursorPos X="17" Y="84"/>
         <TopLine Value="80"/>
+        <CursorPos X="17" Y="84"/>
         <UsageCount Value="9"/>
       </Unit26>
       <Unit27>
         <Filename Value="/usr/local/share/lazarus/lcl/widgetset/wsdialogs.pp"/>
         <UnitName Value="WSDialogs"/>
-        <CursorPos X="3" Y="136"/>
         <TopLine Value="132"/>
+        <CursorPos X="3" Y="136"/>
         <UsageCount Value="9"/>
       </Unit27>
       <Unit28>
@@ -260,48 +261,52 @@
         <ComponentName Value="rxAboutFormForm"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="rxAboutFormUnit"/>
-        <CursorPos X="26" Y="55"/>
         <TopLine Value="41"/>
+        <CursorPos X="26" Y="55"/>
         <UsageCount Value="10"/>
       </Unit28>
       <Unit29>
         <Filename Value="/usr/local/share/lazarus/components/rxnew/rxversinfo.pas"/>
         <UnitName Value="RxVersInfo"/>
-        <CursorPos X="49" Y="105"/>
         <TopLine Value="72"/>
+        <CursorPos X="49" Y="105"/>
         <UsageCount Value="9"/>
       </Unit29>
       <Unit30>
         <Filename Value="/usr/local/share/lazarus/lcl/include/control.inc"/>
-        <CursorPos X="1" Y="3167"/>
+        <WindowIndex Value="0"/>
         <TopLine Value="3150"/>
-        <UsageCount Value="9"/>
+        <CursorPos X="89" Y="3171"/>
+        <UsageCount Value="10"/>
       </Unit30>
       <Unit31>
         <Filename Value="/usr/local/share/lazarus/lcl/buttonpanel.pas"/>
         <UnitName Value="ButtonPanel"/>
-        <CursorPos X="6" Y="15"/>
         <TopLine Value="11"/>
+        <CursorPos X="6" Y="15"/>
         <UsageCount Value="10"/>
       </Unit31>
       <Unit32>
         <Filename Value="/usr/local/share/lazarus/lcl/extctrls.pp"/>
         <UnitName Value="ExtCtrls"/>
-        <CursorPos X="15" Y="607"/>
         <TopLine Value="604"/>
+        <CursorPos X="15" Y="607"/>
         <UsageCount Value="10"/>
       </Unit32>
       <Unit33>
         <Filename Value="/usr/local/share/lazarus/lcl/include/customimage.inc"/>
-        <CursorPos X="3" Y="69"/>
         <TopLine Value="67"/>
+        <CursorPos X="3" Y="69"/>
         <UsageCount Value="10"/>
       </Unit33>
       <Unit34>
         <Filename Value="../../../../../../install/fpcsrc/rtl/objpas/classes/classesh.inc"/>
-        <CursorPos X="1" Y="1641"/>
-        <TopLine Value="1632"/>
-        <UsageCount Value="9"/>
+        <EditorIndex Value="5"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="472"/>
+        <CursorPos X="1" Y="491"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
       </Unit34>
       <Unit35>
         <Filename Value="../../../../../smsprog/sms_send_deamon/smsSendGui/smssendaboutunit.pas"/>
@@ -309,22 +314,22 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="smsSendAboutUnit"/>
-        <CursorPos X="1" Y="57"/>
         <TopLine Value="28"/>
+        <CursorPos X="1" Y="57"/>
         <UsageCount Value="10"/>
       </Unit35>
       <Unit36>
         <Filename Value="../../../../../smsprog/sms_shared/smsabstarctconstunit.pas"/>
         <UnitName Value="smsAbstarctConstUnit"/>
-        <CursorPos X="42" Y="11"/>
         <TopLine Value="1"/>
+        <CursorPos X="42" Y="11"/>
         <UsageCount Value="10"/>
       </Unit36>
       <Unit37>
         <Filename Value="/usr/local/share/lazarus/components/rxnew/rxconst.pas"/>
         <UnitName Value="rxconst"/>
-        <CursorPos X="3" Y="51"/>
         <TopLine Value="34"/>
+        <CursorPos X="3" Y="51"/>
         <UsageCount Value="10"/>
       </Unit37>
       <Unit38>
@@ -333,8 +338,8 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="smssendParamsUnit"/>
-        <CursorPos X="34" Y="60"/>
         <TopLine Value="49"/>
+        <CursorPos X="34" Y="60"/>
         <UsageCount Value="10"/>
       </Unit38>
       <Unit39>
@@ -343,64 +348,76 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="smsSendDemoMainUnit"/>
-        <CursorPos X="105" Y="29"/>
         <TopLine Value="41"/>
+        <CursorPos X="105" Y="29"/>
         <UsageCount Value="10"/>
       </Unit39>
       <Unit40>
         <Filename Value="../../../rxnet/demo/send_demo/send_demo.lpr"/>
         <UnitName Value="send_demo"/>
-        <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
         <UsageCount Value="10"/>
       </Unit40>
       <Unit41>
         <Filename Value="../../../../doceditor/lazdeopts.pp"/>
         <UnitName Value="LazDEOpts"/>
-        <CursorPos X="1" Y="56"/>
         <TopLine Value="43"/>
+        <CursorPos X="1" Y="56"/>
         <UsageCount Value="10"/>
       </Unit41>
       <Unit42>
         <Filename Value="/usr/local/share/lazarus/components/rxnew/rxfileutils.pas"/>
         <UnitName Value="rxFileUtils"/>
-        <CursorPos X="33" Y="42"/>
         <TopLine Value="18"/>
+        <CursorPos X="33" Y="42"/>
         <UsageCount Value="10"/>
       </Unit42>
       <Unit43>
         <Filename Value="/usr/local/share/lazarus/lcl/dbgrids.pas"/>
         <UnitName Value="DBGrids"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="121"/>
+        <EditorIndex Value="2"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1755"/>
+        <CursorPos X="36" Y="1773"/>
         <UsageCount Value="10"/>
+        <Loaded Value="True"/>
       </Unit43>
       <Unit44>
         <Filename Value="/usr/local/share/lazarus/components/rxnew/registerrxdb.pas"/>
         <UnitName Value="RegisterRxDB"/>
-        <CursorPos X="20" Y="17"/>
         <TopLine Value="2"/>
+        <CursorPos X="20" Y="17"/>
         <UsageCount Value="10"/>
       </Unit44>
       <Unit45>
         <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
         <UnitName Value="rxdbgrid"/>
-        <CursorPos X="61" Y="496"/>
-        <TopLine Value="481"/>
-        <UsageCount Value="10"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="78"/>
+        <CursorPos X="21" Y="113"/>
+        <UsageCount Value="12"/>
+        <Bookmarks Count="3">
+          <Item0 X="3" Y="3550" ID="2"/>
+          <Item1 X="3" Y="2199" ID="3"/>
+          <Item2 X="3" Y="2774" ID="1"/>
+        </Bookmarks>
+        <Loaded Value="True"/>
       </Unit45>
       <Unit46>
         <Filename Value="/usr/local/share/lazarus/ideintf/dbpropedits.pas"/>
         <UnitName Value="DBPropEdits"/>
-        <CursorPos X="6" Y="19"/>
         <TopLine Value="13"/>
+        <CursorPos X="6" Y="19"/>
         <UsageCount Value="10"/>
       </Unit46>
       <Unit47>
         <Filename Value="/usr/local/share/lazarus/ideintf/propedits.pp"/>
         <UnitName Value="PropEdits"/>
-        <CursorPos X="6" Y="26"/>
         <TopLine Value="1"/>
+        <CursorPos X="6" Y="26"/>
         <UsageCount Value="10"/>
       </Unit47>
       <Unit48>
@@ -409,8 +426,8 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="rxdbgrid_findunit"/>
-        <CursorPos X="1" Y="94"/>
         <TopLine Value="78"/>
+        <CursorPos X="1" Y="94"/>
         <UsageCount Value="10"/>
       </Unit48>
       <Unit49>
@@ -419,53 +436,223 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="rxdbgrid_columsunit"/>
-        <CursorPos X="25" Y="1"/>
         <TopLine Value="1"/>
+        <CursorPos X="25" Y="1"/>
         <UsageCount Value="10"/>
       </Unit49>
       <Unit50>
         <Filename Value="/usr/local/share/lazarus/components/rxnew/rxtoolbar.pas"/>
         <UnitName Value="rxtoolbar"/>
-        <CursorPos X="52" Y="26"/>
+        <WindowIndex Value="0"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="1"/>
+        <CursorPos X="52" Y="26"/>
+        <UsageCount Value="12"/>
+      </Unit50>
+      <Unit51>
+        <Filename Value="/usr/local/share/lazarus/components/synedit/synedit.pp"/>
+        <UnitName Value="SynEdit"/>
+        <EditorIndex Value="3"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="5699"/>
+        <CursorPos X="1" Y="5702"/>
+        <SyntaxHighlighter Value="FreePascal"/>
         <UsageCount Value="12"/>
         <Loaded Value="True"/>
-      </Unit50>
+        <DefaultSyntaxHighlighter Value="Text"/>
+      </Unit51>
+      <Unit52>
+        <Filename Value="/usr/local/share/lazarus/components/synedit/syneditkeycmds.pp"/>
+        <UnitName Value="SynEditKeyCmds"/>
+        <EditorIndex Value="4"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="750"/>
+        <CursorPos X="3" Y="752"/>
+        <SyntaxHighlighter Value="FreePascal"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Text"/>
+      </Unit52>
+      <Unit53>
+        <Filename Value="../../../../../../install/fpcsrc/rtl/objpas/classes/classes.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="429"/>
+        <CursorPos X="33" Y="447"/>
+        <SyntaxHighlighter Value="FreePascal"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="Text"/>
+      </Unit53>
+      <Unit54>
+        <Filename Value="/usr/local/share/lazarus/lcl/actnlist.pas"/>
+        <UnitName Value="ActnList"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="206"/>
+        <CursorPos X="33" Y="224"/>
+        <SyntaxHighlighter Value="FreePascal"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="Text"/>
+      </Unit54>
+      <Unit55>
+        <Filename Value="/usr/local/share/lazarus/lcl/lclproc.pas"/>
+        <UnitName Value="LCLProc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1154"/>
+        <CursorPos X="10" Y="1165"/>
+        <SyntaxHighlighter Value="FreePascal"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="Text"/>
+      </Unit55>
+      <Unit56>
+        <Filename Value="rxdbgridmainunit.lfm"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="100"/>
+        <CursorPos X="5" Y="103"/>
+        <SyntaxHighlighter Value="LFM"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="Text"/>
+      </Unit56>
+      <Unit57>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/Demos/RxDBGrid/RxDBGridDemo.lpr"/>
+        <UnitName Value="RxDBGridDemo"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="15"/>
+        <SyntaxHighlighter Value="FreePascal"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="Text"/>
+      </Unit57>
+      <Unit58>
+        <Filename Value="../../../../../../install/fpcsrc/rtl/objpas/classes/collect.inc"/>
+        <EditorIndex Value="6"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="286"/>
+        <CursorPos X="1" Y="288"/>
+        <SyntaxHighlighter Value="FreePascal"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Text"/>
+      </Unit58>
     </Units>
-    <JumpHistory Count="8" HistoryIndex="7">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="rxdbgridmainunit.pas"/>
-        <Caret Line="87" Column="23" TopLine="54"/>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
+        <Caret Line="373" Column="15" TopLine="355"/>
       </Position1>
       <Position2>
-        <Filename Value="rxdbgridmainunit.pas"/>
-        <Caret Line="96" Column="92" TopLine="71"/>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
+        <Caret Line="477" Column="74" TopLine="464"/>
       </Position2>
       <Position3>
-        <Filename Value="rxdbgridmainunit.pas"/>
-        <Caret Line="97" Column="92" TopLine="71"/>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
+        <Caret Line="1045" Column="19" TopLine="1038"/>
       </Position3>
       <Position4>
-        <Filename Value="rxdbgridmainunit.pas"/>
-        <Caret Line="10" Column="8" TopLine="1"/>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
+        <Caret Line="477" Column="76" TopLine="463"/>
       </Position4>
       <Position5>
-        <Filename Value="rxdbgridmainunit.pas"/>
-        <Caret Line="9" Column="12" TopLine="1"/>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
+        <Caret Line="2839" Column="19" TopLine="2814"/>
       </Position5>
       <Position6>
-        <Filename Value="rxdbgridmainunit.pas"/>
-        <Caret Line="10" Column="9" TopLine="1"/>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
+        <Caret Line="441" Column="32" TopLine="418"/>
       </Position6>
       <Position7>
-        <Filename Value="rxdbgridmainunit.pas"/>
-        <Caret Line="9" Column="28" TopLine="1"/>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
+        <Caret Line="2769" Column="21" TopLine="2769"/>
       </Position7>
       <Position8>
-        <Filename Value="rxdbgridmainunit.pas"/>
-        <Caret Line="9" Column="28" TopLine="1"/>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position8>
+      <Position9>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
+        <Caret Line="441" Column="22" TopLine="423"/>
+      </Position9>
+      <Position10>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
+        <Caret Line="2769" Column="28" TopLine="2751"/>
+      </Position10>
+      <Position11>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
+        <Caret Line="2772" Column="13" TopLine="2754"/>
+      </Position11>
+      <Position12>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
+        <Caret Line="229" Column="15" TopLine="211"/>
+      </Position12>
+      <Position13>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
+        <Caret Line="3543" Column="4" TopLine="3538"/>
+      </Position13>
+      <Position14>
+        <Filename Value="../../../../../../install/fpcsrc/rtl/objpas/classes/collect.inc"/>
+        <Caret Line="50" Column="20" TopLine="42"/>
+      </Position14>
+      <Position15>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
+        <Caret Line="124" Column="55" TopLine="103"/>
+      </Position15>
+      <Position16>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
+        <Caret Line="2774" Column="3" TopLine="2756"/>
+      </Position16>
+      <Position17>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
+        <Caret Line="3571" Column="37" TopLine="3553"/>
+      </Position17>
+      <Position18>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
+        <Caret Line="3552" Column="85" TopLine="3549"/>
+      </Position18>
+      <Position19>
+        <Filename Value="rxdbgridmainunit.pas"/>
+        <Caret Line="132" Column="74" TopLine="100"/>
+      </Position19>
+      <Position20>
+        <Filename Value="rxdbgridmainunit.pas"/>
+        <Caret Line="134" Column="74" TopLine="102"/>
+      </Position20>
+      <Position21>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
+        <Caret Line="570" Column="16" TopLine="538"/>
+      </Position21>
+      <Position22>
+        <Filename Value="/usr/local/share/lazarus/lcl/dbgrids.pas"/>
+        <Caret Line="457" Column="84" TopLine="439"/>
+      </Position22>
+      <Position23>
+        <Filename Value="/usr/local/share/lazarus/lcl/dbgrids.pas"/>
+        <Caret Line="561" Column="26" TopLine="543"/>
+      </Position23>
+      <Position24>
+        <Filename Value="/usr/local/share/lazarus/lcl/dbgrids.pas"/>
+        <Caret Line="1773" Column="27" TopLine="1757"/>
+      </Position24>
+      <Position25>
+        <Filename Value="/usr/local/share/lazarus/lcl/dbgrids.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position25>
+      <Position26>
+        <Filename Value="/usr/local/share/lazarus/lcl/dbgrids.pas"/>
+        <Caret Line="413" Column="26" TopLine="395"/>
+      </Position26>
+      <Position27>
+        <Filename Value="rxdbgridmainunit.pas"/>
+        <Caret Line="152" Column="1" TopLine="150"/>
+      </Position27>
+      <Position28>
+        <Filename Value="rxdbgridmainunit.pas"/>
+        <Caret Line="151" Column="1" TopLine="149"/>
+      </Position28>
+      <Position29>
+        <Filename Value="rxdbgridmainunit.pas"/>
+        <Caret Line="157" Column="15" TopLine="148"/>
+      </Position29>
+      <Position30>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
+        <Caret Line="480" Column="36" TopLine="474"/>
+      </Position30>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
@@ -489,13 +676,23 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <Watches Count="2">
+    <BreakPoints Count="1">
+      <Item1>
+        <Source Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
+        <Line Value="1043"/>
+      </Item1>
+    </BreakPoints>
+    <Watches Count="3">
       <Item1>
         <Expression Value="W"/>
       </Item1>
       <Item2>
         <Expression Value="aRect"/>
       </Item2>
+      <Item3>
+        <Expression Value="K.Enabled)"/>
+        <Enabled Value="False"/>
+      </Item3>
     </Watches>
     <Exceptions Count="1">
       <Item1>

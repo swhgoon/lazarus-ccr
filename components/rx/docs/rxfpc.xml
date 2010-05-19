@@ -160,6 +160,7 @@
             
             
             
+            
             <link id="TRxDBGrid">RxDBGrid</link>-а.</p>
         </descr>
       </element>
@@ -560,6 +561,7 @@
             
             
             
+            
             <link id="TRxDBGrid">RxDBGrid</link>-а.</p>
         </descr>
         <seealso>
@@ -624,6 +626,32 @@
       <element name="TDisplayLookup">
         <short>Тип описывает событие, возникающее в момент показа выпадающего списка лукапного редактора значения ячейки</short>
         <descr>Тип описывает событие, возникающее в момент показа выпадающего списка лукапного редактора значения ячейки</descr>
+      </element>
+      <element name="TRxDBGrid.KeyStrokes">
+        <short>Определяет сочетания для вызова фукнций RxDBGrid</short>
+        <descr>Определяет сочетания для вызова фукнций RxDBGrid</descr>
+      </element>
+      <element name="TRxDBGridKeyStrokes">
+        <short>Список назначенных клавиш на команды в TRxDBGrid</short>
+      </element>
+      <element name="TRxDBGridKeyStrokes.Create"/>
+      <element name="TRxDBGridKeyStrokes.Add"/>
+      <element name="TRxDBGridKeyStrokes.AddE"/>
+      <element name="TRxDBGridKeyStrokes.ResetDefaults"/>
+      <element name="TRxDBGridKeyStrokes.FindRxCommand"/>
+      <element name="TRxDBGridKeyStrokes.FindRxKeyStrokes"/>
+      <element name="TRxDBGridKeyStrokes.Items">
+        <short>Список назначенных команд на сочетания клавишь</short>
+      </element>
+      <element name="TRxDBGridKeyStroke"/>
+      <element name="TRxDBGridKeyStroke.Command">
+        <short>Определяем команду</short>
+      </element>
+      <element name="TRxDBGridKeyStroke.ShortCut">
+        <short>Определят сочетание клавишь</short>
+      </element>
+      <element name="TRxDBGridKeyStroke.Enabled">
+        <short>Признак запрета данного сочетания клавишь</short>
       </element>
     </module>
     <module name="rxctrls">
@@ -1090,6 +1118,7 @@ TRxDBCalcEdit является наследником TDBCalcEdit и имеет 
         <descr>
           <p>Свойство - массив, содержит в себе список всех файлов и каталогов, которые были обнаружены в указанной папке.</p>
 Кол-во элементов данного массива находится в свойстве 
+          
           
           
           
@@ -2392,7 +2421,9 @@ Description
             
             
             
+            
             <b>const</b> SearchDomain, FileName:
+            
             
             
             
@@ -2430,7 +2461,9 @@ Description
             
             
             
+            
             <b>out</b> UserName, DomainName:
+            
             
             
             
@@ -2485,7 +2518,9 @@ Description
             
             
             
+            
             <b>const</b> DirName:
+            
             
             
             
@@ -2511,6 +2546,7 @@ Description
             
             
             
+            
             <b>string</b>;</p>
           <p>Функция проверяет все разделители каталогов в указанном имени файла/каталога и, если нужно, меняет их на значение константы<b>DirectorySeparator</b>.</p>
         </descr>
@@ -2521,6 +2557,7 @@ Description
         <descr>
           <p>
             <b>function</b> GetUserName: 
+            
             
             
             

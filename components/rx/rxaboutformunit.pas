@@ -55,6 +55,7 @@ type
     lblVersion: TLabel;
     lblWidgetName: TLabel;
     Memo1: TMemo;
+    Memo2: TMemo;
     PageControl1: TPageControl;
     RxVersionInfo1: TRxVersionInfo;
     TabSheet1: TTabSheet;
@@ -92,7 +93,9 @@ begin
   TabSheet1.Caption:=sGeneral;
   TabSheet2.Caption:=sDetails;
   TabSheet3.Caption:=sLicense;
+  Memo2.Color:=TabSheet1.Color;
 end;
+
 
 procedure TrxAboutFormForm.LoadLicense(AFileName: string);
 begin
