@@ -1,0 +1,542 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="7"/>
+    <General>
+      <Flags>
+        <MainUnitHasCreateFormStatements Value="False"/>
+        <Runnable Value="False"/>
+      </Flags>
+      <MainUnit Value="0"/>
+      <TargetFileExt Value=""/>
+      <UseXPManifest Value="True"/>
+      <Icon Value="0"/>
+      <ActiveWindowIndexAtStart Value="0"/>
+    </General>
+    <VersionInfo>
+      <StringTable Comments="" CompanyName="" FileDescription="" FileVersion="0.0.0.0" InternalName="" LegalCopyright="" LegalTrademarks="" OriginalFilename="" ProductName="" ProductVersion=""/>
+    </VersionInfo>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="4">
+      <Item1>
+        <PackageName Value="fclwebwst"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="WebLaz"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="LCL"/>
+      </Item3>
+      <Item4>
+        <PackageName Value="FCL"/>
+      </Item4>
+    </RequiredPackages>
+    <Units Count="38">
+      <Unit0>
+        <Filename Value="demoservice.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="demoservice"/>
+        <EditorIndex Value="12"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="6" Y="1"/>
+        <UsageCount Value="71"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="wmhandler.pp"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="WSTModule1"/>
+        <ResourceBaseClass Value="DataModule"/>
+        <UnitName Value="wmhandler"/>
+        <EditorIndex Value="0"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="19"/>
+        <CursorPos X="53" Y="29"/>
+        <ComponentState Value="1"/>
+        <UsageCount Value="71"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="imp_helper.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="imp_helper"/>
+        <TopLine Value="1"/>
+        <CursorPos X="6" Y="11"/>
+        <UsageCount Value="71"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="user_service_intf.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="user_service_intf"/>
+        <EditorIndex Value="4"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="67"/>
+        <CursorPos X="11" Y="77"/>
+        <UsageCount Value="71"/>
+        <Loaded Value="True"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="user_service_intf_binder.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="user_service_intf_binder"/>
+        <EditorIndex Value="3"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="270"/>
+        <CursorPos X="1" Y="290"/>
+        <UsageCount Value="71"/>
+        <Loaded Value="True"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="user_service_intf_imp.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="user_service_intf_imp"/>
+        <EditorIndex Value="17"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="22"/>
+        <CursorPos X="26" Y="46"/>
+        <UsageCount Value="71"/>
+        <Loaded Value="True"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="user_service_intf_proxy.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="user_service_intf_proxy"/>
+        <TopLine Value="148"/>
+        <CursorPos X="4" Y="185"/>
+        <UsageCount Value="71"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="std_cursors.pas"/>
+        <UnitName Value="std_cursors"/>
+        <TopLine Value="2"/>
+        <CursorPos X="3" Y="23"/>
+        <UsageCount Value="5"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="../wstmodule.pas"/>
+        <HasResources Value="True"/>
+        <UnitName Value="wstmodule"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="6"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="45"/>
+        <CursorPos X="10" Y="66"/>
+        <UsageCount Value="18"/>
+        <Loaded Value="True"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="../../../Documents/source/wst/wst_global.inc"/>
+        <EditorIndex Value="2"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="36" Y="18"/>
+        <UsageCount Value="36"/>
+        <Loaded Value="True"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="../../../fpc/packages/fcl-web/src/httpdefs.pp"/>
+        <UnitName Value="HTTPDefs"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="12"/>
+        <CursorPos X="27" Y="25"/>
+        <UsageCount Value="15"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="../../../fpc/packages/fcl-web/src/fphttp.pp"/>
+        <UnitName Value="fphttp"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="101"/>
+        <CursorPos X="14" Y="112"/>
+        <UsageCount Value="16"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="../../../fpc/packages/fcl-web/src/fpweb.pp"/>
+        <UnitName Value="fpWeb"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="442"/>
+        <UsageCount Value="5"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="../../../fpc/packages/fcl-web/src/fpcgi.pp"/>
+        <UnitName Value="fpcgi"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="27" Y="20"/>
+        <UsageCount Value="16"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="../../../fpc/packages/fcl-web/src/custcgi.pp"/>
+        <UnitName Value="custcgi"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="16"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="../../../fpc/packages/fcl-web/src/custweb.pp"/>
+        <UnitName Value="custweb"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="3" Y="15"/>
+        <UsageCount Value="16"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="../../../fpc/lazarus/components/fpweb/weblazideintf.pp"/>
+        <UnitName Value="WebLazIDEIntf"/>
+        <TopLine Value="109"/>
+        <CursorPos X="40" Y="122"/>
+        <UsageCount Value="5"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="../regwstmodule.pp"/>
+        <UnitName Value="regwstmodule"/>
+        <TopLine Value="22"/>
+        <CursorPos X="48" Y="40"/>
+        <UsageCount Value="5"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="../../../Documents/source/wst/metadata_wsdl.pas"/>
+        <UnitName Value="metadata_wsdl"/>
+        <TopLine Value="46"/>
+        <CursorPos X="49" Y="67"/>
+        <UsageCount Value="5"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="../../../Documents/source/wst/wst_rtti_filter/cursor_intf.pas"/>
+        <UnitName Value="cursor_intf"/>
+        <TopLine Value="1"/>
+        <CursorPos X="14" Y="13"/>
+        <UsageCount Value="5"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="../../../Documents/source/wst/wst_rtti_filter/rtti_filters.pas"/>
+        <UnitName Value="rtti_filters"/>
+        <TopLine Value="1"/>
+        <CursorPos X="14" Y="13"/>
+        <UsageCount Value="5"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="../../../Documents/source/wst/wst_rtti_filter/std_cursors.pas"/>
+        <UnitName Value="std_cursors"/>
+        <TopLine Value="1"/>
+        <CursorPos X="14" Y="23"/>
+        <UsageCount Value="5"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="../../../Documents/source/wst/wst_rtti_filter/wst_cursors.pas"/>
+        <UnitName Value="wst_cursors"/>
+        <TopLine Value="1"/>
+        <CursorPos X="14" Y="13"/>
+        <UsageCount Value="5"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="../../../Documents/source/wst/server_service_json.pas"/>
+        <UnitName Value="server_service_json"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="91"/>
+        <CursorPos X="18" Y="111"/>
+        <UsageCount Value="36"/>
+        <Loaded Value="True"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="../../../Documents/source/wst/base_json_formatter.pas"/>
+        <UnitName Value="base_json_formatter"/>
+        <EditorIndex Value="5"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="677"/>
+        <CursorPos X="45" Y="697"/>
+        <UsageCount Value="36"/>
+        <Loaded Value="True"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="../../../Documents/source/wst/base_service_intf.pas"/>
+        <UnitName Value="base_service_intf"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="5"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="../../../Documents/source/wst/server_service_intf.pas"/>
+        <UnitName Value="server_service_intf"/>
+        <EditorIndex Value="11"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="42"/>
+        <CursorPos X="35" Y="53"/>
+        <UsageCount Value="15"/>
+        <Loaded Value="True"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="../../../fpc/rtl/unix/sysutils.pp"/>
+        <UnitName Value="sysutils"/>
+        <EditorIndex Value="16"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="18" Y="7"/>
+        <UsageCount Value="18"/>
+        <Loaded Value="True"/>
+      </Unit27>
+      <Unit28>
+        <Filename Value="../../../Documents/source/wst/wst_rtti_filter/dom_cursors.pas"/>
+        <UnitName Value="dom_cursors"/>
+        <EditorIndex Value="14"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="7"/>
+        <CursorPos X="14" Y="29"/>
+        <UsageCount Value="17"/>
+        <Loaded Value="True"/>
+      </Unit28>
+      <Unit29>
+        <Filename Value="../../../Documents/source/wst/type_lib_edtr/uwsttypelibraryedit.pas"/>
+        <ComponentName Value="fWstTypeLibraryEdit"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uwsttypelibraryedit"/>
+        <EditorIndex Value="15"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="485"/>
+        <CursorPos X="40" Y="503"/>
+        <UsageCount Value="17"/>
+        <Loaded Value="True"/>
+      </Unit29>
+      <Unit30>
+        <Filename Value="user_service_intf.wst"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="9"/>
+        <DefaultSyntaxHighlighter Value="None"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="../../../fpc/packages/fcl-web/src/fpapache.pp"/>
+        <UnitName Value="fpapache"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="251"/>
+        <CursorPos X="14" Y="256"/>
+        <UsageCount Value="13"/>
+      </Unit31>
+      <Unit32>
+        <Filename Value="../../../Documents/source/wst/metadata_repository.pas"/>
+        <UnitName Value="metadata_repository"/>
+        <EditorIndex Value="9"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="80"/>
+        <CursorPos X="3" Y="95"/>
+        <UsageCount Value="13"/>
+        <Loaded Value="True"/>
+      </Unit32>
+      <Unit33>
+        <Filename Value="/wisa/projects/fpcpackages/synapse/source/lib/ssfpc.pas"/>
+        <UnitName Value="ssfpc"/>
+        <EditorIndex Value="10"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="634"/>
+        <CursorPos X="139" Y="635"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit33>
+      <Unit34>
+        <Filename Value="../../../Documents/source/synapse-38/source/lib/ssfpc.pas"/>
+        <UnitName Value="ssfpc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="506"/>
+        <CursorPos X="6" Y="517"/>
+        <UsageCount Value="10"/>
+      </Unit34>
+      <Unit35>
+        <Filename Value="../../../fpc/rtl/objpas/sysutils/sysutilh.inc"/>
+        <EditorIndex Value="13"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="246"/>
+        <CursorPos X="25" Y="257"/>
+        <SyntaxHighlighter Value="FreePascal"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Text"/>
+      </Unit35>
+      <Unit36>
+        <Filename Value="../../../Documents/source/wst/server_service_imputils.pas"/>
+        <UnitName Value="server_service_imputils"/>
+        <EditorIndex Value="8"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="15"/>
+        <CursorPos X="3" Y="26"/>
+        <SyntaxHighlighter Value="FreePascal"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Text"/>
+      </Unit36>
+      <Unit37>
+        <Filename Value="../../../fpc/packages/fcl-web/src/websession.pp"/>
+        <UnitName Value="websession"/>
+        <EditorIndex Value="7"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="308"/>
+        <CursorPos X="1" Y="310"/>
+        <SyntaxHighlighter Value="FreePascal"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Text"/>
+      </Unit37>
+    </Units>
+    <JumpHistory Count="30" HistoryIndex="29">
+      <Position1>
+        <Filename Value="../wstmodule.pas"/>
+        <Caret Line="116" Column="22" TopLine="105"/>
+      </Position1>
+      <Position2>
+        <Filename Value="/wisa/projects/fpcpackages/synapse/source/lib/ssfpc.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position2>
+      <Position3>
+        <Filename Value="/wisa/projects/fpcpackages/synapse/source/lib/ssfpc.pas"/>
+        <Caret Line="519" Column="23" TopLine="506"/>
+      </Position3>
+      <Position4>
+        <Filename Value="/wisa/projects/fpcpackages/synapse/source/lib/ssfpc.pas"/>
+        <Caret Line="517" Column="16" TopLine="506"/>
+      </Position4>
+      <Position5>
+        <Filename Value="/wisa/projects/fpcpackages/synapse/source/lib/ssfpc.pas"/>
+        <Caret Line="521" Column="29" TopLine="506"/>
+      </Position5>
+      <Position6>
+        <Filename Value="/wisa/projects/fpcpackages/synapse/source/lib/ssfpc.pas"/>
+        <Caret Line="543" Column="29" TopLine="522"/>
+      </Position6>
+      <Position7>
+        <Filename Value="/wisa/projects/fpcpackages/synapse/source/lib/ssfpc.pas"/>
+        <Caret Line="539" Column="35" TopLine="528"/>
+      </Position7>
+      <Position8>
+        <Filename Value="/wisa/projects/fpcpackages/synapse/source/lib/ssfpc.pas"/>
+        <Caret Line="562" Column="41" TopLine="552"/>
+      </Position8>
+      <Position9>
+        <Filename Value="/wisa/projects/fpcpackages/synapse/source/lib/ssfpc.pas"/>
+        <Caret Line="577" Column="38" TopLine="556"/>
+      </Position9>
+      <Position10>
+        <Filename Value="/wisa/projects/fpcpackages/synapse/source/lib/ssfpc.pas"/>
+        <Caret Line="569" Column="51" TopLine="557"/>
+      </Position10>
+      <Position11>
+        <Filename Value="/wisa/projects/fpcpackages/synapse/source/lib/ssfpc.pas"/>
+        <Caret Line="576" Column="59" TopLine="565"/>
+      </Position11>
+      <Position12>
+        <Filename Value="/wisa/projects/fpcpackages/synapse/source/lib/ssfpc.pas"/>
+        <Caret Line="589" Column="23" TopLine="578"/>
+      </Position12>
+      <Position13>
+        <Filename Value="/wisa/projects/fpcpackages/synapse/source/lib/ssfpc.pas"/>
+        <Caret Line="595" Column="31" TopLine="584"/>
+      </Position13>
+      <Position14>
+        <Filename Value="/wisa/projects/fpcpackages/synapse/source/lib/ssfpc.pas"/>
+        <Caret Line="606" Column="23" TopLine="585"/>
+      </Position14>
+      <Position15>
+        <Filename Value="/wisa/projects/fpcpackages/synapse/source/lib/ssfpc.pas"/>
+        <Caret Line="601" Column="62" TopLine="590"/>
+      </Position15>
+      <Position16>
+        <Filename Value="/wisa/projects/fpcpackages/synapse/source/lib/ssfpc.pas"/>
+        <Caret Line="620" Column="29" TopLine="605"/>
+      </Position16>
+      <Position17>
+        <Filename Value="../wstmodule.pas"/>
+        <Caret Line="199" Column="29" TopLine="180"/>
+      </Position17>
+      <Position18>
+        <Filename Value="../wstmodule.pas"/>
+        <Caret Line="172" Column="18" TopLine="165"/>
+      </Position18>
+      <Position19>
+        <Filename Value="../wstmodule.pas"/>
+        <Caret Line="179" Column="24" TopLine="178"/>
+      </Position19>
+      <Position20>
+        <Filename Value="../wstmodule.pas"/>
+        <Caret Line="41" Column="122" TopLine="23"/>
+      </Position20>
+      <Position21>
+        <Filename Value="../wstmodule.pas"/>
+        <Caret Line="182" Column="1" TopLine="175"/>
+      </Position21>
+      <Position22>
+        <Filename Value="../wstmodule.pas"/>
+        <Caret Line="171" Column="88" TopLine="166"/>
+      </Position22>
+      <Position23>
+        <Filename Value="../wstmodule.pas"/>
+        <Caret Line="56" Column="27" TopLine="56"/>
+      </Position23>
+      <Position24>
+        <Filename Value="../wstmodule.pas"/>
+        <Caret Line="8" Column="65" TopLine="1"/>
+      </Position24>
+      <Position25>
+        <Filename Value="../wstmodule.pas"/>
+        <Caret Line="179" Column="7" TopLine="168"/>
+      </Position25>
+      <Position26>
+        <Filename Value="../wstmodule.pas"/>
+        <Caret Line="181" Column="51" TopLine="169"/>
+      </Position26>
+      <Position27>
+        <Filename Value="../wstmodule.pas"/>
+        <Caret Line="176" Column="15" TopLine="173"/>
+      </Position27>
+      <Position28>
+        <Filename Value="../wstmodule.pas"/>
+        <Caret Line="232" Column="24" TopLine="213"/>
+      </Position28>
+      <Position29>
+        <Filename Value="../wstmodule.pas"/>
+        <Caret Line="19" Column="36" TopLine="12"/>
+      </Position29>
+      <Position30>
+        <Filename Value="../wstmodule.pas"/>
+        <Caret Line="245" Column="7" TopLine="245"/>
+      </Position30>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="8"/>
+    <Target>
+      <Filename Value="demoservice.cgi"/>
+    </Target>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)/"/>
+    </SearchPaths>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="3">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EFOpenError"/>
+      </Item3>
+    </Exceptions>
+  </Debugging>
+</CONFIG>
