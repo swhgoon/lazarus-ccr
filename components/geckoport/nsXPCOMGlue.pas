@@ -39,7 +39,7 @@ unit nsXPCOMGlue;
 interface
 
 uses
-  nsXPCOM, nsGeckoStrings, nsConsts, nsTypes, SysUtils;
+  nsXPCOM, nsTypes, SysUtils;
 
 const
 (*
@@ -281,8 +281,8 @@ type
   TWeakReference = class(TInterfacedObject, nsIWeakReference)
   private
     FSupports: TSupportsWeakReference;
-    constructor Create(supports: TSupportsWeakReference);
   public
+    constructor Create(supports: TSupportsWeakReference);
     destructor Destroy; override;
     procedure QueryReferent(const uuid: TGUID; out Intf); safecall;
   end;
@@ -295,7 +295,9 @@ type
     function GetWeakReference: nsIWeakReference; safecall;
   end;
 
-  EGeckoError = class(Exception);
+  EGeckoException = class (Exception);
+  EGeckoError = class(EGeckoException); //Gecko error. It is an error.
+  EGeckoHint = class(EGeckoException);  //Gecko Hint. It does not necessary means an error. They could be hidden.
 
 function NS_NewSupportsWeakReferenceDelegate(aTarget: nsISupports): nsISupportsWeakReference;
 
@@ -311,7 +313,7 @@ resourcestring
 implementation
 
 uses
-  nsMemory, nsError, nsInit, {$IFDEF MSWINDOWS} Windows, {$ENDIF} StrUtils;
+  nsMemory, nsError, nsInit {$IFDEF MSWINDOWS} ,Windows {$ELSE} ,{$ENDIF};
 
 var
   sCompMgr: nsIComponentManager = nil;

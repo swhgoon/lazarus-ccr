@@ -37,7 +37,9 @@ unit nsInit;
 interface
 
 uses
-  nsXPCOM, nsConsts, nsTypes, nsGeckoStrings;
+  sysutils,Classes,LCLProc,FileUtil,nsXPCOM, nsConsts, nsTypes, nsGeckoStrings
+  {$IFDEF MSWINDOWS},registry{$ENDIF}
+  ;
 
 // XPCOM Functions
 function NS_InitXPCOM2(out servMgr: nsIServiceManager; binDir: nsIFile; appFileLocationProvider: nsIDirectoryServiceProvider): nsresult; cdecl;
@@ -51,8 +53,8 @@ function NS_NewNativeLocalFile(const Path: nsACString; FollowLinks: PRBool; out 
 function NS_GetDebug(out debug: nsIDebug): nsresult; cdecl;
 function NS_GetTraceRefcnt(out traceRefcnt: nsITraceRefcnt): nsresult; cdecl;
 
-type
-  PLongBool = ^LongBool;
+//type
+//  PLongBool = ^LongBool;
 
 function NS_StringContainerInit(var aContainer: nsStringContainer): nsresult; cdecl;
 procedure NS_StringContainerFinish(var aContainer: nsStringContainer); cdecl;
@@ -81,8 +83,8 @@ type
                        NS_ENCODING_UTF8 = 1,
                        NS_ENCODING_NATIVE_FILESYSTEM = 2);
 
-function NS_CStringToUTF16(const aSource: nsACString; aSrcEncoding: nsSourceEncoding; aDest: nsAString): Longword; cdecl;
-function NS_UTF16ToCString(const aSource: nsAString; aSrcEncoding: nsSourceEncoding; aDest: nsACString): Longword; cdecl;
+function NS_CStringToUTF16(const aSource: nsACString; aSrcEncoding: nsSourceEncoding; aDest: nsAString): nsresult; cdecl;
+function NS_UTF16ToCString(const aSource: nsAString; aSrcEncoding: nsSourceEncoding; aDest: nsACString): nsresult; cdecl;
 
 // Added for Gecko 1.8
 type
@@ -99,7 +101,7 @@ type
 function NS_Alloc(size: PRSize): Pointer; cdecl;
 function NS_Realloc(ptr: Pointer; size: PRSize): Pointer; cdecl;
 procedure NS_Free(ptr: Pointer); cdecl;
-function NS_InitXPCOM3(out servMgr: nsIServiceManager; binDir: nsIFile; appFileLocationProvider: nsIDirectoryServiceProvider; const staticComponents: nsStaticModuleInfoArray; componentCount: PRUint32): nsresult; cdecl;
+function NS_InitXPCOM3(out servMgr: nsIServiceManager; binDir: nsIFile; appFileLocationProvider: nsIDirectoryServiceProvider; var staticComponents: nsStaticModuleInfoArray; componentCount: PRUint32): nsresult; cdecl;
 
 function NS_StringContainerInit2(var aContainer: nsStringContainer; const aStr: PWideChar; aOffset, aLength: PRUint32): nsresult; cdecl;
 procedure NS_StringSetIsVoid(aStr: nsAString; const aIsVoid: PRBool); cdecl;
@@ -230,7 +232,6 @@ type
     upper: PAnsiChar;
     upperInclusive: PRBool;
   end;
-  PGREVersionRangeArray = ^TGREVersionRangeArray;
   TGREVersionRangeArray = array [0..MaxInt div SizeOf(TGREVersionRange)-1] of TGREVersionRange;
 
   PGREProperty = ^TGREProperty;
@@ -238,7 +239,6 @@ type
     property_: PAnsiChar;
     value: PAnsiChar;
   end;
-  PGREPropertyArray = ^TGREPropertyArray;
   TGREPropertyArray = array [0..MaxInt div SizeOf(TGREProperty)-1] of TGREProperty;
 
   PNSFuncPtr = ^NSFuncPtr;
@@ -269,8 +269,8 @@ function XPCOMGlueStartup(xpcomFile: PAnsiChar): nsresult;
 function XPCOMGlueShutdown: nsresult;
 function XPCOMGlueLoadXULFunctions(aSymbols: PDynamicFunctionLoad): nsresult;
 
-function GRE_Startup: Longword;
-function GRE_Shutdown: Longword;
+function GRE_Startup: nsresult;
+function GRE_Shutdown: nsresult;
 
 
 // PChar functions
@@ -290,14 +290,42 @@ function NS_StrLCat(Dest: PWideChar; const Source: PWideChar; maxLen: Cardinal):
 function NS_StrComp(const Str1, Str2: PWideChar): Integer; overload;
 function NS_StrRScan(const Str: PWideChar; Chr: WideChar): PWideChar; overload;
 
-{$IFDEF MSWINDOWS}
 function NS_CurrentProcessDirectory(buf: PAnsiChar; bufLen: Cardinal): Boolean;
-{$ENDIF}
+
+type
+  TAnsiCharArray = array [0..High(Word) div SizeOf(AnsiChar)] of AnsiChar;
+  TMaxPathChar = array[0..MAX_PATH] of AnsiChar;
+//  HINST = TLibHandle;
+  PDependentLib = ^TDependentLib;
+  TDependentLib = record
+    libHandle: HMODULE;
+    next: PDependentLib;
+  end;
+
+
+type
+  nsIDirectoryServiceProvider_stdcall = interface(nsISupports)
+  ['{bbf8cab0-d43a-11d3-8cc2-00609792278c}']
+    function GetFile(const prop: PAnsiChar; out persistent: PRBool; out AFile: nsIFile): nsresult; stdcall;
+  end;
+
+  nsGREDirServiceProvider = class(TInterfacedObject,
+                                  nsIDirectoryServiceProvider_stdcall)
+  public
+    FPathEnvString: TMaxPathChar;
+    class function NewInstance: TObject; override;
+    procedure FreeInstance; override;
+    function GetFile(const prop: PAnsiChar; out persistent: PRBool; out AFile: nsIFile): nsresult; stdcall;
+    function GetGreDirectory(out AFile: nsILocalFile): nsresult;
+  end;
+
+procedure ZeroArray(out AArray; const ASize: SizeInt);
+
 
 implementation
 
 uses
-  {$IFDEF MSWINDOWS} Windows, {$ELSE} DynLibs, {$ENDIF} nsError, nsMemory, SysUtils;
+  {$IFDEF MSWINDOWS} Windows, {$ELSE} DynLibs, {$ENDIF} nsError, nsMemory;
 
 type
   XPCOMExitRoutine = function : Longword; stdcall;
@@ -316,7 +344,7 @@ type
   AllocFunc = function (size: PRSize): Pointer; cdecl;
   ReallocFunc = function (ptr: Pointer; size: PRSize): Pointer; cdecl;
   FreeFunc = procedure (ptr: Pointer); cdecl;
-  Init3Func = function (out servMgr: nsIServiceManager; binDir: nsIFile; provider: nsIDirectoryServiceProvider; const staticComponents: nsStaticModuleInfoArray; componentCount: PRUint32): nsresult; cdecl;
+  Init3Func = function (out servMgr: nsIServiceManager; binDir: nsIFile; provider: nsIDirectoryServiceProvider; var staticComponents: nsStaticModuleInfoArray; componentCount: PRUint32): nsresult; cdecl;
 
   GetDebugFunc = function (out debug: nsIDebug): Longword; cdecl;
   GetTraceRefcntFunc = function (out traceRefcnt: nsITraceRefcnt): Longword; cdecl;
@@ -439,7 +467,7 @@ var
 
 function NS_InitXPCOM2(out servMgr: nsIServiceManager;
                        binDir: nsIFile;
-                       appFileLocationProvider: nsIDirectoryServiceProvider): Longword;
+                       appFileLocationProvider: nsIDirectoryServiceProvider): nsresult;
 begin
   if Assigned(xpcomFunc.init) then
     Result := xpcomFunc.init(servMgr, binDir, appFileLocationProvider)
@@ -447,7 +475,7 @@ begin
     Result := NS_ERROR_FAILURE;
 end;
 
-function NS_ShutdownXPCOM(servMgr: nsIServiceManager): Longword;
+function NS_ShutdownXPCOM(servMgr: nsIServiceManager): nsresult;
 begin
   if Assigned(xpcomFunc.shutdown) then
     Result := xpcomFunc.shutdown(servMgr)
@@ -455,7 +483,7 @@ begin
     Result := NS_ERROR_FAILURE;
 end;
 
-function NS_GetServiceManager(out servMgr: nsIServiceManager): Longword;
+function NS_GetServiceManager(out servMgr: nsIServiceManager): nsresult;
 begin
   if Assigned(xpcomFunc.getServiceManager) then
     Result := xpcomFunc.getServiceManager(servMgr)
@@ -508,7 +536,7 @@ begin
 end;
 
 function NS_RegisterXPCOMExitRoutine(exitRoutine: XPCOMExitRoutine;
-                                     priority: Longword): Longword;
+                                     priority: Longword): nsresult;
 begin
   if Assigned(xpcomFunc.registerXPCOMExitRoutine) then
     Result := xpcomFunc.registerXPCOMExitRoutine(exitRoutine, priority)
@@ -516,7 +544,7 @@ begin
     Result := NS_ERROR_FAILURE;
 end;
 
-function NS_UnregisterXPCOMExitRoutine(exitRoutine: XPCOMExitRoutine): Longword;
+function NS_UnregisterXPCOMExitRoutine(exitRoutine: XPCOMExitRoutine): nsresult;
 begin
   if Assigned(xpcomFunc.unregisterXPCOMExitRoutine) then
     Result := xpcomFunc.unregisterXPCOMExitRoutine(exitRoutine)
@@ -524,7 +552,7 @@ begin
     Result := NS_ERROR_FAILURE;
 end;
 
-function NS_GetDebug(out debug: nsIDebug): Longword;
+function NS_GetDebug(out debug: nsIDebug): nsresult;
 begin
   if Assigned(xpcomFunc.getDebug) then
     Result := xpcomFunc.getDebug(debug)
@@ -532,7 +560,7 @@ begin
     Result := NS_ERROR_FAILURE;
 end;
 
-function NS_GetTraceRefcnt(out traceRefcnt: nsITraceRefcnt): Longword;
+function NS_GetTraceRefcnt(out traceRefcnt: nsITraceRefcnt): nsresult;
 begin
   if Assigned(xpcomFunc.getTraceRefCnt) then
     Result := xpcomFunc.getTraceRefCnt(traceRefcnt)
@@ -540,7 +568,7 @@ begin
     Result := NS_ERROR_FAILURE;
 end;
 
-function NS_StringContainerInit(var aContainer: nsStringContainer): Longword;
+function NS_StringContainerInit(var aContainer: nsStringContainer): nsresult;
 begin
   if Assigned(xpcomFunc.stringContainerInit) then
     Result := xpcomFunc.stringContainerInit(aContainer)
@@ -554,7 +582,7 @@ begin
     xpcomFunc.stringContainerFinish(aContainer);
 end;
 
-function NS_StringGetData(const aStr: nsAString; out aData: PWideChar; aTerminated: PLongBool): Longword;
+function NS_StringGetData(const aStr: nsAString; out aData: PWideChar; aTerminated: PLongBool): nsresult;
 begin
   if Assigned(xpcomFunc.stringGetData) then
     Result := xpcomFunc.stringGetData(aStr, aData, aTerminated)
@@ -595,7 +623,7 @@ begin
   NS_StringSetDataRange(aStr, aCutOffset, aCutLength, nil, 0);
 end;
 
-function NS_CStringContainerInit(var aContainer: nsCStringContainer): Longword;
+function NS_CStringContainerInit(var aContainer: nsCStringContainer): nsresult;
 begin
   if Assigned(xpcomFunc.cstringContainerInit) then
     Result := xpcomFunc.cstringContainerInit(aContainer)
@@ -650,7 +678,7 @@ begin
   NS_CStringSetDataRange(aStr, aCutOffset, aCutLength, nil, 0);
 end;
 
-function NS_CStringToUTF16(const aSource: nsACString; aSrcEncoding: nsSourceEncoding; aDest: nsAString): Longword;
+function NS_CStringToUTF16(const aSource: nsACString; aSrcEncoding: nsSourceEncoding; aDest: nsAString): nsresult;
 begin
   if Assigned(xpcomFunc.cstringToUTF16) then
     Result := xpcomFunc.cstringToUTF16(aSource, aSrcEncoding, aDest)
@@ -658,7 +686,7 @@ begin
     Result := NS_ERROR_FAILURE;
 end;
 
-function NS_UTF16ToCString(const aSource: nsAString; aSrcEncoding: nsSourceEncoding; aDest: nsACString): Longword;
+function NS_UTF16ToCString(const aSource: nsAString; aSrcEncoding: nsSourceEncoding; aDest: nsACString): nsresult;
 begin
   if Assigned(xpcomFunc.UTF16ToCString) then
     Result := xpcomFunc.UTF16ToCString(aSource, aSrcEncoding, aDest)
@@ -705,7 +733,7 @@ begin
     xpcomFunc.free(ptr);
 end;
 
-function NS_InitXPCOM3(out servMgr: nsIServiceManager; binDir: nsIFile; appFileLocationProvider: nsIDirectoryServiceProvider; const staticComponents: nsStaticModuleInfoArray; componentCount: PRUint32): nsresult; cdecl;
+function NS_InitXPCOM3(out servMgr: nsIServiceManager; binDir: nsIFile; appFileLocationProvider: nsIDirectoryServiceProvider; var staticComponents: nsStaticModuleInfoArray; componentCount: PRUint32): nsresult; cdecl;
 //FPC port: added const to staticComponents and changed componentCount from
 // PRInt32 to PRUInt32 so they match init3 - wouldn't assemble otherwise on PowerPC.
 begin
@@ -849,6 +877,7 @@ function GRE_GetPathFromRegKey(
                 properties: PGREPropertyArray;
                 propertiesLength: PRUint32;
                 buf: PAnsiChar; buflen: PRUint32): PRBool; forward;
+{$ENDIF}
 
 function GRE_GetGREPathWithProperties(
                 aVersions: PGREVersionRange;
@@ -857,11 +886,39 @@ function GRE_GetGREPathWithProperties(
                 propertiesLength: PRUint32;
                 buf: PAnsiChar; buflen: PRUint32): nsresult;
 var
-  env: array[0..MAX_PATH] of AnsiChar;
+  env: string;
   hRegKey: HKEY;
   ok: PRBool;
   versions: PGREVersionRangeArray;
   properties: PGREPropertyArray;
+  GeckoVersion: String;
+  function GRE_FireFox(): string;
+  var
+    Reg: TRegistry;
+    FF: string;
+  begin
+    Reg:=TRegistry.Create(KEY_ALL_ACCESS);
+    Reg.RootKey:=HKEY_LOCAL_MACHINE;
+    if Reg.OpenKeyReadOnly(GRE_FIREFOX_BASE_WIN_REG_LOC) then begin
+      FF:=Reg.ReadString('CurrentVersion');
+      FF:=LeftStr(FF,Pos(' ',FF)-1);
+      Reg.CloseKey;
+      FF:=format('%s %s',[GRE_FIREFOX_BASE_WIN_REG_LOC,FF]);
+      if Reg.OpenKeyReadOnly(FF) then begin
+        GeckoVersion:=Reg.ReadString('GeckoVer');
+        if GeckoVersion<>'' then begin
+          Reg.CloseKey;
+          FF:=FF+'\bin';
+          if Reg.OpenKeyReadOnly(FF) then begin
+            Result:=Reg.ReadString('PathToExe');
+            Result:=ExtractFilePath(Result)+XPCOM_DLL;
+          end;
+        end;
+      end;
+    end;
+    Reg.CloseKey;
+    Reg.Free;
+  end;
 begin
   versions := PGREVersionRangeArray(aVersions);
   properties := PGREPropertyArray(aProperties);
@@ -876,15 +933,18 @@ begin
   end;
   *)
 
-  if GetEnvironmentVariableA('USE_LOCAL_GRE', env, MAX_PATH)>0 then
+  env:=sysutils.GetEnvironmentVariable('USE_LOCAL_GRE');
+  if env<>''then
   begin
-    buf[0] := #0;
+    strlcopy(Buf,pchar(env+PathDelim+XPCOM_DLL),buflen);
     Result := NS_OK;
     Exit;
   end;
 
+  {$IFDEF MSWINDOWS}
+  //Check for default mozilla GRE
   hRegKey := 0;
-  if RegOpenKeyEx(HKEY_CURRENT_USER, GRE_WIN_REG_LOC, 0,
+  if RegOpenKeyEx(HKEY_CURRENT_USER, GRE_MOZILLA_WIN_REG_LOC, 0,
                   KEY_READ, hRegKey) = ERROR_SUCCESS then
   begin
     ok := GRE_GetPathFromRegKey(hRegkey,
@@ -899,7 +959,7 @@ begin
     end;
   end;
 
-  if RegOpenKeyEx(HKEY_LOCAL_MACHINE, GRE_WIN_REG_LOC, 0,
+  if RegOpenKeyEx(HKEY_LOCAL_MACHINE, GRE_MOZILLA_WIN_REG_LOC, 0,
                   KEY_READ, hRegKey) = ERROR_SUCCESS then
   begin
     ok := GRE_GetPathFromRegKey(hRegKey,
@@ -913,10 +973,16 @@ begin
       Exit;
     end;
   end;
-
+  //Check for Firefox GRE
+  (*GrePath:=GRE_FireFox();
+  if GrePath<>'' then begin
+    strlcopy(buf,pchar(GrePath),bufLen);
+    Result:=NS_OK;
+    exit;
+  end;*)
+  {$ENDIF}
   Result := NS_ERROR_FAILURE;
 end;
-{$ENDIF}
 
 function CheckVersion(toCheck: PAnsiChar;
                       const versions: PGREVersionRangeArray;
@@ -980,8 +1046,6 @@ function GRE_GetPathFromRegKey(
                 properties: PGREPropertyArray;
                 propertiesLength: PRUint32;
                 buf: PAnsiChar; buflen: PRUint32): PRBool;
-const
-  XPCOM_DLL = 'xpcom.dll';
 var
   i, j: DWORD;
   name: array [0..MAX_PATH] of AnsiChar;
@@ -1058,23 +1122,6 @@ begin
 end;
 {$ENDIF}
 
-type
-  TAnsiCharArray = array [0..High(Word) div SizeOf(AnsiChar)] of AnsiChar;
-  PAnsiCharArray = ^TAnsiCharArray;
-  TMaxPathChar = array[0..MAX_PATH] of AnsiChar;
-{$IFNDEF MSWINDOWS}
-  HINST = TLibHandle;
-{$ENDIF}
-  PDependentLib = ^TDependentLib;
-  TDependentLib = record
-    libHandle: HINST;
-    next: PDependentLib;
-  end;
-
-const
-  XPCOM_DLL = 'xpcom.dll';
-  XUL_DLL = 'xul.dll';
-
 var
   sDependentLibs: PDependentLib = nil;
   sXULLibrary: HINST = 0;
@@ -1084,37 +1131,34 @@ type
 
 function XPCOMGlueLoad(xpcomFile: PAnsiChar): GetFrozenFunctionsFunc; forward;
 procedure XPCOMGlueUnload(); forward;
-{$IFDEF MSWINDOWS}
 function fullpath(absPath, relPath: PAnsiChar; maxLength: PRUint32): PAnsiChar; forward;
-{$ENDIF}
 
 const
   BUFFEREDFILE_BUFSIZE = 256;
 type
   TBufferedFile = record
-    f: THandle;
+    fs: TFileStream;
     buf: array [0..BUFFEREDFILE_BUFSIZE-1] of AnsiChar;
     bufPos: Integer;
     bufMax: Integer;
   end;
 
-{$IFDEF MSWINDOWS}
-function BufferedFile_Open(name: PAnsiChar; var ret: TBufferedFile): Boolean;
+function BufferedFile_Open(name: PAnsiChar; out ret: TBufferedFile): Boolean;
 begin
-  Result := False;
-  ret.f := CreateFileA(name, GENERIC_READ, FILE_SHARE_READ, nil, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-  if ret.f <> INVALID_HANDLE_VALUE then
-  begin
-    Result := True;
+  try
+    ret.fs:=TFileStream.Create(name,fmOpenRead, fmShareDenyWrite);
+    result:=true;
+    ret.bufPos := 0;
+    ret.bufMax := -1;
+  except
+    ret.fs:=nil;
   end;
-  ret.bufPos := 0;
-  ret.bufMax := -1;
 end;
 
 procedure BufferedFile_Close(var aFile: TBufferedFile);
 begin
-  CloseHandle(aFile.f);
-  aFile.f := 0;
+  afile.fs.Free;
+  afile.fs:=nil;
   aFile.bufPos := 0;
   aFile.bufMax := -1;
 end;
@@ -1123,7 +1167,7 @@ procedure BufferedFile_ReadBuffer(var aFile: TBufferedFile);
 var
   readSize: DWORD;
 begin
-  if ReadFile(aFile.f, aFile.buf, BUFFEREDFILE_BUFSIZE, readSize, nil) then
+  readSize:=aFile.fs.Read(aFile.buf, BUFFEREDFILE_BUFSIZE);
   begin
     aFile.bufPos := 0;
     aFile.bufMax := readSize;
@@ -1207,7 +1251,6 @@ begin
     BufferedFile_Close(f);
   end;
 end;
-{$ENDIF}
 
 procedure AppendDependentLib(libHandle: HINST);
 var
@@ -1224,14 +1267,20 @@ end;
 procedure ReadDependentCB(aDependentLib: PAnsiChar);
 var
   h: HINST;
+  OldDir: string;
+  NewDir: string;
 begin
-{$IFDEF MSWINDOWS}
-  h := LoadLibraryExA(aDependentLib, 0, LOAD_WITH_ALTERED_SEARCH_PATH);
-{$ELSE}
+  //Changes directory temporaly to resolve automatic modules loading
+  //in a crossplatform way.
+  OldDir:=GetCurrentDir;
+  NewDir:=ExtractFilePath(aDependentLib);
+  SetCurrentDir(NewDir);
   h := LoadLibrary(aDependentLib);
-{$ENDIF}
+  SetCurrentDir(OldDir);
   if h <> 0 then
-    AppendDependentLib(h);
+    AppendDependentLib(h)
+  else
+    Raise Exception.Create('Missing Gecko runtime library: '+aDependentLib);
 end;
 
 function XPCOMGlueLoad(xpcomFile: PAnsiChar): GetFrozenFunctionsFunc;
@@ -1240,7 +1289,6 @@ var
   idx: PRInt32;
   h: HINST;
 begin
-{$IFDEF MSWINDOWS}
   if (xpcomFile[0]='.') and (xpcomFile[1]=#0) then
   begin
     xpcomFile := XPCOM_DLL;
@@ -1254,14 +1302,11 @@ begin
       xpcomDir[idx] := #0;
       XPCOMGlueLoadDependentLibs(xpcomDir, ReadDependentCB);
       NS_StrLCat(xpcomdir, '\'+xul_dll, sizeof(xpcomdir));
-      sXULLibrary := LoadLibraryExA(xpcomdir, 0, LOAD_WITH_ALTERED_SEARCH_PATH);
+      sXULLibrary := LoadLibrary(xpcomdir);
     end;
   end;
 
-  h := LoadLibraryExA(xpcomFile, 0, LOAD_WITH_ALTERED_SEARCH_PATH);
-{$ELSE}
   h := LoadLibrary(xpcomFile);
-{$ENDIF}
 
   if h <> 0 then
     begin
@@ -1294,9 +1339,8 @@ begin
   end;
 end;
 
-function XPCOMGlueStartup(xpcomFile: PAnsiChar): Longword;
+function XPCOMGlueStartup(xpcomFile: PAnsiChar): nsresult;
 const
-  XPCOM_DLL = 'xpcom.dll';
   XPCOM_GLUE_VERSION = 1;
 var
   func: GetFrozenFunctionsFunc;
@@ -1320,7 +1364,7 @@ begin
     XPCOMGlueUnload();
 end;
 
-function XPCOMGlueShutdown: Longword;
+function XPCOMGlueShutdown: nsresult;
 begin
   XPCOMGlueUnload();
 
@@ -1333,8 +1377,6 @@ function XPCOMGlueLoadXULFunctions(aSymbols: PDynamicFunctionLoad): nsresult;
 var
   i: Integer;
   symbols: PDynamicFunctionLoadArray;
-type
-  PPointer = ^Pointer;
 begin
   symbols := PDynamicFunctionLoadArray(aSymbols);
 
@@ -1394,7 +1436,7 @@ var
   dot: Integer;
 begin
   idx := 0;
-  FillChar(vers, sizeof(vers), 0);
+  ZeroArray(vers, sizeof(vers));
   for i:=0 to 2 do
   begin
     dot := idx;
@@ -1501,34 +1543,20 @@ begin
   Result := GREVersionCompare(lhsVer, rhsVer);
 end;
 
-{$IFDEF MSWINDOWS}
-// Ç†ÇÈÉtÉ@ÉCÉãÇ™GREÇÃïKóvÉoÅ[ÉWÉáÉìÇ…íBÇµÇƒÇ¢ÇÈÇ©Çí≤Ç◊ÇÈÅB
-function CheckGeckoVersion(path: PAnsiChar; const reqVer: TGREVersion): Boolean;
-const
-  BUFSIZE = 4096;
-var
-  buf: array[0..BUFSIZE-1] of Char;
-  fileVer: PAnsiChar;
-  dwSize: DWORD;
-  dw: DWORD;
-  greVer: TGREVersion;
+{$IFDEF GECKO_EXPERIMENTAL}
+// Ç†ÇÈÉtÉ@ÉCÉãÇ™GREÇÃïKóvÉo[ÉWÉáÉìÇ…íBÇµÇƒÇ¢ÇÈÇ©Çí≤Ç◊ÇÈB
+function GetPathFromConfigDir(dirname: PAnsiChar; buf: PAnsiChar): Boolean;
 begin
+  //TODO 1: GetPathFromConfigDir ÇÃé¿ëï
   Result := False;
-
-  dwSize := GetFileVersionInfoSizeA(path, dw);
-  if (dwSize<=0) or (dwSize>BUFSIZE) then Exit;
-
-  Result := GetFileVersionInfoA(path, 0, dwSize, @buf);
-  if not Result then Exit;
-
-  // ÉoÅ[ÉWÉáÉìèÓïÒÇÃåæåÍIDÇÕåàÇﬂë≈Çø
-  Result := VerQueryValueA(@buf, '\StringFileInfo\000004b0\FileVersion', Pointer(fileVer), dw);
-  if not Result then Exit;
-
-  greVer := GetGREVersion(fileVer);
-
-  if GREVersionCompare(greVer, reqVer)>=0 then Result := True;
 end;
+
+function GetPathFromConfigFile(const filename: PAnsiChar; buf: PAnsiChar): Boolean;
+begin
+  //TODO 1: GetPathFromConfigFile ÇÃé¿ëï
+  Result := False;
+end;
+{$ENDIF GECKO_EXPERIMENTAL}
 
 function IsXpcomDll(const filename: PAnsiChar): Boolean;
 var
@@ -1545,10 +1573,38 @@ begin
   FreeLibrary(module);
 end;
 
+function CheckGeckoVersion(path: PAnsiChar; const reqVer: TGREVersion): Boolean;
+const
+  BUFSIZE = 4096;
+var
+  buf: array[0..BUFSIZE-1] of Char;
+  fileVer: PAnsiChar;
+  dwSize: DWORD;
+  dw: DWORD;
+  greVer: TGREVersion;
+begin
+  Result := False;
+  dw:=1; //Non zero
+  dwSize := GetFileVersionInfoSizeA(path, dw);
+  if (dwSize<=0) or (dwSize>BUFSIZE) then Exit;
+
+  Result := GetFileVersionInfoA(path, 0, dwSize, @buf);
+  if not Result then Exit;
+
+  // Éo[ÉWÉáÉìÓïÒÇÃåæåÍIDÇÕåàÇﬂë≈Çø
+  fileVer:=nil;
+  Result := VerQueryValueA(@buf, '\StringFileInfo\000004b0\FileVersion', Pointer(fileVer), dw);
+  if not Result then Exit;
+
+  greVer := GetGREVersion(fileVer);
+
+  if GREVersionCompare(greVer, reqVer)>=0 then Result := True;
+end;
+
 function GetLatestGreFromReg(regBase: HKEY; const reqVer: TGREVersion;
   grePath: PAnsiChar; var greVer: TGREVersion): Boolean;
 var
-  curKey: HKEY;
+  curKey: HKEY = 0;
   dwSize: DWORD;
   i: Integer;
   keyName: TMaxPathChar;
@@ -1574,7 +1630,7 @@ begin
            (GREVersionCompare(ver, greVer)>=0) then
         begin
           dllPath := path;
-          NS_StrCat(dllPath, '\xpcom.dll');
+          NS_StrCat(dllPath, '\'+XPCOM_DLL);
           //if IsXpcomDll(dllPath) then
 //          if CheckGeckoVersion(dllPath, reqVer) and
 //             IsXpcomDll(@dllPath) then
@@ -1600,7 +1656,7 @@ const
   nameBase: PAnsiChar = 'Software\mozilla.org\GRE';
 var
   rv: HRESULT;
-  base: HKEY;
+  base: HKEY = 0;
   cuPath, lmPath: TMaxPathChar;
   cuVer, lmVer: TGREVersion;
   reqVer: TGREVersion;
@@ -1609,8 +1665,8 @@ label
   NoLocalMachine,
   NoCurrentUser;
 begin
-  FillChar(cuVer, SizeOf(cuVer), 0);
-  FillChar(lmVer, SizeOf(lmVer), 0);
+  ZeroArray(cuVer, SizeOf(cuVer));
+  ZeroArray(lmVer, SizeOf(lmVer));
   reqVer := GetGREVersion(GRE_BUILD_ID);
 
   rv := RegOpenKeyA(HKEY_LOCAL_MACHINE, nameBase, base);
@@ -1632,27 +1688,13 @@ NoCurrentUser:;
   end;
 end;
 
-
-function GetPathFromConfigDir(dirname: PAnsiChar; buf: PAnsiChar): Boolean;
-begin
-  //TODO 1: GetPathFromConfigDir ÇÃé¿ëï
-  Result := False;
-end;
-
-function GetPathFromConfigFile(const filename: PAnsiChar; buf: PAnsiChar): Boolean;
-begin
-  //TODO 1: GetPathFromConfigFile ÇÃé¿ëï
-  Result := False;
-end;
-{$ENDIF}
-
 var
   GRELocation: TMaxPathChar;
 
 function GetGREDirectoryPath(buf: PAnsiChar): Boolean;
 {$IFDEF MSWINDOWS}
-const
-  GRE_REGISTRY_KEY = GRE_WIN_REG_LOC + GRE_BUILD_ID;
+//const
+//  GRE_REGISTRY_KEY = GRE_MOZILLA_WIN_REG_LOC + GRE_BUILD_ID;
 var
   cpd:TMaxPathChar;
   dllPath: TMaxPathChar;
@@ -1668,7 +1710,7 @@ begin
   if NS_CurrentProcessDirectory(cpd, MAX_PATH) then
   begin
     dllPath := cpd;
-    NS_StrCat(dllPath, '\xpcom.dll');
+    NS_StrCat(dllPath, '\'+XPCOM_DLL);
     if IsXpcomDll(dllPath) then
     begin
       //buf := cpd;
@@ -1727,22 +1769,6 @@ begin
 {$ENDIF}
 end;
 
-type
-  nsIDirectoryServiceProvider_stdcall = interface(nsISupports)
-  ['{bbf8cab0-d43a-11d3-8cc2-00609792278c}']
-    function GetFile(const prop: PAnsiChar; out persistent: PRBool; out AFile: nsIFile): nsresult; stdcall;
-  end;
-
-  nsGREDirServiceProvider = class(TInterfacedObject,
-                                  nsIDirectoryServiceProvider_stdcall)
-  public
-    FPathEnvString: TMaxPathChar;
-    class function NewInstance: TObject; override;
-    procedure FreeInstance; override;
-    function GetFile(const prop: PAnsiChar; out persistent: PRBool; out AFile: nsIFile): nsresult; stdcall;
-    function GetGreDirectory(out AFile: nsILocalFile): nsresult;
-  end;
-
 function nsGREDirServiceProvider.GetGreDirectory(out AFile: nsILocalFile): nsresult;
 var
   GreDir: TMaxPathChar;
@@ -1752,6 +1778,7 @@ begin
   Result := NS_ERROR_FAILURE;
   if not GetGREDirectoryPath(GreDir) then Exit;
 
+  ZeroArray(leaf,sizeof(leaf));
   Result := NS_CStringContainerInit(leaf);
   if NS_FAILED(Result) then Exit;
   NS_CStringSetData(@leaf, GreDir);
@@ -1836,7 +1863,7 @@ end;
 var
   sStartupCount: Integer = 0;
 
-function GRE_Startup: Longword;
+function GRE_Startup: nsresult;
 var
   xpcomLocation: TMaxPathChar;
   provider: nsGREDirServiceProvider;
@@ -1876,7 +1903,7 @@ begin
   Inc(sStartupCount);
 end;
 
-function GRE_Shutdown: Longword;
+function GRE_Shutdown: nsresult;
 begin
   Dec(sStartupCount);
 
@@ -2123,12 +2150,11 @@ begin
   Result := (Append^ = #0);
 end;
 
-{$IFDEF MSWINDOWS}
 function fullpath(absPath, relPath: PAnsiChar; maxLength: PRUint32): PAnsiChar;
-var
-  filePart: PAnsiChar;
 begin
-  GetFullPathNameA(relPath, maxLength, absPath, filePart);
+  //Path here must arrive already absolute :-?
+  strlcopy(abspath,relpath,maxLength);
+//  GetFullPathNameA(relPath, maxLength, absPath, filePart);
   Result := absPath;
 end;
 
@@ -2137,17 +2163,21 @@ var
   lastSlash: PAnsiChar;
 begin
   Result := False;
-  if SUCCEEDED(GetModuleFileNameA(0, buf, bufLen)) then
+  move(ParamStr(0)[1],buf^,min(bufLen,Length(ParamStr(0))));
+  lastSlash := NS_StrRScan(buf, '\');
+  if Assigned(lastSlash) then
   begin
-    lastSlash := NS_StrRScan(buf, '\');
-    if Assigned(lastSlash) then
-    begin
-      lastSlash^ := #0;
-      Result := True;
-    end;
+    lastSlash^ := #0;
+    Result := True;
   end;
 end;
-{$ENDIF}
+
+procedure ZeroArray(out AArray; const ASize: SizeInt);
+begin
+{$PUSH}{$HINTS OFF}
+  FillByte(AArray,ASize,0);
+{$POP}
+end;
 
 
 end.

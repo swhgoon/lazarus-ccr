@@ -3,7 +3,7 @@ unit nsXPCOM_std19;
 interface
 
 uses
-  nsConsts, nsGeckoStrings, nsTypes;
+  nsGeckoStrings, nsTypes;
 
 const
   NS_ISUPPORTS_STD19_IID: TGUID = '{00000000-0000-0000-c000-000000000046}';

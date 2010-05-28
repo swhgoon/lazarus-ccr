@@ -21,11 +21,19 @@
       </Parsing>
       <CodeGeneration>
         <Checks>
+          <IOChecks Value="True"/>
           <RangeChecks Value="True"/>
           <OverflowChecks Value="True"/>
           <StackChecks Value="True"/>
         </Checks>
+        <VerifyObjMethodCallValidity Value="True"/>
       </CodeGeneration>
+      <Linking>
+        <Debugging>
+          <GenerateDebugInfo Value="True"/>
+          <UseHeaptrc Value="True"/>
+        </Debugging>
+      </Linking>
       <Other>
         <WriteFPCLogo Value="False"/>
         <CompilerPath Value="$(CompPath)"/>

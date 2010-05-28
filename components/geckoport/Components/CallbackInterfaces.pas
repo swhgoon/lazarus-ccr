@@ -67,6 +67,13 @@ type
     function SafeCallException(Obj: TObject; Addr: Pointer): HResult; override;
   end;
 
+{$PUSH}
+{$HINTS OFF}
+procedure UseParameter(var X);
+begin
+end;
+{$POP}
+
 function FindTarget(chrome: nsIWebBrowserChrome): IGeckoCreateWindowTarget;
 var
   chrome2: IGeckoBrowserChrome;
@@ -131,12 +138,14 @@ begin
     if Assigned(target) then
       Result := target.DoCreateChromeWindow(chromeFlags);
     if not Assigned(Result) then
-      raise EGeckoError.Create('新しいブラウザを開くことが出来ません。');
+      raise EGeckoHint.CreateFmt('Attempt to create a new Chrome window but handler does not create a new one. Chrome flags: %8X',[chromeFlags]);
   end;
 end;
 
 function TWindowCreator.SafeCallException(Obj: TObject; Addr: Pointer): HResult;
 begin
+  UseParameter(Obj);
+  UseParameter(Addr);
   Result := HRESULT(NS_ERROR_FAILURE);
 end;
 

@@ -36,11 +36,7 @@ unit nsGeckoStrings;
 
 interface
 
-uses
-  nsConsts, nsTypes;
-
 type
-
   nsAString = ^nsStringContainer;
   nsString = nsAString;
   nsStringContainer = record

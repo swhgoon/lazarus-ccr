@@ -37,7 +37,7 @@ unit BrowserSupports;
 interface
 
 uses
-  nsConsts, nsGeckoStrings, nsTypes, nsXPCOM;
+  nsGeckoStrings, nsTypes, nsXPCOM;
 
 const
   GFXIFORMATS_IID: TGUID = '{96d086e6-1dd1-11b2-b6b2-b77b59390247}';
@@ -114,7 +114,7 @@ type
  *)
   gfx_format = PRInt32;
   nscoord = PRInt32;
-  nativeWindow = Pointer;
+  nativeWindow = THANDLE;
   gfxIFormats = interface
   ['{96d086e6-1dd1-11b2-b6b2-b77b59390247}']
   end;

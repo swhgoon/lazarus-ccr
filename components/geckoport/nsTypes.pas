@@ -38,9 +38,6 @@ unit nsTypes;
 
 interface
 
-uses
-  nsConsts;
-
 type
   PRBool = LongBool;
   PRUint8 = Byte;
@@ -53,10 +50,12 @@ type
   PRInt32 = Longint;
   PRInt64 = Int64;
 
-  nsresult = PRUint32;
-  nsrefcnt = PRUint32;
+  nsresult = PRint32;
+  nsrefcnt = PRint32;
 
-  size_t = PRUint32;
+{$IFNDEF FPC}
+  size_t = SizeUint;
+{$ENDIF}
 
   PRSize = PRUint32;
 

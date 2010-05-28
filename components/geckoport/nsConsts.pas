@@ -37,7 +37,18 @@ unit nsConsts;
 interface
 
 const
-  GRE_WIN_REG_LOC = 'Software\mozilla.org\GRE\';
+{$IFDEF MSWINDOWS}
+  XPCOM_DLL = 'xpcom.dll';
+  XUL_DLL = 'xul.dll';
+{$ENDIF}
+{$IFDEF UNIX}
+  XPCOM_DLL = 'libxpcom.so';
+  XUL_DLL = 'libxul.so';
+{$ENDIF}
+
+const
+  GRE_MOZILLA_WIN_REG_LOC = 'Software\mozilla.org\GRE\';
+  GRE_FIREFOX_BASE_WIN_REG_LOC = 'SOFTWARE\Mozilla\Mozilla Firefox';
 
   // 1.7 Release
   MOZILLA_VERSION = 1.7;

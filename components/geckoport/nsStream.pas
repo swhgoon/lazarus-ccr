@@ -39,16 +39,16 @@ unit nsStream;
 interface
 
 uses
-  nsXPCOM, Classes;
+  nsXPCOM, Classes,nsTypes;
 
-function NS_NewByteArrayInputStream(out stream: nsIInputStream; const Buffer: Pointer; Size: Longword): Longword;
+function NS_NewByteArrayInputStream(out stream: nsIInputStream; const Buffer: Pointer; Size: Longword): nsresult;
 function NS_NewInputStreamFromTStream(input: TStream; own: Boolean=False): nsIInputStream;
 function NS_NewOutputStreamFromTStream(output: TStream; own: Boolean=False): nsIOutputStream;
 
 implementation
 
 uses
-  Math, nsMemory, nsError, nsTypes, SysUtils;
+  Math, nsMemory, nsError, SysUtils;
 
 type
   nsByteArrayInputStream = class(TInterfacedObject,
@@ -163,7 +163,7 @@ begin
     raise Exception.Create('nsIInputStream.Close')
 end;
 
-function NS_NewByteArrayInputStream(out stream: nsIInputStream; const Buffer: Pointer; Size: Longword): Longword;
+function NS_NewByteArrayInputStream(out stream: nsIInputStream; const Buffer: Pointer; Size: Longword): nsresult;
 begin
   try
     stream := nsByteArrayInputStream.Create(Buffer, Size);

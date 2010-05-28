@@ -81,7 +81,7 @@ end;
 
 function GlueStartupMemory: Longword;
 begin
-  Result := NS_ERROR_FAILURE;
+  Result := LongWord(NS_ERROR_FAILURE);
   if Assigned(gMemory) then Exit;
   nsInit.NS_GetMemoryManager(gMemory);
   if not Assigned(gMemory) then Exit;
@@ -124,13 +124,13 @@ end;
 
 function HeapMinimize(aImmediate: Boolean): Longword;
 begin
-  Result := NS_ERROR_FAILURE;
+  Result := LongWord(NS_ERROR_FAILURE);
   if ENSURE_ALLOCATOR then
   try
     Result := NS_OK;
     gMemory.HeapMinimize(aImmediate);
   except
-    Result := NS_ERROR_FAILURE;
+    Result := LongWord(NS_ERROR_FAILURE);
   end;
 end;
 

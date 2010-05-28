@@ -42,7 +42,7 @@ interface
 
 uses
   {$IFNDEF LCL} Windows, Messages, {$ELSE} LclIntf, LMessages, LclType, LResources, {$ENDIF}
-  SysUtils, Classes, Controls, nsConsts, nsXPCOM,
+  SysUtils, Classes, Controls, nsXPCOM,
   nsGeckoStrings, CallbackInterfaces, nsTypes, nsXPCOMGlue, BrowserSupports,
   nsXPCOM_std19
   {$IFDEF LCLCarbon}, CarbonPrivate {$ENDIF}
@@ -70,6 +70,7 @@ const
   WM_GETDLGCODE = LM_GETDLGCODE;
   WM_NEXTDLGCTL = $0028;
   WM_ERASEBKGND = LM_ERASEBKGND;
+  WM_SHOWWINDOW = LM_SHOWWINDOW;
   E_FAIL        = HRESULT($80004005);
 type
   TMessage      = TLMessage;
@@ -134,7 +135,10 @@ type
   end;
 
 
-    //TODO 2 -cTCustomGeckoBrowser: DocShell プロパティを追加
+    //TODO 2 -cTCustomGeckoBrowser: DocShell プャpティを追加
+
+  { TCustomGeckoBrowser }
+
   TCustomGeckoBrowser = class(TCustomControl,
                               IGeckoCreateWindowTarget)
   private
@@ -160,6 +164,14 @@ type
 
     FOnNewWindow: TGeckoBrowserNewWindow;
 
+    FOnSetupProperties: TNotifyEvent;
+
+    //misc settings
+    FDisableJavaScript: Boolean;
+    FInitialized: Boolean;
+
+    function GetDisableJavaScript: Boolean;
+    procedure SetDisableJavascript(const AValue: Boolean);
     procedure ShutdownWebBrowser;
     procedure InnerLoadURI(uri: WideString; Flags: PRUint32;
       referer: nsIURI; postData, headers: TStream);
@@ -169,7 +181,6 @@ type
 
     procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
     procedure WMEraseBkGnd(var Msg: TMessage); message WM_ERASEBKGND;
-
     function GetContentDocument: nsIDOMDocument;
     function GetContentWindow: nsIDOMWindow;
     function GetCanGoBack: Boolean;
@@ -186,7 +197,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure InitWebBrowser;  //FPC port: moved from private to public 
+    procedure InitWebBrowser;  //FPC port: moved from private to public
     procedure LoadURI(const uri: WideString); overload;
     procedure LoadURI(const uri: WideString; const referer: UTF8String);
       overload;
@@ -270,6 +281,11 @@ type
 
     property OnNewWindow: TGeckoBrowserNewWindow
       read FOnNewWindow write FOnNewWindow;
+
+    property OnSetupProperties: TNotifyEvent read FOnSetupProperties write FOnSetupProperties;
+    // misc base settings
+    property DisableJavaScript: Boolean read GetDisableJavaScript write SetDisableJavascript;
+    property Initialized: Boolean read FInitialized;
   end;
 
   TCustomGeckoBrowserChrome = class(TInterfacedObject,
@@ -362,6 +378,9 @@ type
     FOnDOMDragDrop: TGeckoBrowserDOMEventHandler;
     FOnDOMDragExit: TGeckoBrowserDOMEventHandler;
     FOnDOMFocus: TGeckoBrowserDOMEventHandler;
+
+    FOnCloseWindow: TNotifyEvent;
+
     // The Last focused element
     FLastFocused: nsIDOMElement;
 
@@ -407,6 +426,8 @@ type
       read FOnDOMDragExit write FOnDOMDragExit;
     property OnDOMFocus: TGeckoBrowserDOMEventHandler
       read FOnDOMFocus write FOnDOMFocus;
+    property OnCloseWindow: TNotifyEvent
+      read FOnCloseWindow write FOnCloseWindow;
 
   published
     // TWinControl
@@ -419,8 +440,13 @@ type
     property BevelKind;
     property BevelOuter;
     property BevelWidth;
+{$ELSE}
+    property Anchors;
+    property BorderSpacing;
+    property Constraints;
 {$ENDIF}
-    //property BorderWidth;
+    property BorderStyle;
+    property BorderWidth;
 
     property OnLocationChange;
     property OnProgressChange;
@@ -433,6 +459,10 @@ type
     property OnGoBack;
     property OnGoForward;
     property OnGoToIndex;
+
+    property OnSetupProperties;
+
+    property DisableJavaScript;
 
   public
     property ContentDocument;
@@ -449,8 +479,8 @@ type
   private
     FBrowser: TGeckoBrowser;
   protected
-    constructor Create(Browser: TGeckoBrowser);
   public
+    constructor Create(Browser: TGeckoBrowser);
     destructor Destroy; override;
   protected
     // nsIWebBrowserChrome
@@ -495,7 +525,6 @@ type
                                   nsISHistoryListener,
                                   nsIDOMEventListener)
   protected
-    constructor Create(browser: TGeckoBrowser);
     // nsIWebProgressListener
     procedure OnStateChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aStateFlags: PRUint32; aStatus: nsresult); override;
     procedure OnProgressChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aCurSelfProgress: PRInt32; aMaxSelfProgress: PRInt32; aCurTotalProgress: PRInt32; aMaxTotalProgress: PRInt32); override;
@@ -511,12 +540,14 @@ type
     function OnHistoryPurge(aNumEntries: PRInt32): PRBool; safecall;
     // nsIDOMEventListener
     //procedure HandleEvent(aEvent: nsIDOMEvent); safecall;
+  public
+    constructor Create(browser: TGeckoBrowser);
   end;
 
   (*TGeckoBrowser = class(TCustomControl,
                         nsISHistoryListener)
   private
-    { Private 宣言 }
+    { Private 骭ｾ }
     FWebBrowser: nsIWebBrowser;
     FDocTitle: WideString;
 
@@ -535,13 +566,13 @@ type
     function GetHistoryPosition: Integer;
     function GetHistoryCount: Integer;
   protected
-    { Protected 宣言 }
+    { Protected 骭ｾ }
     // TControl
     procedure Resize; override;
 
   public
-    { Public 宣言 }
-    // ナビゲーション
+    { Public 骭ｾ }
+    // ナビゲ[ション
     // nsIWebNavigation
     procedure GotoIndex(aIndex: Integer);
 
@@ -549,7 +580,7 @@ type
     property HistoryPosition: Integer read GetHistoryPosition;
     property HistoryCount: Integer read GetHistoryCount;
   published
-    { Published 宣言 }
+    { Published 骭ｾ }
     // TWinControl
     property Align;
     property TabOrder;
@@ -635,13 +666,20 @@ procedure Register;
 implementation
 
 uses
-  nsError, nsStream, nsMemory, nsNetUtil, nsInit, GeckoInit,
+  nsError, nsStream, nsMemory, nsNetUtil, GeckoInit,
   Forms, TypInfo, Variants;
 
 procedure Register;
 begin
   RegisterComponents('Gecko', [TGeckoBrowser]);
 end;
+
+{$PUSH}
+{$HINTS OFF}
+procedure UseParameter(var X);
+begin
+end;
+{$POP}
 
 (*
 // nsISHistoryListener
@@ -721,7 +759,7 @@ begin
   Result := NS_OK;
 end;
 
-// TControl 継承
+// TControl 継ｳ
 procedure TGeckoBrowser.Resize;
 var
   BaseWindow: nsIBaseWindow;
@@ -813,6 +851,7 @@ end;
 
 function TCustomGeckoBrowserChrome.SafeCallException(obj: TObject; addr: Pointer): HRESULT;
 begin
+  UseParameter(obj); UseParameter(Addr);
   Result := E_FAIL;
 end;
 
@@ -839,7 +878,7 @@ begin
     begin
       with FDOMEvents[I] do
       begin
-        target.AddEventListener(NewString(Name).AString, Self, False);
+        target.AddEventListener(NewString(Name).AString, Self, true);
       end;
       Inc(I);
     end;
@@ -883,9 +922,10 @@ begin
 {$IFNDEF FPC}
       browser.AddWebBrowserListener(weak, table.Entries[i].IID);
 {$ELSE}
- {$IFOPT R+}{$DEFINE TURNED_RANGE_CHECK_OFF}{$R-}{$ENDIF}
+ {$PUSH}
+  {$R-}
       browser.AddWebBrowserListener(weak, table.Entries[i].IID^);  //FPC Entries is only array[0..0]!
- {$IFDEF TURNED_RANGE_CHECK_OFF}{$UNDEFINE TURNED_RANGE_CHECK_OFF}{$R+}{$ENDIF}
+ {$POP}
 {$ENDIF}
 end;
 
@@ -902,15 +942,17 @@ begin
 {$IFNDEF FPC}
       browser.RemoveWebBrowserListener(weak, table.Entries[i].IID);
 {$ELSE}
- {$IFOPT R+}{$DEFINE TURNED_RANGE_CHECK_OFF}{$R-}{$ENDIF}
+ {$PUSH}
+  {$R-}
       browser.RemoveWebBrowserListener(weak, table.Entries[i].IID^);
- {$IFDEF TURNED_RANGE_CHECK_OFF}{$UNDEFINE TURNED_RANGE_CHECK_OFF}{$R+}{$ENDIF}
+ {$POP}
 {$ENDIF}
 end;
 
 function TCustomGeckoBrowserListener.SafeCallException(
                 Obj: TObject; Addr: Pointer): HResult;
 begin
+  UseParameter(obj); UseParameter(Addr);
   Result := HRESULT(NS_ERROR_FAILURE);
 end;
 
@@ -994,7 +1036,7 @@ begin
   baseWin.SetPositionAndSize(rc.Left, rc.Top, rc.Right - rc.Left, rc.Bottom - rc.Top, False);
 end;
 
-// TWinControl 継承
+// TWinControl 継ｳ
 procedure TCustomGeckoBrowser.CreateWnd;
 begin
   {$IFDEF DEBUG}
@@ -1005,6 +1047,13 @@ begin
   if not (csDesigning in ComponentState) then
   begin
     InitWebBrowser;
+    LoadURI('about:blank');
+    FInitialized:=true;
+    if Assigned(FOnSetupProperties) then begin
+      FOnSetupProperties(Self);
+    end;
+    //Set again the published properties
+    SetDisableJavascript(FDisableJavaScript);
   end;
 end;
 
@@ -1056,12 +1105,12 @@ begin
     baseWin := FWebBrowser as nsIBaseWindow;
 
     rc := ClientRect;
-    baseWin.InitWindow({$IFDEF MSWINDOWS}Pointer(Handle),{$ENDIF}
-                       {$IFDEF LCLCarbon}Pointer(TCarbonWindow(Handle).Window),{$ENDIF}
+    baseWin.InitWindow({$IFDEF MSWINDOWS}Handle,{$ENDIF}
+                       {$IFDEF LCLCarbon}TCarbonWindow(Handle).Window,{$ENDIF}
 //                       {$IFDEF LCLCocoa}Pointer(TCocoaForm(Handle).MainWindowView.superview),{$ENDIF}
-                       {$IFDEF LCLCocoa}Pointer(TCocoaWindow(Handle).contentView),{$ENDIF}
-                       {$IFDEF LCLGtk}Pointer(Handle),{$ENDIF}  //Is Handle same as GTK Window?
-                       {$IFDEF LCLGtk2}Pointer(Handle),{$ENDIF}  //Is Handle same as GTK Window?
+                       {$IFDEF LCLCocoa}TCocoaWindow(Handle).contentView,{$ENDIF}
+                       {$IFDEF LCLGtk}Handle,{$ENDIF}  //Is Handle same as GTK Window?
+                       {$IFDEF LCLGtk2}Handle,{$ENDIF}  //Is Handle same as GTK Window?
                        nil,
                        rc.Left,
                        rc.Top,
@@ -1151,7 +1200,7 @@ begin
   InnerLoadURI(uri, Flags, ref, nil, nil);
 end;
 
-procedure TCustomGeckoBrowser.LoadURIWithFlags(const uri: WideString; Flags: Cardinal; const referer: WideString);
+procedure TCustomGeckoBrowser.LoadURIWithFlags(const uri: WideString; Flags: PRUint32; const referer: WideString);
 var
   ref: nsIURI;
   refStr: IInterfacedUTF8String;
@@ -1161,7 +1210,7 @@ begin
   InnerLoadURI(uri, Flags, ref, nil, nil);
 end;
 
-procedure TCustomGeckoBrowser.LoadURIWithFlags(const uri: WideString; Flags: Cardinal; referer: nsIURI);
+procedure TCustomGeckoBrowser.LoadURIWithFlags(const uri: WideString; Flags: PRUint32; referer: nsIURI);
 begin
   InnerLoadURI(uri, Flags, referer, nil, nil);
 end;
@@ -1191,6 +1240,29 @@ begin
     FListeners.ShutdownListener(Self);
     FWebBrowser.SetContainerWindow(nil);
     FWebBrowser := nil;
+  end;
+end;
+
+function TCustomGeckoBrowser.GetDisableJavaScript: Boolean;
+begin
+  Result:=FDisableJavaScript;
+end;
+
+procedure TCustomGeckoBrowser.SetDisableJavascript(const AValue: Boolean);
+var
+  iWebSetup: nsIWebBrowserSetup;
+begin
+  try
+    if FInitialized then begin
+      iWebSetup:=Self.FWebBrowser as nsIWebBrowserSetup;
+      iWebSetup.SetProperty(NS_IWEBBROWSERSETUP_SETUP_ALLOW_JAVASCRIPT,PRInt32(not AValue));
+    end;
+    FDisableJavaScript:=AValue;
+  except
+    try
+      Raise EGeckoHint.Create('Unable to disable JavaScript at this moment. Gecko not created?');
+    except
+    end;
   end;
 end;
 
@@ -1243,6 +1315,7 @@ begin
   ));
   }
   {$ENDIF}
+  UseParameter(statusType);
   if Assigned(FBrowser.OnStatusChange) then
     FBrowser.OnStatusChange(FBrowser, status);
 end;
@@ -1269,11 +1342,13 @@ end;
 procedure TGeckoBrowserChrome.SetChromeFlags(
                 aChromeFlags: PRUint32);
 begin
+  UseParameter(aChromeFlags);
 end;
 
 procedure TGeckoBrowserChrome.DestroyBrowserWindow;
 begin
-  //TODO 2 -cTGeckoBrowserChrome: TGeckoBrowserChrome.OnDestroyBrowser イベントの追加
+  if Assigned(FBrowser.FOnCloseWindow) then
+    FBrowser.FOnCloseWindow(FBrowser);
 end;
 
 procedure TGeckoBrowserChrome.SizeBrowserTo(
@@ -1297,6 +1372,7 @@ end;
 procedure TGeckoBrowserChrome.ExitModalEventLoop(
                 aStatus: nsresult);
 begin
+  UseParameter(aStatus);
 end;
 
 procedure TGeckoBrowserChrome.SetDimensions(
@@ -1376,7 +1452,15 @@ end;
 
 procedure TGeckoBrowserChrome.SetFocus;
 begin
-  FBrowser.SetFocus;
+  if Assigned(FBrowser.FOnVisibleChange) then begin
+    //Give the browser a chance to become visible
+    FBrowser.FOnVisibleChange(FBrowser,true);
+  end;
+  try
+    FBrowser.SetFocus;
+  except
+    Raise EGeckoHint.Create('Unable to set focus to '+FBrowser.Name);
+  end;
 end;
 
 function TGeckoBrowserChrome.GetVisibility: PRBool;
@@ -1388,6 +1472,7 @@ end;
 procedure TGeckoBrowserChrome.SetVisibility(
                 aVisibility: PRBool);
 begin
+  UseParameter(aVisibility);
   //TODO 1 -cTGeckoBrowserChrome: TGeckoBrowserChrome.SetVisibility の実装
 end;
 
@@ -1415,28 +1500,32 @@ end;
 
 function TGeckoBrowserChrome.GetSiteWindow: Pointer;
 begin
+{$PUSH}
+{$HINTS OFF}
   Result := Pointer(FBrowser.Handle);
+{$POP}
 end;
 
 constructor TGeckoBrowserListener.Create(browser: TGeckoBrowser);
 const
+  //Most usual events at the beginning to improve handling speed.
   events: array [0..15] of TGeckoDOMEventRegister = (
-    (name:'load';      eventType:etEvent;      propertyName:'OnDOMLoad' ),
-    (name:'click';     eventType:etMouseEvent; propertyName:'OnDOMClick' ),
-    (name:'mouseup';   eventType:etMouseEvent; propertyName:'OnDOMMouseUp' ),
-    (name:'mousedown'; eventType:etMouseEvent; propertyName:'OnDOMMouseDown' ),
-    (name:'mousemove'; eventType:etMouseEvent; propertyName:'OnDOMMouseMove' ),
-    (name:'keyup';     eventType:etEvent;      propertyName:'OnDOMKeyUp' ),
-    (name:'keydown';   eventType:etEvent;      propertyName:'OnDOMKeyDown'),
-    (name:'keypress';  eventType:etEvent;      propertyName:'OnDOMKeyPress'),
-    (name:'DOMMouseScroll'; eventType: etMouseEvent; propertyName:'OnDOMMouseScroll'),
-    (name:'DOMLinkAdded'; eventType: etEvent;  propertyName:'OnDOMLinkAdded'),
-    (name:'dragover';  eventType:etEvent;      propertyName:'OnDOMDragOver'),
-    (name:'draggesture'; eventType:etEvent;    propertyName:'OnDOMDragGesture'),
-    (name:'dragdrop';  eventType:etEvent;      propertyName:'OnDOMDragDrop'),
-    (name:'dragexit';  eventType:etEvent;      propertyName:'OnDOMDragExit'),
-    (name:'focus';     eventType:etEvent;      propertyName:'OnDOMFocus'),
-    (name:'';          eventType:etNone;       propertyName:'')
+    (name:'mousemove';      eventType:etMouseEvent; propertyName:'OnDOMMouseMove' ),
+    (name:'DOMMouseScroll'; eventType: etMouseEvent;propertyName:'OnDOMMouseScroll'),
+    (name:'focus';          eventType:etEvent;      propertyName:'OnDOMFocus'),
+    (name:'load';           eventType:etEvent;      propertyName:'OnDOMLoad' ),
+    (name:'click';          eventType:etMouseEvent; propertyName:'OnDOMClick' ),
+    (name:'mouseup';        eventType:etMouseEvent; propertyName:'OnDOMMouseUp' ),
+    (name:'mousedown';      eventType:etMouseEvent; propertyName:'OnDOMMouseDown' ),
+    (name:'keyup';          eventType:etEvent;      propertyName:'OnDOMKeyUp' ),
+    (name:'keydown';        eventType:etEvent;      propertyName:'OnDOMKeyDown'),
+    (name:'keypress';       eventType:etEvent;      propertyName:'OnDOMKeyPress'),
+    (name:'DOMLinkAdded';   eventType: etEvent;     propertyName:'OnDOMLinkAdded'),
+    (name:'dragover';       eventType:etEvent;      propertyName:'OnDOMDragOver'),
+    (name:'draggesture';    eventType:etEvent;      propertyName:'OnDOMDragGesture'),
+    (name:'dragdrop';       eventType:etEvent;      propertyName:'OnDOMDragDrop'),
+    (name:'dragexit';       eventType:etEvent;      propertyName:'OnDOMDragExit'),
+    (name:'';               eventType:etNone;       propertyName:'')
   );
 begin
   inherited Create(browser);
@@ -1447,7 +1536,7 @@ procedure TGeckoBrowserListener.OnStateChange(
                 aWebProgress: nsIWebProgress;
                 aRequest: nsIRequest;
                 aStateFlags: PRUint32;
-                aStatus: PRUint32);
+                aStatus: nsresult);
 {$IFDEF DEBUG}
 var
   uri: nsIURI;
@@ -1460,12 +1549,15 @@ const
   STATE_START       = NS_IWEBPROGRESSLISTENER_STATE_START;
   STATE_STOP        = NS_IWEBPROGRESSLISTENER_STATE_STOP;
 begin
+  UseParameter(aWebProgress);
+  UseParameter(aRequest);
+  UseParameter(aStatus);
   if (aStateFlags and STATE_IS_DOCUMENT)<>0 then
   begin
-    // 状態の変化はドキュメントに対してである
+    // ﾔの変化はドキュャ塔gに対してである
     if (aStateFlags and STATE_START)<>0 then
     begin
-      // ドキュメントの読み込みが開始された
+      // ドキュャ塔gの読み桙ﾝが開始された
       {$IFDEF DEBUG}
       {
       OutputDebugString('GeckoBrowser.OnDocumentBegin');
@@ -1474,7 +1566,7 @@ begin
     end else
     if (aStateFlags and STATE_STOP)<>0 then
     begin
-      // ドキュメントの読み込みが完了した
+      // ドキュャ塔gの読み桙ﾝが完了した
       {$IFDEF DEBUG}
       {
       OutputDebugString('GeckoBrowser.OnDocumentComplete');
@@ -1484,10 +1576,10 @@ begin
   end;
   if (aStateFlags and STATE_IS_NETWORK)<>0 then
   begin
-    // 状態の変化はネットワークに対してである
+    // ﾔの変化はネットゼクに対してである
     if (aStateFlags and STATE_START)<>0 then
     begin
-      // ネットワークの転送が開始された場合
+      // ネットゼクの転送が開始された鼇
       {$IFDEF DEBUG}
       {
       str := NewCString;
@@ -1501,7 +1593,7 @@ begin
     end else
     if (aStateFlags and STATE_STOP)<>0 then
     begin
-      // ネットワークの転送が終了した場合
+      // ネットゼクの転送がI了した鼇
       {$IFDEF DEBUG}
       {
       str := NewCString;
@@ -1526,6 +1618,10 @@ procedure TGeckoBrowserListener.OnProgressChange(
                 aCurTotalProgress: PRInt32;
                 aMaxTotalProgress: PRInt32);
 begin
+  UseParameter(aWebProgress);
+  UseParameter(aRequest);
+  UseParameter(aCurSelfProgress);
+  UseParameter(aMaxSelfProgress);
   if Assigned(FBrowser.OnProgressChange) then
   begin
     {$IFDEF DEBUG}
@@ -1546,6 +1642,8 @@ procedure TGeckoBrowserListener.OnLocationChange(
 var
   str: IInterfacedCString;
 begin
+  UseParameter(aWebProgress);
+  UseParameter(aRequest);
   str := NewCString;
   location.GetSpec(str.ACString);
   {$IFDEF DEBUG}
@@ -1562,9 +1660,12 @@ end;
 procedure TGeckoBrowserListener.OnStatusChange(
                 aWebProgress: nsIWebProgress;
                 aRequest: nsIRequest;
-                aStatus: PRUint32;
+                aStatus: nsresult;
                 const aMessage: PWideChar);
 begin
+  UseParameter(aWebProgress);
+  UseParameter(aRequest);
+  UseParameter(aStatus);
 {$IFDEF DEBUG}
 {
   OutputDebugStringW(PWideChar(
@@ -1581,7 +1682,10 @@ procedure TGeckoBrowserListener.OnSecurityChange(
                 aRequest: nsIRequest;
                 state: PRUint32);
 begin
-  //TODO 1 -cTGeckoBrowserListner: TGeckoBrowserListener.OnSecurityChange の記述
+  UseParameter(aWebProgress);
+  UseParameter(aRequest);
+  UseParameter(State);
+  //TODO 1 -cTGeckoBrowserListner: TGeckoBrowserListener.OnSecurityChange の記q
 end;
 
 constructor TGeckoBrowser.Create(AOwner: TComponent);
@@ -1595,8 +1699,7 @@ function TGeckoBrowserChrome.NS_GetInterface(const uuid: TGUID; out _result): ns
 begin
   if IsEqualGUID(uuid, nsIDOMWindow) then
   begin
-    // nsIDOMWindow を処理しないと nsIWindowCreator.CreateChromeWindow でエラーになる
-    Result := FBrowser.FBrowser.ContainerWindow.QueryInterface(uuid, _result);
+    Result:= nsresult(FBrowser.GetContentWindow.QueryInterface(uuid, _result));
   end else
   begin
 // FPC port: Result is PRUInt32, but QueryInterface returns Longint,
@@ -1608,6 +1711,7 @@ end;
 
 procedure TGeckoBrowserChrome.OnShowContextMenu(aContextFlags: PRUint32;
   aUtils: nsIContextMenuInfo);
+(*
 const
   CONTEXT_NONE             = NS_ICONTEXTMENULISTENER2_CONTEXT_NONE;
   CONTEXT_LINK             = NS_ICONTEXTMENULISTENER2_CONTEXT_LINK;
@@ -1615,7 +1719,7 @@ const
   CONTEXT_DOCUMENT         = NS_ICONTEXTMENULISTENER2_CONTEXT_DOCUMENT;
   CONTEXT_TEXT             = NS_ICONTEXTMENULISTENER2_CONTEXT_TEXT;
   CONTEXT_INPUT            = NS_ICONTEXTMENULISTENER2_CONTEXT_INPUT;
-  CONTEXT_BACKGROUND_IMAGE = NS_ICONTEXTMENULISTENER2_CONTEXT_BACKGROUND_IMAGE;
+  CONTEXT_BACKGROUND_IMAGE = NS_ICONTEXTMENULISTENER2_CONTEXT_BACKGROUND_IMAGE;*)
 var
   cmenu: TCtxMenuInfo;
 begin
@@ -1631,10 +1735,12 @@ begin
 end;
 
 procedure TGeckoBrowserChrome.OnShowTooltip(aXCoords: PRInt32; aYCoords: PRInt32; const aTipText: PWideChar); safecall;
+{$IFNDEF FPC}
 var
   r:TRect;
   p,ap:TPoint;
 //  height:Integer;
+{$ENDIF}
 begin
 {$IFNDEF LCL}
   if FBrowser.FHint = nil then
@@ -1649,6 +1755,11 @@ begin
   r.Right:=r.Right +p.x;
   r.Bottom:=p.y;
   FBrowser.FHint.ActivateHint(r,aTipText);
+{$ELSE}
+  UseParameter(aXCoords);
+  UseParameter(aYCoords);
+  FBrowser.Hint:=aTiptext;
+  FBrowser.ShowHint:=true;
 {$ENDIF}
 end;
 
@@ -1690,7 +1801,7 @@ end;
 
 procedure TCustomGeckoBrowser.WMEraseBkGnd(var Msg: TMessage);
 begin
-  // ちらつき防止
+  // Cancel erase background actions.
   Msg.Result := 0;
 end;
 
@@ -1706,7 +1817,7 @@ begin
   end else
   begin
     baseWin := FWebBrowser as nsIBaseWindow;
-    baseWin.Repaint(True);
+    baseWin.Repaint(true);
   end;
   inherited;
 end;
@@ -1823,6 +1934,7 @@ end;
 
 procedure TGeckoBrowserListener.OnHistoryNewEntry(aNewURI: nsIURI);
 begin
+  UseParameter(aNewURI);
 end;
 
 function TGeckoBrowserListener.OnHistoryGoBack(aBackURI: nsIURI): PRBool;
@@ -1830,6 +1942,7 @@ var
   Handled:Boolean;
   aContinue:PRBool;
 begin
+  Handled:=false;
   if Assigned(FBrowser.FOnGoBack) then
     FBrowser.FOnGoBack(Self,aBackURI,aContinue,Handled);
   if Handled then begin
@@ -1849,6 +1962,7 @@ var
   Handled:Boolean;
   aContinue:PRBool;
 begin
+  Handled:=false;
   if Assigned(FBrowser.FOnGoForward) then
     FBrowser.FOnGoForward(Self,aForwardURI,aContinue,Handled);
   if Handled then begin
@@ -1865,6 +1979,8 @@ end;
 
 function TGeckoBrowserListener.OnHistoryReload(aReloadURI: nsIURI; aReloadFlags: PRUint32): PRBool;
 begin
+  UseParameter(aReloadURI);
+  UseParameter(aReloadFlags);
   Result := True;
 end;
 
@@ -1873,6 +1989,7 @@ var
   Handled:Boolean;
   aContinue:PRBool;
 begin
+  Handled:=false;
   if Assigned(FBrowser.FOnGoToIndex) then
     FBrowser.FOnGoToIndex(Self,aIndex,aGotoURI,aContinue,Handled);
 
@@ -1890,6 +2007,7 @@ end;
 
 function TGeckoBrowserListener.OnHistoryPurge(aNumEntries: PRInt32): PRBool;
 begin
+  UseParameter(aNumEntries);
   Result := True;
 end;
 

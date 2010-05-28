@@ -41,7 +41,7 @@ unit GeckoChromeWindow;
 interface
 
 uses
-  {$IFNDEF LCL} Windows, Messages, {$ELSE} LclIntf, LMessages, LResources, {$ENDIF}
+  {$IFNDEF LCL} Windows, Messages, {$ELSE} LclIntf, LResources, {$ENDIF}
   SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, CallbackInterfaces, nsXPCOM, nsTypes, nsXPCOM_std19
   {$IFDEF LCLCarbon}, CarbonPrivate {$ENDIF}
@@ -60,7 +60,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
   private
-    { Private �錾 }
+    { Private 錾 }
     FWebBrowser: nsIWebBrowser;
     FChromeFlags: Longword;
 
@@ -98,12 +98,12 @@ type
     // for nsISupportsWeakReference
     function GetWeakReference(): nsIWeakReference; safecall;
 
-    function GetNativeWindow : Pointer;  //FPC port: added this.
+    function GetNativeWindow : THANDLE;  //FPC port: added this.
     procedure InitWebBrowser;
     procedure UpdateChrome;
     procedure ContentFinishedLoading;
   public
-    { Public �錾 }
+    { Public 錾 }
     function SafeCallException(Obj: TObject; Addr: Pointer): HResult; override;
 
     constructor CreateWithChromeFlags(AOwner: TComponent; aChromeFlags: Longword);
@@ -126,6 +126,13 @@ implementation
 uses
   nsXPCOMGlue, nsError, BrowserSupports;
 
+{$PUSH}
+{$HINTS OFF}
+procedure UseParameter(var X);
+begin
+end;
+{$POP}
+
 constructor TGeckoChromeForm.CreateWithChromeFlags(AOwner: TComponent; AChromeFlags: Longword);
 begin
   inherited Create(AOwner);
@@ -139,16 +146,16 @@ begin
   Action := caFree;
 end;
 
-function TGeckoChromeForm.GetNativeWindow : Pointer;
+function TGeckoChromeForm.GetNativeWindow : THANDLE;
 {$IFDEF LCLCocoa}
 var
   ARect : NSRect;
   AView : NSView;
 {$ENDIF}
 begin
-   {$IFDEF MSWINDOWS}Result := Pointer(Handle);{$ENDIF}
+   {$IFDEF MSWINDOWS}Result := Handle;{$ENDIF}
 
-   {$IFDEF LCLCarbon}Result := Pointer(TCarbonWindow(Handle).Window);{$ENDIF}
+   {$IFDEF LCLCarbon}Result := TCarbonWindow(Handle).Window;{$ENDIF}
     //Carbon doesn't work but leave in so package compiles in Carbon IDE.
 
 //   {$IFDEF LCLCocoa}Result := Pointer(TCocoaForm(Handle).MainWindowView.superview);{$ENDIF}
@@ -163,16 +170,16 @@ begin
     ARect.origin.y := 15;
     AView := NSView.alloc.initWithFrame(ARect);
     NSView(TCocoaWindow(Handle).contentView).addSubView(AView);
-    Result := Pointer(AView);
+    Result := HANDLE(AView);
    {$ENDIF}
 
 //NSLog(NSStringUtf8(FloatToStr(NSView(TCocoaWindow(Handle).contentView).frame.size.width)));
 //   {$IFDEF LCLCocoa}Result := Pointer(TCocoaWindow(Handle).contentView);{$ENDIF}
     //New ObjC-based Cocoa widgetset.
 
-   {$IFDEF LCLGtk}Result := Pointer(Handle);{$ENDIF}  //Is Handle same as GTK Window?
+   {$IFDEF LCLGtk}Result := Handle;{$ENDIF}  //Is Handle same as GTK Window?
 
-   {$IFDEF LCLGtk2}Result := Pointer(Handle);{$ENDIF}  //Is Handle same as GTK Window?
+   {$IFDEF LCLGtk2}Result := Handle;{$ENDIF}  //Is Handle same as GTK Window?
 end;
 
 procedure TGeckoChromeForm.InitWebBrowser;
@@ -227,7 +234,8 @@ end;
 
 function TGeckoChromeForm.DoCreateChromeWindow(chromeFlags: Longword): nsIWebBrowserChrome;
 begin
-  //Result := nil;
+  UseParameter(chromeFlags);
+  Result := nil;
 end;
 
 function TGeckoChromeForm.GetWebBrowserChrome: nsIWebBrowserChrome;
@@ -237,6 +245,7 @@ end;
 
 procedure TGeckoChromeForm.SetStatus(statusType: Longword; const status: PWideChar);
 begin
+  UseParameter(statusType);
 end;
 
 function TGeckoChromeForm.GetWebBrowser: nsIWebBrowser;
@@ -246,6 +255,7 @@ end;
 
 procedure TGeckoChromeForm.SetWebBrowser(aWebBrowser: nsIWebBrowser);
 begin
+  UseParameter(aWebBrowser);
 end;
 
 function TGeckoChromeForm.GetChromeFlags: PRUint32;
@@ -284,8 +294,9 @@ begin
   Result := False;
 end;
 
-procedure TGeckoChromeForm.ExitModalEventLoop(aStatus: PRUint32);
+procedure TGeckoChromeForm.ExitModalEventLoop(aStatus: nsresult); safecall;
 begin
+  UseParameter(aStatus);
   ModalResult := 1;
 end;
 
@@ -359,6 +370,7 @@ end;
 
 procedure TGeckoChromeForm.SetVisibility(Value: LongBool);
 begin
+  UseParameter(Value);
   //Visible := Value;
 end;
 
@@ -374,11 +386,18 @@ end;
 
 function TGeckoChromeForm.GetSiteWindow: Pointer;
 begin
-  Result := GetNativeWindow;
+//Known "not safe" conversion.
+{$PUSH}
+{$HINTS OFF}
+  Result := Pointer(GetNativeWindow);
+{$POP}
 end;
 
 procedure TGeckoChromeForm.OnStateChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aStateFlags: PRUint32; aStatus: nsresult);
 begin
+  UseParameter(aWebProgress);
+  UseParameter(aRequest);
+  UseParameter(aStatus);
   if ((aStateFlags and NS_IWEBPROGRESSLISTENER_STATE_STOP)<>0) and
      ((aStateFlags and NS_IWEBPROGRESSLISTENER_STATE_IS_DOCUMENT)<>0) then
   begin
@@ -388,20 +407,34 @@ end;
 
 procedure TGeckoChromeForm.OnProgressChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aCurSelfProgress: PRInt32; aMaxSelfProgress: PRInt32; aCurTotalProgress: PRInt32; aMaxTotalProgress: PRInt32);
 begin
+  UseParameter(aWebProgress);
+  UseParameter(aRequest);
+  UseParameter(aCurSelfProgress);
+  UseParameter(aMaxSelfProgress);
+  UseParameter(aCurTotalProgress);
+  UseParameter(aMaxTotalProgress);
 end;
 
 procedure TGeckoChromeForm.OnLocationChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; location: nsIURI);
 begin
+  UseParameter(aWebProgress);
+  UseParameter(aRequest);
+  UseParameter(location);
 end;
 
 procedure TGeckoChromeForm.OnStatusChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aStatus: nsresult; const aMessage: PWideChar);
 begin
+  UseParameter(aWebProgress);
+  UseParameter(aRequest);
+  UseParameter(aStatus);
 end;
 
 procedure TGeckoChromeForm.OnSecurityChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; state: PRUint32);
 begin
+  UseParameter(aWebProgress);
+  UseParameter(aRequest);
+  UseParameter(state);
 end;
-
 
 function TGeckoChromeForm.NS_GetInterface(const uuid: TGUID; out Intf): nsresult;
 var
@@ -471,6 +504,7 @@ const
 
 function TGeckoChromeForm.SafeCallException(Obj: TObject; Addr: Pointer): HResult;
 begin
+  UseParameter(Addr);
   if Obj is EIntfCastError then
     Result := E_NOINTERFACE
   else

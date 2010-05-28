@@ -80,7 +80,7 @@ function XRE_InitEmbedding(aLibXulDirectory: nsILocalFile;
                            aAppDirectory: nsILocalFile;
                            aAppDirProvider: nsIDirectoryServiceProvider;
                            const aStaticComponents: PStaticModuleInfoArray;
-                           aStaticComponentCount: PRUint32): nsresult; cdecl;
+                           aStaticComponentCount: PRUint32): nsresult;
 procedure XRE_NotifyProfile(); cdecl;
 procedure XRE_TermEmbedding(); cdecl;
 function XRE_CreateAppData(aINIFile: nsILocalFile;
@@ -92,7 +92,7 @@ procedure XRE_FreeAppData(aAppData: PXREAppData); cdecl;
 implementation
 
 uses
-  nsConsts, nsError, nsGeckoStrings, 
+  nsError, nsGeckoStrings,
   {$IFDEF MSWINDOWS} Windows, {$ELSE} DynLibs, {$ENDIF} SysUtils;
 
 var
@@ -128,8 +128,6 @@ var
               out aAppData: nsXREAppData): nsresult; cdecl;
   freeAppDataFunc :
     procedure (aAppData: PXREAppData); cdecl;
-
-  sInitialized : Boolean = False;
 
 function strrpbrk(src: PAnsiChar; const charSet: PAnsiChar): PAnsiChar;
 var
@@ -172,6 +170,7 @@ begin
   vers.upper := upperVer;
   vers.upperInclusive := upperInclusive;
 
+(*
   Result := GRE_GetGREPathWithProperties(@vers, 1, nil, 0, xpcomPath, MAX_PATH);
 //FPC port: previous call doesn't find Firefox's GRE, so just force it.
   if NS_FAILED(result) then
@@ -182,6 +181,31 @@ begin
       Result := NS_OK;
     end;
 //FPC port
+  if NS_FAILED(result) then
+    Exit;
+*)
+  //Changed checking order. Preference is xulrunner in application folder
+  if ParamStr(1)<>'' then begin
+    NS_StrLCopy(xpcomPath, PChar(ParamStr(1) + '\xpcom.dll'), MAX_PATH);
+    Result:=NS_OK;
+  end else begin
+    NS_StrLCopy(xpcomPath, PChar(ExtractFilePath(ParamStr(0)) + 'xpcom.dll'), MAX_PATH);
+    if FileExists(xpcomPath) then begin
+      Result := NS_OK;
+    end else begin
+      NS_StrLCopy(xpcomPath, PChar(ExtractFilePath(ParamStr(0)) + 'xulrunner\xpcom.dll'), MAX_PATH);
+      if FileExists(xpcomPath) then begin
+        Result := NS_OK;
+      end else begin
+        Result := GRE_GetGREPathWithProperties(@vers, 1, nil, 0, xpcomPath, MAX_PATH);
+        if not FileExists(xpcomPath) then begin
+          Result:=NS_ERROR_FILE_ACCESS_DENIED
+        end else begin
+          result:=NS_OK;
+        end;
+      end;
+    end;
+  end;
   if NS_FAILED(result) then
     Exit;
 
@@ -286,7 +310,7 @@ begin
     Result := NS_ERROR_NOT_INITIALIZED;
     Exit;
   end;
-  FreeLibrary(sXulModule);
+  XPCOMGlueShutdown;
   sXulModule := 0;
   Result := NS_OK;
 end;
@@ -369,8 +393,9 @@ begin
     XRE_UnloadGRE();
     Exit;
   end;
-
+//  NS_LogInit();
   Result := XRE_InitEmbedding(xulDir, appDir, nil, nil, 0);
+//  NS_LogTerm();
 end;
 
 function XRE_Shutdown(): nsresult;
