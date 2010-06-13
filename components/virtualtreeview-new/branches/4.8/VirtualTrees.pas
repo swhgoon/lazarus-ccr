@@ -22183,8 +22183,8 @@ procedure TBaseVirtualTree.PaintCheckImage(const PaintInfo: TVTPaintInfo);
       ButtonState := ButtonState or DFCS_CHECKED;
     if Flat then
       ButtonState := ButtonState or DFCS_FLAT;
-    //lcl DrawFrameControl is different from windows
-    DelphiCompat.DrawFrameControl(Canvas.Handle, R, DFC_BUTTON, ButtonType or ButtonState);
+
+    DrawFrameControl(Canvas.Handle, R, DFC_BUTTON, ButtonType or ButtonState);
   end;
 
 
