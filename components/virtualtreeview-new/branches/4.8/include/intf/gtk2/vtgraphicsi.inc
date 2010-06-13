@@ -1,12 +1,12 @@
 uses
-  gtkdef, gdk2, GTKProc, Cairo;
+  gtk2def, gdk2, GTK2Proc, Cairo;
 
 
 function gdk_cairo_create(drawable: PGdkDrawable): Pcairo_t cdecl external gdklib;
 
 procedure AlphaBlend(Source, Destination: HDC; const R: TRect; const Target: TPoint; Mode: TBlendMode; ConstantAlpha, Bias: Integer);
 
-  function GetContext(GtkDC: TGtkDeviceContext): Pcairo_t;
+  function GetContext(GtkDC: TGtk2DeviceContext): Pcairo_t;
   begin
     Result := nil;
     if (GtkDC <> nil) and (GtkDC.Drawable <> nil) then
@@ -14,8 +14,8 @@ procedure AlphaBlend(Source, Destination: HDC; const R: TRect; const Target: TPo
   end;
 
 var
-  SrcDC: TGtkDeviceContext absolute Source;
-  DestDC: TGtkDeviceContext absolute Destination;
+  SrcDC: TGtk2DeviceContext absolute Source;
+  DestDC: TGtk2DeviceContext absolute Destination;
   SrcContext, DestContext: Pcairo_t;
 begin
   case Mode of
