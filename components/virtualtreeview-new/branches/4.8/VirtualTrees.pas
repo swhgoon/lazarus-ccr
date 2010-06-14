@@ -30465,9 +30465,13 @@ begin
   // This does not harm formatting as single line control, if we don't use word wrapping.
   with Params do
   begin
-    Style := Style or ES_MULTILINE;
+    //todo: delphi uses Multiline for all
+    //Style := Style or ES_MULTILINE;
     if vsMultiline in FLink.FNode.States then
+    begin
       Style := Style and not (ES_AUTOHSCROLL or WS_HSCROLL) or WS_VSCROLL or ES_AUTOVSCROLL;
+      Style := Style or ES_MULTILINE;
+    end;
     if tsUseThemes in FLink.FTree.FStates then
     begin
       Style := Style and not WS_BORDER;
