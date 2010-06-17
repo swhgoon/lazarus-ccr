@@ -2387,7 +2387,7 @@ function GetVTClipboardFormatDescription(AFormat: Word): string;
 //x   lindex: Integer = -1): Word; overload;
 
 // utility routines
-procedure AlphaBlend(Source, Destination: HDC; R: TRect; Target: TPoint; Mode: TBlendMode; ConstantAlpha, Bias: Integer);
+procedure VTAlphaBlend(Source, Destination: HDC; R: TRect; Target: TPoint; Mode: TBlendMode; ConstantAlpha, Bias: Integer);
 procedure DrawTextW(DC: HDC; lpString: PWideChar; nCount: Integer; var lpRect: TRect; uFormat: Cardinal;
   AdjustRight: Boolean); overload;
 procedure DrawTextW(Canvas: TCanvas; lpString: PWideChar; var lpRect: TRect; uFormat: Cardinal;
@@ -3593,7 +3593,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure AlphaBlend(Source, Destination: HDC; R: TRect; Target: TPoint; Mode: TBlendMode; ConstantAlpha, Bias: Integer);
+procedure VTAlphaBlend(Source, Destination: HDC; R: TRect; Target: TPoint; Mode: TBlendMode; ConstantAlpha, Bias: Integer);
 
 // Optimized alpha blend procedure using MMX instructions to perform as quick as possible.
 // For this procedure to work properly it is important that both source and target bitmap use the 32 bit color format.
@@ -4850,7 +4850,7 @@ procedure TVirtualTreeHintWindow.InternalPaint(Step, StepSize: Integer);
   // Helper routine for shadow blending to shorten the parameter list in frequent calls.
 
   begin
-    AlphaBlend(0, DC, R, Point(0, 0), bmConstantAlphaAndColor,  Alpha, clBlack);
+    VTAlphaBlend(0, DC, R, Point(0, 0), bmConstantAlphaAndColor,  Alpha, clBlack);
   end;
 
   //---------------------------------------------------------------------------
@@ -4982,7 +4982,7 @@ begin
       with FTarget do
         BitBlt(Canvas.Handle, 0, 0, Width, Height, FBackground.Canvas.Handle, 0, 0, SRCCOPY);
       // Main image.
-      AlphaBlend(FDrawBuffer.Canvas.Handle, FTarget.Canvas.Handle, Rect(0, 0, Width - Shadow, Height - Shadow),
+      VTAlphaBlend(FDrawBuffer.Canvas.Handle, FTarget.Canvas.Handle, Rect(0, 0, Width - Shadow, Height - Shadow),
         Point(0, 0), bmConstantAlpha,  MulDiv(Step, 256, FadeAnimationStepCount), 0);
 
       if Shadow > 0 then
@@ -5390,7 +5390,7 @@ begin exit;
   else
     BlendMode := bmMasterAlpha;
   with FDragImage do
-    AlphaBlend(Canvas.Handle, FAlphaImage.Canvas.Handle, Rect(0, 0, Width, Height), Point(0, 0), BlendMode,
+    VTAlphaBlend(Canvas.Handle, FAlphaImage.Canvas.Handle, Rect(0, 0, Width, Height), Point(0, 0), BlendMode,
       FTransparency, FPostBlendBias);
 
   with FAlphaImage do
@@ -11733,7 +11733,7 @@ var
       R.Left := 0;
     if R.Right > MaxWidth then
       R.Right := MaxWidth;
-    AlphaBlend(0, PaintInfo.Canvas.Handle, R, Point(0, 0), bmConstantAlphaAndColor,
+    VTAlphaBlend(0, PaintInfo.Canvas.Handle, R, Point(0, 0), bmConstantAlphaAndColor,
       FSelectionBlendFactor, ColorToRGB(Color));
   end;
 
@@ -19373,7 +19373,7 @@ begin
     if IntersectRect(BlendRect, OrderRect(SelectionRect), TargetRect) then
     begin
       OffsetRect(BlendRect, -WindowOrgX, 0);
-      AlphaBlend(0, Target.Handle, BlendRect, Point(0, 0), bmConstantAlphaAndColor, FSelectionBlendFactor,
+      VTAlphaBlend(0, Target.Handle, BlendRect, Point(0, 0), bmConstantAlphaAndColor, FSelectionBlendFactor,
         ColorToRGB(FColors.SelectionRectangleBlendColor));
 
       Target.Brush.Color := FColors.SelectionRectangleBorderColor;
