@@ -42,7 +42,7 @@ interface
  
 uses
    LCLIntf, LCLType, SysUtils, Classes, Graphics, Controls, Forms,
-   Dialogs, GraphType, Db, DBCtrls;
+   Dialogs, GraphType, Db, DBCtrls, LMessages;
 
 Const
   DefaultStyle     = DT_SINGLELINE or DT_END_ELLIPSIS or DT_EXPANDTABS;
@@ -91,8 +91,6 @@ type
     property          Font: TFont read FFont write SetFont;
     property          Visible: Boolean read FVisible write SetVisible default True;
   end;
-
-  { TNetGradient }
 
   { TCustomNetGradient }
 
@@ -143,6 +141,7 @@ type
     procedure SetLayout(Value: TTextLayout); virtual;
     procedure SetBevelInner(Value: TLabelBevel);
     procedure SetBevelOuter(Value: TLabelBevel);
+    procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
     property CaptionAlignment: TAlignment read FAlignment write SetAlignment;
     property CaptionLayout: TTextLayout read FLayout write SetLayout default tlCenter;
     property BevelInner: TLabelBevel read FBevelInner write SetBevelInner default bvNone;
@@ -171,14 +170,17 @@ type
     procedure EndUpdate;
   end;
 
+  { TNetGradient }
+
   TNetGradient = class (TCustomNetGradient)
   published
-    property CaptionAlignment;
-    property CaptionLayout;
+    property Anchors;
     property BevelInner;
     property BevelOuter;
     property BeginColor;
     property BorderColor;
+    property CaptionAlignment;
+    property CaptionLayout;
     property EndColor;
     property FlatBorder;
     property FillDirection;
@@ -190,6 +192,7 @@ type
     property SubCaption;
     //default properties
     property Align;
+    property Anchors;
     property BorderSpacing;
     property BorderWidth;
     property DragCursor;
@@ -245,6 +248,7 @@ type
     property SubCaption;
     //default properties
     property Align;
+    property Anchors;
     property BorderSpacing;
     property BorderWidth;
     property DragCursor;
@@ -688,6 +692,11 @@ begin
     FBevelOuter := Value;
     Changed;
   end;
+end;
+
+procedure TCustomNetGradient.WMEraseBkgnd(var Message: TLMEraseBkgnd);
+begin
+  // Do nothing. Just to avoid flicker.
 end;
 
 procedure TCustomNetGradient.OnFontChanged(Sender: TObject);
