@@ -349,9 +349,6 @@ const
 
   {$if defined(Gtk)}
     {$define ManualClipNeeded}
-    {$ifdef lcl_release > 28}
-      {$define InvertDCOrigin}
-    {$endif}
   {$endif}
 
   VTVersion = '4.8.6';
@@ -28190,8 +28187,7 @@ begin
                   {$ifndef Gtk}
                   SetMapMode(Canvas.Handle, GetMapMode(TargetCanvas.Handle));
                   {$endif}
-                  //Workaround to LCL bug 8626
-                  SetWindowOrgEx(Canvas.Handle, {$ifdef InvertDCOrigin}-{$endif}Window.Left, 0, nil);
+                  SetWindowOrgEx(Canvas.Handle, Window.Left, 0, nil);
                   R.Bottom := PaintInfo.Node.NodeHeight;
                 end;
                 // Set the origin of the canvas' brush. This depends on the node heights.
@@ -28502,7 +28498,7 @@ begin
           {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'TargetRect',TargetRect);{$endif}
           {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'NodeBitmap Width: %d Height: %d',[NodeBitmap.Width,NodeBitmap.Height]);{$endif}
           // Call back application/descendants whether they want to erase this area.
-          SetWindowOrgEx(NodeBitmap.Canvas.Handle,{$ifndef Windows}-{$endif}Target.X, 0, nil);
+          SetWindowOrgEx(NodeBitmap.Canvas.Handle, Target.X, 0, nil);
           if not DoPaintBackground(NodeBitmap.Canvas, TargetRect) then
           begin
             if UseBackground then
