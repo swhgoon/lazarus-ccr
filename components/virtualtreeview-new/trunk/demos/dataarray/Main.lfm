@@ -1,40 +1,41 @@
 object Form1: TForm1
   Left = 188
-  Height = 437
+  Height = 434
   Top = 104
-  Width = 612
-  ActiveControl = Button1
+  Width = 648
+  ActiveControl = MyTree
   Caption = 'Form1'
-  ClientHeight = 437
-  ClientWidth = 612
+  ClientHeight = 434
+  ClientWidth = 648
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   OnClose = FormClose
   OnCreate = FormCreate
-  LCLVersion = '0.9.27'
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
   object Label1: TLabel
-    Left = 207
+    Left = 224
     Height = 14
-    Top = 351
-    Width = 149
+    Top = 348
+    Width = 174
     Anchors = [akRight, akBottom]
-    Caption = 'Array data  of  the clicked node'
+    Caption = 'Array data  of  the clicked node:'
     ParentColor = False
   end
   object Label2: TLabel
-    Left = 367
+    Left = 224
     Height = 14
-    Top = 335
-    Width = 222
+    Top = 382
+    Width = 256
     Anchors = [akRight, akBottom]
     Caption = 'Find and show the node by specific array index'
     ParentColor = False
   end
   object Label3: TLabel
-    Left = 367
+    Left = 224
     Height = 14
-    Top = 351
-    Width = 237
+    Top = 398
+    Width = 274
     Anchors = [akRight, akBottom]
     Caption = 'Type index to get related tree node on the screen:'
     ParentColor = False
@@ -42,7 +43,7 @@ object Form1: TForm1
   object Button1: TButton
     Left = 8
     Height = 25
-    Top = 342
+    Top = 344
     Width = 83
     Anchors = [akLeft, akBottom]
     BorderSpacing.InnerBorder = 4
@@ -53,7 +54,7 @@ object Form1: TForm1
   object btnDelete: TButton
     Left = 96
     Height = 25
-    Top = 342
+    Top = 344
     Width = 97
     Anchors = [akLeft, akBottom]
     BorderSpacing.InnerBorder = 4
@@ -62,18 +63,21 @@ object Form1: TForm1
     TabOrder = 1
   end
   object Edit1: TEdit
-    Left = 208
-    Height = 21
-    Top = 376
-    Width = 153
-    Anchors = [akRight, akBottom]
+    AnchorSideLeft.Control = Label1
+    AnchorSideLeft.Side = asrBottom
+    Left = 402
+    Height = 23
+    Top = 344
+    Width = 170
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Left = 4
     ReadOnly = True
     TabOrder = 2
   end
   object btnCleanAll: TButton
     Left = 56
     Height = 25
-    Top = 374
+    Top = 376
     Width = 75
     Anchors = [akLeft, akBottom]
     BorderSpacing.InnerBorder = 4
@@ -82,25 +86,29 @@ object Form1: TForm1
     TabOrder = 3
   end
   object Edit2: TEdit
-    Left = 368
-    Height = 21
-    Top = 378
+    AnchorSideLeft.Control = Label3
+    AnchorSideLeft.Side = asrBottom
+    Left = 502
+    Height = 23
+    Top = 394
     Width = 97
-    Anchors = [akRight, akBottom]
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Left = 4
     OnChange = Edit2Change
     TabOrder = 4
   end
   object MyTree: TVirtualStringTree
     Left = 3
-    Height = 321
+    Height = 326
     Top = 8
-    Width = 605
+    Width = 641
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoScrollDelay = 1
-    BorderStyle = bsSingle
     DefaultText = 'Node'
+    Header.AutoSizeIndex = 0
     Header.Columns = <    
       item
+        Position = 0
         Text = 'Text'
         Width = 150
       end    
@@ -115,6 +123,7 @@ object Form1: TForm1
         Text = 'Random'
         Width = 100
       end>
+    Header.DefaultHeight = 17
     Header.Font.Height = -11
     Header.Font.Name = 'MS Sans Serif'
     Header.Options = [hoColumnResize, hoDblClickResize, hoDrag, hoShowSortGlyphs, hoVisible]

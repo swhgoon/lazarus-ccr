@@ -29,6 +29,21 @@ unit VirtualTrees;
 //
 //  January 2010 (j.wielicki@sotecware.net)
 //   - Improvement: Introduced 64-bit compatibility.
+//  January 2010
+//   - Bug fix: TBaseVirtualTree.AdjustTotalHeight now longer calculates wrong total heights if nodes have been
+//              made invisible
+//   - Bug fix: TCustomVirtualStringTree.OnMeasureTextWidth now works as intended
+//   - Bug fix: Added missing $IFDEFs concerning theming support
+//   - Bug fix: Removed default from properties TVirtualTreeColumn.Color and TVirtualTreeColumn.BiDiMode
+//  July 2009
+//   - Bug fix: TWorkerThread will no longer reference the tree after it has been destroyed (Mantis issue #384)
+//   - Bug fix: TBaseVirtualTree.InternalConnectNode checked the expanded state of the wrong node if Mode was
+//              amAddChildFirst or amAddChildLast
+//  June 2009
+//   - Bug fix: fixed some issues concerning the vista theme handling
+//   - Improvement: removed hidden node handling in this branch
+//   - Improvement: reverted header click handling to old version to keep compatibility in this branch
+//   - Improvement: removed TVTPaintOption toHideTreeLinesIfThemed
 //  May 2009
 //   - Improvement: new TVTMiscOption toEditOnClick, toEditOnDblClick to control if editing can be started with a single
 //                  click or a double click
@@ -490,8 +505,6 @@ type
     lParam: Integer;
     Result: Integer;
   end;
-
-  TLMContextMenu = TLMMouse;
 
   // Be careful when adding new states as this might change the size of the type which in turn
   // changes the alignment in the node record as well as the stream chunks.
@@ -22316,8 +22329,8 @@ procedure TBaseVirtualTree.PaintCheckImage(const PaintInfo: TVTPaintInfo);
       ButtonState := ButtonState or DFCS_CHECKED;
     if Flat then
       ButtonState := ButtonState or DFCS_FLAT;
-    //lcl DrawFrameControl is different from windows
-    DelphiCompat.DrawFrameControl(Canvas.Handle, R, DFC_BUTTON, ButtonType or ButtonState);
+
+    DrawFrameControl(Canvas.Handle, R, DFC_BUTTON, ButtonType or ButtonState);
   end;
 
 
@@ -28357,8 +28370,7 @@ begin
                   {$ifndef Gtk}
                   SetMapMode(Canvas.Handle, GetMapMode(TargetCanvas.Handle));
                   {$endif}
-                  //Workaround to LCL bug 8626
-                  SetWindowOrgEx(Canvas.Handle, {$ifdef Gtk}-{$endif}Window.Left, 0, nil);
+                  SetWindowOrgEx(Canvas.Handle, Window.Left, 0, nil);
                   R.Bottom := PaintInfo.Node.NodeHeight;
                 end;
                 // Set the origin of the canvas' brush. This depends on the node heights.
@@ -28671,7 +28683,7 @@ begin
           {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'TargetRect',TargetRect);{$endif}
           {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'NodeBitmap Width: %d Height: %d',[NodeBitmap.Width,NodeBitmap.Height]);{$endif}
           // Call back application/descendants whether they want to erase this area.
-          SetWindowOrgEx(NodeBitmap.Canvas.Handle,{$ifndef Windows}-{$endif}Target.X, 0, nil);
+          SetWindowOrgEx(NodeBitmap.Canvas.Handle, Target.X, 0, nil);
           if not DoPaintBackground(NodeBitmap.Canvas, TargetRect) then
           begin
             if UseBackground then
@@ -30634,9 +30646,13 @@ begin
   // This does not harm formatting as single line control, if we don't use word wrapping.
   with Params do
   begin
-    Style := Style or ES_MULTILINE;
+    //todo: delphi uses Multiline for all
+    //Style := Style or ES_MULTILINE;
     if vsMultiline in FLink.FNode.States then
+    begin
       Style := Style and not (ES_AUTOHSCROLL or WS_HSCROLL) or WS_VSCROLL or ES_AUTOVSCROLL;
+      Style := Style or ES_MULTILINE;
+    end;
     if tsUseThemes in FLink.FTree.FStates then
     begin
       Style := Style and not WS_BORDER;
@@ -30852,8 +30868,8 @@ constructor TCustomVirtualStringTree.Create(AOwner: TComponent);
 
 begin
   inherited;
-
-  FDefaultText := 'Node';
+  if (Owner = nil) or (([csReading, csDesigning] * Owner.ComponentState) = [csDesigning]) then
+    FDefaultText := 'Node';
   FInternalDataOffset := AllocateInternalDataArea(SizeOf(Cardinal));
 end;
 
