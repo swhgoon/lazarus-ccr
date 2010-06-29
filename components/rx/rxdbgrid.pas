@@ -1120,7 +1120,7 @@ var
   H, H1, W, H2:integer;
   rxCol, rxColNext:TRxColumn;
   rxTit, rxTitleNext:TRxColumnTitle;
-  MLRec1:TMLCaptionItem;
+  MLRec1, P:TMLCaptionItem;
   MLRec2:TMLCaptionItem;
   tmpCanvas: TCanvas;
 begin
@@ -1151,15 +1151,6 @@ begin
               rxColNext:=TRxColumn(Columns[i+1]);
               rxTitleNext:=TRxColumnTitle(rxColNext.Title);
             end;
-    { TODO -oalexs : Тут необходимо также обработать скрытые столбцы }
-    {
-            j:=i;
-     while j < Columns.Count-1  then
-            begin
-              if
-              inc(j);
-            end;
-            }
 
             W:=Max(rxCol.Width-6, 1);
             if rxTit.CaptionLinesCount > 0 then
@@ -1172,7 +1163,7 @@ begin
 
                 if Assigned(rxTitleNext) and (rxTitleNext.CaptionLinesCount>j) then
                 begin
-                  //make links to next column (and in the next column set linc to prior-current)
+                  //make links to next column (and in the next column set link to prior-current)
                   MLRec2:=rxTitleNext.CaptionLine(j);
                   if MLRec1.Caption = MLRec2.Caption then
                   begin
@@ -1213,6 +1204,29 @@ begin
         end;
       end;
     end;
+
+    //Тут расчёт высоты заголовка каждой колонки - надо обработать слитые заголовки
+{    for i:=0 to Columns.Count-1 do
+    begin
+      rxCol:=TRxColumn(Columns[i]);
+      if Assigned(rxCol) and rxCol.Visible then
+      begin
+        for j:=0 to rxTit.CaptionLinesCount-1 do
+        begin
+          MLRec1:=rxTit.CaptionLine(j);
+          if not Assigned(MLRec1.Prior) then
+          begin
+            W:=MLRec1.Width;
+            P:=MLRec1.Next;
+            while Assigned(P) do
+            begin
+              Inc(W, P.Width);
+              P:=P.Next;
+            end;
+          end;
+        end;
+      end;
+    end;}
 
     RowHeights[0] := DefaultRowHeight * ({FTitleLines+}H);
 
