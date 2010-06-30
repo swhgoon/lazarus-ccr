@@ -321,8 +321,10 @@ uses
   {$endif}
   OleUtils,
   LCLIntf,
+  {$ifdef USE_DELPHICOMPAT}
   DelphiCompat,
   LclExt,
+  {$endif}
   virtualpanningwindow,
   LCLVersion,
   VTGraphics, //alpha blend functions
@@ -5738,7 +5740,7 @@ begin
             FBackImage.Canvas.Handle, 0, 0, SRCCOPY);
 
           if ForceRepaint then
-            DelphiCompat.UpdateWindow(FOwner.Handle);
+            UpdateWindow(FOwner.Handle);
 
           Inc(FImagePosition.X, -DeltaX);
           Inc(FImagePosition.Y, -DeltaY);
@@ -8696,9 +8698,16 @@ begin
                   begin
                     CheckImageListNeeded;
                     ColImageIndex := GetCheckImage(nil, FCheckType, FCheckState, IsEnabled);
+                    {$ifdef USE_DELPHICOMPAT}
                     with FCheckImages do
                       DirectMaskBlt(FHeaderBitmap.Canvas.Handle, GlyphPos.X, GlyphPos.Y,
                         Height, Height, Canvas.Handle, ColImageIndex * Height, 0, MaskHandle);
+                    {$else}
+                    with FCheckImages do
+                      StretchMaskBlt(FHeaderBitmap.Canvas.Handle, GlyphPos.X, GlyphPos.Y,
+                        Height, Height, Canvas.Handle, ColImageIndex * Height, 0,
+                        Height, Height, MaskHandle, ColImageIndex * Height, 0, SRCCOPY);
+                    {$endif}
                   end;
                 end;
 
@@ -8726,9 +8735,13 @@ begin
               if not (hpeSortGlyph in ActualElements) and ShowSortGlyph then
               begin
                 SortIndex := SortGlyphs[FHeader.FSortDirection, tsUseThemes in FHeader.Treeview.FStates];
+                {$ifdef USE_DELPHICOMPAT}
                 DirectMaskBlt(FHeaderBitmap.Canvas.Handle, SortGlyphPos.X, SortGlyphPos.Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
                   SortIndex * UtilityImageSize, 0, UtilityImages.MaskHandle);
-                //UtilityImages.Draw(FHeaderBitmap.Canvas, SortGlyphPos.X, SortGlyphPos.X, SortIndex);
+                {$else}
+                StretchMaskBlt(FHeaderBitmap.Canvas.Handle, SortGlyphPos.X, SortGlyphPos.Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
+                  SortIndex * UtilityImageSize, 0, UtilityImageSize, UtilityImageSize, UtilityImages.MaskHandle,SortIndex * UtilityImageSize, 0, SRCCOPY);
+                {$endif}
               end;
 
               // Show an indication if this column is the current drop target in a header drag operation.
@@ -8736,13 +8749,21 @@ begin
               begin
                 Y := (PaintRectangle.Top + PaintRectangle.Bottom - UtilityImages.Height) div 2;
                 if DropMark = dmmLeft then
+                  {$ifdef USE_DELPHICOMPAT}
                   DirectMaskBlt(FHeaderBitmap.Canvas.Handle, PaintRectangle.Left, Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
-                    0 * UtilityImageSize, 0, UtilityImages.MaskHandle)
-                  //UtilityImages.Draw(FHeaderBitmap.Canvas, PaintRectangle.Left, Y, 0)
+                    0, 0, UtilityImages.MaskHandle)
+                  {$else}
+                  StretchMaskBlt(FHeaderBitmap.Canvas.Handle, PaintRectangle.Left, Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
+                    0, 0, UtilityImageSize, UtilityImageSize, UtilityImages.MaskHandle, 0, 0, SRCCOPY)
+                  {$endif}
                 else
-                   DirectMaskBlt(FHeaderBitmap.Canvas.Handle, PaintRectangle.Right - 16, Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
-                    1 * UtilityImageSize, 0, UtilityImages.MaskHandle);
-                  //UtilityImages.Draw(FHeaderBitmap.Canvas, PaintRectangle.Right - 16 , Y,  1);
+                  {$ifdef USE_DELPHICOMPAT}
+                  DirectMaskBlt(FHeaderBitmap.Canvas.Handle, PaintRectangle.Right - 16, Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
+                    UtilityImageSize, 0, UtilityImages.MaskHandle);
+                  {$else}
+                  StretchMaskBlt(FHeaderBitmap.Canvas.Handle, PaintRectangle.Right - 16, Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
+                    UtilityImageSize, 0, UtilityImageSize, UtilityImageSize, UtilityImages.MaskHandle, UtilityImageSize, 0, SRCCOPY);
+                  {$endif}
               end;
 
               if ActualElements <> [] then
@@ -16341,8 +16362,10 @@ begin
   //todo:
   //Windows.GetUpdateRect is always empty because BeginPaint was called
   //see if PaintStruct has the same rect
+  {$ifdef USE_DELPHICOMPAT}
   if tsVCLDragging in FStates then
     ImageList_DragShowNolock(False);
+  {$endif}
   if csPaintCopy in ControlState then
     FUpdateRect := ClientRect
   else
@@ -16352,8 +16375,10 @@ begin
 
   inherited WMPaint(Message);
 
+  {$ifdef USE_DELPHICOMPAT}
   if tsVCLDragging in FStates then
     ImageList_DragShowNolock(True);
+  {$endif}
   {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMPaint');{$endif}
 end;
 
@@ -19077,8 +19102,10 @@ begin
     if FUpdateCount = 0 then
     begin
       // The drag image from VCL controls need special consideration.
+      {$ifdef USE_DELPHICOMPAT}
       if tsVCLDragging in FStates then
         ImageList_DragShowNolock(False);
+      {$endif}
 
       if (suoScrollClientArea in Options) and not (tsToggling in FStates) then
       begin

@@ -31,6 +31,7 @@
 {.$define EnableAccessible}
 {$define ThemeSupport}
 {.$define DEBUG_VTV}
+{$define USE_DELPHICOMPAT}
 
 //under linux the performance is poor with threading enabled
 {$ifdef Windows}
