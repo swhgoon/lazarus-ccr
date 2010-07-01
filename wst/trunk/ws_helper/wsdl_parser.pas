@@ -1102,7 +1102,7 @@ var
                       )
                     );
           tmpCrs.Reset();
-          if tmpCrs.MoveNext() then begin
+          while tmpCrs.MoveNext() do begin
             nd := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
             if AnsiSameText(nd.NodeName,s_style) then begin
               SymbolTable.Properties.SetValue(AOp,s_soapStyle,nd.NodeValue);
