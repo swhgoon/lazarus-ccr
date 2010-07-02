@@ -198,6 +198,7 @@ type
     procedure message_parts_type_hint();
     procedure parameter_var();
     procedure parameter_const_default();
+    procedure soap_action();
   end;
   
 implementation
@@ -2660,6 +2661,38 @@ begin
         CheckEquals(LowerCase('ANonSpecifiedParam'), LowerCase(arg.Name));
         CheckEquals(LowerCase('integer'), LowerCase(arg.ArgType.Name));
         CheckEquals('argConst',GetEnumName(TypeInfo(TArgumentAccess),Ord(arg.Access)),'ANonSpecifiedParam');
+  finally
+    tr.Free();
+  end;
+end;
+
+procedure TTest_WsdlParser.soap_action(); 
+var
+  tr : TwstPasTreeContainer;
+  elt : TPasElement;
+  intf : TPasClassType;
+  i : Integer;
+  mth : TPasProcedure;
+begin
+  tr := ParseDoc('soap_action');
+  try //SymbolTable.Properties.SetValue(AOp,s_TRANSPORT + '_' + s_soapAction,nd.NodeValue);
+    elt := tr.FindElement('TestService');
+    CheckNotNull(elt,'TestService');
+    CheckIs(elt,TPasClassType);
+    intf := elt as TPasClassType;
+    mth := nil;
+    for i := 0 to (intf.Members.Count - 1) do begin
+      if TObject(intf.Members[i]).InheritsFrom(TPasProcedure) then begin
+        mth := TPasProcedure(intf.Members[i]);
+        Break;
+      end;
+    end;
+    CheckNotNull(mth,'test_proc not found');
+    CheckEquals('test_proc',mth.Name);
+    CheckEquals(
+      'http://wst.Sample/Soap/Action/',
+      tr.Properties.GetValue(mth,s_TRANSPORT + '_' + s_soapAction)
+    );
   finally
     tr.Free();
   end;
