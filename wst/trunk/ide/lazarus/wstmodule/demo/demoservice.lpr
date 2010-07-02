@@ -4,9 +4,9 @@ program demoservice;
 
 uses
   fpCGI, wmhandler, imp_helper, user_service_intf, user_service_intf_binder,
-  user_service_intf_imp, user_service_intf_proxy;
+  user_service_intf_imp, user_service_intf_proxy, wst_core;
 
-{$IFDEF WINDOWS}{$R demoservice.rc}{$ENDIF}
+{$R *.res}
 
 begin
   Application.Initialize;

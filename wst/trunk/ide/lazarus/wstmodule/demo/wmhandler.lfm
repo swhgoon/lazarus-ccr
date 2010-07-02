@@ -1,7 +1,7 @@
 object WSTModule1: TWSTModule1
   OldCreateOrder = False
   Height = 300
-  HorizontalOffset = 635
-  VerticalOffset = 230
+  HorizontalOffset = 720
+  VerticalOffset = 252
   Width = 400
 end

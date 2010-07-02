@@ -12,6 +12,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
+    <Description Value="WST's fcl-we intégration package."/>
     <Files Count="2">
       <Item1>
         <Filename Value="wstmodule.pas"/>

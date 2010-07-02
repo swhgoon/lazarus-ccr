@@ -5,7 +5,8 @@ unit wstmodule;
 interface
 
 uses
-  Classes, SysUtils, httpdefs, fphttp, server_service_imputils, websession;
+  Classes, SysUtils, httpdefs, fphttp, server_service_imputils, websession,
+  server_service_intf;
 
 const
   sWSDL = 'WSDL';
@@ -31,7 +32,7 @@ Type
     procedure ProcessServiceRequest(ARequest: TRequest; AResponse: TResponse; AFormat : String);
     procedure ProcessWSDLRequest(ARequest: TRequest; AResponse: TResponse);
   Protected
-    procedure AddSessionProperties(ARequest: TRequest; WSTRequest: TRequestBuffer); virtual;
+    procedure AddSessionProperties(ARequest: TRequest; WSTRequest: IRequestBuffer); virtual;
     property BeforeGenerateWSDLTable : TNotifyEvent Read FBeforeGenerateWSDLTable Write FBeforeGenerateWSDLTable;
     property AfterGenerateWSDLTable : TNotifyEvent Read FAfterGenerateWSDLTable Write FAfterGenerateWSDLTable;
     property BeforeGenerateWSDL : TWSTServiceEvent Read FBeforeGenerateWSDL Write FBeforeGenerateWSDL;
@@ -66,7 +67,6 @@ implementation
 { $define wmdebug}
 
 uses {$ifdef wmdebug}dbugintf,{$endif}base_service_intf,
-     server_service_intf,
      metadata_repository, metadata_wsdl, dom,xmlwrite,
       metadata_service, metadata_service_binder;
 
@@ -168,7 +168,7 @@ begin
 {$ifdef wmdebug}SendDebug('Exiting ProcessWSDLRequest');{$endif}
 end;
 
-Procedure TCustomWSTModule.AddSessionProperties(ARequest : TRequest; WSTRequest : TRequestBuffer);
+Procedure TCustomWSTModule.AddSessionProperties(ARequest : TRequest; WSTRequest : IRequestBuffer);
 
 Var
   P : IPropertyManager;
@@ -177,7 +177,7 @@ Var
   N,V : String;
 
 begin
-  P:=(WSTRequest As IRequestBuffer).GetPropertyManager();
+  P:=WSTRequest.GetPropertyManager();
   If CreateSession and Assigned(Session) then
     P.SetProperty('SessionID',Self.Session.SessionID);
   P.SetProperty(SRemote_IP,ARequest.RemoteAddress);
@@ -201,15 +201,12 @@ end;
 Procedure TCustomWSTModule.ProcessServiceRequest(ARequest : TRequest; AResponse : TResponse; AFormat : String);
 var
   ServiceName,ContentType : string;
-  rqst : TRequestBuffer;
+  rqst : IRequestBuffer;
   inStream, outStream: TStringStream;
   B : Boolean;
-  F : TFileStream;
-
 begin
 {$ifdef wmdebug}SendDebug('Entering ProcessServiceRequest');{$endif}
   ServiceName:=ARequest.GetNextPathInfo;
-//  TServiceRequestEvent = procedure(Sender : TObject; Const AServiceName : String; Var Handled : Boolean);
 {$ifdef wmdebug}SendDebug(Format('ProcessServiceRequest: Servicename = "%s"',[ServiceName]));{$endif}
   B:=False;
   If Assigned(FBeforeService) then
@@ -218,13 +215,6 @@ begin
     begin
     inStream := TStringStream.Create(ARequest.Content);
     try
-      F:=TFileStream.Create('/tmp/request',fmCreate);
-      try
-        F.CopyFrom(InStream,0);
-        Instream.Position:=0;
-      finally
-        F.Free;
-      end;
       outStream := TStringStream.Create('');
       try
         ContentType:= ARequest.ContentType;
@@ -261,8 +251,6 @@ procedure TCustomWSTModule.HandleRequest(ARequest: TRequest;
 
 Var
   AFormat : String;
-  F : TFileStream;
-
 begin
 {$ifdef wmdebug}SendDebug('Entering HandleRequest');{$endif}
   try
@@ -282,14 +270,8 @@ begin
   except
     On E : Exception do
       begin
-     {$ifdef wmdebug}SendDebug('Error during HandleRequest : '+E.Message);{$endif}
-      With TFileStream.Create('/tmp/request-error',fmCreate) do
-        try
-          WriteBuffer(E.Message[1],Length(E.Message));
-        finally
-          Free;
-        end;
-      Raise;
+       {$ifdef wmdebug}SendDebug('Error during HandleRequest : '+E.Message);{$endif}
+        raise;
       end;
   end;
 {$ifdef wmdebug}SendDebug('Exiting HandleRequest');{$endif}
@@ -297,3 +279,4 @@ end;
 
 
 end.
+
