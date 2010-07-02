@@ -4500,6 +4500,11 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+//todo: Unify the procedure or change to widgetset specific
+// Currently the UTF-8 version is broken.
+// the unicode version is used when all winapi is available
+
+{$ifndef INCOMPLETE_WINAPI}
 function ShortenString(DC: HDC; const S: String; Width: Integer; EllipsisWidth: Integer = 0): String;
 
 // Adjusts the given string S so that it fits into the given width. EllipsisWidth gives the width of
@@ -4513,9 +4518,6 @@ var
   L, H, N, W: Integer;
   WideStr: UnicodeString;
 begin
-  //todo: this need to be adjusted to work with UTF8 strings since the current algorithm
-  //  when direct ported to use UTF8 functions leads to invalid UTF8 strings.
-  //  for now use a UnicodeString as a bridge
   WideStr := UTF8Decode(S);
   Len := Length(WideStr);
   if (Len = 0) or (Width <= 0) then
@@ -4550,7 +4552,53 @@ begin
     end;
   end;
 end;
+{$else}
+function ShortenString(DC: HDC; const S: String; Width: Integer; EllipsisWidth: Integer = 0): String;
 
+// Adjusts the given string S so that it fits into the given width. EllipsisWidth gives the width of
+// the three points to be added to the shorted string. If this value is 0 then it will be determined implicitely.
+// For higher speed (and multiple entries to be shorted) specify this value explicitely.
+// Note: It is assumed that the string really needs shortage. Check this in advance.
+
+var
+  Size: TSize;
+  Len: Integer;
+  L, H, N, W: Integer;
+begin
+  Len := Length(S);
+  if (Len = 0) or (Width <= 0) then
+    Result := ''
+  else
+  begin
+    // Determine width of triple point using the current DC settings (if not already done).
+    if EllipsisWidth = 0 then
+    begin
+      GetTextExtentPoint32(DC, '...', 3, Size);
+      EllipsisWidth := Size.cx;
+    end;
+
+    if Width <= EllipsisWidth then
+      Result := ''
+    else
+    begin
+      // Do a binary search for the optimal string length which fits into the given width.
+      L := 0;
+      H := Len - 1;
+      while L < H do
+      begin
+        N := (L + H + 1) shr 1;
+        GetTextExtentPoint32(DC, PAnsiChar(S), N, Size);
+        W := Size.cx + EllipsisWidth;
+        if W <= Width then
+          L := N
+        else
+          H := N - 1;
+      end;
+      Result := Copy(S, 1, L) + '...';
+    end;
+  end;
+end;
+{$endif}
 //----------------------------------------------------------------------------------------------------------------------
 
 function WrapString(DC: HDC; const S: String; const Bounds: TRect; RTL: Boolean;
@@ -5782,8 +5830,11 @@ begin
               end;
             end;
 
+            //todo: implement ScrollDC. Alternatively reimplement drag operations
+            {$ifndef INCOMPLETE_WINAPI}
             // move existent background
             ScrollDC(Handle, DeltaX, DeltaY, RScroll, RClip, 0, nil);
+            {$endif}
 
             Inc(FImagePosition.X, -DeltaX);
             Inc(FImagePosition.Y, -DeltaY);
@@ -5908,7 +5959,12 @@ begin
     DragInfo.sizeDragImage.cy := Height;
     DragInfo.ptOffset.x := Width div 2;
     DragInfo.ptOffset.y := Height div 2;
+    //todo: replace CopyImage. Alternatively reimplement Drag support
+    {$ifndef INCOMPLETE_WINAPI}
     DragInfo.hbmpDragImage := CopyImage(DragImage.Handle, IMAGE_BITMAP, Width, Height, LR_COPYRETURNORG);
+    {$else}
+    DragInfo.hbmpDragImage := 0;
+    {$endif}
     DragInfo.ColorRef := ColorToRGB(FColorKey);
     if not Succeeded(DragSourceHelper.InitializeFromBitmap(DragInfo, DataObject)) then
     begin
@@ -5966,15 +6022,18 @@ procedure TVTDragImage.RecaptureBackground(Tree: TBaseVirtualTree; R: TRect; Vis
 //       The caller does not check if the given rectangle is actually within the drag image. Hence this method must do
 //       all the checks.
 // This method does nothing if the system manages the drag image.
-
+{$ifndef INCOMPLETE_WINAPI}
 var
   DragRect,
   ClipRect: TRect;
   PaintTarget: TPoint;
   PaintOptions: TVTInternalPaintOptions;
   ScreenDC: HDC;
+{$endif}
 
 begin
+  //todo: reimplement
+  {$ifndef INCOMPLETE_WINAPI}
   // Recapturing means we want the tree to paint the new part into our back bitmap instead to the screen.
   if Visible then
   begin
@@ -6029,6 +6088,7 @@ begin
       end;
     end;
   end;
+  {$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -6038,11 +6098,13 @@ procedure TVTDragImage.ShowDragImage;
 // Shows the drag image after it has been hidden by HideDragImage.
 // Note: there might be a new background now.
 // Also this method does nothing if the system manages the drag image.
-
+{$ifndef INCOMPLETE_WINAPI}
 var
   ScreenDC: HDC;
+{$endif}
 
 begin
+  {$ifndef INCOMPLETE_WINAPI}
   if FStates * [disInDrag, disHidden, disPrepared, disSystemSupport] = [disInDrag, disHidden, disPrepared] then
   begin
     Exclude(FStates, disHidden);
@@ -6058,6 +6120,7 @@ begin
       ReleaseDC(0, ScreenDC);
     end;
   end;
+  {$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7917,7 +7980,7 @@ end;
 procedure TVirtualTreeColumns.AnimatedResize(Column: TColumnIndex; NewWidth: Integer);
 
 // Resizes the given column animated by scrolling the window DC.
-
+{$ifndef INCOMPLETE_WINAPI}
 var
   OldWidth: Integer;
   DC: HDC;
@@ -7930,8 +7993,10 @@ var
 
   NewBrush,
   LastBrush: HBRUSH;
-
+{$endif}
 begin
+  //todo: reimplement
+  {$ifndef INCOMPLETE_WINAPI}
   if not IsValidColumn(Column) then exit; // Just in case.
 
   // Make sure the width constrains are considered.
@@ -7998,6 +8063,7 @@ begin
     end;
     Items[Column].Width := NewWidth;
   end;
+  {$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -9804,7 +9870,7 @@ begin
     // to handle WM_LBUTTONDOWN here, too.
     LM_LBUTTONDOWN:
       begin
-        if (csDesigning in Treeview.ComponentState) and (Message.Msg = WM_LBUTTONDOWN) then
+        if csDesigning in Treeview.ComponentState then
           Exit;
 
         Application.CancelHint;
@@ -10504,9 +10570,10 @@ begin
     // Current position of the owner in screen coordinates.
     GetWindowRect(Treeview.Handle, RW);
 
+    {$ifndef INCOMPLETE_WINAPI}
     // Convert to client coordinates.
     MapWindowPoints(0, Treeview.Handle, RW, 2);
-
+    {$endif}
     // Consider the header within this rectangle.
     OffsetRect(R, RW.Left, RW.Top);
     Result := PtInRect(R, P);
@@ -14451,7 +14518,9 @@ var
   procedure DoScrollUp(DC: HDC; Brush: HBRUSH; Area: TRect; Steps: Integer);
 
 begin
+    {$ifndef INCOMPLETE_WINAPI}
     ScrollDC(DC, 0, -Steps, Area, Area, 0, nil);
+    {$endif}
 
     if Step = 0 then
       if not FHeader.UseColumns then
@@ -14468,7 +14537,9 @@ begin
   procedure DoScrollDown(DC: HDC; Brush: HBRUSH; Area: TRect; Steps: Integer);
 
       begin
-    ScrollDC(DC, 0, Steps, Area, Area, 0, nil);
+      {$ifndef INCOMPLETE_WINAPI}
+      ScrollDC(DC, 0, Steps, Area, Area, 0, nil);
+      {$endif}
 
         if Step = 0 then
           if not FHeader.UseColumns then
@@ -15872,6 +15943,8 @@ begin
 
         // For +, -, /, * keys on the main keyboard (not numpad) there is no virtual key code defined.
         // We have to do special processing to get them working too.
+        //todo: reimplement
+        {$ifndef INCOMPLETE_WINAPI}
         GetKeyboardState(KeyState);
         // Avoid conversion to control characters. We have captured the control key state already in Shift.
         KeyState[VK_CONTROL] := 0;
@@ -15893,7 +15966,7 @@ begin
         // with dead chars. The article recommends to call ToASCII twice to restore a deleted flag in the key message
         // structure under certain circumstances. It turned out it is best to always call ToASCII twice.
         ToASCII(Message.CharCode, (Message.KeyData shr 16) and 7, KeyState, @Buffer, 0);
-
+        {$endif}
         case CharCode of
           VK_F2:
             if (Shift = []) and Assigned(FFocusedNode) and CanEdit(FFocusedNode, FFocusedColumn) then
@@ -16362,7 +16435,7 @@ begin
   //todo:
   //Windows.GetUpdateRect is always empty because BeginPaint was called
   //see if PaintStruct has the same rect
-  {$ifdef USE_DELPHICOMPAT}
+  {$ifndef INCOMPLETE_WINAPI}
   if tsVCLDragging in FStates then
     ImageList_DragShowNolock(False);
   {$endif}
@@ -16375,7 +16448,7 @@ begin
 
   inherited WMPaint(Message);
 
-  {$ifdef USE_DELPHICOMPAT}
+  {$ifndef INCOMPLETE_WINAPI}
   if tsVCLDragging in FStates then
     ImageList_DragShowNolock(True);
   {$endif}
@@ -19102,7 +19175,7 @@ begin
     if FUpdateCount = 0 then
     begin
       // The drag image from VCL controls need special consideration.
-      {$ifdef USE_DELPHICOMPAT}
+      {$ifndef INCOMPLETE_WINAPI}
       if tsVCLDragging in FStates then
         ImageList_DragShowNolock(False);
       {$endif}
@@ -19112,6 +19185,8 @@ begin
         // Have to invalidate the entire window if there's a background.
         if (toShowBackground in FOptions.FPaintOptions) and (FBackground.Graphic is TBitmap) then
         begin
+          //todo: reimplement
+          {$ifndef INCOMPLETE_WINAPI}
           // Since we don't use ScrollWindow here we have to move all client windows ourselves.
           DWPStructure := BeginDeferWindowPos(ControlCount);
           for I := 0 to ControlCount - 1 do
@@ -19126,6 +19201,7 @@ begin
           if DWPStructure <> 0 then
             EndDeferWindowPos(DWPStructure);
           InvalidateRect(Handle, nil, False);
+          {$endif}
         end
         else
         begin
@@ -19146,9 +19222,9 @@ begin
             {$ifdef Gtk}
             InvalidateRect(Handle, nil, True);
             {$else}
-            DelphiCompat.ScrollWindow(Handle, DeltaX, 0, @R, @R);
+            ScrollWindow(Handle, DeltaX, 0, @R, @R);
             if DeltaY <> 0 then
-              DelphiCompat.ScrollWindow(Handle, 0, DeltaY, @R, @R);
+              ScrollWindow(Handle, 0, DeltaY, @R, @R);
             {$endif}
           end
           else
@@ -19170,7 +19246,7 @@ begin
             //todo: temporary hack to avoid some drawing problems.
             //Will be removed when scrollwindowex is properly implemented in all widgets
             {$ifdef LCLQt}
-            DelphiCompat.ScrollWindow(Handle, DeltaX, DeltaY, @R, @R);
+            ScrollWindow(Handle, DeltaX, DeltaY, @R, @R);
             {$else}
             {$ifdef Gtk}
             InvalidateRect(Handle, nil, True);
@@ -19200,9 +19276,10 @@ begin
             UpdateHorizontalScrollBar(suoRepaintScrollbars in Options);
         end;
       end;
-
+      {$ifndef INCOMPLETE_WINAPI}
       if tsVCLDragging in FStates then
         ImageList_DragShowNolock(True);
+      {$endif}
     end;
 
     // Finally update "hot" node if hot tracking is activated
@@ -19302,7 +19379,10 @@ begin
   GetCursorPos(P);
   R := ClientRect;
   ClipRect := R;
+  //todo: add MapWindowPoints to LCL??
+  {$ifndef INCOMPLETE_WINAPI}
   MapWindowPoints(Handle, 0, R, 2);
+  {$endif}
   InRect := PtInRect(R, P);
   ClientP := ScreenToClient(P);
   Panning := [tsWheelPanning, tsWheelScrolling] * FStates <> [];
@@ -20517,7 +20597,8 @@ var
   end;
 
   //---------------------------------------------------------------------------
-
+  //todo: reimplement
+  {$ifndef INCOMPLETE_WINAPI}
   function CodePageFromLocale(Language: DWord): Integer;
 
   // Determines the code page for a given locale.
@@ -20542,7 +20623,7 @@ var
     MultiByteToWideChar(CodePageFromLocale(GetKeyboardLayout(0) and $FFFF),
       MB_USEGLYPHCHARS, @C, 1, @Result, 1);
   end;
-
+  {$endif}
   //--------------- end local functions ---------------------------------------
 
 var
@@ -20560,7 +20641,12 @@ begin
       DoStateChange([tsIncrementalSearching]);
 
       // Convert the given virtual key code into a Unicode character based on the current locale.
+      //todo: reimplement
+      {$ifndef INCOMPLETE_WINAPI}
       NewChar := KeyUnicode(Char(CharCode));
+      {$else}
+      NewChar := Char(CharCode);
+      {$endif}
       PreviousSearch := NewChar = WideChar(VK_BACK);
       // We cannot do a search with an empty search buffer.
       if not PreviousSearch or (FSearchBuffer <> '') then
@@ -20853,7 +20939,7 @@ begin
     ShiftEmpty := ShiftState = [];
     NodeSelected := IsAnyHit and (vsSelected in HitInfo.HitNode.States);
     FullRowDrag := toFullRowDrag in FOptions.FMiscOptions;
-    IsHeightTracking := (Message.Msg = WM_LBUTTONDOWN) and
+    IsHeightTracking := (Message.Msg = LM_LBUTTONDOWN) and
                         (toNodeHeightResize in FOptions.FMiscOptions) and (hiOnItem in HitInfo.HitPositions) and
                         ([hiUpperSplitter, hiLowerSplitter] * HitInfo.HitPositions <> []) and
                         ((HitInfo.HitColumn > NoColumn) and (coFixed in FHeader.FColumns[HitInfo.HitColumn].Options));
@@ -22256,10 +22342,17 @@ begin
           Details.State := 0;
         end;
         ThemeServices.DrawElement(Canvas.Handle, Details, R);
+        {$ifdef USE_DELPHICOMPAT}
         if Index in [21..24] then
           with UtilityImages do
             DirectMaskBlt(PaintInfo.Canvas.Handle, XPos - 1, YPos, Height, Height,
               Canvas.Handle, 4 * Height, 0, MaskHandle);
+        {$else}
+        if Index in [21..24] then
+          with UtilityImages do
+            StretchMaskBlt(PaintInfo.Canvas.Handle, XPos - 1, YPos, Height, Height,
+              Canvas.Handle, 4 * Height, 0, Height, Height, MaskHandle,  4 * Height, 0, SRCCOPY);
+        {$endif}
       end
       else
       {$endif}
@@ -22271,8 +22364,13 @@ begin
     else
     with FCheckImages do
     begin
+      {$ifdef USE_DELPHICOMPAT}
       DirectMaskBlt(PaintInfo.Canvas.Handle, XPos, YPos, Height, Height, Canvas.Handle,
         Index * Height, 0, MaskHandle);
+      {$else}
+      StretchMaskBlt(PaintInfo.Canvas.Handle, XPos, YPos, Height, Height, Canvas.Handle,
+        Index * Height, 0, Height, Height, MaskHandle, Index * Height, 0, SRCCOPY);
+      {$endif}
     end;
   end;
   {$ifdef DEBUG_VTV}Logger.ExitMethod([lcCheck],'PaintCheckImage');{$endif}
@@ -22490,11 +22588,16 @@ begin
     // Classical selection rectangle using dotted borderlines.
     TextColorBackup := GetTextColor(Target.Handle);
     SetTextColor(Target.Handle, $FFFFFF);
+    //todo: implement in LCL
+    {$ifndef INCOMPLETE_WINAPI}
     BackColorBackup := GetBkColor(Target.Handle);
     SetBkColor(Target.Handle, 0);
+    {$endif}
     Target.DrawFocusRect(SelectionRect);
     SetTextColor(Target.Handle, TextColorBackup);
+    {$ifndef INCOMPLETE_WINAPI}
     SetBkColor(Target.Handle, BackColorBackup);
+    {$endif}
   end
   else
   begin
@@ -22716,8 +22819,11 @@ begin
       begin
         TextColorBackup := GetTextColor(Handle);
         SetTextColor(Handle, $FFFFFF);
+        //todo: implement in LCL
+        {$ifndef INCOMPLETE_WINAPI}
         BackColorBackup := GetBkColor(Handle);
         SetBkColor(Handle, 0);
+        {$endif}
 
         {$ifdef ThemeSupport}
         //todo
@@ -22743,7 +22849,9 @@ begin
 
         LCLIntf.DrawFocusRect(Handle, FocusRect);
         SetTextColor(Handle, TextColorBackup);
+        {$ifndef INCOMPLETE_WINAPI}
         SetBkColor(Handle, BackColorBackup);
+        {$endif}
       end;
     end;
   end;
@@ -23534,7 +23642,7 @@ procedure TBaseVirtualTree.UpdateWindowAndDragImage(const Tree: TBaseVirtualTree
 // of the drag image.
 // Note: This method must only be called during a drag operation and the tree passed in is the one managing the current
 // drag image (so it is the actual drag source).
-
+{$ifndef INCOMPLETE_WINAPI}
 var
   DragRegion,          // the region representing the drag image
   UpdateRegion,        // the unclipped region within the tree to be updated
@@ -23546,8 +23654,11 @@ var
   VisibleTreeRegion: HRGN;
 
   DC: HDC;
+{$endif}
 
 begin
+  //todo: reimplement
+  {$ifndef INCOMPLETE_WINAPI}
   if IntersectRect(TreeRect, TreeRect, ClientRect) then
   begin
     // Retrieve the visible region of the window. This is important to avoid overpainting parts of other windows
@@ -23603,6 +23714,7 @@ begin
     DeleteObject(DragRegion);
     DeleteObject(VisibleTreeRegion);
   end;
+  {$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -28218,8 +28330,11 @@ begin
                   R.Bottom := PaintInfo.Node.NodeHeight;
                 end;
                 // Set the origin of the canvas' brush. This depends on the node heights.
+                //todo: see if is necessary. According to docs is only necessary when HALFTONE is set
+                {$ifndef INCOMPLETE_WINAPI}
                 with PaintInfo do
                   SetBrushOrgEx(Canvas.Handle, BrushOrigin.X, BrushOrigin.Y, nil);
+                {$endif}
               end;
               CalculateVerticalAlignments(ShowImages, ShowStateImages, PaintInfo.Node, VAlign, ButtonY);
 
@@ -28625,7 +28740,10 @@ begin
             // Remap the selection rectangle to the current window of the tree.
             // Since Target has been used for other tasks BaseOffset got the left extent of the target position here.
             OffsetRect(R, -Target.X + BaseOffset - Window.Left, -Target.Y + FOffsetY);
+            //todo: see if is necessary
+            {$ifndef INCOMPLETE_WINAPI}
             SetBrushOrgEx(NodeBitmap.Canvas.Handle, 0, Target.X and 1, nil);
+            {$endif}
             PaintSelectionRectangle(NodeBitmap.Canvas, 0, R, TargetRect);
           end;
           {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'NodeBitmap.Canvas.Height',NodeBitmap.Canvas.Height);{$endif}
@@ -31033,7 +31151,7 @@ begin
     GetTextMetrics(MemDC, TM);
     FTextHeight := TM.tmHeight;
 
-    GetTextExtentPoint32W(MemDC, '...', 3, Size);
+    GetTextExtentPoint32(MemDC, '...', 3, Size);
     FEllipsisWidth := Size.cx;
   finally
     DeleteDC(MemDC);
