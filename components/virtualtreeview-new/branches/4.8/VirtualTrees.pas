@@ -316,6 +316,7 @@ uses
   {$ifdef Windows}
   Windows,
   ActiveX,
+  CommCtrl,
   {$else}
   FakeActiveX,
   {$endif}
