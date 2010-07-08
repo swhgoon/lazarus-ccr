@@ -1117,12 +1117,13 @@ end;
 procedure TRxDBGrid.CalcTitle;
 var
   i, j:integer;
-  H, H1, W, H2:integer;
+  H, H1, W, H2, W1:integer;
   rxCol, rxColNext:TRxColumn;
   rxTit, rxTitleNext:TRxColumnTitle;
   MLRec1, P:TMLCaptionItem;
   MLRec2:TMLCaptionItem;
   tmpCanvas: TCanvas;
+  S:string;
 begin
   { TODO -oalexs : need rewrite code - split to 2 step:
 1. make links between column
@@ -1206,29 +1207,52 @@ begin
     end;
 
     //Тут расчёт высоты заголовка каждой колонки - надо обработать слитые заголовки
-{    for i:=0 to Columns.Count-1 do
+    H:=1;
+    for i:=0 to Columns.Count-1 do
     begin
       rxCol:=TRxColumn(Columns[i]);
+      rxTit:=TRxColumnTitle(rxCol.Title);
+      H1:=0;
+      //Не забудем про вертикальную ориентацию
       if Assigned(rxCol) and rxCol.Visible then
       begin
+        if rxTit.CaptionLinesCount > H then
+          H:=rxTit.CaptionLinesCount;
         for j:=0 to rxTit.CaptionLinesCount-1 do
         begin
           MLRec1:=rxTit.CaptionLine(j);
+          S:=MLRec1.Caption;
           if not Assigned(MLRec1.Prior) then
           begin
-            W:=MLRec1.Width;
+            W:=rxCol.Width;//MLRec1.Width;
             P:=MLRec1.Next;
             while Assigned(P) do
             begin
-              Inc(W, P.Width);
+              Inc(W, P.Col.Width);//P.Width);
+              P:=P.Next;
+            end;
+            W1:=tmpCanvas.TextWidth(MLRec1.Caption)+2;
+            if W1 > W then
+              MLRec1.Hegth:= W1 div W + 1
+            else
+              MLRec1.Hegth:=1;
+
+            P:=MLRec1.Next;
+            while Assigned(P) do
+            begin
+              P.Hegth:=MLRec1.Hegth;
               P:=P.Next;
             end;
           end;
+            H1:=H1 + MLRec1.Hegth;
         end;
       end;
-    end;}
 
-    RowHeights[0] := DefaultRowHeight * ({FTitleLines+}H);
+      if H1 > H then
+        H:=H1;
+    end;
+
+    RowHeights[0] := DefaultRowHeight * H;
 
     if rdgFilter in OptionsRx then
     begin
@@ -1561,7 +1585,7 @@ begin
           end
           else
           begin
-            aRect2.Bottom:=aRect2.Top + DefaultRowHeight;
+            aRect2.Bottom:=aRect2.Top + MLI.Hegth * DefaultRowHeight;
           end;
 
 
