@@ -3,7 +3,7 @@
   <Package Version="3">
     <Name Value="laz_acs"/>
     <CompilerOptions>
-      <Version Value="8"/>
+      <Version Value="9"/>
       <SearchPaths>
         <IncludeFiles Value="../classes/linux/;../fileformats/linux/;../drivers/linux/"/>
         <OtherUnitFiles Value="../classes/;../classes/linux/;../fileformats/;../fileformats/linux/;../fileformats/general/;../drivers/;../drivers/linux/"/>
@@ -13,6 +13,7 @@
         <SyntaxOptions>
           <SyntaxMode Value="Delphi"/>
           <CStyleOperator Value="False"/>
+          <UseAnsiStrings Value="False"/>
         </SyntaxOptions>
       </Parsing>
       <Other>
@@ -111,8 +112,7 @@
     <UsageOptions>
       <CustomOptions Value="
 "/>
-      <IncludePath Value="../classes/;../classes/linux/;../fileformats/;../fileformats/general/;../fileformats/linux/;../drivers/;../drivers/linux/"/>
-      <UnitPath Value="$(PkgOutDir)/;../classes/;../classes/linux/;../fileformats/;../fileformats/general/;../fileformats/linux/;../drivers/;../drivers/linux/"/>
+      <UnitPath Value="$(PkgOutDir)/"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
