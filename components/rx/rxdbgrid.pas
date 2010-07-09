@@ -1214,40 +1214,44 @@ begin
       rxTit:=TRxColumnTitle(rxCol.Title);
       H1:=0;
       //Не забудем про вертикальную ориентацию
-      if Assigned(rxCol) and rxCol.Visible then
+      if Assigned(rxCol) and rxCol.Visible and Assigned(rxTit) then
       begin
-        if rxTit.CaptionLinesCount > H then
-          H:=rxTit.CaptionLinesCount;
-        for j:=0 to rxTit.CaptionLinesCount-1 do
+        if rxTit.Orientation in [toVertical270, toVertical90] then
+          H1:=Max((tmpCanvas.TextWidth(Columns[i].Title.Caption)+ tmpCanvas.TextWidth('W')) div DefaultRowHeight, H)
+        else
         begin
-          MLRec1:=rxTit.CaptionLine(j);
-          S:=MLRec1.Caption;
-          if not Assigned(MLRec1.Prior) then
+          if rxTit.CaptionLinesCount > H then
+            H:=rxTit.CaptionLinesCount;
+          for j:=0 to rxTit.CaptionLinesCount-1 do
           begin
-            W:=rxCol.Width;//MLRec1.Width;
-            P:=MLRec1.Next;
-            while Assigned(P) do
+            MLRec1:=rxTit.CaptionLine(j);
+            S:=MLRec1.Caption;
+            if not Assigned(MLRec1.Prior) then
             begin
-              Inc(W, P.Col.Width);//P.Width);
-              P:=P.Next;
-            end;
-            W1:=tmpCanvas.TextWidth(MLRec1.Caption)+2;
-            if W1 > W then
-              MLRec1.Hegth:= W1 div W + 1
-            else
-              MLRec1.Hegth:=1;
+              W:=rxCol.Width;//MLRec1.Width;
+              P:=MLRec1.Next;
+              while Assigned(P) do
+              begin
+                Inc(W, P.Col.Width);//P.Width);
+                P:=P.Next;
+              end;
+              W1:=tmpCanvas.TextWidth(MLRec1.Caption)+2;
+              if W1 > W then
+                MLRec1.Hegth:= W1 div W + 1
+              else
+                MLRec1.Hegth:=1;
 
-            P:=MLRec1.Next;
-            while Assigned(P) do
-            begin
-              P.Hegth:=MLRec1.Hegth;
-              P:=P.Next;
+              P:=MLRec1.Next;
+              while Assigned(P) do
+              begin
+                P.Hegth:=MLRec1.Hegth;
+                P:=P.Next;
+              end;
             end;
+              H1:=H1 + MLRec1.Hegth;
           end;
-            H1:=H1 + MLRec1.Hegth;
         end;
       end;
-
       if H1 > H then
         H:=H1;
     end;

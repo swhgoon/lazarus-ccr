@@ -151,7 +151,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
       end>
     PropertyStorage = XMLPropStorage1
     Version = 1
-    OptionsRx = [rdgAllowColumnsForm, rdgAllowDialogFind, rdgDblClickOptimizeColWidth, rdgFooterRows, rdgAllowQuickSearch, rdgAllowToolMenu]
+    OptionsRx = [rdgAllowColumnsForm, rdgAllowDialogFind, rdgHighlightFocusCol, rdgHighlightFocusRow, rdgDblClickOptimizeColWidth, rdgFooterRows, rdgXORColSizing, rdgMultiTitleLines, rdgAllowQuickSearch, rdgAllowQuickFilter, rdgAllowFilterForm, rdgAllowSortForm, rdgAllowToolMenu]
     FooterColor = clYellow
     FooterRowCount = 1
     OnFiltred = RxDBGrid1Filtred
@@ -165,6 +165,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
     PopupMenu = PopupMenu1
     TabOrder = 0
     TitleStyle = tsNative
+    UseXORFeatures = True
   end
   object Panel1: TPanel
     Left = 0
