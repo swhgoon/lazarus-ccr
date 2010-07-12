@@ -5471,7 +5471,7 @@ procedure TCustomVirtualTreeOptions.AssignTo(Dest: TPersistent);
 begin
   if Dest is TCustomVirtualTreeOptions then
   begin
-    with Dest as TCustomVirtualTreeOptions do
+    with TCustomVirtualTreeOptions(Dest) do
     begin
       PaintOptions := Self.PaintOptions;
       AnimationOptions := Self.AnimationOptions;
@@ -30394,7 +30394,7 @@ procedure TCustomStringTreeOptions.AssignTo(Dest: TPersistent);
 begin
   if Dest is TCustomStringTreeOptions then
   begin
-    with Dest as TCustomStringTreeOptions do
+    with TCustomStringTreeOptions(Dest) do
       StringOptions := Self.StringOptions;
   end;
 
