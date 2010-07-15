@@ -1723,6 +1723,7 @@ var
   ptyp : PTypeInfo;
   h : THeaderBlock;
   i, c : Integer;
+  regItem : TTypeRegistryItem;
 begin
   Result := ACallContext.GetHeaderCount([hdOut]);
   if ( Result > 0 ) then begin
@@ -1733,8 +1734,12 @@ begin
         h := ACallContext.GetHeader(i);
         if ( h.Direction = hdOut ) then begin
           ptyp := PTypeInfo(h.ClassInfo);
+          regItem := GetTypeRegistry().Find(ptyp,True);
           //Put(GetTypeRegistry().ItemByTypeInfo[ptyp].DeclaredName,ptyp,h);
-          Put(h.Name,ptyp,h);
+          if ( regItem <> nil) then
+            Put(regItem.NameSpace,h.Name,ptyp,h)
+          else
+            Put(h.Name,ptyp,h);
         end;
       end;
     finally
