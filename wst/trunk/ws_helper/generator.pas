@@ -827,14 +827,18 @@ Var
             if origineIsFunc then begin
               Indent(); WriteLn('%s := %s(%s);',[sOUTPUT_PARAM,origineMthd.Name,sINPUT_PARAM]);
               if localIsFunc then begin
-                Indent(); WriteLn('if ( %s <> nil ) then begin',[sOUTPUT_PARAM]);
-                IncIndent();
-                  Indent(); WriteLn('Result := %s.%s;',[sOUTPUT_PARAM,origineResProp.Name]);
-                  Indent(); WriteLn('%s.%s := nil;',[sOUTPUT_PARAM,origineResProp.Name]);
-                DecIndent();
                 elt := origineResProp.VarType;
                 if elt.InheritsFrom(TPasUnresolvedTypeRef) then
                   elt := SymbolTable.FindElement(SymbolTable.GetExternalName(elt));
+                Indent(); WriteLn('if ( %s <> nil ) then begin',[sOUTPUT_PARAM]);
+                IncIndent();
+                  Indent(); WriteLn('Result := %s.%s;',[sOUTPUT_PARAM,origineResProp.Name]);
+                  if SymbolTable.IsOfType(TPasType(elt),TPasClassType) or
+                     SymbolTable.IsOfType(TPasType(elt),TPasArrayType)
+                  then begin
+                    Indent(); WriteLn('%s.%s := nil;',[sOUTPUT_PARAM,origineResProp.Name]);
+                  end;
+                DecIndent();
                 Indent(); WriteLn('end else begin');
                 IncIndent();
                 if elt.InheritsFrom(TPasUnresolvedTypeRef) then begin
