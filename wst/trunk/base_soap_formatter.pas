@@ -1740,7 +1740,7 @@ begin
           regItem := GetTypeRegistry().Find(ptyp,True);
           //Put(GetTypeRegistry().ItemByTypeInfo[ptyp].DeclaredName,ptyp,h);
           if ( regItem <> nil) then
-            Put(regItem.NameSpace,h.Name,ptyp,h)
+            Put(regItem.NameSpace,h.Name,PTypeInfo(h.ClassInfo),h)
           else
             Put(h.Name,ptyp,h);
         end;
