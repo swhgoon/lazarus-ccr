@@ -1733,7 +1733,10 @@ begin
       for i := 0 to Pred(c) do begin
         h := ACallContext.GetHeader(i);
         if ( h.Direction = hdOut ) then begin
-          ptyp := PTypeInfo(h.ClassInfo);
+          if h.InheritsFrom(THeaderBlockProxy) then
+            ptyp := PTypeInfo(THeaderBlockProxy(h).ActualObject.ClassInfo)
+          else  
+            ptyp := PTypeInfo(h.ClassInfo);
           regItem := GetTypeRegistry().Find(ptyp,True);
           //Put(GetTypeRegistry().ItemByTypeInfo[ptyp].DeclaredName,ptyp,h);
           if ( regItem <> nil) then
