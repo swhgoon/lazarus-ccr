@@ -15,6 +15,16 @@
     {$DEFINE HAS_TKBOOL}
     {$UNDEF WST_INTF_DOM}
     //{$DEFINE USE_INLINE}
+    {$IF Defined(FPC_VERSION) and 
+         ( (FPC_VERSION > 2) or
+           ( (FPC_VERSION = 2) and 
+             (FPC_RELEASE > 4)
+           )
+         )
+    }
+      { $DEFINE HAS_JSON_CLONE}
+    {$IFEND}
+
     {$IF Defined(FPC_VERSION) and (FPC_VERSION = 2)  }
       {$IF Defined(FPC_RELEASE) }
         {$IF Defined(FPC_VERSION) and (FPC_RELEASE > 0) }
@@ -22,6 +32,7 @@
           {$IF Defined(FPC_RELEASE) and (FPC_RELEASE > 2) }
             {$DEFINE WST_TKPROCVAR}
             {$DEFINE WST_UNICODESTRING}
+            {$DEFINE WST_HAS_JSON_INT64}   
           {$IFEND}
           {$IF Defined(FPC_RELEASE) and (FPC_RELEASE > 2) }
             {$DEFINE TDOMNodeList_RELEASE_NOT_FREE}

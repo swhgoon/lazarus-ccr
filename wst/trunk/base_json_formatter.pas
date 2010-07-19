@@ -70,7 +70,7 @@ type
     function CreateInt64Buffer(
       Const AName  : string;
       const AValue : Int64
-    ) : TJSONData;virtual;
+    ) : TJSONData;virtual; abstract;
 {$IFDEF HAS_QWORD}
     function CreateUInt64Buffer(
       Const AName  : string;
@@ -110,6 +110,10 @@ type
       Const AName  : string;
       const AValue : TJsonInteger
     ) : TJSONData;override;
+    function CreateInt64Buffer(
+      Const AName  : string;
+      const AValue : Int64
+    ) : TJSONData; override;
     function CreateFloatBuffer(
       Const AName  : string;
       const AValue : TJSONFloat
@@ -141,7 +145,11 @@ type
     function CreateIntBuffer(
       Const AName  : string;
       const AValue : TJsonInteger
-    ) : TJSONData;override;
+    ) : TJSONData;override; 
+    function CreateInt64Buffer(
+      Const AName  : string;
+      const AValue : Int64
+    ) : TJSONData; override; 
     function CreateFloatBuffer(
       Const AName  : string;
       const AValue : TJSONFloat
@@ -171,7 +179,11 @@ type
     function CreateIntBuffer(
       Const AName  : string;
       const AValue : TJsonInteger
-    ) : TJSONData;override;
+    ) : TJSONData;override; 
+    function CreateInt64Buffer(
+      Const AName  : string;
+      const AValue : Int64
+    ) : TJSONData; override; 
     function CreateFloatBuffer(
       Const AName  : string;
       const AValue : TJSONFloat
@@ -432,6 +444,16 @@ implementation
 uses 
   jsonparser, imp_utils, wst_consts;
 
+function FindObject(AObject : TJSONObject; const AName : TJSONStringType) : TJSONData;
+var
+  i : Integer;
+begin
+  i := AObject.IndexOfName(AName);
+  if ( i >= 0 ) then
+    Result := AObject.Items[i]
+  else
+    Result := nil;
+end;
 
 { TJsonRpcBaseFormatter }
 
@@ -1613,14 +1635,6 @@ begin
   FScopeType := AScopeType;
 end;
 
-function TStackItem.CreateInt64Buffer(
-  const AName  : string;
-  const AValue : Int64
-) : TJSONData;
-begin
-  Result := CreateFloatBuffer(AName,AValue);
-end;
-
 {$IFDEF HAS_QWORD}
 function TStackItem.CreateUInt64Buffer(
   const AName  : string;
@@ -1645,7 +1659,7 @@ end;
 
 function TObjectStackItem.FindNode(var ANodeName : string) : TJSONData;
 begin
-  Result := GetDataObject().Elements[ANodeName];
+  Result := FindObject(GetDataObject(),ANodeName);
 end;
 
 function TObjectStackItem.CreateStringBuffer(
@@ -1657,7 +1671,7 @@ var
   i : PtrInt;
 begin
   locObj := GetDataObject();
-  Result := locObj.Elements[AName];
+  Result := FindObject(locObj,AName);
   if ( Result = nil ) then begin
     i := locObj.Add(AName,AValue);
     Result := locObj.Items[i];
@@ -1675,7 +1689,7 @@ var
   i : PtrInt;
 begin
   locObj := GetDataObject();
-  Result := locObj.Elements[AName];
+  Result := FindObject(locObj,AName);
   if ( Result = nil ) then begin
     i := locObj.Add(AName,AValue);
     Result := locObj.Items[i];
@@ -1683,6 +1697,30 @@ begin
     Result.AsInteger := AValue;
   end;
 end;
+
+function TObjectStackItem.CreateInt64Buffer(
+  const AName : string;  
+  const AValue : Int64
+) : TJSONData;  
+{$IFDEF WST_HAS_JSON_INT64}     
+var
+  locObj : TJSONObject;
+  i : PtrInt;
+begin
+  locObj := GetDataObject();
+  Result := FindObject(locObj,AName);
+  if ( Result = nil ) then begin
+    i := locObj.Add(AName,AValue);
+    Result := locObj.Items[i];
+  end else begin
+    Result.AsInt64 := AValue;
+  end;   
+end;
+{$ELSE WST_HAS_JSON_INT64}
+begin
+  Result := CreateFloatBuffer(AName,AValue);
+end;
+{$ENDIF WST_HAS_JSON_INT64}
 
 function TObjectStackItem.CreateFloatBuffer(
   const AName : string;
@@ -1693,7 +1731,7 @@ var
   i : PtrInt;
 begin
   locObj := GetDataObject();
-  Result := locObj.Elements[AName];
+  Result := FindObject(locObj,AName);
   if ( Result = nil ) then begin
     i := locObj.Add(AName,AValue);
     Result := locObj.Items[i];
@@ -1711,7 +1749,7 @@ var
   i : PtrInt;
 begin
   locObj := GetDataObject();
-  Result := locObj.Elements[AName];
+  Result := FindObject(locObj,AName);
   if ( Result = nil ) then begin
     i := locObj.Add(AName,AValue);
     Result := locObj.Items[i];
@@ -1723,12 +1761,15 @@ end;
 function TObjectStackItem.CreateObjectBuffer(const AName : string) : TJSONObject;
 var
   locObj : TJSONObject;
+  locIndex : Integer;
 begin
   locObj := GetDataObject();
-  Result := locObj.Elements[AName] as TJSONObject;
-  if ( Result = nil ) then begin
+  locIndex := locObj.IndexOfName(AName);
+  if ( locIndex = -1 ) then begin
     Result := TJSONObject.Create();
     locObj.Add(AName,Result);
+  end else begin
+    Result := locObj.Items[locIndex] as TJSONObject;
   end;
 end;
 
@@ -1737,7 +1778,7 @@ var
   locObj : TJSONObject;
 begin
   locObj := GetDataObject();
-  Result := locObj.Elements[AName] as TJSONArray;
+  Result := FindObject(locObj,AName) as TJSONArray;
   if ( Result = nil ) then begin
     Result := TJSONArray.Create();
     locObj.Add(AName,Result);
@@ -1802,6 +1843,18 @@ end;
 function TArrayStackItem.CreateIntBuffer(const AName : string; const AValue : TJsonInteger) : TJSONData;
 begin
   Result := GetDataObject().Items[GetDataObject().Add(AValue)];
+end;
+
+function TArrayStackItem.CreateInt64Buffer(
+  const AName : string;  
+  const AValue : Int64
+) : TJSONData;  
+begin
+{$IFDEF WST_HAS_JSON_INT64} 
+  Result := GetDataObject().Items[GetDataObject().Add(AValue)];
+{$ELSE WST_HAS_JSON_INT64} 
+  Result := CreateFloatBuffer(AName,AValue);
+{$ENDIF WST_HAS_JSON_INT64} 
 end;
 
 function TArrayStackItem.CreateFloatBuffer(const AName : string; const AValue : TJSONFloat) : TJSONData;
@@ -1888,6 +1941,11 @@ end;
 function TNullStackItem.CreateIntBuffer(const AName : string; const AValue : TJsonInteger) : TJSONData;
 begin
   RaiseNotApplicable();
+end;
+
+function TNullStackItem.CreateInt64Buffer(const AName : string; const AValue : Int64) : TJSONData;  
+begin
+  RaiseNotApplicable();   
 end;
 
 function TNullStackItem.CreateFloatBuffer(const AName : string; const AValue : TJSONFloat) : TJSONData;
