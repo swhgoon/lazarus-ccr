@@ -80,9 +80,9 @@ end;
 
 procedure ReleaseDomNode(ADomNode : TDOMNodeList);overload;
 begin
-{$IFNDEF TDOMNodeList_RELEASE_NOT_FREE}
+{ $IFNDEF TDOMNodeList_RELEASE_NOT_FREE}
   ADomNode.Free();
-{$ENDIF}
+{ $ENDIF}
 end;
 
 procedure ReleaseDomNode(ADomNode : TDOMNamedNodeMap);overload;

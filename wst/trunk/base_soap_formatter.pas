@@ -111,6 +111,7 @@ type
 
   TScopedArrayStackItem = class(TAbstractArrayStackItem)
   protected
+    destructor Destroy();override;
     function CreateList(const ANodeName : string):TDOMNodeList;override;
   end;
 
@@ -2370,6 +2371,13 @@ begin
 end;
 
 { TScopedArrayStackItem }
+
+destructor TScopedArrayStackItem.Destroy();  
+begin
+  if ( FItemList <> nil ) then
+    FItemList := nil;
+  inherited Destroy();  
+end;
 
 function TScopedArrayStackItem.CreateList(const ANodeName : string): TDOMNodeList;
 begin

@@ -175,7 +175,7 @@ implementation
   begin
     Result := nil;
     if ( ANode <> nil ) and ANode.HasChildNodes() then begin
-      Result := TDOMNodeListCursor.Create(ANode.ChildNodes,faFreeOnDestroy) ;
+      Result := TDOMNodeListCursor.Create(ANode.ChildNodes,faNone) ;
       if ( AExposedType = cetRttiNode ) then
         Result := TDOMNodeRttiExposerCursor.Create(Result);
     end;
