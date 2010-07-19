@@ -61,6 +61,16 @@ begin
   GetFormatterRegistry().Register(s_json,s_json_ContentType,TSimpleItemFactory.Create(TJsonRpcFormatter) as IItemFactory);
 end;
 
+{$IFDEF HAS_JSON_CLONE}
+function Clone(const AValue : TJSONData) : TJSONData; inline;
+begin
+  if ( AValue = nil ) then
+    Result := nil
+  else  
+    Result := AValue.Clone();
+end;
+
+{$ELSE HAS_JSON_CLONE}
 function Clone(const AValue : TJSONData) : TJSONData;
 var
   locParser : TJSONParser;
@@ -94,6 +104,7 @@ begin
     Result := nil;
   end;
 end;
+{$ENDIF HAS_JSON_CLONE}
 
 { TJsonRpcFormatter }
 
