@@ -1,9 +1,8 @@
 object fProcEdit: TfProcEdit
-  Left = 290
+  Left = 329
   Height = 543
-  Top = 118
+  Top = 143
   Width = 522
-  ActiveControl = edtName
   BorderStyle = bsSizeToolWin
   Caption = 'fProcEdit'
   ClientHeight = 543
@@ -71,6 +70,7 @@ object fProcEdit: TfProcEdit
             end          
             item
             end>
+          ItemIndex = -1
           RowSelect = True
           TabOrder = 0
           ViewStyle = vsReport

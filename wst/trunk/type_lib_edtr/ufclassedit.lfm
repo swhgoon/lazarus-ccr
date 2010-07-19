@@ -1,19 +1,18 @@
 object fClassEdit: TfClassEdit
-  Left = 536
-  Height = 547
-  Top = 127
+  Left = 640
+  Height = 556
+  Top = 167
   Width = 552
-  ActiveControl = PC
   BorderStyle = bsSizeToolWin
   Caption = 'fClassEdit'
-  ClientHeight = 547
+  ClientHeight = 556
   ClientWidth = 552
   Position = poDesktopCenter
   LCLVersion = '0.9.29'
   object Panel1: TPanel
     Left = 0
     Height = 50
-    Top = 497
+    Top = 506
     Width = 552
     Align = alBottom
     ClientHeight = 50
@@ -54,7 +53,7 @@ object fClassEdit: TfClassEdit
   end
   object PC: TPageControl
     Left = 0
-    Height = 497
+    Height = 506
     Top = 0
     Width = 552
     ActivePage = TabSheet1
@@ -65,7 +64,7 @@ object fClassEdit: TfClassEdit
     OnPageChanged = PCChange
     object TabSheet1: TTabSheet
       Caption = 'Compound Object'
-      ClientHeight = 471
+      ClientHeight = 480
       ClientWidth = 544
       object Label1: TLabel
         Left = 4
@@ -93,26 +92,25 @@ object fClassEdit: TfClassEdit
       end
       object GroupBox1: TGroupBox
         Left = 4
-        Height = 312
+        Height = 305
         Top = 98
         Width = 529
         Anchors = [akTop, akLeft, akRight, akBottom]
         Caption = '  Properties  '
-        ClientHeight = 294
+        ClientHeight = 287
         ClientWidth = 525
         TabOrder = 2
         object edtProp: TListView
           Left = 0
-          Height = 294
+          Height = 287
           Top = 0
           Width = 525
           Align = alClient
           BorderWidth = 2
           Columns = <          
             item
-              AutoSize = True
               Caption = 'Name'
-              Width = 210
+              Width = 200
             end          
             item
               Caption = 'Type'
@@ -133,7 +131,7 @@ object fClassEdit: TfClassEdit
       object Button3: TButton
         Left = 4
         Height = 25
-        Top = 421
+        Top = 413
         Width = 100
         Action = actPropAdd
         Anchors = [akLeft, akBottom]
@@ -143,7 +141,7 @@ object fClassEdit: TfClassEdit
       object Button4: TButton
         Left = 116
         Height = 25
-        Top = 421
+        Top = 413
         Width = 100
         Action = actPropEdit
         Anchors = [akLeft, akBottom]
@@ -153,7 +151,7 @@ object fClassEdit: TfClassEdit
       object Button5: TButton
         Left = 228
         Height = 25
-        Top = 421
+        Top = 413
         Width = 100
         Action = actPropDelete
         Anchors = [akLeft, akBottom]
@@ -173,7 +171,7 @@ object fClassEdit: TfClassEdit
       object Button7: TButton
         Left = 372
         Height = 25
-        Top = 421
+        Top = 413
         Width = 70
         Action = actMoveUp
         Anchors = [akRight, akBottom]
@@ -183,19 +181,37 @@ object fClassEdit: TfClassEdit
       object Button8: TButton
         Left = 452
         Height = 25
-        Top = 421
+        Top = 413
         Width = 70
         Action = actMoveDown
         Anchors = [akRight, akBottom]
         BorderSpacing.InnerBorder = 4
         TabOrder = 7
       end
+      object Button9: TButton
+        Left = 372
+        Height = 25
+        Top = 442
+        Width = 70
+        Action = actMoveFirst
+        Anchors = [akRight, akBottom]
+        TabOrder = 8
+      end
+      object Button10: TButton
+        Left = 452
+        Height = 25
+        Top = 442
+        Width = 70
+        Action = actMoveLast
+        Anchors = [akRight, akBottom]
+        TabOrder = 9
+      end
     end
     object tsSourceXSD: TTabSheet
       Caption = 'XSD'
       ClientHeight = 471
       ClientWidth = 544
-      object edtSourceXSD: TSynEdit
+      inline edtSourceXSD: TSynEdit
         Left = 12
         Height = 432
         Top = 18
@@ -209,7 +225,6 @@ object fClassEdit: TfClassEdit
         ParentFont = False
         TabOrder = 0
         BookMarkOptions.Xoffset = 42
-        BookMarkOptions.OnChange = nil
         Gutter.Width = 67
         Gutter.MouseActions = <        
           item
@@ -681,113 +696,6 @@ object fClassEdit: TfClassEdit
           end>
         ReadOnly = True
         BracketHighlightStyle = sbhsBoth
-        object TSynGutterPartList
-          object TSynGutterMarks
-            Width = 23
-          end
-          object TSynGutterLineNumber
-            Width = 27
-            MouseActions = <>
-            MarkupInfo.Background = clBtnFace
-            MarkupInfo.Foreground = clNone
-            DigitCount = 2
-            ShowOnlyLineNumbersMultiplesOf = 1
-            ZeroStart = False
-            LeadingZeros = False
-          end
-          object TSynGutterChanges
-            Width = 4
-            ModifiedColor = 59900
-            SavedColor = clGreen
-          end
-          object TSynGutterSeparator
-            Width = 2
-          end
-          object TSynGutterCodeFolding
-            MouseActions = <            
-              item
-                Shift = []
-                ShiftMask = []
-                Button = mbRight
-                ClickCount = ccSingle
-                ClickDir = cdUp
-                Command = 16
-                MoveCaret = False
-                Option = 0
-                Priority = 0
-              end            
-              item
-                Shift = []
-                ShiftMask = [ssShift]
-                Button = mbMiddle
-                ClickCount = ccAny
-                ClickDir = cdDown
-                Command = 14
-                MoveCaret = False
-                Option = 0
-                Priority = 0
-              end            
-              item
-                Shift = [ssShift]
-                ShiftMask = [ssShift]
-                Button = mbMiddle
-                ClickCount = ccAny
-                ClickDir = cdDown
-                Command = 14
-                MoveCaret = False
-                Option = 1
-                Priority = 0
-              end            
-              item
-                Shift = []
-                ShiftMask = []
-                Button = mbLeft
-                ClickCount = ccAny
-                ClickDir = cdDown
-                Command = 0
-                MoveCaret = False
-                Option = 0
-                Priority = 0
-              end>
-            MarkupInfo.Background = clNone
-            MarkupInfo.Foreground = clGray
-            MouseActionsExpanded = <            
-              item
-                Shift = []
-                ShiftMask = []
-                Button = mbLeft
-                ClickCount = ccAny
-                ClickDir = cdDown
-                Command = 14
-                MoveCaret = False
-                Option = 0
-                Priority = 0
-              end>
-            MouseActionsCollapsed = <            
-              item
-                Shift = [ssCtrl]
-                ShiftMask = [ssCtrl]
-                Button = mbLeft
-                ClickCount = ccAny
-                ClickDir = cdDown
-                Command = 15
-                MoveCaret = False
-                Option = 0
-                Priority = 0
-              end            
-              item
-                Shift = []
-                ShiftMask = [ssCtrl]
-                Button = mbLeft
-                ClickCount = ccAny
-                ClickDir = cdDown
-                Command = 15
-                MoveCaret = False
-                Option = 1
-                Priority = 0
-              end>
-          end
-        end
       end
     end
     object tsDependencies: TTabSheet
@@ -824,8 +732,8 @@ object fClassEdit: TfClassEdit
     end
   end
   object ActionList1: TActionList
-    left = 232
-    top = 200
+    left = 248
+    top = 232
     object actOK: TAction
       Caption = 'OK'
       OnExecute = actOKExecute
@@ -858,6 +766,16 @@ object fClassEdit: TfClassEdit
     object actMoveDown: TAction
       Caption = 'Move Down'
       OnExecute = actMoveDownExecute
+      OnUpdate = actMoveDownUpdate
+    end
+    object actMoveFirst: TAction
+      Caption = 'Move First'
+      OnExecute = actMoveFirstExecute
+      OnUpdate = actMoveUpUpdate
+    end
+    object actMoveLast: TAction
+      Caption = 'Move Last'
+      OnExecute = actMoveLastExecute
       OnUpdate = actMoveDownUpdate
     end
   end

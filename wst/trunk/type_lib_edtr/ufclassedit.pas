@@ -28,6 +28,8 @@ type
 
   TfClassEdit = class(TForm)
     actApply : TAction;
+    actMoveFirst : TAction;
+    actMoveLast : TAction;
     actMoveDown: TAction;
     actMoveUp: TAction;
     actPropDelete: TAction;
@@ -37,6 +39,7 @@ type
     actOK: TAction;
     actOK1: TAction;
     Button1: TButton;
+    Button10 : TButton;
     Button2: TButton;
     Button3: TButton;
     Button4: TButton;
@@ -44,6 +47,7 @@ type
     Button6 : TButton;
     Button7: TButton;
     Button8: TButton;
+    Button9 : TButton;
     edtParent: TComboBox;
     edtName: TEdit;
     GroupBox1: TGroupBox;
@@ -70,6 +74,8 @@ type
     procedure actApplyExecute(Sender : TObject);
     procedure actMoveDownExecute(Sender: TObject);
     procedure actMoveDownUpdate(Sender: TObject);
+    procedure actMoveFirstExecute(Sender : TObject);
+    procedure actMoveLastExecute(Sender : TObject);
     procedure actMoveUpExecute(Sender: TObject);
     procedure actMoveUpUpdate(Sender: TObject);
     procedure actOKExecute(Sender: TObject);
@@ -153,6 +159,16 @@ end;
 procedure TfClassEdit.actMoveDownUpdate(Sender: TObject);
 begin
   TAction(Sender).Enabled := Assigned(edtProp.ItemFocused) and ( edtProp.ItemFocused.Index < Pred(edtProp.Items.Count) );
+end;
+
+procedure TfClassEdit.actMoveFirstExecute(Sender : TObject);
+begin
+  MovePropertyItem(TPasProperty(edtProp.ItemFocused.Data),0);
+end;
+
+procedure TfClassEdit.actMoveLastExecute(Sender : TObject);
+begin
+  MovePropertyItem(TPasProperty(edtProp.ItemFocused.Data),(edtProp.Items.Count - 1)); 
 end;
 
 procedure TfClassEdit.actMoveUpExecute(Sender: TObject);

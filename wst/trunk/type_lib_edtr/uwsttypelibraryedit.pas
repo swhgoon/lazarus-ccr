@@ -41,6 +41,7 @@ type
     actDelete : TAction;
     actArrayCreate : TAction;
     actEditSearch : TAction;
+    actClone : TAction;
     actSaveXSD : TAction;
     actTreeSearch : TAction;
     actRecordCreate : TAction;
@@ -100,6 +101,8 @@ type
     MenuItem51 : TMenuItem;
     MenuItem52 : TMenuItem;
     MenuItem53 : TMenuItem;
+    MenuItem54 : TMenuItem;
+    MenuItem55 : TMenuItem;
     MenuItem6: TMenuItem;
     MenuItem7 : TMenuItem;
     MenuItem8: TMenuItem;
@@ -141,8 +144,11 @@ type
     trvSchema: TTreeView;
     procedure actAboutExecute(Sender: TObject);
     procedure actArrayCreateExecute(Sender : TObject);
+    procedure actCloneExecute(Sender : TObject);
+    procedure actCloneUpdate(Sender : TObject);
     procedure actCompoundCreateExecute(Sender: TObject);
     procedure actDeleteExecute (Sender : TObject );
+    procedure actDeleteUpdate(Sender : TObject);
     procedure actEnumCreateExecute(Sender: TObject);
     procedure actEnumCreateUpdate(Sender : TObject);
     procedure actExitExecute(Sender: TObject);
@@ -613,7 +619,7 @@ begin
   nd := trvSchema.Selected;
   if Assigned(nd) and Assigned(nd.Data) then begin
     o := TPasElement(nd.Data);
-    if HasEditor(o) and UpdateObject(o,FSymbolTable) then begin
+    if HasEditor(o,etUpdate) and UpdateObject(o,FSymbolTable) then begin
       nd_1  := nd;
       locTypeNode := GetTypeNode();
       trvSchema.BeginUpdate();
@@ -633,7 +639,7 @@ begin
   TAction(Sender).Enabled :=
     Assigned(trvSchema.Selected) and
     Assigned(trvSchema.Selected.Data) and
-    HasEditor(TPasElement(trvSchema.Selected.Data));
+    HasEditor(TPasElement(trvSchema.Selected.Data),etUpdate);
 end;
 
 procedure TfWstTypeLibraryEdit.FDFind(Sender : TObject);
@@ -827,6 +833,43 @@ begin
   end;
 end;
 
+procedure TfWstTypeLibraryEdit.actCloneExecute(Sender : TObject);
+var
+  o : TPasElement;
+  nd, nd_1 : TTreeNode;
+  locHandler : TObjectUpdaterClass;
+  locNewItem : TPasElement;
+begin
+  nd := trvSchema.Selected;
+  if Assigned(nd) and Assigned(nd.Data) then begin
+    o := TPasElement(nd.Data);
+    if HasEditor(o,etClone,locHandler) then begin
+      locNewItem := locHandler.CloneObject(o,FSymbolTable);
+      if ( locNewItem <> nil ) then begin
+        trvSchema.BeginUpdate();
+        try
+          nd_1 := FindPainter(locNewItem).Paint(FSymbolTable,locNewItem,GetTypeNode());   
+          if ( nd_1 <> nil ) then begin
+            nd_1.Expand(True);
+            trvSchema.Selected := nd_1;
+            trvSchema.MakeSelectionVisible();
+          end;
+        finally
+          trvSchema.EndUpdate();
+        end;
+      end;  
+    end;
+  end; 
+end;
+
+procedure TfWstTypeLibraryEdit.actCloneUpdate(Sender : TObject);
+begin
+  TAction(Sender).Enabled :=
+    Assigned(trvSchema.Selected) and
+    Assigned(trvSchema.Selected.Data) and
+    HasEditor(TPasElement(trvSchema.Selected.Data),etClone);
+end;
+
 procedure TfWstTypeLibraryEdit.actCompoundCreateExecute(Sender: TObject);
 var
   e : TPasClassType;
@@ -845,7 +888,7 @@ begin
   nd := trvSchema.Selected;
   if Assigned(nd) and Assigned(nd.Data) then begin
     o := TPasElement(nd.Data);
-    if HasEditor(o) then begin
+    if HasEditor(o,etDelete) then begin
       if ( MessageDlg(Format('Delete this object "%s" ?',[o.Name]),mtConfirmation,mbYesNo,0) = mrYes ) then begin
         DeleteObject(o,FSymbolTable);
         trvSchema.BeginUpdate();
@@ -857,6 +900,14 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TfWstTypeLibraryEdit.actDeleteUpdate(Sender : TObject);
+begin
+  TAction(Sender).Enabled :=
+    Assigned(trvSchema.Selected) and
+    Assigned(trvSchema.Selected.Data) and
+    HasEditor(TPasElement(trvSchema.Selected.Data),etDelete);
 end;
 
 procedure TfWstTypeLibraryEdit.actEnumCreateExecute(Sender: TObject);

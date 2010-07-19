@@ -1,9 +1,8 @@
 object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
-  Left = 158
+  Left = 209
   Height = 644
-  Top = 112
+  Top = 105
   Width = 833
-  ActiveControl = trvSchema
   Caption = '[Web Services Toolkit ] Type Library Editor'
   ClientHeight = 624
   ClientWidth = 833
@@ -11,7 +10,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
   OnClose = FormClose
   OnShow = FormShow
   Position = poDesktopCenter
-  LCLVersion = '0.9.28'
+  LCLVersion = '0.9.29'
   object SB: TStatusBar
     Left = 0
     Height = 23
@@ -85,7 +84,6 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 56
-          BookMarkOptions.OnChange = nil
           Gutter.Width = 57
           Gutter.MouseActions = <          
             item
@@ -687,7 +685,6 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 34
-          BookMarkOptions.OnChange = nil
           Gutter.Width = 57
           Gutter.MouseActions = <          
             item
@@ -1289,7 +1286,6 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 56
-          BookMarkOptions.OnChange = nil
           Gutter.Width = 57
           Gutter.MouseActions = <          
             item
@@ -1891,7 +1887,6 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 56
-          BookMarkOptions.OnChange = nil
           Gutter.Width = 57
           Gutter.MouseActions = <          
             item
@@ -2493,7 +2488,6 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 56
-          BookMarkOptions.OnChange = nil
           Gutter.Width = 57
           Gutter.MouseActions = <          
             item
@@ -3137,7 +3131,6 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           ParentFont = False
           TabOrder = 0
           BookMarkOptions.Xoffset = -18
-          BookMarkOptions.OnChange = nil
           Gutter.Visible = False
           Gutter.Width = 0
           Gutter.MouseActions = <          
@@ -3849,6 +3842,10 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
       object MenuItem12: TMenuItem
         Caption = '-'
       end
+      object MenuItem55: TMenuItem
+        Action = actClone
+        OnClick = actCloneExecute
+      end
       object MenuItem13: TMenuItem
         Action = actUpdateObject
         Caption = 'Update Object'
@@ -3940,7 +3937,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
       Caption = 'Delete'
       Enabled = False
       OnExecute = actDeleteExecute
-      OnUpdate = actUpdateObjectUpdate
+      OnUpdate = actDeleteUpdate
     end
     object actArrayCreate: TAction
       Caption = 'Create Array'
@@ -3971,6 +3968,11 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
     object actSaveXSD: TAction
       Caption = 'Save as XSD file ...'
       OnExecute = actSaveXSDExecute
+    end
+    object actClone: TAction
+      Caption = 'Clone'
+      OnExecute = actCloneExecute
+      OnUpdate = actCloneUpdate
     end
   end
   object OD: TOpenDialog
@@ -4053,6 +4055,10 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
     end
     object MenuItem22: TMenuItem
       Caption = '-'
+    end
+    object MenuItem54: TMenuItem
+      Action = actClone
+      OnClick = actCloneExecute
     end
     object MenuItem9: TMenuItem
       Action = actUpdateObject

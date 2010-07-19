@@ -22,13 +22,13 @@ uses
 
 type
 
-  TEditType = ( etCreate, etUpdate, etDelete );
+  TEditType = ( etCreate, etUpdate, etDelete, etClone );
   
   { TObjectUpdater }
 
   TObjectUpdater = class
   public
-    class function CanHandle(AObject : TObject):Boolean;virtual;
+    class function CanHandle(AObject : TObject; const AEditAction : TEditType):Boolean;virtual;
     class function UpdateObject(
       var AObject : TPasElement;
       ASymbolTable : TwstPasTreeContainer
@@ -37,6 +37,10 @@ type
       AObject : TPasElement;
       ASymbolTable : TwstPasTreeContainer
     );virtual;
+    class function CloneObject(
+      AObject : TPasElement;
+      ASymbolTable : TwstPasTreeContainer
+    ) : TPasElement;virtual; abstract;
   end;
   TObjectUpdaterClass = class of TObjectUpdater;
   
@@ -57,7 +61,12 @@ type
 
 
 
-  function HasEditor(AObject : TPasElement):Boolean;
+  function HasEditor(AObject : TObject; const AEditAction : TEditType):Boolean; overload;
+  function HasEditor(
+          AObject : TObject; 
+    const AEditAction : TEditType;
+    out   AHandler : TObjectUpdaterClass  
+  ): Boolean; overload;
   function UpdateObject(
     var AObject : TPasElement;
         ASymbolTable : TwstPasTreeContainer
@@ -87,12 +96,12 @@ type
   private
     FList : TClassList;
   private
-    function FindHanlderIndex(AObj : TObject):Integer;
+    function FindHanlderIndex(AObj : TObject; const AEditAction : TEditType):Integer;
   public
     constructor Create();
     destructor Destroy();override;
     procedure RegisterHandler(AHandlerClass : TObjectUpdaterClass);
-    function FindHandler(AObj : TObject; out AHandler : TObjectUpdaterClass) : Boolean;
+    function FindHandler(AObj : TObject; const AEditAction : TEditType; out AHandler : TObjectUpdaterClass) : Boolean;
   end;
 
 var UpdaterRegistryInst : TUpdaterRegistry;
@@ -110,12 +119,21 @@ begin
   end;
 end;
 
-function HasEditor(AObject: TPasElement): Boolean;
+function HasEditor(
+        AObject : TObject; 
+  const AEditAction : TEditType;
+  out   AHandler : TObjectUpdaterClass  
+): Boolean;
+begin
+  Result := UpdaterRegistryInst.FindHandler(AObject,AEditAction,AHandler) and AHandler.CanHandle(AObject,AEditAction);
+end;
+
+function HasEditor(AObject : TObject; const AEditAction : TEditType): Boolean;
 var
   h : TObjectUpdaterClass;
 begin
-  Result := UpdaterRegistryInst.FindHandler(AObject,h);
-end;
+  Result := HasEditor(AObject,AEditAction,h);
+end; 
 
 function UpdateObject(
   var AObject : TPasElement;
@@ -124,7 +142,7 @@ function UpdateObject(
 var
   h : TObjectUpdaterClass;
 begin
-  if not UpdaterRegistryInst.FindHandler(AObject,h) then begin
+  if not UpdaterRegistryInst.FindHandler(AObject,etUpdate,h) then begin
     raise Exception.Create('No handler found.');
   end;
   Result := h.UpdateObject(AObject,ASymbolTable);
@@ -137,7 +155,7 @@ procedure DeleteObject(
 var
   h : TObjectUpdaterClass;
 begin
-  if not UpdaterRegistryInst.FindHandler(AObject,h) then begin
+  if not UpdaterRegistryInst.FindHandler(AObject,etDelete,h) then begin
     raise Exception.Create('No handler found.');
   end;
   h.DeleteObject(AObject,ASymbolTable);
@@ -148,7 +166,7 @@ type
 
   TEnumUpdater = class(TObjectUpdater)
   public
-    class function CanHandle(AObject : TObject):Boolean;override;
+    class function CanHandle(AObject : TObject; const AEditAction : TEditType):Boolean;override;
     class function UpdateObject(
       var AObject : TPasElement;
           ASymbolTable : TwstPasTreeContainer
@@ -159,18 +177,22 @@ type
 
   TClassUpdater = class(TObjectUpdater)
   public
-    class function CanHandle(AObject : TObject):Boolean;override;
+    class function CanHandle(AObject : TObject; const AEditAction : TEditType):Boolean;override;
     class function UpdateObject(
       var AObject : TPasElement;
           ASymbolTable : TwstPasTreeContainer
     ):Boolean;override;
+    class function CloneObject(
+      AObject : TPasElement;
+      ASymbolTable : TwstPasTreeContainer
+    ) : TPasElement; override;
   end;
 
   { TRecordUpdater }
 
   TRecordUpdater = class(TObjectUpdater)
   public
-    class function CanHandle(AObject : TObject):Boolean;override;
+    class function CanHandle(AObject : TObject; const AEditAction : TEditType):Boolean;override;
     class function UpdateObject(
       var AObject : TPasElement;
           ASymbolTable : TwstPasTreeContainer
@@ -181,7 +203,7 @@ type
 
   TTypeAliasUpdater = class(TObjectUpdater)
   public
-    class function CanHandle(AObject : TObject):Boolean;override;
+    class function CanHandle(AObject : TObject; const AEditAction : TEditType):Boolean;override;
     class function UpdateObject(
       var AObject : TPasElement;
           ASymbolTable : TwstPasTreeContainer
@@ -192,7 +214,7 @@ type
 
   TArrayUpdater = class(TObjectUpdater)
   public
-    class function CanHandle(AObject : TObject):Boolean;override;
+    class function CanHandle(AObject : TObject; const AEditAction : TEditType):Boolean;override;
     class function UpdateObject(
       var AObject : TPasElement;
           ASymbolTable : TwstPasTreeContainer
@@ -203,7 +225,7 @@ type
 
   TInterfaceUpdater = class(TObjectUpdater)
   public
-    class function CanHandle(AObject : TObject):Boolean;override;
+    class function CanHandle(AObject : TObject; const AEditAction : TEditType):Boolean;override;
     class function UpdateObject(
       var AObject : TPasElement;
           ASymbolTable : TwstPasTreeContainer
@@ -214,7 +236,7 @@ type
 
   TMethodUpdater = class(TObjectUpdater)
   public
-    class function CanHandle(AObject : TObject):Boolean;override;
+    class function CanHandle(AObject : TObject; const AEditAction : TEditType):Boolean;override;
     class function UpdateObject(
       var AObject : TPasElement;
           ASymbolTable : TwstPasTreeContainer
@@ -225,7 +247,7 @@ type
 
   TArgumentUpdater = class(TObjectUpdater)
   public
-    class function CanHandle(AObject : TObject):Boolean;override;
+    class function CanHandle(AObject : TObject; const AEditAction : TEditType):Boolean;override;
     class function UpdateObject(
       var AObject : TPasElement;
           ASymbolTable : TwstPasTreeContainer
@@ -236,7 +258,7 @@ type
 
   TModuleUpdater = class(TObjectUpdater)
   public
-    class function CanHandle(AObject : TObject):Boolean;override;
+    class function CanHandle(AObject : TObject; const AEditAction : TEditType):Boolean;override;
     class function UpdateObject(
       var AObject : TPasElement;
           ASymbolTable : TwstPasTreeContainer
@@ -247,7 +269,7 @@ type
 
   TBindingUpdater = class(TObjectUpdater)
   public
-    class function CanHandle(AObject : TObject):Boolean;override;
+    class function CanHandle(AObject : TObject; const AEditAction : TEditType):Boolean;override;
     class function UpdateObject(
       var AObject : TPasElement;
           ASymbolTable : TwstPasTreeContainer
@@ -256,9 +278,9 @@ type
 
 { TRecordUpdater }
 
-class function TRecordUpdater.CanHandle(AObject : TObject) : Boolean;
+class function TRecordUpdater.CanHandle(AObject : TObject; const AEditAction : TEditType) : Boolean;
 begin
-  Result := ( inherited CanHandle(AObject) ) and AObject.InheritsFrom(TPasRecordType) ;
+  Result := ( inherited CanHandle(AObject,AEditAction) ) and AObject.InheritsFrom(TPasRecordType) ;
 end;
 
 class function TRecordUpdater.UpdateObject(
@@ -281,9 +303,9 @@ end;
 
 { TTypeAliasUpdater }
 
-class function TTypeAliasUpdater.CanHandle(AObject : TObject) : Boolean;
+class function TTypeAliasUpdater.CanHandle(AObject : TObject; const AEditAction : TEditType) : Boolean;
 begin
-  Result := ( inherited CanHandle(AObject) ) and AObject.InheritsFrom(TPasAliasType);
+  Result := ( inherited CanHandle(AObject,AEditAction) ) and AObject.InheritsFrom(TPasAliasType);
 end;
 
 class function TTypeAliasUpdater.UpdateObject(
@@ -306,9 +328,9 @@ end;
 
 { TArrayUpdater }
 
-class function TArrayUpdater.CanHandle(AObject : TObject) : Boolean;
+class function TArrayUpdater.CanHandle(AObject : TObject; const AEditAction : TEditType) : Boolean;
 begin
-  Result := ( inherited CanHandle(AObject) ) and AObject.InheritsFrom(TPasArrayType);
+  Result := ( inherited CanHandle(AObject,AEditAction) ) and AObject.InheritsFrom(TPasArrayType);
 end;
 
 class function TArrayUpdater.UpdateObject(
@@ -331,9 +353,9 @@ end;
 
 { TBindingUpdater }
 
-class function TBindingUpdater.CanHandle(AObject: TObject): Boolean;
+class function TBindingUpdater.CanHandle(AObject : TObject; const AEditAction : TEditType): Boolean;
 begin
-  Result := ( inherited CanHandle(AObject) ) and  AObject.InheritsFrom(TwstBinding);
+  Result := ( inherited CanHandle(AObject,AEditAction) ) and  AObject.InheritsFrom(TwstBinding);
 end;
 
 class function TBindingUpdater.UpdateObject(
@@ -356,9 +378,9 @@ end;
   
 { TModuleUpdater }
 
-class function TModuleUpdater.CanHandle(AObject: TObject): Boolean;
+class function TModuleUpdater.CanHandle(AObject : TObject; const AEditAction : TEditType): Boolean;
 begin
-  Result := ( inherited CanHandle(AObject) ) and  AObject.InheritsFrom(TPasModule);
+  Result := ( inherited CanHandle(AObject,AEditAction) ) and  AObject.InheritsFrom(TPasModule);
 end;
 
 class function TModuleUpdater.UpdateObject(
@@ -381,9 +403,9 @@ end;
   
 { TArgumentUpdater }
 
-class function TArgumentUpdater.CanHandle(AObject: TObject): Boolean;
+class function TArgumentUpdater.CanHandle(AObject : TObject; const AEditAction : TEditType): Boolean;
 begin
-  Result := ( inherited CanHandle(AObject) ) and  AObject.InheritsFrom(TPasArgument);
+  Result := ( inherited CanHandle(AObject,AEditAction) ) and  AObject.InheritsFrom(TPasArgument);
 end;
 
 class function TArgumentUpdater.UpdateObject(
@@ -406,9 +428,9 @@ end;
 
 { TMethodUpdater }
 
-class function TMethodUpdater.CanHandle(AObject: TObject): Boolean;
+class function TMethodUpdater.CanHandle(AObject : TObject; const AEditAction : TEditType): Boolean;
 begin
-  Result := ( inherited CanHandle(AObject) ) and  AObject.InheritsFrom(TPasProcedure);
+  Result := ( inherited CanHandle(AObject,AEditAction) ) and  AObject.InheritsFrom(TPasProcedure);
 end;
 
 class function TMethodUpdater.UpdateObject(
@@ -431,9 +453,9 @@ end;
 
 { TInterfaceUpdater }
 
-class function TInterfaceUpdater.CanHandle(AObject: TObject): Boolean;
+class function TInterfaceUpdater.CanHandle(AObject : TObject; const AEditAction : TEditType): Boolean;
 begin
-  Result := ( inherited CanHandle(AObject) ) and
+  Result := ( inherited CanHandle(AObject,AEditAction) ) and
             ( AObject.InheritsFrom(TPasClassType) and ( TPasClassType(AObject).ObjKind = okInterface ) );
 end;
 
@@ -457,9 +479,9 @@ end;
   
 { TClassUpdater }
 
-class function TClassUpdater.CanHandle(AObject: TObject): Boolean;
+class function TClassUpdater.CanHandle(AObject : TObject; const AEditAction : TEditType): Boolean;
 begin
-  Result := ( inherited CanHandle(AObject) ) and
+  Result := ( AObject <> nil ) and
             ( AObject.InheritsFrom(TPasClassType) and ( TPasClassType(AObject).ObjKind = okClass ) );
 end;
 
@@ -480,15 +502,88 @@ begin
     f.Release();
   end;
 end;
+
+class function TClassUpdater.CloneObject(
+  AObject : TPasElement;  
+  ASymbolTable : TwstPasTreeContainer
+) : TPasElement;
+
+  function MakeNewName(const ABase : string) : string;
+  var
+    k : Integer;
+  begin
+    k := 1;
+    while True do begin
+      Result := Format('%s_%d',[ABase,k]);
+      if ( ASymbolTable.FindElement(Result) = nil ) then
+        Break;
+      Inc(k);
+    end;
+  end;
+  
+  procedure CloneProperties(ASource, ADest : TPasClassType);
+  var
+    ls : TList;
+    k : Integer;
+    locSource, locDest : TPasProperty;
+  begin
+    ls := ASource.Members;
+    if ( ls.Count > 0 ) then begin
+      for k := 0 to Pred(ls.Count) do begin
+        if TObject(ls[k]).InheritsFrom(TPasProperty) then begin
+          locSource := TPasProperty(ls[k]);
+          locDest := TPasProperty(ASymbolTable.CreateElement(TPasProperty,locSource.Name,ADest,visPublished,'',0));  
+          ADest.Members.Add(locDest);
+          if ( locSource.VarType <> nil ) then begin
+            locDest.VarType := locSource.VarType;
+            locDest.VarType.AddRef();
+            locDest.StoredAccessorName := locSource.StoredAccessorName;
+            locDest.ReadAccessorName := locSource.ReadAccessorName;
+            locDest.WriteAccessorName := locSource.WriteAccessorName;            
+            ASymbolTable.RegisterExternalAlias(locDest,ASymbolTable.GetExternalName(locSource));
+            ASymbolTable.SetPropertyAsAttribute(locDest,ASymbolTable.IsAttributeProperty(locSource));
+          end;
+        end;
+      end;
+    end;
+  end;
+  
+var
+  locSource, locRes : TPasClassType;
+  locNewName : string;
+begin
+  locSource := AObject as TPasClassType;
+  locNewName := MakeNewName(locSource.Name);
+  locRes := TPasClassType(
+              ASymbolTable.CreateElement(
+                TPTreeElement(locSource.ClassType), locNewName,
+                ASymbolTable.CurrentModule.InterfaceSection,visDefault,'',0)
+            );
+  try
+    locRes.ObjKind := okClass;
+    ASymbolTable.CurrentModule.InterfaceSection.Declarations.Add(locRes);
+    ASymbolTable.CurrentModule.InterfaceSection.Types.Add(locRes);
+    ASymbolTable.CurrentModule.InterfaceSection.Classes.Add(locRes);
+    if ( locSource.AncestorType <> nil ) then begin
+      locRes.AncestorType := locSource.AncestorType;
+      locRes.AncestorType.AddRef();
+    end;
+    CloneProperties(locSource,locRes);
+  except
+    locRes.Free();
+    raise;
+  end;
+  Result := locRes;
+end;
   
 { TUpdaterRegistry }
 
-function TUpdaterRegistry.FindHanlderIndex(AObj : TObject): Integer;
+function TUpdaterRegistry.FindHanlderIndex(AObj : TObject; const AEditAction : TEditType): Integer;
 var
   i : Integer;
 begin
   for i := 0 to Pred(FList.Count) do begin
-    if TObjectUpdaterClass(FList[i]).CanHandle(AObj) then begin
+    if TObjectUpdaterClass(FList[i]).CanHandle(AObj,AEditAction) then begin
       Result := i;
       Exit;
     end;
@@ -515,14 +610,15 @@ begin
 end;
 
 function TUpdaterRegistry.FindHandler(
-      AObj      : TObject;
-  out AHandler  : TObjectUpdaterClass
+        AObj      : TObject;
+  const AEditAction : TEditType;
+  out   AHandler  : TObjectUpdaterClass
 ): Boolean;
 var
   i : Integer;
 begin
   AHandler := nil;
-  i := FindHanlderIndex(AObj);
+  i := FindHanlderIndex(AObj,AEditAction);
   Result := ( i >= 0 );
   if Result then begin
     AHandler := TObjectUpdaterClass(FList[i]);
@@ -531,9 +627,9 @@ end;
 
 { TEnumUpdater }
 
-class function TEnumUpdater.CanHandle(AObject: TObject): Boolean;
+class function TEnumUpdater.CanHandle(AObject : TObject; const AEditAction : TEditType): Boolean;
 begin
-  Result := ( inherited CanHandle(AObject) ) and AObject.InheritsFrom(TPasEnumType);
+  Result := ( inherited CanHandle(AObject,AEditAction) ) and AObject.InheritsFrom(TPasEnumType);
 end;
 
 class function TEnumUpdater.UpdateObject(
@@ -656,9 +752,12 @@ end;
 
 { TObjectUpdater }
 
-class function TObjectUpdater.CanHandle(AObject: TObject): Boolean;
+class function TObjectUpdater.CanHandle(
+        AObject : TObject; 
+  const AEditAction : TEditType  
+) : Boolean;
 begin
-  Result := Assigned(AObject);
+  Result := Assigned(AObject) and ( AEditAction <> etClone );
 end;
 
 class procedure TObjectUpdater.DeleteObject (

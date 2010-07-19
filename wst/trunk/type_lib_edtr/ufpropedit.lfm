@@ -1,18 +1,17 @@
 object fPropEdit: TfPropEdit
-  Left = 832
+  Left = 977
   Height = 326
-  Top = 106
+  Top = 144
   Width = 324
   HorzScrollBar.Page = 323
   VertScrollBar.Page = 325
-  ActiveControl = edtName
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'fPropEdit'
   ClientHeight = 326
   ClientWidth = 324
   Position = poDesktopCenter
-  LCLVersion = '0.9.28'
+  LCLVersion = '0.9.29'
   object Panel1: TPanel
     Left = 0
     Height = 50
