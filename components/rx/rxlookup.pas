@@ -36,7 +36,7 @@ unit rxlookup;
 interface
 
 uses
-  LCLType, LCLProc, LCLIntf, Classes, SysUtils, LResources, Forms,
+  LCLType, LCLProc, LCLIntf, Classes, SysUtils, LResources, Forms, types,
   Controls, Graphics, Dialogs, DB, EditBtn, DBGrids, StdCtrls, Buttons,
   LMessages, DbCtrls, GraphType, dbutils, RxDbGrid, rxpopupunit, Themes;
 
@@ -238,6 +238,10 @@ type
   protected
     procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
                                      WithThemeSpace: Boolean); override;
+    {procedure GetPreferredSize(var PreferredWidth, PreferredHeight: integer;
+                               Raw: boolean = false;
+                               WithThemeSpace: boolean = true); override;
+    class function GetControlClassDefaultSize: TSize; override;}
     procedure ShowList; virtual;
     procedure OnInternalClosePopup(AResult:boolean);virtual;
     procedure SetEnabled(Value: Boolean); override;
@@ -1140,12 +1144,27 @@ begin
   tmpCanvas := GetWorkingCanvas(Canvas);
   try
     PreferredHeight:=Canvas.TextHeight('Wg')+12;
+    //PreferredWidth:=Canvas.TextWidth('W')*12;
   finally
     if TmpCanvas<>Canvas then
       FreeWorkingCanvas(tmpCanvas);
   end;
 end;
 
+{procedure TRxCustomDBLookupCombo.GetPreferredSize(var PreferredWidth,
+  PreferredHeight: integer; Raw: boolean; WithThemeSpace: boolean);
+begin
+  inherited GetPreferredSize(PreferredWidth, PreferredHeight, Raw,
+    WithThemeSpace);
+end;
+
+
+class function TRxCustomDBLookupCombo.GetControlClassDefaultSize: TSize;
+begin
+  Result.CX := 170;
+  Result.CY := 50;
+end;
+}
 procedure TRxCustomDBLookupCombo.OnInternalClosePopup(AResult: boolean);
 begin
   if Assigned(FRxPopUpForm) and AResult and (pfgColumnResize in FPopUpFormOptions.Options) then
@@ -1289,12 +1308,12 @@ procedure TRxCustomDBLookupCombo.DoSetBounds(ALeft, ATop, AWidth,
   AHeight: Integer);
 begin
   if not (csReading in ComponentState) and (Height < GetMinHeight) then
-    Height := GetMinHeight
+    AHeight := GetMinHeight
   else
   begin
     if (csDesigning in ComponentState) then
       if (Height < GetMinHeight) then
-        Height := GetMinHeight;
+        AHeight := GetMinHeight;
   end;
 
   inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
@@ -1526,7 +1545,6 @@ var
   ArrowBmp:TBitmap;
 begin
   inherited Create(AOwner);
-  //Height := 23;
   Width := 100;
   AutoSize:=true;
   FUnfindedValue:=rxufNone;
