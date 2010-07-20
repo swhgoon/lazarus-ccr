@@ -68,6 +68,7 @@ type
     FCaseInsensitiveSort: Boolean;
     FDescendingSort: Boolean;
     function AddRecord: TMemoryRecord;
+    procedure CopyRecord(RecordData, Buffer: PChar);
     function GetOnFilterRecordEx: TFilterRecordEvent;
     function InsertRecord(Index: Integer): TMemoryRecord;
     function FindRecordID(ID: Integer): TMemoryRecord;
@@ -77,7 +78,8 @@ type
     procedure SetOnFilterRecordEx(const AValue: TFilterRecordEvent);
     procedure Sort;
     function CalcRecordSize: Integer;
-    function FindFieldData(Buffer: Pointer; Field: TField): Pointer;
+    function FindFieldData(Buffer: Pointer; Field: TField): Pointer;overload;
+    function FindFieldData(Buffer: Pointer; FieldNo:Integer): Pointer;overload;
     function GetMemoryRecord(Index: Integer): TMemoryRecord;
     function GetCapacity: Integer;
     function RecordFilter: Boolean;
@@ -438,6 +440,7 @@ begin
       for I := 0 to Value.FieldDefs.Count - 1 do
         CalcDataSize(Value.FieldDefs[I], DataSize);
       ReallocMem(FData, DataSize);
+      FillChar(FData^, DataSize, 0);
     end;
   end;
 end;
@@ -583,19 +586,15 @@ function TRxMemoryData.FindFieldData(Buffer: Pointer; Field: TField): Pointer;
 var
   Index: Integer;
 begin
-{.$IFDEF RX_D4}
-//  Index := FieldDefList.IndexOf(Field.FullName);
-{.$ELSE}
   Index := FieldDefs.IndexOf(Field.FieldName);
-{.$ENDIF}
-  if (Index >= 0) and (Buffer <> nil) and
-{.$IFDEF RX_D4}
-//    (FieldDefList[Index].DataType in ftSupported - ftBlobTypes) then
-{.$ELSE}
-    (FieldDefs[Index].DataType in ftSupported - ftBlobTypes) then
-{.$ENDIF}
-    Result := Pointer(PtrInt(PChar(Buffer)) + FOffsets^[Index])
-  else Result := nil;
+  Result:=FindFieldData(Buffer, Index);
+end;
+
+function TRxMemoryData.FindFieldData(Buffer: Pointer; FieldNo: Integer): Pointer;
+begin
+  Result := nil;
+  if (FieldNo >= 0) and (Buffer <> nil) and (FieldDefs[FieldNo].DataType in ftSupported - ftBlobTypes) then
+    Result := Pointer(PtrInt(PChar(Buffer)) + FOffsets^[FieldNo]);
 end;
 
 { Buffer Manipulation }
@@ -639,10 +638,26 @@ begin
 end;
 
 procedure TRxMemoryData.FreeRecordBuffer(var Buffer: PChar);
+var
+  n:integer;
+  FieldPtr:PChar;
 begin
- if BlobFieldCount > 0 then
+  //correctly release field memory for complex types
+  for n:=0 to FieldDefs.Count-1 do
+    if FieldDefs.Items[n].DataType = ftVariant then
+    begin
+      FieldPtr:=FindFieldData(Buffer, n);
+      if FieldPtr <> nil then
+      begin
+        PBoolean(FieldPtr)^:=False;
+        Inc(FieldPtr);
+        Finalize( PVariant(FieldPtr)^ );
+      end;
+    end;
+
+  if BlobFieldCount > 0 then
     FinalizeBlobFields(PMemBlobArray(Buffer + FBlobOfs), BlobFieldCount);
-//    Finalize(PMemBlobArray(Buffer + FBlobOfs)^[0]);//, BlobFieldCount)
+
   StrDispose(Buffer);
   Buffer := nil;
 end;
@@ -674,6 +689,35 @@ begin
   end;
 end;
 
+procedure TRxMemoryData.CopyRecord(RecordData, Buffer:PChar);
+var
+  n, FieldSize:Integer;
+  FieldPtr, BufPtr:PChar;
+  DataType:TFieldType;
+begin
+  for n:=0 to FieldDefs.Count-1 do
+  begin
+    FieldPtr:=FindFieldData(RecordData, n);
+    BufPtr:=FindFieldData(Buffer, n);
+    if FieldPtr = nil then Continue;
+
+    PBoolean(BufPtr)^:=PBoolean(FieldPtr)^;
+    Inc(FieldPtr);
+    Inc(BufPtr);
+
+    DataType:=FieldDefs.Items[n].DataType;
+    if DataType = ftVariant then
+    begin
+      PVariant(BufPtr)^:=PVariant(FieldPtr)^;
+    end
+    else
+    begin
+      FieldSize:=FieldDefs.Items[n].Size;
+      Move( FieldPtr^, BufPtr^, CalcFieldLen(DataType, FieldSize) );
+    end;
+  end;
+end;
+
 function TRxMemoryData.GetCurrentRecord(Buffer: PChar): Boolean;
 begin
   Result := False;
@@ -682,7 +726,9 @@ begin
     UpdateCursorPos;
     if (FRecordPos >= 0) and (FRecordPos < RecordCount) then
     begin
-      Move(Records[FRecordPos].Data^, Buffer^, FRecordSize);
+      //Move(Records[FRecordPos].Data^, Buffer^, FRecordSize);
+      CopyRecord(Records[FRecordPos].Data, Buffer);
+
       Result := True;
     end;
   end;
@@ -692,7 +738,8 @@ procedure TRxMemoryData.RecordToBuffer(Rec: TMemoryRecord; Buffer: PChar);
 var
   I: Integer;
 begin
-  Move(Rec.Data^, Buffer^, FRecordSize);
+  //Move(Rec.Data^, Buffer^, FRecordSize);
+  CopyRecord(Rec.Data, Buffer);
   with PMemBookmarkInfo(Buffer + FBookmarkOfs)^ do
   begin
     BookmarkData := Rec.ID;
@@ -851,17 +898,15 @@ begin
         begin
           if DataType = ftVariant then
           begin
-            if Buffer <> nil then
-              VarData := PVariant(Buffer)^
+            if (Buffer = nil) or VarIsNull(PVariant(Buffer)^) or VarIsEmpty(PVariant(Buffer)^) or
+               VarIsEmptyParam(PVariant(Buffer)^) then
+              FillChar(Data^, CalcFieldLen(DataType, Size), 0)
             else
-              VarData := EmptyParam;
-            Boolean(Data[0]) := LongBool(Buffer) and not
-              (VarIsNull(VarData) or VarIsEmpty(VarData));
-            if Boolean(Data[0]) then begin
+            begin
+              Boolean(Data[0]):=True;
               Inc(Data);
-              PVariant(Data)^ := VarData;
-            end
-            else FillChar(Data^, CalcFieldLen(DataType, Size), 0);
+              PVariant(Data)^ := PVariant(Buffer)^;
+            end;
           end
           else
           begin
@@ -1063,7 +1108,9 @@ procedure TRxMemoryData.AssignMemoryRecord(Rec: TMemoryRecord; Buffer: PChar);
 var
   I: Integer;
 begin
-  Move(Buffer^, Rec.Data^, FRecordSize);
+  //Move(Buffer^, Rec.Data^, FRecordSize);
+  CopyRecord(Buffer, PChar(Rec.Data));
+
   for I := 0 to BlobFieldCount - 1 do
     PMemBlobArray(Rec.FBlobs)^[I] := PMemBlobArray(Buffer + FBlobOfs)^[I];
 end;
