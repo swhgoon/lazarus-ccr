@@ -33,12 +33,11 @@ interface
 uses
   SysUtils, Classes, LCLType,
 {$IFDEF LCLgtk2}
-  glib2, gdk2,
+  glib2, gdk2, gtk2Def, gtk2Proc,
 {$ENDIF}
 {$IFDEF LCLgtk}
-  glib, gdk,
+  glib, gdk, gtkDef, gtkProc,
 {$ENDIF}
-  gtkDef, gtkProc,
   RGBTypes;
   
   procedure WidgetSetDrawRGB32Bitmap(Dest: HDC; DstX, DstY: Integer; SrcX, SrcY, SrcWidth, SrcHeight: Integer;
