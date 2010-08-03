@@ -318,7 +318,7 @@ begin
   for i:=1 to 12 do
   begin
     MI:=TMenuItem.Create(Result);
-    MI.Caption := LongMonthNames[i - 1];
+    MI.Caption := LongMonthNames[i];
     MI.OnClick:=AOnClick;
     MI.Tag:=i;
     Result.Items.Add(MI);
@@ -1245,7 +1245,7 @@ var
   AYear, AMonth, ADay: Word;
 begin
   DecodeDate(FCalendar.CalendarDate, AYear, AMonth, ADay);
-  s := Format('%s, %d', [LongMonthNames[AMonth - 1], AYear]);
+  s := Format('%s, %d', [LongMonthNames[AMonth], AYear]);
   FTitleLabel.Caption := s; //
   // FTitleLabel.Caption := FormatDateTime('MMMM, YYYY', FCalendar.CalendarDate);
 end;

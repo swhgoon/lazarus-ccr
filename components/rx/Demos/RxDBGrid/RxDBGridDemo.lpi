@@ -53,7 +53,7 @@
         <MinVersion Major="1" Release="18" Build="56" Valid="True"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="62">
+    <Units Count="63">
       <Unit0>
         <Filename Value="RxDBGridDemo.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -69,11 +69,10 @@
         <ComponentName Value="RxDBGridMainForm"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="RxDBGridMainUnit"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
-        <CursorPos X="73" Y="8"/>
+        <CursorPos X="12" Y="9"/>
         <UsageCount Value="53"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -393,15 +392,17 @@
       <Unit45>
         <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
         <UnitName Value="rxdbgrid"/>
+        <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1895"/>
-        <CursorPos X="32" Y="1920"/>
+        <TopLine Value="37"/>
+        <CursorPos X="48" Y="41"/>
         <UsageCount Value="16"/>
         <Bookmarks Count="3">
           <Item0 X="3" Y="2250" ID="3"/>
           <Item1 X="13" Y="1203" ID="1"/>
           <Item2 X="11" Y="1606" ID="2"/>
         </Bookmarks>
+        <Loaded Value="True"/>
       </Unit45>
       <Unit46>
         <Filename Value="/usr/local/share/lazarus/ideintf/dbpropedits.pas"/>
@@ -540,8 +541,19 @@
         <CursorPos X="1" Y="1113"/>
         <UsageCount Value="10"/>
       </Unit61>
+      <Unit62>
+        <Filename Value="../../../../../../install/fpcsrc/packages/fcl-db/src/base/db.pas"/>
+        <UnitName Value="db"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="2"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="541"/>
+        <CursorPos X="1" Y="569"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit62>
     </Units>
-    <JumpHistory Count="2" HistoryIndex="1">
+    <JumpHistory Count="3" HistoryIndex="2">
       <Position1>
         <Filename Value="rxdbgridmainunit.pas"/>
         <Caret Line="161" Column="14" TopLine="148"/>
@@ -550,6 +562,10 @@
         <Filename Value="rxdbgridmainunit.pas"/>
         <Caret Line="8" Column="73" TopLine="1"/>
       </Position2>
+      <Position3>
+        <Filename Value="rxdbgridmainunit.pas"/>
+        <Caret Line="9" Column="12" TopLine="1"/>
+      </Position3>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
