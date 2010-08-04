@@ -22,7 +22,8 @@ uses
 const
   sREMOTE_IP = 'RemoteIP';
   sREMOTE_PORT = 'RemotePort';
-
+  sSERVICES_EXTENSIONS = 'extensions';
+  
 type
 
   IRequestBuffer = interface;
@@ -73,6 +74,7 @@ type
                   - IFormatterResponse on "msAfterDeserialize", "msBeforeSerialize"
               }
     );
+    function GetPropertyManager():IPropertyManager;
   end;
 
   IServiceExtensionRegistry = Interface
@@ -99,10 +101,14 @@ type
     ['{23A745BC-5F63-404D-BF53-55A6E64DE5BE}']
     procedure RegisterExtension(
       const AExtensionList : array of string
-    );
+    ); overload;
     function GetExtension(
       out AExtensionList : string
     ) : Boolean;
+    procedure RegisterExtension(
+      const AExtension  : string;
+      const AInitString : string
+    ); overload;
   end;
   
   IServiceImplementationRegistry = Interface
@@ -198,10 +204,14 @@ type
     procedure ReleaseInstance(const AInstance : IInterface);override;
     procedure RegisterExtension(
       const AExtensionList : array of string
-    );
+    ); overload;
     function GetExtension(
       out AExtensionList : string
     ) : Boolean;
+    procedure RegisterExtension(
+      const AExtension  : string;
+      const AInitString : string
+    ); overload;
   end;
 
 
@@ -539,14 +549,16 @@ procedure TBaseServiceBinder.DoProcessMessage(
         AMsgData      : IInterface
 );
 var
-  s : string;
+  s, extInitString : string;
   ls : TStringList;
   i : Integer;
   exreg : IServiceExtensionRegistry;
   se : IServiceExtension;
+  pm : IPropertyManager;
 begin
   exreg := GetServiceExtensionRegistry();
   if FImplementationFactory.GetExtension(s) then begin
+    pm := FImplementationFactory.GetPropertyManager(sSERVICES_EXTENSIONS,True);
     ls := TStringList.Create();
     try
       ls.QuoteChar := #0;
@@ -555,8 +567,12 @@ begin
       for i := 0 to Pred(ls.Count) do begin
         s := ls[i];
         se := exreg.Find(s);
-        if Assigned(se) then
+        if Assigned(se) then begin
+          extInitString := pm.GetProperty(s);
+          if ( Length(extInitString) > 0 ) then
+            se.GetPropertyManager().SetProperties(extInitString);
           se.ProcessMessage(AMessageStage,ACallContext,AMsgData);
+        end;
       end;
     finally
       ls.Free();
@@ -700,7 +716,8 @@ end;
 
 
 { TImplementationFactory }
-const sSERVICES_EXTENSIONS = 'extensions';sLIST = 'list';
+const
+  sLIST = 'list';
 
 procedure TImplementationFactory.ReleaseInstance(const AInstance : IInterface);
 var
@@ -720,25 +737,54 @@ procedure TImplementationFactory.RegisterExtension(
   const AExtensionList : array of string
 );
 var
-  pmngr : IPropertyManager;
   i : Integer;
-  strBuffer, s : string;
 begin
   if ( Length(AExtensionList) > 0 ) then begin
-    pmngr := GetPropertyManager(sSERVICES_EXTENSIONS,True);
-    strBuffer := '';
-    for i := Low(AExtensionList) to High(AExtensionList) do begin
-      s := Trim(AExtensionList[i]);
-      if ( Length(s) > 0 ) then
-        strBuffer := strBuffer + ';' + s;
+    for i := Low(AExtensionList) to High(AExtensionList) do
+      RegisterExtension(AExtensionList[i],'');
+  end;
+end;
+
+procedure TImplementationFactory.RegisterExtension(
+  const AExtension  : string;
+  const AInitString : string
+);
+
+  function IsIn(const AList, AItem : string) : Boolean;
+  var
+    ls : TStringList;
+  begin
+    ls := TStringList.Create();
+    try
+      ls.QuoteChar := #0;
+      ls.Delimiter := PROP_LIST_DELIMITER;
+      ls.DelimitedText := AList;
+      Result := ( ls.IndexOf(AItem) >= 0 );
+    finally
+      ls.Free();
     end;
-    if ( Length(strBuffer) > 0 ) then begin
-      s:= Trim(pmngr.GetProperty(sLIST));
+  end;
+
+var
+  pmngr : IPropertyManager;
+  strBuffer, s : string;
+  wasExistent : Boolean;
+begin
+  strBuffer := Trim(AExtension);
+  if ( Length(strBuffer) > 0 ) then begin
+    pmngr := GetPropertyManager(sSERVICES_EXTENSIONS,True);
+    s := Trim(pmngr.GetProperty(sLIST));
+    wasExistent := IsIn(s,strBuffer);
+    if ( Length(s) = 0 ) or ( not wasExistent ) then begin
       if ( Length(s) = 0 ) then
-        Delete(strBuffer,1,1);
-      s := s + strBuffer;
+        s := strBuffer
+      else
+        s := Format('%s;%s',[s,strBuffer]);
       pmngr.SetProperty(sLIST,s);
     end;
+    s := Trim(AInitString);
+    if wasExistent or ( Length(s) > 0 ) then
+      pmngr.SetProperty(strBuffer,s);
   end;
 end;
 

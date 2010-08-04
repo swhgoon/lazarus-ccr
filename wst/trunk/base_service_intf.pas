@@ -63,6 +63,7 @@ const
 type
 
   EServiceException = class(Exception) end;
+  EServiceExtensionException = class(Exception) end;
   ETransportExecption = class(EServiceException) end;
 
   EBaseRemoteException = class(EServiceException)

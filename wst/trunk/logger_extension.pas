@@ -23,6 +23,8 @@ type
   { TLoggerServiceExtension }
 
   TLoggerServiceExtension = class(TSimpleFactoryItem,IServiceExtension)
+  private
+    FPropertyManager : IPropertyManager;
   protected
     procedure TraceMessage(const AMsg : string);virtual;
   protected
@@ -36,8 +38,9 @@ type
                   - IFormatterResponse on "msAfterDeserialize", "msBeforeSerialize"
               }
     );
+    function GetPropertyManager():IPropertyManager;
   end;
-  
+
 implementation
 uses TypInfo;
 
@@ -93,7 +96,14 @@ begin
   TraceMessage(Format('%sTimeStamp : %s;   %s',[sLineBreak,DateTimeToStr(Now()),s]));
 end;
 
+function TLoggerServiceExtension.GetPropertyManager: IPropertyManager;
+begin
+  if ( FPropertyManager = nil ) then
+    FPropertyManager := TStoredPropertyManager.Create();
+  Result := FPropertyManager;  
+end;
+
 initialization
   GetServiceExtensionRegistry().Register('TLoggerServiceExtension',TSimpleItemFactory.Create(TLoggerServiceExtension) as IItemFactory);
-  
+
 end.

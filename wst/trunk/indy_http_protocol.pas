@@ -13,26 +13,24 @@
 {$INCLUDE wst_global.inc}
 unit indy_http_protocol;
 
-//{$DEFINE WST_DBG}
+{.$DEFINE WST_DBG}
 
 interface
 
 uses
   Classes, SysUtils,
-  service_intf, imp_utils, base_service_intf, wst_types,
-  IdHTTP;
+  service_intf, imp_utils, base_service_intf, wst_types, filter_intf,
+  client_utils, IdHTTP;
 
 Const
   sTRANSPORT_NAME = 'HTTP';
 
 Type
 
-{$M+}
   { THTTPTransport }
-  THTTPTransport = class(TSimpleFactoryItem,ITransport)
+  THTTPTransport = class(TBaseTransport,ITransport)
   Private
     FFormat : string;
-    FPropMngr : IPropertyManager;
     FConnection : TidHttp;
     FSoapAction: string;
     FContentType: string;
@@ -49,12 +47,11 @@ Type
     procedure SetProxyPort(const AValue: Integer);
     procedure SetProxyServer(const AValue: string);
     procedure SetProxyUsername(const AValue: string);
-  Public
+  public
     constructor Create();override;
     destructor Destroy();override;
-    function GetPropertyManager():IPropertyManager;
-    procedure SendAndReceive(ARequest,AResponse:TStream);
-  Published
+    procedure SendAndReceive(ARequest,AResponse:TStream); override;
+  published
     property ContentType : string Read FContentType Write FContentType;
     property Address : string Read GetAddress Write SetAddress;
     property ProxyServer : string Read GetProxyServer Write SetProxyServer;
@@ -65,7 +62,6 @@ Type
     property Format : string read FFormat write FFormat;
     property ProtocolVersion : string read GetProtocolVersion write SetProtocolVersion;
   End;
-{$M+}
 
   procedure INDY_RegisterHTTP_Transport();
 
@@ -164,25 +160,20 @@ end;
 
 constructor THTTPTransport.Create();
 begin
-  FPropMngr := TPublishedPropertyManager.Create(Self);
+  inherited;
   FConnection := TidHttp.Create(Nil);
 end;
 
 destructor THTTPTransport.Destroy();
 begin
   FreeAndNil(FConnection);
-  FPropMngr := Nil;
   inherited Destroy();
 end;
 
-function THTTPTransport.GetPropertyManager(): IPropertyManager;
-begin
-  Result := FPropMngr;
-end;
-
 procedure THTTPTransport.SendAndReceive(ARequest, AResponse: TStream);
-{$IFDEF WST_DBG}
 var
+  locTempStream, locTempRes : TMemoryStream;
+{$IFDEF WST_DBG}
   s : TBinaryString;
   i : Int64;
 {$ENDIF WST_DBG}
@@ -199,13 +190,35 @@ begin
 {$IFDEF WST_DBG}
   TMemoryStream(ARequest).SaveToFile('request.log');
 {$ENDIF WST_DBG}
-  FConnection.Post(Address,ARequest, AResponse);
+  if not HasFilter() then begin
+    FConnection.Post(Address,ARequest, AResponse);
+  end else begin
+    locTempRes := nil;
+    locTempStream := TMemoryStream.Create();
+    try
+      FilterInput(ARequest,locTempStream);
+{$IFDEF WST_DBG}
+      TMemoryStream(locTempStream).SaveToFile('request.log.wire');
+{$ENDIF WST_DBG}
+      locTempRes := TMemoryStream.Create();
+      FConnection.Post(Address,locTempStream,locTempRes);
   {$IFDEF WST_DBG}
-  i := AResponse.Size;
-  SetLength(s,i);
-  Move(TMemoryStream(AResponse).Memory^,s[1],i);
-  WriteLn('--------------------------------------------');
-  WriteLn(s);
+      TMemoryStream(locTempRes).SaveToFile('response.log.wire');
+  {$ENDIF WST_DBG}
+      FilterOutput(locTempRes,AResponse);
+    finally
+      locTempRes.Free();
+      locTempStream.Free();
+    end;
+  end;
+  {$IFDEF WST_DBG}
+  if IsConsole then begin
+    i := AResponse.Size;
+    SetLength(s,i);
+    Move(TMemoryStream(AResponse).Memory^,s[1],i);
+    WriteLn('--------------------------------------------');
+    WriteLn(s);
+  end;
   TMemoryStream(AResponse).SaveToFile('response.log');
   {$ENDIF WST_DBG}
 end;
@@ -214,5 +227,6 @@ procedure INDY_RegisterHTTP_Transport();
 begin
   GetTransportRegistry().Register(sTRANSPORT_NAME,TSimpleItemFactory.Create(THTTPTransport) as IItemFactory);
 end;
+
 
 end.

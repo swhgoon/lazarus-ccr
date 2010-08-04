@@ -92,7 +92,7 @@ procedure TwstIndyTcpListener.Handle_OnExecute(
   var
     strBuff : TIdBytes;
     bufferLen : LongInt;
-    i, j, c : PtrInt;
+    i, c : PtrInt;
   begin
     Result := 0;
     bufferLen := 0;
