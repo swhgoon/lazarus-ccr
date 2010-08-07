@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="3">
+    <Name Value="chelper"/>
+    <Author Value="Dmitry 'skalogrz' Boyarintsev"/>
+    <CompilerOptions>
+      <Version Value="9"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="The IDE extension usefull for C headers convertion"/>
+    <License Value="LGPL"/>
+    <Version Minor="8"/>
+    <Files Count="6">
+      <Item1>
+        <Filename Value="tosourceeditor.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="toSourceEditor"/>
+      </Item1>
+      <Item2>
+        <Filename Value="ctopasconvert.pas"/>
+        <UnitName Value="ctopasconvert"/>
+      </Item2>
+      <Item3>
+        <Filename Value="extconvdialog.pas"/>
+        <UnitName Value="extconvdialog"/>
+      </Item3>
+      <Item4>
+        <Filename Value="cconvconfig.pas"/>
+        <UnitName Value="cconvconfig"/>
+      </Item4>
+      <Item5>
+        <Filename Value="converteridesettings.pas"/>
+        <UnitName Value="converteridesettings"/>
+      </Item5>
+      <Item6>
+        <Filename Value="extconvdialog.lfm"/>
+        <Type Value="LFM"/>
+      </Item6>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="3">
+      <Item1>
+        <PackageName Value="IDEIntf"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item3>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)/"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
