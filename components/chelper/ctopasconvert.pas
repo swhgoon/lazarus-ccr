@@ -550,7 +550,7 @@ var
 begin
   cmt:=FindCommentForLine( Breaker.LineNumber(AOffset));
   if Assigned(cmt) then begin
-    LastOffset:=AOffset;
+    LastOffset:=cmt.Offset;
     wr.W('  ');
     WriteCommentToPas(cmt);
   end else
