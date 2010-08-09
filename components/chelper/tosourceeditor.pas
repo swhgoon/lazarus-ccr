@@ -144,6 +144,9 @@ begin
     txt:='';
 end;
 
+var
+  parsing : Boolean = False;
+
 procedure TryParse;
 var
   editor  : TSourceEditorInterface;
@@ -153,26 +156,33 @@ var
   p       : TPoint;
   st      : TPoint;
 begin
+  if parsing then Exit;
   if not Assigned(SourceEditorManagerIntf) or not Assigned(SourceEditorManagerIntf.ActiveEditor) then Exit;
-  editor:=SourceEditorManagerIntf.ActiveEditor;
 
-  if Assigned(CtoPasConfig) then CtoPasConfig.UIToSettings;
+  parsing:=True;
+  try
+    editor:=SourceEditorManagerIntf.ActiveEditor;
 
-  i:=editor.CursorTextXY.Y;
-  dec(i);
-  if i<0 then i:=0;
-  txt:='';
-  for i:=i to editor.Lines.Count-1 do
-    txt:=txt+editor.Lines[i]+#10;
+    if Assigned(CtoPasConfig) then CtoPasConfig.UIToSettings;
 
-  if DoConvertCode(txt, p, s) then
-  begin
-    inc(p.Y, editor.CursorTextXY.Y-1);
-    st:=editor.CursorTextXY;
-    st.X:=1;
-    editor.ReplaceText(st, p, s);
-    if Assigned(CtoPasConfig) then
-      CtoPasConfig.SettingsToUI;
+    i:=editor.CursorTextXY.Y;
+    dec(i);
+    if i<0 then i:=0;
+    txt:='';
+    for i:=i to editor.Lines.Count-1 do
+      txt:=txt+editor.Lines[i]+#10;
+
+    if DoConvertCode(txt, p, s) then
+    begin
+      inc(p.Y, editor.CursorTextXY.Y-1);
+      st:=editor.CursorTextXY;
+      st.X:=1;
+      editor.ReplaceText(st, p, s);
+      if Assigned(CtoPasConfig) then
+        CtoPasConfig.SettingsToUI;
+    end;
+  finally
+    parsing:=False;
   end;
 end;
 

@@ -266,10 +266,16 @@ type
 
   { TExpression }
 
+  TExpPart = record
+    Token     : AnsiString;
+    TokenType : TTokenType;
+  end;
   TExpression = class(TEntity)
     function DoParse(AParser: TTextParser): Boolean; override;
   public
-    Text  : AnsiString;
+    Tokens  : array of TExpPart;
+    Count   : Integer;
+    procedure PushToken(const AToken: AnsiString; ATokenType: TTokenType);
   end;
 
 procedure ErrorExpect(Parser: TTextParser; const Expect: AnsiString);
@@ -1531,21 +1537,31 @@ end;
 
 function isEndOfExpr(const t: AnsiString; CommaIsEnd: Boolean): Boolean;
 begin
-  Result:=(t=']') or (t=';') or (t=')') or (CommaIsEnd and (t=','));
+  Result:=(t=']') or (t=';') or (t=')') or (CommaIsEnd and (t=',')) or (t='}');
 end;
 
 function ParseCExpr(Parser: TTextParser; CommaIsEnd: Boolean=False): TExpression;
 var
-  x : TExpression;
+  x   : TExpression;
+  lvl : Integer;
 begin
   if isEndOfExpr(Parser.Token, CommaIsEnd) then
     Result:=nil
   else begin
+    lvl:=0;
     x := TExpression.Create(Parser.Index);
-    while not isEndOfExpr(Parser.Token, CommaIsEnd) do begin
-      x.Text:=x.Text+Parser.Token;
-      Parser.NextToken;
-    end; 
+
+    repeat
+      if (Parser.Token='(') or (Parser.Token='[') then
+        inc(lvl)
+      else begin
+        if (lvl=0) and isEndOfExpr(Parser.Token, CommaIsEnd) then
+          Break
+        else if (Parser.Token=')') or (Parser.Token=']') then
+          dec(lvl)
+      end;
+      x.PushToken(Parser.Token, Parser.TokenType);
+    until not Parser.NextToken;
     Result:=x;   
   end;
 end;
@@ -1556,6 +1572,18 @@ function TExpression.DoParse(AParser: TTextParser): Boolean;
 begin
   Result:=False;
 end;
+
+procedure TExpression.PushToken(const AToken:AnsiString; ATokenType: TTokenType);
+begin
+  if Count=length(Tokens) then begin
+    if Count=0 then SetLength(Tokens, 2)
+    else SetLength(Tokens, Count*2);
+  end;
+  Tokens[Count].Token:=AToken;
+  Tokens[Count].TokenType:=ATokenType;
+  inc(Count);
+end;
+
 
 procedure ParseFuncParams(Parser: TTextParser; FuncName: TNamePart);
 var
@@ -1777,13 +1805,8 @@ begin
     AParser.NextToken;
   end;
 
-  if AParser.Token<>'{' then begin
-    ErrorExpect(AParser, '{');
-    Exit;
-  end;
-  AParser.NextToken;
-
-  try
+  if AParser.Token='{' then begin
+    AParser.NextToken;
     repeat
       v:=TVarFuncEntity.Create(AParser.TokenPos);
       if not ParseNames(AParser, v.RetType, v.Names) then begin
@@ -1800,10 +1823,8 @@ begin
     until (AParser.Token='}');
 
     ConsumeToken(AParser, '}');
-    Result:=st;
-  finally
-    if not Assigned(Result) then st.Free;
   end;
+  Result:=st;
 end;
 
 function ParseUnion(AParser:TTextParser):TUnionType;
@@ -1907,8 +1928,8 @@ begin
         en.AddItem(nm, x, ofs);
         if AParser.Token=',' then AParser.NextToken;
       end;
+      AParser.NextToken;
     end;
-    AParser.NextToken;
     Result:=en;
   finally
     if not Assigned(Result) then en.Free;

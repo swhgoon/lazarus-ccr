@@ -60,6 +60,23 @@ type
 //  X - column (starting from 1);
 function ConvertCode(const t: AnsiString; var endPoint: TPoint; cfg: TConvertSettings = nil): AnsiString;
 
+// converts C-expression to Pascal expression, replace symbols with pascal equvialents.
+// WARN: * the function doesn't handle macroses (treats them as identifiers)
+//       * it doesn't recognizes typecasting
+//       * it doesn't recognize the correct order of operations.
+function PasExp(x: TExpression): AnsiString;
+
+// returns true, if x is single number expression. V is the value of the number
+function isNumberExp(x: TExpression; var v: Int64): Boolean;
+
+// returns array limit base on x expression.
+// if expression is a single number (N), then evaluates the N-1 number and returns it as string
+// if expression is complex, returns pascal expression exp-1.
+// i.e.   int a[10] ->       a: array [0..9] of Integer;
+//        int a[10*2] ->     a: array [0..10*2-1] of Integer;
+//        int a[MAXCONST] -> a: array [0..MAXCONST-1] of Integer;
+function PasArrayLimit(x: TExpression): AnsiString;
+
 implementation
 
 type
@@ -108,15 +125,16 @@ type
     procedure DeclarePasType(TypeEntity: TEntity; const PasTypeName: AnsiString);
     procedure DeclareFuncType(const PasTypeName, RetTypeName: AnsiString; const params: array of TFuncParam);
 
-    procedure WriteLnCommentForOffset(AOffset: Integer);
+    procedure WriteLnCommentForOffset(AOffset: Integer; NeedOffset: Boolean=True);
     function NextCommentBefore(AOffset: Integer): Integer;
     procedure WriteLnCommentsBeforeOffset(AOffset: Integer);
 
     procedure WriteFuncDecl(const FnName, PasRetType: Ansistring; const params : array of TFuncParam);
-    procedure WriteFuncOrVar(cent: TVarFuncEntity; StartVar: Boolean); // todo: deprecate!
+    procedure WriteFuncOrVar(cent: TVarFuncEntity; StartVar, WriteComment: Boolean); // todo: deprecate!
     procedure WriteTypeDef(tp: TTypeDef);
     procedure WriteEnum(en: TEnumType);
     procedure WriteEnumAsConst(en: TEnumType);
+    procedure WriteUnion(st: TUnionType);
     procedure WriteStruct(st: TStructType);
     procedure WriteCommentToPas(cent: TComment);
     procedure WriteExp(x: TExpression);
@@ -289,12 +307,35 @@ begin
   FillChar(Result[1], AstCount, '*');
 end;
 
+
+function isNumberExp(x: TExpression; var v: Int64): Boolean;
+var
+  err : Integer;
+begin
+  Result:=Assigned(x) and (x.count=1);
+  if Result then begin
+    Val(x.Tokens[0].Token, v, err);
+    Result:=err=0;
+  end;
+end;
+
+function PasArrayLimit(x: TExpression): AnsiString;
+var
+  i   : Int64;
+begin
+  if isNumberExp(x, i) then
+    Result:=IntToStr(i-1)
+  else
+    Result:=PasExp(x) + '-1';
+end;
+
+
 procedure WriteArray(arr: TNamePart; wr: TCodeWriter);
 var
   i : Integer;
 begin
   wr.W('array ');
-  for i := 0 to length(arr.arrayexp) - 1 do wr.W('[0..' + arr.arrayexp[i].Text + '-1]');
+  for i := 0 to length(arr.arrayexp) - 1 do wr.W('[0..' + PasArrayLimit(arr.arrayexp[i])+']');
   wr.W(' of ');
 end;
 
@@ -446,7 +487,7 @@ end;
 
 procedure TCodeConvertor.WriteExp(x:TExpression);
 begin
-  wr.W('0 {todo writeexp}');
+  wr.W(PasExp(x));
 end;
 
 function CtoPasSymbol(const t: AnsiString): AnsiString;
@@ -474,7 +515,6 @@ var
 begin
   if cent.SubsText<>'' then begin
     SetPasSection(wr, 'const');
-    //wr.Wln(cfg.GetUniqueName(cent._Name) + ' = ' + Trim(cent.SubsText)+';');
     p:=CreateCParser(cent.SubsText, false);
     s:='';
     while p.NextToken do begin
@@ -544,14 +584,14 @@ begin
   WriteFuncDecl('', RetTypeName, params);
 end;
 
-procedure TCodeConvertor.WriteLnCommentForOffset(AOffset:Integer);
+procedure TCodeConvertor.WriteLnCommentForOffset(AOffset:Integer; NeedOffset: Boolean);
 var
   cmt : TComment;
 begin
   cmt:=FindCommentForLine( Breaker.LineNumber(AOffset));
   if Assigned(cmt) then begin
     LastOffset:=cmt.Offset;
-    wr.W('  ');
+    if NeedOffset then wr.W('  ');
     WriteCommentToPas(cmt);
   end else
     wr.Wln;
@@ -579,7 +619,7 @@ var
 begin
   i:=NextCommentBefore(AOffset);
   while i>=0 do begin
-    WriteLnCommentForOffset(i);
+    WriteLnCommentForOffset(i, False);
     i:=NextCommentBefore(AOffset);
   end;
 end;
@@ -680,7 +720,9 @@ begin
   if Result then Exit;
   Result:=length(params)=1;
   if Result then
-    Result:=(params[0].prmtype is TSimpleType) and (TSimpleType(params[0].prmtype).Name='void');
+    Result:=(params[0].prmtype is TSimpleType) and
+            (TSimpleType(params[0].prmtype).Name='void') and
+            (params[0].name=nil);
 end;
 
 procedure TCodeConvertor.WriteFuncDecl(const FnName, PasRetType: Ansistring; const params : array of TFuncParam);
@@ -720,7 +762,7 @@ begin
   if cfg.FuncDeclPostfix<>'' then wr.W('; '+cfg.FuncDeclPostfix);
 end;
 
-procedure TCodeConvertor.WriteFuncOrVar(cent: TVarFuncEntity; StartVar: Boolean);
+procedure TCodeConvertor.WriteFuncOrVar(cent: TVarFuncEntity; StartVar, WriteComment: Boolean);
 var
   i, j  : integer;
   Name  : TNamePart;
@@ -736,12 +778,14 @@ begin
       wr.Wln(' bad declaration synax!');
       Exit;
     end;
-    id:=name.Id;
+    id:=cfg.GetUniqueName(name.Id);
     n:=name.owner;
-
     if not Assigned(n) then begin
+      PushWriter;
+      rt:=GetPasTypeName(cent.RetType, Name);
+      PopWriter;
       if StartVar then SetPasSection(wr, 'var');
-      wr.W(id + ' : ' + GetPasTypeName(cent.RetType, Name))
+      wr.W(id + ' : ' + rt);
     end else if (n.Kind=nk_Func) then begin
       SetPasSection(wr, '');
       rt:=GetPasTypeName(cent.RetType, n.owner);
@@ -752,9 +796,9 @@ begin
       wr.W(id + ' : ');
       ref:=n;
       n:=n.owner;
-      if not Assigned(n) then
-        wr.W( GetPasTypeName(cent.RetType, ref) )
-      else
+      if not Assigned(n) then begin
+        wr.W( GetPasTypeName(cent.RetType, ref) );
+      end else
         case n.Kind of
           nk_Array: begin
             for i:=1 to ref.RefCount do wr.W('^');
@@ -777,7 +821,7 @@ begin
     end;
     wr.W(';');
 
-    WriteLnCommentForOffset(cent.Offset)
+    if WriteComment then WriteLnCommentForOffset(cent.Offset)
   end;
 end;
 
@@ -787,15 +831,14 @@ begin
   Breaker:=TLineBreaker.Create;
   Breaker.SetText(ParsedText);
 
-  if cent is TVarFuncEntity then
-    WriteFuncOrVar(cent as TVarFuncEntity, True)
-  else if cent is TTypeDef then
+  if cent is TVarFuncEntity then begin
+    WriteFuncOrVar(cent as TVarFuncEntity, True, True)
+  end else if cent is TTypeDef then
     WriteTypeDef(cent as TTypeDef)
-  else if cent is TStructType then
-    DeclarePasType(cent as TStructType, TStructType(cent).Name)
-  else if cent is TEnumType then
-    DeclarePasType(cent as TEnumType, TEnumType(cent).Name)
-  else if cent is TComment then
+  else if (cent is TStructType) or (cent is TEnumType) or (cent is TUnionType) then begin
+    DeclarePasType(cent, GetCDeclTypeName(cent));
+    wr.Wln(';');
+  end else if cent is TComment then
     WriteCommentToPas(cent as TComment)
   else if cent is TCPrepDefine then
     WritePreprocessor(cent as TCPrepDefine)
@@ -869,7 +912,7 @@ begin
   //todo: bit fields support
   for i:=0 to length(st.fields)-1 do begin
     WriteLnCommentsBeforeOffset(st.fields[i].v.Offset);
-    WriteFuncOrVar(st.fields[i].v, False);
+    WriteFuncOrVar(st.fields[i].v, False, True);
   end;
   wr.DecIdent;
   wr.W('end');
@@ -916,24 +959,58 @@ end;
 procedure TCodeConvertor.WriteEnumAsConst(en:TEnumType);
 var
   i       : Integer;
+  v       : Int64;
+  last    : AnsiString;
+  useval  : Boolean;
 begin
   if length(en.items)>0 then begin
     PushWriter;
     WriteLnCommentsBeforeOffset(en.Offset);
     SetPasSection(wr, 'const');
+    v:=0;
+    last:='';
+    useval:=True;
+
     for i:=0 to length(en.items)-1 do begin
       WriteLnCommentsBeforeOffset(en.items[i].Offset);
+
       wr.W(en.items[i].Name + ' = ');
-      if Assigned(en.items[i].Value) then
-        WriteExp(en.items[i].Value)
-      else
-        wr.W(IntToStr(i));
+      if Assigned(en.items[i].Value) then begin
+        WriteExp(en.items[i].Value);
+        useval:=isNumberExp(en.items[i].Value, v);
+      end else begin
+        if useval
+        then wr.W(IntToStr(v))
+        else wr.W(last+' + 1');
+      end;
       wr.W(';');
       WriteLnCommentForOffset(en.items[i].Offset);
+      inc(v);
+      last:=en.Items[i].Name;
     end;
+
     PopWriter;
   end;
   wr.W('Integer');
+end;
+
+procedure TCodeConvertor.WriteUnion(st:TUnionType);
+var
+  i : Integer;
+begin
+  if cfg.RecordsArePacked then wr.W('packed ');
+  wr.WLn('record');
+  wr.Wln('case Integer of');
+  wr.IncIdent;
+  for i:=0 to length(st.fields)-1 do begin
+    WriteLnCommentsBeforeOffset(st.fields[i].v.Offset);
+    wr.w(IntToStr(i)+':(');
+    WriteFuncOrVar(st.fields[i].v, False, False);
+    wr.W(');');
+    WriteLnCommentForOffset(st.fields[i].v.Offset);
+  end;
+  wr.DecIdent;
+  wr.w('end');
 end;
 
 function TCodeConvertor.NextAuxTypeName(const Prefix:AnsiString):AnsiString;
@@ -949,8 +1026,12 @@ begin
   wr.W(PasTypeName + ' = ');
   if TypeEntity is TStructType then
     WriteStruct(TStructType(TypeEntity))
-  else if TypeEntity is TEnumType then
+  else if TypeEntity is TEnumType then begin
     WriteEnum(TEnumType(TypeEntity))
+  end else if TypeEntity is TUnionType then begin
+    WriteUnion(TUnionType(TypeEntity))
+  end else if TypeEntity is TSimpleType then
+    wr.W( cfg.GetTypeName(TSimpleType(TypeEntity).Name))
   else begin
     {SetPasSection(wr, 'type');
     wr.W(PasTypeName + ' = ');}
@@ -1163,8 +1244,10 @@ begin
   CtoPasTypes.Values['void'] := '';
   CtoPasTypes.Values['void*'] := 'Pointer';
   CtoPasTypes.Values['void**'] := 'PPointer';
+  CtoPasTypes.Values['char'] := 'Char';
   CtoPasTypes.Values['char*'] := 'PChar';
   CtoPasTypes.Values['char**'] := 'PPChar';
+  CtoPasTypes.Values['signed char'] := 'SmallInt';
   CtoPasTypes.Values['long'] := 'Longword';
   CtoPasTypes.Values['long*'] := 'PLongword';
   CtoPasTypes.Values['long long'] := 'Int64';
@@ -1173,6 +1256,7 @@ begin
   CtoPasTypes.Values['unsigned long long*'] := 'PQWord';
   CtoPasTypes.Values['short'] := 'SmallInt';
   CtoPasTypes.Values['short*'] := 'PSmallInt';
+  CtoPasTypes.Values['unsigned'] := 'LongWord';
   CtoPasTypes.Values['unsigned short'] := 'Word';
   CtoPasTypes.Values['unsigned short*'] := 'PWord';
   CtoPasTypes.Values['unsigned char'] := 'Byte';
@@ -1208,6 +1292,21 @@ begin
     Result := GetUniqueName(Result);
   end;
 end;
+
+function PasExp(x: TExpression): AnsiString;
+var
+  i : Integer;
+begin
+  Result:='';
+  for i:=0 to x.Count-1 do begin
+    if x.Tokens[i].TokenType=tt_Symbol then
+      Result:=Result+CtoPasSymbol(x.Tokens[i].Token)+' '
+    else
+      Result:=Result+x.Tokens[i].Token+' ';
+  end;
+  Result:=Copy(Result, 1, length(Result)-1);
+end;
+
 
 end.
 

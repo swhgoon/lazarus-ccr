@@ -80,6 +80,7 @@ var
   p   : TPoint;
   cfg : TConvertSettings;
 begin
+  if ParamCount=0 then Exit;
   inps := TStringList.Create;
   outs := TStringList.Create;
 
