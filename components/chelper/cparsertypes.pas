@@ -1499,17 +1499,13 @@ begin
     simple:=TSimpleType.Create(Parser.TokenPos);
     simple.Name:=Parser.Token;
 
+    isunsig:=(simple.Name='unsigned') or (simple.Name='signed');
+    islong:=(simple.Name='long');
+
     Result:=simple;
     Parser.NextToken;
 
-    isunsig:=(simple.Name='unsigned') or (simple.Name='signed');
-    islong:=Parser.Token='long';
-    if islong then begin
-      simple.name:=simple.name+' '+Parser.Token;
-      Parser.NextToken;
-    end;
-
-    if islong and (Parser.Token='long') then begin
+    if (Parser.Token='long') and islong then begin
       simple.name:=simple.name+' '+Parser.Token;
       Parser.NextToken;
     end;
@@ -1524,10 +1520,11 @@ begin
       Parser.NextToken
     end;
 
-    if (isunsig or islong) and (Parser.Token='int') then begin
+    if (Parser.Token='int') and (isunsig or islong) then begin
       simple.name:=simple.name+' '+Parser.Token;
       Parser.NextToken
     end;
+
     if islong and (Parser.Token='double') then begin
       simple.name:=simple.name+' '+Parser.Token;
       Parser.NextToken
