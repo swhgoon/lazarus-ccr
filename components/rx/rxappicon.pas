@@ -33,6 +33,10 @@ unit rxappicon;
 
 {$mode objfpc}{$H+}
 
+{$IFDEF LCLQT}
+ {$DEFINE LCLGtk2}
+{$ENDIF}
+
 interface
 
 uses
@@ -67,7 +71,7 @@ type
 implementation
 {$IFDEF WIN32}
 {$IFNDEF LCLGtk2} 
-uses Windows, win32int, InterfaceBase, vclutils;
+uses Windows, Win32Int, InterfaceBase, vclutils;
 {$ENDIF}
 {$ENDIF}
 

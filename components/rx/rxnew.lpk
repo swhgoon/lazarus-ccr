@@ -5,7 +5,7 @@
     <Name Value="rxnew"/>
     <Author Value="Lagunov Aleksey"/>
     <CompilerOptions>
-      <Version Value="8"/>
+      <Version Value="9"/>
       <PathDelim Value="\"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
@@ -13,6 +13,7 @@
       <Parsing>
         <SyntaxOptions>
           <CStyleOperator Value="False"/>
+          <UseAnsiStrings Value="False"/>
         </SyntaxOptions>
       </Parsing>
       <Other>
@@ -26,7 +27,7 @@ translate to Lazarus by alexs in 2005 - 2009
     <License Value="free ware
 "/>
     <Version Major="2" Minor="1" Release="2" Build="105"/>
-    <Files Count="53">
+    <Files Count="54">
       <Item1>
         <Filename Value="rxlookup.pas"/>
         <UnitName Value="rxlookup"/>
@@ -241,6 +242,10 @@ translate to Lazarus by alexs in 2005 - 2009
         <Filename Value="rxaboutformunit.pas"/>
         <UnitName Value="rxaboutformunit"/>
       </Item53>
+      <Item54>
+        <Filename Value="dbcurredit.pas"/>
+        <UnitName Value="dbcurredit"/>
+      </Item54>
     </Files>
     <LazDoc Paths="docs\;\usr\local\share\lazarus\components\rxnew\docs\"/>
     <i18n>

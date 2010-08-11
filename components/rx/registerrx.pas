@@ -42,7 +42,7 @@ procedure Register;
 
 implementation
 uses
-  PropEdits, dbdateedit, rxlookup, folderlister, rxmemds, duallist,
+  PropEdits, dbdateedit, dbcurredit, rxlookup, folderlister, rxmemds, duallist,
   curredit, rxswitch, rxdice, rxdbcomb, rxtoolbar, rxxpman, PageMngr, RxAppIcon,
   Dialogs, ComponentEditors, seldsfrm, DBPropEdits, DB, rxctrls, RxLogin,
   RxCustomChartPanel, AutoPanel, pickdate, rxconst, tooledit, rxclock,
@@ -94,7 +94,7 @@ end;
 
 procedure RegisterUnitDBDateEdit;
 begin
-  RegisterComponents('RX DBAware',[TDBDateEdit, TRxDBCalcEdit]);
+  RegisterComponents('RX DBAware',[TDBDateEdit, TRxDBCalcEdit, TRxDBCurrEdit]);
 end;
 
 procedure RegisterRXLookup;

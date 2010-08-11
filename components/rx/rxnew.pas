@@ -1,10 +1,8 @@
-{ Этот файл был автоматически создан Lazarus. Н�
-  � редактировать!
-  Исходный код используется только для комп�
-    �ляции и установки пакета.
+{ This file was automatically created by Lazarus. Do not edit!
+  This source is only used to compile and install the package.
  }
 
-unit rxnew; 
+unit rxnew ; 
 
 interface
 
@@ -17,16 +15,16 @@ uses
   rxsortmemds, AutoPanel, pickdate, rxiconv, rxceEditLookupFields, rxclock, 
   rxspin, RxDBSpinEdit, RegisterRxDB, RxTimeEdit, RxDBTimeEdit, RxDBCtrls, 
   rxfilterby, rxconst, rxFileUtils, RxVersInfo, RxAboutDialog, 
-  rxAboutFormUnit, LazarusPackageIntf;
+  rxAboutFormUnit, dbcurredit, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register ; 
 begin
-  RegisterUnit('registerrx', @registerrx.Register); 
-  RegisterUnit('RegisterRxDB', @RegisterRxDB.Register); 
-end; 
+  RegisterUnit('registerrx', @registerrx.Register) ; 
+  RegisterUnit('RegisterRxDB', @RegisterRxDB.Register) ; 
+end ; 
 
 initialization
-  RegisterPackage('rxnew', @Register); 
+  RegisterPackage('rxnew', @Register) ; 
 end.
