@@ -165,8 +165,8 @@ begin
 
     if Assigned(CtoPasConfig) then CtoPasConfig.UIToSettings;
 
-    i:=editor.CursorTextXY.Y;
-    dec(i);
+    st:=editor.CursorTextXY;
+    i:=st.Y-1;
     if i<0 then i:=0;
     txt:='';
     for i:=i to editor.Lines.Count-1 do
@@ -174,8 +174,7 @@ begin
 
     if DoConvertCode(txt, p, s) then
     begin
-      inc(p.Y, editor.CursorTextXY.Y-1);
-      st:=editor.CursorTextXY;
+      inc(p.Y, st.Y-1);
       st.X:=1;
       editor.ReplaceText(st, p, s);
       if Assigned(CtoPasConfig) then
