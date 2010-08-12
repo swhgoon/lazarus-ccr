@@ -129,7 +129,7 @@ type
     function NextCommentBefore(AOffset: Integer): Integer;
     procedure WriteLnCommentsBeforeOffset(AOffset: Integer);
 
-    procedure WriteFuncDecl(const FnName, PasRetType: Ansistring; const params : array of TFuncParam);
+    procedure WriteFuncDecl(const FnName, PasRetType: AnsiString; const params : array of TFuncParam);
     procedure WriteFuncOrVar(cent: TVarFuncEntity; StartVar, WriteComment: Boolean); // todo: deprecate!
     procedure WriteTypeDef(tp: TTypeDef);
     procedure WriteEnum(en: TEnumType);
@@ -725,7 +725,7 @@ begin
             (params[0].name=nil);
 end;
 
-procedure TCodeConvertor.WriteFuncDecl(const FnName, PasRetType: Ansistring; const params : array of TFuncParam);
+procedure TCodeConvertor.WriteFuncDecl(const FnName, PasRetType: AnsiString; const params : array of TFuncParam);
 var
   i        : Integer;
   ptypes   : array of String;
@@ -762,6 +762,12 @@ begin
   if cfg.FuncDeclPostfix<>'' then wr.W('; '+cfg.FuncDeclPostfix);
 end;
 
+function isDeclExternal(cfg: TConvertSettings; DeclType: TEntity; isFunc: Boolean): Boolean;
+begin
+  Result:=(isfunc and cfg.FuncsAreExternal) or
+          (Assigned(DeclType) and (DeclType.Specifiers.IndexOf('extern')>=0));
+end;
+
 procedure TCodeConvertor.WriteFuncOrVar(cent: TVarFuncEntity; StartVar, WriteComment: Boolean);
 var
   i, j  : integer;
@@ -770,6 +776,7 @@ var
   id    : AnsiString;
   ref   : TNamePart;
   rt    : AnsiString;
+  isfunc  : Boolean;
 begin
   for j := 0 to cent.Names.Count - 1 do
   begin
@@ -778,6 +785,7 @@ begin
       wr.Wln(' bad declaration synax!');
       Exit;
     end;
+    isfunc:=False;
     id:=cfg.GetUniqueName(name.Id);
     n:=name.owner;
     if not Assigned(n) then begin
@@ -790,7 +798,7 @@ begin
       SetPasSection(wr, '');
       rt:=GetPasTypeName(cent.RetType, n.owner);
       WriteFuncDecl(id, rt, n.params);
-      if cfg.FuncsAreExternal then wr.W('; external');
+      isfunc:=True;
     end else if (n.Kind=nk_Ref) then begin
       if StartVar then SetPasSection(wr, 'var');
       wr.W(id + ' : ');
@@ -820,8 +828,8 @@ begin
       wr.W(GetPasTypeName(cent.RetType, n.owner));
     end;
     wr.W(';');
-
-    if WriteComment then WriteLnCommentForOffset(cent.Offset)
+    if isDeclExternal(cfg, cent.RetType, isfunc) then wr.W(' external;');
+    if WriteComment then WriteLnCommentForOffset(cent.Offset);
   end;
 end;
 

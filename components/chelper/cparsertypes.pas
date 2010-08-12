@@ -323,7 +323,6 @@ type
   protected
     function DoParse(AParser:TTextParser): Boolean; override;
   public
-    Specifiers  : TStringList;
     RetType     : TEntity;
     Names       : TList;
     constructor Create(AOffset: Integer=-1); override;
@@ -1419,6 +1418,32 @@ begin
     end;
 end;
 
+function isCallConv(const s: AnsiString): AnsiString;
+var
+  i : Integer;
+  c : AnsiString;
+begin
+  Result:='';
+  if s='' then Exit;
+
+  c:=s;
+  for i:=1 to length(c) do
+    if c[i]<>'_' then begin
+      if i>1 then c:=Copy(c, i, length(c));
+      Break;
+    end;
+
+  case c[1] of
+    'c': if (c='cdecl') or (c='clrcall') then Result:=c;
+    'f': if c='fastcall' then Result:=c;
+    's': if c='stdcall' then Result:=c;
+    't': if c='thiscall' then Result:=c;
+    'p': if c='pascal' then Result:=c;
+    'r': if c='register' then Result:=c;
+  end;
+end;
+
+
 procedure ParseSepcifiers(AParser: TTextParser; st: TStrings);
 begin
   while isSomeSpecifier(AParser.Token) do begin
@@ -1676,12 +1701,21 @@ end;
 function ParseNames(Parser: TTextParser; var NameType: TEntity; Names: TList; AllowMultipleNames: Boolean): Boolean;
 var
   Name  : TNamePart;
-  done   : Boolean;
-  specs  : TStringList;
+  done  : Boolean;
+  specs : TStringList;
+  s     : AnsiString;
 begin
   specs:=TStringList.Create;
+
   ParseSepcifiers(Parser, specs);
   NameType:=ParseCType(Parser);
+
+  s:=isCallConv(Parser.Token);
+  if s<>'' then begin
+    specs.Add(s);
+    Parser.NextToken;
+  end;
+
   Result:=Assigned(NameType);
   if Result then NameType.Specifiers.Assign(specs);
   specs.Free;
@@ -1761,13 +1795,11 @@ end;
 constructor TVarFuncEntity.Create(AOffset: Integer);
 begin
   inherited Create(AOffset);
-  Specifiers:=TStringList.Create;
   Names:=TList.Create;
 end;
 
 destructor TVarFuncEntity.Destroy;
 begin
-  Specifiers.Free;
   inherited Destroy;
 end;
 

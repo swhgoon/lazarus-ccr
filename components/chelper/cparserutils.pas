@@ -26,7 +26,6 @@ uses
 // is function declared, i.e. int f()
 function isFunc(name: TNamePart): Boolean;
 
-
 // probably an untyped function: fn ().
 // the name of the function has been consumed by TYPE parsing, so ommited!
 // so TNamepart doesn't contain any children
