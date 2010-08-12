@@ -1612,12 +1612,16 @@ var
   prefix    : TNamePart;
   id        : TNamePart;
   postfix   : TNamePart;
+// todo: store const them as part of the name
 begin
+  if Parser.Token='const' then Parser.NextToken; // skip const qualifier
+
   if Parser.Token='*' then begin
     prefix:=TNamePart.Create(nk_Ref);
     while Parser.Token='*' do begin
       inc(prefix.refcount);
       Parser.NextToken;
+      if Parser.Token='const' then Parser.NextToken; // skip const qualifier
     end;
   end else
     prefix:=nil;
