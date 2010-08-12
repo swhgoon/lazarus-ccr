@@ -645,7 +645,7 @@ end;
 //   struct num n;
 //   struct num {int f;} n;
 // returns 'num' (name of the struct),
-function GetCDeclTypeName(ent: TEntity): AnsiString;
+function GetComplexTypeName(ent: TEntity): AnsiString;
 begin
   if ent is TStructType then
     Result:=TStructType(ent).Name
@@ -680,7 +680,7 @@ begin
     if CtypeName<>'' then begin
       pasRef:=cfg.RefTypeNamePrefix+cfg.GetTypeName(CtypeName);
     end else begin
-      CtypeName:=GetCDeclTypeName(RetType);
+      CtypeName:=GetComplexTypeName(RetType);
       if CTypeName='' then CtypeName:=NextAuxTypeName('TAuxType');
       DeclarePasType(RetType, CtypeName);
       cfg.CtoPasTypes.Values[CtypeName]:=CTypeName;
@@ -844,7 +844,7 @@ begin
   end else if cent is TTypeDef then
     WriteTypeDef(cent as TTypeDef)
   else if (cent is TStructType) or (cent is TEnumType) or (cent is TUnionType) then begin
-    DeclarePasType(cent, GetCDeclTypeName(cent));
+    DeclarePasType(cent, GetComplexTypeName(cent));
     wr.Wln(';');
   end else if cent is TComment then
     WriteCommentToPas(cent as TComment)
@@ -856,58 +856,108 @@ begin
   Breaker.Free;
 end;
 
+// typedef allows to declare multiple type alias names, with the same base type.   //
+// i.e.:                                                                           //
+// typedef struct mystruct_{int a,b;}                                              //
+//                  t[10], *t_ptr, (*f)(int i);                                    //
+//                                                                                 //
+// typedef writting alogrithm:                                                     //
+// 1. find the base type name.                                                     //
+// 2. if no name is found, generate AuxType name                                   //
+// 3. declare all types using the base name (treating the base name as simpletype) //
+//                                                                                 //
+// found simple declaration, that can be used as base name:                        //
+// typedef struct {int a;} t, *t_ptr;  - t is base name                            //
 procedure TCodeConvertor.WriteTypeDef(tp: TTypeDef);
 var
-  nm   : TNamePart;
-  n    : TNamePart;
-  fn   : TNamePart;
-  rt   : AnsiString;
-  stn  : AnsiString;
-  tpart : TNamePart;
+  nm        : TNamePart;
+  n         : TNamePart;
+  fn        : TNamePart;
+  rt        : AnsiString;
+  tpart     : TNamePart;
+  i         : Integer;
+
+  name        : AnsiString;
+  basetype    : TSimpleType;
+  basetypeown : Boolean;
+
 begin
-  nm:=GetIdPart(tp.name);
-  if not Assigned(nm) then Exit;
-  SetPasSection(wr,'type');
+  if tp.names.Count=0 then Exit; // no names specified!
 
-  n:=nm.owner;
-
-  if not Assigned(n) then begin
-    stn:=GetCDeclTypeName(tp.origintype);
-    if stn='' then stn:=nm.Id;
-    DeclarePasType(tp.origintype, stn);
-    if stn<>nm.Id then begin
-      wr.Wln(';');
-      wr.W(nm.Id+' = '+stn);
-    end;
-
+  // 1. selecting base name (and TSimpleType) type
+  if tp.origintype is TSimpleType then begin
+    basetype:=TSimpleType(tp.origintype);
+    basetypeown:=False;
   end else begin
-    fn:=n.owner;
-    if n.Kind=nk_Array then begin
-      wr.W(nm.Id+' = ');
-      WriteArray(n, wr);
-      wr.W(GetPasTypeName(tp.origintype, n.owner));
-    //typedef functions and typedef function pointers are converted the same way.
-    end else if (n.Kind=nk_Ref) and (not Assigned(fn) or (fn.Kind<>nk_Func)) then begin
-      wr.W(nm.Id+' = '+GetPasTypeName(tp.origintype, n));
-      fn:=n.owner;
-    end else if isNamePartPtrToFunc(n) or (Assigned(n) and (n.kind=nk_Func) ) then begin
-
-      if isNamePartPtrToFunc(n) then begin
-        tpart:=n.owner.owner // rettype of function pointer
-      end else begin
-        tpart:=n.owner;
-        cfg.CtoPasTypes.Values[nm.id+'*']:=nm.id;
+    name:=GetComplexTypeName(tp.origintype);
+    if name='' then
+      for i:=0 to tp.names.Count-1 do begin
+        if TNamePart(tp.names[i]).Kind=nk_Ident then begin
+          name:=TNamePart(tp.names[i]).Id;
+          Break;
+        end;
       end;
-
+    // 2. no suitable name found in typedef, generating auxtype
+    if name='' then begin
       PushWriter;
-      rt := GetPasTypeName(tp.origintype, tpart);
+      name:=GetPasTypeName(tp.origintype, nil);
       PopWriter;
-
-      if n.Kind=nk_Func then fn:=n;
-      DeclareFuncType(nm.id, rt, fn.params);
+    end else begin
+      DeclarePasType(tp.origintype, name);
+      wr.Wln(';');
     end;
+    basetype:=TSimpleType.Create;
+    basetype.Name:=name;
+    basetypeown:=True;
   end;
-  wr.Wln(';');
+
+  // 3. writting down all types
+  for i:=0 to tp.names.Count-1 do begin
+    nm:=GetIdPart(TNamePart(tp.names[i]));
+    if not Assigned(nm) then Exit;
+    SetPasSection(wr,'type');
+
+    n:=nm.owner;
+
+    if not Assigned(n) then begin
+      if nm.Id<>basetype.Name then wr.W(nm.Id+' = '+basetype.Name)
+      else Continue;
+    end else begin
+      fn:=n.owner;
+      if n.Kind=nk_Array then begin
+        PushWriter;
+        name:=GetPasTypeName(basetype, n.owner);
+        PopWriter;
+        wr.W(nm.Id+' = ');
+        WriteArray(n, wr);
+        wr.W(name);;
+      //typedef functions and typedef function pointers are converted the same way.
+      end else if (n.Kind=nk_Ref) and (not Assigned(fn) or (fn.Kind<>nk_Func)) then begin
+        PushWriter;
+        name:=GetPasTypeName(basetype, n);
+        PopWriter;
+        wr.W(nm.Id+' = '+name);
+        fn:=n.owner;
+      end else if isNamePartPtrToFunc(n) or (Assigned(n) and (n.kind=nk_Func) ) then begin
+
+        if isNamePartPtrToFunc(n) then begin
+          tpart:=n.owner.owner // rettype of function pointer
+        end else begin
+          tpart:=n.owner;
+          cfg.CtoPasTypes.Values[nm.id+'*']:=nm.id;
+        end;
+
+        PushWriter;
+        rt := GetPasTypeName(basetype, tpart);
+        PopWriter;
+
+        if n.Kind=nk_Func then fn:=n;
+        DeclareFuncType(nm.id, rt, fn.params);
+      end;
+    end;
+    wr.Wln(';');
+  end;
+  if basetypeown then basetype.Free;
 end;
 
 procedure TCodeConvertor.WriteStruct(st:TStructType);

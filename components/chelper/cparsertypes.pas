@@ -360,7 +360,9 @@ type
   TTypeDef = class(TEntity)
   public
     origintype  : TEntity;
-    name        : TNamePart;
+    names       : TList;
+    constructor Create(AOffset: Integer=-1);
+    destructor Destroy; override;
   end;
 
 
@@ -1918,7 +1920,7 @@ begin
     AParser.NextToken;
     Result:=td;
 
-    ParseName(AParser, td.origintype, td.name);
+    ParseNames(AParser, td.origintype, td.names, true);
   finally
     if not Assigned(Result) then
       td.Free;
@@ -1993,6 +1995,20 @@ begin
   items[i].Value := x;
   items[i].Offset:=Offset;
   Result:=i;
+end;
+
+{ TTypeDef }
+
+constructor TTypeDef.Create(AOffset:Integer);
+begin
+  inherited Create(AOffset);
+  names:=TList.Create;
+end;
+
+destructor TTypeDef.Destroy;
+begin
+  names.Free;
+  inherited Destroy;
 end;
 
 end.
