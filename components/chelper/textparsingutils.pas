@@ -28,7 +28,7 @@ type
 const
   EoLnChars      = [#10,#13];
   SpaceChars     = [#32,#9];
-  InvsChars      = SpaceChars;
+  InvsChars      = [#0..#32];
   WhiteSpaceChars = SpaceChars;
   SpaceEolnChars = EoLnChars+SpaceChars;
   NumericChars   = ['0'..'9'];

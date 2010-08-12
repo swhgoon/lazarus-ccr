@@ -361,7 +361,7 @@ type
   public
     origintype  : TEntity;
     names       : TList;
-    constructor Create(AOffset: Integer=-1);
+    constructor Create(AOffset: Integer=-1); override;
     destructor Destroy; override;
   end;
 
