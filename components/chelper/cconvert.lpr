@@ -28,6 +28,7 @@ var
   ConfigFile    : AnsiString = '';
   OutputFile    : AnsiString = '';
   ConfigFileRO  : Boolean = false;
+  ParseAll      : Boolean = false;
 
 function StringFromFile(const FileName: AnsiString): AnsiString;
 var
@@ -69,7 +70,8 @@ begin
     end else if p='-o' then begin
       inc(i);
       OutputFile:=ParamStr(i);
-    end;
+    end else if p='-all' then
+      ParseAll:=True;
     inc(i);
   end;
 end;
@@ -89,7 +91,7 @@ begin
     InitSettings(cfg);
 
     inps.LoadFromFile(ParamStr(ParamCount));
-    outs.Text:=ConvertCode(inps.Text, p, cfg);
+    outs.Text:=ConvertCode(inps.Text, p, ParseAll, cfg);
     if OutputFile<>'' then begin
       outs.Insert(0, Format('%d %d', [p.Y,p.X]));
       outs.SaveToFile(OutputFile)

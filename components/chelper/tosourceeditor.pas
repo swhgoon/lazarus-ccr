@@ -31,7 +31,7 @@ procedure Register;
 
 implementation
 
-function DoExtConvert(const t: AnsiString; var EndPos: TPoint): AnsiString;
+function DoExtConvert(const t: AnsiString; ParseAll: Boolean; var EndPos: TPoint): AnsiString;
 var
   p     : TProcess;
   d     : AnsiString;
@@ -78,6 +78,7 @@ begin
       if (DefineFile<>'') and FileExists(DefineFile) then
         cmd:=cmd+' -defines "'+DefineFile+'" ';
       cmd:=cmd+' -o "'+outp+'" ';
+      if ParseAll then cmd:=cmd+' -all ';
       cmd:=cmd+'"'+inp+'"';
 
       p.CommandLine:=cmd;
@@ -125,7 +126,7 @@ begin
   end;
 end;
 
-function DoConvertCode(const t: AnsiString; var EndPoint: TPoint; var txt: AnsiString): Boolean;
+function DoConvertCode(const t: AnsiString; ParseAll: Boolean; var EndPoint: TPoint; var txt: AnsiString): Boolean;
 begin
   Result:=False;
   if UseExtTool then begin
@@ -134,7 +135,7 @@ begin
       Exit;
     end;
     cconvconfig.SaveToFile(ConvFile, ConvSettings);
-    txt:=DoExtConvert(t, EndPoint);
+    txt:=DoExtConvert(t, ParseAll, EndPoint);
     Result:=(EndPoint.X>=0) and (EndPoint.Y>=0);
 
     if Result then cconvconfig.LoadFromFile(ConvFile, ConvSettings)
@@ -147,7 +148,7 @@ end;
 var
   parsing : Boolean = False;
 
-procedure TryParse;
+procedure TryParse(ParseAll: Boolean);
 var
   editor  : TSourceEditorInterface;
   i       : Integer;
@@ -172,7 +173,7 @@ begin
     for i:=i to editor.Lines.Count-1 do
       txt:=txt+editor.Lines[i]+#10;
 
-    if DoConvertCode(txt, p, s) then
+    if DoConvertCode(txt, ParseAll, p, s) then
     begin
       inc(p.Y, st.Y-1);
       st.X:=1;
@@ -187,8 +188,14 @@ end;
 
 procedure OnCtoPasClick(Sender: TObject);
 begin
-  TryParse;
+  TryParse(False);
 end;
+
+procedure OnCtoPasAllClick(Sender: TObject);
+begin
+  TryParse(True);
+end;
+
 
 procedure OnCtoPasOptionsClick(Sender: TObject);
 begin
@@ -200,8 +207,12 @@ var
   cmd : TIDEMenuCommand;
 begin
   cmd:=RegisterIDEMenuCommand(itmSecondaryTools, 'CtoPas', 'C to Pascal', nil, @OnCtoPasClick);
-  RegisterIDEMenuCommand(itmSecondaryTools, 'CtoPas', 'C to Pascal Options', nil, @OnCtoPasOptionsClick);
   if Assigned(cmd) and Assigned(cmd.MenuItem) then cmd.MenuItem.ShortCut:=ShortCut(VK_B, [ssCtrl]);
+
+  cmd:=RegisterIDEMenuCommand(itmSecondaryTools, 'CtoPas', 'C to Pascal all', nil, @OnCtoPasAllClick);
+  if Assigned(cmd) and Assigned(cmd.MenuItem) then cmd.MenuItem.ShortCut:=ShortCut(VK_B, [ssShift, ssCtrl]);
+
+  RegisterIDEMenuCommand(itmSecondaryTools, 'CtoPas', 'C to Pascal Options', nil, @OnCtoPasOptionsClick);
 end;
 
 procedure Register;

@@ -58,7 +58,7 @@ type
 // endPoint contains
 //  Y - line number (starting from 1),
 //  X - column (starting from 1);
-function ConvertCode(const t: AnsiString; var endPoint: TPoint; cfg: TConvertSettings = nil): AnsiString;
+function ConvertCode(const t: AnsiString; var endPoint: TPoint; AllText: Boolean; cfg: TConvertSettings = nil): AnsiString;
 
 // converts C-expression to Pascal expression, replace symbols with pascal equvialents.
 // WARN: * the function doesn't handle macroses (treats them as identifiers)
@@ -146,6 +146,7 @@ type
     wr        : TCodeWriter;
     cfg       : TConvertSettings;
     WriteFunc : TFuncWriterProc;
+    DebugEntities : Boolean;
     constructor Create(ASettings: TConvertSettings);
     destructor Destroy; override;
     procedure WriteCtoPas(cent: TEntity; comments: TList; const ParsedText: AnsiString);
@@ -385,7 +386,33 @@ begin
   m.Free;
 end;
 
-function ConvertCode(const t: AnsiString; var endPoint: TPoint; cfg: TConvertSettings): AnsiString;
+function GetEmptyLinesCount(const t: AnsiString; StartOfs, EndOfs: Integer): Integer;
+var
+  i : Integer;
+begin
+  i:=StartOfs;
+  if i<=0 then Exit;
+
+  Result:=0;
+  while (i<EndOfs) and (i<=length(t)) do begin
+    if t[i] in [#13,#10] then begin
+      inc(Result); inc(i);
+      if (i<=length(t)) and (t[i] in [#13,#10]) and (t[i]<>t[i-1]) then inc(i);
+    end;
+    inc(i);
+  end;
+end;
+
+function GetEmptyLines(const t: AnsiString; StartOfs, EndOfs: Integer): AnsiString;
+var
+  i : Integer;
+  c : Integer;
+begin
+  c:=GetEmptyLinesCount(t, StartOfs, EndOfs);
+  for i:=1 to c do Result:=Result+LineEnding;
+end;
+
+function ConvertCode(const t: AnsiString; var endPoint: TPoint; AllText: Boolean; cfg: TConvertSettings): AnsiString;
 var
   p         : TTextParser;
   ent       : TEntity;
@@ -394,10 +421,13 @@ var
   cnv       : TCodeConvertor;
   macros    : TCMacroHandler;
   owncfg    : Boolean;
+  lastsec   : AnsiString; // last code section
+  ofs       : Integer;
 begin
   Result:='';
   ent:=nil;
   owncfg:=not Assigned(cfg);
+  lastsec:='';
   if owncfg then cfg := TConvertSettings.Create;
   try
     macros:=TCMacroHandler.Create;
@@ -407,11 +437,34 @@ begin
     p := CreateCParser(t);
     p.MacroHandler:=macros;
     try
-      try
-        ent := ParseNextEntityOrComment(p);
-      except
-        on E: Exception do Result:='error while parsing C-code: '+e.Message;
-      end;
+      repeat
+        try
+          ofs := p.Index;
+          ent := ParseNextEntityOrComment(p);
+        except
+          ent:=nil;
+        end;
+
+        if Assigned(ent) then begin
+          cnv := TCodeConvertor.Create(cfg);
+          try
+            cnv.wr.Section:=lastsec;
+            if lastsec<>'' then cnv.wr.IncIdent;
+
+            cnv.WriteCtoPas(ent, p.Comments, t);
+
+            lastsec:=cnv.wr.Section;
+          except
+            on e: Exception do Result:=Result+LineEnding+ 'error while converting C code: ' + e.Message;
+          end;
+          Result := Result+GetEmptyLines(p.Buf, ofs, ent.Offset)+cnv.wr.Text;
+          cnv.Free;
+        end;
+
+        for i:=0 to p.Comments.Count-1 do TComment(p.Comments[i]).Free;
+        p.Comments.Clear;
+
+      until (ent=nil) or not AllText;
 
       i := 1;
       le := 0;
@@ -424,23 +477,11 @@ begin
       end;
       endPoint.X := p.Index - le + 1 + p.MacrosDelta;
 
-      if Assigned(ent) then begin
 
-        cnv := TCodeConvertor.Create(cfg);
-        try
-          cnv.WriteCtoPas(ent, p.Comments, t);
-        except
-          on e: Exception do Result:=Result+LineEnding+ 'error while converting C code: ' + e.Message;
-        end;
-        Result := cnv.wr.Text;
-        cnv.Free;
-      end else
-        Result:='unable to parse C expression';
 
     finally
       p.Free;
       macros.Free;
-
     end;
   except
     on e: Exception do Result:=Result+LineEnding+' internal error: '+ e.Message;
@@ -850,8 +891,10 @@ begin
     WriteCommentToPas(cent as TComment)
   else if cent is TCPrepDefine then
     WritePreprocessor(cent as TCPrepDefine)
-  else
-    wr.Wln(cent.ClassName);
+  else begin
+    if DebugEntities then
+      wr.Wln(cent.ClassName);
+  end;
 
   Breaker.Free;
 end;
