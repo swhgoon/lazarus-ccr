@@ -451,6 +451,15 @@ begin
             cnv.wr.Section:=lastsec;
             if lastsec<>'' then cnv.wr.IncIdent;
 
+            //hack, based on knowledge of how enums writting works
+            if (ent is TEnumType) or ((ent is TTypeDef) and (TTypeDef(ent).origintype is TEnumType)) then
+            begin
+              if cfg.EnumsAsConst and (cnv.wr.Section='type') then begin
+                cnv.wr.DecIdent;
+                cnv.wr.Section:='';
+              end;
+            end;
+
             cnv.WriteCtoPas(ent, p.Comments, t);
 
             lastsec:=cnv.wr.Section;
