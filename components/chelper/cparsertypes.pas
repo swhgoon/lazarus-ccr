@@ -20,12 +20,7 @@ unit cparsertypes;
 
 interface
 
-{$ifdef fpc}{$mode delphi}{$h+}
-{$else}
-{$warn unsafe_code off}
-{$warn unsafe_type off}
-{$warn unsafe_cast off}
-{$endif}
+{$ifdef fpc}{$mode delphi}{$h+}{$endif}
 
 uses
   Classes, SysUtils, TextParsingUtils;
@@ -232,7 +227,11 @@ type
   end;
 
 // parsing function
-function ParseNextEntity(AParser: TTextParser): TEntity;
+var
+  ParseNextEntity: function (AParser: TTextParser): TEntity = nil;
+
+function ParseNextCEntity(AParser: TTextParser): TEntity;
+
 function ParseCExpression(AParser: TTextParser; var ExpS: AnsiString): Boolean;
 procedure ParseCNumeric(const S: AnsiString; var idx: integer; var NumStr: AnsiSTring);
 function ParseCString(const S: AnsiString; var idx: Integer; var CStr: AnsiString): Boolean;
@@ -280,6 +279,7 @@ type
 
 procedure ErrorExpect(Parser: TTextParser; const Expect: AnsiString);
 function ConsumeToken(Parser: TTextParser; const Token: AnsiString): Boolean;
+function ConsumeIdentifier(Parser: TTextParser; var Id: AnsiString): Boolean;
 
 function ParseCType(Parser: TTextParser): TEntity;
 
@@ -1455,7 +1455,7 @@ begin
 end;
 
 
-function ParseNextEntity(AParser: TTextParser): TEntity;
+function ParseNextCEntity(AParser: TTextParser): TEntity;
 var
   s   : AnsiString;
   tt  : TTokenType;
@@ -1465,7 +1465,7 @@ var
   v   : TVarFuncEntity;
 begin
   Result := nil;
-  if not AParser.FindNextToken(s, tt) then Exit;
+  s:=AParser.Token;
 
   if s = 'typedef' then begin
     Result:=ParseTypeDef(AParser);
@@ -1505,6 +1505,16 @@ begin
   Result:=Parser.Token=Token;
   if Result then Parser.NextToken
   else Parser.SetError('Token expected: '+Token);
+end;
+
+function ConsumeIdentifier(Parser: TTextParser; var Id: AnsiString): Boolean;
+begin
+  Result:=Parser.TokenType=tt_Ident;
+  if Result then begin
+    id:=Parser.Token;
+    Parser.NextToken;
+  end else
+    Parser.SetError('Identifier expected');
 end;
 
 function ParseCType(Parser: TTextParser): TEntity;
@@ -2010,5 +2020,9 @@ begin
   names.Free;
   inherited Destroy;
 end;
+
+initialization
+  ParseNextEntity:=@ParseNextCEntity;
+
 
 end.

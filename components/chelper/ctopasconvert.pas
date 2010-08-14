@@ -18,13 +18,15 @@
 }
 unit ctopasconvert;
 
+
 {$mode objfpc}{$H+}
 
 interface
 
 uses
   Classes, SysUtils,
-  cparsertypes, TextParsingUtils, codewriter, cparserutils;
+  cparsertypes, TextParsingUtils, codewriter, cparserutils,
+  objcparsing;
 
 type
 
@@ -139,6 +141,10 @@ type
     procedure WriteCommentToPas(cent: TComment);
     procedure WriteExp(x: TExpression);
     procedure WritePreprocessor(cent: TCPrepDefine);
+
+    function GetObjCMethodName(names: TStrings): AnsiString;
+    procedure WriteObjCMethod(m: TObjCMethod);
+    procedure WriteObjCInterface(cent: TObjCInterface);
 
     procedure PushWriter;
     procedure PopWriter;
@@ -278,6 +284,8 @@ begin
   AParser.OnComment := @cmt.OnComment;
   AParser.OnPrecompile:=@cmt.OnPrecompiler;
   Result:=nil;
+
+  AParser.NextToken;
 
   ent := ParseNextEntity(AParser);
   entidx:=AParser.Index;
@@ -580,6 +588,75 @@ begin
 
     WriteLnCommentForOffset(cent.Offset);
   end;
+end;
+
+function TCodeConvertor.GetObjCMethodName(names:TStrings):AnsiString;
+var
+  i : Integer;
+begin
+  Result:='';
+  for i:=0 to names.Count-1 do Result:=Result+names[i];
+  for i:=1 to length(Result) do if Result[i]=':' then Result[i]:='_';
+end;
+
+procedure TCodeConvertor.WriteObjCMethod(m: TObjCMethod);
+var
+  ret : AnsiString;
+  i   : INteger;
+begin
+  if m.RetType=nil then ret:='id' else ret:=GetPasTypeName(m.RetType, m.RetName);
+  if ret='' then wr.W('procedure ')
+  else wr.W('function ');
+  wr.W( GetObjCMethodName(m.Name) );
+
+  if length(m.Args)>0 then begin
+    wr.W('(');
+    for i:=0 to length(m.Args)-1 do begin
+      if m.Args[i].Name='' then wr.W(cfg.ParamPrefix+IntToStr(i))
+      else wr.W(m.Args[i].Name);
+      wr.W(': ');
+      wr.W(GetPasTypeName(m.Args[i].RetType, m.Args[i].TypeName));
+      if i<length(m.Args)-1 then wr.W('; ');
+    end;
+    wr.W(')');
+  end;
+
+  if ret<>'' then wr.W(': '+ ret);
+  wr.W(';');
+
+  wr.W(' message ''');
+  for i:=0 to m.Name.Count-1 do wr.W(m.Name[i]);
+  wr.Wln(''';');
+end;
+
+procedure TCodeConvertor.WriteObjCInterface(cent:TObjCInterface);
+var
+  i     : Integer;
+  m     : TObjCMethod;
+begin
+  SetPasSection(wr, 'type');
+  if cent.isCategory then begin
+    wr.W(cent.Name + ' = objccategory')
+  end else begin
+    wr.W(cent.Name + ' = objcclass');
+    if cent.SuperClass<>'' then wr.W('('+cent.SuperClass);
+    if cent.Protocols.Count>0 then begin
+      if cent.SuperClass='' then wr.W('(id, ')
+      else wr.W(', ');
+      for i:=0 to cent.Protocols.Count-2 do wr.W(cent.Protocols[i]+', ');
+      wr.W(cent.Protocols[cent.Protocols.Count-1]);
+    end;
+    if (cent.SuperClass<>'') or (cent.Protocols.Count>0) then wr.Wln(')');
+  end;
+
+  wr.Wln('public');
+  wr.IncIdent;
+  for i:=0 to cent.Methods.Count-1 do begin
+    m:=TObjCMethod(cent.Methods[i]);
+    WriteObjCMethod(m)
+  end;
+  wr.DecIdent;
+  wr.Wln('end;')
 end;
 
 procedure TCodeConvertor.PushWriter;
@@ -900,6 +977,8 @@ begin
     WriteCommentToPas(cent as TComment)
   else if cent is TCPrepDefine then
     WritePreprocessor(cent as TCPrepDefine)
+  else if cent is TObjCInterface then
+    WriteObjCInterface(cent as TObjCInterface)
   else begin
     if DebugEntities then
       wr.Wln(cent.ClassName);
