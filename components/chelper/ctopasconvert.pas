@@ -145,6 +145,7 @@ type
 
     function GetPasObjCMethodName(names: TStrings): AnsiString;
     procedure WriteObjCMethod(m: TObjCMethod);
+    procedure WriteObjCMethods(list: TList);
     procedure WriteObjCInterface(cent: TObjCInterface);
     procedure WriteObjCProtocol(cent: TObjCProtocol);
 
@@ -632,6 +633,22 @@ begin
   wr.W(''';');
 end;
 
+procedure TCodeConvertor.WriteObjCMethods(list:TList);
+var
+  ent : TEntity;
+  i   : Integer;
+begin
+  if not Assigned(list) or (list.Count=0) then Exit;
+  for i:=0 to list.Count-1 do begin
+    ent:=TEntity(list[i]);
+    if not Assigned(ent) then Continue;
+    WriteLnCommentsBeforeOffset(ent.Offset);
+    if ent is TObjCMethod then
+      WriteObjCMethod(TObjCMethod(ent));
+    WriteLnCommentForOffset(ent.Offset);
+  end;
+end;
+
 procedure TCodeConvertor.WriteObjCInterface(cent:TObjCInterface);
 var
   i     : Integer;
@@ -675,12 +692,13 @@ begin
   if cent.Methods.Count>0 then begin
     wr.Wln('public');
     wr.IncIdent;
-    for i:=0 to cent.Methods.Count-1 do begin
-      m:=TObjCMethod(cent.Methods[i]);
-      WriteLnCommentsBeforeOffset(m.Offset);
-      WriteObjCMethod(m);
-      WriteLnCommentForOffset(m.Offset);
-    end;
+    for i:=0 to cent.Methods.Count-1 do
+      if TObject(cent.Methods[i]) is TObjCMethod then begin
+        m:=TObjCMethod(cent.Methods[i]);
+        WriteLnCommentsBeforeOffset(m.Offset);
+        WriteObjCMethod(m);
+        WriteLnCommentForOffset(m.Offset);
+      end;
     wr.DecIdent;
     wr.Wln('end external;')
   end;
@@ -689,7 +707,6 @@ end;
 procedure TCodeConvertor.WriteObjCProtocol(cent:TObjCProtocol);
 var
   i : Integer;
-  m : TObjCMethod;
 begin
   SetPasSection(wr, 'type');
   wr.W(cent.Name+'Protocol = objcprotocol');
@@ -701,12 +718,7 @@ begin
     wr.Wln(')');
   end;
   wr.IncIdent;
-  for i:=0 to cent.Methods.Count-1 do begin
-    m:=TObjCMethod(cent.Methods[i]);
-    WriteLnCommentsBeforeOffset(m.Offset);
-    WriteObjCMethod(m);
-    WriteLnCommentForOffset(m.Offset);
-  end;
+  WriteObjCMethods(cent.Methods);
   wr.DecIdent;
   wr.W('end; ');
   wr.Wln(' external name '''+cent.Name+''';');

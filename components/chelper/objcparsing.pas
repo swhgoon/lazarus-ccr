@@ -96,10 +96,23 @@ type
     destructor Destroy; override;
   end;
 
+  { TObjCProperty }
+
+  TObjCProperty = class(TEntity)
+  public
+    Name        : TNamePart;
+    RetType     : TEntity;
+    SetterName  : AnsiString;
+    GetterName  : AnsiString;
+    Props       : TStringList;
+    constructor Create(AOffset: Integer=-1); override;
+    destructor Destroy; override;
+  end;
 
 function ParseClassList(AParser: TTextParser): TObjCClasses;
 function ParseInterface(AParser: TTextParser): TObjCInterface;
 function ParseMethod(AParser: TTextParser): TObjCMethod;
+function ParseProperty(AParser: TTextParser): TObjCProperty;
 function ParseMethods(AParser: TTextParser; MethodsList: TList; const EndToken: AnsiString): Boolean;
 function ParseProtocol(AParser: TTextParser): TEntity;
 
@@ -393,17 +406,24 @@ end;
 function ParseMethods(AParser: TTextParser; MethodsList: TList; const EndToken: AnsiString = '@end'): Boolean;
 var
   m   : TObjCMethod;
+  p   : TObjCProperty;
   opt : TObjCMethodOpt;
+  s   : AnsiString;
 begin
   Result:=False;
   if not Assigned(MethodsList) or not Assigned(AParser) then Exit;
   opt:=mo_Required;
-  while (AParser.Token<>EndToken) and (AParser.Token<>'') and (AParser.Token[1] in ['+','-']) do begin
+  while (AParser.Token<>EndToken) and (AParser.Token<>'') and (AParser.Token[1] in ['+','-','@']) do begin
     if isObjCKeyword(AParser.Token) then begin
-      if GetObjCKeyword(AParser.Token)='optional'
-        then opt:=mo_Optional
+      s:=GetObjCKeyword(AParser.Token);
+      if s='property' then begin
+        p:=ParseProperty(AParser);
+        MethodsList.Add(p);
+      end else begin
+        if s='optional' then opt:=mo_Optional
         else opt:=mo_Required;
-      AParser.NextToken
+        AParser.NextToken;
+      end;
     end else begin
       m:=ParseMethod(AParser);
       if not Assigned(m) then Exit;
@@ -474,6 +494,66 @@ begin
   Methods.Free;
   Protocols.Free;
   inherited Destroy;
+end;
+
+{ TObjCProperty }
+
+constructor TObjCProperty.Create(AOffset:Integer);
+begin
+  inherited Create(AOffset);
+  Props:=TStringList.Create;
+end;
+
+destructor TObjCProperty.Destroy;
+begin
+  RetType.Free;
+  Name.Free;
+  Props.Free;
+  inherited Destroy;
+end;
+
+function ParseProperty(AParser: TTextParser): TObjCProperty;
+var
+  p   : TObjCProperty;
+  s   : AnsiString;
+  nm  : AnsiString;
+begin
+  Result:=nil;
+  if AParser.Token<>'@property' then Exit;
+  AParser.NextToken;
+  p := TObjCProperty.Create;
+  try
+    if AParser.Token='(' then begin
+      AParser.NextToken;
+      while AParser.Token<>')' do begin
+        s:=AParser.Token;
+        if (s='setter') or (s='getter') then begin
+          AParser.NextToken;
+          if not ConsumeToken(AParser, '=') and not ConsumeIdentifier(AParser, nm) then Exit;
+          if s='setter' then p.SetterName:=nm
+          else p.GetterName:=nm;
+        end else begin
+          p.Props.Add(nm);
+          AParser.NextToken;
+        end;
+        if AParser.Token=',' then AParser.NextToken;
+      end;
+      if AParser.Token=')' then
+        AParser.NextToken
+      else begin
+        ErrorExpect(AParser,')');
+        Exit;
+      end;
+      if ParseName(AParser, p.RetType, p.Name) then begin
+        Result:=p;
+        if APArser.Token=';' then AParser.NextToken;
+      end;
+
+    end;
+
+  finally
+    if not Assigned(Result) then p.Free;
+  end;
 end;
 
 initialization
