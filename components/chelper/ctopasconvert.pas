@@ -146,6 +146,7 @@ type
     function GetPasObjCMethodName(names: TStrings): AnsiString;
     procedure WriteObjCMethod(m: TObjCMethod);
     procedure WriteObjCInterface(cent: TObjCInterface);
+    procedure WriteObjCProtocol(cent: TObjCProtocol);
 
     procedure PushWriter;
     procedure PopWriter;
@@ -514,6 +515,7 @@ begin
   cfg:=ASettings;
   wr:=TCodeWriter.Create;
   WriteFunc:=@DefFuncWrite;
+  DebugEntities := True;
 end;
 
 destructor TCodeConvertor.Destroy;
@@ -627,7 +629,7 @@ begin
   wr.W(';');
   wr.W(' message ''');
   for i:=0 to m.Name.Count-1 do wr.W(m.Name[i]);
-  wr.Wln(''';');
+  wr.W(''';');
 end;
 
 procedure TCodeConvertor.WriteObjCInterface(cent:TObjCInterface);
@@ -675,11 +677,39 @@ begin
     wr.IncIdent;
     for i:=0 to cent.Methods.Count-1 do begin
       m:=TObjCMethod(cent.Methods[i]);
-      WriteObjCMethod(m)
+      WriteLnCommentsBeforeOffset(m.Offset);
+      WriteObjCMethod(m);
+      WriteLnCommentForOffset(m.Offset);
     end;
     wr.DecIdent;
-    wr.Wln('end;')
+    wr.Wln('end external;')
   end;
+end;
+
+procedure TCodeConvertor.WriteObjCProtocol(cent:TObjCProtocol);
+var
+  i : Integer;
+  m : TObjCMethod;
+begin
+  SetPasSection(wr, 'type');
+  wr.W(cent.Name+'Protocol = objcprotocol');
+
+  if cent.Protocols.Count>0 then begin
+    wr.W('(');
+    for i:=0 to cent.Protocols.Count-2 do wr.W(cent.Protocols[i]+', ');
+    wr.W(cent.Protocols[cent.Protocols.Count-1]);
+    wr.Wln(')');
+  end;
+  wr.IncIdent;
+  for i:=0 to cent.Methods.Count-1 do begin
+    m:=TObjCMethod(cent.Methods[i]);
+    WriteLnCommentsBeforeOffset(m.Offset);
+    WriteObjCMethod(m);
+    WriteLnCommentForOffset(m.Offset);
+  end;
+  wr.DecIdent;
+  wr.W('end; ');
+  wr.Wln(' external name '''+cent.Name+''';');
 end;
 
 procedure TCodeConvertor.PushWriter;
@@ -1002,6 +1032,8 @@ begin
     WritePreprocessor(cent as TCPrepDefine)
   else if cent is TObjCInterface then
     WriteObjCInterface(cent as TObjCInterface)
+  else if cent is TObjCProtocol then
+    WriteObjCProtocol(cent as TObjCProtocol)
   else begin
     if DebugEntities then
       wr.Wln(cent.ClassName);

@@ -44,6 +44,8 @@ type
     Name     : AnsiString;
   end;
 
+  TObjCMethodOpt = (mo_Required, mo_Optional);
+
   TObjCMethod = class(TEntity)
   public
     isClassMethod : Boolean;
@@ -51,6 +53,7 @@ type
     RetType   : TEntity;
     RetName   : TNamePart;
     Args      : array of TObjCMethodArg;
+    Option    : TObjCMethodOpt;
     constructor Create(AOffset: Integer=-1); override;
     destructor Destroy; override;
     procedure AddArg(const ArgType: TEntity; ArgTypeName: TNamePart; const Name: AnsiString);
@@ -81,11 +84,24 @@ type
     destructor Destroy; override;
   end;
 
+  { TObjCProtocol }
+
+  TObjCProtocol = class(TEntity)
+  public
+    Name        : AnsiString;
+    isForward   : Boolean;
+    Protocols   : TStringList;
+    Methods     : TList;
+    constructor Create(AOffset: Integer=-1); override;
+    destructor Destroy; override;
+  end;
+
+
 function ParseClassList(AParser: TTextParser): TObjCClasses;
 function ParseInterface(AParser: TTextParser): TObjCInterface;
 function ParseMethod(AParser: TTextParser): TObjCMethod;
 function ParseMethods(AParser: TTextParser; MethodsList: TList; const EndToken: AnsiString): Boolean;
-function ParserProtocol(AParser: TTextParser): TEntity;
+function ParseProtocol(AParser: TTextParser): TEntity;
 
 function ParseNextObjCEntity(AParser: TTextParser): TEntity;
 
@@ -200,7 +216,6 @@ begin
       if AParser.Token=':' then begin
         AParser.NextToken;
         if not ConsumeIdentifier(AParser, itf.SuperClass) then Exit;
-        //writeln('SuperClass = ', itf.SuperClass);
       end;
 
       // protocols
@@ -208,7 +223,6 @@ begin
         AParser.NextToken;
         while AParser.Token<>'>' do begin
           if not ConsumeIdentifier(AParser, nm) then Exit;
-          //writeln('Protos = ', nm);
           itf.Protocols.Add(nm);
           if AParser.Token=',' then AParser.NextToken
           else if AParser.Token<>'>' then begin
@@ -219,15 +233,10 @@ begin
         AParser.NextToken;
       end;
 
-      //writeln('parsing vars1 ', AParser.Token);
       ParseInstVars(AParser, itf.Vars);
-      //writeln('parsing vars2 ', AParser.Token);
     end;
 
-    //writeln('parsing methods1 ', AParser.Token);
     if not ParseMethods(AParser, itf.Methods, '@end') then Exit;
-    //writeln('parsing methods2 ', AParser.Token);
-
     if AParser.Token='@end' then AParser.NextToken;
 
     Result:=itf;
@@ -236,9 +245,39 @@ begin
   end;
 end;
 
-function ParserProtocol(AParser: TTextParser): TEntity;
+function ParseProtocol(AParser: TTextParser): TEntity;
+var
+  p   : TObjCProtocol;
+  nm  : AnsiString;
 begin
   Result:=nil;
+  if AParser.Token<>'@protocol' then Exit;
+  p := TObjCProtocol.Create(AParser.TokenPos);
+  try
+    AParser.NextToken;
+    if not ConsumeIdentifier(AParser, p.Name) then Exit;
+    p.isForward:= AParser.Token=';';
+    if p.isForward then begin
+      Result:=p;
+      AParser.NextToken;
+      Exit;
+    end;
+
+    if AParser.Token='<' then begin
+      AParser.NextToken;
+      while AParser.Token<>'>' do begin
+        if not ConsumeIdentifier(AParser, nm) then Exit;
+        p.Protocols.Add(nm);
+        if AParser.Token=',' then AParser.NextToken;
+      end;
+      if AParser.Token='>' then AParser.NextToken;
+    end;
+
+    if ParseMethods(AParser, p.Methods, '@end') then Result:=p;
+    if AParser.Token='@end' then AParser.NextToken;
+  finally
+    if not Assigned(Result) then p.Free;
+  end;
 end;
 
 var
@@ -252,7 +291,7 @@ begin
     t:=GetObjCKeyword(AParser.Token);
     if t='class' then Result:=ParseClassList(AParser)
     else if t='interface' then Result:=ParseInterface(AParser)
-    else if t='protocol' then Result:=ParserProtocol(AParser);
+    else if t='protocol' then Result:=ParseProtocol(AParser);
   end else begin
     if Assigned(PrevParseNextEntity) then
       Result:=PrevParseNextEntity(AParser)
@@ -308,27 +347,23 @@ var
 begin
   Result:=nil;
   if (AParser.Token<>'+') and (AParser.Token<>'-') then Exit;
-  //writeln('in method: ', AParser.Token);
+
   m:=TObjCMethod.Create(AParser.TokenPos);
   try
     AParser.NextToken;
 
-    //writeln('in method2: ', AParser.Token);
     if AParser.Token='(' then begin
       AParser.NextToken;
       if not ParseName(AParser,  m.RetType, m.RetName) then Exit;
       if not ConsumeToken(AParser, ')') then Exit;
     end;
 
-    //writeln('in method3: ', AParser.Token);
     if not ConsumeIdentifier(AParser, nm) then Exit;
 
-    //writeln('in method3: ', AParser.Token);
     if (AParser.Token=':') then begin
       m.Name.Add(nm+':');
       AParser.NextToken;
 
-      //writeln('in method4: ', AParser.Token);
       while AParser.Token<>';' do begin
         prm:=ConsumeToken(AParser, '(') and
              ParseName(APArser, atype, atname) and
@@ -349,7 +384,6 @@ begin
       if not ConsumeToken(AParser, ';') then Exit;
     end;
 
-    //writeln('in method5: ', AParser.Token);
     Result:=m;
   finally
     if not Assigned(Result) then m.Free;
@@ -358,16 +392,24 @@ end;
 
 function ParseMethods(AParser: TTextParser; MethodsList: TList; const EndToken: AnsiString = '@end'): Boolean;
 var
-  m : TObjCMethod;
+  m   : TObjCMethod;
+  opt : TObjCMethodOpt;
 begin
   Result:=False;
   if not Assigned(MethodsList) or not Assigned(AParser) then Exit;
+  opt:=mo_Required;
   while (AParser.Token<>EndToken) and (AParser.Token<>'') and (AParser.Token[1] in ['+','-']) do begin
-    //writeln('AParser.Token = ', AParser.Token);
-    m:=ParseMethod(AParser);
-    //writeln('m = ', Integer(m));
-    if not Assigned(m) then Exit;
-    MethodsList.Add(m);
+    if isObjCKeyword(AParser.Token) then begin
+      if GetObjCKeyword(AParser.Token)='optional'
+        then opt:=mo_Optional
+        else opt:=mo_Required;
+      AParser.NextToken
+    end else begin
+      m:=ParseMethod(AParser);
+      if not Assigned(m) then Exit;
+      m.Option:=opt;
+      MethodsList.Add(m);
+    end;
   end;
   Result:=True;
 end;
@@ -412,6 +454,25 @@ end;
 destructor TObjCInstVar.Destroy;
 begin
   v.Free;
+  inherited Destroy;
+end;
+
+{ TObjCProtocol }
+
+constructor TObjCProtocol.Create(AOffset:Integer);
+begin
+  inherited Create(AOffset);
+  Protocols := TStringList.Create;
+  Methods   := TList.Create;
+end;
+
+destructor TObjCProtocol.Destroy;
+var
+  i : Integer;
+begin
+  for i:=0 to Methods.Count-1 do TObject(Methods[i]).Free;
+  Methods.Free;
+  Protocols.Free;
   inherited Destroy;
 end;
 
