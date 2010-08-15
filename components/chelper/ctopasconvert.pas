@@ -18,7 +18,6 @@
 }
 unit ctopasconvert;
 
-
 {$mode objfpc}{$H+}
 
 interface
@@ -50,6 +49,8 @@ type
 
     CustomDefines     : AnsiString;
 
+    // obj-c
+    RemoveLastUnderscores : Boolean;
 
     constructor Create;
     destructor Destroy; override;
@@ -142,7 +143,7 @@ type
     procedure WriteExp(x: TExpression);
     procedure WritePreprocessor(cent: TCPrepDefine);
 
-    function GetObjCMethodName(names: TStrings): AnsiString;
+    function GetPasObjCMethodName(names: TStrings): AnsiString;
     procedure WriteObjCMethod(m: TObjCMethod);
     procedure WriteObjCInterface(cent: TObjCInterface);
 
@@ -590,40 +591,40 @@ begin
   end;
 end;
 
-function TCodeConvertor.GetObjCMethodName(names:TStrings):AnsiString;
+function TCodeConvertor.GetPasObjCMethodName(names:TStrings):AnsiString;
 var
   i : Integer;
 begin
   Result:='';
   for i:=0 to names.Count-1 do Result:=Result+names[i];
   for i:=1 to length(Result) do if Result[i]=':' then Result[i]:='_';
+  if cfg.RemoveLastUnderscores then begin
+    i:=length(Result);
+    while (i>0) and (Result[i]='_') do dec(i);
+    Result:=Copy(Result, 1, i);
+  end;
 end;
 
 procedure TCodeConvertor.WriteObjCMethod(m: TObjCMethod);
 var
-  ret : AnsiString;
-  i   : INteger;
+  ret     : AnsiString;
+  i       : Integer;
+  PNames  : array of AnsiString;
+  PTypes  : array of AnsiString;
 begin
   if m.RetType=nil then ret:='id' else ret:=GetPasTypeName(m.RetType, m.RetName);
-  if ret='' then wr.W('procedure ')
-  else wr.W('function ');
-  wr.W( GetObjCMethodName(m.Name) );
-
-  if length(m.Args)>0 then begin
-    wr.W('(');
+  SetLength(PNames, length(m.Args));
+  SetLength(PTypes, length(m.Args));
+  if length(m.Args)>0 then
     for i:=0 to length(m.Args)-1 do begin
-      if m.Args[i].Name='' then wr.W(cfg.ParamPrefix+IntToStr(i))
-      else wr.W(m.Args[i].Name);
-      wr.W(': ');
-      wr.W(GetPasTypeName(m.Args[i].RetType, m.Args[i].TypeName));
-      if i<length(m.Args)-1 then wr.W('; ');
+      if m.Args[i].Name=''
+        then PNames[i]:=cfg.ParamPrefix+IntToStr(i)
+        else PNames[i]:=m.Args[i].Name;
+      PTypes[i]:=GetPasTypeName(m.Args[i].RetType, m.Args[i].TypeName);
     end;
-    wr.W(')');
-  end;
 
-  if ret<>'' then wr.W(': '+ ret);
+  DefFuncWrite(wr, GetPasObjCMethodName(m.Name), ret, PNames, PTypes);
   wr.W(';');
-
   wr.W(' message ''');
   for i:=0 to m.Name.Count-1 do wr.W(m.Name[i]);
   wr.Wln(''';');
@@ -633,6 +634,11 @@ procedure TCodeConvertor.WriteObjCInterface(cent:TObjCInterface);
 var
   i     : Integer;
   m     : TObjCMethod;
+  sc    : TObjCScope;
+  v     : TObjCInstVar;
+  sect  : AnsiString;
+const
+  sectname : array [TObjCScope] of AnsiString = ('private', 'protected', 'public', 'protected');
 begin
   SetPasSection(wr, 'type');
   if cent.isCategory then begin
@@ -647,16 +653,33 @@ begin
       wr.W(cent.Protocols[cent.Protocols.Count-1]);
     end;
     if (cent.SuperClass<>'') or (cent.Protocols.Count>0) then wr.Wln(')');
+
+    sect:='';
+    sc:=os_Public;
+    for i:=0 to cent.Vars.Count-1 do begin
+      v:=TObjCInstVar(cent.Vars[i]);
+      if (sect='') or (v.scope<>sc) then begin
+        if sect<>'' then wr.DecIdent;
+        sc:=v.scope;
+        sect:=sectname[sc];
+        wr.Wln(sect);
+        wr.IncIdent;
+      end;
+      WriteFuncOrVar(v.v, false, true);
+    end;
+    if sect<>'' then wr.DecIdent;
   end;
 
-  wr.Wln('public');
-  wr.IncIdent;
-  for i:=0 to cent.Methods.Count-1 do begin
-    m:=TObjCMethod(cent.Methods[i]);
-    WriteObjCMethod(m)
+  if cent.Methods.Count>0 then begin
+    wr.Wln('public');
+    wr.IncIdent;
+    for i:=0 to cent.Methods.Count-1 do begin
+      m:=TObjCMethod(cent.Methods[i]);
+      WriteObjCMethod(m)
+    end;
+    wr.DecIdent;
+    wr.Wln('end;')
   end;
-  wr.DecIdent;
-  wr.Wln('end;')
 end;
 
 procedure TCodeConvertor.PushWriter;

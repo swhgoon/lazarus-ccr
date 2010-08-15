@@ -1,3 +1,21 @@
+{ The unit is part of Lazarus Chelper package
+
+  Copyright (C) 2010 Dmitry Boyarintsev skalogryz dot lists at gmail.com
+
+  This library is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Library General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or (at your
+  option) any later version.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License
+  for more details.
+
+  You should have received a copy of the GNU Library General Public License
+  along with this library; if not, write to the Free Software Foundation,
+  Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+}
 unit
   objcparsing;
 
@@ -38,6 +56,17 @@ type
     procedure AddArg(const ArgType: TEntity; ArgTypeName: TNamePart; const Name: AnsiString);
   end;
 
+  TObjCScope = (os_Private, os_Protected, os_Public, os_Package);
+
+  { TObjCInstVar }
+
+  TObjCInstVar = class(TEntity)
+  public
+    scope  : TObjCScope;
+    v      : TVarFuncEntity;
+    destructor Destroy; override;
+  end;
+
   { TObjCInterface }
 
   TObjCInterface = class(TEntity)
@@ -46,10 +75,7 @@ type
     SuperClass  : AnsiString;
     isCategory  : Boolean;
     Protocols   : TStringList;
-    ProtVars    : TList;
-    PrivVars    : TList;
-    PubVars     : TList;
-    PackVars    : TList;
+    Vars        : TList;
     Methods     : TList;
     constructor Create(AOffset: Integer=-1); override;
     destructor Destroy; override;
@@ -106,37 +132,40 @@ begin
   Result:=cl;
 end;
 
-function ParseInstVars(AParser: TTextParser; itf: TObjCInterface): Boolean;
+function ParseInstVars(AParser: TTextParser; Vars: TList): Boolean;
 var
-  vars  : TList;
   v     : TVarFuncEntity;
+  iv    : TObjCInstVar;
   s     : AnsiString;
+  scope : TObjCScope;
 begin
   Result:=True;
   if AParser.Token<>'{' then Exit;
 
   Result:=False;
   AParser.NextToken;
-  vars:=itf.ProtVars;
 
+  scope:=os_Protected;
   while AParser.Token<>'}' do begin
     if isObjCKeyword(AParser.Token) then begin
       s:=GetObjCKeyword(APArser.Token);
-      if s='protected' then vars:=itf.ProtVars
-      else if s='private' then vars:=itf.PrivVars
-      else if s='public' then vars:=itf.PubVars
-      else if s='package' then vars:=itf.PackVars
+      if s='protected' then scope:=os_Protected
+      else if s='private' then scope:=os_Private
+      else if s='public' then scope:=os_Public
+      else if s='package' then scope:=os_Package
       else begin
         ErrorExpect(AParser,'}');
         Exit;
       end;
       AParser.NextToken;
     end else begin
-      v:=TVarFuncEntity.Create(APArser.TokenPos);
+      v:=TVarFuncEntity.Create(AParser.TokenPos);
       if not ParseNames(AParser, v.RetType, v.Names) then Exit;
-      vars.Add(v);
-      if AParser.Token=';' then
-        AParser.NextToken;
+      iv:=TObjCInstVar.Create(v.Offset);
+      iv.v:=v;
+      iv.scope:=scope;
+      Vars.Add(iv);
+      if AParser.Token=';' then AParser.NextToken;
     end;
   end;
   AParser.NextToken;
@@ -191,7 +220,7 @@ begin
       end;
 
       //writeln('parsing vars1 ', AParser.Token);
-      ParseInstVars(AParser, itf);
+      ParseInstVars(AParser, itf.Vars);
       //writeln('parsing vars2 ', AParser.Token);
     end;
 
@@ -250,10 +279,7 @@ end;
 
 constructor TObjCInterface.Create(AOffset:Integer);
 begin
-  ProtVars := TList.Create;
-  PrivVars := TList.Create;
-  PubVars  := TList.Create;
-  PackVars := TList.Create;
+  Vars := TList.Create;
   Methods  := TList.Create;
   Protocols := TStringList.Create;
   inherited Create(AOffset);
@@ -263,18 +289,10 @@ destructor TObjCInterface.Destroy;
 var
   i : Integer;
 begin
-  for i:=0 to ProtVars.Count-1 do TObject(ProtVars[i]).Free;
-  for i:=0 to PrivVars.Count-1 do TObject(PrivVars[i]).Free;
-  for i:=0 to PubVars.Count-1 do TObject(PubVars[i]).Free;
-  for i:=0 to PackVars.Count-1 do TObject(PubVars[i]).Free;
-  PrivVars.Free;
-  PubVars.Free;
-  ProtVars.Free;
-  PackVars.Free;
-
+  for i:=0 to Vars.Count-1 do TObject(Vars[i]).Free;
+  Vars.Free;
   for i:=0 to Methods.Count-1 do TObject(Methods[i]).Free;
   Methods.Free;
-
   Protocols.Free;
   inherited Destroy;
 end;
@@ -386,6 +404,15 @@ begin
   Args[i].Name:=Name;
   Args[i].RetType:=ArgType;
   Args[i].TypeName:=ArgTypeName;
+end;
+
+{ TObjCInstVar }
+
+
+destructor TObjCInstVar.Destroy;
+begin
+  v.Free;
+  inherited Destroy;
 end;
 
 initialization
