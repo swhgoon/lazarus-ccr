@@ -533,7 +533,7 @@ begin
           if s='setter' then p.SetterName:=nm
           else p.GetterName:=nm;
         end else begin
-          p.Props.Add(nm);
+          if APArser.TokenType=tt_Ident then p.Props.Add(AParser.Token);
           AParser.NextToken;
         end;
         if AParser.Token=',' then AParser.NextToken;
@@ -546,7 +546,7 @@ begin
       end;
       if ParseName(AParser, p.RetType, p.Name) then begin
         Result:=p;
-        if APArser.Token=';' then AParser.NextToken;
+        if AParser.Token=';' then AParser.NextToken;
       end;
 
     end;

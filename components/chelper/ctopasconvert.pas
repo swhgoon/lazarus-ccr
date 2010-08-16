@@ -51,6 +51,7 @@ type
 
     // obj-c
     RemoveLastUnderscores : Boolean;
+    PropsAsMethods        : Boolean;
 
     constructor Create;
     destructor Destroy; override;
@@ -136,7 +137,7 @@ type
     procedure WriteFuncOrVar(cent: TVarFuncEntity; StartVar, WriteComment: Boolean); // todo: deprecate!
     procedure WriteTypeDef(tp: TTypeDef);
     procedure WriteEnum(en: TEnumType);
-    procedure WriteEnumAsConst(en: TEnumType);
+    procedure WriteEnumAsConst(en: TEnumType; FinishWithInteger: Boolean=True);
     procedure WriteUnion(st: TUnionType);
     procedure WriteStruct(st: TStructType);
     procedure WriteCommentToPas(cent: TComment);
@@ -145,6 +146,7 @@ type
 
     function GetPasObjCMethodName(names: TStrings): AnsiString;
     procedure WriteObjCMethod(m: TObjCMethod);
+    procedure WriteObjCProperty(p: TObjCProperty);
     procedure WriteObjCMethods(list: TList);
     procedure WriteObjCInterface(cent: TObjCInterface);
     procedure WriteObjCProtocol(cent: TObjCProtocol);
@@ -633,6 +635,37 @@ begin
   wr.W(''';');
 end;
 
+procedure TCodeConvertor.WriteObjCProperty(p:TObjCProperty);
+var
+  tp  : AnsiString;
+  mtd : AnsiString;
+  nmp : TNamePart;
+  nm  : AnsiString;
+begin
+  //if not Assigned(p.Name) or (p.Name.Kind<>nk_Ident) then Exit;
+  nmp:=GetIdPart(p.Name);
+  if not Assigned(nmp) or (nmp.Id='') then Exit;
+  tp:=GetPasTypeName(p.RetType, nmp.owner);
+  if tp='' then Exit;
+
+  nm:=nmp.Id;
+  if (cfg.PropsAsMethods) then begin
+
+    if p.GetterName='' then mtd:=nmp.Id else mtd:=p.GetterName;
+    wr.W('function '+nm+': '+tp+'; message '''+mtd+''';');
+
+    if p.Props.IndexOf('readonly')<0 then begin
+      wr.Wln;
+
+      nm:='set'+UpperCase(nm[1])+Copy(nm, 2, length(nm)-1);
+      if p.SetterName='' then mtd:=nm+':' else mtd:=p.SetterName;
+
+      wr.W('procedure '+nm+'(AValue: '+tp+'); message '''+mtd+''';');
+    end;
+
+  end;
+end;
+
 procedure TCodeConvertor.WriteObjCMethods(list:TList);
 var
   ent : TEntity;
@@ -644,7 +677,10 @@ begin
     if not Assigned(ent) then Continue;
     WriteLnCommentsBeforeOffset(ent.Offset);
     if ent is TObjCMethod then
-      WriteObjCMethod(TObjCMethod(ent));
+      WriteObjCMethod(TObjCMethod(ent))
+    else if ent is TObjCProperty then begin
+      WriteObjCProperty(TObjCProperty(ent));
+    end;
     WriteLnCommentForOffset(ent.Offset);
   end;
 end;
@@ -652,7 +688,6 @@ end;
 procedure TCodeConvertor.WriteObjCInterface(cent:TObjCInterface);
 var
   i     : Integer;
-  m     : TObjCMethod;
   sc    : TObjCScope;
   v     : TObjCInstVar;
   sect  : AnsiString;
@@ -692,16 +727,10 @@ begin
   if cent.Methods.Count>0 then begin
     wr.Wln('public');
     wr.IncIdent;
-    for i:=0 to cent.Methods.Count-1 do
-      if TObject(cent.Methods[i]) is TObjCMethod then begin
-        m:=TObjCMethod(cent.Methods[i]);
-        WriteLnCommentsBeforeOffset(m.Offset);
-        WriteObjCMethod(m);
-        WriteLnCommentForOffset(m.Offset);
-      end;
+    WriteObjCMethods(cent.Methods);
     wr.DecIdent;
-    wr.Wln('end external;')
   end;
+  wr.Wln('end external;')
 end;
 
 procedure TCodeConvertor.WriteObjCProtocol(cent:TObjCProtocol);
@@ -1026,6 +1055,8 @@ begin
 end;
 
 procedure TCodeConvertor.WriteCtoPas(cent: TEntity; comments: TList; const ParsedText: AnsiString);
+var
+  tp  : AnsiString;
 begin
   CmtList:=comments;
   Breaker:=TLineBreaker.Create;
@@ -1035,9 +1066,17 @@ begin
     WriteFuncOrVar(cent as TVarFuncEntity, True, True)
   end else if cent is TTypeDef then
     WriteTypeDef(cent as TTypeDef)
-  else if (cent is TStructType) or (cent is TEnumType) or (cent is TUnionType) then begin
+  else if (cent is TStructType) or (cent is TUnionType) then begin
     DeclarePasType(cent, GetComplexTypeName(cent));
     wr.Wln(';');
+  end else if (cent is TEnumType) then begin
+    tp:=GetComplexTypeName(cent);
+    if cfg.EnumsAsConst and (tp='') then
+      WriteEnumAsConst(TEnumType(cent), false)
+    else begin
+      DeclarePasType(TEnumType(cent), GetComplexTypeName(cent));
+      wr.Wln(';');
+    end;
   end else if cent is TComment then
     WriteCommentToPas(cent as TComment)
   else if cent is TCPrepDefine then
@@ -1212,7 +1251,7 @@ begin
   end;
 end;
 
-procedure TCodeConvertor.WriteEnumAsConst(en:TEnumType);
+procedure TCodeConvertor.WriteEnumAsConst(en:TEnumType; FinishWithInteger: Boolean);
 var
   i       : Integer;
   v       : Int64;
@@ -1247,7 +1286,7 @@ begin
 
     PopWriter;
   end;
-  wr.W('Integer');
+  if FinishWithInteger then wr.W('Integer');
 end;
 
 procedure TCodeConvertor.WriteUnion(st:TUnionType);
@@ -1523,6 +1562,9 @@ begin
   CtoPasTypes.Values['signed long'] := 'Integer';
   CtoPasTypes.Values['...'] := 'array of const';
   CtoPasTypes.Values['va_list'] := 'array of const';
+
+  // obj-c
+  PropsAsMethods:=True;
 end;
 
 destructor TConvertSettings.Destroy;
