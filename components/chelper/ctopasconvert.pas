@@ -20,6 +20,7 @@ unit ctopasconvert;
 
 {$mode objfpc}{$H+}
 
+
 interface
 
 uses
@@ -33,6 +34,7 @@ type
 
   TConvertSettings = class
     RecordsArePacked  : Boolean;
+    UseBitPacked      : Boolean;
     FuncsAreExternal  : Boolean;
     EnumsAsConst      : Boolean;
     UsedNames         : TStringList;
@@ -1231,15 +1233,43 @@ end;
 
 procedure TCodeConvertor.WriteStruct(st:TStructType);
 var
-  i : Integer;
+  i       : Integer;
+  anybit  : Boolean;
+
+  x       : TExpression;
+  bval    : Int64;
+  xp      : AnsiString;
 begin
-  if cfg.RecordsArePacked then wr.W('packed ');
+  anybit:=False;
+  for i:=0 to length(st.fields)-1 do
+    if st.fields[i].isbitted then begin
+      anybit:=True;
+      Break;
+    end;
+
+  if cfg.UseBitPacked and anybit then
+    wr.W('bitpacked ')
+  else if cfg.RecordsArePacked then
+    wr.W('packed ');
+
   wr.Wln('record');
   wr.IncIdent;
-  //todo: bit fields support
+
   for i:=0 to length(st.fields)-1 do begin
     WriteLnCommentsBeforeOffset(st.fields[i].v.Offset);
-    WriteFuncOrVar(st.fields[i].v, False, True);
+
+    if cfg.UseBitPacked and st.fields[i].isbitted then begin
+      x:=st.fields[i].bits;
+      if isNumberExp(x, bval) then begin
+        bval:=(1 shl bval) - 1;
+        xp:=IntToStr(bval);
+      end else
+        xp:='((1 shl ('+PasExp(x)+'))-1)';
+      // returns true, if x is single number expression. V is the value of the number
+      wr.W( GetIdFromPart(st.fields[i].v.FirstName) + ' : 0..'+xp+';');
+    end else
+      WriteFuncOrVar(st.fields[i].v, False, True);
+    WriteLnCommentForOffset(st.fields[i].v.Offset);
   end;
   wr.DecIdent;
   wr.W('end');
@@ -1540,6 +1570,7 @@ begin
   EnumsAsConst := True;
   FuncsAreExternal := True;
   RecordsArePacked := True;
+  UseBitPacked := True;
 
   DefaultCType := 'int';
   FuncConv := 'cdecl';

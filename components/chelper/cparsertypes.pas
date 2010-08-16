@@ -341,7 +341,7 @@ type
 
   TStructTypeField = record
     v         : TVarFuncEntity;
-    isbitted  : Integer;
+    isbitted  : Boolean;
     bits      : TExpression;
   end;
 
@@ -1870,6 +1870,7 @@ begin
       i:=st.AddField(v);
       if AParser.Token=':' then begin
         AParser.NextToken;
+        st.fields[i].isbitted:=True;
         st.fields[i].bits:=ParseCExpr(AParser);
       end;
       if AParser.Token=';' then AParser.NextToken;
