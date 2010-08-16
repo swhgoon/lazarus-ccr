@@ -315,8 +315,7 @@ begin
   if (not Assigned(Result)) or (Assigned(ent) and (ent.Offset<Result.Offset)) then begin
     Result:=ent;
     AParser.Index:=entidx;
-  end else
-    AParser.NextToken;
+  end;
 end;
 
 function GetRefAsterix(const AstCount: integer): ansistring;
