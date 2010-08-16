@@ -26,6 +26,9 @@ interface
 uses
   Classes, SysUtils, cparsertypes;
 
+const
+  objcend = '@end';
+
 type
 
   { TObjCClasses }
@@ -54,6 +57,7 @@ type
     RetName   : TNamePart;
     Args      : array of TObjCMethodArg;
     Option    : TObjCMethodOpt;
+    VarParams : Boolean;
     constructor Create(AOffset: Integer=-1); override;
     destructor Destroy; override;
     procedure AddArg(const ArgType: TEntity; ArgTypeName: TNamePart; const Name: AnsiString);
@@ -88,7 +92,7 @@ type
 
   TObjCProtocol = class(TEntity)
   public
-    Name        : AnsiString;
+    Names       : TStringList;
     isForward   : Boolean;
     Protocols   : TStringList;
     Methods     : TList;
@@ -113,13 +117,16 @@ function ParseClassList(AParser: TTextParser): TObjCClasses;
 function ParseInterface(AParser: TTextParser): TObjCInterface;
 function ParseMethod(AParser: TTextParser): TObjCMethod;
 function ParseProperty(AParser: TTextParser): TObjCProperty;
-function ParseMethods(AParser: TTextParser; MethodsList: TList; const EndToken: AnsiString): Boolean;
+function ParseMethods(AParser: TTextParser; MethodsList: TList; const EndToken: AnsiString = objcend): Boolean;
 function ParseProtocol(AParser: TTextParser): TEntity;
 
 function ParseNextObjCEntity(AParser: TTextParser): TEntity;
 
 function isObjCKeyword(const token: AnsiString): Boolean; inline;
 function GetObjCKeyword(const token: AnsiString): AnsiString;
+
+const
+  nk_Protocol = $1000;
 
 implementation
 
@@ -140,25 +147,30 @@ var
 begin
   Result:=nil;
   if AParser.Token<>'@class' then Exit;
-  cl:=TObjCClasses.Create(AParser.TokenPos);
-  AParser.NextToken;
-  while AParser.Token<>';' do begin
-    if AParser.TokenType<>tt_Ident then begin
-      ErrorExpect(AParser,'identifier');
-      cl.Free;
-      Exit;
-    end;
-    cl.Classes.Add(AParser.Token);
+  try
+    cl:=TObjCClasses.Create(AParser.TokenPos);
     AParser.NextToken;
-    if AParser.Token=',' then
-      AParser.NextToken
-    else if AParser.Token<>';' then begin
-      ErrorExpect(AParser,';');
-      cl.Free;
-      Exit;
+    while AParser.Token<>';' do begin
+      if AParser.TokenType<>tt_Ident then begin
+        ErrorExpect(AParser,'identifier');
+        cl.Free;
+        Exit;
+      end;
+      cl.Classes.Add(AParser.Token);
+      AParser.NextToken;
+      if AParser.Token=',' then
+        AParser.NextToken
+      else if AParser.Token<>';' then begin
+        ErrorExpect(AParser,';');
+        cl.Free;
+        Exit;
+      end;
     end;
+    if AParser.Token<>';' then ErrorExpect(AParser, ';');
+    Result:=cl;
+  finally
+    if not Assigned(Result) then cl.Free;
   end;
-  Result:=cl;
 end;
 
 function ParseInstVars(AParser: TTextParser; Vars: TList): Boolean;
@@ -217,14 +229,14 @@ begin
 
   itf:=TObjCInterface.Create(i);
   try
-    itf.Name:=nm;
     itf.isCategory:=AParser.Token='(';
     if itf.isCategory then begin
-       AParser.NextToken;
-       if not ConsumeIdentifier(AParser, itf.SuperClass) and ConsumeToken(AParser, ')') then
+      itf.SuperClass:=nm;
+      AParser.NextToken;
+      if not (ConsumeIdentifier(AParser, itf.Name) and ConsumeToken(AParser, ')')) then
         Exit;
     end else begin
-
+      itf.Name:=nm;
       // super-class
       if AParser.Token=':' then begin
         AParser.NextToken;
@@ -249,8 +261,8 @@ begin
       ParseInstVars(AParser, itf.Vars);
     end;
 
-    if not ParseMethods(AParser, itf.Methods, '@end') then Exit;
-    if AParser.Token='@end' then AParser.NextToken;
+    if not ParseMethods(AParser, itf.Methods, objcend) then Exit;
+    if AParser.Token<>objcend then ErrorExpect(AParser, objcend);
 
     Result:=itf;
   finally
@@ -268,11 +280,17 @@ begin
   p := TObjCProtocol.Create(AParser.TokenPos);
   try
     AParser.NextToken;
-    if not ConsumeIdentifier(AParser, p.Name) then Exit;
-    p.isForward:= AParser.Token=';';
+    if not ConsumeIdentifier(AParser, nm) then Exit;
+    p.Names.Add(nm);
+    p.isForward:= (AParser.Token=';') or (AParser.Token=',');
     if p.isForward then begin
+      while AParser.Token<>';' do begin
+        AParser.NextToken;
+        ConsumeIdentifier(AParser, nm);
+        p.Names.Add(nm);
+      end;
       Result:=p;
-      AParser.NextToken;
+      if AParser.Token<>';' then ErrorExpect(AParser, ';');
       Exit;
     end;
 
@@ -286,8 +304,8 @@ begin
       if AParser.Token='>' then AParser.NextToken;
     end;
 
-    if ParseMethods(AParser, p.Methods, '@end') then Result:=p;
-    if AParser.Token='@end' then AParser.NextToken;
+    if ParseMethods(AParser, p.Methods, objcend) then Result:=p;
+    if AParser.Token<>objcend then ErrorExpect(AParser, objcend);
   finally
     if not Assigned(Result) then p.Free;
   end;
@@ -295,6 +313,7 @@ end;
 
 var
   PrevParseNextEntity : function (AParser: TTextParser): TEntity = nil;
+  PrevNamePart : function (AParser: TTextParser): TNamePart = nil;
 
 function ParseNextObjCEntity(AParser: TTextParser): TEntity;
 var
@@ -377,25 +396,36 @@ begin
       m.Name.Add(nm+':');
       AParser.NextToken;
 
-      while AParser.Token<>';' do begin
-        prm:=ConsumeToken(AParser, '(') and
-             ParseName(APArser, atype, atname) and
-             ConsumeToken(AParser, ')') and
-             ConsumeIdentifier(AParser, aname);
+      while (AParser.Token<>';') and (AParser.Token<>',') do begin
+        if AParser.Token='(' then begin
+          prm:=ConsumeToken(AParser, '(') and
+               ParseName(APArser, atype, atname) and
+               ConsumeToken(AParser, ')');
+        end else begin
+          prm:=True;
+          atype:=nil;
+          atname:=nil;
+        end;
         if not prm then Exit;
+        ConsumeIdentifier(AParser, aname);
         m.AddArg(atype, atname, aname);
 
+        // the next name starts
         if AParser.TokenType=tt_Ident then ConsumeIdentifier(AParser, nm) else nm:='';
-        if AParser.Token<>';' then begin
+        if (AParser.Token<>';') and (AParser.Token<>',') then begin
           if not ConsumeToken(AParser,':') then Exit;
           m.Name.Add(nm+':');
         end;
       end;
-      AParser.NextToken;
-    end else begin
+    end else
       m.Name.Add(nm);
-      if not ConsumeToken(AParser, ';') then Exit;
+
+    if AParser.Token=',' then begin
+      AParser.NextToken;
+      if ConsumeToken(AParser,'...') then m.VarParams:=True
+      else ErrorExpect(AParser, '...');
     end;
+    if not ConsumeToken(AParser, ';') then Exit;
 
     Result:=m;
   finally
@@ -403,7 +433,7 @@ begin
   end;
 end;
 
-function ParseMethods(AParser: TTextParser; MethodsList: TList; const EndToken: AnsiString = '@end'): Boolean;
+function ParseMethods(AParser: TTextParser; MethodsList: TList; const EndToken: AnsiString): Boolean;
 var
   m   : TObjCMethod;
   p   : TObjCProperty;
@@ -484,6 +514,7 @@ begin
   inherited Create(AOffset);
   Protocols := TStringList.Create;
   Methods   := TList.Create;
+  Names     := TStringList.Create;
 end;
 
 destructor TObjCProtocol.Destroy;
@@ -493,6 +524,7 @@ begin
   for i:=0 to Methods.Count-1 do TObject(Methods[i]).Free;
   Methods.Free;
   Protocols.Free;
+  Names.Free;
   inherited Destroy;
 end;
 
@@ -521,7 +553,7 @@ begin
   Result:=nil;
   if AParser.Token<>'@property' then Exit;
   AParser.NextToken;
-  p := TObjCProperty.Create;
+  p := TObjCProperty.Create(AParser.TokenPos);
   try
     if AParser.Token='(' then begin
       AParser.NextToken;
@@ -556,9 +588,25 @@ begin
   end;
 end;
 
+function ParseObjCNamePart(AParser: TTextParser): TNamePart;
+var
+  p   : AnsiString;
+begin
+  // skipping protocol adopted type definition
+  if AParser.Token='<' then begin
+    Result:=nil;
+    AParser.NextToken;
+    if not (ConsumeIdentifier(AParser, p) and ConsumeToken(AParser,'>')) then Exit;
+  end;
+  Result:=PrevNamePart(AParser);
+end;
+
 initialization
   PrevParseNextEntity:=ParseNextEntity;
   ParseNextEntity:=ParseNextObjCEntity;
+
+  PrevNamePart:=ParseNamePart;
+  ParseNamePart:=ParseObjCNamePart;
 
 end.
 

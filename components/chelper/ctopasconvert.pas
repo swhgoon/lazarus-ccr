@@ -81,6 +81,23 @@ function isNumberExp(x: TExpression; var v: Int64): Boolean;
 //        int a[MAXCONST] -> a: array [0..MAXCONST-1] of Integer;
 function PasArrayLimit(x: TExpression): AnsiString;
 
+type
+
+  { TStopComment }
+
+  TStopComment = class(TObject)
+  public
+    FirstComment  : boolean;
+    CommentFound  : boolean;
+    CommentEnd    : Integer;
+    Precomp       : TEntity;
+    PrecompEnd    : Integer;
+
+    procedure OnComment(Sender: TObject; const Str: ansistring);
+    procedure OnPrecompiler(Sender: TTextParser; PrecompEntity: TObject);
+    procedure Clear;
+  end;
+
 implementation
 
 type
@@ -114,7 +131,6 @@ type
     CmtList         : TList;
     Breaker         : TLineBreaker;
     LastOffset      : Integer;
-    function FindCommentForLine(ln: Integer): TComment;
   protected
     fWriters        : TList;
     AuxTypeCounter  : Integer;
@@ -140,7 +156,7 @@ type
     procedure WriteEnumAsConst(en: TEnumType; FinishWithInteger: Boolean=True);
     procedure WriteUnion(st: TUnionType);
     procedure WriteStruct(st: TStructType);
-    procedure WriteCommentToPas(cent: TComment);
+    procedure WriteCommentToPas(cent: TComment; NeedLineBreak: Boolean);
     procedure WriteExp(x: TExpression);
     procedure WritePreprocessor(cent: TCPrepDefine);
 
@@ -239,21 +255,7 @@ begin
 end;
 
 
-type
-
-  { TStopComment }
-
-  TStopComment = class(TObject)
-  public
-    FirstComment  : boolean;
-    CommentFound  : boolean;
-    CommentEnd    : Integer;
-    Precomp       : TEntity;
-    PrecompEnd    : Integer;
-
-    procedure OnComment(Sender: TObject; const Str: ansistring);
-    procedure OnPrecompiler(Sender: TTextParser; PrecompEntity: TObject);
-  end;
+{ TStopComment }
 
 procedure TStopComment.OnComment(Sender: TObject; const Str: ansistring);
 var
@@ -278,22 +280,24 @@ begin
   end;
 end;
 
-function ParseNextEntityOrComment(AParser: TTextParser): TEntity;
+procedure TStopComment.Clear;
+begin
+  FirstComment:=False;
+  CommentFound:=False;
+  Precomp:=nil;
+  CommentEnd:=-1;
+  PrecompEnd:=-1;
+end;
+
+function ParseNextEntityOrComment(AParser: TTextParser; cmt: TStopComment): TEntity;
 var
-  cmt : TStopComment;
   ent     : TEntity;
   entidx  : Integer;
 begin
-  cmt := TStopComment.Create;
-  AParser.UseCommentEntities := True;
-  AParser.OnComment := @cmt.OnComment;
-  AParser.OnPrecompile:=@cmt.OnPrecompiler;
   Result:=nil;
 
-  AParser.NextToken;
-
   ent := ParseNextEntity(AParser);
-  entidx:=AParser.Index;
+  entidx := AParser.Index;
 
   if cmt.FirstComment then begin
     if Assigned(cmt.Precomp) then begin
@@ -306,11 +310,11 @@ begin
     end;
   end;
 
-  cmt.Free;
   if (not Assigned(Result)) or (Assigned(ent) and (ent.Offset<Result.Offset)) then begin
     Result:=ent;
     AParser.Index:=entidx;
-  end;
+  end else
+    AParser.NextToken;
 end;
 
 function GetRefAsterix(const AstCount: integer): ansistring;
@@ -343,7 +347,6 @@ begin
     Result:=PasExp(x) + '-1';
 end;
 
-
 procedure WriteArray(arr: TNamePart; wr: TCodeWriter);
 var
   i : Integer;
@@ -352,7 +355,6 @@ begin
   for i := 0 to length(arr.arrayexp) - 1 do wr.W('[0..' + PasArrayLimit(arr.arrayexp[i])+']');
   wr.W(' of ');
 end;
-
 
 type
   TMacrosMaker = class(TObject)
@@ -436,6 +438,7 @@ var
   owncfg    : Boolean;
   lastsec   : AnsiString; // last code section
   ofs       : Integer;
+  cmt       : TStopComment;
 begin
   Result:='';
   ent:=nil;
@@ -447,13 +450,19 @@ begin
 
     if cfg.CustomDefines<>'' then PrepareMacros(cfg.CustomDefines, macros);
 
+    cmt := TStopComment.Create;
     p := CreateCParser(t);
     p.MacroHandler:=macros;
+    p.UseCommentEntities := True;
+    p.OnComment := @cmt.OnComment;
+    p.OnPrecompile:=@cmt.OnPrecompiler;
+
     try
       repeat
         try
           ofs := p.Index;
-          ent := ParseNextEntityOrComment(p);
+          p.NextToken;
+          ent := ParseNextEntityOrComment(p, cmt);
         except
           ent:=nil;
         end;
@@ -473,7 +482,7 @@ begin
               end;
             end;
 
-            cnv.WriteCtoPas(ent, p.Comments, t);
+            cnv.WriteCtoPas(ent, p.Comments, p.Buf);
 
             lastsec:=cnv.wr.Section;
           except
@@ -495,15 +504,14 @@ begin
       while i < p.Index do begin
         Inc(endPoint.Y);
         le := i;
-        SkipLine(t, i);
+        SkipLine(p.Buf, i);
       end;
       endPoint.X := p.Index - le + 1 + p.MacrosDelta;
-
-
 
     finally
       p.Free;
       macros.Free;
+      cmt.Free;
     end;
   except
     on e: Exception do Result:=Result+LineEnding+' internal error: '+ e.Message;
@@ -533,7 +541,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TCodeConvertor.WriteCommentToPas(cent: TComment);
+procedure TCodeConvertor.WriteCommentToPas(cent: TComment; NeedLineBreak: Boolean);
 var
   u: ansistring;
 begin
@@ -541,12 +549,13 @@ begin
   if cent.CommenType = ctBlock then
   begin
     u := StringReplace(u, '*)', '* )', [rfReplaceAll]);
-    wr.Wln('(*' + u + ' *)');
+    wr.W('(*' + u + ' *)');
   end
   else
   begin
-    wr.Wln('//' + u);
+    wr.W('//' + u);
   end;
+  if NeedLineBreak then wr.Wln;
 end;
 
 procedure TCodeConvertor.WriteExp(x:TExpression);
@@ -625,7 +634,10 @@ begin
       if m.Args[i].Name=''
         then PNames[i]:=cfg.ParamPrefix+IntToStr(i)
         else PNames[i]:=m.Args[i].Name;
-      PTypes[i]:=GetPasTypeName(m.Args[i].RetType, m.Args[i].TypeName);
+      if not Assigned(m.Args[i].RetType) then
+        PTypes[i]:='id'
+      else
+        PTypes[i]:=GetPasTypeName(m.Args[i].RetType, m.Args[i].TypeName);
     end;
 
   DefFuncWrite(wr, GetPasObjCMethodName(m.Name), ret, PNames, PTypes);
@@ -662,7 +674,6 @@ begin
 
       wr.W('procedure '+nm+'(AValue: '+tp+'); message '''+mtd+''';');
     end;
-
   end;
 end;
 
@@ -675,14 +686,17 @@ begin
   for i:=0 to list.Count-1 do begin
     ent:=TEntity(list[i]);
     if not Assigned(ent) then Continue;
+
     WriteLnCommentsBeforeOffset(ent.Offset);
     if ent is TObjCMethod then
       WriteObjCMethod(TObjCMethod(ent))
     else if ent is TObjCProperty then begin
       WriteObjCProperty(TObjCProperty(ent));
     end;
+
     WriteLnCommentForOffset(ent.Offset);
   end;
+
 end;
 
 procedure TCodeConvertor.WriteObjCInterface(cent:TObjCInterface);
@@ -696,7 +710,9 @@ const
 begin
   SetPasSection(wr, 'type');
   if cent.isCategory then begin
-    wr.W(cent.Name + ' = objccategory')
+    wr.W(cent.Name + ' = objccategory');
+    if cent.SuperClass<>'' then wr.W('('+cent.SuperClass+')');
+    wr.Wln;
   end else begin
     wr.W(cent.Name + ' = objcclass');
     if cent.SuperClass<>'' then wr.W('('+cent.SuperClass);
@@ -730,7 +746,7 @@ begin
     WriteObjCMethods(cent.Methods);
     wr.DecIdent;
   end;
-  wr.Wln('end external;')
+  wr.Wln('end external;');
 end;
 
 procedure TCodeConvertor.WriteObjCProtocol(cent:TObjCProtocol);
@@ -738,19 +754,24 @@ var
   i : Integer;
 begin
   SetPasSection(wr, 'type');
-  wr.W(cent.Name+'Protocol = objcprotocol');
+  if cent.Names.Count=1 then begin
+    wr.W(cent.Names[0]+'Protocol = objcprotocol');
 
-  if cent.Protocols.Count>0 then begin
-    wr.W('(');
-    for i:=0 to cent.Protocols.Count-2 do wr.W(cent.Protocols[i]+', ');
-    wr.W(cent.Protocols[cent.Protocols.Count-1]);
-    wr.Wln(')');
+    if cent.Protocols.Count>0 then begin
+      wr.W('(');
+      for i:=0 to cent.Protocols.Count-2 do wr.W(cent.Protocols[i]+', ');
+      wr.W(cent.Protocols[cent.Protocols.Count-1]);
+      wr.Wln(')');
+    end;
+    wr.IncIdent;
+    WriteObjCMethods(cent.Methods);
+    wr.DecIdent;
+    wr.W('end; ');
+    wr.Wln(' external name '''+cent.Names[0]+''';');
+  end else begin
+    for i:=0 to cent.Names.Count-1 do
+      wr.Wln(cent.Names[i]+'Protocol = objcprotocol; external name '''+cent.Names[i]+''';');
   end;
-  wr.IncIdent;
-  WriteObjCMethods(cent.Methods);
-  wr.DecIdent;
-  wr.W('end; ');
-  wr.Wln(' external name '''+cent.Name+''';');
 end;
 
 procedure TCodeConvertor.PushWriter;
@@ -808,14 +829,25 @@ end;
 procedure TCodeConvertor.WriteLnCommentForOffset(AOffset:Integer; NeedOffset: Boolean);
 var
   cmt : TComment;
+  ln  : Integer;
+  c   : Integer;
+  i   : Integer;
 begin
-  cmt:=FindCommentForLine( Breaker.LineNumber(AOffset));
-  if Assigned(cmt) then begin
-    LastOffset:=cmt.Offset;
-    if NeedOffset then wr.W('  ');
-    WriteCommentToPas(cmt);
-  end else
-    wr.Wln;
+  ln:= Breaker.LineNumber(AOffset);
+  c:=0;
+  for i:=0 to CmtList.Count-1 do begin
+    cmt:=TComment(CmtList[i]);
+    if Breaker.LineNumber(TComment(CmtList[i]).Offset)=ln then begin
+      if NeedOffset then begin
+        wr.W('  ');
+        NeedOffset:=False;
+      end;
+      WriteCommentToPas(cmt, false);
+      LastOffset:=cmt.Offset;
+      inc(c);
+    end;
+  end;
+  wr.Wln;
 end;
 
 function TCodeConvertor.NextCommentBefore(AOffset:Integer):Integer;
@@ -1078,7 +1110,7 @@ begin
       wr.Wln(';');
     end;
   end else if cent is TComment then
-    WriteCommentToPas(cent as TComment)
+    WriteCommentToPas(cent as TComment, True)
   else if cent is TCPrepDefine then
     WritePreprocessor(cent as TCPrepDefine)
   else if cent is TObjCInterface then
@@ -1332,20 +1364,7 @@ begin
     wr.W(PasTypeName + ' = ');}
     wr.W('todo: '+TypeEntity.ClassName);
   end;
-  //todo: ...
-end;
-
-function TCodeConvertor.FindCommentForLine(ln:Integer):TComment;
-var
-  i : Integer;
-begin
-  Result:=nil;
-  if not Assigned(CmtList) then Exit;
-  for i:=0 to CmtList.Count-1 do
-    if Breaker.LineNumber(TComment(CmtList[i]).Offset)=ln then begin
-      Result:=TComment(CmtList[i]);
-      Exit;
-    end;
+  //todo: ...parse any Entity
 end;
 
 procedure TCodeConvertor.DefFuncWrite(wr:TCodeWriter;const FuncName,FuncRetType:AnsiString;

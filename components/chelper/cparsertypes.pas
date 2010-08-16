@@ -226,9 +226,69 @@ type
     _Params    : AnsiString;
   end;
 
-// parsing function
+type
+
+  { TSimpleType }
+
+  TSimpleType = class(TEntity)
+  public
+    Name : AnsiString;
+  end;
+
+  { TExpression }
+
+  TExpPart = record
+    Token     : AnsiString;
+    TokenType : TTokenType;
+  end;
+
+  TExpression = class(TEntity)
+    function DoParse(AParser: TTextParser): Boolean; override;
+  public
+    Tokens  : array of TExpPart;
+    Count   : Integer;
+    procedure PushToken(const AToken: AnsiString; ATokenType: TTokenType);
+  end;
+
+const
+  nk_Ident = 0;
+  nk_Ref   = 1;
+  nk_Array = 2;
+  nk_Func  = 3;
+
+type
+  TNameKind = Integer;
+
+type
+  TNamePart = class;
+
+  TFuncParam = record
+    prmtype : TEntity;
+    name    : TNamePart;
+  end;
+
+  { TNamePart }
+
+  TNamePart = class(TObject)
+  private
+    fChild  : TNamePart;
+    fOwner  : TNamePart;
+  public
+    Kind      : TNameKind;
+    RefCount  : Integer;
+    Id        : AnsiString;
+    arrayexp  : array of TExpression;
+    params    : array of TFuncParam;
+    constructor Create(AKind: TNameKind);
+    procedure AddParam(prmtype: TEntity; prmname: TNamePart);
+    procedure AddArrayExpr(expr: TExpression);
+    property child: TNamePart read fchild write fChild;    // int (*p)[10]; "[10]" is child of (*p)
+    property owner: TNamePart read fowner write fOwner;
+  end;
+
 var
   ParseNextEntity: function (AParser: TTextParser): TEntity = nil;
+  ParseNamePart : function (Parser: TTextParser): TNamePart = nil;
 
 function ParseNextCEntity(AParser: TTextParser): TEntity;
 
@@ -254,63 +314,11 @@ function CreateCParser(const CHeaderText: AnsiString;
 type
   TCustomEntityProc = function (Parent: TEntity; Parser: TTextParser): TEntity;
 
-type
-
-  { TSimpleType }
-
-  TSimpleType = class(TEntity)
-  public
-    Name : AnsiString;
-  end;
-
-  { TExpression }
-
-  TExpPart = record
-    Token     : AnsiString;
-    TokenType : TTokenType;
-  end;
-  TExpression = class(TEntity)
-    function DoParse(AParser: TTextParser): Boolean; override;
-  public
-    Tokens  : array of TExpPart;
-    Count   : Integer;
-    procedure PushToken(const AToken: AnsiString; ATokenType: TTokenType);
-  end;
-
 procedure ErrorExpect(Parser: TTextParser; const Expect: AnsiString);
 function ConsumeToken(Parser: TTextParser; const Token: AnsiString): Boolean;
 function ConsumeIdentifier(Parser: TTextParser; var Id: AnsiString): Boolean;
 
 function ParseCType(Parser: TTextParser): TEntity;
-
-type
-  TNamePart = class;
-
-  TFuncParam = record
-    prmtype : TEntity;
-    name    : TNamePart;
-  end;
-
-  TNameKind = (nk_Ident, nk_Ref, nk_Array, nk_Func);
-
-  { TNamePart }
-
-  TNamePart = class(TObject)
-  private
-    fChild  : TNamePart;
-    fOwner  : TNamePart;
-  public
-    Kind      : TNameKind;
-    RefCount  : Integer;
-    Id        : AnsiString;
-    arrayexp  : array of TExpression;
-    params    : array of TFuncParam;
-    constructor Create(AKind: TNameKind);
-    procedure AddParam(prmtype: TEntity; prmname: TNamePart);
-    procedure AddArrayExpr(expr: TExpression);
-    property child: TNamePart read fchild write fChild;    // int (*p)[10]; "[10]" is child of (*p)
-    property owner: TNamePart read fowner write fOwner;
-  end;
 
 function ParseNames(Parser: TTextParser; var NameType: TEntity; Names: TList; AllowMultipleNames: Boolean=True): Boolean;
 function ParseName(Parser: TTextParser; var NameType: TEntity; var name: TNamePart): Boolean;
@@ -1458,8 +1466,6 @@ end;
 function ParseNextCEntity(AParser: TTextParser): TEntity;
 var
   s   : AnsiString;
-  tt  : TTokenType;
-
   tp  : TEntity;
   nm  : TNamePart;
   v   : TVarFuncEntity;
@@ -1493,6 +1499,8 @@ begin
     end else
       Result:=v;
   end;
+
+  if AParser.Token<>';' then ErrorExpect(AParser,';');
 end;
 
 procedure ErrorExpect(Parser:TTextParser;const Expect:AnsiString);
@@ -1644,7 +1652,7 @@ begin
   Parser.NextToken;
 end;
 
-function ParseNamePart(Parser: TTextParser): TNamePart;
+function ParseCNamePart(Parser: TTextParser): TNamePart;
 var
   prefix    : TNamePart;
   id        : TNamePart;
@@ -2023,6 +2031,7 @@ end;
 
 initialization
   ParseNextEntity:=@ParseNextCEntity;
+  ParseNamePart:=@ParseCNamePart;
 
 
 end.
