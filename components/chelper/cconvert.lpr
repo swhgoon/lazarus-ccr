@@ -22,7 +22,7 @@ program cconvert;
 
 uses
   SysUtils,Classes,
-  ctopasconvert,cparsertypes,cparserutils,cconvconfig, objcparsing;
+  ctopasconvert,cparsertypes, cparserutils,cconvconfig, objcparsing;
 
 var
   ConfigFile    : AnsiString = '';
@@ -81,6 +81,7 @@ var
   i   : Integer;
   p   : TPoint;
   cfg : TConvertSettings;
+  err : TErrorInfo;
 begin
   if ParamCount=0 then Exit;
   inps := TStringList.Create;
@@ -91,15 +92,15 @@ begin
     InitSettings(cfg);
 
     inps.LoadFromFile(ParamStr(ParamCount));
-    outs.Text:=ConvertCode(inps.Text, p, ParseAll, cfg);
-    if OutputFile<>'' then begin
-      outs.Insert(0, Format('%d %d', [p.Y,p.X]));
+    outs.Text:=ConvertCode(inps.Text, p, ParseAll, err, cfg);;
+    outs.Insert(0, Format('%d %d', [p.Y,p.X]));
+    if err.isError then outs.Insert(0, Format('error %d %d %s',[err.ErrorPos.Y, err.ErrorPos. X, err.ErrorMsg]) );
+
+    if OutputFile<>'' then
       outs.SaveToFile(OutputFile)
-    end else begin
-      writeln(p.Y,' ',p.X);
+    else
       for i:=0 to outs.Count-1 do
         writeln(outs[i]);
-    end;
   finally
     if not ConfigFileRO and (ConfigFile<>'') then begin
       ForceDirectories(ExtractFilePath(ConfigFile));

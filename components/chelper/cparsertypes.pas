@@ -290,7 +290,8 @@ var
   ParseNextEntity: function (AParser: TTextParser): TEntity = nil;
   ParseNamePart : function (Parser: TTextParser): TNamePart = nil;
 
-function ParseNextCEntity(AParser: TTextParser): TEntity;
+function ParseNextCEntity(AParser: TTextParser): TEntity; // default ParseNextEntity
+function ParseCNamePart(Parser: TTextParser): TNamePart;  // default ParseNamePart
 
 function ParseCExpression(AParser: TTextParser; var ExpS: AnsiString): Boolean;
 procedure ParseCNumeric(const S: AnsiString; var idx: integer; var NumStr: AnsiSTring);
@@ -1500,12 +1501,16 @@ begin
       Result:=v;
   end;
 
-  if AParser.Token<>';' then ErrorExpect(AParser,';');
+  if AParser.Token<>';' then begin
+    Result.Free;
+    Result:=nil;
+    ErrorExpect(AParser,';');
+  end;
 end;
 
 procedure ErrorExpect(Parser:TTextParser;const Expect:AnsiString);
 begin
-  Parser.SetError('Excepcted: '+ Expect);
+  Parser.SetError('expected: "'+ Expect + '" but "'+Parser.Token+'" found');
 end;
 
 function ConsumeToken(Parser:TTextParser;const Token:AnsiString):Boolean;
@@ -1718,6 +1723,11 @@ begin
   end;
 end;
 
+function isEndOfName(APArser: TTextParser): Boolean;
+begin
+  Result:=(AParser.TokenType=tt_Symbol) and (AParser.Token[1] in [';',')',',']);
+end;
+
 function ParseNames(Parser: TTextParser; var NameType: TEntity; Names: TList; AllowMultipleNames: Boolean): Boolean;
 var
   Name  : TNamePart;
@@ -1750,10 +1760,10 @@ begin
         Result:=True;
         Exit;
       end;
-      done:=(Parser.Token<>',') and (Parser.Token=')');
+      done:=isEndOfName(Parser);
       if not done then begin
         if Parser.Token <> ',' then begin
-          ErrorExpect(Parser, ')');
+          ErrorExpect(Parser, ';');
           Exit;
         end;
         Parser.NextToken;

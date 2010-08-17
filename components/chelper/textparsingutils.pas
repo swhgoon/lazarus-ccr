@@ -22,6 +22,9 @@ unit TextParsingUtils;
 
 interface
 
+uses
+  Types;
+
 type
   TCharSet = set of Char;
 
@@ -49,6 +52,8 @@ function IsSubStr(const sbs, s: AnsiString; index: Integer): Boolean;
 function SkipCommentBlock(const s: AnsiString; var index: Integer; const closecmt: AnsiString): AnsiString;
 
 function SkipLine(const s: AnsiString; var index: Integer): AnsiString;
+
+function OffsetToLinePos(const t: AnsiString; Offset: Integer; var P: TPoint): AnsiString;
 
 implementation
 
@@ -145,6 +150,22 @@ begin
   if (index<length(s)) and (s[index+1] in EoLnChars) and (s[index]<>s[index+1]) then
     inc(index);
   inc(index);
+end;
+
+function OffsetToLinePos(const t: AnsiString; Offset: Integer; var P: TPoint): AnsiString;
+var
+  i,  le  : Integer;
+begin
+  i := 1;
+  le := 0;
+  P.X := 0;
+  P.Y := 0;
+  while i < Offset do begin
+    Inc(P.Y);
+    le := i;
+    SkipLine(t, i);
+  end;
+  P.X := Offset - le + 1;
 end;
 
 end.

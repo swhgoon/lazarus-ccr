@@ -304,7 +304,8 @@ begin
       if AParser.Token='>' then AParser.NextToken;
     end;
 
-    if ParseMethods(AParser, p.Methods, objcend) then Result:=p;
+    if ParseMethods(AParser, p.Methods, objcend) then
+      Result:=p;
     if AParser.Token<>objcend then ErrorExpect(AParser, objcend);
   finally
     if not Assigned(Result) then p.Free;

@@ -61,10 +61,16 @@ type
     function GetTypeName(const CTypeName: AnsiString): Ansistring;
   end;
 
+  TErrorInfo = record
+    isError   : Boolean;
+    ErrorMsg  : AnsiString; // error message
+    ErrorPos  : TPoint;     // position in ORIGINAL (not-macrosed) text
+  end;
+
 // endPoint contains
 //  Y - line number (starting from 1),
 //  X - column (starting from 1);
-function ConvertCode(const t: AnsiString; var endPoint: TPoint; AllText: Boolean; cfg: TConvertSettings = nil): AnsiString;
+function ConvertCode(const t: AnsiString; var endPoint: TPoint; AllText: Boolean; var ParseError: TErrorInfo; cfg: TConvertSettings = nil): AnsiString;
 
 // converts C-expression to Pascal expression, replace symbols with pascal equvialents.
 // WARN: * the function doesn't handle macroses (treats them as identifiers)
@@ -291,7 +297,7 @@ begin
   PrecompEnd:=-1;
 end;
 
-function ParseNextEntityOrComment(AParser: TTextParser; cmt: TStopComment): TEntity;
+function ParseNextEntityOrComment(AParser: TTextParser; cmt: TStopComment; var ParseError: TErrorInfo): TEntity;
 var
   ent     : TEntity;
   entidx  : Integer;
@@ -313,6 +319,11 @@ begin
   end;
 
   if (not Assigned(Result)) or (Assigned(ent) and (ent.Offset<Result.Offset)) then begin
+    if AParser.Errors.Count>0 then begin
+      ParseError.ErrorPos.X:=AParser.TokenPos;
+      ParseError.ErrorMsg:=AParser.Errors[0];
+      ParseError.isError:=True;
+    end;
     Result:=ent;
     AParser.Index:=entidx;
   end;
@@ -428,19 +439,20 @@ begin
   for i:=1 to c do Result:=Result+LineEnding;
 end;
 
-function ConvertCode(const t: AnsiString; var endPoint: TPoint; AllText: Boolean; cfg: TConvertSettings): AnsiString;
+function ConvertCode(const t: AnsiString; var endPoint: TPoint; AllText: Boolean; var ParseError: TErrorInfo; cfg: TConvertSettings): AnsiString;
 var
   p         : TTextParser;
   ent       : TEntity;
-  i         : integer;
-  le        : integer;
   cnv       : TCodeConvertor;
   macros    : TCMacroHandler;
   owncfg    : Boolean;
   lastsec   : AnsiString; // last code section
   ofs       : Integer;
   cmt       : TStopComment;
+  i         : Integer;
+  succidx   : Integer;
 begin
+  FillChar(ParseError, sizeof(ParseError), 0);
   Result:='';
   ent:=nil;
   owncfg:=not Assigned(cfg);
@@ -460,13 +472,19 @@ begin
 
     try
       repeat
+        cmt.Clear;
         try
           ofs := p.Index;
           p.NextToken;
-          ent := ParseNextEntityOrComment(p, cmt);
+          ent := ParseNextEntityOrComment(p, cmt, ParseError);
         except
           ent:=nil;
         end;
+
+        if ParseError.isError then
+          Break
+        else
+          succidx:=p.Index + p.MacrosDelta;
 
         if Assigned(ent) then begin
           cnv := TCodeConvertor.Create(cfg);
@@ -498,16 +516,11 @@ begin
 
       until (ent=nil) or not AllText;
 
-      i := 1;
-      le := 0;
-      endPoint.X := 0;
-      endPoint.Y := 0;
-      while i < p.Index do begin
-        Inc(endPoint.Y);
-        le := i;
-        SkipLine(p.Buf, i);
-      end;
-      endPoint.X := p.Index - le + 1 + p.MacrosDelta;
+
+      OffsetToLinePos(t, succidx, endPoint);
+
+      if ParseError.isError then
+        OffsetToLinePos(t, ParseError.ErrorPos.X + p.MacrosDelta, ParseError.ErrorPos);
 
     finally
       p.Free;

@@ -24,14 +24,44 @@ interface
 
 uses
   Classes, SysUtils, Dialogs, LCLType, LCLIntf, Forms,
-  Menus, MenuIntf, SrcEditorIntf, process, LazIDEIntf,
+  Menus, MenuIntf, SrcEditorIntf, process, LazIDEIntf, IDEMsgIntf,
   extconvdialog, converteridesettings, cconvconfig;
 
 procedure Register;
 
 implementation
 
-function DoExtConvert(const t: AnsiString; ParseAll: Boolean; var EndPos: TPoint): AnsiString;
+type
+  TErrorInfo = record
+    isError   : Boolean;
+    Error     : AnsiString;
+    ErrorPos  : TPoint;
+  end;
+
+
+function GetErrorInfo(const errstr: AnsiString; var error: TerrorInfo): Boolean;
+var
+  i   : Integer;
+  d   : AnsiString;
+  err : Integer;
+begin
+  i:=Pos('error ', errstr);
+  error.isError:=i>0;
+  Result:=error.isError;
+  if not error.isError then Exit;
+
+  d:=Copy(errstr, 7, length(errstr)-6);
+  i:=Pos(' ', d);
+  Val( copy(d, 1, i-1), error.ErrorPos.Y, err);
+  d:=Copy(d, i+1, length(d));
+
+  i:=Pos(' ', d);
+  Val( copy(d, 1, i-1), error.ErrorPos.X, err);
+
+  error.Error:=Copy(d, i+1, length(d));
+end;
+
+function DoExtConvert(const t: AnsiString; ParseAll: Boolean; var EndPos: TPoint; var error: TErrorInfo): AnsiString;
 var
   p     : TProcess;
   d     : AnsiString;
@@ -104,7 +134,10 @@ begin
       try
         st.LoadFromFile(outp);
         if st.Count=0 then Exit;
+        i:=0;
         d:=st[0];
+        if GetErrorInfo(d, error) then d:=st[1];
+
         if d='' then Exit;
         i:=Pos(' ', d);
         if i>=1 then begin
@@ -126,7 +159,7 @@ begin
   end;
 end;
 
-function DoConvertCode(const t: AnsiString; ParseAll: Boolean; var EndPoint: TPoint; var txt: AnsiString): Boolean;
+function DoConvertCode(const t: AnsiString; ParseAll: Boolean; var EndPoint: TPoint; var txt: AnsiString; var error: TErrorInfo): Boolean;
 begin
   Result:=False;
   if UseExtTool then begin
@@ -135,7 +168,7 @@ begin
       Exit;
     end;
     cconvconfig.SaveToFile(ConvFile, ConvSettings);
-    txt:=DoExtConvert(t, ParseAll, EndPoint);
+    txt:=DoExtConvert(t, ParseAll, EndPoint, error);
     Result:=(EndPoint.X>=0) and (EndPoint.Y>=0);
 
     if Result then cconvconfig.LoadFromFile(ConvFile, ConvSettings)
@@ -156,6 +189,9 @@ var
   s       : AnsiString;
   p       : TPoint;
   st      : TPoint;
+  err     : TErrorInfo;
+  line    : TIDEMessageLine;
+  parts   : TStringList;
 begin
   if parsing then Exit;
   if not Assigned(SourceEditorManagerIntf) or not Assigned(SourceEditorManagerIntf.ActiveEditor) then Exit;
@@ -173,13 +209,34 @@ begin
     for i:=i to editor.Lines.Count-1 do
       txt:=txt+editor.Lines[i]+#10;
 
-    if DoConvertCode(txt, ParseAll, p, s) then
+    if Assigned(IDEMessagesWindow) then IDEMessagesWindow.Clear;
+
+    if DoConvertCode(txt, ParseAll, p, s, err) then
     begin
-      inc(p.Y, st.Y-1);
-      st.X:=1;
-      editor.ReplaceText(st, p, s);
-      if Assigned(CtoPasConfig) then
-        CtoPasConfig.SettingsToUI;
+      if p.Y>0 then begin
+        inc(p.Y, st.Y-1);
+        st.X:=1;
+        editor.ReplaceText(st, p, s);
+        if Assigned(CtoPasConfig) then
+          CtoPasConfig.SettingsToUI;
+      end;
+      if err.isError then begin
+        inc(err.ErrorPos.Y, st.Y-1);
+        if Assigned(IDEMessagesWindow) then begin
+          s:=Format('%s(%d,%d) Chelper: %s', [ExtractFileName(editor.FileName), err.ErrorPos.Y,err.ErrorPos.X, err.Error]);
+          parts:=TStringList.Create;
+          try
+            parts.Values['Type']:='Chelper';
+            parts.Values['Filename']:=editor.FileName;
+            parts.Values['Line']:=IntToStr(err.ErrorPos.Y);
+            parts.Values['Column']:=IntToStr(err.ErrorPos.X);
+            IDEMessagesWindow.AddMsg(s, ExtractFileDir(editor.FileName), -1, parts);
+          finally
+            parts.Free;
+          end;
+        end;
+        editor.CursorTextXY:=err.ErrorPos;
+      end;
     end;
   finally
     parsing:=False;
@@ -215,6 +272,43 @@ begin
   RegisterIDEMenuCommand(itmSecondaryTools, 'CtoPas', 'C to Pascal Options', nil, @OnCtoPasOptionsClick);
 end;
 
+
+type
+
+  { TChelperJumper }
+
+  TChelperJumper = class(TIDEMsgQuickFixItem)
+    constructor Create;
+    procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); override;
+    function IsApplicable(Line: TIDEMessageLine): boolean; override;
+  end;
+
+constructor TChelperJumper.Create;
+begin
+  inherited Create;
+  Name:='Chelper code jumper';
+  Caption:='Chelper code jumper';
+  Steps:=[imqfoJump]
+end;
+
+function TChelperJumper.IsApplicable(Line: TIDEMessageLine): boolean;
+begin
+  Result:=Assigned(Line) and Assigned(Line.Parts) and (Line.Parts.Values['Type']='Chelper');
+end;
+
+procedure TChelperJumper.Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep);
+var
+  fn  : AnsiString;
+  ln  : Integer;
+  cl  : Integer;
+begin
+  if Step=imqfoJump then begin
+    if Msg.Parts.Values['Type']<>'Chelper' then Exit;
+    Msg.GetSourcePosition(fn, ln, cl);
+    LazarusIDE.DoOpenFileAndJumpToPos(fn, Point(cl, ln), -1, -1, -1, [ofOnlyIfExists,ofRegularFile,ofVirtualFile]);
+  end;
+end;
+
 procedure Register;
 var
   pth : AnsiString;
@@ -225,6 +319,7 @@ begin
   LoadFromFile(ConvFile, ConvSettings);
   ReadIDESettings(ConvFile);
   if DefineFile='' then DefineFile:=pth+'cconvdefines.h';
+  RegisterIDEMsgQuickFix(TChelperJumper.Create);
 end;
 
 initialization
