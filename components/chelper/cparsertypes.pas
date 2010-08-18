@@ -321,8 +321,8 @@ function ConsumeIdentifier(Parser: TTextParser; var Id: AnsiString): Boolean;
 
 function ParseCType(Parser: TTextParser): TEntity;
 
-function ParseNames(Parser: TTextParser; var NameType: TEntity; Names: TList; AllowMultipleNames: Boolean=True): Boolean;
-function ParseName(Parser: TTextParser; var NameType: TEntity; var name: TNamePart): Boolean;
+function ParseNames(Parser: TTextParser; var NameType: TEntity; Names: TList; const EndChars: TCharSet; AllowMultipleNames: Boolean=True): Boolean;
+function ParseName(Parser: TTextParser; var NameType: TEntity; var name: TNamePart; const EndChars: TCharSet): Boolean;
 
 type
 
@@ -776,7 +776,7 @@ begin
     end;
   end;
 
-  if not Result then
+  if not Result then begin
     for i := 0 to TokenTable.CmtLine.Count - 1 do begin
       Result:=IsSubStr(TokenTable.CmtLine[i], Buf, index);
       if Result then begin
@@ -787,6 +787,7 @@ begin
         Break;
       end;
     end;
+ end;
 
   if Result then begin
     if UseCommentEntities then begin
@@ -795,7 +796,7 @@ begin
       comment.CommenType:=ct;
       Comments.Add(Comment);
     end;
-    if (Assigned(OnComment)) and (cmt <> '') then OnComment(Self, cmt);
+    if (Assigned(OnComment)) then OnComment(Self, cmt);
   end;
 end;
 
@@ -1473,12 +1474,13 @@ var
 begin
   Result := nil;
   s:=AParser.Token;
+  if s='' then Exit;
 
   if s = 'typedef' then begin
     Result:=ParseTypeDef(AParser);
   end else begin
     v:=TVarFuncEntity.Create(AParser.TokenPos);
-    ParseNames(AParser, tp, v.Names);
+    ParseNames(AParser, tp, v.Names, [';']);
 
     // declarations like:
     // fn (int i);
@@ -1511,6 +1513,7 @@ end;
 procedure ErrorExpect(Parser:TTextParser;const Expect:AnsiString);
 begin
   Parser.SetError('expected: "'+ Expect + '" but "'+Parser.Token+'" found');
+  Dump_Stack(output, get_frame);
 end;
 
 function ConsumeToken(Parser:TTextParser;const Token:AnsiString):Boolean;
@@ -1640,7 +1643,7 @@ begin
   Parser.NextToken;
   while Parser.Token<>')' do begin
 
-    if ParseName(Parser, prmtype, prmname) then begin
+    if ParseName(Parser, prmtype, prmname, [',',')']) then begin
       FuncName.AddParam(prmtype, prmname)
     end else
       Exit; // failure
@@ -1723,12 +1726,12 @@ begin
   end;
 end;
 
-function isEndOfName(APArser: TTextParser): Boolean;
+function isEndOfName(APArser: TTextParser; const EndChars: TCharSet): Boolean;
 begin
-  Result:=(AParser.TokenType=tt_Symbol) and (AParser.Token[1] in [';',')',',']);
+  Result:=(AParser.TokenType=tt_Symbol) and (AParser.Token[1] in EndChars);
 end;
 
-function ParseNames(Parser: TTextParser; var NameType: TEntity; Names: TList; AllowMultipleNames: Boolean): Boolean;
+function ParseNames(Parser: TTextParser; var NameType: TEntity; Names: TList; const EndChars: TCharSet; AllowMultipleNames: Boolean): Boolean;
 var
   Name  : TNamePart;
   done  : Boolean;
@@ -1760,7 +1763,7 @@ begin
         Result:=True;
         Exit;
       end;
-      done:=isEndOfName(Parser);
+      done:=isEndOfName(Parser, EndChars);
       if not done then begin
         if Parser.Token <> ',' then begin
           ErrorExpect(Parser, ';');
@@ -1773,7 +1776,7 @@ begin
   end;
 end;
 
-function ParseName(Parser: TTextParser; var NameType: TEntity; var name: TNamePart): Boolean;
+function ParseName(Parser: TTextParser; var NameType: TEntity; var name: TNamePart; const EndChars: TCharSet): Boolean;
 var
   nm  : TList;
 begin
@@ -1781,7 +1784,7 @@ begin
   try
     name:=nil;
     NameType:=nil;
-    Result:=ParseNames(Parser, NameType, nm, False);
+    Result:=ParseNames(Parser, NameType, nm, EndChars, False);
     if Result and (nm.Count>0) then name:=TNamePart(nm[0]);
   finally
     nm.Free;
@@ -1872,7 +1875,7 @@ begin
     AParser.NextToken;
     repeat
       v:=TVarFuncEntity.Create(AParser.TokenPos);
-      if not ParseNames(AParser, v.RetType, v.Names) then begin
+      if not ParseNames(AParser, v.RetType, v.Names,[';',':']) then begin
         ErrorExpect(AParser, 'type name');
         v.Free;
         Exit;
@@ -1918,7 +1921,7 @@ begin
   try
     repeat
       v:=TVarFuncEntity.Create(AParser.TokenPos);
-      if not ParseNames(AParser, v.RetType, v.Names) then begin
+      if not ParseNames(AParser, v.RetType, v.Names,[';']) then begin
         ErrorExpect(AParser, 'type name');
         v.Free;
         Exit;
@@ -1949,7 +1952,7 @@ begin
     AParser.NextToken;
     Result:=td;
 
-    ParseNames(AParser, td.origintype, td.names, true);
+    ParseNames(AParser, td.origintype, td.names, [';'], true);
   finally
     if not Assigned(Result) then
       td.Free;
@@ -1980,9 +1983,8 @@ begin
           ErrorExpect(AParser, 'identifier');
           Exit;
         end;
-        nm:=AParser.Token;
         ofs:=AParser.TokenPos;
-        AParser.NextToken;
+        if not ConsumeIdentifier(AParser,nm) then Exit;
         if AParser.Token='=' then begin
           AParser.NextToken;
           x:=ParseCExpr(AParser, True);
@@ -1992,7 +1994,7 @@ begin
         en.AddItem(nm, x, ofs);
         if AParser.Token=',' then AParser.NextToken;
       end;
-      AParser.NextToken;
+      if not ConsumeToken(AParser, '}') then Exit;
     end;
     Result:=en;
   finally

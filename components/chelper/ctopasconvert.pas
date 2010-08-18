@@ -20,7 +20,6 @@ unit ctopasconvert;
 
 {$mode objfpc}{$H+}
 
-
 interface
 
 uses
@@ -174,6 +173,7 @@ type
     procedure WriteObjCMethods(list: TList);
     procedure WriteObjCInterface(cent: TObjCInterface);
     procedure WriteObjCProtocol(cent: TObjCProtocol);
+    procedure WriteObjCClasses(cent: TObjCClasses);
 
     procedure PushWriter;
     procedure PopWriter;
@@ -303,7 +303,6 @@ var
   entidx  : Integer;
 begin
   Result:=nil;
-
   ent := ParseNextEntity(AParser);
   entidx := AParser.Index;
 
@@ -467,12 +466,11 @@ begin
     p := CreateCParser(t);
     p.MacroHandler:=macros;
     p.UseCommentEntities := True;
-    p.OnComment := @cmt.OnComment;
+    p.OnComment:=@cmt.OnComment;
     p.OnPrecompile:=@cmt.OnPrecompiler;
 
     try
       repeat
-        cmt.Clear;
         try
           ofs := p.Index;
           p.NextToken;
@@ -513,7 +511,7 @@ begin
 
         for i:=0 to p.Comments.Count-1 do TComment(p.Comments[i]).Free;
         p.Comments.Clear;
-
+        cmt.Clear;
       until (ent=nil) or not AllText;
 
 
@@ -717,7 +715,7 @@ procedure TCodeConvertor.WriteObjCInterface(cent:TObjCInterface);
 var
   i     : Integer;
   sc    : TObjCScope;
-  v     : TObjCInstVar;
+  ivar  : TObjCInstVar;
   sect  : AnsiString;
 const
   sectname : array [TObjCScope] of AnsiString = ('private', 'protected', 'public', 'protected');
@@ -733,23 +731,24 @@ begin
     if cent.Protocols.Count>0 then begin
       if cent.SuperClass='' then wr.W('(id, ')
       else wr.W(', ');
-      for i:=0 to cent.Protocols.Count-2 do wr.W(cent.Protocols[i]+', ');
-      wr.W(cent.Protocols[cent.Protocols.Count-1]);
+      for i:=0 to cent.Protocols.Count-2 do wr.W(cent.Protocols[i]+'Protocol, ');
+      wr.W(cent.Protocols[cent.Protocols.Count-1]+'Protocol');
     end;
     if (cent.SuperClass<>'') or (cent.Protocols.Count>0) then wr.Wln(')');
 
     sect:='';
     sc:=os_Public;
     for i:=0 to cent.Vars.Count-1 do begin
-      v:=TObjCInstVar(cent.Vars[i]);
-      if (sect='') or (v.scope<>sc) then begin
+      ivar:=TObjCInstVar(cent.Vars[i]);
+      if (sect='') or (ivar.scope<>sc) then begin
         if sect<>'' then wr.DecIdent;
-        sc:=v.scope;
+        sc:=ivar.scope;
         sect:=sectname[sc];
         wr.Wln(sect);
         wr.IncIdent;
       end;
-      WriteFuncOrVar(v.v, false, true);
+      WriteLnCommentsBeforeOffset(ivar.v.RetType.Offset);
+      WriteFuncOrVar(ivar.v, false, true);
     end;
     if sect<>'' then wr.DecIdent;
   end;
@@ -768,24 +767,37 @@ var
   i : Integer;
 begin
   SetPasSection(wr, 'type');
-  if cent.Names.Count=1 then begin
+
+  if cent.isForward then begin
+    for i:=0 to cent.Names.Count-1 do
+      wr.Wln(cent.Names[i]+'Protocol = objcprotocol; external name '''+cent.Names[i]+''';');
+  end else begin
     wr.W(cent.Names[0]+'Protocol = objcprotocol');
 
     if cent.Protocols.Count>0 then begin
       wr.W('(');
-      for i:=0 to cent.Protocols.Count-2 do wr.W(cent.Protocols[i]+', ');
-      wr.W(cent.Protocols[cent.Protocols.Count-1]);
-      wr.Wln(')');
+      for i:=0 to cent.Protocols.Count-2 do wr.W(cent.Protocols[i]+'Protocol, ');
+      wr.WLn(cent.Protocols[cent.Protocols.Count-1]+'Protocol)');
+    end else
+      wr.WLn;
+
+    if cent.Methods.Count>0 then begin
+      wr.IncIdent;
+      WriteObjCMethods(cent.Methods);
+      wr.DecIdent;
     end;
-    wr.IncIdent;
-    WriteObjCMethods(cent.Methods);
-    wr.DecIdent;
     wr.W('end; ');
     wr.Wln(' external name '''+cent.Names[0]+''';');
-  end else begin
-    for i:=0 to cent.Names.Count-1 do
-      wr.Wln(cent.Names[i]+'Protocol = objcprotocol; external name '''+cent.Names[i]+''';');
   end;
+end;
+
+procedure TCodeConvertor.WriteObjCClasses(cent:TObjCClasses);
+var
+  i : Integer;
+begin
+  SetPasSection(wr, 'type');
+  for i:=0 to cent.ClassList.Count-1 do
+    wr.WLn(cent.ClassList[i] +' = objcclass; external;');
 end;
 
 procedure TCodeConvertor.PushWriter;
@@ -1131,6 +1143,8 @@ begin
     WriteObjCInterface(cent as TObjCInterface)
   else if cent is TObjCProtocol then
     WriteObjCProtocol(cent as TObjCProtocol)
+  else if cent is TObjCClasses then
+    WriteObjCClasses(cent as TObjCClasses)
   else begin
     if DebugEntities then
       wr.Wln(cent.ClassName);

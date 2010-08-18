@@ -34,7 +34,7 @@ type
   { TObjCClasses }
 
   TObjCClasses = class(TEntity)
-    Classes : TStringList;
+    ClassList : TStringList;
     constructor Create(AOffset: Integer=-1); override;
     destructor Destroy; override;
   end;
@@ -156,7 +156,7 @@ begin
         cl.Free;
         Exit;
       end;
-      cl.Classes.Add(AParser.Token);
+      cl.ClassList.Add(AParser.Token);
       AParser.NextToken;
       if AParser.Token=',' then
         AParser.NextToken
@@ -201,7 +201,7 @@ begin
       AParser.NextToken;
     end else begin
       v:=TVarFuncEntity.Create(AParser.TokenPos);
-      if not ParseNames(AParser, v.RetType, v.Names) then Exit;
+      if not ParseNames(AParser, v.RetType, v.Names, [';']) then Exit;
       iv:=TObjCInstVar.Create(v.Offset);
       iv.v:=v;
       iv.scope:=scope;
@@ -320,7 +320,8 @@ function ParseNextObjCEntity(AParser: TTextParser): TEntity;
 var
   t   : AnsiString;
 begin
-  if AParser.Token[1]='@' then begin
+  Result:=nil;
+  if (AParser.Token<>'') and (AParser.Token[1]='@') then begin
     t:=GetObjCKeyword(AParser.Token);
     if t='class' then Result:=ParseClassList(AParser)
     else if t='interface' then Result:=ParseInterface(AParser)
@@ -338,12 +339,12 @@ end;
 constructor TObjCClasses.Create(AOffset:Integer);
 begin
   inherited Create(AOffset);
-  Classes := TStringList.Create;
+  ClassList := TStringList.Create;
 end;
 
 destructor TObjCClasses.Destroy;
 begin
-  Classes.Free;
+  ClassList.Free;
   inherited Destroy;
 end;
 
@@ -383,11 +384,12 @@ begin
 
   m:=TObjCMethod.Create(AParser.TokenPos);
   try
+    m.isClassMethod:=AParser.Token='+';
     AParser.NextToken;
 
     if AParser.Token='(' then begin
       AParser.NextToken;
-      if not ParseName(AParser,  m.RetType, m.RetName) then Exit;
+      if not ParseName(AParser,  m.RetType, m.RetName,[')']) then Exit;
       if not ConsumeToken(AParser, ')') then Exit;
     end;
 
@@ -400,7 +402,7 @@ begin
       while (AParser.Token<>';') and (AParser.Token<>',') do begin
         if AParser.Token='(' then begin
           prm:=ConsumeToken(AParser, '(') and
-               ParseName(APArser, atype, atname) and
+               ParseName(APArser, atype, atname,[')']) and
                ConsumeToken(AParser, ')');
         end else begin
           prm:=True;
@@ -562,7 +564,12 @@ begin
         s:=AParser.Token;
         if (s='setter') or (s='getter') then begin
           AParser.NextToken;
-          if not ConsumeToken(AParser, '=') and not ConsumeIdentifier(AParser, nm) then Exit;
+          if not ConsumeToken(AParser, '=') then Exit;
+          if not ConsumeIdentifier(AParser, nm) then Exit;
+          while (AParser.TokenType=tt_Ident) or (APArser.Token=':') do begin
+            nm:=nm+AParser.Token;
+            AParser.NextToken;
+          end;
           if s='setter' then p.SetterName:=nm
           else p.GetterName:=nm;
         end else begin
@@ -577,7 +584,7 @@ begin
         ErrorExpect(AParser,')');
         Exit;
       end;
-      if ParseName(AParser, p.RetType, p.Name) then begin
+      if ParseName(AParser, p.RetType, p.Name,[';']) then begin
         Result:=p;
         if AParser.Token=';' then AParser.NextToken;
       end;
@@ -597,7 +604,12 @@ begin
   if AParser.Token='<' then begin
     Result:=nil;
     AParser.NextToken;
-    if not (ConsumeIdentifier(AParser, p) and ConsumeToken(AParser,'>')) then Exit;
+    repeat
+      if not ConsumeIdentifier(AParser, p) then Exit;
+      if AParser.Token=',' then AParser.NextToken;
+    until AParser.Token='>';
+
+    if not ConsumeToken(AParser,'>') then Exit;
   end;
   Result:=PrevNamePart(AParser);
 end;
