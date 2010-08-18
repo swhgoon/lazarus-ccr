@@ -837,14 +837,17 @@ begin
   try
     while (not Result) and (index <= length(Buf)) do begin
       ScanWhile(Buf, index, spaces);
+
       if isMultiline then begin
         ScanTo(Buf, index, EoLnChars);
         SkipSingleEoLnChars;
 
       end else begin
-        if (IsSubStr(TokenTable.Precompile, Buf, Index) and HandlePrecomiler) then
+        if (IsSubStr(TokenTable.Precompile, Buf, Index) and HandlePrecomiler) then begin
+          Token:='';
+          TokenType:=tt_Ident;
            // 1. check is Preprocessor directive is found
-        else if (Buf[index] in TokenTable.Symbols) then begin                 // 2. symbol has been found, so it's not an ident
+        end else if (Buf[index] in TokenTable.Symbols) then begin                 // 2. symbol has been found, so it's not an ident
           if (not (Buf[index] in blck)) or (not SkipComments) then begin //   2.1 check if comment is found (comment prefixes match to the symbols)
             Result := true;                                              //   2.2 check if symbol is found
             if (Buf[index] = '.') and (index < length(Buf)) and (Buf[index+1] in ['0'..'9']) then begin
@@ -1129,7 +1132,6 @@ begin
   Result := tt = tt_Ident;
   if not Result then Exit;
 
-
   if (AParser.Index<=length(AParser.Buf)) and (AParser.Buf[AParser.Index]='(') then begin
     AParser.NextToken; // skipping "("
     AParser.NextToken; // the first ident
@@ -1155,9 +1157,9 @@ begin
       AParser.FindNextToken(prs, tt);
     end;
     RemoveMacroSlash(SubsText);
-    if prs <> '' then
-      AParser.Index := AParser.TokenPos;
+    if prs <> '' then AParser.Index := AParser.TokenPos;
   finally
+    ScanWhile(AParser.Buf, AParser.Index, [#10,#13]);
     AParser.TokenTable.SpaceChars := SpaceChars;
     AParser.TokenTable.Symbols := SymChars;
   end;
