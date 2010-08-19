@@ -869,7 +869,7 @@ begin
         NeedOffset:=False;
       end;
       WriteCommentToPas(cmt, false);
-      LastOffset:=cmt.Offset;
+      if cmt.Offset>LastOffset then LastOffset:=cmt.Offset;
       inc(c);
     end;
   end;
@@ -1217,7 +1217,7 @@ begin
     n:=nm.owner;
 
     if not Assigned(n) then begin
-      if nm.Id<>basetype.Name then wr.W(nm.Id+' = '+basetype.Name)
+      if nm.Id<>basetype.Name then wr.W(nm.Id+' = '+GetPasTypeName( basetype, nil))
       else Continue;
     end else begin
       fn:=n.owner;
@@ -1295,7 +1295,6 @@ begin
       wr.W( GetIdFromPart(st.fields[i].v.FirstName) + ' : 0..'+xp+';');
     end else
       WriteFuncOrVar(st.fields[i].v, False, True);
-    WriteLnCommentForOffset(st.fields[i].v.Offset);
   end;
   wr.DecIdent;
   wr.W('end');

@@ -288,7 +288,8 @@ type
 
 var
   ParseNextEntity: function (AParser: TTextParser): TEntity = nil;
-  ParseNamePart : function (Parser: TTextParser): TNamePart = nil;
+  ParseNamePart: function (Parser: TTextParser): TNamePart = nil;
+  ParsePreproc: function (AParser: TTextParser): TEntity = nil;
 
 function ParseNextCEntity(AParser: TTextParser): TEntity; // default ParseNextEntity
 function ParseCNamePart(Parser: TTextParser): TNamePart;  // default ParseNamePart
@@ -1512,6 +1513,11 @@ begin
   end;
 end;
 
+function ParseDefPreproc(AParser: TTextParser): TEntity;
+begin
+  Result:=nil;
+end;
+
 procedure ErrorExpect(Parser:TTextParser;const Expect:AnsiString);
 begin
   Parser.SetError('expected: "'+ Expect + '" but "'+Parser.Token+'" found');
@@ -1538,8 +1544,9 @@ end;
 function ParseCType(Parser: TTextParser): TEntity;
 var
   simple  : TSimpleType;
-  isunsig : Boolean;
+  issig   : Boolean;
   islong  : Boolean;
+  nm      : AnsiString;
 begin
   Result:=nil;
   if (Parser.Token='struct') then
@@ -1551,39 +1558,54 @@ begin
   else begin
     if Parser.TokenType<>tt_Ident then Exit;
 
+    nm:='';
     simple:=TSimpleType.Create(Parser.TokenPos);
-    simple.Name:=Parser.Token;
+    //simple.Name:=Parser.Token;
 
-    isunsig:=(simple.Name='unsigned') or (simple.Name='signed');
-    islong:=(simple.Name='long');
+    issig:=(Parser.Token='unsigned') or (simple.Name='signed');
+    if issig then begin
+      nm:=nm+Parser.Token+' ';
+      Parser.NextToken;
+    end;
 
+    islong:=Parser.Token='long';
+    if islong then begin
+      nm:=nm+Parser.Token+' ';
+      Parser.NextToken;
+    end;
+
+    if (Parser.Token='long') then begin
+      nm:=nm+Parser.Token+' ';
+      Parser.NextToken;
+    end;
+
+    if (Parser.Token='short') then begin
+      nm:=nm+Parser.Token+' ';
+      Parser.NextToken;
+    end;
+
+    if (Parser.Token='char') then begin
+      nm:=nm+Parser.Token+' ';
+      Parser.NextToken
+    end;
+
+    if (Parser.Token='int') then begin
+      nm:=nm+Parser.Token+' ';
+      Parser.NextToken
+    end;
+
+    if (Parser.Token='double') then begin
+      nm:=nm+Parser.Token+' ';
+      Parser.NextToken;
+    end;
+
+    if nm<>'' then
+      simple.name:=Copy(nm, 1, length(nm)-1)
+    else begin
+      simple.name:=Parser.Token;
+      Parser.NextToken;
+    end;
     Result:=simple;
-    Parser.NextToken;
-
-    if (Parser.Token='long') and islong then begin
-      simple.name:=simple.name+' '+Parser.Token;
-      Parser.NextToken;
-    end;
-
-    if isunsig and (Parser.Token='short') then begin
-      simple.name:=simple.name+' '+Parser.Token;
-      Parser.NextToken;
-    end;
-
-    if isunsig and (Parser.Token='char') then begin
-      simple.name:=simple.name+' '+Parser.Token;
-      Parser.NextToken
-    end;
-
-    if (Parser.Token='int') and (isunsig or islong) then begin
-      simple.name:=simple.name+' '+Parser.Token;
-      Parser.NextToken
-    end;
-
-    if islong and (Parser.Token='double') then begin
-      simple.name:=simple.name+' '+Parser.Token;
-      Parser.NextToken
-    end;
   end;
 end;
 
@@ -1758,6 +1780,7 @@ begin
   if not Result then Exit;
 
   try
+    Result:=False;
     repeat
       Name:=ParseNamePart(Parser);
       if Assigned(Name) then Names.Add(Name);
@@ -1774,6 +1797,7 @@ begin
         Parser.NextToken;
       end;
     until done;
+    Result:=True;
   finally
   end;
 end;
@@ -1865,35 +1889,39 @@ begin
   if AParser.Token<>'struct' then Exit;
 
   st:=TStructType.Create(AParser.TokenPos);
-  AParser.NextToken;
-
-  Result:=st;
-  if AParser.TokenType=tt_Ident then begin
-    Result.Name:=AParser.Token;
+  try
     AParser.NextToken;
-  end;
 
-  if AParser.Token='{' then begin
-    AParser.NextToken;
-    repeat
-      v:=TVarFuncEntity.Create(AParser.TokenPos);
-      if not ParseNames(AParser, v.RetType, v.Names,[';',':']) then begin
-        ErrorExpect(AParser, 'type name');
-        v.Free;
-        Exit;
-      end;
-      i:=st.AddField(v);
-      if AParser.Token=':' then begin
-        AParser.NextToken;
-        st.fields[i].isbitted:=True;
-        st.fields[i].bits:=ParseCExpr(AParser);
-      end;
-      if AParser.Token=';' then AParser.NextToken;
-    until (AParser.Token='}');
+    Result:=st;
+    if AParser.TokenType=tt_Ident then begin
+      Result.Name:=AParser.Token;
+      AParser.NextToken;
+    end;
 
-    ConsumeToken(AParser, '}');
+    if AParser.Token='{' then begin
+      AParser.NextToken;
+      repeat
+        v:=TVarFuncEntity.Create(AParser.TokenPos);
+        if not ParseNames(AParser, v.RetType, v.Names,[';',':']) then begin
+          ErrorExpect(AParser, 'type name');
+          v.Free;
+          Exit;
+        end;
+        i:=st.AddField(v);
+        if AParser.Token=':' then begin
+          AParser.NextToken;
+          st.fields[i].isbitted:=True;
+          st.fields[i].bits:=ParseCExpr(AParser);
+        end;
+        if AParser.Token=';' then AParser.NextToken;
+      until (AParser.Token='}');
+
+      if not ConsumeToken(AParser, '}') then Exit;
+    end;
+    Result:=st;
+  finally
+    if not Assigned(Result) then st.Free;
   end;
-  Result:=st;
 end;
 
 function ParseUnion(AParser:TTextParser):TUnionType;
@@ -2047,6 +2075,7 @@ end;
 initialization
   ParseNextEntity:=@ParseNextCEntity;
   ParseNamePart:=@ParseCNamePart;
+  ParsePreproc:=@ParseDefPreproc;
 
 
 end.
