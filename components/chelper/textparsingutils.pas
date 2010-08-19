@@ -53,7 +53,7 @@ function SkipCommentBlock(const s: AnsiString; var index: Integer; const closecm
 
 function SkipLine(const s: AnsiString; var index: Integer): AnsiString;
 
-function OffsetToLinePos(const t: AnsiString; Offset: Integer; var P: TPoint): AnsiString;
+procedure OffsetToLinePos(const t: AnsiString; Offset: Integer; var P: TPoint);
 
 implementation
 
@@ -152,7 +152,7 @@ begin
   inc(index);
 end;
 
-function OffsetToLinePos(const t: AnsiString; Offset: Integer; var P: TPoint): AnsiString;
+procedure OffsetToLinePos(const t: AnsiString; Offset: Integer; var P: TPoint);
 var
   i,  le  : Integer;
 begin

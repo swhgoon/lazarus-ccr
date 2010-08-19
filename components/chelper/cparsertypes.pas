@@ -100,8 +100,6 @@ type
 
     function IsMultiLine: Boolean;
     procedure SkipSingleEoLnChars;
-
-    function AddChildToStackEntity(ent: TObject): Boolean;
   public
     Buf           : AnsiString;
 
@@ -149,18 +147,13 @@ type
   TEntity = class(TObject)
   protected
     function DoParse(AParser: TTextParser): Boolean; virtual;
-
   public
     Offset      : Integer;
-    Items       : TList;
-
-    TagComment  : AnsiString;
     Specifiers  : TStringList;
     
     constructor Create(AOffset: Integer=-1); virtual;
     destructor Destroy; override;
     function Parse(AParser: TTextParser): Boolean; virtual;
-    procedure Assign(AEntity: TEntity); virtual;
   end;
   TEntityClass = class of TEntity;
 
@@ -178,11 +171,15 @@ type
     destructor Destroy; override;
   end;
 
+  { TCPrepInclude }
+
   TCPrepInclude = class(TCPrepocessor)
   protected
+    function DoParse(AParser: TTextParser): Boolean; override;
+  public
     Params    : TStringList;
     Included  : AnsiString;
-    function DoParse(AParser: TTextParser): Boolean; override;
+    destructor Destroy; override;
   end;
 
   TCPrepElse = class(TCPrepocessor)
@@ -244,7 +241,6 @@ type
   end;
 
   TExpression = class(TEntity)
-    function DoParse(AParser: TTextParser): Boolean; override;
   public
     Tokens  : array of TExpPart;
     Count   : Integer;
@@ -272,8 +268,8 @@ type
 
   TNamePart = class(TObject)
   private
-    fChild  : TNamePart;
-    fOwner  : TNamePart;
+    fChild    : TNamePart;
+    fOwner    : TNamePart;
   public
     Kind      : TNameKind;
     RefCount  : Integer;
@@ -281,6 +277,7 @@ type
     arrayexp  : array of TExpression;
     params    : array of TFuncParam;
     constructor Create(AKind: TNameKind);
+    destructor Destroy; override;
     procedure AddParam(prmtype: TEntity; prmname: TNamePart);
     procedure AddArrayExpr(expr: TExpression);
     property child: TNamePart read fchild write fChild;    // int (*p)[10]; "[10]" is child of (*p)
@@ -331,8 +328,6 @@ type
   { TVarFuncEntity }
 
   TVarFuncEntity = class(TEntity)
-  protected
-    function DoParse(AParser:TTextParser): Boolean; override;
   public
     RetType     : TEntity;
     Names       : TList;
@@ -354,6 +349,7 @@ type
   public
     Name    : AnsiString;
     fields  : array oF TStructTypeField;
+    destructor Destroy; override;
     function AddField(ev: TVarFuncEntity): Integer;
   end;
 
@@ -363,6 +359,7 @@ type
   public
     Name    : AnsiString;
     fields  : array oF TStructTypeField;
+    destructor Destroy; override;
     function AddField(ev: TVarFuncEntity): Integer;
   end;
 
@@ -686,7 +683,12 @@ begin
 end;
 
 destructor TTextParser.Destroy;
+var
+  i : Integer;
 begin
+  TokenTable.Free;
+  for i:=0 to Comments.Count-1 do
+    TObject(Comments[i]).Free;
   Comments.Free;
   //IgnoreTokens.Free;
   Errors.Free;
@@ -735,9 +737,8 @@ begin
     if Result then begin
       Index:=i;
       Result := df.Parse(Self);
-      if UsePrecompileEntities then AddChildToStackEntity(df);
-      if Assigned(OnPrecompile) then
-        OnPrecompile(Self, df);
+      Comments.Add(df);
+      if Assigned(OnPrecompile) then OnPrecompile(Self, df);
     end;
 
     if not Result then begin
@@ -954,18 +955,6 @@ begin
   Result := Cmd;
 end;
 
-function TTextParser.AddChildToStackEntity(ent: TObject): Boolean;
-var
-  parent : TEntity;
-begin
-  Result := Assigned(stack) and (stack.Count>0);
-  if not Result then Exit;
-
-  parent := stack[stack.Count-1];
-  if Assigned(parent) and (parent is TEntity) then
-    (parent as TEntity).Items.Add(ent);
-end;
-
 function TTextParser.IsMultiLine: Boolean;
 begin
   Result := TokenTable.MultiLine <> #0;
@@ -1029,11 +1018,6 @@ end;
 
 { TEntity }
 
-procedure TEntity.Assign(AEntity: TEntity);
-begin
-  TagComment := AEntity.TagComment;
-end;
-
 function TEntity.DoParse(AParser:TTextParser):Boolean;
 begin
   Result:=False;
@@ -1043,14 +1027,12 @@ constructor TEntity.Create(AOffset: Integer);
 begin
   inherited Create;
   Offset := AOffset;
-  Items := TList.Create;
   Specifiers := TStringList.create;
 end;
 
 destructor TEntity.Destroy;
 begin
   Specifiers.Free;
-  Items.Free;
   inherited Destroy;
 end;
 
@@ -1206,6 +1188,12 @@ begin
   finally
     AParser.TokenTable.Symbols := chars ;
   end;
+end;
+
+destructor TCPrepInclude.Destroy;
+begin
+  Params.Free;
+  inherited Destroy;
 end;
 
 { TCPrepElse }
@@ -1561,7 +1549,6 @@ begin
 
     nm:='';
     simple:=TSimpleType.Create(Parser.TokenPos);
-    //simple.Name:=Parser.Token;
 
     issig:=(Parser.Token='unsigned') or (simple.Name='signed');
     if issig then begin
@@ -1642,11 +1629,6 @@ begin
 end;
 
 { TExpression }
-
-function TExpression.DoParse(AParser: TTextParser): Boolean;  
-begin
-  Result:=False;
-end;
 
 procedure TExpression.PushToken(const AToken:AnsiString; ATokenType: TTokenType);
 begin
@@ -1826,6 +1808,23 @@ begin
   Kind:=AKind;
 end;
 
+destructor TNamePart.Destroy;
+var
+  i : Integer;
+begin
+  if Assigned(fChild) then begin
+    fChild.owner:=nil;
+    fChild.Free;
+  end;
+  if Assigned(fOwner) then fOwner.fChild:=nil;
+  for i:=0 to length(arrayexp)-1 do arrayexp[i].Free;
+  for i:=0 to length(params)-1 do begin
+    params[i].prmtype.Free;
+    params[i].name.Free;
+  end;
+  inherited Destroy;
+end;
+
 procedure TNamePart.AddParam(prmtype:TEntity;prmname:TNamePart);
 var
   i : Integer;
@@ -1847,11 +1846,6 @@ end;
 
 { TVarFuncEntity }
 
-function TVarFuncEntity.DoParse(AParser:TTextParser):Boolean;
-begin
-  Result:=False;
-end;
-
 constructor TVarFuncEntity.Create(AOffset: Integer);
 begin
   inherited Create(AOffset);
@@ -1859,7 +1853,12 @@ begin
 end;
 
 destructor TVarFuncEntity.Destroy;
+var
+  i : Integer;
 begin
+  RetType.Free;
+  for i:=0 to Names.Count-1 do TObject(Names[i]).Free;
+  Names.Free;
   inherited Destroy;
 end;
 
@@ -1869,6 +1868,17 @@ begin
 end;
 
 { TStructType }
+
+destructor TStructType.Destroy;
+var
+  i : Integer;
+begin
+  for i:=0 to length(fields)-1 do begin
+    fields[i].v.Free;
+    fields[i].bits.Free;
+  end;
+  inherited Destroy;
+end;
 
 function TStructType.AddField(ev:TVarFuncEntity):Integer;
 var
@@ -2045,6 +2055,17 @@ begin
   Result:=i;
 end;
 
+destructor TUnionType.Destroy;
+var
+  i : Integer;
+begin
+  for i:=0 to length(fields)-1 do begin
+    fields[i].v.Free;
+    fields[i].bits.Free;
+  end;
+  inherited Destroy;
+end;
+
 { TEnumType }
 
 function TEnumType.AddItem(const name:AnsiString;x:TExpression; Offset: Integer): Integer;
@@ -2068,7 +2089,11 @@ begin
 end;
 
 destructor TTypeDef.Destroy;
+var
+  i : Integer;
 begin
+  origintype.Free;
+  for i:=0 to names.Count-1 do TObject(names[i]).Free;
   names.Free;
   inherited Destroy;
 end;

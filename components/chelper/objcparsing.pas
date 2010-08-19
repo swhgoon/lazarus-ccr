@@ -473,7 +473,6 @@ constructor TObjCMethod.Create(AOffset:Integer);
 begin
   inherited Create(AOffset);
   Name      := TStringList.Create;
-  RetType   := TVarFuncEntity.Create;
 end;
 
 destructor TObjCMethod.Destroy;

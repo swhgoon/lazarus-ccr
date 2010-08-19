@@ -10,7 +10,6 @@
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <UseAppBundle Value="False"/>
-      <ResourceType Value="res"/>
     </General>
     <i18n>
       <EnableI18N LFM="False"/>
@@ -65,19 +64,18 @@
     <Linking>
       <Debugging>
         <GenerateDebugInfo Value="True"/>
+        <UseLineInfoUnit Value="False"/>
       </Debugging>
+      <LinkSmart Value="True"/>
       <Options>
         <LinkerOptions Value="-macosx_version_min 10.4  "/>
-        <Win32>
-          <GraphicApplication Value="True"/>
-        </Win32>
       </Options>
     </Linking>
     <Other>
       <CompilerMessages>
         <IgnoredMessages idx3018="True" idx3031="True" idx3189="True" idx4035="True" idx4036="True" idx4055="True" idx4079="True" idx4080="True" idx4081="True" idx5024="True" idx5057="True" idx5058="True" idx5060="True"/>
         <UseMsgFile Value="True"/>
-        <MsgFileName Value="/Users/dmitry/FPC_Laz/fpc/compiler/msg/errore.msg"/>
+        <MsgFileName Value="/Users/igorkokarev/Fpc_Laz/fpc/compiler/msg/errore.msg"/>
       </CompilerMessages>
       <CompilerPath Value="$(CompPath)"/>
     </Other>

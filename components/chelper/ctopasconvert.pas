@@ -325,6 +325,8 @@ begin
     end;
     Result:=ent;
     AParser.Index:=entidx;
+  end else begin
+    ent.Free;
   end;
 end;
 
@@ -450,6 +452,8 @@ var
   cmt       : TStopComment;
   i         : Integer;
   succidx   : Integer;
+  cmtlist   : TList;
+
 begin
   FillChar(ParseError, sizeof(ParseError), 0);
   Result:='';
@@ -468,7 +472,7 @@ begin
     p.UseCommentEntities := True;
     p.OnComment:=@cmt.OnComment;
     p.OnPrecompile:=@cmt.OnPrecompiler;
-
+    cmtlist:=TList.Create;
     try
       repeat
         try
@@ -499,7 +503,10 @@ begin
               end;
             end;
 
-            cnv.WriteCtoPas(ent, p.Comments, p.Buf);
+            cmtlist.Clear;
+            for i:=0 to p.Comments.Count-1 do
+              if TObject(p.Comments[i]) is TComment then cmtlist.Add(TObject(p.Comments[i]));
+            cnv.WriteCtoPas(ent, cmtlist, p.Buf);
 
             lastsec:=cnv.wr.Section;
           except
@@ -509,6 +516,7 @@ begin
           cnv.Free;
         end;
 
+        if Assigned(ent) and (p.Comments.IndexOf(ent)<0) then ent.Free;
         for i:=0 to p.Comments.Count-1 do TComment(p.Comments[i]).Free;
         p.Comments.Clear;
         cmt.Clear;
@@ -524,6 +532,7 @@ begin
       p.Free;
       macros.Free;
       cmt.Free;
+      cmtlist.Free;
     end;
   except
     on e: Exception do Result:=Result+LineEnding+' internal error: '+ e.Message;
@@ -734,7 +743,8 @@ begin
       for i:=0 to cent.Protocols.Count-2 do wr.W(cent.Protocols[i]+'Protocol, ');
       wr.W(cent.Protocols[cent.Protocols.Count-1]+'Protocol');
     end;
-    if (cent.SuperClass<>'') or (cent.Protocols.Count>0) then wr.Wln(')');
+    if (cent.SuperClass<>'') or (cent.Protocols.Count>0) then wr.Wln(')')
+    else wr.Wln;
 
     sect:='';
     sc:=os_Public;
