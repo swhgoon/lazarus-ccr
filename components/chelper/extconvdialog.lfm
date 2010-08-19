@@ -15,7 +15,7 @@ object CtoPasConfig: TCtoPasConfig
     Top = 8
     Width = 622
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 0
+    PageIndex = 1
     TabOrder = 0
     object pageMain: TPage
       Caption = 'Main'
@@ -191,22 +191,37 @@ object CtoPasConfig: TCtoPasConfig
       ClientWidth = 616
       ClientHeight = 382
       object edtExtTool: TEdit
+        AnchorSideTop.Control = chkUseExternal
+        AnchorSideTop.Side = asrBottom
         Left = 13
         Height = 22
-        Top = 6
+        Top = 32
         Width = 511
         Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 10
         TabOrder = 0
       end
       object Button1: TButton
+        AnchorSideTop.Control = chkUseExternal
+        AnchorSideTop.Side = asrBottom
         Left = 538
         Height = 20
-        Top = 6
+        Top = 32
         Width = 70
         Anchors = [akTop, akRight]
+        AutoSize = True
+        BorderSpacing.Top = 10
         Caption = 'Select'
         OnClick = Button1Click
         TabOrder = 1
+      end
+      object chkUseExternal: TCheckBox
+        Left = 13
+        Height = 18
+        Top = 4
+        Width = 163
+        Caption = 'Use external converter'
+        TabOrder = 2
       end
     end
   end

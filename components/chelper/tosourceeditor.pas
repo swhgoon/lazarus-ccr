@@ -25,19 +25,11 @@ interface
 uses
   Classes, SysUtils, Dialogs, LCLType, LCLIntf, Forms,
   Menus, MenuIntf, SrcEditorIntf, process, LazIDEIntf, IDEMsgIntf,
-  extconvdialog, converteridesettings, cconvconfig;
+  extconvdialog, converteridesettings, cconvconfig, ctopasconvert;
 
 procedure Register;
 
 implementation
-
-type
-  TErrorInfo = record
-    isError   : Boolean;
-    Error     : AnsiString;
-    ErrorPos  : TPoint;
-  end;
-
 
 function GetErrorInfo(const errstr: AnsiString; var error: TerrorInfo): Boolean;
 var
@@ -58,7 +50,7 @@ begin
   i:=Pos(' ', d);
   Val( copy(d, 1, i-1), error.ErrorPos.X, err);
 
-  error.Error:=Copy(d, i+1, length(d));
+  error.ErrorMsg:=Copy(d, i+1, length(d));
 end;
 
 function DoExtConvert(const t: AnsiString; ParseAll: Boolean; var EndPos: TPoint; var error: TErrorInfo): AnsiString;
@@ -136,8 +128,10 @@ begin
         if st.Count=0 then Exit;
         i:=0;
         d:=st[0];
-        if GetErrorInfo(d, error) then d:=st[1];
-
+        if GetErrorInfo(d, error) then begin
+          st.Delete(0);
+          d:=st[0];
+        end;
         if d='' then Exit;
         i:=Pos(' ', d);
         if i>=1 then begin
@@ -159,6 +153,24 @@ begin
   end;
 end;
 
+function StringFromFile(const FileName: AnsiString): AnsiString;
+var
+  fs  : TFileStream;
+begin
+  Result:='';
+  if not FileExists(FileName) then Exit;
+  try
+    fs:=TFileStream.Create(FileName, fmOpenRead or fmShareDenyNone);
+    try
+      SetLength(Result, fs.Size);
+      fs.Read(Result[1], fs.Size);
+    finally
+      fs.Free;
+    end;
+  except
+  end;
+end;
+
 function DoConvertCode(const t: AnsiString; ParseAll: Boolean; var EndPoint: TPoint; var txt: AnsiString; var error: TErrorInfo): Boolean;
 begin
   Result:=False;
@@ -174,8 +186,22 @@ begin
     if Result then cconvconfig.LoadFromFile(ConvFile, ConvSettings)
     else ShowMessage('Error: '+ txt);
 
-  end else
-    txt:='';
+  end else begin
+    try
+      if FileExists(DefineFile) then
+        ConvSettings.CustomDefines:=StringFromFile(DefineFile)
+      else
+        ConvSettings.CustomDefines:='';
+      txt:=ConvertCode(t, EndPoint, ParseAll, error, ConvSettings);
+      Result:=true;
+
+    except
+      on E: Exception do begin
+        ShowMessage('Error: '+e.Message);
+        Result:=False;
+      end;
+    end;
+  end;
 end;
 
 var
@@ -192,6 +218,7 @@ var
   err     : TErrorInfo;
   line    : TIDEMessageLine;
   parts   : TStringList;
+  lcnt    : Integer;
 begin
   if parsing then Exit;
   if not Assigned(SourceEditorManagerIntf) or not Assigned(SourceEditorManagerIntf.ActiveEditor) then Exit;
@@ -216,14 +243,17 @@ begin
       if p.Y>0 then begin
         inc(p.Y, st.Y-1);
         st.X:=1;
+        lcnt:=editor.LineCount;
         editor.ReplaceText(st, p, s);
+        lcnt:=editor.LineCount-lcnt;
         if Assigned(CtoPasConfig) then
           CtoPasConfig.SettingsToUI;
-      end;
+      end else
+        lcnt:=0;
       if err.isError then begin
-        inc(err.ErrorPos.Y, st.Y-1);
+        inc(err.ErrorPos.Y, st.Y-1+lcnt);
         if Assigned(IDEMessagesWindow) then begin
-          s:=Format('%s(%d,%d) Chelper: %s', [ExtractFileName(editor.FileName), err.ErrorPos.Y,err.ErrorPos.X, err.Error]);
+          with err do s:=Format('%s(%d,%d) Chelper: %s', [ExtractFileName(editor.FileName), ErrorPos.Y,ErrorPos.X, ErrorMsg]);
           parts:=TStringList.Create;
           try
             parts.Values['Type']:='Chelper';

@@ -14,8 +14,8 @@
     </CompilerOptions>
     <Description Value="The IDE extension usefull for C headers convertion"/>
     <License Value="LGPL"/>
-    <Version Minor="8"/>
-    <Files Count="6">
+    <Version Minor="9"/>
+    <Files Count="5">
       <Item1>
         <Filename Value="tosourceeditor.pas"/>
         <HasRegisterProc Value="True"/>
@@ -37,10 +37,6 @@
         <Filename Value="converteridesettings.pas"/>
         <UnitName Value="converteridesettings"/>
       </Item5>
-      <Item6>
-        <Filename Value="extconvdialog.lfm"/>
-        <Type Value="LFM"/>
-      </Item6>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">

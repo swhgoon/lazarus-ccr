@@ -1680,6 +1680,5 @@ begin
   Result:=Copy(Result, 1, length(Result)-1);
 end;
 
-
 end.
 

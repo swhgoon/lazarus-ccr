@@ -20,6 +20,7 @@ unit cparsertypes;
 
 interface
 
+
 {$ifdef fpc}{$mode delphi}{$h+}{$endif}
 
 uses
@@ -2076,6 +2077,5 @@ initialization
   ParseNextEntity:=@ParseNextCEntity;
   ParseNamePart:=@ParseCNamePart;
   ParsePreproc:=@ParseDefPreproc;
-
 
 end.

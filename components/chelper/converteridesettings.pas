@@ -75,6 +75,7 @@ begin
   try
     ini:=TIniFile.Create(FileName);
     try
+      ini.WriteBool('Tool', 'UseExt', UseExtTool);
       ini.WriteString('Tool', 'Exe', ExtTool);
       ini.WriteString('Tool', 'DefineFile', DefineFile);
     finally
@@ -91,6 +92,7 @@ begin
   try
     ini:=TIniFile.Create(FileName);
     try
+      UseExtTool:=ini.ReadBool('Tool', 'UseExt', UseExtTool);
       ExtTool:=ini.ReadString('Tool', 'Exe', ExtTool);
       DefineFile:=ini.ReadString('Tool', 'DefineFile',DefineFile);
     finally

@@ -17,6 +17,7 @@ type
     btnSelect:TButton;
     btnEdit:TButton;
     Button2:TButton;
+    chkUseExternal:TCheckBox;
     chkRecordsPacked:TCheckBox;
     chkFuncAreExt:TCheckBox;
     chkEnums:TCheckBox;
@@ -134,6 +135,7 @@ begin
   Memo1.Lines.Assign(ConvSettings.CtoPasTypes);
   edtDefines.Text:=DefineFile;
   edtExtTool.Text:=ExtTool;
+  chkUseExternal.Checked:=UseExtTool;
 end;
 
 procedure TCtoPasConfig.UIToSettings;
@@ -145,6 +147,7 @@ begin
   ConvSettings.CtoPasTypes.Assign(Memo1.Lines);
   DefineFile:=edtDefines.Text;
   ExtTool:=edtExtTool.Text;
+  UseExtTool:=chkUseExternal.Checked;
 end;
 
 end.
