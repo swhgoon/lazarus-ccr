@@ -28,7 +28,7 @@ uses
 var
   ConvSettings  : TConvertSettings=nil;
   ExtTool       : AnsiString='';
-  UseExtTool    : Boolean=True;
+  UseExtTool    : Boolean=False;
   ExtTimeOut    : LongWord = 5000;
   ConvFile      : AnsiString='';
   DefineFile    : AnsiString='';

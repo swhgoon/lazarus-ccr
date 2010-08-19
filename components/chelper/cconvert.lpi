@@ -66,7 +66,6 @@
         <GenerateDebugInfo Value="True"/>
         <UseLineInfoUnit Value="False"/>
       </Debugging>
-      <LinkSmart Value="True"/>
       <Options>
         <LinkerOptions Value="-macosx_version_min 10.4  "/>
       </Options>

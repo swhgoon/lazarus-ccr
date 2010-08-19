@@ -1510,7 +1510,6 @@ end;
 procedure ErrorExpect(Parser:TTextParser;const Expect:AnsiString);
 begin
   Parser.SetError('expected: "'+ Expect + '" but "'+Parser.Token+'" found');
-  Dump_Stack(output, get_frame);
 end;
 
 function ConsumeToken(Parser:TTextParser;const Token:AnsiString):Boolean;
