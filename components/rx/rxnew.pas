@@ -2,7 +2,7 @@
   This source is only used to compile and install the package.
  }
 
-unit rxnew ; 
+unit rxnew; 
 
 interface
 
@@ -15,16 +15,16 @@ uses
   rxsortmemds, AutoPanel, pickdate, rxiconv, rxceEditLookupFields, rxclock, 
   rxspin, RxDBSpinEdit, RegisterRxDB, RxTimeEdit, RxDBTimeEdit, RxDBCtrls, 
   rxfilterby, rxconst, rxFileUtils, RxVersInfo, RxAboutDialog, 
-  rxAboutFormUnit, dbcurredit, LazarusPackageIntf;
+  rxAboutFormUnit, dbcurredit, RxViewsPanel, LazarusPackageIntf;
 
 implementation
 
-procedure Register ; 
+procedure Register; 
 begin
-  RegisterUnit('registerrx', @registerrx.Register) ; 
-  RegisterUnit('RegisterRxDB', @RegisterRxDB.Register) ; 
-end ; 
+  RegisterUnit('registerrx', @registerrx.Register); 
+  RegisterUnit('RegisterRxDB', @RegisterRxDB.Register); 
+end; 
 
 initialization
-  RegisterPackage('rxnew', @Register) ; 
+  RegisterPackage('rxnew', @Register); 
 end.

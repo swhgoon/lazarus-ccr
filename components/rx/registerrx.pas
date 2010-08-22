@@ -47,7 +47,7 @@ uses
   Dialogs, ComponentEditors, seldsfrm, DBPropEdits, DB, rxctrls, RxLogin,
   RxCustomChartPanel, AutoPanel, pickdate, rxconst, tooledit, rxclock,
   rxceEditLookupFields, rxpopupunit, rxspin, RxTimeEdit, RxVersInfo,
-  RxAboutDialog;
+  RxAboutDialog, RxViewsPanel;
 
 type
 
@@ -198,6 +198,11 @@ begin
   RegisterComponents('RX',[TRxAboutDialog]);
 end;
 
+procedure RegisterRxViewsPanel;
+begin
+  RegisterComponents('RX',[TRxViewsPanel]);
+end;
+
 procedure Register;
 begin
   //RX
@@ -225,6 +230,7 @@ begin
   RegisterUnit('RxLogin', @RegisterRxLogin);
   RegisterUnit('RxVersInfo', @RegisterRxVersInfo);
   RegisterUnit('RxAboutDialog', @RegisterRxAboutDialog);
+  RegisterUnit('RxViewsPanel', @RegisterRxViewsPanel);
 
   //RX DBAware
   RegisterUnit('dbdateedit', @RegisterUnitDBDateEdit);
