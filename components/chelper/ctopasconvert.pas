@@ -45,6 +45,7 @@ type
     TypeNamePrefix    : AnsiString;
     RefTypeNamePrefix : AnsiString;
     FuncConv          : AnsiString;
+    ExtLibName        : AnsiString;
     FuncDeclPostfix   : AnsiString;
     ParamPrefix       : AnsiString;
 
@@ -1117,7 +1118,9 @@ begin
       wr.W(GetPasTypeName(cent.RetType, n.owner));
     end;
     wr.W(';');
-    if isDeclExternal(cfg, cent.RetType, isfunc) then wr.W(' external;');
+    if isDeclExternal(cfg, cent.RetType, isfunc) then wr.W(' external');
+    if cfg.ExtLibName<>'' then wr.W(' '+cfg.ExtLibName);
+    wr.W(';');
     if WriteComment then WriteLnCommentForOffset(cent.Offset);
   end;
 end;

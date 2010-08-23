@@ -22,11 +22,13 @@ type
     chkFuncAreExt:TCheckBox;
     chkEnums:TCheckBox;
     cmbCallConv:TComboBox;
+    txtLibName:TEdit;
     edtDefines:TEdit;
     edtExtTool: TEdit;
     Label1:TLabel;
     Label2:TLabel;
-    Label3:TLabel;
+    lblCallConv:TLabel;
+    lblExtLibName:TLabel;
     lblDefines:TLabel;
     Memo1:TMemo;
     Notebook1:TNotebook;
@@ -131,6 +133,7 @@ begin
   chkRecordsPacked.Checked:=ConvSettings.RecordsArePacked;
   chkFuncAreExt.Checked:=ConvSettings.FuncsAreExternal;
   chkEnums.Checked:=ConvSettings.EnumsAsConst;
+  txtLibName.Text:=ConvSettings.ExtLibName;
   cmbCallConv.Text:=ConvSettings.FuncConv;
   Memo1.Lines.Assign(ConvSettings.CtoPasTypes);
   edtDefines.Text:=DefineFile;
@@ -143,7 +146,11 @@ begin
   ConvSettings.RecordsArePacked:=chkRecordsPacked.Checked;
   ConvSettings.FuncsAreExternal:=chkFuncAreExt.Checked;
   ConvSettings.EnumsAsConst:=chkEnums.Checked;
-  ConvSettings.FuncConv:=cmbCallConv.Text;
+  ConvSettings.ExtLibName:=Trim(txtLibName.Text);
+  if (cmbCallConv.ItemIndex=0) and (cmbCallConv.Text=cmbCallConv.Items[0]) then
+    ConvSettings.FuncConv:=''
+  else
+    ConvSettings.FuncConv:=cmbCallConv.Text;
   ConvSettings.CtoPasTypes.Assign(Memo1.Lines);
   DefineFile:=edtDefines.Text;
   ExtTool:=edtExtTool.Text;

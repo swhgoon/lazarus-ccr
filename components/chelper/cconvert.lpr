@@ -22,7 +22,7 @@ program cconvert;
 
 uses
   SysUtils,Classes,
-  ctopasconvert,cparsertypes, cparserutils,cconvconfig, objcparsing;
+  ctopasconvert,cparsertypes, cparserutils, cconvconfig, objcparsing;
 
 var
   ConfigFile    : AnsiString = '';

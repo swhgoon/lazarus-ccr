@@ -27,6 +27,7 @@
       </Item2>
       <Item3>
         <Filename Value="extconvdialog.pas"/>
+        <HasResources Value="True"/>
         <UnitName Value="extconvdialog"/>
       </Item3>
       <Item4>

@@ -48,6 +48,7 @@ begin
       cfg.RefTypeNamePrefix:=ini.ReadString('Main','RefTypeNamePrefix',cfg.RefTypeNamePrefix);
       cfg.FuncConv:=ini.ReadString('Main','FuncConv',cfg.FuncConv);
       cfg.FuncDeclPostfix:=ini.ReadString('Main','FuncDeclPostfix',cfg.FuncDeclPostfix);
+      cfg.ExtLibName:=ini.ReadString('Main','ExtLibName',cfg.ExtLibName);
       cfg.ParamPrefix:=ini.ReadString('Main','ParamPrefix',cfg.ParamPrefix);
     finally
       ini.Free;
@@ -78,6 +79,7 @@ begin
       ini.WriteString('Main','FuncConv',cfg.FuncConv);
       ini.WriteString('Main','FuncDeclPostfix',cfg.FuncDeclPostfix);
       ini.WriteString('Main','ParamPrefix',cfg.ParamPrefix);
+      ini.WriteString('Main','ExtLibName',cfg.ExtLibName);
     finally
       ini.Free;
     end;

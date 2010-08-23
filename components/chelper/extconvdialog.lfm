@@ -1,39 +1,39 @@
 object CtoPasConfig: TCtoPasConfig
-  Left = 336
-  Height = 446
-  Top = 231
-  Width = 655
+  Left = 406
+  Height = 584
+  Top = 128
+  Width = 668
   Caption = 'C to Pascal settings'
-  ClientHeight = 446
-  ClientWidth = 655
+  ClientHeight = 584
+  ClientWidth = 668
   OnClose = FormClose
   OnResize = FormResize
   LCLVersion = '0.9.29'
   object Notebook1: TNotebook
     Left = 16
-    Height = 421
+    Height = 559
     Top = 8
-    Width = 622
+    Width = 635
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 1
+    PageIndex = 0
     TabOrder = 0
     object pageMain: TPage
       Caption = 'Main'
-      ClientWidth = 616
-      ClientHeight = 382
+      ClientWidth = 629
+      ClientHeight = 520
       object Panel1: TPanel
         Left = 0
-        Height = 172
+        Height = 228
         Top = 0
-        Width = 616
+        Width = 629
         Align = alTop
         BevelOuter = bvNone
-        ClientHeight = 172
-        ClientWidth = 616
+        ClientHeight = 228
+        ClientWidth = 629
         TabOrder = 0
         object Label1: TLabel
           Left = 6
-          Height = 18
+          Height = 17
           Top = 5
           Width = 150
           Caption = 'Pascal code generation:'
@@ -58,27 +58,34 @@ object CtoPasConfig: TCtoPasConfig
         object chkEnums: TCheckBox
           Left = 6
           Height = 18
-          Top = 107
+          Top = 132
           Width = 244
           Caption = 'Enumerations are Integer constants'
           TabOrder = 2
         end
-        object Label3: TLabel
-          Left = 197
-          Height = 18
-          Top = 70
-          Width = 115
+        object lblCallConv: TLabel
+          AnchorSideLeft.Control = chkFuncAreExt
+          AnchorSideLeft.Side = asrBottom
+          Left = 187
+          Height = 17
+          Top = 71
+          Width = 118
+          BorderSpacing.Left = 20
           Caption = 'Calling convention'
           ParentColor = False
         end
         object cmbCallConv: TComboBox
+          AnchorSideLeft.Control = lblCallConv
+          AnchorSideLeft.Side = asrBottom
           Left = 325
           Height = 21
-          Top = 67
+          Top = 70
           Width = 160
+          BorderSpacing.Left = 20
           ItemHeight = 0
-          ItemIndex = 0
+          ItemIndex = 1
           Items.Strings = (
+            '(empty)'
             'cdecl'
             'stdcall'
             'mwpascal'
@@ -88,10 +95,10 @@ object CtoPasConfig: TCtoPasConfig
           Text = 'cdecl'
         end
         object lblDefines: TLabel
-          Left = 11
-          Height = 18
-          Top = 136
-          Width = 51
+          Left = 6
+          Height = 17
+          Top = 172
+          Width = 52
           Caption = 'Defines:'
           ParentColor = False
         end
@@ -99,10 +106,10 @@ object CtoPasConfig: TCtoPasConfig
           AnchorSideLeft.Control = lblDefines
           AnchorSideLeft.Side = asrBottom
           AnchorSideRight.Control = btnSelect
-          Left = 68
-          Height = 22
-          Top = 136
-          Width = 376
+          Left = 64
+          Height = 21
+          Top = 172
+          Width = 388
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 6
           BorderSpacing.Right = 6
@@ -110,9 +117,9 @@ object CtoPasConfig: TCtoPasConfig
         end
         object btnSelect: TButton
           AnchorSideRight.Control = btnEdit
-          Left = 450
+          Left = 458
           Height = 20
-          Top = 136
+          Top = 172
           Width = 70
           Anchors = [akTop, akRight]
           AutoSize = True
@@ -122,49 +129,69 @@ object CtoPasConfig: TCtoPasConfig
           TabOrder = 5
         end
         object btnEdit: TButton
-          Left = 540
+          Left = 548
           Height = 20
-          Top = 136
+          Top = 172
           Width = 70
           Anchors = [akTop, akRight]
           Caption = 'Edit'
           OnClick = btnEditClick
           TabOrder = 6
         end
+        object txtLibName: TEdit
+          AnchorSideLeft.Control = cmbCallConv
+          Left = 325
+          Height = 22
+          Top = 100
+          Width = 293
+          Anchors = [akTop, akLeft, akRight]
+          TabOrder = 7
+        end
+        object lblExtLibName: TLabel
+          AnchorSideLeft.Control = chkFuncAreExt
+          AnchorSideLeft.Side = asrBottom
+          Left = 187
+          Height = 17
+          Top = 103
+          Width = 83
+          BorderSpacing.Left = 20
+          Caption = 'Library name'
+          ParentColor = False
+        end
       end
       object Panel2: TPanel
         Left = 0
-        Height = 210
-        Top = 172
-        Width = 616
+        Height = 292
+        Top = 228
+        Width = 629
         Align = alClient
         Alignment = taLeftJustify
         BevelOuter = bvNone
-        ClientHeight = 210
-        ClientWidth = 616
+        ClientHeight = 292
+        ClientWidth = 629
         TabOrder = 1
         object Splitter1: TSplitter
           Cursor = crVSplit
           Left = 0
           Height = 5
           Top = 0
-          Width = 616
+          Width = 629
           Align = alTop
           ResizeAnchor = akTop
         end
         object Label2: TLabel
           Left = 6
-          Height = 18
+          Height = 17
           Top = 14
-          Width = 181
+          Width = 178
           Caption = 'C to Pascal types convertion'
           ParentColor = False
         end
         object Memo1: TMemo
           Left = 6
-          Height = 160
+          Height = 242
           Top = 44
-          Width = 604
+          Width = 617
           Align = alBottom
           Anchors = [akTop, akLeft, akRight, akBottom]
           BorderSpacing.Left = 6
@@ -177,7 +204,7 @@ object CtoPasConfig: TCtoPasConfig
           Left = 476
           Height = 20
           Top = 14
-          Width = 134
+          Width = 147
           Anchors = [akTop, akLeft, akRight]
           AutoSize = True
           Caption = 'Reset to defaults'
@@ -194,7 +221,7 @@ object CtoPasConfig: TCtoPasConfig
         AnchorSideTop.Control = chkUseExternal
         AnchorSideTop.Side = asrBottom
         Left = 13
-        Height = 22
+        Height = 21
         Top = 32
         Width = 511
         Anchors = [akTop, akLeft, akRight]
