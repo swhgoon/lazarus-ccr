@@ -205,6 +205,7 @@ procedure TRxViewsPanel.SetImageList(const AValue: TImageList);
 begin
   if FImageList=AValue then exit;
   FImageList:=AValue;
+  FItems.UpdateImages;
 end;
 
 procedure TRxViewsPanel.SetItemIndex(const AValue: integer);
