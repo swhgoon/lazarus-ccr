@@ -1118,9 +1118,11 @@ begin
       wr.W(GetPasTypeName(cent.RetType, n.owner));
     end;
     wr.W(';');
-    if isDeclExternal(cfg, cent.RetType, isfunc) then wr.W(' external');
-    if cfg.ExtLibName<>'' then wr.W(' '+cfg.ExtLibName);
-    wr.W(';');
+    if isDeclExternal(cfg, cent.RetType, isfunc) then begin
+      wr.W(' external');
+      if isfunc and (cfg.ExtLibName<>'') then wr.W(' '+cfg.ExtLibName);
+      wr.W(';');
+    end;
     if WriteComment then WriteLnCommentForOffset(cent.Offset);
   end;
 end;
