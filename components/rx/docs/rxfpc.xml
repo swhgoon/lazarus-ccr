@@ -163,6 +163,7 @@
             
             
             
+            
             <link id="TRxDBGrid">RxDBGrid</link>-а.</p>
         </descr>
       </element>
@@ -556,6 +557,7 @@
         <descr>
           <p>
             <link id="TOptionRx">Набор флагов</link>, управлюящих поведением 
+            
             
             
             
@@ -1122,6 +1124,7 @@ TRxDBCalcEdit является наследником TDBCalcEdit и имеет 
         <descr>
           <p>Свойство - массив, содержит в себе список всех файлов и каталогов, которые были обнаружены в указанной папке.</p>
 Кол-во элементов данного массива находится в свойстве 
+          
           
           
           
@@ -2430,7 +2433,9 @@ Description
             
             
             
+            
             <b>const</b> SearchDomain, FileName:
+            
             
             
             
@@ -2474,7 +2479,9 @@ Description
             
             
             
+            
             <b>out</b> UserName, DomainName:
+            
             
             
             
@@ -2535,7 +2542,9 @@ Description
             
             
             
+            
             <b>const</b> DirName:
+            
             
             
             
@@ -2567,6 +2576,7 @@ Description
             
             
             
+            
             <b>string</b>;</p>
           <p>Функция проверяет все разделители каталогов в указанном имени файла/каталога и, если нужно, меняет их на значение константы<b>DirectorySeparator</b>.</p>
         </descr>
@@ -2577,6 +2587,7 @@ Description
         <descr>
           <p>
             <b>function</b> GetUserName: 
+            
             
             
             
@@ -2841,6 +2852,35 @@ Description
         </descr>
         <example file="/usr/local/share/lazarus/components/rxnew/Demos/RxViewsPanel/unit1.pas"/>
       </element>
+    </module>
+    <module name="RxSystemServices">
+      <element name="TRxServiceType"/>
+      <element name="TRxServiceStatus"/>
+      <element name="TRxServiceState"/>
+      <element name="TRxServiceItem"/>
+      <element name="TRxSystemServices">
+        <short>Компонента получает состояние служб на указанном компьютере</short>
+      </element>
+      <element name="TRxSystemServices.Create"/>
+      <element name="TRxSystemServices.Destroy"/>
+      <element name="TRxSystemServices.Items">
+        <short>Массив содержит список служб, работающих в системе</short>
+      </element>
+      <element name="TRxSystemServices.ItemCount">
+        <short>Количество эелементов в массиве Items</short>
+      </element>
+      <element name="TRxSystemServices.ServerName">
+        <short>Имя компьютера, на котором опрашиваются службы</short>
+      </element>
+      <element name="TRxSystemServices.ServiceType">
+        <short>Фильтр отбора служб по типу (служба/драйвер)</short>
+      </element>
+      <element name="TRxSystemServices.ServiceStatus">
+        <short>Фильтр отбора служб по статусу работает/остановлена</short>
+      </element>
+      <short>Модуль содержит компоненту TRxSystemServices</short>
+      <descr>Модуль RxSystemServices предназначен для получения информации о состоянии работающих в системе служб (windows) / демонов (unix-like)
+Cодержит компоненту <link id="TRxSystemServices">TRxSystemServices</link>.</descr>
     </module>
   </package>
 </fpdoc-descriptions>

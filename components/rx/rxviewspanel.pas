@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  Buttons, StdCtrls;
+  Buttons, StdCtrls, LCLType;
 
 type
   TRxViewsPanel = class;
@@ -54,11 +54,15 @@ type
     FLabel:TLabel;
     function GetAction: TBasicAction;
     function GetCaption: string;
+    function GetEnabled: Boolean;
+    function GetHint: TTranslateString;
     function GetImageIndex: integer;
     function GetTag: Longint;
     function GetVisible: boolean;
     procedure SetAction(const AValue: TBasicAction);
     procedure SetCaption(const AValue: string);
+    procedure SetEnabled(const AValue: Boolean);
+    procedure SetHint(const AValue: TTranslateString);
     procedure SetImageIndex(const AValue: integer);
     procedure SetTag(const AValue: Longint);
     procedure SetVisible(const AValue: boolean);
@@ -76,6 +80,8 @@ type
     property Caption:string read GetCaption Write SetCaption;
     property Tag: Longint read GetTag write SetTag default 0;
     property ImageIndex:integer read GetImageIndex write SetImageIndex;
+    property Hint:TTranslateString read GetHint write SetHint;
+    property Enabled: Boolean read GetEnabled write SetEnabled default True;
   end;
 
 
@@ -224,6 +230,7 @@ end;
 
 procedure TRxViewsPanel.InternalSelectView(Item: TRxViewsPanelItem);
 begin
+  FItemIndex:=Item.Index;
   if Assigned(FOnSelectViewEvent) then
     FOnSelectViewEvent(Item.Index, Item);
 end;
@@ -267,6 +274,16 @@ begin
   Result:=FLabel.Caption;
 end;
 
+function TRxViewsPanelItem.GetEnabled: Boolean;
+begin
+  Result:=FButton.Enabled;
+end;
+
+function TRxViewsPanelItem.GetHint: TTranslateString;
+begin
+  Result:=FButton.Hint;
+end;
+
 function TRxViewsPanelItem.GetImageIndex: integer;
 begin
 {  if Assigned(FButton.Action) then
@@ -293,6 +310,17 @@ end;
 procedure TRxViewsPanelItem.SetCaption(const AValue: string);
 begin
   FLabel.Caption:=AValue;
+end;
+
+procedure TRxViewsPanelItem.SetEnabled(const AValue: Boolean);
+begin
+  FButton.Enabled:=AValue;
+  FLabel.Enabled:=AValue;
+end;
+
+procedure TRxViewsPanelItem.SetHint(const AValue: TTranslateString);
+begin
+  FButton.Hint:=AValue;
 end;
 
 procedure TRxViewsPanelItem.SetImageIndex(const AValue: integer);

@@ -42,11 +42,11 @@ procedure Register;
 
 implementation
 uses
-  PropEdits, dbdateedit, dbcurredit, rxlookup, folderlister, rxmemds, duallist,
+  PropEdits, dbdateedit, dbcurredit, rxlookup, folderlister, duallist,
   curredit, rxswitch, rxdice, rxdbcomb, rxtoolbar, rxxpman, PageMngr, RxAppIcon,
-  Dialogs, ComponentEditors, seldsfrm, DBPropEdits, DB, rxctrls, RxLogin,
+  Dialogs, ComponentEditors, DBPropEdits, DB, rxctrls,
   RxCustomChartPanel, AutoPanel, pickdate, rxconst, tooledit, rxclock,
-  rxceEditLookupFields, rxpopupunit, rxspin, RxTimeEdit, RxVersInfo,
+  rxceEditLookupFields, rxpopupunit, rxspin, RxTimeEdit,
   RxAboutDialog, RxViewsPanel;
 
 type
@@ -100,11 +100,6 @@ end;
 procedure RegisterRXLookup;
 begin
   RegisterComponents('RX DBAware',[TRXLookupEdit, TRxDBLookupCombo]);
-end;
-
-procedure RegisterRxMemDS;
-begin
-  RegisterComponents('RX DBAware',[TRxMemoryData]);
 end;
 
 procedure RegisterRxDBComb;
@@ -183,16 +178,6 @@ begin
   RegisterComponents('RX',[TRxTimeEdit]);
 end;
 
-procedure RegisterRxLogin;
-begin
-  RegisterComponents('RX',[TRxLoginDialog]);
-end;
-
-procedure RegisterRxVersInfo;
-begin
-  RegisterComponents('RX',[TRxVersionInfo]);
-end;
-
 procedure RegisterRxAboutDialog;
 begin
   RegisterComponents('RX',[TRxAboutDialog]);
@@ -227,19 +212,14 @@ begin
   RegisterUnit('rxclock', @RegisterRxClock);
   RegisterUnit('rxspin', @RegisterRxSpin);
   RegisterUnit('RxTimeEdit', @RegisterRxTimeEdit);
-  RegisterUnit('RxLogin', @RegisterRxLogin);
-  RegisterUnit('RxVersInfo', @RegisterRxVersInfo);
   RegisterUnit('RxAboutDialog', @RegisterRxAboutDialog);
   RegisterUnit('RxViewsPanel', @RegisterRxViewsPanel);
 
   //RX DBAware
   RegisterUnit('dbdateedit', @RegisterUnitDBDateEdit);
   RegisterUnit('rxlookup', @RegisterRXLookup);
-  RegisterUnit('rxmemds', @RegisterRxMemDS);
   RegisterUnit('rxdbcomb', @RegisterRxDBComb);
 
-  //Component Editors
-  RegisterComponentEditor(TRxMemoryData, TMemDataSetEditor);
   //
 
   RegisterPropertyEditor(TypeInfo(string), TPopUpColumn, 'FieldName', TPopUpColumnFieldProperty);

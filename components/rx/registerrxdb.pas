@@ -40,7 +40,8 @@ uses
 
 procedure Register;
 implementation
-uses DB, DBPropEdits, rxdbgrid, RxDBSpinEdit, RxDBTimeEdit, RxDBCtrls, PropEdits;
+uses DB, DBPropEdits, rxdbgrid, RxDBSpinEdit, RxDBTimeEdit, RxDBCtrls, rxmemds,
+  ComponentEditors, seldsfrm, PropEdits;
 
 type
 
@@ -111,13 +112,23 @@ begin
   RegisterComponents('RX DBAware',[TRxDBGrid]);
 end;
 
+procedure RegisterRxMemDS;
+begin
+  RegisterComponents('RX DBAware',[TRxMemoryData]);
+end;
+
 procedure Register;
 begin
   RegisterUnit('RxDBTimeEdit', @RegisterRxDBTimeEdit);
   RegisterUnit('RxDBSpinEdit', @RegisterRxDBSpinEdit);
   RegisterUnit('RxDBCtrls', @RegisterRxDBCtrls);
   RegisterUnit('rxdbgrid', @RegisterRxDbGrid);
-//
+  RegisterUnit('rxmemds', @RegisterRxMemDS);
+
+  //Component Editors
+  RegisterComponentEditor(TRxMemoryData, TMemDataSetEditor);
+
+  //
   RegisterPropertyEditor(TypeInfo(string), TRxColumn, 'FieldName', TRxDBGridFieldProperty);
   RegisterPropertyEditor(TypeInfo(string), TRxColumnFooter, 'FieldName', TRxDBGridFooterFieldProperty);
 end;

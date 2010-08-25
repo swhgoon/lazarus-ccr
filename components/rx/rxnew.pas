@@ -15,7 +15,8 @@ uses
   rxsortmemds, AutoPanel, pickdate, rxiconv, rxceEditLookupFields, rxclock, 
   rxspin, RxDBSpinEdit, RegisterRxDB, RxTimeEdit, RxDBTimeEdit, RxDBCtrls, 
   rxfilterby, rxconst, rxFileUtils, RxVersInfo, RxAboutDialog, 
-  rxAboutFormUnit, dbcurredit, RxViewsPanel, LazarusPackageIntf;
+  rxAboutFormUnit, dbcurredit, RxViewsPanel, RxSystemServices, 
+  RegisterRxTools, LazarusPackageIntf;
 
 implementation
 
@@ -23,6 +24,7 @@ procedure Register;
 begin
   RegisterUnit('registerrx', @registerrx.Register); 
   RegisterUnit('RegisterRxDB', @RegisterRxDB.Register); 
+  RegisterUnit('RegisterRxTools', @RegisterRxTools.Register); 
 end; 
 
 initialization
