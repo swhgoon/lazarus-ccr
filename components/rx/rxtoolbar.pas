@@ -1417,6 +1417,7 @@ begin
   FButton.AutoSize:=false;
   FButton.FOwnerItem:=Self;
   FButton.FFullPush:=true;
+  FButton.ParentColor:=true;
 //  if not (csLoading in TToolbarItems(ACollection).FToolPanel.ComponentState) then
 //    FButton.Align:=BtnAl2Align[TToolbarItems(ACollection).FToolPanel.ButtonAllign];
 
