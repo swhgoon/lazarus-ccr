@@ -189,10 +189,10 @@ type
     ToolCut: TToolButton;
     ToolButton8: TToolButton;
     ToolButton9: TToolButton;
-    ToolEllipse: TToolButton;
-    ToolRectangle: TToolButton;
-    ToolLine: TToolButton;
     ToolPolygon: TToolButton;
+    ToolEllipse: TToolButton;
+    ToolLine: TToolButton;
+    ToolRectangle: TToolButton;
     ToolSpray: TToolButton;
     ToolFloodFill: TToolButton;
     ToolEraser: TToolButton;
@@ -252,7 +252,7 @@ type
     procedure Rotate90Execute(Sender: TObject);
     procedure ToolCircleShapeClick(Sender: TObject);
     procedure ToolColorPickClick(Sender: TObject);
-    procedure ToolEllipseClick(Sender: TObject);
+    procedure ToolEllClick(Sender: TObject);
     procedure ToolFillClick(Sender: TObject);
     procedure ToolFillOutlineClick(Sender: TObject);
     procedure ToolFloodFillClick(Sender: TObject);
@@ -453,7 +453,7 @@ begin
   ChangeTool(ptColorPick);
 end;
 
-procedure TMainForm.ToolEllipseClick(Sender: TObject);
+procedure TMainForm.ToolEllClick(Sender: TObject);
 begin
   if not Pictures.CanEdit then Exit;
   ChangeTool(ptEllipse);
@@ -681,9 +681,9 @@ begin
     ptFloodFill: ToolFloodFill.Down := True;
     ptSpray: ToolSpray.Down := True;
     ptLine: ToolLine.Down := True;
-    ptPolygon: ToolPolygon.Down := True;
-    ptRectangle: ToolRectangle.Down := True;
-    ptEllipse: ToolEllipse.Down := True;
+    ptPolygon: ToolRectangle.Down := True;
+    ptRectangle: ToolEllipse.Down := True;
+    ptEllipse: ToolPolygon.Down := True;
   end;
   ChangeTool(Tool);
 end;
@@ -832,7 +832,7 @@ begin
   UpdatePictureToolsEnabled;
   UpdateToolSettings;
   
-  Palette.LoadPalette('../../default.pal');
+  Palette.LoadPalette('default.pal');
   
   // Main Form
   Caption:=lieMain;
@@ -928,9 +928,9 @@ begin
   ToolColorPick.Hint:=lieHintToolColorPick;
   ToolMask.Hint:=lieHintToolMask;
   ToolLine.Hint:=lieHintToolLine;
-  ToolPolygon.Hint:=lieHintToolPolygon;
-  ToolEllipse.Hint:=lieHintToolEllipse;
-  ToolRectangle.Hint:=lieHintToolRectangle;
+  ToolRectangle.Hint:=lieHintToolPolygon;
+  ToolPolygon.Hint:=lieHintToolEllipse;
+  ToolEllipse.Hint:=lieHintToolRectangle;
 
   //File Dialogs
   ColorDialog.Title:=lieColorDialog;

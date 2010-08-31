@@ -3,27 +3,29 @@ object MainForm: TMainForm
   Height = 569
   Top = 155
   Width = 640
-  ActiveControl = ComboBoxZoom
   Caption = 'Lazarus Icon Editor'
-  ClientHeight = 550
+  ClientHeight = 549
   ClientWidth = 640
   Menu = MainMenu
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnShow = FormShow
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.29'
   object PanelTools: TPanel
-    Height = 425
+    Left = 0
+    Height = 421
     Top = 105
     Width = 40
     Align = alLeft
     BevelOuter = bvNone
-    ClientHeight = 425
+    ClientHeight = 421
     ClientWidth = 40
     ParentColor = False
     TabOrder = 0
     object ToolBarTools: TToolBar
-      Height = 425
+      Left = 0
+      Height = 421
+      Top = 0
       Width = 40
       Align = alLeft
       ButtonHeight = 40
@@ -34,111 +36,122 @@ object MainForm: TMainForm
       Indent = 0
       TabOrder = 0
       object ToolSpray: TToolButton
+        Left = 0
         Hint = 'Spray'
         Top = 362
         Grouped = True
         ImageIndex = 9
+        OnClick = ToolSprayClick
         ParentShowHint = False
         ShowHint = True
         Style = tbsCheck
-        OnClick = ToolSprayClick
       end
       object ToolFloodFill: TToolButton
+        Left = 0
         Hint = 'Flood Fill'
         Top = 322
         Grouped = True
         ImageIndex = 8
+        OnClick = ToolFloodFillClick
         ParentShowHint = False
         ShowHint = True
         Style = tbsCheck
-        OnClick = ToolFloodFillClick
       end
       object ToolEraser: TToolButton
+        Left = 0
         Hint = 'Eraser/Replacer'
         Top = 122
         Grouped = True
         ImageIndex = 3
+        OnClick = ToolEraserClick
         ParentShowHint = False
         ShowHint = True
         Style = tbsCheck
-        OnClick = ToolEraserClick
       end
       object ToolPen: TToolButton
+        Left = 0
         Hint = 'Pen'
         Top = 82
         Grouped = True
         ImageIndex = 2
+        OnClick = ToolPenClick
         ParentShowHint = False
         ShowHint = True
         Style = tbsCheck
-        OnClick = ToolPenClick
       end
       object ToolColorPick: TToolButton
+        Left = 0
         Hint = 'Color Pick'
         Top = 42
         Grouped = True
         ImageIndex = 1
+        OnClick = ToolColorPickClick
         ParentShowHint = False
         ShowHint = True
         Style = tbsCheck
-        OnClick = ToolColorPickClick
       end
       object ToolMask: TToolButton
+        Left = 0
         Hint = 'Mask'
         Top = 2
         Grouped = True
         ImageIndex = 0
+        OnClick = ToolMaskClick
         ParentShowHint = False
         ShowHint = True
         Style = tbsCheck
-        OnClick = ToolMaskClick
       end
       object ToolLine: TToolButton
+        Left = 0
         Hint = 'Line'
         Top = 162
         Down = True
         Grouped = True
         ImageIndex = 4
-        ParentShowHint = False
-        ShowHint = True
-        Style = tbsCheck
         OnClick = ToolLineClick
-      end
-      object ToolPolygon: TToolButton
-        Hint = 'Polygon'
-        Top = 282
-        Grouped = True
-        ImageIndex = 5
         ParentShowHint = False
         ShowHint = True
         Style = tbsCheck
-        OnClick = ToolPolygonClick
-      end
-      object ToolEllipse: TToolButton
-        Hint = 'Ellipse'
-        Top = 242
-        Grouped = True
-        ImageIndex = 7
-        ParentShowHint = False
-        ShowHint = True
-        Style = tbsCheck
-        OnClick = ToolEllipseClick
       end
       object ToolRectangle: TToolButton
-        Hint = 'Rectangle/Round rectangle'
+        Left = 0
+        Hint = 'Polygon'
         Top = 202
         Grouped = True
-        ImageIndex = 6
+        ImageIndex = 5
+        OnClick = ToolRectangleClick
         ParentShowHint = False
         ShowHint = True
         Style = tbsCheck
-        OnClick = ToolRectangleClick
+      end
+      object ToolPolygon: TToolButton
+        Left = 0
+        Hint = 'Ellipse'
+        Top = 282
+        Grouped = True
+        ImageIndex = 7
+        OnClick = ToolPolygonClick
+        ParentShowHint = False
+        ShowHint = True
+        Style = tbsCheck
+      end
+      object ToolEllipse: TToolButton
+        Left = 0
+        Hint = 'Rectangle/Round rectangle'
+        Top = 242
+        Grouped = True
+        ImageIndex = 6
+        OnClick = ToolEllClick
+        ParentShowHint = False
+        ShowHint = True
+        Style = tbsCheck
       end
     end
   end
   object StatusBar: TStatusBar
-    Height = 20
-    Top = 530
+    Left = 0
+    Height = 23
+    Top = 526
     Width = 640
     Panels = <    
       item
@@ -164,26 +177,30 @@ object MainForm: TMainForm
     SimplePanel = False
   end
   object PanelPallete: TPanel
-    Left = 543
-    Height = 425
+    Left = 565
+    Height = 421
     Top = 105
-    Width = 97
+    Width = 75
     Align = alRight
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 425
-    ClientWidth = 97
+    ClientHeight = 421
+    ClientWidth = 75
     TabOrder = 1
     object Palette: TColorPalette
-      Height = 425
-      Width = 97
+      Left = 0
+      Height = 421
+      Top = 0
+      Width = 75
       Align = alClient
       ButtonWidth = 12
       ButtonHeight = 12
     end
   end
   object PanelToolBar: TPanel
+    Left = 0
     Height = 105
+    Top = 0
     Width = 640
     Align = alTop
     BevelOuter = bvNone
@@ -191,6 +208,7 @@ object MainForm: TMainForm
     ClientWidth = 640
     TabOrder = 2
     object Bevel1: TBevel
+      Left = 0
       Height = 2
       Top = 69
       Width = 640
@@ -198,6 +216,7 @@ object MainForm: TMainForm
       Shape = bsBottomLine
     end
     object Bevel2: TBevel
+      Left = 0
       Height = 2
       Top = 33
       Width = 640
@@ -205,7 +224,9 @@ object MainForm: TMainForm
       Shape = bsBottomLine
     end
     object ToolBar: TToolBar
+      Left = 0
       Height = 33
+      Top = 0
       Width = 640
       ButtonHeight = 32
       ButtonWidth = 36
@@ -215,8 +236,9 @@ object MainForm: TMainForm
       ParentColor = False
       TabOrder = 0
       object LabelZoom: TLabel
-        Left = 379
+        Left = 385
         Height = 32
+        Top = 0
         Width = 31
         Caption = 'Zoom:'
         Constraints.MinHeight = 32
@@ -225,95 +247,99 @@ object MainForm: TMainForm
       end
       object ToolClose: TToolButton
         Left = 109
-        Hint = 'Close'
+        Top = 0
         Action = FileClose
         ParentShowHint = False
         ShowHint = True
       end
       object ToolSave: TToolButton
         Left = 73
-        Hint = 'Save'
+        Top = 0
         Action = FileSave
         ParentShowHint = False
         ShowHint = True
       end
       object ToolOpen: TToolButton
         Left = 37
-        Hint = 'Open'
+        Top = 0
         Action = FileOpen
         ParentShowHint = False
         ShowHint = True
       end
       object ToolNew: TToolButton
         Left = 1
-        Hint = 'New'
+        Top = 0
         Action = FileNew
         ParentShowHint = False
         ShowHint = True
       end
       object ToolButton6: TToolButton
         Left = 145
-        Width = 6
+        Top = 0
+        Width = 8
         Caption = 'ToolButton6'
         Style = tbsSeparator
       end
       object ToolCut: TToolButton
-        Left = 229
-        Hint = 'Cut'
+        Left = 233
+        Top = 0
         Action = EditCut
         ParentShowHint = False
         ShowHint = True
       end
       object ToolButton8: TToolButton
-        Left = 265
-        Hint = 'Copy'
+        Left = 269
+        Top = 0
         Action = EditCopy
         ParentShowHint = False
         ShowHint = True
       end
       object ToolButton9: TToolButton
-        Left = 301
-        Hint = 'Paste'
+        Left = 305
+        Top = 0
         Action = EditPaste
         ParentShowHint = False
         ShowHint = True
       end
       object ToolButton10: TToolButton
-        Left = 373
-        Width = 6
+        Left = 377
+        Top = 0
+        Width = 8
         Caption = 'ToolButton10'
         Style = tbsSeparator
       end
       object ToolButton11: TToolButton
-        Left = 337
-        Hint = 'Delete'
+        Left = 341
+        Top = 0
         Action = EditDelete
         ParentShowHint = False
         ShowHint = True
       end
       object ToolUndo: TToolButton
-        Left = 151
-        Hint = 'Undo'
+        Left = 153
+        Top = 0
         Action = EditUndo
         ParentShowHint = False
         ShowHint = True
       end
       object ToolButton2: TToolButton
-        Left = 223
-        Width = 6
+        Left = 225
+        Top = 0
+        Width = 8
         Caption = 'ToolButton2'
         Style = tbsSeparator
       end
       object ToolRedo: TToolButton
-        Left = 187
-        Hint = 'Redo'
+        Left = 189
+        Top = 0
         Action = EditRedo
         ParentShowHint = False
         ShowHint = True
       end
       object PanelZoom: TPanel
-        Left = 410
+        Left = 416
         Height = 32
+        Top = 0
         Width = 77
         BevelOuter = bvNone
         ClientHeight = 32
@@ -325,7 +351,6 @@ object MainForm: TMainForm
           Top = 5
           Width = 70
           Anchors = [akLeft]
-          AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           ItemHeight = 13
           ItemIndex = 2
           Items.Strings = (
@@ -337,7 +362,6 @@ object MainForm: TMainForm
             '800 %'
             '1000 %'
           )
-          MaxLength = 0
           OnChange = ComboBoxZoomChange
           OnEditingDone = ComboBoxZoomEditingDone
           ParentShowHint = False
@@ -347,6 +371,7 @@ object MainForm: TMainForm
       end
     end
     object PanelOptions: TPanel
+      Left = 0
       Height = 34
       Top = 35
       Width = 640
@@ -360,6 +385,7 @@ object MainForm: TMainForm
       object LabelFillOutline: TLabel
         Left = 96
         Height = 34
+        Top = 0
         Width = 58
         Align = alLeft
         Caption = 'Fill, Outline:'
@@ -368,7 +394,9 @@ object MainForm: TMainForm
         ParentColor = False
       end
       object LabelShape: TLabel
+        Left = 0
         Height = 34
+        Top = 0
         Width = 35
         Align = alLeft
         Caption = 'Shape:'
@@ -379,6 +407,7 @@ object MainForm: TMainForm
       object LabelMaskTool: TLabel
         Left = 237
         Height = 34
+        Top = 0
         Width = 52
         Align = alLeft
         Caption = 'Mask Tool:'
@@ -387,9 +416,10 @@ object MainForm: TMainForm
         ParentColor = False
       end
       object PanelColors: TPanel
-        Left = 455
+        Left = 447
         Height = 34
-        Width = 185
+        Top = 0
+        Width = 193
         Align = alRight
         AutoSize = True
         BorderSpacing.InnerBorder = 4
@@ -397,10 +427,12 @@ object MainForm: TMainForm
         BorderSpacing.CellAlignVertical = ccaCenter
         BevelOuter = bvNone
         ClientHeight = 34
-        ClientWidth = 185
+        ClientWidth = 193
         TabOrder = 0
         object LabelOutline: TLabel
+          Left = 8
           Height = 34
+          Top = 0
           Width = 39
           Align = alRight
           Caption = 'Outline:'
@@ -408,8 +440,9 @@ object MainForm: TMainForm
           ParentColor = False
         end
         object LabelFill: TLabel
-          Left = 71
+          Left = 79
           Height = 34
+          Top = 0
           Width = 17
           Align = alRight
           Caption = 'Fill:'
@@ -417,8 +450,9 @@ object MainForm: TMainForm
           ParentColor = False
         end
         object LabelPaper: TLabel
-          Left = 120
+          Left = 128
           Height = 34
+          Top = 0
           Width = 33
           Align = alRight
           Caption = 'Paper:'
@@ -426,7 +460,7 @@ object MainForm: TMainForm
           ParentColor = False
         end
         object PanelOutline: TPanel
-          Left = 45
+          Left = 53
           Height = 22
           Top = 6
           Width = 20
@@ -439,7 +473,7 @@ object MainForm: TMainForm
           OnDblClick = PanelOutlineDblClick
         end
         object PanelFill: TPanel
-          Left = 94
+          Left = 102
           Height = 22
           Top = 6
           Width = 20
@@ -452,7 +486,7 @@ object MainForm: TMainForm
           OnDblClick = PanelFillDblClick
         end
         object PanelPaper: TPanel
-          Left = 159
+          Left = 167
           Height = 22
           Top = 6
           Width = 20
@@ -468,6 +502,7 @@ object MainForm: TMainForm
       object PanelFillOutline: TPanel
         Left = 154
         Height = 34
+        Top = 0
         Width = 83
         Align = alLeft
         BevelOuter = bvNone
@@ -650,6 +685,7 @@ object MainForm: TMainForm
       object PanelShape: TPanel
         Left = 35
         Height = 34
+        Top = 0
         Width = 61
         Align = alLeft
         BevelOuter = bvNone
@@ -779,6 +815,7 @@ object MainForm: TMainForm
       object PanelMaskTool: TPanel
         Left = 289
         Height = 34
+        Top = 0
         Width = 86
         Align = alLeft
         BevelOuter = bvNone
@@ -972,6 +1009,7 @@ object MainForm: TMainForm
       end
     end
     object PanelToolOptions: TPanel
+      Left = 0
       Height = 34
       Top = 71
       Width = 640
@@ -981,7 +1019,9 @@ object MainForm: TMainForm
       ClientWidth = 640
       TabOrder = 2
       object LabelSize: TLabel
+        Left = 0
         Height = 34
+        Top = 0
         Width = 24
         Align = alLeft
         Caption = 'Size:'
@@ -992,6 +1032,7 @@ object MainForm: TMainForm
       object LabelDensity: TLabel
         Left = 217
         Height = 34
+        Top = 0
         Width = 41
         Align = alLeft
         Caption = 'Density:'
@@ -1002,6 +1043,7 @@ object MainForm: TMainForm
       object LabelRoundness: TLabel
         Left = 91
         Height = 34
+        Top = 0
         Width = 58
         Align = alLeft
         Caption = 'Roundness:'
@@ -1012,6 +1054,7 @@ object MainForm: TMainForm
       object LabelTolerance: TLabel
         Left = 327
         Height = 34
+        Top = 0
         Width = 52
         Align = alLeft
         Caption = 'Tolerance:'
@@ -1022,6 +1065,7 @@ object MainForm: TMainForm
       object PanelSize: TPanel
         Left = 24
         Height = 34
+        Top = 0
         Width = 67
         Align = alLeft
         BevelOuter = bvNone
@@ -1030,19 +1074,18 @@ object MainForm: TMainForm
         TabOrder = 0
         object EditSize: TEdit
           Left = 3
-          Height = 23
-          Top = 5
+          Height = 21
+          Top = 6
           Width = 43
           Anchors = [akLeft]
           OnChange = EditSizeChange
-          OnKeyDown = nil
           TabOrder = 0
           Text = '10'
         end
         object UpDownSize: TUpDown
           Left = 46
-          Height = 23
-          Top = 5
+          Height = 21
+          Top = 6
           Width = 17
           Associate = EditSize
           Min = 1
@@ -1050,11 +1093,13 @@ object MainForm: TMainForm
           Position = 10
           TabOrder = 1
           Thousands = False
+          Wrap = False
         end
       end
       object PanelDensity: TPanel
         Left = 258
         Height = 34
+        Top = 0
         Width = 69
         Align = alLeft
         BevelOuter = bvNone
@@ -1063,29 +1108,31 @@ object MainForm: TMainForm
         TabOrder = 1
         object EditDensity: TEdit
           Left = 3
-          Height = 23
-          Top = 5
+          Height = 21
+          Top = 6
           Width = 42
           Anchors = [akLeft]
           OnChange = EditDensityChange
-          OnKeyDown = nil
           TabOrder = 0
           Text = '100'
         end
         object UpDownDensity: TUpDown
           Left = 45
-          Height = 23
-          Top = 5
+          Height = 21
+          Top = 6
           Width = 17
           Associate = EditDensity
+          Min = 0
           Position = 100
           TabOrder = 1
           Thousands = False
+          Wrap = False
         end
       end
       object PanelRoundness: TPanel
         Left = 149
         Height = 34
+        Top = 0
         Width = 68
         Align = alLeft
         BevelOuter = bvNone
@@ -1094,29 +1141,32 @@ object MainForm: TMainForm
         TabOrder = 2
         object EditRoundness: TEdit
           Left = 4
-          Height = 23
-          Top = 5
+          Height = 21
+          Top = 6
           Width = 42
           Anchors = [akLeft]
           OnChange = EditRoundnessChange
-          OnKeyDown = nil
           TabOrder = 0
           Text = '0'
         end
         object UpDownRoundness: TUpDown
           Left = 46
-          Height = 23
-          Top = 5
+          Height = 21
+          Top = 6
           Width = 17
           Associate = EditRoundness
+          Min = 0
           Max = 4096
+          Position = 0
           TabOrder = 1
           Thousands = False
+          Wrap = False
         end
       end
       object PanelTolerance: TPanel
         Left = 379
         Height = 34
+        Top = 0
         Width = 68
         Align = alLeft
         BevelOuter = bvNone
@@ -1125,32 +1175,34 @@ object MainForm: TMainForm
         TabOrder = 3
         object EditTolerance: TEdit
           Left = 2
-          Height = 23
-          Top = 5
+          Height = 21
+          Top = 6
           Width = 42
           Anchors = [akLeft]
           OnChange = EditToleranceChange
-          OnKeyDown = nil
           TabOrder = 0
           Text = '0'
         end
         object UpDownTolerance: TUpDown
           Left = 44
-          Height = 23
-          Top = 5
+          Height = 21
+          Top = 6
           Width = 17
           Associate = EditTolerance
+          Min = 0
+          Position = 0
           TabOrder = 1
           Thousands = False
+          Wrap = False
         end
       end
     end
   end
   object PanelPictures: TPanel
     Left = 40
-    Height = 425
+    Height = 421
     Top = 105
-    Width = 503
+    Width = 525
     Align = alClient
     BevelOuter = bvLowered
     TabOrder = 3
@@ -1878,7 +1930,6 @@ object MainForm: TMainForm
     object FileNew: TAction
       Category = 'File'
       Caption = '&New...'
-      DisableIfNoHandler = True
       Hint = 'New'
       ImageIndex = 0
       OnExecute = FileNewExecute
@@ -1887,7 +1938,6 @@ object MainForm: TMainForm
     object FileOpen: TAction
       Category = 'File'
       Caption = '&Open...'
-      DisableIfNoHandler = True
       Hint = 'Open'
       ImageIndex = 1
       OnExecute = FileOpenExecute
@@ -1896,7 +1946,6 @@ object MainForm: TMainForm
     object FileSave: TAction
       Category = 'File'
       Caption = '&Save'
-      DisableIfNoHandler = True
       Hint = 'Save'
       ImageIndex = 2
       OnExecute = FileSaveExecute
@@ -1905,14 +1954,12 @@ object MainForm: TMainForm
     object FileSaveAs: TAction
       Category = 'File'
       Caption = 'Save &As...'
-      DisableIfNoHandler = True
       Hint = 'Save As'
       OnExecute = FileSaveAsExecute
     end
     object FileClose: TAction
       Category = 'File'
       Caption = '&Close'
-      DisableIfNoHandler = True
       Hint = 'Close'
       ImageIndex = 3
       OnExecute = FileCloseExecute
@@ -1921,7 +1968,6 @@ object MainForm: TMainForm
     object EditUndo: TEditUndo
       Category = 'Edit'
       Caption = '&Undo'
-      DisableIfNoHandler = True
       Enabled = False
       Hint = 'Undo'
       ImageIndex = 4
@@ -1930,7 +1976,6 @@ object MainForm: TMainForm
     object EditRedo: TAction
       Category = 'Edit'
       Caption = '&Redo'
-      DisableIfNoHandler = True
       Enabled = False
       Hint = 'Redo'
       ImageIndex = 5
@@ -1939,7 +1984,6 @@ object MainForm: TMainForm
     object EditCut: TEditCut
       Category = 'Edit'
       Caption = 'Cu&t'
-      DisableIfNoHandler = True
       Enabled = False
       Hint = 'Cut'
       ImageIndex = 6
@@ -1949,7 +1993,6 @@ object MainForm: TMainForm
     object EditCopy: TEditCopy
       Category = 'Edit'
       Caption = '&Copy'
-      DisableIfNoHandler = True
       Enabled = False
       Hint = 'Copy'
       ImageIndex = 7
@@ -1959,7 +2002,6 @@ object MainForm: TMainForm
     object EditPaste: TEditPaste
       Category = 'Edit'
       Caption = '&Paste'
-      DisableIfNoHandler = True
       Enabled = False
       Hint = 'Paste'
       ImageIndex = 8
@@ -1969,7 +2011,6 @@ object MainForm: TMainForm
     object EditDelete: TEditDelete
       Category = 'Edit'
       Caption = '&Delete'
-      DisableIfNoHandler = True
       Enabled = False
       Hint = 'Delete'
       ImageIndex = 9
@@ -1979,7 +2020,6 @@ object MainForm: TMainForm
     object EditSelectAll: TEditSelectAll
       Category = 'Edit'
       Caption = 'Select &All'
-      DisableIfNoHandler = True
       Enabled = False
       Hint = 'Select All'
       OnExecute = EditSelectAllExecute
@@ -1988,96 +2028,80 @@ object MainForm: TMainForm
     object PictureResize: TAction
       Category = 'Picture'
       Caption = 'Resize...'
-      DisableIfNoHandler = True
     end
     object PictureResizePaper: TAction
       Category = 'Picture'
       Caption = 'Resize Paper...'
-      DisableIfNoHandler = True
     end
     object FlipHorizontally: TAction
       Category = 'PictureFlip'
       Caption = 'Horizontally'
-      DisableIfNoHandler = True
       OnExecute = FlipHorizontallyExecute
     end
     object FlipVertically: TAction
       Category = 'PictureFlip'
       Caption = 'Vertically'
-      DisableIfNoHandler = True
       OnExecute = FlipVerticallyExecute
     end
     object Rotate90: TAction
       Category = 'PictureRotate'
       Caption = '90° Clockwise'
-      DisableIfNoHandler = True
       OnExecute = Rotate90Execute
     end
     object Rotate180: TAction
       Category = 'PictureRotate'
       Caption = '180° Clockwise'
-      DisableIfNoHandler = True
       OnExecute = Rotate180Execute
     end
     object Rotate270: TAction
       Category = 'PictureRotate'
       Caption = '270° Clockwise'
-      DisableIfNoHandler = True
       OnExecute = Rotate270Execute
     end
     object RotateCustom: TAction
       Category = 'PictureRotate'
       Caption = 'Custom...'
-      DisableIfNoHandler = True
       Enabled = False
     end
     object ColorsInvert: TAction
       Category = 'PictureColors'
       Caption = 'Invert'
-      DisableIfNoHandler = True
       OnExecute = ColorsInvertExecute
     end
     object ColorsGrayscale: TAction
       Category = 'PictureColors'
       Caption = 'Grayscale'
-      DisableIfNoHandler = True
       OnExecute = ColorsGrayscaleExecute
     end
     object ColorsDisable: TAction
       Category = 'PictureColors'
       Caption = 'Disable'
-      DisableIfNoHandler = True
       OnExecute = ColorsDisableExecute
     end
     object FileExportAsLRS: TAction
       Category = 'File'
       Caption = '&Export As *.lrs...'
-      DisableIfNoHandler = True
       OnExecute = FileExportAsLRSExecute
     end
     object MaskRemove: TAction
       Category = 'Mask'
       Caption = 'Remove'
-      DisableIfNoHandler = True
       OnExecute = MaskRemoveExecute
     end
     object MaskInvert: TAction
       Category = 'Mask'
       Caption = 'Invert'
-      DisableIfNoHandler = True
       OnExecute = MaskInvertExecute
     end
     object PictureClipPaperToMask: TAction
       Category = 'Picture'
       Caption = 'Clip Paper To Mask'
-      DisableIfNoHandler = True
     end
     object ViewShowGrid: TAction
       Category = 'View'
       AutoCheck = True
       Caption = 'Show Grid'
       Checked = True
-      DisableIfNoHandler = True
       OnExecute = ViewShowGridExecute
     end
     object ViewShowMask: TAction
@@ -2085,7 +2109,6 @@ object MainForm: TMainForm
       AutoCheck = True
       Caption = 'Show Mask'
       Checked = True
-      DisableIfNoHandler = True
       OnExecute = ViewShowMaskExecute
     end
     object ViewShowPreview: TAction
@@ -2093,7 +2116,6 @@ object MainForm: TMainForm
       AutoCheck = True
       Caption = 'Show Preview'
       Checked = True
-      DisableIfNoHandler = True
       OnExecute = ViewShowPreviewExecute
     end
   end
@@ -3903,6 +3925,29 @@ object MainForm: TMainForm
     top = 90
   end
   object ColorDialog: TColorDialog
+    Color = clBlack
+    CustomColors.Strings = (
+      'ColorA=000000'
+      'ColorB=000080'
+      'ColorC=008000'
+      'ColorD=008080'
+      'ColorE=800000'
+      'ColorF=800080'
+      'ColorG=808000'
+      'ColorH=808080'
+      'ColorI=C0C0C0'
+      'ColorJ=0000FF'
+      'ColorK=00FF00'
+      'ColorL=00FFFF'
+      'ColorM=FF0000'
+      'ColorN=FF00FF'
+      'ColorO=FFFF00'
+      'ColorP=FFFFFF'
+      'ColorQ=C0DCC0'
+      'ColorR=F0CAA6'
+      'ColorS=F0FBFF'
+      'ColorT=A4A0A0'
+    )
     left = 186
     top = 90
   end
