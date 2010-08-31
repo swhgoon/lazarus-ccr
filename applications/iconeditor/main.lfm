@@ -1207,14 +1207,55 @@ object MainForm: TMainForm
         Layout = tlCenter
         ParentColor = False
       end
-      object spinFillAlpha: TSpinEdit
-        Left = 504
-        Height = 21
-        Top = 5
-        Width = 51
-        OnChange = spinFillAlphaChange
+      object PanelTolerance1: TPanel
+        Left = 494
+        Height = 34
+        Top = 0
+        Width = 68
+        Align = alLeft
+        BevelOuter = bvNone
+        ClientHeight = 34
+        ClientWidth = 68
         TabOrder = 4
-        Value = 100
+        object spinFillAlpha: TSpinEdit
+          Left = 10
+          Height = 21
+          Top = 5
+          Width = 51
+          OnChange = spinFillAlphaChange
+          TabOrder = 0
+          Value = 100
+        end
+      end
+      object LabelTolerance2: TLabel
+        Left = 562
+        Height = 34
+        Top = 0
+        Width = 34
+        Align = alLeft
+        Caption = 'Fuzzy?'
+        Constraints.MinHeight = 32
+        Layout = tlCenter
+        ParentColor = False
+      end
+      object PanelTolerance2: TPanel
+        Left = 596
+        Height = 34
+        Top = 0
+        Width = 30
+        Align = alLeft
+        BevelOuter = bvNone
+        ClientHeight = 34
+        ClientWidth = 30
+        TabOrder = 5
+        object checkFuzzy: TCheckBox
+          Left = 4
+          Height = 17
+          Top = 9
+          Width = 18
+          OnChange = checkFuzzyChange
+          TabOrder = 0
+        end
       end
     end
   end

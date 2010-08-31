@@ -125,6 +125,7 @@ type
     FFillAndOutline: TDrawMode;
     FFillColor: TColor;
     FFloodFillTolerance: Single;
+    FFuzzy: Boolean;
     FMaskTool: TMaskTool;
     FModified: Boolean;
     FOnChange: TNotifyEvent;
@@ -213,7 +214,8 @@ type
     property Size: Integer read FSize write FSize;
     property Tool: TPictureEditTool read FTool write SetTool;
     property FillAlpha: Integer read FFillAlpha write FFillAlpha;
-    
+    property Fuzzy: Boolean read FFuzzy write FFuzzy;
+
     property Modified: Boolean read FModified;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnColorChange: TNotifyEvent read FOnColorChange write FOnColorChange;
@@ -845,7 +847,17 @@ begin
   BeginDraw;
   if not (ssLeft in Shift) then Picture.Canvas.EraseMode := ermErase;
   try
-    Picture.Canvas.AlphaRectangle(X1, Y1, X2, Y2, FFillAlpha);
+    if FFuzzy then
+    begin
+      Picture.Canvas.FuzzyRectangle(X1, Y1, X2, Y2);
+    end
+    else
+    begin
+      if FFillAlpha = 100 then
+        Picture.Canvas.Rectangle(X1, Y1, X2, Y2)
+      else
+        Picture.Canvas.AlphaRectangle(X1, Y1, X2, Y2, FFillAlpha);
+    end;
   finally
     Picture.Canvas.EraseMode := ermNone;
     EndDraw;

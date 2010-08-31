@@ -154,6 +154,8 @@ type
     procedure MaskFloodFill(X, Y: Integer);
     // Alpha drawing methods
     procedure AlphaRectangle(X1, Y1, X2, Y2, AAlpha: Integer);
+    // Effect drawing methods
+    procedure FuzzyRectangle(X1, Y1, X2, Y2: Integer);
   public
     procedure DrawTo(ACanvas: TCanvas; X, Y: Integer);
     procedure StretchDrawTo(ACanvas: TCanvas; DstX, DstY, DstWidth, DstHeight: Integer);
@@ -802,6 +804,19 @@ begin
       NewB := ((100 - AAlpha) * OldB + AAlpha * Blue(FillColor)) div 100;
 
       SetColor(X, Y, RGBToColor(NewR, NewG, NewB));
+    end;
+end;
+
+procedure TRGB32Canvas.FuzzyRectangle(X1, Y1, X2, Y2: Integer);
+var
+  X, Y: LongInt;
+  delta: Integer;
+begin
+  for Y := Y1 + 5 to Y2 - 5 do
+    for X := X1 + 5 to X2 - 5 do
+    begin
+      delta := X mod 5;
+      SetColor(X, Y, GetColor(X - delta, Y - delta));
     end;
 end;
 

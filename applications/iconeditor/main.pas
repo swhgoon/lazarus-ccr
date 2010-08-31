@@ -41,10 +41,14 @@ type
   { TMainForm }
 
   TMainForm = class(TForm)
+    checkFuzzy: TCheckBox;
     LabelTolerance1: TLabel;
+    LabelTolerance2: TLabel;
     Palette: TColorPalette;
     MenuItemShowGrid: TMenuItem;
     MenuItemShowPreview: TMenuItem;
+    PanelTolerance1: TPanel;
+    PanelTolerance2: TPanel;
     spinFillAlpha: TSpinEdit;
     ViewShowPreview: TAction;
     ViewShowMask: TAction;
@@ -206,6 +210,7 @@ type
     UpDownSize: TUpDown;
     UpDownSize1: TUpDown;
     UpDownTolerance: TUpDown;
+    procedure checkFuzzyChange(Sender: TObject);
     procedure ColorsDisableExecute(Sender: TObject);
     procedure ColorsGrayscaleExecute(Sender: TObject);
     procedure ColorsInvertExecute(Sender: TObject);
@@ -1135,6 +1140,12 @@ procedure TMainForm.ColorsDisableExecute(Sender: TObject);
 begin
   if not Pictures.CanEdit then Exit;
   ActivePictureEdit.Disable;
+end;
+
+procedure TMainForm.checkFuzzyChange(Sender: TObject);
+begin
+  if not Pictures.CanEdit then Exit;
+  ActivePictureEdit.Fuzzy := checkFuzzy.Checked;
 end;
 
 procedure TMainForm.EditSizeChange(Sender: TObject);
