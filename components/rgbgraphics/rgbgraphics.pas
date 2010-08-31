@@ -152,6 +152,8 @@ type
     procedure Ellipse(X1, Y1, X2, Y2: Integer);
     procedure FloodFill(X, Y: Integer);
     procedure MaskFloodFill(X, Y: Integer);
+    // Alpha drawing methods
+    procedure AlphaRectangle(X1, Y1, X2, Y2, AAlpha: Integer);
   public
     procedure DrawTo(ACanvas: TCanvas; X, Y: Integer);
     procedure StretchDrawTo(ACanvas: TCanvas; DstX, DstY, DstWidth, DstHeight: Integer);
@@ -768,6 +770,39 @@ begin
   if not (FOwner is TRGB32Bitmap) then Exit;
   FloodFillScanLine(X, Y, FOwner.Width, FOwner.Height, @FOwner.Get32PixelUnsafe,
     @SamePixelUnmasked, (FOwner as TRGB32Bitmap).Mask.GetFillProcedure);;
+end;
+
+// AAlpha is the alpha of the rectangle, ranging from
+// 0 - fully transparent to 100 - fully opaque
+procedure TRGB32Canvas.AlphaRectangle(X1, Y1, X2, Y2, AAlpha: Integer);
+var
+  OldColor, NewColor: Integer;
+  X, Y: LongInt;
+  OldR, OldG, OldB, NewR, NewG, NewB: Byte;
+begin
+  // If the rectangle is fully opaque this is the same as a normal rectangle
+  if AAlpha = 100 then
+  begin
+    Rectangle(X1, Y1, X2, Y2);
+    Exit;
+  end;
+
+  // if it is fully transparent there is nothing to draw
+  if AAlpha = 0 then Exit;
+
+  // A partially transparent rectangle
+  for Y := Y1 to Y2 do
+    for X := X1 to X2 do
+    begin
+      OldColor := GetColor(X, Y);
+      RedGreenBlue(OldColor, OldR, OldG, OldB);
+
+      NewR := ((100 - AAlpha) * OldR + AAlpha * Red(FillColor)) div 100;
+      NewG := ((100 - AAlpha) * OldG + AAlpha * Green(FillColor)) div 100;
+      NewB := ((100 - AAlpha) * OldB + AAlpha * Blue(FillColor)) div 100;
+
+      SetColor(X, Y, RGBToColor(NewR, NewG, NewB));
+    end;
 end;
 
 procedure TRGB32Canvas.DrawTo(ACanvas: TCanvas; X, Y: Integer);
