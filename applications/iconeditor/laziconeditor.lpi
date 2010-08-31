@@ -38,7 +38,7 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="138">
+    <Units Count="141">
       <Unit0>
         <Filename Value="laziconeditor.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -47,7 +47,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="4"/>
         <CursorPos X="77" Y="11"/>
-        <UsageCount Value="148"/>
+        <UsageCount Value="149"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit0>
@@ -57,12 +57,11 @@
         <ComponentName Value="MainForm"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Main"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="821"/>
-        <CursorPos X="24" Y="835"/>
-        <UsageCount Value="148"/>
+        <TopLine Value="255"/>
+        <CursorPos X="22" Y="269"/>
+        <UsageCount Value="149"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
@@ -83,7 +82,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="58"/>
         <CursorPos X="23" Y="66"/>
-        <UsageCount Value="148"/>
+        <UsageCount Value="149"/>
         <Loaded Value="True"/>
       </Unit3>
       <Unit4>
@@ -94,7 +93,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="238"/>
         <CursorPos X="35" Y="252"/>
-        <UsageCount Value="148"/>
+        <UsageCount Value="149"/>
         <Loaded Value="True"/>
       </Unit4>
       <Unit5>
@@ -123,9 +122,9 @@
         <UnitName Value="PictureCtrls"/>
         <EditorIndex Value="10"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="513"/>
-        <CursorPos X="36" Y="516"/>
-        <UsageCount Value="146"/>
+        <TopLine Value="840"/>
+        <CursorPos X="28" Y="848"/>
+        <UsageCount Value="147"/>
         <Loaded Value="True"/>
       </Unit8>
       <Unit9>
@@ -184,7 +183,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="64"/>
         <CursorPos X="11" Y="79"/>
-        <UsageCount Value="145"/>
+        <UsageCount Value="146"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit16>
@@ -436,7 +435,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="20"/>
         <CursorPos X="31" Y="34"/>
-        <UsageCount Value="106"/>
+        <UsageCount Value="107"/>
         <Loaded Value="True"/>
       </Unit53>
       <Unit54>
@@ -449,7 +448,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="104"/>
+        <UsageCount Value="105"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit54>
@@ -459,11 +458,11 @@
         <ComponentName Value="ResizePaperDialogForm"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="ResizePaperDialog"/>
-        <EditorIndex Value="11"/>
+        <EditorIndex Value="14"/>
         <WindowIndex Value="0"/>
         <TopLine Value="69"/>
         <CursorPos X="50" Y="83"/>
-        <UsageCount Value="104"/>
+        <UsageCount Value="105"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit55>
@@ -516,7 +515,7 @@
         <UnitName Value="PictureDialog"/>
         <TopLine Value="39"/>
         <CursorPos X="65" Y="60"/>
-        <UsageCount Value="98"/>
+        <UsageCount Value="99"/>
       </Unit62>
       <Unit63>
         <Filename Value="..\fpc\rtl\inc\objpash.inc"/>
@@ -733,7 +732,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="40" Y="27"/>
-        <UsageCount Value="68"/>
+        <UsageCount Value="69"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit94>
@@ -1025,127 +1024,158 @@
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
       </Unit137>
+      <Unit138>
+        <Filename Value="..\..\components\rgbgraphics\rgbgraphics.pas"/>
+        <UnitName Value="RGBGraphics"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="11"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="777"/>
+        <CursorPos X="50" Y="804"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit138>
+      <Unit139>
+        <Filename Value="..\..\components\rgbgraphics\rgbroutines.pas"/>
+        <UnitName Value="RGBRoutines"/>
+        <EditorIndex Value="13"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="843"/>
+        <CursorPos X="1" Y="851"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit139>
+      <Unit140>
+        <Filename Value="..\..\..\lazarussvn\lcl\graphics.pp"/>
+        <UnitName Value="Graphics"/>
+        <EditorIndex Value="12"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1867"/>
+        <CursorPos X="20" Y="1882"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit140>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="picturemanager.pas"/>
-        <Caret Line="247" Column="34" TopLine="235"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="835" Column="24" TopLine="821"/>
       </Position1>
       <Position2>
-        <Filename Value="picturemanager.pas"/>
-        <Caret Line="254" Column="15" TopLine="242"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="836" Column="24" TopLine="822"/>
       </Position2>
       <Position3>
-        <Filename Value="picturemanager.pas"/>
-        <Caret Line="247" Column="31" TopLine="241"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="835" Column="24" TopLine="821"/>
       </Position3>
       <Position4>
-        <Filename Value="picturemanager.pas"/>
-        <Caret Line="238" Column="13" TopLine="226"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="836" Column="24" TopLine="822"/>
       </Position4>
       <Position5>
-        <Filename Value="picturemanager.pas"/>
-        <Caret Line="238" Column="13" TopLine="226"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="837" Column="24" TopLine="823"/>
       </Position5>
       <Position6>
-        <Filename Value="picturemanager.pas"/>
-        <Caret Line="247" Column="26" TopLine="235"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="836" Column="24" TopLine="822"/>
       </Position6>
       <Position7>
-        <Filename Value="picturemanager.pas"/>
-        <Caret Line="80" Column="46" TopLine="68"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="837" Column="24" TopLine="823"/>
       </Position7>
       <Position8>
-        <Filename Value="picturemanager.pas"/>
-        <Caret Line="184" Column="29" TopLine="182"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="836" Column="24" TopLine="822"/>
       </Position8>
       <Position9>
-        <Filename Value="picturemanager.pas"/>
-        <Caret Line="51" Column="67" TopLine="39"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="837" Column="24" TopLine="823"/>
       </Position9>
       <Position10>
-        <Filename Value="picturemanager.pas"/>
-        <Caret Line="380" Column="19" TopLine="368"/>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="516" Column="36" TopLine="513"/>
       </Position10>
       <Position11>
         <Filename Value="picturectrls.pas"/>
-        <Caret Line="160" Column="47" TopLine="148"/>
+        <Caret Line="625" Column="20" TopLine="611"/>
       </Position11>
       <Position12>
         <Filename Value="picturectrls.pas"/>
-        <Caret Line="713" Column="19" TopLine="711"/>
+        <Caret Line="845" Column="16" TopLine="828"/>
       </Position12>
       <Position13>
-        <Filename Value="picturectrls.pas"/>
-        <Caret Line="86" Column="47" TopLine="74"/>
+        <Filename Value="..\..\components\rgbgraphics\rgbgraphics.pas"/>
+        <Caret Line="223" Column="28" TopLine="209"/>
       </Position13>
       <Position14>
-        <Filename Value="picturectrls.pas"/>
-        <Caret Line="516" Column="36" TopLine="513"/>
+        <Filename Value="..\..\components\rgbgraphics\rgbgraphics.pas"/>
+        <Caret Line="156" Column="20" TopLine="142"/>
       </Position14>
       <Position15>
-        <Filename Value="picturemanager.pas"/>
-        <Caret Line="380" Column="19" TopLine="368"/>
+        <Filename Value="..\..\components\rgbgraphics\rgbgraphics.pas"/>
+        <Caret Line="777" Column="56" TopLine="771"/>
       </Position15>
       <Position16>
-        <Filename Value="picturemanager.pas"/>
-        <Caret Line="256" Column="18" TopLine="242"/>
+        <Filename Value="..\..\components\rgbgraphics\rgbgraphics.pas"/>
+        <Caret Line="750" Column="8" TopLine="744"/>
       </Position16>
       <Position17>
-        <Filename Value="picturemanager.pas"/>
-        <Caret Line="252" Column="35" TopLine="238"/>
+        <Filename Value="..\..\components\rgbgraphics\rgbroutines.pas"/>
+        <Caret Line="843" Column="64" TopLine="828"/>
       </Position17>
       <Position18>
-        <Filename Value="main.pas"/>
-        <Caret Line="313" Column="26" TopLine="306"/>
+        <Filename Value="..\..\components\rgbgraphics\rgbgraphics.pas"/>
+        <Caret Line="796" Column="73" TopLine="772"/>
       </Position18>
       <Position19>
-        <Filename Value="main.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="..\..\components\rgbgraphics\rgbgraphics.pas"/>
+        <Caret Line="780" Column="6" TopLine="778"/>
       </Position19>
       <Position20>
-        <Filename Value="main.pas"/>
-        <Caret Line="310" Column="29" TopLine="304"/>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="845" Column="16" TopLine="828"/>
       </Position20>
       <Position21>
-        <Filename Value="main.pas"/>
-        <Caret Line="320" Column="24" TopLine="302"/>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="625" Column="22" TopLine="611"/>
       </Position21>
       <Position22>
         <Filename Value="main.pas"/>
-        <Caret Line="698" Column="30" TopLine="693"/>
+        <Caret Line="533" Column="25" TopLine="524"/>
       </Position22>
       <Position23>
-        <Filename Value="main.pas"/>
-        <Caret Line="48" Column="44" TopLine="33"/>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="845" Column="1" TopLine="837"/>
       </Position23>
       <Position24>
-        <Filename Value="main.pas"/>
-        <Caret Line="44" Column="20" TopLine="33"/>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="625" Column="20" TopLine="611"/>
       </Position24>
       <Position25>
         <Filename Value="main.pas"/>
-        <Caret Line="44" Column="1" TopLine="23"/>
+        <Caret Line="532" Column="3" TopLine="530"/>
       </Position25>
       <Position26>
         <Filename Value="main.pas"/>
-        <Caret Line="706" Column="3" TopLine="692"/>
+        <Caret Line="1088" Column="28" TopLine="1085"/>
       </Position26>
       <Position27>
         <Filename Value="main.pas"/>
-        <Caret Line="37" Column="58" TopLine="37"/>
+        <Caret Line="1094" Column="28" TopLine="1091"/>
       </Position27>
       <Position28>
-        <Filename Value="..\..\components\colorpalette\colorpalette.pas"/>
-        <Caret Line="331" Column="1" TopLine="317"/>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="213" Column="18" TopLine="195"/>
       </Position28>
       <Position29>
-        <Filename Value="..\..\components\colorpalette\colorpalette.pas"/>
-        <Caret Line="327" Column="20" TopLine="317"/>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="848" Column="28" TopLine="840"/>
       </Position29>
       <Position30>
-        <Filename Value="main.pas"/>
-        <Caret Line="37" Column="58" TopLine="37"/>
+        <Filename Value="..\..\components\rgbgraphics\rgbgraphics.pas"/>
+        <Caret Line="797" Column="22" TopLine="783"/>
       </Position30>
     </JumpHistory>
   </ProjectOptions>

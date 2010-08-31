@@ -121,6 +121,7 @@ type
   TCustomPictureEdit = class(TCustomPictureView)
   private
     FDrawMode: TDrawMode;
+    FFillAlpha: Integer;
     FFillAndOutline: TDrawMode;
     FFillColor: TColor;
     FFloodFillTolerance: Single;
@@ -211,6 +212,7 @@ type
     property FloodFillTolerance: Single read FFloodFillTolerance write FFloodFillTolerance;
     property Size: Integer read FSize write FSize;
     property Tool: TPictureEditTool read FTool write SetTool;
+    property FillAlpha: Integer read FFillAlpha write FFillAlpha;
     
     property Modified: Boolean read FModified;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -678,7 +680,8 @@ begin
   inherited;
   ControlStyle := ControlStyle + [csCaptureMouse];
   CaptureMouseButtons := [mbLeft, mbMiddle, mbRight];
-  
+
+  FFillAlpha := 100;
   FFillColor := clGray;
   FOutlineColor := clBlack;
   FPaperColor := clWhite;
@@ -842,7 +845,7 @@ begin
   BeginDraw;
   if not (ssLeft in Shift) then Picture.Canvas.EraseMode := ermErase;
   try
-    Picture.Canvas.Rectangle(X1, Y1, X2, Y2);
+    Picture.Canvas.AlphaRectangle(X1, Y1, X2, Y2, FFillAlpha);
   finally
     Picture.Canvas.EraseMode := ermNone;
     EndDraw;

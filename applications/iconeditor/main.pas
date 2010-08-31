@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Menus,
-  ExtCtrls, ComCtrls, ActnList, StdActns, ExtDlgs, Buttons, StdCtrls,
+  ExtCtrls, ComCtrls, ActnList, StdActns, ExtDlgs, Buttons, StdCtrls, Spin,
   NewDialog, ResizeDialog, ResizePaperDialog, AboutDialog, Preview,
 
   PictureManager, RGBGraphics, PictureCtrls, ColorPalette;
@@ -41,9 +41,11 @@ type
   { TMainForm }
 
   TMainForm = class(TForm)
+    LabelTolerance1: TLabel;
     Palette: TColorPalette;
     MenuItemShowGrid: TMenuItem;
     MenuItemShowPreview: TMenuItem;
+    spinFillAlpha: TSpinEdit;
     ViewShowPreview: TAction;
     ViewShowMask: TAction;
     ViewShowGrid: TAction;
@@ -250,6 +252,7 @@ type
     procedure Rotate180Execute(Sender: TObject);
     procedure Rotate270Execute(Sender: TObject);
     procedure Rotate90Execute(Sender: TObject);
+    procedure spinFillAlphaChange(Sender: TObject);
     procedure ToolCircleShapeClick(Sender: TObject);
     procedure ToolColorPickClick(Sender: TObject);
     procedure ToolEllClick(Sender: TObject);
@@ -439,6 +442,12 @@ procedure TMainForm.Rotate90Execute(Sender: TObject);
 begin
   if not Pictures.CanEdit then Exit;
   ActivePictureEdit.Rotate90Clockwise;
+end;
+
+procedure TMainForm.spinFillAlphaChange(Sender: TObject);
+begin
+  if not Pictures.CanEdit then Exit;
+  ActivePictureEdit.FillAlpha := spinFillAlpha.Value;
 end;
 
 procedure TMainForm.ToolCircleShapeClick(Sender: TObject);

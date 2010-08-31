@@ -1196,6 +1196,26 @@ object MainForm: TMainForm
           Wrap = False
         end
       end
+      object LabelTolerance1: TLabel
+        Left = 447
+        Height = 34
+        Top = 0
+        Width = 47
+        Align = alLeft
+        Caption = 'Fill Alpha:'
+        Constraints.MinHeight = 32
+        Layout = tlCenter
+        ParentColor = False
+      end
+      object spinFillAlpha: TSpinEdit
+        Left = 504
+        Height = 21
+        Top = 5
+        Width = 51
+        OnChange = spinFillAlphaChange
+        TabOrder = 4
+        Value = 100
+      end
     end
   end
   object PanelPictures: TPanel
