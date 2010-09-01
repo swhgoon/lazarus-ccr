@@ -2,17 +2,14 @@
 This unit has been produced by ws_helper.
   Input unit name : "metadata_service".
   This unit name  : "metadata_service_proxy".
-  Date            : "12/11/2006 11:12".
+  Date            : "23/08/2010 16:10:07".
 }
-{$INCLUDE wst_global.inc}
-Unit metadata_service_proxy;
 
+Unit metadata_service_proxy;
+{$IFDEF FPC} {$mode objfpc}{$H+} {$ENDIF}
 Interface
 
 Uses SysUtils, Classes, TypInfo, base_service_intf, service_intf, metadata_service;
-
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
 
 Type
 
@@ -22,12 +19,25 @@ Type
     class function GetServiceType() : PTypeInfo;override;
     function GetRepositoryList():TArrayOfStringRemotable;
     function GetRepositoryInfo(
-      Const AName : string
+      const  AName : String
     ):TWSTMtdRepository;
   End;
 
+  Function wst_CreateInstance_IWSTMetadataService(const AFormat : string = 'SOAP:'; const ATransport : string = 'HTTP:'; const AAddress : string = ''):IWSTMetadataService;
+
 Implementation
 uses wst_resources_imp, metadata_repository;
+
+
+Function wst_CreateInstance_IWSTMetadataService(const AFormat : string; const ATransport : string; const AAddress : string):IWSTMetadataService;
+Var
+  locAdr : string;
+Begin
+  locAdr := AAddress;
+  if ( locAdr = '' ) then
+    locAdr := GetServiceDefaultAddress(TypeInfo(IWSTMetadataService));
+  Result := TWSTMetadataService_Proxy.Create('IWSTMetadataService',AFormat+GetServiceDefaultFormatProperties(TypeInfo(IWSTMetadataService)),ATransport + 'address=' + locAdr);
+End;
 
 { TWSTMetadataService_Proxy implementation }
 
@@ -39,20 +49,21 @@ end;
 function TWSTMetadataService_Proxy.GetRepositoryList():TArrayOfStringRemotable;
 Var
   locSerializer : IFormatterClient;
-  strPrmName : string;
+  locCallContext : ICallContext;
+  locStrPrmName : string;
 Begin
+  locCallContext := Self as ICallContext;
   locSerializer := GetSerializer();
   Try
-    locSerializer.BeginCall('GetRepositoryList', GetTarget(),(Self as ICallContext));
+    locSerializer.BeginCall('GetRepositoryList', GetTarget(),locCallContext);
     locSerializer.EndCall();
 
     MakeCall();
 
-    locSerializer.BeginCallRead((Self as ICallContext));
-      If ( PTypeInfo(TypeInfo(TArrayOfStringRemotable))^.Kind in [tkClass,tkInterface] ) Then
-        Pointer(Result) := Nil;
-      strPrmName := 'return';
-      locSerializer.Get(TypeInfo(TArrayOfStringRemotable), strPrmName, result);
+    locSerializer.BeginCallRead(locCallContext);
+      TObject(Result) := Nil;
+      locStrPrmName := 'Result';
+      locSerializer.Get(TypeInfo(TArrayOfStringRemotable), locStrPrmName, Result);
 
   Finally
     locSerializer.Clear();
@@ -60,24 +71,26 @@ Begin
 End;
 
 function TWSTMetadataService_Proxy.GetRepositoryInfo(
-  Const AName : string
+  const  AName : String
 ):TWSTMtdRepository;
 Var
   locSerializer : IFormatterClient;
-  strPrmName : string;
+  locCallContext : ICallContext;
+  locStrPrmName : string;
 Begin
+  locCallContext := Self as ICallContext;
   locSerializer := GetSerializer();
   Try
-    locSerializer.BeginCall('GetRepositoryInfo', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('AName', TypeInfo(string), AName);
+    locSerializer.BeginCall('GetRepositoryInfo', GetTarget(),locCallContext);
+      locSerializer.Put('AName', TypeInfo(String), AName);
     locSerializer.EndCall();
 
     MakeCall();
 
-    locSerializer.BeginCallRead((Self as ICallContext));
-      Pointer(Result) := Nil;
-      strPrmName := 'return';
-      locSerializer.Get(TypeInfo(TWSTMtdRepository), strPrmName, result);
+    locSerializer.BeginCallRead(locCallContext);
+      TObject(Result) := Nil;
+      locStrPrmName := 'Result';
+      locSerializer.Get(TypeInfo(TWSTMtdRepository), locStrPrmName, Result);
 
   Finally
     locSerializer.Clear();
@@ -90,5 +103,5 @@ initialization
 
   {$IF DECLARED(Register_metadata_service_ServiceMetadata)}
   Register_metadata_service_ServiceMetadata();
-  {$ENDIF}
+  {$IFEND}
 End.

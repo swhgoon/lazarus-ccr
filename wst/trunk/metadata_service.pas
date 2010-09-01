@@ -1,202 +1,124 @@
 {
-    This file is part of the Web Service Toolkit
-    Copyright (c) 2006 by Inoussa OUEDRAOGO
-
-    This file is provide under modified LGPL licence
-    ( the files COPYING.modifiedLGPL and COPYING.LGPL).
-
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+This unit has been produced by ws_helper.
+  Input unit name : "metadata_service".
+  This unit name  : "metadata_service".
+  Date            : "23/08/2010 16:10:07".
 }
-{$INCLUDE wst_global.inc}
 unit metadata_service;
-
+{$IFDEF FPC}
+  {$mode objfpc} {$H+}
+{$ENDIF}
+{$IFNDEF FPC}
+  {$DEFINE WST_RECORD_RTTI}
+{$ENDIF}
 interface
 
-uses
-  Classes, SysUtils,
-  base_service_intf, metadata_repository;
+uses 
+  SysUtils, Classes, TypInfo, base_service_intf, service_intf, 
+  metadata_repository;
+
+const
+  sNAME_SPACE = 'metadata_service';
+  sUNIT_NAME = 'metadata_service';
 
 type
 
+  TWSTMtdOperationParam = class;
+  TWSTMtdServiceOperation = class;
+  TWSTMtdService = class;
+  TWSTMtdRepository = class;
+  TWSTMtdOperationParamArray = class;
+  TWSTMtdServiceOperationArray = class;
+  TWSTMtdServiceArray = class;
+
   TWSTMtdOperationParam = class(TBaseComplexRemotable)
   private
-    FModifier: TOperationParamFlag;
-    FName: string;
-    FTypeName: string;
+    FName : String;
+    FTypeName : String;
+    FModifier : TOperationParamFlag;
   published
-    property Name : string read FName write FName;
-    property TypeName : string read FTypeName write FTypeName;
+    property Name : String read FName write FName;
+    property TypeName : String read FTypeName write FTypeName;
     property Modifier : TOperationParamFlag read FModifier write FModifier;
-  end;
-
-  TWSTMtdOperationParamArray = class(TBaseObjectArrayRemotable)
-  protected
-    function GetParam(AIndex: Integer): TWSTMtdOperationParam;
-  public
-    class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : TWSTMtdOperationParam read GetParam;default;
   end;
 
   TWSTMtdServiceOperation = class(TBaseComplexRemotable)
   private
-    FName: string;
-    FParams: TWSTMtdOperationParamArray;
-    function GetParams: TWSTMtdOperationParamArray;
-    procedure SetParams(const AValue: TWSTMtdOperationParamArray);
+    FName : String;
+    FParams : TWSTMtdOperationParamArray;
   public
     constructor Create();override;
-    destructor Destroy();override;
+    procedure FreeObjectProperties();override;
   published
-    property Name : string read FName write FName;
-    property Params : TWSTMtdOperationParamArray read GetParams write SetParams;
-  end;
-
-  TWSTMtdServiceOperationArray = class(TBaseObjectArrayRemotable)
-  private
-    function GetOperation(AIndex: Integer): TWSTMtdServiceOperation;
-  public
-    class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : TWSTMtdServiceOperation read GetOperation;default;
+    property Name : String read FName write FName;
+    property Params : TWSTMtdOperationParamArray read FParams write FParams;
   end;
 
   TWSTMtdService = class(TBaseComplexRemotable)
   private
-    FName: string;
-    FOperations: TWSTMtdServiceOperationArray;
-    function GetOperations: TWSTMtdServiceOperationArray;
-    procedure SetOperations(const AValue: TWSTMtdServiceOperationArray);
+    FName : String;
+    FOperations : TWSTMtdServiceOperationArray;
   public
     constructor Create();override;
-    destructor Destroy();override;
+    procedure FreeObjectProperties();override;
   published
-    property Name : string read FName write FName;
-    property Operations : TWSTMtdServiceOperationArray read GetOperations write SetOperations;
+    property Name : String read FName write FName;
+    property Operations : TWSTMtdServiceOperationArray read FOperations write FOperations;
+  end;
+
+  TWSTMtdRepository = class(TBaseComplexRemotable)
+  private
+    FName : String;
+    FNameSpace : String;
+    FServices : TWSTMtdServiceArray;
+  public
+    constructor Create();override;
+    procedure FreeObjectProperties();override;
+  published
+    property Name : String read FName write FName;
+    property NameSpace : String read FNameSpace write FNameSpace;
+    property Services : TWSTMtdServiceArray read FServices write FServices;
+  end;
+
+  TWSTMtdOperationParamArray = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): TWSTMtdOperationParam;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : TWSTMtdOperationParam Read GetItem;Default;
+  end;
+
+  TWSTMtdServiceOperationArray = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): TWSTMtdServiceOperation;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : TWSTMtdServiceOperation Read GetItem;Default;
   end;
 
   TWSTMtdServiceArray = class(TBaseObjectArrayRemotable)
-  protected
-    function GetService(AIndex: Integer): TWSTMtdService;
+  private
+    function GetItem(AIndex: Integer): TWSTMtdService;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    Property Item[AIndex:Integer] : TWSTMtdService Read GetService;Default;
+    property Item[AIndex:Integer] : TWSTMtdService Read GetItem;Default;
   end;
-  
-  TWSTMtdRepository = class(TBaseComplexRemotable)
-  private
-    FName: string;
-    FNameSpace: string;
-    FServices : TWSTMtdServiceArray;
-    function GetServices: TWSTMtdServiceArray;
-    procedure SetServices(const AValue: TWSTMtdServiceArray);
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property Name : string read FName write FName;
-    property NameSpace : string read FNameSpace write FNameSpace;
-    property Services : TWSTMtdServiceArray read GetServices write SetServices;
-  end;
-  
-  {The unique metadata public service}
-  IWSTMetadataService = interface
+
+  IWSTMetadataService = interface(IInvokable)
     ['{804A3825-ADA5-4499-87BF-CF5491BFD674}']
     function GetRepositoryList():TArrayOfStringRemotable;
-    function GetRepositoryInfo(const AName : string):TWSTMtdRepository;
+    function GetRepositoryInfo(
+      const  AName : String
+    ):TWSTMtdRepository;
   end;
-  
-  procedure Register_metadata_service_NameSpace();
-  
-implementation
 
-procedure Register_metadata_service_NameSpace();
-begin
-  GetModuleMetadataMngr().SetRepositoryNameSpace('metadata_service',sWST_BASE_NS);
-end;
+  procedure Register_metadata_service_ServiceMetadata();
 
-procedure Register_metadata_service_Types();
-var
-  r : TTypeRegistry;
-begin
-  r := GetTypeRegistry();
-
-  r.Register(sWST_BASE_NS,TypeInfo(TOperationParamFlag),'TOperationParamFlag');
-  r.Register(sWST_BASE_NS,TypeInfo(TWSTMtdOperationParam),'TWSTMtdOperationParam');
-    r.Register(sWST_BASE_NS,TypeInfo(TWSTMtdOperationParamArray),'TWSTMtdOperationParamArray');
-
-  r.Register(sWST_BASE_NS,TypeInfo(TWSTMtdOperationParam),'TWSTMtdOperationParam');
-    r.Register(sWST_BASE_NS,TypeInfo(TWSTMtdOperationParamArray),'TWSTMtdOperationParamArray');
-
-  r.Register(sWST_BASE_NS,TypeInfo(TWSTMtdServiceOperation),'TWSTMtdServiceOperation');
-    r.Register(sWST_BASE_NS,TypeInfo(TWSTMtdServiceOperationArray),'TWSTMtdServiceOperationArray');
-
-  r.Register(sWST_BASE_NS,TypeInfo(TWSTMtdService),'TWSTMtdService');
-    r.Register(sWST_BASE_NS,TypeInfo(TWSTMtdServiceArray),'TWSTMtdServiceArray');
-    
-  r.Register(sWST_BASE_NS,TypeInfo(TWSTMtdRepository),'TWSTMtdRepository');
-end;
-
-{ TWSTMtdServiceArray }
-
-function TWSTMtdServiceArray.GetService(AIndex: Integer): TWSTMtdService;
-begin
-  Result := inherited Item[AIndex] as TWSTMtdService;
-end;
-
-class function TWSTMtdServiceArray.GetItemClass(): TBaseRemotableClass;
-begin
-  Result := TWSTMtdService;
-end;
-
-{ TWSTMtdRepository }
-
-function TWSTMtdRepository.GetServices: TWSTMtdServiceArray;
-begin
-  Result := FServices;
-end;
-
-procedure TWSTMtdRepository.SetServices(const AValue: TWSTMtdServiceArray);
-begin
-  FServices.Assign(AValue);
-end;
-
-constructor TWSTMtdRepository.Create();
-begin
-  inherited Create();
-  FServices := TWSTMtdServiceArray.Create();
-end;
-
-destructor TWSTMtdRepository.Destroy();
-begin
-  FreeAndNil(FServices);
-  inherited Destroy();
-end;
-
-{ TWSTMtdOperationParamArray }
-
-function TWSTMtdOperationParamArray.GetParam(AIndex: Integer): TWSTMtdOperationParam;
-begin
-  Result := inherited Item[AIndex] as TWSTMtdOperationParam;
-end;
-
-class function TWSTMtdOperationParamArray.GetItemClass(): TBaseRemotableClass;
-begin
-  Result := TWSTMtdOperationParam;
-end;
+Implementation
+uses 
+  record_rtti, wst_types;
 
 { TWSTMtdServiceOperation }
-
-function TWSTMtdServiceOperation.GetParams: TWSTMtdOperationParamArray;
-begin
-  Result := FParams;
-end;
-
-procedure TWSTMtdServiceOperation.SetParams(const AValue: TWSTMtdOperationParamArray);
-begin
-  FParams.Assign(AValue);
-end;
 
 constructor TWSTMtdServiceOperation.Create();
 begin
@@ -204,49 +126,125 @@ begin
   FParams := TWSTMtdOperationParamArray.Create();
 end;
 
-destructor TWSTMtdServiceOperation.Destroy();
+procedure TWSTMtdServiceOperation.FreeObjectProperties();
 begin
-  FreeAndNil(FParams);
-  inherited Destroy();
-end;
-
-{ TWSTMtdServiceOperationArray }
-
-function TWSTMtdServiceOperationArray.GetOperation(AIndex: Integer): TWSTMtdServiceOperation;
-begin
-  Result := inherited Item[AIndex] as TWSTMtdServiceOperation;
-end;
-
-class function TWSTMtdServiceOperationArray.GetItemClass(): TBaseRemotableClass;
-begin
-  Result := TWSTMtdServiceOperation;
+  if Assigned(FParams) then
+    FreeAndNil(FParams);
+  inherited FreeObjectProperties();
 end;
 
 { TWSTMtdService }
 
-function TWSTMtdService.GetOperations: TWSTMtdServiceOperationArray;
-begin
-  Result := FOperations;
-end;
-
-procedure TWSTMtdService.SetOperations(const AValue: TWSTMtdServiceOperationArray);
-begin
-  FOperations.Assign(AValue);
-end;
-
 constructor TWSTMtdService.Create();
 begin
-  FOperations := TWSTMtdServiceOperationArray.Create();
   inherited Create();
+  FOperations := TWSTMtdServiceOperationArray.Create();
 end;
 
-destructor TWSTMtdService.Destroy();
+procedure TWSTMtdService.FreeObjectProperties();
 begin
-  FreeAndNil(FOperations);
-  inherited Destroy();
+  if Assigned(FOperations) then
+    FreeAndNil(FOperations);
+  inherited FreeObjectProperties();
 end;
 
+{ TWSTMtdRepository }
+
+constructor TWSTMtdRepository.Create();
+begin
+  inherited Create();
+  FServices := TWSTMtdServiceArray.Create();
+end;
+
+procedure TWSTMtdRepository.FreeObjectProperties();
+begin
+  if Assigned(FServices) then
+    FreeAndNil(FServices);
+  inherited FreeObjectProperties();
+end;
+
+{ TWSTMtdOperationParamArray }
+
+function TWSTMtdOperationParamArray.GetItem(AIndex: Integer): TWSTMtdOperationParam;
+begin
+  Result := TWSTMtdOperationParam(Inherited GetItem(AIndex));
+end;
+
+class function TWSTMtdOperationParamArray.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= TWSTMtdOperationParam;
+end;
+
+{ TWSTMtdServiceOperationArray }
+
+function TWSTMtdServiceOperationArray.GetItem(AIndex: Integer): TWSTMtdServiceOperation;
+begin
+  Result := TWSTMtdServiceOperation(Inherited GetItem(AIndex));
+end;
+
+class function TWSTMtdServiceOperationArray.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= TWSTMtdServiceOperation;
+end;
+
+{ TWSTMtdServiceArray }
+
+function TWSTMtdServiceArray.GetItem(AIndex: Integer): TWSTMtdService;
+begin
+  Result := TWSTMtdService(Inherited GetItem(AIndex));
+end;
+
+class function TWSTMtdServiceArray.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= TWSTMtdService;
+end;
+
+
+procedure Register_metadata_service_ServiceMetadata();
+var
+  mm : IModuleMetadataMngr;
+begin
+  mm := GetModuleMetadataMngr();
+  mm.SetRepositoryNameSpace(sUNIT_NAME, sNAME_SPACE);
+  mm.SetServiceCustomData(
+    sUNIT_NAME,
+    'IWSTMetadataService',
+    'FORMAT_Style',
+    'rpc'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'IWSTMetadataService',
+    'GetRepositoryList',
+    '_E_N_',
+    'GetRepositoryList'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'IWSTMetadataService',
+    'GetRepositoryInfo',
+    '_E_N_',
+    'GetRepositoryInfo'
+  );
+end;
+
+
+var
+  typeRegistryInstance : TTypeRegistry = nil;
 initialization
-  Register_metadata_service_Types();
-  
-end.
+  typeRegistryInstance := GetTypeRegistry();
+
+  typeRegistryInstance.Register(sNAME_SPACE,TypeInfo(TWSTMtdOperationParam),'TWSTMtdOperationParam');
+  typeRegistryInstance.Register(sNAME_SPACE,TypeInfo(TWSTMtdServiceOperation),'TWSTMtdServiceOperation');
+  typeRegistryInstance.Register(sNAME_SPACE,TypeInfo(TWSTMtdService),'TWSTMtdService');
+  typeRegistryInstance.Register(sNAME_SPACE,TypeInfo(TWSTMtdRepository),'TWSTMtdRepository');
+  typeRegistryInstance.Register(sNAME_SPACE,TypeInfo(TWSTMtdOperationParamArray),'TWSTMtdOperationParamArray');
+  typeRegistryInstance.ItemByTypeInfo[TypeInfo(TWSTMtdOperationParamArray)].RegisterExternalPropertyName(sARRAY_ITEM,'Item');
+  typeRegistryInstance.Register(sNAME_SPACE,TypeInfo(TWSTMtdServiceOperationArray),'TWSTMtdServiceOperationArray');
+  typeRegistryInstance.ItemByTypeInfo[TypeInfo(TWSTMtdServiceOperationArray)].RegisterExternalPropertyName(sARRAY_ITEM,'_Item');
+  typeRegistryInstance.Register(sNAME_SPACE,TypeInfo(TWSTMtdServiceArray),'TWSTMtdServiceArray');
+  typeRegistryInstance.ItemByTypeInfo[TypeInfo(TWSTMtdServiceArray)].RegisterExternalPropertyName(sARRAY_ITEM,'Item');
+
+
+
+End.
