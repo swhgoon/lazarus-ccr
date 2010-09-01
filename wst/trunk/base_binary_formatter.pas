@@ -2179,12 +2179,12 @@ end;
 {$WARNINGS OFF}
 function TArrayStackItem.CreateInnerBuffer(const ADataType: TDataType): PDataBuffer;
 begin
-  raise EBinaryFormatterException.CreateFmt(SERR_InsupportedOperation,['TArrayStackItem.CreateInnerBuffer']);
+  raise EBinaryFormatterException.CreateFmt(SERR_UnsupportedOperation,['TArrayStackItem.CreateInnerBuffer']);
 end;
 
 function TArrayStackItem.GetInnerBuffer(): PDataBuffer;
 begin
-  raise EBinaryFormatterException.CreateFmt(SERR_InsupportedOperation,['TArrayStackItem.GetInnerBuffer']);
+  raise EBinaryFormatterException.CreateFmt(SERR_UnsupportedOperation,['TArrayStackItem.GetInnerBuffer']);
 end;
 {$WARNINGS ON}
 

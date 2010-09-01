@@ -31,7 +31,6 @@ resourcestring
   SERR_IndexOutOfBound             = 'Index out of bound : %d.';
   SERR_IncompleteParamTypeRegistration  = 'Incomplete type registration for the type of this parameter : "%s".';
   SERR_InnerScopeMustBeSimpleType       = 'Inner Scope value must be a "simple type" value.';
-  SERR_InsupportedOperation        = 'Insupported operation : "%s".';
   SERR_InvalidArrayBounds          = 'Invalid array bounds.';
   SERR_InvalidArrayLength          = 'Invalid array length : %d.';
   SERR_InvalidCollectionLength     = 'Invalid collection length : %d.';
@@ -62,6 +61,7 @@ resourcestring
   SERR_TypeNotRegistered                 = 'Type not registered : "%s".';
   SERR_UnexpectedEndOfData               = 'Unexpected end of data.';
   SERR_UnknownProperty                   = 'Unknown property : "%s".';
+  SERR_UnsupportedOperation        = 'Unsupported operation : "%s".';
   
 implementation
 

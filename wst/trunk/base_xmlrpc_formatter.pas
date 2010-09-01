@@ -2093,7 +2093,7 @@ end;
 {$WARNINGS OFF} {$HINTS OFF}
 function TSimpleTypeStackItem.FindNode(var ANodeName: string): TDOMNode;
 begin
-  raise EXmlRpcException.CreateFmt(SERR_InsupportedOperation,['FindNode']);
+  raise EXmlRpcException.CreateFmt(SERR_UnsupportedOperation,['FindNode']);
 end;
 
 function TSimpleTypeStackItem.CreateBuffer(
@@ -2101,12 +2101,12 @@ function TSimpleTypeStackItem.CreateBuffer(
   const ADataType: TXmlRpcDataType
 ) : TDOMNode;
 begin
-  raise EXmlRpcException.CreateFmt(SERR_InsupportedOperation,['CreateBuffer']);
+  raise EXmlRpcException.CreateFmt(SERR_UnsupportedOperation,['CreateBuffer']);
 end;
 
 function TSimpleTypeStackItem.GetScopeItemNames(const AReturnList: TStrings): Integer;
 begin
-  raise EXmlRpcException.CreateFmt(SERR_InsupportedOperation,['GetScopeItemNames']);
+  raise EXmlRpcException.CreateFmt(SERR_UnsupportedOperation,['GetScopeItemNames']);
 end;
 {$WARNINGS ON} {$HINTS ON}
 
