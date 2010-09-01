@@ -84,6 +84,7 @@ type
     class function GetDescription() : string;override;
     procedure Start();override;
     procedure Stop();override;
+    function IsActive : Boolean; override;
   end;
 
 
@@ -301,6 +302,11 @@ end;
 class function TwstIndyHttpListener.GetDescription: string;
 begin
   Result := 'WST Indy HTTP Listener';
+end;
+
+function TwstIndyHttpListener.IsActive: Boolean;
+begin
+  Result := FHTTPServerObject.Active;
 end;
 
 initialization

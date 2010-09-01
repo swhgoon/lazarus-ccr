@@ -82,6 +82,7 @@ type
     destructor Destroy();override;
     procedure Start();override;
     procedure Stop();override;
+    function IsActive : Boolean; override;
   end;
   
 implementation
@@ -323,6 +324,11 @@ begin
     Start();
   end;
   inherited Destroy();
+end;
+
+function TwstSynapseTcpListener.IsActive: Boolean;
+begin
+  Result := (FServerThread <> nil) and (not FServerThread.Suspended);
 end;
 
 procedure TwstSynapseTcpListener.Start();

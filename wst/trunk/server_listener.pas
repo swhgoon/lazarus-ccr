@@ -34,6 +34,7 @@ type
     class function GetDescription() : string;virtual;
     procedure Start();virtual;abstract;
     procedure Stop();virtual;abstract;
+    function IsActive : Boolean; virtual;abstract;
     procedure NotifyMessage(const AMsg : string);
     property OnNotifyMessage : TListnerNotifyMessage read FOnNotifyMessage write FOnNotifyMessage;
   end;

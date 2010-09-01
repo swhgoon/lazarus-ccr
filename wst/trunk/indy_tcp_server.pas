@@ -62,6 +62,7 @@ type
     class function GetDescription() : string;override;
     procedure Start();override;
     procedure Stop();override;
+    function IsActive : Boolean; override;
   end;
 
 implementation
@@ -248,6 +249,11 @@ procedure TwstIndyTcpListener.Stop();
 begin
   if FTCPServerObject.Active then
     FTCPServerObject.Active := False;
+end; 
+
+function TwstIndyTcpListener.IsActive: Boolean;
+begin
+  Result := FTCPServerObject.Active;
 end;
 
 end.
