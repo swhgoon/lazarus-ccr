@@ -26,10 +26,21 @@ Const
   
 Type
 
+  ICookieManager = interface
+    ['{C04EFE37-A6BA-409E-9D9C-25836938858F}']
+    function GetCount() : Integer;
+    function GetName(const AIndex : Integer) : string;
+    function GetValue(const AIndex : Integer) : string; overload;
+    function GetValue(const AName : string) : string; overload;
+    procedure SetValue(const AIndex : Integer; const AValue : string); overload;
+    procedure SetValue(const AName : string; const AValue : string); overload;
+  end;
+  
   ITransport = Interface
     ['{AEB6677A-9620-4E7D-82A0-43E3C4C52B43}']
     function GetPropertyManager():IPropertyManager;
     procedure SendAndReceive(ARequest,AResponse:TStream);
+    function GetCookieManager() : ICookieManager;
   End;
 
   //The client formater interface, used to marshall parameters.
@@ -72,7 +83,7 @@ Type
 
   { TBaseProxy }
   (* The base class for service proxy *)
-  TBaseProxy = Class(TInterfacedObject,IInterface,ICallContext)
+  TBaseProxy = Class(TInterfacedObject,IInterface,ICallContext,IServiceProtocol)
   private
     FTarget : String;
     FProtocol : IServiceProtocol;
@@ -81,9 +92,10 @@ Type
     procedure LoadProperties();
   protected
     function GetTarget():String;{$IFDEF USE_INLINE}inline;{$ENDIF}
-    function GetSerializer() : IFormatterClient;{$IFDEF USE_INLINE}inline;{$ENDIF}
-    function GetCallHandler() : ICallMaker;{$IFDEF USE_INLINE}inline;{$ENDIF}
-    function GetTransport() : ITransport;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetSerializer() : IFormatterClient;
+    function GetCallHandler() : ICallMaker;
+    function GetTransport() : ITransport;
+    procedure SetTransport(AValue : ITransport);  
     procedure MakeCall();
     class function GetServiceType() : PTypeInfo;virtual;abstract;
 
@@ -223,6 +235,11 @@ end;
 function TBaseProxy.GetTransport(): ITransport;
 begin
   Result := FProtocol.GetTransport();
+end;
+
+procedure TBaseProxy.SetTransport(AValue : ITransport); 
+begin
+  FProtocol.SetTransport(AValue);
 end;
 
 procedure TBaseProxy.MakeCall();

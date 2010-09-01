@@ -13,20 +13,38 @@
 {$INCLUDE wst_global.inc}
 unit indy_http_protocol;
 
-{.$DEFINE WST_DBG}
+{ $DEFINE WST_DBG}
 
 interface
 
 uses
   Classes, SysUtils,
-  service_intf, imp_utils, base_service_intf, wst_types, filter_intf,
-  client_utils, IdHTTP;
+  service_intf, imp_utils, base_service_intf, wst_types,
+  client_utils, IdHTTP, IdCookie;
 
 Const
   sTRANSPORT_NAME = 'HTTP';
 
 Type
 
+  { TIndyCookieManager }
+
+  TIndyCookieManager = class(TInterfacedObject,ICookieManager)
+  private
+    FReferencedObject : TIdCookies;
+  protected
+    property ReferencedObject : TIdCookies read FReferencedObject;
+  protected  
+    function GetCount() : Integer;
+    function GetName(const AIndex : Integer) : string;
+    function GetValue(const AIndex : Integer) : string; overload;
+    function GetValue(const AName : string) : string; overload;
+    procedure SetValue(const AIndex : Integer; const AValue : string); overload;
+    procedure SetValue(const AName : string; const AValue : string); overload;
+  public
+    constructor Create(AReferencedObject : TIdCookies);
+  end; 
+  
   { THTTPTransport }
   THTTPTransport = class(TBaseTransport,ITransport)
   Private
@@ -34,6 +52,7 @@ Type
     FConnection : TidHttp;
     FSoapAction: string;
     FContentType: string;
+    FCookieManager : ICookieManager;  
   private
     function GetAddress: string;
     function GetProtocolVersion : string;
@@ -51,6 +70,7 @@ Type
     constructor Create();override;
     destructor Destroy();override;
     procedure SendAndReceive(ARequest,AResponse:TStream); override;
+    function GetCookieManager() : ICookieManager; override;        
   published
     property ContentType : string Read FContentType Write FContentType;
     property Address : string Read GetAddress Write SetAddress;
@@ -223,10 +243,78 @@ begin
   {$ENDIF WST_DBG}
 end;
 
+function THTTPTransport.GetCookieManager() : ICookieManager;  
+begin  
+  if (FCookieManager = nil) then
+    FCookieManager := TIndyCookieManager.Create(FConnection.CookieManager.CookieCollection);
+  Result := FCookieManager;    
+end;
+
 procedure INDY_RegisterHTTP_Transport();
 begin
   GetTransportRegistry().Register(sTRANSPORT_NAME,TSimpleItemFactory.Create(THTTPTransport) as IItemFactory);
 end;
 
+
+{ TIndyCookieManager }
+
+function TIndyCookieManager.GetCount() : Integer; 
+begin
+  Result := ReferencedObject.Count;
+end;
+
+function TIndyCookieManager.GetName(const AIndex : Integer) : string; 
+begin
+  Result := ReferencedObject[AIndex].CookieName;
+end;
+
+function TIndyCookieManager.GetValue(const AIndex : Integer) : string; 
+begin
+  Result := ReferencedObject[AIndex].Value;
+end;
+
+function TIndyCookieManager.GetValue(const AName : string) : string; 
+var
+  i : Integer;
+begin       
+  i := ReferencedObject.GetCookieIndex(0,AName);
+  if (i >= 0) then
+    Result := ReferencedObject[i].Value
+  else
+    Result := '';
+end;
+
+procedure TIndyCookieManager.SetValue(
+  const AIndex : Integer;  
+  const AValue : string
+); 
+begin
+  ReferencedObject[AIndex].Value := AValue; 
+end;
+
+procedure TIndyCookieManager.SetValue(
+  const AName : string;  
+  const AValue : string
+); 
+var
+  i : Integer;
+  locItem : TIdNetscapeCookie;
+begin
+  i := ReferencedObject.GetCookieIndex(0,AName);  
+  if (i >= 0) then begin
+    ReferencedObject[i].Value := AValue;
+  end else begin
+    locItem := ReferencedObject.Add();
+    locItem.CookieName := AName;
+    locItem.Value := AValue;
+  end;
+end;
+
+constructor TIndyCookieManager.Create(AReferencedObject : TIdCookies); 
+begin
+  if (AReferencedObject = nil) then
+    raise ETransportExecption.CreateFmt(SERR_InvalidParameter,['AReferencedObject']); 
+  FReferencedObject := AReferencedObject;
+end;
 
 end.

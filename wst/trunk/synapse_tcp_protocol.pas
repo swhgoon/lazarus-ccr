@@ -17,7 +17,7 @@ interface
 
 uses
   Classes, SysUtils,
-  service_intf, imp_utils, base_service_intf,
+  service_intf, imp_utils, base_service_intf, client_utils,
   blcksock;
 
 //{$DEFINE WST_DBG}
@@ -32,10 +32,9 @@ Type
   
 {$M+}
   { TTCPTransport }
-  TTCPTransport = class(TSimpleFactoryItem,ITransport)
+  TTCPTransport = class(TBaseTransport,ITransport)
   Private
     FFormat : string;
-    FPropMngr : IPropertyManager;
     FConnection : TTCPBlockSocket;
     FContentType : string;
     FTarget: string;
@@ -47,8 +46,7 @@ Type
   public
     constructor Create();override;
     destructor Destroy();override;
-    function GetPropertyManager():IPropertyManager;
-    procedure SendAndReceive(ARequest,AResponse:TStream);
+    procedure SendAndReceive(ARequest,AResponse:TStream); override;
   Published
     property Target : string Read FTarget Write FTarget;
     property ContentType : string Read FContentType Write FContentType;
@@ -89,7 +87,7 @@ end;
 
 constructor TTCPTransport.Create();
 begin
-  FPropMngr := TPublishedPropertyManager.Create(Self);
+  inherited Create();
   FConnection := TTCPBlockSocket.Create();
   FConnection.RaiseExcept := True;
   FDefaultTimeOut := 90000;
@@ -98,23 +96,47 @@ end;
 destructor TTCPTransport.Destroy();
 begin
   FreeAndNil(FConnection);
-  FPropMngr := Nil;
   inherited Destroy();
 end;
 
-function TTCPTransport.GetPropertyManager(): IPropertyManager;
-begin
-  Result := FPropMngr;
-end;
-
 procedure TTCPTransport.SendAndReceive(ARequest, AResponse: TStream);
+
+  procedure ReadResponse(ADest : TStream);
+  var
+    bufferLen : LongInt;
+    i, j, c : PtrInt;
+    locBinBuff : TByteDynArray;
+  begin
+    bufferLen := 0;
+    FConnection.RecvBufferEx(@bufferLen,SizeOf(bufferLen),DefaultTimeOut);
+    FConnection.ExceptCheck();
+    bufferLen := Reverse_32(bufferLen);
+    ADest.Size := bufferLen;
+    if ( bufferLen > 0 ) then begin
+      c := 0;
+      i := 1024;
+      if ( i > bufferLen ) then
+        i := bufferLen;
+      SetLength(locBinBuff,i);
+      repeat
+        j := FConnection.RecvBufferEx(@(locBinBuff[0]),i,DefaultTimeOut);
+        FConnection.ExceptCheck();
+        ADest.Write(locBinBuff[0],j);
+        Inc(c,j);
+        i := Min(1024,(bufferLen-c));
+      until ( i =0 ) or ( j <= 0 );
+    end;
+    ADest.Position := 0;
+  end;
+
 Var
   wrtr : IDataStore;
   buffStream : TMemoryStream;
   binBuff : TByteDynArray;
-  bufferLen : LongInt;
-  i, j, c : PtrInt;
+  locTempStream, locTempRes : TMemoryStream;
 begin
+  locTempStream := nil;
+  locTempRes := nil;
   buffStream := TMemoryStream.Create();
   Try
     wrtr := CreateBinaryWriter(buffStream);
@@ -122,42 +144,46 @@ begin
     wrtr.WriteAnsiStr(Target);
     wrtr.WriteAnsiStr(ContentType);
     wrtr.WriteAnsiStr(Self.Format);
-    SetLength(binBuff,ARequest.Size);
-    ARequest.Position := 0;
-    ARequest.Read(binBuff[0],Length(binBuff));
+    if not HasFilter() then begin
+      SetLength(binBuff,ARequest.Size);
+      ARequest.Position := 0;
+      ARequest.Read(binBuff[0],Length(binBuff));
+    end else begin
+      locTempStream := TMemoryStream.Create();
+      FilterInput(ARequest,locTempStream);
+{$IFDEF WST_DBG}
+      TMemoryStream(locTempStream).SaveToFile('request.log.wire');
+{$ENDIF WST_DBG}
+      SetLength(binBuff,locTempStream.Size);
+      locTempStream.Position := 0;
+      locTempStream.Read(binBuff[0],Length(binBuff));
+      locTempStream.Size := 0;
+    end;
     wrtr.WriteBinary(binBuff);
     buffStream.Position := 0;
     wrtr.WriteInt32S(buffStream.Size-4);
+    buffStream.Position := 0;
 
-    //if ( FConnection.Socket = NOT(0) ) then
-      //FConnection.Connect(Address,Port);
     Connect();
     FConnection.SendBuffer(buffStream.Memory,buffStream.Size);
 
-    bufferLen := 0;
-    FConnection.RecvBufferEx(@bufferLen,SizeOf(bufferLen),DefaultTimeOut);
-    FConnection.ExceptCheck();
-    bufferLen := Reverse_32(bufferLen);
-    AResponse.Size := bufferLen;
-    if ( bufferLen > 0 ) then begin
-      c := 0;
-      i := 1024;
-      if ( i > bufferLen ) then
-        i := bufferLen;
-      SetLength(binBuff,i);
-      repeat
-        j := FConnection.RecvBufferEx(@(binBuff[0]),i,DefaultTimeOut);
-        FConnection.ExceptCheck();
-        AResponse.Write(binBuff[0],j);
-        Inc(c,j);
-        i := Min(1024,(bufferLen-c));
-      until ( i =0 ) or ( j <= 0 );
+    if not HasFilter() then begin
+      ReadResponse(AResponse);
+    end else begin
+      locTempRes := TMemoryStream.Create();
+      ReadResponse(locTempRes);
+  {$IFDEF WST_DBG}
+      TMemoryStream(locTempRes).SaveToFile('response.log.wire');
+  {$ENDIF WST_DBG}
+      FilterOutput(locTempRes,AResponse);
     end;
-    AResponse.Position := 0;
+
     {$IFDEF WST_DBG}
     TMemoryStream(AResponse).SaveToFile('response.log');
     {$ENDIF WST_DBG}
   Finally
+    locTempStream.Free();
+    locTempRes.Free();
     buffStream.Free();
   End;
 end;

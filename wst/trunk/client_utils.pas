@@ -21,6 +21,9 @@ uses
 Type
 
 {$M+}
+  
+  { TBaseTransport }
+
   TBaseTransport = class(TSimpleFactoryItem,ITransport)
   Private
     FPropMngr : IPropertyManager;
@@ -36,7 +39,8 @@ Type
     constructor Create();override;
     destructor Destroy();override;
     function GetPropertyManager():IPropertyManager;
-    procedure SendAndReceive(ARequest,AResponse:TStream); virtual; abstract;
+    procedure SendAndReceive(ARequest,AResponse:TStream); virtual; 
+    function GetCookieManager() : ICookieManager; virtual; 
   published
     property FilterString : string read GetFilterString write SetFilterString;
   End;
@@ -59,6 +63,16 @@ destructor TBaseTransport.Destroy();
 begin
   FPropMngr := Nil;
   inherited;
+end;
+
+procedure TBaseTransport.SendAndReceive(ARequest, AResponse : TStream); 
+begin
+  raise ETransportExecption.CreateFmt(SERR_UnsupportedOperation,['SendAndReceive']);
+end;
+
+function TBaseTransport.GetCookieManager() : ICookieManager; 
+begin
+  raise ETransportExecption.CreateFmt(SERR_UnsupportedOperation,['GetCookieManager']);
 end;
 
 procedure TBaseTransport.FilterInput(ASource, ADest: TStream);
@@ -140,7 +154,7 @@ begin
   Result := locRes;
 end;
 
-function TBaseTransport.GetPropertyManager: IPropertyManager;
+function TBaseTransport.GetPropertyManager() : IPropertyManager;
 begin
   Result := FPropMngr;
 end;

@@ -20,7 +20,7 @@ interface
 uses
   Classes, SysUtils,
   service_intf, imp_utils, base_service_intf, library_base_intf,
-  library_imp_utils, wst_types;
+  library_imp_utils, wst_types, client_utils;
 
 const
   sTRANSPORT_NAME = 'LIB';
@@ -29,24 +29,22 @@ Type
 
 {$M+}
   { TLIBTransport }
-  TLIBTransport = class(TSimpleFactoryItem,ITransport)
+  TLIBTransport = class(TBaseTransport,ITransport)
   Private
-    FPropMngr : IPropertyManager;
     FModule : IwstModule;
     FHandler : TwstLibraryHandlerFunction;
   private
     FContentType: string;
     FFileName: string;
     FTarget: string;
-  private
     FFormat : string;
+  private
     procedure SetFileName(const AValue: string);
     procedure LoadModule();
   public
     constructor Create();override;
     destructor Destroy();override;
-    function GetPropertyManager():IPropertyManager;
-    procedure SendAndReceive(ARequest,AResponse:TStream);
+    procedure SendAndReceive(ARequest,AResponse:TStream); override;
   published
     property ContentType : string read FContentType write FContentType;
     property Target : string read FTarget write FTarget;
@@ -82,22 +80,15 @@ end;
 constructor TLIBTransport.Create();
 begin
   inherited Create();
-  FPropMngr := TPublishedPropertyManager.Create(Self);
   FModule := nil;
   FHandler := nil
 end;
 
 destructor TLIBTransport.Destroy();
 begin
-  FPropMngr := Nil;
   FModule := nil;
   FHandler := nil;
   inherited Destroy();
-end;
-
-function TLIBTransport.GetPropertyManager(): IPropertyManager;
-begin
-  Result := FPropMngr;
 end;
 
 const MAX_ERR_LEN = 500;

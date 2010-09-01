@@ -13,13 +13,13 @@
 {$INCLUDE wst_global.inc}
 unit synapse_http_protocol;
 
-{$DEFINE WST_DBG}
+//{$DEFINE WST_DBG}
 
 interface
 
 uses
   Classes, SysUtils,{$IFDEF WST_DBG}Dialogs,{$ENDIF}
-  wst_types, service_intf, imp_utils, base_service_intf,
+  wst_types, service_intf, imp_utils, base_service_intf, client_utils,
   httpsend;
 
 Const
@@ -27,16 +27,34 @@ Const
 
 Type
 
+  { TSynapseCookieManager }
+
+  TSynapseCookieManager = class(TInterfacedObject,ICookieManager)
+  private
+    FReferencedObject : TStrings;
+  protected
+    property ReferencedObject : TStrings read FReferencedObject;
+  protected  
+    function GetCount() : Integer;
+    function GetName(const AIndex : Integer) : string;
+    function GetValue(const AIndex : Integer) : string; overload;
+    function GetValue(const AName : string) : string; overload;
+    procedure SetValue(const AIndex : Integer; const AValue : string); overload;
+    procedure SetValue(const AName : string; const AValue : string); overload;
+  public
+    constructor Create(AReferencedObject : TStrings);
+  end;
+  
 {$M+}
   { THTTPTransport }
-  THTTPTransport = class(TSimpleFactoryItem,ITransport)
+  THTTPTransport = class(TBaseTransport,ITransport)
   Private
-    FPropMngr : IPropertyManager;
     FConnection : THTTPSend;
     FAddress : string;
-  private
     FFormat : string;
     FSoapAction: string;
+    FCookieManager : ICookieManager; 
+  private  
     function GetAddress: string;
     function GetContentType: string;
     function GetProxyPassword: string;
@@ -52,8 +70,8 @@ Type
   Public
     constructor Create();override;
     destructor Destroy();override;
-    function GetPropertyManager():IPropertyManager;
-    procedure SendAndReceive(ARequest,AResponse:TStream);
+    procedure SendAndReceive(ARequest,AResponse:TStream); override;
+    function GetCookieManager() : ICookieManager; override;
   Published
     property ContentType : string Read GetContentType Write SetContentType;
     property Address : string Read GetAddress Write SetAddress;
@@ -137,7 +155,6 @@ end;
 constructor THTTPTransport.Create();
 begin
   inherited Create();
-  FPropMngr := TPublishedPropertyManager.Create(Self);
   FConnection := THTTPSend.Create();
   FConnection.Protocol := '1.1';
 end;
@@ -145,13 +162,7 @@ end;
 destructor THTTPTransport.Destroy();
 begin
   FreeAndNil(FConnection);
-  FPropMngr := Nil;
   inherited Destroy();
-end;
-
-function THTTPTransport.GetPropertyManager(): IPropertyManager;
-begin
-  Result := FPropMngr;
 end;
 
 procedure THTTPTransport.SendAndReceive(ARequest, AResponse: TStream);
@@ -163,20 +174,45 @@ procedure THTTPTransport.SendAndReceive(ARequest, AResponse: TStream);
     {else
       ShowMessage(AStr)};
   end;
-
+{$ENDIF WST_DBG}
 var
+{$IFDEF WST_DBG}
   s : TBinaryString;
-{$ENDIF}
+{$ENDIF WST_DBG}
+  locTempStream, locTempRes : TMemoryStream;
 begin
 {$IFDEF WST_DBG}
   TMemoryStream(ARequest).SaveToFile('request-1.log');
 {$ENDIF}
   FConnection.Document.Size := 0;
   FConnection.Headers.Add('soapAction:' + SoapAction);
-  FConnection.Document.CopyFrom(ARequest,0);
-  if not FConnection.HTTPMethod('POST',FAddress) then
-    raise ETransportExecption.CreateFmt(SERR_FailedTransportRequest,[sTRANSPORT_NAME,FAddress]);
-  AResponse.CopyFrom(FConnection.Document,0);
+  if not HasFilter() then begin
+    FConnection.Document.CopyFrom(ARequest,0);
+    if not FConnection.HTTPMethod('POST',FAddress) then
+      raise ETransportExecption.CreateFmt(SERR_FailedTransportRequest,[sTRANSPORT_NAME,FAddress]);
+    AResponse.CopyFrom(FConnection.Document,0);
+  end else begin
+    locTempRes := nil;
+    locTempStream := TMemoryStream.Create();
+    try
+      FilterInput(ARequest,locTempStream);
+{$IFDEF WST_DBG}
+      TMemoryStream(locTempStream).SaveToFile('request.log.wire');
+{$ENDIF WST_DBG}
+      FConnection.Document.CopyFrom(locTempStream,0);
+      if not FConnection.HTTPMethod('POST',FAddress) then
+        raise ETransportExecption.CreateFmt(SERR_FailedTransportRequest,[sTRANSPORT_NAME,FAddress]);
+      locTempRes := TMemoryStream.Create();
+      locTempRes.CopyFrom(FConnection.Document,0);
+  {$IFDEF WST_DBG}
+      TMemoryStream(locTempRes).SaveToFile('response.log.wire');
+  {$ENDIF WST_DBG}
+      FilterOutput(locTempRes,AResponse);
+    finally
+      locTempRes.Free();
+      locTempStream.Free();
+    end;
+  end;
   FConnection.Clear();
 {$IFDEF WST_DBG}
   TMemoryStream(ARequest).SaveToFile('request.log');
@@ -190,9 +226,61 @@ begin
 {$ENDIF}
 end;
 
+function THTTPTransport.GetCookieManager() : ICookieManager; 
+begin
+  if (FCookieManager = nil) then
+    FCookieManager := TSynapseCookieManager.Create(FConnection.Cookies);
+  Result := FCookieManager;
+end;
+
 procedure SYNAPSE_RegisterHTTP_Transport();
 begin
   GetTransportRegistry().Register(sTRANSPORT_NAME,TSimpleItemFactory.Create(THTTPTransport) as IItemFactory);
+end;
+
+{ TSynapseCookieManager }
+
+function TSynapseCookieManager.GetCount() : Integer; 
+begin
+  Result := ReferencedObject.Count;
+end;
+
+function TSynapseCookieManager.GetName(const AIndex : Integer) : string; 
+begin
+  Result := ReferencedObject.Names[AIndex];
+end;
+
+function TSynapseCookieManager.GetValue(const AIndex : Integer) : string; 
+begin
+  Result := ReferencedObject.ValueFromIndex[AIndex];
+end;
+
+function TSynapseCookieManager.GetValue(const AName : string) : string; 
+begin
+  Result := ReferencedObject.Values[AName];
+end;
+
+procedure TSynapseCookieManager.SetValue(
+  const AIndex : Integer;  
+  const AValue : string
+); 
+begin
+  ReferencedObject.ValueFromIndex[AIndex] := AValue;
+end;
+
+procedure TSynapseCookieManager.SetValue(
+  const AName : string;  
+  const AValue : string
+); 
+begin
+  ReferencedObject.Values[AName] := AValue;
+end;
+
+constructor TSynapseCookieManager.Create(AReferencedObject : TStrings); 
+begin
+  if (AReferencedObject = nil) then
+    raise ETransportExecption.CreateFmt(SERR_InvalidParameter,['AReferencedObject']); 
+  FReferencedObject := AReferencedObject;
 end;
 
 end.
