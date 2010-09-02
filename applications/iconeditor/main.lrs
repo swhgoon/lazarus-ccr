@@ -4038,7 +4038,7 @@ LazarusResources.Add('TMainForm','FORMDATA',[
   +'0'#6#13'ColorP=FFFFFF'#6#13'ColorQ=C0DCC0'#6#13'ColorR=F0CAA6'#6#13'ColorS='
   +'F0FBFF'#6#13'ColorT=A4A0A0'#0#4'left'#3#186#0#3'top'#2'Z'#0#0#18'TSavePictu'
   +'reDialog'#17'SavePictureDialog'#5'Title'#6#12'Save file as'#10'DefaultExt'#6
-  +#4'.xpm'#6'Filter'#6#130'Graphic (*.png; *.xpm; *.bmp)|*.png; *.xpm; *.bmp|P'
+  +#4'.bmp'#6'Filter'#6#130'Graphic (*.png; *.xpm; *.bmp)|*.png; *.xpm; *.bmp|P'
   +'ixmap (*.xpm)|*.xpm|Bitmap (*.bmp)|*.bmp|Portable Network Graphic (*.png)|*'
   +'.png'#11'FilterIndex'#2#0#7'Options'#11#17'ofOverwritePrompt'#14'ofEnableSi'
   +'zing'#12'ofViewDetail'#13'ofAutoPreview'#0#4'left'#3#150#0#3'top'#2'~'#0#0

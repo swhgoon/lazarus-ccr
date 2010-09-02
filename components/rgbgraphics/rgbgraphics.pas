@@ -810,13 +810,22 @@ end;
 procedure TRGB32Canvas.FuzzyRectangle(X1, Y1, X2, Y2: Integer);
 var
   X, Y: LongInt;
-  delta: Integer;
+  deltaX, deltaY: Integer;
 begin
-  for Y := Y1 + 5 to Y2 - 5 do
-    for X := X1 + 5 to X2 - 5 do
+  for Y := Y1 to Y2 do
+    for X := X1 to X2 do
     begin
-      delta := X mod 5;
-      SetColor(X, Y, GetColor(X - delta, Y - delta));
+      // This computation has a good effect of making text illegible,
+      // but keeping the overal image with the same colors
+      deltaX := X mod 5;
+      deltaY := deltaX;
+
+      // Makes sure we won't get any invalid pixel positions
+      if X < 5 then deltaX := -deltaX;
+      if Y < 5 then deltaY := -deltaY;
+
+      // Change the color
+      SetColor(X, Y, GetColor(X - deltaX, Y - deltaY));
     end;
 end;
 
