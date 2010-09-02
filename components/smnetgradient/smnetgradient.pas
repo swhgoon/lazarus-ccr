@@ -277,6 +277,7 @@ constructor TCustomNetGradient.Create(AOwner: TComponent);
 begin
   { Inherit original constructor }
   inherited Create(AOwner);
+  ControlStyle := ControlStyle + [csAcceptsControls, csNoFocus];
   { Add new initializations }
   FLayout        := tlCenter;
   FBevelInner    := bvNone;
