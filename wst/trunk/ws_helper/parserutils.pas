@@ -150,6 +150,8 @@ begin
         end;
       end;
     end;
+    if (Length(Result) > 1) and (Result[Length(Result)] = '_') then
+      Delete(Result,Length(Result),1);
   end;
 end;
 
