@@ -18,7 +18,8 @@ interface
 uses
   Classes, SysUtils,
   service_intf, imp_utils,
-  server_service_intf, server_service_imputils, base_service_intf, wst_types;
+  server_service_intf, server_service_imputils, base_service_intf, wst_types,
+  client_utils;
 
 Const
   sTRANSPORT_NAME = 'SAME_PROCESS';
@@ -29,17 +30,13 @@ Type
 
   { TInProcessTransport }
 
-  TInProcessTransport = class(TSimpleFactoryItem,ITransport)
+  TInProcessTransport = class(TBaseTransport,ITransport)
   Private
     FAdress: string;
     FContentType: string;
     FFormat : string;
-    FPropMngr : IPropertyManager;
   Public
-    constructor Create();override;
-    destructor Destroy();override;
-    function GetPropertyManager():IPropertyManager;
-    procedure SendAndReceive(ARequest,AResponse:TStream);
+    procedure SendAndReceive(ARequest,AResponse:TStream); override;
   Published
     property ContentType : string Read FContentType Write FContentType;
     property Adress : string Read FAdress Write FAdress;
@@ -52,22 +49,6 @@ Type
 implementation
 
 { TInProcessTransport }
-
-constructor TInProcessTransport.Create();
-begin
-  FPropMngr := TPublishedPropertyManager.Create(Self);
-end;
-
-destructor TInProcessTransport.Destroy();
-begin
-  FPropMngr := Nil;
-  inherited Destroy();
-end;
-
-function TInProcessTransport.GetPropertyManager(): IPropertyManager;
-begin
-  Result := FPropMngr;
-end;
 
 procedure TInProcessTransport.SendAndReceive(ARequest, AResponse: TStream);
 Var
