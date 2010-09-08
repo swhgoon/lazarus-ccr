@@ -315,11 +315,24 @@ var
   g : TGuid;
   e : TPasElement;
   procCount : Integer;
+  locName : string;
 begin
   if ( ARawInt.ObjKind <> okInterface ) then
     raise Exception.CreateFmt('Interface expected : "%s".',[ARawInt.Name]);
+  locName := Format('%s%s',[ARawInt.Name,sEASY_ACCESS_INTERFACE_PREFIX]);
+  e := AContainer.FindElement(locName);
+  if (e <> nil) then begin
+    Result := e as TPasClassType;
+    Exit;
+  end;     
   procCount := 0;
-  locRes := TPasClassType(AContainer.CreateElement(TPasClassType,Format('%s%s',[ARawInt.Name,sEASY_ACCESS_INTERFACE_PREFIX]),nil,'',0));
+  locRes := TPasClassType(
+              AContainer.CreateElement(
+                TPasClassType,
+                Format('%s%s',[ARawInt.Name,sEASY_ACCESS_INTERFACE_PREFIX]),
+                AContainer.CurrentModule.InterfaceSection,'',0
+              )
+            );
   try
     locRes.ObjKind := okInterface;
     if ( CreateGUID(g) = 0 ) then
@@ -437,8 +450,14 @@ begin
         intf := elt as TPasClassType;
         binding := SymbolTable.FindBinding(intf);
         intfEasy := nil;
-        if ( binding.BindingStyle = bsDocument ) then
-          intfEasy := DeduceEasyInterfaceForDocStyle(intf,SymbolTable);
+        if ( binding.BindingStyle = bsDocument ) then begin
+          if (binding.EasyIntf = nil) then begin
+            binding.EasyIntf := DeduceEasyInterfaceForDocStyle(intf,SymbolTable);
+            if (binding.EasyIntf <> nil) then
+              binding.EasyIntf.Release();
+          end;
+          intfEasy := binding.EasyIntf;
+        end;
         GenerateProxyIntf(intf,intfEasy,binding);
         GenerateProxyImp(intf,intfEasy,binding);
       end;
@@ -3118,15 +3137,16 @@ begin
       if ( c > 0 ) then begin
         for i := 0 to ( c - 1 ) do begin
           locBinding := FSymbolTable.Binding[i];
-          if ( locBinding.BindingStyle = bsDocument ) then begin
-            clssTyp := DeduceEasyInterfaceForDocStyle(locBinding.Intf,FSymbolTable);
-            if ( clssTyp <> nil ) then begin
-              try
-                GenerateIntf(clssTyp);
-              finally
-                clssTyp.Release();
-              end;
+          if (typeList.IndexOf(locBinding.Intf) >= 0) and
+             (locBinding.BindingStyle = bsDocument) 
+          then begin
+            if (locBinding.EasyIntf = nil) then begin
+              locBinding.EasyIntf := DeduceEasyInterfaceForDocStyle(locBinding.Intf,FSymbolTable);
+              if (locBinding.EasyIntf <> nil) then
+                locBinding.EasyIntf.Release();
             end;
+            if ( locBinding.EasyIntf <> nil ) then 
+              GenerateIntf(locBinding.EasyIntf);
           end;
         end;
       end;

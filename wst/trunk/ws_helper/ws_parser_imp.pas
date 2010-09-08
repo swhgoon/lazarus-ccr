@@ -831,6 +831,7 @@ var
     locStrBuffer : string;
     locIsRefElement : Boolean;
     locTypeHint : string;
+    locTypeAddRef : Boolean;
   begin
     locType := nil;
     locTypeName := '';
@@ -839,6 +840,7 @@ var
     locPartCursor := CreateCursorOn(locAttCursor.Clone() as IObjectCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_name)]),TDOMNodeRttiExposer));
     locPartCursor.Reset();
     locIsRefElement := False;
+    locTypeAddRef := True;
     if not locPartCursor.MoveNext() then begin
       locPartCursor := CreateCursorOn(locAttCursor.Clone() as IObjectCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_ref)]),TDOMNodeRttiExposer));
       locPartCursor.Reset();
@@ -892,9 +894,10 @@ var
       if IsReservedKeyWord(locTypeInternalName) then begin
         locTypeInternalName := '_' + locTypeInternalName;
       end;
-      locType := TPasUnresolvedTypeRef(FSymbols.CreateElement(TPasUnresolvedTypeRef,locTypeInternalName,Self.Module.InterfaceSection,visDefault,'',0));
-      Self.Module.InterfaceSection.Declarations.Add(locType);
-      Self.Module.InterfaceSection.Types.Add(locType);
+      locType := TPasUnresolvedTypeRef(FSymbols.CreateElement(TPasUnresolvedTypeRef,locTypeInternalName,nil{Self.Module.InterfaceSection},visDefault,'',0));
+      locTypeAddRef := False;
+      //Self.Module.InterfaceSection.Declarations.Add(locType);
+      //Self.Module.InterfaceSection.Types.Add(locType);
       if not AnsiSameText(locTypeInternalName,locTypeName) then
         FSymbols.RegisterExternalAlias(locType,locTypeName);
     end;
@@ -907,7 +910,8 @@ var
     locProp := TPasProperty(FSymbols.CreateElement(TPasProperty,locInternalEltName,classDef,visPublished,'',0));
     classDef.Members.Add(locProp);
     locProp.VarType := locType as TPasType;
-    locType.AddRef();
+    if locTypeAddRef then
+      locType.AddRef();
     if locHasInternalName then
       FSymbols.RegisterExternalAlias(locProp,locName);
     {if AnsiSameText(locType.Name,locProp.Name) then begin

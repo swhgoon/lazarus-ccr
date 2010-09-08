@@ -56,9 +56,12 @@ type
 
   TwstBinding = class(TPasElement)
   private
+    FEasyIntf : TPasClassType;
     FAddress: string;
     FBindingStyle: TBindingStyle;
     FIntf: TPasClassType;
+  private  
+    procedure setEasyIntf(const AValue : TPasClassType);
   public
     constructor Create(
       const AName : string;
@@ -67,6 +70,7 @@ type
     );reintroduce;
     destructor Destroy();override;
     property Intf : TPasClassType read FIntf;
+    property EasyIntf : TPasClassType read FEasyIntf write setEasyIntf;
     property Address : string read FAddress write FAddress;
     property BindingStyle : TBindingStyle read FBindingStyle write FBindingStyle;
   end;
@@ -1027,6 +1031,17 @@ end;
 
 { TwstBinding }
 
+procedure TwstBinding.setEasyIntf(const AValue : TPasClassType); 
+begin
+  if (FEasyIntf = AValue) then 
+    exit; 
+  if (FEasyIntf <> nil) then
+    FEasyIntf.Release();
+  FEasyIntf := AValue; 
+  if (FEasyIntf <> nil) then
+    FEasyIntf.AddRef();  
+end;
+
 constructor TwstBinding.Create(
   const AName : string;
         AIntf : TPasClassType;
@@ -1044,6 +1059,10 @@ begin
   if Assigned(FIntf) then begin
     FIntf.Release();
     FIntf := nil;
+  end;
+  if Assigned(FEasyIntf) then begin
+    FEasyIntf.Release();
+    FEasyIntf := nil;
   end;
   inherited Destroy();
 end;
