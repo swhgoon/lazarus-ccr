@@ -22589,16 +22589,11 @@ begin
     // Classical selection rectangle using dotted borderlines.
     TextColorBackup := GetTextColor(Target.Handle);
     SetTextColor(Target.Handle, $FFFFFF);
-    //todo: implement in LCL
-    {$ifndef INCOMPLETE_WINAPI}
     BackColorBackup := GetBkColor(Target.Handle);
     SetBkColor(Target.Handle, 0);
-    {$endif}
     Target.DrawFocusRect(SelectionRect);
     SetTextColor(Target.Handle, TextColorBackup);
-    {$ifndef INCOMPLETE_WINAPI}
     SetBkColor(Target.Handle, BackColorBackup);
-    {$endif}
   end
   else
   begin
@@ -22820,11 +22815,8 @@ begin
       begin
         TextColorBackup := GetTextColor(Handle);
         SetTextColor(Handle, $FFFFFF);
-        //todo: implement in LCL
-        {$ifndef INCOMPLETE_WINAPI}
         BackColorBackup := GetBkColor(Handle);
         SetBkColor(Handle, 0);
-        {$endif}
 
         {$ifdef ThemeSupport}
         //todo
@@ -22850,9 +22842,7 @@ begin
 
         LCLIntf.DrawFocusRect(Handle, FocusRect);
         SetTextColor(Handle, TextColorBackup);
-        {$ifndef INCOMPLETE_WINAPI}
         SetBkColor(Handle, BackColorBackup);
-        {$endif}
       end;
     end;
   end;
