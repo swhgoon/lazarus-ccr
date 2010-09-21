@@ -1,4 +1,4 @@
-object Form1: TForm1
+object formChess: TformChess
   Left = 181
   Height = 300
   Top = 209
@@ -6,13 +6,14 @@ object Form1: TForm1
   Caption = 'FP Chess 0.1'
   ClientHeight = 300
   ClientWidth = 240
+  OnCreate = FormCreate
   LCLVersion = '0.9.29'
   object notebookMain: TUntabbedNotebook
     Left = 0
     Height = 300
     Top = 0
     Width = 240
-    PageIndex = 2
+    PageIndex = 0
     Align = alClient
     TabOrder = 0
     TabStop = True
@@ -46,28 +47,69 @@ object Form1: TForm1
       object btnSinglePlayer: TBitBtn
         Left = 8
         Height = 30
-        Top = 112
+        Top = 152
         Width = 224
         Caption = 'Play Against the Computer'
         OnClick = HandleMainScreenButton
         TabOrder = 0
       end
-      object buttonDirectComm: TBitBtn
+      object btnDirectComm: TBitBtn
         Left = 8
         Height = 30
-        Top = 144
+        Top = 184
         Width = 226
         Caption = 'Play with a friend through a direct connection'
-        OnClick = buttonDirectCommClick
+        OnClick = HandleMainScreenButton
         TabOrder = 1
       end
       object BitBtn3: TBitBtn
         Left = 8
         Height = 30
-        Top = 264
+        Top = 232
         Width = 224
         Caption = 'Quit'
         TabOrder = 2
+      end
+      object editPlayerName: TLabeledEdit
+        Left = 104
+        Height = 22
+        Top = 80
+        Width = 120
+        EditLabel.AnchorSideLeft.Control = editPlayerName
+        EditLabel.AnchorSideTop.Control = editPlayerName
+        EditLabel.AnchorSideTop.Side = asrCenter
+        EditLabel.AnchorSideRight.Control = editPlayerName
+        EditLabel.AnchorSideBottom.Control = editPlayerName
+        EditLabel.Left = 22
+        EditLabel.Height = 17
+        EditLabel.Top = 83
+        EditLabel.Width = 79
+        EditLabel.Caption = 'Player Name'
+        EditLabel.ParentColor = False
+        LabelPosition = lpLeft
+        TabOrder = 3
+      end
+      object Label6: TLabel
+        Left = 21
+        Height = 17
+        Top = 112
+        Width = 52
+        Caption = 'Start as:'
+        ParentColor = False
+      end
+      object comboStartColor: TComboBox
+        Left = 104
+        Height = 21
+        Top = 111
+        Width = 120
+        ItemHeight = 0
+        ItemIndex = 0
+        Items.Strings = (
+          'White'
+          'Black'
+        )
+        TabOrder = 4
+        Text = 'White'
       end
     end
     object pageConfigConnection: TUNBPage
@@ -88,8 +130,8 @@ object Form1: TForm1
         ParentFont = False
       end
       object LabeledEdit1: TLabeledEdit
-        Left = 104
-        Height = 21
+        Left = 112
+        Height = 22
         Top = 72
         Width = 120
         EditLabel.AnchorSideLeft.Control = LabeledEdit1
@@ -97,10 +139,10 @@ object Form1: TForm1
         EditLabel.AnchorSideTop.Side = asrCenter
         EditLabel.AnchorSideRight.Control = LabeledEdit1
         EditLabel.AnchorSideBottom.Control = LabeledEdit1
-        EditLabel.Left = 23
-        EditLabel.Height = 14
+        EditLabel.Left = 8
+        EditLabel.Height = 17
         EditLabel.Top = 75
-        EditLabel.Width = 78
+        EditLabel.Width = 101
         EditLabel.Caption = 'Your friend''s IP:'
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
@@ -108,8 +150,8 @@ object Form1: TForm1
         Text = 'LabeledEdit1'
       end
       object LabeledEdit2: TLabeledEdit
-        Left = 104
-        Height = 21
+        Left = 112
+        Height = 22
         Top = 104
         Width = 120
         EditLabel.AnchorSideLeft.Control = LabeledEdit2
@@ -117,10 +159,10 @@ object Form1: TForm1
         EditLabel.AnchorSideTop.Side = asrCenter
         EditLabel.AnchorSideRight.Control = LabeledEdit2
         EditLabel.AnchorSideBottom.Control = LabeledEdit2
-        EditLabel.Left = 19
-        EditLabel.Height = 14
+        EditLabel.Left = 4
+        EditLabel.Height = 17
         EditLabel.Top = 107
-        EditLabel.Width = 82
+        EditLabel.Width = 105
         EditLabel.Caption = 'Your IP Address:'
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
@@ -129,11 +171,11 @@ object Form1: TForm1
         Text = 'LabeledEdit2'
       end
       object BitBtn1: TBitBtn
-        Left = 16
+        Left = 8
         Height = 30
-        Top = 144
-        Width = 208
-        Caption = 'BitBtn1'
+        Top = 184
+        Width = 224
+        Caption = 'Connect'
         TabOrder = 2
       end
     end
@@ -160,6 +202,24 @@ object Form1: TForm1
         Top = 56
         Width = 100
         TabOrder = 0
+      end
+    end
+    object pageGame: TUNBPage
+      Left = 0
+      Height = 300
+      Top = 0
+      Width = 240
+      object Label5: TLabel
+        Left = 0
+        Height = 32
+        Top = 8
+        Width = 240
+        Alignment = taCenter
+        AutoSize = False
+        Caption = 'Playing'
+        Font.Height = -19
+        ParentColor = False
+        ParentFont = False
       end
     end
   end

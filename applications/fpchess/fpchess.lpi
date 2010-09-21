@@ -31,102 +31,86 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="23">
+    <Units Count="25">
       <Unit0>
         <Filename Value="fpchess.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="fpchess"/>
-        <UsageCount Value="29"/>
+        <UsageCount Value="32"/>
       </Unit0>
       <Unit1>
         <Filename Value="mainform.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="Form1"/>
+        <ComponentName Value="formChess"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="mainform"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="15"/>
-        <CursorPos X="40" Y="19"/>
-        <UsageCount Value="29"/>
+        <TopLine Value="56"/>
+        <CursorPos X="45" Y="72"/>
+        <UsageCount Value="32"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="..\..\..\lazarussvn\lcl\extctrls.pp"/>
         <UnitName Value="ExtCtrls"/>
-        <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
         <TopLine Value="309"/>
         <CursorPos X="15" Y="326"/>
         <UsageCount Value="16"/>
-        <Loaded Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="..\..\..\lazarussvn\ideintf\componenteditors.pas"/>
         <UnitName Value="ComponentEditors"/>
-        <EditorIndex Value="19"/>
         <WindowIndex Value="0"/>
         <TopLine Value="864"/>
         <CursorPos X="15" Y="877"/>
         <UsageCount Value="16"/>
-        <Loaded Value="True"/>
       </Unit3>
       <Unit4>
         <Filename Value="..\..\..\lazarussvn\lcl\include\custompage.inc"/>
-        <EditorIndex Value="18"/>
         <WindowIndex Value="0"/>
         <TopLine Value="136"/>
         <CursorPos X="1" Y="136"/>
         <UsageCount Value="16"/>
-        <Loaded Value="True"/>
       </Unit4>
       <Unit5>
         <Filename Value="..\..\..\lazarussvn\lcl\include\customnotebook.inc"/>
-        <EditorIndex Value="16"/>
         <WindowIndex Value="0"/>
         <TopLine Value="195"/>
         <CursorPos X="21" Y="207"/>
         <UsageCount Value="16"/>
-        <Loaded Value="True"/>
       </Unit5>
       <Unit6>
         <Filename Value="..\..\..\lazarussvn\lcl\include\untabbednotebook.inc"/>
-        <EditorIndex Value="14"/>
         <WindowIndex Value="0"/>
         <TopLine Value="155"/>
         <CursorPos X="36" Y="181"/>
         <UsageCount Value="16"/>
-        <Loaded Value="True"/>
       </Unit6>
       <Unit7>
         <Filename Value="..\..\..\lazarussvn\ideintf\propedits.pp"/>
         <UnitName Value="PropEdits"/>
-        <EditorIndex Value="20"/>
         <WindowIndex Value="0"/>
         <TopLine Value="5323"/>
         <CursorPos X="3" Y="5329"/>
         <UsageCount Value="16"/>
-        <Loaded Value="True"/>
       </Unit7>
       <Unit8>
         <Filename Value="..\..\..\lazarussvn\lcl\include\page.inc"/>
-        <EditorIndex Value="4"/>
         <WindowIndex Value="0"/>
         <TopLine Value="24"/>
         <CursorPos X="26" Y="50"/>
         <UsageCount Value="16"/>
-        <Loaded Value="True"/>
       </Unit8>
       <Unit9>
         <Filename Value="..\..\..\lazarussvn\lcl\lconvencoding.pas"/>
         <UnitName Value="LConvEncoding"/>
-        <EditorIndex Value="7"/>
         <WindowIndex Value="0"/>
         <TopLine Value="10"/>
         <CursorPos X="19" Y="15"/>
         <UsageCount Value="16"/>
-        <Loaded Value="True"/>
       </Unit9>
       <Unit10>
         <Filename Value="F:\JIL\AndroidJuliana\Widget\PIM\addCalendarItem\auto_001.js"/>
@@ -139,242 +123,242 @@
       <Unit11>
         <Filename Value="..\..\..\lazarussvn\lcl\controls.pp"/>
         <UnitName Value="Controls"/>
-        <EditorIndex Value="6"/>
         <WindowIndex Value="0"/>
         <TopLine Value="193"/>
         <CursorPos X="3" Y="225"/>
         <UsageCount Value="16"/>
-        <Loaded Value="True"/>
       </Unit11>
       <Unit12>
         <Filename Value="..\..\..\lazarussvn\lcl\include\notebook.inc"/>
-        <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
         <TopLine Value="9"/>
         <CursorPos X="3" Y="40"/>
         <UsageCount Value="16"/>
-        <Loaded Value="True"/>
       </Unit12>
       <Unit13>
         <Filename Value="..\..\..\lazarussvn\lcl\lcltype.pp"/>
         <UnitName Value="LCLType"/>
-        <EditorIndex Value="17"/>
         <WindowIndex Value="0"/>
         <TopLine Value="2728"/>
         <CursorPos X="3" Y="2700"/>
         <UsageCount Value="16"/>
-        <Loaded Value="True"/>
       </Unit13>
       <Unit14>
         <Filename Value="..\..\..\fpcsvn\rtl\arm\mathu.inc"/>
-        <EditorIndex Value="15"/>
         <WindowIndex Value="0"/>
         <TopLine Value="148"/>
         <CursorPos X="15" Y="163"/>
         <UsageCount Value="15"/>
-        <Loaded Value="True"/>
       </Unit14>
       <Unit15>
         <Filename Value="..\..\..\lazarus29\fpc\2.4.3\source\rtl\objpas\classes\classesh.inc"/>
-        <EditorIndex Value="5"/>
         <WindowIndex Value="0"/>
         <TopLine Value="595"/>
         <CursorPos X="27" Y="612"/>
         <UsageCount Value="14"/>
-        <Loaded Value="True"/>
       </Unit15>
       <Unit16>
-        <Filename Value="fpchessdrawer.pas"/>
+        <Filename Value="chessdrawer.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="fpchessdrawer"/>
-        <EditorIndex Value="1"/>
+        <UnitName Value="chessdrawer"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="10"/>
-        <CursorPos X="16" Y="23"/>
-        <UsageCount Value="27"/>
+        <TopLine Value="74"/>
+        <CursorPos X="3" Y="80"/>
+        <UsageCount Value="30"/>
         <Loaded Value="True"/>
       </Unit16>
       <Unit17>
         <Filename Value="..\..\..\lazarussvn\lcl\lconvasiapage.pas"/>
         <UnitName Value="LConvAsiaPage"/>
-        <EditorIndex Value="13"/>
         <WindowIndex Value="0"/>
         <TopLine Value="2"/>
         <CursorPos X="26" Y="18"/>
         <UsageCount Value="13"/>
-        <Loaded Value="True"/>
       </Unit17>
       <Unit18>
         <Filename Value="..\..\..\lazarussvn\lcl\include\asiancodepagefunctions.inc"/>
-        <EditorIndex Value="12"/>
         <WindowIndex Value="0"/>
         <TopLine Value="18"/>
         <CursorPos X="1" Y="37"/>
         <UsageCount Value="13"/>
-        <Loaded Value="True"/>
       </Unit18>
       <Unit19>
         <Filename Value="..\..\..\lazarussvn\lcl\translations.pas"/>
         <UnitName Value="Translations"/>
-        <EditorIndex Value="8"/>
         <WindowIndex Value="0"/>
         <TopLine Value="43"/>
         <CursorPos X="24" Y="66"/>
         <UsageCount Value="13"/>
-        <Loaded Value="True"/>
       </Unit19>
       <Unit20>
         <Filename Value="..\..\..\fpcsvn\packages\fpvectorial\src\pdfvrsemantico.pas"/>
         <UnitName Value="pdfvrsemantico"/>
-        <EditorIndex Value="9"/>
         <WindowIndex Value="0"/>
         <TopLine Value="210"/>
         <CursorPos X="19" Y="230"/>
         <UsageCount Value="13"/>
-        <Loaded Value="True"/>
       </Unit20>
       <Unit21>
         <Filename Value="..\..\..\openssl-1.0.0a\crypto\pem\pem_pkey.c"/>
-        <EditorIndex Value="10"/>
         <WindowIndex Value="0"/>
         <TopLine Value="55"/>
         <CursorPos X="1" Y="76"/>
         <UsageCount Value="13"/>
-        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="C++"/>
       </Unit21>
       <Unit22>
         <Filename Value="..\..\..\fpcsvn\packages\openssl\src\openssl.pas"/>
         <UnitName Value="OpenSSL"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="11"/>
         <WindowIndex Value="0"/>
         <TopLine Value="634"/>
         <CursorPos X="20" Y="656"/>
         <UsageCount Value="13"/>
-        <Loaded Value="True"/>
       </Unit22>
+      <Unit23>
+        <Filename Value="chessgame.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="chessgame"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="13"/>
+        <CursorPos X="22" Y="21"/>
+        <UsageCount Value="22"/>
+        <Loaded Value="True"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="chessconfig.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="chessconfig"/>
+        <EditorIndex Value="2"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="22"/>
+        <CursorPos X="13" Y="39"/>
+        <UsageCount Value="22"/>
+        <Loaded Value="True"/>
+      </Unit24>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="..\..\..\lazarussvn\lcl\include\untabbednotebook.inc"/>
-        <Caret Line="171" Column="61" TopLine="154"/>
+        <Filename Value="chessconfig.pas"/>
+        <Caret Line="16" Column="38" TopLine="1"/>
       </Position1>
       <Position2>
-        <Filename Value="..\..\..\lazarussvn\lcl\include\untabbednotebook.inc"/>
-        <Caret Line="186" Column="4" TopLine="154"/>
+        <Filename Value="chessdrawer.pas"/>
+        <Caret Line="19" Column="28" TopLine="4"/>
       </Position2>
       <Position3>
-        <Filename Value="..\..\..\lazarussvn\lcl\include\untabbednotebook.inc"/>
-        <Caret Line="171" Column="33" TopLine="154"/>
+        <Filename Value="chessgame.pas"/>
+        <Caret Line="21" Column="28" TopLine="12"/>
       </Position3>
       <Position4>
-        <Filename Value="..\..\..\lazarussvn\lcl\controls.pp"/>
-        <Caret Line="1386" Column="33" TopLine="1369"/>
+        <Filename Value="chessgame.pas"/>
+        <Caret Line="24" Column="28" TopLine="7"/>
       </Position4>
       <Position5>
-        <Filename Value="..\..\..\lazarussvn\lcl\lconvencoding.pas"/>
-        <Caret Line="19" Column="2" TopLine="2"/>
+        <Filename Value="chessgame.pas"/>
+        <Caret Line="82" Column="11" TopLine="61"/>
       </Position5>
       <Position6>
-        <Filename Value="..\..\..\lazarussvn\lcl\include\untabbednotebook.inc"/>
-        <Caret Line="171" Column="68" TopLine="154"/>
+        <Filename Value="chessgame.pas"/>
+        <Caret Line="24" Column="62" TopLine="13"/>
       </Position6>
       <Position7>
-        <Filename Value="..\..\..\fpcsvn\rtl\arm\mathu.inc"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="chessgame.pas"/>
+        <Caret Line="71" Column="8" TopLine="59"/>
       </Position7>
       <Position8>
-        <Filename Value="..\..\..\fpcsvn\rtl\arm\mathu.inc"/>
-        <Caret Line="36" Column="26" TopLine="19"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="70" Column="28" TopLine="49"/>
       </Position8>
       <Position9>
-        <Filename Value="..\..\..\lazarussvn\lcl\include\untabbednotebook.inc"/>
-        <Caret Line="171" Column="68" TopLine="154"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="71" Column="28" TopLine="50"/>
       </Position9>
       <Position10>
-        <Filename Value="..\..\..\lazarussvn\lcl\include\page.inc"/>
-        <Caret Line="36" Column="12" TopLine="7"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="70" Column="28" TopLine="49"/>
       </Position10>
       <Position11>
-        <Filename Value="..\..\..\lazarussvn\lcl\include\page.inc"/>
-        <Caret Line="38" Column="28" TopLine="24"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="71" Column="28" TopLine="50"/>
       </Position11>
       <Position12>
         <Filename Value="mainform.pas"/>
-        <Caret Line="9" Column="10" TopLine="1"/>
+        <Caret Line="72" Column="28" TopLine="51"/>
       </Position12>
       <Position13>
         <Filename Value="mainform.pas"/>
-        <Caret Line="19" Column="40" TopLine="15"/>
+        <Caret Line="71" Column="28" TopLine="50"/>
       </Position13>
       <Position14>
-        <Filename Value="..\..\..\lazarussvn\lcl\lconvencoding.pas"/>
-        <Caret Line="6181" Column="32" TopLine="6170"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="70" Column="28" TopLine="49"/>
       </Position14>
       <Position15>
-        <Filename Value="..\..\..\lazarussvn\lcl\lconvencoding.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="71" Column="28" TopLine="50"/>
       </Position15>
       <Position16>
-        <Filename Value="..\..\..\lazarussvn\lcl\lconvencoding.pas"/>
-        <Caret Line="6" Column="51" TopLine="1"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="72" Column="28" TopLine="51"/>
       </Position16>
       <Position17>
-        <Filename Value="..\..\..\lazarussvn\lcl\lconvencoding.pas"/>
-        <Caret Line="5853" Column="29" TopLine="5836"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="73" Column="28" TopLine="52"/>
       </Position17>
       <Position18>
-        <Filename Value="..\..\..\lazarussvn\lcl\lconvencoding.pas"/>
-        <Caret Line="101" Column="44" TopLine="95"/>
+        <Filename Value="chessgame.pas"/>
+        <Caret Line="41" Column="20" TopLine="28"/>
       </Position18>
       <Position19>
-        <Filename Value="..\..\..\lazarussvn\lcl\lconvencoding.pas"/>
-        <Caret Line="104" Column="32" TopLine="94"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="60" Column="53" TopLine="52"/>
       </Position19>
       <Position20>
-        <Filename Value="..\..\..\lazarussvn\lcl\lconvencoding.pas"/>
-        <Caret Line="6188" Column="28" TopLine="6170"/>
+        <Filename Value="chessgame.pas"/>
+        <Caret Line="108" Column="34" TopLine="96"/>
       </Position20>
       <Position21>
-        <Filename Value="..\..\..\lazarussvn\lcl\lconvencoding.pas"/>
-        <Caret Line="133" Column="20" TopLine="116"/>
+        <Filename Value="chessgame.pas"/>
+        <Caret Line="75" Column="9" TopLine="63"/>
       </Position21>
       <Position22>
-        <Filename Value="fpchessdrawer.pas"/>
-        <Caret Line="18" Column="34" TopLine="4"/>
+        <Filename Value="chessdrawer.pas"/>
+        <Caret Line="20" Column="42" TopLine="13"/>
       </Position22>
       <Position23>
-        <Filename Value="..\..\..\lazarussvn\lcl\lconvasiapage.pas"/>
-        <Caret Line="240" Column="1" TopLine="207"/>
+        <Filename Value="chessdrawer.pas"/>
+        <Caret Line="19" Column="20" TopLine="7"/>
       </Position23>
       <Position24>
-        <Filename Value="..\..\..\lazarussvn\lcl\lconvencoding.pas"/>
-        <Caret Line="114" Column="38" TopLine="108"/>
+        <Filename Value="chessconfig.pas"/>
+        <Caret Line="17" Column="28" TopLine="4"/>
       </Position24>
       <Position25>
-        <Filename Value="..\..\..\lazarussvn\lcl\lconvencoding.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="chessdrawer.pas"/>
+        <Caret Line="25" Column="22" TopLine="12"/>
       </Position25>
       <Position26>
-        <Filename Value="..\..\..\lazarussvn\lcl\include\asiancodepagefunctions.inc"/>
-        <Caret Line="34" Column="3" TopLine="23"/>
+        <Filename Value="chessdrawer.pas"/>
+        <Caret Line="131" Column="1" TopLine="117"/>
       </Position26>
       <Position27>
-        <Filename Value="..\..\..\lazarussvn\lcl\translations.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="chessdrawer.pas"/>
+        <Caret Line="9" Column="5" TopLine="1"/>
       </Position27>
       <Position28>
-        <Filename Value="..\..\..\fpcsvn\packages\fpvectorial\src\pdfvrsemantico.pas"/>
-        <Caret Line="48" Column="1" TopLine="27"/>
+        <Filename Value="chessdrawer.pas"/>
+        <Caret Line="103" Column="39" TopLine="91"/>
       </Position28>
       <Position29>
-        <Filename Value="..\..\..\openssl-1.0.0a\crypto\pem\pem_pkey.c"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="chessdrawer.pas"/>
+        <Caret Line="124" Column="6" TopLine="112"/>
       </Position29>
       <Position30>
-        <Filename Value="..\..\..\fpcsvn\packages\openssl\src\openssl.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="chessdrawer.pas"/>
+        <Caret Line="136" Column="31" TopLine="120"/>
       </Position30>
     </JumpHistory>
   </ProjectOptions>
@@ -385,7 +369,7 @@
       <Filename Value="fpchess"/>
     </Target>
     <SearchPaths>
-      <IncludeFiles Value="$(ProjOutDir)\"/>
+      <IncludeFiles Value="$(ProjOutDir)"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>

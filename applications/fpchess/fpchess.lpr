@@ -7,14 +7,14 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, mainform, fpchessdrawer
+  Forms, mainform, chessdrawer, chessgame, chessconfig
   { you can add units after this };
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TformChess, formChess);
   Application.Run;
 end.
 
