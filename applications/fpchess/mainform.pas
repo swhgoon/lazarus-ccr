@@ -56,7 +56,7 @@ procedure TformChess.HandleMainScreenButton(Sender: TObject);
 begin
   if Sender = btnSinglePlayer then
   begin
-    notebookMain.PageIndex := 2;
+    notebookMain.PageIndex := 3;
     vChessGame.StartNewGame(comboStartColor.ItemIndex);
   end
   else if Sender = btnDirectComm then notebookMain.PageIndex := 1;
@@ -67,7 +67,7 @@ begin
   // Creation of internal components
   vChessDrawer := TChessDrawer.Create(Self);
   vChessDrawer.Parent := pageGame;
-  vChessDrawer.Top := 20;
+  vChessDrawer.Top := 50;
   vChessDrawer.Left := 20;
   vChessDrawer.Height := INT_CHESSBOARD_SIZE;
   vChessDrawer.Width := INT_CHESSBOARD_SIZE;

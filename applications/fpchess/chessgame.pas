@@ -5,7 +5,7 @@ unit chessgame;
 interface
 
 uses
-  Classes, SysUtils; 
+  Classes, SysUtils, fpimage;
 
 const
   colA = 1;
@@ -17,8 +17,10 @@ const
   colG = 7;
   colH = 8;
 
-  INT_CHESSTILE_SIZE = 20;
-  INT_CHESSBOARD_SIZE = 200;
+  INT_CHESSTILE_SIZE = 40;
+  INT_CHESSBOARD_SIZE = 40 * 8;
+
+  FPCOLOR_TRANSPARENT_TILE: TFPColor = (Red: $0000; Green: $8000; Blue: $8000; Alpha: alphaOpaque); //colTeal
 
 type
 

@@ -5,8 +5,8 @@ unit chessdrawer;
 interface
 
 uses
-  Classes, SysUtils, Controls, Graphics, LCLType,
-  //
+  Classes, SysUtils, Controls, Graphics, LCLType, IntfGraphics, fpimage,
+  Math,
   chessgame, chessconfig;
 
 type
@@ -15,17 +15,21 @@ type
 
   TChessDrawer = class(TCustomControl)
   private
-    imgBoard,
-     imgWPawn, imgWKnight, imgWBishop, imgWRook, imgWQueen, imgWKing,
-     imgBPawn, imgBKnight, imgBBishop, imgBRook, imgBQueen, imgBKing:
-     TPortableNetworkGraphic;
+    imgBoard, imgWPawn, imgWKnight, imgWBishop, imgWRook, imgWQueen,
+    imgWKing, imgBPawn, imgBKnight, imgBBishop, imgBRook, imgBQueen,
+    imgBKing: TPortableNetworkGraphic;
+{    bmpBoard, bmpWPawn, bmpWKnight, bmpWBishop, bmpWRook, bmpWQueen,
+    bmpWKing, bmpBPawn, bmpBKnight, bmpBBishop, bmpBRook, bmpBQueen,
+    bmpBKing: TBitmap;}
   public
     constructor Create(AOwner: TComponent); override;
     procedure EraseBackground(DC: HDC); override;
     procedure Paint; override;
     procedure DrawToCanvas(ACanvas: TCanvas);
-    procedure DrawChessTile(ACanvas: TCanvas; ACol, ARow: Integer;
-      ATile: TChessTile);
+    procedure DrawImageWithTransparentColor(
+      ADest: TLazIntfImage; const ADestX, ADestY: Integer; AColor: TFPColor;
+      AImage: TFPImageBitmap);
+    function GetChessTileImage(ATile: TChessTile): TPortableNetworkGraphic;
     procedure LoadImages();
   end;
 
@@ -51,6 +55,20 @@ begin
   imgBRook := TPortableNetworkGraphic.Create;
   imgBQueen := TPortableNetworkGraphic.Create;
   imgBKing := TPortableNetworkGraphic.Create;
+
+{  bmpBoard := TBitmap.Create;
+  bmpWPawn := TBitmap.Create;
+  bmpWKnight := TBitmap.Create;
+  bmpWBishop := TBitmap.Create;
+  bmpWRook := TBitmap.Create;
+  bmpWQueen := TBitmap.Create;
+  bmpWKing := TBitmap.Create;
+  bmpBPawn := TBitmap.Create;
+  bmpBKnight := TBitmap.Create;
+  bmpBBishop := TBitmap.Create;
+  bmpBRook := TBitmap.Create;
+  bmpBQueen := TBitmap.Create;
+  bmpBKing := TBitmap.Create;       }
 end;
 
 procedure TChessDrawer.EraseBackground(DC: HDC);
@@ -61,7 +79,7 @@ end;
 
 procedure TChessDrawer.Paint;
 var
-  x, y: Integer;
+  x, y: integer;
   Bitmap: TBitmap;
 begin
   Bitmap := TBitmap.Create;
@@ -77,45 +95,96 @@ begin
     Bitmap.Free;
   end;
 
-//  inherited Paint;
+  //  inherited Paint;
 end;
 
 procedure TChessDrawer.DrawToCanvas(ACanvas: TCanvas);
 var
-  col, row: Integer;
+  col, row: integer;
+  lIntfImage: TLazIntfImage;
+  lTmpBmp: TBitmap;
+  lTileBmp: TPortableNetworkGraphic;
+  X, Y: integer;
 begin
-  // First draw the board
-  ACanvas.Draw(0, 0, imgBoard);
+  lIntfImage := TLazIntfImage.Create(0, 0);
+  lTmpBmp := TBitmap.Create;
+  try
+    // First draw the board
+    lIntfImage.LoadFromBitmap(imgBoard.Handle, 0{bmpBoard.MaskHandle});
 
-  // Now all pieces
-  for col := 1 to 8 do
-    for row := 1 to 8 do
-      DrawChessTile(ACanvas, col, row, vChessGame.Board[col][row]);
+    // Now all pieces
+    for col := 1 to 8 do
+      for row := 1 to 8 do
+      begin
+        lTileBmp := GetChessTileImage(vChessGame.Board[col][row]);
+        if lTileBmp = nil then Continue;
+
+        X := (col - 1) * INT_CHESSTILE_SIZE;
+        Y := (8 - row) * INT_CHESSTILE_SIZE;
+
+        DrawImageWithTransparentColor(lIntfImage, X, Y, FPCOLOR_TRANSPARENT_TILE, lTileBmp);
+      end;
+
+    lTmpBmp.LoadFromIntfImage(lIntfImage);
+    ACanvas.Draw(0, 0, lTmpBmp);
+  finally
+    lTmpBmp.Free;
+    lIntfImage.Free;
+  end;
 end;
 
-procedure TChessDrawer.DrawChessTile(ACanvas: TCanvas; ACol, ARow: Integer;
-  ATile: TChessTile);
+procedure TChessDrawer.DrawImageWithTransparentColor(ADest: TLazIntfImage;
+  const ADestX, ADestY: Integer; AColor: TFPColor; AImage: TFPImageBitmap);
 var
-  X, Y: Integer;
+  x, y, CurX, CurY: Integer;
+  CurColor: TFPColor;
+  IntfImage: TLazIntfImage;
+  lDrawWidth, lDrawHeight: Integer;
 begin
-  if ATile = ctEmpty then Exit;
+  IntfImage := TLazIntfImage.Create(0,0);
+  try
+    IntfImage.LoadFromBitmap(AImage.Handle, AImage.MaskHandle);
 
-  X := (ACol - 1) * INT_CHESSTILE_SIZE;
-  Y := (8 - ARow) * INT_CHESSTILE_SIZE;
+    // Take care not to draw outside the destination area
+    lDrawWidth := Min(ADest.Width - ADestX, AImage.Width);
+    lDrawHeight := Min(ADest.Height - ADestY, AImage.Height);
+    for y := 0 to lDrawHeight - 1 do
+    begin
+      for x := 0 to lDrawWidth - 1 do
+      begin
+        CurX := ADestX + x;
+        CurY := ADestY + y;
 
+        // Never draw outside the destination
+        if (CurX < 0) or (CurY < 0) then Continue;
+
+        // CurColor := IntfImage.Colors[x, y]; // Just for debugging
+        if IntfImage.Colors[x, y].Green <> AColor.Green then
+          ADest.Colors[CurX, CurY] := IntfImage.Colors[x, y];
+      end;
+    end;
+  finally
+    IntfImage.Free;
+  end;
+end;
+
+function TChessDrawer.GetChessTileImage(ATile: TChessTile): TPortableNetworkGraphic;
+begin
   case ATile of
-  ctWPawn: ACanvas.Draw(X, Y, imgWPawn);
-  ctWKnight: ACanvas.Draw(X, Y, imgWKnight);
-  ctWBishop: ACanvas.Draw(X, Y, imgWBishop);
-  ctWRook: ACanvas.Draw(X, Y, imgWRook);
-  ctWQueen: ACanvas.Draw(X, Y, imgWQueen);
-  ctWKing: ACanvas.Draw(X, Y, imgWKing);
-  ctBPawn: ACanvas.Draw(X, Y, imgBPawn);
-  ctBKnight: ACanvas.Draw(X, Y, imgBKnight);
-  ctBBishop: ACanvas.Draw(X, Y, imgBBishop);
-  ctBRook: ACanvas.Draw(X, Y, imgBRook);
-  ctBQueen: ACanvas.Draw(X, Y, imgBQueen);
-  ctBKing: ACanvas.Draw(X, Y, imgBKing);
+    ctWPawn:   Result := imgWPawn;
+    ctWKnight: Result := imgWKnight;
+    ctWBishop: Result := imgWBishop;
+    ctWRook:   Result := imgWRook;
+    ctWQueen:  Result := imgWQueen;
+    ctWKing:   Result := imgWKing;
+    ctBPawn:   Result := imgBPawn;
+    ctBKnight: Result := imgBKnight;
+    ctBBishop: Result := imgBBishop;
+    ctBRook:   Result := imgBRook;
+    ctBQueen:  Result := imgBQueen;
+    ctBKing:   Result := imgBKing;
+  else
+    Result := nil;
   end;
 end;
 
@@ -125,7 +194,7 @@ var
 begin
   lDir := vChessConfig.GetCurrentSkinDir();
 
-  imgBoard.LoadFromFile(lDir + 'board.png');
+  imgBoard.LoadFromFile(lDir + 'base.png');
   imgWPawn.LoadFromFile(lDir + 'wpawn.png');
   imgWKnight.LoadFromFile(lDir + 'wknight.png');
   imgWBishop.LoadFromFile(lDir + 'wbishop.png');
@@ -138,6 +207,18 @@ begin
   imgBRook.LoadFromFile(lDir + 'brook.png');
   imgBQueen.LoadFromFile(lDir + 'bqueen.png');
   imgBKing.LoadFromFile(lDir + 'bking.png');
+
+{  bmpWKnight.Assign(imgWKnight);
+  bmpWKnight.Assign(imgWBishop);
+  bmpWKnight.Assign(imgWRook);
+  bmpWKnight.Assign(imgWQueen);
+  bmpWKnight.Assign(imgWKing);
+  bmpWKnight.Assign(imgBPawn);
+  bmpWKnight.Assign(imgBKnight);
+  bmpWKnight.Assign(imgBBishop);
+  bmpWKnight.Assign(imgBRook);
+  bmpWKnight.Assign(imgBQueen);
+  bmpWKnight.Assign(imgBKing);    }
 end;
 
 end.

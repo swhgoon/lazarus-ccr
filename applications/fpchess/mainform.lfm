@@ -18,10 +18,8 @@ object formChess: TformChess
     TabOrder = 0
     TabStop = True
     object pageStart: TUNBPage
-      Left = 0
-      Height = 300
-      Top = 0
-      Width = 240
+      ClientWidth = 240
+      ClientHeight = 300
       object Label1: TLabel
         Left = 0
         Height = 32
@@ -72,7 +70,7 @@ object formChess: TformChess
       end
       object editPlayerName: TLabeledEdit
         Left = 104
-        Height = 22
+        Height = 21
         Top = 80
         Width = 120
         EditLabel.AnchorSideLeft.Control = editPlayerName
@@ -80,10 +78,10 @@ object formChess: TformChess
         EditLabel.AnchorSideTop.Side = asrCenter
         EditLabel.AnchorSideRight.Control = editPlayerName
         EditLabel.AnchorSideBottom.Control = editPlayerName
-        EditLabel.Left = 22
-        EditLabel.Height = 17
+        EditLabel.Left = 40
+        EditLabel.Height = 14
         EditLabel.Top = 83
-        EditLabel.Width = 79
+        EditLabel.Width = 61
         EditLabel.Caption = 'Player Name'
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
@@ -91,9 +89,9 @@ object formChess: TformChess
       end
       object Label6: TLabel
         Left = 21
-        Height = 17
+        Height = 14
         Top = 112
-        Width = 52
+        Width = 43
         Caption = 'Start as:'
         ParentColor = False
       end
@@ -102,7 +100,7 @@ object formChess: TformChess
         Height = 21
         Top = 111
         Width = 120
-        ItemHeight = 0
+        ItemHeight = 13
         ItemIndex = 0
         Items.Strings = (
           'White'
@@ -113,10 +111,8 @@ object formChess: TformChess
       end
     end
     object pageConfigConnection: TUNBPage
-      Left = 0
-      Height = 300
-      Top = 0
-      Width = 240
+      ClientWidth = 240
+      ClientHeight = 300
       object Label3: TLabel
         Left = 0
         Height = 32
@@ -180,10 +176,8 @@ object formChess: TformChess
       end
     end
     object pageConnecting: TUNBPage
-      Left = 0
-      Height = 300
-      Top = 0
-      Width = 240
+      ClientWidth = 240
+      ClientHeight = 300
       object Label4: TLabel
         Left = 0
         Height = 32
@@ -205,10 +199,8 @@ object formChess: TformChess
       end
     end
     object pageGame: TUNBPage
-      Left = 0
-      Height = 300
-      Top = 0
-      Width = 240
+      ClientWidth = 240
+      ClientHeight = 300
       object Label5: TLabel
         Left = 0
         Height = 32
