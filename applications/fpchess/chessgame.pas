@@ -5,7 +5,7 @@ unit chessgame;
 interface
 
 uses
-  Classes, SysUtils, fpimage;
+  Classes, SysUtils, fpimage, dateutils;
 
 const
   colA = 1;
@@ -50,11 +50,17 @@ type
     CurrentPlayerIsWhite: Boolean;
     Dragging: Boolean;
     DragStart, MouseMovePos: TPoint;
-    procedure StartNewGame(APlayAsWhite: Boolean); overload;
-    procedure StartNewGame(APlayAsWhite: Integer); overload;
+    UseTimer: Boolean;
+    WhitePlayerTime: Integer; // milisseconds
+    BlackPlayerTime: Integer; // milisseconds
+    MoveStartTime: TDateTime;
+    constructor Create;
+    procedure StartNewGame(APlayAsWhite: Boolean; AUseTimer: Boolean; APlayerTime: Integer); overload;
+    procedure StartNewGame(APlayAsWhite: Integer; AUseTimer: Boolean; APlayerTime: Integer); overload;
     function ClientToBoardCoords(AClientCoords: TPoint): TPoint;
     function CheckStartMove(AFrom: TPoint): Boolean;
     function MovePiece(AFrom, ATo: TPoint): Boolean;
+    procedure UpdateTimes();
   end;
 
 var
@@ -64,13 +70,24 @@ implementation
 
 { TChessGame }
 
-procedure TChessGame.StartNewGame(APlayAsWhite: Boolean);
+constructor TChessGame.Create;
+begin
+  inherited Create;
+
+
+end;
+
+procedure TChessGame.StartNewGame(APlayAsWhite: Boolean; AUseTimer: Boolean; APlayerTime: Integer);
 var
   lWPawnRow, lWMainRow, lBPawnRow, lBMainRow: Byte;
   i: Integer;
   j: Integer;
 begin
+  UseTimer := AUseTimer;
   CurrentPlayerIsWhite := True;
+  WhitePlayerTime := APlayerTime * 60 * 1000; // minutes to milisseconds
+  BlackPlayerTime := APlayerTime * 60 * 1000; // minutes to milisseconds
+  MoveStartTime := Now;
 
   //
   if APlayAsWhite then
@@ -122,9 +139,9 @@ begin
   Board[8][lBMainRow] := ctBRook;
 end;
 
-procedure TChessGame.StartNewGame(APlayAsWhite: Integer);
+procedure TChessGame.StartNewGame(APlayAsWhite: Integer; AUseTimer: Boolean; APlayerTime: Integer);
 begin
-  StartNewGame(APlayAsWhite = 0);
+  StartNewGame(APlayAsWhite = 0, AUseTimer, APlayerTime);
 end;
 
 {
@@ -144,9 +161,24 @@ begin
   Board[ATo.X][ATo.Y] := Board[AFrom.X][AFrom.Y];
   Board[AFrom.X][AFrom.Y] := ctEmpty;
 
+  UpdateTimes();
   CurrentPlayerIsWhite := not CurrentPlayerIsWhite;
 
   Result := True;
+end;
+
+procedure TChessGame.UpdateTimes();
+var
+  lNow: TDateTime;
+  lTimeDelta: Integer;
+begin
+  lNow := Now;
+
+  lTimeDelta := MilliSecondsBetween(lNow, MoveStartTime);
+  MoveStartTime := lNow;
+
+  if CurrentPlayerIsWhite then WhitePlayerTime := WhitePlayerTime - lTimeDelta
+  else BlackPlayerTime := BlackPlayerTime - lTimeDelta;
 end;
 
 function TChessGame.ClientToBoardCoords(AClientCoords: TPoint): TPoint;

@@ -2,29 +2,29 @@ object formChess: TformChess
   Left = 181
   Height = 433
   Top = 209
-  Width = 240
+  Width = 360
   Caption = 'FP Chess 0.1'
   ClientHeight = 433
-  ClientWidth = 240
+  ClientWidth = 360
   OnCreate = FormCreate
   LCLVersion = '0.9.29'
   object notebookMain: TUntabbedNotebook
     Left = 0
     Height = 433
     Top = 0
-    Width = 240
-    PageIndex = 3
+    Width = 360
+    PageIndex = 0
     Align = alClient
     TabOrder = 0
     TabStop = True
     object pageStart: TUNBPage
-      ClientWidth = 240
-      ClientHeight = 300
+      ClientWidth = 360
+      ClientHeight = 433
       object Label1: TLabel
         Left = 0
         Height = 32
         Top = 8
-        Width = 240
+        Width = 360
         Alignment = taCenter
         AutoSize = False
         Caption = 'Welcome to FP Chess 0.1'
@@ -36,51 +36,52 @@ object formChess: TformChess
         Left = 8
         Height = 30
         Top = 40
-        Width = 224
+        Width = 352
         AutoSize = False
         Caption = 'Please choose what kind of game you would like to play:'
         ParentColor = False
         WordWrap = True
       end
       object btnSinglePlayer: TBitBtn
-        Left = 8
+        Left = 64
         Height = 30
-        Top = 152
+        Top = 200
         Width = 224
         Caption = 'Play Against the Computer'
+        Enabled = False
         OnClick = HandleMainScreenButton
         TabOrder = 0
       end
       object btnDirectComm: TBitBtn
-        Left = 8
+        Left = 62
         Height = 30
-        Top = 184
+        Top = 288
         Width = 226
         Caption = 'Play with a friend through a direct connection'
         OnClick = HandleMainScreenButton
         TabOrder = 1
       end
       object BitBtn3: TBitBtn
-        Left = 8
+        Left = 64
         Height = 30
-        Top = 232
+        Top = 336
         Width = 224
         Caption = 'Quit'
         TabOrder = 2
       end
       object editPlayerName: TLabeledEdit
-        Left = 104
+        Left = 88
         Height = 21
-        Top = 80
+        Top = 72
         Width = 120
         EditLabel.AnchorSideLeft.Control = editPlayerName
         EditLabel.AnchorSideTop.Control = editPlayerName
         EditLabel.AnchorSideTop.Side = asrCenter
         EditLabel.AnchorSideRight.Control = editPlayerName
         EditLabel.AnchorSideBottom.Control = editPlayerName
-        EditLabel.Left = 40
+        EditLabel.Left = 24
         EditLabel.Height = 14
-        EditLabel.Top = 83
+        EditLabel.Top = 75
         EditLabel.Width = 61
         EditLabel.Caption = 'Player Name'
         EditLabel.ParentColor = False
@@ -88,17 +89,17 @@ object formChess: TformChess
         TabOrder = 3
       end
       object Label6: TLabel
-        Left = 21
+        Left = 28
         Height = 14
-        Top = 112
+        Top = 104
         Width = 43
         Caption = 'Start as:'
         ParentColor = False
       end
       object comboStartColor: TComboBox
-        Left = 104
+        Left = 88
         Height = 21
-        Top = 111
+        Top = 104
         Width = 120
         ItemHeight = 13
         ItemIndex = 0
@@ -109,10 +110,45 @@ object formChess: TformChess
         TabOrder = 4
         Text = 'White'
       end
+      object checkTimer: TCheckBox
+        Left = 24
+        Height = 17
+        Top = 136
+        Width = 163
+        Caption = 'Set a time limit for each Player'
+        Checked = True
+        State = cbChecked
+        TabOrder = 5
+      end
+      object spinPlayerTime: TSpinEdit
+        Left = 21
+        Height = 21
+        Top = 160
+        Width = 50
+        TabOrder = 6
+        Value = 30
+      end
+      object Label7: TLabel
+        Left = 80
+        Height = 14
+        Top = 163
+        Width = 114
+        Caption = 'minutes for each player'
+        ParentColor = False
+      end
+      object btnHotSeat: TBitBtn
+        Left = 64
+        Height = 30
+        Top = 240
+        Width = 224
+        Caption = 'Play with a friend in the same Computer'
+        OnClick = HandleMainScreenButton
+        TabOrder = 7
+      end
     end
     object pageConfigConnection: TUNBPage
-      ClientWidth = 480
-      ClientHeight = 600
+      ClientWidth = 960
+      ClientHeight = 1200
       object Label3: TLabel
         Left = 0
         Height = 32
@@ -176,8 +212,8 @@ object formChess: TformChess
       end
     end
     object pageConnecting: TUNBPage
-      ClientWidth = 480
-      ClientHeight = 600
+      ClientWidth = 960
+      ClientHeight = 1200
       object Label4: TLabel
         Left = 0
         Height = 32
@@ -199,8 +235,8 @@ object formChess: TformChess
       end
     end
     object pageGame: TUNBPage
-      ClientWidth = 240
-      ClientHeight = 433
+      ClientWidth = 480
+      ClientHeight = 866
       object Label5: TLabel
         Left = 0
         Height = 32
@@ -222,5 +258,10 @@ object formChess: TformChess
         ParentColor = False
       end
     end
+  end
+  object timerChessTimer: TTimer
+    OnTimer = timerChessTimerTimer
+    left = 296
+    top = 152
   end
 end

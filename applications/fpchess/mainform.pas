@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, ComCtrls, StdCtrls, Buttons,
+  ExtCtrls, ComCtrls, StdCtrls, Buttons, Spin,
   //
   chessdrawer, chessgame, chessconfig;
 
@@ -30,6 +30,8 @@ type
     btnSinglePlayer: TBitBtn;
     btnDirectComm: TBitBtn;
     BitBtn3: TBitBtn;
+    btnHotSeat: TBitBtn;
+    checkTimer: TCheckBox;
     comboStartColor: TComboBox;
     Label1: TLabel;
     Label2: TLabel;
@@ -37,6 +39,7 @@ type
     Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
+    Label7: TLabel;
     labelPos: TLabel;
     LabeledEdit1: TLabeledEdit;
     LabeledEdit2: TLabeledEdit;
@@ -47,8 +50,11 @@ type
     pageConnecting: TUNBPage;
     ProgressBar1: TProgressBar;
     pageGame: TUNBPage;
+    spinPlayerTime: TSpinEdit;
+    timerChessTimer: TTimer;
     procedure FormCreate(Sender: TObject);
     procedure HandleMainScreenButton(Sender: TObject);
+    procedure timerChessTimerTimer(Sender: TObject);
   private
     { private declarations }
   public
@@ -71,20 +77,36 @@ begin
   if Sender = btnSinglePlayer then
   begin
     notebookMain.PageIndex := 3;
-    vChessGame.StartNewGame(comboStartColor.ItemIndex);
+    vChessGame.StartNewGame(comboStartColor.ItemIndex, checkTimer.Checked, spinPlayerTime.Value);
+  end
+  else if Sender = btnHotSeat then
+  begin
+    notebookMain.PageIndex := 3;
+    vChessGame.StartNewGame(comboStartColor.ItemIndex, checkTimer.Checked, spinPlayerTime.Value);
   end
   else if Sender = btnDirectComm then notebookMain.PageIndex := 1;
 end;
 
+procedure TformChess.timerChessTimerTimer(Sender: TObject);
+begin
+  vChessGame.UpdateTimes();
+  UpdateCaptions();
+end;
+
 procedure TformChess.UpdateCaptions;
 var
-  CurPlayerStr: string;
+  lStr: string;
 begin
-  if vChessGame.CurrentPlayerIsWhite then CurPlayerStr := 'White playing'
-  else CurPlayerStr := 'Black playing';
+  if vChessGame.CurrentPlayerIsWhite then lStr := 'White playing'
+  else lStr := 'Black playing';
 
-  formChess.labelPos.Caption := Format(CurPlayerStr + ' X: %d Y: %d',
+  lStr := lStr + Format(' X: %d Y: %d',
     [vChessGame.MouseMovePos.X, vChessGame.MouseMovePos.Y]);
+
+  lStr := lStr + Format(' White time: %d Black time: %d',
+    [vChessGame.WhitePlayerTime, vChessGame.BlackPlayerTime]);
+
+  formChess.labelPos.Caption := lStr;
 end;
 
 procedure TformChess.FormCreate(Sender: TObject);
