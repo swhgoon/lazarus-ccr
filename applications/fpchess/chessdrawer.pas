@@ -11,6 +11,15 @@ uses
 
 type
 
+  TChessDrawerDelegate = class
+  public
+    procedure HandleMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); virtual; abstract;
+    procedure HandleMouseUp(Sender: TObject; Button: TMouseButton;
+                          Shift: TShiftState; X, Y: Integer); virtual; abstract;
+    procedure HandleMouseDown(Sender: TObject; Button: TMouseButton;
+                          Shift: TShiftState; X, Y: Integer); virtual; abstract;
+  end;
+
   { TChessDrawer }
 
   TChessDrawer = class(TCustomControl)
@@ -31,6 +40,7 @@ type
       AImage: TFPImageBitmap);
     function GetChessTileImage(ATile: TChessTile): TPortableNetworkGraphic;
     procedure LoadImages();
+    procedure SetDelegate(ADelegate: TChessDrawerDelegate);
   end;
 
 var
@@ -222,6 +232,14 @@ begin
   bmpWKnight.Assign(imgBRook);
   bmpWKnight.Assign(imgBQueen);
   bmpWKnight.Assign(imgBKing);    }
+end;
+
+procedure TChessDrawer.SetDelegate(ADelegate: TChessDrawerDelegate);
+begin
+  // Events
+  OnMouseMove := @ADelegate.HandleMouseMove;
+  OnMouseUp := @ADelegate.HandleMouseUp;
+  OnMouseDown := @ADelegate.HandleMouseDown;
 end;
 
 end.

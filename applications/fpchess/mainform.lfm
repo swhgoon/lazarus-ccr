@@ -1,19 +1,19 @@
 object formChess: TformChess
   Left = 181
-  Height = 300
+  Height = 433
   Top = 209
   Width = 240
   Caption = 'FP Chess 0.1'
-  ClientHeight = 300
+  ClientHeight = 433
   ClientWidth = 240
   OnCreate = FormCreate
   LCLVersion = '0.9.29'
   object notebookMain: TUntabbedNotebook
     Left = 0
-    Height = 300
+    Height = 433
     Top = 0
     Width = 240
-    PageIndex = 0
+    PageIndex = 3
     Align = alClient
     TabOrder = 0
     TabStop = True
@@ -111,8 +111,8 @@ object formChess: TformChess
       end
     end
     object pageConfigConnection: TUNBPage
-      ClientWidth = 240
-      ClientHeight = 300
+      ClientWidth = 480
+      ClientHeight = 600
       object Label3: TLabel
         Left = 0
         Height = 32
@@ -176,8 +176,8 @@ object formChess: TformChess
       end
     end
     object pageConnecting: TUNBPage
-      ClientWidth = 240
-      ClientHeight = 300
+      ClientWidth = 480
+      ClientHeight = 600
       object Label4: TLabel
         Left = 0
         Height = 32
@@ -200,7 +200,7 @@ object formChess: TformChess
     end
     object pageGame: TUNBPage
       ClientWidth = 240
-      ClientHeight = 300
+      ClientHeight = 433
       object Label5: TLabel
         Left = 0
         Height = 32
@@ -212,6 +212,14 @@ object formChess: TformChess
         Font.Height = -19
         ParentColor = False
         ParentFont = False
+      end
+      object labelPos: TLabel
+        Left = 8
+        Height = 14
+        Top = 392
+        Width = 40
+        Caption = 'labelPos'
+        ParentColor = False
       end
     end
   end

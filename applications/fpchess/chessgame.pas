@@ -29,6 +29,11 @@ type
     ctBPawn, ctBKnight, ctBBishop, ctBRook, ctBQueen, ctBKing
     );
 
+const
+  WhitePieces = [ctWPawn, ctWKnight, ctWBishop, ctWRook, ctWQueen, ctWKing];
+  BlackPieces = [ctBPawn, ctBKnight, ctBBishop, ctBRook, ctBQueen, ctBKing];
+
+type
   {@@
     The index [1][1] refers to the left-bottom corner of the table,
     also known as A1.
@@ -42,8 +47,14 @@ type
   TChessGame = class
   public
     Board: TChessBoard;
+    CurrentPlayerIsWhite: Boolean;
+    Dragging: Boolean;
+    DragStart, MouseMovePos: TPoint;
     procedure StartNewGame(APlayAsWhite: Boolean); overload;
     procedure StartNewGame(APlayAsWhite: Integer); overload;
+    function ClientToBoardCoords(AClientCoords: TPoint): TPoint;
+    function CheckStartMove(AFrom: TPoint): Boolean;
+    function MovePiece(AFrom, ATo: TPoint): Boolean;
   end;
 
 var
@@ -59,6 +70,8 @@ var
   i: Integer;
   j: Integer;
 begin
+  CurrentPlayerIsWhite := True;
+
   //
   if APlayAsWhite then
   begin
@@ -112,6 +125,45 @@ end;
 procedure TChessGame.StartNewGame(APlayAsWhite: Integer);
 begin
   StartNewGame(APlayAsWhite = 0);
+end;
+
+{
+  Returns: If the move is valid and was executed
+}
+function TChessGame.MovePiece(AFrom, ATo: TPoint): Boolean;
+begin
+  Result := False;
+
+  if not CheckStartMove(AFrom) then Exit;
+
+  // Parameter checking
+  if (AFrom.X < 1) or (AFrom.X > 8) or (ATo.X < 1) or (ATo.X > 8) then Exit;
+  if (AFrom.Y < 1) or (AFrom.Y > 8) or (ATo.Y < 1) or (ATo.Y > 8) then Exit;
+
+  // col, row
+  Board[ATo.X][ATo.Y] := Board[AFrom.X][AFrom.Y];
+  Board[AFrom.X][AFrom.Y] := ctEmpty;
+
+  CurrentPlayerIsWhite := not CurrentPlayerIsWhite;
+
+  Result := True;
+end;
+
+function TChessGame.ClientToBoardCoords(AClientCoords: TPoint): TPoint;
+begin
+  Result.X := 1 + AClientCoords.X div INT_CHESSTILE_SIZE;
+  Result.Y := 1 + (INT_CHESSBOARD_SIZE - AClientCoords.Y) div INT_CHESSTILE_SIZE;
+end;
+
+{@@
+  AFrom - The start move position in board coordinates
+}
+function TChessGame.CheckStartMove(AFrom: TPoint): Boolean;
+begin
+  if CurrentPlayerIsWhite then
+    Result := Board[AFrom.X][AFrom.Y] in WhitePieces
+  else
+    Result := Board[AFrom.X][AFrom.Y] in BlackPieces;
 end;
 
 initialization

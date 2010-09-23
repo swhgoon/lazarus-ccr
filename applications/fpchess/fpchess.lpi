@@ -36,7 +36,7 @@
         <Filename Value="fpchess.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="fpchess"/>
-        <UsageCount Value="33"/>
+        <UsageCount Value="37"/>
       </Unit0>
       <Unit1>
         <Filename Value="mainform.pas"/>
@@ -46,9 +46,9 @@
         <UnitName Value="mainform"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="52"/>
-        <CursorPos X="24" Y="70"/>
-        <UsageCount Value="33"/>
+        <TopLine Value="108"/>
+        <CursorPos X="26" Y="122"/>
+        <UsageCount Value="37"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
@@ -123,10 +123,12 @@
       <Unit11>
         <Filename Value="..\..\..\lazarussvn\lcl\controls.pp"/>
         <UnitName Value="Controls"/>
+        <EditorIndex Value="4"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="193"/>
-        <CursorPos X="3" Y="225"/>
-        <UsageCount Value="16"/>
+        <TopLine Value="305"/>
+        <CursorPos X="61" Y="320"/>
+        <UsageCount Value="18"/>
+        <Loaded Value="True"/>
       </Unit11>
       <Unit12>
         <Filename Value="..\..\..\lazarussvn\lcl\include\notebook.inc"/>
@@ -163,9 +165,9 @@
         <UnitName Value="chessdrawer"/>
         <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="148"/>
-        <CursorPos X="26" Y="157"/>
-        <UsageCount Value="31"/>
+        <TopLine Value="17"/>
+        <CursorPos X="3" Y="25"/>
+        <UsageCount Value="35"/>
         <Loaded Value="True"/>
       </Unit16>
       <Unit17>
@@ -222,9 +224,9 @@
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="2"/>
-        <CursorPos X="76" Y="23"/>
-        <UsageCount Value="23"/>
+        <TopLine Value="130"/>
+        <CursorPos X="42" Y="137"/>
+        <UsageCount Value="27"/>
         <Loaded Value="True"/>
       </Unit23>
       <Unit24>
@@ -235,7 +237,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="18"/>
         <CursorPos X="13" Y="39"/>
-        <UsageCount Value="23"/>
+        <UsageCount Value="27"/>
         <Loaded Value="True"/>
       </Unit24>
       <Unit25>
@@ -280,119 +282,133 @@
       <Unit30>
         <Filename Value="..\..\..\fpctrunk\packages\fcl-image\src\fpimage.pp"/>
         <UnitName Value="FPimage"/>
-        <EditorIndex Value="4"/>
         <WindowIndex Value="0"/>
         <TopLine Value="18"/>
         <CursorPos X="1" Y="30"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit30>
     </Units>
-    <JumpHistory Count="26" HistoryIndex="25">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="chessdrawer.pas"/>
-        <Caret Line="108" Column="1" TopLine="100"/>
+        <Caret Line="237" Column="8" TopLine="212"/>
       </Position1>
       <Position2>
-        <Filename Value="chessdrawer.pas"/>
-        <Caret Line="110" Column="1" TopLine="100"/>
+        <Filename Value="..\..\..\lazarussvn\lcl\controls.pp"/>
+        <Caret Line="1232" Column="30" TopLine="1218"/>
       </Position2>
       <Position3>
         <Filename Value="chessdrawer.pas"/>
-        <Caret Line="113" Column="1" TopLine="100"/>
+        <Caret Line="238" Column="44" TopLine="212"/>
       </Position3>
       <Position4>
-        <Filename Value="chessdrawer.pas"/>
-        <Caret Line="114" Column="1" TopLine="100"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="21" Column="71" TopLine="5"/>
       </Position4>
       <Position5>
-        <Filename Value="chessdrawer.pas"/>
-        <Caret Line="116" Column="1" TopLine="100"/>
+        <Filename Value="chessgame.pas"/>
+        <Caret Line="49" Column="40" TopLine="34"/>
       </Position5>
       <Position6>
-        <Filename Value="chessdrawer.pas"/>
-        <Caret Line="117" Column="1" TopLine="100"/>
+        <Filename Value="chessgame.pas"/>
+        <Caret Line="151" Column="1" TopLine="135"/>
       </Position6>
       <Position7>
-        <Filename Value="chessdrawer.pas"/>
-        <Caret Line="119" Column="1" TopLine="100"/>
+        <Filename Value="chessgame.pas"/>
+        <Caret Line="54" Column="15" TopLine="39"/>
       </Position7>
       <Position8>
-        <Filename Value="chessdrawer.pas"/>
-        <Caret Line="120" Column="1" TopLine="100"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="127" Column="1" TopLine="111"/>
       </Position8>
       <Position9>
-        <Filename Value="chessdrawer.pas"/>
-        <Caret Line="122" Column="1" TopLine="100"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="109" Column="14" TopLine="95"/>
       </Position9>
       <Position10>
-        <Filename Value="chessdrawer.pas"/>
-        <Caret Line="123" Column="1" TopLine="100"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="114" Column="14" TopLine="100"/>
       </Position10>
       <Position11>
         <Filename Value="chessdrawer.pas"/>
-        <Caret Line="110" Column="61" TopLine="94"/>
+        <Caret Line="47" Column="21" TopLine="33"/>
       </Position11>
       <Position12>
-        <Filename Value="chessdrawer.pas"/>
-        <Caret Line="123" Column="29" TopLine="102"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="114" Column="14" TopLine="100"/>
       </Position12>
       <Position13>
-        <Filename Value="chessdrawer.pas"/>
-        <Caret Line="28" Column="15" TopLine="21"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="117" Column="43" TopLine="100"/>
       </Position13>
       <Position14>
-        <Filename Value="chessdrawer.pas"/>
-        <Caret Line="131" Column="1" TopLine="112"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="111" Column="1" TopLine="100"/>
       </Position14>
       <Position15>
-        <Filename Value="chessdrawer.pas"/>
-        <Caret Line="8" Column="73" TopLine="1"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="112" Column="1" TopLine="100"/>
       </Position15>
       <Position16>
-        <Filename Value="chessdrawer.pas"/>
-        <Caret Line="131" Column="15" TopLine="102"/>
+        <Filename Value="chessgame.pas"/>
+        <Caret Line="133" Column="1" TopLine="119"/>
       </Position16>
       <Position17>
-        <Filename Value="chessdrawer.pas"/>
-        <Caret Line="121" Column="21" TopLine="110"/>
+        <Filename Value="chessgame.pas"/>
+        <Caret Line="136" Column="1" TopLine="119"/>
       </Position17>
       <Position18>
-        <Filename Value="chessdrawer.pas"/>
-        <Caret Line="32" Column="24" TopLine="9"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="112" Column="1" TopLine="103"/>
       </Position18>
       <Position19>
-        <Filename Value="chessdrawer.pas"/>
-        <Caret Line="185" Column="29" TopLine="171"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="122" Column="1" TopLine="103"/>
       </Position19>
       <Position20>
-        <Filename Value="chessdrawer.pas"/>
-        <Caret Line="113" Column="70" TopLine="99"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="123" Column="1" TopLine="103"/>
       </Position20>
       <Position21>
-        <Filename Value="chessdrawer.pas"/>
-        <Caret Line="119" Column="21" TopLine="105"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="121" Column="43" TopLine="104"/>
       </Position21>
       <Position22>
-        <Filename Value="chessdrawer.pas"/>
-        <Caret Line="106" Column="36" TopLine="99"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="123" Column="1" TopLine="104"/>
       </Position22>
       <Position23>
-        <Filename Value="chessdrawer.pas"/>
-        <Caret Line="163" Column="48" TopLine="148"/>
+        <Filename Value="chessgame.pas"/>
+        <Caret Line="157" Column="15" TopLine="143"/>
       </Position23>
       <Position24>
-        <Filename Value="chessdrawer.pas"/>
-        <Caret Line="161" Column="1" TopLine="148"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="56" Column="29" TopLine="33"/>
       </Position24>
       <Position25>
-        <Filename Value="chessdrawer.pas"/>
-        <Caret Line="142" Column="15" TopLine="136"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="85" Column="1" TopLine="82"/>
       </Position25>
       <Position26>
-        <Filename Value="chessdrawer.pas"/>
-        <Caret Line="165" Column="43" TopLine="148"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="87" Column="57" TopLine="72"/>
       </Position26>
+      <Position27>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="56" Column="29" TopLine="47"/>
+      </Position27>
+      <Position28>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="79" Column="36" TopLine="79"/>
+      </Position28>
+      <Position29>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="111" Column="3" TopLine="97"/>
+      </Position29>
+      <Position30>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="122" Column="26" TopLine="108"/>
+      </Position30>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
