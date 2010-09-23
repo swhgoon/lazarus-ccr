@@ -20,7 +20,7 @@ const
   INT_CHESSTILE_SIZE = 40;
   INT_CHESSBOARD_SIZE = 40 * 8;
 
-  FPCOLOR_TRANSPARENT_TILE: TFPColor = (Red: $0000; Green: $8000; Blue: $8000; Alpha: alphaOpaque); //colTeal
+  FPCOLOR_TRANSPARENT_TILE: TFPColor = (Red: $0000; Green: $8100; Blue: $8100; Alpha: alphaOpaque); //+/-colTeal
 
 type
 

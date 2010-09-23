@@ -31,7 +31,7 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="30">
+    <Units Count="31">
       <Unit0>
         <Filename Value="fpchess.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -161,11 +161,10 @@
         <Filename Value="chessdrawer.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="chessdrawer"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="197"/>
-        <CursorPos X="36" Y="221"/>
+        <TopLine Value="148"/>
+        <CursorPos X="26" Y="157"/>
         <UsageCount Value="31"/>
         <Loaded Value="True"/>
       </Unit16>
@@ -220,10 +219,11 @@
         <Filename Value="chessgame.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="chessgame"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="41" Y="23"/>
+        <TopLine Value="2"/>
+        <CursorPos X="76" Y="23"/>
         <UsageCount Value="23"/>
         <Loaded Value="True"/>
       </Unit23>
@@ -241,32 +241,26 @@
       <Unit25>
         <Filename Value="..\..\..\lazarussvn\lcl\graphics.pp"/>
         <UnitName Value="Graphics"/>
-        <EditorIndex Value="6"/>
         <WindowIndex Value="0"/>
         <TopLine Value="217"/>
         <CursorPos X="12" Y="232"/>
         <UsageCount Value="11"/>
-        <Loaded Value="True"/>
       </Unit25>
       <Unit26>
         <Filename Value="..\..\..\lazarussvn\lcl\intfgraphics.pas"/>
         <UnitName Value="IntfGraphics"/>
-        <EditorIndex Value="4"/>
         <WindowIndex Value="0"/>
         <TopLine Value="3455"/>
         <CursorPos X="1" Y="3483"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit26>
       <Unit27>
         <Filename Value="..\..\..\lazarus29\fpc\2.4.3\source\packages\fcl-image\src\fpimage.pp"/>
         <UnitName Value="FPimage"/>
-        <EditorIndex Value="5"/>
         <WindowIndex Value="0"/>
         <TopLine Value="10"/>
         <CursorPos X="25" Y="31"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit27>
       <Unit28>
         <Filename Value="..\..\..\fpcsvn\packages\fcl-image\src\fpcolors.inc"/>
@@ -283,8 +277,18 @@
         <CursorPos X="1" Y="313"/>
         <UsageCount Value="10"/>
       </Unit29>
+      <Unit30>
+        <Filename Value="..\..\..\fpctrunk\packages\fcl-image\src\fpimage.pp"/>
+        <UnitName Value="FPimage"/>
+        <EditorIndex Value="4"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="18"/>
+        <CursorPos X="1" Y="30"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit30>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
+    <JumpHistory Count="26" HistoryIndex="25">
       <Position1>
         <Filename Value="chessdrawer.pas"/>
         <Caret Line="108" Column="1" TopLine="100"/>
@@ -334,77 +338,61 @@
         <Caret Line="123" Column="29" TopLine="102"/>
       </Position12>
       <Position13>
-        <Filename Value="..\..\..\lazarussvn\lcl\intfgraphics.pas"/>
-        <Caret Line="3485" Column="1" TopLine="3480"/>
+        <Filename Value="chessdrawer.pas"/>
+        <Caret Line="28" Column="15" TopLine="21"/>
       </Position13>
       <Position14>
-        <Filename Value="..\..\..\lazarussvn\lcl\intfgraphics.pas"/>
-        <Caret Line="3488" Column="1" TopLine="3480"/>
+        <Filename Value="chessdrawer.pas"/>
+        <Caret Line="131" Column="1" TopLine="112"/>
       </Position14>
       <Position15>
-        <Filename Value="..\..\..\lazarussvn\lcl\intfgraphics.pas"/>
-        <Caret Line="3486" Column="1" TopLine="3480"/>
+        <Filename Value="chessdrawer.pas"/>
+        <Caret Line="8" Column="73" TopLine="1"/>
       </Position15>
       <Position16>
-        <Filename Value="..\..\..\lazarussvn\lcl\intfgraphics.pas"/>
-        <Caret Line="3485" Column="1" TopLine="3480"/>
+        <Filename Value="chessdrawer.pas"/>
+        <Caret Line="131" Column="15" TopLine="102"/>
       </Position16>
       <Position17>
-        <Filename Value="..\..\..\lazarussvn\lcl\intfgraphics.pas"/>
-        <Caret Line="3481" Column="27" TopLine="3475"/>
+        <Filename Value="chessdrawer.pas"/>
+        <Caret Line="121" Column="21" TopLine="110"/>
       </Position17>
       <Position18>
-        <Filename Value="..\..\..\lazarussvn\lcl\intfgraphics.pas"/>
-        <Caret Line="3492" Column="3" TopLine="3481"/>
+        <Filename Value="chessdrawer.pas"/>
+        <Caret Line="32" Column="24" TopLine="9"/>
       </Position18>
       <Position19>
-        <Filename Value="..\..\..\lazarussvn\lcl\intfgraphics.pas"/>
-        <Caret Line="35" Column="42" TopLine="22"/>
+        <Filename Value="chessdrawer.pas"/>
+        <Caret Line="185" Column="29" TopLine="171"/>
       </Position19>
       <Position20>
         <Filename Value="chessdrawer.pas"/>
-        <Caret Line="28" Column="15" TopLine="21"/>
+        <Caret Line="113" Column="70" TopLine="99"/>
       </Position20>
       <Position21>
         <Filename Value="chessdrawer.pas"/>
-        <Caret Line="131" Column="1" TopLine="112"/>
+        <Caret Line="119" Column="21" TopLine="105"/>
       </Position21>
       <Position22>
         <Filename Value="chessdrawer.pas"/>
-        <Caret Line="8" Column="73" TopLine="1"/>
+        <Caret Line="106" Column="36" TopLine="99"/>
       </Position22>
       <Position23>
         <Filename Value="chessdrawer.pas"/>
-        <Caret Line="131" Column="15" TopLine="102"/>
+        <Caret Line="163" Column="48" TopLine="148"/>
       </Position23>
       <Position24>
         <Filename Value="chessdrawer.pas"/>
-        <Caret Line="121" Column="21" TopLine="110"/>
+        <Caret Line="161" Column="1" TopLine="148"/>
       </Position24>
       <Position25>
         <Filename Value="chessdrawer.pas"/>
-        <Caret Line="32" Column="24" TopLine="9"/>
+        <Caret Line="142" Column="15" TopLine="136"/>
       </Position25>
       <Position26>
         <Filename Value="chessdrawer.pas"/>
-        <Caret Line="185" Column="29" TopLine="171"/>
+        <Caret Line="165" Column="43" TopLine="148"/>
       </Position26>
-      <Position27>
-        <Filename Value="chessdrawer.pas"/>
-        <Caret Line="71" Column="38" TopLine="111"/>
-      </Position27>
-      <Position28>
-        <Filename Value="chessdrawer.pas"/>
-        <Caret Line="113" Column="70" TopLine="99"/>
-      </Position28>
-      <Position29>
-        <Filename Value="chessdrawer.pas"/>
-        <Caret Line="119" Column="21" TopLine="105"/>
-      </Position29>
-      <Position30>
-        <Filename Value="chessdrawer.pas"/>
-        <Caret Line="106" Column="36" TopLine="99"/>
-      </Position30>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>

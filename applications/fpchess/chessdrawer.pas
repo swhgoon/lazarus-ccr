@@ -137,9 +137,10 @@ procedure TChessDrawer.DrawImageWithTransparentColor(ADest: TLazIntfImage;
   const ADestX, ADestY: Integer; AColor: TFPColor; AImage: TFPImageBitmap);
 var
   x, y, CurX, CurY: Integer;
-  CurColor: TFPColor;
   IntfImage: TLazIntfImage;
   lDrawWidth, lDrawHeight: Integer;
+  CurColor: TFPColor;
+  lCurColorDiv, lTranspColorDiv: Byte;
 begin
   IntfImage := TLazIntfImage.Create(0,0);
   try
@@ -158,8 +159,10 @@ begin
         // Never draw outside the destination
         if (CurX < 0) or (CurY < 0) then Continue;
 
-        // CurColor := IntfImage.Colors[x, y]; // Just for debugging
-        if IntfImage.Colors[x, y].Green <> AColor.Green then
+        CurColor := IntfImage.Colors[x, y]; // Good for debugging
+        lCurColorDiv := CurColor.Green div $FF;
+        lTranspColorDiv := AColor.Green div $FF;
+        if lCurColorDiv <> lTranspColorDiv then
           ADest.Colors[CurX, CurY] := IntfImage.Colors[x, y];
       end;
     end;
