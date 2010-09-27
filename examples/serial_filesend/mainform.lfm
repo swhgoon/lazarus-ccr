@@ -1,0 +1,165 @@
+object formSerial: TformSerial
+  Left = 316
+  Height = 320
+  Top = 119
+  Width = 240
+  Caption = 'Serial File Transfer'
+  ClientHeight = 320
+  ClientWidth = 240
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '0.9.29'
+  object btnConnect: TButton
+    Left = 49
+    Height = 25
+    Top = 264
+    Width = 135
+    Caption = 'Connect'
+    OnClick = btnConnectClick
+    TabOrder = 0
+  end
+  object comboClientServer: TComboBox
+    Left = 120
+    Height = 21
+    Top = 176
+    Width = 108
+    ItemHeight = 13
+    ItemIndex = 0
+    Items.Strings = (
+      'Server'
+      'Client'
+    )
+    TabOrder = 1
+    Text = 'Server'
+  end
+  object Label2: TLabel
+    Left = 8
+    Height = 14
+    Top = 144
+    Width = 83
+    Caption = 'Serial port name:'
+    ParentColor = False
+  end
+  object editDevice: TEdit
+    Left = 120
+    Height = 21
+    Top = 144
+    Width = 108
+    TabOrder = 2
+    Text = 'COM1'
+  end
+  object Label3: TLabel
+    Left = 13
+    Height = 14
+    Top = 176
+    Width = 35
+    Caption = 'Act as:'
+    ParentColor = False
+  end
+  object Label4: TLabel
+    Left = 11
+    Height = 14
+    Top = 205
+    Width = 46
+    Caption = 'File path:'
+    ParentColor = False
+  end
+  object Label5: TLabel
+    Left = -1
+    Height = 24
+    Top = 8
+    Width = 240
+    Alignment = taCenter
+    AutoSize = False
+    Caption = 'Serial File Transfer'
+    Font.Height = -18
+    ParentColor = False
+    ParentFont = False
+  end
+  object editFileName: TFileNameEdit
+    Left = 80
+    Height = 21
+    Top = 200
+    Width = 128
+    DialogOptions = []
+    FilterIndex = 0
+    HideDirectories = False
+    ButtonWidth = 23
+    NumGlyphs = 0
+    MaxLength = 0
+    TabOrder = 3
+  end
+  object editFileSize: TLabeledEdit
+    Left = 13
+    Height = 21
+    Top = 240
+    Width = 53
+    EditLabel.AnchorSideLeft.Control = editFileSize
+    EditLabel.AnchorSideTop.Control = editFileSize
+    EditLabel.AnchorSideTop.Side = asrCenter
+    EditLabel.AnchorSideRight.Control = editFileSize
+    EditLabel.AnchorSideBottom.Control = editFileSize
+    EditLabel.Left = 13
+    EditLabel.Height = 14
+    EditLabel.Top = 223
+    EditLabel.Width = 80
+    EditLabel.Caption = 'File size (Bytes):'
+    EditLabel.ParentColor = False
+    ReadOnly = True
+    TabOrder = 4
+  end
+  object ScrollBox1: TScrollBox
+    Left = 8
+    Height = 102
+    Top = 32
+    Width = 227
+    ClientHeight = 81
+    ClientWidth = 206
+    TabOrder = 5
+    object Label1: TLabel
+      Left = 0
+      Height = 160
+      Top = 0
+      Width = 216
+      AutoSize = False
+      Caption = 'Serial client-server communication test. Two instances of this program should be running. One in a client machine and another in a server machine. The server will send a file to the client. Both should specify the correct serial port name, a file path (of the file to be sent or where to place the received file) and both should connect to each other within 10 seconds in order for the communication to occur.'
+      ParentColor = False
+      WordWrap = True
+    end
+  end
+  object StatusBar: TStatusBar
+    Left = 0
+    Height = 23
+    Top = 297
+    Width = 240
+    Panels = <>
+    SimplePanel = False
+  end
+  object editReceivedFileName: TLabeledEdit
+    Left = 120
+    Height = 21
+    Top = 240
+    Width = 108
+    EditLabel.AnchorSideLeft.Control = editReceivedFileName
+    EditLabel.AnchorSideBottom.Control = editReceivedFileName
+    EditLabel.Left = 120
+    EditLabel.Height = 14
+    EditLabel.Top = 223
+    EditLabel.Width = 95
+    EditLabel.Caption = 'Received file name:'
+    EditLabel.ParentColor = False
+    TabOrder = 7
+  end
+  object timerServerConnect: TTimer
+    Enabled = False
+    OnTimer = timerServerConnectTimer
+    left = 136
+    top = 224
+  end
+  object timerClientConnect: TTimer
+    Enabled = False
+    OnTimer = timerClientConnectTimer
+    left = 176
+    top = 224
+  end
+end
