@@ -148,14 +148,16 @@ const ADDRESS_MAP : array[TTransportType] of string = (
         //'TCP:Address=172.16.82.31;Port=1234;target=UserService',
         'TCP:Address=127.0.0.1;Port=1234;target=UserService',
         //'http:Address=http://127.0.0.1:8888/wst/services/lib_server/UserService'
-        'http:Address=http://127.0.0.1:8080/wst/services/UserService'
+        'http:Address=http://127.0.0.1:8000/services/UserService'
+        //'http:Address=http://127.0.0.1:8080/cgi-bin/demoservice.cgi/WST/%s/UserService/'
       );
-      FORMAT_MAP : array[TFormatType] of string =( 'binary', 'soap', 'xmlrpc', 'json', 'json' );
+      FORMAT_MAP : array[TFormatType] of string =( 'binary', 'SOAP', 'xmlrpc', 'json', 'json' );
 var
   buffTransport, buffFormat : string;
 begin
   if ( TransportType = ttHTTP ) then
     buffTransport := Format('%s/?format=%s',[ADDRESS_MAP[TransportType],FORMAT_MAP[FormatValue]])
+    //buffTransport := Format(ADDRESS_MAP[TransportType],[FORMAT_MAP[FormatValue]])
   else
     buffTransport := ADDRESS_MAP[TransportType];
   if ( TransportType = ttLibrary ) then
