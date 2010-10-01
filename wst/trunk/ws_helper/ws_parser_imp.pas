@@ -902,10 +902,12 @@ var
         FSymbols.RegisterExternalAlias(locType,locTypeName);
     end;
     
-    locInternalEltName := locName;
-    locHasInternalName := IsReservedKeyWord(locInternalEltName);
-    if locHasInternalName then
+    locInternalEltName := ExtractIdentifier(locName);
+    locHasInternalName := (locInternalEltName <> locName);
+    if IsReservedKeyWord(locInternalEltName) then begin
+      locHasInternalName := True; 
       locInternalEltName := Format('_%s',[locInternalEltName]);
+    end;
 
     locProp := TPasProperty(FSymbols.CreateElement(TPasProperty,locInternalEltName,classDef,visPublished,'',0));
     classDef.Members.Add(locProp);

@@ -618,6 +618,7 @@ function TWsdlParser.ParseOperation(
                 then begin
                   prmInternameName := prmInternameName + 'Param';
                 end;
+                prmInternameName := ExtractIdentifier(prmInternameName);
                 prmHasInternameName := IsReservedKeyWord(prmInternameName) or
                                        ( not IsValidIdent(prmInternameName) ) or
                                        ( GetParameterIndex(tmpMthdType,prmInternameName) >= 0 );
@@ -742,6 +743,7 @@ function TWsdlParser.ParseOperation(
               if AnsiSameText(prmInternameName,tmpMthd.Name) then begin
                 prmInternameName := prmInternameName + 'Param';
               end;
+              prmInternameName := ExtractIdentifier(prmInternameName);
               prmHasInternameName := IsReservedKeyWord(prmInternameName) or
                                      ( not IsValidIdent(prmInternameName) );
               if prmHasInternameName then

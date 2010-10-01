@@ -61,6 +61,7 @@ type
     function load_class_ansichar_property() : TwstPasTreeContainer;virtual;abstract;
     function load_class_widechar_property() : TwstPasTreeContainer;virtual;abstract;
     function load_class_currency_property() : TwstPasTreeContainer;virtual;abstract;
+    function load_class_property_composed_name() : TwstPasTreeContainer;virtual;abstract;
 
     function load_schema_import() : TwstPasTreeContainer;virtual;abstract;
   published
@@ -100,6 +101,7 @@ type
     procedure class_ansichar_property();
     procedure class_widechar_property();
     procedure class_currency_property();
+    procedure class_property_composed_name();
 
     procedure schema_import();
   end;
@@ -143,6 +145,7 @@ type
     function load_class_ansichar_property() : TwstPasTreeContainer;override;
     function load_class_widechar_property() : TwstPasTreeContainer;override;
     function load_class_currency_property() : TwstPasTreeContainer;override;
+    function load_class_property_composed_name() : TwstPasTreeContainer;override;
 
     function load_schema_import() : TwstPasTreeContainer;override;
   end;
@@ -185,7 +188,8 @@ type
     function load_class_widestring_property() : TwstPasTreeContainer;override;
     function load_class_ansichar_property() : TwstPasTreeContainer;override;
     function load_class_widechar_property() : TwstPasTreeContainer;override;
-    function load_class_currency_property() : TwstPasTreeContainer;override;
+    function load_class_currency_property() : TwstPasTreeContainer;override;  
+    function load_class_property_composed_name() : TwstPasTreeContainer;override;
 
     function load_schema_import() : TwstPasTreeContainer;override;
   published
@@ -198,6 +202,8 @@ type
     procedure message_parts_type_hint();
     procedure parameter_var();
     procedure parameter_const_default();
+    procedure parameter_composed_name();
+    procedure parameter_composed_name_function();
     procedure soap_action();
   end;
   
@@ -1913,6 +1919,49 @@ begin
   end;
 end;
 
+procedure TTest_CustomXsdParser.class_property_composed_name();   
+const s_class_name = 'TSampleClass';
+var
+  clsType : TPasClassType;
+  tr : TwstPasTreeContainer;
+
+  procedure CheckProperty(
+    const AName,
+          ADeclaredName,
+          ATypeName      : string; 
+    const AFieldType     : TPropertyType
+  );
+  var
+    prp : TPasProperty;
+  begin
+    prp := FindMember(clsType,AName) as TPasProperty;
+      CheckNotNull(prp);
+      CheckEquals(AName,prp.Name,'Name');
+      CheckEquals(ADeclaredName,tr.GetExternalName(prp),'External Name');
+      CheckNotNull(prp.VarType);
+      CheckEquals(ATypeName,prp.VarType.Name,'TypeName');
+      CheckEquals(PropertyType_Att[AFieldType],tr.IsAttributeProperty(prp));
+  end;
+
+var
+  mdl : TPasModule;
+  elt : TPasElement;
+begin
+  tr := load_class_property_composed_name();
+  try
+    mdl := tr.FindModule('urn_sample');
+    CheckNotNull(mdl,'urn_sample');
+    elt := tr.FindElement(s_class_name);
+      CheckNotNull(elt,s_class_name);       
+      CheckIs(elt,TPasClassType);
+      clsType := elt as TPasClassType;
+      CheckProperty('one_prop','one-prop','string',ptField);
+      CheckProperty('one_two_prop','one-two-prop','string',ptAttribute);
+  finally
+    tr.Free();
+  end;   
+end;
+
 procedure TTest_CustomXsdParser.schema_import();
 const
   s_base_namespace = 'urn:base-library';
@@ -2092,6 +2141,11 @@ end;
 function TTest_XsdParser.load_class_currency_property() : TwstPasTreeContainer;  
 begin
   Result := ParseDoc('class_currency_property');    
+end;
+
+function TTest_XsdParser.load_class_property_composed_name() : TwstPasTreeContainer;  
+begin
+  Result := ParseDoc('class_property_composed_name');  
 end;
 
 function TTest_XsdParser.load_schema_import(): TwstPasTreeContainer;
@@ -2666,6 +2720,109 @@ begin
   end;
 end;
 
+procedure TTest_WsdlParser.parameter_composed_name(); 
+
+  function FindProc(const AName : string; AIntf : TPasClassType) : TPasProcedure;
+  var
+    k : Integer;
+  begin
+    Result := nil;
+    for k := 0 to (AIntf.Members.Count - 1) do begin
+      if TObject(AIntf.Members[k]).InheritsFrom(TPasProcedure) and ( TPasProcedure(AIntf.Members[k]).Name = AName ) then begin
+        Result := TPasProcedure(AIntf.Members[k]);
+        Break;
+      end;
+    end;
+  end;
+
+var
+  tr : TwstPasTreeContainer;
+  elt : TPasElement;
+  intf : TPasClassType;
+  mth : TPasProcedure;
+  mthType : TPasProcedureType;
+  res : TPasResultElement;
+  arg : TPasArgument;
+begin
+  tr := ParseDoc('parameter_composed_name');
+  try
+    elt := tr.FindElement('TestService');
+    CheckNotNull(elt,'TestService');
+    CheckIs(elt,TPasClassType);
+    intf := elt as TPasClassType;
+    CheckEquals(Ord(okInterface),Ord(intf.ObjKind));
+    mth := FindProc('sampleProc',intf);
+      CheckNotNull(mth,'sampleProc not found');
+      CheckEquals('sampleProc',mth.Name);
+      mthType := mth.ProcType;
+      CheckIs(mthType,TPasProcedureType);
+      CheckEquals(2, mthType.Args.Count, 'Parameter count');
+      arg := TPasArgument(mthType.Args[0]);
+        CheckNotNull(arg);
+        CheckEquals('one_param',arg.Name,'Param Name');
+        CheckEquals('one-param',tr.GetExternalName(arg),'Param External Name');
+      arg := TPasArgument(mthType.Args[1]);
+        CheckNotNull(arg);
+        CheckEquals('one_two_param',arg.Name,'Param Name');
+        CheckEquals('one-two-param',tr.GetExternalName(arg),'Param External Name');
+  finally
+    tr.Free();
+  end;
+end;
+
+procedure TTest_WsdlParser.parameter_composed_name_function();
+
+  function FindProc(const AName : string; AIntf : TPasClassType) : TPasProcedure;
+  var
+    k : Integer;
+  begin
+    Result := nil;
+    for k := 0 to (AIntf.Members.Count - 1) do begin
+      if TObject(AIntf.Members[k]).InheritsFrom(TPasProcedure) and ( TPasProcedure(AIntf.Members[k]).Name = AName ) then begin
+        Result := TPasProcedure(AIntf.Members[k]);
+        Break;
+      end;
+    end;
+  end;
+
+var
+  tr : TwstPasTreeContainer;
+  elt : TPasElement;
+  intf : TPasClassType;
+  mth : TPasProcedure;
+  mthType : TPasProcedureType;
+  res : TPasResultElement;
+  arg : TPasArgument;
+begin
+  tr := ParseDoc('parameter_composed_name');
+  try
+    elt := tr.FindElement('TestService');
+    CheckNotNull(elt,'TestService');
+    CheckIs(elt,TPasClassType);
+    intf := elt as TPasClassType;
+    CheckEquals(Ord(okInterface),Ord(intf.ObjKind));
+    mth := FindProc('sampleFunc',intf);
+      CheckNotNull(mth,'sampleFunc not found');
+      CheckEquals('sampleFunc',mth.Name);
+      mthType := mth.ProcType;
+      CheckIs(mthType,TPasFunctionType);
+      CheckEquals(2, mthType.Args.Count, 'Parameter count');
+      arg := TPasArgument(mthType.Args[0]);
+        CheckNotNull(arg);
+        CheckEquals('one_param',arg.Name,'Param Name');
+        CheckEquals('one-param',tr.GetExternalName(arg),'Param External Name');
+      arg := TPasArgument(mthType.Args[1]);
+        CheckNotNull(arg);
+        CheckEquals('one_two_param',arg.Name,'Param Name');
+        CheckEquals('one-two-param',tr.GetExternalName(arg),'Param External Name');
+      res := TPasFunctionType(mthType).ResultEl;
+        CheckNotNull(res, 'Result');
+        CheckEquals(LowerCase('string'), LowerCase(res.ResultType.Name));
+  finally
+    tr.Free();
+  end;
+end;
+
 procedure TTest_WsdlParser.soap_action(); 
 var
   tr : TwstPasTreeContainer;
@@ -2726,6 +2883,11 @@ end;
 function TTest_WsdlParser.load_class_currency_property() : TwstPasTreeContainer;  
 begin
   Result := ParseDoc('class_currency_property');
+end;
+
+function TTest_WsdlParser.load_class_property_composed_name() : TwstPasTreeContainer;  
+begin
+  Result := ParseDoc('class_property_composed_name');  
 end;
 
 function TTest_WsdlParser.load_schema_import(): TwstPasTreeContainer;
