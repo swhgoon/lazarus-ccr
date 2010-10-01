@@ -106,6 +106,11 @@ type
   TTest_TImplementationFactory = class(TTestCase)
   published
     procedure POOLED_Discard();
+    procedure extension_empty();
+    procedure extension_simple();
+    procedure extension_array_empty();
+    procedure extension_array_simple();
+    procedure extension_duplicate();
   end;
   
   { TwstModuleNotLoad }
@@ -531,6 +536,121 @@ begin
   obj.ReleaseInstance(elt);
   elt := obj.CreateInstance() as ITest;
   Check(oldElt <> elt,'4.2');
+end;
+
+procedure TTest_TImplementationFactory.extension_empty(); 
+var
+  obj : IServiceImplementationFactory;
+  s : string;
+begin
+  obj := TImplementationFactory.Create(TTestClass);
+  CheckEquals(False,obj.GetExtension(s));
+  CheckEquals('',s)
+end;
+
+procedure TTest_TImplementationFactory.extension_simple(); 
+var
+  obj : IServiceImplementationFactory;
+  s : string;
+  pm : IPropertyManager;
+begin
+  obj := TImplementationFactory.Create(TTestClass);
+  obj.RegisterExtension('a','');
+  CheckEquals(True,obj.GetExtension(s));
+  CheckEquals('a',s);
+  
+  obj := TImplementationFactory.Create(TTestClass);
+  obj.RegisterExtension('a','a.val');
+  CheckEquals(True,obj.GetExtension(s));
+  CheckEquals('a',s);
+  pm := obj.GetPropertyManager(sSERVICES_EXTENSIONS,False);
+  Check((pm <> nil),'GetPropertyManager(sSERVICES_EXTENSIONS,False)');
+  CheckEquals('a.val',pm.GetProperty('a'));
+  obj.RegisterExtension('b','');
+    CheckEquals(True,obj.GetExtension(s));
+    CheckEquals('a;b',s);   
+    CheckEquals('a.val',pm.GetProperty('a'));
+    CheckEquals('',pm.GetProperty('b'));
+  obj.RegisterExtension('c','123');
+    CheckEquals(True,obj.GetExtension(s));
+    CheckEquals('a;b;c',s);   
+    CheckEquals('a.val',pm.GetProperty('a'));
+    CheckEquals('',pm.GetProperty('b'));
+    CheckEquals('123',pm.GetProperty('c'));
+end;
+
+procedure TTest_TImplementationFactory.extension_array_empty(); 
+var
+  obj : IServiceImplementationFactory;
+  s : string;
+begin
+  obj := TImplementationFactory.Create(TTestClass);
+  obj.RegisterExtension([]);
+  CheckEquals(False,obj.GetExtension(s));
+  CheckEquals('',s);
+  
+  obj := TImplementationFactory.Create(TTestClass);
+  obj.RegisterExtension(['']);
+  CheckEquals(False,obj.GetExtension(s));
+  CheckEquals('',s);
+  obj.RegisterExtension(['','']);
+  CheckEquals(False,obj.GetExtension(s));
+  CheckEquals('',s);
+end;
+
+procedure TTest_TImplementationFactory.extension_array_simple(); 
+var
+  obj : IServiceImplementationFactory;
+  s : string;
+  pm : IPropertyManager;
+begin
+  obj := TImplementationFactory.Create(TTestClass);
+  obj.RegisterExtension(['a']);
+  CheckEquals(True,obj.GetExtension(s));
+  CheckEquals('a',s);
+  
+  obj := TImplementationFactory.Create(TTestClass);
+  obj.RegisterExtension(['a']);
+  CheckEquals(True,obj.GetExtension(s));
+  CheckEquals('a',s);
+  pm := obj.GetPropertyManager(sSERVICES_EXTENSIONS,False);
+  Check((pm <> nil),'GetPropertyManager(sSERVICES_EXTENSIONS,False)');
+  CheckEquals('',pm.GetProperty('a'));
+  obj.RegisterExtension(['b']);
+    CheckEquals(True,obj.GetExtension(s));
+    CheckEquals('a;b',s);   
+    CheckEquals('',pm.GetProperty('a'));
+    CheckEquals('',pm.GetProperty('b'));
+  obj.RegisterExtension(['c','123']);
+    CheckEquals(True,obj.GetExtension(s));
+    CheckEquals('a;b;c;123',s);   
+    CheckEquals('',pm.GetProperty('a'));
+    CheckEquals('',pm.GetProperty('b'));
+    CheckEquals('',pm.GetProperty('c'));
+    CheckEquals('',pm.GetProperty('123'));
+end;
+
+procedure TTest_TImplementationFactory.extension_duplicate(); 
+var
+  obj : IServiceImplementationFactory;
+  s : string;
+begin
+  obj := TImplementationFactory.Create(TTestClass);
+  obj.RegisterExtension('a','');
+  CheckEquals(True,obj.GetExtension(s));
+  CheckEquals('a',s);
+  // Should not duplicate
+  obj.RegisterExtension('a','');
+  CheckEquals(True,obj.GetExtension(s));
+  CheckEquals('a',s);
+
+  obj.RegisterExtension('b','');
+  CheckEquals(True,obj.GetExtension(s));
+  CheckEquals('a;b',s);    
+  
+  obj.RegisterExtension('a','a.val');
+  CheckEquals(True,obj.GetExtension(s));
+  CheckEquals('a;b',s);
 end;
 
 { TTest_TIntfPoolItem }
