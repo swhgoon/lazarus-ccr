@@ -197,7 +197,7 @@ implementation
 uses
   wst_consts;
 
-{$HINTS OFF}
+{$WARNINGS OFF}
 function ErrorFunc(
     AObject : TObject;
     APropInfo : TPropSerializationInfo;
@@ -215,7 +215,7 @@ procedure ErrorProc(
 begin
   raise Exception.CreateFmt(SERR_NoReaderProc,[APropInfo.Name,APropInfo.PropInfo^.Name]);
 end;
-{$HINTS ON}
+{$WARNINGS ON}
 
 type
   TEnumBuffer = record
