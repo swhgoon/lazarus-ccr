@@ -171,12 +171,12 @@ var
   frmt : IFormatterBase;
   createdHere : Boolean;
 begin
+  createdHere := ( AConfigObj = nil );
   if ( AConfigObj <> nil ) then
     locObj := AConfigObj
   else
     locObj := wst_CreateDefaultConfigObject();
   try
-    createdHere := ( AConfigObj = nil );
     frmt := TSOAPBaseFormatter.Create();
     frmt.SetSerializationStyle(ssNodeSerialization);
     frmt.BeginObject(sAPPLICATION,TypeInfo(TWstConfigurationObject));

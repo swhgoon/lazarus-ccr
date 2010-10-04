@@ -111,8 +111,9 @@ type
 
   TScopedArrayStackItem = class(TAbstractArrayStackItem)
   protected
-    destructor Destroy();override;
     function CreateList(const ANodeName : string):TDOMNodeList;override;
+  public
+    destructor Destroy();override;
   end;
 
   { TEmbeddedArrayStackItem }
@@ -643,8 +644,10 @@ begin
   case AStyle of
     asScoped  : Result := FStack.Push(TScopedArrayStackItem.Create(AScopeObject,stArray,AItemName)) as TStackItem;
     asEmbeded : Result := FStack.Push(TEmbeddedArrayStackItem.Create(AScopeObject,stArray,AItemName)) as TStackItem;
-    else
+    else begin
       Assert(False);
+      Result := nil;
+    end;
   end;
 end;
 
@@ -1480,6 +1483,7 @@ begin
   if ( AScopeType = stObject ) or
      ( ( AScopeType = stArray ) and ( AStyle = asScoped ) )
   then begin
+    addAtt := False;
     scpStr := AScopeName;
     hasNmspc := Not IsStrEmpty(ANameSpace);
     If hasNmspc Then Begin
@@ -1980,6 +1984,8 @@ begin
           otUWord : enumData := Word(AData);
           otSLong : enumData := LongInt(AData);
           otULong : enumData := LongWord(AData);
+          else
+            enumData := 0;   
         end;
         dataBuffer := IntToStr(enumData);
       end;

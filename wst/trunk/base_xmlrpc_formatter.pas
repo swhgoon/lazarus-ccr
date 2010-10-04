@@ -1600,6 +1600,8 @@ begin
           otUWord : enumData := Word(AData);
           otSLong : enumData := LongInt(AData);
           otULong : enumData := LongWord(AData);
+          else
+            enumData := 0;
         end;
         dataBuffer := IntToStr(enumData);
       end;

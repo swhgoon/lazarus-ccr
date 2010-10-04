@@ -197,6 +197,7 @@ implementation
 uses
   wst_consts;
 
+{$HINTS OFF}
 function ErrorFunc(
     AObject : TObject;
     APropInfo : TPropSerializationInfo;
@@ -214,6 +215,7 @@ procedure ErrorProc(
 begin
   raise Exception.CreateFmt(SERR_NoReaderProc,[APropInfo.Name,APropInfo.PropInfo^.Name]);
 end;
+{$HINTS ON}
 
 type
   TEnumBuffer = record
@@ -288,6 +290,7 @@ var
   floatDt : TFloatExtendedType;
   pt : PTypeInfo;
 begin
+  floatDt := 0;
   floatBuffer.ExtendedData := 0;
   propName := APropInfo.ExternalName;
   pt := APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF};
@@ -343,6 +346,7 @@ var
   boolData : Boolean;
 {$ENDIF WST_DELPHI}
 begin
+  int64Data := 0;
   propName := APropInfo.ExternalName;
   pt := APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF};
 {$IFDEF WST_DELPHI}
@@ -521,6 +525,7 @@ var
   floatDt : TFloatExtendedType;
   pt : PTypeInfo;
 begin
+  floatDt := 0;
   floatBuffer.ExtendedData := 0;
   propName := APropInfo.ExternalName;
   pt := APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF};
@@ -592,6 +597,7 @@ var
   boolData : Boolean;
 {$ENDIF WST_DELPHI}
 begin
+  int64Data := 0;
   propName := APropInfo.ExternalName;
   pt := APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF};
 {$IFDEF WST_DELPHI}
