@@ -7,8 +7,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, mainform, chessdrawer, chessgame, chessconfig
-  { you can add units after this };
+  Forms, lnetvisual, mainform, chessdrawer, chessgame, chessconfig, tcpcomm;
 
 {$R *.res}
 

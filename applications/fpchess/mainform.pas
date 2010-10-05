@@ -41,8 +41,8 @@ type
     Label6: TLabel;
     Label7: TLabel;
     labelPos: TLabel;
-    LabeledEdit1: TLabeledEdit;
-    LabeledEdit2: TLabeledEdit;
+    editRemoteID: TLabeledEdit;
+    editLocalIP: TLabeledEdit;
     editPlayerName: TLabeledEdit;
     pageStart: TUNBPage;
     pageConfigConnection: TUNBPage;
@@ -54,6 +54,7 @@ type
     timerChessTimer: TTimer;
     procedure FormCreate(Sender: TObject);
     procedure HandleMainScreenButton(Sender: TObject);
+    procedure pageStartBeforeShow(Sender: TObject);
     procedure timerChessTimerTimer(Sender: TObject);
   private
     { private declarations }
@@ -85,6 +86,14 @@ begin
     vChessGame.StartNewGame(comboStartColor.ItemIndex, checkTimer.Checked, spinPlayerTime.Value);
   end
   else if Sender = btnDirectComm then notebookMain.PageIndex := 1;
+end;
+
+procedure TformChess.pageStartBeforeShow(Sender: TObject);
+begin
+  if notebookMain.PageIndex = 1 then
+  begin
+    editLocalIP.Text := '';
+  end;
 end;
 
 procedure TformChess.timerChessTimerTimer(Sender: TObject);

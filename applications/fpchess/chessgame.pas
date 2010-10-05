@@ -24,6 +24,19 @@ const
 
 type
 
+  TPacketKind = (pkConnect, pkStartGameClientAsWhite, pkStartGameClientAsBlack, pkMove);
+
+  { TPacket }
+
+  TPacket = class
+  public
+    // Packet Data
+    ID: Cardinal;
+    Kind: TPacketKind;
+    MoveStartX, MoveStartY, MoveEndX, MoveEndY: Byte;
+    Next: TPacket; // To build a linked list
+  end;
+
   TChessTile = (ctEmpty,
     ctWPawn, ctWKnight, ctWBishop, ctWRook, ctWQueen, ctWKing,
     ctBPawn, ctBKnight, ctBBishop, ctBRook, ctBQueen, ctBKing

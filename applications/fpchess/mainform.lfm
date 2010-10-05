@@ -13,11 +13,12 @@ object formChess: TformChess
     Height = 433
     Top = 0
     Width = 360
-    PageIndex = 0
+    PageIndex = 1
     Align = alClient
     TabOrder = 0
     TabStop = True
     object pageStart: TUNBPage
+      OnBeforeShow = pageStartBeforeShow
       ClientWidth = 360
       ClientHeight = 433
       object Label1: TLabel
@@ -71,7 +72,7 @@ object formChess: TformChess
       end
       object editPlayerName: TLabeledEdit
         Left = 88
-        Height = 21
+        Height = 22
         Top = 72
         Width = 120
         EditLabel.AnchorSideLeft.Control = editPlayerName
@@ -79,10 +80,10 @@ object formChess: TformChess
         EditLabel.AnchorSideTop.Side = asrCenter
         EditLabel.AnchorSideRight.Control = editPlayerName
         EditLabel.AnchorSideBottom.Control = editPlayerName
-        EditLabel.Left = 24
-        EditLabel.Height = 14
+        EditLabel.Left = 6
+        EditLabel.Height = 17
         EditLabel.Top = 75
-        EditLabel.Width = 61
+        EditLabel.Width = 79
         EditLabel.Caption = 'Player Name'
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
@@ -90,9 +91,9 @@ object formChess: TformChess
       end
       object Label6: TLabel
         Left = 28
-        Height = 14
+        Height = 17
         Top = 104
-        Width = 43
+        Width = 52
         Caption = 'Start as:'
         ParentColor = False
       end
@@ -101,7 +102,7 @@ object formChess: TformChess
         Height = 21
         Top = 104
         Width = 120
-        ItemHeight = 13
+        ItemHeight = 0
         ItemIndex = 0
         Items.Strings = (
           'White'
@@ -112,9 +113,9 @@ object formChess: TformChess
       end
       object checkTimer: TCheckBox
         Left = 24
-        Height = 17
+        Height = 18
         Top = 136
-        Width = 163
+        Width = 212
         Caption = 'Set a time limit for each Player'
         Checked = True
         State = cbChecked
@@ -122,7 +123,7 @@ object formChess: TformChess
       end
       object spinPlayerTime: TSpinEdit
         Left = 21
-        Height = 21
+        Height = 16
         Top = 160
         Width = 50
         TabOrder = 6
@@ -130,9 +131,9 @@ object formChess: TformChess
       end
       object Label7: TLabel
         Left = 80
-        Height = 14
+        Height = 17
         Top = 163
-        Width = 114
+        Width = 150
         Caption = 'minutes for each player'
         ParentColor = False
       end
@@ -147,8 +148,8 @@ object formChess: TformChess
       end
     end
     object pageConfigConnection: TUNBPage
-      ClientWidth = 960
-      ClientHeight = 1200
+      ClientWidth = 360
+      ClientHeight = 433
       object Label3: TLabel
         Left = 0
         Height = 32
@@ -161,16 +162,16 @@ object formChess: TformChess
         ParentColor = False
         ParentFont = False
       end
-      object LabeledEdit1: TLabeledEdit
+      object editRemoteID: TLabeledEdit
         Left = 112
         Height = 22
         Top = 72
         Width = 120
-        EditLabel.AnchorSideLeft.Control = LabeledEdit1
-        EditLabel.AnchorSideTop.Control = LabeledEdit1
+        EditLabel.AnchorSideLeft.Control = editRemoteID
+        EditLabel.AnchorSideTop.Control = editRemoteID
         EditLabel.AnchorSideTop.Side = asrCenter
-        EditLabel.AnchorSideRight.Control = LabeledEdit1
-        EditLabel.AnchorSideBottom.Control = LabeledEdit1
+        EditLabel.AnchorSideRight.Control = editRemoteID
+        EditLabel.AnchorSideBottom.Control = editRemoteID
         EditLabel.Left = 8
         EditLabel.Height = 17
         EditLabel.Top = 75
@@ -179,18 +180,17 @@ object formChess: TformChess
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
         TabOrder = 0
-        Text = 'LabeledEdit1'
       end
-      object LabeledEdit2: TLabeledEdit
+      object editLocalIP: TLabeledEdit
         Left = 112
         Height = 22
         Top = 104
         Width = 120
-        EditLabel.AnchorSideLeft.Control = LabeledEdit2
-        EditLabel.AnchorSideTop.Control = LabeledEdit2
+        EditLabel.AnchorSideLeft.Control = editLocalIP
+        EditLabel.AnchorSideTop.Control = editLocalIP
         EditLabel.AnchorSideTop.Side = asrCenter
-        EditLabel.AnchorSideRight.Control = LabeledEdit2
-        EditLabel.AnchorSideBottom.Control = LabeledEdit2
+        EditLabel.AnchorSideRight.Control = editLocalIP
+        EditLabel.AnchorSideBottom.Control = editLocalIP
         EditLabel.Left = 4
         EditLabel.Height = 17
         EditLabel.Top = 107
@@ -200,7 +200,6 @@ object formChess: TformChess
         LabelPosition = lpLeft
         ReadOnly = True
         TabOrder = 1
-        Text = 'LabeledEdit2'
       end
       object BitBtn1: TBitBtn
         Left = 8
@@ -212,8 +211,8 @@ object formChess: TformChess
       end
     end
     object pageConnecting: TUNBPage
-      ClientWidth = 960
-      ClientHeight = 1200
+      ClientWidth = 1920
+      ClientHeight = 2400
       object Label4: TLabel
         Left = 0
         Height = 32
@@ -235,8 +234,8 @@ object formChess: TformChess
       end
     end
     object pageGame: TUNBPage
-      ClientWidth = 480
-      ClientHeight = 866
+      ClientWidth = 960
+      ClientHeight = 1732
       object Label5: TLabel
         Left = 0
         Height = 32
