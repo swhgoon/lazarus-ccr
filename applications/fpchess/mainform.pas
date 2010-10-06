@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, ComCtrls, StdCtrls, Buttons, Spin,
   //
-  chessdrawer, chessgame, chessconfig;
+  chessdrawer, chessgame, chessconfig, chesstcputils;
 
 type
 
@@ -54,7 +54,7 @@ type
     timerChessTimer: TTimer;
     procedure FormCreate(Sender: TObject);
     procedure HandleMainScreenButton(Sender: TObject);
-    procedure pageStartBeforeShow(Sender: TObject);
+    procedure pageBeforeShow(Sender: TObject; ANewPage: TUNBPage; ANewIndex: Integer);
     procedure timerChessTimerTimer(Sender: TObject);
   private
     { private declarations }
@@ -71,28 +71,34 @@ implementation
 
 {$R *.lfm}
 
+const
+  INT_PAGE_START = 0;
+  INT_PAGE_CONFIGCONNECTION = 1;
+  INT_PAGE_CONNECTING = 2;
+  INT_PAGE_GAME = 3;
+
 { TformChess }
 
 procedure TformChess.HandleMainScreenButton(Sender: TObject);
 begin
   if Sender = btnSinglePlayer then
   begin
-    notebookMain.PageIndex := 3;
+    notebookMain.PageIndex := INT_PAGE_GAME;
     vChessGame.StartNewGame(comboStartColor.ItemIndex, checkTimer.Checked, spinPlayerTime.Value);
   end
   else if Sender = btnHotSeat then
   begin
-    notebookMain.PageIndex := 3;
+    notebookMain.PageIndex := INT_PAGE_GAME;
     vChessGame.StartNewGame(comboStartColor.ItemIndex, checkTimer.Checked, spinPlayerTime.Value);
   end
-  else if Sender = btnDirectComm then notebookMain.PageIndex := 1;
+  else if Sender = btnDirectComm then notebookMain.PageIndex := INT_PAGE_CONFIGCONNECTION;
 end;
 
-procedure TformChess.pageStartBeforeShow(Sender: TObject);
+procedure TformChess.pageBeforeShow(Sender: TObject; ANewPage: TUNBPage; ANewIndex: Integer);
 begin
-  if notebookMain.PageIndex = 1 then
+  if ANewIndex = INT_PAGE_CONFIGCONNECTION then
   begin
-    editLocalIP.Text := '';
+    editLocalIP.Text := ChessGetLocalIP();
   end;
 end;
 

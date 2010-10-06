@@ -13,12 +13,12 @@ object formChess: TformChess
     Height = 433
     Top = 0
     Width = 360
-    PageIndex = 1
+    PageIndex = 0
     Align = alClient
     TabOrder = 0
     TabStop = True
     object pageStart: TUNBPage
-      OnBeforeShow = pageStartBeforeShow
+      OnBeforeShow = pageBeforeShow
       ClientWidth = 360
       ClientHeight = 433
       object Label1: TLabel
@@ -72,7 +72,7 @@ object formChess: TformChess
       end
       object editPlayerName: TLabeledEdit
         Left = 88
-        Height = 22
+        Height = 21
         Top = 72
         Width = 120
         EditLabel.AnchorSideLeft.Control = editPlayerName
@@ -80,10 +80,10 @@ object formChess: TformChess
         EditLabel.AnchorSideTop.Side = asrCenter
         EditLabel.AnchorSideRight.Control = editPlayerName
         EditLabel.AnchorSideBottom.Control = editPlayerName
-        EditLabel.Left = 6
-        EditLabel.Height = 17
+        EditLabel.Left = 24
+        EditLabel.Height = 14
         EditLabel.Top = 75
-        EditLabel.Width = 79
+        EditLabel.Width = 61
         EditLabel.Caption = 'Player Name'
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
@@ -91,9 +91,9 @@ object formChess: TformChess
       end
       object Label6: TLabel
         Left = 28
-        Height = 17
+        Height = 14
         Top = 104
-        Width = 52
+        Width = 43
         Caption = 'Start as:'
         ParentColor = False
       end
@@ -102,7 +102,7 @@ object formChess: TformChess
         Height = 21
         Top = 104
         Width = 120
-        ItemHeight = 0
+        ItemHeight = 13
         ItemIndex = 0
         Items.Strings = (
           'White'
@@ -113,9 +113,9 @@ object formChess: TformChess
       end
       object checkTimer: TCheckBox
         Left = 24
-        Height = 18
+        Height = 17
         Top = 136
-        Width = 212
+        Width = 163
         Caption = 'Set a time limit for each Player'
         Checked = True
         State = cbChecked
@@ -123,7 +123,7 @@ object formChess: TformChess
       end
       object spinPlayerTime: TSpinEdit
         Left = 21
-        Height = 16
+        Height = 21
         Top = 160
         Width = 50
         TabOrder = 6
@@ -131,9 +131,9 @@ object formChess: TformChess
       end
       object Label7: TLabel
         Left = 80
-        Height = 17
+        Height = 14
         Top = 163
-        Width = 150
+        Width = 114
         Caption = 'minutes for each player'
         ParentColor = False
       end
@@ -148,8 +148,9 @@ object formChess: TformChess
       end
     end
     object pageConfigConnection: TUNBPage
-      ClientWidth = 360
-      ClientHeight = 433
+      OnBeforeShow = pageBeforeShow
+      ClientWidth = 2880
+      ClientHeight = 3464
       object Label3: TLabel
         Left = 0
         Height = 32
@@ -211,8 +212,9 @@ object formChess: TformChess
       end
     end
     object pageConnecting: TUNBPage
-      ClientWidth = 1920
-      ClientHeight = 2400
+      OnBeforeShow = pageBeforeShow
+      ClientWidth = 15360
+      ClientHeight = 19200
       object Label4: TLabel
         Left = 0
         Height = 32
@@ -234,8 +236,9 @@ object formChess: TformChess
       end
     end
     object pageGame: TUNBPage
-      ClientWidth = 960
-      ClientHeight = 1732
+      OnBeforeShow = pageBeforeShow
+      ClientWidth = 7680
+      ClientHeight = 13856
       object Label5: TLabel
         Left = 0
         Height = 32

@@ -4,11 +4,11 @@
     <Version Value="9"/>
     <PathDelim Value="\"/>
     <General>
+      <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
       <Icon Value="0"/>
-      <ActiveWindowIndexAtStart Value="0"/>
     </General>
     <i18n>
       <EnableI18N LFM="False"/>
@@ -34,17 +34,11 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="32">
+    <Units Count="7">
       <Unit0>
         <Filename Value="fpchess.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="fpchess"/>
-        <EditorIndex Value="4"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="77" Y="10"/>
-        <UsageCount Value="39"/>
-        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="mainform.pas"/>
@@ -52,381 +46,33 @@
         <ComponentName Value="formChess"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="mainform"/>
-        <EditorIndex Value="0"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="92"/>
-        <CursorPos X="1" Y="100"/>
-        <UsageCount Value="39"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit1>
       <Unit2>
-        <Filename Value="..\..\..\lazarussvn\lcl\extctrls.pp"/>
-        <UnitName Value="ExtCtrls"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="309"/>
-        <CursorPos X="15" Y="326"/>
-        <UsageCount Value="16"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="..\..\..\lazarussvn\ideintf\componenteditors.pas"/>
-        <UnitName Value="ComponentEditors"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="864"/>
-        <CursorPos X="15" Y="877"/>
-        <UsageCount Value="16"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="..\..\..\lazarussvn\lcl\include\custompage.inc"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="136"/>
-        <CursorPos X="1" Y="136"/>
-        <UsageCount Value="16"/>
-      </Unit4>
-      <Unit5>
-        <Filename Value="..\..\..\lazarussvn\lcl\include\customnotebook.inc"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="195"/>
-        <CursorPos X="21" Y="207"/>
-        <UsageCount Value="16"/>
-      </Unit5>
-      <Unit6>
-        <Filename Value="..\..\..\lazarussvn\lcl\include\untabbednotebook.inc"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="155"/>
-        <CursorPos X="36" Y="181"/>
-        <UsageCount Value="16"/>
-      </Unit6>
-      <Unit7>
-        <Filename Value="..\..\..\lazarussvn\ideintf\propedits.pp"/>
-        <UnitName Value="PropEdits"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="5323"/>
-        <CursorPos X="3" Y="5329"/>
-        <UsageCount Value="16"/>
-      </Unit7>
-      <Unit8>
-        <Filename Value="..\..\..\lazarussvn\lcl\include\page.inc"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="24"/>
-        <CursorPos X="26" Y="50"/>
-        <UsageCount Value="16"/>
-      </Unit8>
-      <Unit9>
-        <Filename Value="..\..\..\lazarussvn\lcl\lconvencoding.pas"/>
-        <UnitName Value="LConvEncoding"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="10"/>
-        <CursorPos X="19" Y="15"/>
-        <UsageCount Value="16"/>
-      </Unit9>
-      <Unit10>
-        <Filename Value="F:\JIL\AndroidJuliana\Widget\PIM\addCalendarItem\auto_001.js"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="5"/>
-        <CursorPos X="41" Y="31"/>
-        <UsageCount Value="9"/>
-        <DefaultSyntaxHighlighter Value="JScript"/>
-      </Unit10>
-      <Unit11>
-        <Filename Value="..\..\..\lazarussvn\lcl\controls.pp"/>
-        <UnitName Value="Controls"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="305"/>
-        <CursorPos X="61" Y="320"/>
-        <UsageCount Value="19"/>
-      </Unit11>
-      <Unit12>
-        <Filename Value="..\..\..\lazarussvn\lcl\include\notebook.inc"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="9"/>
-        <CursorPos X="3" Y="40"/>
-        <UsageCount Value="16"/>
-      </Unit12>
-      <Unit13>
-        <Filename Value="..\..\..\lazarussvn\lcl\lcltype.pp"/>
-        <UnitName Value="LCLType"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="2728"/>
-        <CursorPos X="3" Y="2700"/>
-        <UsageCount Value="16"/>
-      </Unit13>
-      <Unit14>
-        <Filename Value="..\..\..\fpcsvn\rtl\arm\mathu.inc"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="148"/>
-        <CursorPos X="15" Y="163"/>
-        <UsageCount Value="15"/>
-      </Unit14>
-      <Unit15>
-        <Filename Value="..\..\..\lazarus29\fpc\2.4.3\source\rtl\objpas\classes\classesh.inc"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="595"/>
-        <CursorPos X="27" Y="612"/>
-        <UsageCount Value="14"/>
-      </Unit15>
-      <Unit16>
         <Filename Value="chessdrawer.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="chessdrawer"/>
-        <EditorIndex Value="5"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="3" Y="25"/>
-        <UsageCount Value="37"/>
-        <Loaded Value="True"/>
-      </Unit16>
-      <Unit17>
-        <Filename Value="..\..\..\lazarussvn\lcl\lconvasiapage.pas"/>
-        <UnitName Value="LConvAsiaPage"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="2"/>
-        <CursorPos X="26" Y="18"/>
-        <UsageCount Value="13"/>
-      </Unit17>
-      <Unit18>
-        <Filename Value="..\..\..\lazarussvn\lcl\include\asiancodepagefunctions.inc"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="18"/>
-        <CursorPos X="1" Y="37"/>
-        <UsageCount Value="13"/>
-      </Unit18>
-      <Unit19>
-        <Filename Value="..\..\..\lazarussvn\lcl\translations.pas"/>
-        <UnitName Value="Translations"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="43"/>
-        <CursorPos X="24" Y="66"/>
-        <UsageCount Value="13"/>
-      </Unit19>
-      <Unit20>
-        <Filename Value="..\..\..\fpcsvn\packages\fpvectorial\src\pdfvrsemantico.pas"/>
-        <UnitName Value="pdfvrsemantico"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="210"/>
-        <CursorPos X="19" Y="230"/>
-        <UsageCount Value="13"/>
-      </Unit20>
-      <Unit21>
-        <Filename Value="..\..\..\openssl-1.0.0a\crypto\pem\pem_pkey.c"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="55"/>
-        <CursorPos X="1" Y="76"/>
-        <UsageCount Value="13"/>
-        <DefaultSyntaxHighlighter Value="C++"/>
-      </Unit21>
-      <Unit22>
-        <Filename Value="..\..\..\fpcsvn\packages\openssl\src\openssl.pas"/>
-        <UnitName Value="OpenSSL"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="634"/>
-        <CursorPos X="20" Y="656"/>
-        <UsageCount Value="13"/>
-      </Unit22>
-      <Unit23>
+      </Unit2>
+      <Unit3>
         <Filename Value="chessgame.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="chessgame"/>
-        <EditorIndex Value="2"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="22"/>
-        <CursorPos X="1" Y="28"/>
-        <UsageCount Value="29"/>
-        <Loaded Value="True"/>
-      </Unit23>
-      <Unit24>
+      </Unit3>
+      <Unit4>
         <Filename Value="chessconfig.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="chessconfig"/>
-        <EditorIndex Value="3"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="14" Y="10"/>
-        <UsageCount Value="29"/>
-        <Loaded Value="True"/>
-      </Unit24>
-      <Unit25>
-        <Filename Value="..\..\..\lazarussvn\lcl\graphics.pp"/>
-        <UnitName Value="Graphics"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="217"/>
-        <CursorPos X="12" Y="232"/>
-        <UsageCount Value="11"/>
-      </Unit25>
-      <Unit26>
-        <Filename Value="..\..\..\lazarussvn\lcl\intfgraphics.pas"/>
-        <UnitName Value="IntfGraphics"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="3455"/>
-        <CursorPos X="1" Y="3483"/>
-        <UsageCount Value="10"/>
-      </Unit26>
-      <Unit27>
-        <Filename Value="..\..\..\lazarus29\fpc\2.4.3\source\packages\fcl-image\src\fpimage.pp"/>
-        <UnitName Value="FPimage"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="10"/>
-        <CursorPos X="25" Y="31"/>
-        <UsageCount Value="10"/>
-      </Unit27>
-      <Unit28>
-        <Filename Value="..\..\..\fpcsvn\packages\fcl-image\src\fpcolors.inc"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="15" Y="10"/>
-        <UsageCount Value="10"/>
-      </Unit28>
-      <Unit29>
-        <Filename Value="..\..\..\lazarussvn\lcl\interfaces\win32\win32wsbuttons.pp"/>
-        <UnitName Value="Win32WSButtons"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="296"/>
-        <CursorPos X="1" Y="313"/>
-        <UsageCount Value="10"/>
-      </Unit29>
-      <Unit30>
-        <Filename Value="..\..\..\fpctrunk\packages\fcl-image\src\fpimage.pp"/>
-        <UnitName Value="FPimage"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="18"/>
-        <CursorPos X="1" Y="30"/>
-        <UsageCount Value="10"/>
-      </Unit30>
-      <Unit31>
+      </Unit4>
+      <Unit5>
         <Filename Value="tcpcomm.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="tcpcomm"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="1"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="523"/>
-        <CursorPos X="1" Y="545"/>
-        <UsageCount Value="21"/>
-        <Loaded Value="True"/>
-      </Unit31>
+      </Unit5>
+      <Unit6>
+        <Filename Value="chesstcputils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="chesstcputils"/>
+      </Unit6>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
-      <Position1>
-        <Filename Value="tcpcomm.pas"/>
-        <Caret Line="270" Column="20" TopLine="259"/>
-      </Position1>
-      <Position2>
-        <Filename Value="tcpcomm.pas"/>
-        <Caret Line="261" Column="23" TopLine="248"/>
-      </Position2>
-      <Position3>
-        <Filename Value="tcpcomm.pas"/>
-        <Caret Line="138" Column="1" TopLine="124"/>
-      </Position3>
-      <Position4>
-        <Filename Value="tcpcomm.pas"/>
-        <Caret Line="94" Column="39" TopLine="81"/>
-      </Position4>
-      <Position5>
-        <Filename Value="tcpcomm.pas"/>
-        <Caret Line="99" Column="45" TopLine="81"/>
-      </Position5>
-      <Position6>
-        <Filename Value="tcpcomm.pas"/>
-        <Caret Line="110" Column="1" TopLine="108"/>
-      </Position6>
-      <Position7>
-        <Filename Value="tcpcomm.pas"/>
-        <Caret Line="92" Column="17" TopLine="81"/>
-      </Position7>
-      <Position8>
-        <Filename Value="tcpcomm.pas"/>
-        <Caret Line="144" Column="44" TopLine="131"/>
-      </Position8>
-      <Position9>
-        <Filename Value="tcpcomm.pas"/>
-        <Caret Line="151" Column="1" TopLine="138"/>
-      </Position9>
-      <Position10>
-        <Filename Value="tcpcomm.pas"/>
-        <Caret Line="39" Column="15" TopLine="21"/>
-      </Position10>
-      <Position11>
-        <Filename Value="tcpcomm.pas"/>
-        <Caret Line="36" Column="32" TopLine="16"/>
-      </Position11>
-      <Position12>
-        <Filename Value="tcpcomm.pas"/>
-        <Caret Line="145" Column="44" TopLine="132"/>
-      </Position12>
-      <Position13>
-        <Filename Value="tcpcomm.pas"/>
-        <Caret Line="24" Column="74" TopLine="17"/>
-      </Position13>
-      <Position14>
-        <Filename Value="tcpcomm.pas"/>
-        <Caret Line="61" Column="25" TopLine="45"/>
-      </Position14>
-      <Position15>
-        <Filename Value="tcpcomm.pas"/>
-        <Caret Line="48" Column="1" TopLine="35"/>
-      </Position15>
-      <Position16>
-        <Filename Value="tcpcomm.pas"/>
-        <Caret Line="178" Column="3" TopLine="165"/>
-      </Position16>
-      <Position17>
-        <Filename Value="tcpcomm.pas"/>
-        <Caret Line="258" Column="42" TopLine="245"/>
-      </Position17>
-      <Position18>
-        <Filename Value="tcpcomm.pas"/>
-        <Caret Line="262" Column="8" TopLine="245"/>
-      </Position18>
-      <Position19>
-        <Filename Value="tcpcomm.pas"/>
-        <Caret Line="257" Column="1" TopLine="237"/>
-      </Position19>
-      <Position20>
-        <Filename Value="tcpcomm.pas"/>
-        <Caret Line="273" Column="10" TopLine="256"/>
-      </Position20>
-      <Position21>
-        <Filename Value="tcpcomm.pas"/>
-        <Caret Line="665" Column="3" TopLine="649"/>
-      </Position21>
-      <Position22>
-        <Filename Value="tcpcomm.pas"/>
-        <Caret Line="291" Column="8" TopLine="273"/>
-      </Position22>
-      <Position23>
-        <Filename Value="tcpcomm.pas"/>
-        <Caret Line="303" Column="26" TopLine="290"/>
-      </Position23>
-      <Position24>
-        <Filename Value="tcpcomm.pas"/>
-        <Caret Line="382" Column="44" TopLine="367"/>
-      </Position24>
-      <Position25>
-        <Filename Value="tcpcomm.pas"/>
-        <Caret Line="410" Column="1" TopLine="393"/>
-      </Position25>
-      <Position26>
-        <Filename Value="tcpcomm.pas"/>
-        <Caret Line="369" Column="32" TopLine="356"/>
-      </Position26>
-      <Position27>
-        <Filename Value="tcpcomm.pas"/>
-        <Caret Line="435" Column="3" TopLine="424"/>
-      </Position27>
-      <Position28>
-        <Filename Value="tcpcomm.pas"/>
-        <Caret Line="47" Column="1" TopLine="30"/>
-      </Position28>
-      <Position29>
-        <Filename Value="tcpcomm.pas"/>
-        <Caret Line="486" Column="22" TopLine="473"/>
-      </Position29>
-      <Position30>
-        <Filename Value="tcpcomm.pas"/>
-        <Caret Line="543" Column="32" TopLine="519"/>
-      </Position30>
-    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="9"/>
@@ -446,6 +92,9 @@
       </Options>
     </Linking>
     <Other>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
