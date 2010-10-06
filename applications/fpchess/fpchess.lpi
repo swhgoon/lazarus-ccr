@@ -34,7 +34,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="7">
+    <Units Count="6">
       <Unit0>
         <Filename Value="fpchess.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -63,15 +63,10 @@
         <UnitName Value="chessconfig"/>
       </Unit4>
       <Unit5>
-        <Filename Value="tcpcomm.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="tcpcomm"/>
-      </Unit5>
-      <Unit6>
         <Filename Value="chesstcputils.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="chesstcputils"/>
-      </Unit6>
+      </Unit5>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

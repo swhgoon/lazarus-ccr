@@ -26,13 +26,16 @@ type
   { TformChess }
 
   TformChess = class(TForm)
-    BitBtn1: TBitBtn;
+    btnConnect: TBitBtn;
+    btnWebservice: TBitBtn;
     btnSinglePlayer: TBitBtn;
     btnDirectComm: TBitBtn;
     BitBtn3: TBitBtn;
     btnHotSeat: TBitBtn;
+    Button1: TButton;
     checkTimer: TCheckBox;
     comboStartColor: TComboBox;
+    editWebserviceURL: TLabeledEdit;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
@@ -40,6 +43,7 @@ type
     Label5: TLabel;
     Label6: TLabel;
     Label7: TLabel;
+    Label8: TLabel;
     labelPos: TLabel;
     editRemoteID: TLabeledEdit;
     editLocalIP: TLabeledEdit;
@@ -52,6 +56,8 @@ type
     pageGame: TUNBPage;
     spinPlayerTime: TSpinEdit;
     timerChessTimer: TTimer;
+    pageWebservice: TUNBPage;
+    procedure btnConnectClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure HandleMainScreenButton(Sender: TObject);
     procedure pageBeforeShow(Sender: TObject; ANewPage: TUNBPage; ANewIndex: Integer);
@@ -137,6 +143,12 @@ begin
 
   // Loading of resources
   vChessDrawer.LoadImages();
+end;
+
+procedure TformChess.btnConnectClick(Sender: TObject);
+begin
+  notebookMain.PageIndex := INT_PAGE_CONNECTING;
+
 end;
 
 { TFormDrawerDelegate }
