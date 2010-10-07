@@ -123,7 +123,9 @@ begin
     Result := shrSuccess;
  {$ELSE}  
   {$IFDEF DARWIN} 
-    if Shell('Open -a "Help Viewer" "' + Application.HelpFile + '"') = 127 then
+    if Shell('Open -a "HelpViewer" "' + Application.HelpFile + '"') = 127 then
+//     Note: Renamed from Help Viewer.app to HelpViewer.app with 10.5.
+//
 //     Note: With OS X earlier than 10.4 (Tiger), if connected to network 
 //      but not connected to Internet, takes Help Viewer 1-2 minutes to 
 //      recover and turn off rotating ball! Can comment out previous Shell

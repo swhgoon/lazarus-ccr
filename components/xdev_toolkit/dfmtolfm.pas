@@ -224,7 +224,15 @@ begin
         DeleteLine := True;
       end
 
-    else  {Other property}
+    else if Copy(StripStr, Length(StripStr), 1) = '<' then  {Skip to end>?}
+      begin
+      repeat
+        WriteLn(LfmFileVar, InStr);
+        ReadLn(DfmFileVar, InStr);
+      until Trim(InStr) = 'end>';
+      end
+
+    else if Pos('=', StripStr) > 0 then  {Other property?}
       begin  {Check if property should be deleted from current object}
       if CfgFileObj.ValueExists('DeleteProps', 
                                 Copy(StripStr, 1, Pos('=', StripStr)-1)) or
