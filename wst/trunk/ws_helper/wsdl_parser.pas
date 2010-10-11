@@ -113,18 +113,6 @@ implementation
 uses
   ws_parser_imp, dom_cursors, parserutils, StrUtils, xsd_consts, TypInfo;
 
-type
-
-  { TIntfObjectRef }
-
-  TIntfObjectRef = class
-  private
-    FIntf: IInterface;
-  public
-    constructor Create(AIntf : IInterface);
-    destructor Destroy();override;
-    property Intf : IInterface read FIntf;
-  end;
 
 function StrToBindingStyle(const AStr : string):TBindingStyle;
 begin
@@ -739,10 +727,13 @@ function TWsdlParser.ParseOperation(
               then begin
                 prmName := ExtractNameFromQName(prmTypeName);
               end;
-              prmInternameName := Trim(prmName);
-              if AnsiSameText(prmInternameName,tmpMthd.Name) then begin
+              prmInternameName := Trim(prmName); 
+              if AnsiSameText(prmInternameName,tmpMthd.Name) or 
+                 AnsiSameText(prmInternameName,ExtractNameFromQName(prmTypeName)) 
+              then begin
                 prmInternameName := prmInternameName + 'Param';
-              end;
+              end;                            
+                                                
               prmInternameName := ExtractIdentifier(prmInternameName);
               prmHasInternameName := IsReservedKeyWord(prmInternameName) or
                                      ( not IsValidIdent(prmInternameName) );
@@ -1391,25 +1382,25 @@ end;
 function TWsdlParser.GetParser(const ANamespace: string): IXsdPaser;
 var
   i : PtrInt;
+  p, p1 : IXsdPaser;
 begin
-  i := FXsdParsers.IndexOf(ANamespace);
-  if ( i < 0 ) then
+  Result := nil;
+  i := FXsdParsers.IndexOf(ANamespace); 
+  if ( i >= 0 ) then begin
+    Result := (FXsdParsers.Objects[i] as TIntfObjectRef).Intf as IXsdPaser; 
+  end else begin
+    for i := 0 to Pred(FXsdParsers.Count) do begin
+      p := (FXsdParsers.Objects[i] as TIntfObjectRef).Intf as IXsdPaser;
+      p1 := p.FindParser(ANamespace);
+      if (p1 <> nil) then begin
+        Result := p1;
+        Break;
+      end;
+    end;
+  end;
+  if (Result = nil) then
     raise EXsdParserAssertException.CreateFmt('Unable to find the parser, namespace : "%s".',[ANamespace]);
-  Result := (FXsdParsers.Objects[i] as TIntfObjectRef).Intf as IXsdPaser;
 end;
 
-{ TIntfObjectRef }
-
-constructor TIntfObjectRef.Create(AIntf: IInterface);
-begin
-  Assert(Assigned(AIntf));
-  FIntf := AIntf;
-end;
-
-destructor TIntfObjectRef.Destroy();
-begin
-  FIntf := nil;
-  inherited Destroy();
-end;
 
 end.

@@ -70,6 +70,7 @@ type
 
   IXsdPaser = interface
     ['{F0CEC726-A068-4CCC-B1E7-D31F018415B2}']
+    function FindParser(const ANamespace : string) : IXsdPaser; 
     function ParseType(
       const AName,
             ATypeKind : string { ATypeKind "ComplexType", "SimpleType", "Element" }
@@ -101,6 +102,7 @@ type
     FDocumentLocator : IDocumentLocator;
     FSimpleOptions : TParserOptions;
     FImportParsed : Boolean;
+    FXsdParsers : TStringList;
   private
     procedure DoOnMessage(const AMsgType : TMessageType; const AMsg : string);
   private
@@ -124,6 +126,7 @@ type
       const AName : string;
       const ATypeNode : TDOMNode
     ) : TPasType;
+    procedure CreateImportParsers(); 
     procedure ParseImportDocuments(); virtual;
   public
     constructor Create(
@@ -133,6 +136,7 @@ type
       AParentContext : IParserContext
     ); virtual;
     destructor Destroy();override;
+    function FindParser(const ANamespace : string) : IXsdPaser; 
     function ParseType(
       const AName,
             ATypeKind : string { ATypeKind "ComplexType", "SimpleType", "Element" }
@@ -209,15 +213,54 @@ begin
 end;
 
 destructor TCustomXsdSchemaParser.Destroy();
-var
-  i : PtrInt;
+
+  procedure FreeList(AList : TStrings);
+  var
+    j : PtrInt;
+  begin
+    if Assigned(AList) then begin
+      for j := 0  to Pred(AList.Count) do begin
+        AList.Objects[j].Free();
+        AList.Objects[j] := nil;
+      end;
+      AList.Free();  
+    end;
+  end; 
+  
 begin
   FParentContext := nil;
-  for i := 0 to Pred(FNameSpaceList.Count) do begin
-    FNameSpaceList.Objects[i].Free();
-  end;
-  FreeAndNil(FNameSpaceList);
+  FreeList(FNameSpaceList);
+  FreeList(FXsdParsers); 
   inherited;
+end;
+
+function TCustomXsdSchemaParser.FindParser(const ANamespace : string) : IXsdPaser; 
+var
+  i : PtrInt;
+  p, p1 : IXsdPaser;
+begin
+  Result := nil;
+  if (ANamespace = FTargetNameSpace) then begin
+    Result := Self;
+    Exit;
+  end;
+  if (FXsdParsers = nil) then 
+    CreateImportParsers();
+  if (FXsdParsers = nil) then
+    Exit;
+  i := FXsdParsers.IndexOf(ANamespace); 
+  if ( i >= 0 ) then begin
+    Result := (FXsdParsers.Objects[i] as TIntfObjectRef).Intf as IXsdPaser; 
+  end else begin
+    for i := 0 to Pred(FXsdParsers.Count) do begin
+      p := (FXsdParsers.Objects[i] as TIntfObjectRef).Intf as IXsdPaser;
+      p1 := p.FindParser(ANamespace);
+      if (p1 <> nil) then begin
+        Result := p1;
+        Break;
+      end;
+    end;
+  end;  
 end;
 
 procedure TCustomXsdSchemaParser.DoOnMessage(
@@ -241,48 +284,23 @@ end;
 
 procedure TCustomXsdSchemaParser.ParseImportDocuments();
 var
-  crsSchemaChild, typTmpCrs : IObjectCursor;
-  strFilter, locFileName, locNameSpace : string;
-  importNode : TDOMElement;
-  importDoc : TXMLDocument;
-  locParser : IXsdPaser;
-  locOldCurrentModule : TPasModule;
-  locContinue : Boolean;
+  locOldCurrentModule : TPasModule; 
+  i : Integer;
+  p : IXsdPaser;
 begin
   if FImportParsed then
     Exit;
-  if ( FDocumentLocator = nil ) then
+  CreateImportParsers();
+  if (FXsdParsers = nil) then
     Exit;
 
   FImportParsed := True;
   if Assigned(FChildCursor) then begin
     locOldCurrentModule := SymbolTable.CurrentModule;
     try
-      crsSchemaChild := FChildCursor.Clone() as IObjectCursor;
-      strFilter := CreateQualifiedNameFilterStr(s_import,FXSShortNames);
-      crsSchemaChild := CreateCursorOn(crsSchemaChild,ParseFilter(strFilter,TDOMNodeRttiExposer));
-      crsSchemaChild.Reset();
-      while crsSchemaChild.MoveNext() do begin
-        importNode := (crsSchemaChild.GetCurrent() as TDOMNodeRttiExposer).InnerObject as TDOMElement;
-        if ( importNode.Attributes <> nil ) and ( importNode.Attributes.Length > 0 ) then begin
-          locFileName := NodeValue(importNode.Attributes.GetNamedItem(s_schemaLocation));
-          if ( not IsStrEmpty(locFileName) ) and
-             FDocumentLocator.Find(locFileName,importDoc)
-          then begin
-            locNameSpace := NodeValue(importNode.Attributes.GetNamedItem(s_namespace));
-            locContinue := IsStrEmpty(locNameSpace) or ( SymbolTable.FindModule(locNameSpace) = nil );
-            if locContinue then begin
-              locParser := TCustomXsdSchemaParserClass(Self.ClassType).Create(
-                             importDoc,
-                             importDoc.DocumentElement,
-                             SymbolTable,
-                             Self as IParserContext
-                           );
-              locParser.SetNotifier(FOnMessage);
-              locParser.ParseTypes();
-            end;
-          end;
-        end;
+      for i := 0 to FXsdParsers.Count - 1 do begin
+        p := TIntfObjectRef(FXsdParsers.Objects[i]).Intf as IXsdPaser;
+        p.ParseTypes();
       end;
     finally
       SymbolTable.SetCurrentModule(locOldCurrentModule);
@@ -365,6 +383,8 @@ end;
 function TCustomXsdSchemaParser.GetDocumentLocator(): IDocumentLocator;
 begin
   Result := FDocumentLocator;
+  if (Result = nil) and (FParentContext <> nil) then
+    Result := GetParentContext().GetDocumentLocator();
 end;
 
 procedure TCustomXsdSchemaParser.SetDocumentLocator(const ALocator: IDocumentLocator);
@@ -599,6 +619,8 @@ begin
     if ( typeModule = nil ) then
       raise EXsdTypeNotFoundException.Create(AName);
     Result := SymbolTable.FindElementInModule(localTypeName,typeModule) as TPasType;
+    if (Result <> nil) and (not Result.InheritsFrom(TPasUnresolvedTypeRef)) then
+      Exit;
     Init();
     locTypeNodeFound := FindTypeNode(aliasType);
     if ( Result <> nil ) and ( typeModule = FModule ) and
@@ -653,6 +675,64 @@ begin
   end;
 end;
 
+procedure TCustomXsdSchemaParser.CreateImportParsers(); 
+var
+  crsSchemaChild, typTmpCrs : IObjectCursor;
+  strFilter, locFileName, locNameSpace : string;
+  importNode : TDOMElement;
+  importDoc : TXMLDocument;
+  locParser : IXsdPaser;
+  locOldCurrentModule : TPasModule;
+  locContinue : Boolean;
+  locLocator : IDocumentLocator;
+begin
+  if FImportParsed then
+    Exit;
+  locLocator := GetDocumentLocator();
+  if (locLocator = nil) then
+    Exit;
+
+  if Assigned(FChildCursor) then begin
+    locOldCurrentModule := SymbolTable.CurrentModule;
+    try
+      crsSchemaChild := FChildCursor.Clone() as IObjectCursor;
+      strFilter := CreateQualifiedNameFilterStr(s_import,FXSShortNames);
+      crsSchemaChild := CreateCursorOn(crsSchemaChild,ParseFilter(strFilter,TDOMNodeRttiExposer));
+      crsSchemaChild.Reset();
+      while crsSchemaChild.MoveNext() do begin
+        importNode := (crsSchemaChild.GetCurrent() as TDOMNodeRttiExposer).InnerObject as TDOMElement;
+        if ( importNode.Attributes <> nil ) and ( importNode.Attributes.Length > 0 ) then begin
+          locFileName := NodeValue(importNode.Attributes.GetNamedItem(s_schemaLocation));
+          if ( not IsStrEmpty(locFileName) ) and
+             locLocator.Find(locFileName,importDoc)
+          then begin
+            locNameSpace := NodeValue(importNode.Attributes.GetNamedItem(s_namespace));
+            locContinue := IsStrEmpty(locNameSpace) or (FXsdParsers = nil) or (FXsdParsers.IndexOf(locNameSpace) = -1);//( SymbolTable.FindModule(locNameSpace) = nil );
+            if locContinue then begin
+              if (FXsdParsers = nil) then begin
+                FXsdParsers := TStringList.Create();
+                FXsdParsers.Duplicates := dupIgnore;
+                FXsdParsers.Sorted := True;                
+              end;  
+              locParser := TCustomXsdSchemaParserClass(Self.ClassType).Create(
+                             importDoc,
+                             importDoc.DocumentElement,
+                             SymbolTable,
+                             Self as IParserContext
+                           );
+              FXsdParsers.AddObject(locNameSpace,TIntfObjectRef.Create(locParser)); 
+              locParser.SetNotifier(FOnMessage);
+              //locParser.ParseTypes();
+            end;
+          end;
+        end;
+      end;
+    finally
+      SymbolTable.SetCurrentModule(locOldCurrentModule);
+    end;
+  end;
+end;
+
 procedure TCustomXsdSchemaParser.ParseTypes();
 var
   crsSchemaChild, typTmpCrs : IObjectCursor;
@@ -697,10 +777,10 @@ var
   ls : TStrings;
 begin
   if ( FSchemaNode.Attributes = nil ) or ( GetNodeListCount(FSchemaNode.Attributes) = 0 ) then
-    raise EXsdParserAssertException.CreateFmt('The Schema node has at least the "%s" attribute.',[s_targetNamespace]);
+    raise EXsdParserAssertException.CreateFmt('The Schema node must have at least the "%s" attribute.',[s_targetNamespace]);
   nd := FSchemaNode.Attributes.GetNamedItem(s_targetNamespace);
   if ( nd = nil ) then
-    raise EXsdParserAssertException.CreateFmt('The Schema node has at least the "%s" attribute.',[s_targetNamespace]);
+    raise EXsdParserAssertException.CreateFmt('The Schema node must have at least the "%s" attribute.',[s_targetNamespace]);
   FTargetNameSpace := nd.NodeValue;
   if IsStrEmpty(FModuleName) then
     FModuleName := ExtractIdentifier(FTargetNameSpace);

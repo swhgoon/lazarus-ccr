@@ -35,6 +35,17 @@ const
 
 type
 
+  { TIntfObjectRef }
+
+  TIntfObjectRef = class
+  private
+    FIntf: IInterface;
+  public
+    constructor Create(AIntf : IInterface);
+    destructor Destroy();override;
+    property Intf : IInterface read FIntf;
+  end; 
+  
   { TQualifiedNameObjectFilter }
 
   TQualifiedNameObjectFilter = class(TInterfacedObject,IObjectFilter)
@@ -516,6 +527,20 @@ constructor TQualifiedNameObjectFilter.Create(const AName, ANameSpace: string);
 begin
   FName := AName;
   FNameSpace := ANameSpace;;
+end;
+
+{ TIntfObjectRef }
+
+constructor TIntfObjectRef.Create(AIntf: IInterface);
+begin
+  Assert(Assigned(AIntf));
+  FIntf := AIntf;
+end;
+
+destructor TIntfObjectRef.Destroy();
+begin
+  FIntf := nil;
+  inherited Destroy();
 end;
 
 end.

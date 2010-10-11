@@ -108,6 +108,7 @@ var
 {$ENDIF}
         prsrW := TWsdlParser.Create(locDoc,symtable);// as IParser;
         prsrCtx := prsrW as IParserContext;
+        prsrCtx.SetDocumentLocator(TFileDocumentLocator.Create(ExtractFilePath(ExpandFileName(inFileName))));
         prsrCtx.SetSimpleOptions(GetParserSimpleOptions());
         prsrW.Execute(parserMode,ChangeFileExt(ExtractFileName(inFileName),''));
 {$IFNDEF WST_INTF_DOM}
