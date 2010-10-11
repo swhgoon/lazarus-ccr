@@ -952,7 +952,7 @@ var
     locProp.ReadAccessorName := 'F' + locProp.Name;
     locProp.WriteAccessorName := 'F' + locProp.Name;
     if ( locMinOccur = 0 ) then begin
-      locProp.StoredAccessorName := 'Has' + locProp.Name;
+      locProp.StoredAccessorName := sWST_PROP_STORE_PREFIX + locProp.Name;
     end else if ( locMinOccur = -1 ) then begin
       locProp.StoredAccessorName := 'False';
     end else begin
@@ -1190,7 +1190,7 @@ begin
               end;
               if AnsiSameText(propTyp.StoredAccessorName,'False') then
                 locStrBuffer := s_prohibited
-              else if AnsiSameText(Copy(propTyp.StoredAccessorName,1,3),'Has') then
+              else if AnsiSameText(Copy(propTyp.StoredAccessorName,1,3),sWST_PROP_STORE_PREFIX) then
                 locStrBuffer := s_optional
               else
                 locStrBuffer := s_required;
@@ -1313,7 +1313,7 @@ var
     FSymbols.SetPropertyAsAttribute(locAttObj,True);
     case locStoreOptIdx of
       0 : locAttObj.StoredAccessorName := 'True';
-      1 : locAttObj.StoredAccessorName := 'Has' + locAttObj.Name;
+      1 : locAttObj.StoredAccessorName := sWST_PROP_STORE_PREFIX + locAttObj.Name;
       2 : locAttObj.StoredAccessorName := 'False';
     end;
   end;
