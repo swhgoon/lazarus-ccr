@@ -295,7 +295,6 @@ function NS_CurrentProcessDirectory(buf: PAnsiChar; bufLen: Cardinal): Boolean;
 type
   TAnsiCharArray = array [0..High(Word) div SizeOf(AnsiChar)] of AnsiChar;
   TMaxPathChar = array[0..MAX_PATH] of AnsiChar;
-//  HINST = TLibHandle;
   PDependentLib = ^TDependentLib;
   TDependentLib = record
     libHandle: HMODULE;
@@ -325,9 +324,12 @@ procedure ZeroArray(out AArray; const ASize: SizeInt);
 implementation
 
 uses
-  {$IFDEF MSWINDOWS} Windows, {$ELSE} DynLibs, {$ENDIF} nsError, nsMemory;
+  {$IFDEF MSWINDOWS} Windows, {$ELSE} DynLibs, {$ENDIF} nsError, nsMemory,math;
 
 type
+{$IFNDEF MSWINDOWS}
+  HINST = TLibHandle;
+{$ENDIF}
   XPCOMExitRoutine = function : Longword; stdcall;
 
   InitFunc = function(out servMgr: nsIServiceManager; binDir: nsIFile; provider: nsIDirectoryServiceProvider): Longword; cdecl;
@@ -887,11 +889,15 @@ function GRE_GetGREPathWithProperties(
                 buf: PAnsiChar; buflen: PRUint32): nsresult;
 var
   env: string;
+{$IFDEF MSWINDOWS}
   hRegKey: HKEY;
+{$ENDIF}
   ok: PRBool;
   versions: PGREVersionRangeArray;
   properties: PGREPropertyArray;
   GeckoVersion: String;
+
+{$IFDEF MSWINDOWS}
   function GRE_FireFox(): string;
   var
     Reg: TRegistry;
@@ -919,6 +925,8 @@ var
     Reg.CloseKey;
     Reg.Free;
   end;
+{$ENDIF}
+
 begin
   versions := PGREVersionRangeArray(aVersions);
   properties := PGREPropertyArray(aProperties);
@@ -1564,7 +1572,7 @@ var
   proc: Pointer;
 begin
   Result := False;
-  module := LoadLibraryA(filename);
+  module := LoadLibrary(filename);
   if module=0 then Exit;
 
   proc := GetProcAddress(module, 'NS_GetFrozenFunctions');
@@ -1573,6 +1581,7 @@ begin
   FreeLibrary(module);
 end;
 
+{$IFDEF MSWINDOWS}
 function CheckGeckoVersion(path: PAnsiChar; const reqVer: TGREVersion): Boolean;
 const
   BUFSIZE = 4096;
@@ -1687,6 +1696,7 @@ NoCurrentUser:;
       NS_StrCopy(buf, cuPath);
   end;
 end;
+{$ENDIF}
 
 var
   GRELocation: TMaxPathChar;
