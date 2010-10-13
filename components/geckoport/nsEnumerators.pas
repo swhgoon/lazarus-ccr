@@ -1,5 +1,13 @@
 unit nsEnumerators;
 
+{$MACRO on}
+
+{$IFDEF Windows}
+  {$DEFINE extdecl:=stdcall}
+{$ELSE Windows}
+  {$DEFINE extdecl:=cdecl}
+{$ENDIF}
+
 interface
 
 uses
@@ -20,8 +28,8 @@ type
     FOwn: Boolean;
     FIndex: Integer;
     destructor Destroy; override;
-    function HasMoreElements(out _retval: PRBool): nsresult; stdcall;
-    function GetNext(out _retval: nsISupports_std19): nsresult; stdcall;
+    function HasMoreElements(out _retval: PRBool): nsresult; extdecl;
+    function GetNext(out _retval: nsISupports_std19): nsresult; extdecl;
   end;
 
 function NewSimpleEnumeratorFromTInterfaceList(AList: TInterfaceList;

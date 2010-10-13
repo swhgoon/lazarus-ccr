@@ -1,5 +1,13 @@
 unit nsXPCOM_safe19;
 
+{$MACRO on}
+
+{$IFDEF Windows}
+  {$DEFINE extdecl:=stdcall}
+{$ELSE Windows}
+  {$DEFINE extdecl:=cdecl}
+{$ENDIF}
+
 interface
 
 uses
@@ -1071,7 +1079,7 @@ type
                                 const aFromSegment: Pointer;
                                 aToOffset: PRUint32;
                                 aCount: PRUint32;
-                                out aWriteCount: PRUint32): nsresult; stdcall;
+                                out aWriteCount: PRUint32): nsresult; extdecl;
 
 
   nsReadSegmentFun = function (aOutStream: nsIOutputStream_safe19;
@@ -1079,7 +1087,7 @@ type
                                aToSegment: Pointer;
                                aFromOffset: PRUint32;
                                aCount: PRUint32;
-                               out aReadCount: PRUint32): nsresult; stdcall;
+                               out aReadCount: PRUint32): nsresult; extdecl;
 
 
   DOMTimeStamp = PRUint64;
@@ -3161,9 +3169,9 @@ type
 
   nsIMemory_safe19 = interface(nsISupports_safe19)
   ['{59e7e77a-38e4-11d4-8cf5-0060b0fc14a3}']
-    function Alloc(size: size_t): Pointer; stdcall;
-    function Realloc(ptr: Pointer; newSize: size_t): Pointer; stdcall;
-    procedure Free(ptr: Pointer); stdcall;
+    function Alloc(size: size_t): Pointer; extdecl;
+    function Realloc(ptr: Pointer; newSize: size_t): Pointer; extdecl;
+    procedure Free(ptr: Pointer); extdecl;
     procedure HeapMinimize(immediate: PRBool); safecall;
     function IsLowMemory(): PRBool; safecall;
   end;

@@ -1,5 +1,13 @@
 unit nsErrorUtils;
 
+{$MACRO on}
+
+{$IFDEF Windows}
+  {$DEFINE extdecl:=stdcall}
+{$ELSE Windows}
+  {$DEFINE extdecl:=cdecl}
+{$ENDIF}
+
 interface
 
 uses
@@ -20,20 +28,20 @@ type
   ['{e72f94b2-5f85-11d4-9877-00c04fa0cf4a}']
     function registerErrorStringBundle(
                 aErrorModule: PRInt16;
-                aStringBundleURL: PAnsiChar): nsresult; stdcall;
+                aStringBundleURL: PAnsiChar): nsresult; extdecl;
     function unregisterErrorStringBundle(
-                aErrorModule: PRInt16): nsresult; stdcall;
+                aErrorModule: PRInt16): nsresult; extdecl;
     function getErrorStringBundle(
                 aErrorModule: PRInt16;
-                out aResult: PAnsiChar): nsresult; stdcall;
+                out aResult: PAnsiChar): nsresult; extdecl;
     function registerErrorStringBundleKey(
                 aError: nsresult;
-                aStringBundleKey: PAnsiChar): nsresult; stdcall;
+                aStringBundleKey: PAnsiChar): nsresult; extdecl;
     function unregisterErrorStringBundleKey(
-                aError: nsresult): nsresult; stdcall;
+                aError: nsresult): nsresult; extdecl;
     function getErrorStringBundleKey(
                 aError: nsresult;
-                out aResult: PAnsiChar): nsresult; stdcall;
+                out aResult: PAnsiChar): nsresult; extdecl;
   end;
 
 const

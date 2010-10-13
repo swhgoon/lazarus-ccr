@@ -34,6 +34,14 @@
  * ***** END LICENSE BLOCK ***** *)
 unit GeckoChromeWindow;
 
+{$MACRO on}
+
+{$IFDEF Windows}
+  {$DEFINE extdecl:=stdcall}
+{$ELSE Windows}
+  {$DEFINE extdecl:=cdecl}
+{$ENDIF}
+
 {$IFDEF LCLCocoa}
   {$MODESWITCH ObjectiveC1}
 {$ENDIF}
@@ -91,7 +99,7 @@ type
     procedure OnStatusChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aStatus: nsresult; const aMessage: PWideChar); safecall;
     procedure OnSecurityChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; state: PRUint32); safecall;
     // nsIInterfaceRequestor
-    function NS_GetInterface(const uuid: TGUID; out Intf): nsresult; stdcall;
+    function NS_GetInterface(const uuid: TGUID; out Intf): nsresult; extdecl;
     function nsIInterfaceRequestor_std19.GetInterface = NS_GetInterface;
     // for nsIWeakReference
     procedure QueryReferent(const IID: TGUID; out Obj); safecall;

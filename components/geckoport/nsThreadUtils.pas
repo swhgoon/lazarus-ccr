@@ -1,5 +1,13 @@
 unit nsThreadUtils;
 
+{$MACRO on}
+
+{$IFDEF Windows}
+  {$DEFINE extdecl:=stdcall}
+{$ELSE Windows}
+  {$DEFINE extdecl:=cdecl}
+{$ENDIF}
+
 interface
 
 uses
@@ -91,7 +99,7 @@ type
 
   nsIThreadEventFilter = interface(nsISupports)
   ['{a0605c0b-17f5-4681-b8cd-a1cd75d42559}']
-    function acceptEvent(aEvent: nsIRunnable): PRBool; stdcall;
+    function acceptEvent(aEvent: nsIRunnable): PRBool; extdecl;
   end;
 
   nsIThreadManager = interface(nsISupports)

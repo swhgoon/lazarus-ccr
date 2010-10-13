@@ -3,5 +3,5 @@
                                aToSegment: Pointer;
                                aFromOffset: PRUint32;
                                aCount: PRUint32;
-                               out aReadCount: PRUint32): nsresult; stdcall;
+                               out aReadCount: PRUint32): nsresult; extdecl;
 

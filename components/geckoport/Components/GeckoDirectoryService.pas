@@ -1,5 +1,13 @@
 unit GeckoDirectoryService;
 
+{$MACRO on}
+
+{$IFDEF Windows}
+  {$DEFINE extdecl:=stdcall}
+{$ELSE Windows}
+  {$DEFINE extdecl:=cdecl}
+{$ENDIF}
+
 interface
 
 uses
@@ -70,9 +78,9 @@ type
     FOwner: TCustomDirectoryServiceProvider;
     constructor Create(AOwner: TCustomDirectoryServiceProvider);
     function GetFile(const prop: PAnsiChar; out persistent: PRBool;
-      out _retval: nsIFile_std19): nsresult; stdcall;
+      out _retval: nsIFile_std19): nsresult; extdecl;
     function GetFiles(const prop: PAnsiChar;
-      out _retval: nsISimpleEnumerator_std19): nsresult; stdcall;
+      out _retval: nsISimpleEnumerator_std19): nsresult; extdecl;
   end;
 
 procedure Register;

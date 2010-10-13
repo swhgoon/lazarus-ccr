@@ -34,6 +34,14 @@
  * ***** END LICENSE BLOCK ***** *)
 unit nsInit;
 
+{$MACRO on}
+
+{$IFDEF Windows}
+  {$DEFINE extdecl:=stdcall}
+{$ELSE Windows}
+  {$DEFINE extdecl:=cdecl}
+{$ENDIF}
+
 interface
 
 uses
@@ -205,7 +213,7 @@ type
   end;
 
   nsIXPTCProxy = interface(nsISupports)
-    function CallMethod(aMethodIndex: PRUint16; const aInfo: XPTMethodDescriptor; aParams: PXPTCMiniVariantArray): nsresult; stdcall;
+    function CallMethod(aMethodIndex: PRUint16; const aInfo: XPTMethodDescriptor; aParams: PXPTCMiniVariantArray): nsresult; extdecl;
   end;
 
 
@@ -305,7 +313,7 @@ type
 type
   nsIDirectoryServiceProvider_stdcall = interface(nsISupports)
   ['{bbf8cab0-d43a-11d3-8cc2-00609792278c}']
-    function GetFile(const prop: PAnsiChar; out persistent: PRBool; out AFile: nsIFile): nsresult; stdcall;
+    function GetFile(const prop: PAnsiChar; out persistent: PRBool; out AFile: nsIFile): nsresult; extdecl;
   end;
 
   nsGREDirServiceProvider = class(TInterfacedObject,
@@ -314,7 +322,7 @@ type
     FPathEnvString: TMaxPathChar;
     class function NewInstance: TObject; override;
     procedure FreeInstance; override;
-    function GetFile(const prop: PAnsiChar; out persistent: PRBool; out AFile: nsIFile): nsresult; stdcall;
+    function GetFile(const prop: PAnsiChar; out persistent: PRBool; out AFile: nsIFile): nsresult; extdecl;
     function GetGreDirectory(out AFile: nsILocalFile): nsresult;
   end;
 
@@ -330,7 +338,7 @@ type
 {$IFNDEF MSWINDOWS}
   HINST = TLibHandle;
 {$ENDIF}
-  XPCOMExitRoutine = function : Longword; stdcall;
+  XPCOMExitRoutine = function : Longword; extdecl;
 
   InitFunc = function(out servMgr: nsIServiceManager; binDir: nsIFile; provider: nsIDirectoryServiceProvider): Longword; cdecl;
   ShutdownFunc = function (servMgr: nsIServiceManager): Longword; cdecl;

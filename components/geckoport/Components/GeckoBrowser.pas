@@ -34,6 +34,14 @@
  * ***** END LICENSE BLOCK ***** *)
 unit GeckoBrowser;
 
+{$MACRO on}
+
+{$IFDEF Windows}
+  {$DEFINE extdecl:=stdcall}
+{$ELSE Windows}
+  {$DEFINE extdecl:=cdecl}
+{$ENDIF}
+
 {$IFDEF LCLCocoa}
   {$MODESWITCH ObjectiveC1}
 {$ENDIF}
@@ -507,7 +515,7 @@ type
     procedure SetTitle(const aTitle: PWideChar); override;
     function GetSiteWindow(): Pointer; override; {$IFDEF FPC} safecall; {$ENDIF}
     // nsIInterfaceRequestor
-    function NS_GetInterface(const uuid: TGUID; out _result): nsresult; stdcall;
+    function NS_GetInterface(const uuid: TGUID; out _result): nsresult; extdecl;
     function nsIInterfaceRequestor_std19.GetInterface = NS_GetInterface;
     // nsIContextMenuListener2
     procedure OnShowContextMenu(aContextFlags: PRUint32;
@@ -555,12 +563,12 @@ type
     FOnNewWindow: TGeckoBrowserNewWindow;
 
     // nsISHistoryListener
-    function OnHistoryNewEntry(aNewURI: nsIURI): Longword; stdcall;
-    function OnHistoryGoBack(aBackURI: nsIURI; out aContinue: LongBool): Longword; stdcall;
-    function OnHistoryGoForward(aForwardURI: nsIURI; out aContinue: LongBool): Longword; stdcall;
-    function OnHistoryReload(aReloadURI: nsIURI; aReloadFlags: Longword; out aContinue: LongBool): Longword; stdcall;
-    function OnHistoryGotoIndex(aIndex: Longint; aGotoURI: nsIURI; out aContinue: LongBool): Longword; stdcall;
-    function OnHistoryPurge(aNumEntries: Longint; out aContinue: LongBool): Longword; stdcall;
+    function OnHistoryNewEntry(aNewURI: nsIURI): Longword; extdecl;
+    function OnHistoryGoBack(aBackURI: nsIURI; out aContinue: LongBool): Longword; extdecl;
+    function OnHistoryGoForward(aForwardURI: nsIURI; out aContinue: LongBool): Longword; extdecl;
+    function OnHistoryReload(aReloadURI: nsIURI; aReloadFlags: Longword; out aContinue: LongBool): Longword; extdecl;
+    function OnHistoryGotoIndex(aIndex: Longint; aGotoURI: nsIURI; out aContinue: LongBool): Longword; extdecl;
+    function OnHistoryPurge(aNumEntries: Longint; out aContinue: LongBool): Longword; extdecl;
 
     function GetHistoryEntry(index: Integer): TGeckoBrowserHisoty;
     function GetHistoryPosition: Integer;

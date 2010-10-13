@@ -1,5 +1,13 @@
 unit nsXPCOM_std17;
 
+{$MACRO on}
+
+{$IFDEF Windows}
+  {$DEFINE extdecl:=stdcall}
+{$ELSE Windows}
+  {$DEFINE extdecl:=cdecl}
+{$ENDIF}
+
 interface
 
 uses
@@ -1017,7 +1025,7 @@ type
                                 const aFromSegment: Pointer;
                                 aToOffset: PRUint32;
                                 aCount: PRUint32;
-                                out aWriteCount: PRUint32): nsresult; stdcall;
+                                out aWriteCount: PRUint32): nsresult; extdecl;
 
 
   nsReadSegmentFun = function (aOutStream: nsIOutputStream_std17;
@@ -1025,7 +1033,7 @@ type
                                aToSegment: Pointer;
                                aFromOffset: PRUint32;
                                aCount: PRUint32;
-                               out aReadCount: PRUint32): nsresult; stdcall;
+                               out aReadCount: PRUint32): nsresult; extdecl;
 
 
   DOMTimeStamp = PRUint64;
@@ -1044,120 +1052,120 @@ type
 
   mozIJSSubScriptLoader_std17 = interface(nsISupports_std17)
   ['{8792d77e-1dd2-11b2-ac7f-9bc9be4f2916}']
-    function LoadSubScript(const url: PWideChar): nsresult; stdcall;
+    function LoadSubScript(const url: PWideChar): nsresult; extdecl;
   end;
 
   nsIArray_std17 = interface(nsISupports_std17)
   ['{114744d9-c369-456e-b55a-52fe52880d2d}']
-    function GetLength(out aLength: PRUint32): Longword; stdcall;
-    function QueryElementAt(index: PRUint32; const uuid: TGUID; out _result): nsresult; stdcall;
-    function IndexOf(startIndex: PRUint32; element: nsISupports_std17; out _retval: PRUint32): nsresult; stdcall;
-    function Enumerate(out _retval: nsISimpleEnumerator_std17): nsresult; stdcall;
+    function GetLength(out aLength: PRUint32): Longword; extdecl;
+    function QueryElementAt(index: PRUint32; const uuid: TGUID; out _result): nsresult; extdecl;
+    function IndexOf(startIndex: PRUint32; element: nsISupports_std17; out _retval: PRUint32): nsresult; extdecl;
+    function Enumerate(out _retval: nsISimpleEnumerator_std17): nsresult; extdecl;
   end;
 
   nsIMutableArray_std17 = interface(nsIArray_std17)
   ['{2cd0b2f8-d4dd-48b8-87ba-b0200501f079}']
-    function AppendElement(element: nsISupports_std17; weak: PRBool): nsresult; stdcall;
-    function RemoveElementAt(index: PRUint32): nsresult; stdcall;
-    function InsertElementAt(element: nsISupports_std17; index: PRUint32; weak: PRBool): nsresult; stdcall;
-    function Clear(): nsresult; stdcall;
+    function AppendElement(element: nsISupports_std17; weak: PRBool): nsresult; extdecl;
+    function RemoveElementAt(index: PRUint32): nsresult; extdecl;
+    function InsertElementAt(element: nsISupports_std17; index: PRUint32; weak: PRBool): nsresult; extdecl;
+    function Clear(): nsresult; extdecl;
   end;
 
   nsIASN1Object_std17 = interface(nsISupports_std17)
   ['{ba8bf582-1dd1-11b2-898c-f40246bc9a63}']
-    function GetType(out aType: PRUint32): Longword; stdcall;
-    function SetType(aType: PRUint32): Longword; stdcall;
-    function GetTag(out aTag: PRUint32): Longword; stdcall;
-    function SetTag(aTag: PRUint32): Longword; stdcall;
-    function GetDisplayName(aDisplayName: nsAString): Longword; stdcall;
-    function SetDisplayName(const aDisplayName: nsAString): Longword; stdcall;
-    function GetDisplayValue(aDisplayValue: nsAString): Longword; stdcall;
-    function SetDisplayValue(const aDisplayValue: nsAString): Longword; stdcall;
+    function GetType(out aType: PRUint32): Longword; extdecl;
+    function SetType(aType: PRUint32): Longword; extdecl;
+    function GetTag(out aTag: PRUint32): Longword; extdecl;
+    function SetTag(aTag: PRUint32): Longword; extdecl;
+    function GetDisplayName(aDisplayName: nsAString): Longword; extdecl;
+    function SetDisplayName(const aDisplayName: nsAString): Longword; extdecl;
+    function GetDisplayValue(aDisplayValue: nsAString): Longword; extdecl;
+    function SetDisplayValue(const aDisplayValue: nsAString): Longword; extdecl;
   end;
 
   nsIASN1Sequence_std17 = interface(nsIASN1Object_std17)
   ['{b6b957e6-1dd1-11b2-89d7-e30624f50b00}']
-    function GetASN1Objects(out aASN1Objects: nsIMutableArray_std17): Longword; stdcall;
-    function SetASN1Objects(aASN1Objects: nsIMutableArray_std17): Longword; stdcall;
-    function GetIsValidContainer(out aIsValidContainer: PRBool): Longword; stdcall;
-    function SetIsValidContainer(aIsValidContainer: PRBool): Longword; stdcall;
-    function GetIsExpanded(out aIsExpanded: PRBool): Longword; stdcall;
-    function SetIsExpanded(aIsExpanded: PRBool): Longword; stdcall;
+    function GetASN1Objects(out aASN1Objects: nsIMutableArray_std17): Longword; extdecl;
+    function SetASN1Objects(aASN1Objects: nsIMutableArray_std17): Longword; extdecl;
+    function GetIsValidContainer(out aIsValidContainer: PRBool): Longword; extdecl;
+    function SetIsValidContainer(aIsValidContainer: PRBool): Longword; extdecl;
+    function GetIsExpanded(out aIsExpanded: PRBool): Longword; extdecl;
+    function SetIsExpanded(aIsExpanded: PRBool): Longword; extdecl;
   end;
 
   nsIAuthPrompt_std17 = interface(nsISupports_std17)
   ['{2f977d45-5485-11d4-87e2-0010a4e75ef2}']
-    function Prompt(const dialogTitle: PWideChar; const text: PWideChar; const passwordRealm: PWideChar; savePassword: PRUint32; const defaultText: PWideChar; out _result: PWideChar; out _retval: PRBool): nsresult; stdcall;
-    function PromptUsernameAndPassword(const dialogTitle: PWideChar; const text: PWideChar; const passwordRealm: PWideChar; savePassword: PRUint32; out user: PWideChar; out pwd: PWideChar; out _retval: PRBool): nsresult; stdcall;
-    function PromptPassword(const dialogTitle: PWideChar; const text: PWideChar; const passwordRealm: PWideChar; savePassword: PRUint32; out pwd: PWideChar; out _retval: PRBool): nsresult; stdcall;
+    function Prompt(const dialogTitle: PWideChar; const text: PWideChar; const passwordRealm: PWideChar; savePassword: PRUint32; const defaultText: PWideChar; out _result: PWideChar; out _retval: PRBool): nsresult; extdecl;
+    function PromptUsernameAndPassword(const dialogTitle: PWideChar; const text: PWideChar; const passwordRealm: PWideChar; savePassword: PRUint32; out user: PWideChar; out pwd: PWideChar; out _retval: PRBool): nsresult; extdecl;
+    function PromptPassword(const dialogTitle: PWideChar; const text: PWideChar; const passwordRealm: PWideChar; savePassword: PRUint32; out pwd: PWideChar; out _retval: PRBool): nsresult; extdecl;
   end;
 
   nsIBadCertListener_std17 = interface(nsISupports_std17)
   ['{86960956-edb0-11d4-998b-00b0d02354a0}']
-    function ConfirmUnknownIssuer(socketInfo: nsIInterfaceRequestor_std17; cert: nsIX509Cert_std17; out certAddType: PRInt16; out _retval: PRBool): nsresult; stdcall;
-    function ConfirmMismatchDomain(socketInfo: nsIInterfaceRequestor_std17; const targetURL: nsACString; cert: nsIX509Cert_std17; out _retval: PRBool): nsresult; stdcall;
-    function ConfirmCertExpired(socketInfo: nsIInterfaceRequestor_std17; cert: nsIX509Cert_std17; out _retval: PRBool): nsresult; stdcall;
-    function NotifyCrlNextupdate(socketInfo: nsIInterfaceRequestor_std17; const targetURL: nsACString; cert: nsIX509Cert_std17): nsresult; stdcall;
+    function ConfirmUnknownIssuer(socketInfo: nsIInterfaceRequestor_std17; cert: nsIX509Cert_std17; out certAddType: PRInt16; out _retval: PRBool): nsresult; extdecl;
+    function ConfirmMismatchDomain(socketInfo: nsIInterfaceRequestor_std17; const targetURL: nsACString; cert: nsIX509Cert_std17; out _retval: PRBool): nsresult; extdecl;
+    function ConfirmCertExpired(socketInfo: nsIInterfaceRequestor_std17; cert: nsIX509Cert_std17; out _retval: PRBool): nsresult; extdecl;
+    function NotifyCrlNextupdate(socketInfo: nsIInterfaceRequestor_std17; const targetURL: nsACString; cert: nsIX509Cert_std17): nsresult; extdecl;
   end;
 
   nsISimpleEnumerator_std17 = interface(nsISupports_std17)
   ['{d1899240-f9d2-11d2-bdd6-000064657374}']
-    function HasMoreElements(out _retval: PRBool): nsresult; stdcall;
-    function GetNext(out _retval: nsISupports_std17): nsresult; stdcall;
+    function HasMoreElements(out _retval: PRBool): nsresult; extdecl;
+    function GetNext(out _retval: nsISupports_std17): nsresult; extdecl;
   end;
 
   nsICategoryManager_std17 = interface(nsISupports_std17)
   ['{3275b2cd-af6d-429a-80d7-f0c5120342ac}']
-    function GetCategoryEntry(const aCategory: PAnsiChar; const aEntry: PAnsiChar; out _retval: PAnsiChar): nsresult; stdcall;
-    function AddCategoryEntry(const aCategory: PAnsiChar; const aEntry: PAnsiChar; const aValue: PAnsiChar; aPersist: PRBool; aReplace: PRBool; out _retval: PAnsiChar): nsresult; stdcall;
-    function DeleteCategoryEntry(const aCategory: PAnsiChar; const aEntry: PAnsiChar; aPersist: PRBool): nsresult; stdcall;
-    function DeleteCategory(const aCategory: PAnsiChar): nsresult; stdcall;
-    function EnumerateCategory(const aCategory: PAnsiChar; out _retval: nsISimpleEnumerator_std17): nsresult; stdcall;
-    function EnumerateCategories(out _retval: nsISimpleEnumerator_std17): nsresult; stdcall;
+    function GetCategoryEntry(const aCategory: PAnsiChar; const aEntry: PAnsiChar; out _retval: PAnsiChar): nsresult; extdecl;
+    function AddCategoryEntry(const aCategory: PAnsiChar; const aEntry: PAnsiChar; const aValue: PAnsiChar; aPersist: PRBool; aReplace: PRBool; out _retval: PAnsiChar): nsresult; extdecl;
+    function DeleteCategoryEntry(const aCategory: PAnsiChar; const aEntry: PAnsiChar; aPersist: PRBool): nsresult; extdecl;
+    function DeleteCategory(const aCategory: PAnsiChar): nsresult; extdecl;
+    function EnumerateCategory(const aCategory: PAnsiChar; out _retval: nsISimpleEnumerator_std17): nsresult; extdecl;
+    function EnumerateCategories(out _retval: nsISimpleEnumerator_std17): nsresult; extdecl;
   end;
 
   nsICertificateDialogs_std17 = interface(nsISupports_std17)
   ['{a03ca940-09be-11d5-ac5d-000064657374}']
-    function ConfirmDownloadCACert(ctx: nsIInterfaceRequestor_std17; cert: nsIX509Cert_std17; out trust: PRUint32; out _retval: PRBool): nsresult; stdcall;
-    function NotifyCACertExists(ctx: nsIInterfaceRequestor_std17): nsresult; stdcall;
-    function SetPKCS12FilePassword(ctx: nsIInterfaceRequestor_std17; password: nsAString; out _retval: PRBool): nsresult; stdcall;
-    function GetPKCS12FilePassword(ctx: nsIInterfaceRequestor_std17; password: nsAString; out _retval: PRBool): nsresult; stdcall;
-    function ViewCert(ctx: nsIInterfaceRequestor_std17; cert: nsIX509Cert_std17): nsresult; stdcall;
-    function CrlImportStatusDialog(ctx: nsIInterfaceRequestor_std17; crl: nsICRLInfo_std17): nsresult; stdcall;
+    function ConfirmDownloadCACert(ctx: nsIInterfaceRequestor_std17; cert: nsIX509Cert_std17; out trust: PRUint32; out _retval: PRBool): nsresult; extdecl;
+    function NotifyCACertExists(ctx: nsIInterfaceRequestor_std17): nsresult; extdecl;
+    function SetPKCS12FilePassword(ctx: nsIInterfaceRequestor_std17; password: nsAString; out _retval: PRBool): nsresult; extdecl;
+    function GetPKCS12FilePassword(ctx: nsIInterfaceRequestor_std17; password: nsAString; out _retval: PRBool): nsresult; extdecl;
+    function ViewCert(ctx: nsIInterfaceRequestor_std17; cert: nsIX509Cert_std17): nsresult; extdecl;
+    function CrlImportStatusDialog(ctx: nsIInterfaceRequestor_std17; crl: nsICRLInfo_std17): nsresult; extdecl;
   end;
 
   nsIRequest_std17 = interface(nsISupports_std17)
   ['{ef6bfbd2-fd46-48d8-96b7-9f8f0fd387fe}']
-    function GetName(aName: nsACString): Longword; stdcall;
-    function IsPending(out _retval: PRBool): nsresult; stdcall;
-    function GetStatus(out aStatus: nsresult): Longword; stdcall;
-    function Cancel(aStatus: nsresult): nsresult; stdcall;
-    function Suspend(): nsresult; stdcall;
-    function Resume(): nsresult; stdcall;
-    function GetLoadGroup(out aLoadGroup: nsILoadGroup_std17): Longword; stdcall;
-    function SetLoadGroup(aLoadGroup: nsILoadGroup_std17): Longword; stdcall;
-    function GetLoadFlags(out aLoadFlags: nsLoadFlags): Longword; stdcall;
-    function SetLoadFlags(aLoadFlags: nsLoadFlags): Longword; stdcall;
+    function GetName(aName: nsACString): Longword; extdecl;
+    function IsPending(out _retval: PRBool): nsresult; extdecl;
+    function GetStatus(out aStatus: nsresult): Longword; extdecl;
+    function Cancel(aStatus: nsresult): nsresult; extdecl;
+    function Suspend(): nsresult; extdecl;
+    function Resume(): nsresult; extdecl;
+    function GetLoadGroup(out aLoadGroup: nsILoadGroup_std17): Longword; extdecl;
+    function SetLoadGroup(aLoadGroup: nsILoadGroup_std17): Longword; extdecl;
+    function GetLoadFlags(out aLoadFlags: nsLoadFlags): Longword; extdecl;
+    function SetLoadFlags(aLoadFlags: nsLoadFlags): Longword; extdecl;
   end;
 
   nsIChannel_std17 = interface(nsIRequest_std17)
   ['{c63a055a-a676-4e71-bf3c-6cfa11082018}']
-    function GetOriginalURI(out aOriginalURI: nsIURI_std17): Longword; stdcall;
-    function SetOriginalURI(aOriginalURI: nsIURI_std17): Longword; stdcall;
-    function GetURI(out aURI: nsIURI_std17): Longword; stdcall;
-    function GetOwner(out aOwner: nsISupports_std17): Longword; stdcall;
-    function SetOwner(aOwner: nsISupports_std17): Longword; stdcall;
-    function GetNotificationCallbacks(out aNotificationCallbacks: nsIInterfaceRequestor_std17): Longword; stdcall;
-    function SetNotificationCallbacks(aNotificationCallbacks: nsIInterfaceRequestor_std17): Longword; stdcall;
-    function GetSecurityInfo(out aSecurityInfo: nsISupports_std17): Longword; stdcall;
-    function GetContentType(aContentType: nsACString): Longword; stdcall;
-    function SetContentType(const aContentType: nsACString): Longword; stdcall;
-    function GetContentCharset(aContentCharset: nsACString): Longword; stdcall;
-    function SetContentCharset(const aContentCharset: nsACString): Longword; stdcall;
-    function GetContentLength(out aContentLength: PRInt32): Longword; stdcall;
-    function SetContentLength(aContentLength: PRInt32): Longword; stdcall;
-    function Open(out _retval: nsIInputStream_std17): nsresult; stdcall;
-    function AsyncOpen(aListener: nsIStreamListener_std17; aContext: nsISupports_std17): nsresult; stdcall;
+    function GetOriginalURI(out aOriginalURI: nsIURI_std17): Longword; extdecl;
+    function SetOriginalURI(aOriginalURI: nsIURI_std17): Longword; extdecl;
+    function GetURI(out aURI: nsIURI_std17): Longword; extdecl;
+    function GetOwner(out aOwner: nsISupports_std17): Longword; extdecl;
+    function SetOwner(aOwner: nsISupports_std17): Longword; extdecl;
+    function GetNotificationCallbacks(out aNotificationCallbacks: nsIInterfaceRequestor_std17): Longword; extdecl;
+    function SetNotificationCallbacks(aNotificationCallbacks: nsIInterfaceRequestor_std17): Longword; extdecl;
+    function GetSecurityInfo(out aSecurityInfo: nsISupports_std17): Longword; extdecl;
+    function GetContentType(aContentType: nsACString): Longword; extdecl;
+    function SetContentType(const aContentType: nsACString): Longword; extdecl;
+    function GetContentCharset(aContentCharset: nsACString): Longword; extdecl;
+    function SetContentCharset(const aContentCharset: nsACString): Longword; extdecl;
+    function GetContentLength(out aContentLength: PRInt32): Longword; extdecl;
+    function SetContentLength(aContentLength: PRInt32): Longword; extdecl;
+    function Open(out _retval: nsIInputStream_std17): nsresult; extdecl;
+    function AsyncOpen(aListener: nsIStreamListener_std17; aContext: nsISupports_std17): nsresult; extdecl;
   end;
 
   nsIProgrammingLanguage_std17 = interface(nsISupports_std17)
@@ -1166,246 +1174,246 @@ type
 
   nsIClassInfo_std17 = interface(nsISupports_std17)
   ['{986c11d0-f340-11d4-9075-0010a4e73d9a}']
-    function GetInterfaces(out count: PRUint32; out _array_array): nsresult; stdcall;
-    function GetHelperForLanguage(language: PRUint32; out _retval: nsISupports_std17): nsresult; stdcall;
-    function GetContractID(out aContractID: PAnsiChar): Longword; stdcall;
-    function GetClassDescription(out aClassDescription: PAnsiChar): Longword; stdcall;
-    function GetClassID(out aClassID: PGUID): Longword; stdcall;
-    function GetImplementationLanguage(out aImplementationLanguage: PRUint32): Longword; stdcall;
-    function GetFlags(out aFlags: PRUint32): Longword; stdcall;
-    function GetClassIDNoAlloc(out aClassIDNoAlloc: TGUID): Longword; stdcall;
+    function GetInterfaces(out count: PRUint32; out _array_array): nsresult; extdecl;
+    function GetHelperForLanguage(language: PRUint32; out _retval: nsISupports_std17): nsresult; extdecl;
+    function GetContractID(out aContractID: PAnsiChar): Longword; extdecl;
+    function GetClassDescription(out aClassDescription: PAnsiChar): Longword; extdecl;
+    function GetClassID(out aClassID: PGUID): Longword; extdecl;
+    function GetImplementationLanguage(out aImplementationLanguage: PRUint32): Longword; extdecl;
+    function GetFlags(out aFlags: PRUint32): Longword; extdecl;
+    function GetClassIDNoAlloc(out aClassIDNoAlloc: TGUID): Longword; extdecl;
   end;
 
   nsIClipboardCommands_std17 = interface(nsISupports_std17)
   ['{b8100c90-73be-11d2-92a5-00105a1b0d64}']
-    function CanCutSelection(out _retval: PRBool): nsresult; stdcall;
-    function CanCopySelection(out _retval: PRBool): nsresult; stdcall;
-    function CanCopyLinkLocation(out _retval: PRBool): nsresult; stdcall;
-    function CanCopyImageLocation(out _retval: PRBool): nsresult; stdcall;
-    function CanCopyImageContents(out _retval: PRBool): nsresult; stdcall;
-    function CanPaste(out _retval: PRBool): nsresult; stdcall;
-    function CutSelection(): nsresult; stdcall;
-    function CopySelection(): nsresult; stdcall;
-    function CopyLinkLocation(): nsresult; stdcall;
-    function CopyImageLocation(): nsresult; stdcall;
-    function CopyImageContents(): nsresult; stdcall;
-    function Paste(): nsresult; stdcall;
-    function SelectAll(): nsresult; stdcall;
-    function SelectNone(): nsresult; stdcall;
+    function CanCutSelection(out _retval: PRBool): nsresult; extdecl;
+    function CanCopySelection(out _retval: PRBool): nsresult; extdecl;
+    function CanCopyLinkLocation(out _retval: PRBool): nsresult; extdecl;
+    function CanCopyImageLocation(out _retval: PRBool): nsresult; extdecl;
+    function CanCopyImageContents(out _retval: PRBool): nsresult; extdecl;
+    function CanPaste(out _retval: PRBool): nsresult; extdecl;
+    function CutSelection(): nsresult; extdecl;
+    function CopySelection(): nsresult; extdecl;
+    function CopyLinkLocation(): nsresult; extdecl;
+    function CopyImageLocation(): nsresult; extdecl;
+    function CopyImageContents(): nsresult; extdecl;
+    function Paste(): nsresult; extdecl;
+    function SelectAll(): nsresult; extdecl;
+    function SelectNone(): nsresult; extdecl;
   end;
 
   nsIComponentManager_std17 = interface(nsISupports_std17)
   ['{a88e5a60-205a-4bb1-94e1-2628daf51eae}']
-    function GetClassObject(const aClass: TGUID; const aIID: TGUID; out _result): nsresult; stdcall;
-    function GetClassObjectByContractID(const aContractID: PAnsiChar; const aIID: TGUID; out _result): nsresult; stdcall;
-    function CreateInstance(const aClass: TGUID; aDelegate: nsISupports_std17; const aIID: TGUID; out _result): nsresult; stdcall;
-    function CreateInstanceByContractID(const aContractID: PAnsiChar; aDelegate: nsISupports_std17; const aIID: TGUID; out _result): nsresult; stdcall;
+    function GetClassObject(const aClass: TGUID; const aIID: TGUID; out _result): nsresult; extdecl;
+    function GetClassObjectByContractID(const aContractID: PAnsiChar; const aIID: TGUID; out _result): nsresult; extdecl;
+    function CreateInstance(const aClass: TGUID; aDelegate: nsISupports_std17; const aIID: TGUID; out _result): nsresult; extdecl;
+    function CreateInstanceByContractID(const aContractID: PAnsiChar; aDelegate: nsISupports_std17; const aIID: TGUID; out _result): nsresult; extdecl;
   end;
 
   nsIComponentRegistrar_std17 = interface(nsISupports_std17)
   ['{2417cbfe-65ad-48a6-b4b6-eb84db174392}']
-    function AutoRegister(aSpec: nsIFile_std17): nsresult; stdcall;
-    function AutoUnregister(aSpec: nsIFile_std17): nsresult; stdcall;
-    function RegisterFactory(const aClass: TGUID; const aClassName: PAnsiChar; const aContractID: PAnsiChar; aFactory: nsIFactory_std17): nsresult; stdcall;
-    function UnregisterFactory(const aClass: TGUID; aFactory: nsIFactory_std17): nsresult; stdcall;
-    function RegisterFactoryLocation(const aClass: TGUID; const aClassName: PAnsiChar; const aContractID: PAnsiChar; aFile: nsIFile_std17; const aLoaderStr: PAnsiChar; const aType: PAnsiChar): nsresult; stdcall;
-    function UnregisterFactoryLocation(const aClass: TGUID; aFile: nsIFile_std17): nsresult; stdcall;
-    function IsCIDRegistered(const aClass: TGUID; out _retval: PRBool): nsresult; stdcall;
-    function IsContractIDRegistered(const aContractID: PAnsiChar; out _retval: PRBool): nsresult; stdcall;
-    function EnumerateCIDs(out _retval: nsISimpleEnumerator_std17): nsresult; stdcall;
-    function EnumerateContractIDs(out _retval: nsISimpleEnumerator_std17): nsresult; stdcall;
-    function CIDToContractID(const aClass: TGUID; out _retval: PAnsiChar): nsresult; stdcall;
-    function ContractIDToCID(const aContractID: PAnsiChar; out _retval: PGUID): nsresult; stdcall;
+    function AutoRegister(aSpec: nsIFile_std17): nsresult; extdecl;
+    function AutoUnregister(aSpec: nsIFile_std17): nsresult; extdecl;
+    function RegisterFactory(const aClass: TGUID; const aClassName: PAnsiChar; const aContractID: PAnsiChar; aFactory: nsIFactory_std17): nsresult; extdecl;
+    function UnregisterFactory(const aClass: TGUID; aFactory: nsIFactory_std17): nsresult; extdecl;
+    function RegisterFactoryLocation(const aClass: TGUID; const aClassName: PAnsiChar; const aContractID: PAnsiChar; aFile: nsIFile_std17; const aLoaderStr: PAnsiChar; const aType: PAnsiChar): nsresult; extdecl;
+    function UnregisterFactoryLocation(const aClass: TGUID; aFile: nsIFile_std17): nsresult; extdecl;
+    function IsCIDRegistered(const aClass: TGUID; out _retval: PRBool): nsresult; extdecl;
+    function IsContractIDRegistered(const aContractID: PAnsiChar; out _retval: PRBool): nsresult; extdecl;
+    function EnumerateCIDs(out _retval: nsISimpleEnumerator_std17): nsresult; extdecl;
+    function EnumerateContractIDs(out _retval: nsISimpleEnumerator_std17): nsresult; extdecl;
+    function CIDToContractID(const aClass: TGUID; out _retval: PAnsiChar): nsresult; extdecl;
+    function ContractIDToCID(const aContractID: PAnsiChar; out _retval: PGUID): nsresult; extdecl;
   end;
 
   nsIContextMenuListener_std17 = interface(nsISupports_std17)
   ['{3478b6b0-3875-11d4-94ef-0020183bf181}']
-    function OnShowContextMenu(aContextFlags: PRUint32; aEvent: nsIDOMEvent_std17; aNode: nsIDOMNode_std17): nsresult; stdcall;
+    function OnShowContextMenu(aContextFlags: PRUint32; aEvent: nsIDOMEvent_std17; aNode: nsIDOMNode_std17): nsresult; extdecl;
   end;
 
   nsICookie_std17 = interface(nsISupports_std17)
   ['{e9fcb9a4-d376-458f-b720-e65e7df593bc}']
-    function GetName(aName: nsACString): Longword; stdcall;
-    function GetValue(aValue: nsACString): Longword; stdcall;
-    function GetIsDomain(out aIsDomain: PRBool): Longword; stdcall;
-    function GetHost(aHost: nsACString): Longword; stdcall;
-    function GetPath(aPath: nsACString): Longword; stdcall;
-    function GetIsSecure(out aIsSecure: PRBool): Longword; stdcall;
-    function GetExpires(out aExpires: PRUint64): Longword; stdcall;
-    function GetStatus(out aStatus: nsCookieStatus): Longword; stdcall;
-    function GetPolicy(out aPolicy: nsCookiePolicy): Longword; stdcall;
+    function GetName(aName: nsACString): Longword; extdecl;
+    function GetValue(aValue: nsACString): Longword; extdecl;
+    function GetIsDomain(out aIsDomain: PRBool): Longword; extdecl;
+    function GetHost(aHost: nsACString): Longword; extdecl;
+    function GetPath(aPath: nsACString): Longword; extdecl;
+    function GetIsSecure(out aIsSecure: PRBool): Longword; extdecl;
+    function GetExpires(out aExpires: PRUint64): Longword; extdecl;
+    function GetStatus(out aStatus: nsCookieStatus): Longword; extdecl;
+    function GetPolicy(out aPolicy: nsCookiePolicy): Longword; extdecl;
   end;
 
   nsICookieManager_std17 = interface(nsISupports_std17)
   ['{aaab6710-0f2c-11d5-a53b-0010a401eb10}']
-    function RemoveAll(): nsresult; stdcall;
-    function GetEnumerator(out aEnumerator: nsISimpleEnumerator_std17): Longword; stdcall;
-    function Remove(const aDomain: nsACString; const aName: nsACString; const aPath: nsACString; aBlocked: PRBool): nsresult; stdcall;
+    function RemoveAll(): nsresult; extdecl;
+    function GetEnumerator(out aEnumerator: nsISimpleEnumerator_std17): Longword; extdecl;
+    function Remove(const aDomain: nsACString; const aName: nsACString; const aPath: nsACString; aBlocked: PRBool): nsresult; extdecl;
   end;
 
   nsICRLInfo_std17 = interface(nsISupports_std17)
   ['{c185d920-4a3e-11d5-ba27-00108303b117}']
-    function GetOrganization(aOrganization: nsAString): Longword; stdcall;
-    function GetOrganizationalUnit(aOrganizationalUnit: nsAString): Longword; stdcall;
-    function GetLastUpdate(out aLastUpdate: PRTime): Longword; stdcall;
-    function GetNextUpdate(out aNextUpdate: PRTime): Longword; stdcall;
-    function GetLastUpdateLocale(aLastUpdateLocale: nsAString): Longword; stdcall;
-    function GetNextUpdateLocale(aNextUpdateLocale: nsAString): Longword; stdcall;
-    function GetNameInDb(aNameInDb: nsAString): Longword; stdcall;
-    function GetLastFetchURL(aLastFetchURL: nsACString): Longword; stdcall;
+    function GetOrganization(aOrganization: nsAString): Longword; extdecl;
+    function GetOrganizationalUnit(aOrganizationalUnit: nsAString): Longword; extdecl;
+    function GetLastUpdate(out aLastUpdate: PRTime): Longword; extdecl;
+    function GetNextUpdate(out aNextUpdate: PRTime): Longword; extdecl;
+    function GetLastUpdateLocale(aLastUpdateLocale: nsAString): Longword; extdecl;
+    function GetNextUpdateLocale(aNextUpdateLocale: nsAString): Longword; extdecl;
+    function GetNameInDb(aNameInDb: nsAString): Longword; extdecl;
+    function GetLastFetchURL(aLastFetchURL: nsACString): Longword; extdecl;
   end;
 
   nsIDebug_std17 = interface(nsISupports_std17)
   ['{3bf0c3d7-3bd9-4cf2-a971-33572c503e1e}']
-    function Assertion(const aStr: PAnsiChar; const aExpr: PAnsiChar; const aFile: PAnsiChar; aLine: PRInt32): nsresult; stdcall;
-    function Warning(const aStr: PAnsiChar; const aFile: PAnsiChar; aLine: PRInt32): nsresult; stdcall;
-    function Break(const aFile: PAnsiChar; aLine: PRInt32): nsresult; stdcall;
-    function Abort(const aFile: PAnsiChar; aLine: PRInt32): nsresult; stdcall;
+    function Assertion(const aStr: PAnsiChar; const aExpr: PAnsiChar; const aFile: PAnsiChar; aLine: PRInt32): nsresult; extdecl;
+    function Warning(const aStr: PAnsiChar; const aFile: PAnsiChar; aLine: PRInt32): nsresult; extdecl;
+    function Break(const aFile: PAnsiChar; aLine: PRInt32): nsresult; extdecl;
+    function Abort(const aFile: PAnsiChar; aLine: PRInt32): nsresult; extdecl;
   end;
 
   nsIFile_std17 = interface(nsISupports_std17)
   ['{c8c0a080-0868-11d3-915f-d9d889d48e3c}']
-    function Append(const node: nsAString): nsresult; stdcall;
-    function AppendNative(const node: nsACString): nsresult; stdcall;
-    function Normalize(): nsresult; stdcall;
-    function Create(_type: PRUint32; permissions: PRUint32): nsresult; stdcall;
-    function GetLeafName(aLeafName: nsAString): Longword; stdcall;
-    function SetLeafName(const aLeafName: nsAString): Longword; stdcall;
-    function GetNativeLeafName(aNativeLeafName: nsACString): Longword; stdcall;
-    function SetNativeLeafName(const aNativeLeafName: nsACString): Longword; stdcall;
-    function CopyTo(newParentDir: nsIFile_std17; const newName: nsAString): nsresult; stdcall;
-    function CopyToNative(newParentDir: nsIFile_std17; const newName: nsACString): nsresult; stdcall;
-    function CopyToFollowingLinks(newParentDir: nsIFile_std17; const newName: nsAString): nsresult; stdcall;
-    function CopyToFollowingLinksNative(newParentDir: nsIFile_std17; const newName: nsACString): nsresult; stdcall;
-    function MoveTo(newParentDir: nsIFile_std17; const newName: nsAString): nsresult; stdcall;
-    function MoveToNative(newParentDir: nsIFile_std17; const newName: nsACString): nsresult; stdcall;
-    function Remove(recursive: PRBool): nsresult; stdcall;
-    function GetPermissions(out aPermissions: PRUint32): Longword; stdcall;
-    function SetPermissions(aPermissions: PRUint32): Longword; stdcall;
-    function GetPermissionsOfLink(out aPermissionsOfLink: PRUint32): Longword; stdcall;
-    function SetPermissionsOfLink(aPermissionsOfLink: PRUint32): Longword; stdcall;
-    function GetLastModifiedTime(out aLastModifiedTime: PRInt64): Longword; stdcall;
-    function SetLastModifiedTime(aLastModifiedTime: PRInt64): Longword; stdcall;
-    function GetLastModifiedTimeOfLink(out aLastModifiedTimeOfLink: PRInt64): Longword; stdcall;
-    function SetLastModifiedTimeOfLink(aLastModifiedTimeOfLink: PRInt64): Longword; stdcall;
-    function GetFileSize(out aFileSize: PRInt64): Longword; stdcall;
-    function SetFileSize(aFileSize: PRInt64): Longword; stdcall;
-    function GetFileSizeOfLink(out aFileSizeOfLink: PRInt64): Longword; stdcall;
-    function GetTarget(aTarget: nsAString): Longword; stdcall;
-    function GetNativeTarget(aNativeTarget: nsACString): Longword; stdcall;
-    function GetPath(aPath: nsAString): Longword; stdcall;
-    function GetNativePath(aNativePath: nsACString): Longword; stdcall;
-    function Exists(out _retval: PRBool): nsresult; stdcall;
-    function IsWritable(out _retval: PRBool): nsresult; stdcall;
-    function IsReadable(out _retval: PRBool): nsresult; stdcall;
-    function IsExecutable(out _retval: PRBool): nsresult; stdcall;
-    function IsHidden(out _retval: PRBool): nsresult; stdcall;
-    function IsDirectory(out _retval: PRBool): nsresult; stdcall;
-    function IsFile(out _retval: PRBool): nsresult; stdcall;
-    function IsSymlink(out _retval: PRBool): nsresult; stdcall;
-    function IsSpecial(out _retval: PRBool): nsresult; stdcall;
-    function CreateUnique(_type: PRUint32; permissions: PRUint32): nsresult; stdcall;
-    function Clone(out _retval: nsIFile_std17): nsresult; stdcall;
-    function Equals(inFile: nsIFile_std17; out _retval: PRBool): nsresult; stdcall;
-    function _Contains(inFile: nsIFile_std17; recur: PRBool; out _retval: PRBool): nsresult; stdcall;
-    function GetParent(out aParent: nsIFile_std17): Longword; stdcall;
-    function GetDirectoryEntries(out aDirectoryEntries: nsISimpleEnumerator_std17): Longword; stdcall;
+    function Append(const node: nsAString): nsresult; extdecl;
+    function AppendNative(const node: nsACString): nsresult; extdecl;
+    function Normalize(): nsresult; extdecl;
+    function Create(_type: PRUint32; permissions: PRUint32): nsresult; extdecl;
+    function GetLeafName(aLeafName: nsAString): Longword; extdecl;
+    function SetLeafName(const aLeafName: nsAString): Longword; extdecl;
+    function GetNativeLeafName(aNativeLeafName: nsACString): Longword; extdecl;
+    function SetNativeLeafName(const aNativeLeafName: nsACString): Longword; extdecl;
+    function CopyTo(newParentDir: nsIFile_std17; const newName: nsAString): nsresult; extdecl;
+    function CopyToNative(newParentDir: nsIFile_std17; const newName: nsACString): nsresult; extdecl;
+    function CopyToFollowingLinks(newParentDir: nsIFile_std17; const newName: nsAString): nsresult; extdecl;
+    function CopyToFollowingLinksNative(newParentDir: nsIFile_std17; const newName: nsACString): nsresult; extdecl;
+    function MoveTo(newParentDir: nsIFile_std17; const newName: nsAString): nsresult; extdecl;
+    function MoveToNative(newParentDir: nsIFile_std17; const newName: nsACString): nsresult; extdecl;
+    function Remove(recursive: PRBool): nsresult; extdecl;
+    function GetPermissions(out aPermissions: PRUint32): Longword; extdecl;
+    function SetPermissions(aPermissions: PRUint32): Longword; extdecl;
+    function GetPermissionsOfLink(out aPermissionsOfLink: PRUint32): Longword; extdecl;
+    function SetPermissionsOfLink(aPermissionsOfLink: PRUint32): Longword; extdecl;
+    function GetLastModifiedTime(out aLastModifiedTime: PRInt64): Longword; extdecl;
+    function SetLastModifiedTime(aLastModifiedTime: PRInt64): Longword; extdecl;
+    function GetLastModifiedTimeOfLink(out aLastModifiedTimeOfLink: PRInt64): Longword; extdecl;
+    function SetLastModifiedTimeOfLink(aLastModifiedTimeOfLink: PRInt64): Longword; extdecl;
+    function GetFileSize(out aFileSize: PRInt64): Longword; extdecl;
+    function SetFileSize(aFileSize: PRInt64): Longword; extdecl;
+    function GetFileSizeOfLink(out aFileSizeOfLink: PRInt64): Longword; extdecl;
+    function GetTarget(aTarget: nsAString): Longword; extdecl;
+    function GetNativeTarget(aNativeTarget: nsACString): Longword; extdecl;
+    function GetPath(aPath: nsAString): Longword; extdecl;
+    function GetNativePath(aNativePath: nsACString): Longword; extdecl;
+    function Exists(out _retval: PRBool): nsresult; extdecl;
+    function IsWritable(out _retval: PRBool): nsresult; extdecl;
+    function IsReadable(out _retval: PRBool): nsresult; extdecl;
+    function IsExecutable(out _retval: PRBool): nsresult; extdecl;
+    function IsHidden(out _retval: PRBool): nsresult; extdecl;
+    function IsDirectory(out _retval: PRBool): nsresult; extdecl;
+    function IsFile(out _retval: PRBool): nsresult; extdecl;
+    function IsSymlink(out _retval: PRBool): nsresult; extdecl;
+    function IsSpecial(out _retval: PRBool): nsresult; extdecl;
+    function CreateUnique(_type: PRUint32; permissions: PRUint32): nsresult; extdecl;
+    function Clone(out _retval: nsIFile_std17): nsresult; extdecl;
+    function Equals(inFile: nsIFile_std17; out _retval: PRBool): nsresult; extdecl;
+    function _Contains(inFile: nsIFile_std17; recur: PRBool; out _retval: PRBool): nsresult; extdecl;
+    function GetParent(out aParent: nsIFile_std17): Longword; extdecl;
+    function GetDirectoryEntries(out aDirectoryEntries: nsISimpleEnumerator_std17): Longword; extdecl;
   end;
 
   nsIDirectoryServiceProvider_std17 = interface(nsISupports_std17)
   ['{bbf8cab0-d43a-11d3-8cc2-00609792278c}']
-    function GetFile(const prop: PAnsiChar; out persistent: PRBool; out _retval: nsIFile_std17): nsresult; stdcall;
+    function GetFile(const prop: PAnsiChar; out persistent: PRBool; out _retval: nsIFile_std17): nsresult; extdecl;
   end;
 
   nsIDirectoryServiceProvider2_std17 = interface(nsIDirectoryServiceProvider_std17)
   ['{2f977d4b-5485-11d4-87e2-0010a4e75ef2}']
-    function GetFiles(const prop: PAnsiChar; out _retval: nsISimpleEnumerator_std17): nsresult; stdcall;
+    function GetFiles(const prop: PAnsiChar; out _retval: nsISimpleEnumerator_std17): nsresult; extdecl;
   end;
 
   nsIDirectoryService_std17 = interface(nsISupports_std17)
   ['{57a66a60-d43a-11d3-8cc2-00609792278c}']
-    function Init(): nsresult; stdcall;
-    function RegisterProvider(prov: nsIDirectoryServiceProvider_std17): nsresult; stdcall;
-    function UnregisterProvider(prov: nsIDirectoryServiceProvider_std17): nsresult; stdcall;
+    function Init(): nsresult; extdecl;
+    function RegisterProvider(prov: nsIDirectoryServiceProvider_std17): nsresult; extdecl;
+    function UnregisterProvider(prov: nsIDirectoryServiceProvider_std17): nsresult; extdecl;
   end;
 
   nsIDOM3DocumentEvent_std17 = interface(nsISupports_std17)
   ['{090ecc19-b7cb-4f47-ae47-ed68d4926249}']
-    function CreateEventGroup(out _retval: nsIDOMEventGroup_std17): nsresult; stdcall;
+    function CreateEventGroup(out _retval: nsIDOMEventGroup_std17): nsresult; extdecl;
   end;
 
   nsIDOM3EventTarget_std17 = interface(nsISupports_std17)
   ['{3e9c01a7-de97-4c3b-8294-b4bd9d7056d1}']
-    function AddGroupedEventListener(const _type: nsAString; listener: nsIDOMEventListener_std17; useCapture: PRBool; evtGroup: nsIDOMEventGroup_std17): nsresult; stdcall;
-    function RemoveGroupedEventListener(const _type: nsAString; listener: nsIDOMEventListener_std17; useCapture: PRBool; evtGroup: nsIDOMEventGroup_std17): nsresult; stdcall;
-    function CanTrigger(const _type: nsAString; out _retval: PRBool): nsresult; stdcall;
-    function IsRegisteredHere(const _type: nsAString; out _retval: PRBool): nsresult; stdcall;
+    function AddGroupedEventListener(const _type: nsAString; listener: nsIDOMEventListener_std17; useCapture: PRBool; evtGroup: nsIDOMEventGroup_std17): nsresult; extdecl;
+    function RemoveGroupedEventListener(const _type: nsAString; listener: nsIDOMEventListener_std17; useCapture: PRBool; evtGroup: nsIDOMEventGroup_std17): nsresult; extdecl;
+    function CanTrigger(const _type: nsAString; out _retval: PRBool): nsresult; extdecl;
+    function IsRegisteredHere(const _type: nsAString; out _retval: PRBool): nsresult; extdecl;
   end;
 
   nsIDOMAbstractView_std17 = interface(nsISupports_std17)
   ['{f51ebade-8b1a-11d3-aae7-0010830123b4}']
-    function GetDocument(out aDocument: nsIDOMDocumentView_std17): Longword; stdcall;
+    function GetDocument(out aDocument: nsIDOMDocumentView_std17): Longword; extdecl;
   end;
 
   nsIDOMNode_std17 = interface(nsISupports_std17)
   ['{a6cf907c-15b3-11d2-932e-00805f8add32}']
-    function GetNodeName(aNodeName: nsAString): Longword; stdcall;
-    function GetNodeValue(aNodeValue: nsAString): Longword; stdcall;
-    function SetNodeValue(const aNodeValue: nsAString): Longword; stdcall;
-    function GetNodeType(out aNodeType: PRUint16): Longword; stdcall;
-    function GetParentNode(out aParentNode: nsIDOMNode_std17): Longword; stdcall;
-    function GetChildNodes(out aChildNodes: nsIDOMNodeList_std17): Longword; stdcall;
-    function GetFirstChild(out aFirstChild: nsIDOMNode_std17): Longword; stdcall;
-    function GetLastChild(out aLastChild: nsIDOMNode_std17): Longword; stdcall;
-    function GetPreviousSibling(out aPreviousSibling: nsIDOMNode_std17): Longword; stdcall;
-    function GetNextSibling(out aNextSibling: nsIDOMNode_std17): Longword; stdcall;
-    function GetAttributes(out aAttributes: nsIDOMNamedNodeMap_std17): Longword; stdcall;
-    function GetOwnerDocument(out aOwnerDocument: nsIDOMDocument_std17): Longword; stdcall;
-    function InsertBefore(newChild: nsIDOMNode_std17; refChild: nsIDOMNode_std17; out _retval: nsIDOMNode_std17): nsresult; stdcall;
-    function ReplaceChild(newChild: nsIDOMNode_std17; oldChild: nsIDOMNode_std17; out _retval: nsIDOMNode_std17): nsresult; stdcall;
-    function RemoveChild(oldChild: nsIDOMNode_std17; out _retval: nsIDOMNode_std17): nsresult; stdcall;
-    function AppendChild(newChild: nsIDOMNode_std17; out _retval: nsIDOMNode_std17): nsresult; stdcall;
-    function HasChildNodes(out _retval: PRBool): nsresult; stdcall;
-    function CloneNode(deep: PRBool; out _retval: nsIDOMNode_std17): nsresult; stdcall;
-    function Normalize(): nsresult; stdcall;
-    function IsSupported(const feature: nsAString; const version: nsAString; out _retval: PRBool): nsresult; stdcall;
-    function GetNamespaceURI(aNamespaceURI: nsAString): Longword; stdcall;
-    function GetPrefix(aPrefix: nsAString): Longword; stdcall;
-    function SetPrefix(const aPrefix: nsAString): Longword; stdcall;
-    function GetLocalName(aLocalName: nsAString): Longword; stdcall;
-    function HasAttributes(out _retval: PRBool): nsresult; stdcall;
+    function GetNodeName(aNodeName: nsAString): Longword; extdecl;
+    function GetNodeValue(aNodeValue: nsAString): Longword; extdecl;
+    function SetNodeValue(const aNodeValue: nsAString): Longword; extdecl;
+    function GetNodeType(out aNodeType: PRUint16): Longword; extdecl;
+    function GetParentNode(out aParentNode: nsIDOMNode_std17): Longword; extdecl;
+    function GetChildNodes(out aChildNodes: nsIDOMNodeList_std17): Longword; extdecl;
+    function GetFirstChild(out aFirstChild: nsIDOMNode_std17): Longword; extdecl;
+    function GetLastChild(out aLastChild: nsIDOMNode_std17): Longword; extdecl;
+    function GetPreviousSibling(out aPreviousSibling: nsIDOMNode_std17): Longword; extdecl;
+    function GetNextSibling(out aNextSibling: nsIDOMNode_std17): Longword; extdecl;
+    function GetAttributes(out aAttributes: nsIDOMNamedNodeMap_std17): Longword; extdecl;
+    function GetOwnerDocument(out aOwnerDocument: nsIDOMDocument_std17): Longword; extdecl;
+    function InsertBefore(newChild: nsIDOMNode_std17; refChild: nsIDOMNode_std17; out _retval: nsIDOMNode_std17): nsresult; extdecl;
+    function ReplaceChild(newChild: nsIDOMNode_std17; oldChild: nsIDOMNode_std17; out _retval: nsIDOMNode_std17): nsresult; extdecl;
+    function RemoveChild(oldChild: nsIDOMNode_std17; out _retval: nsIDOMNode_std17): nsresult; extdecl;
+    function AppendChild(newChild: nsIDOMNode_std17; out _retval: nsIDOMNode_std17): nsresult; extdecl;
+    function HasChildNodes(out _retval: PRBool): nsresult; extdecl;
+    function CloneNode(deep: PRBool; out _retval: nsIDOMNode_std17): nsresult; extdecl;
+    function Normalize(): nsresult; extdecl;
+    function IsSupported(const feature: nsAString; const version: nsAString; out _retval: PRBool): nsresult; extdecl;
+    function GetNamespaceURI(aNamespaceURI: nsAString): Longword; extdecl;
+    function GetPrefix(aPrefix: nsAString): Longword; extdecl;
+    function SetPrefix(const aPrefix: nsAString): Longword; extdecl;
+    function GetLocalName(aLocalName: nsAString): Longword; extdecl;
+    function HasAttributes(out _retval: PRBool): nsresult; extdecl;
   end;
 
   nsIDOMAttr_std17 = interface(nsIDOMNode_std17)
   ['{a6cf9070-15b3-11d2-932e-00805f8add32}']
-    function GetName(aName: nsAString): Longword; stdcall;
-    function GetSpecified(out aSpecified: PRBool): Longword; stdcall;
-    function GetValue(aValue: nsAString): Longword; stdcall;
-    function SetValue(const aValue: nsAString): Longword; stdcall;
-    function GetOwnerElement(out aOwnerElement: nsIDOMElement_std17): Longword; stdcall;
+    function GetName(aName: nsAString): Longword; extdecl;
+    function GetSpecified(out aSpecified: PRBool): Longword; extdecl;
+    function GetValue(aValue: nsAString): Longword; extdecl;
+    function SetValue(const aValue: nsAString): Longword; extdecl;
+    function GetOwnerElement(out aOwnerElement: nsIDOMElement_std17): Longword; extdecl;
   end;
 
   nsIDOMBarProp_std17 = interface(nsISupports_std17)
   ['{9eb2c150-1d56-11d3-8221-0060083a0bcf}']
-    function GetVisible(out aVisible: PRBool): Longword; stdcall;
-    function SetVisible(aVisible: PRBool): Longword; stdcall;
+    function GetVisible(out aVisible: PRBool): Longword; extdecl;
+    function SetVisible(aVisible: PRBool): Longword; extdecl;
   end;
 
   nsIDOMCharacterData_std17 = interface(nsIDOMNode_std17)
   ['{a6cf9072-15b3-11d2-932e-00805f8add32}']
-    function GetData(aData: nsAString): Longword; stdcall;
-    function SetData(const aData: nsAString): Longword; stdcall;
-    function GetLength(out aLength: PRUint32): Longword; stdcall;
-    function SubstringData(offset: PRUint32; count: PRUint32; _retval: nsAString): nsresult; stdcall;
-    function AppendData(const arg: nsAString): nsresult; stdcall;
-    function InsertData(offset: PRUint32; const arg: nsAString): nsresult; stdcall;
-    function DeleteData(offset: PRUint32; count: PRUint32): nsresult; stdcall;
-    function ReplaceData(offset: PRUint32; count: PRUint32; const arg: nsAString): nsresult; stdcall;
+    function GetData(aData: nsAString): Longword; extdecl;
+    function SetData(const aData: nsAString): Longword; extdecl;
+    function GetLength(out aLength: PRUint32): Longword; extdecl;
+    function SubstringData(offset: PRUint32; count: PRUint32; _retval: nsAString): nsresult; extdecl;
+    function AppendData(const arg: nsAString): nsresult; extdecl;
+    function InsertData(offset: PRUint32; const arg: nsAString): nsresult; extdecl;
+    function DeleteData(offset: PRUint32; count: PRUint32): nsresult; extdecl;
+    function ReplaceData(offset: PRUint32; count: PRUint32; const arg: nsAString): nsresult; extdecl;
   end;
 
   nsIDOMText_std17 = interface(nsIDOMCharacterData_std17)
   ['{a6cf9082-15b3-11d2-932e-00805f8add32}']
-    function SplitText(offset: PRUint32; out _retval: nsIDOMText_std17): nsresult; stdcall;
+    function SplitText(offset: PRUint32; out _retval: nsIDOMText_std17): nsresult; extdecl;
   end;
 
   nsIDOMCDATASection_std17 = interface(nsIDOMText_std17)
@@ -1418,129 +1426,129 @@ type
 
   nsIDOMCounter_std17 = interface(nsISupports_std17)
   ['{31adb439-0055-402d-9b1d-d5ca94f3f55b}']
-    function GetIdentifier(aIdentifier: nsAString): Longword; stdcall;
-    function GetListStyle(aListStyle: nsAString): Longword; stdcall;
-    function GetSeparator(aSeparator: nsAString): Longword; stdcall;
+    function GetIdentifier(aIdentifier: nsAString): Longword; extdecl;
+    function GetListStyle(aListStyle: nsAString): Longword; extdecl;
+    function GetSeparator(aSeparator: nsAString): Longword; extdecl;
   end;
 
   nsIDOMCSSValue_std17 = interface(nsISupports_std17)
   ['{009f7ea5-9e80-41be-b008-db62f10823f2}']
-    function GetCssText(aCssText: nsAString): Longword; stdcall;
-    function SetCssText(const aCssText: nsAString): Longword; stdcall;
-    function GetCssValueType(out aCssValueType: PRUint16): Longword; stdcall;
+    function GetCssText(aCssText: nsAString): Longword; extdecl;
+    function SetCssText(const aCssText: nsAString): Longword; extdecl;
+    function GetCssValueType(out aCssValueType: PRUint16): Longword; extdecl;
   end;
 
   nsIDOMCSSPrimitiveValue_std17 = interface(nsIDOMCSSValue_std17)
   ['{e249031f-8df9-4e7a-b644-18946dce0019}']
-    function GetPrimitiveType(out aPrimitiveType: PRUint16): Longword; stdcall;
-    function SetFloatValue(unitType: PRUint16; floatValue: Single): nsresult; stdcall;
-    function GetFloatValue(unitType: PRUint16; out _retval: Single): nsresult; stdcall;
-    function SetStringValue(stringType: PRUint16; const stringValue: nsAString): nsresult; stdcall;
-    function GetStringValue(_retval: nsAString): nsresult; stdcall;
-    function GetCounterValue(out _retval: nsIDOMCounter_std17): nsresult; stdcall;
-    function GetRectValue(out _retval: nsIDOMRect_std17): nsresult; stdcall;
-    function GetRGBColorValue(out _retval: nsIDOMRGBColor_std17): nsresult; stdcall;
+    function GetPrimitiveType(out aPrimitiveType: PRUint16): Longword; extdecl;
+    function SetFloatValue(unitType: PRUint16; floatValue: Single): nsresult; extdecl;
+    function GetFloatValue(unitType: PRUint16; out _retval: Single): nsresult; extdecl;
+    function SetStringValue(stringType: PRUint16; const stringValue: nsAString): nsresult; extdecl;
+    function GetStringValue(_retval: nsAString): nsresult; extdecl;
+    function GetCounterValue(out _retval: nsIDOMCounter_std17): nsresult; extdecl;
+    function GetRectValue(out _retval: nsIDOMRect_std17): nsresult; extdecl;
+    function GetRGBColorValue(out _retval: nsIDOMRGBColor_std17): nsresult; extdecl;
   end;
 
   nsIDOMCSSRule_std17 = interface(nsISupports_std17)
   ['{a6cf90c1-15b3-11d2-932e-00805f8add32}']
-    function GetType(out aType: PRUint16): Longword; stdcall;
-    function GetCssText(aCssText: nsAString): Longword; stdcall;
-    function SetCssText(const aCssText: nsAString): Longword; stdcall;
-    function GetParentStyleSheet(out aParentStyleSheet: nsIDOMCSSStyleSheet_std17): Longword; stdcall;
-    function GetParentRule(out aParentRule: nsIDOMCSSRule_std17): Longword; stdcall;
+    function GetType(out aType: PRUint16): Longword; extdecl;
+    function GetCssText(aCssText: nsAString): Longword; extdecl;
+    function SetCssText(const aCssText: nsAString): Longword; extdecl;
+    function GetParentStyleSheet(out aParentStyleSheet: nsIDOMCSSStyleSheet_std17): Longword; extdecl;
+    function GetParentRule(out aParentRule: nsIDOMCSSRule_std17): Longword; extdecl;
   end;
 
   nsIDOMCSSRuleList_std17 = interface(nsISupports_std17)
   ['{a6cf90c0-15b3-11d2-932e-00805f8add32}']
-    function GetLength(out aLength: PRUint32): Longword; stdcall;
-    function Item(index: PRUint32; out _retval: nsIDOMCSSRule_std17): nsresult; stdcall;
+    function GetLength(out aLength: PRUint32): Longword; extdecl;
+    function Item(index: PRUint32; out _retval: nsIDOMCSSRule_std17): nsresult; extdecl;
   end;
 
   nsIDOMCSSStyleDeclaration_std17 = interface(nsISupports_std17)
   ['{a6cf90be-15b3-11d2-932e-00805f8add32}']
-    function GetCssText(aCssText: nsAString): Longword; stdcall;
-    function SetCssText(const aCssText: nsAString): Longword; stdcall;
-    function GetPropertyValue(const propertyName: nsAString; _retval: nsAString): nsresult; stdcall;
-    function GetPropertyCSSValue(const propertyName: nsAString; out _retval: nsIDOMCSSValue_std17): nsresult; stdcall;
-    function RemoveProperty(const propertyName: nsAString; _retval: nsAString): nsresult; stdcall;
-    function GetPropertyPriority(const propertyName: nsAString; _retval: nsAString): nsresult; stdcall;
-    function SetProperty(const propertyName: nsAString; const value: nsAString; const priority: nsAString): nsresult; stdcall;
-    function GetLength(out aLength: PRUint32): Longword; stdcall;
-    function Item(index: PRUint32; _retval: nsAString): nsresult; stdcall;
-    function GetParentRule(out aParentRule: nsIDOMCSSRule_std17): Longword; stdcall;
+    function GetCssText(aCssText: nsAString): Longword; extdecl;
+    function SetCssText(const aCssText: nsAString): Longword; extdecl;
+    function GetPropertyValue(const propertyName: nsAString; _retval: nsAString): nsresult; extdecl;
+    function GetPropertyCSSValue(const propertyName: nsAString; out _retval: nsIDOMCSSValue_std17): nsresult; extdecl;
+    function RemoveProperty(const propertyName: nsAString; _retval: nsAString): nsresult; extdecl;
+    function GetPropertyPriority(const propertyName: nsAString; _retval: nsAString): nsresult; extdecl;
+    function SetProperty(const propertyName: nsAString; const value: nsAString; const priority: nsAString): nsresult; extdecl;
+    function GetLength(out aLength: PRUint32): Longword; extdecl;
+    function Item(index: PRUint32; _retval: nsAString): nsresult; extdecl;
+    function GetParentRule(out aParentRule: nsIDOMCSSRule_std17): Longword; extdecl;
   end;
 
   nsIDOMStyleSheet_std17 = interface(nsISupports_std17)
   ['{a6cf9080-15b3-11d2-932e-00805f8add32}']
-    function GetType(aType: nsAString): Longword; stdcall;
-    function GetDisabled(out aDisabled: PRBool): Longword; stdcall;
-    function SetDisabled(aDisabled: PRBool): Longword; stdcall;
-    function GetOwnerNode(out aOwnerNode: nsIDOMNode_std17): Longword; stdcall;
-    function GetParentStyleSheet(out aParentStyleSheet: nsIDOMStyleSheet_std17): Longword; stdcall;
-    function GetHref(aHref: nsAString): Longword; stdcall;
-    function GetTitle(aTitle: nsAString): Longword; stdcall;
-    function GetMedia(out aMedia: nsIDOMMediaList_std17): Longword; stdcall;
+    function GetType(aType: nsAString): Longword; extdecl;
+    function GetDisabled(out aDisabled: PRBool): Longword; extdecl;
+    function SetDisabled(aDisabled: PRBool): Longword; extdecl;
+    function GetOwnerNode(out aOwnerNode: nsIDOMNode_std17): Longword; extdecl;
+    function GetParentStyleSheet(out aParentStyleSheet: nsIDOMStyleSheet_std17): Longword; extdecl;
+    function GetHref(aHref: nsAString): Longword; extdecl;
+    function GetTitle(aTitle: nsAString): Longword; extdecl;
+    function GetMedia(out aMedia: nsIDOMMediaList_std17): Longword; extdecl;
   end;
 
   nsIDOMCSSStyleSheet_std17 = interface(nsIDOMStyleSheet_std17)
   ['{a6cf90c2-15b3-11d2-932e-00805f8add32}']
-    function GetOwnerRule(out aOwnerRule: nsIDOMCSSRule_std17): Longword; stdcall;
-    function GetCssRules(out aCssRules: nsIDOMCSSRuleList_std17): Longword; stdcall;
-    function InsertRule(const rule: nsAString; index: PRUint32; out _retval: PRUint32): nsresult; stdcall;
-    function DeleteRule(index: PRUint32): nsresult; stdcall;
+    function GetOwnerRule(out aOwnerRule: nsIDOMCSSRule_std17): Longword; extdecl;
+    function GetCssRules(out aCssRules: nsIDOMCSSRuleList_std17): Longword; extdecl;
+    function InsertRule(const rule: nsAString; index: PRUint32; out _retval: PRUint32): nsresult; extdecl;
+    function DeleteRule(index: PRUint32): nsresult; extdecl;
   end;
 
   nsIDOMCSSValueList_std17 = interface(nsIDOMCSSValue_std17)
   ['{8f09fa84-39b9-4dca-9b2f-db0eeb186286}']
-    function GetLength(out aLength: PRUint32): Longword; stdcall;
-    function Item(index: PRUint32; out _retval: nsIDOMCSSValue_std17): nsresult; stdcall;
+    function GetLength(out aLength: PRUint32): Longword; extdecl;
+    function Item(index: PRUint32; out _retval: nsIDOMCSSValue_std17): nsresult; extdecl;
   end;
 
   nsIDOMEvent_std17 = interface(nsISupports_std17)
   ['{a66b7b80-ff46-bd97-0080-5f8ae38add32}']
-    function GetType(aType: nsAString): Longword; stdcall;
-    function GetTarget(out aTarget: nsIDOMEventTarget_std17): Longword; stdcall;
-    function GetCurrentTarget(out aCurrentTarget: nsIDOMEventTarget_std17): Longword; stdcall;
-    function GetEventPhase(out aEventPhase: PRUint16): Longword; stdcall;
-    function GetBubbles(out aBubbles: PRBool): Longword; stdcall;
-    function GetCancelable(out aCancelable: PRBool): Longword; stdcall;
-    function GetTimeStamp(out aTimeStamp: DOMTimeStamp): Longword; stdcall;
-    function StopPropagation(): nsresult; stdcall;
-    function PreventDefault(): nsresult; stdcall;
-    function InitEvent(const eventTypeArg: nsAString; canBubbleArg: PRBool; cancelableArg: PRBool): nsresult; stdcall;
+    function GetType(aType: nsAString): Longword; extdecl;
+    function GetTarget(out aTarget: nsIDOMEventTarget_std17): Longword; extdecl;
+    function GetCurrentTarget(out aCurrentTarget: nsIDOMEventTarget_std17): Longword; extdecl;
+    function GetEventPhase(out aEventPhase: PRUint16): Longword; extdecl;
+    function GetBubbles(out aBubbles: PRBool): Longword; extdecl;
+    function GetCancelable(out aCancelable: PRBool): Longword; extdecl;
+    function GetTimeStamp(out aTimeStamp: DOMTimeStamp): Longword; extdecl;
+    function StopPropagation(): nsresult; extdecl;
+    function PreventDefault(): nsresult; extdecl;
+    function InitEvent(const eventTypeArg: nsAString; canBubbleArg: PRBool; cancelableArg: PRBool): nsresult; extdecl;
   end;
 
   nsIDOMCustomEvent_std17 = interface(nsIDOMEvent_std17)
   ['{55c7af7b-1a64-40bf-87eb-2c2cbee0491b}']
-    function SetCurrentTarget(target: nsIDOMNode_std17): nsresult; stdcall;
-    function SetEventPhase(phase: PRUint16): nsresult; stdcall;
+    function SetCurrentTarget(target: nsIDOMNode_std17): nsresult; extdecl;
+    function SetEventPhase(phase: PRUint16): nsresult; extdecl;
   end;
 
   nsIDOMDocument_std17 = interface(nsIDOMNode_std17)
   ['{a6cf9075-15b3-11d2-932e-00805f8add32}']
-    function GetDoctype(out aDoctype: nsIDOMDocumentType_std17): Longword; stdcall;
-    function GetImplementation(out aImplementation: nsIDOMDOMImplementation_std17): Longword; stdcall;
-    function GetDocumentElement(out aDocumentElement: nsIDOMElement_std17): Longword; stdcall;
-    function CreateElement(const tagName: nsAString; out _retval: nsIDOMElement_std17): nsresult; stdcall;
-    function CreateDocumentFragment(out _retval: nsIDOMDocumentFragment_std17): nsresult; stdcall;
-    function CreateTextNode(const data: nsAString; out _retval: nsIDOMText_std17): nsresult; stdcall;
-    function CreateComment(const data: nsAString; out _retval: nsIDOMComment_std17): nsresult; stdcall;
-    function CreateCDATASection(const data: nsAString; out _retval: nsIDOMCDATASection_std17): nsresult; stdcall;
-    function CreateProcessingInstruction(const target: nsAString; const data: nsAString; out _retval: nsIDOMProcessingInstruction_std17): nsresult; stdcall;
-    function CreateAttribute(const name: nsAString; out _retval: nsIDOMAttr_std17): nsresult; stdcall;
-    function CreateEntityReference(const name: nsAString; out _retval: nsIDOMEntityReference_std17): nsresult; stdcall;
-    function GetElementsByTagName(const tagname: nsAString; out _retval: nsIDOMNodeList_std17): nsresult; stdcall;
-    function ImportNode(importedNode: nsIDOMNode_std17; deep: PRBool; out _retval: nsIDOMNode_std17): nsresult; stdcall;
-    function CreateElementNS(const namespaceURI: nsAString; const qualifiedName: nsAString; out _retval: nsIDOMElement_std17): nsresult; stdcall;
-    function CreateAttributeNS(const namespaceURI: nsAString; const qualifiedName: nsAString; out _retval: nsIDOMAttr_std17): nsresult; stdcall;
-    function GetElementsByTagNameNS(const namespaceURI: nsAString; const localName: nsAString; out _retval: nsIDOMNodeList_std17): nsresult; stdcall;
-    function GetElementById(const elementId: nsAString; out _retval: nsIDOMElement_std17): nsresult; stdcall;
+    function GetDoctype(out aDoctype: nsIDOMDocumentType_std17): Longword; extdecl;
+    function GetImplementation(out aImplementation: nsIDOMDOMImplementation_std17): Longword; extdecl;
+    function GetDocumentElement(out aDocumentElement: nsIDOMElement_std17): Longword; extdecl;
+    function CreateElement(const tagName: nsAString; out _retval: nsIDOMElement_std17): nsresult; extdecl;
+    function CreateDocumentFragment(out _retval: nsIDOMDocumentFragment_std17): nsresult; extdecl;
+    function CreateTextNode(const data: nsAString; out _retval: nsIDOMText_std17): nsresult; extdecl;
+    function CreateComment(const data: nsAString; out _retval: nsIDOMComment_std17): nsresult; extdecl;
+    function CreateCDATASection(const data: nsAString; out _retval: nsIDOMCDATASection_std17): nsresult; extdecl;
+    function CreateProcessingInstruction(const target: nsAString; const data: nsAString; out _retval: nsIDOMProcessingInstruction_std17): nsresult; extdecl;
+    function CreateAttribute(const name: nsAString; out _retval: nsIDOMAttr_std17): nsresult; extdecl;
+    function CreateEntityReference(const name: nsAString; out _retval: nsIDOMEntityReference_std17): nsresult; extdecl;
+    function GetElementsByTagName(const tagname: nsAString; out _retval: nsIDOMNodeList_std17): nsresult; extdecl;
+    function ImportNode(importedNode: nsIDOMNode_std17; deep: PRBool; out _retval: nsIDOMNode_std17): nsresult; extdecl;
+    function CreateElementNS(const namespaceURI: nsAString; const qualifiedName: nsAString; out _retval: nsIDOMElement_std17): nsresult; extdecl;
+    function CreateAttributeNS(const namespaceURI: nsAString; const qualifiedName: nsAString; out _retval: nsIDOMAttr_std17): nsresult; extdecl;
+    function GetElementsByTagNameNS(const namespaceURI: nsAString; const localName: nsAString; out _retval: nsIDOMNodeList_std17): nsresult; extdecl;
+    function GetElementById(const elementId: nsAString; out _retval: nsIDOMElement_std17): nsresult; extdecl;
   end;
 
   nsIDOMDocumentEvent_std17 = interface(nsISupports_std17)
   ['{46b91d66-28e2-11d4-ab1e-0010830123b4}']
-    function CreateEvent(const eventType: nsAString; out _retval: nsIDOMEvent_std17): nsresult; stdcall;
+    function CreateEvent(const eventType: nsAString; out _retval: nsIDOMEvent_std17): nsresult; extdecl;
   end;
 
   nsIDOMDocumentFragment_std17 = interface(nsIDOMNode_std17)
@@ -1549,66 +1557,66 @@ type
 
   nsIDOMDocumentRange_std17 = interface(nsISupports_std17)
   ['{7b9badc6-c9bc-447a-8670-dbd195aed24b}']
-    function CreateRange(out _retval: nsIDOMRange_std17): nsresult; stdcall;
+    function CreateRange(out _retval: nsIDOMRange_std17): nsresult; extdecl;
   end;
 
   nsIDOMDocumentStyle_std17 = interface(nsISupports_std17)
   ['{3d9f4973-dd2e-48f5-b5f7-2634e09eadd9}']
-    function GetStyleSheets(out aStyleSheets: nsIDOMStyleSheetList_std17): Longword; stdcall;
+    function GetStyleSheets(out aStyleSheets: nsIDOMStyleSheetList_std17): Longword; extdecl;
   end;
 
   nsIDOMDocumentType_std17 = interface(nsIDOMNode_std17)
   ['{a6cf9077-15b3-11d2-932e-00805f8add32}']
-    function GetName(aName: nsAString): Longword; stdcall;
-    function GetEntities(out aEntities: nsIDOMNamedNodeMap_std17): Longword; stdcall;
-    function GetNotations(out aNotations: nsIDOMNamedNodeMap_std17): Longword; stdcall;
-    function GetPublicId(aPublicId: nsAString): Longword; stdcall;
-    function GetSystemId(aSystemId: nsAString): Longword; stdcall;
-    function GetInternalSubset(aInternalSubset: nsAString): Longword; stdcall;
+    function GetName(aName: nsAString): Longword; extdecl;
+    function GetEntities(out aEntities: nsIDOMNamedNodeMap_std17): Longword; extdecl;
+    function GetNotations(out aNotations: nsIDOMNamedNodeMap_std17): Longword; extdecl;
+    function GetPublicId(aPublicId: nsAString): Longword; extdecl;
+    function GetSystemId(aSystemId: nsAString): Longword; extdecl;
+    function GetInternalSubset(aInternalSubset: nsAString): Longword; extdecl;
   end;
 
   nsIDOMDocumentView_std17 = interface(nsISupports_std17)
   ['{1acdb2ba-1dd2-11b2-95bc-9542495d2569}']
-    function GetDefaultView(out aDefaultView: nsIDOMAbstractView_std17): Longword; stdcall;
+    function GetDefaultView(out aDefaultView: nsIDOMAbstractView_std17): Longword; extdecl;
   end;
 
   nsIDOMDOMException_std17 = interface(nsISupports_std17)
   ['{a6cf910a-15b3-11d2-932e-00805f8add32}']
-    function GetCode(out aCode: PRUint32): Longword; stdcall;
+    function GetCode(out aCode: PRUint32): Longword; extdecl;
   end;
 
   nsIDOMDOMImplementation_std17 = interface(nsISupports_std17)
   ['{a6cf9074-15b3-11d2-932e-00805f8add32}']
-    function HasFeature(const feature: nsAString; const version: nsAString; out _retval: PRBool): nsresult; stdcall;
-    function CreateDocumentType(const qualifiedName: nsAString; const publicId: nsAString; const systemId: nsAString; out _retval: nsIDOMDocumentType_std17): nsresult; stdcall;
-    function CreateDocument(const namespaceURI: nsAString; const qualifiedName: nsAString; doctype: nsIDOMDocumentType_std17; out _retval: nsIDOMDocument_std17): nsresult; stdcall;
+    function HasFeature(const feature: nsAString; const version: nsAString; out _retval: PRBool): nsresult; extdecl;
+    function CreateDocumentType(const qualifiedName: nsAString; const publicId: nsAString; const systemId: nsAString; out _retval: nsIDOMDocumentType_std17): nsresult; extdecl;
+    function CreateDocument(const namespaceURI: nsAString; const qualifiedName: nsAString; doctype: nsIDOMDocumentType_std17; out _retval: nsIDOMDocument_std17): nsresult; extdecl;
   end;
 
   nsIDOMElement_std17 = interface(nsIDOMNode_std17)
   ['{a6cf9078-15b3-11d2-932e-00805f8add32}']
-    function GetTagName(aTagName: nsAString): Longword; stdcall;
-    function GetAttribute(const name: nsAString; _retval: nsAString): nsresult; stdcall;
-    function SetAttribute(const name: nsAString; const value: nsAString): nsresult; stdcall;
-    function RemoveAttribute(const name: nsAString): nsresult; stdcall;
-    function GetAttributeNode(const name: nsAString; out _retval: nsIDOMAttr_std17): nsresult; stdcall;
-    function SetAttributeNode(newAttr: nsIDOMAttr_std17; out _retval: nsIDOMAttr_std17): nsresult; stdcall;
-    function RemoveAttributeNode(oldAttr: nsIDOMAttr_std17; out _retval: nsIDOMAttr_std17): nsresult; stdcall;
-    function GetElementsByTagName(const name: nsAString; out _retval: nsIDOMNodeList_std17): nsresult; stdcall;
-    function GetAttributeNS(const namespaceURI: nsAString; const localName: nsAString; _retval: nsAString): nsresult; stdcall;
-    function SetAttributeNS(const namespaceURI: nsAString; const qualifiedName: nsAString; const value: nsAString): nsresult; stdcall;
-    function RemoveAttributeNS(const namespaceURI: nsAString; const localName: nsAString): nsresult; stdcall;
-    function GetAttributeNodeNS(const namespaceURI: nsAString; const localName: nsAString; out _retval: nsIDOMAttr_std17): nsresult; stdcall;
-    function SetAttributeNodeNS(newAttr: nsIDOMAttr_std17; out _retval: nsIDOMAttr_std17): nsresult; stdcall;
-    function GetElementsByTagNameNS(const namespaceURI: nsAString; const localName: nsAString; out _retval: nsIDOMNodeList_std17): nsresult; stdcall;
-    function HasAttribute(const name: nsAString; out _retval: PRBool): nsresult; stdcall;
-    function HasAttributeNS(const namespaceURI: nsAString; const localName: nsAString; out _retval: PRBool): nsresult; stdcall;
+    function GetTagName(aTagName: nsAString): Longword; extdecl;
+    function GetAttribute(const name: nsAString; _retval: nsAString): nsresult; extdecl;
+    function SetAttribute(const name: nsAString; const value: nsAString): nsresult; extdecl;
+    function RemoveAttribute(const name: nsAString): nsresult; extdecl;
+    function GetAttributeNode(const name: nsAString; out _retval: nsIDOMAttr_std17): nsresult; extdecl;
+    function SetAttributeNode(newAttr: nsIDOMAttr_std17; out _retval: nsIDOMAttr_std17): nsresult; extdecl;
+    function RemoveAttributeNode(oldAttr: nsIDOMAttr_std17; out _retval: nsIDOMAttr_std17): nsresult; extdecl;
+    function GetElementsByTagName(const name: nsAString; out _retval: nsIDOMNodeList_std17): nsresult; extdecl;
+    function GetAttributeNS(const namespaceURI: nsAString; const localName: nsAString; _retval: nsAString): nsresult; extdecl;
+    function SetAttributeNS(const namespaceURI: nsAString; const qualifiedName: nsAString; const value: nsAString): nsresult; extdecl;
+    function RemoveAttributeNS(const namespaceURI: nsAString; const localName: nsAString): nsresult; extdecl;
+    function GetAttributeNodeNS(const namespaceURI: nsAString; const localName: nsAString; out _retval: nsIDOMAttr_std17): nsresult; extdecl;
+    function SetAttributeNodeNS(newAttr: nsIDOMAttr_std17; out _retval: nsIDOMAttr_std17): nsresult; extdecl;
+    function GetElementsByTagNameNS(const namespaceURI: nsAString; const localName: nsAString; out _retval: nsIDOMNodeList_std17): nsresult; extdecl;
+    function HasAttribute(const name: nsAString; out _retval: PRBool): nsresult; extdecl;
+    function HasAttributeNS(const namespaceURI: nsAString; const localName: nsAString; out _retval: PRBool): nsresult; extdecl;
   end;
 
   nsIDOMEntity_std17 = interface(nsIDOMNode_std17)
   ['{a6cf9079-15b3-11d2-932e-00805f8add32}']
-    function GetPublicId(aPublicId: nsAString): Longword; stdcall;
-    function GetSystemId(aSystemId: nsAString): Longword; stdcall;
-    function GetNotationName(aNotationName: nsAString): Longword; stdcall;
+    function GetPublicId(aPublicId: nsAString): Longword; extdecl;
+    function GetSystemId(aSystemId: nsAString): Longword; extdecl;
+    function GetNotationName(aNotationName: nsAString): Longword; extdecl;
   end;
 
   nsIDOMEntityReference_std17 = interface(nsIDOMNode_std17)
@@ -1617,1255 +1625,1255 @@ type
 
   nsIDOMEventGroup_std17 = interface(nsISupports_std17)
   ['{33347bee-6620-4841-8152-36091ae80c7e}']
-    function IsSameEventGroup(other: nsIDOMEventGroup_std17; out _retval: PRBool): nsresult; stdcall;
+    function IsSameEventGroup(other: nsIDOMEventGroup_std17; out _retval: PRBool): nsresult; extdecl;
   end;
 
   nsIDOMEventListener_std17 = interface(nsISupports_std17)
   ['{df31c120-ded6-11d1-bd85-00805f8ae3f4}']
-    function HandleEvent(event: nsIDOMEvent_std17): nsresult; stdcall;
+    function HandleEvent(event: nsIDOMEvent_std17): nsresult; extdecl;
   end;
 
   nsIDOMEventTarget_std17 = interface(nsISupports_std17)
   ['{1c773b30-d1cf-11d2-bd95-00805f8ae3f4}']
-    function AddEventListener(const _type: nsAString; listener: nsIDOMEventListener_std17; useCapture: PRBool): nsresult; stdcall;
-    function RemoveEventListener(const _type: nsAString; listener: nsIDOMEventListener_std17; useCapture: PRBool): nsresult; stdcall;
-    function DispatchEvent(evt: nsIDOMEvent_std17; out _retval: PRBool): nsresult; stdcall;
+    function AddEventListener(const _type: nsAString; listener: nsIDOMEventListener_std17; useCapture: PRBool): nsresult; extdecl;
+    function RemoveEventListener(const _type: nsAString; listener: nsIDOMEventListener_std17; useCapture: PRBool): nsresult; extdecl;
+    function DispatchEvent(evt: nsIDOMEvent_std17; out _retval: PRBool): nsresult; extdecl;
   end;
 
   nsIDOMHTMLElement_std17 = interface(nsIDOMElement_std17)
   ['{a6cf9085-15b3-11d2-932e-00805f8add32}']
-    function GetId(aId: nsAString): Longword; stdcall;
-    function SetId(const aId: nsAString): Longword; stdcall;
-    function GetTitle(aTitle: nsAString): Longword; stdcall;
-    function SetTitle(const aTitle: nsAString): Longword; stdcall;
-    function GetLang(aLang: nsAString): Longword; stdcall;
-    function SetLang(const aLang: nsAString): Longword; stdcall;
-    function GetDir(aDir: nsAString): Longword; stdcall;
-    function SetDir(const aDir: nsAString): Longword; stdcall;
-    function GetClassName(aClassName: nsAString): Longword; stdcall;
-    function SetClassName(const aClassName: nsAString): Longword; stdcall;
+    function GetId(aId: nsAString): Longword; extdecl;
+    function SetId(const aId: nsAString): Longword; extdecl;
+    function GetTitle(aTitle: nsAString): Longword; extdecl;
+    function SetTitle(const aTitle: nsAString): Longword; extdecl;
+    function GetLang(aLang: nsAString): Longword; extdecl;
+    function SetLang(const aLang: nsAString): Longword; extdecl;
+    function GetDir(aDir: nsAString): Longword; extdecl;
+    function SetDir(const aDir: nsAString): Longword; extdecl;
+    function GetClassName(aClassName: nsAString): Longword; extdecl;
+    function SetClassName(const aClassName: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLAnchorElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf90aa-15b3-11d2-932e-00805f8add32}']
-    function GetAccessKey(aAccessKey: nsAString): Longword; stdcall;
-    function SetAccessKey(const aAccessKey: nsAString): Longword; stdcall;
-    function GetCharset(aCharset: nsAString): Longword; stdcall;
-    function SetCharset(const aCharset: nsAString): Longword; stdcall;
-    function GetCoords(aCoords: nsAString): Longword; stdcall;
-    function SetCoords(const aCoords: nsAString): Longword; stdcall;
-    function GetHref(aHref: nsAString): Longword; stdcall;
-    function SetHref(const aHref: nsAString): Longword; stdcall;
-    function GetHreflang(aHreflang: nsAString): Longword; stdcall;
-    function SetHreflang(const aHreflang: nsAString): Longword; stdcall;
-    function GetName(aName: nsAString): Longword; stdcall;
-    function SetName(const aName: nsAString): Longword; stdcall;
-    function GetRel(aRel: nsAString): Longword; stdcall;
-    function SetRel(const aRel: nsAString): Longword; stdcall;
-    function GetRev(aRev: nsAString): Longword; stdcall;
-    function SetRev(const aRev: nsAString): Longword; stdcall;
-    function GetShape(aShape: nsAString): Longword; stdcall;
-    function SetShape(const aShape: nsAString): Longword; stdcall;
-    function GetTabIndex(out aTabIndex: PRInt32): Longword; stdcall;
-    function SetTabIndex(aTabIndex: PRInt32): Longword; stdcall;
-    function GetTarget(aTarget: nsAString): Longword; stdcall;
-    function SetTarget(const aTarget: nsAString): Longword; stdcall;
-    function GetType(aType: nsAString): Longword; stdcall;
-    function SetType(const aType: nsAString): Longword; stdcall;
-    function Blur(): nsresult; stdcall;
-    function Focus(): nsresult; stdcall;
+    function GetAccessKey(aAccessKey: nsAString): Longword; extdecl;
+    function SetAccessKey(const aAccessKey: nsAString): Longword; extdecl;
+    function GetCharset(aCharset: nsAString): Longword; extdecl;
+    function SetCharset(const aCharset: nsAString): Longword; extdecl;
+    function GetCoords(aCoords: nsAString): Longword; extdecl;
+    function SetCoords(const aCoords: nsAString): Longword; extdecl;
+    function GetHref(aHref: nsAString): Longword; extdecl;
+    function SetHref(const aHref: nsAString): Longword; extdecl;
+    function GetHreflang(aHreflang: nsAString): Longword; extdecl;
+    function SetHreflang(const aHreflang: nsAString): Longword; extdecl;
+    function GetName(aName: nsAString): Longword; extdecl;
+    function SetName(const aName: nsAString): Longword; extdecl;
+    function GetRel(aRel: nsAString): Longword; extdecl;
+    function SetRel(const aRel: nsAString): Longword; extdecl;
+    function GetRev(aRev: nsAString): Longword; extdecl;
+    function SetRev(const aRev: nsAString): Longword; extdecl;
+    function GetShape(aShape: nsAString): Longword; extdecl;
+    function SetShape(const aShape: nsAString): Longword; extdecl;
+    function GetTabIndex(out aTabIndex: PRInt32): Longword; extdecl;
+    function SetTabIndex(aTabIndex: PRInt32): Longword; extdecl;
+    function GetTarget(aTarget: nsAString): Longword; extdecl;
+    function SetTarget(const aTarget: nsAString): Longword; extdecl;
+    function GetType(aType: nsAString): Longword; extdecl;
+    function SetType(const aType: nsAString): Longword; extdecl;
+    function Blur(): nsresult; extdecl;
+    function Focus(): nsresult; extdecl;
   end;
 
   nsIDOMHTMLAppletElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf90ae-15b3-11d2-932e-00805f8add32}']
-    function GetAlign(aAlign: nsAString): Longword; stdcall;
-    function SetAlign(const aAlign: nsAString): Longword; stdcall;
-    function GetAlt(aAlt: nsAString): Longword; stdcall;
-    function SetAlt(const aAlt: nsAString): Longword; stdcall;
-    function GetArchive(aArchive: nsAString): Longword; stdcall;
-    function SetArchive(const aArchive: nsAString): Longword; stdcall;
-    function GetCode(aCode: nsAString): Longword; stdcall;
-    function SetCode(const aCode: nsAString): Longword; stdcall;
-    function GetCodeBase(aCodeBase: nsAString): Longword; stdcall;
-    function SetCodeBase(const aCodeBase: nsAString): Longword; stdcall;
-    function GetHeight(aHeight: nsAString): Longword; stdcall;
-    function SetHeight(const aHeight: nsAString): Longword; stdcall;
-    function GetHspace(out aHspace: PRInt32): Longword; stdcall;
-    function SetHspace(aHspace: PRInt32): Longword; stdcall;
-    function GetName(aName: nsAString): Longword; stdcall;
-    function SetName(const aName: nsAString): Longword; stdcall;
-    function GetObject(aObject: nsAString): Longword; stdcall;
-    function SetObject(const aObject: nsAString): Longword; stdcall;
-    function GetVspace(out aVspace: PRInt32): Longword; stdcall;
-    function SetVspace(aVspace: PRInt32): Longword; stdcall;
-    function GetWidth(aWidth: nsAString): Longword; stdcall;
-    function SetWidth(const aWidth: nsAString): Longword; stdcall;
+    function GetAlign(aAlign: nsAString): Longword; extdecl;
+    function SetAlign(const aAlign: nsAString): Longword; extdecl;
+    function GetAlt(aAlt: nsAString): Longword; extdecl;
+    function SetAlt(const aAlt: nsAString): Longword; extdecl;
+    function GetArchive(aArchive: nsAString): Longword; extdecl;
+    function SetArchive(const aArchive: nsAString): Longword; extdecl;
+    function GetCode(aCode: nsAString): Longword; extdecl;
+    function SetCode(const aCode: nsAString): Longword; extdecl;
+    function GetCodeBase(aCodeBase: nsAString): Longword; extdecl;
+    function SetCodeBase(const aCodeBase: nsAString): Longword; extdecl;
+    function GetHeight(aHeight: nsAString): Longword; extdecl;
+    function SetHeight(const aHeight: nsAString): Longword; extdecl;
+    function GetHspace(out aHspace: PRInt32): Longword; extdecl;
+    function SetHspace(aHspace: PRInt32): Longword; extdecl;
+    function GetName(aName: nsAString): Longword; extdecl;
+    function SetName(const aName: nsAString): Longword; extdecl;
+    function GetObject(aObject: nsAString): Longword; extdecl;
+    function SetObject(const aObject: nsAString): Longword; extdecl;
+    function GetVspace(out aVspace: PRInt32): Longword; extdecl;
+    function SetVspace(aVspace: PRInt32): Longword; extdecl;
+    function GetWidth(aWidth: nsAString): Longword; extdecl;
+    function SetWidth(const aWidth: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLAreaElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf90b0-15b3-11d2-932e-00805f8add32}']
-    function GetAccessKey(aAccessKey: nsAString): Longword; stdcall;
-    function SetAccessKey(const aAccessKey: nsAString): Longword; stdcall;
-    function GetAlt(aAlt: nsAString): Longword; stdcall;
-    function SetAlt(const aAlt: nsAString): Longword; stdcall;
-    function GetCoords(aCoords: nsAString): Longword; stdcall;
-    function SetCoords(const aCoords: nsAString): Longword; stdcall;
-    function GetHref(aHref: nsAString): Longword; stdcall;
-    function SetHref(const aHref: nsAString): Longword; stdcall;
-    function GetNoHref(out aNoHref: PRBool): Longword; stdcall;
-    function SetNoHref(aNoHref: PRBool): Longword; stdcall;
-    function GetShape(aShape: nsAString): Longword; stdcall;
-    function SetShape(const aShape: nsAString): Longword; stdcall;
-    function GetTabIndex(out aTabIndex: PRInt32): Longword; stdcall;
-    function SetTabIndex(aTabIndex: PRInt32): Longword; stdcall;
-    function GetTarget(aTarget: nsAString): Longword; stdcall;
-    function SetTarget(const aTarget: nsAString): Longword; stdcall;
+    function GetAccessKey(aAccessKey: nsAString): Longword; extdecl;
+    function SetAccessKey(const aAccessKey: nsAString): Longword; extdecl;
+    function GetAlt(aAlt: nsAString): Longword; extdecl;
+    function SetAlt(const aAlt: nsAString): Longword; extdecl;
+    function GetCoords(aCoords: nsAString): Longword; extdecl;
+    function SetCoords(const aCoords: nsAString): Longword; extdecl;
+    function GetHref(aHref: nsAString): Longword; extdecl;
+    function SetHref(const aHref: nsAString): Longword; extdecl;
+    function GetNoHref(out aNoHref: PRBool): Longword; extdecl;
+    function SetNoHref(aNoHref: PRBool): Longword; extdecl;
+    function GetShape(aShape: nsAString): Longword; extdecl;
+    function SetShape(const aShape: nsAString): Longword; extdecl;
+    function GetTabIndex(out aTabIndex: PRInt32): Longword; extdecl;
+    function SetTabIndex(aTabIndex: PRInt32): Longword; extdecl;
+    function GetTarget(aTarget: nsAString): Longword; extdecl;
+    function SetTarget(const aTarget: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLBaseElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf908b-15b3-11d2-932e-00805f8add32}']
-    function GetHref(aHref: nsAString): Longword; stdcall;
-    function SetHref(const aHref: nsAString): Longword; stdcall;
-    function GetTarget(aTarget: nsAString): Longword; stdcall;
-    function SetTarget(const aTarget: nsAString): Longword; stdcall;
+    function GetHref(aHref: nsAString): Longword; extdecl;
+    function SetHref(const aHref: nsAString): Longword; extdecl;
+    function GetTarget(aTarget: nsAString): Longword; extdecl;
+    function SetTarget(const aTarget: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLBaseFontElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf90a6-15b3-11d2-932e-00805f8add32}']
-    function GetColor(aColor: nsAString): Longword; stdcall;
-    function SetColor(const aColor: nsAString): Longword; stdcall;
-    function GetFace(aFace: nsAString): Longword; stdcall;
-    function SetFace(const aFace: nsAString): Longword; stdcall;
-    function GetSize(out aSize: PRInt32): Longword; stdcall;
-    function SetSize(aSize: PRInt32): Longword; stdcall;
+    function GetColor(aColor: nsAString): Longword; extdecl;
+    function SetColor(const aColor: nsAString): Longword; extdecl;
+    function GetFace(aFace: nsAString): Longword; extdecl;
+    function SetFace(const aFace: nsAString): Longword; extdecl;
+    function GetSize(out aSize: PRInt32): Longword; extdecl;
+    function SetSize(aSize: PRInt32): Longword; extdecl;
   end;
 
   nsIDOMHTMLBodyElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf908e-15b3-11d2-932e-00805f8add32}']
-    function GetALink(aALink: nsAString): Longword; stdcall;
-    function SetALink(const aALink: nsAString): Longword; stdcall;
-    function GetBackground(aBackground: nsAString): Longword; stdcall;
-    function SetBackground(const aBackground: nsAString): Longword; stdcall;
-    function GetBgColor(aBgColor: nsAString): Longword; stdcall;
-    function SetBgColor(const aBgColor: nsAString): Longword; stdcall;
-    function GetLink(aLink: nsAString): Longword; stdcall;
-    function SetLink(const aLink: nsAString): Longword; stdcall;
-    function GetText(aText: nsAString): Longword; stdcall;
-    function SetText(const aText: nsAString): Longword; stdcall;
-    function GetVLink(aVLink: nsAString): Longword; stdcall;
-    function SetVLink(const aVLink: nsAString): Longword; stdcall;
+    function GetALink(aALink: nsAString): Longword; extdecl;
+    function SetALink(const aALink: nsAString): Longword; extdecl;
+    function GetBackground(aBackground: nsAString): Longword; extdecl;
+    function SetBackground(const aBackground: nsAString): Longword; extdecl;
+    function GetBgColor(aBgColor: nsAString): Longword; extdecl;
+    function SetBgColor(const aBgColor: nsAString): Longword; extdecl;
+    function GetLink(aLink: nsAString): Longword; extdecl;
+    function SetLink(const aLink: nsAString): Longword; extdecl;
+    function GetText(aText: nsAString): Longword; extdecl;
+    function SetText(const aText: nsAString): Longword; extdecl;
+    function GetVLink(aVLink: nsAString): Longword; extdecl;
+    function SetVLink(const aVLink: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLBRElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf90a5-15b3-11d2-932e-00805f8add32}']
-    function GetClear(aClear: nsAString): Longword; stdcall;
-    function SetClear(const aClear: nsAString): Longword; stdcall;
+    function GetClear(aClear: nsAString): Longword; extdecl;
+    function SetClear(const aClear: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLButtonElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf9095-15b3-11d2-932e-00805f8add32}']
-    function GetForm(out aForm: nsIDOMHTMLFormElement_std17): Longword; stdcall;
-    function GetAccessKey(aAccessKey: nsAString): Longword; stdcall;
-    function SetAccessKey(const aAccessKey: nsAString): Longword; stdcall;
-    function GetDisabled(out aDisabled: PRBool): Longword; stdcall;
-    function SetDisabled(aDisabled: PRBool): Longword; stdcall;
-    function GetName(aName: nsAString): Longword; stdcall;
-    function SetName(const aName: nsAString): Longword; stdcall;
-    function GetTabIndex(out aTabIndex: PRInt32): Longword; stdcall;
-    function SetTabIndex(aTabIndex: PRInt32): Longword; stdcall;
-    function GetType(aType: nsAString): Longword; stdcall;
-    function GetValue(aValue: nsAString): Longword; stdcall;
-    function SetValue(const aValue: nsAString): Longword; stdcall;
+    function GetForm(out aForm: nsIDOMHTMLFormElement_std17): Longword; extdecl;
+    function GetAccessKey(aAccessKey: nsAString): Longword; extdecl;
+    function SetAccessKey(const aAccessKey: nsAString): Longword; extdecl;
+    function GetDisabled(out aDisabled: PRBool): Longword; extdecl;
+    function SetDisabled(aDisabled: PRBool): Longword; extdecl;
+    function GetName(aName: nsAString): Longword; extdecl;
+    function SetName(const aName: nsAString): Longword; extdecl;
+    function GetTabIndex(out aTabIndex: PRInt32): Longword; extdecl;
+    function SetTabIndex(aTabIndex: PRInt32): Longword; extdecl;
+    function GetType(aType: nsAString): Longword; extdecl;
+    function GetValue(aValue: nsAString): Longword; extdecl;
+    function SetValue(const aValue: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLCollection_std17 = interface(nsISupports_std17)
   ['{a6cf9083-15b3-11d2-932e-00805f8add32}']
-    function GetLength(out aLength: PRUint32): Longword; stdcall;
-    function Item(index: PRUint32; out _retval: nsIDOMNode_std17): nsresult; stdcall;
-    function NamedItem(const name: nsAString; out _retval: nsIDOMNode_std17): nsresult; stdcall;
+    function GetLength(out aLength: PRUint32): Longword; extdecl;
+    function Item(index: PRUint32; out _retval: nsIDOMNode_std17): nsresult; extdecl;
+    function NamedItem(const name: nsAString; out _retval: nsIDOMNode_std17): nsresult; extdecl;
   end;
 
   nsIDOMHTMLDirectoryElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf909c-15b3-11d2-932e-00805f8add32}']
-    function GetCompact(out aCompact: PRBool): Longword; stdcall;
-    function SetCompact(aCompact: PRBool): Longword; stdcall;
+    function GetCompact(out aCompact: PRBool): Longword; extdecl;
+    function SetCompact(aCompact: PRBool): Longword; extdecl;
   end;
 
   nsIDOMHTMLDivElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf90a0-15b3-11d2-932e-00805f8add32}']
-    function GetAlign(aAlign: nsAString): Longword; stdcall;
-    function SetAlign(const aAlign: nsAString): Longword; stdcall;
+    function GetAlign(aAlign: nsAString): Longword; extdecl;
+    function SetAlign(const aAlign: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLDListElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf909b-15b3-11d2-932e-00805f8add32}']
-    function GetCompact(out aCompact: PRBool): Longword; stdcall;
-    function SetCompact(aCompact: PRBool): Longword; stdcall;
+    function GetCompact(out aCompact: PRBool): Longword; extdecl;
+    function SetCompact(aCompact: PRBool): Longword; extdecl;
   end;
 
   nsIDOMHTMLDocument_std17 = interface(nsIDOMDocument_std17)
   ['{a6cf9084-15b3-11d2-932e-00805f8add32}']
-    function GetTitle(aTitle: nsAString): Longword; stdcall;
-    function SetTitle(const aTitle: nsAString): Longword; stdcall;
-    function GetReferrer(aReferrer: nsAString): Longword; stdcall;
-    function GetDomain(aDomain: nsAString): Longword; stdcall;
-    function GetURL(aURL: nsAString): Longword; stdcall;
-    function GetBody(out aBody: nsIDOMHTMLElement_std17): Longword; stdcall;
-    function SetBody(aBody: nsIDOMHTMLElement_std17): Longword; stdcall;
-    function GetImages(out aImages: nsIDOMHTMLCollection_std17): Longword; stdcall;
-    function GetApplets(out aApplets: nsIDOMHTMLCollection_std17): Longword; stdcall;
-    function GetLinks(out aLinks: nsIDOMHTMLCollection_std17): Longword; stdcall;
-    function GetForms(out aForms: nsIDOMHTMLCollection_std17): Longword; stdcall;
-    function GetAnchors(out aAnchors: nsIDOMHTMLCollection_std17): Longword; stdcall;
-    function GetCookie(aCookie: nsAString): Longword; stdcall;
-    function SetCookie(const aCookie: nsAString): Longword; stdcall;
-    function Open(): nsresult; stdcall;
-    function Close(): nsresult; stdcall;
-    function Write(const text: nsAString): nsresult; stdcall;
-    function Writeln(const text: nsAString): nsresult; stdcall;
-    function GetElementsByName(const elementName: nsAString; out _retval: nsIDOMNodeList_std17): nsresult; stdcall;
+    function GetTitle(aTitle: nsAString): Longword; extdecl;
+    function SetTitle(const aTitle: nsAString): Longword; extdecl;
+    function GetReferrer(aReferrer: nsAString): Longword; extdecl;
+    function GetDomain(aDomain: nsAString): Longword; extdecl;
+    function GetURL(aURL: nsAString): Longword; extdecl;
+    function GetBody(out aBody: nsIDOMHTMLElement_std17): Longword; extdecl;
+    function SetBody(aBody: nsIDOMHTMLElement_std17): Longword; extdecl;
+    function GetImages(out aImages: nsIDOMHTMLCollection_std17): Longword; extdecl;
+    function GetApplets(out aApplets: nsIDOMHTMLCollection_std17): Longword; extdecl;
+    function GetLinks(out aLinks: nsIDOMHTMLCollection_std17): Longword; extdecl;
+    function GetForms(out aForms: nsIDOMHTMLCollection_std17): Longword; extdecl;
+    function GetAnchors(out aAnchors: nsIDOMHTMLCollection_std17): Longword; extdecl;
+    function GetCookie(aCookie: nsAString): Longword; extdecl;
+    function SetCookie(const aCookie: nsAString): Longword; extdecl;
+    function Open(): nsresult; extdecl;
+    function Close(): nsresult; extdecl;
+    function Write(const text: nsAString): nsresult; extdecl;
+    function Writeln(const text: nsAString): nsresult; extdecl;
+    function GetElementsByName(const elementName: nsAString; out _retval: nsIDOMNodeList_std17): nsresult; extdecl;
   end;
 
   nsIDOMHTMLEmbedElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{123f90ab-15b3-11d2-456e-00805f8add32}']
-    function GetAlign(aAlign: nsAString): Longword; stdcall;
-    function SetAlign(const aAlign: nsAString): Longword; stdcall;
-    function GetHeight(aHeight: nsAString): Longword; stdcall;
-    function SetHeight(const aHeight: nsAString): Longword; stdcall;
-    function GetName(aName: nsAString): Longword; stdcall;
-    function SetName(const aName: nsAString): Longword; stdcall;
-    function GetSrc(aSrc: nsAString): Longword; stdcall;
-    function SetSrc(const aSrc: nsAString): Longword; stdcall;
-    function GetType(aType: nsAString): Longword; stdcall;
-    function SetType(const aType: nsAString): Longword; stdcall;
-    function GetWidth(aWidth: nsAString): Longword; stdcall;
-    function SetWidth(const aWidth: nsAString): Longword; stdcall;
+    function GetAlign(aAlign: nsAString): Longword; extdecl;
+    function SetAlign(const aAlign: nsAString): Longword; extdecl;
+    function GetHeight(aHeight: nsAString): Longword; extdecl;
+    function SetHeight(const aHeight: nsAString): Longword; extdecl;
+    function GetName(aName: nsAString): Longword; extdecl;
+    function SetName(const aName: nsAString): Longword; extdecl;
+    function GetSrc(aSrc: nsAString): Longword; extdecl;
+    function SetSrc(const aSrc: nsAString): Longword; extdecl;
+    function GetType(aType: nsAString): Longword; extdecl;
+    function SetType(const aType: nsAString): Longword; extdecl;
+    function GetWidth(aWidth: nsAString): Longword; extdecl;
+    function SetWidth(const aWidth: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLFieldSetElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf9097-15b3-11d2-932e-00805f8add32}']
-    function GetForm(out aForm: nsIDOMHTMLFormElement_std17): Longword; stdcall;
+    function GetForm(out aForm: nsIDOMHTMLFormElement_std17): Longword; extdecl;
   end;
 
   nsIDOMHTMLFontElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf90a7-15b3-11d2-932e-00805f8add32}']
-    function GetColor(aColor: nsAString): Longword; stdcall;
-    function SetColor(const aColor: nsAString): Longword; stdcall;
-    function GetFace(aFace: nsAString): Longword; stdcall;
-    function SetFace(const aFace: nsAString): Longword; stdcall;
-    function GetSize(aSize: nsAString): Longword; stdcall;
-    function SetSize(const aSize: nsAString): Longword; stdcall;
+    function GetColor(aColor: nsAString): Longword; extdecl;
+    function SetColor(const aColor: nsAString): Longword; extdecl;
+    function GetFace(aFace: nsAString): Longword; extdecl;
+    function SetFace(const aFace: nsAString): Longword; extdecl;
+    function GetSize(aSize: nsAString): Longword; extdecl;
+    function SetSize(const aSize: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLFormElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf908f-15b3-11d2-932e-00805f8add32}']
-    function GetElements(out aElements: nsIDOMHTMLCollection_std17): Longword; stdcall;
-    function GetLength(out aLength: PRInt32): Longword; stdcall;
-    function GetName(aName: nsAString): Longword; stdcall;
-    function SetName(const aName: nsAString): Longword; stdcall;
-    function GetAcceptCharset(aAcceptCharset: nsAString): Longword; stdcall;
-    function SetAcceptCharset(const aAcceptCharset: nsAString): Longword; stdcall;
-    function GetAction(aAction: nsAString): Longword; stdcall;
-    function SetAction(const aAction: nsAString): Longword; stdcall;
-    function GetEnctype(aEnctype: nsAString): Longword; stdcall;
-    function SetEnctype(const aEnctype: nsAString): Longword; stdcall;
-    function GetMethod(aMethod: nsAString): Longword; stdcall;
-    function SetMethod(const aMethod: nsAString): Longword; stdcall;
-    function GetTarget(aTarget: nsAString): Longword; stdcall;
-    function SetTarget(const aTarget: nsAString): Longword; stdcall;
-    function Submit(): nsresult; stdcall;
-    function Reset(): nsresult; stdcall;
+    function GetElements(out aElements: nsIDOMHTMLCollection_std17): Longword; extdecl;
+    function GetLength(out aLength: PRInt32): Longword; extdecl;
+    function GetName(aName: nsAString): Longword; extdecl;
+    function SetName(const aName: nsAString): Longword; extdecl;
+    function GetAcceptCharset(aAcceptCharset: nsAString): Longword; extdecl;
+    function SetAcceptCharset(const aAcceptCharset: nsAString): Longword; extdecl;
+    function GetAction(aAction: nsAString): Longword; extdecl;
+    function SetAction(const aAction: nsAString): Longword; extdecl;
+    function GetEnctype(aEnctype: nsAString): Longword; extdecl;
+    function SetEnctype(const aEnctype: nsAString): Longword; extdecl;
+    function GetMethod(aMethod: nsAString): Longword; extdecl;
+    function SetMethod(const aMethod: nsAString): Longword; extdecl;
+    function GetTarget(aTarget: nsAString): Longword; extdecl;
+    function SetTarget(const aTarget: nsAString): Longword; extdecl;
+    function Submit(): nsresult; extdecl;
+    function Reset(): nsresult; extdecl;
   end;
 
   nsIDOMHTMLFrameElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf90b9-15b3-11d2-932e-00805f8add32}']
-    function GetFrameBorder(aFrameBorder: nsAString): Longword; stdcall;
-    function SetFrameBorder(const aFrameBorder: nsAString): Longword; stdcall;
-    function GetLongDesc(aLongDesc: nsAString): Longword; stdcall;
-    function SetLongDesc(const aLongDesc: nsAString): Longword; stdcall;
-    function GetMarginHeight(aMarginHeight: nsAString): Longword; stdcall;
-    function SetMarginHeight(const aMarginHeight: nsAString): Longword; stdcall;
-    function GetMarginWidth(aMarginWidth: nsAString): Longword; stdcall;
-    function SetMarginWidth(const aMarginWidth: nsAString): Longword; stdcall;
-    function GetName(aName: nsAString): Longword; stdcall;
-    function SetName(const aName: nsAString): Longword; stdcall;
-    function GetNoResize(out aNoResize: PRBool): Longword; stdcall;
-    function SetNoResize(aNoResize: PRBool): Longword; stdcall;
-    function GetScrolling(aScrolling: nsAString): Longword; stdcall;
-    function SetScrolling(const aScrolling: nsAString): Longword; stdcall;
-    function GetSrc(aSrc: nsAString): Longword; stdcall;
-    function SetSrc(const aSrc: nsAString): Longword; stdcall;
-    function GetContentDocument(out aContentDocument: nsIDOMDocument_std17): Longword; stdcall;
+    function GetFrameBorder(aFrameBorder: nsAString): Longword; extdecl;
+    function SetFrameBorder(const aFrameBorder: nsAString): Longword; extdecl;
+    function GetLongDesc(aLongDesc: nsAString): Longword; extdecl;
+    function SetLongDesc(const aLongDesc: nsAString): Longword; extdecl;
+    function GetMarginHeight(aMarginHeight: nsAString): Longword; extdecl;
+    function SetMarginHeight(const aMarginHeight: nsAString): Longword; extdecl;
+    function GetMarginWidth(aMarginWidth: nsAString): Longword; extdecl;
+    function SetMarginWidth(const aMarginWidth: nsAString): Longword; extdecl;
+    function GetName(aName: nsAString): Longword; extdecl;
+    function SetName(const aName: nsAString): Longword; extdecl;
+    function GetNoResize(out aNoResize: PRBool): Longword; extdecl;
+    function SetNoResize(aNoResize: PRBool): Longword; extdecl;
+    function GetScrolling(aScrolling: nsAString): Longword; extdecl;
+    function SetScrolling(const aScrolling: nsAString): Longword; extdecl;
+    function GetSrc(aSrc: nsAString): Longword; extdecl;
+    function SetSrc(const aSrc: nsAString): Longword; extdecl;
+    function GetContentDocument(out aContentDocument: nsIDOMDocument_std17): Longword; extdecl;
   end;
 
   nsIDOMHTMLFrameSetElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf90b8-15b3-11d2-932e-00805f8add32}']
-    function GetCols(aCols: nsAString): Longword; stdcall;
-    function SetCols(const aCols: nsAString): Longword; stdcall;
-    function GetRows(aRows: nsAString): Longword; stdcall;
-    function SetRows(const aRows: nsAString): Longword; stdcall;
+    function GetCols(aCols: nsAString): Longword; extdecl;
+    function SetCols(const aCols: nsAString): Longword; extdecl;
+    function GetRows(aRows: nsAString): Longword; extdecl;
+    function SetRows(const aRows: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLHeadElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf9087-15b3-11d2-932e-00805f8add32}']
-    function GetProfile(aProfile: nsAString): Longword; stdcall;
-    function SetProfile(const aProfile: nsAString): Longword; stdcall;
+    function GetProfile(aProfile: nsAString): Longword; extdecl;
+    function SetProfile(const aProfile: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLHeadingElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf90a2-15b3-11d2-932e-00805f8add32}']
-    function GetAlign(aAlign: nsAString): Longword; stdcall;
-    function SetAlign(const aAlign: nsAString): Longword; stdcall;
+    function GetAlign(aAlign: nsAString): Longword; extdecl;
+    function SetAlign(const aAlign: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLHRElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf90a8-15b3-11d2-932e-00805f8add32}']
-    function GetAlign(aAlign: nsAString): Longword; stdcall;
-    function SetAlign(const aAlign: nsAString): Longword; stdcall;
-    function GetNoShade(out aNoShade: PRBool): Longword; stdcall;
-    function SetNoShade(aNoShade: PRBool): Longword; stdcall;
-    function GetSize(aSize: nsAString): Longword; stdcall;
-    function SetSize(const aSize: nsAString): Longword; stdcall;
-    function GetWidth(aWidth: nsAString): Longword; stdcall;
-    function SetWidth(const aWidth: nsAString): Longword; stdcall;
+    function GetAlign(aAlign: nsAString): Longword; extdecl;
+    function SetAlign(const aAlign: nsAString): Longword; extdecl;
+    function GetNoShade(out aNoShade: PRBool): Longword; extdecl;
+    function SetNoShade(aNoShade: PRBool): Longword; extdecl;
+    function GetSize(aSize: nsAString): Longword; extdecl;
+    function SetSize(const aSize: nsAString): Longword; extdecl;
+    function GetWidth(aWidth: nsAString): Longword; extdecl;
+    function SetWidth(const aWidth: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLHtmlElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf9086-15b3-11d2-932e-00805f8add32}']
-    function GetVersion(aVersion: nsAString): Longword; stdcall;
-    function SetVersion(const aVersion: nsAString): Longword; stdcall;
+    function GetVersion(aVersion: nsAString): Longword; extdecl;
+    function SetVersion(const aVersion: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLIFrameElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf90ba-15b3-11d2-932e-00805f8add32}']
-    function GetAlign(aAlign: nsAString): Longword; stdcall;
-    function SetAlign(const aAlign: nsAString): Longword; stdcall;
-    function GetFrameBorder(aFrameBorder: nsAString): Longword; stdcall;
-    function SetFrameBorder(const aFrameBorder: nsAString): Longword; stdcall;
-    function GetHeight(aHeight: nsAString): Longword; stdcall;
-    function SetHeight(const aHeight: nsAString): Longword; stdcall;
-    function GetLongDesc(aLongDesc: nsAString): Longword; stdcall;
-    function SetLongDesc(const aLongDesc: nsAString): Longword; stdcall;
-    function GetMarginHeight(aMarginHeight: nsAString): Longword; stdcall;
-    function SetMarginHeight(const aMarginHeight: nsAString): Longword; stdcall;
-    function GetMarginWidth(aMarginWidth: nsAString): Longword; stdcall;
-    function SetMarginWidth(const aMarginWidth: nsAString): Longword; stdcall;
-    function GetName(aName: nsAString): Longword; stdcall;
-    function SetName(const aName: nsAString): Longword; stdcall;
-    function GetScrolling(aScrolling: nsAString): Longword; stdcall;
-    function SetScrolling(const aScrolling: nsAString): Longword; stdcall;
-    function GetSrc(aSrc: nsAString): Longword; stdcall;
-    function SetSrc(const aSrc: nsAString): Longword; stdcall;
-    function GetWidth(aWidth: nsAString): Longword; stdcall;
-    function SetWidth(const aWidth: nsAString): Longword; stdcall;
-    function GetContentDocument(out aContentDocument: nsIDOMDocument_std17): Longword; stdcall;
+    function GetAlign(aAlign: nsAString): Longword; extdecl;
+    function SetAlign(const aAlign: nsAString): Longword; extdecl;
+    function GetFrameBorder(aFrameBorder: nsAString): Longword; extdecl;
+    function SetFrameBorder(const aFrameBorder: nsAString): Longword; extdecl;
+    function GetHeight(aHeight: nsAString): Longword; extdecl;
+    function SetHeight(const aHeight: nsAString): Longword; extdecl;
+    function GetLongDesc(aLongDesc: nsAString): Longword; extdecl;
+    function SetLongDesc(const aLongDesc: nsAString): Longword; extdecl;
+    function GetMarginHeight(aMarginHeight: nsAString): Longword; extdecl;
+    function SetMarginHeight(const aMarginHeight: nsAString): Longword; extdecl;
+    function GetMarginWidth(aMarginWidth: nsAString): Longword; extdecl;
+    function SetMarginWidth(const aMarginWidth: nsAString): Longword; extdecl;
+    function GetName(aName: nsAString): Longword; extdecl;
+    function SetName(const aName: nsAString): Longword; extdecl;
+    function GetScrolling(aScrolling: nsAString): Longword; extdecl;
+    function SetScrolling(const aScrolling: nsAString): Longword; extdecl;
+    function GetSrc(aSrc: nsAString): Longword; extdecl;
+    function SetSrc(const aSrc: nsAString): Longword; extdecl;
+    function GetWidth(aWidth: nsAString): Longword; extdecl;
+    function SetWidth(const aWidth: nsAString): Longword; extdecl;
+    function GetContentDocument(out aContentDocument: nsIDOMDocument_std17): Longword; extdecl;
   end;
 
   nsIDOMHTMLImageElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf90ab-15b3-11d2-932e-00805f8add32}']
-    function GetName(aName: nsAString): Longword; stdcall;
-    function SetName(const aName: nsAString): Longword; stdcall;
-    function GetAlign(aAlign: nsAString): Longword; stdcall;
-    function SetAlign(const aAlign: nsAString): Longword; stdcall;
-    function GetAlt(aAlt: nsAString): Longword; stdcall;
-    function SetAlt(const aAlt: nsAString): Longword; stdcall;
-    function GetBorder(aBorder: nsAString): Longword; stdcall;
-    function SetBorder(const aBorder: nsAString): Longword; stdcall;
-    function GetHeight(out aHeight: PRInt32): Longword; stdcall;
-    function SetHeight(aHeight: PRInt32): Longword; stdcall;
-    function GetHspace(out aHspace: PRInt32): Longword; stdcall;
-    function SetHspace(aHspace: PRInt32): Longword; stdcall;
-    function GetIsMap(out aIsMap: PRBool): Longword; stdcall;
-    function SetIsMap(aIsMap: PRBool): Longword; stdcall;
-    function GetLongDesc(aLongDesc: nsAString): Longword; stdcall;
-    function SetLongDesc(const aLongDesc: nsAString): Longword; stdcall;
-    function GetSrc(aSrc: nsAString): Longword; stdcall;
-    function SetSrc(const aSrc: nsAString): Longword; stdcall;
-    function GetUseMap(aUseMap: nsAString): Longword; stdcall;
-    function SetUseMap(const aUseMap: nsAString): Longword; stdcall;
-    function GetVspace(out aVspace: PRInt32): Longword; stdcall;
-    function SetVspace(aVspace: PRInt32): Longword; stdcall;
-    function GetWidth(out aWidth: PRInt32): Longword; stdcall;
-    function SetWidth(aWidth: PRInt32): Longword; stdcall;
+    function GetName(aName: nsAString): Longword; extdecl;
+    function SetName(const aName: nsAString): Longword; extdecl;
+    function GetAlign(aAlign: nsAString): Longword; extdecl;
+    function SetAlign(const aAlign: nsAString): Longword; extdecl;
+    function GetAlt(aAlt: nsAString): Longword; extdecl;
+    function SetAlt(const aAlt: nsAString): Longword; extdecl;
+    function GetBorder(aBorder: nsAString): Longword; extdecl;
+    function SetBorder(const aBorder: nsAString): Longword; extdecl;
+    function GetHeight(out aHeight: PRInt32): Longword; extdecl;
+    function SetHeight(aHeight: PRInt32): Longword; extdecl;
+    function GetHspace(out aHspace: PRInt32): Longword; extdecl;
+    function SetHspace(aHspace: PRInt32): Longword; extdecl;
+    function GetIsMap(out aIsMap: PRBool): Longword; extdecl;
+    function SetIsMap(aIsMap: PRBool): Longword; extdecl;
+    function GetLongDesc(aLongDesc: nsAString): Longword; extdecl;
+    function SetLongDesc(const aLongDesc: nsAString): Longword; extdecl;
+    function GetSrc(aSrc: nsAString): Longword; extdecl;
+    function SetSrc(const aSrc: nsAString): Longword; extdecl;
+    function GetUseMap(aUseMap: nsAString): Longword; extdecl;
+    function SetUseMap(const aUseMap: nsAString): Longword; extdecl;
+    function GetVspace(out aVspace: PRInt32): Longword; extdecl;
+    function SetVspace(aVspace: PRInt32): Longword; extdecl;
+    function GetWidth(out aWidth: PRInt32): Longword; extdecl;
+    function SetWidth(aWidth: PRInt32): Longword; extdecl;
   end;
 
   nsIDOMHTMLInputElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf9093-15b3-11d2-932e-00805f8add32}']
-    function GetDefaultValue(aDefaultValue: nsAString): Longword; stdcall;
-    function SetDefaultValue(const aDefaultValue: nsAString): Longword; stdcall;
-    function GetDefaultChecked(out aDefaultChecked: PRBool): Longword; stdcall;
-    function SetDefaultChecked(aDefaultChecked: PRBool): Longword; stdcall;
-    function GetForm(out aForm: nsIDOMHTMLFormElement_std17): Longword; stdcall;
-    function GetAccept(aAccept: nsAString): Longword; stdcall;
-    function SetAccept(const aAccept: nsAString): Longword; stdcall;
-    function GetAccessKey(aAccessKey: nsAString): Longword; stdcall;
-    function SetAccessKey(const aAccessKey: nsAString): Longword; stdcall;
-    function GetAlign(aAlign: nsAString): Longword; stdcall;
-    function SetAlign(const aAlign: nsAString): Longword; stdcall;
-    function GetAlt(aAlt: nsAString): Longword; stdcall;
-    function SetAlt(const aAlt: nsAString): Longword; stdcall;
-    function GetChecked(out aChecked: PRBool): Longword; stdcall;
-    function SetChecked(aChecked: PRBool): Longword; stdcall;
-    function GetDisabled(out aDisabled: PRBool): Longword; stdcall;
-    function SetDisabled(aDisabled: PRBool): Longword; stdcall;
-    function GetMaxLength(out aMaxLength: PRInt32): Longword; stdcall;
-    function SetMaxLength(aMaxLength: PRInt32): Longword; stdcall;
-    function GetName(aName: nsAString): Longword; stdcall;
-    function SetName(const aName: nsAString): Longword; stdcall;
-    function GetReadOnly(out aReadOnly: PRBool): Longword; stdcall;
-    function SetReadOnly(aReadOnly: PRBool): Longword; stdcall;
-    function GetSize(out aSize: PRUint32): Longword; stdcall;
-    function SetSize(aSize: PRUint32): Longword; stdcall;
-    function GetSrc(aSrc: nsAString): Longword; stdcall;
-    function SetSrc(const aSrc: nsAString): Longword; stdcall;
-    function GetTabIndex(out aTabIndex: PRInt32): Longword; stdcall;
-    function SetTabIndex(aTabIndex: PRInt32): Longword; stdcall;
-    function GetType(aType: nsAString): Longword; stdcall;
-    function SetType(const aType: nsAString): Longword; stdcall;
-    function GetUseMap(aUseMap: nsAString): Longword; stdcall;
-    function SetUseMap(const aUseMap: nsAString): Longword; stdcall;
-    function GetValue(aValue: nsAString): Longword; stdcall;
-    function SetValue(const aValue: nsAString): Longword; stdcall;
-    function Blur(): nsresult; stdcall;
-    function Focus(): nsresult; stdcall;
-    function Select(): nsresult; stdcall;
-    function Click(): nsresult; stdcall;
+    function GetDefaultValue(aDefaultValue: nsAString): Longword; extdecl;
+    function SetDefaultValue(const aDefaultValue: nsAString): Longword; extdecl;
+    function GetDefaultChecked(out aDefaultChecked: PRBool): Longword; extdecl;
+    function SetDefaultChecked(aDefaultChecked: PRBool): Longword; extdecl;
+    function GetForm(out aForm: nsIDOMHTMLFormElement_std17): Longword; extdecl;
+    function GetAccept(aAccept: nsAString): Longword; extdecl;
+    function SetAccept(const aAccept: nsAString): Longword; extdecl;
+    function GetAccessKey(aAccessKey: nsAString): Longword; extdecl;
+    function SetAccessKey(const aAccessKey: nsAString): Longword; extdecl;
+    function GetAlign(aAlign: nsAString): Longword; extdecl;
+    function SetAlign(const aAlign: nsAString): Longword; extdecl;
+    function GetAlt(aAlt: nsAString): Longword; extdecl;
+    function SetAlt(const aAlt: nsAString): Longword; extdecl;
+    function GetChecked(out aChecked: PRBool): Longword; extdecl;
+    function SetChecked(aChecked: PRBool): Longword; extdecl;
+    function GetDisabled(out aDisabled: PRBool): Longword; extdecl;
+    function SetDisabled(aDisabled: PRBool): Longword; extdecl;
+    function GetMaxLength(out aMaxLength: PRInt32): Longword; extdecl;
+    function SetMaxLength(aMaxLength: PRInt32): Longword; extdecl;
+    function GetName(aName: nsAString): Longword; extdecl;
+    function SetName(const aName: nsAString): Longword; extdecl;
+    function GetReadOnly(out aReadOnly: PRBool): Longword; extdecl;
+    function SetReadOnly(aReadOnly: PRBool): Longword; extdecl;
+    function GetSize(out aSize: PRUint32): Longword; extdecl;
+    function SetSize(aSize: PRUint32): Longword; extdecl;
+    function GetSrc(aSrc: nsAString): Longword; extdecl;
+    function SetSrc(const aSrc: nsAString): Longword; extdecl;
+    function GetTabIndex(out aTabIndex: PRInt32): Longword; extdecl;
+    function SetTabIndex(aTabIndex: PRInt32): Longword; extdecl;
+    function GetType(aType: nsAString): Longword; extdecl;
+    function SetType(const aType: nsAString): Longword; extdecl;
+    function GetUseMap(aUseMap: nsAString): Longword; extdecl;
+    function SetUseMap(const aUseMap: nsAString): Longword; extdecl;
+    function GetValue(aValue: nsAString): Longword; extdecl;
+    function SetValue(const aValue: nsAString): Longword; extdecl;
+    function Blur(): nsresult; extdecl;
+    function Focus(): nsresult; extdecl;
+    function Select(): nsresult; extdecl;
+    function Click(): nsresult; extdecl;
   end;
 
   nsIDOMHTMLIsIndexElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf908c-15b3-11d2-932e-00805f8add32}']
-    function GetForm(out aForm: nsIDOMHTMLFormElement_std17): Longword; stdcall;
-    function GetPrompt(aPrompt: nsAString): Longword; stdcall;
-    function SetPrompt(const aPrompt: nsAString): Longword; stdcall;
+    function GetForm(out aForm: nsIDOMHTMLFormElement_std17): Longword; extdecl;
+    function GetPrompt(aPrompt: nsAString): Longword; extdecl;
+    function SetPrompt(const aPrompt: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLLabelElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf9096-15b3-11d2-932e-00805f8add32}']
-    function GetForm(out aForm: nsIDOMHTMLFormElement_std17): Longword; stdcall;
-    function GetAccessKey(aAccessKey: nsAString): Longword; stdcall;
-    function SetAccessKey(const aAccessKey: nsAString): Longword; stdcall;
-    function GetHtmlFor(aHtmlFor: nsAString): Longword; stdcall;
-    function SetHtmlFor(const aHtmlFor: nsAString): Longword; stdcall;
+    function GetForm(out aForm: nsIDOMHTMLFormElement_std17): Longword; extdecl;
+    function GetAccessKey(aAccessKey: nsAString): Longword; extdecl;
+    function SetAccessKey(const aAccessKey: nsAString): Longword; extdecl;
+    function GetHtmlFor(aHtmlFor: nsAString): Longword; extdecl;
+    function SetHtmlFor(const aHtmlFor: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLLegendElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf9098-15b3-11d2-932e-00805f8add32}']
-    function GetForm(out aForm: nsIDOMHTMLFormElement_std17): Longword; stdcall;
-    function GetAccessKey(aAccessKey: nsAString): Longword; stdcall;
-    function SetAccessKey(const aAccessKey: nsAString): Longword; stdcall;
-    function GetAlign(aAlign: nsAString): Longword; stdcall;
-    function SetAlign(const aAlign: nsAString): Longword; stdcall;
+    function GetForm(out aForm: nsIDOMHTMLFormElement_std17): Longword; extdecl;
+    function GetAccessKey(aAccessKey: nsAString): Longword; extdecl;
+    function SetAccessKey(const aAccessKey: nsAString): Longword; extdecl;
+    function GetAlign(aAlign: nsAString): Longword; extdecl;
+    function SetAlign(const aAlign: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLLIElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf909e-15b3-11d2-932e-00805f8add32}']
-    function GetType(aType: nsAString): Longword; stdcall;
-    function SetType(const aType: nsAString): Longword; stdcall;
-    function GetValue(out aValue: PRInt32): Longword; stdcall;
-    function SetValue(aValue: PRInt32): Longword; stdcall;
+    function GetType(aType: nsAString): Longword; extdecl;
+    function SetType(const aType: nsAString): Longword; extdecl;
+    function GetValue(out aValue: PRInt32): Longword; extdecl;
+    function SetValue(aValue: PRInt32): Longword; extdecl;
   end;
 
   nsIDOMHTMLLinkElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf9088-15b3-11d2-932e-00805f8add32}']
-    function GetDisabled(out aDisabled: PRBool): Longword; stdcall;
-    function SetDisabled(aDisabled: PRBool): Longword; stdcall;
-    function GetCharset(aCharset: nsAString): Longword; stdcall;
-    function SetCharset(const aCharset: nsAString): Longword; stdcall;
-    function GetHref(aHref: nsAString): Longword; stdcall;
-    function SetHref(const aHref: nsAString): Longword; stdcall;
-    function GetHreflang(aHreflang: nsAString): Longword; stdcall;
-    function SetHreflang(const aHreflang: nsAString): Longword; stdcall;
-    function GetMedia(aMedia: nsAString): Longword; stdcall;
-    function SetMedia(const aMedia: nsAString): Longword; stdcall;
-    function GetRel(aRel: nsAString): Longword; stdcall;
-    function SetRel(const aRel: nsAString): Longword; stdcall;
-    function GetRev(aRev: nsAString): Longword; stdcall;
-    function SetRev(const aRev: nsAString): Longword; stdcall;
-    function GetTarget(aTarget: nsAString): Longword; stdcall;
-    function SetTarget(const aTarget: nsAString): Longword; stdcall;
-    function GetType(aType: nsAString): Longword; stdcall;
-    function SetType(const aType: nsAString): Longword; stdcall;
+    function GetDisabled(out aDisabled: PRBool): Longword; extdecl;
+    function SetDisabled(aDisabled: PRBool): Longword; extdecl;
+    function GetCharset(aCharset: nsAString): Longword; extdecl;
+    function SetCharset(const aCharset: nsAString): Longword; extdecl;
+    function GetHref(aHref: nsAString): Longword; extdecl;
+    function SetHref(const aHref: nsAString): Longword; extdecl;
+    function GetHreflang(aHreflang: nsAString): Longword; extdecl;
+    function SetHreflang(const aHreflang: nsAString): Longword; extdecl;
+    function GetMedia(aMedia: nsAString): Longword; extdecl;
+    function SetMedia(const aMedia: nsAString): Longword; extdecl;
+    function GetRel(aRel: nsAString): Longword; extdecl;
+    function SetRel(const aRel: nsAString): Longword; extdecl;
+    function GetRev(aRev: nsAString): Longword; extdecl;
+    function SetRev(const aRev: nsAString): Longword; extdecl;
+    function GetTarget(aTarget: nsAString): Longword; extdecl;
+    function SetTarget(const aTarget: nsAString): Longword; extdecl;
+    function GetType(aType: nsAString): Longword; extdecl;
+    function SetType(const aType: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLMapElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf90af-15b3-11d2-932e-00805f8add32}']
-    function GetAreas(out aAreas: nsIDOMHTMLCollection_std17): Longword; stdcall;
-    function GetName(aName: nsAString): Longword; stdcall;
-    function SetName(const aName: nsAString): Longword; stdcall;
+    function GetAreas(out aAreas: nsIDOMHTMLCollection_std17): Longword; extdecl;
+    function GetName(aName: nsAString): Longword; extdecl;
+    function SetName(const aName: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLMenuElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf909d-15b3-11d2-932e-00805f8add32}']
-    function GetCompact(out aCompact: PRBool): Longword; stdcall;
-    function SetCompact(aCompact: PRBool): Longword; stdcall;
+    function GetCompact(out aCompact: PRBool): Longword; extdecl;
+    function SetCompact(aCompact: PRBool): Longword; extdecl;
   end;
 
   nsIDOMHTMLMetaElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf908a-15b3-11d2-932e-00805f8add32}']
-    function GetContent(aContent: nsAString): Longword; stdcall;
-    function SetContent(const aContent: nsAString): Longword; stdcall;
-    function GetHttpEquiv(aHttpEquiv: nsAString): Longword; stdcall;
-    function SetHttpEquiv(const aHttpEquiv: nsAString): Longword; stdcall;
-    function GetName(aName: nsAString): Longword; stdcall;
-    function SetName(const aName: nsAString): Longword; stdcall;
-    function GetScheme(aScheme: nsAString): Longword; stdcall;
-    function SetScheme(const aScheme: nsAString): Longword; stdcall;
+    function GetContent(aContent: nsAString): Longword; extdecl;
+    function SetContent(const aContent: nsAString): Longword; extdecl;
+    function GetHttpEquiv(aHttpEquiv: nsAString): Longword; extdecl;
+    function SetHttpEquiv(const aHttpEquiv: nsAString): Longword; extdecl;
+    function GetName(aName: nsAString): Longword; extdecl;
+    function SetName(const aName: nsAString): Longword; extdecl;
+    function GetScheme(aScheme: nsAString): Longword; extdecl;
+    function SetScheme(const aScheme: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLModElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf90a9-15b3-11d2-932e-00805f8add32}']
-    function GetCite(aCite: nsAString): Longword; stdcall;
-    function SetCite(const aCite: nsAString): Longword; stdcall;
-    function GetDateTime(aDateTime: nsAString): Longword; stdcall;
-    function SetDateTime(const aDateTime: nsAString): Longword; stdcall;
+    function GetCite(aCite: nsAString): Longword; extdecl;
+    function SetCite(const aCite: nsAString): Longword; extdecl;
+    function GetDateTime(aDateTime: nsAString): Longword; extdecl;
+    function SetDateTime(const aDateTime: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLObjectElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf90ac-15b3-11d2-932e-00805f8add32}']
-    function GetForm(out aForm: nsIDOMHTMLFormElement_std17): Longword; stdcall;
-    function GetCode(aCode: nsAString): Longword; stdcall;
-    function SetCode(const aCode: nsAString): Longword; stdcall;
-    function GetAlign(aAlign: nsAString): Longword; stdcall;
-    function SetAlign(const aAlign: nsAString): Longword; stdcall;
-    function GetArchive(aArchive: nsAString): Longword; stdcall;
-    function SetArchive(const aArchive: nsAString): Longword; stdcall;
-    function GetBorder(aBorder: nsAString): Longword; stdcall;
-    function SetBorder(const aBorder: nsAString): Longword; stdcall;
-    function GetCodeBase(aCodeBase: nsAString): Longword; stdcall;
-    function SetCodeBase(const aCodeBase: nsAString): Longword; stdcall;
-    function GetCodeType(aCodeType: nsAString): Longword; stdcall;
-    function SetCodeType(const aCodeType: nsAString): Longword; stdcall;
-    function GetData(aData: nsAString): Longword; stdcall;
-    function SetData(const aData: nsAString): Longword; stdcall;
-    function GetDeclare(out aDeclare: PRBool): Longword; stdcall;
-    function SetDeclare(aDeclare: PRBool): Longword; stdcall;
-    function GetHeight(aHeight: nsAString): Longword; stdcall;
-    function SetHeight(const aHeight: nsAString): Longword; stdcall;
-    function GetHspace(out aHspace: PRInt32): Longword; stdcall;
-    function SetHspace(aHspace: PRInt32): Longword; stdcall;
-    function GetName(aName: nsAString): Longword; stdcall;
-    function SetName(const aName: nsAString): Longword; stdcall;
-    function GetStandby(aStandby: nsAString): Longword; stdcall;
-    function SetStandby(const aStandby: nsAString): Longword; stdcall;
-    function GetTabIndex(out aTabIndex: PRInt32): Longword; stdcall;
-    function SetTabIndex(aTabIndex: PRInt32): Longword; stdcall;
-    function GetType(aType: nsAString): Longword; stdcall;
-    function SetType(const aType: nsAString): Longword; stdcall;
-    function GetUseMap(aUseMap: nsAString): Longword; stdcall;
-    function SetUseMap(const aUseMap: nsAString): Longword; stdcall;
-    function GetVspace(out aVspace: PRInt32): Longword; stdcall;
-    function SetVspace(aVspace: PRInt32): Longword; stdcall;
-    function GetWidth(aWidth: nsAString): Longword; stdcall;
-    function SetWidth(const aWidth: nsAString): Longword; stdcall;
-    function GetContentDocument(out aContentDocument: nsIDOMDocument_std17): Longword; stdcall;
+    function GetForm(out aForm: nsIDOMHTMLFormElement_std17): Longword; extdecl;
+    function GetCode(aCode: nsAString): Longword; extdecl;
+    function SetCode(const aCode: nsAString): Longword; extdecl;
+    function GetAlign(aAlign: nsAString): Longword; extdecl;
+    function SetAlign(const aAlign: nsAString): Longword; extdecl;
+    function GetArchive(aArchive: nsAString): Longword; extdecl;
+    function SetArchive(const aArchive: nsAString): Longword; extdecl;
+    function GetBorder(aBorder: nsAString): Longword; extdecl;
+    function SetBorder(const aBorder: nsAString): Longword; extdecl;
+    function GetCodeBase(aCodeBase: nsAString): Longword; extdecl;
+    function SetCodeBase(const aCodeBase: nsAString): Longword; extdecl;
+    function GetCodeType(aCodeType: nsAString): Longword; extdecl;
+    function SetCodeType(const aCodeType: nsAString): Longword; extdecl;
+    function GetData(aData: nsAString): Longword; extdecl;
+    function SetData(const aData: nsAString): Longword; extdecl;
+    function GetDeclare(out aDeclare: PRBool): Longword; extdecl;
+    function SetDeclare(aDeclare: PRBool): Longword; extdecl;
+    function GetHeight(aHeight: nsAString): Longword; extdecl;
+    function SetHeight(const aHeight: nsAString): Longword; extdecl;
+    function GetHspace(out aHspace: PRInt32): Longword; extdecl;
+    function SetHspace(aHspace: PRInt32): Longword; extdecl;
+    function GetName(aName: nsAString): Longword; extdecl;
+    function SetName(const aName: nsAString): Longword; extdecl;
+    function GetStandby(aStandby: nsAString): Longword; extdecl;
+    function SetStandby(const aStandby: nsAString): Longword; extdecl;
+    function GetTabIndex(out aTabIndex: PRInt32): Longword; extdecl;
+    function SetTabIndex(aTabIndex: PRInt32): Longword; extdecl;
+    function GetType(aType: nsAString): Longword; extdecl;
+    function SetType(const aType: nsAString): Longword; extdecl;
+    function GetUseMap(aUseMap: nsAString): Longword; extdecl;
+    function SetUseMap(const aUseMap: nsAString): Longword; extdecl;
+    function GetVspace(out aVspace: PRInt32): Longword; extdecl;
+    function SetVspace(aVspace: PRInt32): Longword; extdecl;
+    function GetWidth(aWidth: nsAString): Longword; extdecl;
+    function SetWidth(const aWidth: nsAString): Longword; extdecl;
+    function GetContentDocument(out aContentDocument: nsIDOMDocument_std17): Longword; extdecl;
   end;
 
   nsIDOMHTMLOListElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf909a-15b3-11d2-932e-00805f8add32}']
-    function GetCompact(out aCompact: PRBool): Longword; stdcall;
-    function SetCompact(aCompact: PRBool): Longword; stdcall;
-    function GetStart(out aStart: PRInt32): Longword; stdcall;
-    function SetStart(aStart: PRInt32): Longword; stdcall;
-    function GetType(aType: nsAString): Longword; stdcall;
-    function SetType(const aType: nsAString): Longword; stdcall;
+    function GetCompact(out aCompact: PRBool): Longword; extdecl;
+    function SetCompact(aCompact: PRBool): Longword; extdecl;
+    function GetStart(out aStart: PRInt32): Longword; extdecl;
+    function SetStart(aStart: PRInt32): Longword; extdecl;
+    function GetType(aType: nsAString): Longword; extdecl;
+    function SetType(const aType: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLOptGroupElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf9091-15b3-11d2-932e-00805f8add32}']
-    function GetDisabled(out aDisabled: PRBool): Longword; stdcall;
-    function SetDisabled(aDisabled: PRBool): Longword; stdcall;
-    function GetLabel(aLabel: nsAString): Longword; stdcall;
-    function SetLabel(const aLabel: nsAString): Longword; stdcall;
+    function GetDisabled(out aDisabled: PRBool): Longword; extdecl;
+    function SetDisabled(aDisabled: PRBool): Longword; extdecl;
+    function GetLabel(aLabel: nsAString): Longword; extdecl;
+    function SetLabel(const aLabel: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLOptionElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf9092-15b3-11d2-932e-00805f8add32}']
-    function GetForm(out aForm: nsIDOMHTMLFormElement_std17): Longword; stdcall;
-    function GetDefaultSelected(out aDefaultSelected: PRBool): Longword; stdcall;
-    function SetDefaultSelected(aDefaultSelected: PRBool): Longword; stdcall;
-    function GetText(aText: nsAString): Longword; stdcall;
-    function GetIndex(out aIndex: PRInt32): Longword; stdcall;
-    function GetDisabled(out aDisabled: PRBool): Longword; stdcall;
-    function SetDisabled(aDisabled: PRBool): Longword; stdcall;
-    function GetLabel(aLabel: nsAString): Longword; stdcall;
-    function SetLabel(const aLabel: nsAString): Longword; stdcall;
-    function GetSelected(out aSelected: PRBool): Longword; stdcall;
-    function SetSelected(aSelected: PRBool): Longword; stdcall;
-    function GetValue(aValue: nsAString): Longword; stdcall;
-    function SetValue(const aValue: nsAString): Longword; stdcall;
+    function GetForm(out aForm: nsIDOMHTMLFormElement_std17): Longword; extdecl;
+    function GetDefaultSelected(out aDefaultSelected: PRBool): Longword; extdecl;
+    function SetDefaultSelected(aDefaultSelected: PRBool): Longword; extdecl;
+    function GetText(aText: nsAString): Longword; extdecl;
+    function GetIndex(out aIndex: PRInt32): Longword; extdecl;
+    function GetDisabled(out aDisabled: PRBool): Longword; extdecl;
+    function SetDisabled(aDisabled: PRBool): Longword; extdecl;
+    function GetLabel(aLabel: nsAString): Longword; extdecl;
+    function SetLabel(const aLabel: nsAString): Longword; extdecl;
+    function GetSelected(out aSelected: PRBool): Longword; extdecl;
+    function SetSelected(aSelected: PRBool): Longword; extdecl;
+    function GetValue(aValue: nsAString): Longword; extdecl;
+    function SetValue(const aValue: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLOptionsCollection_std17 = interface(nsISupports_std17)
   ['{bce0213c-f70f-488f-b93f-688acca55d63}']
-    function GetLength(out aLength: PRUint32): Longword; stdcall;
-    function SetLength(aLength: PRUint32): Longword; stdcall;
-    function Item(index: PRUint32; out _retval: nsIDOMNode_std17): nsresult; stdcall;
-    function NamedItem(const name: nsAString; out _retval: nsIDOMNode_std17): nsresult; stdcall;
+    function GetLength(out aLength: PRUint32): Longword; extdecl;
+    function SetLength(aLength: PRUint32): Longword; extdecl;
+    function Item(index: PRUint32; out _retval: nsIDOMNode_std17): nsresult; extdecl;
+    function NamedItem(const name: nsAString; out _retval: nsIDOMNode_std17): nsresult; extdecl;
   end;
 
   nsIDOMHTMLParagraphElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf90a1-15b3-11d2-932e-00805f8add32}']
-    function GetAlign(aAlign: nsAString): Longword; stdcall;
-    function SetAlign(const aAlign: nsAString): Longword; stdcall;
+    function GetAlign(aAlign: nsAString): Longword; extdecl;
+    function SetAlign(const aAlign: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLParamElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf90ad-15b3-11d2-932e-00805f8add32}']
-    function GetName(aName: nsAString): Longword; stdcall;
-    function SetName(const aName: nsAString): Longword; stdcall;
-    function GetType(aType: nsAString): Longword; stdcall;
-    function SetType(const aType: nsAString): Longword; stdcall;
-    function GetValue(aValue: nsAString): Longword; stdcall;
-    function SetValue(const aValue: nsAString): Longword; stdcall;
-    function GetValueType(aValueType: nsAString): Longword; stdcall;
-    function SetValueType(const aValueType: nsAString): Longword; stdcall;
+    function GetName(aName: nsAString): Longword; extdecl;
+    function SetName(const aName: nsAString): Longword; extdecl;
+    function GetType(aType: nsAString): Longword; extdecl;
+    function SetType(const aType: nsAString): Longword; extdecl;
+    function GetValue(aValue: nsAString): Longword; extdecl;
+    function SetValue(const aValue: nsAString): Longword; extdecl;
+    function GetValueType(aValueType: nsAString): Longword; extdecl;
+    function SetValueType(const aValueType: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLPreElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf90a4-15b3-11d2-932e-00805f8add32}']
-    function GetWidth(out aWidth: PRInt32): Longword; stdcall;
-    function SetWidth(aWidth: PRInt32): Longword; stdcall;
+    function GetWidth(out aWidth: PRInt32): Longword; extdecl;
+    function SetWidth(aWidth: PRInt32): Longword; extdecl;
   end;
 
   nsIDOMHTMLQuoteElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf90a3-15b3-11d2-932e-00805f8add32}']
-    function GetCite(aCite: nsAString): Longword; stdcall;
-    function SetCite(const aCite: nsAString): Longword; stdcall;
+    function GetCite(aCite: nsAString): Longword; extdecl;
+    function SetCite(const aCite: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLScriptElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf90b1-15b3-11d2-932e-00805f8add32}']
-    function GetText(aText: nsAString): Longword; stdcall;
-    function SetText(const aText: nsAString): Longword; stdcall;
-    function GetHtmlFor(aHtmlFor: nsAString): Longword; stdcall;
-    function SetHtmlFor(const aHtmlFor: nsAString): Longword; stdcall;
-    function GetEvent(aEvent: nsAString): Longword; stdcall;
-    function SetEvent(const aEvent: nsAString): Longword; stdcall;
-    function GetCharset(aCharset: nsAString): Longword; stdcall;
-    function SetCharset(const aCharset: nsAString): Longword; stdcall;
-    function GetDefer(out aDefer: PRBool): Longword; stdcall;
-    function SetDefer(aDefer: PRBool): Longword; stdcall;
-    function GetSrc(aSrc: nsAString): Longword; stdcall;
-    function SetSrc(const aSrc: nsAString): Longword; stdcall;
-    function GetType(aType: nsAString): Longword; stdcall;
-    function SetType(const aType: nsAString): Longword; stdcall;
+    function GetText(aText: nsAString): Longword; extdecl;
+    function SetText(const aText: nsAString): Longword; extdecl;
+    function GetHtmlFor(aHtmlFor: nsAString): Longword; extdecl;
+    function SetHtmlFor(const aHtmlFor: nsAString): Longword; extdecl;
+    function GetEvent(aEvent: nsAString): Longword; extdecl;
+    function SetEvent(const aEvent: nsAString): Longword; extdecl;
+    function GetCharset(aCharset: nsAString): Longword; extdecl;
+    function SetCharset(const aCharset: nsAString): Longword; extdecl;
+    function GetDefer(out aDefer: PRBool): Longword; extdecl;
+    function SetDefer(aDefer: PRBool): Longword; extdecl;
+    function GetSrc(aSrc: nsAString): Longword; extdecl;
+    function SetSrc(const aSrc: nsAString): Longword; extdecl;
+    function GetType(aType: nsAString): Longword; extdecl;
+    function SetType(const aType: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLSelectElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf9090-15b3-11d2-932e-00805f8add32}']
-    function GetType(aType: nsAString): Longword; stdcall;
-    function GetSelectedIndex(out aSelectedIndex: PRInt32): Longword; stdcall;
-    function SetSelectedIndex(aSelectedIndex: PRInt32): Longword; stdcall;
-    function GetValue(aValue: nsAString): Longword; stdcall;
-    function SetValue(const aValue: nsAString): Longword; stdcall;
-    function GetLength(out aLength: PRUint32): Longword; stdcall;
-    function SetLength(aLength: PRUint32): Longword; stdcall;
-    function GetForm(out aForm: nsIDOMHTMLFormElement_std17): Longword; stdcall;
-    function GetOptions(out aOptions: nsIDOMHTMLOptionsCollection_std17): Longword; stdcall;
-    function GetDisabled(out aDisabled: PRBool): Longword; stdcall;
-    function SetDisabled(aDisabled: PRBool): Longword; stdcall;
-    function GetMultiple(out aMultiple: PRBool): Longword; stdcall;
-    function SetMultiple(aMultiple: PRBool): Longword; stdcall;
-    function GetName(aName: nsAString): Longword; stdcall;
-    function SetName(const aName: nsAString): Longword; stdcall;
-    function GetSize(out aSize: PRInt32): Longword; stdcall;
-    function SetSize(aSize: PRInt32): Longword; stdcall;
-    function GetTabIndex(out aTabIndex: PRInt32): Longword; stdcall;
-    function SetTabIndex(aTabIndex: PRInt32): Longword; stdcall;
-    function Add(element: nsIDOMHTMLElement_std17; before: nsIDOMHTMLElement_std17): nsresult; stdcall;
-    function Remove(index: PRInt32): nsresult; stdcall;
-    function Blur(): nsresult; stdcall;
-    function Focus(): nsresult; stdcall;
+    function GetType(aType: nsAString): Longword; extdecl;
+    function GetSelectedIndex(out aSelectedIndex: PRInt32): Longword; extdecl;
+    function SetSelectedIndex(aSelectedIndex: PRInt32): Longword; extdecl;
+    function GetValue(aValue: nsAString): Longword; extdecl;
+    function SetValue(const aValue: nsAString): Longword; extdecl;
+    function GetLength(out aLength: PRUint32): Longword; extdecl;
+    function SetLength(aLength: PRUint32): Longword; extdecl;
+    function GetForm(out aForm: nsIDOMHTMLFormElement_std17): Longword; extdecl;
+    function GetOptions(out aOptions: nsIDOMHTMLOptionsCollection_std17): Longword; extdecl;
+    function GetDisabled(out aDisabled: PRBool): Longword; extdecl;
+    function SetDisabled(aDisabled: PRBool): Longword; extdecl;
+    function GetMultiple(out aMultiple: PRBool): Longword; extdecl;
+    function SetMultiple(aMultiple: PRBool): Longword; extdecl;
+    function GetName(aName: nsAString): Longword; extdecl;
+    function SetName(const aName: nsAString): Longword; extdecl;
+    function GetSize(out aSize: PRInt32): Longword; extdecl;
+    function SetSize(aSize: PRInt32): Longword; extdecl;
+    function GetTabIndex(out aTabIndex: PRInt32): Longword; extdecl;
+    function SetTabIndex(aTabIndex: PRInt32): Longword; extdecl;
+    function Add(element: nsIDOMHTMLElement_std17; before: nsIDOMHTMLElement_std17): nsresult; extdecl;
+    function Remove(index: PRInt32): nsresult; extdecl;
+    function Blur(): nsresult; extdecl;
+    function Focus(): nsresult; extdecl;
   end;
 
   nsIDOMHTMLStyleElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf908d-15b3-11d2-932e-00805f8add32}']
-    function GetDisabled(out aDisabled: PRBool): Longword; stdcall;
-    function SetDisabled(aDisabled: PRBool): Longword; stdcall;
-    function GetMedia(aMedia: nsAString): Longword; stdcall;
-    function SetMedia(const aMedia: nsAString): Longword; stdcall;
-    function GetType(aType: nsAString): Longword; stdcall;
-    function SetType(const aType: nsAString): Longword; stdcall;
+    function GetDisabled(out aDisabled: PRBool): Longword; extdecl;
+    function SetDisabled(aDisabled: PRBool): Longword; extdecl;
+    function GetMedia(aMedia: nsAString): Longword; extdecl;
+    function SetMedia(const aMedia: nsAString): Longword; extdecl;
+    function GetType(aType: nsAString): Longword; extdecl;
+    function SetType(const aType: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLTableCaptionElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf90b3-15b3-11d2-932e-00805f8add32}']
-    function GetAlign(aAlign: nsAString): Longword; stdcall;
-    function SetAlign(const aAlign: nsAString): Longword; stdcall;
+    function GetAlign(aAlign: nsAString): Longword; extdecl;
+    function SetAlign(const aAlign: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLTableCellElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf90b7-15b3-11d2-932e-00805f8add32}']
-    function GetCellIndex(out aCellIndex: PRInt32): Longword; stdcall;
-    function GetAbbr(aAbbr: nsAString): Longword; stdcall;
-    function SetAbbr(const aAbbr: nsAString): Longword; stdcall;
-    function GetAlign(aAlign: nsAString): Longword; stdcall;
-    function SetAlign(const aAlign: nsAString): Longword; stdcall;
-    function GetAxis(aAxis: nsAString): Longword; stdcall;
-    function SetAxis(const aAxis: nsAString): Longword; stdcall;
-    function GetBgColor(aBgColor: nsAString): Longword; stdcall;
-    function SetBgColor(const aBgColor: nsAString): Longword; stdcall;
-    function GetCh(aCh: nsAString): Longword; stdcall;
-    function SetCh(const aCh: nsAString): Longword; stdcall;
-    function GetChOff(aChOff: nsAString): Longword; stdcall;
-    function SetChOff(const aChOff: nsAString): Longword; stdcall;
-    function GetColSpan(out aColSpan: PRInt32): Longword; stdcall;
-    function SetColSpan(aColSpan: PRInt32): Longword; stdcall;
-    function GetHeaders(aHeaders: nsAString): Longword; stdcall;
-    function SetHeaders(const aHeaders: nsAString): Longword; stdcall;
-    function GetHeight(aHeight: nsAString): Longword; stdcall;
-    function SetHeight(const aHeight: nsAString): Longword; stdcall;
-    function GetNoWrap(out aNoWrap: PRBool): Longword; stdcall;
-    function SetNoWrap(aNoWrap: PRBool): Longword; stdcall;
-    function GetRowSpan(out aRowSpan: PRInt32): Longword; stdcall;
-    function SetRowSpan(aRowSpan: PRInt32): Longword; stdcall;
-    function GetScope(aScope: nsAString): Longword; stdcall;
-    function SetScope(const aScope: nsAString): Longword; stdcall;
-    function GetVAlign(aVAlign: nsAString): Longword; stdcall;
-    function SetVAlign(const aVAlign: nsAString): Longword; stdcall;
-    function GetWidth(aWidth: nsAString): Longword; stdcall;
-    function SetWidth(const aWidth: nsAString): Longword; stdcall;
+    function GetCellIndex(out aCellIndex: PRInt32): Longword; extdecl;
+    function GetAbbr(aAbbr: nsAString): Longword; extdecl;
+    function SetAbbr(const aAbbr: nsAString): Longword; extdecl;
+    function GetAlign(aAlign: nsAString): Longword; extdecl;
+    function SetAlign(const aAlign: nsAString): Longword; extdecl;
+    function GetAxis(aAxis: nsAString): Longword; extdecl;
+    function SetAxis(const aAxis: nsAString): Longword; extdecl;
+    function GetBgColor(aBgColor: nsAString): Longword; extdecl;
+    function SetBgColor(const aBgColor: nsAString): Longword; extdecl;
+    function GetCh(aCh: nsAString): Longword; extdecl;
+    function SetCh(const aCh: nsAString): Longword; extdecl;
+    function GetChOff(aChOff: nsAString): Longword; extdecl;
+    function SetChOff(const aChOff: nsAString): Longword; extdecl;
+    function GetColSpan(out aColSpan: PRInt32): Longword; extdecl;
+    function SetColSpan(aColSpan: PRInt32): Longword; extdecl;
+    function GetHeaders(aHeaders: nsAString): Longword; extdecl;
+    function SetHeaders(const aHeaders: nsAString): Longword; extdecl;
+    function GetHeight(aHeight: nsAString): Longword; extdecl;
+    function SetHeight(const aHeight: nsAString): Longword; extdecl;
+    function GetNoWrap(out aNoWrap: PRBool): Longword; extdecl;
+    function SetNoWrap(aNoWrap: PRBool): Longword; extdecl;
+    function GetRowSpan(out aRowSpan: PRInt32): Longword; extdecl;
+    function SetRowSpan(aRowSpan: PRInt32): Longword; extdecl;
+    function GetScope(aScope: nsAString): Longword; extdecl;
+    function SetScope(const aScope: nsAString): Longword; extdecl;
+    function GetVAlign(aVAlign: nsAString): Longword; extdecl;
+    function SetVAlign(const aVAlign: nsAString): Longword; extdecl;
+    function GetWidth(aWidth: nsAString): Longword; extdecl;
+    function SetWidth(const aWidth: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLTableColElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf90b4-15b3-11d2-932e-00805f8add32}']
-    function GetAlign(aAlign: nsAString): Longword; stdcall;
-    function SetAlign(const aAlign: nsAString): Longword; stdcall;
-    function GetCh(aCh: nsAString): Longword; stdcall;
-    function SetCh(const aCh: nsAString): Longword; stdcall;
-    function GetChOff(aChOff: nsAString): Longword; stdcall;
-    function SetChOff(const aChOff: nsAString): Longword; stdcall;
-    function GetSpan(out aSpan: PRInt32): Longword; stdcall;
-    function SetSpan(aSpan: PRInt32): Longword; stdcall;
-    function GetVAlign(aVAlign: nsAString): Longword; stdcall;
-    function SetVAlign(const aVAlign: nsAString): Longword; stdcall;
-    function GetWidth(aWidth: nsAString): Longword; stdcall;
-    function SetWidth(const aWidth: nsAString): Longword; stdcall;
+    function GetAlign(aAlign: nsAString): Longword; extdecl;
+    function SetAlign(const aAlign: nsAString): Longword; extdecl;
+    function GetCh(aCh: nsAString): Longword; extdecl;
+    function SetCh(const aCh: nsAString): Longword; extdecl;
+    function GetChOff(aChOff: nsAString): Longword; extdecl;
+    function SetChOff(const aChOff: nsAString): Longword; extdecl;
+    function GetSpan(out aSpan: PRInt32): Longword; extdecl;
+    function SetSpan(aSpan: PRInt32): Longword; extdecl;
+    function GetVAlign(aVAlign: nsAString): Longword; extdecl;
+    function SetVAlign(const aVAlign: nsAString): Longword; extdecl;
+    function GetWidth(aWidth: nsAString): Longword; extdecl;
+    function SetWidth(const aWidth: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLTableElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf90b2-15b3-11d2-932e-00805f8add32}']
-    function GetCaption(out aCaption: nsIDOMHTMLTableCaptionElement_std17): Longword; stdcall;
-    function SetCaption(aCaption: nsIDOMHTMLTableCaptionElement_std17): Longword; stdcall;
-    function GetTHead(out aTHead: nsIDOMHTMLTableSectionElement_std17): Longword; stdcall;
-    function SetTHead(aTHead: nsIDOMHTMLTableSectionElement_std17): Longword; stdcall;
-    function GetTFoot(out aTFoot: nsIDOMHTMLTableSectionElement_std17): Longword; stdcall;
-    function SetTFoot(aTFoot: nsIDOMHTMLTableSectionElement_std17): Longword; stdcall;
-    function GetRows(out aRows: nsIDOMHTMLCollection_std17): Longword; stdcall;
-    function GetTBodies(out aTBodies: nsIDOMHTMLCollection_std17): Longword; stdcall;
-    function GetAlign(aAlign: nsAString): Longword; stdcall;
-    function SetAlign(const aAlign: nsAString): Longword; stdcall;
-    function GetBgColor(aBgColor: nsAString): Longword; stdcall;
-    function SetBgColor(const aBgColor: nsAString): Longword; stdcall;
-    function GetBorder(aBorder: nsAString): Longword; stdcall;
-    function SetBorder(const aBorder: nsAString): Longword; stdcall;
-    function GetCellPadding(aCellPadding: nsAString): Longword; stdcall;
-    function SetCellPadding(const aCellPadding: nsAString): Longword; stdcall;
-    function GetCellSpacing(aCellSpacing: nsAString): Longword; stdcall;
-    function SetCellSpacing(const aCellSpacing: nsAString): Longword; stdcall;
-    function GetFrame(aFrame: nsAString): Longword; stdcall;
-    function SetFrame(const aFrame: nsAString): Longword; stdcall;
-    function GetRules(aRules: nsAString): Longword; stdcall;
-    function SetRules(const aRules: nsAString): Longword; stdcall;
-    function GetSummary(aSummary: nsAString): Longword; stdcall;
-    function SetSummary(const aSummary: nsAString): Longword; stdcall;
-    function GetWidth(aWidth: nsAString): Longword; stdcall;
-    function SetWidth(const aWidth: nsAString): Longword; stdcall;
-    function CreateTHead(out _retval: nsIDOMHTMLElement_std17): nsresult; stdcall;
-    function DeleteTHead(): nsresult; stdcall;
-    function CreateTFoot(out _retval: nsIDOMHTMLElement_std17): nsresult; stdcall;
-    function DeleteTFoot(): nsresult; stdcall;
-    function CreateCaption(out _retval: nsIDOMHTMLElement_std17): nsresult; stdcall;
-    function DeleteCaption(): nsresult; stdcall;
-    function InsertRow(index: PRInt32; out _retval: nsIDOMHTMLElement_std17): nsresult; stdcall;
-    function DeleteRow(index: PRInt32): nsresult; stdcall;
+    function GetCaption(out aCaption: nsIDOMHTMLTableCaptionElement_std17): Longword; extdecl;
+    function SetCaption(aCaption: nsIDOMHTMLTableCaptionElement_std17): Longword; extdecl;
+    function GetTHead(out aTHead: nsIDOMHTMLTableSectionElement_std17): Longword; extdecl;
+    function SetTHead(aTHead: nsIDOMHTMLTableSectionElement_std17): Longword; extdecl;
+    function GetTFoot(out aTFoot: nsIDOMHTMLTableSectionElement_std17): Longword; extdecl;
+    function SetTFoot(aTFoot: nsIDOMHTMLTableSectionElement_std17): Longword; extdecl;
+    function GetRows(out aRows: nsIDOMHTMLCollection_std17): Longword; extdecl;
+    function GetTBodies(out aTBodies: nsIDOMHTMLCollection_std17): Longword; extdecl;
+    function GetAlign(aAlign: nsAString): Longword; extdecl;
+    function SetAlign(const aAlign: nsAString): Longword; extdecl;
+    function GetBgColor(aBgColor: nsAString): Longword; extdecl;
+    function SetBgColor(const aBgColor: nsAString): Longword; extdecl;
+    function GetBorder(aBorder: nsAString): Longword; extdecl;
+    function SetBorder(const aBorder: nsAString): Longword; extdecl;
+    function GetCellPadding(aCellPadding: nsAString): Longword; extdecl;
+    function SetCellPadding(const aCellPadding: nsAString): Longword; extdecl;
+    function GetCellSpacing(aCellSpacing: nsAString): Longword; extdecl;
+    function SetCellSpacing(const aCellSpacing: nsAString): Longword; extdecl;
+    function GetFrame(aFrame: nsAString): Longword; extdecl;
+    function SetFrame(const aFrame: nsAString): Longword; extdecl;
+    function GetRules(aRules: nsAString): Longword; extdecl;
+    function SetRules(const aRules: nsAString): Longword; extdecl;
+    function GetSummary(aSummary: nsAString): Longword; extdecl;
+    function SetSummary(const aSummary: nsAString): Longword; extdecl;
+    function GetWidth(aWidth: nsAString): Longword; extdecl;
+    function SetWidth(const aWidth: nsAString): Longword; extdecl;
+    function CreateTHead(out _retval: nsIDOMHTMLElement_std17): nsresult; extdecl;
+    function DeleteTHead(): nsresult; extdecl;
+    function CreateTFoot(out _retval: nsIDOMHTMLElement_std17): nsresult; extdecl;
+    function DeleteTFoot(): nsresult; extdecl;
+    function CreateCaption(out _retval: nsIDOMHTMLElement_std17): nsresult; extdecl;
+    function DeleteCaption(): nsresult; extdecl;
+    function InsertRow(index: PRInt32; out _retval: nsIDOMHTMLElement_std17): nsresult; extdecl;
+    function DeleteRow(index: PRInt32): nsresult; extdecl;
   end;
 
   nsIDOMHTMLTableRowElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf90b6-15b3-11d2-932e-00805f8add32}']
-    function GetRowIndex(out aRowIndex: PRInt32): Longword; stdcall;
-    function GetSectionRowIndex(out aSectionRowIndex: PRInt32): Longword; stdcall;
-    function GetCells(out aCells: nsIDOMHTMLCollection_std17): Longword; stdcall;
-    function GetAlign(aAlign: nsAString): Longword; stdcall;
-    function SetAlign(const aAlign: nsAString): Longword; stdcall;
-    function GetBgColor(aBgColor: nsAString): Longword; stdcall;
-    function SetBgColor(const aBgColor: nsAString): Longword; stdcall;
-    function GetCh(aCh: nsAString): Longword; stdcall;
-    function SetCh(const aCh: nsAString): Longword; stdcall;
-    function GetChOff(aChOff: nsAString): Longword; stdcall;
-    function SetChOff(const aChOff: nsAString): Longword; stdcall;
-    function GetVAlign(aVAlign: nsAString): Longword; stdcall;
-    function SetVAlign(const aVAlign: nsAString): Longword; stdcall;
-    function InsertCell(index: PRInt32; out _retval: nsIDOMHTMLElement_std17): nsresult; stdcall;
-    function DeleteCell(index: PRInt32): nsresult; stdcall;
+    function GetRowIndex(out aRowIndex: PRInt32): Longword; extdecl;
+    function GetSectionRowIndex(out aSectionRowIndex: PRInt32): Longword; extdecl;
+    function GetCells(out aCells: nsIDOMHTMLCollection_std17): Longword; extdecl;
+    function GetAlign(aAlign: nsAString): Longword; extdecl;
+    function SetAlign(const aAlign: nsAString): Longword; extdecl;
+    function GetBgColor(aBgColor: nsAString): Longword; extdecl;
+    function SetBgColor(const aBgColor: nsAString): Longword; extdecl;
+    function GetCh(aCh: nsAString): Longword; extdecl;
+    function SetCh(const aCh: nsAString): Longword; extdecl;
+    function GetChOff(aChOff: nsAString): Longword; extdecl;
+    function SetChOff(const aChOff: nsAString): Longword; extdecl;
+    function GetVAlign(aVAlign: nsAString): Longword; extdecl;
+    function SetVAlign(const aVAlign: nsAString): Longword; extdecl;
+    function InsertCell(index: PRInt32; out _retval: nsIDOMHTMLElement_std17): nsresult; extdecl;
+    function DeleteCell(index: PRInt32): nsresult; extdecl;
   end;
 
   nsIDOMHTMLTableSectionElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf90b5-15b3-11d2-932e-00805f8add32}']
-    function GetAlign(aAlign: nsAString): Longword; stdcall;
-    function SetAlign(const aAlign: nsAString): Longword; stdcall;
-    function GetCh(aCh: nsAString): Longword; stdcall;
-    function SetCh(const aCh: nsAString): Longword; stdcall;
-    function GetChOff(aChOff: nsAString): Longword; stdcall;
-    function SetChOff(const aChOff: nsAString): Longword; stdcall;
-    function GetVAlign(aVAlign: nsAString): Longword; stdcall;
-    function SetVAlign(const aVAlign: nsAString): Longword; stdcall;
-    function GetRows(out aRows: nsIDOMHTMLCollection_std17): Longword; stdcall;
-    function InsertRow(index: PRInt32; out _retval: nsIDOMHTMLElement_std17): nsresult; stdcall;
-    function DeleteRow(index: PRInt32): nsresult; stdcall;
+    function GetAlign(aAlign: nsAString): Longword; extdecl;
+    function SetAlign(const aAlign: nsAString): Longword; extdecl;
+    function GetCh(aCh: nsAString): Longword; extdecl;
+    function SetCh(const aCh: nsAString): Longword; extdecl;
+    function GetChOff(aChOff: nsAString): Longword; extdecl;
+    function SetChOff(const aChOff: nsAString): Longword; extdecl;
+    function GetVAlign(aVAlign: nsAString): Longword; extdecl;
+    function SetVAlign(const aVAlign: nsAString): Longword; extdecl;
+    function GetRows(out aRows: nsIDOMHTMLCollection_std17): Longword; extdecl;
+    function InsertRow(index: PRInt32; out _retval: nsIDOMHTMLElement_std17): nsresult; extdecl;
+    function DeleteRow(index: PRInt32): nsresult; extdecl;
   end;
 
   nsIDOMHTMLTextAreaElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf9094-15b3-11d2-932e-00805f8add32}']
-    function GetDefaultValue(aDefaultValue: nsAString): Longword; stdcall;
-    function SetDefaultValue(const aDefaultValue: nsAString): Longword; stdcall;
-    function GetForm(out aForm: nsIDOMHTMLFormElement_std17): Longword; stdcall;
-    function GetAccessKey(aAccessKey: nsAString): Longword; stdcall;
-    function SetAccessKey(const aAccessKey: nsAString): Longword; stdcall;
-    function GetCols(out aCols: PRInt32): Longword; stdcall;
-    function SetCols(aCols: PRInt32): Longword; stdcall;
-    function GetDisabled(out aDisabled: PRBool): Longword; stdcall;
-    function SetDisabled(aDisabled: PRBool): Longword; stdcall;
-    function GetName(aName: nsAString): Longword; stdcall;
-    function SetName(const aName: nsAString): Longword; stdcall;
-    function GetReadOnly(out aReadOnly: PRBool): Longword; stdcall;
-    function SetReadOnly(aReadOnly: PRBool): Longword; stdcall;
-    function GetRows(out aRows: PRInt32): Longword; stdcall;
-    function SetRows(aRows: PRInt32): Longword; stdcall;
-    function GetTabIndex(out aTabIndex: PRInt32): Longword; stdcall;
-    function SetTabIndex(aTabIndex: PRInt32): Longword; stdcall;
-    function GetType(aType: nsAString): Longword; stdcall;
-    function GetValue(aValue: nsAString): Longword; stdcall;
-    function SetValue(const aValue: nsAString): Longword; stdcall;
-    function Blur(): nsresult; stdcall;
-    function Focus(): nsresult; stdcall;
-    function Select(): nsresult; stdcall;
+    function GetDefaultValue(aDefaultValue: nsAString): Longword; extdecl;
+    function SetDefaultValue(const aDefaultValue: nsAString): Longword; extdecl;
+    function GetForm(out aForm: nsIDOMHTMLFormElement_std17): Longword; extdecl;
+    function GetAccessKey(aAccessKey: nsAString): Longword; extdecl;
+    function SetAccessKey(const aAccessKey: nsAString): Longword; extdecl;
+    function GetCols(out aCols: PRInt32): Longword; extdecl;
+    function SetCols(aCols: PRInt32): Longword; extdecl;
+    function GetDisabled(out aDisabled: PRBool): Longword; extdecl;
+    function SetDisabled(aDisabled: PRBool): Longword; extdecl;
+    function GetName(aName: nsAString): Longword; extdecl;
+    function SetName(const aName: nsAString): Longword; extdecl;
+    function GetReadOnly(out aReadOnly: PRBool): Longword; extdecl;
+    function SetReadOnly(aReadOnly: PRBool): Longword; extdecl;
+    function GetRows(out aRows: PRInt32): Longword; extdecl;
+    function SetRows(aRows: PRInt32): Longword; extdecl;
+    function GetTabIndex(out aTabIndex: PRInt32): Longword; extdecl;
+    function SetTabIndex(aTabIndex: PRInt32): Longword; extdecl;
+    function GetType(aType: nsAString): Longword; extdecl;
+    function GetValue(aValue: nsAString): Longword; extdecl;
+    function SetValue(const aValue: nsAString): Longword; extdecl;
+    function Blur(): nsresult; extdecl;
+    function Focus(): nsresult; extdecl;
+    function Select(): nsresult; extdecl;
   end;
 
   nsIDOMHTMLTitleElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf9089-15b3-11d2-932e-00805f8add32}']
-    function GetText(aText: nsAString): Longword; stdcall;
-    function SetText(const aText: nsAString): Longword; stdcall;
+    function GetText(aText: nsAString): Longword; extdecl;
+    function SetText(const aText: nsAString): Longword; extdecl;
   end;
 
   nsIDOMHTMLUListElement_std17 = interface(nsIDOMHTMLElement_std17)
   ['{a6cf9099-15b3-11d2-932e-00805f8add32}']
-    function GetCompact(out aCompact: PRBool): Longword; stdcall;
-    function SetCompact(aCompact: PRBool): Longword; stdcall;
-    function GetType(aType: nsAString): Longword; stdcall;
-    function SetType(const aType: nsAString): Longword; stdcall;
+    function GetCompact(out aCompact: PRBool): Longword; extdecl;
+    function SetCompact(aCompact: PRBool): Longword; extdecl;
+    function GetType(aType: nsAString): Longword; extdecl;
+    function SetType(const aType: nsAString): Longword; extdecl;
   end;
 
   nsIDOMMediaList_std17 = interface(nsISupports_std17)
   ['{9b0c2ed7-111c-4824-adf9-ef0da6dad371}']
-    function GetMediaText(aMediaText: nsAString): Longword; stdcall;
-    function SetMediaText(const aMediaText: nsAString): Longword; stdcall;
-    function GetLength(out aLength: PRUint32): Longword; stdcall;
-    function Item(index: PRUint32; _retval: nsAString): nsresult; stdcall;
-    function DeleteMedium(const oldMedium: nsAString): nsresult; stdcall;
-    function AppendMedium(const newMedium: nsAString): nsresult; stdcall;
+    function GetMediaText(aMediaText: nsAString): Longword; extdecl;
+    function SetMediaText(const aMediaText: nsAString): Longword; extdecl;
+    function GetLength(out aLength: PRUint32): Longword; extdecl;
+    function Item(index: PRUint32; _retval: nsAString): nsresult; extdecl;
+    function DeleteMedium(const oldMedium: nsAString): nsresult; extdecl;
+    function AppendMedium(const newMedium: nsAString): nsresult; extdecl;
   end;
 
   nsIDOMUIEvent_std17 = interface(nsIDOMEvent_std17)
   ['{a6cf90c3-15b3-11d2-932e-00805f8add32}']
-    function GetView(out aView: nsIDOMAbstractView_std17): Longword; stdcall;
-    function GetDetail(out aDetail: PRInt32): Longword; stdcall;
-    function InitUIEvent(const typeArg: nsAString; canBubbleArg: PRBool; cancelableArg: PRBool; viewArg: nsIDOMAbstractView_std17; detailArg: PRInt32): nsresult; stdcall;
+    function GetView(out aView: nsIDOMAbstractView_std17): Longword; extdecl;
+    function GetDetail(out aDetail: PRInt32): Longword; extdecl;
+    function InitUIEvent(const typeArg: nsAString; canBubbleArg: PRBool; cancelableArg: PRBool; viewArg: nsIDOMAbstractView_std17; detailArg: PRInt32): nsresult; extdecl;
   end;
 
   nsIDOMMouseEvent_std17 = interface(nsIDOMUIEvent_std17)
   ['{ff751edc-8b02-aae7-0010-8301838a3123}']
-    function GetScreenX(out aScreenX: PRInt32): Longword; stdcall;
-    function GetScreenY(out aScreenY: PRInt32): Longword; stdcall;
-    function GetClientX(out aClientX: PRInt32): Longword; stdcall;
-    function GetClientY(out aClientY: PRInt32): Longword; stdcall;
-    function GetCtrlKey(out aCtrlKey: PRBool): Longword; stdcall;
-    function GetShiftKey(out aShiftKey: PRBool): Longword; stdcall;
-    function GetAltKey(out aAltKey: PRBool): Longword; stdcall;
-    function GetMetaKey(out aMetaKey: PRBool): Longword; stdcall;
-    function GetButton(out aButton: PRUint16): Longword; stdcall;
-    function GetRelatedTarget(out aRelatedTarget: nsIDOMEventTarget_std17): Longword; stdcall;
-    function InitMouseEvent(const typeArg: nsAString; canBubbleArg: PRBool; cancelableArg: PRBool; viewArg: nsIDOMAbstractView_std17; detailArg: PRInt32; screenXArg: PRInt32; screenYArg: PRInt32; clientXArg: PRInt32; clientYArg: PRInt32; ctrlKeyArg: PRBool; altKeyArg: PRBool; shiftKeyArg: PRBool; metaKeyArg: PRBool; buttonArg: PRUint16; relatedTargetArg: nsIDOMEventTarget_std17): nsresult; stdcall;
+    function GetScreenX(out aScreenX: PRInt32): Longword; extdecl;
+    function GetScreenY(out aScreenY: PRInt32): Longword; extdecl;
+    function GetClientX(out aClientX: PRInt32): Longword; extdecl;
+    function GetClientY(out aClientY: PRInt32): Longword; extdecl;
+    function GetCtrlKey(out aCtrlKey: PRBool): Longword; extdecl;
+    function GetShiftKey(out aShiftKey: PRBool): Longword; extdecl;
+    function GetAltKey(out aAltKey: PRBool): Longword; extdecl;
+    function GetMetaKey(out aMetaKey: PRBool): Longword; extdecl;
+    function GetButton(out aButton: PRUint16): Longword; extdecl;
+    function GetRelatedTarget(out aRelatedTarget: nsIDOMEventTarget_std17): Longword; extdecl;
+    function InitMouseEvent(const typeArg: nsAString; canBubbleArg: PRBool; cancelableArg: PRBool; viewArg: nsIDOMAbstractView_std17; detailArg: PRInt32; screenXArg: PRInt32; screenYArg: PRInt32; clientXArg: PRInt32; clientYArg: PRInt32; ctrlKeyArg: PRBool; altKeyArg: PRBool; shiftKeyArg: PRBool; metaKeyArg: PRBool; buttonArg: PRUint16; relatedTargetArg: nsIDOMEventTarget_std17): nsresult; extdecl;
   end;
 
   nsIDOMNamedNodeMap_std17 = interface(nsISupports_std17)
   ['{a6cf907b-15b3-11d2-932e-00805f8add32}']
-    function GetNamedItem(const name: nsAString; out _retval: nsIDOMNode_std17): nsresult; stdcall;
-    function SetNamedItem(arg: nsIDOMNode_std17; out _retval: nsIDOMNode_std17): nsresult; stdcall;
-    function RemoveNamedItem(const name: nsAString; out _retval: nsIDOMNode_std17): nsresult; stdcall;
-    function Item(index: PRUint32; out _retval: nsIDOMNode_std17): nsresult; stdcall;
-    function GetLength(out aLength: PRUint32): Longword; stdcall;
-    function GetNamedItemNS(const namespaceURI: nsAString; const localName: nsAString; out _retval: nsIDOMNode_std17): nsresult; stdcall;
-    function SetNamedItemNS(arg: nsIDOMNode_std17; out _retval: nsIDOMNode_std17): nsresult; stdcall;
-    function RemoveNamedItemNS(const namespaceURI: nsAString; const localName: nsAString; out _retval: nsIDOMNode_std17): nsresult; stdcall;
+    function GetNamedItem(const name: nsAString; out _retval: nsIDOMNode_std17): nsresult; extdecl;
+    function SetNamedItem(arg: nsIDOMNode_std17; out _retval: nsIDOMNode_std17): nsresult; extdecl;
+    function RemoveNamedItem(const name: nsAString; out _retval: nsIDOMNode_std17): nsresult; extdecl;
+    function Item(index: PRUint32; out _retval: nsIDOMNode_std17): nsresult; extdecl;
+    function GetLength(out aLength: PRUint32): Longword; extdecl;
+    function GetNamedItemNS(const namespaceURI: nsAString; const localName: nsAString; out _retval: nsIDOMNode_std17): nsresult; extdecl;
+    function SetNamedItemNS(arg: nsIDOMNode_std17; out _retval: nsIDOMNode_std17): nsresult; extdecl;
+    function RemoveNamedItemNS(const namespaceURI: nsAString; const localName: nsAString; out _retval: nsIDOMNode_std17): nsresult; extdecl;
   end;
 
   nsIDOMNodeList_std17 = interface(nsISupports_std17)
   ['{a6cf907d-15b3-11d2-932e-00805f8add32}']
-    function Item(index: PRUint32; out _retval: nsIDOMNode_std17): nsresult; stdcall;
-    function GetLength(out aLength: PRUint32): Longword; stdcall;
+    function Item(index: PRUint32; out _retval: nsIDOMNode_std17): nsresult; extdecl;
+    function GetLength(out aLength: PRUint32): Longword; extdecl;
   end;
 
   nsIDOMNotation_std17 = interface(nsIDOMNode_std17)
   ['{a6cf907e-15b3-11d2-932e-00805f8add32}']
-    function GetPublicId(aPublicId: nsAString): Longword; stdcall;
-    function GetSystemId(aSystemId: nsAString): Longword; stdcall;
+    function GetPublicId(aPublicId: nsAString): Longword; extdecl;
+    function GetSystemId(aSystemId: nsAString): Longword; extdecl;
   end;
 
   nsIDOMProcessingInstruction_std17 = interface(nsIDOMNode_std17)
   ['{a6cf907f-15b3-11d2-932e-00805f8add32}']
-    function GetTarget(aTarget: nsAString): Longword; stdcall;
-    function GetData(aData: nsAString): Longword; stdcall;
-    function SetData(const aData: nsAString): Longword; stdcall;
+    function GetTarget(aTarget: nsAString): Longword; extdecl;
+    function GetData(aData: nsAString): Longword; extdecl;
+    function SetData(const aData: nsAString): Longword; extdecl;
   end;
 
   nsIDOMRange_std17 = interface(nsISupports_std17)
   ['{a6cf90ce-15b3-11d2-932e-00805f8add32}']
-    function GetStartContainer(out aStartContainer: nsIDOMNode_std17): Longword; stdcall;
-    function GetStartOffset(out aStartOffset: PRInt32): Longword; stdcall;
-    function GetEndContainer(out aEndContainer: nsIDOMNode_std17): Longword; stdcall;
-    function GetEndOffset(out aEndOffset: PRInt32): Longword; stdcall;
-    function GetCollapsed(out aCollapsed: PRBool): Longword; stdcall;
-    function GetCommonAncestorContainer(out aCommonAncestorContainer: nsIDOMNode_std17): Longword; stdcall;
-    function SetStart(refNode: nsIDOMNode_std17; offset: PRInt32): nsresult; stdcall;
-    function SetEnd(refNode: nsIDOMNode_std17; offset: PRInt32): nsresult; stdcall;
-    function SetStartBefore(refNode: nsIDOMNode_std17): nsresult; stdcall;
-    function SetStartAfter(refNode: nsIDOMNode_std17): nsresult; stdcall;
-    function SetEndBefore(refNode: nsIDOMNode_std17): nsresult; stdcall;
-    function SetEndAfter(refNode: nsIDOMNode_std17): nsresult; stdcall;
-    function Collapse(toStart: PRBool): nsresult; stdcall;
-    function SelectNode(refNode: nsIDOMNode_std17): nsresult; stdcall;
-    function SelectNodeContents(refNode: nsIDOMNode_std17): nsresult; stdcall;
-    function CompareBoundaryPoints(how: PRUint16; sourceRange: nsIDOMRange_std17; out _retval: PRInt16): nsresult; stdcall;
-    function DeleteContents(): nsresult; stdcall;
-    function ExtractContents(out _retval: nsIDOMDocumentFragment_std17): nsresult; stdcall;
-    function CloneContents(out _retval: nsIDOMDocumentFragment_std17): nsresult; stdcall;
-    function InsertNode(newNode: nsIDOMNode_std17): nsresult; stdcall;
-    function SurroundContents(newParent: nsIDOMNode_std17): nsresult; stdcall;
-    function CloneRange(out _retval: nsIDOMRange_std17): nsresult; stdcall;
-    function ToString(_retval: nsAString): nsresult; stdcall;
-    function Detach(): nsresult; stdcall;
+    function GetStartContainer(out aStartContainer: nsIDOMNode_std17): Longword; extdecl;
+    function GetStartOffset(out aStartOffset: PRInt32): Longword; extdecl;
+    function GetEndContainer(out aEndContainer: nsIDOMNode_std17): Longword; extdecl;
+    function GetEndOffset(out aEndOffset: PRInt32): Longword; extdecl;
+    function GetCollapsed(out aCollapsed: PRBool): Longword; extdecl;
+    function GetCommonAncestorContainer(out aCommonAncestorContainer: nsIDOMNode_std17): Longword; extdecl;
+    function SetStart(refNode: nsIDOMNode_std17; offset: PRInt32): nsresult; extdecl;
+    function SetEnd(refNode: nsIDOMNode_std17; offset: PRInt32): nsresult; extdecl;
+    function SetStartBefore(refNode: nsIDOMNode_std17): nsresult; extdecl;
+    function SetStartAfter(refNode: nsIDOMNode_std17): nsresult; extdecl;
+    function SetEndBefore(refNode: nsIDOMNode_std17): nsresult; extdecl;
+    function SetEndAfter(refNode: nsIDOMNode_std17): nsresult; extdecl;
+    function Collapse(toStart: PRBool): nsresult; extdecl;
+    function SelectNode(refNode: nsIDOMNode_std17): nsresult; extdecl;
+    function SelectNodeContents(refNode: nsIDOMNode_std17): nsresult; extdecl;
+    function CompareBoundaryPoints(how: PRUint16; sourceRange: nsIDOMRange_std17; out _retval: PRInt16): nsresult; extdecl;
+    function DeleteContents(): nsresult; extdecl;
+    function ExtractContents(out _retval: nsIDOMDocumentFragment_std17): nsresult; extdecl;
+    function CloneContents(out _retval: nsIDOMDocumentFragment_std17): nsresult; extdecl;
+    function InsertNode(newNode: nsIDOMNode_std17): nsresult; extdecl;
+    function SurroundContents(newParent: nsIDOMNode_std17): nsresult; extdecl;
+    function CloneRange(out _retval: nsIDOMRange_std17): nsresult; extdecl;
+    function ToString(_retval: nsAString): nsresult; extdecl;
+    function Detach(): nsresult; extdecl;
   end;
 
   nsIDOMRect_std17 = interface(nsISupports_std17)
   ['{71735f62-ac5c-4236-9a1f-5ffb280d531c}']
-    function GetTop(out aTop: nsIDOMCSSPrimitiveValue_std17): Longword; stdcall;
-    function GetRight(out aRight: nsIDOMCSSPrimitiveValue_std17): Longword; stdcall;
-    function GetBottom(out aBottom: nsIDOMCSSPrimitiveValue_std17): Longword; stdcall;
-    function GetLeft(out aLeft: nsIDOMCSSPrimitiveValue_std17): Longword; stdcall;
+    function GetTop(out aTop: nsIDOMCSSPrimitiveValue_std17): Longword; extdecl;
+    function GetRight(out aRight: nsIDOMCSSPrimitiveValue_std17): Longword; extdecl;
+    function GetBottom(out aBottom: nsIDOMCSSPrimitiveValue_std17): Longword; extdecl;
+    function GetLeft(out aLeft: nsIDOMCSSPrimitiveValue_std17): Longword; extdecl;
   end;
 
   nsIDOMRGBColor_std17 = interface(nsISupports_std17)
   ['{6aff3102-320d-4986-9790-12316bb87cf9}']
-    function GetRed(out aRed: nsIDOMCSSPrimitiveValue_std17): Longword; stdcall;
-    function GetGreen(out aGreen: nsIDOMCSSPrimitiveValue_std17): Longword; stdcall;
-    function GetBlue(out aBlue: nsIDOMCSSPrimitiveValue_std17): Longword; stdcall;
+    function GetRed(out aRed: nsIDOMCSSPrimitiveValue_std17): Longword; extdecl;
+    function GetGreen(out aGreen: nsIDOMCSSPrimitiveValue_std17): Longword; extdecl;
+    function GetBlue(out aBlue: nsIDOMCSSPrimitiveValue_std17): Longword; extdecl;
   end;
 
   nsIDOMStyleSheetList_std17 = interface(nsISupports_std17)
   ['{a6cf9081-15b3-11d2-932e-00805f8add32}']
-    function GetLength(out aLength: PRUint32): Longword; stdcall;
-    function Item(index: PRUint32; out _retval: nsIDOMStyleSheet_std17): nsresult; stdcall;
+    function GetLength(out aLength: PRUint32): Longword; extdecl;
+    function Item(index: PRUint32; out _retval: nsIDOMStyleSheet_std17): nsresult; extdecl;
   end;
 
   nsIDOMWindow_std17 = interface(nsISupports_std17)
   ['{a6cf906b-15b3-11d2-932e-00805f8add32}']
-    function GetDocument(out aDocument: nsIDOMDocument_std17): Longword; stdcall;
-    function GetParent(out aParent: nsIDOMWindow_std17): Longword; stdcall;
-    function GetTop(out aTop: nsIDOMWindow_std17): Longword; stdcall;
-    function GetScrollbars(out aScrollbars: nsIDOMBarProp_std17): Longword; stdcall;
-    function GetFrames(out aFrames: nsIDOMWindowCollection_std17): Longword; stdcall;
-    function GetName(aName: nsAString): Longword; stdcall;
-    function SetName(const aName: nsAString): Longword; stdcall;
-    function GetTextZoom(out aTextZoom: Single): Longword; stdcall;
-    function SetTextZoom(aTextZoom: Single): Longword; stdcall;
-    function GetScrollX(out aScrollX: PRInt32): Longword; stdcall;
-    function GetScrollY(out aScrollY: PRInt32): Longword; stdcall;
-    function ScrollTo(xScroll: PRInt32; yScroll: PRInt32): nsresult; stdcall;
-    function ScrollBy(xScrollDif: PRInt32; yScrollDif: PRInt32): nsresult; stdcall;
-    function GetSelection(out _retval: nsISelection_std17): nsresult; stdcall;
-    function ScrollByLines(numLines: PRInt32): nsresult; stdcall;
-    function ScrollByPages(numPages: PRInt32): nsresult; stdcall;
-    function SizeToContent(): nsresult; stdcall;
+    function GetDocument(out aDocument: nsIDOMDocument_std17): Longword; extdecl;
+    function GetParent(out aParent: nsIDOMWindow_std17): Longword; extdecl;
+    function GetTop(out aTop: nsIDOMWindow_std17): Longword; extdecl;
+    function GetScrollbars(out aScrollbars: nsIDOMBarProp_std17): Longword; extdecl;
+    function GetFrames(out aFrames: nsIDOMWindowCollection_std17): Longword; extdecl;
+    function GetName(aName: nsAString): Longword; extdecl;
+    function SetName(const aName: nsAString): Longword; extdecl;
+    function GetTextZoom(out aTextZoom: Single): Longword; extdecl;
+    function SetTextZoom(aTextZoom: Single): Longword; extdecl;
+    function GetScrollX(out aScrollX: PRInt32): Longword; extdecl;
+    function GetScrollY(out aScrollY: PRInt32): Longword; extdecl;
+    function ScrollTo(xScroll: PRInt32; yScroll: PRInt32): nsresult; extdecl;
+    function ScrollBy(xScrollDif: PRInt32; yScrollDif: PRInt32): nsresult; extdecl;
+    function GetSelection(out _retval: nsISelection_std17): nsresult; extdecl;
+    function ScrollByLines(numLines: PRInt32): nsresult; extdecl;
+    function ScrollByPages(numPages: PRInt32): nsresult; extdecl;
+    function SizeToContent(): nsresult; extdecl;
   end;
 
   nsIDOMWindow2_std17 = interface(nsIDOMWindow_std17)
   ['{65455132-b96a-40ec-adea-52fa22b1028c}']
-    function GetWindowRoot(out aWindowRoot: nsIDOMEventTarget_std17): Longword; stdcall;
+    function GetWindowRoot(out aWindowRoot: nsIDOMEventTarget_std17): Longword; extdecl;
   end;
 
   nsIDOMWindowCollection_std17 = interface(nsISupports_std17)
   ['{a6cf906f-15b3-11d2-932e-00805f8add32}']
-    function GetLength(out aLength: PRUint32): Longword; stdcall;
-    function Item(index: PRUint32; out _retval: nsIDOMWindow_std17): nsresult; stdcall;
-    function NamedItem(const name: nsAString; out _retval: nsIDOMWindow_std17): nsresult; stdcall;
+    function GetLength(out aLength: PRUint32): Longword; extdecl;
+    function Item(index: PRUint32; out _retval: nsIDOMWindow_std17): nsresult; extdecl;
+    function NamedItem(const name: nsAString; out _retval: nsIDOMWindow_std17): nsresult; extdecl;
   end;
 
   nsIEmbeddingSiteWindow_std17 = interface(nsISupports_std17)
   ['{3e5432cd-9568-4bd1-8cbe-d50aba110743}']
-    function SetDimensions(flags: PRUint32; x: PRInt32; y: PRInt32; cx: PRInt32; cy: PRInt32): nsresult; stdcall;
-    function GetDimensions(flags: PRUint32; out x: PRInt32; out y: PRInt32; out cx: PRInt32; out cy: PRInt32): nsresult; stdcall;
-    function SetFocus(): nsresult; stdcall;
-    function GetVisibility(out aVisibility: PRBool): Longword; stdcall;
-    function SetVisibility(aVisibility: PRBool): Longword; stdcall;
-    function GetTitle(out aTitle: PWideChar): Longword; stdcall;
-    function SetTitle(const aTitle: PWideChar): Longword; stdcall;
-    function GetSiteWindow(out aSiteWindow: Pointer): Longword; stdcall;
+    function SetDimensions(flags: PRUint32; x: PRInt32; y: PRInt32; cx: PRInt32; cy: PRInt32): nsresult; extdecl;
+    function GetDimensions(flags: PRUint32; out x: PRInt32; out y: PRInt32; out cx: PRInt32; out cy: PRInt32): nsresult; extdecl;
+    function SetFocus(): nsresult; extdecl;
+    function GetVisibility(out aVisibility: PRBool): Longword; extdecl;
+    function SetVisibility(aVisibility: PRBool): Longword; extdecl;
+    function GetTitle(out aTitle: PWideChar): Longword; extdecl;
+    function SetTitle(const aTitle: PWideChar): Longword; extdecl;
+    function GetSiteWindow(out aSiteWindow: Pointer): Longword; extdecl;
   end;
 
   nsIFactory_std17 = interface(nsISupports_std17)
   ['{00000001-0000-0000-c000-000000000046}']
-    function CreateInstance(aOuter: nsISupports_std17; const iid: TGUID; out _result): nsresult; stdcall;
-    function LockFactory(lock: PRBool): nsresult; stdcall;
+    function CreateInstance(aOuter: nsISupports_std17; const iid: TGUID; out _result): nsresult; extdecl;
+    function LockFactory(lock: PRBool): nsresult; extdecl;
   end;
 
   nsIURI_std17 = interface(nsISupports_std17)
   ['{07a22cc0-0ce5-11d3-9331-00104ba0fd40}']
-    function GetSpec(aSpec: nsACString): Longword; stdcall;
-    function SetSpec(const aSpec: nsACString): Longword; stdcall;
-    function GetPrePath(aPrePath: nsACString): Longword; stdcall;
-    function GetScheme(aScheme: nsACString): Longword; stdcall;
-    function SetScheme(const aScheme: nsACString): Longword; stdcall;
-    function GetUserPass(aUserPass: nsACString): Longword; stdcall;
-    function SetUserPass(const aUserPass: nsACString): Longword; stdcall;
-    function GetUsername(aUsername: nsACString): Longword; stdcall;
-    function SetUsername(const aUsername: nsACString): Longword; stdcall;
-    function GetPassword(aPassword: nsACString): Longword; stdcall;
-    function SetPassword(const aPassword: nsACString): Longword; stdcall;
-    function GetHostPort(aHostPort: nsACString): Longword; stdcall;
-    function SetHostPort(const aHostPort: nsACString): Longword; stdcall;
-    function GetHost(aHost: nsACString): Longword; stdcall;
-    function SetHost(const aHost: nsACString): Longword; stdcall;
-    function GetPort(out aPort: PRInt32): Longword; stdcall;
-    function SetPort(aPort: PRInt32): Longword; stdcall;
-    function GetPath(aPath: nsACString): Longword; stdcall;
-    function SetPath(const aPath: nsACString): Longword; stdcall;
-    function Equals(other: nsIURI_std17; out _retval: PRBool): nsresult; stdcall;
-    function SchemeIs(const scheme: PAnsiChar; out _retval: PRBool): nsresult; stdcall;
-    function Clone(out _retval: nsIURI_std17): nsresult; stdcall;
-    function Resolve(const relativePath: nsACString; _retval: nsACString): nsresult; stdcall;
-    function GetAsciiSpec(aAsciiSpec: nsACString): Longword; stdcall;
-    function GetAsciiHost(aAsciiHost: nsACString): Longword; stdcall;
-    function GetOriginCharset(aOriginCharset: nsACString): Longword; stdcall;
+    function GetSpec(aSpec: nsACString): Longword; extdecl;
+    function SetSpec(const aSpec: nsACString): Longword; extdecl;
+    function GetPrePath(aPrePath: nsACString): Longword; extdecl;
+    function GetScheme(aScheme: nsACString): Longword; extdecl;
+    function SetScheme(const aScheme: nsACString): Longword; extdecl;
+    function GetUserPass(aUserPass: nsACString): Longword; extdecl;
+    function SetUserPass(const aUserPass: nsACString): Longword; extdecl;
+    function GetUsername(aUsername: nsACString): Longword; extdecl;
+    function SetUsername(const aUsername: nsACString): Longword; extdecl;
+    function GetPassword(aPassword: nsACString): Longword; extdecl;
+    function SetPassword(const aPassword: nsACString): Longword; extdecl;
+    function GetHostPort(aHostPort: nsACString): Longword; extdecl;
+    function SetHostPort(const aHostPort: nsACString): Longword; extdecl;
+    function GetHost(aHost: nsACString): Longword; extdecl;
+    function SetHost(const aHost: nsACString): Longword; extdecl;
+    function GetPort(out aPort: PRInt32): Longword; extdecl;
+    function SetPort(aPort: PRInt32): Longword; extdecl;
+    function GetPath(aPath: nsACString): Longword; extdecl;
+    function SetPath(const aPath: nsACString): Longword; extdecl;
+    function Equals(other: nsIURI_std17; out _retval: PRBool): nsresult; extdecl;
+    function SchemeIs(const scheme: PAnsiChar; out _retval: PRBool): nsresult; extdecl;
+    function Clone(out _retval: nsIURI_std17): nsresult; extdecl;
+    function Resolve(const relativePath: nsACString; _retval: nsACString): nsresult; extdecl;
+    function GetAsciiSpec(aAsciiSpec: nsACString): Longword; extdecl;
+    function GetAsciiHost(aAsciiHost: nsACString): Longword; extdecl;
+    function GetOriginCharset(aOriginCharset: nsACString): Longword; extdecl;
   end;
 
   nsIURL_std17 = interface(nsIURI_std17)
   ['{d6116970-8034-11d3-9399-00104ba0fd40}']
-    function GetFilePath(aFilePath: nsACString): Longword; stdcall;
-    function SetFilePath(const aFilePath: nsACString): Longword; stdcall;
-    function GetParam(aParam: nsACString): Longword; stdcall;
-    function SetParam(const aParam: nsACString): Longword; stdcall;
-    function GetQuery(aQuery: nsACString): Longword; stdcall;
-    function SetQuery(const aQuery: nsACString): Longword; stdcall;
-    function GetRef(aRef: nsACString): Longword; stdcall;
-    function SetRef(const aRef: nsACString): Longword; stdcall;
-    function GetDirectory(aDirectory: nsACString): Longword; stdcall;
-    function SetDirectory(const aDirectory: nsACString): Longword; stdcall;
-    function GetFileName(aFileName: nsACString): Longword; stdcall;
-    function SetFileName(const aFileName: nsACString): Longword; stdcall;
-    function GetFileBaseName(aFileBaseName: nsACString): Longword; stdcall;
-    function SetFileBaseName(const aFileBaseName: nsACString): Longword; stdcall;
-    function GetFileExtension(aFileExtension: nsACString): Longword; stdcall;
-    function SetFileExtension(const aFileExtension: nsACString): Longword; stdcall;
-    function GetCommonBaseSpec(aURIToCompare: nsIURI_std17; _retval: nsACString): nsresult; stdcall;
-    function GetRelativeSpec(aURIToCompare: nsIURI_std17; _retval: nsACString): nsresult; stdcall;
+    function GetFilePath(aFilePath: nsACString): Longword; extdecl;
+    function SetFilePath(const aFilePath: nsACString): Longword; extdecl;
+    function GetParam(aParam: nsACString): Longword; extdecl;
+    function SetParam(const aParam: nsACString): Longword; extdecl;
+    function GetQuery(aQuery: nsACString): Longword; extdecl;
+    function SetQuery(const aQuery: nsACString): Longword; extdecl;
+    function GetRef(aRef: nsACString): Longword; extdecl;
+    function SetRef(const aRef: nsACString): Longword; extdecl;
+    function GetDirectory(aDirectory: nsACString): Longword; extdecl;
+    function SetDirectory(const aDirectory: nsACString): Longword; extdecl;
+    function GetFileName(aFileName: nsACString): Longword; extdecl;
+    function SetFileName(const aFileName: nsACString): Longword; extdecl;
+    function GetFileBaseName(aFileBaseName: nsACString): Longword; extdecl;
+    function SetFileBaseName(const aFileBaseName: nsACString): Longword; extdecl;
+    function GetFileExtension(aFileExtension: nsACString): Longword; extdecl;
+    function SetFileExtension(const aFileExtension: nsACString): Longword; extdecl;
+    function GetCommonBaseSpec(aURIToCompare: nsIURI_std17; _retval: nsACString): nsresult; extdecl;
+    function GetRelativeSpec(aURIToCompare: nsIURI_std17; _retval: nsACString): nsresult; extdecl;
   end;
 
   nsIFileURL_std17 = interface(nsIURL_std17)
   ['{d26b2e2e-1dd1-11b2-88f3-8545a7ba7949}']
-    function GetFile(out aFile: nsIFile_std17): Longword; stdcall;
-    function SetFile(aFile: nsIFile_std17): Longword; stdcall;
+    function GetFile(out aFile: nsIFile_std17): Longword; extdecl;
+    function SetFile(aFile: nsIFile_std17): Longword; extdecl;
   end;
 
   nsIGlobalHistory_std17 = interface(nsISupports_std17)
   ['{9491c383-e3c4-11d2-bdbe-0050040a9b44}']
-    function AddPage(const aURL: PAnsiChar): nsresult; stdcall;
-    function IsVisited(const aURL: PAnsiChar; out _retval: PRBool): nsresult; stdcall;
+    function AddPage(const aURL: PAnsiChar): nsresult; extdecl;
+    function IsVisited(const aURL: PAnsiChar; out _retval: PRBool): nsresult; extdecl;
   end;
 
   nsIHistoryEntry_std17 = interface(nsISupports_std17)
   ['{a41661d4-1417-11d5-9882-00c04fa02f40}']
-    function GetURI(out aURI: nsIURI_std17): Longword; stdcall;
-    function GetTitle(out aTitle: PWideChar): Longword; stdcall;
-    function GetIsSubFrame(out aIsSubFrame: PRBool): Longword; stdcall;
+    function GetURI(out aURI: nsIURI_std17): Longword; extdecl;
+    function GetTitle(out aTitle: PWideChar): Longword; extdecl;
+    function GetIsSubFrame(out aIsSubFrame: PRBool): Longword; extdecl;
   end;
 
   nsIHttpChannel_std17 = interface(nsIChannel_std17)
   ['{9277fe09-f0cc-4cd9-bbce-581dd94b0260}']
-    function GetRequestMethod(aRequestMethod: nsACString): Longword; stdcall;
-    function SetRequestMethod(const aRequestMethod: nsACString): Longword; stdcall;
-    function GetReferrer(out aReferrer: nsIURI_std17): Longword; stdcall;
-    function SetReferrer(aReferrer: nsIURI_std17): Longword; stdcall;
-    function GetRequestHeader(const aHeader: nsACString; _retval: nsACString): nsresult; stdcall;
-    function SetRequestHeader(const aHeader: nsACString; const aValue: nsACString; aMerge: PRBool): nsresult; stdcall;
-    function VisitRequestHeaders(aVisitor: nsIHttpHeaderVisitor_std17): nsresult; stdcall;
-    function GetAllowPipelining(out aAllowPipelining: PRBool): Longword; stdcall;
-    function SetAllowPipelining(aAllowPipelining: PRBool): Longword; stdcall;
-    function GetRedirectionLimit(out aRedirectionLimit: PRUint32): Longword; stdcall;
-    function SetRedirectionLimit(aRedirectionLimit: PRUint32): Longword; stdcall;
-    function GetResponseStatus(out aResponseStatus: PRUint32): Longword; stdcall;
-    function GetResponseStatusText(aResponseStatusText: nsACString): Longword; stdcall;
-    function GetRequestSucceeded(out aRequestSucceeded: PRBool): Longword; stdcall;
-    function GetResponseHeader(const header: nsACString; _retval: nsACString): nsresult; stdcall;
-    function SetResponseHeader(const header: nsACString; const value: nsACString; merge: PRBool): nsresult; stdcall;
-    function VisitResponseHeaders(aVisitor: nsIHttpHeaderVisitor_std17): nsresult; stdcall;
-    function IsNoStoreResponse(out _retval: PRBool): nsresult; stdcall;
-    function IsNoCacheResponse(out _retval: PRBool): nsresult; stdcall;
+    function GetRequestMethod(aRequestMethod: nsACString): Longword; extdecl;
+    function SetRequestMethod(const aRequestMethod: nsACString): Longword; extdecl;
+    function GetReferrer(out aReferrer: nsIURI_std17): Longword; extdecl;
+    function SetReferrer(aReferrer: nsIURI_std17): Longword; extdecl;
+    function GetRequestHeader(const aHeader: nsACString; _retval: nsACString): nsresult; extdecl;
+    function SetRequestHeader(const aHeader: nsACString; const aValue: nsACString; aMerge: PRBool): nsresult; extdecl;
+    function VisitRequestHeaders(aVisitor: nsIHttpHeaderVisitor_std17): nsresult; extdecl;
+    function GetAllowPipelining(out aAllowPipelining: PRBool): Longword; extdecl;
+    function SetAllowPipelining(aAllowPipelining: PRBool): Longword; extdecl;
+    function GetRedirectionLimit(out aRedirectionLimit: PRUint32): Longword; extdecl;
+    function SetRedirectionLimit(aRedirectionLimit: PRUint32): Longword; extdecl;
+    function GetResponseStatus(out aResponseStatus: PRUint32): Longword; extdecl;
+    function GetResponseStatusText(aResponseStatusText: nsACString): Longword; extdecl;
+    function GetRequestSucceeded(out aRequestSucceeded: PRBool): Longword; extdecl;
+    function GetResponseHeader(const header: nsACString; _retval: nsACString): nsresult; extdecl;
+    function SetResponseHeader(const header: nsACString; const value: nsACString; merge: PRBool): nsresult; extdecl;
+    function VisitResponseHeaders(aVisitor: nsIHttpHeaderVisitor_std17): nsresult; extdecl;
+    function IsNoStoreResponse(out _retval: PRBool): nsresult; extdecl;
+    function IsNoCacheResponse(out _retval: PRBool): nsresult; extdecl;
   end;
 
   nsIHttpHeaderVisitor_std17 = interface(nsISupports_std17)
   ['{0cf40717-d7c1-4a94-8c1e-d6c9734101bb}']
-    function VisitHeader(const aHeader: nsACString; const aValue: nsACString): nsresult; stdcall;
+    function VisitHeader(const aHeader: nsACString; const aValue: nsACString): nsresult; extdecl;
   end;
 
   nsIInputStream_std17 = interface(nsISupports_std17)
   ['{fa9c7f6c-61b3-11d4-9877-00c04fa0cf4a}']
-    function Close(): nsresult; stdcall;
-    function Available(out _retval: PRUint32): nsresult; stdcall;
-    function Read(aBuf: Pchar; aCount: PRUint32; out _retval: PRUint32): nsresult; stdcall;
-    function ReadSegments(aWriter: nsWriteSegmentFun; aClosure: Pointer; aCount: PRUint32; out _retval: PRUint32): nsresult; stdcall;
-    function IsNonBlocking(out _retval: PRBool): nsresult; stdcall;
+    function Close(): nsresult; extdecl;
+    function Available(out _retval: PRUint32): nsresult; extdecl;
+    function Read(aBuf: Pchar; aCount: PRUint32; out _retval: PRUint32): nsresult; extdecl;
+    function ReadSegments(aWriter: nsWriteSegmentFun; aClosure: Pointer; aCount: PRUint32; out _retval: PRUint32): nsresult; extdecl;
+    function IsNonBlocking(out _retval: PRBool): nsresult; extdecl;
   end;
 
   nsIInterfaceRequestor_std17 = interface(nsISupports_std17)
   ['{033a1470-8b2a-11d3-af88-00a024ffc08c}']
-    function GetInterface(const uuid: TGUID; out _result): nsresult; stdcall;
+    function GetInterface(const uuid: TGUID; out _result): nsresult; extdecl;
   end;
 
   nsIIOService_std17 = interface(nsISupports_std17)
   ['{bddeda3f-9020-4d12-8c70-984ee9f7935e}']
-    function GetProtocolHandler(const aScheme: PAnsiChar; out _retval: nsIProtocolHandler_std17): nsresult; stdcall;
-    function GetProtocolFlags(const aScheme: PAnsiChar; out _retval: PRUint32): nsresult; stdcall;
-    function NewURI(const aSpec: nsACString; const aOriginCharset: PAnsiChar; aBaseURI: nsIURI_std17; out _retval: nsIURI_std17): nsresult; stdcall;
-    function NewFileURI(aFile: nsIFile_std17; out _retval: nsIURI_std17): nsresult; stdcall;
-    function NewChannelFromURI(aURI: nsIURI_std17; out _retval: nsIChannel_std17): nsresult; stdcall;
-    function NewChannel(const aSpec: nsACString; const aOriginCharset: PAnsiChar; aBaseURI: nsIURI_std17; out _retval: nsIChannel_std17): nsresult; stdcall;
-    function GetOffline(out aOffline: PRBool): Longword; stdcall;
-    function SetOffline(aOffline: PRBool): Longword; stdcall;
-    function AllowPort(aPort: PRInt32; const aScheme: PAnsiChar; out _retval: PRBool): nsresult; stdcall;
-    function ExtractScheme(const urlString: nsACString; _retval: nsACString): nsresult; stdcall;
+    function GetProtocolHandler(const aScheme: PAnsiChar; out _retval: nsIProtocolHandler_std17): nsresult; extdecl;
+    function GetProtocolFlags(const aScheme: PAnsiChar; out _retval: PRUint32): nsresult; extdecl;
+    function NewURI(const aSpec: nsACString; const aOriginCharset: PAnsiChar; aBaseURI: nsIURI_std17; out _retval: nsIURI_std17): nsresult; extdecl;
+    function NewFileURI(aFile: nsIFile_std17; out _retval: nsIURI_std17): nsresult; extdecl;
+    function NewChannelFromURI(aURI: nsIURI_std17; out _retval: nsIChannel_std17): nsresult; extdecl;
+    function NewChannel(const aSpec: nsACString; const aOriginCharset: PAnsiChar; aBaseURI: nsIURI_std17; out _retval: nsIChannel_std17): nsresult; extdecl;
+    function GetOffline(out aOffline: PRBool): Longword; extdecl;
+    function SetOffline(aOffline: PRBool): Longword; extdecl;
+    function AllowPort(aPort: PRInt32; const aScheme: PAnsiChar; out _retval: PRBool): nsresult; extdecl;
+    function ExtractScheme(const urlString: nsACString; _retval: nsACString): nsresult; extdecl;
   end;
 
   nsILoadGroup_std17 = interface(nsIRequest_std17)
   ['{3de0a31c-feaf-400f-9f1e-4ef71f8b20cc}']
-    function GetGroupObserver(out aGroupObserver: nsIRequestObserver_std17): Longword; stdcall;
-    function SetGroupObserver(aGroupObserver: nsIRequestObserver_std17): Longword; stdcall;
-    function GetDefaultLoadRequest(out aDefaultLoadRequest: nsIRequest_std17): Longword; stdcall;
-    function SetDefaultLoadRequest(aDefaultLoadRequest: nsIRequest_std17): Longword; stdcall;
-    function AddRequest(aRequest: nsIRequest_std17; aContext: nsISupports_std17): nsresult; stdcall;
-    function RemoveRequest(aRequest: nsIRequest_std17; aContext: nsISupports_std17; aStatus: nsresult): nsresult; stdcall;
-    function GetRequests(out aRequests: nsISimpleEnumerator_std17): Longword; stdcall;
-    function GetActiveCount(out aActiveCount: PRUint32): Longword; stdcall;
-    function GetNotificationCallbacks(out aNotificationCallbacks: nsIInterfaceRequestor_std17): Longword; stdcall;
-    function SetNotificationCallbacks(aNotificationCallbacks: nsIInterfaceRequestor_std17): Longword; stdcall;
+    function GetGroupObserver(out aGroupObserver: nsIRequestObserver_std17): Longword; extdecl;
+    function SetGroupObserver(aGroupObserver: nsIRequestObserver_std17): Longword; extdecl;
+    function GetDefaultLoadRequest(out aDefaultLoadRequest: nsIRequest_std17): Longword; extdecl;
+    function SetDefaultLoadRequest(aDefaultLoadRequest: nsIRequest_std17): Longword; extdecl;
+    function AddRequest(aRequest: nsIRequest_std17; aContext: nsISupports_std17): nsresult; extdecl;
+    function RemoveRequest(aRequest: nsIRequest_std17; aContext: nsISupports_std17; aStatus: nsresult): nsresult; extdecl;
+    function GetRequests(out aRequests: nsISimpleEnumerator_std17): Longword; extdecl;
+    function GetActiveCount(out aActiveCount: PRUint32): Longword; extdecl;
+    function GetNotificationCallbacks(out aNotificationCallbacks: nsIInterfaceRequestor_std17): Longword; extdecl;
+    function SetNotificationCallbacks(aNotificationCallbacks: nsIInterfaceRequestor_std17): Longword; extdecl;
   end;
 
   nsILocalFile_std17 = interface(nsIFile_std17)
   ['{aa610f20-a889-11d3-8c81-000064657374}']
-    function InitWithPath(const filePath: nsAString): nsresult; stdcall;
-    function InitWithNativePath(const filePath: nsACString): nsresult; stdcall;
-    function InitWithFile(aFile: nsILocalFile_std17): nsresult; stdcall;
-    function GetFollowLinks(out aFollowLinks: PRBool): Longword; stdcall;
-    function SetFollowLinks(aFollowLinks: PRBool): Longword; stdcall;
-    function OpenNSPRFileDesc(flags: PRInt32; mode: PRInt32; out _retval: PPRFileDesc): nsresult; stdcall;
-    function OpenANSIFileDesc(const mode: PAnsiChar; out _retval: PFILE): nsresult; stdcall;
-    function Load(out _retval: PPRLibrary): nsresult; stdcall;
-    function GetDiskSpaceAvailable(out aDiskSpaceAvailable: PRInt64): Longword; stdcall;
-    function AppendRelativePath(const relativeFilePath: nsAString): nsresult; stdcall;
-    function AppendRelativeNativePath(const relativeFilePath: nsACString): nsresult; stdcall;
-    function GetPersistentDescriptor(aPersistentDescriptor: nsACString): Longword; stdcall;
-    function SetPersistentDescriptor(const aPersistentDescriptor: nsACString): Longword; stdcall;
-    function Reveal(): nsresult; stdcall;
-    function Launch(): nsresult; stdcall;
-    function GetRelativeDescriptor(fromFile: nsILocalFile_std17; _retval: nsACString): nsresult; stdcall;
-    function SetRelativeDescriptor(fromFile: nsILocalFile_std17; const relativeDesc: nsACString): nsresult; stdcall;
+    function InitWithPath(const filePath: nsAString): nsresult; extdecl;
+    function InitWithNativePath(const filePath: nsACString): nsresult; extdecl;
+    function InitWithFile(aFile: nsILocalFile_std17): nsresult; extdecl;
+    function GetFollowLinks(out aFollowLinks: PRBool): Longword; extdecl;
+    function SetFollowLinks(aFollowLinks: PRBool): Longword; extdecl;
+    function OpenNSPRFileDesc(flags: PRInt32; mode: PRInt32; out _retval: PPRFileDesc): nsresult; extdecl;
+    function OpenANSIFileDesc(const mode: PAnsiChar; out _retval: PFILE): nsresult; extdecl;
+    function Load(out _retval: PPRLibrary): nsresult; extdecl;
+    function GetDiskSpaceAvailable(out aDiskSpaceAvailable: PRInt64): Longword; extdecl;
+    function AppendRelativePath(const relativeFilePath: nsAString): nsresult; extdecl;
+    function AppendRelativeNativePath(const relativeFilePath: nsACString): nsresult; extdecl;
+    function GetPersistentDescriptor(aPersistentDescriptor: nsACString): Longword; extdecl;
+    function SetPersistentDescriptor(const aPersistentDescriptor: nsACString): Longword; extdecl;
+    function Reveal(): nsresult; extdecl;
+    function Launch(): nsresult; extdecl;
+    function GetRelativeDescriptor(fromFile: nsILocalFile_std17; _retval: nsACString): nsresult; extdecl;
+    function SetRelativeDescriptor(fromFile: nsILocalFile_std17; const relativeDesc: nsACString): nsresult; extdecl;
   end;
 
   nsIMemory_std17 = interface(nsISupports_std17)
   ['{59e7e77a-38e4-11d4-8cf5-0060b0fc14a3}']
-    function Alloc(size: size_t): Pointer; stdcall;
-    function Realloc(ptr: Pointer; newSize: size_t): Pointer; stdcall;
-    procedure Free(ptr: Pointer); stdcall;
-    function HeapMinimize(immediate: PRBool): nsresult; stdcall;
-    function IsLowMemory(out _retval: PRBool): nsresult; stdcall;
+    function Alloc(size: size_t): Pointer; extdecl;
+    function Realloc(ptr: Pointer; newSize: size_t): Pointer; extdecl;
+    procedure Free(ptr: Pointer); extdecl;
+    function HeapMinimize(immediate: PRBool): nsresult; extdecl;
+    function IsLowMemory(out _retval: PRBool): nsresult; extdecl;
   end;
 
   nsIModule_std17 = interface(nsISupports_std17)
   ['{7392d032-5371-11d3-994e-00805fd26fee}']
-    function GetClassObject(aCompMgr: nsIComponentManager_std17; const aClass: TGUID; const aIID: TGUID; out aResult): nsresult; stdcall;
-    function RegisterSelf(aCompMgr: nsIComponentManager_std17; aLocation: nsIFile_std17; const aLoaderStr: PAnsiChar; const aType: PAnsiChar): nsresult; stdcall;
-    function UnregisterSelf(aCompMgr: nsIComponentManager_std17; aLocation: nsIFile_std17; const aLoaderStr: PAnsiChar): nsresult; stdcall;
-    function CanUnload(aCompMgr: nsIComponentManager_std17; out _retval: PRBool): nsresult; stdcall;
+    function GetClassObject(aCompMgr: nsIComponentManager_std17; const aClass: TGUID; const aIID: TGUID; out aResult): nsresult; extdecl;
+    function RegisterSelf(aCompMgr: nsIComponentManager_std17; aLocation: nsIFile_std17; const aLoaderStr: PAnsiChar; const aType: PAnsiChar): nsresult; extdecl;
+    function UnregisterSelf(aCompMgr: nsIComponentManager_std17; aLocation: nsIFile_std17; const aLoaderStr: PAnsiChar): nsresult; extdecl;
+    function CanUnload(aCompMgr: nsIComponentManager_std17; out _retval: PRBool): nsresult; extdecl;
   end;
 
   nsIObserver_std17 = interface(nsISupports_std17)
   ['{db242e01-e4d9-11d2-9dde-000064657374}']
-    function Observe(aSubject: nsISupports_std17; const aTopic: PAnsiChar; const aData: PWideChar): nsresult; stdcall;
+    function Observe(aSubject: nsISupports_std17; const aTopic: PAnsiChar; const aData: PWideChar): nsresult; extdecl;
   end;
 
   nsIObserverService_std17 = interface(nsISupports_std17)
   ['{d07f5192-e3d1-11d2-8acd-00105a1b8860}']
-    function AddObserver(anObserver: nsIObserver_std17; const aTopic: PAnsiChar; ownsWeak: PRBool): nsresult; stdcall;
-    function RemoveObserver(anObserver: nsIObserver_std17; const aTopic: PAnsiChar): nsresult; stdcall;
-    function NotifyObservers(aSubject: nsISupports_std17; const aTopic: PAnsiChar; const someData: PWideChar): nsresult; stdcall;
-    function EnumerateObservers(const aTopic: PAnsiChar; out _retval: nsISimpleEnumerator_std17): nsresult; stdcall;
+    function AddObserver(anObserver: nsIObserver_std17; const aTopic: PAnsiChar; ownsWeak: PRBool): nsresult; extdecl;
+    function RemoveObserver(anObserver: nsIObserver_std17; const aTopic: PAnsiChar): nsresult; extdecl;
+    function NotifyObservers(aSubject: nsISupports_std17; const aTopic: PAnsiChar; const someData: PWideChar): nsresult; extdecl;
+    function EnumerateObservers(const aTopic: PAnsiChar; out _retval: nsISimpleEnumerator_std17): nsresult; extdecl;
   end;
 
   nsIOutputStream_std17 = interface(nsISupports_std17)
   ['{0d0acd2a-61b4-11d4-9877-00c04fa0cf4a}']
-    function Close(): nsresult; stdcall;
-    function Flush(): nsresult; stdcall;
-    function Write(const aBuf: PAnsiChar; aCount: PRUint32; out _retval: PRUint32): nsresult; stdcall;
-    function WriteFrom(aFromStream: nsIInputStream_std17; aCount: PRUint32; out _retval: PRUint32): nsresult; stdcall;
-    function WriteSegments(aReader: nsReadSegmentFun; aClosure: Pointer; aCount: PRUint32; out _retval: PRUint32): nsresult; stdcall;
-    function IsNonBlocking(out _retval: PRBool): nsresult; stdcall;
+    function Close(): nsresult; extdecl;
+    function Flush(): nsresult; extdecl;
+    function Write(const aBuf: PAnsiChar; aCount: PRUint32; out _retval: PRUint32): nsresult; extdecl;
+    function WriteFrom(aFromStream: nsIInputStream_std17; aCount: PRUint32; out _retval: PRUint32): nsresult; extdecl;
+    function WriteSegments(aReader: nsReadSegmentFun; aClosure: Pointer; aCount: PRUint32; out _retval: PRUint32): nsresult; extdecl;
+    function IsNonBlocking(out _retval: PRBool): nsresult; extdecl;
   end;
 
   nsIPassword_std17 = interface(nsISupports_std17)
   ['{cf39c2b0-1e4b-11d5-a549-0010a401eb10}']
-    function GetHost(aHost: nsACString): Longword; stdcall;
-    function GetUser(aUser: nsAString): Longword; stdcall;
-    function GetPassword(aPassword: nsAString): Longword; stdcall;
+    function GetHost(aHost: nsACString): Longword; extdecl;
+    function GetUser(aUser: nsAString): Longword; extdecl;
+    function GetPassword(aPassword: nsAString): Longword; extdecl;
   end;
 
   nsIPrefBranch_std17 = interface(nsISupports_std17)
   ['{56c35506-f14b-11d3-99d3-ddbfac2ccf65}']
-    function GetRoot(out aRoot: PAnsiChar): Longword; stdcall;
-    function GetPrefType(const aPrefName: PAnsiChar; out _retval: PRInt32): nsresult; stdcall;
-    function GetBoolPref(const aPrefName: PAnsiChar; out _retval: PRBool): nsresult; stdcall;
-    function SetBoolPref(const aPrefName: PAnsiChar; aValue: PRInt32): nsresult; stdcall;
-    function GetCharPref(const aPrefName: PAnsiChar; out _retval: PAnsiChar): nsresult; stdcall;
-    function SetCharPref(const aPrefName: PAnsiChar; const aValue: PAnsiChar): nsresult; stdcall;
-    function GetIntPref(const aPrefName: PAnsiChar; out _retval: PRInt32): nsresult; stdcall;
-    function SetIntPref(const aPrefName: PAnsiChar; aValue: PRInt32): nsresult; stdcall;
-    function GetComplexValue(const aPrefName: PAnsiChar; const aType: TGUID; out aValue): nsresult; stdcall;
-    function SetComplexValue(const aPrefName: PAnsiChar; const aType: TGUID; aValue: nsISupports_std17): nsresult; stdcall;
-    function ClearUserPref(const aPrefName: PAnsiChar): nsresult; stdcall;
-    function LockPref(const aPrefName: PAnsiChar): nsresult; stdcall;
-    function PrefHasUserValue(const aPrefName: PAnsiChar; out _retval: PRBool): nsresult; stdcall;
-    function PrefIsLocked(const aPrefName: PAnsiChar; out _retval: PRBool): nsresult; stdcall;
-    function UnlockPref(const aPrefName: PAnsiChar): nsresult; stdcall;
-    function DeleteBranch(const aStartingAt: PAnsiChar): nsresult; stdcall;
-    function GetChildList(const aStartingAt: PAnsiChar; out aCount: PRUint32; out aChildArray_array): nsresult; stdcall;
-    function ResetBranch(const aStartingAt: PAnsiChar): nsresult; stdcall;
+    function GetRoot(out aRoot: PAnsiChar): Longword; extdecl;
+    function GetPrefType(const aPrefName: PAnsiChar; out _retval: PRInt32): nsresult; extdecl;
+    function GetBoolPref(const aPrefName: PAnsiChar; out _retval: PRBool): nsresult; extdecl;
+    function SetBoolPref(const aPrefName: PAnsiChar; aValue: PRInt32): nsresult; extdecl;
+    function GetCharPref(const aPrefName: PAnsiChar; out _retval: PAnsiChar): nsresult; extdecl;
+    function SetCharPref(const aPrefName: PAnsiChar; const aValue: PAnsiChar): nsresult; extdecl;
+    function GetIntPref(const aPrefName: PAnsiChar; out _retval: PRInt32): nsresult; extdecl;
+    function SetIntPref(const aPrefName: PAnsiChar; aValue: PRInt32): nsresult; extdecl;
+    function GetComplexValue(const aPrefName: PAnsiChar; const aType: TGUID; out aValue): nsresult; extdecl;
+    function SetComplexValue(const aPrefName: PAnsiChar; const aType: TGUID; aValue: nsISupports_std17): nsresult; extdecl;
+    function ClearUserPref(const aPrefName: PAnsiChar): nsresult; extdecl;
+    function LockPref(const aPrefName: PAnsiChar): nsresult; extdecl;
+    function PrefHasUserValue(const aPrefName: PAnsiChar; out _retval: PRBool): nsresult; extdecl;
+    function PrefIsLocked(const aPrefName: PAnsiChar; out _retval: PRBool): nsresult; extdecl;
+    function UnlockPref(const aPrefName: PAnsiChar): nsresult; extdecl;
+    function DeleteBranch(const aStartingAt: PAnsiChar): nsresult; extdecl;
+    function GetChildList(const aStartingAt: PAnsiChar; out aCount: PRUint32; out aChildArray_array): nsresult; extdecl;
+    function ResetBranch(const aStartingAt: PAnsiChar): nsresult; extdecl;
   end;
 
   nsIPrefLocalizedString_std17 = interface(nsISupports_std17)
   ['{ae419e24-1dd1-11b2-b39a-d3e5e7073802}']
-    function GetData(out aData: PWideChar): Longword; stdcall;
-    function SetData(const aData: PWideChar): Longword; stdcall;
-    function ToString(out _retval: PWideChar): nsresult; stdcall;
-    function SetDataWithLength(length: PRUint32; const data: PWideChar): nsresult; stdcall;
+    function GetData(out aData: PWideChar): Longword; extdecl;
+    function SetData(const aData: PWideChar): Longword; extdecl;
+    function ToString(out _retval: PWideChar): nsresult; extdecl;
+    function SetDataWithLength(length: PRUint32; const data: PWideChar): nsresult; extdecl;
   end;
 
   nsIPrefService_std17 = interface(nsISupports_std17)
   ['{decb9cc7-c08f-4ea5-be91-a8fc637ce2d2}']
-    function ReadUserPrefs(aFile: nsIFile_std17): nsresult; stdcall;
-    function ResetPrefs(): nsresult; stdcall;
-    function ResetUserPrefs(): nsresult; stdcall;
-    function SavePrefFile(aFile: nsIFile_std17): nsresult; stdcall;
-    function GetBranch(const aPrefRoot: PAnsiChar; out _retval: nsIPrefBranch_std17): nsresult; stdcall;
-    function GetDefaultBranch(const aPrefRoot: PAnsiChar; out _retval: nsIPrefBranch_std17): nsresult; stdcall;
+    function ReadUserPrefs(aFile: nsIFile_std17): nsresult; extdecl;
+    function ResetPrefs(): nsresult; extdecl;
+    function ResetUserPrefs(): nsresult; extdecl;
+    function SavePrefFile(aFile: nsIFile_std17): nsresult; extdecl;
+    function GetBranch(const aPrefRoot: PAnsiChar; out _retval: nsIPrefBranch_std17): nsresult; extdecl;
+    function GetDefaultBranch(const aPrefRoot: PAnsiChar; out _retval: nsIPrefBranch_std17): nsresult; extdecl;
   end;
 
   nsIPrintSession_std17 = interface(nsISupports_std17)
@@ -2874,632 +2882,632 @@ type
 
   nsIPrintSettings_std17 = interface(nsISupports_std17)
   ['{83427530-f790-11d4-a869-00105a183419}']
-    function SetPrintOptions(aType: PRInt32; aTurnOnOff: PRBool): nsresult; stdcall;
-    function GetPrintOptions(aType: PRInt32; out _retval: PRBool): nsresult; stdcall;
-    function GetPrintOptionsBits(out _retval: PRInt32): nsresult; stdcall;
-    function GetPageSizeInTwips(out aWidth: PRInt32; out aHeight: PRInt32): nsresult; stdcall;
-    function Clone(out _retval: nsIPrintSettings_std17): nsresult; stdcall;
-    function Assign(aPS: nsIPrintSettings_std17): nsresult; stdcall;
-    function GetPrintSession(out aPrintSession: nsIPrintSession_std17): Longword; stdcall;
-    function SetPrintSession(aPrintSession: nsIPrintSession_std17): Longword; stdcall;
-    function GetStartPageRange(out aStartPageRange: PRInt32): Longword; stdcall;
-    function SetStartPageRange(aStartPageRange: PRInt32): Longword; stdcall;
-    function GetEndPageRange(out aEndPageRange: PRInt32): Longword; stdcall;
-    function SetEndPageRange(aEndPageRange: PRInt32): Longword; stdcall;
-    function GetMarginTop(out aMarginTop: Double): Longword; stdcall;
-    function SetMarginTop(aMarginTop: Double): Longword; stdcall;
-    function GetMarginLeft(out aMarginLeft: Double): Longword; stdcall;
-    function SetMarginLeft(aMarginLeft: Double): Longword; stdcall;
-    function GetMarginBottom(out aMarginBottom: Double): Longword; stdcall;
-    function SetMarginBottom(aMarginBottom: Double): Longword; stdcall;
-    function GetMarginRight(out aMarginRight: Double): Longword; stdcall;
-    function SetMarginRight(aMarginRight: Double): Longword; stdcall;
-    function GetScaling(out aScaling: Double): Longword; stdcall;
-    function SetScaling(aScaling: Double): Longword; stdcall;
-    function GetPrintBGColors(out aPrintBGColors: PRBool): Longword; stdcall;
-    function SetPrintBGColors(aPrintBGColors: PRBool): Longword; stdcall;
-    function GetPrintBGImages(out aPrintBGImages: PRBool): Longword; stdcall;
-    function SetPrintBGImages(aPrintBGImages: PRBool): Longword; stdcall;
-    function GetPrintRange(out aPrintRange: PRInt16): Longword; stdcall;
-    function SetPrintRange(aPrintRange: PRInt16): Longword; stdcall;
-    function GetTitle(out aTitle: PWideChar): Longword; stdcall;
-    function SetTitle(const aTitle: PWideChar): Longword; stdcall;
-    function GetDocURL(out aDocURL: PWideChar): Longword; stdcall;
-    function SetDocURL(const aDocURL: PWideChar): Longword; stdcall;
-    function GetHeaderStrLeft(out aHeaderStrLeft: PWideChar): Longword; stdcall;
-    function SetHeaderStrLeft(const aHeaderStrLeft: PWideChar): Longword; stdcall;
-    function GetHeaderStrCenter(out aHeaderStrCenter: PWideChar): Longword; stdcall;
-    function SetHeaderStrCenter(const aHeaderStrCenter: PWideChar): Longword; stdcall;
-    function GetHeaderStrRight(out aHeaderStrRight: PWideChar): Longword; stdcall;
-    function SetHeaderStrRight(const aHeaderStrRight: PWideChar): Longword; stdcall;
-    function GetFooterStrLeft(out aFooterStrLeft: PWideChar): Longword; stdcall;
-    function SetFooterStrLeft(const aFooterStrLeft: PWideChar): Longword; stdcall;
-    function GetFooterStrCenter(out aFooterStrCenter: PWideChar): Longword; stdcall;
-    function SetFooterStrCenter(const aFooterStrCenter: PWideChar): Longword; stdcall;
-    function GetFooterStrRight(out aFooterStrRight: PWideChar): Longword; stdcall;
-    function SetFooterStrRight(const aFooterStrRight: PWideChar): Longword; stdcall;
-    function GetHowToEnableFrameUI(out aHowToEnableFrameUI: PRInt16): Longword; stdcall;
-    function SetHowToEnableFrameUI(aHowToEnableFrameUI: PRInt16): Longword; stdcall;
-    function GetIsCancelled(out aIsCancelled: PRBool): Longword; stdcall;
-    function SetIsCancelled(aIsCancelled: PRBool): Longword; stdcall;
-    function GetPrintFrameTypeUsage(out aPrintFrameTypeUsage: PRInt16): Longword; stdcall;
-    function SetPrintFrameTypeUsage(aPrintFrameTypeUsage: PRInt16): Longword; stdcall;
-    function GetPrintFrameType(out aPrintFrameType: PRInt16): Longword; stdcall;
-    function SetPrintFrameType(aPrintFrameType: PRInt16): Longword; stdcall;
-    function GetPrintSilent(out aPrintSilent: PRBool): Longword; stdcall;
-    function SetPrintSilent(aPrintSilent: PRBool): Longword; stdcall;
-    function GetShrinkToFit(out aShrinkToFit: PRBool): Longword; stdcall;
-    function SetShrinkToFit(aShrinkToFit: PRBool): Longword; stdcall;
-    function GetShowPrintProgress(out aShowPrintProgress: PRBool): Longword; stdcall;
-    function SetShowPrintProgress(aShowPrintProgress: PRBool): Longword; stdcall;
-    function GetPaperName(out aPaperName: PWideChar): Longword; stdcall;
-    function SetPaperName(const aPaperName: PWideChar): Longword; stdcall;
-    function GetPaperSizeType(out aPaperSizeType: PRInt16): Longword; stdcall;
-    function SetPaperSizeType(aPaperSizeType: PRInt16): Longword; stdcall;
-    function GetPaperData(out aPaperData: PRInt16): Longword; stdcall;
-    function SetPaperData(aPaperData: PRInt16): Longword; stdcall;
-    function GetPaperWidth(out aPaperWidth: Double): Longword; stdcall;
-    function SetPaperWidth(aPaperWidth: Double): Longword; stdcall;
-    function GetPaperHeight(out aPaperHeight: Double): Longword; stdcall;
-    function SetPaperHeight(aPaperHeight: Double): Longword; stdcall;
-    function GetPaperSizeUnit(out aPaperSizeUnit: PRInt16): Longword; stdcall;
-    function SetPaperSizeUnit(aPaperSizeUnit: PRInt16): Longword; stdcall;
-    function GetPlexName(out aPlexName: PWideChar): Longword; stdcall;
-    function SetPlexName(const aPlexName: PWideChar): Longword; stdcall;
-    function GetPrintReversed(out aPrintReversed: PRBool): Longword; stdcall;
-    function SetPrintReversed(aPrintReversed: PRBool): Longword; stdcall;
-    function GetPrintInColor(out aPrintInColor: PRBool): Longword; stdcall;
-    function SetPrintInColor(aPrintInColor: PRBool): Longword; stdcall;
-    function GetPaperSize(out aPaperSize: PRInt32): Longword; stdcall;
-    function SetPaperSize(aPaperSize: PRInt32): Longword; stdcall;
-    function GetOrientation(out aOrientation: PRInt32): Longword; stdcall;
-    function SetOrientation(aOrientation: PRInt32): Longword; stdcall;
-    function GetPrintCommand(out aPrintCommand: PWideChar): Longword; stdcall;
-    function SetPrintCommand(const aPrintCommand: PWideChar): Longword; stdcall;
-    function GetNumCopies(out aNumCopies: PRInt32): Longword; stdcall;
-    function SetNumCopies(aNumCopies: PRInt32): Longword; stdcall;
-    function GetPrinterName(out aPrinterName: PWideChar): Longword; stdcall;
-    function SetPrinterName(const aPrinterName: PWideChar): Longword; stdcall;
-    function GetPrintToFile(out aPrintToFile: PRBool): Longword; stdcall;
-    function SetPrintToFile(aPrintToFile: PRBool): Longword; stdcall;
-    function GetToFileName(out aToFileName: PWideChar): Longword; stdcall;
-    function SetToFileName(const aToFileName: PWideChar): Longword; stdcall;
-    function GetPrintPageDelay(out aPrintPageDelay: PRInt32): Longword; stdcall;
-    function SetPrintPageDelay(aPrintPageDelay: PRInt32): Longword; stdcall;
-    function GetIsInitializedFromPrinter(out aIsInitializedFromPrinter: PRBool): Longword; stdcall;
-    function SetIsInitializedFromPrinter(aIsInitializedFromPrinter: PRBool): Longword; stdcall;
-    function GetIsInitializedFromPrefs(out aIsInitializedFromPrefs: PRBool): Longword; stdcall;
-    function SetIsInitializedFromPrefs(aIsInitializedFromPrefs: PRBool): Longword; stdcall;
-    function SetMarginInTwips(var aMargin: nsMargin): nsresult; stdcall;
-    function GetMarginInTwips(var aMargin: nsMargin): nsresult; stdcall;
+    function SetPrintOptions(aType: PRInt32; aTurnOnOff: PRBool): nsresult; extdecl;
+    function GetPrintOptions(aType: PRInt32; out _retval: PRBool): nsresult; extdecl;
+    function GetPrintOptionsBits(out _retval: PRInt32): nsresult; extdecl;
+    function GetPageSizeInTwips(out aWidth: PRInt32; out aHeight: PRInt32): nsresult; extdecl;
+    function Clone(out _retval: nsIPrintSettings_std17): nsresult; extdecl;
+    function Assign(aPS: nsIPrintSettings_std17): nsresult; extdecl;
+    function GetPrintSession(out aPrintSession: nsIPrintSession_std17): Longword; extdecl;
+    function SetPrintSession(aPrintSession: nsIPrintSession_std17): Longword; extdecl;
+    function GetStartPageRange(out aStartPageRange: PRInt32): Longword; extdecl;
+    function SetStartPageRange(aStartPageRange: PRInt32): Longword; extdecl;
+    function GetEndPageRange(out aEndPageRange: PRInt32): Longword; extdecl;
+    function SetEndPageRange(aEndPageRange: PRInt32): Longword; extdecl;
+    function GetMarginTop(out aMarginTop: Double): Longword; extdecl;
+    function SetMarginTop(aMarginTop: Double): Longword; extdecl;
+    function GetMarginLeft(out aMarginLeft: Double): Longword; extdecl;
+    function SetMarginLeft(aMarginLeft: Double): Longword; extdecl;
+    function GetMarginBottom(out aMarginBottom: Double): Longword; extdecl;
+    function SetMarginBottom(aMarginBottom: Double): Longword; extdecl;
+    function GetMarginRight(out aMarginRight: Double): Longword; extdecl;
+    function SetMarginRight(aMarginRight: Double): Longword; extdecl;
+    function GetScaling(out aScaling: Double): Longword; extdecl;
+    function SetScaling(aScaling: Double): Longword; extdecl;
+    function GetPrintBGColors(out aPrintBGColors: PRBool): Longword; extdecl;
+    function SetPrintBGColors(aPrintBGColors: PRBool): Longword; extdecl;
+    function GetPrintBGImages(out aPrintBGImages: PRBool): Longword; extdecl;
+    function SetPrintBGImages(aPrintBGImages: PRBool): Longword; extdecl;
+    function GetPrintRange(out aPrintRange: PRInt16): Longword; extdecl;
+    function SetPrintRange(aPrintRange: PRInt16): Longword; extdecl;
+    function GetTitle(out aTitle: PWideChar): Longword; extdecl;
+    function SetTitle(const aTitle: PWideChar): Longword; extdecl;
+    function GetDocURL(out aDocURL: PWideChar): Longword; extdecl;
+    function SetDocURL(const aDocURL: PWideChar): Longword; extdecl;
+    function GetHeaderStrLeft(out aHeaderStrLeft: PWideChar): Longword; extdecl;
+    function SetHeaderStrLeft(const aHeaderStrLeft: PWideChar): Longword; extdecl;
+    function GetHeaderStrCenter(out aHeaderStrCenter: PWideChar): Longword; extdecl;
+    function SetHeaderStrCenter(const aHeaderStrCenter: PWideChar): Longword; extdecl;
+    function GetHeaderStrRight(out aHeaderStrRight: PWideChar): Longword; extdecl;
+    function SetHeaderStrRight(const aHeaderStrRight: PWideChar): Longword; extdecl;
+    function GetFooterStrLeft(out aFooterStrLeft: PWideChar): Longword; extdecl;
+    function SetFooterStrLeft(const aFooterStrLeft: PWideChar): Longword; extdecl;
+    function GetFooterStrCenter(out aFooterStrCenter: PWideChar): Longword; extdecl;
+    function SetFooterStrCenter(const aFooterStrCenter: PWideChar): Longword; extdecl;
+    function GetFooterStrRight(out aFooterStrRight: PWideChar): Longword; extdecl;
+    function SetFooterStrRight(const aFooterStrRight: PWideChar): Longword; extdecl;
+    function GetHowToEnableFrameUI(out aHowToEnableFrameUI: PRInt16): Longword; extdecl;
+    function SetHowToEnableFrameUI(aHowToEnableFrameUI: PRInt16): Longword; extdecl;
+    function GetIsCancelled(out aIsCancelled: PRBool): Longword; extdecl;
+    function SetIsCancelled(aIsCancelled: PRBool): Longword; extdecl;
+    function GetPrintFrameTypeUsage(out aPrintFrameTypeUsage: PRInt16): Longword; extdecl;
+    function SetPrintFrameTypeUsage(aPrintFrameTypeUsage: PRInt16): Longword; extdecl;
+    function GetPrintFrameType(out aPrintFrameType: PRInt16): Longword; extdecl;
+    function SetPrintFrameType(aPrintFrameType: PRInt16): Longword; extdecl;
+    function GetPrintSilent(out aPrintSilent: PRBool): Longword; extdecl;
+    function SetPrintSilent(aPrintSilent: PRBool): Longword; extdecl;
+    function GetShrinkToFit(out aShrinkToFit: PRBool): Longword; extdecl;
+    function SetShrinkToFit(aShrinkToFit: PRBool): Longword; extdecl;
+    function GetShowPrintProgress(out aShowPrintProgress: PRBool): Longword; extdecl;
+    function SetShowPrintProgress(aShowPrintProgress: PRBool): Longword; extdecl;
+    function GetPaperName(out aPaperName: PWideChar): Longword; extdecl;
+    function SetPaperName(const aPaperName: PWideChar): Longword; extdecl;
+    function GetPaperSizeType(out aPaperSizeType: PRInt16): Longword; extdecl;
+    function SetPaperSizeType(aPaperSizeType: PRInt16): Longword; extdecl;
+    function GetPaperData(out aPaperData: PRInt16): Longword; extdecl;
+    function SetPaperData(aPaperData: PRInt16): Longword; extdecl;
+    function GetPaperWidth(out aPaperWidth: Double): Longword; extdecl;
+    function SetPaperWidth(aPaperWidth: Double): Longword; extdecl;
+    function GetPaperHeight(out aPaperHeight: Double): Longword; extdecl;
+    function SetPaperHeight(aPaperHeight: Double): Longword; extdecl;
+    function GetPaperSizeUnit(out aPaperSizeUnit: PRInt16): Longword; extdecl;
+    function SetPaperSizeUnit(aPaperSizeUnit: PRInt16): Longword; extdecl;
+    function GetPlexName(out aPlexName: PWideChar): Longword; extdecl;
+    function SetPlexName(const aPlexName: PWideChar): Longword; extdecl;
+    function GetPrintReversed(out aPrintReversed: PRBool): Longword; extdecl;
+    function SetPrintReversed(aPrintReversed: PRBool): Longword; extdecl;
+    function GetPrintInColor(out aPrintInColor: PRBool): Longword; extdecl;
+    function SetPrintInColor(aPrintInColor: PRBool): Longword; extdecl;
+    function GetPaperSize(out aPaperSize: PRInt32): Longword; extdecl;
+    function SetPaperSize(aPaperSize: PRInt32): Longword; extdecl;
+    function GetOrientation(out aOrientation: PRInt32): Longword; extdecl;
+    function SetOrientation(aOrientation: PRInt32): Longword; extdecl;
+    function GetPrintCommand(out aPrintCommand: PWideChar): Longword; extdecl;
+    function SetPrintCommand(const aPrintCommand: PWideChar): Longword; extdecl;
+    function GetNumCopies(out aNumCopies: PRInt32): Longword; extdecl;
+    function SetNumCopies(aNumCopies: PRInt32): Longword; extdecl;
+    function GetPrinterName(out aPrinterName: PWideChar): Longword; extdecl;
+    function SetPrinterName(const aPrinterName: PWideChar): Longword; extdecl;
+    function GetPrintToFile(out aPrintToFile: PRBool): Longword; extdecl;
+    function SetPrintToFile(aPrintToFile: PRBool): Longword; extdecl;
+    function GetToFileName(out aToFileName: PWideChar): Longword; extdecl;
+    function SetToFileName(const aToFileName: PWideChar): Longword; extdecl;
+    function GetPrintPageDelay(out aPrintPageDelay: PRInt32): Longword; extdecl;
+    function SetPrintPageDelay(aPrintPageDelay: PRInt32): Longword; extdecl;
+    function GetIsInitializedFromPrinter(out aIsInitializedFromPrinter: PRBool): Longword; extdecl;
+    function SetIsInitializedFromPrinter(aIsInitializedFromPrinter: PRBool): Longword; extdecl;
+    function GetIsInitializedFromPrefs(out aIsInitializedFromPrefs: PRBool): Longword; extdecl;
+    function SetIsInitializedFromPrefs(aIsInitializedFromPrefs: PRBool): Longword; extdecl;
+    function SetMarginInTwips(var aMargin: nsMargin): nsresult; extdecl;
+    function GetMarginInTwips(var aMargin: nsMargin): nsresult; extdecl;
   end;
 
   nsIProfile_std17 = interface(nsISupports_std17)
   ['{02b0625a-e7f3-11d2-9f5a-006008a6efe9}']
-    function GetProfileCount(out aProfileCount: PRInt32): Longword; stdcall;
-    function GetProfileList(out length: PRUint32; out profileNames_array): nsresult; stdcall;
-    function ProfileExists(const profileName: PWideChar; out _retval: PRBool): nsresult; stdcall;
-    function GetCurrentProfile(out aCurrentProfile: PWideChar): Longword; stdcall;
-    function SetCurrentProfile(const aCurrentProfile: PWideChar): Longword; stdcall;
-    function ShutDownCurrentProfile(shutDownType: PRUint32): nsresult; stdcall;
-    function CreateNewProfile(const profileName: PWideChar; const nativeProfileDir: PWideChar; const langcode: PWideChar; useExistingDir: PRBool): nsresult; stdcall;
-    function RenameProfile(const oldName: PWideChar; const newName: PWideChar): nsresult; stdcall;
-    function DeleteProfile(const name: PWideChar; canDeleteFiles: PRBool): nsresult; stdcall;
-    function CloneProfile(const profileName: PWideChar): nsresult; stdcall;
+    function GetProfileCount(out aProfileCount: PRInt32): Longword; extdecl;
+    function GetProfileList(out length: PRUint32; out profileNames_array): nsresult; extdecl;
+    function ProfileExists(const profileName: PWideChar; out _retval: PRBool): nsresult; extdecl;
+    function GetCurrentProfile(out aCurrentProfile: PWideChar): Longword; extdecl;
+    function SetCurrentProfile(const aCurrentProfile: PWideChar): Longword; extdecl;
+    function ShutDownCurrentProfile(shutDownType: PRUint32): nsresult; extdecl;
+    function CreateNewProfile(const profileName: PWideChar; const nativeProfileDir: PWideChar; const langcode: PWideChar; useExistingDir: PRBool): nsresult; extdecl;
+    function RenameProfile(const oldName: PWideChar; const newName: PWideChar): nsresult; extdecl;
+    function DeleteProfile(const name: PWideChar; canDeleteFiles: PRBool): nsresult; extdecl;
+    function CloneProfile(const profileName: PWideChar): nsresult; extdecl;
   end;
 
   nsIProfileChangeStatus_std17 = interface(nsISupports_std17)
   ['{2f977d43-5485-11d4-87e2-0010a4e75ef2}']
-    function VetoChange(): nsresult; stdcall;
-    function ChangeFailed(): nsresult; stdcall;
+    function VetoChange(): nsresult; extdecl;
+    function ChangeFailed(): nsresult; extdecl;
   end;
 
   nsIPrompt_std17 = interface(nsISupports_std17)
   ['{a63f70c0-148b-11d3-9333-00104ba0fd40}']
-    function Alert(const dialogTitle: PWideChar; const text: PWideChar): nsresult; stdcall;
-    function AlertCheck(const dialogTitle: PWideChar; const text: PWideChar; const checkMsg: PWideChar; out checkValue: PRBool): nsresult; stdcall;
-    function Confirm(const dialogTitle: PWideChar; const text: PWideChar; out _retval: PRBool): nsresult; stdcall;
-    function ConfirmCheck(const dialogTitle: PWideChar; const text: PWideChar; const checkMsg: PWideChar; out checkValue: PRBool; out _retval: PRBool): nsresult; stdcall;
-    function ConfirmEx(const dialogTitle: PWideChar; const text: PWideChar; buttonFlags: PRUint32; const button0Title: PWideChar; const button1Title: PWideChar; const button2Title: PWideChar; const checkMsg: PWideChar; out checkValue: PRBool; out _retval: PRInt32): nsresult; stdcall;
-    function Prompt(const dialogTitle: PWideChar; const text: PWideChar; out value: PWideChar; const checkMsg: PWideChar; out checkValue: PRBool; out _retval: PRBool): nsresult; stdcall;
-    function PromptPassword(const dialogTitle: PWideChar; const text: PWideChar; out password: PWideChar; const checkMsg: PWideChar; out checkValue: PRBool; out _retval: PRBool): nsresult; stdcall;
-    function PromptUsernameAndPassword(const dialogTitle: PWideChar; const text: PWideChar; out username: PWideChar; out password: PWideChar; const checkMsg: PWideChar; out checkValue: PRBool; out _retval: PRBool): nsresult; stdcall;
-    function Select(const dialogTitle: PWideChar; const text: PWideChar; count: PRUint32; const selectList_array; out outSelection: PRInt32; out _retval: PRBool): nsresult; stdcall;
+    function Alert(const dialogTitle: PWideChar; const text: PWideChar): nsresult; extdecl;
+    function AlertCheck(const dialogTitle: PWideChar; const text: PWideChar; const checkMsg: PWideChar; out checkValue: PRBool): nsresult; extdecl;
+    function Confirm(const dialogTitle: PWideChar; const text: PWideChar; out _retval: PRBool): nsresult; extdecl;
+    function ConfirmCheck(const dialogTitle: PWideChar; const text: PWideChar; const checkMsg: PWideChar; out checkValue: PRBool; out _retval: PRBool): nsresult; extdecl;
+    function ConfirmEx(const dialogTitle: PWideChar; const text: PWideChar; buttonFlags: PRUint32; const button0Title: PWideChar; const button1Title: PWideChar; const button2Title: PWideChar; const checkMsg: PWideChar; out checkValue: PRBool; out _retval: PRInt32): nsresult; extdecl;
+    function Prompt(const dialogTitle: PWideChar; const text: PWideChar; out value: PWideChar; const checkMsg: PWideChar; out checkValue: PRBool; out _retval: PRBool): nsresult; extdecl;
+    function PromptPassword(const dialogTitle: PWideChar; const text: PWideChar; out password: PWideChar; const checkMsg: PWideChar; out checkValue: PRBool; out _retval: PRBool): nsresult; extdecl;
+    function PromptUsernameAndPassword(const dialogTitle: PWideChar; const text: PWideChar; out username: PWideChar; out password: PWideChar; const checkMsg: PWideChar; out checkValue: PRBool; out _retval: PRBool): nsresult; extdecl;
+    function Select(const dialogTitle: PWideChar; const text: PWideChar; count: PRUint32; const selectList_array; out outSelection: PRInt32; out _retval: PRBool): nsresult; extdecl;
   end;
 
   nsIPromptService_std17 = interface(nsISupports_std17)
   ['{1630c61a-325e-49ca-8759-a31b16c47aa5}']
-    function Alert(aParent: nsIDOMWindow_std17; const aDialogTitle: PWideChar; const aText: PWideChar): nsresult; stdcall;
-    function AlertCheck(aParent: nsIDOMWindow_std17; const aDialogTitle: PWideChar; const aText: PWideChar; const aCheckMsg: PWideChar; out aCheckState: PRBool): nsresult; stdcall;
-    function Confirm(aParent: nsIDOMWindow_std17; const aDialogTitle: PWideChar; const aText: PWideChar; out _retval: PRBool): nsresult; stdcall;
-    function ConfirmCheck(aParent: nsIDOMWindow_std17; const aDialogTitle: PWideChar; const aText: PWideChar; const aCheckMsg: PWideChar; out aCheckState: PRBool; out _retval: PRBool): nsresult; stdcall;
-    function ConfirmEx(aParent: nsIDOMWindow_std17; const aDialogTitle: PWideChar; const aText: PWideChar; aButtonFlags: PRUint32; const aButton0Title: PWideChar; const aButton1Title: PWideChar; const aButton2Title: PWideChar; const aCheckMsg: PWideChar; out aCheckState: PRBool; out _retval: PRInt32): nsresult; stdcall;
-    function Prompt(aParent: nsIDOMWindow_std17; const aDialogTitle: PWideChar; const aText: PWideChar; out aValue: PWideChar; const aCheckMsg: PWideChar; out aCheckState: PRBool; out _retval: PRBool): nsresult; stdcall;
-    function PromptUsernameAndPassword(aParent: nsIDOMWindow_std17; const aDialogTitle: PWideChar; const aText: PWideChar; out aUsername: PWideChar; out aPassword: PWideChar; const aCheckMsg: PWideChar; out aCheckState: PRBool; out _retval: PRBool): nsresult; stdcall;
-    function PromptPassword(aParent: nsIDOMWindow_std17; const aDialogTitle: PWideChar; const aText: PWideChar; out aPassword: PWideChar; const aCheckMsg: PWideChar; out aCheckState: PRBool; out _retval: PRBool): nsresult; stdcall;
-    function Select(aParent: nsIDOMWindow_std17; const aDialogTitle: PWideChar; const aText: PWideChar; aCount: PRUint32; const aSelectList_array; out aOutSelection: PRInt32; out _retval: PRBool): nsresult; stdcall;
+    function Alert(aParent: nsIDOMWindow_std17; const aDialogTitle: PWideChar; const aText: PWideChar): nsresult; extdecl;
+    function AlertCheck(aParent: nsIDOMWindow_std17; const aDialogTitle: PWideChar; const aText: PWideChar; const aCheckMsg: PWideChar; out aCheckState: PRBool): nsresult; extdecl;
+    function Confirm(aParent: nsIDOMWindow_std17; const aDialogTitle: PWideChar; const aText: PWideChar; out _retval: PRBool): nsresult; extdecl;
+    function ConfirmCheck(aParent: nsIDOMWindow_std17; const aDialogTitle: PWideChar; const aText: PWideChar; const aCheckMsg: PWideChar; out aCheckState: PRBool; out _retval: PRBool): nsresult; extdecl;
+    function ConfirmEx(aParent: nsIDOMWindow_std17; const aDialogTitle: PWideChar; const aText: PWideChar; aButtonFlags: PRUint32; const aButton0Title: PWideChar; const aButton1Title: PWideChar; const aButton2Title: PWideChar; const aCheckMsg: PWideChar; out aCheckState: PRBool; out _retval: PRInt32): nsresult; extdecl;
+    function Prompt(aParent: nsIDOMWindow_std17; const aDialogTitle: PWideChar; const aText: PWideChar; out aValue: PWideChar; const aCheckMsg: PWideChar; out aCheckState: PRBool; out _retval: PRBool): nsresult; extdecl;
+    function PromptUsernameAndPassword(aParent: nsIDOMWindow_std17; const aDialogTitle: PWideChar; const aText: PWideChar; out aUsername: PWideChar; out aPassword: PWideChar; const aCheckMsg: PWideChar; out aCheckState: PRBool; out _retval: PRBool): nsresult; extdecl;
+    function PromptPassword(aParent: nsIDOMWindow_std17; const aDialogTitle: PWideChar; const aText: PWideChar; out aPassword: PWideChar; const aCheckMsg: PWideChar; out aCheckState: PRBool; out _retval: PRBool): nsresult; extdecl;
+    function Select(aParent: nsIDOMWindow_std17; const aDialogTitle: PWideChar; const aText: PWideChar; aCount: PRUint32; const aSelectList_array; out aOutSelection: PRInt32; out _retval: PRBool): nsresult; extdecl;
   end;
 
   nsIProperties_std17 = interface(nsISupports_std17)
   ['{78650582-4e93-4b60-8e85-26ebd3eb14ca}']
-    function Get(const prop: PAnsiChar; const iid: TGUID; out _result): nsresult; stdcall;
-    function _Set(const prop: PAnsiChar; value: nsISupports_std17): nsresult; stdcall;
-    function Has(const prop: PAnsiChar; out _retval: PRBool): nsresult; stdcall;
-    function Undefine(const prop: PAnsiChar): nsresult; stdcall;
-    function GetKeys(out count: PRUint32; out keys_array): nsresult; stdcall;
+    function Get(const prop: PAnsiChar; const iid: TGUID; out _result): nsresult; extdecl;
+    function _Set(const prop: PAnsiChar; value: nsISupports_std17): nsresult; extdecl;
+    function Has(const prop: PAnsiChar; out _retval: PRBool): nsresult; extdecl;
+    function Undefine(const prop: PAnsiChar): nsresult; extdecl;
+    function GetKeys(out count: PRUint32; out keys_array): nsresult; extdecl;
   end;
 
   nsIProtocolHandler_std17 = interface(nsISupports_std17)
   ['{15fd6940-8ea7-11d3-93ad-00104ba0fd40}']
-    function GetScheme(aScheme: nsACString): Longword; stdcall;
-    function GetDefaultPort(out aDefaultPort: PRInt32): Longword; stdcall;
-    function GetProtocolFlags(out aProtocolFlags: PRUint32): Longword; stdcall;
-    function NewURI(const aSpec: nsACString; const aOriginCharset: PAnsiChar; aBaseURI: nsIURI_std17; out _retval: nsIURI_std17): nsresult; stdcall;
-    function NewChannel(aURI: nsIURI_std17; out _retval: nsIChannel_std17): nsresult; stdcall;
-    function AllowPort(port: PRInt32; const scheme: PAnsiChar; out _retval: PRBool): nsresult; stdcall;
+    function GetScheme(aScheme: nsACString): Longword; extdecl;
+    function GetDefaultPort(out aDefaultPort: PRInt32): Longword; extdecl;
+    function GetProtocolFlags(out aProtocolFlags: PRUint32): Longword; extdecl;
+    function NewURI(const aSpec: nsACString; const aOriginCharset: PAnsiChar; aBaseURI: nsIURI_std17; out _retval: nsIURI_std17): nsresult; extdecl;
+    function NewChannel(aURI: nsIURI_std17; out _retval: nsIChannel_std17): nsresult; extdecl;
+    function AllowPort(port: PRInt32; const scheme: PAnsiChar; out _retval: PRBool): nsresult; extdecl;
   end;
 
   nsIRequestObserver_std17 = interface(nsISupports_std17)
   ['{fd91e2e0-1481-11d3-9333-00104ba0fd40}']
-    function OnStartRequest(aRequest: nsIRequest_std17; aContext: nsISupports_std17): nsresult; stdcall;
-    function OnStopRequest(aRequest: nsIRequest_std17; aContext: nsISupports_std17; aStatusCode: nsresult): nsresult; stdcall;
+    function OnStartRequest(aRequest: nsIRequest_std17; aContext: nsISupports_std17): nsresult; extdecl;
+    function OnStopRequest(aRequest: nsIRequest_std17; aContext: nsISupports_std17; aStatusCode: nsresult): nsresult; extdecl;
   end;
 
   nsIScriptableInputStream_std17 = interface(nsISupports_std17)
   ['{a2a32f90-9b90-11d3-a189-0050041caf44}']
-    function Close(): nsresult; stdcall;
-    function Init(aInputStream: nsIInputStream_std17): nsresult; stdcall;
-    function Available(out _retval: PRUint32): nsresult; stdcall;
-    function Read(aCount: PRUint32; out _retval: PAnsiChar): nsresult; stdcall;
+    function Close(): nsresult; extdecl;
+    function Init(aInputStream: nsIInputStream_std17): nsresult; extdecl;
+    function Available(out _retval: PRUint32): nsresult; extdecl;
+    function Read(aCount: PRUint32; out _retval: PAnsiChar): nsresult; extdecl;
   end;
 
   nsISecurityWarningDialogs_std17 = interface(nsISupports_std17)
   ['{1c399d06-1dd2-11b2-bc58-c87cbcacdb78}']
-    function ConfirmEnteringSecure(ctx: nsIInterfaceRequestor_std17; out _retval: PRBool): nsresult; stdcall;
-    function ConfirmEnteringWeak(ctx: nsIInterfaceRequestor_std17; out _retval: PRBool): nsresult; stdcall;
-    function ConfirmLeavingSecure(ctx: nsIInterfaceRequestor_std17; out _retval: PRBool): nsresult; stdcall;
-    function ConfirmMixedMode(ctx: nsIInterfaceRequestor_std17; out _retval: PRBool): nsresult; stdcall;
-    function ConfirmPostToInsecure(ctx: nsIInterfaceRequestor_std17; out _retval: PRBool): nsresult; stdcall;
-    function ConfirmPostToInsecureFromSecure(ctx: nsIInterfaceRequestor_std17; out _retval: PRBool): nsresult; stdcall;
+    function ConfirmEnteringSecure(ctx: nsIInterfaceRequestor_std17; out _retval: PRBool): nsresult; extdecl;
+    function ConfirmEnteringWeak(ctx: nsIInterfaceRequestor_std17; out _retval: PRBool): nsresult; extdecl;
+    function ConfirmLeavingSecure(ctx: nsIInterfaceRequestor_std17; out _retval: PRBool): nsresult; extdecl;
+    function ConfirmMixedMode(ctx: nsIInterfaceRequestor_std17; out _retval: PRBool): nsresult; extdecl;
+    function ConfirmPostToInsecure(ctx: nsIInterfaceRequestor_std17; out _retval: PRBool): nsresult; extdecl;
+    function ConfirmPostToInsecureFromSecure(ctx: nsIInterfaceRequestor_std17; out _retval: PRBool): nsresult; extdecl;
   end;
 
   nsISelection_std17 = interface(nsISupports_std17)
   ['{b2c7ed59-8634-4352-9e37-5484c8b6e4e1}']
-    function GetAnchorNode(out aAnchorNode: nsIDOMNode_std17): Longword; stdcall;
-    function GetAnchorOffset(out aAnchorOffset: PRInt32): Longword; stdcall;
-    function GetFocusNode(out aFocusNode: nsIDOMNode_std17): Longword; stdcall;
-    function GetFocusOffset(out aFocusOffset: PRInt32): Longword; stdcall;
-    function GetIsCollapsed(out aIsCollapsed: PRBool): Longword; stdcall;
-    function GetRangeCount(out aRangeCount: PRInt32): Longword; stdcall;
-    function GetRangeAt(index: PRInt32; out _retval: nsIDOMRange_std17): nsresult; stdcall;
-    function Collapse(parentNode: nsIDOMNode_std17; offset: PRInt32): nsresult; stdcall;
-    function Extend(parentNode: nsIDOMNode_std17; offset: PRInt32): nsresult; stdcall;
-    function CollapseToStart(): nsresult; stdcall;
-    function CollapseToEnd(): nsresult; stdcall;
-    function ContainsNode(node: nsIDOMNode_std17; entirelyContained: PRBool; out _retval: PRBool): nsresult; stdcall;
-    function SelectAllChildren(parentNode: nsIDOMNode_std17): nsresult; stdcall;
-    function AddRange(range: nsIDOMRange_std17): nsresult; stdcall;
-    function RemoveRange(range: nsIDOMRange_std17): nsresult; stdcall;
-    function RemoveAllRanges(): nsresult; stdcall;
-    function DeleteFromDocument(): nsresult; stdcall;
-    function SelectionLanguageChange(langRTL: PRBool): nsresult; stdcall;
-    function ToString(out _retval: PWideChar): nsresult; stdcall;
+    function GetAnchorNode(out aAnchorNode: nsIDOMNode_std17): Longword; extdecl;
+    function GetAnchorOffset(out aAnchorOffset: PRInt32): Longword; extdecl;
+    function GetFocusNode(out aFocusNode: nsIDOMNode_std17): Longword; extdecl;
+    function GetFocusOffset(out aFocusOffset: PRInt32): Longword; extdecl;
+    function GetIsCollapsed(out aIsCollapsed: PRBool): Longword; extdecl;
+    function GetRangeCount(out aRangeCount: PRInt32): Longword; extdecl;
+    function GetRangeAt(index: PRInt32; out _retval: nsIDOMRange_std17): nsresult; extdecl;
+    function Collapse(parentNode: nsIDOMNode_std17; offset: PRInt32): nsresult; extdecl;
+    function Extend(parentNode: nsIDOMNode_std17; offset: PRInt32): nsresult; extdecl;
+    function CollapseToStart(): nsresult; extdecl;
+    function CollapseToEnd(): nsresult; extdecl;
+    function ContainsNode(node: nsIDOMNode_std17; entirelyContained: PRBool; out _retval: PRBool): nsresult; extdecl;
+    function SelectAllChildren(parentNode: nsIDOMNode_std17): nsresult; extdecl;
+    function AddRange(range: nsIDOMRange_std17): nsresult; extdecl;
+    function RemoveRange(range: nsIDOMRange_std17): nsresult; extdecl;
+    function RemoveAllRanges(): nsresult; extdecl;
+    function DeleteFromDocument(): nsresult; extdecl;
+    function SelectionLanguageChange(langRTL: PRBool): nsresult; extdecl;
+    function ToString(out _retval: PWideChar): nsresult; extdecl;
   end;
 
   nsIServiceManager_std17 = interface(nsISupports_std17)
   ['{8bb35ed9-e332-462d-9155-4a002ab5c958}']
-    function GetService(const aClass: TGUID; const aIID: TGUID; out _result): nsresult; stdcall;
-    function GetServiceByContractID(const aContractID: PAnsiChar; const aIID: TGUID; out _result): nsresult; stdcall;
-    function IsServiceInstantiated(const aClass: TGUID; const aIID: TGUID; out _retval: PRBool): nsresult; stdcall;
-    function IsServiceInstantiatedByContractID(const aContractID: PAnsiChar; const aIID: TGUID; out _retval: PRBool): nsresult; stdcall;
+    function GetService(const aClass: TGUID; const aIID: TGUID; out _result): nsresult; extdecl;
+    function GetServiceByContractID(const aContractID: PAnsiChar; const aIID: TGUID; out _result): nsresult; extdecl;
+    function IsServiceInstantiated(const aClass: TGUID; const aIID: TGUID; out _retval: PRBool): nsresult; extdecl;
+    function IsServiceInstantiatedByContractID(const aContractID: PAnsiChar; const aIID: TGUID; out _retval: PRBool): nsresult; extdecl;
   end;
 
   nsISHistory_std17 = interface(nsISupports_std17)
   ['{7294fe9b-14d8-11d5-9882-00c04fa02f40}']
-    function GetCount(out aCount: PRInt32): Longword; stdcall;
-    function GetIndex(out aIndex: PRInt32): Longword; stdcall;
-    function GetMaxLength(out aMaxLength: PRInt32): Longword; stdcall;
-    function SetMaxLength(aMaxLength: PRInt32): Longword; stdcall;
-    function GetEntryAtIndex(index: PRInt32; modifyIndex: PRBool; out _retval: nsIHistoryEntry_std17): nsresult; stdcall;
-    function PurgeHistory(numEntries: PRInt32): nsresult; stdcall;
-    function AddSHistoryListener(aListener: nsISHistoryListener_std17): nsresult; stdcall;
-    function RemoveSHistoryListener(aListener: nsISHistoryListener_std17): nsresult; stdcall;
-    function GetSHistoryEnumerator(out aSHistoryEnumerator: nsISimpleEnumerator_std17): Longword; stdcall;
+    function GetCount(out aCount: PRInt32): Longword; extdecl;
+    function GetIndex(out aIndex: PRInt32): Longword; extdecl;
+    function GetMaxLength(out aMaxLength: PRInt32): Longword; extdecl;
+    function SetMaxLength(aMaxLength: PRInt32): Longword; extdecl;
+    function GetEntryAtIndex(index: PRInt32; modifyIndex: PRBool; out _retval: nsIHistoryEntry_std17): nsresult; extdecl;
+    function PurgeHistory(numEntries: PRInt32): nsresult; extdecl;
+    function AddSHistoryListener(aListener: nsISHistoryListener_std17): nsresult; extdecl;
+    function RemoveSHistoryListener(aListener: nsISHistoryListener_std17): nsresult; extdecl;
+    function GetSHistoryEnumerator(out aSHistoryEnumerator: nsISimpleEnumerator_std17): Longword; extdecl;
   end;
 
   nsISHistoryListener_std17 = interface(nsISupports_std17)
   ['{3b07f591-e8e1-11d4-9882-00c04fa02f40}']
-    function OnHistoryNewEntry(aNewURI: nsIURI_std17): nsresult; stdcall;
-    function OnHistoryGoBack(aBackURI: nsIURI_std17; out _retval: PRBool): nsresult; stdcall;
-    function OnHistoryGoForward(aForwardURI: nsIURI_std17; out _retval: PRBool): nsresult; stdcall;
-    function OnHistoryReload(aReloadURI: nsIURI_std17; aReloadFlags: PRUint32; out _retval: PRBool): nsresult; stdcall;
-    function OnHistoryGotoIndex(aIndex: PRInt32; aGotoURI: nsIURI_std17; out _retval: PRBool): nsresult; stdcall;
-    function OnHistoryPurge(aNumEntries: PRInt32; out _retval: PRBool): nsresult; stdcall;
+    function OnHistoryNewEntry(aNewURI: nsIURI_std17): nsresult; extdecl;
+    function OnHistoryGoBack(aBackURI: nsIURI_std17; out _retval: PRBool): nsresult; extdecl;
+    function OnHistoryGoForward(aForwardURI: nsIURI_std17; out _retval: PRBool): nsresult; extdecl;
+    function OnHistoryReload(aReloadURI: nsIURI_std17; aReloadFlags: PRUint32; out _retval: PRBool): nsresult; extdecl;
+    function OnHistoryGotoIndex(aIndex: PRInt32; aGotoURI: nsIURI_std17; out _retval: PRBool): nsresult; extdecl;
+    function OnHistoryPurge(aNumEntries: PRInt32; out _retval: PRBool): nsresult; extdecl;
   end;
 
   nsIStreamListener_std17 = interface(nsIRequestObserver_std17)
   ['{1a637020-1482-11d3-9333-00104ba0fd40}']
-    function OnDataAvailable(aRequest: nsIRequest_std17; aContext: nsISupports_std17; aInputStream: nsIInputStream_std17; aOffset: PRUint32; aCount: PRUint32): nsresult; stdcall;
+    function OnDataAvailable(aRequest: nsIRequest_std17; aContext: nsISupports_std17; aInputStream: nsIInputStream_std17; aOffset: PRUint32; aCount: PRUint32): nsresult; extdecl;
   end;
 
   nsISupportsPrimitive_std17 = interface(nsISupports_std17)
   ['{d0d4b136-1dd1-11b2-9371-f0727ef827c0}']
-    function GetType(out aType: PRUint16): Longword; stdcall;
+    function GetType(out aType: PRUint16): Longword; extdecl;
   end;
 
   nsISupportsID_std17 = interface(nsISupportsPrimitive_std17)
   ['{d18290a0-4a1c-11d3-9890-006008962422}']
-    function GetData(out aData: PGUID): Longword; stdcall;
-    function SetData(const aData: PGUID): Longword; stdcall;
-    function ToString(out _retval: PAnsiChar): nsresult; stdcall;
+    function GetData(out aData: PGUID): Longword; extdecl;
+    function SetData(const aData: PGUID): Longword; extdecl;
+    function ToString(out _retval: PAnsiChar): nsresult; extdecl;
   end;
 
   nsISupportsCString_std17 = interface(nsISupportsPrimitive_std17)
   ['{d65ff270-4a1c-11d3-9890-006008962422}']
-    function GetData(aData: nsACString): Longword; stdcall;
-    function SetData(const aData: nsACString): Longword; stdcall;
-    function ToString(out _retval: PAnsiChar): nsresult; stdcall;
+    function GetData(aData: nsACString): Longword; extdecl;
+    function SetData(const aData: nsACString): Longword; extdecl;
+    function ToString(out _retval: PAnsiChar): nsresult; extdecl;
   end;
 
   nsISupportsString_std17 = interface(nsISupportsPrimitive_std17)
   ['{d79dc970-4a1c-11d3-9890-006008962422}']
-    function GetData(aData: nsAString): Longword; stdcall;
-    function SetData(const aData: nsAString): Longword; stdcall;
-    function ToString(out _retval: PWideChar): nsresult; stdcall;
+    function GetData(aData: nsAString): Longword; extdecl;
+    function SetData(const aData: nsAString): Longword; extdecl;
+    function ToString(out _retval: PWideChar): nsresult; extdecl;
   end;
 
   nsISupportsPRBool_std17 = interface(nsISupportsPrimitive_std17)
   ['{ddc3b490-4a1c-11d3-9890-006008962422}']
-    function GetData(out aData: PRBool): Longword; stdcall;
-    function SetData(aData: PRBool): Longword; stdcall;
-    function ToString(out _retval: PAnsiChar): nsresult; stdcall;
+    function GetData(out aData: PRBool): Longword; extdecl;
+    function SetData(aData: PRBool): Longword; extdecl;
+    function ToString(out _retval: PAnsiChar): nsresult; extdecl;
   end;
 
   nsISupportsPRUint8_std17 = interface(nsISupportsPrimitive_std17)
   ['{dec2e4e0-4a1c-11d3-9890-006008962422}']
-    function GetData(out aData: PRUint8): Longword; stdcall;
-    function SetData(aData: PRUint8): Longword; stdcall;
-    function ToString(out _retval: PAnsiChar): nsresult; stdcall;
+    function GetData(out aData: PRUint8): Longword; extdecl;
+    function SetData(aData: PRUint8): Longword; extdecl;
+    function ToString(out _retval: PAnsiChar): nsresult; extdecl;
   end;
 
   nsISupportsPRUint16_std17 = interface(nsISupportsPrimitive_std17)
   ['{dfacb090-4a1c-11d3-9890-006008962422}']
-    function GetData(out aData: PRUint16): Longword; stdcall;
-    function SetData(aData: PRUint16): Longword; stdcall;
-    function ToString(out _retval: PAnsiChar): nsresult; stdcall;
+    function GetData(out aData: PRUint16): Longword; extdecl;
+    function SetData(aData: PRUint16): Longword; extdecl;
+    function ToString(out _retval: PAnsiChar): nsresult; extdecl;
   end;
 
   nsISupportsPRUint32_std17 = interface(nsISupportsPrimitive_std17)
   ['{e01dc470-4a1c-11d3-9890-006008962422}']
-    function GetData(out aData: PRUint32): Longword; stdcall;
-    function SetData(aData: PRUint32): Longword; stdcall;
-    function ToString(out _retval: PAnsiChar): nsresult; stdcall;
+    function GetData(out aData: PRUint32): Longword; extdecl;
+    function SetData(aData: PRUint32): Longword; extdecl;
+    function ToString(out _retval: PAnsiChar): nsresult; extdecl;
   end;
 
   nsISupportsPRUint64_std17 = interface(nsISupportsPrimitive_std17)
   ['{e13567c0-4a1c-11d3-9890-006008962422}']
-    function GetData(out aData: PRUint64): Longword; stdcall;
-    function SetData(aData: PRUint64): Longword; stdcall;
-    function ToString(out _retval: PAnsiChar): nsresult; stdcall;
+    function GetData(out aData: PRUint64): Longword; extdecl;
+    function SetData(aData: PRUint64): Longword; extdecl;
+    function ToString(out _retval: PAnsiChar): nsresult; extdecl;
   end;
 
   nsISupportsPRTime_std17 = interface(nsISupportsPrimitive_std17)
   ['{e2563630-4a1c-11d3-9890-006008962422}']
-    function GetData(out aData: PRTime): Longword; stdcall;
-    function SetData(aData: PRTime): Longword; stdcall;
-    function ToString(out _retval: PAnsiChar): nsresult; stdcall;
+    function GetData(out aData: PRTime): Longword; extdecl;
+    function SetData(aData: PRTime): Longword; extdecl;
+    function ToString(out _retval: PAnsiChar): nsresult; extdecl;
   end;
 
   nsISupportsChar_std17 = interface(nsISupportsPrimitive_std17)
   ['{e2b05e40-4a1c-11d3-9890-006008962422}']
-    function GetData(out aData: AnsiChar): Longword; stdcall;
-    function SetData(aData: AnsiChar): Longword; stdcall;
-    function ToString(out _retval: PAnsiChar): nsresult; stdcall;
+    function GetData(out aData: AnsiChar): Longword; extdecl;
+    function SetData(aData: AnsiChar): Longword; extdecl;
+    function ToString(out _retval: PAnsiChar): nsresult; extdecl;
   end;
 
   nsISupportsPRInt16_std17 = interface(nsISupportsPrimitive_std17)
   ['{e30d94b0-4a1c-11d3-9890-006008962422}']
-    function GetData(out aData: PRInt16): Longword; stdcall;
-    function SetData(aData: PRInt16): Longword; stdcall;
-    function ToString(out _retval: PAnsiChar): nsresult; stdcall;
+    function GetData(out aData: PRInt16): Longword; extdecl;
+    function SetData(aData: PRInt16): Longword; extdecl;
+    function ToString(out _retval: PAnsiChar): nsresult; extdecl;
   end;
 
   nsISupportsPRInt32_std17 = interface(nsISupportsPrimitive_std17)
   ['{e36c5250-4a1c-11d3-9890-006008962422}']
-    function GetData(out aData: PRInt32): Longword; stdcall;
-    function SetData(aData: PRInt32): Longword; stdcall;
-    function ToString(out _retval: PAnsiChar): nsresult; stdcall;
+    function GetData(out aData: PRInt32): Longword; extdecl;
+    function SetData(aData: PRInt32): Longword; extdecl;
+    function ToString(out _retval: PAnsiChar): nsresult; extdecl;
   end;
 
   nsISupportsPRInt64_std17 = interface(nsISupportsPrimitive_std17)
   ['{e3cb0ff0-4a1c-11d3-9890-006008962422}']
-    function GetData(out aData: PRInt64): Longword; stdcall;
-    function SetData(aData: PRInt64): Longword; stdcall;
-    function ToString(out _retval: PAnsiChar): nsresult; stdcall;
+    function GetData(out aData: PRInt64): Longword; extdecl;
+    function SetData(aData: PRInt64): Longword; extdecl;
+    function ToString(out _retval: PAnsiChar): nsresult; extdecl;
   end;
 
   nsISupportsFloat_std17 = interface(nsISupportsPrimitive_std17)
   ['{abeaa390-4ac0-11d3-baea-00805f8a5dd7}']
-    function GetData(out aData: Single): Longword; stdcall;
-    function SetData(aData: Single): Longword; stdcall;
-    function ToString(out _retval: PAnsiChar): nsresult; stdcall;
+    function GetData(out aData: Single): Longword; extdecl;
+    function SetData(aData: Single): Longword; extdecl;
+    function ToString(out _retval: PAnsiChar): nsresult; extdecl;
   end;
 
   nsISupportsDouble_std17 = interface(nsISupportsPrimitive_std17)
   ['{b32523a0-4ac0-11d3-baea-00805f8a5dd7}']
-    function GetData(out aData: Double): Longword; stdcall;
-    function SetData(aData: Double): Longword; stdcall;
-    function ToString(out _retval: PAnsiChar): nsresult; stdcall;
+    function GetData(out aData: Double): Longword; extdecl;
+    function SetData(aData: Double): Longword; extdecl;
+    function ToString(out _retval: PAnsiChar): nsresult; extdecl;
   end;
 
   nsISupportsVoid_std17 = interface(nsISupportsPrimitive_std17)
   ['{464484f0-568d-11d3-baf8-00805f8a5dd7}']
-    function GetData(out aData: Pointer): Longword; stdcall;
-    function SetData(aData: Pointer): Longword; stdcall;
-    function ToString(out _retval: PAnsiChar): nsresult; stdcall;
+    function GetData(out aData: Pointer): Longword; extdecl;
+    function SetData(aData: Pointer): Longword; extdecl;
+    function ToString(out _retval: PAnsiChar): nsresult; extdecl;
   end;
 
   nsISupportsInterfacePointer_std17 = interface(nsISupportsPrimitive_std17)
   ['{995ea724-1dd1-11b2-9211-c21bdd3e7ed0}']
-    function GetData(out aData: nsISupports_std17): Longword; stdcall;
-    function SetData(aData: nsISupports_std17): Longword; stdcall;
-    function GetDataIID(out aDataIID: PGUID): Longword; stdcall;
-    function SetDataIID(const aDataIID: PGUID): Longword; stdcall;
-    function ToString(out _retval: PAnsiChar): nsresult; stdcall;
+    function GetData(out aData: nsISupports_std17): Longword; extdecl;
+    function SetData(aData: nsISupports_std17): Longword; extdecl;
+    function GetDataIID(out aDataIID: PGUID): Longword; extdecl;
+    function SetDataIID(const aDataIID: PGUID): Longword; extdecl;
+    function ToString(out _retval: PAnsiChar): nsresult; extdecl;
   end;
 
   nsITooltipListener_std17 = interface(nsISupports_std17)
   ['{44b78386-1dd2-11b2-9ad2-e4eee2ca1916}']
-    function OnShowTooltip(aXCoords: PRInt32; aYCoords: PRInt32; const aTipText: PWideChar): nsresult; stdcall;
-    function OnHideTooltip(): nsresult; stdcall;
+    function OnShowTooltip(aXCoords: PRInt32; aYCoords: PRInt32; const aTipText: PWideChar): nsresult; extdecl;
+    function OnHideTooltip(): nsresult; extdecl;
   end;
 
   nsITooltipTextProvider_std17 = interface(nsISupports_std17)
   ['{b128a1e6-44f3-4331-8fbe-5af360ff21ee}']
-    function GetNodeText(aNode: nsIDOMNode_std17; out aText: PWideChar; out _retval: PRBool): nsresult; stdcall;
+    function GetNodeText(aNode: nsIDOMNode_std17; out aText: PWideChar; out _retval: PRBool): nsresult; extdecl;
   end;
 
   nsITraceRefcnt_std17 = interface(nsISupports_std17)
   ['{273dc92f-0fe6-4545-96a9-21be77828039}']
-    function LogAddRef(aPtr: Pointer; aNewRefcnt: nsrefcnt; const aTypeName: PAnsiChar; aInstanceSize: PRUint32): nsresult; stdcall;
-    function LogRelease(aPtr: Pointer; aNewRefcnt: nsrefcnt; const aTypeName: PAnsiChar): nsresult; stdcall;
-    function LogCtor(aPtr: Pointer; const aTypeName: PAnsiChar; aInstanceSize: PRUint32): nsresult; stdcall;
-    function LogDtor(aPtr: Pointer; const aTypeName: PAnsiChar; aInstanceSize: PRUint32): nsresult; stdcall;
-    function LogAddCOMPtr(aPtr: Pointer; aObject: nsISupports_std17): nsresult; stdcall;
-    function LogReleaseCOMPtr(aPtr: Pointer; aObject: nsISupports_std17): nsresult; stdcall;
+    function LogAddRef(aPtr: Pointer; aNewRefcnt: nsrefcnt; const aTypeName: PAnsiChar; aInstanceSize: PRUint32): nsresult; extdecl;
+    function LogRelease(aPtr: Pointer; aNewRefcnt: nsrefcnt; const aTypeName: PAnsiChar): nsresult; extdecl;
+    function LogCtor(aPtr: Pointer; const aTypeName: PAnsiChar; aInstanceSize: PRUint32): nsresult; extdecl;
+    function LogDtor(aPtr: Pointer; const aTypeName: PAnsiChar; aInstanceSize: PRUint32): nsresult; extdecl;
+    function LogAddCOMPtr(aPtr: Pointer; aObject: nsISupports_std17): nsresult; extdecl;
+    function LogReleaseCOMPtr(aPtr: Pointer; aObject: nsISupports_std17): nsresult; extdecl;
   end;
 
   nsIUnicharStreamListener_std17 = interface(nsIRequestObserver_std17)
   ['{4a7e9b62-fef8-400d-9865-d6820f630b4c}']
-    function OnUnicharDataAvailable(aRequest: nsIRequest_std17; aContext: nsISupports_std17; const aData: nsAString): nsresult; stdcall;
+    function OnUnicharDataAvailable(aRequest: nsIRequest_std17; aContext: nsISupports_std17; const aData: nsAString): nsresult; extdecl;
   end;
 
   nsIUploadChannel_std17 = interface(nsISupports_std17)
   ['{ddf633d8-e9a4-439d-ad88-de636fd9bb75}']
-    function SetUploadStream(aStream: nsIInputStream_std17; const aContentType: nsACString; aContentLength: PRInt32): nsresult; stdcall;
-    function GetUploadStream(out aUploadStream: nsIInputStream_std17): Longword; stdcall;
+    function SetUploadStream(aStream: nsIInputStream_std17; const aContentType: nsACString; aContentLength: PRInt32): nsresult; extdecl;
+    function GetUploadStream(out aUploadStream: nsIInputStream_std17): Longword; extdecl;
   end;
 
   nsIURIContentListener_std17 = interface(nsISupports_std17)
   ['{94928ab3-8b63-11d3-989d-001083010e9b}']
-    function OnStartURIOpen(aURI: nsIURI_std17; out _retval: PRBool): nsresult; stdcall;
-    function DoContent(const aContentType: PAnsiChar; aIsContentPreferred: PRBool; aRequest: nsIRequest_std17; out aContentHandler: nsIStreamListener_std17; out _retval: PRBool): nsresult; stdcall;
-    function IsPreferred(const aContentType: PAnsiChar; out aDesiredContentType: PAnsiChar; out _retval: PRBool): nsresult; stdcall;
-    function CanHandleContent(const aContentType: PAnsiChar; aIsContentPreferred: PRBool; out aDesiredContentType: PAnsiChar; out _retval: PRBool): nsresult; stdcall;
-    function GetLoadCookie(out aLoadCookie: nsISupports_std17): Longword; stdcall;
-    function SetLoadCookie(aLoadCookie: nsISupports_std17): Longword; stdcall;
-    function GetParentContentListener(out aParentContentListener: nsIURIContentListener_std17): Longword; stdcall;
-    function SetParentContentListener(aParentContentListener: nsIURIContentListener_std17): Longword; stdcall;
+    function OnStartURIOpen(aURI: nsIURI_std17; out _retval: PRBool): nsresult; extdecl;
+    function DoContent(const aContentType: PAnsiChar; aIsContentPreferred: PRBool; aRequest: nsIRequest_std17; out aContentHandler: nsIStreamListener_std17; out _retval: PRBool): nsresult; extdecl;
+    function IsPreferred(const aContentType: PAnsiChar; out aDesiredContentType: PAnsiChar; out _retval: PRBool): nsresult; extdecl;
+    function CanHandleContent(const aContentType: PAnsiChar; aIsContentPreferred: PRBool; out aDesiredContentType: PAnsiChar; out _retval: PRBool): nsresult; extdecl;
+    function GetLoadCookie(out aLoadCookie: nsISupports_std17): Longword; extdecl;
+    function SetLoadCookie(aLoadCookie: nsISupports_std17): Longword; extdecl;
+    function GetParentContentListener(out aParentContentListener: nsIURIContentListener_std17): Longword; extdecl;
+    function SetParentContentListener(aParentContentListener: nsIURIContentListener_std17): Longword; extdecl;
   end;
 
   nsIWeakReference_std17 = interface(nsISupports_std17)
   ['{9188bc85-f92e-11d2-81ef-0060083a0bcf}']
-    function QueryReferent(const uuid: TGUID; out _result): nsresult; stdcall;
+    function QueryReferent(const uuid: TGUID; out _result): nsresult; extdecl;
   end;
 
   nsISupportsWeakReference_std17 = interface(nsISupports_std17)
   ['{9188bc86-f92e-11d2-81ef-0060083a0bcf}']
-    function GetWeakReference(out _retval: nsIWeakReference_std17): nsresult; stdcall;
+    function GetWeakReference(out _retval: nsIWeakReference_std17): nsresult; extdecl;
   end;
 
   nsIWebBrowser_std17 = interface(nsISupports_std17)
   ['{69e5df00-7b8b-11d3-af61-00a024ffc08c}']
-    function AddWebBrowserListener(aListener: nsIWeakReference_std17; const aIID: TGUID): nsresult; stdcall;
-    function RemoveWebBrowserListener(aListener: nsIWeakReference_std17; const aIID: TGUID): nsresult; stdcall;
-    function GetContainerWindow(out aContainerWindow: nsIWebBrowserChrome_std17): Longword; stdcall;
-    function SetContainerWindow(aContainerWindow: nsIWebBrowserChrome_std17): Longword; stdcall;
-    function GetParentURIContentListener(out aParentURIContentListener: nsIURIContentListener_std17): Longword; stdcall;
-    function SetParentURIContentListener(aParentURIContentListener: nsIURIContentListener_std17): Longword; stdcall;
-    function GetContentDOMWindow(out aContentDOMWindow: nsIDOMWindow_std17): Longword; stdcall;
+    function AddWebBrowserListener(aListener: nsIWeakReference_std17; const aIID: TGUID): nsresult; extdecl;
+    function RemoveWebBrowserListener(aListener: nsIWeakReference_std17; const aIID: TGUID): nsresult; extdecl;
+    function GetContainerWindow(out aContainerWindow: nsIWebBrowserChrome_std17): Longword; extdecl;
+    function SetContainerWindow(aContainerWindow: nsIWebBrowserChrome_std17): Longword; extdecl;
+    function GetParentURIContentListener(out aParentURIContentListener: nsIURIContentListener_std17): Longword; extdecl;
+    function SetParentURIContentListener(aParentURIContentListener: nsIURIContentListener_std17): Longword; extdecl;
+    function GetContentDOMWindow(out aContentDOMWindow: nsIDOMWindow_std17): Longword; extdecl;
   end;
 
   nsIWebBrowserChrome_std17 = interface(nsISupports_std17)
   ['{ba434c60-9d52-11d3-afb0-00a024ffc08c}']
-    function SetStatus(statusType: PRUint32; const status: PWideChar): nsresult; stdcall;
-    function GetWebBrowser(out aWebBrowser: nsIWebBrowser_std17): Longword; stdcall;
-    function SetWebBrowser(aWebBrowser: nsIWebBrowser_std17): Longword; stdcall;
-    function GetChromeFlags(out aChromeFlags: PRUint32): Longword; stdcall;
-    function SetChromeFlags(aChromeFlags: PRUint32): Longword; stdcall;
-    function DestroyBrowserWindow(): nsresult; stdcall;
-    function SizeBrowserTo(aCX: PRInt32; aCY: PRInt32): nsresult; stdcall;
-    function ShowAsModal(): nsresult; stdcall;
-    function IsWindowModal(out _retval: PRBool): nsresult; stdcall;
-    function ExitModalEventLoop(aStatus: nsresult): nsresult; stdcall;
+    function SetStatus(statusType: PRUint32; const status: PWideChar): nsresult; extdecl;
+    function GetWebBrowser(out aWebBrowser: nsIWebBrowser_std17): Longword; extdecl;
+    function SetWebBrowser(aWebBrowser: nsIWebBrowser_std17): Longword; extdecl;
+    function GetChromeFlags(out aChromeFlags: PRUint32): Longword; extdecl;
+    function SetChromeFlags(aChromeFlags: PRUint32): Longword; extdecl;
+    function DestroyBrowserWindow(): nsresult; extdecl;
+    function SizeBrowserTo(aCX: PRInt32; aCY: PRInt32): nsresult; extdecl;
+    function ShowAsModal(): nsresult; extdecl;
+    function IsWindowModal(out _retval: PRBool): nsresult; extdecl;
+    function ExitModalEventLoop(aStatus: nsresult): nsresult; extdecl;
   end;
 
   nsIWebBrowserChromeFocus_std17 = interface(nsISupports_std17)
   ['{d2206418-1dd1-11b2-8e55-acddcd2bcfb8}']
-    function FocusNextElement(): nsresult; stdcall;
-    function FocusPrevElement(): nsresult; stdcall;
+    function FocusNextElement(): nsresult; extdecl;
+    function FocusPrevElement(): nsresult; extdecl;
   end;
 
   nsIWebBrowserFind_std17 = interface(nsISupports_std17)
   ['{2f977d44-5485-11d4-87e2-0010a4e75ef2}']
-    function FindNext(out _retval: PRBool): nsresult; stdcall;
-    function GetSearchString(out aSearchString: PWideChar): Longword; stdcall;
-    function SetSearchString(const aSearchString: PWideChar): Longword; stdcall;
-    function GetFindBackwards(out aFindBackwards: PRBool): Longword; stdcall;
-    function SetFindBackwards(aFindBackwards: PRBool): Longword; stdcall;
-    function GetWrapFind(out aWrapFind: PRBool): Longword; stdcall;
-    function SetWrapFind(aWrapFind: PRBool): Longword; stdcall;
-    function GetEntireWord(out aEntireWord: PRBool): Longword; stdcall;
-    function SetEntireWord(aEntireWord: PRBool): Longword; stdcall;
-    function GetMatchCase(out aMatchCase: PRBool): Longword; stdcall;
-    function SetMatchCase(aMatchCase: PRBool): Longword; stdcall;
-    function GetSearchFrames(out aSearchFrames: PRBool): Longword; stdcall;
-    function SetSearchFrames(aSearchFrames: PRBool): Longword; stdcall;
+    function FindNext(out _retval: PRBool): nsresult; extdecl;
+    function GetSearchString(out aSearchString: PWideChar): Longword; extdecl;
+    function SetSearchString(const aSearchString: PWideChar): Longword; extdecl;
+    function GetFindBackwards(out aFindBackwards: PRBool): Longword; extdecl;
+    function SetFindBackwards(aFindBackwards: PRBool): Longword; extdecl;
+    function GetWrapFind(out aWrapFind: PRBool): Longword; extdecl;
+    function SetWrapFind(aWrapFind: PRBool): Longword; extdecl;
+    function GetEntireWord(out aEntireWord: PRBool): Longword; extdecl;
+    function SetEntireWord(aEntireWord: PRBool): Longword; extdecl;
+    function GetMatchCase(out aMatchCase: PRBool): Longword; extdecl;
+    function SetMatchCase(aMatchCase: PRBool): Longword; extdecl;
+    function GetSearchFrames(out aSearchFrames: PRBool): Longword; extdecl;
+    function SetSearchFrames(aSearchFrames: PRBool): Longword; extdecl;
   end;
 
   nsIWebBrowserFindInFrames_std17 = interface(nsISupports_std17)
   ['{e0f5d182-34bc-11d5-be5b-b760676c6ebc}']
-    function GetCurrentSearchFrame(out aCurrentSearchFrame: nsIDOMWindow_std17): Longword; stdcall;
-    function SetCurrentSearchFrame(aCurrentSearchFrame: nsIDOMWindow_std17): Longword; stdcall;
-    function GetRootSearchFrame(out aRootSearchFrame: nsIDOMWindow_std17): Longword; stdcall;
-    function SetRootSearchFrame(aRootSearchFrame: nsIDOMWindow_std17): Longword; stdcall;
-    function GetSearchSubframes(out aSearchSubframes: PRBool): Longword; stdcall;
-    function SetSearchSubframes(aSearchSubframes: PRBool): Longword; stdcall;
-    function GetSearchParentFrames(out aSearchParentFrames: PRBool): Longword; stdcall;
-    function SetSearchParentFrames(aSearchParentFrames: PRBool): Longword; stdcall;
+    function GetCurrentSearchFrame(out aCurrentSearchFrame: nsIDOMWindow_std17): Longword; extdecl;
+    function SetCurrentSearchFrame(aCurrentSearchFrame: nsIDOMWindow_std17): Longword; extdecl;
+    function GetRootSearchFrame(out aRootSearchFrame: nsIDOMWindow_std17): Longword; extdecl;
+    function SetRootSearchFrame(aRootSearchFrame: nsIDOMWindow_std17): Longword; extdecl;
+    function GetSearchSubframes(out aSearchSubframes: PRBool): Longword; extdecl;
+    function SetSearchSubframes(aSearchSubframes: PRBool): Longword; extdecl;
+    function GetSearchParentFrames(out aSearchParentFrames: PRBool): Longword; extdecl;
+    function SetSearchParentFrames(aSearchParentFrames: PRBool): Longword; extdecl;
   end;
 
   nsIWebBrowserFocus_std17 = interface(nsISupports_std17)
   ['{9c5d3c58-1dd1-11b2-a1c9-f3699284657a}']
-    function Activate(): nsresult; stdcall;
-    function Deactivate(): nsresult; stdcall;
-    function SetFocusAtFirstElement(): nsresult; stdcall;
-    function SetFocusAtLastElement(): nsresult; stdcall;
-    function GetFocusedWindow(out aFocusedWindow: nsIDOMWindow_std17): Longword; stdcall;
-    function SetFocusedWindow(aFocusedWindow: nsIDOMWindow_std17): Longword; stdcall;
-    function GetFocusedElement(out aFocusedElement: nsIDOMElement_std17): Longword; stdcall;
-    function SetFocusedElement(aFocusedElement: nsIDOMElement_std17): Longword; stdcall;
+    function Activate(): nsresult; extdecl;
+    function Deactivate(): nsresult; extdecl;
+    function SetFocusAtFirstElement(): nsresult; extdecl;
+    function SetFocusAtLastElement(): nsresult; extdecl;
+    function GetFocusedWindow(out aFocusedWindow: nsIDOMWindow_std17): Longword; extdecl;
+    function SetFocusedWindow(aFocusedWindow: nsIDOMWindow_std17): Longword; extdecl;
+    function GetFocusedElement(out aFocusedElement: nsIDOMElement_std17): Longword; extdecl;
+    function SetFocusedElement(aFocusedElement: nsIDOMElement_std17): Longword; extdecl;
   end;
 
   nsIWebBrowserPrint_std17 = interface(nsISupports_std17)
   ['{9a7ca4b0-fbba-11d4-a869-00105a183419}']
-    function GetGlobalPrintSettings(out aGlobalPrintSettings: nsIPrintSettings_std17): Longword; stdcall;
-    function GetCurrentPrintSettings(out aCurrentPrintSettings: nsIPrintSettings_std17): Longword; stdcall;
-    function GetCurrentChildDOMWindow(out aCurrentChildDOMWindow: nsIDOMWindow_std17): Longword; stdcall;
-    function GetDoingPrint(out aDoingPrint: PRBool): Longword; stdcall;
-    function GetDoingPrintPreview(out aDoingPrintPreview: PRBool): Longword; stdcall;
-    function GetIsFramesetDocument(out aIsFramesetDocument: PRBool): Longword; stdcall;
-    function GetIsFramesetFrameSelected(out aIsFramesetFrameSelected: PRBool): Longword; stdcall;
-    function GetIsIFrameSelected(out aIsIFrameSelected: PRBool): Longword; stdcall;
-    function GetIsRangeSelection(out aIsRangeSelection: PRBool): Longword; stdcall;
-    function GetPrintPreviewNumPages(out aPrintPreviewNumPages: PRInt32): Longword; stdcall;
-    function Print(aThePrintSettings: nsIPrintSettings_std17; aWPListener: nsIWebProgressListener_std17): nsresult; stdcall;
-    function PrintPreview(aThePrintSettings: nsIPrintSettings_std17; aChildDOMWin: nsIDOMWindow_std17; aWPListener: nsIWebProgressListener_std17): nsresult; stdcall;
-    function PrintPreviewNavigate(aNavType: PRInt16; aPageNum: PRInt32): nsresult; stdcall;
-    function Cancel(): nsresult; stdcall;
-    function EnumerateDocumentNames(out aCount: PRUint32; out aResult_array): nsresult; stdcall;
-    function ExitPrintPreview(): nsresult; stdcall;
+    function GetGlobalPrintSettings(out aGlobalPrintSettings: nsIPrintSettings_std17): Longword; extdecl;
+    function GetCurrentPrintSettings(out aCurrentPrintSettings: nsIPrintSettings_std17): Longword; extdecl;
+    function GetCurrentChildDOMWindow(out aCurrentChildDOMWindow: nsIDOMWindow_std17): Longword; extdecl;
+    function GetDoingPrint(out aDoingPrint: PRBool): Longword; extdecl;
+    function GetDoingPrintPreview(out aDoingPrintPreview: PRBool): Longword; extdecl;
+    function GetIsFramesetDocument(out aIsFramesetDocument: PRBool): Longword; extdecl;
+    function GetIsFramesetFrameSelected(out aIsFramesetFrameSelected: PRBool): Longword; extdecl;
+    function GetIsIFrameSelected(out aIsIFrameSelected: PRBool): Longword; extdecl;
+    function GetIsRangeSelection(out aIsRangeSelection: PRBool): Longword; extdecl;
+    function GetPrintPreviewNumPages(out aPrintPreviewNumPages: PRInt32): Longword; extdecl;
+    function Print(aThePrintSettings: nsIPrintSettings_std17; aWPListener: nsIWebProgressListener_std17): nsresult; extdecl;
+    function PrintPreview(aThePrintSettings: nsIPrintSettings_std17; aChildDOMWin: nsIDOMWindow_std17; aWPListener: nsIWebProgressListener_std17): nsresult; extdecl;
+    function PrintPreviewNavigate(aNavType: PRInt16; aPageNum: PRInt32): nsresult; extdecl;
+    function Cancel(): nsresult; extdecl;
+    function EnumerateDocumentNames(out aCount: PRUint32; out aResult_array): nsresult; extdecl;
+    function ExitPrintPreview(): nsresult; extdecl;
   end;
 
   nsIWebBrowserSetup_std17 = interface(nsISupports_std17)
   ['{f15398a0-8018-11d3-af70-00a024ffc08c}']
-    function SetProperty(aId: PRUint32; aValue: PRUint32): nsresult; stdcall;
+    function SetProperty(aId: PRUint32; aValue: PRUint32): nsresult; extdecl;
   end;
 
   nsIWebProgress_std17 = interface(nsISupports_std17)
   ['{570f39d0-efd0-11d3-b093-00a024ffc08c}']
-    function AddProgressListener(aListener: nsIWebProgressListener_std17; aNotifyMask: PRUint32): nsresult; stdcall;
-    function RemoveProgressListener(aListener: nsIWebProgressListener_std17): nsresult; stdcall;
-    function GetDOMWindow(out aDOMWindow: nsIDOMWindow_std17): Longword; stdcall;
-    function GetIsLoadingDocument(out aIsLoadingDocument: PRBool): Longword; stdcall;
+    function AddProgressListener(aListener: nsIWebProgressListener_std17; aNotifyMask: PRUint32): nsresult; extdecl;
+    function RemoveProgressListener(aListener: nsIWebProgressListener_std17): nsresult; extdecl;
+    function GetDOMWindow(out aDOMWindow: nsIDOMWindow_std17): Longword; extdecl;
+    function GetIsLoadingDocument(out aIsLoadingDocument: PRBool): Longword; extdecl;
   end;
 
   nsIWebProgressListener_std17 = interface(nsISupports_std17)
   ['{570f39d1-efd0-11d3-b093-00a024ffc08c}']
-    function OnStateChange(aWebProgress: nsIWebProgress_std17; aRequest: nsIRequest_std17; aStateFlags: PRUint32; aStatus: nsresult): nsresult; stdcall;
-    function OnProgressChange(aWebProgress: nsIWebProgress_std17; aRequest: nsIRequest_std17; aCurSelfProgress: PRInt32; aMaxSelfProgress: PRInt32; aCurTotalProgress: PRInt32; aMaxTotalProgress: PRInt32): nsresult; stdcall;
-    function OnLocationChange(aWebProgress: nsIWebProgress_std17; aRequest: nsIRequest_std17; aLocation: nsIURI_std17): nsresult; stdcall;
-    function OnStatusChange(aWebProgress: nsIWebProgress_std17; aRequest: nsIRequest_std17; aStatus: nsresult; const aMessage: PWideChar): nsresult; stdcall;
-    function OnSecurityChange(aWebProgress: nsIWebProgress_std17; aRequest: nsIRequest_std17; aState: PRUint32): nsresult; stdcall;
+    function OnStateChange(aWebProgress: nsIWebProgress_std17; aRequest: nsIRequest_std17; aStateFlags: PRUint32; aStatus: nsresult): nsresult; extdecl;
+    function OnProgressChange(aWebProgress: nsIWebProgress_std17; aRequest: nsIRequest_std17; aCurSelfProgress: PRInt32; aMaxSelfProgress: PRInt32; aCurTotalProgress: PRInt32; aMaxTotalProgress: PRInt32): nsresult; extdecl;
+    function OnLocationChange(aWebProgress: nsIWebProgress_std17; aRequest: nsIRequest_std17; aLocation: nsIURI_std17): nsresult; extdecl;
+    function OnStatusChange(aWebProgress: nsIWebProgress_std17; aRequest: nsIRequest_std17; aStatus: nsresult; const aMessage: PWideChar): nsresult; extdecl;
+    function OnSecurityChange(aWebProgress: nsIWebProgress_std17; aRequest: nsIRequest_std17; aState: PRUint32): nsresult; extdecl;
   end;
 
   nsIWindowCreator_std17 = interface(nsISupports_std17)
   ['{30465632-a777-44cc-90f9-8145475ef999}']
-    function CreateChromeWindow(parent: nsIWebBrowserChrome_std17; chromeFlags: PRUint32; out _retval: nsIWebBrowserChrome_std17): nsresult; stdcall;
+    function CreateChromeWindow(parent: nsIWebBrowserChrome_std17; chromeFlags: PRUint32; out _retval: nsIWebBrowserChrome_std17): nsresult; extdecl;
   end;
 
   nsIWindowWatcher_std17 = interface(nsISupports_std17)
   ['{002286a8-494b-43b3-8ddd-49e3fc50622b}']
-    function OpenWindow(aParent: nsIDOMWindow_std17; const aUrl: PAnsiChar; const aName: PAnsiChar; const aFeatures: PAnsiChar; aArguments: nsISupports_std17; out _retval: nsIDOMWindow_std17): nsresult; stdcall;
-    function RegisterNotification(aObserver: nsIObserver_std17): nsresult; stdcall;
-    function UnregisterNotification(aObserver: nsIObserver_std17): nsresult; stdcall;
-    function GetWindowEnumerator(out _retval: nsISimpleEnumerator_std17): nsresult; stdcall;
-    function GetNewPrompter(aParent: nsIDOMWindow_std17; out _retval: nsIPrompt_std17): nsresult; stdcall;
-    function GetNewAuthPrompter(aParent: nsIDOMWindow_std17; out _retval: nsIAuthPrompt_std17): nsresult; stdcall;
-    function SetWindowCreator(creator: nsIWindowCreator_std17): nsresult; stdcall;
-    function GetChromeForWindow(aWindow: nsIDOMWindow_std17; out _retval: nsIWebBrowserChrome_std17): nsresult; stdcall;
-    function GetWindowByName(const aTargetName: PWideChar; aCurrentWindow: nsIDOMWindow_std17; out _retval: nsIDOMWindow_std17): nsresult; stdcall;
-    function GetActiveWindow(out aActiveWindow: nsIDOMWindow_std17): Longword; stdcall;
-    function SetActiveWindow(aActiveWindow: nsIDOMWindow_std17): Longword; stdcall;
+    function OpenWindow(aParent: nsIDOMWindow_std17; const aUrl: PAnsiChar; const aName: PAnsiChar; const aFeatures: PAnsiChar; aArguments: nsISupports_std17; out _retval: nsIDOMWindow_std17): nsresult; extdecl;
+    function RegisterNotification(aObserver: nsIObserver_std17): nsresult; extdecl;
+    function UnregisterNotification(aObserver: nsIObserver_std17): nsresult; extdecl;
+    function GetWindowEnumerator(out _retval: nsISimpleEnumerator_std17): nsresult; extdecl;
+    function GetNewPrompter(aParent: nsIDOMWindow_std17; out _retval: nsIPrompt_std17): nsresult; extdecl;
+    function GetNewAuthPrompter(aParent: nsIDOMWindow_std17; out _retval: nsIAuthPrompt_std17): nsresult; extdecl;
+    function SetWindowCreator(creator: nsIWindowCreator_std17): nsresult; extdecl;
+    function GetChromeForWindow(aWindow: nsIDOMWindow_std17; out _retval: nsIWebBrowserChrome_std17): nsresult; extdecl;
+    function GetWindowByName(const aTargetName: PWideChar; aCurrentWindow: nsIDOMWindow_std17; out _retval: nsIDOMWindow_std17): nsresult; extdecl;
+    function GetActiveWindow(out aActiveWindow: nsIDOMWindow_std17): Longword; extdecl;
+    function SetActiveWindow(aActiveWindow: nsIDOMWindow_std17): Longword; extdecl;
   end;
 
   nsIX509Cert_std17 = interface(nsISupports_std17)
   ['{f0980f60-ee3d-11d4-998b-00b0d02354a0}']
-    function GetNickname(aNickname: nsAString): Longword; stdcall;
-    function GetEmailAddress(aEmailAddress: nsAString): Longword; stdcall;
-    function GetEmailAddresses(out length: PRUint32; out addresses_array): nsresult; stdcall;
-    function ContainsEmailAddress(const aEmailAddress: nsAString; out _retval: PRBool): nsresult; stdcall;
-    function GetSubjectName(aSubjectName: nsAString): Longword; stdcall;
-    function GetCommonName(aCommonName: nsAString): Longword; stdcall;
-    function GetOrganization(aOrganization: nsAString): Longword; stdcall;
-    function GetOrganizationalUnit(aOrganizationalUnit: nsAString): Longword; stdcall;
-    function GetSha1Fingerprint(aSha1Fingerprint: nsAString): Longword; stdcall;
-    function GetMd5Fingerprint(aMd5Fingerprint: nsAString): Longword; stdcall;
-    function GetTokenName(aTokenName: nsAString): Longword; stdcall;
-    function GetIssuerName(aIssuerName: nsAString): Longword; stdcall;
-    function GetSerialNumber(aSerialNumber: nsAString): Longword; stdcall;
-    function GetIssuerCommonName(aIssuerCommonName: nsAString): Longword; stdcall;
-    function GetIssuerOrganization(aIssuerOrganization: nsAString): Longword; stdcall;
-    function GetIssuerOrganizationUnit(aIssuerOrganizationUnit: nsAString): Longword; stdcall;
-    function GetIssuer(out aIssuer: nsIX509Cert_std17): Longword; stdcall;
-    function GetValidity(out aValidity: nsIX509CertValidity_std17): Longword; stdcall;
-    function GetDbKey(out aDbKey: PAnsiChar): Longword; stdcall;
-    function GetWindowTitle(out aWindowTitle: PAnsiChar): Longword; stdcall;
-    function GetChain(out _retval: nsIArray_std17): nsresult; stdcall;
-    function GetUsagesArray(ignoreOcsp: PRBool; out verified: PRUint32; out count: PRUint32; out usages_array): nsresult; stdcall;
-    function GetUsagesString(ignoreOcsp: PRBool; out verified: PRUint32; usages: nsAString): nsresult; stdcall;
-    function VerifyForUsage(usage: PRUint32; out _retval: PRUint32): nsresult; stdcall;
-    function GetASN1Structure(out aASN1Structure: nsIASN1Object_std17): Longword; stdcall;
-    function GetRawDER(out length: PRUint32; out data_array): nsresult; stdcall;
-    function Equals(other: nsIX509Cert_std17; out _retval: PRBool): nsresult; stdcall;
+    function GetNickname(aNickname: nsAString): Longword; extdecl;
+    function GetEmailAddress(aEmailAddress: nsAString): Longword; extdecl;
+    function GetEmailAddresses(out length: PRUint32; out addresses_array): nsresult; extdecl;
+    function ContainsEmailAddress(const aEmailAddress: nsAString; out _retval: PRBool): nsresult; extdecl;
+    function GetSubjectName(aSubjectName: nsAString): Longword; extdecl;
+    function GetCommonName(aCommonName: nsAString): Longword; extdecl;
+    function GetOrganization(aOrganization: nsAString): Longword; extdecl;
+    function GetOrganizationalUnit(aOrganizationalUnit: nsAString): Longword; extdecl;
+    function GetSha1Fingerprint(aSha1Fingerprint: nsAString): Longword; extdecl;
+    function GetMd5Fingerprint(aMd5Fingerprint: nsAString): Longword; extdecl;
+    function GetTokenName(aTokenName: nsAString): Longword; extdecl;
+    function GetIssuerName(aIssuerName: nsAString): Longword; extdecl;
+    function GetSerialNumber(aSerialNumber: nsAString): Longword; extdecl;
+    function GetIssuerCommonName(aIssuerCommonName: nsAString): Longword; extdecl;
+    function GetIssuerOrganization(aIssuerOrganization: nsAString): Longword; extdecl;
+    function GetIssuerOrganizationUnit(aIssuerOrganizationUnit: nsAString): Longword; extdecl;
+    function GetIssuer(out aIssuer: nsIX509Cert_std17): Longword; extdecl;
+    function GetValidity(out aValidity: nsIX509CertValidity_std17): Longword; extdecl;
+    function GetDbKey(out aDbKey: PAnsiChar): Longword; extdecl;
+    function GetWindowTitle(out aWindowTitle: PAnsiChar): Longword; extdecl;
+    function GetChain(out _retval: nsIArray_std17): nsresult; extdecl;
+    function GetUsagesArray(ignoreOcsp: PRBool; out verified: PRUint32; out count: PRUint32; out usages_array): nsresult; extdecl;
+    function GetUsagesString(ignoreOcsp: PRBool; out verified: PRUint32; usages: nsAString): nsresult; extdecl;
+    function VerifyForUsage(usage: PRUint32; out _retval: PRUint32): nsresult; extdecl;
+    function GetASN1Structure(out aASN1Structure: nsIASN1Object_std17): Longword; extdecl;
+    function GetRawDER(out length: PRUint32; out data_array): nsresult; extdecl;
+    function Equals(other: nsIX509Cert_std17; out _retval: PRBool): nsresult; extdecl;
   end;
 
   nsIX509CertDB_std17 = interface(nsISupports_std17)
   ['{da48b3c0-1284-11d5-ac67-000064657374}']
-    function FindCertByNickname(aToken: nsISupports_std17; const aNickname: nsAString; out _retval: nsIX509Cert_std17): nsresult; stdcall;
-    function FindCertByDBKey(const aDBkey: PAnsiChar; aToken: nsISupports_std17; out _retval: nsIX509Cert_std17): nsresult; stdcall;
-    function FindCertNicknames(aToken: nsISupports_std17; aType: PRUint32; out count: PRUint32; out certNameList_array): nsresult; stdcall;
-    function FindEmailEncryptionCert(const aNickname: nsAString; out _retval: nsIX509Cert_std17): nsresult; stdcall;
-    function FindEmailSigningCert(const aNickname: nsAString; out _retval: nsIX509Cert_std17): nsresult; stdcall;
-    function FindCertByEmailAddress(aToken: nsISupports_std17; const aEmailAddress: PAnsiChar; out _retval: nsIX509Cert_std17): nsresult; stdcall;
-    function ImportCertificates(const data_array; length: PRUint32; _type: PRUint32; ctx: nsIInterfaceRequestor_std17): nsresult; stdcall;
-    function ImportEmailCertificate(const data_array; length: PRUint32; ctx: nsIInterfaceRequestor_std17): nsresult; stdcall;
-    function ImportServerCertificate(const data_array; length: PRUint32; ctx: nsIInterfaceRequestor_std17): nsresult; stdcall;
-    function ImportUserCertificate(const data_array; length: PRUint32; ctx: nsIInterfaceRequestor_std17): nsresult; stdcall;
-    function DeleteCertificate(aCert: nsIX509Cert_std17): nsresult; stdcall;
-    function SetCertTrust(cert: nsIX509Cert_std17; _type: PRUint32; trust: PRUint32): nsresult; stdcall;
-    function IsCertTrusted(cert: nsIX509Cert_std17; certType: PRUint32; trustType: PRUint32; out _retval: PRBool): nsresult; stdcall;
-    function ImportCertsFromFile(aToken: nsISupports_std17; aFile: nsILocalFile_std17; aType: PRUint32): nsresult; stdcall;
-    function ImportPKCS12File(aToken: nsISupports_std17; aFile: nsILocalFile_std17): nsresult; stdcall;
-    function ExportPKCS12File(aToken: nsISupports_std17; aFile: nsILocalFile_std17; count: PRUint32; const aCerts_array): nsresult; stdcall;
-    function GetOCSPResponders(out _retval: nsIArray_std17): nsresult; stdcall;
-    function GetIsOcspOn(out aIsOcspOn: PRBool): Longword; stdcall;
-    function ConstructX509FromBase64(const base64: PAnsiChar; out _retval: nsIX509Cert_std17): nsresult; stdcall;
+    function FindCertByNickname(aToken: nsISupports_std17; const aNickname: nsAString; out _retval: nsIX509Cert_std17): nsresult; extdecl;
+    function FindCertByDBKey(const aDBkey: PAnsiChar; aToken: nsISupports_std17; out _retval: nsIX509Cert_std17): nsresult; extdecl;
+    function FindCertNicknames(aToken: nsISupports_std17; aType: PRUint32; out count: PRUint32; out certNameList_array): nsresult; extdecl;
+    function FindEmailEncryptionCert(const aNickname: nsAString; out _retval: nsIX509Cert_std17): nsresult; extdecl;
+    function FindEmailSigningCert(const aNickname: nsAString; out _retval: nsIX509Cert_std17): nsresult; extdecl;
+    function FindCertByEmailAddress(aToken: nsISupports_std17; const aEmailAddress: PAnsiChar; out _retval: nsIX509Cert_std17): nsresult; extdecl;
+    function ImportCertificates(const data_array; length: PRUint32; _type: PRUint32; ctx: nsIInterfaceRequestor_std17): nsresult; extdecl;
+    function ImportEmailCertificate(const data_array; length: PRUint32; ctx: nsIInterfaceRequestor_std17): nsresult; extdecl;
+    function ImportServerCertificate(const data_array; length: PRUint32; ctx: nsIInterfaceRequestor_std17): nsresult; extdecl;
+    function ImportUserCertificate(const data_array; length: PRUint32; ctx: nsIInterfaceRequestor_std17): nsresult; extdecl;
+    function DeleteCertificate(aCert: nsIX509Cert_std17): nsresult; extdecl;
+    function SetCertTrust(cert: nsIX509Cert_std17; _type: PRUint32; trust: PRUint32): nsresult; extdecl;
+    function IsCertTrusted(cert: nsIX509Cert_std17; certType: PRUint32; trustType: PRUint32; out _retval: PRBool): nsresult; extdecl;
+    function ImportCertsFromFile(aToken: nsISupports_std17; aFile: nsILocalFile_std17; aType: PRUint32): nsresult; extdecl;
+    function ImportPKCS12File(aToken: nsISupports_std17; aFile: nsILocalFile_std17): nsresult; extdecl;
+    function ExportPKCS12File(aToken: nsISupports_std17; aFile: nsILocalFile_std17; count: PRUint32; const aCerts_array): nsresult; extdecl;
+    function GetOCSPResponders(out _retval: nsIArray_std17): nsresult; extdecl;
+    function GetIsOcspOn(out aIsOcspOn: PRBool): Longword; extdecl;
+    function ConstructX509FromBase64(const base64: PAnsiChar; out _retval: nsIX509Cert_std17): nsresult; extdecl;
   end;
 
   nsIX509CertValidity_std17 = interface(nsISupports_std17)
   ['{e701dfd8-1dd1-11b2-a172-ffa6cc6156ad}']
-    function GetNotBefore(out aNotBefore: PRTime): Longword; stdcall;
-    function GetNotBeforeLocalTime(aNotBeforeLocalTime: nsAString): Longword; stdcall;
-    function GetNotBeforeLocalDay(aNotBeforeLocalDay: nsAString): Longword; stdcall;
-    function GetNotBeforeGMT(aNotBeforeGMT: nsAString): Longword; stdcall;
-    function GetNotAfter(out aNotAfter: PRTime): Longword; stdcall;
-    function GetNotAfterLocalTime(aNotAfterLocalTime: nsAString): Longword; stdcall;
-    function GetNotAfterLocalDay(aNotAfterLocalDay: nsAString): Longword; stdcall;
-    function GetNotAfterGMT(aNotAfterGMT: nsAString): Longword; stdcall;
+    function GetNotBefore(out aNotBefore: PRTime): Longword; extdecl;
+    function GetNotBeforeLocalTime(aNotBeforeLocalTime: nsAString): Longword; extdecl;
+    function GetNotBeforeLocalDay(aNotBeforeLocalDay: nsAString): Longword; extdecl;
+    function GetNotBeforeGMT(aNotBeforeGMT: nsAString): Longword; extdecl;
+    function GetNotAfter(out aNotAfter: PRTime): Longword; extdecl;
+    function GetNotAfterLocalTime(aNotAfterLocalTime: nsAString): Longword; extdecl;
+    function GetNotAfterLocalDay(aNotAfterLocalDay: nsAString): Longword; extdecl;
+    function GetNotAfterGMT(aNotAfterGMT: nsAString): Longword; extdecl;
   end;
 
 implementation
