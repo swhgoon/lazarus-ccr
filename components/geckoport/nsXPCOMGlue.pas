@@ -313,7 +313,7 @@ resourcestring
 implementation
 
 uses
-  nsMemory, nsError, nsInit {$IFDEF MSWINDOWS} ,Windows {$ELSE} ,{$ENDIF};
+  nsMemory, nsError, nsInit {$IFDEF MSWINDOWS} ,Windows {$ENDIF};
 
 var
   sCompMgr: nsIComponentManager = nil;
