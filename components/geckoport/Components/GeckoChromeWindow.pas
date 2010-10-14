@@ -53,6 +53,7 @@ uses
   SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, CallbackInterfaces, nsXPCOM, nsTypes, nsXPCOM_std19
   {$IFDEF LCLCarbon}, CarbonPrivate {$ENDIF}
+  {$IFDEF LCLGtk2}, gtk2 {$ENDIF}
   {$IFDEF LCLCocoa}, CocoaAll, CocoaUtils, CocoaPrivate {$ENDIF};
 
 type
@@ -187,7 +188,9 @@ begin
 
    {$IFDEF LCLGtk}Result := Handle;{$ENDIF}  //Is Handle same as GTK Window?
 
-   {$IFDEF LCLGtk2}Result := Handle;{$ENDIF}  //Is Handle same as GTK Window?
+   {$IFDEF LCLGtk2}
+   Result := PtrInt(PGtkWindow(GeckoChromeForm.Handle)^.bin.child);
+   {$ENDIF}  //Is Handle same as GTK Window?
 end;
 
 procedure TGeckoChromeForm.InitWebBrowser;
