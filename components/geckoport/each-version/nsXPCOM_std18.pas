@@ -1076,7 +1076,7 @@ type
   nsIArray_std18 = interface(nsISupports_std18)
   ['{114744d9-c369-456e-b55a-52fe52880d2d}']
     function GetLength(out aLength: PRUint32): Longword; extdecl;
-    function QueryElementAt(index: PRUint32; const uuid: TGUID; out _result): nsresult; extdecl;
+    function QueryElementAt(index: PRUint32; constref uuid: TGUID; out _result): nsresult; extdecl;
     function IndexOf(startIndex: PRUint32; element: nsISupports_std18; out _retval: PRUint32): nsresult; extdecl;
     function Enumerate(out _retval: nsISimpleEnumerator_std18): nsresult; extdecl;
   end;
@@ -1223,25 +1223,25 @@ type
 
   nsIComponentManager_std18 = interface(nsISupports_std18)
   ['{a88e5a60-205a-4bb1-94e1-2628daf51eae}']
-    function GetClassObject(const aClass: TGUID; const aIID: TGUID; out _result): nsresult; extdecl;
-    function GetClassObjectByContractID(const aContractID: PAnsiChar; const aIID: TGUID; out _result): nsresult; extdecl;
-    function CreateInstance(const aClass: TGUID; aDelegate: nsISupports_std18; const aIID: TGUID; out _result): nsresult; extdecl;
-    function CreateInstanceByContractID(const aContractID: PAnsiChar; aDelegate: nsISupports_std18; const aIID: TGUID; out _result): nsresult; extdecl;
+    function GetClassObject(constref aClass: TGUID; constref aIID: TGUID; out _result): nsresult; extdecl;
+    function GetClassObjectByContractID(const aContractID: PAnsiChar; constref aIID: TGUID; out _result): nsresult; extdecl;
+    function CreateInstance(constref aClass: TGUID; aDelegate: nsISupports_std18; constref aIID: TGUID; out _result): nsresult; extdecl;
+    function CreateInstanceByContractID(const aContractID: PAnsiChar; aDelegate: nsISupports_std18; constref aIID: TGUID; out _result): nsresult; extdecl;
   end;
 
   nsIComponentRegistrar_std18 = interface(nsISupports_std18)
   ['{2417cbfe-65ad-48a6-b4b6-eb84db174392}']
     function AutoRegister(aSpec: nsIFile_std18): nsresult; extdecl;
     function AutoUnregister(aSpec: nsIFile_std18): nsresult; extdecl;
-    function RegisterFactory(const aClass: TGUID; const aClassName: PAnsiChar; const aContractID: PAnsiChar; aFactory: nsIFactory_std18): nsresult; extdecl;
-    function UnregisterFactory(const aClass: TGUID; aFactory: nsIFactory_std18): nsresult; extdecl;
-    function RegisterFactoryLocation(const aClass: TGUID; const aClassName: PAnsiChar; const aContractID: PAnsiChar; aFile: nsIFile_std18; const aLoaderStr: PAnsiChar; const aType: PAnsiChar): nsresult; extdecl;
-    function UnregisterFactoryLocation(const aClass: TGUID; aFile: nsIFile_std18): nsresult; extdecl;
-    function IsCIDRegistered(const aClass: TGUID; out _retval: PRBool): nsresult; extdecl;
+    function RegisterFactory(constref aClass: TGUID; const aClassName: PAnsiChar; const aContractID: PAnsiChar; aFactory: nsIFactory_std18): nsresult; extdecl;
+    function UnregisterFactory(constref aClass: TGUID; aFactory: nsIFactory_std18): nsresult; extdecl;
+    function RegisterFactoryLocation(constref aClass: TGUID; const aClassName: PAnsiChar; const aContractID: PAnsiChar; aFile: nsIFile_std18; const aLoaderStr: PAnsiChar; const aType: PAnsiChar): nsresult; extdecl;
+    function UnregisterFactoryLocation(constref aClass: TGUID; aFile: nsIFile_std18): nsresult; extdecl;
+    function IsCIDRegistered(constref aClass: TGUID; out _retval: PRBool): nsresult; extdecl;
     function IsContractIDRegistered(const aContractID: PAnsiChar; out _retval: PRBool): nsresult; extdecl;
     function EnumerateCIDs(out _retval: nsISimpleEnumerator_std18): nsresult; extdecl;
     function EnumerateContractIDs(out _retval: nsISimpleEnumerator_std18): nsresult; extdecl;
-    function CIDToContractID(const aClass: TGUID; out _retval: PAnsiChar): nsresult; extdecl;
+    function CIDToContractID(constref aClass: TGUID; out _retval: PAnsiChar): nsresult; extdecl;
     function ContractIDToCID(const aContractID: PAnsiChar; out _retval: PGUID): nsresult; extdecl;
   end;
 
@@ -2659,7 +2659,7 @@ type
 
   nsIFactory_std18 = interface(nsISupports_std18)
   ['{00000001-0000-0000-c000-000000000046}']
-    function CreateInstance(aOuter: nsISupports_std18; const iid: TGUID; out _result): nsresult; extdecl;
+    function CreateInstance(aOuter: nsISupports_std18; constref iid: TGUID; out _result): nsresult; extdecl;
     function LockFactory(lock: PRBool): nsresult; extdecl;
   end;
 
@@ -2773,7 +2773,7 @@ type
 
   nsIInterfaceRequestor_std18 = interface(nsISupports_std18)
   ['{033a1470-8b2a-11d3-af88-00a024ffc08c}']
-    function GetInterface(const uuid: TGUID; out _result): nsresult; extdecl;
+    function GetInterface(constref uuid: TGUID; out _result): nsresult; extdecl;
   end;
 
   nsIIOService_std18 = interface(nsISupports_std18)
@@ -2836,7 +2836,7 @@ type
 
   nsIModule_std18 = interface(nsISupports_std18)
   ['{7392d032-5371-11d3-994e-00805fd26fee}']
-    function GetClassObject(aCompMgr: nsIComponentManager_std18; const aClass: TGUID; const aIID: TGUID; out aResult): nsresult; extdecl;
+    function GetClassObject(aCompMgr: nsIComponentManager_std18; constref aClass: TGUID; constref aIID: TGUID; out aResult): nsresult; extdecl;
     function RegisterSelf(aCompMgr: nsIComponentManager_std18; aLocation: nsIFile_std18; const aLoaderStr: PAnsiChar; const aType: PAnsiChar): nsresult; extdecl;
     function UnregisterSelf(aCompMgr: nsIComponentManager_std18; aLocation: nsIFile_std18; const aLoaderStr: PAnsiChar): nsresult; extdecl;
     function CanUnload(aCompMgr: nsIComponentManager_std18; out _retval: PRBool): nsresult; extdecl;
@@ -2875,8 +2875,8 @@ type
     function SetCharPref(const aPrefName: PAnsiChar; const aValue: PAnsiChar): nsresult; extdecl;
     function GetIntPref(const aPrefName: PAnsiChar; out _retval: PRInt32): nsresult; extdecl;
     function SetIntPref(const aPrefName: PAnsiChar; aValue: PRInt32): nsresult; extdecl;
-    function GetComplexValue(const aPrefName: PAnsiChar; const aType: TGUID; out aValue): nsresult; extdecl;
-    function SetComplexValue(const aPrefName: PAnsiChar; const aType: TGUID; aValue: nsISupports_std18): nsresult; extdecl;
+    function GetComplexValue(const aPrefName: PAnsiChar; constref aType: TGUID; out aValue): nsresult; extdecl;
+    function SetComplexValue(const aPrefName: PAnsiChar; constref aType: TGUID; aValue: nsISupports_std18): nsresult; extdecl;
     function ClearUserPref(const aPrefName: PAnsiChar): nsresult; extdecl;
     function LockPref(const aPrefName: PAnsiChar): nsresult; extdecl;
     function PrefHasUserValue(const aPrefName: PAnsiChar; out _retval: PRBool): nsresult; extdecl;
@@ -3071,7 +3071,7 @@ type
 
   nsIProperties_std18 = interface(nsISupports_std18)
   ['{78650582-4e93-4b60-8e85-26ebd3eb14ca}']
-    function Get(const prop: PAnsiChar; const iid: TGUID; out _result): nsresult; extdecl;
+    function Get(const prop: PAnsiChar; constref iid: TGUID; out _result): nsresult; extdecl;
     function _Set(const prop: PAnsiChar; value: nsISupports_std18): nsresult; extdecl;
     function Has(const prop: PAnsiChar; out _retval: PRBool): nsresult; extdecl;
     function Undefine(const prop: PAnsiChar): nsresult; extdecl;
@@ -3137,10 +3137,10 @@ type
 
   nsIServiceManager_std18 = interface(nsISupports_std18)
   ['{8bb35ed9-e332-462d-9155-4a002ab5c958}']
-    function GetService(const aClass: TGUID; const aIID: TGUID; out _result): nsresult; extdecl;
-    function GetServiceByContractID(const aContractID: PAnsiChar; const aIID: TGUID; out _result): nsresult; extdecl;
-    function IsServiceInstantiated(const aClass: TGUID; const aIID: TGUID; out _retval: PRBool): nsresult; extdecl;
-    function IsServiceInstantiatedByContractID(const aContractID: PAnsiChar; const aIID: TGUID; out _retval: PRBool): nsresult; extdecl;
+    function GetService(constref aClass: TGUID; constref aIID: TGUID; out _result): nsresult; extdecl;
+    function GetServiceByContractID(const aContractID: PAnsiChar; constref aIID: TGUID; out _result): nsresult; extdecl;
+    function IsServiceInstantiated(constref aClass: TGUID; constref aIID: TGUID; out _retval: PRBool): nsresult; extdecl;
+    function IsServiceInstantiatedByContractID(const aContractID: PAnsiChar; constref aIID: TGUID; out _retval: PRBool): nsresult; extdecl;
   end;
 
   nsISHistory_std18 = interface(nsISupports_std18)
@@ -3343,7 +3343,7 @@ type
 
   nsIWeakReference_std18 = interface(nsISupports_std18)
   ['{9188bc85-f92e-11d2-81ef-0060083a0bcf}']
-    function QueryReferent(const uuid: TGUID; out _result): nsresult; extdecl;
+    function QueryReferent(constref uuid: TGUID; out _result): nsresult; extdecl;
   end;
 
   nsISupportsWeakReference_std18 = interface(nsISupports_std18)
@@ -3353,8 +3353,8 @@ type
 
   nsIWebBrowser_std18 = interface(nsISupports_std18)
   ['{69e5df00-7b8b-11d3-af61-00a024ffc08c}']
-    function AddWebBrowserListener(aListener: nsIWeakReference_std18; const aIID: TGUID): nsresult; extdecl;
-    function RemoveWebBrowserListener(aListener: nsIWeakReference_std18; const aIID: TGUID): nsresult; extdecl;
+    function AddWebBrowserListener(aListener: nsIWeakReference_std18; constref aIID: TGUID): nsresult; extdecl;
+    function RemoveWebBrowserListener(aListener: nsIWeakReference_std18; constref aIID: TGUID): nsresult; extdecl;
     function GetContainerWindow(out aContainerWindow: nsIWebBrowserChrome_std18): Longword; extdecl;
     function SetContainerWindow(aContainerWindow: nsIWebBrowserChrome_std18): Longword; extdecl;
     function GetParentURIContentListener(out aParentURIContentListener: nsIURIContentListener_std18): Longword; extdecl;

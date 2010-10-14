@@ -515,7 +515,7 @@ type
     procedure SetTitle(const aTitle: PWideChar); override;
     function GetSiteWindow(): Pointer; override; {$IFDEF FPC} safecall; {$ENDIF}
     // nsIInterfaceRequestor
-    function NS_GetInterface(const uuid: TGUID; out _result): nsresult; extdecl;
+    function NS_GetInterface(constref uuid: TGUID; out _result): nsresult; extdecl;
     function nsIInterfaceRequestor_std19.GetInterface = NS_GetInterface;
     // nsIContextMenuListener2
     procedure OnShowContextMenu(aContextFlags: PRUint32;
@@ -1703,7 +1703,7 @@ begin
   Listener := TGeckoBrowserListener.Create(Self);
 end;
 
-function TGeckoBrowserChrome.NS_GetInterface(const uuid: TGUID; out _result): nsresult;
+function TGeckoBrowserChrome.NS_GetInterface(constref uuid: TGUID; out _result): nsresult;
 begin
   if IsEqualGUID(uuid, nsIDOMWindow) then
   begin

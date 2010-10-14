@@ -156,11 +156,11 @@ const
   NS_APP_STORAGE_50_FILE               = 'UStor';
 
 procedure NS_CreateInstance(const CID, IID: TGUID; out Intf); overload;
-procedure NS_CreateInstance(ContractID: PAnsiChar; const IID: TGUID; out Intf); overload;
+procedure NS_CreateInstance(ContractID: PAnsiChar; constref IID: TGUID; out Intf); overload;
 function NS_GetWeakReference(Instance: nsISupports): nsIWeakReference;
-procedure NS_GetInterface(Source: nsISupports; const IID: TGUID; out Instance);
+procedure NS_GetInterface(Source: nsISupports; constref IID: TGUID; out Instance);
 procedure NS_GetService(const CID, IID: TGUID; out Intf); overload;
-procedure NS_GetService(ContractID: PAnsiChar; const IID: TGUID; out Intf); overload;
+procedure NS_GetService(ContractID: PAnsiChar; constref IID: TGUID; out Intf); overload;
 function NS_GetSpecialDirectory(const specialDirName: PAnsiChar): nsIFile;
 
 const
@@ -284,7 +284,7 @@ type
   public
     constructor Create(supports: TSupportsWeakReference);
     destructor Destroy; override;
-    procedure QueryReferent(const uuid: TGUID; out Intf); safecall;
+    procedure QueryReferent(constref uuid: TGUID; out Intf); safecall;
   end;
 
   TSupportsWeakReference = class(TInterfacedObject, nsISupportsWeakReference)
@@ -336,7 +336,7 @@ begin
   end;
 end;
 
-procedure NS_CreateInstance(ContractID: PAnsiChar; const IID: TGUID; out Intf);
+procedure NS_CreateInstance(ContractID: PAnsiChar; constref IID: TGUID; out Intf);
 var
   rv: nsresult;
 begin
@@ -370,7 +370,7 @@ begin
   end;
 end;
 
-procedure NS_GetService(ContractID: PAnsiChar; const IID: TGUID; out Intf);
+procedure NS_GetService(ContractID: PAnsiChar; constref IID: TGUID; out Intf);
 var
   rv: nsresult;
 begin
@@ -415,7 +415,7 @@ begin
   inherited;
 end;
 
-procedure TWeakReference.QueryReferent(const uuid: TGUID; out Intf);
+procedure TWeakReference.QueryReferent(constref uuid: TGUID; out Intf);
 var
   rv: nsresult;
 begin
@@ -454,7 +454,7 @@ begin
   end;
 end;
 
-procedure NS_GetInterface(Source: nsISupports; const IID: TGUID; out Instance);
+procedure NS_GetInterface(Source: nsISupports; constref IID: TGUID; out Instance);
 var
   factory: nsIInterfaceRequestor;
 begin
@@ -486,7 +486,7 @@ type
     FReferent: TSupportsWeakReferenceInternal;
     constructor Create(aReferent: TSupportsWeakReferenceInternal);
     destructor Destroy; override;
-    procedure QueryReferent(const iid: TGUID; out Intf); safecall;
+    procedure QueryReferent(constref iid: TGUID; out Intf); safecall;
   end;
 
 function NS_NewSupportsWeakReferenceDelegate(aTarget: nsISupports): nsISupportsWeakReference;
@@ -533,7 +533,7 @@ begin
   inherited;
 end;
 
-procedure TWeakReferenceInternal.QueryReferent(const iid: TGUID; out intf);
+procedure TWeakReferenceInternal.QueryReferent(constref iid: TGUID; out intf);
 begin
   if not Supports(FReferent.FTarget, iid, intf) then
     System.Error(reIntfCastError);

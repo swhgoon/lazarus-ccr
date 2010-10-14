@@ -1059,7 +1059,7 @@ type
   ['{114744d9-c369-456e-b55a-52fe52880d2d}']
     function GetLength(): PRUint32; safecall;
     property Length: PRUint32 read GetLength;
-    procedure QueryElementAt(index: PRUint32; const uuid: TGUID; out _result); safecall;
+    procedure QueryElementAt(index: PRUint32; constref uuid: TGUID; out _result); safecall;
     function IndexOf(startIndex: PRUint32; element: nsISupports_safe17): PRUint32; safecall;
     function Enumerate(): nsISimpleEnumerator_safe17; safecall;
   end;
@@ -1225,25 +1225,25 @@ type
 
   nsIComponentManager_safe17 = interface(nsISupports_safe17)
   ['{a88e5a60-205a-4bb1-94e1-2628daf51eae}']
-    procedure GetClassObject(const aClass: TGUID; const aIID: TGUID; out _result); safecall;
-    procedure GetClassObjectByContractID(const aContractID: PAnsiChar; const aIID: TGUID; out _result); safecall;
-    procedure CreateInstance(const aClass: TGUID; aDelegate: nsISupports_safe17; const aIID: TGUID; out _result); safecall;
-    procedure CreateInstanceByContractID(const aContractID: PAnsiChar; aDelegate: nsISupports_safe17; const aIID: TGUID; out _result); safecall;
+    procedure GetClassObject(constref aClass: TGUID; constref aIID: TGUID; out _result); safecall;
+    procedure GetClassObjectByContractID(const aContractID: PAnsiChar; constref aIID: TGUID; out _result); safecall;
+    procedure CreateInstance(constref aClass: TGUID; aDelegate: nsISupports_safe17; constref aIID: TGUID; out _result); safecall;
+    procedure CreateInstanceByContractID(const aContractID: PAnsiChar; aDelegate: nsISupports_safe17; constref aIID: TGUID; out _result); safecall;
   end;
 
   nsIComponentRegistrar_safe17 = interface(nsISupports_safe17)
   ['{2417cbfe-65ad-48a6-b4b6-eb84db174392}']
     procedure AutoRegister(aSpec: nsIFile_safe17); safecall;
     procedure AutoUnregister(aSpec: nsIFile_safe17); safecall;
-    procedure RegisterFactory(const aClass: TGUID; const aClassName: PAnsiChar; const aContractID: PAnsiChar; aFactory: nsIFactory_safe17); safecall;
-    procedure UnregisterFactory(const aClass: TGUID; aFactory: nsIFactory_safe17); safecall;
-    procedure RegisterFactoryLocation(const aClass: TGUID; const aClassName: PAnsiChar; const aContractID: PAnsiChar; aFile: nsIFile_safe17; const aLoaderStr: PAnsiChar; const aType: PAnsiChar); safecall;
-    procedure UnregisterFactoryLocation(const aClass: TGUID; aFile: nsIFile_safe17); safecall;
-    function IsCIDRegistered(const aClass: TGUID): PRBool; safecall;
+    procedure RegisterFactory(constref aClass: TGUID; const aClassName: PAnsiChar; const aContractID: PAnsiChar; aFactory: nsIFactory_safe17); safecall;
+    procedure UnregisterFactory(constref aClass: TGUID; aFactory: nsIFactory_safe17); safecall;
+    procedure RegisterFactoryLocation(constref aClass: TGUID; const aClassName: PAnsiChar; const aContractID: PAnsiChar; aFile: nsIFile_safe17; const aLoaderStr: PAnsiChar; const aType: PAnsiChar); safecall;
+    procedure UnregisterFactoryLocation(constref aClass: TGUID; aFile: nsIFile_safe17); safecall;
+    function IsCIDRegistered(constref aClass: TGUID): PRBool; safecall;
     function IsContractIDRegistered(const aContractID: PAnsiChar): PRBool; safecall;
     function EnumerateCIDs(): nsISimpleEnumerator_safe17; safecall;
     function EnumerateContractIDs(): nsISimpleEnumerator_safe17; safecall;
-    function CIDToContractID(const aClass: TGUID): PAnsiChar; safecall;
+    function CIDToContractID(constref aClass: TGUID): PAnsiChar; safecall;
     function ContractIDToCID(const aContractID: PAnsiChar): PGUID; safecall;
   end;
 
@@ -2837,7 +2837,7 @@ type
 
   nsIFactory_safe17 = interface(nsISupports_safe17)
   ['{00000001-0000-0000-c000-000000000046}']
-    procedure CreateInstance(aOuter: nsISupports_safe17; const iid: TGUID; out _result); safecall;
+    procedure CreateInstance(aOuter: nsISupports_safe17; constref iid: TGUID; out _result); safecall;
     procedure LockFactory(lock: PRBool); safecall;
   end;
 
@@ -2961,7 +2961,7 @@ type
 
   nsIInterfaceRequestor_safe17 = interface(nsISupports_safe17)
   ['{033a1470-8b2a-11d3-af88-00a024ffc08c}']
-    procedure GetInterface(const uuid: TGUID; out _result); safecall;
+    procedure GetInterface(constref uuid: TGUID; out _result); safecall;
   end;
 
   nsIIOService_safe17 = interface(nsISupports_safe17)
@@ -3032,7 +3032,7 @@ type
 
   nsIModule_safe17 = interface(nsISupports_safe17)
   ['{7392d032-5371-11d3-994e-00805fd26fee}']
-    procedure GetClassObject(aCompMgr: nsIComponentManager_safe17; const aClass: TGUID; const aIID: TGUID; out aResult); safecall;
+    procedure GetClassObject(aCompMgr: nsIComponentManager_safe17; constref aClass: TGUID; constref aIID: TGUID; out aResult); safecall;
     procedure RegisterSelf(aCompMgr: nsIComponentManager_safe17; aLocation: nsIFile_safe17; const aLoaderStr: PAnsiChar; const aType: PAnsiChar); safecall;
     procedure UnregisterSelf(aCompMgr: nsIComponentManager_safe17; aLocation: nsIFile_safe17; const aLoaderStr: PAnsiChar); safecall;
     function CanUnload(aCompMgr: nsIComponentManager_safe17): PRBool; safecall;
@@ -3079,8 +3079,8 @@ type
     procedure SetCharPref(const aPrefName: PAnsiChar; const aValue: PAnsiChar); safecall;
     function GetIntPref(const aPrefName: PAnsiChar): PRInt32; safecall;
     procedure SetIntPref(const aPrefName: PAnsiChar; aValue: PRInt32); safecall;
-    procedure GetComplexValue(const aPrefName: PAnsiChar; const aType: TGUID; out aValue); safecall;
-    procedure SetComplexValue(const aPrefName: PAnsiChar; const aType: TGUID; aValue: nsISupports_safe17); safecall;
+    procedure GetComplexValue(const aPrefName: PAnsiChar; constref aType: TGUID; out aValue); safecall;
+    procedure SetComplexValue(const aPrefName: PAnsiChar; constref aType: TGUID; aValue: nsISupports_safe17); safecall;
     procedure ClearUserPref(const aPrefName: PAnsiChar); safecall;
     procedure LockPref(const aPrefName: PAnsiChar); safecall;
     function PrefHasUserValue(const aPrefName: PAnsiChar): PRBool; safecall;
@@ -3311,7 +3311,7 @@ type
 
   nsIProperties_safe17 = interface(nsISupports_safe17)
   ['{78650582-4e93-4b60-8e85-26ebd3eb14ca}']
-    procedure Get(const prop: PAnsiChar; const iid: TGUID; out _result); safecall;
+    procedure Get(const prop: PAnsiChar; constref iid: TGUID; out _result); safecall;
     procedure _Set(const prop: PAnsiChar; value: nsISupports_safe17); safecall;
     function Has(const prop: PAnsiChar): PRBool; safecall;
     procedure Undefine(const prop: PAnsiChar); safecall;
@@ -3385,10 +3385,10 @@ type
 
   nsIServiceManager_safe17 = interface(nsISupports_safe17)
   ['{8bb35ed9-e332-462d-9155-4a002ab5c958}']
-    procedure GetService(const aClass: TGUID; const aIID: TGUID; out _result); safecall;
-    procedure GetServiceByContractID(const aContractID: PAnsiChar; const aIID: TGUID; out _result); safecall;
-    function IsServiceInstantiated(const aClass: TGUID; const aIID: TGUID): PRBool; safecall;
-    function IsServiceInstantiatedByContractID(const aContractID: PAnsiChar; const aIID: TGUID): PRBool; safecall;
+    procedure GetService(constref aClass: TGUID; constref aIID: TGUID; out _result); safecall;
+    procedure GetServiceByContractID(const aContractID: PAnsiChar; constref aIID: TGUID; out _result); safecall;
+    function IsServiceInstantiated(constref aClass: TGUID; constref aIID: TGUID): PRBool; safecall;
+    function IsServiceInstantiatedByContractID(const aContractID: PAnsiChar; constref aIID: TGUID): PRBool; safecall;
   end;
 
   nsISHistory_safe17 = interface(nsISupports_safe17)
@@ -3615,7 +3615,7 @@ type
 
   nsIWeakReference_safe17 = interface(nsISupports_safe17)
   ['{9188bc85-f92e-11d2-81ef-0060083a0bcf}']
-    procedure QueryReferent(const uuid: TGUID; out _result); safecall;
+    procedure QueryReferent(constref uuid: TGUID; out _result); safecall;
   end;
 
   nsISupportsWeakReference_safe17 = interface(nsISupports_safe17)
@@ -3625,8 +3625,8 @@ type
 
   nsIWebBrowser_safe17 = interface(nsISupports_safe17)
   ['{69e5df00-7b8b-11d3-af61-00a024ffc08c}']
-    procedure AddWebBrowserListener(aListener: nsIWeakReference_safe17; const aIID: TGUID); safecall;
-    procedure RemoveWebBrowserListener(aListener: nsIWeakReference_safe17; const aIID: TGUID); safecall;
+    procedure AddWebBrowserListener(aListener: nsIWeakReference_safe17; constref aIID: TGUID); safecall;
+    procedure RemoveWebBrowserListener(aListener: nsIWeakReference_safe17; constref aIID: TGUID); safecall;
     function GetContainerWindow(): nsIWebBrowserChrome_safe17; safecall;
     procedure SetContainerWindow(aContainerWindow: nsIWebBrowserChrome_safe17); safecall;
     property ContainerWindow: nsIWebBrowserChrome_safe17 read GetContainerWindow write SetContainerWindow;

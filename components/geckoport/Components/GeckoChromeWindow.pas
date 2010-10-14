@@ -99,10 +99,10 @@ type
     procedure OnStatusChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aStatus: nsresult; const aMessage: PWideChar); safecall;
     procedure OnSecurityChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; state: PRUint32); safecall;
     // nsIInterfaceRequestor
-    function NS_GetInterface(const uuid: TGUID; out Intf): nsresult; extdecl;
+    function NS_GetInterface(constref uuid: TGUID; out Intf): nsresult; extdecl;
     function nsIInterfaceRequestor_std19.GetInterface = NS_GetInterface;
     // for nsIWeakReference
-    procedure QueryReferent(const IID: TGUID; out Obj); safecall;
+    procedure QueryReferent(constref IID: TGUID; out Obj); safecall;
     // for nsISupportsWeakReference
     function GetWeakReference(): nsIWeakReference; safecall;
 
@@ -444,7 +444,7 @@ begin
   UseParameter(state);
 end;
 
-function TGeckoChromeForm.NS_GetInterface(const uuid: TGUID; out Intf): nsresult;
+function TGeckoChromeForm.NS_GetInterface(constref uuid: TGUID; out Intf): nsresult;
 var
   domwin: nsIDOMWindow;
 begin
@@ -464,7 +464,7 @@ begin
   end;
 end;
 
-procedure TGeckoChromeForm.QueryReferent(const IID: TGUID; out Obj);
+procedure TGeckoChromeForm.QueryReferent(constref IID: TGUID; out Obj);
 var
   rv: nsresult;
 begin

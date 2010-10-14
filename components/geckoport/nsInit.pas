@@ -365,7 +365,7 @@ type
   LogReleaseFunc = procedure (var aPtr; refcnt: nsrefcnt; name: PAnsiChar); cdecl;
   LogCtorFunc = procedure (var aPtr; name: PAnsiChar; ident: PRUint32); cdecl;
   LogCOMPtrFunc = procedure (var aPtr; aIntf: nsISupports); cdecl;
-  GetXPTCallStubFunc = function (const guid: TGUID; proxy: nsIXPTCProxy; out aIntf): nsresult; cdecl;
+  GetXPTCallStubFunc = function (constref guid: TGUID; proxy: nsIXPTCProxy; out aIntf): nsresult; cdecl;
   DestroyXPTCallStubFunc = procedure (aStub: nsISupports); cdecl;
   InvokeByIndexFunc = function (aStub: nsISupports; methodIndex: PRUint32; paramCount: PRUint32; params: PXPTCVariantArray): nsresult; cdecl;
   CycleCollectorFunc = function (aStub: nsISupports): PRBool; cdecl;
