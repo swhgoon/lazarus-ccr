@@ -897,7 +897,9 @@ var
     typeHelper : IXsdSpecialTypeHelper;
   begin
     p := AProp;
-    if AnsiSameText('Has',Copy(p.StoredAccessorName,1,3)) or AnsiSameText('True',p.StoredAccessorName) then begin
+    if AnsiSameText(sWST_PROP_STORE_PREFIX,Copy(p.StoredAccessorName,1,Length(sWST_PROP_STORE_PREFIX))) or 
+       AnsiSameText('True',p.StoredAccessorName) 
+    then begin
       if AContainer.IsAttributeProperty(p) then begin
         s := Format('%s:%s',[s_xs_short,s_attribute]);
         if Assigned(derivationNode) then
@@ -943,13 +945,13 @@ var
         if ( Length(p.DefaultValue) > 0 ) then
           propNode.SetAttribute(s_default,p.DefaultValue);
         if AContainer.IsAttributeProperty(p) then begin
-          if AnsiSameText('Has',Copy(p.StoredAccessorName,1,3)) then begin
+          if AnsiSameText(sWST_PROP_STORE_PREFIX,Copy(p.StoredAccessorName,1,Length(sWST_PROP_STORE_PREFIX))) then begin
             {propNode.SetAttribute(s_use,'optional')}
           end else begin
             propNode.SetAttribute(s_use,'required');
           end;
         end else begin
-          if AnsiSameText('Has',Copy(p.StoredAccessorName,1,3)) then
+          if AnsiSameText(sWST_PROP_STORE_PREFIX,Copy(p.StoredAccessorName,1,Length(sWST_PROP_STORE_PREFIX))) then
             propNode.SetAttribute(s_minOccurs,'0');
           if isEmbeddedArray then begin
             propNode.SetAttribute(s_maxOccurs,s_unbounded);

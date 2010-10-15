@@ -2360,7 +2360,7 @@ var
           Inc(locClassPropNbr);
         if SymbolTable.IsOfType(p.VarType,TPasArrayType) then
           Inc(locArrayPropsNbr);
-        if AnsiSameText(sWST_PROP_STORE_PREFIX,Copy(p.StoredAccessorName,1,3))  then
+        if AnsiSameText(sWST_PROP_STORE_PREFIX,Copy(p.StoredAccessorName,1,Length(sWST_PROP_STORE_PREFIX)))  then
           Inc(locOptionalPropsNbr);
       end;
     end;
@@ -2464,7 +2464,7 @@ var
         IncIndent();
           for k := 0 to Pred(locPropCount) do begin
             p := TPasProperty(locPropList[k]);
-            if AnsiSameText(sWST_PROP_STORE_PREFIX,Copy(p.StoredAccessorName,1,3)) then begin
+            if AnsiSameText(sWST_PROP_STORE_PREFIX,Copy(p.StoredAccessorName,1,Length(sWST_PROP_STORE_PREFIX))) then begin
               Indent();
               WriteLn('function %s() : Boolean;',[p.StoredAccessorName]);
             end;
@@ -2550,7 +2550,7 @@ var
     end;
     for k := 0 to Pred(locPropCount) do begin
       p := TPasProperty(locPropList[k]);
-      if AnsiSameText(sWST_PROP_STORE_PREFIX,Copy(p.StoredAccessorName,1,3)) then begin
+      if AnsiSameText(sWST_PROP_STORE_PREFIX,Copy(p.StoredAccessorName,1,Length(sWST_PROP_STORE_PREFIX))) then begin
         NewLine();
         WriteLn('function %s.%s() : Boolean;',[ASymbol.Name,p.StoredAccessorName]);
         WriteLn('begin');

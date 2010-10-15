@@ -1190,7 +1190,7 @@ begin
               end;
               if AnsiSameText(propTyp.StoredAccessorName,'False') then
                 locStrBuffer := s_prohibited
-              else if AnsiSameText(Copy(propTyp.StoredAccessorName,1,3),sWST_PROP_STORE_PREFIX) then
+              else if AnsiSameText(Copy(propTyp.StoredAccessorName,1,Length(sWST_PROP_STORE_PREFIX)),sWST_PROP_STORE_PREFIX) then
                 locStrBuffer := s_optional
               else
                 locStrBuffer := s_required;
