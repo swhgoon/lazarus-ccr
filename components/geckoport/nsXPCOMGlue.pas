@@ -36,6 +36,12 @@
  * ***** END LICENSE BLOCK ***** *)
 unit nsXPCOMGlue;
 
+{$MACRO on}
+
+{$IFNDEF FPC_HAS_CONSTREF}
+  {$DEFINE constref:=const}
+{$ENDIF}
+
 interface
 
 uses

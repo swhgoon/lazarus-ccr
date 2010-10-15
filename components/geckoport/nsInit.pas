@@ -42,6 +42,10 @@ unit nsInit;
   {$DEFINE extdecl:=cdecl}
 {$ENDIF}
 
+{$IFNDEF FPC_HAS_CONSTREF}
+  {$DEFINE constref:=const}
+{$ENDIF}
+
 interface
 
 uses

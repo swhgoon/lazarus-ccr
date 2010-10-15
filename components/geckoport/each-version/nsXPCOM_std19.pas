@@ -8,6 +8,10 @@ unit nsXPCOM_std19;
   {$DEFINE extdecl:=cdecl}
 {$ENDIF}
 
+{$IFNDEF FPC_HAS_CONSTREF}
+  {$DEFINE constref:=const}
+{$ENDIF}
+
 interface
 
 uses

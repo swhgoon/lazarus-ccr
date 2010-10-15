@@ -42,6 +42,10 @@ unit GeckoChromeWindow;
   {$DEFINE extdecl:=cdecl}
 {$ENDIF}
 
+{$IFNDEF FPC_HAS_CONSTREF}
+  {$DEFINE constref:=const}
+{$ENDIF}
+
 {$IFDEF LCLCocoa}
   {$MODESWITCH ObjectiveC1}
 {$ENDIF}
