@@ -460,6 +460,7 @@ begin
             AddClassDef(Result,'TArrayOfFloatCurrencyRemotable','TBaseSimpleTypeArrayRemotable');
 
     AddAlias('token','string',Result);
+    AddAlias('language','string',Result); 
     AddAlias('anyURI','string',Result);
     AddAlias('ID','string',Result);
     //AddAlias('float','Single',Result);

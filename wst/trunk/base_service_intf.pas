@@ -41,6 +41,7 @@ type
   { standart data types defines }
   anyURI = type string;
   token = type string;
+  language = type string;   
   nonNegativeInteger = type LongWord;
   positiveInteger = type nonNegativeInteger;
   float = Single;
@@ -1778,7 +1779,8 @@ begin
   r.Register(sXSD_NS,TypeInfo(anyURI),'anyURI').AddPascalSynonym('anyURI');
   r.Register(sXSD_NS,TypeInfo(anyType_Type),'anyType').AddPascalSynonym('anyType_Type');
   r.Register(sXSD_NS,TypeInfo(schema_Type),'schema').AddPascalSynonym('schema_Type');
-  r.Register(sXSD_NS,TypeInfo(token),'token').AddPascalSynonym('token');
+  r.Register(sXSD_NS,TypeInfo(token),'token').AddPascalSynonym('token');    
+  r.Register(sXSD_NS,TypeInfo(language),'language').AddPascalSynonym('language');               
 
   r.Register(sXSD_NS,TypeInfo(boolean),'boolean').AddPascalSynonym('boolean');
 
