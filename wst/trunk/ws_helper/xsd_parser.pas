@@ -168,7 +168,7 @@ type
   end;
 
 implementation
-uses ws_parser_imp, dom_cursors, parserutils, xsd_consts
+uses ws_parser_imp, dom_cursors, parserutils, xsd_consts, wst_consts
 {$IFDEF FPC}
      ,wst_fpc_xml
 {$ENDIF}
@@ -192,13 +192,11 @@ constructor TCustomXsdSchemaParser.Create(
 );
 begin
   if ( ADoc = nil ) then
-    raise EXsdParserAssertException.Create('Invalid DOM document.');
+    raise EXsdParserAssertException.Create(SERR_InvalidDomDocument);
   if ( ASchemaNode = nil ) then
-    raise EXsdParserAssertException.Create('Invalid schema node.');
+    raise EXsdParserAssertException.Create(SERR_InvalidSchemaNode);
   if ( ASymbols = nil ) then
-    raise EXsdParserAssertException.Create('Invalid Symbol table.');
-  if ( ASchemaNode = nil ) then
-    raise EXsdParserAssertException.Create('Invalid schema node.');
+    raise EXsdParserAssertException.Create(SERR_InvalidSymbolTable);
 
   FDoc := ADoc;
   FParentContext := Pointer(AParentContext);
@@ -493,7 +491,7 @@ var
     else
       typNd := FindNamedNode(crsSchemaChild,localTypeName);
     if not Assigned(typNd) then
-      raise EXsdTypeNotFoundException.CreateFmt('Type definition not found 1 : "%s"',[AName]);
+      raise EXsdTypeNotFoundException.CreateFmt(SERR_TypeDefinitionNotFound,['1',AName]);
     if AnsiSameText(ExtractNameFromQName(typNd.NodeName),s_element) then begin
       crs := CreateCursorOn(CreateAttributesCursor(typNd,cetRttiNode),ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_type)]),TDOMNodeRttiExposer));
       crs.Reset();
@@ -514,12 +512,12 @@ var
           oldTypeNode := typNd;
           typNd := FindNamedNode(crsSchemaChild,ExtractNameFromQName(nd.NodeValue));
           if not Assigned(typNd) then
-            raise EXsdTypeNotFoundException.CreateFmt('Type definition not found 2 : "%s"',[AName]);
+            raise EXsdTypeNotFoundException.CreateFmt(SERR_TypeDefinitionNotFound,['2',AName]);
           embededType := False;
           if ( typNd = oldTypeNode ) then begin
             typNd := FindNamedNode(crsSchemaChild,ExtractNameFromQName(nd.NodeValue),2);
             if not Assigned(typNd) then
-              raise EXsdTypeNotFoundException.CreateFmt('Type definition not found 2.1 : "%s"',[AName]);
+              raise EXsdTypeNotFoundException.CreateFmt(SERR_TypeDefinitionNotFound,['2.1',AName]);
           end;
         end;
       end else begin
@@ -529,7 +527,7 @@ var
         crs := CreateCursorOn(CreateChildrenCursor(typNd,cetRttiNode),ParseFilter(locStrFilter,TDOMNodeRttiExposer));
         crs.Reset();
         if not crs.MoveNext() then begin
-          raise EXsdTypeNotFoundException.CreateFmt('Type definition not found 3 : "%s"',[AName]);
+          raise EXsdTypeNotFoundException.CreateFmt(SERR_TypeDefinitionNotFound,['3',AName]);
         end;
         typNd := (crs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
         typName := ExtractNameFromQName(AName);
@@ -604,7 +602,7 @@ begin
   if not FImportParsed then
     ParseImportDocuments();
   sct := nil;
-  DoOnMessage(mtInfo, Format('Parsing "%s" ...',[AName]));
+  DoOnMessage(mtInfo, Format(SERR_Parsing,[AName]));
   try
     embededType := False;
     aliasType := nil;
@@ -613,7 +611,7 @@ begin
       typeModule := FModule;
     end else begin
       if not FindNameSpace(shortNameSpace,longNameSpace) then
-        raise EXsdParserAssertException.CreateFmt('Unable to resolve namespace, short name = "%s".',[shortNameSpace]);
+        raise EXsdParserAssertException.CreateFmt(SERR_UnableToResolveNamespace,[shortNameSpace]);
       typeModule := SymbolTable.FindModule(longNameSpace);
     end;
     if ( typeModule = nil ) then
@@ -648,7 +646,7 @@ begin
             SymbolTable.RegisterExternalAlias(Result,SymbolTable.GetExternalName(frwType));
           end;
         end else begin
-          raise EXsdTypeNotFoundException.CreateFmt('Type node found but unable to parse it : "%s"',[AName]);
+          raise EXsdTypeNotFoundException.CreateFmt(SERR_TypeNodeFoundButUnableToParseIt,[AName]);
         end;
       end else begin
         Result := CreateTypeAlias(aliasType);
@@ -777,10 +775,10 @@ var
   ls : TStrings;
 begin
   if ( FSchemaNode.Attributes = nil ) or ( GetNodeListCount(FSchemaNode.Attributes) = 0 ) then
-    raise EXsdParserAssertException.CreateFmt('The Schema node must have at least the "%s" attribute.',[s_targetNamespace]);
+    raise EXsdParserAssertException.CreateFmt(SERR_SchemaNodeRequiredAttribute,[s_targetNamespace]);
   nd := FSchemaNode.Attributes.GetNamedItem(s_targetNamespace);
   if ( nd = nil ) then
-    raise EXsdParserAssertException.CreateFmt('The Schema node must have at least the "%s" attribute.',[s_targetNamespace]);
+    raise EXsdParserAssertException.CreateFmt(SERR_SchemaNodeRequiredAttribute,[s_targetNamespace]);
   FTargetNameSpace := nd.NodeValue;
   if IsStrEmpty(FModuleName) then
     FModuleName := ExtractIdentifier(FTargetNameSpace);
@@ -795,10 +793,10 @@ begin
   prntCtx := GetParentContext();
   if ( FXSShortNames = nil ) then begin
     if ( prntCtx = nil ) then
-      raise EXsdParserAssertException.CreateFmt('Invalid Schema document, namespace not found :'#13'%s.',[s_xs]);
+      raise EXsdParserAssertException.CreateFmt(SERR_InvalidSchemaDoc_NamespaceNotFound,[s_xs]);
     FXSShortNames := prntCtx.FindShortNamesForNameSpace(s_xs);
     if ( FXSShortNames = nil ) then
-      raise EXsdParserAssertException.CreateFmt('Invalid Schema document, namespace not found ( short names ) :'#13'%s.',[s_xs]);
+      raise EXsdParserAssertException.CreateFmt(SERR_InvalidSchemaDoc_NamespaceNotFoundShort,[s_xs]);
   end;
 
   if Assigned(prntCtx) then begin

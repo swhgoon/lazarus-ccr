@@ -46,6 +46,7 @@ resourcestring
   SERR_InvalidCollectionLength     = 'Invalid collection length : %d.';
   SERR_InvalidComplexSimpleTypeDef_NoRestOrExt = 'Invalid "complexeType.simpleType" definition : restriction/extension not found.';
   SERR_InvalidDataTypeInContext    = 'Invalid data type in this context : "%s".';
+  SERR_InvalidDomDocument          = 'Invalid DOM document.';
   SERR_InvalidElementDef_MissingNameOrRef = 'Invalid <element> definition : missing "name" or "ref" attribute.';
   SERR_InvalidElementDef_EmptyName = 'Invalid <element> definition : empty "name".';
   SERR_InvalidElementDef_EmptyType = 'Invalid <element> definition : empty "type".';
@@ -62,6 +63,10 @@ resourcestring
   SERR_InvalidParameterProc        = 'Invalid parameter : "%s"; Procedure = "%s".';
   SERR_InvalidParameters           = 'Invalid parameters.';
   SERR_InvalidPoolParametersArgs   = 'Invalid pool arguments Min = %d; Max = %d .';
+  SERR_InvalidSchemaDoc_NamespaceNotFound = 'Invalid Schema document, namespace not found : %s.';
+  SERR_InvalidSchemaDoc_NamespaceNotFoundShort = 'Invalid Schema document, namespace not found ( short names ) : %s.';
+  SERR_InvalidSchemaNode           = 'Invalid schema node.';
+  SERR_InvalidSymbolTable          = 'Invalid Symbol table.';
   SERR_InvalidTypeDef_AttributeNotFound = 'Invalid type definition, attributes not found : "%s".';
   SERR_InvalidTypeDef_BaseAttributeNotFound = 'Invalid extention/restriction of type "%s" : "base" attribute not found.';
   SERR_InvalidTypeDef_NamedAttributeNotFound = 'Invalid type definition, unable to find the "%s" attribute : "%s".';
@@ -76,14 +81,19 @@ resourcestring
   SERRE_ObjectCreationTimeOut      = 'Unable to create the object : Timeout expired.';
   SERR_OperationNotAllowedOnActivePool = 'Operation not allowed on an active pool.';
   SERR_ParamaterNotFound           = 'Parameter non found : "%s".';
+  SERR_Parsing                     = 'Parsing "%s" ...';
   SERR_RecordExtendedRttiNotFound  = 'Record extended RTTI informations not found in type registry : "%s".';
   SERR_RootObjectCannotBeNIL       = 'The root object cannot be NIL.';
+  SERR_SchemaNodeRequiredAttribute = 'The Schema node must have at least the "%s" attribute.';
   SERR_SerializerInitializationException = 'Unable to initialize the serializer of that type : "%s".';
   SERR_ServiceNotFound                   = 'Service not found : "%s".';
   SERR_ScopeNotFound                     = 'Scope not found : "%s".';
+  SERR_TypeDefinitionNotFound            = 'Type definition not found %s : "%s"';
+  SERR_TypeNodeFoundButUnableToParseIt   = 'Type node found but unable to parse it : "%s"';
   SERR_TypeNotRegistered                 = 'Type not registered : "%s".';
   SERR_TypeStyleNotSupported             = 'This type style is not supported : "%s".';
   SERR_UnableToFindNameTagInNode         = 'Unable to find the <name> tag in the type/element node attributes.';
+  SERR_UnableToResolveNamespace          = 'Unable to resolve namespace, short name = "%s".';
   SERR_UnexpectedEndOfData               = 'Unexpected end of data.';
   SERR_UnknownProperty                   = 'Unknown property : "%s".';
   SERR_UnsupportedOperation        = 'Unsupported operation : "%s".';
