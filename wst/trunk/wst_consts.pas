@@ -20,10 +20,13 @@ const
   sWST_SIGNATURE = 'WST_METADATA_0.6';
 
 resourcestring
+  SERR_BaseTypeNotSpecfifiedForSimpleType = 'Base type is not specified for the simple type, parsing : "%s".';
   SERR_CannotMakeInternalSymbolName  ='Unable to make an internal symbol Name from "%s".';
   SERR_CannotResolveNamespace        = 'Unable to resolve this namespace : "%s".';
   SERR_DataFilterNotFound            = 'Data Filter not found : "%s".';
   SERR_DuplicateBindingName          = 'Duplicated binding : "%s".';
+  SERR_ExpectedButFound              = '%s expected but %s found.';
+  SERR_ExpectedTypeDefinition        = '"%s" was expected to be a type definition.';
   SERR_ExpectingRemotableObjectClass = 'Expecting remotable object class but found "%s".';
   SERR_FailedTransportRequest        = '%s Request to %s failed.';
   SERR_HeaderNotUnderstood         = 'Header "%s" not Understood.';
@@ -32,11 +35,26 @@ resourcestring
   SERR_IncompleteParamTypeRegistration  = 'Incomplete type registration for the type of this parameter : "%s".';
   SERR_InnerScopeMustBeSimpleType       = 'Inner Scope value must be a "simple type" value.';
   SERR_InvalidArrayBounds          = 'Invalid array bounds.';
+  SERR_InvalidArrayItemType        = 'Invalid array type definition, invalid item type definition : "%s".';
   SERR_InvalidArrayLength          = 'Invalid array length : %d.';
+  SERR_InvalidAttributeDef_EmptyName = 'Invalid Attribute definition : empty "name".';
+  SERR_InvalidAttributeDef_EmptyType = 'Invalid Attribute definition : empty "type".';
+  SERR_InvalidAttributeDef_EmptyUse = 'Invalid Attribute definition : empty "use".';
+  SERR_InvalidAttributeDef_InvalidUse = 'Invalid Attribute definition : invalid "use" value "%s".';
+  SERR_InvalidAttributeDef_MissingName = 'Invalid Attribute definition : missing "name" attribute.';
+  SERR_InvalidAttributeDef_MissingType = 'Invalid Attribute definition : missing "type" attribute.';     
   SERR_InvalidCollectionLength     = 'Invalid collection length : %d.';
+  SERR_InvalidComplexSimpleTypeDef_NoRestOrExt = 'Invalid "complexeType.simpleType" definition : restriction/extension not found.';
   SERR_InvalidDataTypeInContext    = 'Invalid data type in this context : "%s".';
+  SERR_InvalidElementDef_MissingNameOrRef = 'Invalid <element> definition : missing "name" or "ref" attribute.';
+  SERR_InvalidElementDef_EmptyName = 'Invalid <element> definition : empty "name".';
+  SERR_InvalidElementDef_EmptyType = 'Invalid <element> definition : empty "type".';
+  SERR_InvalidElementDef_Type      = 'Invalid <element> definition : unable to determine the type. Type name : "%s"; Element name :"%s".';
   SERR_InvalidEncodedData          = 'Invalid encoded data.';
+  SERR_InvalidEnumItemNode_NoValueAttribute = 'Invalid "enum" item node : no value attribute, type = "%s".';
   SERR_InvalidHourOffetValue       = '"%d" is not a valid hour offset value.';
+  SERR_InvalidMaxOccursValue       = 'Invalid "maxOccurs" value : "%s.%s".';
+  SERR_InvalidMinOccursValue       = 'Invalid "minOccurs" value : "%s.%s".';
   SERR_InvalidMinuteOffetValue     = '"%d" is not a valid minute offset value.';
   SERR_InvalidEmbeddedScopeOperation    = 'Invalid opération on scope, their are no embedded scope.';
   SERR_InvalidParameter            = 'Invalid parameter : "%s".';
@@ -44,6 +62,11 @@ resourcestring
   SERR_InvalidParameterProc        = 'Invalid parameter : "%s"; Procedure = "%s".';
   SERR_InvalidParameters           = 'Invalid parameters.';
   SERR_InvalidPoolParametersArgs   = 'Invalid pool arguments Min = %d; Max = %d .';
+  SERR_InvalidTypeDef_AttributeNotFound = 'Invalid type definition, attributes not found : "%s".';
+  SERR_InvalidTypeDef_BaseAttributeNotFound = 'Invalid extention/restriction of type "%s" : "base" attribute not found.';
+  SERR_InvalidTypeDef_NamedAttributeNotFound = 'Invalid type definition, unable to find the "%s" attribute : "%s".';
+  SERR_InvalidTypeDef_NoChild      = 'Invalid type definition, this element must have children.';
+  SERR_InvalidTypeName             = 'Invalid type/element name( the name is empty ).';
   SERR_IsNotAFieldOf               = '"%s" is not a field of "%s".';
   SERR_NodeNotFoundByID            = 'Node not found with this ID in the document : "%s".';
   SERR_NoHandlerForThatVerb        = 'No handler for that verb : "%s".';
@@ -59,6 +82,8 @@ resourcestring
   SERR_ServiceNotFound                   = 'Service not found : "%s".';
   SERR_ScopeNotFound                     = 'Scope not found : "%s".';
   SERR_TypeNotRegistered                 = 'Type not registered : "%s".';
+  SERR_TypeStyleNotSupported             = 'This type style is not supported : "%s".';
+  SERR_UnableToFindNameTagInNode         = 'Unable to find the <name> tag in the type/element node attributes.';
   SERR_UnexpectedEndOfData               = 'Unexpected end of data.';
   SERR_UnknownProperty                   = 'Unknown property : "%s".';
   SERR_UnsupportedOperation        = 'Unsupported operation : "%s".';

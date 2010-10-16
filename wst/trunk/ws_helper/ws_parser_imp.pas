@@ -217,10 +217,10 @@ class function TAbstractTypeParser.ExtractEmbeddedTypeFromElement(
               );
     locCrs.Reset();
     if not locCrs.MoveNext() then
-      raise EXsdParserException.Create('Unable to find the <name> tag in the type/element node attributes.');
+      raise EXsdParserException.Create(SERR_UnableToFindNameTagInNode);
     Result := (locCrs.GetCurrent() as TDOMNodeRttiExposer).NodeValue;
     if IsStrEmpty(Result) then begin
-      raise EXsdParserException.Create('Invalid type/element name( the name is empty ).');
+      raise EXsdParserException.Create(SERR_InvalidTypeName);
     end;
   end;
   
@@ -256,7 +256,7 @@ var
   typNode : TDOMNode;
 begin
   if not AEltNode.HasChildNodes() then begin;
-    raise EXsdParserException.Create('Invalid type definition, this element must have children.');
+    raise EXsdParserException.Create(SERR_InvalidTypeDef_NoChild);
   end;
   typName := ATypeName;
   if IsStrEmpty(typName) then begin
@@ -264,7 +264,7 @@ begin
   end;
   prsClss := FindParser(typNode);
   if ( prsClss = nil ) then begin;
-    raise EXsdInvalidTypeDefinitionException.CreateFmt('This type style is not supported : "%s".',[typName]);
+    raise EXsdInvalidTypeDefinitionException.CreateFmt(SERR_TypeStyleNotSupported,[typName]);
   end;
   prs := prsClss.Create(AOwner,typNode,typName,True);
   try
@@ -599,7 +599,7 @@ var
   nd : TDOMNode;
 begin
   if not FDerivationNode.HasChildNodes then begin
-    raise EXsdInvalidTypeDefinitionException.CreateFmt('Invalid type definition, attributes not found : "%s".',[FTypeName]);
+    raise EXsdInvalidTypeDefinitionException.CreateFmt(SERR_InvalidTypeDef_AttributeNotFound,[FTypeName]);
   end;
   crs := CreateCursorOn(
            CreateChildrenCursor(FDerivationNode,cetRttiNode),
@@ -632,7 +632,7 @@ begin
     FreeAndNil(ls);
   end;
   if not ok then begin
-    raise EXsdInvalidTypeDefinitionException.CreateFmt('Invalid type definition, unable to find the "%s" attribute : "%s".',[s_arrayType,FTypeName]);
+    raise EXsdInvalidTypeDefinitionException.CreateFmt(SERR_InvalidTypeDef_NamedAttributeNotFound,[s_arrayType,FTypeName]);
   end;
   s := ExtractNameFromQName((locCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject.NodeValue);
   i := Pos('[',s);
@@ -647,7 +647,7 @@ begin
     Self.Module.InterfaceSection.Types.Add(locSym);
   end;
   if not locSym.InheritsFrom(TPasType) then
-    raise EXsdInvalidTypeDefinitionException.CreateFmt('Invalid array type definition, invalid item type definition : "%s".',[FTypeName]);
+    raise EXsdInvalidTypeDefinitionException.CreateFmt(SERR_InvalidArrayItemType,[FTypeName]);
   Result := FSymbols.CreateArray(AInternalName,locSym as TPasType,s_item,s_item,asScoped);
   if AHasInternalName then
     FSymbols.RegisterExternalAlias(Result,ATypeName);
@@ -684,11 +684,11 @@ begin
               );
     locCrs.Reset();
     if not locCrs.MoveNext() then
-      raise EXsdParserException.Create('Unable to find the <name> tag in the type node attributes.');
+      raise EXsdParserException.Create(SERR_UnableToFindNameTagInNode);
     FTypeName := (locCrs.GetCurrent() as TDOMNodeRttiExposer).NodeValue;
   end;
   if IsStrEmpty(FTypeName) then
-    raise EXsdParserException.Create('Invalid type name( the name is empty ).');
+    raise EXsdParserException.Create(SERR_InvalidTypeName);
 end;
 
 procedure TComplexTypeParser.ExtractContentType();
@@ -764,7 +764,7 @@ begin
     );
     locCrs.Reset();
     if not locCrs.MoveNext() then
-      raise EXsdParserException.CreateFmt('Invalid extention/restriction of type "%s" : "base" attribute not found.',[FTypeName]);
+      raise EXsdParserException.CreateFmt(SERR_InvalidTypeDef_BaseAttributeNotFound,[FTypeName]);
     ExplodeQName((locCrs.GetCurrent() as TDOMNodeRttiExposer).NodeValue,locBaseTypeLocalName,locBaseTypeLocalSpace);
     locSymbol := FindElementNS(locBaseTypeLocalSpace,locBaseTypeLocalName,nvtShortSynonym);
     if Assigned(locSymbol) then begin
@@ -781,7 +781,7 @@ begin
             FBaseType := TPasNativeClassType(FBaseType).ExtendableType;
         end;
       end else begin
-        raise EXsdParserException.CreateFmt('"%s" was expected to be a type definition.',[locSymbol.Name]);
+        raise EXsdParserException.CreateFmt(SERR_ExpectedTypeDefinition,[locSymbol.Name]);
       end;
     end else begin
       if ( FDerivationMode = dmRestriction ) and
@@ -845,7 +845,7 @@ var
       locPartCursor := CreateCursorOn(locAttCursor.Clone() as IObjectCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_ref)]),TDOMNodeRttiExposer));
       locPartCursor.Reset();
       if not locPartCursor.MoveNext() then begin
-        raise EXsdParserException.Create('Invalid <element> definition : missing "name" or "ref" attribute.');
+        raise EXsdParserException.Create(SERR_InvalidElementDef_MissingNameOrRef);
       end;
       locIsRefElement := True;
     end;
@@ -854,7 +854,7 @@ var
       locName := ExtractNameFromQName(locName);
     end;
     if IsStrEmpty(locName) then
-      raise EXsdParserException.Create('Invalid <element> definition : empty "name".');
+      raise EXsdParserException.Create(SERR_InvalidElementDef_EmptyName);
     if locIsRefElement then begin
       locTypeName := locName;
     end else begin
@@ -867,7 +867,7 @@ var
         locTypeName := Format('%s_%s_Type',[FTypeName,locName]);
         locType := TAbstractTypeParser.ExtractEmbeddedTypeFromElement(Context,AElement,FSymbols,locTypeName);
         if ( locType = nil ) then begin
-          raise EXsdInvalidElementDefinitionException.CreateFmt('Invalid <element> definition : unable to determine the type.'#13'Type name : "%s"; Element name :"%s".',[FTypeName,locName]);
+          raise EXsdInvalidElementDefinitionException.CreateFmt(SERR_InvalidElementDef_Type,[FTypeName,locName]);
         end;
         Self.Module.InterfaceSection.Declarations.Add(locType);
         Self.Module.InterfaceSection.Types.Add(locType);
@@ -877,7 +877,7 @@ var
       end;
     end;
     if IsStrEmpty(locTypeName) then
-      raise EXsdInvalidElementDefinitionException.Create('Invalid <element> definition : empty "type".');
+      raise EXsdInvalidElementDefinitionException.Create(SERR_InvalidElementDef_EmptyType);
     locType := FindElementWithHint(locTypeName,locTypeHint,ssGlobal);
     if Assigned(locType) then begin
       if locIsRefElement then begin
@@ -927,13 +927,13 @@ var
       if locPartCursor.MoveNext() then begin
         locStrBuffer := ExtractNameFromQName((locPartCursor.GetCurrent() as TDOMNodeRttiExposer).NodeValue);
         if IsStrEmpty(locStrBuffer) then
-          raise EXsdInvalidDefinitionException.CreateFmt('Invalid <%s> definition : empty "use".',[s_attribute]);
+          raise EXsdInvalidDefinitionException.Create(SERR_InvalidAttributeDef_EmptyUse);
         case AnsiIndexText(locStrBuffer,[s_required,s_optional,s_prohibited]) of
           0 : locMinOccur := 1;
           1 : locMinOccur := 0;
           2 : locMinOccur := -1;
           else
-            raise EXsdInvalidDefinitionException.CreateFmt('Invalid <%s> definition : invalid "use" value "%s".',[s_attribute,locStrBuffer]);
+            raise EXsdInvalidDefinitionException.CreateFmt(SERR_InvalidAttributeDef_InvalidUse,[locStrBuffer]);
         end;
       end else begin
         locMinOccur := 0;
@@ -944,9 +944,9 @@ var
       locPartCursor.Reset();
       if locPartCursor.MoveNext() then begin
         if not TryStrToInt((locPartCursor.GetCurrent() as TDOMNodeRttiExposer).NodeValue,locMinOccur) then
-          raise EXsdParserException.CreateFmt('Invalid "minOccurs" value : "%s.%s".',[FTypeName,locName]);
+          raise EXsdParserException.CreateFmt(SERR_InvalidMinOccursValue,[FTypeName,locName]);
         if ( locMinOccur < 0 ) then
-          raise EXsdParserException.CreateFmt('Invalid "minOccurs" value : "%s.%s".',[FTypeName,locName]);
+          raise EXsdParserException.CreateFmt(SERR_InvalidMinOccursValue,[FTypeName,locName]);
       end;
     end;
     locProp.ReadAccessorName := 'F' + locProp.Name;
@@ -969,9 +969,9 @@ var
         locMaxOccurUnbounded := True;
       end else begin
         if not TryStrToInt(locStrBuffer,locMaxOccur) then
-          raise EXsdParserException.CreateFmt('Invalid "maxOccurs" value : "%s.%s".',[FTypeName,locName]);
+          raise EXsdParserException.CreateFmt(SERR_InvalidMaxOccursValue,[FTypeName,locName]);
         if ( locMinOccur < 0 ) then
-          raise EXsdParserException.CreateFmt('Invalid "maxOccurs" value : "%s.%s".',[FTypeName,locName]);
+          raise EXsdParserException.CreateFmt(SERR_InvalidMaxOccursValue,[FTypeName,locName]);
       end;
     end;
     isArrayDef := locMaxOccurUnbounded or ( locMaxOccur > 1 );
@@ -1267,18 +1267,18 @@ var
     locPartCursor := CreateCursorOn(locAttCursor.Clone() as IObjectCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_name)]),TDOMNodeRttiExposer));
     locPartCursor.Reset();
     if not locPartCursor.MoveNext() then
-      raise EXsdInvalidDefinitionException.CreateFmt('Invalid <%s> definition : missing "name" attribute.',[s_attribute]);
+      raise EXsdInvalidDefinitionException.Create(SERR_InvalidAttributeDef_MissingName);
     locName := (locPartCursor.GetCurrent() as TDOMNodeRttiExposer).NodeValue;
     if IsStrEmpty(locName) then
-      raise EXsdInvalidDefinitionException.CreateFmt('Invalid <%s> definition : empty "name".',[s_attribute]);
+      raise EXsdInvalidDefinitionException.Create(SERR_InvalidAttributeDef_EmptyName);
 
     locPartCursor := CreateCursorOn(locAttCursor.Clone() as IObjectCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_type)]),TDOMNodeRttiExposer));
     locPartCursor.Reset();
     if not locPartCursor.MoveNext() then
-      raise EXsdInvalidDefinitionException.CreateFmt('Invalid <%s> definition : missing "type" attribute.',[s_attribute]);
+      raise EXsdInvalidDefinitionException.Create(SERR_InvalidAttributeDef_MissingType);
     locTypeName := ExtractNameFromQName((locPartCursor.GetCurrent() as TDOMNodeRttiExposer).NodeValue);
     if IsStrEmpty(locTypeName) then
-      raise EXsdInvalidDefinitionException.CreateFmt('Invalid <%s> definition : empty "type".',[s_attribute]);
+      raise EXsdInvalidDefinitionException.Create(SERR_InvalidAttributeDef_EmptyType);
     locType := FSymbols.FindElement(locTypeName) as TPasType;
     if not Assigned(locType) then begin
       locType := TPasUnresolvedTypeRef(FSymbols.CreateElement(TPasUnresolvedTypeRef,locTypeName,Self.Module.InterfaceSection,visPublic,'',0));
@@ -1291,10 +1291,10 @@ var
     if locPartCursor.MoveNext() then begin
       locStoreOpt := ExtractNameFromQName((locPartCursor.GetCurrent() as TDOMNodeRttiExposer).NodeValue);
       if IsStrEmpty(locStoreOpt) then
-        raise EXsdInvalidDefinitionException.CreateFmt('Invalid <%s> definition : empty "use".',[s_attribute]);
+        raise EXsdInvalidDefinitionException.Create(SERR_InvalidAttributeDef_EmptyUse);
       locStoreOptIdx := AnsiIndexText(locStoreOpt,[s_required,s_optional,s_prohibited]);
       if ( locStoreOptIdx < 0 ) then
-        raise EXsdInvalidDefinitionException.CreateFmt('Invalid <%s> definition : invalid "use" value "%s".',[s_attribute,locStoreOpt]);
+        raise EXsdInvalidDefinitionException.CreateFmt(SERR_InvalidAttributeDef_InvalidUse,[locStoreOpt]);
     end else begin
       locStoreOptIdx := 1{optional by default!}; //0;
     end;
@@ -1325,7 +1325,7 @@ var
 begin
   ExtractBaseType();
   if not ( FDerivationMode in [dmExtension, dmRestriction] ) then
-    raise EXsdInvalidTypeDefinitionException.Create('Invalid "complexeType.simpleType" definition : restriction/extension not found.');
+    raise EXsdInvalidTypeDefinitionException.Create(SERR_InvalidComplexSimpleTypeDef_NoRestOrExt);
 
   internalName := ATypeName;
   hasInternalName := IsReservedKeyWord(internalName) or
@@ -1396,7 +1396,7 @@ var
   locContinue : Boolean;
 begin
   if not AnsiSameText(ExtractNameFromQName(FTypeNode.NodeName),s_complexType) then
-    raise EXsdParserAssertException.CreateFmt('%s expected but %s found.',[s_complexType,ExtractNameFromQName(FTypeNode.NodeName)]);
+    raise EXsdParserAssertException.CreateFmt(SERR_ExpectedButFound,[s_complexType,ExtractNameFromQName(FTypeNode.NodeName)]);
   Result := nil;
   CreateNodeCursors();
   ExtractTypeName();
@@ -1404,7 +1404,7 @@ begin
   locSym := FSymbols.FindElement(FTypeName);
   if Assigned(locSym) then begin
     if not locSym.InheritsFrom(TPasType) then
-      raise EXsdParserException.CreateFmt('Symbol found in the symbol table but is not a type definition : %s.',[FTypeName]);
+      raise EXsdParserException.CreateFmt(SERR_ExpectedTypeDefinition,[FTypeName]);
     locContinue := locSym.InheritsFrom(TPasUnresolvedTypeRef) or
                    ( IsEmbeddedType(TPasType(locSym)) <> FEmbededDef );
     if not locContinue then;
@@ -1450,11 +1450,11 @@ begin
               );
     locCrs.Reset();
     if not locCrs.MoveNext() then
-      raise EXsdParserAssertException.Create('Unable to find the <name> tag in the type node attributes.');
+      raise EXsdParserAssertException.Create(SERR_UnableToFindNameTagInNode);
     FTypeName := (locCrs.GetCurrent() as TDOMNodeRttiExposer).NodeValue;
   end;
   if IsStrEmpty(FTypeName) then
-    raise EXsdParserAssertException.Create('Invalid type name( the name is empty ).');
+    raise EXsdParserAssertException.Create(SERR_InvalidTypeName);
 end;
 
 function TSimpleTypeParser.ExtractContentType() : Boolean;
@@ -1497,12 +1497,12 @@ begin
         FIsEnum := True;
       end else begin
         if IsStrEmpty(FBaseName) then
-          raise EXsdParserAssertException.CreateFmt('Base type is not specified for the simple type, parsing : "%s".',[FTypeName]);
+          raise EXsdParserAssertException.CreateFmt(SERR_BaseTypeNotSpecfifiedForSimpleType,[FTypeName]);
         FIsEnum := False
       end;
     end else begin
       if IsStrEmpty(FBaseName) then
-        raise EXsdParserAssertException.CreateFmt('Base type is not specified for the simple type, parsing : "%s".',[FTypeName]);
+        raise EXsdParserAssertException.CreateFmt(SERR_BaseTypeNotSpecfifiedForSimpleType,[FTypeName]);
       FIsEnum := False
     end;
     Result := True;
@@ -1538,10 +1538,10 @@ var
   begin
     locCrs := CreateCursorOn(CreateAttributesCursor(AItemNode,cetRttiNode),ParseFilter(Format('%s=%s',[s_NODE_NAME,QuotedStr(s_value)]),TDOMNodeRttiExposer)) as IObjectCursor;
     if not Assigned(locCrs) then
-      raise EXsdInvalidDefinitionException.CreateFmt('Invalid "enum" item node : no value attribute, type = "%s".',[FTypeName]);
+      raise EXsdInvalidDefinitionException.CreateFmt(SERR_InvalidEnumItemNode_NoValueAttribute,[FTypeName]);
     locCrs.Reset();
     if not locCrs.MoveNext() then
-      raise EXsdInvalidDefinitionException.CreateFmt('Invalid "enum" item node : no value attribute, type = "%s".',[FTypeName]);
+      raise EXsdInvalidDefinitionException.CreateFmt(SERR_InvalidEnumItemNode_NoValueAttribute,[FTypeName]);
     tmpNode := (locCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
     locItemName := tmpNode.NodeValue;
     { (26-06-2008) empty string "" can be valid enum item!
@@ -1611,7 +1611,7 @@ var
   tmpElement : TPasElement;
 begin  // todo : implement TSimpleTypeParser.ParseOtherContent
   if IsStrEmpty(FBaseName) then
-    raise EXsdInvalidTypeDefinitionException.CreateFmt('Invalid simple type definition : base type not provided, "%s".',[FTypeName]);
+    raise EXsdInvalidTypeDefinitionException.CreateFmt(SERR_BaseTypeNotSpecfifiedForSimpleType,[FTypeName]);
   intrName := ExtractIdentifier(FTypeName);
   hasIntrnName := ( intrName <> FTypeName ) or
                   IsReservedKeyWord(intrName);
@@ -1640,7 +1640,7 @@ var
   locContinue : Boolean;
 begin
   if not AnsiSameText(ExtractNameFromQName(FTypeNode.NodeName),s_simpleType) then
-    raise EXsdParserAssertException.CreateFmt('%s expected but %s found.',[s_simpleType,ExtractNameFromQName(FTypeNode.NodeName)]);
+    raise EXsdParserAssertException.CreateFmt(SERR_ExpectedButFound,[s_simpleType,ExtractNameFromQName(FTypeNode.NodeName)]);
   Result := nil;
   CreateNodeCursors();
   ExtractTypeName();
@@ -1648,7 +1648,7 @@ begin
   locSym := FindElement(FTypeName);
   if Assigned(locSym) then begin
     if not locSym.InheritsFrom(TPasType) then
-      raise EXsdParserAssertException.CreateFmt('Symbol found in the symbol table but is not a type definition : %s.',[FTypeName]);
+      raise EXsdParserAssertException.CreateFmt(SERR_ExpectedTypeDefinition,[FTypeName]);
     locContinue := locSym.InheritsFrom(TPasUnresolvedTypeRef);
     if not locContinue then begin
       Result := locSym as TPasType;
