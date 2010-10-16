@@ -1165,6 +1165,7 @@ type
 
 function BufferedFile_Open(name: PAnsiChar; out ret: TBufferedFile): Boolean;
 begin
+  result := false;
   try
     ret.fs:=TFileStream.Create(name,fmOpenRead, fmShareDenyWrite);
     result:=true;
