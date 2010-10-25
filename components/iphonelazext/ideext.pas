@@ -46,7 +46,7 @@ type
 
     function ProjectBuilding(Sender: TObject): TModalResult;
     function ProjectOpened(Sender: TObject; AProject: TLazProject): TModalResult;
-    procedure OnProjOptionsChanged(Sender: TObject);
+    //procedure OnProjOptionsChanged(Sender: TObject; Restore: Boolean);
   public
     //isiPhoneMenu    :TIDEMenuCommand;
     constructor Create;
@@ -241,7 +241,7 @@ begin
   inherited Create;
   LazarusIDE.AddHandlerOnProjectOpened(@ProjectOpened);
   LazarusIDE.AddHandlerOnProjectBuilding(@ProjectBuilding);
-  ProjOptions.OnAfterWrite:=@OnProjOptionsChanged;
+  //ProjOptions.OnAfterWrite:=@OnProjOptionsChanged;
 
   RegisterIDEMenuCommand(itmProjectWindowSection, 'mnuiPhoneSeparator', '-', nil, nil);
 
@@ -330,11 +330,12 @@ begin
   end;
 end;
 
-procedure TiPhoneExtension.OnProjOptionsChanged(Sender: TObject);
+{
+procedure TiPhoneExtension.OnProjOptionsChanged(Sender: TObject; Restore: Boolean);
 begin
   //isiPhoneMenu.Checked:=ProjOptions.isIPhoneApp;
 end;
-
+}
 procedure TiPhoneExtension.UpdateXcode(Sender: TObject);
 var
   templates : TStringList;
