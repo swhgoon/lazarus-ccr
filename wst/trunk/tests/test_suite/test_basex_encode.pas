@@ -49,6 +49,31 @@ type
     procedure Decode_illegal_char();
     procedure Decode_empty();
   end;
+  
+  { TTest_Base32 }
+
+  TTest_Base32 = class(TWstBaseTest)
+  protected
+    procedure Check_Encode(const AIn, AExpect : string);
+    procedure Check_Decode(const AIn, AExpect : string; const AOptions : TBaseXOptions = [xoDecodeIgnoreIllegalChar]);
+  published
+    procedure Encode_empty();
+    procedure Encode_f();
+    procedure Encode_fo();
+    procedure Encode_foo();
+    procedure Encode_foob();
+    procedure Encode_fooba();
+    procedure Encode_foobar();
+
+    procedure Decode_f();
+    procedure Decode_fo();
+    procedure Decode_foo();
+    procedure Decode_foob();
+    procedure Decode_fooba();
+    procedure Decode_foobar();
+    procedure Decode_illegal_char();
+    procedure Decode_empty();
+  end;   
 
   TTest_Base16 = class(TWstBaseTest)
   protected
@@ -200,6 +225,132 @@ begin
   //Check_Encode('foobar','Zm9vYmFy');
 end;
 
+{ TTest_Base32 }
+
+procedure TTest_Base32.Check_Decode(const AIn, AExpect: string; const AOptions : TBaseXOptions);
+var
+  locRes : TByteDynArray;
+begin
+  locRes := Base32Decode(AIn,AOptions);
+  CheckEquals(StringToByteArray(AExpect),locRes);
+end;
+
+procedure TTest_Base32.Check_Encode(const AIn, AExpect: string);
+var
+  locRes : string;
+begin
+  locRes := Base32Encode(AIn);
+  CheckEquals(AExpect,locRes);
+end;
+
+procedure TTest_Base32.Decode_f();
+begin
+  Check_Decode('MY======','f');
+end;
+
+procedure TTest_Base32.Decode_fo();
+begin
+  Check_Decode('MZXQ====','fo');
+end;
+
+procedure TTest_Base32.Decode_foo();
+begin
+  Check_Decode('MZXW6===','foo');
+end;
+
+procedure TTest_Base32.Decode_foob();
+begin
+  Check_Decode('MZXW6YQ=','foob');
+end;
+
+procedure TTest_Base32.Decode_fooba();
+begin
+  Check_Decode('MZXW6YTB','fooba');
+end;
+
+procedure TTest_Base32.Decode_foobar();
+begin
+  Check_Decode('MZXW6YTBOI======','foobar');
+end;
+
+procedure TTest_Base32.Decode_illegal_char();
+var
+  ok : Boolean;
+begin
+  ok := False;
+  try
+    Check_Decode('MZX'#200'W6' + sLineBreak + 'Y'#0'TB','fooba',[]);
+  except
+    on e : EBase32Exception do
+      ok := True;
+  end;
+  CheckEquals(True,ok);
+
+  Check_Decode('MZX'#200'W6' + sLineBreak + 'Y'#0'TB','fooba',[xoDecodeIgnoreIllegalChar]);
+  Check_Decode('MZX'#200'W6' + sLineBreak + 'Y'#0'TB' + sLineBreak,'fooba',[xoDecodeIgnoreIllegalChar]);
+  Check_Decode('MZX'#200'W6' + sLineBreak + 'Y'#0'TB' + sLineBreak + sLineBreak,'fooba',[xoDecodeIgnoreIllegalChar]);
+end;
+
+procedure TTest_Base32.Decode_empty();
+var
+  ok : Boolean;
+begin
+  ok := False;
+  try
+    Check_Decode(sLineBreak,'',[]);
+  except
+    on e : EBase32Exception do
+      ok := True;
+  end;
+  CheckEquals(True,ok);
+
+  Check_Decode('','',[]);
+  Check_Decode(#0,'',[xoDecodeIgnoreIllegalChar]);
+  Check_Decode(sLineBreak,'',[xoDecodeIgnoreIllegalChar]);
+  Check_Decode(sLineBreak + sLineBreak,'',[xoDecodeIgnoreIllegalChar]);
+  Check_Decode(sLineBreak + sLineBreak + sLineBreak,'',[xoDecodeIgnoreIllegalChar]);
+end;
+
+procedure TTest_Base32.Encode_empty();
+begin
+  Check_Encode('','');
+end;
+
+procedure TTest_Base32.Encode_f();
+begin
+  Check_Encode('f','MY======');
+end;
+
+procedure TTest_Base32.Encode_fo();
+begin
+  Check_Encode('fo','MZXQ====');
+end;
+
+procedure TTest_Base32.Encode_foo();
+begin
+  Check_Encode('foo','MZXW6===');
+end;
+
+procedure TTest_Base32.Encode_foob();
+begin
+  Check_Encode('foob','MZXW6YQ=');
+end;
+
+procedure TTest_Base32.Encode_fooba();
+begin
+  Check_Encode('fooba','MZXW6YTB');
+end;
+
+procedure TTest_Base32.Encode_foobar();
+var
+  a, b : string;
+begin
+  a := 'foobar';
+  b := 'MZXW6YTBOI======';
+  Check_Encode(a,b);
+  //Check_Encode('foobar','Zm9vYmFy');
+end;
+
 { TTest_Base16 }
 
 procedure TTest_Base16.Check_Decode(const AIn, AExpect: string; const AOptions: TBaseXOptions);
@@ -301,6 +452,7 @@ end;
 
 initialization
   RegisterTest('Encoding',TTest_Base64.Suite);
+  RegisterTest('Encoding',TTest_Base32.Suite);    
   RegisterTest('Encoding',TTest_Base16.Suite);
 
 end.
