@@ -49,7 +49,7 @@ unit nsInit;
 interface
 
 uses
-  sysutils,Classes,LCLProc,FileUtil,nsXPCOM, nsConsts, nsTypes, nsGeckoStrings
+  sysutils,Classes,nsXPCOM, nsConsts, nsTypes, nsGeckoStrings
   {$IFDEF MSWINDOWS},registry{$ENDIF}
   ;
 
