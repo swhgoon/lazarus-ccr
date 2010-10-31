@@ -1381,7 +1381,6 @@ begin
   FNeedOrderButtons := false;
 
   Logger.EnterMethod(Self, 'OrderButtons');
-  Logger.
 
   FMovedTo:=0;
 
@@ -2952,7 +2951,9 @@ begin
     if (pfAdded in APage.FFlags) then exit;
     Include(APage.FFlags,pfAdding);
     APage.FFlags:=APage.FFlags+[pfAdded]-[pfAdding];
-    APage.ResizeDelayedAutoSizeChildren
+    {$IFNDEF DARWIN}
+    APage.ResizeDelayedAutoSizeChildren;
+    {$ENDIF}
   end else begin
     {$IFDEF NOTEBOOK_DEBUG}
     DebugLn(['TGradTabControl.AddRemovePageHandle REMOVE ',DbgSName(APage),' pfAdded=',pfAdded in APage.FFlags]);

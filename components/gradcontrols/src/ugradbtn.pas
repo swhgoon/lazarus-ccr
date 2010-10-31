@@ -424,9 +424,9 @@ begin
       if (bsTopLine in BorderSides) then
       begin
         Canvas.Pen.Color:=clBlack;
-        Canvas.Line(FBackgroundRect.Left,0,FBackgroundRect.Right,0);
+        Canvas.Line(FBackgroundRect.Left,0,FBackgroundRect.Right+{$IFDEF DARWIN}1{$ELSE}0{$ENDIF},0);
         Canvas.Pen.Color:=clWhite;
-        Canvas.Line(FBackgroundRect.Left,1,FBackgroundRect.Right,1);
+        Canvas.Line(FBackgroundRect.Left,1,FBackgroundRect.Right+{$IFDEF DARWIN}1{$ELSE}0{$ENDIF},1);
       end;
 
       //Left
@@ -451,9 +451,9 @@ begin
       if (bsBottomLine in BorderSides) then
       begin
         Canvas.Pen.Color:=clBlack;
-        Canvas.Line(FBackgroundRect.Left,Height-1,FBackgroundRect.Right,Height-1);
+        Canvas.Line(FBackgroundRect.Left,Height-1,FBackgroundRect.Right+{$IFDEF DARWIN}1{$ELSE}0{$ENDIF},Height-1);
         Canvas.Pen.Color:=clWhite;
-        Canvas.Line(FBackgroundRect.Left,Height-2,FBackgroundRect.Right,Height-2);
+        Canvas.Line(FBackgroundRect.Left,Height-2,FBackgroundRect.Right+{$IFDEF DARWIN}1{$ELSE}0{$ENDIF},Height-2);
       end;
 
       //TopLeft
@@ -753,7 +753,7 @@ begin
         end else begin
           TrgCanvas.Pen.Color := ColorsBetween([t1,t2], 1.0-(r / pr.Bottom));
         end;
-        TrgCanvas.Line(pr.Left,r,pr.Right,r);
+        TrgCanvas.Line(pr.Left,r,pr.Right{$IFDEF DARWIN}+1{$ENDIF},r);
       end;
      end else
        for r := (pr.Bottom)-1 downto pr.Top do
@@ -765,12 +765,12 @@ begin
          end else begin
            TrgCanvas.Pen.Color := ColorsBetween([t1,t2], r / pr.Bottom);
          end;
-         TrgCanvas.Line(pr.Left,r,pr.Right,r);
+         TrgCanvas.Line(pr.Left,r,pr.Right{$IFDEF DARWIN}+1{$ENDIF},r);
        end;
    end else begin
    if FState = bsDown then
    begin
-       for r := (pr.Right)-1 downto pr.Left do
+       for r := (pr.Right)-{$IFDEF DARWIN}0{$ELSE}1{$ENDIF} downto pr.Left do
        begin
           if (r >= (pr.Right/2)) then
           begin
@@ -781,7 +781,7 @@ begin
           TrgCanvas.Line(r,pr.Top,r,pr.Bottom);
        end;
    end else
-       for r := (pr.Right)-1 downto pr.Left do
+       for r := (pr.Right)-{$IFDEF DARWIN}0{$ELSE}1{$ENDIF} downto pr.Left do
        begin
           if (r <= (pr.Right/2)) then
           begin
