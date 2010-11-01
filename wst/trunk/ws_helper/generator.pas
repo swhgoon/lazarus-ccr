@@ -2373,26 +2373,28 @@ var
     elt : TPasElement;
     ultimAnc, trueAncestor : TPasType;
   begin
+    s := '';
     if Assigned(ASymbol.AncestorType) then begin
       trueAncestor := ASymbol.AncestorType;
       if trueAncestor.InheritsFrom(TPasUnresolvedTypeRef) then begin
         elt := SymbolTable.FindElement(SymbolTable.GetExternalName(trueAncestor));
-        if elt.InheritsFrom(TPasType) then begin
+        if (elt = nil) or (not elt.InheritsFrom(TPasType)) then
+          trueAncestor := nil
+        else  
           trueAncestor := TPasType(elt);
+      end;
+      if (trueAncestor <> nil) then begin
+        ultimAnc := GetUltimeType(trueAncestor);
+        if ultimAnc.InheritsFrom(TPasNativeSimpleType) then begin
+          trueAncestor := ultimAnc;
         end;
+        if trueAncestor.InheritsFrom(TPasNativeSimpleType) and
+           Assigned(TPasNativeSimpleType(trueAncestor).ExtendableType)
+        then begin
+          trueAncestor := TPasNativeSimpleType(trueAncestor).ExtendableType;
+        end;
+        s := Format('%s',[trueAncestor.Name]);
       end;
-      ultimAnc := GetUltimeType(trueAncestor);
-      if ultimAnc.InheritsFrom(TPasNativeSimpleType) then begin
-        trueAncestor := ultimAnc;
-      end;
-      if trueAncestor.InheritsFrom(TPasNativeSimpleType) and
-         Assigned(TPasNativeSimpleType(trueAncestor).ExtendableType)
-      then begin
-        trueAncestor := TPasNativeSimpleType(trueAncestor).ExtendableType;
-      end;
-      s := Format('%s',[trueAncestor.Name]);
-    end else begin
-      s := '';//'TBaseComplexRemotable';
     end;
     if IsStrEmpty(s) then begin
       decBuffer := '';

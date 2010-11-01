@@ -1003,37 +1003,39 @@ begin
       trueParent := typItm.AncestorType;
       if trueParent.InheritsFrom(TPasUnresolvedTypeRef) then
         trueParent := AContainer.FindElement(AContainer.GetExternalName(trueParent)) as TPasType;
-      if trueParent.InheritsFrom(TPasNativeClassType) and AnsiSameText('THeaderBlock',trueParent.Name) then begin
-        DeclareNameSpaceOf_WST(ADocument);
-        DeclareAttributeOf_WST(cplxNode,s_WST_headerBlock,'true');
-      end else if trueParent.InheritsFrom(TPasNativeClassType) and AnsiSameText('TSimpleContentHeaderBlock',trueParent.Name) then begin
-        DeclareNameSpaceOf_WST(ADocument);
-        DeclareAttributeOf_WST(cplxNode,s_WST_headerBlockSimpleContent,'true');
-      end;
-
-      if trueParent.InheritsFrom(TPasAliasType) then
-        trueParent := GetUltimeType(trueParent);
-      if trueParent.InheritsFrom(TPasNativeSimpleContentClassType) or
-         trueParent.InheritsFrom(TPasNativeSimpleType)
-      then begin
-        typeCategory := tcSimpleContent;
-      end;
-      if trueParent.InheritsFrom(TPasNativeSimpleContentClassType) or
-         ( not trueParent.InheritsFrom(TPasNativeClassType) )
-      then begin
-        if ( typeCategory = tcSimpleContent ) then begin
-          derivationNode := CreateElement(Format('%s:%s',[s_xs_short,s_simpleContent]),cplxNode,ADocument);
-          derivationNode := CreateElement(Format('%s:%s',[s_xs_short,s_extension]),derivationNode,ADocument);
-        end else begin
-          derivationNode := CreateElement(Format('%s:%s',[s_xs_short,s_extension]),cplxNode,ADocument);
+      if (trueParent <> nil) then begin
+        if trueParent.InheritsFrom(TPasNativeClassType) and AnsiSameText('THeaderBlock',trueParent.Name) then begin
+          DeclareNameSpaceOf_WST(ADocument);
+          DeclareAttributeOf_WST(cplxNode,s_WST_headerBlock,'true');
+        end else if trueParent.InheritsFrom(TPasNativeClassType) and AnsiSameText('TSimpleContentHeaderBlock',trueParent.Name) then begin
+          DeclareNameSpaceOf_WST(ADocument);
+          DeclareAttributeOf_WST(cplxNode,s_WST_headerBlockSimpleContent,'true');
         end;
-        s := Trim(GetNameSpaceShortName(GetTypeNameSpace(AContainer,trueParent),ADocument,GetOwner().GetPreferedShortNames()));
-        if ( Length(s) > 0 ) then
-          s := s + ':';
-        s := s + AContainer.GetExternalName(trueParent);
-        derivationNode.SetAttribute(s_base,s);
+  
+        if trueParent.InheritsFrom(TPasAliasType) then
+          trueParent := GetUltimeType(trueParent);
+        if trueParent.InheritsFrom(TPasNativeSimpleContentClassType) or
+           trueParent.InheritsFrom(TPasNativeSimpleType)
+        then begin
+          typeCategory := tcSimpleContent;
+        end;
+        if trueParent.InheritsFrom(TPasNativeSimpleContentClassType) or
+           ( not trueParent.InheritsFrom(TPasNativeClassType) )
+        then begin
+          if ( typeCategory = tcSimpleContent ) then begin
+            derivationNode := CreateElement(Format('%s:%s',[s_xs_short,s_simpleContent]),cplxNode,ADocument);
+            derivationNode := CreateElement(Format('%s:%s',[s_xs_short,s_extension]),derivationNode,ADocument);
+          end else begin
+            derivationNode := CreateElement(Format('%s:%s',[s_xs_short,s_extension]),cplxNode,ADocument);
+          end;
+          s := Trim(GetNameSpaceShortName(GetTypeNameSpace(AContainer,trueParent),ADocument,GetOwner().GetPreferedShortNames()));
+          if ( Length(s) > 0 ) then
+            s := s + ':';
+          s := s + AContainer.GetExternalName(trueParent);
+          derivationNode.SetAttribute(s_base,s);
+        end;
+        hasSequence := False;
       end;
-      hasSequence := False;
     end;
     if ( typItm.Members.Count > 0 ) then
       hasSequence := TypeHasSequence(typItm,typeCategory);
