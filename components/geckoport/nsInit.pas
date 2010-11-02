@@ -1126,7 +1126,7 @@ begin
         ok := False;
       end else
       begin
-        NS_StrLCat(Buf, '\'+XPCOM_DLL, BufLen);
+        NS_StrLCat(Buf, DirectorySeparator+XPCOM_DLL, BufLen);
       end;
     end;
     RegCloseKey(subKey);
@@ -1247,7 +1247,7 @@ const
   XPCOM_DEPENDENT_LIBS_LIST = 'dependentlibs.list';
 begin
   NS_StrCopy(buffer, xpcomDir);
-  NS_StrLCat(buffer, '\' + XPCOM_DEPENDENT_LIBS_LIST, MAX_PATH);
+  NS_StrLCat(buffer,  DirectorySeparator + XPCOM_DEPENDENT_LIBS_LIST, MAX_PATH);
 
   if not BufferedFile_Open(buffer, f) then
   begin
@@ -1263,7 +1263,7 @@ begin
       if buffer[l-1] in [#10, #13] then
         buffer[l-1]:= #0;
       NS_StrCopy(buffer2, xpcomdir);
-      NS_StrLCat(buffer2, '\', MAX_PATH);
+      NS_StrLCat(buffer2, DirectorySeparator, MAX_PATH);
       NS_StrLCat(buffer2, buffer, MAX_PATH);
 
       cb(buffer2);
@@ -1322,7 +1322,7 @@ begin
     begin
       xpcomDir[idx] := #0;
       XPCOMGlueLoadDependentLibs(xpcomDir, ReadDependentCB);
-      NS_StrLCat(xpcomdir, '\'+xul_dll, sizeof(xpcomdir));
+      NS_StrLCat(xpcomdir, DirectorySeparator+xul_dll, sizeof(xpcomdir));
       sXULLibrary := LoadLibrary(xpcomdir);
     end;
   end;
@@ -1652,7 +1652,7 @@ begin
            (GREVersionCompare(ver, greVer)>=0) then
         begin
           dllPath := path;
-          NS_StrCat(dllPath, '\'+XPCOM_DLL);
+          NS_StrCat(dllPath, DirectorySeparator+XPCOM_DLL);
           //if IsXpcomDll(dllPath) then
 //          if CheckGeckoVersion(dllPath, reqVer) and
 //             IsXpcomDll(@dllPath) then
@@ -1733,7 +1733,7 @@ begin
   if NS_CurrentProcessDirectory(cpd, MAX_PATH) then
   begin
     dllPath := cpd;
-    NS_StrCat(dllPath, '\'+XPCOM_DLL);
+    NS_StrCat(dllPath, DirectorySeparator+XPCOM_DLL);
     if IsXpcomDll(dllPath) then
     begin
       //buf := cpd;
@@ -2187,7 +2187,7 @@ var
 begin
   Result := False;
   move(ParamStr(0)[1],buf^,min(bufLen,Length(ParamStr(0))));
-  lastSlash := NS_StrRScan(buf, '\');
+  lastSlash := NS_StrRScan(buf, DirectorySeparator);
   if Assigned(lastSlash) then
   begin
     lastSlash^ := #0;
