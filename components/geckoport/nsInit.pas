@@ -1297,6 +1297,11 @@ begin
   NewDir:=ExtractFilePath(aDependentLib);
   SetCurrentDir(NewDir);
   h := LoadLibrary(aDependentLib);
+  // On Linux (Fedora) at least, some dependencies are not in the xulrunner path,
+  // but in the normal-library location. So also try to load the dependency without
+  // the path.
+  if h = 0 then
+    h := LoadLibrary(ExtractFileName(aDependentLib));
   SetCurrentDir(OldDir);
   if h <> 0 then
     AppendDependentLib(h)
