@@ -58,7 +58,8 @@ uses
   nsGeckoStrings, CallbackInterfaces, nsTypes, nsXPCOMGlue, BrowserSupports,
   nsXPCOM_std19
   {$IFDEF LCLCarbon}, CarbonPrivate {$ENDIF}
-  {$IFDEF LCLCocoa}, CocoaPrivate {$ENDIF};
+  {$IFDEF LCLCocoa}, CocoaPrivate, CocoaAll, CocoaUtils {$ENDIF}
+  {$IFDEF LCLGtk2}, gtk2 {$ENDIF};
 
 resourcestring
   SGeckoBrowserInitError = 'Failed to initialize TGeckoBrowser.';
@@ -201,6 +202,7 @@ type
     function GetWebBrowserFind: nsIWebBrowserFind;
     function GetWebBrowserPrint: nsIWebBrowserPrint;
     function GetWebNavigation: nsIWebNavigation;
+    function GetNativeWindow : THANDLE;
     //function GetMarkupDocumentViewer: nsIMarkupDocumentViewer;
     //function GetDocShell: nsIDocShell;
     //function GetDocumentCharsetInfo: nsIDocumentCharsetInfo;
@@ -1117,12 +1119,7 @@ begin
     baseWin := FWebBrowser as nsIBaseWindow;
 
     rc := ClientRect;
-    baseWin.InitWindow({$IFDEF MSWINDOWS}Handle,{$ENDIF}
-                       {$IFDEF LCLCarbon}TCarbonWindow(Handle).Window,{$ENDIF}
-//                       {$IFDEF LCLCocoa}Pointer(TCocoaForm(Handle).MainWindowView.superview),{$ENDIF}
-                       {$IFDEF LCLCocoa}TCocoaWindow(Handle).contentView,{$ENDIF}
-                       {$IFDEF LCLGtk}Handle,{$ENDIF}  //Is Handle same as GTK Window?
-                       {$IFDEF LCLGtk2}Handle,{$ENDIF}  //Is Handle same as GTK Window?
+    baseWin.InitWindow(getNativeWindow,
                        nil,
                        rc.Left,
                        rc.Top,
@@ -1877,6 +1874,37 @@ end;
 function TCustomGeckoBrowser.GetWebNavigation: nsIWebNavigation;
 begin
   Result := FWebBrowser as nsIWebNavigation;
+end;
+
+function TCustomGeckoBrowser.GetNativeWindow: THANDLE;
+{$IFDEF LCLCocoa}
+var
+  ARect : NSRect;
+  AView : NSView;
+{$ENDIF}
+begin
+{$IFDEF MSWINDOWS}
+  Result := Handle;
+{$ENDIF}
+{$IFDEF LCLCarbon}
+  Result := TCarbonWindow(Handle).Window;
+{$ENDIF}
+{$IFDEF LCLCocoa}
+  ARect := NSView(TCocoaWindow(Handle).contentView).visibleRect;
+  ARect.size.width := ARect.size.width - 30;
+  ARect.size.height := ARect.size. height - 30;
+  ARect.origin.x := 15;
+  ARect.origin.y := 15;
+  AView := NSView.alloc.initWithFrame(ARect);
+  NSView(TCocoaWindow(Handle).contentView).addSubView(AView);
+  Result := HANDLE(AView);
+{$ENDIF}
+{$IFDEF LCLGtk}
+  Result := Handle;
+{$ENDIF}
+{$IFDEF LCLGtk2}
+  Result := PtrInt(PGtkWindow(Handle)^.default_widget);
+{$ENDIF}
 end;
 
 {
