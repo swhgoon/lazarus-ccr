@@ -336,7 +336,7 @@ procedure ZeroArray(out AArray; const ASize: SizeInt);
 implementation
 
 uses
-  {$IFDEF MSWINDOWS} Windows, {$ELSE} DynLibs, {$ENDIF} nsError, nsMemory,math;
+  {$IFDEF MSWINDOWS} Windows, {$ENDIF} DynLibs, nsError, nsMemory,math;
 
 type
 {$IFNDEF MSWINDOWS}
