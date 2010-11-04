@@ -2,7 +2,7 @@ unit GeckoInit;
 
 interface
 
-procedure GeckoComponentsStartup;
+procedure GeckoComponentsStartup(XPComPath: string = '');
 procedure GeckoComponentsShutdown;
 
 implementation
@@ -14,7 +14,7 @@ uses
 var
   sInitCount: Integer = 0;
 
-procedure GeckoComponentsStartup();
+procedure GeckoComponentsStartup(XPComPath: string = '');
 var
   rv: nsresult;
 
@@ -26,7 +26,7 @@ begin
     Exit;
   end;
 
-  rv := XRE_Startup('1.9', True, '2.0', False);
+  rv := XRE_Startup('1.9', True, '2.0', False, XPComPath);
 
   if NS_FAILED(rv) then
   begin

@@ -54,14 +54,16 @@ function XRE_UnloadGRE(): nsresult;
 function XRE_FindAndLoadGRE(const lowerVer: PAnsiChar;
                      lowerInclusive: PRBool;
                      const upperVer: PAnsiChar;
-                     upperInclusive: PRBool): nsresult;
+                     upperInclusive: PRBool;
+                     XPComPath: string = ''): nsresult;
 function XRE_GetLoadedGREPath(GREPath: PAnsiChar;
                               GREPathLen: Cardinal): nsresult;
 
 function XRE_Startup(const lowerVer: PAnsiChar;
                      lowerInclusive: PRBool;
                      const upperVer: PAnsiChar;
-                     upperInclusive: PRBool): nsresult;
+                     upperInclusive: PRBool;
+                     XPComPath: string = ''): nsresult;
 function XRE_Shutdown(): nsresult;
 
 function XRE_main(argc: integer;
@@ -265,11 +267,7 @@ begin
   end;
   lastSlash^ := #0;
   NS_StrLCopy(xulPath, xpcomPath, MAX_PATH);
-{$IFDEF MSWINDOWS}
-  NS_StrLCat(xulPath, '\' + libxul, MAX_PATH);
-{$ELSE}
-  NS_StrLCat(xulPath, '/' + libxul, MAX_PATH);
-{$ENDIF}
+  NS_StrLCat(xulPath, DirectorySeparator + libxul, MAX_PATH);
 
   Result := XPCOMGlueStartup(GREPath);
   if NS_FAILED(Result) then
@@ -318,15 +316,28 @@ end;
 function XRE_FindAndLoadGRE(const lowerVer: PAnsiChar;
                      lowerInclusive: PRBool;
                      const upperVer: PAnsiChar;
-                     upperInclusive: PRBool): nsresult;
+                     upperInclusive: PRBool;
+                     XPComPath: string = ''): nsresult;
 var
   grePath: array[0..MAX_PATH] of AnsiChar;
 begin
-  Result := XRE_FindGRE(lowerVer, lowerInclusive,
-                        upperVer, upperInclusive,
-                        grePath, MAX_PATH);
-  if NS_FAILED(Result) then
+  if XPComPath='' then
+    begin
+    Result := XRE_FindGRE(lowerVer, lowerInclusive,
+                          upperVer, upperInclusive,
+                          grePath, MAX_PATH);
+    if NS_FAILED(Result) then
+      Exit;
+    end
+  else if FileExists(XPComPath) then
+    begin
+    NS_StrLCopy(GREPath, pchar(XPComPath), length(XPComPath));
+    end
+  else
+    begin
+    result := NS_ERROR_FILE_ACCESS_DENIED;
     Exit;
+    end;
 
   Result := XRE_LoadGRE(grePath);
 end;
@@ -346,7 +357,8 @@ end;
 function XRE_Startup(const lowerVer: PAnsiChar;
                      lowerInclusive: PRBool;
                      const upperVer: PAnsiChar;
-                     upperInclusive: PRBool): nsresult;
+                     upperInclusive: PRBool;
+                     XPComPath: string = ''): nsresult;
 var
   grePath: array[0..MAX_PATH] of AnsiChar;
   xulDir: nsILocalFile;
@@ -356,7 +368,8 @@ var
   appDir: nsILocalFile;
 begin
   Result := XRE_FindAndLoadGRE(lowerVer, lowerInclusive,
-                               upperVer, upperInclusive);
+                               upperVer, upperInclusive,
+                               XPComPath);
   if NS_FAILED(Result) then
     Exit;
 
