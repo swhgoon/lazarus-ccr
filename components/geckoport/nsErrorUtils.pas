@@ -95,7 +95,9 @@ begin
     rv := es.getErrorStringBundleKey(aError, str);
     if NS_SUCCEEDED(rv) then
       Result := str;
-  end;
+  end
+  else
+    result := SGetServiceManagerError;
 end;
 
 end.
