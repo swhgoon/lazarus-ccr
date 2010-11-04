@@ -155,18 +155,18 @@ begin
     P.Sources.AddExample('SampleApps/GBrowser.lpi','examples');
     P.Sources.AddExample('SampleApps/GBrowser.dpr','examples');
 
-    P.Sources.AddDoc('Components/GeckoComponentsFP.lpk','lazaruspackage/Components');
-    P.Sources.AddDoc('Components/BrowserSupports.pas','lazaruspackage/Components');
-    P.Sources.AddDoc('Components/CallbackInterfaces.pas','lazaruspackage/Components');
-    P.Sources.AddDoc('Components/GeckoBrowser.pas','lazaruspackage/Components');
-    P.Sources.AddDoc('Components/GeckoBrowser.lrs','lazaruspackage/Components');
-    P.Sources.AddDoc('Components/GeckoChromeWindow.pas','lazaruspackage/Components');
-    P.Sources.AddDoc('Components/GeckoChromeWindow.lfm','lazaruspackage/Components');
-    P.Sources.AddDoc('Components/GeckoChromeWindow.lrs','lazaruspackage/Components');
-    P.Sources.AddDoc('Components/GeckoComponents.pas','lazaruspackage/Components');
-    P.Sources.AddDoc('Components/GeckoDirectoryService.pas','lazaruspackage/Components');
-    P.Sources.AddDoc('Components/GeckoInit.pas','lazaruspackage/Components');
-    P.Sources.AddDoc('Components/GeckoSimpleProfile.pas','lazaruspackage/Components');
+    P.Sources.AddDoc('Components/GeckoComponentsFP.lpk','lazaruspackage');
+    P.Sources.AddDoc('Components/BrowserSupports.pas','lazaruspackage');
+    P.Sources.AddDoc('Components/CallbackInterfaces.pas','lazaruspackage');
+    P.Sources.AddDoc('Components/GeckoBrowser.pas','lazaruspackage');
+    P.Sources.AddDoc('Components/GeckoBrowser.lrs','lazaruspackage');
+    P.Sources.AddDoc('Components/GeckoChromeWindow.pas','lazaruspackage');
+    P.Sources.AddDoc('Components/GeckoChromeWindow.lfm','lazaruspackage');
+    P.Sources.AddDoc('Components/GeckoChromeWindow.lrs','lazaruspackage');
+    P.Sources.AddDoc('Components/GeckoComponents.pas','lazaruspackage');
+    P.Sources.AddDoc('Components/GeckoDirectoryService.pas','lazaruspackage');
+    P.Sources.AddDoc('Components/GeckoInit.pas','lazaruspackage');
+    P.Sources.AddDoc('Components/GeckoSimpleProfile.pas','lazaruspackage');
 
     Run;
     end;
