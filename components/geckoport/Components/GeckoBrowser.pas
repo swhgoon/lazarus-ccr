@@ -179,6 +179,8 @@ type
 
     FOnSetupProperties: TNotifyEvent;
 
+    FGeckoComponentsStartupSucceeded: boolean;
+
     //misc settings
     FDisableJavaScript: Boolean;
     FInitialized: Boolean;
@@ -1012,6 +1014,7 @@ begin
   if not (csDesigning in ComponentState) then
   begin
     GeckoComponentsStartup;
+    FGeckoComponentsStartupSucceeded := true;
   end;
 end;
 
@@ -1027,7 +1030,8 @@ begin
     Chrome := nil;
     Listener := nil;
 
-    GeckoComponentsShutdown;
+    if FGeckoComponentsStartupSucceeded then
+      GeckoComponentsShutdown;
   end;
 
   inherited;
