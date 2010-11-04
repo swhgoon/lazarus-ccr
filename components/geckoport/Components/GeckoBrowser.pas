@@ -236,10 +236,7 @@ type
     // TControl
     procedure Resize; override;
 
-    // TWinControl
-    procedure CreateWnd; override;
-    procedure DestroyWnd; override;
-
+    procedure Loaded; override;
   protected
     property Chrome: TCustomGeckoBrowserChrome
         read FChrome write SetChrome;
@@ -1050,14 +1047,9 @@ begin
   baseWin.SetPositionAndSize(rc.Left, rc.Top, rc.Right - rc.Left, rc.Bottom - rc.Top, False);
 end;
 
-// TWinControl Œp³
-procedure TCustomGeckoBrowser.CreateWnd;
+procedure TCustomGeckoBrowser.Loaded;
 begin
-  {$IFDEF DEBUG}
-  OutputDebugString('TGeckoBrowser.CreateWnd');
-  {$ENDIF}
-  inherited CreateWnd;
-
+  inherited Loaded;
   if not (csDesigning in ComponentState) then
   begin
     InitWebBrowser;
@@ -1069,14 +1061,6 @@ begin
     //Set again the published properties
     SetDisableJavascript(FDisableJavaScript);
   end;
-end;
-
-procedure TCustomGeckoBrowser.DestroyWnd;
-begin
-  inherited DestroyWnd;
-  {$IFDEF DEBUG}
-  OutputDebugString('TGeckoBrowser.DestroyWnd');
-  {$ENDIF}
 end;
 
 procedure TCustomGeckoBrowser.GoBack;
