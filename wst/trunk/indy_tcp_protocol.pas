@@ -141,7 +141,6 @@ begin
     Connect();
     FConnection.IOHandler.Write(buffStream,buffStream.Size,False);
 
-    bufferLen := 0;
     bufferLen := FConnection.IOHandler.ReadLongInt(False);
     bufferLen := Reverse_32(bufferLen);
     if not HasFilter() then begin

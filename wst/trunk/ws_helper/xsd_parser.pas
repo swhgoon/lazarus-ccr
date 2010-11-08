@@ -675,7 +675,7 @@ end;
 
 procedure TCustomXsdSchemaParser.CreateImportParsers(); 
 var
-  crsSchemaChild, typTmpCrs : IObjectCursor;
+  crsSchemaChild : IObjectCursor;
   strFilter, locFileName, locNameSpace : string;
   importNode : TDOMElement;
   importDoc : TXMLDocument;

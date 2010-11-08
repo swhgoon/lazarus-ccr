@@ -634,7 +634,6 @@ begin
       AddObj(AOwner,Result);
   Except
     Freemem(Result,resLen);
-    Result := nil;
     Raise;
   End;
 end;
@@ -668,7 +667,6 @@ begin
       AddObj(AOwner,Result);
   Except
     Freemem(Result,resLen);
-    Result := nil;
     Raise;
   End;
 end;

@@ -565,8 +565,10 @@ begin
     nfoNotEqual       :  Result := ( GetOrdProp(AInstance,PropInfo) <> ComparedValue );
     nfoGreaterOrEqual :  Result := ( GetOrdProp(AInstance,PropInfo) >=  ComparedValue );
     nfoLesserOrEqual  :  Result := ( GetOrdProp(AInstance,PropInfo) <=  ComparedValue );
-    else
+    else begin
       Assert(False);
+      Result := False;
+    end;
   end;
 end;
 
@@ -802,8 +804,10 @@ begin
     sfoEqualCaseSensitive   :  Result := ( GetStrProp(AInstance,PropInfo) = ComparedValue );
     sfoEqualCaseInsensitive :  Result := AnsiSameText(GetStrProp(AInstance,PropInfo),ComparedValue);
     sfoNotEqual             :  Result := ( GetStrProp(AInstance,PropInfo) <> ComparedValue);
-    else
+    else begin
       Assert(False);
+      Result := False;
+    end;
   end;
 end;
 
@@ -828,8 +832,10 @@ begin
     sfoEqualCaseSensitive   :  Result := ( GetWideStrProp(AInstance,PropInfo) = ComparedValue );
     sfoEqualCaseInsensitive :  Result := ( LowerCase(GetWideStrProp(AInstance,PropInfo)) = LowerCase(ComparedValue) );
     sfoNotEqual             :  Result := not SameText(GetWideStrProp(AInstance,PropInfo),ComparedValue);
-    else
+    else begin
       Assert(False);
+      Result := False;
+    end;
   end;
 end;
 

@@ -219,7 +219,6 @@ Var
 Function GetWSTResourceManager(Force : Boolean = True) : TWSTResourceManager;
 
 begin
-  Result:=ResMGR;
   If (ResMgr=Nil) and Force then
     ResMGr:=TCollectionResourceManager.Create;
   Result:=ResMGR;

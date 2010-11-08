@@ -337,6 +337,7 @@ begin
     locInIndex := 0;
     locAtualLen := 0;
     locPadded := 0;
+    locInValue := 0;
     locInLen := Length(AInBuffer);
     SetLength(Result,locInLen);
     locBuffer := @(AInBuffer[1]);

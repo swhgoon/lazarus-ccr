@@ -796,7 +796,6 @@ var
   i : Integer;
   rp : PServiceRepository;
 begin
-  Result := nil;
   i := FindInnerListIndex(ARepName);
   if ( i < 0 ) then
     i := InternalLoadRepository(ARepName);
