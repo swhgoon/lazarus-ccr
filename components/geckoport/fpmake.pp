@@ -1,16 +1,25 @@
 {$mode objfpc}{$H+}
 program fpmake;
 
-uses fpmkunit;
+uses fpmkunit, sysutils;
 
 Var
   P : TPackage;
   T : TTarget;
+  InstallLazarusPackageDir : string;
+  LazarusDir : string;
+  LazPackagerFile : Text;
 
 begin
+  AddCustomFpmakeCommandlineOption('lazarusdir','Location of a Lazarus installation.');
   With Installer do
     begin
     P:=AddPackage('gecko');
+
+    If Defaults.UnixPaths then
+      InstallLazarusPackageDir:=Defaults.Prefix+'share'+PathDelim+'fpc-'+p.Name
+    else
+      InstallLazarusPackageDir:=Defaults.BaseInstallDir+PathDelim+'fpc-'+p.Name;
 
     P.Version:='0.9.0-1';
     P.OSes:=AllUnixOSes+[Win32,Win64];
@@ -155,20 +164,29 @@ begin
     P.Sources.AddExample('SampleApps/GBrowser.lpi','examples');
     P.Sources.AddExample('SampleApps/GBrowser.dpr','examples');
 
-    P.Sources.AddDoc('Components/GeckoComponentsFP.lpk','lazaruspackage');
-    P.Sources.AddDoc('Components/BrowserSupports.pas','lazaruspackage');
-    P.Sources.AddDoc('Components/CallbackInterfaces.pas','lazaruspackage');
-    P.Sources.AddDoc('Components/GeckoBrowser.pas','lazaruspackage');
-    P.Sources.AddDoc('Components/GeckoBrowser.lrs','lazaruspackage');
-    P.Sources.AddDoc('Components/GeckoChromeWindow.pas','lazaruspackage');
-    P.Sources.AddDoc('Components/GeckoChromeWindow.lfm','lazaruspackage');
-    P.Sources.AddDoc('Components/GeckoChromeWindow.lrs','lazaruspackage');
-    P.Sources.AddDoc('Components/GeckoComponents.pas','lazaruspackage');
-    P.Sources.AddDoc('Components/GeckoDirectoryService.pas','lazaruspackage');
-    P.Sources.AddDoc('Components/GeckoInit.pas','lazaruspackage');
-    P.Sources.AddDoc('Components/GeckoSimpleProfile.pas','lazaruspackage');
+    P.Sources.AddDoc('Components/GeckoComponentsFP.lpk',InstallLazarusPackageDir);
+    P.Sources.AddDoc('Components/BrowserSupports.pas',InstallLazarusPackageDir);
+    P.Sources.AddDoc('Components/CallbackInterfaces.pas',InstallLazarusPackageDir);
+    P.Sources.AddDoc('Components/GeckoBrowser.pas',InstallLazarusPackageDir);
+    P.Sources.AddDoc('Components/GeckoBrowser.lrs',InstallLazarusPackageDir);
+    P.Sources.AddDoc('Components/GeckoChromeWindow.pas',InstallLazarusPackageDir);
+    P.Sources.AddDoc('Components/GeckoChromeWindow.lfm',InstallLazarusPackageDir);
+    P.Sources.AddDoc('Components/GeckoChromeWindow.lrs',InstallLazarusPackageDir);
+    P.Sources.AddDoc('Components/GeckoComponents.pas',InstallLazarusPackageDir);
+    P.Sources.AddDoc('Components/GeckoDirectoryService.pas',InstallLazarusPackageDir);
+    P.Sources.AddDoc('Components/GeckoInit.pas',InstallLazarusPackageDir);
+    P.Sources.AddDoc('Components/GeckoSimpleProfile.pas',InstallLazarusPackageDir);
 
     Run;
+
+    LazarusDir := GetCustomFpmakeCommandlineOptionValue('lazarusdir');
+    if LazarusDir <> '' then
+      begin
+      System.assign(LazPackagerFile,IncludeTrailingPathDelimiter(LazarusDir)+'packager'+PathDelim+'globallinks'+PathDelim+'GeckoComponentsFP-0.lpl');
+      System.Rewrite(LazPackagerFile);
+      System.WriteLn(LazPackagerFile,InstallLazarusPackageDir+PathDelim+'GeckoComponentsFP.lpk');
+      System.close(LazPackagerFile);
+      end;
     end;
 end.
 
