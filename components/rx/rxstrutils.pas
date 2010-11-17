@@ -251,23 +251,23 @@ uses Windows;
 
 function StrToOem(const AnsiStr: string): string;
 begin
+{$IFDEF WINDOWS}
   SetLength(Result, Length(AnsiStr));
   if Length(Result) > 0 then
-{$IFDEF WIN32}
     CharToOemBuff(PChar(AnsiStr), PChar(Result), Length(Result));
 {$ELSE}
-//    AnsiToOemBuff(@AnsiStr[1], @Result[1], Length(Result));
+  Result:=AnsiStr;
 {$ENDIF}
 end;
 
 function OemToAnsiStr(const OemStr: string): string;
 begin
+{$IFDEF WINDOWS}
   SetLength(Result, Length(OemStr));
   if Length(Result) > 0 then
-{$IFDEF WIN32}
     OemToCharBuff(PChar(OemStr), PChar(Result), Length(Result));
 {$ELSE}
-//    OemToAnsiBuff(@OemStr[1], @Result[1], Length(Result));
+  Result:=OemStr;
 {$ENDIF}
 end;
 

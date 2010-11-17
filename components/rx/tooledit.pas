@@ -258,7 +258,7 @@ begin
         I := I div 4;
       end;
       Result.X := I;
-      Result.Y := I;
+      Result.Y := I div 4;
     end;
   end;
 end;

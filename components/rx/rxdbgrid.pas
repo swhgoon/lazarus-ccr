@@ -1316,11 +1316,27 @@ end;
 
 procedure TRxDBGrid.OutCaptionCellText(aCol, aRow: Integer;const aRect: TRect;
   aState: TGridDrawState; const ACaption: string);
+var
+  T1, T2:TTextStyle;
 begin
-  Canvas.FillRect(aRect);
-  DrawCellGrid(aCol, aRow, aRect, aState);
+  if (TitleStyle=tsNative)  then
+    DrawThemedCell(aCol, aRow, aRect, aState)
+  else
+  begin
+//    Canvas.FillRect(aRect);
+    DrawCellGrid(aCol, aRow, aRect, aState);
+  end;
+
   if ACaption <> '' then
+  begin
+{    T1:=Canvas.TextStyle;
+    T2:=T1;
+    T1.Wordbreak:=true;
+    Canvas.TextStyle:=T1;
+    DrawCellText(aCol, aRow, aRect, aState, ACaption);
+    Canvas.TextStyle:=T2;     }
     WriteTextHeader(Canvas, aRect, ACaption, GetColumnAlignment(aCol, true))
+  end;
 end;
 
 procedure TRxDBGrid.OutCaptionCellText90(aCol,aRow: Integer;const  aRect: TRect;
@@ -1328,8 +1344,14 @@ procedure TRxDBGrid.OutCaptionCellText90(aCol,aRow: Integer;const  aRect: TRect;
 var
   dW, dY:integer;
 begin
-  Canvas.FillRect(aRect);
-  DrawCellGrid(aCol,aRow,aRect,aState);
+  if (TitleStyle=tsNative)  then
+    DrawThemedCell(aCol, aRow, aRect, aState)
+  else
+  begin
+    Canvas.FillRect(aRect);
+    DrawCellGrid(aCol,aRow,aRect,aState);
+  end;
+
 
   if TextOrient in [toVertical90, toVertical270] then
   begin
@@ -1532,7 +1554,12 @@ begin
      Canvas.FillRect(aRect);
      if F_Clicked then
       aState:= aState + [gdPushed];
-     DrawCellGrid(aCol,aRow, aRect, aState);
+
+     if (TitleStyle=tsNative)  then
+       DrawThemedCell(aCol, aRow, aRect, aState)
+     else
+       DrawCellGrid(aCol,aRow, aRect, aState);
+
      if DatalinkActive and (rdgAllowToolMenu in FOptionsRx) then
        Canvas.Draw((ARect.Left+ARect.Right-F_MenuBMP.Width) div 2,(ARect.Top + ARect.Bottom - F_MenuBMP.Height) div 2, F_MenuBMP);
      exit;
