@@ -15,7 +15,7 @@ program DfmToLfm;
    (a one-time conversion).
    
   Author:    Phil Hess.
-  Copyright: Copyright (C) 2007 Phil Hess. All rights reserved.
+  Copyright: Copyright (C) 2007-2010 Phil Hess. All rights reserved.
   License:   Modified LGPL.
 }
 
@@ -32,7 +32,7 @@ uses
 
 const
   ProgramName    = 'DfmToLfm';
-  ProgramVersion = '0.02';
+  ProgramVersion = '0.03';
   
   DfmFileExt     = '.dfm';  {Delphi form file extension}
   LfmFileExt     = '.lfm';  {Lazarus form file extension}
@@ -60,6 +60,7 @@ var
   MatchFound  : TFilenameCaseMatch;
 {$ENDIF}
   FontSwitch  : Integer;
+  MacSwitch   : Boolean;
   CfgFileObj  : TMemIniFile;
   DfmFileName : string;
   LfmFileName : string;
@@ -87,12 +88,13 @@ begin
     begin
     WriteLn(ProgramName, ', version ', ProgramVersion,
             ' - converts a Delphi form file to a Lazarus form file.');
-    WriteLn('Usage: ', ProgramName, ' filename', DfmFileExt, ' [-p|-d]');
+    WriteLn('Usage: ', ProgramName, ' filename', DfmFileExt, ' [-p|-d][-m]');
     WriteLn('Switches:');
     WriteLn('  -p  Add parent''s font to controls with no font ',
             '(useful with Windows).');
     WriteLn('  -d  Delete font name from controls ',
             '(useful with GTK and GTK2).');
+    WriteLn('  -m  Mac prettifier.');
     WriteLn('Looks for configuration data in file ', CfgFileName); 
     Halt;
     end;
@@ -103,6 +105,7 @@ begin
     FontSwitch := UseParentFont
   else if FindCmdLineSwitch('d', ['-'], True) then
     FontSwitch := DeleteFontName;
+  MacSwitch := FindCmdLineSwitch('m', ['-'], True);
 
    {Load configuration file}
   if not FileExists(CfgFileName) then
@@ -298,6 +301,28 @@ begin
           end
 *)
   
+        else if MacSwitch and
+                (StackLevel > 1) and
+                (SameText('TButton', StackRec[StackLevel].ClassName) or
+                 SameText('TBitBtn', StackRec[StackLevel].ClassName)) and
+                SameText('Height=', Copy(StripStr, 1, 7)) and
+                (StrToInt(Copy(StripStr, 8, MaxInt)) > 22) then
+          WriteLn(LfmFileVar,
+                  Copy(InStr, 1, Succ(Pos('=', InStr))), '22')
+           {Reduce button height so it's displayed as oval on Mac}
+           
+        else if MacSwitch and
+                (StackLevel > 1) and
+                SameText('TabOrder=', Copy(StripStr, 1, 9)) and
+                CfgFileObj.ValueExists('MacNoFocus',
+                                       StackRec[StackLevel].ClassName) then
+          begin
+          WriteLn(LfmFileVar, InStr);  {No change to TabOrder property}
+          WriteLn(LfmFileVar,
+                  Copy(InStr, 1, Length(InStr)-Length(Trim(InStr))), {Spaces}
+                  'TabStop = False');  {Control can't receive focus}
+          end
+
         else  {No change to property}
           WriteLn(LfmFileVar, InStr);
 
