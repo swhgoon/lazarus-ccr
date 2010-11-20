@@ -7185,15 +7185,19 @@ procedure TVirtualTreeColumn.ParentColorChanged;
 
 var
   Columns: TVirtualTreeColumns;
-
+  TreeViewColor: TColor;
 begin
   if coParentColor in FOptions then
   begin
     Columns := GetOwner as TVirtualTreeColumns;
-    if Assigned(Columns) and (FColor <> Columns.FHeader.Treeview.Color) then
+    if Assigned(Columns) then
     begin
-      FColor := Columns.FHeader.Treeview.Color;
-      Changed(False);
+      TreeViewColor := Columns.FHeader.Treeview.Brush.Color;
+      if FColor <> TreeViewColor then
+      begin
+        FColor := TreeViewColor;
+        Changed(False);
+      end;
     end;
   end;
 end;
