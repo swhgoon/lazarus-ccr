@@ -8037,7 +8037,7 @@ begin
         if NewWidth > OldWidth then
         begin
           R := ScrollRect;
-          NewBrush := CreateSolidBrush(ColorToRGB(Color));
+          NewBrush := CreateSolidBrush(ColorToRGB(Brush.Color));
           LastBrush := SelectObject(DC, NewBrush);
           R.Right := R.Left + DX;
           FillRect(DC, R, NewBrush);
@@ -12067,7 +12067,7 @@ begin
   with PaintInfo do
   begin
     EraseAction := eaDefault;
-    BackColor := Color;
+    BackColor := Brush.Color;
     if Floating then
     begin
       Offset := Point(-FEffectiveOffsetX, R.Top);
@@ -12102,7 +12102,7 @@ begin
           //clear the node background
           //note there's a bug in original VTV that can lead to wrong node paint
           //so, here the node is always cleared even if is selected
-          Brush.Color := Self.Color;
+          Brush.Color := Self.Brush.Color;
           FillRect(R);
           {$ifdef DEBUG_VTV}Logger.SendColor([lcPaintDetails],'Clearing a node background - Brush.Color', Brush.Color);{$endif}
           {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'Clearing Rectangle (R)', R);{$endif}
@@ -13261,7 +13261,7 @@ const
           if not (coParentColor in FHeader.FColumns[FHeader.FMainColumn].FOptions) then
             Brush.Color := FHeader.FColumns[FHeader.FMainColumn].Color
           else
-            Brush.Color := Self.Color;
+            Brush.Color := Self.Brush.Color;
         end
         else
         begin
@@ -13323,7 +13323,7 @@ begin
           begin
             case FButtonFillMode of
               fmTreeColor:
-                Brush.Color := Self.Color;
+                Brush.Color := Self.Brush.Color;
               fmWindowColor:
                 Brush.Color := clWindow;
             end;
@@ -13359,7 +13359,7 @@ begin
           begin
             case FButtonFillMode of
               fmTreeColor:
-                Brush.Color := Self.Color;
+                Brush.Color := Self.Brush.Color;
               fmWindowColor:
                 Brush.Color := clWindow;
             end;
@@ -14395,7 +14395,7 @@ var
 
 begin
   // clear background
-  Target.Brush.Color := Color;
+  Target.Brush.Color := Brush.Color;
   Target.FillRect(R);
 
   // Picture rect in relation to client viewscreen.
@@ -20037,7 +20037,7 @@ var
 begin
   with PaintInfo, Canvas do
   begin
-    Brush.Color := Self.Color;
+    Brush.Color := Self.Brush.Color;
     R := Rect(Min(Left, Right), Top, Max(Left, Right) + 1, Top + 1);
     LCLIntf.FillRect(Handle, R, FDottedBrush);
   end;
@@ -20055,7 +20055,7 @@ var
 begin
   with PaintInfo, Canvas do
   begin
-    Brush.Color := Self.Color;
+    Brush.Color := Self.Brush.Color;
     R := Rect(Left, Min(Top, Bottom), Left + 1, Max(Top, Bottom) + 1);
     LCLIntf.FillRect(Handle, R, FDottedBrush);
   end;
@@ -28685,7 +28685,7 @@ begin
                     if not (coParentColor in Items[FirstColumn].FOptions) then
                       NodeBitmap.Canvas.Brush.Color := Items[FirstColumn].FColor
                     else
-                      NodeBitmap.Canvas.Brush.Color := Color;
+                      NodeBitmap.Canvas.Brush.Color := Brush.Color;
 
                     NodeBitmap.Canvas.FillRect(R);
                     FirstColumn := GetNextVisibleColumn(FirstColumn);
@@ -28706,7 +28706,7 @@ begin
                        (toFullVertGridLines in FOptions.FPaintOptions) and (toShowVertGridLines in FOptions.FPaintOptions) and
                        (not (hoAutoResize in FHeader.FOptions)) then
                       Inc(R.Left);
-                    NodeBitmap.Canvas.Brush.Color := Color;
+                    NodeBitmap.Canvas.Brush.Color := Brush.Color;
                     NodeBitmap.Canvas.FillRect(R);
                   end;
                 end;
@@ -28718,7 +28718,7 @@ begin
                 {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'TargetRect',TargetRect);{$endif}
                 // No columns nor bitmap background. Simply erase it with the tree color.
                 SetWindowOrgEx(NodeBitmap.Canvas.Handle, 0, 0, nil);
-                NodeBitmap.Canvas.Brush.Color := Color;
+                NodeBitmap.Canvas.Brush.Color := Brush.Color;
                 NodeBitmap.Canvas.FillRect(TargetRect);
               end;
             end;
@@ -28844,7 +28844,7 @@ begin
       Height := TreeRect.Bottom - TreeRect.Top;
       // Erase the entire image with the color key value, for the case not everything
       // in the image is covered by the tree image.
-      Canvas.Brush.Color := Color;
+      Canvas.Brush.Color := Brush.Color;
       Canvas.FillRect(Rect(0, 0, Width, Height));
 
       PaintOptions := [poDrawSelection, poSelectedOnly];
@@ -28857,7 +28857,7 @@ begin
       ImagePos := ClientToScreen(TreeRect.TopLeft);
       HotSpot := ClientToScreen(HotSpot);
 
-      FDragImage.ColorKey := Color;
+      FDragImage.ColorKey := Brush.Color;
       FDragImage.PrepareDrag(Image, ImagePos, HotSpot, DataObject);
     finally
       Image.Free;
@@ -29677,7 +29677,8 @@ var
     begin
       Window := Handle;
       DC := GetDC(Handle);
-      Self.Brush.Color := Color;
+      //lcl: setting Color to Brush seems not necessary
+      //Self.Brush.Color := Color;
       Brush := Self.Brush.Reference.Handle;
 
       if (Mode1 <> tamNoScroll) and (Mode2 <> tamNoScroll) then
