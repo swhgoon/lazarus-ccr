@@ -64,9 +64,10 @@ function GetIdPart(name: TNamePart): TNamePart;
 
 function isNamePartPtrToFunc(part: TNamePart): Boolean; inline;
 
+function isAnyBlock(part: TNamePart): Boolean;
+
 
 type
-
   { TLineBreaker }
 
   TLineInfo = record
@@ -89,6 +90,11 @@ implementation
 function isNamePartPtrToFunc(part: TNamePart): Boolean; inline;
 begin
   Result:=Assigned(part) and (part.Kind=nk_Ref) and Assigned(part.owner) and (part.owner.kind=nk_Func);
+end;
+
+function isAnyBlock(part: TNamePart): Boolean;
+begin
+  Result:=Assigned(part) and ((part.Kind=nk_Block) or isAnyBlock(part.child));
 end;
 
 function isPtrToFunc(name: TNamePart): Boolean;

@@ -29,6 +29,7 @@ var
   OutputFile    : AnsiString = '';
   ConfigFileRO  : Boolean = false;
   ParseAll      : Boolean = false;
+  ShowCodeSize  : Boolean = False; // show the size of code processed
 
 function StringFromFile(const FileName: AnsiString): AnsiString;
 var
@@ -80,11 +81,13 @@ procedure PrintHelp;
 begin
   writeln('cconvert - c to pascal convert utility');
   writeln('possible options:');
-  writeln(' -all - convert the whole header to pascal, instead of a first entity');
-  writeln(' -o filename   - specify the output file. if not specified, outputs to stdout');
-  writeln(' -ro - prevent the configuration file from modifications (adding new types, etc)');
-  writeln(' -cfg filename - specifies the configuration file');
+  writeln(' -all              - convert the whole header to pascal, instead of a first entity');
+  writeln(' -o filename       - specify the output file. if not specified, outputs to stdout');
+  writeln(' -ro               - prevent the configuration file from modifications (adding new types, etc)');
+  writeln(' -cfg filename     - specifies the configuration file');
   writeln(' -defines filename - macros definition file. should be in C-preprocessor format');
+  writeln(' -showunparsed     - writes out unprased entities by their classname (for debugging only)');
+  writeln(' -codesize         - show two numbers of the code processed (used by Chelper)');
 end;
 
 procedure ReadParams(var InputFileName: String);
@@ -97,7 +100,8 @@ begin
     if (s='-h') or (s='-help') or (s='-?') then begin
       PrintHelp;
       Halt;
-    end;
+    end else if s='-showunparsed' then
+      DoDebugEntities:=True;
   end;
   InputFileName:=ParamStr(ParamCount);
 end;
@@ -127,7 +131,8 @@ begin
 
     inps.LoadFromFile(ParamStr(ParamCount));
     outs.Text:=ConvertCode(inps.Text, p, ParseAll, err, cfg);;
-    outs.Insert(0, Format('%d %d', [p.Y,p.X]));
+
+    if ShowCodeSize then outs.Insert(0, Format('%d %d', [p.Y,p.X]));
     if err.isError then outs.Insert(0, Format('error %d %d %s',[err.ErrorPos.Y, err.ErrorPos. X, err.ErrorMsg]) );
 
     if OutputFile<>'' then

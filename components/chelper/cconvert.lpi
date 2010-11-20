@@ -34,7 +34,7 @@
         <LaunchingApplication PathPlusParams="/usr/X11/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <Units Count="2">
+    <Units Count="3">
       <Unit0>
         <Filename Value="cconvert.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -45,6 +45,10 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="objctopasconvert"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="../../testUIKit/UIViewTest.h"/>
+        <IsPartOfProject Value="True"/>
+      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

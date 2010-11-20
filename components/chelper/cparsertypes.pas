@@ -252,6 +252,7 @@ const
   nk_Ref   = 1;
   nk_Array = 2;
   nk_Func  = 3;
+  nk_Block = 4;
 
 type
   TNameKind = Integer;
@@ -1676,14 +1677,19 @@ begin
       Parser.NextToken;
       if Parser.Token='const' then Parser.NextToken; // skip const qualifier
     end;
+  end else if (Parser.Token='^') then begin
+    prefix:=TNamePart.Create(nk_Block);
+    Parser.NextToken;
   end else
     prefix:=nil;
+
+
 
   if Parser.Token='(' then begin
     Parser.NextToken;
     id:=ParseNamePart(Parser);
     ConsumeToken(Parser, ')');
-  end else if (Parser.TokenType=tt_Ident) or (Parser.Token='^') then begin
+  end else if (Parser.TokenType=tt_Ident) then begin
     id:=TNamePart.Create(nk_Ident);
     id.id:=Parser.Token;
     Parser.NextToken;

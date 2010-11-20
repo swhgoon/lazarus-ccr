@@ -27,6 +27,9 @@ uses
   cparsertypes, TextParsingUtils, codewriter, cparserutils,
   objcparsing;
 
+var
+  DoDebugEntities : Boolean = False; // write parsed entities names if no converter found!?
+
 type
 
   { TConvertSettings }
@@ -106,6 +109,9 @@ type
     procedure Clear;
   end;
 
+type
+  TConvertCheck = function (ent: TEntity): Boolean;
+
 implementation
 
 type
@@ -175,6 +181,8 @@ type
     procedure WriteObjCInterface(cent: TObjCInterface);
     procedure WriteObjCProtocol(cent: TObjCProtocol);
     procedure WriteObjCClasses(cent: TObjCClasses);
+
+    function CanConvert(ent: TEntity): Boolean;
 
     procedure PushWriter;
     procedure PopWriter;
@@ -548,7 +556,7 @@ begin
   cfg:=ASettings;
   wr:=TCodeWriter.Create;
   WriteFunc:=@DefFuncWrite;
-  DebugEntities := True;
+  DebugEntities := DoDebugEntities;
 end;
 
 destructor TCodeConvertor.Destroy;
@@ -648,6 +656,9 @@ var
   PNames  : array of AnsiString;
   PTypes  : array of AnsiString;
 begin
+  if not CanConvert(m) then Exit;
+
+
   if m.RetType=nil then ret:='id' else ret:=GetPasTypeName(m.RetType, m.RetName);
   SetLength(PNames, length(m.Args));
   SetLength(PTypes, length(m.Args));
@@ -809,6 +820,34 @@ begin
   SetPasSection(wr, 'type');
   for i:=0 to cent.ClassList.Count-1 do
     wr.WLn(cent.ClassList[i] +' = objcclass; external;');
+end;
+
+
+function CanConvertObjCMethod(ent: TObjCMethod): Boolean;
+var
+  i : Integer;
+begin
+  Result:=True;
+  if not Assigned(ent) then Exit;
+  for i:=0 to length(ent.Args)-1 do
+    if Assigned(ent.Args[i].TypeName) and isAnyBlock(ent.Args[i].TypeName) then begin
+      Result:=False;
+      Exit;
+    end;
+end;
+
+function TCodeConvertor.CanConvert(ent: TEntity): Boolean;
+begin
+  Result:=Assigned(ent);
+  if not Result then Exit;
+
+
+  if ent is TVarFuncEntity then
+  begin
+    Result:=(not isAnyBlock(TVarFuncEntity(ent).FirstName)) and CanConvert(TVarFuncEntity(ent).RetType)
+  end else if ent is TObjCMethod then
+    Result:=CanConvertObjCMethod(TObjCMethod(ent));
+
 end;
 
 procedure TCodeConvertor.PushWriter;
@@ -1131,6 +1170,8 @@ procedure TCodeConvertor.WriteCtoPas(cent: TEntity; comments: TList; const Parse
 var
   tp  : AnsiString;
 begin
+  if not CanConvert(cent) then Exit;
+
   CmtList:=comments;
   Breaker:=TLineBreaker.Create;
   Breaker.SetText(ParsedText);
