@@ -721,13 +721,13 @@ begin
     idx := Index;
     i := idx+1;
     ScanWhile(Buf, i, WhiteSpaceChars);
-    s := ScanTo(Buf, i, WhiteSpaceChars);
-    if s = 'define' then df := TCPrepDefine.Create(idx)
-    else if s = 'include' then df := TCPrepInclude.Create(idx)
-    else if s = 'else' then df := TCPrepInclude.Create(idx)
-    else if s = 'endif' then df := TCPrepEndif.Create(idx)
-    else if s = 'pragma' then df := TCPrepPragma.Create(idx)
-    else if (s = 'if') or (s = 'elif') or (s = 'ifdef') or (s = 'ifndef') then begin
+    s := ScanTo(Buf, i, SpaceEolnChars);
+    if s='define' then df := TCPrepDefine.Create(idx)
+    else if (s='include') or (s='import') then df := TCPrepInclude.Create(idx)
+    else if s='else' then df := TCPrepInclude.Create(idx)
+    else if s='endif' then df := TCPrepEndif.Create(idx)
+    else if s='pragma' then df := TCPrepPragma.Create(idx)
+    else if (s='if') or (s='elif') or (s='ifdef') or (s='ifndef') then begin
       df := TCPrepIf.Create(idx);
       TCPrepIf(df).IfOp:=s;
     end else
@@ -739,12 +739,9 @@ begin
       Result := df.Parse(Self);
       Comments.Add(df);
       if Assigned(OnPrecompile) then OnPrecompile(Self, df);
-    end;
+    end else
+      SetError('cannot handle preprocessor: "'+s+'"');
 
-    if not Result then begin
-      SetError('cannot handle preprocessor');
-      Exit;
-    end;
   finally
     ProcessingMacro := false;
   end;
@@ -1168,8 +1165,6 @@ begin
   try
     AParser.TokenTable.Symbols := AParser.TokenTable.Symbols + ['"'];
 
-    //i := AParser.TokenPos;
-
     AParser.FindNextToken(s, tt);
     Result := (s = '"') or (s = '<');
     if not Result then Exit;
@@ -1182,7 +1177,6 @@ begin
       if (s = '/') or (s = '\') or (tt = tt_Ident) then
         Included := Included + s;
     until (tt =tt_Symbol) and ((s <> '\') or (s <> '/'));
-
     Result := s = exp;
     SkipLine(AParser.buf, AParser.Index);
   finally
@@ -1689,7 +1683,7 @@ begin
     Parser.NextToken;
     id:=ParseNamePart(Parser);
     ConsumeToken(Parser, ')');
-  end else if Parser.TokenType=tt_Ident then begin
+  end else if (Parser.TokenType=tt_Ident) or (Parser.Token='^') then begin
     id:=TNamePart.Create(nk_Ident);
     id.id:=Parser.Token;
     Parser.NextToken;

@@ -76,14 +76,48 @@ begin
   end;
 end;
 
+procedure PrintHelp;
+begin
+  writeln('cconvert - c to pascal convert utility');
+  writeln('possible options:');
+  writeln(' -all - convert the whole header to pascal, instead of a first entity');
+  writeln(' -o filename   - specify the output file. if not specified, outputs to stdout');
+  writeln(' -ro - prevent the configuration file from modifications (adding new types, etc)');
+  writeln(' -cfg filename - specifies the configuration file');
+  writeln(' -defines filename - macros definition file. should be in C-preprocessor format');
+end;
+
+procedure ReadParams(var InputFileName: String);
+var
+  i : integer;
+  s : string;
+begin
+  for i:=1 to ParamCount do begin
+    s:=LowerCase(ParamStr(i));
+    if (s='-h') or (s='-help') or (s='-?') then begin
+      PrintHelp;
+      Halt;
+    end;
+  end;
+  InputFileName:=ParamStr(ParamCount);
+end;
+
 var
   inps, outs : TStringList;
   i   : Integer;
   p   : TPoint;
   cfg : TConvertSettings;
   err : TErrorInfo;
+  fn  : String;
 begin
   if ParamCount=0 then Exit;
+  ReadParams(fn);
+  if not FileExists(fn) then begin
+    writeln('file doesn''t exist: ', fn);
+    Exit;
+  end;
+
+
   inps := TStringList.Create;
   outs := TStringList.Create;
 
