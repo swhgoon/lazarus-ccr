@@ -183,6 +183,7 @@ type
 
     //misc settings
     FDisableJavaScript: Boolean;
+    FInitializationStarted: Boolean;
     FInitialized: Boolean;
 
     function GetDisableJavaScript: Boolean;
@@ -208,6 +209,7 @@ type
     //function GetMarkupDocumentViewer: nsIMarkupDocumentViewer;
     //function GetDocShell: nsIDocShell;
     //function GetDocumentCharsetInfo: nsIDocumentCharsetInfo;
+    procedure DoInitializationIfNeeded;
   protected
     procedure Paint; override;
   public
@@ -239,6 +241,10 @@ type
     procedure Resize; override;
 
     procedure Loaded; override;
+
+    //TWinControl
+    procedure CreateWnd; override;
+    procedure DestroyWnd; override;
   protected
     property Chrome: TCustomGeckoBrowserChrome
         read FChrome write SetChrome;
@@ -1054,17 +1060,24 @@ end;
 procedure TCustomGeckoBrowser.Loaded;
 begin
   inherited Loaded;
-  if not (csDesigning in ComponentState) then
-  begin
-    InitWebBrowser;
-    LoadURI('about:blank');
-    FInitialized:=true;
-    if Assigned(FOnSetupProperties) then begin
-      FOnSetupProperties(Self);
-    end;
-    //Set again the published properties
-    SetDisableJavascript(FDisableJavaScript);
-  end;
+  DoInitializationIfNeeded;
+end;
+
+procedure TCustomGeckoBrowser.CreateWnd;
+begin
+  {$IFDEF DEBUG}
+  OutputDebugString('TGeckoBrowser.CreateWnd');
+  {$ENDIF}
+  inherited CreateWnd;
+  DoInitializationIfNeeded;
+end;
+
+procedure TCustomGeckoBrowser.DestroyWnd;
+begin
+  {$IFDEF DEBUG}
+  OutputDebugString('TGeckoBrowser.DestroyWnd');
+  {$ENDIF}
+  inherited DestroyWnd;
 end;
 
 procedure TCustomGeckoBrowser.GoBack;
@@ -1893,6 +1906,23 @@ begin
 {$IFDEF LCLGtk2}
   Result := PtrInt(PGtkWindow(Handle)^.default_widget);
 {$ENDIF}
+end;
+
+procedure TCustomGeckoBrowser.DoInitializationIfNeeded;
+begin
+  if not FInitializationStarted then
+    if not (csDesigning in ComponentState) then
+    begin
+      FInitializationStarted:=true;
+      InitWebBrowser;
+      LoadURI('about:blank');
+      FInitialized:=true;
+      if Assigned(FOnSetupProperties) then begin
+        FOnSetupProperties(Self);
+      end;
+      //Set again the published properties
+      SetDisableJavascript(FDisableJavaScript);
+    end;
 end;
 
 {
