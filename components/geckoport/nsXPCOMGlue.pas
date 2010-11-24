@@ -426,9 +426,17 @@ var
   rv: nsresult;
 begin
   rv := FSupports.QueryInterface(uuid, Intf);
-  if NS_FAILED(rv) then
+  if NS_FAILED(rv) then begin
+    //This is not a catastrophic error, so no exception is needed.
+    //In example the uuid {DDE39DE0-E4E0-11DA-8AD9-0800200C9A66} request
+    //for a nsIWebProgressListener2. Just answering nothing does not
+    //produce an "error".
+    {$IFDEF DEBUG}
+    OutputDebugString(GUIDToString(uuid);
+    {$ENDIF}
     //raise EGeckoError.Create('QueryReference Error');
-    System.Error(reIntfCastError);
+    //System.Error(reIntfCastError);
+  end;
 end;
 
 destructor TSupportsWeakReference.Destroy;

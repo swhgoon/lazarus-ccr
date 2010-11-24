@@ -3979,6 +3979,12 @@ type
     procedure OnSecurityChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aState: PRUint32); safecall;
   end;
 
+  nsIWebProgressListener2 = interface(nsISupports)
+  ['{dde39de0-e4e0-11da-8ad9-0800200c9a66}']
+    procedure OnProgressChange64(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aCurSelfProgress: PRInt64; aMaxSelfProgress: PRInt64; aCurTotalProgress: PRInt64; aMaxTotalProgress: PRInt64); safecall;
+    function  onRefreshAttempted(aWebProgress: nsIWebProgress; aRefreshURI: nsIURI; aMillis: PRInt32; aSameURI: PRBool): PRBool; safecall;
+  end;
+
   nsIWindowCreator = interface(nsISupports)
   ['{30465632-a777-44cc-90f9-8145475ef999}']
     function CreateChromeWindow(parent: nsIWebBrowserChrome; chromeFlags: PRUint32): nsIWebBrowserChrome; safecall;
