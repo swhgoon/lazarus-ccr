@@ -165,7 +165,7 @@ begin
     edtType.ItemIndex := edtType.Items.IndexOfObject(FObject.VarType);
     edtAttribute.Checked := FSymbolTable.IsAttributeProperty(FObject);
     if IsClassType() then begin
-      edtOptional.Checked := AnsiSameText('Has',Copy(TPasProperty(FObject).StoredAccessorName,1,3)) ;
+      edtOptional.Checked := (AnsiPos(sWST_PROP_STORE_PREFIX,TPasProperty(FObject).StoredAccessorName) = 1) ;
     end else begin
       edtOptional.Checked := True;
       edtOptional.Enabled := False;
@@ -213,7 +213,7 @@ begin
   if IsClassType() then begin
     locObjProp := locObj as TPasProperty;
     if edtOptional.Checked then
-      locObjProp.StoredAccessorName := 'Has' + locObjProp.Name
+      locObjProp.StoredAccessorName := sWST_PROP_STORE_PREFIX + locObjProp.Name
     else
       locObjProp.StoredAccessorName := 'True';
     locObjProp.ReadAccessorName := 'F' + locObjProp.Name;
