@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <CONFIG>
   <Package Version="3">
-    <Name Value="GeckoComponentsFP"/>
+    <Name Value="GeckoComponents"/>
     <AddToProjectUsesSection Value="False"/>
     <Author Value="Gecko Components for Delphi; ported to Lazarus by Phil Hess"/>
     <CompilerOptions>
@@ -81,8 +81,5 @@
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
-    <Provides Count="1">
-      <Item1 Value="GeckoComponents"/>
-    </Provides>
   </Package>
 </CONFIG>

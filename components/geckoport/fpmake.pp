@@ -1,20 +1,60 @@
 {$mode objfpc}{$H+}
 program fpmake;
 
-uses fpmkunit, sysutils;
+uses fpmkunit, sysutils, classes;
 
-Var
-  P : TPackage;
-  T : TTarget;
+type
+  { TLazInstaller }
+
+  TLazInstaller = class(TCustomInstaller)
+  public
+    procedure DoRegisterLazarusPackages(Sender: TObject);
+    constructor Create(AOwner: TComponent); override;
+  end;
+
+resourcestring
+  SErrAlreadyInitialized = 'Installer can only be initialized once';
+
+var
   InstallLazarusPackageDir : string;
+
+{ TLazInstaller }
+
+procedure TLazInstaller.DoRegisterLazarusPackages(Sender: TObject);
+Var
   LazarusDir : string;
   LazPackagerFile : Text;
 
 begin
+  LazarusDir := GetCustomFpmakeCommandlineOptionValue('lazarusdir');
+  if LazarusDir <> '' then
+    begin
+    BuildEngine.CmdRenameFile(InstallLazarusPackageDir+PathDelim+'GeckoComponents.lpk.fppkg',InstallLazarusPackageDir+PathDelim+'GeckoComponents.lpk');
+    System.assign(LazPackagerFile,IncludeTrailingPathDelimiter(LazarusDir)+'packager'+PathDelim+'globallinks'+PathDelim+'GeckoComponents-0.lpl');
+    System.Rewrite(LazPackagerFile);
+    System.WriteLn(LazPackagerFile,InstallLazarusPackageDir+PathDelim+'GeckoComponents.lpk');
+    System.close(LazPackagerFile);
+    end;
+end;
+
+constructor TLazInstaller.Create(AOwner: TComponent);
+begin
   AddCustomFpmakeCommandlineOption('lazarusdir','Location of a Lazarus installation.');
-  With Installer do
+  if assigned(Defaults) then
+    Error(SErrAlreadyInitialized);
+  Defaults:=TFPCDefaults.Create;
+  inherited Create(AOwner);
+end;
+
+Var
+  P : TPackage;
+  T : TTarget;
+
+begin
+  With Installer(TLazInstaller) do
     begin
     P:=AddPackage('gecko');
+    p.AfterInstall := @TLazInstaller(Installer).DoRegisterLazarusPackages;
 
     If Defaults.UnixPaths then
       InstallLazarusPackageDir:=Defaults.Prefix+'share'+PathDelim+'fpc-'+p.Name
@@ -164,7 +204,7 @@ begin
     P.Sources.AddExample('SampleApps/GBrowser.lpi','examples');
     P.Sources.AddExample('SampleApps/GBrowser.dpr','examples');
 
-    P.Sources.AddDoc('Components/GeckoComponentsFP.lpk',InstallLazarusPackageDir);
+    P.Sources.AddDoc('Components/GeckoComponents.lpk.fppkg',InstallLazarusPackageDir);
     P.Sources.AddDoc('Components/BrowserSupports.pas',InstallLazarusPackageDir);
     P.Sources.AddDoc('Components/CallbackInterfaces.pas',InstallLazarusPackageDir);
     P.Sources.AddDoc('Components/GeckoBrowser.pas',InstallLazarusPackageDir);
@@ -178,15 +218,6 @@ begin
     P.Sources.AddDoc('Components/GeckoSimpleProfile.pas',InstallLazarusPackageDir);
 
     Run;
-
-    LazarusDir := GetCustomFpmakeCommandlineOptionValue('lazarusdir');
-    if LazarusDir <> '' then
-      begin
-      System.assign(LazPackagerFile,IncludeTrailingPathDelimiter(LazarusDir)+'packager'+PathDelim+'globallinks'+PathDelim+'GeckoComponentsFP-0.lpl');
-      System.Rewrite(LazPackagerFile);
-      System.WriteLn(LazPackagerFile,InstallLazarusPackageDir+PathDelim+'GeckoComponentsFP.lpk');
-      System.close(LazPackagerFile);
-      end;
     end;
 end.
 
