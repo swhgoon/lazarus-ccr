@@ -174,6 +174,8 @@ type
     procedure FDFind(Sender : TObject);
     procedure FDShow(Sender : TObject);
     procedure FormClose (Sender : TObject; var CloseAction : TCloseAction );
+    procedure FormDropFiles(Sender : TObject; const FileNames : array of String
+      );
     procedure FormShow(Sender: TObject);
     procedure trvSchemaSelectionChanged(Sender : TObject);
   private
@@ -204,6 +206,7 @@ type
     procedure ShowDependencies();
     procedure OpenFile(const AFileName : string; const AContent : TStream = nil);
     procedure SaveToFile(const AFileName : string);
+    function PromptAndSave() : Boolean;
   public
     constructor Create(AOwner : TComponent);override;
     destructor Destroy();override;
@@ -659,30 +662,29 @@ begin
 end;
 
 procedure TfWstTypeLibraryEdit.FormClose (Sender : TObject; var CloseAction : TCloseAction );
-var
-  dlgRes : Integer;
-  {$IFDEF WST_IDE}
-  prjFile : TLazProjectFile;
-  {$ENDIF}
 begin
-  dlgRes := MessageDlg(Self.Caption,'Save the file before exit ?',mtConfirmation,mbYesNoCancel,0);
-  if ( dlgRes = mrCancel ) then begin
-    CloseAction := caNone;
-  end else begin
-    if ( dlgRes = mrYes ) then begin
-      actSave.Execute();
-    end;
-{$IFDEF WST_IDE}
-    if ( FProjectLibrary = nil ) then begin
-      prjFile := GetCurrentProjectLibraryFile();
-      if ( prjFile = nil ) then begin
-        dlgRes := MessageDlg(Self.Caption,'Add this type library to the current project ?',mtConfirmation,mbYesNo,0);
-        if ( dlgRes = mrYes ) then begin
-          LazarusIDE.DoOpenEditorFile(FCurrentFileName,-1,[ofAddToProject]);
-        end;
+  PromptAndSave();
+end;
+
+procedure TfWstTypeLibraryEdit.FormDropFiles(
+        Sender : TObject; 
+  const FileNames : array of String
+);
+var
+  locFileName : string;
+  c, i : Integer;
+begin
+  c := Length(FileNames); 
+  if (c > 0) then begin
+    locFileName := '';
+    for i := 0 to c - 1 do begin
+      if FileExists(FileNames[i]) then begin
+        locFileName := FileNames[i];
+        Break;
       end;
     end;
-{$ENDIF}
+    if (locFileName <> '') then
+      OpenFile(locFileName);
   end;
 end;
 
@@ -1206,6 +1208,33 @@ begin
 {$IFNDEF WST_IDE}
   DM.Options.WriteString(ClassName(),sLAST_PATH,ExtractFilePath(AFileName));
 {$ENDIF WST_IDE}
+end;
+
+function TfWstTypeLibraryEdit.PromptAndSave() : Boolean; 
+var
+  dlgRes : Integer;
+{$IFDEF WST_IDE}
+  prjFile : TLazProjectFile;
+{$ENDIF}
+begin
+  dlgRes := MessageDlg(Self.Caption,'Save the file before exit ?',mtConfirmation,mbYesNoCancel,0);
+  Result := (dlgRes <> mrCancel); 
+  if Result then begin
+    if ( dlgRes = mrYes ) then begin
+      actSave.Execute();
+    end;
+{$IFDEF WST_IDE}
+    if ( FProjectLibrary = nil ) then begin
+      prjFile := GetCurrentProjectLibraryFile();
+      if ( prjFile = nil ) then begin
+        dlgRes := MessageDlg(Self.Caption,'Add this type library to the current project ?',mtConfirmation,mbYesNo,0);
+        if ( dlgRes = mrYes ) then begin
+          LazarusIDE.DoOpenEditorFile(FCurrentFileName,-1,[ofAddToProject]);
+        end;
+      end;
+    end;
+{$ENDIF}
+  end;
 end;
 
 constructor TfWstTypeLibraryEdit.Create(AOwner: TComponent);
