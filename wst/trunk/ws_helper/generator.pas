@@ -162,7 +162,7 @@ type
     FImpLastStream : ISourceStream;
     FRttiFunc : ISourceStream;
   private
-    procedure WriteDocumetation(AElement : TPasElement);
+    procedure WriteDocumentation(AElement : TPasElement);
     procedure WriteDocIfEnabled(AElement : TPasElement);{$IFDEF USE_INLINE}inline;{$ENDIF}
     // Array handling helper routines
     procedure WriteObjectArray(ASymbol : TPasArrayType);
@@ -1914,7 +1914,7 @@ end;
 
 { TInftGenerator }
 
-procedure TInftGenerator.WriteDocumetation(AElement : TPasElement);
+procedure TInftGenerator.WriteDocumentation(AElement : TPasElement);
 var
   pl : TStrings;
   docString : string;
@@ -1937,7 +1937,7 @@ end;
 procedure TInftGenerator.WriteDocIfEnabled(AElement : TPasElement);
 begin
   if ( goGenerateDocAsComments in Options ) then
-    WriteDocumetation(AElement);
+    WriteDocumentation(AElement);
 end;
 
 procedure TInftGenerator.WriteObjectArray(ASymbol : TPasArrayType);
