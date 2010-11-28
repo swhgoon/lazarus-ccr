@@ -34,10 +34,22 @@
  * ***** END LICENSE BLOCK ***** *)
 unit CallbackInterfaces;
 
+{$MACRO on}
+
+{$IFDEF Windows}
+  {$DEFINE extdecl:=stdcall}
+{$ELSE Windows}
+  {$DEFINE extdecl:=cdecl}
+{$ENDIF}
+
+{$IFNDEF FPC_HAS_CONSTREF}
+  {$DEFINE constref:=const}
+{$ENDIF}
+
 interface
 
 uses
-  nsXPCOM, nsTypes;
+  nsXPCOM, nsTypes,nsInit, nsGeckoStrings;
 
 type
   IGeckoCreateWindowTarget = interface
@@ -50,6 +62,26 @@ type
   ['{8852637D-BB99-4ADA-82C8-8B94AFEC23C6}']
     function GetCreateWindowTarget: IGeckoCreateWindowTarget;
   end;
+
+  { nsMyDirectoryServiceProvider }
+
+  { IDirectoryServiceProvider }
+
+  IDirectoryServiceProvider = class(TInterfacedObject,
+                                  nsIDirectoryServiceProvider)
+  private
+    FCacheParentDir: UTF8String;
+    FProfileDir: UTF8String;
+    procedure SetCacheDir(const AValue: UTF8String);
+    procedure SetProfileDir(const AValue: UTF8String);
+  public
+    function GetFile(const prop: PAnsiChar; out persistent: PRBool): nsIFile; safecall;
+    property CacheParentDir: UTF8String read FCacheParentDir write SetCacheDir;
+    property ProfileDir: UTF8String read FProfileDir write SetProfileDir;
+  end;
+
+var
+  GeckoEngineDirectoryService: IDirectoryServiceProvider;
 
 function InitWindowCreator: Boolean;
 
@@ -147,6 +179,45 @@ begin
   UseParameter(Obj);
   UseParameter(Addr);
   Result := HRESULT(NS_ERROR_FAILURE);
+end;
+
+{ IDirectoryServiceProvider }
+
+procedure IDirectoryServiceProvider.SetCacheDir(const AValue: UTF8String);
+begin
+  if FCacheParentDir=AValue then exit;
+  FCacheParentDir:=AValue;
+end;
+
+procedure IDirectoryServiceProvider.SetProfileDir(const AValue: UTF8String);
+begin
+  if FProfileDir=AValue then exit;
+  FProfileDir:=AValue;
+end;
+
+function IDirectoryServiceProvider.GetFile(const prop: PAnsiChar; out
+  persistent: PRBool): nsIFile; safecall;
+var
+  Local: nsILocalFile;
+begin
+  persistent:=true; //Only ask one time for each directory, it will be remembered
+                    //by the Gecko engine while running.
+  if prop = 'ProfD' then //Profile directory
+  begin
+    if FProfileDir<>'' then
+    begin
+      NS_NewLocalFile(NewString(FProfileDir).AString,false,Local);
+      Local.QueryInterface(nsILocalFile,Result);
+    end;
+  end else
+  if prop = 'cachePDir' then //Cache directory
+  begin
+    if FCacheParentDir<>'' then
+    begin
+      NS_NewLocalFile(NewString(FCacheParentDir).AString,false,Local);
+      Local.QueryInterface(nsILocalFile,Result);
+    end;
+  end;
 end;
 
 end.

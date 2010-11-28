@@ -53,7 +53,7 @@ unit GeckoBrowser;
 interface
 
 uses
-  {$IFNDEF LCL} Windows, Messages, {$ELSE} LclIntf, LMessages, LclType, LResources, {$ENDIF}
+  LclIntf, LMessages, LclType, LResources, Graphics,
   SysUtils, Classes, Controls, nsXPCOM,
   nsGeckoStrings, CallbackInterfaces, nsTypes, nsXPCOMGlue, BrowserSupports,
   nsXPCOM_std19
@@ -140,13 +140,13 @@ type
   TGeckoBrowserDOMEventHandler = procedure (Sender: TObject; aEvent:TGeckoDOMEvent) of object;
   TGeckoBrowserHistoryMove = procedure (Sender: TObject; aURI: nsIURI; out aContinue: LongBool; var Handled: Boolean) of object;
   TGeckoBrowserHistoryGoTo = procedure (Sender: TObject; aIndex: Longint; aURI: nsIURI; out aContinue: LongBool; var Handled: Boolean) of object;
+  TGeckoBrowserDirectoryService = procedure (Sender: TObject; const aDirectoryService: IDirectoryServiceProvider) of object;
 
   TGeckoBrowserHisoty = record
     URI: AnsiString;
     Title: WideString;
     IsSubFrame: Boolean;
   end;
-
 
     //TODO 2 -cTCustomGeckoBrowser: DocShell ƒvƒƒpƒeƒB‚ð’Ç‰Á
 
@@ -178,6 +178,7 @@ type
     FOnNewWindow: TGeckoBrowserNewWindow;
 
     FOnSetupProperties: TNotifyEvent;
+    FOnDirectoryService: TGeckoBrowserDirectoryService;
 
     FGeckoComponentsStartupSucceeded: boolean;
 
@@ -185,6 +186,9 @@ type
     FDisableJavaScript: Boolean;
     FInitializationStarted: Boolean;
     FInitialized: Boolean;
+
+    //Designtime graphic
+    FDesignTimeLogo: TPortableNetworkGraphic;
 
     function GetDisableJavaScript: Boolean;
     procedure SetDisableJavascript(const AValue: Boolean);
@@ -301,9 +305,13 @@ type
     property OnNewWindow: TGeckoBrowserNewWindow
       read FOnNewWindow write FOnNewWindow;
 
-    property OnSetupProperties: TNotifyEvent read FOnSetupProperties write FOnSetupProperties;
+    property OnSetupProperties: TNotifyEvent
+      read FOnSetupProperties write FOnSetupProperties;
+    property OnDirectoryService: TGeckoBrowserDirectoryService
+      read FOnDirectoryService write FOnDirectoryService;
     // misc base settings
-    property DisableJavaScript: Boolean read GetDisableJavaScript write SetDisableJavascript;
+    property DisableJavaScript: Boolean
+      read GetDisableJavaScript write SetDisableJavascript;
     property Initialized: Boolean read FInitialized;
   end;
 
@@ -373,6 +381,8 @@ type
     function SafeCallException(Obj: TObject; Addr: Pointer): HRESULT; override;
   end;
 
+  { TGeckoBrowser }
+
   TGeckoBrowser = class(TCustomGeckoBrowser)
   protected
     FBrowser: nsIWebBrowser;
@@ -406,7 +416,7 @@ type
     function DoCreateChromeWindow(
       chromeFlags: Longword): nsIWebBrowserChrome; override;
 
-    function GetURIString(): UTF8String;
+    function GetURIString: UTF8String;
   public
     constructor Create(AOwner: TComponent); override;
 
@@ -480,6 +490,7 @@ type
     property OnGoToIndex;
 
     property OnSetupProperties;
+    property OnDirectoryService;
 
     property DisableJavaScript;
 
@@ -680,6 +691,8 @@ procedure Register;
 
 {$IFNDEF LCL}
 {$R *.dcr}
+{$ELSE}
+{$R geckoresources.rc}
 {$ENDIF}
 
 implementation
@@ -1011,6 +1024,8 @@ begin
 end;
 
 constructor TCustomGeckoBrowser.Create(AOwner: TComponent);
+var
+  Logo: TResourceStream;
 begin
   inherited;
 
@@ -1019,8 +1034,11 @@ begin
   {$ENDIF}
   if not (csDesigning in ComponentState) then
   begin
-    GeckoComponentsStartup;
-    FGeckoComponentsStartupSucceeded := true;
+  end else begin
+    Logo:=TResourceStream.Create(HINSTANCE,'ID_GECKO_LOGO',pchar(RT_RCDATA));
+    FDesignTimeLogo:=TPortableNetworkGraphic.Create;
+    FDesignTimeLogo.LoadFromStream(Logo);
+    Logo.Free;
   end;
 end;
 
@@ -1031,6 +1049,7 @@ begin
   {$ENDIF}
   if not (csDesigning in ComponentState) then
   begin
+    FreeAndNil(FDesignTimeLogo);
     ShutdownWebBrowser;
 
     Chrome := nil;
@@ -1059,6 +1078,22 @@ end;
 
 procedure TCustomGeckoBrowser.Loaded;
 begin
+  if not (csDesigning in ComponentState) then
+  begin
+    if not Assigned(GeckoEngineDirectoryService) then begin
+      //This interface must be created as soon as possible because it
+      //will be callbacked when starting the XRE which happend just
+      //after the GeckoBrowser is created but before it is ready to be
+      //used. The setup of this component is a one time operation, called
+      //by the FIRST instance of GeckoBrowser and not called by the next
+      //ones; and its data persists while the program is running.
+      GeckoEngineDirectoryService:=IDirectoryServiceProvider.Create;
+    end;
+    if Assigned(FOnDirectoryService) then
+      FOnDirectoryService(Self,GeckoEngineDirectoryService);
+    GeckoComponentsStartup;
+    FGeckoComponentsStartupSucceeded := true;
+  end;
   inherited Loaded;
   DoInitializationIfNeeded;
 end;
@@ -1823,7 +1858,10 @@ begin
   if csDesigning in ComponentState then
   begin
     rc := ClientRect;
-    Canvas.FillRect(rc);
+    if Assigned(FDesignTimeLogo) then
+      Canvas.StretchDraw(rc,FDesignTimeLogo)
+    else
+      Canvas.FillRect(rc);
   end else
   begin
     baseWin := FWebBrowser as nsIBaseWindow;
