@@ -432,7 +432,7 @@ begin
     //for a nsIWebProgressListener2. Just answering nothing does not
     //produce an "error".
     {$IFDEF DEBUG}
-    OutputDebugString(GUIDToString(uuid);
+    OutputDebugString('Missing interface in TWeakReference.QueryReferent '+GUIDToString(uuid));
     {$ENDIF}
     //raise EGeckoError.Create('QueryReference Error');
     //System.Error(reIntfCastError);
