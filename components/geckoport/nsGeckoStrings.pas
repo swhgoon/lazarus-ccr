@@ -267,7 +267,11 @@ constructor TIStringImpl.Create(src: WideString);
 begin
   inherited Create;
   if NS_FAILED(NS_StringContainerInit(FContainer)) then
-    Error(reOutOfMemory);
+  begin
+    //Maybe the engine is being unloaded, so just skip error.
+    //Error(reOutOfMemory);
+    FillByte(FContainer,sizeof(FContainer),0);
+  end;
   FOwn := True;
   FString := @FContainer;
   Assign(src);
