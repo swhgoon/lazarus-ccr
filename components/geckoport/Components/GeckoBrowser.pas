@@ -1888,7 +1888,7 @@ begin
   Result := Handle;
 {$ENDIF}
 {$IFDEF LCLCarbon}
-  Result := TCarbonWindow(Handle).Window;
+  Result := THANDLE(TCarbonWindow(Handle).Window);
 {$ENDIF}
 {$IFDEF LCLCocoa}
   ARect := NSView(TCocoaWindow(Handle).contentView).visibleRect;
@@ -1898,7 +1898,7 @@ begin
   ARect.origin.y := 15;
   AView := NSView.alloc.initWithFrame(ARect);
   NSView(TCocoaWindow(Handle).contentView).addSubView(AView);
-  Result := HANDLE(AView);
+  Result := THANDLE(AView);
 {$ENDIF}
 {$IFDEF LCLGtk}
   Result := Handle;

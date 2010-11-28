@@ -168,12 +168,17 @@ var
 begin
    {$IFDEF MSWINDOWS}Result := Handle;{$ENDIF}
 
-   {$IFDEF LCLCarbon}Result := TCarbonWindow(Handle).Window;{$ENDIF}
+   {$IFDEF LCLCarbon}Result := THANDLE(TCarbonWindow(Handle).Window);{$ENDIF}
     //Carbon doesn't work but leave in so package compiles in Carbon IDE.
 
 //   {$IFDEF LCLCocoa}Result := Pointer(TCocoaForm(Handle).MainWindowView.superview);{$ENDIF}
       //Old PasCocoa-based widgetset.
 
+//NSLog(NSStringUtf8(FloatToStr(NSView(TCocoaWindow(Handle).contentView).frame.size.width)));
+   {$IFDEF LCLCocoa}Result := THANDLE(TCocoaWindow(Handle).contentView);{$ENDIF}
+    //New ObjC-based Cocoa widgetset.
+
+(*
     //Does adding a view work better than using window's view (below)? No, it doesn't.
    {$IFDEF LCLCocoa}
     ARect := NSView(TCocoaWindow(Handle).contentView).visibleRect;
@@ -183,12 +188,9 @@ begin
     ARect.origin.y := 15;
     AView := NSView.alloc.initWithFrame(ARect);
     NSView(TCocoaWindow(Handle).contentView).addSubView(AView);
-    Result := HANDLE(AView);
+    Result := THANDLE(AView);
    {$ENDIF}
-
-//NSLog(NSStringUtf8(FloatToStr(NSView(TCocoaWindow(Handle).contentView).frame.size.width)));
-//   {$IFDEF LCLCocoa}Result := Pointer(TCocoaWindow(Handle).contentView);{$ENDIF}
-    //New ObjC-based Cocoa widgetset.
+*)
 
    {$IFDEF LCLGtk}Result := Handle;{$ENDIF}  //Is Handle same as GTK Window?
 
