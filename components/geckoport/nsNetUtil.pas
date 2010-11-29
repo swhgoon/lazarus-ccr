@@ -39,7 +39,7 @@ unit nsNetUtil;
 interface
 
 uses
-  nsXPCOM, nsConsts, nsTypes, nsGeckoStrings;
+  nsXPCOM, nsTypes, nsGeckoStrings;
 
 function NS_GetIOService: nsIIOService;
 

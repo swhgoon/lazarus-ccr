@@ -45,7 +45,7 @@ unit nsXPCOMGlue;
 interface
 
 uses
-  nsXPCOM, nsTypes, SysUtils;
+  nsXPCOM, nsTypes, nsGeckoStrings, SysUtils;
 
 const
 (*
@@ -301,6 +301,21 @@ type
     function GetWeakReference: nsIWeakReference; safecall;
   end;
 
+  { IDirectoryServiceProvider }
+
+  IDirectoryServiceProvider = class(TInterfacedObject,
+                                  nsIDirectoryServiceProvider)
+  private
+    FCacheParentDir: UTF8String;
+    FProfileDir: UTF8String;
+    procedure SetCacheDir(const AValue: UTF8String);
+    procedure SetProfileDir(const AValue: UTF8String);
+  public
+    function GetFile(const prop: PAnsiChar; out persistent: PRBool): nsIFile; safecall;
+    property CacheParentDir: UTF8String read FCacheParentDir write SetCacheDir;
+    property ProfileDir: UTF8String read FProfileDir write SetProfileDir;
+  end;
+
   EGeckoException = class (Exception);
   EGeckoError = class(EGeckoException); //Gecko error. It is an error.
   EGeckoHint = class(EGeckoException);  //Gecko Hint. It does not necessary means an error. They could be hidden.
@@ -315,6 +330,8 @@ resourcestring
   SNoSuchSpecialDir = 'Cannot get the Special Directory ''%s.'' ';
   SNoSuchInterface = 'Cannot get the Interface ''%s.'' ';
 
+var
+  GeckoEngineDirectoryService: IDirectoryServiceProvider;
 
 implementation
 
@@ -324,6 +341,7 @@ uses
 var
   sCompMgr: nsIComponentManager = nil;
   sSrvMgr: nsIServiceManager = nil;
+
 
 procedure NS_CreateInstance(const CID, IID: TGUID; out Intf);
 var
@@ -551,6 +569,45 @@ procedure TWeakReferenceInternal.QueryReferent(constref iid: TGUID; out intf);
 begin
   if not Supports(FReferent.FTarget, iid, intf) then
     System.Error(reIntfCastError);
+end;
+
+{ IDirectoryServiceProvider }
+
+procedure IDirectoryServiceProvider.SetCacheDir(const AValue: UTF8String);
+begin
+  if FCacheParentDir=AValue then exit;
+  FCacheParentDir:=AValue;
+end;
+
+procedure IDirectoryServiceProvider.SetProfileDir(const AValue: UTF8String);
+begin
+  if FProfileDir=AValue then exit;
+  FProfileDir:=AValue;
+end;
+
+function IDirectoryServiceProvider.GetFile(const prop: PAnsiChar; out
+  persistent: PRBool): nsIFile; safecall;
+var
+  Local: nsILocalFile;
+begin
+  persistent:=true; //Only ask one time for each directory, it will be remembered
+                    //by the Gecko engine while running.
+  if prop = 'ProfD' then //Profile directory
+  begin
+    if FProfileDir<>'' then
+    begin
+      NS_NewLocalFile(NewString(FProfileDir).AString,false,Local);
+      Local.QueryInterface(nsILocalFile,Result);
+    end;
+  end else
+  if prop = 'cachePDir' then //Cache directory
+  begin
+    if FCacheParentDir<>'' then
+    begin
+      NS_NewLocalFile(NewString(FCacheParentDir).AString,false,Local);
+      Local.QueryInterface(nsILocalFile,Result);
+    end;
+  end;
 end;
 
 end.

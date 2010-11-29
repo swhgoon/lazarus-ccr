@@ -130,6 +130,10 @@ type
   EGeckoBrowserNavigationError = class(EGeckoBrowserError)
   end;
 
+  {$PUSH}{$HINTS OFF} //Redefinition to expose the interface
+  IDirectoryServiceProvider=nsXPCOMGlue.IDirectoryServiceProvider;
+  {$POP}
+
   TGeckoBrowserContextMenu = procedure (Sender: TObject; aInfo: TCtxMenuInfo) of object;
   TGeckoBrowserStatusChange = procedure (Sender: TObject; aMessage: WideString) of object;
   TGeckoBrowserNewWindow = procedure (Sender: TObject; aChromeFlags: Longword; var newWindow: TCustomGeckoBrowser) of object;
@@ -1091,8 +1095,12 @@ begin
     end;
     if Assigned(FOnDirectoryService) then
       FOnDirectoryService(Self,GeckoEngineDirectoryService);
-    GeckoComponentsStartup;
-    FGeckoComponentsStartupSucceeded := true;
+    try
+      GeckoComponentsStartup;
+      FGeckoComponentsStartupSucceeded := true;
+    except
+      FGeckoComponentsStartupSucceeded := false;
+    end;
   end;
   inherited Loaded;
   DoInitializationIfNeeded;
@@ -1113,6 +1121,8 @@ begin
   OutputDebugString('TGeckoBrowser.DestroyWnd');
   {$ENDIF}
   inherited DestroyWnd;
+  if not FGeckoComponentsStartupSucceeded then
+    FreeAndNIL(GeckoEngineDirectoryService);
 end;
 
 procedure TCustomGeckoBrowser.GoBack;
@@ -1199,7 +1209,8 @@ end;
 
 procedure TCustomGeckoBrowser.LoadURI(const uri: WideString);
 begin
-  InnerLoadURI(uri, 0, nil, nil, nil);
+  if FGeckoComponentsStartupSucceeded then
+    InnerLoadURI(uri, 0, nil, nil, nil);
 end;
 
 procedure TCustomGeckoBrowser.LoadURI(const uri: WideString;
@@ -1864,8 +1875,15 @@ begin
       Canvas.FillRect(rc);
   end else
   begin
-    baseWin := FWebBrowser as nsIBaseWindow;
-    baseWin.Repaint(true);
+    if FGeckoComponentsStartupSucceeded then
+    begin
+      baseWin := FWebBrowser as nsIBaseWindow;
+      baseWin.Repaint(true);
+    end
+    else
+    begin
+      Canvas.TextOut(0,0,SGeckoBrowserInitError);
+    end;
   end;
   inherited;
 end;
@@ -1948,7 +1966,7 @@ end;
 
 procedure TCustomGeckoBrowser.DoInitializationIfNeeded;
 begin
-  if not FInitializationStarted then
+  if not FInitializationStarted and FGeckoComponentsStartupSucceeded then
     if not (csDesigning in ComponentState) then
     begin
       FInitializationStarted:=true;

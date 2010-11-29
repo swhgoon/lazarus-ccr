@@ -19,7 +19,7 @@ function NS_GetErrorStringBundleKey(aError: nsresult): AnsiString;
 implementation
 
 uses
-  nsInit, nsXPCOMGlue, nsXPCOM, nsConsts, nsError;
+  nsXPCOMGlue, nsXPCOM, nsError;
 
 type
   nsIErrorService = interface;

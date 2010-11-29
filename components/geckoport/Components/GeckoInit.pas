@@ -8,17 +8,20 @@ procedure GeckoComponentsShutdown;
 implementation
 
 uses
-  nsXPCOM, nsInit, nsGeckoStrings, nsTypes, nsConsts, nsErrorUtils, nsError,
+  nsXPCOM, nsInit, nsTypes, nsErrorUtils, nsError,
   nsXPCOMGlue, nsXRE {$IFDEF MSWINDOWS}, Windows {$ENDIF};
 
 var
   sInitCount: Integer = 0;
 
 procedure GeckoComponentsStartup(XPComPath: string = '');
+const
+  NS_DIRECTORY_SERVICE_CID: TGUID = '{f00152d0-b40b-11d3-8c9c-000064657374}';
 var
   rv: nsresult;
-
   errorStr: AnsiString;
+  ServiceManager: nsIServiceManager;
+  DirectoryService: nsIDirectoryService;
 begin
   if sInitCount>0 then
   begin
@@ -34,6 +37,13 @@ begin
     XPCOMGlueShutdown;
     raise EGeckoError.Create(string(errorStr));
   end;
+
+  //Register the service via Service Manager.
+  if not Assigned(GeckoEngineDirectoryService) then
+    GeckoEngineDirectoryService:=IDirectoryServiceProvider.Create;
+  NS_GetServiceManager(ServiceManager);
+  ServiceManager.GetService(NS_DIRECTORY_SERVICE_CID, DirectoryService,DirectoryService);
+  DirectoryService.RegisterProvider(GeckoEngineDirectoryService);
 
   Inc(sInitCount);
 end;

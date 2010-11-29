@@ -3,7 +3,7 @@ unit nsXRE;
 interface
 
 uses
-  nsTypes, nsXPCOM, nsInit, CallbackInterfaces;
+  nsTypes, nsXPCOM, nsInit;
 
 type
   PXREAppData = ^nsXREAppData;
@@ -406,10 +406,10 @@ begin
     XRE_UnloadGRE();
     Exit;
   end;
-  if not Assigned(GeckoEngineDirectoryService) then
-    GeckoEngineDirectoryService:=IDirectoryServiceProvider.Create;
 //  NS_LogInit();
-  Result := XRE_InitEmbedding(xulDir, appDir, GeckoEngineDirectoryService, nil, 0);
+  //Warning, do not pass GeckoEngineDirectoryService to XRE_InitEmbedding, it
+  //will crash Gecko versions prior to 1.9.2.x with AV in line "basewin.Create"
+  Result := XRE_InitEmbedding(xulDir, appDir, nil, nil, 0);
 //  NS_LogTerm();
 end;
 

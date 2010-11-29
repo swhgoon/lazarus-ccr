@@ -500,7 +500,7 @@ end;
 function NS_GetServiceManager(out servMgr: nsIServiceManager): nsresult;
 begin
   if Assigned(xpcomFunc.getServiceManager) then
-    Result := xpcomFunc.getServiceManager(servMgr)
+    Result := nsresult(xpcomFunc.getServiceManager(servMgr))
   else
     Result := NS_ERROR_FAILURE;
 end;
@@ -534,7 +534,7 @@ function NS_NewLocalFile(const path: nsAString;
                          out newFile: nsILocalFile): nsresult;
 begin
   if Assigned(xpcomFunc.newLocalFile) then
-    Result := xpcomFunc.newLocalFile(path, followLinks, newFile)
+    Result := nsresult(xpcomFunc.newLocalFile(path, followLinks, newFile))
   else
     Result := NS_ERROR_FAILURE;
 end;
@@ -544,7 +544,7 @@ function NS_NewNativeLocalFile(const path: nsACString;
                                out newFile: nsILocalFile): nsresult;
 begin
   if Assigned(xpcomFunc.newNativeLocalFile) then
-    Result := xpcomFunc.newNativeLocalFile(path, followLinks, newFile)
+    Result := nsresult(xpcomFunc.newNativeLocalFile(path, followLinks, newFile))
   else
     Result := NS_ERROR_FAILURE;
 end;
@@ -553,7 +553,7 @@ function NS_RegisterXPCOMExitRoutine(exitRoutine: XPCOMExitRoutine;
                                      priority: Longword): nsresult;
 begin
   if Assigned(xpcomFunc.registerXPCOMExitRoutine) then
-    Result := xpcomFunc.registerXPCOMExitRoutine(exitRoutine, priority)
+    Result := nsresult(xpcomFunc.registerXPCOMExitRoutine(exitRoutine, priority))
   else
     Result := NS_ERROR_FAILURE;
 end;
@@ -561,7 +561,7 @@ end;
 function NS_UnregisterXPCOMExitRoutine(exitRoutine: XPCOMExitRoutine): nsresult;
 begin
   if Assigned(xpcomFunc.unregisterXPCOMExitRoutine) then
-    Result := xpcomFunc.unregisterXPCOMExitRoutine(exitRoutine)
+    Result := nsresult(xpcomFunc.unregisterXPCOMExitRoutine(exitRoutine))
   else
     Result := NS_ERROR_FAILURE;
 end;
