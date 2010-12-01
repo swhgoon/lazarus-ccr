@@ -696,7 +696,9 @@ procedure Register;
 {$IFNDEF LCL}
 {$R *.dcr}
 {$ELSE}
+{$IFNDEF DARWIN}
 {$R geckoresources.rc}
+{$ENDIF}
 {$ENDIF}
 
 implementation
