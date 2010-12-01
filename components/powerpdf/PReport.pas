@@ -473,6 +473,7 @@ type
   { TPRImage }
   TPRImage = class(TPRItem)
   private
+    FSharedName: string;
     procedure SetStretch(Value: boolean);
   protected
     FPicture: TPicture;
@@ -484,6 +485,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    property SharedName: string read FSharedName write FSharedName;
   published
     property Picture: TPicture read FPicture write SetPicture;
     property SharedImage: boolean read FSharedImage write FSharedImage;
@@ -2312,14 +2314,16 @@ var
   FIdx: integer;
 begin
   if (FPicture = nil) or (FPicture.Graphic = nil) or
-   (FPicture.Graphic.Empty) or not (FPicture.Graphic is TBitmap) then
+   (FPicture.Graphic.Empty) {or not (FPicture.Graphic is TFPImageBitmap)} then
     Exit;
   FDoc := ACanvas.PdfCanvas.Doc;
   if SharedImage then
   begin
     FXObjectName := Self.Name;
+    if FXObjectName='' then
+      FXObjectName := FSharedName;
     if FDoc.GetXObject(FXObjectName) = nil then
-      FDoc.AddXObject(FXObjectName, CreatePdfImage(FPicture.Graphic, 'Pdf-Bitmap'));
+      FDoc.AddXObject(FXObjectName, CreatePdfImage(FPicture.Graphic, 'Pdf-Bitmap', FDoc.ObjectMgr));
   end
   else
   begin
@@ -2334,7 +2338,7 @@ begin
       if FIdx >= MAX_IMAGE_NUMBER then
         FIdx := 0;
     end;
-    FDoc.AddXObject(FXObjectName, CreatePdfImage(FPicture.Graphic, 'Pdf-Bitmap'));
+    FDoc.AddXObject(FXObjectName, CreatePdfImage(FPicture.Graphic, 'Pdf-Bitmap', FDoc.ObjectMgr));
   end;
   with ARect, ACanvas.PdfCanvas do
     if FStretch then

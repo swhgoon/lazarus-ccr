@@ -346,6 +346,7 @@ type
     property Info: TPdfInfo read GetInfo;
     property Root: TPdfCatalog read GetRoot;
     property OutlineRoot: TPdfOutlineRoot read GetOutlineRoot;
+    property ObjectMgr: TPdfXRef read FXRef;
     property DefaultPageWidth: word read FDefaultPageWidth write FDefaultPageWidth;
     property DefaultPageHeight: word read FDefaultPageHeight write FDefaultPageHeight;
     property CompressionMethod: TPdfCompressionMethod

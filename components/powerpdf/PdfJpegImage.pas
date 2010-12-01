@@ -35,13 +35,13 @@ type
   { TPdfJpegImage }
   TPdfJpegImage = class(TPdfImageCreator)
   public
-    function CreateImage(AImage: TGraphic): TPdfImage; override;
+    function CreateImage(AImage: TGraphic; ObjectMgr: TPdfObjectMgr=nil): TPdfImage; override;
   end;
 
 implementation
 
 // CreateImage
-function TPdfJpegImage.CreateImage(AImage: TGraphic): TPdfImage;
+function TPdfJpegImage.CreateImage(AImage: TGraphic; ObjectMgr: TPdfObjectMgr=nil): TPdfImage;
 begin
   // check whether specified graphic is valid image.
   if not (AImage is TJpegImage) then
