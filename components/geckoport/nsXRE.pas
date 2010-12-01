@@ -394,7 +394,8 @@ begin
     Exit;
   end;
 {$ELSE}
-  NS_StrCopy(appPath, PAnsiChar(ExtractFilePath(ParamStr(0))));
+//  NS_StrCopy(appPath, PAnsiChar(ExtractFilePath(ParamStr(0))));
+  NS_StrCopy(appPath, PAnsiChar(ExtractFilePath(ExpandFileName(ParamStr(0)))));
 {$ENDIF}
 {$IFNDEF FPC}
   Result := NS_NewNativeLocalFile(NewCString(appPath).ACString, False, appDir);
