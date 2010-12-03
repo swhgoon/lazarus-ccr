@@ -3,6 +3,9 @@ program ChromeWin;
 uses
 {$IFDEF LCL}
   Interfaces,
+ {$IFDEF MSWINDOWS}
+  Math,
+ {$ENDIF}
 {$ENDIF}
   Forms,
   nsXRE,
@@ -16,6 +19,13 @@ uses
 var
   navigation: nsIWebNavigation;
 begin
+{$IFDEF FPC}
+ {$IFDEF MSWINDOWS}
+  //For now - disable all floating point exceptions or XULRUNNER will crash.
+  SetExceptionMask([exInvalidOp,exDenormalized,exZeroDivide,exOverflow,exUnderflow,exPrecision]);
+ {$ENDIF}
+{$ENDIF}
+
   Application.Initialize;
 
   XRE_Startup('1.9', True, '2.0', False);
