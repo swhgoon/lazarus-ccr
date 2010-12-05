@@ -20,6 +20,8 @@ unit cparserutils;
 
 interface
 
+{$ifdef fpc}{$mode delphi}{$h+}{$endif}
+
 uses
   cparsertypes;
 
