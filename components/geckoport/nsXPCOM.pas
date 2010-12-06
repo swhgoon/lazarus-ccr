@@ -2927,6 +2927,15 @@ type
     procedure SizeToContent(); safecall;
   end;
 
+  {$IFDEF XULRUNNER2}
+  nsIDOMWindow2 = interface(nsIDOMWindow)
+  ['{a6cf906b-15b3-11d2-932e-00805f8add32}']
+    function GetWindowRoot(): nsIDOMEventTarget; safecall;
+    property WindowRoot: nsIDOMEventTarget read GetWindowRoot;
+    function GetApplicationCache(): nsIDOMOfflineResourceList; safecall;
+    property ApplicationCache: nsIDOMOfflineResourceList read GetApplicationCache;
+  end;
+  {$ELSE XULRUNNER2}
   nsIDOMWindow2 = interface(nsIDOMWindow)
   ['{73c5fa35-3add-4c87-a303-a850ccf4d65a}']
     function GetWindowRoot(): nsIDOMEventTarget; safecall;
@@ -2934,6 +2943,7 @@ type
     function GetApplicationCache(): nsIDOMOfflineResourceList; safecall;
     property ApplicationCache: nsIDOMOfflineResourceList read GetApplicationCache;
   end;
+  {$ENDIF}
 
   nsIDOMWindowCollection = interface(nsISupports)
   ['{a6cf906f-15b3-11d2-932e-00805f8add32}']
@@ -3829,6 +3839,24 @@ type
     function GetWeakReference(): nsIWeakReference; safecall;
   end;
 
+  {$IFDEF XULRUNNER2}
+  nsIWebBrowser = interface(nsISupports)
+  ['{33e9d001-caab-4ba9-8961-54902f197202}']
+    procedure AddWebBrowserListener(aListener: nsIWeakReference; constref aIID: TGUID); safecall;
+    procedure RemoveWebBrowserListener(aListener: nsIWeakReference; constref aIID: TGUID); safecall;
+    function GetContainerWindow(): nsIWebBrowserChrome; safecall;
+    procedure SetContainerWindow(aContainerWindow: nsIWebBrowserChrome); safecall;
+    property ContainerWindow: nsIWebBrowserChrome read GetContainerWindow write SetContainerWindow;
+    function GetParentURIContentListener(): nsIURIContentListener; safecall;
+    procedure SetParentURIContentListener(aParentURIContentListener: nsIURIContentListener); safecall;
+    property ParentURIContentListener: nsIURIContentListener read GetParentURIContentListener write SetParentURIContentListener;
+    function GetContentDOMWindow(): nsIDOMWindow; safecall;
+    property ContentDOMWindow: nsIDOMWindow read GetContentDOMWindow;
+    function GetIsActive: PRBool; safecall;
+    procedure SetIsActive(aIsActive: PRBool); safecall;
+    property IsActive: PRBool read GetIsActive write SetIsActive;
+  end;
+  {$ELSE XULRUNNER2}
   nsIWebBrowser = interface(nsISupports)
   ['{69e5df00-7b8b-11d3-af61-00a024ffc08c}']
     procedure AddWebBrowserListener(aListener: nsIWeakReference; constref aIID: TGUID); safecall;
@@ -3842,6 +3870,7 @@ type
     function GetContentDOMWindow(): nsIDOMWindow; safecall;
     property ContentDOMWindow: nsIDOMWindow read GetContentDOMWindow;
   end;
+  {$ENDIF}
 
   nsIWebBrowserChrome = interface(nsISupports)
   ['{ba434c60-9d52-11d3-afb0-00a024ffc08c}']

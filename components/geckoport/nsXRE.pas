@@ -120,6 +120,12 @@ var
               aAppDirProvider: nsIDirectoryServiceProvider;
               const aStaticComponents: PStaticModuleInfoArray;
               aStaticComponentCount: PRUint32): nsresult; cdecl;
+  {$IFDEF XULRUNNER2}
+  initEmbedding2Func :
+    function (aLibXulDirectory: nsILocalFile;
+              aAppDirectory: nsILocalFile;
+              aAppDirProvider: nsIDirectoryServiceProvider): nsresult; cdecl;
+  {$ENDIF}
   notifyProfileFunc : procedure (); cdecl;
   termEmbeddingFunc : procedure (); cdecl;
   createAppDataFunc :
@@ -291,6 +297,9 @@ begin
   getStaticComponentsFunc := GetProcAddress(xulModule, 'XRE_GetStaticComponents');
   lockProfileDirectoryFunc := GetProcAddress(xulModule, 'XRE_LockProfileDirectory');
   initEmbeddingFunc := GetProcAddress(xulModule, 'XRE_InitEmbedding');
+  {$IFDEF XULRUNNER2}
+  initEmbedding2Func := GetProcAddress(xulModule, 'XRE_InitEmbedding2');
+  {$ENDIF}
   notifyProfileFunc := GetProcAddress(xulModule, 'XRE_NotifyProfile');
   termEmbeddingFunc := GetProcAddress(xulModule, 'XRE_TermEmbedding');
   createAppDataFunc := GetProcAddress(xulModule, 'XRE_CreateAppData');
@@ -478,6 +487,13 @@ begin
             aStaticComponents,
             aStaticComponentCount)
   else
+  {$IFDEF XULRUNNER2}
+    if Assigned(initEmbedding2Func) then
+      Result := initEmbedding2Func(aLibXulDirectory,
+              aAppDirectory,
+              aAppDirProvider)
+  else
+  {$ENDIF}
     Result := NS_ERROR_NOT_IMPLEMENTED;
 end;
 
