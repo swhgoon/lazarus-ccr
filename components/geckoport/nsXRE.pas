@@ -171,6 +171,12 @@ var
   vers: TGREVersionRange;
   xpcomPath: array[0..MAX_PATH] of AnsiChar;
   lastSlash: PAnsiChar;
+  {$IFDEF LINUX}
+  EachPath: string;
+  LDPATH: string;
+  LDPATHItems: TStringList;
+  j: integer;
+  {$ENDIF}
 begin
 {$IFDEF MSWINDOWS}
   vers.lower := lowerVer;
@@ -232,7 +238,25 @@ begin
 //  NS_StrLCopy(GREPath, '/Applications/Firefox.app/Contents/MacOS/libxpcom.dylib', GREPathLen);
   NS_StrLCopy(GREPath, '/Library/Frameworks/XUL.framework/Versions/Current/libxpcom.dylib', GREPathLen);
  {$ELSE}  //Linux
-  NS_StrLCopy(GREPath, '/usr/lib/xulrunner-1.9.1.4/libxpcom.so', GREPathLen);
+  //NS_StrLCopy(GREPath, '/home/user/xulrunner/libxpcom.so', GREPathLen);
+  Result:=NS_ERROR_NOT_AVAILABLE;
+  LDPATH:=GetEnvironmentVariable('LD_LIBRARY_PATH');
+  LDPATHItems:=TStringList.Create;
+  LDPATHItems.StrictDelimiter:=true;
+  LDPATHItems.Delimiter:=PathSeparator;
+  LDPATHItems.DelimitedText:=LDPATH;
+  for j := 0 to LDPATHItems.Count-1 do begin
+    EachPath:=LDPATHItems[j];
+    if Length(EachPath)>0 then begin
+      if EachPath[Length(EachPath)]<>PathDelim then EachPath:=EachPath+PathDelim;
+      if FileExists(EachPath+'libxpcom.so') and FileExists(EachPath+'dependentlibs.list') then begin
+        NS_StrLCopy(GREPath, pchar(EachPath+'libxpcom.so'), GREPathLen);
+        Result:=NS_OK;
+        break;
+      end;
+    end;
+  end;
+  LDPATHItems.Free;
  {$ENDIF}
   Result := NS_OK;
 {$ENDIF}
