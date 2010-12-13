@@ -16444,10 +16444,15 @@ begin
   if tsVCLDragging in FStates then
     ImageList_DragShowNolock(False);
   {$endif}
+  //todo: workaround to bug 18211. Remove when fixed.
+  {$ifndef LCLCarbon}
   if csPaintCopy in ControlState then
     FUpdateRect := ClientRect
   else
-    FUpdateRect:=Message.PaintStruct^.rcPaint;
+    FUpdateRect := Message.PaintStruct^.rcPaint;
+  {$else}
+  FUpdateRect := ClientRect;
+  {$endif}
 
   {$ifdef DEBUG_VTV}Logger.Send([lcPaint],'FUpdateRect', FUpdateRect);{$endif}
 
