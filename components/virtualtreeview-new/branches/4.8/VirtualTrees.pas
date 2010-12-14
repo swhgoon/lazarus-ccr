@@ -15478,7 +15478,7 @@ begin
     SB_THUMBTRACK:
       begin
         DoStateChange([tsThumbTracking]);
-        {$ifdef LCLQt}
+        {$if DEFINED(LCLQt) OR DEFINED(LCLCarbon)}
         if UseRightToLeftAlignment then
           SetOffsetX(-Integer(FRangeX) + ClientWidth + Message.Pos)
         else
@@ -16775,7 +16775,7 @@ begin
     SB_THUMBTRACK:
       begin
         DoStateChange([tsThumbTracking]);
-        {$ifdef LCLQt}
+        {$if DEFINED(LCLQt) OR DEFINED(LCLCarbon)}
         SetOffsetY(-Message.Pos);
         {$else}
         SetOffsetY(-GetRealScrollPosition);
