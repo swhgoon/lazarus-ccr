@@ -395,6 +395,18 @@ begin
 end;
 
 procedure TCustomRxCalendar.CreateParams(var Params: TCreateParams);
+const
+  ClassStylesOff = CS_VREDRAW or CS_HREDRAW;
+begin
+  inherited CreateParams(Params);
+  with Params do
+  begin
+    WindowClass.Style := WindowClass.Style and DWORD(not ClassStylesOff);
+    Style := Style or WS_VSCROLL or WS_HSCROLL or WS_CLIPCHILDREN;
+  end;
+end;
+
+(*
 begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or WS_BORDER;
@@ -403,6 +415,7 @@ begin
   AddBiDiModeExStyle(Params.ExStyle);
 {$ENDIF}
 end;
+*)
 
 procedure TCustomRxCalendar.Change;
 begin
