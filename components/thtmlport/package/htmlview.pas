@@ -4336,7 +4336,9 @@ end;
 procedure ThtmlViewer.PaintWindow(DC: HDC);
 begin
 PaintPanel.RePaint;
-BorderPanel.RePaint;
+{$IFNDEF LCL}
+BorderPanel.RePaint;  //Causes endless loop for some reason on gtk2.
+{$ENDIF}
 VScrollbar.RePaint;   
 HScrollbar.RePaint;  
 end;
