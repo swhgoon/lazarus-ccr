@@ -3564,22 +3564,23 @@ try
       FreeAndNil(HeadViewer);
       FreeAndNil(FootViewer);
       if hRgnClip <> 0 then DeleteObject(hrgnClip);
+{$IFNDEF LCL}
       if not PrinterOpen then   
         begin
-{$IFNDEF LCL}
         if (FromPage > FPage) then
           vwPrinter.Abort
         else
           vwPrinter.EndDoc;
         vwSetPrinter(OldPrinter);
         FreeAndNil(vwP);
-{$ELSE}
-        if (FromPage > FPage) then
-          Printer.Abort
-        else
-          Printer.EndDoc;
-{$ENDIF}
         end;
+{$ELSE}
+      if (FromPage > FPage) then
+        Printer.Abort
+      else
+        Printer.EndDoc;
+      vwP := nil;
+{$ENDIF}
       Dec(FPage);
       end;
   finally
@@ -3618,6 +3619,7 @@ if Assigned(vwP) then
 {$ELSE}
   if vwP.Printing then
     Printer.EndDoc;
+  vwP := nil;
 {$ENDIF}
   end;
 end;
@@ -3634,6 +3636,7 @@ if Assigned(vwP) then
 {$ELSE}
   if vwP.Printing then
     Printer.Abort;
+  vwP := nil;
 {$ENDIF}
   end;
 end;
@@ -4349,7 +4352,11 @@ var
   HTML: string;
   format : UINT;
 
+{$IFNDEF LCL}
   procedure copyFormatToClipBoard(const source: string; format : UINT);
+{$ELSE}  //changed to var to use with AddFormat below
+  procedure copyFormatToClipBoard(var source: string; format : UINT);
+{$ENDIF}  
   // Put SOURCE on the clipboard, using FORMAT as the clipboard format
   // Based on http://www.lorriman.com/programming/cf_html.html
   var
@@ -4365,6 +4372,8 @@ var
       copymemory(lp, pchar(source), length(source)+1);
       globalunlock(gMem);
       setClipboarddata(format, gMem);
+{$ELSE}
+      clipboard.AddFormat(format, source[1], Length(source));
 {$ENDIF}
     finally
       clipboard.Close;
@@ -4579,7 +4588,11 @@ HTML := HTML+EndFrag;
 {Add the header to start}
 HTML := GetHeader(HTML)+HTML;
 
+{$IFNDEF LCL}
 format := RegisterClipboardFormat('HTML Format'); {not sure this is necessary}
+{$ELSE}
+format := RegisterClipboardFormat('text/html');
+{$ENDIF}
 CopyFormatToClipBoard(HTML, format);
 end;
 
@@ -5105,7 +5118,8 @@ with FViewer do
   if FSectionList.Printing then
     Exit;    {no background}
 
-  ARect := Canvas.ClipRect;
+//  ARect := Canvas.ClipRect;  //bug? get invalid DC with Carbon
+  ARect := ACanvas.ClipRect;
   Image := FSectionList.BackgroundBitmap;
   if FSectionList.ShowImages and Assigned(Image) then
     begin

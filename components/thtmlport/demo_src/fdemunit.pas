@@ -190,6 +190,9 @@ for I := 0 to MaxHistories-1 do
   MainMenu1.Items.Insert(0, AppMenu);
   MainMenu1.Items.Remove(About1);  //Remove About as separate menu
   AppMenu.Add(About1);  //Add About as item in application menu
+  
+  Find1.ShortCut := ShortCut(VK_F, [ssMeta]);
+  Copy1.ShortCut := ShortCut(VK_C, [ssMeta]);
 {$ENDIF}
 
 {$IFDEF MSWINDOWS}

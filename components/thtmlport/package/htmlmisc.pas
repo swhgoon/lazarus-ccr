@@ -410,7 +410,8 @@ const
   PHYSICALOFFSETY = 113;
 
   BM_SETCHECK = $00F1;
-  NUMCOLORS = 24;  
+  PLANES = 14;
+  NUMCOLORS = 24;
   STRETCH_DELETESCANS = 3;
   CP_ACP = 0;  {ANSI code page}
   CP_OEMCP = 1;  {OEM code page }
@@ -807,6 +808,7 @@ begin
 {$IFDEF MSWINDOWS}
   Result := Windows.SetViewportExtEx(DC, XExt, YExt, Size);
 {$ELSE}
+//  Result := LclIntf.SetViewportExtEx(DC, XExt, YExt, Size);
   Result := True;
 {$ENDIF}
 end;
@@ -862,7 +864,15 @@ end;
 function GetDeviceCaps(DC: HDC; Index: Integer): Integer;
 begin
   if DC <> 1 then
-    Result := LclIntf.GetDeviceCaps(DC, Index)
+    begin
+     {First check for Index values that may not be implemented in widgetset}
+    if Index = PLANES then
+      Result := 1
+    else if Index = NUMCOLORS then
+      Result := 100  {Return large enough value so not BxW device}
+    else      
+      Result := LclIntf.GetDeviceCaps(DC, Index);
+    end
   else  //Assume dummy DC is for CUPS printer canvas.
     begin
     case Index of 

@@ -1608,6 +1608,7 @@ inherited Destroy;
 end;
 
 procedure ClipBuffer.CopyToClipboard;   
+{$IFNDEF LCL}
 {Unicode clipboard routine courtesy Mike Lischke}
 var
   Data: THandle;
@@ -1618,9 +1619,7 @@ begin
     DataPtr := GlobalLock(Data);
     try
       Move(Buffer^, DataPtr^, 2 * BufferLeng);
-{$IFNDEF LCL}  //For now
       Clipboard.SetAsHandle(CF_UNICODETEXT, Data);
-{$ENDIF}      
     finally
       GlobalUnlock(Data);
     end;
@@ -1628,6 +1627,13 @@ begin
     GlobalFree(Data);
     raise;
   end;
+{$ELSE}
+var
+  Utf8Str : string;
+begin
+  Utf8Str := WideCharLenToString(Buffer, BufferLeng);
+  Clipboard.AddFormat(CF_TEXT, Utf8Str[1], Length(Utf8Str));
+{$ENDIF}
 end;
 
 function ClipBuffer.Terminate: integer;

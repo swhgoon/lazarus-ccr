@@ -733,8 +733,10 @@ repeat
       Value := Value+LCh;
       GetCh;
       end;
-    Value1 := Trim(Lowercase(Value));  {leave quotes on for font:}
-    Value := RemoveQuotes(Value1);
+//    Value1 := Trim(Lowercase(Value));  {leave quotes on for font:}  //Mac font names are case sensitive
+//    Value := RemoveQuotes(Value1);
+    Value1 := Trim(Value);  {leave quotes on for font:}
+    Value := RemoveQuotes(LowerCase(Value1));
     if FindShortHand(Prop, Index) then
       case Index of
         MarginX, BorderWidthX, PaddingX, BorderColorX, BorderStyleX:     
@@ -885,7 +887,8 @@ var
 
 begin
 LinkPath := '';
-S := Lowercase(PropertyStr);
+//S := Lowercase(PropertyStr);  //Mac font names are case sensitive
+S := PropertyStr;
 I := 1;
 GetCh;
 repeat
@@ -908,7 +911,7 @@ repeat
       GetCh;
       end;
     Value1 := Trim(Value);   {leave quotes on for font}
-    Value := RemoveQuotes(Value1);
+    Value := RemoveQuotes(LowerCase(Value1));  //added LowerCase here since no longer doing it above
 
     if FindShortHand(Prop, Index) then
       case Index of
