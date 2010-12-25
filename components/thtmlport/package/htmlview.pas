@@ -639,17 +639,13 @@ BorderPanel := TPanel.Create(Self);
 BorderPanel.BevelInner := bvNone;
 BorderPanel.BevelOuter := bvNone;
 {$IFNDEF LCL}
-BorderPanel.Ctl3D := False;
-{$ENDIF}
-BorderPanel.Align := alClient;
-{$IFNDEF LCL}
-BorderPanel.ParentCtl3D := False;
-{$ENDIF}
+BorderPanel.Ctl3D := False;  //Not LCL property
+BorderPanel.Align := alClient;  //Interferes with GTK2 scrollbar
+BorderPanel.ParentCtl3D := False;  //Not LCL property
 {$ifdef delphi7_plus}
-{$IFNDEF LCL}
-BorderPanel.ParentBackground := False;
-{$ENDIF}
+BorderPanel.ParentBackground := False;  //Not LCL property
 {$endif}
+{$ENDIF}
 
 BorderPanel.Parent := Self;
 
@@ -1147,15 +1143,19 @@ if FBorderStyle = htNone then
   WFactor := 0;
   PaintPanel.Top := 0;
   PaintPanel.Left := 0;
+{$IFNDEF LCL}
   BorderPanel.Visible := False;
+{$ENDIF}
   end
 else
   begin
   WFactor := 1;
   PaintPanel.Top := 1;
   PaintPanel.Left := 1;
+{$IFNDEF LCL}
   BorderPanel.Visible := False;
   BorderPanel.Visible := True;
+{$ENDIF}
   end;
 WFactor2 := 2*WFactor;
 
@@ -4337,10 +4337,10 @@ procedure ThtmlViewer.PaintWindow(DC: HDC);
 begin
 PaintPanel.RePaint;
 {$IFNDEF LCL}
-BorderPanel.RePaint;  //Causes endless loop for some reason on gtk2.
+BorderPanel.RePaint;
+VScrollbar.RePaint;  //   
+HScrollbar.RePaint;  //
 {$ENDIF}
-VScrollbar.RePaint;   
-HScrollbar.RePaint;  
 end;
 
 procedure ThtmlViewer.CopyToClipboard;
@@ -4694,11 +4694,17 @@ end;
 
 procedure ThtmlViewer.DrawBorder;
 begin  //Focused may not work with control on all widgetsets.
-if {$IFNDEF LCL}(Focused and (FBorderStyle = htFocused)) or{$ENDIF} (FBorderStyle = htSingle)
+if (Focused and (FBorderStyle = htFocused)) or (FBorderStyle = htSingle)
        or (csDesigning in ComponentState) then
+{$IFNDEF LCL}
   BorderPanel.BorderStyle := bsSingle
 else
   BorderPanel.BorderStyle := bsNone;
+{$ELSE}
+//  inherited BorderStyle := bsSingle
+//else
+//  inherited BorderStyle := bsNone;
+{$ENDIF}  
 end;
 
 procedure ThtmlViewer.DoEnter;
@@ -4875,7 +4881,11 @@ for I := 0 to FormControlList.count-1 do
   with TFormControlObj(FormControlList.Items[I]) do
     if Assigned(TheControl) then
       TheControl.Hide;  
+{$IFNDEF LCL}
 BorderPanel.BorderStyle := bsNone;
+{$ELSE}
+//inherited BorderStyle := bsNone;
+{$ENDIF}
 inherited Repaint;
 end;
 
@@ -5064,9 +5074,7 @@ var
 begin
 if FViewer.DontDraw or (Canvas2 <> Nil) then    
   Exit;
-{$IFNDEF LCL}
-FViewer.DrawBorder;  //Causes endless loop for some reason on win32 and gtk2.
-{$ENDIF}
+FViewer.DrawBorder;
 OldPal := 0;
 Canvas.Font := Font;
 Canvas.Brush.Color := Color;
