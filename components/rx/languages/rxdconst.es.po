@@ -41,6 +41,10 @@ msgstr "Base de Dato bloqueada: %s"
 msgid "SDataSourceFixed"
 msgstr "SFuenteDatosFija"
 
+#: rxdconst.sdbcomboboxfieldnotassigned
+msgid "%s:TDBComboBox - DataField not assigned"
+msgstr ""
+
 #: rxdconst.sdbexceptcaption
 msgid "Error in DB engine"
 msgstr "Error in DB Motor"

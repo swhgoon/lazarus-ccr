@@ -36,7 +36,7 @@ unit rxdbcomb;
 interface
 
 uses LCLType, LCLProc, LCLIntf, LMessages, Menus, Graphics, Classes, Controls,
-  DB, StdCtrls, DbCtrls;
+  sysutils, DB, StdCtrls, DbCtrls;
 
 type
 
@@ -167,7 +167,7 @@ type
 
 implementation
 
-uses DBUtils;
+uses DBUtils, rxdconst;
 
 { TCustomDBComboBox }
 
@@ -221,7 +221,10 @@ end;
 
 procedure TCustomDBComboBox.UpdateData(Sender: TObject);
 begin
-  FDataLink.Field.AsString := ComboText;
+  if Assigned(FDataLink.Field) then
+    FDataLink.Field.AsString := ComboText
+  else
+    raise Exception.CreateFmt(SDBComboBoxFieldNotAssigned, [Name]);
 end;
 
 procedure TCustomDBComboBox.SetComboText(const Value: string);

@@ -41,6 +41,10 @@ msgstr ""
 msgid "SDataSourceFixed"
 msgstr ""
 
+#: rxdconst.sdbcomboboxfieldnotassigned
+msgid "%s:TDBComboBox - DataField not assigned"
+msgstr ""
+
 #: rxdconst.sdbexceptcaption
 msgid "Error in DB engine"
 msgstr ""

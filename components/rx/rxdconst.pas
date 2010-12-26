@@ -85,6 +85,8 @@ resourcestring
   SUnlockHint              = 'Enter you password';
   SDeleteMultipleRecords   = 'Delete all selected records?';
 
+  SDBComboBoxFieldNotAssigned        = '%s:TDBComboBox - DataField not assigned';
+
   SPropDefByLookup         = 'PropDefByLookup';
   SDataSourceFixed         = 'SDataSourceFixed';
   SCircularDataLink        = 'SCircularDataLink';
