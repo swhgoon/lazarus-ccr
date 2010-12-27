@@ -635,6 +635,13 @@ FCharset := DEFAULT_CHARSET;
 FMarginHeight := 5;
 FMarginWidth := 10;
 
+// LCL port note: BorderPanel presumably used to simulate viewer border 
+//  since TWinControl does not have BorderStyle property. But this use of
+//  TPanel interferes with Win32/GTK2 text display. However, eliminating 
+//  it altogether interferes with Carbon animated GIFs, so create and add,
+//  but don't do anything with it.
+// Since we're using TCustomControl, which introduces BorderStyle in LCL,
+//  instead of TWinControl, might eventually be able to set its border.
 BorderPanel := TPanel.Create(Self);  
 BorderPanel.BevelInner := bvNone;
 BorderPanel.BevelOuter := bvNone;
@@ -1203,7 +1210,7 @@ HScrollBar.LargeChange := IntMax(1, Wid - 20);
 HScrollBar.SetBounds(WFactor, Height-sbWidth-WFactor, Wid -WFactor, sbWidth);
 VScrollBar.SetBounds(Width-sbWidth-WFactor, WFactor, sbWidth, VHeight);    
 VScrollBar.LargeChange := IntMax(1, PaintPanel.Height - VScrollBar.SmallChange);
- //LCL port: Added IntMax per HScrollBar above to avoid range-check error.
+ // LCL port: Added IntMax per HScrollBar above to avoid range-check error.
 if htShowVScroll in FOptions then
   begin
   VScrollBar.Visible := ( FScrollBars in [ssBoth, ssVertical] );
@@ -2306,9 +2313,15 @@ else
   begin
   Result := HTMLServerToDos(Trim(Filename), FServerRoot);
 
+{$IFDEF MSWINDOWS}
   if Pos('\', Result) = 1 then
     Result := ExpandFilename(Result)
   else if (Pos(':', Result)<> 2) and (Pos('\\', Result) <> 1) then
+{$ELSE}
+  if Pos('/', Result) > 1 then
+    Result := ExpandFilename(Result)
+  else if (Pos('/', Result) <> 1) then
+{$ENDIF}
     if CompareText(FBase, 'DosPath') = 0 then  {let Dos find the path}
     else if FBase <> '' then
       begin
@@ -4338,8 +4351,8 @@ begin
 PaintPanel.RePaint;
 {$IFNDEF LCL}
 BorderPanel.RePaint;
-VScrollbar.RePaint;  //   
-HScrollbar.RePaint;  //
+VScrollbar.RePaint;  //Don't need this anymore (and causes   
+HScrollbar.RePaint;  // endless loop with GTK2).
 {$ENDIF}
 end;
 
@@ -4700,7 +4713,7 @@ if (Focused and (FBorderStyle = htFocused)) or (FBorderStyle = htSingle)
   BorderPanel.BorderStyle := bsSingle
 else
   BorderPanel.BorderStyle := bsNone;
-{$ELSE}
+{$ELSE}  //Setting viewer's BorderStyle currently does not work.
 //  inherited BorderStyle := bsSingle
 //else
 //  inherited BorderStyle := bsNone;

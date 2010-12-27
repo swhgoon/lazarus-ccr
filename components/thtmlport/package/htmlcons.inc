@@ -117,10 +117,14 @@
 {$Define NoOldPNG}  //Exclude .obj files, PNGZLIB1 and PngImage1.
 {$ENDIF}        
 
+{$IFDEF MSWINDOWS}
 {.$Define NoGDIPlus} {The gdiplus.dll provides Alpha transparency support for
         PNG images.  If, for some reason the use of the gdiplus.dll is
         undesirable, define "NoGDIPlus" by removing the '.'.  Defining both
         NoGDIPlus and NoOldPNG will remove support for PNG images entirely.}
+{$ELSE}
+{$Define NoGDIPlus}  //No point in trying to load gdiplus.dll if not Windows.
+{$ENDIF}
 
 {$Define NoMetaFile} {Metafiles may be displayed by undefining this constant.
         NoMetaFile is defined by default to emphasize the fact that Metafile

@@ -490,7 +490,7 @@ type
   EGDIPlus = class (Exception);
   TJpegMod = class(TJpegImage)
   public
-{$IFNDEF LCL}  //For now
+{$IFNDEF LCL}  //Don't need since TJpegImage is a bitmap.
     property Bitmap;
 {$ENDIF}    
   end;
@@ -2134,15 +2134,22 @@ try
     jpImage := TJpegMod.Create;
     try
       jpImage.LoadFromStream(Stream);
-{$IFNDEF LCL}
       if ColorBits <= 8 then
         begin
+{$IFNDEF LCL}
         jpImage.PixelFormat := jf8bit;
+{$ELSE}
+        jpImage.PixelFormat := pf8bit;
+{$ENDIF}      
         if not jpImage.GrayScale and (ColorBits = 8) then
           jpImage.Palette := CopyPalette(ThePalette);
         end
+{$IFNDEF LCL}
       else jpImage.PixelFormat := jf24bit;
       Result.Assign(jpImage.Bitmap);
+{$ELSE}
+      else jpImage.PixelFormat := pf24bit;
+      Result.Assign(jpImage);
 {$ENDIF}      
     finally
       jpImage.Free;                                                 
@@ -2298,9 +2305,9 @@ var
     begin
     Result := TBitmap.Create;
     try
-{$IFNDEF LCL}
+//{$IFNDEF LCL}
       Result.Assign(TmpGif.Bitmap);
-{$ENDIF}
+//{$ENDIF}
     except
       Result.Free;
       Result := Nil;
@@ -2363,7 +2370,7 @@ var
 {$IFNDEF LCL}
   BM: Windows.TBitmap;
 {$ELSE}  
-  BM: BITMAP;
+  BM: LclType.BITMAP;
 {$ENDIF}
   Image: TBitmap;
 
@@ -4279,15 +4286,14 @@ Screen.Cursors[UpDownCursor] := LoadCursor(HInstance, 'UPDOWNCURSOR');
 Screen.Cursors[UpOnlyCursor] := LoadCursor(HInstance, 'UPONLYCURSOR');
 Screen.Cursors[DownOnlyCursor] := LoadCursor(HInstance, 'DOWNONLYCURSOR');
 {$ELSE}
-DefBitMap.LoadFromLazarusResource('ErrBitmap');
-ErrorBitMap.LoadFromLazarusResource('DefaultBitmap');
+DefBitMap.LoadFromLazarusResource('DefaultBitmap');
+ErrorBitMap.LoadFromLazarusResource('ErrBitmap');
 ErrorBitMapMask.LoadFromLazarusResource('ErrBitmapMask');
-// {$IFDEF MSWINDOWS}  //For now until fixed on Carbon.
+//Don't need since equal to crHandPoint (and jumps around on Carbon).
 //Screen.Cursors[HandCursor] := LoadCursorFromLazarusResource('Hand_Cursor');
 Screen.Cursors[UpDownCursor] := LoadCursorFromLazarusResource('UPDOWNCURSOR');
 Screen.Cursors[UpOnlyCursor] := LoadCursorFromLazarusResource('UPONLYCURSOR');
 Screen.Cursors[DownOnlyCursor] := LoadCursorFromLazarusResource('DOWNONLYCURSOR');
-// {$ENDIF}
 {$ENDIF}
 
 WaitStream := TMemoryStream.Create;
