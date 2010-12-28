@@ -790,7 +790,7 @@ begin
 {$IFDEF MSWINDOWS}
   Result := Windows.GetMapMode(DC);
 {$ELSE}
-  WriteLn('GetMapMode not implemented yet');
+//  WriteLn('GetMapMode not implemented yet');
 {$ENDIF}
 end;
 
@@ -799,7 +799,7 @@ begin
 {$IFDEF MSWINDOWS} 
   Result := Windows.SetMapMode(DC, p2);
 {$ELSE}
-  WriteLn('SetMapMode not implemented yet');
+//  WriteLn('SetMapMode not implemented yet');
 {$ENDIF}
 end;
 

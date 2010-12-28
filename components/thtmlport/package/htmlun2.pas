@@ -32,7 +32,7 @@ unit HTMLUn2;
 
 interface
 uses
-  {$IFNDEF LCL} Windows, Messages, {$ELSE} LclIntf, LMessages, Types, LclType, LResources, HtmlMisc, {$ENDIF} 
+  {$IFNDEF LCL} Windows, Messages, {$ELSE} LclIntf, LMessages, Types, LclType, LResources, IntfGraphics, HtmlMisc, {$ENDIF} 
   SysUtils, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, ExtCtrls, Clipbrd, StyleUn, GDIPL2A; 
 
@@ -2372,6 +2372,11 @@ var
 {$ELSE}  
   BM: LclType.BITMAP;
 {$ENDIF}
+{$IFNDEF MSWINDOWS}
+  ColorMask : TBitmap;
+  ColorMaskIntfImg : TLazIntfImage;
+  MaskIntfImg : TLazIntfImage;
+{$ENDIF}
   Image: TBitmap;
 
 begin
@@ -2393,7 +2398,24 @@ try
 
   { create a bitmap for each DC}
   { monochrome DC}
+{$IFDEF MSWINDOWS}
   bmAndBack := CreateBitmap (SrcSize.x, SrcSize.y, 1, 1, nil);
+{$ELSE}
+   // LCL port: Both Carbon and GTK2 widgetsets have trouble with
+   //  monochrome bitmaps, so create bitmap with same color format
+   //  for mask inverse and also convert mask to color format.
+  bmAndBack := CreateCompatibleBitmap(ahdc, SrcSize.x, SrcSize.y);
+  ColorMask := TBitmap.Create;
+  ColorMask.Width := Mask.Width;
+  ColorMask.Height := Mask.Height;
+  ColorMask.PixelFormat := Image.PixelFormat;
+  ColorMaskIntfImg := ColorMask.CreateIntfImage;
+  MaskIntfImg := Mask.CreateIntfImage;
+  ColorMaskIntfImg.CopyPixels(MaskIntfImg);
+  ColorMask.LoadFromIntfImage(ColorMaskIntfImg);
+  ColorMaskIntfImg.Free;
+  MaskIntfImg.Free;
+{$ENDIF}
 
   bmSave := CreateCompatibleBitmap (ahdc, DestSize.x, DestSize.y);
   GetObject(bmSave, SizeOf(BM), @BM);
@@ -2409,7 +2431,11 @@ try
     { set proper mapping mode}
     SetMapMode (hdcImage, GetMapMode (ahdc));
 
+{$IFDEF MSWINDOWS}
     bmObjectOld := SelectObject(hdcMask, Mask.Handle);
+{$ELSE}
+    bmObjectOld := SelectObject(hdcMask, ColorMask.Handle);
+{$ENDIF}
 
     { create the inverse of the object mask}
     BitBlt (hdcInvMask, 0, 0, SrcSize.x, SrcSize.y, hdcMask, 0, 0, NOTSRCCOPY);
@@ -2448,6 +2474,9 @@ try
     end;
   DeleteObject(bmSave);     
   DeleteDC (hdcImage);
+{$IFNDEF MSWINDOWS}
+  ColorMask.Free;
+{$ENDIF}
 finally
   Image.Free;
   end;
