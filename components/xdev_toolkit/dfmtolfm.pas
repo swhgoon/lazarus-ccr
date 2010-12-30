@@ -60,6 +60,7 @@ var
   MatchFound  : TFilenameCaseMatch;
 {$ENDIF}
   FontSwitch  : Integer;
+  SubstFonts  : Boolean;
   MacSwitch   : Boolean;
   CfgFileObj  : TMemIniFile;
   DfmFileName : string;
@@ -88,12 +89,14 @@ begin
     begin
     WriteLn(ProgramName, ', version ', ProgramVersion,
             ' - converts a Delphi form file to a Lazarus form file.');
-    WriteLn('Usage: ', ProgramName, ' filename', DfmFileExt, ' [-p|-d][-m]');
+    WriteLn('Usage: ', ProgramName, ' filename', DfmFileExt, 
+            ' [-p|-d][-s][-m]');
     WriteLn('Switches:');
     WriteLn('  -p  Add parent''s font to controls with no font ',
             '(useful with Windows).');
     WriteLn('  -d  Delete font name from controls ',
             '(useful with GTK and GTK2).');
+    WriteLn('  -s  Substitute font names.');
     WriteLn('  -m  Mac prettifier.');
     WriteLn('Looks for configuration data in file ', CfgFileName); 
     Halt;
@@ -105,6 +108,7 @@ begin
     FontSwitch := UseParentFont
   else if FindCmdLineSwitch('d', ['-'], True) then
     FontSwitch := DeleteFontName;
+  SubstFonts := FindCmdLineSwitch('s', ['-'], True);
   MacSwitch := FindCmdLineSwitch('m', ['-'], True);
 
    {Load configuration file}
@@ -301,6 +305,20 @@ begin
           end
 *)
   
+        else if SubstFonts and
+                SameText('font.name', Copy(StripStr, 1, 9)) then
+          begin
+          StripStr := Copy(InStr, Pos('=', InStr)+3, MaxInt); {Name after quote}
+          Delete(StripStr, Length(StripStr), 1);  {Delete closing quote}
+          if CfgFileObj.ValueExists('FontSubstitutes', StripStr) then
+            WriteLn(LfmFileVar,
+                    Copy(InStr, 1, Succ(Pos('=', InStr))), '''',
+                    CfgFileObj.ReadString('FontSubstitutes', StripStr, 'Arial'), 
+                    '''')
+          else
+            WriteLn(LfmFileVar, InStr);
+          end
+
         else if MacSwitch and
                 (StackLevel > 1) and
                 (SameText('TButton', StackRec[StackLevel].ClassName) or
