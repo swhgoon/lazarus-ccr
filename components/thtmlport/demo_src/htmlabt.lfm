@@ -12,6 +12,7 @@ object AboutBox: TAboutBox
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -13
+  Font.Name = 'Arial'
   Font.Style = []
   Position = poScreenCenter
   PixelsPerInch = 96

@@ -36,7 +36,8 @@ var
   S: string[210];
 begin
 inherited Create(Owner);
-Viewer.DefFontName := 'MS Sans Serif';
+//Viewer.DefFontName := 'MS Sans Serif';  //Windows-only font
+Viewer.DefFontName := 'Arial';
 Viewer.DefFontSize := 9;
 Viewer.DefFontColor := clNavy;
 S :='<body bgcolor="ffffeb" text="000080">'+

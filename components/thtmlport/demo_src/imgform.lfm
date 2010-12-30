@@ -11,6 +11,7 @@ object ImageForm: TImageForm
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
+  Font.Name = 'Arial'
   Font.Style = []
   FormStyle = fsStayOnTop
   Position = poDefaultPosOnly

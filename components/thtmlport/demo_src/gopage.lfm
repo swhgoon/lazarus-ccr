@@ -10,6 +10,7 @@ object GoPageForm: TGoPageForm
   Width = 231
   Font.Color = clBlack
   Font.Height = -11
+  Font.Name = 'Tahoma'
   Font.Style = [fsBold]
   Position = poScreenCenter
   PixelsPerInch = 96
@@ -27,6 +28,7 @@ object GoPageForm: TGoPageForm
     Height = 27
     Font.Color = clBlack
     Font.Height = -11
+    Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
     TabOrder = 1
@@ -40,6 +42,7 @@ object GoPageForm: TGoPageForm
     Height = 27
     Font.Color = clBlack
     Font.Height = -11
+    Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
     TabOrder = 2

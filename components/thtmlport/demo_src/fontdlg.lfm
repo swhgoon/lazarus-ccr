@@ -11,6 +11,7 @@ object FontForm: TFontForm
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -13
+  Font.Name = 'Arial'
   Font.Style = []
   OnCreate = FormCreate
   OnShow = FormShow
@@ -61,6 +62,7 @@ object FontForm: TFontForm
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -11
+    Font.Name = 'Arial'
     Font.Style = []
     ItemHeight = 13
     ParentFont = False
@@ -76,6 +78,7 @@ object FontForm: TFontForm
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -11
+    Font.Name = 'Arial'
     Font.Style = []
     ItemHeight = 13
     ParentFont = False

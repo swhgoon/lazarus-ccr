@@ -8,6 +8,7 @@ object PreviewForm: TPreviewForm
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
+  Font.Name = 'Tahoma'
   Font.Style = []
   Icon.Data = {
     0000010001002020100000000000E80200001600000028000000200000004000
@@ -373,6 +374,7 @@ object PreviewForm: TPreviewForm
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -11
+    Font.Name = 'Arial'
     Font.Style = []
     ParentFont = False
     TabOrder = 1
@@ -434,6 +436,7 @@ object PreviewForm: TPreviewForm
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
         Font.Height = -13
+        Font.Name = 'Times New Roman'
         Font.Style = []
         Glyph.Data = {
           F6010000424DF601000000000000760000002800000030000000100000000100
@@ -467,6 +470,7 @@ object PreviewForm: TPreviewForm
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
         Font.Height = -13
+        Font.Name = 'Times New Roman'
         Font.Style = []
         Glyph.Data = {
           F6010000424DF601000000000000760000002800000030000000100000000100
@@ -500,6 +504,7 @@ object PreviewForm: TPreviewForm
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
         Font.Height = -13
+        Font.Name = 'Times New Roman'
         Font.Style = []
         Glyph.Data = {
           F6010000424DF601000000000000760000002800000030000000100000000100
@@ -533,6 +538,7 @@ object PreviewForm: TPreviewForm
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
         Font.Height = -13
+        Font.Name = 'Times New Roman'
         Font.Style = []
         Glyph.Data = {
           F6010000424DF601000000000000760000002800000030000000100000000100
@@ -566,6 +572,7 @@ object PreviewForm: TPreviewForm
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
         Font.Height = -13
+        Font.Name = 'Times New Roman'
         Font.Style = []
         Glyph.Data = {
           76010000424D7601000000000000760000002800000020000000100000000100
@@ -593,8 +600,6 @@ object PreviewForm: TPreviewForm
     Top = 35
     Width = 734
     Height = 449
-    HorzScrollBar.Tracking = True
-    VertScrollBar.Tracking = True
     Align = alClient
     BorderStyle = bsNone
     Color = clBtnFace

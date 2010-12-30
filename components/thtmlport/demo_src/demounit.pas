@@ -198,8 +198,12 @@ for I := 0 to MaxHistories-1 do
   MainMenu.Items.Remove(About1);  //Remove About as separate menu
   AppMenu.Add(About1);  //Add About as item in application menu
 
+  File1.Remove(File1.Items[File1.Count-2]);
+  File1.Remove(Exit1);  //Remove Exit since have Quit
+
   Find1.ShortCut := ShortCut(VK_F, [ssMeta]);
   CopyItem.ShortCut := ShortCut(VK_C, [ssMeta]);
+  SelectAllItem.ShortCut := ShortCut(VK_A, [ssMeta]);
 {$ENDIF}
 
 {$IFDEF MSWINDOWS}
@@ -880,6 +884,8 @@ finally
   end;
 {$ELSE}
 begin
+  MessageDlg('Not yet supported with LCL.',
+             mtError, [mbOK], 0);
 {$ENDIF}
 end;
 
