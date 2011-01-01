@@ -245,6 +245,7 @@ procedure TForm1.OpenFileClick(Sender: TObject);
 begin
 if Viewer.CurrentFile <> '' then
   OpenDialog.InitialDir := ExtractFilePath(Viewer.CurrentFile);
+OpenDialog.Filter := 'HTML Files (*.htm,*.html)|*.htm;*.html';  //might have changed
 if OpenDialog.Execute then
   begin
   Update;  

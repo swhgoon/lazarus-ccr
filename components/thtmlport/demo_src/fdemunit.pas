@@ -347,7 +347,9 @@ else OpenDialog.InitialDir := ExtractFilePath(ParamStr(0));
 {$ELSE}  //Don't default to within app bundle.
 else OpenDialog.InitialDir := ExtractFilePath(ParamStr(0)) + '../../../';
 {$ENDIF}
-OpenDialog.FilterIndex := 1;
+//OpenDialog.FilterIndex := 1;  //Form's Filter wasn't right, so set here
+OpenDialog.Filter := 'HTML Files (*.htm,*.html)|*.htm;*.html'+
+                     '|All Files (*.*)|*.*';
 if OpenDialog.Execute then
   begin
   FrameViewer.LoadFromFile(OpenDialog.Filename);
