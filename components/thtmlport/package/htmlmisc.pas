@@ -464,6 +464,7 @@ procedure OutputDebugString(lpOutputString: PChar);
 function GlobalAlloc(uFlags: UINT; dwBytes: DWORD): HGLOBAL;
 function GlobalLock(hMem: HGLOBAL): Pointer;
 function GlobalUnlock(hMem: HGLOBAL): BOOL;
+function GlobalFree(hMem: HGLOBAL): HGLOBAL;
 function PostMessage(hWnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): BOOL;
 function SendMessage(hWnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT;
 
@@ -499,7 +500,6 @@ function PatBlt(DC: HDC; X, Y, Width, Height: Integer; Rop: DWORD): BOOL;
 function SetTextJustification(DC: HDC; BreakExtra, BreakCount: Integer): Integer;
 function GetBrushOrgEx(DC: HDC; var lppt: TPoint): BOOL;
 function SetBrushOrgEx(DC: HDC; X, Y: Integer; PrevPt: PPoint): BOOL;
-function GlobalFree(hMem: HGLOBAL): HGLOBAL;
 function timeGetTime: DWORD;
 function GetTextExtentExPointW(DC: HDC; p2: PWideChar; p3, p4: Integer; 
                                p5, p6: PInteger; var p7: TSize): BOOL;
@@ -562,12 +562,11 @@ begin
 end;
 
 function GlobalAlloc(uFlags: UINT; dwBytes: DWORD): HGLOBAL;
-// Replace with calls to standard Clipboard methods?
 begin
 {$IFDEF MSWINDOWS}
   Result := Windows.GlobalAlloc(uFlags, dwBytes);
 {$ELSE}
-  Result := THandle(GetMem(dwBytes));
+  Result := HGLOBAL(GetMem(dwBytes));  {Treating pointer to memory as "handle"}
 {$ENDIF}
 end;
 
@@ -576,7 +575,7 @@ begin
 {$IFDEF MSWINDOWS}
   Result := Windows.GlobalLock(hMem);
 {$ELSE}
-  Result := PAnsiChar(hMem);
+  Result := Pointer(hMem);  {"Handle" is pointer to memory}
 {$ENDIF}
 end;
 
@@ -585,8 +584,17 @@ begin
 {$IFDEF MSWINDOWS}
   Result := Windows.GlobalUnlock(hMem);
 {$ELSE}
-  FreeMem(Pointer(hMem));
   Result := True;
+{$ENDIF}
+end;
+
+function GlobalFree(hMem: HGLOBAL): HGLOBAL;
+begin
+{$IFDEF MSWINDOWS}
+  Result := Windows.GlobalFree(hMem);
+{$ELSE}
+  FreeMem(Pointer(hMem));  {"Handle" is pointer to memory}
+  Result := 0;
 {$ENDIF}
 end;
 
@@ -1011,15 +1019,6 @@ begin
   Result := Windows.SetBrushOrgEx(DC, X, Y, PrevPt);
 {$ELSE}
   WriteLn('SetBrushOrgEx not implemented yet');
-{$ENDIF}
-end;
-
-function GlobalFree(hMem: HGLOBAL): HGLOBAL;
-begin
-{$IFDEF MSWINDOWS}
-  Result := Windows.GlobalFree(hMem);
-{$ELSE}
-  WriteLn('GlobalFree not implemented yet');
 {$ENDIF}
 end;
 

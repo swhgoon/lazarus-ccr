@@ -2916,7 +2916,11 @@ end;
 constructor TFormControlObj.CreateCopy(T: TFormControlObj);
 begin
 inherited Create;
+{$IFNDEF FPC}
 System.Move(T.Pos, Pos, DWord(@FControl)-DWord(@Pos));
+{$ELSE}
+System.Move(T.Pos, Pos, PtrUInt(@FControl)-PtrUInt(@Pos));
+{$ENDIF}
 end;
 
 destructor TFormControlObj.Destroy;
@@ -4236,7 +4240,11 @@ var
 begin
 inherited CreateCopy(AMasterList, T);
 TT := T as TBlock;
+{$IFNDEF FPC}
 System.Move(TT.MargArray, MargArray, DWord(@Converted)-DWord(@MargArray)+Sizeof(Converted));
+{$ELSE}
+System.Move(TT.MargArray, MargArray, PtrUInt(@Converted)-PtrUInt(@MargArray)+Sizeof(Converted));
+{$ENDIF}
 MyCell := TBlockCell.CreateCopy(AMasterList, TT.MyCell);
 MyCell.Owner := Self;   
 DrawList := TList.Create;
@@ -5531,7 +5539,11 @@ var
 begin
 inherited;
 TT := T as TTableBlock;
+{$IFNDEF FPC}
 System.Move(TT.WidthAttr, WidthAttr, DWord(@Justify)-DWord(@WidthAttr)+Sizeof(Justify));
+{$ELSE}
+System.Move(TT.WidthAttr, WidthAttr, PtrUInt(@Justify)-PtrUInt(@WidthAttr)+Sizeof(Justify));
+{$ENDIF}
 Item := MyCell.Items[0];
 Table := Item as ThtmlTable;
 end;
@@ -6104,7 +6116,11 @@ BitmapList := T.BitmapList;     {same list}
 InlineList := T.InlineList;     {same list}
 IsCopy := True;    
 inherited CreateCopy(Self, T);
+{$IFNDEF FPC}
 System.Move(T.ShowImages, ShowImages, DWord(@Background)-Dword(@ShowImages)+Sizeof(integer));
+{$ELSE}
+System.Move(T.ShowImages, ShowImages, PtrUInt(@Background)-PtrUInt(@ShowImages)+Sizeof(integer));
+{$ENDIF}
 BitmapName := '';
 BackgroundBitmap := Nil;
 BackgroundMask := Nil;
@@ -7129,7 +7145,11 @@ constructor TCellObj.CreateCopy(AMasterList: TSectionList; T: TCellObj);
 begin
 inherited create;
 Cell := TCellObjCell.CreateCopy(AMasterList, T.Cell);     
+{$IFNDEF FPC}
 Move(T.ColSpan, ColSpan, DWord(@Cell)-DWord(@ColSpan));
+{$ELSE}
+Move(T.ColSpan, ColSpan, PtrUInt(@Cell)-PtrUInt(@ColSpan));
+{$ENDIF}
 
 if AMasterList.PrintTableBackground then
   begin
@@ -7835,7 +7855,11 @@ for I := 0 to ThtmlTable(T).Rows.Count-1 do
   Rows.Add(TCellList.CreateCopy(AMasterList, TCellList(ThtmlTable(T).Rows.Items[I])));
 
 Move((T as ThtmlTable).ListsProcessed, ListsProcessed,
+{$IFNDEF FPC}
         DWord(@EndList)-DWord(@ListsProcessed));
+{$ELSE}
+        PtrUInt(@EndList)-PtrUInt(@ListsProcessed));
+{$ENDIF}
 
 SetLength(Widths, NumCols);
 SetLength(MaxWidths, NumCols);

@@ -260,7 +260,11 @@ end;
 constructor TgfFrame.CreateCopy(Item: TgfFrame);
 begin
 inherited Create;
+{$IFNDEF FPC}
 System.Move(Item.frLeft, frLeft, DWord(@TheEnd)-DWord(@frLeft));
+{$ELSE}
+System.Move(Item.frLeft, frLeft, PtrUInt(@TheEnd)-PtrUInt(@frLeft));
+{$ENDIF}
 IsCopy := True;
 end;
 
@@ -287,7 +291,11 @@ begin
 inherited Create;
 FImageWidth := Item.Width;
 FimageHeight := Item.Height;
+{$IFNDEF FPC}
 System.Move(Item.FAnimated, FAnimated, DWord(@TheEnd)-DWord(@FAnimated));
+{$ELSE}
+System.Move(Item.FAnimated, FAnimated, PtrUInt(@TheEnd)-PtrUInt(@FAnimated));
+{$ENDIF}
 IsCopy := True;
 
 Frames := TgfFrameList.Create;

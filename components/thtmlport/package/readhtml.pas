@@ -327,7 +327,11 @@ case LoadStyle of
        end;
   else Result := #0;       {to prevent warning msg}
   end;
+{$IFNDEF FPC}
 if (Integer(Buff) and $FFF = 0)    {about every 4000 chars}   
+{$ELSE}
+if (PtrUInt(Buff) and $FFF = 0)    {about every 4000 chars}   
+{$ENDIF}
       and not LinkSearch and Assigned(MasterList) and (DocS <> '') then
   ThtmlViewer(CallingObject).htProgress(((Buff-PChar(DocS)) *MasterList.ProgressStart) div (BuffEnd-PChar(DocS)));
 end;

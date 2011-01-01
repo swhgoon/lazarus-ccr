@@ -498,7 +498,7 @@ type
 var
   DC: HDC; 
 
-{$IFNDEF CPUPOWERPC}
+{$IFDEF CPU86}
 {----------------StrLenW}
 function StrLenW(Str: PWideChar): Cardinal;
 {returns number of characters in a string excluding the null terminator}
@@ -818,7 +818,7 @@ else
   end;
 end;
 
-{$IFNDEF CPUPOWERPC}
+{$IFDEF CPU86}
 function IntMin(A, B: Integer): Integer;
 asm
   cmp edx, eax
@@ -3469,7 +3469,11 @@ begin
           end;
           Inc(x);
         end; // scan every sample byte of the image
+{$IFNDEF FPC}
         Inc(Integer(ScanLinePtr), ScanLineInc);
+{$ELSE}
+        Inc(ScanLinePtr, ScanLineInc);  // LCL port: removed cast for 64-bits.
+{$ENDIF}
       end;
       { need to call ExCreateRegion one more time because we could have left    }
       { a RgnData with less than 2000 rects, so it wasn't yet created/combined  }

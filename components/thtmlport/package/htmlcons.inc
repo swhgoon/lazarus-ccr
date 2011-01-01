@@ -32,6 +32,7 @@
   {$ifdef Win32}
     {$O-}  {optimization off}
   {$endif}
+  {$DEFINE CPU86}  // LCL port: Delphi currently only for Intel, 32-bit.
 {$endif}
 
 {$ELSE}  // LCL

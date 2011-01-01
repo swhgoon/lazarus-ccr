@@ -260,7 +260,11 @@ end;
 constructor THorzLine.CreateCopy(AMasterList: TSectionList; T: TSectionBase);
 begin
 inherited Create(AMasterList);
+{$IFNDEF FPC}
 System.Move((T as THorzline).VSize, VSize, DWord(@BkGnd)-DWord(@VSize)+Sizeof(BkGnd));
+{$ELSE}
+System.Move((T as THorzline).VSize, VSize, PtrUInt(@BkGnd)-PtrUInt(@VSize)+Sizeof(BkGnd));
+{$ENDIF}
 end;
 
 procedure THorzLine.CopyToClipboard;

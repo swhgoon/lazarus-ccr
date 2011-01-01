@@ -225,10 +225,10 @@ end;
 procedure Error(msg: string);
   function ReturnAddr: Pointer;
   // From classes.pas
-{$IFNDEF CPUPOWERPC}
+{$IFDEF CPU86}
   asm
     MOV		EAX,[EBP+4] // sysutils.pas says [EBP-4] !
-{$ELSE}  //Ignore for now on non-Intel.
+{$ELSE}  //Ignore for now on non-Intel/32-bit.
   begin
 {$ENDIF}
   end;
@@ -614,7 +614,7 @@ begin
 end;
 
 procedure TDIBWriter.CreateDIB;
-{$IFDEF PIXELFORMAT_TOO_SLOW}
+{$IFDEF PIXELFORMAT_TOO_SLOW}  // LCL port: Not defined with LCL to exclude assembler.
 var
   SrcColors		,
   DstColors		: WORD;
@@ -1131,14 +1131,26 @@ begin
   // Move on to next column
   if (FDirection = 1) then
   begin
+{$IFNDEF FPC}
     inc(longInt(ErrorR), sizeof(TErrorTerm));
     inc(longInt(ErrorG), sizeof(TErrorTerm));
     inc(longInt(ErrorB), sizeof(TErrorTerm));
+{$ELSE}  //Cast so safe for 64-bits.
+    inc(PtrUInt(ErrorR), sizeof(TErrorTerm));
+    inc(PtrUInt(ErrorG), sizeof(TErrorTerm));
+    inc(PtrUInt(ErrorB), sizeof(TErrorTerm));
+{$ENDIF}
   end else
   begin
+{$IFNDEF FPC}
     dec(longInt(ErrorR), sizeof(TErrorTerm));
     dec(longInt(ErrorG), sizeof(TErrorTerm));
     dec(longInt(ErrorB), sizeof(TErrorTerm));
+{$ELSE}
+    dec(PtrUInt(ErrorR), sizeof(TErrorTerm));
+    dec(PtrUInt(ErrorG), sizeof(TErrorTerm));
+    dec(PtrUInt(ErrorB), sizeof(TErrorTerm));
+{$ENDIF}
   end;
 end;
 {$IFDEF R_PLUS}
@@ -1635,8 +1647,13 @@ begin
         begin
           SrcScanline := DIBSource.ScanLine[Row];
           DstScanline := DIBResult.ScanLine[Row];
+{$IFNDEF FPC}
           Src := pointer(longInt(SrcScanLine) + Ditherer.Column*sizeof(TRGBTriple));
           Dst := pointer(longInt(DstScanLine) + Ditherer.Column);
+{$ELSE}
+          Src := pointer(PtrUInt(SrcScanLine) + Ditherer.Column*sizeof(TRGBTriple));
+          Dst := pointer(PtrUInt(DstScanLine) + Ditherer.Column);
+{$ENDIF}
 
           while (Ditherer.Column < Ditherer.Width) and (Ditherer.Column >= 0) do
           begin
