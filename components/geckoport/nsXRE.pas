@@ -3,7 +3,7 @@ unit nsXRE;
 interface
 
 uses
-  nsTypes, nsXPCOM, nsInit;
+  Classes, nsTypes, nsXPCOM, nsInit;
 
 type
   PXREAppData = ^nsXREAppData;
@@ -171,6 +171,7 @@ var
   vers: TGREVersionRange;
   xpcomPath: array[0..MAX_PATH] of AnsiChar;
   lastSlash: PAnsiChar;
+  MOZILLAFIVEHOME: string;
   {$IFDEF LINUX}
   EachPath: string;
   LDPATH: string;
@@ -199,8 +200,10 @@ begin
     Exit;
 *)
   //Changed checking order. Preference is xulrunner in application folder
-  if ParamStr(1)<>'' then begin
-    NS_StrLCopy(xpcomPath, PChar(ParamStr(1) + '\xpcom.dll'), MAX_PATH);
+  MOZILLAFIVEHOME:=GetEnvironmentVariable('MOZILLA_FIVE_HOME');
+  if MOZILLAFIVEHOME<>'' then begin
+    if MOZILLAFIVEHOME[Length(MOZILLAFIVEHOME)]<>PathDelim then MOZILLAFIVEHOME:=MOZILLAFIVEHOME+PathDelim;
+    NS_StrLCopy(xpcomPath, PChar(MOZILLAFIVEHOME+'xpcom.dll'), MAX_PATH);
     Result:=NS_OK;
   end else begin
     NS_StrLCopy(xpcomPath, PChar(ExtractFilePath(ParamStr(0)) + 'xpcom.dll'), MAX_PATH);
