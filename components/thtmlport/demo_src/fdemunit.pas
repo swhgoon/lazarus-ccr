@@ -146,7 +146,12 @@ const
     HintVisible: boolean;
     TitleViewer: ThtmlViewer;
 
+{$IFNDEF LCL}
     procedure wmDropFiles(var Message: TMessage); message wm_DropFiles;
+{$ELSE}
+    procedure DropFiles(      Sender   : TObject;
+                        const FileNames: array of string);
+{$ENDIF}
     procedure CloseAll;
   public
     { Public declarations }
@@ -199,8 +204,11 @@ for I := 0 to MaxHistories-1 do
   SelectAll1.ShortCut := ShortCut(VK_A, [ssMeta]);
 {$ENDIF}
 
-{$IFDEF MSWINDOWS}
+{$IFNDEF LCL}
 DragAcceptFiles(Handle, True);
+{$ELSE}
+AllowDropFiles := True;
+OnDropFiles := DropFiles;
 {$ENDIF}
 HintWindow := THintWindow.Create(Self);
 HintWindow.Color := $CCFFFF;
@@ -281,9 +289,9 @@ if (I <= 2) or (J > 0) then
  {$IFDEF MSWINDOWS}
     ShellExecute(Handle, nil, StrPCopy(PC, S), StrPCopy(PC2, Params), 
                  nil, SW_SHOWNORMAL); 
- {$ELSE}
+ {$ELSE}  //Not sure if this makes any sense since executable won't have .exe.
   {$IFDEF LCLCarbon}
-    Shell('Open "' + S + '.app"');
+    Shell('open -n "' + S + '" --args "' + Params + '"');
   {$ELSE}
     Shell('"' + S + '" "' + Params + '"');
   {$ENDIF}
@@ -316,9 +324,9 @@ if (I > 0) or (J > 0) then
   ShellExecute(Handle, nil, StrPCopy(PC, URL), nil, nil, SW_SHOWNORMAL);
 {$ELSE}
  {$IFDEF LCLCarbon}
-  Shell('Open "' + URL + '.app"');
+  Shell('open "' + URL + '"');
  {$ELSE}
-  Shell('"' + URL + '"');
+  Shell('"' + URL + '"');  //use LCL's OpenURL?
  {$ENDIF}
 {$ENDIF}
   Handled := True;
@@ -347,7 +355,7 @@ else OpenDialog.InitialDir := ExtractFilePath(ParamStr(0));
 {$ELSE}  //Don't default to within app bundle.
 else OpenDialog.InitialDir := ExtractFilePath(ParamStr(0)) + '../../../';
 {$ENDIF}
-//OpenDialog.FilterIndex := 1;  //Form's Filter wasn't right, so set here
+//OpenDialog.FilterIndex := 1;  //Form's Filter isn't right, so set here
 OpenDialog.Filter := 'HTML Files (*.htm,*.html)|*.htm;*.html'+
                      '|All Files (*.*)|*.*';
 if OpenDialog.Execute then
@@ -372,10 +380,10 @@ var
   S: string;
   I: integer;
 begin
-{$IFNDEF LCLCarbon}  //Launched file name not passed via command line with app bundle.
-if (ParamCount >= 1) then
+// With OS X app, ParamStr not meaningful unless launched with --args switch.
+if (ParamCount >= 1) {$IFDEF LCLCarbon} and (Copy(ParamStr(1), 1, 4) <> '-psn') {$ENDIF} then
   begin            {Parameter is file to load}
-{$IFNDEF LCL}
+ {$IFNDEF LCL}
   S := CmdLine;
   I := Pos('" ', S);
   if I > 0 then
@@ -387,15 +395,15 @@ if (ParamCount >= 1) then
     Delete(S, I, 1);
     I := Pos('"', S);
     end;
-{$ELSE}
+ {$ELSE}
   S := ParamStr(1);
-{$ENDIF}  
+ {$ENDIF}  
   FrameViewer.LoadFromFile(HtmlToDos(Trim(S)));
   end
-else {$ENDIF} if FileExists(ExtractFilePath(ParamStr(0))+'demo.htm') then
+else if FileExists(ExtractFilePath(ParamStr(0))+'demo.htm') then
   FrameViewer.LoadFromFile(ExtractFilePath(ParamStr(0))+'demo.htm')
  {If run from Lazarus IDE, HTML files probably won't be in executable's folder,
-   so look for them one level up (or 4 levels up with Carbon app bundle).}
+   so look for them one level up (or 4 levels up with OS X app bundle).}
 else if FileExists(ExtractFilePath(ParamStr(0)) + '..' + PathDelim + 
                    {$IFDEF LCLCarbon} '../../../' + {$ENDIF} 'demo.htm') then
   FrameViewer.LoadFromFile(ExtractFilePath(ParamStr(0)) + '..' + PathDelim + 
@@ -623,7 +631,9 @@ if FileExists(S) then
                StrPCopy(PC2, S+Dest), nil, SW_SHOWNORMAL); 
  {$ELSE}
   {$IFDEF LCLCarbon}
-  Shell('Open "' + ParamStr(0) + '.app"');
+  Shell('open -n "' + 
+        ExtractFileDir(ExtractFileDir(ExtractFileDir(ParamStr(0)))) + 
+        '" --args "' + S+Dest + '"');
   {$ELSE}
   Shell('"' + ParamStr(0) + '" "' + S+Dest + '"');
   {$ENDIF}
@@ -631,24 +641,27 @@ if FileExists(S) then
 {$ENDIF}
 end;
 
+{$IFNDEF LCL}
 procedure TForm1.wmDropFiles(var Message: TMessage);
 var
   S: string[200];
   Count: integer;
 begin
-{$IFDEF MSWINDOWS}
 Count := DragQueryFile(Message.WParam, 0, @S[1], 200);
-{$IFNDEF LCL}
 Length(S) := Count;
-{$ELSE}
-S[0] := Char(Count);
-{$ENDIF}
 DragFinish(Message.WParam);
 if Count >0 then
   FrameViewer.LoadFromFile(S);
-{$ENDIF}
 Message.Result := 0;
 end;
+{$ELSE}
+procedure TForm1.DropFiles(      Sender    : TObject;
+                           const FileNames : array of string);
+begin
+  if High(FileNames) >= 0 then  {At least one file passed?}
+    FrameViewer.LoadFromFile(FileNames[0]);
+end;
+{$ENDIF}
 
 procedure TForm1.CopyImagetoclipboardClick(Sender: TObject);
 begin
@@ -860,7 +873,9 @@ begin
                StrPCopy(PC2, NewWindowFile), nil, SW_SHOWNORMAL); 
  {$ELSE}
   {$IFDEF LCLCarbon}
-  Shell('Open "' + ParamStr(0) + '.app"');
+  Shell('open -n "' + 
+        ExtractFileDir(ExtractFileDir(ExtractFileDir(ParamStr(0)))) + 
+        '" --args "' + NewWindowFile + '"');
   {$ELSE}
   Shell('"' + ParamStr(0) + '" "' + NewWindowFile + '"');
   {$ENDIF}

@@ -139,7 +139,12 @@ type
     HintWindow: THintWindow;
     HintVisible: boolean;   
 
+{$IFNDEF LCL}
     procedure wmDropFiles(var Message: TMessage); message wm_DropFiles;
+{$ELSE}
+    procedure DropFiles(      Sender   : TObject;
+                        const FileNames: array of string);
+{$ENDIF}
     procedure CloseAll;
   public
     { Public declarations }
@@ -206,8 +211,11 @@ for I := 0 to MaxHistories-1 do
   SelectAllItem.ShortCut := ShortCut(VK_A, [ssMeta]);
 {$ENDIF}
 
-{$IFDEF MSWINDOWS}
+{$IFNDEF LCL}
 DragAcceptFiles(Handle, True);
+{$ELSE}
+AllowDropFiles := True;
+OnDropFiles := DropFiles;
 {$ENDIF}
 HintWindow := THintWindow.Create(Self);
 HintWindow.Color := $C0FFFF;
@@ -218,8 +226,8 @@ var
   S: string;
   I: integer;
 begin
-{$IFNDEF DARWIN}  //Launched file name not passed via command line with OS X.
-if (ParamCount >= 1) then
+// With OS X app, ParamStr not meaningful unless launched with --args switch.
+if (ParamCount >= 1) {$IFDEF LCLCarbon} and (Copy(ParamStr(1), 1, 4) <> '-psn') {$ENDIF} then
   begin            {Parameter is file to load}
  {$IFNDEF LCL}
   S := CmdLine;
@@ -238,7 +246,6 @@ if (ParamCount >= 1) then
  {$ENDIF}  
   Viewer.LoadFromFile(HtmlToDos(Trim(S)));
   end;
-{$ENDIF}
 end;
 
 procedure TForm1.OpenFileClick(Sender: TObject);
@@ -336,8 +343,12 @@ if (I <= 2) or (J > 0) then
  {$IFDEF MSWINDOWS}
     ShellExecute(Handle, nil, StrPCopy(PC, S), StrPCopy(PC2, Params), 
                  nil, SW_SHOWNORMAL); 
- {$ELSE}
-    Shell('Open ' + S);
+ {$ELSE}  //Not sure if this makes any sense since executable won't have .exe.
+  {$IFDEF LCLCarbon}
+    Shell('open -n "' + S + '" --args "' + Params + '"');
+  {$ELSE}
+    Shell('"' + S + '" "' + Params + '"');
+  {$ENDIF}
  {$ENDIF}
 {$ENDIF}
     end
@@ -366,7 +377,11 @@ if (I > 0) or (J > 0) then
 {$IFDEF MSWINDOWS}
   ShellExecute(0, nil, pchar(URL), nil, nil, SW_SHOWNORMAL);
 {$ELSE}
-  Shell('Open ' + URL);
+ {$IFDEF LCLCarbon}
+  Shell('open "' + URL + '"');
+ {$ELSE}
+  Shell('"' + URL + '"');  //use LCL's OpenURL?
+ {$ENDIF}
 {$ENDIF}
   Handled := True;
   Exit;
@@ -620,22 +635,27 @@ if OpenDialog.Execute then
   end;
 end;
 
+{$IFNDEF LCL}
 procedure TForm1.wmDropFiles(var Message: TMessage);
 var
   S: string[200];
   Ext: string;
   Count: integer;
 begin
-{$IFDEF MSWINDOWS}
 Count := DragQueryFile(Message.WParam, 0, @S[1], 200);
-{$IFNDEF LCL}
 Length(S) := Count;
-{$ELSE}
-S[0] := Char(Count);
-{$ENDIF}
 DragFinish(Message.WParam);
 if Count >0 then
   begin
+{$ELSE}
+procedure TForm1.DropFiles(      Sender    : TObject;
+                           const FileNames : array of string);
+var
+  S  : string;
+  Ext: string;
+begin
+  S := FileNames[0];
+{$ENDIF}
   Ext := LowerCase(ExtractFileExt(S));
   if (Ext = '.htm') or (Ext = '.html') then
     Viewer.LoadFromFile(S)
@@ -644,9 +664,10 @@ if Count >0 then
   else if (Ext = '.bmp') or (Ext = '.gif') or (Ext = '.jpg')
         or (Ext = '.jpeg') or (Ext = '.png') then
     Viewer.LoadImageFile(S);
+{$IFNDEF LCL}
   end;
-{$ENDIF}
 Message.Result := 0;
+{$ENDIF}
 end;
 
 procedure TForm1.MediaPlayerNotify(Sender: TObject);
@@ -837,13 +858,19 @@ var
 {$ENDIF}
 begin
 {$IFNDEF LCL}
-WinExec(StrPCopy(PC, ParamStr(0)+' "'+NewWindowFile+'"'), sw_Show);
+  WinExec(StrPCopy(PC, ParamStr(0)+' "'+NewWindowFile+'"'), sw_Show);
 {$ELSE}
  {$IFDEF MSWINDOWS}
   ShellExecute(Handle, nil, StrPCopy(PC, ParamStr(0)), 
                StrPCopy(PC2, NewWindowFile), nil, SW_SHOWNORMAL); 
  {$ELSE}
-  Shell('Open ' + ParamStr(0));
+  {$IFDEF LCLCarbon}
+  Shell('open -n "' + 
+        ExtractFileDir(ExtractFileDir(ExtractFileDir(ParamStr(0)))) + 
+        '" --args "' + NewWindowFile + '"');
+  {$ELSE}
+  Shell('"' + ParamStr(0) + '" "' + NewWindowFile + '"');
+  {$ENDIF}
  {$ENDIF}
 {$ENDIF}
 end;
