@@ -59,7 +59,10 @@ uses
   nsXPCOM_std19
   {$IFDEF LCLCarbon}, CarbonPrivate {$ENDIF}
   {$IFDEF LCLCocoa}, CocoaPrivate, CocoaAll, CocoaUtils {$ENDIF}
-  {$IFDEF LCLGtk2}, gtk2 {$ENDIF};
+  {$IFDEF LCLGtk2}, gtk2,
+                    ExtCtrls {This is temporal for TTimer needed for event pooling forced}
+  {$ENDIF}
+  ;
 
 resourcestring
   SGeckoBrowserInitError = 'Failed to initialize TGeckoBrowser.';
@@ -168,6 +171,8 @@ type
     FOnStatusChange: TGeckoBrowserStatusChange;
     FOnProgressChange: TGeckoBrowserProgressChange;
     FOnLocationChange: TGeckoBrowserLocationChange;
+    FOnDocumentBegin: TNotifyEvent;
+    FOnDocumentComplete: TNotifyEvent;
     //FOnSecurityChange: TGeckoBrowserSecurityChange;
     // nsIEmbeddingSiteWindow
     FOnTitleChange: TGeckoBrowserTitleChange;
@@ -243,7 +248,8 @@ type
     procedure Reload;
     procedure ReloadWithFlags(AFlags: PRUint32);
   protected
-    function DoCreateChromeWindow(chromeFlags: Longword): nsIWebBrowserChrome; virtual; abstract;
+    function  DoCreateChromeWindow(chromeFlags: Longword): nsIWebBrowserChrome; virtual; abstract;
+    procedure DoGeckoComponentsStartup;
 
     // TControl
     procedure Resize; override;
@@ -290,6 +296,10 @@ type
         read FOnProgressChange write FOnProgressChange;
     property OnLocationChange: TGeckoBrowserLocationChange
         read FOnLocationChange write FOnLocationChange;
+    property OnDocumentBegin: TNotifyEvent
+        read FOnDocumentBegin write FOnDocumentBegin;
+    property OnDocumentComplete: TNotifyEvent
+        read FOnDocumentComplete write FOnDocumentComplete;
     // nsIEmbeddingSiteWindow
     property OnTitleChange: TGeckoBrowserTitleChange
       read FOnTitleChange write FOnTitleChange;
@@ -388,6 +398,11 @@ type
   { TGeckoBrowser }
 
   TGeckoBrowser = class(TCustomGeckoBrowser)
+  {$IFDEF LCLGTK2}
+  private
+    EventPool: TTimer;
+    procedure EventPoolProc(Sender: TObject);
+  {$ENDIF}
   protected
     FBrowser: nsIWebBrowser;
     FTitle: WideString;
@@ -488,6 +503,8 @@ type
     property OnVisibleChange;
     property OnContextMenu;
     property OnNewWindow;
+    property OnDocumentBegin;
+    property OnDocumentComplete;
 
     property OnGoBack;
     property OnGoForward;
@@ -1086,23 +1103,7 @@ procedure TCustomGeckoBrowser.Loaded;
 begin
   if not (csDesigning in ComponentState) then
   begin
-    if not Assigned(GeckoEngineDirectoryService) then begin
-      //This interface must be created as soon as possible because it
-      //will be callbacked when starting the XRE which happend just
-      //after the GeckoBrowser is created but before it is ready to be
-      //used. The setup of this component is a one time operation, called
-      //by the FIRST instance of GeckoBrowser and not called by the next
-      //ones; and its data persists while the program is running.
-      GeckoEngineDirectoryService:=IDirectoryServiceProvider.Create;
-    end;
-    if Assigned(FOnDirectoryService) then
-      FOnDirectoryService(Self,GeckoEngineDirectoryService);
-    try
-      GeckoComponentsStartup;
-      FGeckoComponentsStartupSucceeded := true;
-    except
-      FGeckoComponentsStartupSucceeded := false;
-    end;
+    DoGeckoComponentsStartup;
   end;
   inherited Loaded;
   DoInitializationIfNeeded;
@@ -1114,7 +1115,11 @@ begin
   OutputDebugString('TGeckoBrowser.CreateWnd');
   {$ENDIF}
   inherited CreateWnd;
-  DoInitializationIfNeeded;
+  if not (csDesigning in ComponentState) and not FGeckoComponentsStartupSucceeded and not FInitializationStarted then
+  begin
+    DoGeckoComponentsStartup;
+    DoInitializationIfNeeded;
+  end;
 end;
 
 procedure TCustomGeckoBrowser.DestroyWnd;
@@ -1287,6 +1292,27 @@ begin
   except
     raise EGeckoBrowserNavigationError.CreateRes(
       PResStringRec(@SGeckoBrowserCannotReload));
+  end;
+end;
+
+procedure TCustomGeckoBrowser.DoGeckoComponentsStartup;
+begin
+  if not Assigned(GeckoEngineDirectoryService) then begin
+    //This interface must be created as soon as possible because it
+    //will be callbacked when starting the XRE which happend just
+    //after the GeckoBrowser is created but before it is ready to be
+    //used. The setup of this component is a one time operation, called
+    //by the FIRST instance of GeckoBrowser and not called by the next
+    //ones; and its data persists while the program is running.
+    GeckoEngineDirectoryService:=IDirectoryServiceProvider.Create;
+  end;
+  if Assigned(FOnDirectoryService) then
+    FOnDirectoryService(Self,GeckoEngineDirectoryService);
+  try
+    GeckoComponentsStartup;
+    FGeckoComponentsStartupSucceeded := true;
+  except
+    FGeckoComponentsStartupSucceeded := false;
   end;
 end;
 
@@ -1621,6 +1647,8 @@ begin
       OutputDebugString('GeckoBrowser.OnDocumentBegin');
       }
       {$ENDIF}
+      if Assigned(FBrowser.OnDocumentBegin) then
+        FBrowser.OnDocumentBegin(Self);
     end else
     if (aStateFlags and STATE_STOP)<>0 then
     begin
@@ -1630,6 +1658,10 @@ begin
       OutputDebugString('GeckoBrowser.OnDocumentComplete');
       }
       {$ENDIF}
+      if Assigned(FBrowser.OnDocumentComplete) then
+        FBrowser.OnDocumentComplete(Self);
+      if Assigned(FBrowser.OnStatusChange) then
+        FBrowser.OnStatusChange(FBrowser, '');
     end;
   end;
   if (aStateFlags and STATE_IS_NETWORK)<>0 then
@@ -1751,6 +1783,16 @@ begin
   inherited;
   Chrome := TGeckoBrowserChrome.Create(Self);
   Listener := TGeckoBrowserListener.Create(Self);
+  {$IFDEF LCLGTK2}
+  //Creates a timer that forces the event queue to be pooled. This could be a
+  //bug in the LCL or a problem with events coming for the XULRUNNER.
+  //A timer of 100 ms creates the feel that everything is pooled as it comes and
+  //it only have a visual impact.
+  EventPool := TTimer.Create(Self);
+  EventPool.Interval:=100;
+  EventPool.Enabled:=true;
+  EventPool.OnTimer:=EventPoolProc;
+  {$ENDIF}
 end;
 
 function TGeckoBrowserChrome.NS_GetInterface(constref uuid: TGUID; out _result): nsresult;
@@ -1828,6 +1870,13 @@ begin
 {$ENDIF}
 end;
 
+{$IFDEF LCLGTK2}
+procedure TGeckoBrowser.EventPoolProc(Sender: TObject);
+begin
+  //Do nothing. Just a hack.
+end;
+{$ENDIF}
+
 function TGeckoBrowser.DoCreateChromeWindow(
   chromeFlags: Longword): nsIWebBrowserChrome;
 var
@@ -1871,19 +1920,24 @@ begin
   if csDesigning in ComponentState then
   begin
     rc := ClientRect;
+    Canvas.Brush.Color:=clWhite;
+    Canvas.FillRect(rc);
     if Assigned(FDesignTimeLogo) then
       Canvas.StretchDraw(rc,FDesignTimeLogo)
-    else
-      Canvas.FillRect(rc);
   end else
   begin
     if FGeckoComponentsStartupSucceeded then
     begin
       baseWin := FWebBrowser as nsIBaseWindow;
       baseWin.Repaint(true);
+      {$IFDEF LCLGTK2}
+      Self.AdjustSize;
+      {$ENDIF}
     end
     else
     begin
+      rc := ClientRect;
+      Canvas.FillRect(rc);
       Canvas.TextOut(0,0,SGeckoBrowserInitError);
     end;
   end;
