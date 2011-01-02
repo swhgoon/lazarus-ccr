@@ -4,8 +4,13 @@ unit URLSubs;
 interface
 
 uses
-  {$IFNDEF LCL} WinTypes, WinProcs, Messages, {$ELSE} LclIntf, LMessages, Types, LclType, HtmlMisc, {$ENDIF} 
-  SysUtils, htmlun2;
+  SysUtils,
+  {$IFNDEF LCL}
+   WinTypes, WinProcs, Messages,
+  {$ELSE}
+   LclIntf, LMessages, Types, LclType, HtmlMisc,
+  {$ENDIF} 
+  htmlun2;
 
 function GetBase(const URL: string): string;
 {Given an URL, get the base directory}

@@ -97,10 +97,13 @@ interface
 //
 ////////////////////////////////////////////////////////////////////////////////
 uses
-  {$IFNDEF LCL} Windows, {$ELSE} LclIntf, LclType, HtmlMisc, {$ENDIF} 
-  sysutils,
-  Graphics,
-  Classes;
+  SysUtils, Classes,
+  {$IFNDEF LCL} 
+   Windows,
+  {$ELSE} 
+   LclIntf, LclType, HtmlMisc, 
+  {$ENDIF}
+  Graphics;
 
 ////////////////////////////////////////////////////////////////////////////////
 //

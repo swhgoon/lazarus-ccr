@@ -33,10 +33,15 @@ unit FramBrwz;
 interface
 
 uses
-  {$IFNDEF LCL} WinTypes, WinProcs, Messages, {$ELSE} LclIntf, LMessages, Types, LclType, HtmlMisc, {$ENDIF} 
-  SysUtils, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, ExtCtrls, Menus, htmlsubs, htmlview, htmlun2,
-  readHTML, FramView;
+  SysUtils, Classes,
+  {$IFNDEF LCL} 
+   WinTypes, WinProcs, Messages, 
+  {$ELSE}
+   LclIntf, LMessages, Types, LclType, HtmlMisc, 
+  {$ENDIF} 
+  Graphics, Controls,
+  Forms, Dialogs, StdCtrls, ExtCtrls, Menus, 
+  htmlsubs, htmlview, htmlun2, readHTML, FramView;
 
 type
   TGetPostRequestEvent = procedure(Sender: TObject; IsGet: boolean; const URL, Query: string;

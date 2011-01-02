@@ -33,9 +33,16 @@ unit Htmlview;
 interface
 
 uses
-  {$IFNDEF LCL} WinTypes, WinProcs, Messages, {$ELSE} LclIntf, LMessages, Types, LclType, FPimage, HtmlMisc, {$ENDIF} 
-  SysUtils, Classes, Graphics, Controls, StdCtrls,
-  {$IFNDEF LCL} vwPrint, MetafilePrinter, mmSystem, {$ENDIF}
+  SysUtils, Classes,
+  {$IFNDEF LCL}
+   WinTypes, WinProcs, Messages,
+  {$ELSE}
+   LclIntf, LMessages, Types, LclType, FPimage, HtmlMisc,
+  {$ENDIF} 
+  Graphics, Controls, StdCtrls,
+  {$IFNDEF LCL}
+   vwPrint, MetafilePrinter, mmSystem,
+  {$ENDIF}
   HTMLUn2, Forms, Dialogs, ExtCtrls, ReadHTML, HTMLSubs, StyleUn, Printers, Menus,
   GDIPL2A;
 

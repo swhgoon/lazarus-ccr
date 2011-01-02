@@ -30,9 +30,14 @@ unit HTMLGif2;
 interface
 
 uses
-  {$IFNDEF LCL} Windows, mmSystem, {$ELSE} LclIntf, LMessages, Types, LclType, HtmlMisc, {$ENDIF} 
-  SysUtils, Classes, Graphics, Controls, ExtCtrls, htmlUN2,
-  htmlgif1;
+  SysUtils, Classes,
+  {$IFNDEF LCL}
+   Windows, mmSystem,
+  {$ELSE}
+   LclIntf, LMessages, Types, LclType, HtmlMisc,
+  {$ENDIF} 
+  Graphics, Controls, ExtCtrls,
+  htmlUN2, htmlgif1;
 
 type
   TRGBColor = packed Record

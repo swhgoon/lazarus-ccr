@@ -63,9 +63,14 @@ unit Htmlsubs;
 
 interface
 uses
-  {$IFNDEF LCL} WinTypes, Windows, WinProcs, Messages, mmSystem, {$ELSE} LclIntf, LMessages, Types, LclType, HtmlMisc, {$ENDIF} 
-  SysUtils, Classes, Graphics, Controls, 
-  Forms, Dialogs, StdCtrls, ExtCtrls, HTMLUn2, HTMLGif2,
+  SysUtils, Classes,
+  {$IFNDEF LCL}
+   WinTypes, Windows, WinProcs, Messages, mmSystem,
+  {$ELSE}
+   LclIntf, LMessages, Types, LclType, HtmlMisc,
+  {$ENDIF} 
+  Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls,
+  HTMLUn2, HTMLGif2,
   {$ifdef UseTNT}    
   TntStdCtrls,
   {$endif}

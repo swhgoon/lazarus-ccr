@@ -33,9 +33,18 @@ unit HtmlMisc;
 interface
 
 uses 
-  {$IFDEF MSWINDOWS} Windows, {$ELSE} Types, Printers, {$ENDIF}
-   LclIntf, LMessages, LclType, LclProc, InterfaceBase,
-   GraphType, Graphics, Controls, SysUtils;
+  SysUtils,
+  {$IFDEF MSWINDOWS}
+   Windows,
+  {$ELSE}
+   Types, Printers,
+  {$ENDIF}
+  LclIntf, LMessages, LclType, LclProc, InterfaceBase,
+  GraphType, Graphics, Controls;
+   {Important: Be sure to list LclType after SysUtils and Classes 
+     in order to use LclType's THandle declaration (32 or 64 bits)
+     rather than THandle in SysUtils and Classes (=System.THandle,
+     which apparently is always 32 bits).}
 
 type
   TButtonStyle = (bsAutoDetect, bsWin31, bsNew);

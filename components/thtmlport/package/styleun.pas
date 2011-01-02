@@ -33,8 +33,13 @@ unit StyleUn;
 interface
 
 uses
-  {$IFNDEF LCL} Windows, Messages, {$ELSE} LclIntf, LMessages, Types, LclType, HtmlMisc, {$ENDIF} 
-  SysUtils, Classes, Graphics, Controls, Forms, Dialogs;
+  SysUtils, Classes,
+  {$IFNDEF LCL}
+   Windows, Messages,
+  {$ELSE}
+   LclIntf, LMessages, Types, LclType, HtmlMisc,
+  {$ENDIF} 
+  Graphics, Controls, Forms, Dialogs;
 
 const
   IntNull = -12345678;

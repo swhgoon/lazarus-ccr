@@ -33,9 +33,14 @@ unit StylePars;
 interface
 
 uses
-  {$IFNDEF LCL} WinTypes, WinProcs, Messages, {$ELSE} LclIntf, LMessages, Types, LclType, HtmlMisc, {$ENDIF} 
-  SysUtils, Classes, Controls,
-  Dialogs, StdCtrls, StyleUn;
+  SysUtils, Classes,
+  {$IFNDEF LCL}
+   WinTypes, WinProcs, Messages,
+  {$ELSE}
+   LclIntf, LMessages, Types, LclType, HtmlMisc,
+  {$ENDIF} 
+  Controls, Dialogs, StdCtrls,
+  StyleUn;
 
 type
   CharFunction = function: Char;

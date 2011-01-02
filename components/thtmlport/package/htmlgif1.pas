@@ -46,12 +46,15 @@ interface
 
 uses
   {$ifdef UseCLX}
-    SysUtils, Types, Classes, QGraphics, QControls, QForms, QDialogs,
-    QStdCtrls;
+    SysUtils, Types, Classes, QGraphics, QControls, QForms, QDialogs, QStdCtrls;
   {$else}
-  {$IFNDEF LCL} Windows, Messages, WinTypes, WinProcs, {$ELSE} LclIntf, LMessages, Types, LclType, HtmlMisc, {$ENDIF} 
-    SysUtils, Classes, Graphics,
-    Controls, StdCtrls, ExtCtrls, Forms;  
+   SysUtils, Classes, 
+   {$IFNDEF LCL}
+    Windows, Messages, WinTypes, WinProcs,
+   {$ELSE}
+    LclIntf, LMessages, Types, LclType, HtmlMisc,
+   {$ENDIF} 
+   Graphics, Controls, StdCtrls, ExtCtrls, Forms;  
   {$endif}
 
 

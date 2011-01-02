@@ -32,9 +32,14 @@ unit Htmlsbs1;
 
 interface
 uses
-  {$IFNDEF LCL} WinTypes, WinProcs, Messages, {$ELSE} LclIntf, LMessages, Types, LclType, HtmlMisc, {$ENDIF} 
-  SysUtils, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, ExtCtrls, HTMLUn2, HTMLGif2, HTMLSubs, StyleUn;
+  SysUtils, Classes,
+  {$IFNDEF LCL}
+   WinTypes, WinProcs, Messages,
+  {$ELSE}
+   LclIntf, LMessages, Types, LclType, HtmlMisc,
+  {$ENDIF} 
+  Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls, 
+  HTMLUn2, HTMLGif2, HTMLSubs, StyleUn;
 
 Type
 

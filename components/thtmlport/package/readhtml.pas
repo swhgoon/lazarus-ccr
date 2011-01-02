@@ -76,9 +76,14 @@ unit Readhtml;
 
 interface
 uses
-  {$IFNDEF LCL} WinTypes, WinProcs, Messages, {$ELSE} LclIntf, LMessages, Types, LclType, HtmlMisc, {$ENDIF} 
-  SysUtils, Classes, Graphics, Controls, 
-  Dialogs, StdCtrls, HTMLUn2, StyleUn;
+  SysUtils, Classes,
+  {$IFNDEF LCL}
+   WinTypes, WinProcs, Messages,
+  {$ELSE}
+   LclIntf, LMessages, Types, LclType, HtmlMisc,
+  {$ENDIF} 
+  Graphics, Controls, Dialogs, StdCtrls,
+  HTMLUn2, StyleUn;
 
 type
   LoadStyleType = (lsFile, lsString, lsInclude);

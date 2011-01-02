@@ -32,9 +32,14 @@ unit HTMLUn2;
 
 interface
 uses
-  {$IFNDEF LCL} Windows, Messages, {$ELSE} LclIntf, LMessages, Types, LclType, LResources, IntfGraphics, HtmlMisc, {$ENDIF} 
-  SysUtils, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, ExtCtrls, Clipbrd, StyleUn, GDIPL2A; 
+  SysUtils, Classes,
+  {$IFNDEF LCL}
+   Windows, Messages,
+  {$ELSE}
+   LclIntf, LMessages, Types, LclType, LResources, IntfGraphics, HtmlMisc,
+  {$ENDIF} 
+  Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls, Clipbrd,
+  StyleUn, GDIPL2A; 
 
 const
   VersionNo = '9.45';

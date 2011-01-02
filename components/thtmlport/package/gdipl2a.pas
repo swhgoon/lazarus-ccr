@@ -7,8 +7,13 @@ unit GDIPL2A;
 interface
 
 uses 
-{$IFNDEF LCL} Windows, ActiveX, {$ELSE} LclIntf, LclType, Types, DynLibs, HtmlMisc, {$ENDIF} 
-SysUtils, Graphics;
+  SysUtils, 
+  {$IFNDEF LCL}
+   Windows, ActiveX,
+  {$ELSE} 
+   LclIntf, LclType, Types, DynLibs, HtmlMisc,
+  {$ENDIF} 
+  Graphics;
 
 var
   GDIPlusActive: boolean;
@@ -295,7 +300,7 @@ begin
 GdipDisposeImage (fHandle);
 if Length(fFilename) > 0 then
   try
-    DeleteFile(fFilename);
+    SysUtils.DeleteFile(fFilename);
   except
     end;
 inherited;

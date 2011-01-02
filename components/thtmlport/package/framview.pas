@@ -33,10 +33,14 @@ unit FramView;
 interface
 
 uses
-  {$IFNDEF LCL} WinTypes, WinProcs, Messages, {$ELSE} LclIntf, LMessages, Types, LclType, FPimage, HtmlMisc, {$ENDIF} 
-  SysUtils, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, ExtCtrls, Menus, htmlsubs, htmlview, htmlun2,
-  readHTML;
+  SysUtils, Classes, 
+  {$IFNDEF LCL} 
+   WinTypes, WinProcs, Messages, 
+  {$ELSE}
+   LclIntf, LMessages, Types, LclType, FPimage, HtmlMisc,
+  {$ENDIF} 
+  Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls, Menus, 
+  htmlsubs, htmlview, htmlun2, readHTML;
 
 type
   {common to TFrameViewer and TFrameBrowser}
