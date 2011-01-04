@@ -655,12 +655,20 @@ begin
     SetLength(s, cchMultiByte);
     Move(lpMultiByteStr^, s[1], cchMultiByte);
     end;
-  SetLength(w, Succ(Length(s)));
-  StringToWideChar(s, PWideChar(w), Length(w));
-   {Look for terminating null to determine length of returned string}
-  Result := 0;
-  while w[Succ(Result)] <> #0 do
-   Inc(Result);
+  if CodePage = CP_UTF8 then
+    begin
+    w := UTF8Decode(s);
+    Result := Length(w);
+    end
+  else  //TODO: Convert other codepages to UTF8 encoding (see styleun.pas and lconvencoding.pas).
+    begin
+    SetLength(w, Succ(Length(s)));
+    StringToWideChar(s, PWideChar(w), Length(w));
+     {Look for terminating null to determine length of returned string}
+    Result := 0;
+    while w[Succ(Result)] <> #0 do
+      Inc(Result);
+    end;
   if cchMultiByte < 0 then  {Include terminating null too?}
     Inc(Result);
   if cchWideChar > 0 then  {Okay to return string?}
