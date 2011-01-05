@@ -56,22 +56,27 @@ type
 {$IFNDEF FPC}
   size_t = SizeUint;
 {$ENDIF}
-
+{$IFDEF CPU64}
+  PRSize = PtrUInt;
+{$ELSE}
   PRSize = PRUint32;
+{$ENDIF}
 
   PRFileDesc = type Pointer;
   PRLibrary = type Pointer;
 
+  nsCoord = PRInt32;
+
   nsPoint = record
-    x, y: Longint;
+    x, y: nsCoord;
   end;
 
   nsRect = record
-    left, top, right, bottom: Longint;
+    left, top, right, bottom: nsCoord;
   end;
   
   nsMargin = record
-    left, top, right, bottom: Longint;
+    left, top, right, bottom: nsCoord;
   end;
 
   TGUIDArray = array[0..16383] of TGUID;

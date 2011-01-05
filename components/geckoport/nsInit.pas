@@ -1260,8 +1260,12 @@ begin
       l := NS_StrLen(buffer);
       if (buffer[0] = '#') or (l=0) then
         Continue;
-      if buffer[l-1] in [#10, #13] then
-        buffer[l-1]:= #0;
+      if l>0 then
+        if buffer[l-1] in [#10, #13] then
+          buffer[l-1]:= #0;
+      if l>1 then
+        if buffer[l-2] in [#10, #13] then
+          buffer[l-2]:= #0;
       NS_StrCopy(buffer2, xpcomdir);
       NS_StrLCat(buffer2, DirectorySeparator, MAX_PATH);
       NS_StrLCat(buffer2, buffer, MAX_PATH);
