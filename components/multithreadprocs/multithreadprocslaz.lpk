@@ -2,8 +2,9 @@
 <CONFIG>
   <Package Version="3">
     <Name Value="MultiThreadProcsLaz"/>
+    <Author Value="Mattias Gaertner  mattias@freepascal.org"/>
     <CompilerOptions>
-      <Version Value="8"/>
+      <Version Value="9"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
@@ -11,7 +12,9 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Version Major="1" Release="1"/>
+    <Description Value="Running procedures and methods parallel via a thread pool."/>
+    <License Value="modified LGPL2"/>
+    <Version Major="1" Minor="2" Release="1"/>
     <Files Count="3">
       <Item1>
         <Filename Value="mtprocs.pas"/>
@@ -35,11 +38,12 @@
     </RequiredPkgs>
     <UsageOptions>
       <CustomOptions Value="-dUseCThreads"/>
-      <UnitPath Value="$(PkgOutDir)/"/>
+      <UnitPath Value="$(PkgOutDir)"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
+    <Provides Count="2"/>
   </Package>
 </CONFIG>

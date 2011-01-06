@@ -35,7 +35,7 @@ type
     fBlockSize: PtrInt;
     fBlockCntPowOf2Offset: PtrInt;
     FMergeBuffer: PPointer;
-    procedure MTPSort(Index: PtrInt; Data: Pointer; Item: TMultiThreadProcItem);
+    procedure MTPSort(Index: PtrInt; {%H-}Data: Pointer; Item: TMultiThreadProcItem);
   public
     List: PPointer;
     Count: PtrInt;

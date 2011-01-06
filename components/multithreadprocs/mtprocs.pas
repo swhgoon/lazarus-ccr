@@ -127,6 +127,7 @@ type
     procedure AddToList(var First: TProcThreadGroup; ListType: TMTPGroupState); inline;
     procedure RemoveFromList(var First: TProcThreadGroup); inline;
     function NeedMoreThreads: boolean; inline;
+    procedure IncreaseLastRunningIndex(Item: TMultiThreadProcItem);
     procedure AddThread(AThread: TProcThread);
     procedure RemoveThread(AThread: TProcThread); inline;
     procedure Run(Index: PtrInt; Data: Pointer; Item: TMultiThreadProcItem); inline;
@@ -203,6 +204,8 @@ type
 var
   ProcThreadPool: TProcThreadPool = nil;
 
+threadvar
+  CurrentThread: TThread; // TProcThread sets this, you can set this for your own TThreads descendants
 
 implementation
 
@@ -338,6 +341,7 @@ var
   ok: Boolean;
   E: Exception;
 begin
+  CurrentThread:=Self;
   aPool:=Item.Group.Pool;
   ok:=false;
   try
@@ -353,8 +357,7 @@ begin
         // find next work
         if Group.LastRunningIndex<Group.EndIndex then begin
           // next index of group
-          inc(Group.FLastRunningIndex);
-          Item.FIndex:=Group.FLastRunningIndex;
+          Group.IncreaseLastRunningIndex(Item);
         end else begin
           // remove from group
           RemoveFromList(Group.FFirstThread,mtptlGroup);
@@ -422,17 +425,23 @@ begin
       and (FState<>mtpgsException);
 end;
 
+procedure TProcThreadGroup.IncreaseLastRunningIndex(Item: TMultiThreadProcItem);
+begin
+  inc(FLastRunningIndex);
+  Item.FIndex:=FLastRunningIndex;
+  if NeedMoreThreads then exit;
+  if FState=mtpgsNeedThreads then begin
+    RemoveFromList(Pool.FFirstGroupNeedThreads);
+    AddToList(Pool.FFirstGroupFinishing,mtpgsFinishing);
+  end;
+end;
+
 procedure TProcThreadGroup.AddThread(AThread: TProcThread);
 begin
   AThread.Item.FGroup:=Self;
   AThread.AddToList(FFirstThread,mtptlGroup);
   inc(FThreadCount);
-  inc(FLastRunningIndex);
-  AThread.Item.FIndex:=FLastRunningIndex;
-  if not NeedMoreThreads then begin
-    RemoveFromList(Pool.FFirstGroupNeedThreads);
-    AddToList(Pool.FFirstGroupFinishing,mtpgsFinishing);
-  end;
+  IncreaseLastRunningIndex(AThread.Item);
 end;
 
 procedure TProcThreadGroup.RemoveThread(AThread: TProcThread);
@@ -856,6 +865,7 @@ end;
 
 initialization
   ProcThreadPool:=TProcThreadPool.Create;
+  CurrentThread:=nil;
 
 finalization
   ProcThreadPool.Free;
