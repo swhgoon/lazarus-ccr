@@ -1237,7 +1237,7 @@ begin
               end;
               W1:=tmpCanvas.TextWidth(MLRec1.Caption)+2;
               if W1 > W then
-                MLRec1.Hegth:= W1 div W + 1
+                MLRec1.Hegth:= W1 div Max(W, 1) + 1
               else
                 MLRec1.Hegth:=1;
 

@@ -1,14 +1,13 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="8"/>
+    <Version Value="9"/>
     <General>
       <Flags>
         <AlwaysBuild Value="False"/>
         <LRSInOutputDirectory Value="False"/>
       </Flags>
       <MainUnit Value="0"/>
-      <TargetFileExt Value=".exe"/>
       <Title Value="RxDBGrid demo"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
@@ -22,8 +21,11 @@
       <MinorVersionNr Value="4"/>
       <RevisionNr Value="1"/>
       <BuildNr Value="1"/>
-      <StringTable Comments="" CompanyName="" FileDescription="Demo application from RXFPC library" FileVersion="3.4.1.1" InternalName="" LegalCopyright="Lagunov Aleksey, GPL 2" LegalTrademarks="" OriginalFilename="" ProductName="Demo application from RXFPC library" ProductVersion="3.1.1.0"/>
+      <StringTable FileDescription="Demo application from RXFPC library" LegalCopyright="Lagunov Aleksey, GPL 2" ProductName="Demo application from RXFPC library" ProductVersion="3.1.1.0"/>
     </VersionInfo>
+    <BuildModes Count="1">
+      <Item1 Name="default" Default="True"/>
+    </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
@@ -392,10 +394,11 @@
       <Unit45>
         <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
         <UnitName Value="rxdbgrid"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="37"/>
-        <CursorPos X="48" Y="41"/>
+        <TopLine Value="1216"/>
+        <CursorPos X="48" Y="1240"/>
         <UsageCount Value="16"/>
         <Bookmarks Count="3">
           <Item0 X="3" Y="2250" ID="3"/>
@@ -544,16 +547,13 @@
       <Unit62>
         <Filename Value="../../../../../../install/fpcsrc/packages/fcl-db/src/base/db.pas"/>
         <UnitName Value="db"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
         <TopLine Value="541"/>
         <CursorPos X="1" Y="569"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit62>
     </Units>
-    <JumpHistory Count="3" HistoryIndex="2">
+    <JumpHistory Count="5" HistoryIndex="4">
       <Position1>
         <Filename Value="rxdbgridmainunit.pas"/>
         <Caret Line="161" Column="14" TopLine="148"/>
@@ -566,6 +566,14 @@
         <Filename Value="rxdbgridmainunit.pas"/>
         <Caret Line="9" Column="12" TopLine="1"/>
       </Position3>
+      <Position4>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
+        <Caret Line="43" Column="11" TopLine="37"/>
+      </Position4>
+      <Position5>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
+        <Caret Line="1231" Column="29" TopLine="1216"/>
+      </Position5>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
@@ -575,7 +583,7 @@
     </Target>
     <SearchPaths>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
-      <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
+      <SrcPath Value="$(LazarusDir)/lcl;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)"/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>
