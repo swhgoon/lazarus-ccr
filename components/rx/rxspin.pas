@@ -261,8 +261,8 @@ const
 constructor TRxSpinButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FUpBitmap := TBitmap.Create;
-  FDownBitmap := TBitmap.Create;
+{  FUpBitmap := TBitmap.Create;
+  FDownBitmap := TBitmap.Create;}
   FUpBitmap := LoadBitmapFromLazarusResource(sSpinUpBtn);
   FDownBitmap := LoadBitmapFromLazarusResource(sSpinDownBtn);
   FUpBitmap.OnChange := @GlyphChanged;

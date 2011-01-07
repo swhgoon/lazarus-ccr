@@ -598,6 +598,8 @@ begin
 end;
 
 constructor TRxCustomDBLookupEdit.Create(AOwner: TComponent);
+var
+  P:TBitmap;
 begin
   inherited Create(AOwner);
   FLocateObject:=CreateLocate(nil);
@@ -611,7 +613,9 @@ begin
 
 //  FDropDownCount:=8;
   FFieldList:=TStringList.Create;
-  Glyph:=CreateArrowBitmap;
+  P:=CreateArrowBitmap;
+  Glyph.Assign(P);
+  P.Free;
   ButtonWidth:=15;
   FPopUpFormOptions:=TPopUpFormOptions.Create;
 end;
@@ -622,6 +626,7 @@ begin
   FreeAndNil(FPopUpFormOptions);
   FFieldList.Clear;
   FreeAndNil(FFieldList);
+  FreeAndNil(FLookupDataLink);
   inherited Destroy;
 end;
 
