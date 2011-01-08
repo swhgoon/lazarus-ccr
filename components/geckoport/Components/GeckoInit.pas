@@ -43,7 +43,11 @@ begin
     GeckoEngineDirectoryService:=IDirectoryServiceProvider.Create;
   NS_GetServiceManager(ServiceManager);
   ServiceManager.GetService(NS_DIRECTORY_SERVICE_CID, DirectoryService,DirectoryService);
+  {$IFDEF LCLGTK2 AND defined(cpux86_64)}
+  //No register meanwhile the DirectoryService bug in Linux64 is not solved.
+  {$ELSE}
   DirectoryService.RegisterProvider(GeckoEngineDirectoryService);
+  {$ENDIF}
 
   Inc(sInitCount);
 end;
