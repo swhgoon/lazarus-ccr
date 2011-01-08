@@ -55,7 +55,7 @@ interface
 uses
   LclIntf, LMessages, LclType, LResources, Graphics,
   SysUtils, Classes, Controls, nsXPCOM,
-  nsGeckoStrings, CallbackInterfaces, nsTypes, nsXPCOMGlue, BrowserSupports,
+  nsGeckoStrings, nsTypes, CallbackInterfaces, nsXPCOMGlue, BrowserSupports,
   nsXPCOM_std19
   {$IFDEF LCLCarbon}, CarbonPrivate {$ENDIF}
   {$IFDEF LCLCocoa}, CocoaPrivate, CocoaAll, CocoaUtils {$ENDIF}
@@ -218,7 +218,7 @@ type
     function GetWebBrowserFind: nsIWebBrowserFind;
     function GetWebBrowserPrint: nsIWebBrowserPrint;
     function GetWebNavigation: nsIWebNavigation;
-    function GetNativeWindow : THANDLE;
+    function GetNativeWindow : nativeWindow;
     //function GetMarkupDocumentViewer: nsIMarkupDocumentViewer;
     //function GetDocShell: nsIDocShell;
     //function GetDocumentCharsetInfo: nsIDocumentCharsetInfo;
@@ -1989,7 +1989,7 @@ begin
   Result := FWebBrowser as nsIWebNavigation;
 end;
 
-function TCustomGeckoBrowser.GetNativeWindow: THANDLE;
+function TCustomGeckoBrowser.GetNativeWindow: nativeWindow;
 {$IFDEF LCLCocoa}
 var
   ARect : NSRect;
@@ -2000,7 +2000,7 @@ begin
   Result := Handle;
 {$ENDIF}
 {$IFDEF LCLCarbon}
-  Result := THANDLE(TCarbonWindow(Handle).Window);
+  Result := nativeWindow(TCarbonWindow(Handle).Window);
 {$ENDIF}
 {$IFDEF LCLCocoa}
   ARect := NSView(TCocoaWindow(Handle).contentView).visibleRect;
@@ -2010,13 +2010,14 @@ begin
   ARect.origin.y := 15;
   AView := NSView.alloc.initWithFrame(ARect);
   NSView(TCocoaWindow(Handle).contentView).addSubView(AView);
+  //Maybe Result := nativeWindow(AView) ? for 64 bits ?
   Result := THANDLE(AView);
 {$ENDIF}
 {$IFDEF LCLGtk}
   Result := Handle;
 {$ENDIF}
 {$IFDEF LCLGtk2}
-  Result := PtrInt(PGtkWindow(Handle)^.default_widget);
+  Result := nativeWindow(PGtkWindow(Handle)^.default_widget);
 {$ENDIF}
 end;
 

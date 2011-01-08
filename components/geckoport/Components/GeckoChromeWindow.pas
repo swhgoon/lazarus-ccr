@@ -61,6 +61,15 @@ uses
   {$IFDEF LCLCocoa}, CocoaAll, CocoaUtils, CocoaPrivate {$ENDIF};
 
 type
+  //In all currently supported platforms the native window handle is a pointer
+  //size handle. In Linux64 THANDLE can not be used because by default it is 32
+  //bits due file descriptors which are 32 bits even in 64 bit platform.
+  //Win32   WindowHandle 32 bits THANDLE 32 bits
+  //Win64   WindowHandle 64 bits THANDLE 64 bits
+  //Linux32 WindowHandle 32 bits THANDLE 32 bits
+  //Linux64 WindowHandle 64 bits THANDLE 32 bits
+  nativeWindow = PtrUInt;
+
   TGeckoChromeForm = class(TForm,
                            IGeckoCreateWindowTarget,
                            nsIWebBrowserChrome,
@@ -111,7 +120,7 @@ type
     // for nsISupportsWeakReference
     function GetWeakReference(): nsIWeakReference; safecall;
 
-    function GetNativeWindow : THANDLE;  //FPC port: added this.
+    function GetNativeWindow : nativeWindow;  //FPC port: added this.
     procedure InitWebBrowser;
     procedure UpdateChrome;
     procedure ContentFinishedLoading;
@@ -159,7 +168,7 @@ begin
   Action := caFree;
 end;
 
-function TGeckoChromeForm.GetNativeWindow : THANDLE;
+function TGeckoChromeForm.GetNativeWindow : nativeWindow;
 {$IFDEF LCLCocoa}
 var
   ARect : NSRect;
@@ -195,7 +204,7 @@ begin
    {$IFDEF LCLGtk}Result := Handle;{$ENDIF}  //Is Handle same as GTK Window?
 
    {$IFDEF LCLGtk2}
-   Result := PtrInt(PGtkWindow(GeckoChromeForm.Handle)^.bin.child);
+   Result := nativeWindow(PGtkWindow(GeckoChromeForm.Handle)^.bin.child);
    {$ENDIF}  //Is Handle same as GTK Window?
 end;
 
@@ -388,7 +397,7 @@ end;
 procedure TGeckoChromeForm.SetVisibility(Value: LongBool);
 begin
   UseParameter(Value);
-  //Visible := Value;
+  Visible := Value;
 end;
 
 function TGeckoChromeForm.GetTitle: PWideChar;
@@ -469,7 +478,12 @@ begin
   begin
 // FPC port: Result is PRUInt32, but QueryInterface returns Longint,
 //  so cast to nsresult to prevent range check error.
+    try
     Result := nsresult(QueryInterface(uuid, Intf));
+    except
+      Result:=0;
+      Integer(Intf):=0;
+    end;
   end;
 end;
 
@@ -496,7 +510,6 @@ procedure TGeckoChromeForm.FormResize(Sender: TObject);
 var
   baseWin: nsIBaseWindow;
 begin
-  //
   baseWin:=FWebBrowser as nsIBaseWindow;
   baseWin.SetPositionAndSize(0, 0, ClientWidth, ClientHeight, True);
   baseWin.SetVisibility(True);
@@ -505,13 +518,22 @@ end;
 procedure TGeckoChromeForm.ContentFinishedLoading;
 var
   contentWin: nsIDOMWindow;
+  baseWin: nsIBaseWindow;
 begin
+  contentWin := FWebBrowser.ContentDOMWindow;
   try
-    contentWin := FWebBrowser.ContentDOMWindow;
+    //Will try to resize the form to the size of the HTML page, but if the HTML
+    //does not have a width specified (UNRESTRICTED) it will raise an exception
+    //and badly resize the HTML content.
     contentWin.SizeToContent;
-    Visible := True;
   except
+    //Workaround
+    baseWin:=FWebBrowser as nsIBaseWindow;
+    //Forces reflow...
+    baseWin.SetPositionAndSize(0,0,ClientWidth, ClientHeight+1, false);
+    baseWin.SetPositionAndSize(0,0,ClientWidth, ClientHeight, true);
   end;
+  Visible:=true;
 end;
 
 {$IFDEF LCL}

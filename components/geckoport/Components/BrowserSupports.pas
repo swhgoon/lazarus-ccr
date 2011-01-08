@@ -114,7 +114,14 @@ type
  *)
   gfx_format = PRInt32;
   nscoord = PRInt32;
-  nativeWindow = THANDLE;
+  //In all currently supported platforms the native window handle is a pointer
+  //size handle. In Linux64 THANDLE can not be used because by default it is 32
+  //bits due file descriptors which are 32 bits even in 64 bit platform.
+  //Win32   WindowHandle 32 bits THANDLE 32 bits
+  //Win64   WindowHandle 64 bits THANDLE 64 bits
+  //Linux32 WindowHandle 32 bits THANDLE 32 bits
+  //Linux64 WindowHandle 64 bits THANDLE 32 bits
+  nativeWindow = PtrUInt;
   gfxIFormats = interface
   ['{96d086e6-1dd1-11b2-b6b2-b77b59390247}']
   end;
