@@ -8,15 +8,18 @@ uses
   Classes, SysUtils, DB, RxDBGrid, ZConnection, ZDataset, ZAbstractRODataset;
 
 type
-  TFBDataSetSortEngine = class(TExDBGridSortEngine)
+
+  { TZeosDataSetSortEngine }
+
+  TZeosDataSetSortEngine = class(TRxDBGridSortEngine)
   public
-    procedure Sort(Field:TField; ADataSet:TDataSet; Asc:boolean);override;
+    procedure Sort(Field:TField; ADataSet:TDataSet; Asc:boolean; SortOptions:TRxSortEngineOptions);override;
     procedure SortList(ListField:string; ADataSet:TDataSet; Asc:boolean);override;
   end;
 
 implementation
 
-procedure TFBDataSetSortEngine.Sort(Field:TField; ADataSet:TDataSet; Asc:boolean);
+procedure TZeosDataSetSortEngine.Sort(Field:TField; ADataSet:TDataSet; Asc:boolean; SortOptions:TRxSortEngineOptions);
 begin
   if Assigned(ADataSet) then
     if ADataSet.ClassName='TZReadOnlyQuery' then
@@ -47,7 +50,7 @@ begin
           end;
 end;
 
-procedure TFBDataSetSortEngine.SortList(ListField:string; ADataSet:TDataSet; Asc:boolean);
+procedure TZeosDataSetSortEngine.SortList(ListField:string; ADataSet:TDataSet; Asc:boolean);
 begin
   if Assigned(ADataSet) then
     if ADataSet.ClassName='TZReadOnlyQuery' then
@@ -80,8 +83,8 @@ end;
 
 
 initialization
-  RegisterExDBGridSortEngine(TFBDataSetSortEngine, TZReadOnlyQuery);
-  RegisterExDBGridSortEngine(TFBDataSetSortEngine, TZQuery);
-  RegisterExDBGridSortEngine(TFBDataSetSortEngine, TZTable);
+  RegisterRxDBGridSortEngine(TZeosDataSetSortEngine, TZReadOnlyQuery);
+  RegisterRxDBGridSortEngine(TZeosDataSetSortEngine, TZQuery);
+  RegisterRxDBGridSortEngine(TZeosDataSetSortEngine, TZTable);
 end.
 
