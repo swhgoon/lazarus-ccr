@@ -310,10 +310,16 @@ begin
           begin
           StripStr := Copy(InStr, Pos('=', InStr)+3, MaxInt); {Name after quote}
           Delete(StripStr, Length(StripStr), 1);  {Delete closing quote}
-          if CfgFileObj.ValueExists('FontSubstitutes', StripStr) then
+          if MacSwitch and
+             CfgFileObj.ValueExists('MacFontSubstitutes', StripStr) then
             WriteLn(LfmFileVar,
                     Copy(InStr, 1, Succ(Pos('=', InStr))), '''',
-                    CfgFileObj.ReadString('FontSubstitutes', StripStr, 'Arial'), 
+                    CfgFileObj.ReadString('MacFontSubstitutes', StripStr, ''), 
+                    '''')
+          else if CfgFileObj.ValueExists('FontSubstitutes', StripStr) then
+            WriteLn(LfmFileVar,
+                    Copy(InStr, 1, Succ(Pos('=', InStr))), '''',
+                    CfgFileObj.ReadString('FontSubstitutes', StripStr, ''), 
                     '''')
           else
             WriteLn(LfmFileVar, InStr);
