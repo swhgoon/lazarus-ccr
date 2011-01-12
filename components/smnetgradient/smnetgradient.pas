@@ -60,6 +60,8 @@ type
 
   TCustomNetGradient = class;
 
+  { TSubCaption }
+
   TSubCaption = class(TPersistent)
   private
     { Private-Deklarationen }
@@ -73,6 +75,7 @@ type
     procedure         OnFontChanged(Sender: TObject);
   protected
     { Protected declarations }
+    procedure         Assign(Source: TPersistent); override;
     procedure         SetCaption(const Value: TCaption); virtual;
     procedure         SetFont(Value: TFont); virtual;
     procedure         SetMarginLeft(Value: Integer); virtual;
@@ -131,6 +134,7 @@ type
     procedure SetNumberOfColors(Value: TNumberOfColors);
     procedure SetFont(AFont: TFont);
     procedure SetCaption(const Value: String);
+    procedure SetSubCaption(const Value: TSubCaption);
     procedure SetTextTop(Value: Integer);
     procedure SetTextLeft(Value: Integer);
     { Fill procedure }
@@ -162,7 +166,7 @@ type
     property Caption: String read FCaption write SetCaption;
     property TextTop: Integer read FTextTop write SetTextTop;
     property TextLeft: Integer read FTextLeft write SetTextLeft;
-    property SubCaption: TSubCaption read FSubCaption;
+    property SubCaption: TSubCaption read FSubCaption write SetSubCaption;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -367,6 +371,11 @@ begin
     FCaption := Value;
     Changed;
   end;
+end;
+
+procedure TCustomNetGradient.SetSubCaption(const Value: TSubCaption);
+begin
+  FSubCaption.Assign(Value);
 end;
  
 // Set the Position of the Caption  (Top)
@@ -795,6 +804,21 @@ end;
 procedure TSubCaption.OnFontChanged(Sender: TObject);
 begin
   Parent.Changed;
+end;
+
+procedure TSubCaption.Assign(Source: TPersistent);
+begin
+  if Source is TSubCaption then
+  begin
+    FCaption := TSubCaption(Source).Caption;
+    FHotTrack := TSubCaption(Source).HotTrack;
+    FMarginLeft := TSubCaption(Source).MarginLeft;
+    FMarginTop := TSubCaption(Source).MarginTop;
+    FVisible := TSubCaption(Source).Visible;
+    Font := TSubCaption(Source).Font;
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TSubCaption.SetMarginLeft(Value: Integer);
