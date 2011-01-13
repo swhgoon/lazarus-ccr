@@ -73,11 +73,11 @@ type
     procedure         OnFontChanged(Sender: TObject);
   protected
     { Protected declarations }
-    procedure         SetCaption(const Value: TCaption); virtual;
-    procedure         SetFont(Value: TFont); virtual;
-    procedure         SetMarginLeft(Value: Integer); virtual;
-    procedure         SetMarginTop(Value: Integer); virtual;
-    procedure         SetVisible(Value: Boolean); virtual;
+    procedure         SetCaption(const Value: TCaption);
+    procedure         SetFont(Value: TFont);
+    procedure         SetMarginLeft(Value: Integer);
+    procedure         SetMarginTop(Value: Integer);
+    procedure         SetVisible(Value: Boolean);
   public
     { Public declarations }
     constructor       Create(AOwner: TCustomNetGradient); overload;
