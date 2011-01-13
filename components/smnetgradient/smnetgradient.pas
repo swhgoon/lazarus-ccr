@@ -113,8 +113,6 @@ type
     FEndColor: TColor;
     // FCenter: Boolean;
     FNumberOfColors: TNumberOfColors;
-    FFont : TFont;
-    FCaption : TCaption;
     FTextTop : Integer;
     FTextLeft: Integer;
     FSubCaption: TSubCaption;
@@ -129,14 +127,14 @@ type
     procedure SetEndColor(Value: TColor);
     procedure SetFlatBorder(const Value: Boolean);
     procedure SetNumberOfColors(Value: TNumberOfColors);
-    procedure SetFont(AFont: TFont);
-    procedure SetCaption(const Value: String);
     procedure SetSubCaption(const Value: TSubCaption);
     procedure SetTextTop(Value: Integer);
     procedure SetTextLeft(Value: Integer);
     { Fill procedure }
     procedure GradientFill;
   protected
+    procedure CMFontChanged(var Message: TLMessage); message CM_FONTCHANGED;
+    procedure CMTextChanged(var Message: TLMessage); message CM_TEXTCHANGED;
     procedure Paint; override;
     procedure SetAlignment(Value: TAlignment);
     procedure SetLayout(Value: TTextLayout);
@@ -158,9 +156,6 @@ type
     { Number of colors to use in the fill (1 - 256) - default is 255.  If 1 }
     { then it uses the Begin Color.                                         }
     property NumberOfColors: TNumberOfColors read FNumberOfColors write SetNumberOfColors default 255;
-    { Enable standard properties }
-    property Font: TFont read FFont write SetFont;
-    property Caption: String read FCaption write SetCaption;
     property TextTop: Integer read FTextTop write SetTextTop default 0;
     property TextLeft: Integer read FTextLeft write SetTextLeft default 0;
     property SubCaption: TSubCaption read FSubCaption write SetSubCaption;
@@ -292,23 +287,14 @@ begin
   FBorderColor := clWhite;
   FDirection := fdLeftToRight;
   FNumberOfColors:= 255;
-  //FTextLeft:= 0;
-  //FTextTop:= 0;
-  FFont := TFont.Create;
-  FFont.Style:= [fsbold];
-  FFont.OnChange := OnFontChanged;
-
+  //FTextLeft := 0;
+  //FTextTop := 0;
   FSubCaption  := TSubCaption.Create(Self);
-  //Caption := Name;
-  //FCaption := AOwner.Name;
-  //ShowMessage((AOwner as TComponent).);
-  //FCaption:= 'test';
 end;
 
 destructor TCustomNetGradient.Destroy;
 begin
   FSubCaption.Destroy;
-  FFont.Destroy;
   inherited Destroy;
 end;
 
@@ -347,26 +333,6 @@ begin
   if Value <> FNumberOfColors then
   begin
     FNumberOfColors := Value;
-    Changed;
-  end;
-end;
- 
-// Set the Font
-procedure TCustomNetGradient.SetFont(AFont: TFont);
-begin
-  if AFont <> FFont then
-  begin
-    FFont.Assign(AFont);
-    Changed;
-  end;
-end;
- 
-// Set the Caption on NG
-procedure TCustomNetGradient.SetCaption(const Value: String);
-begin
-  if Value <> FCaption then
-  begin
-    FCaption := Value;
     Changed;
   end;
 end;
@@ -544,7 +510,7 @@ begin
     end;
   end;
 
-  Canvas.Font.Assign(FFont);
+  Canvas.Font.Assign(Font);
   TS := Canvas.TextStyle;
   TS.Alignment := FAlignment;
   TS.Layout := FLayout;
@@ -598,6 +564,12 @@ begin
   { Release the working bitmap resources }
   WorkBmp.Free;
 end;
+
+procedure TCustomNetGradient.CMFontChanged(var Message: TLMessage);
+begin
+  inherited;
+  Changed;
+end;
  
 { Set the fill direction }
 procedure TCustomNetGradient.SetFillDirection(Value: TFillDirection);
@@ -644,6 +616,12 @@ begin
     FBevelOuter := Value;
     Changed;
   end;
+end;
+
+procedure TCustomNetGradient.CMTextChanged(var Message: TLMessage);
+begin
+  inherited;
+  Changed;
 end;
 
 procedure TCustomNetGradient.WMEraseBkgnd(var Message: TLMEraseBkgnd);
