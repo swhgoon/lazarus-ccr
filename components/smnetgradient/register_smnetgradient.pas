@@ -5,7 +5,7 @@ unit register_smnetgradient;
 interface
 
 uses
-  Classes, LazarusPackageIntf, SMNetGradient;
+  Classes, LazarusPackageIntf, SMNetGradient, LResources;
 
 procedure Register;
 
@@ -21,5 +21,7 @@ begin
   RegisterUnit('SMNetGradient', @RegisterUnitSMNetGradient);
 end;
 
+initialization
+  {$i register_smnetgradient.lrs}
 end.
 
