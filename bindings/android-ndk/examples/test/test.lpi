@@ -1,0 +1,408 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="9"/>
+    <PathDelim Value="\"/>
+    <General>
+      <Flags>
+        <MainUnitHasCreateFormStatements Value="False"/>
+        <MainUnitHasTitleStatement Value="False"/>
+      </Flags>
+      <MainUnit Value="0"/>
+      <ResourceType Value="res"/>
+      <UseXPManifest Value="True"/>
+      <Icon Value="0"/>
+      <ActiveWindowIndexAtStart Value="0"/>
+    </General>
+    <i18n>
+      <EnableI18N LFM="False"/>
+    </i18n>
+    <VersionInfo>
+      <StringTable ProductVersion=""/>
+    </VersionInfo>
+    <BuildModes Count="1" Active="Default">
+      <Item1 Name="Default" Default="True"/>
+    </BuildModes>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+      </local>
+    </RunParams>
+    <Units Count="23">
+      <Unit0>
+        <Filename Value="test.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="0"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="165"/>
+        <CursorPos X="35" Y="182"/>
+        <UsageCount Value="27"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="android_native_app_glue.pas"/>
+        <UnitName Value="android_native_app_glue"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="89"/>
+        <CursorPos X="13" Y="106"/>
+        <UsageCount Value="13"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="native_activity.pas"/>
+        <UnitName Value="native_activity"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="238"/>
+        <CursorPos X="77" Y="256"/>
+        <UsageCount Value="12"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="asset_manager.pas"/>
+        <UnitName Value="asset_manager"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="87"/>
+        <CursorPos X="1" Y="133"/>
+        <UsageCount Value="12"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="native_window.pas"/>
+        <UnitName Value="native_window"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="23"/>
+        <CursorPos X="16" Y="33"/>
+        <UsageCount Value="12"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="rect.pas"/>
+        <UnitName Value="rect"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="14"/>
+        <CursorPos X="13" Y="24"/>
+        <UsageCount Value="12"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="input.pas"/>
+        <UnitName Value="input"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="70"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="12"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="looper.pas"/>
+        <UnitName Value="looper"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="204"/>
+        <CursorPos X="112" Y="228"/>
+        <UsageCount Value="12"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="keycodes.pas"/>
+        <UnitName Value="keycodes"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="112"/>
+        <CursorPos X="1" Y="158"/>
+        <UsageCount Value="12"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="configuration.pas"/>
+        <UnitName Value="configuration"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="284"/>
+        <CursorPos X="112" Y="301"/>
+        <UsageCount Value="12"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="D:\src\fpc-real\packages\pthreads\src\pthreads.pp"/>
+        <UnitName Value="pthreads"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="32"/>
+        <CursorPos X="24" Y="29"/>
+        <UsageCount Value="12"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="D:\src\fpc-real\rtl\unix\initc.pp"/>
+        <UnitName Value="initc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="9"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="D:\src\fpc-real\rtl\unix\unixtype.pp"/>
+        <UnitName Value="unixtype"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="7" Y="21"/>
+        <UsageCount Value="9"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="D:\src\fpc-real\rtl\linux\ptypes.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="196"/>
+        <CursorPos X="18" Y="210"/>
+        <UsageCount Value="9"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="D:\src\fpc-real\rtl\inc\cmem.pp"/>
+        <UnitName Value="cmem"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="43"/>
+        <CursorPos X="15" Y="47"/>
+        <UsageCount Value="9"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="log.pas"/>
+        <UnitName Value="log"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="4"/>
+        <CursorPos X="24" Y="17"/>
+        <UsageCount Value="12"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="D:\src\fpc-real\rtl\linux\pthread.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="56"/>
+        <CursorPos X="35" Y="73"/>
+        <UsageCount Value="11"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="..\default.properties"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="19" Y="10"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="None"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="..\AndroidManifest.xml"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="73" Y="13"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="XML"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="gles.pas"/>
+        <UnitName Value="gles"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="10"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="egl.pas"/>
+        <UnitName Value="egl"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="28"/>
+        <CursorPos X="137" Y="55"/>
+        <UsageCount Value="10"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="..\libs\armeabi\link.res"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="22" Y="2"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="None"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="..\libs\armeabi\d.txt"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="753"/>
+        <CursorPos X="47" Y="792"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="None"/>
+      </Unit22>
+    </Units>
+    <JumpHistory Count="30" HistoryIndex="29">
+      <Position1>
+        <Filename Value="test.pas"/>
+        <Caret Line="204" Column="29" TopLine="193"/>
+      </Position1>
+      <Position2>
+        <Filename Value="test.pas"/>
+        <Caret Line="9" Column="9" TopLine="7"/>
+      </Position2>
+      <Position3>
+        <Filename Value="test.pas"/>
+        <Caret Line="144" Column="22" TopLine="139"/>
+      </Position3>
+      <Position4>
+        <Filename Value="test.pas"/>
+        <Caret Line="130" Column="17" TopLine="120"/>
+      </Position4>
+      <Position5>
+        <Filename Value="test.pas"/>
+        <Caret Line="18" Column="23" TopLine="6"/>
+      </Position5>
+      <Position6>
+        <Filename Value="test.pas"/>
+        <Caret Line="55" Column="17" TopLine="38"/>
+      </Position6>
+      <Position7>
+        <Filename Value="test.pas"/>
+        <Caret Line="68" Column="48" TopLine="51"/>
+      </Position7>
+      <Position8>
+        <Filename Value="test.pas"/>
+        <Caret Line="70" Column="66" TopLine="53"/>
+      </Position8>
+      <Position9>
+        <Filename Value="test.pas"/>
+        <Caret Line="129" Column="46" TopLine="112"/>
+      </Position9>
+      <Position10>
+        <Filename Value="test.pas"/>
+        <Caret Line="132" Column="25" TopLine="115"/>
+      </Position10>
+      <Position11>
+        <Filename Value="test.pas"/>
+        <Caret Line="134" Column="10" TopLine="117"/>
+      </Position11>
+      <Position12>
+        <Filename Value="test.pas"/>
+        <Caret Line="137" Column="24" TopLine="120"/>
+      </Position12>
+      <Position13>
+        <Filename Value="test.pas"/>
+        <Caret Line="138" Column="37" TopLine="121"/>
+      </Position13>
+      <Position14>
+        <Filename Value="test.pas"/>
+        <Caret Line="139" Column="24" TopLine="122"/>
+      </Position14>
+      <Position15>
+        <Filename Value="test.pas"/>
+        <Caret Line="141" Column="10" TopLine="124"/>
+      </Position15>
+      <Position16>
+        <Filename Value="test.pas"/>
+        <Caret Line="144" Column="28" TopLine="127"/>
+      </Position16>
+      <Position17>
+        <Filename Value="test.pas"/>
+        <Caret Line="151" Column="10" TopLine="134"/>
+      </Position17>
+      <Position18>
+        <Filename Value="test.pas"/>
+        <Caret Line="156" Column="10" TopLine="139"/>
+      </Position18>
+      <Position19>
+        <Filename Value="test.pas"/>
+        <Caret Line="158" Column="28" TopLine="141"/>
+      </Position19>
+      <Position20>
+        <Filename Value="test.pas"/>
+        <Caret Line="166" Column="10" TopLine="149"/>
+      </Position20>
+      <Position21>
+        <Filename Value="test.pas"/>
+        <Caret Line="168" Column="28" TopLine="151"/>
+      </Position21>
+      <Position22>
+        <Filename Value="test.pas"/>
+        <Caret Line="179" Column="47" TopLine="162"/>
+      </Position22>
+      <Position23>
+        <Filename Value="test.pas"/>
+        <Caret Line="182" Column="25" TopLine="165"/>
+      </Position23>
+      <Position24>
+        <Filename Value="test.pas"/>
+        <Caret Line="194" Column="43" TopLine="177"/>
+      </Position24>
+      <Position25>
+        <Filename Value="test.pas"/>
+        <Caret Line="201" Column="7" TopLine="184"/>
+      </Position25>
+      <Position26>
+        <Filename Value="android_native_app_glue.pas"/>
+        <Caret Line="613" Column="66" TopLine="596"/>
+      </Position26>
+      <Position27>
+        <Filename Value="android_native_app_glue.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position27>
+      <Position28>
+        <Filename Value="test.pas"/>
+        <Caret Line="207" Column="19" TopLine="191"/>
+      </Position28>
+      <Position29>
+        <Filename Value="test.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position29>
+      <Position30>
+        <Filename Value="test.pas"/>
+        <Caret Line="132" Column="35" TopLine="127"/>
+      </Position30>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="9"/>
+    <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="..\libs\armeabi\libexample.so" ApplyConventions="False"/>
+    </Target>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)"/>
+      <Libraries Value="libs;libs\egl"/>
+      <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+    </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <CStyleOperator Value="False"/>
+        <AllowLabel Value="False"/>
+        <CPPInline Value="False"/>
+        <UseAnsiStrings Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
+    <CodeGeneration>
+      <TargetCPU Value="arm"/>
+      <TargetOS Value="linux"/>
+      <Optimizations>
+        <OptimizationLevel Value="2"/>
+      </Optimizations>
+    </CodeGeneration>
+    <Linking>
+      <Debugging>
+        <UseLineInfoUnit Value="False"/>
+      </Debugging>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+        <ExecutableType Value="Library"/>
+      </Options>
+    </Linking>
+    <Other>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
+      <CustomOptions Value="-dANDROID
+-Cccdecl"/>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="3">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EFOpenError"/>
+      </Item3>
+    </Exceptions>
+  </Debugging>
+</CONFIG>
