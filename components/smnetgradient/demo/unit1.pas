@@ -32,6 +32,8 @@ var
 
 implementation
 
+{ TMainForm }
+
 initialization
   {$I unit1.lrs}
 

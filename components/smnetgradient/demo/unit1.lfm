@@ -1,17 +1,20 @@
 object MainForm: TMainForm
-  Left = 406
-  Height = 397
-  Top = 215
-  Width = 322
+  Left = 388
+  Height = 394
+  Top = 237
+  Width = 296
   Caption = 'NetGradient Demo'
-  ClientHeight = 397
-  ClientWidth = 322
+  ChildSizing.VerticalSpacing = 2
+  ChildSizing.ControlsPerLine = 8
+  ClientHeight = 394
+  ClientWidth = 296
+  Position = poScreenCenter
   LCLVersion = '0.9.29'
   object NetGradient1: TNetGradient
-    Left = 6
-    Height = 39
-    Top = 3
-    Width = 313
+    Left = 0
+    Height = 40
+    Top = 0
+    Width = 296
     BeginColor = clLime
     CaptionAlignment = taLeftJustify
     CaptionLayout = tlTop
@@ -21,15 +24,16 @@ object MainForm: TMainForm
     Caption = 'Caption'
     TextTop = 0
     TextLeft = 0
-    SubCaption.Caption = 'SubCaption'
+    SubCaption.Caption = 'SubCaption 1'
     SubCaption.MarginLeft = 0
+    Align = alTop
     BorderWidth = 2
   end
   object NetGradient2: TNetGradient
-    Left = 6
-    Height = 32
-    Top = 45
-    Width = 312
+    Left = 0
+    Height = 40
+    Top = 42
+    Width = 296
     BevelOuter = bvLowered
     BeginColor = clSkyBlue
     CaptionAlignment = taCenter
@@ -39,12 +43,14 @@ object MainForm: TMainForm
     TextTop = 0
     TextLeft = 0
     SubCaption.Caption = 'SubCaption 2'
+    SubCaption.MarginLeft = 1
+    Align = alTop
   end
   object NetGradient3: TNetGradient
-    Left = 6
-    Height = 47
-    Top = 78
-    Width = 312
+    Left = 0
+    Height = 40
+    Top = 84
+    Width = 296
     BevelInner = bvLowered
     BeginColor = clSilver
     CaptionAlignment = taLeftJustify
@@ -61,14 +67,16 @@ object MainForm: TMainForm
     TextTop = 0
     TextLeft = 0
     SubCaption.Caption = 'Sub Caption 3'
+    SubCaption.MarginLeft = 4
     SubCaption.Font.Color = clBlue
     SubCaption.Font.Style = [fsBold]
+    Align = alTop
   end
   object NetGradient4: TNetGradient
-    Left = 6
+    Left = 0
     Height = 60
-    Top = 216
-    Width = 313
+    Top = 210
+    Width = 296
     BevelInner = bvRaised
     BevelOuter = bvLowered
     BeginColor = clRed
@@ -81,15 +89,16 @@ object MainForm: TMainForm
     SubCaption.Caption = 'SubCaption 4'
     SubCaption.Font.Color = clRed
     SubCaption.Font.Style = [fsBold, fsItalic]
+    Align = alTop
   end
   object NetGradient5: TNetGradient
-    Left = 6
-    Height = 44
+    Left = 0
+    Height = 40
     Top = 126
-    Width = 312
+    Width = 296
     BevelInner = bvLowered
     BeginColor = clSilver
-    CaptionAlignment = taLeftJustify
+    CaptionAlignment = taCenter
     CaptionLayout = tlTop
     EndColor = 10841401
     Font.CharSet = ANSI_CHARSET
@@ -101,16 +110,18 @@ object MainForm: TMainForm
     Font.Style = [fsBold]
     Caption = 'Caption'
     TextTop = 0
-    TextLeft = 20
+    TextLeft = 0
     SubCaption.Caption = 'Sub Caption 3'
+    SubCaption.MarginLeft = 4
     SubCaption.Font.Color = clBlue
     SubCaption.Font.Style = [fsBold]
+    Align = alTop
   end
   object NetGradient6: TNetGradient
-    Left = 6
-    Height = 44
-    Top = 171
-    Width = 312
+    Left = 0
+    Height = 40
+    Top = 168
+    Width = 296
     BevelInner = bvLowered
     BeginColor = clSilver
     CaptionAlignment = taRightJustify
@@ -125,17 +136,18 @@ object MainForm: TMainForm
     Font.Style = [fsBold]
     Caption = 'Caption'
     TextTop = 0
-    TextLeft = 2
+    TextLeft = 4
     SubCaption.Caption = 'Sub Caption 3'
     SubCaption.MarginTop = 20
     SubCaption.Font.Color = clBlue
     SubCaption.Font.Style = [fsBold]
+    Align = alTop
   end
   object NetGradient8: TNetGradient
-    Left = 6
+    Left = 0
     Height = 60
-    Top = 336
-    Width = 313
+    Top = 334
+    Width = 296
     BevelInner = bvRaised
     BevelOuter = bvLowered
     BeginColor = clRed
@@ -149,12 +161,13 @@ object MainForm: TMainForm
     SubCaption.Caption = 'SubCaption 4'
     SubCaption.Font.Color = clBlue
     SubCaption.Font.Style = [fsBold, fsItalic]
+    Align = alTop
   end
   object NetGradient9: TNetGradient
-    Left = 6
+    Left = 0
     Height = 60
-    Top = 276
-    Width = 313
+    Top = 272
+    Width = 296
     BevelInner = bvRaised
     BevelOuter = bvLowered
     BeginColor = clRed
@@ -168,5 +181,6 @@ object MainForm: TMainForm
     SubCaption.Caption = 'SubCaption 4'
     SubCaption.Font.Color = clBlue
     SubCaption.Font.Style = [fsBold, fsItalic]
+    Align = alTop
   end
 end
