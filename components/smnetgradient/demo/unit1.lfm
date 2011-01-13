@@ -12,44 +12,46 @@ object MainForm: TMainForm
     Height = 39
     Top = 3
     Width = 313
+    BeginColor = clLime
     CaptionAlignment = taLeftJustify
     CaptionLayout = tlTop
-    BevelInner = bvLowered
-    BevelOuter = bvNone
-    BeginColor = clLime
     EndColor = 10841401
+    FlatBorder = True
     Font.Style = [fsBold]
     Caption = 'Caption'
     TextTop = 0
     TextLeft = 0
+    SubCaption.Caption = 'SubCaption'
+    SubCaption.MarginLeft = 0
+    BorderWidth = 2
   end
   object NetGradient2: TNetGradient
     Left = 6
     Height = 32
     Top = 45
     Width = 312
-    CaptionAlignment = taCenter
-    BevelInner = bvLowered
     BevelOuter = bvLowered
     BeginColor = clSkyBlue
+    CaptionAlignment = taCenter
     EndColor = clTeal
     Font.Style = [fsBold]
     Caption = 'Caption'
     TextTop = 0
     TextLeft = 0
+    SubCaption.Caption = 'SubCaption 2'
   end
   object NetGradient3: TNetGradient
     Left = 6
     Height = 47
     Top = 78
     Width = 312
-    CaptionAlignment = taLeftJustify
-    CaptionLayout = tlTop
     BevelInner = bvLowered
     BeginColor = clSilver
+    CaptionAlignment = taLeftJustify
+    CaptionLayout = tlTop
     EndColor = 10841401
     Font.CharSet = ANSI_CHARSET
-    Font.Color = clMenuHighlight
+    Font.Color = clHighlight
     Font.Height = -16
     Font.Name = 'Arial'
     Font.Pitch = fpVariable
@@ -57,35 +59,41 @@ object MainForm: TMainForm
     Font.Style = [fsBold]
     Caption = 'Caption'
     TextTop = 0
-    TextLeft = 5
+    TextLeft = 0
+    SubCaption.Caption = 'Sub Caption 3'
+    SubCaption.Font.Color = clBlue
+    SubCaption.Font.Style = [fsBold]
   end
   object NetGradient4: TNetGradient
     Left = 6
     Height = 60
     Top = 216
     Width = 313
-    CaptionAlignment = taLeftJustify
     BevelInner = bvRaised
     BevelOuter = bvLowered
     BeginColor = clRed
+    CaptionAlignment = taLeftJustify
     EndColor = clYellow
     Font.Style = [fsBold]
     Caption = 'Caption'
     TextTop = 0
     TextLeft = 2
+    SubCaption.Caption = 'SubCaption 4'
+    SubCaption.Font.Color = clRed
+    SubCaption.Font.Style = [fsBold, fsItalic]
   end
   object NetGradient5: TNetGradient
     Left = 6
     Height = 44
     Top = 126
     Width = 312
-    CaptionAlignment = taLeftJustify
-    CaptionLayout = tlTop
     BevelInner = bvLowered
     BeginColor = clSilver
+    CaptionAlignment = taLeftJustify
+    CaptionLayout = tlTop
     EndColor = 10841401
     Font.CharSet = ANSI_CHARSET
-    Font.Color = clMenuHighlight
+    Font.Color = clHighlight
     Font.Height = -16
     Font.Name = 'Arial'
     Font.Pitch = fpVariable
@@ -94,19 +102,22 @@ object MainForm: TMainForm
     Caption = 'Caption'
     TextTop = 0
     TextLeft = 20
+    SubCaption.Caption = 'Sub Caption 3'
+    SubCaption.Font.Color = clBlue
+    SubCaption.Font.Style = [fsBold]
   end
   object NetGradient6: TNetGradient
     Left = 6
     Height = 44
     Top = 171
     Width = 312
-    CaptionAlignment = taRightJustify
-    CaptionLayout = tlTop
     BevelInner = bvLowered
     BeginColor = clSilver
+    CaptionAlignment = taRightJustify
+    CaptionLayout = tlTop
     EndColor = 10841401
     Font.CharSet = ANSI_CHARSET
-    Font.Color = clMenuHighlight
+    Font.Color = clHighlight
     Font.Height = -16
     Font.Name = 'Arial'
     Font.Pitch = fpVariable
@@ -114,38 +125,48 @@ object MainForm: TMainForm
     Font.Style = [fsBold]
     Caption = 'Caption'
     TextTop = 0
-    TextLeft = -20
+    TextLeft = 2
+    SubCaption.Caption = 'Sub Caption 3'
+    SubCaption.MarginTop = 20
+    SubCaption.Font.Color = clBlue
+    SubCaption.Font.Style = [fsBold]
   end
   object NetGradient8: TNetGradient
-    Left = 5
+    Left = 6
     Height = 60
     Top = 336
     Width = 313
-    CaptionAlignment = taLeftJustify
     BevelInner = bvRaised
     BevelOuter = bvLowered
     BeginColor = clRed
+    CaptionAlignment = taLeftJustify
     EndColor = clYellow
     FillDirection = ftBottomToTop
     Font.Style = [fsBold]
     Caption = 'Caption'
-    TextTop = -20
+    TextTop = 0
     TextLeft = 2
+    SubCaption.Caption = 'SubCaption 4'
+    SubCaption.Font.Color = clBlue
+    SubCaption.Font.Style = [fsBold, fsItalic]
   end
   object NetGradient9: TNetGradient
     Left = 6
     Height = 60
     Top = 276
     Width = 313
-    CaptionAlignment = taLeftJustify
     BevelInner = bvRaised
     BevelOuter = bvLowered
     BeginColor = clRed
+    CaptionAlignment = taLeftJustify
     EndColor = clYellow
     FillDirection = ftTopToBottom
     Font.Style = [fsBold]
     Caption = 'Caption'
-    TextTop = -20
+    TextTop = 0
     TextLeft = 2
+    SubCaption.Caption = 'SubCaption 4'
+    SubCaption.Font.Color = clBlue
+    SubCaption.Font.Style = [fsBold, fsItalic]
   end
 end
