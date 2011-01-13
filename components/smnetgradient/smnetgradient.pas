@@ -139,11 +139,11 @@ type
   protected
     procedure Paint; override;
     procedure SetAlignment(Value: TAlignment);
-    procedure SetLayout(Value: TTextLayout); virtual;
+    procedure SetLayout(Value: TTextLayout);
     procedure SetBevelInner(Value: TLabelBevel);
     procedure SetBevelOuter(Value: TLabelBevel);
     procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
-    property CaptionAlignment: TAlignment read FAlignment write SetAlignment;
+    property CaptionAlignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property CaptionLayout: TTextLayout read FLayout write SetLayout default tlCenter;
     property BevelInner: TLabelBevel read FBevelInner write SetBevelInner default bvNone;
     property BevelOuter: TLabelBevel read FBevelOuter write SetBevelOuter default bvRaised;
@@ -161,8 +161,8 @@ type
     { Enable standard properties }
     property Font: TFont read FFont write SetFont;
     property Caption: String read FCaption write SetCaption;
-    property TextTop: Integer read FTextTop write SetTextTop;
-    property TextLeft: Integer read FTextLeft write SetTextLeft;
+    property TextTop: Integer read FTextTop write SetTextTop default 0;
+    property TextLeft: Integer read FTextLeft write SetTextLeft default 0;
     property SubCaption: TSubCaption read FSubCaption write SetSubCaption;
   public
     constructor Create(AOwner: TComponent); override;
@@ -280,6 +280,7 @@ begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csAcceptsControls, csNoFocus];
   { Add new initializations }
+  FAlignment     := taLeftJustify;
   FLayout        := tlCenter;
   FBevelInner    := bvNone;
   FBevelOuter    := bvRaised;
