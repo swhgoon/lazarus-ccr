@@ -44,9 +44,6 @@ uses
    LCLIntf, LCLType, SysUtils, Classes, Graphics, Controls, Forms,
    Dialogs, GraphType, Db, DBCtrls, LMessages;
 
-Const
-  DefaultStyle     = DT_SINGLELINE or DT_END_ELLIPSIS or DT_EXPANDTABS;
-
 type
   { Direction of fill }
   TFillDirection = (fdLeftToRight, fdRightToLeft, ftTopToBottom, ftBottomToTop);
@@ -75,7 +72,6 @@ type
     procedure         OnFontChanged(Sender: TObject);
   protected
     { Protected declarations }
-    procedure         Assign(Source: TPersistent); override;
     procedure         SetCaption(const Value: TCaption); virtual;
     procedure         SetFont(Value: TFont); virtual;
     procedure         SetMarginLeft(Value: Integer); virtual;
@@ -85,6 +81,7 @@ type
     { Public declarations }
     constructor       Create(AOwner: TCustomNetGradient); overload;
     destructor        Destroy; override;
+    procedure         Assign(Source: TPersistent); override;
   published
     { Published-Deklarationen }
     property          Caption: TCaption read FCaption write SetCaption;
@@ -411,36 +408,14 @@ var
   BeginRGBValue  : array[0..2] of Byte;    { Begin RGB values }
   RGBDifference  : array[0..2] of integer; { Difference between begin and end }
                                            { RGB values                       }
-  ColorBand , rp,cr: TRect;    { Color band rectangular coordinates }
-  I , x        : Integer;  { Color band index }
+  ColorBand , rp: TRect;    { Color band rectangular coordinates }
+  I         : Integer;  { Color band index }
   R         : Byte;     { Color band Red value }
   G         : Byte;     { Color band Green value }
   B         : Byte;     { Color band Blue value }
   WorkBmp   : TBitmap;  { Off screen working bitmap }
-  DrawStyle  : LongInt;
   TS         : TTextStyle;
-  GlyphOffs  : Integer;
-  //SbCapOffs  : Integer;
-
-  procedure DoDrawText(const Text: string; ACanvas: TCanvas; AFont: TFont; var Rect: TRect; Flags: LongInt);
-  begin
-    with ACanvas do
-    begin
-      Font.Assign(AFont);
-      Rect.Left:=Rect.Left;    //**
-      if not(Enabled) then
-      begin
-        OffsetRect(Rect, 1, 1);
-        Font.Color := clBtnHighlight;
-        DrawText(Handle, PChar(Text), Length(Text), Rect, Flags);
-        OffsetRect(Rect, -1, -1);   //**
-        Font.Color := clBtnShadow;
-        DrawText(Handle, PChar(Text), Length(Text), Rect, Flags);
-      end
-      else
-        DrawText(Handle, PChar(Text), Length(Text), Rect, Flags);
-    end;
-  end;
+  BorderOffset: Integer;
 
 begin
   { Create the working bitmap and set its width and height }
@@ -539,120 +514,86 @@ begin
  
   { Copy the working bitmap to the main canvas }
   Canvas.Draw(0, 0, WorkBmp);
- 
-  // <TextOut>
-   //Canvas.Brush.Style:= bsClear;
-   Canvas.Font.Assign(FFont);
 
-   //Canvas.Textout(FTextLeft, FTextTop, FCaption);   *** Enzo *** Implemetation
-   if FFlatBorder then
-   begin
-     if BorderWidth > 0 then
-     begin
-       Canvas.Pen.Width := BorderWidth;
-       Canvas.Pen.EndCap := pecSquare;
-       Canvas.Pen.Color := FBorderColor;
-       //see if there's a better way of drawing a rectangle since
-       // in BorderWidth >= 3 glitches occurs
-       Canvas.Polyline(GetBorderPoints(rp));
-     end;
-   end
-   else
-   begin
-     if FBevelOuter <> bvNone then
-       Canvas.Frame3D(rp, 1, FBevelOuter);
-     if FBevelInner <> bvNone then
-       Canvas.Frame3D(rp, 1, FBevelInner);
-   end;
+  if FFlatBorder then
+  begin
+    BorderOffset := BorderWidth;
+    if BorderWidth > 0 then
+    begin
+      Canvas.Pen.Width := BorderWidth;
+      Canvas.Pen.EndCap := pecSquare;
+      Canvas.Pen.Color := FBorderColor;
+      //see if there's a better way of drawing a rectangle since
+      // in BorderWidth >= 3 glitches occurs
+      Canvas.Polyline(GetBorderPoints(rp));
+    end;
+  end
+  else
+  begin
+    BorderOffset := 0;
+    if FBevelOuter <> bvNone then
+    begin
+      Canvas.Frame3D(rp, 1, FBevelOuter);
+      Inc(BorderOffset);
+    end;
+    if FBevelInner <> bvNone then
+    begin
+      Canvas.Frame3D(rp, 1, FBevelInner);
+      Inc(BorderOffset);
+    end;
+  end;
 
-    if Caption <> '' then  begin
-            Font.Assign(Self.Font);
-            Rp := GetClientRect;
-            Inc(Rp.Left, FTextLeft);  //5=FMargin
-            //if FGlyph.DisplayAlign = daLeft then
-            //  Inc(Rp.Left, GlyphOffs)
-            //else
-            //  Dec(R.Right, GlyphOffs);
-            //Dec(R.Right, SbCapOffs);
-            case FAlignment of
-              taLeftJustify : begin
-                    DrawStyle := DefaultStyle or  DT_LEFT;
-                     Inc(Rp.Left, FTextLeft);
-              end;
-              taRightJustify : begin
-                    DrawStyle := DefaultStyle or  DT_RIGHT;
-                    Inc(Rp.Right, FTextLeft);
+  Canvas.Font.Assign(FFont);
+  TS := Canvas.TextStyle;
+  TS.Alignment := FAlignment;
+  TS.Layout := FLayout;
+  TS.Opaque := False;
+  TS.SystemFont := Canvas.Font.IsDefault;
 
-              end;
-              taCenter : begin
-              DrawStyle := DefaultStyle or  DT_CENTER;
-              Inc(Rp.Left, FTextLeft);
-              end;
-            end;
-            //DrawStyle := DefaultStyle or FAlignment; //Enzo DT_LEFT;
+  if Caption <> '' then
+  begin
+    Rp := GetClientRect;
+    InflateRect(Rp, -BorderOffset, -BorderOffset);
 
-            TS := Canvas.TextStyle;
-            TS.Alignment:= CaptionAlignment;
-            //TS.Layout:= tlCenter;
-            TS.Opaque:= false;
-            TS.Clipping:= false;
-            TS.SystemFont:=Canvas.Font.IsDefault;
+    case FAlignment of
+      taLeftJustify:
+        Inc(Rp.Left, FTextLeft);
+      taRightJustify:
+        Dec(Rp.Right, FTextLeft);
+      taCenter:
+        Inc(Rp.Left, FTextLeft * 2);
+    end;
 
-            CR := Rp;
-            //cr.left := cr.Left +  FTextLeft;
-            //rp.left :=rp.left + FTextLeft;
-            rp.Top:= rp.Top + FTextTop;
-            if FLayout <> tlTop then begin
+    case FLayout of
+      tlTop:
+        Inc(rp.Top, FTextTop);
+      tlBottom:
+        Dec(rp.Bottom, FTextTop);
+      tlCenter:
+        Inc(rp.Top, FTextTop * 2);
+    end;
 
-                X := Canvas.TextHeight('W');
-                DoDrawText(Caption, WorkBmp.Canvas, Self.Font, CR, DrawStyle or DT_CALCRECT);
-                if FLayout = tlBottom then OffsetRect(Rp, 0, Height - CR.Bottom-2)
-                else OffsetRect(Rp, 0, (Height - CR.Bottom) div 2);
-              end;
-           // if Rp.Right - Rp.Left >= Canvas.TextWidth(Caption[1]) then
-           Canvas.TextRect(rp, rp.Left, rp.Top, Caption, TS);
+    Canvas.TextRect(rp, rp.Left, rp.Top, Caption, TS);
+  end;
 
+  if FSubCaption.Caption <> '' then
+  begin
+    Canvas.Font.Assign(FSubCaption.Font);
+    Rp := GetClientRect;
+    InflateRect(Rp, -BorderOffset, -BorderOffset);
+    TS.Alignment := taRightJustify;
+    Dec(Rp.Right, FSubCaption.MarginLeft);
+    case FLayout of
+      tlTop:
+        Inc(rp.Top, FSubCaption.MarginTop);
+      tlBottom:
+        Dec(rp.Bottom, FSubCaption.MarginTop);
+      tlCenter:
+        Inc(Rp.Top, FSubCaption.MarginTop * 2);
+    end;
+    Canvas.TextRect(rp, rp.Left, rp.Top, FSubCaption.Caption, TS);
+  end;
 
-        end;
-
-
-   //*** Enzo **** SubCaption
-
-   if (FSubCaption.Caption <> '') then  begin
-      GlyphOffs := 0;
-      //SbCapOffs := 0;
-      Canvas.Font.Assign(FSubCaption.Font);
-      Rp := GetClientRect;
-
-      //DrawStyle := DefaultStyle or  DT_RIGHT;
-
-      // if FLayout <> tlTop then begin
-      // rp:=GetClientRect;
-      X := canvas.TextHeight('W');
-
-      Inc(Rp.Left, ClientWidth - canvas.TextWidth(FSubCaption.Caption) - FSubCaption.MarginLeft);
-      if Rp.Left < SubCaption.FMarginLeft   + GlyphOffs then    Rp.Left := SubCaption.FMarginLeft   + GlyphOffs;
-      //SbCapOffs := Rp.Right - Rp.Left;
-      CR := Rp;
-      Inc(cr.Left, SubCaption.FMarginLeft);
-      rp.Top:= rp.Top+SubCaption.FMarginTop;
-      DoDrawText(FSubCaption.Caption, WorkBmp.Canvas, Self.Font, CR, DT_CALCRECT);
-      if FLayout = tlBottom then begin
-         OffsetRect(Rp, 0, Height - X - Abs(canvas.TextHeight('W') - X) div 2);
-      end else if FLayout = tlTop then begin
-         Font.Assign(Self.Font);
-      end else
-         OffsetRect(Rp, 0, (Height - CR.Bottom) div 2);
-      Canvas.TextRect(rp, rp.Left, rp.Top, FSubCaption.Caption);
-      end;
-
-
-   // Border Outer and Inner
-
-
-   // Canvas.Frame3d(rp, 1, bvRaised);
-  // </TextOut>
- 
   { Release the working bitmap resources }
   WorkBmp.Free;
 end;
