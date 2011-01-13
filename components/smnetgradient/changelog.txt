@@ -12,3 +12,11 @@ Changes between 2.0.4 and 2.0.5 (By Luiz Américo)
 * Added BeginUpdate and EndUpdate: protects against handle creation while loading
 * Published BorderSpacing
 * Fixed memory leaks
+
+Changes between 2.0.5 and 2.1 (By Luiz Américo)
+* Added FlatBorder option
+* Separated TNetGradient and TDBNetGradient
+* Use Caption and Font from TControl instead of a local copy
+* Allow placing a child control
+* Fix SubCaption streaming
+* Code cleanup

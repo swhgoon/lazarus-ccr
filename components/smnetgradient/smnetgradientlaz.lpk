@@ -2,19 +2,24 @@
 <CONFIG>
   <Package Version="3">
     <Name Value="smnetgradientlaz"/>
-    <Author Value="Curtis White &amp; Heiko Webers (converted for lazarus by barko)"/>
+    <Author Value="Curtis White &amp; Heiko Webers (converted for lazarus by barko, fixes and improvements by Luiz Américo)"/>
     <CompilerOptions>
-      <Version Value="8"/>
+      <Version Value="9"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib"/>
       </SearchPaths>
+      <Parsing>
+        <SyntaxOptions>
+          <UseAnsiStrings Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
     <Description Value="A gradient fill like in the new Netscape Communicator Options Box."/>
     <License Value="This component can be freely used and distributed in commercial and private environments, provided this notice is not modified in any way."/>
-    <Version Major="2" Release="5"/>
+    <Version Major="2" Minor="1"/>
     <Files Count="2">
       <Item1>
         <Filename Value="smnetgradient.pas"/>
@@ -38,7 +43,7 @@
       </Item2>
     </RequiredPkgs>
     <UsageOptions>
-      <UnitPath Value="$(PkgOutDir)/"/>
+      <UnitPath Value="$(PkgOutDir)"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>

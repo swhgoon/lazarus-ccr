@@ -3,7 +3,7 @@
 { TGradientFill, Copyright 1995, Curtis White.  All Rights Reserved.          }
 { TNetGradient, Copyright 1997, Heiko Webers.  All Rights Reserved.           }
 { This component can be freely used and distributed in commercial and private }
-{ environments, provided this notice is not modified in any way.               }
+{ environments, provided this notice is not modified in any way.              }
 { ----------------------------------------------------------------------------}
 { Feel free to contact me if you have any questions, comments or suggestions  }
 { at cwhite@teleport.com 						      }
@@ -12,7 +12,7 @@
 { Date last modified:  18/10/2009                                             }
 { ----------------------------------------------------------------------------}
 { ----------------------------------------------------------------------------}
-{ TNetGradient v2.05                                                          }
+{ TNetGradient v2.1                                                           }
 { ----------------------------------------------------------------------------}
 { Description:                                                                }
 {   A gradient fill like in the new Netscape Communicator Options Box.        }
@@ -32,6 +32,7 @@
 { 2.03:  -Bug TextLetf                                                        }
 { 2.04:  FillDirection: +ftTopToBottom, +ftBottomToTop                        }
 { 2.05:  +Begin/EndUpdate, Fix crash in frames, Fix memory leaks, Cleanup     }
+{ 2.1:   +FlatBorder, +TDBNetGradient, allow children controls, Cleanup       }
 { ----------------------------------------------------------------------------}
  
 unit SMNetGradient;
