@@ -1,8 +1,87 @@
-object Form1: TForm1
-  Left = 349
-  Height = 240
-  Top = 171
-  Width = 320
-  Caption = 'Form1'
+object frmFPVViewer: TfrmFPVViewer
+  Left = 234
+  Height = 433
+  Top = 172
+  Width = 342
+  Caption = 'frmFPVViewer'
+  ClientHeight = 433
+  ClientWidth = 342
   LCLVersion = '0.9.31'
+  object editFileName: TFileNameEdit
+    Left = 8
+    Height = 25
+    Top = 8
+    Width = 304
+    DialogOptions = []
+    FilterIndex = 0
+    HideDirectories = False
+    ButtonWidth = 23
+    NumGlyphs = 0
+    MaxLength = 0
+    TabOrder = 0
+  end
+  object btnVisualize: TButton
+    Left = 8
+    Height = 25
+    Top = 40
+    Width = 96
+    Caption = 'Visualize'
+    OnClick = btnVisualizeClick
+    TabOrder = 1
+  end
+  object spinScale: TFloatSpinEdit
+    Left = 72
+    Height = 25
+    Top = 72
+    Width = 64
+    Increment = 1
+    MaxValue = 100
+    MinValue = 0
+    TabOrder = 2
+    Value = 1
+  end
+  object Label1: TLabel
+    Left = 8
+    Height = 18
+    Top = 79
+    Width = 61
+    Caption = 'Scale by:'
+    ParentColor = False
+  end
+  object imageView: TImage
+    Left = 11
+    Height = 296
+    Top = 128
+    Width = 325
+  end
+  object Label2: TLabel
+    Left = 8
+    Height = 18
+    Top = 104
+    Width = 82
+    Caption = 'Start Pos X:'
+    ParentColor = False
+  end
+  object spinStartX: TSpinEdit
+    Left = 98
+    Height = 25
+    Top = 99
+    Width = 46
+    TabOrder = 3
+  end
+  object spinStartY: TSpinEdit
+    Left = 240
+    Height = 25
+    Top = 99
+    Width = 50
+    TabOrder = 4
+  end
+  object Label3: TLabel
+    Left = 152
+    Height = 18
+    Top = 104
+    Width = 79
+    Caption = 'Start Pos Y:'
+    ParentColor = False
+  end
 end
