@@ -1844,6 +1844,11 @@ end;
 
 procedure TO32CustomControl.DoOnMouseWheel(Shift : TShiftState;
                                  Delta, XPos, YPos : SmallInt);
+// Another TurboPower bug? Their TMouseWheelEvent expects Word
+//  params, yet passing SmallInts here. Delta is negative when 
+//  scroll down, which will raise exception if a descendent class
+//  with a TMouseWheelEvent handler has range checking turned on.
+// Note that their TMouseWheelEvent redefines LCL's.
 begin
   if Assigned(FOnMouseWheel) then
     FOnMouseWheel(Self, Shift, Delta, XPos, YPos);
@@ -2026,10 +2031,15 @@ begin
 end;
 
 procedure TO32CustomControl.WMMouseWheel(var Msg : TMessage);
+// TurboPower bug: They should have used TWMMouseWheel instead of
+//  TMessage. Delta is negative on scroll down, but extracting it
+//  from wParam with HIWORD returns a Word, which causes an
+//  exception when passed as SmallInt to DoOnMouseWheel when 
+//  range checking turned on. Fix is to cast delta as SmallInt.
 begin
   with Msg do
     DoOnMouseWheel(KeysToShiftState(LOWORD(wParam)) {fwKeys},
-                   HIWORD(wParam) {zDelta},
+                   SmallInt(HIWORD(wParam)) {zDelta},  //bug fix
                    LOWORD(lParam) {xPos},   HIWORD(lParam) {yPos});
 end;
 
@@ -2265,10 +2275,11 @@ begin
 end;
 
 procedure TOvcCustomControl.WMMouseWheel(var Msg : TMessage);
+// See TurboPower bug comments above.
 begin
   with Msg do
     DoOnMouseWheel(KeysToShiftState(LOWORD(wParam)) {fwKeys},
-                   HIWORD(wParam) {zDelta},
+                   SmallInt(HIWORD(wParam)) {zDelta},  //bug fix
                    LOWORD(lParam) {xPos},   HIWORD(lParam) {yPos});
 end;
 

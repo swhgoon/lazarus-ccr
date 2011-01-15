@@ -1530,12 +1530,13 @@ begin
 end;
 
 procedure TOvcBaseComboBox.WMMouseWheel(var Msg : TMessage);
+// See TurboPower bug comments in TO32CustomControl.WMMouseWheel.
 begin
   inherited;
 
   with Msg do
     DoOnMouseWheel(KeysToShiftState(LOWORD(wParam)) {fwKeys},
-                   HIWORD(wParam) {zDelta},
+                   SmallInt(HIWORD(wParam)) {zDelta},  //bug fix
                    LOWORD(lParam) {xPos},   HIWORD(lParam) {yPos});
 end;
 
