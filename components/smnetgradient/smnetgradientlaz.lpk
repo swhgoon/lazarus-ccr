@@ -19,7 +19,7 @@
     </CompilerOptions>
     <Description Value="A gradient fill like in the new Netscape Communicator Options Box."/>
     <License Value="This component can be freely used and distributed in commercial and private environments, provided this notice is not modified in any way."/>
-    <Version Major="2" Minor="1"/>
+    <Version Major="2" Minor="1" Release="1"/>
     <Files Count="2">
       <Item1>
         <Filename Value="smnetgradient.pas"/>
