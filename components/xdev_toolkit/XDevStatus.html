@@ -32,7 +32,21 @@
 <A name="Whats_New"></A><H3>What's New</H3>
 
 <UL>
-<LI><B>20101230 release:</B>
+<LI><B>20110116 release:</B>
+<UL>
+<LI>DfmToLfm now supports converting a Lazarus form file too, as a way
+to create more than one version of the same form, for example to conditionally
+include a different version based on widgetset target. For example, you could
+do this in a form's unit:
+<PRE>
+{$IFNDEF LCLCarbon}
+ {$R *.lfm}  //include generic form with Windows and Linux
+{$ELSE}
+ {$R *.mac.lfm}  //include prettied form with Mac (-m -s switches)
+{$ENDIF}
+</PRE>
+</UL>
+<LI>20101230 release:
 <UL>
 <LI>Added -s switch to DfmToLfm (substitutes fonts).
 </UL>
@@ -355,7 +369,7 @@ also be able to output version information to a Lazarus .lpi file.<P>
 <A HREF="http://wiki.lazarus.freepascal.org/Deploying_Your_Application">http://wiki.lazarus.freepascal.org/Deploying_Your_Application</A><P>
 <P>
 <HR>
-Last updated: Jan 2, 2011
+Last updated: Jan 16, 2011
 <P>
 
 </BODY>
