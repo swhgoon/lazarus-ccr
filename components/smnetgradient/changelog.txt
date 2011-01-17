@@ -1,4 +1,4 @@
-Changes between 2.0.4 and 2.0.5 (By Luiz Américo)
+﻿Changes between 2.0.4 and 2.0.5 (By Luiz Américo)
 * Correctly set the version info in the package description
 * Removed About property since does not make sense at all
 * Made SubCaption a read only property
@@ -20,3 +20,6 @@ Changes between 2.0.5 and 2.1 (By Luiz Américo)
 * Allow placing a child control
 * Fix SubCaption streaming
 * Code cleanup
+
+Changes between 2.1 and 2.1.1 (By Vincenzo Scozzaro)
+* Fix icon ide TNetGradient 
