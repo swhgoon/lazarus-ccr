@@ -16,11 +16,14 @@ interface
 
 uses
   Classes, SysUtils, Controls, graphics, LCLType,LResources,
-  LCLIntf ,Buttons, urotatebitmap, types;
+  LCLIntf ,Buttons, urotatebitmap, types, Menus;
 
 type
   TGradButton = class;
-
+      
+  
+  TDropDownMarkDirection = (mdUp, mdLeft, mdDown, mdRight);
+  TDropDownMarkPosition = (mpLeft, mpRight);
   TTextAlignment = (taLeftJustify, taRightJustify, taCenter);
   TBorderSide = (bsTopLine, bsBottomLine, bsLeftLine, bsRightLine);
   TBorderSides = set of TBorderSide;
@@ -29,10 +32,53 @@ type
   TGBBackgroundPaintEvent = procedure(Sender: TGradButton;
     TargetCanvas: TCanvas; R: TRect; BState : TButtonState) of object;
 
+  
+  { TDropDownSettings }
+
+  TDropDownSettings = class(TPersistent)
+  private
+    FColor: TColor;
+    FMarkDirection: TDropDownMarkDirection;
+    FMarkPosition: TDropDownMarkPosition;
+    FOnlyOnMark: boolean;
+    FPopupMenu: TPopupMenu;
+    FPressedColor: TColor;
+    FShow: Boolean;
+    FSize: integer;
+    FNotify: TNotifyEvent; 
+    procedure SetColor(const AValue: TColor);
+    procedure SetMarkDirection(const AValue: TDropDownMarkDirection);
+    procedure SetMarkPosition(const AValue: TDropDownMarkPosition);
+    procedure SetOnlyOnMark(const AValue: boolean);
+    procedure SetPopupMenu(const AValue: TPopupMenu); 
+    procedure SetPressedColor(const AValue: TColor);
+    procedure SetShow(const AValue: Boolean);
+    procedure SetSize(const AValue: integer); 
+    
+    procedure Notify;
+  public
+    constructor Create(ANotify: TNotifyEvent);
+    procedure AssignTo(Dest: TPersistent); override;
+    function IsPopupStored: boolean; 
+  published
+    property Color : TColor read FColor write SetColor default clSilver;
+    property MarkDirection : TDropDownMarkDirection read FMarkDirection 
+      write SetMarkDirection default mdDown;
+    property MarkPosition : TDropDownMarkPosition read FMarkPosition 
+      write SetMarkPosition default mpRight;
+    property OnlyOnMark: boolean read FOnlyOnMark write SetOnlyOnMark;
+    property PopupMenu : TPopupMenu read FPopupMenu write SetPopupMenu;
+    property PressedColor: TColor read FPressedColor write SetPressedColor default clBlack;
+    property Show : Boolean read FShow write SetShow;
+    property Size: integer read FSize write SetSize default 8;
+  end;
+  
   { TGradButton }
 
   TGradButton = class(TCustomControl)
   private
+    FDropDownSettings: TDropDownSettings;
+    FPaintToActive: Boolean;
     FAutoHeight: Boolean;
     FAutoHeightBorderSpacing: Integer;
     FAutoWidthBorderSpacing: Integer;
@@ -40,8 +86,9 @@ type
     FRotateDirection : TRotateDirection;
     FTextAlignment : TTextAlignment;
     FButtonLayout: TButtonLayout;
-    FTextPoint, FGlyphPoint : TPoint;
-    FTextSize, FGlyphSize : TSize;
+    FDropdownMarkRect: TRect;
+    FTextPoint, FGlyphPoint: TPoint;
+    FTextSize, FGlyphSize, FDropdownSize, FAutoSize : TSize;
     FBackground, bm,
     FNormalBackgroundCache, FHotBackgroundCache,
     FDownBackgroundCache, FDisabledBackgroundCache : TBitmap;
@@ -54,11 +101,15 @@ type
     FBorderSides: TBorderSides;
     FOnNormalBackgroundPaint, FOnHotBackgroundPaint,
     FOnDownBackgroundPaint, FOnDisabledBackgroundPaint : TGBBackgroundPaintEvent;
+    procedure DrawDropDownArrow;
     procedure PaintGradient(TrgCanvas: TCanvas; pr : TRect);
+    procedure SetDropDownSettings(const AValue: TDropDownSettings);
     procedure UpdateBackground;
     procedure PaintBackground(AState: TButtonState; TrgBitmap: TBitmap);
+    procedure ShowDropdownPopupMenu;
+    procedure DropDownSettingsChanged(Sender: TObject);
   protected
-    FState, FOldState: TButtonState;
+    FState, FOldState, FDropDownState: TButtonState;
     FNormalBlend,FOverBlend : Extended;
     FBaseColor, FNormalBlendColor, FOverBlendColor, FDisabledColor,
     FBackgroundColor, FGlyphBackgroundColor, FClickColor: TColor;
@@ -69,7 +120,6 @@ type
     procedure InvPaint(StateCheck:Boolean=false);
     procedure FontChanged(Sender: TObject); override;
     procedure GlyphChanged(Sender: TObject); virtual;
-    procedure GetBackgroundRect(var TheRect : TRect); virtual;
     procedure GetContentRect(var TheRect: TRect); virtual;
     function GetGlyph : TBitmap;
     procedure SetEnabled(Value: Boolean); override;
@@ -98,8 +148,12 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    //procedure CreateParams(var Params: TCreateParams); override;
+
+    procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: integer; 
+       KeepBase: boolean); override;
+    
     procedure Paint; override;
+    procedure PaintTo(ACanvas: TCanvas; X, Y: Integer); overload; 
     procedure MouseEnter; override;
     procedure MouseLeave; override;
     procedure MouseDown(Button: TMouseButton;
@@ -113,12 +167,12 @@ type
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     function  GetBackground : TCanvas;
     procedure Click; override;
-    procedure Resize; override;
     function Focused: Boolean; override;
     procedure UpdateButton;
     procedure UpdatePositions;
     function GetAutoWidth : Integer;
     function GetAutoHeight : Integer;
+    class function GetControlClassDefaultSize: TSize; override;
   published
     property Action;
     property Anchors;
@@ -126,6 +180,8 @@ type
     property BorderSpacing;
     property Caption;
     property Enabled;
+    property DropDownSettings: TDropDownSettings read FDropDownSettings 
+      write SetDropDownSettings;
     property PopupMenu;
     property Font;
     property Visible;
@@ -178,13 +234,68 @@ type
   function ColorBetween(C1, C2 : TColor; blend:Extended):TColor;
   function ColorsBetween(colors:array of TColor; blend:Extended):TColor;
   function AlignItem(ItemLength, AreaLength,Spacing: Integer; ATextAlignment: TTextAlignment):Integer;
-
+  function IfThen(ATest, ValA: Boolean; ValB: Boolean = false): Boolean; overload;
+  
   procedure Register;
 
 implementation
 
 uses
     LCLProc, math;
+
+procedure PaintArrow(ACanvas: TCanvas; ARect: TRect; ADirection: TDropDownMarkDirection; AColor: TColor);
+var
+  Points : Array of TPoint;
+  ASize: TSize; 
+  i: Integer; 
+begin
+  SetLength(Points, 3);
+  
+  ASize := Size(ARect);
+  
+  case ADirection of
+    mdUp:
+    begin
+      Points[0] := Point(0, ASize.cy);
+      Points[1] := Point(ASize.cx, ASize.cy);
+      Points[2] := Point(ASize.cx div 2, 0);
+    end;
+    mdDown:
+    begin
+      Points[0] := Point(0, 0);
+      Points[1] := Point(ASize.cx, 0);
+      Points[2] := Point(ASize.cx div 2, ASize.cy); 
+    end;
+    mdLeft:
+    begin
+      Points[0] := Point(ASize.cx, 0);
+      Points[1] := Point(ASize.cx, ASize.cy);
+      Points[2] := Point(0, ASize.cy div 2); 
+    end;
+    mdRight:
+    begin
+      Points[0] := Point(0, 0);
+      Points[1] := Point(0, ASize.cy);
+      Points[2] := Point(ASize.cx, ASize.cy div 2); 
+    end;
+  end;
+  
+  for i := 0 to 2 do
+  with Points[i] do
+  begin
+    Inc(X, ARect.Left);
+    Inc(Y, ARect.Top);
+  end;
+
+  
+  ACanvas.Brush.Style:=bsSolid;
+  ACanvas.Brush.Color:=AColor;
+  ACanvas.Pen.Color:=AColor;
+  
+  ACanvas.Polygon(Points);
+
+  SetLength(Points, 0);
+end;
 
 function AlignItem(ItemLength, AreaLength,Spacing: Integer; ATextAlignment: TTextAlignment):Integer;
 begin
@@ -249,40 +360,24 @@ begin
     UpdateButton;
 end;
 
-procedure TGradButton.Resize;
-begin
-  inherited;
-
-  if (HasParent) then
-  begin
-    if FAutoWidth then
-      UpdateButton
-    else begin
-      UpdatePositions;
-      UpdateBackground;
-    end;
-  end;
-end;
-
 procedure TGradButton.UpdatePositions;
 var
-  tempTS,tempGS : TSize;
+  tempTS,tempGS,Area : TSize;
   p,t,midx, midy, textmidx, textmidy,
-  groupwidth, groupheight, AreaWidth, AreaHeight :Integer;
+  groupwidth, groupheight, Offset1, Offset2 :Integer;
   tempBL : TButtonLayout;
 begin
   GetContentRect(FBackgroundRect);
 
-  AreaWidth := FBackgroundRect.Right-FBackgroundRect.Left;
-  AreaHeight := FBackgroundRect.Bottom-FBackgroundRect.Top;
-
+  Area := Size(FBackgroundRect);
+                              
   tempGS.cx:=0;
   tempGS.cy:=0;
 
   if FShowGlyph and not FRotatedGlyph.Empty then
   begin
-  tempGS.cx:=FRotatedGlyph.Width;
-  tempGS.cy:=FRotatedGlyph.Height;
+    tempGS.cx:=FRotatedGlyph.Width;
+    tempGS.cy:=FRotatedGlyph.Height;
   end;
 
   tempTS := bm.Canvas.TextExtent(Caption);
@@ -300,34 +395,34 @@ begin
   if FShowGlyph and not FRotatedGlyph.Empty then begin
     case tempBL of
       blGlyphLeft:  begin
-        FGlyphPoint.x := AlignItem(tempGS.cx+FTextGlyphSpacing+tempTS.cx,AreaWidth,4,FTextAlignment);
-        FGlyphPoint.y := AlignItem(tempGS.cy,AreaHeight,0, taCenter);
+        FGlyphPoint.x := AlignItem(tempGS.cx+FTextGlyphSpacing+tempTS.cx,Area.cx,4,FTextAlignment);
+        FGlyphPoint.y := AlignItem(tempGS.cy,Area.cy,0, taCenter);
 
-        FTextPoint.x := FGlyphPoint.x+tempGS.cx+FTextGlyphSpacing;
-        FTextPoint.y := AlignItem(tempTS.cy,AreaHeight,0, taCenter);
+        FTextPoint.x := FGlyphPoint.x+tempGS.cx+FTextGlyphSpacing+FDropDownSettings.Size;
+        FTextPoint.y := AlignItem(tempTS.cy,Area.cy,0, taCenter);
       end;
       blGlyphRight: begin
         //Glyph Right, Text Left
-        FTextPoint.x := AlignItem(tempTS.cx+FTextGlyphSpacing+tempGS.cx,AreaWidth,4, FTextAlignment);
-        FTextPoint.y := AlignItem(tempTS.cy,AreaHeight,0, taCenter);
+        FTextPoint.x := AlignItem(tempTS.cx+FTextGlyphSpacing+tempGS.cx,Area.cx,4, FTextAlignment);
+        FTextPoint.y := AlignItem(tempTS.cy,Area.cy,0, taCenter);
 
-        FGlyphPoint.x := FTextPoint.x+tempTS.cx+FTextGlyphSpacing;
-        FGlyphPoint.y := AlignItem(tempGS.cy,AreaHeight,0, taCenter);
+        FGlyphPoint.x := FTextPoint.x+tempTS.cx+FTextGlyphSpacing+FDropDownSettings.Size;
+        FGlyphPoint.y := AlignItem(tempGS.cy,Area.cy,0, taCenter);
       end;
       blGlyphTop:  begin
         //Glyph Top, Text Bottom
-        FGlyphPoint.x := AlignItem(tempGS.cx,AreaWidth, 0, FTextAlignment);
-        FTextPoint.x := AlignItem(tempTS.cx, AreaWidth, 0, FTextAlignment);
+        FGlyphPoint.x := AlignItem(tempGS.cx + FDropDownSettings.Size, Area.cx, 0, FTextAlignment);
+        FTextPoint.x  := AlignItem(tempTS.cx + FDropDownSettings.Size, Area.cx, 0, FTextAlignment);
 
-        FGlyphPoint.y := AlignItem(tempGS.cy+FTextGlyphSpacing+tempTS.cy, AreaHeight, 4, taCenter);
-        FTextPoint.y := FGlyphPoint.y+tempGS.cy+FTextGlyphSpacing;
+        FGlyphPoint.y := AlignItem(tempGS.cy+FTextGlyphSpacing+tempTS.cy, Area.cy, 4, taCenter);
+        FTextPoint.y  := FGlyphPoint.y+tempGS.cy+FTextGlyphSpacing;
       end;
       blGlyphBottom: begin
         //Glyph Bottom, Text Top
-        FGlyphPoint.x := AlignItem(tempGS.cx,AreaWidth, 0, FTextAlignment);
-        FTextPoint.x := AlignItem(tempTS.cx, AreaWidth, 0, FTextAlignment);
+        FGlyphPoint.x := AlignItem(tempGS.cx+FDropDownSettings.Size, Area.cx, 0, FTextAlignment);
+        FTextPoint.x  := AlignItem(tempTS.cx+FDropDownSettings.Size, Area.cx, 0, FTextAlignment);
 
-        FTextPoint.y := AlignItem(tempGS.cy+FTextGlyphSpacing+tempTS.cy, AreaHeight, 4, taCenter);
+        FTextPoint.y  := AlignItem(tempGS.cy+FTextGlyphSpacing+tempTS.cy, Area.cy, 4, taCenter);
         FGlyphPoint.y := FTextPoint.y+tempTS.cy+FTextGlyphSpacing;
       end;
     end;
@@ -335,56 +430,52 @@ begin
     FGlyphPoint.x := 0;
     FGlyphPoint.y := 0;
 
-    FTextPoint.x := AlignItem(tempTS.cx,AreaWidth,4, FTextAlignment);
-    FTextPoint.y := AlignItem(tempTS.cy,AreaHeight,0, taCenter);
+    FTextPoint.x := AlignItem(tempTS.cx+FDropDownSettings.Size,Area.cx,4, FTextAlignment);
+    FTextPoint.y := AlignItem(tempTS.cy,Area.cy,0, taCenter);
   end;
-       //WritePoints([TP^, GP^]);
+  
+  Offset1 := IfThen(FDropDownSettings.MarkPosition=mpLeft, FDropDownSettings.Size);
 
-       {TP^.x := TP^.x + p;
-       TP^.y := TP^.y + p;
-
-       GP^.x := GP^.x + p;
-       GP^.y := GP^.y + p; }
-
-  FTextPoint.x := FTextPoint.x+FBackgroundRect.Left;
+  FTextPoint.x := Offset1 + FTextPoint.x+FBackgroundRect.Left;
   FTextPoint.y := FTextPoint.y+FBackgroundRect.Top;
 
-  FGlyphPoint.x := FGlyphPoint.x+FBackgroundRect.Left;
+  FGlyphPoint.x := Offset1 + FGlyphPoint.x+FBackgroundRect.Left;
   FGlyphPoint.y := FGlyphPoint.y+FBackgroundRect.Top;
-
-
-  {$IFDEF DEBUGGRADBUTTON}
-  WriteLn('Text');
-  WritePoint(FTextPoint);
-  WriteLn('Glyph');
-  WritePoint(FGlyphPoint);
-  {$ENDIF}
+                                                                 
+  Offset1 := IfThen(FDropDownSettings.MarkPosition<>mpLeft, FTextSize.cx, -FDropDownSettings.Size - 2);
+  Offset2 := IfThen(FDropDownSettings.MarkPosition<>mpLeft, FGlyphSize.cx, -FDropDownSettings.Size - 2);
+  
+  FDropdownMarkRect.Left   := Max(FTextPoint.X+Offset1, FGlyphPoint.X+Offset2);
+  FDropdownMarkRect.Top    := AlignItem(FDropDownSettings.Size, Area.cy, 0, taCenter) + FBackgroundRect.Top;
+  FDropdownMarkRect.Right  := FDropdownMarkRect.Left + FDropDownSettings.Size;
+  FDropdownMarkRect.Bottom := FDropdownMarkRect.Top + FDropDownSettings.Size;               
+  
+  FAutoSize.cx := Max(FGlyphPoint.x + FGlyphSize.cx, FTextPoint.x + FTextSize.cx);
+  FAutoSize.cy := Max(FGlyphPoint.y + FGlyphSize.cy, FTextPoint.x + FTextSize.cx);
+  
+  if FDropDownSettings.Show and FDropDownSettings.IsPopupStored then
+  begin
+    FAutoSize.cx := Max(FAutoSize.cx, FDropdownMarkRect.Right);
+    FAutoSize.cy := Max(FAutoSize.cy, FDropdownMarkRect.Bottom);
+  end;
 
   FGlyphSize:=tempGS;
 end;
 
 function TGradButton.GetAutoWidth: Integer;
 begin
-  if FShowGlyph then begin
-    if FButtonLayout in [blGlyphLeft,blGlyphRight] then
-       Result := FTextSize.cx+ FRotatedGlyph.Width+FTextGlyphSpacing+FAutoWidthBorderSpacing
-    else
-       Result := Max(FTextSize.cx,FRotatedGlyph.Width)+FAutoWidthBorderSpacing;
-  end else begin
-    Result := FTextSize.cx+FAutoWidthBorderSpacing;
-  end;
+  Result := FAutoSize.cx + FAutoWidthBorderSpacing;
 end;
 
 function TGradButton.GetAutoHeight: Integer;
 begin
-  if FShowGlyph then begin
-    if FButtonLayout in [blGlyphTop,blGlyphBottom] then
-       Result := FTextSize.cy+ FRotatedGlyph.Height+FTextGlyphSpacing+FAutoHeightBorderSpacing
-    else
-       Result := Max(FTextSize.cy,FRotatedGlyph.Height)+FAutoHeightBorderSpacing;
-  end else begin
-    Result := FTextSize.cy+FAutoHeightBorderSpacing;
-  end;
+  Result := FAutoSize.cy + FAutoHeightBorderSpacing;
+end;
+
+class function TGradButton.GetControlClassDefaultSize: TSize;  
+begin            
+  Result.CX := 80;
+  Result.CY := 25;   
 end;
 
 procedure TGradButton.PaintBackground(AState: TButtonState; TrgBitmap: TBitmap);
@@ -394,7 +485,7 @@ var
 begin
   FTempState:=FState;
 
-  GetBackgroundRect(FBackgroundRect);
+  GetContentRect(FBackgroundRect);
 
   with TrgBitmap do
   begin
@@ -418,7 +509,7 @@ begin
 
     if FOwnerBackgroundDraw AND (FOnBorderBackgroundPaint<>nil) then
     begin
-      FOnBorderBackgroundPaint(Self, Canvas, FBackgroundRect, AState);
+      //FOnBorderBackgroundPaint(Self, Canvas, FBackgroundRect, AState);
     end else begin
       //Top
       if (bsTopLine in BorderSides) then
@@ -499,6 +590,23 @@ begin
   FState:=FTempState;
 end;
 
+procedure TGradButton.ShowDropdownPopupMenu; 
+var
+  lowerLeft: TPoint;
+begin
+  if FDropDownSettings.Show and FDropDownSettings.IsPopupStored then Exit;
+  lowerLeft := Point(0, Height);
+  lowerLeft := ControlToScreen(lowerLeft);
+  FDropDownSettings.PopupMenu.Popup(lowerLeft.X, lowerLeft.Y);
+end;
+
+procedure TGradButton.DropDownSettingsChanged(Sender: TObject); 
+begin
+  UpdateButton;
+  
+  InvPaint();
+end;
+
 procedure TGradButton.UpdateBackground;
 var
   FTempState : TButtonState;
@@ -516,37 +624,6 @@ begin
   FState:=FTempState;
 
   InvPaint;
-end;
-
-procedure TGradButton.GetBackgroundRect(var TheRect: TRect);
-begin
-  TheRect := Rect(0,0,Width,Height);
-
-  //Top
-  if (bsTopLine in BorderSides) then
-  begin
-    TheRect.Top := 2;
-  end else
-    TheRect.Top := 0;
-
-  //Left
-  if (bsLeftLine in BorderSides) then
-  begin
-    TheRect.Left := 2;
-  end else
-    TheRect.Left := 0;
-
-  //Right
-  if (bsRightLine in BorderSides) then
-  begin
-    TheRect.Right := TheRect.Right-{$IFDEF windows}2{$ELSE}3{$ENDIF};
-  end;
-
-  //Bottom
-  if (bsBottomLine in BorderSides) then
-  begin
-    TheRect.Bottom := TheRect.Bottom - 2;
-  end;
 end;
 
 procedure TGradButton.GetContentRect(var TheRect: TRect);
@@ -649,11 +726,7 @@ begin
 end;
 
 procedure TGradButton.UpdateButton;
-
 begin
-   if FAutoWidth then Width := GetAutoWidth;
-   if FAutoHeight then Height := GetAutoHeight;
-
    UpdateBackground;
    UpdatePositions;
 end;
@@ -715,6 +788,25 @@ begin
 end;
 
 
+procedure TGradButton.DrawDropDownArrow;
+var
+  Points : Array of TPoint; 
+begin          
+  SetLength(Points, 3);
+                              
+  // ArrowState
+  {if FDropDownState = bsUp then ArrowState:=ttbSplitButtonDropDownNormal;
+  if FDropDownState = bsDown then ArrowState:=ttbSplitButtonDropDownPressed;
+  if FDropDownState = bsHot then ArrowState:=ttbSplitButtonDropDownHot;
+  if FDropDownState = bsDisabled then ArrowState:=ttbSplitButtonDropDownDisabled;
+  
+  if (FDropDownState = bsDown) and Enabled then
+    ArrowState := ttbSplitButtonDropDownPressed;
+   }      
+  PaintArrow(bm.Canvas, FDropdownMarkRect, FDropDownSettings.FMarkDirection, clGray);
+  
+  SetLength(Points, 0);
+end; 
 
 procedure TGradButton.PaintGradient(TrgCanvas: TCanvas; pr : TRect);
 var
@@ -794,6 +886,15 @@ begin
    end;
 end;
 
+procedure TGradButton.SetDropDownSettings(const AValue: TDropDownSettings); 
+begin
+  if FDropDownSettings=AValue then exit; 
+  FDropDownSettings.Assign(AValue);
+  
+  FDropDownSettings.Notify;
+end;
+                          
+
 procedure TGradButton.SetAutoHeight(const AValue: Boolean);
 begin
   if FAutoHeight=AValue then exit;
@@ -821,10 +922,9 @@ end;
 constructor TGradButton.Create(AOwner: TComponent);
 begin
   inherited;
-    
-  Width:=80;
-  Height:=25;
-    
+                            
+  FDropDownSettings := TDropDownSettings.Create(@DropDownSettingsChanged);
+  
   FAutoWidthBorderSpacing:=15;
   FAutoHeightBorderSpacing:=15;
   FNormalBlend:=0.5;
@@ -898,6 +998,28 @@ begin
 
    
    inherited;
+end;
+
+procedure TGradButton.ChangeBounds(ALeft, ATop, AWidth, AHeight: integer;  
+  KeepBase: boolean);  
+begin
+  if FAutoWidth then
+    AWidth := GetAutoWidth;
+  
+  if FAutoHeight then
+    AHeight := GetAutoHeight;
+                            
+  if (HasParent) then
+  begin
+    if FAutoWidth or FAutoHeight then
+      UpdateButton
+    else begin
+      UpdatePositions;
+      UpdateBackground;
+    end;
+  end;         
+  
+  inherited ChangeBounds(ALeft, ATop, AWidth, AHeight, KeepBase);  
 end;
 
 procedure TGradButton.SetBorderSides(const Value: TBorderSides);
@@ -976,7 +1098,7 @@ begin
   
   if StateCheck then
   begin
-      doIt := (FOldState<>FState);
+    doIt := (FOldState<>FState);
   end;
 
   if doIt then
@@ -1002,29 +1124,29 @@ end;
 
 procedure TGradButton.DoEnter;
 begin
-     FState:=bsHot;
-     FFocused:=true;
-     InvPaint;
-
-     inherited;
+  FState:=bsHot;
+  FFocused:=true;
+  InvPaint;
+  
+  inherited;
 end;
 
 procedure TGradButton.KeyUp(var Key: Word; Shift: TShiftState);
 begin
-      if Key in [VK_RETURN, VK_SPACE] then
-         inherited Click;
-
-      inherited;
+  if Key in [VK_RETURN, VK_SPACE] then
+     inherited Click;
+  
+  inherited;
 end;
 
 procedure TGradButton.DoExit;
 begin
-     FState:=bsUp;
-     FFocused:=false;
-     
-     InvPaint;
-
-     inherited;
+  FState:=bsUp;
+  FFocused:=false;
+  
+  InvPaint;
+  
+  inherited;
 end;
 
 procedure TGradButton.Paint;
@@ -1074,9 +1196,24 @@ begin
             FBackgroundRect.Right-2, FBackgroundRect.Bottom-2));
    end;
    
-   Canvas.Draw(0,0,bm);
+   if FDropDownSettings.Show and FDropDownSettings.IsPopupStored then
+    DrawDropDownArrow;
+   
+   if not FPaintToActive then
+   begin
+    Canvas.Draw(0,0,bm); 
+   
+    inherited Paint;
+   end;
+end;
 
-   inherited Paint;
+procedure TGradButton.PaintTo(ACanvas: TCanvas; X, Y: Integer); 
+begin
+  FPaintToActive := true;
+  Paint;
+  ACanvas.CopyRect(Rect(X,Y, X+Width, Y+Height),
+    bm.Canvas, ClientRect);
+  FPaintToActive:= false;
 end;
 
 procedure TGradButton.MouseEnter;
@@ -1092,22 +1229,32 @@ end;
 
 procedure TGradButton.MouseMove(Shift: TShiftState;
                  X, Y: Integer);
+var
+  TempPoint: TPoint;
 begin
-   if ssLeft in Shift then
-      FState := bsDown
-   else
-      FState := bsHot;
-         
-   InvPaint(true);
+  TempPoint := Point(X, Y);
+  
+  if ssLeft in Shift then
+    FState := bsDown
+  else                   
+    FState := bsHot;     
+   
+  if PtInRect(FDropdownMarkRect, TempPoint) and (ssLeft in Shift) then
+    FDropDownState:= bsDown
+  else
+    FDropDownState:= bsHot;
 
-   //inherited MouseMove calls OnMouseMove
-   inherited MouseMove(Shift, X, Y);
+  InvPaint(true);
+
+  //inherited MouseMove calls OnMouseMove
+  inherited MouseMove(Shift, X, Y);
 end;
 
 procedure TGradButton.MouseLeave;
 begin
     inherited;
     //WriteLn('MouseLeave');
+    FDropDownState:= bsUp;
     FState:=bsUp;
     //FFocused:=false;
     InvPaint(true);
@@ -1120,7 +1267,19 @@ end;
 
 procedure TGradButton.MouseDown(Button: TMouseButton;
                  Shift: TShiftState; X, Y: Integer);
+var
+  TempPoint : TPoint;
 begin
+  TempPoint:= Point(X,Y); 
+  
+  if PtInRect(FDropdownMarkRect, TempPoint) then
+  begin
+    FState := bsDown;
+    FDropDownState := bsDown;
+    InvPaint(true);
+    
+  end
+  else
     if PtInRect(Rect(0,0,Width,Height),Point(X,Y)) then
     begin
        FState:=bsDown;
@@ -1141,21 +1300,150 @@ end;
 
 procedure TGradButton.MouseUp(Button: TMouseButton;
                  Shift: TShiftState; X, Y: Integer);
+var
+  TempPoint : TPoint;
 begin
-  if PtInRect(Rect(0,0,Width,Height),Point(X,Y)) then
+  TempPoint:= Point(X,Y);
+  
+  if PtInRect(FDropdownMarkRect, TempPoint) then
   begin
-    FState:=bsHot;
+    FState := bsHot;
+    FDropDownState := bsHot;
     InvPaint(true);
-
+    
     if Button = mbLeft then
-      inherited Click; //Faster, than the Overrided Click procedure
-  end else begin
-    FState := bsUp;
-    FFocused:=false;
-    InvPaint(true);
+      ShowDropdownPopupMenu;
+  end
+  else
+  begin
+    if PtInRect(Rect(0,0,Width,Height),TempPoint) then
+    begin
+      FState:=bsHot;
+      InvPaint(true);
+  
+      if Button = mbLeft then
+        inherited Click; //Faster, than the Overrided Click procedure
+    end 
+    else 
+    begin
+      FState := bsUp;
+      FFocused:=false;
+      InvPaint(true);
+    end;
+  
+    inherited;
   end;
+end;
 
-  inherited;
+{ TDropDownSettings }
+
+procedure TDropDownSettings.SetMarkPosition(const AValue: TDropDownMarkPosition); 
+begin
+  if FMarkPosition=AValue then exit; 
+  FMarkPosition:=AValue; 
+  
+  Notify;
+end;
+
+procedure TDropDownSettings.SetMarkDirection(
+  const AValue: TDropDownMarkDirection); 
+begin
+  if FMarkDirection=AValue then exit; 
+  FMarkDirection:=AValue; 
+  
+  Notify;
+end;
+
+procedure TDropDownSettings.SetColor(const AValue: TColor); 
+begin
+  if FColor=AValue then exit; 
+  FColor:=AValue; 
+  
+  Notify;
+end;
+
+procedure TDropDownSettings.SetOnlyOnMark(const AValue: boolean); 
+begin
+  if FOnlyOnMark=AValue then exit; 
+  FOnlyOnMark:=AValue;
+  
+  Notify;
+end;
+
+procedure TDropDownSettings.SetPopupMenu(const AValue: TPopupMenu); 
+begin
+  if FPopupMenu=AValue then exit; 
+  FPopupMenu:=AValue; 
+  
+  Notify;
+end;
+
+procedure TDropDownSettings.SetPressedColor(const AValue: TColor); 
+begin
+  if FPressedColor=AValue then exit; 
+  FPressedColor:=AValue; 
+  
+  Notify;
+end;
+
+procedure TDropDownSettings.SetShow(const AValue: Boolean); 
+begin
+  if FShow=AValue then exit; 
+  FShow:=AValue; 
+  
+  Notify;
+end;
+
+procedure TDropDownSettings.SetSize(const AValue: integer); 
+begin
+  if FSize=AValue then exit; 
+  FSize:=AValue; 
+  
+  Notify;
+end;
+
+procedure TDropDownSettings.Notify; 
+begin
+  if FNotify <> nil then
+    FNotify(Self);
+end;
+
+constructor TDropDownSettings.Create(ANotify: TNotifyEvent); 
+begin
+  FNotify := ANotify;
+
+  FColor:= clSilver;
+  FPressedColor:= clBlack;
+  FMarkDirection:= mdDown;
+  FMarkPosition:= mpRight;
+  FOnlyOnMark:= false;
+  FShow:= false;
+  FSize:= 8;
+end;
+
+procedure TDropDownSettings.AssignTo(Dest: TPersistent);  
+begin
+  if Dest is TDropDownSettings then
+  begin
+    with TDropDownSettings(Dest) do
+    begin
+      FNotify := Self.FNotify;
+      FColor:= Self.FColor;
+      FPressedColor:=Self.FPressedColor;
+      FMarkDirection:=Self.FMarkDirection;
+      FMarkPosition:=Self.FMarkPosition;
+      FOnlyOnMark:=Self.FOnlyOnMark;
+      FShow:=Self.FShow;
+      FSize:=Self.FSize;
+    end;
+  end
+  else
+    inherited;  
+end;
+                     
+function TDropDownSettings.IsPopupStored: boolean;
+begin
+  Result := FPopupMenu <> nil;  
 end;
 
 //Thx to: http://www.delphipraxis.net/topic67805_farbverlauf+berechnen.html
@@ -1205,6 +1493,14 @@ begin
 
       Result := ColorBetween(colors[a], colors[a+1], (blend-(a * faktor)) / faktor);
    end;
+end;
+
+function IfThen(ATest, ValA: Boolean; ValB: Boolean): Boolean;
+begin
+  if ATest then
+    Result := ValA
+  else
+    Result := ValB;
 end;
 
 procedure Register;
