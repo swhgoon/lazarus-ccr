@@ -2395,7 +2395,11 @@ begin
 
     {get the key state}
     if FMultiSelect then begin
+{$IFNDEF LCLCarbon}
       CtrlKeyDown := GetKeyState(VK_CONTROL) and $8000 <> 0;
+{$ELSE}  {Cmd+click used on Mac for non-contiguous selection; see it as VK_LWIN}
+      CtrlKeyDown := GetKeyState(VK_LWIN) and $8000 <> 0;
+{$ENDIF}
       ShiftKeyDown := GetKeyState(VK_SHIFT) and $8000 <> 0;
     end else begin
       CtrlKeyDown := False;

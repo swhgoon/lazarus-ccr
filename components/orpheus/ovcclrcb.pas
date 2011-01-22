@@ -197,18 +197,11 @@ begin
   Style := ocsDropDownList;
 
   FShowColorNames := True;
-end;
-
-destructor TOvcCustomColorComboBox.Destroy;
-begin
-  inherited;
-end;
-
-{ - modified}
-procedure TOvcCustomColorComboBox.CreateWnd;
-begin
-  inherited CreateWnd;
-
+  
+// On Carbon, SetSelectedColor gets called before Items is populated
+//  in CreateWnd below, so moved code to here.
+// Note: Isn't CreateWnd an odd place to initialize a control?
+{$IFDEF LCL}
   Text := '';
   Items.Clear;
   Items.Add(GetOrphStr(SCColorBlack));
@@ -235,6 +228,47 @@ begin
   Items.Add(GetOrphStr(SCColorCream));
 
   ItemIndex := 0;
+{$ENDIF}
+end;
+
+destructor TOvcCustomColorComboBox.Destroy;
+begin
+  inherited;
+end;
+
+{ - modified}
+procedure TOvcCustomColorComboBox.CreateWnd;
+begin
+  inherited CreateWnd;
+
+{$IFNDEF LCL}  //See note above.
+  Text := '';
+  Items.Clear;
+  Items.Add(GetOrphStr(SCColorBlack));
+  Items.Add(GetOrphStr(SCColorMaroon));
+  Items.Add(GetOrphStr(SCColorGreen));
+  Items.Add(GetOrphStr(SCColorOlive));
+  Items.Add(GetOrphStr(SCColorNavy));
+  Items.Add(GetOrphStr(SCColorPurple));
+  Items.Add(GetOrphStr(SCColorTeal));
+  Items.Add(GetOrphStr(SCColorGray));
+  Items.Add(GetOrphStr(SCColorSilver));
+  Items.Add(GetOrphStr(SCColorRed));
+  Items.Add(GetOrphStr(SCColorLime));
+  Items.Add(GetOrphStr(SCColorYellow));
+  Items.Add(GetOrphStr(SCColorBlue));
+  Items.Add(GetOrphStr(SCColorFuchsia));
+  Items.Add(GetOrphStr(SCColorAqua));
+  Items.Add(GetOrphStr(SCColorLightGray));
+  Items.Add(GetOrphStr(SCColorMediumGray));
+  Items.Add(GetOrphStr(SCColorDarkGray));
+  Items.Add(GetOrphStr(SCColorWhite));
+  Items.Add(GetOrphStr(SCColorMoneyGreen));
+  Items.Add(GetOrphStr(SCColorSkyBlue));
+  Items.Add(GetOrphStr(SCColorCream));
+
+  ItemIndex := 0;
+{$ENDIF}
 end;
 
 procedure TOvcCustomColorComboBox.DrawItem(Index : Integer; Rect : TRect;

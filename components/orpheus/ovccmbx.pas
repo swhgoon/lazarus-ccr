@@ -1524,7 +1524,7 @@ begin
   with PMStruct^ do begin
     ItemWidth  := ClientWidth;
     IHeight := ItemHeight;
-    MeasureItem(ItemID, IHeight);
+    MeasureItem(LongInt(ItemID), IHeight);  // LCL: UINT ItemID can be out of range on Win.
     ItemHeight := IHeight;
   end;
 end;
