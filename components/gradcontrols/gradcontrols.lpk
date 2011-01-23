@@ -4,51 +4,63 @@
     <PathDelim Value="\"/>
     <Name Value="gradcontrols"/>
     <CompilerOptions>
-      <Version Value="8"/>
+      <Version Value="9"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <IncludeFiles Value="src\;..\"/>
-        <OtherUnitFiles Value="src\;..\"/>
+        <IncludeFiles Value="src"/>
+        <OtherUnitFiles Value="src"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
+      <Parsing>
+        <SyntaxOptions>
+          <UseAnsiStrings Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="3">
+    <Files Count="4">
       <Item1>
-        <Filename Value="src\ugradtabcontrol.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="ugradtabcontrol"/>
-      </Item1>
-      <Item2>
         <Filename Value="src\ugradbtn.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="ugradbtn"/>
+      </Item1>
+      <Item2>
+        <Filename Value="src\ugradtabcontrol.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="ugradtabcontrol"/>
       </Item2>
       <Item3>
         <Filename Value="src\urotatebitmap.pas"/>
         <UnitName Value="uRotateBitmap"/>
       </Item3>
+      <Item4>
+        <Filename Value="src\gradcustomcontrol.pas"/>
+        <UnitName Value="gradcustomcontrol"/>
+      </Item4>
     </Files>
     <Type Value="RunAndDesignTime"/>
-    <RequiredPkgs Count="3">
+    <RequiredPkgs Count="4">
       <Item1>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="multiloglaz"/>
       </Item1>
       <Item2>
-        <PackageName Value="LCl"/>
+        <PackageName Value="IDEIntf"/>
       </Item2>
       <Item3>
+        <PackageName Value="LCl"/>
+      </Item3>
+      <Item4>
         <PackageName Value="FCL"/>
         <MinVersion Major="1" Valid="True"/>
-      </Item3>
+      </Item4>
     </RequiredPkgs>
     <UsageOptions>
-      <IncludePath Value="$(PkgOutDir)\;$(PkgOutDir)\..\"/>
-      <LibraryPath Value="$(PkgOutDir)\;$(PkgOutDir)\..\"/>
-      <ObjectPath Value="$(PkgOutDir)\;$(PkgOutDir)\..\"/>
-      <UnitPath Value="$(PkgOutDir)\;$(PkgOutDir)\..\"/>
+      <IncludePath Value="$(PkgOutDir);$(PkgOutDir)\.."/>
+      <LibraryPath Value="$(PkgOutDir);$(PkgOutDir)\.."/>
+      <ObjectPath Value="$(PkgOutDir);$(PkgOutDir)\.."/>
+      <UnitPath Value="$(PkgOutDir);$(PkgOutDir)\.."/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
