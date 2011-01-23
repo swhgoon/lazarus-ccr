@@ -7,17 +7,30 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
   StdCtrls, ExtCtrls, ugradbtn, Buttons, ComCtrls,
-  LCLType, ExtDlgs, urotatebitmap;
+  LCLType, ExtDlgs, Menus, urotatebitmap;
 
 type
 
   { TForm1 }
 
   TForm1 = class(TForm)
+    CheckBox2: TCheckBox;
+    DDColorButton: TGradButton;
+    DDPressedColorButton: TGradButton;
     BoldCheckBox: TCheckBox;
+    CheckBox1: TCheckBox;
     GlyphTransparentCheckBox: TCheckBox;
+    GroupBox1: TGroupBox;
     ItalicCheckBox: TCheckBox;
     Label12: TLabel;
+    ExamplePopupMenu: TPopupMenu;
+    Label13: TLabel;
+    Label14: TLabel;
+    LabeledEdit2: TLabeledEdit;
+    MenuItem1: TMenuItem;
+    MenuItem2: TMenuItem;
+    RadioGroup5: TRadioGroup;
+    RadioGroup6: TRadioGroup;
     TextColorButton: TGradButton;
     UnderlineCheckBox: TCheckBox;
     CheckGroup1: TCheckGroup;
@@ -52,10 +65,15 @@ type
     TrackBar2: TTrackBar;
     procedure bClick(Sender: TObject);
     procedure BoldCheckBoxChange(Sender: TObject);
+    procedure CheckBox1Change(Sender: TObject);
+    procedure CheckBox2Change(Sender: TObject);
     procedure CheckGroup1ItemClick(Sender: TObject; Index: integer);
     procedure CheckGroup2ItemClick(Sender: TObject; Index: integer);
     procedure BaseColorClick(Sender: TObject);
+    procedure DDPressedColorButtonClick(Sender: TObject);
+    procedure DDColorButtonClick(Sender: TObject);
     procedure GlyphTransparentCheckBoxChange(Sender: TObject);
+    procedure LabeledEdit2Change(Sender: TObject);
     procedure LoadGlyphButtonClick(Sender: TObject);
     procedure GlyphBackgroundColorButtonClick(Sender: TObject);
     procedure ClickColorButtonClick(Sender: TObject);
@@ -68,6 +86,8 @@ type
     procedure RadioGroup2Click(Sender: TObject);
     procedure RadioGroup3Click(Sender: TObject);
     procedure RadioGroup4Click(Sender: TObject);
+    procedure RadioGroup5Click(Sender: TObject);
+    procedure RadioGroup6Click(Sender: TObject);
     procedure TextColorButtonClick(Sender: TObject);
     procedure TrackBar1Change(Sender: TObject);
     procedure TrackBar2Change(Sender: TObject);
@@ -82,7 +102,8 @@ var
 implementation
 
 uses
-    GraphType;
+  GraphType;
+
 procedure UpdateButtonColor(Button: TGradButton; Color: TColor);
 begin
   Button.BaseColor := Color;
@@ -106,6 +127,8 @@ begin
   UpdateButtonColor(ClickColorButton, b.ClickColor);
   UpdateButtonColor(DisabledColorButton, b.DisabledColor);
   UpdateButtonColor(TextColorButton, b.Font.Color);
+  UpdateButtonColor(DDColorButton, b.DropDownSettings.Color);
+  UpdateButtonColor(DDPressedColorButton, b.DropDownSettings.PressedColor);
 
   CheckGroup1.Checked[0]:=true;
   CheckGroup1.Checked[1]:=true;
@@ -125,40 +148,58 @@ end;
 
 procedure TForm1.RadioGroup1Click(Sender: TObject);
 begin
-    if RadioGroup1.ItemIndex = 0 then
-       b.GradientType := gtHorizontal
-    else
-       b.GradientType := gtVertical;
+  if RadioGroup1.ItemIndex = 0 then
+    b.GradientType := gtHorizontal
+  else
+    b.GradientType := gtVertical;
 end;
 
 procedure TForm1.RadioGroup2Click(Sender: TObject);
 begin
-    if RadioGroup2.ItemIndex = 0 then
-       b.RotateDirection := rdNormal
-    else if RadioGroup2.ItemIndex = 1 then
-       b.RotateDirection := rdLeft
-    else
-       b.RotateDirection := rdRight;
+  if RadioGroup2.ItemIndex = 0 then
+    b.RotateDirection := rdNormal
+  else if RadioGroup2.ItemIndex = 1 then
+    b.RotateDirection := rdLeft
+  else
+    b.RotateDirection := rdRight;
 end;
 
 procedure TForm1.RadioGroup3Click(Sender: TObject);
 begin
   if RadioGroup3.ItemIndex = 0 then
-       b.ButtonLayout := blGlyphRight
+    b.ButtonLayout := blGlyphRight
   else if RadioGroup3.ItemIndex = 1 then
-       b.ButtonLayout := blGlyphLeft
+    b.ButtonLayout := blGlyphLeft
   else if RadioGroup3.ItemIndex = 2 then
-       b.ButtonLayout := blGlyphTop
+    b.ButtonLayout := blGlyphTop
   else b.ButtonLayout := blGlyphBottom;
 end;
 
 procedure TForm1.RadioGroup4Click(Sender: TObject);
 begin
   case RadioGroup4.ItemIndex of
-     0 : b.TextAlignment := taCenter;
-     1 : b.TextAlignment := taLeftJustify;
-     2 : b.TextAlignment := taRightJustify;
+    0 : b.TextAlignment := taCenter;
+    1 : b.TextAlignment := taLeftJustify;
+    2 : b.TextAlignment := taRightJustify;
   end;
+end;
+
+procedure TForm1.RadioGroup5Click(Sender: TObject);
+begin
+  case RadioGroup5.ItemIndex of                 
+    0: b.DropDownSettings.MarkDirection:=mdUp;  
+    1: b.DropDownSettings.MarkDirection:=mdLeft;  
+    2: b.DropDownSettings.MarkDirection:=mdDown;  
+    3: b.DropDownSettings.MarkDirection:=mdRight;  
+  end;
+end;
+
+procedure TForm1.RadioGroup6Click(Sender: TObject);
+begin
+  case RadioGroup6.ItemIndex of                 
+    0: b.DropDownSettings.MarkPosition:=mpLeft;  
+    1: b.DropDownSettings.MarkPosition:=mpRight;    
+  end; 
 end;
 
 procedure TForm1.TextColorButtonClick(Sender: TObject);
@@ -173,18 +214,48 @@ end;
 
 procedure TForm1.BaseColorClick(Sender: TObject);
 begin
-    ColorDialog1.Color:=BaseColorButton.BaseColor;
-    if ColorDialog1.Execute then
-    begin
-        b.BaseColor:=ColorDialog1.Color;
-        UpdateButtonColor(BaseColorButton, ColorDialog1.Color);
-    end;
+  ColorDialog1.Color:=BaseColorButton.BaseColor;
+  if ColorDialog1.Execute then
+  begin
+    b.BaseColor:=ColorDialog1.Color;
+    UpdateButtonColor(BaseColorButton, ColorDialog1.Color);
+  end;
+end;
+
+procedure TForm1.DDPressedColorButtonClick(Sender: TObject);
+begin
+  ColorDialog1.Color:=DDPressedColorButton.BaseColor;
+  if ColorDialog1.Execute then
+  begin
+    b.DropDownSettings.PressedColor:=ColorDialog1.Color;
+    UpdateButtonColor(DDPressedColorButton, ColorDialog1.Color);
+  end;
+end;
+
+procedure TForm1.DDColorButtonClick(Sender: TObject);
+begin
+  ColorDialog1.Color:=DDColorButton.BaseColor;
+  if ColorDialog1.Execute then
+  begin
+    b.DropDownSettings.Color:=ColorDialog1.Color;
+    UpdateButtonColor(DDColorButton, ColorDialog1.Color);
+  end;
 end;
 
 procedure TForm1.GlyphTransparentCheckBoxChange(Sender: TObject);
 begin
   b.Glyph.Transparent := GlyphTransparentCheckBox.Checked;
   LoadGlyphButton.Glyph.Transparent := GlyphTransparentCheckBox.Checked;
+end;
+
+procedure TForm1.LabeledEdit2Change(Sender: TObject);
+var
+  i : Integer;
+begin
+  if TryStrToInt(LabeledEdit2.Text, i) then
+  begin
+    b.DropDownSettings.Size := i;
+  end;
 end;
 
 procedure TForm1.LoadGlyphButtonClick(Sender: TObject);
@@ -287,6 +358,16 @@ begin
     b.Font.Style := b.Font.Style + [fsBold]
   else
     b.Font.Style := b.Font.Style - [fsBold];
+end;
+
+procedure TForm1.CheckBox1Change(Sender: TObject);
+begin
+  b.DropDownSettings.Show := CheckBox1.Checked;
+end;
+
+procedure TForm1.CheckBox2Change(Sender: TObject);
+begin
+  b.DropDownSettings.SplitButton:= CheckBox2.Checked;
 end;
 
 procedure TForm1.bClick(Sender: TObject);
