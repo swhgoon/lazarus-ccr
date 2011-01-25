@@ -353,6 +353,11 @@ begin
   begin
     // Now read and process the item name
     CurToken := TDXFToken(ATokens.Items[i]);
+
+    // Avoid an exception by previously checking if the conversion can be made
+    if (CurToken.StrValue = 'AcDbEntity') or
+      (CurToken.StrValue = 'AcDbLine') then Continue;
+
     CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue));
 
     case CurToken.GroupCode of
