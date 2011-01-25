@@ -3,9 +3,6 @@
   <ProjectOptions>
     <Version Value="9"/>
     <General>
-      <Flags>
-        <AlwaysBuild Value="False"/>
-      </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <ResourceType Value="res"/>
@@ -37,7 +34,7 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="3">
       <Unit0>
         <Filename Value="fpvviewer.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -50,6 +47,11 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fpvv_mainform"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="dxftokentotree.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="dxftokentotree"/>
+      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

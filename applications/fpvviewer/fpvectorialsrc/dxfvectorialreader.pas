@@ -17,7 +17,7 @@ SECTION_NAME
 ENDSEC
 0
 
-after all section end there is:
+after all sections there is:
 
 EOF
 
@@ -37,6 +37,31 @@ type
   { Used by tcutils.SeparateString }
   T10Strings = array[0..9] of shortstring;
 
+  TDXFToken = class;
+
+  TDXFTokens = TFPList;// TDXFToken;
+
+  TDXFToken = class
+    GroupCode: Integer;
+    StrValue: string;
+    FloatValue: double;
+    IntValue: Integer;
+    Childs: TDXFTokens;
+    constructor Create;
+    Destructor Destroy; override;
+  end;
+
+  { TDXFTokenizer }
+
+  TDXFTokenizer = class
+  public
+    Tokens: TDXFTokens;
+    constructor Create;
+    Destructor Destroy; override;
+    procedure ReadFromStrings(AStrings: TStrings);
+    function  IsENTITIES_Subsection(AStr: string): Boolean;
+  end;
+
   { TvDXFVectorialReader }
 
   TvDXFVectorialReader = class(TvCustomVectorialReader)
@@ -44,13 +69,15 @@ type
     LineStartX, LineStartY, LineStartZ: Double;
     LineEndX, LineEndY, LineEndZ: Double;
     function  SeparateString(AString: string; ASeparator: Char): T10Strings;
-    function ReadSection(AStrings: TStrings; var AIndex: Integer; AData: TvVectorialDocument): Boolean;
-    function ReadENTITIES(AStrings: TStrings; var AIndex: Integer; AData: TvVectorialDocument): Boolean;
-    function ReadENTITIES_LINE(AStrings: TStrings; var AIndex: Integer; AData: TvVectorialDocument): Boolean;
+    procedure ReadENTITIES(ATokens: TDXFTokens; AData: TvVectorialDocument);
+    function  ReadENTITIES_LINE(AStrings: TStrings; var AIndex: Integer; AData: TvVectorialDocument): Boolean;
     function  GetCoordinate(AStr: shortstring): Integer;
     function  GetCoordinateValue(AStr: shortstring): Double;
   public
     { General reading methods }
+    Tokenizer: TDXFTokenizer;
+    constructor Create;
+    Destructor Destroy; override;
     procedure ReadFromStrings(AStrings: TStrings; AData: TvVectorialDocument); override;
   end;
 
@@ -59,23 +86,182 @@ implementation
 {$define FPVECTORIALDEBUG}
 
 const
-  { Coordinate constants }
+  // Group Codes for ENTITIES
+  DXF_ENTITIES_TYPE = 0;
+  DXF_ENTITIES_HANDLE = 5;
+  DXF_ENTITIES_APPLICATION_GROUP = 102;
+  DXF_ENTITIES_AcDbEntity = 100;
+  DXF_ENTITIES_MODEL_OR_PAPER_SPACE = 67; // default=0=model, 1=paper
+  DXF_ENTITIES_VISIBILITY = 60; // default=0 = Visible, 1 = Invisible
 
-  INT_COORDINATE_NONE = 0;
-  INT_COORDINATE_X = 1;
-  INT_COORDINATE_Y = 2;
-  INT_COORDINATE_Z = 3;
+{ TDXFToken }
 
-  { GCode constants }
+constructor TDXFToken.Create;
+begin
+  inherited Create;
 
-  STR_GCODE_LINEAR_MOVE = 'G01';
-  STR_GCODE_STEPPER_MOVE = 'S01';
-  STR_GCODE_2DBEZIER_MOVE = 'B02';
-  STR_GCODE_3DBEZIER_MOVE = 'B03';
-  STR_GCODE_DRILL_UP = 'P01';
-  STR_GCODE_DRILL_DOWN = 'P02';
+  Childs := TDXFTokens.Create;
+end;
 
-{ TvAvisoCNCGCodeReader }
+destructor TDXFToken.Destroy;
+begin
+  Childs.Free;
+
+  inherited Destroy;
+end;
+
+{ TDXFTokenizer }
+
+constructor TDXFTokenizer.Create;
+begin
+  inherited Create;
+
+  Tokens := TDXFTokens.Create;
+end;
+
+destructor TDXFTokenizer.Destroy;
+begin
+  Tokens.Free;
+
+  inherited Destroy;
+end;
+
+procedure TDXFTokenizer.ReadFromStrings(AStrings: TStrings);
+var
+  i: Integer;
+  StrSectionGroupCode, StrSectionName: string;
+  IntSectionGroupCode: Integer;
+  CurTokenBase, NextTokenBase, ENTITIESTokenBase: TDXFTokens;
+  NewToken: TDXFToken;
+  ParserState: Integer;
+begin
+  //  Tokens.ForEachCall(); deletecallback
+  Tokens.Clear;
+
+  CurTokenBase := Tokens;
+  NextTokenBase := Tokens;
+  i := 0;
+  ParserState := 0;
+
+  while i < AStrings.Count - 1 do
+  begin
+    CurTokenBase := NextTokenBase;
+
+    // Now read and process the section name
+    StrSectionGroupCode := AStrings.Strings[i];
+    IntSectionGroupCode := StrToInt(Trim(StrSectionGroupCode));
+    StrSectionName := AStrings.Strings[i+1];
+
+    NewToken := TDXFToken.Create;
+    NewToken.GroupCode := IntSectionGroupCode;
+    NewToken.StrValue := StrSectionName;
+
+    // Waiting for a section
+    if ParserState = 0 then
+    begin
+      if (StrSectionName = 'SECTION') then
+      begin
+        ParserState := 1;
+        NextTokenBase := NewToken.Childs;
+      end
+      else
+      begin
+        raise Exception.Create(Format(
+          'TDXFTokenizer.ReadFromStrings: Expected SECTION, but got: %s', [StrSectionname]));
+      end;
+    end
+    // Processing the section name
+    else if ParserState = 1 then
+    begin
+      if (StrSectionName = 'HEADER') or
+        (StrSectionName = 'CLASSES') or
+        (StrSectionName = 'TABLES') or
+        (StrSectionName = 'BLOCKS') or
+        (StrSectionName = 'OBJECTS') or
+        (StrSectionName = 'THUMBNAILIMAGE') then
+      begin
+        ParserState := 2;
+      end
+      else if (StrSectionName = 'ENTITIES') then
+      begin
+        ParserState := 3;
+        ENTITIESTokenBase := CurTokenBase;
+      end
+      else if (StrSectionName = 'EOF') then
+      begin
+        Exit;
+      end
+      else
+      begin
+        raise Exception.Create(Format(
+          'TDXFTokenizer.ReadFromStrings: Invalid section name: %s', [StrSectionname]));
+      end;
+    end
+    // Reading a generic section
+    else if ParserState = 2 then
+    begin
+      if StrSectionName = 'ENDSEC' then
+      begin
+        ParserState := 0;
+        NextTokenBase := Tokens;
+      end;
+    end
+    // Reading the ENTITIES section
+    else if ParserState = 3 then
+    begin
+      if IsENTITIES_Subsection(StrSectionName) then
+      begin
+        CurTokenBase := ENTITIESTokenBase;
+        NextTokenBase := NewToken.Childs;
+      end
+    end;
+
+    CurTokenBase.Add(NewToken);
+
+    Inc(i, 2);
+  end;
+end;
+
+function TDXFTokenizer.IsENTITIES_Subsection(AStr: string): Boolean;
+begin
+  Result :=
+    (AStr = '3DFACE') or
+    (AStr = '3DSOLID') or
+    (AStr = 'ACAD_PROXY_ENTITY') or
+    (AStr = 'ARC') or
+    (AStr = 'ATTDEF') or
+    (AStr = 'ATTRIB') or
+    (AStr = 'BODY') or
+    (AStr = 'CIRCLE') or
+    (AStr = 'DIMENSION') or
+    (AStr = 'ELLIPSE') or
+    (AStr = 'HATCH') or
+    (AStr = 'IMAGE') or
+    (AStr = 'INSERT') or
+    (AStr = 'LEADER') or
+    (AStr = 'LINE') or
+    (AStr = 'LWPOLYLINE') or
+    (AStr = 'MLINE') or
+    (AStr = 'MTEXT') or
+    (AStr = 'OLEFRAME') or
+    (AStr = 'OLE2FRAME') or
+    (AStr = 'POINT') or
+    (AStr = 'POLYLINE') or
+    (AStr = 'RAY') or
+    (AStr = 'REGION') or
+    (AStr = 'SEQEND') or
+    (AStr = 'SHAPE') or
+    (AStr = 'SOLID') or
+    (AStr = 'SPLINE') or
+    (AStr = 'TEXT') or
+    (AStr = 'TOLERANCE') or
+    (AStr = 'TRACE') or
+    (AStr = 'VERTEX') or
+    (AStr = 'VIEWPORT') or
+    (AStr = 'XLINE');
+end;
+
+{ TvDXFVectorialReader }
 
 {@@
   Reads a string and separates it in substring
@@ -110,116 +296,44 @@ begin
   end;
 end;
 
-{@@
-  returns   If an end of file marker was found
-}
-function TvDXFVectorialReader.ReadSection(
-  AStrings: TStrings; var AIndex: Integer; AData: TvVectorialDocument): Boolean;
+procedure TvDXFVectorialReader.ReadENTITIES(ATokens: TDXFTokens; AData: TvVectorialDocument);
 var
-  DestX, DestY, DestZ: Double;
-  StrSectionNum, StrSectionName: string;
-  IntSectionNum, i: Integer;
+  i: Integer;
+  CurToken: TDXFToken;
 begin
-  Result := False;
-
-  // Check if there is minimal space for a section
-  if AIndex+5 > AStrings.Count then
+  for i := 0 to ATokens.Count - 1 do
   begin
-    {$ifdef FPVECTORIALDEBUG}
-    WriteLn('Not enough space for a section');
-    {$endif}
-    Exit(True);
-  end;
-
-  // Check of the EOF marker
-  StrSectionName := Trim(AStrings.Strings[AIndex+1]);
-  if StrSectionName = 'EOF' then
-  begin
-    {$ifdef FPVECTORIALDEBUG}
-    WriteLn('EOF found');
-    {$endif}
-    Exit(True);
-  end;
-
-  // Now read and process the section name
-  StrSectionNum := AStrings.Strings[AIndex+2];
-  IntSectionNum := StrToInt(Trim(StrSectionNum));
-  StrSectionName := AStrings.Strings[AIndex+3];
-
-  {$ifdef FPVECTORIALDEBUG}
-  WriteLn('TvDXFVectorialReader.ReadSection ' + StrSectionName);
-  {$endif}
-
-  if (StrSectionName = 'HEADER') or
-     (StrSectionName = 'CLASSES') or
-     (StrSectionName = 'TABLES') or
-     (StrSectionName = 'BLOCKS') or
-     (StrSectionName = 'OBJECTS') or
-     (StrSectionName = 'THUMBNAILIMAGE') then
-  begin
-    // We don't care about contents here, so let's just find the last section and get out of here.
-    for i := AIndex + 4 to AStrings.Count - 1 do
+    CurToken := TDXFToken(ATokens.Items[i]);
+    if CurToken.StrValue = 'ELLIPSE' then
     begin
-      if AStrings.Strings[i] = 'ENDSEC' then
-      begin
-        AIndex := i + 1;
-        Exit;
-      end;
+      // ...
+    end
+    else if CurToken.StrValue = 'LINE' then
+    begin
+      // Initial values
+      LineStartX := 0;
+      LineStartY := 0;
+      LineStartZ := 0;
+      LineEndX := 0;
+      LineEndY := 0;
+      LineEndZ := 0;
+
+      // Read the data of the line
+//      Inc(AIndex, 2);
+//      while not ReadENTITIES_LINE(AStrings, AIndex, AData) do ;
+
+      // And now write it
+      {$ifdef FPVECTORIALDEBUG}
+      WriteLn(Format('Adding Line from %f,%f to %f,%f', [LineStartX, LineStartY, LineEndX, LineEndY]));
+      {$endif}
+//      AData.StartPath(LineStartX, LineStartY);
+//      AData.AddLineToPath(LineEndX, LineEndY);
+//      AData.EndPath();
+    end
+    else if CurToken.StrValue = 'TEXT' then
+    begin
+      // ...
     end;
-    // If we reached here, the section in incomplete
-    raise Exception.Create('TvDXFVectorialReader.ReadSection: ENDSEC was not found in the SECTION');
-  end
-  else if StrSectionName = 'ENTITIES' then
-  begin
-    AIndex := AIndex + 4;
-    while not ReadENTITIES(AStrings, AIndex, AData) do ;
-  end;
-  {else
-  begin
-  end;}
-end;
-
-function TvDXFVectorialReader.ReadENTITIES(AStrings: TStrings;
-  var AIndex: Integer; AData: TvVectorialDocument): Boolean;
-var
-  StrSectionNum, StrSectionName: string;
-  IntSectionNum, i: Integer;
-begin
-  Result := False;
-
-  // Now read and process the item name
-  StrSectionName := AStrings.Strings[AIndex+1];
-
-  {$ifdef FPVECTORIALDEBUG}
-  WriteLn('TvDXFVectorialReader.ReadENTITIES ', StrSectionName);
-  {$endif}
-
-  if StrSectionName = 'ENDSEC' then
-  begin
-    Inc(AIndex, 2);
-    Exit(True);
-  end
-  else if StrSectionName = 'LINE' then
-  begin
-    // Initial values
-    LineStartX := 0;
-    LineStartY := 0;
-    LineStartZ := 0;
-    LineEndX := 0;
-    LineEndY := 0;
-    LineEndZ := 0;
-
-    // Read the data of the line
-    Inc(AIndex, 2);
-    while not ReadENTITIES_LINE(AStrings, AIndex, AData) do ;
-
-    // And now write it
-    {$ifdef FPVECTORIALDEBUG}
-    WriteLn(Format('Adding Line from %f,%f to %f,%f', [LineStartX, LineStartY, LineEndX, LineEndY]));
-    {$endif}
-    AData.StartPath(LineStartX, LineStartY);
-    AData.AddLineToPath(LineEndX, LineEndY);
-    AData.EndPath();
   end;
 end;
 
@@ -232,11 +346,11 @@ var
 begin
   Result := False;
 
-  // Now read and process the item name
+{  // Now read and process the item name
   StrSectionNum := AStrings.Strings[AIndex];
   StrSectionValue := AStrings.Strings[AIndex+1];
 
-  if (StrSectionValue = 'LINE') or
+  if IsENTITIES_Subsection(StrSectionValue) or
      (StrSectionValue = 'ENDSEC') then
   begin
     Exit(True);
@@ -256,26 +370,40 @@ begin
       21: LineEndY := FloatSectionValue;
       31: LineEndZ := FloatSectionValue;
     end;
-  end;
+  end;}
 end;
 
 function TvDXFVectorialReader.GetCoordinate(AStr: shortstring): Integer;
 begin
-  Result := INT_COORDINATE_NONE;
+{  Result := INT_COORDINATE_NONE;
 
   if AStr = '' then Exit
   else if AStr[1] = 'X' then Result := INT_COORDINATE_X
   else if AStr[1] = 'Y' then Result := INT_COORDINATE_Y
-  else if AStr[1] = 'Z' then Result := INT_COORDINATE_Z;
+  else if AStr[1] = 'Z' then Result := INT_COORDINATE_Z;}
 end;
 
 function TvDXFVectorialReader.GetCoordinateValue(AStr: shortstring): Double;
 begin
   Result := 0.0;
 
-  if Length(AStr) <= 1 then Exit;
+{  if Length(AStr) <= 1 then Exit;
 
-  Result := StrToFloat(Copy(AStr, 2, Length(AStr) - 1));
+  Result := StrToFloat(Copy(AStr, 2, Length(AStr) - 1));}
+end;
+
+constructor TvDXFVectorialReader.Create;
+begin
+  inherited Create;
+
+  Tokenizer := TDXFTokenizer.Create;
+end;
+
+destructor TvDXFVectorialReader.Destroy;
+begin
+  Tokenizer.Free;
+
+  inherited Destroy;
 end;
 
 {@@
@@ -286,10 +414,18 @@ procedure TvDXFVectorialReader.ReadFromStrings(AStrings: TStrings;
   AData: TvVectorialDocument);
 var
   i: Integer;
+  CurToken, CurTokenFirstChild: TDXFToken;
 begin
-  i := 0;
-  while i < AStrings.Count - 1 do
-    if ReadSection(AStrings, i, AData) then Break;
+  Tokenizer.ReadFromStrings(AStrings);
+
+  for i := 0 to Tokenizer.Tokens.Count - 1 do
+  begin
+    CurToken := TDXFToken(Tokenizer.Tokens.Items[i]);
+    CurTokenFirstChild := TDXFToken(CurToken.Childs.Items[0]);
+
+    if CurTokenFirstChild.StrValue = 'ENTITIES' then
+      ReadENTITIES(CurToken.Childs, AData);
+  end;
 end;
 
 initialization
