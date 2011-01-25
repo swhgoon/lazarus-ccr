@@ -70,13 +70,13 @@ type
     LineEndX, LineEndY, LineEndZ: Double;
     function  SeparateString(AString: string; ASeparator: Char): T10Strings;
     procedure ReadENTITIES(ATokens: TDXFTokens; AData: TvVectorialDocument);
-    function  ReadENTITIES_LINE(AStrings: TStrings; var AIndex: Integer; AData: TvVectorialDocument): Boolean;
+    function  ReadENTITIES_LINE(ATokens: TDXFTokens; AData: TvVectorialDocument): Boolean;
     function  GetCoordinate(AStr: shortstring): Integer;
     function  GetCoordinateValue(AStr: shortstring): Double;
   public
     { General reading methods }
     Tokenizer: TDXFTokenizer;
-    constructor Create;
+    constructor Create; override;
     Destructor Destroy; override;
     procedure ReadFromStrings(AStrings: TStrings; AData: TvVectorialDocument); override;
   end;
@@ -131,7 +131,7 @@ var
   i: Integer;
   StrSectionGroupCode, StrSectionName: string;
   IntSectionGroupCode: Integer;
-  CurTokenBase, NextTokenBase, ENTITIESTokenBase: TDXFTokens;
+  CurTokenBase, NextTokenBase, SectionTokenBase: TDXFTokens;
   NewToken: TDXFToken;
   ParserState: Integer;
 begin
@@ -164,6 +164,10 @@ begin
         ParserState := 1;
         NextTokenBase := NewToken.Childs;
       end
+      else if (StrSectionName = 'EOF') then
+      begin
+        Exit;
+      end
       else
       begin
         raise Exception.Create(Format(
@@ -181,15 +185,12 @@ begin
         (StrSectionName = 'THUMBNAILIMAGE') then
       begin
         ParserState := 2;
+        SectionTokenBase := CurTokenBase;
       end
       else if (StrSectionName = 'ENTITIES') then
       begin
         ParserState := 3;
-        ENTITIESTokenBase := CurTokenBase;
-      end
-      else if (StrSectionName = 'EOF') then
-      begin
-        Exit;
+        SectionTokenBase := CurTokenBase;
       end
       else
       begin
@@ -203,6 +204,7 @@ begin
       if StrSectionName = 'ENDSEC' then
       begin
         ParserState := 0;
+        CurTokenBase := SectionTokenBase;
         NextTokenBase := Tokens;
       end;
     end
@@ -211,9 +213,15 @@ begin
     begin
       if IsENTITIES_Subsection(StrSectionName) then
       begin
-        CurTokenBase := ENTITIESTokenBase;
+        CurTokenBase := SectionTokenBase;
         NextTokenBase := NewToken.Childs;
       end
+      else if StrSectionName = 'ENDSEC' then
+      begin
+        ParserState := 0;
+        CurTokenBase := SectionTokenBase;
+        NextTokenBase := Tokens;
+      end;
     end;
 
     CurTokenBase.Add(NewToken);
@@ -319,16 +327,15 @@ begin
       LineEndZ := 0;
 
       // Read the data of the line
-//      Inc(AIndex, 2);
-//      while not ReadENTITIES_LINE(AStrings, AIndex, AData) do ;
+      ReadENTITIES_LINE(CurToken.Childs, AData);
 
       // And now write it
       {$ifdef FPVECTORIALDEBUG}
       WriteLn(Format('Adding Line from %f,%f to %f,%f', [LineStartX, LineStartY, LineEndX, LineEndY]));
       {$endif}
-//      AData.StartPath(LineStartX, LineStartY);
-//      AData.AddLineToPath(LineEndX, LineEndY);
-//      AData.EndPath();
+      AData.StartPath(LineStartX, LineStartY);
+      AData.AddLineToPath(LineEndX, LineEndY);
+      AData.EndPath();
     end
     else if CurToken.StrValue = 'TEXT' then
     begin
@@ -337,40 +344,26 @@ begin
   end;
 end;
 
-function TvDXFVectorialReader.ReadENTITIES_LINE(AStrings: TStrings;
-  var AIndex: Integer; AData: TvVectorialDocument): Boolean;
+function TvDXFVectorialReader.ReadENTITIES_LINE(ATokens: TDXFTokens; AData: TvVectorialDocument): Boolean;
 var
-  StrSectionNum, StrSectionValue: string;
-  IntSectionNum: Integer;
-  FloatSectionValue: double;
+  CurToken: TDXFToken;
+  i: Integer;
 begin
-  Result := False;
-
-{  // Now read and process the item name
-  StrSectionNum := AStrings.Strings[AIndex];
-  StrSectionValue := AStrings.Strings[AIndex+1];
-
-  if IsENTITIES_Subsection(StrSectionValue) or
-     (StrSectionValue = 'ENDSEC') then
+  for i := 0 to ATokens.Count - 1 do
   begin
-    Exit(True);
-  end
-  else
-  begin
-    Inc(AIndex, 2);
+    // Now read and process the item name
+    CurToken := TDXFToken(ATokens.Items[i]);
+    CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue));
 
-    IntSectionNum := StrToInt(Trim(StrSectionNum));
-    FloatSectionValue := StrToFloat(Trim(StrSectionValue));
-
-    case IntSectionNum of
-      10: LineStartX := FloatSectionValue;
-      20: LineStartY := FloatSectionValue;
-      30: LineStartZ := FloatSectionValue;
-      11: LineEndX := FloatSectionValue;
-      21: LineEndY := FloatSectionValue;
-      31: LineEndZ := FloatSectionValue;
+    case CurToken.GroupCode of
+      10: LineStartX := CurToken.FloatValue;
+      20: LineStartY := CurToken.FloatValue;
+      30: LineStartZ := CurToken.FloatValue;
+      11: LineEndX := CurToken.FloatValue;
+      21: LineEndY := CurToken.FloatValue;
+      31: LineEndZ := CurToken.FloatValue;
     end;
-  end;}
+  end;
 end;
 
 function TvDXFVectorialReader.GetCoordinate(AStr: shortstring): Integer;

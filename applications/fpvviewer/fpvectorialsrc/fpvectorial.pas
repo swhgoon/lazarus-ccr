@@ -186,6 +186,7 @@ type
   TvCustomVectorialReader = class
   public
     { General reading methods }
+    constructor Create; virtual;
     procedure ReadFromFile(AFileName: string; AData: TvVectorialDocument); virtual;
     procedure ReadFromStream(AStream: TStream; AData: TvVectorialDocument); virtual;
     procedure ReadFromStrings(AStrings: TStrings; AData: TvVectorialDocument); virtual;
@@ -202,6 +203,7 @@ type
   TvCustomVectorialWriter = class
   public
     { General writing methods }
+    constructor Create; virtual;
     procedure WriteToFile(AFileName: string; AData: TvVectorialDocument); virtual;
     procedure WriteToStream(AStream: TStream; AData: TvVectorialDocument); virtual;
     procedure WriteToStrings(AStrings: TStrings; AData: TvVectorialDocument); virtual;
@@ -758,6 +760,11 @@ end;
 
 { TvCustomVectorialReader }
 
+constructor TvCustomVectorialReader.Create;
+begin
+  inherited Create;
+end;
+
 procedure TvCustomVectorialReader.ReadFromFile(AFileName: string; AData: TvVectorialDocument);
 var
   FileStream: TFileStream;
@@ -805,6 +812,11 @@ begin
 end;
 
 { TsCustomSpreadWriter }
+
+constructor TvCustomVectorialWriter.Create;
+begin
+  inherited Create;
+end;
 
 {@@
   Default file writting method.
