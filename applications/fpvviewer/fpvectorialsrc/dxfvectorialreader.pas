@@ -66,12 +66,18 @@ type
 
   TvDXFVectorialReader = class(TvCustomVectorialReader)
   private
+    // CIRCLE
+    CircleCenterX, CircleCenterY, CircleCenterZ, CircleRadius: Double;
+    // LINE
     LineStartX, LineStartY, LineStartZ: Double;
     LineEndX, LineEndY, LineEndZ: Double;
+    //
     function  SeparateString(AString: string; ASeparator: Char): T10Strings;
     procedure ReadENTITIES(ATokens: TDXFTokens; AData: TvVectorialDocument);
-    function  ReadENTITIES_LINE(ATokens: TDXFTokens; AData: TvVectorialDocument): Boolean;
-    function  GetCoordinate(AStr: shortstring): Integer;
+    procedure ReadENTITIES_LINE(ATokens: TDXFTokens; AData: TvVectorialDocument);
+    procedure ReadENTITIES_CIRCLE(ATokens: TDXFTokens; AData: TvVectorialDocument);
+    procedure ReadENTITIES_ELLIPSE(ATokens: TDXFTokens; AData: TvVectorialDocument);
+    procedure ReadENTITIES_TEXT(ATokens: TDXFTokens; AData: TvVectorialDocument);
     function  GetCoordinateValue(AStr: shortstring): Double;
   public
     { General reading methods }
@@ -312,9 +318,22 @@ begin
   for i := 0 to ATokens.Count - 1 do
   begin
     CurToken := TDXFToken(ATokens.Items[i]);
-    if CurToken.StrValue = 'ELLIPSE' then
+    if CurToken.StrValue = 'CIRCLE' then
+    begin
+      CircleCenterX := 0.0;
+      CircleCenterY := 0.0;
+      CircleCenterZ := 0.0;
+      CircleRadius := 0.0;
+
+      ReadENTITIES_CIRCLE(CurToken.Childs, AData);
+
+      AData.AddCircle(CircleCenterX, CircleCenterY,
+        CircleCenterZ, CircleRadius);
+    end
+    else if CurToken.StrValue = 'ELLIPSE' then
     begin
       // ...
+      ReadENTITIES_ELLIPSE(CurToken.Childs, AData);
     end
     else if CurToken.StrValue = 'LINE' then
     begin
@@ -344,7 +363,7 @@ begin
   end;
 end;
 
-function TvDXFVectorialReader.ReadENTITIES_LINE(ATokens: TDXFTokens; AData: TvVectorialDocument): Boolean;
+procedure TvDXFVectorialReader.ReadENTITIES_LINE(ATokens: TDXFTokens; AData: TvVectorialDocument);
 var
   CurToken: TDXFToken;
   i: Integer;
@@ -355,8 +374,8 @@ begin
     CurToken := TDXFToken(ATokens.Items[i]);
 
     // Avoid an exception by previously checking if the conversion can be made
-    if (CurToken.StrValue = 'AcDbEntity') or
-      (CurToken.StrValue = 'AcDbLine') then Continue;
+    if (CurToken.GroupCode = DXF_ENTITIES_HANDLE) or
+      (CurToken.GroupCode = DXF_ENTITIES_AcDbEntity) then Continue;
 
     CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue));
 
@@ -371,14 +390,116 @@ begin
   end;
 end;
 
-function TvDXFVectorialReader.GetCoordinate(AStr: shortstring): Integer;
+{
+Group codes	Description
+100 Subclass marker (AcDbCircle)
+39 Thickness (optional; default = 0)
+10 Center point (in OCS) DXF: X value; APP: 3D point
+20, 30 DXF: Y and Z values of center point (in OCS)
+40 Radius
+210 Extrusion direction (optional; default = 0, 0, 1) DXF: X value; APP: 3D vector
+220, 230 DXF: Y and Z values of extrusion direction  (optional)
+}
+procedure TvDXFVectorialReader.ReadENTITIES_CIRCLE(ATokens: TDXFTokens;
+  AData: TvVectorialDocument);
+var
+  CurToken: TDXFToken;
+  i: Integer;
 begin
-{  Result := INT_COORDINATE_NONE;
+  for i := 0 to ATokens.Count - 1 do
+  begin
+    // Now read and process the item name
+    CurToken := TDXFToken(ATokens.Items[i]);
 
-  if AStr = '' then Exit
-  else if AStr[1] = 'X' then Result := INT_COORDINATE_X
-  else if AStr[1] = 'Y' then Result := INT_COORDINATE_Y
-  else if AStr[1] = 'Z' then Result := INT_COORDINATE_Z;}
+    // Avoid an exception by previously checking if the conversion can be made
+    if (CurToken.GroupCode = DXF_ENTITIES_HANDLE) or
+      (CurToken.GroupCode = DXF_ENTITIES_AcDbEntity) then Continue;
+
+    CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue));
+
+    case CurToken.GroupCode of
+      10: CircleCenterX := CurToken.FloatValue;
+      20: CircleCenterY := CurToken.FloatValue;
+      30: CircleCenterZ := CurToken.FloatValue;
+      40: CircleRadius := CurToken.FloatValue;
+    end;
+  end;
+end;
+
+{
+100 Subclass marker (AcDbEllipse)
+10 Center point (in WCS) DXF: X value; APP: 3D point
+20, 30 DXF: Y and Z values of center point (in WCS)
+11 Endpoint of major axis, relative to the center (in WCS) DXF: X value; APP: 3D point
+21, 31 DXF: Y and Z values of endpoint of major axis, relative to the center (in WCS)
+210 Extrusion direction (optional; default = 0, 0, 1) DXF: X value; APP: 3D vector
+220, 230 DXF: Y and Z values of extrusion direction  (optional)
+40 Ratio of minor axis to major axis
+41 Start parameter (this value is 0.0 for a full ellipse)
+42 End parameter (this value is 2pi for a full ellipse)
+}
+procedure TvDXFVectorialReader.ReadENTITIES_ELLIPSE(ATokens: TDXFTokens;
+  AData: TvVectorialDocument);
+var
+  CurToken: TDXFToken;
+  i: Integer;
+  CenterX, CenterY, CenterZ: Double;
+begin
+  for i := 0 to ATokens.Count - 1 do
+  begin
+    // Now read and process the item name
+    CurToken := TDXFToken(ATokens.Items[i]);
+
+    // Avoid an exception by previously checking if the conversion can be made
+    if (CurToken.GroupCode = DXF_ENTITIES_HANDLE) or
+      (CurToken.GroupCode = DXF_ENTITIES_AcDbEntity) then Continue;
+
+    CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue));
+
+    case CurToken.GroupCode of
+      10: CenterX := CurToken.FloatValue;
+      20: CenterY := CurToken.FloatValue;
+      30: CenterZ := CurToken.FloatValue;
+    end;
+  end;
+end;
+
+{
+100 Subclass marker (AcDbText)
+39 Thickness (optional; default = 0)
+10 First alignment point (in OCS) DXF: X value; APP: 3D point
+20, 30 DXF: Y and Z values of first alignment point (in OCS)
+40 Text height
+1 Default value (the string itself)
+50 Text rotation (optional; default = 0)
+41 Relative X scale factor-width (optional; default = 1)
+  This value is also adjusted when fit-type text is used.
+51 Oblique angle (optional; default = 0)
+7 Text style name (optional, default = STANDARD)
+71 Text generation flags (optional, default = 0):
+  2 = Text is backward (mirrored in X).
+  4 = Text is upside down (mirrored in Y).
+72 Horizontal text justification type (optional, default = 0) integer codes (not bit-coded)
+  0 = Left; 1= Center; 2 = Right
+  3 = Aligned (if vertical alignment = 0)
+  4 = Middle (if vertical alignment = 0)
+  5 = Fit (if vertical alignment = 0)
+  See the Group 72 and 73 integer codes table for clarification.
+11 Second alignment point (in OCS) (optional)
+  DXF: X value; APP: 3D point
+  This value is meaningful only if the value of a 72 or 73 group is nonzero (if the justification is anything other than baseline/left).
+21, 31 DXF: Y and Z values of second alignment point (in OCS) (optional)
+210 Extrusion direction (optional; default = 0, 0, 1)
+  DXF: X value; APP: 3D vector
+220, 230 DXF: Y and Z values of extrusion direction (optional)
+73 Vertical text justification type (optional, default = 0): integer codes (not bit- coded):
+  0 = Baseline; 1 = Bottom; 2 = Middle; 3 = Top
+  See the Group 72 and 73 integer codes table for clarification.
+}
+procedure TvDXFVectorialReader.ReadENTITIES_TEXT(ATokens: TDXFTokens;
+  AData: TvVectorialDocument);
+begin
+
 end;
 
 function TvDXFVectorialReader.GetCoordinateValue(AStr: shortstring): Double;
