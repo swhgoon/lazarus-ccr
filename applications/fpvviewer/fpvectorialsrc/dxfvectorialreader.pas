@@ -314,7 +314,8 @@ begin
   for i := 0 to ATokens.Count - 1 do
   begin
     CurToken := TDXFToken(ATokens.Items[i]);
-    if CurToken.StrValue = 'CIRCLE' then ReadENTITIES_CIRCLE(CurToken.Childs, AData)
+    if CurToken.StrValue = 'ARC' then ReadENTITIES_ARC(CurToken.Childs, AData)
+    else if CurToken.StrValue = 'CIRCLE' then ReadENTITIES_CIRCLE(CurToken.Childs, AData)
     else if CurToken.StrValue = 'ELLIPSE' then ReadENTITIES_ELLIPSE(CurToken.Childs, AData)
     else if CurToken.StrValue = 'LINE' then ReadENTITIES_LINE(CurToken.Childs, AData)
     else if CurToken.StrValue = 'TEXT' then
@@ -377,8 +378,8 @@ end;
 20, 30 DXF: Y and Z values of center point (in OCS)
 40 Radius
 100 Subclass marker (AcDbArc)
-50 Start angle
-51 End angle
+50 Start angle (degrees)
+51 End angle (degrees)
 210 Extrusion direction. (optional; default = 0, 0, 1) DXF: X value; APP: 3D vector
 220, 230 DXF: Y and Z values of extrusion direction (optional)
 }
@@ -412,6 +413,8 @@ begin
       20: CenterY := CurToken.FloatValue;
       30: CenterZ := CurToken.FloatValue;
       40: Radius := CurToken.FloatValue;
+      50: StartAngle := CurToken.FloatValue;
+      51: EndAngle := CurToken.FloatValue;
     end;
   end;
 
