@@ -3,13 +3,13 @@ object frmFPVViewer: TfrmFPVViewer
   Height = 441
   Top = 137
   Width = 336
-  Caption = 'frmFPVViewer'
+  Caption = 'Free Pascal Vectorial Viewer'
   ClientHeight = 441
   ClientWidth = 336
   LCLVersion = '0.9.31'
   object editFileName: TFileNameEdit
     Left = 8
-    Height = 25
+    Height = 22
     Top = 8
     Width = 304
     DialogOptions = []
@@ -31,7 +31,7 @@ object frmFPVViewer: TfrmFPVViewer
   end
   object spinScale: TFloatSpinEdit
     Left = 72
-    Height = 25
+    Height = 16
     Top = 72
     Width = 64
     Increment = 1
@@ -42,39 +42,39 @@ object frmFPVViewer: TfrmFPVViewer
   end
   object Label1: TLabel
     Left = 8
-    Height = 18
+    Height = 17
     Top = 79
-    Width = 58
+    Width = 56
     Caption = 'Scale by:'
     ParentColor = False
   end
   object Label2: TLabel
     Left = 8
-    Height = 18
+    Height = 17
     Top = 104
-    Width = 76
+    Width = 73
     Caption = 'Start Pos X:'
     ParentColor = False
   end
   object spinStartX: TSpinEdit
     Left = 98
-    Height = 25
+    Height = 16
     Top = 99
     Width = 46
     TabOrder = 3
   end
   object spinStartY: TSpinEdit
     Left = 240
-    Height = 25
+    Height = 16
     Top = 99
     Width = 50
     TabOrder = 4
   end
   object Label3: TLabel
     Left = 152
-    Height = 18
+    Height = 17
     Top = 104
-    Width = 73
+    Width = 72
     Caption = 'Start Pos Y:'
     ParentColor = False
   end
@@ -92,7 +92,7 @@ object frmFPVViewer: TfrmFPVViewer
     Height = 313
     Top = 128
     Width = 336
-    PageIndex = 1
+    PageIndex = 0
     TabOrder = 6
     TabStop = True
     object Page1: TPage
@@ -106,8 +106,8 @@ object frmFPVViewer: TfrmFPVViewer
       end
     end
     object Page2: TPage
-      ClientWidth = 336
-      ClientHeight = 313
+      ClientWidth = 672
+      ClientHeight = 626
       object DXFTreeView: TTreeView
         Left = 8
         Height = 313
