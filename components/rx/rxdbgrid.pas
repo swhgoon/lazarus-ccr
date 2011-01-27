@@ -938,6 +938,7 @@ begin
   if DrawRect.Top < ARect.Top + 1 then
     DrawRect.Top := ARect.Top + 1;
 
+  SetBkMode(ACanvas.Handle, TRANSPARENT);
   DrawText(ACanvas.Handle, PChar(Text), Length(Text), DrawRect,
 //    DT_VCENTER or  DT_WORDBREAK or DT_CENTER
     ALIGN_FLAGS_HEADER[Alignment] {or DT_VCENTER or  DT_END_ELLIPSIS }or DT_WORDBREAK
