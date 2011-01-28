@@ -177,6 +177,8 @@ begin
     P.LazPackageFiles.AddLazFile('Components/GeckoDirectoryService.pas');
     P.LazPackageFiles.AddLazFile('Components/GeckoInit.pas');
     P.LazPackageFiles.AddLazFile('Components/GeckoSimpleProfile.pas');
+    P.LazPackageFiles.AddLazFile('Components/geckoresources.rc');
+    P.LazPackageFiles.AddLazFile('Components/geckologo.png');
 
     Run;
     end;
