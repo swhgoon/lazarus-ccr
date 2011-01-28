@@ -1070,17 +1070,16 @@ begin
   {$IFDEF DEBUG}
   OutputDebugString('TGeckoBrowser.Destroy');
   {$ENDIF}
-  if not (csDesigning in ComponentState) then
-  begin
+
+  if assigned(FDesignTimeLogo) then
     FreeAndNil(FDesignTimeLogo);
-    ShutdownWebBrowser;
+  ShutdownWebBrowser;
 
-    Chrome := nil;
-    Listener := nil;
+  Chrome := nil;
+  Listener := nil;
 
-    if FGeckoComponentsStartupSucceeded then
-      GeckoComponentsShutdown;
-  end;
+  if FGeckoComponentsStartupSucceeded then
+    GeckoComponentsShutdown;
 
   inherited;
 end;
