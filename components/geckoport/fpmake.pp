@@ -31,6 +31,8 @@ begin
 
     P.Dependencies.Add('lazmkunit');
     P.Dependencies.Add('fcl-registry',AllWindowsOSes);
+    // Due to a bug in fpcmake, the dependencies of fcl-registry aren't processed
+    P.Dependencies.Add('fcl-base',AllWindowsOSes); 
 
     P.Targets.AddUnit('nsTypes.pas');
     P.Targets.AddUnit('nsCID.pas');
