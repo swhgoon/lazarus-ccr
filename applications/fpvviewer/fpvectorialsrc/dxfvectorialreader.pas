@@ -66,6 +66,7 @@ type
 
   TvDXFVectorialReader = class(TvCustomVectorialReader)
   private
+    FPointSeparator: TFormatSettings;
     //
     function  SeparateString(AString: string; ASeparator: Char): T10Strings;
     procedure ReadENTITIES(ATokens: TDXFTokens; AData: TvVectorialDocument);
@@ -350,7 +351,7 @@ begin
     if (CurToken.GroupCode = DXF_ENTITIES_HANDLE) or
       (CurToken.GroupCode = DXF_ENTITIES_AcDbEntity) then Continue;
 
-    CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue));
+    CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
 
     case CurToken.GroupCode of
       10: LineStartX := CurToken.FloatValue;
@@ -406,7 +407,7 @@ begin
     if (CurToken.GroupCode = DXF_ENTITIES_HANDLE) or
       (CurToken.GroupCode = DXF_ENTITIES_AcDbEntity) then Continue;
 
-    CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue));
+    CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
 
     case CurToken.GroupCode of
       10: CenterX := CurToken.FloatValue;
@@ -452,7 +453,7 @@ begin
     if (CurToken.GroupCode = DXF_ENTITIES_HANDLE) or
       (CurToken.GroupCode = DXF_ENTITIES_AcDbEntity) then Continue;
 
-    CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue));
+    CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
 
     case CurToken.GroupCode of
       10: CircleCenterX := CurToken.FloatValue;
@@ -494,7 +495,7 @@ begin
     if (CurToken.GroupCode = DXF_ENTITIES_HANDLE) or
       (CurToken.GroupCode = DXF_ENTITIES_AcDbEntity) then Continue;
 
-    CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue));
+    CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
 
     case CurToken.GroupCode of
       10: CenterX := CurToken.FloatValue;
@@ -558,7 +559,7 @@ begin
       (CurToken.GroupCode = 1) or
       (CurToken.GroupCode = DXF_ENTITIES_AcDbEntity) then Continue;
 
-    CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue));
+    CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
 
     case CurToken.GroupCode of
       1:  Str := CurToken.StrValue;
@@ -585,6 +586,10 @@ end;
 constructor TvDXFVectorialReader.Create;
 begin
   inherited Create;
+
+  FPointSeparator := DefaultFormatSettings;
+  FPointSeparator.DecimalSeparator := '.';
+  FPointSeparator.ThousandSeparator := '#';// disable the thousand separator
 
   Tokenizer := TDXFTokenizer.Create;
 end;
