@@ -426,6 +426,9 @@ procedure TOvcBaseTableCell.tcChangeScale(M, D : integer);
 {--------}
 procedure TOvcBaseTableCell.DecRefs;
   begin
+//try  // LCL: On Carbon, get "EXC_BAD_ACCESS, Could not access memory" for
+     //  FReferences when free cell's column (for example, when quit app), 
+     //  as though cell object's memory already freed, so trap and ignore.
     if (FReferences > 0) then
       begin
         dec(FReferences);
@@ -436,6 +439,8 @@ procedure TOvcBaseTableCell.DecRefs;
             FOnCfgChanged := nil;
           end;
       end;
+//except
+//end;
   end;
 {--------}
 function TOvcBaseTableCell.DoOwnerDraw(TableCanvas : TCanvas;

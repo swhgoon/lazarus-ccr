@@ -577,15 +577,15 @@ procedure TOvcTableColumns.tcStopLoading;
     {fixup references to cell components on any data modules}
     if (FFixups.Count <> 0) then begin
       DM := 0;
-{$IFNDEF LCL}
+//{$IFNDEF LCL}
       DMCount := Screen.DataModuleCount;
-{$ELSE}
-      DMCount := 0;
-{$ENDIF}
+//{$ELSE}
+//      DMCount := 0;
+//{$ENDIF}
       while (FFixups.Count > 0) and (DM < DMCount) do begin
-{$IFNDEF LCL}
+//{$IFNDEF LCL}
         DataMod := Screen.DataModules[DM];
-{$ENDIF}
+//{$ENDIF}
         for i := pred(FFixups.Count) downto 0 do
           if (GetFormName(FFixups[i], Form.Name) = DataMod.Name) then begin
             Compnt := DataMod.FindComponent(GetComponentName(FFixups[i]));

@@ -715,16 +715,16 @@ begin
         if (taLoadList.Count <> 0) then
           begin
             DM := 0;
-{$IFNDEF LCL}
+//{$IFNDEF LCL}
             DMCount := Screen.DataModuleCount;
-{$ELSE}
-            DMCount := 0;
-{$ENDIF}
+//{$ELSE}
+//            DMCount := 0;
+//{$ENDIF}
             while (taLoadList.Count > 0) and (DM < DMCount) do
               begin
-{$IFNDEF LCL}
+//{$IFNDEF LCL}
                 DataMod := Screen.DataModules[DM];
-{$ENDIF}
+//{$ENDIF}
                 for i := pred(taLoadList.Count) downto 0 do
                   if (GetFormName(taLoadList[i], Form.Name) = DataMod.Name) then
                     begin

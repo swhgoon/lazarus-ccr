@@ -580,7 +580,11 @@ type
       procedure CreateWnd; override;
       procedure Loaded; override;
       procedure Paint; override;
+{$IFNDEF LCL}
       procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
+{$ELSE}
+      procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
+{$ENDIF}
 
       {new public methods}
       function CalcRowColFromXY(X, Y : integer;
@@ -3663,14 +3667,25 @@ procedure TOvcCustomTable.tbQueryRowData(RowNum : TRowNum;
       end;
   end;
 {--------}
+{$IFNDEF LCL}
 procedure TOvcCustomTable.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
+{$ELSE}
+procedure TOvcCustomTable.DoSetBounds(ALeft, ATop, AWidth, AHeight: integer);
+{$ENDIF}
+// LCL port: Behavior of SetBounds changed in 0.9.29, so using DoSetBounds.
+// http://wiki.lazarus.freepascal.org/Lazarus_0.9.30_release_notes#overriding_TControl.SetBounds
+// Calls to TOvcTable.SetBounds will just be handled by ancestor.
   var
     WidthChanged  : boolean;
     HeightChanged : boolean;
   begin
     if (not HandleAllocated) then
       begin
+{$IFNDEF LCL}
         inherited SetBounds(ALeft, ATop, AWidth, AHeight);
+{$ELSE}
+        inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
+{$ENDIF}
         Exit;
       end;
 
@@ -3681,7 +3696,11 @@ procedure TOvcCustomTable.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
       begin
         AllowRedraw := false;
         try
+{$IFNDEF LCL}
           inherited SetBounds(ALeft, ATop, AWidth, AHeight);
+{$ELSE}
+          inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
+{$ENDIF}
           if WidthChanged then
             tbCalcColData(tbColNums, LeftCol);
           if HeightChanged then
@@ -3698,7 +3717,11 @@ procedure TOvcCustomTable.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
         end;{try..finally}
       end
     else
+{$IFNDEF LCL}
       inherited SetBounds(ALeft, ATop, AWidth, AHeight);
+{$ELSE}
+      inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
+{$ENDIF}
   end;
 {====================================================================}
 
