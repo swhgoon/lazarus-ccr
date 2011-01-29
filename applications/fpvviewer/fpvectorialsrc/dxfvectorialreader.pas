@@ -86,12 +86,15 @@ type
 
 implementation
 
+{$ifndef Windows}
 {$define FPVECTORIALDEBUG}
+{$endif}
 
 const
   // Group Codes for ENTITIES
   DXF_ENTITIES_TYPE = 0;
   DXF_ENTITIES_HANDLE = 5;
+  DXF_ENTITIES_LINETYPE_NAME = 6;
   DXF_ENTITIES_APPLICATION_GROUP = 102;
   DXF_ENTITIES_AcDbEntity = 100;
   DXF_ENTITIES_MODEL_OR_PAPER_SPACE = 67; // default=0=model, 1=paper
@@ -348,10 +351,10 @@ begin
     CurToken := TDXFToken(ATokens.Items[i]);
 
     // Avoid an exception by previously checking if the conversion can be made
-    if (CurToken.GroupCode = DXF_ENTITIES_HANDLE) or
-      (CurToken.GroupCode = DXF_ENTITIES_AcDbEntity) then Continue;
-
-    CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
+    if CurToken.GroupCode in [10, 20, 30, 11, 21, 31] then
+    begin
+      CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
+    end;
 
     case CurToken.GroupCode of
       10: LineStartX := CurToken.FloatValue;
@@ -404,10 +407,10 @@ begin
     CurToken := TDXFToken(ATokens.Items[i]);
 
     // Avoid an exception by previously checking if the conversion can be made
-    if (CurToken.GroupCode = DXF_ENTITIES_HANDLE) or
-      (CurToken.GroupCode = DXF_ENTITIES_AcDbEntity) then Continue;
-
-    CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
+    if CurToken.GroupCode in [10, 20, 30, 40, 50, 51] then
+    begin
+      CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
+    end;
 
     case CurToken.GroupCode of
       10: CenterX := CurToken.FloatValue;
@@ -450,10 +453,10 @@ begin
     CurToken := TDXFToken(ATokens.Items[i]);
 
     // Avoid an exception by previously checking if the conversion can be made
-    if (CurToken.GroupCode = DXF_ENTITIES_HANDLE) or
-      (CurToken.GroupCode = DXF_ENTITIES_AcDbEntity) then Continue;
-
-    CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
+    if CurToken.GroupCode in [10, 20, 30, 40] then
+    begin
+      CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
+    end;
 
     case CurToken.GroupCode of
       10: CircleCenterX := CurToken.FloatValue;
@@ -492,17 +495,16 @@ begin
     CurToken := TDXFToken(ATokens.Items[i]);
 
     // Avoid an exception by previously checking if the conversion can be made
-    if (CurToken.GroupCode = DXF_ENTITIES_HANDLE) or
-      (CurToken.GroupCode = DXF_ENTITIES_AcDbEntity) then Continue;
-
-    CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
+    if CurToken.GroupCode in [10, 20, 30] then
+    begin
+      CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
+    end;
 
     case CurToken.GroupCode of
       10: CenterX := CurToken.FloatValue;
       20: CenterY := CurToken.FloatValue;
       30: CenterZ := CurToken.FloatValue;
     end;
-
   end;
 
   //
@@ -555,11 +557,10 @@ begin
     CurToken := TDXFToken(ATokens.Items[i]);
 
     // Avoid an exception by previously checking if the conversion can be made
-    if (CurToken.GroupCode = DXF_ENTITIES_HANDLE) or
-      (CurToken.GroupCode = 1) or
-      (CurToken.GroupCode = DXF_ENTITIES_AcDbEntity) then Continue;
-
-    CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
+    if CurToken.GroupCode in [10, 20, 30] then
+    begin
+      CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
+    end;
 
     case CurToken.GroupCode of
       1:  Str := CurToken.StrValue;
@@ -567,7 +568,6 @@ begin
       20: PosY := CurToken.FloatValue;
       30: PosZ := CurToken.FloatValue;
     end;
-
   end;
 
   //
