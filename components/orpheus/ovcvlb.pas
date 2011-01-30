@@ -2487,7 +2487,7 @@ begin
   if (csDesigning in ComponentState) and
      not (csLoading in ComponentState) then
     if FIntegralHeight then
-      Msg.Height := ClientHeight;
+      Msg.Height := Height;  //was ClientHeight, but no longer works on Windows
 {$ENDIF}
     vlbCalcFontFields;
     vlbInitScrollInfo;
