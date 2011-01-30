@@ -107,6 +107,8 @@ var
   CurX, CurY: Integer; // Not modified by ADestX, etc
   CurveLength: Integer;
   t: Double;
+  // For text
+  CurText: TvText;
   // For entities
   CurEntity: TvEntity;
   CurCircle: TvCircle;
@@ -122,6 +124,7 @@ begin
 
   ADest.MoveTo(ADestX, ADestY);
 
+  // Draws all paths
   for i := 0 to ASource.PathCount - 1 do
   begin
     //WriteLn('i = ', i);
@@ -172,6 +175,7 @@ begin
     end;
   end;
 
+  // Draws all entities
   for i := 0 to ASource.GetEntityCount - 1 do
   begin
     CurEntity := ASource.GetEntity(i);
@@ -205,6 +209,16 @@ begin
         );
       {$endif}
     end;
+  end;
+
+  // Draws all text
+  for i := 0 to ASource.GetTextCount - 1 do
+  begin
+    CurText := ASource.GetText(i);
+    ADest.Font.Height := Round(AmulY * CurText.FontSize);
+    ADest.Pen.Style := psSolid;
+    ADest.Pen.Color := clBlack;
+    ADest.TextOut(Round(CurText.X), Round(CurText.Y), CurText.Value);
   end;
 
   {$ifdef FPVECTORIALDEBUG}

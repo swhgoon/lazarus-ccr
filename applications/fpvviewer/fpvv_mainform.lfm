@@ -61,6 +61,8 @@ object frmFPVViewer: TfrmFPVViewer
     Height = 23
     Top = 99
     Width = 46
+    MaxValue = 1000
+    MinValue = -1000
     TabOrder = 3
   end
   object spinStartY: TSpinEdit
@@ -68,6 +70,8 @@ object frmFPVViewer: TfrmFPVViewer
     Height = 23
     Top = 99
     Width = 50
+    MaxValue = 1000
+    MinValue = -1000
     TabOrder = 4
   end
   object Label3: TLabel
@@ -120,8 +124,8 @@ object frmFPVViewer: TfrmFPVViewer
       end
     end
     object Page2: TPage
-      ClientWidth = 1344
-      ClientHeight = 1252
+      ClientWidth = 2688
+      ClientHeight = 2504
       object DXFTreeView: TTreeView
         Left = 8
         Height = 313

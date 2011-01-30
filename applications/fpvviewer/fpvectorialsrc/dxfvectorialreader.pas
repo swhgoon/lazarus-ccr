@@ -95,11 +95,14 @@ implementation
 {$endif}
 
 const
-  DXF_AUTOCAD_2000_R10 = 'AC1006';
-  DXF_AUTOCAD_2000_R11 = 'AC1009';
-  DXF_AUTOCAD_2000_R11_and_R12 = 'AC1009';
-//  DXF_AUTOCAD_2000_R11 = 'AC1009';
-//  = R10, AC1009 = R11 and R12, AC1012 = R13, AC1014 = R14
+  // Items in the HEADER section
+
+  // $ACADVER
+  DXF_AUTOCAD_R10         = 'AC1006'; // 1988
+  DXF_AUTOCAD_R11_and_R12 = 'AC1009'; // 1990
+  DXF_AUTOCAD_R13         = 'AC1012'; // 1994
+  DXF_AUTOCAD_R14         = 'AC1009'; // 1997  http://www.autodesk.com/techpubs/autocad/acadr14/dxf/index.htm
+  DXF_AUTOCAD_2000        = 'AC1500'; // 1999  http://www.autodesk.com/techpubs/autocad/acad2000/dxf/
 
   // Group Codes for ENTITIES
   DXF_ENTITIES_TYPE = 0;
@@ -585,8 +588,11 @@ procedure TvDXFVectorialReader.ReadENTITIES_TEXT(ATokens: TDXFTokens;
 var
   CurToken: TDXFToken;
   i: Integer;
-  PosX, PosY, PosZ: Double;
-  Str: string;
+  PosX: Double = 0.0;
+  PosY: Double = 0.0;
+  PosZ: Double = 0.0;
+  FontSize: Double = 10.0;
+  Str: string = '';
 begin
   for i := 0 to ATokens.Count - 1 do
   begin
@@ -594,7 +600,7 @@ begin
     CurToken := TDXFToken(ATokens.Items[i]);
 
     // Avoid an exception by previously checking if the conversion can be made
-    if CurToken.GroupCode in [10, 20, 30] then
+    if CurToken.GroupCode in [10, 20, 30, 40] then
     begin
       CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
     end;
@@ -604,11 +610,12 @@ begin
       10: PosX := CurToken.FloatValue;
       20: PosY := CurToken.FloatValue;
       30: PosZ := CurToken.FloatValue;
+      40: FontSize := CurToken.FloatValue;
     end;
   end;
 
   //
-//  AData.AddEllipse(CenterX, CenterY, CenterZ, MajorHalfAxis, MinorHalfAxis, Angle);
+  AData.AddText(PosX, PosY, PosZ, '', Round(FontSize), Str);
 end;
 
 function TvDXFVectorialReader.GetCoordinateValue(AStr: shortstring): Double;
