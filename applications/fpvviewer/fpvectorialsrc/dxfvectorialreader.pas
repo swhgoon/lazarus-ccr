@@ -67,8 +67,12 @@ type
   TvDXFVectorialReader = class(TvCustomVectorialReader)
   private
     FPointSeparator: TFormatSettings;
+    // HEADER data
+    ANGBASE: Double;
+    ANGDIR: Integer;
     //
     function  SeparateString(AString: string; ASeparator: Char): T10Strings;
+    procedure ReadHEADER(ATokens: TDXFTokens; AData: TvVectorialDocument);
     procedure ReadENTITIES(ATokens: TDXFTokens; AData: TvVectorialDocument);
     procedure ReadENTITIES_LINE(ATokens: TDXFTokens; AData: TvVectorialDocument);
     procedure ReadENTITIES_ARC(ATokens: TDXFTokens; AData: TvVectorialDocument);
@@ -91,6 +95,12 @@ implementation
 {$endif}
 
 const
+  DXF_AUTOCAD_2000_R10 = 'AC1006';
+  DXF_AUTOCAD_2000_R11 = 'AC1009';
+  DXF_AUTOCAD_2000_R11_and_R12 = 'AC1009';
+//  DXF_AUTOCAD_2000_R11 = 'AC1009';
+//  = R10, AC1009 = R11 and R12, AC1012 = R13, AC1014 = R14
+
   // Group Codes for ENTITIES
   DXF_ENTITIES_TYPE = 0;
   DXF_ENTITIES_HANDLE = 5;
@@ -307,6 +317,33 @@ begin
     end
     else
       Result[CurrentPart] := Result[CurrentPart] + Copy(AString, i, 1);
+  end;
+end;
+
+procedure TvDXFVectorialReader.ReadHEADER(ATokens: TDXFTokens;
+  AData: TvVectorialDocument);
+var
+  i: Integer;
+  CurToken: TDXFToken;
+begin
+  i := 0;
+  while i < ATokens.Count do
+  begin
+    CurToken := TDXFToken(ATokens.Items[i]);
+    if CurToken.StrValue = '$ANGBASE' then
+    begin
+      CurToken := TDXFToken(ATokens.Items[i+1]);
+      ANGBASE := StrToFloat(CurToken.StrValue, FPointSeparator);
+      Inc(i);
+    end
+    else if CurToken.StrValue = '$ANGDIR' then
+    begin
+      CurToken := TDXFToken(ATokens.Items[i+1]);
+      ANGDIR := StrToInt(CurToken.StrValue);
+      Inc(i);
+    end;
+
+    Inc(i);
   end;
 end;
 
@@ -591,6 +628,10 @@ begin
   FPointSeparator.DecimalSeparator := '.';
   FPointSeparator.ThousandSeparator := '#';// disable the thousand separator
 
+  // Default HEADER data
+  ANGBASE := 0.0; // Starts pointing to the right / east
+  ANGDIR := 0; // counter-clock wise
+
   Tokenizer := TDXFTokenizer.Create;
 end;
 
@@ -618,7 +659,9 @@ begin
     CurToken := TDXFToken(Tokenizer.Tokens.Items[i]);
     CurTokenFirstChild := TDXFToken(CurToken.Childs.Items[0]);
 
-    if CurTokenFirstChild.StrValue = 'ENTITIES' then
+    if CurTokenFirstChild.StrValue = 'HEADER' then
+      ReadHEADER(CurToken.Childs, AData)
+    else if CurTokenFirstChild.StrValue = 'ENTITIES' then
       ReadENTITIES(CurToken.Childs, AData);
   end;
 end;

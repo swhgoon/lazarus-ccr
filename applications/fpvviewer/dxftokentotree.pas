@@ -29,12 +29,17 @@ var
 begin
   if ATokens = nil then Exit;
 
-  for i := 0 to ATokens.Count - 1 do
-  begin
-    AToken := TDXFToken(ATokens.Items[i]);
-    NodeStr := Format('(%d %s)', [AToken.GroupCode, AToken.StrValue]);
-    NewNode := ATreeNodes.AddChild(ABaseNode, NodeStr);
-    ConvertDXFTokensToTreeNodes(AToken.Childs, NewNode.TreeNodes, NewNode);
+  ATreeNodes.BeginUpdate(); // Greatly speeds up the operation
+  try
+    for i := 0 to ATokens.Count - 1 do
+    begin
+      AToken := TDXFToken(ATokens.Items[i]);
+      NodeStr := Format('(%d %s)', [AToken.GroupCode, AToken.StrValue]);
+      NewNode := ATreeNodes.AddChild(ABaseNode, NodeStr);
+      ConvertDXFTokensToTreeNodes(AToken.Childs, NewNode.TreeNodes, NewNode);
+    end;
+  finally
+    ATreeNodes.EndUpdate();
   end;
 end;
 

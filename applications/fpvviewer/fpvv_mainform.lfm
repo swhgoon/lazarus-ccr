@@ -1,15 +1,15 @@
 object frmFPVViewer: TfrmFPVViewer
   Left = 186
-  Height = 441
+  Height = 473
   Top = 137
-  Width = 336
+  Width = 375
   Caption = 'Free Pascal Vectorial Viewer'
-  ClientHeight = 441
-  ClientWidth = 336
+  ClientHeight = 473
+  ClientWidth = 375
   LCLVersion = '0.9.31'
   object editFileName: TFileNameEdit
     Left = 8
-    Height = 22
+    Height = 23
     Top = 8
     Width = 304
     DialogOptions = []
@@ -31,7 +31,7 @@ object frmFPVViewer: TfrmFPVViewer
   end
   object spinScale: TFloatSpinEdit
     Left = 72
-    Height = 16
+    Height = 23
     Top = 72
     Width = 64
     Increment = 1
@@ -42,39 +42,39 @@ object frmFPVViewer: TfrmFPVViewer
   end
   object Label1: TLabel
     Left = 8
-    Height = 17
+    Height = 16
     Top = 79
-    Width = 56
+    Width = 47
     Caption = 'Scale by:'
     ParentColor = False
   end
   object Label2: TLabel
     Left = 8
-    Height = 17
+    Height = 16
     Top = 104
-    Width = 73
+    Width = 60
     Caption = 'Start Pos X:'
     ParentColor = False
   end
   object spinStartX: TSpinEdit
     Left = 98
-    Height = 16
+    Height = 23
     Top = 99
     Width = 46
     TabOrder = 3
   end
   object spinStartY: TSpinEdit
     Left = 240
-    Height = 16
+    Height = 23
     Top = 99
     Width = 50
     TabOrder = 4
   end
   object Label3: TLabel
     Left = 152
-    Height = 17
+    Height = 16
     Top = 104
-    Width = 72
+    Width = 60
     Caption = 'Start Pos Y:'
     ParentColor = False
   end
@@ -88,26 +88,40 @@ object frmFPVViewer: TfrmFPVViewer
     TabOrder = 5
   end
   object notebook: TNotebook
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 313
+    Height = 340
     Top = 128
-    Width = 336
+    Width = 370
     PageIndex = 0
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Right = 5
+    BorderSpacing.Bottom = 5
     TabOrder = 6
     TabStop = True
     object Page1: TPage
-      ClientWidth = 336
-      ClientHeight = 313
+      ClientWidth = 370
+      ClientHeight = 340
       object imageView: TImage
+        AnchorSideRight.Control = Page1
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = Page1
+        AnchorSideBottom.Side = asrBottom
         Left = 8
-        Height = 296
+        Height = 327
         Top = 8
-        Width = 325
+        Width = 357
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Right = 5
+        BorderSpacing.Bottom = 5
       end
     end
     object Page2: TPage
-      ClientWidth = 672
-      ClientHeight = 626
+      ClientWidth = 1344
+      ClientHeight = 1252
       object DXFTreeView: TTreeView
         Left = 8
         Height = 313
