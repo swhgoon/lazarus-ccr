@@ -1,0 +1,38 @@
+=== TODO ===
+* Write more tests for different CSV variations
+
+=== Warning about speed optimizations ===
+A try to speed up buffer operations (FCellBuffer, FWhitespaceBuffer)
+by memory preallocation using straightforward String Builder implementation
+resulted in about 25% slowdown compared with current implementation based
+on string concatenation. This happened on Linux and was not tested on other
+platforms. These changes were not commited.
+
+Using TStrBuf object (http://freepascal-bits.blogspot.com/2010/02/simple-string-buffer.html) 
+for the same purpose showed neither noticable performance improvement nor a slowdown with
+the following results on 5,4 MB CSV file:
+Without StrBuf: 2392, 2363, 2544, 2441, 2422, 2407, 2467 ms
+With StrBuf:    2423, 2437, 2404, 2471, 2405 ms
+This happened on Linux too and was not tested on other platforms.
+These changes were not commited either.
+
+=== Warning about CSV extensions like escaping special chars and line breaks ===
+There are more problems in implementing them than it seems at first glance:
+* It should be clearly defined what escaping scheme should be used:
+  - what characters must be escaped, 
+  - what escaped characters have special meaning (like \r and \n),
+  - how to include these special characters into text
+    i.e. how to escape escaping (like \\).
+* It should be clearly defined whether/how escaping can be mixed with 
+  traditional quotation scheme and what should take precedence.
+  Consider the following examples:
+    "quoted \"" field"
+    "embedded \, delimiter"
+    embedded \, delimiter
+    "embedded \\, delimiter"
+    \w\w\wescaped non-trimmable whitespace\w\w\w
+    "   quoted non-trimmable whitespace   "
+
+=== Links ===
+http://tools.ietf.org/html/rfc4180#section-2
+http://www.creativyst.com/Doc/Articles/CSV/CSV01.htm#FileFormat

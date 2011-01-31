@@ -1,0 +1,12 @@
+*.pas
+*.lpi
+*.lpr
+*.lfm
+*.txt
+*.csv
+*.lpk
+csvdocument/demo/csvdemo.res
+csvdocument/testsuite/tests/msexcel/
+csvdocument/testsuite/tests/oocalc/
+csvdocument/testsuite/tests/rfc4180/
+csvdocument/testsuite/tests/unofficial/
