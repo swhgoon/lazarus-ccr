@@ -38,31 +38,40 @@ begin
   FindClose(SearchRec);
 end;
 
-procedure TestCsvFile(const AFilename: String; ADocument: TCSVDocument);
+function TestCsvString(ADocument: TCSVDocument; const AnInput: String;
+  out AParseTime, ABuildTime: Int64): String;
+var
+  Start: TDateTime;
+begin
+  ADocument.Clear;
+  Start := Now;
+  ADocument.CSVText := AnInput;
+  AParseTime := MilliSecondsBetween(Start, Now);
+  Start := Now;
+  Result := ADocument.CSVText;
+  ABuildTime := MilliSecondsBetween(Start, Now);
+end;
+
+procedure TestCsvFile(ADocument: TCSVDocument; const AnInputFilename,
+  ASampleOutputFilename: String);
 var
   InBuffer, OutBuffer: String;
   SampleBuffer: String;
-  CsvDoc: TCSVDocument;
-  Start: TDateTime;
-  MSec: Int64;
+  ParseTime: Int64;
+  BuildTime: Int64;
 begin
-  InBuffer := ReadStringFromFile(AFilename);
-  SampleBuffer := ReadStringFromFile(ChangeFileExt(AFilename,
-    '.sample' + ExtractFileExt(AFilename)));
+  InBuffer := ReadStringFromFile(AnInputFilename);
+  SampleBuffer := ReadStringFromFile(ASampleOutputFilename);
   if SampleBuffer = '' then
     SampleBuffer := InBuffer;
 
-  ADocument.CSVText := '';
-  Start := Now;
-  ADocument.CSVText := InBuffer;
-  MSec := MilliSecondsBetween(Start, Now);
-  OutBuffer := ADocument.CSVText;
+  OutBuffer := TestCsvString(ADocument, InBuffer, ParseTime, BuildTime);
 
-  Write(ExtractFileName(AFilename));
+  Write(ExtractFileName(AnInputFilename));
   if OutBuffer = InBuffer then
   begin
     Write(': ok');
-    WriteLn('   (parsed in ', MSec, ' ms)');
+    WriteLn('   (parsed in ', BuildTime, ' ms)');
   end else
   begin
     WriteLn(': FAILED');
@@ -74,18 +83,58 @@ begin
   end;
 end;
 
-procedure PerformTests(ADocument: TCSVDocument; const ASpec: String);
+procedure ExecTests(ADocument: TCSVDocument; const ASpec: String);
 var
   I: Integer;
   TestFiles: TStringList;
+  CurrentTestFile: String;
+  InBuffer, OutBuffer: String;
 begin
   WriteLn('== Format: ', ASpec, ' ==');
   TestFiles := TStringList.Create;
   FindTestFiles(TestFiles, ASpec);
   for I := 0 to TestFiles.Count - 1 do
-    TestCsvFile(TestFiles[I], ADocument);
+  begin
+    CurrentTestFile := TestFiles[I];
+    TestCsvFile(ADocument,
+      CurrentTestFile,
+      ChangeFileExt(CurrentTestFile, '.sample' + ExtractFileExt(CurrentTestFile)));
+  end;
   FreeAndNil(TestFiles);
   WriteLn();
+end;
+
+procedure ExecPerformanceTest(ADocument: TCSVDocument; const AMinSizeKB: Integer);
+const
+  CsvLineEnding = #13#10;
+var
+  I, MaxRows: Integer;
+  Seq: String;
+  SeqLen: Integer;
+  RealSize: Integer;
+  InBuffer, OutBuffer: String;
+  ParseTime: Int64;
+  BuildTime: Int64;
+begin
+  WriteLn('== Performance test: ==');
+
+  WriteLn('Preparing the test...');
+  Seq := '"abcd efg";"hij""k;l;m;n";opqrstuvw;    xyz12     ;"3456'#13#10'7890'#13#10;
+  SeqLen := Length(Seq);
+  MaxRows := ((AMinSizeKB * 1024) div SeqLen) + 1;
+
+  InBuffer := '';
+  RealSize := 0;
+  for I := 0 to MaxRows do
+  begin
+    InBuffer := InBuffer + Seq;
+    Inc(RealSize, SeqLen);
+  end;
+
+  WriteLn('Testing with ', RealSize div 1024, ' KB of CSV data...');
+  TestCsvString(ADocument, InBuffer, ParseTime, BuildTime);
+  WriteLn('Parsed in ', ParseTime, ' ms');
+  WriteLn('Built in ', BuildTime, ' ms');
 end;
 
 var
@@ -95,17 +144,29 @@ begin
   WriteLn('-------------------');
   CsvDoc := TCSVDocument.Create;
 
-  // no setup needed, rfc4180 supported out-of-the-box
-  PerformTests(CsvDoc, 'rfc4180');
+  if ParamStr(1) = 'p' then
+  begin
+    CsvDoc.Delimiter := ';';
+    CsvDoc.QuoteChar := '"';
+    CsvDoc.LineEnding := #13#10;
+    CsvDoc.EqualColCountPerRow := False;
+    CsvDoc.IgnoreOuterWhitespace := False;
+    CsvDoc.QuoteOuterWhitespace := True;
+    ExecPerformanceTest(CsvDoc, StrToIntDef(ParamStr(2), 1));
+  end else
+  begin
+    // no setup needed, rfc4180 supported out-of-the-box
+    ExecTests(CsvDoc, 'rfc4180');
 
-  // setup for unofficial Creativyst spec
-  PerformTests(CsvDoc, 'unofficial');
+    // setup for unofficial Creativyst spec
+    ExecTests(CsvDoc, 'unofficial');
 
-  // setup for MS Excel files
-  PerformTests(CsvDoc, 'msexcel');
+    // setup for MS Excel files
+    ExecTests(CsvDoc, 'msexcel');
 
-  // setup for OOo Calc files
-  PerformTests(CsvDoc, 'oocalc');
+    // setup for OOo Calc files
+    ExecTests(CsvDoc, 'oocalc');
+  end;
 
   FreeAndNil(CsvDoc);
   WriteLn('------------------');
