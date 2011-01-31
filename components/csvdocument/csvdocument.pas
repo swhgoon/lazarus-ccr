@@ -188,8 +188,8 @@ const
   LF    = #10;
   HTAB  = #9;
   SPACE = #32;
-  WhitespaceChars: TSysCharSet = [HTAB, SPACE];
-  LineEndingChars: TSysCharSet = [CR, LF];
+  WhitespaceChars = [HTAB, SPACE];
+  LineEndingChars = [CR, LF];
 
 function ChangeLineEndings(const AString, ALineEnding: String): String;
 var
@@ -420,15 +420,20 @@ end;
 function TCSVBuilder.QuoteCSVString(const AValue: String): String;
 var
   I: Integer;
+  ValueLen: Integer;
+  SpecialChars: TSysCharSet;
   NeedQuotation: Boolean;
 begin
-  NeedQuotation := (AValue <> '') and FQuoteOuterWhitespace
-    and ((AValue[1] in WhitespaceChars) or (AValue[Length(AValue)] in WhitespaceChars));
+  ValueLen := Length(AValue);
 
+  NeedQuotation := (AValue <> '') and FQuoteOuterWhitespace
+    and ((AValue[1] in WhitespaceChars) or (AValue[ValueLen] in WhitespaceChars));
+
+  SpecialChars := [CR, LF, FDelimiter, FQuoteChar];
   if not NeedQuotation then
-    for I := 1 to Length(AValue) do
+    for I := 1 to ValueLen do
     begin
-      if AValue[I] in [CR, LF, FDelimiter, FQuoteChar] then
+      if AValue[I] in SpecialChars then
       begin
         NeedQuotation := True;
         Break;
