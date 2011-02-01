@@ -55,7 +55,7 @@ type
 var
   CtoPasConfig: TCtoPasConfig;
 
-function ShowConfigDialog: TCtoPasConfig;
+function ShowConfigDialog : TCtoPasConfig;
 
 implementation
 

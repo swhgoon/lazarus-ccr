@@ -30,6 +30,7 @@ var
   ConfigFileRO  : Boolean = false;
   ParseAll      : Boolean = false;
   ShowCodeSize  : Boolean = False; // show the size of code processed
+  isPascalUnit  : Boolean = False; // convert to pascal unit
 
 function StringFromFile(const FileName: AnsiString): AnsiString;
 var
@@ -71,8 +72,10 @@ begin
     end else if p='-o' then begin
       inc(i);
       OutputFile:=ParamStr(i);
-    end else if p='-all' then
-      ParseAll:=True;
+    end else if p='-all' then begin
+      ParseAll:=True
+    end else if p='-pasunit' then
+      isPascalUnit:=True;
     inc(i);
   end;
 end;
@@ -88,6 +91,7 @@ begin
   writeln(' -defines filename - macros definition file. should be in C-preprocessor format');
   writeln(' -showunparsed     - writes out unprased entities by their classname (for debugging only)');
   writeln(' -codesize         - show two numbers of the code processed (used by Chelper)');
+  writeln(' -pasunit          - generates a pascal unit');
 end;
 
 procedure ReadParams(var InputFileName: String);
@@ -104,6 +108,22 @@ begin
       DoDebugEntities:=True;
   end;
   InputFileName:=ParamStr(ParamCount);
+end;
+
+
+function GetPascalUnitName(const UnitName: String): String;
+begin
+  Result:=ChangeFileExt(UnitName, '');
+end;
+
+procedure AddPascalUnit(outs: TStrings; const UnitName: String);
+begin
+  if not Assigned(outs) then Exit;
+  outs.Insert(0, 'unit '+UnitName+';');
+  outs.Insert(1, '');
+  outs.Insert(2, 'interface');
+  outs.Add(      'implementation');
+  outs.Add(      'end.');
 end;
 
 var
@@ -134,6 +154,11 @@ begin
 
     if ShowCodeSize then outs.Insert(0, Format('%d %d', [p.Y,p.X]));
     if err.isError then outs.Insert(0, Format('error %d %d %s',[err.ErrorPos.Y, err.ErrorPos. X, err.ErrorMsg]) );
+
+    if isPascalUnit then begin
+      AddPascalUnit(outs, GetPascalUnitName(fn));
+    end;
+
 
     if OutputFile<>'' then
       outs.SaveToFile(OutputFile)

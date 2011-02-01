@@ -8,28 +8,28 @@ object CtoPasConfig: TCtoPasConfig
   ClientWidth = 668
   OnClose = FormClose
   OnResize = FormResize
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object Notebook1: TNotebook
     Left = 16
     Height = 559
     Top = 8
     Width = 635
-    Anchors = [akTop, akLeft, akRight, akBottom]
     PageIndex = 0
+    Anchors = [akTop, akLeft, akRight, akBottom]
     TabOrder = 0
+    TabStop = True
     object pageMain: TPage
-      Caption = 'Main'
-      ClientWidth = 629
-      ClientHeight = 520
+      ClientWidth = 635
+      ClientHeight = 559
       object Panel1: TPanel
         Left = 0
         Height = 228
         Top = 0
-        Width = 629
+        Width = 635
         Align = alTop
         BevelOuter = bvNone
         ClientHeight = 228
-        ClientWidth = 629
+        ClientWidth = 635
         TabOrder = 0
         object Label1: TLabel
           Left = 6
@@ -107,9 +107,9 @@ object CtoPasConfig: TCtoPasConfig
           AnchorSideLeft.Side = asrBottom
           AnchorSideRight.Control = btnSelect
           Left = 64
-          Height = 21
+          Height = 22
           Top = 172
-          Width = 388
+          Width = 394
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 6
           BorderSpacing.Right = 6
@@ -117,7 +117,7 @@ object CtoPasConfig: TCtoPasConfig
         end
         object btnSelect: TButton
           AnchorSideRight.Control = btnEdit
-          Left = 458
+          Left = 464
           Height = 20
           Top = 172
           Width = 70
@@ -129,7 +129,7 @@ object CtoPasConfig: TCtoPasConfig
           TabOrder = 5
         end
         object btnEdit: TButton
-          Left = 548
+          Left = 554
           Height = 20
           Top = 172
           Width = 70
@@ -143,7 +143,7 @@ object CtoPasConfig: TCtoPasConfig
           Left = 325
           Height = 22
           Top = 100
-          Width = 293
+          Width = 299
           Anchors = [akTop, akLeft, akRight]
           TabOrder = 7
         end
@@ -161,21 +161,21 @@ object CtoPasConfig: TCtoPasConfig
       end
       object Panel2: TPanel
         Left = 0
-        Height = 292
+        Height = 331
         Top = 228
-        Width = 629
+        Width = 635
         Align = alClient
         Alignment = taLeftJustify
         BevelOuter = bvNone
-        ClientHeight = 292
-        ClientWidth = 629
+        ClientHeight = 331
+        ClientWidth = 635
         TabOrder = 1
         object Splitter1: TSplitter
           Cursor = crVSplit
           Left = 0
           Height = 5
           Top = 0
-          Width = 629
+          Width = 635
           Align = alTop
           ResizeAnchor = akTop
         end
@@ -189,9 +189,9 @@ object CtoPasConfig: TCtoPasConfig
         end
         object Memo1: TMemo
           Left = 6
-          Height = 242
+          Height = 281
           Top = 44
-          Width = 617
+          Width = 623
           Align = alBottom
           Anchors = [akTop, akLeft, akRight, akBottom]
           BorderSpacing.Left = 6
@@ -204,7 +204,7 @@ object CtoPasConfig: TCtoPasConfig
           Left = 476
           Height = 20
           Top = 14
-          Width = 147
+          Width = 153
           Anchors = [akTop, akLeft, akRight]
           AutoSize = True
           Caption = 'Reset to defaults'
@@ -214,9 +214,8 @@ object CtoPasConfig: TCtoPasConfig
       end
     end
     object pageConverter: TPage
-      Caption = 'Converter'
-      ClientWidth = 616
-      ClientHeight = 382
+      ClientWidth = 2464
+      ClientHeight = 1528
       object edtExtTool: TEdit
         AnchorSideTop.Control = chkUseExternal
         AnchorSideTop.Side = asrBottom

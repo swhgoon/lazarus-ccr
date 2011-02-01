@@ -55,6 +55,35 @@ function SkipLine(const s: AnsiString; var index: Integer): AnsiString;
 
 procedure OffsetToLinePos(const t: AnsiString; Offset: Integer; var P: TPoint);
 
+
+type
+  TRange = record stofs, endofs : Integer; end;
+
+  { TSubBuffer }
+
+  TSubBuffer = class(TObject)
+    Ranges      : array of TRange;
+    RangesCount : Integer;
+    Name        : string;
+    Tag         : TObject;
+    constructor Create(const AName: string; ATag: TObject);
+  end;
+
+  { TTextBuffer }
+
+  TTextBuffer = class(TObject)
+  private
+    function GetSubBuffer(i: Integer): TSubBuffer;
+  protected
+    function GetCount: Integer;
+  public
+    buffer: String;
+    constructor Create(const Abuffer: String=''; const aname: string = ''; aobj: TObject = nil);
+    procedure InsertSubBuffer(pos: Integer; const ABuffer: string; const AName: string = ''; ATag: TObject = '');
+    property SubBuffer[i: Integer]: TSubBuffer read GetSubBuffer;
+    property Count: Integer read GetCount;
+  end;
+
 implementation
 
 function ScanWhile(const s: AnsiString; var index: Integer; const ch: TCharSet): AnsiString;
@@ -166,6 +195,39 @@ begin
     SkipLine(t, i);
   end;
   P.X := Offset - le + 1;
+end;
+
+{ TTextBuffer }
+
+function TTextBuffer.GetSubBuffer(i: Integer): TSubBuffer;
+begin
+  Result:=nil;
+end;
+
+function TTextBuffer.GetCount: Integer;
+begin
+  Result:=0;
+end;
+
+constructor TTextBuffer.Create(const Abuffer: String; const aname: string;
+  aobj: TObject);
+begin
+  if abuffer<>'' then
+    InsertSubBuffer(1, abuffer, aname, aobj);
+end;
+
+procedure TTextBuffer.InsertSubBuffer(pos: Integer; const ABuffer: string; const AName: string; ATag: TObject);
+begin
+
+end;
+
+{ TSubBuffer }
+
+constructor TSubBuffer.Create(const AName: string; ATag: TObject);
+begin
+  inherited Create;
+  Name:=AName;
+  Tag:=ATag;
 end;
 
 end.

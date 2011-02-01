@@ -743,11 +743,11 @@ const
 begin
   SetPasSection(wr, 'type');
   if cent.isCategory then begin
-    wr.W(cent.Name + ' = objccategory');
+    wr.W(cent.Name + ' = objccategory external ');
     if cent.SuperClass<>'' then wr.W('('+cent.SuperClass+')');
     wr.Wln;
   end else begin
-    wr.W(cent.Name + ' = objcclass');
+    wr.W(cent.Name + ' = objcclass external ');
     if cent.SuperClass<>'' then wr.W('('+cent.SuperClass);
     if cent.Protocols.Count>0 then begin
       if cent.SuperClass='' then wr.W('(id, ')
@@ -781,7 +781,7 @@ begin
     WriteObjCMethods(cent.Methods);
     wr.DecIdent;
   end;
-  wr.Wln('end external;');
+  wr.Wln('end;');
 end;
 
 procedure TCodeConvertor.WriteObjCProtocol(cent:TObjCProtocol);
@@ -794,7 +794,7 @@ begin
     for i:=0 to cent.Names.Count-1 do
       wr.Wln(cent.Names[i]+'Protocol = objcprotocol; external name '''+cent.Names[i]+''';');
   end else begin
-    wr.W(cent.Names[0]+'Protocol = objcprotocol');
+    wr.W(cent.Names[0]+'Protocol = objcprotocol external');
 
     if cent.Protocols.Count>0 then begin
       wr.W('(');
@@ -809,7 +809,7 @@ begin
       wr.DecIdent;
     end;
     wr.W('end; ');
-    wr.Wln(' external name '''+cent.Names[0]+''';');
+    wr.Wln(' name '''+cent.Names[0]+''';');
   end;
 end;
 
@@ -819,7 +819,7 @@ var
 begin
   SetPasSection(wr, 'type');
   for i:=0 to cent.ClassList.Count-1 do
-    wr.WLn(cent.ClassList[i] +' = objcclass; external;');
+    wr.WLn(cent.ClassList[i] +' = objcclass external;');
 end;
 
 
@@ -1349,6 +1349,7 @@ begin
         xp:='((1 shl ('+PasExp(x)+'))-1)';
       // returns true, if x is single number expression. V is the value of the number
       wr.W( GetIdFromPart(st.fields[i].v.FirstName) + ' : 0..'+xp+';');
+      WriteLnCommentForOffset(st.fields[i].v.Offset);
     end else
       WriteFuncOrVar(st.fields[i].v, False, True);
   end;
