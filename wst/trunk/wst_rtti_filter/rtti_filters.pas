@@ -419,8 +419,12 @@ var
         raise ERttiFilterException.CreateFmt('Unexpected symbol : "%s".',[s]);
       MoveNext();
     end;
-    prsr.CheckToken(toSymbol);
-    AFltrCrtr.AddCondition(propName,fltrOp,prsr.TokenString(),lastCntr);
+    if (prsr.Token = toInteger) then begin
+      AFltrCrtr.AddCondition(propName,fltrOp,prsr.TokenInt,lastCntr)
+    end else begin
+      prsr.CheckToken(toSymbol);
+      AFltrCrtr.AddCondition(propName,fltrOp,prsr.TokenString(),lastCntr);
+    end;
   end;
 
 var
