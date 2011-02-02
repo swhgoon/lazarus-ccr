@@ -1238,6 +1238,15 @@ var
 {$IFDEF WST_UNICODESTRING}
      ,( Simple : UnicodeStringReader; Qualified : UnicodeStringReaderQualified ;)  //tkUString
 {$ENDIF WST_UNICODESTRING}
+{$IFDEF WST_TKCLASSREF}
+     ,( Simple : ErrorFunc; Qualified : ErrorFunc ;)  //tkClassRef
+{$ENDIF WST_TKCLASSREF}
+{$IFDEF WST_TKPOINTER}
+     ,( Simple : ErrorFunc; Qualified : ErrorFunc ;)  //tkPointer
+{$ENDIF WST_TKPOINTER}
+{$IFDEF WST_TKPROCEDURE}
+     ,( Simple : ErrorFunc; Qualified : ErrorFunc ;)  //tkProcedure
+{$ENDIF WST_TKPROCEDURE}
     );
 
     WriterInfoMap : array[TTypeKind] of TWriterInfo = (
@@ -1263,6 +1272,15 @@ var
 {$IFDEF WST_UNICODESTRING}
      ,( Simple : UnicodeStringWriter; Qualified : UnicodeStringWriterQualified ;)  //tkUString
 {$ENDIF WST_UNICODESTRING}
+{$IFDEF WST_TKCLASSREF}
+     ,( Simple : ErrorProc; Qualified : ErrorProc ;)  //tkClassRef
+{$ENDIF WST_TKCLASSREF}
+{$IFDEF WST_TKPOINTER}
+     ,( Simple : ErrorProc; Qualified : ErrorProc ;)  //tkPointer
+{$ENDIF WST_TKPOINTER}
+{$IFDEF WST_TKPROCEDURE}
+     ,( Simple : ErrorProc; Qualified : ErrorProc ;)  //tkProcedure
+{$ENDIF WST_TKPROCEDURE}
     );
 {$ENDIF WST_DELPHI}
 
