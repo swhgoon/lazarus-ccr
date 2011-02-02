@@ -2560,12 +2560,14 @@ var
           Indent();
           pte := FSymbolTable.FindElement(p.VarType.Name);
           if ( pte <> nil ) and pte.InheritsFrom(TPasType) then begin
+            if pte.InheritsFrom(TPasUnresolvedTypeRef) then
+              pte := SymbolTable.FindElement(SymbolTable.GetExternalName(pte));
             pt := pte as TPasType;
             pt := GetUltimeType(pt);
             if pt.InheritsFrom(TPasEnumType) then begin
               WriteLn('Result := True;');
             end else if pt.InheritsFrom(TPasNativeSimpleType) and
-                       ( AnsiPos('string', pt.Name) > 0 )
+                       ( AnsiPos('string', LowerCase(pt.Name)) > 0 )
             then begin
               WriteLn('Result := ( F%s <> '''' );',[p.Name]);
             end else if pt.InheritsFrom(TPasNativeSimpleType) and
