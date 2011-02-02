@@ -5206,7 +5206,13 @@ begin
               ok := ( GetInt64Prop(Self,p^.Name) = GetInt64Prop(ACompareTo,p^.Name) );
             {$IFDEF HAS_TKBOOL}tkBool,{$ENDIF} tkEnumeration, tkInteger :
               ok := ( GetOrdProp(Self,p^.Name) = GetOrdProp(ACompareTo,p^.Name) );
-            tkLString{$IFDEF FPC}, tkAString{$ENDIF} :
+            {$IFDEF FPC}
+            tkAString,
+            {$ENDIF FPC}
+            {$IFDEF WST_UNICODESTRING}
+            tkUString,
+            {$ENDIF WST_UNICODESTRING}
+            tkLString :
               ok := ( GetStrProp(Self,p^.Name) = GetStrProp(ACompareTo,p^.Name) );
             tkClass :
               begin

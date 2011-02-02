@@ -46,9 +46,9 @@ type
     dtAnsiChar   = 10, dtWideChar   = 11, dtEnum     = 12,
     dtSingle     = 13, dtDouble     = 14, dtExtended = 15, dtCurrency = 16,
     dtAnsiString = 17, dtWideString = 18,
-{$IFDEF WST_UNICODESTRING}
+{ $IFDEF WST_UNICODESTRING}
     dtUnicodeString = 19,
-{$ENDIF WST_UNICODESTRING}
+{ $ENDIF WST_UNICODESTRING}
     dtObject = 30, dtArray = 31
   );
 const
@@ -69,9 +69,9 @@ type
 
   PAnsiStringBuffer = ^TAnsiStringBuffer;
   PWideStringBuffer = ^TWideStringBuffer;
-{$IFDEF WST_UNICODESTRING}
+{ $IFDEF WST_UNICODESTRING}
   PUnicodeStringBuffer = ^TUnicodeStringBuffer;
-{$ENDIF WST_UNICODESTRING}
+{ $ENDIF WST_UNICODESTRING}
   PObjectBuffer = ^TObjectBuffer;
   PArrayBuffer = ^TArrayBuffer;
   PDataBuffer = ^TDataBuffer;
@@ -98,9 +98,9 @@ type
       
       dtAnsiString : ( AnsiStrData : PAnsiStringBuffer );
       dtWideString : ( WideStrData : PWideStringBuffer );
-{$IFDEF WST_UNICODESTRING}
+{ $IFDEF WST_UNICODESTRING}
       dtUnicodeString : ( UnicodeStrData : PUnicodeStringBuffer );
-{$ENDIF WST_UNICODESTRING}
+{ $ENDIF WST_UNICODESTRING}
       dtObject   : ( ObjectData : PObjectBuffer );
       dtArray    : ( ArrayData : PArrayBuffer );
   End;
@@ -113,11 +113,11 @@ type
     Data : TWideStringData;
   end;
 
-{$IFDEF WST_UNICODESTRING}
+{ $IFDEF WST_UNICODESTRING}
   TUnicodeStringBuffer = record
     Data : TUnicodeStringData;
   end;
-{$ENDIF WST_UNICODESTRING}
+{ $ENDIF WST_UNICODESTRING}
 
 
 
@@ -254,13 +254,13 @@ type
       Const ATypeInfo : PTypeInfo;
       Const AData     : WideString
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
-{$IFDEF WST_UNICODESTRING}
+{ $IFDEF WST_UNICODESTRING}
     procedure PutUnicodeStr(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
       Const AData     : UnicodeString
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
-{$ENDIF WST_UNICODESTRING}
+{ $ENDIF WST_UNICODESTRING}
     procedure PutEnum(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
@@ -360,13 +360,13 @@ type
       var   AName     : String;
       var   AData     : WideString
     ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
-{$IFDEF WST_UNICODESTRING}
+{ $IFDEF WST_UNICODESTRING}
     function GetUnicodeStr(
       const ATypeInfo : PTypeInfo;
       var   AName     : String;
       var   AData     : UnicodeString
     ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
-{$ENDIF WST_UNICODESTRING}
+{ $ENDIF WST_UNICODESTRING}
     function GetObj(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
@@ -507,9 +507,9 @@ Begin
     
     dtAnsiString  : APrinterProc( s + ARoot^.Name + ' = ' + ARoot^.AnsiStrData^.Data );
     dtWideString  : APrinterProc( s + ARoot^.Name + ' = ' + ARoot^.WideStrData^.Data );
-{$IFDEF WST_UNICODESTRING}
+{ $IFDEF WST_UNICODESTRING}
     dtUnicodeString  : APrinterProc( s + ARoot^.Name + ' = ' + ARoot^.UnicodeStrData^.Data );
-{$ENDIF WST_UNICODESTRING}
+{ $ENDIF WST_UNICODESTRING}
     dtObject  :
       Begin
         APrinterProc( s + ARoot^.Name + ' = ');
@@ -615,7 +615,7 @@ begin
           FillChar(Result^.WideStrData^,i,#0);
           Result^.WideStrData^.Data := '';
         end;
-{$IFDEF WST_UNICODESTRING}
+{ $IFDEF WST_UNICODESTRING}
       dtUnicodeString :
         begin
           i := SizeOf(TUnicodeStringBuffer);
@@ -623,7 +623,7 @@ begin
           FillChar(Result^.UnicodeStrData^,i,#0);
           Result^.UnicodeStrData^.Data := '';
         end;
-{$ENDIF WST_UNICODESTRING}
+{ $ENDIF WST_UNICODESTRING}
       dtObject :
         Begin
           Result^.ObjectData := wst_GetMem(SizeOf(TObjectBuffer));
@@ -698,9 +698,9 @@ Begin
     
     dtAnsiString  : ADest.WriteAnsiStr(ARoot^.AnsiStrData^.Data);
     dtWideString  : ADest.WriteWideStr(ARoot^.WideStrData^.Data);
-{$IFDEF WST_UNICODESTRING}
+{ $IFDEF WST_UNICODESTRING}
     dtUnicodeString  : ADest.WriteUnicodeStr(ARoot^.UnicodeStrData^.Data);
-{$ENDIF WST_UNICODESTRING}
+{ $ENDIF WST_UNICODESTRING}
     dtBool    : ADest.WriteBool(ARoot^.BoolData);
     dtAnsiChar    : ADest.WriteAnsiChar(ARoot^.AnsiCharData);
     dtWideChar    : ADest.WriteWideChar(ARoot^.WideCharData);
@@ -767,9 +767,9 @@ Begin
     
     dtAnsiString  : Result^.AnsiStrData^.Data := AStoreRdr.ReadAnsiStr();
     dtWideString  : Result^.WideStrData^.Data := AStoreRdr.ReadWideStr();
-{$IFDEF WST_UNICODESTRING}
+{ $IFDEF WST_UNICODESTRING}
     dtUnicodeString  : Result^.UnicodeStrData^.Data := AStoreRdr.ReadUnicodeStr();
-{$ENDIF WST_UNICODESTRING}
+{ $ENDIF WST_UNICODESTRING}
     dtBool    : Result^.BoolData := AStoreRdr.ReadBool();
     dtAnsiChar    : Result^.AnsiCharData := AStoreRdr.ReadAnsiChar();
     dtWideChar    : Result^.WideCharData := AStoreRdr.ReadWideChar();
@@ -856,14 +856,14 @@ Begin
         Freemem(AOwner^.WideStrData);
         AOwner^.WideStrData := Nil;
       end;
-{$IFDEF WST_UNICODESTRING}
+{ $IFDEF WST_UNICODESTRING}
     dtUnicodeString :
       begin
         AOwner^.UnicodeStrData^.Data := '';
         Freemem(AOwner^.UnicodeStrData);
         AOwner^.UnicodeStrData := Nil;
       end;
-{$ENDIF WST_UNICODESTRING}
+{ $ENDIF WST_UNICODESTRING}
     dtObject :
       Begin
         FreeObjectBuffer(AOwner^.ObjectData);
@@ -1093,7 +1093,7 @@ begin
   StackTop().CreateBuffer(AName,dtWideString)^.WideStrData^.Data := AData;
 end;
 
-{$IFDEF WST_UNICODESTRING}
+{ $IFDEF WST_UNICODESTRING}
 procedure TBaseBinaryFormatter.PutUnicodeStr(
   const AName: String;
   const ATypeInfo: PTypeInfo;
@@ -1102,7 +1102,7 @@ procedure TBaseBinaryFormatter.PutUnicodeStr(
 begin
   StackTop().CreateBuffer(AName,dtUnicodeString)^.UnicodeStrData^.Data := AData;
 end;
-{$ENDIF WST_UNICODESTRING}
+{ $ENDIF WST_UNICODESTRING}
 
 procedure TBaseBinaryFormatter.PutEnum(
   const AName: String;
@@ -1320,8 +1320,14 @@ var
   locBuffer : PDataBuffer;
 begin
   Result := GetDataBuffer(AName,locBuffer);
-  if Result then
-    AData := locBuffer^.AnsiStrData^.Data;
+  if Result then begin
+    case locBuffer^.DataType of
+      dtUnicodeString : AData := locBuffer^.UnicodeStrData^.Data;
+      dtWideString    : AData := locBuffer^.WideStrData^.Data;
+      else
+        AData := locBuffer^.AnsiStrData^.Data;
+    end;
+  end;
 end;
 
 function TBaseBinaryFormatter.GetWideStr(
@@ -1333,11 +1339,17 @@ var
   locBuffer : PDataBuffer;
 begin
   Result := GetDataBuffer(AName,locBuffer);
-  if Result then
-    AData := locBuffer^.WideStrData^.Data;
+  if Result then begin
+    case locBuffer^.DataType of
+      dtAnsiString    : AData := locBuffer^.AnsiStrData^.Data;
+      dtUnicodeString : AData := locBuffer^.UnicodeStrData^.Data;
+      else
+        AData := locBuffer^.WideStrData^.Data;
+    end;
+  end;
 end;
 
-{$IFDEF WST_UNICODESTRING}
+{ $IFDEF WST_UNICODESTRING}
 function TBaseBinaryFormatter.GetUnicodeStr(
   const ATypeInfo: PTypeInfo;
   var   AName: String;
@@ -1347,10 +1359,16 @@ var
   locBuffer : PDataBuffer;
 begin
   Result := GetDataBuffer(AName,locBuffer);
-  if Result then
-    AData := locBuffer^.UnicodeStrData^.Data;
+  if Result then begin
+    case locBuffer^.DataType of
+      dtAnsiString : AData := locBuffer^.AnsiStrData^.Data;
+      dtWideString : AData := locBuffer^.WideStrData^.Data;
+      else
+        AData := locBuffer^.UnicodeStrData^.Data;
+    end;
+  end;
 end;
-{$ENDIF WST_UNICODESTRING}
+{ $ENDIF WST_UNICODESTRING}
 
 function TBaseBinaryFormatter.GetObj(
   const ATypeInfo: PTypeInfo;
@@ -1530,7 +1548,7 @@ begin
       end;
     tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       Begin
-        ansiStrData := String(AData);
+        ansiStrData := AnsiString(AData);
         PutAnsiStr(AName,ATypeInfo,ansiStrData);
       End;
     tkWString :
@@ -1659,7 +1677,7 @@ begin
       end;
     tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       begin
-        strData := string(AData);
+        strData := AnsiString(AData);
         StackTop().CreateInnerBuffer(dtAnsiString)^.AnsiStrData^.Data := strData;
       end;
     tkWString :
@@ -1838,7 +1856,7 @@ begin
         strData := '';
         Result := GetAnsiStr(ATypeInfo,AName,strData);
         if Result then
-          String(AData) := strData;
+          AnsiString(AData) := strData;
       End;
     tkWString :
       begin
@@ -1973,10 +1991,34 @@ begin
     tkLString
     {$IFDEF FPC},
     tkAString
-    {$ENDIF}       : string(AData) := dataBuffer^.AnsiStrData^.Data;
-    tkWString      : WideString(AData) := dataBuffer^.WideStrData^.Data;
+    {$ENDIF}       :
+      begin
+        case dataBuffer^.DataType of
+          dtUnicodeString : AnsiString(AData) := dataBuffer^.UnicodeStrData^.Data;
+          dtWideString    : AnsiString(AData) := dataBuffer^.WideStrData^.Data;
+          else
+            AnsiString(AData) := dataBuffer^.AnsiStrData^.Data;
+        end;
+      end;
+    tkWString      :
+      begin
+        case dataBuffer^.DataType of
+          dtUnicodeString : WideString(AData) := dataBuffer^.UnicodeStrData^.Data;
+          dtAnsiString    : WideString(AData) := dataBuffer^.AnsiStrData^.Data;
+          else
+            WideString(AData) := dataBuffer^.WideStrData^.Data;
+        end;
+      end;
 {$IFDEF WST_UNICODESTRING}
-    tkUString      : UnicodeString(AData) := dataBuffer^.UnicodeStrData^.Data;
+    tkUString      :
+      begin
+        case dataBuffer^.DataType of
+          dtAnsiString : UnicodeString(AData) := dataBuffer^.AnsiStrData^.Data;
+          dtWideString : UnicodeString(AData) := dataBuffer^.WideStrData^.Data;
+          else
+            UnicodeString(AData) := dataBuffer^.UnicodeStrData^.Data;
+        end;
+      end;
 {$ENDIF WST_UNICODESTRING}
 
     tkClass, tkRecord : raise EBinaryFormatterException.Create(SERR_InnerScopeMustBeSimpleType);

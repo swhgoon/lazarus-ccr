@@ -1433,7 +1433,7 @@ begin
 {$ENDIF HAS_QWORD}
     tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       Begin
-        strData := String(AData);
+        strData := AnsiString(AData);
         PutStr(AName,ATypeInfo,strData);
       End;
     tkWString :
@@ -1562,7 +1562,7 @@ begin
 {$ENDIF HAS_QWORD}
     tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       begin
-        strData := string(AData);
+        strData := AnsiString(AData);
         dataBuffer := strData;
       end;
     tkWString :
@@ -1706,7 +1706,7 @@ begin
         strData := '';
         Result := GetStr(ATypeInfo,AName,strData);
         if Result then
-          String(AData) := strData;
+          AnsiString(AData) := strData;
       End;
 {$IFDEF WST_UNICODESTRING}
     tkUString :
@@ -1842,7 +1842,7 @@ begin
 {$IFDEF HAS_QWORD}
     tkQWord      : QWord(AData) := StrToQWordDef(Trim(dataBuffer),0);
 {$ENDIF HAS_QWORD}
-    tkLString{$IFDEF FPC},tkAString{$ENDIF} : string(AData) := dataBuffer;
+    tkLString{$IFDEF FPC},tkAString{$ENDIF} : AnsiString(AData) := dataBuffer;
     tkWString : WideString(AData) := dataBuffer;
 {$IFDEF WST_UNICODESTRING}
     tkUString : UnicodeString(AData) := dataBuffer;

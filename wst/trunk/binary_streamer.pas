@@ -34,6 +34,10 @@ Type
   TWideStringData = WideString;
 {$IFDEF WST_UNICODESTRING}
   TUnicodeStringData = UnicodeString;
+{$ELSE WST_UNICODESTRING}
+  UnicodeString = WideString;
+  TUnicodeStringData = UnicodeString;
+  UnicodeChar = WideChar;
 {$ENDIF WST_UNICODESTRING}
   TAnsiCharacter = AnsiChar;
   TWideCharacter = WideChar;
@@ -64,9 +68,9 @@ Type
     procedure WriteEnum(Const AData : TEnumData);
     procedure WriteAnsiStr(Const AData : TAnsiStringData);
     procedure WriteWideStr(Const AData : TWideStringData);
-{$IFDEF WST_UNICODESTRING}
+{ $IFDEF WST_UNICODESTRING}
     procedure WriteUnicodeStr(Const AData : TUnicodeStringData);
-{$ENDIF WST_UNICODESTRING}
+{ $ENDIF WST_UNICODESTRING}
     procedure WriteBinary(const AData : TByteDynArray);
     
     procedure WriteSingle(Const AData : TFloat_Single_4);
@@ -96,9 +100,9 @@ Type
     function ReadEnum():TEnumData;
     function ReadAnsiStr():TAnsiStringData;
     function ReadWideStr():TWideStringData;
-{$IFDEF WST_UNICODESTRING}
+{ $IFDEF WST_UNICODESTRING}
     function ReadUnicodeStr():TUnicodeStringData;
-{$ENDIF WST_UNICODESTRING}
+{ $ENDIF WST_UNICODESTRING}
     function ReadBinary() : TByteDynArray;
 
     function ReadSingle():TFloat_Single_4;
@@ -231,9 +235,9 @@ Type
     procedure WriteEnum(Const AData : TEnumData);
     procedure WriteAnsiStr(Const AData : TAnsiStringData);
     procedure WriteWideStr(Const AData : TWideStringData);
-{$IFDEF WST_UNICODESTRING}
+{ $IFDEF WST_UNICODESTRING}
     procedure WriteUnicodeStr(Const AData : TUnicodeStringData);
-{$ENDIF WST_UNICODESTRING}
+{ $ENDIF WST_UNICODESTRING}
     procedure WriteBinary(const AData : TByteDynArray);
     
     procedure WriteSingle(Const AData : TFloat_Single_4);
@@ -269,9 +273,9 @@ Type
     function ReadEnum():TEnumData;
     function ReadAnsiStr():TAnsiStringData;
     function ReadWideStr():TWideStringData;
-{$IFDEF WST_UNICODESTRING}
+{ $IFDEF WST_UNICODESTRING}
     function ReadUnicodeStr():TUnicodeStringData;
-{$ENDIF WST_UNICODESTRING}
+{ $ENDIF WST_UNICODESTRING}
     function ReadBinary() : TByteDynArray;
 
     function ReadSingle():TFloat_Single_4;
@@ -452,7 +456,7 @@ begin
     FStream.Write(AData[0],i);
 end;
 
-{$IFDEF WST_UNICODESTRING}
+{ $IFDEF WST_UNICODESTRING}
 procedure TDataStore.WriteUnicodeStr(const AData: TUnicodeStringData);
 
   procedure LocalWrite();
@@ -474,7 +478,7 @@ begin
     LocalWrite();
   end;
 end;
-{$ENDIF WST_UNICODESTRING}
+{ $ENDIF WST_UNICODESTRING}
 
 {
 procedure TDataStore.WriteSingle(const AData: TFloat_Single_4);
@@ -642,7 +646,7 @@ begin
     FStream.ReadBuffer(Result[0],i);
 end;
 
-{$IFDEF WST_UNICODESTRING}
+{ $IFDEF WST_UNICODESTRING}
 function TDataStoreReader.ReadUnicodeStr(): TUnicodeStringData;
 var
   i : TInt32S;
@@ -654,7 +658,7 @@ begin
     Reverse_Array(Pointer(Result)^,i,SizeOf(UnicodeChar));
   end;
 end;
-{$ENDIF WST_UNICODESTRING}
+{ $ENDIF WST_UNICODESTRING}
 
 {$HINTS OFF}
 function TDataStoreReader.ReadSingle(): TFloat_Single_4;
