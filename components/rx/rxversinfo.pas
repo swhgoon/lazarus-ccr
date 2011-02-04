@@ -101,7 +101,7 @@ type
     property ProductName: string read GetProductName;
     property SpecialBuild: string read GetSpecialBuild;
     property PrivateBuild: string read GetPrivateBuild;
-    property Values[const Name: string]: string read GetVerValue;
+    property Values[const VerName: string]: string read GetVerValue;
     property VerFileDate: TDateTime read GetVerFileDate;
   published
     property WidgetName:string read GetWidgetName;
