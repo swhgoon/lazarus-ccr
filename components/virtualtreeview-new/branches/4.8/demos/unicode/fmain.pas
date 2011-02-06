@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, VirtualTrees, StdCtrls, LCLProc;
+  ExtCtrls, VirtualTrees, StdCtrls, LCLProc, ComCtrls;
 
 type
 
@@ -24,12 +24,12 @@ type
     TextComboBox: TComboBox;
     TextEdit: TEdit;
     FontDialog1: TFontDialog;
-    MainNotebook: TNotebook;
-    LCLTextPage: TPage;
+    MainNotebook: TPageControl;
+    LCLTextPage: TTabsheet;
     LCLTextTree: TVirtualStringTree;
     WelcomeTopPanel: TPanel;
     WelcomeTree: TVirtualStringTree;
-    WelcomePage: TPage;
+    WelcomePage: TTabsheet;
     procedure AddComboTextButtonClick(Sender: TObject);
     procedure AddEditTextButtonClick(Sender: TObject);
     procedure AddListTextButtonClick(Sender: TObject);
