@@ -3164,12 +3164,14 @@ type
   // Edit support classes.
   TStringEditLink = class;
 
+  { TVTEdit }
+
   TVTEdit = class(TCustomEdit)
   private
     procedure CMAutoAdjust(var Message: TLMessage); message CM_AUTOADJUST;
     procedure CMExit(var Message: TLMessage); message CM_EXIT;
-    procedure CMRelease(var Message: TLMessage); message CM_RELEASE;
     procedure CNCommand(var Message: TLMCommand); message CN_COMMAND;
+    procedure DoRelease(Data: PtrInt);
     procedure WMChar(var Message: TLMChar); message LM_CHAR;
     procedure WMDestroy(var Message: TLMDestroy); message LM_DESTROY;
     procedure WMGetDlgCode(var Message: TLMNoParams); message LM_GETDLGCODE;
@@ -3182,7 +3184,7 @@ type
   public
     constructor Create(Link: TStringEditLink); reintroduce;
 
-    procedure Release; virtual;
+    procedure Release;
 
     property AutoSelect;
     property AutoSize;
@@ -11326,7 +11328,6 @@ begin
   StopWheelPanning;
   //lcl
   FPanningWindow.Free;
-  CancelEditNode;
 
   // Just in case it didn't happen already release the edit link.
   FEditLink := nil;
@@ -17496,6 +17497,7 @@ begin
   DeleteObject(FDottedBrush);
   FDottedBrush := 0;
 
+  CancelEditNode;
   inherited;
   {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'DestroyHandle');{$endif}
 end;
@@ -18074,8 +18076,7 @@ begin
     DoStateChange([], [tsEditing]);
     if Assigned(FOnEditCancelled) then
       FOnEditCancelled(Self, FEditColumn);
-    if not (csDestroying in ComponentState) then
-      FEditLink := nil;
+    FEditLink := nil;
   end;
 end;
 
@@ -30443,14 +30444,6 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TVTEdit.CMRelease(var Message: TLMessage);
-
-begin
-  Free;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
 procedure TVTEdit.CNCommand(var Message: TLMCommand);
 
 begin
@@ -30463,6 +30456,13 @@ begin
       AutoAdjustSize
     else
       PostMessage(Handle, CM_AUTOADJUST, 0, 0);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+procedure TVTEdit.DoRelease(Data: PtrInt);
+begin
+  Free;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -30633,7 +30633,7 @@ procedure TVTEdit.Release;
 
 begin
   if HandleAllocated then
-    PostMessage(Handle, CM_RELEASE, 0, 0);
+    Application.QueueAsyncCall(DoRelease, 0);
 end;
 
 //----------------- TStringEditLink ------------------------------------------------------------------------------------
