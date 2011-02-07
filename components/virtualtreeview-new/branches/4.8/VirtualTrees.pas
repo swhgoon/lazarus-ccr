@@ -2699,6 +2699,8 @@ type
     procedure InternalConnectNode(Node, Destination: PVirtualNode; Target: TBaseVirtualTree; Mode: TVTNodeAttachMode); virtual;
     function InternalData(Node: PVirtualNode): Pointer;
     procedure InternalDisconnectNode(Node: PVirtualNode; KeepFocus: Boolean; Reindex: Boolean = True); virtual;
+    function InternalGetNodeAt(X, Y: Integer): PVirtualNode; overload;
+    function InternalGetNodeAt(X, Y: Integer; Relative: Boolean; var NodeTop: Integer): PVirtualNode; overload;
     procedure InternalRemoveFromSelection(Node: PVirtualNode); virtual;
     procedure InvalidateCache;
     procedure Loaded; override;
@@ -11745,7 +11747,7 @@ begin
   SimpleSelection := toSimpleDrawSelection in FOptions.FSelectionOptions;
 
   // This is the node to start with.
-  Run := GetNodeAt(0, MinY, False, CurrentTop);
+  Run := InternalGetNodeAt(0, MinY, False, CurrentTop);
 
   if Assigned(Run) then
   begin
@@ -11932,7 +11934,7 @@ begin
   SimpleSelection := toSimpleDrawSelection in FOptions.FSelectionOptions;
 
   // This is the node to start with.
-  Run := GetNodeAt(0, MinY, False, CurrentTop);
+  Run := InternalGetNodeAt(0, MinY, False, CurrentTop);
 
   if Assigned(Run) then
   begin
@@ -12515,7 +12517,7 @@ end;
 function TBaseVirtualTree.GetBottomNode: PVirtualNode;
 
 begin
-  Result := GetNodeAt(0, ClientHeight - 1);
+  Result := InternalGetNodeAt(0, ClientHeight - 1);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -12712,12 +12714,8 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 function TBaseVirtualTree.GetTopNode: PVirtualNode;
-
-var
-  Dummy: Integer;
-
 begin
-  Result := GetNodeAt(0, 0, True, Dummy);
+  Result := InternalGetNodeAt(0, 0);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -20355,7 +20353,7 @@ var
   CheckOffset: Integer;
 
 begin
-  Node := GetNodeAt(0, 0, True, TopPosition);
+  Node := InternalGetNodeAt(0, 0, True, TopPosition);
   Result := 0;
   if toShowRoot in FOptions.FPaintOptions then
     NodeLeft := (GetNodeLevel(Node) + 1) * FIndent
@@ -20383,7 +20381,8 @@ begin
     if Integer(Result) < (NodeLeft + CurrentWidth) then
       Result := NodeLeft + CurrentWidth;
     Inc(TopPosition, NodeHeight[Node]);
-    if TopPosition > Height then
+    //lclheader: Height -> ClientHeight
+    if TopPosition > ClientHeight then
       Break;
 
     if WithCheck and (Node.CheckType <> ctNone) then
@@ -21780,6 +21779,74 @@ begin
     end
     else
       Parent.LastChild := Node.PrevSibling;
+  end;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TBaseVirtualTree.InternalGetNodeAt(X, Y: Integer): PVirtualNode;
+var
+  Dummy: Integer;
+begin
+  Result := InternalGetNodeAt(X, Y, True, Dummy);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TBaseVirtualTree.InternalGetNodeAt(X, Y: Integer; Relative: Boolean; var NodeTop: Integer): PVirtualNode;
+
+//lclheader this is the original version of GetNodeAt used internally since expects coordinates
+//  relative to the image tree. In LCL the image tree and control coordinates are different
+//  when header is visible
+
+// This method returns the node that occupies the specified point, or nil if there's none.
+// If Relative is True then X and Y are given in client coordinates otherwise they are considered as being
+// absolute values into the virtual tree image (regardless of the current offsets in the tree window).
+// NodeTop gets the absolute or relative top position of the node returned or is untouched if no node
+// could be found.
+
+var
+  AbsolutePos,
+  CurrentPos: Cardinal;
+
+begin
+  if Y < 0 then
+    Y := 0;
+
+  AbsolutePos := Y;
+  if Relative then
+    Inc(AbsolutePos, -FOffsetY);
+
+  // CurrentPos tracks a running term of the current position to test for.
+  // It corresponds always to the top position of the currently considered node.
+  CurrentPos := 0;
+
+  // If the cache is available then use it.
+  if tsUseCache in FStates then
+    Result := FindInPositionCache(AbsolutePos, CurrentPos)
+  else
+    Result := GetFirstVisibleNoInit(nil, True);
+
+  // Determine node, of which position and height corresponds to the scroll position most closely.
+  while Assigned(Result) and (Result <> FRoot) do
+  begin
+    if AbsolutePos < (CurrentPos + NodeHeight[Result]) then
+      Break;
+    Inc(CurrentPos, NodeHeight[Result]);
+    Result := GetNextVisibleNoInit(Result, True);
+  end;
+
+  if Result = FRoot then
+    Result := nil;
+
+  // Since the given vertical position is likely not the same as the top position
+  // of the found node this top position is returned.
+  if Assigned(Result) then
+  begin
+    NodeTop := CurrentPos;
+    if Relative then
+      Inc(NodeTop, FOffsetY);
+    //{$ifdef DEBUG_VTV}Logger.Send([lcPaintHeader],'GetNodeAt Result: ',Result^.Index);{$endif}
   end;
 end;
 
@@ -24342,7 +24409,6 @@ procedure TBaseVirtualTree.ClearSelection;
 
 var
   Node: PVirtualNode;
-  Dummy: Integer;
   R: TRect;
   Counter: Integer;
 
@@ -24352,7 +24418,7 @@ begin
     if (FUpdateCount = 0) and HandleAllocated and (FVisibleCount > 0) then
     begin
       // Iterate through nodes currently visible in the client area and invalidate them.
-      Node := GetNodeAt(0, 0, True, Dummy);
+      Node := TopNode;
       if Assigned(Node) then
         R := GetDisplayRect(Node, NoColumn, False);
       Counter := FSelectionCount;
@@ -25663,32 +25729,27 @@ begin
       Include(HitInfo.HitPositions, hiToRight);
 
   //lclheader
-  if Y < 0 then
+  if Y < IfThen(hoVisible in FHeader.Options, FHeader.Height) then
     Include(HitInfo.HitPositions, hiAbove)
   else
     if Y > Max(FRangeY, inherited GetClientRect.Bottom) then
       Include(HitInfo.HitPositions, hiBelow);
 
-  // Convert position into absolute coordinate if necessary.
-  if Relative then
-  begin
-    if X > Header.Columns.GetVisibleFixedWidth then
-      Inc(X, FEffectiveOffsetX);
-    Inc(Y, -FOffsetY);
-    //lclheader
-    if hoVisible in FHeader.Options then
-    begin
-      Dec(Y, FHeader.Height);
-      //the coordinate is in header
-      if Y < 0 then
-        Exit;
-    end;
-  end;
-
   // If the point is in the tree area then check the nodes.
   if HitInfo.HitPositions = [] then
   begin
-    HitInfo.HitNode := GetNodeAt(X, Y, False, NodeTop);
+    // Convert position into absolute coordinate if necessary.
+    if Relative then
+    begin
+      if X > Header.Columns.GetVisibleFixedWidth then
+        Inc(X, FEffectiveOffsetX);
+      //lclheader
+      if hoVisible in FHeader.Options then
+        Dec(Y, FHeader.Height);
+      Dec(Y, FOffsetY);
+    end;
+
+    HitInfo.HitNode := InternalGetNodeAt(X, Y, False, NodeTop);
     if HitInfo.HitNode = nil then
       Include(HitInfo.HitPositions, hiNowhere)
     else
@@ -26657,56 +26718,17 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 function TBaseVirtualTree.GetNodeAt(X, Y: Integer; Relative: Boolean; var NodeTop: Integer): PVirtualNode;
-
-// This method returns the node that occupies the specified point, or nil if there's none.
-// If Relative is True then X and Y are given in client coordinates otherwise they are considered as being
-// absolute values into the virtual tree image (regardless of the current offsets in the tree window).
-// NodeTop gets the absolute or relative top position of the node returned or is untouched if no node
-// could be found.
-
 var
-  AbsolutePos,
-  CurrentPos: Cardinal;
-
+  OffsetByHeader: Boolean;
 begin
-  if Y < 0 then
-    Y := 0;
-
-  AbsolutePos := Y;
-  if Relative then
-    Inc(AbsolutePos, -FOffsetY);
-
-  // CurrentPos tracks a running term of the current position to test for.
-  // It corresponds always to the top position of the currently considered node.
-  CurrentPos := 0;
-
-  // If the cache is available then use it.
-  if tsUseCache in FStates then
-    Result := FindInPositionCache(AbsolutePos, CurrentPos)
-  else
-    Result := GetFirstVisibleNoInit(nil, True);
-
-  // Determine node, of which position and height corresponds to the scroll position most closely.
-  while Assigned(Result) and (Result <> FRoot) do
-  begin
-    if AbsolutePos < (CurrentPos + NodeHeight[Result]) then
-      Break;
-    Inc(CurrentPos, NodeHeight[Result]);
-    Result := GetNextVisibleNoInit(Result, True);
-  end;
-
-  if Result = FRoot then
-    Result := nil;
-
-  // Since the given vertical position is likely not the same as the top position
-  // of the found node this top position is returned.
-  if Assigned(Result) then
-  begin
-    NodeTop := CurrentPos;
-    if Relative then
-      Inc(NodeTop, FOffsetY);
-    //{$ifdef DEBUG_VTV}Logger.Send([lcPaintHeader],'GetNodeAt Result: ',Result^.Index);{$endif}
-  end;
+  //lclheader
+  OffsetByHeader := Relative and (hoVisible in FHeader.Options);
+  if OffsetByHeader then
+    Dec(Y, FHeader.Height);
+  Result := InternalGetNodeAt(X, Y, Relative, NodeTop);
+  //lclheader
+  if OffsetByHeader then
+    Inc(NodeTop, FHeader.Height);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -28254,7 +28276,7 @@ begin
 
         // Determine node to start drawing with.
         BaseOffset := 0;
-        PaintInfo.Node := GetNodeAt(0, Window.Top, False, BaseOffset);
+        PaintInfo.Node := InternalGetNodeAt(0, Window.Top, False, BaseOffset);
         if PaintInfo.Node = nil then
           BaseOffset := Window.Top;
         {$ifdef DEBUG_VTV}Logger.Send([lcPaint, lcHeaderOffset],'BaseOffset',BaseOffset);{$endif}
