@@ -205,7 +205,7 @@ begin
         Round(ADestX + AmulX * (CurArc.CenterX + CurArc.Radius)),
         Round(ADestY + AmulY * (CurArc.CenterY + CurArc.Radius)),
         Round(16*CurArc.StartAngle),
-        Round(16*CurArc.EndAngle - CurArc.StartAngle)
+        Round(16*(CurArc.EndAngle - CurArc.StartAngle))
         );
       {$endif}
     end;
