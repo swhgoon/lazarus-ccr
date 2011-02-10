@@ -64,7 +64,13 @@ begin
     Vec.ReadFromFile(editFileName.FileName, vfDXF);
     imageView.Canvas.Brush.Color := clWhite;
     imageView.Canvas.FillRect(0, 0, imageView.Width, imageView.Height);
-    DrawFPVectorialToCanvas(Vec, imageView.Canvas, spinStartX.Value, spinStartY.Value, spinScale.Value, spinScale.Value);
+    DrawFPVectorialToCanvas(
+      Vec,
+      imageView.Canvas,
+      spinStartX.Value,
+      spinStartY.Value + imageView.Height,
+      spinScale.Value,
+      -1 * spinScale.Value);
   finally
     Vec.Free;
   end;

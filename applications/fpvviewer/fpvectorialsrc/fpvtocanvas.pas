@@ -114,6 +114,7 @@ var
   CurCircle: TvCircle;
   CurEllipse: TvEllipse;
   CurArc: TvCircularArc;
+  FinalStartAngle, FinalEndAngle: double;
 begin
   {$ifdef FPVECTORIALDEBUG}
   WriteLn(':>DrawFPVectorialToCanvas');
@@ -198,14 +199,27 @@ begin
     begin
       CurArc := CurEntity as TvCircularArc;
       {$ifdef USE_LCL_CANVAS}
+      // ToDo: Consider a X axis inversion
+      // If the Y axis is inverted, then we need to mirror our angles as well
+      if AMulY > 0 then
+      begin
+        FinalStartAngle := CurArc.StartAngle;
+        FinalEndAngle := CurArc.EndAngle;
+      end
+      else // AMulY is negative
+      begin
+        // Inverting the angles generates the correct result for Y axis inversion
+        FinalStartAngle := 360 - 1* CurArc.EndAngle;
+        FinalEndAngle := 360 - 1* CurArc.StartAngle;
+      end;
       // Arc(ALeft, ATop, ARight, ABottom, Angle16Deg, Angle16DegLength: Integer);
       ADest.Arc(
         Round(ADestX + AmulX * (CurArc.CenterX - CurArc.Radius)),
         Round(ADestY + AmulY * (CurArc.CenterY - CurArc.Radius)),
         Round(ADestX + AmulX * (CurArc.CenterX + CurArc.Radius)),
         Round(ADestY + AmulY * (CurArc.CenterY + CurArc.Radius)),
-        Round(16*CurArc.StartAngle),
-        Round(16*(CurArc.EndAngle - CurArc.StartAngle))
+        Round(16*FinalStartAngle),
+        Round(16*(FinalEndAngle - FinalStartAngle))
         );
       {$endif}
     end;
