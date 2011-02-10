@@ -62,11 +62,18 @@ begin
 
   notebook.PageIndex := 0;
 
+  Drawer.Clear;
+
   Vec := TvVectorialDocument.Create;
   try
     Vec.ReadFromFile(editFileName.FileName, vfDXF);
-    Drawer.Drawing.Width := Round(Vec.Width);
-    Drawer.Drawing.Height := Round(Vec.Height);
+
+    // We need to be robust, because sometimes the document size won't be given
+    if Vec.Width < 100 then Vec.Width := Drawer.Width;
+    if Vec.Height < 100 then Vec.Height := Drawer.Height;
+
+    Drawer.Drawing.Width := Round(Vec.Width * spinScale.Value);
+    Drawer.Drawing.Height := Round(Vec.Height * spinScale.Value);
     Drawer.Drawing.Canvas.Brush.Color := clWhite;
     Drawer.Drawing.Canvas.FillRect(0, 0, Drawer.Drawing.Width, Drawer.Drawing.Height);
     DrawFPVectorialToCanvas(
