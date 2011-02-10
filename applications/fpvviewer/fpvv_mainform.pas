@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, EditBtn,
-  StdCtrls, Spin, ExtCtrls, ComCtrls;
+  StdCtrls, Spin, ExtCtrls, ComCtrls,
+  fpvv_drawer;
 
 type
 
@@ -14,13 +15,12 @@ type
 
   TfrmFPVViewer = class(TForm)
     btnVisualize: TButton;
-    Button1: TButton;
+    btnViewDXFTokens: TButton;
     editFileName: TFileNameEdit;
-    imageView: TImage;
     Label2: TLabel;
     Label3: TLabel;
     notebook: TNotebook;
-    Page1: TPage;
+    pageViewer: TPage;
     Page2: TPage;
     spinStartX: TSpinEdit;
     spinStartY: TSpinEdit;
@@ -28,12 +28,15 @@ type
     Label1: TLabel;
     DXFTreeView: TTreeView;
     procedure btnVisualizeClick(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
+    procedure btnViewDXFTokensClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     { private declarations }
   public
     { public declarations }
-  end; 
+    Drawer: TFPVVDrawer;
+  end;
 
 var
   frmFPVViewer: TfrmFPVViewer;
@@ -62,21 +65,24 @@ begin
   Vec := TvVectorialDocument.Create;
   try
     Vec.ReadFromFile(editFileName.FileName, vfDXF);
-    imageView.Canvas.Brush.Color := clWhite;
-    imageView.Canvas.FillRect(0, 0, imageView.Width, imageView.Height);
+    Drawer.Drawing.Width := Round(Vec.Width);
+    Drawer.Drawing.Height := Round(Vec.Height);
+    Drawer.Drawing.Canvas.Brush.Color := clWhite;
+    Drawer.Drawing.Canvas.FillRect(0, 0, Drawer.Drawing.Width, Drawer.Drawing.Height);
     DrawFPVectorialToCanvas(
       Vec,
-      imageView.Canvas,
+      Drawer.Drawing.Canvas,
       spinStartX.Value,
-      spinStartY.Value + imageView.Height,
+      spinStartY.Value + Drawer.Drawing.Height,
       spinScale.Value,
       -1 * spinScale.Value);
+    Drawer.Invalidate;
   finally
     Vec.Free;
   end;
 end;
 
-procedure TfrmFPVViewer.Button1Click(Sender: TObject);
+procedure TfrmFPVViewer.btnViewDXFTokensClick(Sender: TObject);
 var
   Reader: TvDXFVectorialReader;
   Vec: TvVectorialDocument;
@@ -95,6 +101,20 @@ begin
     Reader.Free;
     Vec.Free;
   end;
+end;
+
+procedure TfrmFPVViewer.FormCreate(Sender: TObject);
+begin
+  Drawer := TFPVVDrawer.Create(Self);
+  Drawer.Parent := pageViewer;
+  Drawer.Top := 5;
+  Drawer.Left := 5;
+  Drawer.AnchorClient(5);
+end;
+
+procedure TfrmFPVViewer.FormDestroy(Sender: TObject);
+begin
+  Drawer.Free;
 end;
 
 end.

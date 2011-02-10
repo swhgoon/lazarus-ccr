@@ -6,6 +6,8 @@ object frmFPVViewer: TfrmFPVViewer
   Caption = 'Free Pascal Vectorial Viewer'
   ClientHeight = 473
   ClientWidth = 375
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   LCLVersion = '0.9.31'
   object editFileName: TFileNameEdit
     Left = 8
@@ -82,13 +84,13 @@ object frmFPVViewer: TfrmFPVViewer
     Caption = 'Start Pos Y:'
     ParentColor = False
   end
-  object Button1: TButton
+  object btnViewDXFTokens: TButton
     Left = 112
     Height = 25
     Top = 41
     Width = 128
     Caption = 'View DXF Tokens'
-    OnClick = Button1Click
+    OnClick = btnViewDXFTokensClick
     TabOrder = 5
   end
   object notebook: TNotebook
@@ -104,23 +106,7 @@ object frmFPVViewer: TfrmFPVViewer
     Anchors = [akTop, akLeft, akRight, akBottom]
     TabOrder = 6
     TabStop = True
-    object Page1: TPage
-      ClientWidth = 375
-      ClientHeight = 345
-      object imageView: TImage
-        AnchorSideRight.Control = Page1
-        AnchorSideRight.Side = asrBottom
-        AnchorSideBottom.Control = Page1
-        AnchorSideBottom.Side = asrBottom
-        Left = 8
-        Height = 332
-        Top = 8
-        Width = 362
-        Anchors = [akTop, akLeft, akRight, akBottom]
-        AutoSize = True
-        BorderSpacing.Right = 5
-        BorderSpacing.Bottom = 5
-      end
+    object pageViewer: TPage
     end
     object Page2: TPage
       ClientWidth = 21504

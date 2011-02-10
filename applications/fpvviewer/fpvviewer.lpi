@@ -33,7 +33,7 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="4">
       <Unit0>
         <Filename Value="fpvviewer.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -51,6 +51,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="dxftokentotree"/>
       </Unit2>
+      <Unit3>
+        <Filename Value="fpvv_drawer.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="fpvv_drawer"/>
+      </Unit3>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

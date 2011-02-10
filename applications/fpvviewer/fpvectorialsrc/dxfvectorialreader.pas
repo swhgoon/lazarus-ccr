@@ -77,6 +77,7 @@ type
     procedure ReadENTITIES_LINE(ATokens: TDXFTokens; AData: TvVectorialDocument);
     procedure ReadENTITIES_ARC(ATokens: TDXFTokens; AData: TvVectorialDocument);
     procedure ReadENTITIES_CIRCLE(ATokens: TDXFTokens; AData: TvVectorialDocument);
+    procedure ReadENTITIES_DIMENSION(ATokens: TDXFTokens; AData: TvVectorialDocument);
     procedure ReadENTITIES_ELLIPSE(ATokens: TDXFTokens; AData: TvVectorialDocument);
     procedure ReadENTITIES_TEXT(ATokens: TDXFTokens; AData: TvVectorialDocument);
     function  GetCoordinateValue(AStr: shortstring): Double;
@@ -344,6 +345,16 @@ begin
       CurToken := TDXFToken(ATokens.Items[i+1]);
       ANGDIR := StrToInt(CurToken.StrValue);
       Inc(i);
+    end
+    // This indicates the size of the document
+    else if CurToken.StrValue = '$LIMMAX' then
+    begin
+      {$Warning Actually verify if the values are present in this order}
+      CurToken := TDXFToken(ATokens.Items[i+1]); // If Group 10
+      aData.Width := StrToFloat(CurToken.StrValue);
+      CurToken := TDXFToken(ATokens.Items[i+2]); // If Group 20
+      aData.Height := StrToFloat(CurToken.StrValue);
+      Inc(i, 2);
     end;
 
     Inc(i);
@@ -360,6 +371,7 @@ begin
     CurToken := TDXFToken(ATokens.Items[i]);
     if CurToken.StrValue = 'ARC' then ReadENTITIES_ARC(CurToken.Childs, AData)
     else if CurToken.StrValue = 'CIRCLE' then ReadENTITIES_CIRCLE(CurToken.Childs, AData)
+    else if CurToken.StrValue = 'DIMENSION' then ReadENTITIES_DIMENSION(CurToken.Childs, AData)
     else if CurToken.StrValue = 'ELLIPSE' then ReadENTITIES_ELLIPSE(CurToken.Childs, AData)
     else if CurToken.StrValue = 'LINE' then ReadENTITIES_LINE(CurToken.Childs, AData)
     else if CurToken.StrValue = 'TEXT' then
@@ -512,6 +524,99 @@ begin
 
   AData.AddCircle(CircleCenterX, CircleCenterY,
     CircleCenterZ, CircleRadius);
+end;
+
+{
+Group codes Description
+100 Subclass marker (AcDbDimension)
+2 Name of the block that contains the entities that make up the dimension picture
+10 Definition point (in WCS) DXF: X value; APP: 3D point
+20, 30 DXF: Y and Z values of definition point (in WCS)
+11 Middle point of dimension text (in OCS) DXF: X value; APP: 3D point
+21, 31 DXF: Y and Z values of middle point of dimension text (in OCS)
+70 Dimension type.
+  Values 0-6 are integer values that represent the dimension type.
+  Values 32, 64, and 128 are bit values, which are added to the integer values
+  (value 32 is always set in R13 and later releases).
+  0 = Rotated, horizontal, or vertical; 1 = Aligned;
+  2 = Angular; 3 = Diameter; 4 = Radius;
+  5 = Angular 3 point; 6 = Ordinate;
+  32 = Indicates that the block reference (group code 2) is referenced by this dimension only.
+  64 = Ordinate type. This is a bit value (bit 7) used only with integer value 6.
+    If set, ordinate is X-type; if not set, ordinate is Y-type.
+  128 = This is a bit value (bit 8) added to the other group 70 values
+    if the dimension text has been positioned at a user-defined location
+    rather than at the default location.
+71 Attachment point:
+  1 = Top left; 2 = Top center; 3 = Top right;
+  4 = Middle left; 5 = Middle center; 6 = Middle right;
+  7 = Bottom left; 8 = Bottom center; 9 = Bottom right
+72 Dimension text line spacing style (optional):
+  1(or missing) = At least (taller characters will override)
+  2 = Exact (taller characters will not override)
+41 Dimension text line spacing factor (optional):
+  Percentage of default (3-on-5) line spacing to be applied. Valid values range from 0.25 to 4.00.
+42 Actual measurement (optional; read-only value)
+1 Dimension text explicitly entered by the user. Optional; default is the measurement.
+  If null or "<>", the dimension measurement is drawn as the text,
+  if " " (one blank space), the text is suppressed. Anything else is drawn as the text.
+53 The optional group code 53 is the rotation angle of the dimension
+  text away from its default orientation (the direction of the dimension line)  (optional).
+51 All dimension types have an optional 51 group code, which indicates the
+  horizontal direction for the dimension entity. The dimension entity determines
+  the orientation of dimension text and lines for horizontal, vertical, and
+  rotated linear dimensions.
+  This group value is the negative of the angle between the OCS X axis
+  and the UCS X axis. It is always in the XY plane of the OCS.
+210 Extrusion direction (optional; default = 0, 0, 1) DXF: X value; APP: 3D vector
+220, 230 DXF: Y and Z values of extrusion direction  (optional)
+3 Dimension style name
+}
+procedure TvDXFVectorialReader.ReadENTITIES_DIMENSION(ATokens: TDXFTokens;
+  AData: TvVectorialDocument);
+{var
+  CurToken: TDXFToken;
+  i: Integer;
+  // LINE
+  LineStartX, LineStartY, LineStartZ: Double;
+  LineEndX, LineEndY, LineEndZ: Double;}
+begin
+{  // Initial values
+  LineStartX := 0;
+  LineStartY := 0;
+  LineStartZ := 0;
+  LineEndX := 0;
+  LineEndY := 0;
+  LineEndZ := 0;
+
+  for i := 0 to ATokens.Count - 1 do
+  begin
+    // Now read and process the item name
+    CurToken := TDXFToken(ATokens.Items[i]);
+
+    // Avoid an exception by previously checking if the conversion can be made
+    if CurToken.GroupCode in [10, 20, 30, 11, 21, 31] then
+    begin
+      CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
+    end;
+
+    case CurToken.GroupCode of
+      10: LineStartX := CurToken.FloatValue;
+      20: LineStartY := CurToken.FloatValue;
+      30: LineStartZ := CurToken.FloatValue;
+      11: LineEndX := CurToken.FloatValue;
+      21: LineEndY := CurToken.FloatValue;
+      31: LineEndZ := CurToken.FloatValue;
+    end;
+  end;
+
+  // And now write it
+  {$ifdef FPVECTORIALDEBUG}
+//  WriteLn(Format('Adding Line from %f,%f to %f,%f', [LineStartX, LineStartY, LineEndX, LineEndY]));
+  {$endif}
+  AData.StartPath(LineStartX, LineStartY);
+  AData.AddLineToPath(LineEndX, LineEndY);
+  AData.EndPath();}
 end;
 
 {
