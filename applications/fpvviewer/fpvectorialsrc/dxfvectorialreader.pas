@@ -33,7 +33,6 @@ uses
   fpvectorial;
 
 type
-
   { Used by tcutils.SeparateString }
   T10Strings = array[0..9] of shortstring;
 
@@ -571,23 +570,40 @@ Group codes Description
 210 Extrusion direction (optional; default = 0, 0, 1) DXF: X value; APP: 3D vector
 220, 230 DXF: Y and Z values of extrusion direction  (optional)
 3 Dimension style name
+
+Aligned Dimension Group Codes
+
+100 Subclass marker (AcDbAlignedDimension)
+12 Insertion point for clones of a dimension-Baseline and Continue (in OCS) DXF: X value; APP: 3D point
+22, 32 DXF: Y and Z values of insertion point for clones of a dimension-Baseline and Continue (in OCS)
+13 Definition point for linear and angular dimensions (in WCS) DXF: X value; APP: 3D point
+23, 33 DXF: Y and Z values of definition point for linear and angular dimensions (in WCS)
+14 Definition point for linear and angular dimensions (in WCS) DXF: X value; APP: 3D point
+24, 34 DXF: Y and Z values of definition point for linear and angular dimensions (in WCS)
+
+  |--text--|->10,20
+  |        |
+  |        |
+  X->14,24 X->13,23
 }
 procedure TvDXFVectorialReader.ReadENTITIES_DIMENSION(ATokens: TDXFTokens;
   AData: TvVectorialDocument);
-{var
+var
   CurToken: TDXFToken;
   i: Integer;
-  // LINE
-  LineStartX, LineStartY, LineStartZ: Double;
-  LineEndX, LineEndY, LineEndZ: Double;}
+  // DIMENSION
+  BaseLeft, BaseRight, DimensionRight, DimensionLeft, TmpPoint: T3DPoint;
+  IsAlignedDimension: Boolean = False;
 begin
-{  // Initial values
-  LineStartX := 0;
-  LineStartY := 0;
-  LineStartZ := 0;
-  LineEndX := 0;
-  LineEndY := 0;
-  LineEndZ := 0;
+  // Initial values
+  BaseLeft.X := 0;
+  BaseLeft.Y := 0;
+  BaseRight.X := 0;
+  BaseRight.X := 0;
+  DimensionRight.X := 0;
+  DimensionRight.Y := 0;
+  DimensionLeft.X := 0;
+  DimensionLeft.Y := 0;
 
   for i := 0 to ATokens.Count - 1 do
   begin
@@ -595,28 +611,53 @@ begin
     CurToken := TDXFToken(ATokens.Items[i]);
 
     // Avoid an exception by previously checking if the conversion can be made
-    if CurToken.GroupCode in [10, 20, 30, 11, 21, 31] then
+    if CurToken.GroupCode in [10, 20, 30, 11, 21, 31, 13, 23, 33, 14, 24, 34] then
     begin
       CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
     end;
 
     case CurToken.GroupCode of
-      10: LineStartX := CurToken.FloatValue;
-      20: LineStartY := CurToken.FloatValue;
-      30: LineStartZ := CurToken.FloatValue;
-      11: LineEndX := CurToken.FloatValue;
-      21: LineEndY := CurToken.FloatValue;
-      31: LineEndZ := CurToken.FloatValue;
+      10: DimensionRight.X := CurToken.FloatValue;
+      20: DimensionRight.Y := CurToken.FloatValue;
+      30: DimensionRight.Z := CurToken.FloatValue;
+      13: BaseRight.X := CurToken.FloatValue;
+      23: BaseRight.Y := CurToken.FloatValue;
+      33: BaseRight.Z := CurToken.FloatValue;
+      14: BaseLeft.X := CurToken.FloatValue;
+      24: BaseLeft.Y := CurToken.FloatValue;
+      34: BaseLeft.Z := CurToken.FloatValue;
+      100:
+      begin
+        if CurToken.StrValue = 'AcDbAlignedDimension' then IsAlignedDimension := True;
+      end;
     end;
   end;
+
+  // Now make sure that we actually have the right positions
+  if BaseRight.X < BaseLeft.X then
+  begin
+    TmpPoint := BaseRight;
+    BaseRight := BaseLeft;
+    BaseLeft := TmpPoint;
+  end;
+
+  // Considering the the Base and the Dimension position must form a parallelogram
+  // we can solve the other dimention point through the midpoint formula
+  // which means that in a paralelogram A, B, C, D, with A and D opposites
+  // midpoint(AD)=midpoint(BC)
+  // in our case: A=BaseLeft B=DimLeft C=BaseRight D=DimRIght
+  // midpoint(AD)x=(Ax+Dx)/2
+  DimensionLeft.X := BaseLeft.X - BaseRight.X + DimensionRight.X;
+  DimensionLeft.Y := BaseLeft.Y - BaseRight.Y + DimensionRight.Y;
 
   // And now write it
   {$ifdef FPVECTORIALDEBUG}
 //  WriteLn(Format('Adding Line from %f,%f to %f,%f', [LineStartX, LineStartY, LineEndX, LineEndY]));
   {$endif}
-  AData.StartPath(LineStartX, LineStartY);
-  AData.AddLineToPath(LineEndX, LineEndY);
-  AData.EndPath();}
+  if IsAlignedDimension then
+  begin
+    AData.AddAlignedDimension(BaseLeft, BaseRight, DimensionLeft, DimensionRight);
+  end;
 end;
 
 {

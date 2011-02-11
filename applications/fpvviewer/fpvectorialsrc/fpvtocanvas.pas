@@ -97,6 +97,17 @@ procedure DrawFPVectorialToCanvas(ASource: TvVectorialDocument;
   ADest: TFPCustomCanvas;
   {$endif}
   ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
+
+  function CoordToCanvasX(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestX + AmulX * ACoord);
+  end;
+
+  function CoordToCanvasY(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestY + AmulY * ACoord);
+  end;
+
 var
   i, j, k: Integer;
   PosX, PosY: Integer; // Not modified by ADestX, etc
@@ -115,6 +126,7 @@ var
   CurEllipse: TvEllipse;
   CurArc: TvCircularArc;
   FinalStartAngle, FinalEndAngle: double;
+  CurDim: TvAlignedDimension;
 begin
   {$ifdef FPVECTORIALDEBUG}
   WriteLn(':>DrawFPVectorialToCanvas');
@@ -222,6 +234,19 @@ begin
         Round(16*(FinalEndAngle - FinalStartAngle))
         );
       {$endif}
+    end
+    else if CurEntity is TvAlignedDimension then
+    begin
+      CurDim := CurEntity as TvAlignedDimension;
+{      ADest.MoveTo(CoordToCanvasX(CurDim.BaseRight.X), CoordToCanvasY(CurDim.BaseRight.Y));
+      ADest.LineTo(CoordToCanvasX(CurDim.DimensionRight.X), CoordToCanvasY(CurDim.DimensionRight.Y));
+      ADest.LineTo(CoordToCanvasX(CurDim.DimensionLeft.X), CoordToCanvasY(CurDim.DimensionLeft.Y));
+      ADest.LineTo(CoordToCanvasX(CurDim.BaseLeft.X), CoordToCanvasY(CurDim.BaseLeft.Y));}
+      // Debug info
+//      ADest.TextOut(CoordToCanvasX(CurDim.BaseRight.X), CoordToCanvasY(CurDim.BaseRight.Y), 'BR');
+//      ADest.TextOut(CoordToCanvasX(CurDim.DimensionRight.X), CoordToCanvasY(CurDim.DimensionRight.Y), 'DR');
+//      ADest.TextOut(CoordToCanvasX(CurDim.DimensionLeft.X), CoordToCanvasY(CurDim.DimensionLeft.Y), 'DL');
+//      ADest.TextOut(CoordToCanvasX(CurDim.BaseLeft.X), CoordToCanvasY(CurDim.BaseLeft.Y), 'BL');
     end;
   end;
 
