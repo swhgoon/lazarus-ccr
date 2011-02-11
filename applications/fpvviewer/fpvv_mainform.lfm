@@ -11,7 +11,7 @@ object frmFPVViewer: TfrmFPVViewer
   LCLVersion = '0.9.31'
   object editFileName: TFileNameEdit
     Left = 8
-    Height = 22
+    Height = 25
     Top = 8
     Width = 304
     DialogOptions = []
@@ -33,7 +33,7 @@ object frmFPVViewer: TfrmFPVViewer
   end
   object spinScale: TFloatSpinEdit
     Left = 72
-    Height = 16
+    Height = 25
     Top = 72
     Width = 64
     Increment = 1
@@ -44,23 +44,23 @@ object frmFPVViewer: TfrmFPVViewer
   end
   object Label1: TLabel
     Left = 8
-    Height = 17
+    Height = 18
     Top = 79
-    Width = 56
+    Width = 58
     Caption = 'Scale by:'
     ParentColor = False
   end
   object Label2: TLabel
     Left = 8
-    Height = 17
+    Height = 18
     Top = 104
-    Width = 73
+    Width = 76
     Caption = 'Start Pos X:'
     ParentColor = False
   end
   object spinStartX: TSpinEdit
     Left = 98
-    Height = 16
+    Height = 25
     Top = 99
     Width = 46
     MaxValue = 1000
@@ -69,7 +69,7 @@ object frmFPVViewer: TfrmFPVViewer
   end
   object spinStartY: TSpinEdit
     Left = 240
-    Height = 16
+    Height = 25
     Top = 99
     Width = 50
     MaxValue = 1000
@@ -78,9 +78,9 @@ object frmFPVViewer: TfrmFPVViewer
   end
   object Label3: TLabel
     Left = 152
-    Height = 17
+    Height = 18
     Top = 104
-    Width = 72
+    Width = 73
     Caption = 'Start Pos Y:'
     ParentColor = False
   end
@@ -109,8 +109,8 @@ object frmFPVViewer: TfrmFPVViewer
     object pageViewer: TPage
     end
     object Page2: TPage
-      ClientWidth = 21504
-      ClientHeight = 20032
+      ClientWidth = 43008
+      ClientHeight = 40064
       object DXFTreeView: TTreeView
         Left = 8
         Height = 313

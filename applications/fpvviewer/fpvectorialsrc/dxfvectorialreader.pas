@@ -326,7 +326,7 @@ end;
 procedure TvDXFVectorialReader.ReadHEADER(ATokens: TDXFTokens;
   AData: TvVectorialDocument);
 var
-  i: Integer;
+  i, j: Integer;
   CurToken: TDXFToken;
 begin
   i := 0;
@@ -348,12 +348,23 @@ begin
     // This indicates the size of the document
     else if CurToken.StrValue = '$LIMMAX' then
     begin
-      {$Warning Actually verify if the values are present in this order}
-      CurToken := TDXFToken(ATokens.Items[i+1]); // If Group 10
-      aData.Width := StrToFloat(CurToken.StrValue);
-      CurToken := TDXFToken(ATokens.Items[i+2]); // If Group 20
-      aData.Height := StrToFloat(CurToken.StrValue);
-      Inc(i, 2);
+      // Check the next 2 items and verify if they are the values of the size of the document
+      for j := 0 to 1 do
+      begin
+        CurToken := TDXFToken(ATokens.Items[i+1]);
+        case CurToken.GroupCode of
+        10:
+        begin;
+          aData.Width := StrToFloat(CurToken.StrValue, FPointSeparator);
+          Inc(i);
+        end;
+        20:
+        begin
+          aData.Height := StrToFloat(CurToken.StrValue, FPointSeparator);
+          Inc(i);
+        end;
+        end;
+      end;
     end;
 
     Inc(i);
@@ -427,6 +438,8 @@ begin
 end;
 
 {
+Arcs are always counter-clockwise in DXF
+
 100 Subclass marker (AcDbCircle)
 39 Thickness (optional; default = 0)
 10 Center point (in OCS) DXF: X value; APP: 3D point
@@ -633,29 +646,34 @@ begin
     end;
   end;
 
-  // Now make sure that we actually have the right positions
-  if BaseRight.X < BaseLeft.X then
-  begin
-    TmpPoint := BaseRight;
-    BaseRight := BaseLeft;
-    BaseLeft := TmpPoint;
-  end;
-
-  // Considering the the Base and the Dimension position must form a parallelogram
-  // we can solve the other dimention point through the midpoint formula
-  // which means that in a paralelogram A, B, C, D, with A and D opposites
-  // midpoint(AD)=midpoint(BC)
-  // in our case: A=BaseLeft B=DimLeft C=BaseRight D=DimRIght
-  // midpoint(AD)x=(Ax+Dx)/2
-  DimensionLeft.X := BaseLeft.X - BaseRight.X + DimensionRight.X;
-  DimensionLeft.Y := BaseLeft.Y - BaseRight.Y + DimensionRight.Y;
-
   // And now write it
   {$ifdef FPVECTORIALDEBUG}
 //  WriteLn(Format('Adding Line from %f,%f to %f,%f', [LineStartX, LineStartY, LineEndX, LineEndY]));
   {$endif}
   if IsAlignedDimension then
   begin
+    // Now make sure that we actually have the right positions
+    if BaseRight.X < BaseLeft.X then
+    begin
+      TmpPoint := BaseRight;
+      BaseRight := BaseLeft;
+      BaseLeft := TmpPoint;
+    end;
+
+    // Now check if we are a horizontal or vertical dimension
+
+    // horizontal
+    if DimensionRight.Y = BaseRight.Y then
+    begin
+      DimensionLeft.X := BaseLeft.X;
+      DimensionLeft.Y := DimensionRight.Y;
+    end
+    else
+    begin
+      DimensionLeft.Y := BaseLeft.Y;
+      DimensionLeft.X := DimensionRight.X;
+    end;
+
     AData.AddAlignedDimension(BaseLeft, BaseRight, DimensionLeft, DimensionRight);
   end;
 end;

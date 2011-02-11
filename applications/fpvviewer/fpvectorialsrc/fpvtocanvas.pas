@@ -125,7 +125,8 @@ var
   CurCircle: TvCircle;
   CurEllipse: TvEllipse;
   CurArc: TvCircularArc;
-  FinalStartAngle, FinalEndAngle: double;
+  FinalStartAngle, FinalEndAngle, tmpAngle: double;
+  BoundsLeft, BoundsTop, BoundsRight, BoundsBottom: Word;
   CurDim: TvAlignedDimension;
 begin
   {$ifdef FPVECTORIALDEBUG}
@@ -134,6 +135,7 @@ begin
 
   PosX := 0;
   PosY := 0;
+  ADest.Brush.Style := bsClear;
 
   ADest.MoveTo(ADestX, ADestY);
 
@@ -151,17 +153,11 @@ begin
       case CurSegment.SegmentType of
       stMoveTo:
       begin
-        ADest.MoveTo(
-          Round(ADestX + AMulX * Cur2DSegment.X),
-          Round(ADestY + AMulY * Cur2DSegment.Y)
-          );
+        ADest.MoveTo(CoordToCanvasX(Cur2DSegment.X), CoordToCanvasY(Cur2DSegment.Y));
       end;
       st2DLine, st3DLine:
       begin
-        ADest.LineTo(
-          Round(ADestX + AMulX * Cur2DSegment.X),
-          Round(ADestY + AMulY * Cur2DSegment.Y)
-          );
+        ADest.LineTo(CoordToCanvasX(Cur2DSegment.X), CoordToCanvasY(Cur2DSegment.Y));
       end;
       { To draw a bezier we need to divide the interval in parts and make
         lines between this parts }
@@ -177,9 +173,7 @@ begin
           t := k / CurveLength;
           CurX := Round(sqr(1 - t) * (1 - t) * PosX + 3 * t * sqr(1 - t) * Cur2DBSegment.X2 + 3 * t * t * (1 - t) * Cur2DBSegment.X3 + t * t * t * Cur2DBSegment.X);
           CurY := Round(sqr(1 - t) * (1 - t) * PosY + 3 * t * sqr(1 - t) * Cur2DBSegment.Y2 + 3 * t * t * (1 - t) * Cur2DBSegment.Y3 + t * t * t * Cur2DBSegment.Y);
-          ADest.LineTo(
-            Round(ADestX + AMulX * CurX),
-            Round(ADestY + AMulY * CurY));
+          ADest.LineTo(CoordToCanvasX(CurX), CoordToCanvasY(CurY));
         end;
         PosX := Round(Cur2DBSegment.X);
         PosY := Round(Cur2DBSegment.Y);
@@ -196,10 +190,10 @@ begin
     begin
       CurCircle := CurEntity as TvCircle;
       ADest.Ellipse(
-        Round(ADestX + AmulX * (CurCircle.CenterX - CurCircle.Radius)),
-        Round(ADestY + AMulY * (CurCircle.CenterY - CurCircle.Radius)),
-        Round(ADestX + AmulX * (CurCircle.CenterX + CurCircle.Radius)),
-        Round(ADestY + AMulY * (CurCircle.CenterY + CurCircle.Radius))
+        CoordToCanvasX(CurCircle.CenterX - CurCircle.Radius),
+        CoordToCanvasY(CurCircle.CenterY - CurCircle.Radius),
+        CoordToCanvasX(CurCircle.CenterX + CurCircle.Radius),
+        CoordToCanvasY(CurCircle.CenterY + CurCircle.Radius)
         );
     end
     else if CurEntity is TvEllipse then
@@ -217,22 +211,32 @@ begin
       begin
         FinalStartAngle := CurArc.StartAngle;
         FinalEndAngle := CurArc.EndAngle;
+        BoundsLeft := CoordToCanvasX(CurArc.CenterX - CurArc.Radius);
+        BoundsTop := CoordToCanvasY(CurArc.CenterY - CurArc.Radius);
+        BoundsRight := CoordToCanvasY(CurArc.CenterX + CurArc.Radius);
+        BoundsBottom := CoordToCanvasY(CurArc.CenterY + CurArc.Radius);
       end
       else // AMulY is negative
       begin
         // Inverting the angles generates the correct result for Y axis inversion
         FinalStartAngle := 360 - 1* CurArc.EndAngle;
         FinalEndAngle := 360 - 1* CurArc.StartAngle;
+        BoundsLeft := CoordToCanvasX(CurArc.CenterX - CurArc.Radius);
+        BoundsTop := CoordToCanvasY(CurArc.CenterY + CurArc.Radius);
+        BoundsRight := CoordToCanvasY(CurArc.CenterX + CurArc.Radius);
+        BoundsBottom := CoordToCanvasY(CurArc.CenterY - CurArc.Radius);
       end;
       // Arc(ALeft, ATop, ARight, ABottom, Angle16Deg, Angle16DegLength: Integer);
       ADest.Arc(
-        Round(ADestX + AmulX * (CurArc.CenterX - CurArc.Radius)),
-        Round(ADestY + AmulY * (CurArc.CenterY - CurArc.Radius)),
-        Round(ADestX + AmulX * (CurArc.CenterX + CurArc.Radius)),
-        Round(ADestY + AmulY * (CurArc.CenterY + CurArc.Radius)),
+        BoundsLeft, BoundsTop, BoundsRight, BoundsBottom,
         Round(16*FinalStartAngle),
-        Round(16*(FinalEndAngle - FinalStartAngle))
+        Abs(Round(16*(FinalEndAngle - FinalStartAngle)))
         );
+      // Debug info
+{      ADest.TextOut(CoordToCanvasX(CurArc.CenterX), CoordToCanvasY(CurArc.CenterY),
+        Format('R=%d', [Round(CurArc.Radius)]));
+      ADest.Rectangle(
+        BoundsLeft, BoundsTop, BoundsRight, BoundsBottom);}
       {$endif}
     end
     else if CurEntity is TvAlignedDimension then
@@ -241,12 +245,12 @@ begin
 {      ADest.MoveTo(CoordToCanvasX(CurDim.BaseRight.X), CoordToCanvasY(CurDim.BaseRight.Y));
       ADest.LineTo(CoordToCanvasX(CurDim.DimensionRight.X), CoordToCanvasY(CurDim.DimensionRight.Y));
       ADest.LineTo(CoordToCanvasX(CurDim.DimensionLeft.X), CoordToCanvasY(CurDim.DimensionLeft.Y));
-      ADest.LineTo(CoordToCanvasX(CurDim.BaseLeft.X), CoordToCanvasY(CurDim.BaseLeft.Y));}
+      ADest.LineTo(CoordToCanvasX(CurDim.BaseLeft.X), CoordToCanvasY(CurDim.BaseLeft.Y));
       // Debug info
-//      ADest.TextOut(CoordToCanvasX(CurDim.BaseRight.X), CoordToCanvasY(CurDim.BaseRight.Y), 'BR');
-//      ADest.TextOut(CoordToCanvasX(CurDim.DimensionRight.X), CoordToCanvasY(CurDim.DimensionRight.Y), 'DR');
-//      ADest.TextOut(CoordToCanvasX(CurDim.DimensionLeft.X), CoordToCanvasY(CurDim.DimensionLeft.Y), 'DL');
-//      ADest.TextOut(CoordToCanvasX(CurDim.BaseLeft.X), CoordToCanvasY(CurDim.BaseLeft.Y), 'BL');
+      ADest.TextOut(CoordToCanvasX(CurDim.BaseRight.X), CoordToCanvasY(CurDim.BaseRight.Y), 'BR');
+      ADest.TextOut(CoordToCanvasX(CurDim.DimensionRight.X), CoordToCanvasY(CurDim.DimensionRight.Y), 'DR');
+      ADest.TextOut(CoordToCanvasX(CurDim.DimensionLeft.X), CoordToCanvasY(CurDim.DimensionLeft.Y), 'DL');
+      ADest.TextOut(CoordToCanvasX(CurDim.BaseLeft.X), CoordToCanvasY(CurDim.BaseLeft.Y), 'BL');}
     end;
   end;
 
