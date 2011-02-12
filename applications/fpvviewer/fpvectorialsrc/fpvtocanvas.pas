@@ -284,6 +284,7 @@ begin
         Points[0].X := CoordToCanvasX((CurDim.DimensionLeft.X+CurDim.DimensionRight.X)/2);
         Points[0].Y := CoordToCanvasY(CurDim.DimensionLeft.Y);
         LowerDim.X := CurDim.DimensionRight.X-CurDim.DimensionLeft.X;
+        ADest.Font.Size := 10;
         ADest.TextOut(Points[0].X, Points[0].Y, Format('%.1f', [LowerDim.X]));
       end
       else
@@ -317,6 +318,7 @@ begin
         Points[0].Y := CoordToCanvasY((CurDim.DimensionLeft.Y+CurDim.DimensionRight.Y)/2);
         LowerDim.Y := CurDim.DimensionRight.Y-CurDim.DimensionLeft.Y;
         if LowerDim.Y < 0 then LowerDim.Y := -1 * LowerDim.Y;
+        ADest.Font.Size := 10;
         ADest.TextOut(Points[0].X, Points[0].Y, Format('%.1f', [LowerDim.Y]));
       end;
       SetLength(Points, 0);
