@@ -652,7 +652,7 @@ begin
   {$endif}
   if IsAlignedDimension then
   begin
-    // Now make sure that we actually have the right positions
+    // Now make sure that we actually that BaseLeft is to the left of BaseRight
     if BaseRight.X < BaseLeft.X then
     begin
       TmpPoint := BaseRight;

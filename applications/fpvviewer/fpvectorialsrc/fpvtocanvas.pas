@@ -124,11 +124,15 @@ var
   CurEntity: TvEntity;
   CurCircle: TvCircle;
   CurEllipse: TvEllipse;
+  //
   CurArc: TvCircularArc;
   FinalStartAngle, FinalEndAngle, tmpAngle: double;
   BoundsLeft, BoundsTop, BoundsRight, BoundsBottom,
    IntStartAngle, IntAngleLength: Integer;
+  //
   CurDim: TvAlignedDimension;
+  Points: array of TPoint;
+  UpperDim, LowerDim: T3DPoint;
 begin
   {$ifdef FPVECTORIALDEBUG}
   WriteLn(':>DrawFPVectorialToCanvas');
@@ -247,10 +251,75 @@ begin
     else if CurEntity is TvAlignedDimension then
     begin
       CurDim := CurEntity as TvAlignedDimension;
+      //
+      // Draws this shape:
+      // vertical     horizontal
+      // ___
+      // | |     or   ---| X cm
+      //   |           --|
+      // Which marks the dimension
       ADest.MoveTo(CoordToCanvasX(CurDim.BaseRight.X), CoordToCanvasY(CurDim.BaseRight.Y));
       ADest.LineTo(CoordToCanvasX(CurDim.DimensionRight.X), CoordToCanvasY(CurDim.DimensionRight.Y));
       ADest.LineTo(CoordToCanvasX(CurDim.DimensionLeft.X), CoordToCanvasY(CurDim.DimensionLeft.Y));
       ADest.LineTo(CoordToCanvasX(CurDim.BaseLeft.X), CoordToCanvasY(CurDim.BaseLeft.Y));
+      // Now the arrows
+      // horizontal
+      SetLength(Points, 3);
+      if CurDim.DimensionRight.Y = CurDim.DimensionLeft.Y then
+      begin
+        ADest.Brush.Color := clBlack;
+        ADest.Brush.Style := bsSolid;
+        // Left arrow
+        Points[0] := Point(CoordToCanvasX(CurDim.DimensionLeft.X), CoordToCanvasY(CurDim.DimensionLeft.Y));
+        Points[1] := Point(Points[0].X + 7, Points[0].Y - 3);
+        Points[2] := Point(Points[0].X + 7, Points[0].Y + 3);
+        ADest.Polygon(Points);
+        // Right arrow
+        Points[0] := Point(CoordToCanvasX(CurDim.DimensionRight.X), CoordToCanvasY(CurDim.DimensionRight.Y));
+        Points[1] := Point(Points[0].X - 7, Points[0].Y - 3);
+        Points[2] := Point(Points[0].X - 7, Points[0].Y + 3);
+        ADest.Polygon(Points);
+        ADest.Brush.Style := bsClear;
+        // Dimension text
+        Points[0].X := CoordToCanvasX((CurDim.DimensionLeft.X+CurDim.DimensionRight.X)/2);
+        Points[0].Y := CoordToCanvasY(CurDim.DimensionLeft.Y);
+        LowerDim.X := CurDim.DimensionRight.X-CurDim.DimensionLeft.X;
+        ADest.TextOut(Points[0].X, Points[0].Y, Format('%.1f', [LowerDim.X]));
+      end
+      else
+      begin
+        ADest.Brush.Color := clBlack;
+        ADest.Brush.Style := bsSolid;
+        // There is no upper/lower preference for DimensionLeft/Right, so we need to check
+        if CurDim.DimensionLeft.Y > CurDim.DimensionRight.Y then
+        begin
+          UpperDim := CurDim.DimensionLeft;
+          LowerDim := CurDim.DimensionRight;
+        end
+        else
+        begin
+          UpperDim := CurDim.DimensionRight;
+          LowerDim := CurDim.DimensionLeft;
+        end;
+        // Upper arrow
+        Points[0] := Point(CoordToCanvasX(UpperDim.X), CoordToCanvasY(UpperDim.Y));
+        Points[1] := Point(Points[0].X + Round(AMulX), Points[0].Y - Round(AMulY*3));
+        Points[2] := Point(Points[0].X - Round(AMulX), Points[0].Y - Round(AMulY*3));
+        ADest.Polygon(Points);
+        // Lower arrow
+        Points[0] := Point(CoordToCanvasX(LowerDim.X), CoordToCanvasY(LowerDim.Y));
+        Points[1] := Point(Points[0].X + Round(AMulX), Points[0].Y + Round(AMulY*3));
+        Points[2] := Point(Points[0].X - Round(AMulX), Points[0].Y + Round(AMulY*3));
+        ADest.Polygon(Points);
+        ADest.Brush.Style := bsClear;
+        // Dimension text
+        Points[0].X := CoordToCanvasX(CurDim.DimensionLeft.X);
+        Points[0].Y := CoordToCanvasY((CurDim.DimensionLeft.Y+CurDim.DimensionRight.Y)/2);
+        LowerDim.Y := CurDim.DimensionRight.Y-CurDim.DimensionLeft.Y;
+        if LowerDim.Y < 0 then LowerDim.Y := -1 * LowerDim.Y;
+        ADest.TextOut(Points[0].X, Points[0].Y, Format('%.1f', [LowerDim.Y]));
+      end;
+      SetLength(Points, 0);
 {      // Debug info
       ADest.TextOut(CoordToCanvasX(CurDim.BaseRight.X), CoordToCanvasY(CurDim.BaseRight.Y), 'BR');
       ADest.TextOut(CoordToCanvasX(CurDim.DimensionRight.X), CoordToCanvasY(CurDim.DimensionRight.Y), 'DR');
