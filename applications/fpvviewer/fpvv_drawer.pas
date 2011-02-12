@@ -12,6 +12,9 @@ type
   { TFPVVDrawer }
 
   TFPVVDrawer = class(TCustomControl)
+  private
+    DragDropStarted: Boolean;
+    DragStartPos: TPoint;
   public
     PosX, PosY: Integer;
     Drawing: TBitmap;
@@ -21,6 +24,10 @@ type
     procedure Paint; override;
     procedure HandleKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure HandleClick(Sender: TObject);
+    procedure HandleMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure HandleMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure Clear;
   end;
 
@@ -35,6 +42,8 @@ begin
 
   OnKeyDown := @HandleKeyDown;
   OnClick := @HandleClick;
+  OnMouseDown := @HandleMouseDown;
+  OnMouseUp := @HandleMouseUp;
 end;
 
 destructor TFPVVDrawer.Destroy;
@@ -74,6 +83,28 @@ end;
 procedure TFPVVDrawer.HandleClick(Sender: TObject);
 begin
   Self.SetFocus();
+end;
+
+procedure TFPVVDrawer.HandleMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if not DragDropStarted then
+  begin
+    DragDropStarted := True;
+    DragStartPos := Point(X, Y);
+  end;
+end;
+
+procedure TFPVVDrawer.HandleMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if DragDropStarted then
+  begin
+    DragDropStarted := False;
+    PosX := PosX + (X - DragStartPos.X);
+    PosY := PosY + (Y - DragStartPos.Y);
+    Invalidate();
+  end;
 end;
 
 procedure TFPVVDrawer.Clear;

@@ -663,15 +663,36 @@ begin
     // Now check if we are a horizontal or vertical dimension
 
     // horizontal
-    if DimensionRight.Y = BaseRight.Y then
+    //
+    //DL____ DR
+    //  |  |
+    //  |  |
+    // BL  BR
+    if DimensionRight.X = BaseRight.X then
     begin
       DimensionLeft.X := BaseLeft.X;
       DimensionLeft.Y := DimensionRight.Y;
     end
-    else
+    // vertical
+    //
+    // BL ----|DR
+    //  BR  --|DL
+    //
+    // In this case we invert then DR and DL
+    else if DimensionRight.Y = BaseLeft.Y then
     begin
-      DimensionLeft.Y := BaseLeft.Y;
+      DimensionLeft := DimensionRight;
+      DimensionRight.Y := BaseRight.Y;
+    end
+    // vertical
+    //
+    // BL ----|DL
+    //  BR  --|DR
+    //
+    else if DimensionRight.Y = BaseRight.Y then
+    begin
       DimensionLeft.X := DimensionRight.X;
+      DimensionLeft.Y := BaseLeft.Y;
     end;
 
     AData.AddAlignedDimension(BaseLeft, BaseRight, DimensionLeft, DimensionRight);

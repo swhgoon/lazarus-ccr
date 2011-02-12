@@ -126,7 +126,8 @@ var
   CurEllipse: TvEllipse;
   CurArc: TvCircularArc;
   FinalStartAngle, FinalEndAngle, tmpAngle: double;
-  BoundsLeft, BoundsTop, BoundsRight, BoundsBottom: Word;
+  BoundsLeft, BoundsTop, BoundsRight, BoundsBottom,
+   IntStartAngle, IntAngleLength: Integer;
   CurDim: TvAlignedDimension;
 begin
   {$ifdef FPVECTORIALDEBUG}
@@ -207,15 +208,15 @@ begin
       {$ifdef USE_LCL_CANVAS}
       // ToDo: Consider a X axis inversion
       // If the Y axis is inverted, then we need to mirror our angles as well
-      if AMulY > 0 then
-      begin
+{      if AMulY > 0 then
+      begin}
         FinalStartAngle := CurArc.StartAngle;
         FinalEndAngle := CurArc.EndAngle;
         BoundsLeft := CoordToCanvasX(CurArc.CenterX - CurArc.Radius);
         BoundsTop := CoordToCanvasY(CurArc.CenterY - CurArc.Radius);
-        BoundsRight := CoordToCanvasY(CurArc.CenterX + CurArc.Radius);
+        BoundsRight := CoordToCanvasX(CurArc.CenterX + CurArc.Radius);
         BoundsBottom := CoordToCanvasY(CurArc.CenterY + CurArc.Radius);
-      end
+{      end
       else // AMulY is negative
       begin
         // Inverting the angles generates the correct result for Y axis inversion
@@ -223,31 +224,34 @@ begin
         FinalEndAngle := 360 - 1* CurArc.StartAngle;
         BoundsLeft := CoordToCanvasX(CurArc.CenterX - CurArc.Radius);
         BoundsTop := CoordToCanvasY(CurArc.CenterY + CurArc.Radius);
-        BoundsRight := CoordToCanvasY(CurArc.CenterX + CurArc.Radius);
+        BoundsRight := CoordToCanvasX(CurArc.CenterX + CurArc.Radius);
         BoundsBottom := CoordToCanvasY(CurArc.CenterY - CurArc.Radius);
-      end;
+      end;}
+      IntStartAngle := Round(16*FinalStartAngle);
+      IntAngleLength := Abs(Round(16*(FinalEndAngle - FinalStartAngle)));
       // Arc(ALeft, ATop, ARight, ABottom, Angle16Deg, Angle16DegLength: Integer);
       ADest.Arc(
         BoundsLeft, BoundsTop, BoundsRight, BoundsBottom,
-        Round(16*FinalStartAngle),
-        Abs(Round(16*(FinalEndAngle - FinalStartAngle)))
+        IntStartAngle, IntAngleLength
         );
       // Debug info
-      ADest.TextOut(CoordToCanvasX(CurArc.CenterX), CoordToCanvasY(CurArc.CenterY),
-        Format('R=%d S=%d L=%d', [Round(CurArc.Radius), Round(16*FinalStartAngle),
-        Abs(Round(16*(FinalEndAngle - FinalStartAngle)))]));
-{      ADest.Rectangle(
-        BoundsLeft, BoundsTop, BoundsRight, BoundsBottom);}
+{      ADest.TextOut(CoordToCanvasX(CurArc.CenterX), CoordToCanvasY(CurArc.CenterY),
+        Format('R=%d S=%d L=%d', [Round(CurArc.Radius*AMulX), Round(FinalStartAngle),
+        Abs(Round((FinalEndAngle - FinalStartAngle)))]));
+      ADest.Pen.Color := TColor($DDDDDD);
+      ADest.Rectangle(
+        BoundsLeft, BoundsTop, BoundsRight, BoundsBottom);
+      ADest.Pen.Color := clBlack;}
       {$endif}
     end
     else if CurEntity is TvAlignedDimension then
     begin
       CurDim := CurEntity as TvAlignedDimension;
-{      ADest.MoveTo(CoordToCanvasX(CurDim.BaseRight.X), CoordToCanvasY(CurDim.BaseRight.Y));
+      ADest.MoveTo(CoordToCanvasX(CurDim.BaseRight.X), CoordToCanvasY(CurDim.BaseRight.Y));
       ADest.LineTo(CoordToCanvasX(CurDim.DimensionRight.X), CoordToCanvasY(CurDim.DimensionRight.Y));
       ADest.LineTo(CoordToCanvasX(CurDim.DimensionLeft.X), CoordToCanvasY(CurDim.DimensionLeft.Y));
       ADest.LineTo(CoordToCanvasX(CurDim.BaseLeft.X), CoordToCanvasY(CurDim.BaseLeft.Y));
-      // Debug info
+{      // Debug info
       ADest.TextOut(CoordToCanvasX(CurDim.BaseRight.X), CoordToCanvasY(CurDim.BaseRight.Y), 'BR');
       ADest.TextOut(CoordToCanvasX(CurDim.DimensionRight.X), CoordToCanvasY(CurDim.DimensionRight.Y), 'DR');
       ADest.TextOut(CoordToCanvasX(CurDim.DimensionLeft.X), CoordToCanvasY(CurDim.DimensionLeft.Y), 'DL');
