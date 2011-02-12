@@ -17,13 +17,9 @@ type
     btnVisualize: TButton;
     btnViewDXFTokens: TButton;
     editFileName: TFileNameEdit;
-    Label2: TLabel;
-    Label3: TLabel;
     notebook: TNotebook;
     pageViewer: TPage;
     Page2: TPage;
-    spinStartX: TSpinEdit;
-    spinStartY: TSpinEdit;
     spinScale: TFloatSpinEdit;
     Label1: TLabel;
     DXFTreeView: TTreeView;
@@ -75,12 +71,13 @@ begin
     Drawer.Drawing.Width := Round(Vec.Width * spinScale.Value);
     Drawer.Drawing.Height := Round(Vec.Height * spinScale.Value);
     Drawer.Drawing.Canvas.Brush.Color := clWhite;
+    Drawer.Drawing.Canvas.Brush.Style := bsSolid;
     Drawer.Drawing.Canvas.FillRect(0, 0, Drawer.Drawing.Width, Drawer.Drawing.Height);
     DrawFPVectorialToCanvas(
       Vec,
       Drawer.Drawing.Canvas,
-      spinStartX.Value,
-      spinStartY.Value + Drawer.Drawing.Height,
+      0,
+      Drawer.Drawing.Height,
       spinScale.Value,
       -1 * spinScale.Value);
     Drawer.Invalidate;
@@ -117,6 +114,7 @@ begin
   Drawer.Top := 5;
   Drawer.Left := 5;
   Drawer.AnchorClient(5);
+  Drawer.TabStop := True;
 end;
 
 procedure TfrmFPVViewer.FormDestroy(Sender: TObject);

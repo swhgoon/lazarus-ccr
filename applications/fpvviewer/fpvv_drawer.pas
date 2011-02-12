@@ -20,6 +20,7 @@ type
     procedure EraseBackground(DC: HDC); override;
     procedure Paint; override;
     procedure HandleKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure HandleClick(Sender: TObject);
     procedure Clear;
   end;
 
@@ -33,6 +34,7 @@ begin
   Drawing := TBitmap.Create;
 
   OnKeyDown := @HandleKeyDown;
+  OnClick := @HandleClick;
 end;
 
 destructor TFPVVDrawer.Destroy;
@@ -48,6 +50,9 @@ end;
 
 procedure TFPVVDrawer.Paint;
 begin
+  Canvas.Brush.Color := clWhite;
+  Canvas.Brush.Style := bsSolid;
+  Canvas.FillRect(Self.ClientRect);
   Canvas.Draw(PosX, PosY, Drawing);
 //  inherited Paint;
 end;
@@ -64,6 +69,11 @@ begin
     Exit;
   end;
   Invalidate();
+end;
+
+procedure TFPVVDrawer.HandleClick(Sender: TObject);
+begin
+  Self.SetFocus();
 end;
 
 procedure TFPVVDrawer.Clear;

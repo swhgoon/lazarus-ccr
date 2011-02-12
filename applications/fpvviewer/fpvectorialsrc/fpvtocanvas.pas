@@ -233,9 +233,10 @@ begin
         Abs(Round(16*(FinalEndAngle - FinalStartAngle)))
         );
       // Debug info
-{      ADest.TextOut(CoordToCanvasX(CurArc.CenterX), CoordToCanvasY(CurArc.CenterY),
-        Format('R=%d', [Round(CurArc.Radius)]));
-      ADest.Rectangle(
+      ADest.TextOut(CoordToCanvasX(CurArc.CenterX), CoordToCanvasY(CurArc.CenterY),
+        Format('R=%d S=%d L=%d', [Round(CurArc.Radius), Round(16*FinalStartAngle),
+        Abs(Round(16*(FinalEndAngle - FinalStartAngle)))]));
+{      ADest.Rectangle(
         BoundsLeft, BoundsTop, BoundsRight, BoundsBottom);}
       {$endif}
     end
