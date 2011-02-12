@@ -384,7 +384,8 @@ begin
     else if CurToken.StrValue = 'DIMENSION' then ReadENTITIES_DIMENSION(CurToken.Childs, AData)
     else if CurToken.StrValue = 'ELLIPSE' then ReadENTITIES_ELLIPSE(CurToken.Childs, AData)
     else if CurToken.StrValue = 'LINE' then ReadENTITIES_LINE(CurToken.Childs, AData)
-    else if CurToken.StrValue = 'TEXT' then
+    else if CurToken.StrValue = 'TEXT' then ReadENTITIES_TEXT(CurToken.Childs, AData)
+    else
     begin
       // ...
     end;

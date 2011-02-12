@@ -332,10 +332,12 @@ begin
   for i := 0 to ASource.GetTextCount - 1 do
   begin
     CurText := ASource.GetText(i);
-    ADest.Font.Height := Round(AmulY * CurText.FontSize);
+    ADest.Font.Size := Round(AmulX * CurText.FontSize);
     ADest.Pen.Style := psSolid;
     ADest.Pen.Color := clBlack;
-    ADest.TextOut(Round(CurText.X), Round(CurText.Y), CurText.Value);
+    ADest.Brush.Style := bsClear;
+    LowerDim.Y := CurText.Y + CurText.FontSize;
+    ADest.TextOut(CoordToCanvasX(CurText.X), CoordToCanvasY(LowerDim.Y), CurText.Value);
   end;
 
   {$ifdef FPVECTORIALDEBUG}
