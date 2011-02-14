@@ -22,6 +22,8 @@ uses
   nsTypes;
 
 const
+  EncoderService_CID_BASE = '@mozilla.org/layout/documentEncoder;1?type=';
+
   NS_ISUPPORTS_IID: TGUID = '{00000000-0000-0000-c000-000000000046}';
 
   MOZIJSSUBSCRIPTLOADER_IID: TGUID = '{8792d77e-1dd2-11b2-ac7f-9bc9be4f2916}';
@@ -60,7 +62,23 @@ const
   NS_IAUTHPROMPT_SAVE_PASSWORD_FOR_SESSION = 1;
   NS_IAUTHPROMPT_SAVE_PASSWORD_PERMANENTLY = 2;
 
+  NS_IAUTHINFORMATION_IID: TGUID = '{0D73639C-2A92-4518-9F92-28F71FEA5F20}';
+  NS_IAUTHINFORMATION_AUTH_HOST = 1;
+  NS_IAUTHINFORMATION_AUTH_PROXY = 2;
+  NS_IAUTHINFORMATION_NEED_DOMAIN = 4;
+  NS_IAUTHINFORMATION_ONLY_PASSWORD = 8;
+
+  NS_IAUTHPROMPT2_IID: TGUID = '{651395EB-8612-4876-8AC0-A88D4DCE9E1E}';
+
+  NS_IAUTHPROMPT2_LEVEL_NONE = 0;
+  NS_IAUTHPROMPT2_LEVEL_PW_ENCRYPTED = 1;
+  NS_IAUTHPROMPT2_LEVEL_SECURE = 2;
+
+  NS_IAUTHPROMPTCALLBACK_IID: TGUID = '{BDC387D7-2D29-4CAC-92F1-DD75D786631D}';
+
   NS_ISIMPLEENUMERATOR_IID: TGUID = '{d1899240-f9d2-11d2-bdd6-000064657374}';
+
+  NS_ICANCELABLE_IID: TGUID = '{D94AC0A0-BB18-46B8-844E-84159064B0BD}';
 
   NS_ICATEGORYMANAGER_IID: TGUID = '{3275b2cd-af6d-429a-80d7-f0c5120342ac}';
 
@@ -137,6 +155,30 @@ const
   NS_IDIRECTORYSERVICEPROVIDER2_IID: TGUID = '{2f977d4b-5485-11d4-87e2-0010a4e75ef2}';
 
   NS_IDIRECTORYSERVICE_IID: TGUID = '{57a66a60-d43a-11d3-8cc2-00609792278c}';
+
+  NS_IDOCUMENTENCODERNODEFIXUP_IID: TGUID = '{C0DA5B87-0BA7-4D7C-8CB3-FCB02AF4253D}';
+
+  NS_IDOCUMENTENCODER_IID: TGUID = '{F85C5A20-258D-11DB-A98B-0800200C9A66}';
+
+  NS_IDOCUMENTENCODER_OutputSelectionOnly = Cardinal(1);
+  NS_IDOCUMENTENCODER_OutputFormatted = Cardinal(2);
+  NS_IDOCUMENTENCODER_OutputRaw = Cardinal(4);
+  NS_IDOCUMENTENCODER_OutputBodyOnly = Cardinal(8);
+  NS_IDOCUMENTENCODER_OutputPreformatted = Cardinal(16);
+  NS_IDOCUMENTENCODER_OutputWrap = Cardinal(32);
+  NS_IDOCUMENTENCODER_OutputFormatFlowed = Cardinal(64);
+  NS_IDOCUMENTENCODER_OutputAbsoluteLinks = Cardinal(128);
+  NS_IDOCUMENTENCODER_OutputEncodeW3CEntities = Cardinal(256);
+  NS_IDOCUMENTENCODER_OutputCRLineBreak = Cardinal(512);
+  NS_IDOCUMENTENCODER_OutputLFLineBreak = Cardinal(1024);
+  NS_IDOCUMENTENCODER_OutputNoScriptContent = Cardinal(2048);
+  NS_IDOCUMENTENCODER_OutputNoFramesContent = Cardinal(4096);
+  NS_IDOCUMENTENCODER_OutputNoFormattingInPre = Cardinal(8192);
+  NS_IDOCUMENTENCODER_OutputEncodeBasicEntities = Cardinal(16384);
+  NS_IDOCUMENTENCODER_OutputEncodeLatin1Entities = Cardinal(32768);
+  NS_IDOCUMENTENCODER_OutputEncodeHTMLEntities = Cardinal(65536);
+  NS_IDOCUMENTENCODER_OutputPersistNBSP = Cardinal(131072);
+  NS_IDOCUMENTENCODER_OutputDontRewriteEncodingDeclaration = Cardinal(262144);
 
   NS_IDOM3DOCUMENTEVENT_IID: TGUID = '{090ecc19-b7cb-4f47-ae47-ed68d4926249}';
 
@@ -588,6 +630,7 @@ const
   NS_IPROGRAMMINGLANGUAGE_MAX = 10;
 
   NS_IPROMPT_IID: TGUID = '{a63f70c0-148b-11d3-9333-00104ba0fd40}';
+
   NS_IPROMPT_BUTTON_POS_0 = 1;
   NS_IPROMPT_BUTTON_POS_1 = 256;
   NS_IPROMPT_BUTTON_POS_2 = 65536;
@@ -607,6 +650,7 @@ const
   NS_IPROMPT_STD_YES_NO_BUTTONS = 1027;
 
   NS_IPROMPTSERVICE_IID: TGUID = '{1630c61a-325e-49ca-8759-a31b16c47aa5}';
+
   NS_IPROMPTSERVICE_BUTTON_POS_0 = 1;
   NS_IPROMPTSERVICE_BUTTON_POS_1 = 256;
   NS_IPROMPTSERVICE_BUTTON_POS_2 = 65536;
@@ -624,6 +668,8 @@ const
   NS_IPROMPTSERVICE_BUTTON_DELAY_ENABLE = 67108864;
   NS_IPROMPTSERVICE_STD_OK_CANCEL_BUTTONS = 513;
   NS_IPROMPTSERVICE_STD_YES_NO_BUTTONS = 1027;
+
+  NS_IPROMPTSERVICE2_IID: TGUID = '{CF86D196-DBEE-4482-9DFA-3477AA128319}';
 
   NS_IPROPERTIES_IID: TGUID = '{78650582-4e93-4b60-8e85-26ebd3eb14ca}';
 
@@ -882,6 +928,8 @@ type
   nsIDirectoryServiceProvider = interface;
   nsIDirectoryServiceProvider2 = interface;
   nsIDirectoryService = interface;
+  nsIDocumentEncoder = interface;
+  nsIDocumentEncoderNodeFixup = interface;
   nsIDOM3DocumentEvent = interface;
   nsIDOM3EventTarget = interface;
   nsIDOMAbstractView = interface;
@@ -1153,6 +1201,19 @@ type
     property IsExpanded: PRBool read GetIsExpanded write SetIsExpanded;
   end;
 
+  nsIAuthInformation = interface(nsISupports)
+    ['{0D73639C-2A92-4518-9F92-28F71FEA5F20}']
+    procedure GetFlags(out aFlags: PRUINT32); safecall;
+    procedure GetRealm(aRealm: nsAString); safecall;
+    procedure GetAuthenticationScheme(aAuthenticationScheme: nsACString); safecall;
+    procedure GetUsername(aUsername: nsAString); safecall;
+    procedure SetUsername(const aUsername: nsAString); safecall;
+    procedure GetPassword(aPassword: nsAString); safecall;
+    procedure SetPassword(const aPassword: nsAString); safecall;
+    procedure GetDomain(aDomain: nsAString); safecall;
+    procedure SetDomain(const aDomain: nsAString); safecall;
+  end;
+
   nsIAuthPrompt = interface(nsISupports)
   ['{358089f9-ee4b-4711-82fd-bcd07fc62061}']
     function Prompt(const dialogTitle: PWideChar; const text: PWideChar; const passwordRealm: PWideChar; savePassword: PRUint32; const defaultText: PWideChar; out _result: PWideChar): PRBool; safecall;
@@ -1160,10 +1221,21 @@ type
     function PromptPassword(const dialogTitle: PWideChar; const text: PWideChar; const passwordRealm: PWideChar; savePassword: PRUint32; out pwd: PWideChar): PRBool; safecall;
   end;
 
+  nsIAuthPromptCallback = interface(nsISupports)
+    ['{BDC387D7-2D29-4CAC-92F1-DD75D786631D}']
+    procedure OnAuthAvailable(aContext: nsISupports; aAuthInfo: nsIAuthInformation); safecall;
+    procedure OnAuthCancelled(aContext: nsISupports; userCancel: LongBool); safecall;
+  end;
+
   nsISimpleEnumerator = interface(nsISupports)
   ['{d1899240-f9d2-11d2-bdd6-000064657374}']
     function HasMoreElements(): PRBool; safecall;
     function GetNext(): nsISupports; safecall;
+  end;
+
+  nsICancelable = interface(nsISupports)
+    ['{D94AC0A0-BB18-46B8-844E-84159064B0BD}']
+    procedure Cancel(aReason: nsresult); safecall;
   end;
 
   nsICategoryManager = interface(nsISupports)
@@ -1414,6 +1486,27 @@ type
     procedure Init(); safecall;
     procedure RegisterProvider(prov: nsIDirectoryServiceProvider); safecall;
     procedure UnregisterProvider(prov: nsIDirectoryServiceProvider); safecall;
+  end;
+
+  nsIDocumentEncoder = interface(nsISupports)
+    ['{F85C5A20-258D-11DB-A98B-0800200C9A66}']
+    procedure Init(aDocument: nsIDOMDocument; const aMimeType: nsAString; aFlags: Cardinal); safecall;
+    procedure SetSelection(aSelection: nsISelection); safecall;
+    procedure SetRange(aRange: nsIDOMRange); safecall;
+    procedure SetNode(aNode: nsIDOMNode);safecall;
+    procedure SetContainerNode(aContainer: nsIDOMNode); safecall;
+    procedure SetCharset(const aCharset: nsACString); safecall;
+    procedure SetWrapColumn(aWrapColumn: Cardinal); safecall;
+    procedure GetMimeType(aMimeType: nsAString); safecall;
+    procedure EncodeToStream(aStream: nsIOutputStream); safecall;
+    procedure EncodeToString(aString: nsAString); safecall;
+    function  EncodeToStringWithContext(aContextString: nsAString; aInfoString: nsAString): nsAString; safecall;
+    procedure SetNodeFixup(aFixup: nsIDocumentEncoderNodeFixup); safecall;
+  end;
+
+  nsIDocumentEncoderNodeFixup = interface(nsISupports)
+    ['{C0DA5B87-0BA7-4D7C-8CB3-FCB02AF4253D}']
+    function FixupNode(aNode: nsIDOMNode; var aSerializeCloneKids: LongBool): nsIDOMNode; safecall;
   end;
 
   nsIDOM3DocumentEvent = interface(nsISupports)
@@ -3517,10 +3610,16 @@ type
     function Confirm(aParent: nsIDOMWindow; const aDialogTitle: PWideChar; const aText: PWideChar): PRBool; safecall;
     function ConfirmCheck(aParent: nsIDOMWindow; const aDialogTitle: PWideChar; const aText: PWideChar; const aCheckMsg: PWideChar; out aCheckState: PRBool): PRBool; safecall;
     function ConfirmEx(aParent: nsIDOMWindow; const aDialogTitle: PWideChar; const aText: PWideChar; aButtonFlags: PRUint32; const aButton0Title: PWideChar; const aButton1Title: PWideChar; const aButton2Title: PWideChar; const aCheckMsg: PWideChar; out aCheckState: PRBool): PRInt32; safecall;
-    function Prompt(aParent: nsIDOMWindow; const aDialogTitle: PWideChar; const aText: PWideChar; out aValue: PWideChar; const aCheckMsg: PWideChar; out aCheckState: PRBool): PRBool; safecall;
+    function Prompt(aParent: nsIDOMWindow; const aDialogTitle: PWideChar; const aText: PWideChar; var aValue: PWideChar; const aCheckMsg: PWideChar; var aCheckState: PRBool): PRBool; safecall;
     function PromptUsernameAndPassword(aParent: nsIDOMWindow; const aDialogTitle: PWideChar; const aText: PWideChar; out aUsername: PWideChar; out aPassword: PWideChar; const aCheckMsg: PWideChar; out aCheckState: PRBool): PRBool; safecall;
     function PromptPassword(aParent: nsIDOMWindow; const aDialogTitle: PWideChar; const aText: PWideChar; out aPassword: PWideChar; const aCheckMsg: PWideChar; out aCheckState: PRBool): PRBool; safecall;
     function Select(aParent: nsIDOMWindow; const aDialogTitle: PWideChar; const aText: PWideChar; aCount: PRUint32; const aSelectList_array; out aOutSelection: PRInt32): PRBool; safecall;
+  end;
+
+  nsIPromptService2 = interface(nsIPromptService)
+  ['{CF86D196-DBEE-4482-9DFA-3477AA128319}']
+    function PromptAuth(aParent: nsIDOMWindow; aChannel: nsIChannel; level: PRUint32; authInfo: nsIAuthInformation; const checkboxLabel: PWideChar; var checkValue: LongBool): LongBool; safecall;
+    function AsyncPromptAuth(aParent: nsIDOMWindow; aChannel: nsIChannel; aCallback: nsIAuthPromptCallback; aContext: nsISupports; level: PRUint32; authInfo: nsIAuthInformation; const checkboxLabel: PWideChar; var checkValue: LongBool): nsICancelable; safecall;
   end;
 
   nsIProperties = interface(nsISupports)
