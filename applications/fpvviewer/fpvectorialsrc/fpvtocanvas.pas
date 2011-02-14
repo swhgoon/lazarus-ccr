@@ -128,7 +128,7 @@ var
   CurArc: TvCircularArc;
   FinalStartAngle, FinalEndAngle, tmpAngle: double;
   BoundsLeft, BoundsTop, BoundsRight, BoundsBottom,
-   IntStartAngle, IntAngleLength: Integer;
+   IntStartAngle, IntAngleLength, IntTmp: Integer;
   //
   CurDim: TvAlignedDimension;
   Points: array of TPoint;
@@ -233,12 +233,34 @@ begin
       end;}
       IntStartAngle := Round(16*FinalStartAngle);
       IntAngleLength := Abs(Round(16*(FinalEndAngle - FinalStartAngle)));
+      // On Gtk2 and Carbon, the Left really needs to be to the Left of the Right position
+      // The same for the Top and Bottom
+      // On Windows it works fine either way
+      // On Gtk2 if the positions are inverted then the arcs are screwed up
+      // In Carbon if the positions are inverted, then the arc is inverted
+      if BoundsLeft > BoundsRight then
+      begin
+        IntTmp := BoundsLeft;
+        BoundsLeft := BoundsRight;
+        BoundsRight := IntTmp;
+      end;
+      if BoundsTop > BoundsBottom then
+      begin
+        IntTmp := BoundsTop;
+        BoundsTop := BoundsBottom;
+        BoundsBottom := IntTmp;
+      end;
       // Arc(ALeft, ATop, ARight, ABottom, Angle16Deg, Angle16DegLength: Integer);
       ADest.Arc(
         BoundsLeft, BoundsTop, BoundsRight, BoundsBottom,
         IntStartAngle, IntAngleLength
         );
       // Debug info
+//      {$define FPVECTORIALDEBUG}
+//      {$ifdef FPVECTORIALDEBUG}
+//      WriteLn(Format('Drawing Arc x1y1=%d,%d x2y2=%d,%d start=%d end=%d',
+//        [BoundsLeft, BoundsTop, BoundsRight, BoundsBottom, IntStartAngle, IntAngleLength]));
+//      {$endif}
 {      ADest.TextOut(CoordToCanvasX(CurArc.CenterX), CoordToCanvasY(CurArc.CenterY),
         Format('R=%d S=%d L=%d', [Round(CurArc.Radius*AMulX), Round(FinalStartAngle),
         Abs(Round((FinalEndAngle - FinalStartAngle)))]));
