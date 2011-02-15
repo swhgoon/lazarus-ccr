@@ -23,6 +23,12 @@ uses
 
 const
   EncoderService_CID_BASE = '@mozilla.org/layout/documentEncoder;1?type=';
+  EncoderService_MIME_APPLICATION_XHTML_XML='application/xhtml+xml';
+  EncoderService_MIME_APPLICATION_XML='application/xml';
+  EncoderService_MIME_IMAGE_SVGXML='image/svg+xml';
+  EncoderService_MIME_TEXT_HTML='text/html';
+  EncoderService_MIME_TEXT_PLAIN='text/plain';
+  EncoderService_MIME_TEXT_XML='text/xml';
 
   NS_ISUPPORTS_IID: TGUID = '{00000000-0000-0000-c000-000000000046}';
 
@@ -448,6 +454,8 @@ const
   NS_IDOMNODELIST_IID: TGUID = '{a6cf907d-15b3-11d2-932e-00805f8add32}';
 
   NS_IDOMNOTATION_IID: TGUID = '{a6cf907e-15b3-11d2-932e-00805f8add32}';
+
+  NS_IDOMNSHTMLDOCUMENT_IID: TGUID = '{79BEB289-3644-4B54-9432-9FB993945629}';
 
   NS_IDOMOFFLINERESOURCELIST_IID: TGUID = '{8449bce2-0d8c-4c74-ab79-b41b8d81f1c4}';
   NS_IDOMOFFLINERESOURCELIST_UNCACHED = 0;
@@ -1030,6 +1038,7 @@ type
   nsIDOMNamedNodeMap = interface;
   nsIDOMNodeList = interface;
   nsIDOMNotation = interface;
+  nsIDOMNSHTMLDocument = interface;
   nsIDOMOfflineResourceList = interface;
   nsIDOMProcessingInstruction = interface;
   nsIDOMRange = interface;
@@ -2846,6 +2855,45 @@ type
   ['{a6cf907e-15b3-11d2-932e-00805f8add32}']
     procedure GetPublicId(aPublicId: nsAString); safecall;
     procedure GetSystemId(aSystemId: nsAString); safecall;
+  end;
+
+  nsIDOMNSHTMLDocument = interface(nsISupports)
+    ['{79BEB289-3644-4B54-9432-9FB993945629}']
+    procedure GetWidth(out aWidth: Integer); safecall;
+    procedure GetHeight(out aHeight: Integer); safecall;
+    procedure GetAlinkColor(aAlinkColor: nsAString); safecall;
+    procedure SetAlinkColor(const aAlinkColor: nsAString); safecall;
+    procedure GetLinkColor(aLinkColor: nsAString); safecall;
+    procedure SetLinkColor(const aLinkColor: nsAString); safecall;
+    procedure GetVlinkColor(aVlinkColor: nsAString); safecall;
+    procedure SetVlinkColor(const aVlinkColor: nsAString); safecall;
+    procedure GetBgColor(aBgColor: nsAString); safecall;
+    procedure SetBgColor(const aBgColor: nsAString); safecall;
+    procedure GetFgColor(aFgColor: nsAString); safecall;
+    procedure SetFgColor(const aFgColor: nsAString); safecall;
+    procedure GetDomain(aDomain: nsAString); safecall;
+    procedure SetDomain(const aDomain: nsAString); safecall;
+    procedure GetEmbeds(out aEmbeds: nsIDOMHTMLCollection); safecall;
+    procedure GetSelection(_retval: nsAString); safecall;
+    function  Open(const aContentType: nsACString; aReplace: LongBool): nsIDOMDocument; safecall;
+    procedure Write(); safecall;
+    procedure Writeln(); safecall;
+    procedure Clear(); safecall;
+    procedure CaptureEvents(eventFlags: Integer); safecall;
+    procedure ReleaseEvents(eventFlags: Integer); safecall;
+    procedure RouteEvent(evt: nsIDOMEvent); safecall;
+    procedure GetCompatMode(aCompatMode: nsAString); safecall;
+    procedure GetPlugins(out aPlugins: nsIDOMHTMLCollection); safecall;
+    procedure GetDesignMode(aDesignMode: nsAString); safecall;
+    procedure SetDesignMode(const aDesignMode: nsAString); safecall;
+    function  ExecCommand(const commandID: nsAString; doShowUI: LongBool; const value: nsAString): LongBool; safecall;
+    function  ExecCommandShowHelp(const commandID: nsAString): LongBool; safecall;
+    function  QueryCommandEnabled(const commandID: nsAString): LongBool; safecall;
+    function  QueryCommandIndeterm(const commandID: nsAString): LongBool; safecall;
+    function  QueryCommandState(const commandID: nsAString): LongBool; safecall;
+    function  QueryCommandSupported(const commandID: nsAString): LongBool; safecall;
+    procedure QueryCommandText(const commandID: nsAString; _retval: nsAString);  extdecl;
+    procedure QueryCommandValue(const commandID: nsAString; _retval: nsAString);  extdecl;
   end;
 
   nsIDOMOfflineResourceList = interface(nsISupports)
