@@ -79,7 +79,7 @@ begin
     if Node.Index mod 6 = 0 then
       Color := $49DDEF // $70A33F // $436BFF
     else
-      Color := VST5.Color;
+      Color := VST5.Brush.Color;
     EraseAction := eaColor;
   end;
 end;
