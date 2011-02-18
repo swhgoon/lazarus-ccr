@@ -3,8 +3,8 @@ unit ViewCode;
 interface
 
    uses
-      delphicompat, LCLIntf, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-      Dialogs, StdCtrls, LResources, SynHighlighterPas, SynEdit;
+      DelphiCompat, LCLIntf, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+      Dialogs, StdCtrls, LResources, SynHighlighterPas, SynEdit, LCLType;
 
    type
 
@@ -29,7 +29,8 @@ implementation
       r  : TRect;
    begin
       {get size of desktop}
-      {$ifdef Windows}
+      {$ifdef LCLWin32}
+      //todo: enable when SPI_GETWORKAREA is implemented
       SystemParametersInfo(SPI_GETWORKAREA, 0, @r, 0);
       Height := r.Bottom-Top;
       Width  := r.Right-Left;
