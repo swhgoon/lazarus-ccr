@@ -31,7 +31,7 @@
 
 unit RxTimeEdit;
 
-{$mode objfpc}{$H+}
+{$I rx.inc}
 
 interface
 
