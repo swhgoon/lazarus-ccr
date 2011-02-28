@@ -382,7 +382,7 @@ begin
     Inc(i);
   end;
 
-  // After getting all the data, we can try to make so sense out of it
+  // After getting all the data, we can try to make some sense out of it
 
   // Sometimes EXTMIN comes as 10^20 and EXTMAX as -10^20, which makes no sence
   // In these cases we need to ignore them.
@@ -472,6 +472,12 @@ begin
     end;
   end;
 
+  // Position fixing for documents with negative coordinates
+  LineStartX := LineStartX - DOC_OFFSET.X;
+  LineStartY := LineStartY - DOC_OFFSET.Y;
+  LineEndX := LineEndX - DOC_OFFSET.X;
+  LineEndY := LineEndY - DOC_OFFSET.Y;
+
   // And now write it
   {$ifdef FPVECTORIALDEBUG}
 //  WriteLn(Format('Adding Line from %f,%f to %f,%f', [LineStartX, LineStartY, LineEndX, LineEndY]));
@@ -530,6 +536,7 @@ begin
     end;
   end;
 
+  // Position fixing for documents with negative coordinates
   CenterX := CenterX - DOC_OFFSET.X;
   CenterY := CenterY - DOC_OFFSET.Y;
 
@@ -580,6 +587,10 @@ begin
       40: CircleRadius := CurToken.FloatValue;
     end;
   end;
+
+  // Position fixing for documents with negative coordinates
+  CircleCenterX := CircleCenterX - DOC_OFFSET.X;
+  CircleCenterY := CircleCenterY - DOC_OFFSET.Y;
 
   AData.AddCircle(CircleCenterX, CircleCenterY,
     CircleCenterZ, CircleRadius);
@@ -783,6 +794,10 @@ begin
     end;
   end;
 
+  // Position fixing for documents with negative coordinates
+  CenterX := CenterX - DOC_OFFSET.X;
+  CenterY := CenterY - DOC_OFFSET.Y;
+
   //
   AData.AddEllipse(CenterX, CenterY, CenterZ, MajorHalfAxis, MinorHalfAxis, Angle);
 end;
@@ -849,6 +864,10 @@ begin
       40: FontSize := CurToken.FloatValue;
     end;
   end;
+
+  // Position fixing for documents with negative coordinates
+  PosX := PosX - DOC_OFFSET.X;
+  PosY := PosY - DOC_OFFSET.Y;
 
   //
   AData.AddText(PosX, PosY, PosZ, '', Round(FontSize), Str);
