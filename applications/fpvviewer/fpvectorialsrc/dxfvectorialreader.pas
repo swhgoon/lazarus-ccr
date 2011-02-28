@@ -481,7 +481,7 @@ begin
 
   // And now write it
   {$ifdef FPVECTORIALDEBUG}
-  WriteLn(Format('Adding Line from %f,%f to %f,%f', [LineStartX, LineStartY, LineEndX, LineEndY]));
+ // WriteLn(Format('Adding Line from %f,%f to %f,%f', [LineStartX, LineStartY, LineEndX, LineEndY]));
   {$endif}
   AData.StartPath(LineStartX, LineStartY);
   AData.AddLineToPath(LineEndX, LineEndY);
