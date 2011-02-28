@@ -536,6 +536,10 @@ begin
     end;
   end;
 
+  // In DXF the EndAngle is always greater then the StartAngle.
+  // If it isn't then sum 360 to it to make sure we don't get wrong results
+  if EndAngle < StartAngle then EndAngle := EndAngle + 360;
+
   // Position fixing for documents with negative coordinates
   CenterX := CenterX - DOC_OFFSET.X;
   CenterY := CenterY - DOC_OFFSET.Y;

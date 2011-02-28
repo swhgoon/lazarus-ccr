@@ -25,6 +25,10 @@ procedure DrawFPVectorialToCanvas(ASource: TvVectorialDocument;
 
 implementation
 
+{$ifndef Windows}
+{$define FPVECTORIALDEBUG}
+{$endif}
+
 function Rotate2DPoint(P,Fix :TPoint; alpha:double): TPoint;
 var
   sinus, cosinus : Extended;
@@ -212,27 +216,25 @@ begin
       {$ifdef USE_LCL_CANVAS}
       // ToDo: Consider a X axis inversion
       // If the Y axis is inverted, then we need to mirror our angles as well
-{      if AMulY > 0 then
+      BoundsLeft := CoordToCanvasX(CurArc.CenterX - CurArc.Radius);
+      BoundsTop := CoordToCanvasY(CurArc.CenterY - CurArc.Radius);
+      BoundsRight := CoordToCanvasX(CurArc.CenterX + CurArc.Radius);
+      BoundsBottom := CoordToCanvasY(CurArc.CenterY + CurArc.Radius);
+      {if AMulY > 0 then
       begin}
         FinalStartAngle := CurArc.StartAngle;
         FinalEndAngle := CurArc.EndAngle;
-        BoundsLeft := CoordToCanvasX(CurArc.CenterX - CurArc.Radius);
-        BoundsTop := CoordToCanvasY(CurArc.CenterY - CurArc.Radius);
-        BoundsRight := CoordToCanvasX(CurArc.CenterX + CurArc.Radius);
-        BoundsBottom := CoordToCanvasY(CurArc.CenterY + CurArc.Radius);
-{      end
+      {end
       else // AMulY is negative
       begin
         // Inverting the angles generates the correct result for Y axis inversion
-        FinalStartAngle := 360 - 1* CurArc.EndAngle;
-        FinalEndAngle := 360 - 1* CurArc.StartAngle;
-        BoundsLeft := CoordToCanvasX(CurArc.CenterX - CurArc.Radius);
-        BoundsTop := CoordToCanvasY(CurArc.CenterY + CurArc.Radius);
-        BoundsRight := CoordToCanvasX(CurArc.CenterX + CurArc.Radius);
-        BoundsBottom := CoordToCanvasY(CurArc.CenterY - CurArc.Radius);
+        if CurArc.EndAngle = 0 then FinalStartAngle := 0
+        else FinalStartAngle := 360 - 1* CurArc.EndAngle;
+        if CurArc.StartAngle = 0 then FinalEndAngle := 0
+        else FinalEndAngle := 360 - 1* CurArc.StartAngle;
       end;}
       IntStartAngle := Round(16*FinalStartAngle);
-      IntAngleLength := Abs(Round(16*(FinalEndAngle - FinalStartAngle)));
+      IntAngleLength := Round(16*(FinalEndAngle - FinalStartAngle));
       // On Gtk2 and Carbon, the Left really needs to be to the Left of the Right position
       // The same for the Top and Bottom
       // On Windows it works fine either way
@@ -251,6 +253,10 @@ begin
         BoundsBottom := IntTmp;
       end;
       // Arc(ALeft, ATop, ARight, ABottom, Angle16Deg, Angle16DegLength: Integer);
+      {$ifdef FPVECTORIALDEBUG}
+      WriteLn(Format('Drawing Arc Center=%f,%f Radius=%f StartAngle=%f AngleLength=%f',
+        [CurArc.CenterX, CurArc.CenterY, CurArc.Radius, IntStartAngle/16, IntAngleLength/16]));
+      {$endif}
       ADest.Arc(
         BoundsLeft, BoundsTop, BoundsRight, BoundsBottom,
         IntStartAngle, IntAngleLength
