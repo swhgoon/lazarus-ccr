@@ -43,6 +43,8 @@ type
     X, Y, Z: Double;
   end;
 
+  P3DPoint = ^T3DPoint;
+
   TSegmentType = (
     st2DLine, st2DBezier,
     st3DLine, st3DBezier, stMoveTo);

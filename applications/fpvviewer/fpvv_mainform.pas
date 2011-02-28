@@ -52,6 +52,7 @@ uses
 procedure TfrmFPVViewer.btnVisualizeClick(Sender: TObject);
 var
   Vec: TvVectorialDocument;
+  CanvasSize: TPoint;
 begin
   // First check the in input
   //if not CheckInput() then Exit;
@@ -65,11 +66,17 @@ begin
     Vec.ReadFromFile(editFileName.FileName, vfDXF);
 
     // We need to be robust, because sometimes the document size won't be given
-    if Vec.Width < 100 then Vec.Width := Drawer.Width;
-    if Vec.Height < 100 then Vec.Height := Drawer.Height;
+    // also give up drawing everything if we need more then 4MB of RAM for the image
+    if Vec.Width * spinScale.Value > 1000 then CanvasSize.X := 1000
+    else if Vec.Width < 100 then CanvasSize.X := Drawer.Width
+    else CanvasSize.X := Round(Vec.Width * spinScale.Value);
 
-    Drawer.Drawing.Width := Round(Vec.Width * spinScale.Value);
-    Drawer.Drawing.Height := Round(Vec.Height * spinScale.Value);
+    if Vec.Height * spinScale.Value > 1000 then CanvasSize.Y := 1000
+    else  if Vec.Height < 100 then CanvasSize.Y := Drawer.Height
+    else CanvasSize.Y := Round(Vec.Height * spinScale.Value);
+
+    Drawer.Drawing.Width := CanvasSize.X;
+    Drawer.Drawing.Height := CanvasSize.Y;
     Drawer.Drawing.Canvas.Brush.Color := clWhite;
     Drawer.Drawing.Canvas.Brush.Style := bsSolid;
     Drawer.Drawing.Canvas.FillRect(0, 0, Drawer.Drawing.Width, Drawer.Drawing.Height);

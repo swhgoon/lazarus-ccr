@@ -29,7 +29,7 @@ unit dxfvectorialreader;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, Math,
   fpvectorial;
 
 type
@@ -69,6 +69,9 @@ type
     // HEADER data
     ANGBASE: Double;
     ANGDIR: Integer;
+    INSBASE, EXTMIN, EXTMAX, LIMMIN, LIMMAX: T3DPoint;
+    // Calculated HEADER data
+    DOC_OFFSET: T3DPoint;
     //
     function  SeparateString(AString: string; ASeparator: Char): T10Strings;
     procedure ReadHEADER(ATokens: TDXFTokens; AData: TvVectorialDocument);
@@ -328,6 +331,7 @@ procedure TvDXFVectorialReader.ReadHEADER(ATokens: TDXFTokens;
 var
   i, j: Integer;
   CurToken: TDXFToken;
+  CurField: P3DPoint;
 begin
   i := 0;
   while i < ATokens.Count do
@@ -346,8 +350,16 @@ begin
       Inc(i);
     end
     // This indicates the size of the document
-    else if CurToken.StrValue = '$LIMMAX' then
+    else if (CurToken.StrValue = '$INSBASE') or
+      (CurToken.StrValue = '$EXTMIN') or (CurToken.StrValue = '$EXTMAX') or
+      (CurToken.StrValue = '$LIMMIN') or (CurToken.StrValue = '$LIMMAX') then
     begin
+      if (CurToken.StrValue = '$INSBASE') then CurField := @INSBASE
+      else if (CurToken.StrValue = '$EXTMIN') then CurField := @EXTMIN
+      else if (CurToken.StrValue = '$EXTMAX') then CurField := @EXTMAX
+      else if (CurToken.StrValue = '$LIMMIN') then CurField := @LIMMIN
+      else if (CurToken.StrValue = '$LIMMAX') then CurField := @LIMMAX;
+
       // Check the next 2 items and verify if they are the values of the size of the document
       for j := 0 to 1 do
       begin
@@ -355,12 +367,12 @@ begin
         case CurToken.GroupCode of
         10:
         begin;
-          aData.Width := StrToFloat(CurToken.StrValue, FPointSeparator);
+          CurField^.X := StrToFloat(CurToken.StrValue, FPointSeparator);
           Inc(i);
         end;
         20:
         begin
-          aData.Height := StrToFloat(CurToken.StrValue, FPointSeparator);
+          CurField^.Y := StrToFloat(CurToken.StrValue, FPointSeparator);
           Inc(i);
         end;
         end;
@@ -368,6 +380,37 @@ begin
     end;
 
     Inc(i);
+  end;
+
+  // After getting all the data, we can try to make so sense out of it
+
+  // Sometimes EXTMIN comes as 10^20 and EXTMAX as -10^20, which makes no sence
+  // In these cases we need to ignore them.
+  if (EXTMIN.X > 100000) or (EXTMIN.X < -100000) or (EXTMAX.X > 100000) or (EXTMAX.X < -100000) then
+  begin
+    DOC_OFFSET.X := 0;
+    DOC_OFFSET.Y := 0;
+
+    AData.Width := LIMMAX.X;
+    AData.Height := LIMMAX.Y;
+  end
+  else
+  begin
+    // The size of the document seams to be given by:
+    // DOC_SIZE = min(EXTMAX, LIMMAX) - DOC_OFFSET;
+    // if EXTMIN is <> -infinite then DOC_OFFSET = EXTMIN else DOC_OFFSET = (0, 0)
+    // We will shift the whole document so that it has only positive coordinates and
+    // DOC_OFFSET will be utilized for that
+
+    if EXTMIN.X > -100 then
+    begin
+      DOC_OFFSET.X := EXTMIN.X;
+      DOC_OFFSET.Y := EXTMIN.Y;
+    end
+    else FillChar(DOC_OFFSET, sizeof(T3DPoint), #0);
+
+    AData.Width := min(EXTMAX.X, LIMMAX.X) - DOC_OFFSET.X;
+    AData.Height := min(EXTMAX.Y, LIMMAX.Y) - DOC_OFFSET.Y;
   end;
 end;
 
@@ -486,6 +529,9 @@ begin
       51: EndAngle := CurToken.FloatValue;
     end;
   end;
+
+  CenterX := CenterX - DOC_OFFSET.X;
+  CenterY := CenterY - DOC_OFFSET.Y;
 
   {$ifdef FPVECTORIALDEBUG}
   WriteLn(Format('Adding Arc Center=%f,%f Radius=%f StartAngle=%f EndAngle=%f',
