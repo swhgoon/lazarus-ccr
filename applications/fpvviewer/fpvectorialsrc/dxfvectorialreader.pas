@@ -386,7 +386,8 @@ begin
 
   // Sometimes EXTMIN comes as 10^20 and EXTMAX as -10^20, which makes no sence
   // In these cases we need to ignore them.
-  if (EXTMIN.X > 100000) or (EXTMIN.X < -100000) or (EXTMAX.X > 100000) or (EXTMAX.X < -100000) then
+  if (EXTMIN.X > 10000000000) or (EXTMIN.X < -10000000000)
+  or (EXTMAX.X > 10000000000) or (EXTMAX.X < -10000000000) then
   begin
     DOC_OFFSET.X := 0;
     DOC_OFFSET.Y := 0;
@@ -480,7 +481,7 @@ begin
 
   // And now write it
   {$ifdef FPVECTORIALDEBUG}
-//  WriteLn(Format('Adding Line from %f,%f to %f,%f', [LineStartX, LineStartY, LineEndX, LineEndY]));
+  WriteLn(Format('Adding Line from %f,%f to %f,%f', [LineStartX, LineStartY, LineEndX, LineEndY]));
   {$endif}
   AData.StartPath(LineStartX, LineStartY);
   AData.AddLineToPath(LineEndX, LineEndY);
