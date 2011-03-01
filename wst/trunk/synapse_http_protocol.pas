@@ -69,7 +69,8 @@ Type
     procedure SetProxyUsername(const AValue: string);
   Public
     constructor Create();override;
-    destructor Destroy();override;
+    destructor Destroy();override;      
+    function GetTransportName() : string; override;
     procedure SendAndReceive(ARequest,AResponse:TStream); override;
     function GetCookieManager() : ICookieManager; override;
   Published
@@ -163,6 +164,11 @@ destructor THTTPTransport.Destroy();
 begin
   FreeAndNil(FConnection);
   inherited Destroy();
+end;
+
+function THTTPTransport.GetTransportName() : string;  
+begin
+  Result := sTRANSPORT_NAME;
 end;
 
 procedure THTTPTransport.SendAndReceive(ARequest, AResponse: TStream);

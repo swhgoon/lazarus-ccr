@@ -45,6 +45,7 @@ Type
   public
     constructor Create();override;
     destructor Destroy();override;
+    function GetTransportName() : string; override;
     procedure SendAndReceive(ARequest,AResponse:TStream); override;
   Published
     property Target : string Read FTarget Write FTarget;
@@ -97,6 +98,11 @@ destructor TTCPTransport.Destroy();
 begin
   FreeAndNil(FConnection);
   inherited Destroy();
+end;
+
+function TTCPTransport.GetTransportName() : string;
+begin
+  Result := sTRANSPORT_NAME;
 end;
 
 procedure TTCPTransport.SendAndReceive(ARequest, AResponse: TStream);

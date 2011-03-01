@@ -38,6 +38,7 @@ Type
   public
     constructor Create();override;
     destructor Destroy();override;
+    function GetTransportName() : string; virtual;
     function GetPropertyManager():IPropertyManager;
     procedure SendAndReceive(ARequest,AResponse:TStream); virtual; 
     function GetCookieManager() : ICookieManager; virtual; 
@@ -65,12 +66,12 @@ begin
   inherited;
 end;
 
-procedure TBaseTransport.SendAndReceive(ARequest, AResponse : TStream); 
+procedure TBaseTransport.SendAndReceive(ARequest, AResponse : TStream);
 begin
   raise ETransportExecption.CreateFmt(SERR_UnsupportedOperation,['SendAndReceive']);
 end;
 
-function TBaseTransport.GetCookieManager() : ICookieManager; 
+function TBaseTransport.GetCookieManager() : ICookieManager;
 begin
   raise ETransportExecption.CreateFmt(SERR_UnsupportedOperation,['GetCookieManager']);
 end;
@@ -152,6 +153,11 @@ begin
     end;
   end;
   Result := locRes;
+end;
+
+function TBaseTransport.GetTransportName() : string;
+begin
+  Result := ClassName();
 end;
 
 function TBaseTransport.GetPropertyManager() : IPropertyManager;

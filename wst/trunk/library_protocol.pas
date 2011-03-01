@@ -44,6 +44,7 @@ Type
   public
     constructor Create();override;
     destructor Destroy();override;
+    function GetTransportName() : string; override;
     procedure SendAndReceive(ARequest,AResponse:TStream); override;
   published
     property ContentType : string read FContentType write FContentType;
@@ -89,6 +90,11 @@ begin
   FModule := nil;
   FHandler := nil;
   inherited Destroy();
+end;
+
+function TLIBTransport.GetTransportName() : string;
+begin
+  Result := sTRANSPORT_NAME;
 end;
 
 const MAX_ERR_LEN = 500;

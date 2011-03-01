@@ -38,6 +38,7 @@ Type
   
   ITransport = Interface
     ['{AEB6677A-9620-4E7D-82A0-43E3C4C52B43}']
+    function GetTransportName() : string;
     function GetPropertyManager():IPropertyManager;
     procedure SendAndReceive(ARequest,AResponse:TStream);
     function GetCookieManager() : ICookieManager;

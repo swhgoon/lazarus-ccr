@@ -69,6 +69,7 @@ Type
   public
     constructor Create();override;
     destructor Destroy();override;
+    function GetTransportName() : string; override;
     procedure SendAndReceive(ARequest,AResponse:TStream); override;
     function GetCookieManager() : ICookieManager; override;        
   published
@@ -140,6 +141,11 @@ end;
 function THTTPTransport.GetProxyUsername: string;
 begin
   Result := FConnection.ProxyParams.ProxyUsername;
+end;
+
+function THTTPTransport.GetTransportName() : string;
+begin
+  Result := sTRANSPORT_NAME;
 end;
 
 procedure THTTPTransport.SetAddress(const AValue: string);

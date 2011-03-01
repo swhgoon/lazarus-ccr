@@ -35,7 +35,8 @@ Type
     FAdress: string;
     FContentType: string;
     FFormat : string;
-  Public
+  Public                             
+    function GetTransportName() : string; override;    
     procedure SendAndReceive(ARequest,AResponse:TStream); override;
   Published
     property ContentType : string Read FContentType Write FContentType;
@@ -49,6 +50,11 @@ Type
 implementation
 
 { TInProcessTransport }
+
+function TInProcessTransport.GetTransportName() : string;  
+begin
+  Result := sTRANSPORT_NAME;  
+end;
 
 procedure TInProcessTransport.SendAndReceive(ARequest, AResponse: TStream);
 Var
