@@ -6,6 +6,7 @@
 
   Contributors:
     Luiz Americo Pereira Camara
+    Mattias Gaertner
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Library General Public License as published by
@@ -191,22 +192,62 @@ const
   WhitespaceChars = [HTAB, SPACE];
   LineEndingChars = [CR, LF];
 
+// The following implementation of ChangeLineEndings function originates from
+// Lazarus CodeTools library by Mattias Gaertner. It was explicitly allowed
+// by Mattias to relicense it under modified LGPL and include into CsvDocument.
+
 function ChangeLineEndings(const AString, ALineEnding: String): String;
 var
-  I: Integer;
+  NewLength: Integer;
+  P, StartPos: Integer;
+  Src: PChar;
+  Dest: PChar;
+  EndLen: Integer;
+  EndPos: PChar;
 begin
-  for I := 1 to Length(AString) do
-    if AString[I] in LineEndingChars then
+  if AString = '' then
+  begin
+    Result := AString;
+    Exit;
+  end;
+  EndLen := Length(ALineEnding);
+  NewLength := Length(AString);
+  P := 1;
+  while P < Length(AString) do
+  begin
+    if AString[P] in [#10,#13] then
     begin
-      // first unify line endings to single-char value
-      Result := StringReplace(AString, CR + LF, LF, [rfReplaceAll]);
-      Result := StringReplace(Result, CR, LF, [rfReplaceAll]);
-      // then replace this single-char value with value we need
-      if ALineEnding <> LF then
-        Result := StringReplace(Result, LF, ALineEnding, [rfReplaceAll]);
-      Exit;
+      StartPos := P;
+      Inc(P);
+      if (AString[P] in [#10,#13]) and (AString[P] <> AString[P-1]) then Inc(P);
+      Inc(NewLength, EndLen - (P - StartPos));
+    end else
+      Inc(P);
+  end;
+  SetLength(Result, NewLength);
+  Src := PChar(AString);
+  Dest := PChar(Result);
+  EndPos := Dest + NewLength;
+  while (Dest < EndPos) do
+  begin
+    if Src^ in [#10,#13] then
+    begin
+      for P := 1 to EndLen do
+      begin
+        Dest^ := ALineEnding[P];
+        Inc(Dest);
+      end;
+      if (Src[1] in [#10,#13]) and (Src^ <> Src[1]) then
+        Inc(Src, 2)
+      else
+        Inc(Src);
+    end else
+    begin
+      Dest^ := Src^;
+      Inc(Src);
+      Inc(Dest);
     end;
-  Result := AString;
+  end;
 end;
 
 { TCSVHandler }
