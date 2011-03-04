@@ -5,9 +5,9 @@
     <AddToProjectUsesSection Value="False"/>
     <Author Value="Gecko Components for Delphi; ported to Lazarus by Phil Hess"/>
     <CompilerOptions>
-      <Version Value="8"/>
+      <Version Value="9"/>
       <SearchPaths>
-        <OtherUnitFiles Value="../;../each-version/"/>
+        <OtherUnitFiles Value="..;../each-version"/>
         <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Parsing>
@@ -42,7 +42,7 @@
     <Description Value="Gecko Components for Lazarus"/>
     <License Value="MPL 1.1"/>
     <Version Release="3"/>
-    <Files Count="20">
+    <Files Count="21">
       <Item1>
         <Filename Value="GeckoBrowser.pas"/>
         <HasRegisterProc Value="True"/>
@@ -124,6 +124,11 @@
         <Filename Value="../each-version/nsXPCOM_std19.pas"/>
         <UnitName Value="nsXPCOM_std19"/>
       </Item20>
+      <Item21>
+        <Filename Value="GeckoPromptService.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="GeckoPromptService"/>
+      </Item21>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

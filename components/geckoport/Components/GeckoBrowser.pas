@@ -56,7 +56,7 @@ uses
   LclIntf, LMessages, LclType, LResources, Graphics,
   SysUtils, Classes, Controls, nsXPCOM,
   nsGeckoStrings, nsTypes, CallbackInterfaces, nsXPCOMGlue, BrowserSupports,
-  nsXPCOM_std19
+  nsXPCOM_std19, GeckoPromptService
   {$IFDEF LCLCarbon}, CarbonPrivate {$ENDIF}
   {$IFDEF LCLCocoa}, CocoaPrivate, CocoaAll, CocoaUtils {$ENDIF}
   {$IFDEF LCLGtk2}, gtk2,
@@ -190,6 +190,9 @@ type
     FOnDirectoryService: TGeckoBrowserDirectoryService;
 
     FGeckoComponentsStartupSucceeded: boolean;
+
+    //Linked event components
+    FPromptService: TGeckoPrompt;
 
     //misc settings
     FDisableJavaScript: Boolean;
@@ -327,6 +330,10 @@ type
     property DisableJavaScript: Boolean
       read GetDisableJavaScript write SetDisableJavascript;
     property Initialized: Boolean read FInitialized;
+
+    // Linked components set
+    property Prompt: TGeckoPrompt
+      read FPromptService write FPromptService;
   end;
 
   TCustomGeckoBrowserChrome = class(TInterfacedObject,
@@ -438,10 +445,13 @@ type
     function GetURIString: UTF8String;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
 
     property Title: WideString read FTitle;
 
     property URIString: UTF8String read GetURIString;
+
+    class function GetGeckoBrowserWithDOMWindow(constref DOMWindow: nsIDOMWindow): TGeckoBrowser;
 
   published
     property OnDOMLoad: TGeckoBrowserDOMEventHandler
@@ -514,7 +524,7 @@ type
     property OnDirectoryService;
 
     property DisableJavaScript;
-
+    property Prompt;
   public
     property ContentDocument;
     property ContentWindow;
@@ -522,6 +532,8 @@ type
     property CanGoForward;
 
   end;
+
+  { TGeckoBrowserChrome }
 
   TGeckoBrowserChrome = class(TCustomGeckoBrowserChrome,
                               nsIInterfaceRequestor_std19,
@@ -723,6 +735,9 @@ implementation
 uses
   nsError, nsStream, nsMemory, nsNetUtil, GeckoInit,
   Forms, TypInfo, Variants;
+
+var
+  GeckoListBrowsers: TFPList=nil;
 
 procedure Register;
 begin
@@ -1310,6 +1325,8 @@ begin
   try
     GeckoComponentsStartup;
     FGeckoComponentsStartupSucceeded := true;
+    //Create the prompt service and register
+    RegisterPromptService;
   except
     FGeckoComponentsStartupSucceeded := false;
   end;
@@ -1403,7 +1420,7 @@ begin
     FBrowser.OnStatusChange(FBrowser, status);
 end;
 
-function TGeckoBrowserChrome.GetWebBrowser
+function TGeckoBrowserChrome.GetWebBrowser()
                 : nsIWebBrowser;
 begin
   Result := FBrowser.FWebBrowser;
@@ -1415,7 +1432,7 @@ begin
   FBrowser.FWebBrowser := aWebBrowser;
 end;
 
-function TGeckoBrowserChrome.GetChromeFlags
+function TGeckoBrowserChrome.GetChromeFlags()
                 : PRUint32;
 begin
   //TODO 2 -cTGeckoBrowserChrome: Chrome ƒtƒ‰ƒO‚Ìˆµ‚¢‚ð‚Ç‚¤‚µ‚æ‚¤‚©
@@ -1428,7 +1445,7 @@ begin
   UseParameter(aChromeFlags);
 end;
 
-procedure TGeckoBrowserChrome.DestroyBrowserWindow;
+procedure TGeckoBrowserChrome.DestroyBrowserWindow();
 begin
   if Assigned(FBrowser.FOnCloseWindow) then
     FBrowser.FOnCloseWindow(FBrowser);
@@ -1442,11 +1459,11 @@ begin
   FBrowser.Height:= aCY;
 end;
 
-procedure TGeckoBrowserChrome.ShowAsModal;
+procedure TGeckoBrowserChrome.ShowAsModal();
 begin
 end;
 
-function TGeckoBrowserChrome.IsWindowModal
+function TGeckoBrowserChrome.IsWindowModal()
                 : PRBool;
 begin
   Result := False;
@@ -1533,7 +1550,7 @@ begin
   end;
 end;
 
-procedure TGeckoBrowserChrome.SetFocus;
+procedure TGeckoBrowserChrome.SetFocus();
 begin
   if Assigned(FBrowser.FOnVisibleChange) then begin
     //Give the browser a chance to become visible
@@ -1546,7 +1563,7 @@ begin
   end;
 end;
 
-function TGeckoBrowserChrome.GetVisibility: PRBool;
+function TGeckoBrowserChrome.GetVisibility(): PRBool;
 begin
   // TODO 1 -cTGeckoBrowserChrome: TGeckoBrowserChrome.GetVisibility ‚Í‚Ç‚¤‚·‚×‚«‚©
   Result := True;
@@ -1559,7 +1576,7 @@ begin
   //TODO 1 -cTGeckoBrowserChrome: TGeckoBrowserChrome.SetVisibility ‚ÌŽÀ‘•
 end;
 
-function TGeckoBrowserChrome.GetTitle: PWideChar;
+function TGeckoBrowserChrome.GetTitle(): PWideChar;
 var
   pstr: PWideChar;
   title: WideString;
@@ -1581,7 +1598,7 @@ begin
     FBrowser.OnTitleChange(FBrowser, FBrowser.FTitle);
 end;
 
-function TGeckoBrowserChrome.GetSiteWindow: Pointer;
+function TGeckoBrowserChrome.GetSiteWindow(): Pointer;
 begin
 {$PUSH}
 {$HINTS OFF}
@@ -1779,6 +1796,8 @@ end;
 
 constructor TGeckoBrowser.Create(AOwner: TComponent);
 begin
+  if not Assigned(GeckoListBrowsers) then GeckoListBrowsers:=TFPList.Create;
+  GeckoListBrowsers.Add(Self);
   inherited;
   Chrome := TGeckoBrowserChrome.Create(Self);
   Listener := TGeckoBrowserListener.Create(Self);
@@ -1792,6 +1811,34 @@ begin
   EventPool.Enabled:=true;
   EventPool.OnTimer:=EventPoolProc;
   {$ENDIF}
+end;
+
+destructor TGeckoBrowser.Destroy;
+begin
+  inherited Destroy;
+  GeckoListBrowsers.Remove(Self);
+  if GeckoListBrowsers.Count=0 then FreeAndNil(GeckoListBrowsers);
+end;
+
+class function TGeckoBrowser.GetGeckoBrowserWithDOMWindow(
+  constref DOMWindow: nsIDOMWindow): TGeckoBrowser;
+var
+  ThisGecko: TGeckoBrowser;
+  t1,t2: nsIDOMWindow;
+  j: integer;
+begin
+  Result:=nil;
+  if Assigned(GeckoListBrowsers) then begin
+    for j := 0 to GeckoListBrowsers.Count-1 do begin
+      ThisGecko:=TGeckoBrowser(GeckoListBrowsers[j]);
+      t1:=ThisGecko.GetContentWindow.Parent;
+      t2:=DOMWindow.Parent;
+      if t1=t2 then begin
+        Result:=ThisGecko;
+        break;
+      end;
+    end;
+  end;
 end;
 
 function TGeckoBrowserChrome.NS_GetInterface(constref uuid: TGUID; out _result): nsresult;
