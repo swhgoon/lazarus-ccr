@@ -453,6 +453,8 @@ type
 
     class function GetGeckoBrowserWithDOMWindow(constref DOMWindow: nsIDOMWindow): TGeckoBrowser;
 
+    procedure Print(const aShowPrinterSelectDialog: Boolean);
+
   published
     property OnDOMLoad: TGeckoBrowserDOMEventHandler
       read FOnDOMLoad write FOnDOMLoad;
@@ -1841,6 +1843,23 @@ begin
   end;
 end;
 
+procedure TGeckoBrowser.Print(const aShowPrinterSelectDialog: Boolean);
+var
+  PrintInterface: nsIWebBrowserPrint;
+  PrintSettings: nsIPrintSettings;
+begin
+  PrintInterface:=GetWebBrowserPrint;
+  if Assigned(PrintInterface) then begin
+    PrintSettings:=PrintInterface.GetGlobalPrintSettings;
+    if Assigned(PrintSettings) then begin
+      PrintSettings.ShowPrintProgress:=false; //true implies need of nsIWebProgressListener
+      PrintSettings.PrintBGImages:=true;
+      PrintSettings.SetPrintSilent(not aShowPrinterSelectDialog);
+    end;
+    PrintInterface.Print(PrintSettings,nil);
+  end;
+end;
+
 function TGeckoBrowserChrome.NS_GetInterface(constref uuid: TGUID; out _result): nsresult;
 begin
   if IsEqualGUID(uuid, nsIDOMWindow) then
@@ -2021,6 +2040,7 @@ function TCustomGeckoBrowser.GetWebBrowserFind: nsIWebBrowserFind;
 begin
   Result := FWebBrowser as nsIWebBrowserFind;
 end;
+
 function TCustomGeckoBrowser.GetWebBrowserPrint: nsIWebBrowserPrint;
 var
   ir:nsIInterfaceRequestor;
@@ -2030,6 +2050,7 @@ begin
   ir.GetInterface(nsIWebBrowserPrint, wbp);
   Result := wbp;
 end;
+
 function TCustomGeckoBrowser.GetWebNavigation: nsIWebNavigation;
 begin
   Result := FWebBrowser as nsIWebNavigation;
