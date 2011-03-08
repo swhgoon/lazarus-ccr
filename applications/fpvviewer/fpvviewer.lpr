@@ -7,7 +7,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, fpvv_mainform, dxftokentotree, fpvv_drawer
+  Forms, fpvv_mainform, dxftokentotree, fpvv_drawer, fpvectorialpkg
   { you can add units after this };
 
 {$R *.res}

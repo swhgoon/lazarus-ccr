@@ -11,7 +11,7 @@ uses
   {$ifdef USE_LCL_CANVAS}
   Graphics, LCLIntf,
   {$else}
-  fpcanvas,
+  fpcanvas, fpimage,
   {$endif}
   fpvectorial;
 
@@ -295,7 +295,11 @@ begin
       SetLength(Points, 3);
       if CurDim.DimensionRight.Y = CurDim.DimensionLeft.Y then
       begin
+        {$ifdef USE_LCL_CANVAS}
         ADest.Brush.Color := clBlack;
+        {$else}
+        ADest.Brush.FPColor := colBlack;
+        {$endif}
         ADest.Brush.Style := bsSolid;
         // Left arrow
         Points[0] := Point(CoordToCanvasX(CurDim.DimensionLeft.X), CoordToCanvasY(CurDim.DimensionLeft.Y));
@@ -317,7 +321,11 @@ begin
       end
       else
       begin
+        {$ifdef USE_LCL_CANVAS}
         ADest.Brush.Color := clBlack;
+        {$else}
+        ADest.Brush.FPColor := colBlack;
+        {$endif}
         ADest.Brush.Style := bsSolid;
         // There is no upper/lower preference for DimensionLeft/Right, so we need to check
         if CurDim.DimensionLeft.Y > CurDim.DimensionRight.Y then
@@ -364,7 +372,11 @@ begin
     CurText := ASource.GetText(i);
     ADest.Font.Size := Round(AmulX * CurText.FontSize);
     ADest.Pen.Style := psSolid;
+    {$ifdef USE_LCL_CANVAS}
     ADest.Pen.Color := clBlack;
+    {$else}
+    ADest.Pen.FPColor := colBlack;
+    {$endif}
     ADest.Brush.Style := bsClear;
     LowerDim.Y := CurText.Y + CurText.FontSize;
     ADest.TextOut(CoordToCanvasX(CurText.X), CoordToCanvasY(LowerDim.Y), CurText.Value);

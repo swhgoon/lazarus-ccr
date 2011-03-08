@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="3">
+    <Name Value="fpvectorialpkg"/>
+    <CompilerOptions>
+      <Version Value="10"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
+      </SearchPaths>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Files Count="13">
+      <Item1>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <UnitName Value="svgvectorialwriter"/>
+      </Item1>
+      <Item2>
+        <Filename Value="pdfvrsintatico.pas"/>
+        <UnitName Value="pdfvrsintatico"/>
+      </Item2>
+      <Item3>
+        <Filename Value="pdfvrsemantico.pas"/>
+        <UnitName Value="pdfvrsemantico"/>
+      </Item3>
+      <Item4>
+        <Filename Value="pdfvrlexico.pas"/>
+        <UnitName Value="pdfvrlexico"/>
+      </Item4>
+      <Item5>
+        <Filename Value="pdfvectorialreader.pas"/>
+        <UnitName Value="pdfvectorialreader"/>
+      </Item5>
+      <Item6>
+        <Filename Value="fpvtocanvas.pas"/>
+        <UnitName Value="fpvtocanvas"/>
+      </Item6>
+      <Item7>
+        <Filename Value="fpvectorial.pas"/>
+        <UnitName Value="fpvectorial"/>
+      </Item7>
+      <Item8>
+        <Filename Value="fpvectbuildunit.pas"/>
+        <UnitName Value="fpvectbuildunit"/>
+      </Item8>
+      <Item9>
+        <Filename Value="dxfvectorialreader.pas"/>
+        <UnitName Value="dxfvectorialreader"/>
+      </Item9>
+      <Item10>
+        <Filename Value="cdrvectorialreader.pas"/>
+        <UnitName Value="cdrvectorialreader"/>
+      </Item10>
+      <Item11>
+        <Filename Value="avisozlib.pas"/>
+        <UnitName Value="avisozlib"/>
+      </Item11>
+      <Item12>
+        <Filename Value="avisocncgcodewriter.pas"/>
+        <UnitName Value="avisocncgcodewriter"/>
+      </Item12>
+      <Item13>
+        <Filename Value="avisocncgcodereader.pas"/>
+        <UnitName Value="avisocncgcodereader"/>
+      </Item13>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="2">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Release="1" Valid="True"/>
+      </Item2>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
