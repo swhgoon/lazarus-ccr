@@ -1,0 +1,477 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="9"/>
+    <PathDelim Value="\"/>
+    <General>
+      <MainUnit Value="0"/>
+      <Title Value="lazimageeditor"/>
+      <ResourceType Value="res"/>
+      <UseXPManifest Value="True"/>
+      <ActiveWindowIndexAtStart Value="0"/>
+    </General>
+    <i18n>
+      <EnableI18N LFM="False"/>
+    </i18n>
+    <VersionInfo>
+      <StringTable ProductVersion=""/>
+    </VersionInfo>
+    <BuildModes Count="1" Active="Default">
+      <Item1 Name="Default" Default="True"/>
+    </BuildModes>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="2">
+      <Item1>
+        <PackageName Value="LazColorPalette"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
+    </RequiredPackages>
+    <Units Count="29">
+      <Unit0>
+        <Filename Value="lazimageeditor.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="lazimageeditor"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="5"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="105" Y="12"/>
+        <UsageCount Value="44"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="main.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MainForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Main"/>
+        <EditorIndex Value="0"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1035"/>
+        <CursorPos X="22" Y="1054"/>
+        <UsageCount Value="44"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="picturectrls.pas"/>
+        <UnitName Value="PictureCtrls"/>
+        <EditorIndex Value="2"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="18"/>
+        <CursorPos X="14" Y="34"/>
+        <UsageCount Value="18"/>
+        <Loaded Value="True"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="preview.pas"/>
+        <ComponentName Value="PreviewForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Preview"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="27"/>
+        <CursorPos X="3" Y="40"/>
+        <UsageCount Value="10"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="test.pas"/>
+        <ComponentName Value="TestForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Test"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="61"/>
+        <CursorPos X="5" Y="85"/>
+        <UsageCount Value="10"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="newdialog.pas"/>
+        <ComponentName Value="NewDialogForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="NewDialog"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="49"/>
+        <CursorPos X="3" Y="66"/>
+        <UsageCount Value="10"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="resizedialog.pas"/>
+        <ComponentName Value="ResizeDialogForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ResizeDialog"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="27"/>
+        <CursorPos X="42" Y="37"/>
+        <UsageCount Value="10"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="resizepaperdialog.pas"/>
+        <ComponentName Value="ResizePaperDialogForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ResizePaperDialog"/>
+        <EditorIndex Value="4"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="18"/>
+        <CursorPos X="63" Y="34"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="aboutdialog.pas"/>
+        <ComponentName Value="AboutDialogForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="AboutDialog"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="44"/>
+        <CursorPos X="1" Y="56"/>
+        <UsageCount Value="10"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="T:\LazRGB\rgbgraphics.pas"/>
+        <UnitName Value="RGBGraphics"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="34"/>
+        <CursorPos X="46" Y="33"/>
+        <UsageCount Value="10"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="lazimageditor.rc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="None"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="aboutdialog.lrs"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="77" Y="6"/>
+        <UsageCount Value="10"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="T:\fpclaz\laz\lcl\graphics.pp"/>
+        <UnitName Value="Graphics"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1087"/>
+        <CursorPos X="19" Y="1101"/>
+        <UsageCount Value="10"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="picturemanager.pas"/>
+        <UnitName Value="PictureManager"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="7"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="19"/>
+        <Loaded Value="True"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="T:\ajlazctrls\dbdemo\bmprgbgraph.pas"/>
+        <UnitName Value="BmpRGBGraph"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="361"/>
+        <CursorPos X="80" Y="382"/>
+        <UsageCount Value="19"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="rgbroutines.pas"/>
+        <UnitName Value="RGBRoutines"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="989"/>
+        <CursorPos X="102" Y="750"/>
+        <UsageCount Value="16"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="rgbwinroutines.pas"/>
+        <UnitName Value="RGBWinRoutines"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="21"/>
+        <CursorPos X="40" Y="34"/>
+        <UsageCount Value="10"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="T:\LazRGB\rgbtypes.pas"/>
+        <UnitName Value="RGBTypes"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="55"/>
+        <CursorPos X="37" Y="69"/>
+        <UsageCount Value="11"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="T:\LazRGB\rgbutils.pas"/>
+        <UnitName Value="RGBUtils"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="22"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="11"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="T:\LazRGB\rgbroutines.pas"/>
+        <UnitName Value="RGBRoutines"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="45" Y="1"/>
+        <UsageCount Value="10"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="rgbqtroutines.pas"/>
+        <UnitName Value="RGBQtRoutines"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="52" Y="13"/>
+        <UsageCount Value="10"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="bmprgbtypes.pas"/>
+        <UnitName Value="BmpRGBTypes"/>
+        <EditorIndex Value="3"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="194"/>
+        <CursorPos X="18" Y="159"/>
+        <UsageCount Value="19"/>
+        <Loaded Value="True"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="T:\fpclaz\laz\lcl\include\winapih.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="255"/>
+        <CursorPos X="23" Y="271"/>
+        <UsageCount Value="10"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="T:\fpclaz\laz\lcl\lcltype.pp"/>
+        <UnitName Value="LCLType"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1181"/>
+        <CursorPos X="3" Y="1197"/>
+        <UsageCount Value="10"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="iconstrconsts.pas"/>
+        <UnitName Value="IconStrConsts"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="9"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="10"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="bmprgbutils.pas"/>
+        <UnitName Value="BmpRGBUtils"/>
+        <EditorIndex Value="6"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="108"/>
+        <CursorPos X="41" Y="128"/>
+        <UsageCount Value="14"/>
+        <Loaded Value="True"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="T:\fpclaz\fpc\2.5\packages\fcl-image\src\fpcanvas.pp"/>
+        <UnitName Value="FPCanvas"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="267"/>
+        <CursorPos X="15" Y="283"/>
+        <UsageCount Value="10"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="T:\fpclaz\laz\lcl\graphtype.pp"/>
+        <UnitName Value="GraphType"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="24"/>
+        <CursorPos X="45" Y="35"/>
+        <UsageCount Value="10"/>
+      </Unit27>
+      <Unit28>
+        <Filename Value="bmprgbgraph.pas"/>
+        <UnitName Value="BmpRGBGraph"/>
+        <EditorIndex Value="7"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="20"/>
+        <CursorPos X="76" Y="36"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit28>
+    </Units>
+    <JumpHistory Count="30" HistoryIndex="29">
+      <Position1>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="239" Column="20" TopLine="222"/>
+      </Position1>
+      <Position2>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="256" Column="20" TopLine="230"/>
+      </Position2>
+      <Position3>
+        <Filename Value="main.pas"/>
+        <Caret Line="578" Column="33" TopLine="562"/>
+      </Position3>
+      <Position4>
+        <Filename Value="main.pas"/>
+        <Caret Line="1054" Column="22" TopLine="1035"/>
+      </Position4>
+      <Position5>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="95" Column="51" TopLine="79"/>
+      </Position5>
+      <Position6>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="238" Column="8" TopLine="218"/>
+      </Position6>
+      <Position7>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="249" Column="37" TopLine="232"/>
+      </Position7>
+      <Position8>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="251" Column="20" TopLine="232"/>
+      </Position8>
+      <Position9>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="252" Column="8" TopLine="232"/>
+      </Position9>
+      <Position10>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="253" Column="28" TopLine="232"/>
+      </Position10>
+      <Position11>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="254" Column="27" TopLine="232"/>
+      </Position11>
+      <Position12>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="304" Column="17" TopLine="284"/>
+      </Position12>
+      <Position13>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="5" Column="87" TopLine="1"/>
+      </Position13>
+      <Position14>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="53" Column="17" TopLine="27"/>
+      </Position14>
+      <Position15>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="276" Column="24" TopLine="259"/>
+      </Position15>
+      <Position16>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="277" Column="24" TopLine="259"/>
+      </Position16>
+      <Position17>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="280" Column="83" TopLine="259"/>
+      </Position17>
+      <Position18>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="304" Column="17" TopLine="281"/>
+      </Position18>
+      <Position19>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="307" Column="17" TopLine="281"/>
+      </Position19>
+      <Position20>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="309" Column="40" TopLine="283"/>
+      </Position20>
+      <Position21>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="310" Column="40" TopLine="284"/>
+      </Position21>
+      <Position22>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="313" Column="59" TopLine="287"/>
+      </Position22>
+      <Position23>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="413" Column="48" TopLine="413"/>
+      </Position23>
+      <Position24>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="34" Column="35" TopLine="18"/>
+      </Position24>
+      <Position25>
+        <Filename Value="bmprgbtypes.pas"/>
+        <Caret Line="341" Column="85" TopLine="335"/>
+      </Position25>
+      <Position26>
+        <Filename Value="bmprgbtypes.pas"/>
+        <Caret Line="43" Column="55" TopLine="27"/>
+      </Position26>
+      <Position27>
+        <Filename Value="bmprgbtypes.pas"/>
+        <Caret Line="44" Column="6" TopLine="27"/>
+      </Position27>
+      <Position28>
+        <Filename Value="bmprgbtypes.pas"/>
+        <Caret Line="209" Column="9" TopLine="191"/>
+      </Position28>
+      <Position29>
+        <Filename Value="resizepaperdialog.pas"/>
+        <Caret Line="205" Column="1" TopLine="187"/>
+      </Position29>
+      <Position30>
+        <Filename Value="resizepaperdialog.pas"/>
+        <Caret Line="34" Column="55" TopLine="18"/>
+      </Position30>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="10"/>
+    <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="lazimageeditor"/>
+    </Target>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)"/>
+      <OtherUnitFiles Value="."/>
+      <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+    </SearchPaths>
+    <Linking>
+      <Debugging>
+        <UseLineInfoUnit Value="False"/>
+      </Debugging>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="3">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EFOpenError"/>
+      </Item3>
+    </Exceptions>
+  </Debugging>
+</CONFIG>
