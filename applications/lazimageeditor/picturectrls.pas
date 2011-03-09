@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, LCLType, LCLIntf, Controls, Forms, ExtCtrls, Graphics, Math,
-  ImgEditorGraphics, ImgEditorUtils, ImgEditorTypes;
+  BmpRGBGraph, BmpRGBUtils, BmpRGBTypes;
   
 type
   TPictureViewOption = (poShowGrid, poShowMask);
