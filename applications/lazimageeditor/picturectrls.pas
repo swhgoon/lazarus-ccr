@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, LCLType, LCLIntf, Controls, Forms, ExtCtrls, Graphics, Math,
-  RGBGraphics, RGBUtils, RGBTypes;
+  ImgEditorGraphics, ImgEditorUtils, ImgEditorTypes;
   
 type
   TPictureViewOption = (poShowGrid, poShowMask);
@@ -409,8 +409,8 @@ begin
 
     if Assigned(FPicture) then
     begin
-      FPicture.Canvas.StretchDrawTo(Canvas, FPictureRect.Left, FPictureRect.Top,
-        FPictureRect.Right - FPictureRect.Left, FPictureRect.Bottom - FPictureRect.Top);
+      FPicture.StretchDrawTo(Canvas, FPictureRect.Left, FPictureRect.Top,
+        FPictureRect.Right, FPictureRect.Bottom);
 
       if (poShowGrid in Options) and (Zoom > 2.0) then
       begin
@@ -701,7 +701,7 @@ begin
   Picture.Free;
   Picture := TPictureBitmap.Create(AWidth, AHeight);
   PaperColor := APaperColor;
-  Picture.Canvas.Fill(PaperColor);
+  Picture.Fill(PaperColor);
   FModified := False;
   Change;
 end;
@@ -735,7 +735,7 @@ begin
   
   BeginDraw;
   try
-    C := Picture.Canvas.GetColor(X, Y);
+    C := Picture.GetColor(X, Y);
   finally
     EndDraw;
   end;
@@ -751,11 +751,11 @@ procedure TCustomPictureEdit.FloodFill(X, Y: Integer; Shift: TShiftState);
 begin
   if Picture = nil then Exit;
   BeginDraw;
-  if not (ssLeft in Shift) then Picture.Canvas.EraseMode := ermErase;
+  if not (ssLeft in Shift) then Picture.EraseMode := ermErase;
   try
-    Picture.Canvas.FloodFill(X, Y);
+    Picture.Canvas.FloodFill(X, Y, Picture.Canvas.Brush.Color, fsSurface);
   finally
-    Picture.Canvas.EraseMode := ermNone;
+    Picture.EraseMode := ermNone;
     EndDraw;
   end;
   Invalidate;
@@ -771,7 +771,7 @@ begin
     if ssLeft in Shift then Picture.Mask.FillMode := mfAdd;
     if ssRight in Shift then Picture.Mask.FillMode := mfRemove;
 
-    Picture.Canvas.MaskFloodFill(X, Y);
+    Picture.MaskFloodFill(X, Y);
   finally
     Picture.Mask.FillMode := mfAdd;
     EndDraw;
@@ -786,16 +786,16 @@ begin
   if Picture = nil then Exit;
   
   BeginDraw;
-  if ssLeft in Shift then Picture.Canvas.EraseMode := ermErase;
-  if ssRight in Shift then Picture.Canvas.EraseMode := ermReplace;
+  if ssLeft in Shift then Picture.EraseMode := ermErase;
+  if ssRight in Shift then Picture.EraseMode := ermReplace;
   try
     R := Bounds(X - FSize div 2, Y - FSize div 2, FSize, FSize);
     case Shape of
     psRect: Picture.Canvas.FillRect(R.Left, R.Top, R.Right, R.Bottom);
-    psCircle: Picture.Canvas.FillEllipse(R.Left, R.Top, R.Right, R.Bottom);
+    psCircle: Picture.FillEllipse(R.Left, R.Top, R.Right, R.Bottom);
     end;
   finally
-    Picture.Canvas.EraseMode := ermNone;
+    Picture.EraseMode := ermNone;
     EndDraw;
   end;
   InvalidatePictureRect(R);
@@ -808,17 +808,17 @@ begin
   if Picture = nil then Exit;
   
   BeginDraw;
-  if not (ssLeft in Shift) then Picture.Canvas.EraseMode := ermErase;
-  Picture.Canvas.RandomEnabled := True;
+  if not (ssLeft in Shift) then Picture.EraseMode := ermErase;
+  Picture.RandomEnabled := True;
   try
     R := Bounds(X - FSize div 2, Y - FSize div 2, FSize, FSize);
     case Shape of
     psRect: Picture.Canvas.FillRect(R.Left, R.Top, R.Right, R.Bottom);
-    psCircle: Picture.Canvas.FillEllipse(R.Left, R.Top, R.Right, R.Bottom);
+    psCircle: Picture.FillEllipse(R.Left, R.Top, R.Right, R.Bottom);
     end;
   finally
-    Picture.Canvas.EraseMode := ermNone;
-    Picture.Canvas.RandomEnabled := False;
+    Picture.EraseMode := ermNone;
+    Picture.RandomEnabled := False;
     EndDraw;
   end;
   InvalidatePictureRect(R);
@@ -829,11 +829,11 @@ begin
   if Picture = nil then Exit;
   
   BeginDraw;
-  if not (ssLeft in Shift) then Picture.Canvas.EraseMode := ermErase;
+  if not (ssLeft in Shift) then Picture.EraseMode := ermErase;
   try
     Picture.Canvas.Line(X1, Y1, X2, Y2);
   finally
-    Picture.Canvas.EraseMode := ermNone;
+    Picture.EraseMode := ermNone;
     EndDraw;
   end;
   InvalidatePictureRect(Rect(X1, Y1, X2, Y2));
@@ -845,21 +845,21 @@ begin
   if Picture = nil then Exit;
   
   BeginDraw;
-  if not (ssLeft in Shift) then Picture.Canvas.EraseMode := ermErase;
+  if not (ssLeft in Shift) then Picture.EraseMode := ermErase;
   try
     if FFuzzy then
     begin
-      Picture.Canvas.FuzzyRectangle(X1, Y1, X2, Y2);
+      Picture.FuzzyRectangle(X1, Y1, X2, Y2);
     end
     else
     begin
       if FFillAlpha = 100 then
         Picture.Canvas.Rectangle(X1, Y1, X2, Y2)
       else
-        Picture.Canvas.AlphaRectangle(X1, Y1, X2, Y2, FFillAlpha);
+        Picture.AlphaRectangle(X1, Y1, X2, Y2, FFillAlpha);
     end;
   finally
-    Picture.Canvas.EraseMode := ermNone;
+    Picture.EraseMode := ermNone;
     EndDraw;
   end;
   InvalidatePictureRect(Rect(X1, Y1, X2, Y2));
@@ -870,12 +870,12 @@ begin
   if Picture = nil then Exit;
   
   BeginDraw;
-  if not (ssLeft in Shift) then Picture.Canvas.EraseMode := ermErase;
+  if not (ssLeft in Shift) then Picture.EraseMode := ermErase;
   try
 
     Picture.Canvas.Ellipse(X1, Y1, X2, Y2);
   finally
-    Picture.Canvas.EraseMode := ermNone;
+    Picture.EraseMode := ermNone;
     EndDraw;
   end;
   InvalidatePictureRect(Rect(X1, Y1, X2, Y2));
@@ -998,8 +998,8 @@ begin
   try
     New := TPictureBitmap.Create(AWidth, AHeight);
     try
-      New.Canvas.PaperColor := ColorToRGB32Pixel(PaperColor);
-      New.Canvas.Fill(PaperColor);
+      New.PaperColor := PaperColor;
+      New.Fill(PaperColor);
 
       case PicturePos of
       ppTopLeft, ppCenterLeft, ppBottomLeft: X := 0;
@@ -1031,7 +1031,7 @@ var
   R: TRect;
 begin
   if Picture = nil then Exit;
-  R := Picture.Mask.GetMaskedRect;
+//  R := Picture.Mask.GetMaskedRect;
   if (Picture.Width = (R.Right - R.Left)) and
      (Picture.Height = (R.Bottom - R.Top)) then Exit;
   
@@ -1170,13 +1170,13 @@ procedure TCustomPictureEdit.BeginDraw;
 begin
   if Picture = nil then Exit;
   
-  Picture.Canvas.OutlineColor := OutlineColor;
-  Picture.Canvas.FillColor := FillColor;
-  Picture.Canvas.PaperColor := PaperColor;
-  Picture.Canvas.RandomDensity := Round(RandomDensity * MAXRANDOMDENSITY);
-  Picture.Canvas.RectangleRoundness := RectangleRoundness;
-  Picture.Canvas.FloodFillTolerance := Round(FloodFillTolerance * MAXDIFFERENCE);
-  Picture.Canvas.DrawMode := FillAndOutline;
+  Picture.OutlineColor := OutlineColor;
+  Picture.FillColor := FillColor;
+  Picture.PaperColor := PaperColor;
+  Picture.RandomDensity := Round(RandomDensity * MAXRANDOMDENSITY);
+  Picture.RectangleRoundness := RectangleRoundness;
+  Picture.FloodFillTolerance := Round(FloodFillTolerance * MAXDIFFERENCE);
+  Picture.DrawMode := FillAndOutline;
 end;
 
 procedure TCustomPictureEdit.EndDraw;

@@ -1,30 +1,35 @@
-object MainForm: TMainForm
-  Left = 301
-  Height = 569
-  Top = 155
-  Width = 640
-  Caption = 'Lazarus Icon Editor'
-  ClientHeight = 549
-  ClientWidth = 640
+ï»¿object MainForm: TMainForm
+  Left = 209
+  Height = 631
+  Top = 146
+  Width = 897
+  Caption = 'Lazarus Image Editor'
+  ClientHeight = 609
+  ClientWidth = 897
+  Font.CharSet = GB2312_CHARSET
+  Font.Height = -13
+  Font.Name = 'å¾®è½¯é›…é»‘'
+  Font.Pitch = fpVariable
+  Font.Quality = fqDraft
   Menu = MainMenu
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnShow = FormShow
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object PanelTools: TPanel
     Left = 0
-    Height = 421
+    Height = 482
     Top = 105
     Width = 40
     Align = alLeft
     BevelOuter = bvNone
-    ClientHeight = 421
+    ClientHeight = 482
     ClientWidth = 40
     ParentColor = False
     TabOrder = 0
     object ToolBarTools: TToolBar
       Left = 0
-      Height = 421
+      Height = 482
       Top = 0
       Width = 40
       Align = alLeft
@@ -150,9 +155,9 @@ object MainForm: TMainForm
   end
   object StatusBar: TStatusBar
     Left = 0
-    Height = 23
-    Top = 526
-    Width = 640
+    Height = 22
+    Top = 587
+    Width = 897
     Panels = <    
       item
         Width = 250
@@ -177,19 +182,19 @@ object MainForm: TMainForm
     SimplePanel = False
   end
   object PanelPallete: TPanel
-    Left = 565
-    Height = 421
+    Left = 822
+    Height = 482
     Top = 105
     Width = 75
     Align = alRight
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 421
+    ClientHeight = 482
     ClientWidth = 75
     TabOrder = 1
     object Palette: TColorPalette
       Left = 0
-      Height = 421
+      Height = 482
       Top = 0
       Width = 75
       Align = alClient
@@ -201,17 +206,17 @@ object MainForm: TMainForm
     Left = 0
     Height = 105
     Top = 0
-    Width = 640
+    Width = 897
     Align = alTop
     BevelOuter = bvNone
     ClientHeight = 105
-    ClientWidth = 640
+    ClientWidth = 897
     TabOrder = 2
     object Bevel1: TBevel
       Left = 0
       Height = 2
       Top = 69
-      Width = 640
+      Width = 897
       Align = alTop
       Shape = bsBottomLine
     end
@@ -219,7 +224,7 @@ object MainForm: TMainForm
       Left = 0
       Height = 2
       Top = 33
-      Width = 640
+      Width = 897
       Align = alTop
       Shape = bsBottomLine
     end
@@ -227,7 +232,7 @@ object MainForm: TMainForm
       Left = 0
       Height = 33
       Top = 0
-      Width = 640
+      Width = 897
       ButtonHeight = 32
       ButtonWidth = 36
       Color = clBtnFace
@@ -239,7 +244,7 @@ object MainForm: TMainForm
         Left = 385
         Height = 32
         Top = 0
-        Width = 31
+        Width = 40
         Caption = 'Zoom:'
         Constraints.MinHeight = 32
         Layout = tlCenter
@@ -337,7 +342,7 @@ object MainForm: TMainForm
         ShowHint = True
       end
       object PanelZoom: TPanel
-        Left = 416
+        Left = 425
         Height = 32
         Top = 0
         Width = 77
@@ -347,11 +352,11 @@ object MainForm: TMainForm
         TabOrder = 0
         object ComboBoxZoom: TComboBox
           Left = 4
-          Height = 21
-          Top = 5
+          Height = 27
+          Top = 2
           Width = 70
           Anchors = [akLeft]
-          ItemHeight = 13
+          ItemHeight = 19
           ItemIndex = 2
           Items.Strings = (
             '25 %'
@@ -374,19 +379,19 @@ object MainForm: TMainForm
       Left = 0
       Height = 34
       Top = 35
-      Width = 640
+      Width = 897
       Align = alTop
       BorderSpacing.InnerBorder = 4
       BorderSpacing.CellAlignVertical = ccaCenter
       BevelOuter = bvNone
       ClientHeight = 34
-      ClientWidth = 640
+      ClientWidth = 897
       TabOrder = 1
       object LabelFillOutline: TLabel
-        Left = 96
+        Left = 103
         Height = 34
         Top = 0
-        Width = 58
+        Width = 72
         Align = alLeft
         Caption = 'Fill, Outline:'
         Constraints.MinHeight = 32
@@ -397,7 +402,7 @@ object MainForm: TMainForm
         Left = 0
         Height = 34
         Top = 0
-        Width = 35
+        Width = 42
         Align = alLeft
         Caption = 'Shape:'
         Constraints.MinHeight = 32
@@ -405,10 +410,10 @@ object MainForm: TMainForm
         ParentColor = False
       end
       object LabelMaskTool: TLabel
-        Left = 237
+        Left = 258
         Height = 34
         Top = 0
-        Width = 52
+        Width = 67
         Align = alLeft
         Caption = 'Mask Tool:'
         Constraints.MinHeight = 32
@@ -416,10 +421,10 @@ object MainForm: TMainForm
         ParentColor = False
       end
       object PanelColors: TPanel
-        Left = 447
+        Left = 685
         Height = 34
         Top = 0
-        Width = 193
+        Width = 212
         Align = alRight
         AutoSize = True
         BorderSpacing.InnerBorder = 4
@@ -427,40 +432,40 @@ object MainForm: TMainForm
         BorderSpacing.CellAlignVertical = ccaCenter
         BevelOuter = bvNone
         ClientHeight = 34
-        ClientWidth = 193
+        ClientWidth = 212
         TabOrder = 0
         object LabelOutline: TLabel
           Left = 8
           Height = 34
           Top = 0
-          Width = 39
+          Width = 49
           Align = alRight
           Caption = 'Outline:'
           Layout = tlCenter
           ParentColor = False
         end
         object LabelFill: TLabel
-          Left = 79
+          Left = 89
           Height = 34
           Top = 0
-          Width = 17
+          Width = 20
           Align = alRight
           Caption = 'Fill:'
           Layout = tlCenter
           ParentColor = False
         end
         object LabelPaper: TLabel
-          Left = 128
+          Left = 141
           Height = 34
           Top = 0
-          Width = 33
+          Width = 39
           Align = alRight
           Caption = 'Paper:'
           Layout = tlCenter
           ParentColor = False
         end
         object PanelOutline: TPanel
-          Left = 53
+          Left = 63
           Height = 22
           Top = 6
           Width = 20
@@ -473,7 +478,7 @@ object MainForm: TMainForm
           OnDblClick = PanelOutlineDblClick
         end
         object PanelFill: TPanel
-          Left = 102
+          Left = 115
           Height = 22
           Top = 6
           Width = 20
@@ -486,7 +491,7 @@ object MainForm: TMainForm
           OnDblClick = PanelFillDblClick
         end
         object PanelPaper: TPanel
-          Left = 167
+          Left = 186
           Height = 22
           Top = 6
           Width = 20
@@ -500,7 +505,7 @@ object MainForm: TMainForm
         end
       end
       object PanelFillOutline: TPanel
-        Left = 154
+        Left = 175
         Height = 34
         Top = 0
         Width = 83
@@ -515,7 +520,6 @@ object MainForm: TMainForm
           Top = 5
           Width = 25
           Anchors = [akLeft]
-          Color = clBtnFace
           Down = True
           Glyph.Data = {
             E6040000424DE604000000000000360000002800000014000000140000000100
@@ -569,7 +573,6 @@ object MainForm: TMainForm
           Top = 5
           Width = 25
           Anchors = [akLeft]
-          Color = clBtnFace
           Glyph.Data = {
             76060000424D7606000000000000360000002800000014000000140000000100
             2000000000004006000064000000640000000000000000000000000000FF0000
@@ -634,7 +637,6 @@ object MainForm: TMainForm
           Top = 5
           Width = 25
           Anchors = [akLeft]
-          Color = clBtnFace
           Glyph.Data = {
             E6040000424DE604000000000000360000002800000014000000140000000100
             180000000000B004000064000000640000000000000000000000FFFFFFFFFFFF
@@ -683,7 +685,7 @@ object MainForm: TMainForm
         end
       end
       object PanelShape: TPanel
-        Left = 35
+        Left = 42
         Height = 34
         Top = 0
         Width = 61
@@ -698,7 +700,6 @@ object MainForm: TMainForm
           Top = 5
           Width = 25
           Anchors = [akLeft]
-          Color = clBtnFace
           Down = True
           Glyph.Data = {
             E6040000424DE604000000000000360000002800000014000000140000000100
@@ -752,7 +753,6 @@ object MainForm: TMainForm
           Top = 5
           Width = 25
           Anchors = [akLeft]
-          Color = clBtnFace
           Glyph.Data = {
             76060000424D7606000000000000360000002800000014000000140000000100
             2000000000004006000064000000640000000000000000000000FFFFFF00FFFF
@@ -813,7 +813,7 @@ object MainForm: TMainForm
         end
       end
       object PanelMaskTool: TPanel
-        Left = 289
+        Left = 325
         Height = 34
         Top = 0
         Width = 86
@@ -828,7 +828,6 @@ object MainForm: TMainForm
           Top = 5
           Width = 25
           Anchors = [akLeft]
-          Color = clBtnFace
           Down = True
           Glyph.Data = {
             E6040000424DE604000000000000360000002800000014000000140000000100
@@ -882,7 +881,6 @@ object MainForm: TMainForm
           Top = 5
           Width = 25
           Anchors = [akLeft]
-          Color = clBtnFace
           Glyph.Data = {
             76060000424D7606000000000000360000002800000014000000140000000100
             2000000000004006000064000000640000000000000000000000FFFFFF00FFFF
@@ -947,7 +945,6 @@ object MainForm: TMainForm
           Top = 5
           Width = 25
           Anchors = [akLeft]
-          Color = clBtnFace
           Glyph.Data = {
             76060000424D7606000000000000360000002800000014000000140000000100
             2000000000004006000064000000640000000000000000000000FFFFFF00FFFF
@@ -1012,17 +1009,17 @@ object MainForm: TMainForm
       Left = 0
       Height = 34
       Top = 71
-      Width = 640
+      Width = 897
       Align = alTop
       BevelOuter = bvNone
       ClientHeight = 34
-      ClientWidth = 640
+      ClientWidth = 897
       TabOrder = 2
       object LabelSize: TLabel
         Left = 0
         Height = 34
         Top = 0
-        Width = 24
+        Width = 28
         Align = alLeft
         Caption = 'Size:'
         Constraints.MinHeight = 32
@@ -1030,10 +1027,10 @@ object MainForm: TMainForm
         ParentColor = False
       end
       object LabelDensity: TLabel
-        Left = 217
+        Left = 234
         Height = 34
         Top = 0
-        Width = 41
+        Width = 50
         Align = alLeft
         Caption = 'Density:'
         Constraints.MinHeight = 32
@@ -1041,10 +1038,10 @@ object MainForm: TMainForm
         ParentColor = False
       end
       object LabelRoundness: TLabel
-        Left = 91
+        Left = 95
         Height = 34
         Top = 0
-        Width = 58
+        Width = 71
         Align = alLeft
         Caption = 'Roundness:'
         Constraints.MinHeight = 32
@@ -1052,10 +1049,10 @@ object MainForm: TMainForm
         ParentColor = False
       end
       object LabelTolerance: TLabel
-        Left = 327
+        Left = 353
         Height = 34
         Top = 0
-        Width = 52
+        Width = 63
         Align = alLeft
         Caption = 'Tolerance:'
         Constraints.MinHeight = 32
@@ -1063,7 +1060,7 @@ object MainForm: TMainForm
         ParentColor = False
       end
       object PanelSize: TPanel
-        Left = 24
+        Left = 28
         Height = 34
         Top = 0
         Width = 67
@@ -1074,8 +1071,8 @@ object MainForm: TMainForm
         TabOrder = 0
         object EditSize: TEdit
           Left = 3
-          Height = 21
-          Top = 6
+          Height = 27
+          Top = 3
           Width = 43
           Anchors = [akLeft]
           OnChange = EditSizeChange
@@ -1084,8 +1081,8 @@ object MainForm: TMainForm
         end
         object UpDownSize: TUpDown
           Left = 46
-          Height = 21
-          Top = 6
+          Height = 27
+          Top = 3
           Width = 17
           Associate = EditSize
           Min = 1
@@ -1097,7 +1094,7 @@ object MainForm: TMainForm
         end
       end
       object PanelDensity: TPanel
-        Left = 258
+        Left = 284
         Height = 34
         Top = 0
         Width = 69
@@ -1108,8 +1105,8 @@ object MainForm: TMainForm
         TabOrder = 1
         object EditDensity: TEdit
           Left = 3
-          Height = 21
-          Top = 6
+          Height = 27
+          Top = 3
           Width = 42
           Anchors = [akLeft]
           OnChange = EditDensityChange
@@ -1118,8 +1115,8 @@ object MainForm: TMainForm
         end
         object UpDownDensity: TUpDown
           Left = 45
-          Height = 21
-          Top = 6
+          Height = 27
+          Top = 3
           Width = 17
           Associate = EditDensity
           Min = 0
@@ -1130,7 +1127,7 @@ object MainForm: TMainForm
         end
       end
       object PanelRoundness: TPanel
-        Left = 149
+        Left = 166
         Height = 34
         Top = 0
         Width = 68
@@ -1141,8 +1138,8 @@ object MainForm: TMainForm
         TabOrder = 2
         object EditRoundness: TEdit
           Left = 4
-          Height = 21
-          Top = 6
+          Height = 27
+          Top = 3
           Width = 42
           Anchors = [akLeft]
           OnChange = EditRoundnessChange
@@ -1151,8 +1148,8 @@ object MainForm: TMainForm
         end
         object UpDownRoundness: TUpDown
           Left = 46
-          Height = 21
-          Top = 6
+          Height = 27
+          Top = 3
           Width = 17
           Associate = EditRoundness
           Min = 0
@@ -1164,7 +1161,7 @@ object MainForm: TMainForm
         end
       end
       object PanelTolerance: TPanel
-        Left = 379
+        Left = 416
         Height = 34
         Top = 0
         Width = 68
@@ -1175,8 +1172,8 @@ object MainForm: TMainForm
         TabOrder = 3
         object EditTolerance: TEdit
           Left = 2
-          Height = 21
-          Top = 6
+          Height = 27
+          Top = 3
           Width = 42
           Anchors = [akLeft]
           OnChange = EditToleranceChange
@@ -1185,8 +1182,8 @@ object MainForm: TMainForm
         end
         object UpDownTolerance: TUpDown
           Left = 44
-          Height = 21
-          Top = 6
+          Height = 27
+          Top = 3
           Width = 17
           Associate = EditTolerance
           Min = 0
@@ -1197,10 +1194,10 @@ object MainForm: TMainForm
         end
       end
       object LabelTolerance1: TLabel
-        Left = 447
+        Left = 484
         Height = 34
         Top = 0
-        Width = 47
+        Width = 59
         Align = alLeft
         Caption = 'Fill Alpha:'
         Constraints.MinHeight = 32
@@ -1208,7 +1205,7 @@ object MainForm: TMainForm
         ParentColor = False
       end
       object PanelTolerance1: TPanel
-        Left = 494
+        Left = 543
         Height = 34
         Top = 0
         Width = 68
@@ -1219,7 +1216,7 @@ object MainForm: TMainForm
         TabOrder = 4
         object spinFillAlpha: TSpinEdit
           Left = 10
-          Height = 21
+          Height = 27
           Top = 5
           Width = 51
           OnChange = spinFillAlphaChange
@@ -1228,18 +1225,18 @@ object MainForm: TMainForm
         end
       end
       object LabelTolerance2: TLabel
-        Left = 562
+        Left = 611
         Height = 34
         Top = 0
-        Width = 34
+        Width = 35
         Align = alLeft
-        Caption = 'Fuzzy?'
+        Caption = 'Fuzzy'
         Constraints.MinHeight = 32
         Layout = tlCenter
         ParentColor = False
       end
       object PanelTolerance2: TPanel
-        Left = 596
+        Left = 646
         Height = 34
         Top = 0
         Width = 30
@@ -1250,9 +1247,9 @@ object MainForm: TMainForm
         TabOrder = 5
         object checkFuzzy: TCheckBox
           Left = 4
-          Height = 17
+          Height = 19
           Top = 9
-          Width = 18
+          Width = 20
           OnChange = checkFuzzyChange
           TabOrder = 0
         end
@@ -1261,9 +1258,9 @@ object MainForm: TMainForm
   end
   object PanelPictures: TPanel
     Left = 40
-    Height = 421
+    Height = 482
     Top = 105
-    Width = 525
+    Width = 782
     Align = alClient
     BevelOuter = bvLowered
     TabOrder = 3
@@ -1965,8 +1962,9 @@ object MainForm: TMainForm
         OnClick = ViewShowMaskExecute
       end
       object MenuItemShowPreview: TMenuItem
-        Action = ViewShowPreview
         AutoCheck = True
+        Caption = 'Show Preview'
+        Checked = True
         OnClick = ViewShowPreviewExecute
       end
     end
@@ -1979,7 +1977,7 @@ object MainForm: TMainForm
         Caption = '-'
       end
       object MenuItemAbout: TMenuItem
-        Caption = 'About Lazarus Icon Editor...'
+        Caption = 'About Lazarus Image Editor...'
         OnClick = MenuItemAboutClick
       end
     end
@@ -2106,17 +2104,17 @@ object MainForm: TMainForm
     end
     object Rotate90: TAction
       Category = 'PictureRotate'
-      Caption = '90° Clockwise'
+      Caption = '90Clockwise'
       OnExecute = Rotate90Execute
     end
     object Rotate180: TAction
       Category = 'PictureRotate'
-      Caption = '180° Clockwise'
+      Caption = '180Clockwise'
       OnExecute = Rotate180Execute
     end
     object Rotate270: TAction
       Category = 'PictureRotate'
-      Caption = '270° Clockwise'
+      Caption = '270Clockwise'
       OnExecute = Rotate270Execute
     end
     object RotateCustom: TAction
@@ -2171,13 +2169,6 @@ object MainForm: TMainForm
       Caption = 'Show Mask'
       Checked = True
       OnExecute = ViewShowMaskExecute
-    end
-    object ViewShowPreview: TAction
-      Category = 'View'
-      AutoCheck = True
-      Caption = 'Show Preview'
-      Checked = True
-      OnExecute = ViewShowPreviewExecute
     end
   end
   object ImageListTools: TImageList

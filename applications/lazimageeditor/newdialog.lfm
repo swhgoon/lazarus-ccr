@@ -2,31 +2,31 @@ object NewDialogForm: TNewDialogForm
   Left = 478
   Height = 185
   Top = 79
-  Width = 249
+  Width = 291
   HorzScrollBar.Page = 248
   VertScrollBar.Page = 184
-  ActiveControl = EditWidth
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'New picture'
   ClientHeight = 185
-  ClientWidth = 249
+  ClientWidth = 291
   Position = poMainFormCenter
+  LCLVersion = '0.9.29'
   object GroupBoxProperties: TGroupBox
-    Left = 6
+    Left = 8
     Height = 136
     Top = 6
-    Width = 236
+    Width = 275
     Anchors = [akTop, akLeft, akRight, akBottom]
     Caption = 'Properties'
     ClientHeight = 118
-    ClientWidth = 232
+    ClientWidth = 271
     TabOrder = 0
     object LabelWidth: TLabel
       Left = 16
       Height = 14
       Top = 14
-      Width = 33
+      Width = 43
       Caption = 'Width:'
       ParentColor = False
     end
@@ -34,7 +34,7 @@ object NewDialogForm: TNewDialogForm
       Left = 16
       Height = 14
       Top = 50
-      Width = 36
+      Width = 50
       Caption = 'Height:'
       ParentColor = False
     end
@@ -42,7 +42,7 @@ object NewDialogForm: TNewDialogForm
       Left = 16
       Height = 14
       Top = 86
-      Width = 59
+      Width = 85
       Caption = 'Paper color:'
       ParentColor = False
     end
@@ -50,56 +50,57 @@ object NewDialogForm: TNewDialogForm
       Left = 118
       Height = 25
       Top = 82
-      Width = 80
+      Width = 129
       BorderWidth = 2
       ButtonColorSize = 16
       ButtonColor = clWhite
       Caption = 'Change...'
-      Color = clBtnFace
     end
     object EditWidth: TEdit
       Left = 118
-      Height = 23
+      Height = 21
       Top = 8
-      Width = 80
-      OnKeyDown = nil
+      Width = 112
       TabOrder = 0
       Text = '512'
     end
     object EditHeight: TEdit
       Left = 118
-      Height = 23
+      Height = 21
       Top = 44
-      Width = 80
-      OnKeyDown = nil
+      Width = 112
       TabOrder = 1
       Text = '512'
     end
     object UpDownWidth: TUpDown
-      Left = 198
-      Height = 23
-      Top = 8
+      Left = 230
+      Height = 17
+      Top = 10
       Width = 17
       Associate = EditWidth
       Min = 1
       Max = 4096
       Position = 512
+      TabOrder = 2
       Thousands = False
+      Wrap = False
     end
     object UpDownHeight: TUpDown
-      Left = 198
-      Height = 23
-      Top = 44
+      Left = 230
+      Height = 17
+      Top = 46
       Width = 17
       Associate = EditHeight
       Min = 1
       Max = 4096
       Position = 512
+      TabOrder = 3
       Thousands = False
+      Wrap = False
     end
   end
   object ButtonCancel: TButton
-    Left = 167
+    Left = 208
     Height = 25
     Top = 149
     Width = 75
@@ -111,7 +112,7 @@ object NewDialogForm: TNewDialogForm
     TabOrder = 1
   end
   object ButtonOK: TButton
-    Left = 85
+    Left = 126
     Height = 25
     Top = 149
     Width = 75

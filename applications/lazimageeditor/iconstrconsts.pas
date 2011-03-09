@@ -23,7 +23,7 @@
   Abstract:
     This unit contains all resource strings.
 
-Note: All resource strings should be prefixed with 'lie' (Lazarus Icon Editor)
+Note: All resource strings should be prefixed with 'lie' (Lazarus Image Editor)
 
 }
 unit IconStrConsts;
@@ -49,7 +49,7 @@ resourcestring
   lieResourceName = 'Resource name: ';
 
   // Main Form
-  lieMain = 'Lazarus Icon Editor';
+  lieMain = 'Lazarus Image Editor';
 
   // main bar menu
   lieMenuFile = '&File';
@@ -66,9 +66,9 @@ resourcestring
   lieFileSaveAs = 'Save &As...';
   lieFileExportAsLRS = '&Export As *.lrs...';
   lieFileClose = '&Close';
-  lieRotate90 = '90° Clockwise';
-  lieRotate180 = '180° Clockwise';
-  lieRotate270 = '270° Clockwise';
+  lieRotate90 = '90?Clockwise';
+  lieRotate180 = '180?Clockwise';
+  lieRotate270 = '270?Clockwise';
   lieRotateCustom = 'Custom...';
   lieFlipVertically = 'Vertically';
   lieFlipHorizontally = 'Horizontally';
@@ -97,9 +97,9 @@ resourcestring
   lieHintFileSaveAs = 'Save As';
   lieHintFileExportAsLRS = 'Export As *.lrs';
   lieHintFileClose = 'Close';
-  lieHintRotate90 = '90° Clockwise';
-  lieHintRotate180 = '180° Clockwise';
-  lieHintRotate270 = '270° Clockwise';
+  lieHintRotate90 = '90?Clockwise';
+  lieHintRotate180 = '180?Clockwise';
+  lieHintRotate270 = '270?Clockwise';
   lieHintRotateCustom = 'Custom';
   lieHintFlipVertically = 'Vertically';
   lieHintFlipHorizontally = 'Horizontally';
@@ -147,7 +147,7 @@ resourcestring
   lieLabelTolerance = 'Tolerance:';
 
   // Dialog About
-  lieAbouDialog = 'About Lazarus Icon Editor';
+  lieAbouDialog = 'About Lazarus Image Editor';
   lieLabelVersion = 'Version: 0.1';
   lieLabelAuthor = 'Author: Tom Gregorovic';
 

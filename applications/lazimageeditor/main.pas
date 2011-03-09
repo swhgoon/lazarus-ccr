@@ -21,7 +21,7 @@
   Author: Tom Gregorovic
 
   Abstract:
-    Icon Editor main unit.
+    Image Editor main unit.
 }
 unit Main;
 
@@ -32,9 +32,8 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Menus,
   ExtCtrls, ComCtrls, ActnList, StdActns, ExtDlgs, Buttons, StdCtrls, Spin,
-  NewDialog, ResizeDialog, ResizePaperDialog, AboutDialog, Preview,
-
-  PictureManager, RGBGraphics, PictureCtrls, ColorPalette;
+  NewDialog, ResizeDialog, ResizePaperDialog, AboutDialog,
+  PictureManager, PictureCtrls, ColorPalette;
 
 type
 
@@ -50,7 +49,6 @@ type
     PanelTolerance1: TPanel;
     PanelTolerance2: TPanel;
     spinFillAlpha: TSpinEdit;
-    ViewShowPreview: TAction;
     ViewShowMask: TAction;
     ViewShowGrid: TAction;
     MenuItemShowMask: TMenuItem;
@@ -293,7 +291,6 @@ type
     procedure SelectTool(Tool: TPictureEditTool);
     procedure ChangeTool(Tool: TPictureEditTool);
     procedure UpdatePictureToolsEnabled;
-    procedure UpdatePreview;
     procedure UpdateAll;
   public
     property ActivePicture: TPictureBitmap read GetActivePicture;
@@ -356,8 +353,7 @@ end;
 procedure TMainForm.PicturePageChange(Sender: TObject);
 begin
   UpdatePictureToolsEnabled;
-  UpdatePreview;
-  
+
   if not Pictures.CanEdit then Exit;
   with ActivePictureEdit do
   begin
@@ -373,11 +369,11 @@ begin
     psCircle: ToolCircleShape.Down := True;
     end;
     
-    case FillAndOutline of
+{    case FillAndOutline of
     dmFillAndOutline: ToolFillOutline.Down := True;
     dmOutline: ToolOutline.Down := True;
     dmFill: ToolFill.Down := True;
-    end;
+    end;     }
     
     case MaskTool of
     mtRectangle: ToolMaskRectangle.Down := True;
@@ -392,8 +388,7 @@ begin
     
     ViewShowGrid.Checked := poShowGrid in ActivePictureEdit.Options;
     ViewShowMask.Checked := poShowMask in ActivePictureEdit.Options;
-    ViewShowPreview.Checked := ActivePicturePage.ShowPreview;
-    
+
     SelectTool(Tool);
     
     PictureSizeChange(nil);
@@ -476,13 +471,13 @@ end;
 procedure TMainForm.ToolFillClick(Sender: TObject);
 begin
   if not Pictures.CanEdit then Exit;
-  ActivePictureEdit.FillAndOutline := dmFill;
+//  ActivePictureEdit.FillAndOutline := dmFill;
 end;
 
 procedure TMainForm.ToolFillOutlineClick(Sender: TObject);
 begin
   if not Pictures.CanEdit then Exit;
-  ActivePictureEdit.FillAndOutline := dmFillAndOutline;
+//  ActivePictureEdit.FillAndOutline := dmFillAndOutline;
 end;
 
 procedure TMainForm.ToolFloodFillClick(Sender: TObject);
@@ -524,7 +519,7 @@ end;
 procedure TMainForm.ToolOutlineClick(Sender: TObject);
 begin
   if not Pictures.CanEdit then Exit;
-  ActivePictureEdit.FillAndOutline := dmOutline;
+//  ActivePictureEdit.FillAndOutline := dmOutline;
 end;
 
 procedure TMainForm.ToolPenClick(Sender: TObject);
@@ -580,7 +575,7 @@ begin
   
   StatusBar.Panels[3].Text := Format('%3.d x %3.d', [DX, DY]);
   StatusBar.Panels[4].Text :=
-    ColorToString(ActivePicture.Canvas.GetColor(X, Y));
+    ColorToString(ActivePicture.GetColor(X, Y));
 end;
 
 procedure TMainForm.PictureColorChange(Sender: TObject);
@@ -633,9 +628,6 @@ end;
 procedure TMainForm.ViewShowPreviewExecute(Sender: TObject);
 begin
   if not Pictures.CanEdit then Exit;
-  ActivePicturePage.ShowPreview := ViewShowPreview.Checked;
-
-  UpdatePreview;
 end;
 
 procedure TMainForm.PaletteColorPick(Sender: TObject; AColor: TColor;
@@ -753,25 +745,13 @@ begin
   
   ViewShowGrid.Enabled := AValue;
   ViewShowMask.Enabled := AValue;
-  ViewShowPreview.Enabled := AValue;
   
   ToolBar.Invalidate;
   ToolBarTools.Invalidate;
 end;
 
-procedure TMainForm.UpdatePreview;
-begin
-  if Pictures.CanEdit and ActivePicturePage.ShowPreview then
-  begin
-    PreviewForm.Preview(ActivePicture);
-    PreviewForm.Show;
-  end
-  else PreviewForm.Hide;
-end;
-
 procedure TMainForm.UpdateAll;
 begin
-  UpdatePreview;
   UpdatePictureToolsEnabled;
   UpdateToolSettings;
 end;
@@ -877,7 +857,6 @@ begin
   ColorsGrayscale.Caption:=lieColorsGrayscale;
   ColorsInvert.Caption:=lieColorsInvert;
   ColorsDisable.Caption:=lieColorsDisable;
-  ViewShowPreview.Caption:=lieViewShowPreview;
   ViewShowMask.Caption:=lieViewShowMask;
   ViewShowGrid.Caption:=lieViewShowGrid;
   MaskInvert.Caption:=lieMaskInvert;
@@ -908,7 +887,6 @@ begin
   ColorsGrayscale.Hint:=lieHintColorsGrayscale;
   ColorsInvert.Hint:=lieHintColorsInvert;
   ColorsDisable.Hint:=lieHintColorsDisable;
-  ViewShowPreview.Hint:=lieHintViewShowPreview;
   ViewShowMask.Hint:=lieHintViewShowMask;
   ViewShowGrid.Hint:=lieHintViewShowGrid;
   MaskInvert.Hint:=lieHintMaskInvert;
@@ -1162,6 +1140,7 @@ end;
 
 
 initialization
+
   {$I main.lrs}
 
 end.
