@@ -41,32 +41,34 @@ interface
 
 uses
   Classes, SysUtils, FPImage, IntfGraphics, Graphics, Math, LCLProc,
-  BmpRGBUtils;
+  BmpRGBUtils, rgbdrawutils;
 
 const
   MAXRANDOMDENSITY = $FFFF;
 
 type
-  TRandomDensity = Word;
+  TRandomDensity = word;
   TDrawMode = (dmFillAndOutline, dmOutline, dmFill);
   TEraseMode = (ermNone, ermErase, ermReplace);
-  TDrawPixelProcedure = procedure (X, Y: Integer) of Object;
+  TDrawPixelProcedure = procedure(X, Y: integer) of object;
 
-  TPixelDifference = Word;
+  TPixelDifference = word;
+
 const
   MAXDIFFERENCE = 255 + 255 + 255;
+
 type
   // integral float with 1/256 precision
-  TIntensityFloat = Integer;
-  TIntensityFloatTable = Array [0..255] of TIntensityFloat;
+  TIntensityFloat = integer;
+  TIntensityFloatTable = array [0..255] of TIntensityFloat;
 
   { TRGBBitmapCore }
 
-  TRGBBitmapCore = class(TBitmap)
+  TRGBBitmapCore = class(TCustomRGBBitmapCore)
   private
-    FSizeOfPixel: Integer;
-    FRowPixelStride: Integer;
-    FDataOwner: Boolean;
+    FSizeOfPixel: integer;
+    FRowPixelStride: integer;
+    FDataOwner: boolean;
     FDrawMode: TDrawMode;
     FEraseMode: TEraseMode;
     FFillColor: TColor;
@@ -74,98 +76,92 @@ type
     FOutlineColor: TColor;
     FPaperColor: TColor;
     FRandomDensity: TRandomDensity;
-    FRandomEnabled: Boolean;
-    FRectangleRoundness: Integer;
-    function GetFillColor: TColor;
-    function GetOutlineColor: TColor;
-    function GetPaperColor: TColor;
-    procedure SetFillColor(const AValue: TColor);
-    procedure SetOutlineColor(const AValue: TColor);
-    procedure SetPaperColor(const AValue: TColor);
-    function GetSize: Integer;
+    FRandomEnabled: boolean;
+    FRectangleRoundness: integer;
+    function GetSize: integer;
   protected
-    function PixelMasked(X, Y: Integer): Boolean;
+    function PixelMasked(X, Y: integer): boolean;
 
-    procedure DrawOutlinePixel(X, Y: Integer);
-    procedure DrawFillPixel(X, Y: Integer);
-    procedure DrawPaperPixel(X, Y: Integer);
+    procedure DrawOutlinePixel(X, Y: integer);
+    procedure DrawFillPixel(X, Y: integer);
+    procedure DrawPaperPixel(X, Y: integer);
 
-    procedure DrawReplacePixel(X, Y: Integer);
+    procedure DrawReplacePixel(X, Y: integer);
 
-    procedure DrawRandomOutlinePixel(X, Y: Integer);
-    procedure DrawRandomFillPixel(X, Y: Integer);
-    procedure DrawRandomPaperPixel(X, Y: Integer);
+    procedure DrawRandomOutlinePixel(X, Y: integer);
+    procedure DrawRandomFillPixel(X, Y: integer);
+    procedure DrawRandomPaperPixel(X, Y: integer);
 
-    procedure DrawEmptyPixel(X, Y: Integer);
+    procedure DrawEmptyPixel(X, Y: integer);
 
     function GetOutlineProcedure: TDrawPixelProcedure; virtual;
     function GetFillProcedure: TDrawPixelProcedure; virtual;
   public
-    constructor Create(AWidth, AHeight: Integer; ASizeOfPixel: Integer); virtual;
-    constructor CreateAsCopy(ABitmap: TRGBBitmapCore; ASizeOfPixel: Integer); virtual;
-    constructor CreateFromData(AData: Pointer; AWidth, AHeight: Integer; ASizeOfPixel: Integer; ADataOwner: Boolean = False); virtual;
+    constructor Create(AWidth, AHeight: integer; ASizeOfPixel: integer); virtual;
+    constructor CreateAsCopy(ABitmap: TRGBBitmapCore; ASizeOfPixel: integer); virtual;
+    constructor CreateFromData(AData: Pointer; AWidth, AHeight: integer;
+      ASizeOfPixel: integer; ADataOwner: boolean = False); virtual;
     destructor Destroy; override;
 
     procedure Assign(Source: TPersistent); override;
     procedure SwapWith(ABitmap: TRGBBitmapCore); virtual;
   public
-    procedure Clear; virtual;
-    procedure ClearWhite; virtual;
-    procedure Invert; virtual;
-    
-    procedure FlipHorz; virtual;
-    procedure FlipVert; virtual;
-    procedure Rotate90; virtual;
-    procedure Rotate180; virtual;
-    procedure Rotate270; virtual;
+    procedure Clear; override;
+    procedure ClearWhite; override;
+    procedure Invert; override;
+
+    procedure FlipHorz; override;
+    procedure FlipVert; override;
+    procedure Rotate90; override;
+    procedure Rotate180; override;
+    procedure Rotate270; override;
   public
-        procedure SetColor(X, Y: Integer; Value: TColor);
-    function GetColor(X, Y: Integer): TColor;
+    procedure SetColor(X, Y: integer; Value: TColor);
+    function GetColor(X, Y: integer): TColor;
 
     procedure Fill(Color: TColor);
-    procedure FillEllipse(X1, Y1, X2, Y2: Integer);
-    procedure MaskFloodFill(X, Y: Integer);
+    procedure FillEllipse(X1, Y1, X2, Y2: integer); override;
+    procedure MaskFloodFill(X, Y: integer);
     // Alpha drawing methods
-    procedure AlphaRectangle(X1, Y1, X2, Y2, AAlpha: Integer);
+    procedure AlphaRectangle(X1, Y1, X2, Y2, AAlpha: integer);
     // Effect drawing methods
-    procedure FuzzyRectangle(X1, Y1, X2, Y2: Integer);
+    procedure FuzzyRectangle(X1, Y1, X2, Y2: integer);
   public
-    procedure DrawTo(ACanvas: TCanvas; X, Y: Integer);
-    procedure StretchDrawTo(ACanvas: TCanvas; DstX, DstY, DstWidth, DstHeight: Integer);
+    procedure DrawTo(ACanvas: TCanvas; X, Y: integer);
+    procedure StretchDrawTo(ACanvas: TCanvas; DstX, DstY, DstWidth, DstHeight: integer);
 
     property EraseMode: TEraseMode read FEraseMode write FEraseMode;
     property DrawMode: TDrawMode read FDrawMode write FDrawMode;
-    property FloodFillTolerance: TPixelDifference read FFloodFillTolerance
-      write FFloodFillTolerance;
+    property FloodFillTolerance: TPixelDifference
+      read FFloodFillTolerance write FFloodFillTolerance;
 
     property Width;
     property Height;
 
-    property FillColor: TColor read GetFillColor write SetFillColor;
-    property OutlineColor: TColor read GetOutlineColor write SetOutlineColor;
-    property PaperColor: TColor read GetPaperColor write SetPaperColor;
-
-    property RandomEnabled: Boolean read FRandomEnabled write FRandomEnabled;
+    property RandomEnabled: boolean read FRandomEnabled write FRandomEnabled;
     property RandomDensity: TRandomDensity read FRandomDensity write FRandomDensity;
 
-    property RectangleRoundness: Integer read FRectangleRoundness write FRectangleRoundness;
-    property DataOwner: Boolean read FDataOwner;
-    property Size: Integer read GetSize;
-    property SizeOfPixel: Integer read FSizeOfPixel;
+    property RectangleRoundness: integer read FRectangleRoundness
+      write FRectangleRoundness;
+    property DataOwner: boolean read FDataOwner;
+    property Size: integer read GetSize;
+    property SizeOfPixel: integer read FSizeOfPixel;
   end;
 
   { TRGB8BitmapCore }
 
   TRGB8BitmapCore = class(TRGBBitmapCore)
   public
-    constructor Create(AWidth, AHeight: Integer); virtual;
+    constructor Create(AWidth, AHeight: integer); virtual;
     constructor CreateAsCopy(ABitmap: TRGBBitmapCore); virtual;
-    constructor CreateFromData(AData: Pointer; AWidth, AHeight: Integer; ADataOwner: Boolean = False); virtual;
+    constructor CreateFromData(AData: Pointer; AWidth, AHeight: integer;
+      ADataOwner: boolean = False); virtual;
 
     procedure LoadFromLazIntfImageAlpha(AImage: TLazIntfImage); virtual;
     procedure SaveToLazIntfImageAlpha(AImage: TLazIntfImage); virtual;
-    procedure SaveToLazIntfImageAlpha(AImage: TLazIntfImage; const ARect: TRect); virtual;
-    
+    procedure SaveToLazIntfImageAlpha(AImage: TLazIntfImage;
+      const ARect: TRect); virtual;
+
     procedure Assign(Source: TPersistent); override;
     procedure SwapWith(ABitmap: TRGBBitmapCore); override;
   public
@@ -176,11 +172,12 @@ type
   TRGB32BitmapCore = class(TRGBBitmapCore)
   private
   public
-    constructor Create(AWidth, AHeight: Integer); virtual;
+    constructor Create(AWidth, AHeight: integer); virtual;
     constructor CreateAsCopy(ABitmap: TRGBBitmapCore); virtual;
     constructor CreateFromLazIntfImage(AImage: TLazIntfImage); virtual;
-    constructor CreateFromData(AData: Pointer; AWidth, AHeight: Integer; ADataOwner: Boolean = False); virtual;
-    destructor  Destroy; override;
+    constructor CreateFromData(AData: Pointer; AWidth, AHeight: integer;
+      ADataOwner: boolean = False); virtual;
+    destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure SwapWith(ABitmap: TRGBBitmapCore); override;
     procedure SaveToLazIntfImage(AImage: TLazIntfImage); virtual;
@@ -189,32 +186,34 @@ type
   published
   end;
 
-  procedure FlipHorzRGBBitmap(Bitmap: TRGBBitmapCore);
-  procedure FlipVertRGBBitmap(Bitmap: TRGBBitmapCore);
+procedure FlipHorzRGBBitmap(Bitmap: TRGBBitmapCore);
+procedure FlipVertRGBBitmap(Bitmap: TRGBBitmapCore);
 
-  // intensity tables
-  function GetIntensityFloatTable(A, B: Single): TIntensityFloatTable;
+// intensity tables
+function GetIntensityFloatTable(A, B: single): TIntensityFloatTable;
 
-  // rotate clockwise
-  procedure Rotate90CWRGBBitmap(Bitmap: TRGBBitmapCore);
-  procedure Rotate180CWRGBBitmap(Bitmap: TRGBBitmapCore);
-  procedure Rotate270CWRGBBitmap(Bitmap: TRGBBitmapCore);
+// rotate clockwise
+procedure Rotate90CWRGBBitmap(Bitmap: TRGBBitmapCore);
+procedure Rotate180CWRGBBitmap(Bitmap: TRGBBitmapCore);
+procedure Rotate270CWRGBBitmap(Bitmap: TRGBBitmapCore);
 
-  procedure InvertRGBBitmap(Bitmap: TRGBBitmapCore);
-  procedure GrayscaleRGB32Bitmap(Bitmap: TRGB32BitmapCore);
-  procedure DisableRGB32Bitmap(Bitmap: TRGB32BitmapCore);
+procedure InvertRGBBitmap(Bitmap: TRGBBitmapCore);
+procedure GrayscaleRGB32Bitmap(Bitmap: TRGB32BitmapCore);
+procedure DisableRGB32Bitmap(Bitmap: TRGB32BitmapCore);
 
 implementation
 
 uses BmpRGBGraph;
 
-function AbsByte(Src: Integer): Byte; inline;
+function AbsByte(Src: integer): byte; inline;
 begin
-  if Src >= 0 then Result := Src
-  else Result := -Src;
+  if Src >= 0 then
+    Result := Src
+  else
+    Result := -Src;
 end;
 
-function RoundIntensityFloatInline(V: TIntensityFloat): Byte; inline;
+function RoundIntensityFloatInline(V: TIntensityFloat): byte; inline;
 begin
   Result := Max(0, Min(255, (V + 128) shr 8));
 end;
@@ -223,10 +222,10 @@ end;
   Creates look-up table T[I = 0..255] = A + I * B.
 *)
 
-function GetIntensityFloatTable(A, B: Single): TIntensityFloatTable;
+function GetIntensityFloatTable(A, B: single): TIntensityFloatTable;
 var
-  I: Integer;
-  C: Single;
+  I: integer;
+  C: single;
 begin
   C := A;
   for I := 0 to High(Result) do
@@ -278,22 +277,22 @@ end;
 
 { TRGBBitmapCore }
 
-function TRGBBitmapCore.GetSize: Integer;
+function TRGBBitmapCore.GetSize: integer;
 begin
 
 end;
 
-constructor TRGBBitmapCore.Create(AWidth, AHeight: Integer; ASizeOfPixel: Integer);
+constructor TRGBBitmapCore.Create(AWidth, AHeight: integer; ASizeOfPixel: integer);
 begin
   inherited Create;
-  
+
   Width := AWidth;
   Height := AHeight;
   // TODO: check on 64-bit arch.
   // 32-bit alignment
   FRowPixelStride := (((AWidth * ASizeOfPixel + 3) shr 2) shl 2) div ASizeOfPixel;
   FSizeOfPixel := ASizeOfPixel;
-  
+
   FDataOwner := True;
 
   FRandomDensity := MAXRANDOMDENSITY;
@@ -301,22 +300,22 @@ begin
   FRectangleRoundness := 0;
 end;
 
-constructor TRGBBitmapCore.CreateAsCopy(ABitmap: TRGBBitmapCore; ASizeOfPixel: Integer);
+constructor TRGBBitmapCore.CreateAsCopy(ABitmap: TRGBBitmapCore; ASizeOfPixel: integer);
 begin
   inherited Create;
 
   Width := ABitmap.Width;
   Height := ABitmap.Height;
   FSizeOfPixel := ASizeOfPixel;
-  
+
   FDataOwner := True;
 end;
 
-constructor TRGBBitmapCore.CreateFromData(AData: Pointer; AWidth, AHeight: Integer;
-  ASizeOfPixel: Integer; ADataOwner: Boolean);
+constructor TRGBBitmapCore.CreateFromData(AData: Pointer; AWidth, AHeight: integer;
+  ASizeOfPixel: integer; ADataOwner: boolean);
 begin
   inherited Create;
-  
+
   Width := AWidth;
   Height := AHeight;
   // TODO: check on 64-bit arch.
@@ -333,8 +332,10 @@ end;
 
 procedure TRGBBitmapCore.Assign(Source: TPersistent);
 begin
-  if Source = nil then Exit;
-  if Source = Self then Exit;
+  if Source = nil then
+    Exit;
+  if Source = Self then
+    Exit;
   if Source is TRGBBitmapCore then
   begin
     Width := (Source as TRGBBitmapCore).Width;
@@ -347,7 +348,8 @@ end;
 
 procedure TRGBBitmapCore.SwapWith(ABitmap: TRGBBitmapCore);
 begin
-  if ABitmap = nil then Exit;
+  if ABitmap = nil then
+    Exit;
   SwapInt(Width, ABitmap.Width);
   SwapInt(Height, ABitmap.Height);
   SwapInt(FRowPixelStride, ABitmap.FRowPixelStride);
@@ -356,131 +358,103 @@ end;
 
 procedure TRGBBitmapCore.Clear;
 begin
-
+  inherited;
 end;
 
 procedure TRGBBitmapCore.ClearWhite;
 begin
-
+  inherited;
 end;
 
 procedure TRGBBitmapCore.Invert;
 begin
-
+  inherited;
 end;
 
 procedure TRGBBitmapCore.FlipHorz;
 begin
-
+  inherited;
 end;
 
 procedure TRGBBitmapCore.FlipVert;
 begin
-
+  inherited;
 end;
 
 procedure TRGBBitmapCore.Rotate90;
 begin
-
+  inherited;
 end;
 
 procedure TRGBBitmapCore.Rotate180;
 begin
-
+  inherited;
 end;
 
 procedure TRGBBitmapCore.Rotate270;
 begin
-
+  inherited;
 end;
 
-procedure TRGBBitmapCore.SetColor(X, Y: Integer; Value: TColor);
+procedure TRGBBitmapCore.SetColor(X, Y: integer; Value: TColor);
 begin
   Canvas.Pixels[X, Y] := Value;
 end;
 
-function TRGBBitmapCore.GetColor(X, Y: Integer): TColor;
+function TRGBBitmapCore.GetColor(X, Y: integer): TColor;
 begin
-  if (X > 0) and (X < Width) and (Y > 0) and (Y < Height) then Result := Canvas.Pixels[X, Y]
-  else Result := clNone;
+  if (X > 0) and (X < Width) and (Y > 0) and (Y < Height) then
+    Result := Canvas.Pixels[X, Y]
+  else
+    Result := clNone;
 end;
 
-function TRGBBitmapCore.GetFillColor: TColor;
-begin
-  Result := FFillColor;
-end;
-
-function TRGBBitmapCore.GetOutlineColor: TColor;
-begin
-  Result := FOutlineColor;
-end;
-
-function TRGBBitmapCore.GetPaperColor: TColor;
-begin
-  Result := FPaperColor;
-end;
-
-procedure TRGBBitmapCore.SetFillColor(const AValue: TColor);
-begin
-  FFillColor := AValue;
-end;
-
-procedure TRGBBitmapCore.SetOutlineColor(const AValue: TColor);
-begin
-  FOutlineColor := AValue;
-end;
-
-procedure TRGBBitmapCore.SetPaperColor(const AValue: TColor);
-begin
-  FPaperColor := AValue;
-end;
-
-function TRGBBitmapCore.PixelMasked(X, Y: Integer): Boolean;
+function TRGBBitmapCore.PixelMasked(X, Y: integer): boolean;
 begin
 
 end;
 
-procedure TRGBBitmapCore.DrawOutlinePixel(X, Y: Integer);
+procedure TRGBBitmapCore.DrawOutlinePixel(X, Y: integer);
 begin
 
 end;
 
-procedure TRGBBitmapCore.DrawFillPixel(X, Y: Integer);
+procedure TRGBBitmapCore.DrawFillPixel(X, Y: integer);
 begin
 
 end;
 
-procedure TRGBBitmapCore.DrawPaperPixel(X, Y: Integer);
+procedure TRGBBitmapCore.DrawPaperPixel(X, Y: integer);
 begin
 
 end;
 
-procedure TRGBBitmapCore.DrawReplacePixel(X, Y: Integer);
+procedure TRGBBitmapCore.DrawReplacePixel(X, Y: integer);
 begin
 
 end;
 
-procedure TRGBBitmapCore.DrawRandomOutlinePixel(X, Y: Integer);
+procedure TRGBBitmapCore.DrawRandomOutlinePixel(X, Y: integer);
 begin
-  if PixelMasked(X, Y) and (Random(MAXRANDOMDENSITY) < FRandomDensity) then
+  if PixelMasked(X, Y) and (Random(MAXRANDOMDENSITY) < FRandomDensity) then;
 
 end;
 
-procedure TRGBBitmapCore.DrawRandomFillPixel(X, Y: Integer);
+procedure TRGBBitmapCore.DrawRandomFillPixel(X, Y: integer);
 begin
-  if PixelMasked(X, Y) and (Random(MAXRANDOMDENSITY) < FRandomDensity) then
+  if PixelMasked(X, Y) and (Random(MAXRANDOMDENSITY) < FRandomDensity) then;
 
 end;
 
-procedure TRGBBitmapCore.DrawRandomPaperPixel(X, Y: Integer);
+procedure TRGBBitmapCore.DrawRandomPaperPixel(X, Y: integer);
 begin
-  if PixelMasked(X, Y) and (Random(MAXRANDOMDENSITY) < FRandomDensity) then
+  if PixelMasked(X, Y) and (Random(MAXRANDOMDENSITY) < FRandomDensity) then;
 
 end;
 
-procedure TRGBBitmapCore.DrawEmptyPixel(X, Y: Integer);
+procedure TRGBBitmapCore.DrawEmptyPixel(X, Y: integer);
 begin
-  //
+
 end;
 
 function TRGBBitmapCore.GetOutlineProcedure: TDrawPixelProcedure;
@@ -488,24 +462,24 @@ begin
   if not FRandomEnabled then
   begin
     case DrawMode of
-    dmFillAndOutline, dmOutline:
-    begin
-      case EraseMode of
-      ermNone: Result := @DrawOutlinePixel;
-      ermErase: Result := @DrawPaperPixel;
-      ermReplace: Result := @DrawReplacePixel;
+      dmFillAndOutline, dmOutline:
+      begin
+        case EraseMode of
+          ermNone: Result := @DrawOutlinePixel;
+          ermErase: Result := @DrawPaperPixel;
+          ermReplace: Result := @DrawReplacePixel;
+        end;
       end;
-    end;
-    else
-      Result := @DrawEmptyPixel;
+      else
+        Result := @DrawEmptyPixel;
     end;
   end
   else
   begin
     case EraseMode of
-    ermNone: Result := @DrawRandomFillPixel;
-    ermErase: Result := @DrawRandomPaperPixel;
-    ermReplace: Result := @DrawRandomFillPixel;
+      ermNone: Result := @DrawRandomFillPixel;
+      ermErase: Result := @DrawRandomPaperPixel;
+      ermReplace: Result := @DrawRandomFillPixel;
     end;
   end;
 end;
@@ -515,43 +489,42 @@ begin
   if not FRandomEnabled then
   begin
     case DrawMode of
-    dmFillAndOutline, dmFill:
-    begin
-      case EraseMode of
-      ermNone: Result := @DrawFillPixel;
-      ermErase: Result := @DrawPaperPixel;
-      ermReplace: Result := @DrawReplacePixel;
+      dmFillAndOutline, dmFill:
+      begin
+        case EraseMode of
+          ermNone: Result := @DrawFillPixel;
+          ermErase: Result := @DrawPaperPixel;
+          ermReplace: Result := @DrawReplacePixel;
+        end;
       end;
-    end;
-    else
-      Result := @DrawEmptyPixel;
+      else
+        Result := @DrawEmptyPixel;
     end;
   end
   else
   begin
     case EraseMode of
-    ermNone: Result := @DrawRandomFillPixel;
-    ermErase: Result := @DrawRandomPaperPixel;
-    ermReplace: Result := @DrawRandomFillPixel;
+      ermNone: Result := @DrawRandomFillPixel;
+      ermErase: Result := @DrawRandomPaperPixel;
+      ermReplace: Result := @DrawRandomFillPixel;
     end;
   end;
 end;
 
 procedure TRGBBitmapCore.Fill(Color: TColor);
 var
-  I, J: Integer;
+  I, J: integer;
 begin
   Canvas.Brush.Color := Color;
   Canvas.FillRect(Rect(0, 0, Width, Height));
 end;
 
-procedure TRGBBitmapCore.FillEllipse(X1, Y1, X2, Y2: Integer);
+procedure TRGBBitmapCore.FillEllipse(X1, Y1, X2, Y2: integer);
 begin
-  Canvas.Brush.Color := clRed;
-  Canvas.FillRect(Rect(0, 0, Width, Height));
+  inherited;
 end;
 
-procedure TRGBBitmapCore.MaskFloodFill(X, Y: Integer);
+procedure TRGBBitmapCore.MaskFloodFill(X, Y: integer);
 begin
   Canvas.Brush.Color := clBlack;
   Canvas.FillRect(Rect(0, 0, Width, Height));
@@ -559,11 +532,11 @@ end;
 
 // AAlpha is the alpha of the rectangle, ranging from
 // 0 - fully transparent to 100 - fully opaque
-procedure TRGBBitmapCore.AlphaRectangle(X1, Y1, X2, Y2, AAlpha: Integer);
+procedure TRGBBitmapCore.AlphaRectangle(X1, Y1, X2, Y2, AAlpha: integer);
 var
-  OldColor, NewColor: Integer;
-  X, Y: LongInt;
-  OldR, OldG, OldB, NewR, NewG, NewB: Byte;
+  OldColor, NewColor: integer;
+  X, Y: longint;
+  OldR, OldG, OldB, NewR, NewG, NewB: byte;
 begin
   // If the rectangle is fully opaque this is the same as a normal rectangle
   if AAlpha = 100 then
@@ -573,7 +546,8 @@ begin
   end;
 
   // if it is fully transparent there is nothing to draw
-  if AAlpha = 0 then Exit;
+  if AAlpha = 0 then
+    Exit;
 
   // A partially transparent rectangle
   for Y := Y1 to Y2 do
@@ -590,10 +564,10 @@ begin
     end;
 end;
 
-procedure TRGBBitmapCore.FuzzyRectangle(X1, Y1, X2, Y2: Integer);
+procedure TRGBBitmapCore.FuzzyRectangle(X1, Y1, X2, Y2: integer);
 var
-  X, Y: LongInt;
-  deltaX, deltaY: Integer;
+  X, Y: longint;
+  deltaX, deltaY: integer;
 begin
   for Y := Y1 to Y2 do
     for X := X1 to X2 do
@@ -604,22 +578,24 @@ begin
       deltaY := deltaX;
 
       // Makes sure we won't get any invalid pixel positions
-      if X < 5 then deltaX := -deltaX;
-      if Y < 5 then deltaY := -deltaY;
+      if X < 5 then
+        deltaX := -deltaX;
+      if Y < 5 then
+        deltaY := -deltaY;
 
       // Change the color
       SetColor(X, Y, GetColor(X - deltaX, Y - deltaY));
     end;
 end;
 
-procedure TRGBBitmapCore.DrawTo(ACanvas: TCanvas; X, Y: Integer);
+procedure TRGBBitmapCore.DrawTo(ACanvas: TCanvas; X, Y: integer);
 begin
   if ACanvas <> nil then
     ACanvas.Draw(X, Y, Self);
 end;
 
-procedure TRGBBitmapCore.StretchDrawTo(ACanvas: TCanvas; DstX, DstY, DstWidth,
-  DstHeight: Integer);
+procedure TRGBBitmapCore.StretchDrawTo(ACanvas: TCanvas;
+  DstX, DstY, DstWidth, DstHeight: integer);
 begin
   if ACanvas <> nil then
     ACanvas.StretchDraw(Rect(DstX, DstY, DstWidth, DstHeight), Self);
@@ -627,7 +603,7 @@ end;
 
 { TRGB32BitmapCore }
 
-constructor TRGB32BitmapCore.Create(AWidth, AHeight: Integer);
+constructor TRGB32BitmapCore.Create(AWidth, AHeight: integer);
 begin
   inherited Create(AWidth, AHeight, 1);
 end;
@@ -640,7 +616,7 @@ end;
 
 constructor TRGB32BitmapCore.CreateFromLazIntfImage(AImage: TLazIntfImage);
 var
-  I, J: Integer;
+  I, J: integer;
 begin
   Create(AImage.Width, AImage.Height);
 
@@ -650,8 +626,8 @@ begin
   end;
 end;
 
-constructor TRGB32BitmapCore.CreateFromData(AData: Pointer; AWidth, AHeight: Integer;
-  ADataOwner: Boolean);
+constructor TRGB32BitmapCore.CreateFromData(AData: Pointer;
+  AWidth, AHeight: integer; ADataOwner: boolean);
 begin
   inherited CreateFromData(AData, AWidth, AHeight, 0, ADataOwner);
 end;
@@ -675,8 +651,8 @@ end;
 
 procedure TRGB32BitmapCore.SaveToLazIntfImage(AImage: TLazIntfImage; const ARect: TRect);
 var
-  I, J: Integer;
-  W, H: Integer;
+  I, J: integer;
+  W, H: integer;
 begin
   W := ARect.Right - ARect.Left;
   H := ARect.Bottom - ARect.Top;
@@ -687,7 +663,6 @@ begin
 
       for I := 0 to Pred(W) do
       begin
-
 
       end;
     end;
@@ -703,7 +678,7 @@ end;
 
 { TRGB8BitmapCore }
 
-constructor TRGB8BitmapCore.Create(AWidth, AHeight: Integer);
+constructor TRGB8BitmapCore.Create(AWidth, AHeight: integer);
 begin
   inherited Create(AWidth, AHeight, 1);
 end;
@@ -714,15 +689,15 @@ begin
     inherited CreateAsCopy(ABitmap, 1);
 end;
 
-constructor TRGB8BitmapCore.CreateFromData(AData: Pointer; AWidth, AHeight: Integer;
-  ADataOwner: Boolean);
+constructor TRGB8BitmapCore.CreateFromData(AData: Pointer;
+  AWidth, AHeight: integer; ADataOwner: boolean);
 begin
   inherited CreateFromData(AData, AWidth, AHeight, 0, ADataOwner);
 end;
 
 procedure TRGB8BitmapCore.LoadFromLazIntfImageAlpha(AImage: TLazIntfImage);
 var
-  I, J: Integer;
+  I, J: integer;
 begin
   for J := 0 to Pred(Height) do
   begin
@@ -741,7 +716,7 @@ end;
 procedure TRGB8BitmapCore.SaveToLazIntfImageAlpha(AImage: TLazIntfImage;
   const ARect: TRect);
 var
-  I, J: Integer;
+  I, J: integer;
   F: TFPColor;
 begin
   for J := 0 to Pred(AImage.Height) do
@@ -749,7 +724,7 @@ begin
     for I := 0 to Pred(AImage.Width) do
     begin
       F := AImage.Colors[I, J];
-   //   F.alpha := P^ shl 8;
+      //   F.alpha := P^ shl 8;
       AImage.Colors[I, J] := F;
 
     end;
