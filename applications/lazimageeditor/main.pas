@@ -17,7 +17,7 @@
  *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
  *                                                                         *
  ***************************************************************************
- 
+
   Author: Tom Gregorovic
 
   Abstract:
@@ -243,8 +243,7 @@ type
     procedure MenuItemResizePaperClick(Sender: TObject);
     procedure PaletteColorMouseMove(Sender: TObject; AColor: TColor;
       Shift: TShiftState);
-    procedure PaletteColorPick(Sender: TObject; AColor: TColor;
-      Shift: TShiftState);
+    procedure PaletteColorPick(Sender: TObject; AColor: TColor; Shift: TShiftState);
     procedure PanelFillDblClick(Sender: TObject);
     procedure PanelOutlineDblClick(Sender: TObject);
     procedure PanelPaperDblClick(Sender: TObject);
@@ -274,7 +273,7 @@ type
     procedure ToolRectShapeClick(Sender: TObject);
     procedure ToolEraserClick(Sender: TObject);
     procedure ToolSprayClick(Sender: TObject);
-    procedure PictureMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    procedure PictureMouseMove(Sender: TObject; Shift: TShiftState; X, Y: integer);
     procedure PictureColorChange(Sender: TObject);
     procedure PictureFileNameChange(Sender: TObject);
     procedure PictureSizeChange(Sender: TObject);
@@ -286,7 +285,7 @@ type
     function GetActivePicture: TPictureBitmap;
     function GetActivePictureEdit: TPictureEdit;
     function GetActivePicturePage: TPicturePage;
-    
+
     procedure UpdateToolSettings;
     procedure SelectTool(Tool: TPictureEditTool);
     procedure ChangeTool(Tool: TPictureEditTool);
@@ -296,11 +295,11 @@ type
     property ActivePicture: TPictureBitmap read GetActivePicture;
     property ActivePicturePage: TPicturePage read GetActivePicturePage;
     property ActivePictureEdit: TPictureEdit read GetActivePictureEdit;
-  end; 
-  
+  end;
+
   TToolSetting = (tsFillAndOutline, tsShape, tsMaskTools, tsSize, tsDensity, tsRoundness,
     tsTolerance);
-    
+
   TToolSettings = set of TToolSetting;
 
 var
@@ -310,17 +309,17 @@ implementation
 
 uses Test, IconStrConsts;
 
-procedure SetControlsEnabled(AControl: TControl; AEnabled: Boolean);
+procedure SetControlsEnabled(AControl: TControl; AEnabled: boolean);
 var
   AWinControl: TWinControl;
-  I: Integer;
+  I: integer;
 begin
   AControl.Enabled := AEnabled;
   if AControl is TWinControl then
   begin
     AWinControl := AControl as TWinControl;
     for I := 0 to Pred(AWinControl.ControlCount) do
-     SetControlsEnabled(AWinControl.Controls[I], AEnabled);
+      SetControlsEnabled(AWinControl.Controls[I], AEnabled);
   end;
 end;
 
@@ -333,13 +332,15 @@ end;
 
 procedure TMainForm.MenuItemResizeClick(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ResizeDialogForm.ShowDialog(ActivePicturePage);
 end;
 
 procedure TMainForm.MenuItemResizePaperClick(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ResizePaperDialogForm.ShowDialog(ActivePicturePage);
 end;
 
@@ -354,43 +355,44 @@ procedure TMainForm.PicturePageChange(Sender: TObject);
 begin
   UpdatePictureToolsEnabled;
 
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   with ActivePictureEdit do
   begin
     PanelOutline.Color := OutlineColor;
     PanelFill.Color := FillColor;
     PanelPaper.Color := PaperColor;
-    
+
     UpDownDensity.Position := Round(RandomDensity * 100);
     UpDownSize.Position := Size;
 
     case Shape of
-    psRect: ToolRectShape.Down := True;
-    psCircle: ToolCircleShape.Down := True;
+      psRect: ToolRectShape.Down := True;
+      psCircle: ToolCircleShape.Down := True;
     end;
-    
+
 {    case FillAndOutline of
     dmFillAndOutline: ToolFillOutline.Down := True;
     dmOutline: ToolOutline.Down := True;
     dmFill: ToolFill.Down := True;
     end;     }
-    
+
     case MaskTool of
-    mtRectangle: ToolMaskRectangle.Down := True;
-    mtEllipse: ToolmaskEllipse.Down := True;
-    mtFloodFill: ToolMaskFloodFill.Down := True;
+      mtRectangle: ToolMaskRectangle.Down := True;
+      mtEllipse: ToolmaskEllipse.Down := True;
+      mtFloodFill: ToolMaskFloodFill.Down := True;
     end;
-    
+
     UpDownRoundness.Position := RectangleRoundness;
     UpDownTolerance.Position := Round(FloodFillTolerance * 100);
-    
+
     ComboBoxZoom.Text := Format('%d %%', [Round(Zoom * 100)]);
-    
+
     ViewShowGrid.Checked := poShowGrid in ActivePictureEdit.Options;
     ViewShowMask.Checked := poShowMask in ActivePictureEdit.Options;
 
     SelectTool(Tool);
-    
+
     PictureSizeChange(nil);
     PictureFileNameChange(nil);
   end;
@@ -408,171 +410,198 @@ end;
 
 procedure TMainForm.PicturePageCloseQuery(Sender: TObject; var CanClose: boolean);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   CanClose := True;
-  
+
   if ActivePictureEdit.Modified then
   begin
-    case MessageDlg(Application.Title,
-      Format(lieSaveChanges, [ActivePicturePage.Caption]), mtWarning,
-      mbYesNoCancel, 0) of
-    mrYes:
-    begin
-      ActivePicturePage.Save;
-      CanClose := not ActivePictureEdit.Modified;
-    end;
-    mrCancel: CanClose := False;
+    case MessageDlg(Application.Title, Format(lieSaveChanges,
+        [ActivePicturePage.Caption]), mtWarning, mbYesNoCancel, 0) of
+      mrYes:
+      begin
+        ActivePicturePage.Save;
+        CanClose := not ActivePictureEdit.Modified;
+      end;
+      mrCancel: CanClose := False;
     end;
   end;
 end;
 
 procedure TMainForm.Rotate180Execute(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ActivePictureEdit.Rotate180Clockwise;
 end;
 
 procedure TMainForm.Rotate270Execute(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ActivePictureEdit.Rotate270Clockwise;
 end;
 
 procedure TMainForm.Rotate90Execute(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ActivePictureEdit.Rotate90Clockwise;
 end;
 
 procedure TMainForm.spinFillAlphaChange(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ActivePictureEdit.FillAlpha := spinFillAlpha.Value;
 end;
 
 procedure TMainForm.ToolCircleShapeClick(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ActivePictureEdit.Shape := psCircle;
 end;
 
 procedure TMainForm.ToolColorPickClick(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ChangeTool(ptColorPick);
 end;
 
 procedure TMainForm.ToolEllClick(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ChangeTool(ptEllipse);
 end;
 
 procedure TMainForm.ToolFillClick(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
-//  ActivePictureEdit.FillAndOutline := dmFill;
+  if not Pictures.CanEdit then
+    Exit;
+  //  ActivePictureEdit.FillAndOutline := dmFill;
 end;
 
 procedure TMainForm.ToolFillOutlineClick(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
-//  ActivePictureEdit.FillAndOutline := dmFillAndOutline;
+  if not Pictures.CanEdit then
+    Exit;
+  //  ActivePictureEdit.FillAndOutline := dmFillAndOutline;
 end;
 
 procedure TMainForm.ToolFloodFillClick(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ChangeTool(ptFloodFill);
 end;
 
 procedure TMainForm.ToolLineClick(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ChangeTool(ptLine);
 end;
 
 procedure TMainForm.ToolMaskClick(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ChangeTool(ptMask);
 end;
 
 procedure TMainForm.ToolMaskEllipseClick(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ActivePictureEdit.MaskTool := mtEllipse;
 end;
 
 procedure TMainForm.ToolMaskFloodFillClick(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ActivePictureEdit.MaskTool := mtFloodFill;
 end;
 
 procedure TMainForm.ToolMaskRectangleClick(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ActivePictureEdit.MaskTool := mtRectangle;
 end;
 
 procedure TMainForm.ToolOutlineClick(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
-//  ActivePictureEdit.FillAndOutline := dmOutline;
+  if not Pictures.CanEdit then
+    Exit;
+  //  ActivePictureEdit.FillAndOutline := dmOutline;
 end;
 
 procedure TMainForm.ToolPenClick(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ChangeTool(ptPen);
 end;
 
 procedure TMainForm.ToolPolygonClick(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ChangeTool(ptPolygon);
 end;
 
 procedure TMainForm.ToolRectangleClick(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ChangeTool(ptRectangle);
 end;
 
 procedure TMainForm.ToolRectShapeClick(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ActivePictureEdit.Shape := psRect;
 end;
 
 procedure TMainForm.ToolEraserClick(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ChangeTool(ptEraser);
 end;
 
 procedure TMainForm.ToolSprayClick(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ChangeTool(ptSpray);
 end;
 
-procedure TMainForm.PictureMouseMove(Sender: TObject; Shift: TShiftState; X,
-  Y: Integer);
+procedure TMainForm.PictureMouseMove(Sender: TObject; Shift: TShiftState;
+  X, Y: integer);
 var
-  DX, DY: Integer;
+  DX, DY: integer;
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   StatusBar.Panels[2].Text := Format('%3.d : %3.d', [X, Y]);
-  
+
   DX := ActivePictureEdit.EndPos.X - ActivePictureEdit.StartPos.X;
   DY := ActivePictureEdit.EndPos.Y - ActivePictureEdit.StartPos.Y;
-  if DX >= 0 then Inc(DX)
-  else Dec(DX);
-  if DY >= 0 then Inc(DY)
-  else Dec(DY);
-  
+  if DX >= 0 then
+    Inc(DX)
+  else
+    Dec(DX);
+  if DY >= 0 then
+    Inc(DY)
+  else
+    Dec(DY);
+
   StatusBar.Panels[3].Text := Format('%3.d x %3.d', [DX, DY]);
   StatusBar.Panels[4].Text :=
     ColorToString(ActivePicture.GetColor(X, Y));
@@ -580,7 +609,8 @@ end;
 
 procedure TMainForm.PictureColorChange(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   with ActivePictureEdit do
   begin
     PanelOutline.Color := OutlineColor;
@@ -591,21 +621,23 @@ end;
 
 procedure TMainForm.PictureFileNameChange(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   StatusBar.Panels[0].Text := ActivePicturePage.Filename;
 end;
 
 procedure TMainForm.PictureSizeChange(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   with ActivePictureEdit do
-    StatusBar.Panels[1].Text := Format('%d x %d',
-      [Picture.Width, Picture.Height]);
+    StatusBar.Panels[1].Text := Format('%d x %d', [Picture.Width, Picture.Height]);
 end;
 
 procedure TMainForm.ViewShowGridExecute(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   if ViewShowGrid.Checked then
     ActivePictureEdit.Options := ActivePictureEdit.Options + [poShowGrid]
   else
@@ -616,7 +648,8 @@ end;
 
 procedure TMainForm.ViewShowMaskExecute(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   if ViewShowMask.Checked then
     ActivePictureEdit.Options := ActivePictureEdit.Options + [poShowMask]
   else
@@ -627,24 +660,30 @@ end;
 
 procedure TMainForm.ViewShowPreviewExecute(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
 end;
 
 procedure TMainForm.PaletteColorPick(Sender: TObject; AColor: TColor;
   Shift: TShiftState);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   with ActivePictureEdit do
   begin
-    if ssLeft in Shift then OutlineColor := AColor;
-    if ssRight in Shift then FillColor := AColor;
-    if ssMiddle in Shift then PaperColor := AColor;
+    if ssLeft in Shift then
+      OutlineColor := AColor;
+    if ssRight in Shift then
+      FillColor := AColor;
+    if ssMiddle in Shift then
+      PaperColor := AColor;
   end;
 end;
 
 procedure TMainForm.PanelFillDblClick(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ColorDialog.Color := ActivePictureEdit.FillColor;
   if ColorDialog.Execute then
   begin
@@ -654,7 +693,8 @@ end;
 
 procedure TMainForm.PanelOutlineDblClick(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ColorDialog.Color := ActivePictureEdit.OutlineColor;
   if ColorDialog.Execute then
   begin
@@ -664,7 +704,8 @@ end;
 
 procedure TMainForm.PanelPaperDblClick(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ColorDialog.Color := ActivePictureEdit.PaperColor;
   if ColorDialog.Execute then
   begin
@@ -702,23 +743,23 @@ end;
 
 procedure TMainForm.UpdatePictureToolsEnabled;
 var
-  AValue: Boolean;
+  AValue: boolean;
 begin
   AValue := Pictures.CanEdit;
-  
+
   SetControlsEnabled(PanelZoom, AValue);
   SetControlsEnabled(PanelOptions, AValue);
   SetControlsEnabled(PanelToolOptions, AValue);
   SetControlsEnabled(ToolBarTools, AValue);
   SetControlsEnabled(Palette, AValue);
-  
+
   FileNew.Enabled := True;
   FileOpen.Enabled := True;
   FileSave.Enabled := AValue and ActivePictureEdit.Modified;
   FileSaveAs.Enabled := AValue;
   FileExportAsLRS.Enabled := AValue;
   FileClose.Enabled := AValue;
-  
+
   EditUndo.Enabled := False;//AValue;
   EditRedo.Enabled := False;//AValue;
   EditCopy.Enabled := AValue;
@@ -726,26 +767,26 @@ begin
   EditPaste.Enabled := False;//AValue;
   EditDelete.Enabled := AValue;
   EditSelectAll.Enabled := AValue;
-  
+
   PictureResize.Enabled := AValue;
   PictureResizePaper.Enabled := AValue;
   PictureClipPaperToMask.Enabled := AValue;
-  
+
   FlipHorizontally.Enabled := AValue;
   FlipVertically.Enabled := AValue;
-  
+
   Rotate90.Enabled := AValue;
   Rotate180.Enabled := AValue;
   Rotate270.Enabled := AValue;
   RotateCustom.Enabled := AValue;
-  
+
   ColorsInvert.Enabled := AValue;
   ColorsGrayscale.Enabled := AValue;
   ColorsDisable.Enabled := AVAlue;
-  
+
   ViewShowGrid.Enabled := AValue;
   ViewShowMask.Enabled := AValue;
-  
+
   ToolBar.Invalidate;
   ToolBarTools.Invalidate;
 end;
@@ -770,40 +811,41 @@ procedure TMainForm.UpdateToolSettings;
 var
   Settings: TToolSettings;
 begin
-  if not Pictures.CanEdit then Exit;
-  
+  if not Pictures.CanEdit then
+    Exit;
+
   case ActivePictureEdit.Tool of
-  ptColorPick: Settings := [];
-  ptMask: Settings := [tsMaskTools, tsTolerance];
-  ptLine, ptPen: Settings := [];
-  ptRectangle: Settings := [tsFillAndOutline, tsRoundness];
-  ptEllipse: Settings := [tsFillAndOutline];
-  ptPolygon: Settings := [tsFillAndOutline];
-  ptFloodFill: Settings := [tsTolerance];
-  ptEraser: Settings := [tsShape, tsSize];
-  ptSpray: Settings := [tsShape, tsSize, tsDensity];
+    ptColorPick: Settings := [];
+    ptMask: Settings := [tsMaskTools, tsTolerance];
+    ptLine, ptPen: Settings := [];
+    ptRectangle: Settings := [tsFillAndOutline, tsRoundness];
+    ptEllipse: Settings := [tsFillAndOutline];
+    ptPolygon: Settings := [tsFillAndOutline];
+    ptFloodFill: Settings := [tsTolerance];
+    ptEraser: Settings := [tsShape, tsSize];
+    ptSpray: Settings := [tsShape, tsSize, tsDensity];
   end;
-  
+
   // PanelToolBar/PanelToolOptions
   PanelSize.Enabled := tsSize in Settings;
   LabelSize.Enabled := tsSize in Settings;
-  
+
   PanelDensity.Enabled := tsDensity in Settings;
   LabelDensity.Enabled := tsDensity in Settings;
-  
+
   PanelRoundness.Enabled := tsRoundness in Settings;
   LabelRoundness.Enabled := tsRoundness in Settings;
-  
+
   PanelTolerance.Enabled := tsTolerance in Settings;
   LabelTolerance.Enabled := tsTolerance in Settings;
 
   // PanelToolbar/PanelOptions
   PanelShape.Enabled := tsShape in Settings;
   LabelShape.Enabled := tsShape in Settings;
-  
+
   PanelFillOutline.Enabled := tsFillAndOutline in Settings;
   LabelFillOutline.Enabled := tsFillAndOutline in Settings;
-  
+
   PanelMaskTool.Enabled := tsMaskTools in Settings;
   LabelMaskTool.Enabled := tsMaskTools in Settings;
 end;
@@ -825,11 +867,11 @@ begin
 
   UpdatePictureToolsEnabled;
   UpdateToolSettings;
-  
+
   Palette.LoadPalette('default.pal');
-  
+
   // Main Form
-  Caption:=lieMain;
+  Caption := lieMain;
 
   // Menus
   MenuItemFile.Caption := lieMenuFile;
@@ -841,94 +883,94 @@ begin
 
   // Actions
   FileNew.Caption := lieFileNew;
-  FileOpen.Caption:=lieFileOpen;
-  FileSave.Caption:=lieFileSave;
-  FileSaveAs.Caption:=lieFileSaveAs;
-  FileExportAsLRS.Caption:=lieFileExportAsLRS;
-  FileClose.Caption:=lieFileClose;
-  Rotate90.Caption:=lieRotate90;
-  Rotate180.Caption:=lieRotate180;
-  Rotate270.Caption:=lieRotate270;
-  RotateCustom.Caption:=lieRotateCustom;
-  FlipVertically.Caption:=lieFlipVertically;
-  FlipHorizontally.Caption:=lieFlipHorizontally;
-  PictureResizePaper.Caption:=liePictureResizePaper;
-  PictureResize.Caption:=liePictureResize;
-  ColorsGrayscale.Caption:=lieColorsGrayscale;
-  ColorsInvert.Caption:=lieColorsInvert;
-  ColorsDisable.Caption:=lieColorsDisable;
-  ViewShowMask.Caption:=lieViewShowMask;
-  ViewShowGrid.Caption:=lieViewShowGrid;
-  MaskInvert.Caption:=lieMaskInvert;
-  MaskRemove.Caption:=lieMaskRemove;
-  EditCopy.Caption:=lieEditCopy;
-  EditCut.Caption:=lieEditCut;
-  EditDelete.Caption:=lieEditDelete;
-  EditPaste.Caption:=lieEditPaste;
-  EditRedo.Caption:=lieEditRedo;
-  EditSelectAll.Caption:=lieEditSelectAll;
-  EditUndo.Caption:=lieEditUndo;
+  FileOpen.Caption := lieFileOpen;
+  FileSave.Caption := lieFileSave;
+  FileSaveAs.Caption := lieFileSaveAs;
+  FileExportAsLRS.Caption := lieFileExportAsLRS;
+  FileClose.Caption := lieFileClose;
+  Rotate90.Caption := lieRotate90;
+  Rotate180.Caption := lieRotate180;
+  Rotate270.Caption := lieRotate270;
+  RotateCustom.Caption := lieRotateCustom;
+  FlipVertically.Caption := lieFlipVertically;
+  FlipHorizontally.Caption := lieFlipHorizontally;
+  PictureResizePaper.Caption := liePictureResizePaper;
+  PictureResize.Caption := liePictureResize;
+  ColorsGrayscale.Caption := lieColorsGrayscale;
+  ColorsInvert.Caption := lieColorsInvert;
+  ColorsDisable.Caption := lieColorsDisable;
+  ViewShowMask.Caption := lieViewShowMask;
+  ViewShowGrid.Caption := lieViewShowGrid;
+  MaskInvert.Caption := lieMaskInvert;
+  MaskRemove.Caption := lieMaskRemove;
+  EditCopy.Caption := lieEditCopy;
+  EditCut.Caption := lieEditCut;
+  EditDelete.Caption := lieEditDelete;
+  EditPaste.Caption := lieEditPaste;
+  EditRedo.Caption := lieEditRedo;
+  EditSelectAll.Caption := lieEditSelectAll;
+  EditUndo.Caption := lieEditUndo;
 
   // Hints for Actions
   FileNew.Hint := lieHintFileNew;
-  FileOpen.Hint:=lieHintFileOpen;
-  FileSave.Hint:=lieHintFileSave;
-  FileSaveAs.Hint:=lieHintFileSaveAs;
-  FileExportAsLRS.Hint:=lieHintFileExportAsLRS;
-  FileClose.Hint:=lieHintFileClose;
-  Rotate90.Hint:=lieHintRotate90;
-  Rotate180.Hint:=lieHintRotate180;
-  Rotate270.Hint:=lieHintRotate270;
-  RotateCustom.Hint:=lieHintRotateCustom;
-  FlipVertically.Hint:=lieHintFlipVertically;
-  FlipHorizontally.Hint:=lieHintFlipHorizontally;
-  PictureResizePaper.Hint:=lieHintPictureResizePaper;
-  PictureResize.Hint:=lieHintPictureResize;
-  ColorsGrayscale.Hint:=lieHintColorsGrayscale;
-  ColorsInvert.Hint:=lieHintColorsInvert;
-  ColorsDisable.Hint:=lieHintColorsDisable;
-  ViewShowMask.Hint:=lieHintViewShowMask;
-  ViewShowGrid.Hint:=lieHintViewShowGrid;
-  MaskInvert.Hint:=lieHintMaskInvert;
-  MaskRemove.Hint:=lieHintMaskRemove;
-  EditCopy.Hint:=lieHintEditCopy;
-  EditCut.Hint:=lieHintEditCut;
-  EditDelete.Hint:=lieHintEditDelete;
-  EditPaste.Hint:=lieHintEditPaste;
-  EditRedo.Hint:=lieHintEditRedo;
-  EditSelectAll.Hint:=lieHintEditSelectAll;
-  EditUndo.Hint:=lieHintEditUndo;
+  FileOpen.Hint := lieHintFileOpen;
+  FileSave.Hint := lieHintFileSave;
+  FileSaveAs.Hint := lieHintFileSaveAs;
+  FileExportAsLRS.Hint := lieHintFileExportAsLRS;
+  FileClose.Hint := lieHintFileClose;
+  Rotate90.Hint := lieHintRotate90;
+  Rotate180.Hint := lieHintRotate180;
+  Rotate270.Hint := lieHintRotate270;
+  RotateCustom.Hint := lieHintRotateCustom;
+  FlipVertically.Hint := lieHintFlipVertically;
+  FlipHorizontally.Hint := lieHintFlipHorizontally;
+  PictureResizePaper.Hint := lieHintPictureResizePaper;
+  PictureResize.Hint := lieHintPictureResize;
+  ColorsGrayscale.Hint := lieHintColorsGrayscale;
+  ColorsInvert.Hint := lieHintColorsInvert;
+  ColorsDisable.Hint := lieHintColorsDisable;
+  ViewShowMask.Hint := lieHintViewShowMask;
+  ViewShowGrid.Hint := lieHintViewShowGrid;
+  MaskInvert.Hint := lieHintMaskInvert;
+  MaskRemove.Hint := lieHintMaskRemove;
+  EditCopy.Hint := lieHintEditCopy;
+  EditCut.Hint := lieHintEditCut;
+  EditDelete.Hint := lieHintEditDelete;
+  EditPaste.Hint := lieHintEditPaste;
+  EditRedo.Hint := lieHintEditRedo;
+  EditSelectAll.Hint := lieHintEditSelectAll;
+  EditUndo.Hint := lieHintEditUndo;
 
   //Labels
-  LabelZoom.Caption:=lieLabelZoom;
-  LabelShape.Caption:=lieLabelShape;
-  LabelFillOutline.Caption:=lieLabelFillOutline;
-  LabelMaskTool.Caption:=lieLabelMaskTool;
-  LabelOutline.Caption:=lieLabelOutline;
-  LabelFill.Caption:=lieLabelFill;
-  LabelPaper.Caption:=lieLabelPaper;
-  LabelSize.Caption:=lieLabelSize;
-  LabelRoundness.Caption:=lieLabelRoundness;
-  LabelDensity.Caption:=lieLabelDensity;
-  LabelTolerance.Caption:=lieLabelTolerance;
+  LabelZoom.Caption := lieLabelZoom;
+  LabelShape.Caption := lieLabelShape;
+  LabelFillOutline.Caption := lieLabelFillOutline;
+  LabelMaskTool.Caption := lieLabelMaskTool;
+  LabelOutline.Caption := lieLabelOutline;
+  LabelFill.Caption := lieLabelFill;
+  LabelPaper.Caption := lieLabelPaper;
+  LabelSize.Caption := lieLabelSize;
+  LabelRoundness.Caption := lieLabelRoundness;
+  LabelDensity.Caption := lieLabelDensity;
+  LabelTolerance.Caption := lieLabelTolerance;
 
   //Hints for Tools
-  ToolSpray.Hint:=lieHintToolSpray;
-  ToolFloodFill.Hint:=lieHintToolFloodFill;
-  ToolEraser.Hint:=lieHintToolEraser;
-  ToolPen.Hint:=lieHintToolPen;
-  ToolColorPick.Hint:=lieHintToolColorPick;
-  ToolMask.Hint:=lieHintToolMask;
-  ToolLine.Hint:=lieHintToolLine;
-  ToolRectangle.Hint:=lieHintToolPolygon;
-  ToolPolygon.Hint:=lieHintToolEllipse;
-  ToolEllipse.Hint:=lieHintToolRectangle;
+  ToolSpray.Hint := lieHintToolSpray;
+  ToolFloodFill.Hint := lieHintToolFloodFill;
+  ToolEraser.Hint := lieHintToolEraser;
+  ToolPen.Hint := lieHintToolPen;
+  ToolColorPick.Hint := lieHintToolColorPick;
+  ToolMask.Hint := lieHintToolMask;
+  ToolLine.Hint := lieHintToolLine;
+  ToolRectangle.Hint := lieHintToolPolygon;
+  ToolPolygon.Hint := lieHintToolEllipse;
+  ToolEllipse.Hint := lieHintToolRectangle;
 
   //File Dialogs
-  ColorDialog.Title:=lieColorDialog;
-  OpenPictureDialog.Title:=lieOpenPictureDialog;
-  SavePictureDialog.Title:=lieSavePictureDialog;
-  ExportResourceDialog.Title:=lieExportResourceDialog;
+  ColorDialog.Title := lieColorDialog;
+  OpenPictureDialog.Title := lieOpenPictureDialog;
+  SavePictureDialog.Title := lieSavePictureDialog;
+  ExportResourceDialog.Title := lieExportResourceDialog;
 end;
 
 procedure TMainForm.FormShow(Sender: TObject);
@@ -940,13 +982,15 @@ end;
 
 procedure TMainForm.MaskInvertExecute(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ActivePictureEdit.InvertMask;
 end;
 
 procedure TMainForm.MaskRemoveExecute(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ActivePictureEdit.RemoveMask;
 end;
 
@@ -962,13 +1006,14 @@ end;
 
 procedure TMainForm.MenuItemClipPaperToMaskClick(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ActivePictureEdit.ClipPaperToMask;
 end;
 
 procedure TMainForm.FileNewExecute(Sender: TObject);
 begin
-  if NewDialogForm.ShowModal = mrOK then
+  if NewDialogForm.ShowModal = mrOk then
   begin
     with NewDialogForm do
       Pictures.New(UpDownWidth.Position, UpDownHeight.Position,
@@ -978,7 +1023,7 @@ end;
 
 procedure TMainForm.FileOpenExecute(Sender: TObject);
 var
-  I: Integer;
+  I: integer;
 begin
   if OpenPictureDialog.Execute then
   begin
@@ -997,7 +1042,7 @@ end;
 
 procedure TMainForm.FileExportAsLRSExecute(Sender: TObject);
 var
-  Value: String;
+  Value: string;
 begin
   if ExportResourceDialog.Execute then
   begin
@@ -1017,13 +1062,15 @@ end;
 
 procedure TMainForm.FlipHorizontallyExecute(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ActivePictureEdit.FlipHorizontally;
 end;
 
 procedure TMainForm.FlipVerticallyExecute(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ActivePictureEdit.FlipVertically;
 end;
 
@@ -1040,41 +1087,47 @@ end;
 
 procedure TMainForm.ComboBoxZoomChange(Sender: TObject);
 var
-  V, E: Integer;
-  S: String;
+  V, E: integer;
+  S: string;
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   if Pos('%', ComboBoxZoom.Text) > 0 then
     S := Trim(Copy(ComboBoxZoom.Text, 1, Pos('%', ComboBoxZoom.Text) - 1))
   else
     S := Trim(ComboBoxZoom.Text);
-    
+
   Val(S, V, E);
-  if V <= 0 then V := 100;
+  if V <= 0 then
+    V := 100;
   ActivePictureEdit.Zoom := V / 100;
 end;
 
 procedure TMainForm.EditCopyExecute(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ActivePictureEdit.Copy;
 end;
 
 procedure TMainForm.EditCutExecute(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ActivePictureEdit.Cut;
 end;
 
 procedure TMainForm.EditDeleteExecute(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ActivePictureEdit.Delete;
 end;
 
 procedure TMainForm.EditDensityChange(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ActivePictureEdit.RandomDensity := UpDownDensity.Position / 100;
 end;
 
@@ -1085,56 +1138,65 @@ end;
 
 procedure TMainForm.EditRoundnessChange(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ActivePictureEdit.RectangleRoundness := UpDownRoundness.Position;
 end;
 
 procedure TMainForm.EditSelectAllExecute(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ActivePictureEdit.SelectAll;
 end;
 
 procedure TMainForm.ColorsInvertExecute(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ActivePictureEdit.Invert;
 end;
 
 procedure TMainForm.ComboBoxZoomEditingDone(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ComboBoxZoomChange(nil);
   ComboBoxZoom.Text := Format('%d %%', [Round(ActivePictureEdit.Zoom * 100)]);
 end;
 
 procedure TMainForm.ColorsGrayscaleExecute(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ActivePictureEdit.Grayscale;
 end;
 
 procedure TMainForm.ColorsDisableExecute(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ActivePictureEdit.Disable;
 end;
 
 procedure TMainForm.checkFuzzyChange(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ActivePictureEdit.Fuzzy := checkFuzzy.Checked;
 end;
 
 procedure TMainForm.EditSizeChange(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ActivePictureEdit.Size := UpDownSize.Position;
 end;
 
 procedure TMainForm.EditToleranceChange(Sender: TObject);
 begin
-  if not Pictures.CanEdit then Exit;
+  if not Pictures.CanEdit then
+    Exit;
   ActivePictureEdit.FloodFillTolerance := UpDownTolerance.Position / 100;
 end;
 
@@ -1144,7 +1206,4 @@ initialization
   {$I main.lrs}
 
 end.
-
-
-
 

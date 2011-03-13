@@ -379,31 +379,31 @@ end;
 
 procedure TRGB32Bitmap.FlipHorz;
 begin
-  inherited FlipHorz;
+  inherited;
   Mask.FlipHorz;
 end;
 
 procedure TRGB32Bitmap.FlipVert;
 begin
-  inherited FlipVert;
+  inherited;
   Mask.FlipVert;
 end;
 
 procedure TRGB32Bitmap.Rotate90;
 begin
-  inherited Rotate90;
+  inherited;
   Mask.Rotate90;
 end;
 
 procedure TRGB32Bitmap.Rotate180;
 begin
-  inherited Rotate180;
+  inherited;
   Mask.Rotate180;
 end;
 
 procedure TRGB32Bitmap.Rotate270;
 begin
-  inherited Rotate270;
+  inherited;
   Mask.Rotate270;
 end;
 

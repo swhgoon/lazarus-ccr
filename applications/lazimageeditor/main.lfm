@@ -1,11 +1,11 @@
 ﻿object MainForm: TMainForm
   Left = 209
-  Height = 631
+  Height = 666
   Top = 146
-  Width = 897
+  Width = 905
   Caption = 'Lazarus Image Editor'
-  ClientHeight = 609
-  ClientWidth = 897
+  ClientHeight = 644
+  ClientWidth = 905
   Font.CharSet = GB2312_CHARSET
   Font.Height = -13
   Font.Name = '微软雅黑'
@@ -18,18 +18,18 @@
   LCLVersion = '0.9.31'
   object PanelTools: TPanel
     Left = 0
-    Height = 482
+    Height = 517
     Top = 105
     Width = 40
     Align = alLeft
     BevelOuter = bvNone
-    ClientHeight = 482
+    ClientHeight = 517
     ClientWidth = 40
     ParentColor = False
     TabOrder = 0
     object ToolBarTools: TToolBar
       Left = 0
-      Height = 482
+      Height = 517
       Top = 0
       Width = 40
       Align = alLeft
@@ -156,8 +156,8 @@
   object StatusBar: TStatusBar
     Left = 0
     Height = 22
-    Top = 587
-    Width = 897
+    Top = 622
+    Width = 905
     Panels = <    
       item
         Width = 250
@@ -182,19 +182,19 @@
     SimplePanel = False
   end
   object PanelPallete: TPanel
-    Left = 822
-    Height = 482
+    Left = 830
+    Height = 517
     Top = 105
     Width = 75
     Align = alRight
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 482
+    ClientHeight = 517
     ClientWidth = 75
     TabOrder = 1
     object Palette: TColorPalette
       Left = 0
-      Height = 482
+      Height = 517
       Top = 0
       Width = 75
       Align = alClient
@@ -206,17 +206,17 @@
     Left = 0
     Height = 105
     Top = 0
-    Width = 897
+    Width = 905
     Align = alTop
     BevelOuter = bvNone
     ClientHeight = 105
-    ClientWidth = 897
+    ClientWidth = 905
     TabOrder = 2
     object Bevel1: TBevel
       Left = 0
       Height = 2
       Top = 69
-      Width = 897
+      Width = 905
       Align = alTop
       Shape = bsBottomLine
     end
@@ -224,7 +224,7 @@
       Left = 0
       Height = 2
       Top = 33
-      Width = 897
+      Width = 905
       Align = alTop
       Shape = bsBottomLine
     end
@@ -232,7 +232,7 @@
       Left = 0
       Height = 33
       Top = 0
-      Width = 897
+      Width = 905
       ButtonHeight = 32
       ButtonWidth = 36
       Color = clBtnFace
@@ -379,13 +379,13 @@
       Left = 0
       Height = 34
       Top = 35
-      Width = 897
+      Width = 905
       Align = alTop
       BorderSpacing.InnerBorder = 4
       BorderSpacing.CellAlignVertical = ccaCenter
       BevelOuter = bvNone
       ClientHeight = 34
-      ClientWidth = 897
+      ClientWidth = 905
       TabOrder = 1
       object LabelFillOutline: TLabel
         Left = 103
@@ -421,7 +421,7 @@
         ParentColor = False
       end
       object PanelColors: TPanel
-        Left = 685
+        Left = 693
         Height = 34
         Top = 0
         Width = 212
@@ -1009,11 +1009,11 @@
       Left = 0
       Height = 34
       Top = 71
-      Width = 897
+      Width = 905
       Align = alTop
       BevelOuter = bvNone
       ClientHeight = 34
-      ClientWidth = 897
+      ClientWidth = 905
       TabOrder = 2
       object LabelSize: TLabel
         Left = 0
@@ -1258,9 +1258,9 @@
   end
   object PanelPictures: TPanel
     Left = 40
-    Height = 482
+    Height = 517
     Top = 105
-    Width = 782
+    Width = 790
     Align = alClient
     BevelOuter = bvLowered
     TabOrder = 3
