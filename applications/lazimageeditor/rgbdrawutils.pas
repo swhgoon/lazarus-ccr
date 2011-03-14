@@ -14,7 +14,7 @@ type
 
   TCustomRGBBitmapCore = class(TBitmap)
   private
-    FIntfImg: TLazIntfImage;
+    FIntfImgA: TLazIntfImage;
     FFillColor: TColor;
     FOutlineColor: TColor;
     FPaperColor: TColor;
@@ -31,7 +31,8 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
-    procedure SetScanLineValue;
+    procedure OpenScanLine;
+    procedure CloseScanLine;
     procedure Assign(Source: TPersistent); override;
     procedure Clear; virtual;
     procedure ClearWhite; virtual;
@@ -41,12 +42,22 @@ type
     procedure Rotate90; virtual;
     procedure Rotate180; virtual;
     procedure Rotate270; virtual;
+    property ScanLine[Row: integer]: Pointer read GetScanLine;
     procedure FillEllipse(X1, Y1, X2, Y2: integer); virtual;
     property FillColor: TColor read GetFillColor write SetFillColor;
     property OutlineColor: TColor read GetOutlineColor write SetOutlineColor;
     property PaperColor: TColor read GetPaperColor write SetPaperColor;
-    property ScanLine[Row: integer]: Pointer read GetScanLine;
   end;
+
+procedure LazBMPRotate90(const aBitmap: TCustomRGBBitmapCore; IsTurnRight: boolean);
+procedure BMPRotate90(const Bitmap: TCustomRGBBitmapCore);
+procedure DrawSamePixel(ABitmap: TCustomRGBBitmapCore; Value: integer);
+procedure BMPRotate180(const Bitmap: TCustomRGBBitmapCore);
+procedure BMPRotate270(const Bitmap: TCustomRGBBitmapCore);
+function RotateBitmap(Bitmap: TCustomRGBBitmapCore; Angle: integer;
+  BackColor: TColor): TCustomRGBBitmapCore;
+function BitmapFlip(const Vertical: boolean; const Horizontal: boolean;
+  var BitmapIn: TCustomRGBBitmapCore; out BitmapOut: TCustomRGBBitmapCore): boolean;
 
 implementation
 
@@ -100,7 +111,8 @@ begin
   Bmp := TCustomRGBBitmapCore.Create;
   Bmp.Width := Bitmap.Height;
   Bmp.Height := Bitmap.Width;
-  Bmp.PixelFormat := pf24bit;
+  Bmp.OpenScanLine;
+  Bitmap.OpenScanLine;
   Width := Bitmap.Width - 1;
   Height := Bitmap.Height - 1;
   for  j := 0 to Height do
@@ -109,12 +121,11 @@ begin
     for i := 0 to Width do
     begin
       rowOut := Bmp.ScanLine[i];
-      //   Inc(rowOut, Height - j);
-      rowOut^[j] := rowIn^[i];
-      //   Inc(rowIn);
+      rowOut^[Height - j] := rowIn^[i];
     end;
   end;
-  Bmp.SetScanLineValue;
+  Bmp.CloseScanLine;
+  Bitmap.CloseScanLine;
   Bitmap.Assign(Bmp);
 end;
 
@@ -131,6 +142,8 @@ begin
   Bmp.PixelFormat := pf24bit;
   Width := Bitmap.Width - 1;
   Height := Bitmap.Height - 1;
+  Bmp.OpenScanLine;
+  Bitmap.OpenScanLine;
   for  j := 0 to Height do
   begin
     rowIn := Bitmap.ScanLine[j];
@@ -142,7 +155,8 @@ begin
       Inc(rowIn);
     end;
   end;
-  Bmp.SetScanLineValue;
+  Bmp.CloseScanLine;
+  Bitmap.CloseScanLine;
   Bitmap.Assign(Bmp);
 end;
 
@@ -159,6 +173,8 @@ begin
   Bmp.PixelFormat := pf24bit;
   Width := Bitmap.Width - 1;
   Height := Bitmap.Height - 1;
+  Bmp.OpenScanLine;
+  Bitmap.OpenScanLine;
   for  j := 0 to Height do
   begin
     rowIn := Bitmap.ScanLine[j];
@@ -170,7 +186,8 @@ begin
       Inc(rowIn);
     end;
   end;
-  Bmp.SetScanLineValue;
+  Bmp.CloseScanLine;
+  Bitmap.CloseScanLine;
   Bitmap.Assign(Bmp);
 end;
 
@@ -185,6 +202,8 @@ begin
   Result := TCustomRGBBitmapCore.Create;
   Result.PixelFormat := pf24bit;
   Result.Canvas.Brush.Color := BackColor;
+  Result.OpenScanLine;
+  Bitmap.OpenScanLine;
   Angle := Angle mod 360;
   if Angle < 0 then
     Angle := 360 - Abs(Angle);
@@ -293,7 +312,8 @@ begin
       end;
     end;
   end;
-  Result.SetScanLineValue;
+  Result.CloseScanLine;
+  Bitmap.CloseScanLine;
 end;
 
 procedure DrawSamePixel(ABitmap: TCustomRGBBitmapCore; Value: integer);
@@ -303,62 +323,115 @@ var
   LScan: PRGBTripleArray;
   i, j: integer;
 begin
+  aBitmap.OpenScanLine;
   for i := 0 to ABitmap.Height - 1 do
   begin
     LScan := ABitmap.Scanline[i];
     for j := 0 to ABitmap.Width - 1 do
     begin
       LNew := LScan^[j];
-      LScan^[j].rgbtBlue := LNew.rgbtBlue;
-      LScan^[j].rgbtGreen := LNew.rgbtGreen;
-      LScan^[j].rgbtRed := LNew.rgbtRed;
+      LScan^[j].rgbtBlue := LScan^[j].rgbtBlue * Value div 100; //Value; //LNew.rgbtBlue;
+      LScan^[j].rgbtGreen := LScan^[j].rgbtGreen * Value div 100; //LNew.rgbtGreen;
+      LScan^[j].rgbtRed := LScan^[j].rgbtRed * Value div 100; //LNew.rgbtRed;
       //LScan^[j] := LNew;
     end;
   end;
-  ABitmap.SetScanLineValue;
+  ABitmap.CloseScanLine;
+end;
+
+function BitmapFlip(const Vertical: boolean; const Horizontal: boolean;
+  var BitmapIn: TCustomRGBBitmapCore; out BitmapOut: TCustomRGBBitmapCore): boolean;
+var
+  DataIn: PRGBTripleArray;
+  DataOut: PRGBTripleArray;
+  inRow: integer;
+  inCol: integer;
+begin
+  Result := False;
+  try
+    BitmapIn.OpenScanLine;
+    BitmapOut.OpenScanLine;
+    if BitmapIn.PixelFormat <> pf24bit then
+      Exit;
+    with BitmapOut do
+    begin
+      Width := BitmapIn.Width;
+      Height := BitmapIn.Height;
+      PixelFormat := BitmapIn.PixelFormat;
+    end;
+    for inRow := 0 to BitmapIn.Height - 1 do
+    begin
+      DataIn := BitmapIn.Scanline[inRow];
+      if Vertical then
+      begin
+        DataOut := BitmapOut.ScanLine[BitmapIn.Height - 1 - inRow];
+      end
+      else
+      begin
+        DataOut := BitmapOut.ScanLine[inRow];
+      end;
+      if Horizontal then
+      begin
+        for inCol := 0 to BitmapIn.Width - 1 do
+          DataOut^[inCol] := DataIn^[BitmapIn.Width - 1 - inCol];
+      end
+      else
+      begin
+        for inCol := 0 to BitmapIn.Width - 1 do
+          DataOut^[inCol] := DataIn^[inCol];
+      end;
+    end;
+    Result := True;
+    BitmapIn.CloseScanLine;
+    BitmapOut.CloseScanLine;
+  except
+  end;
 end;
 
 constructor TCustomRGBBitmapCore.Create;
 begin
   inherited;
   PixelFormat := pf24bit;
-  FIntfImg := TLazIntfImage.Create(0, 0);
-  FIntfImg.LoadFromBitmap(Handle, MaskHandle);
 end;
 
 destructor TCustomRGBBitmapCore.Destroy;
 begin
-  FIntfImg.Free;
   inherited;
 end;
 
 function TCustomRGBBitmapCore.GetScanLine(Row: integer): Pointer;
-var
-  ImgHandle, ImgMaskHandle: HBitmap;
 begin
-  Result := FIntfImg.GetDataLineStart(Row);
+  if FIntfImgA <> nil then
+    Result := FIntfImgA.GetDataLineStart(Row);
 end;
 
-procedure TCustomRGBBitmapCore.SetScanLineValue;
+procedure TCustomRGBBitmapCore.OpenScanLine;
+begin
+  FIntfImgA := TLazIntfImage.Create(0, 0);
+  FIntfImgA.LoadFromBitmap(Handle, MaskHandle);
+end;
+
+procedure TCustomRGBBitmapCore.CloseScanLine;
 var
   TmpBmp: TBitmap;
   ImgHandle, ImgMaskHandle: HBitmap;
 begin
   TmpBmp := TBitmap.Create;
   TmpBmp.PixelFormat := pf24bit;
-  FIntfImg.CreateBitmaps(ImgHandle, ImgMaskHandle, False);
+  FIntfImgA.CreateBitmaps(ImgHandle, ImgMaskHandle, True);
   TmpBmp.Handle := ImgHandle;
   TmpBmp.MaskHandle := ImgMaskHandle;
   Empty;
-  //Canvas.Draw(0, 0, TmpBmp);
-  Assign(TmpBmp);
+  Width := TmpBmp.Width;
+  Height := TmpBmp.Height;
+  Canvas.Draw(0, 0, TmpBmp);
   TmpBmp.Free;
+  FIntfImgA.Free;
 end;
 
 procedure TCustomRGBBitmapCore.Assign(Source: TPersistent);
 begin
   inherited;
-  FIntfImg.LoadFromBitmap(Handle, MaskHandle);
 end;
 
 function TCustomRGBBitmapCore.GetFillColor: TColor;
@@ -394,13 +467,13 @@ end;
 procedure TCustomRGBBitmapCore.SetWidth(Value: integer);
 begin
   inherited;
-  FIntfImg.LoadFromBitmap(Handle, MaskHandle);
+
 end;
 
 procedure TCustomRGBBitmapCore.SetHeight(Value: integer);
 begin
   inherited;
-  FIntfImg.LoadFromBitmap(Handle, MaskHandle);
+
 end;
 
 procedure TCustomRGBBitmapCore.Clear;
@@ -419,13 +492,41 @@ begin
 end;
 
 procedure TCustomRGBBitmapCore.FlipHorz;
+var
+  tmp, tmp2: TCustomRGBBitmapCore;
 begin
-
+  tmp := TCustomRGBBitmapCore.Create;
+  tmp.Width := Width;
+  tmp.Height := Height;
+  tmp2:= TCustomRGBBitmapCore.Create;
+  tmp2.Width := Width;
+  tmp2.Height := Height;
+  tmp.PixelFormat := pf24bit;
+  tmp2.PixelFormat := pf24bit;
+  tmp.Canvas.Draw(0, 0, Self);
+  BitmapFlip(False, True, tmp, tmp2);
+  Canvas.Draw(0, 0, tmp2);
+  tmp.Free;
+  tmp2.Free;
 end;
 
 procedure TCustomRGBBitmapCore.FlipVert;
+var
+  tmp, tmp2: TCustomRGBBitmapCore;
 begin
-
+  tmp := TCustomRGBBitmapCore.Create;
+  tmp.Width := Width;
+  tmp.Height := Height;
+  tmp2:= TCustomRGBBitmapCore.Create;
+  tmp2.Width := Width;
+  tmp2.Height := Height;
+  tmp.PixelFormat := pf24bit;
+  tmp2.PixelFormat := pf24bit;
+  tmp.Canvas.Draw(0, 0, Self);
+  BitmapFlip(True, False, tmp, tmp2);
+  Canvas.Draw(0, 0, tmp2);
+  tmp.Free;
+  tmp2.Free;
 end;
 
 procedure TCustomRGBBitmapCore.Rotate90;
@@ -436,10 +537,11 @@ begin
   tmp.Width := Width;
   tmp.Height := Height;
   tmp.Canvas.Draw(0, 0, Self);
-  LazBMPRotate90(tmp, True);
+  BMPRotate90(Tmp);
   Self.Width := tmp.Width;
   Self.Height := tmp.Height;
   Canvas.Draw(0, 0, tmp);
+  tmp.Free;
 end;
 
 procedure TCustomRGBBitmapCore.Rotate180;
@@ -450,11 +552,11 @@ begin
   tmp.Width := Width;
   tmp.Height := Height;
   tmp.Canvas.Draw(0, 0, Self);
-  LazBMPRotate90(tmp, True);
-  LazBMPRotate90(tmp, True);
+  BMPRotate180(Tmp);
   Self.Width := tmp.Width;
   Self.Height := tmp.Height;
   Canvas.Draw(0, 0, tmp);
+  tmp.Free;
 end;
 
 procedure TCustomRGBBitmapCore.Rotate270;
@@ -465,10 +567,11 @@ begin
   tmp.Width := Width;
   tmp.Height := Height;
   tmp.Canvas.Draw(0, 0, Self);
-  LazBMPRotate90(tmp, False);
+  BMPRotate270(Tmp);
   Self.Width := tmp.Width;
   Self.Height := tmp.Height;
   Canvas.Draw(0, 0, tmp);
+  tmp.Free;
 end;
 
 procedure TCustomRGBBitmapCore.FillEllipse(X1, Y1, X2, Y2: integer);

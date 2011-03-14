@@ -310,8 +310,8 @@
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="4"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="414"/>
-        <CursorPos X="22" Y="440"/>
+        <TopLine Value="477"/>
+        <CursorPos X="30" Y="493"/>
         <UsageCount Value="14"/>
         <Loaded Value="True"/>
       </Unit29>
@@ -324,7 +324,7 @@
         <UsageCount Value="11"/>
       </Unit30>
     </Units>
-    <JumpHistory Count="29" HistoryIndex="28">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="picturectrls.pas"/>
         <Caret Line="333" Column="40" TopLine="314"/>
@@ -441,6 +441,10 @@
         <Filename Value="bmprgbgraph.pas"/>
         <Caret Line="392" Column="32" TopLine="378"/>
       </Position29>
+      <Position30>
+        <Filename Value="rgbdrawutils.pas"/>
+        <Caret Line="462" Column="10" TopLine="453"/>
+      </Position30>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
