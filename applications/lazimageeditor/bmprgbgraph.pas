@@ -118,7 +118,7 @@ type
     procedure StretchTrunc(AWidth, AHeight: Integer); virtual;
     procedure StretchSmooth(AWidth, AHeight: Integer; Method: TSmoothMethod); virtual;
 
-    procedure Grayscale; virtual;
+    procedure Grayscale; override;
     procedure Disable; virtual;
     
     procedure CutToClipboard; virtual;
@@ -324,7 +324,7 @@ end;
 
 procedure TRGB32Bitmap.Grayscale;
 begin
-  GrayscaleRGB32Bitmap(Self);
+  inherited;
 end;
 
 procedure TRGB32Bitmap.Disable;

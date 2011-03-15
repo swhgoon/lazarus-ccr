@@ -37,6 +37,7 @@ type
     procedure Clear; virtual;
     procedure ClearWhite; virtual;
     procedure Invert; virtual;
+    procedure Grayscale; virtual;
     procedure FlipHorz; virtual;
     procedure FlipVert; virtual;
     procedure Rotate90; virtual;
@@ -58,6 +59,7 @@ function RotateBitmap(Bitmap: TCustomRGBBitmapCore; Angle: integer;
   BackColor: TColor): TCustomRGBBitmapCore;
 function BitmapFlip(const Vertical: boolean; const Horizontal: boolean;
   var BitmapIn: TCustomRGBBitmapCore; out BitmapOut: TCustomRGBBitmapCore): boolean;
+procedure InvertBitmap(aBitmap: TCustomRGBBitmapCore);
 
 implementation
 
@@ -388,6 +390,50 @@ begin
   end;
 end;
 
+procedure InvertBitmap(aBitmap: TCustomRGBBitmapCore);
+var
+  LNew: TRGBTriple;
+  LMinusRatio: real;
+  LScan: PRGBTripleArray;
+  i, j: integer;
+begin
+  aBitmap.OpenScanLine;
+  for i := 0 to ABitmap.Height - 1 do
+  begin
+    LScan := ABitmap.Scanline[i];
+    for j := 0 to ABitmap.Width - 1 do
+    begin
+      LNew := LScan^[j];
+      LScan^[j].rgbtBlue := not LScan^[j].rgbtBlue;
+      LScan^[j].rgbtGreen := not LScan^[j].rgbtGreen;
+      LScan^[j].rgbtRed := not LScan^[j].rgbtRed;
+    end;
+  end;
+  ABitmap.CloseScanLine;
+end;
+
+procedure ConvertBitmapToGrayScale(const Bitmap: TCustomRGBBitmapCore);
+var
+  X: integer;
+  Y: integer;
+  P: PRGBTripleArray;
+  Gray: byte;
+begin
+  Bitmap.OpenScanLine;
+  for Y := 0 to (Bitmap.Height - 1) do
+  begin
+    P := Bitmap.ScanLine[Y];
+    for X := 0 to (Bitmap.Width - 1) do
+    begin
+      Gray := Round(0.30 * P^[X].rgbtBlue + 0.59 * P^[X].rgbtGreen + 0.11 * P^[X].rgbtRed);
+      P^[X].rgbtRed := Gray;
+      P^[X].rgbtGreen := Gray;
+      P^[X].rgbtBlue := Gray;
+    end;
+  end;
+  Bitmap.CloseScanLine;
+end;
+
 constructor TCustomRGBBitmapCore.Create;
 begin
   inherited;
@@ -487,8 +533,30 @@ begin
 end;
 
 procedure TCustomRGBBitmapCore.Invert;
+var
+  tmp: TCustomRGBBitmapCore;
 begin
+  tmp := TCustomRGBBitmapCore.Create;
+  tmp.Width := Width;
+  tmp.Height := Height;
+  tmp.Canvas.Draw(0, 0, Self);
+  InvertBitmap(Tmp);
+  Canvas.Draw(0, 0, tmp);
+  tmp.Free;
+end;
 
+
+procedure TCustomRGBBitmapCore.Grayscale;
+var
+  tmp: TCustomRGBBitmapCore;
+begin
+  tmp := TCustomRGBBitmapCore.Create;
+  tmp.Width := Width;
+  tmp.Height := Height;
+  tmp.Canvas.Draw(0, 0, Self);
+  ConvertBitmapToGrayScale(Tmp);
+  Canvas.Draw(0, 0, tmp);
+  tmp.Free;
 end;
 
 procedure TCustomRGBBitmapCore.FlipHorz;
@@ -498,7 +566,7 @@ begin
   tmp := TCustomRGBBitmapCore.Create;
   tmp.Width := Width;
   tmp.Height := Height;
-  tmp2:= TCustomRGBBitmapCore.Create;
+  tmp2 := TCustomRGBBitmapCore.Create;
   tmp2.Width := Width;
   tmp2.Height := Height;
   tmp.PixelFormat := pf24bit;
@@ -517,7 +585,7 @@ begin
   tmp := TCustomRGBBitmapCore.Create;
   tmp.Width := Width;
   tmp.Height := Height;
-  tmp2:= TCustomRGBBitmapCore.Create;
+  tmp2 := TCustomRGBBitmapCore.Create;
   tmp2.Width := Width;
   tmp2.Height := Height;
   tmp.PixelFormat := pf24bit;

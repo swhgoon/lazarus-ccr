@@ -1880,9 +1880,11 @@
       Caption = '&Picture'
       object MenuItemResize: TMenuItem
         Action = PictureResize
+        OnClick = MenuItemResizeClick
       end
       object MenuItemResizePaper: TMenuItem
         Action = PictureResizePaper
+        OnClick = MenuItemResizePaperClick
       end
       object MenuItemClipPaperToMask: TMenuItem
         Action = PictureClipPaperToMask
