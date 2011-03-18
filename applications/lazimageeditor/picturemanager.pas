@@ -320,7 +320,8 @@ end;
 
 procedure TPictureManager.Paste;
 begin
-  if CanEdit then ActivePicturePage.PictureEdit.Paste;
+  //if CanEdit then
+  ActivePicturePage.PictureEdit.Paste;
 end;
 
 function TPictureManager.CanEdit: Boolean;

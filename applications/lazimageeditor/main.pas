@@ -40,21 +40,45 @@ type
   { TMainForm }
 
   TMainForm = class(TForm)
+    ActionList: TActionList;
     checkFuzzy: TCheckBox;
+    ColorsDisable: TAction;
+    ColorsGrayscale: TAction;
+    ColorsInvert: TAction;
+    EditCopy: TEditCopy;
+    EditCut: TEditCut;
+    EditDelete: TEditDelete;
+    EditPaste: TEditPaste;
+    EditRedo: TAction;
+    EditSelectAll: TEditSelectAll;
+    EditUndo: TEditUndo;
+    FileClose: TAction;
+    FileExportAsLRS: TAction;
+    FileNew: TAction;
+    FileOpen: TAction;
+    FileSave: TAction;
+    FileSaveAs: TAction;
+    FlipHorizontally: TAction;
+    FlipVertically: TAction;
     LabelTolerance1: TLabel;
     LabelTolerance2: TLabel;
+    MaskInvert: TAction;
+    MaskRemove: TAction;
     Palette: TColorPalette;
     MenuItemShowGrid: TMenuItem;
-    MenuItemShowPreview: TMenuItem;
     PanelTolerance1: TPanel;
     PanelTolerance2: TPanel;
+    PictureClipPaperToMask: TAction;
+    PictureResize: TAction;
+    PictureResizePaper: TAction;
+    Rotate180: TAction;
+    Rotate270: TAction;
+    Rotate90: TAction;
+    RotateCustom: TAction;
     spinFillAlpha: TSpinEdit;
-    ViewShowMask: TAction;
-    ViewShowGrid: TAction;
     MenuItemShowMask: TMenuItem;
     MenuItemView: TMenuItem;
     MenuItemClipPaperToMask: TMenuItem;
-    PictureClipPaperToMask: TAction;
     Bevel2: TBevel;
     EditDensity: TEdit;
     EditRoundness: TEdit;
@@ -66,15 +90,9 @@ type
     LabelMaskTool: TLabel;
     LabelSize: TLabel;
     LabelTolerance: TLabel;
-    MaskInvert: TAction;
-    MaskRemove: TAction;
     Bevel1: TBevel;
     EditSize1: TEdit;
-    FileExportAsLRS: TAction;
-    ColorsDisable: TAction;
     ColorDialog: TColorDialog;
-    ColorsGrayscale: TAction;
-    ColorsInvert: TAction;
     ImageListActions: TImageList;
     LabelFillOutline: TLabel;
     LabelZoom: TLabel;
@@ -115,28 +133,7 @@ type
     PanelPaper: TPanel;
     PanelColors: TPanel;
     PanelFillOutline: TPanel;
-    RotateCustom: TAction;
-    Rotate180: TAction;
-    Rotate90: TAction;
-    Rotate270: TAction;
-    FlipVertically: TAction;
-    FlipHorizontally: TAction;
-    PictureResizePaper: TAction;
-    PictureResize: TAction;
     ComboBoxZoom: TComboBox;
-    EditCopy: TEditCopy;
-    EditCut: TEditCut;
-    EditDelete: TEditDelete;
-    EditPaste: TEditPaste;
-    EditRedo: TAction;
-    EditSelectAll: TEditSelectAll;
-    EditUndo: TEditUndo;
-    FileClose: TAction;
-    FileSave: TAction;
-    FileNew: TAction;
-    ActionList: TActionList;
-    FileOpen: TAction;
-    FileSaveAs: TAction;
     MainMenu: TMainMenu;
     MenuItem1: TMenuItem;
     MenuItem3: TMenuItem;
@@ -208,6 +205,8 @@ type
     UpDownSize: TUpDown;
     UpDownSize1: TUpDown;
     UpDownTolerance: TUpDown;
+    ViewShowGrid: TAction;
+    ViewShowMask: TAction;
     procedure checkFuzzyChange(Sender: TObject);
     procedure ColorsDisableExecute(Sender: TObject);
     procedure ColorsGrayscaleExecute(Sender: TObject);
@@ -292,6 +291,7 @@ type
     procedure UpdatePictureToolsEnabled;
     procedure UpdateAll;
   public
+    procedure FileNewOnStart;
     property ActivePicture: TPictureBitmap read GetActivePicture;
     property ActivePicturePage: TPicturePage read GetActivePicturePage;
     property ActivePictureEdit: TPictureEdit read GetActivePictureEdit;
@@ -1021,6 +1021,11 @@ begin
   end;
 end;
 
+procedure TMainForm.FileNewOnStart;
+begin
+  Pictures.New(640, 480, clTeal);
+end;
+
 procedure TMainForm.FileOpenExecute(Sender: TObject);
 var
   I: integer;
@@ -1105,8 +1110,8 @@ end;
 
 procedure TMainForm.EditCopyExecute(Sender: TObject);
 begin
-  if not Pictures.CanEdit then
-    Exit;
+  //if not Pictures.CanEdit then
+  //  Exit;
   ActivePictureEdit.Copy;
 end;
 
@@ -1148,6 +1153,12 @@ begin
   if not Pictures.CanEdit then
     Exit;
   ActivePictureEdit.SelectAll;
+  MenuItemCopy.Enabled:=True;
+  MenuItemPaste.Enabled:=True;
+  MenuItemDelete.Enabled:=True;
+  MenuItemCopy.OnClick := @EditCopyExecute;
+  MenuItemPaste.OnClick := @EditPasteExecute;
+  MenuItemDelete.OnClick := @EditDeleteExecute;
 end;
 
 procedure TMainForm.ColorsInvertExecute(Sender: TObject);

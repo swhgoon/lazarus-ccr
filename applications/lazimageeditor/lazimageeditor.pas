@@ -22,7 +22,9 @@ begin
 
   // show new picture dialog
   MainForm.Show;
-  MainForm.FileNewExecute(nil);
+  //MainForm.FileNewExecute(nil);
+  MainForm.FileNewOnStart;
+
   Application.Run;
 end.
 

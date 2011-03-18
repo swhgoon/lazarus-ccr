@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LCLType, LCLIntf, LMessages, LCLProc, Controls, Graphics,
-  Forms, Types, IntfGraphics, FPImage, Math, FPImgCanv, FPCanvas;
+  Forms, Types, IntfGraphics, FPImage, Math, FPImgCanv, FPCanvas, ClipBrd;
 
 type
   PRGBTripleArray = ^TRGBTripleArray;
@@ -45,6 +45,10 @@ type
     procedure Rotate270; virtual;
     property ScanLine[Row: integer]: Pointer read GetScanLine;
     procedure FillEllipse(X1, Y1, X2, Y2: integer); virtual;
+    procedure CutToClipboard; virtual;
+    procedure CopyToClipboard; virtual;
+    procedure PasteFromClipboard; virtual;
+    procedure Delete; virtual;
     property FillColor: TColor read GetFillColor write SetFillColor;
     property OutlineColor: TColor read GetOutlineColor write SetOutlineColor;
     property PaperColor: TColor read GetPaperColor write SetPaperColor;
@@ -425,7 +429,8 @@ begin
     P := Bitmap.ScanLine[Y];
     for X := 0 to (Bitmap.Width - 1) do
     begin
-      Gray := Round(0.30 * P^[X].rgbtBlue + 0.59 * P^[X].rgbtGreen + 0.11 * P^[X].rgbtRed);
+      Gray := Round(0.30 * P^[X].rgbtBlue + 0.59 * P^[X].rgbtGreen +
+        0.11 * P^[X].rgbtRed);
       P^[X].rgbtRed := Gray;
       P^[X].rgbtGreen := Gray;
       P^[X].rgbtBlue := Gray;
@@ -473,6 +478,39 @@ begin
   Canvas.Draw(0, 0, TmpBmp);
   TmpBmp.Free;
   FIntfImgA.Free;
+end;
+
+procedure TCustomRGBBitmapCore.CutToClipboard;
+begin
+  CopyToClipboard;
+  Delete;
+end;
+
+procedure TCustomRGBBitmapCore.CopyToClipboard;
+begin
+  ClipBoard.Assign(Self);
+end;
+
+procedure TCustomRGBBitmapCore.PasteFromClipboard;
+var
+  oBmp: TBitmap;
+begin
+  oBmp := TBitmap.Create;
+  try
+    oBmp.LoadFromClipboardFormat(PredefinedClipboardFormat(pcfDelphiBitmap));
+    //Width := oBmp.Width;
+    //Height := oBmp.Height;
+    Canvas.Draw(0, 0, oBmp);
+  finally
+    oBmp.Free;
+  end;
+end;
+
+procedure TCustomRGBBitmapCore.Delete;
+begin
+  Canvas.Brush.Style := bsSolid;
+  Canvas.Brush.Color := PaperColor;
+  Canvas.FillRect(0, 0, Width, Height);
 end;
 
 procedure TCustomRGBBitmapCore.Assign(Source: TPersistent);

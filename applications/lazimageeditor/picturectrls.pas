@@ -1099,7 +1099,8 @@ begin
   if Picture = nil then Exit;
   BeginDraw;
   try
-    Assert(True, 'Implement Paste');
+    //Assert(True, 'Implement Paste');
+    Picture.PasteFromClipboard;
   finally
     EndDraw;
   end;

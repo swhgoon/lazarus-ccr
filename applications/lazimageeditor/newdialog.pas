@@ -58,6 +58,7 @@ var
   NewDialogForm: TNewDialogForm;
 
 implementation
+
 uses IconStrConsts;
 { TNewDialogForm }
 

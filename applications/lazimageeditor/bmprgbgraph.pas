@@ -121,9 +121,9 @@ type
     procedure Grayscale; override;
     procedure Disable; virtual;
     
-    procedure CutToClipboard; virtual;
-    procedure CopyToClipboard; virtual;
-    procedure Delete; virtual;
+    procedure CutToClipboard; override;
+    procedure CopyToClipboard; override;
+    procedure Delete; override;
     
     procedure FlipHorz; override;
     procedure FlipVert; override;
@@ -339,7 +339,7 @@ begin
 end;
 
 procedure TRGB32Bitmap.CopyToClipboard;
-var
+{var
   PixmapStream, BitmapStream: TMemoryStream;
   PixmapWriter, BitmapWriter: TFPCustomImageWriter;
   Image: TLazIntfImage;
@@ -371,10 +371,15 @@ begin
     BitmapWriter.Free;
   end;
 end;
+}
+begin
+  inherited;
+end;
 
 procedure TRGB32Bitmap.Delete;
 begin
-  Fill(PaperColor);
+  //Fill(PaperColor);
+  inherited;
 end;
 
 procedure TRGB32Bitmap.FlipHorz;

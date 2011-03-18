@@ -252,29 +252,41 @@
       end
       object ToolClose: TToolButton
         Left = 109
+        Hint = 'Close'
         Top = 0
-        Action = FileClose
+        Caption = '&Close'
+        ImageIndex = 3
+        OnClick = FileCloseExecute
         ParentShowHint = False
         ShowHint = True
       end
       object ToolSave: TToolButton
         Left = 73
+        Hint = 'Save'
         Top = 0
-        Action = FileSave
+        Caption = '&Save'
+        ImageIndex = 2
+        OnClick = FileSaveExecute
         ParentShowHint = False
         ShowHint = True
       end
       object ToolOpen: TToolButton
         Left = 37
+        Hint = 'Open'
         Top = 0
-        Action = FileOpen
+        Caption = '&Open...'
+        ImageIndex = 1
+        OnClick = FileOpenExecute
         ParentShowHint = False
         ShowHint = True
       end
       object ToolNew: TToolButton
         Left = 1
+        Hint = 'New'
         Top = 0
-        Action = FileNew
+        Caption = '&New...'
+        ImageIndex = 0
+        OnClick = FileNewExecute
         ParentShowHint = False
         ShowHint = True
       end
@@ -287,22 +299,34 @@
       end
       object ToolCut: TToolButton
         Left = 233
+        Hint = 'Cut'
         Top = 0
-        Action = EditCut
+        Caption = 'Cu&t'
+        Enabled = False
+        ImageIndex = 6
+        OnClick = EditCutExecute
         ParentShowHint = False
         ShowHint = True
       end
       object ToolButton8: TToolButton
         Left = 269
+        Hint = 'Copy'
         Top = 0
-        Action = EditCopy
+        Caption = '&Copy'
+        Enabled = False
+        ImageIndex = 7
+        OnClick = EditCopyExecute
         ParentShowHint = False
         ShowHint = True
       end
       object ToolButton9: TToolButton
         Left = 305
+        Hint = 'Paste'
         Top = 0
-        Action = EditPaste
+        Caption = '&Paste'
+        Enabled = False
+        ImageIndex = 8
+        OnClick = EditPasteExecute
         ParentShowHint = False
         ShowHint = True
       end
@@ -315,15 +339,22 @@
       end
       object ToolButton11: TToolButton
         Left = 341
+        Hint = 'Delete'
         Top = 0
-        Action = EditDelete
+        Caption = '&Delete'
+        Enabled = False
+        ImageIndex = 9
+        OnClick = EditDeleteExecute
         ParentShowHint = False
         ShowHint = True
       end
       object ToolUndo: TToolButton
         Left = 153
+        Hint = 'Undo'
         Top = 0
-        Action = EditUndo
+        Caption = '&Undo'
+        Enabled = False
+        ImageIndex = 4
         ParentShowHint = False
         ShowHint = True
       end
@@ -336,8 +367,11 @@
       end
       object ToolRedo: TToolButton
         Left = 189
+        Hint = 'Redo'
         Top = 0
-        Action = EditRedo
+        Caption = '&Redo'
+        Enabled = False
+        ImageIndex = 5
         ParentShowHint = False
         ShowHint = True
       end
@@ -1247,9 +1281,9 @@
         TabOrder = 5
         object checkFuzzy: TCheckBox
           Left = 4
-          Height = 19
+          Height = 23
           Top = 9
-          Width = 20
+          Width = 24
           OnChange = checkFuzzyChange
           TabOrder = 0
         end
@@ -1272,7 +1306,7 @@
     object MenuItemFile: TMenuItem
       Caption = '&File'
       object MenuItemNew: TMenuItem
-        Action = FileNew
+        Caption = '&New...'
         Bitmap.Data = {
           76060000424D7606000000000000360000002800000014000000140000000100
           2000000000004006000064000000640000000000000000000000FFFFFF00FFFF
@@ -1327,10 +1361,13 @@
           09F4080808F5070707F6070707F7060606F8050505F9040404FA050505FC0505
           058CFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
         }
+        Hint = 'New'
+        ImageIndex = 0
+        ShortCut = 16462
         OnClick = FileNewExecute
       end
       object MenuItemOpen: TMenuItem
-        Action = FileOpen
+        Caption = '&Open...'
         Bitmap.Data = {
           76060000424D7606000000000000360000002800000014000000140000000100
           2000000000004006000064000000640000000000000000000000FFFFFF00FFFF
@@ -1385,10 +1422,13 @@
           FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
           FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
         }
+        Hint = 'Open'
+        ImageIndex = 1
+        ShortCut = 16463
         OnClick = FileOpenExecute
       end
       object MenuItemSave: TMenuItem
-        Action = FileSave
+        Caption = '&Save'
         Bitmap.Data = {
           76060000424D7606000000000000360000002800000014000000140000000100
           20000000000040060000640000006400000000000000000000000700009F0A00
@@ -1443,18 +1483,22 @@
           26E62C2626E62C2626E62C2625E62B2625E62B2524E62B2524E62A2423E62923
           23E5292322E5221C1BE4090000D9080000CA0000001DFFFFFF00
         }
+        Hint = 'Save'
+        ImageIndex = 2
+        ShortCut = 16467
         OnClick = FileSaveExecute
       end
       object MenuItemSaveAs: TMenuItem
-        Action = FileSaveAs
+        Caption = 'Save &As...'
+        Hint = 'Save As'
         OnClick = FileSaveAsExecute
       end
       object MenuItemExportAsLRS: TMenuItem
-        Action = FileExportAsLRS
+        Caption = '&Export As *.lrs...'
         OnClick = FileExportAsLRSExecute
       end
       object MenuItemClose: TMenuItem
-        Action = FileClose
+        Caption = '&Close'
         Bitmap.Data = {
           76060000424D7606000000000000360000002800000014000000140000000100
           2000000000004006000064000000640000000000000000000000FFFFFF00FFFF
@@ -1509,6 +1553,9 @@
           0E7800000005FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF000000
           000500020F8D0204139D0000002BFFFFFF00FFFFFF00FFFFFF00
         }
+        Hint = 'Close'
+        ImageIndex = 3
+        ShortCut = 16499
         OnClick = FileCloseExecute
       end
       object MenuItem2: TMenuItem
@@ -1523,7 +1570,8 @@
     object MenuItemEdit: TMenuItem
       Caption = '&Edit'
       object MenuItemUndo: TMenuItem
-        Action = EditUndo
+        Caption = '&Undo'
+        Enabled = False
         Bitmap.Data = {
           76060000424D7606000000000000360000002800000014000000140000000100
           2000000000004006000064000000640000000000000000000000FFFFFF00FFFF
@@ -1578,9 +1626,13 @@
           332D353935BA3333330FFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
           FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
         }
+        Hint = 'Undo'
+        ImageIndex = 4
+        ShortCut = 16474
       end
       object MenuItemRedo: TMenuItem
-        Action = EditRedo
+        Caption = '&Redo'
+        Enabled = False
         Bitmap.Data = {
           76060000424D7606000000000000360000002800000014000000140000000100
           2000000000004006000064000000640000000000000000000000FFFFFF00FFFF
@@ -1635,12 +1687,15 @@
           FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00333333143439
           33BA33333328FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
         }
+        Hint = 'Redo'
+        ImageIndex = 5
+        ShortCut = 24666
       end
       object MenuItem1: TMenuItem
         Caption = '-'
       end
       object MenuItemCut: TMenuItem
-        Action = EditCut
+        Caption = 'Cu&t'
         Bitmap.Data = {
           76060000424D7606000000000000360000002800000014000000140000000100
           2000000000004006000064000000640000000000000000000000FFFFFF00FFFF
@@ -1695,10 +1750,13 @@
           00FFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
           FF00000000FF000000FF000000FFFFFFFF00FFFFFF00FFFFFF00
         }
+        Hint = 'Cut'
+        ImageIndex = 6
+        ShortCut = 16472
         OnClick = EditCutExecute
       end
       object MenuItemCopy: TMenuItem
-        Action = EditCopy
+        Caption = '&Copy'
         Bitmap.Data = {
           76060000424D7606000000000000360000002800000014000000140000000100
           2000000000004006000064000000640000000000000000000000FFFFFF00FFFF
@@ -1753,10 +1811,13 @@
           00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
           00FF000000FF000000FF000000FF000000FFFFFFFF00FFFFFF00
         }
+        Hint = 'Copy'
+        ImageIndex = 7
+        ShortCut = 16451
         OnClick = EditCopyExecute
       end
       object MenuItemPaste: TMenuItem
-        Action = EditPaste
+        Caption = '&Paste'
         Bitmap.Data = {
           76060000424D7606000000000000360000002800000014000000140000000100
           2000000000004006000064000000640000000000000000000000FFFFFF00FFFF
@@ -1811,10 +1872,13 @@
           FF00000000FF000000FF000000FF000000FF3B3B3BFF373737FF252525FFFFFF
           FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
         }
+        Hint = 'Paste'
+        ImageIndex = 8
+        ShortCut = 16470
         OnClick = EditPasteExecute
       end
       object MenuItemDelete: TMenuItem
-        Action = EditDelete
+        Caption = '&Delete'
         Bitmap.Data = {
           76060000424D7606000000000000360000002800000014000000140000000100
           2000000000004006000064000000640000000000000000000000FFFFFF00FFFF
@@ -1869,25 +1933,30 @@
           137800000005FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF000000
           00050002108D0203169D0000002BFFFFFF00FFFFFF00FFFFFF00
         }
+        Hint = 'Delete'
+        ImageIndex = 9
+        ShortCut = 46
         OnClick = EditDeleteExecute
       end
       object MenuItemSelectAll: TMenuItem
-        Action = EditSelectAll
+        Caption = 'Select &All'
+        Hint = 'Select All'
+        ShortCut = 16449
         OnClick = EditSelectAllExecute
       end
     end
     object MenuItemPicture: TMenuItem
       Caption = '&Picture'
       object MenuItemResize: TMenuItem
-        Action = PictureResize
+        Caption = 'Resize...'
         OnClick = MenuItemResizeClick
       end
       object MenuItemResizePaper: TMenuItem
-        Action = PictureResizePaper
+        Caption = 'Resize Paper...'
         OnClick = MenuItemResizePaperClick
       end
       object MenuItemClipPaperToMask: TMenuItem
-        Action = PictureClipPaperToMask
+        Caption = 'Clip Paper To Mask'
       end
       object MenuItem7: TMenuItem
         Caption = '-'
@@ -1895,30 +1964,31 @@
       object MenuItemFlip: TMenuItem
         Caption = 'Flip'
         object MenuItemHorizontally: TMenuItem
-          Action = FlipHorizontally
+          Caption = 'Horizontally'
           OnClick = FlipHorizontallyExecute
         end
         object MenuItemVertically: TMenuItem
-          Action = FlipVertically
+          Caption = 'Vertically'
           OnClick = FlipVerticallyExecute
         end
       end
       object MenuItemRotate: TMenuItem
         Caption = 'Rotate'
         object MenuItem90: TMenuItem
-          Action = Rotate90
+          Caption = '90Clockwise'
           OnClick = Rotate90Execute
         end
         object MenuItem180: TMenuItem
-          Action = Rotate180
+          Caption = '180Clockwise'
           OnClick = Rotate180Execute
         end
         object MenuItem270: TMenuItem
-          Action = Rotate270
+          Caption = '270Clockwise'
           OnClick = Rotate270Execute
         end
         object MenuItemCustom: TMenuItem
-          Action = RotateCustom
+          Caption = 'Custom...'
+          Enabled = False
         end
       end
       object MenuItem4: TMenuItem
@@ -1927,15 +1997,15 @@
       object MenuItemColors: TMenuItem
         Caption = 'Colors'
         object MenuItemInvert: TMenuItem
-          Action = ColorsInvert
+          Caption = 'Invert'
           OnClick = ColorsInvertExecute
         end
         object MenuItemGrayscale: TMenuItem
-          Action = ColorsGrayscale
+          Caption = 'Grayscale'
           OnClick = ColorsGrayscaleExecute
         end
         object MenuItemDisable: TMenuItem
-          Action = ColorsDisable
+          Caption = 'Disable'
           OnClick = ColorsDisableExecute
         end
       end
@@ -1943,31 +2013,27 @@
     object MenuItemMask: TMenuItem
       Caption = 'Mask'
       object MenuItemMaskInvert: TMenuItem
-        Action = MaskInvert
+        Caption = 'Invert'
         OnClick = MaskInvertExecute
       end
       object MenuItemMaskRemove: TMenuItem
-        Action = MaskRemove
+        Caption = 'Remove'
         OnClick = MaskRemoveExecute
       end
     end
     object MenuItemView: TMenuItem
       Caption = 'View'
       object MenuItemShowGrid: TMenuItem
-        Action = ViewShowGrid
         AutoCheck = True
+        Caption = 'Show Grid'
+        Checked = True
         OnClick = ViewShowGridExecute
       end
       object MenuItemShowMask: TMenuItem
-        Action = ViewShowMask
         AutoCheck = True
-        OnClick = ViewShowMaskExecute
-      end
-      object MenuItemShowPreview: TMenuItem
-        AutoCheck = True
-        Caption = 'Show Preview'
+        Caption = 'Show Mask'
         Checked = True
-        OnClick = ViewShowPreviewExecute
+        OnClick = ViewShowMaskExecute
       end
     end
     object MenuItemHelp: TMenuItem
@@ -1982,195 +2048,6 @@
         Caption = 'About Lazarus Image Editor...'
         OnClick = MenuItemAboutClick
       end
-    end
-  end
-  object ActionList: TActionList
-    Images = ImageListActions
-    left = 114
-    top = 90
-    object FileNew: TAction
-      Category = 'File'
-      Caption = '&New...'
-      Hint = 'New'
-      ImageIndex = 0
-      OnExecute = FileNewExecute
-      ShortCut = 16462
-    end
-    object FileOpen: TAction
-      Category = 'File'
-      Caption = '&Open...'
-      Hint = 'Open'
-      ImageIndex = 1
-      OnExecute = FileOpenExecute
-      ShortCut = 16463
-    end
-    object FileSave: TAction
-      Category = 'File'
-      Caption = '&Save'
-      Hint = 'Save'
-      ImageIndex = 2
-      OnExecute = FileSaveExecute
-      ShortCut = 16467
-    end
-    object FileSaveAs: TAction
-      Category = 'File'
-      Caption = 'Save &As...'
-      Hint = 'Save As'
-      OnExecute = FileSaveAsExecute
-    end
-    object FileClose: TAction
-      Category = 'File'
-      Caption = '&Close'
-      Hint = 'Close'
-      ImageIndex = 3
-      OnExecute = FileCloseExecute
-      ShortCut = 16499
-    end
-    object EditUndo: TEditUndo
-      Category = 'Edit'
-      Caption = '&Undo'
-      Enabled = False
-      Hint = 'Undo'
-      ImageIndex = 4
-      ShortCut = 16474
-    end
-    object EditRedo: TAction
-      Category = 'Edit'
-      Caption = '&Redo'
-      Enabled = False
-      Hint = 'Redo'
-      ImageIndex = 5
-      ShortCut = 24666
-    end
-    object EditCut: TEditCut
-      Category = 'Edit'
-      Caption = 'Cu&t'
-      Enabled = False
-      Hint = 'Cut'
-      ImageIndex = 6
-      OnExecute = EditCutExecute
-      ShortCut = 16472
-    end
-    object EditCopy: TEditCopy
-      Category = 'Edit'
-      Caption = '&Copy'
-      Enabled = False
-      Hint = 'Copy'
-      ImageIndex = 7
-      OnExecute = EditCopyExecute
-      ShortCut = 16451
-    end
-    object EditPaste: TEditPaste
-      Category = 'Edit'
-      Caption = '&Paste'
-      Enabled = False
-      Hint = 'Paste'
-      ImageIndex = 8
-      OnExecute = EditPasteExecute
-      ShortCut = 16470
-    end
-    object EditDelete: TEditDelete
-      Category = 'Edit'
-      Caption = '&Delete'
-      Enabled = False
-      Hint = 'Delete'
-      ImageIndex = 9
-      OnExecute = EditDeleteExecute
-      ShortCut = 46
-    end
-    object EditSelectAll: TEditSelectAll
-      Category = 'Edit'
-      Caption = 'Select &All'
-      Enabled = False
-      Hint = 'Select All'
-      OnExecute = EditSelectAllExecute
-      ShortCut = 16449
-    end
-    object PictureResize: TAction
-      Category = 'Picture'
-      Caption = 'Resize...'
-    end
-    object PictureResizePaper: TAction
-      Category = 'Picture'
-      Caption = 'Resize Paper...'
-    end
-    object FlipHorizontally: TAction
-      Category = 'PictureFlip'
-      Caption = 'Horizontally'
-      OnExecute = FlipHorizontallyExecute
-    end
-    object FlipVertically: TAction
-      Category = 'PictureFlip'
-      Caption = 'Vertically'
-      OnExecute = FlipVerticallyExecute
-    end
-    object Rotate90: TAction
-      Category = 'PictureRotate'
-      Caption = '90Clockwise'
-      OnExecute = Rotate90Execute
-    end
-    object Rotate180: TAction
-      Category = 'PictureRotate'
-      Caption = '180Clockwise'
-      OnExecute = Rotate180Execute
-    end
-    object Rotate270: TAction
-      Category = 'PictureRotate'
-      Caption = '270Clockwise'
-      OnExecute = Rotate270Execute
-    end
-    object RotateCustom: TAction
-      Category = 'PictureRotate'
-      Caption = 'Custom...'
-      Enabled = False
-    end
-    object ColorsInvert: TAction
-      Category = 'PictureColors'
-      Caption = 'Invert'
-      OnExecute = ColorsInvertExecute
-    end
-    object ColorsGrayscale: TAction
-      Category = 'PictureColors'
-      Caption = 'Grayscale'
-      OnExecute = ColorsGrayscaleExecute
-    end
-    object ColorsDisable: TAction
-      Category = 'PictureColors'
-      Caption = 'Disable'
-      OnExecute = ColorsDisableExecute
-    end
-    object FileExportAsLRS: TAction
-      Category = 'File'
-      Caption = '&Export As *.lrs...'
-      OnExecute = FileExportAsLRSExecute
-    end
-    object MaskRemove: TAction
-      Category = 'Mask'
-      Caption = 'Remove'
-      OnExecute = MaskRemoveExecute
-    end
-    object MaskInvert: TAction
-      Category = 'Mask'
-      Caption = 'Invert'
-      OnExecute = MaskInvertExecute
-    end
-    object PictureClipPaperToMask: TAction
-      Category = 'Picture'
-      Caption = 'Clip Paper To Mask'
-    end
-    object ViewShowGrid: TAction
-      Category = 'View'
-      AutoCheck = True
-      Caption = 'Show Grid'
-      Checked = True
-      OnExecute = ViewShowGridExecute
-    end
-    object ViewShowMask: TAction
-      Category = 'View'
-      AutoCheck = True
-      Caption = 'Show Mask'
-      Checked = True
-      OnExecute = ViewShowMaskExecute
     end
   end
   object ImageListTools: TImageList
@@ -4022,5 +3899,191 @@
     Options = [ofOverwritePrompt, ofEnableSizing, ofViewDetail]
     left = 186
     top = 126
+  end
+  object ActionList: TActionList
+    Images = ImageListActions
+    left = 112
+    top = 88
+    object FileNew: TAction
+      Category = 'File'
+      Caption = '&New...'
+      Hint = 'New'
+      ImageIndex = 0
+      OnExecute = FileNewExecute
+      ShortCut = 16462
+    end
+    object FileOpen: TAction
+      Category = 'File'
+      Caption = '&Open...'
+      Hint = 'Open'
+      ImageIndex = 1
+      OnExecute = FileOpenExecute
+      ShortCut = 16463
+    end
+    object FileSave: TAction
+      Category = 'File'
+      Caption = '&Save'
+      Hint = 'Save'
+      ImageIndex = 2
+      OnExecute = FileSaveExecute
+      ShortCut = 16467
+    end
+    object FileSaveAs: TAction
+      Category = 'File'
+      Caption = 'Save &As...'
+      Hint = 'Save As'
+      OnExecute = FileSaveAsExecute
+    end
+    object FileClose: TAction
+      Category = 'File'
+      Caption = '&Close'
+      Hint = 'Close'
+      ImageIndex = 3
+      OnExecute = FileCloseExecute
+      ShortCut = 16499
+    end
+    object EditUndo: TEditUndo
+      Category = 'Edit'
+      Caption = '&Undo'
+      Checked = True
+      Enabled = False
+      Hint = 'Undo'
+      ImageIndex = 4
+      ShortCut = 16474
+    end
+    object EditRedo: TAction
+      Category = 'Edit'
+      Caption = '&Redo'
+      Checked = True
+      Enabled = False
+      Hint = 'Redo'
+      ImageIndex = 5
+      ShortCut = 24666
+    end
+    object EditCut: TEditCut
+      Category = 'Edit'
+      Caption = 'Cu&t'
+      Hint = 'Cut'
+      ImageIndex = 6
+      OnExecute = EditCutExecute
+      ShortCut = 16472
+    end
+    object EditCopy: TEditCopy
+      Category = 'Edit'
+      Caption = '&Copy'
+      Hint = 'Copy'
+      ImageIndex = 7
+      OnExecute = EditCopyExecute
+      ShortCut = 16451
+    end
+    object EditPaste: TEditPaste
+      Category = 'Edit'
+      Caption = '&Paste'
+      Hint = 'Paste'
+      ImageIndex = 8
+      OnExecute = EditPasteExecute
+      ShortCut = 16470
+    end
+    object EditDelete: TEditDelete
+      Category = 'Edit'
+      Caption = '&Delete'
+      Hint = 'Delete'
+      ImageIndex = 9
+      OnExecute = EditDeleteExecute
+      ShortCut = 46
+    end
+    object EditSelectAll: TEditSelectAll
+      Category = 'Edit'
+      Caption = 'Select &All'
+      Hint = 'Select All'
+      OnExecute = EditSelectAllExecute
+      ShortCut = 16449
+    end
+    object PictureResize: TAction
+      Category = 'Picture'
+      Caption = 'Resize...'
+    end
+    object PictureResizePaper: TAction
+      Category = 'Picture'
+      Caption = 'Resize Paper...'
+    end
+    object FlipHorizontally: TAction
+      Category = 'PictureFlip'
+      Caption = 'Horizontally'
+      OnExecute = FlipHorizontallyExecute
+    end
+    object FlipVertically: TAction
+      Category = 'PictureFlip'
+      Caption = 'Vertically'
+      OnExecute = FlipVerticallyExecute
+    end
+    object Rotate90: TAction
+      Category = 'PictureRotate'
+      Caption = '90Clockwise'
+      OnExecute = Rotate90Execute
+    end
+    object Rotate180: TAction
+      Category = 'PictureRotate'
+      Caption = '180Clockwise'
+      OnExecute = Rotate180Execute
+    end
+    object Rotate270: TAction
+      Category = 'PictureRotate'
+      Caption = '270Clockwise'
+      OnExecute = Rotate270Execute
+    end
+    object RotateCustom: TAction
+      Category = 'PictureRotate'
+      Caption = 'Custom...'
+      Enabled = False
+    end
+    object ColorsInvert: TAction
+      Category = 'PictureColors'
+      Caption = 'Invert'
+      OnExecute = ColorsInvertExecute
+    end
+    object ColorsGrayscale: TAction
+      Category = 'PictureColors'
+      Caption = 'Grayscale'
+      OnExecute = ColorsGrayscaleExecute
+    end
+    object ColorsDisable: TAction
+      Category = 'PictureColors'
+      Caption = 'Disable'
+      OnExecute = ColorsDisableExecute
+    end
+    object FileExportAsLRS: TAction
+      Category = 'File'
+      Caption = '&Export As *.lrs...'
+      OnExecute = FileExportAsLRSExecute
+    end
+    object MaskRemove: TAction
+      Category = 'Mask'
+      Caption = 'Remove'
+      OnExecute = MaskRemoveExecute
+    end
+    object MaskInvert: TAction
+      Category = 'Mask'
+      Caption = 'Invert'
+      OnExecute = MaskInvertExecute
+    end
+    object PictureClipPaperToMask: TAction
+      Category = 'Picture'
+      Caption = 'Clip Paper To Mask'
+    end
+    object ViewShowGrid: TAction
+      Category = 'View'
+      AutoCheck = True
+      Caption = 'Show Grid'
+      Checked = True
+      OnExecute = ViewShowGridExecute
+    end
+    object ViewShowMask: TAction
+      Category = 'View'
+      AutoCheck = True
+      Caption = 'Show Mask'
+      Checked = True
+      OnExecute = ViewShowMaskExecute
+    end
   end
 end
