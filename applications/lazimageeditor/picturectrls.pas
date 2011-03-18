@@ -521,8 +521,15 @@ begin
 end;
 
 procedure TCustomPictureView.SavePicture(const FileName: String);
+var Pic: TPicture;
 begin
-  Picture.SaveToFile(FileName);
+  Pic := TPicture.Create;
+  //Picture.SaveToFile(UTF8Decode(FileName));
+  Pic.Bitmap.Width := Picture.Width;
+  Pic.Bitmap.Height := Picture.Height;
+  Pic.Bitmap.Canvas.Draw(0,0,Picture);
+  Pic.SaveToFile(FileName);
+  Pic.Free;
 end;
 
 procedure TCustomPictureView.ExportPictureAsLazarusResource(const AFileName,

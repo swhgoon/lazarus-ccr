@@ -23,7 +23,10 @@ begin
   // show new picture dialog
   MainForm.Show;
   //MainForm.FileNewExecute(nil);
-  MainForm.FileNewOnStart;
+  if ParamCount > 0 then
+    MainForm.OpenImageFile(ParamStr(1))
+  else
+    MainForm.FileNewOnStart;
 
   Application.Run;
 end.

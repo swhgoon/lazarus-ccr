@@ -728,8 +728,8 @@ LazarusResources.Add('TMainForm','FORMDATA',[
   +'ht'#2' '#6'Layout'#7#8'tlCenter'#11'ParentColor'#8#0#0#6'TPanel'#15'PanelTo'
   +'lerance2'#4'Left'#3#134#2#6'Height'#2'"'#3'Top'#2#0#5'Width'#2#30#5'Align'#7
   +#6'alLeft'#10'BevelOuter'#7#6'bvNone'#12'ClientHeight'#2'"'#11'ClientWidth'#2
-  +#30#8'TabOrder'#2#5#0#9'TCheckBox'#10'checkFuzzy'#4'Left'#2#4#6'Height'#2#23
-  +#3'Top'#2#9#5'Width'#2#24#8'OnChange'#7#16'checkFuzzyChange'#8'TabOrder'#2#0
+  +#30#8'TabOrder'#2#5#0#9'TCheckBox'#10'checkFuzzy'#4'Left'#2#4#6'Height'#2#19
+  +#3'Top'#2#9#5'Width'#2#20#8'OnChange'#7#16'checkFuzzyChange'#8'TabOrder'#2#0
   +#0#0#0#0#0#6'TPanel'#13'PanelPictures'#4'Left'#2'('#6'Height'#3#5#2#3'Top'#2
   +'i'#5'Width'#3#22#3#5'Align'#7#8'alClient'#10'BevelOuter'#7#9'bvLowered'#8'T'
   +'abOrder'#2#3#0#0#9'TMainMenu'#8'MainMenu'#6'Images'#7#16'ImageListActions'#4

@@ -292,6 +292,7 @@ type
     procedure UpdateAll;
   public
     procedure FileNewOnStart;
+    procedure OpenImageFile(FileName: string);
     property ActivePicture: TPictureBitmap read GetActivePicture;
     property ActivePicturePage: TPicturePage read GetActivePicturePage;
     property ActivePictureEdit: TPictureEdit read GetActivePictureEdit;
@@ -1023,7 +1024,7 @@ end;
 
 procedure TMainForm.FileNewOnStart;
 begin
-  Pictures.New(640, 480, clTeal);
+  Pictures.New(520, 390, $F1EFDA);
 end;
 
 procedure TMainForm.FileOpenExecute(Sender: TObject);
@@ -1033,8 +1034,14 @@ begin
   if OpenPictureDialog.Execute then
   begin
     for I := 0 to Pred(OpenPictureDialog.Files.Count) do
-      Pictures.Load(OpenPictureDialog.Files[I]);
+      //Pictures.Load(OpenPictureDialog.Files[I]);
+      OpenImageFile(OpenPictureDialog.Files[I]);
   end;
+end;
+
+procedure TMainForm.OpenImageFile(FileName: string);
+begin
+  Pictures.Load(FileName);
 end;
 
 procedure TMainForm.FileSaveAsExecute(Sender: TObject);
@@ -1153,9 +1160,9 @@ begin
   if not Pictures.CanEdit then
     Exit;
   ActivePictureEdit.SelectAll;
-  MenuItemCopy.Enabled:=True;
-  MenuItemPaste.Enabled:=True;
-  MenuItemDelete.Enabled:=True;
+  MenuItemCopy.Enabled := True;
+  MenuItemPaste.Enabled := True;
+  MenuItemDelete.Enabled := True;
   MenuItemCopy.OnClick := @EditCopyExecute;
   MenuItemPaste.OnClick := @EditPasteExecute;
   MenuItemDelete.OnClick := @EditDeleteExecute;

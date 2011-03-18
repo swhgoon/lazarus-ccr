@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Controls, Graphics, ExtCtrls, ComCtrls,
-  Forms, PictureCtrls;
+  Forms, PictureCtrls, RGBDrawUtils;
   
 type
 
@@ -235,20 +235,25 @@ end;
 procedure TPictureManager.Load(const FileName: String);
 var
   NewPage: TPicturePage;
-  Icon: TIcon;
+  Icon: TCustomRGBBitmapCore;
   I: Integer;
+  Pic: TPicture;
 begin
-  if SameText(ExtractFileExt(FileName), '.ico') then
-  begin
-    Icon := TIcon.Create;
+  //if SameText(ExtractFileExt(FileName), '.ico') then
+  //begin
+    Icon := TCustomRGBBitmapCore.Create;
     try
       // First image in std bitmap
-      Icon.LoadFromFile(FileName);
-      
+//      Icon.LoadFromFile(FileName);
+      Pic := TPicture.Create;
+      Pic.LoadFromFile(FileName);
+      Icon.Width:=Pic.Width;
+      Icon.Height:=Pic.Height;
+      Icon.Canvas.Draw(0,0,Pic.Graphic);
       // other images
-      for I := 0 to Pred(Icon.Count) do
+      //for I := 0 to Pred(Icon.Count) do
       begin
-        Icon.Current := I;
+      //  Icon.Current := I;
         NewPage := CreatePage(Icon);
         NewPage.Parent := Self;
         ActivePage := NewPage;
@@ -257,15 +262,16 @@ begin
       end;
     finally
       Icon.Free;
+      Pic.Free;
     end;
-  end
+  {end
   else
   begin
     NewPage := CreatePage(FileName);
     NewPage.Parent := Self;
     ActivePage := NewPage;
     Change;
-  end;
+  end; }
 end;
 
 procedure TPictureManager.Save;

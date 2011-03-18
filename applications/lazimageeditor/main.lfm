@@ -1281,9 +1281,9 @@
         TabOrder = 5
         object checkFuzzy: TCheckBox
           Left = 4
-          Height = 23
+          Height = 19
           Top = 9
-          Width = 24
+          Width = 20
           OnChange = checkFuzzyChange
           TabOrder = 0
         end

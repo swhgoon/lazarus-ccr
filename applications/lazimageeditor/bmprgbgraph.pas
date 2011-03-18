@@ -189,7 +189,7 @@ begin
 end;
 
 constructor TRGB32Bitmap.CreateFromBitmap(ABitmap: TRasterImage);
-var
+{var
   Image: TLazIntfImage;
 begin
   Image := ABitmap.CreateIntfImage;
@@ -198,6 +198,10 @@ begin
   finally
     Image.Free;
   end;
+end;          }
+begin
+  Create(ABitmap.Width, ABitmap.Height);
+  Canvas.Draw(0,0,ABitmap);
 end;
 
 destructor TRGB32Bitmap.Destroy;
