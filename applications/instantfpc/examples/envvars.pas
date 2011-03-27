@@ -1,5 +1,5 @@
-#!/usr/bin/env instantfpc -Mobjfpc -Sh
-
+#!/usr/bin/env instantfpc
+{$mode objfpc}{$H+}
 uses
   SysUtils;
 var
