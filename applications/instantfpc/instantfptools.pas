@@ -80,8 +80,15 @@ function IsCacheValid(Src: TStringList; const CachedSrcFile,
   CachedExeFile: string): boolean;
 var
   OldSrc: TStringList;
+  i: Integer;
+  p: String;
 begin
   Result:=false;
+  for i:=1 to Paramcount do begin
+    p:=ParamStr(i);
+    if (p='') or (p[1]<>'-') then break;
+    if p='-B' then exit; // always compile
+  end;
   if not FileExists(CachedSrcFile) then exit;
   if not FileExists(CachedExeFile) then exit;
   OldSrc:=TStringList.Create;

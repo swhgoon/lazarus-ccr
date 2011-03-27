@@ -59,7 +59,7 @@ begin
       writeln('instantfpc -v');
       writeln('      Print version and exit.');
       writeln;
-      writeln('instantfpc [fpc compiler options] <source file> [program parameters]');
+      writeln('instantfpc [compiler options] <source file> [program parameters]');
       writeln('      Compiles source and runs program.');
       writeln('      Source is compared with the cache. If cache is not valid then');
       writeln('      source is copied to cache with the shebang line commented and');
@@ -67,6 +67,8 @@ begin
       writeln('      If compilation fails the fpc output is written to stdout and');
       writeln('      instantfpc exits with error code 1.');
       writeln('      If compilation was successful the program is executed.');
+      writeln('      If the compiler options contains -B the program is always');
+      writeln('      compiled.');
       writeln;
       writeln('instantfpc --get-cache');
       writeln('      Prints cache directory to stdout.');
