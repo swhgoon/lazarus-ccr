@@ -137,6 +137,7 @@ var
   Proc: TProcess;
   Count: Int64;
   ss: TStringStream;
+  buf : Array[1..4096] of byte;
 begin
   Compiler:=GetCompiler;
   CompParams:=GetCompilerParameters(CacheFilename,OutputFilename);
@@ -152,7 +153,9 @@ begin
   Proc.Execute;
   ss:=TStringStream.Create('');
   repeat
-    Count:=ss.CopyFrom(Proc.Output,4096);
+    Count:=Proc.Output.Read(Buf,4096);
+    if Count>0 then
+      ss.write(buf,count);
   until Count=0;
   if (not Proc.WaitOnExit) or (Proc.ExitStatus<>0) then begin
     write(ss.DataString);
