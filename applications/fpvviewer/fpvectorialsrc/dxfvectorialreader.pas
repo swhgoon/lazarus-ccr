@@ -82,6 +82,8 @@ type
     procedure ReadENTITIES_DIMENSION(ATokens: TDXFTokens; AData: TvVectorialDocument);
     procedure ReadENTITIES_ELLIPSE(ATokens: TDXFTokens; AData: TvVectorialDocument);
     procedure ReadENTITIES_TEXT(ATokens: TDXFTokens; AData: TvVectorialDocument);
+    procedure ReadENTITIES_LWPOLYLINE(ATokens: TDXFTokens; AData: TvVectorialDocument);
+    procedure ReadENTITIES_SPLINE(ATokens: TDXFTokens; AData: TvVectorialDocument);
     function  GetCoordinateValue(AStr: shortstring): Double;
   public
     { General reading methods }
@@ -101,11 +103,17 @@ const
   // Items in the HEADER section
 
   // $ACADVER
-  DXF_AUTOCAD_R10         = 'AC1006'; // 1988
-  DXF_AUTOCAD_R11_and_R12 = 'AC1009'; // 1990
+  DXF_AUTOCAD_2010        = 'AC1024'; // AutoCAD 2011 and 2012 too
+  DXF_AUTOCAD_2007        = 'AC1021'; // AutoCAD 2008 and 2009 too
+  DXF_AUTOCAD_2004        = 'AC1018'; // AutoCAD 2005 and 2006 too
+  DXF_AUTOCAD_2000        = 'AC1015'; // 1999  In some docs it is proposed as AC1500, but in practice I found AC1015
+                                      // http://www.autodesk.com/techpubs/autocad/acad2000/dxf/
+                                      // AutoCAD 2000i and 2002 too
+  DXF_AUTOCAD_R14         = 'AC1014'; // 1997  http://www.autodesk.com/techpubs/autocad/acadr14/dxf/index.htm
   DXF_AUTOCAD_R13         = 'AC1012'; // 1994
-  DXF_AUTOCAD_R14         = 'AC1009'; // 1997  http://www.autodesk.com/techpubs/autocad/acadr14/dxf/index.htm
-  DXF_AUTOCAD_2000        = 'AC1500'; // 1999  http://www.autodesk.com/techpubs/autocad/acad2000/dxf/
+  DXF_AUTOCAD_R11_and_R12 = 'AC1009'; // 1990
+  DXF_AUTOCAD_R10         = 'AC1006'; // 1988
+  DXF_AUTOCAD_R9          = 'AC1004';
 
   // Group Codes for ENTITIES
   DXF_ENTITIES_TYPE = 0;
@@ -429,6 +437,8 @@ begin
     else if CurToken.StrValue = 'ELLIPSE' then ReadENTITIES_ELLIPSE(CurToken.Childs, AData)
     else if CurToken.StrValue = 'LINE' then ReadENTITIES_LINE(CurToken.Childs, AData)
     else if CurToken.StrValue = 'TEXT' then ReadENTITIES_TEXT(CurToken.Childs, AData)
+//    else if CurToken.StrValue = 'LWPOLYLINE' then ReadENTITIES_LWPOLYLINE(CurToken.Childs, AData)
+    else if CurToken.StrValue = 'SPLINE' then ReadENTITIES_SPLINE(CurToken.Childs, AData)
     else
     begin
       // ...
@@ -876,6 +886,127 @@ begin
 
   //
   AData.AddText(PosX, PosY, PosZ, '', Round(FontSize), Str);
+end;
+
+{$define FPVECTORIALDEBUG_LWPOLYLINE}
+procedure TvDXFVectorialReader.ReadENTITIES_LWPOLYLINE(ATokens: TDXFTokens;
+  AData: TvVectorialDocument);
+var
+  CurToken: TDXFToken;
+  i, curPoint: Integer;
+  // LINE
+  LineX, LineY, LineZ: array of Double;
+begin
+  curPoint := -1;
+
+  for i := 0 to ATokens.Count - 1 do
+  begin
+    // Now read and process the item name
+    CurToken := TDXFToken(ATokens.Items[i]);
+
+    // Avoid an exception by previously checking if the conversion can be made
+    if CurToken.GroupCode in [10, 20, 30, 11, 21, 31] then
+    begin
+      CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
+    end;
+
+    // Loads the coordinates
+    // With Position fixing for documents with negative coordinates
+    case CurToken.GroupCode of
+      10:
+      begin
+        // Starting a new point
+        Inc(curPoint);
+        SetLength(LineX, curPoint+1);
+        SetLength(LineY, curPoint+1);
+//      SetLength(LineZ, curPoint+1);
+
+        LineX[curPoint] := CurToken.FloatValue - DOC_OFFSET.X;
+      end;
+      20: LineY[curPoint] := CurToken.FloatValue - DOC_OFFSET.Y;
+//      30: LineZ[curPoint] := CurToken.FloatValue;
+    end;
+  end;
+
+  // And now write it
+  if curPoint >= 0 then // otherwise the polyline is empty of points
+  begin
+    AData.StartPath(LineX[0], LineY[0]);
+    {$ifdef FPVECTORIALDEBUG_LWPOLYLINE}
+     Write(Format('LWPOLYLINE %f,%f', [LineX[0], LineY[0]]));
+    {$endif}
+    for i := 1 to curPoint do
+    begin
+      AData.AddLineToPath(LineX[i], LineX[i]);
+      {$ifdef FPVECTORIALDEBUG_LWPOLYLINE}
+       Write(Format(' %f,%f', [LineX[i], LineX[i]]));
+      {$endif}
+    end;
+    {$ifdef FPVECTORIALDEBUG_LWPOLYLINE}
+     WriteLn('');
+    {$endif}
+    AData.EndPath();
+  end;
+end;
+
+procedure TvDXFVectorialReader.ReadENTITIES_SPLINE(ATokens: TDXFTokens;
+  AData: TvVectorialDocument);
+var
+  CurToken: TDXFToken;
+  i, curPoint: Integer;
+  // LINE
+  LineX, LineY, LineZ: array of Double;
+begin
+  curPoint := -1;
+
+  for i := 0 to ATokens.Count - 1 do
+  begin
+    // Now read and process the item name
+    CurToken := TDXFToken(ATokens.Items[i]);
+
+    // Avoid an exception by previously checking if the conversion can be made
+    if CurToken.GroupCode in [10, 20, 30, 11, 21, 31] then
+    begin
+      CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
+    end;
+
+    // Loads the coordinates
+    // With Position fixing for documents with negative coordinates
+    case CurToken.GroupCode of
+      10:
+      begin
+        // Starting a new point
+        Inc(curPoint);
+        SetLength(LineX, curPoint+1);
+        SetLength(LineY, curPoint+1);
+//      SetLength(LineZ, curPoint+1);
+
+        LineX[curPoint] := CurToken.FloatValue - DOC_OFFSET.X;
+      end;
+      20: LineY[curPoint] := CurToken.FloatValue - DOC_OFFSET.Y;
+//      30: LineZ[curPoint] := CurToken.FloatValue;
+    end;
+  end;
+
+  // And now write it
+  if curPoint >= 0 then // otherwise the polyline is empty of points
+  begin
+    AData.StartPath(LineX[0], LineY[0]);
+    {$ifdef FPVECTORIALDEBUG_LWPOLYLINE}
+     Write(Format('SPLINE %f,%f', [LineX[0], LineY[0]]));
+    {$endif}
+    for i := 1 to curPoint do
+    begin
+      AData.AddLineToPath(LineX[i], LineX[i]);
+      {$ifdef FPVECTORIALDEBUG_LWPOLYLINE}
+       Write(Format(' %f,%f', [LineX[i], LineX[i]]));
+      {$endif}
+    end;
+    {$ifdef FPVECTORIALDEBUG_LWPOLYLINE}
+     WriteLn('');
+    {$endif}
+    AData.EndPath();
+  end;
 end;
 
 function TvDXFVectorialReader.GetCoordinateValue(AStr: shortstring): Double;
