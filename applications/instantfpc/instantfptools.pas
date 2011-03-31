@@ -5,7 +5,10 @@ unit InstantFPTools;
 interface
 
 uses
-  Classes, SysUtils, Process, unix;
+  {$IFNDEF MSWINDOWS}
+  Unix,
+  {$ENDIF}
+  Classes, SysUtils, Process;
 
 procedure CheckSourceName(const Filename: string);
 procedure CommentShebang(Src: TStringList);
@@ -179,7 +182,7 @@ begin
     if (p<>'') and (p[1]='-') then
       Result:=p; // copy compile params from the script
   end;
-  AddParam('-o'+OutputFilename,Result);
+  AddParam('-o'+OutputFilename {$IFDEF MSWINDOWS} + '.exe' {$ENDIF},Result);
   AddParam(SrcFilename,Result);
 end;
 
@@ -195,7 +198,12 @@ begin
     end;
     inc(p);
   end;
-  Halt(FpExecV(Filename,p));
+  {$IFDEF MSWINDOWS}
+    Inc(p); //lose the first command-line argument with the the script filename
+    Halt(ExecuteProcess(Filename,[p^]));
+  {$ELSE}
+    Halt(FpExecV(Filename,p));
+  {$ENDIF}
 end;
 
 end.
