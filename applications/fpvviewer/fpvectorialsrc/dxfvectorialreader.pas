@@ -72,6 +72,9 @@ type
     INSBASE, EXTMIN, EXTMAX, LIMMIN, LIMMAX: T3DPoint;
     // Calculated HEADER data
     DOC_OFFSET: T3DPoint;
+    // For building the POLYLINE objects which is composed of multiple records
+    IsReadingPolyline: Boolean;
+    PolylineX, PolylineY: array of Double;
     //
     function  SeparateString(AString: string; ASeparator: Char): T10Strings;
     procedure ReadHEADER(ATokens: TDXFTokens; AData: TvVectorialDocument);
@@ -84,6 +87,9 @@ type
     procedure ReadENTITIES_TEXT(ATokens: TDXFTokens; AData: TvVectorialDocument);
     procedure ReadENTITIES_LWPOLYLINE(ATokens: TDXFTokens; AData: TvVectorialDocument);
     procedure ReadENTITIES_SPLINE(ATokens: TDXFTokens; AData: TvVectorialDocument);
+    procedure ReadENTITIES_POLYLINE(ATokens: TDXFTokens; AData: TvVectorialDocument);
+    procedure ReadENTITIES_VERTEX(ATokens: TDXFTokens; AData: TvVectorialDocument);
+    procedure ReadENTITIES_SEQEND(ATokens: TDXFTokens; AData: TvVectorialDocument);
     function  GetCoordinateValue(AStr: shortstring): Double;
   public
     { General reading methods }
@@ -428,6 +434,8 @@ var
   i: Integer;
   CurToken: TDXFToken;
 begin
+  IsReadingPolyline := False;
+
   for i := 0 to ATokens.Count - 1 do
   begin
     CurToken := TDXFToken(ATokens.Items[i]);
@@ -437,8 +445,20 @@ begin
     else if CurToken.StrValue = 'ELLIPSE' then ReadENTITIES_ELLIPSE(CurToken.Childs, AData)
     else if CurToken.StrValue = 'LINE' then ReadENTITIES_LINE(CurToken.Childs, AData)
     else if CurToken.StrValue = 'TEXT' then ReadENTITIES_TEXT(CurToken.Childs, AData)
-//    else if CurToken.StrValue = 'LWPOLYLINE' then ReadENTITIES_LWPOLYLINE(CurToken.Childs, AData)
+    else if CurToken.StrValue = 'LWPOLYLINE' then ReadENTITIES_LWPOLYLINE(CurToken.Childs, AData)
     else if CurToken.StrValue = 'SPLINE' then ReadENTITIES_SPLINE(CurToken.Childs, AData)
+    // A Polyline can have multiple child objects
+    else if CurToken.StrValue = 'POLYLINE' then
+    begin
+      IsReadingPolyline := True;
+      ReadENTITIES_POLYLINE(CurToken.Childs, AData);
+    end
+    else if CurToken.StrValue = 'VERTEX' then ReadENTITIES_VERTEX(CurToken.Childs, AData)
+    else if CurToken.StrValue = 'SEQEND' then
+    begin
+      ReadENTITIES_SEQEND(CurToken.Childs, AData);
+      IsReadingPolyline := False;
+    end
     else
     begin
       // ...
@@ -888,7 +908,7 @@ begin
   AData.AddText(PosX, PosY, PosZ, '', Round(FontSize), Str);
 end;
 
-{$define FPVECTORIALDEBUG_LWPOLYLINE}
+//{$define FPVECTORIALDEBUG_LWPOLYLINE}
 procedure TvDXFVectorialReader.ReadENTITIES_LWPOLYLINE(ATokens: TDXFTokens;
   AData: TvVectorialDocument);
 var
@@ -949,13 +969,14 @@ begin
   end;
 end;
 
+{$define FPVECTORIALDEBUG_SPLINE}
 procedure TvDXFVectorialReader.ReadENTITIES_SPLINE(ATokens: TDXFTokens;
   AData: TvVectorialDocument);
 var
   CurToken: TDXFToken;
   i, curPoint: Integer;
   // LINE
-  LineX, LineY, LineZ: array of Double;
+  LineX, LineY{, LineZ}: array of Double;
 begin
   curPoint := -1;
 
@@ -992,17 +1013,86 @@ begin
   if curPoint >= 0 then // otherwise the polyline is empty of points
   begin
     AData.StartPath(LineX[0], LineY[0]);
-    {$ifdef FPVECTORIALDEBUG_LWPOLYLINE}
+    {$ifdef FPVECTORIALDEBUG_SPLINE}
      Write(Format('SPLINE %f,%f', [LineX[0], LineY[0]]));
     {$endif}
     for i := 1 to curPoint do
     begin
       AData.AddLineToPath(LineX[i], LineX[i]);
-      {$ifdef FPVECTORIALDEBUG_LWPOLYLINE}
+      {$ifdef FPVECTORIALDEBUG_SPLINE}
        Write(Format(' %f,%f', [LineX[i], LineX[i]]));
       {$endif}
     end;
-    {$ifdef FPVECTORIALDEBUG_LWPOLYLINE}
+    {$ifdef FPVECTORIALDEBUG_SPLINE}
+     WriteLn('');
+    {$endif}
+    AData.EndPath();
+  end;
+end;
+
+procedure TvDXFVectorialReader.ReadENTITIES_POLYLINE(ATokens: TDXFTokens;
+  AData: TvVectorialDocument);
+begin
+  SetLength(PolylineX, 0);
+  SetLength(PolylineY, 0);
+end;
+
+procedure TvDXFVectorialReader.ReadENTITIES_VERTEX(ATokens: TDXFTokens;
+  AData: TvVectorialDocument);
+var
+  CurToken: TDXFToken;
+  i, curPoint: Integer;
+begin
+  if not IsReadingPolyline then raise Exception.Create('[TvDXFVectorialReader.ReadENTITIES_VERTEX] Unexpected record: VERTEX before a POLYLINE');
+
+  curPoint := Length(PolylineX);
+  Inc(curPoint);
+  SetLength(PolylineX, curPoint+1);
+  SetLength(PolylineY, curPoint+1);
+
+  for i := 0 to ATokens.Count - 1 do
+  begin
+    // Now read and process the item name
+    CurToken := TDXFToken(ATokens.Items[i]);
+
+    // Avoid an exception by previously checking if the conversion can be made
+    if CurToken.GroupCode in [10, 20, 30] then
+    begin
+      CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
+    end;
+
+    // Loads the coordinates
+    // With Position fixing for documents with negative coordinates
+    case CurToken.GroupCode of
+      10: PolylineX[curPoint] := CurToken.FloatValue - DOC_OFFSET.X;
+      20: PolylineY[curPoint] := CurToken.FloatValue - DOC_OFFSET.Y;
+    end;
+  end;
+end;
+
+{$define FPVECTORIALDEBUG_POLYLINE}
+procedure TvDXFVectorialReader.ReadENTITIES_SEQEND(ATokens: TDXFTokens;
+  AData: TvVectorialDocument);
+var
+  i: Integer;
+begin
+  if not IsReadingPolyline then raise Exception.Create('[TvDXFVectorialReader.ReadENTITIES_SEQEND] Unexpected record: SEQEND before a POLYLINE');
+
+  // Write the Polyline to the document
+  if Length(PolylineX) >= 0 then // otherwise the polyline is empty of points
+  begin
+    AData.StartPath(PolylineX[0], PolylineY[0]);
+    {$ifdef FPVECTORIALDEBUG_POLYLINE}
+     Write(Format('POLYLINE %f,%f', [PolylineX[0], PolylineY[0]]));
+    {$endif}
+    for i := 1 to Length(PolylineX) do
+    begin
+      AData.AddLineToPath(PolylineX[i], PolylineY[i]);
+      {$ifdef FPVECTORIALDEBUG_POLYLINE}
+       Write(Format(' %f,%f', [PolylineX[i], PolylineY[i]]));
+      {$endif}
+    end;
+    {$ifdef FPVECTORIALDEBUG_POLYLINE}
      WriteLn('');
     {$endif}
     AData.EndPath();
