@@ -76,8 +76,8 @@ object frmFPVViewer: TfrmFPVViewer
     object pageViewer: TPage
     end
     object Page2: TPage
-      ClientWidth = 264
-      ClientHeight = 312
+      ClientWidth = 528
+      ClientHeight = 624
       object DXFTreeView: TTreeView
         Left = 8
         Height = 313

@@ -1056,7 +1056,6 @@ begin
   if not IsReadingPolyline then raise Exception.Create('[TvDXFVectorialReader.ReadENTITIES_VERTEX] Unexpected record: VERTEX before a POLYLINE');
 
   curPoint := Length(Polyline);
-  Inc(curPoint);
   SetLength(Polyline, curPoint+1);
 
   for i := 0 to ATokens.Count - 1 do
@@ -1094,7 +1093,7 @@ begin
     {$ifdef FPVECTORIALDEBUG_POLYLINE}
      Write(Format('POLYLINE %f,%f', [Polyline[0].X, Polyline[0].Y]));
     {$endif}
-    for i := 1 to Length(Polyline) do
+    for i := 1 to Length(Polyline)-1 do
     begin
       AData.AddLineToPath(Polyline[i].X, Polyline[i].Y);
       {$ifdef FPVECTORIALDEBUG_POLYLINE}

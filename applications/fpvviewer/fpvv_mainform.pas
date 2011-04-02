@@ -75,10 +75,12 @@ begin
     if Vec.Width * spinScale.Value > FPVVIEWER_MAX_IMAGE_SIZE then CanvasSize.X := FPVVIEWER_MAX_IMAGE_SIZE
     else if Vec.Width < FPVVIEWER_MIN_IMAGE_SIZE then CanvasSize.X := Drawer.Width
     else CanvasSize.X := Round(Vec.Width * spinScale.Value);
+    if CanvasSize.X < Drawer.Width then CanvasSize.X := Drawer.Width;
 
     if Vec.Height * spinScale.Value > FPVVIEWER_MAX_IMAGE_SIZE then CanvasSize.Y := FPVVIEWER_MAX_IMAGE_SIZE
     else  if Vec.Height < FPVVIEWER_MIN_IMAGE_SIZE then CanvasSize.Y := Drawer.Height
     else CanvasSize.Y := Round(Vec.Height * spinScale.Value);
+    if CanvasSize.Y < Drawer.Height then CanvasSize.Y := Drawer.Height;
 
     Drawer.Drawing.Width := CanvasSize.X;
     Drawer.Drawing.Height := CanvasSize.Y;
