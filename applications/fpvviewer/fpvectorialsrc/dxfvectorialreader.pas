@@ -50,6 +50,10 @@ type
     Destructor Destroy; override;
   end;
 
+  TPolylineElement = record
+    X, Y: Double;
+  end;
+
   TSPLineElement = record
     X, Y: Double;
     KnotValue: Integer;
@@ -83,7 +87,7 @@ type
     DOC_OFFSET: T3DPoint; // The DOC_OFFSET compensates for documents with huge coordinates
     // For building the POLYLINE objects which is composed of multiple records
     IsReadingPolyline: Boolean;
-    PolylineX, PolylineY: array of Double;
+    Polyline: array of TPolylineElement;
     //
     function  SeparateString(AString: string; ASeparator: Char): T10Strings;
     procedure ReadHEADER(ATokens: TDXFTokens; AData: TvVectorialDocument);
@@ -99,6 +103,8 @@ type
     procedure ReadENTITIES_POLYLINE(ATokens: TDXFTokens; AData: TvVectorialDocument);
     procedure ReadENTITIES_VERTEX(ATokens: TDXFTokens; AData: TvVectorialDocument);
     procedure ReadENTITIES_SEQEND(ATokens: TDXFTokens; AData: TvVectorialDocument);
+    procedure ReadENTITIES_MTEXT(ATokens: TDXFTokens; AData: TvVectorialDocument);
+    procedure ReadENTITIES_POINT(ATokens: TDXFTokens; AData: TvVectorialDocument);
     function  GetCoordinateValue(AStr: shortstring): Double;
   public
     { General reading methods }
@@ -456,6 +462,8 @@ begin
     else if CurToken.StrValue = 'TEXT' then ReadENTITIES_TEXT(CurToken.Childs, AData)
     else if CurToken.StrValue = 'LWPOLYLINE' then ReadENTITIES_LWPOLYLINE(CurToken.Childs, AData)
     else if CurToken.StrValue = 'SPLINE' then ReadENTITIES_SPLINE(CurToken.Childs, AData)
+    else if CurToken.StrValue = 'POINT' then ReadENTITIES_POINT(CurToken.Childs, AData)
+    else if CurToken.StrValue = 'MTEXT' then ReadENTITIES_MTEXT(CurToken.Childs, AData)
     // A Polyline can have multiple child objects
     else if CurToken.StrValue = 'POLYLINE' then
     begin
@@ -1036,8 +1044,7 @@ end;
 procedure TvDXFVectorialReader.ReadENTITIES_POLYLINE(ATokens: TDXFTokens;
   AData: TvVectorialDocument);
 begin
-  SetLength(PolylineX, 0);
-  SetLength(PolylineY, 0);
+  SetLength(Polyline, 0);
 end;
 
 procedure TvDXFVectorialReader.ReadENTITIES_VERTEX(ATokens: TDXFTokens;
@@ -1048,10 +1055,9 @@ var
 begin
   if not IsReadingPolyline then raise Exception.Create('[TvDXFVectorialReader.ReadENTITIES_VERTEX] Unexpected record: VERTEX before a POLYLINE');
 
-  curPoint := Length(PolylineX);
+  curPoint := Length(Polyline);
   Inc(curPoint);
-  SetLength(PolylineX, curPoint+1);
-  SetLength(PolylineY, curPoint+1);
+  SetLength(Polyline, curPoint+1);
 
   for i := 0 to ATokens.Count - 1 do
   begin
@@ -1067,8 +1073,8 @@ begin
     // Loads the coordinates
     // With Position fixing for documents with negative coordinates
     case CurToken.GroupCode of
-      10: PolylineX[curPoint] := CurToken.FloatValue - DOC_OFFSET.X;
-      20: PolylineY[curPoint] := CurToken.FloatValue - DOC_OFFSET.Y;
+      10: Polyline[curPoint].X := CurToken.FloatValue - DOC_OFFSET.X;
+      20: Polyline[curPoint].Y := CurToken.FloatValue - DOC_OFFSET.Y;
     end;
   end;
 end;
@@ -1082,17 +1088,17 @@ begin
   if not IsReadingPolyline then raise Exception.Create('[TvDXFVectorialReader.ReadENTITIES_SEQEND] Unexpected record: SEQEND before a POLYLINE');
 
   // Write the Polyline to the document
-  if Length(PolylineX) >= 0 then // otherwise the polyline is empty of points
+  if Length(Polyline) >= 0 then // otherwise the polyline is empty of points
   begin
-    AData.StartPath(PolylineX[0], PolylineY[0]);
+    AData.StartPath(Polyline[0].X, Polyline[0].Y);
     {$ifdef FPVECTORIALDEBUG_POLYLINE}
-     Write(Format('POLYLINE %f,%f', [PolylineX[0], PolylineY[0]]));
+     Write(Format('POLYLINE %f,%f', [Polyline[0].X, Polyline[0].Y]));
     {$endif}
-    for i := 1 to Length(PolylineX) do
+    for i := 1 to Length(Polyline) do
     begin
-      AData.AddLineToPath(PolylineX[i], PolylineY[i]);
+      AData.AddLineToPath(Polyline[i].X, Polyline[i].Y);
       {$ifdef FPVECTORIALDEBUG_POLYLINE}
-       Write(Format(' %f,%f', [PolylineX[i], PolylineY[i]]));
+       Write(Format(' %f,%f', [Polyline[i].X, Polyline[i].Y]));
       {$endif}
     end;
     {$ifdef FPVECTORIALDEBUG_POLYLINE}
@@ -1100,6 +1106,84 @@ begin
     {$endif}
     AData.EndPath();
   end;
+end;
+
+procedure TvDXFVectorialReader.ReadENTITIES_MTEXT(ATokens: TDXFTokens;
+  AData: TvVectorialDocument);
+var
+  CurToken: TDXFToken;
+  i: Integer;
+  PosX: Double = 0.0;
+  PosY: Double = 0.0;
+  PosZ: Double = 0.0;
+  FontSize: Double = 10.0;
+  Str: string = '';
+begin
+  for i := 0 to ATokens.Count - 1 do
+  begin
+    // Now read and process the item name
+    CurToken := TDXFToken(ATokens.Items[i]);
+
+    // Avoid an exception by previously checking if the conversion can be made
+    if CurToken.GroupCode in [10, 20, 30, 40] then
+    begin
+      CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
+    end;
+
+    case CurToken.GroupCode of
+      1:  Str := CurToken.StrValue;
+      10: PosX := CurToken.FloatValue;
+      20: PosY := CurToken.FloatValue;
+      30: PosZ := CurToken.FloatValue;
+      40: FontSize := CurToken.FloatValue;
+    end;
+  end;
+
+  // Position fixing for documents with negative coordinates
+  PosX := PosX - DOC_OFFSET.X;
+  PosY := PosY - DOC_OFFSET.Y;
+
+  //
+  AData.AddText(PosX, PosY, PosZ, '', Round(FontSize), Str);
+end;
+
+procedure TvDXFVectorialReader.ReadENTITIES_POINT(ATokens: TDXFTokens;
+  AData: TvVectorialDocument);
+var
+  CurToken: TDXFToken;
+  i: Integer;
+  CircleCenterX, CircleCenterY, CircleCenterZ, CircleRadius: Double;
+begin
+  CircleCenterX := 0.0;
+  CircleCenterY := 0.0;
+  CircleCenterZ := 0.0;
+  CircleRadius := 1.0;
+
+  for i := 0 to ATokens.Count - 1 do
+  begin
+    // Now read and process the item name
+    CurToken := TDXFToken(ATokens.Items[i]);
+
+    // Avoid an exception by previously checking if the conversion can be made
+    if CurToken.GroupCode in [10, 20, 30, 40] then
+    begin
+      CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
+    end;
+
+    case CurToken.GroupCode of
+      10: CircleCenterX := CurToken.FloatValue;
+      20: CircleCenterY := CurToken.FloatValue;
+      30: CircleCenterZ := CurToken.FloatValue;
+//      40: CircleRadius := CurToken.FloatValue;
+    end;
+  end;
+
+  // Position fixing for documents with negative coordinates
+  CircleCenterX := CircleCenterX - DOC_OFFSET.X;
+  CircleCenterY := CircleCenterY - DOC_OFFSET.Y;
+
+  AData.AddCircle(CircleCenterX, CircleCenterY,
+    CircleCenterZ, CircleRadius);
 end;
 
 function TvDXFVectorialReader.GetCoordinateValue(AStr: shortstring): Double;

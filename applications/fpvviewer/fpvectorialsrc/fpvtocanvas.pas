@@ -94,7 +94,7 @@ end;
 
   DrawFPVectorialToCanvas(ASource, ADest, 0, ASource.Height, 1.0, -1.0);
 }
-{.$define FPVECTORIAL_TOCANVAS_DEBUG}
+{$define FPVECTORIAL_TOCANVAS_DEBUG}
 procedure DrawFPVectorialToCanvas(ASource: TvVectorialDocument;
   {$ifdef USE_LCL_CANVAS}
   ADest: TCanvas;
