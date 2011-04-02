@@ -50,6 +50,15 @@ type
     Destructor Destroy; override;
   end;
 
+  TSPLineElement = record
+    X, Y: Double;
+    KnotValue: Integer;
+  end;
+
+  TLWPOLYLINEElement = record
+    X, Y: Double;
+  end;
+
   { TDXFTokenizer }
 
   TDXFTokenizer = class
@@ -71,7 +80,7 @@ type
     ANGDIR: Integer;
     INSBASE, EXTMIN, EXTMAX, LIMMIN, LIMMAX: T3DPoint;
     // Calculated HEADER data
-    DOC_OFFSET: T3DPoint;
+    DOC_OFFSET: T3DPoint; // The DOC_OFFSET compensates for documents with huge coordinates
     // For building the POLYLINE objects which is composed of multiple records
     IsReadingPolyline: Boolean;
     PolylineX, PolylineY: array of Double;
@@ -908,14 +917,14 @@ begin
   AData.AddText(PosX, PosY, PosZ, '', Round(FontSize), Str);
 end;
 
-//{$define FPVECTORIALDEBUG_LWPOLYLINE}
+{.$define FPVECTORIALDEBUG_LWPOLYLINE}
 procedure TvDXFVectorialReader.ReadENTITIES_LWPOLYLINE(ATokens: TDXFTokens;
   AData: TvVectorialDocument);
 var
   CurToken: TDXFToken;
   i, curPoint: Integer;
   // LINE
-  LineX, LineY, LineZ: array of Double;
+  LWPolyline: array of TLWPOLYLINEElement;
 begin
   curPoint := -1;
 
@@ -937,29 +946,26 @@ begin
       begin
         // Starting a new point
         Inc(curPoint);
-        SetLength(LineX, curPoint+1);
-        SetLength(LineY, curPoint+1);
-//      SetLength(LineZ, curPoint+1);
+        SetLength(LWPolyline, curPoint+1);
 
-        LineX[curPoint] := CurToken.FloatValue - DOC_OFFSET.X;
+        LWPolyline[curPoint].X := CurToken.FloatValue - DOC_OFFSET.X;
       end;
-      20: LineY[curPoint] := CurToken.FloatValue - DOC_OFFSET.Y;
-//      30: LineZ[curPoint] := CurToken.FloatValue;
+      20: LWPolyline[curPoint].Y := CurToken.FloatValue - DOC_OFFSET.Y;
     end;
   end;
 
   // And now write it
   if curPoint >= 0 then // otherwise the polyline is empty of points
   begin
-    AData.StartPath(LineX[0], LineY[0]);
+    AData.StartPath(LWPolyline[0].X, LWPolyline[0].Y);
     {$ifdef FPVECTORIALDEBUG_LWPOLYLINE}
-     Write(Format('LWPOLYLINE %f,%f', [LineX[0], LineY[0]]));
+    Write(Format('LWPOLYLINE ID=%d %f,%f', [AData.PathCount-1, LWPolyline[0].X, LWPolyline[0].Y]));
     {$endif}
     for i := 1 to curPoint do
     begin
-      AData.AddLineToPath(LineX[i], LineX[i]);
+      AData.AddLineToPath(LWPolyline[i].X, LWPolyline[i].Y);
       {$ifdef FPVECTORIALDEBUG_LWPOLYLINE}
-       Write(Format(' %f,%f', [LineX[i], LineX[i]]));
+       Write(Format(' %f,%f', [LWPolyline[i].X, LWPolyline[i].Y]));
       {$endif}
     end;
     {$ifdef FPVECTORIALDEBUG_LWPOLYLINE}
@@ -969,14 +975,14 @@ begin
   end;
 end;
 
-{$define FPVECTORIALDEBUG_SPLINE}
+{.$define FPVECTORIALDEBUG_SPLINE}
 procedure TvDXFVectorialReader.ReadENTITIES_SPLINE(ATokens: TDXFTokens;
   AData: TvVectorialDocument);
 var
   CurToken: TDXFToken;
   i, curPoint: Integer;
   // LINE
-  LineX, LineY{, LineZ}: array of Double;
+  SPLine: array of TSPLineElement;
 begin
   curPoint := -1;
 
@@ -998,29 +1004,26 @@ begin
       begin
         // Starting a new point
         Inc(curPoint);
-        SetLength(LineX, curPoint+1);
-        SetLength(LineY, curPoint+1);
-//      SetLength(LineZ, curPoint+1);
+        SetLength(SPLine, curPoint+1);
 
-        LineX[curPoint] := CurToken.FloatValue - DOC_OFFSET.X;
+        SPLine[curPoint].X := CurToken.FloatValue - DOC_OFFSET.X;
       end;
-      20: LineY[curPoint] := CurToken.FloatValue - DOC_OFFSET.Y;
-//      30: LineZ[curPoint] := CurToken.FloatValue;
+      20: SPLine[curPoint].Y := CurToken.FloatValue - DOC_OFFSET.Y;
     end;
   end;
 
   // And now write it
   if curPoint >= 0 then // otherwise the polyline is empty of points
   begin
-    AData.StartPath(LineX[0], LineY[0]);
+    AData.StartPath(SPLine[0].X, SPLine[0].Y);
     {$ifdef FPVECTORIALDEBUG_SPLINE}
-     Write(Format('SPLINE %f,%f', [LineX[0], LineY[0]]));
+    Write(Format('SPLINE ID=%d %f,%f', [AData.PathCount-1, SPLine[0].X, SPLine[0].Y]));
     {$endif}
     for i := 1 to curPoint do
     begin
-      AData.AddLineToPath(LineX[i], LineX[i]);
+      AData.AddLineToPath(SPLine[i].X, SPLine[i].Y);
       {$ifdef FPVECTORIALDEBUG_SPLINE}
-       Write(Format(' %f,%f', [LineX[i], LineX[i]]));
+       Write(Format(' %f,%f', [SPLine[i].X, SPLine[i].Y]));
       {$endif}
     end;
     {$ifdef FPVECTORIALDEBUG_SPLINE}

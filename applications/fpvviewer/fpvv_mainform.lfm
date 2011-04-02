@@ -11,7 +11,7 @@ object frmFPVViewer: TfrmFPVViewer
   LCLVersion = '0.9.31'
   object editFileName: TFileNameEdit
     Left = 8
-    Height = 25
+    Height = 22
     Top = 8
     Width = 304
     DialogOptions = []
@@ -33,7 +33,7 @@ object frmFPVViewer: TfrmFPVViewer
   end
   object spinScale: TFloatSpinEdit
     Left = 72
-    Height = 25
+    Height = 16
     Top = 72
     Width = 168
     DecimalPlaces = 6
@@ -45,9 +45,9 @@ object frmFPVViewer: TfrmFPVViewer
   end
   object Label1: TLabel
     Left = 8
-    Height = 18
+    Height = 17
     Top = 79
-    Width = 58
+    Width = 56
     Caption = 'Scale by:'
     ParentColor = False
   end
@@ -76,8 +76,8 @@ object frmFPVViewer: TfrmFPVViewer
     object pageViewer: TPage
     end
     object Page2: TPage
-      ClientWidth = 132
-      ClientHeight = 156
+      ClientWidth = 264
+      ClientHeight = 312
       object DXFTreeView: TTreeView
         Left = 8
         Height = 313

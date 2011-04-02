@@ -50,6 +50,10 @@ uses
 { TfrmFPVViewer }
 
 procedure TfrmFPVViewer.btnVisualizeClick(Sender: TObject);
+const
+  FPVVIEWER_MAX_IMAGE_SIZE = 1000;
+  FPVVIEWER_MIN_IMAGE_SIZE = 100;
+  FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS = 100;
 var
   Vec: TvVectorialDocument;
   CanvasSize: TPoint;
@@ -67,12 +71,13 @@ begin
 
     // We need to be robust, because sometimes the document size won't be given
     // also give up drawing everything if we need more then 4MB of RAM for the image
-    if Vec.Width * spinScale.Value > 1000 then CanvasSize.X := 1000
-    else if Vec.Width < 100 then CanvasSize.X := Drawer.Width
+    // and also give some space in the image to allow for negative coordinates
+    if Vec.Width * spinScale.Value > FPVVIEWER_MAX_IMAGE_SIZE then CanvasSize.X := FPVVIEWER_MAX_IMAGE_SIZE
+    else if Vec.Width < FPVVIEWER_MIN_IMAGE_SIZE then CanvasSize.X := Drawer.Width
     else CanvasSize.X := Round(Vec.Width * spinScale.Value);
 
-    if Vec.Height * spinScale.Value > 1000 then CanvasSize.Y := 1000
-    else  if Vec.Height < 100 then CanvasSize.Y := Drawer.Height
+    if Vec.Height * spinScale.Value > FPVVIEWER_MAX_IMAGE_SIZE then CanvasSize.Y := FPVVIEWER_MAX_IMAGE_SIZE
+    else  if Vec.Height < FPVVIEWER_MIN_IMAGE_SIZE then CanvasSize.Y := Drawer.Height
     else CanvasSize.Y := Round(Vec.Height * spinScale.Value);
 
     Drawer.Drawing.Width := CanvasSize.X;
@@ -83,8 +88,8 @@ begin
     DrawFPVectorialToCanvas(
       Vec,
       Drawer.Drawing.Canvas,
-      0,
-      Drawer.Drawing.Height,
+      FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS,
+      Drawer.Drawing.Height - FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS,
       spinScale.Value,
       -1 * spinScale.Value);
     Drawer.Invalidate;

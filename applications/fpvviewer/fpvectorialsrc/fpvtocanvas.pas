@@ -94,6 +94,7 @@ end;
 
   DrawFPVectorialToCanvas(ASource, ADest, 0, ASource.Height, 1.0, -1.0);
 }
+{.$define FPVECTORIAL_TOCANVAS_DEBUG}
 procedure DrawFPVectorialToCanvas(ASource: TvVectorialDocument;
   {$ifdef USE_LCL_CANVAS}
   ADest: TCanvas;
@@ -138,7 +139,7 @@ var
   Points: array of TPoint;
   UpperDim, LowerDim: T3DPoint;
 begin
-  {$ifdef FPVECTORIALDEBUG}
+  {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
   WriteLn(':>DrawFPVectorialToCanvas');
   {$endif}
 
@@ -154,6 +155,10 @@ begin
     //WriteLn('i = ', i);
     ASource.Paths[i].PrepareForSequentialReading;
 
+    {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
+    Write(Format('[Path] ID=%d', [i]));
+    {$endif}
+
     for j := 0 to ASource.Paths[i].Len - 1 do
     begin
       //WriteLn('j = ', j);
@@ -163,10 +168,16 @@ begin
       stMoveTo:
       begin
         ADest.MoveTo(CoordToCanvasX(Cur2DSegment.X), CoordToCanvasY(Cur2DSegment.Y));
+        {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
+        Write(Format(' M%d,%d', [CoordToCanvasX(Cur2DSegment.X), CoordToCanvasY(Cur2DSegment.Y)]));
+        {$endif}
       end;
       st2DLine, st3DLine:
       begin
         ADest.LineTo(CoordToCanvasX(Cur2DSegment.X), CoordToCanvasY(Cur2DSegment.Y));
+        {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
+        Write(Format(' L%d,%d', [CoordToCanvasX(Cur2DSegment.X), CoordToCanvasY(Cur2DSegment.Y)]));
+        {$endif}
       end;
       { To draw a bezier we need to divide the interval in parts and make
         lines between this parts }
@@ -189,6 +200,9 @@ begin
       end;
       end;
     end;
+    {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
+    WriteLn('');
+    {$endif}
   end;
 
   // Draws all entities
