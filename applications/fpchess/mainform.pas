@@ -48,19 +48,19 @@ type
     editRemoteID: TLabeledEdit;
     editLocalIP: TLabeledEdit;
     editPlayerName: TLabeledEdit;
-    pageStart: TUNBPage;
-    pageConfigConnection: TUNBPage;
-    notebookMain: TUntabbedNotebook;
-    pageConnecting: TUNBPage;
+    pageStart: TPage;
+    pageConfigConnection: TPage;
+    notebookMain: TNotebook;
+    pageConnecting: TPage;
     ProgressBar1: TProgressBar;
-    pageGame: TUNBPage;
+    pageGame: TPage;
     spinPlayerTime: TSpinEdit;
     timerChessTimer: TTimer;
-    pageWebservice: TUNBPage;
+    pageWebservice: TPage;
     procedure btnConnectClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure HandleMainScreenButton(Sender: TObject);
-    procedure pageBeforeShow(Sender: TObject; ANewPage: TUNBPage; ANewIndex: Integer);
+    procedure pageBeforeShow(Sender: TObject; ANewPage: TPage; ANewIndex: Integer);
     procedure timerChessTimerTimer(Sender: TObject);
   private
     { private declarations }
@@ -100,7 +100,7 @@ begin
   else if Sender = btnDirectComm then notebookMain.PageIndex := INT_PAGE_CONFIGCONNECTION;
 end;
 
-procedure TformChess.pageBeforeShow(Sender: TObject; ANewPage: TUNBPage; ANewIndex: Integer);
+procedure TformChess.pageBeforeShow(Sender: TObject; ANewPage: TPage; ANewIndex: Integer);
 begin
   if ANewIndex = INT_PAGE_CONFIGCONNECTION then
   begin

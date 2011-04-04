@@ -10,7 +10,7 @@ uses
   Forms, lnetvisual, mainform, chessdrawer, chessgame, chessconfig,
   chesstcputils;
 
-{$R *.res}
+//{$R *.res}
 
 begin
   Application.Initialize;

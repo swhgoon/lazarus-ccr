@@ -8,7 +8,7 @@ uses
   {$IFDEF MSWINDOWS}
   Winsock,
   {$ENDIF}
-  Classes, SysUtils;
+  Classes, SysUtils, Process;
 
 function ChessGetLocalIP(): string;
 
