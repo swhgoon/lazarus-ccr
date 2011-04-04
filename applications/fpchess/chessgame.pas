@@ -83,6 +83,7 @@ type
     function ValidateQueenMove(AFrom, ATo: TPoint) : boolean;
     function ValidateKingMove(AFrom, ATo: TPoint) : boolean;
     function ValidatePawnMove(AFrom, ATo: TPoint) : boolean;
+    function IsSquareOccupied(ASquare: TPoint): Boolean;
 
     procedure UpdateTimes();
   end;
@@ -836,9 +837,47 @@ begin
   Result := True;
 end;
 
+{
+  The white is always in the bottom at the moment,
+  which means the smallest x,y values
+}
 function TChessGame.ValidatePawnMove(AFrom, ATo: TPoint): Boolean;
 begin
-  Result := True;
+  // ToDo: Verify if the kind will be in check
+
+  Result := False;
+
+  if CurrentPlayerIsWhite then
+  begin
+    // Normal move forward
+    if (AFrom.X = ATo.X) and (AFrom.Y = ATo.Y - 1) then
+    begin
+      Result := not IsSquareOccupied(ATo);
+    end
+    // Initial double move forward
+    else if (AFrom.X = ATo.X) and (AFrom.Y = 2) and (AFrom.Y = ATo.Y - 2) then
+    begin
+      Result := not IsSquareOccupied(ATo);
+    end;
+  end
+  else
+  begin
+    // Normal move forward
+    if (AFrom.X = ATo.X) and (AFrom.Y = ATo.Y + 1) then
+    begin
+      Result := not IsSquareOccupied(ATo);
+    end
+    // Initial double move forward
+    else if (AFrom.X = ATo.X) and (AFrom.Y = 7) and (AFrom.Y = ATo.Y + 2) then
+    begin
+      Result := not IsSquareOccupied(ATo);
+    end;
+  end;
+end;
+
+function TChessGame.IsSquareOccupied(ASquare: TPoint): Boolean;
+begin
+  Result := Board[ASquare.X][ASquare.Y] <> ctEmpty;
 end;
 
 procedure TChessGame.UpdateTimes();
