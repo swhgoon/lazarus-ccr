@@ -27,7 +27,7 @@ const
 type
 
   TPacketKind = (pkConnect, pkStartGameClientAsWhite, pkStartGameClientAsBlack, pkMove);
-  BitBoard = array[1..8] of array [1..8] of boolean;
+  BitBoard = array[1..8] of array [1..8] of boolean;// Map of attacked squares
 
   { TPacket }
 
@@ -371,16 +371,18 @@ ShowMessage(mensagem);}
 end;
 function TChessGame.ValidateKnightMove(AFrom, ATo: TPoint): Boolean;
 begin
-result:=true;
+  Result := True;
 end;
+
 function TChessGame.ValidateBishopMove(AFrom, ATo: TPoint): Boolean;
-var AttackedSquares : BitBoard;
-    i,j : Integer;
-    x,y : integer;
-    haveCaptured: boolean = false; //already have captured a piece
-    willBeACapture : boolean = false;// the movement will be a capture
-    validMove : boolean = false; //if the piece in the 'to' square is not of the same color of the player
-    mensagem : String;
+var
+  AttackedSquares : BitBoard;
+  i,j : Integer;
+  x,y : integer;
+  haveCaptured: boolean = false; //already have captured a piece
+  willBeACapture : boolean = false;// the movement will be a capture
+  validMove : boolean = false; //if the piece in the 'to' square is not of the same color of the player
+  mensagem : String;
 begin
   for i:=1 to 8 do  // initialize the bitboard of attacked pieces.
     for j:=1 to 8 do

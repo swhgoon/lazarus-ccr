@@ -37,7 +37,9 @@ type
     btnPlayAgainstAI: TButton;
     checkTimer: TCheckBox;
     comboStartColor: TComboBox;
+    editWebserviceURL: TLabeledEdit;
     Label1: TLabel;
+    labelTime: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
@@ -68,6 +70,7 @@ type
     procedure timerChessTimerTimer(Sender: TObject);
   private
     { private declarations }
+    function FormatTime(ATimeInMiliseconds: Integer): string;
   public
     { public declarations }
     procedure UpdateCaptions;
@@ -121,6 +124,31 @@ begin
   UpdateCaptions();
 end;
 
+function TformChess.FormatTime(ATimeInMiliseconds: Integer): string;
+var
+  lTimePart: Integer;
+begin
+  Result := '';
+
+  // Hours
+  lTimePart := ATimeInMiliseconds div (60*60*1000);
+  if lTimePart > 0 then
+    Result := IntToStr(lTimePart) + 'h';
+
+  // Minutes
+  lTimePart := (ATimeInMiliseconds div (60*1000)) mod 60;
+  if (lTimePart > 0) or (Result <> '') then
+    Result := Result + IntToStr(lTimePart) + 'm';
+
+  // Seconds
+  lTimePart := (ATimeInMiliseconds div (1000)) mod 60;
+  Result := Result + IntToStr(lTimePart) + 's';
+
+  // Miliseconds
+  lTimePart := ATimeInMiliseconds mod (1000);
+  Result := Result + IntToStr(lTimePart);
+end;
+
 procedure TformChess.UpdateCaptions;
 var
   lStr: string;
@@ -131,10 +159,12 @@ begin
   lStr := lStr + Format(' X: %d Y: %d',
     [vChessGame.MouseMovePos.X, vChessGame.MouseMovePos.Y]);
 
-  lStr := lStr + Format(' White time: %d Black time: %d',
-    [vChessGame.WhitePlayerTime, vChessGame.BlackPlayerTime]);
-
   formChess.labelPos.Caption := lStr;
+
+  lStr := Format('White time: %s Black time: %s',
+    [FormatTime(vChessGame.WhitePlayerTime), FormatTime(vChessGame.BlackPlayerTime)]);
+
+  formChess.labelTime.Caption := lStr;
 end;
 
 procedure TformChess.InitializeGameModel;

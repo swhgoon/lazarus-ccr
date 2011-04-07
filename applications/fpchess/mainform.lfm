@@ -14,7 +14,7 @@ object formChess: TformChess
     Height = 433
     Top = 0
     Width = 360
-    PageIndex = 0
+    PageIndex = 3
     Align = alClient
     TabOrder = 0
     TabStop = True
@@ -45,17 +45,17 @@ object formChess: TformChess
       end
       object Label6: TLabel
         Left = 28
-        Height = 18
+        Height = 17
         Top = 104
-        Width = 56
+        Width = 52
         Caption = 'Start as:'
         ParentColor = False
       end
       object Label7: TLabel
         Left = 80
-        Height = 18
+        Height = 17
         Top = 163
-        Width = 152
+        Width = 150
         Caption = 'minutes for each player'
         ParentColor = False
       end
@@ -89,7 +89,7 @@ object formChess: TformChess
       end
       object editPlayerName: TLabeledEdit
         Left = 88
-        Height = 25
+        Height = 22
         Top = 72
         Width = 120
         EditLabel.AnchorSideLeft.Control = editPlayerName
@@ -97,10 +97,10 @@ object formChess: TformChess
         EditLabel.AnchorSideTop.Side = asrCenter
         EditLabel.AnchorSideRight.Control = editPlayerName
         EditLabel.AnchorSideBottom.Control = editPlayerName
-        EditLabel.Left = 2
-        EditLabel.Height = 18
+        EditLabel.Left = 6
+        EditLabel.Height = 17
         EditLabel.Top = 75
-        EditLabel.Width = 83
+        EditLabel.Width = 79
         EditLabel.Caption = 'Player Name'
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
@@ -108,7 +108,7 @@ object formChess: TformChess
       end
       object comboStartColor: TComboBox
         Left = 88
-        Height = 27
+        Height = 21
         Top = 104
         Width = 120
         ItemHeight = 0
@@ -122,9 +122,9 @@ object formChess: TformChess
       end
       object checkTimer: TCheckBox
         Left = 24
-        Height = 21
+        Height = 18
         Top = 136
-        Width = 220
+        Width = 212
         Caption = 'Set a time limit for each Player'
         Checked = True
         State = cbChecked
@@ -132,7 +132,7 @@ object formChess: TformChess
       end
       object spinPlayerTime: TSpinEdit
         Left = 21
-        Height = 25
+        Height = 16
         Top = 160
         Width = 50
         TabOrder = 6
@@ -158,8 +158,8 @@ object formChess: TformChess
       end
     end
     object pageConfigConnection: TPage
-      ClientWidth = 712
-      ClientHeight = 810
+      ClientWidth = 1424
+      ClientHeight = 1620
       object Label3: TLabel
         Left = 0
         Height = 32
@@ -222,8 +222,8 @@ object formChess: TformChess
       end
     end
     object pageConnecting: TPage
-      ClientWidth = 712
-      ClientHeight = 810
+      ClientWidth = 1424
+      ClientHeight = 1620
       object Label4: TLabel
         Left = 0
         Height = 32
@@ -245,8 +245,8 @@ object formChess: TformChess
       end
     end
     object pageGame: TPage
-      ClientWidth = 712
-      ClientHeight = 810
+      ClientWidth = 360
+      ClientHeight = 433
       object Label5: TLabel
         Left = 0
         Height = 32
@@ -261,16 +261,24 @@ object formChess: TformChess
       end
       object labelPos: TLabel
         Left = 8
-        Height = 14
+        Height = 17
         Top = 392
-        Width = 40
+        Width = 53
         Caption = 'labelPos'
+        ParentColor = False
+      end
+      object labelTime: TLabel
+        Left = 8
+        Height = 17
+        Top = 408
+        Width = 62
+        Caption = 'labelTime'
         ParentColor = False
       end
     end
     object pageWebservice: TPage
-      ClientWidth = 712
-      ClientHeight = 810
+      ClientWidth = 1424
+      ClientHeight = 1620
       object Label8: TLabel
         Left = 0
         Height = 32
@@ -300,7 +308,7 @@ object formChess: TformChess
         EditLabel.Caption = 'Player Name'
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
-        TabOrder = 0
+        TabOrder = 2
         Text = 'http://www.bobswart.nl/cgi-bin/ChessISAPIServer.dll/wsdl/IDelphiChess'
       end
       object btnPlayAgainstAI: TButton
