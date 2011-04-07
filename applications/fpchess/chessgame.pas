@@ -65,6 +65,7 @@ type
     Board: TChessBoard;
     msg : String;
     CurrentPlayerIsWhite: Boolean;
+    EnPassant : array[1..2] of array[1..8] of boolean; // Storage a flag to determine en passant captures, 1 is for white pawns.
     Dragging: Boolean;
     DragStart, MouseMovePos: TPoint;
     UseTimer: Boolean;
@@ -173,11 +174,12 @@ end;
   Returns: If the move is valid and was executed
 }
 function TChessGame.MovePiece(AFrom, ATo: TPoint): Boolean;
+var i : integer;
 begin
   result := false;
   //AFrom.x:=AFrom.x;
   //AFrom.y:=AFrom.y+2;
-  //if not CheckStartMove(AFrom) then Exit;
+  if not CheckStartMove(AFrom) then Exit;
 
   if ( (Board[AFrom.X][AFrom.Y]) in WhitePieces ) then begin
   	if Board[AFrom.X][AFrom.Y] = ctWRook then result:=(ValidateRookMove(AFrom,ATo));;
@@ -186,6 +188,7 @@ begin
     if Board[AFrom.X][AFrom.Y] = ctWQueen then result :=(ValidateQueenMove(AFrom,ATo));
     if Board[AFrom.X][AFrom.Y] = ctWKing then result :=(ValidateKingMove(AFrom,ATo));
     if Board[AFrom.X][AFrom.Y] = ctWPawn then result :=(ValidatePawnMove(AFrom,ATo));
+    if (result) then for i := 0 to 8 do EnPassant[2][i]:=false;
   end
   else begin
     if Board[AFrom.X][AFrom.Y] = ctBRook then result :=(ValidateRookMove(AFrom,ATo));
@@ -194,6 +197,7 @@ begin
     if Board[AFrom.X][AFrom.Y] = ctBQueen then result :=(ValidateQueenMove(AFrom,ATo));
     if Board[AFrom.X][AFrom.Y] = ctBKing then result :=(ValidateKingMove(AFrom,ATo));
     if Board[AFrom.X][AFrom.Y] = ctBPawn then result :=(ValidatePawnMove(AFrom,ATo));
+    if (result) then for i := 0 to 8 do EnPassant[1][i]:=false;
   end;
 //  ShowMessage('Resultado := ' + BoolToStr(result,true));
   if (result) then begin
@@ -858,6 +862,29 @@ begin
     else if (AFrom.X = ATo.X) and (AFrom.Y = 2) and (AFrom.Y = ATo.Y - 2) then
     begin
       Result := not IsSquareOccupied(ATo);
+      EnPassant[1][AFrom.X]:=True;
+    end
+    // Normal capture in the left
+    else if (ATo.X = AFrom.X-1) and (ATo.Y = AFrom.Y+1) and (Board[ATo.X][ATo.Y] in BlackPieces) then
+    begin
+      Result := True;
+    end
+    // Normal capture in the right
+    else if (ATo.X = AFrom.X+1) and (ATo.Y = AFrom.Y+1) and (Board[ATo.X][ATo.Y] in BlackPieces) then
+    begin
+      Result := True;
+    end
+    // En Passant Capture in the left
+    else if (EnPassant[2][AFrom.X-1]= true) and (AFrom.Y = 5) and (ATo.X = AFrom.X-1) and (ATo.Y = AFrom.Y+1) and (Board[ATo.X][ATo.Y-1] in BlackPieces) then
+    begin
+      Result := True;
+      Board[ATo.X][ATo.Y-1]:=ctEmpty;
+    end
+    // En Passant Capture in the right
+    else if (EnPassant[2][AFrom.X+1]= true) and (AFrom.Y = 5) and (ATo.X = AFrom.X+1) and (ATo.Y = AFrom.Y+1) and (Board[ATo.X][ATo.Y-1] in BlackPieces) then
+    begin
+      Result := True;
+      Board[ATo.X][ATo.Y-1]:=ctEmpty;
     end;
   end
   else
@@ -871,6 +898,29 @@ begin
     else if (AFrom.X = ATo.X) and (AFrom.Y = 7) and (AFrom.Y = ATo.Y + 2) then
     begin
       Result := not IsSquareOccupied(ATo);
+      EnPassant[2][AFrom.X]:=True;
+    end
+    // Capture a piece in the left
+    else if (ATo.X = AFrom.X-1) and (ATo.Y = AFrom.Y-1) and (Board[ATo.X][ATo.Y] in WhitePieces) then
+    begin
+      Result := True;
+    end
+    // Capture a piece in the right
+    else if (ATo.X = AFrom.X+1) and (ATo.Y = AFrom.Y-1) and (Board[ATo.X][ATo.Y] in WhitePieces) then
+    begin
+      Result := True;
+    end
+    // En Passant Capture in the left
+    else if (EnPassant[1][AFrom.X-1]= true) and (AFrom.Y = 4) and (ATo.X = AFrom.X-1) and (ATo.Y = AFrom.Y-1) and (Board[ATo.X][ATo.Y+1] in WhitePieces) then
+    begin
+      Result := True;
+      Board[ATo.X][ATo.Y+1]:=ctEmpty;
+    end
+    // En Passant Capture in the right
+    else if (EnPassant[1][AFrom.X+1]= true) and (AFrom.Y = 4) and (ATo.X = AFrom.X+1) and (ATo.Y = AFrom.Y-1) and (Board[ATo.X][ATo.Y+1] in WhitePieces) then
+    begin
+      Result := True;
+      Board[ATo.X][ATo.Y+1]:=ctEmpty;
     end;
   end;
 end;
