@@ -39,6 +39,16 @@ const
   STR_WINMETAFILE_EXTENSION = '.wmf';
 
 type
+  {@@ We need our own format because TFPColor is too big for our needs and TColor has no Alpha }
+  TvColor = packed record
+    Red, Green, Blue, Alpha: Byte;
+  end;
+
+const
+  FPValphaTransparent = $00;
+  FPValphaOpaque = $FF;
+
+type
   T3DPoint = record
     X, Y, Z: Double;
   end;
@@ -74,6 +84,7 @@ type
   T2DSegment = class(TPathSegment)
   public
     X, Y: Double;
+    Color: TvColor;
   end;
 
   {@@
@@ -224,6 +235,7 @@ type
     procedure AddPath(APath: TPath);
     procedure StartPath(AX, AY: Double);
     procedure AddLineToPath(AX, AY: Double); overload;
+    procedure AddLineToPath(AX, AY: Double; AColor: TvColor); overload;
     procedure AddLineToPath(AX, AY, AZ: Double); overload;
     procedure AddBezierToPath(AX1, AY1, AX2, AY2, AX3, AY3: Double); overload;
     procedure AddBezierToPath(AX1, AY1, AZ1, AX2, AY2, AZ2, AX3, AY3, AZ3: Double); overload;
@@ -524,6 +536,19 @@ begin
   segment.SegmentType := st2DLine;
   segment.X := AX;
   segment.Y := AY;
+
+  AppendSegmentToTmpPath(segment);
+end;
+
+procedure TvVectorialDocument.AddLineToPath(AX, AY: Double; AColor: TvColor);
+var
+  segment: T2DSegment;
+begin
+  segment := T2DSegment.Create;
+  segment.SegmentType := st2DLine;
+  segment.X := AX;
+  segment.Y := AY;
+  segment.Color := AColor;
 
   AppendSegmentToTmpPath(segment);
 end;
