@@ -7,8 +7,8 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, lnetvisual, mainform, chessdrawer, chessgame, chessconfig,
-  chesstcputils;
+  Forms, laz_synapse, mainform, chessdrawer, chessgame, chessconfig,
+  chesstcputils, IDelphiChess_Intf, wst_synapse;
 
 //{$R *.res}
 

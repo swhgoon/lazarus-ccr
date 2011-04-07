@@ -8,6 +8,8 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, ComCtrls, StdCtrls, Buttons, Spin,
   //
+  IDelphiChess_Intf,
+  //
   chessdrawer, chessgame, chessconfig, chesstcputils;
 
 type
@@ -27,15 +29,14 @@ type
 
   TformChess = class(TForm)
     btnConnect: TBitBtn;
-    btnWebservice: TBitBtn;
+    btnAI: TBitBtn;
     btnSinglePlayer: TBitBtn;
     btnDirectComm: TBitBtn;
     BitBtn3: TBitBtn;
     btnHotSeat: TBitBtn;
-    Button1: TButton;
+    btnPlayAgainstAI: TButton;
     checkTimer: TCheckBox;
     comboStartColor: TComboBox;
-    editWebserviceURL: TLabeledEdit;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
@@ -44,6 +45,8 @@ type
     Label6: TLabel;
     Label7: TLabel;
     Label8: TLabel;
+    Label9: TLabel;
+    editWebServiceAI: TLabeledEdit;
     labelPos: TLabel;
     editRemoteID: TLabeledEdit;
     editLocalIP: TLabeledEdit;
@@ -58,6 +61,7 @@ type
     timerChessTimer: TTimer;
     pageWebservice: TPage;
     procedure btnConnectClick(Sender: TObject);
+    procedure btnPlayAgainstAIClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure HandleMainScreenButton(Sender: TObject);
     procedure pageBeforeShow(Sender: TObject; ANewPage: TPage; ANewIndex: Integer);
@@ -67,7 +71,8 @@ type
   public
     { public declarations }
     procedure UpdateCaptions;
-  end; 
+    procedure InitializeGameModel;
+  end;
 
 var
   formChess: TformChess;
@@ -82,6 +87,7 @@ const
   INT_PAGE_CONFIGCONNECTION = 1;
   INT_PAGE_CONNECTING = 2;
   INT_PAGE_GAME = 3;
+  INT_PAGE_AI = 4;
 
 { TformChess }
 
@@ -90,14 +96,15 @@ begin
   if Sender = btnSinglePlayer then
   begin
     notebookMain.PageIndex := INT_PAGE_GAME;
-    vChessGame.StartNewGame(comboStartColor.ItemIndex, checkTimer.Checked, spinPlayerTime.Value);
+    InitializeGameModel();
   end
   else if Sender = btnHotSeat then
   begin
     notebookMain.PageIndex := INT_PAGE_GAME;
-    vChessGame.StartNewGame(comboStartColor.ItemIndex, checkTimer.Checked, spinPlayerTime.Value);
+    InitializeGameModel();
   end
-  else if Sender = btnDirectComm then notebookMain.PageIndex := INT_PAGE_CONFIGCONNECTION;
+  else if Sender = btnDirectComm then notebookMain.PageIndex := INT_PAGE_CONFIGCONNECTION
+  else if Sender = btnAI then notebookMain.PageIndex := INT_PAGE_AI;
 end;
 
 procedure TformChess.pageBeforeShow(Sender: TObject; ANewPage: TPage; ANewIndex: Integer);
@@ -130,6 +137,11 @@ begin
   formChess.labelPos.Caption := lStr;
 end;
 
+procedure TformChess.InitializeGameModel;
+begin
+  vChessGame.StartNewGame(comboStartColor.ItemIndex, checkTimer.Checked, spinPlayerTime.Value);
+end;
+
 procedure TformChess.FormCreate(Sender: TObject);
 begin
   // Creation of internal components
@@ -149,6 +161,16 @@ procedure TformChess.btnConnectClick(Sender: TObject);
 begin
   notebookMain.PageIndex := INT_PAGE_CONNECTING;
 
+end;
+
+procedure TformChess.btnPlayAgainstAIClick(Sender: TObject);
+begin
+  InitializeGameModel();
+
+  notebookMain.PageIndex := INT_PAGE_GAME;
+
+  if comboStartColor.ItemIndex = 0 then
+    GetNextMoveFromBorlandWS();
 end;
 
 { TFormDrawerDelegate }

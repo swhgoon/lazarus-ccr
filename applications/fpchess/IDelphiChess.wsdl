@@ -1,0 +1,33 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:xs="http://www.w3.org/2001/XMLSchema" name="IDelphiChessservice" targetNamespace="http://eBob42.org/" xmlns:tns="http://eBob42.org/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/">
+<message name="XML_GetNextMove0Request">
+<part name="Position" type="xs:string"/>
+<part name="WhiteMovesNext" type="xs:boolean"/>
+<part name="SearchDepth" type="xs:int"/>
+</message>
+<message name="XML_GetNextMove0Response">
+<part name="return" type="xs:string"/>
+</message>
+<portType name="IDelphiChess">
+<operation name="XML_GetNextMove">
+<input message="tns:XML_GetNextMove0Request"/>
+<output message="tns:XML_GetNextMove0Response"/>
+</operation>
+</portType>
+<binding name="IDelphiChessbinding" type="tns:IDelphiChess">
+<soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+<operation name="XML_GetNextMove">
+<soap:operation soapAction="urn:DelphiChess-IDelphiChess#XML_GetNextMove" style="rpc"/>
+<input>
+<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:DelphiChess-IDelphiChess"/>
+</input>
+<output>
+<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:DelphiChess-IDelphiChess"/>
+</output>
+</operation>
+</binding>
+<service name="IDelphiChessservice">
+<port name="IDelphiChessPort" binding="tns:IDelphiChessbinding">
+<soap:address location="http://www.bobswart.nl/cgi-bin/ChessISAPIServer.dll/soap/IDelphiChess"/>
+</port>
+</service>
+</definitions>

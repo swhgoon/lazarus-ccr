@@ -1,0 +1,7 @@
+  GetWSTResourceManager().AddResource('IDELPHICHESS',
+    #0#0#0#16'WST_METADATA_0.6'#0#0#0#12'IDelphiChess'#0#1#0#0#0#12'IDelphiChess'
+    +#0#1#0#0#0#15'XML_GetNextMove'#4#0#0#0#8'Position'#0#0#0#6'string'#0#0#0#0#0
+    +#0#0#1#0#0#0#14'WhiteMovesNext'#0#0#0#7'boolean'#0#0#0#0#0#0#0#1#0#0#0#11'Se'
+    +'archDepth'#0#0#0#7'integer'#0#0#0#0#0#0#0#1#0#0#0#6'Result'#0#0#0#6'string'#0
+    +#0#0#0#0#0#0#3''
+  );

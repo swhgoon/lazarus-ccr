@@ -147,12 +147,12 @@ object formChess: TformChess
         OnClick = HandleMainScreenButton
         TabOrder = 7
       end
-      object btnWebservice: TBitBtn
+      object btnAI: TBitBtn
         Left = 24
         Height = 30
         Top = 320
         Width = 304
-        Caption = 'Play with a friend through the chess Webservice'
+        Caption = 'Play against the Computer'
         OnClick = HandleMainScreenButton
         TabOrder = 8
       end
@@ -303,13 +303,43 @@ object formChess: TformChess
         TabOrder = 0
         Text = 'http://www.bobswart.nl/cgi-bin/ChessISAPIServer.dll/wsdl/IDelphiChess'
       end
-      object Button1: TButton
-        Left = 35
+      object btnPlayAgainstAI: TButton
+        Left = 64
         Height = 25
-        Top = 140
-        Width = 75
-        Caption = 'Button1'
+        Top = 160
+        Width = 224
+        Caption = 'Start game'
+        OnClick = btnPlayAgainstAIClick
+        TabOrder = 0
+      end
+      object Label9: TLabel
+        Left = 8
+        Height = 30
+        Top = 40
+        Width = 352
+        AutoSize = False
+        Caption = 'The artificial intelligence is obtained from the Borland Chess WebService.'
+        ParentColor = False
+        WordWrap = True
+      end
+      object editWebServiceAI: TLabeledEdit
+        Left = 8
+        Height = 22
+        Top = 96
+        Width = 344
+        EditLabel.AnchorSideLeft.Control = editWebServiceAI
+        EditLabel.AnchorSideTop.Control = editWebServiceAI
+        EditLabel.AnchorSideTop.Side = asrCenter
+        EditLabel.AnchorSideRight.Control = editWebServiceAI
+        EditLabel.AnchorSideBottom.Control = editWebServiceAI
+        EditLabel.Left = 8
+        EditLabel.Height = 17
+        EditLabel.Top = 76
+        EditLabel.Width = 104
+        EditLabel.Caption = 'Web Service URL'
+        EditLabel.ParentColor = False
         TabOrder = 1
+        Text = 'http://www.bobswart.nl/cgi-bin/ChessISAPIServer.dll/wsdl/IDelphiChess'
       end
     end
   end
