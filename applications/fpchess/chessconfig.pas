@@ -22,11 +22,41 @@ var
 
 implementation
 
+{$ifdef Darwin}
+uses
+  MacOSAll;
+{$endif}
+
+const
+  BundleResourcesDirectory = '/Contents/Resources/';
+
 { TChessConfig }
 
 function TChessConfig.GetResourcesDir: string;
+{$ifdef Darwin}
+var
+  pathRef: CFURLRef;
+  pathCFStr: CFStringRef;
+  pathStr: shortstring;
+{$endif}
 begin
+{$ifdef UNIX}
+{$ifdef Darwin}
+  pathRef := CFBundleCopyBundleURL(CFBundleGetMainBundle());
+  pathCFStr := CFURLCopyFileSystemPath(pathRef, kCFURLPOSIXPathStyle);
+  CFStringGetPascalString(pathCFStr, @pathStr, 255, CFStringGetSystemEncoding());
+  CFRelease(pathRef);
+  CFRelease(pathCFStr);
 
+  Result := pathStr + BundleResourcesDirectory;
+{$else}
+  Result := '';
+{$endif}
+{$endif}
+
+{$ifdef Windows}
+  Result := ExtractFilePath(Application.EXEName);
+{$endif}
 end;
 
 function TChessConfig.GetCurrentSkinDir: string;
