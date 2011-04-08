@@ -48,6 +48,8 @@ const
   FPValphaTransparent = $00;
   FPValphaOpaque = $FF;
 
+  clvBlack: TvColor = (Red: $00; Green: $00; Blue: $00; Alpha: FPValphaOpaque);
+
 type
   T3DPoint = record
     X, Y, Z: Double;

@@ -11,8 +11,9 @@ uses
   {$ifdef USE_LCL_CANVAS}
   Graphics, LCLIntf,
   {$else}
-  fpcanvas, fpimage,
+  fpcanvas,
   {$endif}
+  fpimage,
   fpvectorial;
 
 procedure DrawFPVectorialToCanvas(ASource: TvVectorialDocument;
@@ -28,6 +29,21 @@ implementation
 {$ifndef Windows}
 {$define FPVECTORIALDEBUG}
 {$endif}
+
+{$ifdef USE_LCL_CANVAS}
+function VColorToTColor(AVColor: TvColor): TColor; inline;
+begin
+  Result := RGBToColor(AVColor.Red, AVColor.Green, AVColor.Blue);
+end;
+{$endif}
+
+function VColorToFPColor(AVColor: TvColor): TFPColor; inline;
+begin
+  Result.Red := AVColor.Red;
+  Result.Green := AVColor.Green;
+  Result.Blue := AVColor.Blue;
+  Result.Alpha := AVColor.Alpha;
+end;
 
 function Rotate2DPoint(P,Fix :TPoint; alpha:double): TPoint;
 var
@@ -174,7 +190,9 @@ begin
       end;
       st2DLine, st3DLine:
       begin
+        ADest.Pen.Color := {$ifdef USE_LCL_CANVAS}VColorToTColor(Cur2DSegment.Color);{$else}VColorToFPColor(Cur2DSegment.Color);{$endif}
         ADest.LineTo(CoordToCanvasX(Cur2DSegment.X), CoordToCanvasY(Cur2DSegment.Y));
+        ADest.Pen.Color := clBlack;
         {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
         Write(Format(' L%d,%d', [CoordToCanvasX(Cur2DSegment.X), CoordToCanvasY(Cur2DSegment.Y)]));
         {$endif}

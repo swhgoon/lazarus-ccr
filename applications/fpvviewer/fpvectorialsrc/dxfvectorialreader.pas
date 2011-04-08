@@ -52,7 +52,7 @@ type
 
   TPolylineElement = record
     X, Y: Double;
-    Color: TFPColor;
+    Color: TvColor;
   end;
 
   TSPLineElement = record
@@ -108,7 +108,7 @@ type
     procedure ReadENTITIES_POINT(ATokens: TDXFTokens; AData: TvVectorialDocument);
     function  GetCoordinateValue(AStr: shortstring): Double;
     //
-    function DXFColorIndexToFPColor(AColorIndex: Integer): TFPColor;
+    function DXFColorIndexToVColor(AColorIndex: Integer): TvColor;
   public
     { General reading methods }
     Tokenizer: TDXFTokenizer;
@@ -1084,7 +1084,7 @@ begin
   SetLength(Polyline, curPoint+1);
   Polyline[curPoint].X := 0;
   Polyline[curPoint].Y := 0;
-  Polyline[curPoint].Color := colBlack;
+  Polyline[curPoint].Color := clvBlack;
 
   for i := 0 to ATokens.Count - 1 do
   begin
@@ -1105,7 +1105,7 @@ begin
       62:
       begin
         if (CurToken.FloatValue >= 0) and (CurToken.FloatValue <= 15) then
-          Polyline[curPoint].Color := DXFColorIndexToFPColor(Trunc(CurToken.FloatValue));
+          Polyline[curPoint].Color := DXFColorIndexToVColor(Trunc(CurToken.FloatValue));
       end;
     end;
   end;
@@ -1128,7 +1128,7 @@ begin
     {$endif}
     for i := 1 to Length(Polyline)-1 do
     begin
-      AData.AddLineToPath(Polyline[i].X, Polyline[i].Y);
+      AData.AddLineToPath(Polyline[i].X, Polyline[i].Y, Polyline[i].Color);
       {$ifdef FPVECTORIALDEBUG_POLYLINE}
        Write(Format(' %f,%f', [Polyline[i].X, Polyline[i].Y]));
       {$endif}
@@ -1227,10 +1227,13 @@ begin
   Result := StrToFloat(Copy(AStr, 2, Length(AStr) - 1));}
 end;
 
-function TvDXFVectorialReader.DXFColorIndexToFPColor(AColorIndex: Integer
-  ): TFPColor;
+function TvDXFVectorialReader.DXFColorIndexToVColor(AColorIndex: Integer
+  ): TvColor;
 begin
-
+  if (AColorIndex <= 0) and (AColorIndex <= 15) then
+    Result := AUTOCAD_COLOR_PALETTE[AColorIndex]
+  else
+    raise Exception.Create(Format('[TvDXFVectorialReader.DXFColorIndexToFPVColor] Invalid DXF Color Index: %d', [AColorIndex]));
 end;
 
 constructor TvDXFVectorialReader.Create;
