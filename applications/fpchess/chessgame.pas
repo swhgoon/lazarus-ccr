@@ -58,6 +58,11 @@ type
   }
   TChessBoard = array[1..8] of array[1..8] of TChessTile;
 
+  TChessMove = record
+    From, To_: TPoint;
+    PieceMoved, PieceEaten: TChessTile;
+  end;
+
   { TChessGame }
 
   TChessGame = class
@@ -65,25 +70,32 @@ type
     Board: TChessBoard;
     msg : String;
     CurrentPlayerIsWhite: Boolean;
-    EnPassant : array[1..2] of array[1..8] of boolean; // Storage a flag to determine en passant captures, 1 is for white pawns.
     Dragging: Boolean;
     DragStart, MouseMovePos: TPoint;
     UseTimer: Boolean;
     WhitePlayerTime: Integer; // milisseconds
     BlackPlayerTime: Integer; // milisseconds
     MoveStartTime: TDateTime;
+    // Last move (might in the future store all history)
+    PreviousMove: TChessMove;
+    // Data for Enpassant
+    EnpassantAllowed: Boolean;
+    EnpassantSquare: TPoint;
+    //
     constructor Create;
     procedure StartNewGame(APlayAsWhite: Boolean; AUseTimer: Boolean; APlayerTime: Integer); overload;
     procedure StartNewGame(APlayAsWhite: Integer; AUseTimer: Boolean; APlayerTime: Integer); overload;
     function ClientToBoardCoords(AClientCoords: TPoint): TPoint;
     function CheckStartMove(AFrom: TPoint): Boolean;
+    function CheckKingInCheck(AFrom, ATo, AEnpassantSquareToClear: TPoint): Boolean;
     function MovePiece(AFrom, ATo: TPoint): Boolean;
     function ValidateRookMove(AFrom, ATo: TPoint) : boolean;
     function ValidateKnightMove(AFrom, ATo: TPoint) : boolean;
     function ValidateBishopMove(AFrom, ATo: TPoint) : boolean;
     function ValidateQueenMove(AFrom, ATo: TPoint) : boolean;
     function ValidateKingMove(AFrom, ATo: TPoint) : boolean;
-    function ValidatePawnMove(AFrom, ATo: TPoint) : boolean;
+    function ValidatePawnMove(AFrom, ATo: TPoint;
+      var AEnpassantAllowed: Boolean; var AEnpassantSquare, AEnpassantSquareToClear: TPoint) : boolean;
     function IsSquareOccupied(ASquare: TPoint): Boolean;
 
     procedure UpdateTimes();
@@ -92,14 +104,20 @@ type
 var
   vChessGame: TChessGame;
 
+operator = (A, B: TPoint): Boolean;
+
 implementation
+
+operator=(A, B: TPoint): Boolean;
+begin
+  Result := (A.X = B.X) and (A.Y = B.Y);
+end;
 
 { TChessGame }
 
 constructor TChessGame.Create;
 begin
   inherited Create;
-
 
 end;
 
@@ -174,58 +192,71 @@ end;
   Returns: If the move is valid and was executed
 }
 function TChessGame.MovePiece(AFrom, ATo: TPoint): Boolean;
-var i : integer;
+var
+  i : integer;
+  LEnpassantAllowed: Boolean;
+  LEnpassantSquare, LEnpassantToClear: TPoint;
 begin
-  result := false;
-  //AFrom.x:=AFrom.x;
-  //AFrom.y:=AFrom.y+2;
+  LEnpassantAllowed := False;
+  LEnpassantToClear.X := -1;
+  Result := False;
+
+  // Verify if the starting square contains a valid piece
   if not CheckStartMove(AFrom) then Exit;
 
-  if ( (Board[AFrom.X][AFrom.Y]) in WhitePieces ) then begin
-  	if Board[AFrom.X][AFrom.Y] = ctWRook then result:=(ValidateRookMove(AFrom,ATo));;
-    if Board[AFrom.X][AFrom.Y] = ctWKnight then result :=(ValidateKnightMove(AFrom,ATo));
-    if Board[AFrom.X][AFrom.Y] = ctWBishop then result :=(ValidateBishopMove(AFrom,ATo));
-    if Board[AFrom.X][AFrom.Y] = ctWQueen then result :=(ValidateQueenMove(AFrom,ATo));
-    if Board[AFrom.X][AFrom.Y] = ctWKing then result :=(ValidateKingMove(AFrom,ATo));
-    if Board[AFrom.X][AFrom.Y] = ctWPawn then result :=(ValidatePawnMove(AFrom,ATo));
-    if (result) then for i := 0 to 8 do EnPassant[2][i]:=false;
-  end
-  else begin
-    if Board[AFrom.X][AFrom.Y] = ctBRook then result :=(ValidateRookMove(AFrom,ATo));
-    if Board[AFrom.X][AFrom.Y] = ctBKnight then result :=(ValidateKnightMove(AFrom,ATo));
-    if Board[AFrom.X][AFrom.Y] = ctBBishop then result :=(ValidateBishopMove(AFrom,ATo));
-    if Board[AFrom.X][AFrom.Y] = ctBQueen then result :=(ValidateQueenMove(AFrom,ATo));
-    if Board[AFrom.X][AFrom.Y] = ctBKing then result :=(ValidateKingMove(AFrom,ATo));
-    if Board[AFrom.X][AFrom.Y] = ctBPawn then result :=(ValidatePawnMove(AFrom,ATo));
-    if (result) then for i := 0 to 8 do EnPassant[1][i]:=false;
-  end;
-//  ShowMessage('Resultado := ' + BoolToStr(result,true));
-  if (result) then begin
-	  // col, row
-	  Board[ATo.X][ATo.Y] := Board[AFrom.X][AFrom.Y];
-	  Board[AFrom.X][AFrom.Y] := ctEmpty;
+  // Verify if the movement is in accordace to the rules for this piece
+  if Board[AFrom.X][AFrom.Y] in [ctWPawn, ctBPawn] then result := ValidatePawnMove(AFrom,ATo, LEnpassantAllowed, LEnpassantSquare, LEnpassantToClear)
+  else if Board[AFrom.X][AFrom.Y] in [ctWRook, ctBRook] then result := ValidateRookMove(AFrom,ATo)
+  else if Board[AFrom.X][AFrom.Y] in [ctWKnight, ctBKnight] then result := ValidateKnightMove(AFrom,ATo)
+  else if Board[AFrom.X][AFrom.Y] in [ctWBishop, ctBBishop] then result := ValidateBishopMove(AFrom,ATo)
+  else if Board[AFrom.X][AFrom.Y] in [ctWQueen, ctBQueen] then result := ValidateQueenMove(AFrom,ATo)
+  else if Board[AFrom.X][AFrom.Y] in [ctWKing, ctBKing] then result := ValidateKingMove(AFrom,ATo);
 
-	  UpdateTimes();
-	  CurrentPlayerIsWhite := not CurrentPlayerIsWhite;
-  end;
+  if not Result then Exit;
+
+  // Check if the king will be left in check by this move
+  if not CheckKingInCheck(AFrom, ATo, LEnpassantToClear) then Exit;
+
+  // If we arrived here, this means that the move will be really executed
+
+  // Store this move as the previously executed one
+  PreviousMove.From := AFrom;
+  PreviousMove.To_ := ATo;
+  PreviousMove.PieceMoved := Board[AFrom.X][AFrom.Y];
+  PreviousMove.PieceEaten := Board[ATo.X][ATo.Y];
+  EnpassantAllowed := LEnpassantAllowed;
+  EnpassantSquare := LEnpassantSquare;
+
+  // Now we will execute the move
+  // col, row
+  Board[ATo.X][ATo.Y] := Board[AFrom.X][AFrom.Y];
+  Board[AFrom.X][AFrom.Y] := ctEmpty;
+
+  // If Enpassant, clear the remaining pawn
+  if LEnpassantToClear.X <> -1 then
+    Board[LEnpassantToClear.X][LEnpassantToClear.Y] := ctEmpty;
+
+  //
+  UpdateTimes();
+
+  // Change player
+  CurrentPlayerIsWhite := not CurrentPlayerIsWhite;
 end;
 
 //return true if the move of a Rook is valid.
 function TChessGame.ValidateRookMove(AFrom, ATo: TPoint): boolean;
-var AttackedSquares : BitBoard;
-    i,j : Integer;
-    l : integer = 0;
-    haveCaptured: boolean = false; //already have captured a piece
-    willBeACapture : boolean = false;// the movement will be a capture
-    validMove : boolean = false; //if the piece in the 'to' square is not of the same color of the player
+var
+  AttackedSquares: BitBoard;
+  i,j: Integer;
+  l: integer = 0;
+  haveCaptured: boolean = false; //already have captured a piece
+  willBeACapture : boolean = false;// the movement will be a capture
+  validMove: boolean = false; //if the piece in the 'to' square is not of the same color of the player
 //    mensagem : String;
 begin
-
   for i:=1 to 8 do  // initialize the bitboard of attacked pieces.
     for j:=1 to 8 do
       AttackedSquares[i][j]:= false;
-//  ShowMessage('vai passar pelo up');
-
 //////////////////////////////////////UP////////////////////////////////////////
   l := AFrom.y+1;
   if (l<=8) then begin
@@ -387,7 +418,6 @@ begin
   for i:=1 to 8 do  // initialize the bitboard of attacked pieces.
     for j:=1 to 8 do
       AttackedSquares[i][j]:= false;
-//  ShowMessage('vai passar pelo up left');
 //////////////////////////////////////UP LEFT///////////////////////////////////
   y := AFrom.y+1;
   x := AFrom.x-1;
@@ -541,20 +571,18 @@ result := (AttackedSquares[Ato.X][Ato.y]);
 
 end;
 function TChessGame.ValidateQueenMove(AFrom, ATo: TPoint): Boolean;
-var AttackedSquares : BitBoard;
-    i,j : Integer;
-    x,y,l : integer; //l it's the same of the y or x, just an index.
-    haveCaptured: boolean = false; //already have captured a piece
-    willBeACapture : boolean = false;// the movement will be a capture
-    validMove : boolean = false; //if the piece in the 'to' square is not of the same color of the player
-    mensagem : String;
+var
+  AttackedSquares : BitBoard;
+  i,j : Integer;
+  x,y,l : integer; //l it's the same of the y or x, just an index.
+  haveCaptured: boolean = false; //already have captured a piece
+  willBeACapture : boolean = false;// the movement will be a capture
+  validMove : boolean = false; //if the piece in the 'to' square is not of the same color of the player
+  mensagem : String;
 begin
-
   for i:=1 to 8 do  // initialize the bitboard of attacked pieces.
     for j:=1 to 8 do
       AttackedSquares[i][j]:= false;
-//  ShowMessage('vai passar pelo up');
-
 //////////////////////////////////////UP////////////////////////////////////////
   l := AFrom.y+1;
   if (l<=8) then begin
@@ -847,10 +875,10 @@ end;
   The white is always in the bottom at the moment,
   which means the smallest x,y values
 }
-function TChessGame.ValidatePawnMove(AFrom, ATo: TPoint): Boolean;
+function TChessGame.ValidatePawnMove(AFrom, ATo: TPoint;
+  var AEnpassantAllowed: Boolean; var AEnpassantSquare, AEnpassantSquareToClear: TPoint): Boolean;
 begin
-  // ToDo: Verify if the kind will be in check
-
+  AEnpassantAllowed := False;
   Result := False;
 
   if CurrentPlayerIsWhite then
@@ -864,7 +892,8 @@ begin
     else if (AFrom.X = ATo.X) and (AFrom.Y = 2) and (AFrom.Y = ATo.Y - 2) then
     begin
       Result := not IsSquareOccupied(ATo);
-      EnPassant[1][AFrom.X]:=True;
+      AEnpassantAllowed := True;
+      AEnpassantSquare := Point(AFrom.X, ATo.Y - 1);
     end
     // Normal capture in the left
     else if (ATo.X = AFrom.X-1) and (ATo.Y = AFrom.Y+1) and (Board[ATo.X][ATo.Y] in BlackPieces) then
@@ -877,16 +906,18 @@ begin
       Result := True;
     end
     // En Passant Capture in the left
-    else if (EnPassant[2][AFrom.X-1]= true) and (AFrom.Y = 5) and (ATo.X = AFrom.X-1) and (ATo.Y = AFrom.Y+1) and (Board[ATo.X][ATo.Y-1] in BlackPieces) then
+    else if EnPassantAllowed and (EnPassantSquare = ATo) and
+      (ATo.X = AFrom.X-1) and (ATo.Y = AFrom.Y+1) then
     begin
       Result := True;
-      Board[ATo.X][ATo.Y-1]:=ctEmpty;
+      AEnpassantSquareToClear := Point(ATo.X, ATo.Y-1);
     end
     // En Passant Capture in the right
-    else if (EnPassant[2][AFrom.X+1]= true) and (AFrom.Y = 5) and (ATo.X = AFrom.X+1) and (ATo.Y = AFrom.Y+1) and (Board[ATo.X][ATo.Y-1] in BlackPieces) then
+    else if EnPassantAllowed and (EnPassantSquare = ATo) and
+      (ATo.X = AFrom.X+1) and (ATo.Y = AFrom.Y+1) then
     begin
       Result := True;
-      Board[ATo.X][ATo.Y-1]:=ctEmpty;
+      AEnpassantSquareToClear := Point(ATo.X, ATo.Y-1);
     end;
   end
   else
@@ -900,7 +931,8 @@ begin
     else if (AFrom.X = ATo.X) and (AFrom.Y = 7) and (AFrom.Y = ATo.Y + 2) then
     begin
       Result := not IsSquareOccupied(ATo);
-      EnPassant[2][AFrom.X]:=True;
+      AEnpassantAllowed := True;
+      AEnpassantSquare := Point(AFrom.X, ATo.Y + 1);
     end
     // Capture a piece in the left
     else if (ATo.X = AFrom.X-1) and (ATo.Y = AFrom.Y-1) and (Board[ATo.X][ATo.Y] in WhitePieces) then
@@ -913,16 +945,19 @@ begin
       Result := True;
     end
     // En Passant Capture in the left
-    else if (EnPassant[1][AFrom.X-1]= true) and (AFrom.Y = 4) and (ATo.X = AFrom.X-1) and (ATo.Y = AFrom.Y-1) and (Board[ATo.X][ATo.Y+1] in WhitePieces) then
+    else if EnPassantAllowed and (EnPassantSquare = ATo) and
+      (ATo.X = AFrom.X-1) and (ATo.Y = AFrom.Y-1) then
     begin
       Result := True;
-      Board[ATo.X][ATo.Y+1]:=ctEmpty;
+      AEnpassantSquareToClear := Point(ATo.X, ATo.Y+1);
     end
     // En Passant Capture in the right
-    else if (EnPassant[1][AFrom.X+1]= true) and (AFrom.Y = 4) and (ATo.X = AFrom.X+1) and (ATo.Y = AFrom.Y-1) and (Board[ATo.X][ATo.Y+1] in WhitePieces) then
+    else if EnPassantAllowed and (EnPassantSquare = ATo) and
+      (ATo.X = AFrom.X+1) and (ATo.Y = AFrom.Y-1) then
     begin
       Result := True;
-      Board[ATo.X][ATo.Y+1]:=ctEmpty;
+      // Don't clear immediately because we haven't yet checked for kind check
+      AEnpassantSquareToClear := Point(ATo.X, ATo.Y+1);
     end;
   end;
 end;
@@ -961,6 +996,16 @@ begin
     Result := Board[AFrom.X][AFrom.Y] in WhitePieces
   else
     Result := Board[AFrom.X][AFrom.Y] in BlackPieces;
+end;
+
+// True  - The King will not be in check
+// False - The King will be in check
+//
+// if AEnpassantSquareToClear.X = -1 then it is not an enpassant attack
+function TChessGame.CheckKingInCheck(AFrom, ATo, AEnpassantSquareToClear: TPoint
+  ): Boolean;
+begin
+  Result := True;
 end;
 
 initialization
