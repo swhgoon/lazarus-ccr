@@ -48,6 +48,8 @@ type
 const
   WhitePieces = [ctWPawn, ctWKnight, ctWBishop, ctWRook, ctWQueen, ctWKing];
   BlackPieces = [ctBPawn, ctBKnight, ctBBishop, ctBRook, ctBQueen, ctBKing];
+  WhitePiecesOrEmpty = [ctEmpty, ctWPawn, ctWKnight, ctWBishop, ctWRook, ctWQueen, ctWKing];
+  BlackPiecesOrEmpty = [ctEmpty, ctBPawn, ctBKnight, ctBBishop, ctBRook, ctBQueen, ctBKing];
 
 type
   {@@
@@ -87,6 +89,7 @@ type
     procedure StartNewGame(APlayAsWhite: Integer; AUseTimer: Boolean; APlayerTime: Integer); overload;
     function ClientToBoardCoords(AClientCoords: TPoint): TPoint;
     function CheckStartMove(AFrom: TPoint): Boolean;
+    function CheckEndMove(ATo: TPoint): Boolean;
     function CheckKingInCheck(AFrom, ATo, AEnpassantSquareToClear: TPoint): Boolean;
     function MovePiece(AFrom, ATo: TPoint): Boolean;
     function ValidateRookMove(AFrom, ATo: TPoint) : boolean;
@@ -201,8 +204,9 @@ begin
   LEnpassantToClear.X := -1;
   Result := False;
 
-  // Verify if the starting square contains a valid piece
+  // Verify what is in the start and destination squares
   if not CheckStartMove(AFrom) then Exit;
+  if not CheckEndMove(ATo) then Exit;
 
   // Verify if the movement is in accordace to the rules for this piece
   if Board[AFrom.X][AFrom.Y] in [ctWPawn, ctBPawn] then result := ValidatePawnMove(AFrom,ATo, LEnpassantAllowed, LEnpassantSquare, LEnpassantToClear)
@@ -246,160 +250,48 @@ end;
 //return true if the move of a Rook is valid.
 function TChessGame.ValidateRookMove(AFrom, ATo: TPoint): boolean;
 var
-  AttackedSquares: BitBoard;
-  i,j: Integer;
-  l: integer = 0;
-  haveCaptured: boolean = false; //already have captured a piece
-  willBeACapture : boolean = false;// the movement will be a capture
-  validMove: boolean = false; //if the piece in the 'to' square is not of the same color of the player
-//    mensagem : String;
+  i: Integer;
 begin
-  for i:=1 to 8 do  // initialize the bitboard of attacked pieces.
-    for j:=1 to 8 do
-      AttackedSquares[i][j]:= false;
-//////////////////////////////////////UP////////////////////////////////////////
-  l := AFrom.y+1;
-  if (l<=8) then begin
-  	if (CurrentPlayerIsWhite) then begin
-      willBeACapture:= (Board[AFrom.x][l] in BlackPieces);
-      validMove:= not (Board[AFrom.x][l] in WhitePieces);
-    end
-    else begin
-      willBeACapture:=(Board[AFrom.x][l] in WhitePieces);
-      validMove:=not (Board[AFrom.x][l] in BlackPieces)
-    end;
-  end
-  else
-    l :=0; // if it is in the border of the board, put 0 in l to skip the while below.
-  haveCaptured:=false;
-  while ( (l <= 8) and (validMove) and (not haveCaptured)) do begin
-    AttackedSquares[AFrom.x][l] := true;
-    if (willBeACapture) then
-      haveCaptured:=true;
-    l := l+1;
-    if (l<=8) then begin //again to not have an 'out of bounds' error
-  	  if (CurrentPlayerIsWhite) then begin
-        willBeACapture:= (Board[AFrom.x][l] in BlackPieces);
-        validMove:= not (Board[AFrom.x][l] in WhitePieces);
-      end
-      else begin
-        willBeACapture:=(Board[AFrom.x][l] in WhitePieces);
-        validMove:=not (Board[AFrom.x][l] in BlackPieces)
-      end;
-    end;
+  Result := False;
+
+  //////////////////////////////////////UP////////////////////////////////////////
+  if (AFrom.X = ATo.X) and (AFrom.Y < ATo.Y) then
+  begin
+    // Check if there are pieces in the middle of the way
+    for i := AFrom.Y + 1 to ATo.Y - 1 do
+      if Board[AFrom.X][i] <> ctEmpty then Exit;
+
+    Exit(True);
   end;
-///////////////////////////////////END UP///////////////////////////////////////
 ///////////////////////////////////DOWN/////////////////////////////////////////
-  haveCaptured:=false;
-  l := AFrom.y-1;
-  if (l>=1) then begin
-  	if (CurrentPlayerIsWhite) then begin
-      willBeACapture:= (Board[AFrom.x][l] in BlackPieces);
-      validMove:= not (Board[AFrom.x][l] in WhitePieces);
-    end
-    else begin
-      willBeACapture:=(Board[AFrom.x][l] in WhitePieces);
-      validMove:=not (Board[AFrom.x][l] in BlackPieces)
-    end;
-  end
-  else
-    l :=0; // if it is in the border of the board, put 0 in l to skip the while below.
-  haveCaptured:=false;
-  while ( (l >= 1) and (validMove) and (not haveCaptured)) do begin
-    AttackedSquares[AFrom.x][l] := true;
-    if (willBeACapture) then
-      haveCaptured:=true;
-    l := l-1;
-    if (l>=1) then begin //again to not have an 'out of bounds' error
-  	  if (CurrentPlayerIsWhite) then begin
-        willBeACapture:= (Board[AFrom.x][l] in BlackPieces);
-        validMove:= not (Board[AFrom.x][l] in WhitePieces);
-      end
-      else begin
-        willBeACapture:=(Board[AFrom.x][l] in WhitePieces);
-        validMove:=not (Board[AFrom.x][l] in BlackPieces)
-      end;
-    end;
+  if (AFrom.X = ATo.X) and (AFrom.Y > ATo.Y) then
+  begin
+    // Check if there are pieces in the middle of the way
+    for i := AFrom.Y - 1 downto ATo.Y + 1 do
+      if Board[AFrom.X][i] <> ctEmpty then Exit;
+
+    Exit(True);
   end;
-///////////////////////////////////END DOWN/////////////////////////////////////
 ////////////////////////////////////RIGHT////////////////////////////////////////
-  haveCaptured:=false;
-  l := AFrom.x+1;
-  if (l<=8) then begin
-  	if (CurrentPlayerIsWhite) then begin
-      willBeACapture:= (Board[l][AFrom.y] in BlackPieces);
-      validMove:= not (Board[l][AFrom.y] in WhitePieces);
-    end
-    else begin
-      willBeACapture:=(Board[l][AFrom.y] in WhitePieces);
-      validMove:=not (Board[l][AFrom.y] in BlackPieces)
-    end;
-  end
-  else
-    l :=0; // if it is in the border of the board, put 0 in l to skip the while below.
-  haveCaptured:=false;
-  while ( (l <= 8) and (validMove) and (not haveCaptured)) do begin
-    AttackedSquares[l][AFrom.y] := true;
-    if (willBeACapture) then
-      haveCaptured:=true;
-    l := l+1;
-    if (l<=8) then begin //again to not have an 'out of bounds' error
-  	  if (CurrentPlayerIsWhite) then begin
-        willBeACapture:= (Board[l][AFrom.y] in BlackPieces);
-        validMove:= not (Board[l][AFrom.y] in WhitePieces);
-      end
-      else begin
-        willBeACapture:=(Board[l][AFrom.y] in WhitePieces);
-        validMove:=not (Board[l][AFrom.y] in BlackPieces)
-      end;
-    end;
+  if (AFrom.X < ATo.X) and (AFrom.Y = ATo.Y) then
+  begin
+    // Check if there are pieces in the middle of the way
+    for i := AFrom.X + 1 to ATo.X - 1 do
+      if Board[i][AFrom.Y] <> ctEmpty then Exit;
+
+    Exit(True);
   end;
-///////////////////////////////////END RIGHT////////////////////////////////////
 ///////////////////////////////////LEFT/////////////////////////////////////////
-  haveCaptured:=false;
-  l := AFrom.x-1;
-  if (l>=1) then begin
-  	if (CurrentPlayerIsWhite) then begin
-      willBeACapture:= (Board[l][AFrom.y] in BlackPieces);
-      validMove:= not (Board[l][AFrom.y] in WhitePieces);
-    end
-    else begin
-      willBeACapture:=(Board[l][AFrom.y] in WhitePieces);
-      validMove:=not (Board[l][AFrom.y] in BlackPieces)
-    end;
-  end
-  else
-    l :=0; // if it is in the border of the board, put 0 in l to skip the while below.
-  haveCaptured:=false;
-  while ( (l >= 1) and (validMove) and (not haveCaptured)) do begin
-    AttackedSquares[l][AFrom.y] := true;
-    if (willBeACapture) then
-      haveCaptured:=true;
-    l := l-1;
-    if (l>=1) then begin //again to not have an 'out of bounds' error
-  	  if (CurrentPlayerIsWhite) then begin
-        willBeACapture:= (Board[l][AFrom.y] in BlackPieces);
-        validMove:= not (Board[l][AFrom.y] in WhitePieces);
-      end
-      else begin
-        willBeACapture:=(Board[l][AFrom.y] in WhitePieces);
-        validMove:=not (Board[l][AFrom.y] in BlackPieces)
-      end;
-    end;
+  if (AFrom.X > ATo.X) and (AFrom.Y = ATo.Y) then
+  begin
+    // Check if there are pieces in the middle of the way
+    for i := AFrom.X - 1 downto ATo.X + 1 do
+      if Board[i][AFrom.Y] <> ctEmpty then Exit;
+
+    Exit(True);
   end;
-///////////////////////////////////END LEFT/////////////////////////////////////
-
-
-{  for i:=1 to 8 do begin //To show the bitboard
-    for j:=1 to 8 do
-      mensagem := mensagem + BoolToStr(AttackedSquares[i][j],'1','0') + ' ';
-  	mensagem := mensagem + #13;
-  end;
-
-ShowMessage(mensagem);}
-//result:=true;
-  	result := (AttackedSquares[Ato.X][Ato.y]);
 end;
+
 function TChessGame.ValidateKnightMove(AFrom, ATo: TPoint): Boolean;
 begin
   Result := True;
@@ -868,6 +760,9 @@ end;
 
 function TChessGame.ValidateKingMove(AFrom, ATo: TPoint): Boolean;
 begin
+  Result := False;
+  if (AFrom.X > ATo.X + 1) or (AFrom.X + 1 < ATo.X) then Exit;
+  if (AFrom.Y > ATo.Y + 1) or (AFrom.Y + 1 < ATo.Y) then Exit;
   Result := True;
 end;
 
@@ -987,7 +882,18 @@ begin
   Result.Y := 1 + (INT_CHESSBOARD_SIZE - AClientCoords.Y) div INT_CHESSTILE_SIZE;
 end;
 
+// Check if we are moving to either an empty space or to an enemy piece
+function TChessGame.CheckEndMove(ATo: TPoint): Boolean;
+begin
+  if CurrentPlayerIsWhite then
+    Result := Board[ATo.X][ATo.Y] in BlackPiecesOrEmpty
+  else
+    Result := Board[ATo.X][ATo.Y] in WhitePiecesOrEmpty;
+end;
+
 {@@
+  Check if we are moving one of our own pieces
+
   AFrom - The start move position in board coordinates
 }
 function TChessGame.CheckStartMove(AFrom: TPoint): Boolean;
