@@ -17,11 +17,16 @@ uses
   fpvectorial;
 
 procedure DrawFPVectorialToCanvas(ASource: TvVectorialDocument;
-  {$ifdef USE_LCL_CANVAS}
-  ADest: TCanvas;
-  {$else}
-  ADest: TFPCustomCanvas;
-  {$endif}
+  {$ifdef USE_LCL_CANVAS}ADest: TCanvas;{$else}ADest: TFPCustomCanvas;{$endif}
+  ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
+procedure DrawFPVPathsToCanvas(ASource: TvVectorialDocument;
+  {$ifdef USE_LCL_CANVAS}ADest: TCanvas;{$else}ADest: TFPCustomCanvas;{$endif}
+  ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
+procedure DrawFPVEntitiesToCanvas(ASource: TvVectorialDocument;
+  {$ifdef USE_LCL_CANVAS}ADest: TCanvas;{$else}ADest: TFPCustomCanvas;{$endif}
+  ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
+procedure DrawFPVTextToCanvas(ASource: TvVectorialDocument;
+  {$ifdef USE_LCL_CANVAS}ADest: TCanvas;{$else}ADest: TFPCustomCanvas;{$endif}
   ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
 
 implementation
@@ -112,11 +117,24 @@ end;
 }
 {$define FPVECTORIAL_TOCANVAS_DEBUG}
 procedure DrawFPVectorialToCanvas(ASource: TvVectorialDocument;
-  {$ifdef USE_LCL_CANVAS}
-  ADest: TCanvas;
-  {$else}
-  ADest: TFPCustomCanvas;
+  {$ifdef USE_LCL_CANVAS}ADest: TCanvas;{$else}ADest: TFPCustomCanvas;{$endif}
+  ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
+begin
+  {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
+  WriteLn(':>DrawFPVectorialToCanvas');
   {$endif}
+
+  DrawFPVPathsToCanvas(ASource, ADest, ADestX, ADestY, AMulX, AMulY);
+  DrawFPVEntitiesToCanvas(ASource, ADest, ADestX, ADestY, AMulX, AMulY);
+  DrawFPVTextToCanvas(ASource, ADest, ADestX, ADestY, AMulX, AMulY);
+
+  {$ifdef FPVECTORIALDEBUG}
+  WriteLn(':<DrawFPVectorialToCanvas');
+  {$endif}
+end;
+
+procedure DrawFPVPathsToCanvas(ASource: TvVectorialDocument;
+  {$ifdef USE_LCL_CANVAS}ADest: TCanvas;{$else}ADest: TFPCustomCanvas;{$endif}
   ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
 
   function CoordToCanvasX(ACoord: Double): Integer;
@@ -139,26 +157,7 @@ var
   CurX, CurY: Integer; // Not modified by ADestX, etc
   CurveLength: Integer;
   t: Double;
-  // For text
-  CurText: TvText;
-  // For entities
-  CurEntity: TvEntity;
-  CurCircle: TvCircle;
-  CurEllipse: TvEllipse;
-  //
-  CurArc: TvCircularArc;
-  FinalStartAngle, FinalEndAngle, tmpAngle: double;
-  BoundsLeft, BoundsTop, BoundsRight, BoundsBottom,
-   IntStartAngle, IntAngleLength, IntTmp: Integer;
-  //
-  CurDim: TvAlignedDimension;
-  Points: array of TPoint;
-  UpperDim, LowerDim: T3DPoint;
 begin
-  {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
-  WriteLn(':>DrawFPVectorialToCanvas');
-  {$endif}
-
   PosX := 0;
   PosY := 0;
   ADest.Brush.Style := bsClear;
@@ -222,6 +221,39 @@ begin
     WriteLn('');
     {$endif}
   end;
+end;
+
+procedure DrawFPVEntitiesToCanvas(ASource: TvVectorialDocument;
+  {$ifdef USE_LCL_CANVAS}ADest: TCanvas;{$else}ADest: TFPCustomCanvas;{$endif}
+  ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
+
+  function CoordToCanvasX(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestX + AmulX * ACoord);
+  end;
+
+  function CoordToCanvasY(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestY + AmulY * ACoord);
+  end;
+
+var
+  i: Integer;
+  // For entities
+  CurEntity: TvEntity;
+  CurCircle: TvCircle;
+  CurEllipse: TvEllipse;
+  //
+  CurArc: TvCircularArc;
+  FinalStartAngle, FinalEndAngle: double;
+  BoundsLeft, BoundsTop, BoundsRight, BoundsBottom,
+   IntStartAngle, IntAngleLength, IntTmp: Integer;
+  //
+  CurDim: TvAlignedDimension;
+  Points: array of TPoint;
+  UpperDim, LowerDim: T3DPoint;
+begin
+  ADest.Brush.Style := bsClear;
 
   // Draws all entities
   for i := 0 to ASource.GetEntityCount - 1 do
@@ -289,10 +321,12 @@ begin
       WriteLn(Format('Drawing Arc Center=%f,%f Radius=%f StartAngle=%f AngleLength=%f',
         [CurArc.CenterX, CurArc.CenterY, CurArc.Radius, IntStartAngle/16, IntAngleLength/16]));
       {$endif}
+      ADest.Pen.Color := {$ifdef USE_LCL_CANVAS}VColorToTColor(CurArc.PenColor);{$else}VColorToFPColor(CurArc.PenColor);{$endif}
       ADest.Arc(
         BoundsLeft, BoundsTop, BoundsRight, BoundsBottom,
         IntStartAngle, IntAngleLength
         );
+      ADest.Pen.Color := clBlack;
       // Debug info
 //      {$define FPVECTORIALDEBUG}
 //      {$ifdef FPVECTORIALDEBUG}
@@ -397,7 +431,29 @@ begin
       ADest.TextOut(CoordToCanvasX(CurDim.BaseLeft.X), CoordToCanvasY(CurDim.BaseLeft.Y), 'BL');}
     end;
   end;
+end;
 
+procedure DrawFPVTextToCanvas(ASource: TvVectorialDocument;
+  {$ifdef USE_LCL_CANVAS}ADest: TCanvas;{$else}ADest: TFPCustomCanvas;{$endif}
+  ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
+
+  function CoordToCanvasX(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestX + AmulX * ACoord);
+  end;
+
+  function CoordToCanvasY(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestY + AmulY * ACoord);
+  end;
+
+var
+  i: Integer;
+  // For text
+  CurText: TvText;
+  //
+  LowerDim: T3DPoint;
+begin
   // Draws all text
   for i := 0 to ASource.GetTextCount - 1 do
   begin
@@ -413,10 +469,6 @@ begin
     LowerDim.Y := CurText.Y + CurText.FontSize;
     ADest.TextOut(CoordToCanvasX(CurText.X), CoordToCanvasY(LowerDim.Y), CurText.Value);
   end;
-
-  {$ifdef FPVECTORIALDEBUG}
-  WriteLn(':<DrawFPVectorialToCanvas');
-  {$endif}
 end;
 
 end.

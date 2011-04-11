@@ -515,6 +515,7 @@ var
   // LINE
   LineStartX, LineStartY, LineStartZ: Double;
   LineEndX, LineEndY, LineEndZ: Double;
+  LLineColor: TvColor;
 begin
   // Initial values
   LineStartX := 0;
@@ -523,6 +524,7 @@ begin
   LineEndX := 0;
   LineEndY := 0;
   LineEndZ := 0;
+  LLineColor := clvBlack;
 
   for i := 0 to ATokens.Count - 1 do
   begin
@@ -530,7 +532,7 @@ begin
     CurToken := TDXFToken(ATokens.Items[i]);
 
     // Avoid an exception by previously checking if the conversion can be made
-    if CurToken.GroupCode in [10, 20, 30, 11, 21, 31] then
+    if CurToken.GroupCode in [10, 20, 30, 11, 21, 31, 62] then
     begin
       CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
     end;
@@ -542,6 +544,7 @@ begin
       11: LineEndX := CurToken.FloatValue;
       21: LineEndY := CurToken.FloatValue;
       31: LineEndZ := CurToken.FloatValue;
+      62: LLineColor := DXFColorIndexToVColor(Trunc(CurToken.FloatValue));
     end;
   end;
 
@@ -556,7 +559,7 @@ begin
  // WriteLn(Format('Adding Line from %f,%f to %f,%f', [LineStartX, LineStartY, LineEndX, LineEndY]));
   {$endif}
   AData.StartPath(LineStartX, LineStartY);
-  AData.AddLineToPath(LineEndX, LineEndY);
+  AData.AddLineToPath(LineEndX, LineEndY, LLineColor);
   AData.EndPath();
 end;
 
@@ -580,6 +583,7 @@ var
   CurToken: TDXFToken;
   i: Integer;
   CenterX, CenterY, CenterZ, Radius, StartAngle, EndAngle: Double;
+  LColor: TvColor;
 begin
   CenterX := 0.0;
   CenterY := 0.0;
@@ -587,6 +591,7 @@ begin
   Radius := 0.0;
   StartAngle := 0.0;
   EndAngle := 0.0;
+  LColor := clvBlack;
 
   for i := 0 to ATokens.Count - 1 do
   begin
@@ -594,7 +599,7 @@ begin
     CurToken := TDXFToken(ATokens.Items[i]);
 
     // Avoid an exception by previously checking if the conversion can be made
-    if CurToken.GroupCode in [10, 20, 30, 40, 50, 51] then
+    if CurToken.GroupCode in [10, 20, 30, 40, 50, 51, 62] then
     begin
       CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
     end;
@@ -606,6 +611,7 @@ begin
       40: Radius := CurToken.FloatValue;
       50: StartAngle := CurToken.FloatValue;
       51: EndAngle := CurToken.FloatValue;
+      62: LColor := DXFColorIndexToVColor(Trunc(CurToken.FloatValue));
     end;
   end;
 
@@ -621,7 +627,7 @@ begin
   WriteLn(Format('Adding Arc Center=%f,%f Radius=%f StartAngle=%f EndAngle=%f',
     [CenterX, CenterY, Radius, StartAngle, EndAngle]));
   {$endif}
-  AData.AddCircularArc(CenterX, CenterY, CenterZ, Radius, StartAngle, EndAngle);
+  AData.AddCircularArc(CenterX, CenterY, CenterZ, Radius, StartAngle, EndAngle, LColor);
 end;
 
 {
@@ -1102,11 +1108,7 @@ begin
     case CurToken.GroupCode of
       10: Polyline[curPoint].X := CurToken.FloatValue - DOC_OFFSET.X;
       20: Polyline[curPoint].Y := CurToken.FloatValue - DOC_OFFSET.Y;
-      62:
-      begin
-        if (CurToken.FloatValue >= 0) and (CurToken.FloatValue <= 15) then
-          Polyline[curPoint].Color := DXFColorIndexToVColor(Trunc(CurToken.FloatValue));
-      end;
+      62: Polyline[curPoint].Color := DXFColorIndexToVColor(Trunc(CurToken.FloatValue));
     end;
   end;
 end;
@@ -1230,7 +1232,7 @@ end;
 function TvDXFVectorialReader.DXFColorIndexToVColor(AColorIndex: Integer
   ): TvColor;
 begin
-  if (AColorIndex <= 0) and (AColorIndex <= 15) then
+  if (AColorIndex >= 0) and (AColorIndex <= 15) then
     Result := AUTOCAD_COLOR_PALETTE[AColorIndex]
   else
     raise Exception.Create(Format('[TvDXFVectorialReader.DXFColorIndexToFPVColor] Invalid DXF Color Index: %d', [AColorIndex]));

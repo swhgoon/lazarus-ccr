@@ -18,7 +18,8 @@ unit fpvectorial;
 interface
 
 uses
-  Classes, SysUtils, Math;
+  Classes, SysUtils, Math,
+  fpcanvas;
 
 type
   TvVectorialFormat = (
@@ -74,6 +75,8 @@ type
     // Fields for linking the list
     Previous: TPathSegment;
     Next: TPathSegment;
+    // Data fields
+    Color: TvColor;
   end;
 
   {@@
@@ -86,7 +89,6 @@ type
   T2DSegment = class(TPathSegment)
   public
     X, Y: Double;
-    Color: TvColor;
   end;
 
   {@@
@@ -138,12 +140,20 @@ type
     FontSize: integer;
     FontName: utf8string;
     Value: utf8string;
+    Color: TvColor;
   end;
 
   {@@
   }
   TvEntity = class
   public
+    // Pen
+    PenColor: TvColor;
+    PenStyle: TFPPenStyle;
+    PenWidth: Integer;
+    // Brush
+    BrushStyle: TFPBrushStyle;
+    BrushColor: TvColor;
   end;
 
   {@@
@@ -245,7 +255,7 @@ type
     procedure AddText(AX, AY, AZ: Double; FontName: string; FontSize: integer; AText: utf8string); overload;
     procedure AddText(AX, AY, AZ: Double; AStr: utf8string); overload;
     procedure AddCircle(ACenterX, ACenterY, ACenterZ, ARadius: Double);
-    procedure AddCircularArc(ACenterX, ACenterY, ACenterZ, ARadius, AStartAngle, AEndAngle: Double);
+    procedure AddCircularArc(ACenterX, ACenterY, ACenterZ, ARadius, AStartAngle, AEndAngle: Double; AColor: TvColor);
     procedure AddEllipse(CenterX, CenterY, CenterZ, MajorHalfAxis, MinorHalfAxis, Angle: Double);
     // Dimensions
     procedure AddAlignedDimension(BaseLeft, BaseRight, DimLeft, DimRight: T3DPoint);
@@ -538,6 +548,7 @@ begin
   segment.SegmentType := st2DLine;
   segment.X := AX;
   segment.Y := AY;
+  segment.Color := clvBlack;
 
   AppendSegmentToTmpPath(segment);
 end;
@@ -659,7 +670,7 @@ begin
 end;
 
 procedure TvVectorialDocument.AddCircularArc(ACenterX, ACenterY, ACenterZ,
-  ARadius, AStartAngle, AEndAngle: Double);
+  ARadius, AStartAngle, AEndAngle: Double; AColor: TvColor);
 var
   lCircularArc: TvCircularArc;
 begin
@@ -670,6 +681,7 @@ begin
   lCircularArc.Radius := ARadius;
   lCircularArc.StartAngle := AStartAngle;
   lCircularArc.EndAngle := AEndAngle;
+  lCircularArc.PenColor := AColor;
   FEntities.Add(lCircularArc);
 end;
 
