@@ -76,7 +76,9 @@ type
     Previous: TPathSegment;
     Next: TPathSegment;
     // Data fields
-    Color: TvColor;
+    PenColor: TvColor;
+    PenStyle: TFPPenStyle;
+    PenWidth: Integer;
   end;
 
   {@@
@@ -548,7 +550,7 @@ begin
   segment.SegmentType := st2DLine;
   segment.X := AX;
   segment.Y := AY;
-  segment.Color := clvBlack;
+  segment.PenColor := clvBlack;
 
   AppendSegmentToTmpPath(segment);
 end;
@@ -561,7 +563,7 @@ begin
   segment.SegmentType := st2DLine;
   segment.X := AX;
   segment.Y := AY;
-  segment.Color := AColor;
+  segment.PenColor := AColor;
 
   AppendSegmentToTmpPath(segment);
 end;

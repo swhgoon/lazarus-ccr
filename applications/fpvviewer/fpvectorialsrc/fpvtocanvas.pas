@@ -189,7 +189,7 @@ begin
       end;
       st2DLine, st3DLine:
       begin
-        ADest.Pen.Color := {$ifdef USE_LCL_CANVAS}VColorToTColor(Cur2DSegment.Color);{$else}VColorToFPColor(Cur2DSegment.Color);{$endif}
+        ADest.Pen.Color := {$ifdef USE_LCL_CANVAS}VColorToTColor(Cur2DSegment.PenColor);{$else}VColorToFPColor(Cur2DSegment.PenColor);{$endif}
         ADest.LineTo(CoordToCanvasX(Cur2DSegment.X), CoordToCanvasY(Cur2DSegment.Y));
         ADest.Pen.Color := clBlack;
         {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
