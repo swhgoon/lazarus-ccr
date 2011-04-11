@@ -321,166 +321,61 @@ end;
 
 function TChessGame.ValidateBishopMove(AFrom, ATo: TPoint): Boolean;
 var
-  AttackedSquares : BitBoard;
   i,j : Integer;
-  x,y : integer;
-  haveCaptured: boolean = false; //already have captured a piece
-  willBeACapture : boolean = false;// the movement will be a capture
-  validMove : boolean = false; //if the piece in the 'to' square is not of the same color of the player
-  mensagem : String;
 begin
-  for i:=1 to 8 do  // initialize the bitboard of attacked pieces.
-    for j:=1 to 8 do
-      AttackedSquares[i][j]:= false;
-//////////////////////////////////////UP LEFT///////////////////////////////////
-  y := AFrom.y+1;
-  x := AFrom.x-1;
-  if (x>=1) and (y<=8) then begin
-  	if (CurrentPlayerIsWhite) then begin
-      willBeACapture:= (Board[x][y] in BlackPieces);
-      validMove:= not (Board[x][y] in WhitePieces);
-    end
-    else begin
-      willBeACapture:=(Board[x][y] in WhitePieces);
-      validMove:=not (Board[x][y] in BlackPieces)
+  result :=false;
+  //Up left
+  if (AFrom.X>ATo.X) and (AFrom.Y<ATo.Y) and (AFrom.X-ATo.X=ATo.Y-AFrom.Y)then
+  begin
+    i := AFrom.X-1;
+    j := AFrom.Y+1;
+    while (i>=ATo.X+1) and (j<=ATo.Y-1) do
+    begin
+      if Board[i][j] <> ctEmpty then Exit;
+      i := i - 1;
+      j := j + 1;
     end;
-  end
-  else
-    y :=0; // if it is in the border of the board, put 0 in l to skip the while below.
-  haveCaptured:=false;
-  while ( (x>=1) and (y <= 8) and (validMove) and (not haveCaptured)) do begin
-    AttackedSquares[x][y] := true;
-    if (willBeACapture) then
-      haveCaptured:=true;
-    y := y+1;
-    x := x-1;
-    if (x>=1) and (y<=8) then begin //again to not have an 'out of bounds' error
-  	  if (CurrentPlayerIsWhite) then begin
-        willBeACapture:= (Board[x][y] in BlackPieces);
-        validMove:= not (Board[x][y] in WhitePieces);
-      end
-      else begin
-        willBeACapture:=(Board[x][y] in WhitePieces);
-        validMove:=not (Board[x][y] in BlackPieces)
-      end;
-    end;
+    exit(True);
   end;
-///////////////////////////////////END UP LEFT//////////////////////////////////
-
-//////////////////////////////////////UP RIGHT//////////////////////////////////
-  y := AFrom.y+1;
-  x := AFrom.x+1;
-  willBeACapture:=false;
-  if (x<=8) and (y<=8) then begin
-  	if (CurrentPlayerIsWhite) then begin
-      willBeACapture:= (Board[x][y] in BlackPieces);
-      validMove:= not (Board[x][y] in WhitePieces);
-    end
-    else begin
-      willBeACapture:=(Board[x][y] in WhitePieces);
-      validMove:=not (Board[x][y] in BlackPieces)
+  //Up right
+  if (AFrom.X<ATo.X) and (AFrom.Y<ATo.Y) and (ATo.X-AFrom.X=ATo.Y-AFrom.Y) then
+  begin
+    i := AFrom.X+1;
+    j := AFrom.Y+1;
+    while (i<=ATo.X-1) and (j<=ATo.Y-1) do
+    begin
+      if Board[i][j] <> ctEmpty then Exit;
+      i := i + 1;
+      j := j + 1;
     end;
-  end
-  else
-    y :=0; // if it is in the border of the board, put 0 in l to skip the while below.
-  haveCaptured:=false;
-  while ( (x<=8) and (y <= 8) and (validMove) and (not haveCaptured)) do begin
-    AttackedSquares[x][y] := true;
-    if (willBeACapture) then
-      haveCaptured:=true;
-    y := y+1;
-    x := x+1;
-    if (x<=8) and (y<=8) then begin //again to not have an 'out of bounds' error
-  	  if (CurrentPlayerIsWhite) then begin
-        willBeACapture:= (Board[x][y] in BlackPieces);
-        validMove:= not (Board[x][y] in WhitePieces);
-      end
-      else begin
-        willBeACapture:=(Board[x][y] in WhitePieces);
-        validMove:=not (Board[x][y] in BlackPieces)
-      end;
-    end;
+    exit(True);
   end;
-///////////////////////////////////END UP RIGHT/////////////////////////////////
-//////////////////////////////////////DOWN LEFT/////////////////////////////////
-  y := AFrom.y-1;
-  x := AFrom.x-1;
-  willBeACapture:=false;
-  if (x>=1) and (y>=1) then begin
-  	if (CurrentPlayerIsWhite) then begin
-      willBeACapture:= (Board[x][y] in BlackPieces);
-      validMove:= not (Board[x][y] in WhitePieces);
-    end
-    else begin
-      willBeACapture:=(Board[x][y] in WhitePieces);
-      validMove:=not (Board[x][y] in BlackPieces)
+  //Down left
+  if (AFrom.X>ATo.X) and (AFrom.Y>ATo.Y) and (AFrom.X-ATo.X=AFrom.Y-ATo.Y) then
+  begin
+    i := AFrom.X-1;
+    j := AFrom.Y-1;
+    while (i>=ATo.X+1) and (j>=ATo.Y+1) do
+    begin
+      if Board[i][j] <> ctEmpty then Exit;
+      i := i - 1;
+      j := j - 1;
     end;
-  end
-  else
-    y :=0; // if it is in the border of the board, put 0 in l to skip the while below.
-  haveCaptured:=false;
-  while ( (x>=1) and (y >= 1) and (validMove) and (not haveCaptured)) do begin
-    AttackedSquares[x][y] := true;
-    if (willBeACapture) then
-      haveCaptured:=true;
-    y := y-1;
-    x := x-1;
-    if (x>=1) and (y>=1) then begin //again to not have an 'out of bounds' error
-  	  if (CurrentPlayerIsWhite) then begin
-        willBeACapture:= (Board[x][y] in BlackPieces);
-        validMove:= not (Board[x][y] in WhitePieces);
-      end
-      else begin
-        willBeACapture:=(Board[x][y] in WhitePieces);
-        validMove:=not (Board[x][y] in BlackPieces)
-      end;
-    end;
+    exit(True);
   end;
-///////////////////////////////////END DOWN LEFT////////////////////////////////
-//////////////////////////////////////DOWN RIGHT////////////////////////////////
-  y := AFrom.y-1;
-  x := AFrom.x+1;
-  willBeACapture:=false;
-  if (x<=8) and (y>=1) then begin
-  	if (CurrentPlayerIsWhite) then begin
-      willBeACapture:= (Board[x][y] in BlackPieces);
-      validMove:= not (Board[x][y] in WhitePieces);
-    end
-    else begin
-      willBeACapture:=(Board[x][y] in WhitePieces);
-      validMove:=not (Board[x][y] in BlackPieces)
+  //Down right
+  if (AFrom.X<ATo.X) and (AFrom.Y>ATo.Y) and (ATo.X-AFrom.X=AFrom.Y-ATo.Y)then
+  begin
+    i := AFrom.X+1;
+    j := AFrom.Y-1;
+    while (i<=ATo.X-1) and (j>=ATo.Y+1) do
+    begin
+      if Board[i][j] <> ctEmpty then Exit;
+      i := i + 1;
+      j := j - 1;
     end;
-  end
-  else
-    y :=0; // if it is in the border of the board, put 0 in l to skip the while below.
-  haveCaptured:=false;
-  while ( (x<=8) and (y >= 1) and (validMove) and (not haveCaptured)) do begin
-    AttackedSquares[x][y] := true;
-    if (willBeACapture) then
-      haveCaptured:=true;
-    y := y-1;
-    x := x+1;
-    if (x<=8) and (y>=1) then begin //again to not have an 'out of bounds' error
-  	  if (CurrentPlayerIsWhite) then begin
-        willBeACapture:= (Board[x][y] in BlackPieces);
-        validMove:= not (Board[x][y] in WhitePieces);
-      end
-      else begin
-        willBeACapture:=(Board[x][y] in WhitePieces);
-        validMove:=not (Board[x][y] in BlackPieces)
-      end;
-    end;
+    exit(True);
   end;
-///////////////////////////////////END DOWN RIGHT///////////////////////////////
-
-  {for i:=1 to 8 do begin //To show the bitboard
-    for j:=1 to 8 do
-      mensagem := mensagem + BoolToStr(AttackedSquares[i][j],'1','0') + ' ';
-  	mensagem := mensagem + #13;
-  end;
-
-ShowMessage(mensagem);}
-  result := (AttackedSquares[Ato.X][Ato.y]);
 end;
 
 function TChessGame.ValidateQueenMove(AFrom, ATo: TPoint): Boolean;
