@@ -81,8 +81,10 @@ type
     // Last move (might in the future store all history)
     PreviousMove: TChessMove;
     // Data for Enpassant
-    EnpassantAllowed: Boolean;
-    EnpassantSquare: TPoint;
+    EnpassantSquare: TPoint; // Negative coords indicate that it is not allowed
+    // Data for the Roque
+    IsWhiteLeftRoquePossible, IsWhiteRightRoquePossible: Boolean;
+    IsBlackLeftRoquePossible, IsBlackRightRoquePossible: Boolean;
     //
     constructor Create;
     procedure StartNewGame(APlayAsWhite: Boolean; AUseTimer: Boolean; APlayerTime: Integer); overload;
@@ -98,7 +100,7 @@ type
     function ValidateQueenMove(AFrom, ATo: TPoint) : boolean;
     function ValidateKingMove(AFrom, ATo: TPoint) : boolean;
     function ValidatePawnMove(AFrom, ATo: TPoint;
-      var AEnpassantAllowed: Boolean; var AEnpassantSquare, AEnpassantSquareToClear: TPoint) : boolean;
+      var AEnpassantSquare, AEnpassantSquareToClear: TPoint) : boolean;
     function IsSquareOccupied(ASquare: TPoint): Boolean;
 
     procedure UpdateTimes();
@@ -135,6 +137,12 @@ begin
   WhitePlayerTime := APlayerTime * 60 * 1000; // minutes to milisseconds
   BlackPlayerTime := APlayerTime * 60 * 1000; // minutes to milisseconds
   MoveStartTime := Now;
+
+  EnpassantSquare := Point(-1, -1); // Negative coords indicate that it is not allowed
+  IsWhiteLeftRoquePossible := True;
+  IsWhiteRightRoquePossible := True;
+  IsBlackLeftRoquePossible := True;
+  IsBlackRightRoquePossible := True;
 
   //
   if APlayAsWhite then
@@ -197,11 +205,10 @@ end;
 function TChessGame.MovePiece(AFrom, ATo: TPoint): Boolean;
 var
   i : integer;
-  LEnpassantAllowed: Boolean;
   LEnpassantSquare, LEnpassantToClear: TPoint;
 begin
-  LEnpassantAllowed := False;
-  LEnpassantToClear.X := -1;
+  LEnpassantSquare := Point(-1, -1);
+  LEnpassantToClear := Point(-1, -1);
   Result := False;
 
   // Verify what is in the start and destination squares
@@ -209,7 +216,7 @@ begin
   if not CheckEndMove(ATo) then Exit;
 
   // Verify if the movement is in accordace to the rules for this piece
-  if Board[AFrom.X][AFrom.Y] in [ctWPawn, ctBPawn] then result := ValidatePawnMove(AFrom,ATo, LEnpassantAllowed, LEnpassantSquare, LEnpassantToClear)
+  if Board[AFrom.X][AFrom.Y] in [ctWPawn, ctBPawn] then result := ValidatePawnMove(AFrom,ATo, LEnpassantSquare, LEnpassantToClear)
   else if Board[AFrom.X][AFrom.Y] in [ctWRook, ctBRook] then result := ValidateRookMove(AFrom,ATo)
   else if Board[AFrom.X][AFrom.Y] in [ctWKnight, ctBKnight] then result := ValidateKnightMove(AFrom,ATo)
   else if Board[AFrom.X][AFrom.Y] in [ctWBishop, ctBBishop] then result := ValidateBishopMove(AFrom,ATo)
@@ -228,7 +235,6 @@ begin
   PreviousMove.To_ := ATo;
   PreviousMove.PieceMoved := Board[AFrom.X][AFrom.Y];
   PreviousMove.PieceEaten := Board[ATo.X][ATo.Y];
-  EnpassantAllowed := LEnpassantAllowed;
   EnpassantSquare := LEnpassantSquare;
 
   // Now we will execute the move
@@ -487,7 +493,35 @@ begin
   Result := False;
 
   // Verify the possibility of a Roque
-  // ToDo
+  if CurrentPlayerIsWhite then
+  begin
+    // Roque to the left
+{    if IsWhiteLeftRoquePossible and (AFrom.X = 5) and (AFrom.Y = 1)
+      and (ATo.X = 7) and (ATo.Y = 1) then
+    begin
+      Board[ATo.X][ATo.Y] :=
+      Board[ATo.X][ATo.Y] :=
+      Board[ATo.X][ATo.Y] :=
+      WhitePieces = [ctWPawn, ctWKnight, ctWBishop, ctWRook, ctWQueen, ctWKing];
+      BlackPieces = [ctBPawn, ctBKnight, ctBBishop, ctBRook, ctBQueen, ctBKing];
+    end;}
+    // Roque to the right
+    if IsWhiteRightRoquePossible and (AFrom.X = 5) and (AFrom.Y = 1)
+      and (ATo.X = 7) and (ATo.Y = 1) then
+    begin
+      Board[AFrom.X][AFrom.Y] := ctEmpty;
+      Board[ATo.X][ATo.Y] := ctWKing;
+      Board[ATo.X + 1][ATo.Y] := ctEmpty;
+      Board[ATo.X - 1][ATo.Y] := ctWRook;
+    end;
+  end
+  else
+  begin
+    // Roque to the left
+//    IsBlackLeftRoquePossible
+    // Roque to the right
+//    IsBlackRightRoquePossible: Boolean;
+  end;
 
   // Simple move
   if (AFrom.X > ATo.X + 1) or (AFrom.X + 1 < ATo.X) then Exit;
@@ -498,11 +532,20 @@ end;
 {
   The white is always in the bottom at the moment,
   which means the smallest x,y values
+
+  If positive coords are feed to AEnpassantSquare, this means that
+  enpassant will be allowed in the next move
+
+  If positive coords are feed to AEnpassantSquareToClear, then we
+  made an enpassant capture and a square is to be cleared from the
+  captured pawn. This isn't done yet because the check verification
+  wasn't made yet, so it is not certain that the move will take place.
 }
 function TChessGame.ValidatePawnMove(AFrom, ATo: TPoint;
-  var AEnpassantAllowed: Boolean; var AEnpassantSquare, AEnpassantSquareToClear: TPoint): Boolean;
+  var AEnpassantSquare, AEnpassantSquareToClear: TPoint): Boolean;
 begin
-  AEnpassantAllowed := False;
+  AEnpassantSquare := Point(-1, -1);
+  AEnpassantSquareToClear := Point(-1, -1);
   Result := False;
 
   if CurrentPlayerIsWhite then
@@ -516,7 +559,6 @@ begin
     else if (AFrom.X = ATo.X) and (AFrom.Y = 2) and (AFrom.Y = ATo.Y - 2) then
     begin
       Result := not IsSquareOccupied(ATo);
-      AEnpassantAllowed := True;
       AEnpassantSquare := Point(AFrom.X, ATo.Y - 1);
     end
     // Normal capture in the left
@@ -530,14 +572,14 @@ begin
       Result := True;
     end
     // En Passant Capture in the left
-    else if EnPassantAllowed and (EnPassantSquare = ATo) and
+    else if (EnPassantSquare = ATo) and
       (ATo.X = AFrom.X-1) and (ATo.Y = AFrom.Y+1) then
     begin
       Result := True;
       AEnpassantSquareToClear := Point(ATo.X, ATo.Y-1);
     end
     // En Passant Capture in the right
-    else if EnPassantAllowed and (EnPassantSquare = ATo) and
+    else if (EnPassantSquare = ATo) and
       (ATo.X = AFrom.X+1) and (ATo.Y = AFrom.Y+1) then
     begin
       Result := True;
@@ -555,7 +597,6 @@ begin
     else if (AFrom.X = ATo.X) and (AFrom.Y = 7) and (AFrom.Y = ATo.Y + 2) then
     begin
       Result := not IsSquareOccupied(ATo);
-      AEnpassantAllowed := True;
       AEnpassantSquare := Point(AFrom.X, ATo.Y + 1);
     end
     // Capture a piece in the left
@@ -569,14 +610,14 @@ begin
       Result := True;
     end
     // En Passant Capture in the left
-    else if EnPassantAllowed and (EnPassantSquare = ATo) and
+    else if (EnPassantSquare = ATo) and
       (ATo.X = AFrom.X-1) and (ATo.Y = AFrom.Y-1) then
     begin
       Result := True;
       AEnpassantSquareToClear := Point(ATo.X, ATo.Y+1);
     end
     // En Passant Capture in the right
-    else if EnPassantAllowed and (EnPassantSquare = ATo) and
+    else if (EnPassantSquare = ATo) and
       (ATo.X = AFrom.X+1) and (ATo.Y = AFrom.Y-1) then
     begin
       Result := True;
