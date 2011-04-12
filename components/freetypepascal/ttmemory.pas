@@ -152,10 +152,10 @@ const
    L  : Longint;
    P2 : Pointer;
  begin
- {$IFNDEF DELPHI32}
-   OldHeapError := HeapError;
-   HeapError    := @MyHeapErr;
- {$ENDIF}
+// {$IFNDEF DELPHI32}
+//   OldHeapError := HeapError;
+//   HeapError    := @MyHeapErr;
+// {$ENDIF}
 
    L := ( size + Header_Size + 3 ) and -4;
 
@@ -169,9 +169,9 @@ const
 
    GetMem( Pointer(P), L );
 
- {$IFNDEF DELPHI32}
-   HeapError := OldHeapError;
- {$ENDIF}
+// {$IFNDEF DELPHI32}
+//   HeapError := OldHeapError;
+// {$ENDIF}
 
    if Pointer(P) <> nil then
      begin

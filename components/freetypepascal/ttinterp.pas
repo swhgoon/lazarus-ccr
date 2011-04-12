@@ -25,6 +25,8 @@ unit TTInterp;
 
 interface
 
+{$mode Delphi}
+
 uses FreeType,
      TTTypes,
      TTObjs;
@@ -364,8 +366,9 @@ const
 
    Add64( T1, T2, T1 );
 
-   if ( (T1.lo or T1.Hi) = 0 ) then Norm := 0
-                               else Norm := Sqrt64( T1 );
+{$ToDo Fix me}
+//   if ( (T1.lo or T1.Hi) = 0 ) then Norm := 0
+//                               else Norm := Sqrt64( T1 );
  end;
 
 (*******************************************************************
@@ -925,7 +928,7 @@ const
  begin
    case Round_Mode of
 
-{$IFDEF FPK}
+{$IFDEF FPC}
      TT_Round_Off            : exc.func_round := @Round_None;
      TT_Round_To_Grid        : exc.func_round := @Round_To_Grid;
      TT_Round_Up_To_Grid     : exc.func_round := @Round_Up_To_Grid;
@@ -1092,7 +1095,7 @@ const
 
      if (freeVector.x = $4000) then
        begin
-{$IFDEF FPK}
+{$IFDEF FPC}
          func_freeProj := @Project_x;
 {$ELSE}
          func_freeProj := Project_x;
@@ -1102,7 +1105,7 @@ const
      else
      if (freeVector.y = $4000) then
        begin
-{$IFDEF FPK}
+{$IFDEF FPC}
          func_freeProj := @Project_y;
 {$ELSE}
          func_freeProj := Project_y;
@@ -1111,7 +1114,7 @@ const
        end
      else
        begin
-{$IFDEF FPK}
+{$IFDEF FPC}
          func_move     := @Direct_Move;
          func_freeProj := @Free_Project;
 {$ELSE}
@@ -1122,7 +1125,7 @@ const
                           Long(projVector.y) * freeVector.y * 4;
        end;
 
-{$IFDEF FPK}
+{$IFDEF FPC}
      if (projVector.x = $4000) then func_Project := @Project_x
      else
      if (projVector.y = $4000) then func_Project := @Project_y
@@ -2586,7 +2589,7 @@ end;
    begin
      exc.GS.round_state := TT_Round_To_Half_Grid;
 
-{$IFDEF FPK}
+{$IFDEF FPC}
      exc.func_round := @Round_To_Half_Grid;
 {$ELSE}
      exc.func_round := Round_To_Half_Grid;
@@ -2601,7 +2604,7 @@ end;
    begin
      exc.GS.round_state := TT_Round_To_Grid;
 
-{$IFDEF FPK}
+{$IFDEF FPC}
      exc.func_round := @Round_To_Grid;
 {$ELSE}
      exc.func_round := Round_To_Grid;
@@ -2616,7 +2619,7 @@ end;
    begin
      exc.GS.round_state := TT_Round_To_Double_Grid;
 
-{$IFDEF FPK}
+{$IFDEF FPC}
      exc.func_round := @Round_To_Double_Grid;
 {$ELSE}
      exc.func_round := Round_To_Double_Grid;
@@ -2631,7 +2634,7 @@ end;
    begin
      exc.GS.round_state := TT_Round_Up_To_Grid;
 
-{$IFDEF FPK}
+{$IFDEF FPC}
      exc.func_round := @Round_Up_To_Grid;
 {$ELSE}
      exc.func_round := Round_Up_To_Grid;
@@ -2646,7 +2649,7 @@ end;
    begin
      exc.GS.round_state := TT_Round_Down_To_Grid;
 
-{$IFDEF FPK}
+{$IFDEF FPC}
      exc.func_round := @Round_Down_To_Grid;
 {$ELSE}
      exc.func_round := Round_Down_To_Grid;
@@ -2661,7 +2664,7 @@ end;
    begin
      exc.GS.round_state := TT_Round_Off;
 
-{$IFDEF FPK}
+{$IFDEF FPC}
      exc.func_round := @Round_None;
 {$ELSE}
      exc.func_round := Round_None;
@@ -2677,7 +2680,7 @@ end;
      SetSuperRound( $4000, args^[0] );
      exc.GS.round_state := TT_Round_Super;
 
-{$IFDEF FPK}
+{$IFDEF FPC}
      exc.func_round := @Round_Super;
 {$ELSE}
      exc.func_round := Round_Super;
@@ -2693,7 +2696,7 @@ end;
      SetSuperRound( $2D41, args^[0] );
      exc.GS.round_state := TT_Round_Super_45;
 
-{$IFDEF FPK}
+{$IFDEF FPC}
      exc.func_round := @Round_Super_45;
 {$ELSE}
      exc.func_round := Round_Super_45;
@@ -4658,7 +4661,7 @@ const
 
     exc.metrics.ratio := 0;
     if exc.instance^.metrics.x_ppem <> exc.instance^.metrics.y_ppem then
-{$IFDEF FPK}
+{$IFDEF FPC}
       begin
         exc.func_read_cvt  := @Read_CVT_Stretched;
         exc.func_write_cvt := @Write_CVT_Stretched;

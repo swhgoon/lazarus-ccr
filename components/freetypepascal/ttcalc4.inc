@@ -26,8 +26,11 @@
 (**********************************************************)
 (* 64 Bit Addition                                        *)
 
-procedure Add64( var X, Y, Z : Int64 ); assembler;
-asm
+procedure Add64( var X, Y, Z : Int64 );// assembler;
+begin
+  X := Y + Z;
+end;
+{asm
   push %ebx
   push %edx
 
@@ -45,14 +48,17 @@ asm
 
   pop  %edx
   pop  %ebx
-end;
+end;}
 
 
 (**********************************************************)
 (* 64 Bit Substraction                                    *)
 
-procedure Sub64( var X, Y, Z : Int64 ); assembler;
-asm
+procedure Sub64( var X, Y, Z : Int64 );// assembler;
+begin
+  X := Y - Z;
+end;
+{asm
   push %ebx
   push %edx
 
@@ -70,14 +76,17 @@ asm
 
   pop  %edx
   pop  %ebx
-end;
+end;}
 
 
 (**********************************************************)
 (* Multiply two Int32 to an Int64                         *)
 
-procedure MulTo64( X, Y : Int32; var Z : Int64 ); assembler;
-asm
+procedure MulTo64( X, Y : Int32; var Z : Int64 );// assembler;
+begin
+  X := X * Y;
+end;
+{asm
   push  %ebx
   push  %edx
 
@@ -90,14 +99,17 @@ asm
 
   pop   %edx
   pop   %ebx
-end;
+end;}
 
 
 (**********************************************************)
 (* Divide an Int64 by an Int32                            *)
 
-function Div64by32( var X : Int64; Y : Int32 ) : Int32; assembler;
-asm
+function Div64by32( var X : Int64; Y : Int32 ) : Int32;// assembler;
+begin
+  Result := X div Y;
+end;
+{asm
   push  %ebx
   push  %edx
 
@@ -108,12 +120,16 @@ asm
 
   pop  %edx
   pop  %ebx
-end;
+end;}
 
 
 procedure DivMod64by32( var X : Int64; Y : Int32; var Q, R : Int32 );
-          assembler;
-asm
+//          assembler;
+begin
+  Q := X div Y;
+  R := X mod Y;
+end;
+{asm
   push  %ebx
   push  %edx
 
@@ -130,5 +146,5 @@ asm
 
   pop  %edx
   pop  %ebx
-end;
+end;}
 

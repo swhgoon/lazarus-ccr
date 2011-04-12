@@ -79,6 +79,8 @@ unit TTObjs;
 
 interface
 
+{$mode Delphi}
+
 {$I TTCONFIG.INC}
 
 uses FreeType,

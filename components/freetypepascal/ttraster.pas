@@ -3115,7 +3115,7 @@ begin
 
  (* Vertical Sweep *)
 
-{$IFDEF FPK}
+{$IFDEF FPC}
  Proc_Sweep_Init := @Vertical_Sweep_Init;
  Proc_Sweep_Span := @Vertical_Sweep_Span;
  Proc_Sweep_Drop := @Vertical_Sweep_Drop;
@@ -3141,7 +3141,7 @@ begin
  if Second_Pass then
  begin
 
-{$IFDEF FPK}
+{$IFDEF FPC}
    Proc_Sweep_Init := @Horizontal_Sweep_Init;
    Proc_Sweep_Span := @Horizontal_Sweep_Span;
    Proc_Sweep_Drop := @Horizontal_Sweep_Drop;
@@ -3214,7 +3214,7 @@ begin
  BCible := PByte( Gray_Lines   );
  GCible := PByte( Cible.Buffer );
 
-{$IFDEF FPK}
+{$IFDEF FPC}
  Proc_Sweep_Init := @Vertical_Gray_Sweep_Init;
  Proc_Sweep_Span := @Vertical_Sweep_Span;
  Proc_Sweep_Drop := @Vertical_Sweep_Drop;
@@ -3233,7 +3233,7 @@ begin
  if Second_Pass then
  begin
 
-{$IFDEF FPK}
+{$IFDEF FPC}
    Proc_Sweep_Init := @Horizontal_Sweep_Init;
    Proc_Sweep_Span := @Horizontal_Gray_Sweep_Span;
    Proc_Sweep_Drop := @Horizontal_Gray_Sweep_Drop;

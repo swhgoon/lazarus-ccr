@@ -36,31 +36,30 @@ type
 {$IFDEF BORLANDPASCAL}
   Int16  = Integer;
   Word16 = Word;               (* 16-bits unsigned *)
-{$ELSE}
+{$ENDIF}
 {$IFDEF DELPHI16}
   Int16  = Integer;
   Word16 = Word;               (* 16-bits unsigned *)
-{$ELSE}
+{$ENDIF}
 {$IFDEF DELPHI32}
   Int16  = SmallInt;
   Word16 = Word;               (* 16-bits unsigned *)
-{$ELSE}
+{$ENDIF}
+{$IFDEF FPC}
   Int16  = SmallInt;
-  Word16 = SmallWord;          (* 16-bits unsigned *)
+  Word16 = Word;               (* 16-bits unsigned *)
 {$ENDIF}
-{$ENDIF}
-{$ENDIF}
+  Int32  = Integer;            (* 32 bits integer  *)
 
-  Int32  = LongInt;            (* 32 bits integer  *)
-
-  Word32 = LongInt;            (* 32 bits 'unsigned'. Note that there's *)
+  Word32 = Cardinal;           (* 32 bits 'unsigned'. Note that there's *)
                                (* no unsigned long in Pascal..          *)
                                (* As cardinals are only 31 bits !!      *)
 
-  Int64  = record              (* 64 ""            *)
+// No need to define our own type, just use the build-in one
+{  Int64  = record              (* 64 ""            *)
             Lo,
             Hi  : LongInt;
-          end;
+          end;}
 
 function MulDiv( A, B, C : Int32 ): Int32;
 
@@ -86,6 +85,8 @@ function Sqrt64( L : Int64 ): LongInt;
 
 implementation
 
+uses Math;
+
 (* add support for Virtual Pascal inline assembly *)
 {$IFDEF VIRTUALPASCAL}
 {$I TTCALC2.INC}
@@ -107,7 +108,7 @@ implementation
 {$ENDIF}
 
 (* add support for Free Pascal inline assembly *)
-{$IFDEF FPK}
+{$IFDEF FPC}
 {$I TTCALC4.INC}
 {$ENDIF}
 
@@ -154,8 +155,9 @@ implementation
 
    MulTo64( a, b, temp );
 
-   temp2.hi := 0;
-   temp2.lo := c div 2;
+   temp2 := c div 2;;
+{   temp2.hi := 0;
+   temp2.lo := c div 2;}
 
    Add64( temp, temp2, temp );
 
@@ -172,6 +174,9 @@ implementation
 
  procedure Neg64( var x : Int64 );
  begin
+   x := -x;
+ end;
+ { begin
    (* Remember that -(0x80000000) == 0x80000000 with 2-complement! *)
    (* We take care of that here.                                   *)
 
@@ -189,16 +194,23 @@ implementation
      end;
    end;
  end;
-
+}
 
 (**********************************************************)
 (* MSB index ( return -1 for 0 )                          *)
 
 function Order64( var Z : Int64 ) : integer;
+var b : integer;
+begin
+  b := 0;
+  while Z <> 0 do begin Z := Z shr 1; inc( b ); end;
+  Result := b-1;
+end;
+{original
 begin
   if Z.Hi <> 0 then Order64 := 32 + Order32( Z.Hi )
                else Order64 := Order32( Z.Lo );
-end;
+end;}
 
 
 (**********************************************************)
@@ -258,7 +270,10 @@ end;
 (* Integer Square Root                            *)
 
 function Sqrt64( L : Int64 ): LongInt;
-var
+begin
+  Result := Round(sqrt(L));
+end;
+{var
   L2   : Int64;
   R, S : LongInt;
 begin
@@ -284,6 +299,6 @@ begin
       Sqrt64 := R;
      end
    end
-end;
+end;}
 
 end.

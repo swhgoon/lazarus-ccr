@@ -18,7 +18,9 @@ unit TTDebug;
 
 interface
 
-uses TTTypes, TTTables, TTObjs, TTInterp;
+{$mode Delphi}
+
+uses SysUtils, TTTypes, TTTables, TTObjs, TTInterp;
 
 type
 
@@ -456,7 +458,8 @@ end;
 
 function Hex32( L : Long ) : LongHexStr;
 begin
-  Hex32 := Hex16( TStorageLong(L).W2 )+Hex16( TStorageLong(L).W1 );
+  Result := SysUtils.IntToHex(L, 8);
+//  Hex32 := Hex16( TStorageLong(L).W2 )+Hex16( TStorageLong(L).W1 );
 end;
 
 (*******************************************************************
