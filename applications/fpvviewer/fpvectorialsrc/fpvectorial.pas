@@ -139,10 +139,10 @@ type
   TvText = class
   public
     X, Y, Z: Double; // Z is ignored in 2D formats
+    Value: utf8string;
+    FontColor: TvColor;
     FontSize: integer;
     FontName: utf8string;
-    Value: utf8string;
-    Color: TvColor;
   end;
 
   {@@
