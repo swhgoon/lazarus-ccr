@@ -68,6 +68,7 @@ type
   { TChessGame }
 
   TChessGame = class
+  private
   public
     Board: TChessBoard;
     msg : String;
@@ -92,8 +93,11 @@ type
     function ClientToBoardCoords(AClientCoords: TPoint): TPoint;
     function CheckStartMove(AFrom: TPoint): Boolean;
     function CheckEndMove(ATo: TPoint): Boolean;
-    function CheckKingInCheck(AFrom, ATo, AEnpassantSquareToClear: TPoint): Boolean;
+    function WillKingBeInCheck(AFrom, ATo, AEnpassantToClear: TPoint): Boolean;
+    function IsKingInCheck(AKingPos: TPoint): Boolean;
+    function FindKing(): TPoint;
     function MovePiece(AFrom, ATo: TPoint): Boolean;
+    procedure DoMovePiece(AFrom, ATo, AEnpassantToClear: TPoint);
     function ValidateRookMove(AFrom, ATo: TPoint) : boolean;
     function ValidateKnightMove(AFrom, ATo: TPoint) : boolean;
     function ValidateBishopMove(AFrom, ATo: TPoint) : boolean;
@@ -102,7 +106,6 @@ type
     function ValidatePawnMove(AFrom, ATo: TPoint;
       var AEnpassantSquare, AEnpassantSquareToClear: TPoint) : boolean;
     function IsSquareOccupied(ASquare: TPoint): Boolean;
-
     procedure UpdateTimes();
   end;
 
@@ -226,7 +229,7 @@ begin
   if not Result then Exit;
 
   // Check if the king will be left in check by this move
-  if not CheckKingInCheck(AFrom, ATo, LEnpassantToClear) then Exit;
+  if WillKingBeInCheck(AFrom, ATo, LEnpassantToClear) then Exit;
 
   // If we arrived here, this means that the move will be really executed
 
@@ -238,19 +241,25 @@ begin
   EnpassantSquare := LEnpassantSquare;
 
   // Now we will execute the move
-  // col, row
-  Board[ATo.X][ATo.Y] := Board[AFrom.X][AFrom.Y];
-  Board[AFrom.X][AFrom.Y] := ctEmpty;
-
-  // If Enpassant, clear the remaining pawn
-  if LEnpassantToClear.X <> -1 then
-    Board[LEnpassantToClear.X][LEnpassantToClear.Y] := ctEmpty;
+  DoMovePiece(AFrom, ATo, LEnpassantToClear);
 
   //
   UpdateTimes();
 
   // Change player
   CurrentPlayerIsWhite := not CurrentPlayerIsWhite;
+end;
+
+{ Really moves the piece without doing any check }
+procedure TChessGame.DoMovePiece(AFrom, ATo, AEnpassantToClear: TPoint);
+begin
+  // col, row
+  Board[ATo.X][ATo.Y] := Board[AFrom.X][AFrom.Y];
+  Board[AFrom.X][AFrom.Y] := ctEmpty;
+
+  // If Enpassant, clear the remaining pawn
+  if AEnpassantToClear.X <> -1 then
+    Board[AEnpassantToClear.X][AEnpassantToClear.Y] := ctEmpty;
 end;
 
 //return true if the move of a Rook is valid.
@@ -569,14 +578,80 @@ begin
     Result := Board[AFrom.X][AFrom.Y] in BlackPieces;
 end;
 
-// True  - The King will not be in check
-// False - The King will be in check
-//
-// if AEnpassantSquareToClear.X = -1 then it is not an enpassant attack
-function TChessGame.CheckKingInCheck(AFrom, ATo, AEnpassantSquareToClear: TPoint
-  ): Boolean;
+// True  - The King will be in check
+// False - The King will not be in check
+function TChessGame.WillKingBeInCheck(AFrom, ATo, AEnpassantToClear: TPoint): Boolean;
+var
+  kingPos: TPoint;
+  localBoard: TChessBoard;
 begin
-  Result := True;
+  Result := false;
+
+  localBoard := Board;
+
+  DoMovePiece(AFrom, ATo, AEnpassantToClear);
+
+  kingPos := FindKing();
+
+  Result := IsKingInCheck(kingPos);
+
+  Board:=localBoard;
+end;
+
+function TChessGame.IsKingInCheck(AKingPos: TPoint): Boolean;
+var
+  i,j : integer;
+  piecePos : TPoint;
+begin
+  Result := False;
+
+  for i:=1 to 8 do
+    for j:=1 to 8 do
+    begin
+      piecePos := Point(i, j);
+      if not (CurrentPlayerIsWhite) then
+      begin
+        case Board[i][j] of
+        ctWRook:   Result:= ValidateRookMove(piecePos,AKingPos);
+        ctWKnight: Result:= ValidateKnightMove(piecePos,AKingPos);
+        ctWBishop: Result:= ValidateBishopMove(piecePos,AKingPos);
+        ctWQueen:  Result:= ValidateQueenMove(piecePos,AKingPos);
+        ctWKing:   Result:= ValidateKingMove(piecePos,AKingPos);
+        end;
+      end
+      else
+      begin
+        case Board[i][j] of
+        ctBRook:   Result:= ValidateRookMove(piecePos,AKingPos);
+        ctBKnight: Result:= ValidateKnightMove(piecePos,AKingPos);
+        ctBBishop: Result:= ValidateBishopMove(piecePos,AKingPos);
+        ctBQueen:  Result:= ValidateQueenMove(piecePos,AKingPos);
+        ctBKing:   Result:= ValidateKingMove(piecePos,AKingPos);
+        end;
+      end;
+      if (result) then exit();
+    end;
+end;
+
+{ Negative coords indicate that the king is not in the game }
+function TChessGame.FindKing(): TPoint;
+var
+  i,j : integer;
+begin
+  Result := Point(-1, -1);
+
+  for i:=1 to 8 do
+    for j:=1 to 8 do
+    if (CurrentPlayerIsWhite) and (Board[i][j]=ctWKing) then
+    begin
+      Result := Point(i, j);
+      Exit;
+    end
+    else if (not CurrentPlayerIsWhite) and (Board[i][j]=ctBKing) then
+    begin
+      Result := Point(i, j);
+      Exit;
+    end;
 end;
 
 initialization
