@@ -521,14 +521,17 @@ begin
 end;
 
 procedure TCustomPictureView.SavePicture(const FileName: String);
-var Pic: TPicture;
+var Pic: TPicture; ExtName: string;
 begin
   Pic := TPicture.Create;
   //Picture.SaveToFile(UTF8Decode(FileName));
   Pic.Bitmap.Width := Picture.Width;
   Pic.Bitmap.Height := Picture.Height;
   Pic.Bitmap.Canvas.Draw(0,0,Picture);
-  Pic.SaveToFile(FileName);
+  ExtName := ExtractFileExt(FileName);
+//  if ExtName = 'PNG' then
+//    Pic.Graphic.;
+  Pic.SaveToFile(FileName, ExtName);
   Pic.Free;
 end;
 
@@ -760,7 +763,7 @@ begin
   BeginDraw;
   if not (ssLeft in Shift) then Picture.EraseMode := ermErase;
   try
-    Picture.Canvas.FloodFill(X, Y, Picture.Canvas.Brush.Color, fsSurface);
+    Picture.Canvas.FloodFill(X, Y, FFillColor, fsSurface); //Picture.Canvas.Brush.Color, fsSurface);
   finally
     Picture.EraseMode := ermNone;
     EndDraw;
@@ -791,12 +794,14 @@ var
   R: TRect;
 begin
   if Picture = nil then Exit;
-  
+
   BeginDraw;
   if ssLeft in Shift then Picture.EraseMode := ermErase;
   if ssRight in Shift then Picture.EraseMode := ermReplace;
   try
     R := Bounds(X - FSize div 2, Y - FSize div 2, FSize, FSize);
+    Picture.Canvas.Pen.Color:=FPaperColor;
+    Picture.Canvas.Brush.Color:=FpaperColor;
     case Shape of
     psRect: Picture.Canvas.FillRect(R.Left, R.Top, R.Right, R.Bottom);
     psCircle: Picture.FillEllipse(R.Left, R.Top, R.Right, R.Bottom);
@@ -818,6 +823,8 @@ begin
   if not (ssLeft in Shift) then Picture.EraseMode := ermErase;
   Picture.RandomEnabled := True;
   try
+    Picture.Canvas.Pen.Color:=FFillColor;
+    Picture.Canvas.Brush.Color:=FFillColor;
     R := Bounds(X - FSize div 2, Y - FSize div 2, FSize, FSize);
     case Shape of
     psRect: Picture.Canvas.FillRect(R.Left, R.Top, R.Right, R.Bottom);
@@ -834,7 +841,8 @@ end;
 procedure TCustomPictureEdit.Line(X1, Y1, X2, Y2: Integer; Shift: TShiftState);
 begin
   if Picture = nil then Exit;
-  
+
+  Picture.Canvas.Pen.Color:=FOutLineColor;
   BeginDraw;
   if not (ssLeft in Shift) then Picture.EraseMode := ermErase;
   try
@@ -854,6 +862,8 @@ begin
   BeginDraw;
   if not (ssLeft in Shift) then Picture.EraseMode := ermErase;
   try
+    Picture.Canvas.Brush.Color:=FFillColor;
+    Picture.Canvas.Pen.Color:=FOutlineColor;
     if FFuzzy then
     begin
       Picture.FuzzyRectangle(X1, Y1, X2, Y2);
@@ -879,7 +889,8 @@ begin
   BeginDraw;
   if not (ssLeft in Shift) then Picture.EraseMode := ermErase;
   try
-
+    Picture.Canvas.Brush.Color:=FFillColor;
+    Picture.Canvas.Pen.Color:=FOutlineColor;
     Picture.Canvas.Ellipse(X1, Y1, X2, Y2);
   finally
     Picture.EraseMode := ermNone;

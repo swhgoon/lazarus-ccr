@@ -235,25 +235,24 @@ end;
 procedure TPictureManager.Load(const FileName: String);
 var
   NewPage: TPicturePage;
-  Icon: TCustomRGBBitmapCore;
+  Icon: TIcon;
+  Bmp: TDLBitmap;
   I: Integer;
   Pic: TPicture;
 begin
   //if SameText(ExtractFileExt(FileName), '.ico') then
   //begin
-    Icon := TCustomRGBBitmapCore.Create;
+  if SameText(ExtractFileExt(FileName), '.ico') then
+  begin
+    Icon := TIcon.Create;
     try
       // First image in std bitmap
-//      Icon.LoadFromFile(FileName);
-      Pic := TPicture.Create;
-      Pic.LoadFromFile(FileName);
-      Icon.Width:=Pic.Width;
-      Icon.Height:=Pic.Height;
-      Icon.Canvas.Draw(0,0,Pic.Graphic);
+      Icon.LoadFromFile(FileName);
+
       // other images
-      //for I := 0 to Pred(Icon.Count) do
+      for I := 0 to Pred(Icon.Count) do
       begin
-      //  Icon.Current := I;
+        Icon.Current := I;
         NewPage := CreatePage(Icon);
         NewPage.Parent := Self;
         ActivePage := NewPage;
@@ -262,8 +261,34 @@ begin
       end;
     finally
       Icon.Free;
+    end;
+  end
+  else
+  begin
+    Bmp := TDLBitmap.Create;
+    try
+      // First image in std bitmap
+//      Icon.LoadFromFile(FileName);
+      Pic := TPicture.Create;
+      Pic.LoadFromFile(FileName);
+      Bmp.Width:=Pic.Width;
+      Bmp.Height:=Pic.Height;
+      Bmp.Canvas.Draw(0,0,Pic.Graphic);
+      // other images
+      //for I := 0 to Pred(Icon.Count) do
+      begin
+      //  Icon.Current := I;
+        NewPage := CreatePage(Bmp);
+        NewPage.Parent := Self;
+        ActivePage := NewPage;
+        NewPage.Caption := FindNewUniqueName;
+        Change;
+      end;
+    finally
+      Bmp.Free;
       Pic.Free;
     end;
+  end;
   {end
   else
   begin

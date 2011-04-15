@@ -64,7 +64,7 @@ type
 
   { TRGBBitmapCore }
 
-  TRGBBitmapCore = class(TCustomRGBBitmapCore)
+  TRGBBitmapCore = class(TDLBitmap)
   private
     FSizeOfPixel: integer;
     FRowPixelStride: integer;
