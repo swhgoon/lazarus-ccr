@@ -246,6 +246,8 @@ type
     procedure PanelFillDblClick(Sender: TObject);
     procedure PanelOutlineDblClick(Sender: TObject);
     procedure PanelPaperDblClick(Sender: TObject);
+    procedure PanelPaperDragOver(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
     procedure PicturePageChange(Sender: TObject);
     procedure PictureChange(Sender: TObject);
     procedure PicturePageClose(Sender: TObject);
@@ -281,6 +283,7 @@ type
     procedure ViewShowPreviewExecute(Sender: TObject);
   private
     Pictures: TPictureManager;
+    CurrentPaletteColor: TColor;
     function GetActivePicture: TPictureBitmap;
     function GetActivePictureEdit: TPictureEdit;
     function GetActivePicturePage: TPicturePage;
@@ -344,7 +347,6 @@ begin
     Exit;
   ResizePaperDialogForm.ShowDialog(ActivePicturePage);
 end;
-
 
 procedure TMainForm.PaletteColorMouseMove(Sender: TObject; AColor: TColor;
   Shift: TShiftState);
@@ -679,6 +681,7 @@ begin
     if ssMiddle in Shift then
       PaperColor := AColor;
   end;
+  CurrentPaletteColor := AColor;
 end;
 
 procedure TMainForm.PanelFillDblClick(Sender: TObject);
@@ -711,6 +714,23 @@ begin
   if ColorDialog.Execute then
   begin
     ActivePictureEdit.PaperColor := ColorDialog.Color;
+  end;
+end;
+
+procedure TMainForm.PanelPaperDragOver(Sender, Source: TObject; X, Y: Integer;
+  State: TDragState; var Accept: Boolean);
+begin
+  if not Pictures.CanEdit then
+    Exit;
+  if Source is TColorPalette then
+  begin
+//    TPanel(Sender).Color:=CurrentPaletteColor;
+    if Sender = PanelPaper then
+      ActivePictureEdit.PaperColor := CurrentPaletteColor;
+    if Sender = PanelFill then
+      ActivePictureEdit.FillColor := CurrentPaletteColor;
+    if Sender = PanelOutline then
+      ActivePictureEdit.OutlineColor := CurrentPaletteColor;
   end;
 end;
 

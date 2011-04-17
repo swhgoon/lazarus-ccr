@@ -200,6 +200,9 @@
       Align = alClient
       ButtonWidth = 12
       ButtonHeight = 12
+      DragMode = dmAutomatic
+      OnColorMouseMove = PaletteColorMouseMove
+      OnColorPick = PaletteColorPick
     end
   end
   object PanelToolBar: TPanel
@@ -507,9 +510,10 @@
           BorderSpacing.Around = 6
           BevelInner = bvLowered
           Color = clWhite
+          DragMode = dmAutomatic
           ParentColor = False
           TabOrder = 0
-          OnDblClick = PanelOutlineDblClick
+          OnDragOver = PanelPaperDragOver
         end
         object PanelFill: TPanel
           Left = 115
@@ -520,9 +524,10 @@
           BorderSpacing.Around = 6
           BevelInner = bvLowered
           Color = clWhite
+          DragMode = dmAutomatic
           ParentColor = False
           TabOrder = 1
-          OnDblClick = PanelFillDblClick
+          OnDragOver = PanelPaperDragOver
         end
         object PanelPaper: TPanel
           Left = 186
@@ -533,9 +538,11 @@
           BorderSpacing.Around = 6
           BevelInner = bvLowered
           Color = clWhite
+          DragMode = dmAutomatic
           ParentColor = False
           TabOrder = 2
           OnDblClick = PanelPaperDblClick
+          OnDragOver = PanelPaperDragOver
         end
       end
       object PanelFillOutline: TPanel

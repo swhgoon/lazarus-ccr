@@ -846,7 +846,7 @@ begin
   BeginDraw;
   if not (ssLeft in Shift) then Picture.EraseMode := ermErase;
   try
-    if (X1 = X2) and (Y1 = Y2) then
+    if (X1 = X2) and (Y1 = Y2) and (Tool = ptPen) then
       Picture.Canvas.Pixels[X1, Y1] := FOutLineColor
     else
       Picture.Canvas.Line(X1, Y1, X2, Y2);
