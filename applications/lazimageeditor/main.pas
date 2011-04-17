@@ -95,7 +95,6 @@ type
     ColorDialog: TColorDialog;
     ImageListActions: TImageList;
     LabelFillOutline: TLabel;
-    LabelZoom: TLabel;
     MenuItem4: TMenuItem;
     MenuItemMaskRemove: TMenuItem;
     MenuItemMaskInvert: TMenuItem;
@@ -164,6 +163,8 @@ type
     PanelTools: TPanel;
     ExportResourceDialog: TSaveDialog;
     SavePictureDialog: TSavePictureDialog;
+    ZoomInBtn: TToolButton;
+    ZoomOutBtn: TToolButton;
     ToolCircleShape: TSpeedButton;
     ToolMaskEllipse: TSpeedButton;
     ToolMaskFloodFill: TSpeedButton;
@@ -256,6 +257,8 @@ type
     procedure Rotate270Execute(Sender: TObject);
     procedure Rotate90Execute(Sender: TObject);
     procedure spinFillAlphaChange(Sender: TObject);
+    procedure ZoomInBtnClick(Sender: TObject);
+    procedure ZoomOutBtnClick(Sender: TObject);
     procedure ToolCircleShapeClick(Sender: TObject);
     procedure ToolColorPickClick(Sender: TObject);
     procedure ToolEllClick(Sender: TObject);
@@ -457,6 +460,44 @@ begin
   if not Pictures.CanEdit then
     Exit;
   ActivePictureEdit.FillAlpha := spinFillAlpha.Value;
+end;
+
+procedure TMainForm.ZoomInBtnClick(Sender: TObject);
+var
+  V, E: integer;
+  S: string;
+begin
+  if not Pictures.CanEdit then
+    Exit;
+  if Pos('%', ComboBoxZoom.Text) > 0 then
+    S := Trim(Copy(ComboBoxZoom.Text, 1, Pos('%', ComboBoxZoom.Text) - 1))
+  else
+    S := Trim(ComboBoxZoom.Text);
+  E := StrToInt(S);
+  V := E + 10;
+  if V <= 0 then
+    V := 100;
+  ActivePictureEdit.Zoom := V / 100;
+  ComboBoxZoom.Text := IntToStr(V) + '%';
+end;
+
+procedure TMainForm.ZoomOutBtnClick(Sender: TObject);
+var
+  V, E: integer;
+  S: string;
+begin
+  if not Pictures.CanEdit then
+    Exit;
+  if Pos('%', ComboBoxZoom.Text) > 0 then
+    S := Trim(Copy(ComboBoxZoom.Text, 1, Pos('%', ComboBoxZoom.Text) - 1))
+  else
+    S := Trim(ComboBoxZoom.Text);
+  E := StrToInt(S);
+  V := E - 10;
+  if V <= 0 then
+    V := 100;
+  ActivePictureEdit.Zoom := V / 100;
+  ComboBoxZoom.Text := IntToStr(V) + '%';
 end;
 
 procedure TMainForm.ToolCircleShapeClick(Sender: TObject);
@@ -963,7 +1004,7 @@ begin
   EditUndo.Hint := lieHintEditUndo;
 
   //Labels
-  LabelZoom.Caption := lieLabelZoom;
+//  LabelZoom.Caption := lieLabelZoom;
   LabelShape.Caption := lieLabelShape;
   LabelFillOutline.Caption := lieLabelFillOutline;
   LabelMaskTool.Caption := lieLabelMaskTool;
