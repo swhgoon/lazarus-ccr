@@ -41,7 +41,7 @@ interface
 
 uses
   Classes, SysUtils, FPImage, IntfGraphics, Graphics, Math, LCLProc,
-  BmpRGBUtils, rgbdrawutils;
+  BmpRGBUtils, DLBitmap;
 
 const
   MAXRANDOMDENSITY = $FFFF;

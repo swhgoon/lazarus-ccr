@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Controls, Graphics, ExtCtrls, ComCtrls,
-  Forms, PictureCtrls, RGBDrawUtils;
+  Forms, PictureCtrls, DLBitmap;
   
 type
 
