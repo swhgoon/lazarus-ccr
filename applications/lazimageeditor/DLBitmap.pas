@@ -331,9 +331,9 @@ begin
     for j := 0 to ABitmap.Width - 1 do
     begin
       LNew := LScan[j];
-      LScan[j].rgbtBlue := LScan[j].rgbtBlue * Value div 100; //Value; //LNew.rgbtBlue;
-      LScan[j].rgbtGreen := LScan[j].rgbtGreen * Value div 100; //LNew.rgbtGreen;
-      LScan[j].rgbtRed := LScan[j].rgbtRed * Value div 100; //LNew.rgbtRed;
+      LScan[j].rgbtBlue := LScan[j].rgbtBlue * Value div 100;
+      LScan[j].rgbtGreen := LScan[j].rgbtGreen * Value div 100;
+      LScan[j].rgbtRed := LScan[j].rgbtRed * Value div 100;
     end;
   end;
   ABitmap.InvalidateScanLine;

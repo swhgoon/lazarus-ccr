@@ -111,8 +111,8 @@ type
     property OnPageCloseQuery: TCloseQueryEvent read FOnPageCloseQuery write FOnPageCloseQuery;
   end;
 
-
 implementation
+
 uses IconStrConsts;
 { TPictureManager }
 
