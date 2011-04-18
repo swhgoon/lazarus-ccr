@@ -73,9 +73,12 @@ type
   protected
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X, Y:Integer); override;
     procedure MouseMove(Shift:TShiftState; X, Y:Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X, Y:Integer); override;
     procedure ColorPick(AColor: TColor; Shift: TShiftState); dynamic;
     procedure ColorMouseMove(AColor: TColor; Shift: TShiftState); dynamic;
   public
+    PickedColor: TColor;
+    PickShift: TShiftState;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure Paint; override;
@@ -174,19 +177,29 @@ end;
 
 procedure TCustomColorPalette.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
-var
-  C: TColor;
 begin
   inherited;
-  
+
   X := X div FButtonWidth;
   Y := Y div FButtonHeight;
-  
+
+//  if X + Y * FCols < 0 then
+//    Exit;
+
   if X + Y * FCols < FColors.Count then
   begin
-    C := TColor(FColors.Items[X + Y * FCols]);
-    if C <> clNone then ColorPick(C, Shift);
+    PickedColor := TColor(FColors.Items[X + Y * FCols]);
+    //if PickedColor <> clNone then ColorPick(PickedColor, Shift);
+    PickShift := Shift;
   end;
+end;
+
+procedure TCustomColorPalette.MouseUp(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if PickedColor <> clNone then
+    ColorPick(PickedColor, PickShift);
+  inherited;
 end;
 
 procedure TCustomColorPalette.MouseMove(Shift: TShiftState; X, Y: Integer);
