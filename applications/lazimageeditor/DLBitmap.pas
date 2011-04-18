@@ -10,10 +10,10 @@ uses
 
 type
   tagRGBATRIPLE = record
-    rgbtBlue: Byte;
-    rgbtGreen: Byte;
-    rgbtRed: Byte;
-    rgbtAlpha: Byte;
+    rgbtBlue: byte;
+    rgbtGreen: byte;
+    rgbtRed: byte;
+    rgbtAlpha: byte;
   end;
   PRGBATriple = ^TRGBATriple;
   TRGBATriple = tagRGBATRIPLE;
@@ -68,8 +68,7 @@ procedure BMPRotate90(const Bitmap: TDLBitmap);
 procedure DrawSamePixel(ABitmap: TDLBitmap; Value: integer);
 procedure BMPRotate180(const Bitmap: TDLBitmap);
 procedure BMPRotate270(const Bitmap: TDLBitmap);
-function RotateBitmap(Bitmap: TDLBitmap; Angle: integer;
-  BackColor: TColor): TDLBitmap;
+function RotateBitmap(Bitmap: TDLBitmap; Angle: integer; BackColor: TColor): TDLBitmap;
 function BitmapFlip(const Vertical: boolean; const Horizontal: boolean;
   var BitmapIn: TDLBitmap; out BitmapOut: TDLBitmap): boolean;
 procedure InvertBitmap(aBitmap: TDLBitmap);
@@ -88,7 +87,11 @@ begin
   Bmp := TDLBitmap.Create;
   Bmp.Width := aBitmap.Height;
   Bmp.Height := aBitmap.Width;
+  {$ifdef MSWINDOWS}
   Bmp.PixelFormat := pf32bit;
+  {$else}
+  Bmp.PixelFormat := pf24bit;
+  {$endif}
   IntfImg1 := TLazIntfImage.Create(0, 0);
   IntfImg1.LoadFromBitmap(Bmp.Handle, Bmp.MaskHandle);
   IntfImg2 := TLazIntfImage.Create(0, 0);
@@ -196,8 +199,7 @@ begin
   Bitmap.Assign(Bmp);
 end;
 
-function RotateBitmap(Bitmap: TDLBitmap; Angle: integer;
-  BackColor: TColor): TDLBitmap;
+function RotateBitmap(Bitmap: TDLBitmap; Angle: integer; BackColor: TColor): TDLBitmap;
 var
   i, j, iOriginal, jOriginal, CosPoint, SinPoint: integer;
   RowOriginal, RowRotated: pRGBATriple;
@@ -331,9 +333,9 @@ begin
     for j := 0 to ABitmap.Width - 1 do
     begin
       LNew := LScan[j];
-      LScan[j].rgbtBlue := LScan[j].rgbtBlue * Value div 100;
-      LScan[j].rgbtGreen := LScan[j].rgbtGreen * Value div 100;
-      LScan[j].rgbtRed := LScan[j].rgbtRed * Value div 100;
+      LScan[j].rgbtBlue := LScan[j].rgbtBlue * Value div 100; //Value; //LNew.rgbtBlue;
+      LScan[j].rgbtGreen := LScan[j].rgbtGreen * Value div 100; //LNew.rgbtGreen;
+      LScan[j].rgbtRed := LScan[j].rgbtRed * Value div 100; //LNew.rgbtRed;
     end;
   end;
   ABitmap.InvalidateScanLine;
@@ -349,6 +351,8 @@ var
 begin
   Result := False;
   try
+    if BitmapIn.PixelFormat <> pf24bit then
+      Exit;
     with BitmapOut do
     begin
       Width := BitmapIn.Width;
@@ -429,7 +433,11 @@ end;
 constructor TDLBitmap.Create;
 begin
   inherited;
+  {$ifdef MSWINDOWS}
   PixelFormat := pf32bit;
+  {$else}
+  PixelFormat := pf24bit;
+  {$endif}
   FIntfImgA := TLazIntfImage.Create(0, 0);
 end;
 
