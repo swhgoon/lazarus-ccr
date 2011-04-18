@@ -801,7 +801,7 @@ implementation
 
 
 uses SysUtils, Dialogs, {CommCtrl,} VCLUtils, Math, RxAppUtils, ImgList,
- ActnList
+ ActnList, InterfaceBase
 (*  Consts, {$IFDEF RX_D6}, RTLConsts{$ENDIF}
 *)
   ;
@@ -3238,15 +3238,15 @@ begin
   begin
     AdjustColors(BevelOuter);
 //    Frame3D(Canvas, Rect, TopColor, BottomColor, BevelWidth);
-    Frame3d(Canvas.Handle, Rect, BevelWidth, BevelOuter);
+    WidgetSet.Frame3d(Canvas.Handle, Rect, BevelWidth, BevelOuter);
   end;
 //  Frame3D(Canvas, Rect, Color, Color, BorderWidth);
-  Frame3d(Canvas.Handle, Rect, BorderWidth, BevelOuter);
+  WidgetSet.Frame3d(Canvas.Handle, Rect, BorderWidth, BevelOuter);
   if BevelInner <> bvNone then
   begin
     AdjustColors(BevelInner);
 //    Frame3D(Canvas, Rect, TopColor, BottomColor, BevelWidth);
-    Frame3d(Canvas.Handle, Rect, BorderWidth, BevelInner);
+    WidgetSet.Frame3d(Canvas.Handle, Rect, BorderWidth, BevelInner);
   end;
   SaveIndex := SaveDC(Canvas.Handle);
   try
