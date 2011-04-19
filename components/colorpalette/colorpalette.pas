@@ -187,13 +187,12 @@ begin
   X := X div FButtonWidth;
   Y := Y div FButtonHeight;
 
-//  if X + Y * FCols < 0 then
-//    Exit;
+  if X + Y * FCols < 0 then
+    Exit;
 
   if X + Y * FCols < FColors.Count then
   begin
     PickedColor := TColor(FColors.Items[X + Y * FCols]);
-    //if PickedColor <> clNone then ColorPick(PickedColor, Shift);
     PickShift := Shift;
   end;
 end;
