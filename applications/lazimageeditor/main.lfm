@@ -1,7 +1,7 @@
 ﻿object MainForm: TMainForm
-  Left = 260
+  Left = 180
   Height = 666
-  Top = 147
+  Top = 135
   Width = 905
   Caption = 'Lazarus Image Editor'
   ClientHeight = 644
@@ -1292,9 +1292,9 @@
         TabOrder = 5
         object checkFuzzy: TCheckBox
           Left = 4
-          Height = 19
+          Height = 23
           Top = 9
-          Width = 20
+          Width = 24
           OnChange = checkFuzzyChange
           TabOrder = 0
         end

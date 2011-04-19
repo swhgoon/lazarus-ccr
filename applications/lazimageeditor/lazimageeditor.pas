@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset   Preview,
   Forms, Main, PictureManager, PictureCtrls, Test,
-  NewDialog, ResizeDialog, ResizePaperDialog, PictureDialog, AboutDialog, LazColorPalette;
+  NewDialog, ResizeDialog, ResizePaperDialog, PictureDialog, AboutDialog;
 
 {$R *.res}
 

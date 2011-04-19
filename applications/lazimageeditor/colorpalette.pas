@@ -65,6 +65,7 @@ type
     FOnColorPick: TColorMouseEvent;
     FRows: Integer;
     FColors: TList;
+    MX, MY: integer;
     function GetColors(Index: Integer): TColor;
     procedure SetButtonHeight(const AValue: Integer);
     procedure SetButtonWidth(const AValue: Integer);
@@ -180,6 +181,9 @@ procedure TCustomColorPalette.MouseDown(Button: TMouseButton;
 begin
   inherited;
 
+  MX := X;
+  MY := Y;
+
   X := X div FButtonWidth;
   Y := Y div FButtonHeight;
 
@@ -197,7 +201,7 @@ end;
 procedure TCustomColorPalette.MouseUp(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  if PickedColor <> clNone then
+  if (PickedColor <> clNone) and (MX = X) and (MY = Y) then
     ColorPick(PickedColor, PickShift);
   inherited;
 end;

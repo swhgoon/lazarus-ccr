@@ -286,7 +286,6 @@ type
     procedure ViewShowPreviewExecute(Sender: TObject);
   private
     Pictures: TPictureManager;
-    CurrentPaletteColor: TColor;
     function GetActivePicture: TPictureBitmap;
     function GetActivePictureEdit: TPictureEdit;
     function GetActivePicturePage: TPicturePage;
@@ -722,7 +721,6 @@ begin
     if ssMiddle in Shift then
       PaperColor := AColor;
   end;
-  CurrentPaletteColor := AColor;
 end;
 
 procedure TMainForm.PanelFillDblClick(Sender: TObject);
@@ -765,13 +763,13 @@ begin
     Exit;
   if Source is TColorPalette then
   begin
-//    TPanel(Sender).Color:=CurrentPaletteColor;
+    TPanel(Sender).Color:=Palette.PickedColor;
     if Sender = PanelPaper then
-      ActivePictureEdit.PaperColor := CurrentPaletteColor;
+      ActivePictureEdit.PaperColor := Palette.PickedColor;
     if Sender = PanelFill then
-      ActivePictureEdit.FillColor := CurrentPaletteColor;
+      ActivePictureEdit.FillColor := Palette.PickedColor;
     if Sender = PanelOutline then
-      ActivePictureEdit.OutlineColor := CurrentPaletteColor;
+      ActivePictureEdit.OutlineColor := Palette.PickedColor;
   end;
 end;
 

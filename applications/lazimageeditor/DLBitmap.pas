@@ -16,7 +16,11 @@ type
     rgbtAlpha: byte;
   end;
   PRGBATriple = ^TRGBATriple;
+  {$ifdef MSWINDOWS}
+  TRGBATriple = tagRGBTRIPLE;
+  {$else}
   TRGBATriple = tagRGBATRIPLE;
+  {$endif}
   PRGBATripleArray = ^TRGBATripleArray;
   TRGBATripleArray = array[word] of TRGBATriple;
 
@@ -87,11 +91,7 @@ begin
   Bmp := TDLBitmap.Create;
   Bmp.Width := aBitmap.Height;
   Bmp.Height := aBitmap.Width;
-  {$ifdef MSWINDOWS}
-  Bmp.PixelFormat := pf32bit;
-  {$else}
   Bmp.PixelFormat := pf24bit;
-  {$endif}
   IntfImg1 := TLazIntfImage.Create(0, 0);
   IntfImg1.LoadFromBitmap(Bmp.Handle, Bmp.MaskHandle);
   IntfImg2 := TLazIntfImage.Create(0, 0);
@@ -351,8 +351,6 @@ var
 begin
   Result := False;
   try
-    if BitmapIn.PixelFormat <> pf24bit then
-      Exit;
     with BitmapOut do
     begin
       Width := BitmapIn.Width;
@@ -433,11 +431,7 @@ end;
 constructor TDLBitmap.Create;
 begin
   inherited;
-  {$ifdef MSWINDOWS}
-  PixelFormat := pf32bit;
-  {$else}
   PixelFormat := pf24bit;
-  {$endif}
   FIntfImgA := TLazIntfImage.Create(0, 0);
 end;
 
