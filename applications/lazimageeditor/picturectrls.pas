@@ -672,8 +672,7 @@ begin
 
   Canvas.Pen.Mode := pmNot;
   Canvas.Brush.Style := bsClear;
-  
-  
+
   S := PictureToClient(Point(X1, Y1));
   E := PictureToClient(Point(X2, Y2));
   R := Round(RectangleRoundness * Zoom);
@@ -874,7 +873,7 @@ begin
     else
     begin
       if FFillAlpha = 100 then
-        Picture.Canvas.Rectangle(X1, Y1, X2, Y2)
+        Picture.Canvas.RoundRect(X1, Y1, X2, Y2, FRectangleRoundness, FRectangleRoundness)
       else
         Picture.AlphaRectangle(X1, Y1, X2, Y2, FFillAlpha);
     end;

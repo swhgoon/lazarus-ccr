@@ -473,7 +473,10 @@ begin
   else
     S := Trim(ComboBoxZoom.Text);
   E := StrToInt(S);
-  V := E + 10;
+  if E < 100 then
+    V := E + 10
+  else
+    V := E + 100;
   if V <= 0 then
     V := 100;
   ActivePictureEdit.Zoom := V / 100;
@@ -492,7 +495,10 @@ begin
   else
     S := Trim(ComboBoxZoom.Text);
   E := StrToInt(S);
-  V := E - 10;
+  if E <= 100 then
+    V := E - 10
+  else
+    V := E - 100;
   if V <= 0 then
     V := 100;
   ActivePictureEdit.Zoom := V / 100;
