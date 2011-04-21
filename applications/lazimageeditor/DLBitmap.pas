@@ -65,6 +65,7 @@ type
     procedure CopyToClipboard; virtual;
     procedure PasteFromClipboard; virtual;
     procedure Delete; virtual;
+    procedure FloodFill (x,y:integer);
     property FillColor: TColor read GetFillColor write SetFillColor;
     property OutlineColor: TColor read GetOutlineColor write SetOutlineColor;
     property PaperColor: TColor read GetPaperColor write SetPaperColor;
@@ -361,6 +362,12 @@ begin
   ChangeContrast(Tmp, ValueChange);
   Canvas.Draw(0, 0, tmp);
   tmp.Free;
+end;
+
+procedure TDLBitmap.FloodFill (x, y:integer);
+begin
+  Canvas.Brush.Color := FFillColor;
+  Canvas.FloodFill(x, y, Canvas.Pixels[x,y], fsSurface);
 end;
 
 procedure TDLBitmap.FillEllipse(X1, Y1, X2, Y2: integer);

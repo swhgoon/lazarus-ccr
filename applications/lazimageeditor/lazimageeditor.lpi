@@ -41,7 +41,7 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="38">
+    <Units Count="39">
       <Unit0>
         <Filename Value="lazimageeditor.pas"/>
         <IsPartOfProject Value="True"/>
@@ -50,7 +50,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="14" Y="4"/>
-        <UsageCount Value="64"/>
+        <UsageCount Value="65"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -62,21 +62,20 @@
         <UnitName Value="Main"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1203"/>
-        <CursorPos X="30" Y="1220"/>
-        <UsageCount Value="64"/>
+        <TopLine Value="534"/>
+        <CursorPos X="49" Y="551"/>
+        <UsageCount Value="65"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="picturectrls.pas"/>
         <UnitName Value="PictureCtrls"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="4"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="117"/>
-        <CursorPos X="24" Y="137"/>
-        <UsageCount Value="28"/>
+        <TopLine Value="755"/>
+        <CursorPos X="23" Y="758"/>
+        <UsageCount Value="29"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
@@ -172,8 +171,8 @@
         <Filename Value="T:\fpclaz\laz\lcl\graphics.pp"/>
         <UnitName Value="Graphics"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="2580"/>
-        <CursorPos X="9" Y="2592"/>
+        <TopLine Value="1086"/>
+        <CursorPos X="15" Y="1102"/>
         <UsageCount Value="10"/>
       </Unit12>
       <Unit13>
@@ -183,7 +182,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="100" Y="4"/>
-        <UsageCount Value="29"/>
+        <UsageCount Value="30"/>
         <Loaded Value="True"/>
       </Unit13>
       <Unit14>
@@ -245,19 +244,19 @@
       <Unit21>
         <Filename Value="bmprgbtypes.pas"/>
         <UnitName Value="BmpRGBTypes"/>
-        <EditorIndex Value="6"/>
+        <EditorIndex Value="5"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="539"/>
-        <CursorPos X="40" Y="535"/>
-        <UsageCount Value="26"/>
+        <TopLine Value="1"/>
+        <CursorPos X="98" Y="4"/>
+        <UsageCount Value="27"/>
         <Loaded Value="True"/>
       </Unit21>
       <Unit22>
         <Filename Value="T:\fpclaz\laz\lcl\include\winapih.inc"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="255"/>
-        <CursorPos X="23" Y="271"/>
-        <UsageCount Value="9"/>
+        <TopLine Value="93"/>
+        <CursorPos X="10" Y="109"/>
+        <UsageCount Value="10"/>
       </Unit22>
       <Unit23>
         <Filename Value="T:\fpclaz\laz\lcl\lcltype.pp"/>
@@ -278,38 +277,34 @@
       <Unit25>
         <Filename Value="bmprgbutils.pas"/>
         <UnitName Value="BmpRGBUtils"/>
-        <EditorIndex Value="5"/>
         <WindowIndex Value="0"/>
         <TopLine Value="85"/>
         <CursorPos X="72" Y="5"/>
         <UsageCount Value="24"/>
-        <Loaded Value="True"/>
       </Unit25>
       <Unit26>
         <Filename Value="T:\fpclaz\fpc\2.5\packages\fcl-image\src\fpcanvas.pp"/>
         <UnitName Value="FPCanvas"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="267"/>
-        <CursorPos X="15" Y="283"/>
-        <UsageCount Value="9"/>
+        <TopLine Value="286"/>
+        <CursorPos X="5" Y="302"/>
+        <UsageCount Value="10"/>
       </Unit26>
       <Unit27>
         <Filename Value="T:\fpclaz\laz\lcl\graphtype.pp"/>
         <UnitName Value="GraphType"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="24"/>
-        <CursorPos X="45" Y="35"/>
-        <UsageCount Value="9"/>
+        <TopLine Value="26"/>
+        <CursorPos X="5" Y="42"/>
+        <UsageCount Value="10"/>
       </Unit27>
       <Unit28>
         <Filename Value="bmprgbgraph.pas"/>
         <UnitName Value="BmpRGBGraph"/>
-        <EditorIndex Value="7"/>
         <WindowIndex Value="0"/>
         <TopLine Value="500"/>
         <CursorPos X="27" Y="532"/>
         <UsageCount Value="20"/>
-        <Loaded Value="True"/>
       </Unit28>
       <Unit29>
         <Filename Value="rgbdrawutils.pas"/>
@@ -364,11 +359,12 @@
       <Unit35>
         <Filename Value="DLBitmap.pas"/>
         <UnitName Value="DLBitmap"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="10"/>
-        <CursorPos X="102" Y="6"/>
-        <UsageCount Value="11"/>
+        <TopLine Value="346"/>
+        <CursorPos X="1" Y="371"/>
+        <UsageCount Value="12"/>
         <Loaded Value="True"/>
       </Unit35>
       <Unit36>
@@ -387,127 +383,135 @@
         <CursorPos X="21" Y="68"/>
         <UsageCount Value="10"/>
       </Unit37>
+      <Unit38>
+        <Filename Value="T:\fpclaz\laz\lcl\controls.pp"/>
+        <UnitName Value="Controls"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="48"/>
+        <CursorPos X="29" Y="64"/>
+        <UsageCount Value="10"/>
+      </Unit38>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="picturectrls.pas"/>
-        <Caret Line="2" Column="101" TopLine="1"/>
+        <Caret Line="597" Column="55" TopLine="575"/>
       </Position1>
       <Position2>
         <Filename Value="picturectrls.pas"/>
-        <Caret Line="109" Column="54" TopLine="77"/>
+        <Caret Line="596" Column="21" TopLine="586"/>
       </Position2>
       <Position3>
         <Filename Value="picturectrls.pas"/>
-        <Caret Line="657" Column="41" TopLine="625"/>
+        <Caret Line="166" Column="24" TopLine="150"/>
       </Position3>
       <Position4>
         <Filename Value="picturectrls.pas"/>
-        <Caret Line="681" Column="25" TopLine="649"/>
+        <Caret Line="167" Column="28" TopLine="150"/>
       </Position4>
       <Position5>
         <Filename Value="picturectrls.pas"/>
-        <Caret Line="109" Column="54" TopLine="90"/>
+        <Caret Line="213" Column="82" TopLine="186"/>
       </Position5>
       <Position6>
         <Filename Value="picturectrls.pas"/>
-        <Caret Line="657" Column="41" TopLine="625"/>
+        <Caret Line="596" Column="25" TopLine="569"/>
       </Position6>
       <Position7>
-        <Filename Value="main.pas"/>
-        <Caret Line="8" Column="78" TopLine="1"/>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="597" Column="55" TopLine="570"/>
       </Position7>
       <Position8>
-        <Filename Value="main.pas"/>
-        <Caret Line="179" Column="22" TopLine="147"/>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="641" Column="37" TopLine="614"/>
       </Position8>
       <Position9>
-        <Filename Value="main.pas"/>
-        <Caret Line="197" Column="18" TopLine="165"/>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="658" Column="18" TopLine="631"/>
       </Position9>
       <Position10>
-        <Filename Value="main.pas"/>
-        <Caret Line="272" Column="32" TopLine="240"/>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="703" Column="12" TopLine="676"/>
       </Position10>
       <Position11>
-        <Filename Value="main.pas"/>
-        <Caret Line="276" Column="28" TopLine="244"/>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="766" Column="13" TopLine="748"/>
       </Position11>
       <Position12>
-        <Filename Value="main.pas"/>
-        <Caret Line="386" Column="37" TopLine="363"/>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="771" Column="54" TopLine="756"/>
       </Position12>
       <Position13>
-        <Filename Value="main.pas"/>
-        <Caret Line="391" Column="42" TopLine="375"/>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="774" Column="43" TopLine="756"/>
       </Position13>
       <Position14>
-        <Filename Value="main.pas"/>
-        <Caret Line="578" Column="38" TopLine="558"/>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="784" Column="26" TopLine="757"/>
       </Position14>
       <Position15>
-        <Filename Value="main.pas"/>
-        <Caret Line="582" Column="44" TopLine="558"/>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="5" Column="95" TopLine="1"/>
       </Position15>
       <Position16>
-        <Filename Value="main.pas"/>
-        <Caret Line="606" Column="34" TopLine="586"/>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="111" Column="62" TopLine="84"/>
       </Position16>
       <Position17>
-        <Filename Value="main.pas"/>
-        <Caret Line="610" Column="25" TopLine="586"/>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="117" Column="51" TopLine="90"/>
       </Position17>
       <Position18>
-        <Filename Value="main.pas"/>
-        <Caret Line="797" Column="29" TopLine="777"/>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="127" Column="15" TopLine="100"/>
       </Position18>
       <Position19>
-        <Filename Value="main.pas"/>
-        <Caret Line="798" Column="16" TopLine="777"/>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="166" Column="24" TopLine="139"/>
       </Position19>
       <Position20>
-        <Filename Value="main.pas"/>
-        <Caret Line="887" Column="16" TopLine="864"/>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="167" Column="28" TopLine="140"/>
       </Position20>
       <Position21>
-        <Filename Value="main.pas"/>
-        <Caret Line="1031" Column="16" TopLine="1011"/>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="213" Column="82" TopLine="186"/>
       </Position21>
       <Position22>
-        <Filename Value="main.pas"/>
-        <Caret Line="1033" Column="43" TopLine="1011"/>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="596" Column="20" TopLine="581"/>
       </Position22>
       <Position23>
         <Filename Value="picturectrls.pas"/>
-        <Caret Line="681" Column="29" TopLine="649"/>
+        <Caret Line="166" Column="24" TopLine="150"/>
       </Position23>
       <Position24>
         <Filename Value="picturectrls.pas"/>
-        <Caret Line="171" Column="15" TopLine="152"/>
+        <Caret Line="167" Column="28" TopLine="150"/>
       </Position24>
       <Position25>
         <Filename Value="picturectrls.pas"/>
-        <Caret Line="916" Column="7" TopLine="897"/>
+        <Caret Line="213" Column="82" TopLine="186"/>
       </Position25>
       <Position26>
         <Filename Value="picturectrls.pas"/>
-        <Caret Line="879" Column="12" TopLine="857"/>
+        <Caret Line="596" Column="20" TopLine="570"/>
       </Position26>
       <Position27>
         <Filename Value="picturectrls.pas"/>
-        <Caret Line="874" Column="3" TopLine="861"/>
+        <Caret Line="166" Column="22" TopLine="150"/>
       </Position27>
       <Position28>
         <Filename Value="picturectrls.pas"/>
-        <Caret Line="878" Column="25" TopLine="861"/>
+        <Caret Line="162" Column="49" TopLine="147"/>
       </Position28>
       <Position29>
-        <Filename Value="bmprgbtypes.pas"/>
-        <Caret Line="126" Column="29" TopLine="107"/>
+        <Filename Value="picturectrls.pas"/>
+        <Caret Line="517" Column="36" TopLine="511"/>
       </Position29>
       <Position30>
         <Filename Value="picturectrls.pas"/>
-        <Caret Line="859" Column="24" TopLine="852"/>
+        <Caret Line="173" Column="59" TopLine="151"/>
       </Position30>
     </JumpHistory>
   </ProjectOptions>

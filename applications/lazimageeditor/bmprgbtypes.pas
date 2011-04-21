@@ -527,7 +527,8 @@ end;
 procedure TRGBBitmapCore.MaskFloodFill(X, Y: integer);
 begin
   Canvas.Brush.Color := clBlack;
-  Canvas.FillRect(Rect(0, 0, Width, Height));
+//  Canvas.FillRect(Rect(0, 0, Width, Height));
+  FloodFill(X, Y);
 end;
 
 // AAlpha is the alpha of the rectangle, ranging from

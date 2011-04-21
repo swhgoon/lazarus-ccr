@@ -763,7 +763,9 @@ begin
   BeginDraw;
   if not (ssLeft in Shift) then Picture.EraseMode := ermErase;
   try
-    Picture.Canvas.FloodFill(X, Y, FFillColor, fsSurface); //Picture.Canvas.Brush.Color, fsSurface);
+    //Picture.Canvas.FloodFill(X, Y, FFillColor, fsSurface); //Picture.Canvas.Brush.Color, fsSurface);
+    Picture.Canvas.Brush.Color := FFillColor;
+    Picture.Canvas.FloodFill(x, y, Picture.Canvas.Pixels[x,y], fsSurface);
   finally
     Picture.EraseMode := ermNone;
     EndDraw;
