@@ -45,6 +45,17 @@ type
     Red, Green, Blue, Alpha: Byte;
   end;
 
+  TvPen = record
+    Color: TvColor;
+    Style: TFPPenStyle;
+    Width: Integer;
+  end;
+
+  TvBrush = record
+    Color: TvColor;
+    Style: TFPBrushStyle;
+  end;
+
 const
   FPValphaTransparent = $00;
   FPValphaOpaque = $FF;
@@ -59,7 +70,7 @@ type
   P3DPoint = ^T3DPoint;
 
   TSegmentType = (
-    st2DLine, st2DBezier,
+    st2DLine, st2DLineWithPen, st2DBezier,
     st3DLine, st3DBezier, stMoveTo);
 
   {@@
@@ -75,10 +86,6 @@ type
     // Fields for linking the list
     Previous: TPathSegment;
     Next: TPathSegment;
-    // Data fields
-    PenColor: TvColor;
-    PenStyle: TFPPenStyle;
-    PenWidth: Integer;
   end;
 
   {@@
@@ -91,6 +98,11 @@ type
   T2DSegment = class(TPathSegment)
   public
     X, Y: Double;
+  end;
+
+  T2DSegmentWithPen = class(T2DSegment)
+  public
+    Pen: TvPen;
   end;
 
   {@@
@@ -124,6 +136,9 @@ type
     Points: TPathSegment; // Beginning of the double-linked list
     PointsEnd: TPathSegment; // End of the double-linked list
     CurPoint: TPathSegment; // Used in PrepareForSequentialReading and Next
+    Pen: TvPen;
+    Brush: TvBrush;
+    constructor Create();
     procedure Assign(APath: TPath);
     function Count(): TPathSegment;
     procedure PrepareForSequentialReading;
@@ -149,13 +164,8 @@ type
   }
   TvEntity = class
   public
-    // Pen
-    PenColor: TvColor;
-    PenStyle: TFPPenStyle;
-    PenWidth: Integer;
-    // Brush
-    BrushStyle: TFPBrushStyle;
-    BrushColor: TvColor;
+    Pen: TvPen;
+    Brush: TvBrush;
   end;
 
   {@@
@@ -253,6 +263,8 @@ type
     procedure AddLineToPath(AX, AY, AZ: Double); overload;
     procedure AddBezierToPath(AX1, AY1, AX2, AY2, AX3, AY3: Double); overload;
     procedure AddBezierToPath(AX1, AY1, AZ1, AX2, AY2, AZ2, AX3, AY3, AZ3: Double); overload;
+    procedure SetBrushToPath(ABrush: TvBrush);
+    procedure SetPenToPath(APen: TvPen);
     procedure EndPath();
     procedure AddText(AX, AY, AZ: Double; FontName: string; FontSize: integer; AText: utf8string); overload;
     procedure AddText(AX, AY, AZ: Double; AStr: utf8string); overload;
@@ -550,20 +562,19 @@ begin
   segment.SegmentType := st2DLine;
   segment.X := AX;
   segment.Y := AY;
-  segment.PenColor := clvBlack;
 
   AppendSegmentToTmpPath(segment);
 end;
 
 procedure TvVectorialDocument.AddLineToPath(AX, AY: Double; AColor: TvColor);
 var
-  segment: T2DSegment;
+  segment: T2DSegmentWithPen;
 begin
-  segment := T2DSegment.Create;
-  segment.SegmentType := st2DLine;
+  segment := T2DSegmentWithPen.Create;
+  segment.SegmentType := st2DLineWithPen;
   segment.X := AX;
   segment.Y := AY;
-  segment.PenColor := AColor;
+  segment.Pen.Color := AColor;
 
   AppendSegmentToTmpPath(segment);
 end;
@@ -621,6 +632,23 @@ begin
   segment.Z3 := AZ2;
 
   AppendSegmentToTmpPath(segment);
+end;
+
+{
+  Sets a Brush to paint the inner area inside the path.
+}
+procedure TvVectorialDocument.SetBrushToPath(ABrush: TvBrush);
+begin
+  FTmPPath.Brush := ABrush;
+end;
+
+{
+  Sets a global Pen for the entire path. This Pen might be overriden by
+  individual elements of the polyline
+}
+procedure TvVectorialDocument.SetPenToPath(APen: TvPen);
+begin
+  FTmPPath.Pen := APen;
 end;
 
 {@@
@@ -683,7 +711,7 @@ begin
   lCircularArc.Radius := ARadius;
   lCircularArc.StartAngle := AStartAngle;
   lCircularArc.EndAngle := AEndAngle;
-  lCircularArc.PenColor := AColor;
+  lCircularArc.Pen.Color := AColor;
   FEntities.Add(lCircularArc);
 end;
 
@@ -1072,6 +1100,12 @@ begin
 end;
 
 { TPath }
+
+constructor TPath.Create();
+begin
+  Brush.Style := bsClear;
+  inherited Create();
+end;
 
 procedure TPath.Assign(APath: TPath);
 begin

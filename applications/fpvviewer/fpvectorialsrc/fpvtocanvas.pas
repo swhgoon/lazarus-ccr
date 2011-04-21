@@ -187,11 +187,18 @@ begin
         Write(Format(' M%d,%d', [CoordToCanvasX(Cur2DSegment.X), CoordToCanvasY(Cur2DSegment.Y)]));
         {$endif}
       end;
-      st2DLine, st3DLine:
+      st2DLineWithPen:
       begin
-        {$ifdef USE_LCL_CANVAS}ADest.Pen.Color := VColorToTColor(Cur2DSegment.PenColor);{$endif}
+        {$ifdef USE_LCL_CANVAS}ADest.Pen.Color := VColorToTColor(T2DSegmentWithPen(Cur2DSegment).Pen.Color);{$endif}
         ADest.LineTo(CoordToCanvasX(Cur2DSegment.X), CoordToCanvasY(Cur2DSegment.Y));
         {$ifdef USE_LCL_CANVAS}ADest.Pen.Color := clBlack;{$endif}
+        {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
+        Write(Format(' L%d,%d', [CoordToCanvasX(Cur2DSegment.X), CoordToCanvasY(Cur2DSegment.Y)]));
+        {$endif}
+      end;
+      st2DLine, st3DLine:
+      begin
+        ADest.LineTo(CoordToCanvasX(Cur2DSegment.X), CoordToCanvasY(Cur2DSegment.Y));
         {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
         Write(Format(' L%d,%d', [CoordToCanvasX(Cur2DSegment.X), CoordToCanvasY(Cur2DSegment.Y)]));
         {$endif}
@@ -321,7 +328,7 @@ begin
       WriteLn(Format('Drawing Arc Center=%f,%f Radius=%f StartAngle=%f AngleLength=%f',
         [CurArc.CenterX, CurArc.CenterY, CurArc.Radius, IntStartAngle/16, IntAngleLength/16]));
       {$endif}
-      ADest.Pen.Color := {$ifdef USE_LCL_CANVAS}VColorToTColor(CurArc.PenColor);{$else}VColorToFPColor(CurArc.PenColor);{$endif}
+      ADest.Pen.Color := {$ifdef USE_LCL_CANVAS}VColorToTColor(CurArc.Pen.Color);{$else}VColorToFPColor(CurArc.Pen.Color);{$endif}
       ADest.Arc(
         BoundsLeft, BoundsTop, BoundsRight, BoundsBottom,
         IntStartAngle, IntAngleLength
