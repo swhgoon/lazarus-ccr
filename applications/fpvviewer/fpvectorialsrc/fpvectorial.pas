@@ -771,7 +771,8 @@ begin
   for i := 0 to Length(GvVectorialFormats) - 1 do
     if GvVectorialFormats[i].Format = AFormat then
     begin
-      Result := GvVectorialFormats[i].WriterClass.Create;
+      if GvVectorialFormats[i].WriterClass <> nil then
+        Result := GvVectorialFormats[i].WriterClass.Create;
 
       Break;
     end;
@@ -792,7 +793,8 @@ begin
   for i := 0 to Length(GvVectorialFormats) - 1 do
     if GvVectorialFormats[i].Format = AFormat then
     begin
-      Result := GvVectorialFormats[i].ReaderClass.Create;
+      if GvVectorialFormats[i].ReaderClass <> nil then
+        Result := GvVectorialFormats[i].ReaderClass.Create;
 
       Break;
     end;
