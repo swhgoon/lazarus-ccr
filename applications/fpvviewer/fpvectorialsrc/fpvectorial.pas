@@ -777,7 +777,7 @@ begin
       Break;
     end;
 
-  if Result = nil then raise Exception.Create('Unsuported vector graphics format.');
+  if Result = nil then raise Exception.Create('Unsupported vector graphics format.');
 end;
 
 {@@
@@ -799,7 +799,7 @@ begin
       Break;
     end;
 
-  if Result = nil then raise Exception.Create('Unsuported vector graphics format.');
+  if Result = nil then raise Exception.Create('Unsupported vector graphics format.');
 end;
 
 procedure TvVectorialDocument.ClearTmpPath();
