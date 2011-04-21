@@ -136,7 +136,11 @@ type
     Points: TPathSegment; // Beginning of the double-linked list
     PointsEnd: TPathSegment; // End of the double-linked list
     CurPoint: TPathSegment; // Used in PrepareForSequentialReading and Next
+    {@@ The global Pen for the entire path. This Pen might be overriden by
+        individual elements of the polyline. }
     Pen: TvPen;
+    {@@ Sets a Brush to paint the inner area inside the path.
+        There is no inner area if Brush.Style = bsClear, which is the default. }
     Brush: TvBrush;
     constructor Create();
     procedure Assign(APath: TPath);
@@ -263,8 +267,11 @@ type
     procedure AddLineToPath(AX, AY, AZ: Double); overload;
     procedure AddBezierToPath(AX1, AY1, AX2, AY2, AX3, AY3: Double); overload;
     procedure AddBezierToPath(AX1, AY1, AZ1, AX2, AY2, AZ2, AX3, AY3, AZ3: Double); overload;
-    procedure SetBrushToPath(ABrush: TvBrush);
-    procedure SetPenToPath(APen: TvPen);
+    procedure SetBrushColor(AColor: TvColor);
+    procedure SetBrushStyle(AStyle: TFPBrushStyle);
+    procedure SetPenColor(AColor: TvColor);
+    procedure SetPenStyle(AStyle: TFPPenStyle);
+    procedure SetPenWidth(AWidth: Integer);
     procedure EndPath();
     procedure AddText(AX, AY, AZ: Double; FontName: string; FontSize: integer; AText: utf8string); overload;
     procedure AddText(AX, AY, AZ: Double; AStr: utf8string); overload;
@@ -634,21 +641,29 @@ begin
   AppendSegmentToTmpPath(segment);
 end;
 
-{
-  Sets a Brush to paint the inner area inside the path.
-}
-procedure TvVectorialDocument.SetBrushToPath(ABrush: TvBrush);
+procedure TvVectorialDocument.SetBrushColor(AColor: TvColor);
 begin
-  FTmPPath.Brush := ABrush;
+  FTmPPath.Brush.Color := AColor;
 end;
 
-{
-  Sets a global Pen for the entire path. This Pen might be overriden by
-  individual elements of the polyline
-}
-procedure TvVectorialDocument.SetPenToPath(APen: TvPen);
+procedure TvVectorialDocument.SetBrushStyle(AStyle: TFPBrushStyle);
 begin
-  FTmPPath.Pen := APen;
+  FTmPPath.Brush.Style := AStyle;
+end;
+
+procedure TvVectorialDocument.SetPenColor(AColor: TvColor);
+begin
+  FTmPPath.Pen.Color := AColor;
+end;
+
+procedure TvVectorialDocument.SetPenStyle(AStyle: TFPPenStyle);
+begin
+  FTmPPath.Pen.Style := AStyle;
+end;
+
+procedure TvVectorialDocument.SetPenWidth(AWidth: Integer);
+begin
+  FTmPPath.Pen.Width := AWidth;
 end;
 
 {@@
