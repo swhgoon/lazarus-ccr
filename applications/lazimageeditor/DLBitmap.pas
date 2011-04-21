@@ -16,7 +16,11 @@ type
     rgbtAlpha: byte;
   end;
   PRGBATriple = ^TRGBATriple;
+  {$ifdef MSWINDOWS}
+  TRGBATriple = tagRGBTRIPLE;
+  {$else}
   TRGBATriple = tagRGBATRIPLE;
+  {$endif}
   PRGBATripleArray = ^TRGBATripleArray;
   TRGBATripleArray = array[word] of TRGBATriple;
 
@@ -86,11 +90,7 @@ implementation
 constructor TDLBitmap.Create;
 begin
   inherited;
-  {$ifdef MSWINDOWS}
-  PixelFormat := pf32bit;
-  {$else}
   PixelFormat := pf24bit;
-  {$endif}
   FIntfImgA := TLazIntfImage.Create(0, 0);
 end;
 
