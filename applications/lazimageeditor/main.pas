@@ -163,6 +163,7 @@ type
     PanelTools: TPanel;
     ExportResourceDialog: TSaveDialog;
     SavePictureDialog: TSavePictureDialog;
+    ToolBrush: TToolButton;
     ZoomInBtn: TToolButton;
     ZoomOutBtn: TToolButton;
     ToolCircleShape: TSpeedButton;
@@ -257,6 +258,7 @@ type
     procedure Rotate270Execute(Sender: TObject);
     procedure Rotate90Execute(Sender: TObject);
     procedure spinFillAlphaChange(Sender: TObject);
+    procedure ToolBrushClick(Sender: TObject);
     procedure ZoomInBtnClick(Sender: TObject);
     procedure ZoomOutBtnClick(Sender: TObject);
     procedure ToolCircleShapeClick(Sender: TObject);
@@ -459,6 +461,13 @@ begin
   if not Pictures.CanEdit then
     Exit;
   ActivePictureEdit.FillAlpha := spinFillAlpha.Value;
+end;
+
+procedure TMainForm.ToolBrushClick(Sender: TObject);
+begin
+  if not Pictures.CanEdit then
+    Exit;
+  ChangeTool(ptBrush);
 end;
 
 procedure TMainForm.ZoomInBtnClick(Sender: TObject);

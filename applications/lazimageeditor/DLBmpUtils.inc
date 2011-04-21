@@ -487,4 +487,76 @@ begin
   DestBmp.Free;
 end;
 
+procedure SetCanvasPixel(DLBmp: TDLBitmap; x, y: integer; aColor: TColor);
+var SrcRow: pRGBATriple;
+begin
+  if (x > 0) and (x < DLBmp.Width) and (y > 0) and (y < DLBmp.Height) then
+    //aCanvas.Pixels[x, y] := aColor;
+  begin
+    SrcRow := DLBmp.ScanLine[y];
+    SrcRow[x].rgbtRed:=GetRColor(aColor);
+    SrcRow[x].rgbtGreen:=GetGColor(aColor);
+    SrcRow[x].rgbtBlue:=GetBColor(aColor);
+  end;
+end;
+
+procedure SprayPoints(DLBmp: TDLBitmap; X, Y: integer; Radians: Integer; PColor: TColor);
+var
+   i, a, b, temp, ci, center: Integer;
+begin
+  if DLBmp = nil then
+    Exit;
+  Randomize;
+  for i := 0 to Radians do
+  begin
+    temp := Random(100);
+    a := Random(Round(Radians * 0.65));
+    if (temp < 50) then a := 0 - a;
+    temp := Random(100);
+    b := Random(Round(Radians * 0.65));
+    if (temp < 50) then b := 0 - b;
+    if (a * a + b * b < Sqr(Round(Radians * 0.65))) then
+      SetCanvasPixel(DLBmp, X + a, Y + b, PColor);
+  end;
+  for i := 0 to Radians div 3 do
+  begin
+    temp := Random(100);
+    a := Random(Round(Radians * 0.65));
+    if (temp < 50) then a := 0 - a;
+    temp := Random(100);
+    b := Random(Round(Radians * 0.65));
+    if (temp < 50) then b := 0 - b;
+    if (a * a + b * b < Sqr(Round(Radians * 0.65))) then
+      SetCanvasPixel(DLBmp, X + a, Y + b, PColor);
+  end;
+  for i := 0 to Radians * 2 div 3 do
+  begin
+    temp := Random(100);
+    a := Random(Round(Radians * 0.65));
+    if (temp < 50) then a := 0 - a;
+    temp := Random(100);
+    b := Random(Round(Radians * 0.65));
+    if (temp < 50) then b := 0 - b;
+    if (a * a + b * b < Sqr(Round(Radians * 0.65))) then
+      SetCanvasPixel(DLBmp, X + a, Y + b, PColor);
+  end;
+  DLBmp.InvalidateScanLine;
+end;
+
+function GetRColor(const Color: TColor): Byte;
+begin
+  Result := Color and $FF;
+end;
+
+function GetGColor(const Color: TColor): Byte;
+begin
+  Result := (Color and $FF00) shr 8;
+end;
+
+function GetBColor(const Color: TColor): Byte;
+begin
+  Result := (Color and $FF0000) shr 16;
+end;
+
+
 

@@ -1,4 +1,4 @@
-unit DLBitmap;
+unit DLBitmap;  
 
 {$mode objfpc}{$H+}
 
@@ -65,7 +65,8 @@ type
     procedure CopyToClipboard; virtual;
     procedure PasteFromClipboard; virtual;
     procedure Delete; virtual;
-    procedure FloodFill (x,y:integer);
+    procedure FloodFill(x, y: integer);
+    procedure Spray(x, y, radian: integer; PColor: TColor);
     property FillColor: TColor read GetFillColor write SetFillColor;
     property OutlineColor: TColor read GetOutlineColor write SetOutlineColor;
     property PaperColor: TColor read GetPaperColor write SetPaperColor;
@@ -83,6 +84,10 @@ procedure InvertBitmap(aBitmap: TDLBitmap);
 procedure ChangeRGB(SrcBmp: TDLBitmap; RedChange, GreenChange, BlueChange: integer);
 procedure ChangeBrightness(SrcBmp: TDLBitmap; ValueChange: integer);
 procedure ChangeContrast(SrcBmp: TDLBitmap; ValueChange: integer);
+procedure SprayPoints(DLBmp: TDLBitmap; X, Y: integer; Radians: integer; PColor: TColor);
+function GetRColor(const Color: TColor): Byte;
+function GetGColor(const Color: TColor): Byte;
+function GetBColor(const Color: TColor): Byte;
 
 implementation
 
@@ -364,10 +369,15 @@ begin
   tmp.Free;
 end;
 
-procedure TDLBitmap.FloodFill (x, y:integer);
+procedure TDLBitmap.FloodFill(x, y: integer);
 begin
   Canvas.Brush.Color := FFillColor;
-  Canvas.FloodFill(x, y, Canvas.Pixels[x,y], fsSurface);
+  Canvas.FloodFill(x, y, Canvas.Pixels[x, y], fsSurface);
+end;
+
+procedure TDLBitmap.Spray(x, y, radian: integer; PColor: TColor);
+begin
+  SprayPoints(Self, x, y, radian, PColor);
 end;
 
 procedure TDLBitmap.FillEllipse(X1, Y1, X2, Y2: integer);

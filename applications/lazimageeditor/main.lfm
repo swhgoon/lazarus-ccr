@@ -1,7 +1,7 @@
 ﻿object MainForm: TMainForm
-  Left = 260
+  Left = 135
   Height = 681
-  Top = 147
+  Top = 90
   Width = 935
   Caption = 'Lazarus Image Editor'
   ClientHeight = 659
@@ -150,6 +150,13 @@
         ParentShowHint = False
         ShowHint = True
         Style = tbsCheck
+      end
+      object ToolBrush: TToolButton
+        Left = 0
+        Top = 402
+        Caption = 'ToolBrush'
+        ImageIndex = 5
+        OnClick = ToolBrushClick
       end
     end
   end
@@ -1262,8 +1269,8 @@
         object spinFillAlpha: TSpinEdit
           Left = 10
           Height = 27
-          Top = 5
-          Width = 51
+          Top = 3
+          Width = 53
           OnChange = spinFillAlphaChange
           TabOrder = 0
           Value = 100
@@ -1292,9 +1299,9 @@
         TabOrder = 5
         object checkFuzzy: TCheckBox
           Left = 4
-          Height = 19
+          Height = 23
           Top = 9
-          Width = 20
+          Width = 24
           OnChange = checkFuzzyChange
           TabOrder = 0
         end
