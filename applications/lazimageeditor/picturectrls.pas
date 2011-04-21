@@ -670,7 +670,8 @@ var
 begin
   if FToolDrag = tdNone then Exit;
 
-  Canvas.Pen.Mode := pmNot;
+ // Canvas.Pen.Mode := pmNot;
+  Canvas.Pen.Mode := pmNotXor;
   Canvas.Brush.Style := bsClear;
 
   S := PictureToClient(Point(X1, Y1));
