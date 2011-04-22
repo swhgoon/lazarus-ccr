@@ -558,5 +558,53 @@ begin
   Result := (Color and $FF0000) shr 16;
 end;
 
+procedure SprayPoints(aCanvas: TCanvas; X, Y: integer; Radians: Integer; PColor: TColor);
+var
+   i, a, b, temp, ci, center: Integer;
+begin
+  if aCanvas = nil then
+    Exit;
+  Randomize;
+  for i := 0 to Radians do
+  begin
+    temp := Random(100);
+    a := Random(Round(Radians * 0.65));
+    if (temp < 50) then a := 0 - a;
+    temp := Random(100);
+    b := Random(Round(Radians * 0.65));
+    if (temp < 50) then b := 0 - b;
+    if (a * a + b * b < Sqr(Round(Radians * 0.65))) then
+    begin
+      aCanvas.Pixels[X + a, Y + b] := PColor;
+    end;
+  end;
+  for i := 0 to Radians div 3 do
+  begin
+    temp := Random(100);
+    a := Random(Round(Radians * 0.65));
+    if (temp < 50) then a := 0 - a;
+    temp := Random(100);
+    b := Random(Round(Radians * 0.65));
+    if (temp < 50) then b := 0 - b;
+    if (a * a + b * b < Sqr(Round(Radians * 0.65))) then
+    begin
+      aCanvas.Pixels[X + a, Y + b] := PColor;
+    end;
+  end;
+  for i := 0 to Radians * 2 div 3 do
+  begin
+    temp := Random(100);
+    a := Random(Round(Radians * 0.65));
+    if (temp < 50) then a := 0 - a;
+    temp := Random(100);
+    b := Random(Round(Radians * 0.65));
+    if (temp < 50) then b := 0 - b;
+    if (a * a + b * b < Sqr(Round(Radians * 0.65))) then
+    begin
+      aCanvas.Pixels[X + a, Y + b] := PColor;
+    end;
+  end;
+end;
+
 
 

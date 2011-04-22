@@ -88,6 +88,7 @@ procedure SprayPoints(DLBmp: TDLBitmap; X, Y: integer; Radians: integer; PColor:
 function GetRColor(const Color: TColor): Byte;
 function GetGColor(const Color: TColor): Byte;
 function GetBColor(const Color: TColor): Byte;
+procedure SprayPoints(aCanvas: TCanvas; X, Y: integer; Radians: Integer; PColor: TColor);
 
 implementation
 
@@ -377,7 +378,7 @@ end;
 
 procedure TDLBitmap.Spray(x, y, radian: integer; PColor: TColor);
 begin
-  SprayPoints(Self, x, y, radian, PColor);
+  SprayPoints(Self.Canvas, x, y, radian, PColor);
 end;
 
 procedure TDLBitmap.FillEllipse(X1, Y1, X2, Y2: integer);
