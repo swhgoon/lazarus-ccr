@@ -73,7 +73,7 @@ begin
       writeln('instantfpc --get-cache');
       writeln('      Prints cache directory to stdout.');
       writeln;
-      writeln('Normal usage is to add as first line "#!instantfpc" to a source');
+      writeln('Normal usage is to add as first line "#!/usr/bin/instantfpc" to a source');
       Halt(0);
     end else if p='--get-cache' then begin
       CacheDir:=GetCacheDir;
