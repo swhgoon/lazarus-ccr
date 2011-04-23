@@ -73,7 +73,11 @@ begin
       writeln('instantfpc --get-cache');
       writeln('      Prints cache directory to stdout.');
       writeln;
-      writeln('Normal usage is to add as first line "#!/usr/bin/instantfpc" to a source');
+      writeln('instantfpc --compiler=<path to compiler>');
+      writeln('      Normally fpc is searched in PATH and used as compiler.');
+      writeln;
+      writeln('Normal usage is to add as first line ("shebang") "#!/usr/bin/instantfpc"');
+      writeln('to a program source file. Then you can execute the source like a script.');
       Halt(0);
     end else if p='--get-cache' then begin
       CacheDir:=GetCacheDir;

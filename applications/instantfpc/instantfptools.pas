@@ -103,13 +103,31 @@ begin
 end;
 
 function GetCompiler: string;
+const
+  CompilerParam = '--compiler=';
 var
   Path: String;
   p: Integer;
   StartPos: LongInt;
   Dir: String;
   CompFile: String;
+  i: Integer;
+  Param: String;
 begin
+  for i:=1 to Paramcount do begin
+    Param:=ParamStr(i);
+    if (Param='') or (Param[1]<>'-') then break;
+    if copy(Param,1,length(CompilerParam))=CompilerParam then begin
+      CompFile:=copy(Param,length(CompilerParam)+1,length(Param));
+      Result:=ExpandFileName(CompFile);
+      if not FileExists(Result) then begin
+        writeln('Error: '+CompFile+' not found, check the ',CompilerParam,' parameter.');
+        Halt(1);
+      end;
+      exit;
+    end;
+  end;
+
   {$IFDEF Windows}
   CompFile:='fpc.exe';
   {$ELSE}
@@ -129,7 +147,7 @@ begin
       inc(p);
     end;
   end;
-  writeln(CompFile+' not found in PATH');
+  writeln('Error: '+CompFile+' not found in PATH');
   Halt(1);
 end;
 
