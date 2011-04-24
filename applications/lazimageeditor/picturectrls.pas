@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, LCLType, LCLIntf, Controls, Forms, ExtCtrls, Graphics, Math,
-  BmpRGBGraph, BmpRGBUtils, BmpRGBTypes;
+  BmpRGBGraph, BmpRGBUtils, BmpRGBTypes, DLBitmap;
 
 type
   TPictureViewOption = (poShowGrid, poShowMask);
@@ -72,7 +72,7 @@ type
     procedure UpdatePictureRect;
   public
     constructor Create(TheOwner: TComponent); override;
-
+    destructor Destroy; override;
     procedure Paint; override;
     procedure Resize; override;
     procedure EraseBackground(DC: HDC); override;
@@ -111,7 +111,7 @@ type
     tdRoundRectangle, tdPolygon);
 
   TPictureEditTool = (ptLine, ptPen, ptRectangle, ptFloodFill, ptEllipse,
-    ptMask, ptColorPick, ptEraser, ptSpray, ptPolygon, ptBrush);
+    ptMask, ptColorPick, ptEraser, ptSpray, ptPolygon, ptBrush, ptText);
 
   TPicturePos = (ppTopLeft, ppTopCenter, ppTopRight, ppCenterLeft, ppCentered,
     ppCenterRight, ppBottomLeft, ppBottomCenter, ppBottomRight);
@@ -176,6 +176,7 @@ type
     procedure Rectangle(X1, Y1, X2, Y2: integer; Shift: TShiftState = [ssLeft]);
     procedure Ellipse(X1, Y1, X2, Y2: integer; Shift: TShiftState = [ssLeft]);
     procedure Polygon(X1, Y1, X2, Y2: integer; Shift: TShiftState);
+    procedure ProcessEditorText(X1, Y1, X2, Y2: integer);
     procedure ProcessPointAddr(X1, Y1, X2, Y2: integer; Points: array of TPoint; PCount: integer);
     procedure Mask(X1, Y1, X2, Y2: integer; Shift: TShiftState = [ssLeft]);
 
@@ -208,6 +209,7 @@ type
     procedure EndDraw;
     procedure UpdatePicture;
   public
+    TextEditor: TTextEditor;
     property DrawMode: TDrawMode read FDrawMode write FDrawMode;
     property FillColor: TColor read FFillColor write SetFillColor;
     property OutlineColor: TColor read FOutlineColor write SetOutlineColor;
@@ -415,6 +417,11 @@ begin
   FScrollStop := TPanel.Create(Self);
   FScrollStop.SetBounds(0, 0, 0, 0);
   FScrollStop.Parent := Self;
+end;
+
+destructor TCustomPictureView.Destroy;
+begin
+  inherited;
 end;
 
 procedure TCustomPictureView.Paint;
@@ -631,6 +638,7 @@ begin
     ptColorPick: ColorPick(X, Y, Shift);
     ptEraser: Eraser(X, Y, Shift);
     ptSpray: Spray(X, Y, Shift);
+    ptText: ProcessEditorText(X, Y, X, Y);
     ptBrush: Brush(X, Y, Shift);
   end;
 
@@ -1064,6 +1072,15 @@ begin
     EndDraw;
   end;
   InvalidatePictureRect(Rect(X1, Y1, X2, Y2));
+end;
+
+procedure TCustomPictureEdit.ProcessEditorText(X1, Y1, X2, Y2: integer);
+var P: TRect;
+begin
+  TextEditor.IMGCanvas := Picture.Canvas;
+  TextEditor.Parent := Self;
+  P := PictureToClient(Rect(X1, X2, X1, X2));
+  TextEditor.StartEdit(FPictureRect.Left +X1, FPictureRect.Top + Y1, X1, Y1);
 end;
 
 procedure TCustomPictureEdit.Mask(X1, Y1, X2, Y2: integer; Shift: TShiftState);

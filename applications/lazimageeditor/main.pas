@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Menus,
   ExtCtrls, ComCtrls, ActnList, StdActns, ExtDlgs, Buttons, StdCtrls, Spin,
-  NewDialog, ResizeDialog, ResizePaperDialog, AboutDialog,
+  NewDialog, ResizeDialog, ResizePaperDialog, AboutDialog, DLBitmap,
   PictureManager, PictureCtrls, ColorPalette;
 
 type
@@ -45,6 +45,7 @@ type
     ColorsDisable: TAction;
     ColorsGrayscale: TAction;
     ColorsInvert: TAction;
+    FontListBox: TComboBox;
     EditCopy: TEditCopy;
     EditCut: TEditCut;
     EditDelete: TEditDelete;
@@ -66,6 +67,7 @@ type
     MaskRemove: TAction;
     Palette: TColorPalette;
     MenuItemShowGrid: TMenuItem;
+    Panel1: TPanel;
     PanelTolerance1: TPanel;
     PanelTolerance2: TPanel;
     PictureClipPaperToMask: TAction;
@@ -75,6 +77,7 @@ type
     Rotate270: TAction;
     Rotate90: TAction;
     RotateCustom: TAction;
+    FontSize: TSpinEdit;
     spinFillAlpha: TSpinEdit;
     MenuItemShowMask: TMenuItem;
     MenuItemView: TMenuItem;
@@ -164,6 +167,8 @@ type
     ExportResourceDialog: TSaveDialog;
     SavePictureDialog: TSavePictureDialog;
     ToolBrush: TToolButton;
+    ToolButton1: TToolButton;
+    ToolText: TToolButton;
     ZoomInBtn: TToolButton;
     ZoomOutBtn: TToolButton;
     ToolCircleShape: TSpeedButton;
@@ -232,6 +237,9 @@ type
     procedure FileSaveExecute(Sender: TObject);
     procedure FlipHorizontallyExecute(Sender: TObject);
     procedure FlipVerticallyExecute(Sender: TObject);
+    procedure FontListBoxChange(Sender: TObject);
+    procedure FontListBoxClick(Sender: TObject);
+    procedure FontSizeChange(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -258,7 +266,9 @@ type
     procedure Rotate270Execute(Sender: TObject);
     procedure Rotate90Execute(Sender: TObject);
     procedure spinFillAlphaChange(Sender: TObject);
+    procedure ToolBarToolsClick(Sender: TObject);
     procedure ToolBrushClick(Sender: TObject);
+    procedure ToolTextClick(Sender: TObject);
     procedure ZoomInBtnClick(Sender: TObject);
     procedure ZoomOutBtnClick(Sender: TObject);
     procedure ToolCircleShapeClick(Sender: TObject);
@@ -298,6 +308,7 @@ type
     procedure UpdatePictureToolsEnabled;
     procedure UpdateAll;
   public
+    TextEditor: TTextEditor;
     procedure FileNewOnStart;
     procedure OpenImageFile(FileName: string);
     property ActivePicture: TPictureBitmap read GetActivePicture;
@@ -463,11 +474,25 @@ begin
   ActivePictureEdit.FillAlpha := spinFillAlpha.Value;
 end;
 
+procedure TMainForm.ToolBarToolsClick(Sender: TObject);
+begin
+  if ActivePictureEdit.Tool <> ptText then
+    TextEditor.StopEdit;
+end;
+
 procedure TMainForm.ToolBrushClick(Sender: TObject);
 begin
   if not Pictures.CanEdit then
     Exit;
   ChangeTool(ptBrush);
+end;
+
+procedure TMainForm.ToolTextClick(Sender: TObject);
+begin
+  if not Pictures.CanEdit then
+    Exit;
+  ChangeTool(ptText);
+  ActivePictureEdit.TextEditor := TextEditor;
 end;
 
 procedure TMainForm.ZoomInBtnClick(Sender: TObject);
@@ -814,6 +839,7 @@ procedure TMainForm.ChangeTool(Tool: TPictureEditTool);
 begin
   ActivePictureEdit.Tool := Tool;
   UpdateToolSettings;
+  ToolBarToolsClick(nil);
 end;
 
 procedure TMainForm.UpdatePictureToolsEnabled;
@@ -1046,6 +1072,10 @@ begin
   OpenPictureDialog.Title := lieOpenPictureDialog;
   SavePictureDialog.Title := lieSavePictureDialog;
   ExportResourceDialog.Title := lieExportResourceDialog;
+  TextEditor := TTextEditor.Create(Self);
+  TextEditor.Parent := Self;
+  FontListBox.Items := Screen.Fonts;
+  FontListBox.ItemIndex := FontListBox.Items.IndexOf(UTF8Encode(Screen.MenuFont.Name));
 end;
 
 procedure TMainForm.FormShow(Sender: TObject);
@@ -1158,6 +1188,23 @@ begin
   if not Pictures.CanEdit then
     Exit;
   ActivePictureEdit.FlipVertically;
+end;
+
+procedure TMainForm.FontListBoxChange(Sender: TObject);
+begin
+  ActivePictureEdit.Canvas.Font.Name := FontListBox.Text;
+  if ActivePictureEdit.Tool <> ptText then
+    TextEditor.StopEdit;
+end;
+
+procedure TMainForm.FontListBoxClick(Sender: TObject);
+begin
+
+end;
+
+procedure TMainForm.FontSizeChange(Sender: TObject);
+begin
+  ActivePictureEdit.Canvas.Font.Size := FontSize.Value;
 end;
 
 procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: boolean);

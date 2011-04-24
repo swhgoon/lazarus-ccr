@@ -1,4 +1,4 @@
-unit DLBitmap;  
+unit DLBitmap;
 
 {$mode objfpc}{$H+}
 
@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, LCLType, LCLIntf, LMessages, LCLProc, Controls, Graphics,
-  Forms, Types, IntfGraphics, FPImage, Math, FPImgCanv, FPCanvas, ClipBrd;
+  Forms, Types, IntfGraphics, FPImage, Math, FPImgCanv, FPCanvas, StdCtrls,
+  ClipBrd, ExtCtrls;
 
 type
   tagRGBATRIPLE = record
@@ -72,6 +73,41 @@ type
     property PaperColor: TColor read GetPaperColor write SetPaperColor;
   end;
 
+  TTextEditor = class;
+
+  TTextEdit = class(TCustomEdit)
+  private
+    FCanvas: TCanvas;
+  protected
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+  public
+    Editor: TTextEditor;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure EraseBackground(DC: HDC); override;
+    property Canvas: TCanvas read FCanvas write FCanvas;
+  end;
+
+  TTextEditor = class(TCustomControl)
+  private
+    FEdit: TTextEdit;
+    FTimer: TIdleTimer;
+    flashnum: integer;
+  protected
+    procedure Paint; override;
+    procedure DrawFlashLine(Sender: TObject);
+    procedure Changing(Sender: TObject);
+  public
+    IMGCanvas: TCanvas;
+    PositionIndex, StartX, StartY, TextX, TextY: integer;
+    procedure StartEdit(ContainerX, ContainerY, IMGX, IMGY: integer);
+    procedure StopEdit;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure EraseBackground(DC: HDC); override;
+    property Editor: TTextEdit read FEdit write FEdit;
+  end;
+
 procedure LazBMPRotate90(const aBitmap: TDLBitmap; IsTurnRight: boolean);
 procedure BMPRotate90(const Bitmap: TDLBitmap);
 procedure DrawSamePixel(ABitmap: TDLBitmap; Value: integer);
@@ -85,10 +121,10 @@ procedure ChangeRGB(SrcBmp: TDLBitmap; RedChange, GreenChange, BlueChange: integ
 procedure ChangeBrightness(SrcBmp: TDLBitmap; ValueChange: integer);
 procedure ChangeContrast(SrcBmp: TDLBitmap; ValueChange: integer);
 procedure SprayPoints(DLBmp: TDLBitmap; X, Y: integer; Radians: integer; PColor: TColor);
-function GetRColor(const Color: TColor): Byte;
-function GetGColor(const Color: TColor): Byte;
-function GetBColor(const Color: TColor): Byte;
-procedure SprayPoints(aCanvas: TCanvas; X, Y: integer; Radians: Integer; PColor: TColor);
+function GetRColor(const Color: TColor): byte;
+function GetGColor(const Color: TColor): byte;
+function GetBColor(const Color: TColor): byte;
+procedure SprayPoints(aCanvas: TCanvas; X, Y: integer; Radians: integer; PColor: TColor);
 
 implementation
 
@@ -384,6 +420,133 @@ end;
 procedure TDLBitmap.FillEllipse(X1, Y1, X2, Y2: integer);
 begin
 
+end;
+
+constructor TTextEdit.Create(AOwner: TComponent);
+begin
+  inherited;
+  BorderStyle := bsNone;
+  Width := 1;
+  Parent := TWinControl(AOwner);
+  FCanvas := TCanvas.Create;
+  FCanvas.Handle := GetDC(Self.Handle);
+  FCanvas.Brush.Style := bsClear;
+end;
+
+destructor TTextEdit.Destroy;
+begin
+  inherited;
+  FCanvas.Free;
+end;
+
+procedure TTextEdit.EraseBackground(DC: HDC);
+begin
+  inherited EraseBackground(DC);
+
+end;
+
+procedure TTextEdit.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  inherited;
+  if Editor.PositionIndex <> SelStart then
+  begin
+    Editor.PositionIndex := Length(Text); //SelStart;
+    Editor.DrawFlashLine(nil);
+  end;
+end;
+
+constructor TTextEditor.Create(AOwner: TComponent);
+begin
+  inherited;
+  BorderStyle := bsNone;
+  Width := 1;
+  Height := 16;
+  Parent := TWinControl(AOwner);
+  FEdit := TTextEdit.Create(AOwner);
+  FEdit.Parent := Self;
+  FEdit.Left := 3;
+  FEdit.Top := 0;
+  FEdit.Editor := Self;
+  FEdit.Show;
+  FTimer := TIdleTimer.Create(AOwner);
+  FTimer.OnTimer := @DrawFlashLine;
+  FTimer.Interval := 500;
+  FTimer.Enabled := False;
+  FEdit.OnChange := @Changing;
+  Visible := False;
+end;
+
+destructor TTextEditor.Destroy;
+begin
+  inherited;
+  FEdit.Free;
+  FTimer.Free;
+end;
+
+procedure TTextEditor.EraseBackground(DC: HDC);
+begin
+  inherited EraseBackground(DC);
+
+end;
+
+procedure TTextEditor.Paint;
+begin
+  inherited Paint;
+end;
+
+procedure TTextEditor.DrawFlashLine(Sender: TObject);
+var FlashLeft: integer; LeftText: string;
+begin
+  FEdit.SetFocus;
+  flashnum := flashnum + 1;
+  if flashnum > 1000 then
+    flashnum := 0;
+  if flashnum mod 2 = 0 then
+    Canvas.Pen.Color := clWhite
+  else
+    Canvas.Pen.Color := clBlack;
+  LeftText := Copy(FEdit.Text, 1, PositionIndex);
+  FlashLeft := StartX + Canvas.TextWidth(LeftText);
+  Left := FlashLeft;
+  Top := StartY;
+  Canvas.Line(0, 0, 0, Height);
+end;
+
+procedure TTextEditor.StartEdit(ContainerX, ContainerY, IMGX, IMGY: integer);
+begin
+  if IMGCanvas = nil then
+    Exit;
+  Left := ContainerX;
+  Top := ContainerY;
+  StartX := ContainerX;
+  StartY := ContainerY;
+  TextX := IMGX;
+  TextY := IMGY;
+  FEdit.Text := '';
+  Show;
+  FTimer.Enabled := True;
+end;
+
+procedure TTextEditor.StopEdit;
+begin
+  FTimer.Enabled := False;
+  Hide;
+end;
+
+procedure TTextEditor.Changing(Sender: TObject);
+var TextLeft: integer; LeftText, RightText: string;
+begin
+  LeftText := Copy(FEdit.Text, 1, PositionIndex);
+  RightText := Copy(FEdit.Text, PositionIndex + 1, Length(FEdit.text));
+  TextLeft := TextX + Canvas.TextWidth(LeftText);
+  if IMGCanvas = nil then
+    Exit;
+  //IMGCanvas.TextOut(22, 22, FEdit.Text);
+  IMGCanvas.Brush.Style := bsClear;
+  IMGCanvas.TextOut(TextLeft, TextY, RightText);
+  //if PositionIndex <> FEdit.SelStart then
+  //  PositionIndex := FEdit.SelStart;
+  PositionIndex := Length(FEdit.Text);
 end;
 
 end.

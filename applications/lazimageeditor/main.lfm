@@ -1,7 +1,7 @@
 ﻿object MainForm: TMainForm
-  Left = 135
+  Left = 260
   Height = 681
-  Top = 90
+  Top = 147
   Width = 935
   Caption = 'Lazarus Image Editor'
   ClientHeight = 659
@@ -40,6 +40,7 @@
       Images = ImageListTools
       Indent = 0
       TabOrder = 0
+      OnClick = ToolBarToolsClick
       object ToolSpray: TToolButton
         Left = 0
         Hint = 'Spray'
@@ -153,10 +154,21 @@
       end
       object ToolBrush: TToolButton
         Left = 0
+        Hint = 'Brush'
         Top = 402
         Caption = 'ToolBrush'
+        Grouped = True
         ImageIndex = 5
         OnClick = ToolBrushClick
+      end
+      object ToolText: TToolButton
+        Left = 0
+        Hint = 'Text'
+        Top = 442
+        Caption = 'ToolBrush'
+        Grouped = True
+        ImageIndex = 5
+        OnClick = ToolTextClick
       end
     end
   end
@@ -387,7 +399,7 @@
         object ComboBoxZoom: TComboBox
           Left = 0
           Height = 27
-          Top = 2
+          Top = 3
           Width = 76
           Anchors = [akLeft]
           ItemHeight = 19
@@ -421,6 +433,43 @@
         Caption = 'ZoomOutBtn'
         ImageIndex = 11
         OnClick = ZoomOutBtnClick
+      end
+      object ToolButton1: TToolButton
+        Left = 534
+        Top = 0
+        Width = 8
+        Caption = 'ToolButton1'
+        Style = tbsSeparator
+      end
+      object Panel1: TPanel
+        Left = 542
+        Height = 32
+        Top = 0
+        Width = 168
+        BevelOuter = bvNone
+        ClientHeight = 32
+        ClientWidth = 168
+        TabOrder = 1
+        object FontListBox: TComboBox
+          Left = 2
+          Height = 27
+          Top = 3
+          Width = 112
+          ItemHeight = 19
+          OnChange = FontListBoxChange
+          OnClick = FontListBoxClick
+          Style = csDropDownList
+          TabOrder = 0
+        end
+        object FontSize: TSpinEdit
+          Left = 117
+          Height = 27
+          Top = 3
+          Width = 50
+          OnChange = FontSizeChange
+          TabOrder = 1
+          Value = 10
+        end
       end
     end
     object PanelOptions: TPanel
@@ -1299,9 +1348,9 @@
         TabOrder = 5
         object checkFuzzy: TCheckBox
           Left = 4
-          Height = 23
+          Height = 19
           Top = 9
-          Width = 24
+          Width = 20
           OnChange = checkFuzzyChange
           TabOrder = 0
         end
