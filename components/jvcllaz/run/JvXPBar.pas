@@ -1969,7 +1969,7 @@ var
 
       if FHeaderRounded then
       begin
-        OwnColor := TJvXPWinControl(Parent).Color;
+        OwnColor := TJvXPWinControl(Parent).Brush.Color;
         ACanvas.Pixels[0, R.Top] := OwnColor;
         ACanvas.Pixels[0, R.Top + 1] := OwnColor;
         ACanvas.Pixels[1, R.Top] := OwnColor;
