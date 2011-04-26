@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Menus,
   ExtCtrls, ComCtrls, ActnList, StdActns, ExtDlgs, Buttons, StdCtrls, Spin,
-  NewDialog, ResizeDialog, ResizePaperDialog, AboutDialog, DLBitmap,
+  ColorBox, NewDialog, ResizeDialog, ResizePaperDialog, AboutDialog, DLBitmap,
   PictureManager, PictureCtrls, ColorPalette;
 
 type
@@ -1192,7 +1192,9 @@ end;
 
 procedure TMainForm.FontListBoxChange(Sender: TObject);
 begin
-  ActivePictureEdit.Canvas.Font.Name := FontListBox.Text;
+  //ActivePictureEdit.Canvas.Font.Name := FontListBox.Text;
+  ActivePictureEdit.Picture.Canvas.Font.Name := FontListBox.Text;
+  ActivePictureEdit.Picture.Canvas.Font.Color := PanelOutline.Color;
   if ActivePictureEdit.Tool <> ptText then
     TextEditor.StopEdit;
 end;
@@ -1204,7 +1206,8 @@ end;
 
 procedure TMainForm.FontSizeChange(Sender: TObject);
 begin
-  ActivePictureEdit.Canvas.Font.Size := FontSize.Value;
+  ActivePictureEdit.Picture.Canvas.Font.Size := FontSize.Value;
+  ActivePictureEdit.Picture.Canvas.Font.Color := PanelOutline.Color;
 end;
 
 procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: boolean);

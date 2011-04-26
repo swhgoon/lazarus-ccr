@@ -80,6 +80,8 @@ type
     FCanvas: TCanvas;
   protected
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure DoEnter; override;
+    procedure DoExit; override;
   public
     Editor: TTextEditor;
     constructor Create(AOwner: TComponent); override;
@@ -455,6 +457,17 @@ begin
   end;
 end;
 
+procedure TTextEdit.DoEnter;
+begin
+  inherited;
+end;
+
+procedure TTextEdit.DoExit;
+begin
+  inherited;
+  Editor.StopEdit;
+end;
+
 constructor TTextEditor.Create(AOwner: TComponent);
 begin
   inherited;
@@ -497,7 +510,6 @@ end;
 procedure TTextEditor.DrawFlashLine(Sender: TObject);
 var FlashLeft: integer; LeftText: string;
 begin
-  FEdit.SetFocus;
   flashnum := flashnum + 1;
   if flashnum > 1000 then
     flashnum := 0;
@@ -505,8 +517,10 @@ begin
     Canvas.Pen.Color := clWhite
   else
     Canvas.Pen.Color := clBlack;
+  FEdit.Font.Assign(IMGCanvas.Font);
+  Height := FEdit.Height - 3;
   LeftText := Copy(FEdit.Text, 1, PositionIndex);
-  FlashLeft := StartX + Canvas.TextWidth(LeftText);
+  FlashLeft := StartX + IMGCanvas.TextWidth(LeftText);
   Left := FlashLeft;
   Top := StartY;
   Canvas.Line(0, 0, 0, Height);
@@ -525,6 +539,7 @@ begin
   FEdit.Text := '';
   Show;
   FTimer.Enabled := True;
+  FEdit.SetFocus;
 end;
 
 procedure TTextEditor.StopEdit;
@@ -538,7 +553,7 @@ var TextLeft: integer; LeftText, RightText: string;
 begin
   LeftText := Copy(FEdit.Text, 1, PositionIndex);
   RightText := Copy(FEdit.Text, PositionIndex + 1, Length(FEdit.text));
-  TextLeft := TextX + Canvas.TextWidth(LeftText);
+  TextLeft := TextX + IMGCanvas.TextWidth(LeftText);
   if IMGCanvas = nil then
     Exit;
   //IMGCanvas.TextOut(22, 22, FEdit.Text);
