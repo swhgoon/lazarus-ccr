@@ -42,6 +42,8 @@ type
   TMainForm = class(TForm)
     ActionList: TActionList;
     checkFuzzy: TCheckBox;
+    BtnFromColor: TColorButton;
+    BtnToColor: TColorButton;
     ColorsDisable: TAction;
     ColorsGrayscale: TAction;
     ColorsInvert: TAction;
@@ -61,10 +63,12 @@ type
     FileSaveAs: TAction;
     FlipHorizontally: TAction;
     FlipVertically: TAction;
+    Label1: TLabel;
     LabelTolerance1: TLabel;
     LabelTolerance2: TLabel;
     MaskInvert: TAction;
     MaskRemove: TAction;
+    MenuItem5: TMenuItem;
     Palette: TColorPalette;
     MenuItemShowGrid: TMenuItem;
     Panel1: TPanel;
@@ -215,6 +219,7 @@ type
     ViewShowGrid: TAction;
     ViewShowMask: TAction;
     procedure checkFuzzyChange(Sender: TObject);
+    procedure BtnToColorClick(Sender: TObject);
     procedure ColorsDisableExecute(Sender: TObject);
     procedure ColorsGrayscaleExecute(Sender: TObject);
     procedure ColorsInvertExecute(Sender: TObject);
@@ -245,6 +250,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure MaskInvertExecute(Sender: TObject);
     procedure MaskRemoveExecute(Sender: TObject);
+    procedure MenuItem5Click(Sender: TObject);
     procedure MenuItemAboutClick(Sender: TObject);
     procedure MenuItemClipPaperToMaskClick(Sender: TObject);
     procedure MenuItemExitClick(Sender: TObject);
@@ -1099,6 +1105,13 @@ begin
   ActivePictureEdit.RemoveMask;
 end;
 
+procedure TMainForm.MenuItem5Click(Sender: TObject);
+begin
+  if not Pictures.CanEdit then
+    Exit;
+  ActivePictureEdit.ColorReplace(BtnFromColor.ButtonColor, BtnToColor.ButtonColor);
+end;
+
 procedure TMainForm.MenuItemAboutClick(Sender: TObject);
 begin
   AboutDialogForm := TAboutDialogForm.Create(Self);
@@ -1326,6 +1339,11 @@ begin
   if not Pictures.CanEdit then
     Exit;
   ActivePictureEdit.Fuzzy := checkFuzzy.Checked;
+end;
+
+procedure TMainForm.BtnToColorClick(Sender: TObject);
+begin
+
 end;
 
 procedure TMainForm.EditSizeChange(Sender: TObject);

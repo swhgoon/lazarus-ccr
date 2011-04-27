@@ -260,9 +260,9 @@ begin
     for j := 0 to ABitmap.Width - 1 do
     begin
       LNew := LScan[j];
-      LScan[j].rgbtBlue := LScan[j].rgbtBlue * Value div 100; //Value; //LNew.rgbtBlue;
-      LScan[j].rgbtGreen := LScan[j].rgbtGreen * Value div 100; //LNew.rgbtGreen;
-      LScan[j].rgbtRed := LScan[j].rgbtRed * Value div 100; //LNew.rgbtRed;
+      LScan[j].rgbtBlue := LScan[j].rgbtBlue * Value div 100;
+      LScan[j].rgbtGreen := LScan[j].rgbtGreen * Value div 100;
+      LScan[j].rgbtRed := LScan[j].rgbtRed * Value div 100;
     end;
   end;
   ABitmap.InvalidateScanLine;
@@ -595,6 +595,30 @@ begin
       aCanvas.Pixels[X + a, Y + b] := PColor;
   end;
 end;
+
+procedure DLBMPColorReplace(aBitmap: TDLBitmap; ColorFrom, ColorTo: TColor);
+var
+  LScan: pRGBATriple;
+  i, j: integer;
+begin
+  for i := 0 to aBitmap.Height - 1 do
+  begin
+    LScan := aBitmap.Scanline[i];
+    for j := 0 to ABitmap.Width - 1 do
+    begin
+      if (LScan[j].rgbtBlue = GetBColor(ColorFrom)) and
+        (LScan[j].rgbtGreen = GetGColor(ColorFrom)) and
+        (LScan[j].rgbtRed = GetRColor(ColorFrom)) then
+      begin
+        LScan[j].rgbtBlue := GetBColor(ColorTo);
+        LScan[j].rgbtGreen := GetGColor(ColorTo);
+        LScan[j].rgbtRed := GetRColor(ColorTo);
+      end;
+    end;
+  end;
+  aBitmap.InvalidateScanLine;
+end;
+
 
 
 

@@ -60,6 +60,7 @@ type
     procedure RGBDelta(RedChange, GreenChange, BlueChange: integer);
     procedure Brightness(ValueChange: integer);
     procedure Contrast(ValueChange: integer);
+    procedure ColorReplace(ColorFrom, ColorTo: TColor);
     property ScanLine[Row: integer]: pRGBATriple read GetScanLine;
     procedure FillEllipse(X1, Y1, X2, Y2: integer); virtual;
     procedure CutToClipboard; virtual;
@@ -127,6 +128,7 @@ function GetRColor(const Color: TColor): byte;
 function GetGColor(const Color: TColor): byte;
 function GetBColor(const Color: TColor): byte;
 procedure SprayPoints(aCanvas: TCanvas; X, Y: integer; Radians: integer; PColor: TColor);
+procedure DLBMPColorReplace(aBitmap: TDLBitmap; ColorFrom, ColorTo: TColor);
 
 implementation
 
@@ -422,6 +424,11 @@ end;
 procedure TDLBitmap.FillEllipse(X1, Y1, X2, Y2: integer);
 begin
 
+end;
+
+procedure TDLBitmap.ColorReplace(ColorFrom, ColorTo: TColor);
+begin
+  DLBMPColorReplace(Self, ColorFrom, ColorTo);
 end;
 
 constructor TTextEdit.Create(AOwner: TComponent);

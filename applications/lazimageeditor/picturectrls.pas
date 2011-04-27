@@ -185,6 +185,7 @@ type
     procedure Rotate90Clockwise;
     procedure Rotate180Clockwise;
     procedure Rotate270Clockwise;
+    procedure ColorReplace(ColorFrom, ColorTo: TColor);
 
     procedure StretchTruncate(AWidth, AHeight: integer);
     procedure StretchSmooth(AWidth, AHeight: integer; Method: TSmoothMethod);
@@ -1166,6 +1167,19 @@ begin
   BeginDraw;
   try
     Picture.Rotate270;
+  finally
+    EndDraw;
+  end;
+  UpdatePicture;
+end;
+
+procedure TCustomPictureEdit.ColorReplace(ColorFrom, ColorTo: TColor);
+begin
+  if Picture = nil then
+    Exit;
+  BeginDraw;
+  try
+    Picture.ColorReplace(ColorFrom, ColorTo);
   finally
     EndDraw;
   end;
