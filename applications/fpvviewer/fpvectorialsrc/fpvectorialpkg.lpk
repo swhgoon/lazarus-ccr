@@ -5,13 +5,13 @@
     <CompilerOptions>
       <Version Value="10"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="13">
+    <Files Count="14">
       <Item1>
         <Filename Value="svgvectorialwriter.pas"/>
         <UnitName Value="svgvectorialwriter"/>
@@ -64,6 +64,10 @@
         <Filename Value="avisocncgcodereader.pas"/>
         <UnitName Value="avisocncgcodereader"/>
       </Item13>
+      <Item14>
+        <Filename Value="svgvectorialreader.pas"/>
+        <UnitName Value="svgvectorialwriter"/>
+      </Item14>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
