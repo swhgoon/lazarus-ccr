@@ -1130,6 +1130,8 @@ begin
   Points := APath.Points;
   PointsEnd := APath.PointsEnd;
   CurPoint := APath.CurPoint;
+  Pen := APath.Pen;
+  Brush := APath.Brush;
 end;
 
 function TPath.Count(): TPathSegment;
