@@ -47,6 +47,7 @@ type
     destructor Destroy; override;
     procedure ResetScanLine;
     procedure InvalidateScanLine;
+    procedure InvalidateScanLineRect(aRect: TRect);
     procedure Assign(Source: TPersistent); override;
     procedure Clear; virtual;
     procedure ClearWhite; virtual;
@@ -171,6 +172,22 @@ begin
   Width := TmpBmp.Width;
   Height := TmpBmp.Height;
   Canvas.Draw(0, 0, TmpBmp);
+  TmpBmp.Free;
+end;
+
+procedure TDLBitmap.InvalidateScanLineRect(aRect: TRect);
+var
+  TmpBmp: TDLBitmap;
+  ImgHandle, ImgMaskHandle: HBitmap;
+begin
+  TmpBmp := TDLBitmap.Create;
+  FIntfImgA.CreateBitmaps(ImgHandle, ImgMaskHandle, True);
+  TmpBmp.Handle := ImgHandle;
+  TmpBmp.MaskHandle := ImgMaskHandle;
+  Empty;
+  Width := TmpBmp.Width;
+  Height := TmpBmp.Height;
+  Canvas.CopyRect(aRect, TmpBmp.Canvas, aRect);
   TmpBmp.Free;
 end;
 
@@ -418,7 +435,7 @@ end;
 
 procedure TDLBitmap.Spray(x, y, radian: integer; PColor: TColor);
 begin
-  SprayPoints(Self.Canvas, x, y, radian, PColor);
+  SprayPoints(Self, x, y, radian, PColor);
 end;
 
 procedure TDLBitmap.FillEllipse(X1, Y1, X2, Y2: integer);

@@ -1,10 +1,10 @@
 ﻿object MainForm: TMainForm
-  Left = 180
+  Left = 150
   Height = 681
-  Top = 90
+  Top = 63
   Width = 920
   Caption = 'Lazarus Image Editor'
-  ClientHeight = 659
+  ClientHeight = 661
   ClientWidth = 920
   Font.CharSet = GB2312_CHARSET
   Font.Height = -13
@@ -18,18 +18,18 @@
   LCLVersion = '0.9.31'
   object PanelTools: TPanel
     Left = 0
-    Height = 532
+    Height = 534
     Top = 105
     Width = 40
     Align = alLeft
     BevelOuter = bvNone
-    ClientHeight = 532
+    ClientHeight = 534
     ClientWidth = 40
     ParentColor = False
     TabOrder = 0
     object ToolBarTools: TToolBar
       Left = 0
-      Height = 532
+      Height = 534
       Top = 0
       Width = 40
       Align = alLeft
@@ -175,7 +175,7 @@
   object StatusBar: TStatusBar
     Left = 0
     Height = 22
-    Top = 637
+    Top = 639
     Width = 920
     Panels = <    
       item
@@ -202,18 +202,18 @@
   end
   object PanelPallete: TPanel
     Left = 845
-    Height = 532
+    Height = 534
     Top = 105
     Width = 75
     Align = alRight
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 532
+    ClientHeight = 534
     ClientWidth = 75
     TabOrder = 1
     object Palette: TColorPalette
       Left = 0
-      Height = 532
+      Height = 534
       Top = 0
       Width = 75
       Align = alClient
@@ -1375,9 +1375,9 @@
         TabOrder = 5
         object checkFuzzy: TCheckBox
           Left = 4
-          Height = 23
+          Height = 21
           Top = 5
-          Width = 24
+          Width = 22
           OnChange = checkFuzzyChange
           TabOrder = 0
         end
@@ -1386,7 +1386,7 @@
   end
   object PanelPictures: TPanel
     Left = 40
-    Height = 532
+    Height = 534
     Top = 105
     Width = 805
     Align = alClient
