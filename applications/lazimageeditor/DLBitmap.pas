@@ -139,6 +139,7 @@ operator * (const A, B: TRGBATriple): TRGBATriple;
 operator div (const A, B: TRGBATriple): TRGBATriple;
 function DWordTrans(SrcRow: TRGBATriple): DWORD;
 function DWordToTriple(SrcRow: DWORD): TRGBATriple;
+procedure StretchLinear(Dest, Src: TDLBitmap);
 
 implementation
 

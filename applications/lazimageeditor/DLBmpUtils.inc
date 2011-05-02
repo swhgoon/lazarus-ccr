@@ -614,7 +614,7 @@ begin
   aBitmap.InvalidateScanLine;
 end;
 
-procedure StretchLinear(Dest, Src: TDLBitmap);   //   only   for   24bit   bitmap
+procedure StretchLinear(Dest, Src: TDLBitmap);
 var
   sw, sh, dw, dh, B, N, x, y, i, j, k, nPixelSize: DWord;
   pLinePrev, pLineNext, pDest, pA, pB, pC, pD: pRGBATriple;
@@ -672,6 +672,29 @@ begin
       end;
     end;
   end;
+  Dest.InvalidateScanLine;
 end;
 
+procedure StretchDLBMP(Src: TDLBitmap; MultiX, MultiY: integer);
+var
+  sw, sh, dw, dh, B, N, x, y, i, j, k, nPixelSize: DWord;
+  Dest: TDLBitmap;
+begin
+  sw := Src.Width - 1;
+  sh := Src.Height - 1;
+  dw := (Src.Width - 1) * MultiX;
+  dh := (Src.Height - 1) * MultiY;
+  nPixelSize := 3;
+  for  i := 0 to sh do
+  begin
+    for  j := 0 to sw do
+    begin
+      for  k := 0 to nPixelSize - 1 do
+      begin
+
+      end;
+    end;
+  end;
+  Dest.InvalidateScanLine;
+end;
 

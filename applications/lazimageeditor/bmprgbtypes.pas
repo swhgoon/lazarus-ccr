@@ -599,7 +599,11 @@ procedure TRGBBitmapCore.StretchDrawTo(ACanvas: TCanvas;
   DstX, DstY, DstWidth, DstHeight: integer);
 begin
   if ACanvas <> nil then
-    ACanvas.StretchDraw(Rect(DstX, DstY, DstWidth, DstHeight), Self);
+  //  ACanvas.StretchDraw(Rect(DstX, DstY, DstWidth, DstHeight), Self);
+  begin
+    ACanvas.AntialiasingMode:=amOff;
+    ACanvas.CopyRect(Rect(DstX, DstY, DstWidth, DstHeight), Self.Canvas, Rect(0,0,Width,Height));
+  end;
 end;
 
 { TRGB32BitmapCore }
