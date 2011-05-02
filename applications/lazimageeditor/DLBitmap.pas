@@ -38,6 +38,8 @@ type
     procedure SetFillColor(const AValue: TColor);
     procedure SetOutlineColor(const AValue: TColor);
     procedure SetPaperColor(const AValue: TColor);
+    function GetScanLinePixel(X, Y: Integer): TColor;
+    procedure SetScanLinePixel(X, Y: Integer; Value: TColor);
   protected
     procedure SetWidth(Value: integer); override;
     procedure SetHeight(Value: integer); override;
@@ -73,6 +75,7 @@ type
     property FillColor: TColor read GetFillColor write SetFillColor;
     property OutlineColor: TColor read GetOutlineColor write SetOutlineColor;
     property PaperColor: TColor read GetPaperColor write SetPaperColor;
+    property ScanLinePixels[X, Y: Integer]: TColor read GetScanLinePixel write SetScanLinePixel;
   end;
 
   TTextEditor = class;
@@ -431,6 +434,31 @@ procedure TDLBitmap.FloodFill(x, y: integer);
 begin
   Canvas.Brush.Color := FFillColor;
   Canvas.FloodFill(x, y, Canvas.Pixels[x, y], fsSurface);
+end;
+
+function TDLBitmap.GetScanLinePixel(X, Y: Integer): TColor;
+var SrcRow: pRGBATriple; RR, GG, BB: integer;
+begin
+  if (x >= 0) and (x < Width) and (y >= 0) and (y < Height) then
+  begin
+    SrcRow := ScanLine[y];
+    RR := SrcRow[x].rgbtRed;
+    GG := SrcRow[x].rgbtGreen;
+    BB := SrcRow[x].rgbtBlue;
+  end;
+  Result := RR + (GG shl 8) and $FF00 + (BB shl 16) and $FF0000;
+end;
+
+procedure TDLBitmap.SetScanLinePixel(X, Y: Integer; Value: TColor);
+var SrcRow: pRGBATriple;
+begin
+  if (x >= 0) and (x < Width) and (y >= 0) and (y < Height) then
+  begin
+    SrcRow := ScanLine[y];
+    SrcRow[x].rgbtRed:=GetRColor(Value);
+    SrcRow[x].rgbtGreen:=GetGColor(Value);
+    SrcRow[x].rgbtBlue:=GetBColor(Value);
+  end;
 end;
 
 procedure TDLBitmap.Spray(x, y, radian: integer; PColor: TColor);

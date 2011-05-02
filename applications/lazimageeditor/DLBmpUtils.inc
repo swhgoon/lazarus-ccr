@@ -487,11 +487,10 @@ begin
   DestBmp.Free;
 end;
 
-procedure SetCanvasPixel(DLBmp: TDLBitmap; x, y: integer; aColor: TColor);
+procedure SetDLBMPPixel(DLBmp: TDLBitmap; x, y: integer; aColor: TColor);
 var SrcRow: pRGBATriple;
 begin
-  if (x > 0) and (x < DLBmp.Width) and (y > 0) and (y < DLBmp.Height) then
-    //aCanvas.Pixels[x, y] := aColor;
+  if (x >= 0) and (x < DLBmp.Width) and (y >= 0) and (y < DLBmp.Height) then
   begin
     SrcRow := DLBmp.ScanLine[y];
     SrcRow[x].rgbtRed:=GetRColor(aColor);
@@ -516,7 +515,7 @@ begin
     b := Random(Round(Radians * 0.65));
     if (temp < 50) then b := 0 - b;
     if (a * a + b * b < Sqr(Round(Radians * 0.65))) then
-      SetCanvasPixel(DLBmp, X + a, Y + b, PColor);
+      DLBmp.ScanLinePixels[X + a, Y + b] := PColor;
     Radian2 := Radians div 3;
     temp := Random(100);
     a := Random(Round(Radian2 * 0.65));
@@ -525,7 +524,7 @@ begin
     b := Random(Round(Radian2 * 0.65));
     if (temp < 50) then b := 0 - b;
     if (a * a + b * b < Sqr(Round(Radian2 * 0.65))) then
-      SetCanvasPixel(DLBmp, X + a, Y + b, PColor);
+      DLBmp.ScanLinePixels[X + a, Y + b] := PColor;
     Radian3 := Radians * 2 div 3;
     temp := Random(100);
     a := Random(Round(Radian3 * 0.65));
@@ -534,7 +533,7 @@ begin
     b := Random(Round(Radian3 * 0.65));
     if (temp < 50) then b := 0 - b;
     if (a * a + b * b < Sqr(Round(Radian3 * 0.65))) then
-      SetCanvasPixel(DLBmp, X + a, Y + b, PColor);
+      DLBmp.ScanLinePixels[X + a, Y + b] := PColor;
   end;
   DLBmp.InvalidateScanLineRect(Rect(X - Radians, Y - Radians, X + Radians, Y + Radians));
 end;
