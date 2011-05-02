@@ -75,7 +75,7 @@ type
     property FillColor: TColor read GetFillColor write SetFillColor;
     property OutlineColor: TColor read GetOutlineColor write SetOutlineColor;
     property PaperColor: TColor read GetPaperColor write SetPaperColor;
-    property ScanLinePixels[X, Y: Integer]: TColor read GetScanLinePixel write SetScanLinePixel;
+    property Pixels[X, Y: Integer]: TColor read GetScanLinePixel write SetScanLinePixel;
   end;
 
   TTextEditor = class;
@@ -133,10 +133,60 @@ function GetGColor(const Color: TColor): byte;
 function GetBColor(const Color: TColor): byte;
 procedure SprayPoints(aCanvas: TCanvas; X, Y: integer; Radians: integer; PColor: TColor);
 procedure DLBMPColorReplace(aBitmap: TDLBitmap; ColorFrom, ColorTo: TColor);
+operator + (const A, B: TRGBATriple): TRGBATriple;
+operator - (const A, B: TRGBATriple): TRGBATriple;
+operator * (const A, B: TRGBATriple): TRGBATriple;
+operator div (const A, B: TRGBATriple): TRGBATriple;
+function DWordTrans(SrcRow: TRGBATriple): DWORD;
+function DWordToTriple(SrcRow: DWORD): TRGBATriple;
 
 implementation
 
 {$I DLBmpUtils.inc}
+
+operator + (const A, B: TRGBATriple): TRGBATriple;
+begin
+  Result.rgbtBlue := A.rgbtBlue + B.rgbtBlue;
+  Result.rgbtRed := A.rgbtRed + B.rgbtRed;
+  Result.rgbtGreen := A.rgbtBlue + B.rgbtGreen;
+end;
+
+operator - (const A, B: TRGBATriple): TRGBATriple;
+begin
+  Result.rgbtBlue := A.rgbtBlue - B.rgbtBlue;
+  Result.rgbtRed := A.rgbtRed - B.rgbtRed;
+  Result.rgbtGreen := A.rgbtBlue - B.rgbtGreen;
+end;
+
+operator * (const A, B: TRGBATriple): TRGBATriple;
+begin
+  Result.rgbtBlue := A.rgbtBlue * B.rgbtBlue;
+  Result.rgbtRed := A.rgbtRed * B.rgbtRed;
+  Result.rgbtGreen := A.rgbtBlue * B.rgbtGreen;
+end;
+
+operator div (const A, B: TRGBATriple): TRGBATriple;
+begin
+  Result.rgbtBlue := A.rgbtBlue div B.rgbtBlue;
+  Result.rgbtRed := A.rgbtRed div B.rgbtRed;
+  Result.rgbtGreen := A.rgbtBlue div B.rgbtGreen;
+end;
+
+function DWordTrans(SrcRow: TRGBATriple): DWORD;
+var RR, GG, BB: integer;
+begin
+  RR := SrcRow.rgbtRed;
+  GG := SrcRow.rgbtGreen;
+  BB := SrcRow.rgbtBlue;
+  Result := RR + (GG shl 8) and $FF00 + (BB shl 16) and $FF0000;
+end;
+
+function DWordToTriple(SrcRow: DWORD): TRGBATriple;
+begin
+  Result.rgbtBlue := (SrcRow shr 16) and $FF0000;
+  Result.rgbtGreen := (SrcRow shr 8) and $FF00;
+  Result.rgbtRed := SrcRow and $FF;
+end;
 
 constructor TDLBitmap.Create;
 begin

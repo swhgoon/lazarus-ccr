@@ -515,7 +515,7 @@ begin
     b := Random(Round(Radians * 0.65));
     if (temp < 50) then b := 0 - b;
     if (a * a + b * b < Sqr(Round(Radians * 0.65))) then
-      DLBmp.ScanLinePixels[X + a, Y + b] := PColor;
+      DLBmp.Pixels[X + a, Y + b] := PColor;
     Radian2 := Radians div 3;
     temp := Random(100);
     a := Random(Round(Radian2 * 0.65));
@@ -524,7 +524,7 @@ begin
     b := Random(Round(Radian2 * 0.65));
     if (temp < 50) then b := 0 - b;
     if (a * a + b * b < Sqr(Round(Radian2 * 0.65))) then
-      DLBmp.ScanLinePixels[X + a, Y + b] := PColor;
+      DLBmp.Pixels[X + a, Y + b] := PColor;
     Radian3 := Radians * 2 div 3;
     temp := Random(100);
     a := Random(Round(Radian3 * 0.65));
@@ -533,7 +533,7 @@ begin
     b := Random(Round(Radian3 * 0.65));
     if (temp < 50) then b := 0 - b;
     if (a * a + b * b < Sqr(Round(Radian3 * 0.65))) then
-      DLBmp.ScanLinePixels[X + a, Y + b] := PColor;
+      DLBmp.Pixels[X + a, Y + b] := PColor;
   end;
   DLBmp.InvalidateScanLineRect(Rect(X - Radians, Y - Radians, X + Radians, Y + Radians));
 end;
@@ -614,6 +614,64 @@ begin
   aBitmap.InvalidateScanLine;
 end;
 
-
+procedure StretchLinear(Dest, Src: TDLBitmap);   //   only   for   24bit   bitmap
+var
+  sw, sh, dw, dh, B, N, x, y, i, j, k, nPixelSize: DWord;
+  pLinePrev, pLineNext, pDest, pA, pB, pC, pD: pRGBATriple;
+begin
+  sw := Src.Width - 1;
+  sh := Src.Height - 1;
+  dw := Dest.Width - 1;
+  dh := Dest.Height - 1;
+  nPixelSize := 3;
+  for  i := 0 to dh do
+  begin
+    pDest := Dest.ScanLine[i];
+    y := i * sh div dh;
+    N := dh - i * sh mod dh;
+    pLinePrev := Src.ScanLine[y];
+    Inc(y);
+    if N = dh then
+    begin
+      pLineNext := pLinePrev;
+    end
+    else
+    begin
+      pLineNext := Src.ScanLine[y];
+    end;
+    for  j := 0 to dw do
+    begin
+      x := j * sw div dw * nPixelSize;
+      B := dw - j * sw mod dw;
+      pA := pLinePrev;
+      Inc(pA, x);
+      pB := pA;
+      Inc(pB, nPixelSize);
+      pC := pLineNext;
+      Inc(pC, x);
+      pD := pC;
+      Inc(pD, nPixelSize);
+      if B = dw then
+      begin
+        pB := pA;
+        pD := pC;
+      end;
+      for  k := 0 to nPixelSize - 1 do
+      begin
+        pDest^ := DWordToTriple(
+          (B * N * DWordTrans(pA^ - pB^ - pC^ + pD^) +
+          dw * N * DWordTrans(pB^) +
+          dh * B * DWordTrans(pC^) + (dw * dh - dh * B - dw * N) *
+          DWordTrans(pD^) +
+          dw * dh div 2) div (dw * dh));
+        Inc(pDest);
+        Inc(pA);
+        Inc(pB);
+        Inc(pC);
+        Inc(pD);
+      end;
+    end;
+  end;
+end;
 
 
