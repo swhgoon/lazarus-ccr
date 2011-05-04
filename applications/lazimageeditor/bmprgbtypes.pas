@@ -600,8 +600,10 @@ procedure TRGBBitmapCore.StretchDrawTo(ACanvas: TCanvas;
 begin
   if ACanvas <> nil then
   //  ACanvas.StretchDraw(Rect(DstX, DstY, DstWidth, DstHeight), Self);
+ //   StretchDLBMP(Self, 3, 3);
   begin
     ACanvas.AntialiasingMode:=amOff;
+    ACanvas.CopyMode:=cmSrcPaint;
     ACanvas.CopyRect(Rect(DstX, DstY, DstWidth, DstHeight), Self.Canvas, Rect(0,0,Width,Height));
   end;
 end;

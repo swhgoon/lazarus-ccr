@@ -41,9 +41,13 @@ type
     function GetScanLinePixel(X, Y: Integer): TColor;
     procedure SetScanLinePixel(X, Y: Integer; Value: TColor);
   protected
+    ImgHandle, ImgMaskHandle: HBitmap;
     procedure SetWidth(Value: integer); override;
     procedure SetHeight(Value: integer); override;
     procedure Changed(Sender: TObject); override;
+    procedure InitializeReader(AImage: TLazIntfImage; AReader: TFPCustomImageReader); override;
+    procedure InitializeWriter(AImage: TLazIntfImage; AWriter: TFPCustomImageWriter); override;
+    procedure FinalizeWriter(AWriter: TFPCustomImageWriter); override;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -140,6 +144,7 @@ operator div (const A, B: TRGBATriple): TRGBATriple;
 function DWordTrans(SrcRow: TRGBATriple): DWORD;
 function DWordToTriple(SrcRow: DWORD): TRGBATriple;
 procedure StretchLinear(Dest, Src: TDLBitmap);
+procedure StretchDLBMP(Src: TDLBitmap; MultiX, MultiY: integer);
 
 implementation
 
@@ -214,25 +219,15 @@ begin
 end;
 
 procedure TDLBitmap.InvalidateScanLine;
-var
-  TmpBmp: TDLBitmap;
-  ImgHandle, ImgMaskHandle: HBitmap;
 begin
-  TmpBmp := TDLBitmap.Create;
   FIntfImgA.CreateBitmaps(ImgHandle, ImgMaskHandle, True);
-  TmpBmp.Handle := ImgHandle;
-  TmpBmp.MaskHandle := ImgMaskHandle;
-  Empty;
-  Width := TmpBmp.Width;
-  Height := TmpBmp.Height;
-  Canvas.Draw(0, 0, TmpBmp);
-  TmpBmp.Free;
+  Handle := ImgHandle;
+  MaskHandle := ImgMaskHandle;
 end;
 
 procedure TDLBitmap.InvalidateScanLineRect(aRect: TRect);
 var
   TmpBmp: TDLBitmap;
-  ImgHandle, ImgMaskHandle: HBitmap;
 begin
   TmpBmp := TDLBitmap.Create;
   FIntfImgA.CreateBitmaps(ImgHandle, ImgMaskHandle, True);
@@ -517,6 +512,22 @@ begin
   SprayPoints(Self, x, y, radian, PColor);
 end;
 
+procedure TDLBitmap.InitializeReader(AImage: TLazIntfImage; AReader: TFPCustomImageReader);
+begin
+  inherited;
+  FIntfImgA := AImage;
+end;
+
+procedure TDLBitmap.InitializeWriter(AImage: TLazIntfImage; AWriter: TFPCustomImageWriter);
+begin
+  inherited;
+end;
+
+procedure TDLBitmap.FinalizeWriter(AWriter: TFPCustomImageWriter);
+begin
+  inherited;
+end;
+
 procedure TDLBitmap.FillEllipse(X1, Y1, X2, Y2: integer);
 begin
 
@@ -659,11 +670,8 @@ begin
   TextLeft := TextX + IMGCanvas.TextWidth(LeftText);
   if IMGCanvas = nil then
     Exit;
-  //IMGCanvas.TextOut(22, 22, FEdit.Text);
   IMGCanvas.Brush.Style := bsClear;
   IMGCanvas.TextOut(TextLeft, TextY, RightText);
-  //if PositionIndex <> FEdit.SelStart then
-  //  PositionIndex := FEdit.SelStart;
   PositionIndex := Length(FEdit.Text);
 end;
 

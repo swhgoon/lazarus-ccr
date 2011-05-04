@@ -535,7 +535,7 @@ begin
     if (a * a + b * b < Sqr(Round(Radian3 * 0.65))) then
       DLBmp.Pixels[X + a, Y + b] := PColor;
   end;
-  DLBmp.InvalidateScanLineRect(Rect(X - Radians, Y - Radians, X + Radians, Y + Radians));
+  DLBmp.InvalidateScanLine;//Rect(Rect(X - Radians, Y - Radians, X + Radians, Y + Radians));
 end;
 
 function GetRColor(const Color: TColor): Byte;
@@ -677,24 +677,26 @@ end;
 
 procedure StretchDLBMP(Src: TDLBitmap; MultiX, MultiY: integer);
 var
-  sw, sh, dw, dh, B, N, x, y, i, j, k, nPixelSize: DWord;
+  sw, sh, dw, dh, i, j, k, l, nPixelSize: DWord;
   Dest: TDLBitmap;
 begin
-  sw := Src.Width - 1;
-  sh := Src.Height - 1;
-  dw := (Src.Width - 1) * MultiX;
-  dh := (Src.Height - 1) * MultiY;
-  nPixelSize := 3;
-  for  i := 0 to sh do
-  begin
-    for  j := 0 to sw do
-    begin
-      for  k := 0 to nPixelSize - 1 do
-      begin
-
-      end;
-    end;
-  end;
+  Dest := TDLBitmap.Create;
+  sw := Src.Width;
+  sh := Src.Height;
+  dw := Src.Width * MultiX;
+  dh := Src.Height * MultiY;
+  Dest.Width := dw;
+  Dest.Height := dh;
+  for  i := 0 to sh - 1 do
+    for  j := 0 to sw - 1 do
+      for  k := 0 to MultiY - 1 do
+        for l := 0 to MultiX - 1 do
+          Dest.Pixels[j * MultiX + k, i * MultiY + l] := Src.Pixels[j, i];
   Dest.InvalidateScanLine;
+  //Src.Assign(Dest);
+  Src.Width := dw;
+  Src.Height := dh;
+  Src.Canvas.Draw(0, 0, Dest);
+  Dest.Free;
 end;
 
