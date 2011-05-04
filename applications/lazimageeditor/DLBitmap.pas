@@ -144,7 +144,7 @@ operator div (const A, B: TRGBATriple): TRGBATriple;
 function DWordTrans(SrcRow: TRGBATriple): DWORD;
 function DWordToTriple(SrcRow: DWORD): TRGBATriple;
 procedure StretchLinear(Dest, Src: TDLBitmap);
-procedure StretchDLBMP(Src: TDLBitmap; MultiX, MultiY: integer);
+procedure StretchDLBMP(ACanvas: TCanvas; Src: TDLBitmap; NewLeft, NewTop, NewWidth, NewHeight: integer);
 
 implementation
 

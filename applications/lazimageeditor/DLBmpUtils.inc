@@ -675,28 +675,29 @@ begin
   Dest.InvalidateScanLine;
 end;
 
-procedure StretchDLBMP(Src: TDLBitmap; MultiX, MultiY: integer);
+procedure StretchDLBMP(ACanvas: TCanvas; Src: TDLBitmap; NewLeft, NewTop, NewWidth, NewHeight: integer);
 var
-  sw, sh, dw, dh, i, j, k, l, nPixelSize: DWord;
+  sw, sh, dw, dh, i, j: DWord;
   Dest: TDLBitmap;
 begin
   Dest := TDLBitmap.Create;
-  sw := Src.Width;
-  sh := Src.Height;
-  dw := Src.Width * MultiX;
-  dh := Src.Height * MultiY;
+  sw := Max(1, NewWidth div Src.Width);
+  sh := Max(1, NewHeight div Src.Height);
+  dw := NewWidth - NewLeft;
+  dh := NewHeight - NewTop;
   Dest.Width := dw;
   Dest.Height := dh;
-  for  i := 0 to sh - 1 do
-    for  j := 0 to sw - 1 do
-      for  k := 0 to MultiY - 1 do
-        for l := 0 to MultiX - 1 do
-          Dest.Pixels[j * MultiX + k, i * MultiY + l] := Src.Pixels[j, i];
+  for  i := 0 to dh - 1 do
+    for  j := 0 to dw - 1 do
+      Dest.Pixels[j, i] := Src.Pixels[j div sw, i div sh];
   Dest.InvalidateScanLine;
-  //Src.Assign(Dest);
-  Src.Width := dw;
-  Src.Height := dh;
-  Src.Canvas.Draw(0, 0, Dest);
+  ACanvas.Draw(NewLeft, NewTop, Dest);
   Dest.Free;
 end;
+
+
+
+
+
+
 

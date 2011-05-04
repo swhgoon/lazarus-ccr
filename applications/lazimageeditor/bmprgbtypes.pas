@@ -598,14 +598,15 @@ end;
 procedure TRGBBitmapCore.StretchDrawTo(ACanvas: TCanvas;
   DstX, DstY, DstWidth, DstHeight: integer);
 begin
-  if ACanvas <> nil then
+ // if ACanvas <> nil then
   //  ACanvas.StretchDraw(Rect(DstX, DstY, DstWidth, DstHeight), Self);
  //   StretchDLBMP(Self, 3, 3);
-  begin
+    StretchDLBMP(ACanvas, Self, DstX, DstY, DstWidth, DstHeight);
+  {begin
     ACanvas.AntialiasingMode:=amOff;
     ACanvas.CopyMode:=cmSrcPaint;
     ACanvas.CopyRect(Rect(DstX, DstY, DstWidth, DstHeight), Self.Canvas, Rect(0,0,Width,Height));
-  end;
+  end;     }
 end;
 
 { TRGB32BitmapCore }
