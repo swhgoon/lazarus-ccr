@@ -530,7 +530,8 @@ end;
 
 procedure TDLBitmap.FillEllipse(X1, Y1, X2, Y2: integer);
 begin
-
+  Canvas.Brush.Style := bsSolid;
+  Canvas.Ellipse(X1, Y1, X2, Y2);
 end;
 
 procedure TDLBitmap.ColorReplace(ColorFrom, ColorTo: TColor);
