@@ -270,6 +270,7 @@ begin
       fltr.Clear(clrNone);
     except
       fltr.Clear(clrFreeObjects);
+      raise;
     end;
   finally
     FreeAndNil(fltr);
