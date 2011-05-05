@@ -677,7 +677,7 @@ end;
 
 procedure StretchDLBMP(ACanvas: TCanvas; Src: TDLBitmap; NewLeft, NewTop, NewWidth, NewHeight: integer);
 var
-  dw, dh, i, j: DWord; Dest: TDLBitmap; sw, sh: Float;
+  dw, dh, i, j, temph: DWord; Dest: TDLBitmap; sw, sh: Float;
 begin
   Dest := TDLBitmap.Create;
   dw := NewWidth - NewLeft;
@@ -691,8 +691,11 @@ begin
   Dest.Width := dw;
   Dest.Height := dh;
   for  i := 0 to dh - 1 do
+  begin
+    temph := Trunc(i / sh);
     for  j := 0 to dw - 1 do
-      Dest.Pixels[j, i] := Src.Pixels[Trunc(j / sw), Trunc(i / sh)];
+      Dest.Pixels[j, i] := Src.Pixels[Trunc(j / sw), temph];
+  end;
   Dest.InvalidateScanLine;
   ACanvas.Draw(NewLeft, NewTop, Dest);
   Dest.Free;

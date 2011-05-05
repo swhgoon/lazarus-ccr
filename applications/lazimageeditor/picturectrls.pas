@@ -71,6 +71,9 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
     procedure UpdatePictureRect;
   public
+    SeleLeft, SeleTop, XX1, XX2, YY1, YY2: integer;
+    SelectedDLBMP: TDLBitmap;
+    IsSelection: Boolean;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure Paint; override;
@@ -161,6 +164,7 @@ type
     procedure DrawToolDrag(X1, Y1, X2, Y2: integer); virtual;
   public
     constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
 
     procedure NewPicture(AWidth, AHeight: integer; APaperColor: TColor);
     procedure LoadPicture(const FileName: string); override;
@@ -468,6 +472,18 @@ begin
         Application.QueueAsyncCall(@MaskDraw, FPaintIndex);
       end;
     end;
+    {if IsSelection then
+    begin
+      Canvas.Pen.Mode:=pmNotXor;
+      if SeleLeft < FPictureRect.Left then
+        SeleLeft := FPictureRect.Left;
+      if SeleTop < FPictureRect.Top then
+        SeleTop := FPictureRect.Top;
+      if (Seleleft >= FPictureRect.Left) and (SeleTop >= FPictureRect.Top){ and
+        (SeleLeft + SelectedDLBMP.Width <= FPictureRect.Right) and
+        (SeleTop + SelectedDLBMP.Height <= FPictureRect.Bottom)} then
+      Canvas.Draw(SeleLeft, SeleTop, SelectedDLBMP);
+    end; }
   end;
 end;
 
@@ -634,11 +650,19 @@ begin
   inherited PictureMouseDown(Button, Shift, X, Y);
 
   FTempPos := Point(X, Y);
+  IsSelection := False;
   case Tool of
     ptPen: Line(X, Y, X, Y, Shift);
     ptFloodFill: FloodFill(X, Y, Shift);
-    ptMask: if MaskTool = mtFloodFill then
+    ptMask: begin if MaskTool = mtFloodFill then
         MaskFloodFill(X, Y, Shift);
+        Canvas.Pen.Style := psDot;
+        Canvas.Pen.Mode := pmXor;
+        IsSelection := True;
+        SeleLeft := X;
+        SeleTop := Y;
+        Mask(XX1, YY1, XX2, YY2, Shift);
+      end;
     ptColorPick: ColorPick(X, Y, Shift);
     ptEraser: Eraser(X, Y, Shift);
     ptColorReplacer: ColorReplacer(X, Y, Shift);
@@ -704,8 +728,10 @@ begin
     end;
       Canvas.Polygon(paddr);
     end;
-    ptMask: if MaskTool <> mtFloodFill then
+    ptMask: begin if MaskTool <> mtFloodFill then
         Mask(StartPos.X, StartPos.Y, X, Y, Shift);
+        IsSelection := True;
+    end;
   end;
 
   FToolDrag := tdNone;
@@ -778,6 +804,14 @@ begin
   FloodFillTolerance := 0;
 
   Cursor := crCross;
+
+  SelectedDLBMP := TDLBitmap.Create;
+end;
+
+destructor TCustomPictureEdit.Destroy;
+begin
+  SelectedDLBMP.Free;
+  inherited;
 end;
 
 procedure TCustomPictureEdit.NewPicture(AWidth, AHeight: integer; APaperColor: TColor);
@@ -942,16 +976,8 @@ begin
     Exit;
 
   BeginDraw;
-  // if not (ssLeft in Shift) then Picture.EraseMode := ermErase;
-  //  Picture.RandomEnabled := True;
   try
-    //   Picture.Canvas.Pen.Color:=FFillColor;
-    //   Picture.Canvas.Brush.Color:=FFillColor;
     R := Bounds(X - FSize div 2, Y - FSize div 2, FSize, FSize);
-    {case Shape of
-    psRect: Picture.Canvas.FillRect(R.Left, R.Top, R.Right, R.Bottom);
-    psCircle: Picture.FillEllipse(R.Left, R.Top, R.Right, R.Bottom);
-    end;  }
     Picture.Spray(X, Y, 11, FFillColor);
   finally
     Picture.EraseMode := ermNone;
@@ -1139,6 +1165,28 @@ begin
       mtEllipse: Picture.Mask.Ellipse(X1, Y1, X2, Y2);
       mtRectangle: Picture.Mask.Rectangle(X1, Y1, X2, Y2);
     end;
+
+    Picture.Canvas.Pen.Style := psSolid; //psDot;
+    Picture.Canvas.Pen.Color := clGray;
+    Picture.Canvas.Pen.Mode := pmNotXor;
+    Picture.Canvas.Brush.Color := $00EACAB6;
+    //Canvas.Brush.Style := bsClear;
+    Picture.Canvas.Rectangle(X1, Y1, X2, Y2);
+    SelectedDLBMP.Width := Abs(X2 - X1);
+    SelectedDLBMP.Height := Abs(Y2 - Y1);
+    SelectedDLBMP.Canvas.CopyRect(Rect(0, 0, SelectedDLBMP.Width, SelectedDLBMP.Height),
+      Picture.Canvas, Rect(X1, Y1, X2, Y2));
+//    if SelectedDLBMP <> nil then
+//      SelectedDLBMP.CopyToClipboard;
+//    Picture.Canvas.Draw(0,0,SelectedDLBMP);
+    Picture.Canvas.Pen.Mode := pmCopy;
+    Picture.Canvas.Pen.Style := psSolid;
+    SeleLeft := X1;
+    SeleTop := Y1;
+    XX1 := X1;
+    XX2 := X2;
+    YY1 := Y1;
+    YY2 := Y2;
   finally
     Picture.Mask.FillMode := mfAdd;
     EndDraw;

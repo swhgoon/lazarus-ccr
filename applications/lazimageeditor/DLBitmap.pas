@@ -141,6 +141,7 @@ procedure DLBMPColorReplace(aBitmap: TDLBitmap; ColorFrom, ColorTo: TColor);
 operator + (const A, B: TRGBATriple): TRGBATriple;
 operator - (const A, B: TRGBATriple): TRGBATriple;
 operator * (const A, B: TRGBATriple): TRGBATriple;
+operator = (A, B: TRGBATriple): Boolean;
 operator div (const A, B: TRGBATriple): TRGBATriple;
 function DWordTrans(SrcRow: TRGBATriple): DWORD;
 function DWordToTriple(SrcRow: DWORD): TRGBATriple;
@@ -177,6 +178,14 @@ begin
   Result.rgbtBlue := A.rgbtBlue div B.rgbtBlue;
   Result.rgbtRed := A.rgbtRed div B.rgbtRed;
   Result.rgbtGreen := A.rgbtBlue div B.rgbtGreen;
+end;
+
+operator = (A, B: TRGBATriple): Boolean;
+begin
+  A.rgbtBlue := B.rgbtBlue;
+  A.rgbtRed := B.rgbtRed;
+  A.rgbtBlue := B.rgbtGreen;
+  Result := True;
 end;
 
 function DWordTrans(SrcRow: TRGBATriple): DWORD;

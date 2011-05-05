@@ -263,8 +263,8 @@ type
     procedure PanelFillDblClick(Sender: TObject);
     procedure PanelOutlineDblClick(Sender: TObject);
     procedure PanelPaperDblClick(Sender: TObject);
-    procedure PanelPaperDragOver(Sender, Source: TObject; X, Y: Integer;
-      State: TDragState; var Accept: Boolean);
+    procedure PanelPaperDragOver(Sender, Source: TObject; X, Y: integer;
+      State: TDragState; var Accept: boolean);
     procedure PicturePageChange(Sender: TObject);
     procedure PictureChange(Sender: TObject);
     procedure PicturePageClose(Sender: TObject);
@@ -812,14 +812,14 @@ begin
   end;
 end;
 
-procedure TMainForm.PanelPaperDragOver(Sender, Source: TObject; X, Y: Integer;
-  State: TDragState; var Accept: Boolean);
+procedure TMainForm.PanelPaperDragOver(Sender, Source: TObject;
+  X, Y: integer; State: TDragState; var Accept: boolean);
 begin
   if not Pictures.CanEdit then
     Exit;
   if Source is TColorPalette then
   begin
-    TPanel(Sender).Color:=Palette.PickedColor;
+    TPanel(Sender).Color := Palette.PickedColor;
     if Sender = PanelPaper then
       ActivePictureEdit.PaperColor := Palette.PickedColor;
     if Sender = PanelFill then
@@ -853,6 +853,12 @@ end;
 
 procedure TMainForm.ChangeTool(Tool: TPictureEditTool);
 begin
+  if ActivePictureEdit.IsSelection then
+    with ActivePictureEdit do
+    begin
+      Mask(XX1, YY1, XX2, YY2, [ssLeft]);
+      IsSelection := False;
+    end;
   ActivePictureEdit.Tool := Tool;
   UpdateToolSettings;
   ToolBarToolsClick(nil);
@@ -1059,7 +1065,7 @@ begin
   EditUndo.Hint := lieHintEditUndo;
 
   //Labels
-//  LabelZoom.Caption := lieLabelZoom;
+  //  LabelZoom.Caption := lieLabelZoom;
   LabelShape.Caption := lieLabelShape;
   LabelFillOutline.Caption := lieLabelFillOutline;
   LabelMaskTool.Caption := lieLabelMaskTool;
