@@ -173,6 +173,7 @@ type
     ToolBrush: TToolButton;
     ToolButton1: TToolButton;
     ToolText: TToolButton;
+    ToolcolorReplacer: TToolButton;
     ZoomInBtn: TToolButton;
     ZoomOutBtn: TToolButton;
     ToolCircleShape: TSpeedButton;
@@ -274,6 +275,7 @@ type
     procedure spinFillAlphaChange(Sender: TObject);
     procedure ToolBarToolsClick(Sender: TObject);
     procedure ToolBrushClick(Sender: TObject);
+    procedure ToolcolorReplacerClick(Sender: TObject);
     procedure ToolTextClick(Sender: TObject);
     procedure ZoomInBtnClick(Sender: TObject);
     procedure ZoomOutBtnClick(Sender: TObject);
@@ -491,6 +493,14 @@ begin
   if not Pictures.CanEdit then
     Exit;
   ChangeTool(ptBrush);
+end;
+
+procedure TMainForm.ToolcolorReplacerClick(Sender: TObject);
+begin
+  if not Pictures.CanEdit then
+    Exit;
+  ChangeTool(ptColorReplacer);
+  ActivePictureEdit.ChangeColor(BtnFromColor.ButtonColor, BtnToColor.ButtonColor);
 end;
 
 procedure TMainForm.ToolTextClick(Sender: TObject);
@@ -1343,7 +1353,7 @@ end;
 
 procedure TMainForm.BtnToColorClick(Sender: TObject);
 begin
-
+  ActivePictureEdit.ChangeColor(BtnFromColor.ButtonColor, BtnToColor.ButtonColor);
 end;
 
 procedure TMainForm.EditSizeChange(Sender: TObject);

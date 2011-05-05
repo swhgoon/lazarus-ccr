@@ -111,7 +111,7 @@ type
     tdRoundRectangle, tdPolygon);
 
   TPictureEditTool = (ptLine, ptPen, ptRectangle, ptFloodFill, ptEllipse,
-    ptMask, ptColorPick, ptEraser, ptSpray, ptPolygon, ptBrush, ptText);
+    ptMask, ptColorPick, ptEraser, ptSpray, ptPolygon, ptBrush, ptText, ptColorReplacer);
 
   TPicturePos = (ppTopLeft, ppTopCenter, ppTopRight, ppCenterLeft, ppCentered,
     ppCenterRight, ppBottomLeft, ppBottomCenter, ppBottomRight);
@@ -147,6 +147,7 @@ type
     procedure SetPaperColor(const AValue: TColor);
     procedure SetTool(const AValue: TPictureEditTool);
   protected
+    FromColor, ToColor: TColor;
     procedure Change; dynamic;
     procedure ColorChange; dynamic;
     procedure PictureSizeChange; dynamic;
@@ -170,6 +171,7 @@ type
     procedure FloodFill(X, Y: integer; Shift: TShiftState = [ssLeft]);
     procedure MaskFloodFill(X, Y: integer; Shift: TShiftState = [ssLeft]);
     procedure Eraser(X, Y: integer; Shift: TShiftState = [ssLeft]);
+    procedure ColorReplacer(X, Y: integer; Shift: TShiftState = [ssLeft]);
     procedure Spray(X, Y: integer; Shift: TShiftState = [ssLeft]);
     procedure Brush(X, Y: integer; Shift: TShiftState = [ssLeft]);
     procedure Line(X1, Y1, X2, Y2: integer; Shift: TShiftState = [ssLeft]);
@@ -209,6 +211,7 @@ type
     procedure BeginDraw;
     procedure EndDraw;
     procedure UpdatePicture;
+    procedure ChangeColor(FrColor, taColor: TColor);
   public
     TextEditor: TTextEditor;
     property DrawMode: TDrawMode read FDrawMode write FDrawMode;
@@ -638,6 +641,7 @@ begin
         MaskFloodFill(X, Y, Shift);
     ptColorPick: ColorPick(X, Y, Shift);
     ptEraser: Eraser(X, Y, Shift);
+    ptColorReplacer: ColorReplacer(X, Y, Shift);
     ptSpray: Spray(X, Y, Shift);
     ptText: ProcessEditorText(X, Y, X, Y);
     ptBrush: Brush(X, Y, Shift);
@@ -659,6 +663,7 @@ begin
         Line(FTempPos.X, FTempPos.Y, X, Y, Shift);
       end;
       ptEraser: Eraser(X, Y, Shift);
+      ptColorReplacer: ColorReplacer(X, Y, Shift);
       ptSpray: Spray(X, Y, Shift);
       ptBrush: Brush(X, Y, Shift);
       ptColorPick: ColorPick(X, Y, Shift);
@@ -888,6 +893,39 @@ begin
     case Shape of
       psRect: Picture.Canvas.FillRect(R.Left, R.Top, R.Right, R.Bottom);
       psCircle: Picture.FillEllipse(R.Left, R.Top, R.Right, R.Bottom);
+    end;
+  finally
+    Picture.EraseMode := ermNone;
+    EndDraw;
+  end;
+  InvalidatePictureRect(R);
+end;
+
+procedure TCustomPictureEdit.ChangeColor(FrColor, TaColor: TColor);
+begin
+  FromColor := FrColor;
+  ToColor := TaColor;
+end;
+
+procedure TCustomPictureEdit.ColorReplacer(X, Y: integer; Shift: TShiftState = [ssLeft]);
+var
+  R: TRect;
+begin
+  if Picture = nil then
+    Exit;
+
+  BeginDraw;
+  if ssLeft in Shift then
+    Picture.EraseMode := ermErase;
+  if ssRight in Shift then
+    Picture.EraseMode := ermReplace;
+  try
+    R := Bounds(X - FSize div 2, Y - FSize div 2, FSize, FSize);
+    Picture.Canvas.Pen.Color := FPaperColor;
+    Picture.Canvas.Brush.Color := FpaperColor;
+    case Shape of
+      psRect: Picture.ReplaceRectColor(FromColor, ToColor, R, 6, stRoundRect);
+      psCircle: Picture.ReplaceRectColor(FromColor, ToColor, R, 6, stEllipse);
     end;
   finally
     Picture.EraseMode := ermNone;

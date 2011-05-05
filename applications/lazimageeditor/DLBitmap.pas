@@ -68,6 +68,7 @@ type
     procedure Brightness(ValueChange: integer);
     procedure Contrast(ValueChange: integer);
     procedure ColorReplace(ColorFrom, ColorTo: TColor);
+    procedure ReplaceRectColor(ColorFrom, ColorTo: TColor; aRect: TRect; R: integer; Shape: TShapeType);
     property ScanLine[Row: integer]: pRGBATriple read GetScanLine;
     procedure FillEllipse(X1, Y1, X2, Y2: integer); virtual;
     procedure CutToClipboard; virtual;
@@ -537,6 +538,32 @@ end;
 procedure TDLBitmap.ColorReplace(ColorFrom, ColorTo: TColor);
 begin
   DLBMPColorReplace(Self, ColorFrom, ColorTo);
+end;
+
+procedure TDLBitmap.ReplaceRectColor(ColorFrom, ColorTo: TColor; aRect: TRect; R: integer; Shape: TShapeType);
+var maskbmp: TDLBitmap; i, j: integer;
+begin
+  maskbmp := TDLBitmap.Create;
+  maskbmp.Width := aRect.Right - aRect.Left;
+  maskbmp.Height := aRect.Bottom - aRect.Top;
+  maskbmp.Canvas.Brush.Color := clWhite;
+  maskbmp.Canvas.Brush.Style := bsSolid;
+  maskbmp.Canvas.Pen.Color := clWhite;
+  maskbmp.Canvas.Rectangle(0, 0, Width, Height);
+  maskbmp.Canvas.Brush.Color := clBlack;
+  maskbmp.Canvas.Pen.Color := clBlack;
+  case Shape of
+   stRectangle: maskbmp.Canvas.Rectangle(0, 0, maskbmp.Width, maskbmp.Height);
+   stRoundRect: maskbmp.Canvas.RoundRect(0, 0, maskbmp.Width, maskbmp.Height, R, R);
+   stEllipse  : maskbmp.Canvas.Ellipse(0, 0, maskbmp.Width, maskbmp.Height);
+  end;
+  for i := 0 to maskbmp.Width do
+    for j := 0 to maskbmp.Height do
+      if maskbmp.Pixels[i, j] = clBlack then
+        if Pixels[aRect.Left + i, aRect.Top + j] = ColorFrom then
+          Pixels[aRect.Left + i, aRect.Top + j] := ColorTo;
+  InvalidateScanline;
+  maskbmp.Free;
 end;
 
 constructor TTextEdit.Create(AOwner: TComponent);
