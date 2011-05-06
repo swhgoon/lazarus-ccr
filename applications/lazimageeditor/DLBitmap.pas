@@ -268,6 +268,8 @@ begin
   oBmp := TBitmap.Create;
   try
     oBmp.LoadFromClipboardFormat(PredefinedClipboardFormat(pcfDelphiBitmap));
+    Width := oBmp.Width;
+    Height := oBmp.Height;
     Canvas.Draw(0, 0, oBmp);
   finally
     oBmp.Free;

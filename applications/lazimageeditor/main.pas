@@ -858,6 +858,10 @@ begin
     begin
       Mask(XX1, YY1, XX2, YY2, [ssLeft]);
       IsSelection := False;
+      XX1 := 0;
+      XX2 := 0;
+      YY1 := 0;
+      YY2 := 0;
     end;
   ActivePictureEdit.Tool := Tool;
   UpdateToolSettings;

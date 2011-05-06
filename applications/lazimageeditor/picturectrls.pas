@@ -655,13 +655,14 @@ begin
     ptPen: Line(X, Y, X, Y, Shift);
     ptFloodFill: FloodFill(X, Y, Shift);
     ptMask: begin if MaskTool = mtFloodFill then
-        MaskFloodFill(X, Y, Shift);
+          MaskFloodFill(X, Y, Shift);
         Canvas.Pen.Style := psDot;
         Canvas.Pen.Mode := pmXor;
         IsSelection := True;
         SeleLeft := X;
         SeleTop := Y;
-        Mask(XX1, YY1, XX2, YY2, Shift);
+        if (XX1 <> 0) and (XX2 <> 0) and (YY1 <> 0) and (YY2 <> 0) then
+          Mask(XX1, YY1, XX2, YY2, Shift);
       end;
     ptColorPick: ColorPick(X, Y, Shift);
     ptEraser: Eraser(X, Y, Shift);
@@ -767,7 +768,7 @@ begin
 
   // Canvas.Pen.Mode := pmNot;
   Canvas.Pen.Mode := pmNotXor;
-  Canvas.Brush.Style := bsClear;
+  Canvas.Brush.Style := bsSolid;
 
   S := PictureToClient(Point(X1, Y1));
   E := PictureToClient(Point(X2, Y2));
@@ -1171,14 +1172,15 @@ begin
     Picture.Canvas.Pen.Mode := pmNotXor;
     Picture.Canvas.Brush.Color := $00EACAB6;
     //Canvas.Brush.Style := bsClear;
-    Picture.Canvas.Rectangle(X1, Y1, X2, Y2);
     SelectedDLBMP.Width := Abs(X2 - X1);
     SelectedDLBMP.Height := Abs(Y2 - Y1);
     SelectedDLBMP.Canvas.CopyRect(Rect(0, 0, SelectedDLBMP.Width, SelectedDLBMP.Height),
       Picture.Canvas, Rect(X1, Y1, X2, Y2));
 //    if SelectedDLBMP <> nil then
-//      SelectedDLBMP.CopyToClipboard;
-//    Picture.Canvas.Draw(0,0,SelectedDLBMP);
+//    SelectedDLBMP.CopyToClipboard;
+//SelectedDLBMP.Canvas.Rectangle(2,2,Width-2,Height-2);
+//    Canvas.Draw(0,0,SelectedDLBMP);
+    Picture.Canvas.Rectangle(X1, Y1, X2, Y2);
     Picture.Canvas.Pen.Mode := pmCopy;
     Picture.Canvas.Pen.Style := psSolid;
     SeleLeft := X1;
@@ -1412,7 +1414,10 @@ procedure TCustomPictureEdit.Copy;
 begin
   if Picture = nil then
     Exit;
-  Picture.CopyToClipboard;
+  if Tool <> ptMask then
+    Picture.CopyToClipboard
+  else
+    SelectedDLBMP.CopyToClipboard;
 end;
 
 procedure TCustomPictureEdit.Paste;
@@ -1422,7 +1427,10 @@ begin
   BeginDraw;
   try
     //Assert(True, 'Implement Paste');
-    Picture.PasteFromClipboard;
+    SelectedDLBMP.Width:=100;
+    SelectedDLBMP.Height:=100;
+    SelectedDLBMP.PasteFromClipboard;
+    Picture.Canvas.Draw(0, 0, SelectedDLBMP);
   finally
     EndDraw;
   end;

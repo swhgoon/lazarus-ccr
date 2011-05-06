@@ -1,7 +1,7 @@
 ﻿object MainForm: TMainForm
-  Left = 519
+  Left = 135
   Height = 681
-  Top = 272
+  Top = 135
   Width = 920
   Caption = 'Lazarus Image Editor'
   ClientHeight = 659
@@ -160,6 +160,8 @@
         Grouped = True
         ImageIndex = 5
         OnClick = ToolBrushClick
+        ParentShowHint = False
+        ShowHint = True
         Style = tbsCheck
       end
       object ToolText: TToolButton
@@ -169,6 +171,8 @@
         Grouped = True
         ImageIndex = 5
         OnClick = ToolTextClick
+        ParentShowHint = False
+        ShowHint = True
         Style = tbsCheck
       end
       object ToolcolorReplacer: TToolButton
@@ -178,6 +182,8 @@
         Grouped = True
         ImageIndex = 5
         OnClick = ToolcolorReplacerClick
+        ParentShowHint = False
+        ShowHint = True
         Style = tbsCheck
       end
     end
@@ -1385,9 +1391,9 @@
         TabOrder = 5
         object checkFuzzy: TCheckBox
           Left = 4
-          Height = 19
+          Height = 23
           Top = 5
-          Width = 20
+          Width = 24
           OnChange = checkFuzzyChange
           TabOrder = 0
         end
