@@ -7,7 +7,7 @@ unit rxnew;
 interface
 
 uses
-    rxlookup, vclutils, dateutil, dbutils, rxapputils, rxdconst, rxstrutils, 
+  rxlookup, vclutils, dateutil, dbutils, rxapputils, rxdconst, rxstrutils, 
   dbdateedit, registerrx, curredit, folderlister, rxdbgrid, rxmemds, duallist, 
   boxprocs, tooledit, rxswitch, rxdice, rxdbcomb, rxtoolbar, rxtbrsetup, 
   fduallst, rxxpman, pagemngr, rxappicon, seldsfrm, rxctrls, rxlogin, 
@@ -16,7 +16,7 @@ uses
   rxspin, RxDBSpinEdit, RegisterRxDB, RxTimeEdit, RxDBTimeEdit, RxDBCtrls, 
   rxfilterby, rxconst, rxFileUtils, RxVersInfo, RxAboutDialog, 
   rxAboutFormUnit, dbcurredit, RxViewsPanel, RxSystemServices, 
-  RegisterRxTools, LazarusPackageIntf;
+  RegisterRxTools, RxDBColorBox, LazarusPackageIntf;
 
 implementation
 

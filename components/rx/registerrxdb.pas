@@ -41,7 +41,7 @@ uses
 procedure Register;
 implementation
 uses DB, DBPropEdits, rxdbgrid, RxDBSpinEdit, RxDBTimeEdit, RxDBCtrls, rxmemds,
-  ComponentEditors, seldsfrm, PropEdits;
+  ComponentEditors, seldsfrm, PropEdits, RxDBColorBox;
 
 type
 
@@ -117,6 +117,11 @@ begin
   RegisterComponents('RX DBAware',[TRxMemoryData]);
 end;
 
+procedure RegisterRxDBColorBox;
+begin
+  RegisterComponents('RX DBAware',[TRxDBColorBox]);
+end;
+
 procedure Register;
 begin
   RegisterUnit('RxDBTimeEdit', @RegisterRxDBTimeEdit);
@@ -124,6 +129,7 @@ begin
   RegisterUnit('RxDBCtrls', @RegisterRxDBCtrls);
   RegisterUnit('rxdbgrid', @RegisterRxDbGrid);
   RegisterUnit('rxmemds', @RegisterRxMemDS);
+  RegisterUnit('RxDBColorBox', @RegisterRxDBColorBox);
 
   //Component Editors
   RegisterComponentEditor(TRxMemoryData, TMemDataSetEditor);

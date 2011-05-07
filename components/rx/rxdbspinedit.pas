@@ -255,9 +255,9 @@ end;
 
 function TCustomRxDBSpinEdit.IsReadOnly: boolean;
 begin
-  result := true;
-  if FDatalink.Active and not Self.ReadOnly then
-    result := (Field=nil) or Field.ReadOnly;
+  Result := true;
+  if FDatalink.Active and (not Self.ReadOnly) then
+    Result := (Field = nil) or Field.ReadOnly;
 end;
 
 procedure TCustomRxDBSpinEdit.Loaded;
