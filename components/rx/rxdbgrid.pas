@@ -510,7 +510,7 @@ type
     property Constraints;
     property DataSource;
     property DefaultDrawing;
-    property DefaultRowHeight stored IsDefaultRowHeightStored default 18 ;
+    property DefaultRowHeight; // stored IsDefaultRowHeightStored;
     property DragCursor;
     property DragKind;
     property DragMode;
