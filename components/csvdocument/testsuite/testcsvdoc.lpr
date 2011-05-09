@@ -141,14 +141,26 @@ begin
   WriteLn('Built in ', BuildTime, ' ms');
 end;
 
+procedure SetupUnofficialCsvHandler(AHandler: TCSVHandler);
+begin
+  AHandler.Delimiter := ',';
+  AHandler.QuoteChar := '"';
+  AHandler.LineEnding := #13#10;
+  AHandler.IgnoreOuterWhitespace := True;
+  AHandler.QuoteOuterWhitespace := True;
+  AHandler.EqualColCountPerRow := False;
+end;
+
 var
   CsvDoc: TCSVDocument;
+  Param1: String;
 begin
+  Param1 := ParamStr(1);
   WriteLn('Testing CSVDocument');
   WriteLn('-------------------');
   CsvDoc := TCSVDocument.Create;
 
-  if ParamStr(1) = 'p' then
+  if Pos(Param1, 'performance') = 1 then
   begin
     CsvDoc.Delimiter := ';';
     CsvDoc.QuoteChar := '"';
@@ -163,12 +175,15 @@ begin
     ExecTests(CsvDoc, 'rfc4180');
 
     // setup for unofficial Creativyst spec
+    SetupUnofficialCsvHandler(CsvDoc);
     ExecTests(CsvDoc, 'unofficial');
 
     // setup for MS Excel files
+    // (todo)
     ExecTests(CsvDoc, 'msexcel');
 
     // setup for OOo Calc files
+    // (todo)
     ExecTests(CsvDoc, 'oocalc');
   end;
 
