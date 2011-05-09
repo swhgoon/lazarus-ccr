@@ -80,6 +80,13 @@ and store them in CSV fields. That is why there is no point in implementing vari
 on the parser level, unless they are made more specific and require access to CSV internals
 like feature (1) does.
 
+Alternatively, feature (2) can be implemented like in Python csv module, using 3 quotation
+modes: "full", "minimal" and "no quotation". "full" and "minimal" modes would instruct 
+csv writer to quote all fields or just fields containing special characters, while 
+"no quotation" mode would turn quotation off competely, instructing both reader and 
+writer to use backslash-escaping instead.
+
 === Links ===
 http://tools.ietf.org/html/rfc4180#section-2
 http://www.creativyst.com/Doc/Articles/CSV/CSV01.htm#FileFormat
+http://docs.python.org/library/csv.html
