@@ -76,8 +76,12 @@ begin
   begin
     WriteLn(': FAILED');
     WriteLn('--- Expected: ---');
+    SampleBuffer := StringReplace(SampleBuffer, #13, '<CR>', [rfReplaceAll]);
+    SampleBuffer := StringReplace(SampleBuffer, #10, '<LF>', [rfReplaceAll]);
     WriteLn(SampleBuffer);
     WriteLn('--- Got: --------');
+    OutBuffer := StringReplace(OutBuffer, #13, '<CR>', [rfReplaceAll]);
+    OutBuffer := StringReplace(OutBuffer, #10, '<LF>', [rfReplaceAll]);
     WriteLn(OutBuffer);
     WriteLn('-----------------');
   end;
