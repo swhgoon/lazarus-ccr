@@ -22,6 +22,7 @@ Vladimir Zhirov
 
 === Contributors ===
 Luiz Americo Pereira Camara
+Mattias Gaertner
 
 === License ===
 [http://svn.freepascal.org/svn/lazarus/trunk/COPYING.modifiedLGPL Modified] [http://svn.freepascal.org/svn/lazarus/trunk/COPYING.LGPL LGPL] (same as FPC RTL and Lazarus LCL).
@@ -45,7 +46,7 @@ The library is a single Pascal source file that only depends on FPC RTL and FCL.
 * performance improvements.
 * code cleanup.
 * added simple test suite.
-==== Version 0.4 (2011-01-31) ====
+==== Version 0.4 (2011-05-10) ====
 * replaced QuoteCSVString function with TCSVBuilder class. See example of its usage in TCSVDocument.SaveToStream.
 * renamed TrimWhitespace to IgnoreOuterWhitespace (to be consistent with newly introduced QuoteOuterWhitespace property).
 * support for equal column count throughout the document (required by RFC 4180). See new EqualColCountPerRow property.
@@ -54,21 +55,31 @@ The library is a single Pascal source file that only depends on FPC RTL and FCL.
 * moved CSV format settings to TCSVHandler class (an ancestor of TCSVParser, TCSVBuilder and TCSVDocument).
 * updated test suite for RFC 4180 compliance.
 * fixed minor annoyances in demo application.
-* optimizations, demo improvements and Lazarus package by Luiz Americo Pereira Camara.
+* included optimized ChangeLineEndings function by Mattias Gaertner.
+* speed optimizations, demo improvements and Lazarus package by Luiz Americo Pereira Camara.
 
 === Status ===
 Beta
 
 === Download ===
-The latest release is available at lazarus-ccr:
+The latest release is available at Lazarus-CCR:
 
 http://sourceforge.net/projects/lazarus-ccr/files/CsvDocument/CsvDocument%200.4/csvdocument-0.4.zip/download
 
 The download contains the library and demo application.
 
+You can get development version from Lazarus-CCR svn reporsitory:
+
+  svn co https://lazarus-ccr.svn.sourceforge.net/svnroot/lazarus-ccr/components/csvdocument csvdocument
+
 === Installation and usage ===
 
 Include unit CsvDocument in the ''uses'' section. Set path for it in project settings if needed.
+Alternatively:
+1. Open "csvdocument_package.lpk" file from Lazarus IDE using menu: "Package -> Open package file (.lpk) ...".
+2. Compile the package.
+3. Open your project.
+4. Add the package as a requirement to your project using Project Inspector.
 
 === Contact ===
 

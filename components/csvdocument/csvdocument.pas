@@ -1,6 +1,6 @@
 {
   CSV Parser and Document classes.
-  Version 0.4 2011-01-31
+  Version 0.4 2011-05-10
 
   Copyright (C) 2010-2011 Vladimir Zhirov <vvzh.home@gmail.com>
 

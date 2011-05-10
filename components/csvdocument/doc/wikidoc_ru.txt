@@ -22,6 +22,7 @@
 
 === Участники, внесшие вклад в развитие библитеки ===
 Luiz Américo Pereira Câmara
+Mattias Gärtner
 
 === Лицензия ===
 [http://svn.freepascal.org/svn/lazarus/trunk/COPYING.modifiedLGPL Modified] [http://svn.freepascal.org/svn/lazarus/trunk/COPYING.LGPL LGPL] (та же, что у FPC RTL и Lazarus LCL).
@@ -45,7 +46,7 @@ Luiz Américo Pereira Câmara
 * улучшена производительность
 * выполнена чистка кода
 * добавлен набор простых тестов
-==== Версия 0.4 (20.01.2011) ====
+==== Версия 0.4 (10.05.2011) ====
 * функция QuoteCSVString заменена классом TCSVBuilder. Пример его использования можно посмотреть в методе TCSVDocument.SaveToStream.
 * свойство TrimWhitespace переименовано в IgnoreOuterWhitespace (для соответствия с новым свойством QuoteOuterWhitespace).
 * поддержка одинакового числа столбцов во всём документе (требуется для соответствия RFC 4180). См. свойство EqualColCountPerRow.
@@ -54,21 +55,31 @@ Luiz Américo Pereira Câmara
 * параметры формата CSV перемещены в класс TCSVHandler (предка классов TCSVParser, TCSVBuilder и TCSVDocument).
 * набор тестов обновлён для соответствия RFC 4180.
 * исправлены мелкие недоработки в demo-приложении.
-* оптимизация, улучшенное demo-приложение и пакет для Lazarus от Luiz Américo Pereira Câmara.
+* включен оптимизированный вариант функции ChangeLineEndings, созданный Mattias Gärtner.
+* оптимизации по скорости, улучшения в demo-приложении и пакет для Lazarus от Luiz Américo Pereira Câmara.
 
 === Статус ===
 Beta
 
 === Загрузка ===
-Последнюю версию можно загрузить с lazarus-ccr:
+Новый выпуск библиотеки можно загрузить с Lazarus-CCR:
 
 http://sourceforge.net/projects/lazarus-ccr/files/CsvDocument/CsvDocument%200.4/csvdocument-0.4.zip/download
 
 Архив содержит саму библиотеку и демонстрационное приложение.
 
+Разрабатываемую версию можно получить из svn-репозитория Lazarus-CCR:
+
+  svn co https://lazarus-ccr.svn.sourceforge.net/svnroot/lazarus-ccr/components/csvdocument csvdocument
+
 === Установка и использование ===
 
 Достаточно добавить модуль CsvDocument в секцию ''uses''. Если необходимо, можно установить путь к модулю в свойствах проекта.
+Другой вариант:
+1. Откройте файл "csvdocument_package.lpk" из Lazarus IDE, используя меню: "Пакет -> Открыть файл пакета (.lpk) ...".
+2. Скомпилируйте пакет.
+3. Откройте ваш проект.
+4. Добавьте пакет в качестве зависимости для вашего проекта с помощью Инспектора проекта.
 
 === Обратная связь ===
 
