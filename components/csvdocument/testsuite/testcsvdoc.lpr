@@ -68,7 +68,7 @@ begin
   OutBuffer := TestCsvString(ADocument, InBuffer, ParseTime, BuildTime);
 
   Write(ExtractFileName(AnInputFilename));
-  if OutBuffer = InBuffer then
+  if OutBuffer = SampleBuffer then
   begin
     Write(': ok');
     WriteLn('   (parsed in ', BuildTime, ' ms)');
@@ -102,7 +102,7 @@ begin
     CurrentTestFile := TestFiles[I];
     TestCsvFile(ADocument,
       CurrentTestFile,
-      ChangeFileExt(CurrentTestFile, '.sample' + ExtractFileExt(CurrentTestFile)));
+      ChangeFileExt(CurrentTestFile, '.sample'));
   end;
   FreeAndNil(TestFiles);
   WriteLn();
