@@ -205,21 +205,20 @@ const
 
 function ChangeLineEndings(const AString, ALineEnding: String): String;
 var
-  NewLength: Integer;
-  P, StartPos: Integer;
+  I: Integer;
   Src: PChar;
   Dest: PChar;
-  EndingStart: PChar;
-  EndingLen: Integer;
+  DestLength: Integer;
+  EndingLength: Integer;
   EndPos: PChar;
 begin
   if AString = '' then
     Exit(AString);
-  EndingLen := Length(ALineEnding);
-  NewLength := Length(AString);
+  EndingLength := Length(ALineEnding);
+  DestLength := Length(AString);
 
   Src := PChar(AString);
-  EndPos := Src + NewLength;
+  EndPos := Src + DestLength;
   while Src < EndPos do
   begin
     if (Src^ = CR) then
@@ -228,28 +227,28 @@ begin
       if (Src^ = LF) then
       begin
         Inc(Src);
-        Inc(NewLength, EndingLen - 2);
+        Inc(DestLength, EndingLength - 2);
       end else
-        Inc(NewLength, EndingLen - 1);
+        Inc(DestLength, EndingLength - 1);
     end else
     begin
       if (Src^ = LF) then
-        Inc(NewLength, EndingLen - 1);
+        Inc(DestLength, EndingLength - 1);
       Inc(Src);
     end;
   end;
 
-  SetLength(Result, NewLength);
+  SetLength(Result, DestLength);
   Src := PChar(AString);
   Dest := PChar(Result);
-  EndPos := Dest + NewLength;
+  EndPos := Dest + DestLength;
   while (Dest < EndPos) do
   begin
     if Src^ in LineEndingChars then
     begin
-      for P := 1 to EndingLen do
+      for I := 1 to EndingLength do
       begin
-        Dest^ := ALineEnding[P];
+        Dest^ := ALineEnding[I];
         Inc(Dest);
       end;
       if (Src^ = CR) and (Src[1] = LF) then

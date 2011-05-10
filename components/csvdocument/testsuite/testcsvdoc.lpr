@@ -92,7 +92,6 @@ var
   I: Integer;
   TestFiles: TStringList;
   CurrentTestFile: String;
-  InBuffer, OutBuffer: String;
 begin
   WriteLn('== Format: ', ASpec, ' ==');
   TestFiles := TStringList.Create;
@@ -109,14 +108,12 @@ begin
 end;
 
 procedure ExecPerformanceTest(ADocument: TCSVDocument; const AMinSizeKB: Integer);
-const
-  CsvLineEnding = #13#10;
 var
   I, MaxRows: Integer;
   Seq: String;
   SeqLen: Integer;
   RealSize: Integer;
-  InBuffer, OutBuffer: String;
+  InBuffer: String;
   ParseTime: Int64;
   BuildTime: Int64;
 begin
