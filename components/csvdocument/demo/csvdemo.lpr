@@ -7,8 +7,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, mainfrm, CsvDocument
-  { you can add units after this };
+  Forms, mainfrm;
 
 {$R csvdemo.res}
 

@@ -38,7 +38,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="2">
       <Unit0>
         <Filename Value="csvdemo.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -51,11 +51,6 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="mainfrm"/>
       </Unit1>
-      <Unit2>
-        <Filename Value="csvdocument.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CsvDocument"/>
-      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
