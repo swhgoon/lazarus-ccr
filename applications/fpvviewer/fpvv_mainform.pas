@@ -67,7 +67,7 @@ begin
 
   Vec := TvVectorialDocument.Create;
   try
-    Vec.ReadFromFile(editFileName.FileName, vfDXF);
+    Vec.ReadFromFile(editFileName.FileName);
 
     // We need to be robust, because sometimes the document size won't be given
     // also give up drawing everything if we need more then 4MB of RAM for the image
