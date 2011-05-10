@@ -53,11 +53,18 @@ type
   TCSVChar = Char;
 
   TCSVHandler = class(TObject)
+  private
+    procedure SetDelimiter(const AValue: TCSVChar);
+    procedure SetQuoteChar(const AValue: TCSVChar);
+    procedure UpdateCachedChars;
   protected
     // special chars
     FDelimiter: TCSVChar;
     FQuoteChar: TCSVChar;
-    FLineEnding: string;
+    FLineEnding: String;
+    // cached values to speed up special chars operations
+    FSpecialChars: TSysCharSet;
+    FDoubleQuote: String;
     // parser settings
     FIgnoreOuterWhitespace: Boolean;
     // builder settings
@@ -67,8 +74,8 @@ type
   public
     constructor Create;
     procedure AssignCSVProperties(ASource: TCSVHandler);
-    property Delimiter: TCSVChar read FDelimiter write FDelimiter;
-    property QuoteChar: TCSVChar read FQuoteChar write FQuoteChar;
+    property Delimiter: TCSVChar read FDelimiter write SetDelimiter;
+    property QuoteChar: TCSVChar read FQuoteChar write SetQuoteChar;
     property LineEnding: String read FLineEnding write FLineEnding;
     property IgnoreOuterWhitespace: Boolean read FIgnoreOuterWhitespace write FIgnoreOuterWhitespace;
     property QuoteOuterWhitespace: Boolean read FQuoteOuterWhitespace write FQuoteOuterWhitespace;
@@ -252,6 +259,30 @@ end;
 
 { TCSVHandler }
 
+procedure TCSVHandler.SetDelimiter(const AValue: TCSVChar);
+begin
+  if FDelimiter <> AValue then
+  begin
+    FDelimiter := AValue;
+    UpdateCachedChars;
+  end;
+end;
+
+procedure TCSVHandler.SetQuoteChar(const AValue: TCSVChar);
+begin
+  if FQuoteChar <> AValue then
+  begin
+    FQuoteChar := AValue;
+    UpdateCachedChars;
+  end;
+end;
+
+procedure TCSVHandler.UpdateCachedChars;
+begin
+  FDoubleQuote := FQuoteChar + FQuoteChar;
+  FSpecialChars := [CR, LF, FDelimiter, FQuoteChar];
+end;
+
 constructor TCSVHandler.Create;
 begin
   inherited Create;
@@ -261,6 +292,7 @@ begin
   FIgnoreOuterWhitespace := False;
   FQuoteOuterWhitespace := True;
   FEqualColCountPerRow := True;
+  UpdateCachedChars;
 end;
 
 procedure TCSVHandler.AssignCSVProperties(ASource: TCSVHandler);
@@ -271,6 +303,7 @@ begin
   FIgnoreOuterWhitespace := ASource.FIgnoreOuterWhitespace;
   FQuoteOuterWhitespace := ASource.FQuoteOuterWhitespace;
   FEqualColCountPerRow := ASource.FEqualColCountPerRow;
+  UpdateCachedChars;
 end;
 
 { TCSVParser }
@@ -462,7 +495,6 @@ function TCSVBuilder.QuoteCSVString(const AValue: String): String;
 var
   I: Integer;
   ValueLen: Integer;
-  SpecialChars: TSysCharSet;
   NeedQuotation: Boolean;
 begin
   ValueLen := Length(AValue);
@@ -470,11 +502,10 @@ begin
   NeedQuotation := (AValue <> '') and FQuoteOuterWhitespace
     and ((AValue[1] in WhitespaceChars) or (AValue[ValueLen] in WhitespaceChars));
 
-  SpecialChars := [CR, LF, FDelimiter, FQuoteChar];
   if not NeedQuotation then
     for I := 1 to ValueLen do
     begin
-      if AValue[I] in SpecialChars then
+      if AValue[I] in FSpecialChars then
       begin
         NeedQuotation := True;
         Break;
@@ -484,9 +515,9 @@ begin
   if NeedQuotation then
   begin
     // double existing quotes
-    Result := StringReplace(AValue, FQuoteChar,
-      FQuoteChar + FQuoteChar, [rfReplaceAll]);
-    Result := FQuoteChar + Result + FQuoteChar;
+    Result := FDoubleQuote;
+    Insert(StringReplace(AValue, FQuoteChar, FDoubleQuote, [rfReplaceAll]),
+      Result, 2);
   end else
     Result := AValue;
 end;
