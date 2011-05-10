@@ -209,42 +209,50 @@ var
   P, StartPos: Integer;
   Src: PChar;
   Dest: PChar;
-  EndLen: Integer;
+  EndingStart: PChar;
+  EndingLen: Integer;
   EndPos: PChar;
 begin
   if AString = '' then
-  begin
-    Result := AString;
-    Exit;
-  end;
-  EndLen := Length(ALineEnding);
+    Exit(AString);
+  EndingLen := Length(ALineEnding);
   NewLength := Length(AString);
-  P := 1;
-  while P < Length(AString) do
+
+  Src := PChar(AString);
+  EndPos := Src + NewLength;
+  while Src < EndPos do
   begin
-    if AString[P] in [#10,#13] then
+    if (Src^ = CR) then
     begin
-      StartPos := P;
-      Inc(P);
-      if (AString[P] in [#10,#13]) and (AString[P] <> AString[P-1]) then Inc(P);
-      Inc(NewLength, EndLen - (P - StartPos));
+      Inc(Src);
+      if (Src^ = LF) then
+      begin
+        Inc(Src);
+        Inc(NewLength, EndingLen - 2);
+      end else
+        Inc(NewLength, EndingLen - 1);
     end else
-      Inc(P);
+    begin
+      if (Src^ = LF) then
+        Inc(NewLength, EndingLen - 1);
+      Inc(Src);
+    end;
   end;
+
   SetLength(Result, NewLength);
   Src := PChar(AString);
   Dest := PChar(Result);
   EndPos := Dest + NewLength;
   while (Dest < EndPos) do
   begin
-    if Src^ in [#10,#13] then
+    if Src^ in LineEndingChars then
     begin
-      for P := 1 to EndLen do
+      for P := 1 to EndingLen do
       begin
         Dest^ := ALineEnding[P];
         Inc(Dest);
       end;
-      if (Src[1] in [#10,#13]) and (Src^ <> Src[1]) then
+      if (Src^ = CR) and (Src[1] = LF) then
         Inc(Src, 2)
       else
         Inc(Src);
