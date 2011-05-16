@@ -1160,14 +1160,22 @@ begin
 end;
 
 procedure TMainForm.FileNewOnStart;
+var i: integer;
 begin
-  Pictures.New(520, 390, $F1EFDA);
+  if ParamCount > 0 then
+  begin
+    for i := 1 to ParamCount - 1 do
+      Pictures.Load(ParamStr(i));
+  end
+  else
+    Pictures.New(520, 390, $F1EFDA);
 end;
 
 procedure TMainForm.FileOpenExecute(Sender: TObject);
 var
   I: integer;
 begin
+  Pictures.CloseAll;
   if OpenPictureDialog.Execute then
   begin
     for I := 0 to Pred(OpenPictureDialog.Files.Count) do

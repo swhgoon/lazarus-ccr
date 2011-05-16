@@ -263,14 +263,14 @@ end;
 
 procedure TDLBitmap.PasteFromClipboard;
 var
-  oBmp: TBitmap;
+  oBmp: TPicture;
 begin
-  oBmp := TBitmap.Create;
+  oBmp := TPicture.Create;
   try
     oBmp.LoadFromClipboardFormat(PredefinedClipboardFormat(pcfDelphiBitmap));
     Width := oBmp.Width;
     Height := oBmp.Height;
-    Canvas.Draw(0, 0, oBmp);
+    Canvas.Draw(0, 0, oBmp.Graphic);
   finally
     oBmp.Free;
   end;

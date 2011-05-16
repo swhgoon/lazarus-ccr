@@ -1427,8 +1427,6 @@ begin
   BeginDraw;
   try
     //Assert(True, 'Implement Paste');
-    SelectedDLBMP.Width:=100;
-    SelectedDLBMP.Height:=100;
     SelectedDLBMP.PasteFromClipboard;
     Picture.Canvas.Draw(0, 0, SelectedDLBMP);
   finally
