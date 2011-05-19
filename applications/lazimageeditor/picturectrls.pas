@@ -185,6 +185,8 @@ type
     procedure Rectangle(X1, Y1, X2, Y2: integer; Shift: TShiftState = [ssLeft]);
     procedure Ellipse(X1, Y1, X2, Y2: integer; Shift: TShiftState = [ssLeft]);
     procedure Polygon(polyaddr: array of TPoint);
+    procedure FinishPolygon;
+    procedure PolygonWithoutEdge(polyaddr: array of TPoint);
     procedure RegularPolygon(X1, Y1, X2, Y2: integer; Shift: TShiftState = [ssLeft]);
     procedure ProcessEditorText(X1, Y1, X2, Y2: integer);
     procedure ProcessPointAddr;
@@ -681,6 +683,7 @@ begin
 end;
 
 procedure TCustomPictureEdit.PictureMouseMove(Shift: TShiftState; X, Y: integer);
+var S, E, P: TPoint;
 begin
   inherited PictureMouseMove(Shift, X, Y);
 
@@ -696,6 +699,21 @@ begin
       ptSpray: Spray(X, Y, Shift);
       ptBrush: Brush(X, Y, Shift);
       ptColorPick: ColorPick(X, Y, Shift);
+    end;
+  end;
+
+  if Tool = ptPolygon then
+  begin
+    if pcount > 0 then
+    begin
+      Canvas.Pen.Mode := pmNotXor;
+      Canvas.Brush.Style := bsSolid;
+      S := PictureToClient(FTempPos);
+      E := PictureToClient(Point(X, Y));
+      P := PictureToClient(paddr[pcount - 1]);
+      Canvas.Line(P.x, P.y, S.X, S.Y);
+      Canvas.Line(P.x, P.y, E.X, E.Y);
+      Canvas.Pen.Mode := pmCopy;
     end;
   end;
 
@@ -730,8 +748,11 @@ begin
       E := PictureToClient(Point(X, Y));
       //Canvas.Pen.Color := OutLineColor;
       //Canvas.Line(S.X, S.Y, E.X, E.Y);
-      Polygon(paddr);
-      //Picture.Canvas.Polygon(paddr);
+      if Shift * [ssLeft] <> [] then
+        PolygonWithoutEdge(paddr);
+      if Shift * [ssRight] <> [] then
+        //Picture.Canvas.Polygon(paddr);
+        FinishPolygon;
     end;
     ptMask: begin if MaskTool <> mtFloodFill then
         Mask(StartPos.X, StartPos.Y, X, Y, Shift);
@@ -1143,6 +1164,41 @@ begin
     for i := 0 to pcount - 1 do
       tempaddr[i] := polyaddr[i]; //PictureToClient(polyaddr[i]);
     Picture.Canvas.Polygon(tempaddr);
+  finally
+    EndDraw;
+  end;
+  InvalidatePictureRect(Rect(0, 0, Width, Height));
+end;
+
+procedure TCustomPictureEdit.FinishPolygon;
+begin
+  if Picture = nil then
+    Exit;
+
+  BeginDraw;
+  try
+    Picture.Canvas.Brush.Color := FFillColor;
+    Picture.Canvas.Pen.Color := FOutlineColor;
+    Picture.Canvas.Polygon(paddr);
+    pcount := 0;
+  finally
+    EndDraw;
+  end;
+  InvalidatePictureRect(Rect(0, 0, Width, Height));
+end;
+
+procedure TCustomPictureEdit.PolygonWithoutEdge(polyaddr: array of TPoint);
+var
+  i: integer;
+begin
+  if Picture = nil then
+    Exit;
+  BeginDraw;
+  try
+    Picture.Canvas.Brush.Color := FFillColor;
+    Picture.Canvas.Pen.Color := FOutlineColor;
+    for i := 1 to pcount - 1 do
+      Picture.Canvas.Line(polyaddr[i - 1].x, polyaddr[i - 1].y, polyaddr[i].x, polyaddr[i].y);
   finally
     EndDraw;
   end;

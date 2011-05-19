@@ -883,6 +883,8 @@ begin
       YY2 := 0;
     end;
   ActivePictureEdit.pcount := 0;
+  if ActivePictureEdit.Tool = ptPolygon then
+    ActivePictureEdit.FinishPolygon;
   ActivePictureEdit.Tool := Tool;
   UpdateToolSettings;
   ToolBarToolsClick(nil);
