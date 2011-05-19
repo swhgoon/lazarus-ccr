@@ -1159,6 +1159,25 @@
         Caption = 'to'
         ParentColor = False
       end
+      object Label2: TLabel
+        Left = 542
+        Height = 20
+        Top = 7
+        Width = 62
+        Caption = 'Poly num:'
+        ParentColor = False
+      end
+      object PolyNum: TSpinEdit
+        Left = 611
+        Height = 27
+        Top = 4
+        Width = 50
+        MaxValue = 20
+        MinValue = 3
+        OnChange = PolyNumChange
+        TabOrder = 4
+        Value = 5
+      end
     end
     object PanelToolOptions: TPanel
       Left = 0

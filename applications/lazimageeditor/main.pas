@@ -63,7 +63,9 @@ type
     FileSaveAs: TAction;
     FlipHorizontally: TAction;
     FlipVertically: TAction;
+    PolyNum: TSpinEdit;
     Label1: TLabel;
+    Label2: TLabel;
     LabelTolerance1: TLabel;
     LabelTolerance2: TLabel;
     MaskInvert: TAction;
@@ -270,6 +272,7 @@ type
     procedure PictureChange(Sender: TObject);
     procedure PicturePageClose(Sender: TObject);
     procedure PicturePageCloseQuery(Sender: TObject; var CanClose: boolean);
+    procedure PolyNumChange(Sender: TObject);
     procedure RegularPolygonClick(Sender: TObject);
     procedure Rotate180Execute(Sender: TObject);
     procedure Rotate270Execute(Sender: TObject);
@@ -456,6 +459,11 @@ begin
   end;
 end;
 
+procedure TMainForm.PolyNumChange(Sender: TObject);
+begin
+  ActivePictureEdit.RegularPolyNum := PolyNum.Value;
+end;
+
 procedure TMainForm.RegularPolygonClick(Sender: TObject);
 begin
   if not Pictures.CanEdit then
@@ -468,6 +476,7 @@ procedure TMainForm.Rotate180Execute(Sender: TObject);
 begin
   if not Pictures.CanEdit then
     Exit;
+  ActivePictureEdit.RegularPolyNum := PolyNum.Value;
   ActivePictureEdit.Rotate180Clockwise;
 end;
 

@@ -67,6 +67,7 @@ type
     procedure RGBDelta(RedChange, GreenChange, BlueChange: integer);
     procedure Brightness(ValueChange: integer);
     procedure Contrast(ValueChange: integer);
+    procedure RegularPolygon(Center, ThePoint: TPoint; Count: integer);
     procedure ColorReplace(ColorFrom, ColorTo: TColor);
     procedure ReplaceRectColor(ColorFrom, ColorTo: TColor; aRect: TRect; R: integer; Shape: TShapeType);
     property ScanLine[Row: integer]: pRGBATriple read GetScanLine;
@@ -487,6 +488,11 @@ begin
   ChangeContrast(Tmp, ValueChange);
   Canvas.Draw(0, 0, tmp);
   tmp.Free;
+end;
+
+procedure TDLBitmap.RegularPolygon(Center, ThePoint: TPoint; Count: integer);
+begin
+  DrawRegularPolygon(Canvas, Center, ThePoint, Count);
 end;
 
 procedure TDLBitmap.FloodFill(x, y: integer);

@@ -165,7 +165,7 @@ type
     function GetToolDrag: TPictureEditToolDrag; virtual;
     procedure DrawToolDrag(X1, Y1, X2, Y2: integer); virtual;
   public
-    pcount: integer;
+    pcount, RegularPolyNum: integer;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
 
@@ -699,11 +699,6 @@ begin
     end;
   end;
 
-  if Tool = ptPolygon then
-        if pcount > 0 then  begin
-          //ProcessPointAddr;
-        end;
-
   DrawToolDrag(StartPos.X, StartPos.Y, FTempPos.X, FTempPos.Y);
   FTempPos := Point(X, Y);
 
@@ -793,7 +788,7 @@ begin
   if FToolDrag = tdEllipse then
     Canvas.Ellipse(S.X, S.Y, E.X, E.Y);
   if FToolDrag = tdRegularPolygon then
-    DrawRegularPolygon(Canvas, Point(S.X, S.Y), Point(E.X, E.Y), 5);
+    DrawRegularPolygon(Canvas, Point(S.X, S.Y), Point(E.X, E.Y), RegularPolyNum);
   if FToolDrag = tdPolygon then
   begin
     Canvas.Pen.Color := OutLineColor;
@@ -822,6 +817,7 @@ begin
   Cursor := crCross;
 
   SelectedDLBMP := TDLBitmap.Create;
+  RegularPolyNum := 5;
 end;
 
 destructor TCustomPictureEdit.Destroy;
@@ -1111,12 +1107,13 @@ begin
   try
     Picture.Canvas.Brush.Color := FFillColor;
     Picture.Canvas.Pen.Color := FOutlineColor;
-    DrawRegularPolygon(Picture.Canvas, Point(X1, Y1), Point(X2, Y2), 5);
+    Picture.RegularPolygon(Point(X1, Y1), Point(X2, Y2), RegularPolyNum);
   finally
     Picture.EraseMode := ermNone;
     EndDraw;
   end;
-  InvalidatePictureRect(Rect(X1, Y1, X2, Y2));
+  //InvalidatePictureRect(Rect(X1, Y1, X2, Y2));
+  InvalidatePictureRect(Rect(0, 0, Width, Height));
 end;
 
 procedure TCustomPictureEdit.ProcessPointAddr;

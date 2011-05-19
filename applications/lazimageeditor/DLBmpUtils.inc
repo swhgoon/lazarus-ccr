@@ -701,7 +701,7 @@ begin
   Dest.Free;
 end;
 
-function RotatePointEx(Center, ThePoint: TPoint; Angle: Double): TPoint;
+function RotatePointEx_0(Center, ThePoint: TPoint; Angle: Double): TPoint;
 var
   cosRadians: Double;
   inX: Integer;
@@ -729,19 +729,44 @@ begin
   Result := Point(inXOriginal, inYOriginal);
 end;
 
-procedure DrawRegularPolygon(aCanvas: TCanvas; Center, ThePoint: TPoint; Count: integer);
-var Angle: Double; paddr: array of TPoint; TmpPoint: TPoint; i: integer;
+function RotatePointEx(Center, ThePoint: TPoint; Angle: Double): TPoint;
+var
+  cosRadians: Double;
+  inX: Integer;
+  inXOriginal: Integer;
+  inXPrime: Integer;
+  inXPrimeRotated: Integer;
+  inY: Integer;
+  inYOriginal: Integer;
+  inYPrime: Integer;
+  inYPrimeRotated: Integer;
+  Radians: Double;
+  sinRadians: Double;
 begin
-  SetLength(paddr, Count);
+  Radians := -(Angle) * PI / 180;
+  sinRadians := Sin(Radians);
+  cosRadians := Cos(Radians);
+  inX := ThePoint.X;
+  inY := ThePoint.Y;
+  inXPrime := 2 * (inX - Center.x) + 1;
+  inYPrime := 2 * (inY - Center.y) + 1;
+  inYPrimeRotated := Round(inYPrime * CosRadians - inXPrime * sinRadians);
+  inXPrimeRotated := Round(inYPrime * sinRadians + inXPrime * cosRadians);
+  inYOriginal := (inYPrimeRotated - 1) div 2 + Center.y;
+  inXOriginal := (inXPrimeRotated - 1) div 2 + Center.x;
+  Result := Point(inXOriginal, inYOriginal);
+end;
+
+procedure DrawRegularPolygon(aCanvas: TCanvas; Center, ThePoint: TPoint; Count: integer);
+var Angle: Double; ptempaddr: array of TPoint; i: integer;
+begin
+  SetLength(ptempaddr, Count);
   //这是个五角星  Angle := Round(1080 / Count);
   Angle := Round(360 / Count);
-  TmpPoint := ThePoint;
-  for i := 0 to Count - 1 do
-  begin
-    paddr[i] := TmpPoint;
-    TmpPoint := RotatePointEx(Center, TmpPoint, Angle);
-  end;
-  aCanvas.Polygon(paddr);
+  ptempaddr[0] := ThePoint;
+  for i := 1 to Count - 1 do
+    ptempaddr[i] := RotatePointEx(Center, ptempaddr[i - 1], Angle);
+  aCanvas.Polygon(ptempaddr);
 end;
 
 
