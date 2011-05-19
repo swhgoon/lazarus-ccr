@@ -1,10 +1,10 @@
 ﻿object MainForm: TMainForm
   Left = 150
-  Height = 681
+  Height = 718
   Top = 60
   Width = 925
   Caption = 'Lazarus Image Editor'
-  ClientHeight = 659
+  ClientHeight = 696
   ClientWidth = 925
   Font.CharSet = GB2312_CHARSET
   Font.Height = -13
@@ -18,18 +18,18 @@
   LCLVersion = '0.9.31'
   object PanelTools: TPanel
     Left = 0
-    Height = 532
+    Height = 569
     Top = 105
     Width = 40
     Align = alLeft
     BevelOuter = bvNone
-    ClientHeight = 532
+    ClientHeight = 569
     ClientWidth = 40
     ParentColor = False
     TabOrder = 0
     object ToolBarTools: TToolBar
       Left = 0
-      Height = 532
+      Height = 569
       Top = 0
       Width = 40
       Align = alLeft
@@ -186,12 +186,23 @@
         ShowHint = True
         Style = tbsCheck
       end
+      object RegularPolygon: TToolButton
+        Left = 0
+        Hint = 'Regular Polygon'
+        Top = 522
+        Grouped = True
+        ImageIndex = 5
+        OnClick = RegularPolygonClick
+        ParentShowHint = False
+        ShowHint = True
+        Style = tbsCheck
+      end
     end
   end
   object StatusBar: TStatusBar
     Left = 0
     Height = 22
-    Top = 637
+    Top = 674
     Width = 925
     Panels = <    
       item
@@ -218,18 +229,18 @@
   end
   object PanelPallete: TPanel
     Left = 850
-    Height = 532
+    Height = 569
     Top = 105
     Width = 75
     Align = alRight
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 532
+    ClientHeight = 569
     ClientWidth = 75
     TabOrder = 1
     object Palette: TColorPalette
       Left = 0
-      Height = 532
+      Height = 569
       Top = 0
       Width = 75
       Align = alClient
@@ -1402,7 +1413,7 @@
   end
   object PanelPictures: TPanel
     Left = 40
-    Height = 532
+    Height = 569
     Top = 105
     Width = 810
     Align = alClient

@@ -701,7 +701,48 @@ begin
   Dest.Free;
 end;
 
+function RotatePointEx(Center, ThePoint: TPoint; Angle: Double): TPoint;
+var
+  cosRadians: Double;
+  inX: Integer;
+  inXOriginal: Integer;
+  inXPrime: Integer;
+  inXPrimeRotated: Integer;
+  inY: Integer;
+  inYOriginal: Integer;
+  inYPrime: Integer;
+  inYPrimeRotated: Integer;
+  Radians: Double;
+  sinRadians: Double;
+begin
+  Radians := -(Angle) * PI / 180;
+  sinRadians := Sin(Radians);
+  cosRadians := Cos(Radians);
+  inX := ThePoint.X;
+  inY := ThePoint.Y;
+  inXPrime := 2 * (inX - Center.y) + 1;
+  inYPrime := 2 * (inY - Center.x) + 1;
+  inYPrimeRotated := Round(inYPrime * CosRadians - inXPrime * sinRadians);
+  inXPrimeRotated := Round(inYPrime * sinRadians + inXPrime * cosRadians);
+  inYOriginal := (inYPrimeRotated - 1) div 2 + Center.x;
+  inXOriginal := (inXPrimeRotated - 1) div 2 + Center.y;
+  Result := Point(inXOriginal, inYOriginal);
+end;
 
+procedure DrawRegularPolygon(aCanvas: TCanvas; Center, ThePoint: TPoint; Count: integer);
+var Angle: Double; paddr: array of TPoint; TmpPoint: TPoint; i: integer;
+begin
+  SetLength(paddr, Count);
+  //这是个五角星  Angle := Round(1080 / Count);
+  Angle := Round(360 / Count);
+  TmpPoint := ThePoint;
+  for i := 0 to Count - 1 do
+  begin
+    paddr[i] := TmpPoint;
+    TmpPoint := RotatePointEx(Center, TmpPoint, Angle);
+  end;
+  aCanvas.Polygon(paddr);
+end;
 
 
 

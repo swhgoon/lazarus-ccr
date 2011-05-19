@@ -172,6 +172,7 @@ type
     SavePictureDialog: TSavePictureDialog;
     ToolBrush: TToolButton;
     ToolButton1: TToolButton;
+    RegularPolygon: TToolButton;
     ToolText: TToolButton;
     ToolcolorReplacer: TToolButton;
     ZoomInBtn: TToolButton;
@@ -269,6 +270,7 @@ type
     procedure PictureChange(Sender: TObject);
     procedure PicturePageClose(Sender: TObject);
     procedure PicturePageCloseQuery(Sender: TObject; var CanClose: boolean);
+    procedure RegularPolygonClick(Sender: TObject);
     procedure Rotate180Execute(Sender: TObject);
     procedure Rotate270Execute(Sender: TObject);
     procedure Rotate90Execute(Sender: TObject);
@@ -452,6 +454,14 @@ begin
       mrCancel: CanClose := False;
     end;
   end;
+end;
+
+procedure TMainForm.RegularPolygonClick(Sender: TObject);
+begin
+  if not Pictures.CanEdit then
+    Exit;
+  ChangeTool(ptRegularPolygon);
+  ActivePictureEdit.ChangeColor(BtnFromColor.ButtonColor, BtnToColor.ButtonColor);
 end;
 
 procedure TMainForm.Rotate180Execute(Sender: TObject);

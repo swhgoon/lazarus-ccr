@@ -111,10 +111,11 @@ type
   TPictureEditShape = (psRect, psCircle);
 
   TPictureEditToolDrag = (tdNone, tdLine, tdRectangle, tdEllipse,
-    tdRoundRectangle, tdPolygon);
+    tdRoundRectangle, tdPolygon, tdRegularPolygon);
 
   TPictureEditTool = (ptLine, ptPen, ptRectangle, ptFloodFill, ptEllipse,
-    ptMask, ptColorPick, ptEraser, ptSpray, ptPolygon, ptBrush, ptText, ptColorReplacer);
+    ptMask, ptColorPick, ptEraser, ptSpray, ptPolygon, ptBrush, ptText,
+    ptColorReplacer, ptRegularPolygon);
 
   TPicturePos = (ppTopLeft, ppTopCenter, ppTopRight, ppCenterLeft, ppCentered,
     ppCenterRight, ppBottomLeft, ppBottomCenter, ppBottomRight);
@@ -184,6 +185,7 @@ type
     procedure Rectangle(X1, Y1, X2, Y2: integer; Shift: TShiftState = [ssLeft]);
     procedure Ellipse(X1, Y1, X2, Y2: integer; Shift: TShiftState = [ssLeft]);
     procedure Polygon(polyaddr: array of TPoint);
+    procedure RegularPolygon(X1, Y1, X2, Y2: integer; Shift: TShiftState = [ssLeft]);
     procedure ProcessEditorText(X1, Y1, X2, Y2: integer);
     procedure ProcessPointAddr;
     procedure Mask(X1, Y1, X2, Y2: integer; Shift: TShiftState = [ssLeft]);
@@ -722,6 +724,7 @@ begin
     ptLine: Line(StartPos.X, StartPos.Y, X, Y, Shift);
     ptRectangle: Rectangle(StartPos.X, StartPos.Y, X, Y, Shift);
     ptEllipse: Ellipse(StartPos.X, StartPos.Y, X, Y, Shift);
+    ptRegularPolygon: RegularPolygon(StartPos.X, StartPos.Y, X, Y, Shift);
     ptPolygon:
     begin
       pcount := pcount + 1;
@@ -751,6 +754,7 @@ begin
     ptRectangle: Result := tdRoundRectangle;
     ptEllipse: Result := tdEllipse;
     ptPolygon: Result := tdPolygon;
+    ptRegularPolygon: Result := tdRegularPolygon;
     ptMask:
     begin
       case MaskTool of
@@ -788,6 +792,8 @@ begin
     Canvas.RoundRect(S.X, S.Y, E.X, E.Y, R, R);
   if FToolDrag = tdEllipse then
     Canvas.Ellipse(S.X, S.Y, E.X, E.Y);
+  if FToolDrag = tdRegularPolygon then
+    DrawRegularPolygon(Canvas, Point(S.X, S.Y), Point(E.X, E.Y), 5);
   if FToolDrag = tdPolygon then
   begin
     Canvas.Pen.Color := OutLineColor;
@@ -1087,6 +1093,25 @@ begin
     Picture.Canvas.Brush.Color := FFillColor;
     Picture.Canvas.Pen.Color := FOutlineColor;
     Picture.Canvas.Ellipse(X1, Y1, X2, Y2);
+  finally
+    Picture.EraseMode := ermNone;
+    EndDraw;
+  end;
+  InvalidatePictureRect(Rect(X1, Y1, X2, Y2));
+end;
+
+procedure TCustomPictureEdit.RegularPolygon(X1, Y1, X2, Y2: integer; Shift: TShiftState = [ssLeft]);
+begin
+  if Picture = nil then
+    Exit;
+
+  BeginDraw;
+  if not (ssLeft in Shift) then
+    Picture.EraseMode := ermErase;
+  try
+    Picture.Canvas.Brush.Color := FFillColor;
+    Picture.Canvas.Pen.Color := FOutlineColor;
+    DrawRegularPolygon(Picture.Canvas, Point(X1, Y1), Point(X2, Y2), 5);
   finally
     Picture.EraseMode := ermNone;
     EndDraw;
