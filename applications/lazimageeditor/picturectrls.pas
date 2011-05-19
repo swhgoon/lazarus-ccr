@@ -151,6 +151,8 @@ type
     procedure SetTool(const AValue: TPictureEditTool);
   protected
     FromColor, ToColor: TColor;
+    paddr: array of TPoint;
+    pcount: integer;
     procedure Change; dynamic;
     procedure ColorChange; dynamic;
     procedure PictureSizeChange; dynamic;
@@ -181,9 +183,9 @@ type
     procedure Line(X1, Y1, X2, Y2: integer; Shift: TShiftState = [ssLeft]);
     procedure Rectangle(X1, Y1, X2, Y2: integer; Shift: TShiftState = [ssLeft]);
     procedure Ellipse(X1, Y1, X2, Y2: integer; Shift: TShiftState = [ssLeft]);
-    procedure Polygon(X1, Y1, X2, Y2: integer; Shift: TShiftState);
+    procedure Polygon(polyaddr: array of TPoint);
     procedure ProcessEditorText(X1, Y1, X2, Y2: integer);
-    procedure ProcessPointAddr(X1, Y1, X2, Y2: integer; Points: array of TPoint; PCount: integer);
+    procedure ProcessPointAddr;
     procedure Mask(X1, Y1, X2, Y2: integer; Shift: TShiftState = [ssLeft]);
 
     procedure FlipHorizontally;
@@ -695,6 +697,11 @@ begin
     end;
   end;
 
+  if Tool = ptPolygon then
+        if pcount > 0 then  begin
+          //ProcessPointAddr;
+        end;
+
   DrawToolDrag(StartPos.X, StartPos.Y, FTempPos.X, FTempPos.Y);
   FTempPos := Point(X, Y);
 
@@ -703,8 +710,7 @@ end;
 
 procedure TCustomPictureEdit.PictureMouseUp(Button: TMouseButton;
   Shift: TShiftState; X, Y: integer);
-var
-  paddr: array of TPoint; i, pXUnit, pYUnit: integer;
+var S, E: TPoint;
 begin
   inherited PictureMouseUp(Button, Shift, X, Y);
   if Button = mbLeft then
@@ -718,16 +724,16 @@ begin
     ptEllipse: Ellipse(StartPos.X, StartPos.Y, X, Y, Shift);
     ptPolygon:
     begin
-      SetLength(paddr, 3);
-      ProcessPointAddr(StartPos.X, StartPos.Y, X, Y, paddr, 3);
-      pXUnit := (X - StartPos.X) div (3 - 1);
-    pYUnit := (Y - StartPos.Y) div (3 - 1);
-    for i := 0 to 3 - 1 do
-    begin
-      paddr[i].x := StartPos.X + pXUnit * i;
-      paddr[i].y := StartPos.Y + pYUnit * i;
-    end;
-      Canvas.Polygon(paddr);
+      pcount := pcount + 1;
+      SetLength(paddr, pcount);
+      paddr[pcount - 1].x := X;
+      paddr[pcount - 1].y := Y;
+      S := PictureToClient(Point(StartPos.X, StartPos.Y));
+      E := PictureToClient(Point(X, Y));
+      //Canvas.Pen.Color := OutLineColor;
+      //Canvas.Line(S.X, S.Y, E.X, E.Y);
+      Polygon(paddr);
+      //Picture.Canvas.Polygon(paddr);
     end;
     ptMask: begin if MaskTool <> mtFloodFill then
         Mask(StartPos.X, StartPos.Y, X, Y, Shift);
@@ -783,8 +789,11 @@ begin
   if FToolDrag = tdEllipse then
     Canvas.Ellipse(S.X, S.Y, E.X, E.Y);
   if FToolDrag = tdPolygon then
-    Polygon(S.X, S.Y, E.X, E.Y, [ssLeft]);
-
+  begin
+    Canvas.Pen.Color := OutLineColor;
+    //Picture.Canvas.Line(paddr[pcount - 1].x, paddr[pcount - 1].y, X, Y);
+    Canvas.Line(S.X, S.Y, E.X, E.Y);
+  end;
   Canvas.Pen.Mode := pmCopy;
   Canvas.Brush.Style := bsSolid;
 end;
@@ -1085,59 +1094,37 @@ begin
   InvalidatePictureRect(Rect(X1, Y1, X2, Y2));
 end;
 
-procedure TCustomPictureEdit.ProcessPointAddr(X1, Y1, X2, Y2: integer;
-  Points: array of TPoint; PCount: integer);
-var i, pXUnit, pYUnit: integer;
+procedure TCustomPictureEdit.ProcessPointAddr;
+var i: integer; E, F: TPoint;
 begin
-{  pXUnit := (X2 - X1) div (PCount - 1);
-  pYUnit := (Y2 - Y1) div (PCount - 1);
-  for i := 0 to PCount - 1 do
+  if pcount > 2 then
   begin
-    Points[i].x := X1 + pXUnit * i;
-    Points[i].y := Y1 + pYUnit * i;
-  end;       }
-  Points[0].x := X1 + (X2 - X1) div 2;
-  Points[0].y := Y1;
-  Points[1].x := X1;
-  Points[1].y := Y2;
-  Points[2].x := X2;
-  Points[2].y := Y2;
+    E := PictureToClient(paddr[i]);
+    F := PictureToClient(paddr[i + 1]);
+    for i := 0 to pcount - 2 do
+      Canvas.Line(E.x, E.y, F.x, F.y);
+  end;
 end;
 
-procedure TCustomPictureEdit.Polygon(X1, Y1, X2, Y2: integer; Shift: TShiftState);
+procedure TCustomPictureEdit.Polygon(polyaddr: array of TPoint);
 var
-  paddr: array of TPoint; i, pXUnit, pYUnit: integer;
+  i: integer; tempaddr: array of TPoint;
 begin
   if Picture = nil then
     Exit;
 
   BeginDraw;
-  if not (ssLeft in Shift) then
-    Picture.EraseMode := ermErase;
   try
+    SetLength(tempaddr, pcount);
     Picture.Canvas.Brush.Color := FFillColor;
     Picture.Canvas.Pen.Color := FOutlineColor;
-    SetLength(paddr, 3);
-    ProcessPointAddr(X1, Y1, X2, Y2, paddr, 3);
-    pXUnit := (X2 - X1) div (3 - 1);
-    pYUnit := (Y2 - Y1) div (3 - 1);
-    for i := 0 to 3 - 1 do
-    begin
-      paddr[i].x := X1 + pXUnit * i;
-      paddr[i].y := Y1 + pYUnit * i;
-    end;
- { paddr[0].x := X1 + (X2 - X1) div 2;
-  paddr[0].y := Y1;
-  paddr[1].x := X1;
-  paddr[1].y := Y2;
-  paddr[2].x := X2;
-  paddr[2].y := Y2;      }
-    Picture.Canvas.Polygon(paddr);
+    for i := 0 to pcount - 1 do
+      tempaddr[i] := polyaddr[i]; //PictureToClient(polyaddr[i]);
+    Picture.Canvas.Polygon(tempaddr);
   finally
-    Picture.EraseMode := ermNone;
     EndDraw;
   end;
-  InvalidatePictureRect(Rect(X1, Y1, X2, Y2));
+  InvalidatePictureRect(Rect(0, 0, Width, Height));
 end;
 
 procedure TCustomPictureEdit.ProcessEditorText(X1, Y1, X2, Y2: integer);
