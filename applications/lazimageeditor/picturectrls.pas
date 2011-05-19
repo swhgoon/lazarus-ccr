@@ -152,7 +152,6 @@ type
   protected
     FromColor, ToColor: TColor;
     paddr: array of TPoint;
-    pcount: integer;
     procedure Change; dynamic;
     procedure ColorChange; dynamic;
     procedure PictureSizeChange; dynamic;
@@ -165,6 +164,7 @@ type
     function GetToolDrag: TPictureEditToolDrag; virtual;
     procedure DrawToolDrag(X1, Y1, X2, Y2: integer); virtual;
   public
+    pcount: integer;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
 

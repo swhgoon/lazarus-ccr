@@ -863,6 +863,7 @@ begin
       YY1 := 0;
       YY2 := 0;
     end;
+  ActivePictureEdit.pcount := 0;
   ActivePictureEdit.Tool := Tool;
   UpdateToolSettings;
   ToolBarToolsClick(nil);
