@@ -16,6 +16,7 @@
   Abstract:
     Utility functions using mtprocs.
     For example a parallel sort.
+
 }
 unit MTPUtils;
 
@@ -27,6 +28,7 @@ uses
   Classes, SysUtils, MTProcs;
 
 type
+  TSortPartEvent = procedure(aList: PPointer; aCount: PtrInt);
 
   { TParallelSortPointerList }
 
@@ -41,18 +43,23 @@ type
     Count: PtrInt;
     Compare: TListSortCompare;
     BlockCnt: PtrInt;
+    OnSortPart: TSortPartEvent;
     constructor Create(aList: PPointer; aCount: PtrInt; const aCompare: TListSortCompare;
                        MaxThreadCount: integer = 0);
     procedure Sort;
   end;
 
+{ Sort a list in parallel using merge sort.
+  You must provide a compare function.
+  You can provide your own sort function for the blocks which are sorted in a
+  single thread, for example a normal quicksort. }
 procedure ParallelSortFPList(List: TFPList; const Compare: TListSortCompare;
-  MaxThreadCount: integer = 0);
+  MaxThreadCount: integer = 0; const OnSortPart: TSortPartEvent = nil);
 
 implementation
 
 procedure ParallelSortFPList(List: TFPList; const Compare: TListSortCompare;
-  MaxThreadCount: integer = 0);
+  MaxThreadCount: integer; const OnSortPart: TSortPartEvent);
 var
   Sorter: TParallelSortPointerList;
 begin
@@ -60,6 +67,7 @@ begin
   Sorter:=TParallelSortPointerList.Create(@List.List[0],List.Count,Compare,
                                           MaxThreadCount);
   try
+    Sorter.OnSortPart:=OnSortPart;
     Sorter.Sort;
   finally
     Sorter.Free;
@@ -128,11 +136,14 @@ var
   MergeIndex: Integer;
 begin
   L:=fBlockSize*Index;
-  R:=L+fBlockSize-1; // middle block
+  R:=L+fBlockSize-1;
   if R>=Count then
     R:=Count-1; // last block
-  WriteLn('TParallelSortPointerList.LWTSort Index=',Index,' sort block: ',L,' ',(L+R+1) div 2,' ',R);
-  MergeSort(L,(L+R+1) div 2,R,true);
+  //WriteLn('TParallelSortPointerList.LWTSort Index=',Index,' sort block: ',L,' ',(L+R+1) div 2,' ',R);
+  if Assigned(OnSortPart) then
+    OnSortPart(@List[L],R-L+1)
+  else
+    MergeSort(L,(L+R+1) div 2,R,true);
 
   // merge
   //  0 1 2 3 4 5 6 7
@@ -187,7 +198,7 @@ begin
   while fBlockCntPowOf2Offset<BlockCnt do
     fBlockCntPowOf2Offset:=fBlockCntPowOf2Offset*2;
   fBlockCntPowOf2Offset:=fBlockCntPowOf2Offset-BlockCnt;
-  WriteLn('TParallelSortPointerList.Sort BlockCnt=',BlockCnt,' fBlockSize=',fBlockSize,' fBlockCntPowOf2Offset=',fBlockCntPowOf2Offset);
+  //WriteLn('TParallelSortPointerList.Sort BlockCnt=',BlockCnt,' fBlockSize=',fBlockSize,' fBlockCntPowOf2Offset=',fBlockCntPowOf2Offset);
   GetMem(FMergeBuffer,SizeOf(Pointer)*Count);
   try
     ProcThreadPool.DoParallel(@MTPSort,0,BlockCnt-1);
