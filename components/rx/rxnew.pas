@@ -16,7 +16,7 @@ uses
   rxspin, RxDBSpinEdit, RegisterRxDB, RxTimeEdit, RxDBTimeEdit, RxDBCtrls, 
   rxfilterby, rxconst, rxFileUtils, RxVersInfo, RxAboutDialog, 
   rxAboutFormUnit, dbcurredit, RxViewsPanel, RxSystemServices, 
-  RegisterRxTools, RxDBColorBox, LazarusPackageIntf;
+  RegisterRxTools, RxDBColorBox, rxConfigValues, LazarusPackageIntf;
 
 implementation
 
