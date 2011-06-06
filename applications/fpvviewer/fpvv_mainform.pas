@@ -41,7 +41,7 @@ implementation
 
 uses
   fpvectorial, cdrvectorialreader, svgvectorialwriter, pdfvectorialreader,
-  dxfvectorialreader,
+  dxfvectorialreader, epsvectorialreader,
   fpvtocanvas,
   dxftokentotree;
 

@@ -24,9 +24,11 @@ uses
 type
   TvVectorialFormat = (
     { Multi-purpose document formats }
-    vfPDF, vfPostScript, vfSVG, vfCorelDrawCDR, vfWindowsMetafileWMF,
+    vfPDF, vfSVG, vfCorelDrawCDR, vfWindowsMetafileWMF,
     { CAD formats }
     vfDXF,
+    { Printing formats }
+    vfPostScript, vfEncapsulatedPostScript,
     { GCode formats }
     vfGCodeAvisoCNCPrototipoV5, vfGCodeAvisoCNCPrototipoV6);
 
@@ -39,6 +41,7 @@ const
   STR_CORELDRAW_EXTENSION = '.cdr';
   STR_WINMETAFILE_EXTENSION = '.wmf';
   STR_AUTOCAD_EXCHANGE_EXTENSION = '.dxf';
+  STR_ENCAPSULATEDPOSTSCRIPT_EXTENSION = '.eps';
 
 type
   {@@ We need our own format because TFPColor is too big for our needs and TColor has no Alpha }
@@ -1000,6 +1003,7 @@ begin
   else if AnsiCompareText(lExt, STR_CORELDRAW_EXTENSION) = 0 then Result := vfCorelDrawCDR
   else if AnsiCompareText(lExt, STR_WINMETAFILE_EXTENSION) = 0 then Result := vfWindowsMetafileWMF
   else if AnsiCompareText(lExt, STR_AUTOCAD_EXCHANGE_EXTENSION) = 0 then Result := vfDXF
+  else if AnsiCompareText(lExt, STR_ENCAPSULATEDPOSTSCRIPT_EXTENSION) = 0 then Result := vfEncapsulatedPostScript
   else
     raise Exception.Create('TvVectorialDocument.GetFormatFromExtension: The extension (' + lExt + ') doesn''t match any supported formats.');
 end;
