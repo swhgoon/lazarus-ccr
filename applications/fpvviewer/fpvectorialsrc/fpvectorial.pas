@@ -208,6 +208,11 @@ type
   end;
 
   {@@
+   DimensionLeft ---text--- DimensionRight
+                 |        |
+                 |        | BaseRight
+                 |
+                 | BaseLeft
   }
 
   { TvAlignedDimension }
@@ -343,6 +348,7 @@ procedure RegisterVectorialReader(
 procedure RegisterVectorialWriter(
   AWriterClass: TvVectorialWriterClass;
   AFormat: TvVectorialFormat);
+function Make2DPoint(AX, AY: Double): T3DPoint;
 
 implementation
 
@@ -431,6 +437,13 @@ begin
     GvVectorialFormats[len].WriterRegistered := True;
     GvVectorialFormats[len].Format := AFormat;
   end;
+end;
+
+function Make2DPoint(AX, AY: Double): T3DPoint;
+begin
+  Result.X := AX;
+  Result.Y := AY;
+  Result.Z := 0;
 end;
 
 { TvEllipse }

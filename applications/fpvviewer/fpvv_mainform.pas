@@ -16,6 +16,7 @@ type
   TfrmFPVViewer = class(TForm)
     btnVisualize: TButton;
     btnViewDXFTokens: TButton;
+    buttonRenderingTest: TButton;
     editFileName: TFileNameEdit;
     notebook: TNotebook;
     pageViewer: TPage;
@@ -25,6 +26,7 @@ type
     DXFTreeView: TTreeView;
     procedure btnVisualizeClick(Sender: TObject);
     procedure btnViewDXFTokensClick(Sender: TObject);
+    procedure buttonRenderingTestClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
@@ -117,6 +119,37 @@ begin
     ConvertDXFTokensToTreeView(Reader.Tokenizer.Tokens, DXFTreeView);
   finally
     Reader.Free;
+    Vec.Free;
+  end;
+end;
+
+procedure TfrmFPVViewer.buttonRenderingTestClick(Sender: TObject);
+var
+  Vec: TvVectorialDocument;
+begin
+  notebook.PageIndex := 0;
+
+  Drawer.Clear;
+
+  Vec := TvVectorialDocument.Create;
+  try
+    Vec.AddAlignedDimension(Make2DPoint(100, 50), Make2DPoint(200, 100), Make2DPoint(100, 150), Make2DPoint(200, 150));
+    Vec.AddAlignedDimension(Make2DPoint(50, 250), Make2DPoint(100, 200), Make2DPoint(150, 250), Make2DPoint(150, 200));
+
+    Drawer.Drawing.Width := 400;
+    Drawer.Drawing.Height := 400;
+    Drawer.Drawing.Canvas.Brush.Color := clWhite;
+    Drawer.Drawing.Canvas.Brush.Style := bsSolid;
+    Drawer.Drawing.Canvas.FillRect(0, 0, Drawer.Drawing.Width, Drawer.Drawing.Height);
+    DrawFPVectorialToCanvas(
+      Vec,
+      Drawer.Drawing.Canvas,
+      0,
+      Drawer.Drawing.Height,
+      spinScale.Value,
+      -1 * spinScale.Value);
+    Drawer.Invalidate;
+  finally
     Vec.Free;
   end;
 end;

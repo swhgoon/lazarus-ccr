@@ -76,8 +76,8 @@ object frmFPVViewer: TfrmFPVViewer
     object pageViewer: TPage
     end
     object Page2: TPage
-      ClientWidth = 8448
-      ClientHeight = 9984
+      ClientWidth = 16896
+      ClientHeight = 19968
       object DXFTreeView: TTreeView
         Left = 8
         Height = 313
@@ -87,5 +87,14 @@ object frmFPVViewer: TfrmFPVViewer
         TabOrder = 0
       end
     end
+  end
+  object buttonRenderingTest: TButton
+    Left = 256
+    Height = 25
+    Top = 41
+    Width = 96
+    Caption = 'Render Test'
+    OnClick = buttonRenderingTestClick
+    TabOrder = 5
   end
 end
