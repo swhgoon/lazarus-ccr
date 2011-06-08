@@ -153,6 +153,18 @@ type
     function Next(): TPathSegment;
   end;
 
+  TvFont = record
+    Color: TvColor;
+    Size: integer;
+    Name: utf8string;
+    {@@
+      Font orientation is measured in degrees and uses the
+      same direction as the LCL TFont.orientation, which is counter-clockwise.
+      Zero is the normal, horizontal, orientation.
+    }
+    Orientation: Double;
+  end;
+
   {@@
     TvText represents a text in memory.
 
@@ -163,9 +175,7 @@ type
   public
     X, Y, Z: Double; // Z is ignored in 2D formats
     Value: utf8string;
-    FontColor: TvColor;
-    FontSize: integer;
-    FontName: utf8string;
+    Font: TvFont;
   end;
 
   {@@
@@ -744,8 +754,8 @@ begin
   lText.X := AX;
   lText.Y := AY;
   lText.Z := AZ;
-  lText.FontName := FontName;
-  lText.FontSize := FontSize;
+  lText.Font.Name := FontName;
+  lText.Font.Size := FontSize;
   FTexts.Add(lText);
 end;
 

@@ -491,7 +491,8 @@ begin
   for i := 0 to ASource.GetTextCount - 1 do
   begin
     CurText := ASource.GetText(i);
-    ADest.Font.Size := Round(AmulX * CurText.FontSize);
+
+    ADest.Font.Size := Round(AmulX * CurText.Font.Size);
     ADest.Pen.Style := psSolid;
     {$ifdef USE_LCL_CANVAS}
     ADest.Pen.Color := clBlack;
@@ -499,7 +500,9 @@ begin
     ADest.Pen.FPColor := colBlack;
     {$endif}
     ADest.Brush.Style := bsClear;
-    LowerDim.Y := CurText.Y + CurText.FontSize;
+    ADest.Font.Orientation := Round(CurText.Font.Orientation * 16);
+
+    LowerDim.Y := CurText.Y + CurText.Font.Size;
     ADest.TextOut(CoordToCanvasX(CurText.X), CoordToCanvasY(LowerDim.Y), CurText.Value);
   end;
 end;
