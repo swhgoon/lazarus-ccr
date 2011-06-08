@@ -42,6 +42,11 @@ begin
 end;
 {$endif}
 
+function VColorToFPColor(AVColor: TvColor): TFPColor; inline;
+begin
+  Result := FPColor(AVColor.Red*$100, AVColor.Green*$100, AVColor.Blue*$100);
+end;
+
 function Rotate2DPoint(P,Fix :TPoint; alpha:double): TPoint;
 var
   sinus, cosinus : Extended;
@@ -142,6 +147,7 @@ procedure DrawFPVPathsToCanvas(ASource: TvVectorialDocument;
 var
   i, j, k: Integer;
   PosX, PosY: Integer; // Not modified by ADestX, etc
+  CurPath: TPath;
   CurSegment: TPathSegment;
   Cur2DSegment: T2DSegment absolute CurSegment;
   Cur2DBSegment: T2DBezierSegment absolute CurSegment;
@@ -160,16 +166,28 @@ begin
   for i := 0 to ASource.PathCount - 1 do
   begin
     //WriteLn('i = ', i);
-    ASource.Paths[i].PrepareForSequentialReading;
+    CurPath := ASource.Paths[i];
+    CurPath.PrepareForSequentialReading;
+
+    // Set the path Pen and Brush options
+    ADest.Pen.Style := CurPath.Pen.Style;
+    ADest.Brush.Style := CurPath.Brush.Style;
+    {$ifdef USE_LCL_CANVAS}
+    ADest.Pen.Color := VColorToTColor(CurPath.Pen.Color);
+    ADest.Brush.Color := VColorToTColor(CurPath.Brush.Color);
+    {$else}
+    ADest.Pen.FPColor := VColorToFPColor(CurPath.Pen.Color);
+    ADest.Brush.FPColor := VColorToFPColor(CurPath.Brush.Color);
+    {$endif}
 
     {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
     Write(Format('[Path] ID=%d', [i]));
     {$endif}
 
-    for j := 0 to ASource.Paths[i].Len - 1 do
+    for j := 0 to CurPath.Len - 1 do
     begin
       //WriteLn('j = ', j);
-      CurSegment := TPathSegment(ASource.Paths[i].Next());
+      CurSegment := TPathSegment(CurPath.Next());
 
       case CurSegment.SegmentType of
       stMoveTo:
@@ -179,11 +197,18 @@ begin
         Write(Format(' M%d,%d', [CoordToCanvasX(Cur2DSegment.X), CoordToCanvasY(Cur2DSegment.Y)]));
         {$endif}
       end;
+      // This element can override temporarely the Pen
       st2DLineWithPen:
       begin
-        {$ifdef USE_LCL_CANVAS}ADest.Pen.Color := VColorToTColor(T2DSegmentWithPen(Cur2DSegment).Pen.Color);{$endif}
+        {$ifdef USE_LCL_CANVAS}
+          ADest.Pen.Color := VColorToTColor(T2DSegmentWithPen(Cur2DSegment).Pen.Color);
+        {$endif}
+
         ADest.LineTo(CoordToCanvasX(Cur2DSegment.X), CoordToCanvasY(Cur2DSegment.Y));
-        {$ifdef USE_LCL_CANVAS}ADest.Pen.Color := clBlack;{$endif}
+
+        {$ifdef USE_LCL_CANVAS}
+          ADest.Pen.Color := VColorToTColor(CurPath.Pen.Color);
+        {$endif}
         {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
         Write(Format(' L%d,%d', [CoordToCanvasX(Cur2DSegment.X), CoordToCanvasY(Cur2DSegment.Y)]));
         {$endif}
@@ -252,12 +277,21 @@ var
   Points: array of TPoint;
   UpperDim, LowerDim: T3DPoint;
 begin
-  ADest.Brush.Style := bsClear;
-
   // Draws all entities
   for i := 0 to ASource.GetEntityCount - 1 do
   begin
     CurEntity := ASource.GetEntity(i);
+
+    ADest.Brush.Style := CurEntity.Brush.Style;
+    ADest.Pen.Style := CurEntity.Pen.Style;
+    {$ifdef USE_LCL_CANVAS}
+    ADest.Pen.Color := VColorToTColor(CurEntity.Pen.Color);
+    ADest.Brush.Color := VColorToTColor(CurEntity.Brush.Color);
+    {$else}
+    ADest.Pen.FPColor := VColorToFPColor(CurEntity.Pen.Color);
+    ADest.Brush.FPColor := VColorToFPColor(CurEntity.Brush.Color);
+    {$endif}
+
     if CurEntity is TvCircle then
     begin
       CurCircle := CurEntity as TvCircle;

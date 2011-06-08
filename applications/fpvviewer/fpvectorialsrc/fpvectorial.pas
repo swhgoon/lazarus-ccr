@@ -65,6 +65,7 @@ const
   FPValphaOpaque = $FF;
 
   clvBlack: TvColor = (Red: $00; Green: $00; Blue: $00; Alpha: FPValphaOpaque);
+  clvBlue: TvColor = (Red: $00; Green: $00; Blue: $FF; Alpha: FPValphaOpaque);
 
 type
   T3DPoint = record
@@ -169,10 +170,14 @@ type
 
   {@@
   }
+
+  { TvEntity }
+
   TvEntity = class
   public
     Pen: TvPen;
     Brush: TvBrush;
+    constructor Create; virtual;
   end;
 
   {@@
@@ -444,6 +449,16 @@ begin
   Result.X := AX;
   Result.Y := AY;
   Result.Z := 0;
+end;
+
+{ TvEntity }
+
+constructor TvEntity.Create;
+begin
+  Pen.Style := psSolid;
+  Pen.Color := clvBlack;
+  Brush.Style := bsClear;
+  Brush.Color := clvBlue;
 end;
 
 { TvEllipse }
@@ -855,6 +870,10 @@ begin
   FTmpPath.Points := nil;
   FTmpPath.PointsEnd := nil;
   FTmpPath.Len := 0;
+  FTmpPath.Brush.Color := clvBlue;
+  FTmpPath.Brush.Style := bsClear;
+  FTmpPath.Pen.Color := clvBlack;
+  FTmpPath.Pen.Style := psSolid;
 end;
 
 procedure TvVectorialDocument.AppendSegmentToTmpPath(ASegment: TPathSegment);
