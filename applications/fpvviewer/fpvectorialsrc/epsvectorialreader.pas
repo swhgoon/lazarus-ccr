@@ -46,8 +46,6 @@ type
     function IsValidPostScriptChar(AChar: Byte): Boolean;
   end;
 
-  { TvEPSFVectorialReader }
-
   { TvEPSVectorialReader }
 
   TvEPSVectorialReader = class(TvCustomVectorialReader)
@@ -154,7 +152,7 @@ end;
 
 {@@ Valid PostScript Chars:
 
-All printable: a..zA..Z0..9
+All printable ASCII: a..zA..Z0..9 plus punctuation
 
 Plus the following white spaces
 000 00 0 Null (nul)
