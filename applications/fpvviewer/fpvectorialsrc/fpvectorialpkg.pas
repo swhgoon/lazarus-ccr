@@ -10,7 +10,7 @@ uses
   svgvectorialwriter, pdfvrsintatico, pdfvrsemantico, pdfvrlexico, 
   pdfvectorialreader, fpvtocanvas, fpvectorial, fpvectbuildunit, 
   dxfvectorialreader, cdrvectorialreader, avisozlib, avisocncgcodewriter, 
-  avisocncgcodereader, svgvectorialreader, epsvectorialreader, 
+  avisocncgcodereader, svgvectorialreader, epsvectorialreader, fpvutils, 
   LazarusPackageIntf;
 
 implementation

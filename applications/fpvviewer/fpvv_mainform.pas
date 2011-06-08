@@ -126,6 +126,7 @@ end;
 procedure TfrmFPVViewer.buttonRenderingTestClick(Sender: TObject);
 var
   Vec: TvVectorialDocument;
+  lClYellow: TvColor = (Red: $FF; Green: $FF; Blue: $00; Alpha: FPValphaOpaque);
 begin
   notebook.PageIndex := 0;
 
@@ -135,6 +136,12 @@ begin
   try
     Vec.AddAlignedDimension(Make2DPoint(100, 50), Make2DPoint(200, 100), Make2DPoint(100, 150), Make2DPoint(200, 150));
     Vec.AddAlignedDimension(Make2DPoint(50, 250), Make2DPoint(100, 200), Make2DPoint(150, 250), Make2DPoint(150, 200));
+
+    Vec.StartPath(0, 0);
+    Vec.SetPenColor(lClYellow);
+    Vec.SetPenWidth(1);
+    Vec.AddLineToPath(100, 100);
+    Vec.EndPath();
 
     Drawer.Drawing.Width := 400;
     Drawer.Drawing.Height := 400;
