@@ -70,11 +70,16 @@ type
   private
     Stack: TObjectStack;
     Dictionary: TStringList;
+    //
     procedure RunPostScript(ATokens: TPsTokens; AData: TvVectorialDocument);
+    //
     procedure ProcessExpressionToken(AToken: TExpressionToken; AData: TvVectorialDocument);
-    function  ProcessArithmeticAndPathOperator(AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
+    function  ProcessArithmeticAndMathOperator(AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
     function  ProcessPathConstructionOperator(AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
     function  ProcessGraphicStateOperatorsDI(AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
+    function  ProcessDictionaryOperators(AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
+    function  ProcessMiscellaneousOperators(AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
+    //
     procedure PostScriptCoordsToFPVectorialCoords(AParam1, AParam2: TPSToken; var APosX, APosY: Double);
     procedure DictionarySubstituteOperator(ADictionary: TStringList; var ACurToken: TPSToken);
   public
@@ -385,7 +390,6 @@ procedure TvEPSVectorialReader.ProcessExpressionToken(AToken: TExpressionToken;
   AData: TvVectorialDocument);
 var
   Param1, Param2: TPSToken;
-  PosX, PosY: Double;
 begin
   if AToken.StrValue = '' then raise Exception.Create('[TvEPSVectorialReader.ProcessExpressionToken] Empty operator');
 
@@ -405,50 +409,19 @@ begin
     mark obj1 … objn counttomark mark obj1 … objn n Count elements down to mark
   }
 
-  if ProcessArithmeticAndPathOperator(AToken, AData) then Exit;
+  if ProcessDictionaryOperators(AToken, AData) then Exit;
+
+  if ProcessArithmeticAndMathOperator(AToken, AData) then Exit;
 
   if ProcessPathConstructionOperator(AToken, AData) then Exit;
 
   if ProcessGraphicStateOperatorsDI(AToken, AData) then Exit;
 
-  // Param2 Param1 moveto ===> moveto(X=Param2, Y=Param1);
-  if AToken.StrValue = 'moveto' then
-  begin
-    Param1 := TPSToken(Stack.Pop);
-    Param2 := TPSToken(Stack.Pop);
-    PostScriptCoordsToFPVectorialCoords(Param1, Param2, PosX, PosY);
-    AData.AddMoveToPath(PosX, PosY);
-  end
-  else if AToken.StrValue = 'lineto' then
-  begin
-    Param1 := TPSToken(Stack.Pop);
-    Param2 := TPSToken(Stack.Pop);
-    PostScriptCoordsToFPVectorialCoords(Param1, Param2, PosX, PosY);
-    AData.AddLineToPath(PosX, PosY);
-  end
-  // – eoclip – Clip using even-odd rule
-  else if AToken.StrValue = 'eoclip' then
-  begin
-  end
-  // Adds a dictionary definition
-  else if AToken.StrValue = 'def' then
-  begin
-    Param1 := TPSToken(Stack.Pop);
-    Param2 := TPSToken(Stack.Pop);
-    Dictionary.AddObject(Param2.StrValue, Param1);
-  end
-  // ???? Commands ignored for now
-  else if (AToken.StrValue = 'ndf') or (AToken.StrValue = 'load') or (AToken.StrValue = 'dup') or (AToken.StrValue = 'scale') then
-  begin
-  end
-  // bind can be ignored
-  else if AToken.StrValue = 'bind' then
-  begin
-  end
-  else
-    raise Exception.Create(Format('[TvEPSVectorialReader.ProcessExpressionToken] Unknown PostScript Command "%s" in Line %d',
-      [AToken.StrValue, AToken.Line]));
+  if ProcessMiscellaneousOperators(AToken, AData) then Exit;
 
+  // If we got here, there the command not yet implemented
+  raise Exception.Create(Format('[TvEPSVectorialReader.ProcessExpressionToken] Unknown PostScript Command "%s" in Line %d',
+    [AToken.StrValue, AToken.Line]));
 
   { Array Operators
 
@@ -482,43 +455,9 @@ begin
   packedarray1 array2 copy subarray2 Copy elements of packedarray1 to initial
   subarray of array2
   packedarray proc forall – Execute proc for each element of packedarray
-  CHAPTER 8 Operators
-  510
-  Dictionary Operators
-  int dict dict Create dictionary with capacity for int
-  elements
-  – << mark Start dictionary construction
-  mark key1 value1 … keyn valuen >> dict End dictionary construction
-  dict length int Return number of entries in dict
-  dict maxlength int Return current capacity of dict
-  dict begin – Push dict on dictionary stack
-  – end – Pop current dictionary off dictionary stack
-  key value def – Associate key and value in current dictionary
-  key load value Search dictionary stack for key and return
-  associated value
-  key value store – Replace topmost definition of key
-  dict key get any Return value associated with key in dict
-  dict key value put – Associate key with value in dict
-  dict key undef – Remove key and its value from dict
-  dict key known bool Test whether key is in dict
-  key where dict true Find dictionary in which key is defined
-  or false
-  dict1 dict2 copy dict2 Copy contents of dict1 to dict2
-  dict proc forall – Execute proc for each entry in dict
-  – currentdict dict Return current dictionary
-  – errordict dict Return error handler dictionary
-  – $error dict Return error control and status dictionary
-  – systemdict dict Return system dictionary
-  – userdict dict Return writeable dictionary in local VM
-  – globaldict dict Return writeable dictionary in global VM
-  – statusdict dict Return product-dependent dictionary
-  – countdictstack int Count elements on dictionary stack
-  array dictstack subarray Copy dictionary stack into array
-  – cleardictstack – Pop all nonpermanent dictionaries off
-  dictionary stack
-  8.1 Operator Summary
-  511
-  String Operators
+}
+{ String Operators
+
   int string string Create string of length int
   string length int Return number of elements in string
   string index get int Return string element indexed by index
@@ -550,9 +489,9 @@ begin
   – true true Return boolean value true
   – false false Return boolean value false
   int1 shift bitshift int2 Perform bitwise shift of int1 (positive is left)
-  CHAPTER 8 Operators
-  512
-  Control Operators
+}
+{  Control Operators
+
   any exec – Execute arbitrary object
   bool proc if – Execute proc if bool is true
   bool proc1 proc2 ifelse – Execute proc1 if bool is true, proc2 if false
@@ -585,9 +524,9 @@ begin
   num|string cvr real Convert to real
   num radix string cvrs substring Convert with radix to string
   any string cvs substring Convert to string
-  8.1 Operator Summary
-  513
-  File Operators
+}
+{  File Operators
+
   filename access file file Open named file with specified access
   datasrc|datatgt dict
   param1 … paramn filtername filter file Establish filtered file
@@ -659,24 +598,8 @@ begin
   index undefineuserobject – Remove user object associated with index
   – UserObjects array Return current UserObjects array defined in
   userdict
-  8.1 Operator Summary
-  515
-  Miscellaneous Operators
-  proc bind proc Replace operator names in proc with
-  operators; perform idiom recognition
-  – null null Push null on stack
-  – version string Return interpreter version
-  – realtime int Return real time in milliseconds
-  – usertime int Return execution time in milliseconds
-  – languagelevel int Return LanguageLevel
-  – product string Return product name
-  – revision int Return product revision level
-  – serialnumber int Return machine serial number
-  – executive – Invoke interactive executive
-  bool echo – Turn echoing on or off
-  – prompt – Executed when ready for interactive input
-
-  Graphics State Operators (Device-Dependent)
+}
+{  Graphics State Operators (Device-Dependent)
 
   halftone sethalftone – Set halftone dictionary
   – currenthalftone halftone
@@ -691,8 +614,6 @@ begin
   greenfreq greenang greenproc|greenhalftone
   bluefreq blueang blueproc|bluehalftone
   grayfreq grayang grayproc|grayhalftone setcolorscreen – Set all four halftone screens
-  8.1 Operator Summary
-  517
   – currentcolorscreen redfreq redang redproc|redhalftone
   greenfreq greenang greenproc|greenhalftone
   bluefreq blueang blueproc|bluehalftone
@@ -730,8 +651,6 @@ begin
   matrix setmatrix – Replace CTM by matrix
   tx ty translate – Translate user space by (tx , ty)
   tx ty matrix translate matrix Define translation by (tx , ty)
-  CHAPTER 8 Operators
-  518
   sx sy scale – Scale user space by sx and sy
   sx sy matrix scale matrix Define scaling by sx and sy
   angle rotate – Rotate user space by angle degrees
@@ -751,8 +670,8 @@ begin
   dx¢ dy¢ matrix idtransform dx dy Perform inverse transform of distance
   (dx¢, dy¢) by matrix
   matrix1 matrix2 invertmatrix matrix2 Fill matrix2 with inverse of matrix1
-
-  Painting Operators
+}
+{  Painting Operators
 
   – erasepage – Paint current page white
   – stroke – Draw line along current path
@@ -810,9 +729,9 @@ begin
   pattern setpattern – Install pattern as current color
   comp1 … compn pattern setpattern – Install pattern as current color
   form execform – Paint form
-  8.1 Operator Summary
-  521
+
   Device Setup and Output Operators
+
   – showpage – Transmit and reset current page
   – copypage – Transmit current page
   dict setpagedevice – Install page-oriented output device
@@ -951,7 +870,7 @@ end;
   int srand –              Set random number seed
   – rrand int              Return random number seed
 }
-function TvEPSVectorialReader.ProcessArithmeticAndPathOperator(
+function TvEPSVectorialReader.ProcessArithmeticAndMathOperator(
   AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
 var
   Param1, Param2: TPSToken;
@@ -1022,6 +941,7 @@ function TvEPSVectorialReader.ProcessPathConstructionOperator(
   AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
 var
   Param1, Param2: TPSToken;
+  PosX, PosY: Double;
 begin
   Result := False;
 
@@ -1032,6 +952,28 @@ begin
     AData.StartPath();
     Exit(True);
   end;
+  // Param2 Param1 moveto ===> moveto(X=Param2, Y=Param1);
+  if AToken.StrValue = 'moveto' then
+  begin
+    Param1 := TPSToken(Stack.Pop);
+    Param2 := TPSToken(Stack.Pop);
+    PostScriptCoordsToFPVectorialCoords(Param1, Param2, PosX, PosY);
+    AData.AddMoveToPath(PosX, PosY);
+    Exit(True);
+  end;
+  if AToken.StrValue = 'lineto' then
+  begin
+    Param1 := TPSToken(Stack.Pop);
+    Param2 := TPSToken(Stack.Pop);
+    PostScriptCoordsToFPVectorialCoords(Param1, Param2, PosX, PosY);
+    AData.AddLineToPath(PosX, PosY);
+    Exit(True);
+  end;
+  // – eoclip – Clip using even-odd rule
+  if AToken.StrValue = 'eoclip' then
+  begin
+    Exit(True);
+  end
 end;
 
 {  Graphics State Operators (Device-Independent)
@@ -1104,6 +1046,85 @@ begin
   end;
 end;
 
+{  Dictionary Operators
+
+  int dict dict Create dictionary with capacity for int
+  elements
+  – << mark Start dictionary construction
+  mark key1 value1 … keyn valuen >> dict End dictionary construction
+  dict length int Return number of entries in dict
+  dict maxlength int Return current capacity of dict
+  dict begin – Push dict on dictionary stack
+  – end – Pop current dictionary off dictionary stack
+  key value def – Associate key and value in current dictionary
+  key load value Search dictionary stack for key and return
+  associated value
+  key value store – Replace topmost definition of key
+  dict key get any Return value associated with key in dict
+  dict key value put – Associate key with value in dict
+  dict key undef – Remove key and its value from dict
+  dict key known bool Test whether key is in dict
+  key where dict true Find dictionary in which key is defined
+  or false
+  dict1 dict2 copy dict2 Copy contents of dict1 to dict2
+  dict proc forall – Execute proc for each entry in dict
+  – currentdict dict Return current dictionary
+  – errordict dict Return error handler dictionary
+  – $error dict Return error control and status dictionary
+  – systemdict dict Return system dictionary
+  – userdict dict Return writeable dictionary in local VM
+  – globaldict dict Return writeable dictionary in global VM
+  – statusdict dict Return product-dependent dictionary
+  – countdictstack int Count elements on dictionary stack
+  array dictstack subarray Copy dictionary stack into array
+  – cleardictstack – Pop all nonpermanent dictionaries off
+  dictionary stack
+}
+function TvEPSVectorialReader.ProcessDictionaryOperators(
+  AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
+var
+  Param1, Param2: TPSToken;
+begin
+  Result := False;
+
+  // Adds a dictionary definition
+  if AToken.StrValue = 'def' then
+  begin
+    Param1 := TPSToken(Stack.Pop);
+    Param2 := TPSToken(Stack.Pop);
+    Dictionary.AddObject(Param2.StrValue, Param1);
+    Exit(True);
+  end;
+end;
+
+{  Miscellaneous Operators
+
+  proc bind proc Replace operator names in proc with
+  operators; perform idiom recognition
+  – null null Push null on stack
+  – version string Return interpreter version
+  – realtime int Return real time in milliseconds
+  – usertime int Return execution time in milliseconds
+  – languagelevel int Return LanguageLevel
+  – product string Return product name
+  – revision int Return product revision level
+  – serialnumber int Return machine serial number
+  – executive – Invoke interactive executive
+  bool echo – Turn echoing on or off
+  – prompt – Executed when ready for interactive input
+}
+function TvEPSVectorialReader.ProcessMiscellaneousOperators(
+  AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
+begin
+  Result := False;
+
+  // Just a hint for more efficient parsing, we can ignore
+  if AToken.StrValue = 'bind' then
+  begin
+    Exit(True);
+  end;
+end;
+
 procedure TvEPSVectorialReader.PostScriptCoordsToFPVectorialCoords(AParam1,
   AParam2: TPSToken; var APosX, APosY: Double);
 begin
@@ -1117,9 +1138,6 @@ var
   lIndex: Integer;
   SubstituteToken: TPSToken;
 begin
-  If (ACurToken.StrValue = 'ndf') or (ACurToken.StrValue = 'div') or (ACurToken.StrValue = 'mul')
-    or (ACurToken.StrValue = 'def') or (ACurToken.StrValue = 'moveto') then Exit;
-
   lIndex := ADictionary.IndexOf(ACurToken.StrValue);
   if lIndex > 0 then
   begin
