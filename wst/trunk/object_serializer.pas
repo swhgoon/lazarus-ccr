@@ -1176,6 +1176,9 @@ var
      ,( Simple : @UnicodeStringReader; Qualified : @UnicodeStringReaderQualified ;)  //tkUString
      ,( Simple : @ErrorFunc; Qualified : @ErrorFunc ;)  //tkUChar
 {$ENDIF WST_UNICODESTRING}
+{$IFDEF WST_TKHELPER}
+     ,( Simple : @ErrorFunc; Qualified : @ErrorFunc ;)  //tkHelper
+{$ENDIF WST_TKHELPER}
   );
 
   WriterInfoMap : array[TTypeKind] of TWriterInfo = (
@@ -1210,7 +1213,9 @@ var
      ,( Simple : @UnicodeStringWriter; Qualified : @UnicodeStringWriterQualified ;)  //tkUString
      ,( Simple : @ErrorProc; Qualified : @ErrorProc ;)  //tkUChar
 {$ENDIF WST_UNICODESTRING}
-
+{$IFDEF WST_TKHELPER}
+     ,( Simple : @ErrorProc; Qualified : @ErrorProc ;)  //tkHelper
+{$ENDIF WST_TKHELPER}
   );
 {$ENDIF FPC}
 
