@@ -27,25 +27,32 @@ type
     StrValue: string;
     FloatValue: double;
     IntValue: Integer;
-    Childs: TPSTokens;
     Line: Integer; // To help debugging
+    function Duplicate: TPSToken; virtual;
   end;
 
   TCommentToken = class(TPSToken)
   end;
 
-  TDefinitionToken = class(TPSToken)
+  { TProcedureToken }
+
+  TProcedureToken = class(TPSToken)
+    Levels: Integer; // Used to count groups inside groups and find the end of a top-level group
+    Childs: TPSTokens;
+    Parsed: Boolean;
+    constructor Create;
+    destructor Destroy; override;
   end;
 
-  TGroupToken = class(TPSToken)
-    Levels: Integer; // Used to count groups inside groups and find the end of a top-level group
-  end;
+  TETType = (ettNamedElement, ettOperand, ettOperator);
 
   { TExpressionToken }
 
   TExpressionToken = class(TPSToken)
+    ETType: TETType;
     function IsExpressionOperand: Boolean;
     procedure PrepareFloatValue;
+    function Duplicate: TPSToken; override;
   end;
 
   TPostScriptScannerState = (ssSearchingToken, ssInComment, ssInDefinition, ssInGroup, ssInExpressionElement);
@@ -73,12 +80,18 @@ type
     //
     procedure RunPostScript(ATokens: TPsTokens; AData: TvVectorialDocument);
     //
-    procedure ProcessExpressionToken(AToken: TExpressionToken; AData: TvVectorialDocument);
-    function  ProcessArithmeticAndMathOperator(AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
-    function  ProcessPathConstructionOperator(AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
-    function  ProcessGraphicStateOperatorsDI(AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
-    function  ProcessDictionaryOperators(AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
-    function  ProcessMiscellaneousOperators(AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
+    procedure ExecuteProcedureToken(AToken: TProcedureToken; AData: TvVectorialDocument);
+    procedure ExecuteOperatorToken(AToken: TExpressionToken; AData: TvVectorialDocument);
+    function  ExecuteArithmeticAndMathOperator(AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
+    function  ExecutePathConstructionOperator(AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
+    function  ExecuteGraphicStateOperatorsDI(AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
+    function  ExecuteGraphicStateOperatorsDD(AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
+    function  ExecuteDictionaryOperators(AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
+    function  ExecuteMiscellaneousOperators(AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
+    function  ExecuteStackManipulationOperator(AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
+    function  ExecuteControlOperator(AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
+    function  ExecutePaintingOperator(AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
+    function  ExecuteDeviceSetupAndOutputOperator(AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
     //
     procedure PostScriptCoordsToFPVectorialCoords(AParam1, AParam2: TPSToken; var APosX, APosY: Double);
     procedure DictionarySubstituteOperator(ADictionary: TStringList; var ACurToken: TPSToken);
@@ -95,6 +108,33 @@ implementation
 var
   FPointSeparator: TFormatSettings;
 
+{ TPSToken }
+
+function TPSToken.Duplicate: TPSToken;
+begin
+  Result := TPSToken(Self.ClassType.Create);
+  Result.StrValue := StrValue;
+  Result.FloatValue := FloatValue;
+  Result.IntValue := IntValue;
+  Result.Line := Line;
+end;
+
+{ TProcedureToken }
+
+constructor TProcedureToken.Create;
+begin
+  inherited Create;
+
+  Childs := TPSTokens.Create;
+end;
+
+destructor TProcedureToken.Destroy;
+begin
+  Childs.Free;
+
+  inherited Destroy;
+end;
+
 { TExpressionToken }
 
 function TExpressionToken.IsExpressionOperand: Boolean;
@@ -105,9 +145,16 @@ end;
 
 procedure TExpressionToken.PrepareFloatValue;
 begin
-  if not IsExpressionOperand() then Exit;
+  //if not IsExpressionOperand() then Exit;
+  if ETType <> ettOperand then Exit; // faster, because this field should already be filled
 
   FloatValue := StrToFloat(StrValue, FPointSeparator);
+end;
+
+function TExpressionToken.Duplicate: TPSToken;
+begin
+  Result:=inherited Duplicate;
+  TExpressionToken(Result).ETType := ETType;
 end;
 
 {$DEFINE FPVECTORIALDEBUG}
@@ -139,8 +186,7 @@ var
   CurLine: Integer = 1;
   State: TPostScriptScannerState = ssSearchingToken;
   CommentToken: TCommentToken;
-  DefinitionToken: TDefinitionToken;
-  GroupToken: TGroupToken;
+  ProcedureToken: TProcedureToken;
   ExpressionToken: TExpressionToken;
   Len: Integer;
   lIsEndOfLine: Boolean;
@@ -170,24 +216,27 @@ begin
 //          WriteLn(Format('Starting Comment at Line %d', [CurLine]));
 //          {$endif}
         end
-        else if CurChar = '/' then
-        begin
-          DefinitionToken := TDefinitionToken.Create;
-          DefinitionToken.Line := CurLine;
-          State := ssInDefinition;
-        end
         else if CurChar = '{' then
         begin
-          GroupToken := TGroupToken.Create;
-          GroupToken.Levels := 1;
-          GroupToken.Line := CurLine;
+          ProcedureToken := TProcedureToken.Create;
+          ProcedureToken.Levels := 1;
+          ProcedureToken.Line := CurLine;
           State := ssInGroup;
         end
-        else if CurChar in ['a'..'z','A'..'Z','0'..'9','-'] then
+        else if CurChar in ['a'..'z','A'..'Z','0'..'9','-','/'] then
         begin
           ExpressionToken := TExpressionToken.Create;
           ExpressionToken.Line := CurLine;
-          ExpressionToken.StrValue := CurChar;
+          if CurChar = '/' then
+            ExpressionToken.ETType := ettNamedElement
+          else
+          begin
+            ExpressionToken.StrValue := CurChar;
+            if ExpressionToken.IsExpressionOperand() then
+              ExpressionToken.ETType := ettOperand
+            else
+              ExpressionToken.ETType := ettOperator;
+          end;
           State := ssInExpressionElement;
         end
         else if lIsEndOfLine then Continue
@@ -211,34 +260,19 @@ begin
         end;
       end; // ssInComment
 
-      // Definitions are names. They start in "/" and end in a PostScript white space
-      // (space, tab, line ending, etc) or in "{"
-      // Definitions simply mean that the token is the name of a dictionary entry
-      ssInDefinition:
-      begin
-        if IsPostScriptSpace(Byte(CurChar)) or (CurChar = '{') then
-        begin
-          Tokens.Add(DefinitionToken);
-          State := ssSearchingToken;
-          if (CurChar = '{') then AStream.Seek(-1, soFromCurrent);
-        end
-        else
-          DefinitionToken.StrValue := DefinitionToken.StrValue + CurChar;
-      end;
-
       // Starts at { and ends in }, passing over nested groups
       ssInGroup:
       begin
-        if (CurChar = '{') then GroupToken.Levels := GroupToken.Levels + 1;
-        if (CurChar = '}') then GroupToken.Levels := GroupToken.Levels - 1;
+        if (CurChar = '{') then ProcedureToken.Levels := ProcedureToken.Levels + 1;
+        if (CurChar = '}') then ProcedureToken.Levels := ProcedureToken.Levels - 1;
 
-        if GroupToken.Levels = 0 then
+        if ProcedureToken.Levels = 0 then
         begin
-          Tokens.Add(GroupToken);
+          Tokens.Add(ProcedureToken);
           State := ssSearchingToken;
         end
         else
-          GroupToken.StrValue := GroupToken.StrValue + CurChar;
+          ProcedureToken.StrValue := ProcedureToken.StrValue + CurChar;
       end;
 
       // Goes until a space comes, or {
@@ -272,13 +306,9 @@ begin
     begin
       WriteLn(Format('TCommentToken StrValue=%s', [Token.StrValue]));
     end
-    else if Token is TDefinitionToken then
+    else if Token is TProcedureToken then
     begin
-      WriteLn(Format('TDefinitionToken StrValue=%s', [Token.StrValue]));
-    end
-    else if Token is TGroupToken then
-    begin
-      WriteLn(Format('TGroupToken StrValue=%s', [Token.StrValue]));
+      WriteLn(Format('TProcedureToken StrValue=%s', [Token.StrValue]));
     end
     else if Token is TExpressionToken then
     begin
@@ -342,9 +372,9 @@ var
   i: Integer;
   CurToken: TPSToken;
 begin
-  // Make sure we have at least one path
-  AData.StartPath();
-
+  {$ifdef FPVECTORIALDEBUG}
+  WriteLn('[TvEPSVectorialReader.RunPostScript] START');
+  {$endif}
   for i := 0 to ATokens.Count - 1 do
   begin
     CurToken := TPSToken(ATokens.Items[i]);
@@ -355,13 +385,7 @@ begin
       Continue;
     end;
 
-    if CurToken is TDefinitionToken then
-    begin
-      Stack.Push(CurToken);
-      Continue;
-    end;
-
-    if CurToken is TGroupToken then
+    if CurToken is TProcedureToken then
     begin
       Stack.Push(CurToken);
       Continue;
@@ -369,7 +393,7 @@ begin
 
     if CurToken is TExpressionToken then
     begin
-      if TExpressionToken(CurToken).IsExpressionOperand() then
+      if TExpressionToken(CurToken).ETType <> ettOperator then
       begin
         Stack.Push(CurToken);
         Continue;
@@ -378,46 +402,85 @@ begin
       // Now we need to verify if the operator should be substituted in the dictionary
       DictionarySubstituteOperator(Dictionary, CurToken);
 
-      ProcessExpressionToken(TExpressionToken(CurToken), AData);
+      if CurToken is TProcedureToken then ExecuteProcedureToken(TProcedureToken(CurToken), AData)
+      else ExecuteOperatorToken(TExpressionToken(CurToken), AData);
     end;
   end;
-
-  // Make sure we have at least one path
-  AData.EndPath();
+  {$ifdef FPVECTORIALDEBUG}
+  WriteLn('[TvEPSVectorialReader.RunPostScript] END');
+  {$endif}
 end;
 
-procedure TvEPSVectorialReader.ProcessExpressionToken(AToken: TExpressionToken;
+procedure TvEPSVectorialReader.ExecuteProcedureToken(AToken: TProcedureToken;
+  AData: TvVectorialDocument);
+var
+  ProcTokenizer: TPSTokenizer;
+  lStream: TMemoryStream;
+  lOldTokens: TPSTokens;
+  i: Integer;
+begin
+  {$ifdef FPVECTORIALDEBUG}
+  WriteLn('[TvEPSVectorialReader.ExecuteProcedureToken] START');
+  {$endif}
+  if not AToken.Parsed then
+  begin
+    ProcTokenizer := TPSTokenizer.Create;
+    lStream := TMemoryStream.Create;
+    try
+      // Copy the string to a Stream
+      for i := 1 to Length(AToken.StrValue) do
+        lStream.WriteByte(Byte(AToken.StrValue[i]));
+
+      // Change the Tokens so that it writes directly to AToken.Childs
+      lOldTokens := Tokenizer.Tokens;
+      Tokenizer.Tokens := AToken.Childs;
+
+      // Now parse the procedure code
+      ProcTokenizer.ReadFromStream(lStream);
+
+      // Recover the old tokens for usage in .Free
+      Tokenizer.Tokens := lOldTokens;
+    finally
+      lStream.Free;
+      ProcTokenizer.Free;
+    end;
+
+    AToken.Parsed := True;
+  end;
+
+  // Now run the procedure
+  RunPostScript(AToken.Childs, AData);
+  {$ifdef FPVECTORIALDEBUG}
+  WriteLn('[TvEPSVectorialReader.ExecuteProcedureToken] END');
+  {$endif}
+end;
+
+procedure TvEPSVectorialReader.ExecuteOperatorToken(AToken: TExpressionToken;
   AData: TvVectorialDocument);
 var
   Param1, Param2: TPSToken;
 begin
   if AToken.StrValue = '' then raise Exception.Create('[TvEPSVectorialReader.ProcessExpressionToken] Empty operator');
 
-  { Operand Stack Manipulation Operators
+  if ExecuteDictionaryOperators(AToken, AData) then Exit;
 
-    any pop – Discard top element
-    any1 any2 exch ==> any2 any1 Exchange top two elements
-    any dup ==> any any Duplicate top element
-    any1 … anyn n copy any1 … anyn any1 … anyn Duplicate top n elements
-    anyn … any0 n index anyn … any0 anyn Duplicate arbitrary element
-    anyn-1 … any0 n j roll any(j-1) mod n … any0 anyn-1 … anyj mod n
-    Roll n elements up j times
-    any1 … anyn clear Discard all elements
-    any1 … anyn count any1 … anyn n Count elements on stack
-    – mark mark Push mark on stack
-    mark obj1 … objn cleartomark – Discard elements down through mark
-    mark obj1 … objn counttomark mark obj1 … objn n Count elements down to mark
-  }
+  if ExecuteArithmeticAndMathOperator(AToken, AData) then Exit;
 
-  if ProcessDictionaryOperators(AToken, AData) then Exit;
+  if ExecutePathConstructionOperator(AToken, AData) then Exit;
 
-  if ProcessArithmeticAndMathOperator(AToken, AData) then Exit;
+  if ExecuteGraphicStateOperatorsDI(AToken, AData) then Exit;
 
-  if ProcessPathConstructionOperator(AToken, AData) then Exit;
+  if ExecuteGraphicStateOperatorsDD(AToken, AData) then Exit;
 
-  if ProcessGraphicStateOperatorsDI(AToken, AData) then Exit;
+  if ExecuteControlOperator(AToken, AData) then Exit;
 
-  if ProcessMiscellaneousOperators(AToken, AData) then Exit;
+  if ExecuteStackManipulationOperator(AToken, AData) then Exit;
+
+  if ExecuteMiscellaneousOperators(AToken, AData) then Exit;
+
+  if ExecutePaintingOperator(AToken, AData) then Exit;
+
+  if ExecuteDeviceSetupAndOutputOperator(AToken, AData) then Exit;
 
   // If we got here, there the command not yet implemented
   raise Exception.Create(Format('[TvEPSVectorialReader.ProcessExpressionToken] Unknown PostScript Command "%s" in Line %d',
@@ -490,41 +553,6 @@ begin
   – false false Return boolean value false
   int1 shift bitshift int2 Perform bitwise shift of int1 (positive is left)
 }
-{  Control Operators
-
-  any exec – Execute arbitrary object
-  bool proc if – Execute proc if bool is true
-  bool proc1 proc2 ifelse – Execute proc1 if bool is true, proc2 if false
-  initial increment limit proc for – Execute proc with values from initial by steps
-  of increment to limit
-  int proc repeat – Execute proc int times
-  proc loop – Execute proc an indefinite number of times
-  – exit – Exit innermost active loop
-  – stop – Terminate stopped context
-  any stopped bool Establish context for catching stop
-  – countexecstack int Count elements on execution stack
-  array execstack subarray Copy execution stack into array
-  – quit – Terminate interpreter
-  – start – Executed at interpreter startup
-  Type, Attribute, and Conversion Operators
-  any type name Return type of any
-  any cvlit any Make object literal
-  any cvx any Make object executable
-  any xcheck bool Test executable attribute
-  array|packedarray|file|string executeonly array|packedarray|file|string
-  Reduce access to execute-only
-  array|packedarray|dict|file|string noaccess array|packedarray|dict|file|string
-  Disallow any access
-  array|packedarray|dict|file|string readonly array|packedarray|dict|file|string
-  Reduce access to read-only
-  array|packedarray|dict|file|string rcheck bool Test read access
-  array|packedarray|dict|file|string wcheck bool Test write access
-  num|string cvi int Convert to integer
-  string cvn name Convert to name
-  num|string cvr real Convert to real
-  num radix string cvrs substring Convert with radix to string
-  any string cvs substring Convert to string
-}
 {  File Operators
 
   filename access file file Open named file with specified access
@@ -564,8 +592,6 @@ begin
   standard output file
   any1 … anyn stack any1 … anyn Print stack nondestructively using =
   any1 … anyn pstack any1 … anyn Print stack nondestructively using ==
-  CHAPTER 8 Operators
-  514
   obj tag printobject – Write binary object to standard output file,
   using tag
   file obj tag writeobject – Write binary object to file, using tag
@@ -573,7 +599,9 @@ begin
   1 = IEEE high, 2 = IEEE low, 3 = native
   high, 4 = native low)
   – currentobjectformat int Return binary object format
-  Resource Operators
+}
+{ Resource Operators
+
   key instance category defineresource instance Register named resource instance in category
   key category undefineresource – Remove resource registration
   key category findresource instance Return resource instance identified by key in
@@ -583,7 +611,9 @@ begin
   key category resourcestatus status size true Return status of resource instance
   or false
   template proc scratch category resourceforall – Enumerate resource instances in category
-  Virtual Memory Operators
+}
+{ Virtual Memory Operators
+
   – save save Create VM snapshot
   save restore – Restore VM snapshot
   bool setglobal – Set VM allocation mode (false = local,
@@ -599,6 +629,534 @@ begin
   – UserObjects array Return current UserObjects array defined in
   userdict
 }
+{ Errors
+
+  configurationerror setpagedevice or setdevparams request
+  cannot be satisfied
+  dictfull No more room in dictionary
+  dictstackoverflow Too many begin operators
+  dictstackunderflow Too many end operators
+  execstackoverflow Executive stack nesting too deep
+  handleerror Called to report error information
+  interrupt External interrupt request (for example,
+  Control-C)
+  invalidaccess Attempt to violate access attribute
+  invalidexit exit not in loop
+  invalidfileaccess Unacceptable access string
+  invalidfont Invalid Font resource name or font or
+  CIDFont dictionary
+  invalidrestore Improper restore
+  ioerror Input/output error
+  limitcheck Implementation limit exceeded
+  nocurrentpoint Current point undefined
+  rangecheck Operand out of bounds
+  stackoverflow Operand stack overflow
+  stackunderflow Operand stack underflow
+  syntaxerror PostScript language syntax error
+  timeout Time limit exceeded
+  typecheck Operand of wrong type
+  undefined Name not known
+  undefinedfilename File not found
+  undefinedresource Resource instance not found
+  undefinedresult Overflow, underflow, or meaningless result
+  unmatchedmark Expected mark not on stack
+  unregistered Internal error
+  VMerror Virtual memory exhausted
+}
+end;
+
+{ Operand Stack Manipulation Operators
+
+  any pop –                    Discard top element
+  any1 any2 exch ==> any2 any1 Exchange top two elements
+  any dup ==> any any          Duplicate top element
+  any1 … anyn n copy any1 … anyn any1 … anyn
+                               Duplicate top n elements
+  anyn … any0 n index anyn … any0 anyn
+                               Duplicate arbitrary element
+  anyn-1 … any0 n j roll any(j-1) mod n … any0 anyn-1 … anyj mod n
+                               Roll n elements up j times
+  any1 … anyn clear            Discard all elements
+  any1 … anyn count any1 … anyn n
+                               Count elements on stack
+  – mark mark                  Push mark on stack
+  mark obj1 … objn cleartomark –
+                               Discard elements down through mark
+  mark obj1 … objn counttomark mark obj1 … objn n
+                               Count elements down to mark
+}
+function TvEPSVectorialReader.ExecuteStackManipulationOperator(
+  AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
+var
+  Param1, NewToken: TPSToken;
+begin
+  Result := False;
+
+  //
+  if AToken.StrValue = 'dup' then
+  begin
+    Param1 := TPSToken(Stack.Pop);
+    NewToken := Param1.Duplicate();
+    Stack.Push(Param1);
+    Stack.Push(NewToken);
+    Exit(True);
+  end;
+end;
+
+{  Control Operators
+
+  any exec – Execute arbitrary object
+  bool proc if – Execute proc if bool is true
+  bool proc1 proc2 ifelse – Execute proc1 if bool is true, proc2 if false
+  initial increment limit proc for – Execute proc with values from initial by steps
+                                     of increment to limit
+  int proc repeat – Execute proc int times
+  proc loop – Execute proc an indefinite number of times
+  – exit – Exit innermost active loop
+  – stop – Terminate stopped context
+  any stopped bool Establish context for catching stop
+  – countexecstack int Count elements on execution stack
+  array execstack subarray Copy execution stack into array
+  – quit – Terminate interpreter
+  – start – Executed at interpreter startup
+  Type, Attribute, and Conversion Operators
+  any type name Return type of any
+  any cvlit any Make object literal
+  any cvx any Make object executable
+  any xcheck bool Test executable attribute
+  array|packedarray|file|string executeonly array|packedarray|file|string
+  Reduce access to execute-only
+  array|packedarray|dict|file|string noaccess array|packedarray|dict|file|string
+  Disallow any access
+  array|packedarray|dict|file|string readonly array|packedarray|dict|file|string
+  Reduce access to read-only
+  array|packedarray|dict|file|string rcheck bool Test read access
+  array|packedarray|dict|file|string wcheck bool Test write access
+  num|string cvi int Convert to integer
+  string cvn name Convert to name
+  num|string cvr real Convert to real
+  num radix string cvrs substring Convert with radix to string
+  any string cvs substring Convert to string
+}
+function TvEPSVectorialReader.ExecuteControlOperator(AToken: TExpressionToken;
+  AData: TvVectorialDocument): Boolean;
+var
+  Param1, Param2, Param3, Param4: TPSToken;
+  FloatCounter: Double;
+begin
+  Result := False;
+
+  // initial increment limit proc for
+  if AToken.StrValue = 'for' then
+  begin
+    Param1 := TPSToken(Stack.Pop);
+    Param2 := TPSToken(Stack.Pop);
+    Param3 := TPSToken(Stack.Pop);
+    Param4 := TPSToken(Stack.Pop);
+
+    if not (Param1 is TProcedureToken) then
+      raise Exception.Create(Format('[TvEPSVectorialReader.ExecuteControlOperator] The operator for requires a procedure. Error at line %d', [AToken.Line]));
+
+    FloatCounter := Param4.FloatValue;
+    while FloatCounter < Param2.FloatValue do
+    begin
+      ExecuteProcedureToken(TProcedureToken(Param1), AData);
+
+      FloatCounter := FloatCounter + Param3.FloatValue;
+    end;
+
+    Exit(True);
+  end;
+end;
+
+{  Painting Operators
+
+  – erasepage – Paint current page white
+  – stroke – Draw line along current path
+  – fill – Fill current path with current color
+  – eofill – Fill using even-odd rule
+  x y width height rectstroke – Define rectangular path and stroke
+  x y width height matrix rectstroke – Define rectangular path, concatenate matrix,
+  and stroke
+  numarray|numstring rectstroke – Define rectangular paths and stroke
+  numarray|numstring matrix rectstroke – Define rectangular paths, concatenate
+  matrix, and stroke
+  x y width height rectfill – Fill rectangular path
+  numarray|numstring rectfill – Fill rectangular paths
+  userpath ustroke – Interpret and stroke userpath
+  userpath matrix ustroke – Interpret userpath, concatenate matrix, and
+  stroke
+  userpath ufill – Interpret and fill userpath
+  userpath ueofill – Fill userpath using even-odd rule
+  dict shfill – Fill area defined by shading pattern
+  dict image – Paint any sampled image
+  width height bits/sample matrix datasrc image – Paint monochrome sampled image
+  width height bits/comp matrix
+  datasrc0 … datasrcncomp-1 multi ncomp colorimage – Paint color sampled image
+  dict imagemask – Paint current color through mask
+  width height polarity matrix datasrc imagemask – Paint current color through mask
+  Insideness-Testing Operators
+  x y infill bool Test whether (x, y) would be painted by fill
+  userpath infill bool Test whether pixels in userpath would be
+  painted by fill
+  x y ineofill bool Test whether (x, y) would be painted by eofill
+  userpath ineofill bool Test whether pixels in userpath would be
+  painted by eofill
+  x y userpath inufill bool Test whether (x, y) would be painted by ufill
+  of userpath
+  userpath1 userpath2 inufill bool Test whether pixels in userpath1 would be
+  painted by ufill of userpath2
+  x y userpath inueofill bool Test whether (x, y) would be painted by
+  ueofill of userpath
+  userpath1 userpath2 inueofill bool Test whether pixels in userpath1 would be
+  painted by ueofill of userpath2
+  x y instroke bool Test whether (x, y) would be painted by
+  stroke
+  x y userpath inustroke bool Test whether (x, y) would be painted by
+  ustroke of userpath
+  x y userpath matrix inustroke bool Test whether (x, y) would be painted by
+  ustroke of userpath
+  userpath1 userpath2 inustroke bool Test whether pixels in userpath1 would be
+  painted by ustroke of userpath2
+  userpath1 userpath2 matrix inustroke bool Test whether pixels in userpath1 would be
+  painted by ustroke of userpath2
+  Form and Pattern Operators
+  pattern matrix makepattern pattern’ Create pattern instance from prototype
+  pattern setpattern – Install pattern as current color
+  comp1 … compn pattern setpattern – Install pattern as current color
+  form execform – Paint form
+}
+function TvEPSVectorialReader.ExecutePaintingOperator(AToken: TExpressionToken;
+  AData: TvVectorialDocument): Boolean;
+var
+  Param1, Param2: TPSToken;
+begin
+  Result := False;
+
+  if AToken.StrValue = 'stroke' then
+  begin
+    Exit(True);
+  end;
+end;
+
+{ Device Setup and Output Operators
+
+  – showpage – Transmit and reset current page
+  – copypage – Transmit current page
+  dict setpagedevice – Install page-oriented output device
+  – currentpagedevice dict Return current page device parameters
+  – nulldevice – Install no-output device
+  Glyph and Font Operators
+  key font|cidfont definefont font|cidfont Register font|cidfont in Font resource
+  category
+  key name|string|dict array composefont font Register composite font dictionary created
+  from CMap and array of CIDFonts or fonts
+  key undefinefont – Remove Font resource registration
+  key findfont font|cidfont Return Font resource instance identified by
+  key
+  font|cidfont scale scalefont font¢|cidfont¢ Scale font|cidfont by scale to produce
+  font¢|cidfont¢
+  font|cidfont matrix makefont font¢|cidfont¢ Transform font|cidfont by matrix to produce
+  font¢|cidfont¢
+  font|cidfont setfont – Set font or CIDFont in graphics state
+  – rootfont font|cidfont Return last set font or CIDFont
+  – currentfont font|cidfont Return current font or CIDFont, possibly a
+  descendant of rootfont
+  key scale|matrix selectfont – Set font or CIDFont given name and
+  transform
+  string show – Paint glyphs for string in current font
+  ax ay string ashow – Add (ax , ay) to width of each glyph while
+  showing string
+  cx cy char string widthshow – Add (cx , cy) to width of glyph for char while
+  showing string
+  cx cy char ax ay string awidthshow – Combine effects of ashow and widthshow
+  string numarray|numstring xshow – Paint glyphs for string using x widths in
+  numarray|numstring
+  string numarray|numstring xyshow – Paint glyphs for string using x and y widths
+  in numarray|numstring
+  string numarray|numstring yshow – Paint glyphs for string using y widths in
+  numarray|numstring
+  name|cid glyphshow – Paint glyph for character identified by
+  name|cid
+  string stringwidth wx wy Return width of glyphs for string in current
+  font
+  proc string cshow – Invoke character mapping algorithm and
+  call proc
+  proc string kshow – Execute proc between characters shown from
+  string
+  – FontDirectory dict Return dictionary of Font resource instances
+  – GlobalFontDirectory dict Return dictionary of Font resource instances
+  in global VM
+  – StandardEncoding array Return Adobe standard font encoding vector
+  – ISOLatin1Encoding array Return ISO Latin-1 font encoding vector
+  key findencoding array Find encoding vector
+  wx wy llx lly urx ury setcachedevice – Declare cached glyph metrics
+  w0x w0y llx lly urx ury
+  w1x w1y vx vy setcachedevice2 – Declare cached glyph metrics
+  wx wy setcharwidth – Declare uncached glyph metrics
+  Interpreter Parameter Operators
+  dict setsystemparams – Set systemwide interpreter parameters
+  – currentsystemparams dict Return systemwide interpreter parameters
+  dict setuserparams – Set per-context interpreter parameters
+  – currentuserparams dict Return per-context interpreter parameters
+  string dict setdevparams – Set parameters for input/output device
+  string currentdevparams dict Return device parameters
+  int vmreclaim – Control garbage collector
+  int setvmthreshold – Control garbage collector
+  – vmstatus level used maximum
+  Report VM status
+  – cachestatus bsize bmax msize mmax csize cmax blimit
+  Return font cache status and parameters
+  int setcachelimit – Set maximum bytes in cached glyph
+  mark size lower upper setcacheparams – Set font cache parameters
+  – currentcacheparams mark size lower upper
+  Return current font cache parameters
+  mark blimit setucacheparams – Set user path cache parameters
+  – ucachestatus mark bsize bmax rsize rmax blimit
+  Return user path cache status and
+  parameters
+}
+function TvEPSVectorialReader.ExecuteDeviceSetupAndOutputOperator(
+  AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
+var
+  Param1, Param2: TPSToken;
+begin
+  Result := False;
+
+  if AToken.StrValue = 'showpage' then
+  begin
+    Exit(True);
+  end;
+end;
+
+{  Arithmetic and Math Operators
+
+  num1 num2 add sum        Return num1 plus num2
+  num1 num2 div quotient   Return num1 divided by num2
+  int1 int2 idiv quotient  Return int1 divided by int2
+  int1 int2 mod remainder  Return remainder after dividing int1 by int2
+  num1 num2 mul product    Return num1 times num2
+  num1 num2 sub difference Return num1 minus num2
+  num1 abs num2            Return absolute value of num1
+  num1 neg num2            Return negative of num1
+  num1 ceiling num2        Return ceiling of num1
+  num1 floor num2          Return floor of num1
+  num1 round num2          Round num1 to nearest integer
+  num1 truncate num2       Remove fractional part of num1
+  num sqrt real            Return square root of num
+  num den atan angle       Return arctangent of num/den in degrees
+  angle cos real           Return cosine of angle degrees
+  angle sin real           Return sine of angle degrees
+  base exponent exp real   Raise base to exponent power
+  num ln real              Return natural logarithm (base e)
+  num log real             Return common logarithm (base 10)
+  – rand int               Generate pseudo-random integer
+  int srand –              Set random number seed
+  – rrand int              Return random number seed
+}
+function TvEPSVectorialReader.ExecuteArithmeticAndMathOperator(
+  AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
+var
+  Param1, Param2: TPSToken;
+begin
+  Result := False;
+
+  // Division
+  // Param2 Param1 div ==> Param2 div Param1
+  if AToken.StrValue = 'div' then
+  begin
+    Param1 := TPSToken(Stack.Pop);
+    Param2 := TPSToken(Stack.Pop);
+    Param1.FloatValue := Param2.FloatValue / Param1.FloatValue;
+    Param1.StrValue := '00'; // Just to mark it as a number
+    Stack.Push(Param1);
+    Exit(True);
+  end;
+
+  // Param2 Param1 mul ==> Param2 mul Param1
+  if AToken.StrValue = 'mul' then
+  begin
+    Param1 := TPSToken(Stack.Pop);
+    Param2 := TPSToken(Stack.Pop);
+    Param1.FloatValue := Param2.FloatValue * Param1.FloatValue;
+    Param1.StrValue := '00'; // Just to mark it as a number
+    Stack.Push(Param1);
+    Exit(True);
+  end;
+end;
+
+{ Path Construction Operators
+
+  – newpath –              Initialize current path to be empty
+  – currentpoint x y       Return current point coordinates
+  x y moveto –             Set current point to (x, y)
+  dx dy rmoveto –          Perform relative moveto
+  x y lineto –             Append straight line to (x, y)
+  dx dy rlineto –          Perform relative lineto
+  x y r angle1 angle2 arc – Append counterclockwise arc
+  x y r angle1 angle2 arcn – Append clockwise arc
+  x1 y1 x2 y2 r arct –     Append tangent arc
+  x1 y1 x2 y2 r arcto xt1 yt1 xt2 yt2 Append tangent arc
+  x1 y1 x2 y2 x3 y3 curveto – Append Bézier cubic section
+  dx1 dy1 dx2 dy2 dx3 dy3 rcurveto – Perform relative curveto
+  – closepath –            Connect subpath back to its starting point
+  – flattenpath –          Convert curves to sequences of straight lines
+  – reversepath –          Reverse direction of current path
+  – strokepath –           Compute outline of stroked path
+  userpath ustrokepath – Compute outline of stroked userpath
+  userpath matrix ustrokepath – Compute outline of stroked userpath
+  string bool charpath – Append glyph outline to current path
+  userpath uappend – Interpret userpath and append to current
+  path
+  – clippath – Set current path to clipping path
+  llx lly urx ury setbbox – Set bounding box for current path
+  – pathbbox llx lly urx ury Return bounding box of current path
+  move line curve close pathforall – Enumerate current path
+  bool upath userpath Create userpath for current path; include
+  ucache if bool is true
+  – initclip – Set clipping path to device default
+  – clip – Clip using nonzero winding number rule
+  – eoclip – Clip using even-odd rule
+  x y width height rectclip – Clip with rectangular path
+  numarray|numstring rectclip – Clip with rectangular paths
+  – ucache – Declare that user path is to be cached
+}
+function TvEPSVectorialReader.ExecutePathConstructionOperator(
+  AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
+var
+  Param1, Param2, Param3, Param4, Param5, Param6: TPSToken;
+  PosX, PosY, PosX2, PosY2, PosX3, PosY3, BaseX, BaseY: Double;
+begin
+  Result := False;
+
+  //
+  if AToken.StrValue = 'newpath' then
+  begin
+    AData.EndPath();
+    AData.StartPath();
+    Exit(True);
+  end;
+  // Param2 Param1 moveto ===> moveto(X=Param2, Y=Param1);
+  if AToken.StrValue = 'moveto' then
+  begin
+    Param1 := TPSToken(Stack.Pop);
+    Param2 := TPSToken(Stack.Pop);
+    PostScriptCoordsToFPVectorialCoords(Param1, Param2, PosX, PosY);
+    AData.AddMoveToPath(PosX, PosY);
+    Exit(True);
+  end;
+  // Absolute LineTo
+  if AToken.StrValue = 'lineto' then
+  begin
+    Param1 := TPSToken(Stack.Pop);
+    Param2 := TPSToken(Stack.Pop);
+    PostScriptCoordsToFPVectorialCoords(Param1, Param2, PosX, PosY);
+    AData.AddLineToPath(PosX, PosY);
+    Exit(True);
+  end;
+  // Relative LineTo
+  if AToken.StrValue = 'rlineto' then
+  begin
+    Param1 := TPSToken(Stack.Pop);
+    Param2 := TPSToken(Stack.Pop);
+    PostScriptCoordsToFPVectorialCoords(Param1, Param2, PosX, PosY);
+    AData.GetCurrenPathPenPos(BaseX, BaseY);
+    AData.AddLineToPath(BaseX + PosX, BaseY + PosY);
+    Exit(True);
+  end;
+  // dx1 dy1 dx2 dy2 dx3 dy3 rcurveto – Perform relative curveto
+  if AToken.StrValue = 'rcurveto' then
+  begin
+    Param1 := TPSToken(Stack.Pop);
+    Param2 := TPSToken(Stack.Pop);
+    Param3 := TPSToken(Stack.Pop);
+    Param4 := TPSToken(Stack.Pop);
+    Param5 := TPSToken(Stack.Pop);
+    Param6 := TPSToken(Stack.Pop);
+    PostScriptCoordsToFPVectorialCoords(Param1, Param2, PosX, PosY);
+    PostScriptCoordsToFPVectorialCoords(Param3, Param4, PosX2, PosY2);
+    PostScriptCoordsToFPVectorialCoords(Param5, Param6, PosX3, PosY3);
+    AData.GetCurrenPathPenPos(BaseX, BaseY);
+    AData.AddBezierToPath(BaseX + PosX, BaseY + PosY, BaseX + PosX2, BaseY + PosY2, BaseX + PosX3, BaseY + PosY3);
+    Exit(True);
+  end;
+  // – eoclip – Clip using even-odd rule
+  if AToken.StrValue = 'eoclip' then
+  begin
+    Exit(True);
+  end
+end;
+
+{  Graphics State Operators (Device-Independent)
+
+  – gsave –                    Push graphics state
+  – grestore –                 Pop graphics state
+  – clipsave –                 Push clipping path
+  – cliprestore –              Pop clipping path
+  – grestoreall –              Pop to bottommost graphics state
+  – initgraphics –             Reset graphics state parameters
+  – gstate gstate              Create graphics state object
+  gstate setgstate –           Set graphics state from gstate
+  gstate currentgstate gstate  Copy current graphics state into gstate
+  num setlinewidth –           Set line width
+  – currentlinewidth num       Return current line width
+  int setlinecap –             Set shape of line ends for stroke (0 = butt,
+                               1 = round, 2 = square)
+  – currentlinecap int         Return current line cap
+  int setlinejoin –            Set shape of corners for stroke (0 = miter,
+                               1 = round, 2 = bevel)
+  – currentlinejoin int Return current line join
+  num setmiterlimit – Set miter length limit
+  – currentmiterlimit num Return current miter limit
+  bool setstrokeadjust – Set stroke adjustment (false = disable,
+  true = enable)
+  – currentstrokeadjust bool Return current stroke adjustment
+  array offset setdash – Set dash pattern for stroking
+  – currentdash array offset Return current dash pattern
+  array|name setcolorspace – Set color space
+  – currentcolorspace array Return current color space
+  comp1 … compn setcolor – Set color components
+  pattern setcolor – Set colored tiling pattern as current color
+  comp1 … compn pattern setcolor – Set uncolored tiling pattern as current color
+  – currentcolor comp1 … compn Return current color components
+  num setgray – Set color space to DeviceGray and color to
+  specified gray value (0 = black, 1 = white)
+  – currentgray num Return current color as gray value
+  hue saturation brightness sethsbcolor – Set color space to DeviceRGB and color to
+  specified hue, saturation, brightness
+  – currenthsbcolor hue saturation brightness
+  Return current color as hue, saturation,
+  brightness
+  red green blue setrgbcolor – Set color space to DeviceRGB and color to
+  specified red, green, blue
+  – currentrgbcolor red green blue Return current color as red, green, blue
+  cyan magenta yellow black setcmykcolor – Set color space to DeviceCMYK and color to
+  specified cyan, magenta, yellow, black
+  – currentcmykcolor cyan magenta yellow black
+  Return current color as cyan, magenta,
+  yellow, black
+}
+function TvEPSVectorialReader.ExecuteGraphicStateOperatorsDI(
+  AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
+var
+  Param1, Param2: TPSToken;
+begin
+  Result := False;
+
+  //
+  if AToken.StrValue = 'setlinewidth' then
+  begin
+    Param1 := TPSToken(Stack.Pop);
+    Exit(True);
+  end;
+  //
+  if AToken.StrValue = 'setlinejoin' then
+  begin
+    Param1 := TPSToken(Stack.Pop);
+    Exit(True);
+  end;
+end;
+
 {  Graphics State Operators (Device-Dependent)
 
   halftone sethalftone – Set halftone dictionary
@@ -671,361 +1229,7 @@ begin
   (dx¢, dy¢) by matrix
   matrix1 matrix2 invertmatrix matrix2 Fill matrix2 with inverse of matrix1
 }
-{  Painting Operators
-
-  – erasepage – Paint current page white
-  – stroke – Draw line along current path
-  – fill – Fill current path with current color
-  – eofill – Fill using even-odd rule
-  x y width height rectstroke – Define rectangular path and stroke
-  x y width height matrix rectstroke – Define rectangular path, concatenate matrix,
-  and stroke
-  numarray|numstring rectstroke – Define rectangular paths and stroke
-  numarray|numstring matrix rectstroke – Define rectangular paths, concatenate
-  matrix, and stroke
-  x y width height rectfill – Fill rectangular path
-  numarray|numstring rectfill – Fill rectangular paths
-  userpath ustroke – Interpret and stroke userpath
-  userpath matrix ustroke – Interpret userpath, concatenate matrix, and
-  stroke
-  userpath ufill – Interpret and fill userpath
-  userpath ueofill – Fill userpath using even-odd rule
-  dict shfill – Fill area defined by shading pattern
-  CHAPTER 8 Operators
-  520
-  dict image – Paint any sampled image
-  width height bits/sample matrix datasrc image – Paint monochrome sampled image
-  width height bits/comp matrix
-  datasrc0 … datasrcncomp-1 multi ncomp colorimage – Paint color sampled image
-  dict imagemask – Paint current color through mask
-  width height polarity matrix datasrc imagemask – Paint current color through mask
-  Insideness-Testing Operators
-  x y infill bool Test whether (x, y) would be painted by fill
-  userpath infill bool Test whether pixels in userpath would be
-  painted by fill
-  x y ineofill bool Test whether (x, y) would be painted by eofill
-  userpath ineofill bool Test whether pixels in userpath would be
-  painted by eofill
-  x y userpath inufill bool Test whether (x, y) would be painted by ufill
-  of userpath
-  userpath1 userpath2 inufill bool Test whether pixels in userpath1 would be
-  painted by ufill of userpath2
-  x y userpath inueofill bool Test whether (x, y) would be painted by
-  ueofill of userpath
-  userpath1 userpath2 inueofill bool Test whether pixels in userpath1 would be
-  painted by ueofill of userpath2
-  x y instroke bool Test whether (x, y) would be painted by
-  stroke
-  x y userpath inustroke bool Test whether (x, y) would be painted by
-  ustroke of userpath
-  x y userpath matrix inustroke bool Test whether (x, y) would be painted by
-  ustroke of userpath
-  userpath1 userpath2 inustroke bool Test whether pixels in userpath1 would be
-  painted by ustroke of userpath2
-  userpath1 userpath2 matrix inustroke bool Test whether pixels in userpath1 would be
-  painted by ustroke of userpath2
-  Form and Pattern Operators
-  pattern matrix makepattern pattern’ Create pattern instance from prototype
-  pattern setpattern – Install pattern as current color
-  comp1 … compn pattern setpattern – Install pattern as current color
-  form execform – Paint form
-
-  Device Setup and Output Operators
-
-  – showpage – Transmit and reset current page
-  – copypage – Transmit current page
-  dict setpagedevice – Install page-oriented output device
-  – currentpagedevice dict Return current page device parameters
-  – nulldevice – Install no-output device
-  Glyph and Font Operators
-  key font|cidfont definefont font|cidfont Register font|cidfont in Font resource
-  category
-  key name|string|dict array composefont font Register composite font dictionary created
-  from CMap and array of CIDFonts or fonts
-  key undefinefont – Remove Font resource registration
-  key findfont font|cidfont Return Font resource instance identified by
-  key
-  font|cidfont scale scalefont font¢|cidfont¢ Scale font|cidfont by scale to produce
-  font¢|cidfont¢
-  font|cidfont matrix makefont font¢|cidfont¢ Transform font|cidfont by matrix to produce
-  font¢|cidfont¢
-  font|cidfont setfont – Set font or CIDFont in graphics state
-  – rootfont font|cidfont Return last set font or CIDFont
-  – currentfont font|cidfont Return current font or CIDFont, possibly a
-  descendant of rootfont
-  key scale|matrix selectfont – Set font or CIDFont given name and
-  transform
-  string show – Paint glyphs for string in current font
-  ax ay string ashow – Add (ax , ay) to width of each glyph while
-  showing string
-  cx cy char string widthshow – Add (cx , cy) to width of glyph for char while
-  showing string
-  cx cy char ax ay string awidthshow – Combine effects of ashow and widthshow
-  string numarray|numstring xshow – Paint glyphs for string using x widths in
-  numarray|numstring
-  string numarray|numstring xyshow – Paint glyphs for string using x and y widths
-  in numarray|numstring
-  string numarray|numstring yshow – Paint glyphs for string using y widths in
-  numarray|numstring
-  CHAPTER 8 Operators
-  522
-  name|cid glyphshow – Paint glyph for character identified by
-  name|cid
-  string stringwidth wx wy Return width of glyphs for string in current
-  font
-  proc string cshow – Invoke character mapping algorithm and
-  call proc
-  proc string kshow – Execute proc between characters shown from
-  string
-  – FontDirectory dict Return dictionary of Font resource instances
-  – GlobalFontDirectory dict Return dictionary of Font resource instances
-  in global VM
-  – StandardEncoding array Return Adobe standard font encoding vector
-  – ISOLatin1Encoding array Return ISO Latin-1 font encoding vector
-  key findencoding array Find encoding vector
-  wx wy llx lly urx ury setcachedevice – Declare cached glyph metrics
-  w0x w0y llx lly urx ury
-  w1x w1y vx vy setcachedevice2 – Declare cached glyph metrics
-  wx wy setcharwidth – Declare uncached glyph metrics
-  Interpreter Parameter Operators
-  dict setsystemparams – Set systemwide interpreter parameters
-  – currentsystemparams dict Return systemwide interpreter parameters
-  dict setuserparams – Set per-context interpreter parameters
-  – currentuserparams dict Return per-context interpreter parameters
-  string dict setdevparams – Set parameters for input/output device
-  string currentdevparams dict Return device parameters
-  int vmreclaim – Control garbage collector
-  int setvmthreshold – Control garbage collector
-  – vmstatus level used maximum
-  Report VM status
-  – cachestatus bsize bmax msize mmax csize cmax blimit
-  Return font cache status and parameters
-  int setcachelimit – Set maximum bytes in cached glyph
-  mark size lower upper setcacheparams – Set font cache parameters
-  – currentcacheparams mark size lower upper
-  Return current font cache parameters
-  8.1 Operator Summary
-  523
-  mark blimit setucacheparams – Set user path cache parameters
-  – ucachestatus mark bsize bmax rsize rmax blimit
-  Return user path cache status and
-  parameters
-  Errors
-  configurationerror setpagedevice or setdevparams request
-  cannot be satisfied
-  dictfull No more room in dictionary
-  dictstackoverflow Too many begin operators
-  dictstackunderflow Too many end operators
-  execstackoverflow Executive stack nesting too deep
-  handleerror Called to report error information
-  interrupt External interrupt request (for example,
-  Control-C)
-  invalidaccess Attempt to violate access attribute
-  invalidexit exit not in loop
-  invalidfileaccess Unacceptable access string
-  invalidfont Invalid Font resource name or font or
-  CIDFont dictionary
-  invalidrestore Improper restore
-  ioerror Input/output error
-  limitcheck Implementation limit exceeded
-  nocurrentpoint Current point undefined
-  rangecheck Operand out of bounds
-  stackoverflow Operand stack overflow
-  stackunderflow Operand stack underflow
-  syntaxerror PostScript language syntax error
-  timeout Time limit exceeded
-  typecheck Operand of wrong type
-  undefined Name not known
-  undefinedfilename File not found
-  undefinedresource Resource instance not found
-  undefinedresult Overflow, underflow, or meaningless result
-  unmatchedmark Expected mark not on stack
-  unregistered Internal error
-  VMerror Virtual memory exhausted
-}
-end;
-
-{  Arithmetic and Math Operators
-
-  num1 num2 add sum        Return num1 plus num2
-  num1 num2 div quotient   Return num1 divided by num2
-  int1 int2 idiv quotient  Return int1 divided by int2
-  int1 int2 mod remainder  Return remainder after dividing int1 by int2
-  num1 num2 mul product    Return num1 times num2
-  num1 num2 sub difference Return num1 minus num2
-  num1 abs num2            Return absolute value of num1
-  num1 neg num2            Return negative of num1
-  num1 ceiling num2        Return ceiling of num1
-  num1 floor num2          Return floor of num1
-  num1 round num2          Round num1 to nearest integer
-  num1 truncate num2       Remove fractional part of num1
-  num sqrt real            Return square root of num
-  num den atan angle       Return arctangent of num/den in degrees
-  angle cos real           Return cosine of angle degrees
-  angle sin real           Return sine of angle degrees
-  base exponent exp real   Raise base to exponent power
-  num ln real              Return natural logarithm (base e)
-  num log real             Return common logarithm (base 10)
-  – rand int               Generate pseudo-random integer
-  int srand –              Set random number seed
-  – rrand int              Return random number seed
-}
-function TvEPSVectorialReader.ProcessArithmeticAndMathOperator(
-  AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
-var
-  Param1, Param2: TPSToken;
-begin
-  Result := False;
-
-  // Division
-  // Param2 Param1 div ==> Param2 div Param1
-  if AToken.StrValue = 'div' then
-  begin
-    Param1 := TPSToken(Stack.Pop);
-    Param2 := TPSToken(Stack.Pop);
-    Param1.FloatValue := Param2.FloatValue / Param1.FloatValue;
-    Param1.StrValue := '00'; // Just to mark it as a number
-    Stack.Push(Param1);
-    Exit(True);
-  end;
-
-  // Param2 Param1 mul ==> Param2 mul Param1
-  if AToken.StrValue = 'mul' then
-  begin
-    Param1 := TPSToken(Stack.Pop);
-    Param2 := TPSToken(Stack.Pop);
-    Param1.FloatValue := Param2.FloatValue * Param1.FloatValue;
-    Param1.StrValue := '00'; // Just to mark it as a number
-    Stack.Push(Param1);
-    Exit(True);
-  end;
-end;
-
-{ Path Construction Operators
-
-  – newpath –              Initialize current path to be empty
-  – currentpoint x y       Return current point coordinates
-  x y moveto –             Set current point to (x, y)
-  dx dy rmoveto – Perform relative moveto
-  x y lineto – Append straight line to (x, y)
-  dx dy rlineto – Perform relative lineto
-  x y r angle1 angle2 arc – Append counterclockwise arc
-  x y r angle1 angle2 arcn – Append clockwise arc
-  x1 y1 x2 y2 r arct – Append tangent arc
-  x1 y1 x2 y2 r arcto xt1 yt1 xt2 yt2 Append tangent arc
-  x1 y1 x2 y2 x3 y3 curveto – Append Bézier cubic section
-  dx1 dy1 dx2 dy2 dx3 dy3 rcurveto – Perform relative curveto
-  – closepath – Connect subpath back to its starting point
-  – flattenpath – Convert curves to sequences of straight lines
-  – reversepath – Reverse direction of current path
-  – strokepath – Compute outline of stroked path
-  userpath ustrokepath – Compute outline of stroked userpath
-  userpath matrix ustrokepath – Compute outline of stroked userpath
-  string bool charpath – Append glyph outline to current path
-  userpath uappend – Interpret userpath and append to current
-  path
-  – clippath – Set current path to clipping path
-  llx lly urx ury setbbox – Set bounding box for current path
-  – pathbbox llx lly urx ury Return bounding box of current path
-  move line curve close pathforall – Enumerate current path
-  bool upath userpath Create userpath for current path; include
-  ucache if bool is true
-  – initclip – Set clipping path to device default
-  – clip – Clip using nonzero winding number rule
-  – eoclip – Clip using even-odd rule
-  x y width height rectclip – Clip with rectangular path
-  numarray|numstring rectclip – Clip with rectangular paths
-  – ucache – Declare that user path is to be cached
-}
-function TvEPSVectorialReader.ProcessPathConstructionOperator(
-  AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
-var
-  Param1, Param2: TPSToken;
-  PosX, PosY: Double;
-begin
-  Result := False;
-
-  //
-  if AToken.StrValue = 'newpath' then
-  begin
-    AData.EndPath();
-    AData.StartPath();
-    Exit(True);
-  end;
-  // Param2 Param1 moveto ===> moveto(X=Param2, Y=Param1);
-  if AToken.StrValue = 'moveto' then
-  begin
-    Param1 := TPSToken(Stack.Pop);
-    Param2 := TPSToken(Stack.Pop);
-    PostScriptCoordsToFPVectorialCoords(Param1, Param2, PosX, PosY);
-    AData.AddMoveToPath(PosX, PosY);
-    Exit(True);
-  end;
-  if AToken.StrValue = 'lineto' then
-  begin
-    Param1 := TPSToken(Stack.Pop);
-    Param2 := TPSToken(Stack.Pop);
-    PostScriptCoordsToFPVectorialCoords(Param1, Param2, PosX, PosY);
-    AData.AddLineToPath(PosX, PosY);
-    Exit(True);
-  end;
-  // – eoclip – Clip using even-odd rule
-  if AToken.StrValue = 'eoclip' then
-  begin
-    Exit(True);
-  end
-end;
-
-{  Graphics State Operators (Device-Independent)
-
-  – gsave –                    Push graphics state
-  – grestore –                 Pop graphics state
-  – clipsave –                 Push clipping path
-  – cliprestore –              Pop clipping path
-  – grestoreall –              Pop to bottommost graphics state
-  – initgraphics –             Reset graphics state parameters
-  – gstate gstate              Create graphics state object
-  gstate setgstate –           Set graphics state from gstate
-  gstate currentgstate gstate  Copy current graphics state into gstate
-  num setlinewidth –           Set line width
-  – currentlinewidth num       Return current line width
-  int setlinecap –             Set shape of line ends for stroke (0 = butt,
-                               1 = round, 2 = square)
-  – currentlinecap int         Return current line cap
-  int setlinejoin –            Set shape of corners for stroke (0 = miter,
-                               1 = round, 2 = bevel)
-  – currentlinejoin int Return current line join
-  num setmiterlimit – Set miter length limit
-  – currentmiterlimit num Return current miter limit
-  bool setstrokeadjust – Set stroke adjustment (false = disable,
-  true = enable)
-  – currentstrokeadjust bool Return current stroke adjustment
-  array offset setdash – Set dash pattern for stroking
-  – currentdash array offset Return current dash pattern
-  array|name setcolorspace – Set color space
-  – currentcolorspace array Return current color space
-  comp1 … compn setcolor – Set color components
-  pattern setcolor – Set colored tiling pattern as current color
-  comp1 … compn pattern setcolor – Set uncolored tiling pattern as current color
-  – currentcolor comp1 … compn Return current color components
-  num setgray – Set color space to DeviceGray and color to
-  specified gray value (0 = black, 1 = white)
-  – currentgray num Return current color as gray value
-  hue saturation brightness sethsbcolor – Set color space to DeviceRGB and color to
-  specified hue, saturation, brightness
-  – currenthsbcolor hue saturation brightness
-  Return current color as hue, saturation,
-  brightness
-  red green blue setrgbcolor – Set color space to DeviceRGB and color to
-  specified red, green, blue
-  – currentrgbcolor red green blue Return current color as red, green, blue
-  cyan magenta yellow black setcmykcolor – Set color space to DeviceCMYK and color to
-  specified cyan, magenta, yellow, black
-  – currentcmykcolor cyan magenta yellow black
-  Return current color as cyan, magenta,
-  yellow, black
-}
-function TvEPSVectorialReader.ProcessGraphicStateOperatorsDI(
+function TvEPSVectorialReader.ExecuteGraphicStateOperatorsDD(
   AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
 var
   Param1, Param2: TPSToken;
@@ -1033,15 +1237,10 @@ begin
   Result := False;
 
   //
-  if AToken.StrValue = 'setlinewidth' then
+  if AToken.StrValue = 'scale' then
   begin
     Param1 := TPSToken(Stack.Pop);
-    Exit(True);
-  end;
-  //
-  if AToken.StrValue = 'setlinejoin' then
-  begin
-    Param1 := TPSToken(Stack.Pop);
+    Param2 := TPSToken(Stack.Pop);
     Exit(True);
   end;
 end;
@@ -1050,19 +1249,20 @@ end;
 
   int dict dict Create dictionary with capacity for int
   elements
-  – << mark Start dictionary construction
-  mark key1 value1 … keyn valuen >> dict End dictionary construction
-  dict length int Return number of entries in dict
-  dict maxlength int Return current capacity of dict
-  dict begin – Push dict on dictionary stack
-  – end – Pop current dictionary off dictionary stack
-  key value def – Associate key and value in current dictionary
-  key load value Search dictionary stack for key and return
-  associated value
-  key value store – Replace topmost definition of key
-  dict key get any Return value associated with key in dict
-  dict key value put – Associate key with value in dict
-  dict key undef – Remove key and its value from dict
+  – << mark             Start dictionary construction
+  mark key1 value1 … keyn valuen >> dict
+                        End dictionary construction
+  dict length int       Return number of entries in dict
+  dict maxlength int    Return current capacity of dict
+  dict begin –          Push dict on dictionary stack
+  – end –               Pop current dictionary off dictionary stack
+  key value def –       Associate key and value in current dictionary
+  key load value        Search dictionary stack for key and return
+                        associated value
+  key value store –     Replace topmost definition of key
+  dict key get any      Return value associated with key in dict
+  dict key value put –  Associate key with value in dict
+  dict key undef –      Remove key and its value from dict
   dict key known bool Test whether key is in dict
   key where dict true Find dictionary in which key is defined
   or false
@@ -1080,7 +1280,7 @@ end;
   – cleardictstack – Pop all nonpermanent dictionaries off
   dictionary stack
 }
-function TvEPSVectorialReader.ProcessDictionaryOperators(
+function TvEPSVectorialReader.ExecuteDictionaryOperators(
   AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
 var
   Param1, Param2: TPSToken;
@@ -1093,6 +1293,12 @@ begin
     Param1 := TPSToken(Stack.Pop);
     Param2 := TPSToken(Stack.Pop);
     Dictionary.AddObject(Param2.StrValue, Param1);
+    Exit(True);
+  end;
+
+  // Can be ignored
+  if AToken.StrValue = 'load' then
+  begin
     Exit(True);
   end;
 end;
@@ -1113,7 +1319,7 @@ end;
   bool echo – Turn echoing on or off
   – prompt – Executed when ready for interactive input
 }
-function TvEPSVectorialReader.ProcessMiscellaneousOperators(
+function TvEPSVectorialReader.ExecuteMiscellaneousOperators(
   AToken: TExpressionToken; AData: TvVectorialDocument): Boolean;
 begin
   Result := False;
@@ -1136,14 +1342,22 @@ procedure TvEPSVectorialReader.DictionarySubstituteOperator(
   ADictionary: TStringList; var ACurToken: TPSToken);
 var
   lIndex: Integer;
-  SubstituteToken: TPSToken;
+  SubstituteToken, NewToken: TPSToken;
 begin
   lIndex := ADictionary.IndexOf(ACurToken.StrValue);
-  if lIndex > 0 then
+  if lIndex >= 0 then
   begin
     SubstituteToken := TPSToken(ADictionary.Objects[lIndex]);
-    ACurToken.StrValue := SubstituteToken.StrValue;
-    ACurToken.FloatValue := SubstituteToken.FloatValue;
+
+    if SubstituteToken is TExpressionToken then
+    begin
+      ACurToken.StrValue := SubstituteToken.StrValue;
+      ACurToken.FloatValue := SubstituteToken.FloatValue;
+    end
+    else if SubstituteToken is TProcedureToken then
+    begin
+      ACurToken := SubstituteToken;
+    end;
     if ACurToken.StrValue = '' then raise Exception.Create('[TvEPSVectorialReader.DictionarySubstituteOperator] The Dictionary substitution resulted in an empty value');
   end;
 end;
@@ -1175,7 +1389,14 @@ procedure TvEPSVectorialReader.ReadFromStream(AStream: TStream;
 begin
   Tokenizer.ReadFromStream(AStream);
   Tokenizer.DebugOut();
+
+  // Make sure we have at least one path
+  AData.StartPath();
+
   RunPostScript(Tokenizer.Tokens, AData);
+
+  // Make sure we have at least one path
+  AData.EndPath();
 end;
 
 initialization
