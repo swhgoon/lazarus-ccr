@@ -6,6 +6,7 @@ License: The same modified LGPL as the Free Pascal RTL
 
 AUTHORS: Felipe Monteiro de Carvalho
 
+Documentation: http://www.tailrecursive.org/postscript/postscript.html
 }
 unit epsvectorialreader;
 
@@ -14,7 +15,7 @@ unit epsvectorialreader;
 interface
 
 uses
-  Classes, SysUtils, Math,
+  Classes, SysUtils, Math, contnrs,
   fpvectorial, fpimage, fpvutils;
 
 type
@@ -27,6 +28,7 @@ type
     FloatValue: double;
     IntValue: Integer;
     Childs: TPSTokens;
+    Line: Integer; // To help debugging
   end;
 
   TCommentToken = class(TPSToken)
@@ -35,10 +37,14 @@ type
   TDefinitionToken = class(TPSToken)
   end;
 
+  TGroupToken = class(TPSToken)
+    Levels: Integer; // Used to count groups inside groups and find the end of a top-level group
+  end;
+
   TExpressionToken = class(TPSToken)
   end;
 
-  TPostScriptScannerState = (ssSearchingToken, ssInComment, ssInDefinition, ssInExpressionElement);
+  TPostScriptScannerState = (ssSearchingToken, ssInComment, ssInDefinition, ssInGroup, ssInExpressionElement);
 
   { TPSTokenizer }
 
@@ -59,6 +65,9 @@ type
   TvEPSVectorialReader = class(TvCustomVectorialReader)
   private
     FPointSeparator: TFormatSettings;
+    procedure RunPostScript(ATokens: TPsTokens; AData: TvVectorialDocument);
+    procedure PostScriptCoordsToFPVectorialCoords(AParam1, AParam2: TPSToken; var APosX, APosY: Double);
+    function IsExpressionOperand(AToken: TExpressionToken): Boolean;
   public
     { General reading methods }
     Tokenizer: TPSTokenizer;
@@ -68,6 +77,8 @@ type
   end;
 
 implementation
+
+{$DEFINE FPVECTORIALDEBUG}
 
 { TPSTokenizer }
 
@@ -97,6 +108,7 @@ var
   State: TPostScriptScannerState = ssSearchingToken;
   CommentToken: TCommentToken;
   DefinitionToken: TDefinitionToken;
+  GroupToken: TGroupToken;
   ExpressionToken: TExpressionToken;
   Len: Integer;
   lIsEndOfLine: Boolean;
@@ -104,6 +116,9 @@ begin
   while AStream.Position < AStream.Size do
   begin
     CurChar := Char(AStream.ReadByte());
+//    {$ifdef FPVECTORIALDEBUG}
+//    WriteLn(Format('Obtained token %s', [CurChar]));
+//    {$endif}
     if not IsValidPostScriptChar(Byte(CurChar)) then
       raise Exception.Create('[TPSTokenizer.ReadFromStream] Invalid char: ' + IntToHex(Byte(CurChar), 2));
 
@@ -117,19 +132,34 @@ begin
         if CurChar = '%' then
         begin
           CommentToken := TCommentToken.Create;
+          CommentToken.Line := CurLine;
           State := ssInComment;
+//          {$ifdef FPVECTORIALDEBUG}
+//          WriteLn(Format('Starting Comment at Line %d', [CurLine]));
+//          {$endif}
         end
         else if CurChar = '/' then
         begin
           DefinitionToken := TDefinitionToken.Create;
+          DefinitionToken.Line := CurLine;
           State := ssInDefinition;
         end
-        else if CurChar in ['a'..'z'] + ['A'..'Z'] + ['0'..'9'] then
+        else if CurChar = '{' then
+        begin
+          GroupToken := TGroupToken.Create;
+          GroupToken.Levels := 1;
+          GroupToken.Line := CurLine;
+          State := ssInGroup;
+        end
+        else if CurChar in ['a'..'z','A'..'Z','0'..'9','-'] then
         begin
           ExpressionToken := TExpressionToken.Create;
+          ExpressionToken.Line := CurLine;
+          ExpressionToken.StrValue := CurChar;
           State := ssInExpressionElement;
         end
         else if lIsEndOfLine then Continue
+        else if IsPostScriptSpace(Byte(CurChar)) then Continue
         else
           raise Exception.Create(Format('[TPSTokenizer.ReadFromStream] Unexpected char while searching for token: $%s in Line %d',
            [IntToHex(Byte(CurChar), 2), CurLine]));
@@ -143,22 +173,40 @@ begin
         begin
           Tokens.Add(CommentToken);
           State := ssSearchingToken;
+//          {$ifdef FPVECTORIALDEBUG}
+//          WriteLn(Format('Adding Comment "%s" at Line %d', [CommentToken.StrValue, CurLine]));
+//          {$endif}
         end;
       end; // ssInComment
 
-      // Dictionary definitions end in "def"
+      // Definitions are names. They start in "/" and end in a PostScript white space
+      // (space, tab, line ending, etc) or in "{"
+      // Definitions simply mean that the token is the name of a dictionary entry
       ssInDefinition:
       begin
-        DefinitionToken.StrValue := DefinitionToken.StrValue + CurChar;
-        Len := Length(DefinitionToken.StrValue);
-        if Len >= 3 then
+        if IsPostScriptSpace(Byte(CurChar)) or (CurChar = '{') then
         begin
-          if (DefinitionToken.StrValue[Len-2] = 'd') and (DefinitionToken.StrValue[Len-1] = 'e') and (DefinitionToken.StrValue[Len] = 'f') then
-          begin
-            Tokens.Add(DefinitionToken);
-            State := ssSearchingToken;
-          end;
-        end;
+          Tokens.Add(DefinitionToken);
+          State := ssSearchingToken;
+          if (CurChar = '{') then AStream.Seek(-1, soFromCurrent);
+        end
+        else
+          DefinitionToken.StrValue := DefinitionToken.StrValue + CurChar;
+      end;
+
+      // Starts at { and ends in }, passing over nested groups
+      ssInGroup:
+      begin
+        if (CurChar = '{') then GroupToken.Levels := GroupToken.Levels + 1;
+        if (CurChar = '}') then GroupToken.Levels := GroupToken.Levels - 1;
+
+        if GroupToken.Levels = 0 then
+        begin
+          Tokens.Add(GroupToken);
+          State := ssSearchingToken;
+        end
+        else
+          GroupToken.StrValue := GroupToken.StrValue + CurChar;
       end;
 
       // Goes until a space comes
@@ -193,6 +241,10 @@ begin
     else if Token is TDefinitionToken then
     begin
       WriteLn(Format('TDefinitionToken StrValue=%s', [Token.StrValue]));
+    end
+    else if Token is TGroupToken then
+    begin
+      WriteLn(Format('TGroupToken StrValue=%s', [Token.StrValue]));
     end
     else if Token is TExpressionToken then
     begin
@@ -250,9 +302,99 @@ end;
 
 { TvEPSVectorialReader }
 
+procedure TvEPSVectorialReader.RunPostScript(ATokens: TPsTokens;
+  AData: TvVectorialDocument);
+var
+  i: Integer;
+  Stack: TObjectStack;
+  Dictionary: TStringList;
+  CurToken, Param1, Param2: TPSToken;
+  PosX, PosY: Double;
+begin
+  Stack := TObjectStack.Create;
+  Dictionary := TStringList.Create;
+
+  for i := 0 to ATokens.Count - 1 do
+  begin
+    CurToken := TPSToken(ATokens.Items[i]);
+
+    if CurToken is TCommentToken then
+    begin
+//      ProcessCommentToken(CurToken as TCommentToken, AData);
+      Continue;
+    end;
+
+    if CurToken is TDefinitionToken then
+    begin
+      Stack.Push(CurToken);
+      Continue;
+    end;
+
+    if CurToken is TGroupToken then
+    begin
+      Stack.Push(CurToken);
+      Continue;
+    end;
+
+    if CurToken is TExpressionToken then
+    begin
+      if IsExpressionOperand(TExpressionToken(CurToken)) then
+      begin
+        Stack.Push(CurToken);
+      end
+      else if CurToken.StrValue = 'moveto' then
+      begin
+        Param1 := TPSToken(Stack.Pop);
+        Param2 := TPSToken(Stack.Pop);
+        PostScriptCoordsToFPVectorialCoords(Param1, Param2, PosX, PosY);
+        AData.StartPath();
+      end
+      // Adds a dictionary definition
+      else if CurToken.StrValue = 'def' then
+      begin
+        Param1 := TPSToken(Stack.Pop);
+        Param2 := TPSToken(Stack.Pop);
+        Dictionary.AddObject(Param2.StrValue, Param1);
+      end
+      // ???? Commands ignored for now
+      else if (CurToken.StrValue = 'ndf') or (CurToken.StrValue = 'load') then
+      begin
+      end
+      // bind can be ignored
+      else if CurToken.StrValue = 'bind' then
+      begin
+      end
+      else
+        raise Exception.Create(Format('[TvEPSVectorialReader.RunPostScript] Unknown PostScript Command "%s" in Line %d',
+          [CurToken.StrValue, CurToken.Line]));
+    end;
+  end;
+
+  Stack.Free;
+  Dictionary.Free;
+end;
+
+procedure TvEPSVectorialReader.PostScriptCoordsToFPVectorialCoords(AParam1,
+  AParam2: TPSToken; var APosX, APosY: Double);
+begin
+  APosX := SysUtils.StrToFloat(AParam2.StrValue, FPointSeparator);
+  APosY := SysUtils.StrToFloat(AParam1.StrValue, FPointSeparator);
+end;
+
+function TvEPSVectorialReader.IsExpressionOperand(AToken: TExpressionToken
+  ): Boolean;
+begin
+  if AToken.StrValue = '' then Exit(False);
+  Result := AToken.StrValue[1] in ['0'..'9','-'];
+end;
+
 constructor TvEPSVectorialReader.Create;
 begin
   inherited Create;
+
+  FPointSeparator := SysUtils.DefaultFormatSettings;
+  FPointSeparator.DecimalSeparator := '.';
+  FPointSeparator.ThousandSeparator := ',';
 
   Tokenizer := TPSTokenizer.Create;
 end;
@@ -268,6 +410,7 @@ procedure TvEPSVectorialReader.ReadFromStream(AStream: TStream;
 begin
   Tokenizer.ReadFromStream(AStream);
   Tokenizer.DebugOut();
+  RunPostScript(Tokenizer.Tokens, AData);
 end;
 
 initialization
