@@ -52,26 +52,28 @@ Type
     FConnection : THTTPSend;
     FAddress : string;
     FFormat : string;
-    FSoapAction: string;
-    FCookieManager : ICookieManager; 
-  private  
+    FCookieManager : ICookieManager;
+  private
+    function IndexOfHeader(const AHeader : string) :Integer;
     function GetAddress: string;
     function GetContentType: string;
     function GetProxyPassword: string;
     function GetProxyPort: Integer;
     function GetProxyServer: string;
     function GetProxyUsername: string;
+    function GetSoapAction : string;
     procedure SetAddress(const AValue: string);
     procedure SetContentType(const AValue: string);
     procedure SetProxyPassword(const AValue: string);
     procedure SetProxyPort(const AValue: Integer);
     procedure SetProxyServer(const AValue: string);
     procedure SetProxyUsername(const AValue: string);
+    procedure SetSoapAction(const AValue : string);
+    procedure DoSendAndReceive(ARequest,AResponse:TStream); override;
   Public
     constructor Create();override;
     destructor Destroy();override;      
     function GetTransportName() : string; override;
-    procedure SendAndReceive(ARequest,AResponse:TStream); override;
     function GetCookieManager() : ICookieManager; override;
   Published
     property ContentType : string Read GetContentType Write SetContentType;
@@ -80,7 +82,7 @@ Type
     property ProxyPort : Integer Read GetProxyPort Write SetProxyPort;
     property ProxyUsername : string read GetProxyUsername write SetProxyUsername;
     property ProxyPassword : string read GetProxyPassword write SetProxyPassword;
-    property SoapAction : string read FSoapAction write FSoapAction;
+    property SoapAction : string read GetSoapAction write SetSoapAction;
     property Format : string read FFormat write FFormat;
   End;
 {$M+}
@@ -91,7 +93,28 @@ implementation
 uses
   wst_consts;
 
+const
+  s_soapAction_Header = 'soapAction:';
+
 { THTTPTransport }
+
+function THTTPTransport.IndexOfHeader(const AHeader : string) : Integer;
+var
+  i : Integer;
+  locList : TStringList;
+  s : string;
+begin
+  Result := -1;
+  locList := FConnection.Headers;
+  if (locList.Count > 0) then begin
+    s := LowerCase(AHeader);
+    for i := 0 to locList.Count - 1 do
+      if (Pos(s,LowerCase(locList[i])) = 1) then begin
+        Result := i;
+        Break;
+      end;
+  end;
+end;
 
 function THTTPTransport.GetAddress: string;
 begin
@@ -121,6 +144,19 @@ end;
 function THTTPTransport.GetProxyUsername: string;
 begin
   Result := FConnection.ProxyUser;
+end;
+
+function THTTPTransport.GetSoapAction : string;
+var
+  i : Integer;
+begin
+  i := IndexOfHeader(s_soapAction_Header);
+  if (i >= 0) then begin
+    Result := FConnection.Headers[i];
+    Result := Copy(Result,(Length(s_soapAction_Header)+1),Length(Result));
+  end else begin
+    Result := '';
+  end;
 end;
 
 procedure THTTPTransport.SetAddress(const AValue: string);
@@ -153,6 +189,27 @@ begin
   FConnection.ProxyUser := AValue;
 end;
 
+procedure THTTPTransport.SetSoapAction(const AValue : string);
+var
+  i : Integer;
+  s : string;
+begin
+  i := IndexOfHeader(s_soapAction_Header);
+  s := s_soapAction_Header + AValue;
+  if (i >= 0) then
+    FConnection.Headers[i] := s
+  else
+    FConnection.Headers.Add(s);
+end;
+
+procedure THTTPTransport.DoSendAndReceive(ARequest, AResponse : TStream);
+begin
+  FConnection.Document.CopyFrom(ARequest,0);
+  if not FConnection.HTTPMethod('POST',FAddress) then
+    raise ETransportExecption.CreateFmt(SERR_FailedTransportRequest,[sTRANSPORT_NAME,FAddress]);
+  AResponse.CopyFrom(FConnection.Document,0);
+end;
+
 constructor THTTPTransport.Create();
 begin
   inherited Create();
@@ -171,68 +228,7 @@ begin
   Result := sTRANSPORT_NAME;
 end;
 
-procedure THTTPTransport.SendAndReceive(ARequest, AResponse: TStream);
-{$IFDEF WST_DBG}
-  procedure Display(const AStr : string);
-  begin
-    if IsConsole then
-      WriteLn(AStr)
-    {else
-      ShowMessage(AStr)};
-  end;
-{$ENDIF WST_DBG}
-var
-{$IFDEF WST_DBG}
-  s : TBinaryString;
-{$ENDIF WST_DBG}
-  locTempStream, locTempRes : TMemoryStream;
-begin
-{$IFDEF WST_DBG}
-  TMemoryStream(ARequest).SaveToFile('request-1.log');
-{$ENDIF}
-  FConnection.Document.Size := 0;
-  FConnection.Headers.Add('soapAction:' + SoapAction);
-  if not HasFilter() then begin
-    FConnection.Document.CopyFrom(ARequest,0);
-    if not FConnection.HTTPMethod('POST',FAddress) then
-      raise ETransportExecption.CreateFmt(SERR_FailedTransportRequest,[sTRANSPORT_NAME,FAddress]);
-    AResponse.CopyFrom(FConnection.Document,0);
-  end else begin
-    locTempRes := nil;
-    locTempStream := TMemoryStream.Create();
-    try
-      FilterInput(ARequest,locTempStream);
-{$IFDEF WST_DBG}
-      TMemoryStream(locTempStream).SaveToFile('request.log.wire');
-{$ENDIF WST_DBG}
-      FConnection.Document.CopyFrom(locTempStream,0);
-      if not FConnection.HTTPMethod('POST',FAddress) then
-        raise ETransportExecption.CreateFmt(SERR_FailedTransportRequest,[sTRANSPORT_NAME,FAddress]);
-      locTempRes := TMemoryStream.Create();
-      locTempRes.CopyFrom(FConnection.Document,0);
-  {$IFDEF WST_DBG}
-      TMemoryStream(locTempRes).SaveToFile('response.log.wire');
-  {$ENDIF WST_DBG}
-      FilterOutput(locTempRes,AResponse);
-    finally
-      locTempRes.Free();
-      locTempStream.Free();
-    end;
-  end;
-  FConnection.Clear();
-{$IFDEF WST_DBG}
-  TMemoryStream(ARequest).SaveToFile('request.log');
-  SetLength(s,ARequest.Size);
-  Move(TMemoryStream(ARequest).Memory^,s[1],Length(s));
-  Display(s);
-  SetLength(s,AResponse.Size);
-  Move(TMemoryStream(AResponse).Memory^,s[1],Length(s));
-  TMemoryStream(AResponse).SaveToFile('response.log');
-  Display(s);
-{$ENDIF}
-end;
-
-function THTTPTransport.GetCookieManager() : ICookieManager; 
+function THTTPTransport.GetCookieManager() : ICookieManager;
 begin
   if (FCookieManager = nil) then
     FCookieManager := TSynapseCookieManager.Create(FConnection.Cookies);

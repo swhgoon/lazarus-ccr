@@ -52,23 +52,24 @@ Type
     FConnection : TFPHTTPClient;
     FAddress : string;
     FFormat : string;
-    FSoapAction: string;
-    FCookieManager : ICookieManager; 
+    FCookieManager : ICookieManager;
   private  
     function GetAddress: string;
     function GetContentType: string;
+    function GetSoapAction : string;
     procedure SetAddress(const AValue: string);
     procedure SetContentType(const AValue: string);
+    procedure DoSendAndReceive(ARequest,AResponse:TStream); override;
+    procedure SetSoapAction(const AValue : string);
   Public
     constructor Create();override;
     destructor Destroy();override;      
     function GetTransportName() : string; override;
-    procedure SendAndReceive(ARequest,AResponse:TStream); override;
     function GetCookieManager() : ICookieManager; override;
   Published
     property ContentType : string Read GetContentType Write SetContentType;
     property Address : string Read GetAddress Write SetAddress;
-    property SoapAction : string read FSoapAction write FSoapAction;
+    property SoapAction : string read GetSoapAction write SetSoapAction;
     property Format : string read FFormat write FFormat;
   End;
 {$M+}
@@ -78,6 +79,9 @@ Type
 implementation
 uses
   wst_consts;
+
+const
+  s_soapAction_Header = 'soapAction';
 
 { THTTPTransport }
 
@@ -89,6 +93,11 @@ end;
 function THTTPTransport.GetContentType: string;
 begin
   Result := FConnection.GetHeader('Content-type');
+end;
+
+function THTTPTransport.GetSoapAction : string;
+begin
+  Result := FConnection.GetHeader(s_soapAction_Header);
 end;
 
 procedure THTTPTransport.SetAddress(const AValue: string);
@@ -119,44 +128,25 @@ begin
   Result := sTRANSPORT_NAME;
 end;
 
-procedure THTTPTransport.SendAndReceive(ARequest, AResponse: TStream);
-
+procedure THTTPTransport.DoSendAndReceive(ARequest, AResponse: TStream);
 var
   EMsg : String;
-  req,resp : TStream;
-  
 begin
-  If not HasFilter then
-    begin
-    Req:=ARequest;
-    Resp:=AResponse;
-    end
-  else      
-    begin
-    Req:=TMemoryStream.Create();
-    Resp:=TMemoryStream.Create();
-    end;
   try
-    if HasFilter then
-      FilterInput(ARequest,req);  
-    try
-      Req.position:=0;
-      FConnection.RequestBody:=Req;
-      FConnection.Post(FAddress,Resp);
-      if HasFilter then
-        FilterOutput(Resp,AResponse);
-    except
-      On E : Exception do
-      EMsg:=E.Message;
-    end;
-    if (EMsg<>'') then
-      raise ETransportExecption.CreateFmt(SERR_FailedTransportRequest,[sTRANSPORT_NAME,FAddress]);
-  finally
-    if Req<>ARequest then
-      Req.Free;
-    if Resp<>AResponse then
-      Resp.Free;
+    ARequest.position:=0;
+    FConnection.RequestBody:=ARequest;
+    FConnection.Post(FAddress,AResponse);
+  except
+    On E : Exception do
+    EMsg:=E.Message;
   end;
+  if (EMsg<>'') then
+    raise ETransportExecption.CreateFmt(SERR_FailedTransportRequest,[sTRANSPORT_NAME,FAddress]);
+end;
+
+procedure THTTPTransport.SetSoapAction(const AValue : string);
+begin
+  FConnection.AddHeader(s_soapAction_Header,AValue);
 end;
 
 function THTTPTransport.GetCookieManager() : ICookieManager; 

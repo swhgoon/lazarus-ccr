@@ -50,9 +50,7 @@ Type
   Private
     FFormat : string;
     FConnection : TidHttp;
-    FSoapAction: string;
-    FContentType: string;
-    FCookieManager : ICookieManager;  
+    FCookieManager : ICookieManager;
   private
     function GetAddress: string;
     function GetProtocolVersion : string;
@@ -66,20 +64,25 @@ Type
     procedure SetProxyPort(const AValue: Integer);
     procedure SetProxyServer(const AValue: string);
     procedure SetProxyUsername(const AValue: string);
+    function GetContentType: string;
+    procedure SetContentType(const Value: string);
+    function GetSoapAction: string;
+    procedure SetSoapAction(const Value: string);
+  protected
+    procedure DoSendAndReceive(ARequest,AResponse:TStream);override;
   public
     constructor Create();override;
     destructor Destroy();override;
     function GetTransportName() : string; override;
-    procedure SendAndReceive(ARequest,AResponse:TStream); override;
-    function GetCookieManager() : ICookieManager; override;        
+    function GetCookieManager() : ICookieManager; override;
   published
-    property ContentType : string Read FContentType Write FContentType;
+    property ContentType : string Read GetContentType Write SetContentType;
     property Address : string Read GetAddress Write SetAddress;
     property ProxyServer : string Read GetProxyServer Write SetProxyServer;
     property ProxyPort : Integer Read GetProxyPort Write SetProxyPort;
     property ProxyUsername : string read GetProxyUsername write SetProxyUsername;
     property ProxyPassword : string read GetProxyPassword write SetProxyPassword;
-    property SoapAction : string read FSoapAction write FSoapAction;
+    property SoapAction : string read GetSoapAction write SetSoapAction;
     property Format : string read FFormat write FFormat;
     property ProtocolVersion : string read GetProtocolVersion write SetProtocolVersion;
   End;
@@ -143,6 +146,11 @@ begin
   Result := FConnection.ProxyParams.ProxyUsername;
 end;
 
+function THTTPTransport.GetSoapAction: string;
+begin
+  Result := FConnection.Request.CustomHeaders.Values['SOAPAction'];
+end;
+
 function THTTPTransport.GetTransportName() : string;
 begin
   Result := sTRANSPORT_NAME;
@@ -151,6 +159,11 @@ end;
 procedure THTTPTransport.SetAddress(const AValue: string);
 begin
   FConnection.Request.URL := AValue;
+end;
+
+procedure THTTPTransport.SetContentType(const Value: string);
+begin
+  FConnection.Request.ContentType := Value;
 end;
 
 procedure THTTPTransport.SetProtocolVersion(const AValue : string);
@@ -184,6 +197,11 @@ begin
   FConnection.ProxyParams.ProxyUsername := AValue;
 end;
 
+procedure THTTPTransport.SetSoapAction(const Value: string);
+begin
+  FConnection.Request.CustomHeaders.Values['SOAPAction'] := Value;
+end;
+
 constructor THTTPTransport.Create();
 begin
   inherited;
@@ -196,13 +214,7 @@ begin
   inherited Destroy();
 end;
 
-procedure THTTPTransport.SendAndReceive(ARequest, AResponse: TStream);
-var
-  locTempStream, locTempRes : TMemoryStream;
-{$IFDEF WST_DBG}
-  s : TBinaryString;
-  i : Int64;
-{$ENDIF WST_DBG}
+procedure THTTPTransport.DoSendAndReceive(ARequest, AResponse: TStream);
 begin
   if not ( IsStrEmpty(FConnection.ProxyParams.ProxyUsername) and
            IsStrEmpty(FConnection.ProxyParams.ProxyPassword)
@@ -210,47 +222,16 @@ begin
   then begin
     FConnection.ProxyParams.BasicAuthentication := True;
   end;
-  FConnection.Request.CustomHeaders.Clear();
-  FConnection.Request.CustomHeaders.Values['SOAPAction'] := SoapAction;
-  FConnection.Request.ContentType := ContentType;
-{$IFDEF WST_DBG}
-  TMemoryStream(ARequest).SaveToFile('request.log');
-{$ENDIF WST_DBG}
-  if not HasFilter() then begin
-    FConnection.Post(Address,ARequest, AResponse);
-  end else begin
-    locTempRes := nil;
-    locTempStream := TMemoryStream.Create();
-    try
-      FilterInput(ARequest,locTempStream);
-{$IFDEF WST_DBG}
-      TMemoryStream(locTempStream).SaveToFile('request.log.wire');
-{$ENDIF WST_DBG}
-      locTempRes := TMemoryStream.Create();
-      FConnection.Post(Address,locTempStream,locTempRes);
-  {$IFDEF WST_DBG}
-      TMemoryStream(locTempRes).SaveToFile('response.log.wire');
-  {$ENDIF WST_DBG}
-      FilterOutput(locTempRes,AResponse);
-    finally
-      locTempRes.Free();
-      locTempStream.Free();
-    end;
-  end;
-  {$IFDEF WST_DBG}
-  if IsConsole then begin
-    i := AResponse.Size;
-    SetLength(s,i);
-    Move(TMemoryStream(AResponse).Memory^,s[1],i);
-    WriteLn('--------------------------------------------');
-    WriteLn(s);
-  end;
-  TMemoryStream(AResponse).SaveToFile('response.log');
-  {$ENDIF WST_DBG}
+  FConnection.Post(Address,ARequest, AResponse);
 end;
 
-function THTTPTransport.GetCookieManager() : ICookieManager;  
-begin  
+function THTTPTransport.GetContentType: string;
+begin
+  Result := FConnection.Request.ContentType;
+end;
+
+function THTTPTransport.GetCookieManager() : ICookieManager;
+begin
   if (FCookieManager = nil) then
     FCookieManager := TIndyCookieManager.Create(FConnection.CookieManager.CookieCollection);
   Result := FCookieManager;    

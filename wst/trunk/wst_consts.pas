@@ -25,6 +25,8 @@ resourcestring
   SERR_CannotResolveNamespace        = 'Unable to resolve this namespace : "%s".';
   SERR_DataFilterNotFound            = 'Data Filter not found : "%s".';
   SERR_DuplicateBindingName          = 'Duplicated binding : "%s".';
+  SERR_ErrorReadindDataToSocket      = 'Error %d reading data from socket';
+  SERR_ErrorSendindDataToSocket      = 'Error %d sending data to socket';
   SERR_ExpectedButFound              = '%s expected but %s found.';
   SERR_ExpectedTypeDefinition        = '"%s" was expected to be a type definition.';
   SERR_ExpectingRemotableObjectClass = 'Expecting remotable object class but found "%s".';

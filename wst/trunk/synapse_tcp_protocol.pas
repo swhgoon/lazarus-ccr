@@ -17,7 +17,7 @@ interface
 
 uses
   Classes, SysUtils,
-  service_intf, imp_utils, base_service_intf, client_utils,
+  service_intf, base_service_intf, client_utils,
   blcksock;
 
 //{$DEFINE WST_DBG}
@@ -32,29 +32,25 @@ Type
   
 {$M+}
   { TTCPTransport }
-  TTCPTransport = class(TBaseTransport,ITransport)
+  TTCPTransport = class(TBaseTCPTransport,ITransport)
   Private
-    FFormat : string;
     FConnection : TTCPBlockSocket;
-    FContentType : string;
-    FTarget: string;
     FAddress : string;
     FPort : string;
     FDefaultTimeOut: Integer;
   private
     procedure Connect();
+  protected
+    procedure DoSend(const AData; const ALength : Int64); override;
+    function DoReceive(var AData; const ALength : Int64) : Int64; override;
   public
     constructor Create();override;
     destructor Destroy();override;      
     function GetTransportName() : string; override;      
-    procedure SendAndReceive(ARequest,AResponse:TStream); override;
   Published
-    property Target : string Read FTarget Write FTarget;
-    property ContentType : string Read FContentType Write FContentType;
     property Address : string Read FAddress Write FAddress;
     property Port : string Read FPort Write FPort;
     property DefaultTimeOut : Integer read FDefaultTimeOut write FDefaultTimeOut;
-    property Format : string read FFormat write FFormat;
   End;
 {$M+}
 
@@ -62,7 +58,7 @@ Type
 
 implementation
 uses
-  binary_streamer, Math, wst_types;
+  wst_types;
 
 { TTCPTransport }
 
@@ -86,6 +82,18 @@ begin
   end;
 end;
 
+procedure TTCPTransport.DoSend(const AData; const ALength : Int64);
+begin
+  Connect();
+  FConnection.SendBuffer(@AData,ALength);
+end;
+
+function TTCPTransport.DoReceive(var AData; const ALength : Int64) : Int64;
+begin
+  Result := FConnection.RecvBufferEx(@AData,ALength,DefaultTimeOut);
+  FConnection.ExceptCheck();
+end;
+
 constructor TTCPTransport.Create();
 begin
   inherited Create();
@@ -103,95 +111,6 @@ end;
 function TTCPTransport.GetTransportName() : string;  
 begin
   Result := sTRANSPORT_NAME;  
-end;
-
-procedure TTCPTransport.SendAndReceive(ARequest, AResponse: TStream);
-
-  procedure ReadResponse(ADest : TStream);
-  var
-    bufferLen : LongInt;
-    i, j, c : PtrInt;
-    locBinBuff : TByteDynArray;
-  begin
-    bufferLen := 0;
-    FConnection.RecvBufferEx(@bufferLen,SizeOf(bufferLen),DefaultTimeOut);
-    FConnection.ExceptCheck();
-    bufferLen := Reverse_32(bufferLen);
-    ADest.Size := bufferLen;
-    if ( bufferLen > 0 ) then begin
-      c := 0;
-      i := 1024;
-      if ( i > bufferLen ) then
-        i := bufferLen;
-      SetLength(locBinBuff,i);
-      repeat
-        j := FConnection.RecvBufferEx(@(locBinBuff[0]),i,DefaultTimeOut);
-        FConnection.ExceptCheck();
-        ADest.Write(locBinBuff[0],j);
-        Inc(c,j);
-        i := Min(1024,(bufferLen-c));
-      until ( i =0 ) or ( j <= 0 );
-    end;
-    ADest.Position := 0;
-  end;
-
-Var
-  wrtr : IDataStore;
-  buffStream : TMemoryStream;
-  binBuff : TByteDynArray;
-  locTempStream, locTempRes : TMemoryStream;
-begin
-  locTempStream := nil;
-  locTempRes := nil;
-  buffStream := TMemoryStream.Create();
-  Try
-    wrtr := CreateBinaryWriter(buffStream);
-    wrtr.WriteInt32S(0);
-    wrtr.WriteAnsiStr(Target);
-    wrtr.WriteAnsiStr(ContentType);
-    wrtr.WriteAnsiStr(Self.Format);
-    if not HasFilter() then begin
-      SetLength(binBuff,ARequest.Size);
-      ARequest.Position := 0;
-      ARequest.Read(binBuff[0],Length(binBuff));
-    end else begin
-      locTempStream := TMemoryStream.Create();
-      FilterInput(ARequest,locTempStream);
-{$IFDEF WST_DBG}
-      TMemoryStream(locTempStream).SaveToFile('request.log.wire');
-{$ENDIF WST_DBG}
-      SetLength(binBuff,locTempStream.Size);
-      locTempStream.Position := 0;
-      locTempStream.Read(binBuff[0],Length(binBuff));
-      locTempStream.Size := 0;
-    end;
-    wrtr.WriteBinary(binBuff);
-    buffStream.Position := 0;
-    wrtr.WriteInt32S(buffStream.Size-4);
-    buffStream.Position := 0;
-
-    Connect();
-    FConnection.SendBuffer(buffStream.Memory,buffStream.Size);
-
-    if not HasFilter() then begin
-      ReadResponse(AResponse);
-    end else begin
-      locTempRes := TMemoryStream.Create();
-      ReadResponse(locTempRes);
-  {$IFDEF WST_DBG}
-      TMemoryStream(locTempRes).SaveToFile('response.log.wire');
-  {$ENDIF WST_DBG}
-      FilterOutput(locTempRes,AResponse);
-    end;
-
-    {$IFDEF WST_DBG}
-    TMemoryStream(AResponse).SaveToFile('response.log');
-    {$ENDIF WST_DBG}
-  Finally
-    locTempStream.Free();
-    locTempRes.Free();
-    buffStream.Free();
-  End;
 end;
 
 procedure SYNAPSE_RegisterTCP_Transport();

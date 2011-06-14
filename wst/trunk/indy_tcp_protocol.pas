@@ -31,36 +31,33 @@ Type
   End;
 
   { TTCPTransport }
-  TTCPTransport = class(TBaseTransport,ITransport)
+  TTCPTransport = class(TBaseTCPTransport,ITransport)
   Private
-    FFormat : string;
     FConnection : TIdTCPClient;
-    FContentType : string;
-    FTarget: string;
     FAddress : string;
     FPort : string;
     FDefaultTimeOut: Integer;
   private
     procedure Connect();
+  protected
+    procedure DoSend(const AData; const ALength : Int64); override;
+    function DoReceive(var AData; const ALength : Int64) : Int64; override;
   public
     constructor Create();override;
     destructor Destroy();override;
     function GetTransportName() : string; override;
-    procedure SendAndReceive(ARequest,AResponse:TStream); override;
   Published
-    property Target : string Read FTarget Write FTarget;
-    property ContentType : string Read FContentType Write FContentType;
     property Address : string Read FAddress Write FAddress;
     property Port : string read FPort write FPort;
     property DefaultTimeOut : Integer read FDefaultTimeOut write FDefaultTimeOut;
-    property Format : string read FFormat write FFormat;
   End;
 
   procedure INDY_RegisterTCP_Transport();
 
 implementation
 uses
-  binary_streamer, wst_types;
+  binary_streamer, wst_types,
+  IdGlobal;
 
 { TTCPTransport }
 
@@ -100,81 +97,65 @@ begin
   inherited Destroy();
 end;
 
+function TTCPTransport.DoReceive(var AData; const ALength: Int64): Int64;
+const
+  BUFFER_LEN = 8 * 1024;
+var
+  locBuffer : TIdBytes;
+  p : PByte;
+  k : Integer;
+  len : Integer;
+begin
+  Result := 0;
+  if (ALength=0) then
+    exit;
+
+  p := PByte(@AData);
+  len := ALength;
+  repeat
+    if (len > BUFFER_LEN) then
+      k := BUFFER_LEN
+    else
+      k := len;
+    FConnection.IOHandler.ReadBytes(locBuffer,k,False);
+    Move(locBuffer[0],p^,k);
+    Inc(P,k);
+    Dec(len,k);
+  until (len=0);
+  Result := ALength;
+end;
+
+procedure TTCPTransport.DoSend(const AData; const ALength: Int64);
+const
+  BUFFER_LEN = 8 * 1024;
+var
+  locBuffer : TIdBytes;
+  p : PByte;
+  k : Integer;
+  len : Integer;
+begin
+  if (ALength < 1) then
+    exit;
+
+  Connect();
+  SetLength(locBuffer,BUFFER_LEN);
+  p := PByte(@AData);
+  len := ALength;
+  repeat
+    if (len > BUFFER_LEN) then
+      k := BUFFER_LEN
+    else
+      k := len;
+    Move(p^,locBuffer[0],k);
+    FConnection.IOHandler.Write(locBuffer,k);
+    Inc(P,k);
+    Dec(len,k);
+  until (len=0);
+end;
+
 function TTCPTransport.GetTransportName() : string;
 begin
   Result := sTRANSPORT_NAME;
-end;
-
-procedure TTCPTransport.SendAndReceive(ARequest, AResponse: TStream);
-var
-  wrtr : IDataStore;
-  buffStream : TMemoryStream;
-  binBuff : TByteDynArray;
-  bufferLen : LongInt;
-  locTempStream : TMemoryStream;
-begin
-{$IFDEF WST_DBG}
-  TMemoryStream(ARequest).SaveToFile('request.log');
-{$ENDIF WST_DBG}
-  locTempStream := nil;
-  buffStream := TMemoryStream.Create();
-  try
-    wrtr := CreateBinaryWriter(buffStream);
-    wrtr.WriteInt32S(0);
-    wrtr.WriteAnsiStr(Target);
-    wrtr.WriteAnsiStr(ContentType);
-    wrtr.WriteAnsiStr(Self.Format);
-    if not HasFilter() then begin
-      SetLength(binBuff,ARequest.Size);
-      ARequest.Position := 0;
-      ARequest.Read(binBuff[0],Length(binBuff));
-    end else begin
-      locTempStream := TMemoryStream.Create();
-      FilterInput(ARequest,locTempStream);
-{$IFDEF WST_DBG}
-      TMemoryStream(locTempStream).SaveToFile('request.log.wire');
-{$ENDIF WST_DBG}
-      SetLength(binBuff,locTempStream.Size);
-      locTempStream.Position := 0;
-      locTempStream.Read(binBuff[0],Length(binBuff));
-      locTempStream.Size := 0;
-    end;
-    wrtr.WriteBinary(binBuff);
-    buffStream.Position := 0;
-    wrtr.WriteInt32S(buffStream.Size-4);
-    buffStream.Position := 0;
-
-    Connect();
-    FConnection.IOHandler.Write(buffStream,buffStream.Size,False);
-
-    bufferLen := FConnection.IOHandler.ReadLongInt(False);
-    bufferLen := Reverse_32(bufferLen);
-    if not HasFilter() then begin
-      AResponse.Size := bufferLen;
-      if ( bufferLen > 0 ) then begin
-        AResponse.Position := 0;
-        FConnection.IOHandler.ReadStream(AResponse,bufferLen,False);
-      end;
-    end else begin
-      locTempStream.Size := bufferLen;
-      if ( bufferLen > 0 ) then begin
-        locTempStream.Position := 0;
-        FConnection.IOHandler.ReadStream(locTempStream,bufferLen,False);
-  {$IFDEF WST_DBG}
-        TMemoryStream(locTempStream).SaveToFile('response.log.wire');
-  {$ENDIF WST_DBG}
-        FilterOutput(locTempStream,AResponse);
-        locTempStream.Size := 0;
-      end;
-    end;
-    AResponse.Position := 0;
-    {$IFDEF WST_DBG}
-    TMemoryStream(AResponse).SaveToFile('response.log');
-    {$ENDIF WST_DBG}
-  finally
-    locTempStream.Free();
-    buffStream.Free();
-  end;
 end;
 
 procedure INDY_RegisterTCP_Transport();

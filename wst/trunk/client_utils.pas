@@ -35,6 +35,7 @@ Type
     procedure SetFilterString(const Value: string);
     procedure FilterInput(ASource, ADest : TStream);
     procedure FilterOutput(ASource, ADest : TStream);
+    procedure DoSendAndReceive(ARequest,AResponse:TStream); virtual; abstract;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -45,12 +46,120 @@ Type
   published
     property FilterString : string read GetFilterString write SetFilterString;
   End;
+
+  { TBaseTCPTransport }
+
+  TBaseTCPTransport = class(TBaseTransport,ITransport)
+  private
+    FContentType : string;
+    FFormat : string;
+    FTarget : string;
+  protected
+    procedure DoSend(const AData; const ALength : Int64); virtual; abstract;
+    function DoReceive(var AData; const ALength : Int64) : Int64; virtual; abstract;
+  public
+    procedure SendAndReceive(ARequest,AResponse:TStream); override;
+  Published
+    property Target : string Read FTarget Write FTarget;
+    property ContentType : string Read FContentType Write FContentType;
+    property Format : string read FFormat write FFormat;
+  end;
+
 {$M+}
 
 
 implementation
 uses
-  wst_consts;
+  wst_consts, binary_streamer, Math;
+
+{ TBaseTCPTransport }
+
+procedure TBaseTCPTransport.SendAndReceive(ARequest, AResponse : TStream);
+
+  procedure ReadResponse(ADest : TStream);
+  var
+    bufferLen : LongInt;
+    i, j, c : PtrInt;
+    locBinBuff : TByteDynArray;
+  begin
+    bufferLen := 0;
+    DoReceive(bufferLen,SizeOf(bufferLen));
+    bufferLen := Reverse_32(bufferLen);
+    ADest.Size := bufferLen;
+    if ( bufferLen > 0 ) then begin
+      c := 0;
+      i := 1024;
+      if ( i > bufferLen ) then
+        i := bufferLen;
+      SetLength(locBinBuff,i);
+      repeat
+        j := DoReceive(locBinBuff[0],i);
+        ADest.Write(locBinBuff[0],j);
+        Inc(c,j);
+        i := Min(1024,(bufferLen-c));
+      until ( i =0 ) or ( j <= 0 );
+    end;
+    ADest.Position := 0;
+  end;
+
+Var
+  wrtr : IDataStore;
+  buffStream : TMemoryStream;
+  binBuff : TByteDynArray;
+  locTempStream, locTempRes : TMemoryStream;
+begin
+  locTempStream := nil;
+  locTempRes := nil;
+  buffStream := TMemoryStream.Create();
+  Try
+    wrtr := CreateBinaryWriter(buffStream);
+    wrtr.WriteInt32S(0);
+    wrtr.WriteAnsiStr(Target);
+    wrtr.WriteAnsiStr(ContentType);
+    wrtr.WriteAnsiStr(Self.Format);
+    if not HasFilter() then begin
+      SetLength(binBuff,ARequest.Size);
+      ARequest.Position := 0;
+      ARequest.Read(binBuff[0],Length(binBuff));
+    end else begin
+      locTempStream := TMemoryStream.Create();
+      FilterInput(ARequest,locTempStream);
+{$IFDEF WST_DBG}
+      TMemoryStream(locTempStream).SaveToFile('request.log.wire');
+{$ENDIF WST_DBG}
+      SetLength(binBuff,locTempStream.Size);
+      locTempStream.Position := 0;
+      locTempStream.Read(binBuff[0],Length(binBuff));
+      locTempStream.Size := 0;
+    end;
+    wrtr.WriteBinary(binBuff);
+    SetLength(binBuff,0);
+    buffStream.Position := 0;
+    wrtr.WriteInt32S(buffStream.Size-4);
+    buffStream.Position := 0;
+
+    DoSend(buffStream.Memory^,buffStream.Size);
+
+    if not HasFilter() then begin
+      ReadResponse(AResponse);
+    end else begin
+      locTempRes := TMemoryStream.Create();
+      ReadResponse(locTempRes);
+  {$IFDEF WST_DBG}
+      TMemoryStream(locTempRes).SaveToFile('response.log.wire');
+  {$ENDIF WST_DBG}
+      FilterOutput(locTempRes,AResponse);
+    end;
+
+    {$IFDEF WST_DBG}
+    TMemoryStream(AResponse).SaveToFile('response.log');
+    {$ENDIF WST_DBG}
+  Finally
+    locTempStream.Free();
+    locTempRes.Free();
+    buffStream.Free();
+  End;
+end;
 
 { TBaseTransport }
 
@@ -67,8 +176,35 @@ begin
 end;
 
 procedure TBaseTransport.SendAndReceive(ARequest, AResponse : TStream);
+var
+  locTempStream, locTempRes : TMemoryStream;
 begin
-  raise ETransportExecption.CreateFmt(SERR_UnsupportedOperation,['SendAndReceive']);
+  if not HasFilter() then begin
+    DoSendAndReceive(ARequest,AResponse);
+  end else begin
+    locTempRes := nil;
+    locTempStream := TMemoryStream.Create();
+    try
+      FilterInput(ARequest,locTempStream);
+{$IFDEF WST_DBG}
+      TMemoryStream(locTempStream).SaveToFile('request.log.wire');
+{$ENDIF WST_DBG}
+      locTempRes := TMemoryStream.Create();
+      DoSendAndReceive(locTempStream,locTempRes);
+      locTempStream.Clear();
+  {$IFDEF WST_DBG}
+      TMemoryStream(locTempRes).SaveToFile('response.log.wire');
+  {$ENDIF WST_DBG}
+      FilterOutput(locTempRes,AResponse);
+    finally
+      locTempRes.Free();
+      locTempStream.Free();
+    end;
+  end;
+{$IFDEF WST_DBG}
+  TMemoryStream(ARequest).SaveToFile('request.log');
+  TMemoryStream(AResponse).SaveToFile('response.log');
+{$ENDIF}
 end;
 
 function TBaseTransport.GetCookieManager() : ICookieManager;
