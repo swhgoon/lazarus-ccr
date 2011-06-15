@@ -19,10 +19,13 @@ type
     FClassNum, FMethodNum: Integer;
     procedure ProcessModelFile(ASourceFile, APasOutputFile, AJavaOutputFile: string);
     procedure ProcessModelLine(ASourceLine: string);
-    procedure ProcessModelMethodClass(ASourceLine: string);
-    procedure ProcessModelMethodLine(ASourceLine: string);
+    procedure ProcessModelClass(ASourceLine: string);
+    procedure ProcessModelMethod(ASourceLine: string);
+    procedure ProcessModelConstructor(ASourceLine: string);
     function GetNextWord(ALine: string; var AStartPos: Integer): string;
     function GetPascalTypeName(ABaseName: string): string;
+    function GetJavaResultFunction(AReturnType: string): string;
+    function GetJavaTypeReader(AType: string): string;
   public
     constructor Create;
     destructor Destroy; override;
@@ -105,19 +108,25 @@ begin
   // Starting a new class
   if ASourceLine[1] = '[' then
   begin
-    ProcessModelMethodClass(ASourceLine);
+    ProcessModelClass(ASourceLine);
     Exit;
   end;
 
   // Adding methods to a class
   if lCurWord = 'method' then
   begin
-    ProcessModelMethodLine(ASourceLine);
+    ProcessModelMethod(ASourceLine);
+    Exit;
+  end;
+
+  if lCurWord = 'constructor' then
+  begin
+    ProcessModelConstructor(ASourceLine);
     Exit;
   end;
 end;
 
-procedure TAndroidSDKBindingsGen.ProcessModelMethodClass(ASourceLine: string);
+procedure TAndroidSDKBindingsGen.ProcessModelClass(ASourceLine: string);
 var
   lReaderPos: Integer = 1;
   lCurWord, lParentClassName: string;
@@ -146,7 +155,7 @@ begin
   FJavaOutputIDs.Add('  // ' + FClassName);
 end;
 
-procedure TAndroidSDKBindingsGen.ProcessModelMethodLine(
+procedure TAndroidSDKBindingsGen.ProcessModelMethod(
   ASourceLine: string);
 var
   lReaderPos: Integer = 1;
@@ -179,17 +188,17 @@ begin
   FPasOutputImpl.Add('  vAndroidPipesComm.SendInt(Index); // Self, Java Pointer');
 
   lJavaParamSelf := 'param_self_' + FClassName;
-  FJavaOutputMethods.Add('  // ' + ASourceLine);
-  FJavaOutputMethods.Add('  case ' + lIDString + ':');
-  FJavaOutputMethods.Add('    DebugOut("' + lIDString + '");');
-  FJavaOutputMethods.Add('    // Self');
-  FJavaOutputMethods.Add('    lInt = MyAndroidPipesComm.GetInt();');
-  FJavaOutputMethods.Add('    ' + lJavaParamSelf + ' = (' + FClassName + ') ViewElements.get(lInt);');
-  FJavaOutputMethods.Add('    // params');
+  FJavaOutputMethods.Add('    // ' + ASourceLine);
+  FJavaOutputMethods.Add('    case ' + lIDString + ':');
+  FJavaOutputMethods.Add('      DebugOut("' + lIDString + '");');
+  FJavaOutputMethods.Add('      // Self');
+  FJavaOutputMethods.Add('      lInt = MyAndroidPipesComm.GetInt();');
+  FJavaOutputMethods.Add('      ' + lJavaParamSelf + ' = (' + FClassName + ') ViewElements.get(lInt);');
+  FJavaOutputMethods.Add('      // params');
 
   // Lists of constants for the IDs
-  FPasOutputIDs.Add('  ' + lIDString + ' = 0' + IntToHex(FClassNum*$1000+FMethodNum, 8) +  ';');
-  FJavaOutputIDs.Add('  static final int ' + lIDString + ' = 0x0' + IntToHex(FClassNum*$1000+FMethodNum, 8) +  ';');
+  FPasOutputIDs.Add('  ' + lIDString + ' = $' + IntToHex(FClassNum*$1000+FMethodNum, 8) +  ';');
+  FJavaOutputIDs.Add('  static final int ' + lIDString + ' = 0x' + IntToHex(FClassNum*$1000+FMethodNum, 8) +  ';');
 
   // Add all parameters
   TmpStr := lMethodName + '(';
@@ -208,7 +217,7 @@ begin
 
     // Java parameter reading
     lJavaParamVar := 'l' + lParamType + '_' + IntToStr(lParamNum);
-    FJavaOutputMethods.Add('    ' + lJavaParamVar + ' = MyAndroidPipesComm.GetInt();');
+    FJavaOutputMethods.Add('      ' + lJavaParamVar + ' = MyAndroidPipesComm.' + GetJavaTypeReader(lParamType) + '();');
     lJavaParams := lJavaParams + lJavaParamVar + ', ';
 
     Inc(lParamNum);
@@ -236,18 +245,57 @@ begin
   FPasOutputImpl.Add('end;');
   FPasOutputImpl.Add('');
 
-  FJavaOutputMethods.Add('    //');
+  FJavaOutputMethods.Add('      //');
   if lMethodReturn = 'void' then
   begin
-    FJavaOutputMethods.Add('    ' + lJavaParamSelf + '.' + lMethodName + '(' + lJavaParams + ');');
-    FJavaOutputMethods.Add('    MyAndroidPipesComm.SendResult();');
+    FJavaOutputMethods.Add('      ' + lJavaParamSelf + '.' + lMethodName + '(' + lJavaParams + ');');
+    FJavaOutputMethods.Add('      MyAndroidPipesComm.SendResult();');
   end
   else
   begin
-    FJavaOutputMethods.Add('    lResult_' + lMethodReturn + ' = ' + lJavaParamSelf + '.' + lMethodName + '(' + lJavaParams + ');');
-    FJavaOutputMethods.Add('    MyAndroidPipesComm.SendIntResult(lResult_' + lMethodReturn + ');');
+    FJavaOutputMethods.Add('      lResult_' + lMethodReturn + ' = ' + lJavaParamSelf + '.' + lMethodName + '(' + lJavaParams + ');');
+    FJavaOutputMethods.Add('      MyAndroidPipesComm.' + GetJavaResultFunction(lMethodReturn) + '(lResult_' + lMethodReturn + ');');
   end;
-  FJavaOutputMethods.Add('    break;');
+  FJavaOutputMethods.Add('      break;');
+
+  Inc(FMethodNum);
+end;
+
+procedure TAndroidSDKBindingsGen.ProcessModelConstructor(ASourceLine: string);
+var
+  lReaderPos: Integer = 1;
+  lCurWord: string;
+  lParamNum: Integer = 1;
+  lMethodName, lParamType, lParamTypePas, lParamName: string;
+  DeclarationBase, TmpStr, lIDString: string;
+  FPasOutputImplCurLine: Integer;
+begin
+  if ASourceLine = '' then Exit;
+
+  lCurWord := GetNextWord(ASourceLine, lReaderPos);
+
+  // Method type and name
+  lMethodName := GetNextWord(ASourceLine, lReaderPos);
+
+  lIDString := 'amkUI_' + FClassNamePas + '_' + lMethodName;
+
+  FPasOutputClasses.Add('    constructor ' + lMethodName + '();');
+
+  FPasOutputImpl.Add('constructor ' + FClassNamePas + '.' + lMethodName + '();');
+  FPasOutputImpl.Add('begin');
+  FPasOutputImpl.Add('  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));');
+  FPasOutputImpl.Add('  vAndroidPipesComm.SendInt(' + lIDString + ');');
+  FPasOutputImpl.Add('  Index := vAndroidPipesComm.WaitForIntReturn();');
+  FPasOutputImpl.Add('end;');
+
+  FPasOutputIDs.Add('  ' + lIDString + ' = $' + IntToHex(FClassNum*$1000+FMethodNum, 8) +  ';');
+  FJavaOutputIDs.Add('  static final int ' + lIDString + ' = 0x' + IntToHex(FClassNum*$1000+FMethodNum, 8) +  ';');
+
+  FJavaOutputMethods.Add('    case ' + lIDString + ':');
+  FJavaOutputMethods.Add('      DebugOut("' + lIDString + '");');
+  FJavaOutputMethods.Add('      ViewElements.add(new ' + FClassName + '(activity));');
+  FJavaOutputMethods.Add('      MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);');
+  FJavaOutputMethods.Add('      break;');
 
   Inc(FMethodNum);
 end;
@@ -299,6 +347,19 @@ begin
   else if ABaseName = 'CharSequence' then Result := 'string'
   else if ABaseName = 'TJavaObject' then Result := ABaseName
   else Result := 'T' + ABaseName;
+end;
+
+function TAndroidSDKBindingsGen.GetJavaResultFunction(AReturnType: string
+  ): string;
+begin
+  if AReturnType = 'boolean' then Result :=  'SendBoolResult'
+  else Result := 'SendIntResult';
+end;
+
+function TAndroidSDKBindingsGen.GetJavaTypeReader(AType: string): string;
+begin
+  if AType = 'boolean' then Exit('GetBool')
+  else Exit('GetInt');
 end;
 
 constructor TAndroidSDKBindingsGen.Create;
