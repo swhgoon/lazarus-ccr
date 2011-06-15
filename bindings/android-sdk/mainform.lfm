@@ -1,0 +1,47 @@
+object Form1: TForm1
+  Left = 479
+  Height = 414
+  Top = 137
+  Width = 434
+  Caption = 'Android Bindings Generator'
+  ClientHeight = 414
+  ClientWidth = 434
+  LCLVersion = '0.9.31'
+  object Label1: TLabel
+    Left = 8
+    Height = 18
+    Top = 8
+    Width = 43
+    Caption = 'Label1'
+    ParentColor = False
+  end
+  object editInputPath: TDirectoryEdit
+    Left = 64
+    Height = 25
+    Top = 72
+    Width = 312
+    Directory = '/home/felipe/Programas/lazarus-ccr/bindings/android-sdk/sdk_level_7'
+    ShowHidden = False
+    ButtonWidth = 23
+    NumGlyphs = 0
+    MaxLength = 0
+    TabOrder = 0
+  end
+  object Label2: TLabel
+    Left = 7
+    Height = 18
+    Top = 73
+    Width = 43
+    Caption = 'Label2'
+    ParentColor = False
+  end
+  object Button1: TButton
+    Left = 17
+    Height = 25
+    Top = 120
+    Width = 155
+    Caption = 'Build the Bindings'
+    OnClick = Button1Click
+    TabOrder = 1
+  end
+end
