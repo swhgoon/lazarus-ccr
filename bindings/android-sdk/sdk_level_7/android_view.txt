@@ -1,6 +1,17 @@
-[MenuItem] TJavaObject
-classcallback MenuItem.OnMenuItemClickListener boolean onMenuItemClick (MenuItem item)
-method MenuItem setOnMenuItemClickListener (MenuItem.OnMenuItemClickListener menuItemClickListener)
+#[MenuItem] TJavaObject
+#classcallback MenuItem.OnMenuItemClickListener boolean onMenuItemClick (MenuItem item)
+#method MenuItem setOnMenuItemClickListener (MenuItem.OnMenuItemClickListener menuItemClickListener)
+#
+#[Menu] TJavaObject
+#method MenuItem 	add(int groupId, int itemId, int order, CharSequence title)
 
-[Menu] TJavaObject
-method MenuItem 	add(int groupId, int itemId, int order, CharSequence title)
+[CompoundButton] Button 110
+method boolean 	isChecked() 
+method boolean 	performClick() 
+method void 	setChecked(boolean checked) 
+#method void 	setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener listener) 
+method void 	toggle() 
+
+[CheckBox] CompoundButton 111
+constructor Create
+

@@ -13,13 +13,16 @@ type
 
   TAndroidSDKBindingsGen = class
   private
-    FSourceFile, FPasOutputClasses, FPasOutputImpl: TStringList;
+    FSourceFile, FPasOutputClasses, FPasOutputIDs, FPasOutputImpl: TStringList;
     FClassName: string; // Class name of the class currently being parsed
+    FClassNum, FMethodNum: Integer;
     procedure ProcessModelFile(ASourceFile, APasOutputFile, AJavaOutputDir: string);
     procedure ProcessModelLine(ASourceLine: string);
     function GetNextWord(ALine: string; var AStartPos: Integer): string;
     function GetPascalTypeName(ABaseName: string): string;
   public
+    constructor Create;
+    destructor Destroy; override;
     procedure GenerateAllBindings(AInputDir, APasOutputDir, AJavaOutputDir: string);
   end;
 
@@ -36,9 +39,6 @@ var
   i: Integer;
   lPasOutputFile: TStringList;
 begin
-  FSourceFile := TStringList.Create;
-  FPasOutputClasses := TStringList.Create;
-  FPasOutputImpl := TStringList.Create;
   lPasOutputFile := TStringList.Create;
   try
     FSourceFile.LoadFromFile(ASourceFile);
@@ -60,8 +60,10 @@ begin
     lPasOutputFile.AddStrings(FPasOutputClasses);
     lPasOutputFile.Add('  end;');
     lPasOutputFile.Add('');
-    lPasOutputFile.Add('');
     lPasOutputFile.Add('implementation');
+    lPasOutputFile.Add('');
+    lPasOutputFile.Add('const');
+    lPasOutputFile.AddStrings(FPasOutputIDs);
     lPasOutputFile.Add('');
     lPasOutputFile.AddStrings(FPasOutputImpl);
     lPasOutputFile.Add('');
@@ -69,9 +71,6 @@ begin
 
     lPasOutputFile.SaveToFile(APasOutputFile);
   finally
-    FSourceFile.Free;
-    FPasOutputClasses.Free;
-    FPasOutputImpl.Free;
     lPasOutputFile.Free;
   end;
 end;
@@ -81,11 +80,15 @@ var
   lReaderPos: Integer = 1;
   lCurWord, lParentClassName: string;
   lMethodReturn, lMethodName, lParamType, lParamName: string;
-  TmpStr: string;
+  DeclarationBase, TmpStr: string;
+  FPasOutputImplCurLine: Integer;
 begin
   if ASourceLine = '' then Exit;
 
   lCurWord := GetNextWord(ASourceLine, lReaderPos);
+
+  // Comments
+  if ASourceLine[1] = '#' then Exit;
 
   // Starting a new class
   if ASourceLine[1] = '[' then
@@ -101,20 +104,34 @@ begin
     lParentClassName := GetPascalTypeName(lParentClassName);
     FPasOutputClasses.Add(Format('  %s = class(%s)', [FClassName, lParentClassName]));
     FPasOutputClasses.Add('  public');
+    lCurWord := GetNextWord(ASourceLine, lReaderPos);
+    Inc(FClassNum);
+    FMethodNum := 0;
+
+    Exit;
   end;
 
   // Adding methods to a class
   if lCurWord = 'method' then
   begin
+    // Method type and name
     lMethodReturn := GetNextWord(ASourceLine, lReaderPos);
     lMethodReturn := GetPascalTypeName(lMethodReturn);
     lMethodName := GetNextWord(ASourceLine, lReaderPos);
 
-    if lMethodReturn = 'void' then TmpStr := '    procedure '
-    else TmpStr := '    function ';
+    if lMethodReturn = 'void' then DeclarationBase := 'procedure '
+    else DeclarationBase := 'function ';
+
+    // Beginning of the implementation part
+    FPasOutputImplCurLine := FPasOutputImpl.Count;
+    FPasOutputImpl.Add('begin');
+    FPasOutputImpl.Add('  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));');
+    FPasOutputImpl.Add('  vAndroidPipesComm.SendInt(amkUI_' + FClassName + '_' + lMethodName + ');');
+    FPasOutputImpl.Add('  vAndroidPipesComm.SendInt(Index); // Self, Java Pointer');
+    FPasOutputIDs.Add('  amkUI_' + FClassName + '_' + lMethodName + ' = 0' + IntToHex(FClassNum*$1000+FMethodNum, 8) +  ';');
 
     // Add all parameters
-    TmpStr := TmpStr + lMethodName + '(';
+    TmpStr := lMethodName + '(';
 
     repeat
       lParamType := GetNextWord(ASourceLine, lReaderPos);
@@ -124,16 +141,33 @@ begin
       if lParamName = '' then Break;
 
       TmpStr := TmpStr + lParamName + ': ' + lParamType + '; ';
+
+      FPasOutputImpl.Add('  vAndroidPipesComm.SendInt(Integer(' + lParamName + '));');
     until lParamName = '';
 
     // Remove the last ; for the parameters, if necessary
     if TmpStr[Length(TmpStr)-1] = ';' then TmpStr := System.Copy(TmpStr, 0, Length(TmpStr)-2);
 
     // Add the return
-    if lMethodReturn = 'void' then TmpStr := TmpStr + ');'
-    else TmpStr := TmpStr + '): ' + lMethodReturn + ';';
+    if lMethodReturn = 'void' then
+    begin
+      TmpStr := TmpStr + ');';
+      FPasOutputImpl.Add('  vAndroidPipesComm.WaitForReturn();');
+    end
+    else
+    begin
+      TmpStr := TmpStr + '): ' + lMethodReturn + ';';
+      FPasOutputImpl.Add('  Result := Boolean(vAndroidPipesComm.WaitForIntReturn());');
+    end;
 
-    FPasOutputClasses.Add(TmpStr);
+    FPasOutputClasses.Add('    ' + DeclarationBase + TmpStr);
+    FPasOutputImpl.Insert(FPasOutputImplCurLine, DeclarationBase + FClassName + '.' + TmpStr);
+    FPasOutputImpl.Add('end;');
+    FPasOutputImpl.Add('');
+
+    Inc(FMethodNum);
+
+    Exit;
   end;
 end;
 
@@ -142,7 +176,7 @@ end;
 function TAndroidSDKBindingsGen.GetNextWord(ALine: string;
   var AStartPos: Integer): string;
 const
-  WordSeparators = [' ','(',')','[',']',','];
+  WordSeparators = [' ','(',')','[',']',',',#9];
 var
   lState: Integer = 0;
 begin
@@ -179,10 +213,30 @@ begin
   if ABaseName = '' then Exit('');
 
   if ABaseName = 'int' then Result := 'Integer'
+  else if ABaseName = 'boolean' then Result := 'Boolean'
   else if ABaseName = 'void' then Result := ABaseName
   else if ABaseName = 'CharSequence' then Result := 'string'
   else if ABaseName = 'TJavaObject' then Result := ABaseName
   else Result := 'T' + ABaseName;
+end;
+
+constructor TAndroidSDKBindingsGen.Create;
+begin
+  FSourceFile := TStringList.Create;
+  FPasOutputClasses := TStringList.Create;
+  FPasOutputImpl := TStringList.Create;
+  FPasOutputIDs := TStringList.Create;
+  FClassNum := $100;
+end;
+
+destructor TAndroidSDKBindingsGen.Destroy;
+begin
+  FSourceFile.Free;
+  FPasOutputClasses.Free;
+  FPasOutputImpl.Free;
+  FPasOutputIDs.Free;
+
+  inherited Destroy;
 end;
 
 procedure TAndroidSDKBindingsGen.GenerateAllBindings(AInputDir, APasOutputDir,
