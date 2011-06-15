@@ -15,7 +15,7 @@ type
   private
     FSourceFile, FPasOutputClasses, FPasOutputIDs, FPasOutputImpl: TStringList;
     FJavaOutputIDs, FJavaOutputMethods: TStringList;
-    FClassName: string; // Class name of the class currently being parsed
+    FClassName, FClassNamePas: string; // Class name of the class currently being parsed
     FClassNum, FMethodNum: Integer;
     procedure ProcessModelFile(ASourceFile, APasOutputFile, AJavaOutputFile: string);
     procedure ProcessModelLine(ASourceLine: string);
@@ -132,16 +132,17 @@ begin
     FPasOutputClasses.Add('');
   end;
 
-  FClassName := GetPascalTypeName(lCurWord);
+  FClassNamePas := GetPascalTypeName(lCurWord);
+  FClassName := lCurWord;
   lParentClassName := GetNextWord(ASourceLine, lReaderPos);
   lParentClassName := GetPascalTypeName(lParentClassName);
-  FPasOutputClasses.Add(Format('  %s = class(%s)', [FClassName, lParentClassName]));
+  FPasOutputClasses.Add(Format('  %s = class(%s)', [FClassNamePas, lParentClassName]));
   FPasOutputClasses.Add('  public');
   lCurWord := GetNextWord(ASourceLine, lReaderPos);
   Inc(FClassNum);
   FMethodNum := 0;
 
-  FPasOutputIDs.Add('  // ' + FClassName);
+  FPasOutputIDs.Add('  // ' + FClassNamePas);
   FJavaOutputIDs.Add('  // ' + FClassName);
 end;
 
@@ -151,7 +152,7 @@ var
   lReaderPos: Integer = 1;
   lParamNum: Integer = 1;
   lCurWord, lParentClassName: string;
-  lMethodReturn, lMethodName, lParamType, lParamName: string;
+  lMethodReturn, lMethodReturnPas, lMethodName, lParamType, lParamTypePas, lParamName: string;
   DeclarationBase, TmpStr, lIDString: string;
   FPasOutputImplCurLine: Integer;
   lJavaParamVar, lJavaParams, lJavaParamSelf: string;
@@ -162,7 +163,7 @@ begin
 
   // Method type and name
   lMethodReturn := GetNextWord(ASourceLine, lReaderPos);
-  lMethodReturn := GetPascalTypeName(lMethodReturn);
+  lMethodReturnPas := GetPascalTypeName(lMethodReturn);
   lMethodName := GetNextWord(ASourceLine, lReaderPos);
 
   if lMethodReturn = 'void' then DeclarationBase := 'procedure '
@@ -170,7 +171,7 @@ begin
 
   // Beginning of the implementation part
   FPasOutputImplCurLine := FPasOutputImpl.Count;
-  lIDString := 'amkUI_' + FClassName + '_' + lMethodName;
+  lIDString := 'amkUI_' + FClassNamePas + '_' + lMethodName;
 
   FPasOutputImpl.Add('begin');
   FPasOutputImpl.Add('  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));');
@@ -195,12 +196,12 @@ begin
 
   repeat
     lParamType := GetNextWord(ASourceLine, lReaderPos);
-    lParamType := GetPascalTypeName(lParamType);
+    lParamTypePas := GetPascalTypeName(lParamType);
     lParamName := GetNextWord(ASourceLine, lReaderPos);
 
     if lParamName = '' then Break;
 
-    TmpStr := TmpStr + lParamName + ': ' + lParamType + '; ';
+    TmpStr := TmpStr + lParamName + ': ' + lParamTypePas + '; ';
 
     // Pascal parameter sending
     FPasOutputImpl.Add('  vAndroidPipesComm.SendInt(Integer(' + lParamName + '));');
@@ -226,12 +227,12 @@ begin
   end
   else
   begin
-    TmpStr := TmpStr + '): ' + lMethodReturn + ';';
+    TmpStr := TmpStr + '): ' + lMethodReturnPas + ';';
     FPasOutputImpl.Add('  Result := Boolean(vAndroidPipesComm.WaitForIntReturn());');
   end;
 
   FPasOutputClasses.Add('    ' + DeclarationBase + TmpStr);
-  FPasOutputImpl.Insert(FPasOutputImplCurLine, DeclarationBase + FClassName + '.' + TmpStr);
+  FPasOutputImpl.Insert(FPasOutputImplCurLine, DeclarationBase + FClassNamePas + '.' + TmpStr);
   FPasOutputImpl.Add('end;');
   FPasOutputImpl.Add('');
 
@@ -243,7 +244,7 @@ begin
   end
   else
   begin
-    FJavaOutputMethods.Add('    lResult_' + lMethodReturn + ' ' + lJavaParamSelf + '.' + lMethodName + '(' + lJavaParams + ');');
+    FJavaOutputMethods.Add('    lResult_' + lMethodReturn + ' = ' + lJavaParamSelf + '.' + lMethodName + '(' + lJavaParams + ');');
     FJavaOutputMethods.Add('    MyAndroidPipesComm.SendIntResult(lResult_' + lMethodReturn + ');');
   end;
   FJavaOutputMethods.Add('    break;');
@@ -329,9 +330,9 @@ end;
 procedure TAndroidSDKBindingsGen.GenerateAllBindings(AInputDir, APasOutputDir,
   AJavaOutputDir: string);
 begin
-  ProcessModelFile(IncludeTrailingPathDelimiter(AInputDir) + 'android_view.txt',
-    IncludeTrailingPathDelimiter(APasOutputDir) + 'android_view.pas',
-    IncludeTrailingPathDelimiter(AJavaOutputDir) + 'android_view.java');
+  ProcessModelFile(IncludeTrailingPathDelimiter(AInputDir) + 'android_all.txt',
+    IncludeTrailingPathDelimiter(APasOutputDir) + 'android_all.pas',
+    IncludeTrailingPathDelimiter(AJavaOutputDir) + 'android_all.java');
 end;
 
 initialization
