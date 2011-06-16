@@ -26,6 +26,7 @@ type
 
 // Color Conversion routines
 function VColorToFPColor(AVColor: TvColor): TFPColor; inline;
+function FPColorToVColor(AFPColor: TFPColor): TvColor;
 function VColorToRGBHexString(AVColor: TvColor): string;
 function RGBToVColor(AR, AG, AB: Byte): TvColor; inline;
 function  SeparateString(AString: string; ASeparator: Char): T10Strings;
@@ -34,10 +35,18 @@ implementation
 
 function VColorToFPColor(AVColor: TvColor): TFPColor; inline;
 begin
-  Result.Red := AVColor.Red;
-  Result.Green := AVColor.Green;
-  Result.Blue := AVColor.Blue;
-  Result.Alpha := AVColor.Alpha;
+  Result.Red := AVColor.Red shl 8;
+  Result.Green := AVColor.Green shl 8;
+  Result.Blue := AVColor.Blue shl 8;
+  Result.Alpha := AVColor.Alpha shl 8;
+end;
+
+function FPColorToVColor(AFPColor: TFPColor): TvColor;
+begin
+  Result.Red := AFPColor.Red shr 8;
+  Result.Green := AFPColor.Green shr 8;
+  Result.Blue := AFPColor.Blue shr 8;
+  Result.Alpha := AFPColor.Alpha shr 8;
 end;
 
 function VColorToRGBHexString(AVColor: TvColor): string;
