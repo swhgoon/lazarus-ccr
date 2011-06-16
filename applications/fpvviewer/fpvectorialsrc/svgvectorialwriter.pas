@@ -175,11 +175,11 @@ begin
 
   // Get the Pen Color and Style
   if APath.Pen.Style = psClear then lPenColor := 'none'
-  else lPenColor := '#' + VColorToRGBHexString(APath.Pen.Color);
+  else lPenColor := '#' + FPColorToRGBHexString(APath.Pen.Color);
 
   // Get the Brush color and style
   if APath.Brush.Style = bsClear then lFillColor := 'none'
-  else lFillColor := '#' + VColorToRGBHexString(APath.Brush.Color);
+  else lFillColor := '#' + FPColorToRGBHexString(APath.Brush.Color);
 
   // Now effectively write the path
   AStrings.Add('  <path');
