@@ -27,10 +27,15 @@ type
 // Color Conversion routines
 function FPColorToRGBHexString(AColor: TFPColor): string;
 function RGBToFPColor(AR, AG, AB: byte): TFPColor; inline;
+// Other routine
+function CanvasCoordsToFPVectorial(AY: Integer; AHeight: Integer): Integer; inline;
 function SeparateString(AString: string; ASeparator: char): T10Strings;
 
 implementation
 
+{@@ This function is utilized by the SVG writer and some other places, so
+    it shouldn't be changed.
+}
 function FPColorToRGBHexString(AColor: TFPColor): string;
 begin
   Result := Format('%.2x%.2x%.2x', [AColor.Red shr 8, AColor.Green shr 8, AColor.Blue shr 8]);
@@ -38,16 +43,21 @@ end;
 
 function RGBToFPColor(AR, AG, AB: byte): TFPColor; inline;
 begin
-  if AR > $100 then Result.Red := (AR shl 8) + $FF
-  else Result.Red := AR shl 8;
-
-  if AR > $100 then Result.Green := (AG shl 8) + $FF
-  else Result.Green := AG shl 8;
-
-  if AR > $100 then Result.Blue := (AB shl 8) + $FF
-  else Result.Blue := AB shl 8;
-
+  Result.Red := (AR shl 8) + AR;
+  Result.Green := (AG shl 8) + AG;
+  Result.Blue := (AB shl 8) + AB;
   Result.Alpha := $FFFF;
+end;
+
+{@@ Converts the coordinate system from a TCanvas to FPVectorial
+    The basic difference is that the Y axis is positioned differently and
+    points upwards in FPVectorial and downwards in TCanvas.
+    The X axis doesn't change. The fix is trivial and requires only the Height of
+    the Canvas as extra info.
+}
+function CanvasCoordsToFPVectorial(AY: Integer; AHeight: Integer): Integer; inline;
+begin
+  Result := AHeight - AY;
 end;
 
 {@@
