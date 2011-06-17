@@ -29,6 +29,7 @@ function FPColorToRGBHexString(AColor: TFPColor): string;
 function RGBToFPColor(AR, AG, AB: byte): TFPColor; inline;
 // Other routine
 function CanvasCoordsToFPVectorial(AY: Integer; AHeight: Integer): Integer; inline;
+function CanvasTextPosToFPVectorial(AY: Integer; ACanvasHeight, ATextHeight: Integer): Integer;
 function SeparateString(AString: string; ASeparator: char): T10Strings;
 
 implementation
@@ -54,10 +55,24 @@ end;
     points upwards in FPVectorial and downwards in TCanvas.
     The X axis doesn't change. The fix is trivial and requires only the Height of
     the Canvas as extra info.
+
+    @param AHeight Should receive TCanvas.Height
 }
 function CanvasCoordsToFPVectorial(AY: Integer; AHeight: Integer): Integer; inline;
 begin
   Result := AHeight - AY;
+end;
+
+{@@
+  LCL Text is positioned based on the top-left corner of the text.
+  Besides that, one also needs to take the general coordinate change into account too.
+
+  @param ACanvasHeight Should receive TCanvas.Height
+  @param ATextHeight   Should receive TFont.Size
+}
+function CanvasTextPosToFPVectorial(AY: Integer; ACanvasHeight, ATextHeight: Integer): Integer;
+begin
+  Result := CanvasCoordsToFPVectorial(AY, ACanvasHeight) - ATextHeight;
 end;
 
 {@@
