@@ -16,6 +16,7 @@ type
   TfrmFPVViewer = class(TForm)
     btnVisualize: TButton;
     btnViewDXFTokens: TButton;
+    Button1: TButton;
     buttonRenderingTest: TButton;
     editFileName: TFileNameEdit;
     notebook: TNotebook;
@@ -26,6 +27,7 @@ type
     DXFTreeView: TTreeView;
     procedure btnVisualizeClick(Sender: TObject);
     procedure btnViewDXFTokensClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
     procedure buttonRenderingTestClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -119,6 +121,19 @@ begin
     ConvertDXFTokensToTreeView(Reader.Tokenizer.Tokens, DXFTreeView);
   finally
     Reader.Free;
+    Vec.Free;
+  end;
+end;
+
+procedure TfrmFPVViewer.Button1Click(Sender: TObject);
+var
+  Vec: TvVectorialDocument;
+begin
+  Vec := TvVectorialDocument.Create;
+  try
+    Vec.ReadFromFile(editFileName.FileName);
+    Vec.WriteToFile(ChangeFileExt(editFileName.FileName, '.svg'));
+  finally
     Vec.Free;
   end;
 end;

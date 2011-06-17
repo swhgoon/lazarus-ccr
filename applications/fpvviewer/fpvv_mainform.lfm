@@ -2,10 +2,10 @@ object frmFPVViewer: TfrmFPVViewer
   Left = 318
   Height = 473
   Top = 299
-  Width = 375
+  Width = 485
   Caption = 'Free Pascal Vectorial Viewer'
   ClientHeight = 473
-  ClientWidth = 375
+  ClientWidth = 485
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   LCLVersion = '0.9.31'
@@ -68,7 +68,7 @@ object frmFPVViewer: TfrmFPVViewer
     Left = 0
     Height = 369
     Top = 104
-    Width = 375
+    Width = 485
     PageIndex = 0
     Anchors = [akTop, akLeft, akRight, akBottom]
     TabOrder = 4
@@ -76,8 +76,8 @@ object frmFPVViewer: TfrmFPVViewer
     object pageViewer: TPage
     end
     object Page2: TPage
-      ClientWidth = 33792
-      ClientHeight = 39936
+      ClientWidth = 67584
+      ClientHeight = 79872
       object DXFTreeView: TTreeView
         Left = 8
         Height = 313
@@ -96,5 +96,14 @@ object frmFPVViewer: TfrmFPVViewer
     Caption = 'Render Test'
     OnClick = buttonRenderingTestClick
     TabOrder = 5
+  end
+  object Button1: TButton
+    Left = 360
+    Height = 25
+    Top = 41
+    Width = 120
+    Caption = 'Convert to SVG'
+    OnClick = Button1Click
+    TabOrder = 6
   end
 end
