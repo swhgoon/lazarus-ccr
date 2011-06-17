@@ -3,9 +3,9 @@ unit spkt_Tools;
 (*******************************************************************************
 *                                                                              *
 *  Plik: spkt_Tools.pas                                                        *
-*  Opis: Klasy narzêdziowe u³atwiaj¹ce renderowanie toolbara.                  *
-*  Copyright: (c) 2009 by Spook. Jakiekolwiek u¿ycie komponentu bez            *
-*             uprzedniego uzyskania licencji od autora stanowi z³amanie        *
+*  Opis: Klasy narzÃªdziowe uÂ³atwiajÂ¹ce renderowanie toolbara.                  *
+*  Copyright: (c) 2009 by Spook. Jakiekolwiek uÂ¿ycie komponentu bez            *
+*             uprzedniego uzyskania licencji od autora stanowi zÂ³amanie        *
 *             prawa autorskiego!                                               *
 *                                                                              *
 *******************************************************************************)
@@ -70,14 +70,14 @@ TGuiTools.DrawRoundRect(Bitmap.Canvas,
                         not(LeftEdgeOpen or BottomEdgeOpen),
                         not(RightEdgeOpen or BottomEdgeOpen));
 
-// Wewnêtrzna krawêdŸ
-// *** Góra ***
+// WewnÃªtrzna krawÃªdÅ¸
+// *** GÃ³ra ***
 x1:=Rect.Left + radius * TopClosed * LeftClosed + LeftClosed;
 x2:=Rect.Right - radius * TopClosed * RightClosed - RightClosed;
 y1:=Rect.Top + TopClosed;
 TGuiTools.DrawHLine(Bitmap, x1, x2, y1, InnerLightColor, ClipRect);
 
-// *** Dó³ ***
+// *** DÃ³Â³ ***
 x1:=Rect.Left + radius * BottomClosed * LeftClosed + LeftClosed;
 x2:=Rect.Right - radius * BottomClosed * RightClosed - RightClosed;
 y1:=Rect.Bottom - BottomClosed;
@@ -99,7 +99,7 @@ if RightEdgeOpen then
    TGuiTools.DrawVLine(Bitmap, x1, y1, y2, InnerDarkColor, ClipRect) else
    TGuiTools.DrawVLine(Bitmap, x1, y1, y2, InnerLightColor, ClipRect);
 
-// Zaokr¹glone naro¿niki
+// ZaokrÂ¹glone naroÂ¿niki
 if not(LeftEdgeOpen or TopEdgeOpen) then
    TGuiTools.DrawAARoundCorner(Bitmap,
                                T2DIntPoint.create(Rect.left + 1, Rect.Top + 1),
@@ -129,8 +129,8 @@ if not(RightEdgeOpen or BottomEdgeOpen) then
                                InnerLightColor,
                                ClipRect);
 
-// Zewnêtrzna krawêdŸ
-// Zaokr¹glone naro¿niki
+// ZewnÃªtrzna krawÃªdÅ¸
+// ZaokrÂ¹glone naroÂ¿niki
 if not(TopEdgeOpen) then
    begin
    x1:=Rect.Left + Radius * LeftClosed;

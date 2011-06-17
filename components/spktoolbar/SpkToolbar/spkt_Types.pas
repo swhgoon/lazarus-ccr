@@ -3,9 +3,9 @@ unit spkt_Types;
 (*******************************************************************************
 *                                                                              *
 *  Plik: spkt_Types.pas                                                        *
-*  Opis: Definicje typów u¿ywanych podczas pracy toolbara                      *
-*  Copyright: (c) 2009 by Spook. Jakiekolwiek u¿ycie komponentu bez            *
-*             uprzedniego uzyskania licencji od autora stanowi z³amanie        *
+*  Opis: Definicje typÃ³w uÂ¿ywanych podczas pracy toolbara                      *
+*  Copyright: (c) 2009 by Spook. Jakiekolwiek uÂ¿ycie komponentu bez            *
+*             uprzedniego uzyskania licencji od autora stanowi zÂ³amanie        *
 *             prawa autorskiego!                                               *
 *                                                                              *
 *******************************************************************************)
@@ -29,7 +29,7 @@ type TSpkComponent = class(TComponent)
      // *** Konstruktor ***
        constructor Create(AOwner : TComponent); override;
 
-     // *** Obs³uga parenta ***
+     // *** ObsÂ³uga parenta ***
        function HasParent : boolean; override;
        function GetParentComponent : TComponent; override;
        procedure SetParentComponent(Value : TComponent); override;
@@ -45,11 +45,11 @@ type TSpkCollection = class(TPersistent)
        FListState : TSpkListState;
        FRootComponent : TComponent;
 
-     // *** Metody reakcji na zmiany w liœcie ***
+     // *** Metody reakcji na zmiany w liÅ“cie ***
        procedure Notify(Item : TComponent; Operation : TOperation); virtual;
        procedure Update; virtual;
 
-     // *** Wewnêtrzne metody dodawania i wstawiania elementów ***
+     // *** WewnÃªtrzne metody dodawania i wstawiania elementÃ³w ***
        procedure AddItem(AItem : TComponent);
        procedure InsertItem(index : integer; AItem : TComponent);
 
@@ -60,7 +60,7 @@ type TSpkCollection = class(TPersistent)
        constructor Create(RootComponent : TComponent); reintroduce; virtual;
        destructor Destroy; override;
 
-     // *** Obs³uga listy ***
+     // *** ObsÂ³uga listy ***
        procedure Clear;
        function Count : integer;
        procedure Delete(index : integer); virtual;
@@ -70,7 +70,7 @@ type TSpkCollection = class(TPersistent)
        procedure Exchange(item1, item2 : integer);
        procedure Move(IndexFrom, IndexTo : integer);
 
-     // *** Reader, writer i obs³uga designtime i DFM ***
+     // *** Reader, writer i obsÂ³uga designtime i DFM ***
        procedure WriteNames(Writer : TWriter); virtual;
        procedure ReadNames(Reader : TReader); virtual;
        procedure ProcessNames(Owner : TComponent); virtual;
@@ -85,8 +85,8 @@ implementation
 
 procedure TSpkCollection.AddItem(AItem: TComponent);
 begin
-// Ta metoda mo¿e byæ wywo³ywana bez przetworzenia nazw (w szczególnoœci, metoda
-// przetwarzaj¹ca nazwy korzysta z AddItem)
+// Ta metoda moÂ¿e byÃ¦ wywoÂ³ywana bez przetworzenia nazw (w szczegÃ³lnoÅ“ci, metoda
+// przetwarzajÂ¹ca nazwy korzysta z AddItem)
 
 Notify(AItem, opInsert);
 FList.Add(AItem);
@@ -122,7 +122,7 @@ end;
 procedure TSpkCollection.Delete(index: integer);
 begin
 if (index<0) or (index>=FList.count) then
-   raise InternalException.Create('TSpkCollection.Delete: Nieprawid³owy indeks!');
+   raise InternalException.Create('TSpkCollection.Delete: NieprawidÂ³owy indeks!');
 
 Notify(TComponent(FList[index]), opRemove);
 
@@ -147,7 +147,7 @@ end;
 function TSpkCollection.GetItems(index: integer): TComponent;
 begin
 if (index<0) or (index>=FList.Count) then
-   raise InternalException.create('TSpkCollection.GetItems: Nieprawid³owy indeks!');
+   raise InternalException.create('TSpkCollection.GetItems: NieprawidÂ³owy indeks!');
 
 result:=TComponent(FList[index]);
 end;
@@ -160,7 +160,7 @@ end;
 procedure TSpkCollection.InsertItem(index: integer; AItem: TComponent);
 begin
 if (index<0) or (index>FList.Count) then
-   raise InternalException.Create('TSpkCollection.Insert: Nieprawid³owy indeks!');
+   raise InternalException.Create('TSpkCollection.Insert: NieprawidÂ³owy indeks!');
 
 Notify(AItem, opInsert);
 
@@ -173,7 +173,7 @@ procedure TSpkCollection.Move(IndexFrom, IndexTo: integer);
 begin
 if (indexFrom<0) or (indexFrom>=FList.Count) or
    (indexTo<0) or (indexTo>=FList.Count) then
-   raise InternalException.Create('TSpkCollection.Move: Nieprawid³owy indeks!');
+   raise InternalException.Create('TSpkCollection.Move: NieprawidÂ³owy indeks!');
 
 FList.Move(IndexFrom, IndexTo);
 

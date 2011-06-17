@@ -3,9 +3,9 @@ unit spkt_Appearance;
 (*******************************************************************************
 *                                                                              *
 *  Plik: spkt_Appearance.pas                                                   *
-*  Opis: Klasy bazowe dla klas wygl¹du elementów toolbara                      *
-*  Copyright: (c) 2009 by Spook. Jakiekolwiek u¿ycie komponentu bez            *
-*             uprzedniego uzyskania licencji od autora stanowi z³amanie        *
+*  Opis: Klasy bazowe dla klas wyglÂ¹du elementÃ³w toolbara                      *
+*  Copyright: (c) 2009 by Spook. Jakiekolwiek uÂ¿ycie komponentu bez            *
+*             uprzedniego uzyskania licencji od autora stanowi zÂ³amanie        *
 *             prawa autorskiego!                                               *
 *                                                                              *
 *******************************************************************************)
@@ -35,7 +35,7 @@ type TSpkTabAppearance = class(TPersistent)
        procedure SetGradientType(const Value: TBackgroundKind);
      public
      // *** Konstruktor, destruktor, assign ***
-     // <remarks>Appearance musi mieæ assign, bo wystêpuje jako w³asnoœæ
+     // <remarks>Appearance musi mieÃ¦ assign, bo wystÃªpuje jako wÂ³asnoÅ“Ã¦
      // opublikowana.</remarks>
        procedure Assign(Source : TPersistent); override;
        constructor Create(ADispatch : TSpkBaseAppearanceDispatch);
@@ -229,7 +229,7 @@ begin
      if FDispatch<>nil then
         FDispatch.NotifyAppearanceChanged;
      end else
-         raise AssignException.create('TSpkToolbarAppearance.Assign: Nie mogê przypisaæ obiektu '+Source.ClassName+' do TSpkToolbarAppearance!');
+         raise AssignException.create('TSpkToolbarAppearance.Assign: Nie mogÃª przypisaÃ¦ obiektu '+Source.ClassName+' do TSpkToolbarAppearance!');
 end;
 
 constructor TSpkTabAppearance.Create(
@@ -397,7 +397,7 @@ begin
      if FDispatch<>nil then
         FDispatch.NotifyAppearanceChanged;
      end else
-         raise AssignException.create('TSpkPaneAppearance.Assign: Nie mogê przypisaæ obiektu '+Source.ClassName+' do TSpkPaneAppearance!');
+         raise AssignException.create('TSpkPaneAppearance.Assign: Nie mogÃª przypisaÃ¦ obiektu '+Source.ClassName+' do TSpkPaneAppearance!');
 end;
 
 constructor TSpkPaneAppearance.Create(ADispatch: TSpkBaseAppearanceDispatch);
@@ -610,7 +610,7 @@ begin
      if FDispatch<>nil then
         FDispatch.NotifyAppearanceChanged;
      end else
-         raise AssignException.create('TSpkElementAppearance.Assign: Nie mogê przypisaæ obiektu '+Source.ClassName+' do TSpkElementAppearance!');
+         raise AssignException.create('TSpkElementAppearance.Assign: Nie mogÃª przypisaÃ¦ obiektu '+Source.ClassName+' do TSpkElementAppearance!');
 end;
 
 constructor TSpkElementAppearance.Create(ADispatch: TSpkBaseAppearanceDispatch);
@@ -1075,7 +1075,7 @@ begin
      if FDispatch<>nil then
         FDispatch.NotifyAppearanceChanged;
      end else
-         raise AssignException.create('TSpkToolbarAppearance.Assign: Nie mogê przypisaæ obiektu '+Source.ClassName+' do TSpkToolbarAppearance!');
+         raise AssignException.create('TSpkToolbarAppearance.Assign: Nie mogÃª przypisaÃ¦ obiektu '+Source.ClassName+' do TSpkToolbarAppearance!');
 end;
 
 constructor TSpkToolbarAppearance.Create(ADispatch : TSpkBaseAppearanceDispatch);

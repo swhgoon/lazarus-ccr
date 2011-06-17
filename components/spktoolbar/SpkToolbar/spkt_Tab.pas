@@ -3,9 +3,9 @@ unit spkt_Tab;
 (*******************************************************************************
 *                                                                              *
 *  Plik: spkt_Tab.pas                                                          *
-*  Opis: Komponent zak³adki toolbara                                           *
-*  Copyright: (c) 2009 by Spook. Jakiekolwiek u¿ycie komponentu bez            *
-*             uprzedniego uzyskania licencji od autora stanowi z³amanie        *
+*  Opis: Komponent zakÂ³adki toolbara                                           *
+*  Copyright: (c) 2009 by Spook. Jakiekolwiek uÂ¿ycie komponentu bez            *
+*             uprzedniego uzyskania licencji od autora stanowi zÂ³amanie        *
 *             prawa autorskiego!                                               *
 *                                                                              *
 *******************************************************************************)
@@ -66,7 +66,7 @@ type TSpkTab = class;
      // *** Wyszukiwanie tafli ***
        function FindPaneAt(x, y : integer) : integer;
 
-     // *** Obs³uga designtime i DFM ***
+     // *** ObsÂ³uga designtime i DFM ***
        procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
        procedure DefineProperties(Filer : TFiler); override;
        procedure Loaded; override;
@@ -88,11 +88,11 @@ type TSpkTab = class;
        constructor Create(AOwner : TComponent); override;
        destructor Destroy; override;
 
-     // *** Geometria, obs³uga tafli, rysowanie ***
+     // *** Geometria, obsÂ³uga tafli, rysowanie ***
        function AtLeastOnePaneVisible: boolean;
        procedure Draw(ABuffer : TBitmap; AClipRect : T2DIntRect);
 
-     // *** Obs³uga gryzonia ***
+     // *** ObsÂ³uga gryzonia ***
        procedure MouseLeave;
        procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
          X, Y: Integer);
@@ -100,10 +100,10 @@ type TSpkTab = class;
        procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
          X, Y: Integer);
 
-     // *** Obs³uga zdarzeñ dyspozytora ***
+     // *** ObsÂ³uga zdarzeÃ± dyspozytora ***
        procedure NotifyAppearanceChanged;
 
-     // *** Obs³uga elementów ***
+     // *** ObsÂ³uga elementÃ³w ***
        procedure FreeingPane(APane : TSpkPane);
 
        property ToolbarDispatch : TSpkBaseToolbarDispatch read FToolbarDispatch write SetToolbarDispatch;
@@ -350,7 +350,7 @@ if FMouseActiveElement.ElementType = etPane then
    end else
 if FMouseActiveElement.ElementType = etTabArea then
    begin
-   // Placeholder, jeœli zajdzie potrzeba obs³ugi tego zdarzenia.
+   // Placeholder, jeÅ“li zajdzie potrzeba obsÂ³ugi tego zdarzenia.
    end else
 if FMouseActiveElement.ElementType = etNone then
    begin
@@ -374,7 +374,7 @@ if FMouseActiveElement.ElementType = etNone then
       FMouseActiveElement.ElementType:=etTabArea;
       FMouseActiveElement.ElementIndex:=-1;
 
-      // Placeholder, jeœli zajdzie potrzeba obs³ugi tego zdarzenia.
+      // Placeholder, jeÅ“li zajdzie potrzeba obsÂ³ugi tego zdarzenia.
       end;
    end;
 end;
@@ -390,7 +390,7 @@ if FMouseActiveElement.ElementType = etNone then
       end else
    if FMouseHoverElement.ElementType = etTabArea then
       begin
-      // Placeholder, jeœli zajdzie potrzeba obs³ugi tego zdarzenia.
+      // Placeholder, jeÅ“li zajdzie potrzeba obsÂ³ugi tego zdarzenia.
       end;
    end;
 
@@ -404,7 +404,7 @@ var i : integer;
     NewMouseHoverElement : TSpkMouseTabElement;
 
 begin
-// Szukamy obiektu pod mysz¹
+// Szukamy obiektu pod myszÂ¹
 i:=FindPaneAt(x, y);
 if i<>-1 then
    begin
@@ -431,12 +431,12 @@ if FMouseActiveElement.ElementType = etPane then
    end else
 if FMouseActiveElement.ElementType = etTabArea then
    begin
-   // Placeholder, jeœli zajdzie potrzeba obs³ugi tego zdarzenia
+   // Placeholder, jeÅ“li zajdzie potrzeba obsÂ³ugi tego zdarzenia
    end else
 if FMouseActiveElement.ElementType = etNone then
    begin
-   // Jeœli element pod mysz¹ siê zmienia, informujemy poprzedni element o
-   // tym, ¿e mysz opuszcza jego obszar
+   // JeÅ“li element pod myszÂ¹ siÃª zmienia, informujemy poprzedni element o
+   // tym, Â¿e mysz opuszcza jego obszar
    if (NewMouseHoverElement.ElementType<>FMouseHoverElement.ElementType) or
       (NewMouseHoverElement.ElementIndex<>FMouseHoverElement.ElementIndex) then
       begin
@@ -447,7 +447,7 @@ if FMouseActiveElement.ElementType = etNone then
          end else
       if FMouseHoverElement.ElementType = etTabArea then
          begin
-         // Placeholder, jeœli zajdzie potrzeba obs³ugi tego zdarzenia
+         // Placeholder, jeÅ“li zajdzie potrzeba obsÂ³ugi tego zdarzenia
          end;
       end;
 
@@ -458,7 +458,7 @@ if FMouseActiveElement.ElementType = etNone then
       end else
    if NewMouseHoverElement.ElementType = etTabArea then
       begin
-      // Placeholder, jeœli zajdzie potrzeba obs³ugi tego zdarzenia
+      // Placeholder, jeÅ“li zajdzie potrzeba obsÂ³ugi tego zdarzenia
       end;
    end;
 
@@ -480,7 +480,7 @@ if FMouseActiveElement.ElementType = etPane then
    end else
 if FMouseActiveElement.ElementType = etTabArea then
    begin
-   // Placeholder, jeœli zajdzie potrzeba obs³ugi tego zdarzenia.
+   // Placeholder, jeÅ“li zajdzie potrzeba obsÂ³ugi tego zdarzenia.
    end;
    
 if ClearActive and
@@ -494,7 +494,7 @@ if ClearActive and
       end else
    if FMouseActiveElement.ElementType = etTabArea then
       begin
-      // Placeholder, jeœli zajdzie potrzeba obs³ugi tego zdarzenia.
+      // Placeholder, jeÅ“li zajdzie potrzeba obsÂ³ugi tego zdarzenia.
       end;
 
    if FMouseHoverElement.ElementType = etPane then
@@ -504,7 +504,7 @@ if ClearActive and
       end else
    if FMouseHoverElement.ElementType = etTabArea then
       begin
-      // Placeholder, jeœli zajdzie potrzeba obs³ugi tego zdarzenia.
+      // Placeholder, jeÅ“li zajdzie potrzeba obsÂ³ugi tego zdarzenia.
       end;
    end;
 
@@ -583,7 +583,7 @@ if FOverrideAppearance then
    FPanes.Appearance:=FCustomAppearance else
    FPanes.Appearance:=FAppearance;
 
-// Metoda pe³ni rolê makra - dlatego nie powiadamia dyspozytora o zmianie.
+// Metoda peÂ³ni rolÃª makra - dlatego nie powiadamia dyspozytora o zmianie.
 end;
 
 procedure TSpkTab.SetVisible(const Value: boolean);
@@ -655,7 +655,7 @@ var Owner, Parent : TComponent;
 
 begin
 if (index<0) or (index>=self.Count) then
-   raise InternalException.create('TSpkTabs.Insert: Nieprawid³owy indeks!');
+   raise InternalException.create('TSpkTabs.Insert: NieprawidÂ³owy indeks!');
 
 if FRootComponent<>nil then
    begin
@@ -689,8 +689,8 @@ begin
 
   case Operation of
        opInsert: begin
-                 // Ustawienie dyspozytora na nil spowoduje, ¿e podczas
-                 // przypisywania w³asnoœci nie bêd¹ wo³ane metody Notify*
+                 // Ustawienie dyspozytora na nil spowoduje, Â¿e podczas
+                 // przypisywania wÂ³asnoÅ“ci nie bÃªdÂ¹ woÂ³ane metody Notify*
                  TSpkTab(Item).ToolbarDispatch:=nil;
 
                  TSpkTab(Item).Appearance:=self.FAppearance;

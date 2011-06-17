@@ -3,9 +3,9 @@ unit spkt_BaseItem;
 (*******************************************************************************
 *                                                                              *
 *  Plik: spkt_BaseItem.pas                                                     *
-*  Opis: Modu³ zawieraj¹cy bazow¹ klasê dla elementu tafli.                    *
-*  Copyright: (c) 2009 by Spook. Jakiekolwiek u¿ycie komponentu bez            *
-*             uprzedniego uzyskania licencji od autora stanowi z³amanie        *
+*  Opis: ModuÂ³ zawierajÂ¹cy bazowÂ¹ klasÃª dla elementu tafli.                    *
+*  Copyright: (c) 2009 by Spook. Jakiekolwiek uÂ¿ycie komponentu bez            *
+*             uprzedniego uzyskania licencji od autora stanowi zÂ³amanie        *
 *             prawa autorskiego!                                               *
 *                                                                              *
 *******************************************************************************)
@@ -94,7 +94,7 @@ end;
 
 destructor TSpkBaseItem.Destroy;
 begin
-  { Pozosta³e operacje }
+  { PozostaÂ³e operacje }
   inherited Destroy;
 end;
 

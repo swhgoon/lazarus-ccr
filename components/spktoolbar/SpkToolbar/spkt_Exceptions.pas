@@ -3,9 +3,9 @@ unit spkt_Exceptions;
 (*******************************************************************************
 *                                                                              *
 *  Plik: spkt_Exceptions.pas                                                   *
-*  Opis: Klasy wyj¹tków toolbara                                               *
-*  Copyright: (c) 2009 by Spook. Jakiekolwiek u¿ycie komponentu bez            *
-*             uprzedniego uzyskania licencji od autora stanowi z³amanie        *
+*  Opis: Klasy wyjÂ¹tkÃ³w toolbara                                               *
+*  Copyright: (c) 2009 by Spook. Jakiekolwiek uÂ¿ycie komponentu bez            *
+*             uprzedniego uzyskania licencji od autora stanowi zÂ³amanie        *
 *             prawa autorskiego!                                               *
 *                                                                              *
 *******************************************************************************)

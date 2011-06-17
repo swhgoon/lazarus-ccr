@@ -3,9 +3,9 @@ unit SpkToolbar;
 (*******************************************************************************
 *                                                                              *
 *  Plik: SpkToolbar.pas                                                        *
-*  Opis: G³ówny komponent toolbara                                             *
-*  Copyright: (c) 2009 by Spook. Jakiekolwiek u¿ycie komponentu bez            *
-*             uprzedniego uzyskania licencji od autora stanowi z³amanie        *
+*  Opis: GÂ³Ã³wny komponent toolbara                                             *
+*  Copyright: (c) 2009 by Spook. Jakiekolwiek uÂ¿ycie komponentu bez            *
+*             uprzedniego uzyskania licencji od autora stanowi zÂ³amanie        *
 *             prawa autorskiego!                                               *
 *                                                                              *
 *******************************************************************************)
@@ -18,18 +18,18 @@ uses Windows, Graphics, SysUtils, Controls, Classes, Messages, Math, Dialogs,
      spkt_Appearance, spkt_BaseItem, spkt_Const, spkt_Dispatch, spkt_Tab,
      spkt_Pane, spkt_Exceptions, spkt_Types;
 
-type /// <summary>Typ opisuj¹cy regiony toolbara, które s¹ u¿ywane podczas
-     /// obs³ugi interakcji z mysz¹</summary>
+type /// <summary>Typ opisujÂ¹cy regiony toolbara, ktÃ³re sÂ¹ uÂ¿ywane podczas
+     /// obsÂ³ugi interakcji z myszÂ¹</summary>
      TSpkMouseToolbarElement = (teNone, teToolbarArea, teTabs, teTabContents);
 
 type TSpkToolbar = class;
 
-     /// <summary>Klasa dyspozytora s³u¿¹ca do bezpiecznego przyjmowania
-     /// informacji oraz ¿¹dañ od pod-elementów</summary>
+     /// <summary>Klasa dyspozytora sÂ³uÂ¿Â¹ca do bezpiecznego przyjmowania
+     /// informacji oraz Â¿Â¹daÃ± od pod-elementÃ³w</summary>
      TSpkToolbarDispatch = class(TSpkBaseToolbarDispatch)
      private
-     /// <summary>Komponent toolbara, który przyjmuje informacje i ¿¹dania
-     /// od pod-elementów</summary>
+     /// <summary>Komponent toolbara, ktÃ³ry przyjmuje informacje i Â¿Â¹dania
+     /// od pod-elementÃ³w</summary>
        FToolbar : TSpkToolbar;
      protected
      public
@@ -44,29 +44,29 @@ type TSpkToolbar = class;
      // *** Implementacja abstrakcyjnych metod TSpkBaseToolbarDispatch ***
      // ******************************************************************
 
-     /// <summary>Metoda wywo³ywana, gdy zmieni siê zawartoœæ obiektu wygl¹du
-     /// zawieraj¹cego kolory i czcionki u¿ywane do rysowania toolbara.
+     /// <summary>Metoda wywoÂ³ywana, gdy zmieni siÃª zawartoÅ“Ã¦ obiektu wyglÂ¹du
+     /// zawierajÂ¹cego kolory i czcionki uÂ¿ywane do rysowania toolbara.
      /// </summary>
        procedure NotifyAppearanceChanged; override;
-     /// <summary>Metoda wywo³ywana, gdy zmieni siê lista pod-elementów jednego
-     /// z elementów toolbara</summary>
+     /// <summary>Metoda wywoÂ³ywana, gdy zmieni siÃª lista pod-elementÃ³w jednego
+     /// z elementÃ³w toolbara</summary>
        procedure NotifyItemsChanged; override;
-     /// <summary>Metoda wywo³ywana, gdy zmieni siê rozmiar lub po³o¿enie
-     /// (metryka) jednego z elementów toolbara</summary>
+     /// <summary>Metoda wywoÂ³ywana, gdy zmieni siÃª rozmiar lub poÂ³oÂ¿enie
+     /// (metryka) jednego z elementÃ³w toolbara</summary>
        procedure NotifyMetricsChanged; override;
-     /// <summary>Metoda wywo³ywana, gdy zmieni siê wygl¹d jednego z elementów
-     /// toolbara, nie wymagaj¹cy jednak przebudowania metryk.</summary>
+     /// <summary>Metoda wywoÂ³ywana, gdy zmieni siÃª wyglÂ¹d jednego z elementÃ³w
+     /// toolbara, nie wymagajÂ¹cy jednak przebudowania metryk.</summary>
        procedure NotifyVisualsChanged; override;
-     /// <summary>Metoda ¿¹da dostarczenia przez toolbar pomocniczej
-     /// bitmapy u¿ywanej - przyk³adowo - do obliczania rozmiarów renderowanego
+     /// <summary>Metoda Â¿Â¹da dostarczenia przez toolbar pomocniczej
+     /// bitmapy uÂ¿ywanej - przykÂ³adowo - do obliczania rozmiarÃ³w renderowanego
      /// tekstu</summary>
        function GetTempBitmap : TBitmap; override;
-     /// <summary>Metoda przelicza wspó³rzêdne toolbara na wspó³rzêdne
-     /// ekranu, co umo¿liwia - na przyk³ad - rozwiniêcie popup menu.</summary>
+     /// <summary>Metoda przelicza wspÃ³Â³rzÃªdne toolbara na wspÃ³Â³rzÃªdne
+     /// ekranu, co umoÂ¿liwia - na przykÂ³ad - rozwiniÃªcie popup menu.</summary>
        function ClientToScreen(Point : T2DIntPoint) : T2DIntPoint; override;
      end;
 
-     /// <summary>Rozszerzony pasek narzêdzi inspirowany Microsoft Fluent
+     /// <summary>Rozszerzony pasek narzÃªdzi inspirowany Microsoft Fluent
      /// UI</summary>
      TSpkToolbar = class(TCustomControl)
      private
@@ -74,81 +74,81 @@ type TSpkToolbar = class;
      /// toolbara</summary>
        FToolbarDispatch : TSpkToolbarDispatch;
 
-     /// <summary>Bufor w którym rysowany jest toolbar</summary>
+     /// <summary>Bufor w ktÃ³rym rysowany jest toolbar</summary>
        FBuffer : TBitmap;
-     /// <summary>Pomocnicza bitmapa przekazywana na ¿yczenie elementom
+     /// <summary>Pomocnicza bitmapa przekazywana na Â¿yczenie elementom
      /// toolbara</summary>
        FTemporary : TBitmap;
 
-     /// <summary>Tablica rectów "uchwytów" zak³adek</summary>
+     /// <summary>Tablica rectÃ³w "uchwytÃ³w" zakÂ³adek</summary>
        FTabRects : array of T2DIntRect;
-     /// <summary>Cliprect obszaru "uchwytów" zak³adek</summary>
+     /// <summary>Cliprect obszaru "uchwytÃ³w" zakÂ³adek</summary>
        FTabClipRect : T2DIntRect;
-     /// <summary>Cliprect obszaru zawartoœci zak³adki</summary>
+     /// <summary>Cliprect obszaru zawartoÅ“ci zakÂ³adki</summary>
        FTabContentsClipRect : T2DIntRect;
 
-     /// <summary>Element toolbara znajduj¹cy siê obecnie pod myszk¹</summary>
+     /// <summary>Element toolbara znajdujÂ¹cy siÃª obecnie pod myszkÂ¹</summary>
        FMouseHoverElement : TSpkMouseToolbarElement;
-     /// <summary>Element toolbara maj¹cy obecnie wy³¹cznoœæ na otrzymywanie
-     /// komunikatów od myszy</summary>
+     /// <summary>Element toolbara majÂ¹cy obecnie wyÂ³Â¹cznoÅ“Ã¦ na otrzymywanie
+     /// komunikatÃ³w od myszy</summary>
        FMouseActiveElement : TSpkMouseToolbarElement;
 
-     /// <summary>"Uchwyt" zak³adki, nad którym znajduje siê obecnie mysz
+     /// <summary>"Uchwyt" zakÂ³adki, nad ktÃ³rym znajduje siÃª obecnie mysz
      /// </summary>
        FTabHover : integer;
 
-     /// <summary>Flaga informuj¹ca o tym, czy metryki toolbara i jego elementów
-     /// s¹ aktualne</summary>
+     /// <summary>Flaga informujÂ¹ca o tym, czy metryki toolbara i jego elementÃ³w
+     /// sÂ¹ aktualne</summary>
        FMetricsValid : boolean;
-     /// <summary>Flaga informuj¹ca o tym, czy zawartoœæ bufora jest aktualna
+     /// <summary>Flaga informujÂ¹ca o tym, czy zawartoÅ“Ã¦ bufora jest aktualna
      /// </summary>
        FBufferValid : boolean;
      /// <summary>Flaga InternalUpdating pozwala na zablokowanie walidacji
-     /// metryk i bufora w momencie, gdy komponent przebudowuje swoj¹ zawartoœæ.
-     /// FInternalUpdating jest zapalana i gaszona wewnêtrznie, przez komponent.
+     /// metryk i bufora w momencie, gdy komponent przebudowuje swojÂ¹ zawartoÅ“Ã¦.
+     /// FInternalUpdating jest zapalana i gaszona wewnÃªtrznie, przez komponent.
      /// </summary>
        FInternalUpdating : boolean;
      /// <summary>Flaga IUpdating pozwala na zablokowanie walidacji
-     /// metryk i bufora w momencie, gdy u¿ytkownik przebudowuje zawartoœæ
-     /// komponentu. FUpdating jest sterowana przez u¿ytkownika.</summary>
+     /// metryk i bufora w momencie, gdy uÂ¿ytkownik przebudowuje zawartoÅ“Ã¦
+     /// komponentu. FUpdating jest sterowana przez uÂ¿ytkownika.</summary>
        FUpdating : boolean;
      protected
-     /// <summary>Instancja obiektu wygl¹du, przechowuj¹cego kolory i czcionki
-     /// u¿ywane podczas renderowania komponentu</summary>
+     /// <summary>Instancja obiektu wyglÂ¹du, przechowujÂ¹cego kolory i czcionki
+     /// uÂ¿ywane podczas renderowania komponentu</summary>
        FAppearance : TSpkToolbarAppearance;
-     /// <summary>Zak³adki toolbara</summary>
+     /// <summary>ZakÂ³adki toolbara</summary>
        FTabs : TSpkTabs;
-     /// <summary>Indeks wybranej zak³adki</summary>
+     /// <summary>Indeks wybranej zakÂ³adki</summary>
        FTabIndex : integer;
-     /// <summary>Lista ma³ych obrazków elementów toolbara</summary>
+     /// <summary>Lista maÂ³ych obrazkÃ³w elementÃ³w toolbara</summary>
        FImages : TImageList;
-     /// <summary>Lista ma³ych obrazków w stanie "disabled". Jeœli nie jest
-     /// przypisana, obrazki w stanie "disabled" bêd¹ generowane automatycznie.
+     /// <summary>Lista maÂ³ych obrazkÃ³w w stanie "disabled". JeÅ“li nie jest
+     /// przypisana, obrazki w stanie "disabled" bÃªdÂ¹ generowane automatycznie.
      /// </summary>
        FDisabledImages : TImageList;
-     /// <summary>Lista du¿ych obrazków elementów toolbara</summary>
+     /// <summary>Lista duÂ¿ych obrazkÃ³w elementÃ³w toolbara</summary>
        FLargeImages : TImageList;
-     /// <summary>Lista du¿ych obrazków w stanie "disabled". Jeœli nie jest
-     /// przypisana, obrazki w stanie "disabled" bêd¹ generowane automatycznie.
+     /// <summary>Lista duÂ¿ych obrazkÃ³w w stanie "disabled". JeÅ“li nie jest
+     /// przypisana, obrazki w stanie "disabled" bÃªdÂ¹ generowane automatycznie.
      /// </summary>
        FDisabledLargeImages : TImageList;
 
      // *******************************************
-     // *** Zarz¹dzanie stanem metryki i bufora ***
+     // *** ZarzÂ¹dzanie stanem metryki i bufora ***
      // *******************************************
 
      /// <summary>Metoda gasi flagi: FMetricsValid oraz FBufferValid</summary>
        procedure SetMetricsInvalid;
-     /// <summary>Metoda gasi flagê FBufferValid</summary>
+     /// <summary>Metoda gasi flagÃª FBufferValid</summary>
        procedure SetBufferInvalid;
-     /// <summary>Metoda waliduje metryki toolbara i jego elementów</summary>
+     /// <summary>Metoda waliduje metryki toolbara i jego elementÃ³w</summary>
        procedure ValidateMetrics;
-     /// <summary>Metoda waliduje zawartoœæ bufora</summary>
+     /// <summary>Metoda waliduje zawartoÅ“Ã¦ bufora</summary>
        procedure ValidateBuffer;
-     /// <summary>Metoda w³¹cza tryb wewnêtrznej przebudowy - zapala flagê
+     /// <summary>Metoda wÂ³Â¹cza tryb wewnÃªtrznej przebudowy - zapala flagÃª
      /// FInternalUpdating</summary>
        procedure InternalBeginUpdate;
-     /// <summary>Metoda wy³¹cza tryb wewnêtrznej przebudowy - gasi flagê
+     /// <summary>Metoda wyÂ³Â¹cza tryb wewnÃªtrznej przebudowy - gasi flagÃª
      /// FInternalUpdating</summary>
        procedure InternalEndUpdate;
 
@@ -158,43 +158,43 @@ type TSpkToolbar = class;
 
      /// <summary>Zmiana rozmiaru komponentu</summary>
        procedure Resize; override;
-     /// <summary>Metoda wywo³ywana po opuszczeniu obszaru komponentu przez
-     /// wskaŸnik myszy</summary>
+     /// <summary>Metoda wywoÂ³ywana po opuszczeniu obszaru komponentu przez
+     /// wskaÅ¸nik myszy</summary>
        procedure MouseLeave;
-     /// <summary>Metoda wywo³ywana po wciœniêciu przycisku myszy</summary>
+     /// <summary>Metoda wywoÂ³ywana po wciÅ“niÃªciu przycisku myszy</summary>
        procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
          X, Y: Integer); override;
-     /// <summary>Metoda wywo³ywana, gdy nad komponentem przesunie siê wskaŸnik
+     /// <summary>Metoda wywoÂ³ywana, gdy nad komponentem przesunie siÃª wskaÅ¸nik
      /// myszy</summary>
        procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-     /// <summary>Metoda wywo³ywana po puszczeniu przycisku myszy</summary>
+     /// <summary>Metoda wywoÂ³ywana po puszczeniu przycisku myszy</summary>
        procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
          X, Y: Integer); override;
-     /// <summary>Metoda wywo³ywana, gdy ca³y komponent wczyta siê z DFMa
+     /// <summary>Metoda wywoÂ³ywana, gdy caÂ³y komponent wczyta siÃª z DFMa
      /// </summary>
        procedure Loaded; override;
-     /// <summary>Metoda wywo³ywana, gdy komponent staje siê Ownerem innego
-     /// komponentu, b¹dŸ gdy jeden z jego pod-komponentów jest zwalniany
+     /// <summary>Metoda wywoÂ³ywana, gdy komponent staje siÃª Ownerem innego
+     /// komponentu, bÂ¹dÅ¸ gdy jeden z jego pod-komponentÃ³w jest zwalniany
      /// </summary>
        procedure Notification(AComponent: TComponent;
          Operation: TOperation); override;
 
      // ******************************************
-     // *** Obs³uga zdarzeñ myszy dla zak³adek ***
+     // *** ObsÂ³uga zdarzeÃ± myszy dla zakÂ³adek ***
      // ******************************************
 
-     /// <summary>Metoda wywo³ywana po opuszczeniu przez wskaŸnik myszy obszaru
-     /// "uchwytów" zak³adek</summary>
+     /// <summary>Metoda wywoÂ³ywana po opuszczeniu przez wskaÅ¸nik myszy obszaru
+     /// "uchwytÃ³w" zakÂ³adek</summary>
        procedure TabMouseLeave;
-     /// <summary>Metoda wywo³ywana po wciœniêciu przycisku myszy, gdy wskaŸnik
-     /// jest nad obszarem zak³adek</summary>
+     /// <summary>Metoda wywoÂ³ywana po wciÅ“niÃªciu przycisku myszy, gdy wskaÅ¸nik
+     /// jest nad obszarem zakÂ³adek</summary>
        procedure TabMouseDown(Button: TMouseButton; Shift: TShiftState;
          X, Y: Integer);
-     /// <summary>Metoda wywo³ywana, gdy mysz przesunie siê ponad obszarem
-     /// "uchwytów" zak³adek</summary>
+     /// <summary>Metoda wywoÂ³ywana, gdy mysz przesunie siÃª ponad obszarem
+     /// "uchwytÃ³w" zakÂ³adek</summary>
        procedure TabMouseMove(Shift: TShiftState; X, Y: Integer);
-     /// <summary>Metoda wywo³ywana, gdy jeden z przycisków myszy zostanie
-     /// puszczony, gdy obszar zak³adek by³ aktywnym elementem toolbara
+     /// <summary>Metoda wywoÂ³ywana, gdy jeden z przyciskÃ³w myszy zostanie
+     /// puszczony, gdy obszar zakÂ³adek byÂ³ aktywnym elementem toolbara
      /// </summary>
        procedure TabMouseUp(Button: TMouseButton; Shift: TShiftState;
          X, Y: Integer);
@@ -203,66 +203,66 @@ type TSpkToolbar = class;
      // *** Pomocnicze ***
      // ******************
 
-     /// <summary>Metoda sprawdza, czy choæ jedna zak³adka ma ustawion¹ flagê
-     /// widocznoœci (Visible)</summary>
+     /// <summary>Metoda sprawdza, czy choÃ¦ jedna zakÂ³adka ma ustawionÂ¹ flagÃª
+     /// widocznoÅ“ci (Visible)</summary>
        function AtLeastOneTabVisible : boolean;
 
      // ***************************
-     // *** Obs³uga komunikatów ***
+     // *** ObsÂ³uga komunikatÃ³w ***
      // ***************************
 
-     /// <summary>Komunikat odbierany, gdy mysz opuœci obszar komponentu
+     /// <summary>Komunikat odbierany, gdy mysz opuÅ“ci obszar komponentu
      /// </summary>
        procedure CMMouseLeave(var msg : TMessage); message CM_MOUSELEAVE;
 
      // ********************************
-     // *** Obs³uga designtime i DFM ***
+     // *** ObsÂ³uga designtime i DFM ***
      // ********************************
 
-     /// <summary>Metoda zwraca elementy, które maj¹ zostaæ zapisane jako
+     /// <summary>Metoda zwraca elementy, ktÃ³re majÂ¹ zostaÃ¦ zapisane jako
      /// pod-elementy komponentu</summary>
        procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
      /// <summary>Metoda pozwala na zapisanie lub odczytanie dodatkowych
-     /// w³asnoœci komponentu</summary>
+     /// wÂ³asnoÅ“ci komponentu</summary>
        procedure DefineProperties(Filer : TFiler); override;
 
      // *************************
      // *** Gettery i settery ***
      // *************************
 
-     /// <summary>Getter dla w³asnoœci Height</summary>
+     /// <summary>Getter dla wÂ³asnoÅ“ci Height</summary>
        function GetHeight: integer;
-     /// <summary>Setter dla w³asnoœci Appearance</summary>
+     /// <summary>Setter dla wÂ³asnoÅ“ci Appearance</summary>
        procedure SetAppearance(const Value: TSpkToolbarAppearance);
-     /// <summary>Getter dla w³asnoœci Color</summary>
+     /// <summary>Getter dla wÂ³asnoÅ“ci Color</summary>
        function GetColor: TColor;
-     /// <summary>Setter dla w³asnoœci Color</summary>
+     /// <summary>Setter dla wÂ³asnoÅ“ci Color</summary>
        procedure SetColor(const Value: TColor);
-     /// <summary>Setter dla w³asnoœci TabIndex</summary>
+     /// <summary>Setter dla wÂ³asnoÅ“ci TabIndex</summary>
        procedure SetTabIndex(const Value: integer);
-     /// <summary>Setter dla w³asnoœci Images</summary>
+     /// <summary>Setter dla wÂ³asnoÅ“ci Images</summary>
        procedure SetImages(const Value: TImageList);
-     /// <summary>Setter dla w³asnoœci DisabledImages</summary>
+     /// <summary>Setter dla wÂ³asnoÅ“ci DisabledImages</summary>
        procedure SetDisabledImages(const Value : TImageList);
-     /// <summary>Setter dla w³asnoœci LargeImages</summary>
+     /// <summary>Setter dla wÂ³asnoÅ“ci LargeImages</summary>
        procedure SetLargeImages(const Value : TImageList);
-     /// <summary>Setter dla w³asnoœci DisabledLargeImages</summary>
+     /// <summary>Setter dla wÂ³asnoÅ“ci DisabledLargeImages</summary>
        procedure SetDisabledLargeImages(const Value : TImageList);
      public
 
      // ***********************************
-     // *** Obs³uga zdarzeñ dyspozytora ***
+     // *** ObsÂ³uga zdarzeÃ± dyspozytora ***
      // ***********************************
 
-     /// <summary>Reakcja na zmianê struktury elementów toolbara</summary>
+     /// <summary>Reakcja na zmianÃª struktury elementÃ³w toolbara</summary>
        procedure NotifyItemsChanged;
-     /// <summary>Reakcja na zmianê metryki elementów toolbara</summary>
+     /// <summary>Reakcja na zmianÃª metryki elementÃ³w toolbara</summary>
        procedure NotifyMetricsChanged;
-     /// <summary>Reakcja na zmianê wygl¹du elementów toolbara</summary>
+     /// <summary>Reakcja na zmianÃª wyglÂ¹du elementÃ³w toolbara</summary>
        procedure NotifyVisualsChanged;
-     /// <summary>Reakcja na zmianê zawartoœci klasy wygl¹du toolbara</summary>
+     /// <summary>Reakcja na zmianÃª zawartoÅ“ci klasy wyglÂ¹du toolbara</summary>
        procedure NotifyAppearanceChanged;
-     /// <summary>Metoda zwraca instancjê pomocniczej bitmapy</summary>
+     /// <summary>Metoda zwraca instancjÃª pomocniczej bitmapy</summary>
        function GetTempBitmap : TBitmap;
 
      // ********************************
@@ -278,52 +278,52 @@ type TSpkToolbar = class;
      // *** Rysowanie ***
      // *****************
 
-     /// <summary>Metoda odrysowuje zawartoœæ komponentu</summary>
+     /// <summary>Metoda odrysowuje zawartoÅ“Ã¦ komponentu</summary>
        procedure Paint; override;
      /// <summary>Metoda wymusza przebudowanie metryk i bufora</summary>
        procedure ForceRepaint;
-     /// <summary>Metoda prze³¹cza komponent w tryb aktualizacji zawartoœci
+     /// <summary>Metoda przeÂ³Â¹cza komponent w tryb aktualizacji zawartoÅ“ci
      /// poprzez zapalenie flagi FUpdating</summary>
        procedure BeginUpdate;
-     /// <summary>Metoda wy³¹cza tryb aktualizacji zawartoœci poprzez zgaszenie
+     /// <summary>Metoda wyÂ³Â¹cza tryb aktualizacji zawartoÅ“ci poprzez zgaszenie
      /// flagi FUpdating</summary>
        procedure EndUpdate;
 
      // *************************
-     // *** Obs³uga elementów ***
+     // *** ObsÂ³uga elementÃ³w ***
      // *************************
 
-     /// <summary>Metoda wywo³ywana w momencie, gdy jedna z zak³adek
+     /// <summary>Metoda wywoÂ³ywana w momencie, gdy jedna z zakÂ³adek
      /// jest zwalniana</summary>
-     /// <remarks>Nie nale¿y wywo³ywaæ metody FreeingTab z kodu! Jest ona
-     /// wywo³ywana wewnêtrznie, a jej zadaniem jest zaktualizowanie wewnêtrznej
-     /// listy zak³adek.</remarks>
+     /// <remarks>Nie naleÂ¿y wywoÂ³ywaÃ¦ metody FreeingTab z kodu! Jest ona
+     /// wywoÂ³ywana wewnÃªtrznie, a jej zadaniem jest zaktualizowanie wewnÃªtrznej
+     /// listy zakÂ³adek.</remarks>
        procedure FreeingTab(ATab : TSpkTab);
 
      // **************************
-     // *** Dostêp do zak³adek ***
+     // *** DostÃªp do zakÂ³adek ***
      // **************************
 
-     /// <summary>W³asnoœæ daje dostê do zak³adek w trybie runtime. Do edycji
-     /// zak³adek w trybie designtime s³u¿y odpowiedni edytor, zaœ zapisywanie
+     /// <summary>WÂ³asnoÅ“Ã¦ daje dostÃª do zakÂ³adek w trybie runtime. Do edycji
+     /// zakÂ³adek w trybie designtime sÂ³uÂ¿y odpowiedni edytor, zaÅ“ zapisywanie
      /// i odczytywanie z DFMa jest zrealizowane manualnie.</summary>
        property Tabs : TSpkTabs read FTabs;
      published
-     /// <summary>Kolor t³a komponentu</summary>
+     /// <summary>Kolor tÂ³a komponentu</summary>
        property Color : TColor read GetColor write SetColor;
-     /// <summary>Obiekt zawieraj¹cy atrybuty wygl¹du toolbara</summary>
+     /// <summary>Obiekt zawierajÂ¹cy atrybuty wyglÂ¹du toolbara</summary>
        property Appearance : TSpkToolbarAppearance read FAppearance write SetAppearance;
-     /// <summary>Wysokoœæ toolbara (tylko do odczytu)</summary>
+     /// <summary>WysokoÅ“Ã¦ toolbara (tylko do odczytu)</summary>
        property Height : integer read GetHeight;
-     /// <summary>Aktywna zak³adka</summary>
+     /// <summary>Aktywna zakÂ³adka</summary>
        property TabIndex : integer read FTabIndex write SetTabIndex;
-     /// <summary>Lista ma³ych obrazków</summary>
+     /// <summary>Lista maÂ³ych obrazkÃ³w</summary>
        property Images : TImageList read FImages write SetImages;
-     /// <summary>Lista ma³ych obrazków w stanie "disabled"</summary>
+     /// <summary>Lista maÂ³ych obrazkÃ³w w stanie "disabled"</summary>
        property DisabledImages : TImageList read FDisabledImages write SetDisabledImages;
-     /// <summary>Lista du¿ych obrazków</summary>
+     /// <summary>Lista duÂ¿ych obrazkÃ³w</summary>
        property LargeImages : TImageList read FLargeImages write SetLargeImages;
-     /// <summary>Lista du¿ych obrazków w stanie "disabled"</summary>
+     /// <summary>Lista duÂ¿ych obrazkÃ³w w stanie "disabled"</summary>
        property DisabledLargeImages : TImageList read FDisabledLargeImages write SetDisabledLargeImages;
      end;
 
@@ -412,13 +412,13 @@ constructor TSpkToolbar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  // Inicjacja dziedziczonych w³asnoœci
+  // Inicjacja dziedziczonych wÂ³asnoÅ“ci
   inherited Align:=alTop;
   inherited AlignWithMargins:=true;
   inherited Height:=TOOLBAR_HEIGHT;
   inherited Doublebuffered:=true;
 
-  // Inicjacja wewnêtrznych pól danych
+  // Inicjacja wewnÃªtrznych pÃ³l danych
   FToolbarDispatch:=TSpkToolbarDispatch.Create(self);
 
   FBuffer:=TBitmap.create;
@@ -441,7 +441,7 @@ begin
   FInternalUpdating:=false;
   FUpdating:=false;
 
-  // Inicjacja pól
+  // Inicjacja pÃ³l
   FAppearance:=TSpkToolbarAppearance.Create(FToolbarDispatch);
 
   FTabs:=TSpkTabs.Create(self);
@@ -470,7 +470,7 @@ begin
 
   FAppearance.Free;
 
-  // Zwalniamy wewnêtrzne pola
+  // Zwalniamy wewnÃªtrzne pola
   FTemporary.Free;
   FBuffer.Free;
 
@@ -536,7 +536,7 @@ procedure TSpkToolbar.InternalEndUpdate;
 begin
   FInternalUpdating:=false;
 
-  // Po wewnêtrznych zmianach odœwie¿amy metryki i bufor
+  // Po wewnÃªtrznych zmianach odÅ“wieÂ¿amy metryki i bufor
   ValidateMetrics;
   ValidateBuffer;
   Repaint;
@@ -555,7 +555,7 @@ if FTabs.ListState = lsNeedsProcessing then
 
 InternalEndUpdate;
 
-// Proces wewnêtrznego update'u zawsze odœwie¿a na koñcu metryki i bufor oraz
+// Proces wewnÃªtrznego update'u zawsze odÅ“wieÂ¿a na koÃ±cu metryki i bufor oraz
 // odrysowuje komponent.
 end;
 
@@ -569,8 +569,8 @@ begin
 
   inherited MouseDown(Button, Shift, X, Y);
 
-  // Mo¿liwe, ¿e zosta³ wciœniêty kolejny przycisk myszy. W takiej sytuacji
-  // aktywny obiekt otrzymuje kolejn¹ notyfikacjê.
+  // MoÂ¿liwe, Â¿e zostaÂ³ wciÅ“niÃªty kolejny przycisk myszy. W takiej sytuacji
+  // aktywny obiekt otrzymuje kolejnÂ¹ notyfikacjÃª.
   if FMouseActiveElement=teTabs then
      begin
      TabMouseDown(Button, Shift, X, Y);
@@ -582,10 +582,10 @@ begin
      end else
   if FMouseActiveElement = teToolbarArea then
      begin
-     // Placeholder, jeœli zajdzie potrzeba obs³ugi tego zdarzenia
+     // Placeholder, jeÅ“li zajdzie potrzeba obsÂ³ugi tego zdarzenia
      end else
-  // Jeœli nie ma aktywnego elementu, aktywnym staje siê ten, który obecnie
-  // jest pod mysz¹.
+  // JeÅ“li nie ma aktywnego elementu, aktywnym staje siÃª ten, ktÃ³ry obecnie
+  // jest pod myszÂ¹.
   if FMouseActiveElement=teNone then
      begin
      if FMouseHoverElement = teTabs then
@@ -603,7 +603,7 @@ begin
         begin
         FMouseActiveElement:=teToolbarArea;
 
-        // Placeholder, jeœli zajdzie potrzeba obs³ugi tego zdarzenia
+        // Placeholder, jeÅ“li zajdzie potrzeba obsÂ³ugi tego zdarzenia
         end;
      end;
 end;
@@ -615,14 +615,14 @@ begin
   if FInternalUpdating or FUpdating then
      exit;
 
-  // MouseLeave nie ma szans byæ zawo³ane dla obiektu aktywnego, bo po
-  // wciœniêciu przycisku myszy ka¿dy jej ruch jest przekazywany jako
-  // MouseMove. Jeœli mysz wyjedzie za obszar komponentu, MouseLeave
-  // zostanie zawo³any zaraz po MouseUp - ale MouseUp czyœci aktywny
+  // MouseLeave nie ma szans byÃ¦ zawoÂ³ane dla obiektu aktywnego, bo po
+  // wciÅ“niÃªciu przycisku myszy kaÂ¿dy jej ruch jest przekazywany jako
+  // MouseMove. JeÅ“li mysz wyjedzie za obszar komponentu, MouseLeave
+  // zostanie zawoÂ³any zaraz po MouseUp - ale MouseUp czyÅ“ci aktywny
   // obiekt.
   if FMouseActiveElement = teNone then
      begin
-     // Jeœli nie ma obiektu aktywnego, obs³ugujemy elementy pod mysz¹
+     // JeÅ“li nie ma obiektu aktywnego, obsÂ³ugujemy elementy pod myszÂ¹
      if FMouseHoverElement = teTabs then
         begin
         TabMouseLeave;
@@ -634,7 +634,7 @@ begin
         end else
      if FMouseHoverElement = teToolbarArea then
         begin
-        // Placeholder, jeœli bêdzie potrzeba obs³ugi tego zdarzenia
+        // Placeholder, jeÅ“li bÃªdzie potrzeba obsÂ³ugi tego zdarzenia
         end;
      end;
 
@@ -653,7 +653,7 @@ begin
 
   inherited MouseMove(Shift, X, Y);
 
-  // Sprawdzamy, który obiekt jest pod mysz¹
+  // Sprawdzamy, ktÃ³ry obiekt jest pod myszÂ¹
   MousePoint:=T2DIntVector.create(x,y);
 
   if FTabClipRect.Contains(MousePoint) then
@@ -664,7 +664,7 @@ begin
      NewMouseHoverElement:=teToolbarArea else
      NewMouseHoverElement:=teNone;
 
-  // Jeœli jest jakiœ aktywny obiekt, to on ma wy³¹cznoœæ na komunikaty
+  // JeÅ“li jest jakiÅ“ aktywny obiekt, to on ma wyÂ³Â¹cznoÅ“Ã¦ na komunikaty
   if FMouseActiveElement = teTabs then
      begin
      TabMouseMove(Shift, X, Y);
@@ -676,12 +676,12 @@ begin
      end else
   if FMouseActiveElement = teToolbarArea then
      begin
-     // Placeholder, jeœli zajdzie potrzeba obs³ugi tego zdarzenia
+     // Placeholder, jeÅ“li zajdzie potrzeba obsÂ³ugi tego zdarzenia
      end else
   if FMouseActiveElement = teNone then
      begin
-     // Jeœli element pod mysz¹ siê zmienia, informujemy poprzedni element o
-     // tym, ¿e mysz opuszcza jego obszar
+     // JeÅ“li element pod myszÂ¹ siÃª zmienia, informujemy poprzedni element o
+     // tym, Â¿e mysz opuszcza jego obszar
      if NewMouseHoverElement<>FMouseHoverElement then
         begin
         if FMouseHoverElement = teTabs then
@@ -695,11 +695,11 @@ begin
            end else
         if FMouseHoverElement = teToolbarArea then
            begin
-           // Placeholder, jeœli zajdzie potrzeba obs³ugi tego zdarzenia
+           // Placeholder, jeÅ“li zajdzie potrzeba obsÂ³ugi tego zdarzenia
            end;
         end;
 
-     // Element pod mysz¹ otrzymuje MouseMove
+     // Element pod myszÂ¹ otrzymuje MouseMove
      if NewMouseHoverElement = teTabs then
         begin
         TabMouseMove(Shift, X, Y);
@@ -711,7 +711,7 @@ begin
         end else
      if NewMouseHoverElement = teToolbarArea then
         begin
-        // Placeholder, jeœli zajdzie potrzeba obs³ugi tego zdarzenia
+        // Placeholder, jeÅ“li zajdzie potrzeba obsÂ³ugi tego zdarzenia
         end;
      end;
 
@@ -732,8 +732,8 @@ begin
 
   ClearActive:=not(ssLeft in Shift) and not(ssMiddle in Shift) and not(ssRight in Shift);
 
-  // Jeœli jest jakiœ aktywny obiekt, to on ma wy³¹cznoœæ na otrzymywanie
-  // komunikatów
+  // JeÅ“li jest jakiÅ“ aktywny obiekt, to on ma wyÂ³Â¹cznoÅ“Ã¦ na otrzymywanie
+  // komunikatÃ³w
   if FMouseActiveElement=teTabs then
      begin
      TabMouseUp(Button, Shift, X, Y);
@@ -745,12 +745,12 @@ begin
      end else
   if FMouseActiveElement = teToolbarArea then
      begin
-     // Placeholder, jeœli zajdzie potrzeba obs³ugi tego zdarzenia
+     // Placeholder, jeÅ“li zajdzie potrzeba obsÂ³ugi tego zdarzenia
      end;
 
-  // Jeœli puszczono ostatni przycisk i mysz nie znajduje siê nad aktywnym
-  // obiektem, trzeba dodatkowo wywo³aæ MouseLeave dla aktywnego i MouseMove
-  // dla obiektu pod mysz¹.
+  // JeÅ“li puszczono ostatni przycisk i mysz nie znajduje siÃª nad aktywnym
+  // obiektem, trzeba dodatkowo wywoÂ³aÃ¦ MouseLeave dla aktywnego i MouseMove
+  // dla obiektu pod myszÂ¹.
   if ClearActive and (FMouseActiveElement<>FMouseHoverElement) then
      begin
      if FMouseActiveElement = teTabs then
@@ -762,7 +762,7 @@ begin
         end else
      if FMouseActiveElement = teToolbarArea then
         begin
-        // Placeholder, jeœli zajdzie potrzeba obs³ugi tego zdarzenia
+        // Placeholder, jeÅ“li zajdzie potrzeba obsÂ³ugi tego zdarzenia
         end;
 
      if FMouseHoverElement=teTabs then
@@ -774,11 +774,11 @@ begin
         end else
      if FMouseHoverElement = teToolbarArea then
         begin
-        // Placeholder, jeœli zajdzie potrzeba obs³ugi tego zdarzenia
+        // Placeholder, jeÅ“li zajdzie potrzeba obsÂ³ugi tego zdarzenia
         end;
      end;
 
-  // MouseUp gasi aktywny obiekt, o ile zosta³y puszczone wszystkie
+  // MouseUp gasi aktywny obiekt, o ile zostaÂ³y puszczone wszystkie
   // przyciski
   if ClearActive then
      FMouseActiveElement:=teNone;
@@ -842,8 +842,8 @@ begin
     begin
     FTabIndex:=max(0,min(FTabs.count-1,FTabIndex));
 
-    // Wiem, ¿e przynajmniej jedna zak³adka jest widoczna (z wczeœniejszego
-    // warunku), wiêc poni¿sza pêtla na pewno siê zakoñczy.
+    // Wiem, Â¿e przynajmniej jedna zakÂ³adka jest widoczna (z wczeÅ“niejszego
+    // warunku), wiÃªc poniÂ¿sza pÃªtla na pewno siÃª zakoÃ±czy.
     while not(FTabs[FTabIndex].Visible) do
           FTabIndex:=(FTabIndex + 1) mod FTabs.count;
     end;
@@ -866,9 +866,9 @@ end;
 procedure TSpkToolbar.Paint;
 
 begin
-// Jeœli trwa proces przebudowy (wewnêtrznej lub u¿ytkownika), walidacja metryk
+// JeÅ“li trwa proces przebudowy (wewnÃªtrznej lub uÂ¿ytkownika), walidacja metryk
 // i bufora nie jest przeprowadzana, jednak bufor jest rysowany w takiej
-// postaci, w jakiej zosta³ zapamiêtany przed rozpoczêciem procesu przebudowy.
+// postaci, w jakiej zostaÂ³ zapamiÃªtany przed rozpoczÃªciem procesu przebudowy.
 if not(FInternalUpdating or FUpdating) then
    begin
    if not(FMetricsValid) then
@@ -960,8 +960,8 @@ begin
     begin
     FTabIndex:=max(0,min(FTabs.count-1, Value));
 
-    // Wiem, ¿e przynajmniej jedna zak³adka jest widoczna (z wczeœniejszego
-    // warunku), wiêc poni¿sza pêtla na pewno siê zakoñczy.
+    // Wiem, Â¿e przynajmniej jedna zakÂ³adka jest widoczna (z wczeÅ“niejszego
+    // warunku), wiÃªc poniÂ¿sza pÃªtla na pewno siÃª zakoÃ±czy.
     while not(FTabs[FTabIndex].Visible) do
           FTabIndex:=(FTabIndex + 1) mod FTabs.count;
     end;
@@ -995,8 +995,8 @@ if AtLeastOneTabVisible then
                 SelTab:=i;
           end;
 
-// Jeœli klikniêta zosta³a któraœ zak³adka, ró¿na od obecnie zaznaczonej,
-// zmieñ zaznaczenie.
+// JeÅ“li klikniÃªta zostaÂ³a ktÃ³raÅ“ zakÂ³adka, rÃ³Â¿na od obecnie zaznaczonej,
+// zmieÃ± zaznaczenie.
 if (Button = mbLeft) and (SelTab<>-1) and (SelTab<>FTabIndex) then
    begin
    FTabIndex:=SelTab;
@@ -1055,7 +1055,7 @@ begin
 if FInternalUpdating or FUpdating then
    exit;
 
-// Zak³adki nie potrzebuj¹ obs³ugi MouseUp.
+// ZakÂ³adki nie potrzebujÂ¹ obsÂ³ugi MouseUp.
 end;
 
 procedure TSpkToolbar.SetAppearance(const Value: TSpkToolbarAppearance);
@@ -1083,8 +1083,8 @@ procedure TSpkToolbar.ValidateBuffer;
     i: Integer;
 
   begin
-  // Pobieramy appearance aktualnie zaznaczonej zak³adki (b¹dŸ
-  // FToolbarAppearance, jeœli zaznaczona zak³adka nie ma ustawionego
+  // Pobieramy appearance aktualnie zaznaczonej zakÂ³adki (bÂ¹dÅ¸
+  // FToolbarAppearance, jeÅ“li zaznaczona zakÂ³adka nie ma ustawionego
   // OverrideAppearance
   if (FTabIndex<>-1) and (FTabs[FTabIndex].OverrideAppearance) then
      FocusedAppearance:=FTabs[FTabIndex].CustomAppearance else
@@ -1125,18 +1125,18 @@ procedure TSpkToolbar.ValidateBuffer;
 
   if not(AtLeastOneTabVisible) then
      begin
-     // Jeœli nie ma zak³adek, rysujemy poziom¹ liniê
+     // JeÅ“li nie ma zakÂ³adek, rysujemy poziomÂ¹ liniÃª
      TGuiTools.DrawHLine(FBuffer, TOOLBAR_CORNER_RADIUS, self.width - TOOLBAR_CORNER_RADIUS, TOOLBAR_TAB_CAPTIONS_HEIGHT, FocusedAppearance.Tab.BorderColor);
      end
   else
      begin
-     // Jeœli s¹, pozostawiamy miejsce na zak³adki
+     // JeÅ“li sÂ¹, pozostawiamy miejsce na zakÂ³adki
      // Szukamy ostatniej widocznej
      i:=FTabs.count-1;
      while not(FTabs[i].Visible) do
            dec(i);
 
-     // Tylko prawa czêœæ, reszta bêdzie narysowana wraz z zak³adkami
+     // Tylko prawa czÃªÅ“Ã¦, reszta bÃªdzie narysowana wraz z zakÂ³adkami
      if FTabRects[i].Right<self.width - TOOLBAR_CORNER_RADIUS - 1 then
         TGuiTools.DrawHLine(FBuffer, FTabRects[i].Right+1, self.width - TOOLBAR_CORNER_RADIUS, TOOLBAR_TAB_CAPTIONS_HEIGHT, FocusedAppearance.Tab.BorderColor);
      end;
@@ -1178,17 +1178,17 @@ procedure TSpkToolbar.ValidateBuffer;
         TmpRegion, TmpRegion2 : HRGN;
 
     begin
-    // * Notatka! * Zak³adki zachodz¹ jednym pikslem na obszar toolbara,
-    // poniewa¿ musz¹ narysowaæ krawêdŸ, która zgra siê z krawêdzi¹ obszaru.
+    // * Notatka! * ZakÂ³adki zachodzÂ¹ jednym pikslem na obszar toolbara,
+    // poniewaÂ¿ muszÂ¹ narysowaÃ¦ krawÃªdÅ¸, ktÃ³ra zgra siÃª z krawÃªdziÂ¹ obszaru.
     TabRect:=FTabRects[index];
 
-    // Œrodkowy prostok¹t
+    // Å’rodkowy prostokÂ¹t
     TabRegion:=CreateRectRgn(TabRect.Left + TAB_CORNER_RADIUS - 1,
                              TabRect.Top + TAB_CORNER_RADIUS,
                              TabRect.Right - TAB_CORNER_RADIUS + 1 + 1,
                              TabRect.Bottom + 1);
 
-    // Górna czêœæ z górnymi zaokr¹gleniami wypuk³ymi
+    // GÃ³rna czÃªÅ“Ã¦ z gÃ³rnymi zaokrÂ¹gleniami wypukÂ³ymi
     TmpRegion:=CreateRectRgn(TabRect.Left + 2*TAB_CORNER_RADIUS - 1,
                              TabRect.Top,
                              TabRect.Right - 2*TAB_CORNER_RADIUS + 1 + 1,
@@ -1210,7 +1210,7 @@ procedure TSpkToolbar.ValidateBuffer;
     CombineRgn(TabRegion, TabRegion, TmpRegion, RGN_OR);
     DeleteObject(TmpRegion);
 
-    // Dolna czêœæ z dolnymi zaokr¹gleniami wklês³ymi
+    // Dolna czÃªÅ“Ã¦ z dolnymi zaokrÂ¹gleniami wklÃªsÂ³ymi
 
     TmpRegion:=CreateRectRgn(TabRect.Left,
                              TabRect.Bottom - TAB_CORNER_RADIUS,
@@ -1308,10 +1308,10 @@ procedure TSpkToolbar.ValidateBuffer;
     end;
 
   begin
-  // Zak³adam, ¿e zak³adki maj¹ rozs¹dne rozmiary
+  // ZakÂ³adam, Â¿e zakÂ³adki majÂ¹ rozsÂ¹dne rozmiary
 
-  // Pobieramy appearance aktualnie zaznaczonej zak³adki (jej appearance, jeœli
-  // ma zapalon¹ flagê OverrideAppearance, FToolbarAppearance w przeciwnym
+  // Pobieramy appearance aktualnie zaznaczonej zakÂ³adki (jej appearance, jeÅ“li
+  // ma zapalonÂ¹ flagÃª OverrideAppearance, FToolbarAppearance w przeciwnym
   // wypadku)
   if (FTabIndex<>-1) and (FTabs[FTabIndex].OverrideAppearance) then
      FocusedAppearance:=FTabs[FTabIndex].CustomAppearance else
@@ -1321,18 +1321,18 @@ procedure TSpkToolbar.ValidateBuffer;
      for i := 0 to FTabs.count - 1 do
          if FTabs[i].Visible then
             begin
-            // Jest sens rysowaæ?
+            // Jest sens rysowaÃ¦?
             if not(FTabClipRect.IntersectsWith(FTabRects[i])) then
                continue;
 
-            // Pobieramy appearance rysowanej w³aœnie zak³adki
+            // Pobieramy appearance rysowanej wÂ³aÅ“nie zakÂ³adki
             if (FTabs[i].OverrideAppearance) then
                CurrentAppearance:=FTabs[i].CustomAppearance else
                CurrentAppearance:=FAppearance;
 
             TabRect:=FTabRects[i];
 
-            // Rysujemy zak³adkê
+            // Rysujemy zakÂ³adkÃª
             if i = FTabIndex then
                begin
                if i = FTabHover then
@@ -1366,8 +1366,8 @@ procedure TSpkToolbar.ValidateBuffer;
                   end;
 
                // Dolna kreska
-               // Uwaga: Niezale¿nie od zak³adki rysowana kolorem appearance
-               // aktualnie zaznaczonej zak³adki!
+               // Uwaga: NiezaleÂ¿nie od zakÂ³adki rysowana kolorem appearance
+               // aktualnie zaznaczonej zakÂ³adki!
                DrawBottomLine(i, FocusedAppearance.Tab.BorderColor);
 
                // Tekst
@@ -1389,21 +1389,21 @@ if FInternalUpdating or FUpdating then
 if FBufferValid then
    exit;
 
-// ValidateBuffer mo¿e byæ wywo³ane tylko wtedy, gdy metrics zosta³y obliczone.
-// Metoda zak³ada, ¿e bufor ma ju¿ odpowiednie rozmiary oraz ¿e wszystkie
-// recty, zarówno toolbara jak i elementów podrzêdnych, zosta³y poprawnie
+// ValidateBuffer moÂ¿e byÃ¦ wywoÂ³ane tylko wtedy, gdy metrics zostaÂ³y obliczone.
+// Metoda zakÂ³ada, Â¿e bufor ma juÂ¿ odpowiednie rozmiary oraz Â¿e wszystkie
+// recty, zarÃ³wno toolbara jak i elementÃ³w podrzÃªdnych, zostaÂ³y poprawnie
 // obliczone.
 
-// *** T³o komponentu ***
+// *** TÂ³o komponentu ***
 DrawBackgroundColor;
 
-// *** Generowanie t³a dla toolbara ***
+// *** Generowanie tÂ³a dla toolbara ***
 DrawBody;
 
-// *** Zak³adki ***
+// *** ZakÂ³adki ***
 DrawTabs;
 
-// *** Zawartoœæ zak³adek ***
+// *** ZawartoÅ“Ã¦ zakÂ³adek ***
 DrawTabContents;
 
 // Bufor jest poprawny
@@ -1425,15 +1425,15 @@ if FMetricsValid then
 
 FBuffer.SetSize(self.width, self.height);
 
-// *** Zak³adki ***
+// *** ZakÂ³adki ***
 
-// Cliprect zak³adek (zawgórn¹ ramkê komponentu)
+// Cliprect zakÂ³adek (zawgÃ³rnÂ¹ ramkÃª komponentu)
 FTabClipRect:=T2DIntRect.Create(TOOLBAR_CORNER_RADIUS,
                                 0,
                                 self.width - TOOLBAR_CORNER_RADIUS - 1,
                                 TOOLBAR_TAB_CAPTIONS_HEIGHT);
 
-// Recty nag³ówków zak³adek (zawieraj¹ górn¹ ramkê komponentu)
+// Recty nagÂ³Ã³wkÃ³w zakÂ³adek (zawierajÂ¹ gÃ³rnÂ¹ ramkÃª komponentu)
 setlength(FTabRects, FTabs.Count);
 if FTabs.count>0 then
    begin
@@ -1441,17 +1441,17 @@ if FTabs.count>0 then
    for i := 0 to FTabs.count - 1 do
        if FTabs[i].Visible then
           begin
-          // Pobieramy appearance zak³adki
+          // Pobieramy appearance zakÂ³adki
           if FTabs[i].OverrideAppearance then
              TabAppearance:=FTabs[i].CustomAppearance else
              TabAppearance:=FAppearance;
           FBuffer.Canvas.font.assign(TabAppearance.Tab.TabHeaderFont);
 
           TabWidth:=2 +                                                          // Ramka
-                    2*TAB_CORNER_RADIUS +                                        // Zaokr¹glenia
-                    2*TOOLBAR_TAB_CAPTIONS_TEXT_HPADDING +                       // Wewnêtrzne marginesy
+                    2*TAB_CORNER_RADIUS +                                        // ZaokrÂ¹glenia
+                    2*TOOLBAR_TAB_CAPTIONS_TEXT_HPADDING +                       // WewnÃªtrzne marginesy
                     max(TOOLBAR_MIN_TAB_CAPTION_WIDTH,
-                        FBuffer.Canvas.TextWidth(FTabs.Items[i].Caption));       // Szerokoœæ tekstu
+                        FBuffer.Canvas.TextWidth(FTabs.Items[i].Caption));       // SzerokoÅ“Ã¦ tekstu
 
           FTabRects[i].Left:=x;
           FTabRects[i].Right:=x + TabWidth - 1;
@@ -1470,7 +1470,7 @@ if FTabs.count>0 then
 
 if FTabIndex<>-1 then
    begin
-   // Rect obszaru zak³adki
+   // Rect obszaru zakÂ³adki
    FTabContentsClipRect:=T2DIntRect.Create(TOOLBAR_BORDER_WIDTH + TAB_PANE_LEFTPADDING,
                                     TOOLBAR_TAB_CAPTIONS_HEIGHT + TOOLBAR_BORDER_WIDTH + TAB_PANE_TOPPADDING,
                                     self.width - 1 - TOOLBAR_BORDER_WIDTH - TAB_PANE_RIGHTPADDING,

@@ -3,9 +3,9 @@ unit spkt_Items;
 (*******************************************************************************
 *                                                                              *
 *  Plik: spkt_Items.pas                                                        *
-*  Opis: Modu³ zawiera klasê kolekcji elementów tafli.                         *
-*  Copyright: (c) 2009 by Spook. Jakiekolwiek u¿ycie komponentu bez            *
-*             uprzedniego uzyskania licencji od autora stanowi z³amanie        *
+*  Opis: ModuÂ³ zawiera klasÃª kolekcji elementÃ³w tafli.                         *
+*  Copyright: (c) 2009 by Spook. Jakiekolwiek uÂ¿ycie komponentu bez            *
+*             uprzedniego uzyskania licencji od autora stanowi zÂ³amanie        *
 *             prawa autorskiego!                                               *
 *                                                                              *
 *******************************************************************************)
@@ -151,8 +151,8 @@ begin
 
   case Operation of
        opInsert: begin
-                 // Ustawienie dyspozytora na nil spowoduje, ¿e podczas
-                 // przypisywania w³asnoœci nie bêd¹ wo³ane metody Notify*
+                 // Ustawienie dyspozytora na nil spowoduje, Â¿e podczas
+                 // przypisywania wÂ³asnoÅ“ci nie bÃªdÂ¹ woÂ³ane metody Notify*
                  TSpkBaseItem(Item).ToolbarDispatch:=nil;
 
                  TSpkBaseItem(Item).Appearance:=FAppearance;

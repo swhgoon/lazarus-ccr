@@ -15,16 +15,16 @@ const NUM_ZERO = 0.00000001;
 *                                                                              *
 *******************************************************************************)
 
-type // WskaŸnik do tablicy TRGBTriple
+type // WskaÅ¸nik do tablicy TRGBTriple
      PRGBTripleArray = ^TRGBTripleArray;
-     // Tablica TRGBTriple (u¿ywana podczas operacji ze ScanLine)
+     // Tablica TRGBTriple (uÂ¿ywana podczas operacji ze ScanLine)
      TRGBTripleArray = array[word] of TRGBTriple;
 
 type THSLTriple = record
                   H, S, L : extended;
                   end;
 
-type // Typ u¿ywany podczas rysowania gradientów
+type // Typ uÂ¿ywany podczas rysowania gradientÃ³w
      TRIVERTEX = packed record
                         x,y : DWORD;
                         Red,
@@ -37,12 +37,12 @@ type // Rodzaj gradientu
      TGradientType = (gtVertical, gtHorizontal);
      // Rodzaj linii gradientowej (miejsce rozmycia)
      TGradientLineShade = (lsShadeStart, lsShadeEnds, lsShadeCenter, lsShadeEnd);
-     // Rodzaj linii gradientowej (wypuk³oœæ)
+     // Rodzaj linii gradientowej (wypukÂ³oÅ“Ã¦)
      TGradient3dLine = (glRaised, glLowered);
 
 (*******************************************************************************
 *                                                                              *
-*                      Nag³ówki dla zewnêtrznych funkcji                       *
+*                      NagÂ³Ã³wki dla zewnÃªtrznych funkcji                       *
 *                                                                              *
 *******************************************************************************)
 
@@ -50,7 +50,7 @@ function GradientFill(DC : hDC; pVertex : Pointer; dwNumVertex : DWORD; pMesh : 
 
 (*******************************************************************************
 *                                                                              *
-*                              Klasy narzêdziowe                               *
+*                              Klasy narzÃªdziowe                               *
 *                                                                              *
 *******************************************************************************)
 
@@ -191,7 +191,7 @@ if max=min then result:=max else
    result:=round((pos-min)*100/(max-min));
 end;
 
-{.$MESSAGE WARN 'Porównywanie liczb rzeczywistych? Trzeba poprawiæ'}
+{.$MESSAGE WARN 'PorÃ³wnywanie liczb rzeczywistych? Trzeba poprawiÃ¦'}
 class function TColorTools.RGB2HSL(ARGB : TRGBTriple) : THSLTriple;
 
 var RGBmin, RGBmax : extended;
@@ -209,7 +209,7 @@ RGBmax:=max(R,min(G,B));
 H:=0;
 if RGBmax=RGBmin then
    begin
-   // H jest nieoznaczone, ale przyjmijmy zero dla sensownoœci obliczeñ
+   // H jest nieoznaczone, ale przyjmijmy zero dla sensownoÅ“ci obliczeÃ±
    H:=0;
    end else
 if (R=RGBmax) and (G>=B) then

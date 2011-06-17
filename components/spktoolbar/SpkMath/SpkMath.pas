@@ -4,7 +4,7 @@ unit SpkMath;
 
 interface
 
-{TODO: Zastanowiæ siê, czy wszystkie niejawne casty maj¹ sens}
+{TODO: ZastanowiÃ¦ siÃª, czy wszystkie niejawne casty majÂ¹ sens}
 
 uses Windows, Math, SysUtils;
 
@@ -12,7 +12,7 @@ const NUM_ZERO = 1e-12;
 
 type TRectCorner = (rcLeftTop, rcRightTop, rcLeftBottom, rcRightBottom);
 
-type // Dwuwymiarowy wektor o ca³kowitych wspó³rzêdnych
+type // Dwuwymiarowy wektor o caÂ³kowitych wspÃ³Â³rzÃªdnych
      T2DIntVector = record
                       x, y : integer;
                     public
@@ -38,10 +38,10 @@ type // Dwuwymiarowy wektor o ca³kowitych wspó³rzêdnych
                       function DistanceTo(AVector : T2DIntVector) : double;
                     end;
 
-type // Punkt w przestrzeni dwuwymiarowej o ca³kowitych wspó³rzêdnych
+type // Punkt w przestrzeni dwuwymiarowej o caÂ³kowitych wspÃ³Â³rzÃªdnych
      T2DIntPoint = T2DIntVector;
 
-type // Prostok¹t w przestrzeni dwuwymiarowej o ca³kowitych wspó³rzêdnych
+type // ProstokÂ¹t w przestrzeni dwuwymiarowej o caÂ³kowitych wspÃ³Â³rzÃªdnych
      T2DIntRect = record
                   public
                     constructor Create(ALeft, ATop, ARight, ABottom : integer); overload;
@@ -75,7 +75,7 @@ type // Prostok¹t w przestrzeni dwuwymiarowej o ca³kowitych wspó³rzêdnych
                        1 : (TopLeft : T2DIntVector; BottomRight : T2DIntVector);
                   end;
 
-type // Wektor w przestrzeni dwuwymiarowej o rzeczywistych wspó³rzêdnych
+type // Wektor w przestrzeni dwuwymiarowej o rzeczywistych wspÃ³Â³rzÃªdnych
      T2DVector = record
                    x, y : extended;
                  public
@@ -115,10 +115,10 @@ type // Wektor w przestrzeni dwuwymiarowej o rzeczywistych wspó³rzêdnych
                    function DistanceFromAxis(APoint : T2DVector; AVector : T2DVector) : extended;
                  end;
 
-type // Punkt w przestrzeni dwuwymiarowej o rzeczywistych wspó³rzêdnych
+type // Punkt w przestrzeni dwuwymiarowej o rzeczywistych wspÃ³Â³rzÃªdnych
      T2DPoint = T2DVector;
 
-type // Prostok¹t w przestrzeni dwuwymiarowej o rzeczywistych wspó³rzêdnych
+type // ProstokÂ¹t w przestrzeni dwuwymiarowej o rzeczywistych wspÃ³Â³rzÃªdnych
      T2DRect = record
                public
                  constructor Create(ALeft, ATop, ARight, ABottom : extended); overload;
@@ -152,7 +152,7 @@ type // Prostok¹t w przestrzeni dwuwymiarowej o rzeczywistych wspó³rzêdnych
                     1 : (TopLeft : T2DVector; BottomRight : T2DVector);
                end;
 
-type // Wektor w przestrzeni trójwymiarowej o rzeczywistych wspó³rzêdnych
+type // Wektor w przestrzeni trÃ³jwymiarowej o rzeczywistych wspÃ³Â³rzÃªdnych
      T3DVector = record
                    x, y, z : extended;
                  public
@@ -356,7 +356,7 @@ var len : extended;
 begin
 len:=self.Length;
 if len<NUM_ZERO then
-   raise exception.create('T2DVector.DownNormal: Nie mogê obliczyæ normalnej do wektora zerowego!');
+   raise exception.create('T2DVector.DownNormal: Nie mogÃª obliczyÃ¦ normalnej do wektora zerowego!');
 
 if self.x>0 then
    begin
@@ -474,7 +474,7 @@ var len : extended;
 begin
 len:=self.Length;
 if len<NUM_ZERO then
-   raise exception.create('T2DVector.Normalize: Nie mo¿na znormalizowaæ wektora zerowego!');
+   raise exception.create('T2DVector.Normalize: Nie moÂ¿na znormalizowaÃ¦ wektora zerowego!');
 self.x:=self.x/len;
 self.y:=self.y/len;
 end;
@@ -486,7 +486,7 @@ var len : extended;
 begin
 len:=self.Length;
 if len<NUM_ZERO then
-   raise exception.create('T2DVector.Normalized: Nie mo¿na obliczyæ normy wektora zerowego!');
+   raise exception.create('T2DVector.Normalized: Nie moÂ¿na obliczyÃ¦ normy wektora zerowego!');
 result.x:=self.x/len;
 result.y:=self.y/len;
 end;
@@ -521,7 +521,7 @@ var product : extended;
 begin
 len:=vector.Length;
 if abs(len)<NUM_ZERO then
-   raise exception.create('T2DVector.ProjectedTo: Nie mo¿na rzutowaæ na wektor zerowy!');
+   raise exception.create('T2DVector.ProjectedTo: Nie moÂ¿na rzutowaÃ¦ na wektor zerowy!');
 
 product:=self.x*vector.x + self.y*vector.y;
 result.x:=(vector.x * product) / sqr(len);
@@ -536,7 +536,7 @@ var product : extended;
 begin
 len:=vector.Length;
 if abs(len)<NUM_ZERO then
-   raise exception.create('T2DVector.ProjectTo: Nie mo¿na rzutowaæ na wektor zerowy!');
+   raise exception.create('T2DVector.ProjectTo: Nie moÂ¿na rzutowaÃ¦ na wektor zerowy!');
 
 product:=self.x*vector.x + self.y*vector.y;
 
@@ -575,7 +575,7 @@ var len : extended;
 begin
 len:=self.Length;
 if len<NUM_ZERO then
-   raise exception.create('T2DVector.UpNormal: Nie mogê obliczyæ normalnej do wektora zerowego!');
+   raise exception.create('T2DVector.UpNormal: Nie mogÃª obliczyÃ¦ normalnej do wektora zerowego!');
 
 if self.x>0 then
    begin
@@ -634,7 +634,7 @@ result.y:=-(self.x * vector.z - self.z * vector.x);
 result.z:=self.x * vector.y - self.y * vector.x;
 len:=result.Length;
 if len<NUM_ZERO then
-   raise exception.create('T3DVector.DownNormalTo: Nie mogê obliczyæ normalnej: wektory le¿¹ na wspólnej prostej!');
+   raise exception.create('T3DVector.DownNormalTo: Nie mogÃª obliczyÃ¦ normalnej: wektory leÂ¿Â¹ na wspÃ³lnej prostej!');
 result.x:=result.x/len;
 result.y:=result.y/len;
 result.z:=result.z/len;
@@ -762,7 +762,7 @@ var len : extended;
 begin
 len:=self.Length;
 if len<NUM_ZERO then
-   raise exception.create('T3DVector.Normalize: Nie mo¿na znormalizowaæ wektora zerowego!');
+   raise exception.create('T3DVector.Normalize: Nie moÂ¿na znormalizowaÃ¦ wektora zerowego!');
 self.x:=self.x/len;
 self.y:=self.y/len;
 self.z:=self.z/len;
@@ -775,7 +775,7 @@ var len : extended;
 begin
 len:=self.Length;
 if len<NUM_ZERO then
-   raise exception.create('T3DVector.Normalized: Nie mo¿na obliczyæ normy wektora zerowego!');
+   raise exception.create('T3DVector.Normalized: Nie moÂ¿na obliczyÃ¦ normy wektora zerowego!');
 result.x:=self.x/len;
 result.y:=self.y/len;
 result.z:=self.z/len;
@@ -796,7 +796,7 @@ var product : extended;
 begin
 len:=vector.Length;
 if abs(len)<NUM_ZERO then
-   raise exception.create('T3DVector.ProjectedTo: Nie mo¿na rzutowaæ na wektor zerowy!');
+   raise exception.create('T3DVector.ProjectedTo: Nie moÂ¿na rzutowaÃ¦ na wektor zerowy!');
 
 product:=self.x*vector.x + self.y*vector.y + self.z*vector.z;
 result.x:=(vector.x * product) / sqr(len);
@@ -812,7 +812,7 @@ var product : extended;
 begin
 len:=vector.Length;
 if abs(len)<NUM_ZERO then
-   raise exception.create('T3DVector.ProjectTo: Nie mo¿na rzutowaæ na wektor zerowy!');
+   raise exception.create('T3DVector.ProjectTo: Nie moÂ¿na rzutowaÃ¦ na wektor zerowy!');
 
 product:=self.x*vector.x + self.y*vector.y + self.z*vector.z;
 self.x:=(vector.x * product) / sqr(len);
@@ -845,7 +845,7 @@ result.z:=self.x * vector.y - self.y * vector.x;
 
 len:=result.Length;
 if len<NUM_ZERO then
-   raise exception.create('T3DVector.UpNormalTo: Nie mogê obliczyæ normalnej: wektory le¿¹ na wspólnej prostej!');
+   raise exception.create('T3DVector.UpNormalTo: Nie mogÃª obliczyÃ¦ normalnej: wektory leÂ¿Â¹ na wspÃ³lnej prostej!');
 result.x:=result.x/len;
 result.y:=result.y/len;
 result.z:=result.z/len;
@@ -1311,7 +1311,7 @@ var center : extended;
 
 begin
 if (ANewHeight<0) then
-   raise exception.create('T2DRect.SetCenteredHeight: Nowa wysokoœæ mniejsza od zera!');
+   raise exception.create('T2DRect.SetCenteredHeight: Nowa wysokoÅ“Ã¦ mniejsza od zera!');
 
 center:=self.top+(self.bottom-self.top)/2;
 self.top:=center-(ANewHeight/2);
@@ -1324,7 +1324,7 @@ var center : extended;
 
 begin
 if (ANewWidth<0) then
-   raise exception.create('T2DRect.SetCenteredWidth: Nowa szerokoœæ mniejsza od zera!');
+   raise exception.create('T2DRect.SetCenteredWidth: Nowa szerokoÅ“Ã¦ mniejsza od zera!');
 
 center:=self.left+(self.right-self.left)/2;
 self.left:=center-(ANewWidth/2);

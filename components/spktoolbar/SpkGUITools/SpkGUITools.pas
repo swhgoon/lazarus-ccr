@@ -1,10 +1,10 @@
-unit SpkGuiTools;
+ï»¿unit SpkGuiTools;
 
 {$DEFINE SPKGUITOOLS}
 
 interface
 
-{$MESSAGE HINT 'W tym module konsekwentnie ka¿dy rect opisuje dok³adny prostok¹t (a nie, jak w przypadku WINAPI - bez dolnej i prawej krawêdzi)'}
+{$MESSAGE HINT 'W tym module konsekwentnie kaÂ¿dy rect opisuje dokÂ³adny prostokÂ¹t (a nie, jak w przypadku WINAPI - bez dolnej i prawej krawÃªdzi)'}
 
 uses Windows, Graphics, SysUtils, Math, Classes, Controls, ImgList, 
      SpkGraphTools, SpkMath;
@@ -387,9 +387,9 @@ var BufferRect, BitmapRect : T2DIntRect;
 
 begin
 if (ABuffer.PixelFormat<>pf24bit) or (ABitmap.PixelFormat<>pf24bit) then
-   raise exception.create('TSpkGUITools.CopyRoundCorner: Tylko 24-bitowe bitmapy s¹ akceptowane!');
+   raise exception.create('TSpkGUITools.CopyRoundCorner: Tylko 24-bitowe bitmapy sÂ¹ akceptowane!');
 
-// Sprawdzanie poprawnoœci
+// Sprawdzanie poprawnoÅ“ci
 if Radius<1 then
    exit;
 
@@ -417,7 +417,7 @@ Offset:=DstPoint - SrcPoint;
 
 if not(OrgSrcRect.IntersectsWith(OrgDstRect - Offset, SrcRect)) then exit;
 
-// Ustalamy pozycjê œrodka ³uku
+// Ustalamy pozycjÃª Å“rodka Â³uku
 case CornerPos of
      cpLeftTop: Center:=T2DIntVector.create(SrcPoint.x + radius - 1, SrcPoint.y + Radius - 1);
      cpRightTop: Center:=T2DIntVector.create(SrcPoint.x, SrcPoint.y + Radius - 1);
@@ -476,9 +476,9 @@ class procedure TGUITools.CopyRoundRect(ABuffer, ABitmap: TBitmap; SrcPoint,
 
 begin
 if (ABuffer.PixelFormat<>pf24bit) or (ABitmap.PixelFormat<>pf24bit) then
-   raise exception.create('TSpkGUITools.CopyBackground: Tylko 24-bitowe bitmapy s¹ akceptowane!');
+   raise exception.create('TSpkGUITools.CopyBackground: Tylko 24-bitowe bitmapy sÂ¹ akceptowane!');
 
-// Sprawdzamy poprawnoœæ
+// Sprawdzamy poprawnoÅ“Ã¦
 if Radius<0 then
    exit;
 
@@ -487,8 +487,8 @@ if (Radius>Width div 2) or (Radius>Height div 2) then exit;
 if (ABuffer.width=0) or (ABuffer.height=0) or
    (ABitmap.width=0) or (ABitmap.height=0) then exit;
 
-{$REGION 'Wype³niamy prostok¹ty'}
-// Góra
+{$REGION 'WypeÂ³niamy prostokÂ¹ty'}
+// GÃ³ra
 CopyRectangle(ABuffer,
               ABitmap,
               T2DIntPoint.create(SrcPoint.x + radius, SrcPoint.y),
@@ -496,7 +496,7 @@ CopyRectangle(ABuffer,
               width - 2*radius,
               radius,
               ClipRect);
-// Dó³
+// DÃ³Â³
 CopyRectangle(ABuffer,
               ABitmap,
               T2DIntPoint.create(SrcPoint.x + radius, SrcPoint.y + height - radius),
@@ -504,7 +504,7 @@ CopyRectangle(ABuffer,
               width - 2*radius,
               radius,
               ClipRect);
-// Œrodek
+// Å’rodek
 CopyRectangle(ABuffer,
               ABitmap,
               T2DIntPoint.create(SrcPoint.x, SrcPoint.y + radius),
@@ -514,9 +514,9 @@ CopyRectangle(ABuffer,
               ClipRect);
 {$ENDREGION}
 
-// Wype³niamy naro¿niki
+// WypeÂ³niamy naroÂ¿niki
 
-{$REGION 'Lewy górny'}
+{$REGION 'Lewy gÃ³rny'}
 if LeftTopRound then
    TGUITools.CopyRoundCorner(ABuffer,
                              ABitmap,
@@ -535,7 +535,7 @@ else
                         ClipRect);
 {$ENDREGION}
 
-{$REGION 'Prawy górny'}
+{$REGION 'Prawy gÃ³rny'}
 if RightTopRound then
    TGUITools.CopyRoundCorner(ABuffer,
                              ABitmap,
@@ -599,9 +599,9 @@ class procedure TGUITools.CopyRoundRect(ABuffer : TBitmap; ABitmap: TBitmap; Src
 
 begin
 if (ABuffer.PixelFormat<>pf24bit) or (ABitmap.PixelFormat<>pf24bit) then
-   raise exception.create('TSpkGUITools.CopyBackground: Tylko 24-bitowe bitmapy s¹ akceptowane!');
+   raise exception.create('TSpkGUITools.CopyBackground: Tylko 24-bitowe bitmapy sÂ¹ akceptowane!');
 
-// Sprawdzamy poprawnoœæ
+// Sprawdzamy poprawnoÅ“Ã¦
 if Radius<0 then
    exit;
 
@@ -610,22 +610,22 @@ if (Radius>Width div 2) or (Radius>Height div 2) then exit;
 if (ABuffer.width=0) or (ABuffer.height=0) or
    (ABitmap.width=0) or (ABitmap.height=0) then exit;
 
-{$REGION 'Wype³niamy prostok¹ty'}
-// Góra
+{$REGION 'WypeÂ³niamy prostokÂ¹ty'}
+// GÃ³ra
 CopyRectangle(ABuffer,
               ABitmap,
               T2DIntPoint.create(SrcPoint.x + radius, SrcPoint.y),
               T2DIntPoint.create(DstPoint.x + radius, DstPoint.y),
               width - 2*radius,
               radius);
-// Dó³
+// DÃ³Â³
 CopyRectangle(ABuffer,
               ABitmap,
               T2DIntPoint.create(SrcPoint.x + radius, SrcPoint.y + height - radius),
               T2DIntPoint.create(DstPoint.x + radius, DstPoint.y + height - radius),
               width - 2*radius,
               radius);
-// Œrodek
+// Å’rodek
 CopyRectangle(ABuffer,
               ABitmap,
               T2DIntPoint.create(SrcPoint.x, SrcPoint.y + radius),
@@ -634,8 +634,8 @@ CopyRectangle(ABuffer,
               height - 2*radius);
 {$ENDREGION}
 
-// Wype³niamy naro¿niki
-{$REGION 'Lewy górny'}
+// WypeÂ³niamy naroÂ¿niki
+{$REGION 'Lewy gÃ³rny'}
 if LeftTopRound then
    TGUITools.CopyRoundCorner(ABuffer,
                              ABitmap,
@@ -652,7 +652,7 @@ else
                         Radius);
 {$ENDREGION}
 
-{$REGION 'Prawy górny'}
+{$REGION 'Prawy gÃ³rny'}
 if RightTopRound then
    TGUITools.CopyRoundCorner(ABuffer,
                              ABitmap,
@@ -717,16 +717,16 @@ var BufferRect, BitmapRect : T2DIntRect;
 
 begin
 if (ABuffer.PixelFormat<>pf24bit) or (ABitmap.PixelFormat<>pf24bit) then
-   raise exception.create('TSpkGUITools.CopyRoundCorner: Tylko 24-bitowe bitmapy s¹ akceptowane!');
+   raise exception.create('TSpkGUITools.CopyRoundCorner: Tylko 24-bitowe bitmapy sÂ¹ akceptowane!');
 
-// Sprawdzanie poprawnoœci
+// Sprawdzanie poprawnoÅ“ci
 if (Width<1) or (Height<1) then
    exit;
 
 if (ABuffer.width=0) or (ABuffer.height=0) or
    (ABitmap.width=0) or (ABitmap.height=0) then exit;
 
-// Przycinamy Ÿród³owy rect do obszaru Ÿród³owej bitmapy
+// Przycinamy Å¸rÃ³dÂ³owy rect do obszaru Å¸rÃ³dÂ³owej bitmapy
 BufferRect:=T2DIntRect.create(0, 0, ABuffer.width-1, ABuffer.height-1);
 
 if not(BufferRect.IntersectsWith(T2DIntRect.create(SrcPoint.x,
@@ -743,14 +743,14 @@ if not(BitmapRect.IntersectsWith(T2DIntRect.create(DstPoint.x,
                                                    DstPoint.y+Height-1),
                                  DstRect)) then exit;
 
-// Liczymy offset Ÿród³owego do docelowego recta
+// Liczymy offset Å¸rÃ³dÂ³owego do docelowego recta
 Offset:=DstPoint - SrcPoint;
 
-// Sprawdzamy, czy na³o¿one na siebie recty: Ÿród³owy i docelowy przesuniêty o
-// offset maj¹ jak¹œ czêœæ wspóln¹
+// Sprawdzamy, czy naÂ³oÂ¿one na siebie recty: Å¸rÃ³dÂ³owy i docelowy przesuniÃªty o
+// offset majÂ¹ jakÂ¹Å“ czÃªÅ“Ã¦ wspÃ³lnÂ¹
 if not(SrcRect.IntersectsWith(DstRect - Offset, ClippedSrcRect)) then exit;
 
-// Jeœli jest cokolwiek do przetworzenia, wykonaj operacjê
+// JeÅ“li jest cokolwiek do przetworzenia, wykonaj operacjÃª
 if (ClippedSrcRect.left<=ClippedSrcRect.right) and (ClippedSrcRect.top<=ClippedSrcRect.bottom) then
    for y := ClippedSrcRect.top to ClippedSrcRect.bottom do
        begin
@@ -791,12 +791,12 @@ var BufferRect, BitmapRect : T2DIntRect;
 
 begin
 if (ABuffer.PixelFormat<>pf24bit) or (ABitmap.PixelFormat<>pf24bit) then
-   raise exception.create('TSpkGUITools.CopyRoundCorner: Tylko 24-bitowe bitmapy s¹ akceptowane!');
+   raise exception.create('TSpkGUITools.CopyRoundCorner: Tylko 24-bitowe bitmapy sÂ¹ akceptowane!');
 
 if (AMask.PixelFormat<>pf8bit) then
-   raise exception.create('TSpkGUITools.CopyRoundCorner: Tylko 8-bitowe maski s¹ akceptowane!');
+   raise exception.create('TSpkGUITools.CopyRoundCorner: Tylko 8-bitowe maski sÂ¹ akceptowane!');
 
-// Sprawdzanie poprawnoœci
+// Sprawdzanie poprawnoÅ“ci
 if (Width<1) or (Height<1) then
    exit;
 
@@ -806,7 +806,7 @@ if (ABuffer.width=0) or (ABuffer.height=0) or
 if (ABuffer.Width<>AMask.Width) or
    (ABuffer.Height<>AMask.Height) then exit;
 
-// Przycinamy Ÿród³owy rect do obszaru Ÿród³owej bitmapy
+// Przycinamy Å¸rÃ³dÂ³owy rect do obszaru Å¸rÃ³dÂ³owej bitmapy
 BufferRect:=T2DIntRect.create(0, 0, ABuffer.width-1, ABuffer.height-1);
 
 if not(BufferRect.IntersectsWith(T2DIntRect.create(SrcPoint.x,
@@ -823,14 +823,14 @@ if not(BitmapRect.IntersectsWith(T2DIntRect.create(DstPoint.x,
                                                    DstPoint.y+Height-1),
                                  DstRect)) then exit;
 
-// Liczymy offset Ÿród³owego do docelowego recta
+// Liczymy offset Å¸rÃ³dÂ³owego do docelowego recta
 Offset:=DstPoint - SrcPoint;
 
-// Sprawdzamy, czy na³o¿one na siebie recty: Ÿród³owy i docelowy przesuniêty o
-// offset maj¹ jak¹œ czêœæ wspóln¹
+// Sprawdzamy, czy naÂ³oÂ¿one na siebie recty: Å¸rÃ³dÂ³owy i docelowy przesuniÃªty o
+// offset majÂ¹ jakÂ¹Å“ czÃªÅ“Ã¦ wspÃ³lnÂ¹
 if not(SrcRect.IntersectsWith(DstRect - Offset, ClippedSrcRect)) then exit;
 
-// Jeœli jest cokolwiek do przetworzenia, wykonaj operacjê
+// JeÅ“li jest cokolwiek do przetworzenia, wykonaj operacjÃª
 if (ClippedSrcRect.left<=ClippedSrcRect.right) and (ClippedSrcRect.top<=ClippedSrcRect.bottom) then
    for y := ClippedSrcRect.top to ClippedSrcRect.bottom do
        begin
@@ -871,11 +871,11 @@ var BufferRect, BitmapRect : T2DIntRect;
 
 begin
 if (ABuffer.PixelFormat<>pf24bit) or (ABitmap.PixelFormat<>pf24bit) then
-   raise exception.create('TSpkGUITools.CopyMaskRectangle: Tylko 24-bitowe bitmapy s¹ akceptowane!');
+   raise exception.create('TSpkGUITools.CopyMaskRectangle: Tylko 24-bitowe bitmapy sÂ¹ akceptowane!');
 if AMask.PixelFormat<>pf8bit then
-   raise exception.create('TSpkGUITools.CopyMaskRectangle: Tylko 8-bitowe maski s¹ akceptowane!');
+   raise exception.create('TSpkGUITools.CopyMaskRectangle: Tylko 8-bitowe maski sÂ¹ akceptowane!');
 
-// Sprawdzanie poprawnoœci
+// Sprawdzanie poprawnoÅ“ci
 if (Width<1) or (Height<1) then
    exit;
 
@@ -884,9 +884,9 @@ if (ABuffer.width=0) or (ABuffer.height=0) or
 
 if (ABuffer.Width<>AMask.Width) or
    (ABuffer.Height<>AMask.Height) then
-   raise exception.create('TSpkGUITools.CopyMaskRectangle: Maska ma nieprawid³owe rozmiary!');
+   raise exception.create('TSpkGUITools.CopyMaskRectangle: Maska ma nieprawidÂ³owe rozmiary!');
 
-// Przycinamy Ÿród³owy rect do obszaru Ÿród³owej bitmapy
+// Przycinamy Å¸rÃ³dÂ³owy rect do obszaru Å¸rÃ³dÂ³owej bitmapy
 BufferRect:=T2DIntRect.create(0, 0, ABuffer.width-1, ABuffer.height-1);
 if not(BufferRect.IntersectsWith(T2DIntRect.create(SrcPoint.x,
                                                    SrcPoint.y,
@@ -906,14 +906,14 @@ if not(BitmapRect.IntersectsWith(T2DIntRect.create(DstPoint.x,
 if not(DstRect.IntersectsWith(ClipRect, ClippedDstRect)) then
    Exit;
 
-// Liczymy offset Ÿród³owego do docelowego recta
+// Liczymy offset Å¸rÃ³dÂ³owego do docelowego recta
 Offset:=DstPoint - SrcPoint;
 
-// Sprawdzamy, czy na³o¿one na siebie recty: Ÿród³owy i docelowy przesuniêty o
-// offset maj¹ jak¹œ czêœæ wspóln¹
+// Sprawdzamy, czy naÂ³oÂ¿one na siebie recty: Å¸rÃ³dÂ³owy i docelowy przesuniÃªty o
+// offset majÂ¹ jakÂ¹Å“ czÃªÅ“Ã¦ wspÃ³lnÂ¹
 if not(SrcRect.IntersectsWith(ClippedDstRect - Offset, ClippedSrcRect)) then exit;
 
-// Jeœli jest cokolwiek do przetworzenia, wykonaj operacjê
+// JeÅ“li jest cokolwiek do przetworzenia, wykonaj operacjÃª
 if (ClippedSrcRect.left<=ClippedSrcRect.right) and (ClippedSrcRect.top<=ClippedSrcRect.bottom) then
    for y := ClippedSrcRect.top to ClippedSrcRect.bottom do
        begin
@@ -951,16 +951,16 @@ var BufferRect, BitmapRect : T2DIntRect;
 
 begin
 if (ABuffer.PixelFormat<>pf24bit) or (ABitmap.PixelFormat<>pf24bit) then
-   raise exception.create('TSpkGUITools.CopyRoundCorner: Tylko 24-bitowe bitmapy s¹ akceptowane!');
+   raise exception.create('TSpkGUITools.CopyRoundCorner: Tylko 24-bitowe bitmapy sÂ¹ akceptowane!');
 
-// Sprawdzanie poprawnoœci
+// Sprawdzanie poprawnoÅ“ci
 if (Width<1) or (Height<1) then
    exit;
 
 if (ABuffer.width=0) or (ABuffer.height=0) or
    (ABitmap.width=0) or (ABitmap.height=0) then exit;
 
-// Przycinamy Ÿród³owy rect do obszaru Ÿród³owej bitmapy
+// Przycinamy Å¸rÃ³dÂ³owy rect do obszaru Å¸rÃ³dÂ³owej bitmapy
 BufferRect:=T2DIntRect.create(0, 0, ABuffer.width-1, ABuffer.height-1);
 if not(BufferRect.IntersectsWith(T2DIntRect.create(SrcPoint.x,
                                                    SrcPoint.y,
@@ -980,14 +980,14 @@ if not(BitmapRect.IntersectsWith(T2DIntRect.create(DstPoint.x,
 if not(DstRect.IntersectsWith(ClipRect, ClippedDstRect)) then
    Exit;
 
-// Liczymy offset Ÿród³owego do docelowego recta
+// Liczymy offset Å¸rÃ³dÂ³owego do docelowego recta
 Offset:=DstPoint - SrcPoint;
 
-// Sprawdzamy, czy na³o¿one na siebie recty: Ÿród³owy i docelowy przesuniêty o
-// offset maj¹ jak¹œ czêœæ wspóln¹
+// Sprawdzamy, czy naÂ³oÂ¿one na siebie recty: Å¸rÃ³dÂ³owy i docelowy przesuniÃªty o
+// offset majÂ¹ jakÂ¹Å“ czÃªÅ“Ã¦ wspÃ³lnÂ¹
 if not(SrcRect.IntersectsWith(ClippedDstRect - Offset, ClippedSrcRect)) then exit;
 
-// Jeœli jest cokolwiek do przetworzenia, wykonaj operacjê
+// JeÅ“li jest cokolwiek do przetworzenia, wykonaj operacjÃª
 if (ClippedSrcRect.left<=ClippedSrcRect.right) and (ClippedSrcRect.top<=ClippedSrcRect.bottom) then
    for y := ClippedSrcRect.top to ClippedSrcRect.bottom do
        begin
@@ -1018,9 +1018,9 @@ var BufferRect, BitmapRect : T2DIntRect;
 
 begin
 if (ABuffer.PixelFormat<>pf24bit) or (ABitmap.PixelFormat<>pf24bit) then
-   raise exception.create('TSpkGUITools.CopyRoundCorner: Tylko 24-bitowe bitmapy s¹ akceptowane!');
+   raise exception.create('TSpkGUITools.CopyRoundCorner: Tylko 24-bitowe bitmapy sÂ¹ akceptowane!');
 
-// Sprawdzanie poprawnoœci
+// Sprawdzanie poprawnoÅ“ci
 if Radius<1 then
    exit;
 
@@ -1045,7 +1045,7 @@ Offset:=DstPoint - SrcPoint;
 
 if not(OrgSrcRect.IntersectsWith(OrgDstRect - Offset, SrcRect)) then exit;
 
-// Ustalamy pozycjê œrodka ³uku
+// Ustalamy pozycjÃª Å“rodka Â³uku
 
 case CornerPos of
      cpLeftTop: Center:=T2DIntVector.create(SrcPoint.x + radius - 1, SrcPoint.y + Radius - 1);
@@ -1114,30 +1114,30 @@ var CornerRect : T2DIntRect;
 
 begin
 if ABitmap.PixelFormat<>pf24bit then
-   raise exception.create('TSpkGUITools.DrawAARoundCorner: Bitmapa musi byæ w trybie 24-bitowym!');
+   raise exception.create('TSpkGUITools.DrawAARoundCorner: Bitmapa musi byÃ¦ w trybie 24-bitowym!');
 
-// Sprawdzamy poprawnoœæ
+// Sprawdzamy poprawnoÅ“Ã¦
 if Radius<1 then
    exit;
 if (ABitmap.width=0) or (ABitmap.height=0) then
    exit;
 
-// ród³owy rect...
+// ÂrÃ³dÂ³owy rect...
 OrgCornerRect:=T2DIntRect.create(Point.x,
                                  Point.y,
                                  Point.x + radius - 1,
                                  Point.y + radius - 1);
 
-// ...przycinamy do rozmiarów bitmapy
+// ...przycinamy do rozmiarÃ³w bitmapy
 BitmapRect:=T2DIntRect.create(0, 0, ABitmap.width-1, ABitmap.height-1);
 if not(BitmapRect.intersectsWith(OrgCornerRect, CornerRect)) then
    exit;
 
-// Jeœli nie ma czego rysowaæ, wychodzimy
+// JeÅ“li nie ma czego rysowaÃ¦, wychodzimy
 if (CornerRect.left>CornerRect.right) or (CornerRect.top>CornerRect.bottom) then
    exit;
 
-// Szukamy œrodka ³uku - zale¿nie od rodzaju naro¿nika
+// Szukamy Å“rodka Â³uku - zaleÂ¿nie od rodzaju naroÂ¿nika
 case CornerPos of
      cpLeftTop: Center:=T2DIntVector.create(Point.x + radius - 1, Point.y + Radius - 1);
      cpRightTop: Center:=T2DIntVector.create(Point.x, Point.y + Radius - 1);
@@ -1185,21 +1185,21 @@ var CornerRect : T2DIntRect;
 
 begin
 if ABitmap.PixelFormat<>pf24bit then
-   raise exception.create('TSpkGUITools.DrawAARoundCorner: Bitmapa musi byæ w trybie 24-bitowym!');
+   raise exception.create('TSpkGUITools.DrawAARoundCorner: Bitmapa musi byÃ¦ w trybie 24-bitowym!');
 
-// Sprawdzamy poprawnoœæ
+// Sprawdzamy poprawnoÅ“Ã¦
 if Radius<1 then
    exit;
 if (ABitmap.width=0) or (ABitmap.height=0) then
    exit;
 
-// ród³owy rect...
+// ÂrÃ³dÂ³owy rect...
 OrgCornerRect:=T2DIntRect.create(Point.x,
                                  Point.y,
                                  Point.x + radius - 1,
                                  Point.y + radius - 1);
 
-// ...przycinamy do rozmiarów bitmapy
+// ...przycinamy do rozmiarÃ³w bitmapy
 BitmapRect:=T2DIntRect.create(0, 0, ABitmap.width-1, ABitmap.height-1);
 if not(BitmapRect.intersectsWith(OrgCornerRect, UnClippedCornerRect)) then
    exit;
@@ -1208,11 +1208,11 @@ if not(BitmapRect.intersectsWith(OrgCornerRect, UnClippedCornerRect)) then
 if not(UnClippedCornerRect.IntersectsWith(ClipRect, CornerRect)) then
    exit;
 
-// Jeœli nie ma czego rysowaæ, wychodzimy
+// JeÅ“li nie ma czego rysowaÃ¦, wychodzimy
 if (CornerRect.left>CornerRect.right) or (CornerRect.top>CornerRect.bottom) then
    exit;
 
-// Szukamy œrodka ³uku - zale¿nie od rodzaju naro¿nika
+// Szukamy Å“rodka Â³uku - zaleÂ¿nie od rodzaju naroÂ¿nika
 case CornerPos of
      cpLeftTop: Center:=T2DIntVector.create(Point.x + radius - 1, Point.y + Radius - 1);
      cpRightTop: Center:=T2DIntVector.create(Point.x, Point.y + Radius - 1);
@@ -1253,17 +1253,17 @@ var Center : T2DIntVector;
     CornerRect: T2DIntRect;
 
 begin
-// Sprawdzamy poprawnoœæ
+// Sprawdzamy poprawnoÅ“Ã¦
 if Radius<1 then
    exit;
 
-// ród³owy rect...
+// ÂrÃ³dÂ³owy rect...
 CornerRect:=T2DIntRect.create(Point.x,
                               Point.y,
                               Point.x + radius - 1,
                               Point.y + radius - 1);
 
-// Szukamy œrodka ³uku - zale¿nie od rodzaju naro¿nika
+// Szukamy Å“rodka Â³uku - zaleÂ¿nie od rodzaju naroÂ¿nika
 case CornerPos of
      cpLeftTop: Center:=T2DIntVector.create(Point.x + radius - 1, Point.y + Radius - 1);
      cpRightTop: Center:=T2DIntVector.create(Point.x, Point.y + Radius - 1);
@@ -1296,7 +1296,7 @@ var UseOrgClipRgn : boolean;
     OrgRgn : HRGN;
 
 begin
-// Zapamiêtywanie oryginalnego ClipRgn i ustawianie nowego
+// ZapamiÃªtywanie oryginalnego ClipRgn i ustawianie nowego
 SaveClipRgn(ACanvas.Handle, UseOrgClipRgn, OrgRgn);
 
 ClipRgn:=CreateRectRgn(ClipRect.left, ClipRect.Top, ClipRect.Right+1, ClipRect.Bottom+1);
@@ -1307,7 +1307,7 @@ SelectClipRgn(ACanvas.Handle, ClipRgn);
 
 DrawAARoundCorner(ACanvas, Point, Radius, CornerPos, Color);
 
-// Przywracanie poprzedniego ClipRgn i usuwanie wykorzystanych regionów
+// Przywracanie poprzedniego ClipRgn i usuwanie wykorzystanych regionÃ³w
 RestoreClipRgn(ACanvas.Handle, UseOrgClipRgn, OrgRgn);
 DeleteObject(ClipRgn);
 end;
@@ -1316,7 +1316,7 @@ class procedure TGUITools.DrawAARoundFrame(ABitmap: TBitmap; Rect: T2DIntRect;
   Radius: integer; Color: TColor; ClipRect: T2DIntRect);
 begin
 if ABitmap.PixelFormat<>pf24bit then
-   raise exception.create('TGUITools.DrawAARoundFrame: Bitmapa musi byæ w trybie 24-bitowym!');
+   raise exception.create('TGUITools.DrawAARoundFrame: Bitmapa musi byÃ¦ w trybie 24-bitowym!');
 
 if (Radius<1) then
    exit;
@@ -1333,7 +1333,7 @@ DrawAARoundCorner(ABitmap, T2DIntVector.create(Rect.Right - Radius + 1, Rect.Bot
 ABitmap.Canvas.Pen.color:=Color;
 ABitmap.Canvas.pen.style:=psSolid;
 
-// Draw*Line s¹ zabezpieczone przed rysowaniem poza obszarem
+// Draw*Line sÂ¹ zabezpieczone przed rysowaniem poza obszarem
 DrawVLine(ABitmap, Rect.left, rect.top + Radius, rect.bottom - Radius, Color, ClipRect);
 DrawVLine(ABitmap, Rect.right, rect.top + Radius, rect.bottom - Radius, Color, ClipRect);
 DrawHLine(ABitmap, Rect.left + Radius, Rect.right - Radius, rect.top, Color, ClipRect);
@@ -1345,7 +1345,7 @@ class procedure TGUITools.DrawAARoundFrame(ABitmap: TBitmap; Rect: T2DIntRect;
   
 begin
 if ABitmap.PixelFormat<>pf24bit then
-   raise exception.create('TGUITools.DrawAARoundFrame: Bitmapa musi byæ w trybie 24-bitowym!');
+   raise exception.create('TGUITools.DrawAARoundFrame: Bitmapa musi byÃ¦ w trybie 24-bitowym!');
 
 if (Radius<1) then
    exit;
@@ -1362,7 +1362,7 @@ DrawAARoundCorner(ABitmap, T2DIntVector.create(Rect.Right - Radius + 1, Rect.Bot
 ABitmap.canvas.Pen.color:=Color;
 ABitmap.canvas.pen.style:=psSolid;
 
-// Draw*Line s¹ zabezpieczone przed rysowaniem poza obszarem
+// Draw*Line sÂ¹ zabezpieczone przed rysowaniem poza obszarem
 DrawVLine(ABitmap, Rect.left, rect.top + Radius, rect.bottom - Radius, Color);
 DrawVLine(ABitmap, Rect.right, rect.top + Radius, rect.bottom - Radius, Color);
 DrawHLine(ABitmap, Rect.left + Radius, Rect.right - Radius, rect.top, Color);
@@ -1380,7 +1380,7 @@ with ABitmap.Canvas do
      begin
      s:=AText;
      tw:=TextWidth(s);
-     // Jeœli tekst siê zmieœci, rysujemy
+     // JeÅ“li tekst siÃª zmieÅ“ci, rysujemy
      if tw<=(x2-x1+1) then
         case Align of
              taLeftJustify : TextOut(x1,y,AText);
@@ -1426,7 +1426,7 @@ var UseOrgClipRgn : boolean;
     OrgRgn : HRGN;
 
 begin
-// Zapamiêtywanie oryginalnego ClipRgn i ustawianie nowego
+// ZapamiÃªtywanie oryginalnego ClipRgn i ustawianie nowego
 SaveClipRgn(ACanvas.Handle, UseOrgClipRgn, OrgRgn);
 
 ClipRgn:=CreateRectRgn(ClipRect.left, ClipRect.Top, ClipRect.Right+1, ClipRect.Bottom+1);
@@ -1437,7 +1437,7 @@ SelectClipRgn(ACanvas.Handle, ClipRgn);
 
 DrawHLine(ACanvas, x1, x2, y, Color);
 
-// Przywracanie poprzedniego ClipRgn i usuwanie wykorzystanych regionów
+// Przywracanie poprzedniego ClipRgn i usuwanie wykorzystanych regionÃ³w
 RestoreClipRgn(ACanvas.Handle, UseOrgClipRgn, OrgRgn);
 DeleteObject(ClipRgn);
 end;
@@ -1463,7 +1463,7 @@ var UseOrgClipRgn: Boolean;
     ClipRgn: HRGN;
 
 begin
-// Zapamiêtywanie oryginalnego ClipRgn i ustawianie nowego
+// ZapamiÃªtywanie oryginalnego ClipRgn i ustawianie nowego
 SaveClipRgn(ACanvas.Handle, UseOrgClipRgn, OrgRgn);
 
 ClipRgn:=CreateRectRgn(ClipRect.left, ClipRect.Top, ClipRect.Right+1, ClipRect.Bottom+1);
@@ -1486,7 +1486,7 @@ var UseOrgClipRgn: Boolean;
     ClipRgn: HRGN;
 
 begin
-// Zapamiêtywanie oryginalnego ClipRgn i ustawianie nowego
+// ZapamiÃªtywanie oryginalnego ClipRgn i ustawianie nowego
 SaveClipRgn(ACanvas.Handle, UseOrgClipRgn, OrgRgn);
 
 ClipRgn:=CreateRectRgn(ClipRect.left, ClipRect.Top, ClipRect.Right+1, ClipRect.Bottom+1);
@@ -1536,7 +1536,7 @@ while MarkPos>0 do
       begin
       if MarkPos>1 then
          begin
-         // Rysowanie tekstu przed wyró¿nionym
+         // Rysowanie tekstu przed wyrÃ³Â¿nionym
          ACanvas.Font.Style:=ACanvas.Font.Style - [fsBold];
          s:=copy(DrawText, 1, MarkPos-1);
 
@@ -1547,7 +1547,7 @@ while MarkPos>0 do
          delete(BaseText, 1, MarkPos-1);
          end;
 
-      // Rysowanie wyró¿nionego tekstu
+      // Rysowanie wyrÃ³Â¿nionego tekstu
       ACanvas.Font.Style:=ACanvas.Font.Style + [fsBold];
       s:=copy(DrawText, 1, MarkTextLength);
 
@@ -1628,7 +1628,7 @@ var LineRect : T2DIntRect;
 
 begin
 if ABitmap.PixelFormat<>pf24bit then
-   raise exception.create('TGUITools.DrawHLine: Bitmapa musi byæ w trybie 24-bitowym!');
+   raise exception.create('TGUITools.DrawHLine: Bitmapa musi byÃ¦ w trybie 24-bitowym!');
 
 if x2<x1 then
    begin
@@ -1657,7 +1657,7 @@ var OrgLineRect : T2DIntRect;
 
 begin
 if ABitmap.PixelFormat<>pf24bit then
-   raise exception.create('TGUITools.DrawHLine: Bitmapa musi byæ w trybie 24-bitowym!');
+   raise exception.create('TGUITools.DrawHLine: Bitmapa musi byÃ¦ w trybie 24-bitowym!');
 
 if x2<x1 then
    begin
@@ -1711,7 +1711,7 @@ var UseOrgClipRgn: Boolean;
     OrgRgn: HRGN;
 
 begin
-// Zapamiêtywanie oryginalnego ClipRgn i ustawianie nowego
+// ZapamiÃªtywanie oryginalnego ClipRgn i ustawianie nowego
 SaveClipRgn(ACanvas.Handle, UseOrgClipRgn, OrgRgn);
 SelectClipRgn(ACanvas.Handle, Region);
 
@@ -1728,7 +1728,7 @@ var UseOrgClipRgn : boolean;
     OrgRgn : HRGN;
 
 begin
-// Zapamiêtywanie oryginalnego ClipRgn i ustawianie nowego
+// ZapamiÃªtywanie oryginalnego ClipRgn i ustawianie nowego
 SaveClipRgn(ACanvas.Handle, UseOrgClipRgn, OrgRgn);
 
 ClipRgn:=CreateRectRgn(ClipRect.left, ClipRect.Top, ClipRect.Right+1, ClipRect.Bottom+1);
@@ -1739,7 +1739,7 @@ SelectClipRgn(ACanvas.Handle, ClipRgn);
 
 DrawRegion(ACanvas, Region, Rect, ColorFrom, ColorTo, GradientKind);
 
-// Przywracanie poprzedniego ClipRgn i usuwanie wykorzystanych regionów
+// Przywracanie poprzedniego ClipRgn i usuwanie wykorzystanych regionÃ³w
 RestoreClipRgn(ACanvas.Handle, UseOrgClipRgn, OrgRgn);
 DeleteObject(ClipRgn);
 end;
@@ -1754,7 +1754,7 @@ var UseOrgClipRgn : boolean;
     OrgRgn : HRGN;
 
 begin
-// Zapamiêtywanie oryginalnego ClipRgn i ustawianie nowego
+// ZapamiÃªtywanie oryginalnego ClipRgn i ustawianie nowego
 SaveClipRgn(ACanvas.Handle, UseOrgClipRgn, OrgRgn);
 
 ClipRgn:=CreateRectRgn(ClipRect.left, ClipRect.Top, ClipRect.Right+1, ClipRect.Bottom+1);
@@ -1765,7 +1765,7 @@ SelectClipRgn(ACanvas.Handle, ClipRgn);
 
 DrawRoundRect(ACanvas, Rect, Radius, ColorFrom, ColorTo, GradientKind, LeftTopRound, RightTopRound, LeftBottomRound, RightBottomRound);
 
-// Przywracanie poprzedniego ClipRgn i usuwanie wykorzystanych regionów
+// Przywracanie poprzedniego ClipRgn i usuwanie wykorzystanych regionÃ³w
 RestoreClipRgn(ACanvas.Handle, UseOrgClipRgn, OrgRgn);
 DeleteObject(ClipRgn);
 end;
@@ -1812,7 +1812,7 @@ if Radius<1 then
 if (Radius*2>Rect.width) or (Radius*2>Rect.height) then
    exit;
 
-// Zapamiêtywanie oryginalnego ClipRgn i ustawianie nowego
+// ZapamiÃªtywanie oryginalnego ClipRgn i ustawianie nowego
 SaveClipRgn(ACanvas.Handle, UseOrgClipRgn, OrgRgn);
 
 if not(LeftTopRound) and not(RightTopRound) and not(LeftBottomRound) and not (RightBottomRound) then
@@ -1862,7 +1862,7 @@ ColorTo:=ColorToRGB(ColorTo);
 
 FillGradientRectangle(ACanvas, Rect, ColorFrom, ColorTo, GradientKind);
 
-// Przywracanie poprzedniego ClipRgn i usuwanie wykorzystanych regionów
+// Przywracanie poprzedniego ClipRgn i usuwanie wykorzystanych regionÃ³w
 RestoreClipRgn(ACanvas.Handle, UseOrgClipRgn, OrgRgn);
 DeleteObject(RoundRgn);
 end;
@@ -1914,7 +1914,7 @@ with ABitmap.Canvas do
      begin
      s:=AText;
      tw:=TextWidth(s) + 2;
-     // Jeœli tekst siê zmieœci, rysujemy
+     // JeÅ“li tekst siÃª zmieÅ“ci, rysujemy
      if tw<=(x2-x1+1) then
         case Align of
              taLeftJustify : TGUITools.DrawOutlinedText(ABitmap,x1, y, AText, TextColor, OutlineColor);
@@ -1946,7 +1946,7 @@ with ACanvas do
      begin
      s:=AText;
      tw:=TextWidth(s) + 2;
-     // Jeœli tekst siê zmieœci, rysujemy
+     // JeÅ“li tekst siÃª zmieÅ“ci, rysujemy
      if tw<=(x2-x1+1) then
         case Align of
              taLeftJustify : TGUITools.DrawOutlinedText(ACanvas,x1, y, AText, TextColor, OutlineColor);
@@ -2069,7 +2069,7 @@ with ACanvas do
      begin
      s:=AText;
      tw:=TextWidth(s);
-     // Jeœli tekst siê zmieœci, rysujemy
+     // JeÅ“li tekst siÃª zmieÅ“ci, rysujemy
      if tw<=(x2-x1+1) then
         case Align of
              taLeftJustify : TextOut(x1,y,AText);
@@ -2096,12 +2096,12 @@ var TempRect : T2DIntRect;
 
 begin
 if ABuffer.PixelFormat<>pf24bit then
-   raise exception.create('TGUITools.RenderBackground: Bitmapa musi byæ w trybie 24-bitowym!');
+   raise exception.create('TGUITools.RenderBackground: Bitmapa musi byÃ¦ w trybie 24-bitowym!');
 if (rect.left>rect.right) or (rect.top>rect.bottom) then
    exit;
 
-// Zarówno metoda FillRect jak i WinAPI'owe rysowanie gradientów jest
-// zabezpieczone przed rysowaniem poza obszarem p³ótna.
+// ZarÃ³wno metoda FillRect jak i WinAPI'owe rysowanie gradientÃ³w jest
+// zabezpieczone przed rysowaniem poza obszarem pÂ³Ã³tna.
 case BackgroundKind of
      bkSolid: begin
               ABuffer.Canvas.brush.Color:=Color1;
@@ -2180,7 +2180,7 @@ var LineRect : T2DIntRect;
 
 begin
 if ABitmap.PixelFormat<>pf24bit then
-   raise exception.create('TGUITools.DrawHLine: Bitmapa musi byæ w trybie 24-bitowym!');
+   raise exception.create('TGUITools.DrawHLine: Bitmapa musi byÃ¦ w trybie 24-bitowym!');
 
 if y2<y1 then
    begin
@@ -2209,7 +2209,7 @@ var OrgLineRect : T2DIntRect;
 
 begin
 if ABitmap.PixelFormat<>pf24bit then
-   raise exception.create('TGUITools.DrawHLine: Bitmapa musi byæ w trybie 24-bitowym!');
+   raise exception.create('TGUITools.DrawHLine: Bitmapa musi byÃ¦ w trybie 24-bitowym!');
 
 if y2<y1 then
    begin
@@ -2257,7 +2257,7 @@ var UseOrgClipRgn : boolean;
     OrgRgn : HRGN;
 
 begin
-// Zapamiêtywanie oryginalnego ClipRgn i ustawianie nowego
+// ZapamiÃªtywanie oryginalnego ClipRgn i ustawianie nowego
 SaveClipRgn(ACanvas.Handle, UseOrgClipRgn, OrgRgn);
 
 ClipRgn:=CreateRectRgn(ClipRect.left, ClipRect.Top, ClipRect.Right+1, ClipRect.Bottom+1);
@@ -2268,7 +2268,7 @@ SelectClipRgn(ACanvas.Handle, ClipRgn);
 
 DrawVLine(ACanvas, x, y1, y2, Color);
 
-// Przywracanie poprzedniego ClipRgn i usuwanie wykorzystanych regionów
+// Przywracanie poprzedniego ClipRgn i usuwanie wykorzystanych regionÃ³w
 RestoreClipRgn(ACanvas.Handle, UseOrgClipRgn, OrgRgn);
 DeleteObject(ClipRgn);
 end;
@@ -2292,7 +2292,7 @@ DrawAARoundCorner(ACanvas, T2DIntVector.create(Rect.Right - Radius + 1, Rect.Bot
 ACanvas.Pen.color:=Color;
 ACanvas.pen.style:=psSolid;
 
-// Draw*Line s¹ zabezpieczone przed rysowaniem poza obszarem
+// Draw*Line sÂ¹ zabezpieczone przed rysowaniem poza obszarem
 DrawVLine(ACanvas, Rect.left, rect.top + Radius, rect.bottom - Radius, Color);
 DrawVLine(ACanvas, Rect.right, rect.top + Radius, rect.bottom - Radius, Color);
 DrawHLine(ACanvas, Rect.left + Radius, Rect.right - Radius, rect.top, Color);
@@ -2307,7 +2307,7 @@ var UseOrgClipRgn : boolean;
     OrgRgn : HRGN;
 
 begin
-// Zapamiêtywanie oryginalnego ClipRgn i ustawianie nowego
+// ZapamiÃªtywanie oryginalnego ClipRgn i ustawianie nowego
 SaveClipRgn(ACanvas.Handle, UseOrgClipRgn, OrgRgn);
 
 ClipRgn:=CreateRectRgn(ClipRect.left, ClipRect.Top, ClipRect.Right+1, ClipRect.Bottom+1);
@@ -2318,7 +2318,7 @@ SelectClipRgn(ACanvas.Handle, ClipRgn);
 
 DrawAARoundFrame(ACanvas, Rect, Radius, Color);
 
-// Przywracanie poprzedniego ClipRgn i usuwanie wykorzystanych regionów
+// Przywracanie poprzedniego ClipRgn i usuwanie wykorzystanych regionÃ³w
 RestoreClipRgn(ACanvas.Handle, UseOrgClipRgn, OrgRgn);
 DeleteObject(ClipRgn);
 end;
@@ -2346,7 +2346,7 @@ var UseOrgClipRgn: Boolean;
     DCStackPos : integer;
 
 begin
-// Zapamiêtywanie oryginalnego ClipRgn i ustawianie nowego
+// ZapamiÃªtywanie oryginalnego ClipRgn i ustawianie nowego
 SaveClipRgn(ACanvas.Handle, UseOrgClipRgn, OrgRgn);
 
 ClipRgn:=CreateRectRgn(ClipRect.left, ClipRect.Top, ClipRect.Right+1, ClipRect.Bottom+1);
@@ -2355,8 +2355,8 @@ if UseOrgClipRgn then
 
 SelectClipRgn(ACanvas.Handle, ClipRgn);
 
-// Hack poprawiaj¹cy b³¹d w ImageList.Draw, który nie przywraca poprzedniego
-// koloru czcionki dla p³ótna
+// Hack poprawiajÂ¹cy bÂ³Â¹d w ImageList.Draw, ktÃ³ry nie przywraca poprzedniego
+// koloru czcionki dla pÂ³Ã³tna
 DcStackPos:=SaveDC(ACanvas.Handle);
 ImageList.Draw(ACanvas, Point.x, Point.y, ImageIndex, false);
 RestoreDC(ACanvas.Handle, DcStackPos);

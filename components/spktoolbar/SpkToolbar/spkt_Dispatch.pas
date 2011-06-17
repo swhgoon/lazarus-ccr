@@ -3,10 +3,10 @@ unit spkt_Dispatch;
 (*******************************************************************************
 *                                                                              *
 *  Plik: spkt_Dispatch.pas                                                     *
-*  Opis: Bazowe klasy dyspozytorów poœrednicz¹cych pomiêdzy elementami         *
+*  Opis: Bazowe klasy dyspozytorÃ³w poÅ“redniczÂ¹cych pomiÃªdzy elementami         *
 *        toolbara.                                                             *
-*  Copyright: (c) 2009 by Spook. Jakiekolwiek u¿ycie komponentu bez            *
-*             uprzedniego uzyskania licencji od autora stanowi z³amanie        *
+*  Copyright: (c) 2009 by Spook. Jakiekolwiek uÂ¿ycie komponentu bez            *
+*             uprzedniego uzyskania licencji od autora stanowi zÂ³amanie        *
 *             prawa autorskiego!                                               *
 *                                                                              *
 *******************************************************************************)

@@ -3,9 +3,9 @@ unit spkt_Buttons;
 (*******************************************************************************
 *                                                                              *
 *  Plik: spkt_Buttons.pas                                                      *
-*  Opis: Modu³ zawieraj¹cy komponenty przycisków dla toolbara.                 *
-*  Copyright: (c) 2009 by Spook. Jakiekolwiek u¿ycie komponentu bez            *
-*             uprzedniego uzyskania licencji od autora stanowi z³amanie        *
+*  Opis: ModuÂ³ zawierajÂ¹cy komponenty przyciskÃ³w dla toolbara.                 *
+*  Copyright: (c) 2009 by Spook. Jakiekolwiek uÂ¿ycie komponentu bez            *
+*             uprzedniego uzyskania licencji od autora stanowi zÂ³amanie        *
 *             prawa autorskiego!                                               *
 *                                                                              *
 *******************************************************************************)
@@ -60,15 +60,15 @@ type TSpkBaseButton = class;
        FButtonKind : TSpkButtonKind;
        FDropdownMenu : TPopupMenu;
 
-     // *** Obs³uga rysowania ***
+     // *** ObsÂ³uga rysowania ***
 
      /// <summary>Zadaniem metody w odziedziczonych klasach jest obliczenie
-     /// rectów przycisku i menu dropdown w zale¿noœci od FButtonState</summary>
+     /// rectÃ³w przycisku i menu dropdown w zaleÂ¿noÅ“ci od FButtonState</summary>
        procedure CalcRects; virtual; abstract;
 
        function GetDropdownPoint : T2DIntPoint; virtual; abstract;
 
-     // *** Obs³uga akcji ***
+     // *** ObsÂ³uga akcji ***
 
        procedure ActionChange(Sender : TObject);
 
@@ -254,7 +254,7 @@ procedure TSpkBaseButton.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
 begin
 if FEnabled then
    begin
-   // Przyciski reaguj¹ tylko na lewy przycisk myszy
+   // Przyciski reagujÂ¹ tylko na lewy przycisk myszy
    if Button <> mbLeft then
       exit;
 
@@ -324,11 +324,11 @@ if FEnabled then
       begin
       if FMouseHoverElement = beButton then
          begin
-         // Placeholder, gdyby zasz³a potrzeba obs³ugi tego zdarzenia
+         // Placeholder, gdyby zaszÂ³a potrzeba obsÂ³ugi tego zdarzenia
          end else
       if FMouseHoverElement = beDropdown then
          begin
-         // Placeholder, gdyby zasz³a potrzeba obs³ugi tego zdarzenia
+         // Placeholder, gdyby zaszÂ³a potrzeba obsÂ³ugi tego zdarzenia
          end;
       end;
 
@@ -399,8 +399,8 @@ if FEnabled then
       end else
    if FMouseActiveElement = beNone then
       begin
-      // Z uwagi na uproszczon¹ obs³ugê myszy w przycisku, nie ma potrzeby
-      // informowaæ poprzedniego elementu o tym, ¿e mysz opuœci³a jego obszar.
+      // Z uwagi na uproszczonÂ¹ obsÂ³ugÃª myszy w przycisku, nie ma potrzeby
+      // informowaÃ¦ poprzedniego elementu o tym, Â¿e mysz opuÅ“ciÂ³a jego obszar.
 
       if NewMouseHoverElement = beButton then
          begin
@@ -447,7 +447,7 @@ var ClearActive : boolean;
 begin
 if FEnabled then
    begin
-   // Przyciski reaguj¹ tylko na lewy przycisk myszy
+   // Przyciski reagujÂ¹ tylko na lewy przycisk myszy
    if Button <> mbLeft then
       exit;
 
@@ -455,7 +455,7 @@ if FEnabled then
 
    if FMouseActiveElement = beButton then
       begin
-      // Zdarzenie zadzia³a tylko wtedy, gdy przycisk myszy zosta³ puszczony nad
+      // Zdarzenie zadziaÂ³a tylko wtedy, gdy przycisk myszy zostaÂ³ puszczony nad
       // przyciskiem
       if FMouseHoverElement = beButton then
          begin
@@ -476,7 +476,7 @@ if FEnabled then
       end else
    if FMouseActiveElement = beDropDown then
       begin
-      // Zdarzenie zadzia³a tylko wtedy, gdy przycisk myszy zosta³ puszczony nad
+      // Zdarzenie zadziaÂ³a tylko wtedy, gdy przycisk myszy zostaÂ³ puszczony nad
       // przyciskiem DropDown
 
       if FMouseHoverElement = beDropDown then
@@ -491,8 +491,8 @@ if FEnabled then
 
    if (ClearActive) and (FMouseActiveElement<>FMouseHoverElement) then
       begin
-      // Z uwagi na uproszczon¹ obs³ugê, nie ma potrzeby informowaæ poprzedniego
-      // elementu o tym, ¿e mysz opuœci³a jego obszar.
+      // Z uwagi na uproszczonÂ¹ obsÂ³ugÃª, nie ma potrzeby informowaÃ¦ poprzedniego
+      // elementu o tym, Â¿e mysz opuÅ“ciÂ³a jego obszar.
 
       if FMouseHoverElement = beButton then
          begin
@@ -585,9 +585,9 @@ begin
   inherited;
   if not(FEnabled) then
      begin
-     // Jeœli przycisk zosta³ wy³¹czony, zostaje natychmiast prze³¹czony
-     // w stan Idle i zerowane s¹ elementy aktywne i pod mysz¹. Jeœli zosta³
-     // w³¹czony, jego stan zmieni siê podczas pierwszej akcji myszy.
+     // JeÅ“li przycisk zostaÂ³ wyÂ³Â¹czony, zostaje natychmiast przeÂ³Â¹czony
+     // w stan Idle i zerowane sÂ¹ elementy aktywne i pod myszÂ¹. JeÅ“li zostaÂ³
+     // wÂ³Â¹czony, jego stan zmieni siÃª podczas pierwszej akcji myszy.
 
      FMouseHoverElement:=beNone;
      FMouseActiveElement:=beNone;
@@ -660,22 +660,22 @@ if (FRect.width<2*LARGEBUTTON_RADIUS) or (FRect.Height<2*LARGEBUTTON_RADIUS) the
 if FButtonKind in [bkButton, bkDropdown] then
    begin
    {$REGION 'Tryb bez dodatkowego przycisku z rozwijanym menu'}
-   // *** T³o ***
+   // *** TÂ³o ***
    if not(FEnabled) then
       begin
-      {$REGION 'T³o dla disabled'}
-      // Brak t³a
+      {$REGION 'TÂ³o dla disabled'}
+      // Brak tÂ³a
       {$ENDREGION}
       end else
    if FButtonState = bsIdle then
       begin
-      {$REGION 'T³o dla Idle'}
-      // Brak t³a
+      {$REGION 'TÂ³o dla Idle'}
+      // Brak tÂ³a
       {$ENDREGION}
       end else
    if FButtonState = bsBtnHottrack then
       begin
-      {$REGION 'T³o dla HotTrack'}
+      {$REGION 'TÂ³o dla HotTrack'}
       TGuiTools.DrawRoundRect(ABuffer.Canvas,
                               T2DIntRect.Create(FButtonRect.left,
                                                 FButtonRect.Top,
@@ -704,7 +704,7 @@ if FButtonKind in [bkButton, bkDropdown] then
       end else
    if FButtonState = bsBtnPressed then
       begin
-      {$REGION 'T³o dla Pressed'}
+      {$REGION 'TÂ³o dla Pressed'}
       TGuiTools.DrawRoundRect(ABuffer.Canvas,
                               T2DIntRect.Create(FButtonRect.left,
                                                 FButtonRect.Top,
@@ -732,12 +732,12 @@ if FButtonKind in [bkButton, bkDropdown] then
                                  ClipRect);
       {$ENDREGION}
       end else
-          raise InternalException.create('TSpkLargeButton.Draw: Nieprawid³owa wartoœæ FButtonState!');
+          raise InternalException.create('TSpkLargeButton.Draw: NieprawidÂ³owa wartoÅ“Ã¦ FButtonState!');
 
    // *** Ikona ***
    if not(FEnabled) then
       begin
-      {$REGION 'Ikona wy³¹czona'}
+      {$REGION 'Ikona wyÂ³Â¹czona'}
       if (FLargeImageIndex>=0) and
          (FDisabledLargeImages<>nil) and
          (FLargeImageIndex<FDisabledLargeImages.Count) then
@@ -768,7 +768,7 @@ if FButtonKind in [bkButton, bkDropdown] then
       end
    else
       begin
-      {$REGION 'Ikona zwyk³a'}
+      {$REGION 'Ikona zwykÂ³a'}
       if (FLargeImageIndex>=0) and
          (FLargeImages<>nil) and
          (FLargeImageIndex<FLargeImages.Count) then
@@ -819,7 +819,7 @@ if FButtonKind in [bkButton, bkDropdown] then
 
    if BreakPos>0 then
       begin
-      // Tekst z³amany
+      // Tekst zÂ³amany
       TextHeight:=ABuffer.Canvas.Textheight('Wy');
 
       s:=copy(FCaption, 1, BreakPos-1);
@@ -834,7 +834,7 @@ if FButtonKind in [bkButton, bkDropdown] then
       end
    else
       begin
-      // Tekst nie z³amany
+      // Tekst nie zÂ³amany
       TextHeight:=ABuffer.Canvas.Textheight('Wy');
 
       x:=FButtonRect.Left + (FButtonRect.width - ABuffer.Canvas.Textwidth(FCaption)) div 2;
@@ -844,7 +844,7 @@ if FButtonKind in [bkButton, bkDropdown] then
 
    if FButtonKind = bkDropdown then
       begin
-      // Chevron strza³ki w dó³
+      // Chevron strzaÂ³ki w dÃ³Â³
 
       if not(FEnabled) then
          begin
@@ -883,27 +883,27 @@ if FButtonKind in [bkButton, bkDropdown] then
 else
    begin
    {$REGION 'Tryb z rozwijanym menu'}
-   // *** T³o ***
+   // *** TÂ³o ***
    if not(FEnabled) then
       begin
-      {$REGION 'T³o dla Disabled'}
+      {$REGION 'TÂ³o dla Disabled'}
       //
       {$ENDREGION}
       end else
    if FButtonState = bsIdle then
       begin
-      {$REGION 'T³o dla Idle'}
+      {$REGION 'TÂ³o dla Idle'}
       //
       {$ENDREGION}
       end else
    if (FButtonState = bsBtnHottrack) or (FButtonState = bsDropdownHottrack) or
       (FButtonState = bsBtnPressed) or (FButtonState = bsDropdownPressed) then
       begin
-      {$REGION 'T³o dla aktywnego'}
+      {$REGION 'TÂ³o dla aktywnego'}
 
       // *** Przycisk ***
 
-      {$REGION 'Ustalanie kolorów'}
+      {$REGION 'Ustalanie kolorÃ³w'}
       if FButtonState = bsBtnHottrack then
          begin
          FrameColor:=FAppearance.Element.HotTrackFrameColor;
@@ -930,7 +930,7 @@ else
          end;
       {$ENDREGION}
 
-      {$REGION 'T³o przycisku'}
+      {$REGION 'TÂ³o przycisku'}
       DrawRgn:=CreateRectRgn(FButtonRect.Left,
                              FButtonRect.Top + LARGEBUTTON_RADIUS,
                              FButtonRect.Right + 1,
@@ -968,7 +968,7 @@ else
       {$ENDREGION}
 
       {$REGION 'Ramka przycisku'}
-      // Wewnêtrzna ramka
+      // WewnÃªtrzna ramka
       TGuiTools.DrawAARoundCorner(ABuffer,
                                   T2DIntPoint.Create(FButtonRect.Left + 1, FButtonRect.Top + 1),
                                   LARGEBUTTON_RADIUS,
@@ -1014,7 +1014,7 @@ else
                              InnerLightColor,
                              ClipRect);
 
-      // Zewnêtrzna ramka
+      // ZewnÃªtrzna ramka
       TGuiTools.DrawAARoundCorner(ABuffer,
                                   T2DIntPoint.Create(FButtonRect.Left, FButtonRect.Top),
                                   LARGEBUTTON_RADIUS,
@@ -1049,7 +1049,7 @@ else
 
       // *** Dropdown ***
 
-      {$REGION 'Ustalanie kolorów'}
+      {$REGION 'Ustalanie kolorÃ³w'}
       if FButtonState = bsDropdownHottrack then
          begin
          FrameColor:=FAppearance.Element.HotTrackFrameColor;
@@ -1079,7 +1079,7 @@ else
          end;
       {$ENDREGION}
 
-      {$REGION 'T³o dropdown'}
+      {$REGION 'TÂ³o dropdown'}
       DrawRgn:=CreateRectRgn(FDropdownRect.left,
                              FDropdownRect.Top,
                              FDropdownRect.Right + 1,
@@ -1117,7 +1117,7 @@ else
       {$ENDREGION}
 
       {$REGION 'Ramka dropdown'}
-      // Wewnêtrzna ramka
+      // WewnÃªtrzna ramka
 
       TGuiTools.DrawAARoundCorner(ABuffer,
                                   T2DIntPoint.Create(FDropdownRect.Left + 1, FDropdownRect.Bottom - LARGEBUTTON_RADIUS),
@@ -1164,7 +1164,7 @@ else
                              ClipRect);
 
 
-      // Zewnêtrzna ramka
+      // ZewnÃªtrzna ramka
       TGuiTools.DrawAARoundCorner(ABuffer,
                                   T2DIntPoint.Create(FDropdownRect.Left, FDropdownRect.Bottom - LARGEBUTTON_RADIUS + 1),
                                   LARGEBUTTON_RADIUS,
@@ -1197,12 +1197,12 @@ else
 
       {$ENDREGION}
       end else
-          raise InternalException.create('TSpkLargeButton.Draw: Nieprawid³owa wartoœæ FButtonState!');
+          raise InternalException.create('TSpkLargeButton.Draw: NieprawidÂ³owa wartoÅ“Ã¦ FButtonState!');
 
    // *** Ikona ***
    if not(FEnabled) then
       begin
-      {$REGION 'Ikona wy³¹czona'}
+      {$REGION 'Ikona wyÂ³Â¹czona'}
       if (FLargeImageIndex>=0) and
          (FDisabledLargeImages<>nil) and
          (FLargeImageIndex<FDisabledLargeImages.Count) then
@@ -1233,7 +1233,7 @@ else
       end
    else
       begin
-      {$REGION 'Ikona zwyk³a'}
+      {$REGION 'Ikona zwykÂ³a'}
       if (FLargeImageIndex>=0) and
          (FLargeImages<>nil) and
          (FLargeImageIndex<FLargeImages.Count) then
@@ -1414,13 +1414,13 @@ if FLargeImages<>nil then
 // *** Tekst ***
 if FButtonKind = bkButton then
    begin
-   // £amiemy etykietê
+   // Â£amiemy etykietÃª
    FindBreakPlace(FCaption,BreakPos,RowWidth);
    TextWidth:=2 * LARGEBUTTON_CAPTION_HMARGIN + RowWidth;
    end
 else
    begin
-   // Nie ³amiemy etykiety
+   // Nie Â³amiemy etykiety
    Bitmap.canvas.font.assign(FAppearance.Element.CaptionFont);
    TextWidth:=2 * LARGEBUTTON_CAPTION_HMARGIN + Bitmap.Canvas.TextWidth(FCaption);
    end;
@@ -1470,7 +1470,7 @@ Bitmap:=FToolbarDispatch.GetTempBitmap;
 if not(assigned(Bitmap)) then
    exit;
 
-// *** Niezale¿nie od rodzaju, musi byæ miejsce dla ikony i/lub tekstu ***
+// *** NiezaleÂ¿nie od rodzaju, musi byÃ¦ miejsce dla ikony i/lub tekstu ***
 
 BtnWidth:=0;
 AdditionalPadding:=false;
@@ -1492,22 +1492,22 @@ if FShowCaption then
    AdditionalPadding:=true;
    end;
 
-// Padding za tekstem lub ikon¹
+// Padding za tekstem lub ikonÂ¹
 if AdditionalPadding then
    BtnWidth:=BtnWidth + SMALLBUTTON_PADDING;
 
-// Szerokoœæ zawartoœci przycisku musi wynosiæ co najmniej SMALLBUTTON_MIN_WIDTH
+// SzerokoÅ“Ã¦ zawartoÅ“ci przycisku musi wynosiÃ¦ co najmniej SMALLBUTTON_MIN_WIDTH
 BtnWidth:=max(SMALLBUTTON_MIN_WIDTH, BtnWidth);
 
 // *** Dropdown ***
 case FButtonKind of
      bkButton: begin
-               // Lewa krawêdŸ przycisku
+               // Lewa krawÃªdÅ¸ przycisku
                if FGroupBehaviour in [gbContinuesGroup, gbEndsGroup] then
                   BtnWidth:=BtnWidth + SMALLBUTTON_HALF_BORDER_WIDTH else
                   BtnWidth:=BtnWidth + SMALLBUTTON_BORDER_WIDTH;
 
-               // Prawa krawêdŸ przycisku
+               // Prawa krawÃªdÅ¸ przycisku
                if (FGroupBehaviour in [gbBeginsGroup, gbContinuesGroup]) then
                   BtnWidth:=BtnWidth + SMALLBUTTON_HALF_BORDER_WIDTH else
                   BtnWidth:=BtnWidth + SMALLBUTTON_BORDER_WIDTH;
@@ -1516,18 +1516,18 @@ case FButtonKind of
                DropRect:=T2DIntRect.Create(0, 0, 0, 0);
                end;
      bkButtonDropdown: begin
-                       // Lewa krawêdŸ przycisku
+                       // Lewa krawÃªdÅ¸ przycisku
                        if FGroupBehaviour in [gbContinuesGroup, gbEndsGroup] then
                           BtnWidth:=BtnWidth + SMALLBUTTON_HALF_BORDER_WIDTH else
                           BtnWidth:=BtnWidth + SMALLBUTTON_BORDER_WIDTH;
 
-                       // Prawa krawêdŸ przycisku
+                       // Prawa krawÃªdÅ¸ przycisku
                        BtnWidth:=BtnWidth + SMALLBUTTON_HALF_BORDER_WIDTH;
 
-                       // Lewa krawêdŸ i zawartoœæ pola dropdown
+                       // Lewa krawÃªdÅ¸ i zawartoÅ“Ã¦ pola dropdown
                        DropdownWidth:=SMALLBUTTON_HALF_BORDER_WIDTH + SMALLBUTTON_DROPDOWN_WIDTH;
 
-                       // Prawa krawêdŸ pola dropdown
+                       // Prawa krawÃªdÅ¸ pola dropdown
                        if (FGroupBehaviour in [gbBeginsGroup, gbContinuesGroup]) then
                           DropdownWidth:=DropdownWidth + SMALLBUTTON_HALF_BORDER_WIDTH else
                           DropdownWidth:=DropdownWidth + SMALLBUTTON_BORDER_WIDTH;
@@ -1539,18 +1539,18 @@ case FButtonKind of
                                                    PANE_ROW_HEIGHT - 1);
                        end;
      bkDropdown: begin
-                 // Lewa krawêdŸ przycisku
+                 // Lewa krawÃªdÅ¸ przycisku
                  if FGroupBehaviour in [gbContinuesGroup, gbEndsGroup] then
                     BtnWidth:=BtnWidth + SMALLBUTTON_HALF_BORDER_WIDTH else
                     BtnWidth:=BtnWidth + SMALLBUTTON_BORDER_WIDTH;
 
-                 // Prawa krawêdŸ przycisku
+                 // Prawa krawÃªdÅ¸ przycisku
                  if (FGroupBehaviour in [gbBeginsGroup, gbContinuesGroup]) then
                     BtnWidth:=BtnWidth + SMALLBUTTON_HALF_BORDER_WIDTH else
                     BtnWidth:=BtnWidth + SMALLBUTTON_BORDER_WIDTH;
 
-                 // Dodatkowy obszar na dropdown + miejsce na œrodkow¹ krawêdŸ,
-                 // dla kompatybilnoœci wymiarów z dkButtonDropdown
+                 // Dodatkowy obszar na dropdown + miejsce na Å“rodkowÂ¹ krawÃªdÅ¸,
+                 // dla kompatybilnoÅ“ci wymiarÃ³w z dkButtonDropdown
                  BtnWidth:=BtnWidth + SMALLBUTTON_BORDER_WIDTH + SMALLBUTTON_DROPDOWN_WIDTH;
 
                  BtnRect:=T2DIntRect.Create(0, 0, BtnWidth - 1, PANE_ROW_HEIGHT - 1);
@@ -1585,7 +1585,7 @@ if (FRect.width<2*LARGEBUTTON_RADIUS) or (FRect.Height<2*LARGEBUTTON_RADIUS) the
 
 // *** Przycisk ***
 
-// T³o i ramka
+// TÂ³o i ramka
 {$REGION 'Rysowanie przycisku'}
 if (FButtonState = bsIdle) and (not(FHideFrameWhenIdle)) then
    begin
@@ -1664,7 +1664,7 @@ if (FButtonState in [bsDropdownHottrack, bsDropdownPressed]) then
 // Ikona
 if not(FEnabled) then
    begin
-   {$REGION 'Ikona wy³¹czona'}
+   {$REGION 'Ikona wyÂ³Â¹czona'}
    if (FImageIndex>=0) and
       (FDisabledImages<>nil) and
       (FImageIndex<FDisabledImages.Count) then
@@ -1699,7 +1699,7 @@ if not(FEnabled) then
    end
 else
    begin
-   {$REGION 'Ikona zwyk³a'}
+   {$REGION 'Ikona zwykÂ³a'}
    if (FImageIndex>=0) and
       (FImages<>nil) and
       (FImageIndex<FImages.Count) then
@@ -1770,7 +1770,7 @@ if FButtonKind = bkButton then
    end else
 if FButtonKind = bkButtonDropdown then
    begin
-   // T³o i ramka
+   // TÂ³o i ramka
    {$REGION 'Rysowanie dropdowna'}
    if (FButtonState = bsIdle) and (not(FHideFrameWhenIdle)) then
       begin
