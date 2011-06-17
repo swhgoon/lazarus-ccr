@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, EditBtn,
   StdCtrls, Spin, ExtCtrls, ComCtrls,
-  fpvv_drawer;
+  fpvv_drawer, fpimage, fpcanvas;
 
 type
 
@@ -126,7 +126,6 @@ end;
 procedure TfrmFPVViewer.buttonRenderingTestClick(Sender: TObject);
 var
   Vec: TvVectorialDocument;
-  lClYellow: TvColor = (Red: $FF; Green: $FF; Blue: $00; Alpha: FPValphaOpaque);
 begin
   notebook.PageIndex := 0;
 
@@ -138,7 +137,7 @@ begin
     Vec.AddAlignedDimension(Make2DPoint(50, 250), Make2DPoint(100, 200), Make2DPoint(150, 250), Make2DPoint(150, 200));
 
     Vec.StartPath(0, 0);
-    Vec.SetPenColor(lClYellow);
+    Vec.SetPenColor(colYellow);
     Vec.SetPenWidth(1);
     Vec.AddLineToPath(100, 100);
     Vec.EndPath();
