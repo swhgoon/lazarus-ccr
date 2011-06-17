@@ -244,7 +244,7 @@ procedure DrawFPVEntityToCanvas(ASource: TvVectorialDocument; CurEntity: TvEntit
 var
   i: Integer;
   {$ifdef USE_LCL_CANVAS}
-  ALCLDest: TCanvas absolute ADest;
+  ALCLDest: TCanvas;
   {$endif}
   // For entities
   CurCircle: TvCircle;
@@ -259,6 +259,10 @@ var
   Points: array of TPoint;
   UpperDim, LowerDim: T3DPoint;
 begin
+  {$ifdef USE_LCL_CANVAS}
+  ALCLDest := TCanvas(ADest);
+  {$endif}
+
   ADest.Brush.Style := CurEntity.Brush.Style;
   ADest.Pen.Style := CurEntity.Pen.Style;
   ADest.Pen.FPColor := CurEntity.Pen.Color;
@@ -446,16 +450,22 @@ procedure DrawFPVTextToCanvas(ASource: TvVectorialDocument; CurText: TvText;
 var
   i: Integer;
   {$ifdef USE_LCL_CANVAS}
-  ALCLDest: TCanvas absolute ADest;
+  ALCLDest: TCanvas;
   {$endif}
   //
   LowerDim: T3DPoint;
 begin
+  {$ifdef USE_LCL_CANVAS}
+  ALCLDest := TCanvas(ADest);
+  {$endif}
+
   ADest.Font.Size := Round(AmulX * CurText.Font.Size);
   ADest.Pen.Style := psSolid;
   ADest.Pen.FPColor := colBlack;
   ADest.Brush.Style := bsClear;
+  {$ifdef USE_LCL_CANVAS}
   ALCLDest.Font.Orientation := Round(CurText.Font.Orientation * 16);
+  {$endif}
 
   LowerDim.Y := CurText.Y + CurText.Font.Size;
   ADest.TextOut(CoordToCanvasX(CurText.X), CoordToCanvasY(LowerDim.Y), CurText.Value);
