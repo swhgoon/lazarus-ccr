@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="4">
+    <PathDelim Value="\"/>
+    <Name Value="SpkToolbarPackage"/>
+    <Author Value="Spook"/>
+    <CompilerOptions>
+      <Version Value="10"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <OtherUnitFiles Value="SpkToolbar;SpkMath;SpkGUITools;SpkGraphTools"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\"/>
+      </SearchPaths>
+      <CodeGeneration>
+        <Optimizations>
+          <OptimizationLevel Value="2"/>
+        </Optimizations>
+      </CodeGeneration>
+      <Other>
+        <CompilerMessages>
+          <UseMsgFile Value="True"/>
+        </CompilerMessages>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="Ribbon like toolbar"/>
+    <License Value="Modified LGPL"/>
+    <Version Minor="1"/>
+    <Files Count="15">
+      <Item1>
+        <Filename Value="SpkToolbar\spkt_Appearance.pas"/>
+        <UnitName Value="spkt_Appearance"/>
+      </Item1>
+      <Item2>
+        <Filename Value="SpkToolbar\spkt_BaseItem.pas"/>
+        <UnitName Value="spkt_BaseItem"/>
+      </Item2>
+      <Item3>
+        <Filename Value="SpkToolbar\spkt_Buttons.pas"/>
+        <UnitName Value="spkt_Buttons"/>
+      </Item3>
+      <Item4>
+        <Filename Value="SpkToolbar\spkt_Const.pas"/>
+        <UnitName Value="spkt_Const"/>
+      </Item4>
+      <Item5>
+        <Filename Value="SpkToolbar\spkt_Dispatch.pas"/>
+        <UnitName Value="spkt_Dispatch"/>
+      </Item5>
+      <Item6>
+        <Filename Value="SpkToolbar\spkt_Exceptions.pas"/>
+        <UnitName Value="spkt_Exceptions"/>
+      </Item6>
+      <Item7>
+        <Filename Value="SpkToolbar\spkt_Items.pas"/>
+        <UnitName Value="spkt_Items"/>
+      </Item7>
+      <Item8>
+        <Filename Value="SpkToolbar\spkt_Pane.pas"/>
+        <UnitName Value="spkt_Pane"/>
+      </Item8>
+      <Item9>
+        <Filename Value="SpkToolbar\spkt_Tab.pas"/>
+        <UnitName Value="spkt_Tab"/>
+      </Item9>
+      <Item10>
+        <Filename Value="SpkToolbar\spkt_Tools.pas"/>
+        <UnitName Value="spkt_Tools"/>
+      </Item10>
+      <Item11>
+        <Filename Value="SpkToolbar\spkt_Types.pas"/>
+        <UnitName Value="spkt_Types"/>
+      </Item11>
+      <Item12>
+        <Filename Value="SpkToolbar\SpkToolbar.pas"/>
+        <UnitName Value="SpkToolbar"/>
+      </Item12>
+      <Item13>
+        <Filename Value="SpkMath\SpkMath.pas"/>
+        <UnitName Value="SpkMath"/>
+      </Item13>
+      <Item14>
+        <Filename Value="SpkGUITools\SpkGUITools.pas"/>
+        <UnitName Value="SpkGuiTools"/>
+      </Item14>
+      <Item15>
+        <Filename Value="SpkGraphTools\SpkGraphTools.pas"/>
+        <UnitName Value="SpkGraphTools"/>
+      </Item15>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="1">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
