@@ -45,11 +45,15 @@ type
     function Length : extended;
   end;
   {$else}
+
+  { T2DIntVector }
+
   T2DIntVector = object
     x, y : integer;
   public
-    constructor Create(Ax, Ay : integer);
+    constructor Create(Ax, Ay : Integer);
     function DistanceTo(AVector : T2DIntVector) : double;
+    function DistanceTo(Ax, Ay : Integer) : double;
     function Length : extended;
   end;
   {$endif}
@@ -351,6 +355,11 @@ end;
 function T2DIntVector.DistanceTo(AVector: T2DIntVector): double;
 begin
   result:=sqrt(sqr(self.x - AVector.x) + sqr(self.y - AVector.y));
+end;
+
+function T2DIntVector.DistanceTo(Ax, Ay: Integer): double;
+begin
+  Result := sqrt(sqr(x - Ax) + sqr(y - Ay));
 end;
 
 function T2DIntVector.Length: extended;
