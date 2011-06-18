@@ -1,369 +1,372 @@
 ﻿unit SpkGuiTools;
 
+{$mode ObjFpc}
+{$H+}
 {$DEFINE SPKGUITOOLS}
+{.$define EnhancedRecordSupport}
 
 interface
 
 {$MESSAGE HINT 'W tym module konsekwentnie ka¿dy rect opisuje dok³adny prostok¹t (a nie, jak w przypadku WINAPI - bez dolnej i prawej krawêdzi)'}
 
-uses Windows, Graphics, SysUtils, Math, Classes, Controls, ImgList, 
-     SpkGraphTools, SpkMath;
+uses
+  LCLType, Graphics, SysUtils, Math, Classes, Controls, ImgList, SpkGraphTools, SpkMath;
 
-type TCornerPos = (cpLeftTop, cpRightTop, cpLeftBottom, cpRightBottom);
-     TCornerKind = (cpRound, cpNormal);
-     TBackgroundKind = (bkSolid, bkVerticalGradient, bkHorizontalGradient,
-                        bkConcave);
+type
+  TCornerPos = (cpLeftTop, cpRightTop, cpLeftBottom, cpRightBottom);
+  TCornerKind = (cpRound, cpNormal);
+  TBackgroundKind = (bkSolid, bkVerticalGradient, bkHorizontalGradient,
+                    bkConcave);
 
-type TGUITools = class(TObject)
-     private
-     protected
-       class procedure FillGradientRectangle(ACanvas: TCanvas; Rect: T2DIntRect; ColorFrom: TColor; ColorTo: TColor; GradientKind: TBackgroundKind);
+  TGUITools = class(TObject)
+  protected
+    class procedure FillGradientRectangle(ACanvas: TCanvas; Rect: T2DIntRect; ColorFrom: TColor;
+      ColorTo: TColor; GradientKind: TBackgroundKind);
+    class procedure SaveClipRgn(DC : HDC; var OrgRgnExists : boolean; var OrgRgn : HRGN);
+    class procedure RestoreClipRgn(DC : HDC; OrgRgnExists : boolean; var OrgRgn : HRGN);
+  public
+    // *** Lines ***
 
-       class procedure SaveClipRgn(DC : HDC; var OrgRgnExists : boolean; var OrgRgn : HRGN);
-       class procedure RestoreClipRgn(DC : HDC; OrgRgnExists : boolean; var OrgRgn : HRGN);
-     public
-       // *** Lines ***
+    // Performance:
+    // w/ClipRect:  Bitmap is faster (2x)
+    // wo/ClipRect: Canvas is faster (a little)
+    class procedure DrawHLine(ABitmap : TBitmap;
+                             x1, x2 : integer;
+                             y : integer;
+                             Color : TColor); overload; inline;
+    class procedure DrawHLine(ABitmap : TBitmap;
+                             x1, x2 : integer;
+                             y : integer;
+                             Color : TColor;
+                             ClipRect : T2DIntRect); overload; inline;
+    class procedure DrawHLine(ACanvas : TCanvas;
+                             x1, x2 : integer;
+                             y : integer;
+                             Color : TColor); overload; inline;
+    class procedure DrawHLine(ACanvas : TCanvas;
+                             x1, x2 : integer;
+                             y : integer;
+                             Color : TColor;
+                             ClipRect : T2DIntRect); overload; inline;
 
-       // Performance:
-       // w/ClipRect:  Bitmap is faster (2x)
-       // wo/ClipRect: Canvas is faster (a little)
-       class procedure DrawHLine(ABitmap : TBitmap;
-                                 x1, x2 : integer;
-                                 y : integer;
-                                 Color : TColor); overload; inline;
-       class procedure DrawHLine(ABitmap : TBitmap;
-                                 x1, x2 : integer;
-                                 y : integer;
-                                 Color : TColor;
+
+    // Performance:
+    // w/ClipRect:  Bitmap is faster (2x)
+    // wo/ClipRect: Canvas is faster (a little)
+    class procedure DrawVLine(ABitmap : TBitmap;
+                             x : integer;
+                             y1, y2 : integer;
+                             Color : TColor); overload; inline;
+    class procedure DrawVLine(ABitmap : TBitmap;
+                             x : integer;
+                             y1, y2 : integer;
+                             Color : TColor;
+                             ClipRect : T2DIntRect); overload; inline;
+    class procedure DrawVLine(ACanvas : TCanvas;
+                             x : integer;
+                             y1, y2 : integer;
+                             Color : TColor); overload; inline;
+    class procedure DrawVLine(ACanvas : TCanvas;
+                             x : integer;
+                             y1, y2 : integer;
+                             Color : TColor;
+                             ClipRect : T2DIntRect); overload; inline;
+
+    // *** Background and frame tools ***
+
+    // Performance:
+    // w/ClipRect:  Bitmap is faster (extremely)
+    // wo/ClipRect: Bitmap is faster (extremely)
+    class procedure DrawAARoundCorner(ABitmap : TBitmap;
+                                     Point : T2DIntVector;
+                                     Radius : integer;
+                                     CornerPos : TCornerPos;
+                                     Color : TColor); overload; inline;
+    class procedure DrawAARoundCorner(ABitmap : TBitmap;
+                                     Point : T2DIntVector;
+                                     Radius : integer;
+                                     CornerPos : TCornerPos;
+                                     Color : TColor;
+                                     ClipRect : T2DIntRect); overload; inline;
+    class procedure DrawAARoundCorner(ACanvas : TCanvas;
+                                     Point : T2DIntVector;
+                                     Radius : integer;
+                                     CornerPos : TCornerPos;
+                                     Color : TColor); overload; inline;
+    class procedure DrawAARoundCorner(ACanvas : TCanvas;
+                                     Point : T2DIntVector;
+                                     Radius : integer;
+                                     CornerPos : TCornerPos;
+                                     Color : TColor;
+                                     ClipRect : T2DIntRect); overload; inline;
+
+    // Performance:
+    // w/ClipRect:  Bitmap is faster (extremely)
+    // wo/ClipRect: Bitmap is faster (extremely)
+    class procedure DrawAARoundFrame(ABitmap : TBitmap;
+                                    Rect : T2DIntRect;
+                                    Radius : integer;
+                                    Color : TColor); overload; inline;
+    class procedure DrawAARoundFrame(ABitmap : TBitmap;
+                                    Rect : T2DIntRect;
+                                    Radius : integer;
+                                    Color : TColor;
+                                    ClipRect : T2DIntRect); overload; inline;
+    class procedure DrawAARoundFrame(ACanvas : TCanvas;
+                                    Rect : T2DIntRect;
+                                    Radius : integer;
+                                    Color : TColor); overload; inline;
+    class procedure DrawAARoundFrame(ACanvas : TCanvas;
+                                    Rect : T2DIntRect;
+                                    Radius : integer;
+                                    Color : TColor;
+                                    ClipRect : T2DIntRect); overload; inline;
+
+    class procedure RenderBackground(ABuffer : TBitmap;
+                                    Rect : T2DIntRect;
+                                    Color1, Color2 : TColor;
+                                    BackgroundKind : TBackgroundKind); inline;
+
+    class procedure CopyRoundCorner(ABuffer : TBitmap;
+                                   ABitmap : TBitmap;
+                                   SrcPoint : T2DIntVector;
+                                   DstPoint : T2DIntVector;
+                                   Radius : integer;
+                                   CornerPos : TCornerPos;
+                                   Convex : boolean = true); overload; inline;
+    class procedure CopyRoundCorner(ABuffer : TBitmap;
+                                   ABitmap : TBitmap;
+                                   SrcPoint : T2DIntVector;
+                                   DstPoint : T2DIntVector;
+                                   Radius : integer;
+                                   CornerPos : TCornerPos;
+                                   ClipRect : T2DIntRect;
+                                   Convex : boolean = true); overload; inline;
+
+    class procedure CopyCorner(ABuffer : TBitmap;
+                              ABitmap: TBitmap;
+                              SrcPoint : T2DIntVector;
+                              DstPoint: T2DIntVector;
+                              Radius: integer); overload; inline;
+    class procedure CopyCorner(ABuffer : TBitmap;
+                              ABitmap: TBitmap;
+                              SrcPoint : T2DIntVector;
+                              DstPoint: T2DIntVector;
+                              Radius: integer;
+                              ClipRect : T2DIntRect); overload; inline;
+
+    class procedure CopyRectangle(ABuffer : TBitmap;
+                                 ABitmap: TBitmap;
+                                 SrcPoint : T2DIntVector;
+                                 DstPoint: T2DIntVector;
+                                 Width: integer;
+                                 Height : integer); overload; inline;
+    class procedure CopyRectangle(ABuffer : TBitmap;
+                                 ABitmap : TBitmap;
+                                 SrcPoint : T2DIntVector;
+                                 DstPoint : T2DIntVector;
+                                 Width : integer;
+                                 Height : integer;
                                  ClipRect : T2DIntRect); overload; inline;
-       class procedure DrawHLine(ACanvas : TCanvas;
-                                 x1, x2 : integer;
-                                 y : integer;
-                                 Color : TColor); overload; inline;
-       class procedure DrawHLine(ACanvas : TCanvas;
-                                 x1, x2 : integer;
-                                 y : integer;
-                                 Color : TColor;
-                                 ClipRect : T2DIntRect); overload; inline;
-
-
-       // Performance:
-       // w/ClipRect:  Bitmap is faster (2x)
-       // wo/ClipRect: Canvas is faster (a little)
-       class procedure DrawVLine(ABitmap : TBitmap;
-                                 x : integer;
-                                 y1, y2 : integer;
-                                 Color : TColor); overload; inline;
-       class procedure DrawVLine(ABitmap : TBitmap;
-                                 x : integer;
-                                 y1, y2 : integer;
-                                 Color : TColor;
-                                 ClipRect : T2DIntRect); overload; inline;
-       class procedure DrawVLine(ACanvas : TCanvas;
-                                 x : integer;
-                                 y1, y2 : integer;
-                                 Color : TColor); overload; inline;
-       class procedure DrawVLine(ACanvas : TCanvas;
-                                 x : integer;
-                                 y1, y2 : integer;
-                                 Color : TColor;
-                                 ClipRect : T2DIntRect); overload; inline;
-
-       // *** Background and frame tools ***
-
-       // Performance:
-       // w/ClipRect:  Bitmap is faster (extremely)
-       // wo/ClipRect: Bitmap is faster (extremely)
-       class procedure DrawAARoundCorner(ABitmap : TBitmap;
-                                         Point : T2DIntVector;
-                                         Radius : integer;
-                                         CornerPos : TCornerPos;
-                                         Color : TColor); overload; inline;
-       class procedure DrawAARoundCorner(ABitmap : TBitmap;
-                                         Point : T2DIntVector;
-                                         Radius : integer;
-                                         CornerPos : TCornerPos;
-                                         Color : TColor;
-                                         ClipRect : T2DIntRect); overload; inline;
-       class procedure DrawAARoundCorner(ACanvas : TCanvas;
-                                         Point : T2DIntVector;
-                                         Radius : integer;
-                                         CornerPos : TCornerPos;
-                                         Color : TColor); overload; inline;
-       class procedure DrawAARoundCorner(ACanvas : TCanvas;
-                                         Point : T2DIntVector;
-                                         Radius : integer;
-                                         CornerPos : TCornerPos;
-                                         Color : TColor;
-                                         ClipRect : T2DIntRect); overload; inline;
-
-       // Performance:
-       // w/ClipRect:  Bitmap is faster (extremely)
-       // wo/ClipRect: Bitmap is faster (extremely)
-       class procedure DrawAARoundFrame(ABitmap : TBitmap;
-                                        Rect : T2DIntRect;
-                                        Radius : integer;
-                                        Color : TColor); overload; inline;
-       class procedure DrawAARoundFrame(ABitmap : TBitmap;
-                                        Rect : T2DIntRect;
-                                        Radius : integer;
-                                        Color : TColor;
-                                        ClipRect : T2DIntRect); overload; inline;
-       class procedure DrawAARoundFrame(ACanvas : TCanvas;
-                                        Rect : T2DIntRect;
-                                        Radius : integer;
-                                        Color : TColor); overload; inline;
-       class procedure DrawAARoundFrame(ACanvas : TCanvas;
-                                        Rect : T2DIntRect;
-                                        Radius : integer;
-                                        Color : TColor;
-                                        ClipRect : T2DIntRect); overload; inline;
-
-       class procedure RenderBackground(ABuffer : TBitmap;
-                                        Rect : T2DIntRect;
-                                        Color1, Color2 : TColor;
-                                        BackgroundKind : TBackgroundKind); inline;
-
-       class procedure CopyRoundCorner(ABuffer : TBitmap;
-                                       ABitmap : TBitmap;
-                                       SrcPoint : T2DIntVector;
-                                       DstPoint : T2DIntVector;
-                                       Radius : integer;
-                                       CornerPos : TCornerPos;
-                                       Convex : boolean = true); overload; inline;
-       class procedure CopyRoundCorner(ABuffer : TBitmap;
-                                       ABitmap : TBitmap;
-                                       SrcPoint : T2DIntVector;
-                                       DstPoint : T2DIntVector;
-                                       Radius : integer;
-                                       CornerPos : TCornerPos;
-                                       ClipRect : T2DIntRect;
-                                       Convex : boolean = true); overload; inline;
-
-       class procedure CopyCorner(ABuffer : TBitmap;
-                                  ABitmap: TBitmap;
-                                  SrcPoint : T2DIntVector;
-                                  DstPoint: T2DIntVector;
-                                  Radius: integer); overload; inline;
-       class procedure CopyCorner(ABuffer : TBitmap;
-                                  ABitmap: TBitmap;
-                                  SrcPoint : T2DIntVector;
-                                  DstPoint: T2DIntVector;
-                                  Radius: integer;
-                                  ClipRect : T2DIntRect); overload; inline;
-
-       class procedure CopyRectangle(ABuffer : TBitmap;
-                                     ABitmap: TBitmap;
+    class procedure CopyMaskRectangle(ABuffer : TBitmap;
+                                     AMask : TBitmap;
+                                     ABitmap : TBitmap;
                                      SrcPoint : T2DIntVector;
-                                     DstPoint: T2DIntVector;
-                                     Width: integer;
+                                     DstPoint : T2DIntVector;
+                                     Width : integer;
                                      Height : integer); overload; inline;
-       class procedure CopyRectangle(ABuffer : TBitmap;
+    class procedure CopyMaskRectangle(ABuffer : TBitmap;
+                                     AMask : TBitmap;
                                      ABitmap : TBitmap;
                                      SrcPoint : T2DIntVector;
                                      DstPoint : T2DIntVector;
                                      Width : integer;
                                      Height : integer;
                                      ClipRect : T2DIntRect); overload; inline;
-       class procedure CopyMaskRectangle(ABuffer : TBitmap;
-                                         AMask : TBitmap;
-                                         ABitmap : TBitmap;
-                                         SrcPoint : T2DIntVector;
-                                         DstPoint : T2DIntVector;
-                                         Width : integer;
-                                         Height : integer); overload; inline;
-       class procedure CopyMaskRectangle(ABuffer : TBitmap;
-                                         AMask : TBitmap;
-                                         ABitmap : TBitmap;
-                                         SrcPoint : T2DIntVector;
-                                         DstPoint : T2DIntVector;
-                                         Width : integer;
-                                         Height : integer;
-                                         ClipRect : T2DIntRect); overload; inline;
 
-       // Performance (RenderBackground + CopyRoundRect vs DrawRoundRect):
-       // w/ClipRect  : Bitmap faster for smaller radiuses, Canvas faster for larger
-       // wo/ClipRect : Bitmap faster for smaller radiuses, Canvas faster for larger
-       class procedure CopyRoundRect(ABuffer : TBitmap;
-                                     ABitmap : TBitmap;
-                                     SrcPoint : T2DIntVector;
-                                     DstPoint : T2DIntVector;
-                                     Width, Height : integer;
-                                     Radius : integer;
-                                     LeftTopRound : boolean = true;
-                                     RightTopRound : boolean = true;
-                                     LeftBottomRound : boolean = true;
-                                     RightBottomRound : boolean = true); overload; inline;
-       class procedure CopyRoundRect(ABuffer : TBitmap;
-                                     ABitmap : TBitmap;
-                                     SrcPoint : T2DIntVector;
-                                     DstPoint : T2DIntVector;
-                                     Width, Height : integer;
-                                     Radius : integer;
-                                     ClipRect : T2DIntRect;
-                                     LeftTopRound : boolean = true;
-                                     RightTopRound : boolean = true;
-                                     LeftBottomRound : boolean = true;
-                                     RightBottomRound : boolean = true); overload; inline;
+    // Performance (RenderBackground + CopyRoundRect vs DrawRoundRect):
+    // w/ClipRect  : Bitmap faster for smaller radiuses, Canvas faster for larger
+    // wo/ClipRect : Bitmap faster for smaller radiuses, Canvas faster for larger
+    class procedure CopyRoundRect(ABuffer : TBitmap;
+                                 ABitmap : TBitmap;
+                                 SrcPoint : T2DIntVector;
+                                 DstPoint : T2DIntVector;
+                                 Width, Height : integer;
+                                 Radius : integer;
+                                 LeftTopRound : boolean = true;
+                                 RightTopRound : boolean = true;
+                                 LeftBottomRound : boolean = true;
+                                 RightBottomRound : boolean = true); overload; inline;
+    class procedure CopyRoundRect(ABuffer : TBitmap;
+                                 ABitmap : TBitmap;
+                                 SrcPoint : T2DIntVector;
+                                 DstPoint : T2DIntVector;
+                                 Width, Height : integer;
+                                 Radius : integer;
+                                 ClipRect : T2DIntRect;
+                                 LeftTopRound : boolean = true;
+                                 RightTopRound : boolean = true;
+                                 LeftBottomRound : boolean = true;
+                                 RightBottomRound : boolean = true); overload; inline;
 
 
-       class procedure DrawRoundRect(ACanvas : TCanvas;
-                                     Rect : T2DIntRect;
-                                     Radius : integer;
-                                     ColorFrom : TColor;
-                                     ColorTo : TColor;
-                                     GradientKind : TBackgroundKind;
-                                     LeftTopRound : boolean = true;
-                                     RightTopRound : boolean = true;
-                                     LeftBottomRound : boolean = true;
-                                     RightBottomRound : boolean = true); overload; inline;
-       class procedure DrawRoundRect(ACanvas : TCanvas;
-                                     Rect : T2DIntRect;
-                                     Radius : integer;
-                                     ColorFrom : TColor;
-                                     ColorTo : TColor;
-                                     GradientKind : TBackgroundKind;
-                                     ClipRect : T2DIntRect;
-                                     LeftTopRound : boolean = true;
-                                     RightTopRound : boolean = true;
-                                     LeftBottomRound : boolean = true;
-                                     RightBottomRound : boolean = true); overload; inline;
+    class procedure DrawRoundRect(ACanvas : TCanvas;
+                                 Rect : T2DIntRect;
+                                 Radius : integer;
+                                 ColorFrom : TColor;
+                                 ColorTo : TColor;
+                                 GradientKind : TBackgroundKind;
+                                 LeftTopRound : boolean = true;
+                                 RightTopRound : boolean = true;
+                                 LeftBottomRound : boolean = true;
+                                 RightBottomRound : boolean = true); overload; inline;
+    class procedure DrawRoundRect(ACanvas : TCanvas;
+                                 Rect : T2DIntRect;
+                                 Radius : integer;
+                                 ColorFrom : TColor;
+                                 ColorTo : TColor;
+                                 GradientKind : TBackgroundKind;
+                                 ClipRect : T2DIntRect;
+                                 LeftTopRound : boolean = true;
+                                 RightTopRound : boolean = true;
+                                 LeftBottomRound : boolean = true;
+                                 RightBottomRound : boolean = true); overload; inline;
 
-       class procedure DrawRegion(ACanvas : TCanvas;
-                                  Region : HRGN;
-                                  Rect : T2DIntRect;
-                                  ColorFrom : TColor;
-                                  ColorTo : TColor;
-                                  GradientKind : TBackgroundKind); overload; inline;
-       class procedure DrawRegion(ACanvas : TCanvas;
-                                  Region : HRGN;
-                                  Rect : T2DIntRect;
-                                  ColorFrom : TColor;
-                                  ColorTo : TColor;
-                                  GradientKind : TBackgroundKind;
-                                  ClipRect : T2DIntRect); overload; inline;
+    class procedure DrawRegion(ACanvas : TCanvas;
+                              Region : HRGN;
+                              Rect : T2DIntRect;
+                              ColorFrom : TColor;
+                              ColorTo : TColor;
+                              GradientKind : TBackgroundKind); overload; inline;
+    class procedure DrawRegion(ACanvas : TCanvas;
+                              Region : HRGN;
+                              Rect : T2DIntRect;
+                              ColorFrom : TColor;
+                              ColorTo : TColor;
+                              GradientKind : TBackgroundKind;
+                              ClipRect : T2DIntRect); overload; inline;
 
-       // Imagelist tools
-       class procedure DrawImage(ABitmap : TBitmap;
-                                 Imagelist : TImageList;
-                                 ImageIndex : integer;
-                                 Point : T2DIntVector); overload; inline;
-       class procedure DrawImage(ABitmap : TBitmap;
-                                 Imagelist : TImageList;
-                                 ImageIndex : integer;
-                                 Point : T2DIntVector;
-                                 ClipRect : T2DIntRect); overload; inline;
-       class procedure DrawImage(ACanvas : TCanvas;
-                                 Imagelist : TImageList;
-                                 ImageIndex : integer;
-                                 Point : T2DIntVector); overload; inline;
-       class procedure DrawImage(ACanvas : TCanvas;
-                                 Imagelist : TImageList;
-                                 ImageIndex : integer;
-                                 Point : T2DIntVector;
-                                 ClipRect : T2DIntRect); overload; inline;
+    // Imagelist tools
+    class procedure DrawImage(ABitmap : TBitmap;
+                             Imagelist : TImageList;
+                             ImageIndex : integer;
+                             Point : T2DIntVector); overload; inline;
+    class procedure DrawImage(ABitmap : TBitmap;
+                             Imagelist : TImageList;
+                             ImageIndex : integer;
+                             Point : T2DIntVector;
+                             ClipRect : T2DIntRect); overload; inline;
+    class procedure DrawImage(ACanvas : TCanvas;
+                             Imagelist : TImageList;
+                             ImageIndex : integer;
+                             Point : T2DIntVector); overload; inline;
+    class procedure DrawImage(ACanvas : TCanvas;
+                             Imagelist : TImageList;
+                             ImageIndex : integer;
+                             Point : T2DIntVector;
+                             ClipRect : T2DIntRect); overload; inline;
 
-       class procedure DrawDisabledImage(ABitmap : TBitmap;
-                                         Imagelist : TImageList;
-                                         ImageIndex : integer;
-                                         Point : T2DIntVector); overload; inline;
-       class procedure DrawDisabledImage(ABitmap : TBitmap;
-                                         Imagelist : TImageList;
-                                         ImageIndex : integer;
-                                         Point : T2DIntVector;
-                                         ClipRect : T2DIntRect); overload; inline;
-       class procedure DrawDisabledImage(ACanvas : TCanvas;
-                                         Imagelist : TImageList;
-                                         ImageIndex : integer;
-                                         Point : T2DIntVector); overload; inline;
-       class procedure DrawDisabledImage(ACanvas : TCanvas;
-                                         Imagelist : TImageList;
-                                         ImageIndex : integer;
-                                         Point : T2DIntVector;
-                                         ClipRect : T2DIntRect); overload; inline;
+    class procedure DrawDisabledImage(ABitmap : TBitmap;
+                                     Imagelist : TImageList;
+                                     ImageIndex : integer;
+                                     Point : T2DIntVector); overload; inline;
+    class procedure DrawDisabledImage(ABitmap : TBitmap;
+                                     Imagelist : TImageList;
+                                     ImageIndex : integer;
+                                     Point : T2DIntVector;
+                                     ClipRect : T2DIntRect); overload; inline;
+    class procedure DrawDisabledImage(ACanvas : TCanvas;
+                                     Imagelist : TImageList;
+                                     ImageIndex : integer;
+                                     Point : T2DIntVector); overload; inline;
+    class procedure DrawDisabledImage(ACanvas : TCanvas;
+                                     Imagelist : TImageList;
+                                     ImageIndex : integer;
+                                     Point : T2DIntVector;
+                                     ClipRect : T2DIntRect); overload; inline;
 
-       // Text tools
-       class procedure DrawText(ABitmap : TBitmap;
-                            x, y : integer;
-                            AText : string;
-                            TextColor : TColor); overload; inline;
-       class procedure DrawText(ABitmap : TBitmap;
-                            x, y : integer;
-                            AText : string;
-                            TextColor : TColor;
-                            ClipRect : T2DIntRect); overload; inline;
-       class procedure DrawMarkedText(ACanvas : TCanvas;
-                                      x, y : integer;
-                                      AText : string;
-                                      AMarkPhrase : string;
-                                      TextColor : TColor;
-                                      CaseSensitive : boolean = false); overload; inline;
-       class procedure DrawMarkedText(ACanvas : TCanvas;
-                                      x, y : integer;
-                                      AText : string;
-                                      AMarkPhrase : string;
-                                      TextColor : TColor;
-                                      ClipRect : T2DIntRect;
-                                      CaseSensitive : boolean = false); overload; inline; 
-       class procedure DrawText(ACanvas : TCanvas;
-                            x, y : integer;
-                            AText : string;
-                            TextColor : TColor); overload; inline;
-       class procedure DrawText(ACanvas : TCanvas;
-                            x, y : integer;
-                            AText : string;
-                            TextColor : TColor;
-                            ClipRect : T2DIntRect); overload; inline;
-       class procedure DrawFitWText(ABitmap : TBitmap;
-                                    x1, x2 : integer;
-                                    y : integer;
+    // Text tools
+    class procedure DrawText(ABitmap : TBitmap;
+                        x, y : integer;
+                        AText : string;
+                        TextColor : TColor); overload; inline;
+    class procedure DrawText(ABitmap : TBitmap;
+                        x, y : integer;
+                        AText : string;
+                        TextColor : TColor;
+                        ClipRect : T2DIntRect); overload; inline;
+    class procedure DrawMarkedText(ACanvas : TCanvas;
+                                  x, y : integer;
+                                  AText : string;
+                                  AMarkPhrase : string;
+                                  TextColor : TColor;
+                                  CaseSensitive : boolean = false); overload; inline;
+    class procedure DrawMarkedText(ACanvas : TCanvas;
+                                  x, y : integer;
+                                  AText : string;
+                                  AMarkPhrase : string;
+                                  TextColor : TColor;
+                                  ClipRect : T2DIntRect;
+                                  CaseSensitive : boolean = false); overload; inline;
+    class procedure DrawText(ACanvas : TCanvas;
+                        x, y : integer;
+                        AText : string;
+                        TextColor : TColor); overload; inline;
+    class procedure DrawText(ACanvas : TCanvas;
+                        x, y : integer;
+                        AText : string;
+                        TextColor : TColor;
+                        ClipRect : T2DIntRect); overload; inline;
+    class procedure DrawFitWText(ABitmap : TBitmap;
+                                x1, x2 : integer;
+                                y : integer;
+                                AText : string;
+                                TextColor : TColor;
+                                Align : TAlignment); overload; inline;
+    class procedure DrawFitWText(ACanvas : TCanvas;
+                                x1, x2 : integer;
+                                y : integer;
+                                AText : string;
+                                TextColor : TColor;
+                                Align : TAlignment); overload; inline;
+
+    class procedure DrawOutlinedText(ABitmap : TBitmap;
+                                    x, y : integer;
                                     AText : string;
                                     TextColor : TColor;
-                                    Align : TAlignment); overload; inline;
-       class procedure DrawFitWText(ACanvas : TCanvas;
-                                    x1, x2 : integer;
-                                    y : integer;
+                                    OutlineColor : TColor); overload; inline;
+    class procedure DrawOutlinedText(ABitmap : TBitmap;
+                                    x, y : integer;
                                     AText : string;
                                     TextColor : TColor;
-                                    Align : TAlignment); overload; inline;
-
-       class procedure DrawOutlinedText(ABitmap : TBitmap;
-                                        x, y : integer;
-                                        AText : string;
-                                        TextColor : TColor;
-                                        OutlineColor : TColor); overload; inline;
-       class procedure DrawOutlinedText(ABitmap : TBitmap;
-                                        x, y : integer;
-                                        AText : string;
-                                        TextColor : TColor;
-                                        OutlineColor : TColor;
-                                        ClipRect : T2DIntRect); overload; inline;
-       class procedure DrawOutlinedText(ACanvas : TCanvas;
-                                        x, y : integer;
-                                        AText : string;
-                                        TextColor : TColor;
-                                        OutlineColor : TColor); overload; inline;
-       class procedure DrawOutlinedText(ACanvas : TCanvas;
-                                        x, y : integer;
-                                        AText : string;
-                                        TextColor : TColor;
-                                        OutlineColor : TColor;
-                                        ClipRect : T2DIntRect); overload; inline;
-       class procedure DrawFitWOutlinedText(ABitmap: TBitmap;
-                                            x1, x2 : integer;
-                                            y: integer;
-                                            AText: string;
-                                            TextColor,
-                                            OutlineColor: TColor;
-                                            Align: TAlignment); overload; inline;
-       class procedure DrawFitWOutlinedText(ACanvas: TCanvas;
-                                            x1, x2 : integer;
-                                            y: integer;
-                                            AText: string;
-                                            TextColor,
-                                            OutlineColor: TColor;
-                                            Align: TAlignment); overload; inline;
-     end;
+                                    OutlineColor : TColor;
+                                    ClipRect : T2DIntRect); overload; inline;
+    class procedure DrawOutlinedText(ACanvas : TCanvas;
+                                    x, y : integer;
+                                    AText : string;
+                                    TextColor : TColor;
+                                    OutlineColor : TColor); overload; inline;
+    class procedure DrawOutlinedText(ACanvas : TCanvas;
+                                    x, y : integer;
+                                    AText : string;
+                                    TextColor : TColor;
+                                    OutlineColor : TColor;
+                                    ClipRect : T2DIntRect); overload; inline;
+    class procedure DrawFitWOutlinedText(ABitmap: TBitmap;
+                                        x1, x2 : integer;
+                                        y: integer;
+                                        AText: string;
+                                        TextColor,
+                                        OutlineColor: TColor;
+                                        Align: TAlignment); overload; inline;
+    class procedure DrawFitWOutlinedText(ACanvas: TCanvas;
+                                        x1, x2 : integer;
+                                        y: integer;
+                                        AText: string;
+                                        TextColor,
+                                        OutlineColor: TColor;
+                                        Align: TAlignment); overload; inline;
+end;
 
 implementation
 
@@ -373,7 +376,7 @@ class procedure TGUITools.CopyRoundCorner(ABuffer, ABitmap: TBitmap; SrcPoint,
   DstPoint: T2DIntVector; Radius: integer; CornerPos: TCornerPos;
   ClipRect: T2DIntRect; Convex: boolean);
 
-var BufferRect, BitmapRect : T2DIntRect;
+var BufferRect, BitmapRect, TempRect : T2DIntRect;
     OrgSrcRect, UnClippedDstRect, OrgDstRect : T2DIntRect;
     SrcRect : T2DIntRect;
     Offset : T2DIntVector;
@@ -396,19 +399,33 @@ if Radius<1 then
 if (ABuffer.width=0) or (ABuffer.height=0) or
    (ABitmap.width=0) or (ABitmap.height=0) then exit;
 
+//todo minimize use of temps here
+{$ifdef EnhancedRecordSupport}
 BufferRect:=T2DIntRect.create(0, 0, ABuffer.width-1, ABuffer.height-1);
 if not(BufferRect.IntersectsWith(T2DIntRect.create(SrcPoint.x,
                                                    SrcPoint.y,
                                                    SrcPoint.x+Radius-1,
                                                    SrcPoint.y+Radius-1),
                                  OrgSrcRect)) then exit;
+{$else}
+BufferRect.create(0, 0, ABuffer.width-1, ABuffer.height-1);
+TempRect.Create(SrcPoint.x, SrcPoint.y, SrcPoint.x+Radius-1, SrcPoint.y+Radius-1);
+if not(BufferRect.IntersectsWith(TempRect, OrgSrcRect)) then exit;
+{$endif}
 
+{$ifdef EnhancedRecordSupport}
 BitmapRect:=T2DIntRect.create(0, 0, ABitmap.width-1, ABitmap.height-1);
 if not(BitmapRect.IntersectsWith(T2DIntRect.create(DstPoint.x,
                                                    DstPoint.y,
                                                    DstPoint.x+Radius-1,
                                                    DstPoint.y+Radius-1),
                                  UnClippedDstRect)) then exit;
+{$else}
+BitmapRect.create(0, 0, ABitmap.width-1, ABitmap.height-1);
+//todo: calling create twice
+TempRect.Create(DstPoint.x, DstPoint.y, DstPoint.x+Radius-1, DstPoint.y+Radius-1);
+if not(BitmapRect.IntersectsWith(TempRect, UnClippedDstRect)) then exit;
+{$endif}
 
 if not(ClipRect.IntersectsWith(UnClippedDstRect, OrgDstRect)) then
    exit;
@@ -418,12 +435,21 @@ Offset:=DstPoint - SrcPoint;
 if not(OrgSrcRect.IntersectsWith(OrgDstRect - Offset, SrcRect)) then exit;
 
 // Ustalamy pozycjê œrodka ³uku
+{$ifdef EnhancedRecordSupport}
 case CornerPos of
      cpLeftTop: Center:=T2DIntVector.create(SrcPoint.x + radius - 1, SrcPoint.y + Radius - 1);
      cpRightTop: Center:=T2DIntVector.create(SrcPoint.x, SrcPoint.y + Radius - 1);
      cpLeftBottom: Center:=T2DIntVector.Create(SrcPoint.x + radius - 1, SrcPoint.y);
      cpRightBottom: Center:=T2DIntVector.Create(SrcPoint.x, SrcPoint.y);
 end;
+{$else}
+case CornerPos of
+     cpLeftTop: Center.create(SrcPoint.x + radius - 1, SrcPoint.y + Radius - 1);
+     cpRightTop: Center.create(SrcPoint.x, SrcPoint.y + Radius - 1);
+     cpLeftBottom: Center.Create(SrcPoint.x + radius - 1, SrcPoint.y);
+     cpRightBottom: Center.Create(SrcPoint.x, SrcPoint.y);
+end;
+{$endif}
 
 // Czy jest cokolwiek do przetworzenia?
 if Convex then
