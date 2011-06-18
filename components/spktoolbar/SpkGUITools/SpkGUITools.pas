@@ -370,6 +370,9 @@ end;
 
 implementation
 
+uses
+  IntfGraphics;
+
 { TSpkGUITools }
 
 class procedure TGUITools.CopyRoundCorner(ABuffer, ABitmap: TBitmap; SrcPoint,
@@ -378,8 +381,8 @@ class procedure TGUITools.CopyRoundCorner(ABuffer, ABitmap: TBitmap; SrcPoint,
 
 var BufferRect, BitmapRect, TempRect : T2DIntRect;
     OrgSrcRect, UnClippedDstRect, OrgDstRect : T2DIntRect;
-    SrcRect : T2DIntRect;
-    Offset : T2DIntVector;
+    SrcRect: T2DIntRect;
+    Offset: T2DIntVector;
     Center: T2DIntVector;
     y: Integer;
     SrcLine: Pointer;
@@ -387,6 +390,7 @@ var BufferRect, BitmapRect, TempRect : T2DIntRect;
     SrcPtr, DstPtr : PByte;
     x: Integer;
     Dist : double;
+    SrcImg, DestImg: TLazIntfImage;
 
 begin
 if (ABuffer.PixelFormat<>pf24bit) or (ABitmap.PixelFormat<>pf24bit) then
@@ -454,17 +458,25 @@ end;
 // Czy jest cokolwiek do przetworzenia?
 if Convex then
    begin
+   //todo: remove the check since is not necessary
    if (SrcRect.left<=SrcRect.right) and (SrcRect.top<=SrcRect.bottom) then
+   begin
+     SrcImg := ABuffer.CreateIntfImage;
+     DestImg := ABitmap.CreateIntfImage;
       for y := SrcRect.top to SrcRect.bottom do
           begin
-          SrcLine:=ABuffer.ScanLine[y];
-          DstLine:=ABitmap.ScanLine[y+Offset.y];
+          SrcLine:=SrcImg.GetDataLineStart(y);
+          DstLine:=DestImg.GetDataLineStart(y+Offset.y);
 
           SrcPtr:=pointer(integer(SrcLine) + 3*SrcRect.left);
           DstPtr:=pointer(integer(DstLine) + 3*(SrcRect.left + Offset.x));
           for x := SrcRect.left to SrcRect.right do
               begin
+              {$ifdef EnhancedRecordSupport}
               Dist:=Center.DistanceTo(T2DIntVector.create(x, y));
+              {$else}
+              Dist:=Center.DistanceTo(x, y);
+              {$endif}
               if Dist <= (Radius-1) then
                  Move(SrcPtr^,DstPtr^,3);
 
@@ -472,20 +484,31 @@ if Convex then
               inc(DstPtr,3);
               end;
           end;
+      ABitmap.LoadFromIntfImage(DestImg);
+      SrcImg.Destroy;
+      DestImg.Destroy;
+   end;
    end
 else
    begin
    if (SrcRect.left<=SrcRect.right) and (SrcRect.top<=SrcRect.bottom) then
+   begin
+     SrcImg := ABuffer.CreateIntfImage;
+     DestImg := ABitmap.CreateIntfImage;
       for y := SrcRect.top to SrcRect.bottom do
           begin
-          SrcLine:=ABuffer.ScanLine[y];
-          DstLine:=ABitmap.ScanLine[y+Offset.y];
+          SrcLine:=SrcImg.GetDataLineStart(y);
+          DstLine:=DestImg.GetDataLineStart(y+Offset.y);
 
           SrcPtr:=pointer(integer(SrcLine) + 3*SrcRect.left);
           DstPtr:=pointer(integer(DstLine) + 3*(SrcRect.left + Offset.x));
           for x := SrcRect.left to SrcRect.right do
               begin
+              {$ifdef EnhancedRecordSupport}
               Dist:=Center.DistanceTo(T2DIntVector.create(x, y));
+              {$else}
+              Dist:=Center.DistanceTo(x, y);
+              {$endif}
               if Dist >= (Radius-1) then
                  Move(SrcPtr^,DstPtr^,3);
 
@@ -493,6 +516,10 @@ else
               inc(DstPtr,3);
               end;
           end;
+      ABitmap.LoadFromIntfImage(DestImg);
+      SrcImg.Destroy;
+      DestImg.Destroy;
+   end;
    end;
 end;
 
@@ -740,6 +767,8 @@ var BufferRect, BitmapRect : T2DIntRect;
     y: Integer;
     SrcLine: Pointer;
     DstLine: Pointer;
+    SrcImg: TLazIntfImage;
+    DestImg: TLazIntfImage;
 
 begin
 if (ABuffer.PixelFormat<>pf24bit) or (ABitmap.PixelFormat<>pf24bit) then
@@ -777,16 +806,23 @@ Offset:=DstPoint - SrcPoint;
 if not(SrcRect.IntersectsWith(DstRect - Offset, ClippedSrcRect)) then exit;
 
 // Jeœli jest cokolwiek do przetworzenia, wykonaj operacjê
-if (ClippedSrcRect.left<=ClippedSrcRect.right) and (ClippedSrcRect.top<=ClippedSrcRect.bottom) then
+  if (ClippedSrcRect.left<=ClippedSrcRect.right) and (ClippedSrcRect.top<=ClippedSrcRect.bottom) then
+  begin
+    SrcImg := ABuffer.CreateIntfImage;
+    DestImg := ABitmap.CreateIntfImage;
    for y := ClippedSrcRect.top to ClippedSrcRect.bottom do
        begin
-       SrcLine:=ABuffer.ScanLine[y];
-       DstLine:=ABitmap.ScanLine[y+Offset.y];
+       SrcLine:=SrcImg.GetDataLineStart(y);
+       DstLine:=DestImg.GetDataLineStart(y+Offset.y);
 
        Move(pointer(integer(SrcLine) + 3*ClippedSrcRect.left)^,
             pointer(integer(DstLine) + 3*(ClippedSrcRect.left + Offset.x))^,
             3*ClippedSrcRect.Width);
-       end;
+      end;
+     ABitmap.LoadFromIntfImage(DestImg);
+     SrcImg.Destroy;
+     DestImg.Destroy;
+  end;
 end;
 
 class procedure TGUITools.CopyCorner(ABuffer : TBitmap; ABitmap: TBitmap;
@@ -813,7 +849,10 @@ var BufferRect, BitmapRect : T2DIntRect;
     SrcLine: Pointer;
     MaskLine: Pointer;
     DstLine: Pointer;
-  i: Integer;
+    SrcImg: TLazIntfImage;
+    MaskImg: TLazIntfImage;
+    DestImg: TLazIntfImage;
+    i: Integer;
 
 begin
 if (ABuffer.PixelFormat<>pf24bit) or (ABitmap.PixelFormat<>pf24bit) then
@@ -858,15 +897,19 @@ if not(SrcRect.IntersectsWith(DstRect - Offset, ClippedSrcRect)) then exit;
 
 // Jeœli jest cokolwiek do przetworzenia, wykonaj operacjê
 if (ClippedSrcRect.left<=ClippedSrcRect.right) and (ClippedSrcRect.top<=ClippedSrcRect.bottom) then
+begin
+  SrcImg := ABuffer.CreateIntfImage;
+  DestImg := ABitmap.CreateIntfImage;
+  MaskImg := AMask.CreateIntfImage;
    for y := ClippedSrcRect.top to ClippedSrcRect.bottom do
        begin
-       SrcLine:=ABuffer.ScanLine[y];
+       SrcLine:=SrcImg.GetDataLineStart(y);
        SrcLine:=pointer(integer(SrcLine) + 3 * ClippedSrcRect.left);
 
-       MaskLine:=AMask.ScanLine[y];
+       MaskLine:=MaskImg.GetDataLineStart(y);
        MaskLine:=pointer(integer(MaskLine) + ClippedSrcRect.left);
 
-       DstLine:=ABitmap.ScanLine[y+Offset.y];
+       DstLine:=DestImg.GetDataLineStart(y+Offset.y);
        DstLine:=pointer(integer(DstLine) + 3 * (ClippedSrcRect.left + Offset.x));
 
        for i := 0 to ClippedSrcRect.Width - 1 do
@@ -879,6 +922,11 @@ if (ClippedSrcRect.left<=ClippedSrcRect.right) and (ClippedSrcRect.top<=ClippedS
            MaskLine:=pointer(integer(MaskLine)+1);
            end;
        end;
+   ABitmap.LoadFromIntfImage(DestImg);
+   DestImg.Destroy;
+   SrcImg.Destroy;
+   MaskImg.Destroy;
+end;
 end;
 
 class procedure TGUITools.CopyMaskRectangle(ABuffer, AMask, ABitmap: TBitmap;
@@ -890,6 +938,9 @@ var BufferRect, BitmapRect : T2DIntRect;
     ClippedSrcRect, ClippedDstRect : T2DIntRect;
     Offset : T2DIntVector;
     y: Integer;
+    SrcImg: TLazIntfImage;
+    MaskImg: TLazIntfImage;
+    DestImg: TLazIntfImage;
     SrcLine: Pointer;
     DstLine: Pointer;
     i: Integer;
@@ -941,15 +992,19 @@ if not(SrcRect.IntersectsWith(ClippedDstRect - Offset, ClippedSrcRect)) then exi
 
 // Jeœli jest cokolwiek do przetworzenia, wykonaj operacjê
 if (ClippedSrcRect.left<=ClippedSrcRect.right) and (ClippedSrcRect.top<=ClippedSrcRect.bottom) then
+begin
+  SrcImg := ABuffer.CreateIntfImage;
+  DestImg := ABitmap.CreateIntfImage;
+  MaskImg := ABitmap.CreateIntfImage;
    for y := ClippedSrcRect.top to ClippedSrcRect.bottom do
        begin
-       SrcLine:=ABuffer.ScanLine[y];
+       SrcLine:=SrcImg.GetDataLineStart(y);
        SrcLine:=pointer(integer(SrcLine) + 3 * ClippedSrcRect.left);
 
-       MaskLine:=AMask.ScanLine[y];
+       MaskLine:=MaskImg.GetDataLineStart();
        MaskLine:=pointer(integer(MaskLine) + ClippedSrcRect.left);
 
-       DstLine:=ABitmap.ScanLine[y+Offset.y];
+       DstLine:=DestImg.GetDataLineStart(y+Offset.y);
        DstLine:=pointer(integer(DstLine) + 3 * (ClippedSrcRect.left + Offset.x));
 
        for i := 0 to ClippedSrcRect.width - 1 do
@@ -962,6 +1017,11 @@ if (ClippedSrcRect.left<=ClippedSrcRect.right) and (ClippedSrcRect.top<=ClippedS
            MaskLine:=pointer(integer(MaskLine)+1);
            end;
        end;
+   ABitmap.LoadFromIntfImage(DestImg);
+   SrcImg.Destroy;
+   DestImg.Destroy;
+   MaskImg.Destroy;
+end;
 end;
 
 class procedure TGUITools.CopyRectangle(ABuffer, ABitmap: TBitmap; SrcPoint,
@@ -972,6 +1032,8 @@ var BufferRect, BitmapRect : T2DIntRect;
     ClippedSrcRect, ClippedDstRect : T2DIntRect;
     Offset : T2DIntVector;
     y: Integer;
+    DestImg: TLazIntfImage;
+    SrcImg: TLazIntfImage;
     SrcLine: Pointer;
     DstLine: Pointer;
 
@@ -1015,15 +1077,22 @@ if not(SrcRect.IntersectsWith(ClippedDstRect - Offset, ClippedSrcRect)) then exi
 
 // Jeœli jest cokolwiek do przetworzenia, wykonaj operacjê
 if (ClippedSrcRect.left<=ClippedSrcRect.right) and (ClippedSrcRect.top<=ClippedSrcRect.bottom) then
+begin
+  SrcImg := ABuffer.CreateIntfImage;
+  DestImg := ABitmap.CreateIntfImage;
    for y := ClippedSrcRect.top to ClippedSrcRect.bottom do
        begin
-       SrcLine:=ABuffer.ScanLine[y];
-       DstLine:=ABitmap.ScanLine[y+Offset.y];
+       SrcLine:=SrcImg.GetDataLineStart(y);
+       DstLine:=DestImg.GetDataLineStart(y+Offset.y);
 
        Move(pointer(integer(SrcLine) + 3*ClippedSrcRect.left)^,
             pointer(integer(DstLine) + 3*(ClippedSrcRect.left + Offset.x))^,
             3*ClippedSrcRect.Width);
        end;
+  ABitmap.LoadFromIntfImage(DestImg);
+  DestImg.Destroy;
+  SrcImg.Destroy;
+end;
 end;
 
 class procedure TGUITools.CopyRoundCorner(ABuffer: TBitmap; ABitmap: TBitmap;
@@ -1036,6 +1105,8 @@ var BufferRect, BitmapRect : T2DIntRect;
     Offset : T2DIntVector;
     Center: T2DIntVector;
     y: Integer;
+    SrcImg: TLazIntfImage;
+    DestImg: TLazIntfImage;
     SrcLine: Pointer;
     DstLine: Pointer;
     SrcPtr, DstPtr : PByte;
@@ -1084,10 +1155,13 @@ end;
 if Convex then
    begin
    if (SrcRect.left<=SrcRect.right) and (SrcRect.top<=SrcRect.bottom) then
+   begin
+     SrcImg := ABuffer.CreateIntfImage;
+     DestImg := ABitmap.CreateIntfImage;
       for y := SrcRect.top to SrcRect.bottom do
           begin
-          SrcLine:=ABuffer.ScanLine[y];
-          DstLine:=ABitmap.ScanLine[y+Offset.y];
+          SrcLine:=SrcImg.GetDataLineStart(y);
+          DstLine:=DestImg.GetDataLineStart(y+Offset.y);
 
           SrcPtr:=pointer(integer(SrcLine) + 3*SrcRect.left);
           DstPtr:=pointer(integer(DstLine) + 3*(SrcRect.left + Offset.x));
@@ -1101,14 +1175,21 @@ if Convex then
               inc(DstPtr,3);
               end;
           end;
+      ABitmap.LoadFromIntfImage(DestImg);
+      SrcImg.Destroy;
+      DestImg.Destroy;
+    end;
    end
 else
    begin
    if (SrcRect.left<=SrcRect.right) and (SrcRect.top<=SrcRect.bottom) then
+   begin
+     SrcImg := ABuffer.CreateIntfImage;
+     DestImg := ABitmap.CreateIntfImage;
       for y := SrcRect.top to SrcRect.bottom do
           begin
-          SrcLine:=ABuffer.ScanLine[y];
-          DstLine:=ABitmap.ScanLine[y+Offset.y];
+          SrcLine:=SrcImg.GetDataLineStart(y);
+          DstLine:=DestImg.GetDataLineStart(y+Offset.y);
 
           SrcPtr:=pointer(integer(SrcLine) + 3*SrcRect.left);
           DstPtr:=pointer(integer(DstLine) + 3*(SrcRect.left + Offset.x));
@@ -1122,6 +1203,10 @@ else
               inc(DstPtr,3);
               end;
           end;
+      ABitmap.LoadFromIntfImage(DestImg);
+      SrcImg.Destroy;
+      DestImg.Destroy;
+    end;
    end;
 end;
 
@@ -1137,6 +1222,7 @@ var CornerRect : T2DIntRect;
     RadiusDist : double;
     OrgCornerRect: T2DIntRect;
     BitmapRect: T2DIntRect;
+    DestImg: TLazIntfImage;
 
 begin
 if ABitmap.PixelFormat<>pf24bit then
@@ -1176,10 +1262,10 @@ Color:=ColorToRGB(Color);
 colorR:=GetRValue(Color);
 colorG:=GetGValue(Color);
 ColorB:=GetBValue(Color);
-
+DestImg := ABitmap.CreateIntfImage;
 for y := CornerRect.top to CornerRect.bottom do
     begin
-    Line:=ABitmap.ScanLine[y];
+    Line:=DestImg.GetDataLineStart(y);
     for x := CornerRect.left to CornerRect.right do
         begin
         RadiusDist:=1 - abs((Radius - 1) - Center.DistanceTo(T2DIntVector.create(x, y)));
@@ -1192,6 +1278,8 @@ for y := CornerRect.top to CornerRect.bottom do
            end;
         end;
     end;
+ABitmap.LoadFromIntfImage(DestImg);
+DestImg.Destroy;
 end;
 
 class procedure TGUITools.DrawAARoundCorner(ABitmap: TBitmap;
@@ -1208,6 +1296,7 @@ var CornerRect : T2DIntRect;
     OrgCornerRect: T2DIntRect;
     UnClippedCornerRect : T2DIntRect;
     BitmapRect: T2DIntRect;
+    DestImg: TLazIntfImage;
 
 begin
 if ABitmap.PixelFormat<>pf24bit then
@@ -1252,9 +1341,10 @@ colorR:=GetRValue(Color);
 colorG:=GetGValue(Color);
 ColorB:=GetBValue(Color);
 
+DestImg := ABitmap.CreateIntfImage;
 for y := CornerRect.top to CornerRect.bottom do
     begin
-    Line:=ABitmap.ScanLine[y];
+    Line:=DestImg.GetDataLineStart(y);
     for x := CornerRect.left to CornerRect.right do
         begin
         RadiusDist:=1 - abs((Radius - 1) - Center.DistanceTo(T2DIntVector.create(x, y)));
@@ -1267,6 +1357,8 @@ for y := CornerRect.top to CornerRect.bottom do
            end;
         end;
     end;
+ABitmap.LoadFromIntfImage(DestImg);
+DestImg.Destroy;
 end;
 
 class procedure TGUITools.DrawAARoundCorner(ACanvas: TCanvas;
