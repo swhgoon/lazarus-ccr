@@ -10,7 +10,7 @@ interface
 {$MESSAGE HINT 'W tym module konsekwentnie ka¿dy rect opisuje dok³adny prostok¹t (a nie, jak w przypadku WINAPI - bez dolnej i prawej krawêdzi)'}
 
 uses
-  LCLType, Graphics, SysUtils, Math, Classes, Controls, ImgList, SpkGraphTools, SpkMath;
+  LCLType, Graphics, SysUtils, Classes, Controls, SpkGraphTools, SpkMath;
 
 type
   TCornerPos = (cpLeftTop, cpRightTop, cpLeftBottom, cpRightBottom);
@@ -297,14 +297,12 @@ type
                         ClipRect : T2DIntRect); overload; inline;
     class procedure DrawMarkedText(ACanvas : TCanvas;
                                   x, y : integer;
-                                  AText : string;
-                                  AMarkPhrase : string;
+                                  const AText, AMarkPhrase : string;
                                   TextColor : TColor;
                                   CaseSensitive : boolean = false); overload; inline;
     class procedure DrawMarkedText(ACanvas : TCanvas;
                                   x, y : integer;
-                                  AText : string;
-                                  AMarkPhrase : string;
+                                  const AText, AMarkPhrase : string;
                                   TextColor : TColor;
                                   ClipRect : T2DIntRect;
                                   CaseSensitive : boolean = false); overload; inline;
@@ -371,7 +369,7 @@ end;
 implementation
 
 uses
-  IntfGraphics;
+  LCLIntf, IntfGraphics;
 
 { TSpkGUITools }
 
@@ -544,24 +542,39 @@ if (ABuffer.width=0) or (ABuffer.height=0) or
 // Góra
 CopyRectangle(ABuffer,
               ABitmap,
+              {$ifdef EnhancedRecordSupport}
               T2DIntPoint.create(SrcPoint.x + radius, SrcPoint.y),
               T2DIntPoint.create(DstPoint.x + radius, DstPoint.y),
+              {$else}
+              Create2DIntPoint(SrcPoint.x + radius, SrcPoint.y),
+              Create2DIntPoint(DstPoint.x + radius, DstPoint.y),
+              {$endif}
               width - 2*radius,
               radius,
               ClipRect);
 // Dó³
 CopyRectangle(ABuffer,
               ABitmap,
+              {$IFDEF EnhancedRecordSupport}
               T2DIntPoint.create(SrcPoint.x + radius, SrcPoint.y + height - radius),
               T2DIntPoint.create(DstPoint.x + radius, DstPoint.y + height - radius),
+              {$ELSE}
+              Create2DIntPoint(SrcPoint.x + radius, SrcPoint.y + height - radius),
+              Create2DIntPoint(DstPoint.x + radius, DstPoint.y + height - radius),
+              {$ENDIF}
               width - 2*radius,
               radius,
               ClipRect);
 // Œrodek
 CopyRectangle(ABuffer,
               ABitmap,
+              {$IFDEF EnhancedRecordSupport}
               T2DIntPoint.create(SrcPoint.x, SrcPoint.y + radius),
               T2DIntPoint.create(DstPoint.x, DstPoint.y + radius),
+              {$ELSE}
+              Create2DIntPoint(SrcPoint.x, SrcPoint.y + radius),
+              Create2DIntPoint(DstPoint.x, DstPoint.y + radius),
+              {$ENDIF}
               width,
               height - 2*radius,
               ClipRect);
@@ -573,8 +586,13 @@ CopyRectangle(ABuffer,
 if LeftTopRound then
    TGUITools.CopyRoundCorner(ABuffer,
                              ABitmap,
+                             {$IFDEF EnhancedRecordSupport}
                              T2DIntPoint.Create(SrcPoint.x, SrcPoint.y),
                              T2DIntPoint.Create(DstPoint.x, DstPoint.y),
+                             {$ELSE}
+                             Create2DIntPoint(SrcPoint.x, SrcPoint.y),
+                             Create2DIntPoint(DstPoint.x, DstPoint.y),
+                             {$ENDIF}
                              Radius,
                              cpLeftTop,
                              ClipRect,
@@ -582,8 +600,13 @@ if LeftTopRound then
 else
    TGUITools.CopyCorner(ABuffer,
                         ABitmap,
+                        {$IFDEF EnhancedRecordSupport}
                         T2DIntPoint.Create(SrcPoint.x, SrcPoint.y),
                         T2DIntPoint.Create(DstPoint.x, DstPoint.y),
+                        {$ELSE}
+                        Create2DIntPoint(SrcPoint.x, SrcPoint.y),
+                        Create2DIntPoint(DstPoint.x, DstPoint.y),
+                        {$ENDIF}
                         Radius,
                         ClipRect);
 {$ENDREGION}
@@ -592,8 +615,13 @@ else
 if RightTopRound then
    TGUITools.CopyRoundCorner(ABuffer,
                              ABitmap,
+                             {$IFDEF EnhancedRecordSupport}
                              T2DIntPoint.Create(SrcPoint.x + Width - Radius, SrcPoint.y),
                              T2DIntPoint.Create(DstPoint.x + Width - Radius, DstPoint.y),
+                             {$ELSE}
+                             Create2DIntPoint(SrcPoint.x + Width - Radius, SrcPoint.y),
+                             Create2DIntPoint(DstPoint.x + Width - Radius, DstPoint.y),
+                             {$ENDIF}
                              Radius,
                              cpRightTop,
                              ClipRect,
@@ -601,8 +629,13 @@ if RightTopRound then
 else
    TGUITools.CopyCorner(ABuffer,
                         ABitmap,
+                        {$IFDEF EnhancedRecordSupport}
                         T2DIntPoint.Create(SrcPoint.x + Width - Radius, SrcPoint.y),
                         T2DIntPoint.Create(DstPoint.x + Width - Radius, DstPoint.y),
+                        {$ELSE}
+                        Create2DIntPoint(SrcPoint.x + Width - Radius, SrcPoint.y),
+                        Create2DIntPoint(DstPoint.x + Width - Radius, DstPoint.y),
+                        {$ENDIF}
                         Radius,
                         ClipRect);
 {$ENDREGION}
@@ -611,8 +644,13 @@ else
 if LeftBottomRound then
    TGUITools.CopyRoundCorner(ABuffer,
                              ABitmap,
+                             {$IFDEF EnhancedRecordSupport}
                              T2DIntPoint.Create(SrcPoint.x, SrcPoint.y + Height - Radius),
                              T2DIntPoint.Create(DstPoint.x, DstPoint.y + Height - Radius),
+                             {$ELSE}
+                             Create2DIntPoint(SrcPoint.x, SrcPoint.y + Height - Radius),
+                             Create2DIntPoint(DstPoint.x, DstPoint.y + Height - Radius),
+                             {$ENDIF}
                              Radius,
                              cpLeftBottom,
                              ClipRect,
@@ -620,8 +658,13 @@ if LeftBottomRound then
 else
    TGUITools.CopyCorner(ABuffer,
                         ABitmap,
+                        {$IFDEF EnhancedRecordSupport}
                         T2DIntPoint.Create(SrcPoint.x, SrcPoint.y + Height - Radius),
                         T2DIntPoint.Create(DstPoint.x, DstPoint.y + Height - Radius),
+                        {$ELSE}
+                        Create2DIntPoint(SrcPoint.x, SrcPoint.y + Height - Radius),
+                        Create2DIntPoint(DstPoint.x, DstPoint.y + Height - Radius),
+                        {$ENDIF}
                         Radius,
                         ClipRect);
 {$ENDREGION}
@@ -630,8 +673,13 @@ else
 if RightBottomRound then
    TGUITools.CopyRoundCorner(ABuffer,
                              ABitmap,
+                             {$IFDEF EnhancedRecordSupport}
                              T2DIntPoint.Create(SrcPoint.x + Width - Radius, SrcPoint.y + Height - Radius),
                              T2DIntPoint.Create(DstPoint.x + Width - Radius, DstPoint.y + Height - Radius),
+                             {$ELSE}
+                             Create2DIntPoint(SrcPoint.x + Width - Radius, SrcPoint.y + Height - Radius),
+                             Create2DIntPoint(DstPoint.x + Width - Radius, DstPoint.y + Height - Radius),
+                             {$ENDIF}
                              Radius,
                              cpRightBottom,
                              ClipRect,
@@ -639,8 +687,13 @@ if RightBottomRound then
 else
    TGUITools.CopyCorner(ABuffer,
                         ABitmap,
+                        {$IFDEF EnhancedRecordSupport}
                         T2DIntPoint.Create(SrcPoint.x + Width - Radius, SrcPoint.y + Height - Radius),
                         T2DIntPoint.Create(DstPoint.x + Width - Radius, DstPoint.y + Height - Radius),
+                        {$ELSE}
+                        Create2DIntPoint(SrcPoint.x + Width - Radius, SrcPoint.y + Height - Radius),
+                        Create2DIntPoint(DstPoint.x + Width - Radius, DstPoint.y + Height - Radius),
+                        {$ENDIF}
                         Radius,
                         ClipRect);
 {$ENDREGION'}
@@ -667,22 +720,37 @@ if (ABuffer.width=0) or (ABuffer.height=0) or
 // Góra
 CopyRectangle(ABuffer,
               ABitmap,
+              {$IFDEF EnhancedRecordSupport}
               T2DIntPoint.create(SrcPoint.x + radius, SrcPoint.y),
               T2DIntPoint.create(DstPoint.x + radius, DstPoint.y),
+              {$ELSE}
+              Create2DIntPoint(SrcPoint.x + radius, SrcPoint.y),
+              Create2DIntPoint(DstPoint.x + radius, DstPoint.y),
+              {$ENDIF}
               width - 2*radius,
               radius);
 // Dó³
 CopyRectangle(ABuffer,
               ABitmap,
+              {$IFDEF EnhancedRecordSupport}
               T2DIntPoint.create(SrcPoint.x + radius, SrcPoint.y + height - radius),
               T2DIntPoint.create(DstPoint.x + radius, DstPoint.y + height - radius),
+              {$ELSE}
+              Create2DIntPoint(SrcPoint.x + radius, SrcPoint.y + height - radius),
+              Create2DIntPoint(DstPoint.x + radius, DstPoint.y + height - radius),
+              {$ENDIF}
               width - 2*radius,
               radius);
 // Œrodek
 CopyRectangle(ABuffer,
               ABitmap,
+              {$IFDEF EnhancedRecordSupport}
               T2DIntPoint.create(SrcPoint.x, SrcPoint.y + radius),
               T2DIntPoint.create(DstPoint.x, DstPoint.y + radius),
+              {$ELSE}
+              Create2DIntPoint(SrcPoint.x, SrcPoint.y + radius),
+              Create2DIntPoint(DstPoint.x, DstPoint.y + radius),
+              {$ENDIF}
               width,
               height - 2*radius);
 {$ENDREGION}
@@ -692,16 +760,26 @@ CopyRectangle(ABuffer,
 if LeftTopRound then
    TGUITools.CopyRoundCorner(ABuffer,
                              ABitmap,
+                             {$IFDEF EnhancedRecordSupport}
                              T2DIntPoint.Create(SrcPoint.x, SrcPoint.y),
                              T2DIntPoint.Create(DstPoint.x, DstPoint.y),
+                             {$ELSE}
+                             Create2DIntPoint(SrcPoint.x, SrcPoint.y),
+                             Create2DIntPoint(DstPoint.x, DstPoint.y),
+                             {$ENDIF}
                              Radius,
                              cpLeftTop,
                              true)
 else
    TGUITools.CopyCorner(ABuffer,
                         ABitmap,
+                        {$IFDEF EnhancedRecordSupport}
                         T2DIntPoint.Create(SrcPoint.x, SrcPoint.y),
                         T2DIntPoint.Create(DstPoint.x, DstPoint.y),
+                        {$ELSE}
+                        Create2DIntPoint(SrcPoint.x, SrcPoint.y),
+                        Create2DIntPoint(DstPoint.x, DstPoint.y),
+                        {$ENDIF}
                         Radius);
 {$ENDREGION}
 
@@ -709,16 +787,26 @@ else
 if RightTopRound then
    TGUITools.CopyRoundCorner(ABuffer,
                              ABitmap,
+                             {$IFDEF EnhancedRecordSupport}
                              T2DIntPoint.Create(SrcPoint.x + Width - Radius, SrcPoint.y),
                              T2DIntPoint.Create(DstPoint.x + Width - Radius, DstPoint.y),
+                             {$ELSE}
+                             Create2DIntPoint(SrcPoint.x + Width - Radius, SrcPoint.y),
+                             Create2DIntPoint(DstPoint.x + Width - Radius, DstPoint.y),
+                             {$ENDIF}
                              Radius,
                              cpRightTop,
                              true)
 else
    TGUITools.CopyCorner(ABuffer,
                         ABitmap,
+                        {$IFDEF EnhancedRecordSupport}
                         T2DIntPoint.Create(SrcPoint.x + Width - Radius, SrcPoint.y),
                         T2DIntPoint.Create(DstPoint.x + Width - Radius, DstPoint.y),
+                        {$ELSE}
+                        Create2DIntPoint(SrcPoint.x + Width - Radius, SrcPoint.y),
+                        Create2DIntPoint(DstPoint.x + Width - Radius, DstPoint.y),
+                        {$ENDIF}
                         Radius);
 {$ENDREGION}
 
@@ -726,16 +814,26 @@ else
 if LeftBottomRound then
    TGUITools.CopyRoundCorner(ABuffer,
                              ABitmap,
+                             {$IFDEF EnhancedRecordSupport}
                              T2DIntPoint.Create(SrcPoint.x, SrcPoint.y + Height - Radius),
                              T2DIntPoint.Create(DstPoint.x, DstPoint.y + Height - Radius),
+                             {$ELSE}
+                             Create2DIntPoint(SrcPoint.x, SrcPoint.y + Height - Radius),
+                             Create2DIntPoint(DstPoint.x, DstPoint.y + Height - Radius),
+                             {$ENDIF}
                              Radius,
                              cpLeftBottom,
                              true)
 else
    TGUITools.CopyCorner(ABuffer,
                         ABitmap,
+                        {$IFDEF EnhancedRecordSupport}
                         T2DIntPoint.Create(SrcPoint.x, SrcPoint.y + Height - Radius),
                         T2DIntPoint.Create(DstPoint.x, DstPoint.y + Height - Radius),
+                        {$ELSE}
+                        Create2DIntPoint(SrcPoint.x, SrcPoint.y + Height - Radius),
+                        Create2DIntPoint(DstPoint.x, DstPoint.y + Height - Radius),
+                        {$ENDIF}
                         Radius);
 {$ENDREGION}
 
@@ -743,16 +841,26 @@ else
 if RightBottomRound then
    TGUITools.CopyRoundCorner(ABuffer,
                              ABitmap,
+                             {$IFDEF EnhancedRecordSupport}
                              T2DIntPoint.Create(SrcPoint.x + Width - Radius, SrcPoint.y + Height - Radius),
                              T2DIntPoint.Create(DstPoint.x + Width - Radius, DstPoint.y + Height - Radius),
+                             {$ELSE}
+                             Create2DIntPoint(SrcPoint.x + Width - Radius, SrcPoint.y + Height - Radius),
+                             Create2DIntPoint(DstPoint.x + Width - Radius, DstPoint.y + Height - Radius),
+                             {$ENDIF}
                              Radius,
                              cpRightBottom,
                              true)
 else
    TGUITools.CopyCorner(ABuffer,
                         ABitmap,
+                        {$IFDEF EnhancedRecordSupport}
                         T2DIntPoint.Create(SrcPoint.x + Width - Radius, SrcPoint.y + Height - Radius),
                         T2DIntPoint.Create(DstPoint.x + Width - Radius, DstPoint.y + Height - Radius),
+                        {$ELSE}
+                        Create2DIntPoint(SrcPoint.x + Width - Radius, SrcPoint.y + Height - Radius),
+                        Create2DIntPoint(DstPoint.x + Width - Radius, DstPoint.y + Height - Radius),
+                        {$ENDIF}
                         Radius);
 {$ENDREGION'}
 end;
@@ -781,6 +889,7 @@ if (Width<1) or (Height<1) then
 if (ABuffer.width=0) or (ABuffer.height=0) or
    (ABitmap.width=0) or (ABitmap.height=0) then exit;
 
+{$IFDEF EnhancedRecordSupport}
 // Przycinamy Ÿród³owy rect do obszaru Ÿród³owej bitmapy
 BufferRect:=T2DIntRect.create(0, 0, ABuffer.width-1, ABuffer.height-1);
 
@@ -797,6 +906,24 @@ if not(BitmapRect.IntersectsWith(T2DIntRect.create(DstPoint.x,
                                                    DstPoint.x+Width-1,
                                                    DstPoint.y+Height-1),
                                  DstRect)) then exit;
+{$ELSE}
+// Przycinamy Ÿród³owy rect do obszaru Ÿród³owej bitmapy
+BufferRect.create(0, 0, ABuffer.width-1, ABuffer.height-1);
+
+if not(BufferRect.IntersectsWith(Create2DIntRect(SrcPoint.x,
+                                                   SrcPoint.y,
+                                                   SrcPoint.x+Width-1,
+                                                   SrcPoint.y+Height-1),
+                                 SrcRect)) then exit;
+
+// Przycinamy docelowy rect do obszaru docelowej bitmapy
+BitmapRect.create(0, 0, ABitmap.width-1, ABitmap.height-1);
+if not(BitmapRect.IntersectsWith(Create2DIntRect(DstPoint.x,
+                                                   DstPoint.y,
+                                                   DstPoint.x+Width-1,
+                                                   DstPoint.y+Height-1),
+                                 DstRect)) then exit;
+{$ENDIF}
 
 // Liczymy offset Ÿród³owego do docelowego recta
 Offset:=DstPoint - SrcPoint;
@@ -871,6 +998,7 @@ if (ABuffer.width=0) or (ABuffer.height=0) or
 if (ABuffer.Width<>AMask.Width) or
    (ABuffer.Height<>AMask.Height) then exit;
 
+{$IFDEF EnhancedRecordSupport}
 // Przycinamy Ÿród³owy rect do obszaru Ÿród³owej bitmapy
 BufferRect:=T2DIntRect.create(0, 0, ABuffer.width-1, ABuffer.height-1);
 
@@ -887,6 +1015,24 @@ if not(BitmapRect.IntersectsWith(T2DIntRect.create(DstPoint.x,
                                                    DstPoint.x+Width-1,
                                                    DstPoint.y+Height-1),
                                  DstRect)) then exit;
+{$ELSE}
+// Przycinamy Ÿród³owy rect do obszaru Ÿród³owej bitmapy
+BufferRect.create(0, 0, ABuffer.width-1, ABuffer.height-1);
+
+if not(BufferRect.IntersectsWith(Create2DIntRect(SrcPoint.x,
+                                                   SrcPoint.y,
+                                                   SrcPoint.x+Width-1,
+                                                   SrcPoint.y+Height-1),
+                                 SrcRect)) then exit;
+
+// Przycinamy docelowy rect do obszaru docelowej bitmapy
+BitmapRect.create(0, 0, ABitmap.width-1, ABitmap.height-1);
+if not(BitmapRect.IntersectsWith(Create2DIntRect(DstPoint.x,
+                                                   DstPoint.y,
+                                                   DstPoint.x+Width-1,
+                                                   DstPoint.y+Height-1),
+                                 DstRect)) then exit;
+{$ENDIF}
 
 // Liczymy offset Ÿród³owego do docelowego recta
 Offset:=DstPoint - SrcPoint;
@@ -963,6 +1109,7 @@ if (ABuffer.Width<>AMask.Width) or
    (ABuffer.Height<>AMask.Height) then
    raise exception.create('TSpkGUITools.CopyMaskRectangle: Maska ma nieprawid³owe rozmiary!');
 
+{$IFDEF EnhancedRecordSupport}
 // Przycinamy Ÿród³owy rect do obszaru Ÿród³owej bitmapy
 BufferRect:=T2DIntRect.create(0, 0, ABuffer.width-1, ABuffer.height-1);
 if not(BufferRect.IntersectsWith(T2DIntRect.create(SrcPoint.x,
@@ -978,6 +1125,23 @@ if not(BitmapRect.IntersectsWith(T2DIntRect.create(DstPoint.x,
                                                    DstPoint.x+Width-1,
                                                    DstPoint.y+Height-1),
                                  DstRect)) then exit;
+{$ELSE}
+// Przycinamy Ÿród³owy rect do obszaru Ÿród³owej bitmapy
+BufferRect.create(0, 0, ABuffer.width-1, ABuffer.height-1);
+if not(BufferRect.IntersectsWith(Create2DIntRect(SrcPoint.x,
+                                                   SrcPoint.y,
+                                                   SrcPoint.x+Width-1,
+                                                   SrcPoint.y+Height-1),
+                                 SrcRect)) then exit;
+
+// Przycinamy docelowy rect do obszaru docelowej bitmapy
+BitmapRect.create(0, 0, ABitmap.width-1, ABitmap.height-1);
+if not(BitmapRect.IntersectsWith(Create2DIntRect(DstPoint.x,
+                                                   DstPoint.y,
+                                                   DstPoint.x+Width-1,
+                                                   DstPoint.y+Height-1),
+                                 DstRect)) then exit;
+{$ENDIF}
 
 // Dodatkowo przycinamy docelowy rect
 if not(DstRect.IntersectsWith(ClipRect, ClippedDstRect)) then
@@ -1001,7 +1165,7 @@ begin
        SrcLine:=SrcImg.GetDataLineStart(y);
        SrcLine:=pointer(integer(SrcLine) + 3 * ClippedSrcRect.left);
 
-       MaskLine:=MaskImg.GetDataLineStart();
+       MaskLine:=MaskImg.GetDataLineStart(y);
        MaskLine:=pointer(integer(MaskLine) + ClippedSrcRect.left);
 
        DstLine:=DestImg.GetDataLineStart(y+Offset.y);
@@ -1048,6 +1212,7 @@ if (Width<1) or (Height<1) then
 if (ABuffer.width=0) or (ABuffer.height=0) or
    (ABitmap.width=0) or (ABitmap.height=0) then exit;
 
+{$IFDEF EnhancedRecordSupport}
 // Przycinamy Ÿród³owy rect do obszaru Ÿród³owej bitmapy
 BufferRect:=T2DIntRect.create(0, 0, ABuffer.width-1, ABuffer.height-1);
 if not(BufferRect.IntersectsWith(T2DIntRect.create(SrcPoint.x,
@@ -1063,6 +1228,23 @@ if not(BitmapRect.IntersectsWith(T2DIntRect.create(DstPoint.x,
                                                    DstPoint.x+Width-1,
                                                    DstPoint.y+Height-1),
                                  DstRect)) then exit;
+{$ELSE}
+// Przycinamy Ÿród³owy rect do obszaru Ÿród³owej bitmapy
+BufferRect.create(0, 0, ABuffer.width-1, ABuffer.height-1);
+if not(BufferRect.IntersectsWith(Create2DIntRect(SrcPoint.x,
+                                                   SrcPoint.y,
+                                                   SrcPoint.x+Width-1,
+                                                   SrcPoint.y+Height-1),
+                                 SrcRect)) then exit;
+
+// Przycinamy docelowy rect do obszaru docelowej bitmapy
+BitmapRect.create(0, 0, ABitmap.width-1, ABitmap.height-1);
+if not(BitmapRect.IntersectsWith(Create2DIntRect(DstPoint.x,
+                                                   DstPoint.y,
+                                                   DstPoint.x+Width-1,
+                                                   DstPoint.y+Height-1),
+                                 DstRect)) then exit;
+{$ENDIF}
 
 // Dodatkowo przycinamy docelowy rect
 if not(DstRect.IntersectsWith(ClipRect, ClippedDstRect)) then
@@ -1124,6 +1306,7 @@ if Radius<1 then
 if (ABuffer.width=0) or (ABuffer.height=0) or
    (ABitmap.width=0) or (ABitmap.height=0) then exit;
 
+{$IFDEF EnhancedRecordSupport}
 BufferRect:=T2DIntRect.create(0, 0, ABuffer.width-1, ABuffer.height-1);
 if not(BufferRect.IntersectsWith(T2DIntRect.create(SrcPoint.x,
                                                    SrcPoint.y,
@@ -1137,6 +1320,21 @@ if not(BitmapRect.IntersectsWith(T2DIntRect.create(DstPoint.x,
                                                    DstPoint.x+Radius-1,
                                                    DstPoint.y+Radius-1),
                                  OrgDstRect)) then exit;
+{$ELSE}
+BufferRect.create(0, 0, ABuffer.width-1, ABuffer.height-1);
+if not(BufferRect.IntersectsWith(Create2DIntRect(SrcPoint.x,
+                                                   SrcPoint.y,
+                                                   SrcPoint.x+Radius-1,
+                                                   SrcPoint.y+Radius-1),
+                                 OrgSrcRect)) then exit;
+
+BitmapRect.create(0, 0, ABitmap.width-1, ABitmap.height-1);
+if not(BitmapRect.IntersectsWith(Create2DIntRect(DstPoint.x,
+                                                   DstPoint.y,
+                                                   DstPoint.x+Radius-1,
+                                                   DstPoint.y+Radius-1),
+                                 OrgDstRect)) then exit;
+{$ENDIF}
 
 Offset:=DstPoint - SrcPoint;
 
@@ -1144,12 +1342,21 @@ if not(OrgSrcRect.IntersectsWith(OrgDstRect - Offset, SrcRect)) then exit;
 
 // Ustalamy pozycjê œrodka ³uku
 
+{$IFDEF EnhancedRecordSupport}
 case CornerPos of
      cpLeftTop: Center:=T2DIntVector.create(SrcPoint.x + radius - 1, SrcPoint.y + Radius - 1);
      cpRightTop: Center:=T2DIntVector.create(SrcPoint.x, SrcPoint.y + Radius - 1);
      cpLeftBottom: Center:=T2DIntVector.Create(SrcPoint.x + radius - 1, SrcPoint.y);
      cpRightBottom: Center:=T2DIntVector.Create(SrcPoint.x, SrcPoint.y);
 end;
+{$ELSE}
+case CornerPos of
+     cpLeftTop: Center.create(SrcPoint.x + radius - 1, SrcPoint.y + Radius - 1);
+     cpRightTop: Center.create(SrcPoint.x, SrcPoint.y + Radius - 1);
+     cpLeftBottom: Center.Create(SrcPoint.x + radius - 1, SrcPoint.y);
+     cpRightBottom: Center.Create(SrcPoint.x, SrcPoint.y);
+end;
+{$ENDIF}
 
 // Czy jest cokolwiek do przetworzenia?
 if Convex then
@@ -1167,7 +1374,11 @@ if Convex then
           DstPtr:=pointer(integer(DstLine) + 3*(SrcRect.left + Offset.x));
           for x := SrcRect.left to SrcRect.right do
               begin
+              {$IFDEF EnhancedRecordSupport}
               Dist:=Center.DistanceTo(T2DVector.create(x, y));
+              {$ELSE}
+              Dist:=Center.DistanceTo(x, y);
+              {$ENDIF}
               if Dist <= (Radius-1) then
                  Move(SrcPtr^,DstPtr^,3);
 
@@ -1195,7 +1406,11 @@ else
           DstPtr:=pointer(integer(DstLine) + 3*(SrcRect.left + Offset.x));
           for x := SrcRect.left to SrcRect.right do
               begin
+              {$IFDEF EnhancedRecordSupport}
               Dist:=Center.DistanceTo(T2DVector.create(x, y));
+              {$ELSE}
+              Dist:=Center.DistanceTo(x, y);
+              {$ENDIF}
               if Dist >= (Radius-1) then
                  Move(SrcPtr^,DstPtr^,3);
 
@@ -1234,6 +1449,7 @@ if Radius<1 then
 if (ABitmap.width=0) or (ABitmap.height=0) then
    exit;
 
+{$IFDEF EnhancedRecordSupport}
 // ród³owy rect...
 OrgCornerRect:=T2DIntRect.create(Point.x,
                                  Point.y,
@@ -1242,6 +1458,17 @@ OrgCornerRect:=T2DIntRect.create(Point.x,
 
 // ...przycinamy do rozmiarów bitmapy
 BitmapRect:=T2DIntRect.create(0, 0, ABitmap.width-1, ABitmap.height-1);
+{$ELSE}
+// ród³owy rect...
+OrgCornerRect.create(Point.x,
+                                 Point.y,
+                                 Point.x + radius - 1,
+                                 Point.y + radius - 1);
+
+// ...przycinamy do rozmiarów bitmapy
+BitmapRect.create(0, 0, ABitmap.width-1, ABitmap.height-1);
+{$ENDIF}
+
 if not(BitmapRect.intersectsWith(OrgCornerRect, CornerRect)) then
    exit;
 
@@ -1250,12 +1477,21 @@ if (CornerRect.left>CornerRect.right) or (CornerRect.top>CornerRect.bottom) then
    exit;
 
 // Szukamy œrodka ³uku - zale¿nie od rodzaju naro¿nika
+{$IFDEF EnhancedRecordSupport}
 case CornerPos of
      cpLeftTop: Center:=T2DIntVector.create(Point.x + radius - 1, Point.y + Radius - 1);
      cpRightTop: Center:=T2DIntVector.create(Point.x, Point.y + Radius - 1);
      cpLeftBottom: Center:=T2DIntVector.Create(Point.x + radius - 1, Point.y);
      cpRightBottom: Center:=T2DIntVector.Create(Point.x, Point.y);
 end;
+{$ELSE}
+case CornerPos of
+     cpLeftTop: Center.create(Point.x + radius - 1, Point.y + Radius - 1);
+     cpRightTop: Center.create(Point.x, Point.y + Radius - 1);
+     cpLeftBottom: Center.Create(Point.x + radius - 1, Point.y);
+     cpRightBottom: Center.Create(Point.x, Point.y);
+end;
+{$ENDIF}
 
 Color:=ColorToRGB(Color);
 
@@ -1268,7 +1504,11 @@ for y := CornerRect.top to CornerRect.bottom do
     Line:=DestImg.GetDataLineStart(y);
     for x := CornerRect.left to CornerRect.right do
         begin
+        {$IFDEF EnhancedRecordSupport}
         RadiusDist:=1 - abs((Radius - 1) - Center.DistanceTo(T2DIntVector.create(x, y)));
+        {$ELSE}
+        RadiusDist:=1 - abs((Radius - 1) - Center.DistanceTo(x, y));
+        {$ENDIF}
         if RadiusDist>0 then
            begin
            Ptr:=pointer(integer(Line) + 3*x);
@@ -1308,6 +1548,7 @@ if Radius<1 then
 if (ABitmap.width=0) or (ABitmap.height=0) then
    exit;
 
+{$IFDEF EnhancedRecordSupport}
 // ród³owy rect...
 OrgCornerRect:=T2DIntRect.create(Point.x,
                                  Point.y,
@@ -1316,6 +1557,17 @@ OrgCornerRect:=T2DIntRect.create(Point.x,
 
 // ...przycinamy do rozmiarów bitmapy
 BitmapRect:=T2DIntRect.create(0, 0, ABitmap.width-1, ABitmap.height-1);
+{$ELSE}
+// ród³owy rect...
+OrgCornerRect.create(Point.x,
+                                 Point.y,
+                                 Point.x + radius - 1,
+                                 Point.y + radius - 1);
+
+// ...przycinamy do rozmiarów bitmapy
+BitmapRect.create(0, 0, ABitmap.width-1, ABitmap.height-1);
+{$ENDIF}
+
 if not(BitmapRect.intersectsWith(OrgCornerRect, UnClippedCornerRect)) then
    exit;
 
@@ -1328,12 +1580,21 @@ if (CornerRect.left>CornerRect.right) or (CornerRect.top>CornerRect.bottom) then
    exit;
 
 // Szukamy œrodka ³uku - zale¿nie od rodzaju naro¿nika
+{$IFDEF EnhancedRecordSupport}
 case CornerPos of
      cpLeftTop: Center:=T2DIntVector.create(Point.x + radius - 1, Point.y + Radius - 1);
      cpRightTop: Center:=T2DIntVector.create(Point.x, Point.y + Radius - 1);
      cpLeftBottom: Center:=T2DIntVector.Create(Point.x + radius - 1, Point.y);
      cpRightBottom: Center:=T2DIntVector.Create(Point.x, Point.y);
 end;
+{$ELSE}
+case CornerPos of
+     cpLeftTop: Center.create(Point.x + radius - 1, Point.y + Radius - 1);
+     cpRightTop: Center.create(Point.x, Point.y + Radius - 1);
+     cpLeftBottom: Center.Create(Point.x + radius - 1, Point.y);
+     cpRightBottom: Center.Create(Point.x, Point.y);
+end;
+{$ENDIF}
 
 Color:=ColorToRGB(Color);
 
@@ -1347,7 +1608,11 @@ for y := CornerRect.top to CornerRect.bottom do
     Line:=DestImg.GetDataLineStart(y);
     for x := CornerRect.left to CornerRect.right do
         begin
+        {$IFDEF EnhancedRecordSupport}
         RadiusDist:=1 - abs((Radius - 1) - Center.DistanceTo(T2DIntVector.create(x, y)));
+        {$ELSE}
+        RadiusDist:=1 - abs((Radius - 1) - Center.DistanceTo(x, y));
+        {$ENDIF}
         if RadiusDist>0 then
            begin
            Ptr:=pointer(integer(Line) + 3*x);
@@ -1375,6 +1640,7 @@ begin
 if Radius<1 then
    exit;
 
+{$IFDEF EnhancedRecordSupport}
 // ród³owy rect...
 CornerRect:=T2DIntRect.create(Point.x,
                               Point.y,
@@ -1388,6 +1654,21 @@ case CornerPos of
      cpLeftBottom: Center:=T2DIntVector.Create(Point.x + radius - 1, Point.y);
      cpRightBottom: Center:=T2DIntVector.Create(Point.x, Point.y);
 end;
+{$ELSE}
+// ród³owy rect...
+CornerRect.create(Point.x,
+                              Point.y,
+                              Point.x + radius - 1,
+                              Point.y + radius - 1);
+
+// Szukamy œrodka ³uku - zale¿nie od rodzaju naro¿nika
+case CornerPos of
+     cpLeftTop: Center.create(Point.x + radius - 1, Point.y + Radius - 1);
+     cpRightTop: Center.create(Point.x, Point.y + Radius - 1);
+     cpLeftBottom: Center.Create(Point.x + radius - 1, Point.y);
+     cpRightBottom: Center.Create(Point.x, Point.y);
+end;
+{$ENDIF}
 
 Color:=ColorToRGB(Color);
 
@@ -1395,7 +1676,11 @@ for y := CornerRect.top to CornerRect.bottom do
     begin
     for x := CornerRect.left to CornerRect.right do
         begin
+        {$IFDEF EnhancedRecordSupport}
         RadiusDist:=1 - abs((Radius - 1) - Center.DistanceTo(T2DIntVector.create(x, y)));
+        {$ELSE}
+        RadiusDist:=1 - abs((Radius - 1) - Center.DistanceTo(x, y));
+        {$ENDIF}
         if RadiusDist>0 then
            begin
            OrgColor:=ACanvas.Pixels[x, y];
@@ -1443,10 +1728,17 @@ if (Radius>Rect.width div 2) or (Radius>Rect.height div 2) then
    exit;
 
 // DrawAARoundCorner jest zabezpieczony przed rysowaniem poza obszarem
+{$IFDEF EnhancedRecordSupport}
 DrawAARoundCorner(ABitmap, T2DIntVector.create(Rect.left, Rect.top), Radius, cpLeftTop, Color, ClipRect);
 DrawAARoundCorner(ABitmap, T2DIntVector.create(Rect.right - Radius + 1, Rect.top), Radius, cpRightTop, Color, ClipRect);
 DrawAARoundCorner(ABitmap, T2DIntVector.create(Rect.left, Rect.bottom - Radius + 1), Radius, cpLeftBottom, Color, ClipRect);
 DrawAARoundCorner(ABitmap, T2DIntVector.create(Rect.Right - Radius + 1, Rect.Bottom - Radius + 1), Radius, cpRightBottom, Color, ClipRect);
+{$ELSE}
+DrawAARoundCorner(ABitmap, Create2DIntVector(Rect.left, Rect.top), Radius, cpLeftTop, Color, ClipRect);
+DrawAARoundCorner(ABitmap, Create2DIntVector(Rect.right - Radius + 1, Rect.top), Radius, cpRightTop, Color, ClipRect);
+DrawAARoundCorner(ABitmap, Create2DIntVector(Rect.left, Rect.bottom - Radius + 1), Radius, cpLeftBottom, Color, ClipRect);
+DrawAARoundCorner(ABitmap, Create2DIntVector(Rect.Right - Radius + 1, Rect.Bottom - Radius + 1), Radius, cpRightBottom, Color, ClipRect);
+{$ENDIF}
 
 ABitmap.Canvas.Pen.color:=Color;
 ABitmap.Canvas.pen.style:=psSolid;
@@ -1472,10 +1764,17 @@ if (Radius>Rect.width div 2) or (Radius>Rect.height div 2) then
    exit;
 
 // DrawAARoundCorner jest zabezpieczony przed rysowaniem poza obszarem
+{$IFDEF EnhancedRecordSupport}
 DrawAARoundCorner(ABitmap, T2DIntVector.create(Rect.left, Rect.top), Radius, cpLeftTop, Color);
 DrawAARoundCorner(ABitmap, T2DIntVector.create(Rect.right - Radius + 1, Rect.top), Radius, cpRightTop, Color);
 DrawAARoundCorner(ABitmap, T2DIntVector.create(Rect.left, Rect.bottom - Radius + 1), Radius, cpLeftBottom, Color);
 DrawAARoundCorner(ABitmap, T2DIntVector.create(Rect.Right - Radius + 1, Rect.Bottom - Radius + 1), Radius, cpRightBottom, Color);
+{$ELSE}
+DrawAARoundCorner(ABitmap, Create2DIntVector(Rect.left, Rect.top), Radius, cpLeftTop, Color);
+DrawAARoundCorner(ABitmap, Create2DIntVector(Rect.right - Radius + 1, Rect.top), Radius, cpRightTop, Color);
+DrawAARoundCorner(ABitmap, Create2DIntVector(Rect.left, Rect.bottom - Radius + 1), Radius, cpLeftBottom, Color);
+DrawAARoundCorner(ABitmap, Create2DIntVector(Rect.Right - Radius + 1, Rect.Bottom - Radius + 1), Radius, cpRightBottom, Color);
+{$ENDIF}
 
 ABitmap.canvas.Pen.color:=Color;
 ABitmap.canvas.pen.style:=psSolid;
@@ -1596,7 +1895,7 @@ RestoreClipRgn(ACanvas.Handle, UseOrgClipRgn, OrgRgn);
 DeleteObject(ClipRgn);
 end;
 
-class procedure TGUITools.DrawMarkedText(ACanvas: TCanvas; x, y: integer; AText,
+class procedure TGUITools.DrawMarkedText(ACanvas: TCanvas; x, y: integer; const AText,
   AMarkPhrase: string; TextColor : TColor; ClipRect: T2DIntRect; CaseSensitive: boolean);
 
 var UseOrgClipRgn: Boolean;
@@ -1619,10 +1918,10 @@ RestoreClipRgn(ACanvas.Handle, UseOrgClipRgn, OrgRgn);
 DeleteObject(ClipRgn);
 end;
 
-class procedure TGUITools.DrawMarkedText(ACanvas: TCanvas; x, y: integer; AText,
+class procedure TGUITools.DrawMarkedText(ACanvas: TCanvas; x, y: integer; const AText,
   AMarkPhrase: string; TextColor : TColor; CaseSensitive : boolean);
 
-var DrawText : string;
+var TextToDraw : string;
     BaseText : string;
     MarkText : string;
     MarkPos: Integer;
@@ -1631,7 +1930,7 @@ var DrawText : string;
     MarkTextLength: Integer;
 
 begin
-DrawText:=AText;
+TextToDraw:=AText;
 if CaseSensitive then
    begin
    BaseText:=AText;
@@ -1656,23 +1955,23 @@ while MarkPos>0 do
          begin
          // Rysowanie tekstu przed wyró¿nionym
          ACanvas.Font.Style:=ACanvas.Font.Style - [fsBold];
-         s:=copy(DrawText, 1, MarkPos-1);
+         s:=copy(TextToDraw, 1, MarkPos-1);
 
          ACanvas.TextOut(x1, y, s);
          inc(x1, ACanvas.TextWidth(s)+1);
 
-         delete(DrawText, 1, MarkPos-1);
+         delete(TextToDraw, 1, MarkPos-1);
          delete(BaseText, 1, MarkPos-1);
          end;
 
       // Rysowanie wyró¿nionego tekstu
       ACanvas.Font.Style:=ACanvas.Font.Style + [fsBold];
-      s:=copy(DrawText, 1, MarkTextLength);
+      s:=copy(TextToDraw, 1, MarkTextLength);
 
       ACanvas.TextOut(x1, y, s);
       inc(x1, ACanvas.TextWidth(s)+1);
 
-      delete(DrawText, 1, MarkTextLength);
+      delete(TextToDraw, 1, MarkTextLength);
       delete(BaseText, 1, MarkTextLength);
 
       MarkPos:=pos(MarkText, BaseText);
@@ -1681,7 +1980,7 @@ while MarkPos>0 do
 if Length(BaseText)>0 then
    begin
    ACanvas.Font.Style:=ACanvas.Font.Style - [fsBold];
-   ACanvas.TextOut(x1, y, DrawText);
+   ACanvas.TextOut(x1, y, TextToDraw);
    end;
 end;
 
@@ -1755,9 +2054,15 @@ if x2<x1 then
    x2:=tmp;
    end;
 
+{$IFDEF EnhancedRecordSupport}
 BitmapRect:=T2DIntRect.create(0, 0, ABitmap.width-1, ABitmap.height-1);
 if not(BitmapRect.IntersectsWith(T2DIntRect.create(x1, y, x2, y), LineRect)) then
    exit;
+{$ELSE}
+BitmapRect.create(0, 0, ABitmap.width-1, ABitmap.height-1);
+if not(BitmapRect.IntersectsWith(Create2DIntRect(x1, y, x2, y), LineRect)) then
+   exit;
+{$ENDIF}
 
 ABitmap.canvas.pen.color:=Color;
 ABitmap.canvas.pen.style:=psSolid;
@@ -1784,9 +2089,15 @@ if x2<x1 then
    x2:=tmp;
    end;
 
+{$IFDEF EnhancedRecordSupport}
 BitmapRect:=T2DIntRect.create(0, 0, ABitmap.width-1, ABitmap.height-1);
 if not(BitmapRect.IntersectsWith(T2DIntRect.create(x1, y, x2, y), OrgLineRect)) then
    exit;
+{$ELSE}
+BitmapRect.create(0, 0, ABitmap.width-1, ABitmap.height-1);
+if not(BitmapRect.IntersectsWith(Create2DIntRect(x1, y, x2, y), OrgLineRect)) then
+   exit;
+{$ENDIF}
 
 if not(OrgLineRect.IntersectsWith(ClipRect, LineRect)) then
    exit;
@@ -2086,8 +2397,8 @@ end;
 
 class procedure TGUITools.FillGradientRectangle(ACanvas: TCanvas; Rect: T2DIntRect; ColorFrom: TColor; ColorTo: TColor; GradientKind: TBackgroundKind);
 var
-  Mesh: array of _GRADIENT_RECT;
-  GradientVertice: array of _TRIVERTEX;
+  Mesh: array of GRADIENTRECT;
+  GradientVertice: array of TRIVERTEX;
   ConcaveColor: TColor;
 begin
   case GradientKind of
@@ -2233,20 +2544,34 @@ case BackgroundKind of
                            TGradientTools.HGradient(ABuffer.canvas, Color1, Color2, Rect.ForWinAPI);
                            end;
      bkConcave: begin
+                {$IFDEF EnhancedRecordSupport}
                 TempRect:=T2DIntRect.create(rect.Left,
                                             rect.top,
                                             rect.right,
                                             rect.Top + (rect.bottom - rect.top) div 4);
+                {$ELSE}
+                TempRect.create(rect.Left,
+                                            rect.top,
+                                            rect.right,
+                                            rect.Top + (rect.bottom - rect.top) div 4);
+                {$ENDIF}
                 TGradientTools.VGradient(ABuffer.Canvas,
                                          Color1,
                                          TColorTools.Shade(Color1, Color2, 20),
                                          TempRect.ForWinAPI
                                          );
 
+                {$IFDEF EnhancedRecordSupport}
                 TempRect:=T2DIntRect.create(rect.Left,
                                             rect.top + (rect.bottom - rect.top) div 4 + 1,
                                             rect.right,
                                             rect.bottom);
+                {$ELSE}
+                TempRect.create(rect.Left,
+                                            rect.top + (rect.bottom - rect.top) div 4 + 1,
+                                            rect.right,
+                                            rect.bottom);
+                {$ENDIF}
                 TGradientTools.VGradient(ABuffer.Canvas,
                                          Color2,
                                          Color1,
@@ -2307,9 +2632,15 @@ if y2<y1 then
    y2:=tmp;
    end;
 
+{$IFDEF EnhancedRecordSupport}
 BitmapRect:=T2DIntRect.create(0, 0, ABitmap.width-1, ABitmap.height-1);
 if not(BitmapRect.IntersectsWith(T2DIntRect.create(x, y1, x, y2), LineRect)) then
    exit;
+{$ELSE}
+BitmapRect.create(0, 0, ABitmap.width-1, ABitmap.height-1);
+if not(BitmapRect.IntersectsWith(Create2DIntRect(x, y1, x, y2), LineRect)) then
+   exit;
+{$ENDIF}
 
 ABitmap.canvas.pen.color:=Color;
 ABitmap.canvas.pen.style:=psSolid;
@@ -2336,9 +2667,15 @@ if y2<y1 then
    y2:=tmp;
    end;
 
+{$IFDEF EnhancedRecordSupport}
 BitmapRect:=T2DIntRect.create(0, 0, ABitmap.width-1, ABitmap.height-1);
 if not(BitmapRect.IntersectsWith(T2DIntRect.create(x, y1, x, y2), OrgLineRect)) then
    exit;
+{$ELSE}
+BitmapRect.create(0, 0, ABitmap.width-1, ABitmap.height-1);
+if not(BitmapRect.IntersectsWith(Create2DIntRect(x, y1, x, y2), OrgLineRect)) then
+   exit;
+{$ENDIF}
 
 if not(OrgLineRect.IntersectsWith(ClipRect, LineRect)) then
    exit;
@@ -2402,10 +2739,17 @@ if (Radius>Rect.width div 2) or (Radius>Rect.height div 2) then
    exit;
 
 // DrawAARoundCorner jest zabezpieczony przed rysowaniem poza obszarem
+{$IFDEF EnhancedRecordSupport}
 DrawAARoundCorner(ACanvas, T2DIntVector.create(Rect.left, Rect.top), Radius, cpLeftTop, Color);
 DrawAARoundCorner(ACanvas, T2DIntVector.create(Rect.right - Radius + 1, Rect.top), Radius, cpRightTop, Color);
 DrawAARoundCorner(ACanvas, T2DIntVector.create(Rect.left, Rect.bottom - Radius + 1), Radius, cpLeftBottom, Color);
 DrawAARoundCorner(ACanvas, T2DIntVector.create(Rect.Right - Radius + 1, Rect.Bottom - Radius + 1), Radius, cpRightBottom, Color);
+{$ELSE}
+DrawAARoundCorner(ACanvas, Create2DIntVector(Rect.left, Rect.top), Radius, cpLeftTop, Color);
+DrawAARoundCorner(ACanvas, Create2DIntVector(Rect.right - Radius + 1, Rect.top), Radius, cpRightTop, Color);
+DrawAARoundCorner(ACanvas, Create2DIntVector(Rect.left, Rect.bottom - Radius + 1), Radius, cpLeftBottom, Color);
+DrawAARoundCorner(ACanvas, Create2DIntVector(Rect.Right - Radius + 1, Rect.Bottom - Radius + 1), Radius, cpRightBottom, Color);
+{$ENDIF}
 
 ACanvas.Pen.color:=Color;
 ACanvas.pen.style:=psSolid;

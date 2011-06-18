@@ -294,6 +294,13 @@ type
   {$endif}
 
   {$ifndef EnhancedRecordSupport}
+
+  function Create2DIntVector(Ax, Ay : Integer): T2DIntVector;
+
+  function Create2DIntPoint(Ax, Ay : Integer): T2DIntPoint;
+
+  function Create2DIntRect(ALeft, ATop, ARight, ABottom: Integer): T2DIntRect;
+
   operator - (Left: T2DIntVector; Right: T2DIntVector): T2DIntVector;
 
   operator - (Left: T2DIntRect; Right: T2DIntVector): T2DIntRect;
@@ -308,6 +315,21 @@ type
 implementation
 
 {$ifndef EnhancedRecordSupport}
+
+function Create2DIntVector(Ax, Ay: Integer): T2DIntVector;
+begin
+  Result.Create(Ax, Ay);
+end;
+
+function Create2DIntPoint(Ax, Ay: Integer): T2DIntPoint;
+begin
+  Result.Create(Ax, Ay);
+end;
+
+function Create2DIntRect(ALeft, ATop, ARight, ABottom: Integer): T2DIntRect;
+begin
+  Result.Create(ALeft, ATop, ARight, ABottom);
+end;
 
 operator - (Left: T2DIntVector; Right: T2DIntVector): T2DIntVector;
 begin
