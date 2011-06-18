@@ -289,11 +289,21 @@ type
   end;
   {$endif}
 
+  operator := (ARect: TRect): T2DIntRect;
+
   operator - (Left: T2DVector; Right: T2DVector): T2DVector;
 
   operator - (Left: T3DVector; Right: T3DVector): T3DVector;
 
 implementation
+
+operator := (ARect: TRect): T2DIntRect;
+begin
+  Result.Left := ARect.Left;
+  Result.Top := ARect.Top;
+  Result.Right := ARect.Right;
+  Result.Bottom := ARect.Bottom;
+end;
 
 operator - (Left: T2DVector; Right: T2DVector): T2DVector;
 begin

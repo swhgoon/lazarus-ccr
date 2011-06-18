@@ -4,10 +4,11 @@ unit SpkGraphTools;
 
 interface
 
-uses Windows, Graphics, Classes, Math, Sysutils, Dialogs,
-     SpkMath;
+uses
+  LCLIntf, Graphics, LCLType, Classes, Math, Sysutils, Dialogs, SpkMath;
 
-const NUM_ZERO = 0.00000001;
+const
+  NUM_ZERO = 0.00000001;
 
 (*******************************************************************************
 *                                                                              *
@@ -15,38 +16,22 @@ const NUM_ZERO = 0.00000001;
 *                                                                              *
 *******************************************************************************)
 
-type // WskaŸnik do tablicy TRGBTriple
-     PRGBTripleArray = ^TRGBTripleArray;
-     // Tablica TRGBTriple (u¿ywana podczas operacji ze ScanLine)
-     TRGBTripleArray = array[word] of TRGBTriple;
+type
+  // WskaŸnik do tablicy TRGBTriple
+  PRGBTripleArray = ^TRGBTripleArray;
+  // Tablica TRGBTriple (u¿ywana podczas operacji ze ScanLine)
+  TRGBTripleArray = array[word] of TRGBTriple;
 
-type THSLTriple = record
-                  H, S, L : extended;
-                  end;
+  THSLTriple = record
+               H, S, L : extended;
+               end;
 
-type // Typ u¿ywany podczas rysowania gradientów
-     TRIVERTEX = packed record
-                        x,y : DWORD;
-                        Red,
-                        Green,
-                        Blue,
-                        Alpha : Word;
-                        end;
-
-type // Rodzaj gradientu
-     TGradientType = (gtVertical, gtHorizontal);
-     // Rodzaj linii gradientowej (miejsce rozmycia)
-     TGradientLineShade = (lsShadeStart, lsShadeEnds, lsShadeCenter, lsShadeEnd);
-     // Rodzaj linii gradientowej (wypuk³oœæ)
-     TGradient3dLine = (glRaised, glLowered);
-
-(*******************************************************************************
-*                                                                              *
-*                      Nag³ówki dla zewnêtrznych funkcji                       *
-*                                                                              *
-*******************************************************************************)
-
-function GradientFill(DC : hDC; pVertex : Pointer; dwNumVertex : DWORD; pMesh : Pointer; dwNumMesh, dwMode: DWORD) : DWord; stdcall; external 'msimg32.dll';
+  // Rodzaj gradientu
+  TGradientType = (gtVertical, gtHorizontal);
+  // Rodzaj linii gradientowej (miejsce rozmycia)
+  TGradientLineShade = (lsShadeStart, lsShadeEnds, lsShadeCenter, lsShadeEnd);
+  // Rodzaj linii gradientowej (wypuk³oœæ)
+  TGradient3dLine = (glRaised, glLowered);
 
 (*******************************************************************************
 *                                                                              *
@@ -54,55 +39,49 @@ function GradientFill(DC : hDC; pVertex : Pointer; dwNumVertex : DWORD; pMesh : 
 *                                                                              *
 *******************************************************************************)
 
-type TColorTools = class(TObject)
-     private
-     protected
-     public
-       class function Darken(kolor : TColor; percentage : byte) : TColor;
-       class function Brighten(kolor : TColor; percentage : byte) : TColor;
-       class function Shade(kol1,kol2 : TColor; percentage : byte) : TColor; overload;
-       class function Shade(kol1,kol2 : TColor; Step : extended) : TColor; overload;
-       class function AddColors(c1, c2 : TColor) : TColor;
-       class function MultiplyColors(c1, c2 : TColor) : TColor;
-       class function MultiplyColor(color : TColor; scalar : integer) : TColor; overload;
-       class function MultiplyColor(color : TColor; scalar : extended) : TColor; overload;
-       class function percent(min, pos, max : integer) : byte;
-       class function RGB2HSL(ARGB : TRGBTriple) : THSLTriple;
-       class function HSL2RGB(AHSL : THSLTriple) : TRGBTriple;
-       class function RgbTripleToColor(ARgbTriple : TRGBTriple) : TColor;
-       class function ColorToRgbTriple(AColor : TColor) : TRGBTriple;
-       class function ColorToGrayscale(AColor : TColor) : TColor;
-     end;
+  TColorTools = class
+  public
+    class function Darken(kolor : TColor; percentage : byte) : TColor;
+    class function Brighten(kolor : TColor; percentage : byte) : TColor;
+    class function Shade(kol1,kol2 : TColor; percentage : byte) : TColor; overload;
+    class function Shade(kol1,kol2 : TColor; Step : extended) : TColor; overload;
+    class function AddColors(c1, c2 : TColor) : TColor;
+    class function MultiplyColors(c1, c2 : TColor) : TColor;
+    class function MultiplyColor(color : TColor; scalar : integer) : TColor; overload;
+    class function MultiplyColor(color : TColor; scalar : extended) : TColor; overload;
+    class function percent(min, pos, max : integer) : byte;
+    class function RGB2HSL(ARGB : TRGBTriple) : THSLTriple;
+    class function HSL2RGB(AHSL : THSLTriple) : TRGBTriple;
+    class function RgbTripleToColor(ARgbTriple : TRGBTriple) : TColor;
+    class function ColorToRgbTriple(AColor : TColor) : TRGBTriple;
+    class function ColorToGrayscale(AColor : TColor) : TColor;
+  end;
 
-type TGradientTools = class(TObject)
-     private
-     protected
-     public
-       class procedure HGradient(canvas : TCanvas; cStart,cEnd : TColor; rect : T2DIntRect); overload;
-       class procedure HGradient(canvas : TCanvas; cStart,cEnd : TColor; p1, p2 : TPoint); overload;
-       class procedure HGradient(canvas : TCanvas; cStart,cEnd : TColor; x1,y1,x2,y2 : integer); overload;
+  TGradientTools = class
+  public
+    class procedure HGradient(canvas : TCanvas; cStart,cEnd : TColor; rect : T2DIntRect); overload;
+    class procedure HGradient(canvas : TCanvas; cStart,cEnd : TColor; p1, p2 : TPoint); overload;
+    class procedure HGradient(canvas : TCanvas; cStart,cEnd : TColor; x1,y1,x2,y2 : integer); overload;
 
-       class procedure VGradient(canvas : TCanvas; cStart,cEnd : TColor; rect : T2DIntRect); overload;
-       class procedure VGradient(canvas : TCanvas; cStart,cEnd : TColor; p1, p2 : TPoint); overload;
-       class procedure VGradient(canvas : TCanvas; cStart,cEnd : TColor; x1,y1,x2,y2 : integer); overload;
+    class procedure VGradient(canvas : TCanvas; cStart,cEnd : TColor; rect : T2DIntRect); overload;
+    class procedure VGradient(canvas : TCanvas; cStart,cEnd : TColor; p1, p2 : TPoint); overload;
+    class procedure VGradient(canvas : TCanvas; cStart,cEnd : TColor; x1,y1,x2,y2 : integer); overload;
 
-       class procedure Gradient(canvas : TCanvas; cStart,cEnd : TColor; rect : T2DIntRect; GradientType : TGradientType); overload;
-       class procedure Gradient(canvas : TCanvas; cStart,cEnd : TColor; p1, p2 : TPoint; GradientType : TGradientType); overload;
-       class procedure Gradient(canvas : TCanvas; cStart,cEnd : TColor; x1,y1,x2,y2 : integer; GradientType : TGradientType); overload;
+    class procedure Gradient(canvas : TCanvas; cStart,cEnd : TColor; rect : T2DIntRect; GradientType : TGradientType); overload;
+    class procedure Gradient(canvas : TCanvas; cStart,cEnd : TColor; p1, p2 : TPoint; GradientType : TGradientType); overload;
+    class procedure Gradient(canvas : TCanvas; cStart,cEnd : TColor; x1,y1,x2,y2 : integer; GradientType : TGradientType); overload;
 
-       class procedure HGradientLine(canvas : TCanvas; cBase, cShade : TColor; x1, x2 , y : integer; ShadeMode : TGradientLineShade);
-       class procedure VGradientLine(canvas : TCanvas; cBase, cShade : TColor; x, y1 , y2 : integer; ShadeMode : TGradientLineShade);
+    class procedure HGradientLine(canvas : TCanvas; cBase, cShade : TColor; x1, x2 , y : integer; ShadeMode : TGradientLineShade);
+    class procedure VGradientLine(canvas : TCanvas; cBase, cShade : TColor; x, y1 , y2 : integer; ShadeMode : TGradientLineShade);
 
-       class procedure HGradient3dLine(canvas : TCanvas; x1,x2,y : integer; ShadeMode : TGradientLineShade; A3dKind : TGradient3dLine = glLowered);
-       class procedure VGradient3dLine(canvas : TCanvas; x,y1,y2 : integer; ShadeMode : TGradientLineShade; A3dKind : TGradient3dLine = glLowered);
-     end;
+    class procedure HGradient3dLine(canvas : TCanvas; x1,x2,y : integer; ShadeMode : TGradientLineShade; A3dKind : TGradient3dLine = glLowered);
+    class procedure VGradient3dLine(canvas : TCanvas; x,y1,y2 : integer; ShadeMode : TGradientLineShade; A3dKind : TGradient3dLine = glLowered);
+  end;
 
-type TTextTools = class
-     private
-     protected
-     public
-       class procedure OutlinedText(Canvas : TCanvas; x, y : integer; text : string);
-     end;
+  TTextTools = class
+  public
+    class procedure OutlinedText(Canvas : TCanvas; x, y : integer; text : string);
+  end;
 
 implementation
 
@@ -333,7 +312,7 @@ end;
 class procedure TGradientTools.HGradient(canvas : TCanvas; cStart,cEnd : TColor; rect : T2DIntRect);
 
 var vert : array[0..1] of TRIVERTEX;
-    gRect : _GRADIENT_RECT;
+    gRect : GRADIENTRECT;
     Col1,Col2 : TColor;
 
 begin
@@ -379,7 +358,7 @@ end;
 class procedure TGradientTools.VGradient(canvas : TCanvas; cStart,cEnd : TColor; rect : T2DIntRect);
 
 var vert : array[0..1] of TRIVERTEX;
-    gRect : _GRADIENT_RECT;
+    gRect : GRADIENTRECT;
     Col1,Col2 : TColor;
 
 begin
