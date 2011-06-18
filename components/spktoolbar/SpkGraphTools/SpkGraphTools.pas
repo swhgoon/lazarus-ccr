@@ -1,5 +1,7 @@
 unit SpkGraphTools;
 
+{$mode ObjFpc}
+{$H+}
 {$DEFINE SPKGRAPHTOOLS}
 
 interface
@@ -80,7 +82,7 @@ type
 
   TTextTools = class
   public
-    class procedure OutlinedText(Canvas : TCanvas; x, y : integer; text : string);
+    class procedure OutlinedText(Canvas : TCanvas; x, y : integer; const text : string);
   end;
 
 implementation
@@ -508,7 +510,7 @@ end;
 
 { TTextTools }
 
-class procedure TTextTools.OutlinedText(Canvas : TCanvas; x, y : integer; text : string);
+class procedure TTextTools.OutlinedText(Canvas : TCanvas; x, y : integer; const text : string);
 
 var TmpColor : TColor;
     TmpBrushStyle : TBrushStyle;
