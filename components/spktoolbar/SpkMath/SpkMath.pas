@@ -309,6 +309,8 @@ type
 
   operator - (Left: T2DIntRect; Right: T2DIntVector): T2DIntRect;
 
+  operator + (Left: T2DIntRect; Right: T2DIntVector): T2DIntRect;
+
   operator := (ARect: TRect): T2DIntRect;
 
   operator - (Left: T2DVector; Right: T2DVector): T2DVector;
@@ -345,6 +347,12 @@ operator - (Left: T2DIntRect; Right: T2DIntVector): T2DIntRect;
 begin
   Result.Create(Left.Left - Right.x, Left.Top - Right.y,
     Left.Right - Right.x, Left.Bottom - Right.y);
+end;
+
+operator + (Left: T2DIntRect; Right: T2DIntVector): T2DIntRect;
+begin
+  Result.Create(Left.left + Right.x, Left.top + Right.y,
+    Left.Right + Right.x, Left.bottom + Right.y);
 end;
 
 operator := (ARect: TRect): T2DIntRect;

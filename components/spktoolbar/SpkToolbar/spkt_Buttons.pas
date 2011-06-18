@@ -1,5 +1,8 @@
 unit spkt_Buttons;
 
+{$mode delphi}
+{.$Define EnhancedRecordSupport}
+
 (*******************************************************************************
 *                                                                              *
 *  Plik: spkt_Buttons.pas                                                      *
@@ -12,7 +15,8 @@ unit spkt_Buttons;
 
 interface
 
-uses Windows, Graphics, Classes, Controls, Menus, ImgList, ActnList, Math,
+uses
+  Graphics, Classes, Controls, Menus, ImgList, ActnList, Math,
      Types, Dialogs,
      SpkGuiTools, SpkGraphTools, SpkMath,
      spkt_Const, spkt_BaseItem, spkt_Exceptions, spkt_Tools;
@@ -31,15 +35,15 @@ type TSpkBaseButton = class;
        FClient : TSpkBaseButton;
 
        procedure AssignClient(AClient: TObject); override;
-       function IsCaptionLinked: Boolean; override;
-       function IsEnabledLinked: Boolean; override;
-       function IsVisibleLinked: Boolean; override;
        function IsOnExecuteLinked: Boolean; override;
        procedure SetCaption(const Value: string); override;
        procedure SetEnabled(Value: Boolean); override;
        procedure SetVisible(Value: Boolean); override;
        procedure SetOnExecute(Value: TNotifyEvent); override;
      public
+      function IsCaptionLinked: Boolean; override;
+      function IsEnabledLinked: Boolean; override;
+      function IsVisibleLinked: Boolean; override;
      end;
 
      TSpkBaseButton = class abstract(TSpkBaseItem)
@@ -154,6 +158,9 @@ type TSpkSmallButton = class(TSpkBaseButton)
 
 implementation
 
+uses
+  LCLType, LCLIntf;
+
 { TSpkButtonActionLink }
 
 procedure TSpkButtonActionLink.AssignClient(AClient: TObject);
@@ -231,13 +238,15 @@ constructor TSpkBaseButton.Create(AOwner : TComponent);
 begin
   inherited Create(AOwner);
   FCaption:='Button';
-  FOnClick:=nil;
-  FActionLink:=nil;
   FButtonState:=bsIdle;
-  FButtonRect:=T2DIntRect.Create(0, 0, 1, 1);
   FButtonKind:=bkButton;
+  {$IFDEF EnhancedRecordSupport}
+  FButtonRect:=T2DIntRect.Create(0, 0, 1, 1);
   FDropdownRect:=T2DIntRect.Create(0, 0, 1, 1);
-  FDropdownMenu:=nil;
+  {$ELSE}
+  FButtonRect.Create(0, 0, 1, 1);
+  FDropdownRect.Create(0, 0, 1, 1);
+  {$ENDIF}
   FMouseHoverElement:=beNone;
   FMouseActiveElement:=beNone;
 end;
@@ -360,10 +369,18 @@ var NewMouseHoverElement : TSpkMouseButtonElement;
 begin
 if FEnabled then
    begin
+   {$IFDEF EnhancedRecordSupport}
    if FButtonRect.Contains(T2DIntPoint.Create(X,Y)) then
+   {$ELSE}
+   if FButtonRect.Contains(X,Y) then
+   {$ENDIF}
       NewMouseHoverElement:=beButton else
    if (FButtonKind = bkButtonDropdown) and
+      {$IFDEF EnhancedRecordSupport}
       (FDropdownRect.Contains(T2DIntPoint.Create(X,Y))) then
+      {$ELSE}
+      (FDropdownRect.Contains(X,Y)) then
+      {$ENDIF}
       NewMouseHoverElement:=beDropdown else
       NewMouseHoverElement:=beNone;
 
@@ -612,6 +629,7 @@ end;
 
 procedure TSpkLargeButton.CalcRects;
 begin
+{$IFDEF EnhancedRecordSupport}
 if FButtonKind = bkButtonDropdown then
    begin
    FButtonRect:=T2DIntRect.Create(FRect.Left, FRect.Top, FRect.Right, FRect.Bottom - LARGEBUTTON_DROPDOWN_FIELD_SIZE);
@@ -622,6 +640,18 @@ else
    FButtonRect:=FRect;
    FDropdownRect:=T2DIntRect.Create(0, 0, 0, 0);
    end;
+{$ELSE}
+if FButtonKind = bkButtonDropdown then
+   begin
+   FButtonRect.Create(FRect.Left, FRect.Top, FRect.Right, FRect.Bottom - LARGEBUTTON_DROPDOWN_FIELD_SIZE);
+   FDropdownRect.Create(FRect.Left, FRect.Bottom - LARGEBUTTON_DROPDOWN_FIELD_SIZE + 1, FRect.Right, FRect.Bottom);
+   end
+else
+   begin
+   FButtonRect:=FRect;
+   FDropdownRect.Create(0, 0, 0, 0);
+   end;
+{$ENDIF}
 end;
 
 constructor TSpkLargeButton.Create(AOwner: TComponent);
@@ -677,10 +707,17 @@ if FButtonKind in [bkButton, bkDropdown] then
       begin
       {$REGION 'T³o dla HotTrack'}
       TGuiTools.DrawRoundRect(ABuffer.Canvas,
+                              {$IFDEF EnhancedRecordSupport}
                               T2DIntRect.Create(FButtonRect.left,
                                                 FButtonRect.Top,
                                                 FButtonRect.Right,
                                                 FButtonRect.Bottom),
+                              {$ELSE}
+                              Create2DIntRect(FButtonRect.left,
+                                                FButtonRect.Top,
+                                                FButtonRect.Right,
+                                                FButtonRect.Bottom),
+                              {$ENDIF}
                               LARGEBUTTON_RADIUS,
                               FAppearance.Element.HotTrackGradientFromColor,
                               FAppearance.Element.HotTrackGradientToColor,
@@ -688,10 +725,17 @@ if FButtonKind in [bkButton, bkDropdown] then
                               ClipRect);
 
       TGuiTools.DrawAARoundFrame(ABuffer,
+                                 {$IFDEF EnhancedRecordSupport}
                                  T2DIntRect.Create(FButtonRect.left+1,
                                                    FButtonRect.top+1,
                                                    FButtonRect.right-1,
                                                    FButtonRect.Bottom-1),
+                                 {$ELSE}
+                                 Create2DIntRect(FButtonRect.left+1,
+                                                   FButtonRect.top+1,
+                                                   FButtonRect.right-1,
+                                                   FButtonRect.Bottom-1),
+                                 {$ENDIF}
                                  LARGEBUTTON_RADIUS,
                                  FAppearance.Element.HotTrackInnerLightColor,
                                  ClipRect);
@@ -706,10 +750,17 @@ if FButtonKind in [bkButton, bkDropdown] then
       begin
       {$REGION 'T³o dla Pressed'}
       TGuiTools.DrawRoundRect(ABuffer.Canvas,
+                              {$IFDEF EnhancedRecordSupport}
                               T2DIntRect.Create(FButtonRect.left,
                                                 FButtonRect.Top,
                                                 FButtonRect.Right,
                                                 FButtonRect.Bottom),
+                              {$ELSE}
+                              Create2DIntRect(FButtonRect.left,
+                                                FButtonRect.Top,
+                                                FButtonRect.Right,
+                                                FButtonRect.Bottom),
+                              {$ENDIF}
                               LARGEBUTTON_RADIUS,
                               FAppearance.Element.ActiveGradientFromColor,
                               FAppearance.Element.ActiveGradientToColor,
@@ -718,10 +769,17 @@ if FButtonKind in [bkButton, bkDropdown] then
 
 
       TGuiTools.DrawAARoundFrame(ABuffer,
+                                 {$IFDEF EnhancedRecordSupport}
                                  T2DIntRect.Create(FButtonRect.left+1,
                                                    FButtonRect.top+1,
                                                    FButtonRect.right-1,
                                                    FButtonRect.Bottom-1),
+                                 {$ELSE}
+                                 Create2DIntRect(FButtonRect.left+1,
+                                                   FButtonRect.top+1,
+                                                   FButtonRect.right-1,
+                                                   FButtonRect.Bottom-1),
+                                 {$ENDIF}
                                  LARGEBUTTON_RADIUS,
                                  FAppearance.Element.ActiveInnerLightColor,
                                  ClipRect);
@@ -748,7 +806,11 @@ if FButtonKind in [bkButton, bkDropdown] then
          TGuiTools.DrawImage(ABuffer.Canvas,
                              FDisabledLargeImages,
                              FLargeImageIndex,
+                             {$IFDEF EnhancedRecordSupport}
                              T2DIntPoint.Create(x, y),
+                             {$ELSE}
+                             Create2DIntPoint(x, y),
+                             {$ENDIF}
                              ClipRect);
          end else
       if (FLargeImageIndex>=0) and
@@ -761,7 +823,11 @@ if FButtonKind in [bkButton, bkDropdown] then
          TGuiTools.DrawDisabledImage(ABuffer.Canvas,
                                      FLargeImages,
                                      FLargeImageIndex,
+                                     {$IFDEF EnhancedRecordSupport}
                                      T2DIntPoint.Create(x, y),
+                                     {$ELSE}
+                                     Create2DIntPoint(x, y),
+                                     {$ENDIF}
                                      ClipRect);
          end;
       {$ENDREGION}
@@ -779,7 +845,11 @@ if FButtonKind in [bkButton, bkDropdown] then
          TGUITools.DrawImage(ABuffer.Canvas,
                              FLargeImages,
                              FLargeImageIndex,
+                             {$IFDEF EnhancedRecordSupport}
                              T2DIntPoint.Create(x,y),
+                             {$ELSE}
+                             Create2DIntPoint(x,y),
+                             {$ENDIF}
                              ClipRect);
          end;
       {$ENDREGION}
@@ -970,13 +1040,21 @@ else
       {$REGION 'Ramka przycisku'}
       // Wewnêtrzna ramka
       TGuiTools.DrawAARoundCorner(ABuffer,
+                                  {$IFDEF EnhancedRecordSupport}
                                   T2DIntPoint.Create(FButtonRect.Left + 1, FButtonRect.Top + 1),
+                                  {$ELSE}
+                                  Create2DIntPoint(FButtonRect.Left + 1, FButtonRect.Top + 1),
+                                  {$ENDIF}
                                   LARGEBUTTON_RADIUS,
                                   cpLeftTop,
                                   InnerLightColor,
                                   ClipRect);
       TGuiTools.DrawAARoundCorner(ABuffer,
+                                  {$IFDEF EnhancedRecordSupport}
                                   T2DIntPoint.Create(FButtonRect.Right - LARGEBUTTON_RADIUS, FButtonRect.Top + 1),
+                                  {$ELSE}
+                                  Create2DIntPoint(FButtonRect.Right - LARGEBUTTON_RADIUS, FButtonRect.Top + 1),
+                                  {$ENDIF}
                                   LARGEBUTTON_RADIUS,
                                   cpRightTop,
                                   InnerLightColor,
@@ -1016,13 +1094,21 @@ else
 
       // Zewnêtrzna ramka
       TGuiTools.DrawAARoundCorner(ABuffer,
+                                  {$IFDEF EnhancedRecordSupport}
                                   T2DIntPoint.Create(FButtonRect.Left, FButtonRect.Top),
+                                  {$ELSE}
+                                  Create2DIntPoint(FButtonRect.Left, FButtonRect.Top),
+                                  {$ENDIF}
                                   LARGEBUTTON_RADIUS,
                                   cpLeftTop,
                                   FrameColor,
                                   ClipRect);
       TGuiTools.DrawAARoundCorner(ABuffer,
+                                  {$IFDEF EnhancedRecordSupport}
                                   T2DIntPoint.Create(FButtonRect.Right - LARGEBUTTON_RADIUS + 1, FButtonRect.Top),
+                                  {$ELSE}
+                                  Create2DIntPoint(FButtonRect.Right - LARGEBUTTON_RADIUS + 1, FButtonRect.Top),
+                                  {$ENDIF}
                                   LARGEBUTTON_RADIUS,
                                   cpRightTop,
                                   FrameColor,
@@ -1120,12 +1206,20 @@ else
       // Wewnêtrzna ramka
 
       TGuiTools.DrawAARoundCorner(ABuffer,
+                                  {$IFDEF EnhancedRecordSupport}
                                   T2DIntPoint.Create(FDropdownRect.Left + 1, FDropdownRect.Bottom - LARGEBUTTON_RADIUS),
+                                  {$ELSE}
+                                  Create2DIntPoint(FDropdownRect.Left + 1, FDropdownRect.Bottom - LARGEBUTTON_RADIUS),
+                                  {$ENDIF}
                                   LARGEBUTTON_RADIUS,
                                   cpLeftBottom,
                                   InnerLightColor);
       TGuiTools.DrawAARoundCorner(ABuffer,
+                                  {$IFDEF EnhancedRecordSupport}
                                   T2DIntPoint.Create(FDropdownRect.right - LARGEBUTTON_RADIUS, FDropdownRect.Bottom - LARGEBUTTON_RADIUS),
+                                  {$ELSE}
+                                  Create2DIntPoint(FDropdownRect.right - LARGEBUTTON_RADIUS, FDropdownRect.Bottom - LARGEBUTTON_RADIUS),
+                                  {$ENDIF}
                                   LARGEBUTTON_RADIUS,
                                   cpRightBottom,
                                   InnerLightColor);
@@ -1166,12 +1260,20 @@ else
 
       // Zewnêtrzna ramka
       TGuiTools.DrawAARoundCorner(ABuffer,
+                                  {$IFDEF EnhancedRecordSupport}
                                   T2DIntPoint.Create(FDropdownRect.Left, FDropdownRect.Bottom - LARGEBUTTON_RADIUS + 1),
+                                  {$ELSE}
+                                  Create2DIntPoint(FDropdownRect.Left, FDropdownRect.Bottom - LARGEBUTTON_RADIUS + 1),
+                                  {$ENDIF}
                                   LARGEBUTTON_RADIUS,
                                   cpLeftBottom,
                                   FrameColor);
       TGuiTools.DrawAARoundCorner(ABuffer,
+                                  {$IFDEF EnhancedRecordSupport}
                                   T2DIntPoint.Create(FDropdownRect.right - LARGEBUTTON_RADIUS + 1, FDropdownRect.Bottom - LARGEBUTTON_RADIUS + 1),
+                                  {$ELSE}
+                                  Create2DIntPoint(FDropdownRect.right - LARGEBUTTON_RADIUS + 1, FDropdownRect.Bottom - LARGEBUTTON_RADIUS + 1),
+                                  {$ENDIF}
                                   LARGEBUTTON_RADIUS,
                                   cpRightBottom,
                                   FrameColor);
@@ -1213,7 +1315,11 @@ else
          TGuiTools.DrawImage(ABuffer.Canvas,
                              FDisabledLargeImages,
                              FLargeImageIndex,
+                             {$IFDEF EnhancedRecordSupport}
                              T2DIntPoint.Create(x, y),
+                             {$ELSE}
+                             Create2DIntPoint(x, y),
+                             {$ENDIF}
                              ClipRect);
          end else
       if (FLargeImageIndex>=0) and
@@ -1226,7 +1332,11 @@ else
          TGuiTools.DrawDisabledImage(ABuffer.Canvas,
                                      FLargeImages,
                                      FLargeImageIndex,
+                                     {$IFDEF EnhancedRecordSupport}
                                      T2DIntPoint.Create(x, y),
+                                     {$ELSE}
+                                     Create2DIntPoint(x, y),
+                                     {$ENDIF}
                                      ClipRect);
          end;
       {$ENDREGION}
@@ -1244,7 +1354,11 @@ else
          TGUITools.DrawImage(ABuffer.Canvas,
                              FLargeImages,
                              FLargeImageIndex,
+                             {$IFDEF EnhancedRecordSupport}
                              T2DIntPoint.Create(x,y),
+                             {$ELSE}
+                             Create2DIntPoint(x,y),
+                             {$ENDIF}
                              ClipRect);
          end;
       {$ENDREGION}
@@ -1365,11 +1479,21 @@ end;
 
 function TSpkLargeButton.GetDropdownPoint: T2DIntPoint;
 begin
-case FButtonKind of
-     bkDropdown: result:=T2DIntPoint.Create(FButtonRect.left, FButtonRect.Bottom+1);
-     bkButtonDropdown: result:=T2DIntPoint.Create(FDropdownRect.left, FDropdownRect.Bottom+1);
-else result:=T2DIntPoint.Create(0,0);
-end;
+  {$IFDEF EnhancedRecordSupport}
+  case FButtonKind of
+    bkDropdown: result:=T2DIntPoint.Create(FButtonRect.left, FButtonRect.Bottom+1);
+    bkButtonDropdown: result:=T2DIntPoint.Create(FDropdownRect.left, FDropdownRect.Bottom+1);
+  else
+    result:=T2DIntPoint.Create(0,0);
+  end;
+  {$ELSE}
+  case FButtonKind of
+    bkDropdown: result.Create(FButtonRect.left, FButtonRect.Bottom+1);
+    bkButtonDropdown: result.Create(FDropdownRect.left, FDropdownRect.Bottom+1);
+  else
+    result.Create(0,0);
+  end;
+  {$ENDIF}
 end;
 
 function TSpkLargeButton.GetGroupBehaviour: TSpkItemGroupBehaviour;
@@ -1444,7 +1568,11 @@ var RectVector : T2DIntVector;
 
 begin
 ConstructRects(FButtonRect, FDropdownRect);
+{$IFDEF EnhancedRecordSupport}
 RectVector:=T2DIntVector.Create(FRect.Left, FRect.Top);
+{$ELSE}
+RectVector.Create(FRect.Left, FRect.Top);
+{$ENDIF}
 FButtonRect:=FButtonRect + RectVector;
 FDropdownRect:=FDropdownRect + RectVector;
 end;
@@ -1458,8 +1586,13 @@ var BtnWidth : integer;
   AdditionalPadding: Boolean;
 
 begin
+{$IFDEF EnhancedRecordSupport}
 BtnRect:=T2DIntRect.Create(0, 0, 0, 0);
 DropRect:=T2DIntRect.Create(0, 0, 0, 0);
+{$ELSE}
+BtnRect.Create(0, 0, 0, 0);
+DropRect.Create(0, 0, 0, 0);
+{$ENDIF}
 
 if not(assigned(FToolbarDispatch)) then
    exit;
@@ -1512,8 +1645,13 @@ case FButtonKind of
                   BtnWidth:=BtnWidth + SMALLBUTTON_HALF_BORDER_WIDTH else
                   BtnWidth:=BtnWidth + SMALLBUTTON_BORDER_WIDTH;
 
+               {$IFDEF EnhancedRecordSupport}
                BtnRect:=T2DIntRect.Create(0, 0, BtnWidth - 1, PANE_ROW_HEIGHT - 1);
                DropRect:=T2DIntRect.Create(0, 0, 0, 0);
+               {$ELSE}
+               BtnRect.Create(0, 0, BtnWidth - 1, PANE_ROW_HEIGHT - 1);
+               DropRect.Create(0, 0, 0, 0);
+               {$ENDIF}
                end;
      bkButtonDropdown: begin
                        // Lewa krawêdŸ przycisku
@@ -1532,11 +1670,17 @@ case FButtonKind of
                           DropdownWidth:=DropdownWidth + SMALLBUTTON_HALF_BORDER_WIDTH else
                           DropdownWidth:=DropdownWidth + SMALLBUTTON_BORDER_WIDTH;
 
+                       {$IFDEF EnhancedRecordSupport}
                        BtnRect:=T2DIntRect.Create(0, 0, BtnWidth - 1, PANE_ROW_HEIGHT - 1);
                        DropRect:=T2DIntRect.Create(BtnRect.right+1,
                                                    0,
                                                    BtnRect.right+DropdownWidth,
                                                    PANE_ROW_HEIGHT - 1);
+                       {$ELSE}
+                       BtnRect.Create(0, 0, BtnWidth - 1, PANE_ROW_HEIGHT - 1);
+                       DropRect.Create(BtnRect.right+1,  0,
+                           BtnRect.right+DropdownWidth, PANE_ROW_HEIGHT - 1);
+                       {$ENDIF}
                        end;
      bkDropdown: begin
                  // Lewa krawêdŸ przycisku
@@ -1553,8 +1697,13 @@ case FButtonKind of
                  // dla kompatybilnoœci wymiarów z dkButtonDropdown
                  BtnWidth:=BtnWidth + SMALLBUTTON_BORDER_WIDTH + SMALLBUTTON_DROPDOWN_WIDTH;
 
+                 {$IFDEF EnhancedRecordSupport}
                  BtnRect:=T2DIntRect.Create(0, 0, BtnWidth - 1, PANE_ROW_HEIGHT - 1);
                  DropRect:=T2DIntRect.Create(0, 0, 0, 0);
+                 {$ELSE}
+                 BtnRect.Create(0, 0, BtnWidth - 1, PANE_ROW_HEIGHT - 1);
+                 DropRect.Create(0, 0, 0, 0);
+                 {$ENDIF}
                  end;
 end;
 end;
@@ -1677,7 +1826,11 @@ if not(FEnabled) then
       TGuiTools.DrawImage(ABuffer.Canvas,
                           FDisabledImages,
                           FImageIndex,
+                          {$IFDEF EnhancedRecordSupport}
                           T2DIntPoint.Create(x, y),
+                          {$ELSE}
+                          Create2DIntPoint(x, y),
+                          {$ENDIF}
                           ClipRect);
       end else
    if (FImageIndex>=0) and
@@ -1692,7 +1845,11 @@ if not(FEnabled) then
       TGuiTools.DrawDisabledImage(ABuffer.Canvas,
                                   FImages,
                                   FImageIndex,
+                                  {$IFDEF EnhancedRecordSupport}
                                   T2DIntPoint.Create(x, y),
+                                  {$ELSE}
+                                  Create2DIntPoint(x, y),
+                                  {$ENDIF}
                                   ClipRect);
       end;
    {$ENDREGION}
@@ -1712,7 +1869,11 @@ else
       TGUITools.DrawImage(ABuffer.Canvas,
                           FImages,
                           FImageIndex,
+                          {$IFDEF EnhancedRecordSupport}
                           T2DIntPoint.Create(x,y),
+                          {$ELSE}
+                          Create2DIntPoint(x,y),
+                          {$ENDIF}
                           ClipRect);
       end;
    {$ENDREGION}
@@ -1928,9 +2089,15 @@ end;
 
 function TSpkSmallButton.GetDropdownPoint: T2DIntPoint;
 begin
+{$IFDEF EnhancedRecordSupport}
 if FButtonKind in [bkButtonDropdown, bkDropdown] then
    result:=T2DIntPoint.Create(FButtonRect.left, FButtonRect.bottom+1) else
    result:=T2DIntPoint.Create(0,0);
+{$ELSE}
+if FButtonKind in [bkButtonDropdown, bkDropdown] then
+   result.Create(FButtonRect.left, FButtonRect.bottom+1) else
+   result.Create(0,0);
+{$ENDIF}
 end;
 
 function TSpkSmallButton.GetGroupBehaviour: TSpkItemGroupBehaviour;
