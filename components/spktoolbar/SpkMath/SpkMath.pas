@@ -893,8 +893,8 @@ end;
 function T3DVector.Scale(dx, dy, dz: extended): T3DVector;
 begin
   result.x:=self.x * dx;
-  result.y:=self.y * dx;
-  result.z:=self.z * dx;
+  result.y:=self.y * dy;
+  result.z:=self.z * dz;
 end;
 
 function T3DVector.UpNormalTo(vector: T3DVector): T3DVector;
@@ -1185,8 +1185,8 @@ procedure T2DIntRect.Move(dx, dy: integer);
 begin
   inc(left, dx);
   inc(right, dx);
-  inc(top, dx);
-  inc(bottom, dx);
+  inc(top, dy);
+  inc(bottom, dy);
 end;
 
 procedure T2DIntRect.Move(AVector: T2DIntVector);
