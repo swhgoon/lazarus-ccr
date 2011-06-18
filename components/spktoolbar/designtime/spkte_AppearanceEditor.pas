@@ -1,9 +1,11 @@
 unit spkte_AppearanceEditor;
 
+{$MODE Delphi}
+
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  LCLIntf, LCLType, LMessages, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, StdCtrls, ComCtrls,
   SpkGUITools, SpkXMLParser,
   spkt_Buttons, spkt_BaseItem, spkt_Pane, spkt_Types, spkt_Tab, SpkToolbar,
@@ -179,7 +181,7 @@ var
 
 implementation
 
-{$R *.dfm}
+{$R *.lfm}
 
 { TForm3 }
 

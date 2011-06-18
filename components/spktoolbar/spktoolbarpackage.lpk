@@ -8,7 +8,7 @@
       <Version Value="10"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <OtherUnitFiles Value="SpkToolbar;SpkMath;SpkGUITools;SpkGraphTools;SpkXML"/>
+        <OtherUnitFiles Value="SpkToolbar;SpkMath;SpkGUITools;SpkGraphTools;SpkXML;designtime"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <CodeGeneration>
@@ -26,7 +26,7 @@
     <Description Value="Ribbon like toolbar"/>
     <License Value="Modified LGPL"/>
     <Version Minor="1"/>
-    <Files Count="18">
+    <Files Count="24">
       <Item1>
         <Filename Value="SpkToolbar\spkt_Appearance.pas"/>
         <UnitName Value="spkt_Appearance"/>
@@ -99,12 +99,40 @@
         <Filename Value="SpkXML\SpkXMLTools.pas"/>
         <UnitName Value="SpkXMLTools"/>
       </Item18>
+      <Item19>
+        <Filename Value="registerspktoolbar.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="RegisterSpkToolbar"/>
+      </Item19>
+      <Item20>
+        <Filename Value="designtime\SpkToolbarEditor.pas"/>
+        <UnitName Value="SpkToolbarEditor"/>
+      </Item20>
+      <Item21>
+        <Filename Value="designtime\spkte_AppearanceEditor.lfm"/>
+        <Type Value="LFM"/>
+      </Item21>
+      <Item22>
+        <Filename Value="designtime\spkte_AppearanceEditor.pas"/>
+        <UnitName Value="spkte_AppearanceEditor"/>
+      </Item22>
+      <Item23>
+        <Filename Value="designtime\spkte_EditWindow.lfm"/>
+        <Type Value="LFM"/>
+      </Item23>
+      <Item24>
+        <Filename Value="designtime\spkte_EditWindow.pas"/>
+        <UnitName Value="spkte_EditWindow"/>
+      </Item24>
     </Files>
     <Type Value="RunAndDesignTime"/>
-    <RequiredPkgs Count="1">
+    <RequiredPkgs Count="2">
       <Item1>
-        <PackageName Value="LCL"/>
+        <PackageName Value="IDEIntf"/>
       </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

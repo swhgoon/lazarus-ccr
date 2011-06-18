@@ -10,10 +10,8 @@ object frmAppearanceEditWindow: TfrmAppearanceEditWindow
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   OnShow = FormShow
   PixelsPerInch = 96
-  TextHeight = 13
   object gbPreview: TGroupBox
     AlignWithMargins = True
     Left = 3
@@ -24,9 +22,8 @@ object frmAppearanceEditWindow: TfrmAppearanceEditWindow
     Caption = ' Preview '
     TabOrder = 0
     object tbPreview: TSpkToolbar
-      AlignWithMargins = True
-      Left = 5
-      Top = 18
+      Left = 3
+      Top = 4
       Width = 549
       Color = clBtnFace
       Appearance.Tab.TabHeaderFont.Charset = DEFAULT_CHARSET
@@ -281,10 +278,6 @@ object frmAppearanceEditWindow: TfrmAppearanceEditWindow
     TabOrder = 1
     object TabSheet1: TTabSheet
       Caption = 'Tab'
-      ExplicitLeft = 3
-      ExplicitTop = 28
-      ExplicitWidth = 545
-      ExplicitHeight = 281
       object Label2: TLabel
         Left = 12
         Top = 43
@@ -416,10 +409,6 @@ object frmAppearanceEditWindow: TfrmAppearanceEditWindow
     object TabSheet2: TTabSheet
       Caption = 'Pane'
       ImageIndex = 1
-      ExplicitLeft = 5
-      ExplicitTop = 28
-      ExplicitWidth = 545
-      ExplicitHeight = 281
       object Label8: TLabel
         Left = 12
         Top = 40
@@ -588,10 +577,6 @@ object frmAppearanceEditWindow: TfrmAppearanceEditWindow
     object TabSheet3: TTabSheet
       Caption = 'Item'
       ImageIndex = 2
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 273
-      ExplicitHeight = 373
       object sItemRectangle: TShape
         Left = 112
         Top = 26

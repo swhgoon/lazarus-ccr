@@ -10,12 +10,14 @@ uses
   spkt_Appearance, spkt_BaseItem, spkt_Buttons, spkt_Const, spkt_Dispatch, 
   spkt_Exceptions, spkt_Items, spkt_Pane, spkt_Tab, spkt_Tools, spkt_Types, 
   SpkToolbar, SpkMath, SpkGUITools, SpkGraphTools, SpkXMLIni, SpkXMLParser, 
-  SpkXMLTools, LazarusPackageIntf;
+  SpkXMLTools, RegisterSpkToolbar, SpkToolbarEditor, spkte_AppearanceEditor, 
+  spkte_EditWindow, LazarusPackageIntf;
 
 implementation
 
 procedure Register; 
 begin
+  RegisterUnit('RegisterSpkToolbar', @RegisterSpkToolbar.Register); 
 end; 
 
 initialization

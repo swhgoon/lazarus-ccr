@@ -1,12 +1,14 @@
 unit spkte_EditWindow;
 
+{$MODE Delphi}
+
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, DesignIntf, DesignEditors, StdCtrls, ImgList, ComCtrls, ToolWin,
+  LCLIntf, LCLType, LMessages, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, {DesignIntf, DesignEditors,} StdCtrls, ImgList, ComCtrls, ToolWin,
   ActnList, Menus,
-  spkToolbar, spkt_Tab, spkt_Pane, spkt_BaseItem, spkt_Buttons, spkt_Types;
+  SpkToolbar, spkt_Tab, spkt_Pane, spkt_BaseItem, spkt_Buttons, spkt_Types;
 
 type TCreateItemFunc = function(Pane : TSpkPane) : TSpkBaseItem;
 
@@ -76,7 +78,7 @@ type
     { Private declarations }
   protected
     FToolbar : TSpkToolbar;
-    FDesigner : IDesigner;
+    FDesigner : TIDesigner;
 
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
@@ -99,7 +101,7 @@ type
     procedure BuildTreeData;
     procedure RefreshNames;
 
-    procedure SetData(AToolbar : TSpkToolbar; ADesigner : IDesigner);
+    procedure SetData(AToolbar : TSpkToolbar; ADesigner : TIDesigner);
 
     property Toolbar : TSpkToolbar read FToolbar;
   end;
@@ -109,7 +111,7 @@ var
 
 implementation
 
-{$R *.dfm}
+{$R *.lfm}
 
 { TfrmEditWindow }
 
@@ -135,7 +137,6 @@ var Obj : TObject;
     NewNode : TTreeNode;
     Tab : TSpkTab;
     Pane : TSpkPane;
-    DesignObj : IDesignObject;
 
 begin
 if (FToolbar=nil) or (FDesigner=nil) then
@@ -159,8 +160,8 @@ if Obj is TSpkTab then
    NewNode.Selected:=true;
    CheckActionsAvailability;
 
-   DesignObj:=PersistentToDesignObject(Pane);
-   FDesigner.SelectComponent(DesignObj);
+   //DesignObj:=PersistentToDesignObject(Pane);
+   FDesigner.SelectOnlyThisComponent(Pane);
    end else
 if Obj is TSpkPane then
    begin
@@ -176,8 +177,8 @@ if Obj is TSpkPane then
    NewNode.Selected:=true;
    CheckActionsAvailability;
 
-   DesignObj:=PersistentToDesignObject(Pane);
-   FDesigner.SelectComponent(DesignObj);
+   //DesignObj:=PersistentToDesignObject(Pane);
+   FDesigner.SelectOnlyThisComponent(Pane);
    end else
 if Obj is TSpkBaseItem then
    begin
@@ -193,8 +194,8 @@ if Obj is TSpkBaseItem then
    NewNode.Selected:=true;
    CheckActionsAvailability;
 
-   DesignObj:=PersistentToDesignObject(Pane);
-   FDesigner.SelectComponent(DesignObj);
+   //DesignObj:=PersistentToDesignObject(Pane);
+   FDesigner.SelectOnlyThisComponent(Pane);
    end else
        raise exception.create('TfrmEditWindow.aAddPaneExecute: Nieprawid³owy obiekt podwieszony pod ga³êzi¹!');
 end;
@@ -218,7 +219,6 @@ procedure TfrmEditWindow.aAddTabExecute(Sender: TObject);
 
 var Node : TTreeNode;
     Tab : TSpkTab;
-    DesignObj : IDesignObject;
 
 begin
 if (FToolbar=nil) or (FDesigner=nil) then
@@ -232,8 +232,8 @@ Node.SelectedIndex:=0;
 Node.Selected:=true;
 CheckActionsAvailability;
 
-DesignObj:=PersistentToDesignObject(Tab);
-FDesigner.SelectComponent(DesignObj);
+//DesignObj:=PersistentToDesignObject(Tab);
+FDesigner.SelectOnlyThisComponent(Tab);
 end;
 
 procedure TfrmEditWindow.AddItem(CreateItemFunc : TCreateItemFunc);
@@ -243,7 +243,6 @@ var Node : TTreeNode;
     Pane: TSpkPane;
     Item: TSpkBaseItem;
     NewNode: TTreeNode;
-    DesignObj: IDesignObject;
     s: string;
 
 begin
@@ -269,8 +268,8 @@ if Obj is TSpkPane then
    NewNode.Selected:=true;
    CheckActionsAvailability;
 
-   DesignObj:=PersistentToDesignObject(Item);
-   FDesigner.SelectComponent(DesignObj);
+   //DesignObj:=PersistentToDesignObject(Item);
+   FDesigner.SelectOnlyThisComponent(Item);
    end else
 if Obj is TSpkBaseItem then
    begin
@@ -287,8 +286,8 @@ if Obj is TSpkBaseItem then
    NewNode.Selected:=true;
    CheckActionsAvailability;
 
-   DesignObj:=PersistentToDesignObject(Item);
-   FDesigner.SelectComponent(DesignObj);
+   //DesignObj:=PersistentToDesignObject(Item);
+   FDesigner.SelectOnlyThisComponent(Item);
    end else
        raise exception.create('TfrmEditWindow.AddItem: Nieprawid³owy obiekt podwieszony pod ga³êzi¹!');
 end;
@@ -715,7 +714,7 @@ if Item is TSpkBaseButton then
    TSpkBaseButton(Item).Caption:=Value;
 end;
 
-procedure TfrmEditWindow.SetData(AToolbar: TSpkToolbar; ADesigner: IDesigner);
+procedure TfrmEditWindow.SetData(AToolbar: TSpkToolbar; ADesigner: TIDesigner);
 
 begin
 if FToolbar<>nil then
@@ -798,7 +797,7 @@ var
   Tab: TSpkTab;
   index: Integer;
   NextNode: TTreeNode;
-  DesignObj: IDesignObject;
+  //DesignObj: IDesignObject;
 begin
 if (FToolbar=nil) or (FDesigner=nil) then
    exit;
@@ -831,8 +830,8 @@ if (FToolbar=nil) or (FDesigner=nil) then
     // Object Inspectorze - wyœwietlamy wiêc samego toolbara (w przeciwnym
     // wypadku IDE bêdzie próbowa³o wyœwietliæ w Object Inspectorze w³aœciwoœci
     // w³aœnie zwolnionego obiektu, co skoñczy siê, powiedzmy, niezbyt mi³o)
-    DesignObj := PersistentToDesignObject(FToolbar);
-    FDesigner.SelectComponent(DesignObj);
+    //DesignObj := PersistentToDesignObject(FToolbar);
+    FDesigner.SelectOnlyThisComponent(FToolbar);
     CheckActionsAvailability;
   end;
 end;
@@ -940,7 +939,7 @@ var Obj : TObject;
     Tab : TSpkTab;
     Pane : TSpkPane;
     Item : TSpkBaseItem;
-    DesignObj : IDesignObject;
+    //DesignObj : IDesignObject;
     index : integer;
 
 begin
@@ -957,8 +956,8 @@ if assigned(Node) then
    if Obj is TSpkTab then
       begin
       Tab:=Obj as TSpkTab;
-      DesignObj:=PersistentToDesignObject(Tab);
-      FDesigner.SelectComponent(DesignObj);
+      //DesignObj:=PersistentToDesignObject(Tab);
+      FDesigner.SelectOnlyThisComponent(Tab);
 
       index:=FToolbar.Tabs.IndexOf(Tab);
       if index=-1 then
@@ -968,8 +967,8 @@ if assigned(Node) then
    if Obj is TSpkPane then
       begin
       Pane:=Obj as TSpkPane;
-      DesignObj:=PersistentToDesignObject(Pane);
-      FDesigner.SelectComponent(DesignObj);
+      //DesignObj:=PersistentToDesignObject(Pane);
+      FDesigner.SelectOnlyThisComponent(Pane);
 
       if not(CheckValidPaneNode(Node)) then
          raise exception.create('TfrmEditWindow.tvStructureChange: Uszkodzona struktura drzewa!');
@@ -984,8 +983,8 @@ if assigned(Node) then
    if Obj is TSpkBaseItem then
       begin
       Item:=Obj as TSpkBaseItem;
-      DesignObj:=PersistentToDesignObject(Item);
-      FDesigner.SelectComponent(DesignObj);
+      //DesignObj:=PersistentToDesignObject(Item);
+      FDesigner.SelectOnlyThisComponent(Item);
 
       if not(CheckValidItemNode(Node)) then
          raise exception.create('TfrmEditWindow.tvStructureChange: Uszkodzona struktura drzewa!');
@@ -1000,8 +999,8 @@ if assigned(Node) then
           raise exception.create('TfrmEditWindow.tvStructureChange: Nieprawid³owy obiekt podwieszony pod ga³êzi¹!');
    end else
        begin
-       DesignObj:=PersistentToDesignObject(FToolbar);
-       FDesigner.SelectComponent(DesignObj);
+       //DesignObj:=PersistentToDesignObject(FToolbar);
+       FDesigner.SelectOnlyThisComponent(FToolbar);
        end;
 
 CheckActionsAvailability;
