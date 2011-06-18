@@ -1,5 +1,6 @@
 unit SpkXMLParser;
 
+{$mode Delphi}
 {$DEFINE SPKXMLPARSER}
 
 interface
@@ -8,8 +9,10 @@ interface
 
 // Notatki: Stosujê konsekwentnie case-insensitivity
 
-uses SysUtils, Classes, ContNrs, Graphics, Math;
+uses
+  SysUtils, Classes, ContNrs, Graphics, Math;
 
+//todo: use LineEnding?
 const CRLF=#13#10;
 
 type // Rodzaj ga³êzi XML

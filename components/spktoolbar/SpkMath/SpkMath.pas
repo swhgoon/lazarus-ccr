@@ -95,6 +95,9 @@ type
      1 : (TopLeft : T2DIntVector; BottomRight : T2DIntVector);
   end;
   {$else}
+
+  { T2DIntRect }
+
   T2DIntRect = object
     Left, Top, Right, Bottom: integer;
     //todo
@@ -104,6 +107,7 @@ type
     constructor Create(ALeft, ATop, ARight, ABottom : integer); overload;
     constructor Create(ATopLeft : T2DIntVector; ABottomRight : T2DIntVector); overload;
     function Contains(APoint : T2DIntPoint) : boolean;
+    function Contains(Ax, Ay : Integer) : boolean;
     function IntersectsWith(ARect : T2DIntRect) : boolean; overload;
     function IntersectsWith(ARect : T2DIntRect; var Intersection : T2DIntRect) : boolean; overload;
     procedure Move(dx, dy : integer); overload;
@@ -1099,6 +1103,12 @@ function T2DIntRect.Contains(APoint: T2DIntPoint): boolean;
 begin
   result:=(APoint.x>=self.Left) and (APoint.x<=self.Right) and
         (APoint.y>=self.Top) and (APoint.y<=self.Bottom);
+end;
+
+function T2DIntRect.Contains(Ax, Ay: Integer): boolean;
+begin
+  result:=(Ax>=Left) and (Ax<=Right) and
+        (Ay>=Top) and (Ay<=Bottom);
 end;
 
 procedure T2DIntRect.ExpandBy(APoint: T2DIntPoint);

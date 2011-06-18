@@ -1,5 +1,8 @@
 unit spkt_Tools;
 
+{$mode delphi}
+{.$Define EnhancedRecordSupport}
+
 (*******************************************************************************
 *                                                                              *
 *  Plik: spkt_Tools.pas                                                        *
@@ -12,8 +15,8 @@ unit spkt_Tools;
 
 interface
 
-uses Windows, Graphics, SysUtils,
-     SpkMath, SpkGraphTools, SpkGUITools;
+uses
+  Graphics, SysUtils, SpkMath, SpkGraphTools, SpkGUITools;
 
 type TButtonTools = class sealed(TObject)
      private
@@ -102,28 +105,44 @@ if RightEdgeOpen then
 // Zaokr¹glone naro¿niki
 if not(LeftEdgeOpen or TopEdgeOpen) then
    TGuiTools.DrawAARoundCorner(Bitmap,
+                               {$IFDEF EnhancedRecordSupport}
                                T2DIntPoint.create(Rect.left + 1, Rect.Top + 1),
+                               {$ELSE}
+                               Create2DIntPoint(Rect.left + 1, Rect.Top + 1),
+                               {$ENDIF}
                                Radius,
                                cpLeftTop,
                                InnerLightColor,
                                ClipRect);
 if not(RightEdgeOpen or TopEdgeOpen) then
    TGuiTools.DrawAARoundCorner(Bitmap,
+                               {$IFDEF EnhancedRecordSupport}
                                T2DIntPoint.create(Rect.right - radius, Rect.Top + 1),
+                               {$ELSE}
+                               Create2DIntPoint(Rect.right - radius, Rect.Top + 1),
+                               {$ENDIF}
                                Radius,
                                cpRightTop,
                                InnerLightColor,
                                ClipRect);
 if not(LeftEdgeOpen or BottomEdgeOpen) then
    TGuiTools.DrawAARoundCorner(Bitmap,
+                               {$IFDEF EnhancedRecordSupport}
                                T2DIntPoint.create(Rect.left + 1, Rect.bottom - radius),
+                               {$ELSE}
+                               Create2DIntPoint(Rect.left + 1, Rect.bottom - radius),
+                               {$ENDIF}
                                Radius,
                                cpLeftBottom,
                                InnerLightColor,
                                ClipRect);
 if not(RightEdgeOpen or BottomEdgeOpen) then
    TGuiTools.DrawAARoundCorner(Bitmap,
+                               {$IFDEF EnhancedRecordSupport}
                                T2DIntPoint.create(Rect.right - radius, Rect.bottom - radius),
+                               {$ELSE}
+                               Create2DIntPoint(Rect.right - radius, Rect.bottom - radius),
+                               {$ENDIF}
                                Radius,
                                cpRightBottom,
                                InnerLightColor,
@@ -165,28 +184,44 @@ if not(RightEdgeOpen) then
 
 if not(LeftEdgeOpen or TopEdgeOpen) then
    TGuiTools.DrawAARoundCorner(Bitmap,
+                               {$IFDEF EnhancedRecordSupport}
                                T2DIntPoint.create(Rect.left, Rect.Top),
+                               {$ELSE}
+                               Create2DIntPoint(Rect.left, Rect.Top),
+                               {$ENDIF}
                                Radius,
                                cpLeftTop,
                                FrameColor,
                                ClipRect);
 if not(RightEdgeOpen or TopEdgeOpen) then
    TGuiTools.DrawAARoundCorner(Bitmap,
+                               {$IFDEF EnhancedRecordSupport}
                                T2DIntPoint.create(Rect.right - radius + 1, Rect.Top),
+                               {$ELSE}
+                               Create2DIntPoint(Rect.right - radius + 1, Rect.Top),
+                               {$ENDIF}
                                Radius,
                                cpRightTop,
                                FrameColor,
                                ClipRect);
 if not(LeftEdgeOpen or BottomEdgeOpen) then
    TGuiTools.DrawAARoundCorner(Bitmap,
+                               {$IFDEF EnhancedRecordSupport}
                                T2DIntPoint.create(Rect.left, Rect.bottom - radius + 1),
+                               {$ELSE}
+                               Create2DIntPoint(Rect.left, Rect.bottom - radius + 1),
+                               {$ENDIF}
                                Radius,
                                cpLeftBottom,
                                FrameColor,
                                ClipRect);
 if not(RightEdgeOpen or BottomEdgeOpen) then
    TGuiTools.DrawAARoundCorner(Bitmap,
+                               {$IFDEF EnhancedRecordSupport}
                                T2DIntPoint.create(Rect.right - radius + 1, Rect.bottom - radius + 1),
+                               {$ELSE}
+                               Create2DIntPoint(Rect.right - radius + 1, Rect.bottom - radius + 1),
+                               {$ENDIF}
                                Radius,
                                cpRightBottom,
                                FrameColor,

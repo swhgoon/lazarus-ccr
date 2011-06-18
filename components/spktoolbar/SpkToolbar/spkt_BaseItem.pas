@@ -10,6 +10,9 @@ unit spkt_BaseItem;
 *                                                                              *
 *******************************************************************************)
 
+{$mode delphi}
+{.$Define EnhancedRecordSupport}
+
 interface
 
 uses Windows, Graphics, Classes, Controls,
@@ -81,7 +84,12 @@ constructor TSpkBaseItem.Create(AOwner : TComponent);
 begin
   inherited Create(AOwner);
 
+  {$IFDEF EnhancedRecordSupport}
   FRect:=T2DIntRect.create(0, 0, 0, 0);
+  {$ELSE}
+  FRect.create(0, 0, 0, 0);
+  {$ENDIF}
+
   FToolbarDispatch:=nil;
   FAppearance:=nil;
   FImages:=nil;

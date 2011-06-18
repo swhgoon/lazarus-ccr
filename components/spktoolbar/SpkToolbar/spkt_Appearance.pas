@@ -1,5 +1,7 @@
 unit spkt_Appearance;
 
+{$mode Delphi}
+
 (*******************************************************************************
 *                                                                              *
 *  Plik: spkt_Appearance.pas                                                   *
@@ -12,8 +14,8 @@ unit spkt_Appearance;
 
 interface
 
-uses Windows, Graphics, Classes, Forms, SysUtils,
-     SpkGraphTools, SpkGUITools, SpkXMLParser, SpkXMLTools,
+uses Graphics, Classes, Forms, SysUtils,
+     SpkGUITools, SpkXMLParser, SpkXMLTools,
      spkt_Dispatch, spkt_Exceptions;
 
 type TSpkTabAppearance = class(TPersistent)
@@ -208,6 +210,9 @@ type TSpkToolbarAppearance = class;
      end;
 
 implementation
+
+uses
+  LCLIntf, LCLType;
 
 { TSpkBaseToolbarAppearance }
 

@@ -1,9 +1,12 @@
 unit SpkXMLTools;
 
+{$mode ObjFpc}
+{$H+}
+
 interface
 
-uses Windows, Graphics, SysUtils,
-     SpkXMLParser;
+uses
+  Graphics, SysUtils, SpkXMLParser;
 
 type TSpkXMLTools = class
      private

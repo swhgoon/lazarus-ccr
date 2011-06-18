@@ -1,5 +1,7 @@
 unit spkt_Dispatch;
 
+{$mode delphi}
+
 (*******************************************************************************
 *                                                                              *
 *  Plik: spkt_Dispatch.pas                                                     *
@@ -13,7 +15,7 @@ unit spkt_Dispatch;
 
 interface
 
-uses Windows, Classes, Controls, Graphics,
+uses Classes, Controls, Graphics,
      SpkMath;
 
 type TSpkBaseDispatch = class abstract(TObject)

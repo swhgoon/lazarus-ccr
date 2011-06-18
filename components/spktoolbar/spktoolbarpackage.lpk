@@ -8,8 +8,8 @@
       <Version Value="10"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <OtherUnitFiles Value="SpkToolbar;SpkMath;SpkGUITools;SpkGraphTools"/>
-        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\"/>
+        <OtherUnitFiles Value="SpkToolbar;SpkMath;SpkGUITools;SpkGraphTools;SpkXML"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <CodeGeneration>
         <Optimizations>
@@ -26,7 +26,7 @@
     <Description Value="Ribbon like toolbar"/>
     <License Value="Modified LGPL"/>
     <Version Minor="1"/>
-    <Files Count="15">
+    <Files Count="18">
       <Item1>
         <Filename Value="SpkToolbar\spkt_Appearance.pas"/>
         <UnitName Value="spkt_Appearance"/>
@@ -87,6 +87,18 @@
         <Filename Value="SpkGraphTools\SpkGraphTools.pas"/>
         <UnitName Value="SpkGraphTools"/>
       </Item15>
+      <Item16>
+        <Filename Value="SpkXML\SpkXMLIni.pas"/>
+        <UnitName Value="SpkXMLIni"/>
+      </Item16>
+      <Item17>
+        <Filename Value="SpkXML\SpkXMLParser.pas"/>
+        <UnitName Value="SpkXMLParser"/>
+      </Item17>
+      <Item18>
+        <Filename Value="SpkXML\SpkXMLTools.pas"/>
+        <UnitName Value="SpkXMLTools"/>
+      </Item18>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="1">

@@ -1,5 +1,8 @@
 unit SpkXMLIni;
 
+{$mode ObjFpc}
+{$H+}
+
 {$DEFINE SPKXMLINI}
 
 interface

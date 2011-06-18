@@ -1,5 +1,7 @@
 unit spkt_Types;
 
+{$mode Delphi}
+
 (*******************************************************************************
 *                                                                              *
 *  Plik: spkt_Types.pas                                                        *
@@ -12,7 +14,7 @@ unit spkt_Types;
 
 interface
 
-uses Windows, Controls, Classes, ContNrs, SysUtils, Dialogs,
+uses Controls, Classes, ContNrs, SysUtils, Dialogs,
      spkt_Exceptions;
 
 type TSpkListState = (lsNeedsProcessing, lsReady);

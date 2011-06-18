@@ -1,5 +1,7 @@
 unit spkt_Exceptions;
 
+{$mode delphi}
+
 (*******************************************************************************
 *                                                                              *
 *  Plik: spkt_Exceptions.pas                                                   *
