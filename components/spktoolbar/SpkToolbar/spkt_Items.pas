@@ -1,5 +1,8 @@
 unit spkt_Items;
 
+{$mode delphi}
+{.$Define EnhancedRecordSupport}
+
 (*******************************************************************************
 *                                                                              *
 *  Plik: spkt_Items.pas                                                        *
@@ -12,9 +15,8 @@ unit spkt_Items;
 
 interface
 
-uses Windows, Classes, Controls, SysUtils, Dialogs,
-     SpkXMLParser,
-     spkt_Appearance, spkt_Dispatch, spkt_BaseItem, spkt_Exceptions, spkt_Types,
+uses Classes, Controls, SysUtils, Dialogs,
+     spkt_Appearance, spkt_Dispatch, spkt_BaseItem, spkt_Types,
      spkt_Buttons;
 
 type TSpkItems = class(TSpkCollection)

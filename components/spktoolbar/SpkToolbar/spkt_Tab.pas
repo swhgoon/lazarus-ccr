@@ -1,5 +1,8 @@
 unit spkt_Tab;
 
+{$mode delphi}
+{.$Define EnhancedRecordSupport}
+
 (*******************************************************************************
 *                                                                              *
 *  Plik: spkt_Tab.pas                                                          *
@@ -12,8 +15,8 @@ unit spkt_Tab;
 
 interface
 
-uses Windows, Graphics, Controls, Classes, SysUtils,
-     SpkGraphTools, SpkGUITools, SpkMath,
+uses Graphics, Controls, Classes, SysUtils,
+     SpkMath,
      spkt_Appearance, spkt_Const, spkt_Dispatch, spkt_Exceptions,
      spkt_Pane, spkt_Types;
 
@@ -224,7 +227,11 @@ if AtLeastOnePaneVisible then
           end
        else
           begin
+          {$IFDEF EnhancedRecordSupport}
           FPanes[i].Rect:=T2DIntRect.create(-1,-1,-1,-1);
+          {$ELSE}
+          FPanes[i].Rect.create(-1,-1,-1,-1);
+          {$ENDIF}
           end;
    end;
 end;
@@ -241,27 +248,24 @@ begin
   inherited Create(AOwner);
 
   FAppearanceDispatch:=TSpkTabAppearanceDispatch.create(self);
-  FAppearance:=nil;
   FMouseHoverElement.ElementType:=etNone;
   FMouseHoverElement.ElementIndex:=-1;
   FMouseActiveElement.ElementType:=etNone;
   FMouseActiveElement.ElementIndex:=-1;
 
-  FToolbarDispatch:=nil;
   FCaption:='Tab';
   FVisible:=true;
-  FOverrideAppearance:=false;
   FCustomAppearance:=TSpkToolbarAppearance.Create(FAppearanceDispatch);
 
   FPanes:=TSpkPanes.Create(self);
   FPanes.ToolbarDispatch:=FToolbarDispatch;
 
+  {$IFDEF EnhancedRecordSupport}
   FRect:=T2DIntRect.create(0,0,0,0);
+  {$ELSE}
+  FRect.create(0,0,0,0);
+  {$ENDIF}
 
-  FImages:=nil;
-  FDisabledImages:=nil;
-  FLargeImages:=nil;
-  FDisabledLargeImages:=nil;
 
   SetPaneAppearance;
 end;
@@ -308,7 +312,11 @@ while (i>=0) and (result=-1) do
       begin
       if FPanes[i].Visible then
          begin
+         {$IFDEF EnhancedRecordSupport}
          if FPanes[i].Rect.Contains(T2DIntVector.create(x,y)) then
+         {$ELSE}
+         if FPanes[i].Rect.Contains(x,y) then
+         {$ENDIF}
             result:=i;
          end;
       dec(i);

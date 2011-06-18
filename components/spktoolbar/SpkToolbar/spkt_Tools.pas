@@ -16,7 +16,7 @@ unit spkt_Tools;
 interface
 
 uses
-  Graphics, SysUtils, SpkMath, SpkGraphTools, SpkGUITools;
+  Graphics, SysUtils, SpkMath, SpkGUITools;
 
 type TButtonTools = class sealed(TObject)
      private

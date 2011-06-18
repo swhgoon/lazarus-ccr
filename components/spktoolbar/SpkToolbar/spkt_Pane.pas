@@ -1,5 +1,8 @@
 unit spkt_Pane;
 
+{$mode delphi}
+{.$Define EnhancedRecordSupport}
+
 (*******************************************************************************
 *                                                                              *
 *  Plik: spkt_Pane.pas                                                         *
@@ -12,7 +15,7 @@ unit spkt_Pane;
 
 interface
 
-uses Windows, Graphics, Controls, Classes, SysUtils, Math, Dialogs, Types,
+uses Graphics, Controls, Classes, SysUtils, Math, Dialogs,
      SpkGraphTools, SpkGUITools, SpkMath,
      spkt_Appearance, spkt_Const, spkt_Dispatch, spkt_Exceptions,
      spkt_BaseItem, spkt_Items, spkt_Types;
@@ -160,7 +163,12 @@ FRect:=ARect;
 // Obliczamy layout
 Layout:=GenerateLayout;
 
+{$IFDEF EnhancedRecordSupport}
 Pt:=T2DIntPoint.create(ARect.left + PANE_BORDER_SIZE + PANE_LEFT_PADDING, ARect.top + PANE_BORDER_SIZE);
+{$ELSE}
+Pt.create(ARect.left + PANE_BORDER_SIZE + PANE_LEFT_PADDING, ARect.top + PANE_BORDER_SIZE);
+{$ENDIF}
+
 if length(Layout.Rects)>0 then
    begin
    for i := 0 to high(Layout.Rects) do
@@ -186,8 +194,11 @@ begin
   FMouseActiveElement.ElementIndex:=-1;
 
   FCaption:='Pane';
+  {$IFDEF EnhancedRecordSupport}
   FRect:=T2DIntRect.create(0,0,0,0);
-
+  {$ELSE}
+  FRect.create(0,0,0,0);
+  {$ENDIF}
   FToolbarDispatch:=nil;
   FAppearance:=nil;
   FImages:=nil;
@@ -255,10 +266,17 @@ if FPaneState = psIdle then
 
 // T³o
 TGuiTools.DrawRoundRect(ABuffer.Canvas,
+                        {$IFDEF EnhancedRecordSupport}
                         T2DIntRect.Create(FRect.left,
                                           FRect.top,
                                           FRect.right - PANE_BORDER_HALF_SIZE,
                                           FRect.Bottom - PANE_BORDER_HALF_SIZE),
+                        {$ELSE}
+                        Create2DIntRect(FRect.left,
+                                          FRect.top,
+                                          FRect.right - PANE_BORDER_HALF_SIZE,
+                                          FRect.Bottom - PANE_BORDER_HALF_SIZE),
+                        {$ENDIF}
                         PANE_CORNER_RADIUS,
                         BgFromColor,
                         BgToColor,
@@ -267,10 +285,17 @@ TGuiTools.DrawRoundRect(ABuffer.Canvas,
 
 // T³o etykiety tafli
 TGuiTools.DrawRoundRect(ABuffer.Canvas,
+                        {$IFDEF EnhancedRecordSupport}
                         T2DIntRect.Create(FRect.Left,
                                           FRect.Bottom - PANE_CAPTION_HEIGHT - PANE_BORDER_HALF_SIZE,
                                           FRect.right - PANE_BORDER_HALF_SIZE,
                                           FRect.bottom - PANE_BORDER_HALF_SIZE),
+                        {$ELSE}
+                        Create2DIntRect(FRect.Left,
+                                          FRect.Bottom - PANE_CAPTION_HEIGHT - PANE_BORDER_HALF_SIZE,
+                                          FRect.right - PANE_BORDER_HALF_SIZE,
+                                          FRect.bottom - PANE_BORDER_HALF_SIZE),
+                        {$ENDIF}
                         PANE_CORNER_RADIUS,
                         CaptionColor,
                         clNone,
@@ -296,18 +321,32 @@ TGUITools.DrawText(ABuffer.Canvas,
 
 // Ramki
 TGUITools.DrawAARoundFrame(ABuffer,
+                           {$IFDEF EnhancedRecordSupport}
                            T2DIntRect.create(FRect.left+1,
                                              FRect.top+1,
                                              FRect.Right,
                                              FRect.bottom),
+                           {$ELSE}
+                           Create2DIntRect(FRect.left+1,
+                                             FRect.top+1,
+                                             FRect.Right,
+                                             FRect.bottom),
+                           {$ENDIF}
                            PANE_CORNER_RADIUS,
                            BorderLightColor,
                            ClipRect);
 TGUITools.DrawAARoundFrame(ABuffer,
+                           {$IFDEF EnhancedRecordSupport}
                            T2DIntRect.create(FRect.left,
                                              FRect.top,
                                              FRect.Right-1,
                                              FRect.bottom-1),
+                           {$ELSE}
+                           Create2DIntRect(FRect.left,
+                                             FRect.top,
+                                             FRect.Right-1,
+                                             FRect.bottom-1),
+                           {$ENDIF}
                            PANE_CORNER_RADIUS,
                            BorderDarkColor,
                            ClipRect);
@@ -332,7 +371,11 @@ while (i>=0) and (result=-1) do
       begin
       if FItems[i].Visible then
          begin
+         {$IFDEF EnhancedRecordSupport}
          if FItems[i].Rect.Contains(T2DIntVector.create(x,y)) then
+         {$ELSE}
+         if FItems[i].Rect.Contains(x,y) then
+         {$ENDIF}
             result:=i;
          end;
       dec(i);
@@ -443,8 +486,13 @@ for i := 0 to FItems.count - 1 do
 
 // Najpierw wype³niamy je pustymi danymi, które zape³ni¹ miejsce elementów
 // niewidocznych.
+{$IFDEF EnhancedRecordSupport}
 for i := 0 to FItems.count - 1 do
     result.Rects[i]:=T2DIntRect.create(-1, -1, -1, -1);
+{$ELSE}
+for i := 0 to FItems.count - 1 do
+    result.Rects[i].create(-1, -1, -1, -1);
+{$ENDIF}
 
 MaxRowX:=0;
 

@@ -307,6 +307,10 @@ type
 
   operator - (Left: T2DIntVector; Right: T2DIntVector): T2DIntVector;
 
+  operator := (APoint: T2DIntPoint): TPoint;
+
+  operator := (APoint: TPoint): T2DIntPoint;
+
   operator - (Left: T2DIntRect; Right: T2DIntVector): T2DIntRect;
 
   operator + (Left: T2DIntRect; Right: T2DIntVector): T2DIntRect;
@@ -341,6 +345,18 @@ operator - (Left: T2DIntVector; Right: T2DIntVector): T2DIntVector;
 begin
   Result.x := Left.x - Right.x;
   Result.y := Left.y - Right.y;
+end;
+
+operator := (APoint: T2DIntPoint): TPoint;
+begin
+  Result.x := APoint.x;
+  Result.y := APoint.y;
+end;
+
+operator := (APoint: TPoint): T2DIntPoint;
+begin
+  Result.x := APoint.x;
+  Result.y := APoint.y;
 end;
 
 operator - (Left: T2DIntRect; Right: T2DIntVector): T2DIntRect;

@@ -16,8 +16,8 @@ unit spkt_Buttons;
 interface
 
 uses
-  Graphics, Classes, Controls, Menus, ImgList, ActnList, Math,
-     Types, Dialogs,
+  Graphics, Classes, Controls, Menus, ActnList, Math,
+     Dialogs,
      SpkGuiTools, SpkGraphTools, SpkMath,
      spkt_Const, spkt_BaseItem, spkt_Exceptions, spkt_Tools;
 

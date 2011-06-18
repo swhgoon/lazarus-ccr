@@ -15,9 +15,8 @@ unit spkt_BaseItem;
 
 interface
 
-uses Windows, Graphics, Classes, Controls,
-     SpkMath, SpkGUITools, SpkGraphTools,
-     spkt_Appearance, spkt_Exceptions, spkt_Dispatch, spkt_Types;
+uses Graphics, Classes, Controls,
+     SpkMath, spkt_Appearance, spkt_Dispatch, spkt_Types;
 
 type TSpkItemSize = (isLarge, isNormal);
      TSpkItemTableBehaviour = (tbBeginsRow, tbBeginsColumn, tbContinuesRow);

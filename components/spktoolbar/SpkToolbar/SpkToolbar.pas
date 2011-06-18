@@ -1,5 +1,8 @@
 unit SpkToolbar;
 
+{$mode delphi}
+{.$Define EnhancedRecordSupport}
+
 (*******************************************************************************
 *                                                                              *
 *  Plik: SpkToolbar.pas                                                        *
@@ -12,11 +15,11 @@ unit SpkToolbar;
 
 interface
 
-uses Windows, Graphics, SysUtils, Controls, Classes, Messages, Math, Dialogs,
-     Types,
-     SpkGraphTools, SpkGUITools, SpkMath, SpkXMLParser,
+uses
+  LCLType, LMessages, Graphics, SysUtils, Controls, Classes, Math, Dialogs,
+     Types, SpkGraphTools, SpkGUITools, SpkMath,
      spkt_Appearance, spkt_BaseItem, spkt_Const, spkt_Dispatch, spkt_Tab,
-     spkt_Pane, spkt_Exceptions, spkt_Types;
+     spkt_Pane, spkt_Types;
 
 type /// <summary>Typ opisuj¹cy regiony toolbara, które s¹ u¿ywane podczas
      /// obs³ugi interakcji z mysz¹</summary>
@@ -213,7 +216,7 @@ type TSpkToolbar = class;
 
      /// <summary>Komunikat odbierany, gdy mysz opuœci obszar komponentu
      /// </summary>
-       procedure CMMouseLeave(var msg : TMessage); message CM_MOUSELEAVE;
+       procedure CMMouseLeave(var msg : TLMessage); message CM_MOUSELEAVE;
 
      // ********************************
      // *** Obs³uga designtime i DFM ***
@@ -329,13 +332,22 @@ type TSpkToolbar = class;
 
 implementation
 
+uses
+  LCLIntf;
+
 { TSpkToolbarDispatch }
 
 function TSpkToolbarDispatch.ClientToScreen(Point: T2DIntPoint): T2DIntPoint;
 begin
+  {$IFDEF EnhancedRecordSupport}
   if FToolbar<>nil then
      result:=FToolbar.ClientToScreen(Point) else
      result:=T2DIntPoint.Create(-1,-1);
+  {$ELSE}
+  if FToolbar<>nil then
+     result:=FToolbar.ClientToScreen(Point) else
+     result.Create(-1,-1);
+  {$ENDIF}
 end;
 
 constructor TSpkToolbarDispatch.Create(AToolbar: TSpkToolbar);
@@ -402,7 +414,7 @@ begin
   FUpdating:=true;
 end;
 
-procedure TSpkToolbar.CMMouseLeave(var msg: TMessage);
+procedure TSpkToolbar.CMMouseLeave(var msg: TLMessage);
 begin
   inherited;
   MouseLeave;
@@ -414,7 +426,8 @@ begin
 
   // Inicjacja dziedziczonych w³asnoœci
   inherited Align:=alTop;
-  inherited AlignWithMargins:=true;
+  //todo: not found in lcl
+  //inherited AlignWithMargins:=true;
   inherited Height:=TOOLBAR_HEIGHT;
   inherited Doublebuffered:=true;
 
@@ -428,18 +441,19 @@ begin
   FTemporary.Pixelformat:=pf24bit;
 
   setlength(FTabRects,0);
+
+  {$IFDEF EnhancedRecordSupport}
   FTabClipRect:=T2DIntRect.create(0,0,0,0);
   FTabContentsClipRect:=T2DIntRect.create(0,0,0,0);
+  {$ELSE}
+  FTabClipRect.create(0,0,0,0);
+  FTabContentsClipRect.create(0,0,0,0);
+  {$ENDIF}
 
   FMouseHoverElement:=teNone;
   FMouseActiveElement:=teNone;
 
   FTabHover:=-1;
-
-  FMetricsValid:=false;
-  FBufferValid:=false;
-  FInternalUpdating:=false;
-  FUpdating:=false;
 
   // Inicjacja pól
   FAppearance:=TSpkToolbarAppearance.Create(FToolbarDispatch);
@@ -449,11 +463,6 @@ begin
   FTabs.Appearance:=FAppearance;
 
   FTabIndex:=-1;
-
-  FImages:=nil;
-  FDisabledImages:=nil;
-  FLargeImages:=nil;
-  FDisabledLargeImages:=nil;
 end;
 
 procedure TSpkToolbar.DefineProperties(Filer: TFiler);
@@ -654,7 +663,11 @@ begin
   inherited MouseMove(Shift, X, Y);
 
   // Sprawdzamy, który obiekt jest pod mysz¹
+  {$IFDEF EnhancedRecordSupport}
   MousePoint:=T2DIntVector.create(x,y);
+  {$ELSE}
+  MousePoint.create(x,y);
+  {$ENDIF}
 
   if FTabClipRect.Contains(MousePoint) then
      NewMouseHoverElement:=teTabs else
@@ -991,7 +1004,11 @@ if AtLeastOneTabVisible then
        if FTabs[i].visible then
           begin
           if FTabClipRect.IntersectsWith(FTabRects[i], TabRect) then
+             {$IFDEF EnhancedRecordSupport}
              if TabRect.Contains(T2DIntPoint.Create(x, y)) then
+             {$ELSE}
+             if TabRect.Contains(x, y) then
+             {$ENDIF}
                 SelTab:=i;
           end;
 
@@ -1036,7 +1053,11 @@ if AtLeastOneTabVisible then
        if FTabs[i].Visible then
           begin
           if FTabClipRect.IntersectsWith(FTabRects[i], TabRect) then
+             {$IFDEF EnhancedRecordSupport}
              if TabRect.Contains(T2DIntPoint.Create(x, y)) then
+             {$ELSE}
+             if TabRect.Contains(x, y) then
+             {$ENDIF}
                 NewTabHover:=i;
           end;
 
@@ -1091,31 +1112,54 @@ procedure TSpkToolbar.ValidateBuffer;
      FocusedAppearance:=FAppearance;
 
   TGuiTools.DrawRoundRect(FBuffer.Canvas,
+                          {$IFDEF EnhancedRecordSupport}
                           T2DIntRect.Create(0,
                                             TOOLBAR_TAB_CAPTIONS_HEIGHT,
                                             self.width-1,
                                             self.Height-1),
+                          {$ELSE}
+                          Create2DIntRect(0,
+                                            TOOLBAR_TAB_CAPTIONS_HEIGHT,
+                                            self.width-1,
+                                            self.Height-1),
+                          {$ENDIF}
                           TOOLBAR_CORNER_RADIUS,
                           FocusedAppearance.Tab.GradientFromColor,
                           FocusedAppearance.Tab.GradientToColor,
                           FocusedAppearance.Tab.GradientType);
   TGuiTools.DrawAARoundCorner(FBuffer,
+                              {$IFDEF EnhancedRecordSupport}
                               T2DIntPoint.Create(0, TOOLBAR_TAB_CAPTIONS_HEIGHT),
+                              {$ELSE}
+                              Create2DIntPoint(0, TOOLBAR_TAB_CAPTIONS_HEIGHT),
+                              {$ENDIF}
                               TOOLBAR_CORNER_RADIUS,
                               cpLeftTop,
                               FocusedAppearance.Tab.BorderColor);
   TGuiTools.DrawAARoundCorner(FBuffer,
+                              {$IFDEF EnhancedRecordSupport}
                               T2DIntPoint.Create(self.width - TOOLBAR_CORNER_RADIUS, TOOLBAR_TAB_CAPTIONS_HEIGHT),
+                              {$ELSE}
+                              Create2DIntPoint(self.width - TOOLBAR_CORNER_RADIUS, TOOLBAR_TAB_CAPTIONS_HEIGHT),
+                              {$ENDIF}
                               TOOLBAR_CORNER_RADIUS,
                               cpRightTop,
                               FocusedAppearance.Tab.BorderColor);
   TGuiTools.DrawAARoundCorner(FBuffer,
+                              {$IFDEF EnhancedRecordSupport}
                               T2DIntPoint.Create(0, self.height - TOOLBAR_CORNER_RADIUS),
+                              {$ELSE}
+                              Create2DIntPoint(0, self.height - TOOLBAR_CORNER_RADIUS),
+                              {$ENDIF}
                               TOOLBAR_CORNER_RADIUS,
                               cpLeftBottom,
                               FocusedAppearance.Tab.BorderColor);
   TGuiTools.DrawAARoundCorner(FBuffer,
+                              {$IFDEF EnhancedRecordSupport}
                               T2DIntPoint.Create(self.width - TOOLBAR_CORNER_RADIUS, self.height - TOOLBAR_CORNER_RADIUS),
+                              {$ELSE}
+                              Create2DIntPoint(self.width - TOOLBAR_CORNER_RADIUS, self.height - TOOLBAR_CORNER_RADIUS),
+                              {$ENDIF}
                               TOOLBAR_CORNER_RADIUS,
                               cpRightBottom,
                               FocusedAppearance.Tab.BorderColor);
@@ -1245,13 +1289,21 @@ procedure TSpkToolbar.ValidateBuffer;
 
     // Ramka
     TGuiTools.DrawAARoundCorner(FBuffer,
+                                {$IFDEF EnhancedRecordSupport}
                                 T2DIntPoint.create(TabRect.left, TabRect.bottom - TAB_CORNER_RADIUS + 1),
+                                {$ELSE}
+                                Create2DIntPoint(TabRect.left, TabRect.bottom - TAB_CORNER_RADIUS + 1),
+                                {$ENDIF}
                                 TAB_CORNER_RADIUS,
                                 cpRightBottom,
                                 Border,
                                 FTabClipRect);
     TGuiTools.DrawAARoundCorner(FBuffer,
+                                {$IFDEF EnhancedRecordSupport}
                                 T2DIntPoint.create(TabRect.right - TAB_CORNER_RADIUS + 1, TabRect.bottom - TAB_CORNER_RADIUS + 1),
+                                {$ELSE}
+                                Create2DIntPoint(TabRect.right - TAB_CORNER_RADIUS + 1, TabRect.bottom - TAB_CORNER_RADIUS + 1),
+                                {$ENDIF}
                                 TAB_CORNER_RADIUS,
                                 cpLeftBottom,
                                 Border,
@@ -1271,13 +1323,21 @@ procedure TSpkToolbar.ValidateBuffer;
                         FTabClipRect);
 
     TGuiTools.DrawAARoundCorner(FBuffer,
+                                {$IFDEF EnhancedRecordSupport}
                                 T2DIntPoint.create(TabRect.left + TAB_CORNER_RADIUS - 1, 0),
+                                {$ELSE}
+                                Create2DIntPoint(TabRect.left + TAB_CORNER_RADIUS - 1, 0),
+                                {$ENDIF}
                                 TAB_CORNER_RADIUS,
                                 cpLeftTop,
                                 Border,
                                 FTabClipRect);
     TGuiTools.DrawAARoundCorner(FBuffer,
+                                {$IFDEF EnhancedRecordSupport}
                                 T2DIntPoint.Create(TabRect.right - 2*TAB_CORNER_RADIUS + 2, 0),
+                                {$ELSE}
+                                Create2DIntPoint(TabRect.right - 2*TAB_CORNER_RADIUS + 2, 0),
+                                {$ENDIF}
                                 TAB_CORNER_RADIUS,
                                 cpRightTop,
                                 Border,
@@ -1428,10 +1488,17 @@ FBuffer.SetSize(self.width, self.height);
 // *** Zak³adki ***
 
 // Cliprect zak³adek (zawgórn¹ ramkê komponentu)
+{$IFDEF EnhancedRecordSupport}
 FTabClipRect:=T2DIntRect.Create(TOOLBAR_CORNER_RADIUS,
                                 0,
                                 self.width - TOOLBAR_CORNER_RADIUS - 1,
                                 TOOLBAR_TAB_CAPTIONS_HEIGHT);
+{$ELSE}
+FTabClipRect.Create(TOOLBAR_CORNER_RADIUS,
+                                0,
+                                self.width - TOOLBAR_CORNER_RADIUS - 1,
+                                TOOLBAR_TAB_CAPTIONS_HEIGHT);
+{$ENDIF}
 
 // Recty nag³ówków zak³adek (zawieraj¹ górn¹ ramkê komponentu)
 setlength(FTabRects, FTabs.Count);
@@ -1462,7 +1529,11 @@ if FTabs.count>0 then
           end
        else
           begin
+          {$IFDEF EnhancedRecordSupport}
           FTabRects[i]:=T2DIntRect.Create(-1,-1,-1,-1);
+          {$ELSE}
+          FTabRects[i].Create(-1,-1,-1,-1);
+          {$ENDIF}
           end;
    end;
 
@@ -1471,10 +1542,17 @@ if FTabs.count>0 then
 if FTabIndex<>-1 then
    begin
    // Rect obszaru zak³adki
+   {$IFDEF EnhancedRecordSupport}
    FTabContentsClipRect:=T2DIntRect.Create(TOOLBAR_BORDER_WIDTH + TAB_PANE_LEFTPADDING,
                                     TOOLBAR_TAB_CAPTIONS_HEIGHT + TOOLBAR_BORDER_WIDTH + TAB_PANE_TOPPADDING,
                                     self.width - 1 - TOOLBAR_BORDER_WIDTH - TAB_PANE_RIGHTPADDING,
                                     self.Height - 1 - TOOLBAR_BORDER_WIDTH - TAB_PANE_BOTTOMPADDING);
+   {$ELSE}
+   FTabContentsClipRect.Create(TOOLBAR_BORDER_WIDTH + TAB_PANE_LEFTPADDING,
+                                    TOOLBAR_TAB_CAPTIONS_HEIGHT + TOOLBAR_BORDER_WIDTH + TAB_PANE_TOPPADDING,
+                                    self.width - 1 - TOOLBAR_BORDER_WIDTH - TAB_PANE_RIGHTPADDING,
+                                    self.Height - 1 - TOOLBAR_BORDER_WIDTH - TAB_PANE_BOTTOMPADDING);
+   {$ENDIF}
 
    FTabs[FTabIndex].Rect:=FTabContentsClipRect;
    end;
