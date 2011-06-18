@@ -289,13 +289,33 @@ type
   end;
   {$endif}
 
+  {$ifndef EnhancedRecordSupport}
+  operator - (Left: T2DIntVector; Right: T2DIntVector): T2DIntVector;
+
+  operator - (Left: T2DIntRect; Right: T2DIntVector): T2DIntRect;
+
   operator := (ARect: TRect): T2DIntRect;
 
   operator - (Left: T2DVector; Right: T2DVector): T2DVector;
 
   operator - (Left: T3DVector; Right: T3DVector): T3DVector;
+  {$endif}
 
 implementation
+
+{$ifndef EnhancedRecordSupport}
+
+operator - (Left: T2DIntVector; Right: T2DIntVector): T2DIntVector;
+begin
+  Result.x := Left.x - Right.x;
+  Result.y := Left.y - Right.y;
+end;
+
+operator - (Left: T2DIntRect; Right: T2DIntVector): T2DIntRect;
+begin
+  Result.Create(Left.Left - Right.x, Left.Top - Right.y,
+    Left.Right - Right.x, Left.Bottom - Right.y);
+end;
 
 operator := (ARect: TRect): T2DIntRect;
 begin
@@ -317,6 +337,8 @@ begin
   Result.y := Left.y - Right.y;
   Result.z := Left.z - Right.z;
 end;
+
+{$endif}
 
 { T2DIntVector }
 
