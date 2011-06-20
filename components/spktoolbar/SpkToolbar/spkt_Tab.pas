@@ -802,12 +802,5 @@ begin
      FToolbarDispatch.NotifyItemsChanged;
 end;
 
-initialization
-
-RegisterClass(TSpkTab);
-
-finalization
-
-UnRegisterClass(TSpkTab);
 
 end.

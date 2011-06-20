@@ -2176,14 +2176,5 @@ begin
      FToolbarDispatch.NotifyMetricsChanged;
 end;
 
-initialization
-
-RegisterClass(TSpkLargeButton);
-RegisterClass(TSpkSmallButton);
-
-finalization
-
-UnRegisterClass(TSpkLargeButton);
-UnRegisterClass(TSpkSmallButton);
 
 end.

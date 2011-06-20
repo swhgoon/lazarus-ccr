@@ -1102,12 +1102,5 @@ begin
      FToolbarDispatch.NotifyItemsChanged;
 end;
 
-initialization
-
-RegisterClass(TSpkPane);
-
-finalization
-
-UnregisterClass(TSpkPane);
 
 end.
