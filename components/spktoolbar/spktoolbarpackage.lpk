@@ -3,7 +3,7 @@
   <Package Version="4">
     <PathDelim Value="\"/>
     <Name Value="SpkToolbarPackage"/>
-    <Author Value="Spook"/>
+    <Author Value="Spook. Ported to Lazarus/LCL by Luiz Américo"/>
     <CompilerOptions>
       <Version Value="10"/>
       <PathDelim Value="\"/>
@@ -11,11 +11,6 @@
         <OtherUnitFiles Value="SpkToolbar;SpkMath;SpkGUITools;SpkGraphTools;SpkXML;designtime"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <CodeGeneration>
-        <Optimizations>
-          <OptimizationLevel Value="2"/>
-        </Optimizations>
-      </CodeGeneration>
       <Other>
         <CompilerMessages>
           <UseMsgFile Value="True"/>
