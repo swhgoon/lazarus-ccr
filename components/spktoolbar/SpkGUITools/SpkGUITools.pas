@@ -2404,6 +2404,7 @@ begin
   case GradientKind of
     bkSolid:
       begin
+        ACanvas.Brush.Style := bsSolid;
         ACanvas.brush.color := ColorFrom;
         ACanvas.fillrect(Rect.ForWinAPI);
       end;
