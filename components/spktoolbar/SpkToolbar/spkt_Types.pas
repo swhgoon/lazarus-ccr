@@ -115,8 +115,7 @@ FRootComponent:=RootComponent;
 
 FNames:=TStringList.create;
 
-FList:=TObjectList.Create;
-FList.OwnsObjects:=true;
+FList:=TObjectList.create(False);
 
 FListState:=lsReady;
 end;
@@ -135,8 +134,8 @@ end;
 
 destructor TSpkCollection.Destroy;
 begin
-  FNames.Free;
-  FList.Free;
+  FNames.Destroy;
+  FList.Destroy;
   inherited;
 end;
 
