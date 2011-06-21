@@ -290,13 +290,13 @@ type
     // Text tools
     class procedure DrawText(ABitmap : TBitmap;
                         x, y : integer;
-                        AText : string;
-                        TextColor : TColor); overload;
+                        const AText : string;
+                        TextColor: TColor); overload;
     class procedure DrawText(ABitmap : TBitmap;
                         x, y : integer;
-                        AText : string;
+                        const AText : string;
                         TextColor : TColor;
-                        ClipRect : T2DIntRect); overload;
+                        ClipRect: T2DIntRect); overload;
     class procedure DrawMarkedText(ACanvas : TCanvas;
                                   x, y : integer;
                                   const AText, AMarkPhrase : string;
@@ -310,59 +310,59 @@ type
                                   CaseSensitive : boolean = false); overload;
     class procedure DrawText(ACanvas : TCanvas;
                         x, y : integer;
-                        AText : string;
+                        const AText : string;
                         TextColor : TColor); overload;
     class procedure DrawText(ACanvas : TCanvas;
                         x, y : integer;
-                        AText : string;
+                        const AText : string;
                         TextColor : TColor;
                         ClipRect : T2DIntRect); overload;
     class procedure DrawFitWText(ABitmap : TBitmap;
                                 x1, x2 : integer;
                                 y : integer;
-                                AText : string;
+                                const AText : string;
                                 TextColor : TColor;
                                 Align : TAlignment); overload;
     class procedure DrawFitWText(ACanvas : TCanvas;
                                 x1, x2 : integer;
                                 y : integer;
-                                AText : string;
+                                const AText : string;
                                 TextColor : TColor;
                                 Align : TAlignment); overload;
 
     class procedure DrawOutlinedText(ABitmap : TBitmap;
                                     x, y : integer;
-                                    AText : string;
+                                    const AText : string;
                                     TextColor : TColor;
                                     OutlineColor : TColor); overload;
     class procedure DrawOutlinedText(ABitmap : TBitmap;
                                     x, y : integer;
-                                    AText : string;
+                                    const AText : string;
                                     TextColor : TColor;
                                     OutlineColor : TColor;
                                     ClipRect : T2DIntRect); overload;
     class procedure DrawOutlinedText(ACanvas : TCanvas;
                                     x, y : integer;
-                                    AText : string;
+                                    const AText : string;
                                     TextColor : TColor;
                                     OutlineColor : TColor); overload;
     class procedure DrawOutlinedText(ACanvas : TCanvas;
                                     x, y : integer;
-                                    AText : string;
+                                    const AText : string;
                                     TextColor : TColor;
                                     OutlineColor : TColor;
                                     ClipRect : T2DIntRect); overload;
     class procedure DrawFitWOutlinedText(ABitmap: TBitmap;
                                         x1, x2 : integer;
                                         y: integer;
-                                        AText: string;
+                                        const AText: string;
                                         TextColor,
                                         OutlineColor: TColor;
                                         Align: TAlignment); overload;
     class procedure DrawFitWOutlinedText(ACanvas: TCanvas;
                                         x1, x2 : integer;
                                         y: integer;
-                                        AText: string;
+                                        const AText: string;
                                         TextColor,
                                         OutlineColor: TColor;
                                         Align: TAlignment); overload;
@@ -1789,7 +1789,7 @@ DrawHLine(ABitmap, Rect.left + Radius, Rect.right - Radius, rect.bottom, Color);
 end;
 
 class procedure TGUITools.DrawFitWText(ABitmap: TBitmap; x1, x2, y: integer;
-  AText: string; TextColor: TColor; Align : TAlignment);
+  const AText: string; TextColor: TColor; Align : TAlignment);
 
 var tw : integer;
     s : string;
@@ -1993,7 +1993,7 @@ ImageList.Draw(ACanvas, Point.x, Point.y, ImageIndex);
 end;
 
 class procedure TGUITools.DrawOutlinedText(ACanvas: TCanvas; x, y: integer;
-  AText: string; TextColor, OutlineColor: TColor);
+  const AText: string; TextColor, OutlineColor: TColor);
 begin
 with Acanvas do
      begin
@@ -2014,7 +2014,7 @@ with Acanvas do
 end;
 
 class procedure TGUITools.DrawOutlinedText(ACanvas: TCanvas; x, y: integer;
-  AText: string; TextColor, OutlineColor: TColor; ClipRect: T2DIntRect);
+  const AText: string; TextColor, OutlineColor: TColor; ClipRect: T2DIntRect);
 
 var WinAPIClipRect : TRect;
 
@@ -2111,7 +2111,7 @@ ABitmap.canvas.lineto(LineRect.right+1, Linerect.top);
 end;
 
 class procedure TGUITools.DrawOutlinedText(ABitmap: TBitmap; x, y: integer;
-  AText: string; TextColor, OutlineColor: TColor; ClipRect: T2DIntRect);
+  const AText: string; TextColor, OutlineColor: TColor; ClipRect: T2DIntRect);
 
 var WinAPIClipRect : TRect;
 
@@ -2202,7 +2202,7 @@ DeleteObject(ClipRgn);
 end;
 
 class procedure TGUITools.DrawText(ACanvas: TCanvas; x, y: integer;
-  AText: string; TextColor: TColor);
+ const AText: string; TextColor: TColor);
 begin
 with Acanvas do
      begin
@@ -2213,7 +2213,7 @@ with Acanvas do
 end;
 
 class procedure TGUITools.DrawText(ACanvas: TCanvas; x, y: integer;
-  AText: string; TextColor: TColor; ClipRect: T2DIntRect);
+  const AText: string; TextColor: TColor; ClipRect: T2DIntRect);
 
 var WinAPIClipRect : TRect;
 
@@ -2308,7 +2308,7 @@ DeleteObject(RoundRgn);
 end;
 
 class procedure TGUITools.DrawOutlinedText(ABitmap: TBitmap; x, y: integer;
-  AText: string; TextColor, OutlineColor: TColor);
+  const AText: string; TextColor, OutlineColor: TColor);
 begin
 with ABitmap.canvas do
      begin
@@ -2329,7 +2329,7 @@ with ABitmap.canvas do
 end;
 
 class procedure TGUITools.DrawText(ABitmap: TBitmap; x, y: integer;
-  AText: string; TextColor: TColor; ClipRect: T2DIntRect);
+  const AText: string; TextColor: TColor; ClipRect: T2DIntRect);
 
 var WinAPIClipRect : TRect;
 
@@ -2344,7 +2344,7 @@ with ABitmap.canvas do
 end;
 
 class procedure TGUITools.DrawFitWOutlinedText(ABitmap: TBitmap; x1, x2, y: integer;
-  AText: string; TextColor, OutlineColor: TColor; Align : TAlignment);
+  const AText: string; TextColor, OutlineColor: TColor; Align : TAlignment);
 
 var tw : integer;
     s : string;
@@ -2375,7 +2375,7 @@ with ABitmap.Canvas do
 end;
 
 class procedure TGUITools.DrawFitWOutlinedText(ACanvas: TCanvas; x1, x2,
-  y: integer; AText: string; TextColor, OutlineColor: TColor;
+  y: integer; const AText: string; TextColor, OutlineColor: TColor;
   Align: TAlignment);
 
 var tw : integer;
@@ -2500,7 +2500,7 @@ begin
 end;
 
 class procedure TGUITools.DrawFitWText(ACanvas: TCanvas; x1, x2, y: integer;
-  AText: string; TextColor: TColor; Align: TAlignment);
+  const AText: string; TextColor: TColor; Align: TAlignment);
 
 var tw : integer;
     s : string;
@@ -2615,7 +2615,7 @@ i:=GetClipRgn(DC, OrgRgn);
 OrgRgnExists:=(i=1);
 end;
 
-class procedure TGUITools.DrawText(ABitmap: TBitmap; x, y: integer; AText: string;
+class procedure TGUITools.DrawText(ABitmap: TBitmap; x, y: integer; const AText: string;
   TextColor: TColor);
 begin
 with ABitmap.canvas do
