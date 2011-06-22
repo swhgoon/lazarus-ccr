@@ -7,8 +7,16 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset   Preview,
-  Forms, Main, PictureManager, PictureCtrls, Test,
-  NewDialog, ResizeDialog, ResizePaperDialog, PictureDialog, AboutDialog;
+  Forms,
+  Main,
+  PictureManager,
+  PictureCtrls,
+  Test,
+  NewDialog,
+  ResizeDialog,
+  ResizePaperDialog,
+  PictureDialog,
+  AboutDialog, DLBitmap;
 
 {$R *.res}
 
