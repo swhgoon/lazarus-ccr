@@ -54,12 +54,12 @@ var
 
 implementation
 
-uses IconStrConsts;
+uses IconStrConsts, appsettings;
 { TAboutDialogForm }
 
 procedure TAboutDialogForm.FormCreate(Sender: TObject);
 begin
-  Image.Picture.LoadFromFile('.\Images\icon.png');
+  Image.Picture.LoadFromFile(vConfigurations.MyDirectory + 'Images' + PathDelim + 'icon.png');
   Caption:=lieAbouDialog;
   LabelVersion.Caption:=lieLabelVersion;
   LabelAuthor.Caption:=lieLabelAuthor;

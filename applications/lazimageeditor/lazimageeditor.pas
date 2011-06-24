@@ -16,7 +16,7 @@ uses
   ResizeDialog,
   ResizePaperDialog,
   PictureDialog,
-  AboutDialog, DLBitmap;
+  AboutDialog, DLBitmap, IconStrConsts, appsettings, lieconstants, ColorPalette;
 
 {$R *.res}
 
@@ -35,7 +35,6 @@ begin
     MainForm.OpenImageFile(ParamStr(1))
   else
     MainForm.FileNewOnStart;
-
   Application.Run;
 end.
 
