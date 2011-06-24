@@ -21,21 +21,23 @@ object AboutDialogForm: TAboutDialogForm
   LCLVersion = '0.9.31'
   object LabelVersion: TLabel
     Left = 12
-    Height = 20
-    Top = 366
-    Width = 73
+    Height = 18
+    Top = 368
+    Width = 76
     Anchors = [akLeft, akBottom]
     Caption = 'Version: 0.1'
     ParentColor = False
   end
   object LabelAuthor: TLabel
     Left = 12
-    Height = 20
-    Top = 391
-    Width = 150
+    Height = 50
+    Top = 384
+    Width = 324
     Anchors = [akLeft, akBottom]
+    AutoSize = False
     Caption = 'Author: Tom Gregorovic'
     ParentColor = False
+    WordWrap = True
   end
   object Image: TImage
     Left = 12

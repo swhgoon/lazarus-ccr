@@ -148,8 +148,8 @@ resourcestring
 
   // Dialog About
   lieAbouDialog = 'About Lazarus Image Editor';
-  lieLabelVersion = 'Version: 0.1';
-  lieLabelAuthor = 'Author: Tom Gregorovic';
+  lieLabelVersion = 'Version: 0.9';
+  lieLabelAuthor = 'Authors: Tom Gregorovic, Felipe Monteiro de Carvalho, Yang JiXian';
 
   // Dialog New
   lieNewDialog = 'New picture';

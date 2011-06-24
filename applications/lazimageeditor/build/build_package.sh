@@ -8,7 +8,7 @@
 ##################################
 
 PRODUCT="Lazarus Image Editor"
-VERSION="1.0"
+VERSION="0.9"
 OS="linux"
 EXENAME="lazimageeditor"
 

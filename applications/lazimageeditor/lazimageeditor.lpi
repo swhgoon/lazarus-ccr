@@ -43,7 +43,7 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="16">
+    <Units Count="15">
       <Unit0>
         <Filename Value="lazimageeditor.pas"/>
         <IsPartOfProject Value="True"/>
@@ -139,11 +139,6 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="lieconstants"/>
       </Unit14>
-      <Unit15>
-        <Filename Value="colorpalette.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="ColorPalette"/>
-      </Unit15>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

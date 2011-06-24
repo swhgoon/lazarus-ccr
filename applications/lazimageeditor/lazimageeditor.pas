@@ -16,7 +16,7 @@ uses
   ResizeDialog,
   ResizePaperDialog,
   PictureDialog,
-  AboutDialog, DLBitmap, IconStrConsts, appsettings, lieconstants, ColorPalette;
+  AboutDialog, DLBitmap, IconStrConsts, appsettings, lieconstants;
 
 {$R *.res}
 
