@@ -31,6 +31,7 @@ type
     procedure buttonRenderingTestClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure spinScaleChange(Sender: TObject);
   private
     { private declarations }
   public
@@ -188,6 +189,13 @@ end;
 procedure TfrmFPVViewer.FormDestroy(Sender: TObject);
 begin
   Drawer.Free;
+end;
+
+procedure TfrmFPVViewer.spinScaleChange(Sender: TObject);
+begin
+  if spinScale.Value <= 0.2 then spinScale.Increment := 0.01
+  else if spinScale.Value <= 2 then spinScale.Increment := 0.1
+  else spinScale.Increment := 1;
 end;
 
 end.

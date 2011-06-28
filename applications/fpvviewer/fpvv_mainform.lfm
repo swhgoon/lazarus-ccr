@@ -37,9 +37,10 @@ object frmFPVViewer: TfrmFPVViewer
     Top = 72
     Width = 168
     DecimalPlaces = 6
-    Increment = 1
+    Increment = 0.1
     MaxValue = 100
     MinValue = 0
+    OnChange = spinScaleChange
     TabOrder = 2
     Value = 1
   end
@@ -76,8 +77,8 @@ object frmFPVViewer: TfrmFPVViewer
     object pageViewer: TPage
     end
     object Page2: TPage
-      ClientWidth = 67584
-      ClientHeight = 79872
+      ClientWidth = 135
+      ClientHeight = 159
       object DXFTreeView: TTreeView
         Left = 8
         Height = 313
