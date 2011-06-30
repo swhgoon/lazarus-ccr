@@ -56,6 +56,7 @@ else
   mkdir $appfolder/Contents
   mkdir $appfolder/Contents/MacOS
   mkdir $appfolder/Contents/Resources
+  mkdir $appfolder/Contents/Resources/images
 
 #
 # For a debug bundle,
@@ -69,8 +70,10 @@ else
 fi  
 
 # Copy the resource files to the correct place
-#  cp *.bmp $appfolder/Contents/Resources
-#  cp icon3.ico $appfolder/Contents/Resources
+cp default.pal $appfolder/Contents/Resources/
+cp images/*.svg $appfolder/Contents/Resources/images
+cp images/*.png $appfolder/Contents/Resources/images
+cp images/*.ico $appfolder/Contents/Resources/images
 #  cp icon3.png $appfolder/Contents/Resources
 #  cp macicon.icns $appfolder/Contents/Resources
 #  cp docs/*.* $appfolder/Contents/Resources

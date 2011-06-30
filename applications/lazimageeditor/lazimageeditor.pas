@@ -31,7 +31,9 @@ begin
   // show new picture dialog
   MainForm.Show;
   //MainForm.FileNewExecute(nil);
-  if ParamCount > 0 then
+
+  // With OS X app, ParamStr not meaningful unless launched with --args switch.
+  if (ParamCount > 0) {$IFDEF DARWIN} and (Copy(ParamStr(1), 1, 4) <> '-psn') {$ENDIF} then
     MainForm.OpenImageFile(ParamStr(1))
   else
     MainForm.FileNewOnStart;

@@ -33,7 +33,8 @@ uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Menus,
   ExtCtrls, ComCtrls, ActnList, StdActns, ExtDlgs, Buttons, StdCtrls, Spin,
   ColorBox, NewDialog, ResizeDialog, ResizePaperDialog, AboutDialog, DLBitmap,
-  PictureManager, PictureCtrls, ColorPalette;
+  PictureManager, PictureCtrls, ColorPalette,
+  appsettings;
 
 type
 
@@ -1017,7 +1018,7 @@ begin
   UpdatePictureToolsEnabled;
   UpdateToolSettings;
 
-  Palette.LoadPalette('default.pal');
+  Palette.LoadPalette(vConfigurations.MyDirectory + 'default.pal');
 
   // Main Form
   Caption := lieMain;
@@ -1182,9 +1183,11 @@ begin
 end;
 
 procedure TMainForm.FileNewOnStart;
-var i: integer;
+var
+  i: integer;
 begin
-  if ParamCount > 0 then
+  // With OS X app, ParamStr not meaningful unless launched with --args switch.
+  if (ParamCount > 0) {$IFDEF DARWIN} and (Copy(ParamStr(1), 1, 4) <> '-psn') {$ENDIF} then
   begin
     for i := 1 to ParamCount - 1 do
       Pictures.Load(ParamStr(i));

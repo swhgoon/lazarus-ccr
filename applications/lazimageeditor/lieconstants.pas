@@ -9,6 +9,7 @@ uses
 
 const
   DefaultDirectory = '/usr/share/lazimageeditor/';
+  BundleResourcesDirectory = '/Contents/Resources/';
 
   SectionGeneral = 'General';
   IdentLanguage = 'Language';
