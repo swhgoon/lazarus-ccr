@@ -342,6 +342,9 @@ var
   end;
   
 begin
+  if not FileExists(FileName) then
+    raise Exception.Create(Format('[TCustomColorPalette.LoadPalette] File not found: %s', [FileName]));
+
   AssignFile(F, FileName);
   try
     Reset(F);
