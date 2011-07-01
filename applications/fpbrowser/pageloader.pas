@@ -18,7 +18,7 @@ type
     ContentsList: TStringList;
     constructor Create;
     procedure LoadFromURL(AURL: string);
-    procedure LoadBinaryResource(AURL: string; ADest: TStream);
+    procedure LoadBinaryResource(AURL: string; var ADest: TMemoryStream);
   end;
 
 var
@@ -63,7 +63,8 @@ begin
   end;
 end;
 
-procedure TPageLoader.LoadBinaryResource(AURL: string; ADest: TStream);
+{.$define FPB_DEBUG_IMAGE_LOAD}
+procedure TPageLoader.LoadBinaryResource(AURL: string; var ADest: TMemoryStream);
 var
   Client: THttpSend;
   i: Integer;
@@ -79,14 +80,19 @@ begin
     Client.HttpMethod('GET', AURL);
 
     Client.Document.Position := 0;
-//    ADest.CopyFrom(Client.Document, Client.Document.Size);
+    ADest := TMemoryStream.Create;
+    ADest.CopyFrom(Client.Document, Client.Document.Size);
+//    ADest.SaveToFile('/Users/felipe/test.gif');
 
-{    ContentsList.LoadFromStream(Client.Document);
+    {$IFDEF FPB_DEBUG_IMAGE_LOAD}
+    ContentsList.LoadFromStream(Client.Document);
 
+    WriteLn('Starting to receive image: ' + AURL);
     for i := 0 to ContentsList.Count-1 do
       WriteLn(ContentsList.Strings[i]);
 
-    Contents := ContentsList.Text;}
+    Contents := ContentsList.Text;
+    {$ENDIF}
   finally
     Client.Free;
   end;
