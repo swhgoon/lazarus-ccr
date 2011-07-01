@@ -19,7 +19,7 @@ uses
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TformBrowser, formBrowser);
   Application.CreateForm(TSubmitForm, SubmitForm);
   Application.Run;
 end.
