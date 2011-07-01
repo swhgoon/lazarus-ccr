@@ -122,10 +122,10 @@ function TConfigurations.GetConfigFilePath: string;
 begin
 {$ifdef Windows}
   // First tryes to use a configuration file in the application directory
-  Result := ExtractFilePath(Application.EXEName) + 'magnifier.ini';
+  Result := ExtractFilePath(Application.EXEName) + 'lazimageeditor.ini';
 {$endif}
 {$ifdef Unix}
-  Result := GetEnvironmentVariable('HOME') + '/.magnifier.ini';
+  Result := GetEnvironmentVariable('HOME') + '/.lazimageeditor.ini';
 {$endif}
 end;
 
