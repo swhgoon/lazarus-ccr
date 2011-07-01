@@ -177,7 +177,7 @@ if Screen.Width <= 640 then
   Position := poScreenCenter;
 {$ENDIF}
 
-{$IFNDEF LCLCarbon}
+{$IFNDEF DARWIN}
 OpenDialog.InitialDir := ExtractFilePath(ParamStr(0));
 {$ELSE}  //Don't default to within app bundle.
 OpenDialog.InitialDir := ExtractFilePath(ParamStr(0)) + '../../../';
@@ -231,7 +231,7 @@ var
   I: integer;
 begin
 // With OS X app, ParamStr not meaningful unless launched with --args switch.
-if (ParamCount >= 1) {$IFDEF LCLCarbon} and (Copy(ParamStr(1), 1, 4) <> '-psn') {$ENDIF} then
+if (ParamCount >= 1) {$IFDEF DARWIN} and (Copy(ParamStr(1), 1, 4) <> '-psn') {$ENDIF} then
   begin            {Parameter is file to load}
  {$IFNDEF LCL}
   S := CmdLine;
@@ -358,7 +358,7 @@ if (I <= 2) or (J > 0) then
     ShellExecute(Handle, nil, StrPCopy(PC, S), StrPCopy(PC2, Params), 
                  nil, SW_SHOWNORMAL); 
  {$ELSE}  //Not sure if this makes any sense since executable won't have .exe.
-  {$IFDEF LCLCarbon}
+  {$IFDEF DARWIN}
     Shell('open -n "' + S + '" --args "' + Params + '"');
   {$ELSE}
     Shell('"' + S + '" "' + Params + '"');
@@ -391,7 +391,7 @@ if (I > 0) or (J > 0) then
 {$IFDEF MSWINDOWS}
   ShellExecute(0, nil, pchar(URL), nil, nil, SW_SHOWNORMAL);
 {$ELSE}
- {$IFDEF LCLCarbon}
+ {$IFDEF DARWIN}
   Shell('open "' + URL + '"');
  {$ELSE}
   Shell('"' + URL + '"');  //use LCL's OpenURL?
@@ -878,7 +878,7 @@ begin
   ShellExecute(Handle, nil, StrPCopy(PC, ParamStr(0)), 
                StrPCopy(PC2, NewWindowFile), nil, SW_SHOWNORMAL); 
  {$ELSE}
-  {$IFDEF LCLCarbon}
+  {$IFDEF DARWIN}
   Shell('open -n "' + 
         ExtractFileDir(ExtractFileDir(ExtractFileDir(ParamStr(0)))) + 
         '" --args "' + NewWindowFile + '"');

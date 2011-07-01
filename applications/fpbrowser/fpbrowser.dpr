@@ -17,10 +17,6 @@ uses
 {$ENDIF}
   ImgForm in 'ImgForm.pas', pageloader {ImageForm};
 
-{$IFDEF MSWINDOWS}
-{$R *.res}
-{$ENDIF}
-
 begin
   Application.Initialize;
   Application.CreateForm(TForm1, Form1);

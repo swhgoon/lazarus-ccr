@@ -6,9 +6,9 @@
       <Flags>
         <LRSInOutputDirectory Value="False"/>
       </Flags>
+      <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <Title Value="fpbrowser"/>
-      <ActiveWindowIndexAtStart Value="0"/>
     </General>
     <VersionInfo>
       <Language Value=""/>
@@ -42,19 +42,11 @@
         <DefaultFilename Value="../../components/thtmlport/package/htmlcomp.lpk" Prefer="True"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="8">
+    <Units Count="6">
       <Unit0>
         <Filename Value="fpbrowser.dpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="fpbrowser"/>
-        <EditorIndex Value="0"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="36" Y="3"/>
-        <UsageCount Value="25"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit0>
       <Unit1>
         <Filename Value="mainform.pas"/>
@@ -63,209 +55,31 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="mainform"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="4"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="22" Y="310"/>
-        <UsageCount Value="25"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit1>
       <Unit2>
         <Filename Value="submit.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
         <UnitName Value="Submit"/>
-        <EditorIndex Value="3"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
-        <UsageCount Value="25"/>
-        <Loaded Value="True"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit2>
       <Unit3>
         <Filename Value="fontdlg.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
         <UnitName Value="Fontdlg"/>
-        <EditorIndex Value="2"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
-        <UsageCount Value="25"/>
-        <Loaded Value="True"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit3>
       <Unit4>
         <Filename Value="htmlabt.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
         <UnitName Value="HTMLAbt"/>
-        <EditorIndex Value="1"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
-        <UsageCount Value="25"/>
-        <Loaded Value="True"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit4>
       <Unit5>
         <Filename Value="pageloader.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="pageloader"/>
-        <EditorIndex Value="6"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="23"/>
-        <CursorPos X="17" Y="31"/>
-        <UsageCount Value="25"/>
-        <Loaded Value="True"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit5>
-      <Unit6>
-        <Filename Value="../../../lazarus/lcl/lcltype.pp"/>
-        <UnitName Value="LCLType"/>
-        <EditorIndex Value="5"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="387"/>
-        <CursorPos X="12" Y="401"/>
-        <UsageCount Value="12"/>
-        <Loaded Value="True"/>
-      </Unit6>
-      <Unit7>
-        <Filename Value="../../components/thtmlport/package/styleun.pas"/>
-        <UnitName Value="StyleUn"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="2521"/>
-        <CursorPos X="43" Y="2554"/>
-        <UsageCount Value="10"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
-      </Unit7>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
-      <Position1>
-        <Filename Value="fpbrowser.dpr"/>
-        <Caret Line="10" Column="7" TopLine="1"/>
-      </Position1>
-      <Position2>
-        <Filename Value="fpbrowser.dpr"/>
-        <Caret Line="11" Column="6" TopLine="1"/>
-      </Position2>
-      <Position3>
-        <Filename Value="fpbrowser.dpr"/>
-        <Caret Line="12" Column="6" TopLine="1"/>
-      </Position3>
-      <Position4>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position4>
-      <Position5>
-        <Filename Value="pageloader.pas"/>
-        <Caret Line="17" Column="24" TopLine="1"/>
-      </Position5>
-      <Position6>
-        <Filename Value="pageloader.pas"/>
-        <Caret Line="18" Column="39" TopLine="1"/>
-      </Position6>
-      <Position7>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="273" Column="48" TopLine="268"/>
-      </Position7>
-      <Position8>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="23" Column="55" TopLine="1"/>
-      </Position8>
-      <Position9>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="270" Column="21" TopLine="246"/>
-      </Position9>
-      <Position10>
-        <Filename Value="pageloader.pas"/>
-        <Caret Line="58" Column="3" TopLine="8"/>
-      </Position10>
-      <Position11>
-        <Filename Value="pageloader.pas"/>
-        <Caret Line="42" Column="3" TopLine="18"/>
-      </Position11>
-      <Position12>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="163" Column="15" TopLine="131"/>
-      </Position12>
-      <Position13>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="969" Column="1" TopLine="945"/>
-      </Position13>
-      <Position14>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position14>
-      <Position15>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="422" Column="23" TopLine="381"/>
-      </Position15>
-      <Position16>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="423" Column="23" TopLine="383"/>
-      </Position16>
-      <Position17>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="450" Column="48" TopLine="409"/>
-      </Position17>
-      <Position18>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="452" Column="21" TopLine="411"/>
-      </Position18>
-      <Position19>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="2" Column="1" TopLine="1"/>
-      </Position19>
-      <Position20>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="45" Column="11" TopLine="5"/>
-      </Position20>
-      <Position21>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="77" Column="21" TopLine="37"/>
-      </Position21>
-      <Position22>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="268" Column="24" TopLine="228"/>
-      </Position22>
-      <Position23>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="272" Column="36" TopLine="232"/>
-      </Position23>
-      <Position24>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="382" Column="9" TopLine="342"/>
-      </Position24>
-      <Position25>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="403" Column="7" TopLine="389"/>
-      </Position25>
-      <Position26>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="995" Column="17" TopLine="958"/>
-      </Position26>
-      <Position27>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position27>
-      <Position28>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="36" Column="25" TopLine="1"/>
-      </Position28>
-      <Position29>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="270" Column="1" TopLine="255"/>
-      </Position29>
-      <Position30>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="274" Column="5" TopLine="255"/>
-      </Position30>
-    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="10"/>
@@ -298,6 +112,9 @@
       </Options>
     </Linking>
     <Other>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
       <CustomOptions Value="-dDebugIt"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
