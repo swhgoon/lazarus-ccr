@@ -5,7 +5,7 @@ uses
 {$IFDEF LCL}
   Interfaces,
 {$ENDIF}
-  Forms, laz_synapse,
+  Forms, printer4lazarus, laz_synapse,
   mainform {Form1},
   Submit in 'Submit.pas' {SubmitForm},
   Fontdlg in 'Fontdlg.pas' {FontForm},

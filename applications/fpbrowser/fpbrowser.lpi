@@ -30,17 +30,20 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="3">
+    <RequiredPackages Count="4">
       <Item1>
-        <PackageName Value="laz_synapse"/>
+        <PackageName Value="Printer4Lazarus"/>
       </Item1>
       <Item2>
-        <PackageName Value="LCL"/>
+        <PackageName Value="laz_synapse"/>
       </Item2>
       <Item3>
+        <PackageName Value="LCL"/>
+      </Item3>
+      <Item4>
         <PackageName Value="htmlcomp"/>
         <DefaultFilename Value="../../components/thtmlport/package/htmlcomp.lpk" Prefer="True"/>
-      </Item3>
+      </Item4>
     </RequiredPackages>
     <Units Count="6">
       <Unit0>
@@ -83,9 +86,6 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="10"/>
-    <SearchPaths>
-      <OtherUnitFiles Value="$(LazarusDir)/components/printers/lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
-    </SearchPaths>
     <Parsing>
       <SyntaxOptions>
         <SyntaxMode Value="Delphi"/>
