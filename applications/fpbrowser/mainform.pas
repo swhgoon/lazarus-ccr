@@ -788,12 +788,16 @@ begin
   J := Pos(':', UpperCase(SRC));
   if J = 0 then
   begin
-    URL := MyPageLoader.LastPageURL + Copy(SRC, 2, Length(SRC)-1)
+    if (Length(MyPageLoader.LastPageURL) > 0) and
+     (MyPageLoader.LastPageURL[Length(MyPageLoader.LastPageURL)] = '/') then
+      URL := MyPageLoader.LastPageURL + Copy(SRC, 2, Length(SRC)-1)
+    else
+      URL := MyPageLoader.LastPageURL + SRC;
   end
-  else URL := SRC;
+  else
+    URL := SRC;
 
-
-  J := Pos('HTTP:', UpperCase(URL));
+  J := Pos('http:', LowerCase(URL));
   if (J > 0) then
   begin
     MyPageLoader.LoadBinaryResource(URL, Stream);

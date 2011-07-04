@@ -3,7 +3,7 @@ object formBrowser: TformBrowser
   Height = 439
   Top = 267
   Width = 621
-  ClientHeight = 439
+  ClientHeight = 419
   ClientWidth = 621
   Color = clBtnFace
   Font.Color = clWindowText
@@ -13,11 +13,12 @@ object formBrowser: TformBrowser
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
+  Position = poScreenCenter
   LCLVersion = '0.9.31'
   object Panel1: TPanel
     Left = 0
     Height = 18
-    Top = 421
+    Top = 401
     Width = 621
     Align = alBottom
     Alignment = taLeftJustify
@@ -48,9 +49,10 @@ object formBrowser: TformBrowser
     TabOrder = 1
     object editURL: TEdit
       Left = 190
-      Height = 22
+      Height = 24
       Top = 4
       Width = 337
+      AutoSize = False
       OnKeyDown = editURLKeyDown
       TabStop = False
       TabOrder = 3
@@ -88,19 +90,19 @@ object formBrowser: TformBrowser
   end
   object Panel3: TPanel
     Left = 0
-    Height = 388
+    Height = 368
     Top = 33
     Width = 621
     Align = alClient
     BevelInner = bvLowered
     BevelOuter = bvNone
     Caption = 'Panel3'
-    ClientHeight = 388
+    ClientHeight = 368
     ClientWidth = 621
     TabOrder = 2
     object Viewer: THTMLViewer
       Left = 1
-      Height = 386
+      Height = 366
       Top = 1
       Width = 619
       OnHotSpotCovered = HotSpotChange

@@ -86,6 +86,9 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="10"/>
+    <SearchPaths>
+      <OtherUnitFiles Value="../../components/thtmlport/package"/>
+    </SearchPaths>
     <Parsing>
       <SyntaxOptions>
         <SyntaxMode Value="Delphi"/>

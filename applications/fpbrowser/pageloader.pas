@@ -38,8 +38,12 @@ end;
 procedure TPageLoader.LoadFromURL(AURL: string);
 var
   Client: THttpSend;
+  J: Integer;
 begin
-  LastPageURL := AURL;
+  // If there is no protocol, add http
+  J := Pos(':', AURL);
+  if (J = 0) then LastPageURL := 'http://' + AURL
+  else LastPageURL := AURL;
 
   Client := THttpSend.Create;
   try
@@ -52,7 +56,7 @@ begin
 //  end;
 
 //  Client.UserAgent := AUserAgent;
-    Client.HttpMethod('GET', AURL);
+    Client.HttpMethod('GET', LastPageURL);
     Client.Document.Position := 0;
 
     ContentsList.LoadFromStream(Client.Document);
@@ -63,7 +67,6 @@ begin
   end;
 end;
 
-{.$define FPB_DEBUG_IMAGE_LOAD}
 procedure TPageLoader.LoadBinaryResource(AURL: string; var ADest: TMemoryStream);
 var
   Client: THttpSend;
@@ -82,17 +85,7 @@ begin
     Client.Document.Position := 0;
     ADest := TMemoryStream.Create;
     ADest.CopyFrom(Client.Document, Client.Document.Size);
-//    ADest.SaveToFile('/Users/felipe/test.gif');
-
-    {$IFDEF FPB_DEBUG_IMAGE_LOAD}
-    ContentsList.LoadFromStream(Client.Document);
-
-    WriteLn('Starting to receive image: ' + AURL);
-    for i := 0 to ContentsList.Count-1 do
-      WriteLn(ContentsList.Strings[i]);
-
-    Contents := ContentsList.Text;
-    {$ENDIF}
+//    WriteLn(AURL, ' Size: ', ADest.Size);
   finally
     Client.Free;
   end;
