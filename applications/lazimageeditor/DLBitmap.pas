@@ -148,6 +148,8 @@ function DWordTrans(SrcRow: TRGBATriple): DWORD;
 function DWordToTriple(SrcRow: DWORD): TRGBATriple;
 procedure StretchLinear(Dest, Src: TDLBitmap);
 procedure StretchDLBMP(ACanvas: TCanvas; Src: TDLBitmap; NewLeft, NewTop, NewWidth, NewHeight: integer);
+procedure StretchDLBMPEx(ACanvas: TCanvas; Src: TDLBitmap;
+  NewLeft, NewTop, NewWidth, NewHeight: integer; Posx, Posy, aWidth, aHeight: integer);
 procedure DrawRegularPolygon(aCanvas: TCanvas; Center, ThePoint: TPoint; Count: integer);
 
 implementation

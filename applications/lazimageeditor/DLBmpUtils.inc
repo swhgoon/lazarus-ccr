@@ -769,6 +769,65 @@ begin
   aCanvas.Polygon(ptempaddr);
 end;
 
+procedure StretchDLBMPEx(ACanvas: TCanvas; Src: TDLBitmap;
+  NewLeft, NewTop, NewWidth, NewHeight: integer; Posx, Posy, aWidth, aHeight: integer);
+var
+  dw, dh, i, j, k, ypos, xpos, ylen, xlen: DWord; Dest: TDLBitmap; sw, sh: Float; LScan1, LScan2: pRGBATriple;
+begin
+  Dest := TDLBitmap.Create;
+  dw := NewWidth - NewLeft;
+  dh := NewHeight - NewTop;
+  sw := dw / Src.Width;
+  sh := dh / Src.Height;
+  if sw = 0 then
+    sw := 1;
+  if sh = 0 then
+    sh := 1;
+  Dest.Width := dw;
+  Dest.Height := dh;
+  if dw > aWidth then
+    xlen := aWidth
+  else
+    xlen := dw;
+  if dh > aHeight then
+    ylen := aHeight
+  else
+    ylen := dh;
+{  if Pos.y > 0 then
+    ypos := Pos.y - NewTop
+  else
+    ypos := 0;
+  if Pos.x > 0 then
+    xpos := Pos.x - NewLeft
+  else
+    xpos := 0;    }
+  if aWidth > dw then
+    xpos := 0
+  else
+    xpos := Posx - NewLeft;
+  if aHeight > dh then
+    ypos := 0
+  else
+    ypos := Posy - NewTop;
+{  for  i := ypos to ylen - 1 do
+  begin
+    LScan1 := Dest.Scanline[i];
+    LScan2 := Src.Scanline[Trunc(i / sh)];
+    for  j := xpos to xlen - 1 do
+    begin
+      k := Trunc(j / sw);
+      LScan1[j].rgbtBlue := LScan2[k].rgbtBlue;
+      LScan1[j].rgbtGreen := LScan2[k].rgbtGreen;
+      LScan1[j].rgbtRed := LScan2[k].rgbtRed;
+    end;
+  end;    }
+    for  i := ypos to ylen - 1 do
+    for  j := xpos to xlen - 1 do
+      Dest.Pixels[j, i] := Src.Pixels[Trunc(j / sw), Trunc(i / sh)];
+  Dest.InvalidateScanLine;
+  ACanvas.Draw(NewLeft, NewTop, Dest);
+  Dest.Free;
+end;
 
 
 

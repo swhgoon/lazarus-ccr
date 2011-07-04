@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, LCLType, LCLIntf, Controls, Forms, ExtCtrls, Graphics, Math,
-  BmpRGBGraph, BmpRGBUtils, BmpRGBTypes, DLBitmap;
+  LMessages, BmpRGBGraph, BmpRGBUtils, BmpRGBTypes, DLBitmap;
 
 type
   TPictureViewOption = (poShowGrid, poShowMask);
@@ -55,11 +55,14 @@ type
     FStartPos: TPoint;
     FEndPos: TPoint;
     FPaintIndex: integer;
+    HorzPos, VertPos: integer;
     procedure SetOptions(const AValue: TPictureViewOptions);
     procedure SetPicture(const AValue: TPictureBitmap);
     procedure SetZoom(const AValue: single);
     procedure MaskDraw(Data: PtrInt);
   protected
+    procedure WMHScroll(var Message : TLMHScroll); message LM_HScroll;
+    procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
     procedure PictureMouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: integer); dynamic;
     procedure PictureMouseMove(Shift: TShiftState; X, Y: integer); dynamic;
@@ -438,6 +441,18 @@ begin
   inherited;
 end;
 
+procedure TCustomPictureView.WMHScroll(var Message : TLMHScroll);
+begin
+  inherited;
+  HorzPos := Message.Pos;
+end;
+
+procedure TCustomPictureView.WMVScroll(var Message : TLMVScroll);
+begin
+  inherited;
+  VertPos := Message.Pos;
+end;
+
 procedure TCustomPictureView.Paint;
 var
   I: integer;
@@ -454,8 +469,9 @@ begin
     if Assigned(FPicture) then
     begin
       FPicture.StretchDrawTo(Canvas, FPictureRect.Left, FPictureRect.Top,
-        FPictureRect.Right, FPictureRect.Bottom);
-
+        FPictureRect.Right, FPictureRect.Bottom, HorzPos,
+        VertPos, Width, Height);
+    application.Mainform.Caption := IntToStr(HorzPos);
       if (poShowGrid in Options) and (Zoom > 2.0) then
       begin
         Pen.Color := clGray;
