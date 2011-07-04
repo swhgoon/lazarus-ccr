@@ -32,14 +32,19 @@ type
   { TformBrowser }
 
   TformBrowser = class(TForm)
+    memoSource: TMemo;
+    memoDebug: TMemo;
+    menuViewDebug: TMenuItem;
+    N1: TMenuItem;
     OpenDialog: TOpenDialog;   
     MainMenu: TMainMenu;
+    pageBrowser: TPageControl;
     Panel1: TPanel;
-    Panel2: TPanel;                       
-    Panel3: TPanel;
+    Panel2: TPanel;
     File1: TMenuItem;
     Open: TMenuItem;
     options1: TMenuItem;
+    Panel3: TPanel;
     ShowImages: TMenuItem;
     Fonts: TMenuItem;
     editURL: TEdit;
@@ -53,7 +58,6 @@ type
     Edit2: TMenuItem;
     Find1: TMenuItem;
     FindDialog: TFindDialog;
-    Viewer: THTMLViewer;
     CopyItem: TMenuItem;
     N2: TMenuItem;
     SelectAllItem: TMenuItem;
@@ -64,6 +68,10 @@ type
 {$ENDIF}    
     PopupMenu: TPopupMenu;
     CopyImageToClipboard: TMenuItem;
+    tabBrowser: TTabSheet;
+    tabDebug: TTabSheet;
+    tabSource: TTabSheet;
+    Viewer: THTMLViewer;
     Viewimage: TMenuItem;
     N3: TMenuItem;
     OpenInNewWindow: TMenuItem;
@@ -75,6 +83,7 @@ type
     PrinterSetupDialog: TPrinterSetupDialog;
     PrinterSetup1: TMenuItem;
     procedure editURLKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure menuViewDebugClick(Sender: TObject);
     procedure OpenFileClick(Sender: TObject);
     procedure HotSpotChange(Sender: TObject; const URL: string);
     procedure HotSpotClick(Sender: TObject; const URL: string;
@@ -276,6 +285,12 @@ begin
   end;
 end;
 
+procedure TformBrowser.menuViewDebugClick(Sender: TObject);
+begin
+  pageBrowser.ShowTabs := True;
+  pageBrowser.ActivePageIndex := 2;
+end;
+
 procedure TformBrowser.HotSpotChange(Sender: TObject; const URL: string);
 {mouse moved over or away from a hot spot.  Change the status line}
 var
@@ -307,6 +322,7 @@ var
   S, Params: string[255];
   Ext: string[5];
   ID: string;
+  AbsURL: string;
   I, J, K: integer;
 begin
   Handled := False;
@@ -326,86 +342,87 @@ begin
     Exit;
   end;
 
-  J := Pos('HTTP:', UpperCase(URL));
+  AbsURL := MyPageLoader.URLToAbsoluteURL(URL);
+  J := Pos('HTTP:', UpperCase(AbsURL));
   if (J > 0) then
   begin
-    LoadURL(URL);
+    LoadURL(AbsURL);
     Handled := True;
     Exit;
   end;
 
-I := Pos(':', URL);
-J := Pos('FILE:', UpperCase(URL));
-if (I <= 2) or (J > 0) then
+  I := Pos(':', URL);
+  J := Pos('FILE:', UpperCase(URL));
+  if (I <= 2) or (J > 0) then
   begin                      {apparently the URL is a filename}
-  S := URL;
-  K := Pos(' ', S);     {look for parameters}
-  if K = 0 then K := Pos('?', S);  {could be '?x,y' , etc}
-  if K > 0 then
+    S := URL;
+    K := Pos(' ', S);     {look for parameters}
+    if K = 0 then K := Pos('?', S);  {could be '?x,y' , etc}
+    if K > 0 then
     begin
-    Params := Copy(S, K+1, 255); {save any parameters}
-    S[0] := chr(K-1);            {truncate S}
+      Params := Copy(S, K+1, 255); {save any parameters}
+      S[0] := chr(K-1);            {truncate S}
     end
-  else Params := '';
-  S := Viewer.HTMLExpandFileName(S);
-  Ext := Uppercase(ExtractFileExt(S));
-  if Ext = '.WAV' then
+    else Params := '';
+    S := Viewer.HTMLExpandFileName(S);
+    Ext := Uppercase(ExtractFileExt(S));
+    if Ext = '.WAV' then
     begin
-    Handled := True;
+      Handled := True;
 {$IFNDEF LCL}
-    sndPlaySound(StrPCopy(PC, S), snd_ASync);
+      sndPlaySound(StrPCopy(PC, S), snd_ASync);
 {$ENDIF}
     end
-  else if Ext = '.EXE' then
+    else if Ext = '.EXE' then
     begin
-    Handled := True;
+      Handled := True;
 {$IFNDEF LCL}
-    WinExec(StrPCopy(PC, S+' '+Params), sw_Show);
+      WinExec(StrPCopy(PC, S+' '+Params), sw_Show);
 {$ELSE}
  {$IFDEF MSWINDOWS}
-    ShellExecute(Handle, nil, StrPCopy(PC, S), StrPCopy(PC2, Params), 
+      ShellExecute(Handle, nil, StrPCopy(PC, S), StrPCopy(PC2, Params),
                  nil, SW_SHOWNORMAL); 
  {$ELSE}  //Not sure if this makes any sense since executable won't have .exe.
   {$IFDEF DARWIN}
-    Shell('open -n "' + S + '" --args "' + Params + '"');
+      Shell('open -n "' + S + '" --args "' + Params + '"');
   {$ELSE}
-    Shell('"' + S + '" "' + Params + '"');
+      Shell('"' + S + '" "' + Params + '"');
   {$ENDIF}
  {$ENDIF}
 {$ENDIF}
     end
-  else if (Ext = '.MID') or (Ext = '.AVI')  then
+    else if (Ext = '.MID') or (Ext = '.AVI')  then
     begin
-    Handled := True;
+      Handled := True;
 {$IFNDEF LCL}
-    WinExec(StrPCopy(PC, 'MPlayer.exe /play /close '+S), sw_Show);
+      WinExec(StrPCopy(PC, 'MPlayer.exe /play /close '+S), sw_Show);
 {$ELSE}
  {$IFDEF MSWINDOWS}
-    ShellExecute(Handle, nil, 'MPlayer.exe', '/play /close', 
+      ShellExecute(Handle, nil, 'MPlayer.exe', '/play /close',
                  nil, SW_SHOWNORMAL); 
  {$ELSE}  //No equivalent to MPlayer?
  {$ENDIF}
 {$ENDIF}
     end;
   {else ignore other extensions}
-  editURL.Text := URL;
-  Exit;
+    editURL.Text := URL;
+    Exit;
   end;
 
   I := Pos('MAILTO:', UpperCase(URL));
   if (I > 0) then
   begin
 {$IFDEF MSWINDOWS}
-  ShellExecute(0, nil, pchar(URL), nil, nil, SW_SHOWNORMAL);
+    ShellExecute(0, nil, pchar(URL), nil, nil, SW_SHOWNORMAL);
 {$ELSE}
  {$IFDEF DARWIN}
-  Shell('open "' + URL + '"');
+    Shell('open "' + URL + '"');
  {$ELSE}
-  Shell('"' + URL + '"');  //use LCL's OpenURL?
+    Shell('"' + URL + '"');  //use LCL's OpenURL?
  {$ENDIF}
 {$ENDIF}
-  Handled := True;
-  Exit;
+    Handled := True;
+    Exit;
   end;
 
   editURL.Text := URL;   {other protocall}
@@ -734,18 +751,15 @@ procedure TformBrowser.ViewimageClick(Sender: TObject);
 var
   AForm: TImageForm;
 begin
-AForm := TImageForm.Create(Self);
-with AForm do
-  begin
-  ImageFormBitmap := FoundObject.Bitmap;
-  Caption := '';
-  Show;
-  end;
+  AForm := TImageForm.Create(Self);
+  AForm.ImageFormBitmap := FoundObject.Bitmap;
+  AForm.Caption := '';
+  AForm.Show;
 end;
 
 procedure TformBrowser.CopyImageToClipboardClick(Sender: TObject);
 begin
-Clipboard.Assign(FoundObject.Bitmap);
+  Clipboard.Assign(FoundObject.Bitmap);
 end;
 
 procedure TformBrowser.ObjectClick(Sender, Obj: TObject; const OnClick: String);
@@ -784,18 +798,7 @@ var
   J: Integer;
   URL: string;
 begin
-  // Add the base URL if the URL is relative
-  J := Pos(':', UpperCase(SRC));
-  if J = 0 then
-  begin
-    if (Length(MyPageLoader.LastPageURL) > 0) and
-     (MyPageLoader.LastPageURL[Length(MyPageLoader.LastPageURL)] = '/') then
-      URL := MyPageLoader.LastPageURL + Copy(SRC, 2, Length(SRC)-1)
-    else
-      URL := MyPageLoader.LastPageURL + SRC;
-  end
-  else
-    URL := SRC;
+  URL := MyPageLoader.URLToAbsoluteURL(SRC);
 
   J := Pos('http:', LowerCase(URL));
   if (J > 0) then
@@ -844,7 +847,7 @@ end;
 
 procedure TformBrowser.FormDestroy(Sender: TObject);
 begin
-HintWindow.Free;
+  HintWindow.Free;
 end;
 
 procedure TformBrowser.RightClick(Sender: TObject; Parameters: TRightClickParameters);
@@ -855,7 +858,7 @@ var
   HintWindow: THintWindow;  
   ARect: TRect;
 begin
-with Parameters do
+  with Parameters do
   begin
   FoundObject := Image;
   ViewImage.Enabled := (FoundObject <> Nil) and (FoundObject.Bitmap <> Nil);
@@ -923,23 +926,23 @@ end;
 
 procedure TformBrowser.MetaTimerTimer(Sender: TObject);
 begin
-MetaTimer.Enabled := False;
-if Viewer.CurrentFile = PresentFile then  {don't load if current file has changed}
+  MetaTimer.Enabled := False;
+  if Viewer.CurrentFile = PresentFile then  {don't load if current file has changed}
   begin
-  Viewer.LoadFromFile(NextFile);
-  Caption := Viewer.DocumentTitle;
+    Viewer.LoadFromFile(NextFile);
+    Caption := Viewer.DocumentTitle;
   end;
 end;
 
 procedure TformBrowser.MetaRefreshEvent(Sender: TObject; Delay: Integer;
   const URL: String);
 begin
-NextFile := Viewer.HTMLExpandFilename(URL);  
-if FileExists(NextFile) then
+  NextFile := Viewer.HTMLExpandFilename(URL);
+  if FileExists(NextFile) then
   begin
-  PresentFile := Viewer.CurrentFile;
-  MetaTimer.Interval := Delay*1000;
-  MetaTimer.Enabled := True;
+    PresentFile := Viewer.CurrentFile;
+    MetaTimer.Interval := Delay*1000;
+    MetaTimer.Enabled := True;
   end;
 end;
 
@@ -949,12 +952,12 @@ var
   pf: TPreviewForm;
   Abort: boolean;
 begin
-pf := TPreviewForm.CreateIt(Self, Viewer, Abort);
-try
-  if not Abort then
-    pf.ShowModal;
-finally
-  pf.Free;
+  pf := TPreviewForm.CreateIt(Self, Viewer, Abort);
+  try
+    if not Abort then
+      pf.ShowModal;
+  finally
+    pf.Free;
   end;
 {$ELSE}
 begin
@@ -967,25 +970,25 @@ procedure TformBrowser.ViewerMouseMove(Sender: TObject; Shift: TShiftState; X, Y
 var
   TitleStr: string;
 begin
-if not Timer1.Enabled and Assigned(ActiveControl) and ActiveControl.Focused then    {9.25}
+  if not Timer1.Enabled and Assigned(ActiveControl) and ActiveControl.Focused then    {9.25}
   begin
-  TitleStr := Viewer.TitleAttr;
-  if TitleStr = '' then
-    OldTitle := ''
-  else if TitleStr <> OldTitle then
+    TitleStr := Viewer.TitleAttr;
+    if TitleStr = '' then
+      OldTitle := ''
+    else if TitleStr <> OldTitle then
     begin
-    TimerCount := 0;
-    Timer1.Enabled := True;
-    OldTitle := TitleStr;
+      TimerCount := 0;
+      Timer1.Enabled := True;
+      OldTitle := TitleStr;
     end;
   end;
 end;
 
 procedure TformBrowser.CloseAll;
 begin
-Timer1.Enabled := False;
-HintWindow.ReleaseHandle;
-HintVisible := False;
+  Timer1.Enabled := False;
+  HintWindow.ReleaseHandle;
+  HintVisible := False;
 end;
 
 procedure TformBrowser.LoadURL(AURL: string);
@@ -993,6 +996,12 @@ begin
   MyPageLoader.LoadFromURL(AURL);
   Viewer.LoadFromString(MyPageLoader.Contents);
   Caption := Viewer.DocumentTitle;
+
+  // Load source and debug info
+  memoSource.Lines.Clear();
+  memoSource.Lines.AddStrings(MyPageLoader.ContentsList);
+  memoDebug.Lines.Clear();
+  memoDebug.Lines.AddStrings(MyPageLoader.DebugInfo);
 end;
 
 procedure TformBrowser.Timer1Timer(Sender: TObject);

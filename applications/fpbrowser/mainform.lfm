@@ -88,56 +88,104 @@ object formBrowser: TformBrowser
       TabOrder = 2
     end
   end
-  object Panel3: TPanel
+  object pageBrowser: TPageControl
     Left = 0
     Height = 368
     Top = 33
     Width = 621
+    ActivePage = tabBrowser
     Align = alClient
-    BevelInner = bvLowered
-    BevelOuter = bvNone
-    Caption = 'Panel3'
-    ClientHeight = 368
-    ClientWidth = 621
+    ShowTabs = False
+    TabIndex = 0
     TabOrder = 2
-    object Viewer: THTMLViewer
-      Left = 1
-      Height = 366
-      Top = 1
-      Width = 619
-      OnHotSpotCovered = HotSpotChange
-      OnHotSpotClick = HotSpotClick
-      OnImageRequest = ViewerImageRequest
-      OnFormSubmit = SubmitEvent
-      OnHistoryChange = HistoryChange
-      OnProgress = ViewerProgress
-      TabStop = True
-      TabOrder = 0
-      Align = alClient
-      DefBackground = clWindow
-      BorderStyle = htFocused
-      HistoryMaxCount = 6
-      DefFontName = 'Times New Roman'
-      DefPreFontName = 'Courier New'
-      DefFontColor = clWindowText
-      DefOverLinkColor = clFuchsia
-      ImageCacheCount = 6
-      NoSelect = False
-      CharSet = DEFAULT_CHARSET
-      PrintMarginLeft = 2
-      PrintMarginRight = 2
-      PrintMarginTop = 2
-      PrintMarginBottom = 2
-      PrintScale = 1
-      OnMouseMove = ViewerMouseMove
-      OnProcessing = ProcessingHandler
-      OnPrintHTMLHeader = ViewerPrintHTMLHeader
-      OnPrintHTMLFooter = ViewerPrintHTMLFooter
-      OnInclude = ViewerInclude
-      OnSoundRequest = SoundRequest
-      OnMetaRefresh = MetaRefreshEvent
-      OnObjectClick = ObjectClick
-      OnRightClick = RightClick
+    object tabBrowser: TTabSheet
+      Caption = 'Browser'
+      ClientHeight = 360
+      ClientWidth = 613
+      object Panel3: TPanel
+        Left = 0
+        Height = 360
+        Top = 0
+        Width = 613
+        Align = alClient
+        BevelInner = bvLowered
+        BevelOuter = bvNone
+        Caption = 'Panel3'
+        ClientHeight = 360
+        ClientWidth = 613
+        TabOrder = 0
+        object Viewer: THTMLViewer
+          Left = 1
+          Height = 358
+          Top = 1
+          Width = 611
+          OnHotSpotCovered = HotSpotChange
+          OnHotSpotClick = HotSpotClick
+          OnImageRequest = ViewerImageRequest
+          OnFormSubmit = SubmitEvent
+          OnHistoryChange = HistoryChange
+          OnProgress = ViewerProgress
+          TabStop = True
+          TabOrder = 0
+          Align = alClient
+          DefBackground = clWindow
+          BorderStyle = htFocused
+          HistoryMaxCount = 6
+          DefFontName = 'Times New Roman'
+          DefPreFontName = 'Courier New'
+          DefFontColor = clWindowText
+          DefOverLinkColor = clFuchsia
+          ImageCacheCount = 6
+          NoSelect = False
+          CharSet = DEFAULT_CHARSET
+          PrintMarginLeft = 2
+          PrintMarginRight = 2
+          PrintMarginTop = 2
+          PrintMarginBottom = 2
+          PrintScale = 1
+          OnMouseMove = ViewerMouseMove
+          OnProcessing = ProcessingHandler
+          OnPrintHTMLHeader = ViewerPrintHTMLHeader
+          OnPrintHTMLFooter = ViewerPrintHTMLFooter
+          OnInclude = ViewerInclude
+          OnSoundRequest = SoundRequest
+          OnMetaRefresh = MetaRefreshEvent
+          OnObjectClick = ObjectClick
+          OnRightClick = RightClick
+        end
+      end
+    end
+    object tabDebug: TTabSheet
+      Caption = 'Debug'
+      ClientHeight = 360
+      ClientWidth = 613
+      object memoDebug: TMemo
+        Left = 0
+        Height = 360
+        Top = 0
+        Width = 613
+        Align = alClient
+        Lines.Strings = (
+          'memoDebug'
+        )
+        TabOrder = 0
+      end
+    end
+    object tabSource: TTabSheet
+      Caption = 'tabSource'
+      ClientHeight = 360
+      ClientWidth = 613
+      object memoSource: TMemo
+        Left = 0
+        Height = 360
+        Top = 0
+        Width = 613
+        Align = alClient
+        Lines.Strings = (
+          'memoSource'
+        )
+        TabOrder = 0
+      end
     end
   end
   object OpenDialog: TOpenDialog
@@ -210,7 +258,7 @@ object formBrowser: TformBrowser
       end
     end
     object options1: TMenuItem
-      Caption = '&Options'
+      Caption = '&Tools'
       object ShowImages: TMenuItem
         Caption = '&Show images'
         OnClick = ShowImagesClick
@@ -218,6 +266,10 @@ object formBrowser: TformBrowser
       object Fonts: TMenuItem
         Caption = 'Default &Font/Colors...'
         OnClick = FontColorsClick
+      end
+      object menuViewDebug: TMenuItem
+        Caption = 'View Source and Debug info'
+        OnClick = menuViewDebugClick
       end
     end
     object HistoryMenuItem: TMenuItem
@@ -241,8 +293,8 @@ object formBrowser: TformBrowser
   object FindDialog: TFindDialog
     Options = [frDown, frHideWholeWord, frDisableWholeWord]
     OnFind = FindDialogFind
-    left = 249
-    top = 65535
+    left = 248
+    top = 4
   end
   object PopupMenu: TPopupMenu
     left = 400
