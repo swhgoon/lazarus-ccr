@@ -115,14 +115,12 @@ implementation
 
 { TfrmEditWindow }
 
+function CreateLargeButton(Pane : TSpkPane) : TSpkBaseItem;
+begin
+result:=Pane.Items.AddLargeButton;
+end;
+
 procedure TfrmEditWindow.aAddLargeButtonExecute(Sender: TObject);
-
-  function CreateLargeButton(Pane : TSpkPane) : TSpkBaseItem;
-
-  begin
-  result:=Pane.Items.AddLargeButton;
-  end;
-
 begin
 if (FToolbar=nil) or (FDesigner=nil) then
    exit;
@@ -151,7 +149,7 @@ if Node.Data = nil then
 Obj:=TObject(Node.Data);
 if Obj is TSpkTab then
    begin
-   Tab:=Obj as TSpkTab;
+   Tab:=TSpkTab(Obj);
    Pane:=Tab.Panes.Add;
    NewNode:=tvStructure.Items.AddChild(Node, Pane.Caption);
    NewNode.Data:=Pane;
@@ -200,14 +198,13 @@ if Obj is TSpkBaseItem then
        raise exception.create('TfrmEditWindow.aAddPaneExecute: Nieprawid³owy obiekt podwieszony pod ga³êzi¹!');
 end;
 
+function CreateSmallButton(Pane : TSpkPane) : TSpkBaseItem;
+
+begin
+result:=Pane.Items.AddSmallButton;
+end;
+
 procedure TfrmEditWindow.aAddSmallButtonExecute(Sender: TObject);
-
-  function CreateSmallButton(Pane : TSpkPane) : TSpkBaseItem;
-
-  begin
-  result:=Pane.Items.AddSmallButton;
-  end;
-
 begin
 if (FToolbar=nil) or (FDesigner=nil) then
    exit;
@@ -258,7 +255,7 @@ if Node.Data = nil then
 Obj:=TObject(Node.Data);
 if Obj is TSpkPane then
    begin
-   Pane:=Obj as TSpkPane;
+   Pane:=TSpkPane(Obj);
    Item:=CreateItemFunc(Pane);
    s:=GetItemCaption(Item);
    NewNode:=tvStructure.Items.AddChild(Node, s);
@@ -556,7 +553,7 @@ else
          end else
       if Obj is TSpkPane then
          begin
-         Pane:=Obj as TSpkPane;
+         Pane:=TSpkPane(Obj);
 
          if not(CheckValidPaneNode(Node)) then
             raise exception.create('TfrmEditWindow.CheckActionsAvailability: Uszkodzona struktura drzewa!');
@@ -581,7 +578,7 @@ else
          end else
       if Obj is TSpkBaseItem then
          begin
-         Item:=Obj as TSpkBaseItem;
+         Item:=TSpkBaseItem(Obj);
 
          if not(CheckValidItemNode(Node)) then
             raise exception.create('TfrmEditWindow.CheckActionsAvailability: Uszkodzona struktura drzewa!');
