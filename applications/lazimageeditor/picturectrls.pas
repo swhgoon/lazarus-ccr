@@ -434,6 +434,7 @@ begin
   FScrollStop := TPanel.Create(Self);
   FScrollStop.SetBounds(0, 0, 0, 0);
   FScrollStop.Parent := Self;
+  Self.AutoScroll := True;
 end;
 
 destructor TCustomPictureView.Destroy;
@@ -444,13 +445,13 @@ end;
 procedure TCustomPictureView.WMHScroll(var Message : TLMHScroll);
 begin
   inherited;
-  HorzPos := Message.Pos;
+  //HorzPos := Message.Pos;
 end;
 
 procedure TCustomPictureView.WMVScroll(var Message : TLMVScroll);
 begin
   inherited;
-  VertPos := Message.Pos;
+  //VertPos := Message.Pos;
 end;
 
 procedure TCustomPictureView.Paint;
@@ -468,10 +469,10 @@ begin
 
     if Assigned(FPicture) then
     begin
+      HorzPos := HorzScrollbar.Position;
+      VertPos := VertScrollbar.Position;
       FPicture.StretchDrawTo(Canvas, FPictureRect.Left, FPictureRect.Top,
-        FPictureRect.Right, FPictureRect.Bottom, HorzPos,
-        VertPos, Width, Height);
-    application.Mainform.Caption := IntToStr(HorzPos);
+        FPictureRect.Right, FPictureRect.Bottom, HorzPos, VertPos, Width, Height);
       if (poShowGrid in Options) and (Zoom > 2.0) then
       begin
         Pen.Color := clGray;

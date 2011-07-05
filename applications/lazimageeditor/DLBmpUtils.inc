@@ -1,5 +1,9 @@
 {
-These are the TDLBitmap process functions.
+  Authors: Felipe Monteiro de Carvalho, Yang JiXian
+
+  License: The same modifying LGPL with static linking exception as the LCL
+
+  Those are the TDLBitmap process functions.
 }
 
 procedure LazBMPRotate90(const aBitmap: TDLBitmap; IsTurnRight: boolean);
@@ -786,44 +790,35 @@ begin
   Dest.Width := dw;
   Dest.Height := dh;
   if dw > aWidth then
-    xlen := aWidth
+  begin
+    xlen := Min(aWidth + Posx, dw);
+    xpos := Posx;
+  end
   else
+  begin
     xlen := dw;
-  if dh > aHeight then
-    ylen := aHeight
-  else
-    ylen := dh;
-{  if Pos.y > 0 then
-    ypos := Pos.y - NewTop
-  else
-    ypos := 0;
-  if Pos.x > 0 then
-    xpos := Pos.x - NewLeft
-  else
-    xpos := 0;    }
-  if aWidth > dw then
     xpos := 0
+  end;
+  if dh > aHeight then
+  begin
+    ylen := Min(aHeight + Posy, dh);
+    ypos := Posy;
+  end
   else
-    xpos := Posx - NewLeft;
-  if aHeight > dh then
+  begin
+    ylen := dh;
     ypos := 0
-  else
-    ypos := Posy - NewTop;
-{  for  i := ypos to ylen - 1 do
+  end;
+  for  i := ypos to ylen - 1 do
   begin
     LScan1 := Dest.Scanline[i];
     LScan2 := Src.Scanline[Trunc(i / sh)];
     for  j := xpos to xlen - 1 do
     begin
       k := Trunc(j / sw);
-      LScan1[j].rgbtBlue := LScan2[k].rgbtBlue;
-      LScan1[j].rgbtGreen := LScan2[k].rgbtGreen;
-      LScan1[j].rgbtRed := LScan2[k].rgbtRed;
+      LScan1[j] := LScan2[k];
     end;
-  end;    }
-    for  i := ypos to ylen - 1 do
-    for  j := xpos to xlen - 1 do
-      Dest.Pixels[j, i] := Src.Pixels[Trunc(j / sw), Trunc(i / sh)];
+  end;
   Dest.InvalidateScanLine;
   ACanvas.Draw(NewLeft, NewTop, Dest);
   Dest.Free;

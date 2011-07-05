@@ -128,7 +128,7 @@ type
     procedure FuzzyRectangle(X1, Y1, X2, Y2: integer);
   public
     procedure DrawTo(ACanvas: TCanvas; X, Y: integer);
-    procedure StretchDrawTo(ACanvas: TCanvas; DstX, DstY, DstWidth, DstHeight: integer);
+    procedure StretchDrawTo(ACanvas: TCanvas; DstX, DstY, DstWidth, DstHeight, HPos, VPos, aWidth, aHeight: integer);
 
     property EraseMode: TEraseMode read FEraseMode write FEraseMode;
     property DrawMode: TDrawMode read FDrawMode write FDrawMode;
@@ -596,12 +596,12 @@ begin
 end;
 
 procedure TRGBBitmapCore.StretchDrawTo(ACanvas: TCanvas;
-  DstX, DstY, DstWidth, DstHeight: integer);
+  DstX, DstY, DstWidth, DstHeight, HPos, VPos, aWidth, aHeight: integer);
 begin
  // if ACanvas <> nil then
   //  ACanvas.StretchDraw(Rect(DstX, DstY, DstWidth, DstHeight), Self);
  //   StretchDLBMP(Self, 3, 3);
-    StretchDLBMP(ACanvas, Self, DstX, DstY, DstWidth, DstHeight);
+    StretchDLBMPEx(ACanvas, Self, DstX, DstY, DstWidth, DstHeight, HPos, VPos, aWidth, aHeight);
   {begin
     ACanvas.AntialiasingMode:=amOff;
     ACanvas.CopyMode:=cmSrcPaint;

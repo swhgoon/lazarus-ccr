@@ -1,3 +1,15 @@
+{
+  Authors: Felipe Monteiro de Carvalho, Yang JiXian
+
+  License: The same modifying LGPL with static linking exception as the LCL
+
+  This unit implements the TDLBitmap class which has similar property "ScanLine"
+  of Delphi TBitmap. With this property we can reuse some classic code of delphi
+  to yield our platform independent bitmap class. We hope it simple and powerful.
+
+  Also some useful image process function has been added into the class.
+}
+
 unit DLBitmap;
 
 {$mode objfpc}{$H+}
