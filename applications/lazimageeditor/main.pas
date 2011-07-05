@@ -64,6 +64,10 @@ type
     FileSaveAs: TAction;
     FlipHorizontally: TAction;
     FlipVertically: TAction;
+    EditSize: TSpinEdit;
+    EditRoundness: TSpinEdit;
+    EditDensity: TSpinEdit;
+    EditTolerance: TSpinEdit;
     ToolsImageList: TImageList;
     PolyNum: TSpinEdit;
     Label1: TLabel;
@@ -91,10 +95,6 @@ type
     MenuItemView: TMenuItem;
     MenuItemClipPaperToMask: TMenuItem;
     Bevel2: TBevel;
-    EditDensity: TEdit;
-    EditRoundness: TEdit;
-    EditSize: TEdit;
-    EditTolerance: TEdit;
     LabelDensity: TLabel;
     LabelRoundness: TLabel;
     LabelShape: TLabel;
@@ -217,11 +217,7 @@ type
     ToolPen: TToolButton;
     ToolColorPick: TToolButton;
     ToolMask: TToolButton;
-    UpDownDensity: TUpDown;
-    UpDownRoundness: TUpDown;
-    UpDownSize: TUpDown;
     UpDownSize1: TUpDown;
-    UpDownTolerance: TUpDown;
     ViewShowGrid: TAction;
     ViewShowMask: TAction;
     procedure checkFuzzyChange(Sender: TObject);
@@ -396,8 +392,8 @@ begin
     PanelFill.Color := FillColor;
     PanelPaper.Color := PaperColor;
 
-    UpDownDensity.Position := Round(RandomDensity * 100);
-    UpDownSize.Position := Size;
+//    UpDownDensity.Position := Round(RandomDensity * 100);
+//    UpDownSize.Position := Size;
 
     case Shape of
       psRect: ToolRectShape.Down := True;
@@ -416,8 +412,8 @@ begin
       mtFloodFill: ToolMaskFloodFill.Down := True;
     end;
 
-    UpDownRoundness.Position := RectangleRoundness;
-    UpDownTolerance.Position := Round(FloodFillTolerance * 100);
+//    UpDownRoundness.Position := RectangleRoundness;
+//    UpDownTolerance.Position := Round(FloodFillTolerance * 100);
 
     ComboBoxZoom.Text := Format('%d %%', [Round(Zoom * 100)]);
 
@@ -1331,7 +1327,7 @@ procedure TMainForm.EditDensityChange(Sender: TObject);
 begin
   if not Pictures.CanEdit then
     Exit;
-  ActivePictureEdit.RandomDensity := UpDownDensity.Position / 100;
+  ActivePictureEdit.RandomDensity := EditDensity.Value / 100;
 end;
 
 procedure TMainForm.EditPasteExecute(Sender: TObject);
@@ -1343,7 +1339,7 @@ procedure TMainForm.EditRoundnessChange(Sender: TObject);
 begin
   if not Pictures.CanEdit then
     Exit;
-  ActivePictureEdit.RectangleRoundness := UpDownRoundness.Position;
+  ActivePictureEdit.RectangleRoundness := EditRoundness.Value;
 end;
 
 procedure TMainForm.EditSelectAllExecute(Sender: TObject);
@@ -1404,14 +1400,14 @@ procedure TMainForm.EditSizeChange(Sender: TObject);
 begin
   if not Pictures.CanEdit then
     Exit;
-  ActivePictureEdit.Size := UpDownSize.Position;
+  ActivePictureEdit.Size := EditSize.Value;
 end;
 
 procedure TMainForm.EditToleranceChange(Sender: TObject);
 begin
   if not Pictures.CanEdit then
     Exit;
-  ActivePictureEdit.FloodFillTolerance := UpDownTolerance.Position / 100;
+  ActivePictureEdit.FloodFillTolerance := EditTolerance.Value / 100;
 end;
 
 

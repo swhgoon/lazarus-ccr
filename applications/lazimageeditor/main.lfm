@@ -169,7 +169,7 @@
         Hint = 'Text'
         Top = 442
         Grouped = True
-        ImageIndex = 11
+        ImageIndex = 12
         OnClick = ToolTextClick
         ParentShowHint = False
         ShowHint = True
@@ -180,7 +180,7 @@
         Hint = 'Institute Color'
         Top = 482
         Grouped = True
-        ImageIndex = 12
+        ImageIndex = 11
         OnClick = ToolcolorReplacerClick
         ParentShowHint = False
         ShowHint = True
@@ -1032,7 +1032,7 @@
           Left = 36
           Height = 32
           Top = 2
-          Width = 42
+          Width = 32
           Anchors = [akLeft]
           Glyph.Data = {
             36090000424D3609000000000000360000002800000018000000180000000100
@@ -1115,7 +1115,7 @@
           OnClick = ToolMaskEllipseClick
         end
         object ToolMaskFloodFill: TSpeedButton
-          Left = 78
+          Left = 68
           Height = 32
           Top = 2
           Width = 32
@@ -1290,28 +1290,14 @@
         ClientHeight = 34
         ClientWidth = 67
         TabOrder = 0
-        object EditSize: TEdit
-          Left = 3
+        object EditSize: TSpinEdit
+          Left = 4
           Height = 27
           Top = 3
-          Width = 43
-          Anchors = [akLeft]
+          Width = 50
           OnChange = EditSizeChange
           TabOrder = 0
-          Text = '10'
-        end
-        object UpDownSize: TUpDown
-          Left = 46
-          Height = 27
-          Top = 3
-          Width = 17
-          Associate = EditSize
-          Min = 1
-          Max = 200
-          Position = 10
-          TabOrder = 1
-          Thousands = False
-          Wrap = False
+          Value = 10
         end
       end
       object PanelDensity: TPanel
@@ -1324,27 +1310,14 @@
         ClientHeight = 34
         ClientWidth = 69
         TabOrder = 1
-        object EditDensity: TEdit
-          Left = 3
+        object EditDensity: TSpinEdit
+          Left = 4
           Height = 27
           Top = 3
-          Width = 42
-          Anchors = [akLeft]
+          Width = 56
           OnChange = EditDensityChange
           TabOrder = 0
-          Text = '100'
-        end
-        object UpDownDensity: TUpDown
-          Left = 45
-          Height = 27
-          Top = 3
-          Width = 17
-          Associate = EditDensity
-          Min = 0
-          Position = 100
-          TabOrder = 1
-          Thousands = False
-          Wrap = False
+          Value = 100
         end
       end
       object PanelRoundness: TPanel
@@ -1357,28 +1330,13 @@
         ClientHeight = 34
         ClientWidth = 68
         TabOrder = 2
-        object EditRoundness: TEdit
-          Left = 4
+        object EditRoundness: TSpinEdit
+          Left = 5
           Height = 27
           Top = 3
-          Width = 42
-          Anchors = [akLeft]
+          Width = 50
           OnChange = EditRoundnessChange
           TabOrder = 0
-          Text = '0'
-        end
-        object UpDownRoundness: TUpDown
-          Left = 46
-          Height = 27
-          Top = 3
-          Width = 17
-          Associate = EditRoundness
-          Min = 0
-          Max = 4096
-          Position = 0
-          TabOrder = 1
-          Thousands = False
-          Wrap = False
         end
       end
       object PanelTolerance: TPanel
@@ -1391,27 +1349,13 @@
         ClientHeight = 34
         ClientWidth = 68
         TabOrder = 3
-        object EditTolerance: TEdit
-          Left = 2
+        object EditTolerance: TSpinEdit
+          Left = 6
           Height = 27
           Top = 3
-          Width = 42
-          Anchors = [akLeft]
+          Width = 54
           OnChange = EditToleranceChange
           TabOrder = 0
-          Text = '0'
-        end
-        object UpDownTolerance: TUpDown
-          Left = 44
-          Height = 27
-          Top = 3
-          Width = 17
-          Associate = EditTolerance
-          Min = 0
-          Position = 0
-          TabOrder = 1
-          Thousands = False
-          Wrap = False
         end
       end
       object LabelTolerance1: TLabel
@@ -4143,8 +4087,8 @@
     Filter = 'Graphic (*.tga;*.jpeg;*.jpg;*.pbm;*.pgm;*.ppm;*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp)|*.tga;*.jpeg;*.jpg;*.pbm;*.pgm;*.ppm;*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp|TGA Image File (*.tga)|*.tga|JPEG Image File (*.jpeg)|*.jpeg|JPEG Image File (*.jpg)|*.'
     FilterIndex = 0
     Options = [ofAllowMultiSelect, ofFileMustExist, ofEnableSizing]
-    left = 150
-    top = 90
+    left = 312
+    top = 112
   end
   object ColorDialog: TColorDialog
     Color = clBlack
@@ -4170,8 +4114,8 @@
       'ColorS=F0FBFF'
       'ColorT=A4A0A0'
     )
-    left = 186
-    top = 90
+    left = 352
+    top = 112
   end
   object SavePictureDialog: TSavePictureDialog
     Title = 'Save file as'
@@ -4193,8 +4137,8 @@
   end
   object ActionList: TActionList
     Images = ImageListActions
-    left = 112
-    top = 88
+    left = 264
+    top = 112
     object FileNew: TAction
       Category = 'File'
       Caption = '&New...'
