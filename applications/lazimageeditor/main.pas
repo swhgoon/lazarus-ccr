@@ -64,6 +64,7 @@ type
     FileSaveAs: TAction;
     FlipHorizontally: TAction;
     FlipVertically: TAction;
+    ToolsImageList: TImageList;
     PolyNum: TSpinEdit;
     Label1: TLabel;
     Label2: TLabel;
