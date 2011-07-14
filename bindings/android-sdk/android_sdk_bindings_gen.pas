@@ -13,7 +13,7 @@ type
 
   TAndroidSDKBindingsGen = class
   private
-    FSourceFile, FPasOutputClasses, FPasOutputIDs, FPasOutputImpl: TStringList;
+    FSourceFile, FPasOutputClasses, FPasOutputConsts, FPasOutputIDs, FPasOutputImpl: TStringList;
     FJavaOutputIDs, FJavaOutputMethods: TStringList;
     FClassName, FClassNamePas: string; // Class name of the class currently being parsed
     FClassNum, FMethodNum: Integer;
@@ -22,10 +22,14 @@ type
     procedure ProcessModelClass(ASourceLine: string);
     procedure ProcessModelMethod(ASourceLine: string);
     procedure ProcessModelConstructor(ASourceLine: string);
+    procedure ProcessModelConst(ASourceLine: string);
     function GetNextWord(ALine: string; var AStartPos: Integer): string;
     function GetPascalTypeName(ABaseName: string): string;
+    function PassByReference(ABaseName: string): Boolean;
     function GetJavaResultFunction(AReturnType: string): string;
     function GetJavaTypeReader(AType: string): string;
+    function GetIDString(AMethodName: string): string;
+    procedure AddOutputIDs(AIDString: string);
   public
     constructor Create;
     destructor Destroy; override;
@@ -60,7 +64,7 @@ begin
     end;
 
     // Now save the Pascal file
-    lPasOutputFile.Add('unit ;');
+    lPasOutputFile.Add(Format('unit %s;', [ChangeFileExt(ExtractFileName(ASourceFile), '')]));
     lPasOutputFile.Add('');
     lPasOutputFile.Add('interface');
     lPasOutputFile.Add('');
@@ -71,6 +75,8 @@ begin
     lPasOutputFile.Add('implementation');
     lPasOutputFile.Add('');
     lPasOutputFile.Add('const');
+    lPasOutputFile.AddStrings(FPasOutputConsts);
+    lPasOutputFile.Add('');
     lPasOutputFile.AddStrings(FPasOutputIDs);
     lPasOutputFile.Add('');
     lPasOutputFile.AddStrings(FPasOutputImpl);
@@ -124,6 +130,13 @@ begin
     ProcessModelConstructor(ASourceLine);
     Exit;
   end;
+
+  // Constants
+  if lCurWord = 'const' then
+  begin
+    ProcessModelConst(ASourceLine);
+    Exit;
+  end;
 end;
 
 procedure TAndroidSDKBindingsGen.ProcessModelClass(ASourceLine: string);
@@ -153,6 +166,7 @@ begin
 
   FPasOutputIDs.Add('  // ' + FClassNamePas);
   FJavaOutputIDs.Add('  // ' + FClassName);
+  FPasOutputConsts.Add('  { ' + FClassNamePas + ' }');
 end;
 
 procedure TAndroidSDKBindingsGen.ProcessModelMethod(
@@ -180,7 +194,7 @@ begin
 
   // Beginning of the implementation part
   FPasOutputImplCurLine := FPasOutputImpl.Count;
-  lIDString := 'amkUI_' + FClassNamePas + '_' + lMethodName;
+  lIDString := GetIDString(lMethodName);
 
   FPasOutputImpl.Add('begin');
   FPasOutputImpl.Add('  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));');
@@ -197,16 +211,22 @@ begin
   FJavaOutputMethods.Add('      // params');
 
   // Lists of constants for the IDs
-  FPasOutputIDs.Add('  ' + lIDString + ' = $' + IntToHex(FClassNum*$1000+FMethodNum, 8) +  ';');
-  FJavaOutputIDs.Add('  static final int ' + lIDString + ' = 0x' + IntToHex(FClassNum*$1000+FMethodNum, 8) +  ';');
+  AddOutputIDs(lIDString);
 
   // Add all parameters
   TmpStr := lMethodName + '(';
 
   repeat
     lParamType := GetNextWord(ASourceLine, lReaderPos);
+
+    // Method modifiers
+    if (lParamType = 'virtual') or (lParamType = 'override') then Continue;
+
     lParamTypePas := GetPascalTypeName(lParamType);
-    lParamName := GetNextWord(ASourceLine, lReaderPos);
+    if PassByReference(lParamType) then
+      lParamName := 'var ' + GetNextWord(ASourceLine, lReaderPos)
+    else
+      lParamName := GetNextWord(ASourceLine, lReaderPos);
 
     if lParamName = '' then Break;
 
@@ -277,7 +297,7 @@ begin
   // Method type and name
   lMethodName := GetNextWord(ASourceLine, lReaderPos);
 
-  lIDString := 'amkUI_' + FClassNamePas + '_' + lMethodName;
+  lIDString := GetIDString(lMethodName);
 
   FPasOutputClasses.Add('    constructor ' + lMethodName + '();');
 
@@ -288,8 +308,7 @@ begin
   FPasOutputImpl.Add('  Index := vAndroidPipesComm.WaitForIntReturn();');
   FPasOutputImpl.Add('end;');
 
-  FPasOutputIDs.Add('  ' + lIDString + ' = $' + IntToHex(FClassNum*$1000+FMethodNum, 8) +  ';');
-  FJavaOutputIDs.Add('  static final int ' + lIDString + ' = 0x' + IntToHex(FClassNum*$1000+FMethodNum, 8) +  ';');
+  AddOutputIDs(lIDString);
 
   FJavaOutputMethods.Add('    case ' + lIDString + ':');
   FJavaOutputMethods.Add('      DebugOut("' + lIDString + '");');
@@ -300,12 +319,29 @@ begin
   Inc(FMethodNum);
 end;
 
+procedure TAndroidSDKBindingsGen.ProcessModelConst(ASourceLine: string);
+var
+  lReaderPos: Integer = 1;
+  lCurWord: string;
+  lConstName, lConstValue: string;
+begin
+  if ASourceLine = '' then Exit;
+
+  lConstName := GetNextWord(ASourceLine, lReaderPos);
+  lConstName := GetNextWord(ASourceLine, lReaderPos);
+  lConstValue := GetNextWord(ASourceLine, lReaderPos);
+  lConstValue := GetNextWord(ASourceLine, lReaderPos);
+
+  // Method type and name
+  FPasOutputConsts.Add(Format('  %s = %s;', [lConstName, lConstValue]));
+end;
+
 { Reads one word in a string, starting at AStartPos (1-based index)
   and going up to a space or comma or ( or ) or another separator }
 function TAndroidSDKBindingsGen.GetNextWord(ALine: string;
   var AStartPos: Integer): string;
 const
-  WordSeparators = [' ','(',')','[',']',',',#9];
+  WordSeparators = [' ','(',')','[',']',',',';',#9{TAB}];
 var
   lState: Integer = 0;
 begin
@@ -343,10 +379,21 @@ begin
 
   if ABaseName = 'int' then Result := 'Integer'
   else if ABaseName = 'boolean' then Result := 'Boolean'
+  else if ABaseName = 'float' then Result := 'Single'
   else if ABaseName = 'void' then Result := ABaseName
   else if ABaseName = 'CharSequence' then Result := 'string'
   else if ABaseName = 'TJavaObject' then Result := ABaseName
   else Result := 'T' + ABaseName;
+end;
+
+function TAndroidSDKBindingsGen.PassByReference(ABaseName: string): Boolean;
+begin
+  if ABaseName = '' then Exit(False);
+
+  if ABaseName = 'int' then Result := False
+  else if ABaseName = 'boolean' then Result := False
+  else if ABaseName = 'float' then Result := False
+  else Result := True;
 end;
 
 function TAndroidSDKBindingsGen.GetJavaResultFunction(AReturnType: string
@@ -362,6 +409,17 @@ begin
   else Exit('GetInt');
 end;
 
+function TAndroidSDKBindingsGen.GetIDString(AMethodName: string): string;
+begin
+  Result := 'amkUI_' + FClassNamePas + '_' + AMethodName;;
+end;
+
+procedure TAndroidSDKBindingsGen.AddOutputIDs(AIDString: string);
+begin
+  FPasOutputIDs.Add('  ' + AIDString + ' = $' + IntToHex(FClassNum*$1000+FMethodNum, 8) +  ';');
+  FJavaOutputIDs.Add('  static final int ' + AIDString + ' = 0x' + IntToHex(FClassNum*$1000+FMethodNum, 8) +  ';');
+end;
+
 constructor TAndroidSDKBindingsGen.Create;
 begin
   FSourceFile := TStringList.Create;
@@ -369,6 +427,7 @@ begin
   FPasOutputImpl := TStringList.Create;
   FPasOutputIDs := TStringList.Create;
 
+  FPasOutputConsts := TStringList.Create;
   FJavaOutputIDs := TStringList.Create;
   FJavaOutputMethods := TStringList.Create;
 
@@ -382,6 +441,7 @@ begin
   FPasOutputImpl.Free;
   FPasOutputIDs.Free;
 
+  FPasOutputConsts.Free;
   FJavaOutputIDs.Free;
   FJavaOutputMethods.Free;
 

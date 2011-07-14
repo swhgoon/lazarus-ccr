@@ -5,13 +5,97 @@
 #[Menu] TJavaObject
 #method MenuItem 	add(int groupId, int itemId, int order, CharSequence title)
 
-[CompoundButton] Button 110
+#
+# android.util.*
+#
+[DisplayMetrics] TJavaObject
+constructor Create()
+method float density()
+method int densityDpi()
+method int heightPixels()
+method float scaledDensity()
+method int widthPixels()
+method float xdpi()
+method float ydpi()
+
+#
+# android.app.*
+#
+[Display] TJavaObject
+method void getMetrics(DisplayMetrics outMetrics)
+
+[WindowManager] TJavaObject
+method Display getDefaultDisplay()
+
+#
+# android.view
+#
+[LayoutParams] TJavaObject
+constructor Create(int width, int height);
+const FILL_PARENT = $FFFFFFFF;
+
+[View] TJavaObject
+method void setLayoutParams(LayoutParams params);
+method void setVisibility(int visibility);
+const VISIBLE = 0;
+const INVISIBLE = 4;
+const GONE = 8;
+
+[ViewGroup] View
+procedure addView(View child, LayoutParams params);
+procedure addView(View child);
+
+[LinearLayout] TViewGroup
+constructor Create();
+procedure setOrientation(int orientation);
+const HORIZONTAL = 0;
+const VERTICAL = 1;
+
+[AbsoluteLayout] TViewGroup
+constructor Create();
+
+[AbsoluteLayout_LayoutParams] LayoutParams
+constructor Create(int param_width, int param_height, int param_x, int param_y);
+#  TOnClickCallback = procedure (v: TView) of object;
+
+[TextView] View
+#  protected
+#    OnClickListener: TOnClickCallback;
+constructor Create(); virtual;
+method void setText(CharSequence AText); virtual;
+#    procedure setOnClickListener(ACallback: TOnClickCallback);
+#    procedure callOnClickListener();
+method void setTextSize(int unit_; float size);
+
+[EditText] TextView
+constructor Create(); override;
+method void setText(CharSequence AText); override;
+
+[Button] TextView
+constructor Create(); override;
+method void setText(CharSequence AText); override;
+
+[FrameLayout] ViewGroup
+
+[TimePicker] FrameLayout
+constructor Create();
+method int getCurrentHour();
+method void setCurrentHour(int currentHour);
+method int getCurrentMinute: Integer;
+method void setCurrentMinute(int currentMinute);
+method boolean is24HourView: Boolean;
+method void setIs24HourView(boolean AIs24HourView);
+
+[ScrollView] FrameLayout
+constructor Create();
+
+[CompoundButton] Button
 method boolean 	isChecked() 
 method boolean 	performClick() 
 method void 	setChecked(boolean checked) 
 #method void 	setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener listener) 
 method void 	toggle() 
 
-[CheckBox] CompoundButton 111
-constructor Create
+[CheckBox] CompoundButton
+constructor Create()
 

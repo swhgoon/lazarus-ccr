@@ -16,7 +16,7 @@ object Form1: TForm1
     ParentColor = False
   end
   object editInputPath: TDirectoryEdit
-    Left = 64
+    Left = 88
     Height = 25
     Top = 72
     Width = 312
@@ -31,8 +31,8 @@ object Form1: TForm1
     Left = 7
     Height = 18
     Top = 73
-    Width = 43
-    Caption = 'Label2'
+    Width = 69
+    Caption = 'Input Path:'
     ParentColor = False
   end
   object Button1: TButton
