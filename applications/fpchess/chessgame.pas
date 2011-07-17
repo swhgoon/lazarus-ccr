@@ -86,6 +86,8 @@ type
     // Data for the Roque
     IsWhiteLeftRoquePossible, IsWhiteRightRoquePossible: Boolean;
     IsBlackLeftRoquePossible, IsBlackRightRoquePossible: Boolean;
+    Castle:boolean;//If the move will be a castle.
+    CastleCord: TPoint;
     //
     constructor Create;
     procedure StartNewGame(APlayAsWhite: Boolean; AUseTimer: Boolean; APlayerTime: Integer); overload;
@@ -99,10 +101,13 @@ type
     function MovePiece(AFrom, ATo: TPoint): Boolean;
     procedure DoMovePiece(AFrom, ATo, AEnpassantToClear: TPoint);
     function ValidateRookMove(AFrom, ATo: TPoint) : boolean;
+    procedure ResetCastleVar(AFrom : TPoint);
     function ValidateKnightMove(AFrom, ATo: TPoint) : boolean;
     function ValidateBishopMove(AFrom, ATo: TPoint) : boolean;
     function ValidateQueenMove(AFrom, ATo: TPoint) : boolean;
     function ValidateKingMove(AFrom, ATo: TPoint) : boolean;
+    function CheckPassageSquares(side: boolean; AFrom, ATo : TPoint) : boolean;
+    procedure DoCastle();
     function ValidatePawnMove(AFrom, ATo: TPoint;
       var AEnpassantSquare, AEnpassantSquareToClear: TPoint) : boolean;
     function IsSquareOccupied(ASquare: TPoint): Boolean;
@@ -212,6 +217,7 @@ var
 begin
   LEnpassantSquare := Point(-1, -1);
   LEnpassantToClear := Point(-1, -1);
+  Castle:=false;
   Result := False;
 
   // Verify what is in the start and destination squares
@@ -242,6 +248,7 @@ begin
 
   // Now we will execute the move
   DoMovePiece(AFrom, ATo, LEnpassantToClear);
+  if Castle then DoCastle();
 
   //
   UpdateTimes();
@@ -262,6 +269,15 @@ begin
     Board[AEnpassantToClear.X][AEnpassantToClear.Y] := ctEmpty;
 end;
 
+procedure TChessGame.DoCastle();
+begin
+  if CastleCord.X=8 then
+    Board[6][CastleCord.Y]:=Board[8][CastleCord.Y]
+  else
+    Board[4][CastleCord.Y]:=Board[1][CastleCord.Y];
+  Board[CastleCord.X][CastleCord.Y]:=ctEmpty;
+end;
+
 //return true if the move of a Rook is valid.
 function TChessGame.ValidateRookMove(AFrom, ATo: TPoint): boolean;
 var
@@ -275,7 +291,7 @@ begin
     // Check if there are pieces in the middle of the way
     for i := AFrom.Y + 1 to ATo.Y - 1 do
       if Board[AFrom.X][i] <> ctEmpty then Exit;
-
+    ResetCastleVar(AFrom);
     Exit(True);
   end;
 ///////////////////////////////////DOWN/////////////////////////////////////////
@@ -284,7 +300,7 @@ begin
     // Check if there are pieces in the middle of the way
     for i := AFrom.Y - 1 downto ATo.Y + 1 do
       if Board[AFrom.X][i] <> ctEmpty then Exit;
-
+    ResetCastleVar(AFrom);
     Exit(True);
   end;
 ////////////////////////////////////RIGHT////////////////////////////////////////
@@ -293,7 +309,7 @@ begin
     // Check if there are pieces in the middle of the way
     for i := AFrom.X + 1 to ATo.X - 1 do
       if Board[i][AFrom.Y] <> ctEmpty then Exit;
-
+    ResetCastleVar(AFrom);
     Exit(True);
   end;
 ///////////////////////////////////LEFT/////////////////////////////////////////
@@ -302,9 +318,18 @@ begin
     // Check if there are pieces in the middle of the way
     for i := AFrom.X - 1 downto ATo.X + 1 do
       if Board[i][AFrom.Y] <> ctEmpty then Exit;
-
+    ResetCastleVar(AFrom);
     Exit(True);
   end;
+end;
+
+//check if castle is still posible.
+procedure TChessGame.ResetCastleVar(AFrom : TPoint);
+begin
+  if ((AFrom.X=1) and (AFrom.Y=1) and (IsWhiteLeftRoquePossible)) then IsWhiteLeftRoquePossible:=false;
+  if ((AFrom.X=8) and (AFrom.Y=1) and (IsWhiteRightRoquePossible)) then IsWhiteRightRoquePossible:=false;
+  if ((AFrom.X=1) and (AFrom.Y=8) and (IsBlackLeftRoquePossible)) then IsBlackLeftRoquePossible:=false;
+  if ((AFrom.X=8) and (AFrom.Y=8) and (IsBlackLeftRoquePossible)) then IsBlackRightRoquePossible:=false;
 end;
 
 {
@@ -393,44 +418,119 @@ begin
 end;
 
 function TChessGame.ValidateKingMove(AFrom, ATo: TPoint): Boolean;
+var passage : boolean;
 begin
   Result := False;
 
   // Verify the possibility of a Roque
   if CurrentPlayerIsWhite then
   begin
-    // Roque to the left
-{    if IsWhiteLeftRoquePossible and (AFrom.X = 5) and (AFrom.Y = 1)
-      and (ATo.X = 7) and (ATo.Y = 1) then
-    begin
-      Board[ATo.X][ATo.Y] :=
-      Board[ATo.X][ATo.Y] :=
-      Board[ATo.X][ATo.Y] :=
-      WhitePieces = [ctWPawn, ctWKnight, ctWBishop, ctWRook, ctWQueen, ctWKing];
-      BlackPieces = [ctBPawn, ctBKnight, ctBBishop, ctBRook, ctBQueen, ctBKing];
-    end;}
-    // Roque to the right
+    // Castle to the right
     if IsWhiteRightRoquePossible and (AFrom.X = 5) and (AFrom.Y = 1)
-      and (ATo.X = 7) and (ATo.Y = 1) then
+      and (ATo.X = 7) and (ATo.Y = 1) and (board[6][1]=ctEmpty) then
     begin
-      Board[AFrom.X][AFrom.Y] := ctEmpty;
-      Board[ATo.X][ATo.Y] := ctWKing;
-      Board[ATo.X + 1][ATo.Y] := ctEmpty;
-      Board[ATo.X - 1][ATo.Y] := ctWRook;
+      if not(CheckPassageSquares(true,AFrom,ATo)) then exit(false);
+      Castle:=true;
+      CastleCord.X:=8;
+      CastleCord.Y:=1;
+      result:= True;
+    end;
+    // Castle to the left
+    if IsWhiteLeftRoquePossible and (AFrom.X = 5) and (AFrom.Y = 1)
+      and (ATo.X = 3) and (ATo.Y = 1) and (board[2][1]=ctEmpty) and (board[4][1]=ctEmpty) then
+    begin
+      if not(CheckPassageSquares(false,AFrom,ATo)) then exit(false);
+      Castle:=true;
+      CastleCord.X:=1;
+      CastleCord.Y:=1;
+      result:= True;
     end;
   end
   else
   begin
-    // Roque to the left
-//    IsBlackLeftRoquePossible
-    // Roque to the right
-//    IsBlackRightRoquePossible: Boolean;
+  // Castle to the right
+    if IsBlackRightRoquePossible and (AFrom.X = 5) and (AFrom.Y = 8)
+      and (ATo.X = 7) and (ATo.Y = 8) and (board[6][8]=ctEmpty) then
+    begin
+      if not(CheckPassageSquares(true,AFrom,ATo)) then exit(false);
+      Castle:=true;
+      CastleCord.X:=8;
+      CastleCord.Y:=8;
+      result:= True;
+    end;
+    // Castle to the left
+    if IsBlackLeftRoquePossible and (AFrom.X = 5) and (AFrom.Y = 8)
+      and (ATo.X = 3) and (ATo.Y = 8) and (board[2][8]=ctEmpty) and (board[4][8]=ctEmpty) then
+    begin
+      if not(CheckPassageSquares(false,AFrom,ATo)) then exit(false);
+      Castle:=true;
+      CastleCord.X:=1;
+      CastleCord.Y:=8;
+      result:= True;
+    end;
   end;
 
   // Simple move
   if (AFrom.X > ATo.X + 1) or (AFrom.X + 1 < ATo.X) then Exit;
   if (AFrom.Y > ATo.Y + 1) or (AFrom.Y + 1 < ATo.Y) then Exit;
+
   Result := True;
+end;
+
+//Return false if during the passage the king will be in check
+function TChessGame.CheckPassageSquares(side : boolean; AFrom, ATo : TPoint) : boolean; //Left=false;Right=true;
+var
+  LocalBoard : TChessBoard;
+  kingPos : TPoint;
+begin
+  kingPos := FindKing();
+  Result := IsKingInCheck(kingPos);
+  if (result) then exit(false);
+
+  LocalBoard:=Board;
+
+  if CurrentPlayerIsWhite then
+  begin
+    if side then
+    begin
+      Board[5][1]:=ctEmpty;
+      Board[6][1]:=ctWKing;
+      kingPos := FindKing();
+      Result := IsKingInCheck(kingPos);
+      Board:=LocalBoard;
+      Exit(not Result);
+    end
+    else
+    begin
+      Board[5][1]:=ctEmpty;
+      Board[4][1]:=ctWKing;
+      kingPos := FindKing();
+      Result := IsKingInCheck(kingPos);
+      Board:=LocalBoard;
+      Exit(not Result);
+    end;
+  end
+  else
+  begin
+    if side then
+    begin
+      Board[5][8]:=ctEmpty;
+      Board[6][8]:=ctBKing;
+      kingPos := FindKing();
+      Result := IsKingInCheck(kingPos);
+      Board:=LocalBoard;
+      Exit(not Result);
+    end
+    else
+    begin
+      Board[5][8]:=ctEmpty;
+      Board[4][8]:=ctBKing;
+      kingPos := FindKing();
+      Result := IsKingInCheck(kingPos);
+      Board:=LocalBoard;
+      Exit(not Result);
+    end;
+  end;
 end;
 
 {
