@@ -13,7 +13,9 @@ type
 
   TAndroidSDKBindingsGen = class
   private
-    FSourceFile, FPasOutputClasses, FPasOutputConsts, FPasOutputIDs, FPasOutputImpl: TStringList;
+    FSourceFile: TStringList;
+    FPasOutputTypes, FPasOutputClassesForward, FPasOutputClasses,
+      FPasOutputConsts, FPasOutputIDs, FPasOutputImpl, FPasOutputMessages: TStringList;
     FJavaOutputIDs, FJavaOutputMethods: TStringList;
     FClassName, FClassNamePas: string; // Class name of the class currently being parsed
     FClassNum, FMethodNum: Integer;
@@ -23,6 +25,7 @@ type
     procedure ProcessModelMethod(ASourceLine: string);
     procedure ProcessModelConstructor(ASourceLine: string);
     procedure ProcessModelConst(ASourceLine: string);
+    procedure ProcessModelCallbackSetterCaller(ASourceLine: string);
     function GetNextWord(ALine: string; var AStartPos: Integer): string;
     function GetPascalTypeName(ABaseName: string): string;
     function PassByReference(ABaseName: string): Boolean;
@@ -68,18 +71,51 @@ begin
     lPasOutputFile.Add('');
     lPasOutputFile.Add('interface');
     lPasOutputFile.Add('');
+    lPasOutputFile.Add('uses javalang, androidpipescomm;');
+    lPasOutputFile.Add('');
     lPasOutputFile.Add('type');
+    lPasOutputFile.Add('');
+    lPasOutputFile.Add('  { Forward declaration of classes }');
+    lPasOutputFile.Add('');
+    lPasOutputFile.AddStrings(FPasOutputClassesForward);
+    lPasOutputFile.Add('');
+    lPasOutputFile.Add('  { Types }');
+    lPasOutputFile.Add('');
+    lPasOutputFile.AddStrings(FPasOutputTypes);
+    lPasOutputFile.Add('');
+    lPasOutputFile.Add('  { Classes }');
+    lPasOutputFile.Add('');
     lPasOutputFile.AddStrings(FPasOutputClasses);
     lPasOutputFile.Add('  end;');
+    lPasOutputFile.Add('');
+    lPasOutputFile.Add('function HandleMessage(AFirstInt: Integer): Boolean;');
     lPasOutputFile.Add('');
     lPasOutputFile.Add('implementation');
     lPasOutputFile.Add('');
     lPasOutputFile.Add('const');
+    lPasOutputFile.Add('  { Constants }');
+    lPasOutputFile.Add('');
     lPasOutputFile.AddStrings(FPasOutputConsts);
+    lPasOutputFile.Add('');
+    lPasOutputFile.Add('  { IDs }');
     lPasOutputFile.Add('');
     lPasOutputFile.AddStrings(FPasOutputIDs);
     lPasOutputFile.Add('');
+    lPasOutputFile.Add('{ Implementation of Classes }');
+    lPasOutputFile.Add('');
     lPasOutputFile.AddStrings(FPasOutputImpl);
+    lPasOutputFile.Add('');
+    lPasOutputFile.Add('{ Message Handling }');
+    lPasOutputFile.Add('');
+    lPasOutputFile.Add('function HandleMessage(AFirstInt: Integer): Boolean;');
+    lPasOutputFile.Add('var');
+    lPasOutputFile.Add('  lInt: Integer;');
+    lPasOutputFile.Add('  lPascalPointer: PtrInt = -1;');
+    lPasOutputFile.Add('begin');
+    lPasOutputFile.Add('  case AFirstInt of');
+    lPasOutputFile.AddStrings(FPasOutputMessages);
+    lPasOutputFile.Add('  end;');
+    lPasOutputFile.Add('end;');
     lPasOutputFile.Add('');
     lPasOutputFile.Add('end.');
 
@@ -137,6 +173,13 @@ begin
     ProcessModelConst(ASourceLine);
     Exit;
   end;
+
+  // Callbacks
+  if lCurWord = 'callbacksettercaller' then
+  begin
+    ProcessModelCallbackSetterCaller(ASourceLine);
+    Exit;
+  end;
 end;
 
 procedure TAndroidSDKBindingsGen.ProcessModelClass(ASourceLine: string);
@@ -167,6 +210,7 @@ begin
   FPasOutputIDs.Add('  // ' + FClassNamePas);
   FJavaOutputIDs.Add('  // ' + FClassName);
   FPasOutputConsts.Add('  { ' + FClassNamePas + ' }');
+  FPasOutputClassesForward.Add('  ' + FClassNamePas + ' = class;')
 end;
 
 procedure TAndroidSDKBindingsGen.ProcessModelMethod(
@@ -175,7 +219,7 @@ var
   lReaderPos: Integer = 1;
   lParamNum: Integer = 1;
   lCurWord, lParentClassName: string;
-  lMethodReturn, lMethodReturnPas, lMethodName, lParamType, lParamTypePas, lParamName: string;
+  lMethodReturn, lMethodReturnPas, lMethodName, lParamType, lParamTypePas, lParamName, lParamPrefix: string;
   DeclarationBase, TmpStr, lIDString: string;
   FPasOutputImplCurLine: Integer;
   lJavaParamVar, lJavaParams, lJavaParamSelf: string;
@@ -223,14 +267,13 @@ begin
     if (lParamType = 'virtual') or (lParamType = 'override') then Continue;
 
     lParamTypePas := GetPascalTypeName(lParamType);
-    if PassByReference(lParamType) then
-      lParamName := 'var ' + GetNextWord(ASourceLine, lReaderPos)
-    else
-      lParamName := GetNextWord(ASourceLine, lReaderPos);
+    lParamName := GetNextWord(ASourceLine, lReaderPos);
+    if PassByReference(lParamType) then lParamPrefix := 'var '
+    else lParamPrefix := '';
 
     if lParamName = '' then Break;
 
-    TmpStr := TmpStr + lParamName + ': ' + lParamTypePas + '; ';
+    TmpStr := TmpStr + lParamPrefix + lParamName + ': ' + lParamTypePas + '; ';
 
     // Pascal parameter sending
     FPasOutputImpl.Add('  vAndroidPipesComm.SendInt(Integer(' + lParamName + '));');
@@ -257,7 +300,7 @@ begin
   else
   begin
     TmpStr := TmpStr + '): ' + lMethodReturnPas + ';';
-    FPasOutputImpl.Add('  Result := Boolean(vAndroidPipesComm.WaitForIntReturn());');
+    FPasOutputImpl.Add('  Result := ' + lMethodReturnPas + '(vAndroidPipesComm.WaitForIntReturn());');
   end;
 
   FPasOutputClasses.Add('    ' + DeclarationBase + TmpStr);
@@ -336,12 +379,78 @@ begin
   FPasOutputConsts.Add(Format('  %s = %s;', [lConstName, lConstValue]));
 end;
 
+// callbacksettercaller setOnClickListener callOnClickListener OnClickCallback = procedure (v: TView) of object;
+procedure TAndroidSDKBindingsGen.ProcessModelCallbackSetterCaller(ASourceLine: string);
+var
+  lReaderPos: Integer = 1;
+  lCurWord: string;
+  lSetterName, lCallerName, lCallbackName, lCallbackDeclaration: string;
+  lIDSetter, lIDStart, lIDFinished: String;
+begin
+  if ASourceLine = '' then Exit;
+
+  lSetterName := GetNextWord(ASourceLine, lReaderPos);
+  lSetterName := GetNextWord(ASourceLine, lReaderPos);
+  lCallerName := GetNextWord(ASourceLine, lReaderPos);
+  lCallbackDeclaration := Copy(ASourceLine, lReaderPos, Length(ASourceLine));
+  lCallbackDeclaration := Trim(lCallbackDeclaration);
+  lCallbackName := GetNextWord(ASourceLine, lReaderPos);
+
+  lIDSetter := GetIDString(lSetterName);
+  AddOutputIDs(lIDSetter);
+  lIDStart := GetIDString(lCallbackName + '_Start');
+  AddOutputIDs(lIDStart);
+  lIDFinished := GetIDString(lCallbackName + '_Finished');
+  AddOutputIDs(lIDFinished);
+
+  FPasOutputTypes.Add('  T' + lCallbackDeclaration);
+
+  FPasOutputClasses.Add('  public');
+  FPasOutputClasses.Add('    ' + lCallbackName + ': T' + lCallbackName + ';');
+  FPasOutputClasses.Add('    procedure ' + lSetterName + '(ACallback: T' + lCallbackName + ');');
+  FPasOutputClasses.Add('    procedure ' + lCallerName + '();');
+  FPasOutputClasses.Add('  public');
+
+  FPasOutputImpl.Add('procedure ' + FClassNamePas + '.' + lSetterName + '(ACallback: T' + lCallbackName + ');');
+  FPasOutputImpl.Add('begin');
+  FPasOutputImpl.Add('  OnClickListener := ACallback;');
+  FPasOutputImpl.Add('  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));');
+  FPasOutputImpl.Add('  vAndroidPipesComm.SendInt(' + lIDSetter + ');');
+  FPasOutputImpl.Add('  vAndroidPipesComm.SendInt(Index); // Self, Java Index');
+  FPasOutputImpl.Add('  vAndroidPipesComm.SendInt(PtrInt(Self)); // Self, Pascal pointer');
+  FPasOutputImpl.Add('  vAndroidPipesComm.WaitForReturn();');
+  FPasOutputImpl.Add('end;');
+  FPasOutputImpl.Add('');
+  FPasOutputImpl.Add('procedure ' + FClassNamePas + '.' + lCallerName + '();');
+  FPasOutputImpl.Add('begin');
+  FPasOutputImpl.Add('  if Assigned(OnClickListener) then OnClickListener(Self);');
+  FPasOutputImpl.Add('end;');
+
+  // Method type and name
+  FPasOutputMessages.Add('  ' + lIDStart + ':');
+  FPasOutputMessages.Add('  begin');
+  FPasOutputMessages.Add('    lPascalPointer := vAndroidPipesComm.ReadInt();');
+  FPasOutputMessages.Add('    TTextView(lPascalPointer).callOnClickListener();');
+  FPasOutputMessages.Add('    vAndroidPipesComm.SendMessage(amkUICommand, ' + lIDFinished + ');');
+  FPasOutputMessages.Add('  end;');
+{    amkUI_MenuItem_setOnMenuItemClickListener_Start:
+    begin
+      lInt := ReadInt();
+      lMenuItem := TMenuItem(FindItemIdInList(MenuItems, lInt));
+      if lMenuItem <> nil then
+        lInt := lMenuItem.callOnMenuItemClickListener();
+      vAndroidPipesComm.SendMessage(amkUICommand, amkUI_MenuItem_setOnMenuItemClickListener_Finished);
+      vAndroidPipesComm.SendInt(lInt);
+    end;
+  end;}
+end;
+
 { Reads one word in a string, starting at AStartPos (1-based index)
   and going up to a space or comma or ( or ) or another separator }
 function TAndroidSDKBindingsGen.GetNextWord(ALine: string;
   var AStartPos: Integer): string;
 const
-  WordSeparators = [' ','(',')','[',']',',',';',#9{TAB}];
+  WordSeparators = [' ','(',')','[',']',',',';',':',#9{TAB}];
 var
   lState: Integer = 0;
 begin
@@ -423,11 +532,15 @@ end;
 constructor TAndroidSDKBindingsGen.Create;
 begin
   FSourceFile := TStringList.Create;
+
+  FPasOutputTypes := TStringList.Create;
+  FPasOutputClassesForward := TStringList.Create;
   FPasOutputClasses := TStringList.Create;
   FPasOutputImpl := TStringList.Create;
   FPasOutputIDs := TStringList.Create;
-
   FPasOutputConsts := TStringList.Create;
+  FPasOutputMessages := TStringList.Create;
+
   FJavaOutputIDs := TStringList.Create;
   FJavaOutputMethods := TStringList.Create;
 
@@ -437,11 +550,15 @@ end;
 destructor TAndroidSDKBindingsGen.Destroy;
 begin
   FSourceFile.Free;
+
+  FPasOutputTypes.Free;
+  FPasOutputClassesForward.Free;
   FPasOutputClasses.Free;
   FPasOutputImpl.Free;
   FPasOutputIDs.Free;
-
   FPasOutputConsts.Free;
+  FPasOutputMessages.Free;
+
   FJavaOutputIDs.Free;
   FJavaOutputMethods.Free;
 

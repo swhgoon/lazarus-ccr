@@ -45,26 +45,22 @@ const GONE = 8;
 procedure addView(View child, LayoutParams params);
 procedure addView(View child);
 
-[LinearLayout] TViewGroup
+[LinearLayout] ViewGroup
 constructor Create();
 procedure setOrientation(int orientation);
 const HORIZONTAL = 0;
 const VERTICAL = 1;
 
-[AbsoluteLayout] TViewGroup
+[AbsoluteLayout] ViewGroup
 constructor Create();
 
 [AbsoluteLayout_LayoutParams] LayoutParams
 constructor Create(int param_width, int param_height, int param_x, int param_y);
-#  TOnClickCallback = procedure (v: TView) of object;
 
 [TextView] View
-#  protected
-#    OnClickListener: TOnClickCallback;
 constructor Create(); virtual;
 method void setText(CharSequence AText); virtual;
-#    procedure setOnClickListener(ACallback: TOnClickCallback);
-#    procedure callOnClickListener();
+callbacksettercaller setOnClickListener callOnClickListener OnClickListener = procedure (v: TView) of object;
 method void setTextSize(int unit_; float size);
 
 [EditText] TextView
@@ -81,9 +77,9 @@ method void setText(CharSequence AText); override;
 constructor Create();
 method int getCurrentHour();
 method void setCurrentHour(int currentHour);
-method int getCurrentMinute: Integer;
+method int getCurrentMinute;
 method void setCurrentMinute(int currentMinute);
-method boolean is24HourView: Boolean;
+method boolean is24HourView;
 method void setIs24HourView(boolean AIs24HourView);
 
 [ScrollView] FrameLayout
