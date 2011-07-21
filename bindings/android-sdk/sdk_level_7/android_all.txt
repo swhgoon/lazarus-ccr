@@ -10,13 +10,13 @@
 #
 [DisplayMetrics] TJavaObject
 constructor Create()
-method float density()
-method int densityDpi()
-method int heightPixels()
-method float scaledDensity()
-method int widthPixels()
-method float xdpi()
-method float ydpi()
+field float density
+field int densityDpi
+field int heightPixels
+field float scaledDensity
+field int widthPixels
+field float xdpi
+field float ydpi
 
 #
 # android.app.*
@@ -30,7 +30,7 @@ method Display getDefaultDisplay()
 #
 # android.view
 #
-[LayoutParams] TJavaObject
+[ViewGroup.LayoutParams] TJavaObject
 constructor Create(int width, int height);
 const FILL_PARENT = $FFFFFFFF;
 
@@ -46,35 +46,35 @@ procedure addView(View child, LayoutParams params);
 procedure addView(View child);
 
 [LinearLayout] ViewGroup
-constructor Create();
+constructor Create(Activity);
 procedure setOrientation(int orientation);
 const HORIZONTAL = 0;
 const VERTICAL = 1;
 
 [AbsoluteLayout] ViewGroup
-constructor Create();
+constructor Create(Activity);
 
 [AbsoluteLayout_LayoutParams] LayoutParams
 constructor Create(int param_width, int param_height, int param_x, int param_y);
 
 [TextView] View
-constructor Create(); virtual;
+constructor Create(Activity); virtual;
 method void setText(CharSequence AText); virtual;
 callbacksettercaller setOnClickListener callOnClickListener OnClickListener = procedure (v: TView) of object;
 method void setTextSize(int unit_; float size);
 
 [EditText] TextView
-constructor Create(); override;
+constructor Create(Activity); override;
 method void setText(CharSequence AText); override;
 
 [Button] TextView
-constructor Create(); override;
+constructor Create(Activity); override;
 method void setText(CharSequence AText); override;
 
 [FrameLayout] ViewGroup
 
 [TimePicker] FrameLayout
-constructor Create();
+constructor Create(Activity);
 method int getCurrentHour();
 method void setCurrentHour(int currentHour);
 method int getCurrentMinute;
@@ -83,9 +83,10 @@ method boolean is24HourView;
 method void setIs24HourView(boolean AIs24HourView);
 
 [ScrollView] FrameLayout
-constructor Create();
+constructor Create(Activity);
 
 [CompoundButton] Button
+constructor Create(Activity)
 method boolean 	isChecked() 
 method boolean 	performClick() 
 method void 	setChecked(boolean checked) 
@@ -93,5 +94,5 @@ method void 	setChecked(boolean checked)
 method void 	toggle() 
 
 [CheckBox] CompoundButton
-constructor Create()
+constructor Create(Activity)
 
