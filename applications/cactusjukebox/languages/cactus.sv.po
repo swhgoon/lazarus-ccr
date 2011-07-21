@@ -1,0 +1,150 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: cactus jukebox\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2009-01-22 12:40+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"X-Poedit-Language: Swedish\n"
+"X-Poedit-Country: SWEDEN\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: cdrip:rsencodetomp3
+msgid "Encode to mp3"
+msgstr "Koda till mp3"
+
+#: cdrip:rsquerrycddb
+msgid "Querry CDDB"
+msgstr "Fråga CDDB"
+
+#: cdrip:rsload
+msgid "Load"
+msgstr "Läs in"
+
+#: cdrip:rseject
+msgid "Eject"
+msgstr "Mata ut"
+
+#: cdrip:rsstart
+msgid "Start"
+msgstr "Starta"
+
+#: cdrip:rsback
+msgid "Back"
+msgstr "Tillbaka"
+
+#: cdrip:rssetid3tag
+msgid "Write ID3-Tags"
+msgstr "Skriv ID3-taggar"
+
+#: cdrip:rscrsubfolders
+msgid "Create artist subfolders"
+msgstr "Skapa undermappar för artist"
+
+#: cdrip:rsoutfilenamin
+msgid "Outfile naming scheme"
+msgstr ""
+
+#: settings:rsautoloadlast
+msgid "Load last library at startup"
+msgstr "Läs in senaste biblioteket vid uppstart"
+
+#: settings:rsscanfornewfi
+msgid "Scan for new files in background  on startup"
+msgstr "Sök av i bakgrunden efter nya filer vid uppstart"
+
+#: settings:rslanguage
+msgid "Language"
+msgstr "Språk"
+
+#: settings:rswhattodowhen
+msgid "What to do when there is no ID3"
+msgstr "Vad ska göras när det inte finns någon ID3"
+
+#: settings:rsguesstagfrom
+msgid "Guess tag from filename"
+msgstr "Gissa tagg baserat på filnamn"
+
+#: settings:rsmovetosectio
+msgid "Move to section %sUnknown%s"
+msgstr "Flytta till sektion %sOkänd%s"
+
+#: settings:rsid3type
+msgid "ID3 type"
+msgstr "ID3-typ"
+
+#: settings:rsid3v1priorit
+msgid "ID3v1 Priority"
+msgstr "ID3v1-prioritet"
+
+#: settings:rsid3v2priorit
+msgid "ID3v2 Priority"
+msgstr "ID3v2-prioritet"
+
+#: settings:rsgeneral
+msgid "General"
+msgstr "Allmänt"
+
+#: settings:rspathtomp3pla
+msgid "Path to mp3player mountpoint"
+msgstr "Sökväg till monteringspunkt för mp3-spelare"
+
+#: settings:rscreatesubfol
+msgid "Create subfolders on upload"
+msgstr "Skapa undermappar vid uppstart"
+
+#: settings:rspathstoaddit
+msgid "Paths to additional application needed for Cactus Jukebox"
+msgstr "Sökvägar till "
+
+#: settings:rscdda2wavtool
+msgid "Cdda2wav (tool to rip CDs)"
+msgstr "Cdda2wav (verktyg för att extrahera cd-skivor)"
+
+#: settings:rssave
+msgid "Save"
+msgstr "Spara"
+
+#: settings:rscancel
+msgid "Cancel"
+msgstr "Avbryt"
+
+#: settings:rsmobiledevice
+msgid "Mobile Device"
+msgstr "Flyttbar enhet"
+
+#: settings:rspaths
+msgid "Paths"
+msgstr "Sökvägar"
+
+#: settings:rslameneededto
+msgid "lame (needed to encode mp3 files)"
+msgstr "lame (behövs för att koda mp3-filer)"
+
+#: settings:rsenablekdeser
+msgid "Enable KDE Service Menu"
+msgstr "Aktivera servicemenyn i KDE"
+
+#: settings:rsaudiooutput
+msgid "Audio Output"
+msgstr "Ljudutdata"
+
+#: settings:rsdownloadalbu
+msgid "Download album cover image from internet"
+msgstr "Hämta omslagsbild för album från internet"
+
+#: settings:rsclearcache
+msgid "Clear Cache"
+msgstr "Töm cache"
+
+#: settings:rsautomaticlys
+msgid "Automaticly start playing first song in playlist"
+msgstr "Börja automatiskt spela upp den första låten i spellista"
+
+#: settings:rsloadlastplay
+msgid "Load last playlist on startup"
+msgstr "Läs in senaste spellista vid uppstart"
+

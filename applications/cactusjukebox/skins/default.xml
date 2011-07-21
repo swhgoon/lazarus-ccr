@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<CONFIG>
+   <Name Value="default"/>
+   <RelativePath Value="default"/>
+   <Main>
+	<Buttons>
+		<Pause Normal = "buttons/pause.png" MouseOver="buttons/pause-h.png" Clicked="buttons/pause-c.png"/>
+		<Play Normal = "buttons/play.png" MouseOver="buttons/play-h.png" Clicked="buttons/play-c.png"/>
+		<Stop Normal = "buttons/stop.png" MouseOver="buttons/stop-h.png" Clicked="buttons/stop-c.png"/>
+		<Next Normal = "buttons/next.png" MouseOver="buttons/next-h.png" Clicked="buttons/next-c.png"/>
+		<Previous Normal = "buttons/back.png" MouseOver="buttons/back-h.png" Clicked="buttons/back-c.png"/>
+	</Buttons>	
+	<Player Icon = "icon/onplayer.xpm"/>	
+	<Harddisk Icon = "icon/harddisk.xpm"/>
+	<Upload Icon = "icon/upload.xpm"/>
+	<Remove Icon = "icon/remove.xpm"/>
+   </Main>
+   <Player>
+	<Buttons>
+		<Pause Normal = "buttons/pause.png" MouseOver="buttons/pause-h.png" Clicked="buttons/pause-c.png" x="110" y="105"/>
+		<Play Normal = "buttons/play.png" MouseOver="buttons/play-h.png" Clicked="buttons/play-c.png" x="60" y="100"/>
+		<Stop Normal = "buttons/stop.png" MouseOver="buttons/stop-h.png" Clicked="buttons/stop-c.png" x="150" y="105"/>
+		<Next Normal = "buttons/next.png" MouseOver="buttons/next-h.png" Clicked="buttons/next-c.png" x="235" y="105"/>
+		<Previous Normal = "buttons/back.png" MouseOver="buttons/back-h.png" Clicked="buttons/back-c.png" x="195" y="105"/>
+	   	<Mute Normal = "player/mute.png" MouseOver = "player/mute-h.png" Activated = "player/mute-on.png" x="16" y="108"/>
+	   	<Info Normal = "player/info.png" MouseOver = "player/info-h.png" x="22" y="53"/>
+	   	<Open Normal = "player/open.png" MouseOver = "player/open-h.png" x="18" y="25"/>
+		<View Normal = "player/view.png" MouseOver = "player/view-h.png" x="18" y="77"/>
+	</Buttons>
+	<Images>
+	   <Background Path= "player/background.png" x="0" y="0"/>
+	   <Time Path = "player/time.png" x="65" y="65"/>
+	   <Trackbar Path = "player/trackbar.png" x="125" y="65"/>
+	   <Toolbar Path = "player/toolbar.png" x="7" y="10"/>
+	   <Title Path = "player/title.png" x="60" y="17"/>
+	   <TextBackground Path = "player/time-back.png" x="53" y="10"/>
+	</Images>
+   </Player>
+</CONFIG>

@@ -1,0 +1,347 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2003-04-01 21:54+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Sebastian Kraft <EMAIL@ADDRESS>\n"
+"Language-Team:\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: mainform:rsquit
+msgid "Quit"
+msgstr "Beenden"
+
+#: mainform:rsfile
+msgid "File"
+msgstr "Datei"
+
+#: mainform:rsopenfile
+msgid "Open File..."
+msgstr "Datei öffnen.."
+
+#: mainform:rsopendirector
+msgid "Open Directory..."
+msgstr "Verzeichnis öffnen.."
+
+#: mainform:rsplayeronly
+msgid "Player only"
+msgstr "Minimieren"
+
+#: mainform:rschooseskin
+msgid "Choose Skin..."
+msgstr "Skin auswählen"
+
+#: mainform:rssettings
+msgid "Settings..."
+msgstr "Einstellungen..."
+
+#: mainform:rslibrary
+msgid "Library"
+msgstr "Bibliothek"
+
+#: mainform:rsnewlibrary
+msgid "New library"
+msgstr "Neue Bibliothek..."
+
+#: mainform:rsloadlibrary
+msgid "Load library"
+msgstr "Bibliothek laden..."
+
+#: mainform:rssavelibrary
+msgid "Save library"
+msgstr "Bibliothek speichern..."
+
+#: mainform:rslibraryinfo
+msgid "Library info"
+msgstr "Info"
+
+#: mainform:rsmanagelibrar
+msgid "Manage library..."
+msgstr "Verzeichnisse..."
+
+#: mainform:rsplaylist
+msgid "Playlist"
+msgstr "Wiedergabeliste"
+
+#: mainform:rsplay
+msgid "Play"
+msgstr "Abspielen"
+
+#: mainform:rsnext
+msgid "Next"
+msgstr "Nächster Track"
+
+#: mainform:rsprevious
+msgid "Previous"
+msgstr "Vorheriger Track"
+
+#: mainform:rsmute
+msgid "Mute"
+msgstr "Stumm"
+
+#: mainform:rsloadplaylist
+msgid "Load playlist"
+msgstr "Wiedergabeliste laden..."
+
+#: mainform:rssaveplaylist
+msgid "Save playlist"
+msgstr "Wiedergabeliste speichern..."
+
+#: mainform:rsmobileplayer
+msgid "Mobile player"
+msgstr "MP3-Player"
+
+#: mainform:rsclearplaylist
+msgid "Clear Playlist"
+msgstr "Wiedergabeliste löschen"
+
+#: mainform:rsrandomplaylist
+msgid "Random Playlist"
+msgstr "Zufällige Wiedergabeliste"
+
+#: mainform:rsdevices
+msgid "Devices"
+msgstr "Geräte"
+
+#: mainform:rsdeviceinfo
+msgid "Device info"
+msgstr "Geräteinfo"
+
+#: mainform:rsscanplayer
+msgid "Scan player"
+msgstr "Gerät durchsuchen"
+
+#: mainform:rssync
+msgid "Sync"
+msgstr "Synchronisieren"
+
+#: mainform:rsclearplayer
+msgid "Clear player"
+msgstr "Gerät leeren"
+
+#: mainform:rsundoselectio
+msgid "Undo selection"
+msgstr "Änderungen Rückgängig"
+
+#: mainform:rsaudiocd
+msgid "Audio CD"
+msgstr "Audio CD"
+
+#: mainform:rsripencode
+msgid "Rip / Encode..."
+msgstr "Rippen / Kodieren..."
+
+#: mainform:rshelp
+msgid "Help"
+msgstr "Hilfe"
+
+#: mainform:rsabout
+msgid "About..."
+msgstr "Über Cactus Jukebox..."
+
+#: mainform:rsmanual
+msgid "Manual..."
+msgstr "Handbuch..."
+
+#: mainform:rsclear
+msgid "Clear"
+msgstr "Löschen"
+
+#: mainform:rssearch
+msgid "Search"
+msgstr "Suchen"
+
+#: mainform:rsalbum
+msgid "Album"
+msgstr "Album"
+
+#: mainform:rsfilename
+msgid "Filename"
+msgstr "Dateiname"
+
+#: mainform:rsartist
+msgid "Artist"
+msgstr "Künstler"
+
+#: mainform:rstitle
+msgid "Title"
+msgstr "Titel"
+
+#: mainform:rsrandom
+msgid "Random"
+msgstr "Shuffle"
+
+#: mainform:rsnotconnected
+msgid "Device not Connected"
+msgstr "Gerät nicht gefunden"
+
+#: mainform:rsok
+msgid "OK"
+msgstr "OK"
+
+#: mainform:rslenght
+msgid "Length"
+msgstr "Länge"
+
+#: mainform:rstrack
+msgid "Track"
+msgstr "Nr"
+
+#: cdrip:rsencodetomp3
+msgid "Encode to mp3"
+msgstr "Als mp3 kodieren"
+
+#: cdrip:rsquerrycddb
+msgid "Querry CDDB"
+msgstr "CDDB Abfrage"
+
+#: cdrip:rsload
+msgid "Load"
+msgstr "CD Laden"
+
+#: cdrip:rseject
+msgid "Eject"
+msgstr "Auswerfen"
+
+#: cdrip:rsstart
+msgid "Start"
+msgstr "Start"
+
+#: cdrip:rsback
+msgid "Back"
+msgstr "Zurück"
+
+#: cdrip:rssetid3tag
+msgid "Write ID3-Tags"
+msgstr "ID3 Tags schreiben"
+
+#: cdrip:rscrsubfolders
+msgid "Create artist subfolders"
+msgstr "Unterverzeichnisse erstellen"
+
+#: cdrip:rsoutfilenamin
+msgid "Outfile naming scheme"
+msgstr "Dateinamenvergabe"
+
+#: settings:rsautoloadlast
+#, fuzzy
+msgid "Load last library at startup"
+msgstr "Bibliothek beim Start automatisch laden"
+
+#: settings:rsscanfornewfi
+msgid "Scan for new files in background  on startup"
+msgstr "Beim Start Bibliothek im Hintergrund aktualisieren(experimentell)"
+
+#: settings:rslanguage
+msgid "Language"
+msgstr "Sprache"
+
+#: settings:rsguesstagfrom
+msgid "Guess tag from filename"
+msgstr "Dateiinformationen erraten"
+
+#: settings:rsmovetosectio
+msgid "Move to section %sUnknown%s"
+msgstr "Datei zu Unknown einsortieren"
+
+#: settings:rsid3type
+msgid "ID3 type"
+msgstr "ID3 Typ"
+
+#: settings:rsid3v1priorit
+msgid "ID3v1 Priority"
+msgstr "ID3v1 Priorität"
+
+#: settings:rsid3v2priorit
+msgid "ID3v2 Priority"
+msgstr "ID3v2 Priorität"
+
+#: settings:rsgeneral
+msgid "General"
+msgstr "Allgemein"
+
+#: settings:rspathtomp3pla
+msgid "Path to mp3player mountpoint"
+msgstr "Pfad zum Mp3-Player Mountpoint"
+
+#: settings:rscreatesubfol
+msgid "Create subfolders on upload"
+msgstr "Unterverzeichnisse erstellen"
+
+#: settings:rspathstoaddit
+msgid "Paths to additional application needed for Cactus Jukebox"
+msgstr "Pfade zu evtl. benötigten Anwendungen"
+
+#: settings:rscdda2wavtool
+msgid "Cdda2wav (tool to rip CDs)"
+msgstr "Cdda2wav (cd-rip Anwendung)"
+
+#: settings:rssave
+msgid "Save"
+msgstr "Speichern"
+
+#: settings:rscancel
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: settings:rsmobiledevice
+msgid "Mobile Device"
+msgstr "Mp3-Player"
+
+#: settings:rspaths
+msgid "Paths"
+msgstr "Pfade"
+
+#: settings:rslameneededto
+msgid "lame (needed to encode mp3 files)"
+msgstr "lame (enkodiert mp3 Dateien)"
+
+#: settings:rsenablekdeser
+msgid "Enable KDE Service Menu"
+msgstr "KDE Service Menu aktivieren"
+
+#: settings:rsaudiooutput
+#, fuzzy
+msgid "Audio Output"
+msgstr "Audio Ausgabe"
+
+#: settings:rsdownloadalbu
+msgid "Download album cover image from internet"
+msgstr "Album Covers aus dem Internet laden"
+
+#: settings:rsclearcache
+msgid "Clear Cache"
+msgstr "Cache leeren"
+
+#: settings:rsautomaticlys
+msgid "Automaticly start playing first song in playlist"
+msgstr "Ersten Titel in Playlist automatisch anspielen"
+
+#: settings:rsloadlastplay
+msgid "Load last playlist on startup"
+msgstr "Letzte Playlist beim Start automatisch laden"
+
+#: settings:rsalwaysstartp
+#, fuzzy
+msgid "Always start playing first song in empty playlist"
+msgstr "Neuer Titel in leerer Playlist automatisch anspielen"
+
+#: settings:rsstopplayback
+msgid "Stop playback when playlist is cleared"
+msgstr "Beim Löschen der Playlist abspielen stoppen."
+
+#: settings:rssortalbumsby
+msgid "Sort albums by track instead of title"
+msgstr "Alben nach Track anstatt nach Titel sortieren"
+
+#: settings:rsenableplugin
+msgid "Enable plugins"
+msgstr "Plugins aktivieren"
+
+#~ msgid "What to do when there is no ID3"
+#~ msgstr "Wenn kein ID3-Tag gefunden wurde..."
+
+#~ msgid "Rescan directories"
+#~ msgstr "Verzeichnisse erneut durchsuchen"

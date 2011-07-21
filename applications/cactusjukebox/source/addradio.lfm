@@ -1,0 +1,89 @@
+object addRadioForm: TaddRadioForm
+  Left = 277
+  Height = 223
+  Top = 191
+  Width = 392
+  HorzScrollBar.Page = 391
+  VertScrollBar.Page = 222
+  ActiveControl = PlaylistURLEdit
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
+  Caption = 'Add Radio Station...'
+  ClientHeight = 223
+  ClientWidth = 392
+  OnCreate = FormCreate
+  LCLVersion = '0.9.29'
+  object Label1: TLabel
+    Left = 8
+    Height = 17
+    Top = 16
+    Width = 334
+    Caption = 'Radio station playlist URL (only ogg, mp3 streams supported)'
+    ParentColor = False
+  end
+  object Label2: TLabel
+    Left = 26
+    Height = 17
+    Top = 120
+    Width = 265
+    Caption = 'Stream URL/Port (http://server.com:9000/file.mp3'
+    ParentColor = False
+    Visible = False
+  end
+  object StationName: TLabel
+    Left = 24
+    Height = 17
+    Top = 168
+    Width = 72
+    Caption = 'StationName'
+    ParentColor = False
+    Visible = False
+  end
+  object PlaylistURLEdit: TEdit
+    Left = 7
+    Height = 26
+    Top = 39
+    Width = 376
+    OnClick = PlaylistURLEditClick
+    TabOrder = 0
+    Text = '.pls / .m3u'
+  end
+  object BitBtn1: TBitBtn
+    Left = 308
+    Height = 30
+    Top = 72
+    Width = 75
+    Caption = 'Add'
+    NumGlyphs = 0
+    OnClick = BitBtn1Click
+    TabOrder = 1
+  end
+  object AdvancedBtn: TButton
+    Left = 7
+    Height = 26
+    Top = 72
+    Width = 88
+    AutoSize = True
+    Caption = 'Advanced >>'
+    OnClick = AdvancedBtnClick
+    TabOrder = 2
+  end
+  object StreamUrlEdit: TEdit
+    Left = 48
+    Height = 26
+    Top = 136
+    Width = 296
+    OnChange = StreamUrlEditChange
+    TabOrder = 3
+    Visible = False
+  end
+  object StationNameEdit: TEdit
+    Left = 48
+    Height = 26
+    Top = 184
+    Width = 296
+    TabOrder = 4
+    Text = 'Unknown'
+    Visible = False
+  end
+end

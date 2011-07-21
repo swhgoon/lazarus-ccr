@@ -1,0 +1,2 @@
+audio/mpeg;     cactus_jukebox %s; nametemplate=%s.mp3; test=test "$DISPLAY" != ""
+audio/x-wav;    cactus_jukebox %s; nametemplate=%s.wav; test=test "$DISPLAY" != ""

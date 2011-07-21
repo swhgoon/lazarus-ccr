@@ -1,0 +1,165 @@
+#
+#   Makefile.fpc for Cactus Jukebox for Free Pascal
+#
+
+[package]
+name=cactusjukebox
+version=$(shell ./tools/get_cactus_version_string.sh source/cactus_const.inc)
+
+[require]
+
+[target]
+#dirs=source
+
+[compiler]
+unitdir=$(LCL_DIRECTORY)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
+	$(LCL_DIRECTORY)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+
+[clean]
+files=$(wildcard source/*$(OEXT)) $(wildcard source/*$(PPUEXT)) $(wildcard source/*$(RSTEXT))  $(wildcard source/*$(STATICLIBEXT))
+
+
+[prerules]
+#
+# LCL Platform
+ifndef LCL_PLATFORM
+ifneq ($(findstring $(OS_TARGET),win32 win64),)
+LCL_PLATFORM=win32
+else
+ifeq ($(OS_TARGET),darwin)
+LCL_PLATFORM=carbon
+else
+LCL_PLATFORM=gtk2
+endif
+endif
+endif
+export LCL_PLATFORM
+
+# Build dir
+ifndef DEBSRCDIR
+DEBSRCDIR=packages/deb/$(LCL_PLATFORM)
+endif
+
+ifndef ZIPSRCDIR
+ZIPSRCDIR=packages/zip/$(LCL_PLATFORM)
+endif
+
+ifndef CACTUS_VERSION
+CACTUS_VERSION=$(shell ./tools/get_cactus_version_string.sh source/cactus_const.inc)
+endif
+
+ifndef ARCH
+ARCH=$(shell ./tools/get_architecture.sh)
+endif
+   
+[rules]
+
+clean:	
+	$(MAKE) -C source clean
+	$(MAKE) -C tools clean
+
+all: 
+	$(MAKE) -C source
+	$(MAKE) -C tools
+
+alldeb:
+	$(MAKE) -C source deb CactusRPM=1
+	$(MAKE) -C tools
+
+debcheck:
+ifneq ($(DEBFPCVERSION),$(PACKAGE_VERSION))
+	@$(ECHO) "Debian version ($(DEBFPCVERSION)) is not correct, expect $(PACKAGE_VERSION)"
+	@exit 1
+endif
+
+debcopy: 
+	install -d $(DEBSRCDIR)/usr/bin
+	#mkdir release/deb/gtk2/usr/lib
+	#mkdir release/deb/gtk2/usr/lib/mime
+	#mkdir release/deb/gtk2/usr/lib/mime/packages
+	install -d $(DEBSRCDIR)/usr/share/cactusjukebox
+	install -d $(DEBSRCDIR)/usr/share/applications
+	install -d $(DEBSRCDIR)/usr/share/applications/kde
+
+	echo "Target architecture: $(ARCH)"
+
+	cp packages/DEBIAN_$(LCL_PLATFORM) $(DEBSRCDIR) -dr
+	mv $(DEBSRCDIR)/DEBIAN_$(LCL_PLATFORM) $(DEBSRCDIR)/DEBIAN
+	sed -e 's/Architecture:.*/Architecture: '$(ARCH)'/' -e 's/Version:.*/Version: '$(CACTUS_VERSION)'/' $(DEBSRCDIR)/DEBIAN/control > $(DEBSRCDIR)/DEBIAN/control.$(ARCH)
+
+	mv $(DEBSRCDIR)/DEBIAN/control.$(ARCH) $(DEBSRCDIR)/DEBIAN/control
+
+	mv tools/cactus_remote $(DEBSRCDIR)/usr/bin/ 
+	mv cactus_jukebox $(DEBSRCDIR)/usr/bin/
+	mv tools/cactus $(DEBSRCDIR)/usr/bin/
+
+	strip $(DEBSRCDIR)/usr/bin/cactus_jukebox
+	strip $(DEBSRCDIR)/usr/bin/cactus
+	strip $(DEBSRCDIR)/usr/bin/cactus_remote
+
+	cp languages -dr $(DEBSRCDIR)/usr/share/cactusjukebox
+
+	cp skins -dr $(DEBSRCDIR)/usr/share/cactusjukebox
+
+	cp icon -dr $(DEBSRCDIR)/usr/share/cactusjukebox
+
+	cp tools -dr $(DEBSRCDIR)/usr/share/cactusjukebox
+
+	cp mplayer.cfg $(DEBSRCDIR)/usr/share/cactusjukebox
+
+	cp doc -dr $(DEBSRCDIR)/usr/share/cactusjukebox
+
+	cp tools/cactusjukebox.desktop $(DEBSRCDIR)/usr/share/applications/
+	#cp tools/cactusjukebox release/deb/gtk2/usr/lib/mime/packages
+
+	#find $(DEBSRCDIR) -name 'CVS*' | xargs -n1 rm -rf
+	find $(DEBSRCDIR) -name '.svn' | xargs -n1 rm -rf
+
+	#cd $(DEBSRCDIR) ; dpkg-buildpackage -us -uc -B
+	# creating .deb
+	dpkg -b $(DEBSRCDIR) cactusjukebox-$(CACTUS_VERSION)-$(LCL_PLATFORM)_$(ARCH).deb
+	#mv -v -t . $(DEBSRCDIR)/../*.{deb,dsc,changes,tar.gz}
+
+
+debclean: 
+	rm  $(DEBSRCDIR) -drf
+
+deb: debclean alldeb debcopy debclean
+	echo "done"
+
+zipcopy:
+	install -d $(ZIPSRCDIR)
+
+        mv tools/cactus_remote $(ZIPSRCDIR)
+        mv cactus_jukebox $(ZIPSRCDIR)
+        mv tools/cactus $(ZIPSRCDIR)
+
+        strip $(ZIPSRCDIR)/cactus_jukebox
+        strip $(ZIPSRCDIR)/cactus
+        strip $(ZIPSRCDIR)/cactus_remote
+
+	cp languages -dr $(ZIPSRCDIR)
+
+	cp skins -dr $(ZIPSRCDIR)
+
+	cp icon -dr $(ZIPSRCDIR)
+
+	cp tools -dr $(ZIPSRCDIR)
+
+	cp mplayer.cfg $(ZIPSRCDIR)
+
+	cp doc -dr $(ZIPSRCDIR)
+
+	find $(ZIPSRCDIR) -name '.svn' | xargs -n1 rm -rf
+
+
+	mv $(ZIPSRCDIR) packages/cactusjukebox-$(CACTUS_VERSION)-$(LCL_PLATFORM)
+	
+	tar -C packages -pczf cactusjukebox-$(CACTUS_VERSION)-$(LCL_PLATFORM)_$(ARCH).tar.gz cactusjukebox-$(CACTUS_VERSION)-$(LCL_PLATFORM)
+
+zipclean: clean
+	rm packages/cactusjukebox-$(CACTUS_VERSION)-$(LCL_PLATFORM) -dfr
+	rm $(ZIPSRCDIR) -dfr
+
+zip: zipclean all zipcopy zipclean
+	echo "done"

@@ -1,0 +1,636 @@
+object Settings: TSettings
+  Left = 454
+  Height = 522
+  Top = 206
+  Width = 483
+  ActiveControl = PageControl1
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsDialog
+  Caption = 'Settings...'
+  ClientHeight = 522
+  ClientWidth = 483
+  FormStyle = fsStayOnTop
+  OnCreate = FormCreate
+  Position = poMainFormCenter
+  ShowInTaskBar = stNever
+  LCLVersion = '0.9.29'
+  object savebut: TButton
+    Left = 112
+    Height = 34
+    Top = 472
+    Width = 52
+    Anchors = [akLeft, akBottom]
+    AutoSize = True
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Save'
+    OnClick = savebutClick
+    TabOrder = 1
+  end
+  object cancelbut: TButton
+    Left = 272
+    Height = 34
+    Top = 472
+    Width = 63
+    Anchors = [akLeft, akBottom]
+    AutoSize = True
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Cancel'
+    OnClick = cancelbutClick
+    TabOrder = 2
+  end
+  object PageControl1: TPageControl
+    Left = 8
+    Height = 439
+    Top = 16
+    Width = 467
+    ActivePage = TabSheet6
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    TabIndex = 6
+    TabOrder = 0
+    object TabSheet1: TTabSheet
+      Caption = 'General'
+      ClientHeight = 411
+      ClientWidth = 463
+      object LLanguage: TLabel
+        Left = 54
+        Height = 16
+        Top = 353
+        Width = 56
+        Caption = 'Language'
+        ParentColor = False
+      end
+      object autoload1: TCheckBox
+        Left = 38
+        Height = 23
+        Top = 31
+        Width = 179
+        AllowGrayed = True
+        Caption = 'Load last library at startup'
+        Checked = True
+        State = cbChecked
+        TabOrder = 0
+      end
+      object backscan: TCheckBox
+        Left = 38
+        Height = 23
+        Top = 103
+        Width = 363
+        Caption = 'Scan for new files in background  on startup(experimental)'
+        TabOrder = 1
+        Visible = False
+      end
+      object LanguageBox: TComboBox
+        Left = 158
+        Height = 24
+        Top = 346
+        Width = 100
+        ItemHeight = 0
+        ItemIndex = 0
+        Items.Strings = (
+          'en_buildin'
+        )
+        OnChange = LanguageBoxChange
+        TabOrder = 2
+        Text = 'en_buildin'
+      end
+      object kdeservicebox: TCheckBox
+        Left = 38
+        Height = 23
+        Top = 279
+        Width = 172
+        Caption = 'enable KDE service menu'
+        OnChange = kdeserviceboxChange
+        TabOrder = 3
+      end
+      object AutoPlayBox: TCheckBox
+        Left = 38
+        Height = 23
+        Top = 143
+        Width = 297
+        Caption = 'Always start playing first song in empty playlist'
+        TabOrder = 4
+      end
+      object StopOnClearBox: TCheckBox
+        Left = 38
+        Height = 23
+        Top = 167
+        Width = 244
+        Caption = 'Stop playback when playlist is cleared'
+        TabOrder = 5
+      end
+      object LoadPlaylistBox: TCheckBox
+        Left = 38
+        Height = 23
+        Top = 55
+        Width = 186
+        Caption = 'Load last playlist on startup'
+        TabOrder = 6
+      end
+      object SortAlbumBox: TCheckBox
+        Left = 38
+        Height = 23
+        Top = 223
+        Width = 232
+        Caption = 'Sort albums by track instead of title'
+        TabOrder = 7
+      end
+    end
+    object AudioTab: TTabSheet
+      Caption = 'Audio'
+      ClientHeight = 411
+      ClientWidth = 463
+      object LAudioOut: TLabel
+        Left = 36
+        Height = 15
+        Top = 102
+        Width = 79
+        Caption = 'Audio System'
+        ParentColor = False
+      end
+      object LAudioBackend: TLabel
+        Left = 36
+        Height = 15
+        Top = 47
+        Width = 84
+        Caption = 'Audio Backend'
+        ParentColor = False
+      end
+      object AudioOut: TComboBox
+        Left = 140
+        Height = 28
+        Top = 94
+        Width = 100
+        ItemHeight = 0
+        ItemIndex = 0
+        Items.Strings = (
+          'Alsa'
+          'OSS'
+        )
+        Style = csDropDownList
+        TabOrder = 0
+        Text = 'Alsa'
+      end
+      object AudioBackend: TComboBox
+        Left = 142
+        Height = 28
+        Top = 40
+        Width = 200
+        ItemHeight = 0
+        ItemIndex = 0
+        Items.Strings = (
+          'MPlayer (recommended)'
+          'Fmod Library (outdated)'
+        )
+        OnChange = AudioBackendChange
+        Style = csDropDownList
+        TabOrder = 1
+        Text = 'MPlayer (recommended)'
+      end
+      object EditCmdlinePanel: TPanel
+        Left = 20
+        Height = 264
+        Top = 134
+        Width = 435
+        ClientHeight = 264
+        ClientWidth = 435
+        TabOrder = 2
+        object Label9: TLabel
+          Left = 16
+          Height = 15
+          Top = 40
+          Width = 336
+          Caption = 'WARNING: Only edit if you exactly know what you are doing!'
+          ParentColor = False
+        end
+        object UseExternalCfgCheckBox: TCheckBox
+          Left = 15
+          Height = 21
+          Top = 8
+          Width = 154
+          Caption = 'Use external config file'
+          OnChange = UseExternalCfgCheckBoxChange
+          TabOrder = 0
+        end
+        object CmdlineMemo: TMemo
+          Left = 15
+          Height = 184
+          Top = 64
+          Width = 409
+          Enabled = False
+          Lines.Strings = (
+            ''
+          )
+          TabOrder = 1
+        end
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'Mobile Device'
+      ClientHeight = 411
+      ClientWidth = 463
+      object LMountpoint: TLabel
+        Left = 24
+        Height = 16
+        Top = 26
+        Width = 173
+        Caption = 'Path to mp3player mountpoint'
+        ParentColor = False
+      end
+      object playerpathedit1: TEdit
+        Left = 24
+        Height = 24
+        Top = 50
+        Width = 320
+        TabOrder = 0
+        Text = '/mp3player'
+      end
+      object Button1: TButton
+        Left = 352
+        Height = 25
+        Top = 50
+        Width = 24
+        BorderSpacing.InnerBorder = 4
+        Caption = '...'
+        OnClick = Button1Click
+        TabOrder = 1
+      end
+      object subfolders: TCheckBox
+        Left = 24
+        Height = 23
+        Top = 114
+        Width = 190
+        Caption = 'Create subfolders on upload'
+        TabOrder = 2
+      end
+    end
+    object TabSheet5: TTabSheet
+      Caption = 'Plugins'
+      ClientHeight = 411
+      ClientWidth = 463
+      object Label1: TLabel
+        Left = 14
+        Height = 16
+        Top = 303
+        Width = 104
+        Caption = 'Plugin information'
+        ParentColor = False
+      end
+      object PluginList: TCheckListBox
+        Left = 14
+        Height = 232
+        Top = 55
+        Width = 240
+        ExtendedSelect = False
+        ItemHeight = 0
+        OnMouseDown = PluginListMouseDown
+        TabOrder = 0
+      end
+      object PluginInfo: TMemo
+        Left = 14
+        Height = 66
+        Top = 319
+        Width = 392
+        ReadOnly = True
+        ScrollBars = ssAutoVertical
+        TabOrder = 1
+      end
+      object Button2: TButton
+        Left = 302
+        Height = 25
+        Top = 55
+        Width = 75
+        BorderSpacing.InnerBorder = 4
+        Caption = 'Setup'
+        TabOrder = 2
+      end
+      object EnablePluginsBox: TCheckBox
+        Left = 14
+        Height = 23
+        Top = 15
+        Width = 110
+        Caption = 'Enable plugins'
+        OnClick = EnablePluginsBoxClick
+        TabOrder = 3
+      end
+    end
+    object TabSheet3: TTabSheet
+      Caption = 'Paths'
+      ClientHeight = 411
+      ClientWidth = 463
+      object Label5: TLabel
+        Left = 14
+        Height = 16
+        Top = 51
+        Width = 1
+        ParentColor = False
+      end
+      object Label2: TLabel
+        Left = 46
+        Height = 16
+        Top = 231
+        Width = 127
+        Caption = 'Default CDROM Device'
+        ParentColor = False
+      end
+      object PathBox: TGroupBox
+        Left = 14
+        Height = 172
+        Top = 19
+        Width = 425
+        Anchors = [akTop, akLeft, akRight]
+        Caption = 'Paths to additional application needed for Cactus Jukebox'
+        ClientHeight = 138
+        ClientWidth = 415
+        TabOrder = 0
+        object Llame: TLabel
+          Left = 22
+          Height = 16
+          Top = 87
+          Width = 200
+          Caption = 'lame (needed to encode mp3 files)'
+          ParentColor = False
+        end
+        object Lcdda2wav: TLabel
+          Left = 22
+          Height = 16
+          Top = 15
+          Width = 153
+          Caption = 'Cdda2wav (tool to rip CDs)'
+          ParentColor = False
+        end
+        object Edit2: TEdit
+          Left = 38
+          Height = 24
+          Top = 111
+          Width = 387
+          Anchors = [akTop, akLeft, akRight]
+          TabOrder = 0
+          Text = 'default'
+        end
+        object Edit1: TEdit
+          Left = 38
+          Height = 24
+          Top = 39
+          Width = 387
+          Anchors = [akTop, akLeft, akRight]
+          TabOrder = 1
+          Text = 'default'
+        end
+      end
+      object CDRomEdit: TEdit
+        Left = 182
+        Height = 24
+        Top = 223
+        Width = 112
+        TabOrder = 1
+        Text = '/dev/cdromx'
+      end
+    end
+    object TabSheet4: TTabSheet
+      Caption = 'Metatags'
+      ClientHeight = 411
+      ClientWidth = 463
+      object GroupBox1: TGroupBox
+        Left = 22
+        Height = 116
+        Top = 247
+        Width = 409
+        Anchors = [akTop, akLeft, akRight]
+        Caption = 'File name format string'
+        ClientHeight = 82
+        ClientWidth = 399
+        TabOrder = 2
+        object Label3: TLabel
+          Left = 11
+          Height = 16
+          Top = 11
+          Width = 229
+          Caption = '%a = Artist    %b = Album   %t = Title   '
+          ParentColor = False
+        end
+        object Label4: TLabel
+          Left = 11
+          Height = 16
+          Top = 43
+          Width = 240
+          Caption = '( for further usage see documentation... )'
+          ParentColor = False
+        end
+        object Label6: TLabel
+          Left = 11
+          Height = 16
+          Top = 27
+          Width = 138
+          Caption = '%n = Track    %y = Year'
+          ParentColor = False
+        end
+        object txtFormatString: TEdit
+          Left = 7
+          Height = 24
+          Top = 67
+          Width = 312
+          TabOrder = 0
+          Text = '%a/%a - %b - %n - %t'
+        end
+      end
+      object ID3typebox: TGroupBox
+        Left = 22
+        Height = 48
+        Top = 167
+        Width = 409
+        Anchors = [akTop, akLeft, akRight]
+        Caption = 'Mpeg3 ID3 type'
+        ClientHeight = 14
+        ClientWidth = 399
+        TabOrder = 0
+        object v1_prio: TRadioButton
+          Left = 78
+          Height = 21
+          Top = 5
+          Width = 100
+          AllowGrayed = True
+          Caption = 'ID3v1 Priority'
+          TabOrder = 0
+          TabStop = False
+        end
+        object v2_prio: TRadioButton
+          Left = 214
+          Height = 21
+          Top = 5
+          Width = 100
+          AllowGrayed = True
+          Caption = 'ID3v2 Priority'
+          Checked = True
+          State = cbChecked
+          TabOrder = 1
+        end
+      end
+      object GuessTagBox: TGroupBox
+        Left = 22
+        Height = 115
+        Top = 23
+        Width = 409
+        Anchors = [akTop, akLeft, akRight]
+        Caption = 'Incomplete metadata handling'
+        ClientHeight = 81
+        ClientWidth = 399
+        TabOrder = 1
+        object Label7: TLabel
+          Tag = 8
+          Left = 30
+          Height = 16
+          Top = 11
+          Width = 164
+          Caption = 'When artist name is missing'
+          ParentColor = False
+        end
+        object unknown1: TRadioButton
+          Left = 62
+          Height = 21
+          Top = 27
+          Width = 179
+          AllowGrayed = True
+          Caption = 'Move to section "Unknown"'
+          TabOrder = 0
+          TabStop = False
+        end
+        object guesstag1: TRadioButton
+          Left = 62
+          Height = 21
+          Top = 51
+          Width = 287
+          AllowGrayed = True
+          Caption = 'Guess artist and title from file or folder name'
+          Checked = True
+          OnChange = guesstag1Change
+          State = cbChecked
+          TabOrder = 1
+        end
+        object MarkGuessBox: TCheckBox
+          Left = 108
+          Height = 23
+          Top = 70
+          Width = 181
+          Caption = 'Mark guessed tags with (*)'
+          TabOrder = 2
+        end
+      end
+    end
+    object TabSheet6: TTabSheet
+      Caption = 'LastFM API'
+      ClientHeight = 408
+      ClientWidth = 459
+      object Label8: TLabel
+        Left = 78
+        Height = 17
+        Top = 198
+        Width = 114
+        Caption = 'Preferred image size'
+        ParentColor = False
+      end
+      object Image1: TImage
+        Left = 22
+        Height = 28
+        Top = 14
+        Width = 80
+        AutoSize = True
+        Center = True
+        Picture.Data = {
+          1754506F727461626C654E6574776F726B477261706869632905000089504E47
+          0D0A1A0A0000000D49484452000000500000001C0803000000C155C888000000
+          017352474200AECE1CE9000001E3504C5445000001FFFFFFD21108DE473FD315
+          0DDC4038D10C04DD453CD2130ADD423AD10F06DE4941DC3E36DB3C33DA352DDA
+          372FDB3931D72A21D52118D3180FD6231AD7271FD6251DD82C23D41E16D9332A
+          D41A11D41C13D93028D82E26F5CBC9DE524BF5CCCAF5C8C6EC9995FDF2F1EA8D
+          88D9352DE98C87DF5650F4C6C4EA908CE05952E15D57F4C7C5F5C9C7E05A53DE
+          4D45FAE5E4E05C56FCF1F0FAE3E2F4C6C3EA8E89DB433CE2615AF5CAC8D72820
+          EA8F8BEEA3A0E7807AE3645EF6CDCBEE9F9BEB928EFDF2F2F1B2AFE15F59E46F
+          69F3BDBBEB918DDF534DDF554ED93A33FCF1F1D6261EEB9590FAE3E1F3BFBCF5
+          CAC7F7D7D5DA3931E1605AE36862FCF2F1F6CCCAD82F26F6CECCD93128FAE6E5
+          EEA4A1DF544CF0AEABE98883E5736DEC9A96E2625CE7817CEB938FF8D7D6FAE5
+          E3E46B65E05750F6CFCDDB4037F8D8D6EC9793E36963DC443CFDF3F2E46D66DC
+          423BF3BDBAE25E58E0564FE77E79DD4841E57772EA8B86EC9691E4736EF4C1BE
+          E57670EFAAA6EDA09DDF554FD72C25E3665FF2B9B7DE4E48F0ACA9E26159E77B
+          75ED9B97F0B0ACE5756FDF5049E98782E1655FE4716CED9D9AEFA8A5DE4A43F2
+          B8B6DC453DD9332BEEA5A1F4C2C0DD453EDB3F37F0ADAAD93831E67D78F7D5D3
+          E67A75ED9A96DB3D35F8D8D7F2BBB9F2B7B4DC4842EDC9D5750000000174524E
+          530040E6D86600000001624B47440088051D48000000097048597300000B1300
+          000B1301009A9C180000000774494D4507D90802112C03DE40975E000002B249
+          44415448C7AD9365531B511486CF5BA1060DA121D924905D92109CE010DCB550
+          AC2D500AA538D4DDDDDDDD7E6ACF3D17FB000C1FF699C9DEF3CAB9B3EC0C44FB
+          6C8568BBCDD02E9BA13D36433B6D86E2850B7575CFE3B7CC9BBAD9D98F8FD6CF
+          284138031C4DD82A0F4F031BF6295198066A1337E1FCA735E23A305C3BFC7AFD
+          26398445BED0B1218F81C535925FEF94C3F16CFD2EED170680C3FB37E42730B0
+          466EDA25AF7017B064A86EB4AC9EF09C1AE7C296657D887AA3410B680C06AB75
+          B53A0814B08A0683D128B7C35EEF588FD533A6532FA5083540808F5FBF2134CC
+          A4A4CC34E8B9A6469F5260024B8AED2B52191911E3A28E295538C10D3EB81CAA
+          5A28E0E7A5D416A065811FF3B7036CCC070255BA5AA54AAC782504152919E2B7
+          D631798472A0C2E339C6591FAB73C0134F08933C4E55B07F1528F7AC225DB5A2
+          DC4960AA4F6D4287E4149A80434EE741E0B852EF8041C720F04387CA6F72AE22
+          5DB5D2EB5CD9E9057448C9420E90979C9C07E488FC034C8FAA3F26EFD6599627
+          977D8D74D5CAE86AC6AB3A24B75008A4B9DD6940A1C8CBC097F769F2AD3BEFBB
+          DDF5CBBE46BA6AA5DEBD92715987E412F2B9E472B19B2F72882F1A727DBEF1A0
+          132876B95A977D8D74D54AAB6B25E3551D5292900DE426256501AF441EB90764
+          C9500C889FAD6B594FF9295DB5A22A4B59AEEA29C81032F84D323AF8891786D1
+          F1BD524D13ECDFE10B0DA312786B744C18FFD8BD66187CA15EA93424CBE02357
+          F514E417BEAACF55EACFE4677737FFFC37792ACA543AD3EF7F295FB3C8DF2E25
+          BF784AF0EC2F05DAF9E0A6BE897C9A71EE867DB1BFFADF60DCE70B17E9B124C6
+          69898CB1187B6D3E1F9BECB5A905EE89A51AFA223AB044D937339D8FF4E648A4
+          BF4B1C3312893497E9B49F478ED3A5639ACAED32F58269AA7A9969EA26EDB019
+          DA6D33B4CD66286EAFADC411C5D90AFD07FB15AD9B67C749680000000049454E
+          44AE426082
+        }
+      end
+      object Label10: TLabel
+        Left = 22
+        Height = 17
+        Top = 54
+        Width = 322
+        Caption = 'Cactus Jukebox can retrieve song information from LastFM.'
+        ParentColor = False
+      end
+      object Label11: TLabel
+        Left = 22
+        Height = 17
+        Top = 78
+        Width = 332
+        Caption = 'No private data is submitted. Only artist name and album title.'
+        ParentColor = False
+      end
+      object ClearCover: TButton
+        Left = 310
+        Height = 34
+        Top = 134
+        Width = 90
+        AutoSize = True
+        BorderSpacing.InnerBorder = 4
+        Caption = 'Clear cache'
+        OnClick = ClearCoverClick
+        TabOrder = 0
+      end
+      object CoverDownload: TCheckBox
+        Left = 22
+        Height = 23
+        Top = 142
+        Width = 241
+        Caption = 'Download album cover art form internet'
+        TabOrder = 1
+      end
+      object AlbumCoverSizeBox: TComboBox
+        Left = 214
+        Height = 26
+        Top = 190
+        Width = 120
+        ItemHeight = 0
+        ItemIndex = 0
+        Items.Strings = (
+          'medium'
+          'large'
+        )
+        Style = csDropDownList
+        TabOrder = 2
+        Text = 'medium'
+      end
+    end
+  end
+end

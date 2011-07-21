@@ -1,0 +1,213 @@
+object playwin: Tplaywin
+  Left = 372
+  Height = 213
+  Top = 384
+  Width = 396
+  BorderStyle = bsDialog
+  Caption = 'Cactus Audio Player'
+  ClientHeight = 213
+  ClientWidth = 396
+  Color = clNavy
+  Icon.Data = {
+    7E04000000000100010010100000010020006804000016000000280000001000
+    0000200000000100200000000000000000000000000000000000000000000000
+    00000000000000000000ABEDEA00A9EBE70EA7E9E52DA5E8E451A3E7E370A2E6
+    E281A2E6E281A3E7E370A4E8E450A7E9E52EA9EBE70FABEDE901000000000000
+    000099FFFF00A9EBE711A6E8E558A1E6E2B09DE3DFE499E1DCF896DFDBFD94DE
+    D9FD94DED9FD96DFDAFD99E1DCF89CE3DFE5A1E6E1B3A5E8E45DA9EBE714A1F3
+    F300AAEBE713A5E8E4799EE4E0E193DBD2FD88D1C3FD84D0C2FD81CEC2FD83D3
+    CDFD84D4CFFD87D6D1FD8BD8D3FD8FD5D0FD97E0DBFD9EE4E0E4A4E8E47FAAEB
+    E716A8EAE637A2E6E2B59AE2DDFD6EC088FE58AB84FF61B88AFF61BC70FF5EAD
+    7BFE65B78FFE68B993FE6EA68BFE7F8086FF85AAADFE9AE1DDFDA1E6E2BBA8EA
+    E63CA9EBE721A3E7E3969CE3DFF36FC088FE2D7DB2FF1E6BA1FF4C968AFF52A9
+    47FF5EC554FF5CC852FF55C14DFF6B986EFF848791FF9CE1DDF5A3E7E39CA9EB
+    E726ACECE901A8EAE62DA3E7E38F6FC081E63080B3FF1F73ADFF4F9379FF4F96
+    44FF64C259FF55AC4BFF49A141FF5FB962FD98D6D3E1A3E7E394A8EAE632ABED
+    E8020000000000000000A9EBE70249983A684FA1A4FF4392B5FF4C9063FF5DA2
+    50FF5DA451FF539C49FF499641FF55B24EE3A7E9E533AAECE70BA1F3E4000000
+    000000000000000000000000000042832F3054B047FF5DB750FF68BC58FF7ED0
+    6EFF66AA59FF5BA150FF519F48FF4CA241E10000001400000000000000000000
+    000000000000000000000000000042842F365DC353FF72D064FF7FD26FFF8EDB
+    7BFF89D577FF7ED46EFF69C95DFF4B9E41DF0000002400000000000000000000
+    000000000000000000000000000042842F3360C457FF8FE5D3FF90E6D7FF89DD
+    D0FF7FD4C4FF7BD7C3FF74D4A0FF49973FDF0000002500000000000000000000
+    000000000000000000000000000041832F2660C555FF9AEDF1FF90E2E7FF5E9A
+    9CFF539091FF5DACAAFF72D5C5FF54AE47C70000000000000000000000000000
+    000000000000000000000000000041812E0E58B74CFD8FE5D5FF81CACFFF5992
+    94FF4F8989FF57A09FFF71D5C6FF55B248B60000000000000000000000000000
+    000000000000000000000000000041812E0053B047DD84DFB7FF8AD9DEFF5F9B
+    9DFF549191FF67BDBBFF70D4BDFF52AF45A30000000000000000000000000000
+    0000000000000000000000000000000000004FA941936DCE83FF92E6ECFF87DE
+    E1FF7CD6D7FF77D9D8FF6CD1A0FF479839720000000000000000000000000000
+    0000000000000000000000000000000000004388311F55B749EB63C768FF6ED0
+    7EFF6ED07EFF63C76BFF53B549F342842F170000000000000000000000000000
+    000000000000000000000000000000000000000000004285301F4EA33F8D54B2
+    47DB52AF46F750AE44CB4792363F000000000000000000000000000000000000
+    0000FFFF0000FFFF0000FFFF0000F1EF0000F0070000F01F0000F01F0000F01F
+    0000F01F0000F01F0000F01F0000F81F0000F81F0000F81F0000FC3F0000FFFF
+    0000
+  }
+  OnClose = playwinClose
+  OnCreate = playwinCreate
+  OnKeyDown = playwinKeyDown
+  OnKeyUp = playwinKeyUp
+  PopupMenu = PopupMenu1
+  ShowInTaskBar = stAlways
+  LCLVersion = '0.9.29'
+  object BackgroundImg: TImage
+    Left = 0
+    Height = 206
+    Top = 0
+    Width = 392
+  end
+  object ToolbarImg: TImage
+    Left = 8
+    Height = 174
+    Top = 8
+    Width = 56
+    AutoSize = True
+  end
+  object OpenImg: TImage
+    Left = 24
+    Height = 38
+    Top = 16
+    Width = 32
+    OnClick = OpenImgClick
+    OnMouseEnter = OpenImgMouseEnter
+    OnMouseLeave = OpenImgMouseLeave
+  end
+  object InfoImg: TImage
+    Left = 24
+    Height = 38
+    Top = 61
+    Width = 32
+    OnClick = InfoImgClick
+    OnMouseEnter = InfoImgMouseEnter
+    OnMouseLeave = InfoImgMouseLeave
+  end
+  object MuteImg: TImage
+    Left = 24
+    Height = 38
+    Top = 104
+    Width = 32
+    OnClick = MuteImgClick
+    OnMouseEnter = MuteImgMouseEnter
+    OnMouseLeave = MuteImgMouseLeave
+  end
+  object textBackImg: TImage
+    Left = 72
+    Height = 104
+    Top = 8
+    Width = 306
+  end
+  object TitleImg: TImage
+    Left = 80
+    Height = 48
+    Top = 16
+    Width = 273
+  end
+  object TimeImg: TImage
+    Left = 88
+    Height = 19
+    Top = 80
+    Width = 62
+  end
+  object TrackbarImg: TImage
+    Left = 160
+    Height = 19
+    Top = 80
+    Width = 150
+  end
+  object PlayImg: TImage
+    Left = 93
+    Height = 52
+    Top = 135
+    Width = 59
+    OnClick = PlayImgClick
+    OnMouseDown = PlayImgMouseDown
+    OnMouseEnter = PlayImgMouseEnter
+    OnMouseLeave = PlayImgMouseLeave
+    OnMouseUp = PlayImgMouseUp
+  end
+  object StopImg: TImage
+    Left = 171
+    Height = 31
+    Top = 151
+    Width = 35
+    OnClick = StopImgClick
+    OnMouseDown = StopImgMouseDown
+    OnMouseEnter = StopImgMouseEnter
+    OnMouseLeave = StopImgMouseLeave
+    OnMouseUp = StopImgMouseUp
+  end
+  object PauseImg: TImage
+    Left = 216
+    Height = 30
+    Top = 152
+    Width = 33
+    OnClick = PauseImgClick
+    OnMouseDown = PauseImgMouseDown
+    OnMouseEnter = PauseImgMouseEnter
+    OnMouseLeave = PauseImgMouseLeave
+    OnMouseUp = PauseImgMouseUp
+  end
+  object backImg: TImage
+    Left = 264
+    Height = 30
+    Top = 152
+    Width = 33
+    OnClick = backImgClick
+    OnMouseDown = backImgMouseDown
+    OnMouseEnter = backImgMouseEnter
+    OnMouseLeave = backImgMouseLeave
+    OnMouseUp = backImgMouseUp
+  end
+  object NextImg: TImage
+    Left = 320
+    Height = 30
+    Top = 152
+    Width = 33
+    OnClick = NextImgClick
+    OnMouseDown = NextImgMouseDown
+    OnMouseEnter = NextImgMouseEnter
+    OnMouseLeave = NextImgMouseLeave
+    OnMouseUp = NextImgMouseUp
+  end
+  object ViewImg: TImage
+    Left = 24
+    Height = 38
+    Top = 144
+    Width = 32
+    OnClick = ViewImgClick
+    OnMouseEnter = ViewImgMouseEnter
+    OnMouseLeave = ViewImgMouseLeave
+  end
+  object AlbumCoverImg: TImage
+    Left = 304
+    Height = 62
+    Top = 16
+    Width = 64
+  end
+  object PopupMenu1: TPopupMenu
+    left = 192
+    object popup_open: TMenuItem
+      Caption = 'Open File'
+      OnClick = openClick
+    end
+    object file_info: TMenuItem
+      Caption = 'Current File Info'
+      OnClick = file_infoClick
+    end
+    object MenuItem1: TMenuItem
+      Caption = 'Playlist'
+      object MenuItem2: TMenuItem
+        Caption = 'Load Playlist'
+        OnClick = MenuItem2Click
+      end
+      object MenuItem3: TMenuItem
+        Caption = 'Save Playlist'
+        OnClick = MenuItem3Click
+      end
+    end
+  end
+end

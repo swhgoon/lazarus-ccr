@@ -1,0 +1,56 @@
+Changes from 0.4.1 to 0.4.2
+	- Last.fm is now used for album cover art download
+	- MPlayer engine can now use its own config file. Makes it 
+	  possible to access MPlayer functions like EQ, select soundcard, ...
+	- Several fixes concerning the playlist(Drag'n'drop, popupmenu,...)
+	- Fixed a bug causing high cpu load during playback
+	- New/Updated translations: spanish, french, ...
+
+
+
+Changes from 0.4 to 0.4.1
+	- Support for OGG, WMA and FLAC adden (thanks Monta!)
+	- Meta tag reader improvements, faster indexing
+	- CD Ripper improvements
+	- Languages and updated translations
+	- And more...
+
+Changes from 0.3.8.1 to 0.4
+	- MPlayer used for playback, 64bit compatibility
+	- Web radio streaming support	
+	- Drag'n'Drop implemented
+	- Internal Mediacollection structure changed
+		- faster querries
+		- faster reload
+		- albums sorted in alphabetical order
+	- Cover gets enlarged on click
+	- Brazilian translation added
+	- Windows port available
+
+Changes from 0.3.8 to 0.3.8.1
+	- Bugfix: Loading files directly form disk now working again
+	- Hungarian translation added
+
+Changes from 0.3 to 0.3.8
+	- Audio CD ripping facility
+	- GTK2 version is available
+	- Many improvements on tag editor send to me by Jan Murawski
+	- Language support. Currently english and german. Please contribute 
+	  to this. Mail sebastian_kraft@gmx.de for instructions.
+	- remove empty directories after removing files
+	- remote control tool for Cactus Jukebox. See docs for more info
+	- Added threading for some operations(copy, scan)
+	- Jump to artist when first key of name is pressed in the artisttree
+	- automatic album coverdownload from internet
+	- New look and feel, some really cool buttons ;)
+	- Window separations kann now be changed with mouse
+	- again: improved handling of non standard tags and files
+	- minor bugfixes
+	- internal code cleanups. SVN repository is available for developers now
+
+Changes from 0.2.4 to 0.3
+	- synchronize music with mobile devices/players
+	- nicer interface, new icons
+	- ID3v2 write support
+	- better handling of corrupted files/tags
+	- many other improvements

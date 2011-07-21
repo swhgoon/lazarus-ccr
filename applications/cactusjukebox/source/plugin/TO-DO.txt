@@ -1,0 +1,13 @@
+TO-DO
+       Possibility for plugins to register an interface something like
+            procedure RegisterInterface(Name:String; InterfacePointer);
+       and to get it like
+            function GetInterface(Name:String):InterfacePointer
+
+TO-DO :  cj_interfaces_impl
+ Porting of function TCJ_PluginsMenu_Impl.SetIcon(MenuItem :TCJ_MenuItem;
+                        State, NewIcon :Integer):Integer; override;
+
+MGSignals : reintroduce in Lazarus ???.
+            Two times the same function for the same Message do an exception
+

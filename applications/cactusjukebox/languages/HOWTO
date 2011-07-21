@@ -1,0 +1,47 @@
+HOWTO Create a new translation
+++++++++++++++++++++++++++++++
+
+At first you need to create a new .po file for your 
+language with make_po.sh
+
+$cd languages
+$./make_po.sh
+
+This creates cactus.po 
+The .po filename should be from type 'cactus.language.po'
+where language is the abbreviation for your language.
+i.e.	en - englisch
+	de - german
+	fr - french
+	gr - greece
+	...
+
+type 
+
+$ mv cactus.po cactus.yourlanguage.po
+
+Now open this file with a text editor. It contains many entries 
+like this one:
+
+#: mp3:rsquit
+msgid "Quit"
+msgstr ""
+
+All you have to do is to write the translation of the word after 'msgid'
+into the quotes after 'msgstr'
+Afterwards save the .po file as utf8-encoded text.
+
+If you want to test the translated strings you have to create a binary .mo 
+file from the .po file. This is done by
+
+$msgfmt cactus.yourlanguage.po -o cactus.yourlanguage.mo
+
+If the .mo file is in the Cactus jukebox 'languages' directory it 
+should now be chooseable from the settings menu.
+(If you have installed from rpm/deb package the folder 
+is at /usr/share/cactusjukebox/languages)
+
+That's all! Please send the translated .po(!) file to the author at
+sebastian_kraft*AT*gmx.de, and he will include it as soon as possible.
+
+Thanks in advance for your contribution!

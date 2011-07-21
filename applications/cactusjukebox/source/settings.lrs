@@ -1,0 +1,210 @@
+{ Das ist eine automatisch erzeugte Lazarus-Ressourcendatei }
+
+LazarusResources.Add('TSettings','FORMDATA',[
+  'TPF0'#9'TSettings'#8'Settings'#4'Left'#3#198#1#6'Height'#3#10#2#3'Top'#3#206
+  +#0#5'Width'#3#227#1#13'ActiveControl'#7#12'PageControl1'#11'BorderIcons'#11
+  +#12'biSystemMenu'#10'biMinimize'#0#11'BorderStyle'#7#8'bsDialog'#7'Caption'#6
+  +#11'Settings...'#12'ClientHeight'#3#10#2#11'ClientWidth'#3#227#1#9'FormStyle'
+  +#7#11'fsStayOnTop'#8'OnCreate'#7#10'FormCreate'#8'Position'#7#16'poMainFormC'
+  +'enter'#13'ShowInTaskBar'#7#7'stNever'#10'LCLVersion'#6#6'0.9.29'#0#7'TButto'
+  +'n'#7'savebut'#4'Left'#2'p'#6'Height'#2'"'#3'Top'#3#216#1#5'Width'#2'4'#7'An'
+  +'chors'#11#6'akLeft'#8'akBottom'#0#8'AutoSize'#9#25'BorderSpacing.InnerBorde'
+  +'r'#2#4#7'Caption'#6#4'Save'#7'OnClick'#7#12'savebutClick'#8'TabOrder'#2#1#0
+  +#0#7'TButton'#9'cancelbut'#4'Left'#3#16#1#6'Height'#2'"'#3'Top'#3#216#1#5'Wi'
+  +'dth'#2'?'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#8'AutoSize'#9#25'BorderSpac'
+  +'ing.InnerBorder'#2#4#7'Caption'#6#6'Cancel'#7'OnClick'#7#14'cancelbutClick'
+  +#8'TabOrder'#2#2#0#0#12'TPageControl'#12'PageControl1'#4'Left'#2#8#6'Height'
+  +#3#183#1#3'Top'#2#16#5'Width'#3#211#1#10'ActivePage'#7#9'TabSheet6'#7'Anchor'
+  +'s'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#8'TabIndex'#2#6#8'TabOrde'
+  +'r'#2#0#0#9'TTabSheet'#9'TabSheet1'#7'Caption'#6#7'General'#12'ClientHeight'
+  +#3#155#1#11'ClientWidth'#3#207#1#0#6'TLabel'#9'LLanguage'#4'Left'#2'6'#6'Hei'
+  +'ght'#2#16#3'Top'#3'a'#1#5'Width'#2'8'#7'Caption'#6#8'Language'#11'ParentCol'
+  +'or'#8#0#0#9'TCheckBox'#9'autoload1'#4'Left'#2'&'#6'Height'#2#23#3'Top'#2#31
+  +#5'Width'#3#179#0#11'AllowGrayed'#9#7'Caption'#6#28'Load last library at sta'
+  +'rtup'#7'Checked'#9#5'State'#7#9'cbChecked'#8'TabOrder'#2#0#0#0#9'TCheckBox'
+  +#8'backscan'#4'Left'#2'&'#6'Height'#2#23#3'Top'#2'g'#5'Width'#3'k'#1#7'Capti'
+  +'on'#6':Scan for new files in background  on startup(experimental)'#8'TabOrd'
+  +'er'#2#1#7'Visible'#8#0#0#9'TComboBox'#11'LanguageBox'#4'Left'#3#158#0#6'Hei'
+  +'ght'#2#24#3'Top'#3'Z'#1#5'Width'#2'd'#10'ItemHeight'#2#0#9'ItemIndex'#2#0#13
+  +'Items.Strings'#1#6#10'en_buildin'#0#8'OnChange'#7#17'LanguageBoxChange'#8'T'
+  +'abOrder'#2#2#4'Text'#6#10'en_buildin'#0#0#9'TCheckBox'#13'kdeservicebox'#4
+  +'Left'#2'&'#6'Height'#2#23#3'Top'#3#23#1#5'Width'#3#172#0#7'Caption'#6#23'en'
+  +'able KDE service menu'#8'OnChange'#7#19'kdeserviceboxChange'#8'TabOrder'#2#3
+  +#0#0#9'TCheckBox'#11'AutoPlayBox'#4'Left'#2'&'#6'Height'#2#23#3'Top'#3#143#0
+  +#5'Width'#3')'#1#7'Caption'#6'1Always start playing first song in empty play'
+  +'list'#8'TabOrder'#2#4#0#0#9'TCheckBox'#14'StopOnClearBox'#4'Left'#2'&'#6'He'
+  +'ight'#2#23#3'Top'#3#167#0#5'Width'#3#244#0#7'Caption'#6'&Stop playback when'
+  +' playlist is cleared'#8'TabOrder'#2#5#0#0#9'TCheckBox'#15'LoadPlaylistBox'#4
+  +'Left'#2'&'#6'Height'#2#23#3'Top'#2'7'#5'Width'#3#186#0#7'Caption'#6#29'Load'
+  +' last playlist on startup'#8'TabOrder'#2#6#0#0#9'TCheckBox'#12'SortAlbumBox'
+  +#4'Left'#2'&'#6'Height'#2#23#3'Top'#3#223#0#5'Width'#3#232#0#7'Caption'#6'%S'
+  +'ort albums by track instead of title'#8'TabOrder'#2#7#0#0#0#9'TTabSheet'#8
+  +'AudioTab'#7'Caption'#6#5'Audio'#12'ClientHeight'#3#155#1#11'ClientWidth'#3
+  +#207#1#0#6'TLabel'#9'LAudioOut'#4'Left'#2'$'#6'Height'#2#15#3'Top'#2'f'#5'Wi'
+  +'dth'#2'O'#7'Caption'#6#12'Audio System'#11'ParentColor'#8#0#0#6'TLabel'#13
+  +'LAudioBackend'#4'Left'#2'$'#6'Height'#2#15#3'Top'#2'/'#5'Width'#2'T'#7'Capt'
+  +'ion'#6#13'Audio Backend'#11'ParentColor'#8#0#0#9'TComboBox'#8'AudioOut'#4'L'
+  +'eft'#3#140#0#6'Height'#2#28#3'Top'#2'^'#5'Width'#2'd'#10'ItemHeight'#2#0#9
+  +'ItemIndex'#2#0#13'Items.Strings'#1#6#4'Alsa'#6#3'OSS'#0#5'Style'#7#14'csDro'
+  +'pDownList'#8'TabOrder'#2#0#4'Text'#6#4'Alsa'#0#0#9'TComboBox'#12'AudioBacke'
+  +'nd'#4'Left'#3#142#0#6'Height'#2#28#3'Top'#2'('#5'Width'#3#200#0#10'ItemHeig'
+  +'ht'#2#0#9'ItemIndex'#2#0#13'Items.Strings'#1#6#21'MPlayer (recommended)'#6
+  +#23'Fmod Library (outdated)'#0#8'OnChange'#7#18'AudioBackendChange'#5'Style'
+  +#7#14'csDropDownList'#8'TabOrder'#2#1#4'Text'#6#21'MPlayer (recommended)'#0#0
+  +#6'TPanel'#16'EditCmdlinePanel'#4'Left'#2#20#6'Height'#3#8#1#3'Top'#3#134#0#5
+  +'Width'#3#179#1#12'ClientHeight'#3#8#1#11'ClientWidth'#3#179#1#8'TabOrder'#2
+  +#2#0#6'TLabel'#6'Label9'#4'Left'#2#16#6'Height'#2#15#3'Top'#2'('#5'Width'#3
+  +'P'#1#7'Caption'#6':WARNING: Only edit if you exactly know what you are doin'
+  +'g!'#11'ParentColor'#8#0#0#9'TCheckBox'#22'UseExternalCfgCheckBox'#4'Left'#2
+  +#15#6'Height'#2#21#3'Top'#2#8#5'Width'#3#154#0#7'Caption'#6#24'Use external '
+  +'config file'#8'OnChange'#7#28'UseExternalCfgCheckBoxChange'#8'TabOrder'#2#0
+  +#0#0#5'TMemo'#11'CmdlineMemo'#4'Left'#2#15#6'Height'#3#184#0#3'Top'#2'@'#5'W'
+  +'idth'#3#153#1#7'Enabled'#8#13'Lines.Strings'#1#6#0#0#8'TabOrder'#2#1#0#0#0#0
+  +#9'TTabSheet'#9'TabSheet2'#7'Caption'#6#13'Mobile Device'#12'ClientHeight'#3
+  +#155#1#11'ClientWidth'#3#207#1#0#6'TLabel'#11'LMountpoint'#4'Left'#2#24#6'He'
+  +'ight'#2#16#3'Top'#2#26#5'Width'#3#173#0#7'Caption'#6#28'Path to mp3player m'
+  +'ountpoint'#11'ParentColor'#8#0#0#5'TEdit'#15'playerpathedit1'#4'Left'#2#24#6
+  +'Height'#2#24#3'Top'#2'2'#5'Width'#3'@'#1#8'TabOrder'#2#0#4'Text'#6#10'/mp3p'
+  ,'layer'#0#0#7'TButton'#7'Button1'#4'Left'#3'`'#1#6'Height'#2#25#3'Top'#2'2'#5
+  +'Width'#2#24#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#3'...'#7'OnClick'
+  +#7#12'Button1Click'#8'TabOrder'#2#1#0#0#9'TCheckBox'#10'subfolders'#4'Left'#2
+  +#24#6'Height'#2#23#3'Top'#2'r'#5'Width'#3#190#0#7'Caption'#6#27'Create subfo'
+  +'lders on upload'#8'TabOrder'#2#2#0#0#0#9'TTabSheet'#9'TabSheet5'#7'Caption'
+  +#6#7'Plugins'#12'ClientHeight'#3#155#1#11'ClientWidth'#3#207#1#0#6'TLabel'#6
+  +'Label1'#4'Left'#2#14#6'Height'#2#16#3'Top'#3'/'#1#5'Width'#2'h'#7'Caption'#6
+  +#18'Plugin information'#11'ParentColor'#8#0#0#13'TCheckListBox'#10'PluginLis'
+  +'t'#4'Left'#2#14#6'Height'#3#232#0#3'Top'#2'7'#5'Width'#3#240#0#14'ExtendedS'
+  +'elect'#8#10'ItemHeight'#2#0#11'OnMouseDown'#7#19'PluginListMouseDown'#8'Tab'
+  +'Order'#2#0#0#0#5'TMemo'#10'PluginInfo'#4'Left'#2#14#6'Height'#2'B'#3'Top'#3
+  +'?'#1#5'Width'#3#136#1#8'ReadOnly'#9#10'ScrollBars'#7#14'ssAutoVertical'#8'T'
+  +'abOrder'#2#1#0#0#7'TButton'#7'Button2'#4'Left'#3'.'#1#6'Height'#2#25#3'Top'
+  +#2'7'#5'Width'#2'K'#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#5'Setup'#8
+  +'TabOrder'#2#2#0#0#9'TCheckBox'#16'EnablePluginsBox'#4'Left'#2#14#6'Height'#2
+  +#23#3'Top'#2#15#5'Width'#2'n'#7'Caption'#6#14'Enable plugins'#7'OnClick'#7#21
+  +'EnablePluginsBoxClick'#8'TabOrder'#2#3#0#0#0#9'TTabSheet'#9'TabSheet3'#7'Ca'
+  +'ption'#6#5'Paths'#12'ClientHeight'#3#155#1#11'ClientWidth'#3#207#1#0#6'TLab'
+  +'el'#6'Label5'#4'Left'#2#14#6'Height'#2#16#3'Top'#2'3'#5'Width'#2#1#11'Paren'
+  +'tColor'#8#0#0#6'TLabel'#6'Label2'#4'Left'#2'.'#6'Height'#2#16#3'Top'#3#231#0
+  +#5'Width'#2#127#7'Caption'#6#20'Default CDROM Device'#11'ParentColor'#8#0#0#9
+  +'TGroupBox'#7'PathBox'#4'Left'#2#14#6'Height'#3#172#0#3'Top'#2#19#5'Width'#3
+  +#169#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#7'Caption'#6'9Paths to '
+  +'additional application needed for Cactus Jukebox'#12'ClientHeight'#3#138#0
+  +#11'ClientWidth'#3#159#1#8'TabOrder'#2#0#0#6'TLabel'#5'Llame'#4'Left'#2#22#6
+  +'Height'#2#16#3'Top'#2'W'#5'Width'#3#200#0#7'Caption'#6'!lame (needed to enc'
+  +'ode mp3 files)'#11'ParentColor'#8#0#0#6'TLabel'#9'Lcdda2wav'#4'Left'#2#22#6
+  +'Height'#2#16#3'Top'#2#15#5'Width'#3#153#0#7'Caption'#6#26'Cdda2wav (tool to'
+  +' rip CDs)'#11'ParentColor'#8#0#0#5'TEdit'#5'Edit2'#4'Left'#2'&'#6'Height'#2
+  +#24#3'Top'#2'o'#5'Width'#3#131#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'
+  +#0#8'TabOrder'#2#0#4'Text'#6#7'default'#0#0#5'TEdit'#5'Edit1'#4'Left'#2'&'#6
+  +'Height'#2#24#3'Top'#2''''#5'Width'#3#131#1#7'Anchors'#11#5'akTop'#6'akLeft'
+  +#7'akRight'#0#8'TabOrder'#2#1#4'Text'#6#7'default'#0#0#0#5'TEdit'#9'CDRomEdi'
+  +'t'#4'Left'#3#182#0#6'Height'#2#24#3'Top'#3#223#0#5'Width'#2'p'#8'TabOrder'#2
+  +#1#4'Text'#6#11'/dev/cdromx'#0#0#0#9'TTabSheet'#9'TabSheet4'#7'Caption'#6#8
+  +'Metatags'#12'ClientHeight'#3#155#1#11'ClientWidth'#3#207#1#0#9'TGroupBox'#9
+  +'GroupBox1'#4'Left'#2#22#6'Height'#2't'#3'Top'#3#247#0#5'Width'#3#153#1#7'An'
+  +'chors'#11#5'akTop'#6'akLeft'#7'akRight'#0#7'Caption'#6#23'File name format '
+  +'string'#12'ClientHeight'#2'R'#11'ClientWidth'#3#143#1#8'TabOrder'#2#2#0#6'T'
+  +'Label'#6'Label3'#4'Left'#2#11#6'Height'#2#16#3'Top'#2#11#5'Width'#3#229#0#7
+  +'Caption'#6')%a = Artist    %b = Album   %t = Title   '#11'ParentColor'#8#0#0
+  +#6'TLabel'#6'Label4'#4'Left'#2#11#6'Height'#2#16#3'Top'#2'+'#5'Width'#3#240#0
+  +#7'Caption'#6'*( for further usage see documentation... )'#11'ParentColor'#8
+  +#0#0#6'TLabel'#6'Label6'#4'Left'#2#11#6'Height'#2#16#3'Top'#2#27#5'Width'#3
+  +#138#0#7'Caption'#6#23'%n = Track    %y = Year'#11'ParentColor'#8#0#0#5'TEdi'
+  +'t'#15'txtFormatString'#4'Left'#2#7#6'Height'#2#24#3'Top'#2'C'#5'Width'#3'8'
+  +#1#8'TabOrder'#2#0#4'Text'#6#20'%a/%a - %b - %n - %t'#0#0#0#9'TGroupBox'#10
+  +'ID3typebox'#4'Left'#2#22#6'Height'#2'0'#3'Top'#3#167#0#5'Width'#3#153#1#7'A'
+  +'nchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#7'Caption'#6#14'Mpeg3 ID3 type'
+  +#12'ClientHeight'#2#14#11'ClientWidth'#3#143#1#8'TabOrder'#2#0#0#12'TRadioBu'
+  +'tton'#7'v1_prio'#4'Left'#2'N'#6'Height'#2#21#3'Top'#2#5#5'Width'#2'd'#11'Al'
+  +'lowGrayed'#9#7'Caption'#6#14'ID3v1 Priority'#8'TabOrder'#2#0#7'TabStop'#8#0
+  +#0#12'TRadioButton'#7'v2_prio'#4'Left'#3#214#0#6'Height'#2#21#3'Top'#2#5#5'W'
+  +'idth'#2'd'#11'AllowGrayed'#9#7'Caption'#6#14'ID3v2 Priority'#7'Checked'#9#5
+  +'State'#7#9'cbChecked'#8'TabOrder'#2#1#0#0#0#9'TGroupBox'#11'GuessTagBox'#4
+  +'Left'#2#22#6'Height'#2's'#3'Top'#2#23#5'Width'#3#153#1#7'Anchors'#11#5'akTo'
+  +'p'#6'akLeft'#7'akRight'#0#7'Caption'#6#28'Incomplete metadata handling'#12
+  +'ClientHeight'#2'Q'#11'ClientWidth'#3#143#1#8'TabOrder'#2#1#0#6'TLabel'#6'La'
+  +'bel7'#3'Tag'#2#8#4'Left'#2#30#6'Height'#2#16#3'Top'#2#11#5'Width'#3#164#0#7
+  +'Caption'#6#27'When artist name is missing'#11'ParentColor'#8#0#0#12'TRadioB'
+  +'utton'#8'unknown1'#4'Left'#2'>'#6'Height'#2#21#3'Top'#2#27#5'Width'#3#179#0
+  +#11'AllowGrayed'#9#7'Caption'#6#25'Move to section "Unknown"'#8'TabOrder'#2#0
+  +#7'TabStop'#8#0#0#12'TRadioButton'#9'guesstag1'#4'Left'#2'>'#6'Height'#2#21#3
+  +'Top'#2'3'#5'Width'#3#31#1#11'AllowGrayed'#9#7'Caption'#6'/Guess artist and '
+  ,'title from file or folder name'#7'Checked'#9#8'OnChange'#7#15'guesstag1Chan'
+  +'ge'#5'State'#7#9'cbChecked'#8'TabOrder'#2#1#0#0#9'TCheckBox'#12'MarkGuessBo'
+  +'x'#4'Left'#2'l'#6'Height'#2#23#3'Top'#2'F'#5'Width'#3#181#0#7'Caption'#6#26
+  +'Mark guessed tags with (*)'#8'TabOrder'#2#2#0#0#0#0#9'TTabSheet'#9'TabSheet'
+  +'6'#7'Caption'#6#10'LastFM API'#12'ClientHeight'#3#152#1#11'ClientWidth'#3
+  +#203#1#0#6'TLabel'#6'Label8'#4'Left'#2'N'#6'Height'#2#17#3'Top'#3#198#0#5'Wi'
+  +'dth'#2'r'#7'Caption'#6#20'Preferred image size'#11'ParentColor'#8#0#0#6'TIm'
+  +'age'#6'Image1'#4'Left'#2#22#6'Height'#2#28#3'Top'#2#14#5'Width'#2'P'#8'Auto'
+  +'Size'#9#6'Center'#9#12'Picture.Data'#10'E'#5#0#0#23'TPortableNetworkGraphic'
+  +')'#5#0#0#137'PNG'#13#10#26#10#0#0#0#13'IHDR'#0#0#0'P'#0#0#0#28#8#3#0#0#0#193
+  +'U'#200#136#0#0#0#1'sRGB'#0#174#206#28#233#0#0#1#227'PLTE'#0#0#1#255#255#255
+  +#210#17#8#222'G?'#211#21#13#220'@8'#209#12#4#221'E<'#210#19#10#221'B:'#209#15
+  +#6#222'IA'#220'>6'#219'<3'#218'5-'#218'7/'#219'91'#215'*!'#213'!'#24#211#24
+  +#15#214'#'#26#215''''#31#214'%'#29#216',#'#212#30#22#217'3*'#212#26#17#212#28
+  +#19#217'0('#216'.&'#245#203#201#222'RK'#245#204#202#245#200#198#236#153#149
+  +#253#242#241#234#141#136#217'5-'#233#140#135#223'VP'#244#198#196#234#144#140
+  +#224'YR'#225']W'#244#199#197#245#201#199#224'ZS'#222'ME'#250#229#228#224'\V'
+  +#252#241#240#250#227#226#244#198#195#234#142#137#219'C<'#226'aZ'#245#202#200
+  +#215'( '#234#143#139#238#163#160#231#128'z'#227'd^'#246#205#203#238#159#155
+  +#235#146#142#253#242#242#241#178#175#225'_Y'#228'oi'#243#189#187#235#145#141
+  +#223'SM'#223'UN'#217':3'#252#241#241#214'&'#30#235#149#144#250#227#225#243
+  +#191#188#245#202#199#247#215#213#218'91'#225'`Z'#227'hb'#252#242#241#246#204
+  +#202#216'/&'#246#206#204#217'1('#250#230#229#238#164#161#223'TL'#240#174#171
+  +#233#136#131#229'sm'#236#154#150#226'b\'#231#129'|'#235#147#143#248#215#214
+  +#250#229#227#228'ke'#224'WP'#246#207#205#219'@7'#248#216#214#236#151#147#227
+  +'ic'#220'D<'#253#243#242#228'mf'#220'B;'#243#189#186#226'^X'#224'VO'#231'~y'
+  +#221'HA'#229'wr'#234#139#134#236#150#145#228'sn'#244#193#190#229'vp'#239#170
+  +#166#237#160#157#223'UO'#215',%'#227'f_'#242#185#183#222'NH'#240#172#169#226
+  +'aY'#231'{u'#237#155#151#240#176#172#229'uo'#223'PI'#233#135#130#225'e_'#228
+  +'ql'#237#157#154#239#168#165#222'JC'#242#184#182#220'E='#217'3+'#238#165#161
+  +#244#194#192#221'E>'#219'?7'#240#173#170#217'81'#230'}x'#247#213#211#230'zu'
+  +#237#154#150#219'=5'#248#216#215#242#187#185#242#183#180#220'HB'#237#201#213
+  +'u'#0#0#0#1'tRNS'#0'@'#230#216'f'#0#0#0#1'bKGD'#0#136#5#29'H'#0#0#0#9'pHYs'#0
+  +#0#11#19#0#0#11#19#1#0#154#156#24#0#0#0#7'tIME'#7#217#8#2#17','#3#222'@'#151
+  +'^'#0#0#2#178'IDATH'#199#173#147'eS'#27'Q'#20#134#207'['#161#6#13#161'!'#217
+  +'$'#144']'#146#16#156#224#16#220#181'P'#172'-P'#10#165'8'#212#221#221#221#221
+  +'~j'#207'='#23#251#0#12#31#246#153#201#222#243#202#185#179#236#12'D'#251'l'
+  +#133'h'#187#205#208'.'#155#161'=6C;m'#134#226#133#11'uu'#207#227#183#204#155
+  +#186#217#217#143#143#214#207'(A8'#3#28'M'#216'*'#15'O'#3#27#246')Q'#152#6'j'
+  +#19'7'#225#252#167'5'#226':0\;'#252'z'#253'&9'#132'E'#190#208#177'!'#143#129
+  +#197'5'#146'_'#239#148#195#241'l'#253'.'#237#23#6#128#195#251'7'#228'''0'#176
+  +'Fn'#218'%'#175'p'#23#176'd'#168'n'#180#172#158#240#156#26#231#194#150'e}'
+  +#136'z'#163'A'#11'h'#12#6#171'u'#181':'#8#20#176#138#6#131#209'('#183#195'^'
+  +#239'X'#143#213'3'#166'S/'#165#8'5@'#128#143'_'#191'!4'#204#164#164#204'4'
+  +#232#185#166'F'#159'R`'#2'K'#138#237'+R'#25#25#17#227#162#142')U8'#193#13'>'
+  +#184#28#170'Z('#224#231#165#212#22#160'e'#129#31#243#183#3'l'#204#7#2'U'#186
+  +'Z'#165'J'#172'x%'#4#21')'#25#226#183#214'1y'#132'r'#160#194#227'9'#198'Y'#31
+  +#171's'#192#19'O'#8#147'<NU'#176#127#21'('#247#172'"]'#181#162#220'I`'#170'O'
+  +'mB'#135#228#20#154#128'CN'#231'A'#224#184'R'#239#128'A'#199' '#240'C'#135
+  +#202'or'#174'"]'#181#210#235'\'#217#233#5'tH'#201'B'#14#144#151#156#156#7#228
+  +#136#252#3'L'#143#170'?&'#239#214'Y'#150''''#151'}'#141't'#213#202#232'j'#198
+  +#171':$'#183'P'#8#164#185#221'i@'#161#200#203#192#151#247'i'#242#173';'#239
+  +#187#221#245#203#190'F'#186'j'#165#222#189#146'qY'#135#228#18#242#185#228'r'
+  +#177#155'/r'#136'/'#26'r}'#190#241#160#19'(v'#185'Z'#151'}'#141't'#213'J'#171
+  +'k%'#227'U'#29'R'#146#144#13#228'&%e'#1#175'D'#30#185#7'd'#201'P'#12#136#159
+  +#173'kYO'#249')]'#181#162'*KY'#174#234')'#200#16'2'#248'M2:'#248#137#23#134
+  +#209#241#189'RM'#19#236#223#225#11#13#163#18'xktL'#24#255#216#189'f'#24'|'
+  +#161'^'#169'4$'#203#224'#W'#245#20#228#23#190#170#207'U'#234#207#228'gw7'#255
+  +#252'7y*'#202'T:'#211#239#127')_'#179#200#223'.%'#191'xJ'#240#236'/'#5#218
+  +#249#224#166#190#137'|'#154'q'#238#134'}'#177#191#250#223'`'#220#231#11#23
+  +#233#177'$'#198'i'#137#140#177#24'{m>'#31#155#236#181#169#5#238#137#165#26
+  +#250'":'#176'D'#217'73'#157#143#244#230'H'#164#191'K'#28'3'#18#137'4'#151#233
+  +#180#159'G'#142#211#165'c'#154#202#237'2'#245#130'i'#170'z'#153'i'#234'&'#237
+  +#176#25#218'm3'#180#205'f(n'#175#173#196#17#197#217#10#253#7#251#21#173#155
+  ,'g'#199'Ih'#0#0#0#0'IEND'#174'B`'#130#0#0#6'TLabel'#7'Label10'#4'Left'#2#22#6
+  +'Height'#2#17#3'Top'#2'6'#5'Width'#3'B'#1#7'Caption'#6'9Cactus Jukebox can r'
+  +'etrieve song information from LastFM.'#11'ParentColor'#8#0#0#6'TLabel'#7'La'
+  +'bel11'#4'Left'#2#22#6'Height'#2#17#3'Top'#2'N'#5'Width'#3'L'#1#7'Caption'#6
+  +'?No private data is submitted. Only artist name and album title.'#11'Parent'
+  +'Color'#8#0#0#7'TButton'#10'ClearCover'#4'Left'#3'6'#1#6'Height'#2'"'#3'Top'
+  +#3#134#0#5'Width'#2'Z'#8'AutoSize'#9#25'BorderSpacing.InnerBorder'#2#4#7'Cap'
+  +'tion'#6#11'Clear cache'#7'OnClick'#7#15'ClearCoverClick'#8'TabOrder'#2#0#0#0
+  +#9'TCheckBox'#13'CoverDownload'#4'Left'#2#22#6'Height'#2#23#3'Top'#3#142#0#5
+  +'Width'#3#241#0#7'Caption'#6'&Download album cover art form internet'#8'TabO'
+  +'rder'#2#1#0#0#9'TComboBox'#17'AlbumCoverSizeBox'#4'Left'#3#214#0#6'Height'#2
+  +#26#3'Top'#3#190#0#5'Width'#2'x'#10'ItemHeight'#2#0#9'ItemIndex'#2#0#13'Item'
+  +'s.Strings'#1#6#6'medium'#6#5'large'#0#5'Style'#7#14'csDropDownList'#8'TabOr'
+  +'der'#2#2#4'Text'#6#6'medium'#0#0#0#0#0
+]);

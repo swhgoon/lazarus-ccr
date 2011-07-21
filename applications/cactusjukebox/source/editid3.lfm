@@ -1,0 +1,423 @@
+object EditID3: TEditID3
+  Left = 383
+  Height = 454
+  Top = 258
+  Width = 432
+  HorzScrollBar.Page = 395
+  HorzScrollBar.Range = 383
+  VertScrollBar.Page = 441
+  VertScrollBar.Range = 409
+  ActiveControl = metacontrol
+  BorderStyle = bsDialog
+  Caption = 'Edit ID3 Tag'
+  ClientHeight = 454
+  ClientWidth = 432
+  OnClose = EditID3Close
+  OnCreate = FormCreate
+  OnHide = FormHide
+  Position = poMainFormCenter
+  ShowInTaskBar = stNever
+  LCLVersion = '0.9.29'
+  object metacontrol: TPageControl
+    Left = 8
+    Height = 402
+    Top = 8
+    Width = 411
+    ActivePage = metatab
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    TabIndex = 0
+    TabOrder = 0
+    OnChange = metacontrolChange
+    OnPageChanged = metacontrolChange
+    object metatab: TTabSheet
+      Caption = 'Meta-Info'
+      ClientHeight = 371
+      ClientWidth = 405
+      object lblYear: TLabel
+        Left = 118
+        Height = 14
+        Top = 214
+        Width = 26
+        Caption = 'Year'
+        ParentColor = False
+      end
+      object lblPath: TLabel
+        Left = 15
+        Height = 14
+        Top = 66
+        Width = 62
+        Caption = 'Path to file'
+        ParentColor = False
+      end
+      object AlbumCoverImg: TImage
+        Left = 232
+        Height = 146
+        Top = 214
+        Width = 162
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        AutoSize = True
+        Proportional = True
+        Stretch = True
+      end
+      object lblArtist: TLabel
+        Left = 22
+        Height = 14
+        Top = 118
+        Width = 31
+        Caption = 'Artist'
+        ParentColor = False
+      end
+      object lblTitle: TLabel
+        Left = 22
+        Height = 14
+        Top = 150
+        Width = 25
+        Caption = 'Title'
+        ParentColor = False
+      end
+      object lblAlbum: TLabel
+        Left = 22
+        Height = 14
+        Top = 182
+        Width = 36
+        Caption = 'Album'
+        ParentColor = False
+      end
+      object lblTrack: TLabel
+        Left = 22
+        Height = 14
+        Top = 214
+        Width = 30
+        Caption = 'Track'
+        ParentColor = False
+      end
+      object lblGenre: TLabel
+        Left = 22
+        Height = 14
+        Top = 252
+        Width = 36
+        Caption = 'Genre'
+        ParentColor = False
+      end
+      object lblComment: TLabel
+        Left = 21
+        Height = 14
+        Top = 282
+        Width = 56
+        Caption = 'Comment'
+        ParentColor = False
+      end
+      object GroupBox1: TGroupBox
+        Left = 15
+        Height = 53
+        Top = 7
+        Width = 241
+        Caption = 'Tag to name'
+        ClientHeight = 38
+        ClientWidth = 237
+        TabOrder = 10
+        object btnOptions: TButton
+          Left = 125
+          Height = 23
+          Hint = '( %a/%a - %b - %n - %t )'
+          Top = 11
+          Width = 105
+          Anchors = [akLeft, akBottom]
+          BorderSpacing.Around = 4
+          Caption = 'Options'
+          OnClick = btnOptionsClick
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 0
+        end
+        object Button1: TButton
+          Left = 15
+          Height = 23
+          Top = 11
+          Width = 105
+          Anchors = [akLeft, akBottom]
+          BorderSpacing.Around = 4
+          Caption = 'Apply now'
+          OnClick = Button1Click
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 1
+        end
+      end
+      object artistedit1: TEdit
+        Left = 66
+        Height = 23
+        Top = 114
+        Width = 328
+        Anchors = [akTop, akLeft, akRight]
+        OnChange = activateEMode
+        TabOrder = 1
+      end
+      object titleedit1: TEdit
+        Left = 67
+        Height = 23
+        Top = 146
+        Width = 327
+        Anchors = [akTop, akLeft, akRight]
+        OnChange = activateEMode
+        TabOrder = 2
+      end
+      object albumedit1: TEdit
+        Left = 67
+        Height = 23
+        Top = 178
+        Width = 328
+        Anchors = [akTop, akLeft, akRight]
+        OnChange = activateEMode
+        TabOrder = 3
+      end
+      object yearEdit1: TEdit
+        Left = 153
+        Height = 23
+        Top = 210
+        Width = 64
+        MaxLength = 4
+        TabOrder = 5
+      end
+      object commentedit1: TEdit
+        Left = 22
+        Height = 23
+        Top = 298
+        Width = 194
+        OnChange = activateEMode
+        TabOrder = 6
+      end
+      object pathedit1: TEdit
+        Left = 15
+        Height = 23
+        Top = 82
+        Width = 380
+        Anchors = [akTop, akLeft, akRight]
+        OnChange = activateEMode
+        TabOrder = 0
+      end
+      object trackedit1: TEdit
+        Left = 66
+        Height = 23
+        Top = 210
+        Width = 35
+        MaxLength = 4
+        OnChange = activateEMode
+        TabOrder = 4
+      end
+      object guessname1: TButton
+        Left = 278
+        Height = 25
+        Top = 31
+        Width = 98
+        AutoSize = True
+        BorderSpacing.Around = 4
+        Caption = 'Tag from name'
+        OnClick = guessnameClick
+        TabOrder = 7
+      end
+      object cmbYear: TComboBox
+        Left = 151
+        Height = 27
+        Top = 210
+        Width = 64
+        ItemHeight = 0
+        MaxLength = 4
+        OnChange = cmbYearChange
+        Sorted = True
+        TabOrder = 8
+        Text = 'cmbY'
+        Visible = False
+      end
+      object cmbComment: TComboBox
+        Left = 19
+        Height = 27
+        Top = 298
+        Width = 196
+        ItemHeight = 0
+        OnChange = activateEMode
+        Sorted = True
+        TabOrder = 9
+        Text = 'cmbComment'
+        Visible = False
+      end
+      object GenreBox: TComboBox
+        Left = 67
+        Height = 27
+        Top = 244
+        Width = 150
+        AutoComplete = True
+        AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
+        ItemHeight = 0
+        OnChange = activateEMode
+        Sorted = True
+        TabOrder = 11
+      end
+    end
+    object fileinfo: TTabSheet
+      Caption = 'File-Info'
+      ClientHeight = 371
+      ClientWidth = 405
+      object mtype: TLabel
+        Left = 40
+        Height = 20
+        Top = 34
+        Width = 62
+        Caption = 'Mediatype:'
+        ParentColor = False
+      end
+      object bitrate: TLabel
+        Left = 40
+        Height = 20
+        Top = 114
+        Width = 81
+        Caption = 'Bitrate: 0kbps'
+        ParentColor = False
+      end
+      object fsize: TLabel
+        Left = 40
+        Height = 20
+        Top = 94
+        Width = 77
+        Caption = 'Filesize: 0 MB'
+        ParentColor = False
+      end
+      object srate: TLabel
+        Left = 40
+        Height = 20
+        Top = 134
+        Width = 71
+        Caption = 'Samplerate:'
+        ParentColor = False
+      end
+      object plength: TLabel
+        Left = 40
+        Height = 20
+        Top = 58
+        Width = 43
+        Caption = 'Length:'
+        ParentColor = False
+      end
+      object idlabel: TLabel
+        Left = 41
+        Height = 20
+        Top = 178
+        Width = 37
+        Caption = 'Fileid: '
+        ParentColor = False
+      end
+      object indexlabel: TLabel
+        Left = 40
+        Height = 20
+        Top = 194
+        Width = 53
+        Caption = 'FileIndex:'
+        ParentColor = False
+      end
+      object Filelogo: TImage
+        Left = 230
+        Height = 100
+        Top = 34
+        Width = 100
+      end
+    end
+    object StreamTab: TTabSheet
+      Caption = 'Stream-Info'
+      ClientHeight = 371
+      ClientWidth = 405
+      object Label1: TLabel
+        Left = 26
+        Height = 14
+        Top = 15
+        Width = 34
+        Caption = 'Name'
+        Color = clBackground
+        ParentColor = False
+        Transparent = False
+      end
+      object Label2: TLabel
+        Left = 26
+        Height = 14
+        Top = 79
+        Width = 68
+        Caption = 'Stream URL'
+        Color = clBackground
+        ParentColor = False
+        Transparent = False
+      end
+      object Label3: TLabel
+        Left = 26
+        Height = 14
+        Top = 143
+        Width = 65
+        Caption = 'Description'
+        Color = clBackground
+        ParentColor = False
+        Transparent = False
+      end
+      object NameEdit: TEdit
+        Left = 46
+        Height = 23
+        Top = 33
+        Width = 296
+        TabOrder = 0
+      end
+      object URLEdit: TEdit
+        Left = 46
+        Height = 23
+        Top = 97
+        Width = 296
+        TabOrder = 1
+      end
+      object DescEdit: TMemo
+        Left = 46
+        Height = 66
+        Top = 167
+        Width = 296
+        TabOrder = 2
+      end
+    end
+  end
+  object cancelbut1: TButton
+    Left = 280
+    Height = 25
+    Top = 418
+    Width = 75
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.InnerBorder = 4
+    Cancel = True
+    Caption = '&Cancel'
+    OnClick = cancelbutClick
+    TabOrder = 1
+  end
+  object savebut1: TButton
+    Left = 176
+    Height = 25
+    Top = 418
+    Width = 75
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.InnerBorder = 4
+    Caption = '&Save'
+    Default = True
+    OnClick = savebutClick
+    TabOrder = 2
+  end
+  object btnReset: TButton
+    Left = 32
+    Height = 25
+    Top = 418
+    Width = 75
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.InnerBorder = 4
+    Caption = '&Reset'
+    OnClick = btnResetClick
+    TabOrder = 3
+  end
+  object PicDownloadTimer: TTimer
+    Enabled = False
+    Interval = 100
+    OnTimer = PicDownloadTimerTimer
+    OnStartTimer = PicDownloadTimerStartTimer
+    left = 344
+  end
+end

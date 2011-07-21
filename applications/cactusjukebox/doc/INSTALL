@@ -1,0 +1,9 @@
+linux:
+	libfmod v3.75 is needed for cactus.
+	run ./install.sh to copy libfmod to /usr/lib
+	you can also install libfmod by hand or from a rpm.
+	www.fmod.org
+
+win32:
+	nothing to do. 
+	just run cactus.exe

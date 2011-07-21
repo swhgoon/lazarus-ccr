@@ -1,0 +1,16 @@
+Package: cactusjukebox
+Version: 0.3.8.5beta
+Section: sound
+Priority: optional
+Architecture: i386
+Essential: no
+Depends: libgtk1.2 (>= 1.2), mplayer (>= 1.0)
+Pre-Depends: 
+Recommends:   
+Suggests: 
+Installed-Size: 8320589 
+Maintainer: sebastian kraft <sebastian_kraft@gmx.de>
+Conflicts: 
+Replaces: 
+Provides: cactusjukebox
+Description: Cactus Jukebox, audio player and music organizer. GTK1.2 1.2 binary

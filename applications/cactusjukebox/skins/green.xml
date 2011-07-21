@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<CONFIG>
+   <Name Value="green"/>
+   <RelativePath Value="green"/>
+   <Main>
+	<Buttons>
+		<Play Normal = "play.png"/>
+	</Buttons>	
+   </Main>	
+</CONFIG>

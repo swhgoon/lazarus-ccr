@@ -1,0 +1,16 @@
+[Desktop Entry]
+ServiceTypes=audio/x-mp3,audio/x-ogg
+Actions=openfile;enquefile
+
+[Desktop Action openfile]
+Name=Open file with Cactus Jukebox
+Name[de]=Mit Cactus Jukebox öffnen
+icon=
+Exec=/usr/bin/cactus_remote -o %u
+
+[Desktop Action enquefile]
+Name=Append to Cactus Jukebox playlist
+Name[de]=An Cactus Jukebox Playlist anhängen
+icon=
+Exec=/usr/bin/cactus_remote -e %u
+

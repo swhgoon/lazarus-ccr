@@ -1,0 +1,29 @@
+see INSTALL for install information.
+
+
+Requirements:
+	GTK1.x or GTK2
+	mplayer exe or libfmod-3.75 for playback
+	
+	cdda2wav (for CD ripping)
+	lame (mp3 encoding)
+
+
+not more to say... just run cactus_jukebox and have fun.
+run cactus to start in minimized mode.
+
+cactus_remote is a tool to remote control Cactus from other 
+applications or scripts. Watch the output of 'cactus_remote -h' for 
+available commands.
+
+If problems occur run from commandline and watch the output. Most times people 
+forgot to install some gtk/gdk libraries (e.g. libgdk-pixbuf).
+
+See COPYING for license. This software is distributed under the GPL.
+
+homepage: http://cactus.hey-you-freaks.de
+email: sebastian_kraft@gmx.de
+
+
+Cactus Jukebox uses FMOD Sound System for audio playback
+FMOD Sound System, copyright © Firelight Technologies Pty, Ltd., 1994-2006.

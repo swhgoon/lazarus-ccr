@@ -1,0 +1,319 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2008-11-11\n"
+"PO-Revision-Date: YEAR-MO-DA\n"
+"Last-Translator: Dezitter Bart <info@zittergie.be>\n"
+"Language-Team:\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: mainform:rsquit
+msgid "Quit"
+msgstr "Sluiten"
+
+#: mainform:rsfile
+msgid "File"
+msgstr "Bestand"
+
+#: mainform:rsopenfile
+msgid "Open File..."
+msgstr "Bestand openen..."
+
+#: mainform:rsopendirector
+msgid "Open Directory..."
+msgstr "Folder openen..."
+
+#: mainform:rsplayeronly
+msgid "Player only"
+msgstr "Enkel speler"
+
+#: mainform:rschooseskin
+msgid "Choose Skin..."
+msgstr "Skin kiezen"
+
+#: mainform:rssettings
+msgid "Settings..."
+msgstr "Instellingen..."
+
+#: mainform:rslibrary
+msgid "Library"
+msgstr "Verzameling"
+
+#: mainform:rsnewlibrary
+msgid "New library"
+msgstr "Nieuwe verzameling"
+
+#: mainform:rsloadlibrary
+msgid "Load library"
+msgstr "Verzameling laden"
+
+#: mainform:rssavelibrary
+msgid "Save library"
+msgstr "Verzameling opslaan"
+
+#: mainform:rslibraryinfo
+msgid "Library info"
+msgstr "Info"
+
+#: mainform:rsmanagelibrar
+msgid "Manage library..."
+msgstr "Verzameling onderhouden..."
+
+#: mainform:rsplaylist
+msgid "Playlist"
+msgstr "Speellijst"
+
+#: mainform:rsplay
+msgid "Play"
+msgstr "Afspelen"
+
+#: mainform:rsnext
+msgid "Next"
+msgstr "Volgende"
+
+#: mainform:rsprevious
+msgid "Previous"
+msgstr "Vorige"
+
+#: mainform:rsmute
+msgid "Mute"
+msgstr "Dempen"
+
+#: mainform:rsloadplaylist
+msgid "Load playlist"
+msgstr "Speellijst laden"
+
+#: mainform:rssaveplaylist
+msgid "Save playlist"
+msgstr "Speellijst opslaan"
+
+#: mainform:rsmobileplayer
+msgid "Mobile player"
+msgstr "Mobile Speler"
+
+#: mainform:rsclearplaylist
+msgid "Clear Playlist"
+msgstr "Speellijst wissen"
+
+#: mainform:rsdevices
+msgid "Devices"
+msgstr "Apparaten"
+
+#: mainform:rsdeviceinfo
+msgid "Device info"
+msgstr "Apparaat info"
+
+#: mainform:rsscanplayer
+msgid "Scan player"
+msgstr "Speler doorzoeken"
+
+#: mainform:rssync
+msgid "Sync"
+msgstr "Sync"
+
+#: mainform:rsclearplayer
+msgid "Clear player"
+msgstr "Speler leegmaken"
+
+#: mainform:rsundoselectio
+msgid "Undo selection"
+msgstr "Ongedaan maken"
+
+#: mainform:rsaudiocd
+msgid "Audio CD"
+msgstr "Audio CD"
+
+#: mainform:rsripencode
+msgid "Rip / Encode..."
+msgstr "Rippen / Koderen..."
+
+#: mainform:rshelp
+msgid "Help"
+msgstr "Help"
+
+#: mainform:rsabout
+msgid "About..."
+msgstr "Over..."
+
+#: mainform:rsmanual
+msgid "Manual..."
+msgstr "Handboek..."
+
+#: mainform:rsclear
+msgid "Clear"
+msgstr "Wissen"
+
+#: mainform:rssearch
+msgid "Search"
+msgstr "Zoeken"
+
+#: mainform:rsalbum
+msgid "Album"
+msgstr "Album"
+
+#: mainform:rsfilename
+msgid "Filename"
+msgstr "Bestandsnaam"
+
+#: mainform:rsartist
+msgid "Artist"
+msgstr "Artiest"
+
+#: mainform:rstitle
+msgid "Title"
+msgstr "Titel"
+
+#: mainform:rsrandom
+msgid "Random"
+msgstr "Shuffle"
+
+#: mainform:rsnotconnected
+msgid "Device not Connected"
+msgstr "Apparaat niet gevonden"
+
+#: mainform:rsok
+msgid "OK"
+msgstr "OK"
+
+#: mainform:rslenght
+msgid "Length"
+msgstr "Duur"
+
+#: mainform:rstrack
+msgid "Track"
+msgstr "Nr"
+
+#: cdrip:rsencodetomp3
+msgid "Encode to mp3"
+msgstr "Als mp3 omzetten"
+
+#: cdrip:rsquerrycddb
+msgid "Querry CDDB"
+msgstr "CDDB opvragen"
+
+#: cdrip:rsload
+msgid "Load"
+msgstr "CD Laden"
+
+#: cdrip:rseject
+msgid "Eject"
+msgstr "Eject"
+
+#: cdrip:rsstart
+msgid "Start"
+msgstr "Start"
+
+#: cdrip:rsback
+msgid "Back"
+msgstr "Terug"
+
+#: cdrip:rssetid3tag
+msgid "Write ID3-Tags"
+msgstr "ID3 Tags wegschrijven"
+
+#: cdrip:rscrsubfolders
+msgid "Create artist subfolders"
+msgstr "Artietsten sub-folder maken"
+
+#: cdrip:rsoutfilenamin
+msgid "Outfile naming scheme"
+msgstr "Bestandsnaam schema"
+
+#: settings:rsautoloadlast
+msgid "Autoload last library at startup"
+msgstr "Verzameling automatisch laden bij start"
+
+#: settings:rsscanfornewfi
+msgid "Scan for new files in background  on startup"
+msgstr "Nieuwe bestanden in achtergrond zoeken bij start"
+
+#: settings:rslanguage
+msgid "Language"
+msgstr "Taal"
+
+#: settings:rswhattodowhen
+msgid "What to do when there is no ID3"
+msgstr "Wat doen indien geen ID3-Tag gevonden wordt"
+
+#: settings:rsguesstagfrom
+msgid "Guess tag from filename"
+msgstr "ID3-tag raden dmv bestandsnaam"
+
+#: settings:rsmovetosectio
+msgid "Move to section %sUnknown%s"
+msgstr "Verplaats naar %sUnknown%s"
+
+#: settings:rsid3type
+msgid "ID3 type"
+msgstr "ID3 Type"
+
+#: settings:rsid3v1priorit
+msgid "ID3v1 Priority"
+msgstr "ID3v1 Prioriteit"
+
+#: settings:rsid3v2priorit
+msgid "ID3v2 Priority"
+msgstr "ID3v2 Prioriteit"
+
+#: settings:rsgeneral
+msgid "General"
+msgstr "Allgemeen"
+
+#: settings:rspathtomp3pla
+msgid "Path to mp3player mountpoint"
+msgstr "Pad naar Mp3-Spelen mountpoint"
+
+#: settings:rscreatesubfol
+msgid "Create subfolders on upload"
+msgstr "Sub-folders maken bij het uploaden"
+
+#: settings:rspathstoaddit
+msgid "Paths to additional application needed for Cactus Jukebox"
+msgstr "Pad naar optionele programmas nodig voor Cactus Jukebox"
+
+#: settings:rscdda2wavtool
+msgid "Cdda2wav (tool to rip CDs)"
+msgstr "Cdda2wav (cd-rip tool)"
+
+#: settings:rssave
+msgid "Save"
+msgstr "Opslaan"
+
+#: settings:rscancel
+msgid "Cancel"
+msgstr "Annuleren"
+
+#: settings:rsmobiledevice
+msgid "Mobile Device"
+msgstr "Mp3-Speler"
+
+#: settings:rspaths
+msgid "Paths"
+msgstr "Paden"
+
+#: settings:rslameneededto
+msgid "lame (needed to encode mp3 files)"
+msgstr "lame (enkoderen naar mp3 bestanden)"
+
+#: settings:rsenablekdeser
+msgid "Enable KDE Service Menu"
+msgstr "KDE Service Menu aktiveren"
+
+#: settings:rsaudiooutput
+#, fuzzy
+msgid "Audio Output"
+msgstr "Audio Uitgang"
+
+#: settings:rsdownloadalbu
+msgid "Download album cover image from internet"
+msgstr "Album Covers laden via internet"
+
+#: settings:rsclearcache
+msgid "Clear Cache"
+msgstr "Cache Wissen"
+
+#: settings:rsautomaticlys
+msgid "Automaticly start playing first song in playlist"
+msgstr "Eerste titel in speellijst automatisch afspelen"

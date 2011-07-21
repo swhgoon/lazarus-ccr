@@ -1,0 +1,272 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="9"/>
+    <General>
+      <Flags>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
+      <SessionStorage Value="InProjectDir"/>
+      <MainUnit Value="0"/>
+      <Title Value="cactus"/>
+      <UseXPManifest Value="True"/>
+    </General>
+    <VersionInfo>
+      <AutoIncrementBuild Value="True"/>
+      <MinorVersionNr Value="3"/>
+      <RevisionNr Value="5"/>
+      <BuildNr Value="737"/>
+    </VersionInfo>
+    <MacroValues Count="1">
+      <Macro1 Name="LCLWidgetType" Value="gtk2"/>
+    </MacroValues>
+    <BuildModes Count="1">
+      <Item1 Name="default" Default="True"/>
+    </BuildModes>
+    <PublishOptions>
+      <Version Value="2"/>
+      <DestinationDirectory Value="/home/daseeb/devel/mp3/release/source"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="4">
+      <Item1>
+        <PackageName Value="lnetbase"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="laz_synapse"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="LCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item3>
+      <Item4>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item4>
+    </RequiredPackages>
+    <Units Count="32">
+      <Unit0>
+        <Filename Value="mp3proj.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="mp3proj"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="editid3.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="EditID3"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="editid3"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="status.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Status"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="status"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="settings.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Settings"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="settings"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="player.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="playwin"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="player"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="fmodplayer.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="fmodplayer"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="directories.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="dirwin"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="directories"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="skin.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="skin"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="cdrip.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="cdrip"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="cdrip"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="functions.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="functions"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="last_fm.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="last_fm"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="mediacol.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="mediacol"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="bigcoverimg.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="BigCoverImg"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="BigCoverImg"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="mainform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Main"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="mainform"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="debug.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="debug"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="config.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="config"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="addradio.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="addRadioForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="addradio"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="mplayer.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="mplayer"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="playlist.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="playlist"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="playerclass.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="playerclass"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="streamcol.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="streamcol"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="tagreader/mp3file.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="mp3file"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="tagreader/guesstag.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="guesstag"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="plugin/sdk/cj_interfaces.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="cj_interfaces"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="plugin/sdk/cj_plugin.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="cj_plugin"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="plugin/impl/cj_interfaces_impl.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="cj_interfaces_impl"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="plugin/impl/cj_pluginslist.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="cj_pluginslist"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="MGList.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="MGList"/>
+      </Unit27>
+      <Unit28>
+        <Filename Value="MGSignals.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="MGSignals"/>
+      </Unit28>
+      <Unit29>
+        <Filename Value="MGTree16.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="MGTree16"/>
+      </Unit29>
+      <Unit30>
+        <Filename Value="global_vars.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="global_vars"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="plugin/TO-DO.txt"/>
+        <IsPartOfProject Value="True"/>
+      </Unit31>
+    </Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="10"/>
+    <Target>
+      <Filename Value="../cactus_jukebox"/>
+    </Target>
+    <SearchPaths>
+      <OtherUnitFiles Value="fmodintf;tagreader;plugin/sdk;plugin/impl"/>
+      <UnitOutputDirectory Value="../source/obj"/>
+      <SrcPath Value="/home/daseeb/devel/units/synapse/source/lib/"/>
+    </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <CStyleOperator Value="False"/>
+        <AllowLabel Value="False"/>
+        <UseAnsiStrings Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
+    <CodeGeneration>
+      <Checks>
+        <IOChecks Value="True"/>
+        <RangeChecks Value="True"/>
+        <OverflowChecks Value="True"/>
+        <StackChecks Value="True"/>
+      </Checks>
+      <Optimizations>
+        <OptimizationLevel Value="0"/>
+      </Optimizations>
+    </CodeGeneration>
+    <Other>
+      <Verbosity>
+        <ShowHintsForUnusedUnitsInMainSrc Value="True"/>
+      </Verbosity>
+      <WriteFPCLogo Value="False"/>
+      <CustomOptions Value="-dCactusDebug"/>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+</CONFIG>

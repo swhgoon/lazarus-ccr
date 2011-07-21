@@ -1,0 +1,14 @@
+{ Das ist eine automatisch erzeugte Lazarus-Ressourcendatei }
+
+LazarusResources.Add('TBigCoverImg','FORMDATA',[
+  'TPF0'#12'TBigCoverImg'#11'BigCoverImg'#4'Left'#3#132#0#6'Height'#3#176#2#3'T'
+  +'op'#3#177#0#5'Width'#3#184#3#11'BorderIcons'#11#12'biSystemMenu'#0#11'Borde'
+  +'rStyle'#7#8'bsDialog'#7'Caption'#6#15'Album Cover Art'#12'ClientHeight'#3
+  +#176#2#11'ClientWidth'#3#184#3#5'Color'#7#7'clWhite'#7'OnClose'#7#9'FormClos'
+  +'e'#8'Position'#7#16'poDefaultPosOnly'#13'ShowInTaskBar'#7#8'stAlways'#10'LC'
+  +'LVersion'#6#6'0.9.29'#0#6'TImage'#7'BackImg'#4'Left'#2#0#6'Height'#3#176#2#3
+  +'Top'#2#0#5'Width'#3#184#3#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akB'
+  +'ottom'#0#7'OnClick'#7#12'BackImgClick'#0#0#6'TImage'#6'Image1'#4'Left'#2#16
+  +#6'Height'#3'N'#1#3'Top'#2#16#5'Width'#3'z'#1#6'Center'#9#7'OnClick'#7#11'Im'
+  +'age1Click'#12'Proportional'#9#0#0#0
+]);

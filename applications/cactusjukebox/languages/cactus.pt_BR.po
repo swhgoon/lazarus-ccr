@@ -1,0 +1,316 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: mainform:rsquit
+msgid "Quit"
+msgstr "Sair"
+
+#: mainform:rsfile
+msgid "File"
+msgstr "Arquivo"
+
+#: mainform:rsopenfile
+msgid "Open File..."
+msgstr "Abrir arquivo.."
+
+#: mainform:rsopendirector
+#, fuzzy
+msgid "Open Directory..."
+msgstr "Abrir arquivo.."
+
+#: mainform:rsplayeronly
+msgid "Player only"
+msgstr "Somente player"
+
+#: mainform:rschooseskin
+msgid "Choose Skin..."
+msgstr "Escolher tema..."
+
+#: mainform:rssettings
+msgid "Settings..."
+msgstr "Configurações..."
+
+#: mainform:rslibrary
+msgid "Library"
+msgstr "Biblioteca"
+
+#: mainform:rsnewlibrary
+msgid "New library"
+msgstr "Nova biblioteca..."
+
+#: mainform:rsloadlibrary
+msgid "Load library"
+msgstr "Carregar biblioteca..."
+
+#: mainform:rssavelibrary
+msgid "Save library"
+msgstr "Salvar biblioteca..."
+
+#: mainform:rslibraryinfo
+msgid "Library info"
+msgstr "Informações"
+
+#: mainform:rsmanagelibrar
+msgid "Manage library..."
+msgstr "Administrar bibliotecas..."
+
+#: mainform:rsrescandirect
+msgid "Rescan directories"
+msgstr "Reler diretórios"
+
+#: mainform:rsplaylist
+msgid "Playlist"
+msgstr "Lista de música"
+
+#: mainform:rsplay
+msgid "Play"
+msgstr "Tocar"
+
+#: mainform:rsnext
+msgid "Next"
+msgstr "Próxima"
+
+#: mainform:rsprevious
+msgid "Previous"
+msgstr "Anterior"
+
+#: mainform:rsmute
+msgid "Mute"
+msgstr "Mudo"
+
+#: mainform:rsloadplaylist
+msgid "Load playlist"
+msgstr "Carregar lista..."
+
+#: mainform:rssaveplaylist
+msgid "Save playlist"
+msgstr "Salvar lista..."
+
+#: mainform:rsmobileplayer
+msgid "Mobile player"
+msgstr "MP3 Player"
+
+#: mainform:rsclearplaylist
+#, fuzzy
+msgid "Clear Playlist"
+msgstr "Lista de música"
+
+#: mainform:rsdeviceinfo
+msgid "Device info"
+msgstr "Sobre o MP3 player"
+
+#: mainform:rsscanplayer
+msgid "Scan player"
+msgstr "Ler MP3 player"
+
+#: mainform:rssync
+msgid "Sync"
+msgstr "Sincronizar"
+
+#: mainform:rsclearplayer
+msgid "Clear player"
+msgstr "Limpar MP3 player"
+
+#: mainform:rsundoselectio
+msgid "Undo selection"
+msgstr "Desfazer seleção"
+
+#: mainform:rsaudiocd
+msgid "Audio CD"
+msgstr "CD de áudio"
+
+#: mainform:rsripencode
+msgid "Rip / Encode..."
+msgstr "Decodificar CD..."
+
+#: mainform:rshelp
+msgid "Help"
+msgstr "Ajuda"
+
+#: mainform:rsabout
+msgid "About..."
+msgstr "Sobre..."
+
+#: mainform:rsmanual
+msgid "Manual..."
+msgstr "Manual..."
+
+#: mainform:rsclear
+msgid "Clear"
+msgstr "Limpar"
+
+#: mainform:rssearch
+msgid "Search"
+msgstr "Buscar"
+
+#: mainform:rsalbum
+msgid "Album"
+msgstr "Álbum"
+
+#: mainform:rsfilename
+msgid "Filename"
+msgstr "Nome do arquivo"
+
+#: mainform:rsartist
+msgid "Artist"
+msgstr "Artista"
+
+#: mainform:rstitle
+msgid "Title"
+msgstr "Título"
+
+#: mainform:rsrandom
+msgid "Random"
+msgstr "Aleatório"
+
+#: mainform:rsnotconnected
+msgid "Device not Connected"
+msgstr "Dispositivo não conectado"
+
+#: mainform:rsok
+msgid "OK"
+msgstr "OK"
+
+#: mainform:rslenght
+msgid "Length"
+msgstr ""
+
+#: mainform:rstrack
+#, fuzzy
+msgid "Track"
+msgstr "Voltar"
+
+#: cdrip:rsencodetomp3
+msgid "Encode to mp3"
+msgstr "Converter para MP3"
+
+#: cdrip:rsquerrycddb
+msgid "Querry CDDB"
+msgstr "Buscar CDDB"
+
+#: cdrip:rsload
+msgid "Load"
+msgstr "Carregar CD"
+
+#: cdrip:rseject
+msgid "Eject"
+msgstr "Ejetar"
+
+#: cdrip:rsstart
+msgid "Start"
+msgstr "Iniciar"
+
+#: cdrip:rsback
+msgid "Back"
+msgstr "Voltar"
+
+#: cdrip:rssetid3tag
+msgid "Write ID3-Tags"
+msgstr "Escrever tags ID3"
+
+#: cdrip:rscrsubfolders
+msgid "Create artist subfolders"
+msgstr "Criar subpastas de artistas"
+
+#: cdrip:rsoutfilenamin
+msgid "Outfile naming scheme"
+msgstr "Esquema de nome de arquivo"
+
+#: settings:rsautoloadlast
+msgid "Autoload last library at startup"
+msgstr "Carregar última biblioteca na inicialização"
+
+#: settings:rsscanfornewfi
+msgid "Scan for new files in background  on startup"
+msgstr "Buscar novos arquivos na inicialização (experimental)"
+
+#: settings:rslanguage
+msgid "Language"
+msgstr "Idioma"
+
+#: settings:rswhattodowhen
+msgid "What to do when there is no ID3"
+msgstr "O que fazer quando não há tag ID3..."
+
+#: settings:rsguesstagfrom
+msgid "Guess tag from filename"
+msgstr "Supor informações apartir do nome"
+
+#: settings:rsmovetosectio
+msgid "Move to section %sUnknown%s"
+msgstr "Mover para seção %sDesconhecido%s"
+
+#: settings:rsid3type
+msgid "ID3 type"
+msgstr "Tipo de ID3"
+
+#: settings:rsid3v1priorit
+msgid "ID3v1 Priority"
+msgstr "Primeiro ID3v1"
+
+#: settings:rsid3v2priorit
+msgid "ID3v2 Priority"
+msgstr "Primeiro ID3v2"
+
+#: settings:rsgeneral
+msgid "General"
+msgstr "Geral"
+
+#: settings:rspathtomp3pla
+msgid "Path to mp3player mountpoint"
+msgstr "Caminho para ponto de montagem do MP3 player"
+
+#: settings:rscreatesubfol
+msgid "Create subfolders on upload"
+msgstr "Criar subpastas ao enviar"
+
+#: settings:rspathstoaddit
+msgid "Paths to additional application needed for Cactus Jukebox"
+msgstr "Caminhos para aplicações adicionais"
+
+#: settings:rscdda2wavtool
+msgid "Cdda2wav (tool to rip CDs)"
+msgstr "Cdda2wav (programa para decodificar CDs)"
+
+#: settings:rssave
+msgid "Save"
+msgstr "Salvar"
+
+#: settings:rscancel
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: settings:rsmobiledevice
+msgid "Mobile Device"
+msgstr "Mp3-Player"
+
+#: settings:rspaths
+msgid "Paths"
+msgstr "Caminhos"
+
+#: settings:rslameneededto
+msgid "lame (needed to encode mp3 files)"
+msgstr "lame (necessário para criar arquivos MP3)"
+
+#: settings:rsenablekdeser
+msgid "Enable KDE Service Menu"
+msgstr "Ativar menu de serviço KDE"
+
+#: settings:rsaudiooutput
+#, fuzzy
+msgid "Audio Output"
+msgstr "Saída de áudio"
+
+#: settings:rsdownloadalbu
+msgid "Download album cover image from internet"
+msgstr "Baixar imagem da capa do CD na internet"
+
+#: settings:rsclearcache
+msgid "Clear Cache"
+msgstr "Limpar cache"
+
+#: settings:rsautomaticlys
+msgid "Automaticly start playing first song in playlist"
+msgstr "Tocar automaticamente primeira faixa da lista"

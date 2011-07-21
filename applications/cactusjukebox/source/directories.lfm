@@ -1,0 +1,85 @@
+object dirwin: Tdirwin
+  Left = 350
+  Height = 275
+  Top = 291
+  Width = 471
+  ActiveControl = add
+  BorderIcons = [biSystemMenu, biMinimize]
+  Caption = 'Directories'
+  ClientHeight = 275
+  ClientWidth = 471
+  FormStyle = fsStayOnTop
+  OnCreate = FormCreate
+  Position = poMainFormCenter
+  ShowInTaskBar = stNever
+  LCLVersion = '0.9.29'
+  object add: TButton
+    Left = 383
+    Height = 25
+    Top = 16
+    Width = 76
+    Anchors = [akTop, akRight]
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Add'
+    OnClick = addClick
+    TabOrder = 0
+  end
+  object removebut: TButton
+    Left = 384
+    Height = 25
+    Top = 48
+    Width = 75
+    Anchors = [akTop, akRight]
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Remove'
+    OnClick = removeClick
+    TabOrder = 1
+  end
+  object rescan: TButton
+    Left = 383
+    Height = 25
+    Top = 120
+    Width = 76
+    Anchors = [akTop, akRight]
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Rescan'
+    OnClick = rescanClick
+    TabOrder = 2
+  end
+  object rescanall: TButton
+    Left = 384
+    Height = 25
+    Top = 152
+    Width = 75
+    Anchors = [akTop, akRight]
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Rescan all'
+    OnClick = rescanallClick
+    TabOrder = 3
+  end
+  object Button1: TButton
+    Left = 383
+    Height = 25
+    Top = 232
+    Width = 76
+    Anchors = [akTop, akRight]
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Back'
+    OnClick = Button1Click
+    TabOrder = 4
+  end
+  object dirlistview: TListBox
+    Left = 8
+    Height = 256
+    Top = 8
+    Width = 364
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ItemHeight = 0
+    OnClick = dirlistviewClick
+    TabOrder = 5
+  end
+  object SelectDirectoryDialog1: TSelectDirectoryDialog
+    Title = 'Select Directory'
+    FilterIndex = 0
+  end
+end
