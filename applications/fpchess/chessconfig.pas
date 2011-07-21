@@ -5,7 +5,7 @@ unit chessconfig;
 interface
 
 uses
-  Classes, SysUtils; 
+  Classes, SysUtils, Forms;
 
 type
 
