@@ -34,10 +34,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "..\fpchess.exe"; DestDir: "{app}"; Flags: ignoreversion
-; Source: "..\lazimageeditor.ini"; DestDir: "{app}"; Flags: ignoreversion
-; Source: "..\default.pal"; DestDir: "{app}"; Flags: ignoreversion
-; Source: "..\Images\*.svg"; DestDir: "{app}\Images"; Flags: ignoreversion
-; Source: "..\Images\*.ico"; DestDir: "{app}\Images"; Flags: ignoreversion
+Source: "..\skins\classic\*.png"; DestDir: "{app}\skins\classic"; Flags: ignoreversion
 ; Source: "..\Images\*.png"; DestDir: "{app}\Images"; Flags: ignoreversion
 ; Source: "..\libraries\pas_overlays\pas_overlays.dll"; DestDir: "{app}"; Flags: ignoreversion
 ; Source: "..\libraries\videocard_checker\videocard_checker.dll"; DestDir: "{app}"; Flags: ignoreversion
