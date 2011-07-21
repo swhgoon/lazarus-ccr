@@ -110,6 +110,7 @@ type
     procedure DoCastle();
     function ValidatePawnMove(AFrom, ATo: TPoint;
       var AEnpassantSquare, AEnpassantSquareToClear: TPoint) : boolean;
+    function ValidatePawnSimpleCapture(AFrom,ATo: TPoint): Boolean;
     function IsSquareOccupied(ASquare: TPoint): Boolean;
     procedure UpdateTimes();
   end;
@@ -631,6 +632,40 @@ begin
   end;
 end;
 
+//This function is used by IsKingInCheck. It makes the verification reversed
+//(verify a black move in white turn and vice-versa) and don't change the enpassant
+//variables.
+function TChessGame.ValidatePawnSimpleCapture(AFrom,ATo: TPoint): Boolean;
+begin
+  result:=false;
+  if not CurrentPlayerIsWhite then
+  begin
+    // Normal capture in the left
+    if (ATo.X = AFrom.X-1) and (ATo.Y = AFrom.Y+1) and IsSquareOccupied(ATo) then
+    begin
+      Result := True;
+    end
+    // Normal capture in the right
+    else if (ATo.X = AFrom.X+1) and (ATo.Y = AFrom.Y+1) and IsSquareOccupied(ATo) then
+    begin
+      Result := True;
+    end;
+  end
+  else
+  begin
+    // Capture a piece in the left
+    if (ATo.X = AFrom.X-1) and (ATo.Y = AFrom.Y-1) and IsSquareOccupied(ATo) then
+    begin
+      Result := True;
+    end
+    // Capture a piece in the right
+    else if (ATo.X = AFrom.X+1) and (ATo.Y = AFrom.Y-1) and IsSquareOccupied(ATo) then
+    begin
+      Result := True;
+    end
+  end;
+end;
+
 function TChessGame.IsSquareOccupied(ASquare: TPoint): Boolean;
 begin
   Result := Board[ASquare.X][ASquare.Y] <> ctEmpty;
@@ -717,6 +752,7 @@ begin
         ctWBishop: Result:= ValidateBishopMove(piecePos,AKingPos);
         ctWQueen:  Result:= ValidateQueenMove(piecePos,AKingPos);
         ctWKing:   Result:= ValidateKingMove(piecePos,AKingPos);
+        ctWPawn:   Result:= ValidatePawnSimpleCapture(piecePos,AKingPos);
         end;
       end
       else
@@ -727,6 +763,7 @@ begin
         ctBBishop: Result:= ValidateBishopMove(piecePos,AKingPos);
         ctBQueen:  Result:= ValidateQueenMove(piecePos,AKingPos);
         ctBKing:   Result:= ValidateKingMove(piecePos,AKingPos);
+        ctBPawn:   Result:= ValidatePawnSimpleCapture(piecePos,AKingPos);
         end;
       end;
       if (result) then exit();
