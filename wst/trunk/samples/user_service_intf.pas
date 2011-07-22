@@ -2,7 +2,7 @@
 This unit has been produced by ws_helper.
   Input unit name : "user_service_intf".
   This unit name  : "user_service_intf".
-  Date            : "29/01/2010 14:54:18".
+  Date            : "22/07/2011 11:31:59".
 }
 unit user_service_intf;
 {$IFDEF FPC}
@@ -68,7 +68,7 @@ type
   end;
 
   UserService = interface(IInvokable)
-    ['{2F9B181F-BA33-4148-A2A3-42CB450C43CE}']
+    ['{1A6AE445-B888-41D1-BDC2-C3BE9C8F60D3}']
     function GetList():TUserArray;
     procedure Add(
       const  AUser : TUser

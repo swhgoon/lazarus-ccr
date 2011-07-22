@@ -16,6 +16,9 @@
     <VersionInfo>
       <StringTable ProductVersion=""/>
     </VersionInfo>
+    <BuildModes Count="1">
+      <Item1 Name="default" Default="True"/>
+    </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
@@ -27,11 +30,6 @@
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="1">
-      <Item1>
-        <PackageName Value="wst_core"/>
-      </Item1>
-    </RequiredPackages>
     <Units Count="2">
       <Unit0>
         <Filename Value="user_client_console.pas"/>
@@ -52,7 +50,7 @@
       <Filename Value="user_client_console.exe"/>
     </Target>
     <SearchPaths>
-      <OtherUnitFiles Value="..\;..\..\;..\..\fcl-units\fcl-json\src\;$(LazarusDir)\others_package\synapse\"/>
+      <OtherUnitFiles Value="..;..\..;$(LazarusDir)\others_package\synapse;$(LazarusDir)\others_package\indy-10.2.0.3\fpc"/>
       <UnitOutputDirectory Value="obj"/>
     </SearchPaths>
     <Parsing>

@@ -1,7 +1,23 @@
 //{$UNDEF WST_DBG}
 //{$DEFINE WST_DBG}
 
-(*WST_BROKER enable the service brokering :
+(*
+  Without the broker (WST_BROKER undefined):
+    Apache must be configured to route requests to wst services
+
+      <Location /wst>
+        SetHandler wst-handler
+      </Location>
+
+    Services can then be invoked through the following addressing schema
+    http://127.0.0.1:8080/wst/services/UserService
+
+      UserService  : the target service
+      wst/services : constant.
+
+  ============================================================================
+
+  WST_BROKER(still experimental !!!) enable the service brokering :
   if enabled, this module just forwards the request to the
   implementation libraries contained in the WstRootPath path.
   WST load these libraries in the local file system folder

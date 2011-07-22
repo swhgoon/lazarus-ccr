@@ -1,3 +1,5 @@
+{ $DEFINE USING_APACHE} //So it will adapt the service's address
+
 program user_client_console;
 
 {$mode objfpc}{$H+}
@@ -5,8 +7,8 @@ program user_client_console;
 uses
   Classes, SysUtils, TypInfo, {$IFDEF WINDOWS}ActiveX,{$ENDIF}
   user_service_intf_proxy,
-  same_process_protocol, synapse_tcp_protocol, synapse_http_protocol, library_protocol,
-//  same_process_protocol, indy_tcp_protocol, indy_http_protocol, library_protocol,
+  //same_process_protocol, synapse_tcp_protocol, synapse_http_protocol, library_protocol,
+  same_process_protocol, indy_tcp_protocol, indy_http_protocol, library_protocol,
 //  same_process_protocol, ics_tcp_protocol, ics_http_protocol, library_protocol,
   soap_formatter, binary_formatter, json_formatter,
   user_service_intf, xmlrpc_formatter, service_intf;
@@ -147,8 +149,12 @@ const ADDRESS_MAP : array[TTransportType] of string = (
         //'LIB:FileName=C:\Programmes\D7\etatcivil\partages\wst\samples\library_server\lib_server.dll;target=UserService',
         //'TCP:Address=172.16.82.31;Port=1234;target=UserService',
         'TCP:Address=127.0.0.1;Port=1234;target=UserService',
-        //'http:Address=http://127.0.0.1:8888/wst/services/lib_server/UserService'
+{$IFDEF USING_APACHE}
+        'http:Address=http://127.0.0.1:8080/wst/services/UserService'
+{$ELSE USING_APACHE}        
         'http:Address=http://127.0.0.1:8000/services/UserService'
+{$ENDIF USING_APACHE}       
+        //'http:Address=http://127.0.0.1:8888/wst/services/lib_server/UserService'
         //'http:Address=http://127.0.0.1:8080/cgi-bin/demoservice.cgi/WST/%s/UserService/'
       );
       FORMAT_MAP : array[TFormatType] of string =( 'binary', 'SOAP', 'xmlrpc', 'json', 'json' );
@@ -236,10 +242,10 @@ begin
 {$IF DECLARED(SetHeapTraceOutput)}
     SetHeapTraceOutput('heaptrace.txt');
 {$IFEND}
-    SYNAPSE_RegisterTCP_Transport();
-    SYNAPSE_RegisterHTTP_Transport();
-//    INDY_RegisterTCP_Transport();
-//    INDY_RegisterHTTP_Transport();
+//    SYNAPSE_RegisterTCP_Transport();
+//    SYNAPSE_RegisterHTTP_Transport();
+    INDY_RegisterTCP_Transport();
+    INDY_RegisterHTTP_Transport();
 //    ICS_RegisterTCP_Transport();
 //    ICS_RegisterHTTP_Transport();
     LIB_Register_Transport();

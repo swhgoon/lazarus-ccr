@@ -2,7 +2,7 @@
 This unit has been produced by ws_helper.
   Input unit name : "user_service_intf".
   This unit name  : "user_service_intf_binder".
-  Date            : "29/01/2010 14:54:30".
+  Date            : "22/07/2011 11:31:16".
 }
 unit user_service_intf_binder;
 {$IFDEF FPC} {$mode objfpc}{$H+} {$ENDIF}

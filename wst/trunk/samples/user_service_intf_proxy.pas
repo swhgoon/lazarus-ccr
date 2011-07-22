@@ -2,7 +2,7 @@
 This unit has been produced by ws_helper.
   Input unit name : "user_service_intf".
   This unit name  : "user_service_intf_proxy".
-  Date            : "29/01/2010 14:54:18".
+  Date            : "22/07/2011 11:31:59".
 }
 
 Unit user_service_intf_proxy;
