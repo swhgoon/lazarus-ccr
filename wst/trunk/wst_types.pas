@@ -22,6 +22,10 @@ uses
 
 type
 
+{$ifdef fpc}
+  UInt32 = Cardinal;
+{$endif fpc}
+
   { reprents an array of Byte }
 {$IFDEF WST_UNICODESTRING}
   TBinaryString = {$IFDEF FPC}ansistring{$ELSE}RawByteString{$ENDIF};
