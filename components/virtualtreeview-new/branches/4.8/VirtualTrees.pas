@@ -474,6 +474,12 @@ const
 
   UtilityImageSize = 16; // Needed by descendants for hittests.
 
+  {$if defined(LCLCarbon) or defined(LCLCocoa)}
+    ssCtrlOS = ssMeta;     // Mac OS X fix
+  {$else}
+    ssCtrlOS = ssCtrl;
+  {$endif}
+
 var // Clipboard format IDs used in OLE drag'n drop and clipboard transfers.
   CF_VIRTUALTREE,
   CF_VTREFERENCE,
@@ -9667,6 +9673,8 @@ begin
   Result := [];
   if GetKeyState(VK_SHIFT) < 0 then
     Include(Result, ssShift);
+  if GetKeyState(VK_LWIN) < 0 then      // Mac OS X substitute of ssCtrl
+    Include(Result, ssMeta);
   if GetKeyState(VK_CONTROL) < 0 then
     Include(Result, ssCtrl);
   if GetKeyState(VK_MENU) < 0 then
@@ -11731,7 +11739,7 @@ begin
   MaxY := Max(OldRect.Bottom, NewRect.Bottom);
 
   // Initialize short hand variables to speed up tests below.
-  DoSwitch := ssCtrl in FDrawSelShiftState;
+  DoSwitch := ssCtrlOS in FDrawSelShiftState;
   WithCheck := (toCheckSupport in FOptions.FMiscOptions) and Assigned(FCheckImages);
   // Don't check the events here as descendant trees might have overriden the DoGetImageIndex method.
   WithImages := Assigned(FImages);
@@ -11918,7 +11926,7 @@ begin
   MaxY := Max(OldRect.Bottom, NewRect.Bottom);
 
   // Initialize short hand variables to speed up tests below.
-  DoSwitch := ssCtrl in FDrawSelShiftState;
+  DoSwitch := ssCtrlOS in FDrawSelShiftState;
   WithCheck := (toCheckSupport in FOptions.FMiscOptions) and Assigned(FCheckImages);
   // Don't check the events here as descendant trees might have overriden the DoGetImageIndex method.
   WithImages := Assigned(FImages);
@@ -12788,7 +12796,7 @@ procedure TBaseVirtualTree.HandleClickSelection(LastFocused, NewNode: PVirtualNo
 
 begin
   // Ctrl key down
-  if ssCtrl in Shift then
+  if ssCtrlOS in Shift then
   begin
     if ssShift in Shift then
     begin
@@ -15075,7 +15083,7 @@ begin
       begin
         {$ifdef DEBUG_VTV}Logger.Send([lcScroll],'Scroll Vertical - WheelDelta', WheelDelta);{$endif}
         // Scroll vertically if there's something to scroll...
-        if ssCtrl in State then
+        if ssCtrlOS in State then
           ScrollAmount := Trunc(WheelFactor * ClientHeight)
         else
         begin
@@ -15095,7 +15103,7 @@ begin
         else
           RTLFactor := 1;
 
-        if ssCtrl in State then
+        if ssCtrlOS in State then
           ScrollAmount := Trunc(WheelFactor * (ClientWidth - FHeader.Columns.GetVisibleFixedWidth))
         else
         begin
@@ -15623,7 +15631,7 @@ begin
                 NewColumn := GetNextColumn(NewColumn);
               if NewColumn > InvalidColumn then
               begin
-                if (Shift = [ssCtrl]) and not ActAsGrid then
+                if (Shift = [ssCtrlOS]) and not ActAsGrid then
                 begin
                   ScrollIntoView(Node, toCenterScrollIntoView in FOptions.SelectionOptions,
                     not (toDisableAutoscrollOnFocus in FOptions.FAutoOptions));
@@ -15634,7 +15642,7 @@ begin
                 end
                 else
                 begin
-                  if not ActAsGrid or (ssCtrl in Shift) then
+                  if not ActAsGrid or (ssCtrlOS in Shift) then
                     FocusedNode := Node;
                   if ActAsGrid and not (toFullRowSelect in FOptions.FSelectionOptions) then
                     FocusedColumn := NewColumn;
@@ -15642,7 +15650,7 @@ begin
               end;
             end;
           VK_PRIOR:
-            if ssCtrl in Shift then
+            if ssCtrlOS in Shift then
               SetOffsetY(FOffsetY + ClientHeight)
             else
             begin
@@ -15667,7 +15675,7 @@ begin
               FocusedNode := Node;
             end;
           VK_NEXT:
-            if ssCtrl in Shift then
+            if ssCtrlOS in Shift then
               SetOffsetY(FOffsetY - ClientHeight)
             else
             begin
@@ -15694,7 +15702,7 @@ begin
           VK_UP:
             begin
               // scrolling without selection change
-              if ssCtrl in Shift then
+              if ssCtrlOS in Shift then
                 SetOffsetY(FOffsetY + Integer(FDefaultNodeHeight))
               else
               begin
@@ -15721,7 +15729,7 @@ begin
           VK_DOWN:
             begin
               // scrolling without selection change
-              if ssCtrl in Shift then
+              if ssCtrlOS in Shift then
                 SetOffsetY(FOffsetY - Integer(FDefaultNodeHeight))
               else
               begin
@@ -15748,7 +15756,7 @@ begin
           VK_LEFT:
             begin
               // special handling
-              if ssCtrl in Shift then
+              if ssCtrlOS in Shift then
                 SetOffsetX(FOffsetX + RTLFactor * FHeader.Columns.GetScrollWidth)
               else
               begin
@@ -15794,7 +15802,7 @@ begin
           VK_RIGHT:
             begin
               // special handling
-              if ssCtrl in Shift then
+              if ssCtrlOS in Shift then
                 SetOffsetX(FOffsetX - RTLFactor * FHeader.Columns.GetScrollWidth)
               else
               begin
@@ -15944,7 +15952,7 @@ begin
           VK_ADD:
             if not (tsIncrementalSearching in FStates) then
             begin
-              if ssCtrl in Shift then
+              if ssCtrlOS in Shift then
                 if {$ifdef ReverseFullExpandHotKey} not {$endif ReverseFullExpandHotKey} (ssShift in Shift) then
                   FullExpand
                 else
@@ -15958,7 +15966,7 @@ begin
           VK_SUBTRACT:
             if not (tsIncrementalSearching in FStates) then
             begin
-              if ssCtrl in Shift then
+              if ssCtrlOS in Shift then
                 if {$ifdef ReverseFullExpandHotKey} not {$endif ReverseFullExpandHotKey} (ssShift in Shift) then
                   FullCollapse
                 else
@@ -16062,7 +16070,7 @@ begin
               DoPopupMenu(FFocusedNode, FFocusedColumn, Point(R.Left + Offset div 2, (R.Top + R.Bottom) div 2));
             end;
           Ord('a'), Ord('A'):
-            if ssCtrl in Shift then
+            if ssCtrlOS in Shift then
               SelectAll(True)
             else
               DoStateChange([tsIncrementalSearchPending]);
@@ -16073,7 +16081,7 @@ begin
           // of checking for valid characters for incremental search.
           // This is available but would require to include a significant amount of Unicode character
           // properties, so we stick with the simple space check.
-          if (Shift * [ssCtrl, ssAlt] = []) and (CharCode >= 32) then
+          if (Shift * [ssCtrlOS, ssAlt] = []) and (CharCode >= 32) then
             DoStateChange([tsIncrementalSearchPending]);
           end;
         end;
@@ -20888,7 +20896,7 @@ begin
     NewNode := FFocusedNode <> HitInfo.HitNode;
 
     // Translate keys and filter out shift and control key.
-    ShiftState := KeysToShiftState(Message.Keys) * [ssShift, ssCtrl, ssAlt];
+    ShiftState := KeysToShiftState(Message.Keys) * [ssShift, ssCtrlOS, ssAlt];
     if ssAlt in ShiftState then
     begin
       AltPressed := True;
@@ -23337,7 +23345,7 @@ begin
 
   // consider modifier keys and what is allowed at the moment, if none of the following conditions apply then
   // the initial value just set is used
-  if ssCtrl in Shift then
+  if ssCtrlOS in Shift then
   begin
     // copy or link
     if ssShift in Shift then
@@ -30517,7 +30525,7 @@ begin
           // If a multiline node is being edited the finish editing only if Ctrl+Enter was pressed,
           // otherwise allow to insert line breaks into the text.
           Shift := KeyDataToShiftState(Message.KeyData);
-          EndEdit := ssCtrl in Shift;
+          EndEdit := ssCtrlOS in Shift;
         end;
         if EndEdit then
         begin
