@@ -22,7 +22,7 @@ Unit config;
 Interface
 
 Uses 
-Classes, SysUtils, xmlcfg, gettext, playerclass;
+Classes, SysUtils, xmlcfg, gettext, debug, playerclass;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     { TConfigObject }
@@ -67,6 +67,9 @@ Type
 
     Function ReadConfig: boolean;
     Function FlushConfig: boolean;
+    function CheckCoverPath: boolean;
+    function GetCoverPath(AFileName: string): string;
+    function GetCoverDir: string;
     Procedure Clear;
     Private 
     FConfigPath: string;
@@ -243,6 +246,31 @@ Begin
     result := false;
   End;
 End;
+
+function TConfigObject.CheckCoverPath: boolean;
+var
+  aPath: string;
+begin
+  aPath := GetCoverDir;
+  result := DirectoryExists(aPath);
+  if not result then begin
+    result := ForceDirectories(aPath);
+    if not result then
+      DebugOutLn('WARNING: unable to force covercache directory', 1);
+  end;
+end;
+
+function TConfigObject.GetCoverPath(AFileName: string): string;
+begin
+  result := GetCoverDir;
+  if AFilename<>'' then
+    result := result + DirectorySeparator + AFilename;
+end;
+
+function TConfigObject.GetCoverDir: string;
+begin
+  result := IncludeTrailingPathDelimiter(CactusConfig.ConfigPrefix) + 'covercache';
+end;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 

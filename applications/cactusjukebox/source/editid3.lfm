@@ -17,7 +17,7 @@ object EditID3: TEditID3
   OnHide = FormHide
   Position = poMainFormCenter
   ShowInTaskBar = stNever
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object metacontrol: TPageControl
     Left = 8
     Height = 402
@@ -27,16 +27,14 @@ object EditID3: TEditID3
     Anchors = [akTop, akLeft, akRight, akBottom]
     TabIndex = 0
     TabOrder = 0
-    OnChange = metacontrolChange
-    OnPageChanged = metacontrolChange
     object metatab: TTabSheet
       Caption = 'Meta-Info'
       ClientHeight = 371
       ClientWidth = 405
       object lblYear: TLabel
-        Left = 118
+        Left = 22
         Height = 14
-        Top = 214
+        Top = 256
         Width = 26
         Caption = 'Year'
         ParentColor = False
@@ -51,9 +49,9 @@ object EditID3: TEditID3
       end
       object AlbumCoverImg: TImage
         Left = 232
-        Height = 146
+        Height = 151
         Top = 214
-        Width = 162
+        Width = 160
         Anchors = [akTop, akLeft, akRight, akBottom]
         AutoSize = True
         Proportional = True
@@ -92,17 +90,17 @@ object EditID3: TEditID3
         ParentColor = False
       end
       object lblGenre: TLabel
-        Left = 22
+        Left = 20
         Height = 14
-        Top = 252
+        Top = 296
         Width = 36
         Caption = 'Genre'
         ParentColor = False
       end
       object lblComment: TLabel
-        Left = 21
+        Left = 22
         Height = 14
-        Top = 282
+        Top = 328
         Width = 56
         Caption = 'Comment'
         ParentColor = False
@@ -114,13 +112,13 @@ object EditID3: TEditID3
         Width = 241
         Caption = 'Tag to name'
         ClientHeight = 38
-        ClientWidth = 237
+        ClientWidth = 233
         TabOrder = 10
         object btnOptions: TButton
           Left = 125
           Height = 23
           Hint = '( %a/%a - %b - %n - %t )'
-          Top = 11
+          Top = 8
           Width = 105
           Anchors = [akLeft, akBottom]
           BorderSpacing.Around = 4
@@ -133,7 +131,7 @@ object EditID3: TEditID3
         object Button1: TButton
           Left = 15
           Height = 23
-          Top = 11
+          Top = 8
           Width = 105
           Anchors = [akLeft, akBottom]
           BorderSpacing.Around = 4
@@ -146,70 +144,70 @@ object EditID3: TEditID3
       end
       object artistedit1: TEdit
         Left = 66
-        Height = 23
+        Height = 21
         Top = 114
-        Width = 328
+        Width = 326
         Anchors = [akTop, akLeft, akRight]
         OnChange = activateEMode
         TabOrder = 1
       end
       object titleedit1: TEdit
-        Left = 67
-        Height = 23
+        Left = 66
+        Height = 21
         Top = 146
-        Width = 327
+        Width = 326
         Anchors = [akTop, akLeft, akRight]
         OnChange = activateEMode
         TabOrder = 2
       end
       object albumedit1: TEdit
-        Left = 67
-        Height = 23
+        Left = 66
+        Height = 21
         Top = 178
-        Width = 328
+        Width = 326
         Anchors = [akTop, akLeft, akRight]
         OnChange = activateEMode
         TabOrder = 3
       end
       object yearEdit1: TEdit
-        Left = 153
-        Height = 23
-        Top = 210
+        Left = 152
+        Height = 21
+        Top = 256
         Width = 64
         MaxLength = 4
         TabOrder = 5
       end
       object commentedit1: TEdit
-        Left = 22
-        Height = 23
-        Top = 298
+        Left = 21
+        Height = 21
+        Top = 336
         Width = 194
         OnChange = activateEMode
         TabOrder = 6
       end
       object pathedit1: TEdit
         Left = 15
-        Height = 23
+        Height = 21
         Top = 82
-        Width = 380
+        Width = 378
         Anchors = [akTop, akLeft, akRight]
         OnChange = activateEMode
         TabOrder = 0
       end
       object trackedit1: TEdit
         Left = 66
-        Height = 23
+        Height = 21
         Top = 210
-        Width = 35
+        Width = 60
         MaxLength = 4
         OnChange = activateEMode
         TabOrder = 4
       end
       object guessname1: TButton
         Left = 278
-        Height = 25
+        Height = 27
         Top = 31
-        Width = 98
+        Width = 100
         AutoSize = True
         BorderSpacing.Around = 4
         Caption = 'Tag from name'
@@ -217,9 +215,9 @@ object EditID3: TEditID3
         TabOrder = 7
       end
       object cmbYear: TComboBox
-        Left = 151
-        Height = 27
-        Top = 210
+        Left = 153
+        Height = 29
+        Top = 252
         Width = 64
         ItemHeight = 0
         MaxLength = 4
@@ -230,9 +228,9 @@ object EditID3: TEditID3
         Visible = False
       end
       object cmbComment: TComboBox
-        Left = 19
-        Height = 27
-        Top = 298
+        Left = 20
+        Height = 29
+        Top = 332
         Width = 196
         ItemHeight = 0
         OnChange = activateEMode
@@ -243,8 +241,8 @@ object EditID3: TEditID3
       end
       object GenreBox: TComboBox
         Left = 67
-        Height = 27
-        Top = 244
+        Height = 29
+        Top = 288
         Width = 150
         AutoComplete = True
         AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
@@ -260,7 +258,7 @@ object EditID3: TEditID3
       ClientWidth = 405
       object mtype: TLabel
         Left = 40
-        Height = 20
+        Height = 14
         Top = 34
         Width = 62
         Caption = 'Mediatype:'
@@ -268,7 +266,7 @@ object EditID3: TEditID3
       end
       object bitrate: TLabel
         Left = 40
-        Height = 20
+        Height = 14
         Top = 114
         Width = 81
         Caption = 'Bitrate: 0kbps'
@@ -276,7 +274,7 @@ object EditID3: TEditID3
       end
       object fsize: TLabel
         Left = 40
-        Height = 20
+        Height = 14
         Top = 94
         Width = 77
         Caption = 'Filesize: 0 MB'
@@ -284,7 +282,7 @@ object EditID3: TEditID3
       end
       object srate: TLabel
         Left = 40
-        Height = 20
+        Height = 14
         Top = 134
         Width = 71
         Caption = 'Samplerate:'
@@ -292,7 +290,7 @@ object EditID3: TEditID3
       end
       object plength: TLabel
         Left = 40
-        Height = 20
+        Height = 14
         Top = 58
         Width = 43
         Caption = 'Length:'
@@ -300,7 +298,7 @@ object EditID3: TEditID3
       end
       object idlabel: TLabel
         Left = 41
-        Height = 20
+        Height = 14
         Top = 178
         Width = 37
         Caption = 'Fileid: '
@@ -308,7 +306,7 @@ object EditID3: TEditID3
       end
       object indexlabel: TLabel
         Left = 40
-        Height = 20
+        Height = 14
         Top = 194
         Width = 53
         Caption = 'FileIndex:'

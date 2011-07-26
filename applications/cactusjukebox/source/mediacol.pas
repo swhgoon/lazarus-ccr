@@ -20,7 +20,7 @@ Interface
 Uses 
 Classes, SysUtils,
 //Tagreader:
-WMAfile, OggVorbis, FLACfile, mp3file, debug, lconvencoding, guesstag;
+WMAfile, OggVorbis, FLACfile, mp3file, debug, LCLProc, lconvencoding, guesstag;
 
 Type
   // PMediaCollectionClass = ^TMediaCollectionClass;
@@ -40,6 +40,7 @@ Type
        FStreamUrl: string;
        FMediaType: TMediaType;
 
+       function StrToUTF8(s:string): string;
        Procedure read_tag_ogg;
        Procedure read_tag_flac;
        Procedure read_tag_wma;
@@ -59,7 +60,8 @@ Type
        Collection: TMediaCollectionClass;
        Comment: ansistring;
        GenreID: Byte;
-       Year, Track: string[4];
+       Year: string[4];
+       Track: string[10]; // ####/####
        Filetype: string[5];
        Size: int64;
        ID, Bitrate, Samplerate, Playlength, Action: longint;
@@ -77,6 +79,7 @@ Type
        Function FullPathNameFromTag_dryrun(var strFormat: string): string;
        Function move2path(strFilePath: string): Boolean;
        Function LibraryPath(): string;
+       function GetCoverFile: string;
 
        property Artist: string read FArtist write SetArtist;
        property Album: string read FAlbum write SetAlbum;
@@ -272,10 +275,18 @@ Begin
   savepath := path;
   sortState := FSorted;
   linecount:=0;
-  Try
-    system.assign(lfile,path);
-    reset(lfile);
 
+  system.assign(lfile,path);
+  {$i-}
+  reset(lfile);
+  {$i+}
+  if IoResult<>0 then begin
+    result := false;
+    writeln('unable to open file ', path);
+    exit;
+  end;
+
+  try
     readln(lfile, tmps);
     readln(lfile, tmps);
 
@@ -343,6 +354,7 @@ Begin
     writeln('library sucessfully loaded');
     result := true;
   Except
+    close(lfile);
     fsorted := sortState;
     writeln('lib seems corupted');
     write('exception at entry ');
@@ -812,6 +824,26 @@ Begin
   result := i;
 End;
 
+function TMediaFileClass.StrToUTF8(s: string): string;
+var
+  w: Word;
+begin
+  if length(s)>2 then begin
+    W := PWord(@S[1])^;
+    if (W=$FFFE) or (W=$FEFF) then begin
+      s := copy(s, 3, length(s)-2);
+      if (W=$FFFE) then
+        result := UCS2BEToUTF8(s)
+      else
+        result := UCS2LEToUTF8(s);
+      exit;
+    end
+  end;
+  if FindInvalidUTF8Character(pchar(s), Length(s), false)>=0 then
+    result := ISO_8859_1ToUTF8(s)
+  else
+    result := S;
+end;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 { TMediaFileClass }
@@ -943,14 +975,14 @@ Begin
   begin
    // writeln(path);
     MP3File.ReadTag(Path);
-    artist := ISO_8859_1ToUTF8(MP3File.Artist);
-    title := ISO_8859_1ToUTF8(MP3File.Title);
-    album := ISO_8859_1ToUTF8(MP3File.Album);
+    artist := StrToUTF8(MP3File.Artist);
+    title := StrToUTF8(MP3File.Title);
+    album := StrToUTF8(MP3File.Album);
     Bitrate := MP3File.BitRate;
-    Year := MP3File.Year;
+    Year := StrToUTF8(MP3File.Year);
     Samplerate := MP3File.SampleRate;
-    Comment := ISO_8859_1ToUTF8(MP3File.Comment);
-    Track := (MP3File.Track);
+    Comment := StrToUTF8(MP3File.Comment);
+    Track := StrToUTF8(MP3File.Track);
     Playlength := round(MP3File.Playlength);
     Playtime := SecondsToFmtStr(Playlength);
     GenreID := (MP3File.GenreID);
@@ -1302,6 +1334,11 @@ begin
       result := IncludeTrailingPathDelimiter(Collection.dirlist[i]);
       break;
     end;
+end;
+
+function TMediaFileClass.GetCoverFile: string;
+begin
+  result := Artist+'_'+album+'.jpeg'
 end;
 
 

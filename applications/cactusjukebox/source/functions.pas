@@ -18,7 +18,7 @@ Unit functions;
 Interface
 
 Uses 
-Classes, SysUtils, crt, math, config;
+Classes, SysUtils, math, config;
 
 
 

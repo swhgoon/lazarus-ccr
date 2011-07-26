@@ -45,6 +45,7 @@ TMP3File = class
     FGenreID: byte;
     FFileName: string;
     procedure ReadHeader;
+    function GetId3V1Track: Integer;
    public
     constructor create;
     function ReadTag(Filename: string):boolean;
@@ -138,6 +139,20 @@ begin
     Else writeln(FFileName+' -> no valid mpeg header found');
 end;
 
+function TMP3File.GetId3V1Track: Integer;
+begin
+  result := pos('/', FTrack);
+  if result>0 then
+    result := StrToIntDef(Copy(FTrack, 1, result-1), 0)
+  else
+    result := StrToIntDef(FTrack, 0);
+  if result>255 then
+    result := 255
+  else
+  if result<0 then
+    result := 0;
+end;
+
 constructor TMP3File.create; 
 begin
 
@@ -154,6 +169,17 @@ Var i, z, tagpos: integer;
   artistv2, albumv2, titlev2, commentv2, yearv2, trackv2: string;
   bufstr: string;
   mp3filehandle: longint;
+  iso: boolean;
+
+  function GetID3TagStr: string;
+  begin
+    result := copy(bufstr,i+11,buf[i+7]-1);
+    iso := bufstr[i+10]=#0;
+    if bufstr[i+10] in [#0,#3] then
+      // string is ISO-8859-1 or UTF-8 (2.4) encoded, can be trimmed
+      result := TrimRight(result);
+  end;
+
 Begin
   FFileName:=Filename;
   ReadHeader;
@@ -165,7 +191,7 @@ Begin
     fileread(mp3filehandle,buf,high(buf));
     bufstr := '';
     For i:= 1 To high(buf) Do
-      If (buf[i]<>0) and (buf[i]<>10) Then bufstr := bufstr+char(buf[i])
+      If {(buf[i]<>0) and }(buf[i]<>10) Then bufstr := bufstr+char(buf[i])
       Else bufstr := bufstr+' ';
     // filter #10 and 0, replace by ' '
 {id3v2}
@@ -177,39 +203,40 @@ Begin
     If pos('ID3',bufstr)<> 0 Then
       Begin
         i := pos('TPE1',bufstr);
-        If i<> 0 Then artistv2 := copy(bufstr,i+11,buf[i+7]-1);
+        If i<> 0 Then artistv2 := GetID3TagStr;
         i := pos('TP1',bufstr);
         If i<> 0 Then artistv2 := copy(bufstr,i+7,buf[i+5]-1);
 
         i := pos('TIT2',bufstr);
-        If i<> 0 Then titlev2 := copy(bufstr,i+11,buf[i+7]-1);
+        If i<> 0 Then titlev2 := GetID3TagStr;
 
         i := pos('TT2',bufstr);
         If i<> 0 Then titlev2 := copy(bufstr,i+7,buf[i+5]-1);
+
         i := pos('TRCK',bufstr);
-        If i<> 0 Then trackv2 := copy(bufstr,i+11,buf[i+7]-1);
-
+        If i<> 0 Then
+          trackv2 := GetID3TagStr;
         i := pos('TRK',bufstr);
-        If i<> 0 Then trackv2 := copy(bufstr,i+7,buf[i+5]-1);
-
-        If length(trackv2)>3 Then trackv2 := '';
+        If i<> 0 Then begin
+          trackv2 := copy(bufstr,i+7,buf[i+5]-1);
+          If length(trackv2)>3 Then
+            trackv2 := '';
+        end;
 
         i := pos('TAL',bufstr);
         If i<> 0 Then albumv2 := copy(bufstr,i+7,buf[i+5]-1);
         i := pos('TALB',bufstr);
-        If i<> 0 Then albumv2 := copy(bufstr,i+11,buf[i+7]-1);
+        If i<> 0 Then albumv2 := GetID3TagStr;
 
         i := pos('TYE',bufstr);
         If i<> 0 Then yearv2 := copy(bufstr,i+7,buf[i+5]-1);
 
         i := pos('TYER',bufstr);
-        If i<> 0 Then yearv2 := copy(bufstr,i+11,buf[i+7]-1);
-        artistv2 := (artistv2);
-        titlev2 := (titlev2);
-        albumv2 := (albumv2);
-        yearv2 := (yearv2);
-        trackv2 := (trackv2);
-        If length(yearv2)>5 Then yearv2 := '';
+        If i<> 0 Then begin
+          yearv2 := GetID3TagStr;
+          If iso and (length(yearv2)>5) Then
+            yearv2 := '';
+        end;
       End;
    except WriteLn(Filename+' -> exception while reading id3v2 tag... skipped!!'); end;
 {id3v1}
@@ -230,42 +257,29 @@ Begin
     tagpos := pos('TAG',bufstr)+3;
     If tagpos<>3 Then
       Begin
-        ftitle := (copy(bufstr,tagpos,30));
-        fartist := (copy(bufstr,tagpos+30,30));
-        falbum := (copy(bufstr,tagpos+60,30));
-        fyear := copy(bufstr,tagpos+90,4);
+        ftitle := TrimRight(copy(bufstr,tagpos,30));
+        fartist := TrimRight(copy(bufstr,tagpos+30,30));
+        falbum := TrimRight(copy(bufstr,tagpos+60,30));
+        fyear := TrimRight(copy(bufstr,tagpos+90,4));
 
         FGenreID := buf[tagpos+124];
         if FGenreID>high(ID3Genre) then FGenreID:=0;
         If buf[125]<>0 Then                             {check for id3v1.1}
-          fcomment := (copy(bufstr,tagpos+94,30))
+          fcomment := TrimRight(copy(bufstr,tagpos+94,30))
         Else
           Begin
-            fcomment := (copy(bufstr,tagpos+94,28));
+            fcomment := TrimRight(copy(bufstr,tagpos+94,28));
             If (buf[tagpos+123])<>0 Then ftrack := IntToStr(buf[tagpos+123])
             Else ftrack := '';
           End;
       End; // else writeln('no id3v1 tag');
   except WriteLn(Filename+' -> exception while reading id3v1 tag... skipped!!');  end;
-    If ((artistv2<>'')) And (CactusConfig.id3v2_prio Or (artist='')) Then Fartist := TrimRight(
-                                                                                    artistv2);
-    If ((titlev2<>'')) And (CactusConfig.id3v2_prio Or (title=''))  Then Ftitle := TrimRight(
-                                                                                  titlev2);
-    If ((albumv2<>'')) And (CactusConfig.id3v2_prio Or (album='')) Then Falbum := TrimRight(
-                                                                                 albumv2);
-    If ((commentv2<>'')) And (CactusConfig.id3v2_prio Or (comment='')) Then Fcomment := TrimRight
-                                                                                       (
-                                                                                       commentv2
-                                                                                       );
-    If ((yearv2<>'')) And (CactusConfig.id3v2_prio Or (year='')) Then Fyear := TrimRight(yearv2);
-    If ((trackv2<>'')) And (CactusConfig.id3v2_prio Or (track='')) Then ftrack := TrimRight(
-                                                                                 trackv2);
-
-    Fartist := TrimRight(Fartist);
-    Ftitle := TrimRight(Ftitle);
-    Falbum := TrimRight(FAlbum);
-    Fcomment := TrimRight(FComment);
-    Fyear := TrimRight(FYear);
+    If ((artistv2<>'')) And (CactusConfig.id3v2_prio Or (artist='')) Then Fartist := artistv2;
+    If ((titlev2<>'')) And (CactusConfig.id3v2_prio Or (title=''))  Then Ftitle := titlev2;
+    If ((albumv2<>'')) And (CactusConfig.id3v2_prio Or (album='')) Then Falbum := albumv2;
+    If ((commentv2<>'')) And (CactusConfig.id3v2_prio Or (comment='')) Then Fcomment := commentv2;
+    If ((yearv2<>'')) And (CactusConfig.id3v2_prio Or (year='')) Then Fyear := yearv2;
+    If ((trackv2<>'')) And (CactusConfig.id3v2_prio Or (track='')) Then ftrack := trackv2;
     fileclose(mp3filehandle);
 end;
 
@@ -277,7 +291,7 @@ Var
   bufstr, tmptag, tmps: string;
   i, z: integer;
   id3v1str: string[31];
-  mp3filehandle: longint;
+  mp3filehandle: THandle;
 Begin
 {id3v2}
   mp3filehandle := fileopen(Filename,fmOpenRead);
@@ -473,7 +487,7 @@ Begin
   If length(track)>0 Then
     Begin
       buf[126] := 0;
-      buf[127] := StrToInt(track);
+      buf[127] := GetId3V1Track;
     End;
 
   mp3filehandle := fileopen(Filename,fmOpenWrite);

@@ -12,7 +12,7 @@ object dirwin: Tdirwin
   OnCreate = FormCreate
   Position = poMainFormCenter
   ShowInTaskBar = stNever
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object add: TButton
     Left = 383
     Height = 25
@@ -75,11 +75,9 @@ object dirwin: Tdirwin
     Width = 364
     Anchors = [akTop, akLeft, akRight, akBottom]
     ItemHeight = 0
-    OnClick = dirlistviewClick
     TabOrder = 5
   end
   object SelectDirectoryDialog1: TSelectDirectoryDialog
-    Title = 'Select Directory'
     FilterIndex = 0
   end
 end

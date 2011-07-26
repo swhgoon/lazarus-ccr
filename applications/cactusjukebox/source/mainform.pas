@@ -34,7 +34,7 @@ Uses
 
 Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
 ExtCtrls, ComCtrls, StdCtrls, Menus,{$ifdef fmod} fmodplayer,{$endif}
-ActnList, mediacol, dos, SimpleIPC, functions, EditBtn, last_fm, debug, config,
+ActnList, FileUtil, mediacol, dos, SimpleIPC, functions, EditBtn, last_fm, debug, config,
 playlist, playerclass, mplayer, mp3file, Messages, LMessages, cj_interfaces;
 
 resourcestring
@@ -87,9 +87,12 @@ rsTrack = 'Track';
 
 Type 
 
+  TCactusFlags = (cfTrayIconPressed, cfProgHide);
+
   { TMain }
 
   TMain = Class(TForm)
+    ApplicationProperties1: TApplicationProperties;
     ArtistTree: TTreeView;
     artistsearch: TEdit;
     Button1: TButton;
@@ -104,6 +107,7 @@ Type
     ImageListHot: TImageList;
     ImageListDis: TImageList;
     itemPlugins: TMenuItem;
+    lblPath: TLabel;
     Mainmenu1: TMainMenu;
     MenuItem12: TMenuItem;
     Menuitem21: TMenuItem;
@@ -249,6 +253,7 @@ Type
     Trackinfo: TSpeedButton;
     TrayIcon: TTrayIcon;
     Volumebar: TProgressBar;
+    procedure ApplicationProperties1Minimize(Sender: TObject);
     Procedure ArtistTreeClick(Sender: TObject);
     Procedure ArtistTreeDblClick(Sender: TObject);
     Procedure ArtistTreeEndDrag(Sender, Target: TObject; X, Y: Integer);
@@ -260,14 +265,12 @@ Type
     Procedure ArtistTreeStartDrag(Sender: TObject; Var DragObject: TDragObject);
     Procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
-    procedure checkmobileStartTimer(Sender: TObject);
     Procedure CoverImageMouseUp(Sender: TObject; Button: TMouseButton;
                                 Shift: TShiftState; X, Y: Integer);
     Procedure DeviceModeBtnClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     Procedure FormMouseDown(Sender: TOBject; Button: TMouseButton;
                             Shift: TShiftState; X, Y: Integer);
-    Procedure FormResize(Sender: TObject);
     procedure itemTrayExitClick(Sender: TObject);
     procedure itemTrayPlayClick(Sender: TObject);
     Procedure LibModeBtnClick(Sender: TObject);
@@ -301,7 +304,6 @@ Type
     procedure pnlPlaytimeClick(Sender: TObject);
     procedure PopupMenuTrayPopup(Sender: TObject);
     procedure randomcheckChange(Sender: TObject);
-    procedure scan(Sender: TObject);
     Procedure SearchPanelClick(Sender: TObject);
     Procedure PlayerControlsPanelClick(Sender: TObject);
     Procedure PauseButtonImgClick(Sender: TObject);
@@ -323,7 +325,6 @@ Type
     Procedure MenuItem11Click(Sender: TObject);
     Procedure MenuItem14Click(Sender: TObject);
     Procedure MenuItem16Click(Sender: TObject);
-    Procedure MenuItem19Click(Sender: TObject);
     Procedure MenuItem20Click(Sender: TObject);
     Procedure MenuItem26Click(Sender: TObject);
     Procedure MenuItem27Click(Sender: TObject);
@@ -343,6 +344,7 @@ Type
                                        Shift: TShiftState; X, Y: Integer);
     Procedure SettingsItemClick(Sender: TObject);
     Procedure SimpleIPCServer1Message(Sender: TObject);
+    procedure skinmenuClick(Sender: TObject);
     Procedure SpeedButton1Click(Sender: TObject);
 
     Procedure Splitter1Moved(Sender: TObject);
@@ -350,8 +352,6 @@ Type
     Procedure SrchArtItemClick(Sender: TObject);
     Procedure SrchFileItemClick(Sender: TObject);
     Procedure SrchTitleItemClick(Sender: TObject);
-    Procedure srch_buttonKeyUp(Sender: TObject; Var Key: Word;
-                               Shift: TShiftState);
     Procedure StopButtonImgClick(Sender: TObject);
     Procedure StopButtonImgMouseDown(Sender: TOBject; Button: TMouseButton;
                                      Shift: TShiftState; X, Y: Integer);
@@ -404,7 +404,6 @@ Type
     Procedure MenuItem33Click(Sender: TObject);
     Procedure rm_artist_playeritemClick(Sender: TObject);
     Procedure searchstrClick(Sender: TObject);
-    Procedure skinmenuClick(Sender: TObject);
     Procedure syncplayeritem(Sender: TObject);
     Procedure MenuItem3Click(Sender: TObject);
     Procedure MenuItem22aClick(Sender: TObject);
@@ -431,7 +430,7 @@ Type
                                 Shift: TShiftState; X, Y: Integer);
     Procedure trackbarMouseUp(Sender: TOBject; Button: TMouseButton;
                               Shift: TShiftState; X, Y: Integer);
-    procedure TrayIconDblClick(Sender: TObject);
+    procedure TrayIconClick(Sender: TObject);
     Procedure undoSyncItemClick(Sender: TObject);
 
     Procedure loadskin(Sender: TObject);
@@ -452,10 +451,12 @@ Type
     bPnlPlaytimeNegated: boolean;
     oldWindowState :TWindowState;
     fromTrayDBLClick :Boolean;
+    FFlags: set of TCactusFlags;
     Procedure MoveNode(TargetNode, SourceNode : TTreeNode);
     Procedure ApplicationIdle(Sender: TObject; Var Done: Boolean);
     Procedure update_player_display;
     Function LoadFile(path: String): boolean;
+    procedure MinimizeMe(Data: Ptrint);
 
   Public
     player_connected, playermode: boolean;
@@ -478,7 +479,6 @@ Type
     Procedure update_artist_view;
 
     { public declarations }
-    procedure WMSize(var Message: TLMSize); message LM_Size;
 
     //Test Plugins....cut in future
     procedure SayHello(Sender :TCJ_MenuItem);
@@ -553,6 +553,8 @@ Implementation
 
 Uses editid3, status, settings, player, directories, skin, cdrip, translations, bigcoverimg,
 streamcol, addradio, CleanLibrary, global_vars, cj_pluginslist, cj_interfaces_impl, LCLType;
+
+{$R *.lfm}
 
 {$i cactus_const.inc}
 
@@ -1182,7 +1184,7 @@ Begin
 
               If MediaCollection.items[i].title<>'' Then ListItem.SubItems.Add(MediaCollection.items
                                                                                [i].Artist)
-              Else ListItem.SubItems.Add(extractfilename(MediaCollection.items[i].path));
+              Else ListItem.SubItems.Add(SysToUTF8(extractfilename(MediaCollection.items[i].path)));
               ListItem.SubItems.Add (MediaCollection.items[i].title);
               ListItem.SubItems.Add (MediaCollection.items[i].album);
               ListItem.SubItems.Add (MediaCollection.items[i].Track);
@@ -1226,11 +1228,6 @@ Begin
   TitleTree.Clear;
 End;
 
-
-procedure TMain.checkmobileStartTimer(Sender: TObject);
-begin
-
-end;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -1312,44 +1309,6 @@ Begin
 End;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-Procedure TMain.FormResize(Sender: TObject);
-Begin
-  Panel4.Width := oldSplitterWidth;
-  Panel1.Width := Width-oldSplitterWidth-8;
-End;
-
-
-procedure TMain.WMSize(var Message: TLMSize);
-begin
-  if not (csDesigning in ComponentState) then
-  begin
-       case (Message.SizeType and not SIZE_SourceIsInterface) of
-       SIZEICONIC:begin
-                       if not(fromTrayDBLClick) then
-                       begin
-                            Visible :=False;
-                            oldWindowState :=Self.WindowState;
-                            exit;
-                       end;
-                       fromTrayDBLClick :=False;
-                  end;
-       end;
-  end;
-  inherited WMSize(Message);
-end;
-
-procedure TMain.TrayIconDblClick(Sender: TObject);
-begin
-     if not(Self.Visible) then
-     begin
-          //Avoid handling on OnWindowStateChange
-          Self.fromTrayDBLClick :=True;
-//          Self.WindowState:=oldWindowState;
-          Self.Visible:=True;
-          Self.BringToFront;
-     end;
-end;
 
 procedure TMain.itemTrayExitClick(Sender: TObject);
 begin
@@ -1682,11 +1641,6 @@ begin
   PlayerObj.Playlist.reset_random;
 end;
 
-procedure TMain.scan(Sender: TObject);
-begin
-
-end;
-
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 Procedure TMain.SearchPanelClick(Sender: TObject);
@@ -1792,7 +1746,7 @@ Begin
              DebugOutLn('ERROR saving playlist', 2);
      end else if PlayerObj.Playlist.Count=0 then DeleteFile(CactusConfig.ConfigPrefix+'lib'+DirectorySeparator+'last.m3u');
 
-  If (MediaCollection.ItemCount>1) Then
+  If (MediaCollection.ItemCount>0) Then
     Begin
       MediaCollection.SaveToFile(CactusConfig.ConfigPrefix+'lib'+DirectorySeparator+'last.mlb');
       CactusConfig.LastLib := MediaCollection.savepath;
@@ -2223,6 +2177,12 @@ Begin
   Application.ProcessMessages;
 End;
 
+procedure TMain.MinimizeMe(Data: Ptrint);
+begin
+  Include(FFlags, cfProgHide);
+  Hide;
+end;
+
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -2315,8 +2275,8 @@ Begin
           With artnode Do
             Begin
               MakeVisible;
-              ImageIndex := MediaCollection.Items[i].Action;
-              SelectedIndex := MediaCollection.Items[i].Action;
+              ImageIndex := 6; //MediaCollection.Items[i].Action;
+              SelectedIndex := 6; //MediaCollection.Items[i].Action;
               Data := MediaCollection.items[i];
               Expanded:=false;
             End;
@@ -2328,8 +2288,8 @@ Begin
                 Begin
                   MakeVisible;
                   MedFileObj:=TMediaFileClass(AlbumList.Objects[z]);
-                  ImageIndex := MedFileObj.Action;
-                  SelectedIndex := MedFileObj.Action;
+                  ImageIndex := 7;//MedFileObj.Action;
+                  SelectedIndex := 7;//MedFileObj.Action;
                   Data := AlbumList.Objects[z];
                 End;
             End;
@@ -2501,11 +2461,6 @@ Begin
       StatusBar1.Panels[1].Text := 'Device connected     '+tmps+' Free';
     End;
 End;
-
-procedure TMain.MenuItem19Click(Sender: TObject);
-begin
-
-end;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -2874,6 +2829,11 @@ Begin
   Writeln('IPC end');
 End;
 
+procedure TMain.skinmenuClick(Sender: TObject);
+begin
+  // JRA
+end;
+
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 Procedure TMain.SpeedButton1Click(Sender: TObject);
@@ -2908,12 +2868,6 @@ End;
 Procedure TMain.SrchTitleItemClick(Sender: TObject);
 Begin
   SrchTitleItem.Checked := Not SrchTitleItem.Checked;
-End;
-
-Procedure TMain.srch_buttonKeyUp(Sender: TObject; Var Key: Word;
-                                 Shift: TShiftState);
-Begin
-
 End;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -3079,6 +3033,7 @@ Procedure TMain.TitleTreeSelectItem(Sender: TObject; Item: TListItem;
 Begin
   // reanable the popupmenu in case ist was disabled in TMain.TitleTreeMouseDown
   TitleTree.PopupMenu.AutoPopup := true;
+  lblPath.Caption:=TMediaFileClass(Item.data).Path;
 End;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -3227,7 +3182,7 @@ End;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-Procedure TMain.MenuItem10Click(Sender: TObject);
+procedure TMain.Menuitem10Click(Sender: TObject);
 
 Var MedFileObj: TMediaFileClass;
 Begin
@@ -3621,6 +3576,9 @@ Procedure TMain.playlistSelectItem(Sender: TObject; Item: TListItem;
 Begin
   // reanable the popupmenu in case ist was disabled in TMain.playlistMouseDown
   playlist.PopupMenu.AutoPopup := true;
+  if (Item.Data<>nil) then begin
+    lblPath.Caption := TMediaFileClass(Item.data).Path;
+  end;
 End;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -3646,8 +3604,7 @@ Begin
       MedFileObj := TMediaFileClass(playlist.Items[PlayerObj.CurrentTrack].Data);
       If (MedFileObj.album<>'') Then
         Begin
-          MedFileObj.CoverPath := CactusConfig.ConfigPrefix+DirectorySeparator+'covercache'+
-                                  DirectorySeparator+MedFileObj.Artist+'_'+MedFileObj.album+'.jpeg';
+          MedFileObj.CoverPath := CactusConfig.GetCoverPath(MedFileObj.GetCoverFile);
           If (FileExists(MedFileObj.CoverPath)=false) Then
             Begin
               CoverImage.Picture.Clear;
@@ -3716,6 +3673,11 @@ Begin
   ArtistSrchField.Hide;
   // if ArtistTree.Selected<>nil then update_title_view;
 End;
+
+procedure TMain.ApplicationProperties1Minimize(Sender: TObject);
+begin
+  Application.QueueAsyncCall(@MinimizeMe, 0);
+end;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -3948,11 +3910,6 @@ End;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-Procedure TMain.skinmenuClick(Sender: TObject);
-Begin
-
-End;
-
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 Procedure TMain.syncplayeritem(Sender: TObject);
@@ -4170,6 +4127,16 @@ Begin
   trackbar.Position := i;
   If PlayerObj.playing Then playtimer.enabled := true;
 End;
+
+procedure TMain.TrayIconClick(Sender: TObject);
+begin
+  if not Visible then begin
+    Show;
+    BringToFront;
+  end else begin
+    Hide;
+  end;
+end;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -4430,7 +4397,7 @@ Begin
       curalbum := lowercase(MedFileObj.album);
       DebugOut(curartist, 2);
 
-      i := MedColObj.getTracks(MedFileObj.Artist, MedFileObj.index);
+      i := MedColObj.getTracks(MedFileObj.Artist, 0{MedFileObj.index});
 
       Repeat
         Begin
@@ -4445,13 +4412,13 @@ Begin
 
               If MedColObj.items[i].title<>'' Then
                 ListItem.SubItems.Add((MedColObj.items[i].Artist))
-              Else ListItem.SubItems.Add(extractfilename(MedColObj.items[i].path));
+              Else ListItem.SubItems.Add(SysToUTF8(extractfilename(MedColObj.items[i].path)));
 
               ListItem.SubItems.Add((MedColObj.items[i].title));
               ListItem.SubItems.Add((MedColObj.items[i].album));
               ListItem.SubItems.Add(MedColObj.items[i].track);
               ListItem.SubItems.Add(ID3Genre[MedColObj.items[i].GenreID]);
-              ListItem.SubItems.Add(ExtractFileName(MedColObj.items[i].Path));
+              ListItem.SubItems.Add(SysToUTF8(ExtractFileName(MedColObj.items[i].Path)));
               ListItem.SubItems.Add(MedColObj.items[i].playtime);
 
             End;
@@ -4605,8 +4572,5 @@ Var
 begin
      CJ_Interface.GetSignals.Signal(1, 24, 50, msgHandled);
 end;
-
-initialization
-  {$I mainform.lrs}
 
 End.

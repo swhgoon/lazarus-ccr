@@ -296,7 +296,7 @@ Begin
     End;
     Until FindNext(mp3search)<>0;
   Findclose(mp3search);
-  BubbleSort(files);
+  BubbleSort(TStrings(files));
   for i := 1 to files.Count do
     lstRemove.Items.Add(files[i-1]);
   
@@ -315,7 +315,7 @@ Begin
         end;
     Until FindNext(dirsearch)<>0;
   Findclose(dirsearch);
-  BubbleSort(folders);
+  BubbleSort(TStrings(folders));
   for i := 1 to folders.Count do
     lstRemove.Items.Add(folders[i-1]);
 End;

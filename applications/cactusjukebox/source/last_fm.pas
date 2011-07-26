@@ -144,7 +144,10 @@ Begin
                   node:=node.NextSibling
                 else done:= true;
         end;
-        FAlbumInfo.CoverURL:=node.FirstChild.NodeValue;
+        if node.FirstChild<>nil then
+          FAlbumInfo.CoverURL:=node.FirstChild.NodeValue
+        else
+          FAlbumInfo.CoverURL:='';
        // FAlbumInfo.CoverURL:=StringReplace(FAlbumInfo.CoverURL, #10, '', [rfReplaceAll]);
        // FAlbumInfo.CoverURL:=StringReplace(FAlbumInfo.CoverURL, #13, '', [rfReplaceAll]);
         // TODO: Clean up linebreaks in strings retrieved from XML files

@@ -39,8 +39,6 @@ Type
     rescanall: TButton;
     SelectDirectoryDialog1: TSelectDirectoryDialog;
     Procedure Button1Click(Sender: TObject);
-    Procedure Button3Click(Sender: TObject);
-    Procedure dirlistviewClick(Sender: TObject);
     Procedure FormCreate(Sender: TObject);
     Procedure addClick(Sender: TObject);
     Procedure removeClick(Sender: TObject);
@@ -100,7 +98,7 @@ Begin
       MediaCollection.add_directory(SelectDirectoryDialog1.FileName);
       dirlistview.Items.Add(SelectDirectoryDialog1.FileName);
 
-      If MediaCollection.ItemCount>1 Then
+      If MediaCollection.ItemCount>0 Then
         Begin
           Main.ArtistTree.Selected := Nil;
           main.update_artist_view;
@@ -149,14 +147,13 @@ Var rescandir: string;
   i, n: integer;
 Begin
   Main.clear_listClick(nil);
+
   For n:= 0 To dirlistview.Items.Count-1 Do
     Begin
       If dirlistview.Selected[n] Then
         Begin
-          rescandir := dirlistview.Items[n];
+          rescandir := ExcludeTrailingPathDelimiter(dirlistview.Items[n]);
           dirlistview.show;
-          If rescandir[length(rescandir)]=DirectorySeparator Then delete(rescandir,length(rescandir)
-            , 1);
           i := 0;
           Repeat
             Begin
@@ -175,9 +172,10 @@ Begin
           update_title_view;
           Application.ProcessMessages;
           MediaCollection.add_directory(rescandir);
+
         End;
 
-      If MediaCollection.ItemCount>1 Then
+      If MediaCollection.ItemCount>0 Then
         Begin
           Main.ArtistTree.Selected := Nil;
           main.update_artist_view;
@@ -207,16 +205,6 @@ Begin
 End;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-Procedure Tdirwin.Button3Click(Sender: TObject);
-Begin
-
-End;
-
-Procedure Tdirwin.dirlistviewClick(Sender: TObject);
-Begin
-
-End;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 

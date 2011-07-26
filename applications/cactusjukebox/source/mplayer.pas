@@ -111,7 +111,10 @@ begin
    AStringList:=TStringList.Create;
    try
       if GetMPlayerPlaying then AStringList.LoadFromStream(MPlayerProcess.Output);
-      Result:=AStringList.Strings[0];
+      if AStringList.Count>0 then
+        Result:=AStringList.Strings[0]
+      else
+        Result := '';
    //   writeln(Result);
    except
       writeln('EXCEPTION reading mplayer output');result:='';

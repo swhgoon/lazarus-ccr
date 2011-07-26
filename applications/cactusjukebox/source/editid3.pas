@@ -21,7 +21,7 @@ This Software is published under the GPL
 Interface
 
 Uses 
-Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
+Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls, FileUtil,
   {ExtCtrls,} Buttons, ComCtrls, lcltype, mediacol, ExtCtrls, skin, last_fm, streamcol,
   settings, debug, mp3file;
 
@@ -110,14 +110,12 @@ Type
     titleedit1: TEdit;
     yearEdit2: TEdit;
     yearEdit3: TEdit;
-    procedure ac(Sender: TObject);
     procedure btnOptionsClick(Sender: TObject);
     Procedure Button1Click(Sender: TObject);
     Procedure btnResetClick(Sender: TObject);
     Procedure EditID3Close(Sender: TObject; Var CloseAction: TCloseAction);
     Procedure FormCreate(Sender: TObject);
     Procedure FormHide(Sender: TObject);
-    procedure metacontrolChange(Sender: TObject);
     Procedure PicDownloadTimerStartTimer(Sender: TObject);
     Procedure PicDownloadTimerTimer(Sender: TObject);
     Procedure cancelbutClick(Sender: TObject);
@@ -145,6 +143,8 @@ Type
     ptrControls: array Of array Of ^TControl;
     // ..
     Procedure show_tags();
+    function GetCoverPath: boolean;
+    function GetTrack: string;
   Public
     { public declarations }
     fileid: integer;
@@ -156,6 +156,8 @@ Var
   EditID3win: TEditID3;
 
   Implementation
+
+  {$R *.lfm}
 
   Uses mainform, config, functions;
 { TEditID3 }
@@ -245,13 +247,13 @@ Begin
           MedFileObj.album := albumedit1.text;
           MedFileObj.year := yearedit1.text;
           MedFileObj.comment := commentedit1.text;
-          MedFileObj.track := trackedit1.text;
+          MedFileObj.track := GetTrack;
           if GenreBox.ItemIndex>=0 then MedFileObj.GenreID:= GenreIDtoCBIndex[0, GenreBox.ItemIndex];
 
           MedFileObj.write_tag;
 
-          RenameFile(MedFileObj.path, editid3win.pathedit1.text);
-          MedFileObj.path := editid3win.pathedit1.text;
+          RenameFile(MedFileObj.path, UTF8ToSys(editid3win.pathedit1.text));
+          MedFileObj.path := UTF8ToSys(editid3win.pathedit1.text);
         End;
 
 
@@ -389,11 +391,6 @@ Begin
  // self.ShowInTaskBar := stNever;
 End;
 
-
-procedure TEditID3.metacontrolChange(Sender: TObject);
-begin
-
-end;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -611,7 +608,7 @@ Begin
     // title(-mode) specific actions
   Else
     Begin
-      pathedit1.text := MedFileObj.path;
+      pathedit1.text := SysToUTF8(MedFileObj.path);
       //TODO: scroll TEdit to end of path
       titleedit1.text := MedFileObj.title;
       albumedit1.text := MedFileObj.album;
@@ -624,6 +621,37 @@ Begin
   btnReset.Enabled := false;
   bEModeActive := false;
 End;
+
+function TEditID3.GetCoverPath: boolean;
+begin
+  MedFileObj.CoverPath :=  CactusConfig.GetCoverPath(MedFileObj.GetCoverFile);
+  result := FileExists(MedFileObj.CoverPath);
+end;
+
+function TEditID3.GetTrack: string;
+var
+  A,B: Integer;
+  AStr,BStr: string;
+begin
+  // track must conform to n[/m]
+  AStr := Trim(trackedit1.text);
+  A := pos('/', AStr);
+  if A>0 then begin
+    BStr := Trim(Copy(AStr, A+1, Length(AStr)));
+    AStr := Trim(Copy(AStr, 1, A-1));
+    B := StrToIntDef(BStr, -1);
+  end else
+    B := -1;
+  A := StrToIntDef(AStr, -1);
+
+  if A<0 then
+    result := ''
+  else
+  if B<0 then
+    result := AStr
+  else
+    result := AStr + '/' + BStr;
+end;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -673,13 +701,10 @@ Begin
         Then
         Begin
           DebugOutLn('########AlbumCover', 5);
-          If MedFileObj.album<>''
+          If (MedFileObj.album<>'') and CactusConfig.CheckCoverPath
             Then
             Begin
-              MedFileObj.CoverPath := CactusConfig.ConfigPrefix+DirectorySeparator+'covercache'+
-                                      DirectorySeparator+MedFileObj.artist+'_'+MedFileObj.album+
-                                      '.jpeg';
-              If FileExists(MedFileObj.CoverPath) Then
+              if GetCoverPath then
                 Begin
                   Try
                     AlbumCoverImg.Picture.LoadFromFile(MedFileObj.CoverPath);
@@ -738,18 +763,16 @@ Begin
 
       writeln('########AlbumCover');
       // DEBUG-INFO
-      If MedFileObj.album<>''
+      If (MedFileObj.album<>'') and CactusConfig.CheckCoverPath
         Then
         Begin
-          MedFileObj.CoverPath := CactusConfig.ConfigPrefix+DirectorySeparator+'covercache'+
-                                  DirectorySeparator+MedFileObj.artist+'_'+MedFileObj.album+'.jpeg';
-          If FileExists(MedFileObj.CoverPath)
+          if GetCoverPath
             Then
             Begin
               Try
                 AlbumCoverImg.Picture.LoadFromFile(MedFileObj.CoverPath);
               Except
-                writeln('EXCEPTION');
+                writeln('EXCEPTION loading cover');
               End;
             End
           Else
@@ -859,8 +882,7 @@ Begin
   else  // title-mode
   begin
     MedFileObj.PathNameFromTag(CactusConfig.strTagToNameFormatString);
-    EditID3win.pathedit1.text := MedFileObj.Path;
-
+    EditID3win.pathedit1.text := SysToUTF8(MedFileObj.Path);
   end;
             
 
@@ -878,11 +900,6 @@ begin
   Enabled := true;
 end;
 
-procedure TEditID3.ac(Sender: TObject);
-begin
-
-end;
-
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 Procedure TEditID3.btnResetClick(Sender: TObject);
@@ -891,24 +908,24 @@ Begin
 End;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+// TODO: check ....
 Procedure TEditID3.guessnameClick(Sender: TObject);
 
 Var z: integer;
   tmps: string;
 Begin
-  tmps := extractfilename(pathedit1.Text);
+  tmps := extractfilename(UTF8ToSys(pathedit1.Text));
   If ((tmps[1]<#60) And (tmps[2]<#60) And (tmps[4]=#45)) Then
     Begin
-      trackedit1.text := copy(tmps,1,2);
+      trackedit1.text := SysToUTF8(copy(tmps,1,2));
       delete(tmps, 1, 5);
     End;
 
   z := pos(' - ', tmps)+3;
   If z<>3 Then
     Begin
-      titleedit1.text := TrimRight(copy(tmps,z,length(tmps)-z-3));
-      artistedit1.text := TrimRight(copy(tmps,1,z-3));
+      titleedit1.text := SysToUTF8(TrimRight(copy(tmps,z,length(tmps)-z-3)));
+      artistedit1.text := SysToUTF8(TrimRight(copy(tmps,1,z-3)));
     End
   Else
     Begin
@@ -919,8 +936,5 @@ Begin
 End;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-initialization
-  {$I editid3.lrs}
 
 End.

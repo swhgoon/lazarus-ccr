@@ -23,10 +23,12 @@ uses
  {$ifdef linux}
    cthreads,
  {$endif}
-  global_vars, Interfaces, SysUtils, Forms, status, settings, player, graphics,
-  editid3, directories, skin, cdrip, mediacol, BigCoverImg, mainform, cddb,
-  debug, config, addradio, streamcol, playerclass, CleanLibrary, laz_synapse,
-  lnetbase, guesstag;
+  global_vars,
+  Interfaces,SysUtils,
+  Forms, status, settings, player, graphics, editid3, directories, skin,
+  cdrip, mediacol, BigCoverImg, mainform, cddb,
+  debug, config, {imagesforlazarus,} addradio, streamcol,
+  playerclass, CleanLibrary, lnetbase, synapse{, plugininterfaces}, guesstag;
 
 var
   invalid_param, skip_config: boolean;
@@ -35,9 +37,7 @@ var
 
   {$i cactus_const.inc}
 
-{$IFDEF WINDOWS}{$R mp3proj.rc}{$ENDIF}
-
-{$R mp3proj.res}
+{$R *.res}
 
 begin
   Application.Title:='cactus';

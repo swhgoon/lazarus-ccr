@@ -10,6 +10,7 @@
       <MainUnit Value="0"/>
       <Title Value="cactus"/>
       <UseXPManifest Value="True"/>
+      <Icon Value="0"/>
     </General>
     <VersionInfo>
       <AutoIncrementBuild Value="True"/>
@@ -17,9 +18,6 @@
       <RevisionNr Value="5"/>
       <BuildNr Value="737"/>
     </VersionInfo>
-    <MacroValues Count="1">
-      <Macro1 Name="LCLWidgetType" Value="gtk2"/>
-    </MacroValues>
     <BuildModes Count="1">
       <Item1 Name="default" Default="True"/>
     </BuildModes>
@@ -35,21 +33,25 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="4">
+    <RequiredPackages Count="5">
       <Item1>
-        <PackageName Value="lnetbase"/>
+        <PackageName Value="LCLBase"/>
+        <MinVersion Valid="True"/>
       </Item1>
       <Item2>
-        <PackageName Value="laz_synapse"/>
+        <PackageName Value="lnetbase"/>
       </Item2>
       <Item3>
-        <PackageName Value="LCL"/>
-        <MinVersion Major="1" Valid="True"/>
+        <PackageName Value="synapse"/>
       </Item3>
       <Item4>
-        <PackageName Value="FCL"/>
+        <PackageName Value="LCL"/>
         <MinVersion Major="1" Valid="True"/>
       </Item4>
+      <Item5>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item5>
     </RequiredPackages>
     <Units Count="32">
       <Unit0>
@@ -240,7 +242,6 @@
     <SearchPaths>
       <OtherUnitFiles Value="fmodintf;tagreader;plugin/sdk;plugin/impl"/>
       <UnitOutputDirectory Value="../source/obj"/>
-      <SrcPath Value="/home/daseeb/devel/units/synapse/source/lib/"/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>
@@ -265,6 +266,9 @@
         <ShowHintsForUnusedUnitsInMainSrc Value="True"/>
       </Verbosity>
       <WriteFPCLogo Value="False"/>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
       <CustomOptions Value="-dCactusDebug"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
