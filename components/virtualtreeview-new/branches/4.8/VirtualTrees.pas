@@ -2471,7 +2471,6 @@ type
     procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
     procedure CMDenySubclassing(var Message: TLMessage); message CM_DENYSUBCLASSING;
     //procedure CMDrag(var Message: TCMDrag); message CM_DRAG;
-    procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
     procedure CMFontChanged(var Message: TLMessage); message CM_FONTCHANGED;
     procedure CMHintShow(var Message: TCMHintShow); message CM_HINTSHOW;
     procedure CMMouseLeave(var Message: TLMessage); message CM_MOUSELEAVE;
@@ -14750,16 +14749,6 @@ begin
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
-
-procedure TBaseVirtualTree.CMEnabledChanged(var Message: TLMessage);
-
-begin
-  inherited;
-
-  // Need to invalidate the non-client area as well, since the header must be redrawn too.
-  if csDesigning in ComponentState then
-    RedrawWindow(Handle, nil, 0, RDW_FRAME or RDW_INVALIDATE or RDW_NOERASE or RDW_NOCHILDREN);
-end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
