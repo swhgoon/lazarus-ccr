@@ -23,12 +23,10 @@ uses
  {$ifdef linux}
    cthreads,
  {$endif}
-  global_vars,
-  Interfaces,SysUtils,
-  Forms, status, settings, player, graphics, editid3, directories, skin,
-  cdrip, mediacol, BigCoverImg, mainform, cddb,
-  debug, config, {imagesforlazarus,} addradio, streamcol,
-  playerclass, CleanLibrary, lnetbase, synapse{, plugininterfaces}, guesstag;
+  global_vars, Interfaces, SysUtils, Forms, status, settings, player, graphics,
+  laz_synapse, editid3, directories, skin, cdrip, mediacol, BigCoverImg,
+  mainform, cddb, debug, config, addradio, streamcol, playerclass, CleanLibrary,
+  lnetbase, guesstag;
 
 var
   invalid_param, skip_config: boolean;
