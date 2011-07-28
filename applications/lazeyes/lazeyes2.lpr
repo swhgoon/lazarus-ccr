@@ -22,6 +22,7 @@ uses
 {$R *.res}
 
 begin
+  RequireDerivedFormResource := False;
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);
   Application.Run;

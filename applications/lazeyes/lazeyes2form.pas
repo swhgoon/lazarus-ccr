@@ -16,6 +16,7 @@ type
   TMainForm = class(TForm)
   public
     MyTimer: TTimer;
+    FirstOnTimer: Boolean;
     WindowDragMousePos, WindowDragTopLeft: TPoint;
     WindowDragStarted: Boolean;
     Painter: TLazEye2Painter;
@@ -32,6 +33,7 @@ type
     procedure HandleOnMouseUp(Sender: TObject;
       Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer);
+    procedure SetWindowRegion();
   end;
 
 var
@@ -42,8 +44,6 @@ implementation
 { TMainForm }
 
 constructor TMainForm.Create(AOwner: TComponent);
-var
-  Rgn1, Rgn2, TotalRgn: HRGN;
 begin
   inherited Create(AOwner);
 
@@ -55,6 +55,7 @@ begin
   MyTimer.Interval := 1000 div 60;
   MyTimer.OnTimer := @HandleOnTimer;
   MyTimer.Enabled := True;
+  FirstOnTimer := True;
 
   Painter := TLazEye2Painter.Create(Self);
   Painter.Parent := Self;
@@ -74,18 +75,7 @@ begin
   Position := poScreenCenter;
 
   // set window transparency
-  Rgn1 := CreateEllipticRgn(
-    0, 0,
-    INT_OUTER_EYE_WIDTH, INT_OUTER_EYE_HEIGHT);
-  Rgn2 := CreateEllipticRgn(
-    INT_OUTER_EYE_WIDTH + INT_INTEREYE_SPACE, 0,
-    2*INT_OUTER_EYE_WIDTH + INT_INTEREYE_SPACE,
-    INT_OUTER_EYE_HEIGHT);
-  // The dest region needs to exist before calling
-  // CombineRgn, so we create it with dummy values
-  TotalRgn := CreateEllipticRgn(0, 0, 10, 10);
-  LCLIntf.CombineRgn(TotalRgn, Rgn1, Rgn2, RGN_OR);
-  LCLIntf.SetWindowRgn(Handle, TotalRgn, True);
+  SetWindowRegion();
 end;
 
 destructor TMainForm.Destroy;
@@ -177,6 +167,11 @@ end;
 { Timer event - Updates the eyes if the mouse moved }
 procedure TMainForm.HandleOnTimer(ASender: TObject);
 begin
+  {$ifdef LCLGtk2}
+  if FirstOnTimer then SetWindowRegion();
+  FirstOnTimer := False;
+  {$endif}
+
   // Check if mouse position changed
   if (MousePos.X = Mouse.CursorPos.X) and
      (MousePos.Y = Mouse.CursorPos.Y) then Exit;
@@ -224,6 +219,24 @@ procedure TMainForm.HandleOnMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   WindowDragStarted := False;
+end;
+
+procedure TMainForm.SetWindowRegion();
+var
+  Rgn1, Rgn2, TotalRgn: HRGN;
+begin
+  Rgn1 := CreateEllipticRgn(
+    0, 0,
+    INT_OUTER_EYE_WIDTH, INT_OUTER_EYE_HEIGHT);
+  Rgn2 := CreateEllipticRgn(
+    INT_OUTER_EYE_WIDTH + INT_INTEREYE_SPACE, 0,
+    2*INT_OUTER_EYE_WIDTH + INT_INTEREYE_SPACE,
+    INT_OUTER_EYE_HEIGHT);
+  // The dest region needs to exist before calling
+  // CombineRgn, so we create it with dummy values
+  TotalRgn := CreateEllipticRgn(0, 0, 10, 10);
+  LCLIntf.CombineRgn(TotalRgn, Rgn1, Rgn2, RGN_OR);
+  LCLIntf.SetWindowRgn(Handle, TotalRgn, True);
 end;
 
 end.
