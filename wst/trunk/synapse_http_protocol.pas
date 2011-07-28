@@ -204,10 +204,12 @@ end;
 
 procedure THTTPTransport.DoSendAndReceive(ARequest, AResponse : TStream);
 begin
+  FConnection.Document.Clear();
   FConnection.Document.CopyFrom(ARequest,0);
   if not FConnection.HTTPMethod('POST',FAddress) then
     raise ETransportExecption.CreateFmt(SERR_FailedTransportRequest,[sTRANSPORT_NAME,FAddress]);
   AResponse.CopyFrom(FConnection.Document,0);
+  FConnection.Document.Clear();
 end;
 
 constructor THTTPTransport.Create();
