@@ -160,6 +160,15 @@ end;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+function GetCString(var p:pchar; MaxLen: Integer): string;
+begin
+  SetLength(result, MaxLen);
+  StrLCopy(@result[1], p, MaxLen);
+  Inc(P, MaxLen);
+  MaxLen := StrLen(@result[1]);
+  SetLength(Result, MaxLen);
+end;
+
 function TMP3File.ReadTag(Filename: string): boolean; 
 
 Var i, z, tagpos: integer;
@@ -170,6 +179,7 @@ Var i, z, tagpos: integer;
   bufstr: string;
   mp3filehandle: longint;
   iso: boolean;
+  p: pchar;
 
   function GetID3TagStr: string;
   begin
@@ -257,21 +267,22 @@ Begin
     tagpos := pos('TAG',bufstr)+3;
     If tagpos<>3 Then
       Begin
-        ftitle := TrimRight(copy(bufstr,tagpos,30));
-        fartist := TrimRight(copy(bufstr,tagpos+30,30));
-        falbum := TrimRight(copy(bufstr,tagpos+60,30));
-        fyear := TrimRight(copy(bufstr,tagpos+90,4));
-
-        FGenreID := buf[tagpos+124];
-        if FGenreID>high(ID3Genre) then FGenreID:=0;
-        If buf[125]<>0 Then                             {check for id3v1.1}
-          fcomment := TrimRight(copy(bufstr,tagpos+94,30))
-        Else
-          Begin
-            fcomment := TrimRight(copy(bufstr,tagpos+94,28));
-            If (buf[tagpos+123])<>0 Then ftrack := IntToStr(buf[tagpos+123])
-            Else ftrack := '';
-          End;
+        p := @buf[4];
+        ftitle := GetCString(P, 30);
+        fartist := GetCString(P, 30);
+        falbum := GetCString(P, 30);
+        fyear := GetCString(P, 4);
+        fcomment := GetCString(P, 30);
+        // now p is pointing to genreid
+        fgenreid := ord(P^);
+        if fgenreid>high(ID3Genre) then
+          fgenreid := 0;
+        // now check for id3v1.1
+        dec(p); // last byte of comment
+        if (p^<>#0) and ((p-1)^=#0) then
+          ftrack := IntToStr(ord(p^))
+        else
+          ftrack := '';
       End; // else writeln('no id3v1 tag');
   except WriteLn(Filename+' -> exception while reading id3v1 tag... skipped!!');  end;
     If ((artistv2<>'')) And (CactusConfig.id3v2_prio Or (artist='')) Then Fartist := artistv2;
