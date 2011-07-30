@@ -20,8 +20,8 @@ uses
   {$ifdef Windows}
   Windows,
   {$endif}
-  LCLIntf, delphicompat, LCLType, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  VirtualTrees, StdCtrls, ComCtrls, shlobjext, LResources;
+  LCLIntf, delphicompat, LCLType, SysUtils, Classes, ComCtrls, Graphics, Controls, Forms, Dialogs,
+  VirtualTrees, StdCtrls,  shlobjext, LResources;
 
 type
   TDrawTreeForm = class(TForm)

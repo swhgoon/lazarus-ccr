@@ -10,7 +10,7 @@ interface
 
 uses
   LCLIntf, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, VirtualTrees, ComCtrls, Menus, StdCtrls,
+  Dialogs, ComCtrls, VirtualTrees,  Menus, StdCtrls,
   LResources, Printers, PrintersDlgs, ExtCtrls;
 
 type
