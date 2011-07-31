@@ -2145,18 +2145,21 @@ End;
 
 Function TMain.LoadFile(path: String): boolean;
 
-Var z: integer;
+Var z: integer; aPath: string;
   listitem: TListItem;
 Begin
   DebugOutLn('** Loadfile **', 2);
   Application.ProcessMessages;
-  If FileExists(path) Then
+  {$IFDEF WINDOWS}
+  aPath := UTF8Decode(path);
+  {$ENDIF}
+  If FileExists(aPath) Then
     Begin
       z := MediaCollection.GetIndexByPath(path);
       DebugOutLn(z, 3);
       If z<0 Then
         Begin
-          z := MediaCollection.add(path);
+          z := MediaCollection.add(apath);
         End;
       PlayerObj.playlist.add(MediaCollection.items[z]);
       ListItem := Playlist.Items.Add;
@@ -3033,7 +3036,7 @@ Procedure TMain.TitleTreeSelectItem(Sender: TObject; Item: TListItem;
 Begin
   // reanable the popupmenu in case ist was disabled in TMain.TitleTreeMouseDown
   TitleTree.PopupMenu.AutoPopup := true;
-  lblPath.Caption:=TMediaFileClass(Item.data).Path;
+  lblPath.Caption:=UTF8Encode(TMediaFileClass(Item.data).Path);
 End;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -3577,7 +3580,7 @@ Begin
   // reanable the popupmenu in case ist was disabled in TMain.playlistMouseDown
   playlist.PopupMenu.AutoPopup := true;
   if (Item.Data<>nil) then begin
-    lblPath.Caption := TMediaFileClass(Item.data).Path;
+    lblPath.Caption := UTF8Encode(TMediaFileClass(Item.data).Path);
   end;
 End;
 
