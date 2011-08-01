@@ -285,13 +285,27 @@ Begin
           ftrack := '';
       End; // else writeln('no id3v1 tag');
   except WriteLn(Filename+' -> exception while reading id3v1 tag... skipped!!');  end;
-    If ((artistv2<>'')) And (CactusConfig.id3v2_prio Or (artist='')) Then Fartist := artistv2;
-    If ((titlev2<>'')) And (CactusConfig.id3v2_prio Or (title=''))  Then Ftitle := titlev2;
-    If ((albumv2<>'')) And (CactusConfig.id3v2_prio Or (album='')) Then Falbum := albumv2;
-    If ((commentv2<>'')) And (CactusConfig.id3v2_prio Or (comment='')) Then Fcomment := commentv2;
-    If ((yearv2<>'')) And (CactusConfig.id3v2_prio Or (year='')) Then Fyear := yearv2;
-    If ((trackv2<>'')) And (CactusConfig.id3v2_prio Or (track='')) Then ftrack := trackv2;
-    fileclose(mp3filehandle);
+{  If ((artistv2<>'')) And (CactusConfig.id3v2_prio Or (artist='')) Then Fartist := artistv2;
+  If ((titlev2<>'')) And (CactusConfig.id3v2_prio Or (title=''))  Then Ftitle := titlev2;
+  If ((albumv2<>'')) And (CactusConfig.id3v2_prio Or (album='')) Then Falbum := albumv2;
+  If ((commentv2<>'')) And (CactusConfig.id3v2_prio Or (comment='')) Then Fcomment := commentv2;    }
+  {$IFDEF WINDOWS}
+  if Length(Trim(fartist)) <> 0 then begin
+  If ((artistv2<>'')) And (CactusConfig.id3v2_prio Or (artist='')) Then Fartist := UTF8Encode(artistv2);
+  end else Fartist := artistv2;
+  if Length(Trim(Ftitle)) <> 0 then begin
+  If ((titlev2<>'')) And (CactusConfig.id3v2_prio Or (title=''))  Then Ftitle := UTF8Encode(titlev2);
+  end else Ftitle := titlev2;
+  if Length(Trim(Falbum)) <> 0 then begin
+  If ((albumv2<>'')) And (CactusConfig.id3v2_prio Or (album='')) Then Falbum := UTF8Encode(albumv2);
+  end else Falbum := albumv2;
+  if Length(Trim(Fcomment)) <> 0 then begin
+  If ((commentv2<>'')) And (CactusConfig.id3v2_prio Or (comment='')) Then Fcomment := UTF8Encode(commentv2);
+  end else Fcomment := commentv2;
+  {$ENDIF}
+  If ((yearv2<>'')) And (CactusConfig.id3v2_prio Or (year='')) Then Fyear := yearv2;
+  If ((trackv2<>'')) And (CactusConfig.id3v2_prio Or (track='')) Then ftrack := trackv2;
+  fileclose(mp3filehandle);
 end;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

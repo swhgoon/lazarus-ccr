@@ -604,18 +604,22 @@ object Main: TMain
         item
           AutoSize = True
           Caption = 'Title'
+          Width = 37
         end      
         item
           AutoSize = True
           Caption = 'Album'
+          Width = 52
         end      
         item
           AutoSize = True
           Caption = 'Track'
+          Width = 45
         end      
         item
           AutoSize = True
           Caption = 'Genre'
+          Width = 49
         end      
         item
           AutoSize = True
@@ -627,7 +631,7 @@ object Main: TMain
           AutoSize = True
           Caption = 'Length'
           MaxWidth = 60
-          Width = 57
+          Width = 55
         end>
       PopupMenu = titlelistmenu
       ReadOnly = True
@@ -843,7 +847,7 @@ object Main: TMain
         end
         object current_title_edit: TEdit
           Left = 12
-          Height = 21
+          Height = 27
           Top = 109
           Width = 200
           Color = clBtnFace
@@ -852,7 +856,7 @@ object Main: TMain
         end
         object current_title_edit1: TEdit
           Left = 12
-          Height = 21
+          Height = 27
           Top = 141
           Width = 200
           Color = clBtnFace
@@ -861,9 +865,9 @@ object Main: TMain
         end
         object randomcheck: TCheckBox
           Left = 135
-          Height = 19
+          Height = 23
           Top = 257
-          Width = 62
+          Width = 75
           Caption = 'Random'
           OnChange = randomcheckChange
           TabOrder = 3
@@ -946,10 +950,10 @@ object Main: TMain
         TabOrder = 2
         object filetypebox: TComboBox
           Left = 360
-          Height = 21
+          Height = 27
           Top = 14
           Width = 90
-          ItemHeight = 13
+          ItemHeight = 19
           ItemIndex = 0
           Items.Strings = (
             'all types'
@@ -967,7 +971,7 @@ object Main: TMain
         end
         object searchstr: TEdit
           Left = 120
-          Height = 21
+          Height = 27
           Top = 14
           Width = 232
           OnKeyUp = searchstrKeyUp
@@ -977,7 +981,7 @@ object Main: TMain
           Left = 16
           Height = 28
           Hint = 'Search the library'
-          Top = 10
+          Top = 12
           Width = 90
           BorderSpacing.InnerBorder = 4
           Caption = 'Search'
@@ -1012,7 +1016,7 @@ object Main: TMain
         Left = 501
         Height = 30
         Hint = 'Clear Playlist'
-        Top = 12
+        Top = 14
         Width = 84
         Anchors = [akTop, akRight]
         AutoSize = True
@@ -1196,7 +1200,7 @@ object Main: TMain
       end
       object artistsearch: TEdit
         Left = 8
-        Height = 21
+        Height = 27
         Top = 32
         Width = 110
         OnKeyUp = ArtistTreeKeyUp
