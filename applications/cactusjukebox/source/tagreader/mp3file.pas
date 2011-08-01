@@ -285,11 +285,12 @@ Begin
           ftrack := '';
       End; // else writeln('no id3v1 tag');
   except WriteLn(Filename+' -> exception while reading id3v1 tag... skipped!!');  end;
-{  If ((artistv2<>'')) And (CactusConfig.id3v2_prio Or (artist='')) Then Fartist := artistv2;
+  {$IFNDEF WINDOWS}
+  If ((artistv2<>'')) And (CactusConfig.id3v2_prio Or (artist='')) Then Fartist := artistv2;
   If ((titlev2<>'')) And (CactusConfig.id3v2_prio Or (title=''))  Then Ftitle := titlev2;
   If ((albumv2<>'')) And (CactusConfig.id3v2_prio Or (album='')) Then Falbum := albumv2;
-  If ((commentv2<>'')) And (CactusConfig.id3v2_prio Or (comment='')) Then Fcomment := commentv2;    }
-  {$IFDEF WINDOWS}
+  If ((commentv2<>'')) And (CactusConfig.id3v2_prio Or (comment='')) Then Fcomment := commentv2;
+  {$ELSE}
   if Length(Trim(fartist)) <> 0 then begin
   If ((artistv2<>'')) And (CactusConfig.id3v2_prio Or (artist='')) Then Fartist := UTF8Encode(artistv2);
   end else Fartist := artistv2;

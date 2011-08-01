@@ -1,11 +1,11 @@
 object Main: TMain
-  Left = 129
+  Left = 184
   Height = 624
-  Top = 126
+  Top = 61
   Width = 893
   ActiveControl = Panel4
   Caption = 'titel'
-  ClientHeight = 602
+  ClientHeight = 604
   ClientWidth = 893
   Icon.Data = {
     3E42000000000100010040400000010020002842000016000000280000004000
@@ -548,7 +548,7 @@ object Main: TMain
   object StatusBar1: TStatusBar
     Left = 0
     Height = 22
-    Top = 580
+    Top = 582
     Width = 893
     Panels = <    
       item
@@ -562,7 +562,7 @@ object Main: TMain
   end
   object Splitter1: TSplitter
     Left = 288
-    Height = 580
+    Height = 582
     Top = 0
     Width = 8
     AutoSnap = False
@@ -572,19 +572,19 @@ object Main: TMain
   end
   object Panel1: TPanel
     Left = 296
-    Height = 580
+    Height = 582
     Top = 0
     Width = 597
     Align = alClient
     BevelOuter = bvNone
-    ClientHeight = 580
+    ClientHeight = 582
     ClientWidth = 597
     TabOrder = 0
     OnClick = Panel1Click
     OnResize = Panel1Resize
     object TitleTree: TListView
       Left = 0
-      Height = 150
+      Height = 152
       Top = 5
       Width = 587
       Align = alTop
@@ -604,22 +604,22 @@ object Main: TMain
         item
           AutoSize = True
           Caption = 'Title'
-          Width = 37
+          Width = 36
         end      
         item
           AutoSize = True
           Caption = 'Album'
-          Width = 52
+          Width = 49
         end      
         item
           AutoSize = True
           Caption = 'Track'
-          Width = 45
+          Width = 44
         end      
         item
           AutoSize = True
           Caption = 'Genre'
-          Width = 49
+          Width = 47
         end      
         item
           AutoSize = True
@@ -631,7 +631,7 @@ object Main: TMain
           AutoSize = True
           Caption = 'Length'
           MaxWidth = 60
-          Width = 55
+          Width = 51
         end>
       PopupMenu = titlelistmenu
       ReadOnly = True
@@ -654,7 +654,7 @@ object Main: TMain
       Cursor = crVSplit
       Left = 0
       Height = 10
-      Top = 155
+      Top = 157
       Width = 597
       Align = alTop
       ResizeAnchor = akTop
@@ -662,7 +662,7 @@ object Main: TMain
     object Panel3: TPanel
       Left = 0
       Height = 415
-      Top = 165
+      Top = 167
       Width = 597
       Align = alClient
       BevelOuter = bvNone
@@ -847,7 +847,7 @@ object Main: TMain
         end
         object current_title_edit: TEdit
           Left = 12
-          Height = 27
+          Height = 25
           Top = 109
           Width = 200
           Color = clBtnFace
@@ -856,7 +856,7 @@ object Main: TMain
         end
         object current_title_edit1: TEdit
           Left = 12
-          Height = 27
+          Height = 25
           Top = 141
           Width = 200
           Color = clBtnFace
@@ -865,9 +865,9 @@ object Main: TMain
         end
         object randomcheck: TCheckBox
           Left = 135
-          Height = 23
+          Height = 21
           Top = 257
-          Width = 75
+          Width = 71
           Caption = 'Random'
           OnChange = randomcheckChange
           TabOrder = 3
@@ -940,20 +940,20 @@ object Main: TMain
       end
       object Panel2: TPanel
         Left = 0
-        Height = 50
+        Height = 49
         Top = 2
         Width = 464
         BevelOuter = bvNone
-        ClientHeight = 50
+        ClientHeight = 49
         ClientWidth = 464
         PopupMenu = SearchMenu
         TabOrder = 2
         object filetypebox: TComboBox
           Left = 360
-          Height = 27
-          Top = 14
+          Height = 25
+          Top = 8
           Width = 90
-          ItemHeight = 19
+          ItemHeight = 17
           ItemIndex = 0
           Items.Strings = (
             'all types'
@@ -971,8 +971,8 @@ object Main: TMain
         end
         object searchstr: TEdit
           Left = 120
-          Height = 27
-          Top = 14
+          Height = 25
+          Top = 8
           Width = 232
           OnKeyUp = searchstrKeyUp
           TabOrder = 1
@@ -981,7 +981,7 @@ object Main: TMain
           Left = 16
           Height = 28
           Hint = 'Search the library'
-          Top = 12
+          Top = 5
           Width = 90
           BorderSpacing.InnerBorder = 4
           Caption = 'Search'
@@ -1013,11 +1013,11 @@ object Main: TMain
       end
       object clear_list: TBitBtn
         AnchorSideBottom.Side = asrCenter
-        Left = 501
+        Left = 504
         Height = 30
         Hint = 'Clear Playlist'
-        Top = 14
-        Width = 84
+        Top = 7
+        Width = 79
         Anchors = [akTop, akRight]
         AutoSize = True
         Caption = 'Clear'
@@ -1084,9 +1084,9 @@ object Main: TMain
       end
       object lblPath: TLabel
         Left = 8
-        Height = 14
+        Height = 13
         Top = 56
-        Width = 50
+        Width = 43
         Caption = 'lblPath'
         ParentColor = False
       end
@@ -1094,19 +1094,19 @@ object Main: TMain
   end
   object Panel4: TPanel
     Left = 0
-    Height = 580
+    Height = 582
     Top = 0
     Width = 288
     Align = alLeft
     BorderSpacing.InnerBorder = 30
     BevelOuter = bvNone
-    ClientHeight = 580
+    ClientHeight = 582
     ClientWidth = 288
     TabOrder = 1
     OnClick = Panel4Click
     object ArtistTree: TTreeView
       Left = 26
-      Height = 570
+      Height = 572
       Top = 5
       Width = 259
       Align = alClient
@@ -1147,9 +1147,9 @@ object Main: TMain
       OnClick = ArtistSrchFieldClick
       object Label2: TLabel
         Left = 77
-        Height = 14
+        Height = 13
         Top = 8
-        Width = 43
+        Width = 37
         Caption = 'Search'
         ParentColor = False
       end
@@ -1200,7 +1200,7 @@ object Main: TMain
       end
       object artistsearch: TEdit
         Left = 8
-        Height = 27
+        Height = 25
         Top = 32
         Width = 110
         OnKeyUp = ArtistTreeKeyUp
@@ -1210,7 +1210,7 @@ object Main: TMain
     end
     object ToolBar1: TToolBar
       Left = 0
-      Height = 575
+      Height = 577
       Top = 5
       Width = 26
       Align = alLeft
