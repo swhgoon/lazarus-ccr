@@ -2,7 +2,7 @@ program hexeditorlaz;
 
 uses
   Interfaces,
-  Forms, LResources, Printer4Lazarus,
+  Forms, Printer4Lazarus,
   Res in 'Res.pas',
   Basic in 'Basic.pas',
   About in 'About.pas' {AboutForm},
@@ -11,12 +11,13 @@ uses
   Options in 'Options.pas' {OptionsForm},
   ReplacePrompt in 'ReplacePrompt.pas' {ReplacePromptForm},
   Main in 'Main.pas' {MainForm},
-  PrintStatus in 'PrintStatus.pas';
+  PrintStatus in 'PrintStatus.pas', kcontrolslaz;
 
 {$IFDEF WINDOWS}{$R hexeditorlaz.rc}{$ENDIF}
 
+{$R *.res}
+
 begin
-  {$I hexeditorlaz.lrs}
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);
   Application.CreateForm(TSearchForm, SearchForm);
