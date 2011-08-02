@@ -4,9 +4,9 @@
     <Version Value="9"/>
     <PathDelim Value="\"/>
     <General>
+      <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <UseXPManifest Value="True"/>
-      <ActiveWindowIndexAtStart Value="0"/>
     </General>
     <VersionInfo>
       <Language Value=""/>
@@ -38,17 +38,10 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="45">
+    <Units Count="9">
       <Unit0>
         <Filename Value="hexeditorlaz.lpr"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="0"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="6" Y="20"/>
-        <UsageCount Value="53"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="about.pas"/>
@@ -57,13 +50,6 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="About"/>
-        <EditorIndex Value="8"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="12" Y="38"/>
-        <UsageCount Value="53"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="main.pas"/>
@@ -72,13 +58,6 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Main"/>
-        <EditorIndex Value="13"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="24" Y="3"/>
-        <UsageCount Value="53"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="options.pas"/>
@@ -87,13 +66,6 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Options"/>
-        <EditorIndex Value="9"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="208"/>
-        <CursorPos X="7" Y="229"/>
-        <UsageCount Value="53"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit3>
       <Unit4>
         <Filename Value="printstatus.pas"/>
@@ -102,13 +74,6 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="PrintStatus"/>
-        <EditorIndex Value="14"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="22" Y="15"/>
-        <UsageCount Value="53"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit4>
       <Unit5>
         <Filename Value="replace.pas"/>
@@ -117,13 +82,6 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Replace"/>
-        <EditorIndex Value="11"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="24" Y="3"/>
-        <UsageCount Value="53"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit5>
       <Unit6>
         <Filename Value="replaceprompt.pas"/>
@@ -132,24 +90,11 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="ReplacePrompt"/>
-        <EditorIndex Value="12"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="45" Y="2"/>
-        <UsageCount Value="53"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit6>
       <Unit7>
         <Filename Value="res.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Res"/>
-        <EditorIndex Value="7"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="32" Y="17"/>
-        <UsageCount Value="53"/>
-        <Loaded Value="True"/>
       </Unit7>
       <Unit8>
         <Filename Value="search.pas"/>
@@ -158,343 +103,15 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Search"/>
-        <EditorIndex Value="10"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="87" Y="1"/>
-        <UsageCount Value="53"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit8>
-      <Unit9>
-        <Filename Value="basic.pas"/>
-        <UnitName Value="Basic"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="6"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="3"/>
-        <UsageCount Value="26"/>
-        <Loaded Value="True"/>
-      </Unit9>
-      <Unit10>
-        <Filename Value="..\..\source\kprintpreview.pas"/>
-        <ComponentName Value="KPrintPreviewForm"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-        <UnitName Value="KPrintPreview"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
-        <UsageCount Value="26"/>
-        <LoadedDesigner Value="True"/>
-      </Unit10>
-      <Unit11>
-        <Filename Value="..\..\source\khexeditor.pas"/>
-        <UnitName Value="KHexEditor"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="4879"/>
-        <CursorPos X="15" Y="4879"/>
-        <UsageCount Value="26"/>
-        <LoadedDesigner Value="True"/>
-      </Unit11>
-      <Unit12>
-        <Filename Value="..\..\source\kgrids.pas"/>
-        <UnitName Value="KGrids"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="9081"/>
-        <CursorPos X="19" Y="9092"/>
-        <UsageCount Value="24"/>
-        <LoadedDesigner Value="True"/>
-      </Unit12>
-      <Unit13>
-        <Filename Value="..\..\source\kdbgrids.pas"/>
-        <UnitName Value="KDBGrids"/>
-        <TopLine Value="442"/>
-        <CursorPos X="26" Y="470"/>
-        <UsageCount Value="7"/>
-      </Unit13>
-      <Unit14>
-        <Filename Value="..\..\source\kcontrols.pas"/>
-        <UnitName Value="KControls"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1555"/>
-        <CursorPos X="29" Y="1596"/>
-        <UsageCount Value="26"/>
-        <LoadedDesigner Value="True"/>
-      </Unit14>
-      <Unit15>
-        <Filename Value="..\..\source\kdialogs.pas"/>
-        <UnitName Value="KDialogs"/>
-        <TopLine Value="1"/>
-        <CursorPos X="59" Y="28"/>
-        <UsageCount Value="7"/>
-      </Unit15>
-      <Unit16>
-        <Filename Value="..\..\source\kprintsetup.pas"/>
-        <ComponentName Value="KPrintSetupForm"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-        <UnitName Value="KPrintSetup"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="76" Y="13"/>
-        <UsageCount Value="26"/>
-        <LoadedDesigner Value="True"/>
-      </Unit16>
-      <Unit17>
-        <Filename Value="..\kdbgrid\kdbgriddemolaz.lpr"/>
-        <UnitName Value="kdbgriddemolaz"/>
-        <TopLine Value="1"/>
-        <CursorPos X="27" Y="4"/>
-        <UsageCount Value="7"/>
-      </Unit17>
-      <Unit18>
-        <Filename Value="..\..\source\kcontrols.inc"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="39" Y="35"/>
-        <UsageCount Value="24"/>
-        <LoadedDesigner Value="True"/>
-      </Unit18>
-      <Unit19>
-        <Filename Value="..\..\..\..\..\usr\lib\lazarus\0.9.29\lcl\printers.pas"/>
-        <UnitName Value="Printers"/>
-        <TopLine Value="561"/>
-        <CursorPos X="1" Y="583"/>
-        <UsageCount Value="10"/>
-      </Unit19>
-      <Unit20>
-        <Filename Value="..\..\..\..\..\usr\lib\lazarus\0.9.29\lcl\include\customaction.inc"/>
-        <TopLine Value="115"/>
-        <CursorPos X="1" Y="137"/>
-        <UsageCount Value="10"/>
-      </Unit20>
-      <Unit21>
-        <Filename Value="..\..\..\..\..\usr\lib\lazarus\0.9.29\lcl\include\control.inc"/>
-        <TopLine Value="1231"/>
-        <CursorPos X="1" Y="1253"/>
-        <UsageCount Value="9"/>
-      </Unit21>
-      <Unit22>
-        <Filename Value="..\..\..\..\..\usr\lib\lazarus\0.9.29\lcl\clipbrd.pp"/>
-        <UnitName Value="Clipbrd"/>
-        <TopLine Value="242"/>
-        <CursorPos X="16" Y="254"/>
-        <UsageCount Value="9"/>
-      </Unit22>
-      <Unit23>
-        <Filename Value="..\..\..\..\..\usr\lib\lazarus\0.9.29\lcl\include\clipbrd.inc"/>
-        <TopLine Value="724"/>
-        <CursorPos X="1" Y="746"/>
-        <UsageCount Value="9"/>
-      </Unit23>
-      <Unit24>
-        <Filename Value="..\..\..\..\..\usr\lib\lazarus\0.9.29\lcl\include\lclintf.inc"/>
-        <TopLine Value="64"/>
-        <CursorPos X="1" Y="86"/>
-        <UsageCount Value="9"/>
-      </Unit24>
-      <Unit25>
-        <Filename Value="..\..\..\..\..\usr\lib\lazarus\0.9.29\lcl\interfaces\gtk\gtkwinapi.inc"/>
-        <TopLine Value="546"/>
-        <CursorPos X="1" Y="568"/>
-        <UsageCount Value="9"/>
-      </Unit25>
-      <Unit26>
-        <Filename Value="..\..\..\..\..\usr\lib\lazarus\0.9.29\components\printers\unix\cupsdyn.pp"/>
-        <UnitName Value="cupsdyn"/>
-        <TopLine Value="1358"/>
-        <CursorPos X="14" Y="1389"/>
-        <UsageCount Value="8"/>
-      </Unit26>
-      <Unit27>
-        <Filename Value="..\..\..\..\..\usr\lib\lazarus\0.9.29\lcl\include\statuspanels.inc"/>
-        <TopLine Value="10"/>
-        <CursorPos X="1" Y="35"/>
-        <UsageCount Value="8"/>
-      </Unit27>
-      <Unit28>
-        <Filename Value="C:\lazarusSVN\lcl\lmessages.pp"/>
-        <UnitName Value="LMessages"/>
-        <TopLine Value="1"/>
-        <CursorPos X="113" Y="22"/>
-        <UsageCount Value="9"/>
-      </Unit28>
-      <Unit29>
-        <Filename Value="C:\lazarusSVN\lcl\include\control.inc"/>
-        <TopLine Value="1609"/>
-        <CursorPos X="1" Y="1637"/>
-        <UsageCount Value="22"/>
-      </Unit29>
-      <Unit30>
-        <Filename Value="C:\lazarusSVN\lcl\include\wincontrol.inc"/>
-        <TopLine Value="5008"/>
-        <CursorPos X="1" Y="5036"/>
-        <UsageCount Value="8"/>
-      </Unit30>
-      <Unit31>
-        <Filename Value="C:\lazarusSVN\lcl\lclmessageglue.pas"/>
-        <UnitName Value="LCLMessageGlue"/>
-        <TopLine Value="93"/>
-        <CursorPos X="1" Y="121"/>
-        <UsageCount Value="8"/>
-      </Unit31>
-      <Unit32>
-        <Filename Value="C:\lazarusSVN\lcl\interfaces\win32\win32callback.inc"/>
-        <TopLine Value="1115"/>
-        <CursorPos X="25" Y="1141"/>
-        <UsageCount Value="8"/>
-      </Unit32>
-      <Unit33>
-        <Filename Value="C:\lazarusSVN\lcl\include\application.inc"/>
-        <TopLine Value="1773"/>
-        <CursorPos X="1" Y="1801"/>
-        <UsageCount Value="8"/>
-      </Unit33>
-      <Unit34>
-        <Filename Value="C:\lazarusSVN\lcl\forms.pp"/>
-        <UnitName Value="Forms"/>
-        <TopLine Value="355"/>
-        <CursorPos X="82" Y="383"/>
-        <UsageCount Value="22"/>
-      </Unit34>
-      <Unit35>
-        <Filename Value="C:\lazarusSVN\lcl\include\canvas.inc"/>
-        <TopLine Value="1432"/>
-        <CursorPos X="1" Y="1460"/>
-        <UsageCount Value="22"/>
-      </Unit35>
-      <Unit36>
-        <Filename Value="C:\lazarusSVN\lcl\include\winapi.inc"/>
-        <TopLine Value="837"/>
-        <CursorPos X="1" Y="865"/>
-        <UsageCount Value="22"/>
-      </Unit36>
-      <Unit37>
-        <Filename Value="C:\lazarusSVN\lcl\interfaces\gtk\gtkwinapi.inc"/>
-        <TopLine Value="9239"/>
-        <CursorPos X="1" Y="9267"/>
-        <UsageCount Value="22"/>
-      </Unit37>
-      <Unit38>
-        <Filename Value="..\..\source\kfunctions.pas"/>
-        <UnitName Value="KFunctions"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="59"/>
-        <CursorPos X="47" Y="88"/>
-        <UsageCount Value="10"/>
-        <LoadedDesigner Value="True"/>
-      </Unit38>
-      <Unit39>
-        <Filename Value="..\..\source\kgraphics.pas"/>
-        <UnitName Value="KGraphics"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="940"/>
-        <CursorPos X="20" Y="970"/>
-        <UsageCount Value="10"/>
-        <LoadedDesigner Value="True"/>
-      </Unit39>
-      <Unit40>
-        <Filename Value="..\..\..\lazarus\lcl\interfaces\win32\win32wsdialogs.pp"/>
-        <UnitName Value="Win32WSDialogs"/>
-        <EditorIndex Value="1"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="67"/>
-        <CursorPos X="5" Y="91"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit40>
-      <Unit41>
-        <Filename Value="..\..\components\kcontrols\source\kwidewinprocs.pas"/>
-        <UnitName Value="KWideWinProcs"/>
-        <EditorIndex Value="2"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit41>
-      <Unit42>
-        <Filename Value="..\..\components\kcontrols\source\kcontrolslaz.pas"/>
-        <UnitName Value="KControlsLaz"/>
-        <EditorIndex Value="3"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="53" Y="11"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit42>
-      <Unit43>
-        <Filename Value="..\..\components\kcontrols\source\kcontrolsdesign.pas"/>
-        <UnitName Value="kcontrolsdesign"/>
-        <EditorIndex Value="4"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="17" Y="3"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit43>
-      <Unit44>
-        <Filename Value="..\..\components\kcontrols\source\kcontrols.inc"/>
-        <EditorIndex Value="5"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="4"/>
-        <CursorPos X="1" Y="1"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit44>
     </Units>
-    <JumpHistory Count="11" HistoryIndex="10">
-      <Position1>
-        <Filename Value="hexeditorlaz.lpr"/>
-        <Caret Line="5" Column="20" TopLine="1"/>
-      </Position1>
-      <Position2>
-        <Filename Value="hexeditorlaz.lpr"/>
-        <Caret Line="29" Column="37" TopLine="1"/>
-      </Position2>
-      <Position3>
-        <Filename Value="hexeditorlaz.lpr"/>
-        <Caret Line="16" Column="18" TopLine="1"/>
-      </Position3>
-      <Position4>
-        <Filename Value="replace.pas"/>
-        <Caret Line="3" Column="11" TopLine="1"/>
-      </Position4>
-      <Position5>
-        <Filename Value="main.pas"/>
-        <Caret Line="905" Column="21" TopLine="862"/>
-      </Position5>
-      <Position6>
-        <Filename Value="..\..\..\lazarus\lcl\interfaces\win32\win32wsdialogs.pp"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position6>
-      <Position7>
-        <Filename Value="..\..\components\kcontrols\source\kwidewinprocs.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position7>
-      <Position8>
-        <Filename Value="..\..\components\kcontrols\source\kcontrolslaz.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position8>
-      <Position9>
-        <Filename Value="..\..\components\kcontrols\source\kcontrolsdesign.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position9>
-      <Position10>
-        <Filename Value="basic.pas"/>
-        <Caret Line="70" Column="55" TopLine="52"/>
-      </Position10>
-      <Position11>
-        <Filename Value="..\..\components\kcontrols\source\kcontrolsdesign.pas"/>
-        <Caret Line="3" Column="17" TopLine="1"/>
-      </Position11>
-    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="10"/>
     <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="khexedit"/>
+    </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
