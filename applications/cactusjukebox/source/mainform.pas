@@ -2263,9 +2263,9 @@ var
 begin
   DebugOutLn('** Loadfile **', 2);
   Application.ProcessMessages;
-  {$IFDEF WINDOWS}
+//Ubuntu need this  {$IFDEF WINDOWS}
   aPath := UTF8Decode(path);
-  {$ENDIF}
+//  {$ENDIF}
   if FileExists(aPath) then
   begin
     z := MediaCollection.GetIndexByPath(path);
