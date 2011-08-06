@@ -27,16 +27,20 @@ type
 
   TListnerNotifyMessage = procedure(Sender : TObject; const AMsg : string) of object;
 
+  { TwstListener }
+
   TwstListener = class(TObject)
   private
     FOnNotifyMessage: TListnerNotifyMessage;
+  protected
+    procedure SetOnNotifyMessage(const AValue : TListnerNotifyMessage);virtual;
   public
     class function GetDescription() : string;virtual;
     procedure Start();virtual;abstract;
     procedure Stop();virtual;abstract;
     function IsActive : Boolean; virtual;abstract;
     procedure NotifyMessage(const AMsg : string);
-    property OnNotifyMessage : TListnerNotifyMessage read FOnNotifyMessage write FOnNotifyMessage;
+    property OnNotifyMessage : TListnerNotifyMessage read FOnNotifyMessage write SetOnNotifyMessage;
   end;
 
   function GenerateWSDLHtmlTable(const AServicesModulePath : string=''): string;
@@ -86,6 +90,13 @@ begin
 end;
 
 { TwstListener }
+
+procedure TwstListener.SetOnNotifyMessage(const AValue : TListnerNotifyMessage);
+begin
+  if (FOnNotifyMessage = AValue) then
+    exit;
+  FOnNotifyMessage := AValue;
+end;
 
 class function TwstListener.GetDescription() : string;
 begin

@@ -81,6 +81,7 @@ resourcestring
   SERR_NoScope                     = 'There is no scope.';  
   SERR_NoSerializerFoThisType      = 'No serializer for this type : "%s".';
   SERRE_ObjectCreationTimeOut      = 'Unable to create the object : Timeout expired.';
+  SERR_ObjectStateDoesNotAllowOperation = 'Object'' state does not allow this operation : "%s".';
   SERR_OperationNotAllowedOnActivePool = 'Operation not allowed on an active pool.';
   SERR_ParamaterNotFound           = 'Parameter non found : "%s".';
   SERR_Parsing                     = 'Parsing "%s" ...';

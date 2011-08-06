@@ -22,14 +22,20 @@ uses
 
 type
 
-  { TwstFPHttpListener }
+  { TFPWorkerObject }
 
-  TwstFPHttpListener = class(TwstListener)
+  TFPWorkerObject = class
   private
     FHTTPServerObject: TFPHTTPServer;
     FRootAddress : string;
     FServerSoftware : String;
+    FOnNotifyMessage : TListnerNotifyMessage;
   private
+    function GetHandleRequestInThread : Boolean;
+    function GetListeningPort : Integer;
+    procedure SetHandleRequestInThread(const AValue : Boolean);
+    procedure SetListeningPort(const AValue : Integer);
+
     procedure ProcessWSDLRequest(
           ARequest  : TRequest;
           AResponse : TResponse;
@@ -41,9 +47,46 @@ type
       var APath     : string
     );
   private
-    procedure RequestHandler(Sender: TObject; 
-                Var ARequest: TFPHTTPConnectionRequest;
-                Var AResponse : TFPHTTPConnectionResponse);
+    procedure RequestHandler(
+          Sender    : TObject;
+      Var ARequest  : TFPHTTPConnectionRequest;
+      Var AResponse : TFPHTTPConnectionResponse
+    );
+  public
+    constructor Create();
+    destructor Destroy(); override;
+    procedure Start();
+    procedure Stop();
+    function IsActive : Boolean;
+
+    property RootAddress : string read FRootAddress write FRootAddress;
+    property ServerSoftware : string read FServerSoftware write FServerSoftware;
+    property ListeningPort : Integer read GetListeningPort write SetListeningPort;
+    property OnNotifyMessage : TListnerNotifyMessage read FOnNotifyMessage write FOnNotifyMessage;
+    property HandleRequestInThread : Boolean read GetHandleRequestInThread write SetHandleRequestInThread;
+  end;
+
+  { TServerListnerThread }
+
+  TServerListnerThread = class(TThread)
+  private
+    FWorkerObject : TFPWorkerObject;
+  public
+    constructor Create(AWorkerObject : TFPWorkerObject);
+    procedure Execute(); override;
+  end;
+
+  TListenerOption = (loExecuteInThread, loHandleRequestInThread);
+  TListenerOptions = set of TListenerOption;
+
+  { TwstFPHttpListener }
+
+  TwstFPHttpListener = class(TwstListener)
+  private
+    FOptions : TListenerOptions;
+    FWorkerObject : TFPWorkerObject;
+  protected
+    procedure SetOnNotifyMessage(const AValue : TListnerNotifyMessage);override;
   public
     constructor Create(
       const AServerIpAddress   : string  = '127.0.0.1';
@@ -56,11 +99,13 @@ type
     procedure Start();override;
     procedure Stop();override;
     function IsActive : Boolean; override;
-  end;
 
+    property Options : TListenerOptions read FOptions write FOptions;
+  end;
 
 implementation
 uses
+  wst_consts,
   base_service_intf, server_service_intf, server_service_imputils, metadata_wsdl;
 
 {$IFDEF WST_DBG}
@@ -91,9 +136,26 @@ begin
   end;
 end;
 
-{ TwstFPHttpListener }
+{ TServerListnerThread }
 
-procedure TwstFPHttpListener.ProcessWSDLRequest(
+constructor TServerListnerThread.Create(AWorkerObject : TFPWorkerObject);
+begin
+  FreeOnTerminate := True;
+  FWorkerObject := AWorkerObject;
+  inherited Create(False);
+end;
+
+procedure TServerListnerThread.Execute();
+begin
+  try
+    FWorkerObject.Start();
+  except
+  end;
+end;
+
+{ TFPWorkerObject }
+
+procedure TFPWorkerObject.ProcessWSDLRequest(
       ARequest  : TRequest;
       AResponse : TResponse;
   var APath     : string
@@ -107,21 +169,21 @@ begin
     locRepName := ExtractNextPathElement(APath);
   strBuff := GenerateWSDL(locRepName,FRootAddress);
   i:=Length(strBuff);
-  if (StrBuff<>'') then 
+  if (StrBuff<>'') then
     begin
     AResponse.ContentType := 'text/xml';
     AResponse.Content:=strBuff;
     end
   else
-    begin  
+    begin
     AResponse.ContentType := 'text/html';
     AResponse.Content := GenerateWSDLHtmlTable();
     end;
-  if AResponse.ContentLength=0 then  
-    AResponse.ContentLength:=Length(AResponse.Content);  
+  if AResponse.ContentLength=0 then
+    AResponse.ContentLength:=Length(AResponse.Content);
 end;
 
-procedure TwstFPHttpListener.ProcessServiceRequest(
+procedure TFPWorkerObject.ProcessServiceRequest(
       ARequest  : TRequest;
       AResponse : TResponse;
   var APath     : string
@@ -132,7 +194,7 @@ var
   inStream : TStringStream;
 begin
   trgt := ExtractNextPathElement(APath);
-  if AnsiSameText(sWSDL,trgt) then 
+  if AnsiSameText(sWSDL,trgt) then
     begin
     ProcessWSDLRequest(ARequest,AResponse,APath);
     Exit;
@@ -154,16 +216,28 @@ begin
     end;
   except
     on e : Exception do begin
-      NotifyMessage('ProcessData()>> Exception = '+e.Message);
+      if Assigned(FOnNotifyMessage) then
+        FOnNotifyMessage(Self,'ProcessData()>> Exception = '+e.Message);
       raise;
     end;
   end;
 end;
 
-procedure TWstFPHttpListener.RequestHandler(Sender: TObject; 
-                Var ARequest: TFPHTTPConnectionRequest;
-                Var AResponse : TFPHTTPConnectionResponse);
+function TFPWorkerObject.GetHandleRequestInThread : Boolean;
+begin
+  Result := FHTTPServerObject.Threaded;
+end;
 
+function TFPWorkerObject.GetListeningPort : Integer;
+begin
+  Result := FHTTPServerObject.Port;
+end;
+
+procedure TFPWorkerObject.RequestHandler(
+      Sender    : TObject;
+  var ARequest  : TFPHTTPConnectionRequest;
+  var AResponse : TFPHTTPConnectionResponse
+);
 var
 {$IFDEF WST_DBG}
   s : string;
@@ -174,19 +248,73 @@ begin
   AResponse.Server:=FServerSoftware;
   locPath := ARequest.URL;
   locPathPart := ExtractNextPathElement(locPath);
-  if AnsiSameText(sSERVICES_PREFIXE,locPathPart)  then 
+  if AnsiSameText(sSERVICES_PREFIXE,locPathPart)  then
     ProcessServiceRequest(ARequest,AResponse,locPath)
   else
     ProcessWSDLRequest(ARequest,AResponse,locPath);
   try
     AResponse.SendContent;
-  finally  
-    If Assigned(AResponse.ContentStream) then
-      begin
-      AResponse.ContentStream.Free;
-      AResponse.ContentStream:=Nil;
-      end;
-  end;  
+  finally
+    if Assigned(AResponse.ContentStream) then begin
+      AResponse.ContentStream.Free();
+      AResponse.ContentStream := nil;
+    end;
+  end;
+end;
+
+procedure TFPWorkerObject.SetHandleRequestInThread(const AValue : Boolean);
+begin
+  if FHTTPServerObject.Active then
+    raise Exception.CreateFmt(SERR_ObjectStateDoesNotAllowOperation,['SetHandleRequestInThread']);
+  FHTTPServerObject.Threaded := AValue;
+end;
+
+procedure TFPWorkerObject.SetListeningPort(const AValue : Integer);
+begin
+  if FHTTPServerObject.Active then
+    raise Exception.CreateFmt(SERR_ObjectStateDoesNotAllowOperation,['SetListeningPort']);
+  FHTTPServerObject.Port := AValue;
+end;
+
+constructor TFPWorkerObject.Create();
+begin
+  inherited Create();
+  FHTTPServerObject := TFPHTTPServer.Create(nil);
+  FHTTPServerObject.OnRequest := @RequestHandler;
+end;
+
+destructor TFPWorkerObject.Destroy();
+begin
+  if (FHTTPServerObject <> nil) then
+    FHTTPServerObject.Active := False;
+  FreeAndNil(FHTTPServerObject);
+  inherited Destroy();
+end;
+
+procedure TFPWorkerObject.Start();
+begin
+  if not FHTTPServerObject.Active then
+    FHTTPServerObject.Active := True;
+end;
+
+procedure TFPWorkerObject.Stop();
+begin
+  if FHTTPServerObject.Active then
+    FHTTPServerObject.Active := False;
+end;
+
+function TFPWorkerObject.IsActive : Boolean;
+begin
+  Result := FHTTPServerObject.Active;
+end;
+
+{ TwstFPHttpListener }
+
+procedure TwstFPHttpListener.SetOnNotifyMessage(const AValue : TListnerNotifyMessage);
+begin
+  inherited SetOnNotifyMessage(AValue);
+  if (FWorkerObject <> nil) then
+    FWorkerObject.OnNotifyMessage := AValue;
 end;
 
 constructor TwstFPHttpListener.Create(
@@ -198,42 +326,50 @@ constructor TwstFPHttpListener.Create(
 
 begin
   inherited Create();
-  FHTTPServerObject := TFPHTTPServer.Create(nil);
-//  b.IP := AServerIpAddress;
-  FHTTPServerObject.port := AListningPort;
-  FRootAddress := Format('http://%s:%d/',[AServerIpAddress,AListningPort]);
-  FServerSoftware := AServerSoftware;
-  FHTTPServerObject.OnRequest := @RequestHandler;
+  FWorkerObject := TFPWorkerObject.Create();
+  FWorkerObject.RootAddress := AServerIpAddress;
+  FWorkerObject.ServerSoftware := AServerSoftware;
+  FWorkerObject.ListeningPort := AListningPort;
 end;
 
 destructor TwstFPHttpListener.Destroy();
 begin
-  if ( FHTTPServerObject <> nil ) then
+  if (FWorkerObject <> nil) then
     Stop();
-  FreeAndNil(FHTTPServerObject);
+  FreeAndNil(FWorkerObject);
   inherited Destroy();
 end;
 
 procedure TwstFPHttpListener.Start();
 begin
-  if not FHTTPServerObject.Active then
-    FHTTPServerObject.Active := True;
+  if not FWorkerObject.IsActive() then begin
+    FWorkerObject.HandleRequestInThread := (loHandleRequestInThread in Options);
+    if (loExecuteInThread in Options) then begin
+      // The thread is create with "FreeOnTerminate := True"
+      TServerListnerThread.Create(FWorkerObject);
+    end else begin
+      FWorkerObject.Start();
+    end;
+  end;
 end;
 
 procedure TwstFPHttpListener.Stop();
 begin
-  if FHTTPServerObject.Active then
-    FHTTPServerObject.Active := False;
+  if FWorkerObject.IsActive() then begin
+    //In case of the thread(loExecuteInThread in Options),
+    //this will make the thread exit and free itself as "FreeOnTerminate := True"
+    FWorkerObject.Stop();
+  end;
 end;
 
-class function TwstFPHttpListener.GetDescription: string;
+class function TwstFPHttpListener.GetDescription() : string;
 begin
   Result := 'WST FP HTTP Listener';
 end;
 
 function TwstFPHttpListener.IsActive: Boolean;
 begin
-  Result := FHTTPServerObject.Active;
+  Result := FWorkerObject.IsActive();
 end;
 
 initialization
