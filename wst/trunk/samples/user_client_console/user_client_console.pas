@@ -8,8 +8,9 @@ uses
   Classes, SysUtils, TypInfo, {$IFDEF WINDOWS}ActiveX,{$ENDIF}
   user_service_intf_proxy,
   //same_process_protocol, synapse_tcp_protocol, synapse_http_protocol, library_protocol,
-  same_process_protocol, indy_tcp_protocol, indy_http_protocol, library_protocol,
+  //same_process_protocol, indy_tcp_protocol, indy_http_protocol, library_protocol,
 //  same_process_protocol, ics_tcp_protocol, ics_http_protocol, library_protocol,
+  same_process_protocol, fpc_tcp_protocol, fpc_http_protocol, library_protocol,
   soap_formatter, binary_formatter, json_formatter,
   user_service_intf, xmlrpc_formatter, service_intf;
 
@@ -244,10 +245,13 @@ begin
 {$IFEND}
 //    SYNAPSE_RegisterTCP_Transport();
 //    SYNAPSE_RegisterHTTP_Transport();
-    INDY_RegisterTCP_Transport();
-    INDY_RegisterHTTP_Transport();
+//    INDY_RegisterTCP_Transport();
+//    INDY_RegisterHTTP_Transport();
 //    ICS_RegisterTCP_Transport();
 //    ICS_RegisterHTTP_Transport();
+    FPC_RegisterTCP_Transport();
+    FPC_RegisterHTTP_Transport();
+
     LIB_Register_Transport();
     WriteLn('Sample Application using Web Services Toolkit');
     ReadFormatType();

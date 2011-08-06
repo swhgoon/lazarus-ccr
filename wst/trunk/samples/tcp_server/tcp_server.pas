@@ -28,8 +28,9 @@ uses
   base_binary_formatter, server_binary_formatter,
   metadata_service, metadata_service_imp, metadata_service_binder,
   server_listener ,
+  fpc_tcp_server,
   //synapse_tcp_server,
-  indy_tcp_server,
+  //indy_tcp_server,
 
   user_service_intf, user_service_intf_binder, user_service_intf_imp , imp_helper,
   server_service_xmlrpc;
@@ -53,7 +54,8 @@ begin
   WriteLn(Format('WST sample TCP Server listning on "%d"',[sSERVER_PORT]));
   WriteLn('Hit <enter> to stop.');
   //listener := TwstSynapseTcpListener.Create();
-  listener := TwstIndyTcpListener.Create();
+  //listener := TwstIndyTcpListener.Create();
+  listener := TwstFPCTcpListener.Create();
   listener.Start();
   ReadLn;
 end.
