@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
+    <Version Value="9"/>
     <PathDelim Value="\"/>
-    <Version Value="7"/>
     <General>
       <Flags>
         <MainUnitHasUsesSectionForAllUnits Value="False"/>
@@ -12,11 +12,13 @@
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <TargetFileExt Value=".exe"/>
     </General>
     <VersionInfo>
-      <ProjectVersion Value=""/>
+      <StringTable ProductVersion=""/>
     </VersionInfo>
+    <BuildModes Count="1">
+      <Item1 Name="default" Default="True"/>
+    </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
@@ -28,12 +30,7 @@
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="1">
-      <Item1>
-        <PackageName Value="indylaz"/>
-      </Item1>
-    </RequiredPackages>
-    <Units Count="3">
+    <Units Count="2">
       <Unit0>
         <Filename Value="http_server.pas"/>
         <IsPartOfProject Value="True"/>
@@ -44,27 +41,23 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="user_service_intf"/>
       </Unit1>
-      <Unit2>
-        <Filename Value="..\..\indy_tcp_server.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="indy_tcp_server"/>
-      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="8"/>
+    <Version Value="9"/>
     <PathDelim Value="\"/>
     <Target>
       <Filename Value="http_server"/>
     </Target>
     <SearchPaths>
-      <IncludeFiles Value="..\..\"/>
-      <OtherUnitFiles Value="..\;..\..\;..\..\wst_rtti_filter\"/>
+      <IncludeFiles Value="..\.."/>
+      <OtherUnitFiles Value="..;..\..;..\..\wst_rtti_filter"/>
       <UnitOutputDirectory Value="obj"/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>
         <IncludeAssertionCode Value="True"/>
+        <UseAnsiStrings Value="False"/>
       </SyntaxOptions>
     </Parsing>
     <Linking>
@@ -74,10 +67,12 @@
       <LinkSmart Value="True"/>
     </Linking>
     <Other>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
       <CustomOptions Value="-dINDY_10
 -dUseCThreads
--dWST_DBG
-"/>
+-dWST_DBG"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
