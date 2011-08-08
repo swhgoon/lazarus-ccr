@@ -16,7 +16,8 @@ unit wst_consts;
 
 interface
 
-const
+const           
+  WST_BLOCK_TYPE = LongInt(56789); 
   sWST_SIGNATURE = 'WST_METADATA_0.6';
 
 resourcestring

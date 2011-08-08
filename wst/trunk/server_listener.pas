@@ -23,9 +23,20 @@ const
   sSERVICES_PREFIXE = 'services';
   sWSDL = 'WSDL';
   
-type
+type  
+  
+  TTcpListenerOption = (tloHandleBlockType);
+  TTcpListenerOptions = set of TTcpListenerOption; 
 
   TListnerNotifyMessage = procedure(Sender : TObject; const AMsg : string) of object;
+  IBlockHandler = interface
+    ['{E0C50F08-A2C3-41D7-ACD5-E7867DD9F981}']
+    procedure Execute(
+      const ABlockType     : LongInt; 
+            ARequestBlock, 
+            AResponseBlock : TStream
+    );
+  end;                      
 
   { TwstListener }
 
@@ -43,10 +54,25 @@ type
     property OnNotifyMessage : TListnerNotifyMessage read FOnNotifyMessage write SetOnNotifyMessage;
   end;
 
+  { TwstBaseTcpListener }
+
+  TwstBaseTcpListener = class(TwstListener)
+  private
+    FOptions : TTcpListenerOptions;
+    FUnknownBlockHandler : IBlockHandler;  
+  protected
+    procedure CheckActive(const AActive : Boolean; ACaller : string);
+    procedure SetOptions(const AValue : TTcpListenerOptions);
+    procedure SetUnknownBlockHandler(const AValue : IBlockHandler); 
+  public    
+    property Options : TTcpListenerOptions read FOptions write SetOptions;
+    property UnknownBlockHandler : IBlockHandler read FUnknownBlockHandler write SetUnknownBlockHandler;  
+  end;
+  
   function GenerateWSDLHtmlTable(const AServicesModulePath : string=''): string;
   
 implementation
-uses base_service_intf, metadata_repository,
+uses wst_consts, base_service_intf, metadata_repository,
      metadata_service, metadata_service_binder, metadata_service_imp ;
 
 
@@ -87,6 +113,30 @@ begin
                 '</body>'+
               '</head>'+
             '</html>';
+end;
+
+{ TwstBaseTcpListener }
+
+procedure TwstBaseTcpListener.CheckActive(const AActive : Boolean; ACaller : string); 
+begin                      
+  if (IsActive() <> AActive) then
+    raise Exception.CreateFmt(SERR_ObjectStateDoesNotAllowOperation,[ACaller]);
+end;
+
+procedure TwstBaseTcpListener.SetOptions(const AValue : TTcpListenerOptions); 
+begin   
+  CheckActive(False,'SetOptions');
+  if (FOptions=AValue) then 
+    exit; 
+  FOptions:=AValue;   
+end;
+
+procedure TwstBaseTcpListener.SetUnknownBlockHandler(const AValue : IBlockHandler); 
+begin 
+  CheckActive(False,'SetUnknownBlockHandler');
+  if (FUnknownBlockHandler = AValue) then 
+    exit; 
+  FUnknownBlockHandler := AValue;   
 end;
 
 { TwstListener }

@@ -19,8 +19,7 @@ uses
   Classes, SysUtils, ssockets, server_listener, wst_types;
 
 const
-  sSERVER_PORT = 1234;
-  
+  sSERVER_PORT = 1234;   
 type
 
   TwstFPCTcpListener = class;
@@ -33,7 +32,7 @@ type
     FSocket : TSocketStream;
     FOwner : TwstFPCTcpListener;
   private
-    function ReadRequest(ARequest : TStream):Integer;
+    function ReadRequest(ARequest : TStream; var ABlockType : LongInt):Integer;
     procedure SendResponse(AResponse : TMemoryStream);
   public
     constructor Create (ASocket : TSocketStream; AOwner : TwstFPCTcpListener);
@@ -58,11 +57,11 @@ type
     procedure SuspendAsSoonAsPossible();
     procedure ResumeListening();
     property DefaultTimeOut : Integer read FDefaultTimeOut write FDefaultTimeOut;
-  end;
+  end;    
   
   { TwstFPCTcpListener }
 
-  TwstFPCTcpListener = class(TwstListener)
+  TwstFPCTcpListener = class(TwstBaseTcpListener)
   private
     FServerThread : TServerListnerThread;
     FPort : Integer;
@@ -76,27 +75,38 @@ type
   
 implementation
 
-uses binary_streamer, server_service_intf, server_service_imputils, math;
-
-resourcestring
-  SErrReadingFromSocket = 'Error %d reading data from socket';
-  SErrWritingToSocket = 'Error %d writing data to socket';
+uses 
+  wst_consts, binary_streamer, server_service_intf, server_service_imputils, math;
 
 { TClientHandlerThread }
 
 
-function TClientHandlerThread.ReadRequest(ARequest : TStream): Integer;
+function TClientHandlerThread.ReadRequest(
+      ARequest   : TStream; 
+  var ABlockType : LongInt
+): Integer;
 var
   binBuff : TByteDynArray;
-  bufferLen : LongInt;
-  i, j, c, readBufferLen : PtrInt;
+  bufferLen, bktype : TInt32S;
+  i, j, c : PtrInt;
 
 begin
   Result := 0;
+  if (tloHandleBlockType in FOwner.Options) then begin
+    bktype := 0;
+    j:=FSocket.Read(bktype,SizeOf(bktype));
+    if (j<0) then
+      raise Exception.CreateFmt(SERR_ErrorReadindDataToSocket,[FSocket.LastError]);
+    if (j=0) then
+      Exit(0) // Closed gracefully
+    else
+      bktype:=Reverse_32(bktype); 
+  end;
+  
   bufferLen := 0;
   j:=FSocket.Read(bufferLen,SizeOf(bufferLen));
   if (j<0) then
-    Raise Exception.CreateFmt(SErrReadingFromSocket,[FSocket.LastError]);
+    Raise Exception.CreateFmt(SERR_ErrorReadindDataToSocket,[FSocket.LastError]);
   if (j=0) then
     Exit(0) // Closed gracefully
   else
@@ -110,7 +120,7 @@ begin
     repeat
         j:=FSocket.Read(binBuff[0],i);
         If (J<=0) then
-          Raise Exception.CreateFmt(SErrReadingFromSocket,[FSocket.LastError]);
+          Raise Exception.CreateFmt(SERR_ErrorReadindDataToSocket,[FSocket.LastError]);
         ARequest.Write(binBuff[0],j);
         Inc(c,j);
         I:=Min(1024,(bufferLen - c ))
@@ -120,6 +130,9 @@ begin
     if C<ARequest.Size then
       ARequest.Size:=C;
   end;
+  
+  if (tloHandleBlockType in FOwner.Options) then
+    ABlockType := bktype;
 end;
 
 procedure TClientHandlerThread.SendResponse(AResponse : TMemoryStream);
@@ -134,7 +147,7 @@ begin
   Repeat
     W:=FSocket.Write(P^,C);
     if (W<0) then
-      Raise Exception.CreateFmt(SErrWritingToSocket,[FSocket.LastError]);
+      Raise Exception.CreateFmt(SERR_ErrorSendindDataToSocket,[FSocket.LastError]);
     Inc(P,W);
     Dec(C,W);
   Until (C=0) or (w=0);
@@ -174,26 +187,33 @@ var
   rqst : IRequestBuffer;
   ARequest,AResponse : TMemoryStream;
   i : PtrUInt;
+  blocktype : TInt32S;
 
 begin
-  while not Terminated do
+  while not Terminated do begin
     Try
-      ARequest:=TMemoryStream.Create;
+      blocktype := 0;
+      AResponse := nil;
+      ARequest := TMemoryStream.Create;
       try
-        if ReadRequest(ARequest)>SizeOf(LongInt) then
-          begin
-          rdr := CreateBinaryReader(ARequest);
-          trgt := rdr.ReadAnsiStr();
-          ctntyp := rdr.ReadAnsiStr();
-          frmt := rdr.ReadAnsiStr();
-          buff := rdr.ReadBinary();
-          rdr := nil;
-          ARequest.Size := 0;
-          ARequest.Write(buff[0],Length(buff));
-          SetLength(buff,0);
-          ARequest.Position := 0;
-          AResponse:=TMemoryStream.Create;
-          try
+        if ReadRequest(ARequest,blocktype)>SizeOf(LongInt) then begin
+          AResponse := TMemoryStream.Create();
+          if (tloHandleBlockType in FOwner.Options) and 
+             (blocktype <> WST_BLOCK_TYPE) 
+          then begin
+            if (FOwner.UnknownBlockHandler <> nil) then 
+              FOwner.UnknownBlockHandler.Execute(blocktype,ARequest,AResponse);
+          end else begin
+            rdr := CreateBinaryReader(ARequest);
+            trgt := rdr.ReadAnsiStr();
+            ctntyp := rdr.ReadAnsiStr();
+            frmt := rdr.ReadAnsiStr();
+            buff := rdr.ReadBinary();
+            rdr := nil;
+            ARequest.Size := 0;
+            ARequest.Write(buff[0],Length(buff));
+            SetLength(buff,0);
+            ARequest.Position := 0;
             rqst := TRequestBuffer.Create(trgt,ctntyp,ARequest,AResponse,frmt);
             //rqst.GetPropertyManager().SetProperty(sREMOTE_IP,FSocketObject.GetRemoteSinIP());
             //rqst.GetPropertyManager().SetProperty(sREMOTE_PORT,IntToStr(FSocketObject.GetRemoteSinPort()));
@@ -206,21 +226,21 @@ begin
             wrtr := CreateBinaryWriter(AResponse);
             wrtr.WriteBinary(buff);
             SetLength(buff,0);
+          end;
+          if (AResponse.Size > 0) then
             SendResponse(AResponse);
-          finally
-            AResponse.Free;
-          end;
-          end;
+        end;
       finally
+        AResponse.Free;
         ARequest.Free;
       end;
     except
-      on e : Exception do
-        begin
+      on e : Exception do begin
         Terminate;
         FOwner.NotifyMessage(Format('Error : ThreadID = %d; Message = %s',[Self.ThreadID,e.Message]));
-        end;
+      end;
     end;
+  end;
 end;
 
 { TServerListnerThread }

@@ -54,6 +54,7 @@ Type
     FContentType : string;
     FFormat : string;
     FTarget : string;
+    FUseBlockType : Boolean;
   protected
     procedure DoSend(const AData; const ALength : Int64); virtual; abstract;
     function DoReceive(var AData; const ALength : Int64) : Int64; virtual; abstract;
@@ -63,6 +64,7 @@ Type
     property Target : string Read FTarget Write FTarget;
     property ContentType : string Read FContentType Write FContentType;
     property Format : string read FFormat write FFormat;
+    property UseBlockType : Boolean read FUseBlockType write FUseBlockType default false;
   end;
 
 {$M+}
@@ -113,6 +115,8 @@ begin
   buffStream := TMemoryStream.Create();
   Try
     wrtr := CreateBinaryWriter(buffStream);
+    if UseBlockType then
+      wrtr.WriteInt32S(WST_BLOCK_TYPE); 
     wrtr.WriteInt32S(0);
     wrtr.WriteAnsiStr(Target);
     wrtr.WriteAnsiStr(ContentType);
@@ -134,8 +138,13 @@ begin
     end;
     wrtr.WriteBinary(binBuff);
     SetLength(binBuff,0);
-    buffStream.Position := 0;
-    wrtr.WriteInt32S(buffStream.Size-4);
+    if UseBlockType then begin
+      buffStream.Position := 4;
+      wrtr.WriteInt32S(buffStream.Size-({BlockType}4+4));
+    end else begin
+      buffStream.Position := 0;
+      wrtr.WriteInt32S(buffStream.Size-4);
+    end;
     buffStream.Position := 0;
 
     DoSend(buffStream.Memory^,buffStream.Size);
