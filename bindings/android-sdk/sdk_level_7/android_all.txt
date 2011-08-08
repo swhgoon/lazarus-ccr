@@ -35,7 +35,7 @@ constructor Create(int width, int height);
 const FILL_PARENT = $FFFFFFFF;
 
 [View] TJavaObject
-method void setLayoutParams(LayoutParams params);
+method void setLayoutParams(ViewGroup.LayoutParams params);
 method void setVisibility(int visibility);
 const VISIBLE = 0;
 const INVISIBLE = 4;
@@ -54,7 +54,7 @@ const VERTICAL = 1;
 [AbsoluteLayout] ViewGroup
 constructor Create(Activity);
 
-[AbsoluteLayout_LayoutParams] LayoutParams
+[AbsoluteLayout.LayoutParams] ViewGroup.LayoutParams
 constructor Create(int param_width, int param_height, int param_x, int param_y);
 
 [TextView] View
@@ -86,7 +86,7 @@ method void setIs24HourView(boolean AIs24HourView);
 constructor Create(Activity);
 
 [CompoundButton] Button
-constructor Create(Activity)
+#constructor Create(Activity) abstract
 method boolean 	isChecked() 
 method boolean 	performClick() 
 method void 	setChecked(boolean checked) 

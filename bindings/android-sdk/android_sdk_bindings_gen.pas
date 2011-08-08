@@ -19,6 +19,8 @@ type
     FJavaOutputIDs, FJavaOutputMethods: TStringList;
     FClassName, FClassNamePas: string; // Class name of the class currently being parsed
     FClassNum, FMethodNum: Integer;
+    procedure GeneratePascalFile(ASourceFile: string; ADest: TStringList);
+    procedure GenerateJavaFile(ASourceFile: string; ADest: TStringList);
     procedure ProcessModelFile(ASourceFile, APasOutputFile, AJavaOutputFile: string);
     procedure ProcessModelLine(ASourceLine: string);
     procedure ProcessModelClass(ASourceLine: string);
@@ -31,8 +33,12 @@ type
     function PassByReference(ABaseName: string): Boolean;
     function GetJavaResultFunction(AReturnType: string): string;
     function GetJavaTypeReader(AType: string): string;
+    function GetJavaTypeLocalVar(AType: string): string;
+    function GetJavaTypeConverter(AType: string): string;
     function GetIDString(AMethodName: string): string;
     procedure AddOutputIDs(AIDString: string);
+    function ConvertPointToUnderline(AStr: string): string;
+    function IsBasicJavaType(AStr: string): Boolean;
   public
     constructor Create;
     destructor Destroy; override;
@@ -45,6 +51,144 @@ var
 implementation
 
 { TAndroidSDKBindingsGen }
+
+procedure TAndroidSDKBindingsGen.GeneratePascalFile(ASourceFile: string; ADest: TStringList);
+begin
+  ADest.Add(Format('unit %s;', [ChangeFileExt(ExtractFileName(ASourceFile), '')]));
+  ADest.Add('');
+  ADest.Add('interface');
+  ADest.Add('');
+  ADest.Add('uses javalang, androidpipescomm;');
+  ADest.Add('');
+  ADest.Add('type');
+  ADest.Add('');
+  ADest.Add('  { Forward declaration of classes }');
+  ADest.Add('');
+  ADest.AddStrings(FPasOutputClassesForward);
+  ADest.Add('');
+  ADest.Add('  { Types }');
+  ADest.Add('');
+  ADest.AddStrings(FPasOutputTypes);
+  ADest.Add('');
+  ADest.Add('  { Classes }');
+  ADest.Add('');
+  ADest.AddStrings(FPasOutputClasses);
+  ADest.Add('  end;');
+  ADest.Add('');
+  ADest.Add('function HandleMessage(AFirstInt: Integer): Boolean;');
+  ADest.Add('');
+  ADest.Add('implementation');
+  ADest.Add('');
+  ADest.Add('const');
+  ADest.Add('  { Constants }');
+  ADest.Add('');
+  ADest.AddStrings(FPasOutputConsts);
+  ADest.Add('');
+  ADest.Add('  { IDs }');
+  ADest.Add('');
+  ADest.AddStrings(FPasOutputIDs);
+  ADest.Add('');
+  ADest.Add('{ Implementation of Classes }');
+  ADest.Add('');
+  ADest.AddStrings(FPasOutputImpl);
+  ADest.Add('');
+  ADest.Add('{ Message Handling }');
+  ADest.Add('');
+  ADest.Add('function HandleMessage(AFirstInt: Integer): Boolean;');
+  ADest.Add('var');
+  ADest.Add('  lInt: Integer;');
+  ADest.Add('  lPascalPointer: PtrInt = -1;');
+  ADest.Add('begin');
+  ADest.Add('  case AFirstInt of');
+  ADest.AddStrings(FPasOutputMessages);
+  ADest.Add('  end;');
+  ADest.Add('end;');
+  ADest.Add('');
+  ADest.Add('end.');
+end;
+
+procedure TAndroidSDKBindingsGen.GenerateJavaFile(ASourceFile: string; ADest: TStringList);
+begin
+  ADest.Add('package com.pascal.androidlcl;');
+  ADest.Add('');
+  ADest.Add('import android.app.*;');
+  ADest.Add('import android.view.*;');
+  ADest.Add('import android.os.*;');
+  ADest.Add('import android.util.*;');
+  ADest.Add('import android.content.*;');
+  ADest.Add('import android.view.*;');
+  ADest.Add('import android.widget.*;');
+  ADest.Add('import java.util.*;');
+  ADest.Add('import java.lang.*;');
+  ADest.Add('');
+  ADest.Add('public class AndroidAll');
+  ADest.Add('{');
+  ADest.Add('  // info from other classes');
+  ADest.Add('  Activity activity;');
+  ADest.Add('  AndroidPipesComm MyAndroidPipesComm;');
+  ADest.Add('  JavaLang MyJavaLang;');
+  ADest.Add('  // lists of variables');
+  ADest.Add('  ArrayList ViewElements;');
+  ADest.Add('');
+  ADest.Add('  public AndroidAll(AndroidPipesComm AAndroidPipesComm, Activity AActivity, JavaLang AJavaLang)');
+  ADest.Add('  {');
+  ADest.Add('    activity = AActivity;');
+  ADest.Add('    MyAndroidPipesComm = AAndroidPipesComm;');
+  ADest.Add('    MyJavaLang = AJavaLang;');
+  ADest.Add('    ViewElements = new ArrayList();');
+  ADest.Add('  }');
+  ADest.Add('');
+  ADest.Add('  public void DebugOut(String Str)');
+  ADest.Add('  {');
+  ADest.Add('    MyAndroidPipesComm.DebugOut(Str);');
+  ADest.Add('  }');
+  ADest.Add('');
+  ADest.AddStrings(FJavaOutputIDs);
+  ADest.Add('');
+  ADest.Add('  public boolean ProcessCommand(int Buffer)');
+  ADest.Add('  {');
+  ADest.Add('    //DebugOut("AndroidUI.ProcessCommand Command=" + java.lang.Integer.toHexString(Buffer));');
+  ADest.Add('    // basic types');
+  ADest.Add('    int lInt, lIndex, lPascalPointer;');
+  ADest.Add('    boolean lBool;');
+  ADest.Add('    float lFloat;');
+  ADest.Add('    // Self params');
+  ADest.Add('    View param_self_View;');
+  ADest.Add('    ViewGroup param_self_ViewGroup;');
+  ADest.Add('    TextView param_self_TextView;');
+  ADest.Add('    Button param_self_Button;');
+  ADest.Add('    EditText param_self_EditText;');
+  ADest.Add('    LinearLayout param_self_LinearLayout;');
+  ADest.Add('    TimePicker param_self_TimePicker;');
+  ADest.Add('    Display param_self_Display;');
+  ADest.Add('    DisplayMetrics param_self_DisplayMetrics;');
+  ADest.Add('    CompoundButton param_self_CompoundButton;');
+  ADest.Add('    WindowManager param_self_WindowManager;');
+  ADest.Add('    // Params');
+  ADest.Add('    ViewGroup.LayoutParams lViewGroup_LayoutParams_1;');
+  ADest.Add('    DisplayMetrics lDisplayMetrics_1;');
+  ADest.Add('    CharSequence lCharSequence_1;');
+  ADest.Add('    int lint_1, lint_2, lint_3, lint_4;');
+  ADest.Add('    float lfloat_1, lfloat_2;');
+  ADest.Add('    boolean lboolean_1;');
+  ADest.Add('    // Results');
+  ADest.Add('    float lResult_float;');
+  ADest.Add('    int lResult_int;');
+  ADest.Add('    boolean lResult_boolean;');
+  ADest.Add('    Display lResult_Display;');
+  ADest.Add('');
+  ADest.Add('    switch (Buffer)');
+  ADest.Add('    {');
+  ADest.Add('');
+  ADest.AddStrings(FJavaOutputMethods);
+  ADest.Add('');
+  ADest.Add('    default:');
+  ADest.Add('      return false;');
+  ADest.Add('    }');
+  ADest.Add('    return true;');
+  ADest.Add('  }');
+  ADest.Add('}');
+end;
 
 procedure TAndroidSDKBindingsGen.ProcessModelFile(ASourceFile, APasOutputFile,
   AJavaOutputFile: string);
@@ -67,137 +211,11 @@ begin
     end;
 
     // Now save the Pascal file
-    lPasOutputFile.Add(Format('unit %s;', [ChangeFileExt(ExtractFileName(ASourceFile), '')]));
-    lPasOutputFile.Add('');
-    lPasOutputFile.Add('interface');
-    lPasOutputFile.Add('');
-    lPasOutputFile.Add('uses javalang, androidpipescomm;');
-    lPasOutputFile.Add('');
-    lPasOutputFile.Add('type');
-    lPasOutputFile.Add('');
-    lPasOutputFile.Add('  { Forward declaration of classes }');
-    lPasOutputFile.Add('');
-    lPasOutputFile.AddStrings(FPasOutputClassesForward);
-    lPasOutputFile.Add('');
-    lPasOutputFile.Add('  { Types }');
-    lPasOutputFile.Add('');
-    lPasOutputFile.AddStrings(FPasOutputTypes);
-    lPasOutputFile.Add('');
-    lPasOutputFile.Add('  { Classes }');
-    lPasOutputFile.Add('');
-    lPasOutputFile.AddStrings(FPasOutputClasses);
-    lPasOutputFile.Add('  end;');
-    lPasOutputFile.Add('');
-    lPasOutputFile.Add('function HandleMessage(AFirstInt: Integer): Boolean;');
-    lPasOutputFile.Add('');
-    lPasOutputFile.Add('implementation');
-    lPasOutputFile.Add('');
-    lPasOutputFile.Add('const');
-    lPasOutputFile.Add('  { Constants }');
-    lPasOutputFile.Add('');
-    lPasOutputFile.AddStrings(FPasOutputConsts);
-    lPasOutputFile.Add('');
-    lPasOutputFile.Add('  { IDs }');
-    lPasOutputFile.Add('');
-    lPasOutputFile.AddStrings(FPasOutputIDs);
-    lPasOutputFile.Add('');
-    lPasOutputFile.Add('{ Implementation of Classes }');
-    lPasOutputFile.Add('');
-    lPasOutputFile.AddStrings(FPasOutputImpl);
-    lPasOutputFile.Add('');
-    lPasOutputFile.Add('{ Message Handling }');
-    lPasOutputFile.Add('');
-    lPasOutputFile.Add('function HandleMessage(AFirstInt: Integer): Boolean;');
-    lPasOutputFile.Add('var');
-    lPasOutputFile.Add('  lInt: Integer;');
-    lPasOutputFile.Add('  lPascalPointer: PtrInt = -1;');
-    lPasOutputFile.Add('begin');
-    lPasOutputFile.Add('  case AFirstInt of');
-    lPasOutputFile.AddStrings(FPasOutputMessages);
-    lPasOutputFile.Add('  end;');
-    lPasOutputFile.Add('end;');
-    lPasOutputFile.Add('');
-    lPasOutputFile.Add('end.');
+    GeneratePascalFile(ASourceFile, lPasOutputFile);
 
     lPasOutputFile.SaveToFile(APasOutputFile);
 
-    lJavaOutputFile.Add('package com.pascal.androidlcl;');
-    lJavaOutputFile.Add('');
-    lJavaOutputFile.Add('import android.app.*;');
-    lJavaOutputFile.Add('import android.view.*;');
-    lJavaOutputFile.Add('import android.os.*;');
-    lJavaOutputFile.Add('import android.util.*;');
-    lJavaOutputFile.Add('import android.content.*;');
-    lJavaOutputFile.Add('import android.view.*;');
-    lJavaOutputFile.Add('import android.widget.*;');
-    lJavaOutputFile.Add('import java.util.*;');
-    lJavaOutputFile.Add('import java.lang.*;');
-    lJavaOutputFile.Add('');
-    lJavaOutputFile.Add('public class AndroidAll');
-    lJavaOutputFile.Add('{');
-    lJavaOutputFile.Add('  // info from other classes');
-    lJavaOutputFile.Add('  Activity activity;');
-    lJavaOutputFile.Add('  AndroidPipesComm MyAndroidPipesComm;');
-    lJavaOutputFile.Add('  JavaLang MyJavaLang;');
-    lJavaOutputFile.Add('  // lists of variables');
-    lJavaOutputFile.Add('  ArrayList ViewElements;');
-    lJavaOutputFile.Add('');
-    lJavaOutputFile.Add('  public AndroidAll(AndroidPipesComm AAndroidPipesComm, Activity AActivity, JavaLang AJavaLang)');
-    lJavaOutputFile.Add('  {');
-    lJavaOutputFile.Add('    activity = AActivity;');
-    lJavaOutputFile.Add('    MyAndroidPipesComm = AAndroidPipesComm;');
-    lJavaOutputFile.Add('    MyJavaLang = AJavaLang;');
-    lJavaOutputFile.Add('    ViewElements = new ArrayList();');
-    lJavaOutputFile.Add('  }');
-    lJavaOutputFile.Add('');
-    lJavaOutputFile.Add('  public void DebugOut(String Str)');
-    lJavaOutputFile.Add('  {');
-    lJavaOutputFile.Add('    MyAndroidPipesComm.DebugOut(Str);');
-    lJavaOutputFile.Add('  }');
-    lJavaOutputFile.Add('');
-    lJavaOutputFile.AddStrings(FJavaOutputIDs);
-    lJavaOutputFile.Add('');
-    lJavaOutputFile.Add('  public boolean ProcessCommand(int Buffer)');
-    lJavaOutputFile.Add('  {');
-    lJavaOutputFile.Add('    //DebugOut("AndroidUI.ProcessCommand Command=" + java.lang.Integer.toHexString(Buffer));');
-    lJavaOutputFile.Add('    // basic types');
-    lJavaOutputFile.Add('    int lInt, lIndex, lPascalPointer;');
-    lJavaOutputFile.Add('    // Self params');
-    lJavaOutputFile.Add('    View param_self_View;');
-    lJavaOutputFile.Add('    ViewGroup param_self_ViewGroup;');
-    lJavaOutputFile.Add('    TextView param_self_TextView;');
-    lJavaOutputFile.Add('    Button param_self_Button;');
-    lJavaOutputFile.Add('    EditText param_self_EditText;');
-    lJavaOutputFile.Add('    LinearLayout param_self_LinearLayout;');
-    lJavaOutputFile.Add('    TimePicker param_self_TimePicker;');
-    lJavaOutputFile.Add('    Display param_self_Display;');
-    lJavaOutputFile.Add('    DisplayMetrics param_self_DisplayMetrics;');
-    lJavaOutputFile.Add('    CompoundButton param_self_CompoundButton;');
-    lJavaOutputFile.Add('    WindowManager param_self_WindowManager;');
-    lJavaOutputFile.Add('    // Params');
-    lJavaOutputFile.Add('    ViewGroup.LayoutParams lLayoutParams_1;');
-    lJavaOutputFile.Add('    DisplayMetrics lDisplayMetrics_1;');
-    lJavaOutputFile.Add('    CharSequence lCharSequence_1;');
-    lJavaOutputFile.Add('    int lint_1, lint_2, lint_3, lint_4;');
-    lJavaOutputFile.Add('    float lfloat_1, lfloat_2;');
-    lJavaOutputFile.Add('    boolean lboolean_1;');
-    lJavaOutputFile.Add('    // Results');
-    lJavaOutputFile.Add('    float lResult_float;');
-    lJavaOutputFile.Add('    int lResult_int;');
-    lJavaOutputFile.Add('    boolean lResult_boolean;');
-    lJavaOutputFile.Add('    Display lResult_Display;');
-    lJavaOutputFile.Add('');
-    lJavaOutputFile.Add('    switch (Buffer)');
-    lJavaOutputFile.Add('    {');
-    lJavaOutputFile.Add('');
-    lJavaOutputFile.AddStrings(FJavaOutputMethods);
-    lJavaOutputFile.Add('');
-    lJavaOutputFile.Add('    default:');
-    lJavaOutputFile.Add('      return false;');
-    lJavaOutputFile.Add('    }');
-    lJavaOutputFile.Add('    return true;');
-    lJavaOutputFile.Add('  }');
-    lJavaOutputFile.Add('}');
+    GenerateJavaFile(ASourceFile, lJavaOutputFile);
 
     lJavaOutputFile.SaveToFile(AJavaOutputFile);
   finally
@@ -357,8 +375,11 @@ begin
     FPasOutputImpl.Add('  vAndroidPipesComm.SendInt(Integer(' + lParamName + '));');
 
     // Java parameter reading
-    lJavaParamVar := 'l' + lParamType + '_' + IntToStr(lParamNum);
-    FJavaOutputMethods.Add('      ' + lJavaParamVar + ' = MyAndroidPipesComm.' + GetJavaTypeReader(lParamType) + '();');
+    lJavaParamVar := Format('l%s_%d', [ConvertPointToUnderline(lParamType), lParamNum]);
+    FJavaOutputMethods.Add(Format('      %s = MyAndroidPipesComm.%s();',
+      [GetJavaTypeLocalVar(lParamType), GetJavaTypeReader(lParamType)]));
+    FJavaOutputMethods.Add(Format('      %s = %s;',
+      [lJavaParamVar, GetJavaTypeConverter(lParamType)]));
     lJavaParams := lJavaParams + lJavaParamVar + ', ';
 
     Inc(lParamNum);
@@ -401,7 +422,13 @@ begin
   else
   begin
     FJavaOutputMethods.Add('      lResult_' + lMethodReturn + ' = ' + lJavaParamSelf + '.' + lMethodName + '(' + lJavaParams + ');');
-    FJavaOutputMethods.Add('      MyAndroidPipesComm.' + GetJavaResultFunction(lMethodReturn) + '(lResult_' + lMethodReturn + ');');
+    if IsBasicJavaType(lMethodReturn) then
+      FJavaOutputMethods.Add('      MyAndroidPipesComm.' + GetJavaResultFunction(lMethodReturn) + '(lResult_' + lMethodReturn + ');')
+    else
+    begin
+      FJavaOutputMethods.Add(Format('      ViewElements.add(lResult_%s);', [lMethodReturn]));
+      FJavaOutputMethods.Add(Format('      MyAndroidPipesComm.%s(ViewElements.size() - 1);', [GetJavaResultFunction(lMethodReturn)]))
+    end;
   end;
   FJavaOutputMethods.Add('      break;');
 
@@ -430,9 +457,7 @@ begin
 
   AddOutputIDs(lIDString);
 
-  FPasOutputClasses.Add('    constructor ' + lMethodName + '();');
-
-  FPasOutputImpl.Add('constructor ' + FClassNamePas + '.' + lMethodName + '();');
+  FPasOutputImplCurLine := FPasOutputImpl.Count;
   FPasOutputImpl.Add('begin');
   FPasOutputImpl.Add('  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));');
   FPasOutputImpl.Add('  vAndroidPipesComm.SendInt(' + lIDString + ');');
@@ -488,6 +513,10 @@ begin
 
   // Finalization of the constructor
 
+  FPasOutputClasses.Add(Format('    constructor %s(%s);', [lMethodName, lConstructorPasParams]));
+  //
+  FPasOutputImpl.Insert(FPasOutputImplCurLine,
+    Format('constructor %s.%s(%s);', [FClassNamePas, lMethodName, lConstructorPasParams]));
   FPasOutputImpl.Add('  Index := vAndroidPipesComm.WaitForIntReturn();');
   FPasOutputImpl.Add('end;');
 
@@ -656,7 +685,23 @@ end;
 function TAndroidSDKBindingsGen.GetJavaTypeReader(AType: string): string;
 begin
   if AType = 'boolean' then Exit('GetBool')
+  else if AType = 'float' then Exit('GetFloat')
   else Exit('GetInt');
+end;
+
+function TAndroidSDKBindingsGen.GetJavaTypeLocalVar(AType: string): string;
+begin
+  if AType = 'boolean' then Exit('lBool')
+  else if AType = 'float' then Exit('lFloat')
+  else Exit('lInt');
+end;
+
+function TAndroidSDKBindingsGen.GetJavaTypeConverter(AType: string): string;
+begin
+  if AType = 'boolean' then Exit('lBool')
+  else if AType = 'int' then Exit('lInt')
+  else if AType = 'float' then Exit('lFloat')
+  else Result := Format('(%s) ViewElements.get(lInt)', [AType]);
 end;
 
 function TAndroidSDKBindingsGen.GetIDString(AMethodName: string): string;
@@ -669,6 +714,16 @@ procedure TAndroidSDKBindingsGen.AddOutputIDs(AIDString: string);
 begin
   FPasOutputIDs.Add('  ' + AIDString + ' = $' + IntToHex(FClassNum*$1000+FMethodNum, 8) +  ';');
   FJavaOutputIDs.Add('  static final int ' + AIDString + ' = 0x' + IntToHex(FClassNum*$1000+FMethodNum, 8) +  ';');
+end;
+
+function TAndroidSDKBindingsGen.ConvertPointToUnderline(AStr: string): string;
+begin
+  Result := SysUtils.StringReplace(AStr, '.', '_',  [rfReplaceAll, rfIgnoreCase]);
+end;
+
+function TAndroidSDKBindingsGen.IsBasicJavaType(AStr: string): Boolean;
+begin
+  Result := (AStr = 'boolean') or (AStr = 'int') or (AStr = 'float');
 end;
 
 constructor TAndroidSDKBindingsGen.Create;
