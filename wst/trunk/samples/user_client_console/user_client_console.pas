@@ -2,7 +2,8 @@
 
 program user_client_console;
 
-{$mode objfpc}{$H+}
+{$mode objfpc}{$H+} 
+{ $DEFINE WST_BLOCK_TYPE}  
 
 uses
   Classes, SysUtils, TypInfo, {$IFDEF WINDOWS}ActiveX,{$ENDIF}
@@ -149,7 +150,7 @@ const ADDRESS_MAP : array[TTransportType] of string = (
         'LIB:FileName=..\library_server\lib_server.dll;target=UserService',
         //'LIB:FileName=C:\Programmes\D7\etatcivil\partages\wst\samples\library_server\lib_server.dll;target=UserService',
         //'TCP:Address=172.16.82.31;Port=1234;target=UserService',
-        'TCP:Address=127.0.0.1;Port=1234;target=UserService',
+        'TCP:Address=127.0.0.1;Port=1234;target=UserService'{$IFDEF WST_BLOCK_TYPE}+';UseBlockType=True'{$ENDIF},
 {$IFDEF USING_APACHE}
         'http:Address=http://127.0.0.1:8080/wst/services/UserService'
 {$ELSE USING_APACHE}        
