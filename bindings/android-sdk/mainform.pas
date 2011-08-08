@@ -14,10 +14,12 @@ type
 
   TForm1 = class(TForm)
     Button1: TButton;
+    Button2: TButton;
     editInputPath: TDirectoryEdit;
     Label1: TLabel;
     Label2: TLabel;
     procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
   private
     { private declarations }
   public
@@ -36,6 +38,15 @@ implementation
 procedure TForm1.Button1Click(Sender: TObject);
 begin
   AndroidSDKBindingsGen.GenerateAllBindings(editInputPath.Text, editInputPath.Text, editInputPath.Text);
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+var
+  lSourcePath, lDestPath: String;
+begin
+  lSourcePath := IncludeTrailingPathDelimiter(editInputPath.Text) + 'android_all.pas';
+  lDestPath := '/home/felipe/Programas/lazarus/lcl/interfaces/android/android_all.pas';
+  FileUtil.CopyFile(lSourcePath, lDestPath);
 end;
 
 end.

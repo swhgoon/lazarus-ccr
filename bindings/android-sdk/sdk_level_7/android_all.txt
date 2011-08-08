@@ -47,7 +47,7 @@ method void addView(View child, ViewGroup.LayoutParams params);
 
 [LinearLayout] ViewGroup
 constructor Create(Activity);
-procedure setOrientation(int orientation);
+method void setOrientation(int orientation);
 const HORIZONTAL = 0;
 const VERTICAL = 1;
 

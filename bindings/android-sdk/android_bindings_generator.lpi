@@ -57,10 +57,11 @@
         <ComponentName Value="Form1"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="mainform"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="34" Y="38"/>
+        <TopLine Value="6"/>
+        <CursorPos X="87" Y="47"/>
         <UsageCount Value="34"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -119,8 +120,8 @@
         <UnitName Value="android_sdk_bindings_gen"/>
         <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="388"/>
-        <CursorPos X="114" Y="402"/>
+        <TopLine Value="762"/>
+        <CursorPos X="1" Y="798"/>
         <UsageCount Value="34"/>
         <Loaded Value="True"/>
       </Unit8>
@@ -198,11 +199,10 @@
       </Unit17>
       <Unit18>
         <Filename Value="sdk_level_7/android_all.txt"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="4"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="38"/>
-        <CursorPos X="9" Y="46"/>
+        <TopLine Value="46"/>
+        <CursorPos X="42" Y="63"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="None"/>
@@ -220,13 +220,13 @@
         <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
         <TopLine Value="365"/>
-        <CursorPos X="63" Y="381"/>
+        <CursorPos X="38" Y="381"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Java"/>
       </Unit20>
     </Units>
-    <JumpHistory Count="21" HistoryIndex="20">
+    <JumpHistory Count="28" HistoryIndex="27">
       <Position1>
         <Filename Value="android_sdk_bindings_gen.pas"/>
         <Caret Line="641" Column="54" TopLine="637"/>
@@ -311,6 +311,34 @@
         <Filename Value="android_sdk_bindings_gen.pas"/>
         <Caret Line="171" Column="31" TopLine="134"/>
       </Position21>
+      <Position22>
+        <Filename Value="android_sdk_bindings_gen.pas"/>
+        <Caret Line="385" Column="1" TopLine="370"/>
+      </Position22>
+      <Position23>
+        <Filename Value="android_sdk_bindings_gen.pas"/>
+        <Caret Line="325" Column="22" TopLine="309"/>
+      </Position23>
+      <Position24>
+        <Filename Value="android_sdk_bindings_gen.pas"/>
+        <Caret Line="727" Column="32" TopLine="722"/>
+      </Position24>
+      <Position25>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="38" Column="34" TopLine="1"/>
+      </Position25>
+      <Position26>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="40" Column="32" TopLine="2"/>
+      </Position26>
+      <Position27>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="48" Column="62" TopLine="2"/>
+      </Position27>
+      <Position28>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="49" Column="15" TopLine="5"/>
+      </Position28>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>

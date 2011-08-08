@@ -322,6 +322,8 @@ var
   lJavaParamVar, lJavaParams, lJavaParamSelf: string;
   // For adding the var for string params
   HasStringParam: Boolean = False;
+  StringParamCount: Integer = 0;
+  i: Integer;
 begin
   if ASourceLine = '' then Exit;
 
@@ -377,13 +379,15 @@ begin
     // Pascal parameter sending
     if lParamTypePas = 'string' then
     begin
-      FPasOutputImpl.Add(Format('  lString := TString.Create(%s);', [lParamName]));
-      FPasOutputImpl.Add('  vAndroidPipesComm.SendInt(lString.Index); // text');
-      FPasOutputImpl.Add('  lString.Free;');
       HasStringParam := True;
+      Inc(StringParamCount);
+      FPasOutputImpl.Insert(FPasOutputImplCurLine+1, Format('  lString_%d := TString.Create(%s);', [StringParamCount, lParamName]));
+      FPasOutputImpl.Add(Format('  vAndroidPipesComm.SendInt(lString_%d.Index); // text', [StringParamCount]));
     end
-    else
-      FPasOutputImpl.Add('  vAndroidPipesComm.SendInt(Integer(' + lParamName + '));');
+    else if IsBasicJavaType(lParamType) then
+      FPasOutputImpl.Add('  vAndroidPipesComm.SendInt(Integer(' + lParamName + '));')
+    else // for objects
+      FPasOutputImpl.Add('  vAndroidPipesComm.SendInt(Integer(' + lParamName + '.Index));');
 
     // Java parameter reading
     lJavaParamVar := Format('l%s_%d', [ConvertPointToUnderline(lParamType), lParamNum]);
@@ -420,7 +424,11 @@ begin
   if HasStringParam then
   begin
     FPasOutputImpl.Insert(FPasOutputImplCurLine+1, 'var');
-    FPasOutputImpl.Insert(FPasOutputImplCurLine+2, '  lString: TString;');
+    for i := 1 to StringParamCount do
+    begin
+      FPasOutputImpl.Insert(FPasOutputImplCurLine+1+i, Format('  lString_%d: TString;', [i]));
+      FPasOutputImpl.Add(Format('  lString_%d.Free;', [i]));
+    end;
   end;
   FPasOutputImpl.Add('end;');
   FPasOutputImpl.Add('');
@@ -718,6 +726,8 @@ begin
   if AType = 'boolean' then Exit('lBool')
   else if AType = 'int' then Exit('lInt')
   else if AType = 'float' then Exit('lFloat')
+  else if AType = 'CharSequence' then
+    Result := Format('(%s) MyJavaLang.LangElements.get(lInt)', [AType])
   else Result := Format('(%s) ViewElements.get(lInt)', [AType]);
 end;
 

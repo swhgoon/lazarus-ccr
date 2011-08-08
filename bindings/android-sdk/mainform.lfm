@@ -44,4 +44,13 @@ object Form1: TForm1
     OnClick = Button1Click
     TabOrder = 1
   end
+  object Button2: TButton
+    Left = 17
+    Height = 25
+    Top = 160
+    Width = 155
+    Caption = 'Copy to the LCL'
+    OnClick = Button2Click
+    TabOrder = 2
+  end
 end
