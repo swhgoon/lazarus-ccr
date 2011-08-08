@@ -165,9 +165,10 @@ begin
   ADest.Add('    CompoundButton param_self_CompoundButton;');
   ADest.Add('    WindowManager param_self_WindowManager;');
   ADest.Add('    // Params');
-  ADest.Add('    ViewGroup.LayoutParams lViewGroup_LayoutParams_1;');
+  ADest.Add('    ViewGroup.LayoutParams lViewGroup_LayoutParams_1, lViewGroup_LayoutParams_2;');
   ADest.Add('    DisplayMetrics lDisplayMetrics_1;');
   ADest.Add('    CharSequence lCharSequence_1;');
+  ADest.Add('    View lView_1;');
   ADest.Add('    int lint_1, lint_2, lint_3, lint_4;');
   ADest.Add('    float lfloat_1, lfloat_2;');
   ADest.Add('    boolean lboolean_1;');
