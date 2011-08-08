@@ -39,7 +39,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="20">
+    <Units Count="21">
       <Unit0>
         <Filename Value="android_bindings_generator.pas"/>
         <IsPartOfProject Value="True"/>
@@ -117,11 +117,10 @@
         <Filename Value="android_sdk_bindings_gen.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="android_sdk_bindings_gen"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="134"/>
-        <CursorPos X="90" Y="139"/>
+        <TopLine Value="388"/>
+        <CursorPos X="114" Y="402"/>
         <UsageCount Value="34"/>
         <Loaded Value="True"/>
       </Unit8>
@@ -199,10 +198,13 @@
       </Unit17>
       <Unit18>
         <Filename Value="sdk_level_7/android_all.txt"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="4"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="16"/>
-        <CursorPos X="3" Y="46"/>
+        <TopLine Value="38"/>
+        <CursorPos X="9" Y="46"/>
         <UsageCount Value="10"/>
+        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit18>
       <Unit19>
@@ -213,6 +215,16 @@
         <CursorPos X="54" Y="525"/>
         <UsageCount Value="10"/>
       </Unit19>
+      <Unit20>
+        <Filename Value="../../../test/androidlcl/android/src/com/pascal/androidlcl/AndroidAll.java"/>
+        <EditorIndex Value="3"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="365"/>
+        <CursorPos X="63" Y="381"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Java"/>
+      </Unit20>
     </Units>
     <JumpHistory Count="21" HistoryIndex="20">
       <Position1>

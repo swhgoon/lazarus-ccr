@@ -320,6 +320,8 @@ var
   DeclarationBase, TmpStr, lIDString: string;
   FPasOutputImplCurLine: Integer;
   lJavaParamVar, lJavaParams, lJavaParamSelf: string;
+  // For adding the var for string params
+  HasStringParam: Boolean = False;
 begin
   if ASourceLine = '' then Exit;
 
@@ -373,7 +375,15 @@ begin
     TmpStr := TmpStr + lParamPrefix + lParamName + ': ' + lParamTypePas + '; ';
 
     // Pascal parameter sending
-    FPasOutputImpl.Add('  vAndroidPipesComm.SendInt(Integer(' + lParamName + '));');
+    if lParamTypePas = 'string' then
+    begin
+      FPasOutputImpl.Add(Format('  lString := TString.Create(%s);', [lParamName]));
+      FPasOutputImpl.Add('  vAndroidPipesComm.SendInt(lString.Index); // text');
+      FPasOutputImpl.Add('  lString.Free;');
+      HasStringParam := True;
+    end
+    else
+      FPasOutputImpl.Add('  vAndroidPipesComm.SendInt(Integer(' + lParamName + '));');
 
     // Java parameter reading
     lJavaParamVar := Format('l%s_%d', [ConvertPointToUnderline(lParamType), lParamNum]);
@@ -404,8 +414,14 @@ begin
     FPasOutputImpl.Add('  Result := ' + lMethodReturnPas + '(vAndroidPipesComm.WaitForIntReturn());');
   end;
 
+  // Insert the start
   FPasOutputClasses.Add('    ' + DeclarationBase + TmpStr);
   FPasOutputImpl.Insert(FPasOutputImplCurLine, DeclarationBase + FClassNamePas + '.' + TmpStr);
+  if HasStringParam then
+  begin
+    FPasOutputImpl.Insert(FPasOutputImplCurLine+1, 'var');
+    FPasOutputImpl.Insert(FPasOutputImplCurLine+2, '  lString: TString;');
+  end;
   FPasOutputImpl.Add('end;');
   FPasOutputImpl.Add('');
 

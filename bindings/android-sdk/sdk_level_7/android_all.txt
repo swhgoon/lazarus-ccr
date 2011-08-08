@@ -42,8 +42,8 @@ const INVISIBLE = 4;
 const GONE = 8;
 
 [ViewGroup] View
-procedure addView(View child, LayoutParams params);
-procedure addView(View child);
+method void addView(View child, ViewGroup.LayoutParams params);
+# method void addView(View child);
 
 [LinearLayout] ViewGroup
 constructor Create(Activity);
