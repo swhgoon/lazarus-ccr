@@ -33,8 +33,6 @@ uses gdk3;
 
 const gtk3lib = 'libgtk+3.0';
 
-{$define GTK_HEADER}
-
 {#include <gtk/gtkaboutdialog.h>
 #include <gtk/gtkaccelgroup.h>
 #include <gtk/gtkaccellabel.h>
@@ -238,5 +236,18 @@ const gtk3lib = 'libgtk+3.0';
 {$include gtk/gtkwindow.inc}
 
 implementation
+
+{ gtkwindow.inc }
+
+function GTK_TYPE_WINDOW(): GType;
+begin
+  Result := gtk_window_get_type();
+end;
+
+{#define GTK_WINDOW(obj)			(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_WINDOW, GtkWindow))
+#define GTK_WINDOW_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_WINDOW, GtkWindowClass))
+#define GTK_IS_WINDOW(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_WINDOW))
+#define GTK_IS_WINDOW_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_WINDOW))
+#define GTK_WINDOW_GET_CLASS(obj)       (G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_WINDOW, GtkWindowClass))}
 
 end.
