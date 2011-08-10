@@ -90,6 +90,10 @@ public class AndroidAll
   static final int amkUI_TCompoundButton_toggle = 0x00110003;
   // CheckBox
   static final int amkUI_TCheckBox_Create = 0x00111000;
+  // AdapterView
+  // AbsSpinner
+  // Spinner
+  static final int amkUI_TSpinner_Create = 0x00114000;
 
   public boolean ProcessCommand(int Buffer)
   {
@@ -369,12 +373,14 @@ public class AndroidAll
       DebugOut("amkUI_TButton_Create");
       ViewElements.add(new Button(activity));
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
+      DebugOut("amkUI_TButton_Create Self=" + Integer.toString(ViewElements.size() - 1));
       break;
     // method void setText(CharSequence AText); override;
     case amkUI_TButton_setText:
       DebugOut("amkUI_TButton_setText");
       // Self
       lInt = MyAndroidPipesComm.GetInt();
+      DebugOut("amkUI_TButton_setText Self=" + Integer.toString(lInt));
       param_self_Button = (Button) ViewElements.get(lInt);
       // params
       lInt = MyAndroidPipesComm.GetInt();
@@ -514,6 +520,11 @@ public class AndroidAll
     case amkUI_TCheckBox_Create:
       DebugOut("amkUI_TCheckBox_Create");
       ViewElements.add(new CheckBox(activity));
+      MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
+      break;
+    case amkUI_TSpinner_Create:
+      DebugOut("amkUI_TSpinner_Create");
+      ViewElements.add(new Spinner(activity));
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
       break;
 

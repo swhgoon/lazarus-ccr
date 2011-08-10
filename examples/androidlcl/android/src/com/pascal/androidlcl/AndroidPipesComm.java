@@ -56,6 +56,27 @@ public class AndroidPipesComm
     Log.v("AndroidPipesComm:", Str);
 //    tv.setText(tv.getText().toString() + Str);
   }
+
+  public void TerminateApplication()
+  {
+    System.exit(0);
+  }
+
+  public void PrintPascalException(byte Buffer)
+  {
+    String PascalMessage = "" + (char) Buffer;
+    try
+    {
+      while (true)
+      {
+        PascalMessage = PascalMessage + (char) reader.readByte();
+      }
+    }
+    catch (IOException e)
+    {
+      ErrorOut(PascalMessage);
+    }
+  }
   
   // Waits for a particular Pascal message.
   // In the mean time processes any other incoming messages
@@ -118,11 +139,16 @@ public class AndroidPipesComm
       else
       {
         ErrorOut("Unknown Pascal message!!! " + java.lang.Integer.toHexString(Buffer));
+
+        // If we get an Unknown Pascal message, it might be an error printed to the console, so lets print it and quit
+        PrintPascalException(Buffer);
+        TerminateApplication();
       }
     }
     catch (EOFException e)
     {
       ErrorOut("[WaitAndProcessPascalMessage] EOFException=" + e.getMessage());
+      TerminateApplication();
     }
     catch (IOException e)
     {
@@ -258,7 +284,7 @@ public class AndroidPipesComm
     catch (IOException e)
     {
       ErrorOut("[SendMessage] IOException=" + e.getMessage());
-      System.exit(0);
+      TerminateApplication();
     }
   }
 

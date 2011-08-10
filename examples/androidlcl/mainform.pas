@@ -14,6 +14,10 @@ type
 
   TForm2 = class(TForm)
     Button1: TButton;
+    CheckBox1: TCheckBox;
+    ComboBox1: TComboBox;
+    Edit1: TEdit;
+    StaticText1: TStaticText;
   private
     { private declarations }
   public
