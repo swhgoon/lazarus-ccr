@@ -15,7 +15,8 @@ type
   private
     FSourceFile: TStringList;
     FPasOutputTypes, FPasOutputClassesForward, FPasOutputClasses,
-      FPasOutputConsts, FPasOutputIDs, FPasOutputImpl, FPasOutputMessages: TStringList;
+      FPasOutputConsts, FPasOutputIDs, FPasOutputImpl, FPasOutputMessages,
+      FPasOutputInterfaceConsts: TStringList;
     FJavaOutputIDs, FJavaOutputMethods: TStringList;
     FClassName, FClassNamePas: string; // Class name of the class currently being parsed
     FClassNum, FMethodNum: Integer;
@@ -75,12 +76,16 @@ begin
   ADest.AddStrings(FPasOutputClasses);
   ADest.Add('  end;');
   ADest.Add('');
+  ADest.Add('const');
+  ADest.Add('  { Interface Constants }');
+  ADest.AddStrings(FPasOutputInterfaceConsts);
+  ADest.Add('');
   ADest.Add('function HandleMessage(AFirstInt: Integer): Boolean;');
   ADest.Add('');
   ADest.Add('implementation');
   ADest.Add('');
   ADest.Add('const');
-  ADest.Add('  { Constants }');
+  ADest.Add('  { Implementation Constants }');
   ADest.Add('');
   ADest.AddStrings(FPasOutputConsts);
   ADest.Add('');
@@ -566,7 +571,7 @@ begin
   lConstValue := GetNextWord(ASourceLine, lReaderPos);
 
   // Method type and name
-  FPasOutputConsts.Add(Format('  %s = %s;', [lConstName, lConstValue]));
+  FPasOutputInterfaceConsts.Add(Format('  %s = %s;', [lConstName, lConstValue]));
 end;
 
 // callbacksettercaller setOnClickListener callOnClickListener OnClickCallback = procedure (v: TView) of object;
@@ -764,6 +769,7 @@ begin
   FPasOutputIDs := TStringList.Create;
   FPasOutputConsts := TStringList.Create;
   FPasOutputMessages := TStringList.Create;
+  FPasOutputInterfaceConsts := TStringList.Create;
 
   FJavaOutputIDs := TStringList.Create;
   FJavaOutputMethods := TStringList.Create;
@@ -782,6 +788,7 @@ begin
   FPasOutputIDs.Free;
   FPasOutputConsts.Free;
   FPasOutputMessages.Free;
+  FPasOutputInterfaceConsts.Free;
 
   FJavaOutputIDs.Free;
   FJavaOutputMethods.Free;

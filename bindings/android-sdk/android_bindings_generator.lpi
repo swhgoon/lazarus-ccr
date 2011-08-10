@@ -57,7 +57,6 @@
         <ComponentName Value="Form1"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="mainform"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
         <TopLine Value="6"/>
@@ -118,10 +117,11 @@
         <Filename Value="android_sdk_bindings_gen.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="android_sdk_bindings_gen"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="761"/>
-        <CursorPos X="1" Y="798"/>
+        <TopLine Value="560"/>
+        <CursorPos X="28" Y="574"/>
         <UsageCount Value="34"/>
         <Loaded Value="True"/>
       </Unit8>
@@ -201,8 +201,8 @@
         <Filename Value="sdk_level_7/android_all.txt"/>
         <EditorIndex Value="4"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="58"/>
-        <CursorPos X="1" Y="105"/>
+        <TopLine Value="27"/>
+        <CursorPos X="1" Y="38"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="None"/>

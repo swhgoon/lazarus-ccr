@@ -33,6 +33,8 @@ method Display getDefaultDisplay()
 [ViewGroup.LayoutParams] TJavaObject
 constructor Create(int width, int height);
 const FILL_PARENT = $FFFFFFFF;
+const MATCH_PARENT = $FFFFFFFF;
+const WRAP_CONTENT = $FFFFFFFE;
 
 [View] TJavaObject
 method void setLayoutParams(ViewGroup.LayoutParams params);
