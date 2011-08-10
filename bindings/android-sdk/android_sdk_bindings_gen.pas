@@ -15,8 +15,7 @@ type
   private
     FSourceFile: TStringList;
     FPasOutputTypes, FPasOutputClassesForward, FPasOutputClasses,
-      FPasOutputConsts, FPasOutputIDs, FPasOutputImpl, FPasOutputMessages,
-      FPasOutputInterfaceConsts: TStringList;
+      FPasOutputConsts, FPasOutputIDs, FPasOutputImpl, FPasOutputMessages: TStringList;
     FJavaOutputIDs, FJavaOutputMethods: TStringList;
     FClassName, FClassNamePas: string; // Class name of the class currently being parsed
     FClassNum, FMethodNum: Integer;
@@ -77,18 +76,14 @@ begin
   ADest.Add('  end;');
   ADest.Add('');
   ADest.Add('const');
-  ADest.Add('  { Interface Constants }');
-  ADest.AddStrings(FPasOutputInterfaceConsts);
+  ADest.Add('  { Constants }');
+  ADest.AddStrings(FPasOutputConsts);
   ADest.Add('');
   ADest.Add('function HandleMessage(AFirstInt: Integer): Boolean;');
   ADest.Add('');
   ADest.Add('implementation');
   ADest.Add('');
   ADest.Add('const');
-  ADest.Add('  { Implementation Constants }');
-  ADest.Add('');
-  ADest.AddStrings(FPasOutputConsts);
-  ADest.Add('');
   ADest.Add('  { IDs }');
   ADest.Add('');
   ADest.AddStrings(FPasOutputIDs);
@@ -571,7 +566,7 @@ begin
   lConstValue := GetNextWord(ASourceLine, lReaderPos);
 
   // Method type and name
-  FPasOutputInterfaceConsts.Add(Format('  %s = %s;', [lConstName, lConstValue]));
+  FPasOutputConsts.Add(Format('  %s = %s;', [lConstName, lConstValue]));
 end;
 
 // callbacksettercaller setOnClickListener callOnClickListener OnClickCallback = procedure (v: TView) of object;
@@ -581,6 +576,7 @@ var
   lCurWord: string;
   lSetterName, lCallerName, lCallbackName, lCallbackDeclaration: string;
   lIDSetter, lIDStart, lIDFinished: String;
+  lJavaParamSelf: string;
 begin
   if ASourceLine = '' then Exit;
 
@@ -593,10 +589,13 @@ begin
 
   lIDSetter := GetIDString(lSetterName);
   AddOutputIDs(lIDSetter);
+  Inc(FMethodNum);
   lIDStart := GetIDString(lCallbackName + '_Start');
   AddOutputIDs(lIDStart);
+  Inc(FMethodNum);
   lIDFinished := GetIDString(lCallbackName + '_Finished');
   AddOutputIDs(lIDFinished);
+  Inc(FMethodNum);
 
   FPasOutputTypes.Add('  T' + lCallbackDeclaration);
 
@@ -638,6 +637,66 @@ begin
       vAndroidPipesComm.SendInt(lInt);
     end;
   end;}
+
+
+  // -----------------------------------------------
+  // Now Java:
+  // -----------------------------------------------
+
+  lJavaParamSelf := 'param_self_' + FClassName;
+  FJavaOutputMethods.Add(       '    // ' + ASourceLine);
+  FJavaOutputMethods.Add(       '    case ' + lIDSetter + ':');
+  FJavaOutputMethods.Add(       '      DebugOut("' + lIDSetter + '");');
+  FJavaOutputMethods.Add(       '      // Self');
+  FJavaOutputMethods.Add(       '      lInt = MyAndroidPipesComm.GetInt();');
+  FJavaOutputMethods.Add(       '      ' + lJavaParamSelf + ' = (' + FClassName + ') ViewElements.get(lInt);');
+  FJavaOutputMethods.Add(       '      lPascalPointer = MyAndroidPipesComm.GetInt();');
+  FJavaOutputMethods.Add(Format('      %s.setTag(Integer.valueOf(lPascalPointer));', [lJavaParamSelf]));
+  FJavaOutputMethods.Add(       '');
+  FJavaOutputMethods.Add(       '      // Run the code');
+  FJavaOutputMethods.Add(Format('      %s.setOnClickListener(', [lJavaParamSelf]));
+  FJavaOutputMethods.Add(Format('      new View.OnClickListener()', []));
+  FJavaOutputMethods.Add(       '      {');
+  FJavaOutputMethods.Add(       '        public void onClick(View v)');
+  FJavaOutputMethods.Add(       '        {');
+  FJavaOutputMethods.Add(       '          // Perform action');
+  FJavaOutputMethods.Add(       '          DebugOut("START TextView OnClickListener");');
+  FJavaOutputMethods.Add(Format('          MyAndroidPipesComm.SendMessage(AndroidPipesComm.amkUICommand, %s);', [lIDStart]));
+  FJavaOutputMethods.Add(       '          Integer lTag = (Integer) v.getTag();');
+  FJavaOutputMethods.Add(       '          MyAndroidPipesComm.SendInt(lTag.intValue());');
+  FJavaOutputMethods.Add(Format('          MyAndroidPipesComm.WaitForPascalMessage(AndroidPipesComm.amkUICommand, %s);', [lIDFinished]));
+  FJavaOutputMethods.Add(       '          DebugOut("END TextView OnClickListener");');
+  FJavaOutputMethods.Add(       '        }');
+  FJavaOutputMethods.Add(       '      });');
+  FJavaOutputMethods.Add(       '      MyAndroidPipesComm.SendResult();');
+  FJavaOutputMethods.Add(       '      break;');
+(*  case amkUI_TextView_setOnClickListener:
+    DebugOut("amkUI_TextView_setOnClickListener");
+    // Get Self
+    lInt = MyAndroidPipesComm.GetInt();
+    lTextView = (TextView) ViewElements.get(lInt);
+    lPascalPointer = MyAndroidPipesComm.GetInt();
+    lTextView.setTag(Integer.valueOf(lPascalPointer));
+
+    // Run the code
+    lTextView.setOnClickListener(
+      new View.OnClickListener()
+      {
+        public void onClick(View v)
+        {
+          // Perform action on click
+          DebugOut("START TextView OnClickListener");
+          MyAndroidPipesComm.SendMessage(AndroidPipesComm.amkUICommand, amkUI_TextView_OnClickCallback_Start);
+          //lIndex := UIElements.indexOf(v);
+          //MyAndroidPipesComm.SendInt(lIndex);
+          Integer lTag = (Integer) v.getTag();
+          MyAndroidPipesComm.SendInt(lTag.intValue());
+          MyAndroidPipesComm.WaitForPascalMessage(AndroidPipesComm.amkUICommand, amkUI_TextView_OnClickCallback_Finished);
+          DebugOut("END TextView OnClickListener");
+        }
+      });
+    MyAndroidPipesComm.SendResult();
+    break;*)
 end;
 
 { Reads one word in a string, starting at AStartPos (1-based index)
@@ -769,7 +828,6 @@ begin
   FPasOutputIDs := TStringList.Create;
   FPasOutputConsts := TStringList.Create;
   FPasOutputMessages := TStringList.Create;
-  FPasOutputInterfaceConsts := TStringList.Create;
 
   FJavaOutputIDs := TStringList.Create;
   FJavaOutputMethods := TStringList.Create;
@@ -788,7 +846,6 @@ begin
   FPasOutputIDs.Free;
   FPasOutputConsts.Free;
   FPasOutputMessages.Free;
-  FPasOutputInterfaceConsts.Free;
 
   FJavaOutputIDs.Free;
   FJavaOutputMethods.Free;
