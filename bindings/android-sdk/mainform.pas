@@ -47,6 +47,9 @@ begin
   lSourcePath := IncludeTrailingPathDelimiter(editInputPath.Text) + 'android_all.pas';
   lDestPath := '/home/felipe/Programas/lazarus/lcl/interfaces/android/android_all.pas';
   FileUtil.CopyFile(lSourcePath, lDestPath);
+  lSourcePath := IncludeTrailingPathDelimiter(editInputPath.Text) + 'AndroidAll.java';
+  lDestPath := '/home/felipe/Programas/lazarus-ccr/examples/androidlcl/android/src/com/pascal/androidlcl/AndroidAll.java';
+  FileUtil.CopyFile(lSourcePath, lDestPath);
 end;
 
 end.
