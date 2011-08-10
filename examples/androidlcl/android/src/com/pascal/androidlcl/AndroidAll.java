@@ -63,9 +63,9 @@ public class AndroidAll
   static final int amkUI_TTextView_Create = 0x0010A000;
   static final int amkUI_TTextView_setText = 0x0010A001;
   static final int amkUI_TTextView_setOnClickListener = 0x0010A002;
-  static final int amkUI_TTextView_OnClickListener_Start = 0x0010A002;
-  static final int amkUI_TTextView_OnClickListener_Finished = 0x0010A002;
-  static final int amkUI_TTextView_setTextSize = 0x0010A002;
+  static final int amkUI_TTextView_OnClickListener_Start = 0x0010A003;
+  static final int amkUI_TTextView_OnClickListener_Finished = 0x0010A004;
+  static final int amkUI_TTextView_setTextSize = 0x0010A005;
   // EditText
   static final int amkUI_TEditText_Create = 0x0010B000;
   static final int amkUI_TEditText_setText = 0x0010B001;
@@ -336,6 +336,32 @@ public class AndroidAll
       param_self_TextView.setText(lCharSequence_1);
       MyAndroidPipesComm.SendResult();
       break;
+    // callbacksettercaller setOnClickListener callOnClickListener OnClickListener = procedure (v: TView) of object;
+    case amkUI_TTextView_setOnClickListener:
+      DebugOut("amkUI_TTextView_setOnClickListener");
+      // Self
+      lInt = MyAndroidPipesComm.GetInt();
+      param_self_TextView = (TextView) ViewElements.get(lInt);
+      lPascalPointer = MyAndroidPipesComm.GetInt();
+      param_self_TextView.setTag(Integer.valueOf(lPascalPointer));
+
+      // Run the code
+      param_self_TextView.setOnClickListener(
+      new View.OnClickListener()
+      {
+        public void onClick(View v)
+        {
+          // Perform action
+          DebugOut("START TextView OnClickListener");
+          MyAndroidPipesComm.SendMessage(AndroidPipesComm.amkUICommand, amkUI_TTextView_OnClickListener_Start);
+          Integer lTag = (Integer) v.getTag();
+          MyAndroidPipesComm.SendInt(lTag.intValue());
+          MyAndroidPipesComm.WaitForPascalMessage(AndroidPipesComm.amkUICommand, amkUI_TTextView_OnClickListener_Finished);
+          DebugOut("END TextView OnClickListener");
+        }
+      });
+      MyAndroidPipesComm.SendResult();
+      break;
     // method void setTextSize(int unit_; float size);
     case amkUI_TTextView_setTextSize:
       DebugOut("amkUI_TTextView_setTextSize");
@@ -373,14 +399,12 @@ public class AndroidAll
       DebugOut("amkUI_TButton_Create");
       ViewElements.add(new Button(activity));
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
-      DebugOut("amkUI_TButton_Create Self=" + Integer.toString(ViewElements.size() - 1));
       break;
     // method void setText(CharSequence AText); override;
     case amkUI_TButton_setText:
       DebugOut("amkUI_TButton_setText");
       // Self
       lInt = MyAndroidPipesComm.GetInt();
-      DebugOut("amkUI_TButton_setText Self=" + Integer.toString(lInt));
       param_self_Button = (Button) ViewElements.get(lInt);
       // params
       lInt = MyAndroidPipesComm.GetInt();
