@@ -52,10 +52,8 @@ type
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
-    function GetReadOnly: Boolean;
     procedure SetDataField(const AValue: string);
     procedure SetDataSource(const AValue: TDataSource);
-    procedure SetReadOnly(const AValue: Boolean);
     procedure UpdateData(Sender: TObject);
     procedure FocusRequest(Sender: TObject);
     procedure ActiveChange(Sender: TObject);
@@ -63,9 +61,11 @@ type
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
     function IsReadOnly: boolean;
   protected
+    function GetReadOnly: Boolean;override;
+    procedure SetReadOnly(AValue: Boolean);override;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
-    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+    //property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
 
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure Change; override;
@@ -185,7 +185,7 @@ begin
   ChangeDataSource(Self,FDataLink,AValue);
 end;
 
-procedure TCustomRxDBSpinEdit.SetReadOnly(const AValue: Boolean);
+procedure TCustomRxDBSpinEdit.SetReadOnly(AValue: Boolean);
 begin
   inherited;
   FDataLink.ReadOnly := AValue;
