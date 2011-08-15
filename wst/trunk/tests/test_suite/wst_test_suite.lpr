@@ -8,18 +8,18 @@ uses
   cthreads, cwstring,
   {$ENDIF}
 
-  custapp, classes, sysutils, fpcunit, testreport, testregistry, 
-  TestFormatter_unit, testmetadata_unit,
-  server_service_soap, soap_formatter, base_binary_formatter,
-  base_service_intf, base_soap_formatter, binary_formatter, binary_streamer,
-  server_binary_formatter, metadata_repository,
-  metadata_generator, server_service_intf, metadata_wsdl, base_xmlrpc_formatter, wst_fpc_xml, test_utilities,
-  server_service_xmlrpc, test_parsers, wsdl_generator, xsd_generator, 
-xsd_consts, base_json_formatter, wsdl_parser, test_support, basex_encode,
-test_basex_encode, json_formatter, server_service_json, test_json,
-test_suite_utils, test_generators, test_std_cursors, test_rtti_filter,
-test_wst_cursors, test_registry, test_soap_specific, test_generators_runtime,
-test_date_utils;
+  custapp, classes, sysutils, fpcunit, testreport, testregistry,
+  TestFormatter_unit, testmetadata_unit, server_service_soap, soap_formatter,
+  base_binary_formatter, base_service_intf, base_soap_formatter,
+  binary_formatter, binary_streamer, server_binary_formatter,
+  metadata_repository, metadata_generator, server_service_intf, metadata_wsdl,
+  base_xmlrpc_formatter, wst_fpc_xml, test_utilities, server_service_xmlrpc,
+  test_parsers, wsdl_generator, xsd_generator, xsd_consts, base_json_formatter,
+  wsdl_parser, test_support, basex_encode, test_basex_encode, json_formatter,
+  server_service_json, filter_intf, same_process_protocol, test_json,
+  test_suite_utils, test_generators, test_std_cursors, test_rtti_filter,
+  test_wst_cursors, test_registry, test_soap_specific, test_generators_runtime,
+  test_date_utils, test_filter;
 
 Const
   ShortOpts = 'alh';

@@ -275,29 +275,8 @@ begin
 end;
 
 function TBaseTransport.GetFilterString: string;
-var
-  locPM : IPropertyManager;
-  ls : TStringList;
-  locRes, s : string;
-  i : Integer;
 begin
-  locRes := '';
-  if ( FFilter <> nil ) then begin
-    locRes := FFilter.GetName();
-    locPM := FFilter.GetPropertyManager();
-    ls := TStringList.Create();
-    try
-      if ( locPM.GetPropertyNames(ls) > 0 ) then begin
-        for i := 0 to Pred(ls.Count) do begin
-          s := ls[i];
-          locRes := Format('%s,%s>%s',[locRes,s,locPM.GetProperty(s)]);
-        end;
-      end;
-    finally
-      ls.Free();
-    end;
-  end;
-  Result := locRes;
+  Result := GenerateFilterString(FFilter);
 end;
 
 function TBaseTransport.GetTransportName() : string;
@@ -316,32 +295,8 @@ begin
 end;
 
 procedure TBaseTransport.SetFilterString(const Value: string);
-var
-  locBuffer, locName, locValue : string;
-  locPM : IPropertyManager;
-  locFilterManager : IDataFilterRegistry;
-  locFilter : IDataFilter;
 begin
-  locBuffer := Value;
-  if IsStrEmpty(locBuffer) then begin
-    FFilter := nil;
-    Exit;
-  end;
-
-  //The filter name
-  locName := Trim(GetToken(locBuffer,','));
-  locFilterManager := GetDataFilterRegistry();
-  if not locFilterManager.Find(locName,locFilter) then
-    raise ETransportExecption.CreateFmt(SERR_DataFilterNotFound,[locName]);
-  locPM := locFilter.GetPropertyManager();
-  while True do begin
-    locName := GetToken(locBuffer,'>');
-    if IsStrEmpty(locName) then
-      Break;
-    locValue := GetToken(locBuffer,',');
-    locPM.SetProperty(locName,locValue);
-  end;
-  FFilter := locFilter;
+  FFilter := ParseDataFilterString(Value);       
 end;
 
 end.

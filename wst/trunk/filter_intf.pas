@@ -30,6 +30,8 @@ type
     function GetName() : string;
     function ExecuteInput(const AData; const ASize : Integer) : TByteDynArray;
     function ExecuteOutput(const AData; const ASize : Integer) : TByteDynArray;
+    function GetNext() : IDataFilter;
+    procedure SetNext(AItem: IDataFilter);
   end;
 
   IDataFilterRegistry = interface
@@ -44,20 +46,51 @@ type
     );
   end;
 
-  function GetDataFilterRegistry():IDataFilterRegistry;
+{$TYPEINFO ON}
+  
+  { TBaseFilter }
 
-implementation
+  TBaseFilter = class(TSimpleFactoryItem,IDataFilter)
+  private
+    FPropertyManager : IPropertyManager;
+    FNext : IDataFilter;
+  protected
+    function DoExecuteInput(const AData; const ASize : Integer) : TByteDynArray;virtual;abstract;
+    function DoExecuteOutput(const AData; const ASize : Integer) : TByteDynArray;virtual;abstract;
+  protected
+    function GetPropertyManager() : IPropertyManager;
+    function GetName() : string;virtual;abstract;
+    function ExecuteInput(const AData; const ASize : Integer) : TByteDynArray;
+    function ExecuteOutput(const AData; const ASize : Integer) : TByteDynArray;
+    function GetNext() : IDataFilter;
+    procedure SetNext(AItem: IDataFilter);                                    
+  public
+    constructor Create(); override;
+  end;  
+{$TYPEINFO OFF}
 
-type
   { TDataFilterRegistry }
+  
   TDataFilterRegistry = class(TBaseFactoryRegistry,IInterface,IDataFilterRegistry)
   protected
     function Find(
       const AName : string;
       out   ARes  : IDataFilter
     ):Boolean;
-  end;
-
+  end;       
+  
+  function GetDataFilterRegistry():IDataFilterRegistry;
+  function ParseDataFilterString(AValue : string) : IDataFilter; overload;
+  function ParseDataFilterString(
+    AValue     : string; 
+    AFilterReg : IDataFilterRegistry
+  ) : IDataFilter;overload;
+  function GenerateFilterString(AFilter : IDataFilter) : string;
+  
+implementation
+uses
+  classes,
+  wst_consts, imp_utils;
 
 var
   DataFilterRegistryInst : IDataFilterRegistry = nil;
@@ -66,6 +99,146 @@ begin
   if not Assigned(DataFilterRegistryInst) then
     DataFilterRegistryInst := TDataFilterRegistry.Create() as IDataFilterRegistry;// Lock!!!
   Result := DataFilterRegistryInst;
+end;
+
+
+function ParseDataFilterString(AValue : string; AFilterReg : IDataFilterRegistry) : IDataFilter;
+var
+  locAll, locBuffer, locName, locValue : string;
+  locPM : IPropertyManager;
+  locFilterManager : IDataFilterRegistry;
+  locHeader, locLast, locFilter : IDataFilter;
+begin
+  locAll := Trim(AValue);
+  if IsStrEmpty(locAll) then begin
+    Result := nil;
+    Exit;
+  end;
+
+  if (AFilterReg = nil) then
+    locFilterManager := GetDataFilterRegistry()
+  else
+    locFilterManager := AFilterReg;
+  locHeader := nil;
+  locLast := nil;
+  while True do begin
+    locBuffer := Trim(GetToken(locAll,'&'));
+    if IsStrEmpty(locBuffer) then
+      Break;
+    //The filter name
+    locName := Trim(GetToken(locBuffer,','));
+    if not locFilterManager.Find(locName,locFilter) then
+      raise ETransportExecption.CreateFmt(SERR_DataFilterNotFound,[locName]);
+    locPM := locFilter.GetPropertyManager();
+    while True do begin
+      locName := GetToken(locBuffer,'>');
+      if IsStrEmpty(locName) then
+        Break;
+      locValue := GetToken(locBuffer,',');
+      locPM.SetProperty(locName,locValue);
+    end;
+    if (locHeader = nil) then begin
+      locHeader := locFilter;
+      locLast := locFilter;
+    end else begin
+      locLast.SetNext(locFilter);
+    end;
+    locLast := locFilter;
+  end;
+  Result := locHeader;
+end;   
+
+
+function GenerateFilterString(AFilter : IDataFilter) : string;
+var
+  locFilter : IDataFilter;
+  locPM : IPropertyManager;
+  ls : TStringList;
+  locResAll, locResLine, s : string;
+  i : Integer;
+begin
+  locResAll := '';
+  if ( AFilter <> nil ) then begin
+    ls := TStringList.Create();
+    try
+      locFilter := AFilter;
+      while (locFilter <> nil) do begin
+        locResLine := locFilter.GetName();
+        locPM := locFilter.GetPropertyManager();
+        ls.Clear();
+        if ( locPM.GetPropertyNames(ls) > 0 ) then begin
+          for i := 0 to Pred(ls.Count) do begin
+            s := ls[i];
+            locResLine := Format('%s,%s>%s',[locResLine,s,locPM.GetProperty(s)]);
+          end;
+        end;
+        if (locResAll = '') then
+          locResAll := locResLine
+        else
+          locResAll := locResAll + '&' + locResLine;
+        locFilter := locFilter.GetNext();
+      end;
+    finally
+      ls.Free();
+    end;
+  end;
+  Result := locResAll;
+end;   
+
+function ParseDataFilterString(AValue : string) : IDataFilter;
+begin
+  Result := ParseDataFilterString(AValue,GetDataFilterRegistry());
+end;
+
+{ TBaseFilter }
+
+function TBaseFilter.GetPropertyManager() : IPropertyManager; 
+begin
+  Result := FPropertyManager;
+end;
+
+function TBaseFilter.ExecuteInput(const AData; const ASize : Integer) : TByteDynArray; 
+var
+  n : IDataFilter;
+  r : TByteDynArray;
+begin
+  Result := DoExecuteInput(AData,ASize);
+  n := GetNext();
+  if (n <> nil) then begin
+    r := Result;
+    Result := n.ExecuteInput(r[Low(r)],Length(r));
+  end;
+end;
+
+function TBaseFilter.ExecuteOutput(const AData; const ASize : Integer) : TByteDynArray; 
+var
+  n : IDataFilter;
+  r : TByteDynArray;                    
+begin
+  n := GetNext();
+  if (n = nil) then begin
+    Result := DoExecuteOutput(AData,ASize);
+  end else begin
+    r := n.ExecuteOutput(AData,ASize);  
+    Result := DoExecuteOutput(r[Low(r)],Length(r));
+  end;                                   
+end;
+
+function TBaseFilter.GetNext() : IDataFilter; 
+begin
+  Result := FNext;
+end;
+
+procedure TBaseFilter.SetNext(AItem : IDataFilter); 
+begin
+  if (FNext <> AItem) then
+    FNext := AItem;
+end;
+
+constructor TBaseFilter.Create();  
+begin
+  inherited;
+  FPropertyManager := TPublishedPropertyManager.Create(Self);
 end;
 
 { TDataFilterRegistry }
