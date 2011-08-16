@@ -742,10 +742,6 @@ var
   lTexID: GLuint;
 begin
   glPushMatrix;
-  //move the origin to the window center
-  glTranslatef(aRect.w div 2, aRect.h div 2, 0);
-  glScalef(1, 1, 1);
-  glRotatef(180, 0, 0, 1);
 
   drawFrame(aRect, SetPoint(rt.x, rt.y), False, False, False);
 
