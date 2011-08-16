@@ -1,7 +1,7 @@
 object RxDBGridMainForm: TRxDBGridMainForm
-  Left = 325
+  Left = 299
   Height = 786
-  Top = 84
+  Top = 1
   Width = 1012
   ActiveControl = Panel1
   Caption = 'RxDBGrid Demo'
@@ -9,6 +9,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
   ClientWidth = 1012
   Menu = MainMenu1
   OnCreate = FormCreate
+  ShowHint = True
   LCLVersion = '0.9.31'
   object RxDBGrid1: TRxDBGrid
     Left = 0
@@ -21,7 +22,10 @@ object RxDBGridMainForm: TRxDBGridMainForm
       item
         Title.Alignment = taCenter
         Title.Caption = '...'
+        Title.PrefixOption = poNone
         Title.Orientation = toHorizontal
+        Title.Hint = 'DEVELOPER'
+        Title.ShowHint = True
         Width = 50
         FieldName = 'DEVELOPER_ID'
         ImageList = ImageList1
@@ -39,7 +43,10 @@ object RxDBGridMainForm: TRxDBGridMainForm
       item
         Title.Alignment = taCenter
         Title.Caption = 'Code'
+        Title.PrefixOption = poNone
         Title.Orientation = toHorizontal
+        Title.Hint = 'Code - ID'
+        Title.ShowHint = True
         Width = 136
         FieldName = 'ID'
         Footer.Alignment = taRightJustify
@@ -55,7 +62,10 @@ object RxDBGridMainForm: TRxDBGridMainForm
       item
         Title.Alignment = taCenter
         Title.Caption = 'Developer'
+        Title.PrefixOption = poNone
         Title.Orientation = toHorizontal
+        Title.Hint = 'Developer full name'
+        Title.ShowHint = True
         Width = 136
         FieldName = 'Developer'
         Filter.Font.Style = [fsItalic]
@@ -68,7 +78,10 @@ object RxDBGridMainForm: TRxDBGridMainForm
       item
         Title.Alignment = taCenter
         Title.Caption = 'Computer software (all info) - Программное обеспечение|Name'
+        Title.PrefixOption = poNone
         Title.Orientation = toHorizontal
+        Title.Hint = 'Product name'
+        Title.ShowHint = True
         Width = 136
         FieldName = 'NAME'
         Filter.Font.Style = [fsItalic]
@@ -81,7 +94,10 @@ object RxDBGridMainForm: TRxDBGridMainForm
       item
         Title.Alignment = taCenter
         Title.Caption = 'Computer software (all info) - Программное обеспечение|Cost'
+        Title.PrefixOption = poNone
         Title.Orientation = toHorizontal
+        Title.Hint = 'Product price'
+        Title.ShowHint = True
         Width = 136
         FieldName = 'PRICE'
         DisplayFormat = '#,##0.00'
@@ -99,7 +115,10 @@ object RxDBGridMainForm: TRxDBGridMainForm
       item
         Title.Alignment = taCenter
         Title.Caption = 'Computer software (all info) - Программное обеспечение|Date Present'
+        Title.PrefixOption = poNone
         Title.Orientation = toHorizontal
+        Title.Hint = 'Soft date present...'
+        Title.ShowHint = True
         Width = 136
         FieldName = 'Date_Present'
         Filter.Font.Style = [fsItalic]
@@ -111,7 +130,10 @@ object RxDBGridMainForm: TRxDBGridMainForm
       item
         Title.Alignment = taCenter
         Title.Caption = 'DEVELOPER_ID'
+        Title.PrefixOption = poNone
         Title.Orientation = toHorizontal
+        Title.Hint = 'DEVELOPER'
+        Title.ShowHint = True
         Width = 141
         FieldName = 'DEVELOPER_ID'
         Filter.Font.Style = [fsItalic]
@@ -225,6 +247,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
       AnchorSideTop.Side = asrBottom
       Left = 498
       Height = 22
+      Hint = 'Use filter line'
       Top = 35
       Width = 84
       BorderSpacing.Left = 6
@@ -258,6 +281,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
       AnchorSideTop.Control = Panel1
       Left = 498
       Height = 22
+      Hint = 'Auto fill column width'
       Top = 7
       Width = 133
       BorderSpacing.Around = 6
