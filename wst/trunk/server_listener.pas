@@ -143,8 +143,6 @@ end;
 
 procedure TwstListener.SetOnNotifyMessage(const AValue : TListnerNotifyMessage);
 begin
-  if (FOnNotifyMessage = AValue) then
-    exit;
   FOnNotifyMessage := AValue;
 end;
 
