@@ -117,14 +117,15 @@ function GlutUIContext.init(w, h: integer): boolean;
 begin
   Result := False;
 
-  Load_GL_version_2_0;
+  if not Load_GL_version_2_0 then
+  begin
+    writeln('OpenGL version 2.0 not loaded properly');
+    exit;
+  end;
 
   if not glext_ExtensionSupported('GL_ARB_vertex_program', '') or
      not glext_ExtensionSupported('GL_ARB_fragment_program', '') then
-  begin
-    Result := False;
     exit;
-  end;
 
   reshape(w, h);
   Result := True;
