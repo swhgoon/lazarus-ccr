@@ -16,7 +16,6 @@ type
     Button1: TButton;
     Button2: TButton;
     editInputPath: TDirectoryEdit;
-    Label1: TLabel;
     Label2: TLabel;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);

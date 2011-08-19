@@ -185,6 +185,7 @@ begin
   ADest.Add('    float lResult_float;');
   ADest.Add('    int lResult_int;');
   ADest.Add('    boolean lResult_boolean;');
+  ADest.Add('    CharSequence lResult_CharSequence;');
   ADest.Add('    Display lResult_Display;');
   ADest.Add('');
   ADest.Add('    switch (Buffer)');
@@ -452,6 +453,11 @@ begin
     TmpStr := TmpStr + ');';
     FPasOutputImpl.Add('  vAndroidPipesComm.WaitForReturn();');
   end
+  else if (lMethodReturn = 'CharSequence') or (lMethodReturn = 'String') then
+  begin
+    TmpStr := TmpStr + '): ' + lMethodReturnPas + ';';
+    FPasOutputImpl.Add('  Result := vAndroidPipesComm.WaitForStringReturn();');
+  end
   else
   begin
     TmpStr := TmpStr + '): ' + lMethodReturnPas + ';';
@@ -487,7 +493,7 @@ begin
   else
   begin
     FJavaOutputMethods.Add('      lResult_' + lMethodReturn + ' = ' + lJavaParamSelf + '.' + lMethodName + '(' + lJavaParams + ');');
-    if IsBasicJavaType(lMethodReturn) then
+    if IsBasicJavaType(lMethodReturn) or (lMethodReturn = 'CharSequence') or (lMethodReturn = 'String') then
       FJavaOutputMethods.Add('      MyAndroidPipesComm.' + GetJavaResultFunction(lMethodReturn) + '(lResult_' + lMethodReturn + ');')
     else
     begin
@@ -808,8 +814,9 @@ end;
 function TAndroidSDKBindingsGen.GetJavaResultFunction(AReturnType: string
   ): string;
 begin
-  if AReturnType = 'boolean' then Result :=  'SendBoolResult'
-  else if AReturnType = 'float' then Result :=  'SendFloatResult'
+  if AReturnType = 'boolean' then Result := 'SendBoolResult'
+  else if AReturnType = 'float' then Result := 'SendFloatResult'
+  else if (AReturnType = 'CharSequence') or (AReturnType = 'String') then Result := 'SendStringResult'
   else Result := 'SendIntResult';
 end;
 

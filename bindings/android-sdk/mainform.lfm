@@ -2,19 +2,11 @@ object Form1: TForm1
   Left = 479
   Height = 414
   Top = 137
-  Width = 434
+  Width = 433
   Caption = 'Android Bindings Generator'
   ClientHeight = 414
-  ClientWidth = 434
+  ClientWidth = 433
   LCLVersion = '0.9.31'
-  object Label1: TLabel
-    Left = 8
-    Height = 18
-    Top = 8
-    Width = 43
-    Caption = 'Label1'
-    ParentColor = False
-  end
   object editInputPath: TDirectoryEdit
     Left = 88
     Height = 25

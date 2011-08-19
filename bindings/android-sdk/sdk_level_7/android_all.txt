@@ -73,6 +73,7 @@ constructor Create(Activity); virtual;
 method void setText(CharSequence AText); virtual;
 callbacksettercaller setOnClickListener callOnClickListener OnClickListener = procedure (v: TView) of object;
 method void setTextSize(int unit_; float size);
+method CharSequence getText()
 
 [EditText] TextView
 constructor Create(Activity); override;
