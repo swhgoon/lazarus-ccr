@@ -67,6 +67,7 @@ public class AndroidAll
   static final int amkUI_TTextView_OnClickListener_Start = 0x0010A003;
   static final int amkUI_TTextView_OnClickListener_Finished = 0x0010A004;
   static final int amkUI_TTextView_setTextSize = 0x0010A005;
+  static final int amkUI_TTextView_getText = 0x0010A006;
   // EditText
   static final int amkUI_TEditText_Create = 0x0010B000;
   static final int amkUI_TEditText_setText = 0x0010B001;
@@ -145,6 +146,7 @@ public class AndroidAll
     float lResult_float;
     int lResult_int;
     boolean lResult_boolean;
+    CharSequence lResult_CharSequence;
     Display lResult_Display;
 
     switch (Buffer)
@@ -396,6 +398,17 @@ public class AndroidAll
       param_self_TextView.setTextSize(lint_1, lfloat_2);
       MyAndroidPipesComm.SendResult();
       break;
+    // method CharSequence getText()
+    case amkUI_TTextView_getText:
+      DebugOut("amkUI_TTextView_getText");
+      // Self
+      lInt = MyAndroidPipesComm.GetInt();
+      param_self_TextView = (TextView) ViewElements.get(lInt);
+      // params
+      //
+      lResult_CharSequence = param_self_TextView.getText();
+      MyAndroidPipesComm.SendStringResult(lResult_CharSequence);
+      break;
     case amkUI_TEditText_Create:
       DebugOut("amkUI_TEditText_Create");
       ViewElements.add(new EditText(activity));
@@ -598,7 +611,6 @@ public class AndroidAll
       DebugOut("amkUI_TArrayAdapter_String__Create");
       lint_1 = MyAndroidPipesComm.GetInt();
       ViewElements.add(new ArrayAdapter<String>(activity, lint_1));
-      DebugOut("Result = " + (ViewElements.size() - 1));
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
       break;
     // method void add(String aobject)
@@ -619,7 +631,6 @@ public class AndroidAll
       DebugOut("amkUI_TArrayAdapter_String__clear");
       // Self
       lInt = MyAndroidPipesComm.GetInt();
-      DebugOut("lInt = " + lInt);
       param_self_ArrayAdapter_String_ = (ArrayAdapter<String>) ViewElements.get(lInt);
       // params
       //
@@ -631,7 +642,6 @@ public class AndroidAll
       DebugOut("amkUI_TArrayAdapter_String__insert");
       // Self
       lInt = MyAndroidPipesComm.GetInt();
-      DebugOut("lInt = " + lInt);
       param_self_ArrayAdapter_String_ = (ArrayAdapter<String>) ViewElements.get(lInt);
       // params
       lInt = MyAndroidPipesComm.GetInt();

@@ -23,9 +23,10 @@ public class AndroidPipesComm
   int lSubtype = 0;
 
   // Android Message Kind
-  static byte amkFloatResult = 103;
-  static byte amkIntResult = 102;
-  static byte amkResult = 101;
+  static byte amkStringResult = 14;
+  static byte amkFloatResult = 13;
+  static byte amkIntResult = 12;
+  static byte amkResult = 11;
   static byte amkActivityCallback = 0;
   static byte amkLog = 1;
   static byte amkUICommand = 2;
@@ -110,12 +111,7 @@ public class AndroidPipesComm
       else if (Buffer == amkLog)
       {
         DebugOut("amkLog");
-        int lInt = GetInt(); // Length
-        char[] lChars = new char[lInt];
-        for (int i = 0; i < lInt; i++)
-        {
-          lChars[i] = (char) GetByte();
-        }
+        char[] lChars = GetString();
         DebugOut(new String(lChars));
       }
       else if (Buffer == amkUICommand)
@@ -217,6 +213,26 @@ public class AndroidPipesComm
     return -1;
   }
 
+  public char[] GetString()
+  {
+    char[] lChars;
+    try
+    {
+      int lInt = reader.readInt(); // Length
+      lChars = new char[lInt];
+      for (int i = 0; i < lInt; i++)
+      {
+        lChars[i] = (char) reader.readByte();
+      }
+      return lChars;
+    }
+    catch (IOException e)
+    {
+      ErrorOut("[GetString] IOException=" + e.getMessage());
+    }
+    return new char[0];
+  }
+
   // Sending results
 
   public void SendResult()
@@ -255,6 +271,24 @@ public class AndroidPipesComm
     catch (IOException e)
     {
       ErrorOut("[SendFloatResult] IOException=" + e.getMessage());
+    } 
+  }
+
+  public void SendStringResult(CharSequence Result)
+  {
+    try
+    {
+      writer.writeByte(amkStringResult);
+      int lInt = Result.length();
+      writer.writeInt(lInt); // Length
+      for (int i = 0; i < lInt; i++)
+      {
+        writer.writeByte(Result.charAt(i));
+      }
+    }
+    catch (IOException e)
+    {
+      ErrorOut("[SendStringResult] IOException=" + e.getMessage());
     } 
   }
 

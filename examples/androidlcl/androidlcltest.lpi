@@ -17,7 +17,7 @@
     <MacroValues Count="1">
       <Macro1 Name="LCLWidgetType" Value="android"/>
     </MacroValues>
-    <BuildModes Count="3">
+    <BuildModes Count="4">
       <Item1 Name="Android" Default="True"/>
       <Item2 Name="Desktop">
         <MacroValues Count="1">
@@ -75,6 +75,42 @@
           </Other>
         </CompilerOptions>
       </Item3>
+      <Item4 Name="Android-Debug">
+        <MacroValues Count="1">
+          <Macro1 Name="LCLWidgetType" Value="android"/>
+        </MacroValues>
+        <CompilerOptions>
+          <Version Value="10"/>
+          <Target>
+            <Filename Value="android/libs/armeabi/libandroidlcltest.so"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <CodeGeneration>
+            <TargetCPU Value="arm"/>
+            <TargetOS Value="linux"/>
+          </CodeGeneration>
+          <Linking>
+            <Debugging>
+              <GenerateDebugInfo Value="True"/>
+              <GenerateDwarf Value="True"/>
+            </Debugging>
+            <Options>
+              <Win32>
+                <GraphicApplication Value="True"/>
+              </Win32>
+            </Options>
+          </Linking>
+          <Other>
+            <CompilerMessages>
+              <UseMsgFile Value="True"/>
+            </CompilerMessages>
+            <CompilerPath Value="$(CompPath)"/>
+          </Other>
+        </CompilerOptions>
+      </Item4>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>

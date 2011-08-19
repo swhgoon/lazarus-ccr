@@ -13,6 +13,7 @@ object Form2: TForm2
     Top = 35
     Width = 87
     Caption = 'Button1'
+    OnClick = Button1Click
     TabOrder = 0
   end
   object CheckBox1: TCheckBox
@@ -52,5 +53,13 @@ object Form2: TForm2
     )
     TabOrder = 4
     Text = 'ComboBox1'
+  end
+  object Edit2: TEdit
+    Left = 147
+    Height = 25
+    Top = 144
+    Width = 80
+    TabOrder = 5
+    Text = 'Edit2'
   end
 end
