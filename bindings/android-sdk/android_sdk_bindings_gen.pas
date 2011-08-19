@@ -799,7 +799,8 @@ begin
   if ABaseName = 'int' then Result := False
   else if ABaseName = 'boolean' then Result := False
   else if ABaseName = 'float' then Result := False
-  else Result := True;
+//  else if (ABaseName = 'CharSequence') or (ABaseName = 'String') then Result := False
+  else Result := False;
 end;
 
 function TAndroidSDKBindingsGen.GetJavaResultFunction(AReturnType: string

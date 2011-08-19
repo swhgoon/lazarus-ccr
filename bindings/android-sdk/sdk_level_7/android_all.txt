@@ -143,6 +143,9 @@ constructor Create(Activity);
 [ArrayAdapter<String>] BaseAdapter Filterable
 constructor Create(Activity, int textViewResourceId)
 method void add(String aobject)
+method void clear()
+method void insert(String aobject, int aindex)
+method void remove(String aobject)
 
 #
 # android.R.layout
