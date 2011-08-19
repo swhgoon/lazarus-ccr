@@ -60,7 +60,9 @@ begin
   ADest.Add('');
   ADest.Add('interface');
   ADest.Add('');
-  ADest.Add('uses javalang, androidpipescomm;');
+  ADest.Add('uses SysUtils, javalang, androidpipescomm;');
+  ADest.Add('');
+  ADest.Add('{$INTERFACES CORBA}');
   ADest.Add('');
   ADest.Add('type');
   ADest.Add('');
@@ -326,7 +328,7 @@ begin
     if AIsInterface then
       lParentClassName := 'IJavaInterface'
     else
-      lParentClassName := 'TInterfacedObject';
+      lParentClassName := 'TJavaObject';
 
   if AIsInterface then
     FPasOutputClasses.Add(Format('  %s = interface(%s)', [FClassNamePas, lParentClassName]))
