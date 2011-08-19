@@ -573,6 +573,10 @@ procedure TRxCustomDBLookupEdit.InternalClosePopup(AResult: boolean);
 begin
   if Assigned(FOnClosePopup) then
     FOnClosePopup(Self, AResult);
+
+{$IFDEF WINDOWS}
+  FRxPopUpForm:=nil;
+{$ENDIF}
 end;
 
 procedure TRxCustomDBLookupEdit.LookupDataSetChanged(Sender: TObject);
