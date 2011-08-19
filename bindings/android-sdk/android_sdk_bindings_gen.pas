@@ -120,6 +120,7 @@ begin
   ADest.Add('import android.content.*;');
   ADest.Add('import android.view.*;');
   ADest.Add('import android.widget.*;');
+  ADest.Add('import android.R.*;');
   ADest.Add('import java.util.*;');
   ADest.Add('import java.lang.*;');
   ADest.Add('');

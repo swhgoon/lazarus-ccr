@@ -144,3 +144,33 @@ constructor Create(Activity);
 constructor Create(Activity, int textViewResourceId)
 method void add(String aobject)
 
+#
+# android.R.layout
+#
+[layout] TJavaObject
+const activity_list_item = $01090000;
+const browser_link_context_header = $0109000e;
+const expandable_list_content = $01090001;
+const list_content = $01090014;
+const preference_category = $01090002;
+const select_dialog_item = $01090011;
+const select_dialog_multichoice = $01090013;
+const select_dialog_singlechoice = $01090012;
+const simple_dropdown_item_1line = $0109000a;
+const simple_expandable_list_item_1 = $01090006;
+const simple_expandable_list_item_2 = $01090007;
+const simple_gallery_item = $0109000b;
+const simple_list_item_1 = $01090003;
+const simple_list_item_2 = $01090004;
+const simple_list_item_activated_1 = $01090016;
+const simple_list_item_activated_2 = $01090017;
+const simple_list_item_checked = $01090005;
+const simple_list_item_multiple_choice = $01090010;
+const simple_list_item_single_choice = $0109000f;
+const simple_selectable_list_item = $01090015;
+const simple_spinner_dropdown_item = $01090009;
+const simple_spinner_item = $01090008;
+const test_list_item = $0109000c;
+const two_line_list_item = $0109000d;
+
+
