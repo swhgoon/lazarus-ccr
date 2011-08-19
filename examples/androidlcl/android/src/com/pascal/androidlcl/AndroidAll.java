@@ -7,6 +7,7 @@ import android.util.*;
 import android.content.*;
 import android.view.*;
 import android.widget.*;
+import android.R.*;
 import java.util.*;
 import java.lang.*;
 
@@ -104,6 +105,10 @@ public class AndroidAll
   // ArrayAdapter<String>
   static final int amkUI_TArrayAdapter_String__Create = 0x0011A000;
   static final int amkUI_TArrayAdapter_String__add = 0x0011A001;
+  static final int amkUI_TArrayAdapter_String__clear = 0x0011A002;
+  static final int amkUI_TArrayAdapter_String__insert = 0x0011A003;
+  static final int amkUI_TArrayAdapter_String__remove = 0x0011A004;
+  // layout
 
   public boolean ProcessCommand(int Buffer)
   {
@@ -606,6 +611,45 @@ public class AndroidAll
       lString_1 = (String) MyJavaLang.LangElements.get(lInt);
       //
       param_self_ArrayAdapter_String_.add(lString_1);
+      MyAndroidPipesComm.SendResult();
+      break;
+    // method void clear()
+    case amkUI_TArrayAdapter_String__clear:
+      DebugOut("amkUI_TArrayAdapter_String__clear");
+      // Self
+      lInt = MyAndroidPipesComm.GetInt();
+      param_self_ArrayAdapter_String_ = (ArrayAdapter<String>) ViewElements.get(lInt);
+      // params
+      //
+      param_self_ArrayAdapter_String_.clear();
+      MyAndroidPipesComm.SendResult();
+      break;
+    // method void insert(String aobject, int aindex)
+    case amkUI_TArrayAdapter_String__insert:
+      DebugOut("amkUI_TArrayAdapter_String__insert");
+      // Self
+      lInt = MyAndroidPipesComm.GetInt();
+      param_self_ArrayAdapter_String_ = (ArrayAdapter<String>) ViewElements.get(lInt);
+      // params
+      lInt = MyAndroidPipesComm.GetInt();
+      lString_1 = (String) MyJavaLang.LangElements.get(lInt);
+      lInt = MyAndroidPipesComm.GetInt();
+      lint_2 = lInt;
+      //
+      param_self_ArrayAdapter_String_.insert(lString_1, lint_2);
+      MyAndroidPipesComm.SendResult();
+      break;
+    // method void remove(String aobject)
+    case amkUI_TArrayAdapter_String__remove:
+      DebugOut("amkUI_TArrayAdapter_String__remove");
+      // Self
+      lInt = MyAndroidPipesComm.GetInt();
+      param_self_ArrayAdapter_String_ = (ArrayAdapter<String>) ViewElements.get(lInt);
+      // params
+      lInt = MyAndroidPipesComm.GetInt();
+      lString_1 = (String) MyJavaLang.LangElements.get(lInt);
+      //
+      param_self_ArrayAdapter_String_.remove(lString_1);
       MyAndroidPipesComm.SendResult();
       break;
 
