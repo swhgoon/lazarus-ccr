@@ -48,13 +48,11 @@ public class AndroidPipesComm
   public void DebugOut(String Str)
   {
     Log.v("AndroidPipesComm:", Str);
-//    tv.setText(tv.getText().toString() + Str);
   }
   
   public void ErrorOut(String Str)
   {
     Log.v("AndroidPipesComm:", Str);
-//    tv.setText(tv.getText().toString() + Str);
   }
 
   public void TerminateApplication()
@@ -88,7 +86,7 @@ public class AndroidPipesComm
     while (true)
     {
       WaitAndProcessPascalMessage();
-      DebugOut("MID_END WaitForPascalMessage lType=" + lType + " lSubtype=" + java.lang.Integer.toHexString(lSubtype));
+      //DebugOut("MID_END WaitForPascalMessage lType=" + lType + " lSubtype=" + java.lang.Integer.toHexString(lSubtype));
       if ((lType == AExpectedMessageType) && (lSubtype == AExpectedMessageSubtype)) return;
       if ((lType == amkActivityCallback) && (AExpectedMessageType == amkActivityCallback)) return;
     }
@@ -99,7 +97,7 @@ public class AndroidPipesComm
   {
     try
     {
-      DebugOut("WaitAndProcessPascalMessage");
+      //DebugOut("WaitAndProcessPascalMessage");
       byte Buffer = reader.readByte(); // blocking read
       lType = Buffer;
       lSubtype = 0;
@@ -112,6 +110,13 @@ public class AndroidPipesComm
       else if (Buffer == amkLog)
       {
         DebugOut("amkLog");
+        int lInt = GetInt(); // Length
+        char[] lChars = new char[lInt];
+        for (int i = 0; i < lInt; i++)
+        {
+          lChars[i] = (char) GetByte();
+        }
+        DebugOut(new String(lChars));
       }
       else if (Buffer == amkUICommand)
       {

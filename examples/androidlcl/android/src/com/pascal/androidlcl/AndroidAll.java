@@ -598,6 +598,7 @@ public class AndroidAll
       DebugOut("amkUI_TArrayAdapter_String__Create");
       lint_1 = MyAndroidPipesComm.GetInt();
       ViewElements.add(new ArrayAdapter<String>(activity, lint_1));
+      DebugOut("Result = " + (ViewElements.size() - 1));
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
       break;
     // method void add(String aobject)
@@ -618,6 +619,7 @@ public class AndroidAll
       DebugOut("amkUI_TArrayAdapter_String__clear");
       // Self
       lInt = MyAndroidPipesComm.GetInt();
+      DebugOut("lInt = " + lInt);
       param_self_ArrayAdapter_String_ = (ArrayAdapter<String>) ViewElements.get(lInt);
       // params
       //
@@ -629,6 +631,7 @@ public class AndroidAll
       DebugOut("amkUI_TArrayAdapter_String__insert");
       // Self
       lInt = MyAndroidPipesComm.GetInt();
+      DebugOut("lInt = " + lInt);
       param_self_ArrayAdapter_String_ = (ArrayAdapter<String>) ViewElements.get(lInt);
       // params
       lInt = MyAndroidPipesComm.GetInt();
