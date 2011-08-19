@@ -48,7 +48,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="15" Y="14"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="40"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -61,7 +61,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="6"/>
         <CursorPos X="80" Y="15"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="40"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
@@ -117,11 +117,12 @@
         <Filename Value="android_sdk_bindings_gen.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="android_sdk_bindings_gen"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="768"/>
-        <CursorPos X="48" Y="795"/>
-        <UsageCount Value="38"/>
+        <TopLine Value="8"/>
+        <CursorPos X="20" Y="45"/>
+        <UsageCount Value="40"/>
         <Loaded Value="True"/>
       </Unit8>
       <Unit9>
@@ -202,7 +203,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="129"/>
         <CursorPos X="41" Y="147"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="13"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit18>
@@ -229,7 +230,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="26" Y="9"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit21>
       <Unit22>
@@ -243,12 +244,11 @@
       <Unit23>
         <Filename Value="../../../lazarus/lcl/interfaces/android/android_all.pas"/>
         <UnitName Value="android_all"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="5"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="682"/>
-        <CursorPos X="1" Y="682"/>
-        <UsageCount Value="12"/>
+        <TopLine Value="128"/>
+        <CursorPos X="20" Y="132"/>
+        <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit23>
       <Unit24>
@@ -258,7 +258,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="222"/>
         <CursorPos X="10" Y="139"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit24>
       <Unit25>
