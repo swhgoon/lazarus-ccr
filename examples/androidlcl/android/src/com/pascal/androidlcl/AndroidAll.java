@@ -92,8 +92,18 @@ public class AndroidAll
   static final int amkUI_TCheckBox_Create = 0x00111000;
   // AdapterView
   // AbsSpinner
+  static final int amkUI_TAbsSpinner_getCount = 0x00113000;
+  static final int amkUI_TAbsSpinner_setAdapter = 0x00113001;
   // Spinner
   static final int amkUI_TSpinner_Create = 0x00114000;
+  // Filterable
+  // Adapter
+  // ListAdapter
+  // SpinnerAdapter
+  // BaseAdapter
+  // ArrayAdapter<String>
+  static final int amkUI_TArrayAdapter_String__Create = 0x0011A000;
+  static final int amkUI_TArrayAdapter_String__add = 0x0011A001;
 
   public boolean ProcessCommand(int Buffer)
   {
@@ -114,10 +124,14 @@ public class AndroidAll
     DisplayMetrics param_self_DisplayMetrics;
     CompoundButton param_self_CompoundButton;
     WindowManager param_self_WindowManager;
+    AbsSpinner param_self_AbsSpinner;
+    ArrayAdapter<String> param_self_ArrayAdapter_String_;
     // Params
     ViewGroup.LayoutParams lViewGroup_LayoutParams_1, lViewGroup_LayoutParams_2;
+    SpinnerAdapter lSpinnerAdapter_1;
     DisplayMetrics lDisplayMetrics_1;
     CharSequence lCharSequence_1;
+    String lString_1;
     View lView_1;
     int lint_1, lint_2, lint_3, lint_4;
     float lfloat_1, lfloat_2;
@@ -546,10 +560,53 @@ public class AndroidAll
       ViewElements.add(new CheckBox(activity));
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
       break;
+    // method int getCount()
+    case amkUI_TAbsSpinner_getCount:
+      DebugOut("amkUI_TAbsSpinner_getCount");
+      // Self
+      lInt = MyAndroidPipesComm.GetInt();
+      param_self_AbsSpinner = (AbsSpinner) ViewElements.get(lInt);
+      // params
+      //
+      lResult_int = param_self_AbsSpinner.getCount();
+      MyAndroidPipesComm.SendIntResult(lResult_int);
+      break;
+    // method void setAdapter(SpinnerAdapter adapter)
+    case amkUI_TAbsSpinner_setAdapter:
+      DebugOut("amkUI_TAbsSpinner_setAdapter");
+      // Self
+      lInt = MyAndroidPipesComm.GetInt();
+      param_self_AbsSpinner = (AbsSpinner) ViewElements.get(lInt);
+      // params
+      lInt = MyAndroidPipesComm.GetInt();
+      lSpinnerAdapter_1 = (SpinnerAdapter) ViewElements.get(lInt);
+      //
+      param_self_AbsSpinner.setAdapter(lSpinnerAdapter_1);
+      MyAndroidPipesComm.SendResult();
+      break;
     case amkUI_TSpinner_Create:
       DebugOut("amkUI_TSpinner_Create");
       ViewElements.add(new Spinner(activity));
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
+      break;
+    case amkUI_TArrayAdapter_String__Create:
+      DebugOut("amkUI_TArrayAdapter_String__Create");
+      lint_1 = MyAndroidPipesComm.GetInt();
+      ViewElements.add(new ArrayAdapter<String>(activity, lint_1));
+      MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
+      break;
+    // method void add(String aobject)
+    case amkUI_TArrayAdapter_String__add:
+      DebugOut("amkUI_TArrayAdapter_String__add");
+      // Self
+      lInt = MyAndroidPipesComm.GetInt();
+      param_self_ArrayAdapter_String_ = (ArrayAdapter<String>) ViewElements.get(lInt);
+      // params
+      lInt = MyAndroidPipesComm.GetInt();
+      lString_1 = (String) MyJavaLang.LangElements.get(lInt);
+      //
+      param_self_ArrayAdapter_String_.add(lString_1);
+      MyAndroidPipesComm.SendResult();
       break;
 
     default:

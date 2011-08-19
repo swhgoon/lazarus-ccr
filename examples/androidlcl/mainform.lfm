@@ -1,7 +1,7 @@
 object Form2: TForm2
-  Left = 313
+  Left = 181
   Height = 240
-  Top = 186
+  Top = 137
   Width = 320
   Caption = 'Form2'
   ClientHeight = 240
@@ -16,17 +16,17 @@ object Form2: TForm2
     TabOrder = 0
   end
   object CheckBox1: TCheckBox
-    Left = 32
+    Left = 33
     Height = 21
-    Top = 91
+    Top = 88
     Width = 94
     Caption = 'CheckBox1'
     TabOrder = 1
   end
   object Edit1: TEdit
-    Left = 37
+    Left = 33
     Height = 25
-    Top = 145
+    Top = 144
     Width = 99
     TabOrder = 2
     Text = 'Edit1'
@@ -45,6 +45,11 @@ object Form2: TForm2
     Top = 88
     Width = 112
     ItemHeight = 0
+    Items.Strings = (
+      'Item1'
+      'Item2'
+      'Item3'
+    )
     TabOrder = 4
     Text = 'ComboBox1'
   end
