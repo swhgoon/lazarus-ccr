@@ -23,7 +23,7 @@ type
     procedure GenerateJavaFile(ASourceFile: string; ADest: TStringList);
     procedure ProcessModelFile(ASourceFile, APasOutputFile, AJavaOutputFile: string);
     procedure ProcessModelLine(ASourceLine: string);
-    procedure ProcessModelClass(ASourceLine: string);
+    procedure ProcessModelClass(ASourceLine: string; AIsInterface: Boolean);
     procedure ProcessModelMethod(ASourceLine: string; AIsField: Boolean);
     procedure ProcessModelConstructor(ASourceLine: string);
     procedure ProcessModelConst(ASourceLine: string);
@@ -37,7 +37,9 @@ type
     function GetJavaTypeConverter(AType: string): string;
     function GetIDString(AMethodName: string): string;
     procedure AddOutputIDs(AIDString: string);
+    function ConvertJavaSpecialCharsToUnderline(AStr: string): string;
     function ConvertPointToUnderline(AStr: string): string;
+    function JavaRemoveGeneric(AStr: string): string;
     function IsBasicJavaType(AStr: string): Boolean;
   public
     constructor Create;
@@ -164,10 +166,14 @@ begin
   ADest.Add('    DisplayMetrics param_self_DisplayMetrics;');
   ADest.Add('    CompoundButton param_self_CompoundButton;');
   ADest.Add('    WindowManager param_self_WindowManager;');
+  ADest.Add('    AbsSpinner param_self_AbsSpinner;');
+  ADest.Add('    ArrayAdapter<String> param_self_ArrayAdapter_String_;');
   ADest.Add('    // Params');
   ADest.Add('    ViewGroup.LayoutParams lViewGroup_LayoutParams_1, lViewGroup_LayoutParams_2;');
+  ADest.Add('    SpinnerAdapter lSpinnerAdapter_1;');
   ADest.Add('    DisplayMetrics lDisplayMetrics_1;');
   ADest.Add('    CharSequence lCharSequence_1;');
+  ADest.Add('    String lString_1;');
   ADest.Add('    View lView_1;');
   ADest.Add('    int lint_1, lint_2, lint_3, lint_4;');
   ADest.Add('    float lfloat_1, lfloat_2;');
@@ -240,7 +246,14 @@ begin
   // Starting a new class
   if ASourceLine[1] = '[' then
   begin
-    ProcessModelClass(ASourceLine);
+    ProcessModelClass(ASourceLine, False);
+    Exit;
+  end;
+
+  // Starting a new interface
+  if ASourceLine[1] = '{' then
+  begin
+    ProcessModelClass(ASourceLine, True);
     Exit;
   end;
 
@@ -279,10 +292,10 @@ begin
   end;
 end;
 
-procedure TAndroidSDKBindingsGen.ProcessModelClass(ASourceLine: string);
+procedure TAndroidSDKBindingsGen.ProcessModelClass(ASourceLine: string; AIsInterface: Boolean);
 var
   lReaderPos: Integer = 1;
-  lCurWord, lParentClassName: string;
+  lCurWord, lParentClassName, lTmpParent: string;
 begin
   if ASourceLine = '' then Exit;
 
@@ -296,10 +309,31 @@ begin
 
   FClassNamePas := GetPascalTypeName(lCurWord);
   FClassName := lCurWord;
-  lParentClassName := GetNextWord(ASourceLine, lReaderPos);
-  lParentClassName := GetPascalTypeName(lParentClassName);
-  FPasOutputClasses.Add(Format('  %s = class(%s)', [FClassNamePas, lParentClassName]));
-  FPasOutputClasses.Add('  public');
+  lTmpParent := GetNextWord(ASourceLine, lReaderPos);
+  lParentClassName := GetPascalTypeName(lTmpParent);
+
+  // Read all parents
+  while lTmpParent <> '' do
+  begin
+    lTmpParent := GetNextWord(ASourceLine, lReaderPos);
+    if lTmpParent <> '' then
+      lParentClassName := lParentClassName + ', ' + GetPascalTypeName(lTmpParent);
+  end;
+
+  // Java classes can implement interfaces, so based on a safe ground
+  if lParentClassName = '' then
+    if AIsInterface then
+      lParentClassName := 'IJavaInterface'
+    else
+      lParentClassName := 'TInterfacedObject';
+
+  if AIsInterface then
+    FPasOutputClasses.Add(Format('  %s = interface(%s)', [FClassNamePas, lParentClassName]))
+  else
+  begin
+    FPasOutputClasses.Add(Format('  %s = class(%s)', [FClassNamePas, lParentClassName]));
+    FPasOutputClasses.Add('  public');
+  end;
   lCurWord := GetNextWord(ASourceLine, lReaderPos);
   Inc(FClassNum);
   FMethodNum := 0;
@@ -307,7 +341,10 @@ begin
   FPasOutputIDs.Add('  // ' + FClassNamePas);
   FJavaOutputIDs.Add('  // ' + FClassName);
   FPasOutputConsts.Add('  { ' + FClassNamePas + ' }');
-  FPasOutputClassesForward.Add('  ' + FClassNamePas + ' = class;')
+  if AIsInterface then
+    FPasOutputClassesForward.Add('  ' + FClassNamePas + ' = interface;')
+  else
+    FPasOutputClassesForward.Add('  ' + FClassNamePas + ' = class;')
 end;
 
 procedure TAndroidSDKBindingsGen.ProcessModelMethod(
@@ -346,7 +383,7 @@ begin
   FPasOutputImpl.Add('  vAndroidPipesComm.SendInt(' + lIDString + ');');
   FPasOutputImpl.Add('  vAndroidPipesComm.SendInt(Index); // Self, Java Pointer');
 
-  lJavaParamSelf := 'param_self_' + FClassName;
+  lJavaParamSelf := 'param_self_' + JavaRemoveGeneric(FClassName);
   FJavaOutputMethods.Add('    // ' + ASourceLine);
   FJavaOutputMethods.Add('    case ' + lIDString + ':');
   FJavaOutputMethods.Add('      DebugOut("' + lIDString + '");');
@@ -505,6 +542,7 @@ begin
     if (lParamType = 'Activity') then
     begin
       HasActivityParam := True;
+      lParamName := 'ReturnToRepeat';
       Continue;
     end;
 
@@ -704,7 +742,7 @@ end;
 function TAndroidSDKBindingsGen.GetNextWord(ALine: string;
   var AStartPos: Integer): string;
 const
-  WordSeparators = [' ','(',')','[',']',',',';',':',#9{TAB}];
+  WordSeparators = [' ','(',')','[',']','{','}',',',';',':',#9{TAB}];
 var
   lState: Integer = 0;
 begin
@@ -744,12 +782,12 @@ begin
   else if ABaseName = 'boolean' then Result := 'Boolean'
   else if ABaseName = 'float' then Result := 'Single'
   else if ABaseName = 'void' then Result := ABaseName
-  else if ABaseName = 'CharSequence' then Result := 'string'
+  else if (ABaseName = 'CharSequence') or (ABaseName = 'String') then Result := 'string'
   else if ABaseName = 'TJavaObject' then Result := ABaseName
   else
   begin
     Result := 'T' + ABaseName;
-    Result := StringReplace(Result, '.', '_', [rfReplaceAll]);
+    Result := ConvertJavaSpecialCharsToUnderline(Result);
   end;
 end;
 
@@ -790,7 +828,7 @@ begin
   if AType = 'boolean' then Exit('lBool')
   else if AType = 'int' then Exit('lInt')
   else if AType = 'float' then Exit('lFloat')
-  else if AType = 'CharSequence' then
+  else if (AType = 'CharSequence') or (AType = 'String') then
     Result := Format('(%s) MyJavaLang.LangElements.get(lInt)', [AType])
   else Result := Format('(%s) ViewElements.get(lInt)', [AType]);
 end;
@@ -798,7 +836,7 @@ end;
 function TAndroidSDKBindingsGen.GetIDString(AMethodName: string): string;
 begin
   Result := 'amkUI_' + FClassNamePas + '_' + AMethodName;;
-  Result := StringReplace(Result, '.', '_', [rfReplaceAll]);
+  Result := ConvertJavaSpecialCharsToUnderline(Result);
 end;
 
 procedure TAndroidSDKBindingsGen.AddOutputIDs(AIDString: string);
@@ -807,9 +845,22 @@ begin
   FJavaOutputIDs.Add('  static final int ' + AIDString + ' = 0x' + IntToHex(FClassNum*$1000+FMethodNum, 8) +  ';');
 end;
 
+function TAndroidSDKBindingsGen.ConvertJavaSpecialCharsToUnderline(AStr: string): string;
+begin
+  Result := StringReplace(AStr, '.', '_',  [rfReplaceAll, rfIgnoreCase]);
+  Result := StringReplace(Result, '<', '_', [rfReplaceAll]);
+  Result := StringReplace(Result, '>', '_', [rfReplaceAll]);
+end;
+
 function TAndroidSDKBindingsGen.ConvertPointToUnderline(AStr: string): string;
 begin
-  Result := SysUtils.StringReplace(AStr, '.', '_',  [rfReplaceAll, rfIgnoreCase]);
+  Result := StringReplace(AStr, '.', '_',  [rfReplaceAll, rfIgnoreCase]);
+end;
+
+function TAndroidSDKBindingsGen.JavaRemoveGeneric(AStr: string): string;
+begin
+  Result := StringReplace(AStr, '<', '_', [rfReplaceAll]);
+  Result := StringReplace(Result, '>', '_', [rfReplaceAll]);
 end;
 
 function TAndroidSDKBindingsGen.IsBasicJavaType(AStr: string): Boolean;

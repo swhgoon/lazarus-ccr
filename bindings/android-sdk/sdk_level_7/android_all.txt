@@ -1,3 +1,12 @@
+#
+# Declaration of classes:
+# [ClassName] Parent Interface1 Interface2
+# declarations of fields, contructors, methods, consts, etc
+#
+# For Interfaces:
+# {InterfaceName} Parent1 Parent2 Parent3
+#
+
 #[MenuItem] TJavaObject
 #classcallback MenuItem.OnMenuItemClickListener boolean onMenuItemClick (MenuItem item)
 #method MenuItem setOnMenuItemClickListener (MenuItem.OnMenuItemClickListener menuItemClickListener)
@@ -101,7 +110,37 @@ constructor Create(Activity)
 [AdapterView] ViewGroup
 
 [AbsSpinner] AdapterView
+# SpinnerAdapter getAdapter()
+method int getCount()
+# View 	getSelectedView()
+# void 	onRestoreInstanceState(Parcelable state)
+# Parcelable 	onSaveInstanceState()
+# int 	pointToPosition(int x, int y)
+# void 	requestLayout()
+method void setAdapter(SpinnerAdapter adapter)
+# void 	setSelection(int position, boolean animate)
+# void 	setSelection(int position)
 
 [Spinner] AbsSpinner
 constructor Create(Activity);
+
+#
+# For info about the Adapter of a spinner see:
+# http://stackoverflow.com/questions/2784081/android-create-spinner-programmatically-from-array
+#
+{Filterable}
+
+{Adapter}
+
+{ListAdapter} Adapter
+
+{SpinnerAdapter} Adapter
+
+# android.widget.BaseAdapter
+[BaseAdapter] TJavaObject ListAdapter SpinnerAdapter
+
+# android.widget.ArrayAdapter<T>
+[ArrayAdapter<String>] BaseAdapter Filterable
+constructor Create(Activity, int textViewResourceId)
+method void add(String aobject)
 
