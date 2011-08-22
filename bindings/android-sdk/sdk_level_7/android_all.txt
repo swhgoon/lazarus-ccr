@@ -43,6 +43,45 @@ method void getMetrics(DisplayMetrics outMetrics)
 [WindowManager] TJavaObject
 method Display getDefaultDisplay()
 
+[Dialog] TJavaObject
+
+[AlertDialog] Dialog
+
+[AlertDialog.Builder] TJavaObject
+constructor Create(Activity)
+#public AlertDialog create ()
+#public Context getContext ()
+#public AlertDialog.Builder setAdapter (ListAdapter adapter, DialogInterface.OnClickListener listener)
+#public AlertDialog.Builder setCancelable (boolean cancelable)
+#public AlertDialog.Builder setCursor (Cursor cursor, DialogInterface.OnClickListener listener, String labelColumn)
+#public AlertDialog.Builder setCustomTitle (View customTitleView)
+#public AlertDialog.Builder setIcon (Drawable icon)
+#public AlertDialog.Builder setIcon (int iconId)
+#public AlertDialog.Builder setIconAttribute (int attrId)
+#public AlertDialog.Builder setInverseBackgroundForced (boolean useInverseBackground)
+#public AlertDialog.Builder setItems (int itemsId, DialogInterface.OnClickListener listener)
+#public AlertDialog.Builder setItems (CharSequence[] items, DialogInterface.OnClickListener listener)
+method AlertDialog.Builder setMessage (CharSequence message)
+#public AlertDialog.Builder setMessage (int messageId)
+#public AlertDialog.Builder setMultiChoiceItems (CharSequence[] items, boolean[] checkedItems, DialogInterface.OnMultiChoiceClickListener listener)
+#public AlertDialog.Builder setMultiChoiceItems (Cursor cursor, String isCheckedColumn, String labelColumn, DialogInterface.OnMultiChoiceClickListener listener)
+#public AlertDialog.Builder setNegativeButton (CharSequence text, DialogInterface.OnClickListener listener)
+#public AlertDialog.Builder setNeutralButton (int textId, DialogInterface.OnClickListener listener)
+#public AlertDialog.Builder setNeutralButton (CharSequence text, DialogInterface.OnClickListener listener)
+#public AlertDialog.Builder setOnCancelListener (DialogInterface.OnCancelListener onCancelListener)
+#public AlertDialog.Builder setOnItemSelectedListener (AdapterView.OnItemSelectedListener listener)
+#public AlertDialog.Builder setOnKeyListener (DialogInterface.OnKeyListener onKeyListener)
+#public AlertDialog.Builder setPositiveButton (int textId, DialogInterface.OnClickListener listener)
+#public AlertDialog.Builder setPositiveButton (CharSequence text, DialogInterface.OnClickListener listener)
+#public AlertDialog.Builder setSingleChoiceItems (CharSequence[] items, int checkedItem, DialogInterface.OnClickListener listener)
+#public AlertDialog.Builder setSingleChoiceItems (ListAdapter adapter, int checkedItem, DialogInterface.OnClickListener listener)
+#public AlertDialog.Builder setSingleChoiceItems (int itemsId, int checkedItem, DialogInterface.OnClickListener listener)
+#public AlertDialog.Builder setSingleChoiceItems (Cursor cursor, int checkedItem, String labelColumn, DialogInterface.OnClickListener listener)
+method AlertDialog.Builder setTitle (CharSequence title)
+#public AlertDialog.Builder setTitle (int titleId)
+method AlertDialog.Builder setView (View view)
+method AlertDialog show ()
+
 #
 # android.view
 #

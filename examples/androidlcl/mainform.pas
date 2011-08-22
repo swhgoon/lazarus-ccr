@@ -72,7 +72,13 @@ end;
 
 procedure TForm2.Button2Click(Sender: TObject);
 begin
+  {$ifdef LCLAndroid}
+  vAndroidPipesComm.Log('TForm2.Button2Click');
+  {$endif}
   InputBox('Caption', 'Prompt', 'Default');
+  {$ifdef LCLAndroid}
+  vAndroidPipesComm.Log('TForm2.Button2Click');
+  {$endif}
 end;
 
 initialization

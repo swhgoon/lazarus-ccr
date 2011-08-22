@@ -186,6 +186,7 @@ begin
   ADest.Add('    AbsSpinner param_self_AbsSpinner;');
   ADest.Add('    ArrayAdapter<String> param_self_ArrayAdapter_String_;');
   ADest.Add('    AdapterView param_self_AdapterView;');
+  ADest.Add('    AlertDialog.Builder param_self_AlertDialog_Builder;');
   ADest.Add('    //');
   ADest.Add('    // Params');
   ADest.Add('    //');
@@ -206,6 +207,8 @@ begin
   ADest.Add('    boolean lResult_boolean;');
   ADest.Add('    CharSequence lResult_CharSequence;');
   ADest.Add('    Display lResult_Display;');
+  ADest.Add('    AlertDialog.Builder lResult_AlertDialog_Builder;');
+  ADest.Add('    AlertDialog lResult_AlertDialog;');
   ADest.Add('');
   ADest.Add('    switch (Buffer)');
   ADest.Add('    {');
@@ -396,6 +399,7 @@ var
   lParamNum: Integer = 1;
   lCurWord, lParentClassName: string;
   lMethodReturn, lMethodReturnPas, lMethodName, lParamType, lParamTypePas, lParamName, lParamPrefix: string;
+  lMethodReturnJavaIdentifier: string;
   DeclarationBase, TmpStr, lIDString: string;
   FPasOutputImplCurLine: Integer;
   lJavaParamVar, lJavaParams, lJavaParamSelf: string;
@@ -428,7 +432,7 @@ begin
   if not FIsGlobalObject then
     FPasOutputImpl.Add('  vAndroidPipesComm.SendInt(Index); // Self, Java Pointer');
 
-  lJavaParamSelf := 'param_self_' + JavaRemoveGeneric(FClassName);
+  lJavaParamSelf := 'param_self_' + JavaRemoveGeneric(ConvertPointToUnderline(FClassName));
   FJavaOutputMethods.Add('    // ' + ASourceLine);
   FJavaOutputMethods.Add('    case ' + lIDString + ':');
   FJavaOutputMethods.Add('      DebugOut("' + lIDString + '");');
@@ -498,7 +502,7 @@ begin
   // And for Java params too
   lJavaParams := System.Copy(lJavaParams, 0, Length(lJavaParams)-2);
 
-  // Add the return
+  // Add the Pascal return
   if lMethodReturn = 'void' then
   begin
     TmpStr := TmpStr + ');';
@@ -530,25 +534,27 @@ begin
   FPasOutputImpl.Add('end;');
   FPasOutputImpl.Add('');
 
+  // Java Return
   FJavaOutputMethods.Add('      //');
+  lMethodReturnJavaIdentifier := 'lResult_' + ConvertPointToUnderline(lMethodReturn);
   if AIsField then
   begin
-    FJavaOutputMethods.Add('      lResult_' + lMethodReturn + ' = ' + lJavaParamSelf + '.' + lMethodName + ';');
-    FJavaOutputMethods.Add('      MyAndroidPipesComm.' + GetJavaResultFunction(lMethodReturn) + '(lResult_' + lMethodReturn + ');');
+    FJavaOutputMethods.Add(Format('      %s = %s.%s;', [lMethodReturnJavaIdentifier, lJavaParamSelf, lMethodName]));
+    FJavaOutputMethods.Add(Format('      MyAndroidPipesComm.%s(%s);', [GetJavaResultFunction(lMethodReturn), lMethodReturnJavaIdentifier]));
   end
   else if lMethodReturn = 'void' then
   begin
-    FJavaOutputMethods.Add('      ' + lJavaParamSelf + '.' + lMethodName + '(' + lJavaParams + ');');
-    FJavaOutputMethods.Add('      MyAndroidPipesComm.SendResult();');
+    FJavaOutputMethods.Add(Format('      %s.%s(%s);', [lJavaParamSelf, lMethodName, lJavaParams]));
+    FJavaOutputMethods.Add(Format('      MyAndroidPipesComm.SendResult();', []));
   end
   else
   begin
-    FJavaOutputMethods.Add('      lResult_' + lMethodReturn + ' = ' + lJavaParamSelf + '.' + lMethodName + '(' + lJavaParams + ');');
+    FJavaOutputMethods.Add(Format('      %s = %s.%s(%s);', [lMethodReturnJavaIdentifier, lJavaParamSelf, lMethodName, lJavaParams]));
     if IsBasicJavaType(lMethodReturn) or (lMethodReturn = 'CharSequence') or (lMethodReturn = 'String') then
-      FJavaOutputMethods.Add('      MyAndroidPipesComm.' + GetJavaResultFunction(lMethodReturn) + '(lResult_' + lMethodReturn + ');')
+      FJavaOutputMethods.Add(Format('      MyAndroidPipesComm.%s(%s);', [GetJavaResultFunction(lMethodReturn), lMethodReturnJavaIdentifier]))
     else
     begin
-      FJavaOutputMethods.Add(Format('      ViewElements.add(lResult_%s);', [lMethodReturn]));
+      FJavaOutputMethods.Add(Format('      ViewElements.add(%s);', [lMethodReturnJavaIdentifier]));
       FJavaOutputMethods.Add(Format('      MyAndroidPipesComm.%s(ViewElements.size() - 1);', [GetJavaResultFunction(lMethodReturn)]))
     end;
   end;

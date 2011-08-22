@@ -64,15 +64,27 @@ public class AndroidPipesComm
   public void PrintPascalException(byte Buffer)
   {
     String PascalMessage = "" + (char) Buffer;
+    byte curChar;
     try
     {
       while (true)
       {
-        PascalMessage = PascalMessage + (char) reader.readByte();
+        curChar = reader.readByte();
+        // Output line by line
+        if (curChar == 0x10)
+        {
+          ErrorOut(PascalMessage);
+          PascalMessage = "";
+        }
+        else
+        {
+          PascalMessage = PascalMessage + (char) curChar;
+        }
       }
     }
     catch (IOException e)
     {
+      ErrorOut("[PrintPascalException] Exception while obtaining the Pascal Exception, printing the rest of the buffer");
       ErrorOut(PascalMessage);
     }
   }
@@ -122,7 +134,7 @@ public class AndroidPipesComm
         else if (MyAndroidApp.ProcessCommand(lSubtype) == true) ;
         else
         {
-          ErrorOut("Unknown UI Command!!!" + java.lang.Integer.toHexString(lSubtype));
+          ErrorOut("Unknown UI Command!!! This is normal in the end of a callback" + java.lang.Integer.toHexString(lSubtype));
         };
       }
       else if (Buffer == amkJavaLangCall)
@@ -139,7 +151,7 @@ public class AndroidPipesComm
 //      }
       else
       {
-        ErrorOut("Unknown Pascal message!!! " + java.lang.Integer.toHexString(Buffer));
+        ErrorOut("[WaitAndProcessPascalMessage] Unknown Pascal message!!! " + java.lang.Integer.toHexString(Buffer));
 
         // If we get an Unknown Pascal message, it might be an error printed to the console, so lets print it and quit
         PrintPascalException(Buffer);
