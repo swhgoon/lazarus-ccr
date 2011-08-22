@@ -15,10 +15,13 @@ type
   private
     FSourceFile: TStringList;
     FPasOutputTypes, FPasOutputClassesForward, FPasOutputClasses,
-      FPasOutputConsts, FPasOutputIDs, FPasOutputImpl, FPasOutputMessages: TStringList;
+      FPasOutputConsts, FPasOutputIDs, FPasOutputImpl, FPasOutputMessages,
+      FPasGlobalVars, FPasInitialization: TStringList;
     FJavaOutputIDs, FJavaOutputMethods: TStringList;
     FClassName, FClassNamePas: string; // Class name of the class currently being parsed
     FClassNum, FMethodNum: Integer;
+    FIsGlobalObject: Boolean;
+    FGlobalObject: string;
     procedure GeneratePascalFile(ASourceFile: string; ADest: TStringList);
     procedure GenerateJavaFile(ASourceFile: string; ADest: TStringList);
     procedure ProcessModelFile(ASourceFile, APasOutputFile, AJavaOutputFile: string);
@@ -85,6 +88,9 @@ begin
   ADest.Add('');
   ADest.Add('function HandleMessage(AFirstInt: Integer): Boolean;');
   ADest.Add('');
+  ADest.Add('var');
+  ADest.AddStrings(FPasGlobalVars);
+  ADest.Add('');
   ADest.Add('implementation');
   ADest.Add('');
   ADest.Add('const');
@@ -107,6 +113,10 @@ begin
   ADest.AddStrings(FPasOutputMessages);
   ADest.Add('  end;');
   ADest.Add('end;');
+  ADest.Add('');
+  ADest.Add('initialization');
+  ADest.Add('');
+  ADest.AddStrings(FPasInitialization);
   ADest.Add('');
   ADest.Add('end.');
 end;
@@ -172,7 +182,7 @@ begin
   ADest.Add('    AbsSpinner param_self_AbsSpinner;');
   ADest.Add('    ArrayAdapter<String> param_self_ArrayAdapter_String_;');
   ADest.Add('    // Params');
-  ADest.Add('    ViewGroup.LayoutParams lViewGroup_LayoutParams_1, lViewGroup_LayoutParams_2;');
+  ADest.Add('    ViewGroup.LayoutParams lViewGroup_LayoutParams_1, lViewGroup_LayoutParams_2, lViewGroup_LayoutParams_3;');
   ADest.Add('    SpinnerAdapter lSpinnerAdapter_1;');
   ADest.Add('    DisplayMetrics lDisplayMetrics_1;');
   ADest.Add('    CharSequence lCharSequence_1;');
@@ -250,6 +260,15 @@ begin
   // Starting a new class
   if ASourceLine[1] = '[' then
   begin
+    FIsGlobalObject := False;
+    ProcessModelClass(ASourceLine, False);
+    Exit;
+  end;
+
+  // Starting a new global object class
+  if ASourceLine[1] = '%' then
+  begin
+    FIsGlobalObject := True;
     ProcessModelClass(ASourceLine, False);
     Exit;
   end;
@@ -257,6 +276,7 @@ begin
   // Starting a new interface
   if ASourceLine[1] = '{' then
   begin
+    FIsGlobalObject := False;
     ProcessModelClass(ASourceLine, True);
     Exit;
   end;
@@ -313,6 +333,15 @@ begin
 
   FClassNamePas := GetPascalTypeName(lCurWord);
   FClassName := lCurWord;
+
+  // Read the global object, if it is one
+  if FIsGlobalObject then
+  begin
+    FGlobalObject := GetNextWord(ASourceLine, lReaderPos);
+    FPasGlobalVars.Add(Format('  %s: %s;', [FGlobalObject, FClassNamePas]));
+    FPasInitialization.Add(Format('  %s := %s.Create;', [FGlobalObject, FClassNamePas]));
+  end;
+
   lTmpParent := GetNextWord(ASourceLine, lReaderPos);
   lParentClassName := GetPascalTypeName(lTmpParent);
 
@@ -365,6 +394,8 @@ var
   HasStringParam: Boolean = False;
   StringParamCount: Integer = 0;
   i: Integer;
+  //
+  lPascalMethodModifiers: string = '';
 begin
   if ASourceLine = '' then Exit;
 
@@ -385,15 +416,21 @@ begin
   FPasOutputImpl.Add('begin');
   FPasOutputImpl.Add('  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));');
   FPasOutputImpl.Add('  vAndroidPipesComm.SendInt(' + lIDString + ');');
-  FPasOutputImpl.Add('  vAndroidPipesComm.SendInt(Index); // Self, Java Pointer');
+  if not FIsGlobalObject then
+    FPasOutputImpl.Add('  vAndroidPipesComm.SendInt(Index); // Self, Java Pointer');
 
   lJavaParamSelf := 'param_self_' + JavaRemoveGeneric(FClassName);
   FJavaOutputMethods.Add('    // ' + ASourceLine);
   FJavaOutputMethods.Add('    case ' + lIDString + ':');
   FJavaOutputMethods.Add('      DebugOut("' + lIDString + '");');
-  FJavaOutputMethods.Add('      // Self');
-  FJavaOutputMethods.Add('      lInt = MyAndroidPipesComm.GetInt();');
-  FJavaOutputMethods.Add('      ' + lJavaParamSelf + ' = (' + FClassName + ') ViewElements.get(lInt);');
+  if not FIsGlobalObject then
+  begin
+    FJavaOutputMethods.Add('      // Self');
+    FJavaOutputMethods.Add('      lInt = MyAndroidPipesComm.GetInt();');
+    FJavaOutputMethods.Add('      ' + lJavaParamSelf + ' = (' + FClassName + ') ViewElements.get(lInt);');
+  end
+  else
+    lJavaParamSelf := FGlobalObject;
   FJavaOutputMethods.Add('      // params');
 
   // Lists of constants for the IDs
@@ -407,6 +444,11 @@ begin
 
     // Method modifiers
     if (lParamType = 'virtual') or (lParamType = 'override') then Continue;
+    if (lParamType = 'overload') then
+    begin
+      lPascalMethodModifiers := ' overload;';
+      Continue;
+    end;
 
     lParamTypePas := GetPascalTypeName(lParamType);
     lParamName := GetNextWord(ASourceLine, lReaderPos);
@@ -465,7 +507,7 @@ begin
   end;
 
   // Insert the start
-  FPasOutputClasses.Add('    ' + DeclarationBase + TmpStr);
+  FPasOutputClasses.Add('    ' + DeclarationBase + TmpStr + lPascalMethodModifiers);
   FPasOutputImpl.Insert(FPasOutputImplCurLine, DeclarationBase + FClassNamePas + '.' + TmpStr);
   if HasStringParam then
   begin
@@ -751,7 +793,7 @@ end;
 function TAndroidSDKBindingsGen.GetNextWord(ALine: string;
   var AStartPos: Integer): string;
 const
-  WordSeparators = [' ','(',')','[',']','{','}',',',';',':',#9{TAB}];
+  WordSeparators = [' ','(',')','[',']','{','}','%',',',';',':',#9{TAB}];
 var
   lState: Integer = 0;
 begin
@@ -844,9 +886,10 @@ begin
   else Result := Format('(%s) ViewElements.get(lInt)', [AType]);
 end;
 
+// We add the method num too for overloaded routines
 function TAndroidSDKBindingsGen.GetIDString(AMethodName: string): string;
 begin
-  Result := 'amkUI_' + FClassNamePas + '_' + AMethodName;;
+  Result := Format('amkUI_%s_%s_%d', [FClassNamePas, AMethodName, FMethodNum]);
   Result := ConvertJavaSpecialCharsToUnderline(Result);
 end;
 
@@ -890,6 +933,8 @@ begin
   FPasOutputIDs := TStringList.Create;
   FPasOutputConsts := TStringList.Create;
   FPasOutputMessages := TStringList.Create;
+  FPasGlobalVars := TStringList.Create;
+  FPasInitialization := TStringList.Create;
 
   FJavaOutputIDs := TStringList.Create;
   FJavaOutputMethods := TStringList.Create;
@@ -908,6 +953,8 @@ begin
   FPasOutputIDs.Free;
   FPasOutputConsts.Free;
   FPasOutputMessages.Free;
+  FPasGlobalVars.Free;
+  FPasInitialization.Free;
 
   FJavaOutputIDs.Free;
   FJavaOutputMethods.Free;

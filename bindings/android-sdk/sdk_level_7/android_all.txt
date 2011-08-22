@@ -3,6 +3,9 @@
 # [ClassName] Parent Interface1 Interface2
 # declarations of fields, contructors, methods, consts, etc
 #
+# For Classes which are only used through a global object:
+# %ClassName%ObjectName% Parent Interface1 Interface2
+#
 # For Interfaces:
 # {InterfaceName} Parent1 Parent2 Parent3
 #
@@ -30,6 +33,10 @@ field float ydpi
 #
 # android.app.*
 #
+%Activity%activity% TJavaObject
+method void setTitle(CharSequence title)
+method CharSequence getTitle()
+
 [Display] TJavaObject
 method void getMetrics(DisplayMetrics outMetrics)
 
@@ -53,8 +60,11 @@ const INVISIBLE = 4;
 const GONE = 8;
 
 [ViewGroup] View
-method void addView(View child, ViewGroup.LayoutParams params);
-# method void addView(View child);
+method void addView(View child, int aindex, ViewGroup.LayoutParams params); overload;
+method void addView(View child, ViewGroup.LayoutParams params); overload;
+method void addView(View child, int aindex); overload;
+method void addView(View child); overload;
+method void addView(View child, int width, int height); overload;
 
 [LinearLayout] ViewGroup
 constructor Create(Activity);
