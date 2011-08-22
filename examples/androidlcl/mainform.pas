@@ -58,6 +58,8 @@ begin
     'Caption='+Caption+LineEnding+
     'Checked?='+lChecked+LineEnding+
     'ComboBox='+lComboBox;
+
+  Caption := lEdit1Text;
 end;
 
 initialization
