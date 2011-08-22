@@ -62,4 +62,13 @@ object Form2: TForm2
     TabOrder = 5
     Text = 'Edit2'
   end
+  object Button2: TButton
+    Left = 35
+    Height = 25
+    Top = 186
+    Width = 75
+    Caption = 'InputBox'
+    OnClick = Button2Click
+    TabOrder = 6
+  end
 end

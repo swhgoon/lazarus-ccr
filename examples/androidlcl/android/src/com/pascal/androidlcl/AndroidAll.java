@@ -77,10 +77,8 @@ public class AndroidAll
   static final int amkUI_TTextView_getText_6 = 0x0010B006;
   // EditText
   static final int amkUI_TEditText_Create_0 = 0x0010C000;
-  static final int amkUI_TEditText_setText_1 = 0x0010C001;
   // Button
   static final int amkUI_TButton_Create_0 = 0x0010D000;
-  static final int amkUI_TButton_setText_1 = 0x0010D001;
   // FrameLayout
   // TimePicker
   static final int amkUI_TTimePicker_Create_0 = 0x0010F000;
@@ -100,9 +98,11 @@ public class AndroidAll
   // CheckBox
   static final int amkUI_TCheckBox_Create_0 = 0x00112000;
   // AdapterView
+  static final int amkUI_TAdapterView_getSelectedItemPosition_0 = 0x00113000;
   // AbsSpinner
   static final int amkUI_TAbsSpinner_getCount_0 = 0x00114000;
   static final int amkUI_TAbsSpinner_setAdapter_1 = 0x00114001;
+  static final int amkUI_TAbsSpinner_setSelection_2 = 0x00114002;
   // Spinner
   static final int amkUI_TSpinner_Create_0 = 0x00115000;
   // Filterable
@@ -121,11 +121,15 @@ public class AndroidAll
   public boolean ProcessCommand(int Buffer)
   {
     //DebugOut("AndroidUI.ProcessCommand Command=" + java.lang.Integer.toHexString(Buffer));
+    //
     // basic types
+    //
     int lInt, lIndex, lPascalPointer;
     boolean lBool;
     float lFloat;
+    //
     // Self params
+    //
     View param_self_View;
     ViewGroup param_self_ViewGroup;
     TextView param_self_TextView;
@@ -139,7 +143,10 @@ public class AndroidAll
     WindowManager param_self_WindowManager;
     AbsSpinner param_self_AbsSpinner;
     ArrayAdapter<String> param_self_ArrayAdapter_String_;
+    AdapterView param_self_AdapterView;
+    //
     // Params
+    //
     ViewGroup.LayoutParams lViewGroup_LayoutParams_1, lViewGroup_LayoutParams_2, lViewGroup_LayoutParams_3;
     SpinnerAdapter lSpinnerAdapter_1;
     DisplayMetrics lDisplayMetrics_1;
@@ -149,7 +156,9 @@ public class AndroidAll
     int lint_1, lint_2, lint_3, lint_4;
     float lfloat_1, lfloat_2;
     boolean lboolean_1;
+    //
     // Results
+    //
     float lResult_float;
     int lResult_int;
     boolean lResult_boolean;
@@ -501,36 +510,10 @@ public class AndroidAll
       ViewElements.add(new EditText(activity));
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
       break;
-    // method void setText(CharSequence AText); override;
-    case amkUI_TEditText_setText_1:
-      DebugOut("amkUI_TEditText_setText_1");
-      // Self
-      lInt = MyAndroidPipesComm.GetInt();
-      param_self_EditText = (EditText) ViewElements.get(lInt);
-      // params
-      lInt = MyAndroidPipesComm.GetInt();
-      lCharSequence_1 = (CharSequence) MyJavaLang.LangElements.get(lInt);
-      //
-      param_self_EditText.setText(lCharSequence_1);
-      MyAndroidPipesComm.SendResult();
-      break;
     case amkUI_TButton_Create_0:
       DebugOut("amkUI_TButton_Create_0");
       ViewElements.add(new Button(activity));
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
-      break;
-    // method void setText(CharSequence AText); override;
-    case amkUI_TButton_setText_1:
-      DebugOut("amkUI_TButton_setText_1");
-      // Self
-      lInt = MyAndroidPipesComm.GetInt();
-      param_self_Button = (Button) ViewElements.get(lInt);
-      // params
-      lInt = MyAndroidPipesComm.GetInt();
-      lCharSequence_1 = (CharSequence) MyJavaLang.LangElements.get(lInt);
-      //
-      param_self_Button.setText(lCharSequence_1);
-      MyAndroidPipesComm.SendResult();
       break;
     case amkUI_TTimePicker_Create_0:
       DebugOut("amkUI_TTimePicker_Create_0");
@@ -665,6 +648,17 @@ public class AndroidAll
       ViewElements.add(new CheckBox(activity));
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
       break;
+    // method int getSelectedItemPosition()
+    case amkUI_TAdapterView_getSelectedItemPosition_0:
+      DebugOut("amkUI_TAdapterView_getSelectedItemPosition_0");
+      // Self
+      lInt = MyAndroidPipesComm.GetInt();
+      param_self_AdapterView = (AdapterView) ViewElements.get(lInt);
+      // params
+      //
+      lResult_int = param_self_AdapterView.getSelectedItemPosition();
+      MyAndroidPipesComm.SendIntResult(lResult_int);
+      break;
     // method int getCount()
     case amkUI_TAbsSpinner_getCount_0:
       DebugOut("amkUI_TAbsSpinner_getCount_0");
@@ -687,6 +681,19 @@ public class AndroidAll
       lSpinnerAdapter_1 = (SpinnerAdapter) ViewElements.get(lInt);
       //
       param_self_AbsSpinner.setAdapter(lSpinnerAdapter_1);
+      MyAndroidPipesComm.SendResult();
+      break;
+    // method void setSelection(int position); overload;
+    case amkUI_TAbsSpinner_setSelection_2:
+      DebugOut("amkUI_TAbsSpinner_setSelection_2");
+      // Self
+      lInt = MyAndroidPipesComm.GetInt();
+      param_self_AbsSpinner = (AbsSpinner) ViewElements.get(lInt);
+      // params
+      lInt = MyAndroidPipesComm.GetInt();
+      lint_1 = lInt;
+      //
+      param_self_AbsSpinner.setSelection(lint_1);
       MyAndroidPipesComm.SendResult();
       break;
     case amkUI_TSpinner_Create_0:

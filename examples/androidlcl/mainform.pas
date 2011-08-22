@@ -14,12 +14,14 @@ type
 
   TForm2 = class(TForm)
     Button1: TButton;
+    Button2: TButton;
     CheckBox1: TCheckBox;
     ComboBox1: TComboBox;
     Edit1: TEdit;
     Edit2: TEdit;
     StaticText1: TStaticText;
     procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
   private
     { private declarations }
   public
@@ -45,13 +47,19 @@ begin
   if CheckBox1.Checked then lChecked := 'True'
   else lChecked := 'False';
 
+  {$ifdef LCLAndroid}
   vAndroidPipesComm.Log('3');
+  {$endif}
   lEdit1Text := Edit1.Text;
 
+  {$ifdef LCLAndroid}
   vAndroidPipesComm.Log('4');
+  {$endif}
   lComboBox := IntToStr(ComboBox1.ItemIndex);
 
+  {$ifdef LCLAndroid}
   vAndroidPipesComm.Log('5');
+  {$endif}
 
   Edit2.Text :=
     'Edit1.Text='+lEdit1Text+LineEnding+
@@ -60,6 +68,11 @@ begin
     'ComboBox='+lComboBox;
 
   Caption := lEdit1Text;
+end;
+
+procedure TForm2.Button2Click(Sender: TObject);
+begin
+  InputBox('Caption', 'Prompt', 'Default');
 end;
 
 initialization

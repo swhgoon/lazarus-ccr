@@ -117,10 +117,11 @@
         <Filename Value="android_sdk_bindings_gen.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="android_sdk_bindings_gen"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="401"/>
-        <CursorPos X="36" Y="432"/>
+        <TopLine Value="159"/>
+        <CursorPos X="18" Y="188"/>
         <UsageCount Value="42"/>
         <Loaded Value="True"/>
       </Unit8>
@@ -200,8 +201,8 @@
         <Filename Value="sdk_level_7/android_all.txt"/>
         <EditorIndex Value="4"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="14" Y="7"/>
+        <TopLine Value="71"/>
+        <CursorPos X="1" Y="83"/>
         <UsageCount Value="14"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="None"/>
@@ -243,7 +244,6 @@
       <Unit23>
         <Filename Value="../../../lazarus/lcl/interfaces/android/android_all.pas"/>
         <UnitName Value="android_all"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="5"/>
         <WindowIndex Value="0"/>
         <TopLine Value="467"/>
@@ -272,124 +272,124 @@
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="android_sdk_bindings_gen.pas"/>
-        <Caret Line="539" Column="1" TopLine="507"/>
-      </Position1>
-      <Position2>
-        <Filename Value="android_sdk_bindings_gen.pas"/>
-        <Caret Line="541" Column="1" TopLine="507"/>
-      </Position2>
-      <Position3>
-        <Filename Value="android_sdk_bindings_gen.pas"/>
-        <Caret Line="542" Column="36" TopLine="526"/>
-      </Position3>
-      <Position4>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="145" Column="23" TopLine="99"/>
-      </Position4>
-      <Position5>
         <Filename Value="sdk_level_7/android_all.txt"/>
         <Caret Line="1" Column="1" TopLine="1"/>
-      </Position5>
-      <Position6>
+      </Position1>
+      <Position2>
         <Filename Value="sdk_level_7/android_all.txt"/>
         <Caret Line="143" Column="21" TopLine="99"/>
+      </Position2>
+      <Position3>
+        <Filename Value="sdk_level_7/android_all.txt"/>
+        <Caret Line="145" Column="23" TopLine="99"/>
+      </Position3>
+      <Position4>
+        <Filename Value="android_sdk_bindings_gen.pas"/>
+        <Caret Line="42" Column="20" TopLine="3"/>
+      </Position4>
+      <Position5>
+        <Filename Value="../../../lazarus/lcl/interfaces/android/android_all.pas"/>
+        <Caret Line="666" Column="17" TopLine="653"/>
+      </Position5>
+      <Position6>
+        <Filename Value="android_sdk_bindings_gen.pas"/>
+        <Caret Line="864" Column="22" TopLine="858"/>
       </Position6>
       <Position7>
         <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="145" Column="23" TopLine="99"/>
+        <Caret Line="150" Column="1" TopLine="103"/>
       </Position7>
       <Position8>
-        <Filename Value="android_sdk_bindings_gen.pas"/>
-        <Caret Line="42" Column="20" TopLine="3"/>
+        <Filename Value="sdk_level_7/android_all.txt"/>
+        <Caret Line="42" Column="1" TopLine="1"/>
       </Position8>
       <Position9>
-        <Filename Value="../../../lazarus/lcl/interfaces/android/android_all.pas"/>
-        <Caret Line="666" Column="17" TopLine="653"/>
+        <Filename Value="sdk_level_7/android_all.txt"/>
+        <Caret Line="151" Column="1" TopLine="108"/>
       </Position9>
       <Position10>
-        <Filename Value="android_sdk_bindings_gen.pas"/>
-        <Caret Line="864" Column="22" TopLine="858"/>
+        <Filename Value="sdk_level_7/android_all.txt"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position10>
       <Position11>
         <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="150" Column="1" TopLine="103"/>
+        <Caret Line="37" Column="1" TopLine="14"/>
       </Position11>
       <Position12>
         <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="42" Column="1" TopLine="1"/>
+        <Caret Line="267" Column="1" TopLine="220"/>
       </Position12>
       <Position13>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="151" Column="1" TopLine="108"/>
+        <Filename Value="android_sdk_bindings_gen.pas"/>
+        <Caret Line="797" Column="48" TopLine="781"/>
       </Position13>
       <Position14>
-        <Filename Value="sdk_level_7/android_all.txt"/>
+        <Filename Value="android_sdk_bindings_gen.pas"/>
         <Caret Line="1" Column="1" TopLine="1"/>
       </Position14>
       <Position15>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="37" Column="1" TopLine="14"/>
+        <Filename Value="android_sdk_bindings_gen.pas"/>
+        <Caret Line="33" Column="29" TopLine="1"/>
       </Position15>
       <Position16>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="267" Column="1" TopLine="220"/>
+        <Filename Value="android_sdk_bindings_gen.pas"/>
+        <Caret Line="410" Column="23" TopLine="396"/>
       </Position16>
       <Position17>
         <Filename Value="android_sdk_bindings_gen.pas"/>
-        <Caret Line="797" Column="48" TopLine="781"/>
+        <Caret Line="552" Column="23" TopLine="512"/>
       </Position17>
       <Position18>
-        <Filename Value="android_sdk_bindings_gen.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="15" Column="80" TopLine="6"/>
       </Position18>
       <Position19>
         <Filename Value="android_sdk_bindings_gen.pas"/>
-        <Caret Line="33" Column="29" TopLine="1"/>
+        <Caret Line="486" Column="65" TopLine="468"/>
       </Position19>
       <Position20>
         <Filename Value="android_sdk_bindings_gen.pas"/>
-        <Caret Line="410" Column="23" TopLine="396"/>
+        <Caret Line="847" Column="64" TopLine="832"/>
       </Position20>
       <Position21>
         <Filename Value="android_sdk_bindings_gen.pas"/>
-        <Caret Line="552" Column="23" TopLine="512"/>
+        <Caret Line="38" Column="66" TopLine="38"/>
       </Position21>
       <Position22>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="15" Column="80" TopLine="6"/>
+        <Filename Value="android_sdk_bindings_gen.pas"/>
+        <Caret Line="506" Column="11" TopLine="476"/>
       </Position22>
       <Position23>
         <Filename Value="android_sdk_bindings_gen.pas"/>
-        <Caret Line="486" Column="65" TopLine="468"/>
+        <Caret Line="38" Column="45" TopLine="1"/>
       </Position23>
       <Position24>
         <Filename Value="android_sdk_bindings_gen.pas"/>
-        <Caret Line="847" Column="64" TopLine="832"/>
+        <Caret Line="760" Column="1" TopLine="727"/>
       </Position24>
       <Position25>
         <Filename Value="android_sdk_bindings_gen.pas"/>
-        <Caret Line="38" Column="66" TopLine="38"/>
+        <Caret Line="26" Column="75" TopLine="1"/>
       </Position25>
       <Position26>
         <Filename Value="android_sdk_bindings_gen.pas"/>
-        <Caret Line="506" Column="11" TopLine="476"/>
+        <Caret Line="306" Column="94" TopLine="293"/>
       </Position26>
       <Position27>
-        <Filename Value="android_sdk_bindings_gen.pas"/>
-        <Caret Line="38" Column="45" TopLine="1"/>
+        <Filename Value="sdk_level_7/android_all.txt"/>
+        <Caret Line="22" Column="14" TopLine="1"/>
       </Position27>
       <Position28>
-        <Filename Value="android_sdk_bindings_gen.pas"/>
-        <Caret Line="760" Column="1" TopLine="727"/>
+        <Filename Value="sdk_level_7/android_all.txt"/>
+        <Caret Line="123" Column="10" TopLine="83"/>
       </Position28>
       <Position29>
-        <Filename Value="android_sdk_bindings_gen.pas"/>
-        <Caret Line="26" Column="75" TopLine="1"/>
+        <Filename Value="sdk_level_7/android_all.txt"/>
+        <Caret Line="124" Column="8" TopLine="84"/>
       </Position29>
       <Position30>
-        <Filename Value="android_sdk_bindings_gen.pas"/>
-        <Caret Line="306" Column="94" TopLine="293"/>
+        <Filename Value="sdk_level_7/android_all.txt"/>
+        <Caret Line="131" Column="29" TopLine="91"/>
       </Position30>
     </JumpHistory>
   </ProjectOptions>

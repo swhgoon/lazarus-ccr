@@ -163,11 +163,15 @@ begin
   ADest.Add('  public boolean ProcessCommand(int Buffer)');
   ADest.Add('  {');
   ADest.Add('    //DebugOut("AndroidUI.ProcessCommand Command=" + java.lang.Integer.toHexString(Buffer));');
+  ADest.Add('    //');
   ADest.Add('    // basic types');
+  ADest.Add('    //');
   ADest.Add('    int lInt, lIndex, lPascalPointer;');
   ADest.Add('    boolean lBool;');
   ADest.Add('    float lFloat;');
+  ADest.Add('    //');
   ADest.Add('    // Self params');
+  ADest.Add('    //');
   ADest.Add('    View param_self_View;');
   ADest.Add('    ViewGroup param_self_ViewGroup;');
   ADest.Add('    TextView param_self_TextView;');
@@ -181,7 +185,10 @@ begin
   ADest.Add('    WindowManager param_self_WindowManager;');
   ADest.Add('    AbsSpinner param_self_AbsSpinner;');
   ADest.Add('    ArrayAdapter<String> param_self_ArrayAdapter_String_;');
+  ADest.Add('    AdapterView param_self_AdapterView;');
+  ADest.Add('    //');
   ADest.Add('    // Params');
+  ADest.Add('    //');
   ADest.Add('    ViewGroup.LayoutParams lViewGroup_LayoutParams_1, lViewGroup_LayoutParams_2, lViewGroup_LayoutParams_3;');
   ADest.Add('    SpinnerAdapter lSpinnerAdapter_1;');
   ADest.Add('    DisplayMetrics lDisplayMetrics_1;');
@@ -191,7 +198,9 @@ begin
   ADest.Add('    int lint_1, lint_2, lint_3, lint_4;');
   ADest.Add('    float lfloat_1, lfloat_2;');
   ADest.Add('    boolean lboolean_1;');
+  ADest.Add('    //');
   ADest.Add('    // Results');
+  ADest.Add('    //');
   ADest.Add('    float lResult_float;');
   ADest.Add('    int lResult_int;');
   ADest.Add('    boolean lResult_boolean;');

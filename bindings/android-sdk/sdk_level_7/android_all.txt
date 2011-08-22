@@ -87,11 +87,9 @@ method CharSequence getText()
 
 [EditText] TextView
 constructor Create(Activity); override;
-method void setText(CharSequence AText); override;
 
 [Button] TextView
 constructor Create(Activity); override;
-method void setText(CharSequence AText); override;
 
 [FrameLayout] ViewGroup
 
@@ -119,6 +117,7 @@ method void 	toggle()
 constructor Create(Activity)
 
 [AdapterView] ViewGroup
+method int getSelectedItemPosition()
 
 [AbsSpinner] AdapterView
 # SpinnerAdapter getAdapter()
@@ -129,8 +128,8 @@ method int getCount()
 # int 	pointToPosition(int x, int y)
 # void 	requestLayout()
 method void setAdapter(SpinnerAdapter adapter)
-# void 	setSelection(int position, boolean animate)
-# void 	setSelection(int position)
+methodo void setSelection(int position, boolean animate); overload;
+method void setSelection(int position); overload;
 
 [Spinner] AbsSpinner
 constructor Create(Activity);
