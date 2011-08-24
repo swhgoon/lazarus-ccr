@@ -22,6 +22,18 @@ type
     FClassNum, FMethodNum: Integer;
     FIsGlobalObject: Boolean;
     FGlobalObject: string;
+    //
+    // ProcessMethodReturnValue
+    FMethodReturnPas, FDeclarationBase: string;
+    FDeclarationIsFunction: Boolean;
+    // ProcessMethodName
+    FMethodName: string;
+    // ProcessMethodParameters
+    FPascalParams, FJavaParams: string;
+    FHasStringParam: Boolean;
+    FPasOutputImplCurLine: Integer;
+    FCallbackTypePas: string;
+    //
     procedure GeneratePascalFile(ASourceFile: string; ADest: TStringList);
     procedure GenerateJavaFile(ASourceFile: string; ADest: TStringList);
     procedure ProcessModelFile(ASourceFile, APasOutputFile, AJavaOutputFile: string);
@@ -30,7 +42,13 @@ type
     procedure ProcessModelMethod(ASourceLine: string; AIsField: Boolean);
     procedure ProcessModelConstructor(ASourceLine: string);
     procedure ProcessModelConst(ASourceLine: string);
-    procedure ProcessModelCallbackSetterCaller(ASourceLine: string);
+    procedure ProcessModelCallbackSetter(ASourceLine: string);
+    procedure ProcessModelType(ASourceLine: string);
+    //
+    procedure ProcessMethodReturnValue(ASourceLine: string; var lReaderPos: Integer);
+    procedure ProcessMethodName(ASourceLine: string; var lReaderPos: Integer);
+    procedure ProcessMethodParameters(ASourceLine: string; var lReaderPos: Integer; AAddParamRead: Boolean = True);
+    //
     function GetNextWord(ALine: string; var AStartPos: Integer): string;
     function GetPascalTypeName(ABaseName: string): string;
     function PassByReference(ABaseName: string): Boolean;
@@ -314,9 +332,9 @@ begin
   end;
 
   // Callbacks
-  if lCurWord = 'callbacksettercaller' then
+  if lCurWord = 'callbacksetter' then
   begin
-    ProcessModelCallbackSetterCaller(ASourceLine);
+    ProcessModelCallbackSetter(ASourceLine);
     Exit;
   end;
 
@@ -324,6 +342,13 @@ begin
   if lCurWord = 'field' then
   begin
     ProcessModelMethod(ASourceLine, True);
+    Exit;
+  end;
+
+  // Types
+  if lCurWord = 'type' then
+  begin
+    ProcessModelType(ASourceLine);
     Exit;
   end;
 end;
@@ -401,7 +426,6 @@ var
   lMethodReturn, lMethodReturnPas, lMethodName, lParamType, lParamTypePas, lParamName, lParamPrefix: string;
   lMethodReturnJavaIdentifier: string;
   DeclarationBase, TmpStr, lIDString: string;
-  FPasOutputImplCurLine: Integer;
   lJavaParamVar, lJavaParams, lJavaParamSelf: string;
   // For adding the var for string params
   HasStringParam: Boolean = False;
@@ -571,7 +595,6 @@ var
   lMethodName, lParamType, lParamTypePas, lParamName: string;
   lConstructorPasParams, lConstructorJavaParams, lParamPrefix, lJavaParamVar: string;
   DeclarationBase, lIDString: string;
-  FPasOutputImplCurLine: Integer;
   HasActivityParam: Boolean = False;
 begin
   if ASourceLine = '' then Exit;
@@ -667,31 +690,34 @@ begin
   lConstName := GetNextWord(ASourceLine, lReaderPos);
   lConstName := GetNextWord(ASourceLine, lReaderPos);
   lConstValue := GetNextWord(ASourceLine, lReaderPos);
-  lConstValue := GetNextWord(ASourceLine, lReaderPos);
 
   // Method type and name
   FPasOutputConsts.Add(Format('  %s = %s;', [lConstName, lConstValue]));
 end;
 
-// callbacksettercaller setOnClickListener callOnClickListener OnClickCallback = procedure (v: TView) of object;
-procedure TAndroidSDKBindingsGen.ProcessModelCallbackSetterCaller(ASourceLine: string);
+// old declaration: callbacksettercaller setOnClickListener callOnClickListener OnClickCallback = procedure (v: TView) of object;
+// new declaration: callbacksetter void setOnClickListener($View.OnClickListener l)
+procedure TAndroidSDKBindingsGen.ProcessModelCallbackSetter(ASourceLine: string);
 var
   lReaderPos: Integer = 1;
   lCurWord: string;
   lSetterName, lCallerName, lCallbackName, lCallbackDeclaration: string;
   lIDSetter, lIDStart, lIDFinished: String;
   lJavaParamSelf: string;
+  lStr: String;
 begin
   if ASourceLine = '' then Exit;
 
-  lSetterName := GetNextWord(ASourceLine, lReaderPos);
-  lSetterName := GetNextWord(ASourceLine, lReaderPos);
-  lCallerName := GetNextWord(ASourceLine, lReaderPos);
-  lCallbackDeclaration := Copy(ASourceLine, lReaderPos, Length(ASourceLine));
-  lCallbackDeclaration := Trim(lCallbackDeclaration);
-  lCallbackName := GetNextWord(ASourceLine, lReaderPos);
+  lStr := GetNextWord(ASourceLine, lReaderPos);
 
+  ProcessMethodReturnValue(ASourceLine, lReaderPos);
+  ProcessMethodName(ASourceLine, lReaderPos);
+  ProcessMethodParameters(ASourceLine, lReaderPos);
+
+  lSetterName := FMethodName;
   lIDSetter := GetIDString(lSetterName);
+  lCallbackName := Copy(lSetterName, 4, Length(lSetterName)); // remove the "set" from the setter name
+  lCallerName := 'call' + lCallbackName;
   AddOutputIDs(lIDSetter);
   Inc(FMethodNum);
   lIDStart := GetIDString(lCallbackName + '_Start');
@@ -701,28 +727,26 @@ begin
   AddOutputIDs(lIDFinished);
   Inc(FMethodNum);
 
-  FPasOutputTypes.Add('  T' + lCallbackDeclaration);
+  FPasOutputClasses.Add(       '  public');
+  FPasOutputClasses.Add(Format('    %s: %s;', [lCallbackName, FCallbackTypePas]));
+  FPasOutputClasses.Add(Format('    procedure %s(ACallback: %s);', [lSetterName, FCallbackTypePas]));
+  FPasOutputClasses.Add(Format('    procedure %s();', [lCallerName]));
+  FPasOutputClasses.Add(       '  public');
 
-  FPasOutputClasses.Add('  public');
-  FPasOutputClasses.Add('    ' + lCallbackName + ': T' + lCallbackName + ';');
-  FPasOutputClasses.Add('    procedure ' + lSetterName + '(ACallback: T' + lCallbackName + ');');
-  FPasOutputClasses.Add('    procedure ' + lCallerName + '();');
-  FPasOutputClasses.Add('  public');
-
-  FPasOutputImpl.Add('procedure ' + FClassNamePas + '.' + lSetterName + '(ACallback: T' + lCallbackName + ');');
-  FPasOutputImpl.Add('begin');
-  FPasOutputImpl.Add('  OnClickListener := ACallback;');
-  FPasOutputImpl.Add('  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));');
-  FPasOutputImpl.Add('  vAndroidPipesComm.SendInt(' + lIDSetter + ');');
-  FPasOutputImpl.Add('  vAndroidPipesComm.SendInt(Index); // Self, Java Index');
-  FPasOutputImpl.Add('  vAndroidPipesComm.SendInt(PtrInt(Self)); // Self, Pascal pointer');
-  FPasOutputImpl.Add('  vAndroidPipesComm.WaitForReturn();');
-  FPasOutputImpl.Add('end;');
-  FPasOutputImpl.Add('');
-  FPasOutputImpl.Add('procedure ' + FClassNamePas + '.' + lCallerName + '();');
-  FPasOutputImpl.Add('begin');
-  FPasOutputImpl.Add('  if Assigned(OnClickListener) then OnClickListener(Self);');
-  FPasOutputImpl.Add('end;');
+  FPasOutputImpl.Add(Format('procedure %s.%s(ACallback: %s);', [FClassNamePas, lSetterName, FCallbackTypePas]));
+  FPasOutputImpl.Add(       'begin');
+  FPasOutputImpl.Add(       '  OnClickListener := ACallback;');
+  FPasOutputImpl.Add(       '  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));');
+  FPasOutputImpl.Add(       '  vAndroidPipesComm.SendInt(' + lIDSetter + ');');
+  FPasOutputImpl.Add(       '  vAndroidPipesComm.SendInt(Index); // Self, Java Index');
+  FPasOutputImpl.Add(       '  vAndroidPipesComm.SendInt(PtrInt(Self)); // Self, Pascal pointer');
+  FPasOutputImpl.Add(       '  vAndroidPipesComm.WaitForReturn();');
+  FPasOutputImpl.Add(       'end;');
+  FPasOutputImpl.Add(       '');
+  FPasOutputImpl.Add(Format('procedure %s.%s();', [FClassNamePas, lCallerName]));
+  FPasOutputImpl.Add(       'begin');
+  FPasOutputImpl.Add(       '  if Assigned(OnClickListener) then OnClickListener(Self);');
+  FPasOutputImpl.Add(       'end;');
 
   // Method type and name
   FPasOutputMessages.Add('  ' + lIDStart + ':');
@@ -803,12 +827,148 @@ begin
     break;*)
 end;
 
+// type View.OnClickListener = void onClick(View v)
+procedure TAndroidSDKBindingsGen.ProcessModelType(ASourceLine: string);
+var
+  lReaderPos: Integer = 1;
+  lCurWord: string;
+  lStr, lCallbackDeclaration, lPascalType: String;
+begin
+  if ASourceLine = '' then Exit;
+
+  lStr := GetNextWord(ASourceLine, lReaderPos);
+
+  lStr := GetNextWord(ASourceLine, lReaderPos);
+  lPascalType := GetPascalTypeName(lStr);
+
+  ProcessMethodReturnValue(ASourceLine, lReaderPos);
+  ProcessMethodName(ASourceLine, lReaderPos);
+  ProcessMethodParameters(ASourceLine, lReaderPos, False);
+
+  if FDeclarationIsFunction then
+    FPasOutputTypes.Add(Format('  %s = %s (%s): %s of object;', [lPascalType, FDeclarationBase, FPascalParams, FMethodReturnPas]))
+  else
+    FPasOutputTypes.Add(Format('  %s = %s (%s) of object;', [lPascalType, FDeclarationBase, FPascalParams]));
+end;
+
+procedure TAndroidSDKBindingsGen.ProcessMethodReturnValue(ASourceLine: string;
+  var lReaderPos: Integer);
+var
+  lMethodReturn: String;
+begin
+  // Method type and name
+  lMethodReturn := GetNextWord(ASourceLine, lReaderPos);
+  FMethodReturnPas := GetPascalTypeName(lMethodReturn);
+
+  if lMethodReturn = 'void' then
+  begin
+    FDeclarationBase := 'procedure';
+    FDeclarationIsFunction := False;
+  end
+  else
+  begin
+    FDeclarationBase := 'function';
+    FDeclarationIsFunction := True;
+  end;
+end;
+
+procedure TAndroidSDKBindingsGen.ProcessMethodName(ASourceLine: string;
+  var lReaderPos: Integer);
+begin
+  FMethodName := GetNextWord(ASourceLine, lReaderPos);
+end;
+
+// callbacksetter void setOnClickListener($View.OnClickListener l)
+// $ indicates that this parameter should be skipped
+procedure TAndroidSDKBindingsGen.ProcessMethodParameters(ASourceLine: string;
+  var lReaderPos: Integer; AAddParamRead: Boolean);
+var
+  lParamNum: Integer = 1;
+  TmpStr: String;
+  lParamType, lPascalMethodModifiers: String;
+  lParamTypePas, lParamName, lParamPrefix: String;
+  lJavaParams, lJavaParamVar: String;
+  StringParamCount: Integer = 0;
+begin
+  // Add all parameters
+  TmpStr := '';
+  lJavaParams := '';
+  FHasStringParam := False;
+  FCallbackTypePas := '';
+
+  repeat
+    lParamType := GetNextWord(ASourceLine, lReaderPos);
+
+    if lParamType = '' then Break;
+
+    // Method modifiers
+    if (lParamType = 'virtual') or (lParamType = 'override') then Continue;
+    if (lParamType = 'overload') then
+    begin
+      lPascalMethodModifiers := ' overload;';
+      Continue;
+    end;
+
+    // Parameter to skip because it is a callback name, just write $,
+    if lParamType[1] = '$' then
+    begin
+      TmpStr := TmpStr + '$, ';
+      FCallbackTypePas := GetPascalTypeName(lParamType);
+      FCallbackTypePas := StringReplace(FCallbackTypePas, '$', '', [rfReplaceAll]);
+      lParamType := GetNextWord(ASourceLine, lReaderPos);
+      Continue;
+    end;
+
+    lParamTypePas := GetPascalTypeName(lParamType);
+    lParamName := GetNextWord(ASourceLine, lReaderPos);
+    if PassByReference(lParamType) then lParamPrefix := 'var '
+    else lParamPrefix := '';
+
+    if lParamName = '' then Break;
+
+    TmpStr := TmpStr + lParamPrefix + lParamName + ': ' + lParamTypePas + '; ';
+
+    if AAddParamRead then
+    begin
+      // Pascal parameter sending
+      if lParamTypePas = 'string' then
+      begin
+        FHasStringParam := True;
+        Inc(StringParamCount);
+        FPasOutputImpl.Insert(FPasOutputImplCurLine+1, Format('  lString_%d := TString.Create(%s);', [StringParamCount, lParamName]));
+        FPasOutputImpl.Add(Format('  vAndroidPipesComm.SendInt(lString_%d.Index); // text', [StringParamCount]));
+      end
+      else if IsBasicJavaType(lParamType) then
+        FPasOutputImpl.Add('  vAndroidPipesComm.SendInt(Integer(' + lParamName + '));')
+      else // for objects
+        FPasOutputImpl.Add('  vAndroidPipesComm.SendInt(Integer(' + lParamName + '.Index));');
+
+      // Java parameter reading
+      lJavaParamVar := Format('l%s_%d', [ConvertPointToUnderline(lParamType), lParamNum]);
+      FJavaOutputMethods.Add(Format('      %s = MyAndroidPipesComm.%s();',
+        [GetJavaTypeLocalVar(lParamType), GetJavaTypeReader(lParamType)]));
+      FJavaOutputMethods.Add(Format('      %s = %s;',
+        [lJavaParamVar, GetJavaTypeConverter(lParamType)]));
+      lJavaParams := lJavaParams + lJavaParamVar + ', ';
+
+      Inc(lParamNum);
+    end;
+  until lParamName = '';
+
+  // Remove the last ; for the parameters, if necessary
+  if (Length(TmpStr) > 0) and (TmpStr[Length(TmpStr)-1] = ';') then
+    TmpStr := System.Copy(TmpStr, 0, Length(TmpStr)-2);
+  FPascalParams := TmpStr;
+  // And for Java params too
+  FJavaParams := System.Copy(lJavaParams, 0, Length(lJavaParams)-2);
+end;
+
 { Reads one word in a string, starting at AStartPos (1-based index)
   and going up to a space or comma or ( or ) or another separator }
 function TAndroidSDKBindingsGen.GetNextWord(ALine: string;
   var AStartPos: Integer): string;
 const
-  WordSeparators = [' ','(',')','[',']','{','}','%',',',';',':',#9{TAB}];
+  WordSeparators = [' ','(',')','[',']','{','}','%',',',';',':','=',#9{TAB}];
 var
   lState: Integer = 0;
 begin

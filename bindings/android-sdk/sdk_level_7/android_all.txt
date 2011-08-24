@@ -31,6 +31,12 @@ field float xdpi
 field float ydpi
 
 #
+# android.content.*
+#
+{DialogInterface}
+type DialogInterface.OnClickListener = void onClick(DialogInterface dialog, int which)
+
+#
 # android.app.*
 #
 %Activity%activity% TJavaObject
@@ -73,6 +79,7 @@ method AlertDialog.Builder setMessage (CharSequence message)
 #public AlertDialog.Builder setOnKeyListener (DialogInterface.OnKeyListener onKeyListener)
 #public AlertDialog.Builder setPositiveButton (int textId, DialogInterface.OnClickListener listener)
 #public AlertDialog.Builder setPositiveButton (CharSequence text, DialogInterface.OnClickListener listener)
+# callbacksetter AlertDialog.Builder setPositiveButton (CharSequence text, DialogInterface.OnClickListener $listener)
 #public AlertDialog.Builder setSingleChoiceItems (CharSequence[] items, int checkedItem, DialogInterface.OnClickListener listener)
 #public AlertDialog.Builder setSingleChoiceItems (ListAdapter adapter, int checkedItem, DialogInterface.OnClickListener listener)
 #public AlertDialog.Builder setSingleChoiceItems (int itemsId, int checkedItem, DialogInterface.OnClickListener listener)
@@ -104,6 +111,7 @@ method void addView(View child, ViewGroup.LayoutParams params); overload;
 method void addView(View child, int aindex); overload;
 method void addView(View child); overload;
 method void addView(View child, int width, int height); overload;
+type View.OnClickListener = void onClick(View v)
 
 [LinearLayout] ViewGroup
 constructor Create(Activity);
@@ -120,7 +128,7 @@ constructor Create(int param_width, int param_height, int param_x, int param_y);
 [TextView] View
 constructor Create(Activity); virtual;
 method void setText(CharSequence AText); virtual;
-callbacksettercaller setOnClickListener callOnClickListener OnClickListener = procedure (v: TView) of object;
+callbacksetter void setOnClickListener($View.OnClickListener l)
 method void setTextSize(int unit_; float size);
 method CharSequence getText()
 
