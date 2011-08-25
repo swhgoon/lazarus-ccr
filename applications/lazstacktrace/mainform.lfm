@@ -53,12 +53,13 @@ object Form1: TForm1
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 8
-    Height = 260
-    Top = 143
+    Height = 259
+    Top = 144
     Width = 387
-    Anchors = [akLeft, akRight, akBottom]
+    Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Right = 5
     BorderSpacing.Bottom = 44
+    ScrollBars = ssAutoBoth
     TabOrder = 1
   end
   object buttonResolveSymbols: TButton
