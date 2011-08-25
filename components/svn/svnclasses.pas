@@ -223,13 +223,22 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure LoadFromStream(s: TStream);
+    procedure LoadFromStream(s: TStream); virtual;
     procedure LoadFromFile(FileName: string);
-    procedure LoadForFiles(FileNames: TStrings);
+    procedure LoadForFiles(FileNames: TStrings); virtual;
     function GetFileItem(const s: string): TSvnFileProp;
     property FileItem[index: integer]: TSvnFileProp read GetFile; default;
     property FileCount: integer read GetFileCount;
   end;
+
+  { TSvnPropInfoXML }
+
+  TSvnPropInfoXML = class(TSvnPropInfo)
+  public
+    procedure LoadFromStream(s: TStream); override;
+    procedure LoadForFiles(FileNames: TStrings); override;
+  end;
+  
 
   { TStatusEntry }
 
@@ -968,6 +977,73 @@ destructor TSvnStatus.Destroy;
 begin
   FLists.Free;
   inherited Destroy;
+end;
+
+{ TSvnPropInfoXML }
+
+procedure TSvnPropInfoXML.LoadFromStream(s: TStream); 
+var
+  doc       : TXMLDocument;
+  proplist  : TDOMNode;
+  prop      : TDomNode;
+  target    : TDOMNode;
+  fileName  : String;
+  FileProp  : TSvnFileProp;
+  pName     : String;
+begin
+  ReadXMLFile(doc, s);
+  try
+    proplist := doc.FindNode('properties');
+    if not Assigned(proplist) then Exit;
+
+    target := proplist.FirstChild;
+    while Assigned(target) do begin
+      if target.NodeName = 'target' then begin
+        fileName := DomToSvn(TDomElement(target).GetAttribute('path'));
+        FileProp := TSvnFileProp.Create(fileName);
+        prop := target.FirstChild;
+        while Assigned(prop) do begin
+          if prop.NodeName = 'property' then begin
+            pName := DomToSvn(TDomElement(prop).GetAttribute('name'));
+            FileProp.Properties.Values[pName] := DomToSvn(prop.TextContent);
+          end;
+          prop := prop.NextSibling;
+        end;
+        
+        FFiles.Add(FileProp.FileName, FileProp);
+      end;
+      target := target.NextSibling;
+    end;
+    
+  finally 
+    doc.Free;
+  end;
+end;
+
+procedure TSvnPropInfoXML.LoadForFiles(FileNames: TStrings);  
+var
+  Output: TMemoryStream;
+  Files: string;
+  i: integer;
+begin
+  Output := TMemoryStream.Create;
+  try
+    if FileNames.Count>0 then begin
+      Files := '';
+      for i := 0 to FileNames.Count-1 do
+        Files := Files + format(' "%s"', [FileNames[i]]);
+      ExecuteSvnCommand('proplist --xml -v' + Files, Output);
+      Output.Position := 0;
+    end;
+    LoadFromStream(Output);
+    for i := 0 to FileNames.Count -1 do begin
+      if FFiles.FindIndexOf(FileNames[i])<0 then begin
+        FFiles.Add(FileNames[i], TSvnFileProp.Create(FileNames[i]));
+      end;
+    end;
+  finally
+    Output.Free;
+  end;
 end;
 
 end.
