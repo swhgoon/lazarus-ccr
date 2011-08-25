@@ -1,0 +1,13 @@
+TappyMath is an arithmetic module for TappyTux.
+Currently, TappyMath offers three module options, namely:
+	- addition and subtraction
+	- multiplication and division
+	- combination of above
+Select the starting level (in Settings) to chose difficulty level.
+
+TappyTux is an Open Source project led by A J Venter 
+of OpenLab Int'l (www.getopenlab.com). If you would like 
+to contribute time, expertise or ideas to the development of 
+TappyTux, please contact us at tappytux@getopenlab.com
+
+

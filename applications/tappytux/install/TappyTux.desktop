@@ -1,0 +1,20 @@
+[Desktop Entry]
+Comment=Childrens EduGames
+Comment[en_GB]=Childrens EduGames
+Encoding=UTF-8
+Exec=tappytux
+GenericName=Children's EduGames
+GenericName[en_GB]=Children's EduGames
+Icon=/usr/share/pixmaps/tappytux.xpm
+MimeType=
+Name=TappyTux
+Name[en_GB]=TappyTux
+Path=
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-DCOP-ServiceType=
+X-KDE-SubstituteUID=false
+X-KDE-Username=
+Categories=GNOME;Application;Education;

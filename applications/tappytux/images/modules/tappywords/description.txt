@@ -1,0 +1,36 @@
+TappyWords is a simple typing tutor game-mode for 
+young children. 
+
+Hint: Try to keep looking at the screen instead of the
+keyboard !
+
+- Select the appropriate Wordlist and simply start 
+  playing.
+
+- To add a new Wordlist:
+  	- Click Wordlist Editor. Please be patient as it 
+	  opens.
+  	- Enter the Root Password (if on Linux).
+  	- Start typing the new words into the Wordlist 
+	  Editor, one new word per line.
+	- Select the [File] Menu. Select Save. Follow 
+	  any instructions given.
+	- Save the wordlist file as 
+    		'wordlist.language-description' 
+    		eg wordlist.English-Grd4Verbs
+	- You can then share this list of words with 
+	  other TappyTux users if you have Internet 
+	  access. Please share your hard work with 
+	  other users.
+ 	- Your new Wordlist will appear on the 
+	  Wordlist menu.
+
+- To download other Wordlists from the Internet:
+   	- Click Wordlist Editor. Please be patient as it 
+	  opens.
+   	- Enter the Root Password (if on Linux).
+   	- Select [File] Menu. Select Get more wordlists.
+   	- Click the new wordlist you would like to 
+	  retrieve.
+   	- The Wordlist will download and open, and you 
+	  can then edit and/or save (as above).
