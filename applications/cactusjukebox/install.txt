@@ -1,0 +1,28 @@
+#!/bin/bash
+
+cp ./cactus_jukebox /usr/local/bin/cactus_jukebox
+
+echo "cactus_jukebox is now installed"
+
+#sudo dpkg-deb -b . /media/truecrypt1/cactusjukebox/ccjb.deb
+#create deb from the path
+
+#extract the path from the deb. 分两部生成usr和DEBIAN
+sudo dpkg-deb -x cactusjukebox-0.4.2stable-gtk2_i386.deb
+dpkg-deb: error: --extract 需要一个目录作为目标目录。
+或许您应该使用 dpkg --install？
+jixian@jixian-OEM:/usr/share/cactusjukebox$ sudo dpkg-deb -x cactusjukebox-0.4.2stable-gtk2_i386.deb .
+jixian@jixian-OEM:/usr/share/cactusjukebox$ dir
+cactusjukebox-0.4.2stable-gtk2_i386.deb  usr
+jixian@jixian-OEM:/usr/share/cactusjukebox$ dir usr
+bin  share
+jixian@jixian-OEM:/usr/share/cactusjukebox$ sudo dpkg-deb -e cactusjukebox-0.4.2stable-gtk2_i386.deb ./DEBIAN
+
+chmod -R 0755 DEBIAN
+
+sudo dpkg-deb -b . /media/truecrypt1/cactusjukebox/ccjb.deb
+
+sudo dpkg -r cactusjukebox
+sudo dpkg -i ccjb.deb
+
+
