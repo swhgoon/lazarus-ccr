@@ -41,11 +41,33 @@ uses
 function ExecuteSvnCommand(const Command: string; Output: TStream): integer;
 function ExecuteSvnCommand(const Command: string): integer;
 procedure DumpStream(const AStream: TStream);
+function GetSvnVersionNumber: string;
+
+property SvnVersion: string read GetSvnVersionNumber;
 
 var
   SvnExecutable: string;
 
 implementation
+
+var
+  SvnVersionNumber: string;
+
+procedure InitializeSvnVersionNumber;
+var
+  OutputStream: TStream;
+  FirstDot, SecondDot: integer;
+begin
+  OutputStream := TMemoryStream.Create;
+  try
+    ExecuteSvnCommand('--version --quiet', OutputStream);
+    SetLength(SvnVersionNumber, OutputStream.Size);
+    OutputStream.Seek(0,soBeginning);
+    OutputStream.Read(SvnVersionNumber[1],Length(SvnVersionNumber));
+  finally
+    OutputStream.Free;
+  end;
+end;
 
 procedure InitializeSvnExecutable;
 begin
@@ -131,6 +153,13 @@ begin
   lines.LoadFromStream(AStream);
   writeln(lines.Text);
   lines.Free;
+end;
+
+function GetSvnVersionNumber: string;
+begin
+  if SvnVersionNumber='' then
+    InitializeSvnVersionNumber;
+  Result := SvnVersionNumber;
 end;
 
 
