@@ -21,7 +21,7 @@
 # android.util.*
 #
 [DisplayMetrics] TJavaObject
-constructor Create()
+constructor Create(); override;
 field float density
 field int densityDpi
 field int heightPixels
@@ -35,6 +35,9 @@ field float ydpi
 #
 {DialogInterface}
 type DialogInterface.OnClickListener = void onClick(DialogInterface dialog, int which)
+const BUTTON_NEGATIVE = $fffffffe;
+const BUTTON_NEUTRAL = $fffffffd;
+const BUTTON_POSITIVE = $ffffffff;
 
 #
 # android.app.*
@@ -158,7 +161,7 @@ method void setTitle(CharSequence title)
 method void setView(View view)
 
 [AlertDialog.Builder] TJavaObject
-constructor Create(Activity)
+constructor Create(Activity); override;
 method AlertDialog create ()
 #public Context getContext ()
 #public AlertDialog.Builder setAdapter (ListAdapter adapter, DialogInterface.OnClickListener listener)
@@ -218,20 +221,20 @@ method void addView(View child, int width, int height); overload;
 type View.OnClickListener = void onClick(View v)
 
 [LinearLayout] ViewGroup
-constructor Create(Activity);
+constructor Create(Activity); override;
 method void setOrientation(int orientation);
 const HORIZONTAL = 0;
 const VERTICAL = 1;
 
 [AbsoluteLayout] ViewGroup
-constructor Create(Activity);
+constructor Create(Activity); override;
 
 [AbsoluteLayout.LayoutParams] ViewGroup.LayoutParams
 constructor Create(int param_width, int param_height, int param_x, int param_y);
 
 [TextView] View
-constructor Create(Activity); virtual;
-method void setText(CharSequence AText); virtual;
+constructor Create(Activity); override;
+method void setText(CharSequence AText);
 callbacksetter void setOnClickListener($View.OnClickListener l)
 method void setTextSize(int unit_; float size);
 method CharSequence getText()
@@ -245,7 +248,7 @@ constructor Create(Activity); override;
 [FrameLayout] ViewGroup
 
 [TimePicker] FrameLayout
-constructor Create(Activity);
+constructor Create(Activity); override;
 method int getCurrentHour();
 method void setCurrentHour(int currentHour);
 method int getCurrentMinute;
@@ -254,7 +257,7 @@ method boolean is24HourView;
 method void setIs24HourView(boolean AIs24HourView);
 
 [ScrollView] FrameLayout
-constructor Create(Activity);
+constructor Create(Activity); override;
 
 [CompoundButton] Button
 #constructor Create(Activity) abstract
@@ -265,7 +268,7 @@ method void 	setChecked(boolean checked)
 method void 	toggle() 
 
 [CheckBox] CompoundButton
-constructor Create(Activity)
+constructor Create(Activity); override;
 
 [AdapterView] ViewGroup
 method int getSelectedItemPosition()
@@ -283,7 +286,7 @@ methodo void setSelection(int position, boolean animate); overload;
 method void setSelection(int position); overload;
 
 [Spinner] AbsSpinner
-constructor Create(Activity);
+constructor Create(Activity); override;
 
 #
 # For info about the Adapter of a spinner see:

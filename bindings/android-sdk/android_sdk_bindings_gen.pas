@@ -438,7 +438,7 @@ var
   lReaderPos: Integer = 1;
   lParamNum: Integer = 1;
   lCurWord, lParentClassName: string;
-  lMethodReturn, lMethodReturnPas, lMethodName, lParamType, lParamTypePas, lParamName, lParamPrefix: string;
+  lMethodReturn, lMethodReturnPas, lMethodName, lPasMethodName, lParamType, lParamTypePas, lParamName, lParamPrefix: string;
   lMethodReturnJavaIdentifier: string;
   DeclarationBase, TmpStr, lIDString: string;
   lJavaParamVar, lJavaParams, lJavaParamSelf: string;
@@ -457,6 +457,8 @@ begin
   lMethodReturn := GetNextWord(ASourceLine, lReaderPos);
   lMethodReturnPas := GetPascalTypeName(lMethodReturn);
   lMethodName := GetNextWord(ASourceLine, lReaderPos);
+  if lMethodName = 'create' then lPasMethodName := lMethodName + '_'
+  else lPasMethodName := lMethodName;
 
   if lMethodReturn = 'void' then DeclarationBase := 'procedure '
   else DeclarationBase := 'function ';
@@ -489,16 +491,16 @@ begin
   AddOutputIDs(lIDString);
 
   // Add all parameters
-  TmpStr := lMethodName + '(';
+  TmpStr := lPasMethodName + '(';
 
   repeat
     lParamType := GetNextWord(ASourceLine, lReaderPos);
 
     // Method modifiers
-    if (lParamType = 'virtual') or (lParamType = 'override') then Continue;
-    if (lParamType = 'overload') then
+    if (lParamType = 'virtual') or (lParamType = 'override')
+      or (lParamType = 'overload') then
     begin
-      lPascalMethodModifiers := ' overload;';
+      lPascalMethodModifiers := Format(' %s;', [lParamType]);
       Continue;
     end;
 
@@ -551,6 +553,11 @@ begin
   begin
     TmpStr := TmpStr + '): ' + lMethodReturnPas + ';';
     FPasOutputImpl.Add('  Result := vAndroidPipesComm.WaitForStringReturn();');
+  end
+  else if not IsBasicJavaType(lMethodReturn) then
+  begin
+    TmpStr := TmpStr + '): ' + lMethodReturnPas + ';';
+    FPasOutputImpl.Add('  Result := ' + lMethodReturnPas + '.Create(vAndroidPipesComm.WaitForIntReturn());');
   end
   else
   begin
@@ -612,6 +619,7 @@ var
   lConstructorPasParams, lConstructorJavaParams, lParamPrefix, lJavaParamVar: string;
   DeclarationBase, lIDString: string;
   HasActivityParam: Boolean = False;
+  lPascalMethodModifiers: String = '';
 begin
   if ASourceLine = '' then Exit;
 
@@ -640,7 +648,11 @@ begin
     lParamType := GetNextWord(ASourceLine, lReaderPos);
 
     // Method modifiers
-    if (lParamType = 'virtual') or (lParamType = 'override') then Continue;
+    if (lParamType = 'virtual') or (lParamType = 'override') then
+    begin
+      lPascalMethodModifiers := Format(' %s;', [lParamType]);
+      Continue;
+    end;
 
     // The Activity global object doesn't appear in the Pascal side and
     //comes as a single word in the txt file
@@ -681,7 +693,7 @@ begin
 
   // Finalization of the constructor
 
-  FPasOutputClasses.Add(Format('    constructor %s(%s);', [lMethodName, lConstructorPasParams]));
+  FPasOutputClasses.Add(Format('    constructor %s(%s);%s', [lMethodName, lConstructorPasParams, lPascalMethodModifiers]));
   //
   FPasOutputImpl.Insert(FPasOutputImplCurLine,
     Format('constructor %s.%s(%s);', [FClassNamePas, lMethodName, lConstructorPasParams]));

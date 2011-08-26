@@ -629,7 +629,7 @@ public class AndroidAll
       ViewElementsTags.add(null);
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
       break;
-    // method void setText(CharSequence AText); virtual;
+    // method void setText(CharSequence AText);
     case amkUI_TTextView_setText_1:
       DebugOut("amkUI_TTextView_setText_1");
       // Self
