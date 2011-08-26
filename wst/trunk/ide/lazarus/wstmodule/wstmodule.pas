@@ -202,7 +202,8 @@ Procedure TCustomWSTModule.ProcessServiceRequest(ARequest : TRequest; AResponse 
 var
   ServiceName,ContentType : string;
   rqst : IRequestBuffer;
-  inStream, outStream: TStringStream;
+  inStream : TStringStream;
+  outStream : TMemoryStream;
   B : Boolean;
 begin
 {$ifdef wmdebug}SendDebug('Entering ProcessServiceRequest');{$endif}
@@ -215,7 +216,7 @@ begin
     begin
     inStream := TStringStream.Create(ARequest.Content);
     try
-      outStream := TStringStream.Create('');
+      outStream := TMemoryStream.Create();
       try
         ContentType:= ARequest.ContentType;
         Response.ContentType := ContentType;
@@ -224,7 +225,9 @@ begin
        {$ifdef wmdebug}SendDebug('Handling request');{$endif}
         HandleServiceRequest(rqst);
        {$ifdef wmdebug}SendDebug('Handled request');{$endif}
-        AResponse.Content:=OutStream.DataString;
+        AResponse.ContentStream := outStream;
+       AResponse.SendContent();
+       AResponse.ContentStream := nil;
       finally
         OutStream.Free;
       end;
@@ -279,4 +282,3 @@ end;
 
 
 end.
-
