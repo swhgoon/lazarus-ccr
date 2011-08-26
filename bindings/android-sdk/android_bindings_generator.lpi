@@ -3,12 +3,12 @@
   <ProjectOptions>
     <Version Value="9"/>
     <General>
+      <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <Title Value="android_bindings_generator"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
       <Icon Value="0"/>
-      <ActiveWindowIndexAtStart Value="0"/>
     </General>
     <i18n>
       <EnableI18N LFM="False"/>
@@ -16,7 +16,7 @@
     <VersionInfo>
       <StringTable ProductVersion=""/>
     </VersionInfo>
-    <BuildModes Count="1" Active="Default">
+    <BuildModes Count="1">
       <Item1 Name="Default" Default="True"/>
     </BuildModes>
     <PublishOptions>
@@ -39,17 +39,11 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="36">
+    <Units Count="3">
       <Unit0>
         <Filename Value="android_bindings_generator.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="android_bindings_generator"/>
-        <EditorIndex Value="2"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="15" Y="14"/>
-        <UsageCount Value="73"/>
-        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="mainform.pas"/>
@@ -57,421 +51,13 @@
         <ComponentName Value="Form1"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="mainform"/>
-        <EditorIndex Value="0"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="7"/>
-        <CursorPos X="3" Y="39"/>
-        <UsageCount Value="73"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit1>
       <Unit2>
-        <Filename Value="../../../p-tools/turbochessclock4android/androidmenu.pas"/>
-        <UnitName Value="androidmenu"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="51"/>
-        <CursorPos X="25" Y="24"/>
-        <UsageCount Value="11"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="../../../p-tools/turbochessclock4android/androidutil.pas"/>
-        <UnitName Value="androidutil"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
-        <UsageCount Value="12"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="../../../p-tools/turbochessclock4android/androidview.pas"/>
-        <UnitName Value="androidview"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="82" Y="10"/>
-        <UsageCount Value="12"/>
-      </Unit4>
-      <Unit5>
-        <Filename Value="../../../p-tools/turbochessclock4android/androiddialog.pas"/>
-        <UnitName Value="androiddialog"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
-        <UsageCount Value="12"/>
-      </Unit5>
-      <Unit6>
-        <Filename Value="../../../p-tools/turbochessclock4android/androidinputevent.pas"/>
-        <UnitName Value="androidinputevent"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
-        <UsageCount Value="6"/>
-      </Unit6>
-      <Unit7>
-        <Filename Value="../../../p-tools/turbochessclock4android/android/src/com/pascal/turbochessclock/AndroidMenu.java"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="54"/>
-        <CursorPos X="87" Y="37"/>
-        <UsageCount Value="13"/>
-        <DefaultSyntaxHighlighter Value="Java"/>
-      </Unit7>
-      <Unit8>
         <Filename Value="android_sdk_bindings_gen.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="android_sdk_bindings_gen"/>
-        <EditorIndex Value="3"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="526"/>
-        <CursorPos X="58" Y="569"/>
-        <UsageCount Value="73"/>
-        <Loaded Value="True"/>
-      </Unit8>
-      <Unit9>
-        <Filename Value="../../../p-tools/turbochessclock4android/androidapp.pas"/>
-        <UnitName Value="androidapp"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="60"/>
-        <UsageCount Value="12"/>
-      </Unit9>
-      <Unit10>
-        <Filename Value="../../../p-tools/turbochessclock4android/androidpipescomm.pas"/>
-        <UnitName Value="androidpipescomm"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
-        <UsageCount Value="6"/>
-      </Unit10>
-      <Unit11>
-        <Filename Value="../../../fpcbuild/fpcsrc/rtl/objpas/sysutils/sysstrh.inc"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="92"/>
-        <CursorPos X="18" Y="116"/>
-        <UsageCount Value="6"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
-      </Unit11>
-      <Unit12>
-        <Filename Value="../../../p-tools/turbochessclock4android/android/src/com/pascal/turbochessclock/AndroidView.java"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="232"/>
-        <CursorPos X="111" Y="259"/>
-        <UsageCount Value="12"/>
-        <DefaultSyntaxHighlighter Value="Java"/>
-      </Unit12>
-      <Unit13>
-        <Filename Value="../../../p-tools/systeminfo4android/androidpipescomm.pas"/>
-        <UnitName Value="androidpipescomm"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="127"/>
-        <CursorPos X="17" Y="161"/>
-        <UsageCount Value="10"/>
-      </Unit13>
-      <Unit14>
-        <Filename Value="sdk_level_7/android_all.pas"/>
-        <UnitName Value="android_all"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
-        <UsageCount Value="9"/>
-      </Unit14>
-      <Unit15>
-        <Filename Value="../../../p-tools/systeminfo4android/javalang.pas"/>
-        <UnitName Value="javalang"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
-        <UsageCount Value="7"/>
-      </Unit15>
-      <Unit16>
-        <Filename Value="../../../p-tools/systeminfo4android/androidtimer.pas"/>
-        <UnitName Value="androidtimer"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="3" Y="20"/>
-        <UsageCount Value="7"/>
-      </Unit16>
-      <Unit17>
-        <Filename Value="sdk_level_7/AndroidAll.java"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="441"/>
-        <CursorPos X="16" Y="441"/>
-        <UsageCount Value="9"/>
-        <DefaultSyntaxHighlighter Value="Java"/>
-      </Unit17>
-      <Unit18>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <EditorIndex Value="4"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="267"/>
-        <CursorPos X="19" Y="308"/>
-        <UsageCount Value="28"/>
-        <Loaded Value="True"/>
-        <DefaultSyntaxHighlighter Value="None"/>
-      </Unit18>
-      <Unit19>
-        <Filename Value="../../../lazarus/lcl/graphics.pp"/>
-        <UnitName Value="Graphics"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="501"/>
-        <CursorPos X="54" Y="525"/>
-        <UsageCount Value="7"/>
-      </Unit19>
-      <Unit20>
-        <Filename Value="../../../test/androidlcl/android/src/com/pascal/androidlcl/AndroidAll.java"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="365"/>
-        <CursorPos X="38" Y="381"/>
-        <UsageCount Value="7"/>
-        <DefaultSyntaxHighlighter Value="Java"/>
-      </Unit20>
-      <Unit21>
-        <Filename Value="../../../lazarus/lcl/interfaces/lcl.pas"/>
-        <UnitName Value="LCL"/>
-        <EditorIndex Value="1"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="26" Y="9"/>
-        <UsageCount Value="28"/>
-        <Loaded Value="True"/>
-      </Unit21>
-      <Unit22>
-        <Filename Value="../../examples/androidlcl/android/src/com/pascal/androidlcl/AndroidAll.java"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="6"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="451"/>
-        <CursorPos X="40" Y="451"/>
-        <UsageCount Value="12"/>
-        <Loaded Value="True"/>
-        <DefaultSyntaxHighlighter Value="Java"/>
-      </Unit22>
-      <Unit23>
-        <Filename Value="../../../lazarus/lcl/interfaces/android/android_all.pas"/>
-        <UnitName Value="android_all"/>
-        <EditorIndex Value="5"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="882"/>
-        <CursorPos X="34" Y="882"/>
-        <UsageCount Value="28"/>
-        <Loaded Value="True"/>
-      </Unit23>
-      <Unit24>
-        <Filename Value="../../../lazarus/lcl/interfaces/android/androidpipescomm.pas"/>
-        <UnitName Value="androidpipescomm"/>
-        <EditorIndex Value="7"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="38"/>
-        <CursorPos X="15" Y="62"/>
-        <UsageCount Value="28"/>
-        <Loaded Value="True"/>
-      </Unit24>
-      <Unit25>
-        <Filename Value="../../../lazarus/lcl/interfaces/android/androidapp.pas"/>
-        <UnitName Value="androidapp"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="74"/>
-        <CursorPos X="1" Y="1"/>
-        <UsageCount Value="7"/>
-      </Unit25>
-      <Unit26>
-        <Filename Value="../../../lazarus/lcl/arrow.pp"/>
-        <UnitName Value="Arrow"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="21"/>
-        <CursorPos X="3" Y="45"/>
-        <UsageCount Value="18"/>
-      </Unit26>
-      <Unit27>
-        <Filename Value="../../../lazarus/lcl/extctrls.pp"/>
-        <UnitName Value="ExtCtrls"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="388"/>
-        <CursorPos X="3" Y="412"/>
-        <UsageCount Value="18"/>
-      </Unit27>
-      <Unit28>
-        <Filename Value="../../../lazarus/lcl/comctrls.pp"/>
-        <UnitName Value="ComCtrls"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1952"/>
-        <CursorPos X="26" Y="1976"/>
-        <UsageCount Value="18"/>
-      </Unit28>
-      <Unit29>
-        <Filename Value="../../../lazarus/lcl/stdctrls.pp"/>
-        <UnitName Value="StdCtrls"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1025"/>
-        <CursorPos X="32" Y="1049"/>
-        <UsageCount Value="18"/>
-      </Unit29>
-      <Unit30>
-        <Filename Value="../../../lazarus/lcl/grids.pas"/>
-        <UnitName Value="Grids"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="606"/>
-        <CursorPos X="3" Y="630"/>
-        <UsageCount Value="18"/>
-      </Unit30>
-      <Unit31>
-        <Filename Value="../../../lazarus/lcl/toolwin.pp"/>
-        <UnitName Value="Toolwin"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="31"/>
-        <CursorPos X="3" Y="56"/>
-        <UsageCount Value="18"/>
-      </Unit31>
-      <Unit32>
-        <Filename Value="../../../lazarus/lcl/interfaces/wince/winceobject.inc"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="301"/>
-        <CursorPos X="12" Y="339"/>
-        <UsageCount Value="8"/>
-      </Unit32>
-      <Unit33>
-        <Filename Value="../../../lazarus/lcl/interfaces/carbon/carbonobject.inc"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="520"/>
-        <CursorPos X="44" Y="552"/>
-        <UsageCount Value="8"/>
-      </Unit33>
-      <Unit34>
-        <Filename Value="../../examples/androidlcl/android/src/com/pascal/androidlcl/AndroidApp.java"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
-        <UsageCount Value="10"/>
-        <DefaultSyntaxHighlighter Value="Java"/>
-      </Unit34>
-      <Unit35>
-        <Filename Value="../../../lazarus/lcl/interfaces/android/javalang.pas"/>
-        <UnitName Value="javalang"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="53"/>
-        <CursorPos X="3" Y="77"/>
-        <UsageCount Value="10"/>
-      </Unit35>
+      </Unit2>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
-      <Position1>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="164" Column="12" TopLine="123"/>
-      </Position1>
-      <Position2>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="203" Column="12" TopLine="162"/>
-      </Position2>
-      <Position3>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="231" Column="1" TopLine="183"/>
-      </Position3>
-      <Position4>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="233" Column="12" TopLine="192"/>
-      </Position4>
-      <Position5>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="236" Column="12" TopLine="195"/>
-      </Position5>
-      <Position6>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="243" Column="12" TopLine="202"/>
-      </Position6>
-      <Position7>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="246" Column="12" TopLine="205"/>
-      </Position7>
-      <Position8>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="251" Column="12" TopLine="210"/>
-      </Position8>
-      <Position9>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="260" Column="12" TopLine="219"/>
-      </Position9>
-      <Position10>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="263" Column="13" TopLine="222"/>
-      </Position10>
-      <Position11>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="271" Column="12" TopLine="230"/>
-      </Position11>
-      <Position12>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="289" Column="12" TopLine="248"/>
-      </Position12>
-      <Position13>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="286" Column="52" TopLine="267"/>
-      </Position13>
-      <Position14>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="2" Column="1" TopLine="1"/>
-      </Position14>
-      <Position15>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="24" Column="12" TopLine="1"/>
-      </Position15>
-      <Position16>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="164" Column="12" TopLine="123"/>
-      </Position16>
-      <Position17>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="203" Column="12" TopLine="162"/>
-      </Position17>
-      <Position18>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="224" Column="12" TopLine="183"/>
-      </Position18>
-      <Position19>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="230" Column="12" TopLine="189"/>
-      </Position19>
-      <Position20>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="233" Column="12" TopLine="192"/>
-      </Position20>
-      <Position21>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="236" Column="12" TopLine="195"/>
-      </Position21>
-      <Position22>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="243" Column="12" TopLine="202"/>
-      </Position22>
-      <Position23>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="246" Column="12" TopLine="205"/>
-      </Position23>
-      <Position24>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="251" Column="12" TopLine="210"/>
-      </Position24>
-      <Position25>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="260" Column="12" TopLine="219"/>
-      </Position25>
-      <Position26>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="263" Column="13" TopLine="222"/>
-      </Position26>
-      <Position27>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="271" Column="12" TopLine="230"/>
-      </Position27>
-      <Position28>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="289" Column="12" TopLine="248"/>
-      </Position28>
-      <Position29>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="277" Column="56" TopLine="267"/>
-      </Position29>
-      <Position30>
-        <Filename Value="sdk_level_7/android_all.txt"/>
-        <Caret Line="2" Column="1" TopLine="1"/>
-      </Position30>
-    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="10"/>
@@ -490,6 +76,9 @@
       </Options>
     </Linking>
     <Other>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
