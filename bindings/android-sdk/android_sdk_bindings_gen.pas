@@ -22,17 +22,27 @@ type
     FClassNum, FMethodNum: Integer;
     FIsGlobalObject: Boolean;
     FGlobalObject: string;
+    // List of Callback types which are used later
+    FCallbackTypesJavaName: TStringList;
+    FCallbackTypesParams: TStringList;
+    FCallbackTypesInnerName: TStringList;
+    FCallbackTypesFirstParam: TStringList;
     //
     // ProcessMethodReturnValue
     FMethodReturnPas, FDeclarationBase: string;
     FDeclarationIsFunction: Boolean;
     // ProcessMethodName
     FMethodName: string;
+    // ProcessMethodPreface
+    FJavaParamSelf: String;
+    FIDString: String;
+    FIDSetter, FIDStart, FIDFinished: String;
+    FCallbackName, FSetterName, FCallerName: string;
     // ProcessMethodParameters
-    FPascalParams, FJavaParams: string;
+    FPascalParams, FJavaParams, FFirstParam: string;
     FHasStringParam: Boolean;
     FPasOutputImplCurLine: Integer;
-    FCallbackTypePas: string;
+    FCallbackTypePas, FCallbackTypeJava: string;
     //
     procedure GeneratePascalFile(ASourceFile: string; ADest: TStringList);
     procedure GenerateJavaFile(ASourceFile: string; ADest: TStringList);
@@ -47,6 +57,7 @@ type
     //
     procedure ProcessMethodReturnValue(ASourceLine: string; var lReaderPos: Integer);
     procedure ProcessMethodName(ASourceLine: string; var lReaderPos: Integer);
+    procedure ProcessMethodPreface(ASourceLine: string; AIsCallback: Boolean);
     procedure ProcessMethodParameters(ASourceLine: string; var lReaderPos: Integer; AAddParamRead: Boolean = True);
     //
     function GetNextWord(ALine: string; var AStartPos: Integer): string;
@@ -162,6 +173,7 @@ begin
   ADest.Add('  JavaLang MyJavaLang;');
   ADest.Add('  // lists of variables');
   ADest.Add('  ArrayList ViewElements;');
+  ADest.Add('  ArrayList ViewElementsTags;');
   ADest.Add('');
   ADest.Add('  public AndroidAll(AndroidPipesComm AAndroidPipesComm, Activity AActivity, JavaLang AJavaLang)');
   ADest.Add('  {');
@@ -169,6 +181,7 @@ begin
   ADest.Add('    MyAndroidPipesComm = AAndroidPipesComm;');
   ADest.Add('    MyJavaLang = AJavaLang;');
   ADest.Add('    ViewElements = new ArrayList();');
+  ADest.Add('    ViewElementsTags = new ArrayList();');
   ADest.Add('  }');
   ADest.Add('');
   ADest.Add('  public void DebugOut(String Str)');
@@ -205,13 +218,15 @@ begin
   ADest.Add('    ArrayAdapter<String> param_self_ArrayAdapter_String_;');
   ADest.Add('    AdapterView param_self_AdapterView;');
   ADest.Add('    AlertDialog.Builder param_self_AlertDialog_Builder;');
+  ADest.Add('    Dialog param_self_Dialog;');
+  ADest.Add('    AlertDialog param_self_AlertDialog;');
   ADest.Add('    //');
   ADest.Add('    // Params');
   ADest.Add('    //');
   ADest.Add('    ViewGroup.LayoutParams lViewGroup_LayoutParams_1, lViewGroup_LayoutParams_2, lViewGroup_LayoutParams_3;');
   ADest.Add('    SpinnerAdapter lSpinnerAdapter_1;');
   ADest.Add('    DisplayMetrics lDisplayMetrics_1;');
-  ADest.Add('    CharSequence lCharSequence_1;');
+  ADest.Add('    CharSequence lCharSequence_1, lCharSequence_2;');
   ADest.Add('    String lString_1;');
   ADest.Add('    View lView_1;');
   ADest.Add('    int lint_1, lint_2, lint_3, lint_4;');
@@ -579,6 +594,7 @@ begin
     else
     begin
       FJavaOutputMethods.Add(Format('      ViewElements.add(%s);', [lMethodReturnJavaIdentifier]));
+      FJavaOutputMethods.Add(       '      ViewElementsTags.add(null);');
       FJavaOutputMethods.Add(Format('      MyAndroidPipesComm.%s(ViewElements.size() - 1);', [GetJavaResultFunction(lMethodReturn)]))
     end;
   end;
@@ -673,6 +689,7 @@ begin
   FPasOutputImpl.Add('end;');
 
   FJavaOutputMethods.Add('      ViewElements.add(new ' + FClassName + '(' + lConstructorJavaParams + '));');
+  FJavaOutputMethods.Add('      ViewElementsTags.add(null);');
   FJavaOutputMethods.Add('      MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);');
   FJavaOutputMethods.Add('      break;');
 
@@ -701,10 +718,12 @@ procedure TAndroidSDKBindingsGen.ProcessModelCallbackSetter(ASourceLine: string)
 var
   lReaderPos: Integer = 1;
   lCurWord: string;
-  lSetterName, lCallerName, lCallbackName, lCallbackDeclaration: string;
-  lIDSetter, lIDStart, lIDFinished: String;
-  lJavaParamSelf: string;
   lStr: String;
+  lSeparator: String;
+  lJavaCallbackIndex: Integer;
+  lJavaCallbackParams, lJavaCallbackInnerName, lFirstCallbackParam: String;
+  lHugeParamList: TStringList;
+  lHugeParamListText: String;
 begin
   if ASourceLine = '' then Exit;
 
@@ -712,49 +731,40 @@ begin
 
   ProcessMethodReturnValue(ASourceLine, lReaderPos);
   ProcessMethodName(ASourceLine, lReaderPos);
+
+  // Pascal and Java Implementation Start
+  ProcessMethodPreface(ASourceLine, True);
+
   ProcessMethodParameters(ASourceLine, lReaderPos);
 
-  lSetterName := FMethodName;
-  lIDSetter := GetIDString(lSetterName);
-  lCallbackName := Copy(lSetterName, 4, Length(lSetterName)); // remove the "set" from the setter name
-  lCallerName := 'call' + lCallbackName;
-  AddOutputIDs(lIDSetter);
-  Inc(FMethodNum);
-  lIDStart := GetIDString(lCallbackName + '_Start');
-  AddOutputIDs(lIDStart);
-  Inc(FMethodNum);
-  lIDFinished := GetIDString(lCallbackName + '_Finished');
-  AddOutputIDs(lIDFinished);
-  Inc(FMethodNum);
+  // Pascal implementation continuation
+  if FPascalParams = '' then lSeparator := ''
+  else lSeparator := '; ';
+  FPasOutputImpl.Insert(FPasOutputImplCurLine,
+                     Format('procedure %s.%s(%s%sACallback: %s);', [FClassNamePas, FSetterName, FPascalParams, lSeparator, FCallbackTypePas]));
 
-  FPasOutputClasses.Add(       '  public');
-  FPasOutputClasses.Add(Format('    %s: %s;', [lCallbackName, FCallbackTypePas]));
-  FPasOutputClasses.Add(Format('    procedure %s(ACallback: %s);', [lSetterName, FCallbackTypePas]));
-  FPasOutputClasses.Add(Format('    procedure %s();', [lCallerName]));
-  FPasOutputClasses.Add(       '  public');
-
-  FPasOutputImpl.Add(Format('procedure %s.%s(ACallback: %s);', [FClassNamePas, lSetterName, FCallbackTypePas]));
-  FPasOutputImpl.Add(       'begin');
-  FPasOutputImpl.Add(       '  OnClickListener := ACallback;');
-  FPasOutputImpl.Add(       '  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));');
-  FPasOutputImpl.Add(       '  vAndroidPipesComm.SendInt(' + lIDSetter + ');');
-  FPasOutputImpl.Add(       '  vAndroidPipesComm.SendInt(Index); // Self, Java Index');
-  FPasOutputImpl.Add(       '  vAndroidPipesComm.SendInt(PtrInt(Self)); // Self, Pascal pointer');
   FPasOutputImpl.Add(       '  vAndroidPipesComm.WaitForReturn();');
   FPasOutputImpl.Add(       'end;');
   FPasOutputImpl.Add(       '');
-  FPasOutputImpl.Add(Format('procedure %s.%s();', [FClassNamePas, lCallerName]));
+  FPasOutputImpl.Add(Format('procedure %s.%s();', [FClassNamePas, FCallerName]));
   FPasOutputImpl.Add(       'begin');
-  FPasOutputImpl.Add(       '  if Assigned(OnClickListener) then OnClickListener(Self);');
+  FPasOutputImpl.Add(Format('  if Assigned(%s) then %s();', [FCallbackName, FCallbackName]));
   FPasOutputImpl.Add(       'end;');
 
-  // Method type and name
-  FPasOutputMessages.Add('  ' + lIDStart + ':');
-  FPasOutputMessages.Add('  begin');
-  FPasOutputMessages.Add('    lPascalPointer := vAndroidPipesComm.ReadInt();');
-  FPasOutputMessages.Add('    TTextView(lPascalPointer).callOnClickListener();');
-  FPasOutputMessages.Add('    vAndroidPipesComm.SendMessage(amkUICommand, ' + lIDFinished + ');');
-  FPasOutputMessages.Add('  end;');
+  // Pascal Interface
+  FPasOutputClasses.Add(       '  public');
+  FPasOutputClasses.Add(Format('    %s: %s;', [FCallbackName, FCallbackTypePas]));
+  FPasOutputClasses.Add(Format('    procedure %s(%s%sACallback: %s);', [FSetterName, FPascalParams, lSeparator, FCallbackTypePas]));
+  FPasOutputClasses.Add(Format('    procedure %s();', [FCallerName]));
+  FPasOutputClasses.Add(       '  public');
+
+  // Pascal Message Reader
+  FPasOutputMessages.Add(       '  ' + FIDStart + ':');
+  FPasOutputMessages.Add(       '  begin');
+  FPasOutputMessages.Add(       '    lPascalPointer := vAndroidPipesComm.ReadInt();');
+  FPasOutputMessages.Add(Format('    %s(lPascalPointer).%s();', [FClassNamePas, FCallerName]));
+  FPasOutputMessages.Add(       '    vAndroidPipesComm.SendMessage(amkUICommand, ' + FIDFinished + ');');
+  FPasOutputMessages.Add(       '  end;');
 {    amkUI_MenuItem_setOnMenuItemClickListener_Start:
     begin
       lInt := ReadInt();
@@ -766,36 +776,35 @@ begin
     end;
   end;}
 
-
   // -----------------------------------------------
   // Now Java:
   // -----------------------------------------------
 
-  lJavaParamSelf := 'param_self_' + FClassName;
-  FJavaOutputMethods.Add(       '    // ' + ASourceLine);
-  FJavaOutputMethods.Add(       '    case ' + lIDSetter + ':');
-  FJavaOutputMethods.Add(       '      DebugOut("' + lIDSetter + '");');
-  FJavaOutputMethods.Add(       '      // Self');
-  FJavaOutputMethods.Add(       '      lInt = MyAndroidPipesComm.GetInt();');
-  FJavaOutputMethods.Add(       '      ' + lJavaParamSelf + ' = (' + FClassName + ') ViewElements.get(lInt);');
-  FJavaOutputMethods.Add(       '      lPascalPointer = MyAndroidPipesComm.GetInt();');
-  FJavaOutputMethods.Add(Format('      %s.setTag(Integer.valueOf(lPascalPointer));', [lJavaParamSelf]));
-  FJavaOutputMethods.Add(       '');
+  lJavaCallbackIndex := FCallbackTypesJavaName.IndexOf(FCallbackTypeJava);
+  lJavaCallbackParams := FCallbackTypesParams.Strings[lJavaCallbackIndex];
+  lJavaCallbackInnerName := FCallbackTypesInnerName.Strings[lJavaCallbackIndex];
+  lFirstCallbackParam := FCallbackTypesFirstParam.Strings[lJavaCallbackIndex];
+
+  lHugeParamList := TStringList.Create;
+  lHugeParamList.Add(Format('      new %s()', [FCallbackTypeJava]));
+  lHugeParamList.Add(       '      {');
+  lHugeParamList.Add(Format('        public void %s(%s)', [lJavaCallbackInnerName, lJavaCallbackParams]));
+  lHugeParamList.Add(       '        {');
+  lHugeParamList.Add(       '          // Perform action');
+  lHugeParamList.Add(Format('          DebugOut("START %s");', [FCallbackTypeJava]));
+  lHugeParamList.Add(Format('          MyAndroidPipesComm.SendMessage(AndroidPipesComm.amkUICommand, %s);', [FIDStart]));
+  lHugeParamList.Add(Format('          Integer lTag = (Integer) ViewElementsTags.get(ViewElements.indexOf(%s));', [lFirstCallbackParam]));
+  //FJavaOutputMethods.Add(       '          Integer lTag = (Integer) v.getTag();');
+  lHugeParamList.Add(       '          MyAndroidPipesComm.SendInt(lTag.intValue());');
+  lHugeParamList.Add(Format('          MyAndroidPipesComm.WaitForPascalMessage(AndroidPipesComm.amkUICommand, %s);', [FIDFinished]));
+  lHugeParamList.Add(Format('          DebugOut("END %s");', [FCallbackTypeJava]));
+  lHugeParamList.Add(       '        }');
+  lHugeParamList.Add(       '      }');
+  lHugeParamListText := StringReplace(FJavaParams, '$', lHugeParamList.Text, []);
+  lHugeParamList.Free;
+
   FJavaOutputMethods.Add(       '      // Run the code');
-  FJavaOutputMethods.Add(Format('      %s.setOnClickListener(', [lJavaParamSelf]));
-  FJavaOutputMethods.Add(Format('      new View.OnClickListener()', []));
-  FJavaOutputMethods.Add(       '      {');
-  FJavaOutputMethods.Add(       '        public void onClick(View v)');
-  FJavaOutputMethods.Add(       '        {');
-  FJavaOutputMethods.Add(       '          // Perform action');
-  FJavaOutputMethods.Add(       '          DebugOut("START TextView OnClickListener");');
-  FJavaOutputMethods.Add(Format('          MyAndroidPipesComm.SendMessage(AndroidPipesComm.amkUICommand, %s);', [lIDStart]));
-  FJavaOutputMethods.Add(       '          Integer lTag = (Integer) v.getTag();');
-  FJavaOutputMethods.Add(       '          MyAndroidPipesComm.SendInt(lTag.intValue());');
-  FJavaOutputMethods.Add(Format('          MyAndroidPipesComm.WaitForPascalMessage(AndroidPipesComm.amkUICommand, %s);', [lIDFinished]));
-  FJavaOutputMethods.Add(       '          DebugOut("END TextView OnClickListener");');
-  FJavaOutputMethods.Add(       '        }');
-  FJavaOutputMethods.Add(       '      });');
+  FJavaOutputMethods.Add(Format('      %s.%s(%s);', [FJavaParamSelf, FMethodName, lHugeParamListText]));
   FJavaOutputMethods.Add(       '      MyAndroidPipesComm.SendResult();');
   FJavaOutputMethods.Add(       '      break;');
 (*  case amkUI_TextView_setOnClickListener:
@@ -833,22 +842,40 @@ var
   lReaderPos: Integer = 1;
   lCurWord: string;
   lStr, lCallbackDeclaration, lPascalType: String;
+  lJavaName, lJavaParams, lFirstParam: String;
 begin
   if ASourceLine = '' then Exit;
 
   lStr := GetNextWord(ASourceLine, lReaderPos);
 
   lStr := GetNextWord(ASourceLine, lReaderPos);
+  lJavaName := lStr;
   lPascalType := GetPascalTypeName(lStr);
 
   ProcessMethodReturnValue(ASourceLine, lReaderPos);
   ProcessMethodName(ASourceLine, lReaderPos);
+  lJavaParams := Copy(ASourceLine, lReaderPos, Length(ASourceLine));
+  lJavaParams := Trim(lJavaParams);
+  lJavaParams := Copy(lJavaParams, 2, Length(lJavaParams)-2);
+
   ProcessMethodParameters(ASourceLine, lReaderPos, False);
 
+  // Correct code, but at the moment too complex
+
+  {$IFDEF CORRECT_TYPES}
   if FDeclarationIsFunction then
     FPasOutputTypes.Add(Format('  %s = %s (%s): %s of object;', [lPascalType, FDeclarationBase, FPascalParams, FMethodReturnPas]))
   else
     FPasOutputTypes.Add(Format('  %s = %s (%s) of object;', [lPascalType, FDeclarationBase, FPascalParams]));
+  {$ELSE}
+  FPasOutputTypes.Add(Format('  %s = procedure () of object;', [lPascalType, FDeclarationBase, FPascalParams]));
+  {$ENDIF}
+
+  // Also add to the lists
+  FCallbackTypesJavaName.Add(lJavaName);
+  FCallbackTypesParams.Add(lJavaParams);
+  FCallbackTypesInnerName.Add(FMethodName);
+  FCallbackTypesFirstParam.Add(FFirstParam);
 end;
 
 procedure TAndroidSDKBindingsGen.ProcessMethodReturnValue(ASourceLine: string;
@@ -878,6 +905,65 @@ begin
   FMethodName := GetNextWord(ASourceLine, lReaderPos);
 end;
 
+procedure TAndroidSDKBindingsGen.ProcessMethodPreface(ASourceLine: string; AIsCallback: Boolean);
+begin
+  FIDString := GetIDString(FMethodName);
+  // Lists of constants for the IDs
+
+  if not AIsCallback then AddOutputIDs(FIDString)
+  else
+  begin
+    FSetterName := FMethodName;
+    FIDSetter := GetIDString(FSetterName);
+    FCallbackName := Copy(FSetterName, 4, Length(FSetterName)); // remove the "set" from the setter name
+    FCallerName := 'call' + FCallbackName;
+    AddOutputIDs(FIDSetter);
+    Inc(FMethodNum);
+    FIDStart := GetIDString(FCallbackName + '_Start');
+    AddOutputIDs(FIDStart);
+    Inc(FMethodNum);
+    FIDFinished := GetIDString(FCallbackName + '_Finished');
+    AddOutputIDs(FIDFinished);
+    Inc(FMethodNum);
+  end;
+
+  // Pascal implementation start, without method title
+  FPasOutputImplCurLine := FPasOutputImpl.Count;
+  FPasOutputImpl.Add(       'begin');
+  if AIsCallback then
+  FPasOutputImpl.Add(Format('  %s := ACallback;', [FCallbackName]));
+  FPasOutputImpl.Add(       '  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));');
+  FPasOutputImpl.Add(       '  vAndroidPipesComm.SendInt(' + FIDSetter + ');');
+  if not FIsGlobalObject then
+  FPasOutputImpl.Add(       '  vAndroidPipesComm.SendInt(Index); // Self, Java Index');
+  if AIsCallback then
+  FPasOutputImpl.Add(       '  vAndroidPipesComm.SendInt(PtrInt(Self)); // Self, Pascal pointer');
+
+  // Java implementation
+  FJavaParamSelf := 'param_self_' + JavaRemoveGeneric(ConvertPointToUnderline(FClassName));
+  FJavaOutputMethods.Add(Format('    // %s', [ASourceLine]));
+  FJavaOutputMethods.Add(Format('    case %s:', [FIDString]));
+  FJavaOutputMethods.Add(Format('      DebugOut("%s");', [FIDString]));
+  if not FIsGlobalObject then
+  begin
+    FJavaOutputMethods.Add(     '      // Self');
+    FJavaOutputMethods.Add(     '      lInt = MyAndroidPipesComm.GetInt();');
+    FJavaOutputMethods.Add(Format('      %s = (%s) ViewElements.get(lInt);', [FJavaParamSelf, FClassName]));
+  end
+  else
+    FJavaParamSelf := FGlobalObject;
+
+  FJavaOutputMethods.Add('      // params');
+
+  if AIsCallback then
+  begin
+    FJavaOutputMethods.Add(       '      lPascalPointer = MyAndroidPipesComm.GetInt();');
+    FJavaOutputMethods.Add(Format('      ViewElementsTags.set(lInt, new Integer(lPascalPointer));', [fJavaParamSelf]));
+    //FJavaOutputMethods.Add(Format('      %s.setTag(Integer.valueOf(lPascalPointer));', [lJavaParamSelf]));
+    FJavaOutputMethods.Add(       '');
+  end;
+end;
+
 // callbacksetter void setOnClickListener($View.OnClickListener l)
 // $ indicates that this parameter should be skipped
 procedure TAndroidSDKBindingsGen.ProcessMethodParameters(ASourceLine: string;
@@ -889,12 +975,14 @@ var
   lParamTypePas, lParamName, lParamPrefix: String;
   lJavaParams, lJavaParamVar: String;
   StringParamCount: Integer = 0;
+  i: Integer;
 begin
   // Add all parameters
   TmpStr := '';
   lJavaParams := '';
   FHasStringParam := False;
   FCallbackTypePas := '';
+  FFirstParam := '';
 
   repeat
     lParamType := GetNextWord(ASourceLine, lReaderPos);
@@ -909,10 +997,11 @@ begin
       Continue;
     end;
 
-    // Parameter to skip because it is a callback name, just write $,
+    // Parameter to skip because it is a callback name, just write "$, " to the Java Params
     if lParamType[1] = '$' then
     begin
-      TmpStr := TmpStr + '$, ';
+      lJavaParams := lJavaParams + '$, ';
+      FCallbackTypeJava := StringReplace(lParamType, '$', '', [rfReplaceAll]);
       FCallbackTypePas := GetPascalTypeName(lParamType);
       FCallbackTypePas := StringReplace(FCallbackTypePas, '$', '', [rfReplaceAll]);
       lParamType := GetNextWord(ASourceLine, lReaderPos);
@@ -921,6 +1010,7 @@ begin
 
     lParamTypePas := GetPascalTypeName(lParamType);
     lParamName := GetNextWord(ASourceLine, lReaderPos);
+    if FFirstParam = '' then FFirstParam := lParamName;
     if PassByReference(lParamType) then lParamPrefix := 'var '
     else lParamPrefix := '';
 
@@ -961,6 +1051,21 @@ begin
   FPascalParams := TmpStr;
   // And for Java params too
   FJavaParams := System.Copy(lJavaParams, 0, Length(lJavaParams)-2);
+
+  // Insert the start
+  //FPasOutputClasses.Add('    ' + DeclarationBase + TmpStr + lPascalMethodModifiers);
+  //FPasOutputImpl.Insert(FPasOutputImplCurLine, DeclarationBase + FClassNamePas + '.' + TmpStr);
+  if FHasStringParam then
+  begin
+    FPasOutputImpl.Insert(FPasOutputImplCurLine, 'var');
+    for i := 1 to StringParamCount do
+    begin
+      FPasOutputImpl.Insert(FPasOutputImplCurLine+i, Format('  lString_%d: TString;', [i]));
+      FPasOutputImpl.Add(Format('  lString_%d.Free;', [i]));
+    end;
+  end;
+  //FPasOutputImpl.Add('end;');
+  //FPasOutputImpl.Add('');
 end;
 
 { Reads one word in a string, starting at AStartPos (1-based index)
@@ -1114,6 +1219,11 @@ begin
   FJavaOutputIDs := TStringList.Create;
   FJavaOutputMethods := TStringList.Create;
 
+  FCallbackTypesJavaName := TStringList.Create;
+  FCallbackTypesParams := TStringList.Create;
+  FCallbackTypesInnerName := TStringList.Create;
+  FCallbackTypesFirstParam := TStringList.Create;
+
   FClassNum := $100;
 end;
 
@@ -1133,6 +1243,11 @@ begin
 
   FJavaOutputIDs.Free;
   FJavaOutputMethods.Free;
+
+  FCallbackTypesJavaName.Free;
+  FCallbackTypesParams.Free;
+  FCallbackTypesInnerName.Free;
+  FCallbackTypesFirstParam.Free;
 
   inherited Destroy;
 end;

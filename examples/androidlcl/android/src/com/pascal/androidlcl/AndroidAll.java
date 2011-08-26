@@ -19,6 +19,7 @@ public class AndroidAll
   JavaLang MyJavaLang;
   // lists of variables
   ArrayList ViewElements;
+  ArrayList ViewElementsTags;
 
   public AndroidAll(AndroidPipesComm AAndroidPipesComm, Activity AActivity, JavaLang AJavaLang)
   {
@@ -26,6 +27,7 @@ public class AndroidAll
     MyAndroidPipesComm = AAndroidPipesComm;
     MyJavaLang = AJavaLang;
     ViewElements = new ArrayList();
+    ViewElementsTags = new ArrayList();
   }
 
   public void DebugOut(String Str)
@@ -42,88 +44,97 @@ public class AndroidAll
   static final int amkUI_TDisplayMetrics_widthPixels_5 = 0x00101005;
   static final int amkUI_TDisplayMetrics_xdpi_6 = 0x00101006;
   static final int amkUI_TDisplayMetrics_ydpi_7 = 0x00101007;
+  // DialogInterface
   // Activity
-  static final int amkUI_TActivity_setTitle_0 = 0x00102000;
-  static final int amkUI_TActivity_getTitle_1 = 0x00102001;
+  static final int amkUI_TActivity_setTitle_0 = 0x00103000;
+  static final int amkUI_TActivity_getTitle_1 = 0x00103001;
   // Display
-  static final int amkUI_TDisplay_getMetrics_0 = 0x00103000;
+  static final int amkUI_TDisplay_getMetrics_0 = 0x00104000;
   // WindowManager
-  static final int amkUI_TWindowManager_getDefaultDisplay_0 = 0x00104000;
+  static final int amkUI_TWindowManager_getDefaultDisplay_0 = 0x00105000;
   // Dialog
+  static final int amkUI_TDialog_show_0 = 0x00106000;
   // AlertDialog
+  static final int amkUI_TAlertDialog_setButton_0 = 0x00107000;
+  static final int amkUI_TAlertDialog_Button_Start_1 = 0x00107001;
+  static final int amkUI_TAlertDialog_Button_Finished_2 = 0x00107002;
+  static final int amkUI_TAlertDialog_setMessage_3 = 0x00107003;
+  static final int amkUI_TAlertDialog_setTitle_4 = 0x00107004;
+  static final int amkUI_TAlertDialog_setView_5 = 0x00107005;
   // AlertDialog.Builder
-  static final int amkUI_TAlertDialog_Builder_Create_0 = 0x00107000;
-  static final int amkUI_TAlertDialog_Builder_setMessage_1 = 0x00107001;
-  static final int amkUI_TAlertDialog_Builder_setTitle_2 = 0x00107002;
-  static final int amkUI_TAlertDialog_Builder_setView_3 = 0x00107003;
-  static final int amkUI_TAlertDialog_Builder_show_4 = 0x00107004;
+  static final int amkUI_TAlertDialog_Builder_Create_0 = 0x00108000;
+  static final int amkUI_TAlertDialog_Builder_create_1 = 0x00108001;
+  static final int amkUI_TAlertDialog_Builder_setMessage_2 = 0x00108002;
+  static final int amkUI_TAlertDialog_Builder_setTitle_3 = 0x00108003;
+  static final int amkUI_TAlertDialog_Builder_setView_4 = 0x00108004;
+  static final int amkUI_TAlertDialog_Builder_show_5 = 0x00108005;
   // ViewGroup.LayoutParams
-  static final int amkUI_TViewGroup_LayoutParams_Create_0 = 0x00108000;
+  static final int amkUI_TViewGroup_LayoutParams_Create_0 = 0x00109000;
   // View
-  static final int amkUI_TView_setLayoutParams_0 = 0x00109000;
-  static final int amkUI_TView_setVisibility_1 = 0x00109001;
+  static final int amkUI_TView_setLayoutParams_0 = 0x0010A000;
+  static final int amkUI_TView_setVisibility_1 = 0x0010A001;
   // ViewGroup
-  static final int amkUI_TViewGroup_addView_0 = 0x0010A000;
-  static final int amkUI_TViewGroup_addView_1 = 0x0010A001;
-  static final int amkUI_TViewGroup_addView_2 = 0x0010A002;
-  static final int amkUI_TViewGroup_addView_3 = 0x0010A003;
-  static final int amkUI_TViewGroup_addView_4 = 0x0010A004;
+  static final int amkUI_TViewGroup_addView_0 = 0x0010B000;
+  static final int amkUI_TViewGroup_addView_1 = 0x0010B001;
+  static final int amkUI_TViewGroup_addView_2 = 0x0010B002;
+  static final int amkUI_TViewGroup_addView_3 = 0x0010B003;
+  static final int amkUI_TViewGroup_addView_4 = 0x0010B004;
   // LinearLayout
-  static final int amkUI_TLinearLayout_Create_0 = 0x0010B000;
-  static final int amkUI_TLinearLayout_setOrientation_1 = 0x0010B001;
+  static final int amkUI_TLinearLayout_Create_0 = 0x0010C000;
+  static final int amkUI_TLinearLayout_setOrientation_1 = 0x0010C001;
   // AbsoluteLayout
-  static final int amkUI_TAbsoluteLayout_Create_0 = 0x0010C000;
+  static final int amkUI_TAbsoluteLayout_Create_0 = 0x0010D000;
   // AbsoluteLayout.LayoutParams
-  static final int amkUI_TAbsoluteLayout_LayoutParams_Create_0 = 0x0010D000;
+  static final int amkUI_TAbsoluteLayout_LayoutParams_Create_0 = 0x0010E000;
   // TextView
-  static final int amkUI_TTextView_Create_0 = 0x0010E000;
-  static final int amkUI_TTextView_setText_1 = 0x0010E001;
-  static final int amkUI_TTextView_setOnClickListener_2 = 0x0010E002;
-  static final int amkUI_TTextView_OnClickListener_Start_3 = 0x0010E003;
-  static final int amkUI_TTextView_OnClickListener_Finished_4 = 0x0010E004;
-  static final int amkUI_TTextView_setTextSize_5 = 0x0010E005;
-  static final int amkUI_TTextView_getText_6 = 0x0010E006;
+  static final int amkUI_TTextView_Create_0 = 0x0010F000;
+  static final int amkUI_TTextView_setText_1 = 0x0010F001;
+  static final int amkUI_TTextView_setOnClickListener_2 = 0x0010F002;
+  static final int amkUI_TTextView_OnClickListener_Start_3 = 0x0010F003;
+  static final int amkUI_TTextView_OnClickListener_Finished_4 = 0x0010F004;
+  static final int amkUI_TTextView_setTextSize_5 = 0x0010F005;
+  static final int amkUI_TTextView_getText_6 = 0x0010F006;
   // EditText
-  static final int amkUI_TEditText_Create_0 = 0x0010F000;
+  static final int amkUI_TEditText_Create_0 = 0x00110000;
   // Button
-  static final int amkUI_TButton_Create_0 = 0x00110000;
+  static final int amkUI_TButton_Create_0 = 0x00111000;
   // FrameLayout
   // TimePicker
-  static final int amkUI_TTimePicker_Create_0 = 0x00112000;
-  static final int amkUI_TTimePicker_getCurrentHour_1 = 0x00112001;
-  static final int amkUI_TTimePicker_setCurrentHour_2 = 0x00112002;
-  static final int amkUI_TTimePicker_getCurrentMinute_3 = 0x00112003;
-  static final int amkUI_TTimePicker_setCurrentMinute_4 = 0x00112004;
-  static final int amkUI_TTimePicker_is24HourView_5 = 0x00112005;
-  static final int amkUI_TTimePicker_setIs24HourView_6 = 0x00112006;
+  static final int amkUI_TTimePicker_Create_0 = 0x00113000;
+  static final int amkUI_TTimePicker_getCurrentHour_1 = 0x00113001;
+  static final int amkUI_TTimePicker_setCurrentHour_2 = 0x00113002;
+  static final int amkUI_TTimePicker_getCurrentMinute_3 = 0x00113003;
+  static final int amkUI_TTimePicker_setCurrentMinute_4 = 0x00113004;
+  static final int amkUI_TTimePicker_is24HourView_5 = 0x00113005;
+  static final int amkUI_TTimePicker_setIs24HourView_6 = 0x00113006;
   // ScrollView
-  static final int amkUI_TScrollView_Create_0 = 0x00113000;
+  static final int amkUI_TScrollView_Create_0 = 0x00114000;
   // CompoundButton
-  static final int amkUI_TCompoundButton_isChecked_0 = 0x00114000;
-  static final int amkUI_TCompoundButton_performClick_1 = 0x00114001;
-  static final int amkUI_TCompoundButton_setChecked_2 = 0x00114002;
-  static final int amkUI_TCompoundButton_toggle_3 = 0x00114003;
+  static final int amkUI_TCompoundButton_isChecked_0 = 0x00115000;
+  static final int amkUI_TCompoundButton_performClick_1 = 0x00115001;
+  static final int amkUI_TCompoundButton_setChecked_2 = 0x00115002;
+  static final int amkUI_TCompoundButton_toggle_3 = 0x00115003;
   // CheckBox
-  static final int amkUI_TCheckBox_Create_0 = 0x00115000;
+  static final int amkUI_TCheckBox_Create_0 = 0x00116000;
   // AdapterView
-  static final int amkUI_TAdapterView_getSelectedItemPosition_0 = 0x00116000;
+  static final int amkUI_TAdapterView_getSelectedItemPosition_0 = 0x00117000;
   // AbsSpinner
-  static final int amkUI_TAbsSpinner_getCount_0 = 0x00117000;
-  static final int amkUI_TAbsSpinner_setAdapter_1 = 0x00117001;
-  static final int amkUI_TAbsSpinner_setSelection_2 = 0x00117002;
+  static final int amkUI_TAbsSpinner_getCount_0 = 0x00118000;
+  static final int amkUI_TAbsSpinner_setAdapter_1 = 0x00118001;
+  static final int amkUI_TAbsSpinner_setSelection_2 = 0x00118002;
   // Spinner
-  static final int amkUI_TSpinner_Create_0 = 0x00118000;
+  static final int amkUI_TSpinner_Create_0 = 0x00119000;
   // Filterable
   // Adapter
   // ListAdapter
   // SpinnerAdapter
   // BaseAdapter
   // ArrayAdapter<String>
-  static final int amkUI_TArrayAdapter_String__Create_0 = 0x0011E000;
-  static final int amkUI_TArrayAdapter_String__add_1 = 0x0011E001;
-  static final int amkUI_TArrayAdapter_String__clear_2 = 0x0011E002;
-  static final int amkUI_TArrayAdapter_String__insert_3 = 0x0011E003;
-  static final int amkUI_TArrayAdapter_String__remove_4 = 0x0011E004;
+  static final int amkUI_TArrayAdapter_String__Create_0 = 0x0011F000;
+  static final int amkUI_TArrayAdapter_String__add_1 = 0x0011F001;
+  static final int amkUI_TArrayAdapter_String__clear_2 = 0x0011F002;
+  static final int amkUI_TArrayAdapter_String__insert_3 = 0x0011F003;
+  static final int amkUI_TArrayAdapter_String__remove_4 = 0x0011F004;
   // layout
 
   public boolean ProcessCommand(int Buffer)
@@ -153,13 +164,15 @@ public class AndroidAll
     ArrayAdapter<String> param_self_ArrayAdapter_String_;
     AdapterView param_self_AdapterView;
     AlertDialog.Builder param_self_AlertDialog_Builder;
+    Dialog param_self_Dialog;
+    AlertDialog param_self_AlertDialog;
     //
     // Params
     //
     ViewGroup.LayoutParams lViewGroup_LayoutParams_1, lViewGroup_LayoutParams_2, lViewGroup_LayoutParams_3;
     SpinnerAdapter lSpinnerAdapter_1;
     DisplayMetrics lDisplayMetrics_1;
-    CharSequence lCharSequence_1;
+    CharSequence lCharSequence_1, lCharSequence_2;
     String lString_1;
     View lView_1;
     int lint_1, lint_2, lint_3, lint_4;
@@ -182,6 +195,7 @@ public class AndroidAll
     case amkUI_TDisplayMetrics_Create_0:
       DebugOut("amkUI_TDisplayMetrics_Create_0");
       ViewElements.add(new DisplayMetrics());
+      ViewElementsTags.add(null);
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
       break;
     // field float density
@@ -302,16 +316,112 @@ public class AndroidAll
       //
       lResult_Display = param_self_WindowManager.getDefaultDisplay();
       ViewElements.add(lResult_Display);
+      ViewElementsTags.add(null);
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
+      break;
+    // method void show()
+    case amkUI_TDialog_show_0:
+      DebugOut("amkUI_TDialog_show_0");
+      // Self
+      lInt = MyAndroidPipesComm.GetInt();
+      param_self_Dialog = (Dialog) ViewElements.get(lInt);
+      // params
+      //
+      param_self_Dialog.show();
+      MyAndroidPipesComm.SendResult();
+      break;
+    // callbacksetter void 	setButton(int whichButton, CharSequence text, $DialogInterface.OnClickListener listener)
+    case amkUI_TAlertDialog_setButton_0:
+      DebugOut("amkUI_TAlertDialog_setButton_0");
+      // Self
+      lInt = MyAndroidPipesComm.GetInt();
+      param_self_AlertDialog = (AlertDialog) ViewElements.get(lInt);
+      // params
+      lPascalPointer = MyAndroidPipesComm.GetInt();
+      ViewElementsTags.set(lInt, new Integer(lPascalPointer));
+
+      lInt = MyAndroidPipesComm.GetInt();
+      lint_1 = lInt;
+      lInt = MyAndroidPipesComm.GetInt();
+      lCharSequence_2 = (CharSequence) MyJavaLang.LangElements.get(lInt);
+      // Run the code
+      param_self_AlertDialog.setButton(lint_1, lCharSequence_2,       new DialogInterface.OnClickListener()
+      {
+        public void onClick(DialogInterface dialog, int which)
+        {
+          // Perform action
+          DebugOut("START DialogInterface.OnClickListener");
+          MyAndroidPipesComm.SendMessage(AndroidPipesComm.amkUICommand, amkUI_TAlertDialog_Button_Start_1);
+          Integer lTag = (Integer) ViewElementsTags.get(ViewElements.indexOf(dialog));
+          MyAndroidPipesComm.SendInt(lTag.intValue());
+          MyAndroidPipesComm.WaitForPascalMessage(AndroidPipesComm.amkUICommand, amkUI_TAlertDialog_Button_Finished_2);
+          DebugOut("END DialogInterface.OnClickListener");
+        }
+      }
+);
+      MyAndroidPipesComm.SendResult();
+      break;
+    // method void setMessage(CharSequence message)
+    case amkUI_TAlertDialog_setMessage_3:
+      DebugOut("amkUI_TAlertDialog_setMessage_3");
+      // Self
+      lInt = MyAndroidPipesComm.GetInt();
+      param_self_AlertDialog = (AlertDialog) ViewElements.get(lInt);
+      // params
+      lInt = MyAndroidPipesComm.GetInt();
+      lCharSequence_1 = (CharSequence) MyJavaLang.LangElements.get(lInt);
+      //
+      param_self_AlertDialog.setMessage(lCharSequence_1);
+      MyAndroidPipesComm.SendResult();
+      break;
+    // method void setTitle(CharSequence title)
+    case amkUI_TAlertDialog_setTitle_4:
+      DebugOut("amkUI_TAlertDialog_setTitle_4");
+      // Self
+      lInt = MyAndroidPipesComm.GetInt();
+      param_self_AlertDialog = (AlertDialog) ViewElements.get(lInt);
+      // params
+      lInt = MyAndroidPipesComm.GetInt();
+      lCharSequence_1 = (CharSequence) MyJavaLang.LangElements.get(lInt);
+      //
+      param_self_AlertDialog.setTitle(lCharSequence_1);
+      MyAndroidPipesComm.SendResult();
+      break;
+    // method void setView(View view)
+    case amkUI_TAlertDialog_setView_5:
+      DebugOut("amkUI_TAlertDialog_setView_5");
+      // Self
+      lInt = MyAndroidPipesComm.GetInt();
+      param_self_AlertDialog = (AlertDialog) ViewElements.get(lInt);
+      // params
+      lInt = MyAndroidPipesComm.GetInt();
+      lView_1 = (View) ViewElements.get(lInt);
+      //
+      param_self_AlertDialog.setView(lView_1);
+      MyAndroidPipesComm.SendResult();
       break;
     case amkUI_TAlertDialog_Builder_Create_0:
       DebugOut("amkUI_TAlertDialog_Builder_Create_0");
       ViewElements.add(new AlertDialog.Builder(activity));
+      ViewElementsTags.add(null);
+      MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
+      break;
+    // method AlertDialog create ()
+    case amkUI_TAlertDialog_Builder_create_1:
+      DebugOut("amkUI_TAlertDialog_Builder_create_1");
+      // Self
+      lInt = MyAndroidPipesComm.GetInt();
+      param_self_AlertDialog_Builder = (AlertDialog.Builder) ViewElements.get(lInt);
+      // params
+      //
+      lResult_AlertDialog = param_self_AlertDialog_Builder.create();
+      ViewElements.add(lResult_AlertDialog);
+      ViewElementsTags.add(null);
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
       break;
     // method AlertDialog.Builder setMessage (CharSequence message)
-    case amkUI_TAlertDialog_Builder_setMessage_1:
-      DebugOut("amkUI_TAlertDialog_Builder_setMessage_1");
+    case amkUI_TAlertDialog_Builder_setMessage_2:
+      DebugOut("amkUI_TAlertDialog_Builder_setMessage_2");
       // Self
       lInt = MyAndroidPipesComm.GetInt();
       param_self_AlertDialog_Builder = (AlertDialog.Builder) ViewElements.get(lInt);
@@ -321,11 +431,12 @@ public class AndroidAll
       //
       lResult_AlertDialog_Builder = param_self_AlertDialog_Builder.setMessage(lCharSequence_1);
       ViewElements.add(lResult_AlertDialog_Builder);
+      ViewElementsTags.add(null);
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
       break;
     // method AlertDialog.Builder setTitle (CharSequence title)
-    case amkUI_TAlertDialog_Builder_setTitle_2:
-      DebugOut("amkUI_TAlertDialog_Builder_setTitle_2");
+    case amkUI_TAlertDialog_Builder_setTitle_3:
+      DebugOut("amkUI_TAlertDialog_Builder_setTitle_3");
       // Self
       lInt = MyAndroidPipesComm.GetInt();
       param_self_AlertDialog_Builder = (AlertDialog.Builder) ViewElements.get(lInt);
@@ -335,11 +446,12 @@ public class AndroidAll
       //
       lResult_AlertDialog_Builder = param_self_AlertDialog_Builder.setTitle(lCharSequence_1);
       ViewElements.add(lResult_AlertDialog_Builder);
+      ViewElementsTags.add(null);
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
       break;
     // method AlertDialog.Builder setView (View view)
-    case amkUI_TAlertDialog_Builder_setView_3:
-      DebugOut("amkUI_TAlertDialog_Builder_setView_3");
+    case amkUI_TAlertDialog_Builder_setView_4:
+      DebugOut("amkUI_TAlertDialog_Builder_setView_4");
       // Self
       lInt = MyAndroidPipesComm.GetInt();
       param_self_AlertDialog_Builder = (AlertDialog.Builder) ViewElements.get(lInt);
@@ -349,11 +461,12 @@ public class AndroidAll
       //
       lResult_AlertDialog_Builder = param_self_AlertDialog_Builder.setView(lView_1);
       ViewElements.add(lResult_AlertDialog_Builder);
+      ViewElementsTags.add(null);
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
       break;
     // method AlertDialog show ()
-    case amkUI_TAlertDialog_Builder_show_4:
-      DebugOut("amkUI_TAlertDialog_Builder_show_4");
+    case amkUI_TAlertDialog_Builder_show_5:
+      DebugOut("amkUI_TAlertDialog_Builder_show_5");
       // Self
       lInt = MyAndroidPipesComm.GetInt();
       param_self_AlertDialog_Builder = (AlertDialog.Builder) ViewElements.get(lInt);
@@ -361,6 +474,7 @@ public class AndroidAll
       //
       lResult_AlertDialog = param_self_AlertDialog_Builder.show();
       ViewElements.add(lResult_AlertDialog);
+      ViewElementsTags.add(null);
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
       break;
     case amkUI_TViewGroup_LayoutParams_Create_0:
@@ -368,6 +482,7 @@ public class AndroidAll
       lint_1 = MyAndroidPipesComm.GetInt();
       lint_2 = MyAndroidPipesComm.GetInt();
       ViewElements.add(new ViewGroup.LayoutParams(lint_1, lint_2));
+      ViewElementsTags.add(null);
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
       break;
     // method void setLayoutParams(ViewGroup.LayoutParams params);
@@ -476,6 +591,7 @@ public class AndroidAll
     case amkUI_TLinearLayout_Create_0:
       DebugOut("amkUI_TLinearLayout_Create_0");
       ViewElements.add(new LinearLayout(activity));
+      ViewElementsTags.add(null);
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
       break;
     // method void setOrientation(int orientation);
@@ -494,6 +610,7 @@ public class AndroidAll
     case amkUI_TAbsoluteLayout_Create_0:
       DebugOut("amkUI_TAbsoluteLayout_Create_0");
       ViewElements.add(new AbsoluteLayout(activity));
+      ViewElementsTags.add(null);
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
       break;
     case amkUI_TAbsoluteLayout_LayoutParams_Create_0:
@@ -503,11 +620,13 @@ public class AndroidAll
       lint_3 = MyAndroidPipesComm.GetInt();
       lint_4 = MyAndroidPipesComm.GetInt();
       ViewElements.add(new AbsoluteLayout.LayoutParams(lint_1, lint_2, lint_3, lint_4));
+      ViewElementsTags.add(null);
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
       break;
     case amkUI_TTextView_Create_0:
       DebugOut("amkUI_TTextView_Create_0");
       ViewElements.add(new TextView(activity));
+      ViewElementsTags.add(null);
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
       break;
     // method void setText(CharSequence AText); virtual;
@@ -523,30 +642,31 @@ public class AndroidAll
       param_self_TextView.setText(lCharSequence_1);
       MyAndroidPipesComm.SendResult();
       break;
-    // callbacksettercaller setOnClickListener callOnClickListener OnClickListener = procedure (v: TView) of object;
+    // callbacksetter void setOnClickListener($View.OnClickListener l)
     case amkUI_TTextView_setOnClickListener_2:
       DebugOut("amkUI_TTextView_setOnClickListener_2");
       // Self
       lInt = MyAndroidPipesComm.GetInt();
       param_self_TextView = (TextView) ViewElements.get(lInt);
+      // params
       lPascalPointer = MyAndroidPipesComm.GetInt();
-      param_self_TextView.setTag(Integer.valueOf(lPascalPointer));
+      ViewElementsTags.set(lInt, new Integer(lPascalPointer));
 
       // Run the code
-      param_self_TextView.setOnClickListener(
-      new View.OnClickListener()
+      param_self_TextView.setOnClickListener(      new View.OnClickListener()
       {
         public void onClick(View v)
         {
           // Perform action
-          DebugOut("START TextView OnClickListener");
+          DebugOut("START View.OnClickListener");
           MyAndroidPipesComm.SendMessage(AndroidPipesComm.amkUICommand, amkUI_TTextView_OnClickListener_Start_3);
-          Integer lTag = (Integer) v.getTag();
+          Integer lTag = (Integer) ViewElementsTags.get(ViewElements.indexOf(v));
           MyAndroidPipesComm.SendInt(lTag.intValue());
           MyAndroidPipesComm.WaitForPascalMessage(AndroidPipesComm.amkUICommand, amkUI_TTextView_OnClickListener_Finished_4);
-          DebugOut("END TextView OnClickListener");
+          DebugOut("END View.OnClickListener");
         }
-      });
+      }
+);
       MyAndroidPipesComm.SendResult();
       break;
     // method void setTextSize(int unit_; float size);
@@ -578,16 +698,19 @@ public class AndroidAll
     case amkUI_TEditText_Create_0:
       DebugOut("amkUI_TEditText_Create_0");
       ViewElements.add(new EditText(activity));
+      ViewElementsTags.add(null);
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
       break;
     case amkUI_TButton_Create_0:
       DebugOut("amkUI_TButton_Create_0");
       ViewElements.add(new Button(activity));
+      ViewElementsTags.add(null);
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
       break;
     case amkUI_TTimePicker_Create_0:
       DebugOut("amkUI_TTimePicker_Create_0");
       ViewElements.add(new TimePicker(activity));
+      ViewElementsTags.add(null);
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
       break;
     // method int getCurrentHour();
@@ -665,6 +788,7 @@ public class AndroidAll
     case amkUI_TScrollView_Create_0:
       DebugOut("amkUI_TScrollView_Create_0");
       ViewElements.add(new ScrollView(activity));
+      ViewElementsTags.add(null);
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
       break;
     // method boolean 	isChecked() 
@@ -716,6 +840,7 @@ public class AndroidAll
     case amkUI_TCheckBox_Create_0:
       DebugOut("amkUI_TCheckBox_Create_0");
       ViewElements.add(new CheckBox(activity));
+      ViewElementsTags.add(null);
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
       break;
     // method int getSelectedItemPosition()
@@ -769,12 +894,14 @@ public class AndroidAll
     case amkUI_TSpinner_Create_0:
       DebugOut("amkUI_TSpinner_Create_0");
       ViewElements.add(new Spinner(activity));
+      ViewElementsTags.add(null);
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
       break;
     case amkUI_TArrayAdapter_String__Create_0:
       DebugOut("amkUI_TArrayAdapter_String__Create_0");
       lint_1 = MyAndroidPipesComm.GetInt();
       ViewElements.add(new ArrayAdapter<String>(activity, lint_1));
+      ViewElementsTags.add(null);
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
       break;
     // method void add(String aobject)
