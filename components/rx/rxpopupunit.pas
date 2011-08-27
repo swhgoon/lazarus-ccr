@@ -51,11 +51,13 @@ type
     FLookupDisplayIndex: integer;
     FLookupDisplayField:string;
     procedure ClearFind;
-    procedure FindNextChar(AChar:Char);
+    procedure FindNextChar(UTF8Key: TUTF8Char);
+//    procedure FindNextUTF8Char(UTF8Key: TUTF8Char);
     procedure FindPriorChar;
     procedure SetLookupDisplayIndex(const AValue: integer);
   protected
-    procedure KeyPress(var Key: char); dynamic;
+    procedure KeyPress(var Key: char); override;
+    procedure UTF8KeyPress(var UTF8Key: TUTF8Char); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     property LookupDisplayIndex:integer read FLookupDisplayIndex write SetLookupDisplayIndex;
   end;
@@ -217,7 +219,7 @@ type
     procedure DoSetFieldsFromString(FL:string);
     procedure DoSetFieldsFromColList;
   public
-    procedure KeyPress(var Key: char); override;
+    procedure UTF8KeyPress(var UTF8Key: TUTF8Char); override;
     constructor CreatePopUp(AOwner: TComponent;
       APopUpFormOptions:TPopUpFormOptions; AFieldList:string; BtnWidtn:integer);
     destructor Destroy; override;
@@ -232,7 +234,7 @@ function ShowRxDBPopUpForm(AControl:TWinControl; ADataSet:TDataSet;
 procedure FillPopupWidth(APopUpFormOptions:TPopUpFormOptions; ARxPopUpForm:TPopUpForm);
 
 implementation
-uses dbutils, math;
+uses dbutils, math, LCLProc;
 
 function ShowRxDBPopUpForm(AControl:TWinControl; ADataSet:TDataSet;
   AOnPopUpCloseEvent:TPopUpCloseEvent; APopUpFormOptions:TPopUpFormOptions;
@@ -333,10 +335,10 @@ begin
   Invalidate;
 end;
 
-procedure TPopUpForm.KeyPress(var Key: char);
+procedure TPopUpForm.UTF8KeyPress(var UTF8Key: TUTF8Char);
 begin
-  inherited KeyPress(Key);
-  FGrid.KeyPress(Key);
+  inherited UTF8KeyPress(UTF8Key);
+  FGrid.UTF8KeyPress(UTF8Key);
 end;
 
 procedure TPopUpForm.GridDblClick(Sender: TObject);
@@ -808,7 +810,22 @@ begin
     DataSource.DataSet.First;
 end;
 
-procedure TPopUpGrid.FindNextChar(AChar: Char);
+procedure TPopUpGrid.FindNextChar(UTF8Key: TUTF8Char);
+var
+  F:string;
+begin
+  FFindLine:=FFindLine + UTF8Key;
+  if DatalinkActive then
+    if DataSetLocateThrough(DataSource.DataSet, FLookupDisplayField, FFindLine, [loCaseInsensitive, loPartialKey]) then
+    begin
+      TPopUpForm(Owner).WControl.Caption:=FFindLine;
+      TPopUpForm(Owner).WControl.Repaint;
+    end
+    else
+      FFindLine:=F;
+end;
+{
+procedure TPopUpGrid.FindNextUTF8Char(UTF8Key: TUTF8Char);
 var
   F:string;
 begin
@@ -822,14 +839,15 @@ begin
     else
       FFindLine:=F;
 end;
-
+}
 procedure TPopUpGrid.FindPriorChar;
 var
   F:string;
 begin
   if FFindLine = '' then exit;
   F:=FFindLine;
-  Delete(FFindLine, Length(FFindLine), 1);
+  UTF8Delete(FFindLine, UTF8Length(FFindLine), 1);
+  //Delete(FFindLine, Length(FFindLine), 1);
   if DatalinkActive then
     if (FFindLine<>'') then
     begin
@@ -873,6 +891,22 @@ begin
     FindNextChar(Key)
   else
   if Key = #8 then
+    ClearFind;
+end;
+
+procedure TPopUpGrid.UTF8KeyPress(var UTF8Key: TUTF8Char);
+begin
+  inherited UTF8KeyPress(UTF8Key);
+{  if (Columns[FLookupDisplayIndex].Field.DataType<>ftString) and not (Key in ['0'..'9'])  then
+    Exit
+  else}
+  if UTF8Key=#32 then
+    FindNextChar(UTF8Key)
+  else
+  if UTF8Key>#32 then
+    FindNextChar(UTF8Key)
+  else
+  if UTF8Key = #8 then
     ClearFind;
 end;
 

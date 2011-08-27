@@ -246,7 +246,7 @@ type
     procedure OnInternalClosePopup(AResult:boolean);virtual;
     procedure SetEnabled(Value: Boolean); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure KeyPress(var Key: char); override;
+    procedure UTF8KeyPress(var UTF8Key: TUTF8Char); override;
     procedure SetParent(AParent: TWinControl); override;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     procedure DoPositionButton; virtual;
@@ -1294,13 +1294,13 @@ begin
 
 end;
 
-procedure TRxCustomDBLookupCombo.KeyPress(var Key: char);
+procedure TRxCustomDBLookupCombo.UTF8KeyPress(var UTF8Key: TUTF8Char);
 begin
-  if not (PopupVisible) and ((Key in [#32..#255]) or (Key=#8)) then
+  if not (PopupVisible) and ((UTF8Key >= #32) or (UTF8Key = #8)) then
     ShowList;
-  inherited KeyPress(Key);
+  inherited UTF8KeyPress(UTF8Key);
   if PopupVisible then
-    FRxPopUpForm.KeyPress(Key);
+    FRxPopUpForm.UTF8KeyPress(UTF8Key);
 end;
 
 procedure TRxCustomDBLookupCombo.SetParent(AParent: TWinControl);
