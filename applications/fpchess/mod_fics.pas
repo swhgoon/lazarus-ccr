@@ -80,8 +80,7 @@ end;
 procedure TSinglePlayerChessModule.PrepareForGame;
 begin
 //  SecondPlayerName := editSecondPlayerName.Text;
-
-
+  ChessModuleDebugLn('[TSinglePlayerChessModule.PrepareForGame]');
 end;
 
 function TSinglePlayerChessModule.IsMovingAllowedNow: Boolean;
