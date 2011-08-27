@@ -325,6 +325,7 @@ type
   { TRxDBGrid }
   TRxDBGrid = class(TCustomDBGrid)
   private
+    FSortingNow:Boolean;
     FInProcessCalc: integer;
     FAllowedOperations: TRxDBGridAllowedOperations;
     FFooterColor: TColor;
@@ -1932,8 +1933,10 @@ begin
     if SelectedRows.Count > 0 then
       SelectedRows.Clear;
   end;
-  FSortField := nil;
-  FSortOrder := smNone;
+  if not FSortingNow then begin
+    FSortField := nil;
+    FSortOrder := smNone;
+  end;
 
   F_SortListField.Clear;
   if not (csDestroying in ComponentState) and not (csDesigning in ComponentState) then
@@ -2080,8 +2083,10 @@ begin
       FSortField := AField;
       FSortOrder := smUp;
     end;
+    FSortingNow:=true;
     FSortEngine.Sort(FSortField, DataSource.DataSet, FSortOrder =
       smUp, SortEngineOptions);
+    FSortingNow:=false;
   end
   else
     HeaderClick(True, ACol);

@@ -59,10 +59,12 @@
         <Filename Value="RxDBGridDemo.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="RxDBGridDemo"/>
+        <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="5" Y="17"/>
         <UsageCount Value="53"/>
+        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="rxdbgridmainunit.pas"/>
@@ -70,9 +72,10 @@
         <ComponentName Value="RxDBGridMainForm"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="RxDBGridMainUnit"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
+        <TopLine Value="87"/>
         <CursorPos X="11" Y="9"/>
         <UsageCount Value="53"/>
         <Loaded Value="True"/>
@@ -393,8 +396,7 @@
       <Unit45>
         <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
         <UnitName Value="rxdbgrid"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
         <TopLine Value="2537"/>
         <CursorPos X="3" Y="2542"/>
@@ -522,7 +524,7 @@
       <Unit59>
         <Filename Value="/usr/local/share/lazarus/lcl/grids.pas"/>
         <UnitName Value="Grids"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
         <TopLine Value="3866"/>
         <CursorPos X="1" Y="3891"/>
@@ -555,7 +557,7 @@
       </Unit62>
       <Unit63>
         <Filename Value="/usr/local/share/lazarus/lcl/include/canvas.inc"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="4"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1116"/>
         <CursorPos X="1" Y="1132"/>
