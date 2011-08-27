@@ -60,22 +60,15 @@
         <LaunchingApplication PathPlusParams="\usr\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="4">
+    <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="LCLBase"/>
-        <MinVersion Major="1" Release="1" Valid="True"/>
+        <PackageName Value="lnetbase"/>
       </Item1>
       <Item2>
-        <PackageName Value="laz_synapse"/>
-      </Item2>
-      <Item3>
-        <PackageName Value="wst_synapse"/>
-      </Item3>
-      <Item4>
         <PackageName Value="LCL"/>
-      </Item4>
+      </Item2>
     </RequiredPackages>
-    <Units Count="11">
+    <Units Count="13">
       <Unit0>
         <Filename Value="fpchess.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -131,6 +124,16 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="IDelphiChess_Intf"/>
       </Unit10>
+      <Unit11>
+        <Filename Value="chessmodules.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="chessmodules"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="mod_singleplayer.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="mod_singleplayer"/>
+      </Unit12>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

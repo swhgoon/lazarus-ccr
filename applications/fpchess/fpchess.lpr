@@ -7,8 +7,11 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, laz_synapse, mainform, chessdrawer, chessgame, chessconfig,
-  chesstcputils, IDelphiChess_Intf, wst_synapse;
+  Forms, lnetbase, mainform, chessdrawer, chessgame, chessconfig,
+  chesstcputils, chessmodules, mod_singleplayer
+  {$ifdef FPCHESS_WEBSERVICES}
+  ,IDelphiChess_Intf
+  {$endif};
 
 //{$R *.res}
 

@@ -1,7 +1,7 @@
 object formChess: TformChess
-  Left = 181
+  Left = 216
   Height = 433
-  Top = 209
+  Top = 164
   Width = 360
   ActiveControl = notebookMain
   Caption = 'FP Chess 0.1'
@@ -14,7 +14,7 @@ object formChess: TformChess
     Height = 433
     Top = 0
     Width = 360
-    PageIndex = 3
+    PageIndex = 0
     Align = alClient
     TabOrder = 0
     TabStop = True
@@ -35,7 +35,7 @@ object formChess: TformChess
       end
       object Label2: TLabel
         Left = 8
-        Height = 30
+        Height = 40
         Top = 40
         Width = 352
         AutoSize = False
@@ -46,7 +46,7 @@ object formChess: TformChess
       object Label6: TLabel
         Left = 28
         Height = 17
-        Top = 104
+        Top = 128
         Width = 52
         Caption = 'Start as:'
         ParentColor = False
@@ -54,43 +54,23 @@ object formChess: TformChess
       object Label7: TLabel
         Left = 80
         Height = 17
-        Top = 163
+        Top = 175
         Width = 150
         Caption = 'minutes for each player'
         ParentColor = False
       end
-      object btnSinglePlayer: TBitBtn
-        Left = 24
-        Height = 30
-        Top = 200
-        Width = 304
-        Caption = 'Play Against the Computer'
-        Enabled = False
-        OnClick = HandleMainScreenButton
-        TabOrder = 0
-      end
-      object btnDirectComm: TBitBtn
-        Left = 24
-        Height = 30
-        Top = 280
-        Width = 304
-        Caption = 'Play with a friend through a direct connection'
-        Enabled = False
-        OnClick = HandleMainScreenButton
-        TabOrder = 1
-      end
       object BitBtn3: TBitBtn
         Left = 24
         Height = 30
-        Top = 360
+        Top = 392
         Width = 304
         Caption = 'Quit'
-        TabOrder = 2
+        TabOrder = 0
       end
       object editPlayerName: TLabeledEdit
         Left = 88
         Height = 22
-        Top = 72
+        Top = 104
         Width = 120
         EditLabel.AnchorSideLeft.Control = editPlayerName
         EditLabel.AnchorSideTop.Control = editPlayerName
@@ -99,17 +79,17 @@ object formChess: TformChess
         EditLabel.AnchorSideBottom.Control = editPlayerName
         EditLabel.Left = 6
         EditLabel.Height = 17
-        EditLabel.Top = 75
+        EditLabel.Top = 107
         EditLabel.Width = 79
         EditLabel.Caption = 'Player Name'
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
-        TabOrder = 3
+        TabOrder = 1
       end
       object comboStartColor: TComboBox
         Left = 88
         Height = 21
-        Top = 104
+        Top = 128
         Width = 120
         ItemHeight = 0
         ItemIndex = 0
@@ -117,113 +97,124 @@ object formChess: TformChess
           'White'
           'Black'
         )
-        TabOrder = 4
+        TabOrder = 2
         Text = 'White'
       end
       object checkTimer: TCheckBox
         Left = 24
         Height = 18
-        Top = 136
+        Top = 152
         Width = 212
         Caption = 'Set a time limit for each Player'
         Checked = True
         State = cbChecked
-        TabOrder = 5
+        TabOrder = 3
       end
       object spinPlayerTime: TSpinEdit
         Left = 21
         Height = 16
-        Top = 160
+        Top = 176
         Width = 50
-        TabOrder = 6
+        TabOrder = 4
         Value = 30
       end
-      object btnHotSeat: TBitBtn
-        Left = 24
-        Height = 30
-        Top = 240
-        Width = 304
-        Caption = 'Play with a friend in the same Computer'
-        OnClick = HandleMainScreenButton
-        TabOrder = 7
-      end
-      object btnAI: TBitBtn
-        Left = 24
-        Height = 30
-        Top = 320
-        Width = 304
-        Caption = 'Play against the Computer'
-        OnClick = HandleMainScreenButton
-        TabOrder = 8
-      end
-    end
-    object pageConfigConnection: TPage
-      ClientWidth = 1424
-      ClientHeight = 1620
-      object Label3: TLabel
-        Left = 0
-        Height = 32
-        Top = 8
-        Width = 240
-        Alignment = taCenter
-        AutoSize = False
-        Caption = 'Direct Connection'
-        Font.Height = -19
-        ParentColor = False
-        ParentFont = False
-      end
-      object editRemoteID: TLabeledEdit
-        Left = 112
+      object comboGameMode: TComboBox
+        Left = 8
         Height = 21
-        Top = 72
-        Width = 120
-        EditLabel.AnchorSideLeft.Control = editRemoteID
-        EditLabel.AnchorSideTop.Control = editRemoteID
-        EditLabel.AnchorSideTop.Side = asrCenter
-        EditLabel.AnchorSideRight.Control = editRemoteID
-        EditLabel.AnchorSideBottom.Control = editRemoteID
-        EditLabel.Left = 31
-        EditLabel.Height = 14
-        EditLabel.Top = 75
-        EditLabel.Width = 78
-        EditLabel.Caption = 'Your friend''s IP:'
-        EditLabel.ParentColor = False
-        LabelPosition = lpLeft
-        TabOrder = 0
+        Top = 74
+        Width = 338
+        ItemHeight = 0
+        OnSelect = comboGameModeSelect
+        TabOrder = 5
+        Text = 'comboGameMode'
+      end
+      object panelModules: TPanel
+        Left = 8
+        Height = 161
+        Top = 224
+        Width = 344
+        BevelOuter = bvNone
+        TabOrder = 6
       end
       object editLocalIP: TLabeledEdit
-        Left = 112
-        Height = 21
-        Top = 104
+        Left = 120
+        Height = 22
+        Top = 200
         Width = 120
         EditLabel.AnchorSideLeft.Control = editLocalIP
         EditLabel.AnchorSideTop.Control = editLocalIP
         EditLabel.AnchorSideTop.Side = asrCenter
         EditLabel.AnchorSideRight.Control = editLocalIP
         EditLabel.AnchorSideBottom.Control = editLocalIP
-        EditLabel.Left = 27
-        EditLabel.Height = 14
-        EditLabel.Top = 107
-        EditLabel.Width = 82
+        EditLabel.Left = 12
+        EditLabel.Height = 17
+        EditLabel.Top = 203
+        EditLabel.Width = 105
         EditLabel.Caption = 'Your IP Address:'
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
         ReadOnly = True
-        TabOrder = 1
+        TabOrder = 7
+      end
+    end
+    object pageConfigureGame: TPage
+      ClientWidth = 1440
+      ClientHeight = 1732
+      object Label3: TLabel
+        AnchorSideRight.Control = pageConfigureGame
+        AnchorSideRight.Side = asrBottom
+        Left = 0
+        Height = 32
+        Top = 8
+        Width = 360
+        Alignment = taCenter
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = False
+        Caption = 'Configure Game'
+        Font.Height = -19
+        ParentColor = False
+        ParentFont = False
+      end
+      object editRemoteID: TLabeledEdit
+        Left = 112
+        Height = 22
+        Top = 104
+        Width = 120
+        EditLabel.AnchorSideLeft.Control = editRemoteID
+        EditLabel.AnchorSideTop.Control = editRemoteID
+        EditLabel.AnchorSideTop.Side = asrCenter
+        EditLabel.AnchorSideRight.Control = editRemoteID
+        EditLabel.AnchorSideBottom.Control = editRemoteID
+        EditLabel.Left = 8
+        EditLabel.Height = 17
+        EditLabel.Top = 107
+        EditLabel.Width = 101
+        EditLabel.Caption = 'Your friend''s IP:'
+        EditLabel.ParentColor = False
+        LabelPosition = lpLeft
+        TabOrder = 0
       end
       object btnConnect: TBitBtn
-        Left = 8
+        Left = 49
         Height = 30
-        Top = 184
+        Top = 264
         Width = 224
         Caption = 'Connect'
         OnClick = btnConnectClick
-        TabOrder = 2
+        TabOrder = 1
+      end
+      object Label10: TLabel
+        Left = 8
+        Height = 17
+        Top = 48
+        Width = 170
+        Caption = 'Please choose how to play:'
+        ParentColor = False
       end
     end
     object pageConnecting: TPage
-      ClientWidth = 1424
-      ClientHeight = 1620
+      ClientWidth = 11520
+      ClientHeight = 13856
       object Label4: TLabel
         Left = 0
         Height = 32
@@ -245,8 +236,8 @@ object formChess: TformChess
       end
     end
     object pageGame: TPage
-      ClientWidth = 360
-      ClientHeight = 433
+      ClientWidth = 11520
+      ClientHeight = 13856
       object Label5: TLabel
         Left = 0
         Height = 32
@@ -277,8 +268,8 @@ object formChess: TformChess
       end
     end
     object pageWebservice: TPage
-      ClientWidth = 1424
-      ClientHeight = 1620
+      ClientWidth = 11520
+      ClientHeight = 13856
       object Label8: TLabel
         Left = 0
         Height = 32
@@ -301,10 +292,10 @@ object formChess: TformChess
         EditLabel.AnchorSideTop.Side = asrCenter
         EditLabel.AnchorSideRight.Control = editPlayerName
         EditLabel.AnchorSideBottom.Control = editPlayerName
-        EditLabel.Left = 6
-        EditLabel.Height = 15
+        EditLabel.Left = -1062
+        EditLabel.Height = 17
         EditLabel.Top = 75
-        EditLabel.Width = 75
+        EditLabel.Width = 79
         EditLabel.Caption = 'Player Name'
         EditLabel.ParentColor = False
         LabelPosition = lpLeft

@@ -7,10 +7,9 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, ComCtrls, StdCtrls, Buttons, Spin,
-  //
-  IDelphiChess_Intf,
-  //
-  chessdrawer, chessgame, chessconfig, chesstcputils;
+  // fpchess
+  chessdrawer, chessgame, chessconfig, chesstcputils,
+  chessmodules;
 
 type
 
@@ -29,16 +28,15 @@ type
 
   TformChess = class(TForm)
     btnConnect: TBitBtn;
-    btnAI: TBitBtn;
-    btnSinglePlayer: TBitBtn;
-    btnDirectComm: TBitBtn;
     BitBtn3: TBitBtn;
-    btnHotSeat: TBitBtn;
     btnPlayAgainstAI: TButton;
     checkTimer: TCheckBox;
+    comboGameMode: TComboBox;
     comboStartColor: TComboBox;
+    editLocalIP: TLabeledEdit;
     editWebserviceURL: TLabeledEdit;
     Label1: TLabel;
+    Label10: TLabel;
     labelTime: TLabel;
     Label2: TLabel;
     Label3: TLabel;
@@ -51,12 +49,12 @@ type
     editWebServiceAI: TLabeledEdit;
     labelPos: TLabel;
     editRemoteID: TLabeledEdit;
-    editLocalIP: TLabeledEdit;
     editPlayerName: TLabeledEdit;
     pageStart: TPage;
-    pageConfigConnection: TPage;
+    pageConfigureGame: TPage;
     notebookMain: TNotebook;
     pageConnecting: TPage;
+    panelModules: TPanel;
     ProgressBar1: TProgressBar;
     pageGame: TPage;
     spinPlayerTime: TSpinEdit;
@@ -64,13 +62,13 @@ type
     pageWebservice: TPage;
     procedure btnConnectClick(Sender: TObject);
     procedure btnPlayAgainstAIClick(Sender: TObject);
+    procedure comboGameModeSelect(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure HandleMainScreenButton(Sender: TObject);
-    procedure pageBeforeShow(Sender: TObject; ANewPage: TPage; ANewIndex: Integer);
     procedure timerChessTimerTimer(Sender: TObject);
   private
     { private declarations }
     function FormatTime(ATimeInMiliseconds: Integer): string;
+    procedure UpdateChessModulesUI(ANewIndex: Integer);
   public
     { public declarations }
     procedure UpdateCaptions;
@@ -87,36 +85,12 @@ implementation
 
 const
   INT_PAGE_START = 0;
-  INT_PAGE_CONFIGCONNECTION = 1;
+  INT_PAGE_CONFIGUREGAME = 1;
   INT_PAGE_CONNECTING = 2;
   INT_PAGE_GAME = 3;
   INT_PAGE_AI = 4;
 
 { TformChess }
-
-procedure TformChess.HandleMainScreenButton(Sender: TObject);
-begin
-  if Sender = btnSinglePlayer then
-  begin
-    notebookMain.PageIndex := INT_PAGE_GAME;
-    InitializeGameModel();
-  end
-  else if Sender = btnHotSeat then
-  begin
-    notebookMain.PageIndex := INT_PAGE_GAME;
-    InitializeGameModel();
-  end
-  else if Sender = btnDirectComm then notebookMain.PageIndex := INT_PAGE_CONFIGCONNECTION
-  else if Sender = btnAI then notebookMain.PageIndex := INT_PAGE_AI;
-end;
-
-procedure TformChess.pageBeforeShow(Sender: TObject; ANewPage: TPage; ANewIndex: Integer);
-begin
-  if ANewIndex = INT_PAGE_CONFIGCONNECTION then
-  begin
-    editLocalIP.Text := ChessGetLocalIP();
-  end;
-end;
 
 procedure TformChess.timerChessTimerTimer(Sender: TObject);
 begin
@@ -147,6 +121,17 @@ begin
   // Miliseconds
   lTimePart := ATimeInMiliseconds mod (1000);
   Result := Result + IntToStr(lTimePart);
+end;
+
+procedure TformChess.UpdateChessModulesUI(ANewIndex: Integer);
+var
+  lModule: TChessModule;
+begin
+  if ANewIndex = gSelectedModuleIndex then Exit;
+
+  lModule := GetChessModule(gSelectedModuleIndex);
+  if lModule <> nil then lModule.FreeUserInterface();
+  GetChessModule(ANewIndex).ShowUserInterface(panelModules);
 end;
 
 procedure TformChess.UpdateCaptions;
@@ -185,6 +170,16 @@ begin
 
   // Loading of resources
   vChessDrawer.LoadImages();
+
+  // Prepare the modules view
+  InitializeGameModel();
+  editLocalIP.Text := ChessGetLocalIP();
+  PopulateChessModulesList(comboGameMode.Items);
+  if GetChessModuleCount() >= 1 then
+  begin
+    comboGameMode.ItemIndex := 0;
+    UpdateChessModulesUI(0);
+  end;
 end;
 
 procedure TformChess.btnConnectClick(Sender: TObject);
@@ -199,8 +194,14 @@ begin
 
   notebookMain.PageIndex := INT_PAGE_GAME;
 
-  if comboStartColor.ItemIndex = 0 then
-    GetNextMoveFromBorlandWS();
+//  if comboStartColor.ItemIndex = 0 then
+//    GetNextMoveFromBorlandWS();
+end;
+
+procedure TformChess.comboGameModeSelect(Sender: TObject);
+begin
+  UpdateChessModulesUI(comboGameMode.ItemIndex);
+  gSelectedModuleIndex := comboGameMode.ItemIndex;
 end;
 
 { TFormDrawerDelegate }
