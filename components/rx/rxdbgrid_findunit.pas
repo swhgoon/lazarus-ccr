@@ -70,6 +70,8 @@ procedure ShowRxDBGridFindForm(Grid:TRxDBGrid);
 implementation
 uses dbutils, DBGrids, rxdconst;
 
+{$R *.lfm}
+
 procedure ShowRxDBGridFindForm(Grid: TRxDBGrid);
 var
   rxDBGridFindForm: TrxDBGridFindForm;
@@ -150,9 +152,6 @@ begin
     FDataSet:=THckGrid(FGrid).DataSource.DataSet;
   BtnFind.Enabled:=Assigned(FDataSet) and FDataSet.Active
 end;
-
-initialization
-  {$I rxdbgrid_findunit.lrs}
 
 end.
 

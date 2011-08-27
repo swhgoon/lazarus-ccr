@@ -114,6 +114,8 @@ var
 implementation
 uses rxdconst;
 
+{$R *.lfm}
+
 { TrxFilterByForm }
 
 procedure TrxFilterByForm.Button2Click(Sender: TObject);
@@ -356,25 +358,20 @@ Begin
      End;
 End;
 
-Function  TrxFilterByForm.FindEdit(ED:TEdit):Integer;
-Var
+function  TrxFilterByForm.FindEdit(ED:TEdit):Integer;
+var
  X : Integer;
-Begin
- Result :=0;
- For X := 1 to 9 do
-     Begin
-      if Edit_1[X]=ED Then
-         Begin
-           Result := X;
-           Exit;
-         End;
-     End;
-End;
-
-
-
-initialization
-  {$I rxfilterby.lrs}
+begin
+  Result :=0;
+  for X := 1 to 9 do
+  begin
+    if Edit_1[X]=ED then
+    begin
+      Result := X;
+      Exit;
+    end;
+  end;
+end;
 
 end.
 

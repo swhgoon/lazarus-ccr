@@ -78,6 +78,8 @@ var
 implementation
 uses rxdconst;
 
+{$R *.lfm}
+
 { TrxSortByForm }
 
 procedure TrxSortByForm.DownBtnClick(Sender: TObject);
@@ -215,9 +217,6 @@ begin
     Result:=True;
   end;
 end;
-
-initialization
-  {$I rxsortby.lrs}
 
 end.
 

@@ -979,7 +979,7 @@ var
   i:integer;
   TmpBitmap:TBitmap;
 begin
-  inherited Create(AOwner);
+  inherited CreateNew(AOwner);
 
   BorderStyle:=bsNone;
 
@@ -1044,9 +1044,7 @@ begin
   BackPanel.Top:=2;
   BackPanel.Left:=2;
   BackPanel.Width:=Width - 4;
-{.$IFDEF LINUX}
-//  BackPanel.Height:=Height - FCloseBtn.Height - 2;
-{.$ELSE}
+
   BackPanel.Height:=Height - 4;
 
   FBtns[0] := TRxTimerSpeedButton.Create(Self);

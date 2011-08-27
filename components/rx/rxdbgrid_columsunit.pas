@@ -64,6 +64,8 @@ procedure ShowRxDBGridColumsForm(Grid:TRxDBGrid);
 implementation
 uses rxdconst;
 
+{$R *.lfm}
+
 procedure ShowRxDBGridColumsForm(Grid: TRxDBGrid);
 var
   rxDBGridColumsForm: TrxDBGridColumsForm;
@@ -159,9 +161,6 @@ begin
     end
   end;
 end;
-
-initialization
-  {$I rxdbgrid_columsunit.lrs}
 
 end.
 

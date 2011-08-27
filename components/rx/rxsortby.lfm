@@ -10,14 +10,14 @@ object rxSortByForm: TrxSortByForm
   OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object Label1: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
     Height = 18
     Top = 6
-    Width = 131
+    Width = 109
     BorderSpacing.Around = 6
     Caption = '&Fields for sorting:'
     FocusControl = ListBox1
@@ -27,10 +27,10 @@ object rxSortByForm: TrxSortByForm
     AnchorSideLeft.Control = AddBtn
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Owner
-    Left = 423
+    Left = 415
     Height = 18
     Top = 6
-    Width = 75
+    Width = 57
     BorderSpacing.Around = 6
     Caption = '&All fields:'
     FocusControl = ListBox2
@@ -42,8 +42,8 @@ object rxSortByForm: TrxSortByForm
     AnchorSideBottom.Side = asrBottom
     Left = 6
     Height = 18
-    Top = 316
-    Width = 116
+    Top = 318
+    Width = 108
     Anchors = [akLeft, akBottom]
     BorderSpacing.Left = 6
     Caption = 'Select sort order'
@@ -58,14 +58,15 @@ object rxSortByForm: TrxSortByForm
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ComboBox1
-    Left = 423
-    Height = 267
+    Left = 415
+    Height = 273
     Top = 30
-    Width = 255
+    Width = 263
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     ItemHeight = 0
     OnDblClick = ListBox2DblClick
+    ScrollWidth = 261
     TabOrder = 0
     TopIndex = -1
   end
@@ -75,10 +76,10 @@ object rxSortByForm: TrxSortByForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = AddBtn
     AnchorSideRight.Side = asrBottom
-    Left = 268
-    Height = 35
-    Top = 71
-    Width = 149
+    Left = 275
+    Height = 29
+    Top = 65
+    Width = 134
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
@@ -109,10 +110,10 @@ object rxSortByForm: TrxSortByForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = AddBtn
     AnchorSideRight.Side = asrBottom
-    Left = 268
-    Height = 36
-    Top = 112
-    Width = 149
+    Left = 275
+    Height = 30
+    Top = 100
+    Width = 134
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
@@ -142,10 +143,10 @@ object rxSortByForm: TrxSortByForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = AddBtn
     AnchorSideRight.Side = asrBottom
-    Left = 268
-    Height = 36
-    Top = 154
-    Width = 149
+    Left = 275
+    Height = 30
+    Top = 136
+    Width = 134
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
@@ -175,10 +176,10 @@ object rxSortByForm: TrxSortByForm
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = CheckBox1
-    Left = 128
-    Height = 31
-    Top = 303
-    Width = 550
+    Left = 120
+    Height = 27
+    Top = 309
+    Width = 558
     Anchors = [akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     ItemHeight = 0
@@ -192,13 +193,14 @@ object rxSortByForm: TrxSortByForm
     AnchorSideRight.Control = AddBtn
     AnchorSideBottom.Control = ComboBox1
     Left = 6
-    Height = 267
+    Height = 273
     Top = 30
-    Width = 256
+    Width = 263
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     ItemHeight = 0
     OnDblClick = ListBox1DblClick
+    ScrollWidth = 261
     TabOrder = 6
     TopIndex = -1
   end
@@ -206,10 +208,10 @@ object rxSortByForm: TrxSortByForm
     AnchorSideLeft.Control = Owner
     AnchorSideLeft.Side = asrCenter
     AnchorSideTop.Control = ListBox1
-    Left = 268
-    Height = 35
+    Left = 275
+    Height = 29
     Top = 30
-    Width = 149
+    Width = 134
     AutoSize = True
     Caption = '&Add field to sort'
     Glyph.Data = {
@@ -233,9 +235,17 @@ object rxSortByForm: TrxSortByForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 365
+    Height = 36
+    Top = 369
     Width = 672
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&ОК'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Справка'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Закрыть'
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Отмена'
     TabOrder = 7
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
@@ -245,9 +255,9 @@ object rxSortByForm: TrxSortByForm
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel1
     Left = 6
-    Height = 19
-    Top = 340
-    Width = 163
+    Height = 21
+    Top = 342
+    Width = 155
     Anchors = [akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Case insensitive sort'
