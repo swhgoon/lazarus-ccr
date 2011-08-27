@@ -443,7 +443,7 @@ constructor TPopUpForm.CreatePopUp(AOwner: TComponent;
 var
   PopupOrigin:TPoint;
 begin
-  inherited Create(nil);
+  inherited CreateNew(nil);
 //  inherited Create(AOwner);
   BorderStyle := bsNone;
   Caption:='RxPopUp';
