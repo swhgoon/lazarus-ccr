@@ -68,7 +68,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="13">
+    <Units Count="14">
       <Unit0>
         <Filename Value="fpchess.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -134,6 +134,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="mod_singleplayer"/>
       </Unit12>
+      <Unit13>
+        <Filename Value="mod_fics.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="mod_fics"/>
+      </Unit13>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

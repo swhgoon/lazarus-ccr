@@ -65,6 +65,8 @@ type
     PieceMoved, PieceEaten: TChessTile;
   end;
 
+  TOnMoveCallback = procedure (AFrom, ATo: TPoint);
+
   { TChessGame }
 
   TChessGame = class
@@ -72,7 +74,7 @@ type
   public
     Board: TChessBoard;
     msg : String;
-    CurrentPlayerIsWhite: Boolean;
+    FirstPlayerIsWhite, IsWhitePlayerTurn: Boolean;
     Dragging: Boolean;
     DragStart, MouseMovePos: TPoint;
     UseTimer: Boolean;
@@ -88,6 +90,8 @@ type
     IsBlackLeftRoquePossible, IsBlackRightRoquePossible: Boolean;
     Castle:boolean;//If the move will be a castle.
     CastleCord: TPoint;
+    // Callbacks
+    OnMove: TOnMoveCallback;
     //
     constructor Create;
     procedure StartNewGame(APlayAsWhite: Boolean; AUseTimer: Boolean; APlayerTime: Integer); overload;
@@ -142,7 +146,8 @@ var
   j: Integer;
 begin
   UseTimer := AUseTimer;
-  CurrentPlayerIsWhite := True;
+  FirstPlayerIsWhite := APlayAsWhite;
+  IsWhitePlayerTurn := True;
   WhitePlayerTime := APlayerTime * 60 * 1000; // minutes to milisseconds
   BlackPlayerTime := APlayerTime * 60 * 1000; // minutes to milisseconds
   MoveStartTime := Now;
@@ -255,7 +260,7 @@ begin
   UpdateTimes();
 
   // Change player
-  CurrentPlayerIsWhite := not CurrentPlayerIsWhite;
+  IsWhitePlayerTurn := not IsWhitePlayerTurn;
 end;
 
 { Really moves the piece without doing any check }
@@ -268,6 +273,9 @@ begin
   // If Enpassant, clear the remaining pawn
   if AEnpassantToClear.X <> -1 then
     Board[AEnpassantToClear.X][AEnpassantToClear.Y] := ctEmpty;
+
+  // Notify of the move
+  if Assigned(OnMove) then OnMove(AFrom, ATo);
 end;
 
 procedure TChessGame.DoCastle();
@@ -424,7 +432,7 @@ begin
   Result := False;
 
   // Verify the possibility of a Roque
-  if CurrentPlayerIsWhite then
+  if IsWhitePlayerTurn then
   begin
     // Castle to the right
     if IsWhiteRightRoquePossible and (AFrom.X = 5) and (AFrom.Y = 1)
@@ -490,7 +498,7 @@ begin
 
   LocalBoard:=Board;
 
-  if CurrentPlayerIsWhite then
+  if IsWhitePlayerTurn then
   begin
     if side then
     begin
@@ -553,7 +561,7 @@ begin
   AEnpassantSquareToClear := Point(-1, -1);
   Result := False;
 
-  if CurrentPlayerIsWhite then
+  if IsWhitePlayerTurn then
   begin
     // Normal move forward
     if (AFrom.X = ATo.X) and (AFrom.Y = ATo.Y - 1) then
@@ -638,7 +646,7 @@ end;
 function TChessGame.ValidatePawnSimpleCapture(AFrom,ATo: TPoint): Boolean;
 begin
   result:=false;
-  if not CurrentPlayerIsWhite then
+  if not IsWhitePlayerTurn then
   begin
     // Normal capture in the left
     if (ATo.X = AFrom.X-1) and (ATo.Y = AFrom.Y+1) and IsSquareOccupied(ATo) then
@@ -681,7 +689,7 @@ begin
   lTimeDelta := MilliSecondsBetween(lNow, MoveStartTime);
   MoveStartTime := lNow;
 
-  if CurrentPlayerIsWhite then WhitePlayerTime := WhitePlayerTime - lTimeDelta
+  if IsWhitePlayerTurn then WhitePlayerTime := WhitePlayerTime - lTimeDelta
   else BlackPlayerTime := BlackPlayerTime - lTimeDelta;
 end;
 
@@ -694,7 +702,7 @@ end;
 // Check if we are moving to either an empty space or to an enemy piece
 function TChessGame.CheckEndMove(ATo: TPoint): Boolean;
 begin
-  if CurrentPlayerIsWhite then
+  if IsWhitePlayerTurn then
     Result := Board[ATo.X][ATo.Y] in BlackPiecesOrEmpty
   else
     Result := Board[ATo.X][ATo.Y] in WhitePiecesOrEmpty;
@@ -707,7 +715,7 @@ end;
 }
 function TChessGame.CheckStartMove(AFrom: TPoint): Boolean;
 begin
-  if CurrentPlayerIsWhite then
+  if IsWhitePlayerTurn then
     Result := Board[AFrom.X][AFrom.Y] in WhitePieces
   else
     Result := Board[AFrom.X][AFrom.Y] in BlackPieces;
@@ -744,7 +752,7 @@ begin
     for j:=1 to 8 do
     begin
       piecePos := Point(i, j);
-      if not (CurrentPlayerIsWhite) then
+      if not (IsWhitePlayerTurn) then
       begin
         case Board[i][j] of
         ctWRook:   Result:= ValidateRookMove(piecePos,AKingPos);
@@ -779,12 +787,12 @@ begin
 
   for i:=1 to 8 do
     for j:=1 to 8 do
-    if (CurrentPlayerIsWhite) and (Board[i][j]=ctWKing) then
+    if (IsWhitePlayerTurn) and (Board[i][j]=ctWKing) then
     begin
       Result := Point(i, j);
       Exit;
     end
-    else if (not CurrentPlayerIsWhite) and (Board[i][j]=ctBKing) then
+    else if (not IsWhitePlayerTurn) and (Board[i][j]=ctBKing) then
     begin
       Result := Point(i, j);
       Exit;

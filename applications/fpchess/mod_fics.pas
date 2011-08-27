@@ -1,4 +1,13 @@
-unit mod_singleplayer;
+{
+  For playing through the internet via FICS - Free Internet Chess Server
+
+  Based on this article:
+  http://blog.mekk.waw.pl/archives/7-How-to-write-a-FICS-bot-part-I.html
+
+  FICS website:
+  http://www.freechess.org/
+}
+unit mod_fics;
 
 {$mode objfpc}{$H+}
 
@@ -7,16 +16,13 @@ interface
 uses
   Classes, SysUtils,
   StdCtrls, Forms, Controls,
-  chessmodules;
+  chessmodules, chessgame;
 
 type
 
   { TSinglePlayerChessModule }
 
   TSinglePlayerChessModule = class(TChessModule)
-  private
-    textSecondPlayerName: TStaticText;
-    editSecondPlayerName: TEdit;
   public
     SecondPlayerName: string;
     constructor Create();
@@ -38,54 +44,58 @@ constructor TSinglePlayerChessModule.Create;
 begin
   inherited Create;
 
-  Description := 'Play against a friend in the same computer';
+  Description := 'Play online via the Free Internet Chess Server';
   Kind := cmkSinglePlayer;
 end;
 
 procedure TSinglePlayerChessModule.CreateUserInterface;
 begin
-  textSecondPlayerName := TStaticText.Create(nil);
+{  textSecondPlayerName := TStaticText.Create(nil);
   textSecondPlayerName.SetBounds(20, 20, 180, 50);
   textSecondPlayerName.Caption := 'Name of the second player';
 
   editSecondPlayerName := TEdit.Create(nil);
   editSecondPlayerName.SetBounds(200, 20, 150, 50);
-  editSecondPlayerName.Text := 'Second player';
+  editSecondPlayerName.Text := 'Second player';}
 end;
 
 procedure TSinglePlayerChessModule.ShowUserInterface(AParent: TWinControl);
 begin
-  textSecondPlayerName.Parent := AParent;
-  editSecondPlayerName.Parent := AParent;
+{  textSecondPlayerName.Parent := AParent;
+  editSecondPlayerName.Parent := AParent;}
 end;
 
 procedure TSinglePlayerChessModule.HideUserInterface();
 begin
-  textSecondPlayerName.Parent := nil;
-  editSecondPlayerName.Parent := nil;
+{  textSecondPlayerName.Parent := nil;
+  editSecondPlayerName.Parent := nil;}
 end;
 
 procedure TSinglePlayerChessModule.FreeUserInterface;
 begin
-  textSecondPlayerName.Free;
-  editSecondPlayerName.Free;
+{  textSecondPlayerName.Free;
+  editSecondPlayerName.Free;}
 end;
 
 procedure TSinglePlayerChessModule.PrepareForGame;
 begin
-  SecondPlayerName := editSecondPlayerName.Text;
+//  SecondPlayerName := editSecondPlayerName.Text;
+
+
 end;
 
 function TSinglePlayerChessModule.IsMovingAllowedNow: Boolean;
 begin
-  Result := True;
+  Result := not (vChessGame.IsWhitePlayerTurn xor vChessGame.FirstPlayerIsWhite);
 end;
 
 function TSinglePlayerChessModule.GetSecondPlayerName: string;
 begin
-  Result := SecondPlayerName;
+//  Result := SecondPlayerName;
 end;
 
+// If a move came, it is because the local player did a move
+// so send this move and start listening for a move
 procedure TSinglePlayerChessModule.HandleOnMove(AFrom, ATo: TPoint);
 begin
 

@@ -14,7 +14,7 @@ object formChess: TformChess
     Height = 433
     Top = 0
     Width = 360
-    PageIndex = 0
+    PageIndex = 1
     Align = alClient
     TabOrder = 0
     TabStop = True
@@ -157,11 +157,11 @@ object formChess: TformChess
         TabOrder = 7
       end
     end
-    object pageConfigureGame: TPage
-      ClientWidth = 1440
-      ClientHeight = 1732
-      object Label3: TLabel
-        AnchorSideRight.Control = pageConfigureGame
+    object pageGame: TPage
+      ClientWidth = 360
+      ClientHeight = 433
+      object Label5: TLabel
+        AnchorSideRight.Control = pageGame
         AnchorSideRight.Side = asrBottom
         Left = 0
         Height = 32
@@ -169,81 +169,6 @@ object formChess: TformChess
         Width = 360
         Alignment = taCenter
         Anchors = [akTop, akLeft, akRight]
-        AutoSize = False
-        Caption = 'Configure Game'
-        Font.Height = -19
-        ParentColor = False
-        ParentFont = False
-      end
-      object editRemoteID: TLabeledEdit
-        Left = 112
-        Height = 22
-        Top = 104
-        Width = 120
-        EditLabel.AnchorSideLeft.Control = editRemoteID
-        EditLabel.AnchorSideTop.Control = editRemoteID
-        EditLabel.AnchorSideTop.Side = asrCenter
-        EditLabel.AnchorSideRight.Control = editRemoteID
-        EditLabel.AnchorSideBottom.Control = editRemoteID
-        EditLabel.Left = 8
-        EditLabel.Height = 17
-        EditLabel.Top = 107
-        EditLabel.Width = 101
-        EditLabel.Caption = 'Your friend''s IP:'
-        EditLabel.ParentColor = False
-        LabelPosition = lpLeft
-        TabOrder = 0
-      end
-      object btnConnect: TBitBtn
-        Left = 49
-        Height = 30
-        Top = 264
-        Width = 224
-        Caption = 'Connect'
-        OnClick = btnConnectClick
-        TabOrder = 1
-      end
-      object Label10: TLabel
-        Left = 8
-        Height = 17
-        Top = 48
-        Width = 170
-        Caption = 'Please choose how to play:'
-        ParentColor = False
-      end
-    end
-    object pageConnecting: TPage
-      ClientWidth = 11520
-      ClientHeight = 13856
-      object Label4: TLabel
-        Left = 0
-        Height = 32
-        Top = 8
-        Width = 240
-        Alignment = taCenter
-        AutoSize = False
-        Caption = 'Connecting'
-        Font.Height = -19
-        ParentColor = False
-        ParentFont = False
-      end
-      object ProgressBar1: TProgressBar
-        Left = 8
-        Height = 20
-        Top = 56
-        Width = 100
-        TabOrder = 0
-      end
-    end
-    object pageGame: TPage
-      ClientWidth = 11520
-      ClientHeight = 13856
-      object Label5: TLabel
-        Left = 0
-        Height = 32
-        Top = 8
-        Width = 240
-        Alignment = taCenter
         AutoSize = False
         Caption = 'Playing'
         Font.Height = -19
@@ -268,8 +193,8 @@ object formChess: TformChess
       end
     end
     object pageWebservice: TPage
-      ClientWidth = 11520
-      ClientHeight = 13856
+      ClientWidth = 720
+      ClientHeight = 866
       object Label8: TLabel
         Left = 0
         Height = 32
@@ -292,7 +217,7 @@ object formChess: TformChess
         EditLabel.AnchorSideTop.Side = asrCenter
         EditLabel.AnchorSideRight.Control = editPlayerName
         EditLabel.AnchorSideBottom.Control = editPlayerName
-        EditLabel.Left = -1062
+        EditLabel.Left = -6462
         EditLabel.Height = 17
         EditLabel.Top = 75
         EditLabel.Width = 79

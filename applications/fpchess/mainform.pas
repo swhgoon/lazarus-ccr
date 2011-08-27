@@ -27,7 +27,6 @@ type
   { TformChess }
 
   TformChess = class(TForm)
-    btnConnect: TBitBtn;
     BitBtn3: TBitBtn;
     btnPlayAgainstAI: TButton;
     checkTimer: TCheckBox;
@@ -36,11 +35,8 @@ type
     editLocalIP: TLabeledEdit;
     editWebserviceURL: TLabeledEdit;
     Label1: TLabel;
-    Label10: TLabel;
     labelTime: TLabel;
     Label2: TLabel;
-    Label3: TLabel;
-    Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
     Label7: TLabel;
@@ -48,19 +44,14 @@ type
     Label9: TLabel;
     editWebServiceAI: TLabeledEdit;
     labelPos: TLabel;
-    editRemoteID: TLabeledEdit;
     editPlayerName: TLabeledEdit;
     pageStart: TPage;
-    pageConfigureGame: TPage;
     notebookMain: TNotebook;
-    pageConnecting: TPage;
     panelModules: TPanel;
-    ProgressBar1: TProgressBar;
     pageGame: TPage;
     spinPlayerTime: TSpinEdit;
     timerChessTimer: TTimer;
     pageWebservice: TPage;
-    procedure btnConnectClick(Sender: TObject);
     procedure btnPlayAgainstAIClick(Sender: TObject);
     procedure comboGameModeSelect(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -85,10 +76,8 @@ implementation
 
 const
   INT_PAGE_START = 0;
-  INT_PAGE_CONFIGUREGAME = 1;
-  INT_PAGE_CONNECTING = 2;
-  INT_PAGE_GAME = 3;
-  INT_PAGE_AI = 4;
+  INT_PAGE_GAME = 1;
+  INT_PAGE_WEBSERVICE = 2;
 
 { TformChess }
 
@@ -138,7 +127,7 @@ procedure TformChess.UpdateCaptions;
 var
   lStr: string;
 begin
-  if vChessGame.CurrentPlayerIsWhite then lStr := 'White playing'
+  if vChessGame.IsWhitePlayerTurn then lStr := 'White playing'
   else lStr := 'Black playing';
 
   lStr := lStr + Format(' X: %d Y: %d',
@@ -182,12 +171,6 @@ begin
   end;
 end;
 
-procedure TformChess.btnConnectClick(Sender: TObject);
-begin
-  notebookMain.PageIndex := INT_PAGE_CONNECTING;
-
-end;
-
 procedure TformChess.btnPlayAgainstAIClick(Sender: TObject);
 begin
   InitializeGameModel();
@@ -217,7 +200,11 @@ procedure TFormDrawerDelegate.HandleMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   lCoords: TPoint;
+  lModule: TChessModule;
 begin
+  lModule := GetChessModule(gSelectedModuleIndex);
+  if not lModule.IsMovingAllowedNow() then Exit;
+
   vChessGame.Dragging := False;
 
   lCoords := vChessGame.ClientToBoardCoords(Point(X, Y));
@@ -231,7 +218,11 @@ procedure TFormDrawerDelegate.HandleMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   lCoords: TPoint;
+  lModule: TChessModule;
 begin
+  lModule := GetChessModule(gSelectedModuleIndex);
+  if not lModule.IsMovingAllowedNow() then Exit;
+
   lCoords := vChessGame.ClientToBoardCoords(Point(X, Y));
   if not vChessGame.CheckStartMove(lCoords) then Exit;
 

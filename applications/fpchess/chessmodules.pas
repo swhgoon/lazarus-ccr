@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils,
-  Controls;
+  Controls,
+  chessgame;
 
 type
   TChessModuleKind = (cmkSinglePlayer, cmkInternet, cmkAI);
@@ -19,20 +20,34 @@ type
     procedure ShowUserInterface(AParent: TWinControl); virtual; abstract;
     procedure HideUserInterface(); virtual; abstract;
     procedure FreeUserInterface(); virtual; abstract;
+    procedure PrepareForGame(); virtual; abstract;
+    function IsMovingAllowedNow(): Boolean; virtual; abstract;
+    function GetSecondPlayerName(): string; virtual; abstract;
+    procedure HandleOnMove(AFrom, ATo: TPoint); virtual; abstract;
   end;
 
 var
-  gSelectedModuleIndex: Integer;
+  gSelectedModuleIndex: Integer = -1;
+  gChessModulesDebugOutputDestiny: TStrings = nil;
 
 procedure RegisterChessModule(AModule: TChessModule);
 procedure PopulateChessModulesList(AList: TStrings);
 function GetChessModule(AIndex: Integer): TChessModule;
 function GetChessModuleCount(): Integer;
+procedure ChessModuleDebugLn(AStr: string);
 
 implementation
 
 var
   gChessModules: TList;
+
+procedure HandleOnMove(AFrom, ATo: TPoint);
+var
+  lModule: TChessModule;
+begin
+  lModule := GetChessModule(gSelectedModuleIndex);
+  lModule.HandleOnMove(AFrom, ATo);
+end;
 
 procedure RegisterChessModule(AModule: TChessModule);
 begin
@@ -66,9 +81,15 @@ begin
   Result := gChessModules.Count;
 end;
 
+procedure ChessModuleDebugLn(AStr: string);
+begin
+  if Assigned(gChessModulesDebugOutputDestiny) then
+    gChessModulesDebugOutputDestiny.Add(AStr);
+end;
+
 initialization
   gChessModules := TList.Create;
-  gSelectedModuleIndex := -1;
+  vChessGame.OnMove := @HandleOnMove;
 finalization
   gChessModules.Free;
 end.
