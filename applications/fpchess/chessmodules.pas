@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils,
-  Controls,
+  Controls, StdCtrls,
   chessgame;
 
 type
@@ -28,7 +28,7 @@ type
 
 var
   gSelectedModuleIndex: Integer = -1;
-  gChessModulesDebugOutputDestiny: TStrings = nil;
+  gChessModulesDebugOutputDestiny: TMemo = nil;
 
 procedure RegisterChessModule(AModule: TChessModule);
 procedure PopulateChessModulesList(AList: TStrings);
@@ -84,7 +84,7 @@ end;
 procedure ChessModuleDebugLn(AStr: string);
 begin
   if Assigned(gChessModulesDebugOutputDestiny) then
-    gChessModulesDebugOutputDestiny.Add(AStr);
+    gChessModulesDebugOutputDestiny.Lines.Add(AStr);
 end;
 
 initialization

@@ -173,7 +173,7 @@ begin
     UpdateChessModulesUI(0);
     gSelectedModuleIndex := 0;
   end;
-  gChessModulesDebugOutputDestiny := memoDebug.Lines;
+  gChessModulesDebugOutputDestiny := memoDebug;
 end;
 
 procedure TformChess.btnQuitClick(Sender: TObject);
