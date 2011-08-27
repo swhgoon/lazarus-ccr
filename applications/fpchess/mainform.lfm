@@ -1,7 +1,7 @@
 object formChess: TformChess
-  Left = 216
+  Left = 318
   Height = 433
-  Top = 164
+  Top = 123
   Width = 360
   ActiveControl = notebookMain
   Caption = 'FP Chess 0.1'
@@ -123,8 +123,9 @@ object formChess: TformChess
         Left = 8
         Height = 21
         Top = 74
-        Width = 338
+        Width = 346
         ItemHeight = 0
+        OnChange = comboGameModeSelect
         OnSelect = comboGameModeSelect
         TabOrder = 5
         Text = 'comboGameMode'
@@ -168,8 +169,8 @@ object formChess: TformChess
       end
     end
     object pageGame: TPage
-      ClientWidth = 360
-      ClientHeight = 433
+      ClientWidth = 720
+      ClientHeight = 866
       object Label5: TLabel
         AnchorSideRight.Control = pageGame
         AnchorSideRight.Side = asrBottom
@@ -201,10 +202,17 @@ object formChess: TformChess
         Caption = 'labelTime'
         ParentColor = False
       end
+      object memoDebug: TMemo
+        Left = 8
+        Height = 106
+        Top = 440
+        Width = 344
+        TabOrder = 0
+      end
     end
     object pageWebservice: TPage
-      ClientWidth = 360
-      ClientHeight = 433
+      ClientWidth = 720
+      ClientHeight = 866
       object Label8: TLabel
         Left = 0
         Height = 32

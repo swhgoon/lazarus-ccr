@@ -65,7 +65,7 @@ begin
   editSecondPlayerName.Parent := nil;
 end;
 
-procedure TSinglePlayerChessModule.FreeUserInterface;
+procedure TSinglePlayerChessModule.FreeUserInterface();
 begin
   textSecondPlayerName.Free;
   editSecondPlayerName.Free;

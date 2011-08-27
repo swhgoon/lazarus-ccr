@@ -46,6 +46,7 @@ type
     editWebServiceAI: TLabeledEdit;
     labelPos: TLabel;
     editPlayerName: TLabeledEdit;
+    memoDebug: TMemo;
     pageStart: TPage;
     notebookMain: TNotebook;
     panelModules: TPanel;
@@ -121,7 +122,7 @@ begin
   if ANewIndex = gSelectedModuleIndex then Exit;
 
   lModule := GetChessModule(gSelectedModuleIndex);
-  if lModule <> nil then lModule.FreeUserInterface();
+  if lModule <> nil then lModule.HideUserInterface();
   GetChessModule(ANewIndex).ShowUserInterface(panelModules);
 end;
 
@@ -170,7 +171,9 @@ begin
   begin
     comboGameMode.ItemIndex := 0;
     UpdateChessModulesUI(0);
+    gSelectedModuleIndex := 0;
   end;
+  gChessModulesDebugOutputDestiny := memoDebug.Lines;
 end;
 
 procedure TformChess.btnQuitClick(Sender: TObject);

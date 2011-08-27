@@ -20,9 +20,9 @@ uses
 
 type
 
-  { TSinglePlayerChessModule }
+  { TFICSChessModule }
 
-  TSinglePlayerChessModule = class(TChessModule)
+  TFICSChessModule = class(TChessModule)
   public
     SecondPlayerName: string;
     constructor Create();
@@ -38,9 +38,9 @@ type
 
 implementation
 
-{ TSinglePlayerChessModule }
+{ TFICSChessModule }
 
-constructor TSinglePlayerChessModule.Create;
+constructor TFICSChessModule.Create;
 begin
   inherited Create;
 
@@ -48,7 +48,7 @@ begin
   Kind := cmkSinglePlayer;
 end;
 
-procedure TSinglePlayerChessModule.CreateUserInterface;
+procedure TFICSChessModule.CreateUserInterface;
 begin
 {  textSecondPlayerName := TStaticText.Create(nil);
   textSecondPlayerName.SetBounds(20, 20, 180, 50);
@@ -59,48 +59,48 @@ begin
   editSecondPlayerName.Text := 'Second player';}
 end;
 
-procedure TSinglePlayerChessModule.ShowUserInterface(AParent: TWinControl);
+procedure TFICSChessModule.ShowUserInterface(AParent: TWinControl);
 begin
 {  textSecondPlayerName.Parent := AParent;
   editSecondPlayerName.Parent := AParent;}
 end;
 
-procedure TSinglePlayerChessModule.HideUserInterface();
+procedure TFICSChessModule.HideUserInterface();
 begin
 {  textSecondPlayerName.Parent := nil;
   editSecondPlayerName.Parent := nil;}
 end;
 
-procedure TSinglePlayerChessModule.FreeUserInterface;
+procedure TFICSChessModule.FreeUserInterface;
 begin
 {  textSecondPlayerName.Free;
   editSecondPlayerName.Free;}
 end;
 
-procedure TSinglePlayerChessModule.PrepareForGame;
+procedure TFICSChessModule.PrepareForGame;
 begin
 //  SecondPlayerName := editSecondPlayerName.Text;
-  ChessModuleDebugLn('[TSinglePlayerChessModule.PrepareForGame]');
+  ChessModuleDebugLn('[TFICSChessModule.PrepareForGame]');
 end;
 
-function TSinglePlayerChessModule.IsMovingAllowedNow: Boolean;
+function TFICSChessModule.IsMovingAllowedNow: Boolean;
 begin
   Result := not (vChessGame.IsWhitePlayerTurn xor vChessGame.FirstPlayerIsWhite);
 end;
 
-function TSinglePlayerChessModule.GetSecondPlayerName: string;
+function TFICSChessModule.GetSecondPlayerName: string;
 begin
 //  Result := SecondPlayerName;
 end;
 
 // If a move came, it is because the local player did a move
 // so send this move and start listening for a move
-procedure TSinglePlayerChessModule.HandleOnMove(AFrom, ATo: TPoint);
+procedure TFICSChessModule.HandleOnMove(AFrom, ATo: TPoint);
 begin
 
 end;
 
 initialization
-  RegisterChessModule(TSinglePlayerChessModule.Create);
+  RegisterChessModule(TFICSChessModule.Create);
 end.
 
