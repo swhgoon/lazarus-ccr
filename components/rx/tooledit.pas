@@ -143,8 +143,12 @@ type
   end;
   
 type
+
+  { TRxDateEdit }
+
   TRxDateEdit = class(TCustomRxDateEdit)
   public
+    constructor Create(AOwner: TComponent); override;
     property PopupVisible;
   published
     property Action;
@@ -353,6 +357,14 @@ begin
   end;
 end;
 
+{ TRxDateEdit }
+
+constructor TRxDateEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  UpdateMask;
+end;
+
 { TCustomRxDateEdit }
 
 function TCustomRxDateEdit.IsStoreTitle: boolean;
@@ -460,6 +472,7 @@ begin
   if FStartOfWeek=AValue then exit;
   FStartOfWeek:=AValue;
   UpdatePopup;
+  UpdateMask;
 end;
 
 procedure TCustomRxDateEdit.SetWeekendColor(const AValue: TColor);
@@ -480,7 +493,8 @@ procedure TCustomRxDateEdit.SetYearDigits(const AValue: TYearDigits);
 begin
   if FYearDigits=AValue then exit;
   FYearDigits:=AValue;
-  UpdateFormat;
+//  UpdateFormat;
+  UpdateMask;
 end;
 
 procedure TCustomRxDateEdit.CalendarHintsChanged(Sender: TObject);
