@@ -27,6 +27,9 @@ type
   { TformChess }
 
   TformChess = class(TForm)
+    btnGameNewGame: TBitBtn;
+    btnResign: TBitBtn;
+    btnQuitGame: TBitBtn;
     btnQuit: TBitBtn;
     btnStartGame: TBitBtn;
     btnPlayAgainstAI: TButton;
@@ -38,7 +41,6 @@ type
     Label1: TLabel;
     labelTime: TLabel;
     Label2: TLabel;
-    Label5: TLabel;
     Label6: TLabel;
     Label7: TLabel;
     Label8: TLabel;
@@ -54,7 +56,9 @@ type
     spinPlayerTime: TSpinEdit;
     timerChessTimer: TTimer;
     pageWebservice: TPage;
+    procedure btnGameNewGameClick(Sender: TObject);
     procedure btnQuitClick(Sender: TObject);
+    procedure btnQuitGameClick(Sender: TObject);
     procedure btnStartGameClick(Sender: TObject);
     procedure comboGameModeSelect(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -181,6 +185,18 @@ begin
   Close;
 end;
 
+procedure TformChess.btnGameNewGameClick(Sender: TObject);
+begin
+  notebookMain.PageIndex := INT_PAGE_START;
+
+  timerChessTimer.Enabled := False;
+end;
+
+procedure TformChess.btnQuitGameClick(Sender: TObject);
+begin
+  Close;
+end;
+
 procedure TformChess.btnStartGameClick(Sender: TObject);
 var
   lModule: TChessModule;
@@ -192,6 +208,8 @@ begin
   gSelectedModuleIndex := comboGameMode.ItemIndex;
   lModule := GetChessModule(gSelectedModuleIndex);
   lModule.PrepareForGame();
+
+  timerChessTimer.Enabled := True;
 end;
 
 procedure TformChess.comboGameModeSelect(Sender: TObject);

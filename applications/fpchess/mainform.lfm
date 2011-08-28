@@ -1,26 +1,26 @@
 object formChess: TformChess
   Left = 318
-  Height = 433
+  Height = 500
   Top = 123
   Width = 360
   ActiveControl = notebookMain
   Caption = 'FP Chess 0.1'
-  ClientHeight = 433
+  ClientHeight = 500
   ClientWidth = 360
   OnCreate = FormCreate
   LCLVersion = '0.9.31'
   object notebookMain: TNotebook
     Left = 0
-    Height = 433
+    Height = 500
     Top = 0
     Width = 360
-    PageIndex = 0
+    PageIndex = 1
     Align = alClient
     TabOrder = 0
     TabStop = True
     object pageStart: TPage
       ClientWidth = 360
-      ClientHeight = 433
+      ClientHeight = 500
       object Label1: TLabel
         Left = 0
         Height = 32
@@ -62,7 +62,7 @@ object formChess: TformChess
       object btnQuit: TBitBtn
         Left = 24
         Height = 30
-        Top = 392
+        Top = 456
         Width = 304
         Caption = 'Quit'
         OnClick = btnQuitClick
@@ -132,8 +132,8 @@ object formChess: TformChess
       end
       object panelModules: TPanel
         Left = 8
-        Height = 121
-        Top = 224
+        Height = 177
+        Top = 232
         Width = 344
         BevelOuter = bvNone
         TabOrder = 6
@@ -161,7 +161,7 @@ object formChess: TformChess
       object btnStartGame: TBitBtn
         Left = 24
         Height = 30
-        Top = 352
+        Top = 416
         Width = 304
         Caption = 'Start game'
         OnClick = btnStartGameClick
@@ -169,23 +169,8 @@ object formChess: TformChess
       end
     end
     object pageGame: TPage
-      ClientWidth = 720
-      ClientHeight = 866
-      object Label5: TLabel
-        AnchorSideRight.Control = pageGame
-        AnchorSideRight.Side = asrBottom
-        Left = 0
-        Height = 32
-        Top = 8
-        Width = 360
-        Alignment = taCenter
-        Anchors = [akTop, akLeft, akRight]
-        AutoSize = False
-        Caption = 'Playing'
-        Font.Height = -19
-        ParentColor = False
-        ParentFont = False
-      end
+      ClientWidth = 360
+      ClientHeight = 500
       object labelPos: TLabel
         Left = 8
         Height = 17
@@ -203,16 +188,49 @@ object formChess: TformChess
         ParentColor = False
       end
       object memoDebug: TMemo
+        AnchorSideRight.Control = pageGame
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = pageGame
+        AnchorSideBottom.Side = asrBottom
         Left = 8
-        Height = 106
-        Top = 440
-        Width = 344
+        Height = 71
+        Top = 424
+        Width = 347
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Right = 5
+        BorderSpacing.Bottom = 5
         TabOrder = 0
+      end
+      object btnResign: TBitBtn
+        Left = 176
+        Height = 30
+        Top = 8
+        Width = 75
+        Caption = 'Resign'
+        TabOrder = 1
+      end
+      object btnQuitGame: TBitBtn
+        Left = 272
+        Height = 30
+        Top = 8
+        Width = 75
+        Caption = 'Quit'
+        OnClick = btnQuitGameClick
+        TabOrder = 2
+      end
+      object btnGameNewGame: TBitBtn
+        Left = 80
+        Height = 30
+        Top = 8
+        Width = 75
+        Caption = 'New Game'
+        OnClick = btnGameNewGameClick
+        TabOrder = 3
       end
     end
     object pageWebservice: TPage
-      ClientWidth = 720
-      ClientHeight = 866
+      ClientWidth = 1440
+      ClientHeight = 1732
       object Label8: TLabel
         Left = 0
         Height = 32
@@ -285,6 +303,7 @@ object formChess: TformChess
     end
   end
   object timerChessTimer: TTimer
+    Enabled = False
     OnTimer = timerChessTimerTimer
     left = 296
     top = 152
