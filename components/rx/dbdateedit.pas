@@ -294,6 +294,7 @@ begin
   FDataLink.OnDataChange:=@DataChange;
   FDataLink.OnUpdateData:=@UpdateData;
   Text:='';
+  UpdateMask;
 end;
 
 destructor TDBDateEdit.Destroy;
