@@ -208,7 +208,8 @@ end;
 
 procedure TDBDateEdit.Change;
 begin
-  FDataLink.Modified;
+  if Assigned(FDataLink) then
+    FDataLink.Modified;
   inherited Change;
 end;
 
@@ -294,7 +295,7 @@ begin
   FDataLink.OnDataChange:=@DataChange;
   FDataLink.OnUpdateData:=@UpdateData;
   Text:='';
-  UpdateMask;
+  //UpdateMask;
 end;
 
 destructor TDBDateEdit.Destroy;
