@@ -573,6 +573,9 @@ end;
 begin
   if not Assigned(FPopup) then
     FPopup:=CreatePopupForm;
+
+  UpdatePopup;
+
   if (FPopup <> nil) and not (ReadOnly {or FPopupVisible}) then
   begin
     P := Parent.ClientToScreen(Point(Left, Top));

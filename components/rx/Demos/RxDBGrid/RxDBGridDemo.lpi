@@ -54,16 +54,16 @@
         <MinVersion Major="1" Release="18" Build="56" Valid="True"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="64">
+    <Units Count="65">
       <Unit0>
         <Filename Value="RxDBGridDemo.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="RxDBGridDemo"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="5" Y="17"/>
-        <UsageCount Value="53"/>
+        <UsageCount Value="54"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -72,12 +72,11 @@
         <ComponentName Value="RxDBGridMainForm"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="RxDBGridMainUnit"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
         <TopLine Value="87"/>
         <CursorPos X="11" Y="9"/>
-        <UsageCount Value="53"/>
+        <UsageCount Value="54"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
@@ -396,11 +395,11 @@
       <Unit45>
         <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
         <UnitName Value="rxdbgrid"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
         <TopLine Value="2537"/>
         <CursorPos X="3" Y="2542"/>
-        <UsageCount Value="16"/>
+        <UsageCount Value="17"/>
         <Bookmarks Count="3">
           <Item0 X="3" Y="2250" ID="3"/>
           <Item1 X="13" Y="1203" ID="1"/>
@@ -524,11 +523,11 @@
       <Unit59>
         <Filename Value="/usr/local/share/lazarus/lcl/grids.pas"/>
         <UnitName Value="Grids"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="4"/>
         <WindowIndex Value="0"/>
         <TopLine Value="3866"/>
         <CursorPos X="1" Y="3891"/>
-        <UsageCount Value="13"/>
+        <UsageCount Value="14"/>
         <Loaded Value="True"/>
       </Unit59>
       <Unit60>
@@ -557,15 +556,26 @@
       </Unit62>
       <Unit63>
         <Filename Value="/usr/local/share/lazarus/lcl/include/canvas.inc"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="5"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1116"/>
         <CursorPos X="1" Y="1132"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="11"/>
         <Loaded Value="True"/>
       </Unit63>
+      <Unit64>
+        <Filename Value="../../exsortsql.pas"/>
+        <UnitName Value="exsortsql"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="49" Y="3"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit64>
     </Units>
-    <JumpHistory Count="27" HistoryIndex="26">
+    <JumpHistory Count="28" HistoryIndex="27">
       <Position1>
         <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
         <Caret Line="3141" Column="1" TopLine="3126"/>
@@ -674,6 +684,10 @@
         <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
         <Caret Line="187" Column="49" TopLine="162"/>
       </Position27>
+      <Position28>
+        <Filename Value="../../exsortsql.pas"/>
+        <Caret Line="3" Column="21" TopLine="1"/>
+      </Position28>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>

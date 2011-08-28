@@ -40,15 +40,7 @@ uses
   LCLProc, LMessages, ExtCtrls, StdCtrls, Buttons, Forms, Menus;
 
 { TRxCalendar }
-{
-const
-  //TRxShortDaysWeek: array[0..6] of string = ('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
-  TRxShortDaysOfWeek: array[0..6] of string =
-    ('Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa');
-  TRxLongMonthNames: array[0..11] of string =
-    ('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August',
-    'September', 'October', 'November', 'December');
-}
+
 type
   TDayOfWeek = 0..6;
 
@@ -270,8 +262,7 @@ const
 implementation
 
 uses Messages, RXCtrls, rxconst, ToolEdit, vclutils, math, LCLStrConsts,
-  rxstrutils, LResources {$IFDEF HASVARIANT}, Variants{$ENDIF}
-  ;
+  rxstrutils, LResources;
 
 const
   SBtnGlyphs: array[0..3] of PChar = ('PREV2', 'PREV1', 'NEXT1', 'NEXT2');
@@ -343,13 +334,11 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AllowTimer default True;
-//    property Style default bsWin31;
   end;
 
 constructor TRxTimerSpeedButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-//  Style := bsWin31;
   AllowTimer := True;
   ControlStyle := ControlStyle + [csReplicatable];
 end;
@@ -402,20 +391,9 @@ begin
   with Params do
   begin
     WindowClass.Style := WindowClass.Style and DWORD(not ClassStylesOff);
-    Style := Style or WS_VSCROLL or WS_HSCROLL or WS_CLIPCHILDREN;
+    Style := Style or WS_CLIPCHILDREN;
   end;
 end;
-
-(*
-begin
-  inherited CreateParams(Params);
-  Params.Style := Params.Style or WS_BORDER;
-  Params.ExStyle := Params.ExStyle and not WS_EX_CLIENTEDGE;
-{$IFDEF USED_BiDi}
-  AddBiDiModeExStyle(Params.ExStyle);
-{$ENDIF}
-end;
-*)
 
 procedure TCustomRxCalendar.Change;
 begin
@@ -426,8 +404,6 @@ procedure TCustomRxCalendar.Click;
 var
   TheCellText: string;
 begin
-{  TheCellText := CellText[Col, Row];
-  if TheCellText <> '' then Day := StrToInt(TheCellText);}
   FDate := FDaysArray[Col, Row].DayDate;
   FUseCurrentDate := False;
   CalendarUpdate(false);
@@ -489,26 +465,6 @@ begin
   end;
 end;
 
-{
-function TCustomRxCalendar.GetCellText(ACol, ARow: Integer): string;
-var
-  DayNum: Integer;
-begin
-  if ARow = 0 then  { day names at tops of columns }
-    Result := ShortDayNames[(Ord(StartOfWeek) + ACol) mod 7 + 1]
-  else
-  begin
-    DayNum := FMonthOffset + ACol + (ARow - 1) * 7;
-{    if (DayNum < 1) or (DayNum > DaysThisMonth) then Result := ''}
-{    if (DayNum < 1) then
-      Result := ''
-    else
-    if (DayNum > DaysThisMonth) then
-      Result := ''
-    else }Result := IntToStr(DayNum);
-  end;
-end;
-}
 procedure TCustomRxCalendar.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   if Shift = [] then
@@ -673,14 +629,15 @@ end;
 procedure TCustomRxCalendar.UpdateShortDaysOfWeek;
 var
   Ind: Integer;
-  //OldNotify: TNotifyEvent;
+  OldNotify: TNotifyEvent;
 begin
-  if (FShortDaysOfWeek <> nil) and (FShortDaysOfWeek.Count = 0) then begin
-    //OldNotify := FDaysOfWeek.OnChange;
-    //TStringList(FShortDays).OnChange := nil;
+  if (FShortDaysOfWeek <> nil) and (FShortDaysOfWeek.Count = 0) then
+  begin
+    OldNotify := TStringList(FShortDaysOfWeek).OnChange;
+    TStringList(FShortDaysOfWeek).OnChange := nil;
     for Ind := 1 to 7 do
       FShortDaysOfWeek.Add(SysUtils.ShortDayNames[Ind]);
-    //FShortDaysOfWeek.OnChange := OldNotify;
+    TStringList(FShortDaysOfWeek).OnChange := OldNotify;
   end;
 end;
 
@@ -835,11 +792,9 @@ begin
     if FMonthOffset = 2 then FMonthOffset := -5;
 
     FillDaysArray;
-    SelectedColumn;
-
-    MoveExtend(False, (ADay - FMonthOffset) mod 7, (ADay - FMonthOffset) div 7 + 1);
-    LeftCol:=0;
-    TopRow:=0;
+    MoveExtend(false, (ADay - FMonthOffset) mod 7, (ADay - FMonthOffset) div 7 + 1);
+    TopRow:=1; //Правим ошибку для автоскрола календаря после 15 числа...
+    VisualChange;
 
     if DayOnly then Update else Invalidate;
   finally
@@ -996,7 +951,8 @@ begin
 //  if (csDesigning in ComponentState) then Exit;
 
   FMonthNames := TStringList.Create;
-  if FMonthNames.Count = 0 then begin
+  if FMonthNames.Count = 0 then
+  begin
     for i := Low(LongMonthNames) to High(LongMonthNames) do
       FMonthNames.Add(LongMonthNames[i]);
   end;
@@ -1052,7 +1008,6 @@ begin
   begin
     Parent := FControlPanel;
     SetBounds(-1, -1, BtnSide, BtnSide);
-//    Glyph := LoadBitmapFromLazarusResource('prev2');
     //loaded bitmap should be freed as Glyph just takes a copy of it
     TmpBitmap:=LoadBitmapFromLazarusResource('prev2');
     Glyph := TmpBitmap;
@@ -1068,7 +1023,6 @@ begin
   begin
     Parent := FControlPanel;
     SetBounds(BtnSide - 2, -1, BtnSide, BtnSide);
-//    Glyph:=LoadBitmapFromLazarusResource('prev1');
 
     TmpBitmap:=LoadBitmapFromLazarusResource('prev1');
     Glyph := TmpBitmap;
@@ -1084,7 +1038,6 @@ begin
   begin
     Parent := FControlPanel;
     SetBounds(FControlPanel.Width - 2 * BtnSide + 2, -1, BtnSide, BtnSide);
-//    Glyph:=LoadBitmapFromLazarusResource('next1');
     TmpBitmap:=LoadBitmapFromLazarusResource('next1');
     Glyph := TmpBitmap;
     FreeAndNil(TmpBitmap);
@@ -1098,7 +1051,6 @@ begin
   begin
     Parent := FControlPanel;
     SetBounds(FControlPanel.Width - BtnSide + 1, -1, BtnSide, BtnSide);
-//    Glyph:=LoadBitmapFromLazarusResource('next2');
     TmpBitmap:=LoadBitmapFromLazarusResource('next2');
     Glyph := TmpBitmap;
     FreeAndNil(TmpBitmap);
@@ -1213,9 +1165,6 @@ begin
     CR:=ClientRect;
     RxFrame3D(Canvas, CR, clBtnHighlight, clWindowFrame, 1);
     RxFrame3D(Canvas, CR, clBtnFace, clBtnShadow, 1);
-{    Canvas.Pen.Color:=clWindowText;
-    Canvas.Pen.Style := psSolid;
-    Canvas.Rectangle(0, 0, Width-1, Height-1)}
 end;
 
 procedure TPopupCalendar.Deactivate;
@@ -1252,13 +1201,10 @@ end;
 
 procedure TPopupCalendar.CalendarChange(Sender: TObject);
 var
-  s: string; //
   AYear, AMonth, ADay: Word;
 begin
   DecodeDate(FCalendar.CalendarDate, AYear, AMonth, ADay);
-  s := Format('%s, %d', [LongMonthNames[AMonth], AYear]);
-  FTitleLabel.Caption := s; //
-  // FTitleLabel.Caption := FormatDateTime('MMMM, YYYY', FCalendar.CalendarDate);
+  FTitleLabel.Caption := Format('%s, %d', [LongMonthNames[AMonth], AYear]);
 end;
 
 procedure TPopupCalendar.SetDate(const AValue: TDateTime);
@@ -1281,6 +1227,7 @@ var
   Control: TWinControl;
   MI:TMenuItem;
   i:integer;
+  TmpBitmap:TBitmap;
 begin
   inherited CreateNew(AOwner, 0);
   Caption := sDateDlgTitle;
@@ -1327,7 +1274,11 @@ begin
   begin
     Parent := Control;
     SetBounds(3, 3, 16, 16);
-    Glyph:=LoadBitmapFromLazarusResource('prev2');
+
+    TmpBitmap:=LoadBitmapFromLazarusResource('prev2');
+    Glyph := TmpBitmap;
+    FreeAndNil(TmpBitmap);
+
     OnClick := @PrevYearBtnClick;
     Hint := sPrevYear;
   end;
@@ -1336,7 +1287,11 @@ begin
   with FBtns[1] do begin
     Parent := Control;
     SetBounds(18, 3, 16, 16);
-    Glyph:=LoadBitmapFromLazarusResource('prev1');
+
+    TmpBitmap:=LoadBitmapFromLazarusResource('prev1');
+    Glyph := TmpBitmap;
+    FreeAndNil(TmpBitmap);
+
     OnClick := @PrevMonthBtnClick;
     Hint := sPrevMonth;
   end;
@@ -1346,7 +1301,11 @@ begin
   begin
     Parent := Control;
     SetBounds(188, 3, 16, 16);
-    Glyph:=LoadBitmapFromLazarusResource('next1');
+
+    TmpBitmap:=LoadBitmapFromLazarusResource('next1');
+    Glyph := TmpBitmap;
+    FreeAndNil(TmpBitmap);
+
     OnClick := @NextMonthBtnClick;
     Hint := sNextMonth;
   end;
@@ -1355,7 +1314,11 @@ begin
   with FBtns[3] do begin
     Parent := Control;
     SetBounds(203, 3, 16, 16);
-    Glyph:=LoadBitmapFromLazarusResource('next2');
+
+    TmpBitmap:=LoadBitmapFromLazarusResource('next2');
+    Glyph := TmpBitmap;
+    FreeAndNil(TmpBitmap);
+
     OnClick := @NextYearBtnClick;
     Hint := sNextYear;
   end;
@@ -1546,8 +1509,6 @@ begin
     D.Left := X;
     D.Top := Y;
     D.Date := Date;
-    
-//    D.Calendar.DefaultRowHeight:=Edit.ca;
     
     if D.ShowModal = mrOk then
     begin
