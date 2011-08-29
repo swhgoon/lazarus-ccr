@@ -18,7 +18,7 @@ resourcestring
            '  -y  Generate easy access interface for wrapped parameters' + sNEW_LINE +
            '  -d  Generate documentation as comment in the interface file' + sNEW_LINE +      
            '  -f  Specify unit(s) renaming option : oldName= NewName(;oldName= NewName)* ';
-  sCOPYRIGHT = 'ws_helper, Web Service Toolkit 0.6 Copyright (c) 2006, 2007, 2008 by Inoussa OUEDRAOGO';
+  sCOPYRIGHT = 'ws_helper, Web Service Toolkit 0.6 Copyright (c) 2006, 2007, 2008, 2009, 2010,2011 by Inoussa OUEDRAOGO';
 
 type
   TSourceFileType = ( sftPascal, sftWSDL, sftXsd );
