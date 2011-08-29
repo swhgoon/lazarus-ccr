@@ -14,7 +14,7 @@
 unit test_filter; 
 
 interface   
-uses {$define fpc}
+uses 
   SysUtils, 
 {$IFDEF FPC}
   fpcunit, testregistry,
