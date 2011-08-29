@@ -280,20 +280,22 @@ Var
 begin
   ADest.Clear();
   propListLen := GetPropList(PTypeInfo(FParent.ClassInfo),propList);
-  Try
-    For i := 0 To Pred(propListLen) Do Begin
-      If ( propList^[i]^.PropType^.Kind in
-           [ tkLString{$IFDEF FPC},tkSString,tkAString{$ENDIF}{$IFDEF WST_UNICODESTRING},tkUString{$ENDIF}
-             ,tkWString, tkEnumeration,
-             tkInteger,tkInt64{$IFDEF FPC},tkQWord{$ENDIF}
-           ]
-         )
-      Then
-        ADest.Add(propList^[i]^.Name);
+  if (propListLen > 0) then begin
+    Try
+      For i := 0 To Pred(propListLen) Do Begin
+        If ( propList^[i]^.PropType^.Kind in
+             [ tkLString{$IFDEF FPC},tkSString,tkAString{$ENDIF}{$IFDEF WST_UNICODESTRING},tkUString{$ENDIF}
+               ,tkWString, tkEnumeration,
+               tkInteger,tkInt64{$IFDEF FPC},tkQWord{$ENDIF}
+             ]
+           )
+        Then
+          ADest.Add(propList^[i]^.Name);
+      End;
+    Finally
+      Freemem(propList,propListLen*SizeOf(Pointer));
     End;
-  Finally
-    Freemem(propList,propListLen*SizeOf(Pointer));
-  End;
+  end;
   Result := ADest.Count;
 end;
 
