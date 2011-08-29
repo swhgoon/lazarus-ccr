@@ -593,6 +593,16 @@ type
   end;
   TBaseComplexSimpleContentRemotableClass = class of TBaseComplexSimpleContentRemotable;
 
+  { TComplexEnumContentRemotable }
+
+  TComplexEnumContentRemotable = class(TBaseComplexSimpleContentRemotable)
+  protected
+    class procedure SaveValue(AObject : TBaseRemotable; AStore : IFormatterBase);override;
+    class procedure LoadValue(var AObject : TObject; AStore : IFormatterBase);override;
+    class function GetEnumTypeInfo() : PTypeInfo;virtual;abstract;
+    function GetValueAddress() : Pointer;virtual;abstract;
+  end;                    
+
   { TComplexInt8UContentRemotable }
 
   TComplexInt8UContentRemotable = class(TBaseComplexSimpleContentRemotable)
@@ -1742,7 +1752,25 @@ uses
 
 type
   PObject = ^TObject;
-
+  
+  TEnumBuffer = Record
+    Case TOrdType Of
+      otSByte : (ShortIntData : ShortInt);
+      otUByte : (ByteData : Byte);
+      otSWord : (SmallIntData : SmallInt);
+      otUWord : (WordData : Word);
+      otSLong : (SLongIntData : LongInt);
+      otULong : (ULongIntData : LongWord);
+  End;
+  TFloatBuffer = Record
+    Case TFloatType Of
+      ftSingle : (SingleData : Single);
+      ftDouble : (DoubleData : Double);
+      ftExtended : (ExtendedData : Extended);
+      ftCurr : (CurrencyData : Currency);
+      ftComp : (CompData : Comp);
+  End; 
+    
 var
   TypeRegistryInstance : TTypeRegistry = Nil;
 
@@ -1968,6 +1996,7 @@ begin
       Result := pstOptional;
   end;
 end;
+
 {$ELSE}
 function IsStoredPropClass(AClass : TClass;PropInfo : PPropInfo) : TPropStoreType;
 {var
@@ -2013,24 +2042,7 @@ begin
 end;
 
 { TBaseComplexRemotable }
-Type
-  TEnumBuffer = Record
-    Case TOrdType Of
-      otSByte : (ShortIntData : ShortInt);
-      otUByte : (ByteData : Byte);
-      otSWord : (SmallIntData : SmallInt);
-      otUWord : (WordData : Word);
-      otSLong : (SLongIntData : LongInt);
-      otULong : (ULongIntData : LongWord);
-  End;
-  TFloatBuffer = Record
-    Case TFloatType Of
-      ftSingle : (SingleData : Single);
-      ftDouble : (DoubleData : Double);
-      ftExtended : (ExtendedData : Extended);
-      ftCurr : (CurrencyData : Currency);
-      ftComp : (CompData : Comp);
-  End;
+Type   
 
   { TSerializeOptions }
 
@@ -5593,6 +5605,29 @@ begin
   end;
 end;
 {$ENDIF USE_SERIALIZE}
+
+{ TComplexEnumContentRemotable }
+
+class procedure TComplexEnumContentRemotable.SaveValue(
+  AObject : TBaseRemotable; 
+  AStore  : IFormatterBase
+);  
+begin                                 
+  AStore.PutScopeInnerValue(GetEnumTypeInfo(),(AObject as TComplexEnumContentRemotable).GetValueAddress()^);
+end;
+
+class procedure TComplexEnumContentRemotable.LoadValue(
+  var AObject : TObject;  
+      AStore  : IFormatterBase
+);  
+var
+  locObject : TComplexEnumContentRemotable;
+  locBuffer : Pointer;
+begin
+  locObject := AObject as TComplexEnumContentRemotable;
+  locBuffer := locObject.GetValueAddress();
+  AStore.GetScopeInnerValue(GetEnumTypeInfo(),locBuffer^);
+end; 
 
 { TComplexInt32SContentRemotable }
 
