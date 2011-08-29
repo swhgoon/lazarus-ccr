@@ -1115,7 +1115,7 @@ begin
     Delete(Result,1,1);
 end;
 
-function TBaseGenerator.GenerateExtraUses() : string; 
+{function TBaseGenerator.GenerateExtraUses() : string; 
 var
   m : TPasModule;
   k, currentModuleIndex : Integer;
@@ -1134,6 +1134,23 @@ begin
   end;
   if ( Length(Result) > 0 ) then
     Delete(Result,1,2); 
+end;}
+function TBaseGenerator.GenerateExtraUses() : string; 
+var
+  locUsesList : TList;
+  locModule : TPasElement;
+  i : Integer;
+begin
+  Result := '';
+  locUsesList := SymbolTable.CurrentModule.InterfaceSection.UsesList;
+  if (locUsesList.Count > 0) then begin
+    for i := 0 to Pred(locUsesList.Count) do begin
+      locModule := TPasElement(locUsesList[i]);
+      Result := Result + ', ' +  locModule.Name;
+    end;     
+    if ( Length(Result) > 0 ) then
+      Delete(Result,1,2); 
+  end;
 end;
 
 constructor TBaseGenerator.Create(ASymTable: TwstPasTreeContainer; ASrcMngr: ISourceManager);
@@ -2339,6 +2356,7 @@ procedure TInftGenerator.GenerateClass(ASymbol: TPasClassType);
 var
   locClassPropNbr, locOptionalPropsNbr, locArrayPropsNbr, locPropCount : Integer;
   locPropList : TObjectList;
+  locParentIsEnum : Boolean;
   
   procedure Prepare();
   var
@@ -2393,7 +2411,11 @@ var
         then begin
           trueAncestor := TPasNativeSimpleType(trueAncestor).ExtendableType;
         end;
-        s := Format('%s',[trueAncestor.Name]);
+        locParentIsEnum := trueAncestor.InheritsFrom(TPasEnumType);
+        if locParentIsEnum then
+          s := 'TComplexEnumContentRemotable'
+        else  
+          s := Format('%s',[trueAncestor.Name]);
       end;
     end;
     if IsStrEmpty(s) then begin
@@ -2458,6 +2480,10 @@ var
           end;}
           WritePropertyField(p);
         end;
+        if locParentIsEnum then begin
+          Indent();
+          WriteLn('FValue : %s;',[ASymbol.AncestorType.Name]);   
+        end;
       DecIndent();
       //
       if ( locOptionalPropsNbr > 0 ) then begin
@@ -2474,7 +2500,16 @@ var
         DecIndent();
       end;
       //
-      if ( locArrayPropsNbr > 0 ) or ( locClassPropNbr > 0 ) then begin
+      if locParentIsEnum then begin
+        Indent();
+        WriteLn('protected');
+        IncIndent();
+          Indent(); WriteLn('class function GetEnumTypeInfo() : PTypeInfo;override;');
+          Indent(); WriteLn('function GetValueAddress() : Pointer;override;');
+        DecIndent();
+      end;
+      //
+      if ( locArrayPropsNbr > 0 ) or ( locClassPropNbr > 0 ) or locParentIsEnum then begin
         Indent();
         WriteLn('public');
       end;
@@ -2483,7 +2518,13 @@ var
           Indent(); WriteLn('constructor Create();override;');
           Indent(); WriteLn('procedure FreeObjectProperties();override;');
         DecIndent();
-      end;
+      end;   
+      if locParentIsEnum then begin
+        IncIndent();
+          Indent();
+          WriteLn('property Value : %s read FValue write FValue;',[ASymbol.AncestorType.Name]);   
+        DecIndent();  
+      end;  
 
       //
       Indent();
@@ -2592,9 +2633,27 @@ var
         WriteLn('end;');
       end;
     end;
+    if locParentIsEnum then begin
+      NewLine();
+      WriteLn('class function %s.GetEnumTypeInfo() : PTypeInfo;',[ASymbol.Name]);
+      WriteLn('begin');
+      IncIndent();    
+        Indent();WriteLn('Result := TypeInfo(%s);',[ASymbol.AncestorType.Name]);
+      DecIndent();
+      WriteLn('end;');    
+      
+      NewLine();
+      WriteLn('function %s.GetValueAddress() : Pointer;',[ASymbol.Name]);
+      WriteLn('begin');
+      IncIndent();    
+        Indent();WriteLn('Result := @FValue;');
+      DecIndent();
+      WriteLn('end;');            
+    end;
   end;
 
 begin
+  locParentIsEnum := False;
   locPropList := TObjectList.Create(False);
   try
     Prepare();

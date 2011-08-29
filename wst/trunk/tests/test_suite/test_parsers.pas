@@ -64,6 +64,11 @@ type
     function load_class_property_composed_name() : TwstPasTreeContainer;virtual;abstract;
 
     function load_schema_import() : TwstPasTreeContainer;virtual;abstract;
+    function load_schema_include() : TwstPasTreeContainer;virtual;abstract;
+    function load_schema_include_parent_no_types() : TwstPasTreeContainer;virtual;abstract;
+    function load_schema_include_fail_namespace() : TwstPasTreeContainer;virtual;abstract;
+    function load_schema_include_circular1() : TwstPasTreeContainer;virtual;abstract;
+    function load_schema_include_circular2() : TwstPasTreeContainer;virtual;abstract;
   published
     procedure EmptySchema();
 
@@ -102,8 +107,12 @@ type
     procedure class_widechar_property();
     procedure class_currency_property();
     procedure class_property_composed_name();
-
     procedure schema_import();
+    procedure schema_include();
+    procedure schema_include_parent_no_types();
+    procedure schema_include_fail_namespace();
+    procedure schema_include_circular1();
+    procedure schema_include_circular2();
   end;
 
   { TTest_XsdParser }
@@ -148,6 +157,11 @@ type
     function load_class_property_composed_name() : TwstPasTreeContainer;override;
 
     function load_schema_import() : TwstPasTreeContainer;override;
+    function load_schema_include() : TwstPasTreeContainer;override;
+    function load_schema_include_parent_no_types() : TwstPasTreeContainer;override;
+    function load_schema_include_fail_namespace() : TwstPasTreeContainer;override;
+    function load_schema_include_circular1() : TwstPasTreeContainer;override;
+    function load_schema_include_circular2() : TwstPasTreeContainer;override;
   end;
 
   { TTest_WsdlParser }
@@ -192,6 +206,11 @@ type
     function load_class_property_composed_name() : TwstPasTreeContainer;override;
 
     function load_schema_import() : TwstPasTreeContainer;override;
+    function load_schema_include() : TwstPasTreeContainer;override;
+    function load_schema_include_parent_no_types() : TwstPasTreeContainer;override;
+    function load_schema_include_fail_namespace() : TwstPasTreeContainer;override;
+    function load_schema_include_circular1() : TwstPasTreeContainer;override;
+    function load_schema_include_circular2() : TwstPasTreeContainer;override;     
   published
     procedure no_binding_style();
     procedure signature_last();
@@ -2005,6 +2024,146 @@ begin
   FreeAndNil(tr);
 end;
 
+procedure TTest_CustomXsdParser.schema_include();
+var
+  tr : TwstPasTreeContainer;
+  mdl : TPasModule;
+  ls : TList;
+  elt, prpElt : TPasElement;
+  prp : TPasProperty;
+  baseType, scdClass : TPasClassType;
+begin
+  tr := load_schema_include();
+  try
+    mdl := tr.FindModule('urn:include');
+    CheckNotNull(mdl);
+    ls := mdl.InterfaceSection.Declarations;
+    CheckEquals(4,ls.Count,'type count');
+    elt := tr.FindElement('TypeA');
+      CheckNotNull(elt,'TypeA');
+      CheckIs(elt,TPasEnumType);
+    elt := tr.FindElement('TypeB');
+      CheckNotNull(elt,'TypeB');
+      CheckIs(elt,TPasEnumType);
+    elt := tr.FindElement('TypeC');
+      CheckNotNull(elt,'TypeC');
+      CheckIs(elt,TPasEnumType);
+    elt := tr.FindElement('TClassSample');
+      CheckNotNull(elt,'TClassSample');
+      CheckIs(elt,TPasClassType);
+  finally
+    FreeAndNil(tr);
+  end;
+end;
+
+procedure TTest_CustomXsdParser.schema_include_parent_no_types();
+var
+  tr : TwstPasTreeContainer;
+  mdl : TPasModule;
+  ls : TList;
+  elt, prpElt : TPasElement;
+  prp : TPasProperty;
+  baseType, scdClass : TPasClassType;
+begin
+  tr := load_schema_include_parent_no_types();
+  try
+    mdl := tr.FindModule('urn:include');
+    CheckNotNull(mdl);
+    ls := mdl.InterfaceSection.Declarations;
+    CheckEquals(3,ls.Count,'type count');
+    elt := tr.FindElement('TypeA');
+      CheckNotNull(elt,'TypeA');
+      CheckIs(elt,TPasEnumType);
+    elt := tr.FindElement('TypeB');
+      CheckNotNull(elt,'TypeB');
+      CheckIs(elt,TPasEnumType);
+    elt := tr.FindElement('TypeC');
+      CheckNotNull(elt,'TypeC');
+      CheckIs(elt,TPasEnumType);
+  finally
+    FreeAndNil(tr);
+  end;
+end;
+
+procedure TTest_CustomXsdParser.schema_include_fail_namespace();
+var
+  tr : TwstPasTreeContainer;
+  ok : Boolean;
+begin
+  tr := nil;
+  ok := False;
+  try
+    tr := load_schema_include_fail_namespace();
+    ok := True;
+  except
+    on e : EXsdParserAssertException do
+      ok := True;
+  end;
+  FreeAndNil(tr);
+  Check(ok);
+end;
+
+procedure TTest_CustomXsdParser.schema_include_circular1(); 
+var
+  tr : TwstPasTreeContainer;
+  mdl : TPasModule;
+  ls : TList;
+  elt, prpElt : TPasElement;
+  prp : TPasProperty;
+  baseType, scdClass : TPasClassType;
+begin
+  tr := load_schema_include_circular1();
+  try
+    mdl := tr.FindModule('urn:include');
+    CheckNotNull(mdl);
+    ls := mdl.InterfaceSection.Declarations;
+    CheckEquals(3,ls.Count,'type count');
+    elt := tr.FindElement('TypeA');
+      CheckNotNull(elt,'TypeA');
+      CheckIs(elt,TPasEnumType);
+    elt := tr.FindElement('TypeB');
+      CheckNotNull(elt,'TypeB');
+      CheckIs(elt,TPasEnumType);
+    elt := tr.FindElement('TClassSample');
+      CheckNotNull(elt,'TClassSample');
+      CheckIs(elt,TPasClassType);
+  finally
+    FreeAndNil(tr);
+  end;  
+end;
+
+procedure TTest_CustomXsdParser.schema_include_circular2(); 
+var
+  tr : TwstPasTreeContainer;
+  mdl : TPasModule;
+  ls : TList;
+  elt, prpElt : TPasElement;
+  prp : TPasProperty;
+  baseType, scdClass : TPasClassType;
+begin
+  tr := load_schema_include_circular2();
+  try
+    mdl := tr.FindModule('urn:include');
+    CheckNotNull(mdl);
+    ls := mdl.InterfaceSection.Declarations;
+    CheckEquals(4,ls.Count,'type count');
+    elt := tr.FindElement('TypeA');
+      CheckNotNull(elt,'TypeA');
+      CheckIs(elt,TPasEnumType);
+    elt := tr.FindElement('TypeB');
+      CheckNotNull(elt,'TypeB');
+      CheckIs(elt,TPasEnumType);
+    elt := tr.FindElement('TypeC');
+      CheckNotNull(elt,'TypeC');
+      CheckIs(elt,TPasEnumType);
+    elt := tr.FindElement('TClassSample');
+      CheckNotNull(elt,'TClassSample');
+      CheckIs(elt,TPasClassType);
+  finally
+    FreeAndNil(tr);
+  end;  
+end;
+
 { TTest_XsdParser }
 
 function TTest_XsdParser.ParseDoc(const ADoc: string): TwstPasTreeContainer;
@@ -2151,6 +2310,31 @@ end;
 function TTest_XsdParser.load_schema_import(): TwstPasTreeContainer;
 begin
   Result := ParseDoc('import_second_library');
+end;
+
+function TTest_XsdParser.load_schema_include() : TwstPasTreeContainer;
+begin
+  Result := ParseDoc('include');
+end;
+
+function TTest_XsdParser.load_schema_include_parent_no_types() : TwstPasTreeContainer;
+begin
+  Result := ParseDoc('include2');
+end;
+
+function TTest_XsdParser.load_schema_include_fail_namespace() : TwstPasTreeContainer;
+begin
+  Result := ParseDoc('include_error');
+end;
+
+function TTest_XsdParser.load_schema_include_circular1() : TwstPasTreeContainer;  
+begin
+  Result := ParseDoc('include_circular1');
+end;
+
+function TTest_XsdParser.load_schema_include_circular2() : TwstPasTreeContainer;  
+begin
+  Result := ParseDoc('include_circular2');
 end;
 
 function TTest_XsdParser.load_class_widechar_property() : TwstPasTreeContainer;
@@ -2893,6 +3077,31 @@ end;
 function TTest_WsdlParser.load_schema_import(): TwstPasTreeContainer;
 begin
   Result := ParseDoc('import_second_library');
+end;
+
+function TTest_WsdlParser.load_schema_include() : TwstPasTreeContainer;
+begin
+  Result := ParseDoc('include_schema');
+end;
+
+function TTest_WsdlParser.load_schema_include_parent_no_types() : TwstPasTreeContainer;
+begin
+  Result := ParseDoc('include2');
+end;
+
+function TTest_WsdlParser.load_schema_include_fail_namespace() : TwstPasTreeContainer;  
+begin
+  Result := ParseDoc('include_error');
+end;
+
+function TTest_WsdlParser.load_schema_include_circular1() : TwstPasTreeContainer;  
+begin
+  Result := ParseDoc('include_circular1');
+end;
+
+function TTest_WsdlParser.load_schema_include_circular2() : TwstPasTreeContainer;  
+begin
+  Result := ParseDoc('include_circular2');
 end;
 
 initialization

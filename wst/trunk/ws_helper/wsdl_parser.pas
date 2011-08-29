@@ -60,9 +60,11 @@ type
     FSchemaCursor : IObjectCursor;
     FOnMessage: TOnParserMessage;
     FSimpleOptions : TParserOptions;
+    FIncludeList : TStringList;
   private
     procedure DoOnMessage(const AMsgType : TMessageType; const AMsg : string);
     function AddNameSpace(const AValue : string) : TStrings;
+    procedure CreateIncludeList();
   private
     function CreateWsdlNameFilter(const AName : WideString):IObjectFilter;
     function FindNamedNode(AList : IObjectCursor; const AName : WideString; const AOrder : Integer = 0):TDOMNode;
@@ -93,9 +95,11 @@ type
     function GetTargetNameSpace() : string;
     function GetTargetModule() : TPasModule;
     function GetDocumentLocator() : IDocumentLocator;
-    procedure SetDocumentLocator(const ALocator : IDocumentLocator);
+    procedure SetDocumentLocator(ALocator : IDocumentLocator);
     function GetSimpleOptions() : TParserOptions;
     procedure SetSimpleOptions(const AValue : TParserOptions);
+    procedure AddIncludedDoc(ADocLocation : string);
+    function IsIncludedDoc(ADocLocation : string) : Boolean;
   public
     constructor Create(
             ADoc : TXMLDocument;
@@ -148,6 +152,15 @@ begin
   end;
 end;
 
+procedure TWsdlParser.CreateIncludeList();
+begin
+  if (FIncludeList = nil) then begin
+    FIncludeList := TStringList.Create();
+    FIncludeList.Duplicates := dupIgnore;
+    FIncludeList.Sorted := True;
+  end;
+end;
+
 constructor TWsdlParser.Create(
             ADoc : TXMLDocument;
             ASymbols : TwstPasTreeContainer;
@@ -193,6 +206,7 @@ destructor TWsdlParser.Destroy();
   end;
   
 begin
+  FreeAndNil(FIncludeList);
   FreeList(FXsdParsers);
   FreeList(FNameSpaceList);
   inherited;
@@ -285,7 +299,7 @@ begin
   Result := FDocumentLocator;
 end;
 
-procedure TWsdlParser.SetDocumentLocator(const ALocator: IDocumentLocator);
+procedure TWsdlParser.SetDocumentLocator(ALocator: IDocumentLocator);
 begin
   FDocumentLocator := ALocator;
 end;
@@ -299,6 +313,18 @@ procedure TWsdlParser.SetSimpleOptions(const AValue: TParserOptions);
 begin
   if ( AValue <> FSimpleOptions ) then
     FSimpleOptions := AValue;
+end;
+
+procedure TWsdlParser.AddIncludedDoc(ADocLocation : string);
+begin
+  if (FIncludeList = nil) then
+    CreateIncludeList();
+  FIncludeList.Add(ADocLocation);
+end;
+
+function TWsdlParser.IsIncludedDoc(ADocLocation : string) : Boolean;
+begin
+  Result := (FIncludeList <> nil) and (FIncludeList.IndexOf(ADocLocation) <> -1);
 end;
 
 function TWsdlParser.GetTargetNameSpace() : string;
@@ -391,6 +417,26 @@ procedure TWsdlParser.Execute(const AMode: TParserMode; const AModuleName: strin
     end;
   end;
   
+  procedure FixUsesList();
+  var
+    locPrs : IParserContext;
+    k : PtrInt;
+    locModule : TPasModule;
+    locIntfUsesList : TList;
+  begin
+    locIntfUsesList := FModule.InterfaceSection.UsesList;
+    for k := 0 to Pred(FXsdParsers.Count) do begin
+      locPrs := (FXsdParsers.Objects[k] as TIntfObjectRef).Intf as IParserContext;
+      locModule := locPrs.GetTargetModule();
+      if (locModule <> nil) and (locModule <> FModule) and
+         (locIntfUsesList.IndexOf(locModule) = -1) 
+      then begin
+        locModule.AddRef();
+        locIntfUsesList.Add(locModule);
+      end;  
+    end; 
+  end;
+
 var
   locSrvcCrs : IObjectCursor;
   locObj : TDOMNodeRttiExposer;
@@ -408,9 +454,10 @@ begin
     ParseTypes();
   end;
 
-  ParseForwardDeclarations();
-  ExtractNameSpace();
+  ParseForwardDeclarations(); 
   SymbolTable.SetCurrentModule(FModule);
+  ExtractNameSpace();         
+  FixUsesList();
 end;
 
 function TWsdlParser.ParseOperation(

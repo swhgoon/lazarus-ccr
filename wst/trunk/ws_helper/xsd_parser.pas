@@ -48,10 +48,16 @@ type
       const ADocLocation : string;
       out   ADoc : TXMLDocument
     ) : Boolean;
+    function FindPath(ADocLocation : string) : string;
+    
+    function GetBasePath() : string;
+    procedure SetBasePath(AValue : string);
+    function Clone() : IDocumentLocator;
   end;
 
   TParserOption = (
-    poEnumAlwaysPrefix // Always prefix enum item with the enum name
+    poEnumAlwaysPrefix, // Always prefix enum item with the enum name
+    poParsingIncludeSchema
   );
   TParserOptions = set of TParserOption;
   IParserContext = interface
@@ -63,9 +69,12 @@ type
     function GetTargetNameSpace() : string;
     function GetTargetModule() : TPasModule;
     function GetDocumentLocator() : IDocumentLocator;
-    procedure SetDocumentLocator(const ALocator : IDocumentLocator);
+    procedure SetDocumentLocator(ALocator : IDocumentLocator);
     function GetSimpleOptions() : TParserOptions;
     procedure SetSimpleOptions(const AValue : TParserOptions);
+
+    procedure AddIncludedDoc(ADocLocation : string);
+    function IsIncludedDoc(ADocLocation : string) : Boolean;
   end;
 
   IXsdPaser = interface
@@ -103,12 +112,15 @@ type
     FSimpleOptions : TParserOptions;
     FImportParsed : Boolean;
     FXsdParsers : TStringList;
+    FIncludeList : TStringList;
+    FIncludeParsed : Boolean;
+    FPrepared : Boolean;
   private
     procedure DoOnMessage(const AMsgType : TMessageType; const AMsg : string);
   private
     function FindNamedNode(AList : IObjectCursor; const AName : WideString; const AOrder : Integer = 0):TDOMNode;
     function GetParentContext() : IParserContext;{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure Prepare();
+    procedure Prepare(const AMustSucceed : Boolean);
     function FindElement(const AName: String) : TPasElement; {$IFDEF USE_INLINE}inline;{$ENDIF}
   protected
     function GetXsShortNames() : TStrings;
@@ -117,9 +129,11 @@ type
     function FindShortNamesForNameSpaceLocal(const ANameSpace : string) : TStrings;
     function FindShortNamesForNameSpace(const ANameSpace : string) : TStrings;
     function GetDocumentLocator() : IDocumentLocator;
-    procedure SetDocumentLocator(const ALocator : IDocumentLocator);
+    procedure SetDocumentLocator(ALocator : IDocumentLocator);
     function GetSimpleOptions() : TParserOptions;
     procedure SetSimpleOptions(const AValue : TParserOptions);
+    procedure AddIncludedDoc(ADocLocation : string);
+    function IsIncludedDoc(ADocLocation : string) : Boolean;
 
     procedure SetNotifier(ANotifier : TOnParserMessage);
     function InternalParseType(
@@ -128,6 +142,8 @@ type
     ) : TPasType;
     procedure CreateImportParsers(); 
     procedure ParseImportDocuments(); virtual;
+    procedure CreateIncludeList();
+    procedure ParseIncludeDocuments(); virtual;
   public
     constructor Create(
       ADoc           : TXMLDocument;
@@ -207,7 +223,7 @@ begin
   FNameSpaceList.Duplicates := dupError;
   FNameSpaceList.Sorted := True;
 
-  Prepare();
+  Prepare(False);
 end;
 
 destructor TCustomXsdSchemaParser.Destroy();
@@ -227,6 +243,7 @@ destructor TCustomXsdSchemaParser.Destroy();
   
 begin
   FParentContext := nil;
+  FreeAndNil(FIncludeList);
   FreeList(FNameSpaceList);
   FreeList(FXsdParsers); 
   inherited;
@@ -237,6 +254,7 @@ var
   i : PtrInt;
   p, p1 : IXsdPaser;
 begin
+  Prepare(True);
   Result := nil;
   if (ANamespace = FTargetNameSpace) then begin
     Result := Self;
@@ -299,6 +317,101 @@ begin
       for i := 0 to FXsdParsers.Count - 1 do begin
         p := TIntfObjectRef(FXsdParsers.Objects[i]).Intf as IXsdPaser;
         p.ParseTypes();
+      end;
+    finally
+      SymbolTable.SetCurrentModule(locOldCurrentModule);
+    end;
+  end;
+end;
+
+procedure TCustomXsdSchemaParser.CreateIncludeList();
+begin
+  if (FIncludeList = nil) then begin
+    FIncludeList := TStringList.Create();
+    FIncludeList.Duplicates := dupIgnore;
+    FIncludeList.Sorted := True;
+  end;
+end;
+
+procedure TCustomXsdSchemaParser.ParseIncludeDocuments();
+var
+  crsSchemaChild : IObjectCursor;
+  strFilter, locFileName : string;
+  includeNode : TDOMElement;
+  includeDoc : TXMLDocument;
+  locParser : IXsdPaser;
+  locOldCurrentModule : TPasModule;
+  locLocator, locTempLocator : IDocumentLocator;
+  locContext : IParserContext;
+  locUsesList : TList;
+  locModule : TPasModule;
+  locName, s : string;
+  i : Integer;
+begin
+  if FIncludeParsed then
+    exit;
+  Prepare(True);
+  if (poParsingIncludeSchema in FSimpleOptions) then begin
+    locContext := GetParentContext();
+    if (locContext = nil) then
+      raise EXsdParserAssertException.CreateFmt(SERR_InvalidParserState,['"poParsingIncludeSchema" require a parent context']);
+    if not(IsStrEmpty(FTargetNameSpace)) and (FTargetNameSpace <> locContext.GetTargetNameSpace()) then
+      raise EXsdParserAssertException.Create(SERR_InvalidIncludeDirectiveNS);
+  end;
+
+  FIncludeParsed := True;
+  locLocator := GetDocumentLocator();
+  if (locLocator = nil) then
+    Exit;
+
+  if Assigned(FChildCursor) then begin
+    locOldCurrentModule := SymbolTable.CurrentModule;
+    try
+      locUsesList := FModule.InterfaceSection.UsesList;
+      crsSchemaChild := FChildCursor.Clone() as IObjectCursor;
+      strFilter := CreateQualifiedNameFilterStr(s_include,FXSShortNames);
+      crsSchemaChild := CreateCursorOn(crsSchemaChild,ParseFilter(strFilter,TDOMNodeRttiExposer));
+      crsSchemaChild.Reset();
+      while crsSchemaChild.MoveNext() do begin
+        includeNode := (crsSchemaChild.GetCurrent() as TDOMNodeRttiExposer).InnerObject as TDOMElement;
+        if (includeNode.Attributes <> nil) and (includeNode.Attributes.Length > 0) then begin
+          locFileName := NodeValue(includeNode.Attributes.GetNamedItem(s_schemaLocation));
+          if not(IsStrEmpty(locFileName) or IsIncludedDoc(locFileName)) then begin
+            if locLocator.Find(locFileName,includeDoc) then begin
+              AddIncludedDoc(locFileName);
+              locParser := TCustomXsdSchemaParserClass(Self.ClassType).Create(
+                             includeDoc,
+                             includeDoc.DocumentElement,
+                             SymbolTable,
+                             Self as IParserContext
+                           );
+              locContext := locParser as IParserContext;
+              locContext.SetSimpleOptions(locContext.GetSimpleOptions() + [poParsingIncludeSchema]);
+              locTempLocator := locLocator.Clone();
+              locTempLocator.SetBasePath(locLocator.FindPath(locFileName));
+              locContext.SetDocumentLocator(locTempLocator);
+              locParser.SetNotifier(FOnMessage);
+              locParser.ParseTypes();
+              locModule := locContext.GetTargetModule();
+              if (ExtractIdentifier(locContext.GetTargetNameSpace()) = locModule.Name) then begin
+                s := ChangeFileExt(ExtractFileName(locFileName),'');
+                i := 1;
+                locName := s;
+                while (FSymbols.FindModule(locName) <> nil) do begin
+                  locName := Format('%s%d',[s,i]); 
+                  Inc(i);
+                end;
+                locModule.Name := locName;
+              end;  
+              if (locModule <> FModule) and (locUsesList.IndexOf(locModule) = -1) then begin
+                locModule.AddRef();
+                locUsesList.Add(locModule);
+              end;
+            end else begin
+              DoOnMessage(mtError,Format(SERR_FileNotFound,[locFileName]));
+            end;
+          end;
+        end;
       end;
     finally
       SymbolTable.SetCurrentModule(locOldCurrentModule);
@@ -385,7 +498,7 @@ begin
     Result := GetParentContext().GetDocumentLocator();
 end;
 
-procedure TCustomXsdSchemaParser.SetDocumentLocator(const ALocator: IDocumentLocator);
+procedure TCustomXsdSchemaParser.SetDocumentLocator(ALocator: IDocumentLocator);
 begin
   FDocumentLocator := ALocator;
 end;
@@ -399,6 +512,27 @@ procedure TCustomXsdSchemaParser.SetSimpleOptions(const AValue: TParserOptions);
 begin
   if ( AValue <> FSimpleOptions ) then
     FSimpleOptions := AValue;
+end;
+
+procedure TCustomXsdSchemaParser.AddIncludedDoc(ADocLocation : string);
+begin
+  if (poParsingIncludeSchema in FSimpleOptions) then begin
+    GetParentContext().AddIncludedDoc(ADocLocation);
+    exit;
+  end;
+
+  if (FIncludeList = nil) then
+    CreateIncludeList();
+  FIncludeList.Add(ADocLocation);
+end;
+
+function TCustomXsdSchemaParser.IsIncludedDoc(ADocLocation : string) : Boolean;
+begin
+  Result := False;
+  if (poParsingIncludeSchema in FSimpleOptions) then
+    Result := GetParentContext().IsIncludedDoc(ADocLocation);
+  if not Result then
+    Result := (FIncludeList <> nil) and (FIncludeList.IndexOf(ADocLocation) <> -1);
 end;
 
 procedure TCustomXsdSchemaParser.SetNotifier(ANotifier: TOnParserMessage);
@@ -429,11 +563,13 @@ end;
 
 function TCustomXsdSchemaParser.GetTargetModule() : TPasModule;
 begin
+  Prepare(True);
   Result := FModule;
 end;
 
 function TCustomXsdSchemaParser.GetTargetNameSpace() : string;
 begin
+  Prepare(True);
   Result := FTargetNameSpace;
 end;
 
@@ -599,8 +735,11 @@ var
   typeModule : TPasModule;
   locTypeNodeFound : Boolean;
 begin
+  Prepare(True);
   if not FImportParsed then
     ParseImportDocuments();
+  if not FIncludeParsed then
+    ParseIncludeDocuments();
   sct := nil;
   DoOnMessage(mtInfo, Format(SERR_Parsing,[AName]));
   try
@@ -682,10 +821,16 @@ var
   locParser : IXsdPaser;
   locOldCurrentModule : TPasModule;
   locContinue : Boolean;
-  locLocator : IDocumentLocator;
+  locLocator, loctempLocator : IDocumentLocator;
+  locContext : IParserContext; 
+  locUsesList : TList;
+  locModule : TPasModule;
+  locName, s : string;
+  i : Integer;             
 begin
   if FImportParsed then
     Exit;
+  Prepare(True);
   locLocator := GetDocumentLocator();
   if (locLocator = nil) then
     Exit;
@@ -693,6 +838,7 @@ begin
   if Assigned(FChildCursor) then begin
     locOldCurrentModule := SymbolTable.CurrentModule;
     try
+      locUsesList := FModule.InterfaceSection.UsesList;
       crsSchemaChild := FChildCursor.Clone() as IObjectCursor;
       strFilter := CreateQualifiedNameFilterStr(s_import,FXSShortNames);
       crsSchemaChild := CreateCursorOn(crsSchemaChild,ParseFilter(strFilter,TDOMNodeRttiExposer));
@@ -701,26 +847,45 @@ begin
         importNode := (crsSchemaChild.GetCurrent() as TDOMNodeRttiExposer).InnerObject as TDOMElement;
         if ( importNode.Attributes <> nil ) and ( importNode.Attributes.Length > 0 ) then begin
           locFileName := NodeValue(importNode.Attributes.GetNamedItem(s_schemaLocation));
-          if ( not IsStrEmpty(locFileName) ) and
-             locLocator.Find(locFileName,importDoc)
-          then begin
-            locNameSpace := NodeValue(importNode.Attributes.GetNamedItem(s_namespace));
-            locContinue := IsStrEmpty(locNameSpace) or (FXsdParsers = nil) or (FXsdParsers.IndexOf(locNameSpace) = -1);//( SymbolTable.FindModule(locNameSpace) = nil );
-            if locContinue then begin
-              if (FXsdParsers = nil) then begin
-                FXsdParsers := TStringList.Create();
-                FXsdParsers.Duplicates := dupIgnore;
-                FXsdParsers.Sorted := True;                
-              end;  
-              locParser := TCustomXsdSchemaParserClass(Self.ClassType).Create(
-                             importDoc,
-                             importDoc.DocumentElement,
-                             SymbolTable,
-                             Self as IParserContext
-                           );
-              FXsdParsers.AddObject(locNameSpace,TIntfObjectRef.Create(locParser)); 
-              locParser.SetNotifier(FOnMessage);
-              //locParser.ParseTypes();
+          if not IsStrEmpty(locFileName) then begin
+            if locLocator.Find(locFileName,importDoc) then begin
+              locNameSpace := NodeValue(importNode.Attributes.GetNamedItem(s_namespace));
+              locContinue := IsStrEmpty(locNameSpace) or (FXsdParsers = nil) or (FXsdParsers.IndexOf(locNameSpace) = -1);//( SymbolTable.FindModule(locNameSpace) = nil );
+              if locContinue then begin
+                if (FXsdParsers = nil) then begin
+                  FXsdParsers := TStringList.Create();
+                  FXsdParsers.Duplicates := dupIgnore;
+                  FXsdParsers.Sorted := True;
+                end;
+                locParser := TCustomXsdSchemaParserClass(Self.ClassType).Create(
+                               importDoc,
+                               importDoc.DocumentElement,
+                               SymbolTable,
+                               Self as IParserContext
+                             );
+                locContext := locParser as IParserContext;
+                loctempLocator := locLocator.Clone();
+                loctempLocator.SetBasePath(locLocator.FindPath(locFileName));
+                locContext.SetDocumentLocator(loctempLocator);
+                FXsdParsers.AddObject(locNameSpace,TIntfObjectRef.Create(locParser));
+                locParser.SetNotifier(FOnMessage);
+                //locParser.ParseTypes();
+                locModule := locContext.GetTargetModule();
+                if (locModule <> FModule) and (locUsesList.IndexOf(locModule) = -1) then begin
+                  s := ChangeFileExt(ExtractFileName(locFileName),'');  
+                  i := 1;
+                  locName := s;
+                  while (FSymbols.FindModule(locName) <> nil) do begin
+                    locName := Format('%s%d',[s,i]); 
+                    Inc(i);
+                  end;
+                  locModule.Name := locName;                    
+                  locModule.AddRef();
+                  locUsesList.Add(locModule);
+                end;                          
+              end;
+            end else begin
+              DoOnMessage(mtError,Format(SERR_FileNotFound,[locFileName]));
             end;
           end;
         end;
@@ -737,6 +902,8 @@ var
   typFilterStr : string;
   typNode : TDOMNode;
 begin
+  Prepare(True);
+  ParseIncludeDocuments();
   if Assigned(FChildCursor) then begin
     crsSchemaChild := FChildCursor.Clone() as IObjectCursor;
     typFilterStr := Format(
@@ -766,20 +933,40 @@ begin
   end;
 end;
 
-procedure TCustomXsdSchemaParser.Prepare();
+procedure TCustomXsdSchemaParser.Prepare(const AMustSucceed : Boolean);
 var
   locAttCursor : IObjectCursor;
   prntCtx : IParserContext;
   nd : TDOMNode;
   i : PtrInt;
   ls : TStrings;
+  ok : Boolean;
 begin
-  if ( FSchemaNode.Attributes = nil ) or ( GetNodeListCount(FSchemaNode.Attributes) = 0 ) then
-    raise EXsdParserAssertException.CreateFmt(SERR_SchemaNodeRequiredAttribute,[s_targetNamespace]);
-  nd := FSchemaNode.Attributes.GetNamedItem(s_targetNamespace);
-  if ( nd = nil ) then
-    raise EXsdParserAssertException.CreateFmt(SERR_SchemaNodeRequiredAttribute,[s_targetNamespace]);
-  FTargetNameSpace := nd.NodeValue;
+  if FPrepared then
+    exit;
+
+  FTargetNameSpace := '';
+  ok := False;
+  if (FSchemaNode.Attributes <> nil) and (GetNodeListCount(FSchemaNode.Attributes) > 0) then begin
+    nd := FSchemaNode.Attributes.GetNamedItem(s_targetNamespace);
+    if (nd <> nil) then begin
+      FTargetNameSpace := nd.NodeValue;
+      ok := True;
+    end;
+  end;
+  prntCtx := GetParentContext();
+  if not ok then begin
+    if (poParsingIncludeSchema in FSimpleOptions) and (prntCtx <> nil) then begin
+      FTargetNameSpace := prntCtx.GetTargetNameSpace();
+      ok := True;
+    end else begin
+      if not AMustSucceed then
+        exit;
+      raise EXsdParserAssertException.CreateFmt(SERR_SchemaNodeRequiredAttribute,[s_targetNamespace]);
+    end;
+  end;
+
+  FPrepared := True;
   if IsStrEmpty(FModuleName) then
     FModuleName := ExtractIdentifier(FTargetNameSpace);
   if ( SymbolTable.FindModule(s_xs) = nil ) then begin
@@ -790,7 +977,6 @@ begin
   locAttCursor := CreateAttributesCursor(FSchemaNode,cetRttiNode);
   BuildNameSpaceList(locAttCursor,FNameSpaceList);
   FXSShortNames := FindShortNamesForNameSpaceLocal(s_xs);
-  prntCtx := GetParentContext();
   if ( FXSShortNames = nil ) then begin
     if ( prntCtx = nil ) then
       raise EXsdParserAssertException.CreateFmt(SERR_InvalidSchemaDoc_NamespaceNotFound,[s_xs]);

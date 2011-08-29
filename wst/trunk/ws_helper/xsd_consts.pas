@@ -47,6 +47,7 @@ const
   s_extension                  : WideString = 'extension';
   s_guid                       : WideString = 'GUID';
   s_import                                  = 'import';
+  s_include                                 = 'include';
   s_input                      : WideString = 'input';
   s_item                       : WideString = 'item';
   s_literal                                 = 'literal';

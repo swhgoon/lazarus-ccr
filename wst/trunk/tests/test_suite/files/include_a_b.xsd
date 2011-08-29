@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <xsd:schema xmlns:n="urn:include" 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  targetNamespace="urn:include">
+  
+  <xsd:include schemaLocation="include_b_a.xsd" />
+  
+	<xsd:simpleType name="TypeA">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="taOne">	</xsd:enumeration>
+			<xsd:enumeration value="taTwo">	</xsd:enumeration>
+		</xsd:restriction>
+	</xsd:simpleType>
+  
+ </xsd:schema>

@@ -229,7 +229,26 @@ type
     property StrSimpleAtt_Exemple : string read FStrSimpleAtt_Exemple write FStrSimpleAtt_Exemple;
     property IntSimpleAtt_Exemple : Integer read FIntSimpleAtt_Exemple write FIntSimpleAtt_Exemple;
     property BoolSimpleAtt_Exemple : Boolean read FBoolSimpleAtt_Exemple write FBoolSimpleAtt_Exemple;
-  end;
+  end;        
+
+  { T_ComplexTestEnumContent }
+
+  T_ComplexTestEnumContent = class(TComplexEnumContentRemotable)
+  private
+    FBoolSimpleAtt_Exemple: Boolean;
+    FIntSimpleAtt_Exemple: Integer;
+    FStrSimpleAtt_Exemple: string;
+    FValue : TTestEnum;
+  protected
+    class function GetEnumTypeInfo() : PTypeInfo;override;
+    function GetValueAddress() : Pointer;override;
+  public
+    property Value : TTestEnum read FValue write FValue;
+  published
+    property StrSimpleAtt_Exemple : string read FStrSimpleAtt_Exemple write FStrSimpleAtt_Exemple;
+    property IntSimpleAtt_Exemple : Integer read FIntSimpleAtt_Exemple write FIntSimpleAtt_Exemple;
+    property BoolSimpleAtt_Exemple : Boolean read FBoolSimpleAtt_Exemple write FBoolSimpleAtt_Exemple;
+  end;        
   
   T_ComplexFloatExtendedContent = class(TComplexFloatExtendedContentRemotable)
   private
@@ -294,6 +313,7 @@ type
   private
     FElt_Exemple: string;
     FVal_CplxDouble: T_ComplexFloatDoubleContent;
+    FVal_CplxEnum : T_ComplexTestEnumContent;
     FVal_CplxInt16S: T_ComplexInt16SContent;
     FVal_CplxInt16U: T_ComplexInt16UContent;
     FVal_CplxInt32S: T_ComplexInt32SContent;
@@ -323,6 +343,8 @@ type
     
     property Val_CplxInt8U : T_ComplexInt8UContent read FVal_CplxInt8U write FVal_CplxInt8U;
     property Val_CplxInt8S : T_ComplexInt8SContent read FVal_CplxInt8S write FVal_CplxInt8S;
+
+    property Val_CplxEnum : T_ComplexTestEnumContent read FVal_CplxEnum write FVal_CplxEnum;
 
     property Val_CplxExtended : T_ComplexFloatExtendedContent read FVal_CplxExtended write FVal_CplxExtended;
     property Val_CplxDouble : T_ComplexFloatDoubleContent read FVal_CplxDouble write FVal_CplxDouble;
@@ -491,6 +513,8 @@ type
     procedure Test_CplxInt32SimpleContent_WithClass;
     procedure Test_CplxInt16SimpleContent_WithClass;
     procedure Test_CplxInt8SimpleContent_WithClass;
+
+    procedure Test_CplxEnumSimpleContent_WithClass;
 
     procedure Test_CplxFloatExtendedSimpleContent_WithClass;
     procedure Test_CplxStringSimpleContent_WithClass;
@@ -806,6 +830,18 @@ begin
   for k := 1 to AMaxlen do begin
     Result[k] := AnsiChar((Random(Ord(High(AnsiChar)))));
   end;
+end;
+
+{ T_ComplexTestEnumContent }
+
+class function T_ComplexTestEnumContent.GetEnumTypeInfo() : PTypeInfo;
+begin
+  Result := TypeInfo(TTestEnum);
+end;
+
+function T_ComplexTestEnumContent.GetValueAddress() : Pointer;
+begin
+  Result := @FValue;
 end;
 
 function TTestFormatterSimpleType.Support_ComplextType_with_SimpleContent( ): Boolean;
@@ -2674,6 +2710,59 @@ begin
     CheckEquals(False,a.Val_CplxInt8U.BoolSimpleAtt_Exemple);
   finally
     FreeAndNil(nu);
+    FreeAndNil(ns);
+    a.Free();
+    s.Free();
+  end;
+end;
+
+procedure TTestFormatter.Test_CplxEnumSimpleContent_WithClass;
+const VAL_S = teTwo; VAL_U = teThree;
+var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  a : TClass_CplxSimpleContent;
+  ns : T_ComplexTestEnumContent;
+  x : string;
+begin
+  if not Support_ComplextType_with_SimpleContent() then
+    Exit;
+
+  s := nil;
+  ns := T_ComplexTestEnumContent.Create();
+  a := TClass_CplxSimpleContent.Create();
+  try
+    a.Val_CplxEnum := T_ComplexTestEnumContent.Create();
+    a.Val_CplxEnum.Value := VAL_S;
+    ns.Value := VAL_U;
+
+    f := CreateFormatter(TypeInfo(TClass_Int));
+
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.Put('o1',TypeInfo(TClass_CplxSimpleContent),a);
+      f.Put('ns',TypeInfo(T_ComplexTestEnumContent),ns);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+    FreeAndNil(a);
+
+    ns.Value := teOne;
+    a := TClass_CplxSimpleContent.Create();
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
+      x := 'o1';
+      f.Get(TypeInfo(TClass_CplxSimpleContent),x,a);
+      x := 'ns';
+      f.Get(TypeInfo(TComplexInt8SContentRemotable),x,ns);
+    f.EndScopeRead();
+
+    CheckEquals(Ord(VAL_S),Ord(a.Val_CplxEnum.Value),'a.Val_CplxEnum.Value');
+    CheckEquals(Ord(VAL_U),Ord(ns.Value),'ns.Value');
+  finally
     FreeAndNil(ns);
     a.Free();
     s.Free();
@@ -5681,6 +5770,7 @@ end;
 
 procedure TClass_CplxSimpleContent.FreeObjectProperties();
 begin
+  FreeAndNil(FVal_CplxEnum);
   FreeAndNil(FVal_CplxInt64S);
     FreeAndNil(FVal_CplxInt64U);
   FreeAndNil(FVal_CplxInt32U);
@@ -6486,6 +6576,7 @@ initialization
   GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(T_ComplexInt8SContent),'T_ComplexInt8SContent');
     GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(T_ComplexInt8UContent),'T_ComplexInt8UContent');
 
+  GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(T_ComplexTestEnumContent),'T_ComplexTestEnumContent');
   GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(T_ComplexFloatExtendedContent),'T_ComplexFloatExtendedContent');
   GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(T_ComplexFloatDoubleContent),'T_ComplexFloatDoubleContent');
 

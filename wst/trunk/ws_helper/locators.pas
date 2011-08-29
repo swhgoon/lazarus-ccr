@@ -33,19 +33,42 @@ type
   private
     FBasePath : string;
   protected
+    function FindFileName(ADocLocation : string) : string;
     property BasePath : string read FBasePath;
   protected
     function Find(
       const ADocLocation : string;
       out   ADoc : TXMLDocument
     ) : Boolean;
+    function FindPath(ADocLocation : string) : string;
+    
+    function GetBasePath() : string;
+    procedure SetBasePath(AValue : string);
+    function Clone() : IDocumentLocator;
   public
-    constructor Create(const ABasePath : string);
+    constructor Create(const ABasePath : string);virtual;
   end;
-
+  TFileDocumentLocatorClass = class of TFileDocumentLocator;
+    
 implementation
 
 { TFileDocumentLocator }
+
+function TFileDocumentLocator.FindFileName(ADocLocation : string) : string; 
+var
+  locFileName : string;
+begin
+  //locFileName := BasePath + ExtractFileName(ADocLocation);
+  locFileName := StringReplace(ADocLocation,'\',PathDelim,[rfIgnoreCase,rfReplaceAll]);
+  locFileName := StringReplace(locFileName,'/',PathDelim,[rfIgnoreCase,rfReplaceAll]);
+  
+  locFileName := BasePath + locFileName;
+  //locFileName := ExpandFileName(locFileName);
+  if FileExists(locFileName) then
+    Result := locFileName
+  else
+    Result := '';
+end;
 
 function TFileDocumentLocator.Find(
   const ADocLocation: string;
@@ -54,16 +77,38 @@ function TFileDocumentLocator.Find(
 var
   locFileName : string;
 begin
-  locFileName := BasePath + ExtractFileName(ADocLocation);
-  locFileName := ExpandFileName(locFileName);
-  Result := FileExists(locFileName);
+  locFileName := FindFileName(ADocLocation);
+  Result := (locFileName <> '');
   if Result then
     ReadXMLFile(ADoc,locFileName);
 end;
 
+function TFileDocumentLocator.FindPath(ADocLocation : string) : string; 
+begin
+  Result := FindFileName(ADocLocation);
+  if (Result <> '') then
+    Result := ExtractFilePath(Result);
+end;
+
+function TFileDocumentLocator.GetBasePath() : string; 
+begin
+  Result := BasePath;
+end;
+
+procedure TFileDocumentLocator.SetBasePath(AValue : string); 
+begin
+  if (FBasePath <> AValue) then
+    FBasePath := AValue;
+end;
+
+function TFileDocumentLocator.Clone() : IDocumentLocator; 
+begin
+  Result := TFileDocumentLocatorClass(Self.ClassType).Create(FBasePath) as IDocumentLocator;
+end;
+
 constructor TFileDocumentLocator.Create(const ABasePath: string);
 begin
-  FBasePath := IncludeTrailingPathDelimiter(ABasePath);
+  SetBasePath(IncludeTrailingPathDelimiter(ABasePath));
 end;
 
 end.

@@ -32,6 +32,7 @@ resourcestring
   SERR_ExpectedTypeDefinition        = '"%s" was expected to be a type definition.';
   SERR_ExpectingRemotableObjectClass = 'Expecting remotable object class but found "%s".';
   SERR_FailedTransportRequest        = '%s Request to %s failed.';
+  SERR_FileNotFound                  = 'File not found : "%s" .';
   SERR_HeaderNotUnderstood         = 'Header "%s" not Understood.';
   SERR_IllegalChar                 = 'Illegal character for that encoding : "%s".';
   SERR_IndexOutOfBound             = 'Index out of bound : %d.';
@@ -57,11 +58,13 @@ resourcestring
   SERR_InvalidEncodedData          = 'Invalid encoded data.';
   SERR_InvalidEnumItemNode_NoValueAttribute = 'Invalid "enum" item node : no value attribute, type = "%s".';
   SERR_InvalidHourOffetValue       = '"%d" is not a valid hour offset value.';
+  SERR_InvalidIncludeDirectiveNS   = 'Invalid <include> directive, "targetNamespace" must be absent or equals the parent''s one.';
   SERR_InvalidMaxOccursValue       = 'Invalid "maxOccurs" value : "%s.%s".';
   SERR_InvalidMinOccursValue       = 'Invalid "minOccurs" value : "%s.%s".';
   SERR_InvalidMinuteOffetValue     = '"%d" is not a valid minute offset value.';
-  SERR_InvalidEmbeddedScopeOperation    = 'Invalid opération on scope, their are no embedded scope.';
+  SERR_InvalidEmbeddedScopeOperation    = 'Invalid operation on scope, their are no embedded scope.';
   SERR_InvalidParameter            = 'Invalid parameter : "%s".';
+  SERR_InvalidParserState          = 'Invalud parser state : %s.';
   SERR_InvalidPropertyValue        = 'Invalid property ("%s") value : "%s".';
   SERR_InvalidParameterProc        = 'Invalid parameter : "%s"; Procedure = "%s".';
   SERR_InvalidParameters           = 'Invalid parameters.';
