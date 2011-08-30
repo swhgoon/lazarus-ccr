@@ -59,6 +59,10 @@
         Attacked, _Protected: integer;
         NoMoves, TakingPiece: boolean;
     begin
+      {$ifdef KCCHESS_VERBOSE}
+      //WriteLn('[Play.pas.GetComputerMove.Search]');
+      {$endif}
+
       {*** get the player's move list ***}
       GenMoveList (Turn, MoveList);
       NoMoves := true;
@@ -287,6 +291,9 @@
 
 {----------------------------------------------------------------------------}
     begin {GetComputerMove}
+      {$ifdef KCCHESS_VERBOSE}
+      WriteLn('[Play.pas.GetComputerMove]');
+      {$endif}
       {*** initialize ***}
       PosEvalOn := Player[Turn].PosEval;
       MaxDepth := Player[Turn].LookAhead;
@@ -321,9 +328,15 @@
       end;
       {$endif}
 
+      {$ifdef KCCHESS_VERBOSE}
+      WriteLn(Format('[Play.pas.GetComputerMove] MaxDepth=%d Loop i=%d', [MaxDepth, i]));
+      {$endif}
       {*** check each possible move - same method as in Search ***}
       while (i > 0) do
       begin
+          {$ifdef KCCHESS_VERBOSE}
+          WriteLn(Format('[Play.pas.GetComputerMove] Loop i=%d MoveList.NumMoves=%d', [i, MoveList.NumMoves]));
+          {$endif}
           {$ifdef FPCHESS_DISPLAY_ON}
           UpDateTime (Turn);  {*** player's elapsed time ***}
           {$endif}

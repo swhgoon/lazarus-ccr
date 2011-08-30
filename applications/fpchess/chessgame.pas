@@ -261,6 +261,9 @@ begin
 
   // Change player
   IsWhitePlayerTurn := not IsWhitePlayerTurn;
+
+  // Notify of the move
+  if Assigned(OnMove) then OnMove(AFrom, ATo);
 end;
 
 { Really moves the piece without doing any check }
@@ -273,9 +276,6 @@ begin
   // If Enpassant, clear the remaining pawn
   if AEnpassantToClear.X <> -1 then
     Board[AEnpassantToClear.X][AEnpassantToClear.Y] := ctEmpty;
-
-  // Notify of the move
-  if Assigned(OnMove) then OnMove(AFrom, ATo);
 end;
 
 procedure TChessGame.DoCastle();

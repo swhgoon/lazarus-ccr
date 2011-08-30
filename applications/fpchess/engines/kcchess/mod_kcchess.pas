@@ -1,3 +1,8 @@
+{
+  Chess Engine licensed under public domain obtained from:
+
+  http://www.csbruce.com/~csbruce/chess/
+}
 unit mod_kcchess;
 
 {$mode objfpc}
@@ -172,6 +177,8 @@ procedure GetComputerMove (Turn : PieceColorType; Display : boolean;
 
 implementation
 
+{$define KCCHESS_VERBOSE}
+
 {*** include files ***}
 
 //{$I MISC.PAS}     {*** miscellaneous functions ***}
@@ -271,6 +278,10 @@ var
   Escape: boolean;
   Score: Integer;
 begin
+  // If we are getting notified by a computer move, exit immediately
+  if IsMovingAllowedNow() then Exit;
+
+  // initialization
   Escape := False;
   Score := 0;
 
@@ -296,10 +307,9 @@ begin
 
   { And write it to our board }
 
-  vChessGame.DoMovePiece(
-    Point(UserMovement.FromRow, UserMovement.FromCol),
-    Point(UserMovement.ToRow, UserMovement.ToCol),
-    Point(-1, -1));
+  vChessGame.MovePiece(
+    Point(AIMovement.FromCol, AIMovement.FromRow),
+    Point(AIMovement.ToCol, AIMovement.ToRow));
 end;
 
 initialization

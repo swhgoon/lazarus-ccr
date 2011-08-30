@@ -304,7 +304,11 @@
     var Row: RowColType;
         Attacked, _Protected : integer;
 
-    begin
+  begin
+    {$ifdef KCCHESS_VERBOSE}
+    //WriteLn(Format('[Moves.pas.MakeMove] Movement.PieceTaken.image=%d', [Integer(Movement.PieceTaken.image)]));
+    {$endif}
+
       Score := 0;
       {*** update board for most moves ***}
       with Movement do begin
