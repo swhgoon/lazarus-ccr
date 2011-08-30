@@ -12,6 +12,8 @@ uses
 type
   TChessModuleKind = (cmkSinglePlayer, cmkInternet, cmkAI);
 
+  { TChessModule }
+
   TChessModule = class
   public
     Kind: TChessModuleKind;
@@ -21,7 +23,7 @@ type
     procedure HideUserInterface(); virtual; abstract;
     procedure FreeUserInterface(); virtual; abstract;
     procedure PrepareForGame(); virtual; abstract;
-    function IsMovingAllowedNow(): Boolean; virtual; abstract;
+    function IsMovingAllowedNow(): Boolean; virtual;
     function GetSecondPlayerName(): string; virtual; abstract;
     procedure HandleOnMove(AFrom, ATo: TPoint); virtual; abstract;
   end;
@@ -85,6 +87,13 @@ procedure ChessModuleDebugLn(AStr: string);
 begin
   if Assigned(gChessModulesDebugOutputDestiny) then
     gChessModulesDebugOutputDestiny.Lines.Add(AStr);
+end;
+
+{ TChessModule }
+
+function TChessModule.IsMovingAllowedNow: Boolean;
+begin
+  Result := not (vChessGame.IsWhitePlayerTurn xor vChessGame.FirstPlayerIsWhite);
 end;
 
 initialization

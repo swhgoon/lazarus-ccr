@@ -1,11 +1,13 @@
 unit mod_kcchess;
 
-{$mode objfpc}{$H+}
+{$mode objfpc}
 
 interface
 
 uses
-  Classes, SysUtils; 
+  Classes, SysUtils,
+  StdCtrls, Forms, Controls,
+  chessgame, chessmodules;
 
 const HIGH = 52;  WIDE = 52;  SINGLE_IMAGE_SIZE = 1500;
       BOARD_SIZE = 8;  ROW_NAMES = '12345678';  COL_NAMES = 'ABCDEFGH';
@@ -123,6 +125,30 @@ var Game : GameType;
     ImageStore : ImageTypePt;
     GraphDriver, GraphMode : integer;   {*** for Turbo Pascal graphics ***}
 
+type
+
+  { TKCChessModule }
+
+  TKCChessModule = class(TChessModule)
+  private
+    PlayerColor, ComputerColor: PieceColorType;
+    function FPChessPieceToKCChessImage(APos: TPoint): PieceImageType;
+    function FPChessPieceToKCChessColor(APos: TPoint): PieceColorType;
+  public
+    constructor Create();
+    procedure CreateUserInterface(); override;
+    procedure ShowUserInterface(AParent: TWinControl); override;
+    procedure HideUserInterface(); override;
+    procedure FreeUserInterface(); override;
+    procedure PrepareForGame(); override;
+    function GetSecondPlayerName(): ansistring; override;
+    procedure HandleOnMove(AFrom, ATo: TPoint); override;
+  end;
+
+{ INIT.PAS }
+procedure InitPossibleMoves;
+procedure StartupInitialize;
+{ MOVES.PAS }
 procedure AttackedBy (row, col : RowColType; var Attacked, _Protected : integer);
 procedure GenMoveList (Turn : PieceColorType; var Movelist : MoveListType);
 procedure MakeMove (Movement : MoveType; PermanentMove : boolean; var Score : integer);
@@ -130,19 +156,153 @@ procedure UnMakeMove (var Movement: Movetype);
 procedure TrimChecks (Turn : PieceColorType; var MoveList : MoveListType);
 procedure RandomizeMoveList (var MoveList : MoveListType);
 procedure GotoMove (GivenMoveTo : integer);
+{ SETUP.PAS }
+procedure DefaultBoardSetPieces;
+procedure DefaultBoard;
+//procedure SetupBoard;
+{ PLAY.PAS }
+procedure GetComputerMove (Turn : PieceColorType; Display : boolean;
+                             var HiMovement : MoveType; var Escape : boolean);
+// procedure GetHumanMove (Turn : PieceColorType; var Movement : MoveType;
+//                          var Escape : boolean);
+//  procedure GetPlayerMove (var Movement : MoveType; var Escape : boolean);
+//  procedure PlayGame;
+//  procedure CheckFinishStatus;
+//    procedure CheckHumanPawnPromotion (var Movement : MoveType);
 
 implementation
 
 {*** include files ***}
 
 //{$I MISC.PAS}     {*** miscellaneous functions ***}
-//{$I INIT.PAS}     {*** initialization of global variables ***}
+{$I INIT.PAS}     {*** initialization of global variables ***}
 //{$I DISPLAY.PAS}  {*** display-oriented routines ***}
 //{$I INPUT.PAS}    {*** keyboard input routines ***}
 {$I MOVES.PAS}    {*** move generation and making routines ***}
-//{$I SETUP.PAS}    {*** default board and custom setup routines ***}
-//{$I PLAY.PAS}     {*** computer thinking and player input routines ***}
+{$I SETUP.PAS}    {*** default board and custom setup routines ***}
+{$I PLAY.PAS}     {*** computer thinking and player input routines ***}
 //{$I MENU.PAS}     {*** main menu routines ***}
 
+{ TKCChessModule }
+
+function TKCChessModule.FPChessPieceToKCChessImage(APos: TPoint): PieceImageType;
+begin
+  case vChessGame.Board[APos.X][APos.Y] of
+  ctEmpty:              Result := BLANK;
+  ctWPawn, ctBPawn:     Result := PAWN;
+  ctWKnight, ctBKnight: Result := KNIGHT;
+  ctWBishop, ctBBishop: Result := BISHOP;
+  ctWRook, ctBRook:     Result := ROOK;
+  ctWQueen, ctBQueen:   Result := QUEEN;
+  ctWKing, ctBKing:     Result := KING;
+  end;
+end;
+
+function TKCChessModule.FPChessPieceToKCChessColor(APos: TPoint): PieceColorType;
+begin
+  case vChessGame.Board[APos.X][APos.Y] of
+  ctEmpty, ctWPawn, ctWKnight, ctWBishop, ctWRook, ctWQueen, ctWKing: Result := C_WHITE;
+  ctBPawn, ctBKnight, ctBBishop, ctBRook, ctBQueen, ctBKing:          Result := C_BLACK;
+  end;
+end;
+
+constructor TKCChessModule.Create;
+begin
+  inherited Create;
+
+  Description := 'Play against the computer - KCChess Engine';
+  Kind := cmkSinglePlayer;
+end;
+
+procedure TKCChessModule.CreateUserInterface;
+begin
+{  textSecondPlayerName := TStaticText.Create(nil);
+  textSecondPlayerName.SetBounds(20, 20, 180, 50);
+  textSecondPlayerName.Caption := 'Name of the second player';
+
+  editSecondPlayerName := TEdit.Create(nil);
+  editSecondPlayerName.SetBounds(200, 20, 150, 50);
+  editSecondPlayerName.Text := 'Second player';}
+end;
+
+procedure TKCChessModule.ShowUserInterface(AParent: TWinControl);
+begin
+{  textSecondPlayerName.Parent := AParent;
+  editSecondPlayerName.Parent := AParent;}
+end;
+
+procedure TKCChessModule.HideUserInterface();
+begin
+{  textSecondPlayerName.Parent := nil;
+  editSecondPlayerName.Parent := nil;}
+end;
+
+procedure TKCChessModule.FreeUserInterface();
+begin
+{  textSecondPlayerName.Free;
+  editSecondPlayerName.Free;}
+end;
+
+procedure TKCChessModule.PrepareForGame;
+begin
+  StartupInitialize();
+  DefaultBoard();
+
+  if vChessGame.FirstPlayerIsWhite then
+  begin
+    ComputerColor := C_BLACK;
+    PlayerColor := C_WHITE;
+  end
+  else
+  begin
+    ComputerColor := C_WHITE;
+    PlayerColor := C_BLACK;
+  end;
+end;
+
+function TKCChessModule.GetSecondPlayerName: ansistring;
+begin
+  Result := 'KCChess Engine';
+end;
+
+procedure TKCChessModule.HandleOnMove(AFrom, ATo: TPoint);
+var
+  UserMovement, AIMovement: MoveType;
+  Escape: boolean;
+  Score: Integer;
+begin
+  Escape := False;
+  Score := 0;
+
+  { First write the movement of the user }
+  UserMovement.FromRow := AFrom.Y;
+  UserMovement.FromCol := AFrom.X;
+  UserMovement.ToRow := ATo.Y;
+  UserMovement.ToCol := ATo.X;
+  UserMovement.PieceMoved.image := FPChessPieceToKCChessImage(ATo);
+  UserMovement.PieceMoved.color := PlayerColor;
+//                     HasMoved : boolean;
+//                     ValidSquare : boolean;
+  UserMovement.PieceTaken.image := BLANK;
+  UserMovement.PieceTaken.color := ComputerColor;
+//                     HasMoved : boolean;
+//                     ValidSquare : boolean;
+  UserMovement.MovedImage := BLANK;
+
+  MakeMove(UserMovement, True, Score);
+
+  { Now get the computer move }
+  GetComputerMove(ComputerColor, False, AIMovement, Escape);
+
+  { And write it to our board }
+
+  vChessGame.DoMovePiece(
+    Point(UserMovement.FromRow, UserMovement.FromCol),
+    Point(UserMovement.ToRow, UserMovement.ToCol),
+    Point(-1, -1));
+end;
+
+initialization
+  RegisterChessModule(TKCChessModule.Create);
 end.
 

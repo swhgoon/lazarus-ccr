@@ -11,7 +11,7 @@ uses
 
 type
 
-  { TSinglePlayerChessModule }
+  { TSameComputerChessModule }
 
   TSameComputerChessModule = class(TChessModule)
   private

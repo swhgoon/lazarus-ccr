@@ -40,7 +40,6 @@ type
     procedure HideUserInterface(); override;
     procedure FreeUserInterface(); override;
     procedure PrepareForGame(); override;
-    function IsMovingAllowedNow(): Boolean; override;
     function GetSecondPlayerName(): string; override;
     procedure HandleOnMove(AFrom, ATo: TPoint); override;
   end;
@@ -184,11 +183,6 @@ begin
               print STDERR "Successfully logged as guest $username\n" if $VERBOSE;
           }
           *)
-end;
-
-function TFICSChessModule.IsMovingAllowedNow: Boolean;
-begin
-  Result := not (vChessGame.IsWhitePlayerTurn xor vChessGame.FirstPlayerIsWhite);
 end;
 
 function TFICSChessModule.GetSecondPlayerName: string;
