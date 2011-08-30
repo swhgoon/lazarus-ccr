@@ -10,7 +10,7 @@ uses
   chessgame;
 
 type
-  TChessModuleKind = (cmkSinglePlayer, cmkInternet, cmkAI);
+  TChessModuleKind = (cmkSameComputer, cmkInternet, cmkAgainstComputer);
 
   { TChessModule }
 

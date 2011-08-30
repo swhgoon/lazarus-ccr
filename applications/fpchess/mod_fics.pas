@@ -60,7 +60,7 @@ begin
            );*)
 
   Description := 'Play online via the Free Internet Chess Server';
-  Kind := cmkSinglePlayer;
+  Kind := cmkInternet;
 
   FICS_HOST := 'freechess.org';
   FICS_PORT := 5000;

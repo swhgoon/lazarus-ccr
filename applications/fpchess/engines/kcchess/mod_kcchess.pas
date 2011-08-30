@@ -211,7 +211,7 @@ begin
   inherited Create;
 
   Description := 'Play against the computer - KCChess Engine';
-  Kind := cmkSinglePlayer;
+  Kind := cmkAgainstComputer;
 end;
 
 procedure TKCChessModule.CreateUserInterface;

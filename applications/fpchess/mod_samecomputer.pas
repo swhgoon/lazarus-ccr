@@ -39,7 +39,7 @@ begin
   inherited Create;
 
   Description := 'Play against a friend in the same computer';
-  Kind := cmkSinglePlayer;
+  Kind := cmkSameComputer;
 end;
 
 procedure TSameComputerChessModule.CreateUserInterface;
