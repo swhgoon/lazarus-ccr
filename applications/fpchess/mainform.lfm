@@ -4,7 +4,7 @@ object formChess: TformChess
   Top = 123
   Width = 360
   ActiveControl = notebookMain
-  Caption = 'FP Chess 0.1'
+  Caption = 'FP Chess 1.0'
   ClientHeight = 500
   ClientWidth = 360
   OnCreate = FormCreate
@@ -28,7 +28,7 @@ object formChess: TformChess
         Width = 360
         Alignment = taCenter
         AutoSize = False
-        Caption = 'Welcome to FP Chess 0.1'
+        Caption = 'Welcome to FP Chess 1.0'
         Font.Height = -19
         ParentColor = False
         ParentFont = False
@@ -174,7 +174,7 @@ object formChess: TformChess
       object labelPos: TLabel
         Left = 8
         Height = 18
-        Top = 392
+        Top = 376
         Width = 54
         Caption = 'labelPos'
         ParentColor = False
@@ -206,7 +206,7 @@ object formChess: TformChess
         Left = 176
         Height = 30
         Top = 8
-        Width = 75
+        Width = 88
         Caption = 'Resign'
         TabOrder = 1
       end
@@ -223,15 +223,23 @@ object formChess: TformChess
         Left = 80
         Height = 30
         Top = 8
-        Width = 75
+        Width = 88
         Caption = 'New Game'
         OnClick = btnGameNewGameClick
         TabOrder = 3
       end
+      object labelMode: TLabel
+        Left = 8
+        Height = 18
+        Top = 392
+        Width = 66
+        Caption = 'labelMode'
+        ParentColor = False
+      end
     end
     object pageWebservice: TPage
-      ClientWidth = 2880
-      ClientHeight = 3464
+      ClientWidth = 5760
+      ClientHeight = 6928
       object Label8: TLabel
         Left = 0
         Height = 32

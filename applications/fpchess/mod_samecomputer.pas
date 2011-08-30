@@ -19,7 +19,7 @@ type
     editSecondPlayerName: TEdit;
   public
     SecondPlayerName: string;
-    constructor Create();
+    constructor Create(); override;
     procedure CreateUserInterface(); override;
     procedure ShowUserInterface(AParent: TWinControl); override;
     procedure HideUserInterface(); override;
@@ -38,7 +38,9 @@ constructor TSameComputerChessModule.Create;
 begin
   inherited Create;
 
-  Description := 'Play against a friend in the same computer';
+  Name := 'mod_samecomputer.pas';
+  SelectionDescription := 'Play against a friend in the same computer';
+  PlayingDescription := 'Playing against a friend in the same computer';
   Kind := cmkSameComputer;
 end;
 

@@ -17,7 +17,8 @@ type
   TChessModule = class
   public
     Kind: TChessModuleKind;
-    Description: string;
+    Name, SelectionDescription, PlayingDescription: string;
+    constructor Create; virtual;
     procedure CreateUserInterface(); virtual; abstract;
     procedure ShowUserInterface(AParent: TWinControl); virtual; abstract;
     procedure HideUserInterface(); virtual; abstract;
@@ -71,7 +72,7 @@ begin
   begin
     lModule := TChessModule(gChessModules.Items[i]);
     if lModule <> nil then
-      AList.Add(lModule.Description);
+      AList.Add(lModule.SelectionDescription);
   end;
 end;
 
@@ -93,6 +94,11 @@ begin
 end;
 
 { TChessModule }
+
+constructor TChessModule.Create;
+begin
+
+end;
 
 function TChessModule.IsMovingAllowedNow: Boolean;
 begin

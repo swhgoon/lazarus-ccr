@@ -140,7 +140,7 @@ type
     function FPChessPieceToKCChessImage(APos: TPoint): PieceImageType;
     function FPChessPieceToKCChessColor(APos: TPoint): PieceColorType;
   public
-    constructor Create();
+    constructor Create(); override;
     procedure CreateUserInterface(); override;
     procedure ShowUserInterface(AParent: TWinControl); override;
     procedure HideUserInterface(); override;
@@ -217,7 +217,9 @@ constructor TKCChessModule.Create;
 begin
   inherited Create;
 
-  Description := 'Play against the computer - KCChess Engine';
+  Name := 'mod_kcchess.pas';
+  SelectionDescription := 'Play against the computer - KCChess Engine';
+  PlayingDescription := 'Playing against the computer - KCChess Engine';
   Kind := cmkAgainstComputer;
 end;
 

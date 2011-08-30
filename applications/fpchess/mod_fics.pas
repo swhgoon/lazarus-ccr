@@ -33,7 +33,7 @@ type
     FICS_PASSWORD: string;
     // Frequency to issue commands to avoid disconnection, in miliseconds
     PROTECT_LOGOUT_FREQ: Integer;
-    constructor Create();
+    constructor Create(); override;
     destructor Destroy; override;
     procedure CreateUserInterface(); override;
     procedure ShowUserInterface(AParent: TWinControl); override;
@@ -59,7 +59,9 @@ begin
             Errmode => 'die',
            );*)
 
-  Description := 'Play online via the Free Internet Chess Server';
+  Name := 'mod_fics.pas';
+  SelectionDescription := 'Play online - Free Internet Chess Server';
+  PlayingDescription := 'Playing online - Free Internet Chess Server';
   Kind := cmkInternet;
 
   FICS_HOST := 'freechess.org';

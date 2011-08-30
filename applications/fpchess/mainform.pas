@@ -39,6 +39,7 @@ type
     editLocalIP: TLabeledEdit;
     editWebserviceURL: TLabeledEdit;
     Label1: TLabel;
+    labelMode: TLabel;
     labelTime: TLabel;
     Label2: TLabel;
     Label6: TLabel;
@@ -158,6 +159,10 @@ begin
     [FormatTime(vChessGame.WhitePlayerTime), FormatTime(vChessGame.BlackPlayerTime)]);
 
   formChess.labelTime.Caption := lStr;
+
+  lStr := GetChessModule(gSelectedModuleIndex).PlayingDescription;
+
+  formChess.labelMode.Caption := lStr;
 end;
 
 procedure TformChess.InitializeGameModel;
