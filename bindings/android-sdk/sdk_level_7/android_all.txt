@@ -55,9 +55,9 @@ type DialogInterface.OnClickListener = void onClick(DialogInterface dialog, int 
 #interface	DialogInterface.OnKeyListener	Interface definition for a callback to be invoked when a key event is dispatched to this dialog.
 #interface	DialogInterface.OnMultiChoiceClickListener	Interface used to allow the creator of a dialog to run some code when an item in a multi-choice dialog is clicked.
 #interface	DialogInterface.OnShowListener	Interface used to allow the creator of a dialog to run some code when the dialog is shown.
-const BUTTON_NEGATIVE = $fffffffe;
-const BUTTON_NEUTRAL = $fffffffd;
-const BUTTON_POSITIVE = $ffffffff;
+const BUTTON_NEGATIVE = -2;//$fffffffe;
+const BUTTON_NEUTRAL = -3;//$fffffffd;
+const BUTTON_POSITIVE = -1;//$ffffffff;
 #abstract void 	cancel()
 #abstract void 	dismiss()
 
@@ -245,9 +245,9 @@ method AlertDialog show ()
 #
 [ViewGroup.LayoutParams] TJavaObject
 # all methods added
-const FILL_PARENT = $FFFFFFFF;
-const MATCH_PARENT = $FFFFFFFF;
-const WRAP_CONTENT = $FFFFFFFE;
+const FILL_PARENT = -1;//$FFFFFFFF;
+const MATCH_PARENT = -1;//$FFFFFFFF;
+const WRAP_CONTENT = -2;//$FFFFFFFE;
 #public int	height	Information about how tall the view wants to be.
 #public LayoutAnimationController.AnimationParameters	layoutAnimationParameters	Used to animate layouts.
 #public int	width	Information about how wide the view wants to be.
@@ -279,7 +279,7 @@ const MEASURED_HEIGHT_STATE_SHIFT = $00000010;
 const MEASURED_SIZE_MASK = $00ffffff;
 const MEASURED_STATE_MASK = $ff000000;
 const MEASURED_STATE_TOO_SMALL = $01000000;
-const NO_ID = $ffffffff;
+const NO_ID = -1;//$ffffffff;
 const OVER_SCROLL_ALWAYS = 0;
 const OVER_SCROLL_IF_CONTENT_SCROLLS = 1;
 const OVER_SCROLL_NEVER = 2;
