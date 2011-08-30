@@ -1,4 +1,4 @@
-unit mod_singleplayer;
+unit mod_samecomputer;
 
 {$mode objfpc}{$H+}
 
@@ -13,7 +13,7 @@ type
 
   { TSinglePlayerChessModule }
 
-  TSinglePlayerChessModule = class(TChessModule)
+  TSameComputerChessModule = class(TChessModule)
   private
     textSecondPlayerName: TStaticText;
     editSecondPlayerName: TEdit;
@@ -32,9 +32,9 @@ type
 
 implementation
 
-{ TSinglePlayerChessModule }
+{ TSameComputerChessModule }
 
-constructor TSinglePlayerChessModule.Create;
+constructor TSameComputerChessModule.Create;
 begin
   inherited Create;
 
@@ -42,7 +42,7 @@ begin
   Kind := cmkSinglePlayer;
 end;
 
-procedure TSinglePlayerChessModule.CreateUserInterface;
+procedure TSameComputerChessModule.CreateUserInterface;
 begin
   textSecondPlayerName := TStaticText.Create(nil);
   textSecondPlayerName.SetBounds(20, 20, 180, 50);
@@ -53,45 +53,45 @@ begin
   editSecondPlayerName.Text := 'Second player';
 end;
 
-procedure TSinglePlayerChessModule.ShowUserInterface(AParent: TWinControl);
+procedure TSameComputerChessModule.ShowUserInterface(AParent: TWinControl);
 begin
   textSecondPlayerName.Parent := AParent;
   editSecondPlayerName.Parent := AParent;
 end;
 
-procedure TSinglePlayerChessModule.HideUserInterface();
+procedure TSameComputerChessModule.HideUserInterface();
 begin
   textSecondPlayerName.Parent := nil;
   editSecondPlayerName.Parent := nil;
 end;
 
-procedure TSinglePlayerChessModule.FreeUserInterface();
+procedure TSameComputerChessModule.FreeUserInterface();
 begin
   textSecondPlayerName.Free;
   editSecondPlayerName.Free;
 end;
 
-procedure TSinglePlayerChessModule.PrepareForGame;
+procedure TSameComputerChessModule.PrepareForGame;
 begin
   SecondPlayerName := editSecondPlayerName.Text;
 end;
 
-function TSinglePlayerChessModule.IsMovingAllowedNow: Boolean;
+function TSameComputerChessModule.IsMovingAllowedNow: Boolean;
 begin
   Result := True;
 end;
 
-function TSinglePlayerChessModule.GetSecondPlayerName: string;
+function TSameComputerChessModule.GetSecondPlayerName: string;
 begin
   Result := SecondPlayerName;
 end;
 
-procedure TSinglePlayerChessModule.HandleOnMove(AFrom, ATo: TPoint);
+procedure TSameComputerChessModule.HandleOnMove(AFrom, ATo: TPoint);
 begin
 
 end;
 
 initialization
-  RegisterChessModule(TSinglePlayerChessModule.Create);
+  RegisterChessModule(TSameComputerChessModule.Create);
 end.
 

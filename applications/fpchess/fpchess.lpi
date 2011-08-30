@@ -68,7 +68,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="14">
+    <Units Count="15">
       <Unit0>
         <Filename Value="fpchess.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -130,15 +130,20 @@
         <UnitName Value="chessmodules"/>
       </Unit11>
       <Unit12>
-        <Filename Value="mod_singleplayer.pas"/>
+        <Filename Value="mod_samecomputer.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="mod_singleplayer"/>
+        <UnitName Value="mod_samecomputer"/>
       </Unit12>
       <Unit13>
         <Filename Value="mod_fics.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="mod_fics"/>
       </Unit13>
+      <Unit14>
+        <Filename Value="engines\kcchess\mod_kcchess.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="mod_kcchess"/>
+      </Unit14>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -149,6 +154,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
+      <OtherUnitFiles Value="engines\kcchess"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
