@@ -48,7 +48,10 @@ var
   lModule: TChessModule;
 begin
   lModule := GetChessModule(gSelectedModuleIndex);
-  lModule.HandleOnMove(AFrom, ATo);
+
+  // If we are getting notified by a computer move, don't notify the module yet again
+  if not lModule.IsMovingAllowedNow() then
+    lModule.HandleOnMove(AFrom, ATo);
 end;
 
 procedure RegisterChessModule(AModule: TChessModule);
@@ -98,7 +101,7 @@ end;
 
 initialization
   gChessModules := TList.Create;
-  vChessGame.OnMove := @HandleOnMove;
+  vChessGame.OnAfterMove := @HandleOnMove;
 finalization
   gChessModules.Free;
 end.

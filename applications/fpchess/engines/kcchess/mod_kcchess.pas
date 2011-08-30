@@ -278,9 +278,6 @@ var
   Escape: boolean;
   Score: Integer;
 begin
-  // If we are getting notified by a computer move, exit immediately
-  if IsMovingAllowedNow() then Exit;
-
   // initialization
   Escape := False;
   Score := 0;

@@ -71,6 +71,21 @@ type
 
   TChessGame = class
   private
+    function WillKingBeInCheck(AFrom, ATo, AEnpassantToClear: TPoint): Boolean;
+    function IsKingInCheck(AKingPos: TPoint): Boolean;
+    procedure DoMovePiece(AFrom, ATo, AEnpassantToClear: TPoint);
+    function ValidateRookMove(AFrom, ATo: TPoint) : boolean;
+    procedure ResetCastleVar(AFrom : TPoint);
+    function ValidateKnightMove(AFrom, ATo: TPoint) : boolean;
+    function ValidateBishopMove(AFrom, ATo: TPoint) : boolean;
+    function ValidateQueenMove(AFrom, ATo: TPoint) : boolean;
+    function ValidateKingMove(AFrom, ATo: TPoint) : boolean;
+    function CheckPassageSquares(side: boolean; AFrom, ATo : TPoint) : boolean;
+    procedure DoCastle();
+    function ValidatePawnMove(AFrom, ATo: TPoint;
+      var AEnpassantSquare, AEnpassantSquareToClear: TPoint) : boolean;
+    function ValidatePawnSimpleCapture(AFrom,ATo: TPoint): Boolean;
+    function IsSquareOccupied(ASquare: TPoint): Boolean;
   public
     Board: TChessBoard;
     msg : String;
@@ -91,32 +106,21 @@ type
     Castle:boolean;//If the move will be a castle.
     CastleCord: TPoint;
     // Callbacks
-    OnMove: TOnMoveCallback;
+    OnAfterMove: TOnMoveCallback;  // For the modules
+    OnBeforeMove: TOnMoveCallback; // For the UI
     //
     constructor Create;
     procedure StartNewGame(APlayAsWhite: Boolean; AUseTimer: Boolean; APlayerTime: Integer); overload;
     procedure StartNewGame(APlayAsWhite: Integer; AUseTimer: Boolean; APlayerTime: Integer); overload;
     function ClientToBoardCoords(AClientCoords: TPoint): TPoint;
+    function BoardPosToChessCoords(APos: TPoint): string;
     function CheckStartMove(AFrom: TPoint): Boolean;
     function CheckEndMove(ATo: TPoint): Boolean;
-    function WillKingBeInCheck(AFrom, ATo, AEnpassantToClear: TPoint): Boolean;
-    function IsKingInCheck(AKingPos: TPoint): Boolean;
     function FindKing(): TPoint;
     function MovePiece(AFrom, ATo: TPoint): Boolean;
-    procedure DoMovePiece(AFrom, ATo, AEnpassantToClear: TPoint);
-    function ValidateRookMove(AFrom, ATo: TPoint) : boolean;
-    procedure ResetCastleVar(AFrom : TPoint);
-    function ValidateKnightMove(AFrom, ATo: TPoint) : boolean;
-    function ValidateBishopMove(AFrom, ATo: TPoint) : boolean;
-    function ValidateQueenMove(AFrom, ATo: TPoint) : boolean;
-    function ValidateKingMove(AFrom, ATo: TPoint) : boolean;
-    function CheckPassageSquares(side: boolean; AFrom, ATo : TPoint) : boolean;
-    procedure DoCastle();
-    function ValidatePawnMove(AFrom, ATo: TPoint;
-      var AEnpassantSquare, AEnpassantSquareToClear: TPoint) : boolean;
-    function ValidatePawnSimpleCapture(AFrom,ATo: TPoint): Boolean;
-    function IsSquareOccupied(ASquare: TPoint): Boolean;
     procedure UpdateTimes();
+    function GetCurrentPlayerName(): string;
+    function GetCurrentPlayerColor(): string;
   end;
 
 var
@@ -259,11 +263,14 @@ begin
   //
   UpdateTimes();
 
+  // Notify of the move
+  if Assigned(OnBeforeMove) then OnBeforeMove(AFrom, ATo);
+
   // Change player
   IsWhitePlayerTurn := not IsWhitePlayerTurn;
 
   // Notify of the move
-  if Assigned(OnMove) then OnMove(AFrom, ATo);
+  if Assigned(OnAfterMove) then OnAfterMove(AFrom, ATo);
 end;
 
 { Really moves the piece without doing any check }
@@ -693,10 +700,30 @@ begin
   else BlackPlayerTime := BlackPlayerTime - lTimeDelta;
 end;
 
+function TChessGame.GetCurrentPlayerName: string;
+begin
+  if IsWhitePlayerTurn then Result := 'White'
+  else Result := 'Black';
+end;
+
+function TChessGame.GetCurrentPlayerColor: string;
+begin
+  if IsWhitePlayerTurn then Result := 'White'
+  else Result := 'Black';
+end;
+
 function TChessGame.ClientToBoardCoords(AClientCoords: TPoint): TPoint;
 begin
   Result.X := 1 + AClientCoords.X div INT_CHESSTILE_SIZE;
   Result.Y := 1 + (INT_CHESSBOARD_SIZE - AClientCoords.Y) div INT_CHESSTILE_SIZE;
+end;
+
+function TChessGame.BoardPosToChessCoords(APos: TPoint): string;
+var
+  lStr: string;
+begin
+  lStr := Char(APos.X + 96);
+  Result := Format('%s%d', [lStr, APos.Y]);
 end;
 
 // Check if we are moving to either an empty space or to an enemy piece

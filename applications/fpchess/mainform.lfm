@@ -45,17 +45,17 @@ object formChess: TformChess
       end
       object Label6: TLabel
         Left = 28
-        Height = 17
+        Height = 18
         Top = 128
-        Width = 52
+        Width = 56
         Caption = 'Start as:'
         ParentColor = False
       end
       object Label7: TLabel
         Left = 80
-        Height = 17
+        Height = 18
         Top = 175
-        Width = 150
+        Width = 152
         Caption = 'minutes for each player'
         ParentColor = False
       end
@@ -70,7 +70,7 @@ object formChess: TformChess
       end
       object editPlayerName: TLabeledEdit
         Left = 88
-        Height = 22
+        Height = 25
         Top = 104
         Width = 120
         EditLabel.AnchorSideLeft.Control = editPlayerName
@@ -78,10 +78,10 @@ object formChess: TformChess
         EditLabel.AnchorSideTop.Side = asrCenter
         EditLabel.AnchorSideRight.Control = editPlayerName
         EditLabel.AnchorSideBottom.Control = editPlayerName
-        EditLabel.Left = 6
-        EditLabel.Height = 17
+        EditLabel.Left = 2
+        EditLabel.Height = 18
         EditLabel.Top = 107
-        EditLabel.Width = 79
+        EditLabel.Width = 83
         EditLabel.Caption = 'Player Name'
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
@@ -89,7 +89,7 @@ object formChess: TformChess
       end
       object comboStartColor: TComboBox
         Left = 88
-        Height = 21
+        Height = 27
         Top = 128
         Width = 120
         ItemHeight = 0
@@ -103,9 +103,9 @@ object formChess: TformChess
       end
       object checkTimer: TCheckBox
         Left = 24
-        Height = 18
+        Height = 21
         Top = 152
-        Width = 212
+        Width = 220
         Caption = 'Set a time limit for each Player'
         Checked = True
         State = cbChecked
@@ -113,7 +113,7 @@ object formChess: TformChess
       end
       object spinPlayerTime: TSpinEdit
         Left = 21
-        Height = 16
+        Height = 25
         Top = 176
         Width = 50
         TabOrder = 4
@@ -121,7 +121,7 @@ object formChess: TformChess
       end
       object comboGameMode: TComboBox
         Left = 8
-        Height = 21
+        Height = 27
         Top = 74
         Width = 346
         ItemHeight = 0
@@ -140,7 +140,7 @@ object formChess: TformChess
       end
       object editLocalIP: TLabeledEdit
         Left = 120
-        Height = 22
+        Height = 25
         Top = 200
         Width = 120
         EditLabel.AnchorSideLeft.Control = editLocalIP
@@ -148,10 +148,10 @@ object formChess: TformChess
         EditLabel.AnchorSideTop.Side = asrCenter
         EditLabel.AnchorSideRight.Control = editLocalIP
         EditLabel.AnchorSideBottom.Control = editLocalIP
-        EditLabel.Left = 12
-        EditLabel.Height = 17
+        EditLabel.Left = 15
+        EditLabel.Height = 18
         EditLabel.Top = 203
-        EditLabel.Width = 105
+        EditLabel.Width = 102
         EditLabel.Caption = 'Your IP Address:'
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
@@ -173,15 +173,15 @@ object formChess: TformChess
       ClientHeight = 500
       object labelPos: TLabel
         Left = 8
-        Height = 17
+        Height = 18
         Top = 392
-        Width = 53
+        Width = 54
         Caption = 'labelPos'
         ParentColor = False
       end
       object labelTime: TLabel
         Left = 8
-        Height = 17
+        Height = 18
         Top = 408
         Width = 62
         Caption = 'labelTime'
@@ -199,6 +199,7 @@ object formChess: TformChess
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Right = 5
         BorderSpacing.Bottom = 5
+        ScrollBars = ssVertical
         TabOrder = 0
       end
       object btnResign: TBitBtn
@@ -229,8 +230,8 @@ object formChess: TformChess
       end
     end
     object pageWebservice: TPage
-      ClientWidth = 1440
-      ClientHeight = 1732
+      ClientWidth = 2880
+      ClientHeight = 3464
       object Label8: TLabel
         Left = 0
         Height = 32

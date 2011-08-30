@@ -77,6 +77,8 @@ var
   formChess: TformChess;
   vFormDrawerDelegate: TFormDrawerDelegate;
 
+procedure HandleOnMove(AFrom, ATo: TPoint);
+
 implementation
 
 {$R *.lfm}
@@ -130,6 +132,15 @@ begin
   GetChessModule(ANewIndex).ShowUserInterface(panelModules);
 end;
 
+procedure HandleOnMove(AFrom, ATo: TPoint);
+var
+  lStr: String;
+begin
+  lStr := vChessGame.GetCurrentPlayerColor();
+  lStr := Format('%s executed the move %s-%s', [lStr, vChessGame.BoardPosToChessCoords(AFrom), vChessGame.BoardPosToChessCoords(ATo)]);
+  formChess.MemoDebug.Lines.Add(lStr);
+end;
+
 procedure TformChess.UpdateCaptions;
 var
   lStr: string;
@@ -178,6 +189,9 @@ begin
     gSelectedModuleIndex := 0;
   end;
   gChessModulesDebugOutputDestiny := memoDebug;
+
+  // Prepare the move callback
+  vChessGame.OnBeforeMove := @HandleOnMove;
 end;
 
 procedure TformChess.btnQuitClick(Sender: TObject);
