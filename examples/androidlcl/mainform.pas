@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls;
+  StdCtrls, DbCtrls, ExtCtrls, InterfaceBase;
 
 type
 
@@ -33,10 +33,6 @@ var
 
 implementation
 
-{$ifdef LCLAndroid}
-uses androidpipescomm;
-{$endif}
-
 { TForm2 }
 
 procedure TForm2.Button1Click(Sender: TObject);
@@ -47,19 +43,13 @@ begin
   if CheckBox1.Checked then lChecked := 'True'
   else lChecked := 'False';
 
-  {$ifdef LCLAndroid}
-  vAndroidPipesComm.Log('3');
-  {$endif}
+  WidgetSet.DebugLogLn('3');
   lEdit1Text := Edit1.Text;
 
-  {$ifdef LCLAndroid}
-  vAndroidPipesComm.Log('4');
-  {$endif}
+  WidgetSet.DebugLogLn('4');
   lComboBox := IntToStr(ComboBox1.ItemIndex);
 
-  {$ifdef LCLAndroid}
-  vAndroidPipesComm.Log('5');
-  {$endif}
+  WidgetSet.DebugLogLn('5');
 
   Edit2.Text :=
     'Edit1.Text='+lEdit1Text+LineEnding+
@@ -72,13 +62,9 @@ end;
 
 procedure TForm2.Button2Click(Sender: TObject);
 begin
-  {$ifdef LCLAndroid}
-  vAndroidPipesComm.Log('TForm2.Button2Click');
-  {$endif}
+  WidgetSet.DebugLogLn('TForm2.Button2Click');
   InputBox('Caption', 'Prompt', 'Default');
-  {$ifdef LCLAndroid}
-  vAndroidPipesComm.Log('TForm2.Button2Click');
-  {$endif}
+  WidgetSet.DebugLogLn('TForm2.Button2Click 2');
 end;
 
 initialization

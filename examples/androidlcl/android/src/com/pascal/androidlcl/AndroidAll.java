@@ -72,7 +72,10 @@ public class AndroidAll
   static final int amkUI_TViewGroup_LayoutParams_Create_0 = 0x00109000;
   // View
   static final int amkUI_TView_setLayoutParams_0 = 0x0010A000;
-  static final int amkUI_TView_setVisibility_1 = 0x0010A001;
+  static final int amkUI_TView_setOnClickListener_1 = 0x0010A001;
+  static final int amkUI_TView_OnClickListener_Start_2 = 0x0010A002;
+  static final int amkUI_TView_OnClickListener_Finished_3 = 0x0010A003;
+  static final int amkUI_TView_setVisibility_4 = 0x0010A004;
   // ViewGroup
   static final int amkUI_TViewGroup_addView_0 = 0x0010B000;
   static final int amkUI_TViewGroup_addView_1 = 0x0010B001;
@@ -88,12 +91,9 @@ public class AndroidAll
   static final int amkUI_TAbsoluteLayout_LayoutParams_Create_0 = 0x0010E000;
   // TextView
   static final int amkUI_TTextView_Create_0 = 0x0010F000;
-  static final int amkUI_TTextView_setText_1 = 0x0010F001;
-  static final int amkUI_TTextView_setOnClickListener_2 = 0x0010F002;
-  static final int amkUI_TTextView_OnClickListener_Start_3 = 0x0010F003;
-  static final int amkUI_TTextView_OnClickListener_Finished_4 = 0x0010F004;
-  static final int amkUI_TTextView_setTextSize_5 = 0x0010F005;
-  static final int amkUI_TTextView_getText_6 = 0x0010F006;
+  static final int amkUI_TTextView_getText_1 = 0x0010F001;
+  static final int amkUI_TTextView_setText_2 = 0x0010F002;
+  static final int amkUI_TTextView_setTextSize_3 = 0x0010F003;
   // EditText
   static final int amkUI_TEditText_Create_0 = 0x00110000;
   // Button
@@ -498,9 +498,36 @@ public class AndroidAll
       param_self_View.setLayoutParams(lViewGroup_LayoutParams_1);
       MyAndroidPipesComm.SendResult();
       break;
+    // callbacksetter void setOnClickListener($View.OnClickListener l)
+    case amkUI_TView_setOnClickListener_1:
+      DebugOut("amkUI_TView_setOnClickListener_1");
+      // Self
+      lInt = MyAndroidPipesComm.GetInt();
+      param_self_View = (View) ViewElements.get(lInt);
+      // params
+      lPascalPointer = MyAndroidPipesComm.GetInt();
+      ViewElementsTags.set(lInt, new Integer(lPascalPointer));
+
+      // Run the code
+      param_self_View.setOnClickListener(      new View.OnClickListener()
+      {
+        public void onClick(View v)
+        {
+          // Perform action
+          DebugOut("START View.OnClickListener");
+          MyAndroidPipesComm.SendMessage(AndroidPipesComm.amkUICommand, amkUI_TView_OnClickListener_Start_2);
+          Integer lTag = (Integer) ViewElementsTags.get(ViewElements.indexOf(v));
+          MyAndroidPipesComm.SendInt(lTag.intValue());
+          MyAndroidPipesComm.WaitForPascalMessage(AndroidPipesComm.amkUICommand, amkUI_TView_OnClickListener_Finished_3);
+          DebugOut("END View.OnClickListener");
+        }
+      }
+);
+      MyAndroidPipesComm.SendResult();
+      break;
     // method void setVisibility(int visibility);
-    case amkUI_TView_setVisibility_1:
-      DebugOut("amkUI_TView_setVisibility_1");
+    case amkUI_TView_setVisibility_4:
+      DebugOut("amkUI_TView_setVisibility_4");
       // Self
       lInt = MyAndroidPipesComm.GetInt();
       param_self_View = (View) ViewElements.get(lInt);
@@ -629,9 +656,20 @@ public class AndroidAll
       ViewElementsTags.add(null);
       MyAndroidPipesComm.SendIntResult(ViewElements.size() - 1);
       break;
+    // method CharSequence getText()
+    case amkUI_TTextView_getText_1:
+      DebugOut("amkUI_TTextView_getText_1");
+      // Self
+      lInt = MyAndroidPipesComm.GetInt();
+      param_self_TextView = (TextView) ViewElements.get(lInt);
+      // params
+      //
+      lResult_CharSequence = param_self_TextView.getText();
+      MyAndroidPipesComm.SendStringResult(lResult_CharSequence);
+      break;
     // method void setText(CharSequence AText);
-    case amkUI_TTextView_setText_1:
-      DebugOut("amkUI_TTextView_setText_1");
+    case amkUI_TTextView_setText_2:
+      DebugOut("amkUI_TTextView_setText_2");
       // Self
       lInt = MyAndroidPipesComm.GetInt();
       param_self_TextView = (TextView) ViewElements.get(lInt);
@@ -642,36 +680,9 @@ public class AndroidAll
       param_self_TextView.setText(lCharSequence_1);
       MyAndroidPipesComm.SendResult();
       break;
-    // callbacksetter void setOnClickListener($View.OnClickListener l)
-    case amkUI_TTextView_setOnClickListener_2:
-      DebugOut("amkUI_TTextView_setOnClickListener_2");
-      // Self
-      lInt = MyAndroidPipesComm.GetInt();
-      param_self_TextView = (TextView) ViewElements.get(lInt);
-      // params
-      lPascalPointer = MyAndroidPipesComm.GetInt();
-      ViewElementsTags.set(lInt, new Integer(lPascalPointer));
-
-      // Run the code
-      param_self_TextView.setOnClickListener(      new View.OnClickListener()
-      {
-        public void onClick(View v)
-        {
-          // Perform action
-          DebugOut("START View.OnClickListener");
-          MyAndroidPipesComm.SendMessage(AndroidPipesComm.amkUICommand, amkUI_TTextView_OnClickListener_Start_3);
-          Integer lTag = (Integer) ViewElementsTags.get(ViewElements.indexOf(v));
-          MyAndroidPipesComm.SendInt(lTag.intValue());
-          MyAndroidPipesComm.WaitForPascalMessage(AndroidPipesComm.amkUICommand, amkUI_TTextView_OnClickListener_Finished_4);
-          DebugOut("END View.OnClickListener");
-        }
-      }
-);
-      MyAndroidPipesComm.SendResult();
-      break;
     // method void setTextSize(int unit_; float size);
-    case amkUI_TTextView_setTextSize_5:
-      DebugOut("amkUI_TTextView_setTextSize_5");
+    case amkUI_TTextView_setTextSize_3:
+      DebugOut("amkUI_TTextView_setTextSize_3");
       // Self
       lInt = MyAndroidPipesComm.GetInt();
       param_self_TextView = (TextView) ViewElements.get(lInt);
@@ -683,17 +694,6 @@ public class AndroidAll
       //
       param_self_TextView.setTextSize(lint_1, lfloat_2);
       MyAndroidPipesComm.SendResult();
-      break;
-    // method CharSequence getText()
-    case amkUI_TTextView_getText_6:
-      DebugOut("amkUI_TTextView_getText_6");
-      // Self
-      lInt = MyAndroidPipesComm.GetInt();
-      param_self_TextView = (TextView) ViewElements.get(lInt);
-      // params
-      //
-      lResult_CharSequence = param_self_TextView.getText();
-      MyAndroidPipesComm.SendStringResult(lResult_CharSequence);
       break;
     case amkUI_TEditText_Create_0:
       DebugOut("amkUI_TEditText_Create_0");
