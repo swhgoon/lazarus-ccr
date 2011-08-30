@@ -255,6 +255,8 @@ begin
   StartupInitialize();
   DefaultBoard();
 
+  Game.GameFinished := false;
+
   if vChessGame.FirstPlayerIsWhite then
   begin
     ComputerColor := C_BLACK;
@@ -277,6 +279,7 @@ var
   UserMovement, AIMovement: MoveType;
   Escape: boolean;
   Score: Integer;
+  lMoved: Boolean;
 begin
   // initialization
   Escape := False;
@@ -301,12 +304,16 @@ begin
 
   { Now get the computer move }
   GetComputerMove(ComputerColor, False, AIMovement, Escape);
+  MakeMove(AIMovement, True, Score);
 
   { And write it to our board }
 
-  vChessGame.MovePiece(
+  lMoved := vChessGame.MovePiece(
     Point(AIMovement.FromCol, AIMovement.FromRow),
     Point(AIMovement.ToCol, AIMovement.ToRow));
+
+  if not lMoved then raise Exception.Create(Format('Moving failed from %s to %s',
+    [vChessGame.BoardPosToChessCoords(AFrom), vChessGame.BoardPosToChessCoords(ATo)]));
 end;
 
 initialization
