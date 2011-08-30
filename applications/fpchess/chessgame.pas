@@ -114,6 +114,7 @@ type
     procedure StartNewGame(APlayAsWhite: Integer; AUseTimer: Boolean; APlayerTime: Integer); overload;
     function ClientToBoardCoords(AClientCoords: TPoint): TPoint;
     function BoardPosToChessCoords(APos: TPoint): string;
+    function ColumnNumToLetter(ACol: Integer): string;
     function CheckStartMove(AFrom: TPoint): Boolean;
     function CheckEndMove(ATo: TPoint): Boolean;
     function FindKing(): TPoint;
@@ -722,8 +723,13 @@ function TChessGame.BoardPosToChessCoords(APos: TPoint): string;
 var
   lStr: string;
 begin
-  lStr := Char(APos.X + 96);
+  lStr := ColumnNumToLetter(APos.X);
   Result := Format('%s%d', [lStr, APos.Y]);
+end;
+
+function TChessGame.ColumnNumToLetter(ACol: Integer): string;
+begin
+  Result := Char(ACol + 96);
 end;
 
 // Check if we are moving to either an empty space or to an enemy piece

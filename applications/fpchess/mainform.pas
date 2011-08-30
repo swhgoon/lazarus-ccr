@@ -143,13 +143,14 @@ end;
 
 procedure TformChess.UpdateCaptions;
 var
-  lStr: string;
+  lStr, lStr2: string;
 begin
   if vChessGame.IsWhitePlayerTurn then lStr := 'White playing'
   else lStr := 'Black playing';
 
-  lStr := lStr + Format(' X: %d Y: %d',
-    [vChessGame.MouseMovePos.X, vChessGame.MouseMovePos.Y]);
+  lStr2 := vChessGame.BoardPosToChessCoords(vChessGame.MouseMovePos);
+  lStr := lStr + Format(' X: %d Y: %d = %s',
+    [vChessGame.MouseMovePos.X, vChessGame.MouseMovePos.Y, lStr2]);
 
   formChess.labelPos.Caption := lStr;
 
