@@ -177,7 +177,7 @@ procedure GetComputerMove (Turn : PieceColorType; Display : boolean;
 
 implementation
 
-{$define KCCHESS_VERBOSE}
+{.$define KCCHESS_VERBOSE}
 
 {*** include files ***}
 
