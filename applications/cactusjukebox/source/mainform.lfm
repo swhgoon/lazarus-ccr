@@ -1,11 +1,11 @@
 object Main: TMain
-  Left = 184
+  Left = 191
   Height = 624
   Top = 61
   Width = 893
   ActiveControl = Panel4
   Caption = 'titel'
-  ClientHeight = 602
+  ClientHeight = 597
   ClientWidth = 893
   Icon.Data = {
     3E42000000000100010040400000010020002842000016000000280000004000
@@ -547,8 +547,8 @@ object Main: TMain
   LCLVersion = '0.9.31'
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 22
-    Top = 580
+    Height = 23
+    Top = 574
     Width = 893
     Panels = <    
       item
@@ -562,7 +562,7 @@ object Main: TMain
   end
   object Splitter1: TSplitter
     Left = 288
-    Height = 580
+    Height = 574
     Top = 0
     Width = 8
     AutoSnap = False
@@ -572,19 +572,19 @@ object Main: TMain
   end
   object Panel1: TPanel
     Left = 296
-    Height = 580
+    Height = 574
     Top = 0
     Width = 597
     Align = alClient
     BevelOuter = bvNone
-    ClientHeight = 580
+    ClientHeight = 574
     ClientWidth = 597
     TabOrder = 0
     OnClick = Panel1Click
     OnResize = Panel1Resize
     object TitleTree: TListView
       Left = 0
-      Height = 150
+      Height = 144
       Top = 5
       Width = 587
       Align = alTop
@@ -599,23 +599,27 @@ object Main: TMain
         item
           AutoSize = True
           Caption = 'Artist'
-          Width = 567
+          Width = 44
         end      
         item
           AutoSize = True
           Caption = 'Title'
+          Width = 39
         end      
         item
           AutoSize = True
           Caption = 'Album'
+          Width = 52
         end      
         item
           AutoSize = True
           Caption = 'Track'
+          Width = 44
         end      
         item
           AutoSize = True
           Caption = 'Genre'
+          Width = 49
         end      
         item
           AutoSize = True
@@ -627,7 +631,7 @@ object Main: TMain
           AutoSize = True
           Caption = 'Length'
           MaxWidth = 60
-          Width = 57
+          Width = 341
         end>
       PopupMenu = titlelistmenu
       ReadOnly = True
@@ -650,7 +654,7 @@ object Main: TMain
       Cursor = crVSplit
       Left = 0
       Height = 10
-      Top = 155
+      Top = 149
       Width = 597
       Align = alTop
       ResizeAnchor = akTop
@@ -658,7 +662,7 @@ object Main: TMain
     object Panel3: TPanel
       Left = 0
       Height = 415
-      Top = 165
+      Top = 159
       Width = 597
       Align = alClient
       BevelOuter = bvNone
@@ -843,7 +847,7 @@ object Main: TMain
         end
         object current_title_edit: TEdit
           Left = 12
-          Height = 21
+          Height = 27
           Top = 109
           Width = 200
           Color = clBtnFace
@@ -852,7 +856,7 @@ object Main: TMain
         end
         object current_title_edit1: TEdit
           Left = 12
-          Height = 21
+          Height = 27
           Top = 141
           Width = 200
           Color = clBtnFace
@@ -861,9 +865,9 @@ object Main: TMain
         end
         object randomcheck: TCheckBox
           Left = 135
-          Height = 19
+          Height = 23
           Top = 257
-          Width = 62
+          Width = 76
           Caption = 'Random'
           OnChange = randomcheckChange
           TabOrder = 3
@@ -915,7 +919,7 @@ object Main: TMain
           item
             AutoSize = True
             Caption = 'Playlist'
-            Width = 344
+            Width = 346
           end>
         PopupMenu = playlistmenu
         ReadOnly = True
@@ -946,10 +950,10 @@ object Main: TMain
         TabOrder = 2
         object filetypebox: TComboBox
           Left = 360
-          Height = 21
+          Height = 27
           Top = 8
           Width = 90
-          ItemHeight = 13
+          ItemHeight = 0
           ItemIndex = 0
           Items.Strings = (
             'all types'
@@ -967,7 +971,7 @@ object Main: TMain
         end
         object searchstr: TEdit
           Left = 120
-          Height = 21
+          Height = 27
           Top = 8
           Width = 232
           OnKeyUp = searchstrKeyUp
@@ -1009,11 +1013,11 @@ object Main: TMain
       end
       object clear_list: TBitBtn
         AnchorSideBottom.Side = asrCenter
-        Left = 499
+        Left = 517
         Height = 30
         Hint = 'Clear Playlist'
         Top = 7
-        Width = 84
+        Width = 66
         Anchors = [akTop, akRight]
         AutoSize = True
         Caption = 'Clear'
@@ -1080,9 +1084,9 @@ object Main: TMain
       end
       object lblPath: TLabel
         Left = 8
-        Height = 14
+        Height = 20
         Top = 56
-        Width = 50
+        Width = 46
         Caption = 'lblPath'
         ParentColor = False
       end
@@ -1090,19 +1094,19 @@ object Main: TMain
   end
   object Panel4: TPanel
     Left = 0
-    Height = 580
+    Height = 574
     Top = 0
     Width = 288
     Align = alLeft
     BorderSpacing.InnerBorder = 30
     BevelOuter = bvNone
-    ClientHeight = 580
+    ClientHeight = 574
     ClientWidth = 288
     TabOrder = 1
     OnClick = Panel4Click
     object ArtistTree: TTreeView
       Left = 26
-      Height = 570
+      Height = 564
       Top = 5
       Width = 259
       Align = alClient
@@ -1112,7 +1116,7 @@ object Main: TMain
       BorderSpacing.InnerBorder = 20
       BorderSpacing.CellAlignHorizontal = ccaLeftTop
       BorderSpacing.CellAlignVertical = ccaLeftTop
-      DefaultItemHeight = 16
+      DefaultItemHeight = 22
       DragMode = dmAutomatic
       ExpandSignType = tvestArrow
       Images = ImageList1
@@ -1143,9 +1147,9 @@ object Main: TMain
       OnClick = ArtistSrchFieldClick
       object Label2: TLabel
         Left = 77
-        Height = 14
+        Height = 20
         Top = 8
-        Width = 43
+        Width = 44
         Caption = 'Search'
         ParentColor = False
       end
@@ -1196,7 +1200,7 @@ object Main: TMain
       end
       object artistsearch: TEdit
         Left = 8
-        Height = 21
+        Height = 27
         Top = 32
         Width = 110
         OnKeyUp = ArtistTreeKeyUp
@@ -1206,7 +1210,7 @@ object Main: TMain
     end
     object ToolBar1: TToolBar
       Left = 0
-      Height = 575
+      Height = 569
       Top = 5
       Width = 26
       Align = alLeft

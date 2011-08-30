@@ -2258,21 +2258,17 @@ function TMain.LoadFile(path: string): boolean;
 
 var
   z: integer;
-  aPath: string;
   listitem: TListItem;
 begin
   DebugOutLn('** Loadfile **', 2);
   Application.ProcessMessages;
-//Ubuntu need this  {$IFDEF WINDOWS}
-  aPath := UTF8Decode(path);
-//  {$ENDIF}
-  if FileExists(aPath) then
+  if FileExistsUTF8(Path) then
   begin
     z := MediaCollection.GetIndexByPath(path);
     DebugOutLn(z, 3);
     if z < 0 then
     begin
-      z := MediaCollection.add(apath);
+      z := MediaCollection.add(path);
     end;
     PlayerObj.playlist.add(MediaCollection.items[z]);
     ListItem := Playlist.Items.Add;
