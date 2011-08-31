@@ -29,7 +29,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Graphics, Dialogs, ExtCtrls,LCLType,
-  ucmdbox, StdCtrls, Controls, Buttons;
+  ucmdbox, StdCtrls, Controls, Buttons, Menus;
 
 type
 
@@ -39,10 +39,14 @@ type
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
+    cbWordWrap: TCheckBox;
     CmdBox: TCmdBox;
     CbSetCaret: TComboBox;
+    FontDialog: TFontDialog;
     Label1: TLabel;
     HistoryList: TListBox;
+    MenuItem1: TMenuItem;
+    PopupMenu1: TPopupMenu;
     RightPanel: TPanel;
     Splitter1: TSplitter;
     ReaderTimer: TTimer;
@@ -50,6 +54,8 @@ type
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
+    procedure cbWordWrapChange(Sender: TObject);
     procedure CmdBoxInput(ACmdBox: TCmdBox; Input: String);
     procedure CbSetCaretChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -67,22 +73,22 @@ var WMainForm: TWMainForm;
 
 
 implementation
+var Dir:String;
 
 { TWMainForm }
 
 procedure TWMainForm.ReaderTimerTimer(Sender: TObject);
 var i:Integer;
+    s:String;
 begin
- CmdBox.TextColors(clRed,clNavy);
  for i:=0 to 0 do
  begin
-  if TextPosition<DText.Count then
-  begin
-   CmdBox.ClearLine;
-   CmdBox.Writeln(DText[TextPosition]);
-   Inc(TextPosition);
-  end;
-  if TextPosition>=DText.Count then
+  s:='';
+  s:=DText[TextPosition];{+#13#10;}
+  Inc(TextPosition);
+  CmdBox.TextColors(clAqua,clNavy);
+  CmdBox.Writeln(s);
+  if (TextPosition>=DText.Count) then
   begin
    CmdBox.ClearLine;
    CmdBox.TextColor(clYellow);
@@ -97,8 +103,8 @@ procedure TWMainForm.FormCreate(Sender: TObject);
 begin
  DoubleBuffered := True;
  DText          := TStringList.Create;
- if FileExists('demotext.txt') then DText.LoadFromFile('demotext.txt');
- CmdBox.StartRead(clRed,clNavy,'>',clYellow,clNavy);
+ if FileExists(Dir+'/demotext.txt') then DText.LoadFromFile(Dir+'/demotext.txt');
+ CmdBox.StartRead(clSilver,clNavy,'/example/prompt/>',clYellow,clNavy);
  CmdBox.TextColors(clWhite,clNavy);
  CmdBox.Writeln(#27#218#27#10#191);
  CmdBox.Writeln(#27#179'Type "help" to see a short list of available commands.'#27#10#179);
@@ -180,7 +186,7 @@ begin
   end;
  end;
  if rdpw then CmdBox.StartReadPassWord(clYellow,clNavy,'Pwd:',clLime,clNavy) else
- CmdBox.StartRead(clRed,clNavy,'>',clYellow,clNavy);
+ CmdBox.StartRead(clSilver,clNavy,'/example/prompt/>',clYellow,clNavy);
  HistoryList.Clear;
  for i:=0 to CmdBox.HistoryCount-1 do HistoryList.Items.Add(CmdBox.History[i]);
 end;
@@ -205,6 +211,20 @@ procedure TWMainForm.Button3Click(Sender: TObject);
 begin
  FProcess:=0;
  ProcessTimer.Enabled:=True;
+end;
+
+procedure TWMainForm.Button4Click(Sender: TObject);
+begin
+  FontDialog.Font:=CmdBox.Font;
+  if FontDialog.Execute then
+  begin
+    CmdBox.Font:=FontDialog.Font;
+  end;
+end;
+
+procedure TWMainForm.cbWordWrapChange(Sender: TObject);
+begin
+  if CmdBox.WrapMode=wwmWord then CmdBox.WrapMode:=wwmChar else CmdBox.WrapMode:=wwmWord;
 end;
 
 procedure TWMainForm.Button1Click(Sender: TObject);
@@ -234,6 +254,6 @@ end;
 
 initialization
   {$I wnmainform.lrs}
-
+  Dir:=ExtractFileDir(ParamStr(0));
 end.
 
