@@ -1,3 +1,5 @@
+{
+}
 unit mainform;
 
 {$mode objfpc}{$H+}
@@ -9,7 +11,7 @@ uses
   ExtCtrls, ComCtrls, StdCtrls, Buttons, Spin,
   // fpchess
   chessdrawer, chessgame, chessconfig, chesstcputils,
-  chessmodules;
+  chessmodules, selectpromotionpiece;
 
 type
 
@@ -68,6 +70,7 @@ type
     { private declarations }
     function FormatTime(ATimeInMiliseconds: Integer): string;
     procedure UpdateChessModulesUI(ANewIndex: Integer);
+    function HandlePawnPromotion(APiece: TChessTile): TChessTile;
   public
     { public declarations }
     procedure UpdateCaptions;
@@ -133,6 +136,19 @@ begin
   GetChessModule(ANewIndex).ShowUserInterface(panelModules);
 end;
 
+function TformChess.HandlePawnPromotion(APiece: TChessTile): TChessTile;
+var
+  dlgPromotion: TformPromotion;
+begin
+  dlgPromotion := TformPromotion.Create(vChessGame.IsWhitePlayerTurn);
+  try
+    dlgPromotion.ShowModal;
+  finally
+    dlgPromotion.Free;
+    Result := selectPromotionPiece.pieceChosen;
+  end;
+end;
+
 procedure HandleOnMove(AFrom, ATo: TPoint);
 var
   lStr: String;
@@ -196,8 +212,9 @@ begin
   end;
   gChessModulesDebugOutputDestiny := memoDebug;
 
-  // Prepare the move callback
+  // Prepare the callbacks
   vChessGame.OnBeforeMove := @HandleOnMove;
+  vChessGame.OnPawnPromotion := @HandlePawnPromotion;
 end;
 
 procedure TformChess.btnQuitClick(Sender: TObject);

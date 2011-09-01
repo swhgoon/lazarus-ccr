@@ -8,7 +8,8 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, lnetbase, mainform, chessdrawer, chessgame, chessconfig,
-  chesstcputils, chessmodules, mod_samecomputer, mod_fics, mod_kcchess
+  chesstcputils, chessmodules, mod_samecomputer, mod_fics, mod_kcchess, 
+selectPromotionPiece
   {$ifdef FPCHESS_WEBSERVICES}
   ,IDelphiChess_Intf
   {$endif};
@@ -18,6 +19,7 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TformChess, formChess);
+  Application.CreateForm(TformPromotion, formPromotion);
   Application.Run;
 end.
 

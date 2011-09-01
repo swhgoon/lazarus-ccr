@@ -68,7 +68,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="15">
+    <Units Count="16">
       <Unit0>
         <Filename Value="fpchess.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -144,6 +144,13 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="mod_kcchess"/>
       </Unit14>
+      <Unit15>
+        <Filename Value="selectpromotionpiece.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="formPromotion"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="selectPromotionPiece"/>
+      </Unit15>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

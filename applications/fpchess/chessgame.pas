@@ -66,6 +66,7 @@ type
   end;
 
   TOnMoveCallback = procedure (AFrom, ATo: TPoint);
+  TPawnPromotionCallback = function (APawn: TChessTile): TChessTile of object;
 
   { TChessGame }
 
@@ -86,6 +87,7 @@ type
       var AEnpassantSquare, AEnpassantSquareToClear: TPoint) : boolean;
     function ValidatePawnSimpleCapture(AFrom,ATo: TPoint): Boolean;
     function IsSquareOccupied(ASquare: TPoint): Boolean;
+    procedure doPromotion(Position: TPoint);
   public
     Board: TChessBoard;
     msg : String;
@@ -108,6 +110,7 @@ type
     // Callbacks
     OnAfterMove: TOnMoveCallback;  // For the modules
     OnBeforeMove: TOnMoveCallback; // For the UI
+    OnPawnPromotion: TPawnPromotionCallback;
     //
     constructor Create;
     procedure StartNewGame(APlayAsWhite: Boolean; AUseTimer: Boolean; APlayerTime: Integer); overload;
@@ -261,6 +264,8 @@ begin
   DoMovePiece(AFrom, ATo, LEnpassantToClear);
   if Castle then DoCastle();
 
+  if ((Board[ATo.X][Ato.Y]=ctWPawn) and (Ato.Y=8)) or ((Board[ATo.X][Ato.Y]=ctBPawn) and (ATo.Y=1)) then //If a pawn will be promoted
+    doPromotion(Ato);
   //
   UpdateTimes();
 
@@ -284,6 +289,17 @@ begin
   // If Enpassant, clear the remaining pawn
   if AEnpassantToClear.X <> -1 then
     Board[AEnpassantToClear.X][AEnpassantToClear.Y] := ctEmpty;
+end;
+
+procedure TChessGame.doPromotion(Position: TPoint);
+var
+  lNewPiece: TChessTile;
+begin
+  if Assigned(OnPawnPromotion) then
+  begin
+    lNewPiece := OnPawnPromotion(Board[position.X][position.Y]);
+    Board[position.X][position.Y] := lNewPiece;
+  end;
 end;
 
 procedure TChessGame.DoCastle();
