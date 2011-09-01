@@ -169,7 +169,8 @@ begin
 
   // Set the path Pen and Brush options
   ADest.Pen.Style := CurPath.Pen.Style;
-  ADest.Pen.Width := CurPath.Pen.Width;
+  ADest.Pen.Width := Round(CurPath.Pen.Width * AMulX);
+  if ADest.Pen.Width < 1 then ADest.Pen.Width := 1;
   ADest.Pen.FPColor := CurPath.Pen.Color;
   ADest.Brush.FPColor := CurPath.Brush.Color;
 

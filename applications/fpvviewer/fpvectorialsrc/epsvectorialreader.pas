@@ -81,6 +81,9 @@ type
     ClipPath: TPath;
     ClipMode: TvClipMode;
     OverPrint: Boolean; // not used currently
+    //
+    PenWidth: Integer;
+    //
     function Duplicate: TGraphicState;
   end;
 
@@ -1531,6 +1534,7 @@ begin
     WriteLn('[TvEPSVectorialReader.ExecutePathConstructionOperator] newpath');
     {$endif}
     AData.SetClipPath(CurrentGraphicState.ClipPath, CurrentGraphicState.ClipMode);
+    AData.SetPenWidth(CurrentGraphicState.PenWidth);
     AData.EndPath();
     AData.StartPath();
 
@@ -1692,8 +1696,8 @@ begin
   begin
     AData.SetPenStyle(psClear);
     AData.EndPath();
-    //CurrentGraphicState.ClipPath := AData.GetPath(AData.GetPathCount()-1);
-    //CurrentGraphicState.ClipMode := vcmEvenOddRule;
+    CurrentGraphicState.ClipPath := AData.GetPath(AData.GetPathCount()-1);
+    CurrentGraphicState.ClipMode := vcmEvenOddRule;
     Exit(True);
   end
 end;
@@ -1781,6 +1785,7 @@ begin
   if AToken.StrValue = 'setlinewidth' then
   begin
     Param1 := TPSToken(Stack.Pop);
+    CurrentGraphicState.PenWidth := Round(Param1.FloatValue);
     Exit(True);
   end;
   // int setlinecap –             Set shape of line ends for stroke (0 = butt,
