@@ -2411,7 +2411,7 @@ type
     //lcl
     procedure LoadPanningCursors;
     function MakeNewNode: PVirtualNode;
-    function PackArrayAsm(TheArray: TNodeArray; Count: Integer): Integer;
+    function PackArrayPascal(TheArray: TNodeArray; Count: Integer): Integer;
     function PackArray(TheArray: TNodeArray; Count: Integer): Integer;
     procedure PrepareBitmaps(NeedButtons, NeedLines: Boolean);
     procedure SetAlignment(const Value: TAlignment);
@@ -13160,7 +13160,7 @@ begin
   end;
 end;
 
-function TBaseVirtualTree.PackArray(TheArray: TNodeArray; Count: Integer): Integer;
+function TBaseVirtualTree.PackArrayPascal(TheArray: TNodeArray; Count: Integer): Integer;
 var
   i, l: Integer;
 begin
@@ -13184,7 +13184,9 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TBaseVirtualTree.PackArrayAsm(TheArray: TNodeArray; Count: Integer): Integer; assembler;
+{$IMPLICITEXCEPTIONS OFF}
+
+function TBaseVirtualTree.PackArray(TheArray: TNodeArray; Count: Integer): Integer; assembler;
 
 // Removes all entries from the selection array which are no longer in use. The selection array must be sorted for this
 // algo to work. Values which must be removed are marked with bit 0 (LSB) set. This little trick works because memory
@@ -13200,7 +13202,8 @@ asm
         PUSH    EBX
         PUSH    EDI
         PUSH    ESI
-        MOV     ESI, EDX
+        MOV     ECX, EDX               //fpc: count is in EDX. Move to ECX
+        MOV     ESI, [EBP+8]           //fpc: TheArray is in EBP+8
         MOV     EDX, -1
         JCXZ    @@Finish               // Empty list?
         INC     EDX                    // init remaining entries counter
@@ -13238,6 +13241,7 @@ asm
         POP     EBX
 end;
 
+{$IMPLICITEXCEPTIONS ON}
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TBaseVirtualTree.PrepareBitmaps(NeedButtons, NeedLines: Boolean);
