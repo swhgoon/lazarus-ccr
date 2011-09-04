@@ -153,6 +153,7 @@ var
   Cur2DBSegment: T2DBezierSegment absolute CurSegment;
   // For bezier
   CurX, CurY: Integer; // Not modified by ADestX, etc
+  CoordX2, CoordY2, CoordX3, CoordY3, CoordX4, CoordY4: Integer;
   CurveLength: Integer;
   t: Double;
   // For polygons
@@ -279,36 +280,25 @@ begin
       lines between this parts }
     st2DBezier, st3DBezier:
     begin
-      CurveLength :=
-        Round(sqrt(sqr(Cur2DBSegment.X2 - PosX) + sqr(Cur2DBSegment.Y2 - PosY))) +
-        Round(sqrt(sqr(Cur2DBSegment.X3 - Cur2DBSegment.X2) + sqr(Cur2DBSegment.Y3 - Cur2DBSegment.Y2))) +
-        Round(sqrt(sqr(Cur2DBSegment.X - Cur2DBSegment.X3) + sqr(Cur2DBSegment.Y - Cur2DBSegment.Y3)));
+      CoordX := CoordToCanvasX(PosX);
+      CoordY := CoordToCanvasY(PosY);
+      CoordX2 := CoordToCanvasX(Cur2DBSegment.X2);
+      CoordY2 := CoordToCanvasY(Cur2DBSegment.Y2);
+      CoordX3 := CoordToCanvasX(Cur2DBSegment.X3);
+      CoordY3 := CoordToCanvasY(Cur2DBSegment.Y3);
+      CoordX4 := CoordToCanvasX(Cur2DBSegment.X);
+      CoordY4 := CoordToCanvasY(Cur2DBSegment.Y);
+      SetLength(Points, 0);
+      AddBezierToPoints(
+        Make2DPoint(CoordX, CoordY),
+        Make2DPoint(CoordX2, CoordY2),
+        Make2DPoint(CoordX3, CoordY3),
+        Make2DPoint(CoordX4, CoordY4),
+        Points
+      );
 
-      if (CurPath.Brush.Style <> bsClear) then
-      begin
-        ADest.Brush.Style := CurPath.Brush.Style;
-        SetLength(Points, CurveLength);
-      end;
-
-      for k := 1 to CurveLength do
-      begin
-        t := k / CurveLength;
-        CurX := Round(sqr(1 - t) * (1 - t) * PosX + 3 * t * sqr(1 - t) * Cur2DBSegment.X2 + 3 * t * t * (1 - t) * Cur2DBSegment.X3 + t * t * t * Cur2DBSegment.X);
-        CurY := Round(sqr(1 - t) * (1 - t) * PosY + 3 * t * sqr(1 - t) * Cur2DBSegment.Y2 + 3 * t * t * (1 - t) * Cur2DBSegment.Y3 + t * t * t * Cur2DBSegment.Y);
-        CoordX := CoordToCanvasX(CurX);
-        CoordY := CoordToCanvasY(CurY);
-        ADest.LineTo(CoordX, CoordY);
-
-        if (CurPath.Brush.Style = bsSolid) then
-        begin
-          Points[k-1].X := CoordX;
-          Points[k-1].Y := CoordY;
-        end;
-//        {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
-//        Write(Format(' CL%d,%d', [CoordX, CoordY]));
-//        {$endif}
-      end;
-      if (CurPath.Brush.Style = bsSolid) then ADest.Polygon(Points);
+      ADest.Brush.Style := CurPath.Brush.Style;
+      ADest.Polygon(Points);
 
       PosX := Cur2DSegment.X;
       PosY := Cur2DSegment.Y;

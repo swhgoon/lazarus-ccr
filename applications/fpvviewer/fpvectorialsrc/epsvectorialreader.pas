@@ -1741,8 +1741,10 @@ begin
   //
   if AToken.StrValue = 'eoclip' then
   begin
-    {$ifndef FPVECTORIALDEBUG_CLIP_REGION}
+    {$ifdef FPVECTORIALDEBUG_PATHS}
     WriteLn('[TvEPSVectorialReader.ExecutePathConstructionOperator] eoclip');
+    {$endif}
+    {$ifndef FPVECTORIALDEBUG_CLIP_REGION}
     AData.SetPenStyle(psClear);
     {$endif}
     AData.EndPath();

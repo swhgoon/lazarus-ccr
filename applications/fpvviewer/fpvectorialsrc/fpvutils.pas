@@ -28,6 +28,7 @@ uses
 
 type
   T10Strings = array[0..9] of shortstring;
+  TPointsArray = array of TPoint;
 
 // Color Conversion routines
 function FPColorToRGBHexString(AColor: TFPColor): string;
@@ -42,6 +43,7 @@ function SeparateString(AString: string; ASeparator: char): T10Strings;
 // Mathematical routines
 procedure EllipticalArcToBezier(Xc, Yc, Rx, Ry, startAngle, endAngle: Double; var P1, P2, P3, P4: T3DPoint);
 procedure CircularArcToBezier(Xc, Yc, R, startAngle, endAngle: Double; var P1, P2, P3, P4: T3DPoint);
+procedure AddBezierToPoints(P1, P2, P3, P4: T3DPoint; var Points: TPointsArray);
 // LCL-related routines
 {$ifdef USE_LCL_CANVAS}
 function ConvertPathToRegion(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double): HRGN;
@@ -184,6 +186,30 @@ procedure CircularArcToBezier(Xc, Yc, R, startAngle, endAngle: Double; var P1,
   P2, P3, P4: T3DPoint);
 begin
   EllipticalArcToBezier(Xc, Yc, R, R, startAngle, endAngle, P1, P2, P3, P4);
+end;
+
+{ This routine converts a Bezier to a Polygon and adds the points of this poligon
+  to the end of the provided Points output variables }
+procedure AddBezierToPoints(P1, P2, P3, P4: T3DPoint; var Points: TPointsArray);
+var
+  CurveLength, k, CurX, CurY, LastPoint: Integer;
+  t: Double;
+begin
+  CurveLength :=
+    Round(sqrt(sqr(P2.X - P1.X) + sqr(P2.Y - P1.Y))) +
+    Round(sqrt(sqr(P3.X - P2.X) + sqr(P3.Y - P2.Y))) +
+    Round(sqrt(sqr(P4.X - P4.X) + sqr(P4.Y - P3.Y)));
+
+  LastPoint := Length(Points)-1;
+  SetLength(Points, Length(Points)+CurveLength);
+  for k := 1 to CurveLength do
+  begin
+    t := k / CurveLength;
+    CurX := Round(sqr(1 - t) * (1 - t) * P1.X + 3 * t * sqr(1 - t) * P2.X + 3 * t * t * (1 - t) * P3.X + t * t * t * P4.X);
+    CurY := Round(sqr(1 - t) * (1 - t) * P1.Y + 3 * t * sqr(1 - t) * P2.Y + 3 * t * t * (1 - t) * P3.Y + t * t * t * P4.Y);
+    Points[LastPoint+k].X := CurX;
+    Points[LastPoint+k].Y := CurY;
+  end;
 end;
 
 {$ifdef USE_LCL_CANVAS}
