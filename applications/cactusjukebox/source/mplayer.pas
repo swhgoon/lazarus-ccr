@@ -42,6 +42,7 @@ type
 
      constructor create; override;
      destructor destroy;
+     function GetMPlayerPath: string;
 
      function play(index:integer):byte;override;
      function play(url: string):byte;override;
@@ -82,7 +83,7 @@ implementation
 
 uses math; //used for logarithmic volume calculation
 
-{$ifdef linux}
+{$ifdef Unix}
 const MPLAYER_BINARY='mplayer';
 {$endif}
 {$ifdef windows}
@@ -133,32 +134,45 @@ end;
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 constructor TMPlayerClass.create;
-var tmps, tmppath: string;
-    i: integer;
+var
+  tmps, tmppath: string;
+  i: integer;
 begin
-   inherited;
+  inherited;
 
-   // Find mplayer executable
-   FMplayerPath:='';
-   tmps:=GetEnvironmentVariable('PATH');
-   repeat
-     begin
-        i:=pos(':', tmps);
-        if i=0 then i:=Length(tmps);
-        tmppath:=IncludeTrailingPathDelimiter(copy(tmps,0,i-1))+MPLAYER_BINARY;
-        if FileExists(tmppath) then FMplayerPath:=tmppath
-                  else Delete(tmps, 1, i);
-     end;
-   until (length(tmps)<=1) or (FMplayerPath<>'');
-   if FMplayerPath='' then begin
-      writeln('FATAL: Mplayer executable not found. Make sure it is properly installed in binary path');
-     end else DebugOutLn('Mplayer executable found in '+FMplayerPath, 2);
+  FMPlayerPath := GetMPlayerPath();
 end;
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 destructor TMPlayerClass.destroy;
 begin
 
 end;
+
+// Find mplayer executable
+function TMPlayerClass.GetMPlayerPath: string;
+begin
+  Result:='';
+  {$ifdef Darwin}
+  {$else}
+  // Searches for MPlayer in the PATH
+  tmps:=GetEnvironmentVariable('PATH');
+  repeat
+    begin
+       i:=pos(':', tmps);
+       if i=0 then i:=Length(tmps);
+       tmppath:=IncludeTrailingPathDelimiter(copy(tmps,0,i-1))+MPLAYER_BINARY;
+       if FileExists(tmppath) then Result:=tmppath
+                 else Delete(tmps, 1, i);
+    end;
+  until (length(tmps)<=1) or (Result<>'');
+  {$endif}
+  if Result='' then
+  begin
+     writeln('FATAL: Mplayer executable not found. Make sure it is properly installed in binary path');
+  end
+  else DebugOutLn('Mplayer executable found in '+Result, 2);
+end;
+
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function TMPlayerClass.play(index: integer): byte;
 var MPOptions: String;

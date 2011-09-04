@@ -11,7 +11,7 @@
   (c)2005-2008
 }
 
-program mp3proj;
+program cactusjukebox;
 
 {$mode objfpc}{$H+}
 
@@ -20,13 +20,13 @@ program mp3proj;
 {$endif}
 
 uses
- {$ifdef linux}
+ {$ifdef Unix}
    cthreads,
  {$endif}
   global_vars, Interfaces, SysUtils, Forms, status, settings, player, graphics,
   laz_synapse, editid3, directories, skin, cdrip, mediacol, BigCoverImg,
   mainform, cddb, debug, config, addradio, streamcol, playerclass, CleanLibrary,
-  lnetbase, guesstag;
+  fmoddyn, lnetbase, guesstag;
 
 var
   invalid_param, skip_config: boolean;

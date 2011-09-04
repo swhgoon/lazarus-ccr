@@ -56,11 +56,11 @@
         <MinVersion Major="1" Valid="True"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="32">
+    <Units Count="34">
       <Unit0>
-        <Filename Value="mp3proj.lpr"/>
+        <Filename Value="cactusjukebox.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="mp3proj"/>
+        <UnitName Value="cactusjukebox"/>
       </Unit0>
       <Unit1>
         <Filename Value="editid3.pas"/>
@@ -235,6 +235,16 @@
         <Filename Value="plugin/TO-DO.txt"/>
         <IsPartOfProject Value="True"/>
       </Unit31>
+      <Unit32>
+        <Filename Value="fmodintf/fmoddyn.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="fmoddyn"/>
+      </Unit32>
+      <Unit33>
+        <Filename Value="cddb.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="cddb"/>
+      </Unit33>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

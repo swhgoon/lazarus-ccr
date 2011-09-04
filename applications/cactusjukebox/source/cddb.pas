@@ -11,17 +11,28 @@ unit cddb;
 
 {$mode objfpc}{$H+}
 
+{$ifndef Darwin}{$define HAS_CDROM}{$endif}
+
 interface
 
 uses
-  Classes, SysUtils, CDrom, discid, lnet, config;
+  Classes, SysUtils,
+  {$ifdef HAS_CDROM}cdrom, discid,{$endif}
+  lnet, config;
 
 
 type
 
-{ TCddbObject }
+  {$ifndef HAS_CDROM}
+  TTocEntry = Record
+    min, sec, frame : Integer;
+  end;
+  PTocEntry = ^TTocEntry;
+  {$endif}
 
-TCddbObject = class
+  { TCddbObject }
+
+  TCddbObject = class
      year, genre, artist, album: string;
      title: array[1..99] of string;
      ErrorMsg, Status, QueryString: string;
@@ -52,13 +63,11 @@ TCddbObject = class
     procedure OnConnectProc(asocket: TLSocket);
   public
     { public declarations }
-
   end;
 
 implementation
 
 uses functions;
-
 
 type
 
@@ -241,11 +250,14 @@ end;
 
 procedure TCddbObject.query(drive, server: string; port: word);
 begin
-   if NrTracks>0 then begin
+  if NrTracks>0 then
+  begin
+    {$ifdef HAS_CDROM}
     discid:=(CDDBDiscID(TOCEntries, NrTracks));
     querystring:=GetCDDBQueryString(TOCEntries, NrTracks);
     writeln(QueryString);
     writeln(hexStr(discid, 8));
+    {$endif}
 
     FServer:=server;
     FPort:=port;
@@ -326,11 +338,11 @@ begin
     NrTracks:=0;
     Device:=drive;
     Try
+      {$ifdef HAS_CDROM}
       NrTracks:= ReadCDTOC(drive, TOCEntries);
-    except begin
-             result:=false;
-             NrTracks:=0;
-           end;
+      {$endif}
+    except
+      result:=false;
     end;
     if NrTracks>100 then NrTracks:=0;
 end;
@@ -340,20 +352,23 @@ end;
 constructor TCddbObject.create;
 var b: byte;
 begin
-     Connection:=TLTcp.Create(nil);
-     Connection.OnConnect:=@OnConnectProc;
-     Connection.OnReceive:=@OnReceiveProc;
-     Connection.OnDisconnect:=@OnDisconnectProc;
-     Connection.OnError:=@OnErrorProc;
-     Data := TStringList.Create;
-     data_ready:=false;
-     receiving_data := false;
-     FUser:='cddbuser';
-     FSoftware:='cddbobject';
-     FVersion:='v0.1';
-     FHostname:='localhost';
- Try
+  Connection:=TLTcp.Create(nil);
+  Connection.OnConnect:=@OnConnectProc;
+  Connection.OnReceive:=@OnReceiveProc;
+  Connection.OnDisconnect:=@OnDisconnectProc;
+  Connection.OnError:=@OnErrorProc;
+  Data := TStringList.Create;
+  data_ready:=false;
+  receiving_data := false;
+  FUser:='cddbuser';
+  FSoftware:='cddbobject';
+  FVersion:='v0.1';
+  FHostname:='localhost';
+  DriveCount:=0;
+  Try
+     {$ifdef HAS_CDROM}
      DriveCount:=GetCDRomDevices(CDromDrives);
+     {$endif}
      Writeln(DriveCount,' CD-ROM drives autodetected');
      For b:=1 to DriveCount do
        Writeln('Drive ',b,' on device: ',CDRomDrives[b]);
@@ -361,11 +376,13 @@ begin
      On E : exception do
        Writeln(E.ClassName,' exception caught with message: ',E.Message);
   end;
-     if DriveCount=0 then begin
-          CDromDrives[1]:=CactusConfig.CDRomDevice;
-          inc(DriveCount);
-         end;
-     Connection.CallAction;
+
+  if DriveCount=0 then
+  begin
+    CDromDrives[1]:=CactusConfig.CDRomDevice;
+    inc(DriveCount);
+  end;
+  Connection.CallAction;
 end;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
