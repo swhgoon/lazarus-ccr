@@ -18,10 +18,11 @@ unit epsvectorialreader;
 {.$define FPVECTORIALDEBUG_COLORS}
 {.$define FPVECTORIALDEBUG_ROLL}
 {.$define FPVECTORIALDEBUG_CODEFLOW}
-{$define FPVECTORIALDEBUG_INDEX}
+{.$define FPVECTORIALDEBUG_INDEX}
 {.$define FPVECTORIALDEBUG_DICTIONARY}
-{$define FPVECTORIALDEBUG_CONTROL}
+{.$define FPVECTORIALDEBUG_CONTROL}
 {.$define FPVECTORIALDEBUG_ARITHMETIC}
+{$define FPVECTORIALDEBUG_CLIP_REGION}
 
 interface
 
@@ -1720,11 +1721,9 @@ begin
       AData.AddMoveToPath(P1.X, P1.Y);
       AData.AddBezierToPath(P2.X, P2.Y, P3.X, P3.Y, P4.X, P4.Y);
     end;
-//    {$ifdef FPVECTORIALDEBUG}
-//    WriteLn(Format('[TvEPSVectorialReader.ExecutePathConstructionOperator] rcurveto %f, %f', [BaseX + PosX, BaseY + PosY]));
-//    {$endif}
     {$ifdef FPVECTORIALDEBUG_PATHS}
-    WriteLn(Format('[TvEPSVectorialReader.ExecutePathConstructionOperator] arc %f, %f', [PosX, PosY]));
+    WriteLn(Format('[TvEPSVectorialReader.ExecutePathConstructionOperator] arc X,Y=%f, %f Resulting X,Y=%f, %f R=%f Angles Start,End=%f,%f',
+      [Param5.FloatValue, Param4.FloatValue, PosX, PosY, Param3.FloatValue, Param2.FloatValue, Param1.FloatValue]));
     {$endif}
     Exit(True);
   end;
@@ -1742,7 +1741,10 @@ begin
   //
   if AToken.StrValue = 'eoclip' then
   begin
+    {$ifndef FPVECTORIALDEBUG_CLIP_REGION}
+    WriteLn('[TvEPSVectorialReader.ExecutePathConstructionOperator] eoclip');
     AData.SetPenStyle(psClear);
+    {$endif}
     AData.EndPath();
     CurrentGraphicState.ClipPath := AData.GetPath(AData.GetPathCount()-1);
     CurrentGraphicState.ClipMode := vcmEvenOddRule;

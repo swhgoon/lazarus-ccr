@@ -34,7 +34,7 @@ procedure DrawFPVTextToCanvas(ASource: TvVectorialDocument; CurText: TvText;
 implementation
 
 {$ifndef Windows}
-{.$define FPVECTORIAL_TOCANVAS_DEBUG}
+{$define FPVECTORIAL_TOCANVAS_DEBUG}
 {$endif}
 
 function Rotate2DPoint(P,Fix :TPoint; alpha:double): TPoint;
@@ -101,7 +101,6 @@ end;
 
   DrawFPVectorialToCanvas(ASource, ADest, 0, ASource.Height, 1.0, -1.0);
 }
-{$define FPVECTORIAL_TOCANVAS_DEBUG}
 procedure DrawFPVectorialToCanvas(ASource: TvVectorialDocument;
   ADest: TFPCustomCanvas;
   ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
@@ -190,12 +189,15 @@ begin
   {$endif}
 
   //
-  // For solid paths, draw a polygon instead
+  // For solid paths, draw a polygon for the main internal area
   //
-  CurPath.PrepareForSequentialReading;
-
-  if CurPath.Brush.Style = bsSolid then
+  if CurPath.Brush.Style <> bsClear then
   begin
+    CurPath.PrepareForSequentialReading;
+
+    {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
+    Write(' Solid Path Internal Area');
+    {$endif}
     ADest.Brush.Style := CurPath.Brush.Style;
 
     SetLength(Points, CurPath.Len);
@@ -210,16 +212,24 @@ begin
 
       Points[j].X := CoordX;
       Points[j].Y := CoordY;
+
+      {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
+      Write(Format(' P%d,%d', [CoordY, CoordY]));
+      {$endif}
     end;
 
     ADest.Polygon(Points);
 
-    Exit;
+    {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
+    Write(' Now the details ');
+    {$endif}
   end;
 
   //
   // For other paths, draw more carefully
   //
+  CurPath.PrepareForSequentialReading;
+
   for j := 0 to CurPath.Len - 1 do
   begin
     //WriteLn('j = ', j);
@@ -274,6 +284,12 @@ begin
         Round(sqrt(sqr(Cur2DBSegment.X3 - Cur2DBSegment.X2) + sqr(Cur2DBSegment.Y3 - Cur2DBSegment.Y2))) +
         Round(sqrt(sqr(Cur2DBSegment.X - Cur2DBSegment.X3) + sqr(Cur2DBSegment.Y - Cur2DBSegment.Y3)));
 
+      if (CurPath.Brush.Style <> bsClear) then
+      begin
+        ADest.Brush.Style := CurPath.Brush.Style;
+        SetLength(Points, CurveLength);
+      end;
+
       for k := 1 to CurveLength do
       begin
         t := k / CurveLength;
@@ -282,10 +298,18 @@ begin
         CoordX := CoordToCanvasX(CurX);
         CoordY := CoordToCanvasY(CurY);
         ADest.LineTo(CoordX, CoordY);
+
+        if (CurPath.Brush.Style = bsSolid) then
+        begin
+          Points[k-1].X := CoordX;
+          Points[k-1].Y := CoordY;
+        end;
 //        {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
 //        Write(Format(' CL%d,%d', [CoordX, CoordY]));
 //        {$endif}
       end;
+      if (CurPath.Brush.Style = bsSolid) then ADest.Polygon(Points);
+
       PosX := Cur2DSegment.X;
       PosY := Cur2DSegment.Y;
 
@@ -411,9 +435,9 @@ begin
       BoundsBottom := IntTmp;
     end;
     // Arc(ALeft, ATop, ARight, ABottom, Angle16Deg, Angle16DegLength: Integer);
-    {$ifdef FPVECTORIALDEBUG}
-    WriteLn(Format('Drawing Arc Center=%f,%f Radius=%f StartAngle=%f AngleLength=%f',
-      [CurArc.CenterX, CurArc.CenterY, CurArc.Radius, IntStartAngle/16, IntAngleLength/16]));
+    {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
+//    WriteLn(Format('Drawing Arc Center=%f,%f Radius=%f StartAngle=%f AngleLength=%f',
+//      [CurArc.CenterX, CurArc.CenterY, CurArc.Radius, IntStartAngle/16, IntAngleLength/16]));
     {$endif}
     ADest.Pen.FPColor := CurArc.Pen.Color;
     ALCLDest.Arc(
