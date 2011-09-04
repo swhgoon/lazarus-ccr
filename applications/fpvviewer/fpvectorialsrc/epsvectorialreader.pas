@@ -14,13 +14,13 @@ unit epsvectorialreader;
 
 {$mode objfpc}{$H+}
 
-{.$define FPVECTORIALDEBUG_PATHS}
+{$define FPVECTORIALDEBUG_PATHS}
 {.$define FPVECTORIALDEBUG_COLORS}
 {.$define FPVECTORIALDEBUG_ROLL}
 {.$define FPVECTORIALDEBUG_CODEFLOW}
-{.$define FPVECTORIALDEBUG_INDEX}
+{$define FPVECTORIALDEBUG_INDEX}
 {.$define FPVECTORIALDEBUG_DICTIONARY}
-{.$define FPVECTORIALDEBUG_CONTROL}
+{$define FPVECTORIALDEBUG_CONTROL}
 {.$define FPVECTORIALDEBUG_ARITHMETIC}
 
 interface
@@ -796,7 +796,7 @@ begin
   begin
     {$ifdef FPVECTORIALDEBUG_INDEX}
     WriteLn('[TvEPSVectorialReader.ExecuteStackManipulationOperator] index');
-    DebugStack();
+//    DebugStack();
     {$endif}
 
     Param1 := TPSToken(Stack.Pop);
@@ -813,8 +813,7 @@ begin
       Param2 := lTokens[i];
       if Param2 = nil then
       begin
-        //raise Exception.Create(Format('[TvEPSVectorialReader.ExecuteStackManipulationOperator] nil element poped in operator index. Error at line %d', [AToken.Line]));
-        Exit(True);
+        raise Exception.Create(Format('[TvEPSVectorialReader.ExecuteStackManipulationOperator] Stack underflow in operation "index". Error at line %d', [AToken.Line]));
       end;
     end;
 
@@ -954,7 +953,7 @@ end;
 function TvEPSVectorialReader.ExecuteControlOperator(AToken: TExpressionToken;
   AData: TvVectorialDocument): Boolean;
 var
-  Param1, Param2, Param3, Param4: TPSToken;
+  Param1, Param2, Param3, Param4, CounterToken: TPSToken;
   NewToken: TExpressionToken;
   FloatCounter: Double;
 begin
@@ -1021,7 +1020,7 @@ begin
   begin
     {$ifdef FPVECTORIALDEBUG_CONTROL}
     WriteLn('[TvEPSVectorialReader.ExecuteControlOperator] stopped');
-    DebugStack();
+//    DebugStack();
     {$endif}
 
     Param1 := TPSToken(Stack.Pop);
@@ -1060,7 +1059,51 @@ begin
 
     Exit(True);
   end;
-  // initial increment limit proc for
+  { initial increment limit proc for -
+
+   executes proc repeatedly, passing it a sequence of values from initial
+   by steps of increment to limit. The for operator expects initial, increment,
+   and limit to be numbers. It maintains a temporary internal variable, known as
+   the control variable, which it first sets to initial. Then, before each
+   repetition, it compares the control variable with the termination value limit.
+   If limit has not been exceeded, it pushes the control variable on the operand
+   stack, executes proc, and adds increment to the control variable.
+
+   The termination condition depends on whether increment is positive or negative.
+   If increment is positive, for terminates when the control variable becomes
+   greater than limit. If increment is negative, for terminates when the control
+   variable becomes less than limit. If initial meets the termination condition,
+   for does not execute proc at all. If proc executes the exit operator,
+   for terminates prematurely.
+
+   Usually, proc will use the value on the operand stack for some purpose.
+   However, if proc does not remove the value, it will remain there.
+   Successive executions of proc will cause successive values of the control
+   variable to accumulate on the operand stack.
+
+   EXAMPLE:
+   0 1 1 4 {add} for -> 10
+   1 2 6 { } for -> 1 3 5
+   3 -.5 1 {-> } for -> 3.0 2.5 2.0 1.5 1.0
+
+   In the first example, the value of the control variable is added to whatever
+   is on the stack, so 1, 2, 3, and 4 are added in turn to a running sum whose
+   initial value is 0. The second example has an empty procedure, so the
+   successive values of the control variable are left on the stack. The
+   last example counts backward from 3 to 1 by halves, leaving the successive
+   values on the stack.
+
+   Beware of using reals instead of integers for any of the first three operands.
+   Most real numbers are not represented exactly. This can cause an error to
+   accumulate in the value of the control variable, with possibly surprising results.
+   In particular, if the difference between initial and limit is a multiple of
+   increment, as in the third line of the example, the control variable may not
+   achieve the limit value.
+
+   ERRORS: stackoverflow stackunderflow, typecheck
+
+   SEE ALSO: repeat, loop, forall, exit
+  }
   if AToken.StrValue = 'for' then
   begin
     Param1 := TPSToken(Stack.Pop);
@@ -1074,6 +1117,10 @@ begin
     FloatCounter := Param4.FloatValue;
     while FloatCounter < Param2.FloatValue do
     begin
+      CounterToken := Param4.Duplicate();
+      CounterToken.FloatValue := FloatCounter;
+      Stack.Push(CounterToken);
+
       ExecuteProcedureToken(TProcedureToken(Param1), AData);
 
       FloatCounter := FloatCounter + Param3.FloatValue;
@@ -1091,10 +1138,10 @@ begin
   // if it is executable or false if it is literal
   if AToken.StrValue = 'xcheck' then
   begin
-    {$ifdef FPVECTORIALDEBUG_CONTROL}
-    WriteLn('[TvEPSVectorialReader.ExecuteControlOperator] xcheck');
-    DebugStack();
-    {$endif}
+//    {$ifdef FPVECTORIALDEBUG_CONTROL}
+//    WriteLn('[TvEPSVectorialReader.ExecuteControlOperator] xcheck');
+//    DebugStack();
+//    {$endif}
 
     Param1 := TPSToken(Stack.Pop);
 
@@ -1549,13 +1596,13 @@ begin
     Param1 := TPSToken(Stack.Pop);
     Param2 := TPSToken(Stack.Pop);
     PostScriptCoordsToFPVectorialCoords(Param1, Param2, PosX, PosY);
+    PosX2 := PosX + CurrentGraphicState.TranslateX;
+    PosY2 := PosY + CurrentGraphicState.TranslateY;
     {$ifdef FPVECTORIALDEBUG_PATHS}
-    WriteLn(Format('[TvEPSVectorialReader.ExecutePathConstructionOperator] moveto %f, %f CurrentGraphicState.Translate %f, %f',
-      [PosX, PosY, CurrentGraphicState.TranslateX, CurrentGraphicState.TranslateY]));
+    WriteLn(Format('[TvEPSVectorialReader.ExecutePathConstructionOperator] moveto %f, %f CurrentGraphicState.Translate %f, %f Resulting Value %f, %f',
+      [PosX, PosY, CurrentGraphicState.TranslateX, CurrentGraphicState.TranslateY, PosX2, PosY2]));
     {$endif}
-    PosX := PosX + CurrentGraphicState.TranslateX;
-    PosY := PosY + CurrentGraphicState.TranslateY;
-    AData.AddMoveToPath(PosX, PosY);
+    AData.AddMoveToPath(PosX2, PosY2);
     Exit(True);
   end;
   // Absolute LineTo
@@ -1565,12 +1612,12 @@ begin
     Param1 := TPSToken(Stack.Pop);
     Param2 := TPSToken(Stack.Pop);
     PostScriptCoordsToFPVectorialCoords(Param1, Param2, PosX, PosY);
-    PosX := PosX + CurrentGraphicState.TranslateX;
-    PosY := PosY + CurrentGraphicState.TranslateY;
+    PosX2 := PosX + CurrentGraphicState.TranslateX;
+    PosY2 := PosY + CurrentGraphicState.TranslateY;
     {$ifdef FPVECTORIALDEBUG_PATHS}
-    WriteLn(Format('[TvEPSVectorialReader.ExecutePathConstructionOperator] lineto %f, %f', [PosX, PosY]));
+    WriteLn(Format('[TvEPSVectorialReader.ExecutePathConstructionOperator] lineto %f, %f Resulting value %f, %f', [PosX, PosY, PosX2, PosY2]));
     {$endif}
-    AData.AddLineToPath(PosX, PosY);
+    AData.AddLineToPath(PosX2, PosY2);
     Exit(True);
   end;
   // Relative LineTo
@@ -1581,12 +1628,13 @@ begin
     Param2 := TPSToken(Stack.Pop);
     PostScriptCoordsToFPVectorialCoords(Param1, Param2, PosX, PosY);
     AData.GetCurrentPathPenPos(BaseX, BaseY);
-    PosX := PosX + CurrentGraphicState.TranslateX;
-    PosY := PosY + CurrentGraphicState.TranslateY;
+    PosX2 := PosX + BaseX;//CurrentGraphicState.TranslateX;
+    PosY2 := PosY + BaseY;//CurrentGraphicState.TranslateY;
     {$ifdef FPVECTORIALDEBUG_PATHS}
-    WriteLn(Format('[TvEPSVectorialReader.ExecutePathConstructionOperator] rlineto %f, %f', [BaseX + PosX, BaseY + PosY]));
+    WriteLn(Format('[TvEPSVectorialReader.ExecutePathConstructionOperator] rlineto %f, %f Base %f, %f Resulting %f, %f',
+      [PosX, PosY, BaseX, BaseY, PosX2, PosY2]));
     {$endif}
-    AData.AddLineToPath(BaseX + PosX, BaseY + PosY);
+    AData.AddLineToPath(PosX2, PosY2);
     Exit(True);
   end;
   // dx1 dy1 dx2 dy2 dx3 dy3 rcurveto –
@@ -1963,11 +2011,7 @@ begin
 
     if Param2 = nil then
     begin
-      {$ifdef FPVECTORIALDEBUG_PATHS}
-      WriteLn('[TvEPSVectorialReader.ExecuteGraphicStateOperatorsDI] translate with stack underflow');
-      {$endif}
-
-      Exit(True);
+      raise Exception.Create('[TvEPSVectorialReader.ExecuteGraphicStateOperatorsDI] Stack underflow in operator "translate"');
     end;
 
     {$ifdef FPVECTORIALDEBUG_PATHS}

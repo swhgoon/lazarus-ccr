@@ -5,6 +5,9 @@ unit fpvtocanvas;
 interface
 
 {$define USE_LCL_CANVAS}
+{$ifdef USE_LCL_CANVAS}
+  {$define USE_CANVAS_CLIP_REGION}
+{$endif}
 
 uses
   Classes, SysUtils, Math,
@@ -98,7 +101,7 @@ end;
 
   DrawFPVectorialToCanvas(ASource, ADest, 0, ASource.Height, 1.0, -1.0);
 }
-{.$define FPVECTORIAL_TOCANVAS_DEBUG}
+{$define FPVECTORIAL_TOCANVAS_DEBUG}
 procedure DrawFPVectorialToCanvas(ASource: TvVectorialDocument;
   ADest: TFPCustomCanvas;
   ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
@@ -175,7 +178,7 @@ begin
   ADest.Brush.FPColor := CurPath.Brush.Color;
 
   // Prepare the Clipping Region, if any
-  {$ifdef USE_LCL_CANVAS}
+  {$ifdef USE_CANVAS_CLIP_REGION}
   if CurPath.ClipPath <> nil then
   begin
     OldClipRegion := LCLIntf.CreateEmptyRegion();
@@ -301,7 +304,7 @@ begin
   {$endif}
 
   // Restores the previous Clip Region
-  {$ifdef USE_LCL_CANVAS}
+  {$ifdef USE_CANVAS_CLIP_REGION}
   if CurPath.ClipPath <> nil then
   begin
     SelectClipRgn(ACanvas.Handle, OldClipRegion); //Using OldClipRegion crashes in Qt
