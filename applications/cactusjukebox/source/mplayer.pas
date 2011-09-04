@@ -150,6 +150,7 @@ end;
 
 // Find mplayer executable
 function TMPlayerClass.GetMPlayerPath: string;
+var tmps, tmppath: string; i: integer;
 begin
   Result:='';
   {$ifdef Darwin}
