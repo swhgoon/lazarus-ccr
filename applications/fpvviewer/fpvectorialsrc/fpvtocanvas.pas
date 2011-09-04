@@ -7,6 +7,7 @@ interface
 {$define USE_LCL_CANVAS}
 {$ifdef USE_LCL_CANVAS}
   {$define USE_CANVAS_CLIP_REGION}
+  {$define DEBUG_CANVAS_CLIP_REGION}
 {$endif}
 
 uses
@@ -186,6 +187,11 @@ begin
     ClipRegion := ConvertPathToRegion(CurPath.ClipPath, ADestX, ADestY, AMulX, AMulY);
     SelectClipRgn(ACanvas.Handle, ClipRegion);
     DeleteObject(ClipRegion);
+    // debug info
+    {$ifdef DEBUG_CANVAS_CLIP_REGION}
+    ConvertPathToPoints(CurPath.ClipPath, ADestX, ADestY, AMulX, AMulY, Points);
+    ACanvas.Polygon(Points);
+    {$endif}
   end;
   {$endif}
 

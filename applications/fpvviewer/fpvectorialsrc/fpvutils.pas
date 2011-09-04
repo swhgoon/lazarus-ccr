@@ -44,6 +44,7 @@ function SeparateString(AString: string; ASeparator: char): T10Strings;
 procedure EllipticalArcToBezier(Xc, Yc, Rx, Ry, startAngle, endAngle: Double; var P1, P2, P3, P4: T3DPoint);
 procedure CircularArcToBezier(Xc, Yc, R, startAngle, endAngle: Double; var P1, P2, P3, P4: T3DPoint);
 procedure AddBezierToPoints(P1, P2, P3, P4: T3DPoint; var Points: TPointsArray);
+procedure ConvertPathToPoints(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double; var Points: TPointsArray);
 // LCL-related routines
 {$ifdef USE_LCL_CANVAS}
 function ConvertPathToRegion(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double): HRGN;
@@ -212,20 +213,19 @@ begin
   end;
 end;
 
-{$ifdef USE_LCL_CANVAS}
-function ConvertPathToRegion(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double): HRGN;
+procedure ConvertPathToPoints(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double; var Points: TPointsArray);
 var
-  i: Integer;
-  WindingMode: Integer;
-  Points: array of TPoint;
+  i, LastPoint: Integer;
   CoordX, CoordY: Integer;
+  CoordX2, CoordY2, CoordX3, CoordY3, CoordX4, CoordY4: Integer;
   // Segments
   CurSegment: TPathSegment;
   Cur2DSegment: T2DSegment absolute CurSegment;
+  Cur2DBSegment: T2DBezierSegment absolute CurSegment;
 begin
   APath.PrepareForSequentialReading;
 
-  SetLength(Points, APath.Len);
+  SetLength(Points, 0);
 
   for i := 0 to APath.Len - 1 do
   begin
@@ -234,14 +234,49 @@ begin
     CoordX := CoordToCanvasX(Cur2DSegment.X, ADestX, AMulX);
     CoordY := CoordToCanvasY(Cur2DSegment.Y, ADestY, AMulY);
 
-    Points[i].X := CoordX;
-    Points[i].Y := CoordY;
+    case CurSegment.SegmentType of
+    st2DBezier, st3DBezier:
+    begin
+      LastPoint := Length(Points)-1;
+      CoordX4 := CoordX;
+      CoordY4 := CoordY;
+      CoordX := Points[LastPoint].X;
+      CoordY := Points[LastPoint].Y;
+      CoordX2 := CoordToCanvasX(Cur2DBSegment.X2, ADestX, AMulX);
+      CoordY2 := CoordToCanvasY(Cur2DBSegment.Y2, ADestY, AMulY);
+      CoordX3 := CoordToCanvasX(Cur2DBSegment.X3, ADestX, AMulX);
+      CoordY3 := CoordToCanvasY(Cur2DBSegment.Y3, ADestY, AMulY);
+      AddBezierToPoints(
+        Make2DPoint(CoordX, CoordY),
+        Make2DPoint(CoordX2, CoordY2),
+        Make2DPoint(CoordX3, CoordY3),
+        Make2DPoint(CoordX4, CoordY4),
+        Points);
+    end;
+    else
+      LastPoint := Length(Points);
+      SetLength(Points, Length(Points)+1);
+      Points[LastPoint].X := CoordX;
+      Points[LastPoint].Y := CoordY;
+    end;
   end;
+end;
+
+{$ifdef USE_LCL_CANVAS}
+function ConvertPathToRegion(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double): HRGN;
+var
+  WindingMode: Integer;
+  Points: array of TPoint;
+begin
+  APath.PrepareForSequentialReading;
+
+  SetLength(Points, 0);
+  ConvertPathToPoints(APath, ADestX, ADestY, AMulX, AMulY, Points);
 
   if APath.ClipMode = vcmEvenOddRule then WindingMode := LCLType.ALTERNATE
   else WindingMode := LCLType.WINDING;
 
-  Result := LCLIntf.CreatePolygonRgn(@Points[0], APath.Len, WindingMode);
+  Result := LCLIntf.CreatePolygonRgn(@Points[0], Length(Points), WindingMode);
 end;
 {$endif}
 
