@@ -16,7 +16,8 @@ interface
 uses
   Classes, SysUtils,
   StdCtrls, Forms, Controls,
-  lTelnet,
+  lTelnet, lnet,
+  sorokinregexpr, // Remove when FPC 2.8 comes with this
   chessmodules, chessgame;
 
 type
@@ -33,6 +34,7 @@ type
     FICS_PASSWORD: string;
     // Frequency to issue commands to avoid disconnection, in miliseconds
     PROTECT_LOGOUT_FREQ: Integer;
+    RegexObj: TRegExpr;
     constructor Create(); override;
     destructor Destroy; override;
     procedure CreateUserInterface(); override;
@@ -51,6 +53,8 @@ implementation
 constructor TFICSChessModule.Create;
 begin
   inherited Create;
+
+  RegexObj := TRegExpr.Create;
 
   TelnetComm := TLTelnetClient.Create(nil);
   (*    $telnet = new Net::Telnet(
@@ -74,6 +78,7 @@ end;
 destructor TFICSChessModule.Destroy;
 begin
   TelnetComm.Free;
+  RegexObj.Free;
 
   inherited Destroy;
 end;
@@ -109,7 +114,8 @@ end;
 
 procedure TFICSChessModule.PrepareForGame;
 var
-  lResult: Boolean;
+  lResult, WaitTerminated: Boolean;
+  lMsg: string;
 begin
 //  SecondPlayerName := editSecondPlayerName.Text;
   ChessModuleDebugLn('[TFICSChessModule.PrepareForGame]');
@@ -122,8 +128,13 @@ begin
   begin
     ChessModuleDebugLn('Failed to connect to FICS');
     Exit;
-    //      print STDERR "\n" if $VERBOSE;
   end;
+
+  repeat
+    TelnetComm.CallAction; // repeat this to get info
+//    if KeyPressed then
+//      Halt;
+  until TelnetComm.Connected; // wait until timeout or we actualy connected
 
   ChessModuleDebugLn('Connected to FICS');
 
@@ -134,23 +145,36 @@ begin
     //    $username = $FICS_USER;
     // print STDERR "Successfully logged as user $FICS_USER\n" if $VERBOSE;
   end
+  // Now let's go to the guest login. Again, try logging to FICS via telnet as guest to understand what we are testing for here.
   else
   begin
+    {
+    $telnet->waitfor(
+        Match => '/login[: ]*$/i',
+        Match => '/username[: ]*$/i',
+        Timeout => $OPEN_TIMEOUT);
 
+        $telnet->print($FICS_USER);
+        }
+    WaitTerminated := False;
+    while not WaitTerminated do
+    begin
+      if TelnetComm.GetMessage(lMsg) > 0 then
+        ChessModuleDebugOut(lMsg);
+
+      RegexObj.Expression := '/login[: ]*$/i';
+
+      if RegexObj.Exec(lMsg) then WaitTerminated := True;
+
+      TelnetComm.CallAction; // don't forget to make the clock tick :)
+      Application.ProcessMessages;
+      Sleep(100);
+    end;
+
+    ChessModuleDebugLn('Found the login!!!');
   end;
 
 (*
-
-  Now let's go to the guest login. Again, try logging to FICS via telnet as guest to understand what we are testing for here.
-      else {
-
-          $telnet->waitfor(
-              Match => '/login[: ]*$/i',
-              Match => '/username[: ]*$/i',
-              Timeout => $OPEN_TIMEOUT);
-
-              $telnet->print($FICS_USER);
-
       ... and we send our username once prompted. Now we read obtained lines scanning for some patterns.
               while (1) {
                   my $line = $telnet->getline(Timeout => $LINE_WAIT_TIMEOUT);

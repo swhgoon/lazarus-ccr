@@ -38,6 +38,7 @@ procedure PopulateChessModulesList(AList: TStrings);
 function GetChessModule(AIndex: Integer): TChessModule;
 function GetChessModuleCount(): Integer;
 procedure ChessModuleDebugLn(AStr: string);
+procedure ChessModuleDebugOut(AStr: string);
 
 implementation
 
@@ -91,6 +92,12 @@ procedure ChessModuleDebugLn(AStr: string);
 begin
   if Assigned(gChessModulesDebugOutputDestiny) then
     gChessModulesDebugOutputDestiny.Lines.Add(AStr);
+end;
+
+procedure ChessModuleDebugOut(AStr: string);
+begin
+  if Assigned(gChessModulesDebugOutputDestiny) then
+    gChessModulesDebugOutputDestiny.Append(AStr);
 end;
 
 { TChessModule }
