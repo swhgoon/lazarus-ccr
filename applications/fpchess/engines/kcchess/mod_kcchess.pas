@@ -11,7 +11,7 @@ interface
 
 uses
   Classes, SysUtils,
-  StdCtrls, Forms, Controls,
+  StdCtrls, Forms, Controls, Spin,
   chessgame, chessmodules, chessdrawer;
 
 const HIGH = 52;  WIDE = 52;  SINGLE_IMAGE_SIZE = 1500;
@@ -131,14 +131,18 @@ var Game : GameType;
     GraphDriver, GraphMode : integer;   {*** for Turbo Pascal graphics ***}
 
 type
+  TKCChessThread = class;
 
   { TKCChessModule }
 
   TKCChessModule = class(TChessModule)
   private
+    textDifficulty: TStaticText;
+    spinDifficulty: TSpinEdit;
     PlayerColor, ComputerColor: PieceColorType;
-    function FPChessPieceToKCChessImage(APos: TPoint): PieceImageType;
-    function FPChessPieceToKCChessColor(APos: TPoint): PieceColorType;
+    KCChessThread: TKCChessThread;
+    class function FPChessPieceToKCChessImage(APos: TPoint): PieceImageType;
+    class function FPChessPieceToKCChessColor(APos: TPoint): PieceColorType;
   public
     constructor Create(); override;
     procedure CreateUserInterface(); override;
@@ -148,6 +152,16 @@ type
     procedure PrepareForGame(); override;
     function GetSecondPlayerName(): ansistring; override;
     procedure HandleOnMove(AFrom, ATo: TPoint); override;
+  end;
+
+  { TKCChessThread }
+
+  TKCChessThread = class(TThread)
+  protected
+    procedure Execute; override;
+  public
+    AFrom, ATo: TPoint;
+    PlayerColor, ComputerColor: PieceColorType;
   end;
 
 { INIT.PAS }
@@ -192,7 +206,7 @@ implementation
 
 { TKCChessModule }
 
-function TKCChessModule.FPChessPieceToKCChessImage(APos: TPoint): PieceImageType;
+class function TKCChessModule.FPChessPieceToKCChessImage(APos: TPoint): PieceImageType;
 begin
   case vChessGame.Board[APos.X][APos.Y] of
   ctEmpty:              Result := BLANK;
@@ -205,7 +219,7 @@ begin
   end;
 end;
 
-function TKCChessModule.FPChessPieceToKCChessColor(APos: TPoint): PieceColorType;
+class function TKCChessModule.FPChessPieceToKCChessColor(APos: TPoint): PieceColorType;
 begin
   case vChessGame.Board[APos.X][APos.Y] of
   ctEmpty, ctWPawn, ctWKnight, ctWBishop, ctWRook, ctWQueen, ctWKing: Result := C_WHITE;
@@ -225,31 +239,33 @@ end;
 
 procedure TKCChessModule.CreateUserInterface;
 begin
-{  textSecondPlayerName := TStaticText.Create(nil);
-  textSecondPlayerName.SetBounds(20, 20, 180, 50);
-  textSecondPlayerName.Caption := 'Name of the second player';
+  textDifficulty := TStaticText.Create(nil);
+  textDifficulty.SetBounds(20, 20, 180, 50);
+  textDifficulty.Caption := 'Difficulty (3=easiest)';
 
-  editSecondPlayerName := TEdit.Create(nil);
-  editSecondPlayerName.SetBounds(200, 20, 150, 50);
-  editSecondPlayerName.Text := 'Second player';}
+  spinDifficulty := TSpinEdit.Create(nil);
+  spinDifficulty.SetBounds(200, 20, 50, 50);
+  spinDifficulty.Value := 3;
+  spinDifficulty.MinValue := 3;
+  spinDifficulty.MaxValue := 9;
 end;
 
 procedure TKCChessModule.ShowUserInterface(AParent: TWinControl);
 begin
-{  textSecondPlayerName.Parent := AParent;
-  editSecondPlayerName.Parent := AParent;}
+  textDifficulty.Parent := AParent;
+  spinDifficulty.Parent := AParent;
 end;
 
 procedure TKCChessModule.HideUserInterface();
 begin
-{  textSecondPlayerName.Parent := nil;
-  editSecondPlayerName.Parent := nil;}
+  textDifficulty.Parent := nil;
+  spinDifficulty.Parent := nil;
 end;
 
 procedure TKCChessModule.FreeUserInterface();
 begin
-{  textSecondPlayerName.Free;
-  editSecondPlayerName.Free;}
+  textDifficulty.Free;
+  spinDifficulty.Free;
 end;
 
 procedure TKCChessModule.PrepareForGame;
@@ -269,6 +285,8 @@ begin
     ComputerColor := C_WHITE;
     PlayerColor := C_BLACK;
   end;
+
+  Player[ComputerColor].LookAhead := spinDifficulty.Value;
 end;
 
 function TKCChessModule.GetSecondPlayerName: ansistring;
@@ -277,51 +295,14 @@ begin
 end;
 
 procedure TKCChessModule.HandleOnMove(AFrom, ATo: TPoint);
-var
-  UserMovement, AIMovement: MoveType;
-  Escape: boolean;
-  Score: Integer;
-  lMoved: Boolean;
-  lAnimation: TChessMoveAnimation;
 begin
-  // initialization
-  Escape := False;
-  Score := 0;
-
-  { First write the movement of the user }
-  UserMovement.FromRow := AFrom.Y;
-  UserMovement.FromCol := AFrom.X;
-  UserMovement.ToRow := ATo.Y;
-  UserMovement.ToCol := ATo.X;
-  UserMovement.PieceMoved.image := FPChessPieceToKCChessImage(ATo);
-  UserMovement.PieceMoved.color := PlayerColor;
-//                     HasMoved : boolean;
-//                     ValidSquare : boolean;
-  UserMovement.PieceTaken.image := BLANK;
-  UserMovement.PieceTaken.color := ComputerColor;
-//                     HasMoved : boolean;
-//                     ValidSquare : boolean;
-  UserMovement.MovedImage := BLANK;
-
-  MakeMove(UserMovement, True, Score);
-
-  { Now get the computer move }
-  GetComputerMove(ComputerColor, False, AIMovement, Escape);
-  MakeMove(AIMovement, True, Score);
-
-  { And write it to our board }
-
-  lAnimation := TChessMoveAnimation.Create;
-  lAnimation.AFrom := Point(AIMovement.FromCol, AIMovement.FromRow);
-  lAnimation.ATo := Point(AIMovement.ToCol, AIMovement.ToRow);
-  vChessDrawer.AddAnimation(lAnimation);
-
-{  lMoved := vChessGame.MovePiece(
-    Point(AIMovement.FromCol, AIMovement.FromRow),
-    Point(AIMovement.ToCol, AIMovement.ToRow));
-
-  if not lMoved then raise Exception.Create(Format('Moving failed from %s to %s',
-    [vChessGame.BoardPosToChessCoords(AFrom), vChessGame.BoardPosToChessCoords(ATo)]));}
+  KCChessThread := TKCChessThread.Create(True);
+  KCChessThread.FreeOnTerminate := True;
+  KCChessThread.AFrom := AFrom;
+  KCChessThread.ATo := ATo;
+  KCChessThread.PlayerColor := PlayerColor;
+  KCChessThread.ComputerColor := ComputerColor;
+  KCChessThread.Resume();
 end;
 
 initialization
