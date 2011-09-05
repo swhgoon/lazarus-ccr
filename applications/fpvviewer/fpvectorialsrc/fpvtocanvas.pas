@@ -7,7 +7,7 @@ interface
 {$define USE_LCL_CANVAS}
 {$ifdef USE_LCL_CANVAS}
   {$define USE_CANVAS_CLIP_REGION}
-  {$define DEBUG_CANVAS_CLIP_REGION}
+  {.$define DEBUG_CANVAS_CLIP_REGION}
 {$endif}
 
 uses
