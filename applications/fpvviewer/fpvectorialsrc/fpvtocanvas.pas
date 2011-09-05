@@ -9,6 +9,9 @@ interface
   {$define USE_CANVAS_CLIP_REGION}
   {.$define DEBUG_CANVAS_CLIP_REGION}
 {$endif}
+{$ifndef Windows}
+{.$define FPVECTORIAL_TOCANVAS_DEBUG}
+{$endif}
 
 uses
   Classes, SysUtils, Math,
@@ -33,10 +36,6 @@ procedure DrawFPVTextToCanvas(ASource: TvVectorialDocument; CurText: TvText;
   ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
 
 implementation
-
-{$ifndef Windows}
-{$define FPVECTORIAL_TOCANVAS_DEBUG}
-{$endif}
 
 function Rotate2DPoint(P,Fix :TPoint; alpha:double): TPoint;
 var
@@ -259,9 +258,12 @@ begin
     begin
       ADest.Pen.FPColor := T2DSegmentWithPen(Cur2DSegment).Pen.Color;
 
-      CoordX := CoordToCanvasX(Cur2DSegment.X);
-      CoordY := CoordToCanvasY(Cur2DSegment.Y);
-      ADest.LineTo(CoordX, CoordY);
+      CoordX := CoordToCanvasX(PosX);
+      CoordY := CoordToCanvasY(PosY);
+      CoordX2 := CoordToCanvasX(Cur2DSegment.X);
+      CoordY2 := CoordToCanvasY(Cur2DSegment.Y);
+      ADest.Line(CoordX, CoordY, CoordX2, CoordY2);
+
       PosX := Cur2DSegment.X;
       PosY := Cur2DSegment.Y;
 
@@ -273,9 +275,11 @@ begin
     end;
     st2DLine, st3DLine:
     begin
-      CoordX := CoordToCanvasX(Cur2DSegment.X);
-      CoordY := CoordToCanvasY(Cur2DSegment.Y);
-      ADest.LineTo(CoordX, CoordY);
+      CoordX := CoordToCanvasX(PosX);
+      CoordY := CoordToCanvasY(PosY);
+      CoordX2 := CoordToCanvasX(Cur2DSegment.X);
+      CoordY2 := CoordToCanvasY(Cur2DSegment.Y);
+      ADest.Line(CoordX, CoordY, CoordX2, CoordY2);
       PosX := Cur2DSegment.X;
       PosY := Cur2DSegment.Y;
       {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
@@ -304,7 +308,8 @@ begin
       );
 
       ADest.Brush.Style := CurPath.Brush.Style;
-      ADest.Polygon(Points);
+      if Length(Points) >= 3 then
+        ADest.Polygon(Points);
 
       PosX := Cur2DSegment.X;
       PosY := Cur2DSegment.Y;

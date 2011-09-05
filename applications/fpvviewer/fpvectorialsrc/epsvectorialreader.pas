@@ -14,7 +14,7 @@ unit epsvectorialreader;
 
 {$mode objfpc}{$H+}
 
-{$define FPVECTORIALDEBUG_PATHS}
+{.$define FPVECTORIALDEBUG_PATHS}
 {.$define FPVECTORIALDEBUG_COLORS}
 {.$define FPVECTORIALDEBUG_ROLL}
 {.$define FPVECTORIALDEBUG_CODEFLOW}
@@ -159,8 +159,12 @@ begin
   Result.Color := Color;
   Result.TranslateX := TranslateX;
   Result.TranslateY := TranslateY;
+  Result.ScaleX := ScaleX;
+  Result.ScaleY := ScaleY;
   Result.ClipPath := ClipPath;
+  Result.ClipMode := ClipMode;
   Result.OverPrint := OverPrint;
+  Result.PenWidth := PenWidth;
 end;
 
 { TPSToken }
@@ -1227,6 +1231,12 @@ begin
     {$ifdef FPVECTORIALDEBUG_PATHS}
     WriteLn('[TvEPSVectorialReader.ExecutePaintingOperator] stroke');
     {$endif}
+    AData.SetPenStyle(psSolid);
+    AData.SetBrushStyle(bsClear);
+    AData.SetPenColor(CurrentGraphicState.Color);
+    AData.SetClipPath(CurrentGraphicState.ClipPath, CurrentGraphicState.ClipMode);
+    AData.SetPenWidth(CurrentGraphicState.PenWidth);
+    AData.EndPath();
     Exit(True);
   end;
 
@@ -1236,6 +1246,10 @@ begin
     WriteLn('[TvEPSVectorialReader.ExecutePaintingOperator] eofill');
     {$endif}
     AData.SetBrushStyle(bsSolid);
+    AData.SetPenStyle(psSolid);
+    AData.SetClipPath(CurrentGraphicState.ClipPath, CurrentGraphicState.ClipMode);
+    AData.SetPenWidth(CurrentGraphicState.PenWidth);
+    AData.EndPath();
 
     Exit(True);
   end;
@@ -1581,13 +1595,17 @@ begin
     {$ifdef FPVECTORIALDEBUG_PATHS}
     WriteLn('[TvEPSVectorialReader.ExecutePathConstructionOperator] newpath');
     {$endif}
-    AData.SetClipPath(CurrentGraphicState.ClipPath, CurrentGraphicState.ClipMode);
-    AData.SetPenWidth(CurrentGraphicState.PenWidth);
+//    AData.SetClipPath(CurrentGraphicState.ClipPath, CurrentGraphicState.ClipMode);
+//    AData.SetPenWidth(CurrentGraphicState.PenWidth);
+//    AData.SetClipPath(CurrentGraphicState.ClipPath, CurrentGraphicState.ClipMode);
+    AData.SetBrushStyle(bsClear);
+    AData.SetPenStyle(psClear);
     AData.EndPath();
     AData.StartPath();
 
     AData.SetPenColor(CurrentGraphicState.Color);
     AData.SetBrushColor(CurrentGraphicState.Color);
+    AData.SetPenStyle(psClear);
 
     Exit(True);
   end;
@@ -1629,8 +1647,8 @@ begin
     Param2 := TPSToken(Stack.Pop);
     PostScriptCoordsToFPVectorialCoords(Param1, Param2, PosX, PosY);
     AData.GetCurrentPathPenPos(BaseX, BaseY);
-    PosX2 := PosX + BaseX;//CurrentGraphicState.TranslateX;
-    PosY2 := PosY + BaseY;//CurrentGraphicState.TranslateY;
+    PosX2 := PosX + BaseX;
+    PosY2 := PosY + BaseY;
     {$ifdef FPVECTORIALDEBUG_PATHS}
     WriteLn(Format('[TvEPSVectorialReader.ExecutePathConstructionOperator] rlineto %f, %f Base %f, %f Resulting %f, %f',
       [PosX, PosY, BaseX, BaseY, PosX2, PosY2]));
@@ -1659,10 +1677,10 @@ begin
     PostScriptCoordsToFPVectorialCoords(Param1, Param2, PosX3, PosY3);
     AData.GetCurrentPathPenPos(BaseX, BaseY);
     // First move to the start of the arc
-    BaseX := BaseX + CurrentGraphicState.TranslateX;
-    BaseY := BaseY + CurrentGraphicState.TranslateY;
+//    BaseX := BaseX + CurrentGraphicState.TranslateX;
+//    BaseY := BaseY + CurrentGraphicState.TranslateY;
     {$ifdef FPVECTORIALDEBUG_PATHS}
-    WriteLn(Format('[TvEPSVectorialReader.ExecutePathConstructionOperator] translate %f, %f',
+    WriteLn(Format('[TvEPSVectorialReader.ExecutePathConstructionOperator] rcurveto translate %f, %f',
       [CurrentGraphicState.TranslateX, CurrentGraphicState.TranslateY]));
     WriteLn(Format('[TvEPSVectorialReader.ExecutePathConstructionOperator] rcurveto from %f, %f via %f, %f %f, %f to %f, %f',
       [BaseX, BaseY, BaseX + PosX, BaseY + PosY, BaseX + PosX2, BaseY + PosY2, BaseX + PosX3, BaseY + PosY3]));
@@ -1747,6 +1765,7 @@ begin
     {$ifndef FPVECTORIALDEBUG_CLIP_REGION}
     AData.SetPenStyle(psClear);
     {$endif}
+    AData.SetBrushStyle(bsClear);
     AData.EndPath();
     CurrentGraphicState.ClipPath := AData.GetPath(AData.GetPathCount()-1);
     CurrentGraphicState.ClipMode := vcmEvenOddRule;

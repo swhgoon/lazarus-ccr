@@ -12,6 +12,7 @@ AUTHORS: Felipe Monteiro de Carvalho
 unit fpvutils;
 
 {$define USE_LCL_CANVAS}
+{.$define FPVECTORIAL_BEZIERTOPOINTS_DEBUG}
 
 {$ifdef fpc}
   {$mode delphi}
@@ -196,6 +197,10 @@ var
   CurveLength, k, CurX, CurY, LastPoint: Integer;
   t: Double;
 begin
+  {$ifdef FPVECTORIAL_BEZIERTOPOINTS_DEBUG}
+  Write(Format('[AddBezierToPoints] P1=%f,%f P2=%f,%f P3=%f,%f P4=%f,%f =>', [P1.X, P1.Y, P2.X, P2.Y, P3.X, P3.Y, P4.X, P4.Y]));
+  {$endif}
+
   CurveLength :=
     Round(sqrt(sqr(P2.X - P1.X) + sqr(P2.Y - P1.Y))) +
     Round(sqrt(sqr(P3.X - P2.X) + sqr(P3.Y - P2.Y))) +
@@ -210,7 +215,13 @@ begin
     CurY := Round(sqr(1 - t) * (1 - t) * P1.Y + 3 * t * sqr(1 - t) * P2.Y + 3 * t * t * (1 - t) * P3.Y + t * t * t * P4.Y);
     Points[LastPoint+k].X := CurX;
     Points[LastPoint+k].Y := CurY;
+    {$ifdef FPVECTORIAL_BEZIERTOPOINTS_DEBUG}
+    Write(Format(' P=%d,%d', [CurX, CurY]));
+    {$endif}
   end;
+  {$ifdef FPVECTORIAL_BEZIERTOPOINTS_DEBUG}
+  WriteLn(Format(' CurveLength=%d', [CurveLength]));
+  {$endif}
 end;
 
 procedure ConvertPathToPoints(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double; var Points: TPointsArray);
