@@ -169,8 +169,8 @@ object formChess: TformChess
       end
     end
     object pageGame: TPage
-      ClientWidth = 1440
-      ClientHeight = 2000
+      ClientWidth = 720
+      ClientHeight = 1000
       object labelPos: TLabel
         Left = 8
         Height = 18
@@ -313,6 +313,7 @@ object formChess: TformChess
   end
   object timerChessTimer: TTimer
     Enabled = False
+    Interval = 50
     OnTimer = timerChessTimerTimer
     left = 296
     top = 152

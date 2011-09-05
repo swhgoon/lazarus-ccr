@@ -12,7 +12,7 @@ interface
 uses
   Classes, SysUtils,
   StdCtrls, Forms, Controls,
-  chessgame, chessmodules;
+  chessgame, chessmodules, chessdrawer;
 
 const HIGH = 52;  WIDE = 52;  SINGLE_IMAGE_SIZE = 1500;
       BOARD_SIZE = 8;  ROW_NAMES = '12345678';  COL_NAMES = 'ABCDEFGH';
@@ -282,6 +282,7 @@ var
   Escape: boolean;
   Score: Integer;
   lMoved: Boolean;
+  lAnimation: TChessMoveAnimation;
 begin
   // initialization
   Escape := False;
@@ -310,12 +311,17 @@ begin
 
   { And write it to our board }
 
-  lMoved := vChessGame.MovePiece(
+  lAnimation := TChessMoveAnimation.Create;
+  lAnimation.AFrom := Point(AIMovement.FromCol, AIMovement.FromRow);
+  lAnimation.ATo := Point(AIMovement.ToCol, AIMovement.ToRow);
+  vChessDrawer.AddAnimation(lAnimation);
+
+{  lMoved := vChessGame.MovePiece(
     Point(AIMovement.FromCol, AIMovement.FromRow),
     Point(AIMovement.ToCol, AIMovement.ToRow));
 
   if not lMoved then raise Exception.Create(Format('Moving failed from %s to %s',
-    [vChessGame.BoardPosToChessCoords(AFrom), vChessGame.BoardPosToChessCoords(ATo)]));
+    [vChessGame.BoardPosToChessCoords(AFrom), vChessGame.BoardPosToChessCoords(ATo)]));}
 end;
 
 initialization

@@ -98,6 +98,7 @@ procedure TformChess.timerChessTimerTimer(Sender: TObject);
 begin
   vChessGame.UpdateTimes();
   UpdateCaptions();
+  vChessDrawer.HandleOnTimer(Sender);
 end;
 
 function TformChess.FormatTime(ATimeInMiliseconds: Integer): string;

@@ -11,6 +11,34 @@ uses
 
 type
 
+  {
+    dsIdle - Accepts user input
+    dsDragging - During an user input
+    dsRunningAnimation - Does not accept user input because it is running an animation
+  }
+  TDrawerState = (dsIdle, dsDragging, dsRunningAnimation);
+
+  { TChessAnimation }
+
+  TChessAnimation = class
+    CurrentStep: Integer;
+    FinalStep: Integer;
+    constructor Create;
+    procedure DrawToIntfImg(AIntfImg: TLazIntfImage); virtual; abstract;
+    procedure ExecuteFinal; virtual; abstract;
+    function SkipDrawingPiece(col, row: Integer): Boolean; virtual; abstract;
+  end;
+
+  { TChessMoveAnimation }
+
+  TChessMoveAnimation = class(TChessAnimation)
+  public
+    AFrom, ATo: TPoint;
+    procedure DrawToIntfImg(AIntfImg: TLazIntfImage); override;
+    procedure ExecuteFinal; override;
+    function SkipDrawingPiece(col, row: Integer): Boolean; override;
+  end;
+
   TChessDrawerDelegate = class
   public
     procedure HandleMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); virtual; abstract;
@@ -30,6 +58,9 @@ type
 {    bmpBoard, bmpWPawn, bmpWKnight, bmpWBishop, bmpWRook, bmpWQueen,
     bmpWKing, bmpBPawn, bmpBKnight, bmpBBishop, bmpBRook, bmpBQueen,
     bmpBKing: TBitmap;}
+    FDrawerState: TDrawerState;
+    FDelegate: TChessDrawerDelegate;
+    FAnimation: TChessAnimation;
   public
     constructor Create(AOwner: TComponent); override;
     procedure EraseBackground(DC: HDC); override;
@@ -41,12 +72,63 @@ type
     function GetChessTileImage(ATile: TChessTile): TPortableNetworkGraphic;
     procedure LoadImages();
     procedure SetDelegate(ADelegate: TChessDrawerDelegate);
+    procedure HandleMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    procedure HandleMouseUp(Sender: TObject; Button: TMouseButton;
+                          Shift: TShiftState; X, Y: Integer);
+    procedure HandleMouseDown(Sender: TObject; Button: TMouseButton;
+                          Shift: TShiftState; X, Y: Integer);
+    procedure HandleOnTimer(Sender: TObject);
+    procedure AddAnimation(AAnimation: TChessAnimation);
   end;
 
 var
   vChessDrawer: TChessDrawer;
 
 implementation
+
+{ TChessMoveAnimation }
+
+procedure TChessMoveAnimation.DrawToIntfImg(AIntfImg: TLazIntfImage);
+var
+  lTileBmp: TPortableNetworkGraphic;
+  X, Y, SourceX, SourceY, DestX, DestY: integer;
+  dx, dy: Integer;
+  t: Double;
+begin
+  // Draw the moving tile
+  lTileBmp := vChessDrawer.GetChessTileImage(vChessGame.Board[AFrom.X][AFrom.Y]);
+  if lTileBmp = nil then Exit;
+
+  SourceX := (AFrom.X - 1) * INT_CHESSTILE_SIZE;
+  SourceY := (8 - AFrom.Y) * INT_CHESSTILE_SIZE;
+  DestX := (ATo.X - 1) * INT_CHESSTILE_SIZE;
+  DestY := (8 - ATo.Y) * INT_CHESSTILE_SIZE;
+  t := CurrentStep / FinalStep;
+  X := Round(t * DestX + (1-t) * SourceX);
+  Y := Round(t * DestY + (1-t) * SourceY);
+
+  vChessDrawer.DrawImageWithTransparentColor(AIntfImg, X, Y, FPCOLOR_TRANSPARENT_TILE, lTileBmp);
+end;
+
+procedure TChessMoveAnimation.ExecuteFinal;
+begin
+  vChessGame.MovePiece(AFrom, ATo);
+end;
+
+function TChessMoveAnimation.SkipDrawingPiece(col, row: Integer): Boolean;
+begin
+  Result := (col = AFrom.X) and (row = AFrom.Y);
+end;
+
+{ TChessAnimation }
+
+constructor TChessAnimation.Create;
+begin
+  inherited Create;
+
+  CurrentStep := 0;
+  FinalStep := 20;
+end;
 
 constructor TChessDrawer.Create(AOwner: TComponent);
 begin
@@ -79,6 +161,11 @@ begin
   bmpBRook := TBitmap.Create;
   bmpBQueen := TBitmap.Create;
   bmpBKing := TBitmap.Create;       }
+
+  // Events
+  OnMouseMove := @HandleMouseMove;
+  OnMouseUp := @HandleMouseUp;
+  OnMouseDown := @HandleMouseDown;
 end;
 
 procedure TChessDrawer.EraseBackground(DC: HDC);
@@ -126,6 +213,9 @@ begin
     for col := 1 to 8 do
       for row := 1 to 8 do
       begin
+        // Check if the animation wants us to skip drawing this piece
+        if Assigned(FAnimation) and FAnimation.SkipDrawingPiece(col, row) then Continue;
+
         lTileBmp := GetChessTileImage(vChessGame.Board[col][row]);
         if lTileBmp = nil then Continue;
 
@@ -134,6 +224,9 @@ begin
 
         DrawImageWithTransparentColor(lIntfImage, X, Y, FPCOLOR_TRANSPARENT_TILE, lTileBmp);
       end;
+
+    // Now animations
+    if Assigned(FAnimation) then FAnimation.DrawToIntfImg(lIntfImage);
 
     lTmpBmp.LoadFromIntfImage(lIntfImage);
     ACanvas.Draw(0, 0, lTmpBmp);
@@ -236,10 +329,50 @@ end;
 
 procedure TChessDrawer.SetDelegate(ADelegate: TChessDrawerDelegate);
 begin
-  // Events
-  OnMouseMove := @ADelegate.HandleMouseMove;
-  OnMouseUp := @ADelegate.HandleMouseUp;
-  OnMouseDown := @ADelegate.HandleMouseDown;
+  FDelegate := ADelegate;
+end;
+
+procedure TChessDrawer.HandleMouseMove(Sender: TObject; Shift: TShiftState; X,
+  Y: Integer);
+begin
+  if Assigned(FDelegate) and (FDrawerState in [dsIdle, dsDragging]) then
+    FDelegate.HandleMouseMove(Sender, Shift, X, Y);
+end;
+
+procedure TChessDrawer.HandleMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if Assigned(FDelegate) and (FDrawerState in [dsIdle, dsDragging]) then
+    FDelegate.HandleMouseUp(Sender, Button, Shift, X, Y);
+end;
+
+procedure TChessDrawer.HandleMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if Assigned(FDelegate) and (FDrawerState in [dsIdle, dsDragging]) then
+    FDelegate.HandleMouseDown(Sender, Button, Shift, X, Y);
+end;
+
+procedure TChessDrawer.HandleOnTimer(Sender: TObject);
+begin
+  if FDrawerState = dsRunningAnimation then
+  begin
+    Inc(FAnimation.CurrentStep);
+    if FAnimation.CurrentStep >= FAnimation.FinalStep then
+    begin
+      FAnimation.ExecuteFinal;
+      FAnimation.Free;
+      FAnimation := nil;
+      FDrawerState := dsIdle;
+    end;
+    Invalidate();
+  end;
+end;
+
+procedure TChessDrawer.AddAnimation(AAnimation: TChessAnimation);
+begin
+  FDrawerState := dsRunningAnimation;
+  FAnimation := AAnimation;
 end;
 
 end.
