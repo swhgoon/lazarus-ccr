@@ -4,7 +4,7 @@ object formChess: TformChess
   Top = 123
   Width = 360
   ActiveControl = notebookMain
-  Caption = 'FP Chess 1.0'
+  Caption = 'FP Chess 0.6'
   ClientHeight = 500
   ClientWidth = 360
   OnCreate = FormCreate
@@ -28,7 +28,7 @@ object formChess: TformChess
         Width = 360
         Alignment = taCenter
         AutoSize = False
-        Caption = 'Welcome to FP Chess 1.0'
+        Caption = 'Welcome to FP Chess 0.6'
         Font.Height = -19
         ParentColor = False
         ParentFont = False
@@ -45,17 +45,17 @@ object formChess: TformChess
       end
       object Label6: TLabel
         Left = 28
-        Height = 18
+        Height = 14
         Top = 128
-        Width = 56
+        Width = 43
         Caption = 'Start as:'
         ParentColor = False
       end
       object Label7: TLabel
         Left = 80
-        Height = 18
+        Height = 14
         Top = 175
-        Width = 152
+        Width = 114
         Caption = 'minutes for each player'
         ParentColor = False
       end
@@ -70,7 +70,7 @@ object formChess: TformChess
       end
       object editPlayerName: TLabeledEdit
         Left = 88
-        Height = 25
+        Height = 21
         Top = 104
         Width = 120
         EditLabel.AnchorSideLeft.Control = editPlayerName
@@ -78,10 +78,10 @@ object formChess: TformChess
         EditLabel.AnchorSideTop.Side = asrCenter
         EditLabel.AnchorSideRight.Control = editPlayerName
         EditLabel.AnchorSideBottom.Control = editPlayerName
-        EditLabel.Left = 2
-        EditLabel.Height = 18
+        EditLabel.Left = 24
+        EditLabel.Height = 14
         EditLabel.Top = 107
-        EditLabel.Width = 83
+        EditLabel.Width = 61
         EditLabel.Caption = 'Player Name'
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
@@ -89,10 +89,10 @@ object formChess: TformChess
       end
       object comboStartColor: TComboBox
         Left = 88
-        Height = 27
+        Height = 21
         Top = 128
         Width = 120
-        ItemHeight = 0
+        ItemHeight = 13
         ItemIndex = 0
         Items.Strings = (
           'White'
@@ -103,9 +103,9 @@ object formChess: TformChess
       end
       object checkTimer: TCheckBox
         Left = 24
-        Height = 21
+        Height = 17
         Top = 152
-        Width = 220
+        Width = 163
         Caption = 'Set a time limit for each Player'
         Checked = True
         State = cbChecked
@@ -113,7 +113,7 @@ object formChess: TformChess
       end
       object spinPlayerTime: TSpinEdit
         Left = 21
-        Height = 25
+        Height = 21
         Top = 176
         Width = 50
         TabOrder = 4
@@ -121,10 +121,10 @@ object formChess: TformChess
       end
       object comboGameMode: TComboBox
         Left = 8
-        Height = 27
+        Height = 21
         Top = 74
         Width = 346
-        ItemHeight = 0
+        ItemHeight = 13
         OnChange = comboGameModeSelect
         OnSelect = comboGameModeSelect
         TabOrder = 5
@@ -140,7 +140,7 @@ object formChess: TformChess
       end
       object editLocalIP: TLabeledEdit
         Left = 120
-        Height = 25
+        Height = 21
         Top = 200
         Width = 120
         EditLabel.AnchorSideLeft.Control = editLocalIP
@@ -148,10 +148,10 @@ object formChess: TformChess
         EditLabel.AnchorSideTop.Side = asrCenter
         EditLabel.AnchorSideRight.Control = editLocalIP
         EditLabel.AnchorSideBottom.Control = editLocalIP
-        EditLabel.Left = 15
-        EditLabel.Height = 18
+        EditLabel.Left = 35
+        EditLabel.Height = 14
         EditLabel.Top = 203
-        EditLabel.Width = 102
+        EditLabel.Width = 82
         EditLabel.Caption = 'Your IP Address:'
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
@@ -169,8 +169,8 @@ object formChess: TformChess
       end
     end
     object pageGame: TPage
-      ClientWidth = 1440
-      ClientHeight = 2000
+      ClientWidth = 2880
+      ClientHeight = 4000
       object labelPos: TLabel
         Left = 8
         Height = 18
@@ -238,8 +238,8 @@ object formChess: TformChess
       end
     end
     object pageWebservice: TPage
-      ClientWidth = 23040
-      ClientHeight = 27712
+      ClientWidth = 46080
+      ClientHeight = 55424
       object Label8: TLabel
         Left = 0
         Height = 32

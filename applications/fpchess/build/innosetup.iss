@@ -3,7 +3,7 @@
 
 [Setup]
 AppName=FPChess
-AppVerName=FPChess v0.5
+AppVerName=FPChess v0.6
 AppPublisherURL=http://wiki.lazarus.freepascal.org/fpChess
 AppSupportURL=http://wiki.lazarus.freepascal.org/fpChess
 AppUpdatesURL=http://wiki.lazarus.freepascal.org/fpChess
@@ -11,10 +11,10 @@ DefaultDirName={pf}\FPChess
 DefaultGroupName=Free Pascal Applications Suite
 ; LicenseFile=..\license.txt
 OutputDir=.\
-OutputBaseFilename=FPChess0.5_install
+OutputBaseFilename=FPChess0.6_install
 Compression=lzma
 SolidCompression=yes
-VersionInfoVersion=0.5
+VersionInfoVersion=0.6
 AllowNoIcons=yes
 
 [Languages]
