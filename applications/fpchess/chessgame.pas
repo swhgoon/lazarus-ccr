@@ -116,8 +116,10 @@ type
     procedure StartNewGame(APlayAsWhite: Boolean; AUseTimer: Boolean; APlayerTime: Integer); overload;
     procedure StartNewGame(APlayAsWhite: Integer; AUseTimer: Boolean; APlayerTime: Integer); overload;
     function ClientToBoardCoords(AClientCoords: TPoint): TPoint;
-    function BoardPosToChessCoords(APos: TPoint): string;
-    function ColumnNumToLetter(ACol: Integer): string;
+    class function BoardPosToChessCoords(APos: TPoint): string;
+    class function ChessCoordsToBoardPos(AStr: string): TPoint;
+    class procedure ChessMoveCoordsToBoardPos(AMoveStr: string; AFrom, ATo: TPoint);
+    class function ColumnNumToLetter(ACol: Integer): string;
     function CheckStartMove(AFrom: TPoint): Boolean;
     function CheckEndMove(ATo: TPoint): Boolean;
     function FindKing(): TPoint;
@@ -735,7 +737,7 @@ begin
   Result.Y := 1 + (INT_CHESSBOARD_SIZE - AClientCoords.Y) div INT_CHESSTILE_SIZE;
 end;
 
-function TChessGame.BoardPosToChessCoords(APos: TPoint): string;
+class function TChessGame.BoardPosToChessCoords(APos: TPoint): string;
 var
   lStr: string;
 begin
@@ -743,7 +745,30 @@ begin
   Result := Format('%s%d', [lStr, APos.Y]);
 end;
 
-function TChessGame.ColumnNumToLetter(ACol: Integer): string;
+class function TChessGame.ChessCoordsToBoardPos(AStr: string): TPoint;
+var
+  lStr: string;
+begin
+  if Length(AStr) < 2 then raise Exception.Create('[TChessGame.ChessCoordsToBoardPos] Length(AStr) < 2');
+  lStr := Copy(AStr, 1, 1);
+  lStr := LowerCase(lStr);
+  Result.X := Byte(lStr[1]) - 96;
+  lStr := Copy(AStr, 2, 1);
+  Result.Y := StrToInt(lStr);
+end;
+
+class procedure TChessGame.ChessMoveCoordsToBoardPos(AMoveStr: string; AFrom,
+  ATo: TPoint);
+var
+  lStr: String;
+begin
+  lStr := Copy(AMoveStr, 1, 2);
+  AFrom := TChessGame.ChessCoordsToBoardPos(lStr);
+  lStr := Copy(AMoveStr, 3, 2);
+  ATo := TChessGame.ChessCoordsToBoardPos(lStr);
+end;
+
+class function TChessGame.ColumnNumToLetter(ACol: Integer): string;
 begin
   Result := Char(ACol + 96);
 end;

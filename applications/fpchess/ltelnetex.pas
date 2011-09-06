@@ -20,6 +20,7 @@ type
     FOnDebugOut: TLTelnetDebugOutProc;
     RegexObj: TRegExpr;
   public
+    LastMsg: string;
     constructor Create(aOwner: TComponent); override;
     destructor Destroy; override;
     function WaitFor(FirstMatch, SecondMatch: string; ATimeOut: Cardinal): Integer;
@@ -49,13 +50,16 @@ function TLTelnetClientEx.WaitFor(FirstMatch, SecondMatch: string;
   ATimeOut: Cardinal): Integer;
 var
   lMsg: string;
+  lRemaining: Integer;
 begin
+  lRemaining := ATimeOut;
   Result := -1;
   if (FirstMatch = '') and (SecondMatch = '') then Exit;
 
-  while True do
-  begin
+  repeat
     if GetMessage(lMsg) > 0 then if Assigned(OnDebugOut) then OnDebugOut(lMsg);
+
+    LastMsg := lMsg;
 
     if FirstMatch <> '' then
     begin
@@ -70,9 +74,13 @@ begin
     end;
 
     CallAction; // don't forget to make the clock tick :)
-    Application.ProcessMessages;
-    Sleep(100);
-  end;
+    if lRemaining > 0 then // Don't sleep if the routine was called with ATimeOut=0
+    begin
+      Application.ProcessMessages;
+      Sleep(100);
+    end;
+    Dec(lRemaining, 100);
+  until lRemaining <= 0;
 end;
 
 end.

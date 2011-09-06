@@ -27,6 +27,7 @@ type
     function IsMovingAllowedNow(): Boolean; virtual;
     function GetSecondPlayerName(): string; virtual; abstract;
     procedure HandleOnMove(AFrom, ATo: TPoint); virtual; abstract;
+    procedure HandleOnTimer(); virtual;
   end;
 
 var
@@ -36,6 +37,7 @@ var
 procedure RegisterChessModule(AModule: TChessModule);
 procedure PopulateChessModulesList(AList: TStrings);
 function GetChessModule(AIndex: Integer): TChessModule;
+function GetCurrentChessModule: TChessModule;
 function GetChessModuleCount(): Integer;
 procedure ChessModuleDebugLn(AStr: string);
 procedure ChessModuleDebugOut(AStr: string);
@@ -83,6 +85,11 @@ begin
   Result := TChessModule(gChessModules.Items[AIndex]);
 end;
 
+function GetCurrentChessModule: TChessModule;
+begin
+  Result := GetChessModule(gSelectedModuleIndex);
+end;
+
 function GetChessModuleCount: Integer;
 begin
   Result := gChessModules.Count;
@@ -110,6 +117,11 @@ end;
 function TChessModule.IsMovingAllowedNow: Boolean;
 begin
   Result := not (vChessGame.IsWhitePlayerTurn xor vChessGame.FirstPlayerIsWhite);
+end;
+
+procedure TChessModule.HandleOnTimer;
+begin
+
 end;
 
 initialization

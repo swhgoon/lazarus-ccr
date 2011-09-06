@@ -99,6 +99,7 @@ begin
   vChessGame.UpdateTimes();
   UpdateCaptions();
   vChessDrawer.HandleOnTimer(Sender);
+  GetCurrentChessModule().HandleOnTimer();
 end;
 
 function TformChess.FormatTime(ATimeInMiliseconds: Integer): string;

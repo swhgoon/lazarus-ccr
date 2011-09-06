@@ -15,16 +15,22 @@ interface
 
 uses
   Classes, SysUtils,
-  StdCtrls, Forms, Controls,
+  StdCtrls, Forms, Controls, ExtCtrls, maskedit,
   lTelnetex, lnet,
   sorokinregexpr, // Rename to regexpr when FPC 2.8 comes with this
-  chessmodules, chessgame;
+  chessmodules, chessgame, chessdrawer;
 
 type
 
   { TFICSChessModule }
 
   TFICSChessModule = class(TChessModule)
+  private
+    radioConnectionType: TRadioGroup;
+    textPassword: TStaticText;
+    editPassword: TMaskEdit;
+    textSecondPlayerName: TStaticText;
+    editSecondPlayerName: TEdit;
   public
     SecondPlayerName: string;
     TelnetComm: TLTelnetClientEx;
@@ -32,8 +38,6 @@ type
     FICS_PORT: Integer;
     FICS_USER: string;
     FICS_PASSWORD: string;
-    // Frequency to issue commands to avoid disconnection, in miliseconds
-    PROTECT_LOGOUT_FREQ: Integer;
     constructor Create(); override;
     destructor Destroy; override;
     procedure CreateUserInterface(); override;
@@ -43,12 +47,14 @@ type
     procedure PrepareForGame(); override;
     function GetSecondPlayerName(): string; override;
     procedure HandleOnMove(AFrom, ATo: TPoint); override;
+    procedure HandleOnTimer(); override;
     procedure HandleOnDebugOut(AStr: string);
   end;
 
 const
   FICS_LineEnding = #10;
-  OPEN_TIMEOUT = 10000;
+  OPEN_TIMEOUT = 1000000;
+  PROTECT_LOGOUT_FREQ = 45 * 60 * 1000; // Frequency to issue commands to avoid disconnection, in miliseconds
 
 implementation
 
@@ -75,7 +81,6 @@ begin
   FICS_PORT := 5000;
   FICS_USER := 'FPChess';
   FICS_PASSWORD := '';
-  PROTECT_LOGOUT_FREQ := 45 * 60 * 1000;
 end;
 
 destructor TFICSChessModule.Destroy;
@@ -87,31 +92,54 @@ end;
 
 procedure TFICSChessModule.CreateUserInterface;
 begin
-{  textSecondPlayerName := TStaticText.Create(nil);
-  textSecondPlayerName.SetBounds(20, 20, 180, 50);
-  textSecondPlayerName.Caption := 'Name of the second player';
+  radioConnectionType := TRadioGroup.Create(nil);
+  radioConnectionType.SetBounds(10, 10, 300, 100);
+  radioConnectionType.Caption := 'FICS Connection Type';
+  radioConnectionType.Items.Add('Wait for a friend to connect to me');
+  radioConnectionType.Items.Add('Connect to a friend (he needs to be waiting for the connection)');
+
+  textPassword := TStaticText.Create(nil);
+  textPassword.SetBounds(10, 110, 180, 20);
+  textPassword.Caption := 'Your FICS Password';
+
+  editPassword := TMaskEdit.Create(nil);
+  editPassword.SetBounds(200, 110, 150, 20);
+  editPassword.Text := '';
+
+  textSecondPlayerName := TStaticText.Create(nil);
+  textSecondPlayerName.SetBounds(10, 130, 180, 40);
+  textSecondPlayerName.Caption := 'FICS Login of the other player';
 
   editSecondPlayerName := TEdit.Create(nil);
-  editSecondPlayerName.SetBounds(200, 20, 150, 50);
-  editSecondPlayerName.Text := 'Second player';}
+  editSecondPlayerName.SetBounds(200, 130, 150, 40);
+  editSecondPlayerName.Text := '';
 end;
 
 procedure TFICSChessModule.ShowUserInterface(AParent: TWinControl);
 begin
-{  textSecondPlayerName.Parent := AParent;
-  editSecondPlayerName.Parent := AParent;}
+  radioConnectionType.Parent := AParent;
+  textPassword.Parent := AParent;
+  editPassword.Parent := AParent;
+  textSecondPlayerName.Parent := AParent;
+  editSecondPlayerName.Parent := AParent;
 end;
 
 procedure TFICSChessModule.HideUserInterface();
 begin
-{  textSecondPlayerName.Parent := nil;
-  editSecondPlayerName.Parent := nil;}
+  radioConnectionType.Parent := nil;
+  textPassword.Parent := nil;
+  editPassword.Parent := nil;
+  textSecondPlayerName.Parent := nil;
+  editSecondPlayerName.Parent := nil;
 end;
 
 procedure TFICSChessModule.FreeUserInterface;
 begin
-{  textSecondPlayerName.Free;
-  editSecondPlayerName.Free;}
+  radioConnectionType.Free;
+  textPassword.Free;
+  editPassword.Free;
+  textSecondPlayerName.Free;
+  editSecondPlayerName.Free;
 end;
 
 procedure TFICSChessModule.PrepareForGame;
@@ -119,6 +147,9 @@ var
   lResult, WaitTerminated: Boolean;
   lMsg: string;
 begin
+  FICS_USER := 'FPChess';
+  FICS_PASSWORD := editPassword.Text;
+
 //  SecondPlayerName := editSecondPlayerName.Text;
   ChessModuleDebugLn('[TFICSChessModule.PrepareForGame]');
 
@@ -207,6 +238,53 @@ begin
       '',
       OPEN_TIMEOUT);
   end;
+
+  // Remove those annoying message of people seeking chess adversaries
+  TelnetComm.WaitFor(
+    '.*fics%.*',
+    '',
+    OPEN_TIMEOUT);
+  TelnetComm.SendMessage('set seek 0' + FICS_LineEnding);
+
+  // Set the style
+  TelnetComm.WaitFor(
+    '.*fics%.*',
+    '',
+    OPEN_TIMEOUT);
+  TelnetComm.SendMessage('set style 11' + FICS_LineEnding);
+
+  // Wait for a match
+  if radioConnectionType.ItemIndex = 0 then
+  begin
+    // Challenge: GuestZMYL (----) fpchess (----) unrated blitz 2 12.
+    // You can "accept" or "decline", or propose different parameters.
+    TelnetComm.WaitFor(
+      '.*You can "accept" or "decline", or propose different parameters*',
+      '',
+      OPEN_TIMEOUT);
+    TelnetComm.SendMessage('accept ' + FICS_LineEnding);
+
+    // You accept the match offer from GuestZMYL.
+    TelnetComm.WaitFor(
+      '.*You accept the match offer from*',
+      '',
+      OPEN_TIMEOUT);
+  end
+  // Challenge a partner
+  else
+  begin
+    TelnetComm.WaitFor(
+      '.*fics%.*',
+      '',
+      OPEN_TIMEOUT);
+    TelnetComm.SendMessage('match ' + editSecondPlayerName.Text + FICS_LineEnding);
+
+    // fpchess accepts the match offer.
+    TelnetComm.WaitFor(
+      '.*accepts the match offer*',
+      '',
+      OPEN_TIMEOUT);
+  end;
 end;
 
 function TFICSChessModule.GetSecondPlayerName: string;
@@ -215,10 +293,43 @@ begin
 end;
 
 // If a move came, it is because the local player did a move
-// so send this move and start listening for a move
+// so send this move
 procedure TFICSChessModule.HandleOnMove(AFrom, ATo: TPoint);
+var
+  lMsg: String;
 begin
+  lMsg := Format('%s-%s', [TChessGame.BoardPosToChessCoords(AFrom), TChessGame.BoardPosToChessCoords(ATo)]);
+  TelnetComm.WaitFor(
+    '.*fics%.*',
+    '',
+    OPEN_TIMEOUT);
+  TelnetComm.SendMessage(lMsg + FICS_LineEnding);
+end;
 
+// listen for moves
+procedure TFICSChessModule.HandleOnTimer;
+var
+  lIndex: Integer;
+  lAnimation: TChessMoveAnimation;
+  lFrom, lTo: TPoint;
+  lMoveStr: String;
+begin
+  // Example output in style 11
+  // #@#086GuestZMYL       :fpchess         *RNBQKBNR PPP  PP        P   PP  p   p            ppp ppprnbqkbnr003B3939-1628-0163P/a2-a4(1:03)@#@
+
+  lIndex := TelnetComm.WaitFor(
+    '.*[PRNBQK]/[abcdefgh][0123456789]-[abcdefgh][0123456789].*',
+    '',
+    0);
+  if lIndex = 0 then
+  begin
+    lMoveStr := Copy(TelnetComm.LastMsg, Pos('/', TelnetComm.LastMsg)+1, 5);
+    TChessGame.ChessMoveCoordsToBoardPos(lMoveStr, lFrom, lTo);
+    lAnimation := TChessMoveAnimation.Create;
+    lAnimation.AFrom := lFrom;
+    lAnimation.ATo := lTo;
+    vChessDrawer.AddAnimation(lAnimation);
+  end;
 end;
 
 procedure TFICSChessModule.HandleOnDebugOut(AStr: string);
