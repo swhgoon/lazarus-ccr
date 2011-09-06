@@ -91,6 +91,7 @@ type
   public
     Board: TChessBoard;
     msg : String;
+    PlayerName: string;
     FirstPlayerIsWhite, IsWhitePlayerTurn: Boolean;
     Dragging: Boolean;
     DragStart, MouseMovePos: TPoint;

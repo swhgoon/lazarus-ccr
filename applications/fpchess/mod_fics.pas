@@ -147,7 +147,7 @@ var
   lResult, WaitTerminated: Boolean;
   lMsg: string;
 begin
-  FICS_USER := 'FPChess';
+  FICS_USER := vChessGame.PlayerName;
   FICS_PASSWORD := editPassword.Text;
 
 //  SecondPlayerName := editSecondPlayerName.Text;

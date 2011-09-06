@@ -246,6 +246,7 @@ begin
 
   gSelectedModuleIndex := comboGameMode.ItemIndex;
   lModule := GetChessModule(gSelectedModuleIndex);
+  vChessGame.PlayerName := editPlayerName.Text;
   lModule.PrepareForGame();
 
   timerChessTimer.Enabled := True;
