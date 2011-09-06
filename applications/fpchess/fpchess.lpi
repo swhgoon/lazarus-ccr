@@ -68,7 +68,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="16">
+    <Units Count="17">
       <Unit0>
         <Filename Value="fpchess.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -151,6 +151,11 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="selectPromotionPiece"/>
       </Unit15>
+      <Unit16>
+        <Filename Value="ltelnetex.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ltelnetex"/>
+      </Unit16>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

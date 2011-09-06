@@ -16,8 +16,8 @@ interface
 uses
   Classes, SysUtils,
   StdCtrls, Forms, Controls,
-  lTelnet, lnet,
-  sorokinregexpr, // Remove when FPC 2.8 comes with this
+  lTelnetex, lnet,
+  sorokinregexpr, // Rename to regexpr when FPC 2.8 comes with this
   chessmodules, chessgame;
 
 type
@@ -27,14 +27,13 @@ type
   TFICSChessModule = class(TChessModule)
   public
     SecondPlayerName: string;
-    TelnetComm: TLTelnetClient;
+    TelnetComm: TLTelnetClientEx;
     FICS_HOST: string;
     FICS_PORT: Integer;
     FICS_USER: string;
     FICS_PASSWORD: string;
     // Frequency to issue commands to avoid disconnection, in miliseconds
     PROTECT_LOGOUT_FREQ: Integer;
-    RegexObj: TRegExpr;
     constructor Create(); override;
     destructor Destroy; override;
     procedure CreateUserInterface(); override;
@@ -44,7 +43,12 @@ type
     procedure PrepareForGame(); override;
     function GetSecondPlayerName(): string; override;
     procedure HandleOnMove(AFrom, ATo: TPoint); override;
+    procedure HandleOnDebugOut(AStr: string);
   end;
+
+const
+  FICS_LineEnding = #10;
+  OPEN_TIMEOUT = 10000;
 
 implementation
 
@@ -54,9 +58,8 @@ constructor TFICSChessModule.Create;
 begin
   inherited Create;
 
-  RegexObj := TRegExpr.Create;
-
-  TelnetComm := TLTelnetClient.Create(nil);
+  TelnetComm := TLTelnetClientEx.Create(nil);
+  TelnetComm.OnDebugOut := @HandleOnDebugOut;
   (*    $telnet = new Net::Telnet(
             Timeout => $OPEN_TIMEOUT,
             Binmode => 1,
@@ -70,7 +73,7 @@ begin
 
   FICS_HOST := 'freechess.org';
   FICS_PORT := 5000;
-  FICS_USER := 'BotTutorial';
+  FICS_USER := 'FPChess';
   FICS_PASSWORD := '';
   PROTECT_LOGOUT_FREQ := 45 * 60 * 1000;
 end;
@@ -78,7 +81,6 @@ end;
 destructor TFICSChessModule.Destroy;
 begin
   TelnetComm.Free;
-  RegexObj.Free;
 
   inherited Destroy;
 end;
@@ -123,7 +125,6 @@ begin
   //  Opening telnet connection. This is what happens when you issue telnet freechess.org 5000.
 
   lResult := TelnetComm.Connect(FICS_HOST, FICS_PORT);
-
   if not lResult then
   begin
     ChessModuleDebugLn('Failed to connect to FICS');
@@ -132,8 +133,8 @@ begin
 
   repeat
     TelnetComm.CallAction; // repeat this to get info
-//    if KeyPressed then
-//      Halt;
+    Application.ProcessMessages;
+    Sleep(10);
   until TelnetComm.Connected; // wait until timeout or we actualy connected
 
   ChessModuleDebugLn('Connected to FICS');
@@ -156,59 +157,56 @@ begin
 
         $telnet->print($FICS_USER);
         }
-    WaitTerminated := False;
-    while not WaitTerminated do
-    begin
-      if TelnetComm.GetMessage(lMsg) > 0 then
-        ChessModuleDebugOut(lMsg);
+    TelnetComm.WaitFor(
+      '.*login:.*',
+      '.*username:.*',
+      OPEN_TIMEOUT);
 
-      RegexObj.Expression := '/login[: ]*$/i';
+    // ... and we send our username once prompted.
+    //ChessModuleDebugLn('Found the login!!!');
+    TelnetComm.SendMessage(FICS_USER + FICS_LineEnding);
 
-      if RegexObj.Exec(lMsg) then WaitTerminated := True;
+    // Now we read obtained lines scanning for some patterns.
+    TelnetComm.WaitFor(
+      '.*Press return to enter.*',
+      '',
+      OPEN_TIMEOUT);
+    TelnetComm.SendMessage(FICS_LineEnding);
 
-      TelnetComm.CallAction; // don't forget to make the clock tick :)
-      Application.ProcessMessages;
-      Sleep(100);
-    end;
-
-    ChessModuleDebugLn('Found the login!!!');
-  end;
-
-(*
-      ... and we send our username once prompted. Now we read obtained lines scanning for some patterns.
-              while (1) {
-                  my $line = $telnet->getline(Timeout => $LINE_WAIT_TIMEOUT);
-                  next if $line =~ /^[\s\r\n]*$/;
-                  if ($line =~ /Press return to enter/) {
-                      $telnet->print();
-                      last;
-                  }
-
-      Normal guest login here. We get Press return to enter suggestion and we do exactly that (we send empty line).
-                  if ($line =~ /("[^"]*" is a registered name|\S+ is already logged in)/) {
-                      die "Can not login as $FICS_USER: $1\n";
-                  }
+      (*if ($line =~ /("[^"]*" is a registered name|\S+ is already logged in)/) {
+          die "Can not login as $FICS_USER: $1\n";
+      }
 
       Bad luck, we picked the name used by somebody, it is not possible to login as guest with this nick.
-                  print STDERR "Ignored line: $line\n" if $VERBOSE;
-              }
+      *)
 
-      Developing-helper note and the end of loop. We get further after last breaks the loop above.
-              my($pre, $match) = $telnet->waitfor(
-                  Match => "/Starting FICS session as ([a-zA-Z0-9]+)/",
-                  Match => "/\\S+ is already logged in/",
-                  Timeout => $OPEN_TIMEOUT);
-              if ( $match =~ /Starting FICS session as ([a-zA-Z0-9]+)/ ) {
-                  $username = $1;
-              }
-              else {
-                  die "Can not login as $FICS_USER: $match\n";
-              }
+    (*
+    After accepting guest login we may face two things.
+    First, FICS may accept our login and send us a message like
+    Starting FICS session as BotTutorial.
+    This means everything is OK and we can go on.
+    Alternatively, FICS may notice another guest using the same name,
+    in such case it will tell us something like BotTutorial is already
+    logged in and will disconnect.
 
-      After accepting guest login we may face two things. First, FICS may accept our login and send us a message like Starting FICS session as BotTutorial. This means everything is OK and we can go on. Alternatively, FICS may notice another guest using the same name, in such case it will tell us something like BotTutorial is already logged in and will disconnect.
-              print STDERR "Successfully logged as guest $username\n" if $VERBOSE;
-          }
-          *)
+            print STDERR "Successfully logged as guest $username\n" if $VERBOSE;
+                  my($pre, $match) = $telnet->waitfor(
+                      Match => "/Starting FICS session as ([a-zA-Z0-9]+)/",
+                      Match => "/\\S+ is already logged in/",
+                      Timeout => $OPEN_TIMEOUT);
+                  if ( $match =~ /Starting FICS session as ([a-zA-Z0-9]+)/ ) {
+                      $username = $1;
+                  }
+                  else {
+                      die "Can not login as $FICS_USER: $match\n";
+                  }
+              }
+              *)
+    TelnetComm.WaitFor(
+      '.*Starting FICS session as.*',
+      '',
+      OPEN_TIMEOUT);
+  end;
 end;
 
 function TFICSChessModule.GetSecondPlayerName: string;
@@ -221,6 +219,11 @@ end;
 procedure TFICSChessModule.HandleOnMove(AFrom, ATo: TPoint);
 begin
 
+end;
+
+procedure TFICSChessModule.HandleOnDebugOut(AStr: string);
+begin
+  ChessModuleDebugOut(AStr);
 end;
 
 initialization
