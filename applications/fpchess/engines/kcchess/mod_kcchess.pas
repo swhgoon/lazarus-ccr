@@ -240,12 +240,12 @@ end;
 procedure TKCChessModule.CreateUserInterface;
 begin
   textDifficulty := TStaticText.Create(nil);
-  textDifficulty.SetBounds(20, 20, 180, 50);
-  textDifficulty.Caption := 'Difficulty (3=easiest)';
+  textDifficulty.SetBounds(10, 10, 180, 50);
+  textDifficulty.Caption := 'Difficulty (3=easiest, 9=hardest and slowest)';
 
   spinDifficulty := TSpinEdit.Create(nil);
   spinDifficulty.SetBounds(200, 20, 50, 50);
-  spinDifficulty.Value := 3;
+  spinDifficulty.Value := 6;
   spinDifficulty.MinValue := 3;
   spinDifficulty.MaxValue := 9;
 end;
