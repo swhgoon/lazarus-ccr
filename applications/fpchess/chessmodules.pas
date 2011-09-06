@@ -116,7 +116,8 @@ end;
 
 function TChessModule.IsMovingAllowedNow: Boolean;
 begin
-  Result := not (vChessGame.IsWhitePlayerTurn xor vChessGame.FirstPlayerIsWhite);
+  Result := (not (vChessGame.IsWhitePlayerTurn xor vChessGame.FirstPlayerIsWhite))
+    and (vChessGame.Enabled);
 end;
 
 procedure TChessModule.HandleOnTimer;

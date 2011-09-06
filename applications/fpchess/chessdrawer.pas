@@ -94,9 +94,12 @@ var
   X, Y, SourceX, SourceY, DestX, DestY: integer;
   dx, dy: Integer;
   t: Double;
+  lTile: TChessTile;
 begin
   // Draw the moving tile
-  lTileBmp := vChessDrawer.GetChessTileImage(vChessGame.Board[AFrom.X][AFrom.Y]);
+  //WriteLn(Format('[TChessMoveAnimation.DrawToIntfImg] Afrom=%d,%d', [AFrom.X, AFrom.Y]));
+  lTile := vChessGame.Board[AFrom.X][AFrom.Y];
+  lTileBmp := vChessDrawer.GetChessTileImage(lTile);
   if lTileBmp = nil then Exit;
 
   SourceX := (AFrom.X - 1) * INT_CHESSTILE_SIZE;

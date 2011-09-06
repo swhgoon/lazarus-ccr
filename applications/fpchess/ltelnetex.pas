@@ -57,7 +57,8 @@ begin
   if (FirstMatch = '') and (SecondMatch = '') then Exit;
 
   repeat
-    if GetMessage(lMsg) > 0 then if Assigned(OnDebugOut) then OnDebugOut(lMsg);
+    if GetMessage(lMsg) > 0 then
+      if Assigned(OnDebugOut) then OnDebugOut(lMsg);
 
     LastMsg := lMsg;
 

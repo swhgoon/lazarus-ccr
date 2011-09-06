@@ -96,6 +96,7 @@ type
     Dragging: Boolean;
     DragStart, MouseMovePos: TPoint;
     UseTimer: Boolean;
+    Enabled: Boolean;
     WhitePlayerTime: Integer; // milisseconds
     BlackPlayerTime: Integer; // milisseconds
     MoveStartTime: TDateTime;
@@ -119,7 +120,7 @@ type
     function ClientToBoardCoords(AClientCoords: TPoint): TPoint;
     class function BoardPosToChessCoords(APos: TPoint): string;
     class function ChessCoordsToBoardPos(AStr: string): TPoint;
-    class procedure ChessMoveCoordsToBoardPos(AMoveStr: string; AFrom, ATo: TPoint);
+    class procedure ChessMoveCoordsToBoardPos(AMoveStr: string; var AFrom, ATo: TPoint);
     class function ColumnNumToLetter(ACol: Integer): string;
     function CheckStartMove(AFrom: TPoint): Boolean;
     function CheckEndMove(ATo: TPoint): Boolean;
@@ -156,6 +157,7 @@ var
   i: Integer;
   j: Integer;
 begin
+  Enabled := True;
   UseTimer := AUseTimer;
   FirstPlayerIsWhite := APlayAsWhite;
   IsWhitePlayerTurn := True;
@@ -169,21 +171,11 @@ begin
   IsBlackLeftRoquePossible := True;
   IsBlackRightRoquePossible := True;
 
-  //
-  if APlayAsWhite then
-  begin
-    lWPawnRow := 2;
-    lWMainRow := 1;
-    lBPawnRow := 7;
-    lBMainRow := 8;
-  end
-  else
-  begin
-    lWPawnRow := 7;
-    lWMainRow := 8;
-    lBPawnRow := 2;
-    lBMainRow := 1;
-  end;
+  // Don't invert these, instead invert only in the drawer
+  lWPawnRow := 2;
+  lWMainRow := 1;
+  lBPawnRow := 7;
+  lBMainRow := 8;
 
   // First, clear the board
   for i := 1 to 8 do
@@ -758,15 +750,19 @@ begin
   Result.Y := StrToInt(lStr);
 end;
 
-class procedure TChessGame.ChessMoveCoordsToBoardPos(AMoveStr: string; AFrom,
-  ATo: TPoint);
+class procedure TChessGame.ChessMoveCoordsToBoardPos(AMoveStr: string;
+  var AFrom, ATo: TPoint);
 var
   lStr: String;
 begin
+  WriteLn('[TChessGame.ChessMoveCoordsToBoardPos] ' + AMoveStr);
   lStr := Copy(AMoveStr, 1, 2);
+  ///WriteLn('[TChessGame.ChessMoveCoordsToBoardPos] ' + lStr);
   AFrom := TChessGame.ChessCoordsToBoardPos(lStr);
-  lStr := Copy(AMoveStr, 3, 2);
+  lStr := Copy(AMoveStr, 4, 2);
+  //WriteLn('[TChessGame.ChessMoveCoordsToBoardPos] ' + lStr);
   ATo := TChessGame.ChessCoordsToBoardPos(lStr);
+  WriteLn(Format('[TChessGame.ChessMoveCoordsToBoardPos] AFrom.X=%d,%d ATo=%d,%d', [AFrom.X, AFrom.Y, ATo.X, ATo.Y]));
 end;
 
 class function TChessGame.ColumnNumToLetter(ACol: Integer): string;

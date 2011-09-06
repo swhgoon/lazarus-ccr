@@ -241,6 +241,7 @@ var
   lModule: TChessModule;
 begin
   InitializeGameModel();
+  vChessGame.Enabled := False;
 
   notebookMain.PageIndex := INT_PAGE_GAME;
 
@@ -249,6 +250,8 @@ begin
   vChessGame.PlayerName := editPlayerName.Text;
   lModule.PrepareForGame();
 
+  // Make sure this is done after lModule.PrepareForGame()
+  vChessGame.Enabled := True;
   timerChessTimer.Enabled := True;
 end;
 

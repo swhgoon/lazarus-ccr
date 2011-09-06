@@ -97,6 +97,7 @@ begin
   radioConnectionType.Caption := 'FICS Connection Type';
   radioConnectionType.Items.Add('Wait for a friend to connect to me');
   radioConnectionType.Items.Add('Connect to a friend (he needs to be waiting for the connection)');
+  radioConnectionType.ItemIndex := 0;
 
   textPassword := TStaticText.Create(nil);
   textPassword.SetBounds(10, 110, 180, 20);
@@ -112,7 +113,7 @@ begin
 
   editSecondPlayerName := TEdit.Create(nil);
   editSecondPlayerName.SetBounds(200, 130, 150, 40);
-  editSecondPlayerName.Text := '';
+  editSecondPlayerName.Text := 'fpchesse';
 end;
 
 procedure TFICSChessModule.ShowUserInterface(AParent: TWinControl);
@@ -195,6 +196,7 @@ begin
 
     // ... and we send our username once prompted.
     //ChessModuleDebugLn('Found the login!!!');
+    ChessModuleDebugLn('Sending: ' + FICS_USER);
     TelnetComm.SendMessage(FICS_USER + FICS_LineEnding);
 
     // Now we read obtained lines scanning for some patterns.
@@ -244,6 +246,7 @@ begin
     '.*fics%.*',
     '',
     OPEN_TIMEOUT);
+  ChessModuleDebugLn('Sending: set seek 0');
   TelnetComm.SendMessage('set seek 0' + FICS_LineEnding);
 
   // Set the style
@@ -251,18 +254,22 @@ begin
     '.*fics%.*',
     '',
     OPEN_TIMEOUT);
+  ChessModuleDebugLn('Sending: set style 11');
   TelnetComm.SendMessage('set style 11' + FICS_LineEnding);
 
   // Wait for a match
   if radioConnectionType.ItemIndex = 0 then
   begin
+    vChessGame.FirstPlayerIsWhite := False;
+
     // Challenge: GuestZMYL (----) fpchess (----) unrated blitz 2 12.
     // You can "accept" or "decline", or propose different parameters.
     TelnetComm.WaitFor(
       '.*You can "accept" or "decline", or propose different parameters*',
       '',
       OPEN_TIMEOUT);
-    TelnetComm.SendMessage('accept ' + FICS_LineEnding);
+    ChessModuleDebugLn('Sending: accept');
+    TelnetComm.SendMessage('accept' + FICS_LineEnding);
 
     // You accept the match offer from GuestZMYL.
     TelnetComm.WaitFor(
@@ -277,7 +284,9 @@ begin
       '.*fics%.*',
       '',
       OPEN_TIMEOUT);
-    TelnetComm.SendMessage('match ' + editSecondPlayerName.Text + FICS_LineEnding);
+    lMsg := 'match ' + editSecondPlayerName.Text + ' 60 White';
+    ChessModuleDebugLn('Sending: ' + lMsg);
+    TelnetComm.SendMessage(lMsg + FICS_LineEnding);
 
     // fpchess accepts the match offer.
     TelnetComm.WaitFor(
@@ -299,11 +308,14 @@ var
   lMsg: String;
 begin
   lMsg := Format('%s-%s', [TChessGame.BoardPosToChessCoords(AFrom), TChessGame.BoardPosToChessCoords(ATo)]);
+  ChessModuleDebugLn('Sending: ' + lMsg);
+  TelnetComm.SendMessage(lMsg + FICS_LineEnding);
+
+  // Wait until it shows our move
   TelnetComm.WaitFor(
-    '.*fics%.*',
+    '.*[PRNBQK]/[abcdefgh][0123456789]-[abcdefgh][0123456789].*',
     '',
     OPEN_TIMEOUT);
-  TelnetComm.SendMessage(lMsg + FICS_LineEnding);
 end;
 
 // listen for moves
@@ -321,6 +333,8 @@ begin
     '.*[PRNBQK]/[abcdefgh][0123456789]-[abcdefgh][0123456789].*',
     '',
     0);
+  //  if TelnetComm.LastMsg <> '' then
+  //    lIndex := lIndex;
   if lIndex = 0 then
   begin
     lMoveStr := Copy(TelnetComm.LastMsg, Pos('/', TelnetComm.LastMsg)+1, 5);
