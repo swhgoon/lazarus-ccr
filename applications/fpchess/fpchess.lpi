@@ -68,7 +68,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="17">
+    <Units Count="19">
       <Unit0>
         <Filename Value="fpchess.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -156,6 +156,16 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="ltelnetex"/>
       </Unit16>
+      <Unit17>
+        <Filename Value="mod_winboard.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="mod_winboard"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="winboardconn.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="winboardConn"/>
+      </Unit18>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
