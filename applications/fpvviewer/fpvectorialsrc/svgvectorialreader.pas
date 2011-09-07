@@ -348,6 +348,8 @@ begin
     lFirstLayer := Doc.DocumentElement.FirstChild;
     lCurNode := lFirstLayer.FirstChild;
     lPage := AData.AddPage();
+    lPage.Width := AData.Width;
+    lPage.Height := AData.Height;
     while Assigned(lCurNode) do
     begin
       ReadPathFromNode(lCurNode, lPage, AData);
