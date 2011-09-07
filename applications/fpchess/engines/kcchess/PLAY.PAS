@@ -435,56 +435,6 @@
       {$endif}
     end; {GetComputerMove}
 
-{ TKCChessThread }
-
-procedure TKCChessThread.Execute;
-var
-  UserMovement, AIMovement: MoveType;
-  Escape: boolean;
-  Score: Integer;
-  lMoved: Boolean;
-  lAnimation: TChessMoveAnimation;
-begin
-  // initialization
-  Escape := False;
-  Score := 0;
-
-  { First write the movement of the user }
-  UserMovement.FromRow := AFrom.Y;
-  UserMovement.FromCol := AFrom.X;
-  UserMovement.ToRow := ATo.Y;
-  UserMovement.ToCol := ATo.X;
-  UserMovement.PieceMoved.image := TKCChessModule.FPChessPieceToKCChessImage(ATo);
-  UserMovement.PieceMoved.color := PlayerColor;
-//                     HasMoved : boolean;
-//                     ValidSquare : boolean;
-  UserMovement.PieceTaken.image := BLANK;
-  UserMovement.PieceTaken.color := ComputerColor;
-//                     HasMoved : boolean;
-//                     ValidSquare : boolean;
-  UserMovement.MovedImage := BLANK;
-
-  MakeMove(UserMovement, True, Score);
-
-  { Now get the computer move }
-  GetComputerMove(ComputerColor, False, AIMovement, Escape);
-  MakeMove(AIMovement, True, Score);
-
-  { And write it to our board }
-
-  lAnimation := TChessMoveAnimation.Create;
-  lAnimation.AFrom := Point(AIMovement.FromCol, AIMovement.FromRow);
-  lAnimation.ATo := Point(AIMovement.ToCol, AIMovement.ToRow);
-  vChessDrawer.AddAnimation(lAnimation);
-
-{  lMoved := vChessGame.MovePiece(
-    Point(AIMovement.FromCol, AIMovement.FromRow),
-    Point(AIMovement.ToCol, AIMovement.ToRow));
-
-  if not lMoved then raise Exception.Create(Format('Moving failed from %s to %s',
-    [vChessGame.BoardPosToChessCoords(AFrom), vChessGame.BoardPosToChessCoords(ATo)]));}
-end;
-
 {****************************************************************************}
 {*  Get Human Move:  Returns the movement as input by the user.  Invalid    *}
 {*  moves are screened by this routine.  The user moves the cursor to the   *}
