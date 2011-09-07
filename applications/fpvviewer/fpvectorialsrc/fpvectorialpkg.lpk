@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="3">
+  <Package Version="4">
     <Name Value="fpvectorialpkg"/>
+    <AddToProjectUsesSection Value="True"/>
     <CompilerOptions>
       <Version Value="10"/>
       <SearchPaths>
@@ -11,71 +12,55 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="16">
+    <Files Count="12">
       <Item1>
         <Filename Value="svgvectorialwriter.pas"/>
         <UnitName Value="svgvectorialwriter"/>
       </Item1>
       <Item2>
-        <Filename Value="pdfvrsintatico.pas"/>
-        <UnitName Value="pdfvrsintatico"/>
-      </Item2>
-      <Item3>
-        <Filename Value="pdfvrsemantico.pas"/>
-        <UnitName Value="pdfvrsemantico"/>
-      </Item3>
-      <Item4>
-        <Filename Value="pdfvrlexico.pas"/>
-        <UnitName Value="pdfvrlexico"/>
-      </Item4>
-      <Item5>
-        <Filename Value="pdfvectorialreader.pas"/>
-        <UnitName Value="pdfvectorialreader"/>
-      </Item5>
-      <Item6>
         <Filename Value="fpvtocanvas.pas"/>
         <UnitName Value="fpvtocanvas"/>
-      </Item6>
-      <Item7>
+      </Item2>
+      <Item3>
         <Filename Value="fpvectorial.pas"/>
         <UnitName Value="fpvectorial"/>
-      </Item7>
-      <Item8>
+      </Item3>
+      <Item4>
         <Filename Value="fpvectbuildunit.pas"/>
         <UnitName Value="fpvectbuildunit"/>
-      </Item8>
-      <Item9>
+      </Item4>
+      <Item5>
         <Filename Value="dxfvectorialreader.pas"/>
         <UnitName Value="dxfvectorialreader"/>
-      </Item9>
-      <Item10>
+      </Item5>
+      <Item6>
         <Filename Value="cdrvectorialreader.pas"/>
         <UnitName Value="cdrvectorialreader"/>
-      </Item10>
-      <Item11>
+      </Item6>
+      <Item7>
         <Filename Value="avisozlib.pas"/>
         <UnitName Value="avisozlib"/>
-      </Item11>
-      <Item12>
+      </Item7>
+      <Item8>
         <Filename Value="avisocncgcodewriter.pas"/>
         <UnitName Value="avisocncgcodewriter"/>
-      </Item12>
-      <Item13>
+      </Item8>
+      <Item9>
         <Filename Value="avisocncgcodereader.pas"/>
         <UnitName Value="avisocncgcodereader"/>
-      </Item13>
-      <Item14>
+      </Item9>
+      <Item10>
         <Filename Value="svgvectorialreader.pas"/>
         <UnitName Value="svgvectorialreader"/>
-      </Item14>
-      <Item15>
+      </Item10>
+      <Item11>
         <Filename Value="epsvectorialreader.pas"/>
         <UnitName Value="epsvectorialreader"/>
-      </Item15>
-      <Item16>
+      </Item11>
+      <Item12>
         <Filename Value="fpvutils.pas"/>
         <UnitName Value="fpvutils"/>
-      </Item16>
+      </Item12>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

@@ -252,11 +252,13 @@ procedure TvSVGVectorialWriter.WriteEntities(AStrings: TStrings;
   AData: TvVectorialDocument);
 var
   lEntity: TvEntity;
-  i: Integer;
+  i, j: Integer;
+  CurPage: TvVectorialPage;
 begin
-  for i := 0 to AData.GetEntitiesCount() - 1 do
+  CurPage := AData.GetPage(0);
+  for i := 0 to CurPage.GetEntitiesCount() - 1 do
   begin
-    lEntity := AData.GetEntity(i);
+    lEntity := CurPage.GetEntity(i);
 
     if lEntity is TPath then WritePath(i, TPath(lEntity), AStrings, AData)
     else if lEntity is TvText then WriteText(AStrings, TvText(lEntity), AData);

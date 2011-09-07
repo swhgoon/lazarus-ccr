@@ -45,7 +45,7 @@ var
 implementation
 
 uses
-  fpvectorial, cdrvectorialreader, svgvectorialwriter, pdfvectorialreader,
+  fpvectorial, cdrvectorialreader, svgvectorialwriter,
   dxfvectorialreader, epsvectorialreader,
   fpvtocanvas,
   dxftokentotree;
@@ -93,7 +93,7 @@ begin
     Drawer.Drawing.Canvas.Brush.Style := bsSolid;
     Drawer.Drawing.Canvas.FillRect(0, 0, Drawer.Drawing.Width, Drawer.Drawing.Height);
     DrawFPVectorialToCanvas(
-      Vec,
+      Vec.GetPage(0),
       Drawer.Drawing.Canvas,
       FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS,
       Drawer.Drawing.Height - FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS,
@@ -141,13 +141,15 @@ end;
 
 procedure TfrmFPVViewer.buttonRenderingTestClick(Sender: TObject);
 var
-  Vec: TvVectorialDocument;
+  VecDoc: TvVectorialDocument;
+  Vec: TvVectorialPage;
 begin
   notebook.PageIndex := 0;
 
   Drawer.Clear;
 
-  Vec := TvVectorialDocument.Create;
+  VecDoc := TvVectorialDocument.Create;
+  Vec := VecDoc.AddPage();
   try
     Vec.AddAlignedDimension(Make2DPoint(100, 50), Make2DPoint(200, 100), Make2DPoint(100, 150), Make2DPoint(200, 150));
     Vec.AddAlignedDimension(Make2DPoint(50, 250), Make2DPoint(100, 200), Make2DPoint(150, 250), Make2DPoint(150, 200));
