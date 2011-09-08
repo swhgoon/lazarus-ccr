@@ -16,7 +16,7 @@ type
     ShortDescription: string;
     Activated: Boolean;
     constructor Create; virtual;
-    function HandleOnPageLoad(APage: TStream): string; virtual;
+    function HandleOnPageLoad(AInput: string; out AOutput: string): Boolean;
   end;
 
 procedure RegisterBrowserModule(AModule: TBrowserModule);
@@ -52,9 +52,10 @@ begin
 
 end;
 
-function TBrowserModule.HandleOnPageLoad(APage: TStream): string;
+function TBrowserModule.HandleOnPageLoad(AInput: string; out AOutput: string): Boolean;
 begin
-
+  AOutput := '';
+  Result := False;
 end;
 
 initialization

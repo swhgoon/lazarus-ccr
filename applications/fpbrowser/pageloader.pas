@@ -5,7 +5,8 @@ unit pageloader;
 interface
 
 uses
-  Classes, SysUtils; 
+  Classes, SysUtils,
+  browsermodules;
 
 type
 
@@ -54,8 +55,20 @@ begin
 end;
 
 procedure TPageLoaderThread.Execute;
+var
+  lModule: TBrowserModule;
+  lNewContents: string;
+  i: Integer;
 begin
   PageLoader.LoadFromURL(URL);
+
+  // Run all modules which might want to change the HTML
+  for i := 0 to GetBrowserModuleCount() - 1 do
+  begin
+    lModule := GetBrowserModule(i);
+    if lModule.HandleOnPageLoad(PageLoader.Contents, lNewContents) then
+      PageLoader.Contents := lNewContents;
+  end;
 end;
 
 procedure TPageLoaderThread.CallPageLoadProgress;
