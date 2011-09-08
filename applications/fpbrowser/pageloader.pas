@@ -25,14 +25,12 @@ type
   end;
 
   TOnPageLoadProgress = procedure (APercent: Integer) of object;
-  TOnPageLoadTerminated = procedure (APageLoader: TPageLoader) of object;
 
   { TPageLoaderThread }
 
   TPageLoaderThread = class(TThread)
   private
     FOnPageLoadProgress: TOnPageLoadProgress;
-    FOnPageLoadTerminated: TOnPageLoadTerminated;
   public
     PageLoader: TPageLoader;
     Progress: Integer;
@@ -40,9 +38,7 @@ type
     destructor Destroy; override;
     procedure Execute; override;
     procedure CallPageLoadProgress;
-    procedure CallPageLoadTerminated;
     property OnPageLoadProgress: TOnPageLoadProgress read FOnPageLoadProgress write FOnPageLoadProgress;
-    property OnPageLoadTerminated: TOnPageLoadTerminated read FOnPageLoadTerminated write FOnPageLoadTerminated;
   end;
 
 implementation
@@ -59,17 +55,11 @@ end;
 procedure TPageLoaderThread.Execute;
 begin
   PageLoader.LoadFromURL(URL);
-  Synchronize(CallPageLoadTerminated);
 end;
 
 procedure TPageLoaderThread.CallPageLoadProgress;
 begin
 
-end;
-
-procedure TPageLoaderThread.CallPageLoadTerminated;
-begin
-  if Assigned(FOnPageLoadTerminated) then FOnPageLoadTerminated(PageLoader);
 end;
 
 { TPageLoader }

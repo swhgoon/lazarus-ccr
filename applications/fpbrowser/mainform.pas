@@ -165,7 +165,7 @@ type
     MyPageLoader: TPageLoader;
     procedure LoadURL(AURL: string);
     procedure HandlePageLoaderProgress(APercent: Integer);
-    procedure HandlePageLoaderTerminated(APageLoader: TPageLoader);
+    procedure HandlePageLoaderTerminated(Sender: TObject);
   end;
 
 var
@@ -1042,7 +1042,7 @@ begin
   MyPageLoaderThread.URL := AURL;
   MyPageLoaderThread.PageLoader := MyPageLoader;
   MyPageLoaderThread.OnPageLoadProgress := HandlePageLoaderProgress;
-  MyPageLoaderThread.OnPageLoadTerminated := HandlePageLoaderTerminated;
+  MyPageLoaderThread.OnTerminate := HandlePageLoaderTerminated;
   MyPageLoaderThread.FreeOnTerminate := True;
   MyPageLoaderThread.Resume;
 end;
@@ -1052,16 +1052,16 @@ begin
 
 end;
 
-procedure TformBrowser.HandlePageLoaderTerminated(APageLoader: TPageLoader);
+procedure TformBrowser.HandlePageLoaderTerminated(Sender: TObject);
 begin
-  Viewer.LoadFromString(APageLoader.Contents);
+  Viewer.LoadFromString(MyPageLoader.Contents);
   Caption := Viewer.DocumentTitle;
 
   // Load source and debug info
   memoSource.Lines.Clear();
-  memoSource.Lines.AddStrings(APageLoader.ContentsList);
+  memoSource.Lines.AddStrings(MyPageLoader.ContentsList);
   memoDebug.Lines.Clear();
-  memoDebug.Lines.AddStrings(APageLoader.DebugInfo);
+  memoDebug.Lines.AddStrings(MyPageLoader.DebugInfo);
 end;
 
 procedure TformBrowser.Timer1Timer(Sender: TObject);
