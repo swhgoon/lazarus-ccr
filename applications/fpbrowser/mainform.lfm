@@ -34,7 +34,14 @@ object formBrowser: TformBrowser
       Width = 150
       Align = alRight
       TabOrder = 0
-      Visible = False
+    end
+    object labelProgress: TLabel
+      Left = 319
+      Height = 16
+      Top = 3
+      Width = 21
+      Caption = 'Idle'
+      ParentColor = False
     end
   end
   object panelTop: TPanel
@@ -131,7 +138,7 @@ object formBrowser: TformBrowser
       end
     end
     object tabSource: TTabSheet
-      Caption = 'tabSource'
+      Caption = 'Source'
       ClientHeight = 359
       ClientWidth = 619
       object memoSource: TMemo
@@ -283,7 +290,7 @@ object formBrowser: TformBrowser
   object Timer1: TTimer
     Interval = 200
     OnTimer = Timer1Timer
-    left = 291
+    left = 304
     top = 71
   end
   object PrinterSetupDialog: TPrinterSetupDialog

@@ -37,6 +37,7 @@ type
   { TformBrowser }
 
   TformBrowser = class(TForm)
+    labelProgress: TLabel;
     memoSource: TMemo;
     memoDebug: TMemo;
     menuViewDebug: TMenuItem;
@@ -236,6 +237,7 @@ begin
   WriteLn('TForm1.DataProvider1GetHtml ',URL);
   MyPageLoader.LoadBinaryResource(URL, lStream);
   Stream := lStream;
+  lStream.Position := 0;
 end;
 
 procedure TformBrowser.DataProvider1GetImage(Sender: TIpHtmlNode; const URL: string;
@@ -1127,11 +1129,15 @@ end;
 
 procedure TformBrowser.HandlePageLoaderProgress(APercent: Integer);
 begin
-
+  labelProgress.Caption := 'Loading a Page';
+  progressBar.Position := APercent;
 end;
 
 procedure TformBrowser.HandlePageLoaderTerminated(Sender: TObject);
 begin
+  labelProgress.Caption := 'Finished Loading';
+  progressBar.Position := 100;
+
   {$ifdef FPBROWSER_THTMLCOMP}
   Viewer.LoadFromString(MyPageLoader.Contents);
   Caption := Viewer.DocumentTitle;
