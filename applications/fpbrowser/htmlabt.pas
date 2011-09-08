@@ -3,9 +3,9 @@ unit HTMLAbt;
 interface
 
 uses
-  {$IFNDEF LCL} Windows, Messages, {$ELSE} LclIntf, LMessages, LclType, LResources, LCLVersion, {$ENDIF}
+  LclIntf, LMessages, LclType, LResources, LCLVersion,
   SysUtils, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, Buttons, Htmlview, ExtCtrls;
+  Forms, Dialogs, StdCtrls, Buttons, ExtCtrls;
 
 const
   Version = '9.45';
@@ -14,7 +14,6 @@ type
   TAboutBox = class(TForm)
     BitBtn1: TBitBtn;
     Panel1: TPanel;
-    Viewer: THTMLViewer;
   private
     { Private declarations }
   public
@@ -36,7 +35,7 @@ var
   S: string[210];
 begin
 inherited Create(Owner);
-//Viewer.DefFontName := 'MS Sans Serif';  //Windows-only font
+(*//Viewer.DefFontName := 'MS Sans Serif';  //Windows-only font
 Viewer.DefFontName := 'Arial';
 Viewer.DefFontSize := 9;
 Viewer.DefFontColor := clNavy;
@@ -81,7 +80,7 @@ S :='<body bgcolor="ffffeb" text="000080">'+
 
     '</center>'+
     '</body>';
-Viewer.LoadFromBuffer(@S[1], Length(S), '');
+Viewer.LoadFromBuffer(@S[1], Length(S), '');*)
 end;
 
 initialization

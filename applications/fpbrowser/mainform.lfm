@@ -3,7 +3,7 @@ object formBrowser: TformBrowser
   Height = 439
   Top = 186
   Width = 621
-  ClientHeight = 439
+  ClientHeight = 412
   ClientWidth = 621
   Color = clBtnFace
   Font.Color = clWindowText
@@ -18,7 +18,7 @@ object formBrowser: TformBrowser
   object Panel1: TPanel
     Left = 0
     Height = 18
-    Top = 421
+    Top = 394
     Width = 621
     Align = alBottom
     Alignment = taLeftJustify
@@ -90,7 +90,7 @@ object formBrowser: TformBrowser
   end
   object pageBrowser: TPageControl
     Left = 0
-    Height = 388
+    Height = 361
     Top = 33
     Width = 621
     ActivePage = tabBrowser
@@ -100,13 +100,13 @@ object formBrowser: TformBrowser
     TabOrder = 2
     object tabBrowser: TTabSheet
       Caption = 'Browser'
-      ClientHeight = 381
-      ClientWidth = 613
+      ClientHeight = 359
+      ClientWidth = 619
       object Panel3: TPanel
         Left = 0
-        Height = 381
+        Height = 359
         Top = 0
-        Width = 613
+        Width = 619
         Align = alClient
         BevelInner = bvLowered
         BevelOuter = bvNone
@@ -116,8 +116,8 @@ object formBrowser: TformBrowser
     end
     object tabDebug: TTabSheet
       Caption = 'Debug'
-      ClientHeight = 360
-      ClientWidth = 613
+      ClientHeight = 359
+      ClientWidth = 619
       object memoDebug: TMemo
         Left = 0
         Height = 360
@@ -132,8 +132,8 @@ object formBrowser: TformBrowser
     end
     object tabSource: TTabSheet
       Caption = 'tabSource'
-      ClientHeight = 360
-      ClientWidth = 613
+      ClientHeight = 359
+      ClientWidth = 619
       object memoSource: TMemo
         Left = 0
         Height = 360

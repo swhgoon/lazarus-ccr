@@ -3,9 +3,10 @@ unit Fontdlg;
 interface
 
 uses
-  {$IFNDEF LCL} Windows, Messages, {$ELSE} LclIntf, LMessages, LclType, LResources, {$ENDIF}
+  LclIntf, LMessages, LclType, LResources,
   SysUtils, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, {$IFNDEF LCL} ColorGrd, {$ENDIF} Htmlview, Spin;
+  Htmlview
+  Forms, Dialogs, StdCtrls, ColorGrd, Spin;
 
 type
   TFontForm = class(TForm)

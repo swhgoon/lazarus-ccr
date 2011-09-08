@@ -1,34 +1,39 @@
-{$IFNDEF LCL}
-{$ifdef ver140}
-{$warn Symbol_Platform Off}   
-{$endif}
-{$ifdef ver150}
-{$warn Symbol_Platform Off}
-{$Define UseXpMan}
-{$endif}
-{$ifdef ver170}
-{$warn Symbol_Platform Off}
-{$Define UseXpMan}
-{$endif}
-{$ENDIF}
-
 unit mainform;
-{A program to demonstrate the ThtmlViewer component}
+
+{$define FPBROWSER_TURBOPOWERIPRO}
+{.$define FPBROWSER_THTMLCOMP}
 
 interface
 
 uses
-  {$IFNDEF LCL} Windows, Messages, MMSystem, MPlayer, {$ELSE} LclIntf, LMessages, LclType, LResources, FPimage, HtmlMisc, {$ENDIF}
+  LclIntf, LMessages, LclType, LResources, FPimage,
   SysUtils, Classes, Graphics, Controls,
-  Forms, Dialogs, ExtCtrls, Menus, Htmlview, StdCtrls,
-  Clipbrd, HTMLsubs, {$IFDEF MSWINDOWS} ShellAPI, {$ELSE} Unix, {$ENDIF} 
-  {$IFDEF LCL} PrintersDlgs, {$ENDIF}
-  {$ifdef UseXpMan} XpMan, {$endif} {$IFNDEF LCL} Gauges, {$ENDIF} ComCtrls,
+  Forms, Dialogs, ExtCtrls, Menus, StdCtrls, Clipbrd,
+  PrintersDlgs,
+  ComCtrls,
+  {$IFDEF MSWINDOWS} ShellAPI, {$ELSE} Unix, {$ENDIF}
+  {$ifdef FPBROWSER_THTMLCOMP}
+  HtmlMisc, HTMLsubs, Htmlview, HTMLun2,
+  {$endif}
+  {$ifdef FPBROWSER_TURBOPOWERIPRO}
+  IPHtml, Ipfilebroker, IpMsg,
+  {$endif}
+  HTMLabt,
   pageloader;
 
 const
   MaxHistories = 6;  {size of History list}
 type
+
+  {$ifdef FPBROWSER_TURBOPOWERIPRO}
+  { TMyIpHtmlDataProvider }
+
+  TMyIpHtmlDataProvider = class(TIpHtmlDataProvider)
+  protected
+    function DoGetStream(const URL: string): TStream; override;
+  end;
+  {$endif}
+
   { TformBrowser }
 
   TformBrowser = class(TForm)
@@ -81,9 +86,6 @@ type
     procedure editURLKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure menuViewDebugClick(Sender: TObject);
     procedure OpenFileClick(Sender: TObject);
-    procedure HotSpotChange(Sender: TObject; const URL: string);
-    procedure HotSpotClick(Sender: TObject; const URL: string;
-              var Handled: boolean);
     procedure ShowImagesClick(Sender: TObject);
     procedure ReloadButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -105,9 +107,6 @@ type
     procedure SelectAllItemClick(Sender: TObject);
     procedure OpenTextFileClick(Sender: TObject);
     procedure OpenImageFileClick(Sender: TObject);
-    procedure MediaPlayerNotify(Sender: TObject);
-    procedure SoundRequest(Sender: TObject; const SRC: String;
-      Loop: Integer; Terminate: Boolean);
     procedure CopyImageToClipboardClick(Sender: TObject);
     procedure ObjectClick(Sender, Obj: TObject; const OnClick: String);
     procedure ViewerImageRequest(Sender: TObject; const SRC: string;
@@ -116,24 +115,12 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure ViewerInclude(Sender: TObject; const Command: String;
       Params: TStrings; var S: string);
-    procedure RightClick(Sender: TObject;
-      Parameters: TRightClickParameters);
     procedure OpenInNewWindowClick(Sender: TObject);
     procedure MetaTimerTimer(Sender: TObject);
     procedure MetaRefreshEvent(Sender: TObject; Delay: Integer;
       const URL: String);
     procedure PrintpreviewClick(Sender: TObject);
-    procedure ViewerMouseMove(Sender: TObject; Shift: TShiftState; X,
-      Y: Integer);
     procedure Timer1Timer(Sender: TObject);
-    procedure ViewerProgress(Sender: TObject; Stage: TProgressStage;
-      PercentDone: Integer);
-    procedure ViewerPrintHTMLFooter(Sender: TObject; HFViewer: THTMLViewer;
-      NumPage: Integer; LastPage: Boolean; var XL, XR: Integer;
-      var StopPrinting: Boolean);
-    procedure ViewerPrintHTMLHeader(Sender: TObject; HFViewer: THTMLViewer;
-      NumPage: Integer; LastPage: Boolean; var XL, XR: Integer;
-      var StopPrinting: Boolean);
     procedure PrinterSetup1Click(Sender: TObject);
   private
     { Private declarations }
@@ -142,7 +129,6 @@ type
 {$ENDIF}
     Histories: array[0..MaxHistories-1] of TMenuItem;
     MediaCount: integer;
-    FoundObject: TImageObj;
     NewWindowFile: string;
     NextFile, PresentFile: string;
     TimerCount: integer;
@@ -150,15 +136,45 @@ type
     HintWindow: THintWindow;
     HintVisible: boolean;
     //
-    Viewer: THTMLViewer;
-
-{$IFNDEF LCL}
-    procedure wmDropFiles(var Message: TMessage); message wm_DropFiles;
-{$ELSE}
     procedure DropFiles(      Sender   : TObject;
                         const FileNames: array of string);
-{$ENDIF}
     procedure CloseAll;
+  {$ifdef FPBROWSER_THTMLCOMP}
+  private
+    Viewer: THTMLViewer;
+    FoundObject: TImageObj;
+    procedure ViewerMouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Integer);
+    procedure ViewerProgress(Sender: TObject; Stage: TProgressStage;
+      PercentDone: Integer);
+    procedure ViewerPrintHTMLFooter(Sender: TObject; HFViewer: THTMLViewer;
+      NumPage: Integer; LastPage: Boolean; var XL, XR: Integer;
+      var StopPrinting: Boolean);
+    procedure ViewerPrintHTMLHeader(Sender: TObject; HFViewer: THTMLViewer;
+      NumPage: Integer; LastPage: Boolean; var XL, XR: Integer;
+      var StopPrinting: Boolean);
+    procedure HotSpotChange(Sender: TObject; const URL: string);
+    procedure HotSpotClick(Sender: TObject; const URL: string;
+              var Handled: boolean);
+    procedure RightClick(Sender: TObject;
+      Parameters: TRightClickParameters);
+  {$endif}
+  {$ifdef FPBROWSER_TURBOPOWERIPRO}
+  private
+    IpHtmlPanel1: TIpHtmlPanel;
+    DataProvider1: TMyIpHtmlDataProvider;
+    function DataProvider1CanHandle(Sender: TObject; const URL: string
+      ): Boolean;
+    procedure DataProvider1CheckURL(Sender: TObject; const URL: string;
+      var Available: Boolean; var ContentType: string);
+    procedure DataProvider1GetHtml(Sender: TObject; const URL: string;
+      const PostData: TIpFormDataEntity; var Stream: TStream);
+    procedure DataProvider1GetImage(Sender: TIpHtmlNode; const URL: string;
+      var Picture: TPicture);
+    procedure DataProvider1Leave(Sender: TIpHtml);
+    procedure DataProvider1ReportReference(Sender: TObject; const URL: string);
+    procedure ShowHTML(Src: string);
+  {$endif}
   public
     { Public declarations }
     MyPageLoaderThread: TPageLoaderThread;
@@ -174,11 +190,87 @@ var
 implementation
 
 uses
-  {$IFNDEF LCL} PreviewForm, {$ENDIF} HTMLun2, HTMLabt, Submit, ImgForm, FontDlg;
+  Submit, ImgForm;//, FontDlg;
 
-{$IFNDEF LCL}
-{$R *.DFM}
-{$ENDIF}
+{$ifdef FPBROWSER_TURBOPOWERIPRO}
+function TMyIpHtmlDataProvider.DoGetStream(const URL: string): TStream;
+var
+  ms: TMemoryStream;
+begin
+  Result:=nil;
+  //debugln(['TMyIpHtmlDataProvider.DoGetStream ',URL]);
+
+  if URL='fpdoc.css' then begin
+    //debugln(['TMyIpHtmlDataProvider.DoGetStream ',FileExists(URL)]);
+    ms:=TMemoryStream.Create;
+    try
+      ms.LoadFromFile(URL);
+      ms.Position:=0;
+    except
+      ms.Free;
+    end;
+    Result:=ms;
+  end;
+end;
+
+function TformBrowser.DataProvider1CanHandle(Sender: TObject; const URL: string
+  ): Boolean;
+begin
+  //debugln(['TForm1.DataProvider1CanHandle ',URL]);
+  Result:=false;
+end;
+
+procedure TformBrowser.DataProvider1CheckURL(Sender: TObject; const URL: string;
+  var Available: Boolean; var ContentType: string);
+begin
+  //debugln(['TForm1.DataProvider1CheckURL ',URL]);
+  Available:=false;
+  ContentType:='';
+end;
+
+procedure TformBrowser.DataProvider1GetHtml(Sender: TObject; const URL: string;
+  const PostData: TIpFormDataEntity; var Stream: TStream);
+begin
+  //debugln(['TForm1.DataProvider1GetHtml ',URL]);
+  Stream:=nil;
+end;
+
+procedure TformBrowser.DataProvider1GetImage(Sender: TIpHtmlNode; const URL: string;
+  var Picture: TPicture);
+begin
+  //debugln(['TForm1.DataProvider1GetImage ',URL]);
+  Picture:=nil;
+end;
+
+procedure TformBrowser.DataProvider1Leave(Sender: TIpHtml);
+begin
+
+end;
+
+procedure TformBrowser.DataProvider1ReportReference(Sender: TObject; const URL: string
+  );
+begin
+  //debugln(['TForm1.DataProvider1ReportReference ',URL]);
+end;
+
+procedure TformBrowser.ShowHTML(Src: string);
+var
+  ss: TStringStream;
+  NewHTML: TIpHtml;
+begin
+  ss := TStringStream.Create(Src);
+  try
+    NewHTML := TIpHtml.Create; // Beware: Will be freed automatically by IpHtmlPanel1
+    //debugln(['TForm1.ShowHTML BEFORE SETHTML']);
+    IpHtmlPanel1.SetHtml(NewHTML);
+    //debugln(['TForm1.ShowHTML BEFORE LOADFROMSTREAM']);
+    NewHTML.LoadFromStream(ss);
+    //if Anchor <> '' then IpHtmlPanel1.MakeAnchorVisible(Anchor);
+  finally
+    ss.Free;
+  end;
+end;
+{$endif}
 
 procedure TformBrowser.FormCreate(Sender: TObject);
 var
@@ -186,6 +278,28 @@ var
 begin
   MyPageLoader := TPageLoader.Create;
 
+  {$ifdef FPBROWSER_TURBOPOWERIPRO}
+  DataProvider1:=TMyIpHtmlDataProvider.Create(Self);
+  with DataProvider1 do begin
+    Name:='DataProvider1';
+    OnCanHandle:=DataProvider1CanHandle;
+    OnGetHtml:=DataProvider1GetHtml;
+    OnGetImage:=DataProvider1GetImage;
+    OnLeave:=DataProvider1Leave;
+    OnCheckURL:=DataProvider1CheckURL;
+    OnReportReference:=DataProvider1ReportReference;
+  end;
+  IpHtmlPanel1:=TIpHtmlPanel.Create(Self);
+  with IpHtmlPanel1 do begin
+    Name:='IpHtmlPanel1';
+    Parent:=Self;
+    Align:=alClient;
+    DefaultFontSize:=10;
+    DataProvider:=DataProvider1;
+  end;
+  {$endif}
+
+  {$ifdef FPBROWSER_THTMLCOMP}
   Viewer := THTMLViewer.Create(Self);
   Viewer.Left := 1;
   Viewer.Height := 358;
@@ -226,29 +340,25 @@ begin
   Viewer.OnRightClick := RightClick;
   Viewer.Parent := Panel3;
 
-{$IFNDEF LCL}
-if Screen.Width <= 640 then
-  Position := poDefault;  {keeps form on screen better}
-{$ELSE}
+  ShowImages.Checked := Viewer.ViewImages;
+  Viewer.HistoryMaxCount := MaxHistories;  {defines size of history list}
+  {$endif}
+
   Position := poScreenCenter;
-{$ENDIF}
 
-{$IFNDEF DARWIN}
-OpenDialog.InitialDir := ExtractFilePath(ParamStr(0));
-{$ELSE}  //Don't default to within app bundle.
-OpenDialog.InitialDir := ExtractFilePath(ParamStr(0)) + '../../../';
-{$ENDIF}
+  {$IFDEF DARWIN} //Don't default to within app bundle.
+  OpenDialog.InitialDir := ExtractFilePath(ParamStr(0)) + '../../../';
+  {$ELSE}
+  OpenDialog.InitialDir := ExtractFilePath(ParamStr(0));
+  {$ENDIF}
 
-Caption := 'HTML Demo, Version '+HTMLAbt.Version;
+  Caption := 'HTML Demo, Version '+HTMLAbt.Version;
 
-ShowImages.Checked := Viewer.ViewImages;
-Viewer.HistoryMaxCount := MaxHistories;  {defines size of history list}
-
-for I := 0 to MaxHistories-1 do
+  for I := 0 to MaxHistories-1 do
   begin      {create the MenuItems for the history list}
-  Histories[I] := TMenuItem.Create(HistoryMenuItem);
-  HistoryMenuItem.Insert(I, Histories[I]);
-  with Histories[I] do
+    Histories[I] := TMenuItem.Create(HistoryMenuItem);
+    HistoryMenuItem.Insert(I, Histories[I]);
+    with Histories[I] do
     begin
     Visible := False;
     OnClick := HistoryClick;
@@ -256,7 +366,7 @@ for I := 0 to MaxHistories-1 do
     end;
   end;
 
-{$IFDEF LCLCarbon}
+  {$IFDEF LCLCarbon}
   AppMenu := TMenuItem.Create(Self);  //Application menu
   AppMenu.Caption := #$EF#$A3#$BF;  //Unicode Apple logo char
   MainMenu.Items.Insert(0, AppMenu);
@@ -269,16 +379,13 @@ for I := 0 to MaxHistories-1 do
   Find1.ShortCut := ShortCut(VK_F, [ssMeta]);
   CopyItem.ShortCut := ShortCut(VK_C, [ssMeta]);
   SelectAllItem.ShortCut := ShortCut(VK_A, [ssMeta]);
-{$ENDIF}
+  {$ENDIF}
 
-{$IFNDEF LCL}
-DragAcceptFiles(Handle, True);
-{$ELSE}
-AllowDropFiles := True;
-OnDropFiles := DropFiles;
-{$ENDIF}
-HintWindow := THintWindow.Create(Self);
-HintWindow.Color := $C0FFFF;
+  AllowDropFiles := True;
+  OnDropFiles := DropFiles;
+
+  HintWindow := THintWindow.Create(Self);
+  HintWindow.Color := $C0FFFF;
 end;
 
 procedure TformBrowser.FormShow(Sender: TObject);
@@ -289,27 +396,16 @@ begin
   // With OS X app, ParamStr not meaningful unless launched with --args switch.
   if (ParamCount >= 1) {$IFDEF DARWIN} and (Copy(ParamStr(1), 1, 4) <> '-psn') {$ENDIF} then
   begin            {Parameter is file to load}
- {$IFNDEF LCL}
-  S := CmdLine;
-  I := Pos('" ', S);
-  if I > 0 then
-    Delete(S, 1, I+1)     {delete EXE name in quotes}
-  else Delete(S, 1, Length(ParamStr(0)));  {in case no quote marks}
-  I := Pos('"', S);
-  while I > 0 do     {remove any quotes from parameter}
-    begin
-    Delete(S, I, 1);
-    I := Pos('"', S);
-    end;
- {$ELSE}
-  S := ParamStr(1);
- {$ENDIF}  
-  Viewer.LoadFromFile(HtmlToDos(Trim(S)));
+    S := ParamStr(1);
+    {$ifdef FPBROWSER_THTMLCOMP}
+    Viewer.LoadFromFile(HtmlToDos(Trim(S)));
+    {$endif}
   end;
 end;
 
 procedure TformBrowser.OpenFileClick(Sender: TObject);
 begin
+  {$ifdef FPBROWSER_THTMLCOMP}
   if Viewer.CurrentFile <> '' then
     OpenDialog.InitialDir := ExtractFilePath(Viewer.CurrentFile);
   OpenDialog.Filter := 'HTML Files (*.htm,*.html)|*.htm;*.html';  //might have changed
@@ -319,6 +415,7 @@ begin
     Viewer.LoadFromFile(OpenDialog.Filename);
     Caption := Viewer.DocumentTitle;
   end;
+  {$endif}
 end;
 
 procedure TformBrowser.editURLKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -335,6 +432,7 @@ begin
   pageBrowser.ActivePageIndex := 2;
 end;
 
+{$ifdef FPBROWSER_THTMLCOMP}
 procedure TformBrowser.HotSpotChange(Sender: TObject; const URL: string);
 {mouse moved over or away from a hot spot.  Change the status line}
 var
@@ -471,30 +569,33 @@ begin
 
   editURL.Text := URL;   {other protocall}
 end;
+{$endif}
 
 {The Show Images menu item was clicked}
 procedure TformBrowser.ShowImagesClick(Sender: TObject);
 begin
+  {$ifdef FPBROWSER_THTMLCOMP}
   Viewer.ViewImages := not Viewer.ViewImages;
   (Sender as TMenuItem).Checked := Viewer.ViewImages;
+  {$endif}
 end;
 
 procedure TformBrowser.ReloadButtonClick(Sender: TObject);
 {the Reload button was clicked}
 begin
-with Viewer do
-  begin
-  ReLoadButton.Enabled := False;
-  ReLoad;
-  ReLoadButton.Enabled := CurrentFile <> '';
+  {$ifdef FPBROWSER_THTMLCOMP}
+  Viewer.ReLoadButton.Enabled := False;
+  Viewer.ReLoad;
+  Viewer.ReLoadButton.Enabled := CurrentFile <> '';
   Viewer.SetFocus;
-  end;
+  {$endif}
 end;
 
 procedure TformBrowser.FwdBackClick(Sender: TObject);
 {Either the Forward or Back button was clicked}
 begin
-with Viewer do
+  {$ifdef FPBROWSER_THTMLCOMP}
+  with Viewer do
   begin
   if Sender = BackButton then
     HistoryIndex := HistoryIndex +1
@@ -502,6 +603,7 @@ with Viewer do
     HistoryIndex := HistoryIndex -1;
   Self.Caption := DocumentTitle;      
   end;
+  {$endif}
 end;
 
 procedure TformBrowser.HistoryChange(Sender: TObject);
@@ -510,6 +612,7 @@ var
   I: integer;
   Cap: string[80];
 begin
+{$ifdef FPBROWSER_THTMLCOMP}
 with Sender as ThtmlViewer do
   begin
   {check to see which buttons are to be enabled}
@@ -533,13 +636,16 @@ with Sender as ThtmlViewer do
   Caption := DocumentTitle;    {keep the caption updated}
   Viewer.SetFocus;  
   end;
+{$endif}
 end;
 
-procedure TformBrowser.HistoryClick(Sender: TObject);
 {A history list menuitem got clicked on}
+procedure TformBrowser.HistoryClick(Sender: TObject);
 begin
+{$ifdef FPBROWSER_THTMLCOMP}
   {Changing the HistoryIndex loads and positions the appropriate document}
   Viewer.HistoryIndex := (Sender as TMenuItem).Tag;
+{$endif}
 end;
 
 procedure TformBrowser.Exit1Click(Sender: TObject);
@@ -548,10 +654,10 @@ Close;
 end;
 
 procedure TformBrowser.FontColorsClick(Sender: TObject);
-var
-  FontForm: TFontForm;
+{var
+  FontForm: TFontForm;}
 begin
-FontForm := TFontForm.Create(Self);
+(*FontForm := TFontForm.Create(Self);
 try
   with FontForm do
     begin
@@ -572,27 +678,29 @@ try
     end;
 finally
   FontForm.Free;
- end;
+ end;*)
 end;
 
 procedure TformBrowser.Print1Click(Sender: TObject);
 begin
+{$ifdef FPBROWSER_THTMLCOMP}
 with PrintDialog do
   if Execute then
     if PrintRange = prAllPages then
       viewer.Print(1, 9999)
     else
       Viewer.Print(FromPage, ToPage);
+{$endif}
 end;
 
 procedure TformBrowser.PrinterSetup1Click(Sender: TObject);
 begin
-{$IFNDEF LCLCarbon}
-PrinterSetupDialog.Execute;
-{$ELSE}
+  {$IFNDEF LCLCarbon}
+  PrinterSetupDialog.Execute;
+  {$ELSE}
   MessageDlg('Not yet supported with Carbon widgetset.',
              mtError, [mbOK], 0);
-{$ENDIF}
+  {$ENDIF}
 end;
 
 procedure TformBrowser.About1Click(Sender: TObject);
@@ -626,15 +734,18 @@ end;
 
 procedure TformBrowser.FindDialogFind(Sender: TObject);
 begin
+{$ifdef FPBROWSER_THTMLCOMP}
 with FindDialog do
   begin
   if not Viewer.FindEx(FindText, frMatchCase in Options, not (frDown in Options)) then
     MessageDlg('No further occurances of "'+FindText+'"', mtInformation, [mbOK], 0);
   end;
+{$endif}
 end;
 
 procedure TformBrowser.ProcessingHandler(Sender: TObject; ProcessingOn: Boolean);
 begin
+{$ifdef FPBROWSER_THTMLCOMP}
 if ProcessingOn then
   begin    {disable various buttons and menuitems during processing}
   FwdButton.Enabled := False;
@@ -658,25 +769,33 @@ else
   SelectAllItem.Enabled := Viewer.CurrentFile <> '';
   Open.Enabled := True;
   end;
+  {$endif}
 end;
 
 procedure TformBrowser.CopyItemClick(Sender: TObject);
 begin
-Viewer.CopyToClipboard;
+  {$ifdef FPBROWSER_THTMLCOMP}
+  Viewer.CopyToClipboard;
+  {$endif}
 end;
 
 procedure TformBrowser.Edit2Click(Sender: TObject);
 begin
-CopyItem.Enabled := Viewer.SelLength <> 0;
+  {$ifdef FPBROWSER_THTMLCOMP}
+  CopyItem.Enabled := Viewer.SelLength <> 0;
+  {$endif}
 end;
 
 procedure TformBrowser.SelectAllItemClick(Sender: TObject);
 begin
-Viewer.SelectAll;
+  {$ifdef FPBROWSER_THTMLCOMP}
+  Viewer.SelectAll;
+  {$endif}
 end;
 
 procedure TformBrowser.OpenTextFileClick(Sender: TObject);
 begin
+{$ifdef FPBROWSER_THTMLCOMP}
 if Viewer.CurrentFile <> '' then
   OpenDialog.InitialDir := ExtractFilePath(Viewer.CurrentFile);
 OpenDialog.Filter := 'HTML Files (*.htm,*.html)|*.htm;*.html'+
@@ -693,10 +812,12 @@ if OpenDialog.Execute then
     ReLoadButton.Enabled := True;
     end;
   end;
+{$endif}
 end;
 
 procedure TformBrowser.OpenImageFileClick(Sender: TObject);
 begin
+{$ifdef FPBROWSER_THTMLCOMP}
 if Viewer.CurrentFile <> '' then
   OpenDialog.InitialDir := ExtractFilePath(Viewer.CurrentFile);
 OpenDialog.Filter := 'Graphics Files (*.bmp,*.gif,*.jpg,*.jpeg,*.png)|'+
@@ -712,29 +833,17 @@ if OpenDialog.Execute then
     ReLoadButton.Enabled := True;
     end;
   end;
+{$endif}
 end;
 
-{$IFNDEF LCL}
-procedure TformBrowser.wmDropFiles(var Message: TMessage);
-var
-  S: string[200];
-  Ext: string;
-  Count: integer;
-begin
-Count := DragQueryFile(Message.WParam, 0, @S[1], 200);
-Length(S) := Count;
-DragFinish(Message.WParam);
-if Count >0 then
-  begin
-{$ELSE}
 procedure TformBrowser.DropFiles(      Sender    : TObject;
                            const FileNames : array of string);
 var
   S  : string;
   Ext: string;
 begin
+{$ifdef FPBROWSER_THTMLCOMP}
   S := FileNames[0];
-{$ENDIF}
   Ext := LowerCase(ExtractFileExt(S));
   if (Ext = '.htm') or (Ext = '.html') then
     Viewer.LoadFromFile(S)
@@ -743,73 +852,33 @@ begin
   else if (Ext = '.bmp') or (Ext = '.gif') or (Ext = '.jpg')
         or (Ext = '.jpeg') or (Ext = '.png') then
     Viewer.LoadImageFile(S);
-{$IFNDEF LCL}
-  end;
-Message.Result := 0;
-{$ENDIF}
-end;
-
-procedure TformBrowser.MediaPlayerNotify(Sender: TObject);
-begin
-{$IFNDEF LCL}
-try
-  With MediaPlayer do
-    if NotifyValue = nvSuccessful then
-      begin
-      if MediaCount > 0 then
-        begin
-        Play;
-        Dec(MediaCount);
-        end
-      else
-        Close;
-      end;
-except
-  end;
-{$ENDIF}
-end;
-
-procedure TformBrowser.SoundRequest(Sender: TObject; const SRC: String;
-  Loop: Integer; Terminate: Boolean);
-begin
-{$IFNDEF LCL}
-try
-  with MediaPlayer do
-    if Terminate then
-      Close
-    else
-      begin
-      Filename := (Sender as ThtmlViewer).HTMLExpandFilename(SRC);
-      Notify := True;
-      Open;
-      if Loop < 0 then MediaCount := 9999
-        else if Loop = 0 then MediaCount := 1
-        else MediaCount := Loop;
-      end;
-except
-  end;
-{$ENDIF}
+  {$endif}
 end;
 
 procedure TformBrowser.ViewimageClick(Sender: TObject);
 var
   AForm: TImageForm;
 begin
+  {$ifdef FPBROWSER_THTMLCOMP}
   AForm := TImageForm.Create(Self);
   AForm.ImageFormBitmap := FoundObject.Bitmap;
   AForm.Caption := '';
   AForm.Show;
+  {$endif}
 end;
 
 procedure TformBrowser.CopyImageToClipboardClick(Sender: TObject);
 begin
+  {$ifdef FPBROWSER_THTMLCOMP}
   Clipboard.Assign(FoundObject.Bitmap);
+  {$endif}
 end;
 
 procedure TformBrowser.ObjectClick(Sender, Obj: TObject; const OnClick: String);
 var
   S: string;
 begin
+{$ifdef FPBROWSER_THTMLCOMP}
 if OnClick = 'display' then
   begin
   if Obj is TFormControlObj then
@@ -833,6 +902,7 @@ if OnClick = 'display' then
   end
 else if OnClick <> '' then
       MessageDlg(OnClick, mtCustom, [mbOK], 0);
+{$endif}
 end;
 
 { In this event we should provide images for the html component }
@@ -895,6 +965,7 @@ begin
   MyPageLoader.Free;
 end;
 
+{$ifdef FPBROWSER_THTMLCOMP}
 procedure TformBrowser.RightClick(Sender: TObject; Parameters: TRightClickParameters);
 var
   Pt: TPoint;
@@ -943,6 +1014,7 @@ begin
   else PopupMenu.Popup(Pt.X, Pt.Y);
   end;
 end;
+{$endif}
 
 procedure TformBrowser.OpenInNewWindowClick(Sender: TObject);
 var
@@ -971,17 +1043,20 @@ end;
 
 procedure TformBrowser.MetaTimerTimer(Sender: TObject);
 begin
+{$ifdef FPBROWSER_THTMLCOMP}
   MetaTimer.Enabled := False;
   if Viewer.CurrentFile = PresentFile then  {don't load if current file has changed}
   begin
     Viewer.LoadFromFile(NextFile);
     Caption := Viewer.DocumentTitle;
   end;
+  {$ENDIF}
 end;
 
 procedure TformBrowser.MetaRefreshEvent(Sender: TObject; Delay: Integer;
   const URL: String);
 begin
+{$ifdef FPBROWSER_THTMLCOMP}
   NextFile := Viewer.HTMLExpandFilename(URL);
   if FileExists(NextFile) then
   begin
@@ -989,6 +1064,7 @@ begin
     MetaTimer.Interval := Delay*1000;
     MetaTimer.Enabled := True;
   end;
+  {$ENDIF}
 end;
 
 procedure TformBrowser.PrintpreviewClick(Sender: TObject);
@@ -1011,6 +1087,7 @@ begin
 {$ENDIF}
 end;
 
+{$ifdef FPBROWSER_THTMLCOMP}
 procedure TformBrowser.ViewerMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 var
   TitleStr: string;
@@ -1028,6 +1105,7 @@ begin
     end;
   end;
 end;
+{$ENDIF}
 
 procedure TformBrowser.CloseAll;
 begin
@@ -1054,8 +1132,13 @@ end;
 
 procedure TformBrowser.HandlePageLoaderTerminated(Sender: TObject);
 begin
+  {$ifdef FPBROWSER_THTMLCOMP}
   Viewer.LoadFromString(MyPageLoader.Contents);
   Caption := Viewer.DocumentTitle;
+  {$endif}
+  {$ifdef FPBROWSER_TURBOPOWERIPRO}
+  ShowHTML(MyPageLoader.Contents);
+  {$endif}
 
   // Load source and debug info
   memoSource.Lines.Clear();
@@ -1074,41 +1157,39 @@ var
   TitleStr: string;
 
 begin
-Inc(TimerCount);
-GetCursorPos(Pt);
-Pt1 := Viewer.ScreenToClient(Pt);
-TitleStr := Viewer.TitleAttr;
-if (TitleStr = '') or not PtInRect(Viewer.ClientRect, Pt1)then
-  begin
-  OldTitle := '';
-  CloseAll;
-  Exit;
-  end;
-if TitleStr <> OldTitle then
-  begin
-  TimerCount := 0;
-  OldTitle := TitleStr;
-  HintWindow.ReleaseHandle;
-  HintVisible := False;
-  Exit;
+{$ifdef FPBROWSER_THTMLCOMP}
+  Inc(TimerCount);
+  GetCursorPos(Pt);
+  Pt1 := Viewer.ScreenToClient(Pt);
+  TitleStr := Viewer.TitleAttr;
+  if (TitleStr = '') or not PtInRect(Viewer.ClientRect, Pt1)then
+    begin
+    OldTitle := '';
+    CloseAll;
+    Exit;
+    end;
+  if TitleStr <> OldTitle then
+    begin
+    TimerCount := 0;
+    OldTitle := TitleStr;
+    HintWindow.ReleaseHandle;
+    HintVisible := False;
+    Exit;
   end;
 
-if TimerCount > EndCount then
-  CloseAll
-else if (TimerCount >= StartCount) and not HintVisible then
+  if TimerCount > EndCount then
+    CloseAll
+  else if (TimerCount >= StartCount) and not HintVisible then
   begin
-  {$ifdef ver90}  {Delphi 2}
-  ARect := Rect(0,0,0,0);
-  DrawText(HintWindow.Canvas.Handle, PChar(TitleStr), Length(TitleStr), ARect, DT_CALCRECT);
-  {$else}
-  ARect := HintWindow.CalcHintRect(300, TitleStr, Nil);
-  {$endif}
-  with ARect do
-    HintWindow.ActivateHint(Rect(Pt.X, Pt.Y+18, Pt.X+Right, Pt.Y+18+Bottom), TitleStr);
-  HintVisible := True;
+    ARect := HintWindow.CalcHintRect(300, TitleStr, Nil);
+    with ARect do
+      HintWindow.ActivateHint(Rect(Pt.X, Pt.Y+18, Pt.X+Right, Pt.Y+18+Bottom), TitleStr);
+    HintVisible := True;
   end;
+{$endif}
 end;
 
+{$ifdef FPBROWSER_THTMLCOMP}
 procedure TformBrowser.ViewerProgress(Sender: TObject; Stage: TProgressStage;
   PercentDone: Integer);
 begin
@@ -1122,6 +1203,7 @@ case Stage of
   end;
 ProgressBar.Update;
 end;
+{$endif}
 
 {HTML for print header and footer}
 const
@@ -1150,6 +1232,7 @@ if I > 0 then
   end;
 end;
 
+{$ifdef FPBROWSER_THTMLCOMP}
 procedure TformBrowser.ViewerPrintHTMLHeader(Sender: TObject;
   HFViewer: THTMLViewer; NumPage: Integer; LastPage: boolean; var XL, XR: integer; var StopPrinting: Boolean);
 var
@@ -1169,6 +1252,7 @@ S := ReplaceStr(HFText, '#left', DateToStr(Date));
 S := ReplaceStr(S, '#right', 'Page '+IntToStr(NumPage));
 HFViewer.LoadFromString(S);
 end;
+{$endif}
 
 initialization
 {$IFDEF LCL}
