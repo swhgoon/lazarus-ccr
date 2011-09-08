@@ -2,6 +2,9 @@ program fpbrowser;
 {A program to demonstrate the ThtmlViewer component}
 
 uses
+{$IFDEF UNIX}
+  cthreads,
+{$ENDIF}
 {$IFDEF LCL}
   Interfaces,
 {$ENDIF}
@@ -15,7 +18,7 @@ uses
   Gopage in 'Gopage.pas' {GoPageForm},
   PrintStatusForm in 'PrintStatusForm.pas' {PrnStatusForm},
 {$ENDIF}
-  ImgForm in 'ImgForm.pas', pageloader {ImageForm};
+  ImgForm in 'ImgForm.pas', pageloader, browsermodules {ImageForm};
 
 begin
   Application.Initialize;

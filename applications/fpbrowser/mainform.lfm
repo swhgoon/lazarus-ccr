@@ -1,9 +1,9 @@
 object formBrowser: TformBrowser
-  Left = 372
+  Left = 327
   Height = 439
-  Top = 267
+  Top = 186
   Width = 621
-  ClientHeight = 419
+  ClientHeight = 439
   ClientWidth = 621
   Color = clBtnFace
   Font.Color = clWindowText
@@ -18,7 +18,7 @@ object formBrowser: TformBrowser
   object Panel1: TPanel
     Left = 0
     Height = 18
-    Top = 401
+    Top = 421
     Width = 621
     Align = alBottom
     Alignment = taLeftJustify
@@ -90,7 +90,7 @@ object formBrowser: TformBrowser
   end
   object pageBrowser: TPageControl
     Left = 0
-    Height = 368
+    Height = 388
     Top = 33
     Width = 621
     ActivePage = tabBrowser
@@ -100,59 +100,18 @@ object formBrowser: TformBrowser
     TabOrder = 2
     object tabBrowser: TTabSheet
       Caption = 'Browser'
-      ClientHeight = 360
+      ClientHeight = 381
       ClientWidth = 613
       object Panel3: TPanel
         Left = 0
-        Height = 360
+        Height = 381
         Top = 0
         Width = 613
         Align = alClient
         BevelInner = bvLowered
         BevelOuter = bvNone
         Caption = 'Panel3'
-        ClientHeight = 360
-        ClientWidth = 613
         TabOrder = 0
-        object Viewer: THTMLViewer
-          Left = 1
-          Height = 358
-          Top = 1
-          Width = 611
-          OnHotSpotCovered = HotSpotChange
-          OnHotSpotClick = HotSpotClick
-          OnImageRequest = ViewerImageRequest
-          OnFormSubmit = SubmitEvent
-          OnHistoryChange = HistoryChange
-          OnProgress = ViewerProgress
-          TabStop = True
-          TabOrder = 0
-          Align = alClient
-          DefBackground = clWindow
-          BorderStyle = htFocused
-          HistoryMaxCount = 6
-          DefFontName = 'Times New Roman'
-          DefPreFontName = 'Courier New'
-          DefFontColor = clWindowText
-          DefOverLinkColor = clFuchsia
-          ImageCacheCount = 6
-          NoSelect = False
-          CharSet = DEFAULT_CHARSET
-          PrintMarginLeft = 2
-          PrintMarginRight = 2
-          PrintMarginTop = 2
-          PrintMarginBottom = 2
-          PrintScale = 1
-          OnMouseMove = ViewerMouseMove
-          OnProcessing = ProcessingHandler
-          OnPrintHTMLHeader = ViewerPrintHTMLHeader
-          OnPrintHTMLFooter = ViewerPrintHTMLFooter
-          OnInclude = ViewerInclude
-          OnSoundRequest = SoundRequest
-          OnMetaRefresh = MetaRefreshEvent
-          OnObjectClick = ObjectClick
-          OnRightClick = RightClick
-        end
       end
     end
     object tabDebug: TTabSheet

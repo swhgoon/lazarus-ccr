@@ -23,12 +23,12 @@ uses
   Forms, Dialogs, ExtCtrls, Menus, Htmlview, StdCtrls,
   Clipbrd, HTMLsubs, {$IFDEF MSWINDOWS} ShellAPI, {$ELSE} Unix, {$ENDIF} 
   {$IFDEF LCL} PrintersDlgs, {$ENDIF}
-  {$ifdef UseXpMan} XpMan, {$endif} {$IFNDEF LCL} Gauges, {$ENDIF} ComCtrls;
+  {$ifdef UseXpMan} XpMan, {$endif} {$IFNDEF LCL} Gauges, {$ENDIF} ComCtrls,
+  pageloader;
 
 const
   MaxHistories = 6;  {size of History list}
 type
-
   { TformBrowser }
 
   TformBrowser = class(TForm)
@@ -63,15 +63,11 @@ type
     SelectAllItem: TMenuItem;
     OpenTextFile: TMenuItem;
     OpenImageFile: TMenuItem;
-{$IFNDEF LCL}
-    MediaPlayer: TMediaPlayer;
-{$ENDIF}    
     PopupMenu: TPopupMenu;
     CopyImageToClipboard: TMenuItem;
     tabBrowser: TTabSheet;
     tabDebug: TTabSheet;
     tabSource: TTabSheet;
-    Viewer: THTMLViewer;
     Viewimage: TMenuItem;
     N3: TMenuItem;
     OpenInNewWindow: TMenuItem;
@@ -152,7 +148,9 @@ type
     TimerCount: integer;
     OldTitle: string;
     HintWindow: THintWindow;
-    HintVisible: boolean;   
+    HintVisible: boolean;
+    //
+    Viewer: THTMLViewer;
 
 {$IFNDEF LCL}
     procedure wmDropFiles(var Message: TMessage); message wm_DropFiles;
@@ -163,7 +161,11 @@ type
     procedure CloseAll;
   public
     { Public declarations }
+    MyPageLoaderThread: TPageLoaderThread;
+    MyPageLoader: TPageLoader;
     procedure LoadURL(AURL: string);
+    procedure HandlePageLoaderProgress(APercent: Integer);
+    procedure HandlePageLoaderTerminated(APageLoader: TPageLoader);
   end;
 
 var
@@ -172,7 +174,7 @@ var
 implementation
 
 uses
-  pageloader, {$IFNDEF LCL} PreviewForm, {$ENDIF} HTMLun2, HTMLabt, Submit, ImgForm, FontDlg;
+  {$IFNDEF LCL} PreviewForm, {$ENDIF} HTMLun2, HTMLabt, Submit, ImgForm, FontDlg;
 
 {$IFNDEF LCL}
 {$R *.DFM}
@@ -182,6 +184,48 @@ procedure TformBrowser.FormCreate(Sender: TObject);
 var
   I: integer;
 begin
+  MyPageLoader := TPageLoader.Create;
+
+  Viewer := THTMLViewer.Create(Self);
+  Viewer.Left := 1;
+  Viewer.Height := 358;
+  Viewer.Top := 1;
+  Viewer.Width := 611;
+  Viewer.OnHotSpotCovered := HotSpotChange;
+  Viewer.OnHotSpotClick := HotSpotClick;
+  Viewer.OnImageRequest := ViewerImageRequest;
+  Viewer.OnFormSubmit := SubmitEvent;
+  Viewer.OnHistoryChange := HistoryChange;
+  Viewer.OnProgress := ViewerProgress;
+  Viewer.TabStop := True;
+  Viewer.TabOrder := 0;
+  Viewer.Align := alClient;
+  Viewer.DefBackground := clWindow;
+  Viewer.BorderStyle := htFocused;
+  Viewer.HistoryMaxCount := 6;
+  Viewer.DefFontName := 'Times New Roman';
+  Viewer.DefPreFontName := 'Courier New';
+  Viewer.DefFontColor := clWindowText;
+  Viewer.DefOverLinkColor := clFuchsia;
+  Viewer.ImageCacheCount := 6;
+  Viewer.NoSelect := False;
+  Viewer.CharSet := DEFAULT_CHARSET;
+  Viewer.PrintMarginLeft := 2;
+  Viewer.PrintMarginRight := 2;
+  Viewer.PrintMarginTop := 2;
+  Viewer.PrintMarginBottom := 2;
+  Viewer.PrintScale := 1;
+  Viewer.OnMouseMove := ViewerMouseMove;
+  Viewer.OnProcessing := ProcessingHandler;
+  Viewer.OnPrintHTMLHeader := ViewerPrintHTMLHeader;
+  Viewer.OnPrintHTMLFooter := ViewerPrintHTMLFooter;
+  Viewer.OnInclude := ViewerInclude;
+  Viewer.OnSoundRequest := SoundRequest;
+  Viewer.OnMetaRefresh := MetaRefreshEvent;
+  Viewer.OnObjectClick := ObjectClick;
+  Viewer.OnRightClick := RightClick;
+  Viewer.Parent := Panel3;
+
 {$IFNDEF LCL}
 if Screen.Width <= 640 then
   Position := poDefault;  {keeps form on screen better}
@@ -848,6 +892,7 @@ end;
 procedure TformBrowser.FormDestroy(Sender: TObject);
 begin
   HintWindow.Free;
+  MyPageLoader.Free;
 end;
 
 procedure TformBrowser.RightClick(Sender: TObject; Parameters: TRightClickParameters);
@@ -993,15 +1038,30 @@ end;
 
 procedure TformBrowser.LoadURL(AURL: string);
 begin
-  MyPageLoader.LoadFromURL(AURL);
-  Viewer.LoadFromString(MyPageLoader.Contents);
+  MyPageLoaderThread := TPageLoaderThread.Create(True);
+  MyPageLoaderThread.URL := AURL;
+  MyPageLoaderThread.PageLoader := MyPageLoader;
+  MyPageLoaderThread.OnPageLoadProgress := HandlePageLoaderProgress;
+  MyPageLoaderThread.OnPageLoadTerminated := HandlePageLoaderTerminated;
+  MyPageLoaderThread.FreeOnTerminate := True;
+  MyPageLoaderThread.Resume;
+end;
+
+procedure TformBrowser.HandlePageLoaderProgress(APercent: Integer);
+begin
+
+end;
+
+procedure TformBrowser.HandlePageLoaderTerminated(APageLoader: TPageLoader);
+begin
+  Viewer.LoadFromString(APageLoader.Contents);
   Caption := Viewer.DocumentTitle;
 
   // Load source and debug info
   memoSource.Lines.Clear();
-  memoSource.Lines.AddStrings(MyPageLoader.ContentsList);
+  memoSource.Lines.AddStrings(APageLoader.ContentsList);
   memoDebug.Lines.Clear();
-  memoDebug.Lines.AddStrings(MyPageLoader.DebugInfo);
+  memoDebug.Lines.AddStrings(APageLoader.DebugInfo);
 end;
 
 procedure TformBrowser.Timer1Timer(Sender: TObject);
