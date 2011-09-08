@@ -15,7 +15,7 @@ object formBrowser: TformBrowser
   OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '0.9.31'
-  object Panel1: TPanel
+  object panelBottom: TPanel
     Left = 0
     Height = 18
     Top = 394
@@ -37,7 +37,7 @@ object formBrowser: TformBrowser
       Visible = False
     end
   end
-  object Panel2: TPanel
+  object panelTop: TPanel
     Left = 0
     Height = 33
     Top = 0
@@ -102,7 +102,7 @@ object formBrowser: TformBrowser
       Caption = 'Browser'
       ClientHeight = 359
       ClientWidth = 619
-      object Panel3: TPanel
+      object panelBrowser: TPanel
         Left = 0
         Height = 359
         Top = 0
@@ -110,7 +110,7 @@ object formBrowser: TformBrowser
         Align = alClient
         BevelInner = bvLowered
         BevelOuter = bvNone
-        Caption = 'Panel3'
+        Caption = 'panelBrowser'
         TabOrder = 0
       end
     end
@@ -120,9 +120,9 @@ object formBrowser: TformBrowser
       ClientWidth = 619
       object memoDebug: TMemo
         Left = 0
-        Height = 360
+        Height = 359
         Top = 0
-        Width = 613
+        Width = 619
         Align = alClient
         Lines.Strings = (
           'memoDebug'
@@ -136,9 +136,9 @@ object formBrowser: TformBrowser
       ClientWidth = 619
       object memoSource: TMemo
         Left = 0
-        Height = 360
+        Height = 359
         Top = 0
-        Width = 613
+        Width = 619
         Align = alClient
         Lines.Strings = (
           'memoSource'

@@ -44,12 +44,12 @@ type
     OpenDialog: TOpenDialog;   
     MainMenu: TMainMenu;
     pageBrowser: TPageControl;
-    Panel1: TPanel;
-    Panel2: TPanel;
+    panelBottom: TPanel;
+    panelTop: TPanel;
     File1: TMenuItem;
     Open: TMenuItem;
     options1: TMenuItem;
-    Panel3: TPanel;
+    panelBrowser: TPanel;
     ShowImages: TMenuItem;
     Fonts: TMenuItem;
     editURL: TEdit;
@@ -198,7 +198,7 @@ var
   ms: TMemoryStream;
 begin
   Result:=nil;
-  //debugln(['TMyIpHtmlDataProvider.DoGetStream ',URL]);
+  WriteLn('TMyIpHtmlDataProvider.DoGetStream '+URL);
 
   if URL='fpdoc.css' then begin
     //debugln(['TMyIpHtmlDataProvider.DoGetStream ',FileExists(URL)]);
@@ -216,23 +216,26 @@ end;
 function TformBrowser.DataProvider1CanHandle(Sender: TObject; const URL: string
   ): Boolean;
 begin
-  //debugln(['TForm1.DataProvider1CanHandle ',URL]);
-  Result:=false;
+  WriteLn('TForm1.DataProvider1CanHandle ',URL);
+  Result:=True;
 end;
 
 procedure TformBrowser.DataProvider1CheckURL(Sender: TObject; const URL: string;
   var Available: Boolean; var ContentType: string);
 begin
-  //debugln(['TForm1.DataProvider1CheckURL ',URL]);
-  Available:=false;
-  ContentType:='';
+  WriteLn('TForm1.DataProvider1CheckURL ',URL);
+  Available:=True;
+  ContentType:='text/html';
 end;
 
 procedure TformBrowser.DataProvider1GetHtml(Sender: TObject; const URL: string;
   const PostData: TIpFormDataEntity; var Stream: TStream);
+var
+  lStream: TMemoryStream;
 begin
-  //debugln(['TForm1.DataProvider1GetHtml ',URL]);
-  Stream:=nil;
+  WriteLn('TForm1.DataProvider1GetHtml ',URL);
+  MyPageLoader.LoadBinaryResource(URL, lStream);
+  Stream := lStream;
 end;
 
 procedure TformBrowser.DataProvider1GetImage(Sender: TIpHtmlNode; const URL: string;
@@ -280,23 +283,20 @@ begin
 
   {$ifdef FPBROWSER_TURBOPOWERIPRO}
   DataProvider1:=TMyIpHtmlDataProvider.Create(Self);
-  with DataProvider1 do begin
-    Name:='DataProvider1';
-    OnCanHandle:=DataProvider1CanHandle;
-    OnGetHtml:=DataProvider1GetHtml;
-    OnGetImage:=DataProvider1GetImage;
-    OnLeave:=DataProvider1Leave;
-    OnCheckURL:=DataProvider1CheckURL;
-    OnReportReference:=DataProvider1ReportReference;
-  end;
+  DataProvider1.Name:='DataProvider1';
+  DataProvider1.OnCanHandle:=DataProvider1CanHandle;
+  DataProvider1.OnGetHtml:=DataProvider1GetHtml;
+  DataProvider1.OnGetImage:=DataProvider1GetImage;
+  DataProvider1.OnLeave:=DataProvider1Leave;
+  DataProvider1.OnCheckURL:=DataProvider1CheckURL;
+  DataProvider1.OnReportReference:=DataProvider1ReportReference;
+
   IpHtmlPanel1:=TIpHtmlPanel.Create(Self);
-  with IpHtmlPanel1 do begin
-    Name:='IpHtmlPanel1';
-    Parent:=Self;
-    Align:=alClient;
-    DefaultFontSize:=10;
-    DataProvider:=DataProvider1;
-  end;
+  IpHtmlPanel1.Name:='IpHtmlPanel1';
+  IpHtmlPanel1.Parent:=panelBrowser;
+  IpHtmlPanel1.Align:=alClient;
+  IpHtmlPanel1.DefaultFontSize:=10;
+  IpHtmlPanel1.DataProvider:=DataProvider1;
   {$endif}
 
   {$ifdef FPBROWSER_THTMLCOMP}
@@ -338,7 +338,7 @@ begin
   Viewer.OnMetaRefresh := MetaRefreshEvent;
   Viewer.OnObjectClick := ObjectClick;
   Viewer.OnRightClick := RightClick;
-  Viewer.Parent := Panel3;
+  Viewer.Parent := panelBrowser;
 
   ShowImages.Checked := Viewer.ViewImages;
   Viewer.HistoryMaxCount := MaxHistories;  {defines size of history list}
@@ -443,7 +443,7 @@ begin
     Caption := Caption+'URL: '+URL+'     ';
   if Viewer.TitleAttr <> '' then
     Caption := Caption+'Title: '+Viewer.TitleAttr;
-  Panel1.Caption := Caption;
+  panelBottom.Caption := Caption;
 end;
 
 {This routine handles what happens when a hot spot is clicked.  The assumption
