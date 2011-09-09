@@ -91,7 +91,7 @@
   <CompilerOptions>
     <Version Value="10"/>
     <SearchPaths>
-      <OtherUnitFiles Value="../../Wcomponents/thtmlport/package"/>
+      <OtherUnitFiles Value="../../components/thtmlport/package"/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>

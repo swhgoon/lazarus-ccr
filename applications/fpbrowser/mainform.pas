@@ -21,8 +21,6 @@ uses
   HTMLabt,
   pageloader;
 
-const
-  MaxHistories = 6;  {size of History list}
 type
 
   {$ifdef FPBROWSER_TURBOPOWERIPRO}
@@ -54,9 +52,9 @@ type
     ShowImages: TMenuItem;
     Fonts: TMenuItem;
     editURL: TEdit;
-    ReloadButton: TButton;
-    BackButton: TButton;
-    FwdButton: TButton;
+    buttonReload: TButton;
+    buttonBack: TButton;
+    buttonForward: TButton;
     HistoryMenuItem: TMenuItem;
     Exit1: TMenuItem;
     PrintDialog: TPrintDialog;
@@ -88,7 +86,7 @@ type
     procedure menuViewDebugClick(Sender: TObject);
     procedure OpenFileClick(Sender: TObject);
     procedure ShowImagesClick(Sender: TObject);
-    procedure ReloadButtonClick(Sender: TObject);
+    procedure buttonReloadClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FwdBackClick(Sender: TObject);
     procedure HistoryClick(Sender: TObject);
@@ -128,7 +126,8 @@ type
 {$IFDEF LCLCarbon}
     AppMenu : TMenuItem;
 {$ENDIF}
-    Histories: array[0..MaxHistories-1] of TMenuItem;
+    History: TStringList;
+    HistoryIndex: Integer;
     MediaCount: integer;
     NewWindowFile: string;
     NextFile, PresentFile: string;
@@ -181,6 +180,7 @@ type
     MyPageLoaderThread: TPageLoaderThread;
     MyPageLoader: TPageLoader;
     procedure LoadURL(AURL: string);
+    procedure AddURLToHistory(AURL: string);
     procedure HandlePageLoaderProgress(APercent: Integer);
     procedure HandlePageLoaderTerminated(Sender: TObject);
   end;
@@ -217,14 +217,14 @@ end;
 function TformBrowser.DataProvider1CanHandle(Sender: TObject; const URL: string
   ): Boolean;
 begin
-  WriteLn('TForm1.DataProvider1CanHandle ',URL);
+  WriteLn('TformBrowser.DataProvider1CanHandle ',URL);
   Result:=True;
 end;
 
 procedure TformBrowser.DataProvider1CheckURL(Sender: TObject; const URL: string;
   var Available: Boolean; var ContentType: string);
 begin
-  WriteLn('TForm1.DataProvider1CheckURL ',URL);
+  WriteLn('TformBrowser.DataProvider1CheckURL ',URL);
   Available:=True;
   ContentType:='text/html';
 end;
@@ -234,17 +234,39 @@ procedure TformBrowser.DataProvider1GetHtml(Sender: TObject; const URL: string;
 var
   lStream: TMemoryStream;
 begin
-  WriteLn('TForm1.DataProvider1GetHtml ',URL);
-  MyPageLoader.LoadBinaryResource(URL, lStream);
+  WriteLn('TformBrowser.DataProvider1GetHtml ',URL);
+{  MyPageLoader.LoadBinaryResource(URL, lStream);
   Stream := lStream;
-  lStream.Position := 0;
+  lStream.Position := 0;}
+  Stream := nil;
+  LoadURL(URL);
 end;
 
 procedure TformBrowser.DataProvider1GetImage(Sender: TIpHtmlNode; const URL: string;
   var Picture: TPicture);
+var
+  lStream: TMemoryStream = nil;
+  lStr: String;
 begin
-  //debugln(['TForm1.DataProvider1GetImage ',URL]);
-  Picture:=nil;
+  WriteLn('TformBrowser.DataProvider1GetImage ',URL);
+  lStr := ExtractFileExt(URL);
+  if (lStr = '.jpeg') or (lStr = '.jpg') then
+  begin
+    try
+      MyPageLoader.LoadBinaryResource(URL, lStream);
+      Picture := TPicture.Create;
+      Picture.Jpeg.LoadFromStream(lStream);
+    finally
+      lStream.Free
+    end;
+  end
+  else
+  begin
+    WriteLn('TformBrowser.DataProvider1GetImage Unsupported format: ', lStr);
+    Picture := nil;
+    Exit;
+  end;
+//  and (lStr <> '.bmp') and (lStr <> '.png')
 end;
 
 procedure TformBrowser.DataProvider1Leave(Sender: TIpHtml);
@@ -282,6 +304,7 @@ var
   I: integer;
 begin
   MyPageLoader := TPageLoader.Create;
+  History := TStringList.Create;
 
   {$ifdef FPBROWSER_TURBOPOWERIPRO}
   DataProvider1:=TMyIpHtmlDataProvider.Create(Self);
@@ -336,7 +359,7 @@ begin
   Viewer.OnPrintHTMLHeader := ViewerPrintHTMLHeader;
   Viewer.OnPrintHTMLFooter := ViewerPrintHTMLFooter;
   Viewer.OnInclude := ViewerInclude;
-  Viewer.OnSoundRequest := SoundRequest;
+  //Viewer.OnSoundRequest := SoundRequest;
   Viewer.OnMetaRefresh := MetaRefreshEvent;
   Viewer.OnObjectClick := ObjectClick;
   Viewer.OnRightClick := RightClick;
@@ -356,7 +379,7 @@ begin
 
   Caption := 'HTML Demo, Version '+HTMLAbt.Version;
 
-  for I := 0 to MaxHistories-1 do
+  (*for I := 0 to MaxHistories-1 do
   begin      {create the MenuItems for the history list}
     Histories[I] := TMenuItem.Create(HistoryMenuItem);
     HistoryMenuItem.Insert(I, Histories[I]);
@@ -366,7 +389,7 @@ begin
     OnClick := HistoryClick;
     Tag := I;
     end;
-  end;
+  end;*)
 
   {$IFDEF LCLCarbon}
   AppMenu := TMenuItem.Create(Self);  //Application menu
@@ -582,13 +605,13 @@ begin
   {$endif}
 end;
 
-procedure TformBrowser.ReloadButtonClick(Sender: TObject);
+procedure TformBrowser.buttonReloadClick(Sender: TObject);
 {the Reload button was clicked}
 begin
   {$ifdef FPBROWSER_THTMLCOMP}
-  Viewer.ReLoadButton.Enabled := False;
+  buttonReload.Enabled := False;
   Viewer.ReLoad;
-  Viewer.ReLoadButton.Enabled := CurrentFile <> '';
+  buttonReload.Enabled := Viewer.CurrentFile <> '';
   Viewer.SetFocus;
   {$endif}
 end;
@@ -597,15 +620,24 @@ procedure TformBrowser.FwdBackClick(Sender: TObject);
 {Either the Forward or Back button was clicked}
 begin
   {$ifdef FPBROWSER_THTMLCOMP}
-  with Viewer do
-  begin
-  if Sender = BackButton then
-    HistoryIndex := HistoryIndex +1
+{  if Sender = buttonBack then
+    Viewer.HistoryIndex := Viewer.HistoryIndex +1
   else
-    HistoryIndex := HistoryIndex -1;
-  Self.Caption := DocumentTitle;      
-  end;
+    Viewer.HistoryIndex := Viewer.HistoryIndex -1;
+  Self.Caption := Viewer.DocumentTitle;}
   {$endif}
+  LoadURL(History.Strings[HistoryIndex]);
+  if Sender = buttonBack then
+  begin
+    HistoryIndex := HistoryIndex-1;
+    if HistoryIndex < 0 then buttonBack.Enabled := False;
+    buttonForward.Enabled := True;
+  end
+  else
+  begin
+    HistoryIndex := HistoryIndex+1;
+    if HistoryIndex >= History.Count then buttonForward.Enabled := False;
+  end;
 end;
 
 procedure TformBrowser.HistoryChange(Sender: TObject);
@@ -614,12 +646,12 @@ var
   I: integer;
   Cap: string[80];
 begin
-{$ifdef FPBROWSER_THTMLCOMP}
-with Sender as ThtmlViewer do
+  {$ifdef FPBROWSER_THTMLCOMP}
+  with Sender as ThtmlViewer do
   begin
   {check to see which buttons are to be enabled}
-  FwdButton.Enabled := HistoryIndex > 0;
-  BackButton.Enabled := HistoryIndex < History.Count-1;
+  buttonForward.Enabled := HistoryIndex > 0;
+  buttonBack.Enabled := HistoryIndex < History.Count-1;
 
   {Enable and caption the appropriate history menuitems}
   HistoryMenuItem.Visible := History.Count > 0;
@@ -638,21 +670,21 @@ with Sender as ThtmlViewer do
   Caption := DocumentTitle;    {keep the caption updated}
   Viewer.SetFocus;  
   end;
-{$endif}
+  {$endif}
 end;
 
 {A history list menuitem got clicked on}
 procedure TformBrowser.HistoryClick(Sender: TObject);
 begin
-{$ifdef FPBROWSER_THTMLCOMP}
+  {$ifdef FPBROWSER_THTMLCOMP}
   {Changing the HistoryIndex loads and positions the appropriate document}
   Viewer.HistoryIndex := (Sender as TMenuItem).Tag;
-{$endif}
+  {$endif}
 end;
 
 procedure TformBrowser.Exit1Click(Sender: TObject);
 begin
-Close;
+  Close;
 end;
 
 procedure TformBrowser.FontColorsClick(Sender: TObject);
@@ -685,14 +717,14 @@ end;
 
 procedure TformBrowser.Print1Click(Sender: TObject);
 begin
-{$ifdef FPBROWSER_THTMLCOMP}
-with PrintDialog do
+  {$ifdef FPBROWSER_THTMLCOMP}
+  with PrintDialog do
   if Execute then
     if PrintRange = prAllPages then
       viewer.Print(1, 9999)
     else
       Viewer.Print(FromPage, ToPage);
-{$endif}
+  {$endif}
 end;
 
 procedure TformBrowser.PrinterSetup1Click(Sender: TObject);
@@ -707,52 +739,49 @@ end;
 
 procedure TformBrowser.About1Click(Sender: TObject);
 begin
-AboutBox := TAboutBox.CreateIt(Self, 'HTMLDemo', 'ThtmlViewer');
-try
-  AboutBox.ShowModal;
-finally
-  AboutBox.Free;
+  AboutBox := TAboutBox.CreateIt(Self, 'HTMLDemo', 'ThtmlViewer');
+  try
+    AboutBox.ShowModal;
+  finally
+    AboutBox.Free;
   end;
 end;
 
 
-procedure TformBrowser.SubmitEvent(Sender: TObject; const AnAction, Target, EncType, Method: String;
-  Results: TStringList);
+procedure TformBrowser.SubmitEvent(Sender: TObject; const AnAction, Target,
+  EncType, Method: String; Results: TStringList);
 begin
-with SubmitForm do
-  begin
-  ActionText.Text := AnAction;
-  MethodText.Text := Method;
-  ResultBox.Items := Results;
+  SubmitForm.ActionText.Text := AnAction;
+  SubmitForm.MethodText.Text := Method;
+  SubmitForm.ResultBox.Items := Results;
   Results.Free;
-  Show;
-  end;
+  SubmitForm.Show;
 end;
 
 procedure TformBrowser.Find1Click(Sender: TObject);
 begin
-FindDialog.Execute;
+  FindDialog.Execute;
 end;
 
 procedure TformBrowser.FindDialogFind(Sender: TObject);
 begin
-{$ifdef FPBROWSER_THTMLCOMP}
-with FindDialog do
+  {$ifdef FPBROWSER_THTMLCOMP}
+  with FindDialog do
   begin
   if not Viewer.FindEx(FindText, frMatchCase in Options, not (frDown in Options)) then
     MessageDlg('No further occurances of "'+FindText+'"', mtInformation, [mbOK], 0);
   end;
-{$endif}
+  {$endif}
 end;
 
 procedure TformBrowser.ProcessingHandler(Sender: TObject; ProcessingOn: Boolean);
 begin
-{$ifdef FPBROWSER_THTMLCOMP}
-if ProcessingOn then
+  {$ifdef FPBROWSER_THTMLCOMP}
+  if ProcessingOn then
   begin    {disable various buttons and menuitems during processing}
-  FwdButton.Enabled := False;
-  BackButton.Enabled := False;
-  ReLoadButton.Enabled := False;
+  buttonForward.Enabled := False;
+  buttonBack.Enabled := False;
+  buttonReload.Enabled := False;
   Print1.Enabled := False;
   PrintPreview.Enabled := False;
   Find1.Enabled := False;
@@ -760,11 +789,11 @@ if ProcessingOn then
   Open.Enabled := False;
   CloseAll;    {in case hint window is open}
   end
-else
+  else
   begin
-  FwdButton.Enabled := Viewer.HistoryIndex > 0;
-  BackButton.Enabled := Viewer.HistoryIndex < Viewer.History.Count-1;
-  ReLoadButton.Enabled := Viewer.CurrentFile <> '';
+  buttonForward.Enabled := Viewer.HistoryIndex > 0;
+  buttonBack.Enabled := Viewer.HistoryIndex < Viewer.History.Count-1;
+  buttonReload.Enabled := Viewer.CurrentFile <> '';
   Print1.Enabled := Viewer.CurrentFile <> '';
   PrintPreview.Enabled := Viewer.CurrentFile <> '';
   Find1.Enabled := Viewer.CurrentFile <> '';
@@ -798,20 +827,20 @@ end;
 procedure TformBrowser.OpenTextFileClick(Sender: TObject);
 begin
 {$ifdef FPBROWSER_THTMLCOMP}
-if Viewer.CurrentFile <> '' then
-  OpenDialog.InitialDir := ExtractFilePath(Viewer.CurrentFile);
-OpenDialog.Filter := 'HTML Files (*.htm,*.html)|*.htm;*.html'+
+  if Viewer.CurrentFile <> '' then
+    OpenDialog.InitialDir := ExtractFilePath(Viewer.CurrentFile);
+  OpenDialog.Filter := 'HTML Files (*.htm,*.html)|*.htm;*.html'+
     '|Text Files (*.txt)|*.txt'+
     '|All Files (*.*)|*.*';
-if OpenDialog.Execute then
+  if OpenDialog.Execute then
   begin
-  ReloadButton.Enabled := False;
-  Update;
-  Viewer.LoadTextFile(OpenDialog.Filename);
-  if Viewer.CurrentFile  <> '' then
+    buttonReload.Enabled := False;
+    Update;
+    Viewer.LoadTextFile(OpenDialog.Filename);
+    if Viewer.CurrentFile  <> '' then
     begin
-    Caption := Viewer.DocumentTitle;
-    ReLoadButton.Enabled := True;
+      Caption := Viewer.DocumentTitle;
+      buttonReload.Enabled := True;
     end;
   end;
 {$endif}
@@ -819,23 +848,23 @@ end;
 
 procedure TformBrowser.OpenImageFileClick(Sender: TObject);
 begin
-{$ifdef FPBROWSER_THTMLCOMP}
-if Viewer.CurrentFile <> '' then
-  OpenDialog.InitialDir := ExtractFilePath(Viewer.CurrentFile);
-OpenDialog.Filter := 'Graphics Files (*.bmp,*.gif,*.jpg,*.jpeg,*.png)|'+
+  {$ifdef FPBROWSER_THTMLCOMP}
+  if Viewer.CurrentFile <> '' then
+    OpenDialog.InitialDir := ExtractFilePath(Viewer.CurrentFile);
+  OpenDialog.Filter := 'Graphics Files (*.bmp,*.gif,*.jpg,*.jpeg,*.png)|'+
     '*.bmp;*.jpg;*.jpeg;*.gif;*.png|'+
     'All Files (*.*)|*.*';
-if OpenDialog.Execute then
+  if OpenDialog.Execute then
   begin
-  ReloadButton.Enabled := False;
-  Viewer.LoadImageFile(OpenDialog.Filename);
-  if Viewer.CurrentFile  <> '' then
+    buttonReload.Enabled := False;
+    Viewer.LoadImageFile(OpenDialog.Filename);
+    if Viewer.CurrentFile  <> '' then
     begin
-    Caption := Viewer.DocumentTitle;
-    ReLoadButton.Enabled := True;
+      Caption := Viewer.DocumentTitle;
+      buttonReload.Enabled := True;
     end;
   end;
-{$endif}
+  {$endif}
 end;
 
 procedure TformBrowser.DropFiles(      Sender    : TObject;
@@ -844,7 +873,7 @@ var
   S  : string;
   Ext: string;
 begin
-{$ifdef FPBROWSER_THTMLCOMP}
+  {$ifdef FPBROWSER_THTMLCOMP}
   S := FileNames[0];
   Ext := LowerCase(ExtractFileExt(S));
   if (Ext = '.htm') or (Ext = '.html') then
@@ -881,7 +910,7 @@ var
   S: string;
 begin
 {$ifdef FPBROWSER_THTMLCOMP}
-if OnClick = 'display' then
+  if OnClick = 'display' then
   begin
   if Obj is TFormControlObj then
     with TFormControlObj(Obj) do
@@ -902,7 +931,7 @@ if OnClick = 'display' then
           end;
       end;
   end
-else if OnClick <> '' then
+  else if OnClick <> '' then
       MessageDlg(OnClick, mtCustom, [mbOK], 0);
 {$endif}
 end;
@@ -933,13 +962,13 @@ var
   I: integer;
   MS: TMemoryStream;
 begin
-if CompareText(Command, 'Date') = 0 then
-  S := DateToStr(Date) { <!--#date --> }
-else if CompareText(Command, 'Time') = 0 then
-  S := TimeToStr(Time)   { <!--#time -->  }
-else if CompareText(Command, 'Include') = 0 then
+  if CompareText(Command, 'Date') = 0 then
+    S := DateToStr(Date) { <!--#date --> }
+  else if CompareText(Command, 'Time') = 0 then
+    S := TimeToStr(Time)   { <!--#time -->  }
+  else if CompareText(Command, 'Include') = 0 then
   begin   {an include file <!--#include FILE="filename" -->  }
-  if (Params.count >= 1) then
+    if (Params.count >= 1) then
     begin
     I := Pos('file=', Lowercase(Params[0]));
     if I > 0 then
@@ -958,13 +987,14 @@ else if CompareText(Command, 'Include') = 0 then
       end;
     end;
   end;
-Params.Free;
+  Params.Free;
 end;
 
 procedure TformBrowser.FormDestroy(Sender: TObject);
 begin
   HintWindow.Free;
   MyPageLoader.Free;
+  History.Free;
 end;
 
 {$ifdef FPBROWSER_THTMLCOMP}
@@ -1127,6 +1157,13 @@ begin
   MyPageLoaderThread.Resume;
 end;
 
+procedure TformBrowser.AddURLToHistory(AURL: string);
+begin
+  History.Add(AURL);
+  HistoryIndex := History.Count-1;
+  buttonBack.Enabled := True;
+end;
+
 procedure TformBrowser.HandlePageLoaderProgress(APercent: Integer);
 begin
   labelProgress.Caption := 'Loading a Page';
@@ -1151,6 +1188,7 @@ begin
   memoSource.Lines.AddStrings(MyPageLoader.ContentsList);
   memoDebug.Lines.Clear();
   memoDebug.Lines.AddStrings(MyPageLoader.DebugInfo);
+  AddURLToHistory(MyPageLoader.LastPageURL);
 end;
 
 procedure TformBrowser.Timer1Timer(Sender: TObject);
@@ -1199,15 +1237,15 @@ end;
 procedure TformBrowser.ViewerProgress(Sender: TObject; Stage: TProgressStage;
   PercentDone: Integer);
 begin
-ProgressBar.Position := PercentDone;
-case Stage of
+  ProgressBar.Position := PercentDone;
+  case Stage of
   psStarting:
     ProgressBar.Visible := True;
   psRunning:;
   psEnding:
     ProgressBar.Visible := False;
   end;
-ProgressBar.Update;
+  ProgressBar.Update;
 end;
 {$endif}
 
@@ -1229,12 +1267,12 @@ function ReplaceStr(Const S, FromStr, ToStr: string): string;
 var
   I: integer;
 begin
-I := Pos(FromStr, S);
-if I > 0 then
+  I := Pos(FromStr, S);
+  if I > 0 then
   begin
-  Result := S;
-  Delete(Result, I, Length(FromStr));
-  Insert(ToStr, Result, I);
+    Result := S;
+    Delete(Result, I, Length(FromStr));
+    Insert(ToStr, Result, I);
   end;
 end;
 
@@ -1244,9 +1282,9 @@ procedure TformBrowser.ViewerPrintHTMLHeader(Sender: TObject;
 var
   S: string;
 begin
-S := ReplaceStr(HFText, '#left', Viewer.DocumentTitle);
-S := ReplaceStr(S, '#right', Viewer.CurrentFile);
-HFViewer.LoadFromString(S);
+  S := ReplaceStr(HFText, '#left', Viewer.DocumentTitle);
+  S := ReplaceStr(S, '#right', Viewer.CurrentFile);
+  HFViewer.LoadFromString(S);
 end;
 
 procedure TformBrowser.ViewerPrintHTMLFooter(Sender: TObject;
@@ -1254,9 +1292,9 @@ procedure TformBrowser.ViewerPrintHTMLFooter(Sender: TObject;
 var
   S: string;
 begin
-S := ReplaceStr(HFText, '#left', DateToStr(Date));
-S := ReplaceStr(S, '#right', 'Page '+IntToStr(NumPage));
-HFViewer.LoadFromString(S);
+  S := ReplaceStr(HFText, '#left', DateToStr(Date));
+  S := ReplaceStr(S, '#right', 'Page '+IntToStr(NumPage));
+  HFViewer.LoadFromString(S);
 end;
 {$endif}
 

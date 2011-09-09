@@ -64,17 +64,16 @@ object formBrowser: TformBrowser
       TabStop = False
       TabOrder = 3
     end
-    object ReloadButton: TButton
+    object buttonReload: TButton
       Left = 10
       Height = 24
       Top = 4
       Width = 59
       Caption = '&Reload'
-      Enabled = False
-      OnClick = ReloadButtonClick
+      OnClick = buttonReloadClick
       TabOrder = 0
     end
-    object BackButton: TButton
+    object buttonBack: TButton
       Left = 69
       Height = 24
       Top = 4
@@ -84,7 +83,7 @@ object formBrowser: TformBrowser
       OnClick = FwdBackClick
       TabOrder = 1
     end
-    object FwdButton: TButton
+    object buttonForward: TButton
       Left = 128
       Height = 24
       Top = 4

@@ -82,7 +82,7 @@ constructor TPageLoader.Create;
 begin
   ContentsList := TStringList.Create;
   DebugInfo := TStringList.Create;
-  UserAgent := 'FPBrowser/1.0 (X11; Linux i686; Mobile; U; en-GB)';
+  UserAgent := 'FPBrowser/1.0 (Mobile; U; en-GB)';
 end;
 
 destructor TPageLoader.Destroy;
