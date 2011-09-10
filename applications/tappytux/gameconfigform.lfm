@@ -1,8 +1,172 @@
 object Form1: TForm1
-  Left = 238
-  Height = 240
-  Top = 161
-  Width = 320
-  Caption = 'Form1'
+  Left = 578
+  Height = 436
+  Top = 262
+  Width = 582
+  Caption = 'TappyTux Loader'
+  ClientHeight = 436
+  ClientWidth = 582
   LCLVersion = '0.9.31'
+  object lblGameType: TLabel
+    Left = 16
+    Height = 16
+    Top = 16
+    Width = 58
+    Caption = 'GameType'
+    ParentColor = False
+  end
+  object comboGameType: TComboBox
+    Left = 17
+    Height = 23
+    Top = 38
+    Width = 100
+    ItemHeight = 15
+    Items.Strings = (
+      'Tappy Words'
+      'Tappy Math'
+    )
+    TabOrder = 0
+    Text = 'GameType'
+  end
+  object memoGameType: TMemo
+    Left = 17
+    Height = 290
+    Top = 72
+    Width = 143
+    ReadOnly = True
+    TabOrder = 1
+  end
+  object listWordlist: TLabel
+    Left = 208
+    Height = 16
+    Top = 16
+    Width = 79
+    Caption = 'Select Wordlist'
+    ParentColor = False
+  end
+  object ltbWordlist: TListBox
+    Left = 212
+    Height = 292
+    Top = 44
+    Width = 132
+    ItemHeight = 0
+    TabOrder = 2
+  end
+  object lblSettings: TLabel
+    Left = 400
+    Height = 16
+    Top = 16
+    Width = 43
+    Caption = 'Settings'
+    ParentColor = False
+  end
+  object lblSound: TLabel
+    Left = 408
+    Height = 16
+    Top = 47
+    Width = 53
+    Caption = 'Sound FX'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object lblMusic: TLabel
+    Left = 408
+    Height = 16
+    Top = 79
+    Width = 33
+    Caption = 'Music'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object lblLevel: TLabel
+    Left = 408
+    Height = 16
+    Top = 111
+    Width = 79
+    Caption = 'Starting Level'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object comboSound: TComboBox
+    Left = 493
+    Height = 23
+    Top = 40
+    Width = 68
+    ItemHeight = 15
+    Items.Strings = (
+      'ON'
+      'OFF'
+    )
+    TabOrder = 3
+    Text = 'Select'
+  end
+  object comboMusic: TComboBox
+    Left = 493
+    Height = 23
+    Top = 72
+    Width = 68
+    ItemHeight = 15
+    Items.Strings = (
+      'ON'
+      'OFF'
+    )
+    TabOrder = 4
+    Text = 'Select'
+  end
+  object comboLevel: TComboBox
+    Left = 493
+    Height = 23
+    Top = 104
+    Width = 68
+    ItemHeight = 15
+    Items.Strings = (
+      '1'
+      '2'
+      '3'
+      '4'
+      '5'
+      '6'
+      '7'
+      '8'
+      '9'
+      '10'
+    )
+    TabOrder = 5
+    Text = 'Select'
+  end
+  object lblCredits: TLabel
+    Left = 400
+    Height = 16
+    Top = 168
+    Width = 38
+    Caption = 'Credits'
+    ParentColor = False
+  end
+  object memoCredits: TMemo
+    Left = 408
+    Height = 173
+    Top = 189
+    Width = 153
+    ReadOnly = True
+    TabOrder = 6
+  end
+  object btnLoad: TButton
+    Left = 19
+    Height = 37
+    Top = 379
+    Width = 542
+    Caption = 'Load'
+    TabOrder = 7
+  end
+  object btnWordlist: TButton
+    Left = 211
+    Height = 20
+    Top = 342
+    Width = 133
+    Caption = 'Wordlist Editor'
+    TabOrder = 8
+  end
 end
