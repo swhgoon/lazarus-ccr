@@ -30,7 +30,7 @@ Type
     cloInterface, cloProxy, cloImp, cloBinder, cloWsdl, cloXsd,
     cloOutPutDirRelative, cloOutPutDirAbsolute, cloHandleWrappedParameters,
     cloGenerateDocAsComments, cloGenerateObjectCollection,
-    cloFileRenaming, cloPrefixEnum
+    cloFileRenaming, cloPrefixEnum, cloParserCaseSensitive
   );
   TComandLineOptions = set of TComandLineOption;
 
@@ -55,7 +55,7 @@ begin
   AAppOptions := [];
   c := #0;
   repeat
-    c := GetOpt('u:pibo:a:wxydg:f:');
+    c := GetOpt('u:pibo:a:wxydg:f:c:');
     case c of
       'u' :
         begin
@@ -93,7 +93,12 @@ begin
         begin
           Include(AAppOptions,cloFileRenaming);
           OptionsArgsMAP[cloFileRenaming] := OptArg;
-        end;          
+        end;
+      'c' :
+        begin
+          Include(AAppOptions,cloParserCaseSensitive);
+          OptionsArgsMAP[cloParserCaseSensitive] := OptArg;
+        end;
     end;
   until ( c = EndOfOptions );
   Result := OptInd;

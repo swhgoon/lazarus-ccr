@@ -101,6 +101,7 @@ type
     FCurrentModule: TPasModule;
     FBindingList : TObjectList;
     FProperties : TPropertyHolder;
+    FCaseSensitive : Boolean;
   private
     function GetBinding(AIndex : Integer): TwstBinding;
     function GetBindingCount: Integer;
@@ -163,6 +164,8 @@ type
 
     function IsInitNeed(AType: TPasType): Boolean;
     function IsOfType(AType: TPasType; AClass: TClass): Boolean;
+
+    property CaseSensitive : Boolean read FCaseSensitive write FCaseSensitive;
   end;
 
   TPasNativeModule = class(TPasModule)
@@ -751,18 +754,37 @@ begin
     decs := AModule.InterfaceSection.Declarations;
     c := decs.Count;
     if ( elkDeclaredName in ANameKinds ) then begin
-      for i := 0 to Pred(c) do begin
-        if AnsiSameText(AName, GetExternalName(TPasElement(decs[i]))) then begin
-          Result := TPasElement(decs[i]);
-          Exit;
+      if FCaseSensitive then begin
+        for i := 0 to Pred(c) do begin
+          if AnsiSameStr(AName, GetExternalName(TPasElement(decs[i]))) then begin
+            Result := TPasElement(decs[i]);
+            Exit;
+          end;
+        end;
+      end else begin
+        for i := 0 to Pred(c) do begin
+          if AnsiSameText(AName, GetExternalName(TPasElement(decs[i]))) then begin
+            Result := TPasElement(decs[i]);
+            Exit;
+          end;
         end;
       end;
     end;
+
     if ( Result = nil ) and ( elkName in ANameKinds ) then begin
-      for i := 0 to Pred(c) do begin
-        if AnsiSameText(AName, TPasElement(decs[i]).Name) then begin
-          Result := TPasElement(decs[i]);
-          Exit;
+      if FCaseSensitive then begin
+        for i := 0 to Pred(c) do begin
+          if AnsiSameStr(AName, TPasElement(decs[i]).Name) then begin
+            Result := TPasElement(decs[i]);
+            Exit;
+          end;
+        end;
+      end else begin
+        for i := 0 to Pred(c) do begin
+          if AnsiSameText(AName, TPasElement(decs[i]).Name) then begin
+            Result := TPasElement(decs[i]);
+            Exit;
+          end;
         end;
       end;
     end;

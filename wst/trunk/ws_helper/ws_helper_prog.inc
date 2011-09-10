@@ -16,7 +16,10 @@ resourcestring
            '  -w  Generate WSDL file; Can be used to get wsdl from pascal' + sNEW_LINE +
            '  -x  Generate XSD file; Can be used to get xsd from pascal' + sNEW_LINE +
            '  -y  Generate easy access interface for wrapped parameters' + sNEW_LINE +
-           '  -d  Generate documentation as comment in the interface file' + sNEW_LINE +      
+           '  -d  Generate documentation as comment in the interface file' + sNEW_LINE +
+           '  -c  Indicate the parser''s case sensitivity : ' + sNEW_LINE +
+           '        S  : the paser is case sensitive' + sNEW_LINE +
+           '        I  : the paser is not case sensitive' + sNEW_LINE +
            '  -f  Specify unit(s) renaming option : oldName= NewName(;oldName= NewName)* ';
   sCOPYRIGHT = 'ws_helper, Web Service Toolkit 0.6 Copyright (c) 2006, 2007, 2008, 2009, 2010,2011 by Inoussa OUEDRAOGO';
 
@@ -76,6 +79,10 @@ var
     if ( sourceType = sftXsd ) then begin
       AppOptions := AppOptions - [ cloProxy, cloImp, cloBinder, cloWsdl ];
     end;
+    if AnsiSameText('S',Trim(GetOptionArg(cloParserCaseSensitive))) then
+      Include(AppOptions,cloParserCaseSensitive);
+    if AnsiSameText('I',Trim(GetOptionArg(cloParserCaseSensitive))) then
+      Exclude(AppOptions,cloParserCaseSensitive);
   end;
 
   function GenerateSymbolTable() : Boolean ;
@@ -145,6 +152,8 @@ var
   begin
     try
       WriteLn('Parsing the file : ', inFileName);
+      if symtable.CaseSensitive then
+        WriteLn('The parser is case sensitive');
       case sourceType of
         sftPascal : ParsePascalFile();
         sftWSDL   : ParseWsdlFile();
@@ -356,6 +365,7 @@ begin
         Error(errStr);
       end;
       symtable := TwstPasTreeContainer.Create();
+      symtable.CaseSensitive := cloParserCaseSensitive in AppOptions;
       srcMngr := CreateSourceManager();
 
       if not GenerateSymbolTable() then begin
