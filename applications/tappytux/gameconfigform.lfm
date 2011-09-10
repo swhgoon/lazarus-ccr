@@ -7,14 +7,6 @@ object Form1: TForm1
   ClientHeight = 436
   ClientWidth = 582
   LCLVersion = '0.9.31'
-  object lblGameType: TLabel
-    Left = 16
-    Height = 16
-    Top = 16
-    Width = 58
-    Caption = 'GameType'
-    ParentColor = False
-  end
   object comboGameType: TComboBox
     Left = 17
     Height = 23
@@ -25,6 +17,7 @@ object Form1: TForm1
       'Tappy Words'
       'Tappy Math'
     )
+    OnChange = comboGameTypeChange
     TabOrder = 0
     Text = 'GameType'
   end
@@ -46,10 +39,17 @@ object Form1: TForm1
   end
   object ltbWordlist: TListBox
     Left = 212
-    Height = 292
-    Top = 44
+    Height = 300
+    Top = 38
     Width = 132
-    ItemHeight = 0
+    Items.Strings = (
+      'English'
+      'German'
+      'Afrikaans'
+      'French'
+      'Portuguese'
+    )
+    ItemHeight = 15
     TabOrder = 2
   end
   object lblSettings: TLabel
@@ -150,7 +150,24 @@ object Form1: TForm1
     Height = 173
     Top = 189
     Width = 153
+    Lines.Strings = (
+      'Função 1:'
+      '     Nome 1.1'
+      ''
+      'Função 2:'
+      '     Nome 2.1'
+      '     Nome 2.2'
+      ''
+      'Função 3:'
+      '     Nome 3.1'
+      '     Nome 3.2'
+      '     Nome 3.3'
+      ''
+      'Função 4:'
+      '     Nome 4.1'
+    )
     ReadOnly = True
+    ScrollBars = ssAutoVertical
     TabOrder = 6
   end
   object btnLoad: TButton
@@ -168,5 +185,13 @@ object Form1: TForm1
     Width = 133
     Caption = 'Wordlist Editor'
     TabOrder = 8
+  end
+  object lblGameType: TLabel
+    Left = 16
+    Height = 16
+    Top = 16
+    Width = 58
+    Caption = 'GameType'
+    ParentColor = False
   end
 end
