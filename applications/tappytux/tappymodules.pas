@@ -5,7 +5,8 @@ unit tappymodules;
 interface
 
 uses
-  Classes, SysUtils, Graphics;
+  Classes, SysUtils, Graphics,
+  tappyconfig;
 
 type
 
@@ -14,9 +15,13 @@ type
   TTappyModule = class
   public
     imgBackground: TPortableNetworkGraphic;
+    ShortDescription, LongDescription: string;
     constructor Create; virtual;
     destructor Destroy; override;
     procedure LoadImages; virtual;
+    procedure TranslateTexts(ALanguage: Integer);
+    procedure TranslateTextsToEnglish; virtual;
+    procedure TranslateTextsToPortuguese; virtual;
   end;
 
 procedure AddModule(AModule: TTappyModule);
@@ -61,6 +66,8 @@ end;
 constructor TTappyModule.Create;
 begin
   inherited Create;
+
+  TranslateTexts(ID_ENGLISH);
 end;
 
 destructor TTappyModule.Destroy;
@@ -88,6 +95,24 @@ begin
     imgBRook.LoadFromFile(lDir + 'brook.png');
     imgBQueen.LoadFromFile(lDir + 'bqueen.png');
     imgBKing.LoadFromFile(lDir + 'bking.png');}
+
+end;
+
+procedure TTappyModule.TranslateTexts(ALanguage: Integer);
+begin
+  case ALanguage of
+  ID_ENGLISH: TranslateTextsToEnglish();
+  ID_PORTUGUESE: TranslateTextsToEnglish();
+  end;
+end;
+
+procedure TTappyModule.TranslateTextsToEnglish;
+begin
+
+end;
+
+procedure TTappyModule.TranslateTextsToPortuguese;
+begin
 
 end;
 

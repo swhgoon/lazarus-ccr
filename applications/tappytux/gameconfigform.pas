@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls;
+  ExtCtrls,
+  tappymodules;
 
 type
 
@@ -30,10 +31,12 @@ type
     memoGameType: TMemo;
     memoCredits: TMemo;
     procedure comboGameTypeChange(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { private declarations }
   public
     { public declarations }
+    procedure TranslateUI();
   end;
 
 var
@@ -65,6 +68,25 @@ begin
 
   end;
 
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  TranslateUI();
+end;
+
+procedure TForm1.TranslateUI;
+var
+  i: Integer;
+  lModule: TTappyModule;
+begin
+  comboGameType.Items.Clear;
+  for i := 0 to GetModuleCount() - 1 do
+  begin
+    lModule := GetModule(i);
+    comboGameType.Items.Add(lModule.ShortDescription);
+  end;
+  comboGameType.ItemIndex := 0;
 end;
 
 end.

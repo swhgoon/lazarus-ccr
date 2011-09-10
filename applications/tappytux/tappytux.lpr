@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, gameconfigform, gameplayform, tappyconfig, tappydrawer,
-  tappygamedata, mod_tappywords, tappymodules
+  tappygamedata, mod_tappywords, tappymodules, mod_tappymath
   { you can add units after this };
 
 {$R *.res}

@@ -20,6 +20,9 @@ type
 const
   STR_LINUX_RESOURCES_FOLDER = '/usr/share/tappytux/';
 
+  ID_ENGLISH = 0;
+  ID_PORTUGUESE = 1;
+
 var
   vTappyTuxConfig: TTappyTuxConfig;
 
