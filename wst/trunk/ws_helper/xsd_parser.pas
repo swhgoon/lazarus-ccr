@@ -1020,7 +1020,8 @@ begin
     locName := ExtractIdentifier(AModuleName);
     if not IsStrEmpty(locName) then begin
       FModuleName := locName;
-      Module.Name := FModuleName;
+      if (Module <> nil) then
+        Module.Name := FModuleName;
     end;
   end;
 end;
