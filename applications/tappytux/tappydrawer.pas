@@ -1,4 +1,4 @@
-unit tappytuxdrawer;
+unit tappydrawer;
 
 {$mode objfpc}{$H+}
 
@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Controls, Graphics, LCLType, IntfGraphics, fpimage,
   Math,
-  tappytuxgamedata, tappytuxconfig;
+  tappygamedata, tappyconfig, tappymodules;
 
 type
 
@@ -41,8 +41,7 @@ type
     procedure DrawImageWithTransparentColor(
       ADest: TLazIntfImage; const ADestX, ADestY: Integer; AColor: TFPColor;
       AImage: TFPImageBitmap);
-    function GetChessTileImage(ATile: TChessTile): TPortableNetworkGraphic;
-    procedure LoadImages();
+    //function GetImage(ATile: TChessTile): TPortableNetworkGraphic;
     procedure HandleMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure HandleMouseUp(Sender: TObject; Button: TMouseButton;
                           Shift: TShiftState; X, Y: Integer);
@@ -65,7 +64,7 @@ var
   X, Y, SourceX, SourceY, DestX, DestY: integer;
   dx, dy: Integer;
   t: Double;
-  lTile: TChessTile;
+  //lTile: TChessTile;
 begin
 {  // Draw the moving tile
   //WriteLn(Format('[TChessMoveAnimation.DrawToIntfImg] Afrom=%d,%d', [AFrom.X, AFrom.Y]));
@@ -86,7 +85,7 @@ end;
 
 procedure TFireAnimation.ExecuteFinal;
 begin
-  vChessGame.MovePiece(AFrom, ATo);
+  //vChessGame.MovePiece(AFrom, ATo);
 end;
 
 { TTappyTuxAnimation }
@@ -155,16 +154,19 @@ var
   col, row: integer;
   lIntfImage: TLazIntfImage;
   lTmpBmp: TBitmap;
-  lTileBmp: TPortableNetworkGraphic;
   X, Y: integer;
 begin
   lIntfImage := TLazIntfImage.Create(0, 0);
   lTmpBmp := TBitmap.Create;
   try
-    // First draw the board
-    lIntfImage.LoadFromBitmap(imgBoard.Handle, 0{bmpBoard.MaskHandle});
+    // First draw the background
+    lIntfImage.LoadFromBitmap(GetCurrentModule().imgBackground.Handle, 0{bmpBoard.MaskHandle});
 
-    // Now all pieces
+    // Now the module should draw itself
+
+    // Draw all animations
+
+{    // Now all pieces
     for col := 1 to 8 do
       for row := 1 to 8 do
       begin
@@ -181,7 +183,7 @@ begin
       end;
 
     // Now animations
-    if Assigned(FAnimation) then FAnimation.DrawToIntfImg(lIntfImage);
+    if Assigned(FAnimation) then FAnimation.DrawToIntfImg(lIntfImage);}
 
     lTmpBmp.LoadFromIntfImage(lIntfImage);
     ACanvas.Draw(0, 0, lTmpBmp);
@@ -229,9 +231,9 @@ begin
   end;
 end;
 
-function TTappyTuxDrawer.GetChessTileImage(ATile: TChessTile): TPortableNetworkGraphic;
+{function TTappyTuxDrawer.GetChessTileImage(ATile: TChessTile): TPortableNetworkGraphic;
 begin
-{  case ATile of
+  case ATile of
     ctWPawn:   Result := imgWPawn;
     ctWKnight: Result := imgWKnight;
     ctWBishop: Result := imgWBishop;
@@ -246,29 +248,8 @@ begin
     ctBKing:   Result := imgBKing;
   else
     Result := nil;
-  end;}
-end;
-
-procedure TTappyTuxDrawer.LoadImages();
-var
-  lDir: string;
-begin
-  lDir := vChessConfig.GetCurrentSkinDir();
-
-{  imgBoard.LoadFromFile(lDir + 'base.png');
-  imgWPawn.LoadFromFile(lDir + 'wpawn.png');
-  imgWKnight.LoadFromFile(lDir + 'wknight.png');
-  imgWBishop.LoadFromFile(lDir + 'wbishop.png');
-  imgWRook.LoadFromFile(lDir + 'wrook.png');
-  imgWQueen.LoadFromFile(lDir + 'wqueen.png');
-  imgWKing.LoadFromFile(lDir + 'wking.png');
-  imgBPawn.LoadFromFile(lDir + 'bpawn.png');
-  imgBKnight.LoadFromFile(lDir + 'bknight.png');
-  imgBBishop.LoadFromFile(lDir + 'bbishop.png');
-  imgBRook.LoadFromFile(lDir + 'brook.png');
-  imgBQueen.LoadFromFile(lDir + 'bqueen.png');
-  imgBKing.LoadFromFile(lDir + 'bking.png');}
-end;
+  end;
+end;}
 
 procedure TTappyTuxDrawer.HandleMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
@@ -307,7 +288,7 @@ begin
   end;}
 end;
 
-procedure TTappyTuxDrawer.AddAnimation(AAnimation: TChessAnimation);
+procedure TTappyTuxDrawer.AddAnimation(AAnimation: TTappyTuxAnimation);
 begin
 {  FDrawerState := dsRunningAnimation;
   FAnimation := AAnimation;}

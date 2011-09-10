@@ -1,40 +1,44 @@
-unit GameData;
+unit tappygamedata;
 
 {$mode objfpc}{$H}
 
 interface
 
 uses
-  Classes, Forms, SysUtils, process, SynRegExpr, 
-  LCLPRoc, tappywords, util, tappytuxconfig;
+  Classes, Forms, SysUtils, process;
+//  SynRegExpr,
+//  LCLProc,
+//  tappywords,
+//  util,
+//  tappyconfig;
   
 Type
-    TTappyGameData = object
-              SndFX : Boolean;
-              SndMusic: Boolean;
-              ModuleName : String;
-              Option : String;
-              Level : Integer;
-              NextLevel : Integer;
-              NextLife : Integer;
-              Speed : Integer;
-              Score : Integer;
-              Lives : Integer;
-              SongList : TStringList;
-              QuestionList :TStringList;
-              Procedure Create;
-              Function GetQuestion:String;
-              Function CheckAnswer(Question,Answer:String):Integer;
-              Procedure ScoreUp(ScorInc:Integer);
-              Procedure LevelUp;
-              Procedure LoseLife;
-              Function NextSong: String;
-              BGS : TStringList;
-              BG : Integer;
-              Function NextBG:String;
-    end;
+  TTappyGameData = object
+    SndFX : Boolean;
+    SndMusic: Boolean;
+    ModuleName : String;
+    Option : String;
+    Level : Integer;
+    NextLevel : Integer;
+    NextLife : Integer;
+    Speed : Integer;
+    Score : Integer;
+    Lives : Integer;
+    SongList : TStringList;
+    QuestionList :TStringList;
+    BGS : TStringList;
+    BG : Integer;
+(*    Procedure Create;
+    Function GetQuestion:String;
+    Function CheckAnswer(Question,Answer:String):Integer;
+    Procedure ScoreUp(ScorInc:Integer);
+    Procedure LevelUp;
+    Procedure LoseLife;
+    Function NextSong: String;
+    Function NextBG:String;*)
+  end;
     
-Type HammerQue = Object
+(*  HammerQue = Object
                Target : Array [1..10] of Integer;
                Function addTarget(newTarget : Integer):Boolean;
                Procedure delTarget;
@@ -58,18 +62,17 @@ Type HammerQue = Object
      Constructor Create(isSuspended : boolean);
    published
      property terminated;
-   end;
+   end;*)
 
-Var
-    ThisGame: TTappyGameData;
-
-    Question : TQuestion;
-    Scale : Integer;
-    TPTDIR: string;
+var
+  gGameData: TTappyGameData;
+  //Question : TQuestion;
+  //Scale : Integer;
+  //TPTDIR: string;
 
 implementation
 
-constructor TQuestion.Create(isSuspended : boolean);
+(*constructor TQuestion.Create(isSuspended : boolean);
  begin
    S := TSTringlist.Create;
    FreeOnTerminate := True;
@@ -241,8 +244,6 @@ Begin
 end;
 
 
-
-
 Function HammerQue.addTarget(newTarget : Integer):Boolean;
 Var I : Integer;
     New : Boolean;
@@ -270,6 +271,6 @@ Begin
         Target[X] := Target[X  1];
     Dec(Count);
 
-end;
+end;*)
 
 end.

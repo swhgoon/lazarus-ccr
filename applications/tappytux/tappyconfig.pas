@@ -1,11 +1,11 @@
-unit tappytuxconfig;
+unit tappyconfig;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, Forms;
+  Classes, SysUtils, Forms, Graphics;
 
 type
 

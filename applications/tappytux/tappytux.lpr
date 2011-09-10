@@ -7,7 +7,8 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, gameconfigform, gameplayform
+  Forms, gameconfigform, gameplayform, tappyconfig, tappydrawer,
+  tappygamedata, mod_tappywords, tappymodules
   { you can add units after this };
 
 {$R *.res}
