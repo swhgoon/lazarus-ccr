@@ -191,7 +191,12 @@ type
     constructor CreateFromLazIntfImage(AImage: TLazIntfImage); override;
     
     constructor CreateFromFile(const FileName: String); virtual;
+    constructor CreateFromFile(const FileName: String; AReaderClass: TFPCustomImageReaderClass); virtual;
+    constructor CreateFromFile(const FileName: String; AReader: TFPCustomImageReader); virtual;
     constructor CreateFromBitmap(ABitmap: TRasterImage); virtual;
+    constructor CreateFromStream(AStream: TStream); virtual;
+    constructor CreateFromStream(AStream: TStream; AReaderClass: TFPCustomImageReaderClass); virtual;
+    constructor CreateFromStream(AStream: TStream; AReader: TFPCustomImageReader); virtual;
     destructor Destroy; override;
     
     procedure Assign(Source: TPersistent); override;
@@ -203,7 +208,13 @@ type
     procedure SaveToStream(Stream: TStream; const ARect: TRect;
       AWriterClass: TFPCustomImageWriterClass); virtual;
 
+    procedure SaveToStream(Stream: TStream; AWriter: TFPCustomImageWriter); virtual;
+    procedure SaveToStream(Stream: TStream; const ARect: TRect;
+      AWriter: TFPCustomImageWriter); virtual;
+
     procedure SaveToFile(const FileName: String); virtual;
+    procedure SaveToFile(const FileName: String; AWriterClass: TFPCustomImageWriterClass); virtual;
+    procedure SaveToFile(const FileName: String; AWriter: TFPCustomImageWriter); virtual;
     procedure SaveToLazarusResource(const FileName, Name: String); virtual;
   public
     procedure Draw(X, Y: Integer; ABitmap: TRGB32Bitmap);
@@ -297,12 +308,84 @@ begin
   end;
 end;
 
+constructor TRGB32Bitmap.CreateFromFile(const FileName: String;
+  AReaderClass: TFPCustomImageReaderClass);
+var
+  Image: TLazIntfImage;
+  Reader: TFPCustomImageReader;
+begin
+  Reader := AReaderClass.Create;
+  Image := CreateDefaultLazIntfImage;
+  try
+    Image.LoadFromFile(FileName, Reader);
+    CreateFromLazIntfImage(Image);
+  finally
+    Image.Free;
+    Reader.Free;
+  end;
+end;
+
+constructor TRGB32Bitmap.CreateFromFile(const FileName: String; AReader: TFPCustomImageReader);
+var
+  Image: TLazIntfImage;
+begin
+  Image := CreateDefaultLazIntfImage;
+  try
+    Image.LoadFromFile(FileName, AReader);
+    CreateFromLazIntfImage(Image);
+  finally
+    Image.Free;
+  end;
+end;
+
 constructor TRGB32Bitmap.CreateFromBitmap(ABitmap: TRasterImage);
 var
   Image: TLazIntfImage;
 begin
   Image := ABitmap.CreateIntfImage;
   try
+    CreateFromLazIntfImage(Image);
+  finally
+    Image.Free;
+  end;
+end;
+
+constructor TRGB32Bitmap.CreateFromStream(AStream: TStream);
+var
+  Image: TLazIntfImage;
+begin
+  Image := CreateDefaultLazIntfImage;
+  try
+    Image.LoadFromStream(AStream);
+    CreateFromLazIntfImage(Image);
+  finally
+    Image.Free;
+  end;
+end;
+
+constructor TRGB32Bitmap.CreateFromStream(AStream: TStream; AReaderClass: TFPCustomImageReaderClass);
+var
+  Image: TLazIntfImage;
+  Reader: TFPCustomImageReader;
+begin
+  Reader := AReaderClass.Create;
+  Image := CreateDefaultLazIntfImage;
+  try
+    Image.LoadFromStream(AStream, Reader);
+    CreateFromLazIntfImage(Image);
+  finally
+    Image.Free;
+    Reader.Free;
+  end;
+end;
+
+constructor TRGB32Bitmap.CreateFromStream(AStream: TStream; AReader: TFPCustomImageReader);
+var
+  Image: TLazIntfImage;
+begin
+  Image := CreateDefaultLazIntfImage;
+  try
+    Image.LoadFromStream(AStream, AReader);
     CreateFromLazIntfImage(Image);
   finally
     Image.Free;
@@ -368,6 +451,25 @@ begin
   end;
 end;
 
+procedure TRGB32Bitmap.SaveToStream(Stream: TStream; AWriter: TFPCustomImageWriter);
+begin
+  SaveToStream(Stream, Bounds(0, 0, Width, Height), AWriter);
+end;
+
+procedure TRGB32Bitmap.SaveToStream(Stream: TStream; const ARect: TRect;
+  AWriter: TFPCustomImageWriter);
+var
+  Image: TLazIntfImage;
+begin
+  Image := CreateDefaultLazIntfImage;
+  try
+    SaveToLazIntfImage(Image, ARect);
+    Image.SaveToStream(Stream, AWriter);
+  finally
+    Image.Free;
+  end;
+end;
+
 procedure TRGB32Bitmap.SaveToFile(const FileName: String);
 var
   Image: TLazIntfImage;
@@ -376,6 +478,35 @@ begin
   try
     inherited SaveToLazIntfImage(Image);
     Image.SaveToFile(FileName);
+  finally
+    Image.Free;
+  end;
+end;
+
+procedure TRGB32Bitmap.SaveToFile(const FileName: String; AWriterClass: TFPCustomImageWriterClass);
+var
+  Image: TLazIntfImage;
+  Writer: TFPCustomImageWriter;
+begin
+  Writer := AWriterClass.Create;
+  Image := CreateDefaultLazIntfImage;
+  try
+    inherited SaveToLazIntfImage(Image);
+    Image.SaveToFile(FileName, Writer);
+  finally
+    Image.Free;
+    Writer.Free;
+  end;
+end;
+
+procedure TRGB32Bitmap.SaveToFile(const FileName: String; AWriter: TFPCustomImageWriter);
+var
+  Image: TLazIntfImage;
+begin
+  Image := CreateDefaultLazIntfImage;
+  try
+    inherited SaveToLazIntfImage(Image);
+    Image.SaveToFile(FileName, AWriter);
   finally
     Image.Free;
   end;
