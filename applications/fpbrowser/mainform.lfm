@@ -3,7 +3,7 @@ object formBrowser: TformBrowser
   Height = 439
   Top = 186
   Width = 621
-  ClientHeight = 412
+  ClientHeight = 439
   ClientWidth = 621
   Color = clBtnFace
   Font.Color = clWindowText
@@ -18,7 +18,7 @@ object formBrowser: TformBrowser
   object panelBottom: TPanel
     Left = 0
     Height = 18
-    Top = 394
+    Top = 421
     Width = 621
     Align = alBottom
     Alignment = taLeftJustify
@@ -39,7 +39,7 @@ object formBrowser: TformBrowser
       Left = 319
       Height = 16
       Top = 3
-      Width = 21
+      Width = 22
       Caption = 'Idle'
       ParentColor = False
     end
@@ -96,62 +96,11 @@ object formBrowser: TformBrowser
   end
   object pageBrowser: TPageControl
     Left = 0
-    Height = 361
+    Height = 388
     Top = 33
     Width = 621
-    ActivePage = tabBrowser
     Align = alClient
-    ShowTabs = False
-    TabIndex = 0
     TabOrder = 2
-    object tabBrowser: TTabSheet
-      Caption = 'Browser'
-      ClientHeight = 359
-      ClientWidth = 619
-      object panelBrowser: TPanel
-        Left = 0
-        Height = 359
-        Top = 0
-        Width = 619
-        Align = alClient
-        BevelInner = bvLowered
-        BevelOuter = bvNone
-        Caption = 'panelBrowser'
-        TabOrder = 0
-      end
-    end
-    object tabDebug: TTabSheet
-      Caption = 'Debug'
-      ClientHeight = 359
-      ClientWidth = 619
-      object memoDebug: TMemo
-        Left = 0
-        Height = 359
-        Top = 0
-        Width = 619
-        Align = alClient
-        Lines.Strings = (
-          'memoDebug'
-        )
-        TabOrder = 0
-      end
-    end
-    object tabSource: TTabSheet
-      Caption = 'Source'
-      ClientHeight = 359
-      ClientWidth = 619
-      object memoSource: TMemo
-        Left = 0
-        Height = 359
-        Top = 0
-        Width = 619
-        Align = alClient
-        Lines.Strings = (
-          'memoSource'
-        )
-        TabOrder = 0
-      end
-    end
   end
   object OpenDialog: TOpenDialog
     DefaultExt = '.htm'

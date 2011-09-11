@@ -1,5 +1,8 @@
 program fpbrowser;
 
+{$define FPBROWSER_TURBOPOWERIPRO}
+{.$define FPBROWSER_THTMLCOMP}
+
 uses
 {$IFDEF UNIX}
   cthreads,
@@ -15,7 +18,14 @@ uses
   Gopage in 'Gopage.pas' {GoPageForm},
   PrintStatusForm in 'PrintStatusForm.pas' {PrnStatusForm},
 *)
-  ImgForm in 'ImgForm.pas', pageloader, browsermodules {ImageForm};
+  ImgForm in 'ImgForm.pas', pageloader, browsermodules,
+{$ifdef FPBROWSER_THTMLCOMP}
+  viewer_thtmlcomp,
+{$endif}
+{$ifdef FPBROWSER_TURBOPOWERIPRO}
+  viewer_ipro,
+{$endif}
+  browserviewer;
 
 begin
   Application.Initialize;
