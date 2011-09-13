@@ -1,4 +1,7 @@
 JUJIBOUTILS
 ------------
 
-<Description here>
+Set of components (visuals and not visuals) to input and validate
+different kinds of data, floats, dates, etc. while working with 
+db and non db controls.
+
