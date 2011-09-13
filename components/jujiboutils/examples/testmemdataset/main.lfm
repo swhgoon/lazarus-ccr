@@ -1,0 +1,193 @@
+object Form1: TForm1
+  Left = 285
+  Height = 435
+  Top = 159
+  Width = 500
+  Caption = 'Form1'
+  ClientHeight = 435
+  ClientWidth = 500
+  OnCreate = FormCreate
+  LCLVersion = '0.9.31'
+  object DBGrid1: TDBGrid
+    Left = 26
+    Height = 153
+    Top = 119
+    Width = 416
+    Color = clWindow
+    Columns = <    
+      item
+        Title.Caption = 'ID'
+        Title.PrefixOption = poNone
+        FieldName = 'ID'
+      end    
+      item
+        Title.Caption = 'DATE'
+        Title.PrefixOption = poNone
+        FieldName = 'DATE'
+        DisplayFormat = 'dd/mm/yyyy'
+      end    
+      item
+        Title.Caption = 'ID2'
+        Title.PrefixOption = poNone
+        FieldName = 'ID2'
+      end    
+      item
+        Title.Caption = 'TOTAL'
+        Title.PrefixOption = poNone
+        FieldName = 'TOTAL'
+        DisplayFormat = '#,0.00'
+      end>
+    DataSource = Datasource1
+    TabOrder = 0
+    OnSelectEditor = DBGrid1SelectEditor
+  end
+  object DBNavigator1: TDBNavigator
+    Left = 26
+    Height = 25
+    Top = 87
+    Width = 241
+    BevelOuter = bvNone
+    ChildSizing.EnlargeHorizontal = crsScaleChilds
+    ChildSizing.EnlargeVertical = crsScaleChilds
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 100
+    ClientHeight = 25
+    ClientWidth = 241
+    DataSource = Datasource1
+    Options = []
+    TabOrder = 1
+  end
+  object GroupBox1: TGroupBox
+    Left = 24
+    Height = 105
+    Top = 280
+    Width = 418
+    Caption = 'TDBEdit usage example'
+    ClientHeight = 86
+    ClientWidth = 414
+    TabOrder = 2
+    object Label1: TLabel
+      Left = 14
+      Height = 18
+      Top = 7
+      Width = 15
+      Caption = 'ID'
+      ParentColor = False
+    end
+    object Label2: TLabel
+      Left = 102
+      Height = 18
+      Top = 7
+      Width = 31
+      Caption = 'DATE'
+      ParentColor = False
+    end
+    object Label3: TLabel
+      Left = 195
+      Height = 18
+      Top = 7
+      Width = 22
+      Caption = 'ID2'
+      ParentColor = False
+    end
+    object Label4: TLabel
+      Left = 288
+      Height = 18
+      Top = 9
+      Width = 39
+      Caption = 'TOTAL'
+      ParentColor = False
+    end
+    object DBEdit1: TDBEdit
+      Left = 14
+      Height = 27
+      Top = 31
+      Width = 80
+      DataField = 'ID'
+      DataSource = Datasource1
+      CharCase = ecNormal
+      MaxLength = 0
+      TabOrder = 0
+      OnEnter = OnIntegerDBControlEnter
+    end
+    object DBEdit2: TDBEdit
+      Left = 102
+      Height = 27
+      Top = 31
+      Width = 80
+      DataField = 'DATE'
+      DataSource = Datasource1
+      CharCase = ecNormal
+      MaxLength = 0
+      TabOrder = 1
+      OnEnter = OnDateDBControlEnter
+    end
+    object DBEdit3: TDBEdit
+      Left = 195
+      Height = 27
+      Top = 31
+      Width = 80
+      DataField = 'ID2'
+      DataSource = Datasource1
+      CharCase = ecNormal
+      MaxLength = 0
+      TabOrder = 2
+      OnEnter = OnIntegerDBControlEnter
+    end
+    object DBEdit4: TDBEdit
+      Left = 288
+      Height = 27
+      Top = 31
+      Width = 80
+      DataField = 'TOTAL'
+      DataSource = Datasource1
+      CharCase = ecNormal
+      MaxLength = 0
+      TabOrder = 3
+      OnEnter = OnCurrencyDBControlEnter
+    end
+  end
+  object Label5: TLabel
+    Left = 24
+    Height = 18
+    Top = 56
+    Width = 142
+    Caption = 'TDBGrid usage example'
+    ParentColor = False
+  end
+  object MemDataset1: TMemDataset
+    Active = True
+    FieldDefs = <    
+      item
+        Name = 'ID'
+        DataType = ftInteger
+        Precision = 0
+        Size = 0
+      end    
+      item
+        Name = 'DATE'
+        DataType = ftDate
+        Precision = 0
+        Size = 0
+      end    
+      item
+        Name = 'TOTAL'
+        DataType = ftFloat
+        Precision = 0
+        Size = 0
+      end    
+      item
+        Name = 'ID2'
+        DataType = ftInteger
+        Precision = 0
+        Size = 0
+      end>
+    left = 40
+  end
+  object Datasource1: TDatasource
+    DataSet = MemDataset1
+    left = 128
+  end
+end
