@@ -76,8 +76,8 @@ end;
 
 procedure TForm1.btnLoadClick(Sender: TObject);
 begin
-  Hide;
   Form2.Show;
+  Hide;
 
 end;
 

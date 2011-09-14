@@ -23,6 +23,7 @@ object Form2: TForm2
     Height = 23
     Top = 392
     Width = 514
+    OnKeyPress = Edit1KeyPress
     TabOrder = 1
   end
   object Image1: TImage
@@ -1545,5 +1546,17 @@ object Form2: TForm2
     Width = 76
     ReadOnly = True
     TabOrder = 4
+  end
+  object Memo1: TMemo
+    Left = 383
+    Height = 181
+    Top = 76
+    Width = 130
+    Lines.Strings = (
+      '[TESTE]'
+      'Palavras escritas:'
+      ''
+    )
+    TabOrder = 5
   end
 end
