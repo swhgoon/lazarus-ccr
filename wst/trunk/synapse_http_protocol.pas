@@ -18,7 +18,7 @@ unit synapse_http_protocol;
 interface
 
 uses
-  Classes, SysUtils,{$IFDEF WST_DBG}Dialogs,{$ENDIF}
+  Classes, SysUtils,
   wst_types, service_intf, imp_utils, base_service_intf, client_utils,
   httpsend;
 
