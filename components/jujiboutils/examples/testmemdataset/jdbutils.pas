@@ -34,7 +34,6 @@ type
     theValue: currency;
     fDecimales: integer;
     function getDecimales: integer;
-    procedure myEditOnEnter(Sender: TObject);
     procedure myEditOnEditingDone(Sender: TObject);
     procedure setDecimales(const AValue: integer);
     procedure OnKeyPress(Sender: TObject; var key: char);
@@ -96,11 +95,6 @@ begin
   Result := fDecimales;
 end;
 
-procedure TJDBCurrencyCtrl.myEditOnEnter(Sender: TObject);
-begin
-
-end;
-
 procedure TJDBCurrencyCtrl.myEditOnEditingDone(Sender: TObject);
 var
   bufCaption: string;
@@ -159,11 +153,19 @@ end;
 procedure TJDBCurrencyCtrl.Enter(widget: TDBEdit);
 begin
   myEdit := widget;
-  myEdit.OnEditingDone := @myEditOnEditingDone;
-  myEdit.OnKeyPress := @OnKeyPress;
-  fDecimales := 2; // default 2 decimals
-  theValue := myEdit.Field.AsCurrency;
-  myEdit.SelectAll;
+  if myEdit.DataSource.DataSet.Active then
+  begin
+    myEdit.OnEditingDone := @myEditOnEditingDone;
+    myEdit.OnKeyPress := @OnKeyPress;
+    fDecimales := 2; // default 2 decimals
+    theValue := myEdit.Field.AsCurrency;
+    myEdit.SelectAll;
+  end
+  else
+  begin
+    myEdit.OnEditingDone := nil;
+    myEdit.OnKeyPress := nil;
+  end;
 end;
 
 
@@ -204,10 +206,18 @@ end;
 procedure TJDBIntegerCtrl.Enter(widget: TDBEdit);
 begin
   myEdit := widget;
-  myEdit.OnEditingDone := @myEditOnEditingDone;
-  myEdit.OnKeyPress := @OnKeyPress;
-  theValue := myEdit.Field.AsInteger;
-  myEdit.SelectAll;
+  if myEdit.DataSource.DataSet.Active then
+  begin
+    myEdit.OnEditingDone := @myEditOnEditingDone;
+    myEdit.OnKeyPress := @OnKeyPress;
+    theValue := myEdit.Field.AsInteger;
+    myEdit.SelectAll;
+  end
+  else
+  begin
+    myEdit.OnEditingDone := nil;
+    myEdit.OnKeyPress := nil;
+  end;
 end;
 
 { TJDBDateCtrl }
@@ -274,11 +284,19 @@ end;
 procedure TJDBDateCtrl.Enter(widget: TDBEdit);
 begin
   myEdit := widget;
-  myEdit.OnEditingDone := @myEditOnEditingDone;
-  myEdit.OnKeyPress := @OnKeyPress;
-  format := 'dd/mm/yyyy';
-  theValue := myEdit.Field.AsDateTime;
-  myEdit.SelectAll;
+  if myEdit.DataSource.DataSet.Active then
+  begin
+    myEdit.OnEditingDone := @myEditOnEditingDone;
+    myEdit.OnKeyPress := @OnKeyPress;
+    format := ShortDateFormat;
+    theValue := myEdit.Field.AsDateTime;
+    myEdit.SelectAll;
+  end
+  else
+  begin
+    myEdit.OnEditingDone := nil;
+    myEdit.OnKeyPress := nil;
+  end;
 end;
 
 procedure CreateResources;
