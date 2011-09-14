@@ -1,0 +1,44 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TForm1','FORMDATA',[
+  'TPF0'#6'TForm1'#5'Form1'#4'Left'#3'N'#1#6'Height'#3','#1#3'Top'#3#239#0#5'Wi'
+  +'dth'#3#144#1#13'ActiveControl'#7#5'Edit2'#7'Caption'#6#5'Form1'#12'ClientHe'
+  +'ight'#3','#1#11'ClientWidth'#3#144#1#8'OnCreate'#7#10'FormCreate'#9'OnDestr'
+  +'oy'#7#11'FormDestroy'#10'LCLVersion'#6#6'0.9.31'#0#6'TLabel'#6'Label1'#4'Le'
+  +'ft'#2#8#6'Height'#2#18#3'Top'#2'('#5'Width'#2'\'#7'Caption'#6#14'Currency I'
+  +'nput'#11'ParentColor'#8#0#0#5'TEdit'#5'Edit2'#4'Left'#3#136#0#6'Height'#2#27
+  +#3'Top'#2'%'#5'Width'#2'h'#9'Alignment'#7#14'taRightJustify'#8'TabOrder'#2#0
+  +#4'Text'#6#5'Edit2'#0#0#5'TEdit'#5'Edit3'#4'Left'#3#136#0#6'Height'#2#27#3'T'
+  +'op'#2'@'#5'Width'#2'h'#9'Alignment'#7#14'taRightJustify'#8'TabOrder'#2#1#4
+  +'Text'#6#5'Edit3'#0#0#5'TEdit'#5'Edit4'#4'Left'#3#136#0#6'Height'#2#27#3'Top'
+  +#2'['#5'Width'#2'h'#9'Alignment'#7#14'taRightJustify'#8'TabOrder'#2#2#4'Text'
+  +#6#5'Edit4'#0#0#7'TBitBtn'#7'BitBtn1'#4'Left'#3'0'#1#6'Height'#2'"'#3'Top'#3
+  +#0#1#5'Width'#2'X'#7'Caption'#6#6'&Close'#4'Kind'#7#7'bkClose'#7'OnClick'#7
+  +#12'BitBtn1Click'#8'TabOrder'#2#4#0#0#12'TLabeledEdit'#12'LabeledEdit1'#4'Le'
+  +'ft'#3#136#0#6'Height'#2#27#3'Top'#2'v'#5'Width'#2'h'#9'Alignment'#7#14'taRi'
+  +'ghtJustify EditLabel.AnchorSideLeft.Control'#7#12'LabeledEdit1'#31'EditLabe'
+  +'l.AnchorSideTop.Control'#7#12'LabeledEdit1'#28'EditLabel.AnchorSideTop.Side'
+  +#7#9'asrCenter!EditLabel.AnchorSideRight.Control'#7#12'LabeledEdit1"EditLabe'
+  +'l.AnchorSideBottom.Control'#7#12'LabeledEdit1'#14'EditLabel.Left'#2#9#16'Ed'
+  +'itLabel.Height'#2#18#13'EditLabel.Top'#2'z'#15'EditLabel.Width'#2'|'#17'Edi'
+  +'tLabel.Caption'#6#20'TLabeledEdit control'#21'EditLabel.ParentColor'#8#13'L'
+  +'abelPosition'#7#6'lpLeft'#8'TabOrder'#2#3#4'Text'#6#3'123'#0#0#12'TLabeledE'
+  +'dit'#12'LabeledEdit2'#4'Left'#3#136#0#6'Height'#2#27#3'Top'#3#144#0#5'Width'
+  +#2'h'#9'Alignment'#7#14'taRightJustify EditLabel.AnchorSideLeft.Control'#7#12
+  +'LabeledEdit2'#31'EditLabel.AnchorSideTop.Control'#7#12'LabeledEdit2'#28'Edi'
+  +'tLabel.AnchorSideTop.Side'#7#9'asrCenter!EditLabel.AnchorSideRight.Control'
+  +#7#12'LabeledEdit2"EditLabel.AnchorSideBottom.Control'#7#12'LabeledEdit2'#14
+  +'EditLabel.Left'#2'%'#16'EditLabel.Height'#2#18#13'EditLabel.Top'#3#148#0#15
+  +'EditLabel.Width'#2'`'#17'EditLabel.Caption'#6#14'Integer number'#21'EditLab'
+  +'el.ParentColor'#8#13'LabelPosition'#7#6'lpLeft'#8'TabOrder'#2#5#0#0#12'TLab'
+  +'eledEdit'#12'LabeledEdit3'#4'Left'#3#136#0#6'Height'#2#27#3'Top'#3#176#0#5
+  +'Width'#2'h EditLabel.AnchorSideLeft.Control'#7#12'LabeledEdit3'#31'EditLabe'
+  +'l.AnchorSideTop.Control'#7#12'LabeledEdit3'#28'EditLabel.AnchorSideTop.Side'
+  +#7#9'asrCenter!EditLabel.AnchorSideRight.Control'#7#12'LabeledEdit3"EditLabe'
+  +'l.AnchorSideBottom.Control'#7#12'LabeledEdit3'#14'EditLabel.Left'#2'E'#16'E'
+  +'ditLabel.Height'#2#18#13'EditLabel.Top'#3#180#0#15'EditLabel.Width'#2'@'#17
+  +'EditLabel.Caption'#6#10'Date input'#21'EditLabel.ParentColor'#8#13'LabelPos'
+  +'ition'#7#6'lpLeft'#8'TabOrder'#2#6#0#0#7'TButton'#7'Button1'#4'Left'#3#248#0
+  +#6'Height'#2#27#3'Top'#3#176#0#5'Width'#2','#8'AutoSize'#9#7'Caption'#6#5'Da'
+  +'te?'#7'OnClick'#7#12'Button1Click'#8'TabOrder'#2#7#0#0#0
+]);
