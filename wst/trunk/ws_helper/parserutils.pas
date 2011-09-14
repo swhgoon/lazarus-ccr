@@ -89,7 +89,7 @@ type
   function AddNameSpace(const AValue: string; ANameSpaceList : TStrings): TStrings;
   procedure BuildNameSpaceList(AAttCursor : IObjectCursor; ANameSpaceList : TStrings);
   procedure ExplodeQName(const AQName : string; out ALocalName, ANameSpace : string) ;
-  
+
   function wst_findCustomAttribute(
           AWsdlShortNames : TStrings;
           ANode      : TDOMNode;

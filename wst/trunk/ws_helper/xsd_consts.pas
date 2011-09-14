@@ -35,6 +35,7 @@ const
   s_base                       : WideString = 'base';
   s_binding                    : WideString = 'binding';
   s_body                       : WideString = 'body';
+  s_choice                                  = 'choice';
   s_complexContent             : WideString = 'complexContent';
   s_complexType                : WideString = 'complexType';
   s_customAttributes           : WideString = 'customAttributes';

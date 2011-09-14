@@ -124,6 +124,7 @@ type
   private
     //helper routines
     function ExtractElementCursor(
+          AParentNode : TDOMNode;
       out AAttCursor : IObjectCursor;
       out AAnyNode, AAnyAttNode : TDOMNode
     ):IObjectCursor;
@@ -424,6 +425,7 @@ end;
 { TComplexTypeParser }
 
 function TComplexTypeParser.ExtractElementCursor(
+      AParentNode : TDOMNode;
   out AAttCursor : IObjectCursor;
   out AAnyNode, AAnyAttNode : TDOMNode
 ) : IObjectCursor;
@@ -457,11 +459,18 @@ var
   var
     tmpCursor : IObjectCursor;
     tmpNode : TDOMNode;
+    tmpFilter : IObjectFilter;
   begin
     ARes := nil;
+    tmpFilter := ParseFilter(CreateQualifiedNameFilterStr(s_sequence,Context.GetXsShortNames()),TDOMNodeRttiExposer);
+    tmpFilter := TAggregatedFilter.Create(
+                   tmpFilter,
+                   ParseFilter(CreateQualifiedNameFilterStr(s_choice,Context.GetXsShortNames()),TDOMNodeRttiExposer),
+                   fcOr
+                 ) as IObjectFilter;
     tmpCursor := CreateCursorOn(
                    frstCrsr.Clone() as IObjectCursor,
-                   ParseFilter(CreateQualifiedNameFilterStr(s_sequence,Context.GetXsShortNames()),TDOMNodeRttiExposer)
+                   tmpFilter
                  );
     tmpCursor.Reset();
     Result := tmpCursor.MoveNext();
@@ -469,9 +478,15 @@ var
       FSequenceType := stElement;
       tmpNode := (tmpCursor.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
       if  tmpNode.HasChildNodes() then begin
+        tmpFilter := ParseFilter(CreateQualifiedNameFilterStr(s_element,Context.GetXsShortNames()),TDOMNodeRttiExposer);
+        tmpFilter := TAggregatedFilter.Create(
+                       tmpFilter,
+                       ParseFilter(CreateQualifiedNameFilterStr(s_choice,Context.GetXsShortNames()),TDOMNodeRttiExposer),
+                       fcOr
+                     ) as IObjectFilter;
         tmpCursor := CreateCursorOn(
                        CreateChildrenCursor(tmpNode,cetRttiNode),
-                       ParseFilter(CreateQualifiedNameFilterStr(s_element,Context.GetXsShortNames()),TDOMNodeRttiExposer)
+                       tmpFilter
                      );
         ARes := tmpCursor;
         tmpCursor := CreateCursorOn(
@@ -493,10 +508,13 @@ begin
   AAttCursor := nil;
   AAnyNode := nil;
   AAnyAttNode := nil;
-  case FDerivationMode of
-    dmNone          : parentNode := FContentNode;
-    dmRestriction,
-    dmExtension     : parentNode := FDerivationNode;
+  parentNode := AParentNode;
+  if (parentNode = nil) then begin
+    case FDerivationMode of
+      dmNone          : parentNode := FContentNode;
+      dmRestriction,
+      dmExtension     : parentNode := FDerivationNode;
+    end;
   end;
   if parentNode.HasChildNodes() then begin;
     AAttCursor := CreateCursorOn(
@@ -805,6 +823,14 @@ begin
   end;
 end;
 
+type
+  TOccurrenceRec = record
+    Valid      : Boolean;
+    MinOccurs  : Integer;
+    MaxOccurs  : Integer;
+    Unboundded : Boolean;
+  end;
+
 function TComplexTypeParser.ParseComplexContent(const ATypeName : string) : TPasType;
 var
   classDef : TPasClassType;
@@ -818,7 +844,58 @@ var
     Result := wst_findCustomAttributeXsd(Context.GetXsShortNames(),AElement,s_WST_collection,strBuffer) and AnsiSameText('true',Trim(strBuffer));
   end;
 
-  procedure ParseElement(AElement : TDOMNode);
+  procedure ExtractOccurences(
+        AItemName      : string;
+        AAttCursor     : IObjectCursor;
+    var AMinOccurs,
+        AMaxOccurs     : Integer;
+    var AMaxUnboundded : Boolean
+  );
+  var
+    locAttCursor, locPartCursor : IObjectCursor;
+    locMin, locMax : Integer;
+    locMaxOccurUnbounded : Boolean;
+    locStrBuffer : string;
+  begin
+    if (AAttCursor = nil) then begin
+      AMinOccurs := 1;
+      AMaxOccurs := 1;
+      AMaxUnboundded := False;
+      exit;
+    end;
+
+    locMin := 1;
+    locPartCursor := CreateCursorOn(AAttCursor.Clone() as IObjectCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_minOccurs)]),TDOMNodeRttiExposer));
+    locPartCursor.Reset();
+    if locPartCursor.MoveNext() then begin
+      if not TryStrToInt((locPartCursor.GetCurrent() as TDOMNodeRttiExposer).NodeValue,locMin) then
+        raise EXsdParserException.CreateFmt(SERR_InvalidMinOccursValue,[FTypeName,AItemName]);
+      if ( locMin < 0 ) then
+        raise EXsdParserException.CreateFmt(SERR_InvalidMinOccursValue,[FTypeName,AItemName]);
+    end;
+
+    locMax := 1;
+    locMaxOccurUnbounded := False;
+    locPartCursor := CreateCursorOn(AAttCursor.Clone() as IObjectCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_maxOccurs)]),TDOMNodeRttiExposer));
+    locPartCursor.Reset();
+    if locPartCursor.MoveNext() then begin
+      locStrBuffer := (locPartCursor.GetCurrent() as TDOMNodeRttiExposer).NodeValue;
+      if AnsiSameText(locStrBuffer,s_unbounded) then begin
+        locMaxOccurUnbounded := True;
+      end else begin
+        if not TryStrToInt(locStrBuffer,locMax) then
+          raise EXsdParserException.CreateFmt(SERR_InvalidMaxOccursValue,[FTypeName,AItemName]);
+        if ( locMin < 0 ) then
+          raise EXsdParserException.CreateFmt(SERR_InvalidMaxOccursValue,[FTypeName,AItemName]);
+      end;
+    end;
+
+    AMinOccurs := locMin;
+    AMaxOccurs := locMax;
+    AMaxUnboundded := locMaxOccurUnbounded;
+  end;
+
+  procedure ParseElement(AElement : TDOMNode; const ABoundInfos : TOccurrenceRec);
   var
     locAttCursor, locPartCursor : IObjectCursor;
     locName, locTypeName, locTypeInternalName : string;
@@ -939,14 +1016,18 @@ var
         locMinOccur := 0;
       end;
     end else begin
-      locMinOccur := 1;
-      locPartCursor := CreateCursorOn(locAttCursor.Clone() as IObjectCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_minOccurs)]),TDOMNodeRttiExposer));
-      locPartCursor.Reset();
-      if locPartCursor.MoveNext() then begin
-        if not TryStrToInt((locPartCursor.GetCurrent() as TDOMNodeRttiExposer).NodeValue,locMinOccur) then
-          raise EXsdParserException.CreateFmt(SERR_InvalidMinOccursValue,[FTypeName,locName]);
-        if ( locMinOccur < 0 ) then
-          raise EXsdParserException.CreateFmt(SERR_InvalidMinOccursValue,[FTypeName,locName]);
+      if ABoundInfos.Valid then begin
+        locMinOccur := ABoundInfos.MinOccurs;
+      end else begin
+        locMinOccur := 1;
+        locPartCursor := CreateCursorOn(locAttCursor.Clone() as IObjectCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_minOccurs)]),TDOMNodeRttiExposer));
+        locPartCursor.Reset();
+        if locPartCursor.MoveNext() then begin
+          if not TryStrToInt((locPartCursor.GetCurrent() as TDOMNodeRttiExposer).NodeValue,locMinOccur) then
+            raise EXsdParserException.CreateFmt(SERR_InvalidMinOccursValue,[FTypeName,locName]);
+          if ( locMinOccur < 0 ) then
+            raise EXsdParserException.CreateFmt(SERR_InvalidMinOccursValue,[FTypeName,locName]);
+        end;
       end;
     end;
     locProp.ReadAccessorName := 'F' + locProp.Name;
@@ -959,19 +1040,24 @@ var
       locProp.StoredAccessorName := 'True';
     end;
 
-    locMaxOccur := 1;
-    locMaxOccurUnbounded := False;
-    locPartCursor := CreateCursorOn(locAttCursor.Clone() as IObjectCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_maxOccurs)]),TDOMNodeRttiExposer));
-    locPartCursor.Reset();
-    if locPartCursor.MoveNext() then begin
-      locStrBuffer := (locPartCursor.GetCurrent() as TDOMNodeRttiExposer).NodeValue;
-      if AnsiSameText(locStrBuffer,s_unbounded) then begin
-        locMaxOccurUnbounded := True;
-      end else begin
-        if not TryStrToInt(locStrBuffer,locMaxOccur) then
-          raise EXsdParserException.CreateFmt(SERR_InvalidMaxOccursValue,[FTypeName,locName]);
-        if ( locMinOccur < 0 ) then
-          raise EXsdParserException.CreateFmt(SERR_InvalidMaxOccursValue,[FTypeName,locName]);
+    if ABoundInfos.Valid then begin
+      locMaxOccur := ABoundInfos.MaxOccurs;
+      locMaxOccurUnbounded := ABoundInfos.Unboundded;
+    end else begin
+      locMaxOccur := 1;
+      locMaxOccurUnbounded := False;
+      locPartCursor := CreateCursorOn(locAttCursor.Clone() as IObjectCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_maxOccurs)]),TDOMNodeRttiExposer));
+      locPartCursor.Reset();
+      if locPartCursor.MoveNext() then begin
+        locStrBuffer := (locPartCursor.GetCurrent() as TDOMNodeRttiExposer).NodeValue;
+        if AnsiSameText(locStrBuffer,s_unbounded) then begin
+          locMaxOccurUnbounded := True;
+        end else begin
+          if not TryStrToInt(locStrBuffer,locMaxOccur) then
+            raise EXsdParserException.CreateFmt(SERR_InvalidMaxOccursValue,[FTypeName,locName]);
+          if ( locMinOccur < 0 ) then
+            raise EXsdParserException.CreateFmt(SERR_InvalidMaxOccursValue,[FTypeName,locName]);
+        end;
       end;
     end;
     isArrayDef := locMaxOccurUnbounded or ( locMaxOccur > 1 );
@@ -995,18 +1081,56 @@ var
     Result := wst_findCustomAttributeXsd(Context.GetXsShortNames(),FTypeNode,s_WST_record,strBuffer) and AnsiSameText('true',Trim(strBuffer));
   end;
   
-  procedure ParseElementsAndAttributes(AEltCrs, AEltAttCrs : IObjectCursor);
+  procedure ParseElementsAndAttributes(
+    AEltCrs,
+    AEltAttCrs  : IObjectCursor;
+    ABoundInfos : TOccurrenceRec
+  );
+
+    function ExtractElement(ANode : TDOMNode) : IObjectCursor;
+    var
+      tmpFilter : IObjectFilter;
+    begin
+      tmpFilter := ParseFilter(CreateQualifiedNameFilterStr(s_element,Context.GetXsShortNames()),TDOMNodeRttiExposer);
+      tmpFilter := TAggregatedFilter.Create(
+                     tmpFilter,
+                     ParseFilter(CreateQualifiedNameFilterStr(s_choice,Context.GetXsShortNames()),TDOMNodeRttiExposer),
+                     fcOr
+                   ) as IObjectFilter;
+      Result := CreateCursorOn(
+                  CreateChildrenCursor(ANode,cetRttiNode),
+                  tmpFilter
+                );
+    end;
+
+  var
+    locNode, locAnyNode, locAnyAttNode : TDOMNode;
+    locNS, locLN : string;
+    locEltCrs, locEltAttCrs : IObjectCursor;
+    locBoundInfos : TOccurrenceRec;
   begin
     if Assigned(AEltCrs) then begin
       AEltCrs.Reset();
       while AEltCrs.MoveNext() do begin
-        ParseElement((AEltCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject);
+        locNode := (AEltCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
+        ExplodeQName(locNode.NodeName,locLN,locNS);
+        if (locLN = s_choice) then begin
+          locEltCrs := ExtractElement(locNode);
+          if (locEltCrs <> nil) then begin
+            ExtractOccurences(s_choice,locEltAttCrs,locBoundInfos.MinOccurs,locBoundInfos.MaxOccurs,locBoundInfos.Unboundded);
+            locBoundInfos.MinOccurs := 0;
+            locBoundInfos.Valid := True;
+            ParseElementsAndAttributes(locEltCrs,locEltAttCrs,locBoundInfos);
+          end;
+        end else begin
+          ParseElement(locNode,ABoundInfos);
+        end;
       end;
     end;
     if Assigned(AEltAttCrs) then begin
       AEltAttCrs.Reset();
       while AEltAttCrs.MoveNext() do begin
-        ParseElement((AEltAttCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject);
+        ParseElement((AEltAttCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject,ABoundInfos);
       end;
     end;
   end;
@@ -1067,9 +1191,11 @@ var
   locStrBuffer : string;
   locAnyNode, locAnyAttNode : TDOMNode;
   locDefaultAncestorUsed : Boolean;
+  locBoundInfos : TOccurrenceRec;
+  locTempNode : TDOMNode;
 begin
   ExtractBaseType();
-  eltCrs := ExtractElementCursor(eltAttCrs,locAnyNode,locAnyAttNode);
+  eltCrs := ExtractElementCursor(nil,eltAttCrs,locAnyNode,locAnyAttNode);
 
   internalName := ExtractIdentifier(ATypeName);
   hasInternalName := IsReservedKeyWord(internalName) or
@@ -1110,7 +1236,24 @@ begin
         classDef.AncestorType.AddRef();
         if Assigned(eltCrs) or Assigned(eltAttCrs) then begin
           isArrayDef := False;
-          ParseElementsAndAttributes(eltCrs,eltAttCrs);
+          FillChar(locBoundInfos,SizeOf(locBoundInfos),#0);
+          if (eltCrs <> nil) then begin
+            eltCrs.Reset();
+            if eltCrs.MoveNext() then begin
+              locTempNode := (eltCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
+              locTempNode := locTempNode.ParentNode;
+              if (ExtractNameFromQName(locTempNode.NodeName) = s_choice) then begin
+                ExtractOccurences(
+                  s_choice,
+                  CreateAttributesCursor(locTempNode,cetRttiNode),
+                  locBoundInfos.MinOccurs,locBoundInfos.MaxOccurs,locBoundInfos.Unboundded
+                );
+                locBoundInfos.MinOccurs := 0;
+                locBoundInfos.Valid := True;
+              end;
+            end;
+          end;
+          ParseElementsAndAttributes(eltCrs,eltAttCrs,locBoundInfos);
           if ( arrayItems.GetCount() > 0 ) then begin
             if ( arrayItems.GetCount() = 1 ) and locDefaultAncestorUsed and
                ( GetElementCount(classDef.Members,TPasProperty) = 1 )

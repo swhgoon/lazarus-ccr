@@ -99,7 +99,7 @@ begin
   sct.Declarations.Add(inft);
   sct.Types.Add(inft);
     CreateProc('void_operation_proc',inft,Result);
-    CreateFunc('void_operation_func','Integer',inft,Result);
+    CreateFunc('void_operation_func','integer',inft,Result);
 
   inft := TPasClassType(Result.CreateElement(TPasClassType,'service_2',sct,visDefault,'',0));
   inft.ObjKind := okInterface;
@@ -107,11 +107,11 @@ begin
   sct.Types.Add(inft);
     locProc := CreateProc('dis_proc',inft,Result);
       CreateParam('d','double',argDefault,locProc,Result);
-      CreateParam('i','Integer',argConst,locProc,Result);
+      CreateParam('i','integer',argConst,locProc,Result);
       CreateParam('s','string',argOut,locProc,Result);
     locProc := CreateFunc('sid_func','double',inft,Result);
       CreateParam('s','string',argConst,locProc,Result);
-      CreateParam('i','Integer',argVar,locProc,Result);
+      CreateParam('i','integer',argVar,locProc,Result);
 end;
 
 procedure PrintWSDL(ARep : PServiceRepository);

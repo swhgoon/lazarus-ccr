@@ -33,6 +33,8 @@ const
   
   sXSD_NS = 'http://www.w3.org/2001/XMLSchema';
 
+  CASE_SENSITIVE_DEFAULT = True;
+
 {$IF not Declared(TInterfaceSection) }
 type             
   TInterfaceSection = TPasSection;
@@ -165,7 +167,7 @@ type
     function IsInitNeed(AType: TPasType): Boolean;
     function IsOfType(AType: TPasType; AClass: TClass): Boolean;
 
-    property CaseSensitive : Boolean read FCaseSensitive write FCaseSensitive;
+    property CaseSensitive : Boolean read FCaseSensitive write FCaseSensitive default CASE_SENSITIVE_DEFAULT;
   end;
 
   TPasNativeModule = class(TPasModule)
@@ -632,6 +634,7 @@ end;
 
 constructor TwstPasTreeContainer.Create();
 begin
+  FCaseSensitive := CASE_SENSITIVE_DEFAULT;
   FPackage := TPasPackage.Create('sample',nil);
   FBindingList := TObjectList.Create(True);
   FProperties := TPropertyHolder.Create();

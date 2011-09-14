@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<definitions name="wst_test" 
+   xmlns="http://schemas.xmlsoap.org/wsdl/" 
+   xmlns:tns="urn:wst-test" 
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+   targetNamespace="urn:wst-test">
+
+  <types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:wst-test">
+  
+        <xsd:simpleType name="String">
+          <xsd:restriction base="xsd:string"/>
+        </xsd:simpleType>
+      
+        <xsd:simpleType name="Date">
+          <xsd:restriction base="xsd:string"/>
+        </xsd:simpleType>
+      
+        <xsd:simpleType name="Boolean">
+          <xsd:restriction base="xsd:string"/>
+        </xsd:simpleType>
+       
+        <xsd:complexType name="TClassSampleType">
+    	    <xsd:sequence>
+    		    <xsd:element name="dateField" type="xsd:date" />
+            <xsd:element name="localDateField" type="n:Date" minOccurs="1" maxOccurs="1" />
+    		    <xsd:element name="booleanField" type="xsd:boolean" />
+            <xsd:element name="localBooleanField" type="n:Boolean" minOccurs="1" maxOccurs="1" />
+    		    <xsd:element name="stringField" type="xsd:string" />
+            <xsd:element name="localStringField" type="n:String" />
+    	    </xsd:sequence>
+    	    <xsd:attribute name="dateAtt" type="xsd:date" />
+    	    <xsd:attribute name="localDateAtt" type="n:Date" />
+        </xsd:complexType>
+    </xsd:schema>
+  </types>
+  
+
+</definitions>

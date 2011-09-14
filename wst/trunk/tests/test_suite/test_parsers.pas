@@ -29,6 +29,9 @@ type
 
   TTest_CustomXsdParser = class(TTestCase)
   protected
+    function ParseDoc(const ADoc : string) : TwstPasTreeContainer;overload;virtual;
+    function ParseDoc(const ADoc : string; const ACaseSensistive : Boolean) : TwstPasTreeContainer;overload;virtual;abstract;
+  protected
     function LoadEmptySchema() : TwstPasTreeContainer;virtual;abstract;
     function LoadSimpleType_Enum_Schema() : TwstPasTreeContainer;virtual;abstract;
     function LoadSimpleType_Enum_Embedded_Schema() : TwstPasTreeContainer;virtual;abstract;
@@ -42,6 +45,10 @@ type
     function LoadComplexType_Class_Extend_Simple_Schema() : TwstPasTreeContainer;virtual;abstract;
     function LoadComplexType_Class_OpenType() : TwstPasTreeContainer;virtual;abstract;
     function LoadComplexType_Class_FalseArray() : TwstPasTreeContainer;virtual;abstract;
+    function LoadComplexType_Class_Choice_Schema() : TwstPasTreeContainer;virtual;abstract;
+    function LoadComplexType_Class_Choice2_Schema() : TwstPasTreeContainer;virtual;abstract;
+    function LoadComplexType_Class_Choice3_Schema() : TwstPasTreeContainer;virtual;abstract;
+    function LoadComplexType_Class_Choice4_Schema() : TwstPasTreeContainer;virtual;abstract;
     
     function LoadComplexType_Record_Schema() : TwstPasTreeContainer;virtual;abstract;
     function LoadComplexType_Record_Embedded_Schema() : TwstPasTreeContainer;virtual;abstract;
@@ -69,6 +76,10 @@ type
     function load_schema_include_fail_namespace() : TwstPasTreeContainer;virtual;abstract;
     function load_schema_include_circular1() : TwstPasTreeContainer;virtual;abstract;
     function load_schema_include_circular2() : TwstPasTreeContainer;virtual;abstract;
+
+    function load_schema_case_sensitive() : TwstPasTreeContainer;virtual;abstract;
+    function load_schema_case_sensitive2() : TwstPasTreeContainer;virtual;abstract;
+    function load_schema_case_sensitive_import() : TwstPasTreeContainer;virtual;abstract;
   published
     procedure EmptySchema();
 
@@ -88,6 +99,10 @@ type
     procedure ComplexType_Class_sequence_open_type_anyAttribute();
     procedure ComplexType_Class_all_open_type_anyAttribute();
     procedure ComplexType_Class_FalseArray();
+    procedure ComplexType_Class_Choice();
+    procedure ComplexType_Class_Choice2();
+    procedure ComplexType_Class_Choice3();
+    procedure ComplexType_Class_Choice4();
 
     procedure ComplexType_Record();
     procedure ComplexType_Record_Embedded();
@@ -113,13 +128,17 @@ type
     procedure schema_include_fail_namespace();
     procedure schema_include_circular1();
     procedure schema_include_circular2();
+
+    procedure case_sensitive();
+    procedure case_sensitive2();
+    procedure case_sensitive_import();
   end;
 
   { TTest_XsdParser }
 
   TTest_XsdParser = class(TTest_CustomXsdParser)
-  private
-    function ParseDoc(const ADoc : string) : TwstPasTreeContainer;
+  protected
+    function ParseDoc(const ADoc : string; const ACaseSensistive : Boolean) : TwstPasTreeContainer;override;
   protected
     function LoadEmptySchema() : TwstPasTreeContainer;override;
     
@@ -135,6 +154,10 @@ type
     function LoadComplexType_Class_Extend_Simple_Schema() : TwstPasTreeContainer;override;
     function LoadComplexType_Class_OpenType() : TwstPasTreeContainer;override;
     function LoadComplexType_Class_FalseArray() : TwstPasTreeContainer;override;
+    function LoadComplexType_Class_Choice_Schema() : TwstPasTreeContainer;override;
+    function LoadComplexType_Class_Choice2_Schema() : TwstPasTreeContainer;override;
+    function LoadComplexType_Class_Choice3_Schema() : TwstPasTreeContainer;override;
+    function LoadComplexType_Class_Choice4_Schema() : TwstPasTreeContainer;override;
 
     function LoadComplexType_Record_Schema() : TwstPasTreeContainer;override;
     function LoadComplexType_Record_Embedded_Schema() : TwstPasTreeContainer;override;
@@ -162,13 +185,17 @@ type
     function load_schema_include_fail_namespace() : TwstPasTreeContainer;override;
     function load_schema_include_circular1() : TwstPasTreeContainer;override;
     function load_schema_include_circular2() : TwstPasTreeContainer;override;
+
+    function load_schema_case_sensitive() : TwstPasTreeContainer;override;
+    function load_schema_case_sensitive2() : TwstPasTreeContainer;override;
+    function load_schema_case_sensitive_import() : TwstPasTreeContainer;override;
   end;
 
   { TTest_WsdlParser }
 
   TTest_WsdlParser = class(TTest_CustomXsdParser)
   private
-    function ParseDoc(const ADoc : string) : TwstPasTreeContainer;
+    function ParseDoc(const ADoc : string; const ACaseSensitive : Boolean) : TwstPasTreeContainer;override;
   protected
     function LoadEmptySchema() : TwstPasTreeContainer;override;
 
@@ -184,6 +211,10 @@ type
     function LoadComplexType_Class_Extend_Simple_Schema() : TwstPasTreeContainer;override;
     function LoadComplexType_Class_OpenType() : TwstPasTreeContainer;override;
     function LoadComplexType_Class_FalseArray() : TwstPasTreeContainer;override;
+    function LoadComplexType_Class_Choice_Schema() : TwstPasTreeContainer;override;
+    function LoadComplexType_Class_Choice2_Schema() : TwstPasTreeContainer;override;
+    function LoadComplexType_Class_Choice3_Schema() : TwstPasTreeContainer;override;
+    function LoadComplexType_Class_Choice4_Schema() : TwstPasTreeContainer;override;
 
     function LoadComplexType_Record_Schema() : TwstPasTreeContainer;override;
     function LoadComplexType_Record_Embedded_Schema() : TwstPasTreeContainer;override;
@@ -210,7 +241,11 @@ type
     function load_schema_include_parent_no_types() : TwstPasTreeContainer;override;
     function load_schema_include_fail_namespace() : TwstPasTreeContainer;override;
     function load_schema_include_circular1() : TwstPasTreeContainer;override;
-    function load_schema_include_circular2() : TwstPasTreeContainer;override;     
+    function load_schema_include_circular2() : TwstPasTreeContainer;override;
+
+    function load_schema_case_sensitive() : TwstPasTreeContainer;override;
+    function load_schema_case_sensitive2() : TwstPasTreeContainer;override;
+    function load_schema_case_sensitive_import() : TwstPasTreeContainer;override;
   published
     procedure no_binding_style();
     procedure signature_last();
@@ -298,6 +333,11 @@ begin
 end;
 
 { TTest_CustomXsdParser }
+
+function TTest_CustomXsdParser.ParseDoc(const ADoc: string): TwstPasTreeContainer;
+begin
+  Result := ParseDoc(ADoc,False);
+end;
 
 procedure TTest_CustomXsdParser.EmptySchema();
 var
@@ -989,6 +1029,240 @@ begin
         prp := TPasProperty(prpLs[0]);
         CheckIs(prp.VarType,TPasArrayType);
         CheckEquals(x_intField + 'Ex', tr.GetArrayItemExternalName(TPasArrayType(prp.VarType)));
+  finally
+    FreeAndNil(prpLs);
+    FreeAndNil(tr);
+  end;
+end;
+
+procedure TTest_CustomXsdParser.ComplexType_Class_Choice();
+var
+  tr : TwstPasTreeContainer;
+  clsType : TPasClassType;
+
+  procedure CheckProperty(const AName,ATypeName : string; const AFieldType : TPropertyType);
+  var
+    prp : TPasProperty;
+  begin
+    prp := FindMember(clsType,AName) as TPasProperty;
+      CheckNotNull(prp);
+      CheckEquals(AName,prp.Name);
+      CheckEquals(AName,tr.GetExternalName(prp));
+      CheckNotNull(prp.VarType);
+      CheckEquals(ATypeName,tr.GetExternalName(prp.VarType));
+      CheckEquals(PropertyType_Att[AFieldType],tr.IsAttributeProperty(prp));
+  end;
+
+var
+  mdl : TPasModule;
+  ls : TList;
+  elt : TPasElement;
+  aliasType : TPasAliasType;
+  i : Integer;
+  prpLs : TList;
+begin
+  tr := nil;
+  prpLs := TList.Create();
+  try
+    tr := LoadComplexType_Class_Choice_Schema();
+
+    mdl := tr.FindModule(x_targetNamespace);
+    CheckNotNull(mdl);
+    CheckEquals('complex_class_choice',mdl.Name);
+    CheckEquals(x_targetNamespace,tr.GetExternalName(mdl));
+    ls := mdl.InterfaceSection.Declarations;
+    CheckEquals(1,ls.Count);
+    elt := tr.FindElement('TSampleType1');
+      CheckNotNull(elt,'TSampleType1');
+      CheckEquals('TSampleType1',elt.Name);
+      CheckEquals('TSampleType1',tr.GetExternalName(elt));
+      CheckIs(elt,TPasClassType);
+      clsType := elt as TPasClassType;
+        prpLs.Clear();
+        for i := 0 to Pred(clsType.Members.Count) do begin
+          if TPasElement(clsType.Members[i]).InheritsFrom(TPasProperty) then
+            prpLs.Add(clsType.Members[i]);
+        end;
+      CheckEquals(2,prpLs.Count);
+        CheckProperty(x_intField,'int',ptField);
+        CheckProperty(x_strField,'string',ptField);
+  finally
+    FreeAndNil(prpLs);
+    FreeAndNil(tr);
+  end;
+end;
+
+procedure TTest_CustomXsdParser.ComplexType_Class_Choice2();
+var
+  tr : TwstPasTreeContainer;
+  clsType : TPasClassType;
+
+  procedure CheckProperty(const AName,ATypeName : string);
+  var
+    prp : TPasProperty;
+    prpType : TPasArrayType;
+  begin
+    prp := FindMember(clsType,AName) as TPasProperty;
+      CheckNotNull(prp);
+      CheckEquals(AName,prp.Name);
+      CheckEquals(AName,tr.GetExternalName(prp));
+      CheckNotNull(prp.VarType);
+      CheckIs(prp.VarType,TPasArrayType);
+      prpType := TPasArrayType(prp.VarType);
+      CheckNotNull(prpType.ElType);
+      CheckEquals(ATypeName,tr.GetExternalName(prpType.ElType));
+  end;
+
+var
+  mdl : TPasModule;
+  ls : TList;
+  elt : TPasElement;
+  aliasType : TPasAliasType;
+  i : Integer;
+  prpLs : TList;
+begin
+  tr := nil;
+  prpLs := TList.Create();
+  try
+    tr := LoadComplexType_Class_Choice2_Schema();
+
+    mdl := tr.FindModule(x_targetNamespace);
+    CheckNotNull(mdl);
+    CheckEquals('complex_class_choice2',mdl.Name);
+    CheckEquals(x_targetNamespace,tr.GetExternalName(mdl));
+    ls := mdl.InterfaceSection.Declarations;
+    elt := tr.FindElement('TSampleType1');
+      CheckNotNull(elt,'TSampleType1');
+      CheckEquals('TSampleType1',elt.Name);
+      CheckEquals('TSampleType1',tr.GetExternalName(elt));
+      CheckIs(elt,TPasClassType);
+      clsType := elt as TPasClassType;
+        prpLs.Clear();
+        for i := 0 to Pred(clsType.Members.Count) do begin
+          if TPasElement(clsType.Members[i]).InheritsFrom(TPasProperty) then
+            prpLs.Add(clsType.Members[i]);
+        end;
+      CheckEquals(2,prpLs.Count);
+        CheckProperty(x_intField,'int');
+        CheckProperty(x_strField,'string');
+  finally
+    FreeAndNil(prpLs);
+    FreeAndNil(tr);
+  end;
+end;
+
+procedure TTest_CustomXsdParser.ComplexType_Class_Choice3();
+var
+  tr : TwstPasTreeContainer;
+  clsType : TPasClassType;
+
+  procedure CheckProperty(const AName,ATypeName : string; const AFieldType : TPropertyType);
+  var
+    prp : TPasProperty;
+  begin
+    prp := FindMember(clsType,AName) as TPasProperty;
+      CheckNotNull(prp);
+      CheckEquals(AName,prp.Name);
+      CheckEquals(AName,tr.GetExternalName(prp));
+      CheckNotNull(prp.VarType);
+      CheckEquals(ATypeName,tr.GetExternalName(prp.VarType));
+      CheckEquals(PropertyType_Att[AFieldType],tr.IsAttributeProperty(prp));
+  end;
+
+var
+  mdl : TPasModule;
+  ls : TList;
+  elt : TPasElement;
+  aliasType : TPasAliasType;
+  i : Integer;
+  prpLs : TList;
+begin
+  tr := nil;
+  prpLs := TList.Create();
+  try
+    tr := LoadComplexType_Class_Choice3_Schema();
+
+    mdl := tr.FindModule(x_targetNamespace);
+    CheckNotNull(mdl);
+    CheckEquals('complex_class_choice3',mdl.Name);
+    CheckEquals(x_targetNamespace,tr.GetExternalName(mdl));
+    ls := mdl.InterfaceSection.Declarations;
+    CheckEquals(1,ls.Count);
+    elt := tr.FindElement('TSampleType1');
+      CheckNotNull(elt,'TSampleType1');
+      CheckEquals('TSampleType1',elt.Name);
+      CheckEquals('TSampleType1',tr.GetExternalName(elt));
+      CheckIs(elt,TPasClassType);
+      clsType := elt as TPasClassType;
+        prpLs.Clear();
+        for i := 0 to Pred(clsType.Members.Count) do begin
+          if TPasElement(clsType.Members[i]).InheritsFrom(TPasProperty) then
+            prpLs.Add(clsType.Members[i]);
+        end;
+      CheckEquals(4,prpLs.Count);
+        CheckProperty('intField1','int',ptField);
+        CheckProperty(x_intField,'int',ptField);
+        CheckProperty(x_strField,'string',ptField);
+        CheckProperty('dateField','date',ptField);
+  finally
+    FreeAndNil(prpLs);
+    FreeAndNil(tr);
+  end;
+end;
+
+procedure TTest_CustomXsdParser.ComplexType_Class_Choice4();
+var
+  tr : TwstPasTreeContainer;
+  clsType : TPasClassType;
+
+  procedure CheckProperty(const AName,ATypeName : string; const AFieldType : TPropertyType);
+  var
+    prp : TPasProperty;
+  begin
+    prp := FindMember(clsType,AName) as TPasProperty;
+      CheckNotNull(prp);
+      CheckEquals(AName,prp.Name);
+      CheckEquals(AName,tr.GetExternalName(prp));
+      CheckNotNull(prp.VarType);
+      CheckEquals(ATypeName,tr.GetExternalName(prp.VarType));
+      CheckEquals(PropertyType_Att[AFieldType],tr.IsAttributeProperty(prp));
+  end;
+
+var
+  mdl : TPasModule;
+  ls : TList;
+  elt : TPasElement;
+  aliasType : TPasAliasType;
+  i : Integer;
+  prpLs : TList;
+begin
+  tr := nil;
+  prpLs := TList.Create();
+  try
+    tr := LoadComplexType_Class_Choice4_Schema();
+
+    mdl := tr.FindModule(x_targetNamespace);
+    CheckNotNull(mdl);
+    CheckEquals('complex_class_choice4',mdl.Name);
+    CheckEquals(x_targetNamespace,tr.GetExternalName(mdl));
+    ls := mdl.InterfaceSection.Declarations;
+    CheckEquals(1,ls.Count);
+    elt := tr.FindElement('TSampleType1');
+      CheckNotNull(elt,'TSampleType1');
+      CheckEquals('TSampleType1',elt.Name);
+      CheckEquals('TSampleType1',tr.GetExternalName(elt));
+      CheckIs(elt,TPasClassType);
+      clsType := elt as TPasClassType;
+        prpLs.Clear();
+        for i := 0 to Pred(clsType.Members.Count) do begin
+          if TPasElement(clsType.Members[i]).InheritsFrom(TPasProperty) then
+            prpLs.Add(clsType.Members[i]);
+        end;
+      CheckEquals(4,prpLs.Count);
+        CheckProperty('intField1','int',ptField);
+        CheckProperty(x_intField,'int',ptField);
+        CheckProperty(x_strField,'string',ptField);
+        CheckProperty('dateField','date',ptField);
   finally
     FreeAndNil(prpLs);
     FreeAndNil(tr);
@@ -2164,9 +2438,278 @@ begin
   end;  
 end;
 
+procedure TTest_CustomXsdParser.case_sensitive();
+var
+  tr : TwstPasTreeContainer;
+  clsType : TPasClassType;
+
+  procedure CheckProperty(const AName,ATypeName : string; const AFieldType : TPropertyType);
+  var
+    prp : TPasProperty;
+  begin
+    prp := FindMember(clsType,AName) as TPasProperty;
+      CheckNotNull(prp);
+      CheckEquals(AName,prp.Name);
+      CheckEquals(AName,tr.GetExternalName(prp));
+      CheckNotNull(prp.VarType);
+      CheckEquals(ATypeName,tr.GetExternalName(prp.VarType));
+      CheckEquals(PropertyType_Att[AFieldType],tr.IsAttributeProperty(prp));
+  end;
+
+var
+  mdl : TPasModule;
+  ls : TList;
+  elt : TPasElement;
+  aliasType : TPasAliasType;
+  i : Integer;
+  prpLs : TList;
+begin
+  tr := nil;
+  prpLs := TList.Create();
+  try
+    tr := load_schema_case_sensitive();
+
+    mdl := tr.FindModule(x_targetNamespace);
+    CheckNotNull(mdl);
+    CheckEquals('case_sensitive',mdl.Name);
+    CheckEquals(x_targetNamespace,tr.GetExternalName(mdl));
+    ls := mdl.InterfaceSection.Declarations;
+    CheckEquals(4,ls.Count);
+
+    elt := tr.FindElement('Date');
+      CheckNotNull(elt,'Date');
+      CheckEquals('Date',tr.GetExternalName(elt));
+      CheckEquals(x_targetNamespace,tr.GetNameSpace(elt as TPasType));
+      CheckIs(elt,TPasAliasType);
+      CheckNotNull(TPasAliasType(elt).DestType,'Date.DestType');
+      CheckEquals('string',TPasAliasType(elt).DestType.Name);
+
+    elt := tr.FindElement('String');
+      CheckNotNull(elt,'String');
+      CheckEquals('String',tr.GetExternalName(elt));
+      CheckEquals(x_targetNamespace,tr.GetNameSpace(elt as TPasType));
+      CheckIs(elt,TPasAliasType);
+      CheckNotNull(TPasAliasType(elt).DestType,'String.DestType');
+      CheckEquals('string',TPasAliasType(elt).DestType.Name);
+
+    elt := tr.FindElement('Boolean');
+      CheckNotNull(elt,'Boolean');
+      CheckEquals('Boolean',tr.GetExternalName(elt));
+      CheckEquals(x_targetNamespace,tr.GetNameSpace(elt as TPasType));
+      CheckIs(elt,TPasAliasType);
+      CheckNotNull(TPasAliasType(elt).DestType,'Boolean.DestType');
+      CheckEquals('string',TPasAliasType(elt).DestType.Name);
+
+    elt := tr.FindElement(x_complexType_SampleClassType);
+      CheckNotNull(elt,x_complexType_SampleClassType);
+      CheckEquals(x_complexType_SampleClassType,elt.Name);
+      CheckEquals(x_complexType_SampleClassType,tr.GetExternalName(elt));
+      CheckIs(elt,TPasClassType);
+      clsType := elt as TPasClassType;
+        prpLs.Clear();
+        for i := 0 to Pred(clsType.Members.Count) do begin
+          if TPasElement(clsType.Members[i]).InheritsFrom(TPasProperty) then
+            prpLs.Add(clsType.Members[i]);
+        end;
+      CheckEquals(8,prpLs.Count);
+        CheckProperty('dateField','date',ptField);
+          CheckProperty('localDateField','Date',ptField);
+        CheckProperty('booleanField','boolean',ptField);
+          CheckProperty('localBooleanField','Boolean',ptField);
+        CheckProperty('stringField','string',ptField);
+          CheckProperty('localStringField','String',ptField);
+        CheckProperty('dateAtt','date',ptAttribute);
+          CheckProperty('localDateAtt','Date',ptAttribute);
+
+  finally
+    FreeAndNil(prpLs);
+    FreeAndNil(tr);
+  end;
+end;
+
+procedure TTest_CustomXsdParser.case_sensitive2();
+var
+  tr : TwstPasTreeContainer;
+  clsType : TPasClassType;
+
+  procedure CheckProperty(const AName,ATypeName : string; const AFieldType : TPropertyType);
+  var
+    prp : TPasProperty;
+  begin
+    prp := FindMember(clsType,AName) as TPasProperty;
+      CheckNotNull(prp);
+      CheckEquals(AName,prp.Name);
+      CheckEquals(AName,tr.GetExternalName(prp));
+      CheckNotNull(prp.VarType);
+      CheckEquals(ATypeName,tr.GetExternalName(prp.VarType));
+      CheckEquals(PropertyType_Att[AFieldType],tr.IsAttributeProperty(prp));
+  end;
+
+var
+  mdl : TPasModule;
+  ls : TList;
+  elt : TPasElement;
+  aliasType : TPasAliasType;
+  i : Integer;
+  prpLs : TList;
+begin
+  tr := nil;
+  prpLs := TList.Create();
+  try
+    tr := load_schema_case_sensitive2();
+
+    mdl := tr.FindModule(x_targetNamespace);
+    CheckNotNull(mdl);
+    CheckEquals('case_sensitive2',mdl.Name);
+    CheckEquals(x_targetNamespace,tr.GetExternalName(mdl));
+    ls := mdl.InterfaceSection.Declarations;
+    CheckEquals(3,ls.Count);
+
+    elt := tr.FindElement('SampleType');
+      CheckNotNull(elt,'SampleType');
+      CheckEquals('SampleType',tr.GetExternalName(elt));
+      CheckEquals(x_targetNamespace,tr.GetNameSpace(elt as TPasType));
+      CheckIs(elt,TPasAliasType);
+      CheckNotNull(TPasAliasType(elt).DestType,'SampleType.DestType');
+      CheckEquals('string',TPasAliasType(elt).DestType.Name);
+
+    elt := tr.FindElement('SAMPLETYPE');
+      CheckNotNull(elt,'SAMPLETYPE');
+      CheckEquals('SAMPLETYPE',tr.GetExternalName(elt));
+      CheckEquals(x_targetNamespace,tr.GetNameSpace(elt as TPasType));
+      CheckIs(elt,TPasAliasType);
+      CheckNotNull(TPasAliasType(elt).DestType,'SAMPLETYPE.DestType');
+      CheckEquals('string',TPasAliasType(elt).DestType.Name);
+
+    elt := tr.FindElement(x_complexType_SampleClassType);
+      CheckNotNull(elt,x_complexType_SampleClassType);
+      CheckEquals(x_complexType_SampleClassType,elt.Name);
+      CheckEquals(x_complexType_SampleClassType,tr.GetExternalName(elt));
+      CheckIs(elt,TPasClassType);
+      clsType := elt as TPasClassType;
+        prpLs.Clear();
+        for i := 0 to Pred(clsType.Members.Count) do begin
+          if TPasElement(clsType.Members[i]).InheritsFrom(TPasProperty) then
+            prpLs.Add(clsType.Members[i]);
+        end;
+      CheckEquals(2,prpLs.Count);
+        CheckProperty('Field1','SampleType',ptField);
+        CheckProperty('Field2','SAMPLETYPE',ptField);
+
+  finally
+    FreeAndNil(prpLs);
+    FreeAndNil(tr);
+  end;
+end;
+
+procedure TTest_CustomXsdParser.case_sensitive_import();
+const CONST_NS = 'urn:wst-test3';
+var
+  tr : TwstPasTreeContainer;
+  clsType : TPasClassType;
+
+  procedure CheckProperty(const AName,ATypeName : string; const AFieldType : TPropertyType);
+  var
+    prp : TPasProperty;
+  begin
+    prp := FindMember(clsType,AName) as TPasProperty;
+      CheckNotNull(prp);
+      CheckEquals(AName,prp.Name);
+      CheckEquals(AName,tr.GetExternalName(prp));
+      CheckNotNull(prp.VarType);
+      CheckEquals(ATypeName,tr.GetExternalName(prp.VarType));
+      CheckEquals(PropertyType_Att[AFieldType],tr.IsAttributeProperty(prp));
+  end;
+
+var
+  mdl : TPasModule;
+  ls : TList;
+  elt : TPasElement;
+  aliasType : TPasAliasType;
+  i : Integer;
+  prpLs : TList;
+begin
+  tr := nil;
+  prpLs := TList.Create();
+  try
+    tr := load_schema_case_sensitive_import();
+    //-----------------------------------------
+    mdl := tr.FindModule('urn:wst-test');
+    CheckNotNull(mdl);
+    CheckEquals('case_sensitive2',mdl.Name);
+    CheckEquals('urn:wst-test',tr.GetExternalName(mdl));
+    ls := mdl.InterfaceSection.Declarations;
+    CheckEquals(3,ls.Count);
+
+    elt := tr.FindElement('SampleType');
+      CheckNotNull(elt,'SampleType');
+      CheckEquals('SampleType',tr.GetExternalName(elt));
+      CheckEquals('urn:wst-test',tr.GetNameSpace(elt as TPasType));
+      CheckIs(elt,TPasAliasType);
+      CheckNotNull(TPasAliasType(elt).DestType,'SampleType.DestType');
+      CheckEquals('string',TPasAliasType(elt).DestType.Name);
+
+    elt := tr.FindElement('SAMPLETYPE');
+      CheckNotNull(elt,'SAMPLETYPE');
+      CheckEquals('SAMPLETYPE',tr.GetExternalName(elt));
+      CheckEquals('urn:wst-test',tr.GetNameSpace(elt as TPasType));
+      CheckIs(elt,TPasAliasType);
+      CheckNotNull(TPasAliasType(elt).DestType,'SAMPLETYPE.DestType');
+      CheckEquals('string',TPasAliasType(elt).DestType.Name);
+
+    //-----------------------------------------
+    mdl := tr.FindModule(CONST_NS);
+    CheckNotNull(mdl);
+    CheckEquals('case_sensitive3',mdl.Name);
+    CheckEquals(CONST_NS,tr.GetExternalName(mdl));
+    ls := mdl.InterfaceSection.Declarations;
+    CheckEquals(3,ls.Count);
+
+    elt := tr.FindElement('TypeA');
+      CheckNotNull(elt,'TypeA');
+      CheckEquals('TypeA',tr.GetExternalName(elt));
+      CheckEquals(CONST_NS,tr.GetNameSpace(elt as TPasType));
+      CheckIs(elt,TPasAliasType);
+      CheckNotNull(TPasAliasType(elt).DestType,'TypeA.DestType');
+      CheckEquals('string',TPasAliasType(elt).DestType.Name);
+
+    elt := tr.FindElement('TYPEA');
+      CheckNotNull(elt,'TYPEA');
+      CheckEquals('TYPEA',tr.GetExternalName(elt));
+      CheckEquals(CONST_NS,tr.GetNameSpace(elt as TPasType));
+      CheckIs(elt,TPasAliasType);
+      CheckNotNull(TPasAliasType(elt).DestType,'TYPEA.DestType');
+      CheckEquals('string',TPasAliasType(elt).DestType.Name);
+
+    elt := tr.FindElement('CompoundType');
+      CheckNotNull(elt,'CompoundType');
+      CheckEquals('CompoundType',elt.Name);
+      CheckEquals('CompoundType',tr.GetExternalName(elt));
+      CheckIs(elt,TPasClassType);
+      clsType := elt as TPasClassType;
+        prpLs.Clear();
+        for i := 0 to Pred(clsType.Members.Count) do begin
+          if TPasElement(clsType.Members[i]).InheritsFrom(TPasProperty) then
+            prpLs.Add(clsType.Members[i]);
+        end;
+      CheckEquals(4,prpLs.Count);
+        CheckProperty('f1','SampleType',ptField);
+        CheckProperty('f2','SAMPLETYPE',ptField);
+        CheckProperty('f3','TypeA',ptField);
+        CheckProperty('f4','TYPEA',ptField);
+
+  finally
+    FreeAndNil(prpLs);
+    FreeAndNil(tr);
+  end;
+end;
+
 { TTest_XsdParser }
 
-function TTest_XsdParser.ParseDoc(const ADoc: string): TwstPasTreeContainer;
+function TTest_XsdParser.ParseDoc(
+  const ADoc: string;
+  const ACaseSensistive: Boolean
+): TwstPasTreeContainer;
 var
   locDoc : TXMLDocument;
   prs : IXsdPaser;
@@ -2177,6 +2720,7 @@ begin
   locDoc := LoadXmlFile(fileName);
   try
     Result := TwstPasTreeContainer.Create();
+    Result.CaseSensitive := ACaseSensistive;
     CreateWstInterfaceSymbolTable(Result);
     prs := TXsdParser.Create(locDoc,Result,ADoc);
     prsCtx := prs as IParserContext;
@@ -2337,6 +2881,21 @@ begin
   Result := ParseDoc('include_circular2');
 end;
 
+function TTest_XsdParser.load_schema_case_sensitive(): TwstPasTreeContainer;
+begin
+  Result := ParseDoc('case_sensitive',True);
+end;
+
+function TTest_XsdParser.load_schema_case_sensitive2(): TwstPasTreeContainer;
+begin
+  Result := ParseDoc('case_sensitive2',True);
+end;
+
+function TTest_XsdParser.load_schema_case_sensitive_import(): TwstPasTreeContainer;
+begin
+  Result := ParseDoc('case_sensitive3',True);
+end;
+
 function TTest_XsdParser.load_class_widechar_property() : TwstPasTreeContainer;
 begin
   Result := ParseDoc('class_widechar_property');
@@ -2352,9 +2911,32 @@ begin
   Result := ParseDoc('complex_class_false_array');
 end;
 
+function TTest_XsdParser.LoadComplexType_Class_Choice_Schema(): TwstPasTreeContainer;
+begin
+  Result := ParseDoc('complex_class_choice');
+end;
+
+function TTest_XsdParser.LoadComplexType_Class_Choice2_Schema(): TwstPasTreeContainer;
+begin
+  Result := ParseDoc('complex_class_choice2');
+end;
+
+function TTest_XsdParser.LoadComplexType_Class_Choice3_Schema(): TwstPasTreeContainer;
+begin
+  Result := ParseDoc('complex_class_choice3');
+end;
+
+function TTest_XsdParser.LoadComplexType_Class_Choice4_Schema(): TwstPasTreeContainer;
+begin
+  Result := ParseDoc('complex_class_choice4');
+end;
+
 { TTest_WsdlParser }
 
-function TTest_WsdlParser.ParseDoc(const ADoc: string): TwstPasTreeContainer;
+function TTest_WsdlParser.ParseDoc(
+  const ADoc: string;
+  const ACaseSensitive: Boolean
+) : TwstPasTreeContainer;
 var
   locDoc : TXMLDocument;
   prs : IParser;
@@ -2365,6 +2947,7 @@ begin
   locDoc := LoadXmlFile(fileName);
   try
     Result := TwstPasTreeContainer.Create();
+    Result.CaseSensitive := ACaseSensitive;
     CreateWstInterfaceSymbolTable(Result);
     prs := TWsdlParser.Create(locDoc,Result);
     prsCtx := prs as IParserContext;
@@ -2418,6 +3001,26 @@ end;
 function TTest_WsdlParser.LoadComplexType_Class_FalseArray() : TwstPasTreeContainer;
 begin
   Result := ParseDoc('complex_class_false_array');
+end;
+
+function TTest_WsdlParser.LoadComplexType_Class_Choice_Schema(): TwstPasTreeContainer;
+begin
+  Result := ParseDoc('complex_class_choice');
+end;
+
+function TTest_WsdlParser.LoadComplexType_Class_Choice2_Schema(): TwstPasTreeContainer;
+begin
+  Result := ParseDoc('complex_class_choice2');
+end;
+
+function TTest_WsdlParser.LoadComplexType_Class_Choice3_Schema(): TwstPasTreeContainer;
+begin
+  Result := ParseDoc('complex_class_choice3');
+end;
+
+function TTest_WsdlParser.LoadComplexType_Class_Choice4_Schema(): TwstPasTreeContainer;
+begin
+  Result := ParseDoc('complex_class_choice4');
 end;
 
 function TTest_WsdlParser.LoadComplexType_Record_Schema(): TwstPasTreeContainer;
@@ -3102,6 +3705,21 @@ end;
 function TTest_WsdlParser.load_schema_include_circular2() : TwstPasTreeContainer;  
 begin
   Result := ParseDoc('include_circular2');
+end;
+
+function TTest_WsdlParser.load_schema_case_sensitive(): TwstPasTreeContainer;
+begin
+  Result := ParseDoc('case_sensitive',True);
+end;
+
+function TTest_WsdlParser.load_schema_case_sensitive2(): TwstPasTreeContainer;
+begin
+  Result := ParseDoc('case_sensitive2',True);
+end;
+
+function TTest_WsdlParser.load_schema_case_sensitive_import(): TwstPasTreeContainer;
+begin
+  Result := ParseDoc('case_sensitive3',True);
 end;
 
 initialization
