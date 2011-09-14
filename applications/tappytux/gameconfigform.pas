@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls,
-  tappymodules;
+  tappymodules, gameplayform;
 
 type
 
@@ -30,7 +30,10 @@ type
     ltbWordlist: TListBox;
     memoGameType: TMemo;
     memoCredits: TMemo;
+    procedure btnLoadClick(Sender: TObject);
     procedure comboGameTypeChange(Sender: TObject);
+    procedure comboSoundChange(Sender: TObject);
+    procedure FormClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
     { private declarations }
@@ -43,6 +46,7 @@ var
   Form1: TForm1;
 
 implementation
+
 
 {$R *.lfm}
 
@@ -67,6 +71,37 @@ begin
     end;
 
   end;
+
+end;
+
+procedure TForm1.btnLoadClick(Sender: TObject);
+begin
+  Hide;
+  Form2.Show;
+
+end;
+
+procedure TForm1.comboSoundChange(Sender: TObject);
+begin
+
+  {
+  Case comboSound.itemIndex of
+  0: begin
+    TTappyGameData.SndFX = true;
+    end;
+
+  1: begin
+    TTappyGameData.SndFX = false;
+    end;
+
+
+  end; }
+
+
+end;
+
+procedure TForm1.FormClick(Sender: TObject);
+begin
 
 end;
 

@@ -34,12 +34,12 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="9">
+    <Units Count="10">
       <Unit0>
         <Filename Value="tappytux.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="tappytux"/>
-        <UsageCount Value="27"/>
+        <UsageCount Value="34"/>
       </Unit0>
       <Unit1>
         <Filename Value="gameconfigform.pas"/>
@@ -47,14 +47,13 @@
         <ComponentName Value="Form1"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="gameconfigform"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="67"/>
-        <CursorPos X="17" Y="75"/>
-        <FoldState Value=" T8Y21,"/>
-        <UsageCount Value="27"/>
+        <TopLine Value="96"/>
+        <CursorPos X="70" Y="97"/>
+        <UsageCount Value="34"/>
         <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="gameplayform.pas"/>
@@ -62,11 +61,11 @@
         <ComponentName Value="Form2"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="gameplayform"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="19"/>
-        <UsageCount Value="27"/>
+        <TopLine Value="28"/>
+        <CursorPos X="83" Y="42"/>
+        <UsageCount Value="34"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit2>
@@ -76,9 +75,9 @@
         <UnitName Value="tappyconfig"/>
         <EditorIndex Value="4"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="16"/>
+        <TopLine Value="1"/>
         <CursorPos X="21" Y="24"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="28"/>
         <Loaded Value="True"/>
       </Unit3>
       <Unit4>
@@ -87,9 +86,9 @@
         <UnitName Value="tappydrawer"/>
         <EditorIndex Value="5"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="272"/>
+        <TopLine Value="67"/>
         <CursorPos X="70" Y="291"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="28"/>
         <Loaded Value="True"/>
       </Unit4>
       <Unit5>
@@ -98,9 +97,9 @@
         <UnitName Value="tappygamedata"/>
         <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="14"/>
-        <CursorPos X="24" Y="23"/>
-        <UsageCount Value="21"/>
+        <TopLine Value="1"/>
+        <CursorPos X="35" Y="72"/>
+        <UsageCount Value="28"/>
         <Loaded Value="True"/>
       </Unit5>
       <Unit6>
@@ -109,155 +108,161 @@
         <UnitName Value="mod_tappywords"/>
         <EditorIndex Value="6"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="6"/>
-        <CursorPos X="1" Y="20"/>
-        <UsageCount Value="21"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="15"/>
+        <UsageCount Value="28"/>
         <Loaded Value="True"/>
       </Unit6>
       <Unit7>
         <Filename Value="tappymodules.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="tappymodules"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="7"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="66"/>
+        <TopLine Value="1"/>
         <CursorPos X="30" Y="70"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="28"/>
         <Loaded Value="True"/>
       </Unit7>
       <Unit8>
         <Filename Value="mod_tappymath.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="mod_tappymath"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="19"/>
-        <CursorPos X="3" Y="38"/>
-        <UsageCount Value="20"/>
+        <TopLine Value="1"/>
+        <CursorPos X="6" Y="39"/>
+        <UsageCount Value="27"/>
         <Loaded Value="True"/>
       </Unit8>
+      <Unit9>
+        <Filename Value="..\..\..\Lazarus\lcl\include\fpimagebitmap.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="130"/>
+        <CursorPos X="1" Y="146"/>
+        <UsageCount Value="10"/>
+      </Unit9>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="tappyconfig.pas"/>
-        <Caret Line="8" Column="37" TopLine="1"/>
+        <Filename Value="gameconfigform.pas"/>
+        <Caret Line="53" Column="82" TopLine="53"/>
       </Position1>
       <Position2>
-        <Filename Value="tappydrawer.pas"/>
-        <Caret Line="33" Column="3" TopLine="27"/>
+        <Filename Value="gameconfigform.pas"/>
+        <Caret Line="92" Column="6" TopLine="92"/>
       </Position2>
       <Position3>
-        <Filename Value="tappymodules.pas"/>
-        <Caret Line="17" Column="11" TopLine="5"/>
+        <Filename Value="gameconfigform.pas"/>
+        <Caret Line="77" Column="3" TopLine="77"/>
       </Position3>
       <Position4>
-        <Filename Value="tappymodules.pas"/>
-        <Caret Line="18" Column="36" TopLine="14"/>
+        <Filename Value="gameconfigform.pas"/>
+        <Caret Line="104" Column="3" TopLine="104"/>
       </Position4>
       <Position5>
-        <Filename Value="tappymodules.pas"/>
-        <Caret Line="19" Column="34" TopLine="5"/>
+        <Filename Value="gameconfigform.pas"/>
+        <Caret Line="78" Column="3" TopLine="60"/>
       </Position5>
       <Position6>
-        <Filename Value="tappymodules.pas"/>
-        <Caret Line="20" Column="41" TopLine="6"/>
+        <Filename Value="gameplayform.pas"/>
+        <Caret Line="18" Column="14" TopLine="1"/>
       </Position6>
       <Position7>
-        <Filename Value="tappydrawer.pas"/>
-        <Caret Line="165" Column="46" TopLine="152"/>
+        <Filename Value="gameplayform.pas"/>
+        <Caret Line="23" Column="14" TopLine="1"/>
       </Position7>
       <Position8>
-        <Filename Value="tappymodules.pas"/>
-        <Caret Line="50" Column="33" TopLine="33"/>
+        <Filename Value="gameplayform.pas"/>
+        <Caret Line="21" Column="14" TopLine="6"/>
       </Position8>
       <Position9>
-        <Filename Value="tappymodules.pas"/>
-        <Caret Line="8" Column="30" TopLine="1"/>
+        <Filename Value="gameplayform.pas"/>
+        <Caret Line="35" Column="8" TopLine="8"/>
       </Position9>
       <Position10>
-        <Filename Value="tappymodules.pas"/>
-        <Caret Line="38" Column="50" TopLine="16"/>
+        <Filename Value="gameplayform.pas"/>
+        <Caret Line="8" Column="77" TopLine="1"/>
       </Position10>
       <Position11>
-        <Filename Value="tappydrawer.pas"/>
-        <Caret Line="10" Column="43" TopLine="1"/>
+        <Filename Value="gameplayform.pas"/>
+        <Caret Line="9" Column="3" TopLine="1"/>
       </Position11>
       <Position12>
-        <Filename Value="tappydrawer.pas"/>
-        <Caret Line="187" Column="5" TopLine="172"/>
+        <Filename Value="gameconfigform.pas"/>
+        <Caret Line="98" Column="19" TopLine="71"/>
       </Position12>
       <Position13>
-        <Filename Value="tappymodules.pas"/>
-        <Caret Line="17" Column="31" TopLine="1"/>
+        <Filename Value="gameconfigform.pas"/>
+        <Caret Line="96" Column="6" TopLine="73"/>
       </Position13>
       <Position14>
-        <Filename Value="tappymodules.pas"/>
-        <Caret Line="19" Column="35" TopLine="4"/>
+        <Filename Value="gameplayform.pas"/>
+        <Caret Line="29" Column="7" TopLine="10"/>
       </Position14>
       <Position15>
-        <Filename Value="tappydrawer.pas"/>
-        <Caret Line="45" Column="1" TopLine="34"/>
+        <Filename Value="gameplayform.pas"/>
+        <Caret Line="35" Column="79" TopLine="21"/>
       </Position15>
       <Position16>
-        <Filename Value="tappydrawer.pas"/>
-        <Caret Line="291" Column="1" TopLine="272"/>
+        <Filename Value="gameplayform.pas"/>
+        <Caret Line="23" Column="20" TopLine="4"/>
       </Position16>
       <Position17>
-        <Filename Value="tappydrawer.pas"/>
-        <Caret Line="51" Column="57" TopLine="51"/>
+        <Filename Value="gameplayform.pas"/>
+        <Caret Line="48" Column="41" TopLine="21"/>
       </Position17>
       <Position18>
-        <Filename Value="mod_tappywords.pas"/>
-        <Caret Line="12" Column="24" TopLine="1"/>
+        <Filename Value="gameconfigform.pas"/>
+        <Caret Line="105" Column="52" TopLine="69"/>
       </Position18>
       <Position19>
-        <Filename Value="mod_tappywords.pas"/>
-        <Caret Line="17" Column="11" TopLine="1"/>
+        <Filename Value="gameconfigform.pas"/>
+        <Caret Line="108" Column="38" TopLine="96"/>
       </Position19>
       <Position20>
-        <Filename Value="mod_tappymath.pas"/>
-        <Caret Line="16" Column="3" TopLine="1"/>
+        <Filename Value="gameplayform.pas"/>
+        <Caret Line="23" Column="28" TopLine="9"/>
       </Position20>
       <Position21>
-        <Filename Value="mod_tappymath.pas"/>
-        <Caret Line="15" Column="25" TopLine="9"/>
+        <Filename Value="gameplayform.pas"/>
+        <Caret Line="47" Column="40" TopLine="23"/>
       </Position21>
       <Position22>
-        <Filename Value="tappymodules.pas"/>
-        <Caret Line="21" Column="28" TopLine="8"/>
+        <Filename Value="gameplayform.pas"/>
+        <Caret Line="30" Column="35" TopLine="26"/>
       </Position22>
       <Position23>
-        <Filename Value="tappymodules.pas"/>
-        <Caret Line="98" Column="40" TopLine="93"/>
+        <Filename Value="gameplayform.pas"/>
+        <Caret Line="32" Column="35" TopLine="28"/>
       </Position23>
       <Position24>
-        <Filename Value="mod_tappywords.pas"/>
-        <Caret Line="18" Column="24" TopLine="8"/>
+        <Filename Value="gameplayform.pas"/>
+        <Caret Line="31" Column="35" TopLine="27"/>
       </Position24>
       <Position25>
-        <Filename Value="mod_tappymath.pas"/>
-        <Caret Line="18" Column="49" TopLine="9"/>
+        <Filename Value="gameplayform.pas"/>
+        <Caret Line="50" Column="1" TopLine="22"/>
       </Position25>
       <Position26>
-        <Filename Value="gameconfigform.pas"/>
-        <Caret Line="37" Column="29" TopLine="19"/>
+        <Filename Value="gameplayform.pas"/>
+        <Caret Line="51" Column="1" TopLine="23"/>
       </Position26>
       <Position27>
-        <Filename Value="gameconfigform.pas"/>
-        <Caret Line="76" Column="8" TopLine="55"/>
+        <Filename Value="gameplayform.pas"/>
+        <Caret Line="52" Column="1" TopLine="24"/>
       </Position27>
       <Position28>
-        <Filename Value="gameconfigform.pas"/>
-        <Caret Line="79" Column="53" TopLine="58"/>
+        <Filename Value="gameplayform.pas"/>
+        <Caret Line="53" Column="1" TopLine="25"/>
       </Position28>
       <Position29>
-        <Filename Value="gameconfigform.pas"/>
-        <Caret Line="10" Column="15" TopLine="1"/>
+        <Filename Value="gameplayform.pas"/>
+        <Caret Line="54" Column="1" TopLine="26"/>
       </Position29>
       <Position30>
-        <Filename Value="gameconfigform.pas"/>
-        <Caret Line="78" Column="29" TopLine="61"/>
+        <Filename Value="gameplayform.pas"/>
+        <Caret Line="55" Column="1" TopLine="27"/>
       </Position30>
     </JumpHistory>
   </ProjectOptions>

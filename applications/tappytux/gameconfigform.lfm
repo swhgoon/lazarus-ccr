@@ -6,14 +6,15 @@ object Form1: TForm1
   Caption = 'TappyTux Loader'
   ClientHeight = 436
   ClientWidth = 582
+  OnClick = btnLoadClick
   OnCreate = FormCreate
   LCLVersion = '0.9.31'
   object comboGameType: TComboBox
     Left = 17
-    Height = 21
+    Height = 23
     Top = 38
     Width = 100
-    ItemHeight = 0
+    ItemHeight = 15
     OnChange = comboGameTypeChange
     TabOrder = 0
     Text = 'GameType'
@@ -28,9 +29,9 @@ object Form1: TForm1
   end
   object listWordlist: TLabel
     Left = 208
-    Height = 17
+    Height = 16
     Top = 16
-    Width = 93
+    Width = 79
     Caption = 'Select Wordlist'
     ParentColor = False
   end
@@ -51,17 +52,17 @@ object Form1: TForm1
   end
   object lblSettings: TLabel
     Left = 400
-    Height = 17
+    Height = 16
     Top = 16
-    Width = 52
+    Width = 43
     Caption = 'Settings'
     ParentColor = False
   end
   object lblSound: TLabel
     Left = 408
-    Height = 17
+    Height = 16
     Top = 47
-    Width = 63
+    Width = 53
     Caption = 'Sound FX'
     Font.Style = [fsBold]
     ParentColor = False
@@ -69,9 +70,9 @@ object Form1: TForm1
   end
   object lblMusic: TLabel
     Left = 408
-    Height = 17
+    Height = 16
     Top = 79
-    Width = 40
+    Width = 33
     Caption = 'Music'
     Font.Style = [fsBold]
     ParentColor = False
@@ -79,9 +80,9 @@ object Form1: TForm1
   end
   object lblLevel: TLabel
     Left = 408
-    Height = 17
+    Height = 16
     Top = 111
-    Width = 93
+    Width = 79
     Caption = 'Starting Level'
     Font.Style = [fsBold]
     ParentColor = False
@@ -89,23 +90,24 @@ object Form1: TForm1
   end
   object comboSound: TComboBox
     Left = 493
-    Height = 21
+    Height = 23
     Top = 40
     Width = 68
-    ItemHeight = 0
+    ItemHeight = 15
     Items.Strings = (
       'ON'
       'OFF'
     )
+    OnChange = comboSoundChange
     TabOrder = 3
     Text = 'Select'
   end
   object comboMusic: TComboBox
     Left = 493
-    Height = 21
+    Height = 23
     Top = 72
     Width = 68
-    ItemHeight = 0
+    ItemHeight = 15
     Items.Strings = (
       'ON'
       'OFF'
@@ -115,10 +117,10 @@ object Form1: TForm1
   end
   object comboLevel: TComboBox
     Left = 493
-    Height = 21
+    Height = 23
     Top = 104
     Width = 68
-    ItemHeight = 0
+    ItemHeight = 15
     Items.Strings = (
       '1'
       '2'
@@ -136,9 +138,9 @@ object Form1: TForm1
   end
   object lblCredits: TLabel
     Left = 400
-    Height = 17
+    Height = 16
     Top = 168
-    Width = 46
+    Width = 38
     Caption = 'Credits'
     ParentColor = False
   end
@@ -173,6 +175,7 @@ object Form1: TForm1
     Top = 379
     Width = 542
     Caption = 'Load'
+    OnClick = btnLoadClick
     TabOrder = 7
   end
   object btnWordlist: TButton
@@ -185,9 +188,9 @@ object Form1: TForm1
   end
   object lblGameType: TLabel
     Left = 16
-    Height = 17
+    Height = 16
     Top = 16
-    Width = 67
+    Width = 58
     Caption = 'GameType'
     ParentColor = False
   end
