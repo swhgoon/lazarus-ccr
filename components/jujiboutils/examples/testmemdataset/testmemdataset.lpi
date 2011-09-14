@@ -40,7 +40,7 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="3">
       <Unit0>
         <Filename Value="testmemdataset.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -53,6 +53,11 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="main"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="jcontrolutils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="jcontrolutils"/>
+      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -72,6 +77,9 @@
       </Options>
     </Linking>
     <Other>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>

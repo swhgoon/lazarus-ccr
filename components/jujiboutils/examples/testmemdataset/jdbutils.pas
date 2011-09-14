@@ -22,7 +22,7 @@ unit jdbutils;
 interface
 
 uses
-  Classes, StdCtrls, SysUtils, DBCtrls;
+  Classes, SysUtils, DBCtrls, jcontrolutils;
 
 type
 
@@ -71,7 +71,6 @@ type
     procedure setFormat(const AValue: string);
     procedure OnKeyPress(Sender: TObject; var key: char);
     function IsValidDate(const Value: string): boolean;
-    function NormalizeDate(const Value: string): string;
   public
     function isNull: boolean;
     property format: string read getFormat write setFormat;
@@ -83,9 +82,6 @@ var
   integerDbControl: TJDBIntegerCtrl;
   currencyDbControl: TJDBCurrencyCtrl;
 
-function replacechar(const s: string; ch1: char; ch2: char): string;
-function countchar(const s: string; ch: char): integer;
-procedure Split(const Delimiter: char; Input: string; Strings: TStrings);
 
 implementation
 
@@ -225,7 +221,7 @@ procedure TJDBDateCtrl.myEditOnEditingDone(Sender: TObject);
 var
   bufCaption: string;
 begin
-  bufCaption := NormalizeDate(myEdit.Caption);
+  bufCaption := NormalizeDate(myEdit.Caption, theValue);
   if Length(myEdit.Caption) = 0 then
     theValue := 0
   else
@@ -270,30 +266,6 @@ begin
     Result := True;
 end;
 
-function TJDBDateCtrl.NormalizeDate(const Value: string): string;
-var
-  texto: string;
-  i: integer;
-  d, m, y: word;
-begin
-  if theValue = 0 then
-    DecodeDate(Now, y, m, d)
-  else
-    decodedate(theValue, y, m, d);
-  // normalize date
-  texto := Value;
-  texto := replacechar(texto, '.', DateSeparator);
-  texto := replacechar(texto, '-', DateSeparator);
-  texto := replacechar(texto, '/', DateSeparator);
-  i := countchar(texto, DateSeparator);
-
-  case i of
-    1: texto := texto + DateSeparator + IntToStr(y);
-    0: texto := texto + DateSeparator + IntToStr(m) + DateSeparator + IntToStr(y);
-  end;
-  Result := texto;
-end;
-
 function TJDBDateCtrl.isNull: boolean;
 begin
   Result := theValue = 0;
@@ -307,34 +279,6 @@ begin
   format := 'dd/mm/yyyy';
   theValue := myEdit.Field.AsDateTime;
   myEdit.SelectAll;
-end;
-
-function replacechar(const s: string; ch1: char; ch2: char): string;
-var
-  i: integer;
-begin
-  Result := s;
-  for i := 1 to length(Result) do
-    if Result[i] = ch1 then
-      Result[i] := ch2;
-end;
-
-function countchar(const s: string; ch: char): integer;
-var
-  i: integer;
-begin
-  Result := 0;
-  for i := 1 to length(s) do
-    if s[i] = ch then
-      Inc(Result);
-end;
-
-procedure Split(const Delimiter: char; Input: string; Strings: TStrings);
-begin
-  Assert(Assigned(Strings));
-  Strings.Clear;
-  Strings.Delimiter := Delimiter;
-  Strings.DelimitedText := Input;
 end;
 
 procedure CreateResources;

@@ -22,7 +22,8 @@ unit jdbgridutils;
 interface
 
 uses
-  Classes, SysUtils, Grids, Dialogs, StdCtrls, LCLType, DBGrids, Controls, DB;
+  Classes, SysUtils, Grids, Dialogs, LCLType, DBGrids, Controls, DB,
+  jcontrolutils;
 
 type
 
@@ -101,10 +102,6 @@ var
   dateDbGridControl: TJDbGridDateCtrl;
   integerDbGridControl: TJDbGridIntegerCtrl;
   currencyDbGridControl: TJDbGridCurrencyCtrl;
-
-function replacechar(const s: string; ch1: char; ch2: char): string;
-function countchar(const s: string; ch: char): integer;
-procedure Split(const Delimiter: char; Input: string; Strings: TStrings);
 
 implementation
 
@@ -501,34 +498,6 @@ function TJDbGridIntegerCtrl.Editor(aGrid: TDBGrid): TStringCellEditor;
 begin
   theGrid := aGrid;
   Result := CellEditor;
-end;
-
-function replacechar(const s: string; ch1: char; ch2: char): string;
-var
-  i: integer;
-begin
-  Result := s;
-  for i := 1 to length(Result) do
-    if Result[i] = ch1 then
-      Result[i] := ch2;
-end;
-
-function countchar(const s: string; ch: char): integer;
-var
-  i: integer;
-begin
-  Result := 0;
-  for i := 1 to length(s) do
-    if s[i] = ch then
-      Inc(Result);
-end;
-
-procedure Split(const Delimiter: char; Input: string; Strings: TStrings);
-begin
-  Assert(Assigned(Strings));
-  Strings.Clear;
-  Strings.Delimiter := Delimiter;
-  Strings.DelimitedText := Input;
 end;
 
 procedure CreateResources;
