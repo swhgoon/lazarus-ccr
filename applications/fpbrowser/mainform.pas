@@ -117,11 +117,14 @@ type
     procedure InitializeForm();
     procedure UpdateModulesMenu();
     procedure HandleModuleMenuItemClick(Sender: TObject);
+    function  GetCurrentPageLoader: TPageLoader;
+    procedure HandlePageChanged(Sender: TObject);
   public
     { Public declarations }
     CurrentTab: Integer;
     procedure LoadURL(AURL: string);
     procedure AddBrowserTab(AURL: string; AGoToTab: Boolean);
+    procedure AddMemoTab(AText: TStringList; ACaption: string; AGoToTab: Boolean);
     procedure AddURLToHistory(AURL: string);
     procedure HandlePageLoaderProgress(APercent: Integer);
     procedure HandlePageLoaderTerminated(Sender: TObject);
@@ -178,9 +181,14 @@ begin
 end;
 
 procedure TformBrowser.menuViewDebugClick(Sender: TObject);
+var
+  lContents, lDebugInfo: TStringList;
 begin
-  pageBrowser.ShowTabs := True;
-  pageBrowser.ActivePageIndex := 2;
+  lContents := GetCurrentBrowserViewer().MyPageLoader.ContentsList;
+  lDebugInfo := GetCurrentBrowserViewer().MyPageLoader.DebugInfo;
+
+  AddMemoTab(lContents, 'Source', False);
+  AddMemoTab(lDebugInfo, 'Debug', False);
 end;
 
 {The Show Images menu item was clicked}
@@ -235,6 +243,7 @@ begin
   History := TStringList.Create;
 
   AddBrowserTab('', True);
+  pageBrowser.OnPageChanged := HandlePageChanged;
 
   Position := poScreenCenter;
 
@@ -317,6 +326,22 @@ begin
   lModuleNum := lItem.Parent.IndexOf(lItem);
   lModule := GetBrowserModule(lModuleNum);
   lModule.Activated := lNewState;
+end;
+
+function TformBrowser.GetCurrentPageLoader: TPageLoader;
+var
+  lViewer: TBrowserViewer;
+begin
+  lViewer := GetCurrentBrowserViewer();
+  Result := lViewer.MyPageLoader;
+end;
+
+procedure TformBrowser.HandlePageChanged(Sender: TObject);
+var
+  lIndex: Integer;
+begin
+  lIndex := pageBrowser.ActivePageIndex;
+  SetCurrentBrowserViewer(lIndex);
 end;
 
 procedure TformBrowser.HistoryChange(Sender: TObject);
@@ -803,6 +828,33 @@ begin
   end;
 end;
 
+procedure TformBrowser.AddMemoTab(AText: TStringList; ACaption: string;
+  AGoToTab: Boolean);
+var
+  lTabSheet: TTabSheet;
+  lMemo: TMemo;
+  lViewer: TBrowserViewer;
+begin
+  lTabSheet := pageBrowser.AddTabSheet(); // This call requires Lazarus 0.9.31+
+  lTabSheet.Caption := ACaption;
+
+  // Add the top panel of the tab with buttons and the edit box
+  lMemo := TMemo.Create(lTabSheet);
+  lMemo.Parent := lTabSheet;
+  lMemo.Align := alClient;
+  lMemo.Lines.Assign(AText);
+  lMemo.ScrollBars := ssBoth;
+
+  // Add a token viewer for the Memo
+  lViewer := AddBrowserViewer();
+
+  if AGoToTab then
+  begin
+    CurrentTab := GetBrowerViewerCount() - 1;
+    SetCurrentBrowserViewer(CurrentTab);
+  end;
+end;
+
 procedure TformBrowser.AddURLToHistory(AURL: string);
 begin
 {  History.Add(AURL);
@@ -821,11 +873,7 @@ begin
 {  labelProgress.Caption := 'Finished Loading';
   progressBar.Position := 100;
 
-  // Load source and debug info
-  memoSource.Lines.Clear();
-  memoSource.Lines.AddStrings(MyPageLoader.ContentsList);
-  memoDebug.Lines.Clear();
-  memoDebug.Lines.AddStrings(MyPageLoader.DebugInfo);
+
   AddURLToHistory(MyPageLoader.LastPageURL);}
 end;
 

@@ -66,6 +66,7 @@ begin
   for i := 0 to GetBrowserModuleCount() - 1 do
   begin
     lModule := GetBrowserModule(i);
+    if not lModule.Activated then Continue;
     if lModule.HandleOnPageLoad(PageLoader.Contents, lNewContents) then
       PageLoader.Contents := lNewContents;
   end;
