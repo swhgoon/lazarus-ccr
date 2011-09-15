@@ -69,7 +69,6 @@ type
     procedure formatInput;
     procedure setFormat(const AValue: string);
     procedure OnKeyPress(Sender: TObject; var key: char);
-    function IsValidDate(const Value: string): boolean;
   public
     function isNull: boolean;
     property format: string read getFormat write setFormat;
@@ -235,7 +234,7 @@ begin
   if Length(myEdit.Caption) = 0 then
     theValue := 0
   else
-  if IsValidDate(bufCaption) then
+  if IsValidDateString(bufCaption) then
   begin
     theValue := StrToDate(bufCaption);
     myEdit.Caption := bufCaption;
@@ -265,15 +264,6 @@ procedure TJDBDateCtrl.OnKeyPress(Sender: TObject; var key: char);
 begin
   if not (Key in ['0'..'9', #8, #9, '.', '-', '/']) then
     Key := #0;
-end;
-
-function TJDBDateCtrl.IsValidDate(const Value: string): boolean;
-begin
-  // comprobar que la fecha es valida
-  if StrToDateDef(Value, MaxDateTime) = MaxDateTime then
-    Result := False
-  else
-    Result := True;
 end;
 
 function TJDBDateCtrl.isNull: boolean;

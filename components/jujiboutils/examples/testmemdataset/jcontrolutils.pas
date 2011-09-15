@@ -10,8 +10,10 @@ uses
 function ReplaceChar(const s: string; ch1: char; ch2: char): string;
 function CountChar(const s: string; ch: char): integer;
 procedure Split(const Delimiter: char; Input: string; Strings: TStrings);
-function NormalizeDate(const Value: string; theValue: TDateTime): string;
+function NormalizeDate(const Value: string; theValue: TDateTime;
+  const theFormat: string = ''): string;
 function NormalizeDateSeparator(const s: string): string;
+function IsValidDateString(const Value: string): boolean;
 
 implementation
 
@@ -43,29 +45,47 @@ begin
   Strings.DelimitedText := Input;
 end;
 
-function NormalizeDate(const Value: string; theValue: TDateTime): string;
+function NormalizeDate(const Value: string; theValue: TDateTime;
+  const theFormat: string): string;
 var
   texto: string;
   i: integer;
   d, m, y: word;
+  ds, ms, ys: string;
+  aDate: TDateTime;
+  tokens: TStringList;
 begin
   if theValue = 0 then
     DecodeDate(Now, y, m, d)
   else
     decodedate(theValue, y, m, d);
-  // normalize date
+  ds := IntToStr(d);
+  ms := IntToStr(m);
+  ys := IntToStr(y);
   texto := Value;
-  texto:= NormalizeDateSeparator(texto);
-  //texto := replacechar(texto, '.', DateSeparator);
-  //texto := replacechar(texto, '-', DateSeparator);
-  //texto := replacechar(texto, '/', DateSeparator);
+  texto := NormalizeDateSeparator(texto);
+  Result := texto;   // default value
   i := countchar(texto, DateSeparator);
-
-  case i of
-    1: texto := texto + DateSeparator + IntToStr(y);
-    0: texto := texto + DateSeparator + IntToStr(m) + DateSeparator + IntToStr(y);
+  tokens := TStringList.Create;
+  Split(DateSeparator, texto, tokens);
+  if tokens.Count > 0 then
+  begin
+    // for now only working date forma d/m/y
+    // TODO add logic to make it working with m/d/y and ISO format
+    // update jdbgridutils to work with this code
+    if tokens[0] <> '' then
+      ds := tokens[0];
+    if (tokens.Count > 1) and (tokens[1] <> '') then
+      ms := tokens[1];
+    if (tokens.Count > 2) and (tokens[2] <> '') then
+      ys := tokens[2];
+    texto := ds + DateSeparator + ms + DateSeparator + ys;
+    if IsValidDateString(texto) then
+    begin
+      Result:= texto;
+    end;
   end;
-  Result := texto;
+  tokens.Free;
 end;
 
 function NormalizeDateSeparator(const s: string): string;
@@ -76,6 +96,14 @@ begin
   for i := 1 to length(Result) do
     if Result[i] in ['.', ',', '/', '-'] then  // valid date separators
       Result[i] := DateSeparator;
+end;
+
+function IsValidDateString(const Value: string): boolean;
+begin
+  if StrToDateDef(Value, MaxDateTime) = MaxDateTime then
+    Result := False
+  else
+    Result := True;
 end;
 
 end.
