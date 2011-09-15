@@ -123,6 +123,8 @@ type
   end;
 
 implementation
+uses
+  LCLVersion;
 
 type
   TFieldDataLinkHack = class(TFieldDataLink)
@@ -313,7 +315,9 @@ begin
   FDataLink.OnDataChange := @DataChange;
   FDataLink.OnUpdateData := @UpdateData;
   FDataLink.OnActiveChange := @ActiveChange;
+  {$if (lcl_major = 0) and (lcl_release <= 30)}
   FDataLink.OnLayoutChange := @LayoutChange;
+  {$endif}
 end;
 
 destructor TRxCustomDBColorBox.Destroy;

@@ -195,11 +195,7 @@ type
   end;
 
 implementation
-uses dbutils;
-
-type
-  TFieldDataLinkHack = class(TFieldDataLink)
-  end;
+uses dbutils, LCLVersion;
 
 { TCustomRxDBProgressBar }
 
@@ -264,7 +260,9 @@ begin
   FDataLink.Control := Self;
   FDataLink.OnDataChange := @DataChange;
   FDataLink.OnActiveChange := @ActiveChange;
+  {$if (lcl_major = 0) and (lcl_release <= 30)}
   FDataLink.OnLayoutChange := @LayoutChange;
+  {$endif}
 end;
 
 destructor TCustomRxDBProgressBar.Destroy;
@@ -344,7 +342,7 @@ begin
   if not FDatalink.Editing then
     FDatalink.Reset
   else
-    TFieldDataLinkHack(FDatalink).UpdateData;
+    FDatalink.UpdateRecord;
 end;
 
 function TCustomRxDBTrackBar.GetReadOnly: Boolean;
@@ -416,7 +414,9 @@ begin
   FDataLink.OnDataChange := @DataChange;
   FDataLink.OnUpdateData := @UpdateData;
   FDataLink.OnActiveChange := @ActiveChange;
+  {$if (lcl_major = 0) and (lcl_release <= 30)}
   FDataLink.OnLayoutChange := @LayoutChange;
+  {$endif}
 end;
 
 destructor TCustomRxDBTrackBar.Destroy;

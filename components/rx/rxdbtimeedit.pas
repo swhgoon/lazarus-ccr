@@ -136,7 +136,7 @@ type
 
 
 implementation
-uses dbutils;
+uses dbutils, LCLVersion;
 
 type
   TFieldDataLinkHack = class(TFieldDataLink)
@@ -305,7 +305,9 @@ begin
   FDataLink.OnDataChange := @DataChange;
   FDataLink.OnUpdateData := @UpdateData;
   FDataLink.OnActiveChange := @ActiveChange;
+  {$if (lcl_major = 0) and (lcl_release <= 30)}
   FDataLink.OnLayoutChange := @LayoutChange;
+  {$endif}
 end;
 
 destructor TCustomRxDBTimeEdit.Destroy;
