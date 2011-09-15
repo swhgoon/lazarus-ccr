@@ -6,7 +6,7 @@
   Copyright 2011
 *)
 
-unit utf8_braille;
+unit mod_braille;
 
 interface
 
@@ -186,9 +186,9 @@ var
   i: integer;
   output, aux_string: string;
   is_text: boolean;
-
+  page: string;
 begin
-
+  page := AInput;
   i := 1;
   output := '';
   aux_string := '';
