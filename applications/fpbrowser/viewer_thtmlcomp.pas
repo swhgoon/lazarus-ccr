@@ -43,6 +43,7 @@ type
     function GetDocumentTitle: string; override;
     procedure SetShowImages(AValue: Boolean); override;
     procedure HandlePageLoaderTerminated(Sender: TObject); override;
+    procedure Reload; override;
   end;
 
 
@@ -52,28 +53,57 @@ implementation
 
 procedure THtmlCompViewer.ViewerMouseMove(Sender: TObject; Shift: TShiftState;
   X, Y: Integer);
+var
+  TitleStr: string;
 begin
-
+  if not Timer1.Enabled and Assigned(ActiveControl) and ActiveControl.Focused then    {9.25}
+  begin
+    TitleStr := Viewer.TitleAttr;
+    if TitleStr = '' then
+      OldTitle := ''
+    else if TitleStr <> OldTitle then
+    begin
+      TimerCount := 0;
+      Timer1.Enabled := True;
+      OldTitle := TitleStr;
+    end;
+  end;
 end;
 
 procedure THtmlCompViewer.ViewerProgress(Sender: TObject;
   Stage: TProgressStage; PercentDone: Integer);
 begin
-
+  ProgressBar.Position := PercentDone;
+  case Stage of
+  psStarting:
+    ProgressBar.Visible := True;
+  psRunning:;
+  psEnding:
+    ProgressBar.Visible := False;
+  end;
+  ProgressBar.Update;
 end;
 
 procedure THtmlCompViewer.ViewerPrintHTMLFooter(Sender: TObject;
   HFViewer: THTMLViewer; NumPage: Integer; LastPage: Boolean; var XL,
   XR: Integer; var StopPrinting: Boolean);
+var
+  S: string;
 begin
-
+  S := ReplaceStr(HFText, '#left', Viewer.DocumentTitle);
+  S := ReplaceStr(S, '#right', Viewer.CurrentFile);
+  HFViewer.LoadFromString(S);
 end;
 
 procedure THtmlCompViewer.ViewerPrintHTMLHeader(Sender: TObject;
   HFViewer: THTMLViewer; NumPage: Integer; LastPage: Boolean; var XL,
   XR: Integer; var StopPrinting: Boolean);
+var
+  S: string;
 begin
-
+  S := ReplaceStr(HFText, '#left', DateToStr(Date));
+  S := ReplaceStr(S, '#right', 'Page '+IntToStr(NumPage));
+  HFViewer.LoadFromString(S);
 end;
 
 procedure THtmlCompViewer.HotSpotChange(Sender: TObject; const URL: string);
@@ -215,8 +245,52 @@ end;
 
 procedure THtmlCompViewer.RightClick(Sender: TObject;
   Parameters: TRightClickParameters);
+var
+  Pt: TPoint;
+  S, Dest: string;
+  I: integer;
+  HintWindow: THintWindow;
+  ARect: TRect;
 begin
+  with Parameters do
+  begin
+  FoundObject := Image;
+  ViewImage.Enabled := (FoundObject <> Nil) and (FoundObject.Bitmap <> Nil);
+  CopyImageToClipboard.Enabled := (FoundObject <> Nil) and (FoundObject.Bitmap <> Nil);
+  if URL <> '' then
+    begin
+    S := URL;
+    I := Pos('#', S);
+    if I >= 1 then
+      begin
+      Dest := System.Copy(S, I, 255);  {local destination}
+      S := System.Copy(S, 1, I-1);     {the file name}
+      end
+    else
+      Dest := '';    {no local destination}
+    if S = '' then S := Viewer.CurrentFile
+      else S := Viewer.HTMLExpandFileName(S);
+    NewWindowFile := S+Dest;
+    OpenInNewWindow.Enabled := FileExists(S);
+    end
+  else OpenInNewWindow.Enabled := False;
 
+  GetCursorPos(Pt);
+  if Length(CLickWord) > 0 then
+    begin
+    HintWindow := THintWindow.Create(Self);
+    try
+      ARect := Rect(0,0,0,0);
+      DrawTextW(HintWindow.Canvas.Handle, @ClickWord[1], Length(ClickWord), ARect, DT_CALCRECT);
+      with ARect do
+        HintWindow.ActivateHint(Rect(Pt.X+20, Pt.Y-(Bottom-Top)-15, Pt.x+30+Right, Pt.Y-15), ClickWord);
+      PopupMenu.Popup(Pt.X, Pt.Y);
+    finally
+      HintWindow.Free;
+      end;
+    end
+  else PopupMenu.Popup(Pt.X, Pt.Y);
+  end;
 end;
 
 { In this event we should provide images for the html component }
@@ -303,6 +377,12 @@ begin
 
   Viewer.LoadFromString(MyPageLoader.Contents);
   Caption := Viewer.DocumentTitle;
+end;
+
+procedure THtmlCompViewer.Reload;
+begin
+  Viewer.ReLoad;
+  Viewer.SetFocus;
 end;
 
 initialization

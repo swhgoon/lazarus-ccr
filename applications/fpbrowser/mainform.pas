@@ -4,10 +4,13 @@ unit mainform;
 interface
 
 uses
-  LclIntf, LMessages, LclType, LResources, FPimage,
-  SysUtils, Classes, Graphics, Controls,
+  // RTL
+  SysUtils, Classes, fpimage,
+  // LCL
+  LclIntf, LMessages, LclType, LResources,
+  Graphics, Controls,
   Forms, Dialogs, ExtCtrls, Menus, StdCtrls, Clipbrd,
-  PrintersDlgs,
+  PrintersDlgs, buttons,
   ComCtrls,
   {$IFDEF MSWINDOWS} ShellAPI, {$ELSE} Unix, {$ENDIF}
   HTMLabt,
@@ -26,16 +29,11 @@ type
     MainMenu: TMainMenu;
     pageBrowser: TPageControl;
     panelBottom: TPanel;
-    panelTop: TPanel;
     File1: TMenuItem;
     Open: TMenuItem;
     options1: TMenuItem;
     ShowImages: TMenuItem;
     Fonts: TMenuItem;
-    editURL: TEdit;
-    buttonReload: TButton;
-    buttonBack: TButton;
-    buttonForward: TButton;
     HistoryMenuItem: TMenuItem;
     Exit1: TMenuItem;
     PrintDialog: TPrintDialog;
@@ -66,7 +64,6 @@ type
     procedure ShowImagesClick(Sender: TObject);
     procedure buttonReloadClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure FwdBackClick(Sender: TObject);
     procedure HistoryClick(Sender: TObject);
     procedure HistoryChange(Sender: TObject);
     procedure Exit1Click(Sender: TObject);
@@ -115,6 +112,8 @@ type
     procedure DropFiles(      Sender   : TObject;
                         const FileNames: array of string);
     procedure CloseAll;
+    procedure ForwardClick(Sender: TObject);
+    procedure BackClick(Sender: TObject);
   public
     { Public declarations }
     CurrentTab: Integer;
@@ -212,10 +211,13 @@ begin
 end;
 
 procedure TformBrowser.editURLKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+var
+  lEdit: TEdit;
 begin
+  lEdit := Sender as TEdit;
   if Key = VK_RETURN then
   begin
-    LoadURL(editURL.Text);
+    LoadURL(lEdit.Text);
   end;
 end;
 
@@ -234,17 +236,15 @@ end;
 procedure TformBrowser.buttonReloadClick(Sender: TObject);
 {the Reload button was clicked}
 begin
-  {$ifdef FPBROWSER_THTMLCOMP}
-  buttonReload.Enabled := False;
-  Viewer.ReLoad;
-  buttonReload.Enabled := Viewer.CurrentFile <> '';
-  Viewer.SetFocus;
-  {$endif}
+  GetCurrentBrowserViewer().Reload();
 end;
 
-procedure TformBrowser.FwdBackClick(Sender: TObject);
-{Either the Forward or Back button was clicked}
+{Forward button was clicked}
+procedure TformBrowser.ForwardClick(Sender: TObject);
+var
+  lButton: TWinControl;
 begin
+  lButton := Sender as TWinControl;
   {$ifdef FPBROWSER_THTMLCOMP}
 {  if Sender = buttonBack then
     Viewer.HistoryIndex := Viewer.HistoryIndex +1
@@ -253,17 +253,23 @@ begin
   Self.Caption := Viewer.DocumentTitle;}
   {$endif}
   LoadURL(History.Strings[HistoryIndex]);
-  if Sender = buttonBack then
-  begin
-    HistoryIndex := HistoryIndex-1;
-    if HistoryIndex < 0 then buttonBack.Enabled := False;
-    buttonForward.Enabled := True;
-  end
-  else
-  begin
-    HistoryIndex := HistoryIndex+1;
-    if HistoryIndex >= History.Count then buttonForward.Enabled := False;
-  end;
+
+  HistoryIndex := HistoryIndex+1;
+  if HistoryIndex >= History.Count then lButton.Enabled := False;
+end;
+
+{Back button was clicked}
+procedure TformBrowser.BackClick(Sender: TObject);
+var
+  lButton, lForwardButton: TWinControl;
+begin
+  lButton := Sender as TWinControl;
+
+  LoadURL(History.Strings[HistoryIndex]);
+
+  HistoryIndex := HistoryIndex-1;
+  if HistoryIndex < 0 then lButton.Enabled := False;
+  //buttonForward.Enabled := True;
 end;
 
 procedure TformBrowser.HistoryChange(Sender: TObject);
@@ -604,57 +610,6 @@ begin
   History.Free;
 end;
 
-{$ifdef FPBROWSER_THTMLCOMP}
-procedure TformBrowser.RightClick(Sender: TObject; Parameters: TRightClickParameters);
-var
-  Pt: TPoint;
-  S, Dest: string;
-  I: integer;
-  HintWindow: THintWindow;  
-  ARect: TRect;
-begin
-  with Parameters do
-  begin
-  FoundObject := Image;
-  ViewImage.Enabled := (FoundObject <> Nil) and (FoundObject.Bitmap <> Nil);
-  CopyImageToClipboard.Enabled := (FoundObject <> Nil) and (FoundObject.Bitmap <> Nil);
-  if URL <> '' then
-    begin
-    S := URL;
-    I := Pos('#', S);
-    if I >= 1 then
-      begin
-      Dest := System.Copy(S, I, 255);  {local destination}
-      S := System.Copy(S, 1, I-1);     {the file name}
-      end
-    else
-      Dest := '';    {no local destination}
-    if S = '' then S := Viewer.CurrentFile
-      else S := Viewer.HTMLExpandFileName(S);
-    NewWindowFile := S+Dest;
-    OpenInNewWindow.Enabled := FileExists(S);
-    end
-  else OpenInNewWindow.Enabled := False;
-
-  GetCursorPos(Pt);
-  if Length(CLickWord) > 0 then
-    begin
-    HintWindow := THintWindow.Create(Self);   
-    try
-      ARect := Rect(0,0,0,0);
-      DrawTextW(HintWindow.Canvas.Handle, @ClickWord[1], Length(ClickWord), ARect, DT_CALCRECT);
-      with ARect do
-        HintWindow.ActivateHint(Rect(Pt.X+20, Pt.Y-(Bottom-Top)-15, Pt.x+30+Right, Pt.Y-15), ClickWord);
-      PopupMenu.Popup(Pt.X, Pt.Y);
-    finally
-      HintWindow.Free;
-      end;
-    end
-  else PopupMenu.Popup(Pt.X, Pt.Y);
-  end;
-end;
-{$endif}
-
 procedure TformBrowser.OpenInNewWindowClick(Sender: TObject);
 var
   PC: array[0..255] of char;
@@ -726,26 +681,6 @@ begin
 {$ENDIF}
 end;
 
-{$ifdef FPBROWSER_THTMLCOMP}
-procedure TformBrowser.ViewerMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-var
-  TitleStr: string;
-begin
-  if not Timer1.Enabled and Assigned(ActiveControl) and ActiveControl.Focused then    {9.25}
-  begin
-    TitleStr := Viewer.TitleAttr;
-    if TitleStr = '' then
-      OldTitle := ''
-    else if TitleStr <> OldTitle then
-    begin
-      TimerCount := 0;
-      Timer1.Enabled := True;
-      OldTitle := TitleStr;
-    end;
-  end;
-end;
-{$ENDIF}
-
 procedure TformBrowser.CloseAll;
 begin
   Timer1.Enabled := False;
@@ -762,9 +697,54 @@ procedure TformBrowser.AddBrowserTab(AURL: string; AGoToTab: Boolean);
 var
   lViewer: TBrowserViewer;
   lTabSheet: TTabSheet;
+  lTopPanel: TPanel;
+  lbuttonReload, lbuttonBack, lbuttonForward: TBitBtn;
+  leditURL: TEdit;
 begin
   lTabSheet := pageBrowser.AddTabSheet(); // This call requires Lazarus 0.9.31+
 
+  // Add the top panel of the tab with buttons and the edit box
+  lTopPanel := TPanel.Create(lTabSheet);
+  lTopPanel.Parent := lTabSheet;
+  lTopPanel.Align := alTop;
+  lTopPanel.Height := 33;
+
+  lbuttonReload := TBitBtn.Create(lTopPanel);
+  lbuttonReload.Top := 4;
+  lbuttonReload.Left := 10;
+  lbuttonReload.Width := 59;
+  lbuttonReload.Height := 24;
+  lbuttonReload.Parent := lTopPanel;
+  lbuttonReload.Caption := 'Reload';
+  lbuttonReload.OnClick := buttonReloadClick;
+
+  lbuttonBack := TBitBtn.Create(lTopPanel);
+  lbuttonBack.Top := 4;
+  lbuttonBack.Left := 69;
+  lbuttonBack.Width := 59;
+  lbuttonBack.Height := 24;
+  lbuttonBack.Parent := lTopPanel;
+  lbuttonBack.Caption := 'Back';
+  lbuttonBack.OnClick := ForwardClick;
+
+  lbuttonForward := TBitBtn.Create(lTopPanel);
+  lbuttonForward.Top := 4;
+  lbuttonForward.Left := 128;
+  lbuttonForward.Width := 59;
+  lbuttonForward.Height := 24;
+  lbuttonForward.Parent := lTopPanel;
+  lbuttonForward.Caption := 'Forward';
+  lbuttonForward.OnClick := BackClick;
+
+  leditURL := TEdit.Create(lTopPanel);
+  leditURL.Top := 4;
+  leditURL.Left := 190;
+  leditURL.Width := 337;
+  leditURL.Height := 24;
+  leditURL.Parent := lTopPanel;
+  leditURL.OnKeyDown := editURLKeyDown;
+
+  // Add the HTML Viewer
   lViewer := AddBrowserViewer();
   lViewer.CreateViewer(lTabSheet, Self);
 
@@ -777,9 +757,9 @@ end;
 
 procedure TformBrowser.AddURLToHistory(AURL: string);
 begin
-  History.Add(AURL);
+{  History.Add(AURL);
   HistoryIndex := History.Count-1;
-  buttonBack.Enabled := True;
+  buttonBack.Enabled := True;}
 end;
 
 procedure TformBrowser.HandlePageLoaderProgress(APercent: Integer);
@@ -843,22 +823,6 @@ begin
 {$endif}
 end;
 
-{$ifdef FPBROWSER_THTMLCOMP}
-procedure TformBrowser.ViewerProgress(Sender: TObject; Stage: TProgressStage;
-  PercentDone: Integer);
-begin
-  ProgressBar.Position := PercentDone;
-  case Stage of
-  psStarting:
-    ProgressBar.Visible := True;
-  psRunning:;
-  psEnding:
-    ProgressBar.Visible := False;
-  end;
-  ProgressBar.Update;
-end;
-{$endif}
-
 {HTML for print header and footer}
 const
   HFText: string =  '<html><head><style>'+
@@ -885,28 +849,6 @@ begin
     Insert(ToStr, Result, I);
   end;
 end;
-
-{$ifdef FPBROWSER_THTMLCOMP}
-procedure TformBrowser.ViewerPrintHTMLHeader(Sender: TObject;
-  HFViewer: THTMLViewer; NumPage: Integer; LastPage: boolean; var XL, XR: integer; var StopPrinting: Boolean);
-var
-  S: string;
-begin
-  S := ReplaceStr(HFText, '#left', Viewer.DocumentTitle);
-  S := ReplaceStr(S, '#right', Viewer.CurrentFile);
-  HFViewer.LoadFromString(S);
-end;
-
-procedure TformBrowser.ViewerPrintHTMLFooter(Sender: TObject;
-  HFViewer: THTMLViewer; NumPage: Integer; LastPage: boolean; var XL, XR: integer; var StopPrinting: Boolean);
-var
-  S: string;
-begin
-  S := ReplaceStr(HFText, '#left', DateToStr(Date));
-  S := ReplaceStr(S, '#right', 'Page '+IntToStr(NumPage));
-  HFViewer.LoadFromString(S);
-end;
-{$endif}
 
 initialization
 {$IFDEF LCL}

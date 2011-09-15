@@ -43,6 +43,7 @@ type
     function GetDocumentTitle: string; override;
     procedure SetShowImages(AValue: Boolean); override;
     procedure HandlePageLoaderTerminated(Sender: TObject); override;
+    procedure Reload; override;
   end;
 
 implementation
@@ -190,6 +191,10 @@ begin
   inherited HandlePageLoaderTerminated(Sender);
 
   ShowHTML(MyPageLoader.Contents);
+end;
+
+procedure TiProViewer.Reload;
+begin
 end;
 
 initialization

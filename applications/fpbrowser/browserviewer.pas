@@ -27,6 +27,7 @@ type
     function GetDocumentTitle: string; virtual; abstract;
     procedure SetShowImages(AValue: Boolean); virtual; abstract;
     procedure HandlePageLoaderTerminated(Sender: TObject); virtual;
+    procedure Reload; virtual; abstract;
   end;
 
   TBrowserViewerClass = class of TBrowserViewer;

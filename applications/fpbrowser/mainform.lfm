@@ -44,63 +44,13 @@ object formBrowser: TformBrowser
       ParentColor = False
     end
   end
-  object panelTop: TPanel
-    Left = 0
-    Height = 33
-    Top = 0
-    Width = 621
-    Align = alTop
-    BevelOuter = bvNone
-    ClientHeight = 33
-    ClientWidth = 621
-    TabOrder = 1
-    object editURL: TEdit
-      Left = 190
-      Height = 24
-      Top = 4
-      Width = 337
-      AutoSize = False
-      OnKeyDown = editURLKeyDown
-      TabStop = False
-      TabOrder = 3
-    end
-    object buttonReload: TButton
-      Left = 10
-      Height = 24
-      Top = 4
-      Width = 59
-      Caption = '&Reload'
-      OnClick = buttonReloadClick
-      TabOrder = 0
-    end
-    object buttonBack: TButton
-      Left = 69
-      Height = 24
-      Top = 4
-      Width = 59
-      Caption = '&Back'
-      Enabled = False
-      OnClick = FwdBackClick
-      TabOrder = 1
-    end
-    object buttonForward: TButton
-      Left = 128
-      Height = 24
-      Top = 4
-      Width = 59
-      Caption = '&Forward'
-      Enabled = False
-      OnClick = FwdBackClick
-      TabOrder = 2
-    end
-  end
   object pageBrowser: TPageControl
     Left = 0
-    Height = 388
-    Top = 33
+    Height = 421
+    Top = 0
     Width = 621
     Align = alClient
-    TabOrder = 2
+    TabOrder = 1
   end
   object OpenDialog: TOpenDialog
     DefaultExt = '.htm'
