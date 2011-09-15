@@ -102,9 +102,9 @@
         <UnitName Value="viewer_ipro"/>
       </Unit9>
       <Unit10>
-        <Filename Value="utf8_braille.pas"/>
+        <Filename Value="mod_braille.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="utf8_braille"/>
+        <UnitName Value="mod_braille"/>
       </Unit10>
     </Units>
   </ProjectOptions>

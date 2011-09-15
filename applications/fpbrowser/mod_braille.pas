@@ -67,13 +67,39 @@ const
     {u + acute} chr($be), {u + circumflex} 'TODO', {u + diaeresis} chr($b3),
     {y + acute} 'TODO', {thorn} 'TODO', {y + diaeresis} 'TODO');
 
+function ConvertUTF8CharacterToBraille(AInput: string): string;
+begin
+end;
+
+function ConvertUTF8TextToBrailleNew(AInput: string): string;
+var
+  lInput: PChar;
+  lPos: Integer;
+  lCharSize: Integer;
+  lCurChar: string;
+begin
+  Result := '';
+  lInput := PChar(AInput);
+  lPos := 0;
+  while lPos < Length(AInput) do
+  begin
+    lCharSize := LCLProc.UTF8CharacterLength(lInput);
+
+    SetLength(lCurChar, lCharSize);
+    Move(lCurChar[1], lInput^, lCharSize);
+    Result := Result + ConvertUTF8CharacterToBraille(lCurChar);
+
+    Inc(lInput, lCharSize);
+    Inc(lPos, lCharSize);
+  end;
+end;
+
 function ConvertUTF8TextToBraille(Line: string): string;
 var
   Count, count_aux, n, n_aux, decr: integer;
   Braille_string, string_aux: string;
   num, accented: boolean;
   dict_p: dictionary_pointer;
-
 begin
   Braille_string := '';
   num := False;

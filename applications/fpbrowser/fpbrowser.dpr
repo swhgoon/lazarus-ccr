@@ -25,7 +25,7 @@ uses
 {$ifdef FPBROWSER_TURBOPOWERIPRO}
   viewer_ipro,
 {$endif}
-  browserviewer, utf8_braille;
+  browserviewer, mod_braille;
 
 begin
   Application.Initialize;
