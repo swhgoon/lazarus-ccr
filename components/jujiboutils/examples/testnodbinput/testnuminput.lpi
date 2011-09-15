@@ -5,7 +5,6 @@
     <General>
       <MainUnit Value="0"/>
       <UseXPManifest Value="True"/>
-      <Icon Value="0"/>
     </General>
     <VersionInfo>
       <Language Value=""/>
@@ -33,7 +32,7 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="4">
       <Unit0>
         <Filename Value="testnuminput.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -51,6 +50,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="jinpututils"/>
       </Unit2>
+      <Unit3>
+        <Filename Value="jcontrolutils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="jcontrolutils"/>
+      </Unit3>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

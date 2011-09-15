@@ -22,7 +22,7 @@ unit jinpututils;
 interface
 
 uses
-  Classes, StdCtrls, SysUtils;
+  Classes, StdCtrls, SysUtils, jcontrolutils;
 type
 
  { TJCurrencyCtrl }
@@ -89,7 +89,6 @@ type
    procedure formatInput;
    procedure setFormat(const AValue: string);
    procedure OnKeyPress(Sender: TObject; var key : char);
-   function IsValidDate(const Value: string): Boolean;
    procedure setValue(const AValue: TDateTime);
  public
    function isNull : Boolean;
@@ -97,10 +96,6 @@ type
    property value : TDateTime read getValue write setValue;
    constructor Create(widget : TCustomEdit);
  end;
-
-function replacechar(const s: string; ch1: char; ch2: char): string;
-function countchar(const s: string; ch: char): integer;
-procedure Split(const Delimiter: Char; Input: string; Strings: TStrings);
 
 implementation
 
@@ -305,10 +300,11 @@ end;
 
 procedure TJDateCtrl.myEditExit(Sender: TObject);
 begin
+  myEdit.Caption:= NormalizeDate(myEdit.Caption, theValue);
   if Length(myEdit.Caption) = 0 then
     theValue := 0
   else
-  if IsValidDate(myEdit.Caption) then
+  if IsValidDateString(myEdit.Caption) then
     theValue:= StrToDate(myEdit.Caption)
   else
   begin
@@ -335,32 +331,6 @@ begin
   if not (Key in ['0'..'9',#8,#9, '.', '-', '/']) then Key := #0;
 end;
 
-function TJDateCtrl.IsValidDate(const Value: string): Boolean;
-var
- texto : string;
- i : integer;
- d, m, y : word;
-begin
- Result := false;
- // normalize date
- texto:= myEdit.Caption;
- texto := replacechar(texto, '.', DateSeparator);
- texto := replacechar(texto, '-', DateSeparator);
- texto := replacechar(texto, '/', DateSeparator);
- i := countchar(texto, DateSeparator);
- decodedate(theValue, y, m, d);
- case i of
-  1 : texto := texto + DateSeparator + inttostr(y);
-  0 : texto := texto + DateSeparator + inttostr(m) + DateSeparator + inttostr(y);
- end;
- myEdit.Caption:= texto;
- // comprobar que la fecha es valida
- if StrToDateDef(texto, MaxDateTime) = MaxDateTime then
-   Result := False
- else
-   Result := True;
-end;
-
 procedure TJDateCtrl.setValue(const AValue: TDateTime);
 begin
   theValue:= AValue;
@@ -383,33 +353,6 @@ begin
   format:= 'dd/mm/yyyy';
 end;
 
-function replacechar(const s: string; ch1: char; ch2: char): string;
-var
- i : integer;
-begin
- result := s;
- for i := 1 to length(result) do
-  if result[i] = ch1 then
-   result[i] := ch2;
-end;
-
-function countchar(const s: string; ch: char): integer;
-var
- i : integer;
-begin
- result := 0;
- for i := 1 to length(s) do
-  if s[i] = ch then
-   inc(result);
-end;
-
-procedure Split(const Delimiter: Char; Input: string; Strings: TStrings) ;
-begin
-   Assert(Assigned(Strings)) ;
-   Strings.Clear;
-   Strings.Delimiter := Delimiter;
-   Strings.DelimitedText := Input;
-end;
 
 end.
 

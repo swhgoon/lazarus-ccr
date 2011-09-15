@@ -10,7 +10,7 @@ uses
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms
-  { you can add units after this }, main, LResources;
+  { you can add units after this }, main, jcontrolutils, LResources;
 
 {$IFDEF WINDOWS}{$R testnuminput.rc}{$ENDIF}
 
