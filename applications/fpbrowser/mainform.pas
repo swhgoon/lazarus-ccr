@@ -14,8 +14,7 @@ uses
   ComCtrls,
   {$IFDEF MSWINDOWS} ShellAPI, {$ELSE} Unix, {$ENDIF}
   HTMLabt,
-  pageloader,
-  browserviewer;
+  pageloader, browserviewer, browsermodules;
 
 type
 
@@ -23,6 +22,7 @@ type
 
   TformBrowser = class(TForm)
     labelProgress: TLabel;
+    menuToolsModules: TMenuItem;
     menuViewDebug: TMenuItem;
     N1: TMenuItem;
     OpenDialog: TOpenDialog;   
@@ -31,7 +31,7 @@ type
     panelBottom: TPanel;
     File1: TMenuItem;
     Open: TMenuItem;
-    options1: TMenuItem;
+    menuOptions: TMenuItem;
     ShowImages: TMenuItem;
     Fonts: TMenuItem;
     HistoryMenuItem: TMenuItem;
@@ -114,6 +114,9 @@ type
     procedure CloseAll;
     procedure ForwardClick(Sender: TObject);
     procedure BackClick(Sender: TObject);
+    procedure InitializeForm();
+    procedure UpdateModulesMenu();
+    procedure HandleModuleMenuItemClick(Sender: TObject);
   public
     { Public declarations }
     CurrentTab: Integer;
@@ -133,55 +136,8 @@ uses
   Submit, ImgForm;//, FontDlg;
 
 procedure TformBrowser.FormCreate(Sender: TObject);
-var
-  I: integer;
 begin
-  History := TStringList.Create;
-
-  AddBrowserTab('', True);
-
-  Position := poScreenCenter;
-
-  {$IFDEF DARWIN} //Don't default to within app bundle.
-  OpenDialog.InitialDir := ExtractFilePath(ParamStr(0)) + '../../../';
-  {$ELSE}
-  OpenDialog.InitialDir := ExtractFilePath(ParamStr(0));
-  {$ENDIF}
-
-  Caption := 'HTML Demo, Version '+HTMLAbt.Version;
-
-  (*for I := 0 to MaxHistories-1 do
-  begin      {create the MenuItems for the history list}
-    Histories[I] := TMenuItem.Create(HistoryMenuItem);
-    HistoryMenuItem.Insert(I, Histories[I]);
-    with Histories[I] do
-    begin
-    Visible := False;
-    OnClick := HistoryClick;
-    Tag := I;
-    end;
-  end;*)
-
-  {$IFDEF LCLCarbon}
-  AppMenu := TMenuItem.Create(Self);  //Application menu
-  AppMenu.Caption := #$EF#$A3#$BF;  //Unicode Apple logo char
-  MainMenu.Items.Insert(0, AppMenu);
-  MainMenu.Items.Remove(About1);  //Remove About as separate menu
-  AppMenu.Add(About1);  //Add About as item in application menu
-
-  File1.Remove(File1.Items[File1.Count-2]);
-  File1.Remove(Exit1);  //Remove Exit since have Quit
-
-  Find1.ShortCut := ShortCut(VK_F, [ssMeta]);
-  CopyItem.ShortCut := ShortCut(VK_C, [ssMeta]);
-  SelectAllItem.ShortCut := ShortCut(VK_A, [ssMeta]);
-  {$ENDIF}
-
-  AllowDropFiles := True;
-  OnDropFiles := DropFiles;
-
-  HintWindow := THintWindow.Create(Self);
-  HintWindow.Color := $C0FFFF;
+  InitializeForm();
 end;
 
 procedure TformBrowser.FormShow(Sender: TObject);
@@ -270,6 +226,97 @@ begin
   HistoryIndex := HistoryIndex-1;
   if HistoryIndex < 0 then lButton.Enabled := False;
   //buttonForward.Enabled := True;
+end;
+
+procedure TformBrowser.InitializeForm;
+var
+  I: integer;
+begin
+  History := TStringList.Create;
+
+  AddBrowserTab('', True);
+
+  Position := poScreenCenter;
+
+  {$IFDEF DARWIN} //Don't default to within app bundle.
+  OpenDialog.InitialDir := ExtractFilePath(ParamStr(0)) + '../../../';
+  {$ELSE}
+  OpenDialog.InitialDir := ExtractFilePath(ParamStr(0));
+  {$ENDIF}
+
+  Caption := 'fpBrowser, Version '+HTMLAbt.Version;
+
+  (*for I := 0 to MaxHistories-1 do
+  begin      {create the MenuItems for the history list}
+    Histories[I] := TMenuItem.Create(HistoryMenuItem);
+    HistoryMenuItem.Insert(I, Histories[I]);
+    with Histories[I] do
+    begin
+    Visible := False;
+    OnClick := HistoryClick;
+    Tag := I;
+    end;
+  end;*)
+
+  {$IFDEF LCLCarbon}
+  AppMenu := TMenuItem.Create(Self);  //Application menu
+  AppMenu.Caption := #$EF#$A3#$BF;  //Unicode Apple logo char
+  MainMenu.Items.Insert(0, AppMenu);
+  MainMenu.Items.Remove(About1);  //Remove About as separate menu
+  AppMenu.Add(About1);  //Add About as item in application menu
+
+  File1.Remove(File1.Items[File1.Count-2]);
+  File1.Remove(Exit1);  //Remove Exit since have Quit
+
+  Find1.ShortCut := ShortCut(VK_F, [ssMeta]);
+  CopyItem.ShortCut := ShortCut(VK_C, [ssMeta]);
+  SelectAllItem.ShortCut := ShortCut(VK_A, [ssMeta]);
+  {$ENDIF}
+
+  AllowDropFiles := True;
+  OnDropFiles := DropFiles;
+
+  HintWindow := THintWindow.Create(Self);
+  HintWindow.Color := $C0FFFF;
+
+  // Add the modules menu
+  UpdateModulesMenu();
+end;
+
+procedure TformBrowser.UpdateModulesMenu;
+var
+  lItem: TMenuItem;
+  lModule: TBrowserModule;
+  i: Integer;
+begin
+  // First remove any existing modules
+  menuToolsModules.Clear;
+
+  // Now add all modules and their state
+  for i := 0 to GetBrowserModuleCount() - 1 do
+  begin
+    lModule := GetBrowserModule(0);
+    lItem := TMenuItem.Create(nil);
+    lItem.Caption := lModule.ShortDescription;
+    lItem.Checked := lModule.Activated;
+    lItem.OnClick := HandleModuleMenuItemClick;
+    menuToolsModules.Add(lItem);
+  end;
+end;
+
+procedure TformBrowser.HandleModuleMenuItemClick(Sender: TObject);
+var
+  lItem: TMenuItem;
+  lModuleNum: Integer;
+  lModule: TBrowserModule;
+  lNewState: Boolean;
+begin
+  lItem := Sender as TMenuItem;
+  lNewState := not lItem.Checked;
+  lItem.Checked := lNewState;
+  lModuleNum := lItem.Parent.IndexOf(lItem);
+  lModule := GetBrowserModule(lModuleNum);
+  lModule.Activated := lNewState;
 end;
 
 procedure TformBrowser.HistoryChange(Sender: TObject);
@@ -702,6 +749,7 @@ var
   leditURL: TEdit;
 begin
   lTabSheet := pageBrowser.AddTabSheet(); // This call requires Lazarus 0.9.31+
+  lTabSheet.Caption := 'WebPage';
 
   // Add the top panel of the tab with buttons and the edit box
   lTopPanel := TPanel.Create(lTabSheet);

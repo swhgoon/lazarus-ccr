@@ -3,7 +3,7 @@ object formBrowser: TformBrowser
   Height = 439
   Top = 186
   Width = 621
-  ClientHeight = 439
+  ClientHeight = 412
   ClientWidth = 621
   Color = clBtnFace
   Font.Color = clWindowText
@@ -18,7 +18,7 @@ object formBrowser: TformBrowser
   object panelBottom: TPanel
     Left = 0
     Height = 18
-    Top = 421
+    Top = 394
     Width = 621
     Align = alBottom
     Alignment = taLeftJustify
@@ -39,14 +39,14 @@ object formBrowser: TformBrowser
       Left = 319
       Height = 16
       Top = 3
-      Width = 22
+      Width = 21
       Caption = 'Idle'
       ParentColor = False
     end
   end
   object pageBrowser: TPageControl
     Left = 0
-    Height = 421
+    Height = 394
     Top = 0
     Width = 621
     Align = alClient
@@ -121,7 +121,7 @@ object formBrowser: TformBrowser
         OnClick = SelectAllItemClick
       end
     end
-    object options1: TMenuItem
+    object menuOptions: TMenuItem
       Caption = '&Tools'
       object ShowImages: TMenuItem
         Caption = '&Show images'
@@ -134,6 +134,9 @@ object formBrowser: TformBrowser
       object menuViewDebug: TMenuItem
         Caption = 'View Source and Debug info'
         OnClick = menuViewDebugClick
+      end
+      object menuToolsModules: TMenuItem
+        Caption = 'Modules'
       end
     end
     object HistoryMenuItem: TMenuItem
