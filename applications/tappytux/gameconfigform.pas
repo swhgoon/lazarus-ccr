@@ -11,9 +11,9 @@ uses
 
 type
 
-  { TForm1 }
+  { TformConfig }
 
-  TForm1 = class(TForm)
+  TformConfig = class(TForm)
     btnLoad: TButton;
     btnWordlist: TButton;
     comboGameType: TComboBox;
@@ -43,16 +43,16 @@ type
   end;
 
 var
-  Form1: TForm1;
+  formConfig: TformConfig;
 
 implementation
 
 
 {$R *.lfm}
 
-{ TForm1 }
+{ TformConfig }
 
-procedure TForm1.comboGameTypeChange(Sender: TObject);
+procedure TformConfig.comboGameTypeChange(Sender: TObject);
 begin
 
   Case comboGameType.itemIndex of
@@ -74,14 +74,15 @@ begin
 
 end;
 
-procedure TForm1.btnLoadClick(Sender: TObject);
+procedure TformConfig.btnLoadClick(Sender: TObject);
 begin
-  Form2.Show;
-  Hide;
+  SetCurrentModule(comboGameType.ItemIndex);
 
+  formTappyTuxGame.Show;
+  Hide;
 end;
 
-procedure TForm1.comboSoundChange(Sender: TObject);
+procedure TformConfig.comboSoundChange(Sender: TObject);
 begin
 
   {
@@ -100,17 +101,17 @@ begin
 
 end;
 
-procedure TForm1.FormClick(Sender: TObject);
+procedure TformConfig.FormClick(Sender: TObject);
 begin
 
 end;
 
-procedure TForm1.FormCreate(Sender: TObject);
+procedure TformConfig.FormCreate(Sender: TObject);
 begin
   TranslateUI();
 end;
 
-procedure TForm1.TranslateUI;
+procedure TformConfig.TranslateUI;
 var
   i: Integer;
   lModule: TTappyModule;

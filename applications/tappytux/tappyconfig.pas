@@ -14,11 +14,11 @@ type
   TTappyTuxConfig = class
   public
     function GetResourcesDir: string;
-    function GetCurrentSkinDir: string;
   end;
 
 const
-  STR_LINUX_RESOURCES_FOLDER = '/usr/share/tappytux/';
+  STR_LINUX_RESOURCES_FOLDER = '/home/felipe/Programas/lazarus-ccr/applications/tappytux/'; // Temporary debug path
+  //STR_LINUX_RESOURCES_FOLDER = '/usr/share/tappytux/'; // Real path
 
   ID_ENGLISH = 0;
   ID_PORTUGUESE = 1;
@@ -63,11 +63,6 @@ begin
 {$ifdef Windows}
   Result := ExtractFilePath(Application.EXEName);
 {$endif}
-end;
-
-function TTappyTuxConfig.GetCurrentSkinDir: string;
-begin
-  Result := GetResourcesDir() + 'skins' + PathDelim + 'classic' + PathDelim;
 end;
 
 initialization

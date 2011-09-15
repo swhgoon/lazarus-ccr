@@ -6,19 +6,20 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls;
+  ExtCtrls,
+  // TappyTux
+  tappydrawer;
 
 type
 
-  { TForm2 }
+  { TformTappyTuxGame }
 
-  TForm2 = class(TForm)
+  TformTappyTuxGame = class(TForm)
     btnExit: TButton;
     Edit1: TEdit;
     Edit2: TEdit;
     Edit3: TEdit;
     Edit4: TEdit;
-    Image1: TImage;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
@@ -30,13 +31,11 @@ type
     { private declarations }
   public
     { public declarations }
-
     backgroundImage: TJpegImage;
-
-  end; 
+  end;
 
 var
-  Form2: TForm2; 
+  formTappyTuxGame: TformTappyTuxGame;
 
 implementation
 
@@ -44,27 +43,33 @@ uses gameconfigform;
 
 {$R *.lfm}
 
-{ TForm2 }
+{ TformTappyTuxGame }
 
-procedure TForm2.btnExitClick(Sender: TObject);
+procedure TformTappyTuxGame.btnExitClick(Sender: TObject);
 begin
   Close;
-  Form1.Show;
-
+  formConfig.Show;
 end;
 
-procedure TForm2.Edit1KeyPress(Sender: TObject; var Key: char);
+procedure TformTappyTuxGame.Edit1KeyPress(Sender: TObject; var Key: char);
 begin
   if Key = #13 then
   begin
-    Form2.Memo1.Lines.Add(Edit1.Text);
-    Form2.Edit1.Clear;
+    formTappyTuxGame.Memo1.Lines.Add(Edit1.Text);
+    formTappyTuxGame.Edit1.Clear;
   end;
 end;
 
-procedure TForm2.FormCreate(Sender: TObject);
+procedure TformTappyTuxGame.FormCreate(Sender: TObject);
 begin
-
+  // Creation of internal components
+  vTappyTuxDrawer := TTappyTuxDrawer.Create(Self);
+  vTappyTuxDrawer.Parent := Self;
+  vTappyTuxDrawer.Top := 0;
+  vTappyTuxDrawer.Left := 100;
+  vTappyTuxDrawer.Height := Height-vTappyTuxDrawer.Top;
+  vTappyTuxDrawer.Width := Width-vTappyTuxDrawer.Left;
+  vTappyTuxDrawer.SendToBack();
 end;
 
 

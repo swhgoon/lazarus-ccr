@@ -160,7 +160,7 @@ begin
   lTmpBmp := TBitmap.Create;
   try
     // First draw the background
-    lIntfImage.LoadFromBitmap(GetCurrentModule().imgBackground.Handle, 0{bmpBoard.MaskHandle});
+    lIntfImage.LoadFromBitmap(GetCurrentModule().GetBackgroundImage(2).Handle, 0{bmpBoard.MaskHandle});
 
     // Now the module should draw itself
 

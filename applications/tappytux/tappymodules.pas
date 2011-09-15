@@ -14,11 +14,12 @@ type
 
   TTappyModule = class
   public
-    imgBackground: TPortableNetworkGraphic;
+    imgLevel2, imgLevel3: TJPEGImage;
     ShortDescription, LongDescription: string;
     constructor Create; virtual;
     destructor Destroy; override;
     procedure LoadImages; virtual;
+    function GetBackgroundImage(ALevel: Integer): TJPEGImage;
     procedure TranslateTexts(ALanguage: Integer);
     procedure TranslateTextsToEnglish; virtual;
     procedure TranslateTextsToPortuguese; virtual;
@@ -67,35 +68,35 @@ constructor TTappyModule.Create;
 begin
   inherited Create;
 
+  imgLevel2 := TJPEGImage.Create;
+  imgLevel3 := TJPEGImage.Create;
+
+  LoadImages();
+
   TranslateTexts(ID_ENGLISH);
 end;
 
 destructor TTappyModule.Destroy;
 begin
+  imgLevel2.Free;
+  imgLevel3.Free;
+
   inherited Destroy;
 end;
 
 procedure TTappyModule.LoadImages;
+var
+  lDir: string;
 begin
-{  var
-    lDir: string;
-  begin
-    lDir := vChessConfig.GetCurrentSkinDir();}
+  lDir := vTappyTuxConfig.GetResourcesDir();
 
-  {  imgBoard.LoadFromFile(lDir + 'base.png');
-    imgWPawn.LoadFromFile(lDir + 'wpawn.png');
-    imgWKnight.LoadFromFile(lDir + 'wknight.png');
-    imgWBishop.LoadFromFile(lDir + 'wbishop.png');
-    imgWRook.LoadFromFile(lDir + 'wrook.png');
-    imgWQueen.LoadFromFile(lDir + 'wqueen.png');
-    imgWKing.LoadFromFile(lDir + 'wking.png');
-    imgBPawn.LoadFromFile(lDir + 'bpawn.png');
-    imgBKnight.LoadFromFile(lDir + 'bknight.png');
-    imgBBishop.LoadFromFile(lDir + 'bbishop.png');
-    imgBRook.LoadFromFile(lDir + 'brook.png');
-    imgBQueen.LoadFromFile(lDir + 'bqueen.png');
-    imgBKing.LoadFromFile(lDir + 'bking.png');}
+  imgLevel2.LoadFromFile(lDir + 'images/levels/level2.jpg');
+  imgLevel3.LoadFromFile(lDir + 'images/levels/level3.jpg');
+end;
 
+function TTappyModule.GetBackgroundImage(ALevel: Integer): TJPEGImage;
+begin
+  Result := imgLevel3;
 end;
 
 procedure TTappyModule.TranslateTexts(ALanguage: Integer);
