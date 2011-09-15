@@ -42,7 +42,6 @@ type
     procedure setFormat(const AValue: string);
     procedure OnKeyPress(Sender: TObject; var key: char);
     procedure OnKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
-    function IsValidDate(const Value: string): boolean;
   public
     CellEditor: TStringCellEditor;
     theGrid: TDBGrid;
@@ -129,10 +128,11 @@ end;
 
 procedure TJDbGridDateCtrl.myEditOnEditingDone(Sender: TObject);
 begin
+  CellEditor.Caption:= NormalizeDate(CellEditor.Caption, theValue);
   if Length(CellEditor.Caption) = 0 then
     theValue := 0
   else
-  if IsValidDate(CellEditor.Caption) then
+  if IsValidDateString(CellEditor.Caption) then
   begin
     if (not updated) then
     begin
@@ -172,10 +172,9 @@ procedure TJDbGridDateCtrl.OnKeyDown(Sender: TObject; var Key: word;
 begin
   if Length(CellEditor.Caption) <> 0 then
     if (Key in [VK_RETURN, VK_TAB, VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT]) and
-      (not IsValidDate(CellEditor.Caption)) then
+      (not IsValidDateString(NormalizeDate(CellEditor.Caption, theValue))) then
     begin
-      ShowMessage(CellEditor.Caption + ' no es una fecha válida' +
-        CellEditor.Text);
+      ShowMessage(CellEditor.Caption + ' no es una fecha válida');
       CellEditor.Text := FormatDateTime(format, theValue);
       CellEditor.SelectAll;
       Key := VK_UNKNOWN;
@@ -198,10 +197,11 @@ begin
     else
     if Key in [VK_RETURN, VK_TAB] then
     begin
+      CellEditor.Caption:= NormalizeDate(CellEditor.Caption, theValue);
       if Length(CellEditor.Caption) = 0 then
         theValue := 0
       else
-      if IsValidDate(CellEditor.Caption) then
+      if IsValidDateString(CellEditor.Caption) then
       begin
         theValue := StrToDate(CellEditor.Caption);
         Field.DataSet.Edit;
@@ -211,31 +211,6 @@ begin
     end;
 end;
 
-function TJDbGridDateCtrl.IsValidDate(const Value: string): boolean;
-var
-  texto: string;
-  i: integer;
-  d, m, y: word;
-begin
-  Result := False;
-  // normalize date
-  texto := CellEditor.Caption;
-  texto := replacechar(texto, '.', DateSeparator);
-  texto := replacechar(texto, '-', DateSeparator);
-  texto := replacechar(texto, '/', DateSeparator);
-  i := countchar(texto, DateSeparator);
-  decodedate(theValue, y, m, d);
-  case i of
-    1: texto := texto + DateSeparator + IntToStr(y);
-    0: texto := texto + DateSeparator + IntToStr(m) + DateSeparator + IntToStr(y);
-  end;
-  CellEditor.Caption := texto;
-  // comprobar que la fecha es valida
-  if StrToDateDef(texto, MaxDateTime) = MaxDateTime then
-    Result := False
-  else
-    Result := True;
-end;
 
 function TJDbGridDateCtrl.isNull: boolean;
 begin

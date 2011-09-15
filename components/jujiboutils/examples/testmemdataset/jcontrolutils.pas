@@ -54,7 +54,12 @@ var
   ds, ms, ys: string;
   aDate: TDateTime;
   tokens: TStringList;
+  aDateFormat: string;
 begin
+  if theFormat <> '' then
+    aDateFormat := ShortDateFormat
+  else
+    aDateFormat := theFormat;
   if theValue = 0 then
     DecodeDate(Now, y, m, d)
   else
@@ -82,7 +87,8 @@ begin
     texto := ds + DateSeparator + ms + DateSeparator + ys;
     if IsValidDateString(texto) then
     begin
-      Result:= texto;
+      aDate := StrToDate(texto);
+      Result := FormatDateTime(aDateFormat, aDate);
     end;
   end;
   tokens.Free;
