@@ -22,7 +22,7 @@ unit jcontrolutils;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils, Dialogs;
 
 function ReplaceChar(const s: string; ch1: char; ch2: char): string;
 function CountChar(const s: string; ch: char): integer;
@@ -72,8 +72,44 @@ var
   aDate: TDateTime;
   tokens: TStringList;
   aDateFormat: string;
+  aChar: char;
+
+  procedure LittleEndianForm;
+  begin
+    // Note: only numeric input allowed (months names not implemented)
+    if tokens[0] <> '' then
+      ds := tokens[0];
+    if (tokens.Count > 1) and (tokens[1] <> '') then
+      ms := tokens[1];
+    if (tokens.Count > 2) and (tokens[2] <> '') then
+      ys := tokens[2];
+    texto := ds + DateSeparator + ms + DateSeparator + ys;
+  end;
+
+  procedure MiddleEndianForm;
+  begin
+    if tokens[0] <> '' then
+      ms := tokens[0];
+    if (tokens.Count > 1) and (tokens[1] <> '') then
+      ds := tokens[1];
+    if (tokens.Count > 2) and (tokens[2] <> '') then
+      ys := tokens[2];
+    texto := ms + DateSeparator + ds + DateSeparator + ys;
+  end;
+
+  procedure BigEndianForm;
+  begin
+    if tokens[0] <> '' then
+      ys := tokens[0];
+    if (tokens.Count > 1) and (tokens[1] <> '') then
+      ms := tokens[1];
+    if (tokens.Count > 2) and (tokens[2] <> '') then
+      ds := tokens[2];
+    texto := ys + DateSeparator + ms + DateSeparator + ds;
+  end;
+
 begin
-  if theFormat <> '' then
+  if theFormat = '' then
     aDateFormat := ShortDateFormat
   else
     aDateFormat := theFormat;
@@ -92,16 +128,13 @@ begin
   Split(DateSeparator, texto, tokens);
   if tokens.Count > 0 then
   begin
-    // for now only working date forma d/m/y
-    // TODO add logic to make it working with m/d/y and ISO format
-    // update jdbgridutils to work with this code
-    if tokens[0] <> '' then
-      ds := tokens[0];
-    if (tokens.Count > 1) and (tokens[1] <> '') then
-      ms := tokens[1];
-    if (tokens.Count > 2) and (tokens[2] <> '') then
-      ys := tokens[2];
-    texto := ds + DateSeparator + ms + DateSeparator + ys;
+    aChar := aDateFormat[1];
+    case aChar of
+      'd', 'D': LittleEndianForm;
+      'm', 'M': MiddleEndianForm;
+      'y', 'Y': BigEndianForm;
+    end;
+
     if IsValidDateString(texto) then
     begin
       aDate := StrToDate(texto);
