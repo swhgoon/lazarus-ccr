@@ -23,6 +23,8 @@ type
     procedure TranslateTexts(ALanguage: Integer);
     procedure TranslateTextsToEnglish; virtual;
     procedure TranslateTextsToPortuguese; virtual;
+    procedure StartNewGame(); virtual; abstract;
+    procedure EndGame(); virtual; abstract;
   end;
 
 procedure AddModule(AModule: TTappyModule);

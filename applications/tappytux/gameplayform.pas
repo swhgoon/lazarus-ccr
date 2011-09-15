@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls,
   // TappyTux
-  tappydrawer;
+  tappydrawer, tappymodules;
 
 type
 
@@ -49,6 +49,8 @@ procedure TformTappyTuxGame.btnExitClick(Sender: TObject);
 begin
   Close;
   formConfig.Show;
+
+  GetCurrentModule().EndGame();
 end;
 
 procedure TformTappyTuxGame.Edit1KeyPress(Sender: TObject; var Key: char);

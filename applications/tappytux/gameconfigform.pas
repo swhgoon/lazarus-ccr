@@ -77,6 +77,7 @@ end;
 procedure TformConfig.btnLoadClick(Sender: TObject);
 begin
   SetCurrentModule(comboGameType.ItemIndex);
+  GetCurrentModule().StartNewGame();
 
   formTappyTuxGame.Show;
   Hide;

@@ -17,6 +17,8 @@ type
     constructor Create; override;
     procedure TranslateTextsToEnglish; override;
     procedure TranslateTextsToPortuguese; override;
+    procedure StartNewGame(); override;
+    procedure EndGame(); override;
   end;
 
 implementation
@@ -36,6 +38,16 @@ end;
 procedure TTappyMath.TranslateTextsToPortuguese;
 begin
   ShortDescription := 'TappyMath - Um jogo para aprender aritmética';
+end;
+
+procedure TTappyMath.StartNewGame;
+begin
+
+end;
+
+procedure TTappyMath.EndGame;
+begin
+
 end;
 
 initialization

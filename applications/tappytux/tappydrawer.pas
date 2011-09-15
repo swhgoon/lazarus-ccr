@@ -14,7 +14,7 @@ type
   TTappyTuxAnimation = class
     CurrentStep: Integer;
     FinalStep: Integer;
-    constructor Create;
+    constructor Create; virtual;
     procedure DrawToIntfImg(AIntfImg: TLazIntfImage); virtual; abstract;
     procedure ExecuteFinal; virtual; abstract;
   end;
@@ -27,6 +27,15 @@ type
     procedure ExecuteFinal; override;
   end;
 
+  { TBallonAnimation }
+
+  TBallonAnimation = class(TTappyTuxAnimation)
+  public
+    constructor Create; override;
+    procedure DrawToIntfImg(AIntfImg: TLazIntfImage); override;
+    procedure ExecuteFinal; override;
+  end;
+
   { TTappyTuxDrawer }
 
   TTappyTuxDrawer = class(TCustomControl)
@@ -35,6 +44,7 @@ type
     FAnimationList: TFPList;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure EraseBackground(DC: HDC); override;
     procedure Paint; override;
     procedure DrawToCanvas(ACanvas: TCanvas);
@@ -49,12 +59,33 @@ type
                           Shift: TShiftState; X, Y: Integer);
     procedure HandleOnTimer(Sender: TObject);
     procedure AddAnimation(AAnimation: TTappyTuxAnimation);
+    procedure HandleAnimationOnTimer();
   end;
 
 var
   vTappyTuxDrawer: TTappyTuxDrawer;
 
 implementation
+
+{ TBallonAnimation }
+
+constructor TBallonAnimation.Create;
+begin
+  inherited Create;
+
+  CurrentStep := 0;
+  FinalStep := 200;
+end;
+
+procedure TBallonAnimation.DrawToIntfImg(AIntfImg: TLazIntfImage);
+begin
+  AIntfImg.Colors[CurrentStep, CurrentStep] := colRed;
+end;
+
+procedure TBallonAnimation.ExecuteFinal;
+begin
+  // Lost the game if the ballon reached its end
+end;
 
 { TFireAnimation }
 
@@ -102,6 +133,8 @@ constructor TTappyTuxDrawer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
+  FAnimationList := TFPList.Create;
+
 {  imgBoard := TPortableNetworkGraphic.Create;
   imgWPawn := TPortableNetworkGraphic.Create;
   imgWKnight := TPortableNetworkGraphic.Create;
@@ -120,6 +153,13 @@ begin
   OnMouseMove := @HandleMouseMove;
   OnMouseUp := @HandleMouseUp;
   OnMouseDown := @HandleMouseDown;
+end;
+
+destructor TTappyTuxDrawer.Destroy;
+begin
+  FAnimationList.Free;
+
+  inherited Destroy;
 end;
 
 procedure TTappyTuxDrawer.EraseBackground(DC: HDC);
@@ -155,6 +195,8 @@ var
   lIntfImage: TLazIntfImage;
   lTmpBmp: TBitmap;
   X, Y: integer;
+  i: Integer;
+  lAnimation: TTappyTuxAnimation;
 begin
   lIntfImage := TLazIntfImage.Create(0, 0);
   lTmpBmp := TBitmap.Create;
@@ -180,10 +222,14 @@ begin
         Y := (8 - row) * INT_CHESSTILE_SIZE;
 
         DrawImageWithTransparentColor(lIntfImage, X, Y, FPCOLOR_TRANSPARENT_TILE, lTileBmp);
-      end;
+      end;}
 
     // Now animations
-    if Assigned(FAnimation) then FAnimation.DrawToIntfImg(lIntfImage);}
+    for i := 0 to FAnimationList.Count - 1 do
+    begin
+      lAnimation := TTappyTuxAnimation(FAnimationList.Items[i]);
+      lAnimation.DrawToIntfImg(lIntfImage);
+    end;
 
     lTmpBmp.LoadFromIntfImage(lIntfImage);
     ACanvas.Draw(0, 0, lTmpBmp);
@@ -290,8 +336,22 @@ end;
 
 procedure TTappyTuxDrawer.AddAnimation(AAnimation: TTappyTuxAnimation);
 begin
-{  FDrawerState := dsRunningAnimation;
-  FAnimation := AAnimation;}
+  FAnimationList.Add(AAnimation);
+end;
+
+procedure TTappyTuxDrawer.HandleAnimationOnTimer;
+var
+  i: Integer;
+  lAnimation: TTappyTuxAnimation;
+begin
+
+  for i := 0 to FAnimationList.Count - 1 do
+  begin
+    lAnimation := TTappyTuxAnimation(FAnimationList.Items[i]);
+    Inc(lAnimation.CurrentStep);
+  end;
+
+  Self.Invalidate;
 end;
 
 end.
