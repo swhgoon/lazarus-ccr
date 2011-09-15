@@ -16,7 +16,7 @@ type
     ShortDescription: string;
     Activated: Boolean;
     constructor Create; virtual;
-    function HandleOnPageLoad(AInput: string; out AOutput: string): Boolean;
+    function HandleOnPageLoad(AInput: string; out AOutput: string): Boolean; virtual;
   end;
 
 procedure RegisterBrowserModule(AModule: TBrowserModule);
