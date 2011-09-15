@@ -182,8 +182,49 @@ begin
 end;
 
 function ConvertUTF8HtmlTextToBraille(AInput: string): string;
+var
+  i: integer;
+  output, aux_string: string;
+  is_text: boolean;
+
 begin
-  Result := ConvertUTF8TextToBraille(AInput);
+
+  i := 1;
+  output := '';
+  aux_string := '';
+  is_text := True;
+
+  while i <= length(page) do
+  begin
+    while is_text and (i <= length(page)) do
+    begin
+      if (page[i] = '<') or (page[i] = '/') then
+      begin
+        is_text := False;
+        break
+      end;
+      aux_string := aux_string + page[i];
+      i := i + 1;
+    end;
+
+    output := output + ConvertUTF8TextToBraille(aux_string);
+
+    while (not is_text) and (i <= length(page))do
+    begin
+      if (page[i] = '>') then
+      begin
+        is_text := True;
+        i := i + 1;
+        output := output + '>';
+        break
+      end;
+      output := output + page[i];
+      i := i + 1;
+    end;
+  end;
+
+  ConvertUTF8HtmlTextToBraille := output;
+
 end;
 
 { TBrailleBrowserModule }
