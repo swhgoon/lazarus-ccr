@@ -24,7 +24,6 @@ interface
 uses
   Classes, SysUtils, Dialogs;
 
-function ReplaceChar(const s: string; ch1: char; ch2: char): string;
 function CountChar(const s: string; ch: char): integer;
 procedure Split(const Delimiter: char; Input: string; Strings: TStrings);
 function NormalizeDate(const Value: string; theValue: TDateTime;
@@ -33,16 +32,6 @@ function NormalizeDateSeparator(const s: string): string;
 function IsValidDateString(const Value: string): boolean;
 
 implementation
-
-function ReplaceChar(const s: string; ch1: char; ch2: char): string;
-var
-  i: integer;
-begin
-  Result := s;
-  for i := 1 to length(Result) do
-    if Result[i] = ch1 then
-      Result[i] := ch2;
-end;
 
 function CountChar(const s: string; ch: char): integer;
 var
