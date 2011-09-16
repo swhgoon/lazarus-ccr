@@ -49,6 +49,7 @@ type
   
 const
   BindingStyleNames : array[TBindingStyle] of string = ( 'Document', 'RPC', 'Unknown' );
+  NAME_KINDS_DEFAULT = [elkDeclaredName, elkName];
   
 type
   TArrayStyle = ( asScoped, asEmbeded );
@@ -104,6 +105,7 @@ type
     FBindingList : TObjectList;
     FProperties : TPropertyHolder;
     FCaseSensitive : Boolean;
+    FDefaultSearchNameKinds: TElementNameKinds;
   private
     function GetBinding(AIndex : Integer): TwstBinding;
     function GetBindingCount: Integer;
@@ -138,8 +140,12 @@ type
     function FindElementInModule(
         const AName: String;
             AModule: TPasModule;
-      const ANameKinds : TElementNameKinds = [elkDeclaredName, elkName]
-    ): TPasElement;
+      const ANameKinds : TElementNameKinds
+    ): TPasElement; overload;
+    function FindElementInModule(
+        const AName: String;
+            AModule: TPasModule
+    ): TPasElement; overload;
     function FindModule(const AName: String): TPasModule;override;
     function IsEnumItemNameUsed(const AName : string; AModule : TPasModule) : Boolean;overload;
     function IsEnumItemNameUsed(const AName : string) : Boolean;overload;
@@ -168,6 +174,10 @@ type
     function IsOfType(AType: TPasType; AClass: TClass): Boolean;
 
     property CaseSensitive : Boolean read FCaseSensitive write FCaseSensitive default CASE_SENSITIVE_DEFAULT;
+    property DefaultSearchNameKinds : TElementNameKinds
+        read FDefaultSearchNameKinds
+       write FDefaultSearchNameKinds
+     default NAME_KINDS_DEFAULT;
   end;
 
   TPasNativeModule = class(TPasModule)
@@ -418,68 +428,75 @@ function CreateWstInterfaceSymbolTable(AContainer : TwstPasTreeContainer) : TPas
   
 var
   loc_TBaseComplexSimpleContentRemotable : TPasClassType;
+  locOldNameKinds : TElementNameKinds;
 begin
-  Result := TPasNativeModule(AContainer.CreateElement(TPasNativeModule,'base_service_intf',AContainer.Package,visPublic,'',0));
+  locOldNameKinds := AContainer.DefaultSearchNameKinds;
+  AContainer.DefaultSearchNameKinds := [elkDeclaredName,elkName];
   try
-    AContainer.Package.Modules.Add(Result);
-    AContainer.RegisterExternalAlias(Result,sXSD_NS);
-    Result.InterfaceSection := TInterfaceSection(AContainer.CreateElement(TInterfaceSection,'',Result,visDefault,'',0));
-    AddSystemSymbol(Result,AContainer);
-    AddClassDef(Result,'TBaseRemotable','',TPasNativeClassType);
-      AContainer.RegisterExternalAlias(AddClassDef(Result,'anyType_Type','TBaseRemotable',TPasNativeClassType),'anyType');
-      AddClassDef(Result,'TAbstractSimpleRemotable','TBaseRemotable',TPasNativeClassType);
-        AContainer.RegisterExternalAlias(AddClassDef(Result,'schema_Type','TAbstractSimpleRemotable'),'schema');
-        AContainer.RegisterExternalAlias(AddClassDef(Result,'TDateRemotable','TAbstractSimpleRemotable'),'date');
-        AContainer.RegisterExternalAlias(AddClassDef(Result,'TDateTimeRemotable','TAbstractSimpleRemotable'),'dateTime');
-{$IFDEF WST_HAS_TDURATIONREMOTABLE}
-        AContainer.RegisterExternalAlias(AddClassDef(Result,'TDurationRemotable','TAbstractSimpleRemotable'),'duration');
-{$ENDIF WST_HAS_TDURATIONREMOTABLE}
-        AContainer.RegisterExternalAlias(AddClassDef(Result,'TTimeRemotable','TAbstractSimpleRemotable'),'time');
+    Result := TPasNativeModule(AContainer.CreateElement(TPasNativeModule,'base_service_intf',AContainer.Package,visPublic,'',0));
+    try
+      AContainer.Package.Modules.Add(Result);
+      AContainer.RegisterExternalAlias(Result,sXSD_NS);
+      Result.InterfaceSection := TInterfaceSection(AContainer.CreateElement(TInterfaceSection,'',Result,visDefault,'',0));
+      AddSystemSymbol(Result,AContainer);
+      AddClassDef(Result,'TBaseRemotable','',TPasNativeClassType);
+        AContainer.RegisterExternalAlias(AddClassDef(Result,'anyType_Type','TBaseRemotable',TPasNativeClassType),'anyType');
+        AddClassDef(Result,'TAbstractSimpleRemotable','TBaseRemotable',TPasNativeClassType);
+          AContainer.RegisterExternalAlias(AddClassDef(Result,'schema_Type','TAbstractSimpleRemotable'),'schema');
+          AContainer.RegisterExternalAlias(AddClassDef(Result,'TDateRemotable','TAbstractSimpleRemotable'),'date');
+          AContainer.RegisterExternalAlias(AddClassDef(Result,'TDateTimeRemotable','TAbstractSimpleRemotable'),'dateTime');
+  {$IFDEF WST_HAS_TDURATIONREMOTABLE}
+          AContainer.RegisterExternalAlias(AddClassDef(Result,'TDurationRemotable','TAbstractSimpleRemotable'),'duration');
+  {$ENDIF WST_HAS_TDURATIONREMOTABLE}
+          AContainer.RegisterExternalAlias(AddClassDef(Result,'TTimeRemotable','TAbstractSimpleRemotable'),'time');
 
-      AddClassDef(Result,'TAbstractComplexRemotable','TBaseRemotable',TPasNativeClassType);
-        loc_TBaseComplexSimpleContentRemotable := AddClassDef(Result,'TBaseComplexSimpleContentRemotable','TAbstractComplexRemotable',TPasNativeClassType);
-          (AContainer.FindElementInModule('TComplexInt16SContentRemotable',Result) as TPasClassType).AncestorType := loc_TBaseComplexSimpleContentRemotable;
-          (AContainer.FindElementInModule('TComplexFloatDoubleContentRemotable',Result) as TPasClassType).AncestorType := loc_TBaseComplexSimpleContentRemotable;
-            loc_TBaseComplexSimpleContentRemotable.AddRef();
-            loc_TBaseComplexSimpleContentRemotable.AddRef();
+        AddClassDef(Result,'TAbstractComplexRemotable','TBaseRemotable',TPasNativeClassType);
+          loc_TBaseComplexSimpleContentRemotable := AddClassDef(Result,'TBaseComplexSimpleContentRemotable','TAbstractComplexRemotable',TPasNativeClassType);
+            (AContainer.FindElementInModule('TComplexInt16SContentRemotable',Result) as TPasClassType).AncestorType := loc_TBaseComplexSimpleContentRemotable;
+            (AContainer.FindElementInModule('TComplexFloatDoubleContentRemotable',Result) as TPasClassType).AncestorType := loc_TBaseComplexSimpleContentRemotable;
+              loc_TBaseComplexSimpleContentRemotable.AddRef();
+              loc_TBaseComplexSimpleContentRemotable.AddRef();
 
-        AddClassDef(Result,'TBaseComplexRemotable','TAbstractComplexRemotable',TPasNativeClassType);
-          AddClassDef(Result,'THeaderBlock','TBaseComplexRemotable',TPasNativeClassType);
-            AddClassDef(Result,'TSimpleContentHeaderBlock','THeaderBlock',TPasNativeClassType);
-        AddClassDef(Result,'TBaseArrayRemotable','TAbstractComplexRemotable',TPasNativeClassType);
-          AddClassDef(Result,'TBaseObjectArrayRemotable','TBaseArrayRemotable',TPasNativeClassType);
-          AddClassDef(Result,'TBaseSimpleTypeArrayRemotable','TBaseArrayRemotable',TPasNativeClassType);
-            AddClassDef(Result,'TArrayOfStringRemotable','TBaseSimpleTypeArrayRemotable');
-            AddClassDef(Result,'TArrayOfBooleanRemotable','TBaseSimpleTypeArrayRemotable');
-            AddClassDef(Result,'TArrayOfInt8URemotable','TBaseSimpleTypeArrayRemotable');
-            AddClassDef(Result,'TArrayOfInt8SRemotable','TBaseSimpleTypeArrayRemotable');
-            AddClassDef(Result,'TArrayOfInt16SRemotable','TBaseSimpleTypeArrayRemotable');
-            AddClassDef(Result,'TArrayOfInt16URemotable','TBaseSimpleTypeArrayRemotable');
-            AddClassDef(Result,'TArrayOfInt32URemotable','TBaseSimpleTypeArrayRemotable');
-            AddClassDef(Result,'TArrayOfInt32SRemotable','TBaseSimpleTypeArrayRemotable');
-            AddClassDef(Result,'TArrayOfInt64SRemotable','TBaseSimpleTypeArrayRemotable');
-            AddClassDef(Result,'TArrayOfInt64URemotable','TBaseSimpleTypeArrayRemotable');
-            AddClassDef(Result,'TArrayOfFloatSingleRemotable','TBaseSimpleTypeArrayRemotable');
-            AddClassDef(Result,'TArrayOfFloatDoubleRemotable','TBaseSimpleTypeArrayRemotable');
-            AddClassDef(Result,'TArrayOfFloatExtendedRemotable','TBaseSimpleTypeArrayRemotable');
-            AddClassDef(Result,'TArrayOfFloatCurrencyRemotable','TBaseSimpleTypeArrayRemotable');
+          AddClassDef(Result,'TBaseComplexRemotable','TAbstractComplexRemotable',TPasNativeClassType);
+            AddClassDef(Result,'THeaderBlock','TBaseComplexRemotable',TPasNativeClassType);
+              AddClassDef(Result,'TSimpleContentHeaderBlock','THeaderBlock',TPasNativeClassType);
+          AddClassDef(Result,'TBaseArrayRemotable','TAbstractComplexRemotable',TPasNativeClassType);
+            AddClassDef(Result,'TBaseObjectArrayRemotable','TBaseArrayRemotable',TPasNativeClassType);
+            AddClassDef(Result,'TBaseSimpleTypeArrayRemotable','TBaseArrayRemotable',TPasNativeClassType);
+              AddClassDef(Result,'TArrayOfStringRemotable','TBaseSimpleTypeArrayRemotable');
+              AddClassDef(Result,'TArrayOfBooleanRemotable','TBaseSimpleTypeArrayRemotable');
+              AddClassDef(Result,'TArrayOfInt8URemotable','TBaseSimpleTypeArrayRemotable');
+              AddClassDef(Result,'TArrayOfInt8SRemotable','TBaseSimpleTypeArrayRemotable');
+              AddClassDef(Result,'TArrayOfInt16SRemotable','TBaseSimpleTypeArrayRemotable');
+              AddClassDef(Result,'TArrayOfInt16URemotable','TBaseSimpleTypeArrayRemotable');
+              AddClassDef(Result,'TArrayOfInt32URemotable','TBaseSimpleTypeArrayRemotable');
+              AddClassDef(Result,'TArrayOfInt32SRemotable','TBaseSimpleTypeArrayRemotable');
+              AddClassDef(Result,'TArrayOfInt64SRemotable','TBaseSimpleTypeArrayRemotable');
+              AddClassDef(Result,'TArrayOfInt64URemotable','TBaseSimpleTypeArrayRemotable');
+              AddClassDef(Result,'TArrayOfFloatSingleRemotable','TBaseSimpleTypeArrayRemotable');
+              AddClassDef(Result,'TArrayOfFloatDoubleRemotable','TBaseSimpleTypeArrayRemotable');
+              AddClassDef(Result,'TArrayOfFloatExtendedRemotable','TBaseSimpleTypeArrayRemotable');
+              AddClassDef(Result,'TArrayOfFloatCurrencyRemotable','TBaseSimpleTypeArrayRemotable');
 
-    AddAlias('token','string',Result);
-    AddAlias('language','string',Result); 
-    AddAlias('anyURI','string',Result);
-    AddAlias('ID','string',Result);
-    //AddAlias('float','Single',Result);
-    AddAlias('nonNegativeInteger','LongWord',Result);
-    AddAlias('positiveInteger','nonNegativeInteger',Result);
-{$IFNDEF WST_HAS_TDURATIONREMOTABLE}
-    AddAlias('duration','string',Result);
-{$ENDIF WST_HAS_TDURATIONREMOTABLE}
-{$IFNDEF WST_HAS_TTIMEREMOTABLE}
-    AddAlias('time','string',Result);
-{$ENDIF WST_HAS_TTIMEREMOTABLE}
-  except
-    FreeAndNil(Result);
-    raise;
+      AddAlias('token','string',Result);
+      AddAlias('language','string',Result);
+      AddAlias('anyURI','string',Result);
+      AddAlias('ID','string',Result);
+      //AddAlias('float','Single',Result);
+      AddAlias('nonNegativeInteger','LongWord',Result);
+      AddAlias('positiveInteger','nonNegativeInteger',Result);
+  {$IFNDEF WST_HAS_TDURATIONREMOTABLE}
+      AddAlias('duration','string',Result);
+  {$ENDIF WST_HAS_TDURATIONREMOTABLE}
+  {$IFNDEF WST_HAS_TTIMEREMOTABLE}
+      AddAlias('time','string',Result);
+  {$ENDIF WST_HAS_TTIMEREMOTABLE}
+    except
+      FreeAndNil(Result);
+      raise;
+    end;
+  finally
+    AContainer.DefaultSearchNameKinds := locOldNameKinds;
   end;
 end;
 
@@ -635,6 +652,7 @@ end;
 constructor TwstPasTreeContainer.Create();
 begin
   FCaseSensitive := CASE_SENSITIVE_DEFAULT;
+  FDefaultSearchNameKinds := NAME_KINDS_DEFAULT;
   FPackage := TPasPackage.Create('sample',nil);
   FBindingList := TObjectList.Create(True);
   FProperties := TPropertyHolder.Create();
@@ -794,9 +812,17 @@ begin
   end;
 end;
 
+function TwstPasTreeContainer.FindElementInModule(
+  const AName   : String;
+        AModule : TPasModule
+) : TPasElement;
+begin
+  Result := FindElementInModule(AName,AModule,DefaultSearchNameKinds);
+end;
+
 function TwstPasTreeContainer.FindElement(const AName: String): TPasElement;
 begin
-  Result := FindElement(AName,[elkDeclaredName,elkName]);
+  Result := FindElement(AName,DefaultSearchNameKinds);
 end;
 
 function TwstPasTreeContainer.FindElement(

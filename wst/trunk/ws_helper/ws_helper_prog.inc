@@ -79,10 +79,14 @@ var
     if ( sourceType = sftXsd ) then begin
       AppOptions := AppOptions - [ cloProxy, cloImp, cloBinder, cloWsdl ];
     end;
-    if AnsiSameText('S',Trim(GetOptionArg(cloParserCaseSensitive))) then
+    if (cloParserCaseSensitive in AppOptions) then begin
+      if AnsiSameText('S',Trim(GetOptionArg(cloParserCaseSensitive))) then
+        Include(AppOptions,cloParserCaseSensitive);
+      if AnsiSameText('I',Trim(GetOptionArg(cloParserCaseSensitive))) then
+        Exclude(AppOptions,cloParserCaseSensitive);
+    end else begin
       Include(AppOptions,cloParserCaseSensitive);
-    if AnsiSameText('I',Trim(GetOptionArg(cloParserCaseSensitive))) then
-      Exclude(AppOptions,cloParserCaseSensitive);
+    end;
   end;
 
   function GenerateSymbolTable() : Boolean ;

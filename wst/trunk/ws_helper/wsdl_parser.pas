@@ -440,24 +440,31 @@ procedure TWsdlParser.Execute(const AMode: TParserMode; const AModuleName: strin
 var
   locSrvcCrs : IObjectCursor;
   locObj : TDOMNodeRttiExposer;
+  locOldNameKinds : TElementNameKinds;
 begin
-  Prepare(AModuleName);
+  locOldNameKinds := FSymbols.DefaultSearchNameKinds;
+  FSymbols.DefaultSearchNameKinds := [elkDeclaredName];
+  try
+    Prepare(AModuleName);
 
-  locSrvcCrs := FServiceCursor.Clone() as IObjectCursor;
-  locSrvcCrs.Reset();
-  while locSrvcCrs.MoveNext() do begin
-    locObj := locSrvcCrs.GetCurrent() as TDOMNodeRttiExposer;
-    ParseService(locObj.InnerObject);
+    locSrvcCrs := FServiceCursor.Clone() as IObjectCursor;
+    locSrvcCrs.Reset();
+    while locSrvcCrs.MoveNext() do begin
+      locObj := locSrvcCrs.GetCurrent() as TDOMNodeRttiExposer;
+      ParseService(locObj.InnerObject);
+    end;
+
+    if ( AMode = pmAllTypes ) then begin
+      ParseTypes();
+    end;
+
+    ParseForwardDeclarations();
+    SymbolTable.SetCurrentModule(FModule);
+    ExtractNameSpace();
+    FixUsesList();
+  finally
+    FSymbols.DefaultSearchNameKinds := locOldNameKinds;
   end;
-
-  if ( AMode = pmAllTypes ) then begin
-    ParseTypes();
-  end;
-
-  ParseForwardDeclarations(); 
-  SymbolTable.SetCurrentModule(FModule);
-  ExtractNameSpace();         
-  FixUsesList();
 end;
 
 function TWsdlParser.ParseOperation(

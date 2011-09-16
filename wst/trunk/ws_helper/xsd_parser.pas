@@ -115,13 +115,15 @@ type
     FIncludeList : TStringList;
     FIncludeParsed : Boolean;
     FPrepared : Boolean;
+    FOldNameKinds : TElementNameKinds;
   private
     procedure DoOnMessage(const AMsgType : TMessageType; const AMsg : string);
   private
     function FindNamedNode(AList : IObjectCursor; const AName : WideString; const AOrder : Integer = 0):TDOMNode;
     function GetParentContext() : IParserContext;{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure Prepare(const AMustSucceed : Boolean);
-    function FindElement(const AName: String) : TPasElement; {$IFDEF USE_INLINE}inline;{$ENDIF}
+    function FindElement(const AName: String) : TPasElement; overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function FindElement(const AName: String; const ANameKinds : TElementNameKinds) : TPasElement; overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
   protected
     function GetXsShortNames() : TStrings;
     function GetSymbolTable() : TwstPasTreeContainer;
@@ -217,6 +219,8 @@ begin
   FDoc := ADoc;
   FParentContext := Pointer(AParentContext);
   FSymbols := ASymbols;
+  FOldNameKinds := FSymbols.DefaultSearchNameKinds;
+  FSymbols.DefaultSearchNameKinds := [elkDeclaredName];
   FSchemaNode := ASchemaNode;
 
   FNameSpaceList := TStringList.Create();
@@ -242,6 +246,8 @@ destructor TCustomXsdSchemaParser.Destroy();
   end; 
   
 begin
+  if (FSymbols <> nil) then
+    FSymbols.DefaultSearchNameKinds := FOldNameKinds;
   FParentContext := nil;
   FreeAndNil(FIncludeList);
   FreeList(FNameSpaceList);
@@ -296,6 +302,16 @@ begin
   Result := SymbolTable.FindElementInModule(AName,FModule);
   if ( Result = nil ) then
     Result := SymbolTable.FindElement(AName);
+end;
+
+function TCustomXsdSchemaParser.FindElement(
+  const AName      : String;
+  const ANameKinds : TElementNameKinds
+) : TPasElement;
+begin
+  Result := SymbolTable.FindElementInModule(AName,FModule,ANameKinds);
+  if ( Result = nil ) then
+    Result := SymbolTable.FindElement(AName,ANameKinds);
 end;
 
 procedure TCustomXsdSchemaParser.ParseImportDocuments();
@@ -638,7 +654,7 @@ var
           if ASimpleTypeAlias.InheritsFrom(TPasNativeSimpleType) then begin
             locTypeHint := ExtractTypeHint(typNd);
             if not IsStrEmpty(locTypeHint) then begin
-              locHintedType := FindElement(locTypeHint) as TPasType;
+              locHintedType := FindElement(locTypeHint,[elkName]) as TPasType;
               if ( locHintedType <> nil ) then
                 ASimpleTypeAlias := locHintedType;
             end;
