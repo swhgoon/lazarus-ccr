@@ -48,7 +48,7 @@ type
     function isNull: boolean;
     property format: string read getFormat write setFormat;
     constructor Create;
-    destructor Destroy;
+    destructor Destroy; override;
     function Editor(aGrid: TDBGrid): TStringCellEditor;
   end;
 
@@ -68,7 +68,7 @@ type
     CellEditor: TStringCellEditor;
     theGrid: TDBGrid;
     constructor Create;
-    destructor Destroy;
+    destructor Destroy; override;
     function Editor(aGrid: TDBGrid): TStringCellEditor;
   end;
 
@@ -93,7 +93,7 @@ type
     theGrid: TDBGrid;
     property decimales: integer read getDecimales write setDecimales;
     constructor Create;
-    destructor Destroy;
+    destructor Destroy; override;
     function Editor(aGrid: TDBGrid; aDecimals: integer = 2): TStringCellEditor;
   end;
 
@@ -219,6 +219,7 @@ end;
 
 constructor TJDbGridDateCtrl.Create;
 begin
+  inherited Create;
   CellEditor := TStringCellEditor.Create(nil);
   CellEditor.OnEnter := @myEditEnter;
   CellEditor.OnKeyDown := @OnKeyDown;
@@ -230,6 +231,7 @@ end;
 destructor TJDbGridDateCtrl.Destroy;
 begin
   CellEditor.Free;
+  inherited Destroy;
 end;
 
 function TJDbGridDateCtrl.Editor(aGrid: TDBGrid): TStringCellEditor;
@@ -350,6 +352,7 @@ end;
 
 constructor TJDbGridCurrencyCtrl.Create;
 begin
+  inherited Create;
   CellEditor := TStringCellEditor.Create(nil);
   CellEditor.OnEnter := @myEditOnEnter;
   CellEditor.OnKeyDown := @OnKeyDown;
@@ -360,6 +363,7 @@ end;
 destructor TJDbGridCurrencyCtrl.Destroy;
 begin
   CellEditor.Free;
+  inherited Destroy;
 end;
 
 function TJDbGridCurrencyCtrl.Editor(aGrid: TDBGrid;
@@ -457,6 +461,7 @@ end;
 
 constructor TJDbGridIntegerCtrl.Create;
 begin
+  inherited Create;
   CellEditor := TStringCellEditor.Create(nil);
   CellEditor.OnEnter := @myEditOnEnter;
   CellEditor.OnKeyDown := @OnKeyDown;
@@ -467,6 +472,7 @@ end;
 destructor TJDbGridIntegerCtrl.Destroy;
 begin
   CellEditor.Free;
+  inherited Destroy;
 end;
 
 function TJDbGridIntegerCtrl.Editor(aGrid: TDBGrid): TStringCellEditor;
