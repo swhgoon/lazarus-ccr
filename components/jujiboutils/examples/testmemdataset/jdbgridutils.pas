@@ -195,7 +195,7 @@ begin
       Key := VK_UNKNOWN;
     end
     else
-    if Key in [VK_RETURN, VK_TAB] then
+    if Key in [VK_RETURN, VK_TAB, VK_RIGHT, VK_LEFT] then
     begin
       CellEditor.Caption:= NormalizeDate(CellEditor.Caption, theValue);
       if Length(CellEditor.Caption) = 0 then
@@ -206,6 +206,7 @@ begin
         theValue := StrToDate(CellEditor.Caption);
         Field.DataSet.Edit;
         Field.AsDateTime := theValue;
+        CellEditor.SelectAll;
         updated := True;
       end;
     end;
