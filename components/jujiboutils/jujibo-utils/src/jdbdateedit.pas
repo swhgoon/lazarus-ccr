@@ -130,10 +130,15 @@ end;
 
 procedure TJDBDateEdit.DataChange(Sender: TObject);
 begin
+  if FDataLink.Field <> nil then
+  begin
   if not Focused then
     formatInput
   else
     Caption := FDataLink.Field.AsString;
+  end
+  else
+    Text := '';
 end;
 
 procedure TJDBDateEdit.UpdateData(Sender: TObject);
@@ -157,8 +162,9 @@ begin
       SelectAll;
       SetFocus;
     end;
-
-  end;
+  end
+  else
+    Text := '';
 end;
 
 procedure TJDBDateEdit.FocusRequest(Sender: TObject);

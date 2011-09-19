@@ -128,10 +128,15 @@ end;
 
 procedure TJDBIntegerEdit.DataChange(Sender: TObject);
 begin
-  if not Focused then
-    formatInput
+  if FDataLink.Field <> nil then
+  begin
+    if not Focused then
+      formatInput
+    else
+      Caption := FDataLink.Field.AsString;
+  end
   else
-    Caption := FDataLink.Field.AsString;
+    Text := '';
 end;
 
 
@@ -148,7 +153,9 @@ begin
       SelectAll;
       SetFocus;
     end;
-  end;
+  end
+  else
+    Text := '';
 end;
 
 procedure TJDBIntegerEdit.FocusRequest(Sender: TObject);

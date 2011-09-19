@@ -135,10 +135,15 @@ end;
 
 procedure TJDBCurrencyEdit.DataChange(Sender: TObject);
 begin
-  if not Focused then
-    formatInput
+  if FDataLink.Field <> nil then
+  begin
+    if not Focused then
+      formatInput
+    else
+      Caption := FDataLink.Field.AsString;
+  end
   else
-    Caption := FDataLink.Field.AsString;
+    Text := '';
 end;
 
 function TJDBCurrencyEdit.getDecimals: integer;
@@ -157,23 +162,28 @@ procedure TJDBCurrencyEdit.UpdateData(Sender: TObject);
 var
   theValue: currency;
 begin
-  if IsValidCurrency(Text) then
+  if FDataLink.Field <> nil then
   begin
-    theValue := StrToCurr(Text);
-    theValue := ScaleTo(theValue, fDecimales);
-    Text := CurrToStr(theValue);
-    FDataLink.Field.Text := Text;
+    if IsValidCurrency(Text) then
+    begin
+      theValue := StrToCurr(Text);
+      theValue := ScaleTo(theValue, fDecimales);
+      Text := CurrToStr(theValue);
+      FDataLink.Field.Text := Text;
+    end
+    else
+    begin
+      if FDataLink.Field <> nil then
+      begin
+        ShowMessage(Caption + ' no es un valor válido');
+        Caption := FDataLink.Field.AsString;
+        SelectAll;
+        SetFocus;
+      end;
+    end;
   end
   else
-  begin
-    if FDataLink.Field <> nil then
-    begin
-      ShowMessage(Caption + ' no es un valor válido');
-      Caption := FDataLink.Field.AsString;
-      SelectAll;
-      SetFocus;
-    end;
-  end;
+    Text := '';
 end;
 
 procedure TJDBCurrencyEdit.FocusRequest(Sender: TObject);
