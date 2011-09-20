@@ -1,4 +1,4 @@
-unit JIntegerEdit;
+unit JCurrencyEdit;
 
 {$mode objfpc}{$H+}
 
@@ -9,19 +9,23 @@ uses
 
 type
 
-  { TJIntegerEdit }
+  { TJCurrencyEdit }
 
-  TJIntegerEdit = class(TCustomEdit)
+  TJCurrencyEdit = class(TCustomEdit)
   private
     { Private declarations }
-    theValue: integer;
+    theValue: currency;
     fFormat: string;
+    fDecimals: integer;
+    function getDecimals: integer;
     function getFormat: string;
-    function getValue: integer;
+    function getValue: currency;
+    procedure formatInput;
+    procedure setDecimals(const AValue: integer);
     procedure setFormat(const AValue: string);
-    procedure setValue(const AValue: integer);
-    function IsValidInteger(const Value: string): boolean;
-    procedure FormatInput;
+    function scaleTo(const AValue: currency; const NDecimals: integer): currency;
+    function IsValidFloat(const Value: string): boolean;
+    procedure setValue(const AValue: currency);
   protected
     { Protected declarations }
     procedure DoEnter; override;
@@ -34,7 +38,8 @@ type
   published
     { Published declarations }
     property DisplayFormat: string read getFormat write setFormat;
-    property Value: integer read getValue write setValue;
+    property Decimals: integer read getDecimals write setDecimals;
+    property Value: currency read getValue write setValue;
 
     property Action;
     property Align;
@@ -92,87 +97,113 @@ procedure Register;
 
 implementation
 
+uses
+  Math;
 
 procedure Register;
 begin
-  {$I jintegeredit_icon.lrs}
-  RegisterComponents('Additional', [TJIntegerEdit]);
+  {$I jcurrencyedit_icon.lrs}
+  RegisterComponents('Additional', [TJCurrencyEdit]);
 end;
 
-{ TJIntegerEdit }
+{ TJCurrencyEdit }
 
-function TJIntegerEdit.getFormat: string;
+function TJCurrencyEdit.getDecimals: integer;
+begin
+  Result := fDecimals;
+end;
+
+function TJCurrencyEdit.getFormat: string;
 begin
   Result := fFormat;
 end;
 
-function TJIntegerEdit.getValue: integer;
+function TJCurrencyEdit.getValue: currency;
 begin
   Result := theValue;
 end;
 
-procedure TJIntegerEdit.setFormat(const AValue: string);
+procedure TJCurrencyEdit.formatInput;
+begin
+  Caption := FormatFloat(DisplayFormat, theValue);
+end;
+
+procedure TJCurrencyEdit.setDecimals(const AValue: integer);
+begin
+  if (AValue >= 0) and (AValue < 5) then
+    fDecimals := AValue;
+end;
+
+procedure TJCurrencyEdit.setFormat(const AValue: string);
 begin
   fFormat := AValue;
   formatInput;
 end;
 
-procedure TJIntegerEdit.setValue(const AValue: integer);
+function TJCurrencyEdit.scaleTo(const AValue: currency;
+  const NDecimals: integer): currency;
 begin
-  theValue := AValue;
-  formatInput;
+  Result := round(AValue * power(10, NDecimals)) / power(10, NDecimals);
 end;
 
-function TJIntegerEdit.IsValidInteger(const Value: string): boolean;
+function TJCurrencyEdit.IsValidFloat(const Value: string): boolean;
 begin
-  if StrToIntDef(Value, MaxInt) = MaxInt then
+  if StrToCurrDef(Value, MaxCurrency) = MaxCurrency then
     Result := False
   else
     Result := True;
 end;
 
-procedure TJIntegerEdit.FormatInput;
+procedure TJCurrencyEdit.setValue(const AValue: currency);
 begin
-  Text := FormatFloat(fFormat, theValue);
+  theValue := scaleTo(AValue, fDecimals);
+  formatInput;
 end;
 
-procedure TJIntegerEdit.DoEnter;
+procedure TJCurrencyEdit.DoEnter;
 begin
   inherited DoEnter;
-  Text := IntToStr(theValue);
+  Text := FloatToStr(theValue);
   SelectAll;
 end;
 
-procedure TJIntegerEdit.DoExit;
+procedure TJCurrencyEdit.DoExit;
 begin
   inherited DoExit;
-  if IsValidInteger(Text) then
-    theValue := StrToInt(Text)
+  if IsValidFloat(Text) then
+    theValue := StrToCurr(Text)
   else
   begin
     ShowMessage(Text + ' no es un valor válido');
     SetFocus;
   end;
+  theValue := scaleTo(theValue, fDecimals);
   formatInput;
 end;
 
-procedure TJIntegerEdit.KeyPress(var Key: char);
+procedure TJCurrencyEdit.KeyPress(var Key: char);
 begin
-  if not (Key in ['0'..'9', #8, #9, '-']) then
+  if (Key in ['.', ',']) then
+    Key := Decimalseparator;
+  if (key = DecimalSeparator) and (Pos(key, Text) > 0) then
+    key := #0;
+  if not (Key in ['0'..'9', DecimalSeparator, '+', '-', #8, #9]) then
+    Key := #0;
+  if (Key = DecimalSeparator) and (fDecimals = 0) then
     Key := #0;
   inherited KeyPress(Key);
 end;
 
-constructor TJIntegerEdit.Create(TheOwner: TComponent);
+constructor TJCurrencyEdit.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  // Set initial values
   Text := '';
-  DisplayFormat := '0';
-  Value := 0;
+  fFormat := '#,0.00';
+  fDecimals := 2;
+  formatInput;
 end;
 
-destructor TJIntegerEdit.Destroy;
+destructor TJCurrencyEdit.Destroy;
 begin
   inherited Destroy;
 end;

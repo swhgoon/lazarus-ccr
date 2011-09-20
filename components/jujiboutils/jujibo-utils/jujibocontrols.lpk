@@ -12,7 +12,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="9">
+    <Files Count="11">
       <Item1>
         <Filename Value="src/jdbcurrencyedit.pas"/>
         <HasRegisterProc Value="True"/>
@@ -57,6 +57,16 @@
         <HasRegisterProc Value="True"/>
         <UnitName Value="JLabeledIntegerEdit"/>
       </Item9>
+      <Item10>
+        <Filename Value="src/jcurrencyedit.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="JCurrencyEdit"/>
+      </Item10>
+      <Item11>
+        <Filename Value="src/jlabeledcurrencyedit.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="JLabeledCurrencyEdit"/>
+      </Item11>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
