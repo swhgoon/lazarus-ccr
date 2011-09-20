@@ -12,30 +12,31 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="11">
+    <Files Count="13">
       <Item1>
-        <Filename Value="src/jdbcurrencyedit.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="jdbcurrencyedit"/>
-      </Item1>
-      <Item2>
-        <Filename Value="src/jdbdateedit.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="jdbdateedit"/>
-      </Item2>
-      <Item3>
         <Filename Value="src/jdbintegeredit.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="jdbintegeredit"/>
+      </Item1>
+      <Item2>
+        <Filename Value="src/jdblabeledintegeredit.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="jdblabeledintegeredit"/>
+      </Item2>
+      <Item3>
+        <Filename Value="src/jdbcurrencyedit.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="jdbcurrencyedit"/>
       </Item3>
       <Item4>
-        <Filename Value="src/jcontrolutils.pas"/>
-        <UnitName Value="jcontrolutils"/>
-      </Item4>
-      <Item5>
         <Filename Value="src/jdblabeledcurrencyedit.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="jdblabeledcurrencyedit"/>
+      </Item4>
+      <Item5>
+        <Filename Value="src/jdbdateedit.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="jdbdateedit"/>
       </Item5>
       <Item6>
         <Filename Value="src/jdblabeleddateedit.pas"/>
@@ -43,9 +44,8 @@
         <UnitName Value="jdblabeleddateedit"/>
       </Item6>
       <Item7>
-        <Filename Value="src/jdblabeledintegeredit.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="jdblabeledintegeredit"/>
+        <Filename Value="src/jcontrolutils.pas"/>
+        <UnitName Value="jcontrolutils"/>
       </Item7>
       <Item8>
         <Filename Value="src/jintegeredit.pas"/>
@@ -67,6 +67,16 @@
         <HasRegisterProc Value="True"/>
         <UnitName Value="JLabeledCurrencyEdit"/>
       </Item11>
+      <Item12>
+        <Filename Value="src/jdateedit.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="JDateEdit"/>
+      </Item12>
+      <Item13>
+        <Filename Value="src/jlabeleddateedit.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="JLabeledDateEdit"/>
+      </Item13>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

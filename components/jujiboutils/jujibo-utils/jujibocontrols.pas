@@ -7,25 +7,27 @@ unit jujibocontrols;
 interface
 
 uses
-  jdbcurrencyedit, jdbdateedit, jdbintegeredit, jcontrolutils, 
-  jdblabeledcurrencyedit, jdblabeleddateedit, jdblabeledintegeredit, 
+  jdbintegeredit, jdblabeledintegeredit, jdbcurrencyedit, 
+  jdblabeledcurrencyedit, jdbdateedit, jdblabeleddateedit, jcontrolutils, 
   JIntegerEdit, JLabeledIntegerEdit, JCurrencyEdit, JLabeledCurrencyEdit, 
-  LazarusPackageIntf;
+  JDateEdit, JLabeledDateEdit, LazarusPackageIntf;
 
 implementation
 
 procedure Register; 
 begin
-  RegisterUnit('jdbcurrencyedit', @jdbcurrencyedit.Register); 
-  RegisterUnit('jdbdateedit', @jdbdateedit.Register); 
   RegisterUnit('jdbintegeredit', @jdbintegeredit.Register); 
-  RegisterUnit('jdblabeledcurrencyedit', @jdblabeledcurrencyedit.Register); 
-  RegisterUnit('jdblabeleddateedit', @jdblabeleddateedit.Register); 
   RegisterUnit('jdblabeledintegeredit', @jdblabeledintegeredit.Register); 
+  RegisterUnit('jdbcurrencyedit', @jdbcurrencyedit.Register); 
+  RegisterUnit('jdblabeledcurrencyedit', @jdblabeledcurrencyedit.Register); 
+  RegisterUnit('jdbdateedit', @jdbdateedit.Register); 
+  RegisterUnit('jdblabeleddateedit', @jdblabeleddateedit.Register); 
   RegisterUnit('JIntegerEdit', @JIntegerEdit.Register); 
   RegisterUnit('JLabeledIntegerEdit', @JLabeledIntegerEdit.Register); 
   RegisterUnit('JCurrencyEdit', @JCurrencyEdit.Register); 
   RegisterUnit('JLabeledCurrencyEdit', @JLabeledCurrencyEdit.Register); 
+  RegisterUnit('JDateEdit', @JDateEdit.Register); 
+  RegisterUnit('JLabeledDateEdit', @JLabeledDateEdit.Register); 
 end; 
 
 initialization

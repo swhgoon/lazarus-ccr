@@ -7,6 +7,7 @@ Version pre-1.0
 --------------------------------------------------
 2011-09-20  Added: TJIntegerEdit, TJLabeledIntegerEdit
                    TJCurrencyEdit, TJLabeledCurrencyEdit
+                   TJDateEdit, TJLabeledDateEdit
 2011-09-19  Added: TJDBLabeledIntegerEdit, TJDBLabeledCurrencyEdit, TJDBLabeledDateEdit
 2011-09-19  First package: TJDBIntegerEdit, TJDBCurrencyEdit, TJDBDateEdit and example
 2011-09-14  Add Non Database input controls example
