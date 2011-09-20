@@ -1,3 +1,20 @@
+{ JIntegerEdit
+
+  Copyright (C) 2011 Julio Jiménez Borreguero
+  Contact: jujibo at gmail dot com
+
+  This library is free software; you can redistribute it and/or modify it
+  under the same terms as the Lazarus Component Library (LCL)
+
+  See the file license-jujiboutils.txt and COPYING.LGPL, included in this distribution,
+  for details about the license.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+}
+
 unit JIntegerEdit;
 
 {$mode objfpc}{$H+}
