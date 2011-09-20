@@ -29,7 +29,7 @@ type
 
   { TJDBDateEdit }
 
-  TJDBDateEdit = class(TEdit)
+  TJDBDateEdit = class(TCustomEdit)
   private
     fFormat: string;
     FDataLink: TFieldDataLink;

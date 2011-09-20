@@ -12,7 +12,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="4">
+    <Files Count="7">
       <Item1>
         <Filename Value="src/jdbcurrencyedit.pas"/>
         <HasRegisterProc Value="True"/>
@@ -32,6 +32,21 @@
         <Filename Value="src/jcontrolutils.pas"/>
         <UnitName Value="jcontrolutils"/>
       </Item4>
+      <Item5>
+        <Filename Value="src/jdblabeledcurrencyedit.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="jdblabeledcurrencyedit"/>
+      </Item5>
+      <Item6>
+        <Filename Value="src/jdblabeleddateedit.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="jdblabeleddateedit"/>
+      </Item6>
+      <Item7>
+        <Filename Value="src/jdblabeledintegeredit.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="jdblabeledintegeredit"/>
+      </Item7>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

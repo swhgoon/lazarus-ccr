@@ -29,7 +29,7 @@ type
 
   { TJDBCurrencyEdit }
 
-  TJDBCurrencyEdit = class(TEdit)
+  TJDBCurrencyEdit = class(TCustomEdit)
   private
     fFormat: string;
     FDataLink: TFieldDataLink;

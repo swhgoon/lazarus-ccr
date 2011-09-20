@@ -8,6 +8,7 @@ interface
 
 uses
   jdbcurrencyedit, jdbdateedit, jdbintegeredit, jcontrolutils, 
+  jdblabeledcurrencyedit, jdblabeleddateedit, jdblabeledintegeredit, 
   LazarusPackageIntf;
 
 implementation
@@ -17,6 +18,9 @@ begin
   RegisterUnit('jdbcurrencyedit', @jdbcurrencyedit.Register); 
   RegisterUnit('jdbdateedit', @jdbdateedit.Register); 
   RegisterUnit('jdbintegeredit', @jdbintegeredit.Register); 
+  RegisterUnit('jdblabeledcurrencyedit', @jdblabeledcurrencyedit.Register); 
+  RegisterUnit('jdblabeleddateedit', @jdblabeleddateedit.Register); 
+  RegisterUnit('jdblabeledintegeredit', @jdblabeledintegeredit.Register); 
 end; 
 
 initialization

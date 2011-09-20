@@ -29,7 +29,7 @@ type
 
   { TJDBIntegerEdit }
 
-  TJDBIntegerEdit = class(TEdit)
+  TJDBIntegerEdit = class(TCustomEdit)
   private
     fFormat: string;
     FDataLink: TFieldDataLink;

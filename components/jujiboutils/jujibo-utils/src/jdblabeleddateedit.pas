@@ -22,14 +22,14 @@ unit jdblabeleddateedit;
 interface
 
 uses
-  Classes, LResources, Controls, StdCtrls, ExtCtrls, DB, DBCtrls, LMessages, LCLType, Dialogs,
+  Classes, LResources, Controls, ExtCtrls, DB, DBCtrls, LMessages, LCLType, Dialogs,
   SysUtils;
 
 type
 
   { TJDBLabeledDateEdit }
 
-  TJDBLabeledDateEdit = class(TLabeledEdit)
+  TJDBLabeledDateEdit = class(TCustomLabeledEdit)
   private
     fFormat: string;
     FDataLink: TFieldDataLink;
@@ -76,32 +76,36 @@ type
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property ReadOnly: boolean read GetReadOnly write SetReadOnly default False;
 
-    // From TEdit
     property Action;
     property Align;
     property Alignment;
     property Anchors;
-    property AutoSize;
     property AutoSelect;
+    property AutoSize;
     property BidiMode;
-    property BorderStyle;
     property BorderSpacing;
+    property BorderStyle;
     property CharCase;
     property Color;
     property Constraints;
     property DragCursor;
-    property DragKind;
     property DragMode;
-    property EchoMode;
+    property EditLabel;
     property Enabled;
     property Font;
-    property HideSelection;
+    property LabelPosition;
+    property LabelSpacing;
     property MaxLength;
-    property ParentBidiMode;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
     property OnChange;
-    property OnChangeBounds;
     property OnClick;
-    property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -113,21 +117,10 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnMouseDown;
-    property OnMouseEnter;
-    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
-    property OnResize;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property ParentColor;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShowHint;
-    property TabStop;
-    property TabOrder;
-    property Visible;
   end;
 
 procedure Register;
@@ -149,10 +142,10 @@ procedure TJDBLabeledDateEdit.DataChange(Sender: TObject);
 begin
   if FDataLink.Field <> nil then
   begin
-  if not Focused then
-    formatInput
-  else
-    Caption := FDataLink.Field.AsString;
+    if not Focused then
+      formatInput
+    else
+      Caption := FDataLink.Field.AsString;
   end
   else
     Text := '';
@@ -278,7 +271,8 @@ begin
     DataChange(Self);
 end;
 
-procedure TJDBLabeledDateEdit.Notification(AComponent: TComponent; Operation: TOperation);
+procedure TJDBLabeledDateEdit.Notification(AComponent: TComponent;
+  Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   // clean up
@@ -360,6 +354,4 @@ begin
 end;
 
 end.
-
-
 

@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, db, memds, FileUtil, Forms, Controls, Graphics,
   Dialogs, StdCtrls, DbCtrls, Buttons, jdbintegeredit, jdbdateedit,
-  jdbcurrencyedit;
+  jdbcurrencyedit, jdblabeledcurrencyedit;
 
 type
 
@@ -21,6 +21,7 @@ type
     JDBDateEdit1: TJDBDateEdit;
     JDBIntegerEdit1: TJDBIntegerEdit;
     JDBIntegerEdit2: TJDBIntegerEdit;
+    JDBLabeledCurrencyEdit1: TJDBLabeledCurrencyEdit;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
