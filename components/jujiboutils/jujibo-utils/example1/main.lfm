@@ -32,7 +32,7 @@ object Form1: TForm1
     ClientWidth = 241
     DataSource = Datasource1
     Options = []
-    TabOrder = 0
+    TabOrder = 5
   end
   object Label2: TLabel
     Left = 24
@@ -43,7 +43,7 @@ object Form1: TForm1
     ParentColor = False
   end
   object Label3: TLabel
-    Left = 104
+    Left = 106
     Height = 18
     Top = 133
     Width = 29
@@ -51,7 +51,7 @@ object Form1: TForm1
     ParentColor = False
   end
   object Label4: TLabel
-    Left = 187
+    Left = 188
     Height = 18
     Top = 133
     Width = 21
@@ -75,51 +75,10 @@ object Form1: TForm1
     Caption = '&Cerrar'
     Kind = bkClose
     ModalResult = 11
-    TabOrder = 1
-  end
-  object JDBIntegerEdit1: TJDBIntegerEdit
-    Left = 21
-    Height = 27
-    Top = 152
-    Width = 80
-    DataField = 'ID'
-    DataSource = Datasource1
-    Alignment = taRightJustify
-    TabOrder = 2
-  end
-  object JDBDateEdit1: TJDBDateEdit
-    Left = 104
-    Height = 27
-    Top = 152
-    Width = 80
-    DataField = 'DATE'
-    DataSource = Datasource1
-    TabOrder = 3
-  end
-  object JDBIntegerEdit2: TJDBIntegerEdit
-    Left = 187
-    Height = 27
-    Top = 152
-    Width = 80
-    DataField = 'ID2'
-    DataSource = Datasource1
-    Alignment = taRightJustify
-    TabOrder = 4
-  end
-  object JDBCurrencyEdit1: TJDBCurrencyEdit
-    Left = 273
-    Height = 27
-    Top = 152
-    Width = 80
-    DisplayFormat = '#,0.00€'
-    DataField = 'TOTAL'
-    DataSource = Datasource1
-    Decimals = 2
-    Alignment = taRightJustify
-    TabOrder = 5
+    TabOrder = 6
   end
   object JDBLabeledCurrencyEdit1: TJDBLabeledCurrencyEdit
-    Left = 270
+    Left = 272
     Height = 27
     Top = 200
     Width = 80
@@ -130,13 +89,55 @@ object Form1: TForm1
     Alignment = taRightJustify
     EditLabel.AnchorSideLeft.Control = JDBLabeledCurrencyEdit1
     EditLabel.AnchorSideBottom.Control = JDBLabeledCurrencyEdit1
-    EditLabel.Left = 270
+    EditLabel.Left = 272
     EditLabel.Height = 18
     EditLabel.Top = 179
     EditLabel.Width = 84
     EditLabel.Caption = 'Total (labeled)'
     EditLabel.ParentColor = False
-    TabOrder = 6
+    TabOrder = 4
+  end
+  object JDBIntegerEdit1: TJDBIntegerEdit
+    Left = 24
+    Height = 27
+    Top = 152
+    Width = 80
+    DataField = 'ID'
+    DataSource = Datasource1
+    Alignment = taRightJustify
+    TabOrder = 0
+  end
+  object JDBDateEdit1: TJDBDateEdit
+    Left = 106
+    Height = 27
+    Top = 152
+    Width = 80
+    DataField = 'DATE'
+    DataSource = Datasource1
+    TabOrder = 1
+  end
+  object JDBIntegerEdit2: TJDBIntegerEdit
+    Left = 188
+    Height = 27
+    Top = 152
+    Width = 80
+    DataField = 'ID2'
+    DataSource = Datasource1
+    ReadOnly = True
+    Alignment = taRightJustify
+    TabOrder = 2
+  end
+  object JDBCurrencyEdit1: TJDBCurrencyEdit
+    Left = 270
+    Height = 27
+    Top = 152
+    Width = 80
+    DisplayFormat = '#,0.00€'
+    DataField = 'TOTAL'
+    DataSource = Datasource1
+    Decimals = 2
+    Alignment = taRightJustify
+    TabOrder = 3
   end
   object Datasource1: TDatasource
     DataSet = MemDataset1

@@ -92,7 +92,6 @@ type
     property DragCursor;
     property DragKind;
     property DragMode;
-    property EchoMode;
     property Enabled;
     property Font;
     property HideSelection;
