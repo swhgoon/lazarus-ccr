@@ -8,11 +8,17 @@
         <OtherUnitFiles Value="src"/>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
+      <Linking>
+        <Debugging>
+          <GenerateDebugInfo Value="True"/>
+          <DebugInfoType Value="dsAuto"/>
+        </Debugging>
+      </Linking>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="13">
+    <Files Count="15">
       <Item1>
         <Filename Value="src/jdbintegeredit.pas"/>
         <HasRegisterProc Value="True"/>
@@ -77,6 +83,15 @@
         <HasRegisterProc Value="True"/>
         <UnitName Value="JLabeledDateEdit"/>
       </Item13>
+      <Item14>
+        <Filename Value="src/jdbgridcontrol.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="JDBGridControl"/>
+      </Item14>
+      <Item15>
+        <Filename Value="src/jdbgridutils.pas"/>
+        <UnitName Value="jdbgridutils"/>
+      </Item15>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

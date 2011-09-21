@@ -5,6 +5,7 @@ JUJIBOUTILS
 
 Version pre-1.0
 --------------------------------------------------
+2011-09-21  Added: TJDBGridControl and example (testgridctr)
 2011-09-20  Added: TJIntegerEdit, TJLabeledIntegerEdit
                    TJCurrencyEdit, TJLabeledCurrencyEdit
                    TJDateEdit, TJLabeledDateEdit

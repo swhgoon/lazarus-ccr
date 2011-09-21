@@ -1,0 +1,85 @@
+object Form1: TForm1
+  Left = 311
+  Height = 347
+  Top = 162
+  Width = 419
+  Caption = 'Form1'
+  ClientHeight = 347
+  ClientWidth = 419
+  OnCreate = FormCreate
+  LCLVersion = '0.9.31'
+  object DBNavigator1: TDBNavigator
+    Left = 8
+    Height = 25
+    Top = 60
+    Width = 241
+    BevelOuter = bvNone
+    ChildSizing.EnlargeHorizontal = crsScaleChilds
+    ChildSizing.EnlargeVertical = crsScaleChilds
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 100
+    ClientHeight = 25
+    ClientWidth = 241
+    DataSource = Datasource1
+    Options = []
+    TabOrder = 0
+  end
+  object JDBGridControl1: TJDBGridControl
+    Left = 8
+    Height = 192
+    Top = 112
+    Width = 392
+    Color = clWindow
+    Columns = <    
+      item
+        Title.Caption = 'ID'
+        Title.PrefixOption = poNone
+        FieldName = 'ID'
+      end    
+      item
+        Title.Caption = 'DATE'
+        Title.PrefixOption = poNone
+        FieldName = 'DATE'
+      end    
+      item
+        Title.Caption = 'QUANTITY'
+        Title.PrefixOption = poNone
+        Width = 150
+        FieldName = 'QUANTITY'
+        DisplayFormat = '#,0.00000€'
+      end>
+    DataSource = Datasource1
+    TabOrder = 1
+  end
+  object MemDataset1: TMemDataset
+    Active = True
+    FieldDefs = <    
+      item
+        Name = 'ID'
+        DataType = ftInteger
+        Precision = 0
+        Size = 0
+      end    
+      item
+        Name = 'DATE'
+        DataType = ftDate
+        Precision = 0
+        Size = 0
+      end    
+      item
+        Name = 'QUANTITY'
+        DataType = ftFloat
+        Precision = 0
+        Size = 0
+      end>
+    left = 232
+    top = 8
+  end
+  object Datasource1: TDatasource
+    DataSet = MemDataset1
+    left = 324
+    top = 7
+  end
+end
