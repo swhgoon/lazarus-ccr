@@ -37,7 +37,7 @@ unit rxmemds;
 interface
 
 
-uses SysUtils, Classes, Controls, DB, dbutils;
+uses SysUtils, Classes, DB;
 
 { TRxMemoryData }
 
@@ -234,7 +234,7 @@ type
 implementation
 
 
-uses Forms, rxdconst, dbconst, Variants;
+uses CustApp, rxdconst, dbconst, Variants, math;
 
 const
   ftBlobTypes = [ftBlob, ftMemo, ftGraphic, ftFmtMemo, ftParadoxOle,
@@ -984,7 +984,8 @@ begin
         OnFilterRecord(Self, Result);
         {$ENDIF}
       except
-        Application.HandleException(Self);
+//        Application.HandleException(Self);
+        CustomApplication.HandleException(Self);
       end;
       RestoreState(SaveState);
     end
@@ -1241,7 +1242,8 @@ end;
 
 procedure TRxMemoryData.InternalHandleException;
 begin
-  Application.HandleException(Self);
+  CustomApplication.HandleException(Self);
+  //Application.HandleException(Self);
 end;
 
 procedure TRxMemoryData.InternalInitFieldDefs;
@@ -1280,6 +1282,84 @@ end;
 function TRxMemoryData.IsSequenced: Boolean;
 begin
   Result := not Filtered;
+end;
+
+{ DataSet locate routines }
+function DataSetLocateThrough(DataSet: TDataSet; const KeyFields: string;
+  const KeyValues: Variant; Options: TLocateOptions): Boolean;
+var
+  FieldCount: Integer;
+  Fields: TList;
+  Bookmark: TBookmarkStr;
+
+  function CompareField(Field: TField; Value: Variant): Boolean;
+  var
+    S,S1: string;
+
+  begin
+    if Field.DataType = ftString then
+    begin
+      S := Field.AsString;
+      S1:=Value;
+      if (loPartialKey in Options) then
+        Delete(S, Length(S1) + 1, MaxInt);
+
+      if (loCaseInsensitive in Options) then
+        Result := AnsiCompareText(S, S1) = 0
+      else
+        Result := AnsiCompareStr(S, S1) = 0;
+    end
+//    else Result := false //(Field.Value = Value);
+    else Result := (Field.Value = Value);
+  end;
+
+  function CompareRecord: Boolean;
+  var
+    I: Integer;
+  begin
+    if FieldCount = 1 then
+      Result := CompareField(TField(Fields.First), KeyValues)
+    else begin
+      Result := True;
+      for I := 0 to FieldCount - 1 do
+        Result := Result and CompareField(TField(Fields[I]), KeyValues[I]);
+    end;
+  end;
+
+begin
+  Result := False;
+  with DataSet do begin
+    CheckBrowseMode;
+    if BOF and EOF then Exit;
+  end;
+  Fields := TList.Create;
+  try
+    DataSet.GetFieldList(Fields, KeyFields);
+    FieldCount := Fields.Count;
+    Result := CompareRecord;
+    if Result then Exit;
+    DataSet.DisableControls;
+    try
+      Bookmark := DataSet.Bookmark;
+      try
+        with DataSet do begin
+          First;
+          while not EOF do begin
+            Result := CompareRecord;
+            if Result then Break;
+            Next;
+          end;
+        end;
+      finally
+        if not Result and DataSet.BookmarkValid(PChar(Bookmark)) then
+          DataSet.Bookmark := Bookmark;
+      end;
+    finally
+      DataSet.EnableControls;
+    end;
+  finally
+    Fields.Free;
+  end;
 end;
 
 function TRxMemoryData.Locate(const KeyFields: string;
@@ -1343,6 +1423,35 @@ begin
       
   CheckDataTypes(FieldDefs);
   CreateFields;
+end;
+procedure AssignRecord(Source, Dest: TDataSet; ByName: Boolean);
+var
+  I: Integer;
+  F, FSrc: TField;
+begin
+//  if not (Dest.State in dsEditModes) then DBError(SNotEditing);
+  if ByName then begin
+    for I := 0 to Source.FieldCount - 1 do begin
+      F := Dest.FindField(Source.Fields[I].FieldName);
+      if F <> nil then begin
+        if (F.DataType = Source.Fields[I].DataType) and
+          (F.DataSize = Source.Fields[I].DataSize) then
+          F.Assign(Source.Fields[I])
+        else F.AsString := Source.Fields[I].AsString;
+      end;
+    end;
+  end
+  else begin
+    for I := 0 to Min(Source.FieldDefs.Count - 1, Dest.FieldDefs.Count - 1) do
+    begin
+      F := Dest.FindField(Dest.FieldDefs[I].Name);
+      FSrc := Source.FindField(Source.FieldDefs[I].Name);
+      if (F <> nil) and (FSrc <> nil) then begin
+        if F.DataType = FSrc.DataType then F.Assign(FSrc)
+        else F.AsString := FSrc.AsString;
+      end;
+    end;
+  end;
 end;
 
 function TRxMemoryData.LoadFromDataSet(Source: TDataSet; ARecordCount: Integer;
@@ -1614,7 +1723,8 @@ begin
   try
     FDataSet.DataEvent(deFieldChange, ptrint(FField));
   except
-    Application.HandleException(Self);
+    CustomApplication.HandleException(Self);
+//    Application.HandleException(Self);
   end;
 end;
 

@@ -269,6 +269,7 @@ type
 
   TRxColumn = class(TColumn)
   private
+    FDirectInput: boolean;
     FFooter: TRxColumnFooter;
     FFilter: TRxColumnFilter;
     FImageList: TImageList;
@@ -294,6 +295,7 @@ type
     property NotInKeyListIndex: integer read FNotInKeyListIndex
       write SetNotInKeyListIndex default -1;
     property Filter: TRxColumnFilter read FFilter write SetFilter;
+    property DirectInput : boolean read FDirectInput write FDirectInput default true;
   end;
 
   { TRxDbGridColumns }
@@ -690,6 +692,7 @@ type
     procedure msg_SelectAll(var Msg: TGridMessage); message GM_SELECTALL;
 
   public
+    constructor Create(Aowner : TComponent); override;
     //    procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
     procedure EditingDone; override;
   end;
@@ -791,6 +794,17 @@ end;
 
 procedure TRxDBGridDateEditor.WndProc(var TheMessage: TLMessage);
 begin
+  if FGrid<>nil then
+    case TheMessage.Msg of
+      LM_CLEAR,
+      LM_CUT,
+      LM_PASTE:
+        begin
+          if FGrid.EditorIsReadOnly then
+            exit;
+        end;
+    end;
+
   if TheMessage.msg = LM_KILLFOCUS then
   begin
     if HWND(TheMessage.WParam) = HWND(Handle) then
@@ -827,6 +841,12 @@ end;
 procedure TRxDBGridDateEditor.msg_SelectAll(var Msg: TGridMessage);
 begin
   SelectAll;
+end;
+
+constructor TRxDBGridDateEditor.Create(Aowner: TComponent);
+begin
+  inherited Create(Aowner);
+  AutoSize := false;
 end;
 
 {procedure TRxDBGridDateEditor.SetBounds(aLeft, aTop, aWidth, aHeight: integer);
@@ -945,6 +965,7 @@ begin
   inherited Create(AOwner);
   FLDS := TDataSource.Create(nil);
   LookupSource := FLDS;
+  AutoSize := false;
 end;
 
 destructor TRxDBGridLookupComboEditor.Destroy;
@@ -983,7 +1004,7 @@ begin
   CnvW := Max(DrawRect.Right - DrawRect.Left, 1);
   W := (ACanvas.TextWidth(Text) div CnvW) + 1;
 
-  DrawRect.Top := ((ARect.Top + ARect.Bottom) div 2) - W * ACanvas.TextHeight('W') div 2;
+  DrawRect.Top := ((ARect.Top + ARect.Bottom) div 2) - W * ACanvas.TextHeight('Wg') div 2;
   if DrawRect.Top < ARect.Top + 1 then
     DrawRect.Top := ARect.Top + 1;
 
@@ -2646,7 +2667,7 @@ end;
 
 function TRxDBGrid.IsDefaultRowHeightStored: boolean;
 begin
-  Result := DefaultRowHeight = Canvas.TextHeight('W');
+  Result := DefaultRowHeight = Canvas.TextHeight('Wg');
 end;
 
 procedure TRxDBGrid.VisualChange;
@@ -2680,6 +2701,15 @@ begin
     end;
   end;
   Result := inherited EditorByStyle(Style);
+
+  if (Style = cbsPickList) and (Result is TCustomComboBox) then
+  begin
+    if TRxColumn(SelectedColumn).DirectInput then
+      TCustomComboBox(Result).Style:=csDropDown
+    else
+      TCustomComboBox(Result).Style:=csDropDownList;
+  end;
+
 end;
 
 procedure TRxDBGrid.CalcStatTotals;
@@ -3191,6 +3221,7 @@ begin
   FNotInKeyListIndex := -1;
   FFooter := TRxColumnFooter.Create(Self);
   FFilter := TRxColumnFilter.Create(Self);
+  FDirectInput := true;
 end;
 
 destructor TRxColumn.Destroy;

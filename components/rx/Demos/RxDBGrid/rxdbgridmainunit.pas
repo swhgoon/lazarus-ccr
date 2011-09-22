@@ -20,6 +20,7 @@ type
     MenuItem8: TMenuItem;
     MenuItem9: TMenuItem;
     RxAboutDialog1: TRxAboutDialog;
+    RxMemoryData1RAIT: TStringField;
     sysExit: TAction;
     hlpAbout: TAction;
     CheckBox2: TCheckBox;

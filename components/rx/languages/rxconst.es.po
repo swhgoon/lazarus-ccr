@@ -23,7 +23,7 @@ msgstr ""
 
 #: rxconst.sbuttonalign
 msgid "Button align"
-msgstr "Alineación de Botones"
+msgstr "Alineaci?n de Botones"
 
 #: rxconst.sbuttonalign1
 msgid "None"
@@ -111,7 +111,7 @@ msgstr "Proximo Mes|"
 
 #: rxconst.snextyear
 msgid "Next Year|"
-msgstr "Proximo Año|"
+msgstr "Proximo A?o|"
 
 #: rxconst.snotimplemented
 msgid "Function not yet implemented"
@@ -131,7 +131,7 @@ msgstr "Anterior Mes|"
 
 #: rxconst.sprevyear
 msgid "Previous Year|"
-msgstr "Anterior Año|"
+msgstr "Anterior A?o|"
 
 #: rxconst.sqtwidgetset
 msgid "QT widget set"
