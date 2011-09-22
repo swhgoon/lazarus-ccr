@@ -27,6 +27,31 @@ uses
 
 type
 
+  { TJDbGridTimeCtrl }
+
+  TJDbGridTimeCtrl = class(TObject)
+  private
+    Field: TField;
+    updated: boolean;
+    theValue: TTime;
+    fFormat: string;
+    function getFormat: string;
+    procedure myEditEnter(Sender: TObject);
+    procedure myEditOnEditingDone(Sender: TObject);
+    procedure formatInput;
+    procedure setFormat(const AValue: string);
+    procedure OnKeyPress(Sender: TObject; var key: char);
+    procedure OnKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
+  public
+    CellEditor: TStringCellEditor;
+    theGrid: TDBGrid;
+    function isNull: boolean;
+    property format: string read getFormat write setFormat;
+    constructor Create;
+    destructor Destroy; override;
+    function Editor(aGrid: TDBGrid): TStringCellEditor;
+  end;
+
   { TJDbGridDateCtrl }
 
   TJDbGridDateCtrl = class(TObject)
@@ -102,6 +127,138 @@ implementation
 
 uses
   Math;
+
+{ TJDbGridTimeCtrl }
+
+function TJDbGridTimeCtrl.getFormat: string;
+begin
+  Result := fFormat;
+end;
+
+procedure TJDbGridTimeCtrl.myEditEnter(Sender: TObject);
+begin
+  Field := theGrid.SelectedField;
+  CellEditor.BoundsRect := theGrid.SelectedFieldRect;
+  CellEditor.Text := Field.AsString;
+  CellEditor.OnKeyPress := @OnKeyPress;  // Recuperamos el control :-p
+  CellEditor.OnKeyDown := @OnKeyDown;
+  theValue := Field.AsDateTime;
+  updated := False;
+  CellEditor.SelectAll;
+end;
+
+procedure TJDbGridTimeCtrl.myEditOnEditingDone(Sender: TObject);
+begin
+  CellEditor.Caption := NormalizeTime(CellEditor.Caption, theValue);
+  if Length(CellEditor.Caption) = 0 then
+    theValue := 0
+  else
+  if IsValidTimeString(CellEditor.Caption) then
+  begin
+    if (not updated) then
+    begin
+      theValue := StrToTime(CellEditor.Caption);
+      Field.DataSet.Edit;
+      Field.AsDateTime := theValue;
+    end;
+  end
+  else
+  begin
+    ShowMessage(CellEditor.Caption + ' no es una hora válida: Editing done');
+    CellEditor.Text := FormatDateTime(format, theValue);
+  end;
+end;
+
+procedure TJDbGridTimeCtrl.formatInput;
+begin
+  if theValue <> 0 then
+    CellEditor.Caption := FormatDateTime(format, theValue);
+end;
+
+procedure TJDbGridTimeCtrl.setFormat(const AValue: string);
+begin
+  fFormat := AValue;
+  formatInput;
+end;
+
+procedure TJDbGridTimeCtrl.OnKeyPress(Sender: TObject; var key: char);
+begin
+  if not (Key in ['0'..'9', #8, #9, ':']) then
+    Key := #0;
+end;
+
+procedure TJDbGridTimeCtrl.OnKeyDown(Sender: TObject; var Key: word;
+  Shift: TShiftState);
+begin
+  if Length(CellEditor.Caption) <> 0 then
+    if (Key in [VK_RETURN, VK_TAB, VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT]) and
+      (not IsValidTimeString(NormalizeTime(CellEditor.Caption, theValue))) then
+    begin
+      ShowMessage(CellEditor.Caption + ' no es una hora válida OnKeyDown');
+      CellEditor.Text := FormatDateTime(format, theValue);
+      CellEditor.SelectAll;
+      Key := VK_UNKNOWN;
+    end
+    else
+    if key = VK_ESCAPE then
+    begin
+      if Field.IsNull then
+        CellEditor.Text := ''
+      else
+        CellEditor.Text := FormatDateTime(format, Field.AsDateTime);
+      updated := True;
+      theGrid.SetFocus; // No perder el foco
+    end
+    else
+    if Key in [VK_UP, VK_DOWN] then
+    begin
+      Key := VK_UNKNOWN;
+    end
+    else
+    if Key in [VK_RETURN, VK_TAB, VK_RIGHT, VK_LEFT] then
+    begin
+      CellEditor.Caption := NormalizeTime(CellEditor.Caption, theValue);
+      if Length(CellEditor.Caption) = 0 then
+        theValue := 0
+      else
+      if IsValidTimeString(CellEditor.Caption) then
+      begin
+        theValue := StrToTime(CellEditor.Caption);
+        Field.DataSet.Edit;
+        Field.AsDateTime:= theValue ; ShowMessage('TAB/Enter/right/left key-> ' + Field.AsString);//Field.AsDateTime := theValue;
+        CellEditor.SelectAll;
+        updated := True;
+      end;
+    end;
+end;
+
+function TJDbGridTimeCtrl.isNull: boolean;
+begin
+  Result := theValue = 0;
+end;
+
+constructor TJDbGridTimeCtrl.Create;
+begin
+  inherited Create;
+  CellEditor := TStringCellEditor.Create(nil);
+  CellEditor.OnEnter := @myEditEnter;
+  CellEditor.OnKeyDown := @OnKeyDown;
+  CellEditor.OnEditingDone := @myEditOnEditingDone;
+  CellEditor.OnKeyPress := @OnKeyPress;   // se sobreescribe por el Grid :(
+  format := ShortTimeFormat;
+end;
+
+destructor TJDbGridTimeCtrl.Destroy;
+begin
+  CellEditor.Free;
+  inherited Destroy;
+end;
+
+function TJDbGridTimeCtrl.Editor(aGrid: TDBGrid): TStringCellEditor;
+begin
+  theGrid := aGrid;
+  Result := CellEditor;
+end;
 
 { TJDbGridDateCtrl }
 

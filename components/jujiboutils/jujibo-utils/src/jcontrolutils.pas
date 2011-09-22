@@ -28,8 +28,11 @@ function CountChar(const s: string; ch: char): integer;
 procedure Split(const Delimiter: char; Input: string; Strings: TStrings);
 function NormalizeDate(const Value: string; theValue: TDateTime;
   const theFormat: string = ''): string;
+function NormalizeTime(const Value: string; theValue: TTime;
+  const theFormat: string = ''): string;
 function NormalizeDateSeparator(const s: string): string;
 function IsValidDateString(const Value: string): boolean;
+function IsValidTimeString(const Value: string): boolean;
 
 implementation
 
@@ -55,7 +58,6 @@ function NormalizeDate(const Value: string; theValue: TDateTime;
   const theFormat: string): string;
 var
   texto: string;
-  i: integer;
   d, m, y: word;
   ds, ms, ys: string;
   aDate: TDateTime;
@@ -112,7 +114,6 @@ begin
   texto := Value;
   texto := NormalizeDateSeparator(texto);
   Result := texto;   // default value
-  i := countchar(texto, DateSeparator);
   tokens := TStringList.Create;
   Split(DateSeparator, texto, tokens);
   if tokens.Count > 0 then
@@ -133,6 +134,72 @@ begin
   tokens.Free;
 end;
 
+function NormalizeTime(const Value: string; theValue: TTime;
+  const theFormat: string): string;
+var
+  hh, mm, ss, ms: word;
+  hhs, mms, sss, mss: string;
+  texto: string;
+  aTimeFormat: string;
+  aTime: TTime;
+  tokens: TStringList;
+
+  function TimeString: string;
+  begin
+    Result := hhs + TimeSeparator + mms + TimeSeparator + sss;// + TimeSeparator + mss;
+  end;
+
+  procedure TimeForm;
+  begin
+    if tokens[0] <> '' then
+      hhs := tokens[0];
+    if (tokens.Count > 1) and (tokens[1] <> '') then
+      mms := tokens[1];
+    if (tokens.Count > 2) and (tokens[2] <> '') then
+      sss := tokens[2];
+    if (tokens.Count > 3) and (tokens[3] <> '') then
+      mss := tokens[3];
+    texto := TimeString;
+  end;
+
+begin
+  if theFormat = '' then
+    aTimeFormat := ShortTimeFormat
+  else
+    aTimeFormat := theFormat;
+  if theValue = 0 then
+  begin
+    DecodeTime(Now, hh, mm, ss, ms);
+    //ShowMessage('sin hora');
+  end
+  else
+  begin
+    DecodeTime(theValue, hh, mm, ss, ms);
+    //ShowMessage('con hora');
+  end;
+
+  hhs := IntToStr(hh);
+  mms := IntToStr(mm);
+  sss := IntToStr(ss);
+  mss := IntToStr(ms);
+  //ShowMessage(TimeString);
+  texto := Value;
+  Result := texto; // default value
+  tokens := TStringList.Create;
+  Split(TimeSeparator, texto, tokens);
+  if tokens.Count > 0 then
+  begin
+    TimeForm;
+    if IsValidTimeString(texto) then
+    begin
+      aTime := StrToTime(texto);
+      Result := TimeString;// FormatDateTime(aTimeFormat, aTime);
+    end;
+  end;
+  tokens.Free;
+  //ShowMessage('Hora normalizada: ' + Result);
+end;
+
 function NormalizeDateSeparator(const s: string): string;
 var
   i: integer;
@@ -149,6 +216,15 @@ begin
     Result := False
   else
     Result := True;
+end;
+
+function IsValidTimeString(const Value: string): boolean;
+var
+  bTime: TDateTime;
+begin
+  Result := TryStrToTime(Value, bTime);
+  //if Result = False then
+  //  ShowMessage('Hora incorrecta: ' + Value);
 end;
 
 end.

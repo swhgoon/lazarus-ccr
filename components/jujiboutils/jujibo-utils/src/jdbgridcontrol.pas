@@ -16,6 +16,7 @@ type
   private
     { Private declarations }
     dateDbGridControl: TJDbGridDateCtrl;
+    timeDbGridControl: TJDbGridTimeCtrl;
     integerDbGridControl: TJDbGridIntegerCtrl;
     doubleDbGridControl: TJDbGridDoubleCtrl;
   protected
@@ -73,8 +74,9 @@ begin
       case aField.DataType of
         ftSmallint, ftInteger: Result := integerDbGridControl.Editor(Self);
         ftDate: Result := dateDbGridControl.Editor(Self);
+        ftTime: Result := timeDbGridControl.Editor(Self);
         ftCurrency, ftFloat, ftBCD: Result := doubleDbGridControl.Editor(Self);
-        // TODO: ftDateTime and ftTime. strings?
+        // TODO: ftDateTime. strings?
       end;
   end;
 end;
@@ -83,6 +85,7 @@ constructor TJDBGridControl.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   dateDbGridControl := TJDbGridDateCtrl.Create;
+  timeDbGridControl := TJDbGridTimeCtrl.Create;
   integerDbGridControl := TJDbGridIntegerCtrl.Create;
   doubleDbGridControl := TJDbGridDoubleCtrl.Create;
 end;
@@ -90,6 +93,7 @@ end;
 destructor TJDBGridControl.Destroy;
 begin
   dateDbGridControl.Free;
+  timeDbGridControl.Free;
   integerDbGridControl.Free;
   doubleDbGridControl.Free;
   inherited Destroy;
