@@ -151,7 +151,12 @@ procedure TJDbGridTimeCtrl.myEditOnEditingDone(Sender: TObject);
 begin
   CellEditor.Caption := NormalizeTime(CellEditor.Caption, theValue);
   if Length(CellEditor.Caption) = 0 then
-    theValue := 0
+  begin
+    Field.DataSet.Edit;
+    Field.Value := Null;
+    theValue := 0;
+    updated := True;
+  end
   else
   if IsValidTimeString(CellEditor.Caption) then
   begin
@@ -190,7 +195,14 @@ end;
 procedure TJDbGridTimeCtrl.OnKeyDown(Sender: TObject; var Key: word;
   Shift: TShiftState);
 begin
-  if Length(CellEditor.Caption) <> 0 then
+  if Length(CellEditor.Caption) = 0 then
+  begin
+    Field.DataSet.Edit;
+    Field.Value := Null;
+    theValue := 0;
+    updated := True;
+  end
+  else
     if (Key in [VK_RETURN, VK_TAB, VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT]) and
       (not IsValidTimeString(NormalizeTime(CellEditor.Caption, theValue))) then
     begin
@@ -225,7 +237,7 @@ begin
       begin
         theValue := StrToTime(CellEditor.Caption);
         Field.DataSet.Edit;
-        Field.AsDateTime:= theValue ;
+        Field.AsDateTime := theValue;
         CellEditor.SelectAll;
         updated := True;
       end;
@@ -283,7 +295,12 @@ procedure TJDbGridDateCtrl.myEditOnEditingDone(Sender: TObject);
 begin
   CellEditor.Caption := NormalizeDate(CellEditor.Caption, theValue);
   if Length(CellEditor.Caption) = 0 then
-    theValue := 0
+  begin
+    Field.DataSet.Edit;
+    Field.Value := Null;
+    theValue := 0;
+    updated := True;
+  end
   else
   if IsValidDateString(CellEditor.Caption) then
   begin

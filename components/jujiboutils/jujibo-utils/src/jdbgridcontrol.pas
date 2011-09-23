@@ -23,6 +23,7 @@ type
     { Protected declarations }
     //procedure SelectEditor; override;
     function GetDefaultEditor(Column: integer): TWinControl; override;
+    procedure UpdateData; override;
   public
     { Public declarations }
     constructor Create(TheOwner: TComponent); override;
@@ -67,18 +68,26 @@ begin
   if Result <> nil then
   begin
     //aColumn := Columns.Items[Column - 1];
-    aField:= GetFieldFromGridColumn(Column);
+    aField := GetFieldFromGridColumn(Column);
     //if aColumn <> nil then
     if aField <> nil then;
-      //case aColumn.Field.DataType of
-      case aField.DataType of
-        ftSmallint, ftInteger: Result := integerDbGridControl.Editor(Self);
-        ftDate: Result := dateDbGridControl.Editor(Self);
-        ftTime: Result := timeDbGridControl.Editor(Self);
-        ftCurrency, ftFloat, ftBCD: Result := doubleDbGridControl.Editor(Self);
-        // TODO: ftDateTime. strings?
-      end;
+    //case aColumn.Field.DataType of
+    case aField.DataType of
+      ftSmallint, ftInteger: Result := integerDbGridControl.Editor(Self);
+      ftDate: Result := dateDbGridControl.Editor(Self);
+      ftTime: Result := timeDbGridControl.Editor(Self);
+      ftCurrency, ftFloat, ftBCD: Result := doubleDbGridControl.Editor(Self);
+      // TODO: ftDateTime. strings?
+    end;
   end;
+end;
+
+procedure TJDBGridControl.UpdateData;
+begin
+  if not (SelectedField.DataType in [ftSmallInt, ftInteger, ftDate,
+    ftTime, ftCurrency, ftFloat, ftBCD]) then
+    inherited UpdateData;
+  // TODO... think more about this
 end;
 
 constructor TJDBGridControl.Create(TheOwner: TComponent);
