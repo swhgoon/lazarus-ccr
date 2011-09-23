@@ -18,7 +18,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="16">
+    <Files Count="18">
       <Item1>
         <Filename Value="src/jdbintegeredit.pas"/>
         <HasRegisterProc Value="True"/>
@@ -97,6 +97,16 @@
         <HasRegisterProc Value="True"/>
         <UnitName Value="JDBLabeledEdit"/>
       </Item16>
+      <Item17>
+        <Filename Value="src/jtimeedit.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="JTimeEdit"/>
+      </Item17>
+      <Item18>
+        <Filename Value="src/jlabeledtimeedit.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="JLabeledTimeEdit"/>
+      </Item18>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
