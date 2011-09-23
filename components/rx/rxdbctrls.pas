@@ -194,8 +194,46 @@ type
     property Visible;
   end;
 
+type
+
+  { TRxDBRadioGroup }
+
+  TRxDBRadioGroup = class(TDBRadioGroup)
+  private
+    function GetItemEnabled(Index: integer): boolean;
+    procedure SetItemEnabled(Index: integer; AValue: boolean);
+  public
+    property ItemEnabled[Index: integer]: boolean read GetItemEnabled write SetItemEnabled;
+  end;
+
 implementation
-uses dbutils, LCLVersion;
+uses dbutils, LCLVersion, vclutils, StdCtrls;
+
+{ TRxDBRadioGroup }
+
+function TRxDBRadioGroup.GetItemEnabled(Index: integer): boolean;
+var
+  R:TRadioButton;
+begin
+  if (Index < -1) or (Index >= Items.Count) then
+    RaiseIndexOutOfBounds(Self, Items, Index);
+  R:=FindComponent('RadioButton'+IntToStr(Index)) as TRadioButton;
+  if Assigned(R) then
+    Result:=R.Enabled
+  else
+    Result:=False;
+end;
+
+procedure TRxDBRadioGroup.SetItemEnabled(Index: integer; AValue: boolean);
+var
+  R:TRadioButton;
+begin
+  if (Index < -1) or (Index >= Items.Count) then
+    RaiseIndexOutOfBounds(Self, Items, Index);
+  R:=FindComponent('RadioButton'+IntToStr(Index)) as TRadioButton;
+  if Assigned(R) then
+    R.Enabled:=AValue;
+end;
 
 { TCustomRxDBProgressBar }
 

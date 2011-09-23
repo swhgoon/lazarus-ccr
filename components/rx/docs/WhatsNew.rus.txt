@@ -66,11 +66,12 @@
     добавлено новое свойство KeyStrokes
   + Добавлен новый компонент RxCurredit
   + Добавлен новый компонент- TRxViewsPanel 
-  
   + у компоненты TRxMemoryData убрана зависимость от модуля Forms
   + Улучшено отображение редактора полей типа TDateTime/TDate в RxDBGrid
   + У TRxCollumn компоненты TRxDBGrid для стиля cbsPickList добавлено свойство DirectInput. 
     Если оно установлено в false - значения поля можно выбрать только из выпадающего списка
+  + Добавлены 2 комопненты - TRxRadioGroup и TRxDBRadioGroup. В отличии от стнадартных позваляют выборочно запрещать некоторые RadioButton-ы на 
+    компоненте через свойство ItemEnabled.
 22.05.2008 - версия 2.0.0.136 (svn revision 100)
   + У объекта TRxCustomDBLookupCombo введён контроль на CircularDataLink
   + У объекта TRxCustomDBLookupCombo ускорена отрисовка данных

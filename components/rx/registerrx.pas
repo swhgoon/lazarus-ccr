@@ -42,8 +42,8 @@ procedure Register;
 
 implementation
 uses
-  PropEdits, dbdateedit, dbcurredit, rxlookup, folderlister, duallist,
-  curredit, rxswitch, rxdice, rxdbcomb, rxtoolbar, rxxpman, PageMngr, RxAppIcon,
+  PropEdits, folderlister, duallist,
+  curredit, rxswitch, rxdice, rxtoolbar, rxxpman, PageMngr, RxAppIcon,
   Dialogs, ComponentEditors, DBPropEdits, DB, rxctrls,
   RxCustomChartPanel, AutoPanel, pickdate, rxconst, tooledit, rxclock,
   rxceEditLookupFields, rxpopupunit, rxspin, RxTimeEdit,
@@ -92,20 +92,6 @@ begin
   RegisterComponents('RX',[TPageManager]);
 end;
 
-procedure RegisterUnitDBDateEdit;
-begin
-  RegisterComponents('RX DBAware',[TDBDateEdit, TRxDBCalcEdit, TRxDBCurrEdit]);
-end;
-
-procedure RegisterRXLookup;
-begin
-  RegisterComponents('RX DBAware',[TRXLookupEdit, TRxDBLookupCombo]);
-end;
-
-procedure RegisterRxDBComb;
-begin
-  RegisterComponents('RX DBAware',[TRxDBComboBox]);
-end;
 
 procedure RegisterDualList;
 begin
@@ -139,7 +125,7 @@ end;
 
 procedure RegisterRxCtrls;
 begin
-  RegisterComponents('RX',[TRxLabel, TSecretPanel, TRxSpeedButton]);
+  RegisterComponents('RX',[TRxLabel, TSecretPanel, TRxSpeedButton, TRxRadioGroup]);
 end;
 
 
@@ -215,13 +201,7 @@ begin
   RegisterUnit('RxAboutDialog', @RegisterRxAboutDialog);
   RegisterUnit('RxViewsPanel', @RegisterRxViewsPanel);
 
-  //RX DBAware
-  RegisterUnit('dbdateedit', @RegisterUnitDBDateEdit);
-  RegisterUnit('rxlookup', @RegisterRXLookup);
-  RegisterUnit('rxdbcomb', @RegisterRxDBComb);
-
-  //
-
+//
   RegisterPropertyEditor(TypeInfo(string), TPopUpColumn, 'FieldName', TPopUpColumnFieldProperty);
   RegisterCEEditLookupFields;
 end;

@@ -41,7 +41,8 @@ uses
 procedure Register;
 implementation
 uses DB, DBPropEdits, rxdbgrid, RxDBSpinEdit, RxDBTimeEdit, RxDBCtrls, rxmemds,
-  ComponentEditors, seldsfrm, PropEdits, RxDBColorBox;
+  ComponentEditors, seldsfrm, PropEdits, RxDBColorBox, dbdateedit, rxdbcomb,
+  rxlookup, dbcurredit;
 
 type
 
@@ -104,7 +105,7 @@ end;
 
 procedure RegisterRxDBCtrls;
 begin
-  RegisterComponents('RX DBAware',[TRxDBProgressBar, TRxDBTrackBar]);
+  RegisterComponents('RX DBAware',[TRxDBProgressBar, TRxDBTrackBar, TRxDBRadioGroup]);
 end;
 
 procedure RegisterRxDbGrid;
@@ -122,8 +123,28 @@ begin
   RegisterComponents('RX DBAware',[TRxDBColorBox]);
 end;
 
+procedure RegisterUnitDBDateEdit;
+begin
+  RegisterComponents('RX DBAware',[TDBDateEdit, TRxDBCalcEdit, TRxDBCurrEdit]);
+end;
+
+procedure RegisterRXLookup;
+begin
+  RegisterComponents('RX DBAware',[TRXLookupEdit, TRxDBLookupCombo]);
+end;
+
+procedure RegisterRxDBComb;
+begin
+  RegisterComponents('RX DBAware',[TRxDBComboBox]);
+end;
+
 procedure Register;
 begin
+  //RX DBAware
+  RegisterUnit('dbdateedit', @RegisterUnitDBDateEdit);
+  RegisterUnit('rxlookup', @RegisterRXLookup);
+  RegisterUnit('rxdbcomb', @RegisterRxDBComb);
+
   RegisterUnit('RxDBTimeEdit', @RegisterRxDBTimeEdit);
   RegisterUnit('RxDBSpinEdit', @RegisterRxDBSpinEdit);
   RegisterUnit('RxDBCtrls', @RegisterRxDBCtrls);

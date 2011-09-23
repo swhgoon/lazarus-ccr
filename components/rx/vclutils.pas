@@ -74,6 +74,8 @@ function ReallocMemo(fpBlock: Pointer; Size: Longint): Pointer;
 procedure FreeMemo(var fpBlock: Pointer);
 }
 
+procedure RaiseIndexOutOfBounds(Control: TControl; Items:TStrings; Index: integer);
+
 {$IFDEF WIN32}
 type
   PCursorOrIcon = ^TCursorOrIcon;
@@ -100,7 +102,7 @@ procedure OutOfResources;
 {$ENDIF}
 
 implementation
-uses LCLProc, LCLIntf, LCLType;
+uses LCLProc, LCLIntf, LCLType, LCLStrConsts;
 
 function WidthOf(R: TRect): Integer;
 begin
@@ -648,6 +650,12 @@ procedure FreeWorkingCanvas(canvas: TCanvas);
 begin
   ReleaseDC(0, Canvas.Handle);
   Canvas.Free;
+end;
+
+procedure RaiseIndexOutOfBounds(Control: TControl; Items:TStrings; Index: integer);
+begin
+  raise Exception.CreateFmt(rsIndexOutOfBounds,
+                            [Control.Name, Index, Items.Count - 1]);
 end;
 
 initialization

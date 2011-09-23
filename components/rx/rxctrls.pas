@@ -797,14 +797,26 @@ function DrawShadowText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect;
 
 function CheckBitmap: TBitmap;
 *)
+
+type
+
+  { TRxDBRadioGroup }
+
+  { TRxRadioGroup }
+
+  TRxRadioGroup = class(TRadioGroup)
+   private
+    function GetItemEnabled(Index: integer): boolean;
+    procedure SetItemEnabled(Index: integer; AValue: boolean);
+  public
+    property ItemEnabled[Index: integer]: boolean read GetItemEnabled write SetItemEnabled;
+  end;
+
 implementation
 
 
-uses SysUtils, Dialogs, {CommCtrl,} VCLUtils, Math, RxAppUtils, ImgList,
- ActnList, InterfaceBase
-(*  Consts, {$IFDEF RX_D6}, RTLConsts{$ENDIF}
-*)
-  ;
+uses SysUtils, Dialogs, VCLUtils, Math, RxAppUtils, ImgList,
+ ActnList, InterfaceBase;
 const
   Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
   WordWraps: array[Boolean] of Word = (0, DT_WORDBREAK);
@@ -2539,6 +2551,32 @@ begin
   SetTextColor(DC, Color);
   DrawText(DC, Str, Count, RText, Format);
   UnionRect(Rect, RText, RShadow);
+end;
+
+{ TRxRadioGroup }
+
+function TRxRadioGroup.GetItemEnabled(Index: integer): boolean;
+var
+  R:TRadioButton;
+begin
+  if (Index < -1) or (Index >= Items.Count) then
+    RaiseIndexOutOfBounds(Self, Items, Index);
+  R:=FindComponent('RadioButton'+IntToStr(Index)) as TRadioButton;
+  if Assigned(R) then
+    Result:=R.Enabled
+  else
+    Result:=False;
+end;
+
+procedure TRxRadioGroup.SetItemEnabled(Index: integer; AValue: boolean);
+var
+  R:TRadioButton;
+begin
+  if (Index < -1) or (Index >= Items.Count) then
+    RaiseIndexOutOfBounds(Self, Items, Index);
+  R:=FindComponent('RadioButton'+IntToStr(Index)) as TRadioButton;
+  if Assigned(R) then
+    R.Enabled:=AValue;
 end;
 
 constructor TRxCustomLabel.Create(AOwner: TComponent);
