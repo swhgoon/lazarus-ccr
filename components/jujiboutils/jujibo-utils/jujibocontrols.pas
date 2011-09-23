@@ -11,7 +11,8 @@ uses
   jdblabeledcurrencyedit, jdbdateedit, jdblabeleddateedit, jcontrolutils, 
   JIntegerEdit, JLabeledIntegerEdit, JCurrencyEdit, JLabeledCurrencyEdit, 
   JDateEdit, JLabeledDateEdit, JDBGridControl, jdbgridutils, JDBLabeledEdit, 
-  JTimeEdit, JLabeledTimeEdit, LazarusPackageIntf;
+  JTimeEdit, JLabeledTimeEdit, JDBTimeEdit, JDBLabeledTimeEdit, 
+  LazarusPackageIntf;
 
 implementation
 
@@ -33,6 +34,8 @@ begin
   RegisterUnit('JDBLabeledEdit', @JDBLabeledEdit.Register); 
   RegisterUnit('JTimeEdit', @JTimeEdit.Register); 
   RegisterUnit('JLabeledTimeEdit', @JLabeledTimeEdit.Register); 
+  RegisterUnit('JDBTimeEdit', @JDBTimeEdit.Register); 
+  RegisterUnit('JDBLabeledTimeEdit', @JDBLabeledTimeEdit.Register); 
 end; 
 
 initialization
