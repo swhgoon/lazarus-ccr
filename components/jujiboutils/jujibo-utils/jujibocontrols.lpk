@@ -18,7 +18,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="15">
+    <Files Count="16">
       <Item1>
         <Filename Value="src/jdbintegeredit.pas"/>
         <HasRegisterProc Value="True"/>
@@ -92,6 +92,11 @@
         <Filename Value="src/jdbgridutils.pas"/>
         <UnitName Value="jdbgridutils"/>
       </Item15>
+      <Item16>
+        <Filename Value="src/jdblabelededit.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="JDBLabeledEdit"/>
+      </Item16>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

@@ -10,7 +10,8 @@ uses
   jdbintegeredit, jdblabeledintegeredit, jdbcurrencyedit, 
   jdblabeledcurrencyedit, jdbdateedit, jdblabeleddateedit, jcontrolutils, 
   JIntegerEdit, JLabeledIntegerEdit, JCurrencyEdit, JLabeledCurrencyEdit, 
-  JDateEdit, JLabeledDateEdit, JDBGridControl, jdbgridutils, LazarusPackageIntf;
+  JDateEdit, JLabeledDateEdit, JDBGridControl, jdbgridutils, JDBLabeledEdit, 
+  LazarusPackageIntf;
 
 implementation
 
@@ -29,6 +30,7 @@ begin
   RegisterUnit('JDateEdit', @JDateEdit.Register); 
   RegisterUnit('JLabeledDateEdit', @JLabeledDateEdit.Register); 
   RegisterUnit('JDBGridControl', @JDBGridControl.Register); 
+  RegisterUnit('JDBLabeledEdit', @JDBLabeledEdit.Register); 
 end; 
 
 initialization
