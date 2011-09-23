@@ -170,19 +170,16 @@ begin
   if theValue = 0 then
   begin
     DecodeTime(Now, hh, mm, ss, ms);
-    //ShowMessage('sin hora');
   end
   else
   begin
     DecodeTime(theValue, hh, mm, ss, ms);
-    //ShowMessage('con hora');
   end;
 
   hhs := IntToStr(hh);
   mms := IntToStr(mm);
   sss := IntToStr(ss);
   mss := IntToStr(ms);
-  //ShowMessage(TimeString);
   texto := Value;
   Result := texto; // default value
   tokens := TStringList.Create;
@@ -223,8 +220,6 @@ var
   bTime: TDateTime;
 begin
   Result := TryStrToTime(Value, bTime);
-  //if Result = False then
-  //  ShowMessage('Hora incorrecta: ' + Value);
 end;
 
 end.

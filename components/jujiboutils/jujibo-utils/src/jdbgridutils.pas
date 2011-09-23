@@ -164,7 +164,7 @@ begin
   end
   else
   begin
-    ShowMessage(CellEditor.Caption + ' no es una hora válida: Editing done');
+    ShowMessage(CellEditor.Caption + ' no es una hora válida');
     CellEditor.Text := FormatDateTime(format, theValue);
   end;
 end;
@@ -194,7 +194,7 @@ begin
     if (Key in [VK_RETURN, VK_TAB, VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT]) and
       (not IsValidTimeString(NormalizeTime(CellEditor.Caption, theValue))) then
     begin
-      ShowMessage(CellEditor.Caption + ' no es una hora válida OnKeyDown');
+      ShowMessage(CellEditor.Caption + ' no es una hora válida');
       CellEditor.Text := FormatDateTime(format, theValue);
       CellEditor.SelectAll;
       Key := VK_UNKNOWN;
@@ -225,7 +225,7 @@ begin
       begin
         theValue := StrToTime(CellEditor.Caption);
         Field.DataSet.Edit;
-        Field.AsDateTime:= theValue ; ShowMessage('TAB/Enter/right/left key-> ' + Field.AsString);//Field.AsDateTime := theValue;
+        Field.AsDateTime:= theValue ;
         CellEditor.SelectAll;
         updated := True;
       end;
