@@ -6,7 +6,7 @@ Note: Lazarus Trunk required
 Version pre-1.0
 --------------------------------------------------
 2011-09-23  Added: TJDBLabeledEdit, TJTimeEdit, TJLabeledTimeEdit
-2011-09-22  Added: ftTime support (testing)
+2011-09-22  Added: ftTime support
 2011-09-21  Added: TJDBGridControl and example (testgridctr)
 2011-09-20  Added: TJIntegerEdit, TJLabeledIntegerEdit
                    TJCurrencyEdit, TJLabeledCurrencyEdit
