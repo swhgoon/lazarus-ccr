@@ -142,7 +142,6 @@ begin
     theValue := NormalizeTime(Text, FDataLink.Field.AsDateTime);
     if Text = '' then
     begin
-      Field.DataSet.Edit;
       Field.Value := Null;
     end
     else
@@ -325,7 +324,8 @@ end;
 procedure TJDBTimeEdit.EditingDone;
 begin
   inherited EditingDone;
-  UpdateData(self);
+  if DataSource.State in [dsEdit, dsInsert] then
+    UpdateData(self);
 end;
 
 

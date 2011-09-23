@@ -350,7 +350,8 @@ end;
 procedure TJDBLabeledDateEdit.EditingDone;
 begin
   inherited EditingDone;
-  UpdateData(self);
+  if DataSource.State in [dsEdit, dsInsert] then
+    UpdateData(self);
 end;
 
 end.

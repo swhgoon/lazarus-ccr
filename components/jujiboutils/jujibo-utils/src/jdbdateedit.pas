@@ -146,10 +146,10 @@ procedure TJDBDateEdit.DataChange(Sender: TObject);
 begin
   if FDataLink.Field <> nil then
   begin
-  if not Focused then
-    formatInput
-  else
-    Caption := FDataLink.Field.AsString;
+    if not Focused then
+      formatInput
+    else
+      Caption := FDataLink.Field.AsString;
   end
   else
     Text := '';
@@ -345,7 +345,8 @@ end;
 procedure TJDBDateEdit.EditingDone;
 begin
   inherited EditingDone;
-  UpdateData(self);
+  if DataSource.State in [dsEdit, dsInsert] then
+    UpdateData(self);
 end;
 
 end.
