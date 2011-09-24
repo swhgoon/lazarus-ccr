@@ -4,7 +4,6 @@ unit GLib2;
 {$MODE OBJFPC}{$H+}
 
 {$PACKRECORDS C}
-{$BITPACKING ON}
 {$MODESWITCH DUPLICATELOCALS+}
 
 {$LINKLIB libglib-2.0.so.0}
@@ -990,7 +989,6 @@ type
   { void }
   Tvoid = record
     { opaque type }
-    Unknown: Pointer;
   end;
 
 
@@ -1319,7 +1317,6 @@ type
   PGCond = ^TGCond;
 
   TGCond = record
-    Unknown: Pointer;
   end;
 
 
@@ -1332,7 +1329,6 @@ type
   PGData = ^TGData;
 
   TGData = record
-    Unknown: Pointer;
   end;
 
 
@@ -1357,6 +1353,7 @@ type
     month: guint4 { changed from guint to accomodate 4 bitsize requirement };
     year: guint16 { changed from guint to accomodate 16 bitsize requirement };
   end;
+
   TGDate = object
     Bitfield0 : TGDateBitfield0; { auto generated type }
     function new: PGDate; cdecl; inline; static;
@@ -1603,7 +1600,6 @@ type
   { va_list }
   Tva_list = record
     { opaque type }
-    Unknown: Pointer;
   end;
 
   TGError = object
@@ -1772,6 +1768,7 @@ type
     is_setup: guint1 { changed from guint to accomodate 1 bitsize requirement };
   end;
 
+
   PPGHookFinalizeFunc = ^PGHookFinalizeFunc;
   PGHookFinalizeFunc = ^TGHookFinalizeFunc;
   TGHookFinalizeFunc = procedure(hook_list: PGHookList; hook: PGHook); cdecl;
@@ -1914,6 +1911,7 @@ type
     is_writeable: guint1 { changed from guint to accomodate 1 bitsize requirement };
     is_seekable: guint1 { changed from guint to accomodate 1 bitsize requirement };
   end;
+
   TGIOChannel = object
     ref_count: gint;
     funcs: PGIOFuncs;
@@ -2114,7 +2112,6 @@ type
   end;
 
   TGMutex = record
-    Unknown: Pointer;
   end;
 
 
@@ -2524,7 +2521,6 @@ type
   PGPrivate = ^TGPrivate;
 
   TGPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -2644,12 +2640,7 @@ type
 
   PPGScannerConfig = ^PGScannerConfig;
   PGScannerConfig = ^TGScannerConfig;
-
-  TGScannerConfig = record
-    cset_skip_characters: Pgchar;
-    cset_identifier_first: Pgchar;
-    cset_identifier_nth: Pgchar;
-    cpair_comment_single: Pgchar;
+  TGScannerConfigBitfield0 = bitpacked record
     case_sensitive: guint1 { changed from guint to accomodate 1 bitsize requirement };
     skip_comment_multi: guint1 { changed from guint to accomodate 1 bitsize requirement };
     skip_comment_single: guint1 { changed from guint to accomodate 1 bitsize requirement };
@@ -2672,6 +2663,15 @@ type
     symbol_2_token: guint1 { changed from guint to accomodate 1 bitsize requirement };
     scope_0_fallback: guint1 { changed from guint to accomodate 1 bitsize requirement };
     store_int64: guint1 { changed from guint to accomodate 1 bitsize requirement };
+  end;
+
+
+  TGScannerConfig = record
+    cset_skip_characters: Pgchar;
+    cset_identifier_first: Pgchar;
+    cset_identifier_nth: Pgchar;
+    cpair_comment_single: Pgchar;
+    Bitfield0 : TGScannerConfigBitfield0; { auto generated type }
     padding_dummy: guint;
   end;
 
@@ -2817,7 +2817,6 @@ type
 
 
   TGSourcePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -2841,7 +2840,6 @@ type
   PGStatBuf = ^TGStatBuf;
 
   TGStatBuf = record
-    Unknown: Pointer;
   end;
 
 
@@ -2937,7 +2935,6 @@ type
   PGTestCase = ^TGTestCase;
 
   TGTestCase = record
-    Unknown: Pointer;
   end;
 
 

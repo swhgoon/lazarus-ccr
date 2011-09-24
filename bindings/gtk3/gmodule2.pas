@@ -4,7 +4,6 @@ unit GModule2;
 {$MODE OBJFPC}{$H+}
 
 {$PACKRECORDS C}
-{$BITPACKING ON}
 {$MODESWITCH DUPLICATELOCALS+}
 
 {$LINKLIB libgmodule-2.0.so.0}

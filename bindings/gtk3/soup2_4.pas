@@ -4,7 +4,6 @@ unit Soup2_4;
 {$MODE OBJFPC}{$H+}
 
 {$PACKRECORDS C}
-{$BITPACKING ON}
 {$MODESWITCH DUPLICATELOCALS+}
 
 {$LINKLIB libsoup-2.4.so.1}
@@ -731,7 +730,6 @@ type
   PSoupConnection = ^TSoupConnection;
 
   TSoupConnection = record
-    Unknown: Pointer;
   end;
 
 
@@ -756,7 +754,6 @@ type
   PSoupContentDecoderPrivate = ^TSoupContentDecoderPrivate;
 
   TSoupContentDecoderPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -790,7 +787,6 @@ type
   end;
 
   TSoupContentSnifferPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -1105,7 +1101,6 @@ type
   PSoupMessageQueue = ^TSoupMessageQueue;
 
   TSoupMessageQueue = record
-    Unknown: Pointer;
   end;
 
 
@@ -1114,7 +1109,6 @@ type
   PSoupMessageQueueItem = ^TSoupMessageQueueItem;
 
   TSoupMessageQueueItem = record
-    Unknown: Pointer;
   end;
 
 

@@ -4,7 +4,6 @@ unit cairo1;
 {$MODE OBJFPC}{$H+}
 
 {$PACKRECORDS C}
-{$BITPACKING ON}
 {$MODESWITCH DUPLICATELOCALS+}
 
 {$LINKLIB libcairo-gobject.so.2}
@@ -39,7 +38,6 @@ type
   Pcairo_matrix_t = ^Tcairo_matrix_t;
 
   Tcairo_matrix_t = record
-    Unknown: Pointer;
   end;
 
 
@@ -61,7 +59,6 @@ type
   Pcairo_font_options_t = ^Tcairo_font_options_t;
 
   Tcairo_font_options_t = record
-    Unknown: Pointer;
   end;
 
 
@@ -70,7 +67,6 @@ type
   Pcairo_font_type_t = ^Tcairo_font_type_t;
 
   Tcairo_font_type_t = record
-    Unknown: Pointer;
   end;
 
 
@@ -89,7 +85,6 @@ type
   Pcairo_path_t = ^Tcairo_path_t;
 
   Tcairo_path_t = record
-    Unknown: Pointer;
   end;
 
 
@@ -108,7 +103,6 @@ type
   { void }
   Tvoid = record
     { opaque type }
-    Unknown: Pointer;
   end;
 
 

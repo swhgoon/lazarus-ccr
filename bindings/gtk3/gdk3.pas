@@ -4,7 +4,6 @@ unit Gdk3;
 {$MODE OBJFPC}{$H+}
 
 {$PACKRECORDS C}
-{$BITPACKING ON}
 {$MODESWITCH DUPLICATELOCALS+}
 
 {$LINKLIB libgdk-3.so.0}
@@ -3418,6 +3417,10 @@ type
 
   PPGdkEventKey = ^PGdkEventKey;
   PGdkEventKey = ^TGdkEventKey;
+  TGdkEventKeyBitfield0 = bitpacked record
+    is_modifier: guint1 { changed from guint to accomodate 1 bitsize requirement };
+  end;
+
 
   TGdkEventKey = record
     type_: TGdkEventType;
@@ -3430,7 +3433,7 @@ type
     string_: Pgchar;
     hardware_keycode: guint16;
     group: guint8;
-    is_modifier: guint1 { changed from guint to accomodate 1 bitsize requirement };
+    Bitfield0 : TGdkEventKeyBitfield0; { auto generated type }
   end;
 
 
@@ -3559,7 +3562,6 @@ type
   { gshort }
   Tgshort = record
     { opaque type }
-    Unknown: Pointer;
   end;
 
 
@@ -3867,7 +3869,6 @@ type
   PGdkWindowRedirect = ^TGdkWindowRedirect;
 
   TGdkWindowRedirect = record
-    Unknown: Pointer;
   end;
 
 

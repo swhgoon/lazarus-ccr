@@ -4,7 +4,6 @@ unit GdkPixbuf2;
 {$MODE OBJFPC}{$H+}
 
 {$PACKRECORDS C}
-{$BITPACKING ON}
 {$MODESWITCH DUPLICATELOCALS+}
 
 {$LINKLIB libgdk_pixbuf-2.0.so.0}

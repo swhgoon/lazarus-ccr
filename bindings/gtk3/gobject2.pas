@@ -4,7 +4,6 @@ unit GObject2;
 {$MODE OBJFPC}{$H+}
 
 {$PACKRECORDS C}
-{$BITPACKING ON}
 {$MODESWITCH DUPLICATELOCALS+}
 
 {$LINKLIB libgobject-2.0.so.0}
@@ -313,6 +312,7 @@ type
     in_marshal: guint1 { changed from guint to accomodate 1 bitsize requirement };
     is_invalid: guint1 { changed from guint to accomodate 1 bitsize requirement };
   end;
+
 
   PPGClosureNotifyData = ^PGClosureNotifyData;
   PGClosureNotifyData = ^TGClosureNotifyData;
@@ -705,6 +705,7 @@ type
     null_fold_if_empty: guint1 { changed from guint to accomodate 1 bitsize requirement };
     ensure_non_null: guint1 { changed from guint to accomodate 1 bitsize requirement };
   end;
+
   TGParamSpecString = object(TGParamSpec)
     default_value: Pgchar;
     cset_first: Pgchar;

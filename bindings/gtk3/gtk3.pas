@@ -4,7 +4,6 @@ unit Gtk3;
 {$MODE OBJFPC}{$H+}
 
 {$PACKRECORDS C}
-{$BITPACKING ON}
 {$MODESWITCH DUPLICATELOCALS+}
 
 {$LINKLIB libgtk-3.so.0}
@@ -1619,7 +1618,6 @@ type
   PGtkAboutDialogPrivate = ^TGtkAboutDialogPrivate;
 
   TGtkAboutDialogPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -1729,11 +1727,15 @@ type
     property is_locked:  gboolean read get_is_locked ;
     property modifier_mask:  TGdkModifierType read get_modifier_mask ;
   end;
+  TGtkAccelKeyBitfield0 = bitpacked record
+    accel_flags: guint16 { changed from guint to accomodate 16 bitsize requirement };
+  end;
+
 
   TGtkAccelKey = record
     accel_key: guint;
     accel_mods: TGdkModifierType;
-    accel_flags: guint16 { changed from guint to accomodate 16 bitsize requirement };
+    Bitfield0 : TGtkAccelKeyBitfield0; { auto generated type }
   end;
 
 
@@ -1747,7 +1749,6 @@ type
 
 
   TGtkAccelGroupPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -1844,7 +1845,6 @@ type
   PGtkAccelLabelPrivate = ^TGtkAccelLabelPrivate;
 
   TGtkAccelLabelPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -1935,7 +1935,6 @@ type
   PGtkAccessiblePrivate = ^TGtkAccessiblePrivate;
 
   TGtkAccessiblePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -1964,7 +1963,6 @@ type
   PGtkActionPrivate = ^TGtkActionPrivate;
 
   TGtkActionPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -2098,7 +2096,6 @@ type
   PGtkActionGroupPrivate = ^TGtkActionGroupPrivate;
 
   TGtkActionGroupPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -2198,7 +2195,6 @@ type
   end;
 
   TGtkAdjustmentPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -2280,7 +2276,6 @@ type
   PGtkAlignmentPrivate = ^TGtkAlignmentPrivate;
 
   TGtkAlignmentPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -2428,6 +2423,7 @@ type
   TGtkContainerClassBitfield0 = bitpacked record
     _handle_border_width: guint1 { changed from guint to accomodate 1 bitsize requirement };
   end;
+
   TGtkContainerClass = object
     parent_class: TGtkWidgetClass;
     add: procedure(container: PGtkContainer; widget: PGtkWidget); cdecl;
@@ -2601,7 +2597,6 @@ type
   PGtkAppChooserButtonPrivate = ^TGtkAppChooserButtonPrivate;
 
   TGtkAppChooserButtonPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -2645,7 +2640,6 @@ type
   PGtkAppChooserDialogPrivate = ^TGtkAppChooserDialogPrivate;
 
   TGtkAppChooserDialogPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -2777,7 +2771,6 @@ type
   PGtkAppChooserWidgetPrivate = ^TGtkAppChooserWidgetPrivate;
 
   TGtkAppChooserWidgetPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -2850,7 +2843,6 @@ type
   PGtkApplicationPrivate = ^TGtkApplicationPrivate;
 
   TGtkApplicationPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -2865,7 +2857,6 @@ type
   PGtkArrowPrivate = ^TGtkArrowPrivate;
 
   TGtkArrowPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -2921,7 +2912,6 @@ type
   PGtkAspectFramePrivate = ^TGtkAspectFramePrivate;
 
   TGtkAspectFramePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -2967,7 +2957,6 @@ type
   PGtkAssistantPrivate = ^TGtkAssistantPrivate;
 
   TGtkAssistantPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3031,7 +3020,6 @@ type
 
 
   TGtkBinPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3065,6 +3053,7 @@ type
   TGtkBindingSetBitfield0 = bitpacked record
     parsed: guint1 { changed from guint to accomodate 1 bitsize requirement };
   end;
+
   TGtkBindingSet = object
     set_name: Pgchar;
     priority: gint;
@@ -3085,6 +3074,7 @@ type
     in_emission: guint1 { changed from guint to accomodate 1 bitsize requirement };
     marks_unbound: guint1 { changed from guint to accomodate 1 bitsize requirement };
   end;
+
 
   PPGtkBindingSignal = ^PGtkBindingSignal;
   PGtkBindingSignal = ^TGtkBindingSignal;
@@ -3128,7 +3118,6 @@ type
   PGtkBorderStyle = ^TGtkBorderStyle;
 
   TGtkBoxPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3175,7 +3164,6 @@ type
   end;
 
   TGtkBuilderPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3208,7 +3196,6 @@ type
   PGtkButtonPrivate = ^TGtkButtonPrivate;
 
   TGtkButtonPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3261,7 +3248,6 @@ type
   PGtkButtonBoxPrivate = ^TGtkButtonBoxPrivate;
 
   TGtkButtonBoxPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3326,7 +3312,6 @@ type
   PGtkCalendarPrivate = ^TGtkCalendarPrivate;
 
   TGtkCalendarPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3550,7 +3535,6 @@ type
   PGtkCellAreaPrivate = ^TGtkCellAreaPrivate;
 
   TGtkCellAreaPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3614,7 +3598,6 @@ type
   PGtkCellAreaBoxPrivate = ^TGtkCellAreaBoxPrivate;
 
   TGtkCellAreaBoxPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3678,7 +3661,6 @@ type
   end;
 
   TGtkCellAreaContextPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3734,7 +3716,6 @@ type
   PGtkCellRendererMode = ^TGtkCellRendererMode;
 
   TGtkCellRendererPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3804,7 +3785,6 @@ type
   PGtkCellRendererAccelPrivate = ^TGtkCellRendererAccelPrivate;
 
   TGtkCellRendererAccelPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3870,7 +3850,6 @@ type
   PGtkCellRendererComboPrivate = ^TGtkCellRendererComboPrivate;
 
   TGtkCellRendererComboPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3899,7 +3878,6 @@ type
   PGtkCellRendererPixbufPrivate = ^TGtkCellRendererPixbufPrivate;
 
   TGtkCellRendererPixbufPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3934,7 +3912,6 @@ type
   PGtkCellRendererProgressPrivate = ^TGtkCellRendererProgressPrivate;
 
   TGtkCellRendererProgressPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3966,7 +3943,6 @@ type
   PGtkCellRendererSpinPrivate = ^TGtkCellRendererSpinPrivate;
 
   TGtkCellRendererSpinPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3998,7 +3974,6 @@ type
   PGtkCellRendererSpinnerPrivate = ^TGtkCellRendererSpinnerPrivate;
 
   TGtkCellRendererSpinnerPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4024,7 +3999,6 @@ type
   end;
 
   TGtkCellRendererTextPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4033,7 +4007,6 @@ type
   PGtkCellRendererTogglePrivate = ^TGtkCellRendererTogglePrivate;
 
   TGtkCellRendererTogglePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4071,7 +4044,6 @@ type
   PGtkCellViewPrivate = ^TGtkCellViewPrivate;
 
   TGtkCellViewPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4207,7 +4179,6 @@ type
   PGtkCheckMenuItemPrivate = ^TGtkCheckMenuItemPrivate;
 
   TGtkCheckMenuItemPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4236,6 +4207,7 @@ type
   TGtkMenuItemClassBitfield0 = bitpacked record
     hide_on_activate: guint1 { changed from guint to accomodate 1 bitsize requirement };
   end;
+
   TGtkMenuItemClass = object
     parent_class: TGtkBinClass;
     Bitfield0 : TGtkMenuItemClassBitfield0; { auto generated type }
@@ -4474,7 +4446,6 @@ type
   PGtkColorButtonPrivate = ^TGtkColorButtonPrivate;
 
   TGtkColorButtonPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4519,7 +4490,6 @@ type
   PGtkColorSelectionPrivate = ^TGtkColorSelectionPrivate;
 
   TGtkColorSelectionPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4575,7 +4545,6 @@ type
   PGtkColorSelectionDialogPrivate = ^TGtkColorSelectionDialogPrivate;
 
   TGtkColorSelectionDialogPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4603,7 +4572,6 @@ type
   end;
 
   TGtkComboBoxPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4615,7 +4583,6 @@ type
   PGtkComboBoxTextPrivate = ^TGtkComboBoxTextPrivate;
 
   TGtkComboBoxTextPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4696,7 +4663,6 @@ type
   end;
 
   TGtkContainerPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4752,7 +4718,6 @@ type
   end;
 
   TGtkCssProviderPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4791,7 +4756,6 @@ type
   PGtkDeleteType = ^TGtkDeleteType;
 
   TGtkDialogPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4944,7 +4908,6 @@ type
   PGtkEntryPrivate = ^TGtkEntryPrivate;
 
   TGtkEntryPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -5064,7 +5027,6 @@ type
   end;
 
   TGtkEntryBufferPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -5115,7 +5077,6 @@ type
   end;
 
   TGtkEntryCompletionPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -5138,7 +5099,6 @@ type
   PGtkEventBoxPrivate = ^TGtkEventBoxPrivate;
 
   TGtkEventBoxPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -5170,7 +5130,6 @@ type
   PGtkExpanderPrivate = ^TGtkExpanderPrivate;
 
   TGtkExpanderPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -5256,7 +5215,6 @@ type
   { char* }
   Tchar = record
     { opaque type }
-    Unknown: Pointer;
   end;
 
 
@@ -5351,7 +5309,6 @@ type
   PGtkFileChooserButtonPrivate = ^TGtkFileChooserButtonPrivate;
 
   TGtkFileChooserButtonPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -5389,7 +5346,6 @@ type
   PGtkFileChooserDialogPrivate = ^TGtkFileChooserDialogPrivate;
 
   TGtkFileChooserDialogPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -5418,7 +5374,6 @@ type
   PGtkFileChooserWidgetPrivate = ^TGtkFileChooserWidgetPrivate;
 
   TGtkFileChooserWidgetPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -5454,7 +5409,6 @@ type
   PGtkFixedPrivate = ^TGtkFixedPrivate;
 
   TGtkFixedPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -5493,7 +5447,6 @@ type
   PGtkFontButtonPrivate = ^TGtkFontButtonPrivate;
 
   TGtkFontButtonPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -5540,7 +5493,6 @@ type
   PGtkFontChooserPrivate = ^TGtkFontChooserPrivate;
 
   TGtkFontChooserPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -5583,7 +5535,6 @@ type
   PGtkFontChooserDialogPrivate = ^TGtkFontChooserDialogPrivate;
 
   TGtkFontChooserDialogPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -5614,7 +5565,6 @@ type
   PGtkFontSelectionPrivate = ^TGtkFontSelectionPrivate;
 
   TGtkFontSelectionPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -5654,7 +5604,6 @@ type
   PGtkFontSelectionDialogPrivate = ^TGtkFontSelectionDialogPrivate;
 
   TGtkFontSelectionDialogPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -5684,7 +5633,6 @@ type
   end;
 
   TGtkFramePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -5740,7 +5688,6 @@ type
   PGtkGridPrivate = ^TGtkGridPrivate;
 
   TGtkGridPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -5863,7 +5810,6 @@ type
   PGtkHSVPrivate = ^TGtkHSVPrivate;
 
   TGtkHSVPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -6069,7 +6015,6 @@ type
   PGtkHandleBoxPrivate = ^TGtkHandleBoxPrivate;
 
   TGtkHandleBoxPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -6166,7 +6111,6 @@ type
   PGtkIMContextSimplePrivate = ^TGtkIMContextSimplePrivate;
 
   TGtkIMContextSimplePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -6189,7 +6133,6 @@ type
   PGtkIMMulticontextPrivate = ^TGtkIMMulticontextPrivate;
 
   TGtkIMMulticontextPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -6250,7 +6193,6 @@ type
   end;
 
   TGtkIconFactoryPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -6422,7 +6364,6 @@ type
   end;
 
   TGtkIconThemePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -6486,7 +6427,6 @@ type
   PGtkIconViewPrivate = ^TGtkIconViewPrivate;
 
   TGtkIconViewPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -6596,7 +6536,6 @@ type
   PGtkImagePrivate = ^TGtkImagePrivate;
 
   TGtkImagePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -6658,7 +6597,6 @@ type
   PGtkImageMenuItemPrivate = ^TGtkImageMenuItemPrivate;
 
   TGtkImageMenuItemPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -6701,7 +6639,6 @@ type
   PGtkInfoBarPrivate = ^TGtkInfoBarPrivate;
 
   TGtkInfoBarPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -6741,7 +6678,6 @@ type
   PGtkInvisiblePrivate = ^TGtkInvisiblePrivate;
 
   TGtkInvisiblePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -6769,7 +6705,6 @@ type
   TGtkKeySnoopFunc = function(grab_widget: PGtkWidget; event: PGdkEventKey; func_data: gpointer): gint; cdecl;
 
   TGtkLabelPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -6778,7 +6713,6 @@ type
   PGtkLabelSelectionInfo = ^TGtkLabelSelectionInfo;
 
   TGtkLabelSelectionInfo = record
-    Unknown: Pointer;
   end;
 
 
@@ -6787,7 +6721,6 @@ type
   PGtkLayoutPrivate = ^TGtkLayoutPrivate;
 
   TGtkLayoutPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -6824,7 +6757,6 @@ type
   PGtkLinkButtonPrivate = ^TGtkLinkButtonPrivate;
 
   TGtkLinkButtonPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -6919,7 +6851,6 @@ type
   end;
 
   TGtkListStorePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -6938,7 +6869,6 @@ type
   PGtkLockButtonPrivate = ^TGtkLockButtonPrivate;
 
   TGtkLockButtonPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -6973,7 +6903,6 @@ type
   end;
 
   TGtkMenuPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -6985,7 +6914,6 @@ type
   PGtkMenuBarPrivate = ^TGtkMenuBarPrivate;
 
   TGtkMenuBarPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -7008,6 +6936,7 @@ type
   TGtkMenuShellClassBitfield0 = bitpacked record
     submenu_placement: guint1 { changed from guint to accomodate 1 bitsize requirement };
   end;
+
 
   PPGtkMenuDirectionType = ^PGtkMenuDirectionType;
   PGtkMenuDirectionType = ^TGtkMenuDirectionType;
@@ -7050,13 +6979,11 @@ type
   end;
 
   TGtkMenuItemPrivate = record
-    Unknown: Pointer;
   end;
 
 
 
   TGtkMenuShellPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -7140,7 +7067,6 @@ type
   PGtkMenuToolButtonPrivate = ^TGtkMenuToolButtonPrivate;
 
   TGtkMenuToolButtonPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -7197,7 +7123,6 @@ type
   PGtkMessageDialogPrivate = ^TGtkMessageDialogPrivate;
 
   TGtkMessageDialogPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -7238,7 +7163,6 @@ type
   PGtkMiscPrivate = ^TGtkMiscPrivate;
 
   TGtkMiscPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -7298,7 +7222,6 @@ type
   PGtkMountOperationPrivate = ^TGtkMountOperationPrivate;
 
   TGtkMountOperationPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -7367,7 +7290,6 @@ type
   PGtkNotebookTab = ^TGtkNotebookTab;
 
   TGtkNotebookPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -7404,7 +7326,6 @@ type
   PGtkNumerableIconPrivate = ^TGtkNumerableIconPrivate;
 
   TGtkNumerableIconPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -7468,7 +7389,6 @@ type
   PGtkOverlayPrivate = ^TGtkOverlayPrivate;
 
   TGtkOverlayPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -7573,7 +7493,6 @@ type
   TGtkPageSetupDoneFunc = procedure(page_setup: PGtkPageSetup; data: gpointer); cdecl;
 
   TGtkPanedPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -7582,7 +7501,6 @@ type
   PGtkPlugPrivate = ^TGtkPlugPrivate;
 
   TGtkPlugPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -7805,7 +7723,6 @@ type
   end;
 
   TGtkPrintOperationPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -7858,7 +7775,6 @@ type
   PGtkProgressBarPrivate = ^TGtkProgressBarPrivate;
 
   TGtkProgressBarPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -7935,7 +7851,6 @@ type
   end;
 
   TGtkRadioActionPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -7982,7 +7897,6 @@ type
   end;
 
   TGtkRadioButtonPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -8017,7 +7931,6 @@ type
   end;
 
   TGtkRadioMenuItemPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -8081,7 +7994,6 @@ type
   end;
 
   TGtkRangePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -8090,7 +8002,6 @@ type
   PGtkRcContext = ^TGtkRcContext;
 
   TGtkRcContext = record
-    Unknown: Pointer;
   end;
 
 
@@ -8122,6 +8033,7 @@ type
   TGtkRcStyleBitfield0 = bitpacked record
     engine_specified: guint1 { changed from guint to accomodate 1 bitsize requirement };
   end;
+
   TGtkRcStyle = object(TGObject)
     name: Pgchar;
     bg_pixmap_name: array [0..4] of Pgchar;
@@ -8247,7 +8159,6 @@ type
   PGtkRecentActionPrivate = ^TGtkRecentActionPrivate;
 
   TGtkRecentActionPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -8338,7 +8249,6 @@ type
   PGtkRecentChooserDialogPrivate = ^TGtkRecentChooserDialogPrivate;
 
   TGtkRecentChooserDialogPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -8388,7 +8298,6 @@ type
   PGtkRecentChooserMenuPrivate = ^TGtkRecentChooserMenuPrivate;
 
   TGtkRecentChooserMenuPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -8418,7 +8327,6 @@ type
   PGtkRecentChooserWidgetPrivate = ^TGtkRecentChooserWidgetPrivate;
 
   TGtkRecentChooserWidgetPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -8466,7 +8374,6 @@ type
 
 
   TGtkRecentManagerPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -8500,7 +8407,6 @@ type
   PGtkResponseType = ^TGtkResponseType;
 
   TGtkScalePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -8509,7 +8415,6 @@ type
   PGtkScaleButtonPrivate = ^TGtkScaleButtonPrivate;
 
   TGtkScaleButtonPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -8557,7 +8462,6 @@ type
   PGtkScrolledWindowPrivate = ^TGtkScrolledWindowPrivate;
 
   TGtkScrolledWindowPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -8610,7 +8514,6 @@ type
   end;
 
   TGtkSeparatorPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -8635,7 +8538,6 @@ type
   PGtkSeparatorToolItemPrivate = ^TGtkSeparatorToolItemPrivate;
 
   TGtkSeparatorToolItemPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -8765,7 +8667,6 @@ type
   PGtkSettingsPrivate = ^TGtkSettingsPrivate;
 
   TGtkSettingsPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -8790,7 +8691,6 @@ type
   end;
 
   TGtkSizeGroupPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -8831,7 +8731,6 @@ type
   PGtkSocketPrivate = ^TGtkSocketPrivate;
 
   TGtkSocketPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -8846,7 +8745,6 @@ type
   PGtkSpinButtonPrivate = ^TGtkSpinButtonPrivate;
 
   TGtkSpinButtonPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -8908,7 +8806,6 @@ type
   PGtkSpinnerPrivate = ^TGtkSpinnerPrivate;
 
   TGtkSpinnerPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -8992,7 +8889,6 @@ type
   end;
 
   TGtkStatusIconPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -9018,7 +8914,6 @@ type
   PGtkStatusbarPrivate = ^TGtkStatusbarPrivate;
 
   TGtkStatusbarPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -9143,7 +9038,6 @@ type
   end;
 
   TGtkStyleContextPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -9182,7 +9076,6 @@ type
   PGtkSwitchPrivate = ^TGtkSwitchPrivate;
 
   TGtkSwitchPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -9214,7 +9107,6 @@ type
   PGtkTablePrivate = ^TGtkTablePrivate;
 
   TGtkTablePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -9250,6 +9142,15 @@ type
 
   PPGtkTableChild = ^PGtkTableChild;
   PGtkTableChild = ^TGtkTableChild;
+  TGtkTableChildBitfield0 = bitpacked record
+    xexpand: guint1 { changed from guint to accomodate 1 bitsize requirement };
+    yexpand: guint1 { changed from guint to accomodate 1 bitsize requirement };
+    xshrink: guint1 { changed from guint to accomodate 1 bitsize requirement };
+    yshrink: guint1 { changed from guint to accomodate 1 bitsize requirement };
+    xfill: guint1 { changed from guint to accomodate 1 bitsize requirement };
+    yfill: guint1 { changed from guint to accomodate 1 bitsize requirement };
+  end;
+
 
   TGtkTableChild = record
     widget: PGtkWidget;
@@ -9259,12 +9160,7 @@ type
     bottom_attach: guint16;
     xpadding: guint16;
     ypadding: guint16;
-    xexpand: guint1 { changed from guint to accomodate 1 bitsize requirement };
-    yexpand: guint1 { changed from guint to accomodate 1 bitsize requirement };
-    xshrink: guint1 { changed from guint to accomodate 1 bitsize requirement };
-    yshrink: guint1 { changed from guint to accomodate 1 bitsize requirement };
-    xfill: guint1 { changed from guint to accomodate 1 bitsize requirement };
-    yfill: guint1 { changed from guint to accomodate 1 bitsize requirement };
+    Bitfield0 : TGtkTableChildBitfield0; { auto generated type }
   end;
 
 
@@ -9281,16 +9177,20 @@ type
 
   PPGtkTableRowCol = ^PGtkTableRowCol;
   PGtkTableRowCol = ^TGtkTableRowCol;
-
-  TGtkTableRowCol = record
-    requisition: guint16;
-    allocation: guint16;
-    spacing: guint16;
+  TGtkTableRowColBitfield0 = bitpacked record
     need_expand: guint1 { changed from guint to accomodate 1 bitsize requirement };
     need_shrink: guint1 { changed from guint to accomodate 1 bitsize requirement };
     expand: guint1 { changed from guint to accomodate 1 bitsize requirement };
     shrink: guint1 { changed from guint to accomodate 1 bitsize requirement };
     empty: guint1 { changed from guint to accomodate 1 bitsize requirement };
+  end;
+
+
+  TGtkTableRowCol = record
+    requisition: guint16;
+    allocation: guint16;
+    spacing: guint16;
+    Bitfield0 : TGtkTableRowColBitfield0; { auto generated type }
   end;
 
 
@@ -9307,7 +9207,6 @@ type
   PGtkTearoffMenuItemPrivate = ^TGtkTearoffMenuItemPrivate;
 
   TGtkTearoffMenuItemPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -9331,16 +9230,20 @@ type
 
   PPGtkTextAppearance = ^PGtkTextAppearance;
   PGtkTextAppearance = ^TGtkTextAppearance;
-
-  TGtkTextAppearance = record
-    bg_color: TGdkColor;
-    fg_color: TGdkColor;
-    rise: gint;
+  TGtkTextAppearanceBitfield0 = bitpacked record
     underline: guint4 { changed from guint to accomodate 4 bitsize requirement };
     strikethrough: guint1 { changed from guint to accomodate 1 bitsize requirement };
     draw_bg: guint1 { changed from guint to accomodate 1 bitsize requirement };
     inside_selection: guint1 { changed from guint to accomodate 1 bitsize requirement };
     is_text: guint1 { changed from guint to accomodate 1 bitsize requirement };
+  end;
+
+
+  TGtkTextAppearance = record
+    bg_color: TGdkColor;
+    fg_color: TGdkColor;
+    rise: gint;
+    Bitfield0 : TGtkTextAppearanceBitfield0; { auto generated type }
     rgba: array [0..1] of PGdkRGBA;
   end;
 
@@ -9353,6 +9256,7 @@ type
     bg_full_height: guint1 { changed from guint to accomodate 1 bitsize requirement };
     editable: guint1 { changed from guint to accomodate 1 bitsize requirement };
   end;
+
   TGtkTextAttributes = object
     refcount: guint;
     appearance: TGtkTextAppearance;
@@ -9384,7 +9288,6 @@ type
   PGtkTextBTree = ^TGtkTextBTree;
 
   TGtkTextBTree = record
-    Unknown: Pointer;
   end;
 
 
@@ -9619,7 +9522,6 @@ type
   end;
 
   TGtkTextBufferPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -9671,7 +9573,6 @@ type
   end;
 
   TGtkTextTagPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -9688,7 +9589,6 @@ type
   end;
 
   TGtkTextTagTablePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -9713,7 +9613,6 @@ type
   PGtkTextViewPrivate = ^TGtkTextViewPrivate;
 
   TGtkTextViewPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -9829,7 +9728,6 @@ type
   PGtkThemeEngine = ^TGtkThemeEngine;
 
   TGtkThemeEngine = record
-    Unknown: Pointer;
   end;
 
 
@@ -9869,7 +9767,6 @@ type
   end;
 
   TGtkThemingEnginePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -9898,31 +9795,26 @@ type
   end;
 
   TGtkToggleActionPrivate = record
-    Unknown: Pointer;
   end;
 
 
 
   TGtkToggleButtonPrivate = record
-    Unknown: Pointer;
   end;
 
 
 
   TGtkToggleToolButtonPrivate = record
-    Unknown: Pointer;
   end;
 
 
 
   TGtkToolButtonPrivate = record
-    Unknown: Pointer;
   end;
 
 
 
   TGtkToolItemPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -9945,7 +9837,6 @@ type
   PGtkToolItemGroupPrivate = ^TGtkToolItemGroupPrivate;
 
   TGtkToolItemGroupPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -9998,7 +9889,6 @@ type
   PGtkToolPalettePrivate = ^TGtkToolPalettePrivate;
 
   TGtkToolPalettePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -10066,7 +9956,6 @@ type
   PGtkToolbarPrivate = ^TGtkToolbarPrivate;
 
   TGtkToolbarPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -10378,7 +10267,6 @@ type
   PGtkTreeModelFilterPrivate = ^TGtkTreeModelFilterPrivate;
 
   TGtkTreeModelFilterPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -10449,7 +10337,6 @@ type
   PGtkTreeModelSortPrivate = ^TGtkTreeModelSortPrivate;
 
   TGtkTreeModelSortPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -10500,7 +10387,6 @@ type
   PGtkTreeSelectionPrivate = ^TGtkTreeSelectionPrivate;
 
   TGtkTreeSelectionPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -10591,7 +10477,6 @@ type
   end;
 
   TGtkTreeStorePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -10607,7 +10492,6 @@ type
   end;
 
   TGtkTreeViewPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -10642,7 +10526,6 @@ type
   end;
 
   TGtkTreeViewColumnPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -10705,7 +10588,6 @@ type
   end;
 
   TGtkUIManagerPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -10805,7 +10687,6 @@ type
   PGtkViewportPrivate = ^TGtkViewportPrivate;
 
   TGtkViewportPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -10854,26 +10735,28 @@ type
   end;
 
   TGtkWidgetPrivate = record
-    Unknown: Pointer;
   end;
 
 
 
   PPGtkWidgetAuxInfo = ^PGtkWidgetAuxInfo;
   PGtkWidgetAuxInfo = ^TGtkWidgetAuxInfo;
+  TGtkWidgetAuxInfoBitfield0 = bitpacked record
+    halign: guint4 { changed from guint to accomodate 4 bitsize requirement };
+    valign: guint4 { changed from guint to accomodate 4 bitsize requirement };
+  end;
+
 
   TGtkWidgetAuxInfo = record
     width: gint;
     height: gint;
-    halign: guint4 { changed from guint to accomodate 4 bitsize requirement };
-    valign: guint4 { changed from guint to accomodate 4 bitsize requirement };
+    Bitfield0 : TGtkWidgetAuxInfoBitfield0; { auto generated type }
     margin: TGtkBorder;
   end;
 
 
 
   TGtkWidgetClassPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -10903,7 +10786,6 @@ type
   PGtkWindowPrivate = ^TGtkWindowPrivate;
 
   TGtkWindowPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -11069,13 +10951,11 @@ type
   PGtkWindowGeometryInfo = ^TGtkWindowGeometryInfo;
 
   TGtkWindowGeometryInfo = record
-    Unknown: Pointer;
   end;
 
 
 
   TGtkWindowGroupPrivate = record
-    Unknown: Pointer;
   end;
 
 

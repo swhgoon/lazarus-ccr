@@ -4,7 +4,6 @@ unit xlib2;
 {$MODE OBJFPC}{$H+}
 
 {$PACKRECORDS C}
-{$BITPACKING ON}
 {$MODESWITCH DUPLICATELOCALS+}
 
 interface
@@ -32,7 +31,6 @@ type
   PDisplay = ^TDisplay;
 
   TDisplay = record
-    Unknown: Pointer;
   end;
 
 
@@ -61,7 +59,6 @@ type
   PScreen = ^TScreen;
 
   TScreen = record
-    Unknown: Pointer;
   end;
 
 
@@ -74,7 +71,6 @@ type
   PVisual = ^TVisual;
 
   TVisual = record
-    Unknown: Pointer;
   end;
 
 
@@ -95,7 +91,6 @@ type
   PXConfigureEvent = ^TXConfigureEvent;
 
   TXConfigureEvent = record
-    Unknown: Pointer;
   end;
 
 
@@ -112,7 +107,6 @@ type
   PXImage = ^TXImage;
 
   TXImage = record
-    Unknown: Pointer;
   end;
 
 
@@ -121,7 +115,6 @@ type
   PXFontStruct = ^TXFontStruct;
 
   TXFontStruct = record
-    Unknown: Pointer;
   end;
 
 
@@ -130,7 +123,6 @@ type
   PXTrapezoid = ^TXTrapezoid;
 
   TXTrapezoid = record
-    Unknown: Pointer;
   end;
 
 
@@ -139,7 +131,6 @@ type
   PXVisualInfo = ^TXVisualInfo;
 
   TXVisualInfo = record
-    Unknown: Pointer;
   end;
 
 
@@ -148,7 +139,6 @@ type
   PXWindowAttributes = ^TXWindowAttributes;
 
   TXWindowAttributes = record
-    Unknown: Pointer;
   end;
 
 
@@ -156,7 +146,6 @@ type
   { void }
   Tvoid = record
     { opaque type }
-    Unknown: Pointer;
   end;
 
 

@@ -4,7 +4,6 @@ unit Pango1;
 {$MODE OBJFPC}{$H+}
 
 {$PACKRECORDS C}
-{$BITPACKING ON}
 {$MODESWITCH DUPLICATELOCALS+}
 
 {$LINKLIB libpango-1.0.so.0}
@@ -348,7 +347,6 @@ type
   PPangoEngineShape = ^TPangoEngineShape;
 
   TPangoEngineShape = record
-    Unknown: Pointer;
   end;
 
 
@@ -357,7 +355,6 @@ type
   PPangoEngineLang = ^TPangoEngineLang;
 
   TPangoEngineLang = record
-    Unknown: Pointer;
   end;
 
 
@@ -625,6 +622,7 @@ type
   TPangoAttrSizeBitfield0 = bitpacked record
     absolute: guint1 { changed from guint to accomodate 1 bitsize requirement };
   end;
+
   TPangoAttrSize = object
     attr: TPangoAttribute;
     size: gint;
@@ -761,9 +759,13 @@ type
 
   PPPangoGlyphVisAttr = ^PPangoGlyphVisAttr;
   PPangoGlyphVisAttr = ^TPangoGlyphVisAttr;
+  TPangoGlyphVisAttrBitfield0 = bitpacked record
+    is_cluster_start: guint1 { changed from guint to accomodate 1 bitsize requirement };
+  end;
+
 
   TPangoGlyphVisAttr = record
-    is_cluster_start: guint1 { changed from guint to accomodate 1 bitsize requirement };
+    Bitfield0 : TPangoGlyphVisAttrBitfield0; { auto generated type }
   end;
 
 
@@ -804,8 +806,7 @@ type
     procedure set_size(new_len: gint); cdecl; inline;
     procedure x_to_index(text: Pgchar; length: gint; analysis: PPangoAnalysis; x_pos: gint; index_: Pgint; trailing: Pgint); cdecl; inline;
   end;
-
-  TPangoLogAttr = record
+  TPangoLogAttrBitfield0 = bitpacked record
     is_line_break: guint1 { changed from guint to accomodate 1 bitsize requirement };
     is_mandatory_break: guint1 { changed from guint to accomodate 1 bitsize requirement };
     is_char_break: guint1 { changed from guint to accomodate 1 bitsize requirement };
@@ -819,6 +820,11 @@ type
     backspace_deletes_character: guint1 { changed from guint to accomodate 1 bitsize requirement };
     is_expandable_space: guint1 { changed from guint to accomodate 1 bitsize requirement };
     is_word_boundary: guint1 { changed from guint to accomodate 1 bitsize requirement };
+  end;
+
+
+  TPangoLogAttr = record
+    Bitfield0 : TPangoLogAttrBitfield0; { auto generated type }
   end;
 
 
@@ -940,6 +946,7 @@ type
     is_paragraph_start: guint1 { changed from guint to accomodate 1 bitsize requirement };
     resolved_dir: guint3 { changed from guint to accomodate 3 bitsize requirement };
   end;
+
   TPangoLayoutLine = object
     layout: PPangoLayout;
     start_index: gint;
@@ -1007,7 +1014,6 @@ type
   PPangoRendererPrivate = ^TPangoRendererPrivate;
 
   TPangoRendererPrivate = record
-    Unknown: Pointer;
   end;
 
 

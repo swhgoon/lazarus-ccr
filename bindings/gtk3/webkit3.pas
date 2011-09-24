@@ -4,7 +4,6 @@ unit WebKit3;
 {$MODE OBJFPC}{$H+}
 
 {$PACKRECORDS C}
-{$BITPACKING ON}
 {$MODESWITCH DUPLICATELOCALS+}
 
 {$LINKLIB libwebkitgtk-3.0.so.0}
@@ -1431,7 +1430,6 @@ type
   PWebKitDOMEventTargetClass = ^TWebKitDOMEventTargetClass;
 
   TWebKitDOMEventTargetClass = record
-    Unknown: Pointer;
   end;
 
 
@@ -3616,7 +3614,6 @@ type
   PWebKitDOMObjectPrivate = ^TWebKitDOMObjectPrivate;
 
   TWebKitDOMObjectPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3819,7 +3816,6 @@ type
   end;
 
   TWebKitDownloadPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3844,7 +3840,6 @@ type
   PWebKitGeolocationPolicyDecisionPrivate = ^TWebKitGeolocationPolicyDecisionPrivate;
 
   TWebKitGeolocationPolicyDecisionPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3879,7 +3874,6 @@ type
   PWebKitHitTestResultPrivate = ^TWebKitHitTestResultPrivate;
 
   TWebKitHitTestResultPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3909,7 +3903,6 @@ type
   PWebKitIconDatabasePrivate = ^TWebKitIconDatabasePrivate;
 
   TWebKitIconDatabasePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3996,7 +3989,6 @@ type
   PWebKitNetworkError = ^TWebKitNetworkError;
 
   TWebKitNetworkRequestPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4012,7 +4004,6 @@ type
   end;
 
   TWebKitNetworkResponsePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4037,7 +4028,6 @@ type
   PWebKitSecurityOriginPrivate = ^TWebKitSecurityOriginPrivate;
 
   TWebKitSecurityOriginPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4086,7 +4076,6 @@ type
   PWebKitViewportAttributesPrivate = ^TWebKitViewportAttributesPrivate;
 
   TWebKitViewportAttributesPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4281,7 +4270,6 @@ type
   end;
 
   TWebKitWebBackForwardListPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4333,7 +4321,6 @@ type
   end;
 
   TWebKitWebDataSourcePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4352,7 +4339,6 @@ type
   PWebKitWebDatabasePrivate = ^TWebKitWebDatabasePrivate;
 
   TWebKitWebDatabasePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4387,7 +4373,6 @@ type
   end;
 
   TWebKitWebFramePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4405,7 +4390,6 @@ type
   end;
 
   TWebKitWebHistoryItemPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4424,7 +4408,6 @@ type
   PWebKitWebInspectorPrivate = ^TWebKitWebInspectorPrivate;
 
   TWebKitWebInspectorPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4459,7 +4442,6 @@ type
   PWebKitWebNavigationActionPrivate = ^TWebKitWebNavigationActionPrivate;
 
   TWebKitWebNavigationActionPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4496,7 +4478,6 @@ type
   PWebKitWebPluginPrivate = ^TWebKitWebPluginPrivate;
 
   TWebKitWebPluginPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4524,7 +4505,6 @@ type
   PWebKitWebPluginDatabasePrivate = ^TWebKitWebPluginDatabasePrivate;
 
   TWebKitWebPluginDatabasePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4549,7 +4529,6 @@ type
   PWebKitWebPolicyDecisionPrivate = ^TWebKitWebPolicyDecisionPrivate;
 
   TWebKitWebPolicyDecisionPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4574,7 +4553,6 @@ type
   end;
 
   TWebKitWebResourcePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4646,7 +4624,6 @@ type
   end;
 
   TWebKitWebSettingsPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4680,7 +4657,6 @@ type
   end;
 
   TWebKitWebViewPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4717,7 +4693,6 @@ type
   PWebKitWebViewTargetInfo = ^TWebKitWebViewTargetInfo;
 
   TWebKitWebWindowFeaturesPrivate = record
-    Unknown: Pointer;
   end;
 
 

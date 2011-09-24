@@ -4,7 +4,6 @@ unit Atk1;
 {$MODE OBJFPC}{$H+}
 
 {$PACKRECORDS C}
-{$BITPACKING ON}
 {$MODESWITCH DUPLICATELOCALS+}
 
 {$LINKLIB libatk-1.0.so.0}
@@ -771,7 +770,6 @@ type
   { AtkPropertyValues* }
   TAtkPropertyValues = record
     { opaque type }
-    Unknown: Pointer;
   end;
 
 

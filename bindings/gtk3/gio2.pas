@@ -4,7 +4,6 @@ unit Gio2;
 {$MODE OBJFPC}{$H+}
 
 {$PACKRECORDS C}
-{$BITPACKING ON}
 {$MODESWITCH DUPLICATELOCALS+}
 
 {$LINKLIB libgio-2.0.so.0}
@@ -858,7 +857,6 @@ type
   end;
 
   TGAppLaunchContextPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -1193,7 +1191,6 @@ type
   end;
 
   TGApplicationPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -1216,7 +1213,6 @@ type
   end;
 
   TGApplicationCommandLinePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -1308,7 +1304,6 @@ type
   PGBufferedInputStreamPrivate = ^TGBufferedInputStreamPrivate;
 
   TGBufferedInputStreamPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -1426,7 +1421,6 @@ type
   PGBufferedOutputStreamPrivate = ^TGBufferedOutputStreamPrivate;
 
   TGBufferedOutputStreamPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -1654,7 +1648,6 @@ type
   PGBusType = ^TGBusType;
 
   TGCancellablePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -1731,7 +1724,6 @@ type
   PGConverterInputStreamPrivate = ^TGConverterInputStreamPrivate;
 
   TGConverterInputStreamPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -1760,7 +1752,6 @@ type
   PGConverterOutputStreamPrivate = ^TGConverterOutputStreamPrivate;
 
   TGConverterOutputStreamPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -2119,7 +2110,6 @@ type
   PGDBusInterfaceSkeletonPrivate = ^TGDBusInterfaceSkeletonPrivate;
 
   TGDBusInterfaceSkeletonPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -2305,7 +2295,6 @@ type
   end;
 
   TGDBusObjectManagerClientPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -2367,7 +2356,6 @@ type
   end;
 
   TGDBusObjectManagerServerPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -2380,7 +2368,6 @@ type
   end;
 
   TGDBusObjectProxyPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -2393,7 +2380,6 @@ type
   end;
 
   TGDBusObjectSkeletonPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -2407,7 +2393,6 @@ type
   end;
 
   TGDBusProxyPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -2490,7 +2475,6 @@ type
   end;
 
   TGDataInputStreamPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -2528,7 +2512,6 @@ type
   end;
 
   TGDataOutputStreamPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -2711,7 +2694,6 @@ type
   PGEmblemedIconPrivate = ^TGEmblemedIconPrivate;
 
   TGEmblemedIconPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -2950,7 +2932,6 @@ type
   end;
 
   TGFileEnumeratorPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -2985,7 +2966,6 @@ type
   end;
 
   TGFileIOStreamPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3163,7 +3143,6 @@ type
   end;
 
   TGFileInputStreamPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3186,7 +3165,6 @@ type
   end;
 
   TGFileMonitorPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3205,7 +3183,6 @@ type
   end;
 
   TGFileOutputStreamPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3309,7 +3286,6 @@ type
   TGIOSchedulerJobFunc = function(job: PGIOSchedulerJob; cancellable: PGCancellable; user_data: gpointer): gboolean; cdecl;
 
   TGIOStreamPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3318,7 +3294,6 @@ type
   PGIOStreamAdapter = ^TGIOStreamAdapter;
 
   TGIOStreamAdapter = record
-    Unknown: Pointer;
   end;
 
 
@@ -3377,7 +3352,6 @@ type
   end;
 
   TGInetAddressPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3414,7 +3388,6 @@ type
   PGInetSocketAddressPrivate = ^TGInetSocketAddressPrivate;
 
   TGInetSocketAddressPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3453,7 +3426,6 @@ type
   end;
 
   TGInputStreamPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3481,7 +3453,6 @@ type
   PGMemoryInputStreamPrivate = ^TGMemoryInputStreamPrivate;
 
   TGMemoryInputStreamPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3511,7 +3482,6 @@ type
   PGMemoryOutputStreamPrivate = ^TGMemoryOutputStreamPrivate;
 
   TGMemoryOutputStreamPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3599,7 +3569,6 @@ type
   end;
 
   TGMountOperationPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3688,7 +3657,6 @@ type
   PGNetworkAddressPrivate = ^TGNetworkAddressPrivate;
 
   TGNetworkAddressPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3718,7 +3686,6 @@ type
   PGNetworkServicePrivate = ^TGNetworkServicePrivate;
 
   TGNetworkServicePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3746,7 +3713,6 @@ type
   end;
 
   TGOutputStreamPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3765,7 +3731,6 @@ type
   PGPermissionPrivate = ^TGPermissionPrivate;
 
   TGPermissionPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3872,7 +3837,6 @@ type
   end;
 
   TGProxyAddressPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3892,7 +3856,6 @@ type
   PGProxyAddressEnumeratorPrivate = ^TGProxyAddressEnumeratorPrivate;
 
   TGProxyAddressEnumeratorPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -3980,7 +3943,6 @@ type
   end;
 
   TGResolverPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4107,13 +4069,11 @@ type
   end;
 
   TGSettingsBackend = record
-    Unknown: Pointer;
   end;
 
 
 
   TGSettingsPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4144,7 +4104,6 @@ type
   end;
 
   TGSimpleActionGroupPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4293,7 +4252,6 @@ type
   end;
 
   TGSocketPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4377,7 +4335,6 @@ type
   end;
 
   TGSocketClientPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4402,7 +4359,6 @@ type
   end;
 
   TGSocketConnectionPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4420,7 +4376,6 @@ type
   end;
 
   TGSocketControlMessagePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4465,7 +4420,6 @@ type
   end;
 
   TGSocketListenerPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4500,7 +4454,6 @@ type
   end;
 
   TGSocketServicePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4536,7 +4489,6 @@ type
   PGTcpConnectionPrivate = ^TGTcpConnectionPrivate;
 
   TGTcpConnectionPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4560,7 +4512,6 @@ type
   PGTcpWrapperConnectionPrivate = ^TGTcpWrapperConnectionPrivate;
 
   TGTcpWrapperConnectionPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4603,7 +4554,6 @@ type
   PGThreadedSocketServicePrivate = ^TGThreadedSocketServicePrivate;
 
   TGThreadedSocketServicePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4707,7 +4657,6 @@ type
   end;
 
   TGTlsCertificatePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4765,7 +4714,6 @@ type
   PGTlsConnectionPrivate = ^TGTlsConnectionPrivate;
 
   TGTlsConnectionPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4815,7 +4763,6 @@ type
   end;
 
   TGTlsDatabasePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4888,7 +4835,6 @@ type
   end;
 
   TGTlsInteractionPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4904,7 +4850,6 @@ type
   end;
 
   TGTlsPasswordPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4936,7 +4881,6 @@ type
   PGUnixConnectionPrivate = ^TGUnixConnectionPrivate;
 
   TGUnixConnectionPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4961,7 +4905,6 @@ type
   PGUnixCredentialsMessagePrivate = ^TGUnixCredentialsMessagePrivate;
 
   TGUnixCredentialsMessagePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -4986,7 +4929,6 @@ type
   end;
 
   TGUnixFDListPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -5006,7 +4948,6 @@ type
   PGUnixFDMessagePrivate = ^TGUnixFDMessagePrivate;
 
   TGUnixFDMessagePrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -5035,7 +4976,6 @@ type
   PGUnixInputStreamPrivate = ^TGUnixInputStreamPrivate;
 
   TGUnixInputStreamPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -5067,7 +5007,6 @@ type
   PGUnixMountEntry = ^TGUnixMountEntry;
 
   TGUnixMountEntry = record
-    Unknown: Pointer;
   end;
 
 
@@ -5104,7 +5043,6 @@ type
   PGUnixOutputStreamPrivate = ^TGUnixOutputStreamPrivate;
 
   TGUnixOutputStreamPrivate = record
-    Unknown: Pointer;
   end;
 
 
@@ -5139,7 +5077,6 @@ type
   PGUnixSocketAddressPrivate = ^TGUnixSocketAddressPrivate;
 
   TGUnixSocketAddressPrivate = record
-    Unknown: Pointer;
   end;
 
 
