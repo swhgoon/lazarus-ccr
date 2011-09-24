@@ -7,16 +7,16 @@ unit rxnew;
 interface
 
 uses
-  rxlookup, vclutils, dateutil, dbutils, rxapputils, rxdconst, rxstrutils, 
-  dbdateedit, registerrx, curredit, folderlister, rxdbgrid, rxmemds, duallist, 
-  boxprocs, tooledit, rxswitch, rxdice, rxdbcomb, rxtoolbar, rxtbrsetup, 
-  fduallst, rxxpman, pagemngr, rxappicon, seldsfrm, rxctrls, rxlogin, 
-  rxdbgrid_findunit, rxdbgrid_columsunit, rxpopupunit, rxcustomchartpanel, 
-  rxsortmemds, AutoPanel, pickdate, rxiconv, rxceEditLookupFields, rxclock, 
-  rxspin, RxDBSpinEdit, RegisterRxDB, RxTimeEdit, RxDBTimeEdit, RxDBCtrls, 
-  rxfilterby, rxconst, rxFileUtils, RxVersInfo, RxAboutDialog, 
-  rxAboutFormUnit, dbcurredit, RxViewsPanel, RxSystemServices, 
-  RegisterRxTools, RxDBColorBox, rxConfigValues, LazarusPackageIntf;
+  AutoPanel, boxprocs, curredit, dateutil, dbcurredit, dbdateedit, dbutils, 
+  duallist, fduallst, folderlister, pagemngr, pickdate, registerrx, 
+  RegisterRxDB, RegisterRxTools, RxAboutDialog, rxAboutFormUnit, rxappicon, 
+  rxapputils, rxceEditLookupFields, rxclock, rxConfigValues, rxconst, rxctrls, 
+  rxcustomchartpanel, RxDBColorBox, rxdbcomb, RxDBCtrls, rxdbgrid, 
+  rxdbgrid_columsunit, rxdbgrid_findunit, RxDBSpinEdit, RxDBTimeEdit, 
+  rxdconst, rxdice, rxFileUtils, rxfilterby, rxiconv, rxlogin, rxlookup, 
+  rxmemds, rxpopupunit, rxsortmemds, rxspin, rxstrutils, rxswitch, 
+  RxSystemServices, rxtbrsetup, RxTimeEdit, rxtoolbar, RxVersInfo, 
+  RxViewsPanel, rxxpman, seldsfrm, tooledit, vclutils, LazarusPackageIntf;
 
 implementation
 
