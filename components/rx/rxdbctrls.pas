@@ -204,6 +204,8 @@ type
     procedure SetItemEnabled(Index: integer; AValue: boolean);
   public
     property ItemEnabled[Index: integer]: boolean read GetItemEnabled write SetItemEnabled;
+  published
+    property AutoSize;
   end;
 
 implementation
