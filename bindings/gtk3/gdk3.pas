@@ -2774,20 +2774,30 @@ type
   PGdkXEvent = ^TGdkXEvent;
   TGdkXEvent = gpointer;
 
+  PPGdkAppLaunchContext = ^PGdkAppLaunchContext;
+  PGdkAppLaunchContext = ^TGdkAppLaunchContext;
+
+  PPGdkScreen = ^PGdkScreen;
+  PGdkScreen = ^TGdkScreen;
+  TGdkAppLaunchContext = object(TGAppLaunchContext)
+    
+    procedure set_desktop(desktop: gint); cdecl; inline;
+    
+    procedure set_icon(icon: PGIcon); cdecl; inline;
+    procedure set_icon_name(icon_name: Pgchar); cdecl; inline;
+    procedure set_screen(screen: PGdkScreen); cdecl; inline;
+    procedure set_timestamp(timestamp: guint32); cdecl; inline;
+    //property display: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_display  { property is writeable but setter not declared } ;
+  end;
+
   PPGdkDisplay = ^PGdkDisplay;
   PGdkDisplay = ^TGdkDisplay;
 
   PPGdkDevice = ^PGdkDevice;
   PGdkDevice = ^TGdkDevice;
 
-  PPGdkAppLaunchContext = ^PGdkAppLaunchContext;
-  PGdkAppLaunchContext = ^TGdkAppLaunchContext;
-
   PPGdkWindow = ^PGdkWindow;
   PGdkWindow = ^TGdkWindow;
-
-  PPGdkScreen = ^PGdkScreen;
-  PGdkScreen = ^TGdkScreen;
 
   PPGdkDeviceManager = ^PGdkDeviceManager;
   PGdkDeviceManager = ^TGdkDeviceManager;
@@ -2886,16 +2896,6 @@ type
     property font_options:  Pcairo_font_options_t read get_font_options  { property is writeable but setter not declared } ;
     property resolution:  gdouble read get_resolution  { property is writeable but setter not declared } ;
   end;
-  TGdkAppLaunchContext = object(TGAppLaunchContext)
-    
-    procedure set_desktop(desktop: gint); cdecl; inline;
-    
-    procedure set_icon(icon: PGIcon); cdecl; inline;
-    procedure set_icon_name(icon_name: Pgchar); cdecl; inline;
-    procedure set_screen(screen: PGdkScreen); cdecl; inline;
-    procedure set_timestamp(timestamp: guint32); cdecl; inline;
-    //property display: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_display  { property is writeable but setter not declared } ;
-  end;
 
   PPGdkAxisUse = ^PGdkAxisUse;
   PGdkAxisUse = ^TGdkAxisUse;
@@ -2910,12 +2910,12 @@ type
     red: guint16;
     green: guint16;
     blue: guint16;
-    function copy: PPangoColor; cdecl; inline;
-    function equal(colorb: PPangoColor): gboolean; cdecl; inline;
+    function copy: PGdkColor; cdecl; inline;
+    function equal(colorb: PGdkColor): gboolean; cdecl; inline;
     procedure free; cdecl; inline;
     function hash: guint; cdecl; inline;
     function to_string: Pgchar; cdecl; inline;
-    function parse(spec: Pgchar; color: PPangoColor): gboolean; cdecl; inline; static;
+    function parse(spec: Pgchar; color: PGdkColor): gboolean; cdecl; inline; static;
   end;
 
   PPGdkCrossingMode = ^PGdkCrossingMode;
@@ -2940,7 +2940,6 @@ type
     property display:  PGdkDisplay read get_display  { property is writeable but setter not declared } ;
   end;
 
-  PPPPGdkTimeCoord = ^PPPGdkTimeCoord;
   PPPGdkTimeCoord = ^PPGdkTimeCoord;
   PPGdkTimeCoord = ^PGdkTimeCoord;
   PGdkTimeCoord = ^TGdkTimeCoord;
@@ -3557,22 +3556,14 @@ type
   PPGdkDragContext = ^PGdkDragContext;
   PGdkDragContext = ^TGdkDragContext;
 
-  Pgshort = ^Tgshort;
-
-  { gshort }
-  Tgshort = record
-    { opaque type }
-  end;
-
-
   TGdkEventDND = record
     type_: TGdkEventType;
     window: PGdkWindow;
     send_event: gint8;
     context: PGdkDragContext;
     time: guint32;
-    x_root: Tgshort;
-    y_root: Tgshort;
+    x_root: gshort;
+    y_root: gshort;
   end;
 
 
@@ -3713,6 +3704,9 @@ type
   PPGdkExtensionMode = ^PGdkExtensionMode;
   PGdkExtensionMode = ^TGdkExtensionMode;
 
+  PPGdkGravity = ^PGdkGravity;
+  PGdkGravity = ^TGdkGravity;
+
   TGdkGeometry = record
     min_width: gint;
     min_height: gint;
@@ -3724,13 +3718,10 @@ type
     height_inc: gint;
     min_aspect: gdouble;
     max_aspect: gdouble;
-    win_gravity: TPangoGravity;
+    win_gravity: TGdkGravity;
   end;
 
 
-
-  PPGdkGravity = ^PGdkGravity;
-  PGdkGravity = ^TGdkGravity;
 
   PPGdkKeymap = ^PGdkKeymap;
   PGdkKeymap = ^TGdkKeymap;
@@ -3880,12 +3871,11 @@ function gdk_atom_name(AAtom: PGdkAtom): Pgchar; cdecl; external;
 function gdk_cairo_create(window: PGdkWindow): Pcairo_t; cdecl; external;
 function gdk_cairo_get_clip_rectangle(cr: Pcairo_t; rect: PGdkRectangle): gboolean; cdecl; external;
 function gdk_cairo_region_create_from_surface(surface: Pcairo_surface_t): Pcairo_region_t; cdecl; external;
-function gdk_color_copy(AColor: PGdkColor): PPangoColor; cdecl; external;
-function gdk_color_equal(AColor: PGdkColor; colorb: PPangoColor): gboolean; cdecl; external;
+function gdk_color_copy(AColor: PGdkColor): PGdkColor; cdecl; external;
+function gdk_color_equal(AColor: PGdkColor; colorb: PGdkColor): gboolean; cdecl; external;
 function gdk_color_get_type: TGType; cdecl; external;
 function gdk_color_hash(AColor: PGdkColor): guint; cdecl; external;
 function gdk_color_parse(spec: Pgchar; color: PGdkColor): gboolean; cdecl; external;
-function gdk_color_parse(spec: Pgchar; color: PPangoColor): gboolean; cdecl; external;
 function gdk_color_to_string(AColor: PGdkColor): Pgchar; cdecl; external;
 function gdk_cursor_get_cursor_type(ACursor: PGdkCursor): TGdkCursorType; cdecl; external;
 function gdk_cursor_get_display(ACursor: PGdkCursor): PGdkDisplay; cdecl; external;
@@ -4317,6 +4307,31 @@ procedure gdk_window_unmaximize(AWindow: PGdkWindow); cdecl; external;
 procedure gdk_window_unstick(AWindow: PGdkWindow); cdecl; external;
 procedure gdk_window_withdraw(AWindow: PGdkWindow); cdecl; external;
 implementation
+procedure TGdkAppLaunchContext.set_desktop(desktop: gint); cdecl;
+begin
+  Gdk3.gdk_app_launch_context_set_desktop(@self, desktop);
+end;
+
+procedure TGdkAppLaunchContext.set_icon(icon: PGIcon); cdecl;
+begin
+  Gdk3.gdk_app_launch_context_set_icon(@self, icon);
+end;
+
+procedure TGdkAppLaunchContext.set_icon_name(icon_name: Pgchar); cdecl;
+begin
+  Gdk3.gdk_app_launch_context_set_icon_name(@self, icon_name);
+end;
+
+procedure TGdkAppLaunchContext.set_screen(screen: PGdkScreen); cdecl;
+begin
+  Gdk3.gdk_app_launch_context_set_screen(@self, screen);
+end;
+
+procedure TGdkAppLaunchContext.set_timestamp(timestamp: guint32); cdecl;
+begin
+  Gdk3.gdk_app_launch_context_set_timestamp(@self, timestamp);
+end;
+
 function TGdkDisplay.get_default: PGdkDisplay; cdecl;
 begin
   Result := Gdk3.gdk_display_get_default();
@@ -4667,37 +4682,12 @@ begin
   Gdk3.gdk_screen_set_resolution(@self, dpi);
 end;
 
-procedure TGdkAppLaunchContext.set_desktop(desktop: gint); cdecl;
-begin
-  Gdk3.gdk_app_launch_context_set_desktop(@self, desktop);
-end;
-
-procedure TGdkAppLaunchContext.set_icon(icon: PGIcon); cdecl;
-begin
-  Gdk3.gdk_app_launch_context_set_icon(@self, icon);
-end;
-
-procedure TGdkAppLaunchContext.set_icon_name(icon_name: Pgchar); cdecl;
-begin
-  Gdk3.gdk_app_launch_context_set_icon_name(@self, icon_name);
-end;
-
-procedure TGdkAppLaunchContext.set_screen(screen: PGdkScreen); cdecl;
-begin
-  Gdk3.gdk_app_launch_context_set_screen(@self, screen);
-end;
-
-procedure TGdkAppLaunchContext.set_timestamp(timestamp: guint32); cdecl;
-begin
-  Gdk3.gdk_app_launch_context_set_timestamp(@self, timestamp);
-end;
-
-function TGdkColor.copy: PPangoColor; cdecl;
+function TGdkColor.copy: PGdkColor; cdecl;
 begin
   Result := Gdk3.gdk_color_copy(@self);
 end;
 
-function TGdkColor.equal(colorb: PPangoColor): gboolean; cdecl;
+function TGdkColor.equal(colorb: PGdkColor): gboolean; cdecl;
 begin
   Result := Gdk3.gdk_color_equal(@self, colorb);
 end;
@@ -4717,7 +4707,7 @@ begin
   Result := Gdk3.gdk_color_to_string(@self);
 end;
 
-function TGdkColor.parse(spec: Pgchar; color: PPangoColor): gboolean; cdecl;
+function TGdkColor.parse(spec: Pgchar; color: PGdkColor): gboolean; cdecl;
 begin
   Result := Gdk3.gdk_color_parse(spec, color);
 end;

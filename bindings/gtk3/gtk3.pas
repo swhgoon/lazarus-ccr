@@ -315,9 +315,52 @@ const
   GTK_LICENSE_MIT_X11: TGtkLicense = 7;
   GTK_LICENSE_ARTISTIC: TGtkLicense = 8;
 
+type
+  TGtkResizeMode = Integer;
+const
+  { GtkResizeMode }
+  GTK_RESIZE_PARENT: TGtkResizeMode = 0;
+  GTK_RESIZE_QUEUE: TGtkResizeMode = 1;
+  GTK_RESIZE_IMMEDIATE: TGtkResizeMode = 2;
+
+type
+  TGtkWindowType = Integer;
+const
+  { GtkWindowType }
+  GTK_WINDOW_TOPLEVEL: TGtkWindowType = 0;
+  GTK_WINDOW_POPUP: TGtkWindowType = 1;
+
+type
+  TGtkWindowPosition = Integer;
+const
+  { GtkWindowPosition }
+  GTK_WIN_POS_NONE: TGtkWindowPosition = 0;
+  GTK_WIN_POS_CENTER: TGtkWindowPosition = 1;
+  GTK_WIN_POS_MOUSE: TGtkWindowPosition = 2;
+  GTK_WIN_POS_CENTER_ALWAYS: TGtkWindowPosition = 3;
+  GTK_WIN_POS_CENTER_ON_PARENT: TGtkWindowPosition = 4;
+
   { GtkDialogFlags }
   GTK_DIALOG_MODAL = 1;
   GTK_DIALOG_DESTROY_WITH_PARENT = 2;
+
+type
+  TGtkDragResult = Integer;
+const
+  { GtkDragResult }
+  GTK_DRAG_RESULT_SUCCESS: TGtkDragResult = 0;
+  GTK_DRAG_RESULT_NO_TARGET: TGtkDragResult = 1;
+  GTK_DRAG_RESULT_USER_CANCELLED: TGtkDragResult = 2;
+  GTK_DRAG_RESULT_TIMEOUT_EXPIRED: TGtkDragResult = 3;
+  GTK_DRAG_RESULT_GRAB_BROKEN: TGtkDragResult = 4;
+  GTK_DRAG_RESULT_ERROR: TGtkDragResult = 5;
+
+type
+  TGtkWidgetHelpType = Integer;
+const
+  { GtkWidgetHelpType }
+  GTK_WIDGET_HELP_TOOLTIP: TGtkWidgetHelpType = 0;
+  GTK_WIDGET_HELP_WHATS_THIS: TGtkWidgetHelpType = 1;
 
 type
   TGtkJustification = Integer;
@@ -342,32 +385,6 @@ const
   GTK_MOVEMENT_PAGES: TGtkMovementStep = 7;
   GTK_MOVEMENT_BUFFER_ENDS: TGtkMovementStep = 8;
   GTK_MOVEMENT_HORIZONTAL_PAGES: TGtkMovementStep = 9;
-
-type
-  TGtkResizeMode = Integer;
-const
-  { GtkResizeMode }
-  GTK_RESIZE_PARENT: TGtkResizeMode = 0;
-  GTK_RESIZE_QUEUE: TGtkResizeMode = 1;
-  GTK_RESIZE_IMMEDIATE: TGtkResizeMode = 2;
-
-type
-  TGtkDragResult = Integer;
-const
-  { GtkDragResult }
-  GTK_DRAG_RESULT_SUCCESS: TGtkDragResult = 0;
-  GTK_DRAG_RESULT_NO_TARGET: TGtkDragResult = 1;
-  GTK_DRAG_RESULT_USER_CANCELLED: TGtkDragResult = 2;
-  GTK_DRAG_RESULT_TIMEOUT_EXPIRED: TGtkDragResult = 3;
-  GTK_DRAG_RESULT_GRAB_BROKEN: TGtkDragResult = 4;
-  GTK_DRAG_RESULT_ERROR: TGtkDragResult = 5;
-
-type
-  TGtkWidgetHelpType = Integer;
-const
-  { GtkWidgetHelpType }
-  GTK_WIDGET_HELP_TOOLTIP: TGtkWidgetHelpType = 0;
-  GTK_WIDGET_HELP_WHATS_THIS: TGtkWidgetHelpType = 1;
 
 type
   TGtkSensitivityType = Integer;
@@ -1091,6 +1108,15 @@ const
   GTK_TARGET_OTHER_APP = 4;
   GTK_TARGET_OTHER_WIDGET = 8;
 
+type
+  TGtkWrapMode = Integer;
+const
+  { GtkWrapMode }
+  GTK_WRAP_NONE: TGtkWrapMode = 0;
+  GTK_WRAP_CHAR: TGtkWrapMode = 1;
+  GTK_WRAP_WORD: TGtkWrapMode = 2;
+  GTK_WRAP_WORD_CHAR: TGtkWrapMode = 3;
+
   { GtkTextSearchFlags }
   GTK_TEXT_SEARCH_VISIBLE_ONLY = 1;
   GTK_TEXT_SEARCH_TEXT_ONLY = 2;
@@ -1165,32 +1191,6 @@ const
   GTK_UI_MANAGER_SEPARATOR = 128;
   GTK_UI_MANAGER_ACCELERATOR = 256;
   GTK_UI_MANAGER_POPUP_WITH_ACCELS = 512;
-
-type
-  TGtkWindowPosition = Integer;
-const
-  { GtkWindowPosition }
-  GTK_WIN_POS_NONE: TGtkWindowPosition = 0;
-  GTK_WIN_POS_CENTER: TGtkWindowPosition = 1;
-  GTK_WIN_POS_MOUSE: TGtkWindowPosition = 2;
-  GTK_WIN_POS_CENTER_ALWAYS: TGtkWindowPosition = 3;
-  GTK_WIN_POS_CENTER_ON_PARENT: TGtkWindowPosition = 4;
-
-type
-  TGtkWindowType = Integer;
-const
-  { GtkWindowType }
-  GTK_WINDOW_TOPLEVEL: TGtkWindowType = 0;
-  GTK_WINDOW_POPUP: TGtkWindowType = 1;
-
-type
-  TGtkWrapMode = Integer;
-const
-  { GtkWrapMode }
-  GTK_WRAP_NONE: TGtkWrapMode = 0;
-  GTK_WRAP_CHAR: TGtkWrapMode = 1;
-  GTK_WRAP_WORD: TGtkWrapMode = 2;
-  GTK_WRAP_WORD_CHAR: TGtkWrapMode = 3;
 type
 
   PPGtkAllocation = ^PGtkAllocation;
@@ -1301,6 +1301,9 @@ type
 
   PPGtkStyleContext = ^PGtkStyleContext;
   PGtkStyleContext = ^TGtkStyleContext;
+
+  PPGtkWindow = ^PGtkWindow;
+  PGtkWindow = ^TGtkWindow;
 
   PPGtkWidgetPrivate = ^PGtkWidgetPrivate;
   PGtkWidgetPrivate = ^TGtkWidgetPrivate;
@@ -1416,7 +1419,7 @@ type
     function get_support_multidevice: gboolean; cdecl; inline;
     function get_tooltip_markup: Pgchar; cdecl; inline;
     function get_tooltip_text: Pgchar; cdecl; inline;
-    function get_tooltip_window: PAtkWindow; cdecl; inline;
+    function get_tooltip_window: PGtkWindow; cdecl; inline;
     function get_toplevel: PGtkWidget; cdecl; inline;
     function get_valign: TGtkAlign; cdecl; inline;
     function get_vexpand: gboolean; cdecl; inline;
@@ -1517,7 +1520,7 @@ type
     procedure set_support_multidevice(support_multidevice: gboolean); cdecl; inline;
     procedure set_tooltip_markup(markup: Pgchar); cdecl; inline;
     procedure set_tooltip_text(text: Pgchar); cdecl; inline;
-    procedure set_tooltip_window(custom_window: PAtkWindow); cdecl; inline;
+    procedure set_tooltip_window(custom_window: PGtkWindow); cdecl; inline;
     procedure set_valign(align: TGtkAlign); cdecl; inline;
     procedure set_vexpand(expand: gboolean); cdecl; inline;
     procedure set_vexpand_set(set_: gboolean); cdecl; inline;
@@ -1583,634 +1586,6 @@ type
   PPGtkDialog = ^PGtkDialog;
   PGtkDialog = ^TGtkDialog;
 
-  PPGtkDialogFlags = ^PGtkDialogFlags;
-  PGtkDialogFlags = ^TGtkDialogFlags;
-  TGtkDialogFlags = packed object(TBitObject32)
-  public
-    property modal: DWord index 1 read GetBit write SetBit;
-    property destroy_with_parent: DWord index 2 read GetBit write SetBit;
-  end;
-
-
-  PPGtkDialogPrivate = ^PGtkDialogPrivate;
-  PGtkDialogPrivate = ^TGtkDialogPrivate;
-  TGtkDialog = object
-    window: TAtkWindow;
-    priv: PGtkDialogPrivate;
-    function new: PGtkDialog; cdecl; inline; static;
-    //function new_with_buttons(title: Pgchar; parent: PAtkWindow; flags: TGtkDialogFlags; first_button_text: Pgchar; args: array of const): PGtkDialog; cdecl; inline; static;
-    procedure add_action_widget(child: PGtkWidget; response_id: gint); cdecl; inline;
-    function add_button(button_text: Pgchar; response_id: gint): PGtkWidget; cdecl; inline;
-    //procedure add_buttons(first_button_text: Pgchar; args: array of const); cdecl; inline;
-    function get_action_area: PGtkWidget; cdecl; inline;
-    function get_content_area: PGtkWidget; cdecl; inline;
-    function get_response_for_widget(widget: PGtkWidget): gint; cdecl; inline;
-    function get_widget_for_response(response_id: gint): PGtkWidget; cdecl; inline;
-    procedure response(response_id: gint); cdecl; inline;
-    function run: gint; cdecl; inline;
-    //procedure set_alternative_button_order(first_response_id: gint; args: array of const); cdecl; inline;
-    procedure set_alternative_button_order_from_array(n_params: gint; new_order: Pgint); cdecl; inline;
-    procedure set_default_response(response_id: gint); cdecl; inline;
-    procedure set_response_sensitive(response_id: gint; setting: gboolean); cdecl; inline;
-  end;
-
-  PPGtkAboutDialogPrivate = ^PGtkAboutDialogPrivate;
-  PGtkAboutDialogPrivate = ^TGtkAboutDialogPrivate;
-
-  TGtkAboutDialogPrivate = record
-  end;
-
-
-
-  PPGtkAboutDialog = ^PGtkAboutDialog;
-  PGtkAboutDialog = ^TGtkAboutDialog;
-  TGtkAboutDialog = object(TGtkDialog)
-    priv1: PGtkAboutDialogPrivate;
-    function new: PGtkAboutDialog; cdecl; inline; static;
-    function get_artists: PPgchar; cdecl; inline;
-    function get_authors: PPgchar; cdecl; inline;
-    function get_comments: Pgchar; cdecl; inline;
-    function get_copyright: Pgchar; cdecl; inline;
-    function get_documenters: PPgchar; cdecl; inline;
-    function get_license: Pgchar; cdecl; inline;
-    function get_license_type: TGtkLicense; cdecl; inline;
-    function get_logo: PGdkPixbuf; cdecl; inline;
-    function get_logo_icon_name: Pgchar; cdecl; inline;
-    function get_program_name: Pgchar; cdecl; inline;
-    function get_translator_credits: Pgchar; cdecl; inline;
-    function get_version: Pgchar; cdecl; inline;
-    function get_website: Pgchar; cdecl; inline;
-    function get_website_label: Pgchar; cdecl; inline;
-    function get_wrap_license: gboolean; cdecl; inline;
-    procedure set_artists(artists: PPgchar); cdecl; inline;
-    procedure set_authors(authors: PPgchar); cdecl; inline;
-    procedure set_comments(comments: Pgchar); cdecl; inline;
-    procedure set_copyright(copyright: Pgchar); cdecl; inline;
-    procedure set_documenters(documenters: PPgchar); cdecl; inline;
-    procedure set_license(license: Pgchar); cdecl; inline;
-    procedure set_license_type(license_type: TGtkLicense); cdecl; inline;
-    procedure set_logo(logo: PGdkPixbuf); cdecl; inline;
-    procedure set_logo_icon_name(icon_name: Pgchar); cdecl; inline;
-    procedure set_program_name(name: Pgchar); cdecl; inline;
-    procedure set_translator_credits(translator_credits: Pgchar); cdecl; inline;
-    procedure set_version(version: Pgchar); cdecl; inline;
-    procedure set_website(website: Pgchar); cdecl; inline;
-    procedure set_website_label(website_label: Pgchar); cdecl; inline;
-    procedure set_wrap_license(wrap_license: gboolean); cdecl; inline;
-    property artists:  PPgchar read get_artists  { property is writeable but setter not declared } ;
-    property authors:  PPgchar read get_authors  { property is writeable but setter not declared } ;
-    property comments:  Pgchar read get_comments  { property is writeable but setter not declared } ;
-    property copyright:  Pgchar read get_copyright  { property is writeable but setter not declared } ;
-    property documenters:  PPgchar read get_documenters  { property is writeable but setter not declared } ;
-    property license:  Pgchar read get_license  { property is writeable but setter not declared } ;
-    property license_type:  TGtkLicense read get_license_type  { property is writeable but setter not declared } ;
-    property logo:  PGdkPixbuf read get_logo  { property is writeable but setter not declared } ;
-    property logo_icon_name:  Pgchar read get_logo_icon_name  { property is writeable but setter not declared } ;
-    property program_name:  Pgchar read get_program_name  { property is writeable but setter not declared } ;
-    property translator_credits:  Pgchar read get_translator_credits  { property is writeable but setter not declared } ;
-    property version:  Pgchar read get_version  { property is writeable but setter not declared } ;
-    property website:  Pgchar read get_website  { property is writeable but setter not declared } ;
-    property website_label:  Pgchar read get_website_label  { property is writeable but setter not declared } ;
-    property wrap_license:  gboolean read get_wrap_license  { property is writeable but setter not declared } ;
-  end;
-
-  PPGtkDialogClass = ^PGtkDialogClass;
-  PGtkDialogClass = ^TGtkDialogClass;
-  TGtkDialogClass = object
-    parent_class: TGdkWindowClass;
-    response: procedure(dialog: PGtkDialog; response_id: gint); cdecl;
-    close: procedure(dialog: PGtkDialog); cdecl;
-    _gtk_reserved1: procedure; cdecl;
-    _gtk_reserved2: procedure; cdecl;
-    _gtk_reserved3: procedure; cdecl;
-    _gtk_reserved4: procedure; cdecl;
-  end;
-
-  PPGtkAboutDialogClass = ^PGtkAboutDialogClass;
-  PGtkAboutDialogClass = ^TGtkAboutDialogClass;
-  TGtkAboutDialogClass = object
-    parent_class: TGtkDialogClass;
-    activate_link: function(dialog: PGtkAboutDialog; uri: Pgchar): gboolean; cdecl;
-    _gtk_reserved1: procedure; cdecl;
-    _gtk_reserved2: procedure; cdecl;
-    _gtk_reserved3: procedure; cdecl;
-    _gtk_reserved4: procedure; cdecl;
-  end;
-
-  PPGtkAccelKey = ^PGtkAccelKey;
-  PGtkAccelKey = ^TGtkAccelKey;
-
-  PPGtkAccelGroupFindFunc = ^PGtkAccelGroupFindFunc;
-  PGtkAccelGroupFindFunc = ^TGtkAccelGroupFindFunc;
-  TGtkAccelGroupFindFunc = function(key: PGtkAccelKey; closure: PGClosure; data: gpointer): gboolean; cdecl;
-
-  PPGtkAccelGroupEntry = ^PGtkAccelGroupEntry;
-  PGtkAccelGroupEntry = ^TGtkAccelGroupEntry;
-
-  PPGtkAccelGroupPrivate = ^PGtkAccelGroupPrivate;
-  PGtkAccelGroupPrivate = ^TGtkAccelGroupPrivate;
-  TGtkAccelGroup = object(TGObject)
-    priv: PGtkAccelGroupPrivate;
-    function new: PGtkAccelGroup; cdecl; inline; static;
-    function from_accel_closure(closure: PGClosure): PGtkAccelGroup; cdecl; inline; static;
-    function activate(accel_quark: TGQuark; acceleratable: PGObject; accel_key: guint; accel_mods: TGdkModifierType): gboolean; cdecl; inline;
-    procedure connect(accel_key: guint; accel_mods: TGdkModifierType; accel_flags: TGtkAccelFlags; closure: PGClosure); cdecl; inline;
-    procedure connect_by_path(accel_path: Pgchar; closure: PGClosure); cdecl; inline;
-    function disconnect(closure: PGClosure): gboolean; cdecl; inline;
-    function disconnect_key(accel_key: guint; accel_mods: TGdkModifierType): gboolean; cdecl; inline;
-    function find(find_func: TGtkAccelGroupFindFunc; data: gpointer): PGtkAccelKey; cdecl; inline;
-    function get_is_locked: gboolean; cdecl; inline;
-    function get_modifier_mask: TGdkModifierType; cdecl; inline;
-    procedure lock; cdecl; inline;
-    function query(accel_key: guint; accel_mods: TGdkModifierType; n_entries: Pguint): PGtkAccelGroupEntry; cdecl; inline;
-    procedure unlock; cdecl; inline;
-    property is_locked:  gboolean read get_is_locked ;
-    property modifier_mask:  TGdkModifierType read get_modifier_mask ;
-  end;
-  TGtkAccelKeyBitfield0 = bitpacked record
-    accel_flags: guint16 { changed from guint to accomodate 16 bitsize requirement };
-  end;
-
-
-  TGtkAccelKey = record
-    accel_key: guint;
-    accel_mods: TGdkModifierType;
-    Bitfield0 : TGtkAccelKeyBitfield0; { auto generated type }
-  end;
-
-
-
-  TGtkAccelGroupEntry = record
-    key: TGtkAccelKey;
-    closure: PGClosure;
-    accel_path_quark: TGQuark;
-  end;
-
-
-
-  TGtkAccelGroupPrivate = record
-  end;
-
-
-  TGtkAccelGroupActivate = function(accel_group: PGtkAccelGroup; acceleratable: PGObject; keyval: guint; modifier: TGdkModifierType): gboolean; cdecl;
-
-  PPGtkAccelGroupClass = ^PGtkAccelGroupClass;
-  PGtkAccelGroupClass = ^TGtkAccelGroupClass;
-  TGtkAccelGroupClass = object
-    parent_class: TGObjectClass;
-    accel_changed: procedure(accel_group: PGtkAccelGroup; keyval: guint; modifier: TGdkModifierType; accel_closure: PGClosure); cdecl;
-    _gtk_reserved1: procedure; cdecl;
-    _gtk_reserved2: procedure; cdecl;
-    _gtk_reserved3: procedure; cdecl;
-    _gtk_reserved4: procedure; cdecl;
-  end;
-
-  PPGtkLabel = ^PGtkLabel;
-  PGtkLabel = ^TGtkLabel;
-
-  PPGtkJustification = ^PGtkJustification;
-  PGtkJustification = ^TGtkJustification;
-
-  PPGtkLabelPrivate = ^PGtkLabelPrivate;
-  PGtkLabelPrivate = ^TGtkLabelPrivate;
-  TGtkLabel = object
-    misc: TAtkMisc;
-    priv: PGtkLabelPrivate;
-    function new(str: Pgchar): PGtkLabel; cdecl; inline; static;
-    function new_with_mnemonic(str: Pgchar): PGtkLabel; cdecl; inline; static;
-    function get_angle: gdouble; cdecl; inline;
-    function get_attributes: PPangoAttrList; cdecl; inline;
-    function get_current_uri: Pgchar; cdecl; inline;
-    function get_ellipsize: TPangoEllipsizeMode; cdecl; inline;
-    function get_justify: TGtkJustification; cdecl; inline;
-    function get_label: Pgchar; cdecl; inline;
-    function get_layout: PPangoLayout; cdecl; inline;
-    procedure get_layout_offsets(x: Pgint; y: Pgint); cdecl; inline;
-    function get_line_wrap: gboolean; cdecl; inline;
-    function get_line_wrap_mode: TPangoWrapMode; cdecl; inline;
-    function get_max_width_chars: gint; cdecl; inline;
-    function get_mnemonic_keyval: guint; cdecl; inline;
-    function get_mnemonic_widget: PGtkWidget; cdecl; inline;
-    function get_selectable: gboolean; cdecl; inline;
-    function get_selection_bounds(start: Pgint; end_: Pgint): gboolean; cdecl; inline;
-    function get_single_line_mode: gboolean; cdecl; inline;
-    function get_text: Pgchar; cdecl; inline;
-    function get_track_visited_links: gboolean; cdecl; inline;
-    function get_use_markup: gboolean; cdecl; inline;
-    function get_use_underline: gboolean; cdecl; inline;
-    function get_width_chars: gint; cdecl; inline;
-    procedure select_region(start_offset: gint; end_offset: gint); cdecl; inline;
-    procedure set_angle(angle: gdouble); cdecl; inline;
-    procedure set_attributes(attrs: PPangoAttrList); cdecl; inline;
-    procedure set_ellipsize(mode: TPangoEllipsizeMode); cdecl; inline;
-    procedure set_justify(jtype: TGtkJustification); cdecl; inline;
-    procedure set_label(str: Pgchar); cdecl; inline;
-    procedure set_line_wrap(wrap: gboolean); cdecl; inline;
-    procedure set_line_wrap_mode(wrap_mode: TPangoWrapMode); cdecl; inline;
-    procedure set_markup(str: Pgchar); cdecl; inline;
-    procedure set_markup_with_mnemonic(str: Pgchar); cdecl; inline;
-    procedure set_max_width_chars(n_chars: gint); cdecl; inline;
-    procedure set_mnemonic_widget(widget: PGtkWidget); cdecl; inline;
-    procedure set_pattern(pattern: Pgchar); cdecl; inline;
-    procedure set_selectable(setting: gboolean); cdecl; inline;
-    procedure set_single_line_mode(single_line_mode: gboolean); cdecl; inline;
-    procedure set_text(str: Pgchar); cdecl; inline;
-    procedure set_text_with_mnemonic(str: Pgchar); cdecl; inline;
-    procedure set_track_visited_links(track_links: gboolean); cdecl; inline;
-    procedure set_use_markup(setting: gboolean); cdecl; inline;
-    procedure set_use_underline(setting: gboolean); cdecl; inline;
-    procedure set_width_chars(n_chars: gint); cdecl; inline;
-    property angle:  gdouble read get_angle  { property is writeable but setter not declared } ;
-    property attributes:  PPangoAttrList read get_attributes  { property is writeable but setter not declared } ;
-    //property cursor_position: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_cursor_position ;
-    property ellipsize:  TPangoEllipsizeMode read get_ellipsize  { property is writeable but setter not declared } ;
-    property justify:  TGtkJustification read get_justify  { property is writeable but setter not declared } ;
-    property label_:  Pgchar read get_label  { property is writeable but setter not declared } ;
-    property max_width_chars:  gint read get_max_width_chars  { property is writeable but setter not declared } ;
-    property mnemonic_keyval:  guint read get_mnemonic_keyval ;
-    property mnemonic_widget:  PGtkWidget read get_mnemonic_widget  { property is writeable but setter not declared } ;
-    //property pattern: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_pattern  { property is writeable but setter not declared } ;
-    property selectable:  gboolean read get_selectable  { property is writeable but setter not declared } ;
-    //property selection_bound: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_selection_bound ;
-    property single_line_mode:  gboolean read get_single_line_mode  { property is writeable but setter not declared } ;
-    property track_visited_links:  gboolean read get_track_visited_links  { property is writeable but setter not declared } ;
-    property use_markup:  gboolean read get_use_markup  { property is writeable but setter not declared } ;
-    property use_underline:  gboolean read get_use_underline  { property is writeable but setter not declared } ;
-    property width_chars:  gint read get_width_chars  { property is writeable but setter not declared } ;
-    //property wrap: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_wrap  { property is writeable but setter not declared } ;
-    //property wrap_mode: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_wrap_mode  { property is writeable but setter not declared } ;
-  end;
-
-  PPGtkAccelLabelPrivate = ^PGtkAccelLabelPrivate;
-  PGtkAccelLabelPrivate = ^TGtkAccelLabelPrivate;
-
-  TGtkAccelLabelPrivate = record
-  end;
-
-
-
-  PPGtkAccelLabel = ^PGtkAccelLabel;
-  PGtkAccelLabel = ^TGtkAccelLabel;
-  TGtkAccelLabel = object(TGtkLabel)
-    priv1: PGtkAccelLabelPrivate;
-    function new(string_: Pgchar): PGtkAccelLabel; cdecl; inline; static;
-    function get_accel_widget: PGtkWidget; cdecl; inline;
-    function get_accel_width: guint; cdecl; inline;
-    function refetch: gboolean; cdecl; inline;
-    procedure set_accel_closure(accel_closure: PGClosure); cdecl; inline;
-    procedure set_accel_widget(accel_widget: PGtkWidget); cdecl; inline;
-    //property accel_closure: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accel_closure  { property is writeable but setter not declared } ;
-    property accel_widget:  PGtkWidget read get_accel_widget  { property is writeable but setter not declared } ;
-  end;
-
-  PPGtkLabelClass = ^PGtkLabelClass;
-  PGtkLabelClass = ^TGtkLabelClass;
-
-  PPGtkMovementStep = ^PGtkMovementStep;
-  PGtkMovementStep = ^TGtkMovementStep;
-
-  PPGtkMenu = ^PGtkMenu;
-  PGtkMenu = ^TGtkMenu;
-  TGtkLabelClass = object
-    parent_class: TAtkMiscClass;
-    move_cursor: procedure(label_: PGtkLabel; step: TGtkMovementStep; count: gint; extend_selection: gboolean); cdecl;
-    copy_clipboard: procedure(label_: PGtkLabel); cdecl;
-    populate_popup: procedure(label_: PGtkLabel; menu: PGtkMenu); cdecl;
-    activate_link: function(label_: PGtkLabel; uri: Pgchar): gboolean; cdecl;
-    _gtk_reserved1: procedure; cdecl;
-    _gtk_reserved2: procedure; cdecl;
-    _gtk_reserved3: procedure; cdecl;
-    _gtk_reserved4: procedure; cdecl;
-    _gtk_reserved5: procedure; cdecl;
-    _gtk_reserved6: procedure; cdecl;
-    _gtk_reserved7: procedure; cdecl;
-    _gtk_reserved8: procedure; cdecl;
-  end;
-
-  PPGtkAccelLabelClass = ^PGtkAccelLabelClass;
-  PGtkAccelLabelClass = ^TGtkAccelLabelClass;
-  TGtkAccelLabelClass = object
-    parent_class: TGtkLabelClass;
-    signal_quote1: Pgchar;
-    signal_quote2: Pgchar;
-    mod_name_shift: Pgchar;
-    mod_name_control: Pgchar;
-    mod_name_alt: Pgchar;
-    mod_separator: Pgchar;
-    _gtk_reserved1: procedure; cdecl;
-    _gtk_reserved2: procedure; cdecl;
-    _gtk_reserved3: procedure; cdecl;
-    _gtk_reserved4: procedure; cdecl;
-  end;
-  TGtkAccelMapForeach = procedure(data: gpointer; accel_path: Pgchar; accel_key: guint; accel_mods: TGdkModifierType; changed: gboolean); cdecl;
-
-  PPGtkAccelMap = ^PGtkAccelMap;
-  PGtkAccelMap = ^TGtkAccelMap;
-
-  PPGtkAccelMapForeach = ^PGtkAccelMapForeach;
-  PGtkAccelMapForeach = ^TGtkAccelMapForeach;
-  TGtkAccelMap = object(TGObject)
-    procedure add_entry(accel_path: Pgchar; accel_key: guint; accel_mods: TGdkModifierType); cdecl; inline; static;
-    procedure add_filter(filter_pattern: Pgchar); cdecl; inline; static;
-    function change_entry(accel_path: Pgchar; accel_key: guint; accel_mods: TGdkModifierType; replace: gboolean): gboolean; cdecl; inline; static;
-    procedure foreach(data: gpointer; foreach_func: TGtkAccelMapForeach); cdecl; inline; static;
-    procedure foreach_unfiltered(data: gpointer; foreach_func: TGtkAccelMapForeach); cdecl; inline; static;
-    function get: PGtkAccelMap; cdecl; inline; static;
-    procedure load(file_name: Pgchar); cdecl; inline; static;
-    procedure load_fd(fd: gint); cdecl; inline; static;
-    procedure load_scanner(scanner: PGScanner); cdecl; inline; static;
-    procedure lock_path(accel_path: Pgchar); cdecl; inline; static;
-    function lookup_entry(accel_path: Pgchar; key: PGtkAccelKey): gboolean; cdecl; inline; static;
-    procedure save(file_name: Pgchar); cdecl; inline; static;
-    procedure save_fd(fd: gint); cdecl; inline; static;
-    procedure unlock_path(accel_path: Pgchar); cdecl; inline; static;
-  end;
-
-  PPGtkAccelMapClass = ^PGtkAccelMapClass;
-  PGtkAccelMapClass = ^TGtkAccelMapClass;
-  TGtkAccelMapClass = object
-  end;
-
-  PPGtkAccessiblePrivate = ^PGtkAccessiblePrivate;
-  PGtkAccessiblePrivate = ^TGtkAccessiblePrivate;
-
-  TGtkAccessiblePrivate = record
-  end;
-
-
-
-  PPGtkAccessible = ^PGtkAccessible;
-  PGtkAccessible = ^TGtkAccessible;
-  TGtkAccessible = object(TAtkObject)
-    priv: PGtkAccessiblePrivate;
-    procedure connect_widget_destroyed; cdecl; inline;
-    function get_widget: PGtkWidget; cdecl; inline;
-    procedure set_widget(widget: PGtkWidget); cdecl; inline;
-  end;
-
-  PPGtkAccessibleClass = ^PGtkAccessibleClass;
-  PGtkAccessibleClass = ^TGtkAccessibleClass;
-  TGtkAccessibleClass = object
-    parent_class: TAtkObjectClass;
-    connect_widget_destroyed: procedure(accessible: PGtkAccessible); cdecl;
-    _gtk_reserved1: procedure; cdecl;
-    _gtk_reserved2: procedure; cdecl;
-    _gtk_reserved3: procedure; cdecl;
-    _gtk_reserved4: procedure; cdecl;
-  end;
-
-  PPGtkActionPrivate = ^PGtkActionPrivate;
-  PGtkActionPrivate = ^TGtkActionPrivate;
-
-  TGtkActionPrivate = record
-  end;
-
-
-
-  PPGtkAction = ^PGtkAction;
-  PGtkAction = ^TGtkAction;
-  TGtkAction = object(TGObject)
-    private_data: PGtkActionPrivate;
-    function new(name: Pgchar; label_: Pgchar; tooltip: Pgchar; stock_id: Pgchar): PGtkAction; cdecl; inline; static;
-    procedure activate; cdecl; inline;
-    procedure block_activate; cdecl; inline;
-    procedure connect_accelerator; cdecl; inline;
-    function create_icon(icon_size: gint): PGtkWidget; cdecl; inline;
-    function create_menu: PGtkWidget; cdecl; inline;
-    function create_menu_item: PGtkWidget; cdecl; inline;
-    function create_tool_item: PGtkWidget; cdecl; inline;
-    procedure disconnect_accelerator; cdecl; inline;
-    function get_accel_closure: PGClosure; cdecl; inline;
-    function get_accel_path: Pgchar; cdecl; inline;
-    function get_always_show_image: gboolean; cdecl; inline;
-    function get_gicon: PGIcon; cdecl; inline;
-    function get_icon_name: Pgchar; cdecl; inline;
-    function get_is_important: gboolean; cdecl; inline;
-    function get_label: Pgchar; cdecl; inline;
-    function get_name: Pgchar; cdecl; inline;
-    function get_proxies: PGSList; cdecl; inline;
-    function get_sensitive: gboolean; cdecl; inline;
-    function get_short_label: Pgchar; cdecl; inline;
-    function get_stock_id: Pgchar; cdecl; inline;
-    function get_tooltip: Pgchar; cdecl; inline;
-    function get_visible: gboolean; cdecl; inline;
-    function get_visible_horizontal: gboolean; cdecl; inline;
-    function get_visible_vertical: gboolean; cdecl; inline;
-    function is_sensitive: gboolean; cdecl; inline;
-    function is_visible: gboolean; cdecl; inline;
-    procedure set_accel_group(accel_group: PGtkAccelGroup); cdecl; inline;
-    procedure set_accel_path(accel_path: Pgchar); cdecl; inline;
-    procedure set_always_show_image(always_show: gboolean); cdecl; inline;
-    procedure set_gicon(icon: PGIcon); cdecl; inline;
-    procedure set_icon_name(icon_name: Pgchar); cdecl; inline;
-    procedure set_is_important(is_important: gboolean); cdecl; inline;
-    procedure set_label(label_: Pgchar); cdecl; inline;
-    procedure set_sensitive(sensitive: gboolean); cdecl; inline;
-    procedure set_short_label(short_label: Pgchar); cdecl; inline;
-    procedure set_stock_id(stock_id: Pgchar); cdecl; inline;
-    procedure set_tooltip(tooltip: Pgchar); cdecl; inline;
-    procedure set_visible(visible: gboolean); cdecl; inline;
-    procedure set_visible_horizontal(visible_horizontal: gboolean); cdecl; inline;
-    procedure set_visible_vertical(visible_vertical: gboolean); cdecl; inline;
-    procedure unblock_activate; cdecl; inline;
-    //property action_group: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_action_group  { property is writeable but setter not declared } ;
-    property always_show_image:  gboolean read get_always_show_image  { property is writeable but setter not declared } ;
-    property gicon:  PGIcon read get_gicon  { property is writeable but setter not declared } ;
-    //property hide_if_empty: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_hide_if_empty  { property is writeable but setter not declared } ;
-    property icon_name:  Pgchar read get_icon_name  { property is writeable but setter not declared } ;
-    property is_important:  gboolean read get_is_important  { property is writeable but setter not declared } ;
-    property label_:  Pgchar read get_label  { property is writeable but setter not declared } ;
-    property name:  Pgchar read get_name  { property is writeable but setter not declared } ;
-    property sensitive:  gboolean read get_sensitive  { property is writeable but setter not declared } ;
-    property short_label:  Pgchar read get_short_label  { property is writeable but setter not declared } ;
-    property stock_id:  Pgchar read get_stock_id  { property is writeable but setter not declared } ;
-    property tooltip:  Pgchar read get_tooltip  { property is writeable but setter not declared } ;
-    property visible:  gboolean read get_visible  { property is writeable but setter not declared } ;
-    property visible_horizontal:  gboolean read get_visible_horizontal  { property is writeable but setter not declared } ;
-    //property visible_overflown: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_visible_overflown  { property is writeable but setter not declared } ;
-    property visible_vertical:  gboolean read get_visible_vertical  { property is writeable but setter not declared } ;
-  end;
-
-  PPGtkActionClass = ^PGtkActionClass;
-  PGtkActionClass = ^TGtkActionClass;
-  TGtkActionClass = object
-    parent_class: TGObjectClass;
-    activate: procedure(action: PGtkAction); cdecl;
-    menu_item_type: TGType;
-    toolbar_item_type: TGType;
-    create_menu_item: function(action: PGtkAction): PGtkWidget; cdecl;
-    create_tool_item: function(action: PGtkAction): PGtkWidget; cdecl;
-    connect_proxy: procedure(action: PGtkAction; proxy: PGtkWidget); cdecl;
-    disconnect_proxy: procedure(action: PGtkAction; proxy: PGtkWidget); cdecl;
-    create_menu: function(action: PGtkAction): PGtkWidget; cdecl;
-    _gtk_reserved1: procedure; cdecl;
-    _gtk_reserved2: procedure; cdecl;
-    _gtk_reserved3: procedure; cdecl;
-    _gtk_reserved4: procedure; cdecl;
-  end;
-
-  PPGtkActionEntry = ^PGtkActionEntry;
-  PGtkActionEntry = ^TGtkActionEntry;
-
-  TGtkActionEntry = record
-    name: Pgchar;
-    stock_id: Pgchar;
-    label_: Pgchar;
-    accelerator: Pgchar;
-    tooltip: Pgchar;
-    callback: TGCallback;
-  end;
-
-
-
-  PPGtkRadioActionEntry = ^PGtkRadioActionEntry;
-  PGtkRadioActionEntry = ^TGtkRadioActionEntry;
-
-  TGtkRadioActionEntry = record
-    name: Pgchar;
-    stock_id: Pgchar;
-    label_: Pgchar;
-    accelerator: Pgchar;
-    tooltip: Pgchar;
-    value: gint;
-  end;
-
-
-
-  PPGtkToggleActionEntry = ^PGtkToggleActionEntry;
-  PGtkToggleActionEntry = ^TGtkToggleActionEntry;
-
-  TGtkToggleActionEntry = record
-    name: Pgchar;
-    stock_id: Pgchar;
-    label_: Pgchar;
-    accelerator: Pgchar;
-    tooltip: Pgchar;
-    callback: TGCallback;
-    is_active: gboolean;
-  end;
-
-
-
-  PPGtkActionGroupPrivate = ^PGtkActionGroupPrivate;
-  PGtkActionGroupPrivate = ^TGtkActionGroupPrivate;
-
-  TGtkActionGroupPrivate = record
-  end;
-
-
-
-  PPGtkActionGroup = ^PGtkActionGroup;
-  PGtkActionGroup = ^TGtkActionGroup;
-  TGtkActionGroup = object(TGObject)
-    priv: PGtkActionGroupPrivate;
-    function new(name: Pgchar): PGtkActionGroup; cdecl; inline; static;
-    procedure add_action(action: PGtkAction); cdecl; inline;
-    procedure add_action_with_accel(action: PGtkAction; accelerator: Pgchar); cdecl; inline;
-    procedure add_actions(entries: PGtkActionEntry; n_entries: guint; user_data: gpointer); cdecl; inline;
-    procedure add_actions_full(entries: PGtkActionEntry; n_entries: guint; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; inline;
-    procedure add_radio_actions(entries: PGtkRadioActionEntry; n_entries: guint; value: gint; on_change: TGCallback; user_data: gpointer); cdecl; inline;
-    procedure add_radio_actions_full(entries: PGtkRadioActionEntry; n_entries: guint; value: gint; on_change: TGCallback; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; inline;
-    procedure add_toggle_actions(entries: PGtkToggleActionEntry; n_entries: guint; user_data: gpointer); cdecl; inline;
-    procedure add_toggle_actions_full(entries: PGtkToggleActionEntry; n_entries: guint; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; inline;
-    function get_action(action_name: Pgchar): PGtkAction; cdecl; inline;
-    function get_name: Pgchar; cdecl; inline;
-    function get_sensitive: gboolean; cdecl; inline;
-    function get_visible: gboolean; cdecl; inline;
-    function list_actions: PGList; cdecl; inline;
-    procedure remove_action(action: PGtkAction); cdecl; inline;
-    procedure set_sensitive(sensitive: gboolean); cdecl; inline;
-    procedure set_translate_func(func: TGTranslateFunc; data: gpointer; notify: TGDestroyNotify); cdecl; inline;
-    procedure set_translation_domain(domain: Pgchar); cdecl; inline;
-    procedure set_visible(visible: gboolean); cdecl; inline;
-    function translate_string(string_: Pgchar): Pgchar; cdecl; inline;
-    property name:  Pgchar read get_name  { property is writeable but setter not declared } ;
-    property sensitive:  gboolean read get_sensitive  { property is writeable but setter not declared } ;
-    property visible:  gboolean read get_visible  { property is writeable but setter not declared } ;
-  end;
-
-  PPGtkActionGroupClass = ^PGtkActionGroupClass;
-  PGtkActionGroupClass = ^TGtkActionGroupClass;
-  TGtkActionGroupClass = object
-    parent_class: TGObjectClass;
-    get_action: function(action_group: PGtkActionGroup; action_name: Pgchar): PGtkAction; cdecl;
-    _gtk_reserved1: procedure; cdecl;
-    _gtk_reserved2: procedure; cdecl;
-    _gtk_reserved3: procedure; cdecl;
-    _gtk_reserved4: procedure; cdecl;
-  end;
-
-  PPGtkActivatable = ^PGtkActivatable;
-  PGtkActivatable = ^TGtkActivatable;
-  TGtkActivatable = object
-    procedure do_set_related_action(action: PGtkAction); cdecl; inline;
-    function get_related_action: PGtkAction; cdecl; inline;
-    function get_use_action_appearance: gboolean; cdecl; inline;
-    procedure set_related_action(action: PGtkAction); cdecl; inline;
-    procedure set_use_action_appearance(use_appearance: gboolean); cdecl; inline;
-    procedure sync_action_properties(action: PGtkAction); cdecl; inline;
-    property related_action:  PGtkAction read get_related_action  { property is writeable but setter not declared } ;
-    property use_action_appearance:  gboolean read get_use_action_appearance  { property is writeable but setter not declared } ;
-  end;
-
-  PPGtkActivatableIface = ^PGtkActivatableIface;
-  PGtkActivatableIface = ^TGtkActivatableIface;
-  TGtkActivatableIface = object
-    g_iface: TGTypeInterface;
-    update: procedure(activatable: PGtkActivatable; action: PGtkAction; property_name: Pgchar); cdecl;
-    sync_action_properties: procedure(activatable: PGtkActivatable; action: PGtkAction); cdecl;
-  end;
-
-  PPGtkAdjustment = ^PGtkAdjustment;
-  PGtkAdjustment = ^TGtkAdjustment;
-
-  PPGtkAdjustmentPrivate = ^PGtkAdjustmentPrivate;
-  PGtkAdjustmentPrivate = ^TGtkAdjustmentPrivate;
-  TGtkAdjustment = object(TGInitiallyUnowned)
-    priv: PGtkAdjustmentPrivate;
-    function new(value: gdouble; lower: gdouble; upper: gdouble; step_increment: gdouble; page_increment: gdouble; page_size: gdouble): PGtkAdjustment; cdecl; inline; static;
-    procedure changed; cdecl; inline;
-    procedure clamp_page(lower: gdouble; upper: gdouble); cdecl; inline;
-    procedure configure(value: gdouble; lower: gdouble; upper: gdouble; step_increment: gdouble; page_increment: gdouble; page_size: gdouble); cdecl; inline;
-    function get_lower: gdouble; cdecl; inline;
-    function get_minimum_increment: gdouble; cdecl; inline;
-    function get_page_increment: gdouble; cdecl; inline;
-    function get_page_size: gdouble; cdecl; inline;
-    function get_step_increment: gdouble; cdecl; inline;
-    function get_upper: gdouble; cdecl; inline;
-    function get_value: gdouble; cdecl; inline;
-    procedure set_lower(lower: gdouble); cdecl; inline;
-    procedure set_page_increment(page_increment: gdouble); cdecl; inline;
-    procedure set_page_size(page_size: gdouble); cdecl; inline;
-    procedure set_step_increment(step_increment: gdouble); cdecl; inline;
-    procedure set_upper(upper: gdouble); cdecl; inline;
-    procedure set_value(value: gdouble); cdecl; inline;
-    procedure value_changed; cdecl; inline;
-    property lower:  gdouble read get_lower  { property is writeable but setter not declared } ;
-    property page_increment:  gdouble read get_page_increment  { property is writeable but setter not declared } ;
-    property page_size:  gdouble read get_page_size  { property is writeable but setter not declared } ;
-    property step_increment:  gdouble read get_step_increment  { property is writeable but setter not declared } ;
-    property upper:  gdouble read get_upper  { property is writeable but setter not declared } ;
-    property value:  gdouble read get_value  { property is writeable but setter not declared } ;
-  end;
-
-  TGtkAdjustmentPrivate = record
-  end;
-
-
-
-  PPGtkAdjustmentClass = ^PGtkAdjustmentClass;
-  PGtkAdjustmentClass = ^TGtkAdjustmentClass;
-  TGtkAdjustmentClass = object
-    parent_class: TGInitiallyUnownedClass;
-    changed: procedure(adjustment: PGtkAdjustment); cdecl;
-    value_changed: procedure(adjustment: PGtkAdjustment); cdecl;
-    _gtk_reserved1: procedure; cdecl;
-    _gtk_reserved2: procedure; cdecl;
-    _gtk_reserved3: procedure; cdecl;
-    _gtk_reserved4: procedure; cdecl;
-  end;
-
   PPGtkBin = ^PGtkBin;
   PGtkBin = ^TGtkBin;
 
@@ -2220,6 +1595,9 @@ type
   PPGtkCallback = ^PGtkCallback;
   PGtkCallback = ^TGtkCallback;
   TGtkCallback = procedure(widget: PGtkWidget; data: gpointer); cdecl;
+
+  PPGtkAdjustment = ^PGtkAdjustment;
+  PGtkAdjustment = ^TGtkAdjustment;
 
   PPGtkResizeMode = ^PGtkResizeMode;
   PGtkResizeMode = ^TGtkResizeMode;
@@ -2272,31 +1650,259 @@ type
     function get_child: PGtkWidget; cdecl; inline;
   end;
 
-  PPGtkAlignmentPrivate = ^PGtkAlignmentPrivate;
-  PGtkAlignmentPrivate = ^TGtkAlignmentPrivate;
+  PPGtkWindowType = ^PGtkWindowType;
+  PGtkWindowType = ^TGtkWindowType;
 
-  TGtkAlignmentPrivate = record
+  PPGtkApplication = ^PGtkApplication;
+  PGtkApplication = ^TGtkApplication;
+
+  PPGtkWindowGroup = ^PGtkWindowGroup;
+  PGtkWindowGroup = ^TGtkWindowGroup;
+
+  PPGtkWindowPosition = ^PGtkWindowPosition;
+  PGtkWindowPosition = ^TGtkWindowPosition;
+
+  PPGtkWindowPrivate = ^PGtkWindowPrivate;
+  PGtkWindowPrivate = ^TGtkWindowPrivate;
+  TGtkWindow = object(TGtkBin)
+    priv3: PGtkWindowPrivate;
+    function new(type_: TGtkWindowType): PGtkWindow; cdecl; inline; static;
+    function get_default_icon_list: PGList; cdecl; inline; static;
+    function get_default_icon_name: Pgchar; cdecl; inline; static;
+    function list_toplevels: PGList; cdecl; inline; static;
+    procedure set_auto_startup_notification(setting: gboolean); cdecl; inline; static;
+    procedure set_default_icon(icon: PGdkPixbuf); cdecl; inline; static;
+    function set_default_icon_from_file(filename: Pgchar): gboolean; cdecl; inline; static;
+    procedure set_default_icon_list(list: PGList); cdecl; inline; static;
+    procedure set_default_icon_name(name: Pgchar); cdecl; inline; static;
+    function activate_default: gboolean; cdecl; inline;
+    function activate_focus: gboolean; cdecl; inline;
+    function activate_key(event: PGdkEventKey): gboolean; cdecl; inline;
+    procedure add_accel_group(accel_group: PGtkAccelGroup); cdecl; inline;
+    procedure add_mnemonic(keyval: guint; target: PGtkWidget); cdecl; inline;
+    procedure begin_move_drag(button: gint; root_x: gint; root_y: gint; timestamp: guint32); cdecl; inline;
+    procedure begin_resize_drag(edge: TGdkWindowEdge; button: gint; root_x: gint; root_y: gint; timestamp: guint32); cdecl; inline;
+    procedure deiconify; cdecl; inline;
+    procedure fullscreen; cdecl; inline;
+    function get_accept_focus: gboolean; cdecl; inline;
+    function get_application: PGtkApplication; cdecl; inline;
+    function get_decorated: gboolean; cdecl; inline;
+    procedure get_default_size(width: Pgint; height: Pgint); cdecl; inline;
+    function get_default_widget: PGtkWidget; cdecl; inline;
+    function get_deletable: gboolean; cdecl; inline;
+    function get_destroy_with_parent: gboolean; cdecl; inline;
+    function get_focus: PGtkWidget; cdecl; inline;
+    function get_focus_on_map: gboolean; cdecl; inline;
+    function get_focus_visible: gboolean; cdecl; inline;
+    function get_gravity: TGdkGravity; cdecl; inline;
+    function get_group: PGtkWindowGroup; cdecl; inline;
+    function get_has_resize_grip: gboolean; cdecl; inline;
+    function get_icon: PGdkPixbuf; cdecl; inline;
+    function get_icon_list: PGList; cdecl; inline;
+    function get_icon_name: Pgchar; cdecl; inline;
+    function get_mnemonic_modifier: TGdkModifierType; cdecl; inline;
+    function get_mnemonics_visible: gboolean; cdecl; inline;
+    function get_modal: gboolean; cdecl; inline;
+    function get_opacity: gdouble; cdecl; inline;
+    procedure get_position(root_x: Pgint; root_y: Pgint); cdecl; inline;
+    function get_resizable: gboolean; cdecl; inline;
+    function get_resize_grip_area(rect: PGdkRectangle): gboolean; cdecl; inline;
+    function get_role: Pgchar; cdecl; inline;
+    function get_screen: PGdkScreen; cdecl; inline;
+    procedure get_size(width: Pgint; height: Pgint); cdecl; inline;
+    function get_skip_pager_hint: gboolean; cdecl; inline;
+    function get_skip_taskbar_hint: gboolean; cdecl; inline;
+    function get_title: Pgchar; cdecl; inline;
+    function get_transient_for: PGtkWindow; cdecl; inline;
+    function get_type_hint: TGdkWindowTypeHint; cdecl; inline;
+    function get_urgency_hint: gboolean; cdecl; inline;
+    function get_window_type: TGtkWindowType; cdecl; inline;
+    function has_group: gboolean; cdecl; inline;
+    function has_toplevel_focus: gboolean; cdecl; inline;
+    procedure iconify; cdecl; inline;
+    function is_active: gboolean; cdecl; inline;
+    procedure maximize; cdecl; inline;
+    function mnemonic_activate(keyval: guint; modifier: TGdkModifierType): gboolean; cdecl; inline;
+    procedure move(x: gint; y: gint); cdecl; inline;
+    function parse_geometry(geometry: Pgchar): gboolean; cdecl; inline;
+    procedure present; cdecl; inline;
+    procedure present_with_time(timestamp: guint32); cdecl; inline;
+    function propagate_key_event(event: PGdkEventKey): gboolean; cdecl; inline;
+    procedure remove_accel_group(accel_group: PGtkAccelGroup); cdecl; inline;
+    procedure remove_mnemonic(keyval: guint; target: PGtkWidget); cdecl; inline;
+    procedure reshow_with_initial_size; cdecl; inline;
+    procedure resize(width: gint; height: gint); cdecl; inline;
+    function resize_grip_is_visible: gboolean; cdecl; inline;
+    procedure resize_to_geometry(width: gint; height: gint); cdecl; inline;
+    procedure set_accept_focus(setting: gboolean); cdecl; inline;
+    procedure set_application(application: PGtkApplication); cdecl; inline;
+    procedure set_decorated(setting: gboolean); cdecl; inline;
+    procedure set_default(default_widget: PGtkWidget); cdecl; inline;
+    procedure set_default_geometry(width: gint; height: gint); cdecl; inline;
+    procedure set_default_size(width: gint; height: gint); cdecl; inline;
+    procedure set_deletable(setting: gboolean); cdecl; inline;
+    procedure set_destroy_with_parent(setting: gboolean); cdecl; inline;
+    procedure set_focus(focus: PGtkWidget); cdecl; inline;
+    procedure set_focus_on_map(setting: gboolean); cdecl; inline;
+    procedure set_focus_visible(setting: gboolean); cdecl; inline;
+    procedure set_geometry_hints(geometry_widget: PGtkWidget; geometry: PGdkGeometry; geom_mask: TGdkWindowHints); cdecl; inline;
+    procedure set_gravity(gravity: TGdkGravity); cdecl; inline;
+    procedure set_has_resize_grip(value: gboolean); cdecl; inline;
+    procedure set_has_user_ref_count(setting: gboolean); cdecl; inline;
+    procedure set_icon(icon: PGdkPixbuf); cdecl; inline;
+    function set_icon_from_file(filename: Pgchar): gboolean; cdecl; inline;
+    procedure set_icon_list(list: PGList); cdecl; inline;
+    procedure set_icon_name(name: Pgchar); cdecl; inline;
+    procedure set_keep_above(setting: gboolean); cdecl; inline;
+    procedure set_keep_below(setting: gboolean); cdecl; inline;
+    procedure set_mnemonic_modifier(modifier: TGdkModifierType); cdecl; inline;
+    procedure set_mnemonics_visible(setting: gboolean); cdecl; inline;
+    procedure set_modal(modal: gboolean); cdecl; inline;
+    procedure set_opacity(opacity: gdouble); cdecl; inline;
+    procedure set_position(position: TGtkWindowPosition); cdecl; inline;
+    procedure set_resizable(resizable: gboolean); cdecl; inline;
+    procedure set_role(role: Pgchar); cdecl; inline;
+    procedure set_screen(screen: PGdkScreen); cdecl; inline;
+    procedure set_skip_pager_hint(setting: gboolean); cdecl; inline;
+    procedure set_skip_taskbar_hint(setting: gboolean); cdecl; inline;
+    procedure set_startup_id(startup_id: Pgchar); cdecl; inline;
+    procedure set_title(title: Pgchar); cdecl; inline;
+    procedure set_transient_for(parent: PGtkWindow); cdecl; inline;
+    procedure set_type_hint(hint: TGdkWindowTypeHint); cdecl; inline;
+    procedure set_urgency_hint(setting: gboolean); cdecl; inline;
+    procedure set_wmclass(wmclass_name: Pgchar; wmclass_class: Pgchar); cdecl; inline;
+    procedure stick; cdecl; inline;
+    procedure unfullscreen; cdecl; inline;
+    procedure unmaximize; cdecl; inline;
+    procedure unstick; cdecl; inline;
+    property accept_focus:  gboolean read get_accept_focus  { property is writeable but setter not declared } ;
+    property application:  PGtkApplication read get_application  { property is writeable but setter not declared } ;
+    property decorated:  gboolean read get_decorated  { property is writeable but setter not declared } ;
+    //property default_height: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_default_height  { property is writeable but setter not declared } ;
+    //property default_width: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_default_width  { property is writeable but setter not declared } ;
+    property deletable:  gboolean read get_deletable  { property is writeable but setter not declared } ;
+    property destroy_with_parent:  gboolean read get_destroy_with_parent  { property is writeable but setter not declared } ;
+    property focus_on_map:  gboolean read get_focus_on_map  { property is writeable but setter not declared } ;
+    property focus_visible:  gboolean read get_focus_visible  { property is writeable but setter not declared } ;
+    property gravity:  TGdkGravity read get_gravity  { property is writeable but setter not declared } ;
+    property has_resize_grip:  gboolean read get_has_resize_grip  { property is writeable but setter not declared } ;
+    //property has_toplevel_focus1: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_has_toplevel_focus ;
+    property icon:  PGdkPixbuf read get_icon  { property is writeable but setter not declared } ;
+    property icon_name:  Pgchar read get_icon_name  { property is writeable but setter not declared } ;
+    //property is_active1: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_is_active ;
+    property mnemonics_visible:  gboolean read get_mnemonics_visible  { property is writeable but setter not declared } ;
+    property modal:  gboolean read get_modal  { property is writeable but setter not declared } ;
+    property opacity:  gdouble read get_opacity  { property is writeable but setter not declared } ;
+    property resizable:  gboolean read get_resizable  { property is writeable but setter not declared } ;
+    //property resize_grip_visible: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_resize_grip_visible ;
+    property role:  Pgchar read get_role  { property is writeable but setter not declared } ;
+    property screen:  PGdkScreen read get_screen  { property is writeable but setter not declared } ;
+    property skip_pager_hint:  gboolean read get_skip_pager_hint  { property is writeable but setter not declared } ;
+    property skip_taskbar_hint:  gboolean read get_skip_taskbar_hint  { property is writeable but setter not declared } ;
+    //property startup_id: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_startup_id  { property is writeable but setter not declared } ;
+    property title:  Pgchar read get_title  { property is writeable but setter not declared } ;
+    property transient_for:  PGtkWindow read get_transient_for  { property is writeable but setter not declared } ;
+    //property type_: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_type  { property is writeable but setter not declared } ;
+    property type_hint:  TGdkWindowTypeHint read get_type_hint  { property is writeable but setter not declared } ;
+    property urgency_hint:  gboolean read get_urgency_hint  { property is writeable but setter not declared } ;
+    //property window_position: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_window_position  { property is writeable but setter not declared } ;
+  end;
+
+  PPGtkDialogFlags = ^PGtkDialogFlags;
+  PGtkDialogFlags = ^TGtkDialogFlags;
+  TGtkDialogFlags = packed object(TBitObject32)
+  public
+    property modal: DWord index 1 read GetBit write SetBit;
+    property destroy_with_parent: DWord index 2 read GetBit write SetBit;
+  end;
+
+
+  PPGtkDialogPrivate = ^PGtkDialogPrivate;
+  PGtkDialogPrivate = ^TGtkDialogPrivate;
+  TGtkDialog = object(TGtkWindow)
+    priv4: PGtkDialogPrivate;
+    function new: PGtkDialog; cdecl; inline; static;
+    //function new_with_buttons(title: Pgchar; parent: PGtkWindow; flags: TGtkDialogFlags; first_button_text: Pgchar; args: array of const): PGtkDialog; cdecl; inline; static;
+    procedure add_action_widget(child: PGtkWidget; response_id: gint); cdecl; inline;
+    function add_button(button_text: Pgchar; response_id: gint): PGtkWidget; cdecl; inline;
+    //procedure add_buttons(first_button_text: Pgchar; args: array of const); cdecl; inline;
+    function get_action_area: PGtkWidget; cdecl; inline;
+    function get_content_area: PGtkWidget; cdecl; inline;
+    function get_response_for_widget(widget: PGtkWidget): gint; cdecl; inline;
+    function get_widget_for_response(response_id: gint): PGtkWidget; cdecl; inline;
+    procedure response(response_id: gint); cdecl; inline;
+    function run: gint; cdecl; inline;
+    //procedure set_alternative_button_order(first_response_id: gint; args: array of const); cdecl; inline;
+    procedure set_alternative_button_order_from_array(n_params: gint; new_order: Pgint); cdecl; inline;
+    procedure set_default_response(response_id: gint); cdecl; inline;
+    procedure set_response_sensitive(response_id: gint; setting: gboolean); cdecl; inline;
+  end;
+
+  PPGtkAboutDialogPrivate = ^PGtkAboutDialogPrivate;
+  PGtkAboutDialogPrivate = ^TGtkAboutDialogPrivate;
+
+  TGtkAboutDialogPrivate = record
   end;
 
 
 
-  PPGtkAlignment = ^PGtkAlignment;
-  PGtkAlignment = ^TGtkAlignment;
-  TGtkAlignment = object(TGtkBin)
-    priv3: PGtkAlignmentPrivate;
-    function new(xalign: gfloat; yalign: gfloat; xscale: gfloat; yscale: gfloat): PGtkAlignment; cdecl; inline; static;
-    procedure get_padding(padding_top: Pguint; padding_bottom: Pguint; padding_left: Pguint; padding_right: Pguint); cdecl; inline;
-    procedure set_(xalign: gfloat; yalign: gfloat; xscale: gfloat; yscale: gfloat); cdecl; inline;
-    procedure set_padding(padding_top: guint; padding_bottom: guint; padding_left: guint; padding_right: guint); cdecl; inline;
-    //property bottom_padding: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_bottom_padding  { property is writeable but setter not declared } ;
-    //property left_padding: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_left_padding  { property is writeable but setter not declared } ;
-    //property right_padding: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_right_padding  { property is writeable but setter not declared } ;
-    //property top_padding: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_top_padding  { property is writeable but setter not declared } ;
-    //property xalign: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_xalign  { property is writeable but setter not declared } ;
-    //property xscale: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_xscale  { property is writeable but setter not declared } ;
-    //property yalign: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_yalign  { property is writeable but setter not declared } ;
-    //property yscale: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_yscale  { property is writeable but setter not declared } ;
+  PPGtkAboutDialog = ^PGtkAboutDialog;
+  PGtkAboutDialog = ^TGtkAboutDialog;
+  TGtkAboutDialog = object(TGtkDialog)
+    priv5: PGtkAboutDialogPrivate;
+    function new: PGtkAboutDialog; cdecl; inline; static;
+    function get_artists: PPgchar; cdecl; inline;
+    function get_authors: PPgchar; cdecl; inline;
+    function get_comments: Pgchar; cdecl; inline;
+    function get_copyright: Pgchar; cdecl; inline;
+    function get_documenters: PPgchar; cdecl; inline;
+    function get_license: Pgchar; cdecl; inline;
+    function get_license_type: TGtkLicense; cdecl; inline;
+    function get_logo: PGdkPixbuf; cdecl; inline;
+    function get_logo_icon_name: Pgchar; cdecl; inline;
+    function get_program_name: Pgchar; cdecl; inline;
+    function get_translator_credits: Pgchar; cdecl; inline;
+    function get_version: Pgchar; cdecl; inline;
+    function get_website: Pgchar; cdecl; inline;
+    function get_website_label: Pgchar; cdecl; inline;
+    function get_wrap_license: gboolean; cdecl; inline;
+    procedure set_artists(artists: PPgchar); cdecl; inline;
+    procedure set_authors(authors: PPgchar); cdecl; inline;
+    procedure set_comments(comments: Pgchar); cdecl; inline;
+    procedure set_copyright(copyright: Pgchar); cdecl; inline;
+    procedure set_documenters(documenters: PPgchar); cdecl; inline;
+    procedure set_license(license: Pgchar); cdecl; inline;
+    procedure set_license_type(license_type: TGtkLicense); cdecl; inline;
+    procedure set_logo(logo: PGdkPixbuf); cdecl; inline;
+    procedure set_logo_icon_name(icon_name: Pgchar); cdecl; inline;
+    procedure set_program_name(name: Pgchar); cdecl; inline;
+    procedure set_translator_credits(translator_credits: Pgchar); cdecl; inline;
+    procedure set_version(version: Pgchar); cdecl; inline;
+    procedure set_website(website: Pgchar); cdecl; inline;
+    procedure set_website_label(website_label: Pgchar); cdecl; inline;
+    procedure set_wrap_license(wrap_license: gboolean); cdecl; inline;
+    property artists:  PPgchar read get_artists  { property is writeable but setter not declared } ;
+    property authors:  PPgchar read get_authors  { property is writeable but setter not declared } ;
+    property comments:  Pgchar read get_comments  { property is writeable but setter not declared } ;
+    property copyright:  Pgchar read get_copyright  { property is writeable but setter not declared } ;
+    property documenters:  PPgchar read get_documenters  { property is writeable but setter not declared } ;
+    property license:  Pgchar read get_license  { property is writeable but setter not declared } ;
+    property license_type:  TGtkLicense read get_license_type  { property is writeable but setter not declared } ;
+    property logo:  PGdkPixbuf read get_logo  { property is writeable but setter not declared } ;
+    property logo_icon_name:  Pgchar read get_logo_icon_name  { property is writeable but setter not declared } ;
+    property program_name:  Pgchar read get_program_name  { property is writeable but setter not declared } ;
+    property translator_credits:  Pgchar read get_translator_credits  { property is writeable but setter not declared } ;
+    property version:  Pgchar read get_version  { property is writeable but setter not declared } ;
+    property website:  Pgchar read get_website  { property is writeable but setter not declared } ;
+    property website_label:  Pgchar read get_website_label  { property is writeable but setter not declared } ;
+    property wrap_license:  gboolean read get_wrap_license  { property is writeable but setter not declared } ;
   end;
+
+  PPGtkDialogClass = ^PGtkDialogClass;
+  PGtkDialogClass = ^TGtkDialogClass;
+
+  PPGtkWindowClass = ^PGtkWindowClass;
+  PGtkWindowClass = ^TGtkWindowClass;
 
   PPGtkBinClass = ^PGtkBinClass;
   PGtkBinClass = ^TGtkBinClass;
@@ -2456,6 +2062,604 @@ type
     _gtk_reserved2: procedure; cdecl;
     _gtk_reserved3: procedure; cdecl;
     _gtk_reserved4: procedure; cdecl;
+  end;
+  TGtkWindowClass = object
+    parent_class: TGtkBinClass;
+    set_focus: procedure(window: PGtkWindow; focus: PGtkWidget); cdecl;
+    activate_focus: procedure(window: PGtkWindow); cdecl;
+    activate_default: procedure(window: PGtkWindow); cdecl;
+    keys_changed: procedure(window: PGtkWindow); cdecl;
+    _gtk_reserved1: procedure; cdecl;
+    _gtk_reserved2: procedure; cdecl;
+    _gtk_reserved3: procedure; cdecl;
+    _gtk_reserved4: procedure; cdecl;
+  end;
+  TGtkDialogClass = object
+    parent_class: TGtkWindowClass;
+    response: procedure(dialog: PGtkDialog; response_id: gint); cdecl;
+    close: procedure(dialog: PGtkDialog); cdecl;
+    _gtk_reserved1: procedure; cdecl;
+    _gtk_reserved2: procedure; cdecl;
+    _gtk_reserved3: procedure; cdecl;
+    _gtk_reserved4: procedure; cdecl;
+  end;
+
+  PPGtkAboutDialogClass = ^PGtkAboutDialogClass;
+  PGtkAboutDialogClass = ^TGtkAboutDialogClass;
+  TGtkAboutDialogClass = object
+    parent_class: TGtkDialogClass;
+    activate_link: function(dialog: PGtkAboutDialog; uri: Pgchar): gboolean; cdecl;
+    _gtk_reserved1: procedure; cdecl;
+    _gtk_reserved2: procedure; cdecl;
+    _gtk_reserved3: procedure; cdecl;
+    _gtk_reserved4: procedure; cdecl;
+  end;
+
+  PPGtkAccelKey = ^PGtkAccelKey;
+  PGtkAccelKey = ^TGtkAccelKey;
+
+  PPGtkAccelGroupFindFunc = ^PGtkAccelGroupFindFunc;
+  PGtkAccelGroupFindFunc = ^TGtkAccelGroupFindFunc;
+  TGtkAccelGroupFindFunc = function(key: PGtkAccelKey; closure: PGClosure; data: gpointer): gboolean; cdecl;
+
+  PPGtkAccelGroupEntry = ^PGtkAccelGroupEntry;
+  PGtkAccelGroupEntry = ^TGtkAccelGroupEntry;
+
+  PPGtkAccelGroupPrivate = ^PGtkAccelGroupPrivate;
+  PGtkAccelGroupPrivate = ^TGtkAccelGroupPrivate;
+  TGtkAccelGroup = object(TGObject)
+    priv: PGtkAccelGroupPrivate;
+    function new: PGtkAccelGroup; cdecl; inline; static;
+    function from_accel_closure(closure: PGClosure): PGtkAccelGroup; cdecl; inline; static;
+    function activate(accel_quark: TGQuark; acceleratable: PGObject; accel_key: guint; accel_mods: TGdkModifierType): gboolean; cdecl; inline;
+    procedure connect(accel_key: guint; accel_mods: TGdkModifierType; accel_flags: TGtkAccelFlags; closure: PGClosure); cdecl; inline;
+    procedure connect_by_path(accel_path: Pgchar; closure: PGClosure); cdecl; inline;
+    function disconnect(closure: PGClosure): gboolean; cdecl; inline;
+    function disconnect_key(accel_key: guint; accel_mods: TGdkModifierType): gboolean; cdecl; inline;
+    function find(find_func: TGtkAccelGroupFindFunc; data: gpointer): PGtkAccelKey; cdecl; inline;
+    function get_is_locked: gboolean; cdecl; inline;
+    function get_modifier_mask: TGdkModifierType; cdecl; inline;
+    procedure lock; cdecl; inline;
+    function query(accel_key: guint; accel_mods: TGdkModifierType; n_entries: Pguint): PGtkAccelGroupEntry; cdecl; inline;
+    procedure unlock; cdecl; inline;
+    property is_locked:  gboolean read get_is_locked ;
+    property modifier_mask:  TGdkModifierType read get_modifier_mask ;
+  end;
+  TGtkAccelKeyBitfield0 = bitpacked record
+    accel_flags: guint16 { changed from guint to accomodate 16 bitsize requirement };
+  end;
+
+
+  TGtkAccelKey = record
+    accel_key: guint;
+    accel_mods: TGdkModifierType;
+    Bitfield0 : TGtkAccelKeyBitfield0; { auto generated type }
+  end;
+
+
+
+  TGtkAccelGroupEntry = record
+    key: TGtkAccelKey;
+    closure: PGClosure;
+    accel_path_quark: TGQuark;
+  end;
+
+
+
+  TGtkAccelGroupPrivate = record
+  end;
+
+
+  TGtkAccelGroupActivate = function(accel_group: PGtkAccelGroup; acceleratable: PGObject; keyval: guint; modifier: TGdkModifierType): gboolean; cdecl;
+
+  PPGtkAccelGroupClass = ^PGtkAccelGroupClass;
+  PGtkAccelGroupClass = ^TGtkAccelGroupClass;
+  TGtkAccelGroupClass = object
+    parent_class: TGObjectClass;
+    accel_changed: procedure(accel_group: PGtkAccelGroup; keyval: guint; modifier: TGdkModifierType; accel_closure: PGClosure); cdecl;
+    _gtk_reserved1: procedure; cdecl;
+    _gtk_reserved2: procedure; cdecl;
+    _gtk_reserved3: procedure; cdecl;
+    _gtk_reserved4: procedure; cdecl;
+  end;
+
+  PPGtkLabel = ^PGtkLabel;
+  PGtkLabel = ^TGtkLabel;
+
+  PPGtkMisc = ^PGtkMisc;
+  PGtkMisc = ^TGtkMisc;
+
+  PPGtkMiscPrivate = ^PGtkMiscPrivate;
+  PGtkMiscPrivate = ^TGtkMiscPrivate;
+  TGtkMisc = object(TGtkWidget)
+    priv1: PGtkMiscPrivate;
+    procedure get_alignment(xalign: Pgfloat; yalign: Pgfloat); cdecl; inline;
+    procedure get_padding(xpad: Pgint; ypad: Pgint); cdecl; inline;
+    procedure set_alignment(xalign: gfloat; yalign: gfloat); cdecl; inline;
+    procedure set_padding(xpad: gint; ypad: gint); cdecl; inline;
+    //property xalign: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_xalign  { property is writeable but setter not declared } ;
+    //property xpad: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_xpad  { property is writeable but setter not declared } ;
+    //property yalign: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_yalign  { property is writeable but setter not declared } ;
+    //property ypad: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_ypad  { property is writeable but setter not declared } ;
+  end;
+
+  PPGtkJustification = ^PGtkJustification;
+  PGtkJustification = ^TGtkJustification;
+
+  PPGtkLabelPrivate = ^PGtkLabelPrivate;
+  PGtkLabelPrivate = ^TGtkLabelPrivate;
+  TGtkLabel = object(TGtkMisc)
+    priv2: PGtkLabelPrivate;
+    function new(str: Pgchar): PGtkLabel; cdecl; inline; static;
+    function new_with_mnemonic(str: Pgchar): PGtkLabel; cdecl; inline; static;
+    function get_angle: gdouble; cdecl; inline;
+    function get_attributes: PPangoAttrList; cdecl; inline;
+    function get_current_uri: Pgchar; cdecl; inline;
+    function get_ellipsize: TPangoEllipsizeMode; cdecl; inline;
+    function get_justify: TGtkJustification; cdecl; inline;
+    function get_label: Pgchar; cdecl; inline;
+    function get_layout: PPangoLayout; cdecl; inline;
+    procedure get_layout_offsets(x: Pgint; y: Pgint); cdecl; inline;
+    function get_line_wrap: gboolean; cdecl; inline;
+    function get_line_wrap_mode: TPangoWrapMode; cdecl; inline;
+    function get_max_width_chars: gint; cdecl; inline;
+    function get_mnemonic_keyval: guint; cdecl; inline;
+    function get_mnemonic_widget: PGtkWidget; cdecl; inline;
+    function get_selectable: gboolean; cdecl; inline;
+    function get_selection_bounds(start: Pgint; end_: Pgint): gboolean; cdecl; inline;
+    function get_single_line_mode: gboolean; cdecl; inline;
+    function get_text: Pgchar; cdecl; inline;
+    function get_track_visited_links: gboolean; cdecl; inline;
+    function get_use_markup: gboolean; cdecl; inline;
+    function get_use_underline: gboolean; cdecl; inline;
+    function get_width_chars: gint; cdecl; inline;
+    procedure select_region(start_offset: gint; end_offset: gint); cdecl; inline;
+    procedure set_angle(angle: gdouble); cdecl; inline;
+    procedure set_attributes(attrs: PPangoAttrList); cdecl; inline;
+    procedure set_ellipsize(mode: TPangoEllipsizeMode); cdecl; inline;
+    procedure set_justify(jtype: TGtkJustification); cdecl; inline;
+    procedure set_label(str: Pgchar); cdecl; inline;
+    procedure set_line_wrap(wrap: gboolean); cdecl; inline;
+    procedure set_line_wrap_mode(wrap_mode: TPangoWrapMode); cdecl; inline;
+    procedure set_markup(str: Pgchar); cdecl; inline;
+    procedure set_markup_with_mnemonic(str: Pgchar); cdecl; inline;
+    procedure set_max_width_chars(n_chars: gint); cdecl; inline;
+    procedure set_mnemonic_widget(widget: PGtkWidget); cdecl; inline;
+    procedure set_pattern(pattern: Pgchar); cdecl; inline;
+    procedure set_selectable(setting: gboolean); cdecl; inline;
+    procedure set_single_line_mode(single_line_mode: gboolean); cdecl; inline;
+    procedure set_text(str: Pgchar); cdecl; inline;
+    procedure set_text_with_mnemonic(str: Pgchar); cdecl; inline;
+    procedure set_track_visited_links(track_links: gboolean); cdecl; inline;
+    procedure set_use_markup(setting: gboolean); cdecl; inline;
+    procedure set_use_underline(setting: gboolean); cdecl; inline;
+    procedure set_width_chars(n_chars: gint); cdecl; inline;
+    property angle:  gdouble read get_angle  { property is writeable but setter not declared } ;
+    property attributes:  PPangoAttrList read get_attributes  { property is writeable but setter not declared } ;
+    //property cursor_position: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_cursor_position ;
+    property ellipsize:  TPangoEllipsizeMode read get_ellipsize  { property is writeable but setter not declared } ;
+    property justify:  TGtkJustification read get_justify  { property is writeable but setter not declared } ;
+    property label_:  Pgchar read get_label  { property is writeable but setter not declared } ;
+    property max_width_chars:  gint read get_max_width_chars  { property is writeable but setter not declared } ;
+    property mnemonic_keyval:  guint read get_mnemonic_keyval ;
+    property mnemonic_widget:  PGtkWidget read get_mnemonic_widget  { property is writeable but setter not declared } ;
+    //property pattern: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_pattern  { property is writeable but setter not declared } ;
+    property selectable:  gboolean read get_selectable  { property is writeable but setter not declared } ;
+    //property selection_bound: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_selection_bound ;
+    property single_line_mode:  gboolean read get_single_line_mode  { property is writeable but setter not declared } ;
+    property track_visited_links:  gboolean read get_track_visited_links  { property is writeable but setter not declared } ;
+    property use_markup:  gboolean read get_use_markup  { property is writeable but setter not declared } ;
+    property use_underline:  gboolean read get_use_underline  { property is writeable but setter not declared } ;
+    property width_chars:  gint read get_width_chars  { property is writeable but setter not declared } ;
+    //property wrap: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_wrap  { property is writeable but setter not declared } ;
+    //property wrap_mode: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_wrap_mode  { property is writeable but setter not declared } ;
+  end;
+
+  PPGtkAccelLabelPrivate = ^PGtkAccelLabelPrivate;
+  PGtkAccelLabelPrivate = ^TGtkAccelLabelPrivate;
+
+  TGtkAccelLabelPrivate = record
+  end;
+
+
+
+  PPGtkAccelLabel = ^PGtkAccelLabel;
+  PGtkAccelLabel = ^TGtkAccelLabel;
+  TGtkAccelLabel = object(TGtkLabel)
+    priv3: PGtkAccelLabelPrivate;
+    function new(string_: Pgchar): PGtkAccelLabel; cdecl; inline; static;
+    function get_accel_widget: PGtkWidget; cdecl; inline;
+    function get_accel_width: guint; cdecl; inline;
+    function refetch: gboolean; cdecl; inline;
+    procedure set_accel_closure(accel_closure: PGClosure); cdecl; inline;
+    procedure set_accel_widget(accel_widget: PGtkWidget); cdecl; inline;
+    //property accel_closure: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accel_closure  { property is writeable but setter not declared } ;
+    property accel_widget:  PGtkWidget read get_accel_widget  { property is writeable but setter not declared } ;
+  end;
+
+  PPGtkLabelClass = ^PGtkLabelClass;
+  PGtkLabelClass = ^TGtkLabelClass;
+
+  PPGtkMiscClass = ^PGtkMiscClass;
+  PGtkMiscClass = ^TGtkMiscClass;
+  TGtkMiscClass = object
+    parent_class: TGtkWidgetClass;
+    _gtk_reserved1: procedure; cdecl;
+    _gtk_reserved2: procedure; cdecl;
+    _gtk_reserved3: procedure; cdecl;
+    _gtk_reserved4: procedure; cdecl;
+  end;
+
+  PPGtkMovementStep = ^PGtkMovementStep;
+  PGtkMovementStep = ^TGtkMovementStep;
+
+  PPGtkMenu = ^PGtkMenu;
+  PGtkMenu = ^TGtkMenu;
+  TGtkLabelClass = object
+    parent_class: TGtkMiscClass;
+    move_cursor: procedure(label_: PGtkLabel; step: TGtkMovementStep; count: gint; extend_selection: gboolean); cdecl;
+    copy_clipboard: procedure(label_: PGtkLabel); cdecl;
+    populate_popup: procedure(label_: PGtkLabel; menu: PGtkMenu); cdecl;
+    activate_link: function(label_: PGtkLabel; uri: Pgchar): gboolean; cdecl;
+    _gtk_reserved1: procedure; cdecl;
+    _gtk_reserved2: procedure; cdecl;
+    _gtk_reserved3: procedure; cdecl;
+    _gtk_reserved4: procedure; cdecl;
+    _gtk_reserved5: procedure; cdecl;
+    _gtk_reserved6: procedure; cdecl;
+    _gtk_reserved7: procedure; cdecl;
+    _gtk_reserved8: procedure; cdecl;
+  end;
+
+  PPGtkAccelLabelClass = ^PGtkAccelLabelClass;
+  PGtkAccelLabelClass = ^TGtkAccelLabelClass;
+  TGtkAccelLabelClass = object
+    parent_class: TGtkLabelClass;
+    signal_quote1: Pgchar;
+    signal_quote2: Pgchar;
+    mod_name_shift: Pgchar;
+    mod_name_control: Pgchar;
+    mod_name_alt: Pgchar;
+    mod_separator: Pgchar;
+    _gtk_reserved1: procedure; cdecl;
+    _gtk_reserved2: procedure; cdecl;
+    _gtk_reserved3: procedure; cdecl;
+    _gtk_reserved4: procedure; cdecl;
+  end;
+  TGtkAccelMapForeach = procedure(data: gpointer; accel_path: Pgchar; accel_key: guint; accel_mods: TGdkModifierType; changed: gboolean); cdecl;
+
+  PPGtkAccelMap = ^PGtkAccelMap;
+  PGtkAccelMap = ^TGtkAccelMap;
+
+  PPGtkAccelMapForeach = ^PGtkAccelMapForeach;
+  PGtkAccelMapForeach = ^TGtkAccelMapForeach;
+  TGtkAccelMap = object(TGObject)
+    procedure add_entry(accel_path: Pgchar; accel_key: guint; accel_mods: TGdkModifierType); cdecl; inline; static;
+    procedure add_filter(filter_pattern: Pgchar); cdecl; inline; static;
+    function change_entry(accel_path: Pgchar; accel_key: guint; accel_mods: TGdkModifierType; replace: gboolean): gboolean; cdecl; inline; static;
+    procedure foreach(data: gpointer; foreach_func: TGtkAccelMapForeach); cdecl; inline; static;
+    procedure foreach_unfiltered(data: gpointer; foreach_func: TGtkAccelMapForeach); cdecl; inline; static;
+    function get: PGtkAccelMap; cdecl; inline; static;
+    procedure load(file_name: Pgchar); cdecl; inline; static;
+    procedure load_fd(fd: gint); cdecl; inline; static;
+    procedure load_scanner(scanner: PGScanner); cdecl; inline; static;
+    procedure lock_path(accel_path: Pgchar); cdecl; inline; static;
+    function lookup_entry(accel_path: Pgchar; key: PGtkAccelKey): gboolean; cdecl; inline; static;
+    procedure save(file_name: Pgchar); cdecl; inline; static;
+    procedure save_fd(fd: gint); cdecl; inline; static;
+    procedure unlock_path(accel_path: Pgchar); cdecl; inline; static;
+  end;
+
+  PPGtkAccelMapClass = ^PGtkAccelMapClass;
+  PGtkAccelMapClass = ^TGtkAccelMapClass;
+  TGtkAccelMapClass = object
+  end;
+
+  PPGtkAccessiblePrivate = ^PGtkAccessiblePrivate;
+  PGtkAccessiblePrivate = ^TGtkAccessiblePrivate;
+
+  TGtkAccessiblePrivate = record
+  end;
+
+
+
+  PPGtkAccessible = ^PGtkAccessible;
+  PGtkAccessible = ^TGtkAccessible;
+  TGtkAccessible = object(TAtkObject)
+    priv: PGtkAccessiblePrivate;
+    procedure connect_widget_destroyed; cdecl; inline;
+    function get_widget: PGtkWidget; cdecl; inline;
+    procedure set_widget(widget: PGtkWidget); cdecl; inline;
+  end;
+
+  PPGtkAccessibleClass = ^PGtkAccessibleClass;
+  PGtkAccessibleClass = ^TGtkAccessibleClass;
+  TGtkAccessibleClass = object
+    parent_class: TAtkObjectClass;
+    connect_widget_destroyed: procedure(accessible: PGtkAccessible); cdecl;
+    _gtk_reserved1: procedure; cdecl;
+    _gtk_reserved2: procedure; cdecl;
+    _gtk_reserved3: procedure; cdecl;
+    _gtk_reserved4: procedure; cdecl;
+  end;
+
+  PPGtkAction = ^PGtkAction;
+  PGtkAction = ^TGtkAction;
+
+  PPGtkActionPrivate = ^PGtkActionPrivate;
+  PGtkActionPrivate = ^TGtkActionPrivate;
+  TGtkAction = object(TGObject)
+    private_data: PGtkActionPrivate;
+    function new(name: Pgchar; label_: Pgchar; tooltip: Pgchar; stock_id: Pgchar): PGtkAction; cdecl; inline; static;
+    procedure activate; cdecl; inline;
+    procedure block_activate; cdecl; inline;
+    procedure connect_accelerator; cdecl; inline;
+    function create_icon(icon_size: gint): PGtkWidget; cdecl; inline;
+    function create_menu: PGtkWidget; cdecl; inline;
+    function create_menu_item: PGtkWidget; cdecl; inline;
+    function create_tool_item: PGtkWidget; cdecl; inline;
+    procedure disconnect_accelerator; cdecl; inline;
+    function get_accel_closure: PGClosure; cdecl; inline;
+    function get_accel_path: Pgchar; cdecl; inline;
+    function get_always_show_image: gboolean; cdecl; inline;
+    function get_gicon: PGIcon; cdecl; inline;
+    function get_icon_name: Pgchar; cdecl; inline;
+    function get_is_important: gboolean; cdecl; inline;
+    function get_label: Pgchar; cdecl; inline;
+    function get_name: Pgchar; cdecl; inline;
+    function get_proxies: PGSList; cdecl; inline;
+    function get_sensitive: gboolean; cdecl; inline;
+    function get_short_label: Pgchar; cdecl; inline;
+    function get_stock_id: Pgchar; cdecl; inline;
+    function get_tooltip: Pgchar; cdecl; inline;
+    function get_visible: gboolean; cdecl; inline;
+    function get_visible_horizontal: gboolean; cdecl; inline;
+    function get_visible_vertical: gboolean; cdecl; inline;
+    function is_sensitive: gboolean; cdecl; inline;
+    function is_visible: gboolean; cdecl; inline;
+    procedure set_accel_group(accel_group: PGtkAccelGroup); cdecl; inline;
+    procedure set_accel_path(accel_path: Pgchar); cdecl; inline;
+    procedure set_always_show_image(always_show: gboolean); cdecl; inline;
+    procedure set_gicon(icon: PGIcon); cdecl; inline;
+    procedure set_icon_name(icon_name: Pgchar); cdecl; inline;
+    procedure set_is_important(is_important: gboolean); cdecl; inline;
+    procedure set_label(label_: Pgchar); cdecl; inline;
+    procedure set_sensitive(sensitive: gboolean); cdecl; inline;
+    procedure set_short_label(short_label: Pgchar); cdecl; inline;
+    procedure set_stock_id(stock_id: Pgchar); cdecl; inline;
+    procedure set_tooltip(tooltip: Pgchar); cdecl; inline;
+    procedure set_visible(visible: gboolean); cdecl; inline;
+    procedure set_visible_horizontal(visible_horizontal: gboolean); cdecl; inline;
+    procedure set_visible_vertical(visible_vertical: gboolean); cdecl; inline;
+    procedure unblock_activate; cdecl; inline;
+    //property action_group: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_action_group  { property is writeable but setter not declared } ;
+    property always_show_image:  gboolean read get_always_show_image  { property is writeable but setter not declared } ;
+    property gicon:  PGIcon read get_gicon  { property is writeable but setter not declared } ;
+    //property hide_if_empty: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_hide_if_empty  { property is writeable but setter not declared } ;
+    property icon_name:  Pgchar read get_icon_name  { property is writeable but setter not declared } ;
+    property is_important:  gboolean read get_is_important  { property is writeable but setter not declared } ;
+    property label_:  Pgchar read get_label  { property is writeable but setter not declared } ;
+    property name:  Pgchar read get_name  { property is writeable but setter not declared } ;
+    property sensitive:  gboolean read get_sensitive  { property is writeable but setter not declared } ;
+    property short_label:  Pgchar read get_short_label  { property is writeable but setter not declared } ;
+    property stock_id:  Pgchar read get_stock_id  { property is writeable but setter not declared } ;
+    property tooltip:  Pgchar read get_tooltip  { property is writeable but setter not declared } ;
+    property visible:  gboolean read get_visible  { property is writeable but setter not declared } ;
+    property visible_horizontal:  gboolean read get_visible_horizontal  { property is writeable but setter not declared } ;
+    //property visible_overflown: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_visible_overflown  { property is writeable but setter not declared } ;
+    property visible_vertical:  gboolean read get_visible_vertical  { property is writeable but setter not declared } ;
+  end;
+
+  PPGtkActionGroup = ^PGtkActionGroup;
+  PGtkActionGroup = ^TGtkActionGroup;
+
+  PPGtkActionEntry = ^PGtkActionEntry;
+  PGtkActionEntry = ^TGtkActionEntry;
+
+  PPGtkRadioActionEntry = ^PGtkRadioActionEntry;
+  PGtkRadioActionEntry = ^TGtkRadioActionEntry;
+
+  PPGtkToggleActionEntry = ^PGtkToggleActionEntry;
+  PGtkToggleActionEntry = ^TGtkToggleActionEntry;
+
+  PPGtkTranslateFunc = ^PGtkTranslateFunc;
+  PGtkTranslateFunc = ^TGtkTranslateFunc;
+  TGtkTranslateFunc = function(path: Pgchar; func_data: gpointer): Pgchar; cdecl;
+
+  PPGtkActionGroupPrivate = ^PGtkActionGroupPrivate;
+  PGtkActionGroupPrivate = ^TGtkActionGroupPrivate;
+  TGtkActionGroup = object(TGObject)
+    priv: PGtkActionGroupPrivate;
+    function new(name: Pgchar): PGtkActionGroup; cdecl; inline; static;
+    procedure add_action(action: PGtkAction); cdecl; inline;
+    procedure add_action_with_accel(action: PGtkAction; accelerator: Pgchar); cdecl; inline;
+    procedure add_actions(entries: PGtkActionEntry; n_entries: guint; user_data: gpointer); cdecl; inline;
+    procedure add_actions_full(entries: PGtkActionEntry; n_entries: guint; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; inline;
+    procedure add_radio_actions(entries: PGtkRadioActionEntry; n_entries: guint; value: gint; on_change: TGCallback; user_data: gpointer); cdecl; inline;
+    procedure add_radio_actions_full(entries: PGtkRadioActionEntry; n_entries: guint; value: gint; on_change: TGCallback; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; inline;
+    procedure add_toggle_actions(entries: PGtkToggleActionEntry; n_entries: guint; user_data: gpointer); cdecl; inline;
+    procedure add_toggle_actions_full(entries: PGtkToggleActionEntry; n_entries: guint; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; inline;
+    function get_action(action_name: Pgchar): PGtkAction; cdecl; inline;
+    function get_name: Pgchar; cdecl; inline;
+    function get_sensitive: gboolean; cdecl; inline;
+    function get_visible: gboolean; cdecl; inline;
+    function list_actions: PGList; cdecl; inline;
+    procedure remove_action(action: PGtkAction); cdecl; inline;
+    procedure set_sensitive(sensitive: gboolean); cdecl; inline;
+    procedure set_translate_func(func: TGtkTranslateFunc; data: gpointer; notify: TGDestroyNotify); cdecl; inline;
+    procedure set_translation_domain(domain: Pgchar); cdecl; inline;
+    procedure set_visible(visible: gboolean); cdecl; inline;
+    function translate_string(string_: Pgchar): Pgchar; cdecl; inline;
+    property name:  Pgchar read get_name  { property is writeable but setter not declared } ;
+    property sensitive:  gboolean read get_sensitive  { property is writeable but setter not declared } ;
+    property visible:  gboolean read get_visible  { property is writeable but setter not declared } ;
+  end;
+
+  TGtkActionPrivate = record
+  end;
+
+
+
+  PPGtkActionClass = ^PGtkActionClass;
+  PGtkActionClass = ^TGtkActionClass;
+  TGtkActionClass = object
+    parent_class: TGObjectClass;
+    activate: procedure(action: PGtkAction); cdecl;
+    menu_item_type: TGType;
+    toolbar_item_type: TGType;
+    create_menu_item: function(action: PGtkAction): PGtkWidget; cdecl;
+    create_tool_item: function(action: PGtkAction): PGtkWidget; cdecl;
+    connect_proxy: procedure(action: PGtkAction; proxy: PGtkWidget); cdecl;
+    disconnect_proxy: procedure(action: PGtkAction; proxy: PGtkWidget); cdecl;
+    create_menu: function(action: PGtkAction): PGtkWidget; cdecl;
+    _gtk_reserved1: procedure; cdecl;
+    _gtk_reserved2: procedure; cdecl;
+    _gtk_reserved3: procedure; cdecl;
+    _gtk_reserved4: procedure; cdecl;
+  end;
+
+  TGtkActionEntry = record
+    name: Pgchar;
+    stock_id: Pgchar;
+    label_: Pgchar;
+    accelerator: Pgchar;
+    tooltip: Pgchar;
+    callback: TGCallback;
+  end;
+
+
+
+  TGtkRadioActionEntry = record
+    name: Pgchar;
+    stock_id: Pgchar;
+    label_: Pgchar;
+    accelerator: Pgchar;
+    tooltip: Pgchar;
+    value: gint;
+  end;
+
+
+
+  TGtkToggleActionEntry = record
+    name: Pgchar;
+    stock_id: Pgchar;
+    label_: Pgchar;
+    accelerator: Pgchar;
+    tooltip: Pgchar;
+    callback: TGCallback;
+    is_active: gboolean;
+  end;
+
+
+
+  TGtkActionGroupPrivate = record
+  end;
+
+
+
+  PPGtkActionGroupClass = ^PGtkActionGroupClass;
+  PGtkActionGroupClass = ^TGtkActionGroupClass;
+  TGtkActionGroupClass = object
+    parent_class: TGObjectClass;
+    get_action: function(action_group: PGtkActionGroup; action_name: Pgchar): PGtkAction; cdecl;
+    _gtk_reserved1: procedure; cdecl;
+    _gtk_reserved2: procedure; cdecl;
+    _gtk_reserved3: procedure; cdecl;
+    _gtk_reserved4: procedure; cdecl;
+  end;
+
+  PPGtkActivatable = ^PGtkActivatable;
+  PGtkActivatable = ^TGtkActivatable;
+  TGtkActivatable = object
+    procedure do_set_related_action(action: PGtkAction); cdecl; inline;
+    function get_related_action: PGtkAction; cdecl; inline;
+    function get_use_action_appearance: gboolean; cdecl; inline;
+    procedure set_related_action(action: PGtkAction); cdecl; inline;
+    procedure set_use_action_appearance(use_appearance: gboolean); cdecl; inline;
+    procedure sync_action_properties(action: PGtkAction); cdecl; inline;
+    property related_action:  PGtkAction read get_related_action  { property is writeable but setter not declared } ;
+    property use_action_appearance:  gboolean read get_use_action_appearance  { property is writeable but setter not declared } ;
+  end;
+
+  PPGtkActivatableIface = ^PGtkActivatableIface;
+  PGtkActivatableIface = ^TGtkActivatableIface;
+  TGtkActivatableIface = object
+    g_iface: TGTypeInterface;
+    update: procedure(activatable: PGtkActivatable; action: PGtkAction; property_name: Pgchar); cdecl;
+    sync_action_properties: procedure(activatable: PGtkActivatable; action: PGtkAction); cdecl;
+  end;
+
+  PPGtkAdjustmentPrivate = ^PGtkAdjustmentPrivate;
+  PGtkAdjustmentPrivate = ^TGtkAdjustmentPrivate;
+  TGtkAdjustment = object(TGInitiallyUnowned)
+    priv: PGtkAdjustmentPrivate;
+    function new(value: gdouble; lower: gdouble; upper: gdouble; step_increment: gdouble; page_increment: gdouble; page_size: gdouble): PGtkAdjustment; cdecl; inline; static;
+    procedure changed; cdecl; inline;
+    procedure clamp_page(lower: gdouble; upper: gdouble); cdecl; inline;
+    procedure configure(value: gdouble; lower: gdouble; upper: gdouble; step_increment: gdouble; page_increment: gdouble; page_size: gdouble); cdecl; inline;
+    function get_lower: gdouble; cdecl; inline;
+    function get_minimum_increment: gdouble; cdecl; inline;
+    function get_page_increment: gdouble; cdecl; inline;
+    function get_page_size: gdouble; cdecl; inline;
+    function get_step_increment: gdouble; cdecl; inline;
+    function get_upper: gdouble; cdecl; inline;
+    function get_value: gdouble; cdecl; inline;
+    procedure set_lower(lower: gdouble); cdecl; inline;
+    procedure set_page_increment(page_increment: gdouble); cdecl; inline;
+    procedure set_page_size(page_size: gdouble); cdecl; inline;
+    procedure set_step_increment(step_increment: gdouble); cdecl; inline;
+    procedure set_upper(upper: gdouble); cdecl; inline;
+    procedure set_value(value: gdouble); cdecl; inline;
+    procedure value_changed; cdecl; inline;
+    property lower:  gdouble read get_lower  { property is writeable but setter not declared } ;
+    property page_increment:  gdouble read get_page_increment  { property is writeable but setter not declared } ;
+    property page_size:  gdouble read get_page_size  { property is writeable but setter not declared } ;
+    property step_increment:  gdouble read get_step_increment  { property is writeable but setter not declared } ;
+    property upper:  gdouble read get_upper  { property is writeable but setter not declared } ;
+    property value:  gdouble read get_value  { property is writeable but setter not declared } ;
+  end;
+
+  TGtkAdjustmentPrivate = record
+  end;
+
+
+
+  PPGtkAdjustmentClass = ^PGtkAdjustmentClass;
+  PGtkAdjustmentClass = ^TGtkAdjustmentClass;
+  TGtkAdjustmentClass = object
+    parent_class: TGInitiallyUnownedClass;
+    changed: procedure(adjustment: PGtkAdjustment); cdecl;
+    value_changed: procedure(adjustment: PGtkAdjustment); cdecl;
+    _gtk_reserved1: procedure; cdecl;
+    _gtk_reserved2: procedure; cdecl;
+    _gtk_reserved3: procedure; cdecl;
+    _gtk_reserved4: procedure; cdecl;
+  end;
+
+  PPGtkAlignmentPrivate = ^PGtkAlignmentPrivate;
+  PGtkAlignmentPrivate = ^TGtkAlignmentPrivate;
+
+  TGtkAlignmentPrivate = record
+  end;
+
+
+
+  PPGtkAlignment = ^PGtkAlignment;
+  PGtkAlignment = ^TGtkAlignment;
+  TGtkAlignment = object(TGtkBin)
+    priv3: PGtkAlignmentPrivate;
+    function new(xalign: gfloat; yalign: gfloat; xscale: gfloat; yscale: gfloat): PGtkAlignment; cdecl; inline; static;
+    procedure get_padding(padding_top: Pguint; padding_bottom: Pguint; padding_left: Pguint; padding_right: Pguint); cdecl; inline;
+    procedure set_(xalign: gfloat; yalign: gfloat; xscale: gfloat; yscale: gfloat); cdecl; inline;
+    procedure set_padding(padding_top: guint; padding_bottom: guint; padding_left: guint; padding_right: guint); cdecl; inline;
+    //property bottom_padding: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_bottom_padding  { property is writeable but setter not declared } ;
+    //property left_padding: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_left_padding  { property is writeable but setter not declared } ;
+    //property right_padding: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_right_padding  { property is writeable but setter not declared } ;
+    //property top_padding: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_top_padding  { property is writeable but setter not declared } ;
+    //property xalign: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_xalign  { property is writeable but setter not declared } ;
+    //property xscale: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_xscale  { property is writeable but setter not declared } ;
+    //property yalign: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_yalign  { property is writeable but setter not declared } ;
+    //property yscale: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_yscale  { property is writeable but setter not declared } ;
   end;
 
   PPGtkAlignmentClass = ^PGtkAlignmentClass;
@@ -2647,9 +2851,9 @@ type
   PPGtkAppChooserDialog = ^PGtkAppChooserDialog;
   PGtkAppChooserDialog = ^TGtkAppChooserDialog;
   TGtkAppChooserDialog = object(TGtkDialog)
-    priv1: PGtkAppChooserDialogPrivate;
-    function new(parent: PAtkWindow; flags: TGtkDialogFlags; file_: PGFile): PGtkAppChooserDialog; cdecl; inline; static;
-    function new_for_content_type(parent: PAtkWindow; flags: TGtkDialogFlags; content_type: Pgchar): PGtkAppChooserDialog; cdecl; inline; static;
+    priv5: PGtkAppChooserDialogPrivate;
+    function new(parent: PGtkWindow; flags: TGtkDialogFlags; file_: PGFile): PGtkAppChooserDialog; cdecl; inline; static;
+    function new_for_content_type(parent: PGtkWindow; flags: TGtkDialogFlags; content_type: Pgchar): PGtkAppChooserDialog; cdecl; inline; static;
     function get_heading: Pgchar; cdecl; inline;
     function get_widget: PGtkWidget; cdecl; inline;
     procedure set_heading(heading: Pgchar); cdecl; inline;
@@ -2820,32 +3024,29 @@ type
     padding: array [0..15] of gpointer;
   end;
 
-  PPGtkApplication = ^PGtkApplication;
-  PGtkApplication = ^TGtkApplication;
-  TGtkApplication = object(TGApplication)
-    priv1: PGApplicationPrivate;
-    function new(application_id: Pgchar; flags: TGApplicationFlags): PGtkApplication; cdecl; inline; static;
-    procedure add_window(window: PAtkWindow); cdecl; inline;
-    function get_windows: PGList; cdecl; inline;
-    procedure remove_window(window: PAtkWindow); cdecl; inline;
-  end;
-
-  PPGtkApplicationClass = ^PGtkApplicationClass;
-  PGtkApplicationClass = ^TGtkApplicationClass;
-  TGtkApplicationClass = object
-    parent_class: TGApplicationClass;
-    window_added: procedure(application: PGtkApplication; window: PAtkWindow); cdecl;
-    window_removed: procedure(application: PGtkApplication; window: PAtkWindow); cdecl;
-    padding: array [0..13] of gpointer;
-  end;
-
   PPGtkApplicationPrivate = ^PGtkApplicationPrivate;
   PGtkApplicationPrivate = ^TGtkApplicationPrivate;
+  TGtkApplication = object(TGApplication)
+    priv1: PGtkApplicationPrivate;
+    function new(application_id: Pgchar; flags: TGApplicationFlags): PGtkApplication; cdecl; inline; static;
+    procedure add_window(window: PGtkWindow); cdecl; inline;
+    function get_windows: PGList; cdecl; inline;
+    procedure remove_window(window: PGtkWindow); cdecl; inline;
+  end;
 
   TGtkApplicationPrivate = record
   end;
 
 
+
+  PPGtkApplicationClass = ^PGtkApplicationClass;
+  PGtkApplicationClass = ^TGtkApplicationClass;
+  TGtkApplicationClass = object
+    parent_class: TGApplicationClass;
+    window_added: procedure(application: PGtkApplication; window: PGtkWindow); cdecl;
+    window_removed: procedure(application: PGtkApplication; window: PGtkWindow); cdecl;
+    padding: array [0..13] of gpointer;
+  end;
 
   PPGtkArrowType = ^PGtkArrowType;
   PGtkArrowType = ^TGtkArrowType;
@@ -2863,9 +3064,8 @@ type
 
   PPGtkArrow = ^PGtkArrow;
   PGtkArrow = ^TGtkArrow;
-  TGtkArrow = object
-    misc: TAtkMisc;
-    priv: PGtkArrowPrivate;
+  TGtkArrow = object(TGtkMisc)
+    priv2: PGtkArrowPrivate;
     function new(arrow_type: TGtkArrowType; shadow_type: TGtkShadowType): PGtkArrow; cdecl; inline; static;
     procedure set_(arrow_type: TGtkArrowType; shadow_type: TGtkShadowType); cdecl; inline;
     //property arrow_type: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_arrow_type  { property is writeable but setter not declared } ;
@@ -2875,7 +3075,7 @@ type
   PPGtkArrowClass = ^PGtkArrowClass;
   PGtkArrowClass = ^TGtkArrowClass;
   TGtkArrowClass = object
-    parent_class: TAtkMiscClass;
+    parent_class: TGtkMiscClass;
     _gtk_reserved1: procedure; cdecl;
     _gtk_reserved2: procedure; cdecl;
     _gtk_reserved3: procedure; cdecl;
@@ -2966,9 +3166,8 @@ type
 
   PPGtkAssistantPageFunc = ^PGtkAssistantPageFunc;
   PGtkAssistantPageFunc = ^TGtkAssistantPageFunc;
-  TGtkAssistant = object
-    parent: TAtkWindow;
-    priv: PGtkAssistantPrivate;
+  TGtkAssistant = object(TGtkWindow)
+    priv4: PGtkAssistantPrivate;
     function new: PGtkAssistant; cdecl; inline; static;
     procedure add_action_widget(child: PGtkWidget); cdecl; inline;
     function append_page(page: PGtkWidget): gint; cdecl; inline;
@@ -3000,7 +3199,7 @@ type
   PPGtkAssistantClass = ^PGtkAssistantClass;
   PGtkAssistantClass = ^TGtkAssistantClass;
   TGtkAssistantClass = object
-    parent_class: TGdkWindowClass;
+    parent_class: TGtkWindowClass;
     prepare: procedure(assistant: PGtkAssistant; page: PGtkWidget); cdecl;
     apply: procedure(assistant: PGtkAssistant); cdecl;
     close: procedure(assistant: PGtkAssistant); cdecl;
@@ -4552,7 +4751,7 @@ type
   PPGtkColorSelectionDialog = ^PGtkColorSelectionDialog;
   PGtkColorSelectionDialog = ^TGtkColorSelectionDialog;
   TGtkColorSelectionDialog = object(TGtkDialog)
-    priv1: PGtkColorSelectionDialogPrivate;
+    priv5: PGtkColorSelectionDialogPrivate;
     function new(title: Pgchar): PGtkColorSelectionDialog; cdecl; inline; static;
     function get_color_selection: PGtkWidget; cdecl; inline;
     //property cancel_button: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_cancel_button ;
@@ -5212,12 +5411,6 @@ type
     procedure set_name(name: Pgchar); cdecl; inline;
   end;
 
-  { char* }
-  Tchar = record
-    { opaque type }
-  end;
-
-
   PPGtkFileChooserAction = ^PGtkFileChooserAction;
   PGtkFileChooserAction = ^TGtkFileChooserAction;
 
@@ -5226,8 +5419,6 @@ type
 
   PPGtkFileChooser = ^PGtkFileChooser;
   PGtkFileChooser = ^TGtkFileChooser;
-
-  Pchar = ^Tchar;
   TGtkFileChooser = object
     confirm_overwrite: function: TGtkFileChooserConfirmation; cdecl;
     current_folder_changed: procedure; cdecl;
@@ -5235,7 +5426,7 @@ type
     selection_changed: procedure; cdecl;
     update_preview: procedure; cdecl;
     procedure add_filter(filter: PGtkFileFilter); cdecl; inline;
-    function add_shortcut_folder(folder: Pchar): gboolean; cdecl; inline;
+    function add_shortcut_folder(folder: Pgchar): gboolean; cdecl; inline;
     function add_shortcut_folder_uri(uri: Pgchar): gboolean; cdecl; inline;
     function get_action: TGtkFileChooserAction; cdecl; inline;
     function get_create_folders: gboolean; cdecl; inline;
@@ -5251,7 +5442,7 @@ type
     function get_filter: PGtkFileFilter; cdecl; inline;
     function get_local_only: gboolean; cdecl; inline;
     function get_preview_file: PGFile; cdecl; inline;
-    function get_preview_filename: Pchar; cdecl; inline;
+    function get_preview_filename: Pgchar; cdecl; inline;
     function get_preview_uri: Pgchar; cdecl; inline;
     function get_preview_widget: PGtkWidget; cdecl; inline;
     function get_preview_widget_active: gboolean; cdecl; inline;
@@ -5264,11 +5455,11 @@ type
     function list_shortcut_folder_uris: PGSList; cdecl; inline;
     function list_shortcut_folders: PGSList; cdecl; inline;
     procedure remove_filter(filter: PGtkFileFilter); cdecl; inline;
-    function remove_shortcut_folder(folder: Pchar): gboolean; cdecl; inline;
+    function remove_shortcut_folder(folder: Pgchar): gboolean; cdecl; inline;
     function remove_shortcut_folder_uri(uri: Pgchar): gboolean; cdecl; inline;
     procedure select_all; cdecl; inline;
     function select_file(file_: PGFile): gboolean; cdecl; inline;
-    function select_filename(filename: Pchar): gboolean; cdecl; inline;
+    function select_filename(filename: Pgchar): gboolean; cdecl; inline;
     function select_uri(uri: Pgchar): gboolean; cdecl; inline;
     procedure set_action(action: TGtkFileChooserAction); cdecl; inline;
     procedure set_create_folders(create_folders: gboolean); cdecl; inline;
@@ -5279,7 +5470,7 @@ type
     procedure set_do_overwrite_confirmation(do_overwrite_confirmation: gboolean); cdecl; inline;
     procedure set_extra_widget(extra_widget: PGtkWidget); cdecl; inline;
     function set_file(file_: PGFile): gboolean; cdecl; inline;
-    function set_filename(filename: Pchar): gboolean; cdecl; inline;
+    function set_filename(filename: Pgchar): gboolean; cdecl; inline;
     procedure set_filter(filter: PGtkFileFilter); cdecl; inline;
     procedure set_local_only(local_only: gboolean); cdecl; inline;
     procedure set_preview_widget(preview_widget: PGtkWidget); cdecl; inline;
@@ -5290,7 +5481,7 @@ type
     procedure set_use_preview_label(use_label: gboolean); cdecl; inline;
     procedure unselect_all; cdecl; inline;
     procedure unselect_file(file_: PGFile); cdecl; inline;
-    procedure unselect_filename(filename: Pchar); cdecl; inline;
+    procedure unselect_filename(filename: Pgchar); cdecl; inline;
     procedure unselect_uri(uri: Pgchar); cdecl; inline;
     property action:  TGtkFileChooserAction read get_action  { property is writeable but setter not declared } ;
     property create_folders:  gboolean read get_create_folders  { property is writeable but setter not declared } ;
@@ -5353,8 +5544,8 @@ type
   PPGtkFileChooserDialog = ^PGtkFileChooserDialog;
   PGtkFileChooserDialog = ^TGtkFileChooserDialog;
   TGtkFileChooserDialog = object(TGtkDialog)
-    priv1: PGtkFileChooserDialogPrivate;
-    //function new(title: Pgchar; parent: PAtkWindow; action: TGtkFileChooserAction; first_button_text: Pgchar; args: array of const): PGtkFileChooserDialog; cdecl; inline; static;
+    priv5: PGtkFileChooserDialogPrivate;
+    //function new(title: Pgchar; parent: PGtkWindow; action: TGtkFileChooserAction; first_button_text: Pgchar; args: array of const): PGtkFileChooserDialog; cdecl; inline; static;
   end;
 
   PPGtkFileChooserDialogClass = ^PGtkFileChooserDialogClass;
@@ -5542,8 +5733,8 @@ type
   PPGtkFontChooserDialog = ^PGtkFontChooserDialog;
   PGtkFontChooserDialog = ^TGtkFontChooserDialog;
   TGtkFontChooserDialog = object(TGtkDialog)
-    priv1: PGtkFontChooserDialogPrivate;
-    function new(title: Pgchar; window: PAtkWindow): PGtkFontChooserDialog; cdecl; inline; static;
+    priv5: PGtkFontChooserDialogPrivate;
+    function new(title: Pgchar; window: PGtkWindow): PGtkFontChooserDialog; cdecl; inline; static;
     function get_font_chooser: PGtkWidget; cdecl; inline;
     function get_font_name: Pgchar; cdecl; inline;
     function get_preview_text: Pgchar; cdecl; inline;
@@ -5611,7 +5802,7 @@ type
   PPGtkFontSelectionDialog = ^PGtkFontSelectionDialog;
   PGtkFontSelectionDialog = ^TGtkFontSelectionDialog;
   TGtkFontSelectionDialog = object(TGtkDialog)
-    priv1: PGtkFontSelectionDialogPrivate;
+    priv5: PGtkFontSelectionDialogPrivate;
     
     
     
@@ -6339,6 +6530,43 @@ type
     property direction:  TGtkTextDirection read get_direction  { property is writeable but setter not declared } ;
     property screen:  PGdkScreen read get_screen  { property is writeable but setter not declared } ;
   end;
+  TGtkStyle = object(TGObject)
+    fg: array [0..4] of TGdkColor;
+    bg: array [0..4] of TGdkColor;
+    light: array [0..4] of TGdkColor;
+    dark: array [0..4] of TGdkColor;
+    mid: array [0..4] of TGdkColor;
+    text: array [0..4] of TGdkColor;
+    base: array [0..4] of TGdkColor;
+    text_aa: array [0..4] of TGdkColor;
+    black: TGdkColor;
+    white: TGdkColor;
+    font_desc: PPangoFontDescription;
+    xthickness: gint;
+    ythickness: gint;
+    background: array [0..4] of Pcairo_pattern_t;
+    attach_count: gint;
+    visual: PGdkVisual;
+    private_font_desc: PPangoFontDescription;
+    rc_style: PGtkRcStyle;
+    styles: PGSList;
+    property_cache: gpointer;
+    icon_factories: PGSList;
+    
+    procedure apply_default_background(cr: Pcairo_t; window: PGdkWindow; state_type: TGtkStateType; x: gint; y: gint; width: gint; height: gint); cdecl; inline;
+    function attach(window: PGdkWindow): PGtkStyle; cdecl; inline;
+    function copy: PGtkStyle; cdecl; inline;
+    procedure detach; cdecl; inline;
+    //procedure get(widget_type: TGType; first_property_name: Pgchar; args: array of const); cdecl; inline;
+    procedure get_style_property(widget_type: TGType; property_name: Pgchar; value: PGValue); cdecl; inline;
+    //procedure get_valist(widget_type: TGType; first_property_name: Pgchar; var_args: Tva_list); cdecl; inline;
+    function has_context: gboolean; cdecl; inline;
+    function lookup_color(color_name: Pgchar; color: PGdkColor): gboolean; cdecl; inline;
+    function lookup_icon_set(stock_id: Pgchar): PGtkIconSet; cdecl; inline;
+    function render_icon(source: PGtkIconSource; direction: TGtkTextDirection; state: TGtkStateType; size: gint; widget: PGtkWidget; detail: Pgchar): PGdkPixbuf; cdecl; inline;
+    procedure set_background(window: PGdkWindow; state_type: TGtkStateType); cdecl; inline;
+    //property context: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_context  { property is writeable but setter not declared } ;
+  end;
   TGtkIconSource = object
     function new: PGtkIconSource; cdecl; inline; static;
     function copy: PGtkIconSource; cdecl; inline;
@@ -6350,7 +6578,7 @@ type
     function get_pixbuf: PGdkPixbuf; cdecl; inline;
     function get_size: gint; cdecl; inline;
     function get_size_wildcarded: gboolean; cdecl; inline;
-    function get_state: TAtkStateType; cdecl; inline;
+    function get_state: TGtkStateType; cdecl; inline;
     function get_state_wildcarded: gboolean; cdecl; inline;
     procedure set_direction(direction: TGtkTextDirection); cdecl; inline;
     procedure set_direction_wildcarded(setting: gboolean); cdecl; inline;
@@ -6359,8 +6587,95 @@ type
     procedure set_pixbuf(pixbuf: PGdkPixbuf); cdecl; inline;
     procedure set_size(size: gint); cdecl; inline;
     procedure set_size_wildcarded(setting: gboolean); cdecl; inline;
-    procedure set_state(state: TAtkStateType); cdecl; inline;
+    procedure set_state(state: TGtkStateType); cdecl; inline;
     procedure set_state_wildcarded(setting: gboolean); cdecl; inline;
+  end;
+
+  PPGtkSettingsValue = ^PGtkSettingsValue;
+  PGtkSettingsValue = ^TGtkSettingsValue;
+
+  PPGtkSettingsPrivate = ^PGtkSettingsPrivate;
+  PGtkSettingsPrivate = ^TGtkSettingsPrivate;
+  TGtkSettings = object(TGObject)
+    priv: PGtkSettingsPrivate;
+    function get_default: PGtkSettings; cdecl; inline; static;
+    function get_for_screen(screen: PGdkScreen): PGtkSettings; cdecl; inline; static;
+    procedure install_property(pspec: PGParamSpec); cdecl; inline; static;
+    procedure install_property_parser(pspec: PGParamSpec; parser: TGtkRcPropertyParser); cdecl; inline; static;
+    procedure set_double_property(name: Pgchar; v_double: gdouble; origin: Pgchar); cdecl; inline;
+    procedure set_long_property(name: Pgchar; v_long: glong; origin: Pgchar); cdecl; inline;
+    procedure set_property_value(name: Pgchar; svalue: PGtkSettingsValue); cdecl; inline;
+    procedure set_string_property(name: Pgchar; v_string: Pgchar; origin: Pgchar); cdecl; inline;
+    //property color_hash: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_color_hash ;
+    //property gtk_alternative_button_order: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_alternative_button_order  { property is writeable but setter not declared } ;
+    //property gtk_alternative_sort_arrows: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_alternative_sort_arrows  { property is writeable but setter not declared } ;
+    //property gtk_application_prefer_dark_theme: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_application_prefer_dark_theme  { property is writeable but setter not declared } ;
+    //property gtk_auto_mnemonics: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_auto_mnemonics  { property is writeable but setter not declared } ;
+    //property gtk_button_images: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_button_images  { property is writeable but setter not declared } ;
+    //property gtk_can_change_accels: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_can_change_accels  { property is writeable but setter not declared } ;
+    //property gtk_color_palette: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_color_palette  { property is writeable but setter not declared } ;
+    //property gtk_color_scheme: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_color_scheme  { property is writeable but setter not declared } ;
+    //property gtk_cursor_blink: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_cursor_blink  { property is writeable but setter not declared } ;
+    //property gtk_cursor_blink_time: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_cursor_blink_time  { property is writeable but setter not declared } ;
+    //property gtk_cursor_blink_timeout: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_cursor_blink_timeout  { property is writeable but setter not declared } ;
+    //property gtk_cursor_theme_name: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_cursor_theme_name  { property is writeable but setter not declared } ;
+    //property gtk_cursor_theme_size: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_cursor_theme_size  { property is writeable but setter not declared } ;
+    //property gtk_dnd_drag_threshold: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_dnd_drag_threshold  { property is writeable but setter not declared } ;
+    //property gtk_double_click_distance: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_double_click_distance  { property is writeable but setter not declared } ;
+    //property gtk_double_click_time: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_double_click_time  { property is writeable but setter not declared } ;
+    //property gtk_enable_accels: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_enable_accels  { property is writeable but setter not declared } ;
+    //property gtk_enable_animations: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_enable_animations  { property is writeable but setter not declared } ;
+    //property gtk_enable_event_sounds: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_enable_event_sounds  { property is writeable but setter not declared } ;
+    //property gtk_enable_input_feedback_sounds: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_enable_input_feedback_sounds  { property is writeable but setter not declared } ;
+    //property gtk_enable_mnemonics: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_enable_mnemonics  { property is writeable but setter not declared } ;
+    //property gtk_enable_tooltips: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_enable_tooltips  { property is writeable but setter not declared } ;
+    //property gtk_entry_password_hint_timeout: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_entry_password_hint_timeout  { property is writeable but setter not declared } ;
+    //property gtk_entry_select_on_focus: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_entry_select_on_focus  { property is writeable but setter not declared } ;
+    //property gtk_error_bell: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_error_bell  { property is writeable but setter not declared } ;
+    //property gtk_fallback_icon_theme: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_fallback_icon_theme  { property is writeable but setter not declared } ;
+    //property gtk_file_chooser_backend: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_file_chooser_backend  { property is writeable but setter not declared } ;
+    //property gtk_font_name: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_font_name  { property is writeable but setter not declared } ;
+    //property gtk_fontconfig_timestamp: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_fontconfig_timestamp  { property is writeable but setter not declared } ;
+    //property gtk_icon_sizes: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_icon_sizes  { property is writeable but setter not declared } ;
+    //property gtk_icon_theme_name: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_icon_theme_name  { property is writeable but setter not declared } ;
+    //property gtk_im_module: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_im_module  { property is writeable but setter not declared } ;
+    //property gtk_im_preedit_style: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_im_preedit_style  { property is writeable but setter not declared } ;
+    //property gtk_im_status_style: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_im_status_style  { property is writeable but setter not declared } ;
+    //property gtk_key_theme_name: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_key_theme_name  { property is writeable but setter not declared } ;
+    //property gtk_keynav_cursor_only: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_keynav_cursor_only  { property is writeable but setter not declared } ;
+    //property gtk_keynav_wrap_around: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_keynav_wrap_around  { property is writeable but setter not declared } ;
+    //property gtk_label_select_on_focus: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_label_select_on_focus  { property is writeable but setter not declared } ;
+    //property gtk_menu_bar_accel: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_menu_bar_accel  { property is writeable but setter not declared } ;
+    //property gtk_menu_bar_popup_delay: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_menu_bar_popup_delay  { property is writeable but setter not declared } ;
+    //property gtk_menu_images: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_menu_images  { property is writeable but setter not declared } ;
+    //property gtk_menu_popdown_delay: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_menu_popdown_delay  { property is writeable but setter not declared } ;
+    //property gtk_menu_popup_delay: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_menu_popup_delay  { property is writeable but setter not declared } ;
+    //property gtk_modules: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_modules  { property is writeable but setter not declared } ;
+    //property gtk_print_backends: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_print_backends  { property is writeable but setter not declared } ;
+    //property gtk_print_preview_command: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_print_preview_command  { property is writeable but setter not declared } ;
+    //property gtk_recent_files_limit: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_recent_files_limit  { property is writeable but setter not declared } ;
+    //property gtk_recent_files_max_age: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_recent_files_max_age  { property is writeable but setter not declared } ;
+    //property gtk_scrolled_window_placement: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_scrolled_window_placement  { property is writeable but setter not declared } ;
+    //property gtk_show_input_method_menu: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_show_input_method_menu  { property is writeable but setter not declared } ;
+    //property gtk_show_unicode_menu: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_show_unicode_menu  { property is writeable but setter not declared } ;
+    //property gtk_sound_theme_name: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_sound_theme_name  { property is writeable but setter not declared } ;
+    //property gtk_split_cursor: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_split_cursor  { property is writeable but setter not declared } ;
+    //property gtk_theme_name: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_theme_name  { property is writeable but setter not declared } ;
+    //property gtk_timeout_expand: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_timeout_expand  { property is writeable but setter not declared } ;
+    //property gtk_timeout_initial: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_timeout_initial  { property is writeable but setter not declared } ;
+    //property gtk_timeout_repeat: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_timeout_repeat  { property is writeable but setter not declared } ;
+    //property gtk_toolbar_icon_size: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_toolbar_icon_size  { property is writeable but setter not declared } ;
+    //property gtk_toolbar_style: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_toolbar_style  { property is writeable but setter not declared } ;
+    //property gtk_tooltip_browse_mode_timeout: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_tooltip_browse_mode_timeout  { property is writeable but setter not declared } ;
+    //property gtk_tooltip_browse_timeout: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_tooltip_browse_timeout  { property is writeable but setter not declared } ;
+    //property gtk_tooltip_timeout: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_tooltip_timeout  { property is writeable but setter not declared } ;
+    //property gtk_touchscreen_mode: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_touchscreen_mode  { property is writeable but setter not declared } ;
+    //property gtk_visible_focus: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_visible_focus  { property is writeable but setter not declared } ;
+    //property gtk_xft_antialias: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_xft_antialias  { property is writeable but setter not declared } ;
+    //property gtk_xft_dpi: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_xft_dpi  { property is writeable but setter not declared } ;
+    //property gtk_xft_hinting: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_xft_hinting  { property is writeable but setter not declared } ;
+    //property gtk_xft_hintstyle: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_xft_hintstyle  { property is writeable but setter not declared } ;
+    //property gtk_xft_rgba: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_xft_rgba  { property is writeable but setter not declared } ;
   end;
 
   TGtkIconThemePrivate = record
@@ -6542,9 +6857,8 @@ type
 
   PPGtkImage = ^PGtkImage;
   PGtkImage = ^TGtkImage;
-  TGtkImage = object
-    misc: TAtkMisc;
-    priv: PGtkImagePrivate;
+  TGtkImage = object(TGtkMisc)
+    priv2: PGtkImagePrivate;
     function new: PGtkImage; cdecl; inline; static;
     function new_from_animation(animation: PGdkPixbufAnimation): PGtkImage; cdecl; inline; static;
     function new_from_file(filename: Pgchar): PGtkImage; cdecl; inline; static;
@@ -6586,7 +6900,7 @@ type
   PPGtkImageClass = ^PGtkImageClass;
   PGtkImageClass = ^TGtkImageClass;
   TGtkImageClass = object
-    parent_class: TAtkMiscClass;
+    parent_class: TGtkMiscClass;
     _gtk_reserved1: procedure; cdecl;
     _gtk_reserved2: procedure; cdecl;
     _gtk_reserved3: procedure; cdecl;
@@ -7130,9 +7444,9 @@ type
   PPGtkMessageDialog = ^PGtkMessageDialog;
   PGtkMessageDialog = ^TGtkMessageDialog;
   TGtkMessageDialog = object(TGtkDialog)
-    priv1: PGtkMessageDialogPrivate;
-    //function new(parent: PAtkWindow; flags: TGtkDialogFlags; type_: TGtkMessageType; buttons: TGtkButtonsType; message_format: Pgchar; args: array of const): PGtkMessageDialog; cdecl; inline; static;
-    //function new_with_markup(parent: PAtkWindow; flags: TGtkDialogFlags; type_: TGtkMessageType; buttons: TGtkButtonsType; message_format: Pgchar; args: array of const): PGtkMessageDialog; cdecl; inline; static;
+    priv5: PGtkMessageDialogPrivate;
+    //function new(parent: PGtkWindow; flags: TGtkDialogFlags; type_: TGtkMessageType; buttons: TGtkButtonsType; message_format: Pgchar; args: array of const): PGtkMessageDialog; cdecl; inline; static;
+    //function new_with_markup(parent: PGtkWindow; flags: TGtkDialogFlags; type_: TGtkMessageType; buttons: TGtkButtonsType; message_format: Pgchar; args: array of const): PGtkMessageDialog; cdecl; inline; static;
     //procedure format_secondary_markup(message_format: Pgchar; args: array of const); cdecl; inline;
     //procedure format_secondary_text(message_format: Pgchar; args: array of const); cdecl; inline;
     function get_image: PGtkWidget; cdecl; inline;
@@ -7159,52 +7473,33 @@ type
     _gtk_reserved4: procedure; cdecl;
   end;
 
-  PPGtkMiscPrivate = ^PGtkMiscPrivate;
-  PGtkMiscPrivate = ^TGtkMiscPrivate;
-
   TGtkMiscPrivate = record
   end;
 
 
-
-  PPGtkMisc = ^PGtkMisc;
-  PGtkMisc = ^TGtkMisc;
-  TGtkMisc = object(TGtkWidget)
-    priv1: PGtkMiscPrivate;
-    procedure get_alignment(xalign: Pgfloat; yalign: Pgfloat); cdecl; inline;
-    procedure get_padding(xpad: Pgint; ypad: Pgint); cdecl; inline;
-    procedure set_alignment(xalign: gfloat; yalign: gfloat); cdecl; inline;
-    procedure set_padding(xpad: gint; ypad: gint); cdecl; inline;
-    //property xalign: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_xalign  { property is writeable but setter not declared } ;
-    //property xpad: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_xpad  { property is writeable but setter not declared } ;
-    //property yalign: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_yalign  { property is writeable but setter not declared } ;
-    //property ypad: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_ypad  { property is writeable but setter not declared } ;
-  end;
-
-  PPGtkMiscClass = ^PGtkMiscClass;
-  PGtkMiscClass = ^TGtkMiscClass;
-  TGtkMiscClass = object
-    parent_class: TGtkWidgetClass;
-    _gtk_reserved1: procedure; cdecl;
-    _gtk_reserved2: procedure; cdecl;
-    _gtk_reserved3: procedure; cdecl;
-    _gtk_reserved4: procedure; cdecl;
-  end;
   TGtkModuleDisplayInitFunc = procedure(display: PGdkDisplay); cdecl;
   TGtkModuleInitFunc = procedure(argc: Pgint; argv: PPPgchar); cdecl;
+
+  PPGtkMountOperationPrivate = ^PGtkMountOperationPrivate;
+  PGtkMountOperationPrivate = ^TGtkMountOperationPrivate;
+
+  TGtkMountOperationPrivate = record
+  end;
+
+
 
   PPGtkMountOperation = ^PGtkMountOperation;
   PGtkMountOperation = ^TGtkMountOperation;
   TGtkMountOperation = object(TGMountOperation)
-    priv1: PGMountOperationPrivate;
-    function new(parent: PAtkWindow): PGtkMountOperation; cdecl; inline; static;
-    function get_parent: PAtkWindow; cdecl; inline;
+    priv1: PGtkMountOperationPrivate;
+    function new(parent: PGtkWindow): PGtkMountOperation; cdecl; inline; static;
+    function get_parent: PGtkWindow; cdecl; inline;
     function get_screen: PGdkScreen; cdecl; inline;
     function is_showing: gboolean; cdecl; inline;
-    procedure set_parent(parent: PAtkWindow); cdecl; inline;
+    procedure set_parent(parent: PGtkWindow); cdecl; inline;
     procedure set_screen(screen: PGdkScreen); cdecl; inline;
     //property is_showing1: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_is_showing ;
-    property parent:  PAtkWindow read get_parent  { property is writeable but setter not declared } ;
+    property parent:  PGtkWindow read get_parent  { property is writeable but setter not declared } ;
     property screen:  PGdkScreen read get_screen  { property is writeable but setter not declared } ;
   end;
 
@@ -7217,14 +7512,6 @@ type
     _gtk_reserved3: procedure; cdecl;
     _gtk_reserved4: procedure; cdecl;
   end;
-
-  PPGtkMountOperationPrivate = ^PGtkMountOperationPrivate;
-  PGtkMountOperationPrivate = ^TGtkMountOperationPrivate;
-
-  TGtkMountOperationPrivate = record
-  end;
-
-
 
   PPGtkNotebook = ^PGtkNotebook;
   PGtkNotebook = ^TGtkNotebook;
@@ -7362,8 +7649,7 @@ type
 
   PPGtkOffscreenWindow = ^PGtkOffscreenWindow;
   PGtkOffscreenWindow = ^TGtkOffscreenWindow;
-  TGtkOffscreenWindow = object
-    parent_object: TAtkWindow;
+  TGtkOffscreenWindow = object(TGtkWindow)
     function new: PGtkOffscreenWindow; cdecl; inline; static;
     function get_pixbuf: PGdkPixbuf; cdecl; inline;
     function get_surface: Pcairo_surface_t; cdecl; inline;
@@ -7372,7 +7658,7 @@ type
   PPGtkOffscreenWindowClass = ^PGtkOffscreenWindowClass;
   PGtkOffscreenWindowClass = ^TGtkOffscreenWindowClass;
   TGtkOffscreenWindowClass = object
-    parent_class: TGdkWindowClass;
+    parent_class: TGtkWindowClass;
     _gtk_reserved1: procedure; cdecl;
     _gtk_reserved2: procedure; cdecl;
     _gtk_reserved3: procedure; cdecl;
@@ -7455,7 +7741,7 @@ type
     function get_paper_width(unit_: TGtkUnit): gdouble; cdecl; inline;
     function get_right_margin(unit_: TGtkUnit): gdouble; cdecl; inline;
     function get_top_margin(unit_: TGtkUnit): gdouble; cdecl; inline;
-    function load_file(file_name: Pchar): gboolean; cdecl; inline;
+    function load_file(file_name: Pgchar): gboolean; cdecl; inline;
     function load_key_file(key_file: PGKeyFile; group_name: Pgchar): gboolean; cdecl; inline;
     procedure set_bottom_margin(margin: gdouble; unit_: TGtkUnit); cdecl; inline;
     procedure set_left_margin(margin: gdouble; unit_: TGtkUnit); cdecl; inline;
@@ -7464,7 +7750,7 @@ type
     procedure set_paper_size_and_default_margins(size: PGtkPaperSize); cdecl; inline;
     procedure set_right_margin(margin: gdouble; unit_: TGtkUnit); cdecl; inline;
     procedure set_top_margin(margin: gdouble; unit_: TGtkUnit); cdecl; inline;
-    function to_file(file_name: Pchar): gboolean; cdecl; inline;
+    function to_file(file_name: Pgchar): gboolean; cdecl; inline;
     procedure to_key_file(key_file: PGKeyFile; group_name: Pgchar); cdecl; inline;
   end;
   TGtkPaperSize = object
@@ -7507,9 +7793,8 @@ type
 
   PPGtkPlug = ^PGtkPlug;
   PGtkPlug = ^TGtkPlug;
-  TGtkPlug = object
-    window: TAtkWindow;
-    priv: PGtkPlugPrivate;
+  TGtkPlug = object(TGtkWindow)
+    priv4: PGtkPlugPrivate;
     function new(socket_id: TWindow): PGtkPlug; cdecl; inline; static;
     function new_for_display(display: PGdkDisplay; socket_id: TWindow): PGtkPlug; cdecl; inline; static;
     procedure construct(socket_id: TWindow); cdecl; inline;
@@ -7524,7 +7809,7 @@ type
   PPGtkPlugClass = ^PGtkPlugClass;
   PGtkPlugClass = ^TGtkPlugClass;
   TGtkPlugClass = object
-    parent_class: TGdkWindowClass;
+    parent_class: TGtkWindowClass;
     embedded: procedure(plug: PGtkPlug); cdecl;
     _gtk_reserved1: procedure; cdecl;
     _gtk_reserved2: procedure; cdecl;
@@ -7599,7 +7884,7 @@ type
     function get_status_string: Pgchar; cdecl; inline;
     function get_support_selection: gboolean; cdecl; inline;
     function is_finished: gboolean; cdecl; inline;
-    function run(action: TGtkPrintOperationAction; parent: PAtkWindow): TGtkPrintOperationResult; cdecl; inline;
+    function run(action: TGtkPrintOperationAction; parent: PGtkWindow): TGtkPrintOperationResult; cdecl; inline;
     procedure set_allow_async(allow_async: gboolean); cdecl; inline;
     procedure set_current_page(current_page: gint); cdecl; inline;
     procedure set_custom_tab_label(label_: Pgchar); cdecl; inline;
@@ -7740,7 +8025,7 @@ type
     status_changed: procedure(operation: PGtkPrintOperation); cdecl;
     create_custom_widget: function(operation: PGtkPrintOperation): PGtkWidget; cdecl;
     custom_widget_apply: procedure(operation: PGtkPrintOperation; widget: PGtkWidget); cdecl;
-    preview: function(operation: PGtkPrintOperation; preview: PGtkPrintOperationPreview; context: PGtkPrintContext; parent: PAtkWindow): gboolean; cdecl;
+    preview: function(operation: PGtkPrintOperation; preview: PGtkPrintOperationPreview; context: PGtkPrintContext; parent: PGtkWindow): gboolean; cdecl;
     update_custom_widget: procedure(operation: PGtkPrintOperation; widget: PGtkWidget; setup: PGtkPageSetup; settings: PGtkPrintSettings); cdecl;
     _gtk_reserved1: procedure; cdecl;
     _gtk_reserved2: procedure; cdecl;
@@ -8058,9 +8343,9 @@ type
   TGtkRcStyleClass = object
     parent_class: TGObjectClass;
     create_rc_style: function(rc_style: PGtkRcStyle): PGtkRcStyle; cdecl;
-    parse: function(rc_style: PGtkRcStyle; settings: PGSettings; scanner: PGScanner): guint; cdecl;
+    parse: function(rc_style: PGtkRcStyle; settings: PGtkSettings; scanner: PGScanner): guint; cdecl;
     merge: procedure(dest: PGtkRcStyle; src: PGtkRcStyle); cdecl;
-    create_style: function(rc_style: PGtkRcStyle): PPangoStyle; cdecl;
+    create_style: function(rc_style: PGtkRcStyle): PGtkStyle; cdecl;
     _gtk_reserved1: procedure; cdecl;
     _gtk_reserved2: procedure; cdecl;
     _gtk_reserved3: procedure; cdecl;
@@ -8256,9 +8541,9 @@ type
   PPGtkRecentChooserDialog = ^PGtkRecentChooserDialog;
   PGtkRecentChooserDialog = ^TGtkRecentChooserDialog;
   TGtkRecentChooserDialog = object(TGtkDialog)
-    priv1: PGtkRecentChooserDialogPrivate;
-    //function new(title: Pgchar; parent: PAtkWindow; first_button_text: Pgchar; args: array of const): PGtkRecentChooserDialog; cdecl; inline; static;
-    //function new_for_manager(title: Pgchar; parent: PAtkWindow; manager: PGtkRecentManager; first_button_text: Pgchar; args: array of const): PGtkRecentChooserDialog; cdecl; inline; static;
+    priv5: PGtkRecentChooserDialogPrivate;
+    //function new(title: Pgchar; parent: PGtkWindow; first_button_text: Pgchar; args: array of const): PGtkRecentChooserDialog; cdecl; inline; static;
+    //function new_for_manager(title: Pgchar; parent: PGtkWindow; manager: PGtkRecentManager; first_button_text: Pgchar; args: array of const): PGtkRecentChooserDialog; cdecl; inline; static;
   end;
 
   PPGtkRecentChooserDialogClass = ^PGtkRecentChooserDialogClass;
@@ -8562,96 +8847,17 @@ type
     _gtk_reserved4: procedure; cdecl;
   end;
 
-  PPGtkSettingsValue = ^PGtkSettingsValue;
-  PGtkSettingsValue = ^TGtkSettingsValue;
-
   TGtkSettingsValue = record
     origin: Pgchar;
     value: TGValue;
   end;
 
 
-  TGtkSettings = object(TGObject)
-    priv: PGSettingsPrivate;
-    function get_default: PGSettings; cdecl; inline; static;
-    function get_for_screen(screen: PGdkScreen): PGSettings; cdecl; inline; static;
-    procedure install_property(pspec: PGParamSpec); cdecl; inline; static;
-    procedure install_property_parser(pspec: PGParamSpec; parser: TGtkRcPropertyParser); cdecl; inline; static;
-    procedure set_double_property(name: Pgchar; v_double: gdouble; origin: Pgchar); cdecl; inline;
-    procedure set_long_property(name: Pgchar; v_long: glong; origin: Pgchar); cdecl; inline;
-    procedure set_property_value(name: Pgchar; svalue: PGtkSettingsValue); cdecl; inline;
-    procedure set_string_property(name: Pgchar; v_string: Pgchar; origin: Pgchar); cdecl; inline;
-    //property color_hash: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_color_hash ;
-    //property gtk_alternative_button_order: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_alternative_button_order  { property is writeable but setter not declared } ;
-    //property gtk_alternative_sort_arrows: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_alternative_sort_arrows  { property is writeable but setter not declared } ;
-    //property gtk_application_prefer_dark_theme: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_application_prefer_dark_theme  { property is writeable but setter not declared } ;
-    //property gtk_auto_mnemonics: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_auto_mnemonics  { property is writeable but setter not declared } ;
-    //property gtk_button_images: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_button_images  { property is writeable but setter not declared } ;
-    //property gtk_can_change_accels: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_can_change_accels  { property is writeable but setter not declared } ;
-    //property gtk_color_palette: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_color_palette  { property is writeable but setter not declared } ;
-    //property gtk_color_scheme: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_color_scheme  { property is writeable but setter not declared } ;
-    //property gtk_cursor_blink: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_cursor_blink  { property is writeable but setter not declared } ;
-    //property gtk_cursor_blink_time: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_cursor_blink_time  { property is writeable but setter not declared } ;
-    //property gtk_cursor_blink_timeout: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_cursor_blink_timeout  { property is writeable but setter not declared } ;
-    //property gtk_cursor_theme_name: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_cursor_theme_name  { property is writeable but setter not declared } ;
-    //property gtk_cursor_theme_size: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_cursor_theme_size  { property is writeable but setter not declared } ;
-    //property gtk_dnd_drag_threshold: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_dnd_drag_threshold  { property is writeable but setter not declared } ;
-    //property gtk_double_click_distance: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_double_click_distance  { property is writeable but setter not declared } ;
-    //property gtk_double_click_time: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_double_click_time  { property is writeable but setter not declared } ;
-    //property gtk_enable_accels: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_enable_accels  { property is writeable but setter not declared } ;
-    //property gtk_enable_animations: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_enable_animations  { property is writeable but setter not declared } ;
-    //property gtk_enable_event_sounds: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_enable_event_sounds  { property is writeable but setter not declared } ;
-    //property gtk_enable_input_feedback_sounds: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_enable_input_feedback_sounds  { property is writeable but setter not declared } ;
-    //property gtk_enable_mnemonics: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_enable_mnemonics  { property is writeable but setter not declared } ;
-    //property gtk_enable_tooltips: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_enable_tooltips  { property is writeable but setter not declared } ;
-    //property gtk_entry_password_hint_timeout: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_entry_password_hint_timeout  { property is writeable but setter not declared } ;
-    //property gtk_entry_select_on_focus: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_entry_select_on_focus  { property is writeable but setter not declared } ;
-    //property gtk_error_bell: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_error_bell  { property is writeable but setter not declared } ;
-    //property gtk_fallback_icon_theme: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_fallback_icon_theme  { property is writeable but setter not declared } ;
-    //property gtk_file_chooser_backend: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_file_chooser_backend  { property is writeable but setter not declared } ;
-    //property gtk_font_name: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_font_name  { property is writeable but setter not declared } ;
-    //property gtk_fontconfig_timestamp: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_fontconfig_timestamp  { property is writeable but setter not declared } ;
-    //property gtk_icon_sizes: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_icon_sizes  { property is writeable but setter not declared } ;
-    //property gtk_icon_theme_name: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_icon_theme_name  { property is writeable but setter not declared } ;
-    //property gtk_im_module: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_im_module  { property is writeable but setter not declared } ;
-    //property gtk_im_preedit_style: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_im_preedit_style  { property is writeable but setter not declared } ;
-    //property gtk_im_status_style: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_im_status_style  { property is writeable but setter not declared } ;
-    //property gtk_key_theme_name: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_key_theme_name  { property is writeable but setter not declared } ;
-    //property gtk_keynav_cursor_only: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_keynav_cursor_only  { property is writeable but setter not declared } ;
-    //property gtk_keynav_wrap_around: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_keynav_wrap_around  { property is writeable but setter not declared } ;
-    //property gtk_label_select_on_focus: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_label_select_on_focus  { property is writeable but setter not declared } ;
-    //property gtk_menu_bar_accel: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_menu_bar_accel  { property is writeable but setter not declared } ;
-    //property gtk_menu_bar_popup_delay: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_menu_bar_popup_delay  { property is writeable but setter not declared } ;
-    //property gtk_menu_images: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_menu_images  { property is writeable but setter not declared } ;
-    //property gtk_menu_popdown_delay: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_menu_popdown_delay  { property is writeable but setter not declared } ;
-    //property gtk_menu_popup_delay: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_menu_popup_delay  { property is writeable but setter not declared } ;
-    //property gtk_modules: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_modules  { property is writeable but setter not declared } ;
-    //property gtk_print_backends: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_print_backends  { property is writeable but setter not declared } ;
-    //property gtk_print_preview_command: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_print_preview_command  { property is writeable but setter not declared } ;
-    //property gtk_recent_files_limit: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_recent_files_limit  { property is writeable but setter not declared } ;
-    //property gtk_recent_files_max_age: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_recent_files_max_age  { property is writeable but setter not declared } ;
-    //property gtk_scrolled_window_placement: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_scrolled_window_placement  { property is writeable but setter not declared } ;
-    //property gtk_show_input_method_menu: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_show_input_method_menu  { property is writeable but setter not declared } ;
-    //property gtk_show_unicode_menu: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_show_unicode_menu  { property is writeable but setter not declared } ;
-    //property gtk_sound_theme_name: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_sound_theme_name  { property is writeable but setter not declared } ;
-    //property gtk_split_cursor: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_split_cursor  { property is writeable but setter not declared } ;
-    //property gtk_theme_name: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_theme_name  { property is writeable but setter not declared } ;
-    //property gtk_timeout_expand: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_timeout_expand  { property is writeable but setter not declared } ;
-    //property gtk_timeout_initial: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_timeout_initial  { property is writeable but setter not declared } ;
-    //property gtk_timeout_repeat: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_timeout_repeat  { property is writeable but setter not declared } ;
-    //property gtk_toolbar_icon_size: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_toolbar_icon_size  { property is writeable but setter not declared } ;
-    //property gtk_toolbar_style: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_toolbar_style  { property is writeable but setter not declared } ;
-    //property gtk_tooltip_browse_mode_timeout: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_tooltip_browse_mode_timeout  { property is writeable but setter not declared } ;
-    //property gtk_tooltip_browse_timeout: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_tooltip_browse_timeout  { property is writeable but setter not declared } ;
-    //property gtk_tooltip_timeout: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_tooltip_timeout  { property is writeable but setter not declared } ;
-    //property gtk_touchscreen_mode: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_touchscreen_mode  { property is writeable but setter not declared } ;
-    //property gtk_visible_focus: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_visible_focus  { property is writeable but setter not declared } ;
-    //property gtk_xft_antialias: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_xft_antialias  { property is writeable but setter not declared } ;
-    //property gtk_xft_dpi: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_xft_dpi  { property is writeable but setter not declared } ;
-    //property gtk_xft_hinting: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_xft_hinting  { property is writeable but setter not declared } ;
-    //property gtk_xft_hintstyle: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_xft_hintstyle  { property is writeable but setter not declared } ;
-    //property gtk_xft_rgba: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_gtk_xft_rgba  { property is writeable but setter not declared } ;
+
+  TGtkSettingsPrivate = record
   end;
+
+
 
   PPGtkSettingsClass = ^PGtkSettingsClass;
   PGtkSettingsClass = ^TGtkSettingsClass;
@@ -8662,14 +8868,6 @@ type
     _gtk_reserved3: procedure; cdecl;
     _gtk_reserved4: procedure; cdecl;
   end;
-
-  PPGtkSettingsPrivate = ^PGtkSettingsPrivate;
-  PGtkSettingsPrivate = ^TGtkSettingsPrivate;
-
-  TGtkSettingsPrivate = record
-  end;
-
-
 
   PPGtkSizeGroupMode = ^PGtkSizeGroupMode;
   PGtkSizeGroupMode = ^TGtkSizeGroupMode;
@@ -8705,10 +8903,18 @@ type
     _gtk_reserved4: procedure; cdecl;
   end;
 
+  PPGtkSocketPrivate = ^PGtkSocketPrivate;
+  PGtkSocketPrivate = ^TGtkSocketPrivate;
+
+  TGtkSocketPrivate = record
+  end;
+
+
+
   PPGtkSocket = ^PGtkSocket;
   PGtkSocket = ^TGtkSocket;
   TGtkSocket = object(TGtkContainer)
-    priv2: PGSocketPrivate;
+    priv2: PGtkSocketPrivate;
     function new: PGtkSocket; cdecl; inline; static;
     procedure add_id(window: TWindow); cdecl; inline;
     function get_id: TWindow; cdecl; inline;
@@ -8726,14 +8932,6 @@ type
     _gtk_reserved3: procedure; cdecl;
     _gtk_reserved4: procedure; cdecl;
   end;
-
-  PPGtkSocketPrivate = ^PGtkSocketPrivate;
-  PGtkSocketPrivate = ^TGtkSocketPrivate;
-
-  TGtkSocketPrivate = record
-  end;
-
-
 
   PPGtkSpinButtonUpdatePolicy = ^PGtkSpinButtonUpdatePolicy;
   PGtkSpinButtonUpdatePolicy = ^TGtkSpinButtonUpdatePolicy;
@@ -8954,43 +9152,6 @@ type
     translation_domain: Pgchar;
     function copy: PGtkStockItem; cdecl; inline;
     procedure free; cdecl; inline;
-  end;
-  TGtkStyle = object(TGObject)
-    fg: array [0..4] of TGdkColor;
-    bg: array [0..4] of TGdkColor;
-    light: array [0..4] of TGdkColor;
-    dark: array [0..4] of TGdkColor;
-    mid: array [0..4] of TGdkColor;
-    text: array [0..4] of TGdkColor;
-    base: array [0..4] of TGdkColor;
-    text_aa: array [0..4] of TGdkColor;
-    black: TGdkColor;
-    white: TGdkColor;
-    font_desc: PPangoFontDescription;
-    xthickness: gint;
-    ythickness: gint;
-    background: array [0..4] of Pcairo_pattern_t;
-    attach_count: gint;
-    visual: PGdkVisual;
-    private_font_desc: PPangoFontDescription;
-    rc_style: PGtkRcStyle;
-    styles: PGSList;
-    property_cache: gpointer;
-    icon_factories: PGSList;
-    
-    procedure apply_default_background(cr: Pcairo_t; window: PGdkWindow; state_type: TGtkStateType; x: gint; y: gint; width: gint; height: gint); cdecl; inline;
-    function attach(window: PGdkWindow): PPangoStyle; cdecl; inline;
-    function copy: PPangoStyle; cdecl; inline;
-    procedure detach; cdecl; inline;
-    //procedure get(widget_type: TGType; first_property_name: Pgchar; args: array of const); cdecl; inline;
-    procedure get_style_property(widget_type: TGType; property_name: Pgchar; value: PGValue); cdecl; inline;
-    //procedure get_valist(widget_type: TGType; first_property_name: Pgchar; var_args: Tva_list); cdecl; inline;
-    function has_context: gboolean; cdecl; inline;
-    function lookup_color(color_name: Pgchar; color: PGdkColor): gboolean; cdecl; inline;
-    function lookup_icon_set(stock_id: Pgchar): PGtkIconSet; cdecl; inline;
-    function render_icon(source: PGtkIconSource; direction: TGtkTextDirection; state: TGtkStateType; size: gint; widget: PGtkWidget; detail: Pgchar): PGdkPixbuf; cdecl; inline;
-    procedure set_background(window: PGdkWindow; state_type: TGtkStateType); cdecl; inline;
-    //property context: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_context  { property is writeable but setter not declared } ;
   end;
 
   PPGtkStyleClass = ^PGtkStyleClass;
@@ -9249,6 +9410,9 @@ type
 
 
 
+  PPGtkWrapMode = ^PGtkWrapMode;
+  PGtkWrapMode = ^TGtkWrapMode;
+
   PPGtkTextAttributes = ^PGtkTextAttributes;
   PGtkTextAttributes = ^TGtkTextAttributes;
   TGtkTextAttributesBitfield0 = bitpacked record
@@ -9271,7 +9435,7 @@ type
     pixels_below_lines: gint;
     pixels_inside_wrap: gint;
     tabs: PPangoTabArray;
-    wrap_mode: TPangoWrapMode;
+    wrap_mode: TGtkWrapMode;
     language: PPangoLanguage;
     pg_bg_color: PGdkColor;
     Bitfield0 : TGtkTextAttributesBitfield0; { auto generated type }
@@ -9656,7 +9820,7 @@ type
     procedure get_visible_rect(visible_rect: PGdkRectangle); cdecl; inline;
     function get_window(win: TGtkTextWindowType): PGdkWindow; cdecl; inline;
     function get_window_type(window: PGdkWindow): TGtkTextWindowType; cdecl; inline;
-    function get_wrap_mode: TPangoWrapMode; cdecl; inline;
+    function get_wrap_mode: TGtkWrapMode; cdecl; inline;
     function im_context_filter_keypress(event: PGdkEventKey): gboolean; cdecl; inline;
     procedure move_child(child: PGtkWidget; xpos: gint; ypos: gint); cdecl; inline;
     function move_mark_onscreen(mark: PGtkTextMark): gboolean; cdecl; inline;
@@ -9680,7 +9844,7 @@ type
     procedure set_pixels_inside_wrap(pixels_inside_wrap: gint); cdecl; inline;
     procedure set_right_margin(right_margin: gint); cdecl; inline;
     procedure set_tabs(tabs: PPangoTabArray); cdecl; inline;
-    procedure set_wrap_mode(wrap_mode: TPangoWrapMode); cdecl; inline;
+    procedure set_wrap_mode(wrap_mode: TGtkWrapMode); cdecl; inline;
     function starts_display_line(iter: PGtkTextIter): gboolean; cdecl; inline;
     procedure window_to_buffer_coords(win: TGtkTextWindowType; window_x: gint; window_y: gint; buffer_x: Pgint; buffer_y: Pgint); cdecl; inline;
     property accepts_tab:  gboolean read get_accepts_tab  { property is writeable but setter not declared } ;
@@ -9697,7 +9861,7 @@ type
     property pixels_inside_wrap:  gint read get_pixels_inside_wrap  { property is writeable but setter not declared } ;
     property right_margin:  gint read get_right_margin  { property is writeable but setter not declared } ;
     property tabs:  PPangoTabArray read get_tabs  { property is writeable but setter not declared } ;
-    property wrap_mode:  TPangoWrapMode read get_wrap_mode  { property is writeable but setter not declared } ;
+    property wrap_mode:  TGtkWrapMode read get_wrap_mode  { property is writeable but setter not declared } ;
   end;
 
   PPGtkTextViewClass = ^PGtkTextViewClass;
@@ -10001,7 +10165,6 @@ type
 
   PPGtkToolbarSpaceStyle = ^PGtkToolbarSpaceStyle;
   PGtkToolbarSpaceStyle = ^TGtkToolbarSpaceStyle;
-  TGtkTranslateFunc = function(path: Pgchar; func_data: gpointer): Pgchar; cdecl;
 
   PPGtkTreeViewColumn = ^PGtkTreeViewColumn;
   PGtkTreeViewColumn = ^TGtkTreeViewColumn;
@@ -10761,12 +10924,6 @@ type
 
 
 
-  PPGtkWindowGroup = ^PGtkWindowGroup;
-  PGtkWindowGroup = ^TGtkWindowGroup;
-
-  PPGtkWindow = ^PGtkWindow;
-  PGtkWindow = ^TGtkWindow;
-
   PPGtkWindowGroupPrivate = ^PGtkWindowGroupPrivate;
   PGtkWindowGroupPrivate = ^TGtkWindowGroupPrivate;
   TGtkWindowGroup = object(TGObject)
@@ -10779,173 +10936,10 @@ type
     procedure remove_window(window: PGtkWindow); cdecl; inline;
   end;
 
-  PPGtkWindowPosition = ^PGtkWindowPosition;
-  PGtkWindowPosition = ^TGtkWindowPosition;
-
-  PPGtkWindowPrivate = ^PGtkWindowPrivate;
-  PGtkWindowPrivate = ^TGtkWindowPrivate;
-
   TGtkWindowPrivate = record
   end;
 
 
-  TGtkWindow = object(TGtkBin)
-    priv3: PGtkWindowPrivate;
-    function new(type_: TGdkWindowType): PGtkWindow; cdecl; inline; static;
-    function get_default_icon_list: PGList; cdecl; inline; static;
-    function get_default_icon_name: Pgchar; cdecl; inline; static;
-    function list_toplevels: PGList; cdecl; inline; static;
-    procedure set_auto_startup_notification(setting: gboolean); cdecl; inline; static;
-    procedure set_default_icon(icon: PGdkPixbuf); cdecl; inline; static;
-    function set_default_icon_from_file(filename: Pgchar): gboolean; cdecl; inline; static;
-    procedure set_default_icon_list(list: PGList); cdecl; inline; static;
-    procedure set_default_icon_name(name: Pgchar); cdecl; inline; static;
-    function activate_default: gboolean; cdecl; inline;
-    function activate_focus: gboolean; cdecl; inline;
-    function activate_key(event: PGdkEventKey): gboolean; cdecl; inline;
-    procedure add_accel_group(accel_group: PGtkAccelGroup); cdecl; inline;
-    procedure add_mnemonic(keyval: guint; target: PGtkWidget); cdecl; inline;
-    procedure begin_move_drag(button: gint; root_x: gint; root_y: gint; timestamp: guint32); cdecl; inline;
-    procedure begin_resize_drag(edge: TGdkWindowEdge; button: gint; root_x: gint; root_y: gint; timestamp: guint32); cdecl; inline;
-    procedure deiconify; cdecl; inline;
-    procedure fullscreen; cdecl; inline;
-    function get_accept_focus: gboolean; cdecl; inline;
-    function get_application: PGtkApplication; cdecl; inline;
-    function get_decorated: gboolean; cdecl; inline;
-    procedure get_default_size(width: Pgint; height: Pgint); cdecl; inline;
-    function get_default_widget: PGtkWidget; cdecl; inline;
-    function get_deletable: gboolean; cdecl; inline;
-    function get_destroy_with_parent: gboolean; cdecl; inline;
-    function get_focus: PGtkWidget; cdecl; inline;
-    function get_focus_on_map: gboolean; cdecl; inline;
-    function get_focus_visible: gboolean; cdecl; inline;
-    function get_gravity: TGdkGravity; cdecl; inline;
-    function get_group: PGtkWindowGroup; cdecl; inline;
-    function get_has_resize_grip: gboolean; cdecl; inline;
-    function get_icon: PGdkPixbuf; cdecl; inline;
-    function get_icon_list: PGList; cdecl; inline;
-    function get_icon_name: Pgchar; cdecl; inline;
-    function get_mnemonic_modifier: TGdkModifierType; cdecl; inline;
-    function get_mnemonics_visible: gboolean; cdecl; inline;
-    function get_modal: gboolean; cdecl; inline;
-    function get_opacity: gdouble; cdecl; inline;
-    procedure get_position(root_x: Pgint; root_y: Pgint); cdecl; inline;
-    function get_resizable: gboolean; cdecl; inline;
-    function get_resize_grip_area(rect: PGdkRectangle): gboolean; cdecl; inline;
-    function get_role: Pgchar; cdecl; inline;
-    function get_screen: PGdkScreen; cdecl; inline;
-    procedure get_size(width: Pgint; height: Pgint); cdecl; inline;
-    function get_skip_pager_hint: gboolean; cdecl; inline;
-    function get_skip_taskbar_hint: gboolean; cdecl; inline;
-    function get_title: Pgchar; cdecl; inline;
-    function get_transient_for: PAtkWindow; cdecl; inline;
-    function get_type_hint: TGdkWindowTypeHint; cdecl; inline;
-    function get_urgency_hint: gboolean; cdecl; inline;
-    function get_window_type: TGdkWindowType; cdecl; inline;
-    function has_group: gboolean; cdecl; inline;
-    function has_toplevel_focus: gboolean; cdecl; inline;
-    procedure iconify; cdecl; inline;
-    function is_active: gboolean; cdecl; inline;
-    procedure maximize; cdecl; inline;
-    function mnemonic_activate(keyval: guint; modifier: TGdkModifierType): gboolean; cdecl; inline;
-    procedure move(x: gint; y: gint); cdecl; inline;
-    function parse_geometry(geometry: Pgchar): gboolean; cdecl; inline;
-    procedure present; cdecl; inline;
-    procedure present_with_time(timestamp: guint32); cdecl; inline;
-    function propagate_key_event(event: PGdkEventKey): gboolean; cdecl; inline;
-    procedure remove_accel_group(accel_group: PGtkAccelGroup); cdecl; inline;
-    procedure remove_mnemonic(keyval: guint; target: PGtkWidget); cdecl; inline;
-    procedure reshow_with_initial_size; cdecl; inline;
-    procedure resize(width: gint; height: gint); cdecl; inline;
-    function resize_grip_is_visible: gboolean; cdecl; inline;
-    procedure resize_to_geometry(width: gint; height: gint); cdecl; inline;
-    procedure set_accept_focus(setting: gboolean); cdecl; inline;
-    procedure set_application(application: PGtkApplication); cdecl; inline;
-    procedure set_decorated(setting: gboolean); cdecl; inline;
-    procedure set_default(default_widget: PGtkWidget); cdecl; inline;
-    procedure set_default_geometry(width: gint; height: gint); cdecl; inline;
-    procedure set_default_size(width: gint; height: gint); cdecl; inline;
-    procedure set_deletable(setting: gboolean); cdecl; inline;
-    procedure set_destroy_with_parent(setting: gboolean); cdecl; inline;
-    procedure set_focus(focus: PGtkWidget); cdecl; inline;
-    procedure set_focus_on_map(setting: gboolean); cdecl; inline;
-    procedure set_focus_visible(setting: gboolean); cdecl; inline;
-    procedure set_geometry_hints(geometry_widget: PGtkWidget; geometry: PGdkGeometry; geom_mask: TGdkWindowHints); cdecl; inline;
-    procedure set_gravity(gravity: TGdkGravity); cdecl; inline;
-    procedure set_has_resize_grip(value: gboolean); cdecl; inline;
-    procedure set_has_user_ref_count(setting: gboolean); cdecl; inline;
-    procedure set_icon(icon: PGdkPixbuf); cdecl; inline;
-    function set_icon_from_file(filename: Pgchar): gboolean; cdecl; inline;
-    procedure set_icon_list(list: PGList); cdecl; inline;
-    procedure set_icon_name(name: Pgchar); cdecl; inline;
-    procedure set_keep_above(setting: gboolean); cdecl; inline;
-    procedure set_keep_below(setting: gboolean); cdecl; inline;
-    procedure set_mnemonic_modifier(modifier: TGdkModifierType); cdecl; inline;
-    procedure set_mnemonics_visible(setting: gboolean); cdecl; inline;
-    procedure set_modal(modal: gboolean); cdecl; inline;
-    procedure set_opacity(opacity: gdouble); cdecl; inline;
-    procedure set_position(position: TGtkWindowPosition); cdecl; inline;
-    procedure set_resizable(resizable: gboolean); cdecl; inline;
-    procedure set_role(role: Pgchar); cdecl; inline;
-    procedure set_screen(screen: PGdkScreen); cdecl; inline;
-    procedure set_skip_pager_hint(setting: gboolean); cdecl; inline;
-    procedure set_skip_taskbar_hint(setting: gboolean); cdecl; inline;
-    procedure set_startup_id(startup_id: Pgchar); cdecl; inline;
-    procedure set_title(title: Pgchar); cdecl; inline;
-    procedure set_transient_for(parent: PAtkWindow); cdecl; inline;
-    procedure set_type_hint(hint: TGdkWindowTypeHint); cdecl; inline;
-    procedure set_urgency_hint(setting: gboolean); cdecl; inline;
-    procedure set_wmclass(wmclass_name: Pgchar; wmclass_class: Pgchar); cdecl; inline;
-    procedure stick; cdecl; inline;
-    procedure unfullscreen; cdecl; inline;
-    procedure unmaximize; cdecl; inline;
-    procedure unstick; cdecl; inline;
-    property accept_focus:  gboolean read get_accept_focus  { property is writeable but setter not declared } ;
-    property application:  PGtkApplication read get_application  { property is writeable but setter not declared } ;
-    property decorated:  gboolean read get_decorated  { property is writeable but setter not declared } ;
-    //property default_height: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_default_height  { property is writeable but setter not declared } ;
-    //property default_width: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_default_width  { property is writeable but setter not declared } ;
-    property deletable:  gboolean read get_deletable  { property is writeable but setter not declared } ;
-    property destroy_with_parent:  gboolean read get_destroy_with_parent  { property is writeable but setter not declared } ;
-    property focus_on_map:  gboolean read get_focus_on_map  { property is writeable but setter not declared } ;
-    property focus_visible:  gboolean read get_focus_visible  { property is writeable but setter not declared } ;
-    property gravity:  TGdkGravity read get_gravity  { property is writeable but setter not declared } ;
-    property has_resize_grip:  gboolean read get_has_resize_grip  { property is writeable but setter not declared } ;
-    //property has_toplevel_focus1: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_has_toplevel_focus ;
-    property icon:  PGdkPixbuf read get_icon  { property is writeable but setter not declared } ;
-    property icon_name:  Pgchar read get_icon_name  { property is writeable but setter not declared } ;
-    //property is_active1: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_is_active ;
-    property mnemonics_visible:  gboolean read get_mnemonics_visible  { property is writeable but setter not declared } ;
-    property modal:  gboolean read get_modal  { property is writeable but setter not declared } ;
-    property opacity:  gdouble read get_opacity  { property is writeable but setter not declared } ;
-    property resizable:  gboolean read get_resizable  { property is writeable but setter not declared } ;
-    //property resize_grip_visible: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_resize_grip_visible ;
-    property role:  Pgchar read get_role  { property is writeable but setter not declared } ;
-    property screen:  PGdkScreen read get_screen  { property is writeable but setter not declared } ;
-    property skip_pager_hint:  gboolean read get_skip_pager_hint  { property is writeable but setter not declared } ;
-    property skip_taskbar_hint:  gboolean read get_skip_taskbar_hint  { property is writeable but setter not declared } ;
-    //property startup_id: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_startup_id  { property is writeable but setter not declared } ;
-    property title:  Pgchar read get_title  { property is writeable but setter not declared } ;
-    property transient_for:  PAtkWindow read get_transient_for  { property is writeable but setter not declared } ;
-    //property type_: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_type  { property is writeable but setter not declared } ;
-    property type_hint:  TGdkWindowTypeHint read get_type_hint  { property is writeable but setter not declared } ;
-    property urgency_hint:  gboolean read get_urgency_hint  { property is writeable but setter not declared } ;
-    //property window_position: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_window_position  { property is writeable but setter not declared } ;
-  end;
-
-  PPGtkWindowClass = ^PGtkWindowClass;
-  PGtkWindowClass = ^TGtkWindowClass;
-  TGtkWindowClass = object
-    parent_class: TGtkBinClass;
-    set_focus: procedure(window: PGtkWindow; focus: PGtkWidget); cdecl;
-    activate_focus: procedure(window: PGtkWindow); cdecl;
-    activate_default: procedure(window: PGtkWindow); cdecl;
-    keys_changed: procedure(window: PGtkWindow); cdecl;
-    _gtk_reserved1: procedure; cdecl;
-    _gtk_reserved2: procedure; cdecl;
-    _gtk_reserved3: procedure; cdecl;
-    _gtk_reserved4: procedure; cdecl;
-  end;
 
   PPGtkWindowGeometryInfo = ^PGtkWindowGeometryInfo;
   PGtkWindowGeometryInfo = ^TGtkWindowGeometryInfo;
@@ -10969,12 +10963,6 @@ type
     _gtk_reserved3: procedure; cdecl;
     _gtk_reserved4: procedure; cdecl;
   end;
-
-  PPGtkWindowType = ^PGtkWindowType;
-  PGtkWindowType = ^TGtkWindowType;
-
-  PPGtkWrapMode = ^PGtkWrapMode;
-  PGtkWrapMode = ^TGtkWrapMode;
 
 function gtk_about_dialog_get_artists(AAboutDialog: PGtkAboutDialog): PPgchar; cdecl; external;
 function gtk_about_dialog_get_authors(AAboutDialog: PGtkAboutDialog): PPgchar; cdecl; external;
@@ -11074,8 +11062,8 @@ function gtk_app_chooser_button_new(content_type: Pgchar): PGtkAppChooserButton;
 function gtk_app_chooser_dialog_get_heading(AAppChooserDialog: PGtkAppChooserDialog): Pgchar; cdecl; external;
 function gtk_app_chooser_dialog_get_type: TGType; cdecl; external;
 function gtk_app_chooser_dialog_get_widget(AAppChooserDialog: PGtkAppChooserDialog): PGtkWidget; cdecl; external;
-function gtk_app_chooser_dialog_new(parent: PAtkWindow; flags: TGtkDialogFlags; file_: PGFile): PGtkAppChooserDialog; cdecl; external;
-function gtk_app_chooser_dialog_new_for_content_type(parent: PAtkWindow; flags: TGtkDialogFlags; content_type: Pgchar): PGtkAppChooserDialog; cdecl; external;
+function gtk_app_chooser_dialog_new(parent: PGtkWindow; flags: TGtkDialogFlags; file_: PGFile): PGtkAppChooserDialog; cdecl; external;
+function gtk_app_chooser_dialog_new_for_content_type(parent: PGtkWindow; flags: TGtkDialogFlags; content_type: Pgchar): PGtkAppChooserDialog; cdecl; external;
 function gtk_app_chooser_get_app_info(AAppChooser: PGtkAppChooser): PGAppInfo; cdecl; external;
 function gtk_app_chooser_get_content_type(AAppChooser: PGtkAppChooser): Pgchar; cdecl; external;
 function gtk_app_chooser_get_type: TGType; cdecl; external;
@@ -11346,7 +11334,7 @@ function gtk_dialog_get_response_for_widget(ADialog: PGtkDialog; widget: PGtkWid
 function gtk_dialog_get_type: TGType; cdecl; external;
 function gtk_dialog_get_widget_for_response(ADialog: PGtkDialog; response_id: gint): PGtkWidget; cdecl; external;
 function gtk_dialog_new: PGtkDialog; cdecl; external;
-function gtk_dialog_new_with_buttons(title: Pgchar; parent: PAtkWindow; flags: TGtkDialogFlags; first_button_text: Pgchar; args: array of const): PGtkDialog; cdecl; external;
+function gtk_dialog_new_with_buttons(title: Pgchar; parent: PGtkWindow; flags: TGtkDialogFlags; first_button_text: Pgchar; args: array of const): PGtkDialog; cdecl; external;
 function gtk_dialog_run(ADialog: PGtkDialog): gint; cdecl; external;
 function gtk_distribute_natural_allocation(extra_space: gint; n_requested_sizes: guint; sizes: PGtkRequestedSize): gint; cdecl; external;
 function gtk_drag_begin(AWidget: PGtkWidget; targets: PGtkTargetList; actions: TGdkDragAction; button: gint; event: PGdkEvent): PGdkDragContext; cdecl; external;
@@ -11436,7 +11424,7 @@ function gtk_expander_get_use_underline(AExpander: PGtkExpander): gboolean; cdec
 function gtk_expander_new(label_: Pgchar): PGtkExpander; cdecl; external;
 function gtk_expander_new_with_mnemonic(label_: Pgchar): PGtkExpander; cdecl; external;
 function gtk_false: gboolean; cdecl; external;
-function gtk_file_chooser_add_shortcut_folder(AFileChooser: PGtkFileChooser; folder: Pchar): gboolean; cdecl; external;
+function gtk_file_chooser_add_shortcut_folder(AFileChooser: PGtkFileChooser; folder: Pgchar): gboolean; cdecl; external;
 function gtk_file_chooser_add_shortcut_folder_uri(AFileChooser: PGtkFileChooser; uri: Pgchar): gboolean; cdecl; external;
 function gtk_file_chooser_button_get_focus_on_click(AFileChooserButton: PGtkFileChooserButton): gboolean; cdecl; external;
 function gtk_file_chooser_button_get_title(AFileChooserButton: PGtkFileChooserButton): Pgchar; cdecl; external;
@@ -11445,7 +11433,7 @@ function gtk_file_chooser_button_get_width_chars(AFileChooserButton: PGtkFileCho
 function gtk_file_chooser_button_new(title: Pgchar; action: TGtkFileChooserAction): PGtkFileChooserButton; cdecl; external;
 function gtk_file_chooser_button_new_with_dialog(dialog: PGtkWidget): PGtkFileChooserButton; cdecl; external;
 function gtk_file_chooser_dialog_get_type: TGType; cdecl; external;
-function gtk_file_chooser_dialog_new(title: Pgchar; parent: PAtkWindow; action: TGtkFileChooserAction; first_button_text: Pgchar; args: array of const): PGtkFileChooserDialog; cdecl; external;
+function gtk_file_chooser_dialog_new(title: Pgchar; parent: PGtkWindow; action: TGtkFileChooserAction; first_button_text: Pgchar; args: array of const): PGtkFileChooserDialog; cdecl; external;
 function gtk_file_chooser_error_quark: TGQuark; cdecl; external;
 function gtk_file_chooser_get_action(AFileChooser: PGtkFileChooser): TGtkFileChooserAction; cdecl; external;
 function gtk_file_chooser_get_create_folders(AFileChooser: PGtkFileChooser): gboolean; cdecl; external;
@@ -11461,7 +11449,7 @@ function gtk_file_chooser_get_files(AFileChooser: PGtkFileChooser): PGSList; cde
 function gtk_file_chooser_get_filter(AFileChooser: PGtkFileChooser): PGtkFileFilter; cdecl; external;
 function gtk_file_chooser_get_local_only(AFileChooser: PGtkFileChooser): gboolean; cdecl; external;
 function gtk_file_chooser_get_preview_file(AFileChooser: PGtkFileChooser): PGFile; cdecl; external;
-function gtk_file_chooser_get_preview_filename(AFileChooser: PGtkFileChooser): Pchar; cdecl; external;
+function gtk_file_chooser_get_preview_filename(AFileChooser: PGtkFileChooser): Pgchar; cdecl; external;
 function gtk_file_chooser_get_preview_uri(AFileChooser: PGtkFileChooser): Pgchar; cdecl; external;
 function gtk_file_chooser_get_preview_widget(AFileChooser: PGtkFileChooser): PGtkWidget; cdecl; external;
 function gtk_file_chooser_get_preview_widget_active(AFileChooser: PGtkFileChooser): gboolean; cdecl; external;
@@ -11474,16 +11462,16 @@ function gtk_file_chooser_get_use_preview_label(AFileChooser: PGtkFileChooser): 
 function gtk_file_chooser_list_filters(AFileChooser: PGtkFileChooser): PGSList; cdecl; external;
 function gtk_file_chooser_list_shortcut_folder_uris(AFileChooser: PGtkFileChooser): PGSList; cdecl; external;
 function gtk_file_chooser_list_shortcut_folders(AFileChooser: PGtkFileChooser): PGSList; cdecl; external;
-function gtk_file_chooser_remove_shortcut_folder(AFileChooser: PGtkFileChooser; folder: Pchar): gboolean; cdecl; external;
+function gtk_file_chooser_remove_shortcut_folder(AFileChooser: PGtkFileChooser; folder: Pgchar): gboolean; cdecl; external;
 function gtk_file_chooser_remove_shortcut_folder_uri(AFileChooser: PGtkFileChooser; uri: Pgchar): gboolean; cdecl; external;
 function gtk_file_chooser_select_file(AFileChooser: PGtkFileChooser; file_: PGFile): gboolean; cdecl; external;
-function gtk_file_chooser_select_filename(AFileChooser: PGtkFileChooser; filename: Pchar): gboolean; cdecl; external;
+function gtk_file_chooser_select_filename(AFileChooser: PGtkFileChooser; filename: Pgchar): gboolean; cdecl; external;
 function gtk_file_chooser_select_uri(AFileChooser: PGtkFileChooser; uri: Pgchar): gboolean; cdecl; external;
 function gtk_file_chooser_set_current_folder(AFileChooser: PGtkFileChooser; filename: Pgchar): gboolean; cdecl; external;
 function gtk_file_chooser_set_current_folder_file(AFileChooser: PGtkFileChooser; file_: PGFile): gboolean; cdecl; external;
 function gtk_file_chooser_set_current_folder_uri(AFileChooser: PGtkFileChooser; uri: Pgchar): gboolean; cdecl; external;
 function gtk_file_chooser_set_file(AFileChooser: PGtkFileChooser; file_: PGFile): gboolean; cdecl; external;
-function gtk_file_chooser_set_filename(AFileChooser: PGtkFileChooser; filename: Pchar): gboolean; cdecl; external;
+function gtk_file_chooser_set_filename(AFileChooser: PGtkFileChooser; filename: Pgchar): gboolean; cdecl; external;
 function gtk_file_chooser_set_uri(AFileChooser: PGtkFileChooser; uri: Pgchar): gboolean; cdecl; external;
 function gtk_file_chooser_widget_get_type: TGType; cdecl; external;
 function gtk_file_chooser_widget_new(action: TGtkFileChooserAction): PGtkFileChooserWidget; cdecl; external;
@@ -11508,7 +11496,7 @@ function gtk_font_chooser_dialog_get_font_chooser(AFontChooserDialog: PGtkFontCh
 function gtk_font_chooser_dialog_get_font_name(AFontChooserDialog: PGtkFontChooserDialog): Pgchar; cdecl; external;
 function gtk_font_chooser_dialog_get_preview_text(AFontChooserDialog: PGtkFontChooserDialog): Pgchar; cdecl; external;
 function gtk_font_chooser_dialog_get_type: TGType; cdecl; external;
-function gtk_font_chooser_dialog_new(title: Pgchar; window: PAtkWindow): PGtkFontChooserDialog; cdecl; external;
+function gtk_font_chooser_dialog_new(title: Pgchar; window: PGtkWindow): PGtkFontChooserDialog; cdecl; external;
 function gtk_font_chooser_dialog_set_font_name(AFontChooserDialog: PGtkFontChooserDialog; fontname: Pgchar): gboolean; cdecl; external;
 function gtk_font_chooser_get_face(AFontChooser: PGtkFontChooser): PPangoFontFace; cdecl; external;
 function gtk_font_chooser_get_family(AFontChooser: PGtkFontChooser): PPangoFontFamily; cdecl; external;
@@ -11594,7 +11582,6 @@ function gtk_icon_set_render_icon_pixbuf(AIconSet: PGtkIconSet; context: PGtkSty
 function gtk_icon_size_from_name(name: Pgchar): gint; cdecl; external;
 function gtk_icon_size_get_name(size: gint): Pgchar; cdecl; external;
 function gtk_icon_size_lookup(size: gint; width: Pgint; height: Pgint): gboolean; cdecl; external;
-function gtk_icon_size_lookup_for_settings(settings: PGSettings; size: gint; width: Pgint; height: Pgint): gboolean; cdecl; external;
 function gtk_icon_size_lookup_for_settings(settings: PGtkSettings; size: gint; width: Pgint; height: Pgint): gboolean; cdecl; external;
 function gtk_icon_size_register(name: Pgchar; width: gint; height: gint): gint; cdecl; external;
 function gtk_icon_source_copy(AIconSource: PGtkIconSource): PGtkIconSource; cdecl; external;
@@ -11605,7 +11592,7 @@ function gtk_icon_source_get_icon_name(AIconSource: PGtkIconSource): Pgchar; cde
 function gtk_icon_source_get_pixbuf(AIconSource: PGtkIconSource): PGdkPixbuf; cdecl; external;
 function gtk_icon_source_get_size(AIconSource: PGtkIconSource): gint; cdecl; external;
 function gtk_icon_source_get_size_wildcarded(AIconSource: PGtkIconSource): gboolean; cdecl; external;
-function gtk_icon_source_get_state(AIconSource: PGtkIconSource): TAtkStateType; cdecl; external;
+function gtk_icon_source_get_state(AIconSource: PGtkIconSource): TGtkStateType; cdecl; external;
 function gtk_icon_source_get_state_wildcarded(AIconSource: PGtkIconSource): gboolean; cdecl; external;
 function gtk_icon_source_get_type: TGType; cdecl; external;
 function gtk_icon_source_new: PGtkIconSource; cdecl; external;
@@ -11775,14 +11762,14 @@ function gtk_menu_tool_button_new_from_stock(stock_id: Pgchar): PGtkMenuToolButt
 function gtk_message_dialog_get_image(AMessageDialog: PGtkMessageDialog): PGtkWidget; cdecl; external;
 function gtk_message_dialog_get_message_area(AMessageDialog: PGtkMessageDialog): PGtkWidget; cdecl; external;
 function gtk_message_dialog_get_type: TGType; cdecl; external;
-function gtk_message_dialog_new(parent: PAtkWindow; flags: TGtkDialogFlags; type_: TGtkMessageType; buttons: TGtkButtonsType; message_format: Pgchar; args: array of const): PGtkMessageDialog; cdecl; external;
-function gtk_message_dialog_new_with_markup(parent: PAtkWindow; flags: TGtkDialogFlags; type_: TGtkMessageType; buttons: TGtkButtonsType; message_format: Pgchar; args: array of const): PGtkMessageDialog; cdecl; external;
+function gtk_message_dialog_new(parent: PGtkWindow; flags: TGtkDialogFlags; type_: TGtkMessageType; buttons: TGtkButtonsType; message_format: Pgchar; args: array of const): PGtkMessageDialog; cdecl; external;
+function gtk_message_dialog_new_with_markup(parent: PGtkWindow; flags: TGtkDialogFlags; type_: TGtkMessageType; buttons: TGtkButtonsType; message_format: Pgchar; args: array of const): PGtkMessageDialog; cdecl; external;
 function gtk_misc_get_type: TGType; cdecl; external;
-function gtk_mount_operation_get_parent(AMountOperation: PGtkMountOperation): PAtkWindow; cdecl; external;
+function gtk_mount_operation_get_parent(AMountOperation: PGtkMountOperation): PGtkWindow; cdecl; external;
 function gtk_mount_operation_get_screen(AMountOperation: PGtkMountOperation): PGdkScreen; cdecl; external;
 function gtk_mount_operation_get_type: TGType; cdecl; external;
 function gtk_mount_operation_is_showing(AMountOperation: PGtkMountOperation): gboolean; cdecl; external;
-function gtk_mount_operation_new(parent: PAtkWindow): PGtkMountOperation; cdecl; external;
+function gtk_mount_operation_new(parent: PGtkWindow): PGtkMountOperation; cdecl; external;
 function gtk_notebook_append_page(ANotebook: PGtkNotebook; child: PGtkWidget; tab_label: PGtkWidget): gint; cdecl; external;
 function gtk_notebook_append_page_menu(ANotebook: PGtkNotebook; child: PGtkWidget; tab_label: PGtkWidget; menu_label: PGtkWidget): gint; cdecl; external;
 function gtk_notebook_get_action_widget(ANotebook: PGtkNotebook; pack_type: TGtkPackType): PGtkWidget; cdecl; external;
@@ -11837,12 +11824,12 @@ function gtk_page_setup_get_paper_width(APageSetup: PGtkPageSetup; unit_: TGtkUn
 function gtk_page_setup_get_right_margin(APageSetup: PGtkPageSetup; unit_: TGtkUnit): gdouble; cdecl; external;
 function gtk_page_setup_get_top_margin(APageSetup: PGtkPageSetup; unit_: TGtkUnit): gdouble; cdecl; external;
 function gtk_page_setup_get_type: TGType; cdecl; external;
-function gtk_page_setup_load_file(APageSetup: PGtkPageSetup; file_name: Pchar): gboolean; cdecl; external;
+function gtk_page_setup_load_file(APageSetup: PGtkPageSetup; file_name: Pgchar): gboolean; cdecl; external;
 function gtk_page_setup_load_key_file(APageSetup: PGtkPageSetup; key_file: PGKeyFile; group_name: Pgchar): gboolean; cdecl; external;
 function gtk_page_setup_new: PGtkPageSetup; cdecl; external;
 function gtk_page_setup_new_from_file(file_name: Pgchar): PGtkPageSetup; cdecl; external;
 function gtk_page_setup_new_from_key_file(key_file: PGKeyFile; group_name: Pgchar): PGtkPageSetup; cdecl; external;
-function gtk_page_setup_to_file(APageSetup: PGtkPageSetup; file_name: Pchar): gboolean; cdecl; external;
+function gtk_page_setup_to_file(APageSetup: PGtkPageSetup; file_name: Pgchar): gboolean; cdecl; external;
 function gtk_paned_get_child1(APaned: PGtkPaned): PGtkWidget; cdecl; external;
 function gtk_paned_get_child2(APaned: PGtkPaned): PGtkWidget; cdecl; external;
 function gtk_paned_get_handle_window(APaned: PGtkPaned): PGdkWindow; cdecl; external;
@@ -11900,7 +11887,7 @@ function gtk_print_operation_is_finished(APrintOperation: PGtkPrintOperation): g
 function gtk_print_operation_new: PGtkPrintOperation; cdecl; external;
 function gtk_print_operation_preview_get_type: TGType; cdecl; external;
 function gtk_print_operation_preview_is_selected(APrintOperationPreview: PGtkPrintOperationPreview; page_nr: gint): gboolean; cdecl; external;
-function gtk_print_operation_run(APrintOperation: PGtkPrintOperation; action: TGtkPrintOperationAction; parent: PAtkWindow): TGtkPrintOperationResult; cdecl; external;
+function gtk_print_operation_run(APrintOperation: PGtkPrintOperation; action: TGtkPrintOperationAction; parent: PGtkWindow): TGtkPrintOperationResult; cdecl; external;
 function gtk_print_run_page_setup_dialog(parent: PGtkWindow; page_setup: PGtkPageSetup; settings: PGtkPrintSettings): PGtkPageSetup; cdecl; external;
 function gtk_print_settings_copy(APrintSettings: PGtkPrintSettings): PGtkPrintSettings; cdecl; external;
 function gtk_print_settings_get(APrintSettings: PGtkPrintSettings; key: Pgchar): Pgchar; cdecl; external;
@@ -12018,8 +12005,8 @@ function gtk_recent_action_get_type: TGType; cdecl; external;
 function gtk_recent_action_new(name: Pgchar; label_: Pgchar; tooltip: Pgchar; stock_id: Pgchar): PGtkRecentAction; cdecl; external;
 function gtk_recent_action_new_for_manager(name: Pgchar; label_: Pgchar; tooltip: Pgchar; stock_id: Pgchar; manager: PGtkRecentManager): PGtkRecentAction; cdecl; external;
 function gtk_recent_chooser_dialog_get_type: TGType; cdecl; external;
-function gtk_recent_chooser_dialog_new(title: Pgchar; parent: PAtkWindow; first_button_text: Pgchar; args: array of const): PGtkRecentChooserDialog; cdecl; external;
-function gtk_recent_chooser_dialog_new_for_manager(title: Pgchar; parent: PAtkWindow; manager: PGtkRecentManager; first_button_text: Pgchar; args: array of const): PGtkRecentChooserDialog; cdecl; external;
+function gtk_recent_chooser_dialog_new(title: Pgchar; parent: PGtkWindow; first_button_text: Pgchar; args: array of const): PGtkRecentChooserDialog; cdecl; external;
+function gtk_recent_chooser_dialog_new_for_manager(title: Pgchar; parent: PGtkWindow; manager: PGtkRecentManager; first_button_text: Pgchar; args: array of const): PGtkRecentChooserDialog; cdecl; external;
 function gtk_recent_chooser_error_quark: TGQuark; cdecl; external;
 function gtk_recent_chooser_get_current_item(ARecentChooser: PGtkRecentChooser): PGtkRecentInfo; cdecl; external;
 function gtk_recent_chooser_get_current_uri(ARecentChooser: PGtkRecentChooser): Pgchar; cdecl; external;
@@ -12153,8 +12140,8 @@ function gtk_separator_new(orientation: TGtkOrientation): PGtkSeparator; cdecl; 
 function gtk_separator_tool_item_get_draw(ASeparatorToolItem: PGtkSeparatorToolItem): gboolean; cdecl; external;
 function gtk_separator_tool_item_get_type: TGType; cdecl; external;
 function gtk_separator_tool_item_new: PGtkSeparatorToolItem; cdecl; external;
-function gtk_settings_get_default: PGSettings; cdecl; external;
-function gtk_settings_get_for_screen(screen: PGdkScreen): PGSettings; cdecl; external;
+function gtk_settings_get_default: PGtkSettings; cdecl; external;
+function gtk_settings_get_for_screen(screen: PGdkScreen): PGtkSettings; cdecl; external;
 function gtk_settings_get_type: TGType; cdecl; external;
 function gtk_show_uri(screen: PGdkScreen; uri: Pgchar; timestamp: guint32): gboolean; cdecl; external;
 function gtk_size_group_get_ignore_hidden(ASizeGroup: PGtkSizeGroup): gboolean; cdecl; external;
@@ -12209,7 +12196,7 @@ function gtk_statusbar_push(AStatusbar: PGtkStatusbar; context_id: guint; text: 
 function gtk_stock_item_copy(AStockItem: PGtkStockItem): PGtkStockItem; cdecl; external;
 function gtk_stock_list_ids: PGSList; cdecl; external;
 function gtk_stock_lookup(stock_id: Pgchar; item: PGtkStockItem): gboolean; cdecl; external;
-function gtk_style_attach(AStyle: PGtkStyle; window: PGdkWindow): PPangoStyle; cdecl; external;
+function gtk_style_attach(AStyle: PGtkStyle; window: PGdkWindow): PGtkStyle; cdecl; external;
 function gtk_style_context_get_direction(AStyleContext: PGtkStyleContext): TGtkTextDirection; cdecl; external;
 function gtk_style_context_get_font(AStyleContext: PGtkStyleContext; state: TGtkStateFlags): PPangoFontDescription; cdecl; external;
 function gtk_style_context_get_junction_sides(AStyleContext: PGtkStyleContext): TGtkJunctionSides; cdecl; external;
@@ -12225,7 +12212,7 @@ function gtk_style_context_lookup_color(AStyleContext: PGtkStyleContext; color_n
 function gtk_style_context_lookup_icon_set(AStyleContext: PGtkStyleContext; stock_id: Pgchar): PGtkIconSet; cdecl; external;
 function gtk_style_context_new: PGtkStyleContext; cdecl; external;
 function gtk_style_context_state_is_running(AStyleContext: PGtkStyleContext; state: TGtkStateType; progress: Pgdouble): gboolean; cdecl; external;
-function gtk_style_copy(AStyle: PGtkStyle): PPangoStyle; cdecl; external;
+function gtk_style_copy(AStyle: PGtkStyle): PGtkStyle; cdecl; external;
 function gtk_style_get_type: TGType; cdecl; external;
 function gtk_style_has_context(AStyle: PGtkStyle): gboolean; cdecl; external;
 function gtk_style_lookup_color(AStyle: PGtkStyle; color_name: Pgchar; color: PGdkColor): gboolean; cdecl; external;
@@ -12445,7 +12432,7 @@ function gtk_text_view_get_tabs(ATextView: PGtkTextView): PPangoTabArray; cdecl;
 function gtk_text_view_get_type: TGType; cdecl; external;
 function gtk_text_view_get_window(ATextView: PGtkTextView; win: TGtkTextWindowType): PGdkWindow; cdecl; external;
 function gtk_text_view_get_window_type(ATextView: PGtkTextView; window: PGdkWindow): TGtkTextWindowType; cdecl; external;
-function gtk_text_view_get_wrap_mode(ATextView: PGtkTextView): TPangoWrapMode; cdecl; external;
+function gtk_text_view_get_wrap_mode(ATextView: PGtkTextView): TGtkWrapMode; cdecl; external;
 function gtk_text_view_im_context_filter_keypress(ATextView: PGtkTextView; event: PGdkEventKey): gboolean; cdecl; external;
 function gtk_text_view_move_mark_onscreen(ATextView: PGtkTextView; mark: PGtkTextMark): gboolean; cdecl; external;
 function gtk_text_view_move_visually(ATextView: PGtkTextView; iter: PGtkTextIter; count: gint): gboolean; cdecl; external;
@@ -12787,7 +12774,7 @@ function gtk_widget_get_style_context(AWidget: PGtkWidget): PGtkStyleContext; cd
 function gtk_widget_get_support_multidevice(AWidget: PGtkWidget): gboolean; cdecl; external;
 function gtk_widget_get_tooltip_markup(AWidget: PGtkWidget): Pgchar; cdecl; external;
 function gtk_widget_get_tooltip_text(AWidget: PGtkWidget): Pgchar; cdecl; external;
-function gtk_widget_get_tooltip_window(AWidget: PGtkWidget): PAtkWindow; cdecl; external;
+function gtk_widget_get_tooltip_window(AWidget: PGtkWidget): PGtkWindow; cdecl; external;
 function gtk_widget_get_toplevel(AWidget: PGtkWidget): PGtkWidget; cdecl; external;
 function gtk_widget_get_type: TGType; cdecl; external;
 function gtk_widget_get_valign(AWidget: PGtkWidget): TGtkAlign; cdecl; external;
@@ -12877,11 +12864,11 @@ function gtk_window_get_screen(AWindow: PGtkWindow): PGdkScreen; cdecl; external
 function gtk_window_get_skip_pager_hint(AWindow: PGtkWindow): gboolean; cdecl; external;
 function gtk_window_get_skip_taskbar_hint(AWindow: PGtkWindow): gboolean; cdecl; external;
 function gtk_window_get_title(AWindow: PGtkWindow): Pgchar; cdecl; external;
-function gtk_window_get_transient_for(AWindow: PGtkWindow): PAtkWindow; cdecl; external;
+function gtk_window_get_transient_for(AWindow: PGtkWindow): PGtkWindow; cdecl; external;
 function gtk_window_get_type: TGType; cdecl; external;
 function gtk_window_get_type_hint(AWindow: PGtkWindow): TGdkWindowTypeHint; cdecl; external;
 function gtk_window_get_urgency_hint(AWindow: PGtkWindow): gboolean; cdecl; external;
-function gtk_window_get_window_type(AWindow: PGtkWindow): TGdkWindowType; cdecl; external;
+function gtk_window_get_window_type(AWindow: PGtkWindow): TGtkWindowType; cdecl; external;
 function gtk_window_group_get_current_device_grab(AWindowGroup: PGtkWindowGroup; device: PGdkDevice): PGtkWidget; cdecl; external;
 function gtk_window_group_get_current_grab(AWindowGroup: PGtkWindowGroup): PGtkWidget; cdecl; external;
 function gtk_window_group_get_type: TGType; cdecl; external;
@@ -12892,7 +12879,7 @@ function gtk_window_has_toplevel_focus(AWindow: PGtkWindow): gboolean; cdecl; ex
 function gtk_window_is_active(AWindow: PGtkWindow): gboolean; cdecl; external;
 function gtk_window_list_toplevels: PGList; cdecl; external;
 function gtk_window_mnemonic_activate(AWindow: PGtkWindow; keyval: guint; modifier: TGdkModifierType): gboolean; cdecl; external;
-function gtk_window_new(type_: TGdkWindowType): PGtkWindow; cdecl; external;
+function gtk_window_new(type_: TGtkWindowType): PGtkWindow; cdecl; external;
 function gtk_window_parse_geometry(AWindow: PGtkWindow; geometry: Pgchar): gboolean; cdecl; external;
 function gtk_window_propagate_key_event(AWindow: PGtkWindow; event: PGdkEventKey): gboolean; cdecl; external;
 function gtk_window_resize_grip_is_visible(AWindow: PGtkWindow): gboolean; cdecl; external;
@@ -12948,7 +12935,7 @@ procedure gtk_action_group_add_toggle_actions(AActionGroup: PGtkActionGroup; ent
 procedure gtk_action_group_add_toggle_actions_full(AActionGroup: PGtkActionGroup; entries: PGtkToggleActionEntry; n_entries: guint; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
 procedure gtk_action_group_remove_action(AActionGroup: PGtkActionGroup; action: PGtkAction); cdecl; external;
 procedure gtk_action_group_set_sensitive(AActionGroup: PGtkActionGroup; sensitive: gboolean); cdecl; external;
-procedure gtk_action_group_set_translate_func(AActionGroup: PGtkActionGroup; func: TGTranslateFunc; data: gpointer; notify: TGDestroyNotify); cdecl; external;
+procedure gtk_action_group_set_translate_func(AActionGroup: PGtkActionGroup; func: TGtkTranslateFunc; data: gpointer; notify: TGDestroyNotify); cdecl; external;
 procedure gtk_action_group_set_translation_domain(AActionGroup: PGtkActionGroup; domain: Pgchar); cdecl; external;
 procedure gtk_action_group_set_visible(AActionGroup: PGtkActionGroup; visible: gboolean); cdecl; external;
 procedure gtk_action_set_accel_group(AAction: PGtkAction; accel_group: PGtkAccelGroup); cdecl; external;
@@ -12996,8 +12983,8 @@ procedure gtk_app_chooser_widget_set_show_default(AAppChooserWidget: PGtkAppChoo
 procedure gtk_app_chooser_widget_set_show_fallback(AAppChooserWidget: PGtkAppChooserWidget; setting: gboolean); cdecl; external;
 procedure gtk_app_chooser_widget_set_show_other(AAppChooserWidget: PGtkAppChooserWidget; setting: gboolean); cdecl; external;
 procedure gtk_app_chooser_widget_set_show_recommended(AAppChooserWidget: PGtkAppChooserWidget; setting: gboolean); cdecl; external;
-procedure gtk_application_add_window(AApplication: PGtkApplication; window: PAtkWindow); cdecl; external;
-procedure gtk_application_remove_window(AApplication: PGtkApplication; window: PAtkWindow); cdecl; external;
+procedure gtk_application_add_window(AApplication: PGtkApplication; window: PGtkWindow); cdecl; external;
+procedure gtk_application_remove_window(AApplication: PGtkApplication; window: PGtkWindow); cdecl; external;
 procedure gtk_arrow_set(AArrow: PGtkArrow; arrow_type: TGtkArrowType; shadow_type: TGtkShadowType); cdecl; external;
 procedure gtk_aspect_frame_set(AAspectFrame: PGtkAspectFrame; xalign: gfloat; yalign: gfloat; ratio: gfloat; obey_child: gboolean); cdecl; external;
 procedure gtk_assistant_add_action_widget(AAssistant: PGtkAssistant; child: PGtkWidget); cdecl; external;
@@ -13351,7 +13338,7 @@ procedure gtk_file_chooser_set_show_hidden(AFileChooser: PGtkFileChooser; show_h
 procedure gtk_file_chooser_set_use_preview_label(AFileChooser: PGtkFileChooser; use_label: gboolean); cdecl; external;
 procedure gtk_file_chooser_unselect_all(AFileChooser: PGtkFileChooser); cdecl; external;
 procedure gtk_file_chooser_unselect_file(AFileChooser: PGtkFileChooser; file_: PGFile); cdecl; external;
-procedure gtk_file_chooser_unselect_filename(AFileChooser: PGtkFileChooser; filename: Pchar); cdecl; external;
+procedure gtk_file_chooser_unselect_filename(AFileChooser: PGtkFileChooser; filename: Pgchar); cdecl; external;
 procedure gtk_file_chooser_unselect_uri(AFileChooser: PGtkFileChooser; uri: Pgchar); cdecl; external;
 procedure gtk_file_filter_add_custom(AFileFilter: PGtkFileFilter; needed: TGtkFileFilterFlags; func: TGtkFileFilterFunc; data: gpointer; notify: TGDestroyNotify); cdecl; external;
 procedure gtk_file_filter_add_mime_type(AFileFilter: PGtkFileFilter; mime_type: Pgchar); cdecl; external;
@@ -13412,7 +13399,7 @@ procedure gtk_icon_source_set_icon_name(AIconSource: PGtkIconSource; icon_name: 
 procedure gtk_icon_source_set_pixbuf(AIconSource: PGtkIconSource; pixbuf: PGdkPixbuf); cdecl; external;
 procedure gtk_icon_source_set_size(AIconSource: PGtkIconSource; size: gint); cdecl; external;
 procedure gtk_icon_source_set_size_wildcarded(AIconSource: PGtkIconSource; setting: gboolean); cdecl; external;
-procedure gtk_icon_source_set_state(AIconSource: PGtkIconSource; state: TAtkStateType); cdecl; external;
+procedure gtk_icon_source_set_state(AIconSource: PGtkIconSource; state: TGtkStateType); cdecl; external;
 procedure gtk_icon_source_set_state_wildcarded(AIconSource: PGtkIconSource; setting: gboolean); cdecl; external;
 procedure gtk_icon_theme_add_builtin_icon(icon_name: Pgchar; size: gint; pixbuf: PGdkPixbuf); cdecl; external;
 procedure gtk_icon_theme_append_search_path(AIconTheme: PGtkIconTheme; path: Pgchar); cdecl; external;
@@ -13588,7 +13575,7 @@ procedure gtk_misc_get_alignment(AMisc: PGtkMisc; xalign: Pgfloat; yalign: Pgflo
 procedure gtk_misc_get_padding(AMisc: PGtkMisc; xpad: Pgint; ypad: Pgint); cdecl; external;
 procedure gtk_misc_set_alignment(AMisc: PGtkMisc; xalign: gfloat; yalign: gfloat); cdecl; external;
 procedure gtk_misc_set_padding(AMisc: PGtkMisc; xpad: gint; ypad: gint); cdecl; external;
-procedure gtk_mount_operation_set_parent(AMountOperation: PGtkMountOperation; parent: PAtkWindow); cdecl; external;
+procedure gtk_mount_operation_set_parent(AMountOperation: PGtkMountOperation; parent: PGtkWindow); cdecl; external;
 procedure gtk_mount_operation_set_screen(AMountOperation: PGtkMountOperation; screen: PGdkScreen); cdecl; external;
 procedure gtk_notebook_next_page(ANotebook: PGtkNotebook); cdecl; external;
 procedure gtk_notebook_popup_disable(ANotebook: PGtkNotebook); cdecl; external;
@@ -14030,7 +14017,7 @@ procedure gtk_text_view_set_pixels_below_lines(ATextView: PGtkTextView; pixels_b
 procedure gtk_text_view_set_pixels_inside_wrap(ATextView: PGtkTextView; pixels_inside_wrap: gint); cdecl; external;
 procedure gtk_text_view_set_right_margin(ATextView: PGtkTextView; right_margin: gint); cdecl; external;
 procedure gtk_text_view_set_tabs(ATextView: PGtkTextView; tabs: PPangoTabArray); cdecl; external;
-procedure gtk_text_view_set_wrap_mode(ATextView: PGtkTextView; wrap_mode: TPangoWrapMode); cdecl; external;
+procedure gtk_text_view_set_wrap_mode(ATextView: PGtkTextView; wrap_mode: TGtkWrapMode); cdecl; external;
 procedure gtk_text_view_window_to_buffer_coords(ATextView: PGtkTextView; win: TGtkTextWindowType; window_x: gint; window_y: gint; buffer_x: Pgint; buffer_y: Pgint); cdecl; external;
 procedure gtk_theming_engine_get(AThemingEngine: PGtkThemingEngine; state: TGtkStateFlags; args: array of const); cdecl; external;
 procedure gtk_theming_engine_get_background_color(AThemingEngine: PGtkThemingEngine; state: TGtkStateFlags; color: PGdkRGBA); cdecl; external;
@@ -14356,7 +14343,7 @@ procedure gtk_widget_set_style(AWidget: PGtkWidget; style: PGtkStyle); cdecl; ex
 procedure gtk_widget_set_support_multidevice(AWidget: PGtkWidget; support_multidevice: gboolean); cdecl; external;
 procedure gtk_widget_set_tooltip_markup(AWidget: PGtkWidget; markup: Pgchar); cdecl; external;
 procedure gtk_widget_set_tooltip_text(AWidget: PGtkWidget; text: Pgchar); cdecl; external;
-procedure gtk_widget_set_tooltip_window(AWidget: PGtkWidget; custom_window: PAtkWindow); cdecl; external;
+procedure gtk_widget_set_tooltip_window(AWidget: PGtkWidget; custom_window: PGtkWindow); cdecl; external;
 procedure gtk_widget_set_valign(AWidget: PGtkWidget; align: TGtkAlign); cdecl; external;
 procedure gtk_widget_set_vexpand(AWidget: PGtkWidget; expand: gboolean); cdecl; external;
 procedure gtk_widget_set_vexpand_set(AWidget: PGtkWidget; set_: gboolean); cdecl; external;
@@ -14435,7 +14422,7 @@ procedure gtk_window_set_skip_pager_hint(AWindow: PGtkWindow; setting: gboolean)
 procedure gtk_window_set_skip_taskbar_hint(AWindow: PGtkWindow; setting: gboolean); cdecl; external;
 procedure gtk_window_set_startup_id(AWindow: PGtkWindow; startup_id: Pgchar); cdecl; external;
 procedure gtk_window_set_title(AWindow: PGtkWindow; title: Pgchar); cdecl; external;
-procedure gtk_window_set_transient_for(AWindow: PGtkWindow; parent: PAtkWindow); cdecl; external;
+procedure gtk_window_set_transient_for(AWindow: PGtkWindow; parent: PGtkWindow); cdecl; external;
 procedure gtk_window_set_type_hint(AWindow: PGtkWindow; hint: TGdkWindowTypeHint); cdecl; external;
 procedure gtk_window_set_urgency_hint(AWindow: PGtkWindow; setting: gboolean); cdecl; external;
 procedure gtk_window_set_wmclass(AWindow: PGtkWindow; wmclass_name: Pgchar; wmclass_class: Pgchar); cdecl; external;
@@ -15032,7 +15019,7 @@ begin
   Result := Gtk3.gtk_widget_get_tooltip_text(@self);
 end;
 
-function TGtkWidget.get_tooltip_window: PAtkWindow; cdecl;
+function TGtkWidget.get_tooltip_window: PGtkWindow; cdecl;
 begin
   Result := Gtk3.gtk_widget_get_tooltip_window(@self);
 end;
@@ -15532,7 +15519,7 @@ begin
   Gtk3.gtk_widget_set_tooltip_text(@self, text);
 end;
 
-procedure TGtkWidget.set_tooltip_window(custom_window: PAtkWindow); cdecl;
+procedure TGtkWidget.set_tooltip_window(custom_window: PGtkWindow); cdecl;
 begin
   Gtk3.gtk_widget_set_tooltip_window(@self, custom_window);
 end;
@@ -15635,6 +15622,691 @@ end;
 procedure TGtkWidget.unset_state_flags(flags: TGtkStateFlags); cdecl;
 begin
   Gtk3.gtk_widget_unset_state_flags(@self, flags);
+end;
+
+procedure TGtkContainer.add(widget: PGtkWidget); cdecl;
+begin
+  Gtk3.gtk_container_add(@self, widget);
+end;
+
+procedure TGtkContainer.check_resize; cdecl;
+begin
+  Gtk3.gtk_container_check_resize(@self);
+end;
+
+procedure TGtkContainer.child_get_property(child: PGtkWidget; property_name: Pgchar; value: PGValue); cdecl;
+begin
+  Gtk3.gtk_container_child_get_property(@self, child, property_name, value);
+end;
+
+procedure TGtkContainer.child_notify(child: PGtkWidget; child_property: Pgchar); cdecl;
+begin
+  Gtk3.gtk_container_child_notify(@self, child, child_property);
+end;
+
+procedure TGtkContainer.child_set_property(child: PGtkWidget; property_name: Pgchar; value: PGValue); cdecl;
+begin
+  Gtk3.gtk_container_child_set_property(@self, child, property_name, value);
+end;
+
+function TGtkContainer.child_type: TGType; cdecl;
+begin
+  Result := Gtk3.gtk_container_child_type(@self);
+end;
+
+procedure TGtkContainer.forall(callback: TGtkCallback; callback_data: gpointer); cdecl;
+begin
+  Gtk3.gtk_container_forall(@self, callback, callback_data);
+end;
+
+procedure TGtkContainer.foreach(callback: TGtkCallback; callback_data: gpointer); cdecl;
+begin
+  Gtk3.gtk_container_foreach(@self, callback, callback_data);
+end;
+
+function TGtkContainer.get_border_width: guint; cdecl;
+begin
+  Result := Gtk3.gtk_container_get_border_width(@self);
+end;
+
+function TGtkContainer.get_children: PGList; cdecl;
+begin
+  Result := Gtk3.gtk_container_get_children(@self);
+end;
+
+function TGtkContainer.get_focus_chain(focusable_widgets: PPGList): gboolean; cdecl;
+begin
+  Result := Gtk3.gtk_container_get_focus_chain(@self, focusable_widgets);
+end;
+
+function TGtkContainer.get_focus_child: PGtkWidget; cdecl;
+begin
+  Result := Gtk3.gtk_container_get_focus_child(@self);
+end;
+
+function TGtkContainer.get_focus_hadjustment: PGtkAdjustment; cdecl;
+begin
+  Result := Gtk3.gtk_container_get_focus_hadjustment(@self);
+end;
+
+function TGtkContainer.get_focus_vadjustment: PGtkAdjustment; cdecl;
+begin
+  Result := Gtk3.gtk_container_get_focus_vadjustment(@self);
+end;
+
+function TGtkContainer.get_path_for_child(child: PGtkWidget): PGtkWidgetPath; cdecl;
+begin
+  Result := Gtk3.gtk_container_get_path_for_child(@self, child);
+end;
+
+function TGtkContainer.get_resize_mode: TGtkResizeMode; cdecl;
+begin
+  Result := Gtk3.gtk_container_get_resize_mode(@self);
+end;
+
+procedure TGtkContainer.propagate_draw(child: PGtkWidget; cr: Pcairo_t); cdecl;
+begin
+  Gtk3.gtk_container_propagate_draw(@self, child, cr);
+end;
+
+procedure TGtkContainer.remove(widget: PGtkWidget); cdecl;
+begin
+  Gtk3.gtk_container_remove(@self, widget);
+end;
+
+procedure TGtkContainer.resize_children; cdecl;
+begin
+  Gtk3.gtk_container_resize_children(@self);
+end;
+
+procedure TGtkContainer.set_border_width(border_width: guint); cdecl;
+begin
+  Gtk3.gtk_container_set_border_width(@self, border_width);
+end;
+
+procedure TGtkContainer.set_focus_chain(focusable_widgets: PGList); cdecl;
+begin
+  Gtk3.gtk_container_set_focus_chain(@self, focusable_widgets);
+end;
+
+procedure TGtkContainer.set_focus_child(child: PGtkWidget); cdecl;
+begin
+  Gtk3.gtk_container_set_focus_child(@self, child);
+end;
+
+procedure TGtkContainer.set_focus_hadjustment(adjustment: PGtkAdjustment); cdecl;
+begin
+  Gtk3.gtk_container_set_focus_hadjustment(@self, adjustment);
+end;
+
+procedure TGtkContainer.set_focus_vadjustment(adjustment: PGtkAdjustment); cdecl;
+begin
+  Gtk3.gtk_container_set_focus_vadjustment(@self, adjustment);
+end;
+
+procedure TGtkContainer.set_reallocate_redraws(needs_redraws: gboolean); cdecl;
+begin
+  Gtk3.gtk_container_set_reallocate_redraws(@self, needs_redraws);
+end;
+
+procedure TGtkContainer.set_resize_mode(resize_mode: TGtkResizeMode); cdecl;
+begin
+  Gtk3.gtk_container_set_resize_mode(@self, resize_mode);
+end;
+
+procedure TGtkContainer.unset_focus_chain; cdecl;
+begin
+  Gtk3.gtk_container_unset_focus_chain(@self);
+end;
+
+function TGtkBin.get_child: PGtkWidget; cdecl;
+begin
+  Result := Gtk3.gtk_bin_get_child(@self);
+end;
+
+function TGtkWindow.new(type_: TGtkWindowType): PGtkWindow; cdecl;
+begin
+  Result := Gtk3.gtk_window_new(type_);
+end;
+
+function TGtkWindow.get_default_icon_list: PGList; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_default_icon_list();
+end;
+
+function TGtkWindow.get_default_icon_name: Pgchar; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_default_icon_name();
+end;
+
+function TGtkWindow.list_toplevels: PGList; cdecl;
+begin
+  Result := Gtk3.gtk_window_list_toplevels();
+end;
+
+procedure TGtkWindow.set_auto_startup_notification(setting: gboolean); cdecl;
+begin
+  Gtk3.gtk_window_set_auto_startup_notification(setting);
+end;
+
+procedure TGtkWindow.set_default_icon(icon: PGdkPixbuf); cdecl;
+begin
+  Gtk3.gtk_window_set_default_icon(icon);
+end;
+
+function TGtkWindow.set_default_icon_from_file(filename: Pgchar): gboolean; cdecl;
+begin
+  Result := Gtk3.gtk_window_set_default_icon_from_file(filename);
+end;
+
+procedure TGtkWindow.set_default_icon_list(list: PGList); cdecl;
+begin
+  Gtk3.gtk_window_set_default_icon_list(list);
+end;
+
+procedure TGtkWindow.set_default_icon_name(name: Pgchar); cdecl;
+begin
+  Gtk3.gtk_window_set_default_icon_name(name);
+end;
+
+function TGtkWindow.activate_default: gboolean; cdecl;
+begin
+  Result := Gtk3.gtk_window_activate_default(@self);
+end;
+
+function TGtkWindow.activate_focus: gboolean; cdecl;
+begin
+  Result := Gtk3.gtk_window_activate_focus(@self);
+end;
+
+function TGtkWindow.activate_key(event: PGdkEventKey): gboolean; cdecl;
+begin
+  Result := Gtk3.gtk_window_activate_key(@self, event);
+end;
+
+procedure TGtkWindow.add_accel_group(accel_group: PGtkAccelGroup); cdecl;
+begin
+  Gtk3.gtk_window_add_accel_group(@self, accel_group);
+end;
+
+procedure TGtkWindow.add_mnemonic(keyval: guint; target: PGtkWidget); cdecl;
+begin
+  Gtk3.gtk_window_add_mnemonic(@self, keyval, target);
+end;
+
+procedure TGtkWindow.begin_move_drag(button: gint; root_x: gint; root_y: gint; timestamp: guint32); cdecl;
+begin
+  Gtk3.gtk_window_begin_move_drag(@self, button, root_x, root_y, timestamp);
+end;
+
+procedure TGtkWindow.begin_resize_drag(edge: TGdkWindowEdge; button: gint; root_x: gint; root_y: gint; timestamp: guint32); cdecl;
+begin
+  Gtk3.gtk_window_begin_resize_drag(@self, edge, button, root_x, root_y, timestamp);
+end;
+
+procedure TGtkWindow.deiconify; cdecl;
+begin
+  Gtk3.gtk_window_deiconify(@self);
+end;
+
+procedure TGtkWindow.fullscreen; cdecl;
+begin
+  Gtk3.gtk_window_fullscreen(@self);
+end;
+
+function TGtkWindow.get_accept_focus: gboolean; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_accept_focus(@self);
+end;
+
+function TGtkWindow.get_application: PGtkApplication; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_application(@self);
+end;
+
+function TGtkWindow.get_decorated: gboolean; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_decorated(@self);
+end;
+
+procedure TGtkWindow.get_default_size(width: Pgint; height: Pgint); cdecl;
+begin
+  Gtk3.gtk_window_get_default_size(@self, width, height);
+end;
+
+function TGtkWindow.get_default_widget: PGtkWidget; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_default_widget(@self);
+end;
+
+function TGtkWindow.get_deletable: gboolean; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_deletable(@self);
+end;
+
+function TGtkWindow.get_destroy_with_parent: gboolean; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_destroy_with_parent(@self);
+end;
+
+function TGtkWindow.get_focus: PGtkWidget; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_focus(@self);
+end;
+
+function TGtkWindow.get_focus_on_map: gboolean; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_focus_on_map(@self);
+end;
+
+function TGtkWindow.get_focus_visible: gboolean; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_focus_visible(@self);
+end;
+
+function TGtkWindow.get_gravity: TGdkGravity; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_gravity(@self);
+end;
+
+function TGtkWindow.get_group: PGtkWindowGroup; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_group(@self);
+end;
+
+function TGtkWindow.get_has_resize_grip: gboolean; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_has_resize_grip(@self);
+end;
+
+function TGtkWindow.get_icon: PGdkPixbuf; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_icon(@self);
+end;
+
+function TGtkWindow.get_icon_list: PGList; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_icon_list(@self);
+end;
+
+function TGtkWindow.get_icon_name: Pgchar; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_icon_name(@self);
+end;
+
+function TGtkWindow.get_mnemonic_modifier: TGdkModifierType; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_mnemonic_modifier(@self);
+end;
+
+function TGtkWindow.get_mnemonics_visible: gboolean; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_mnemonics_visible(@self);
+end;
+
+function TGtkWindow.get_modal: gboolean; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_modal(@self);
+end;
+
+function TGtkWindow.get_opacity: gdouble; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_opacity(@self);
+end;
+
+procedure TGtkWindow.get_position(root_x: Pgint; root_y: Pgint); cdecl;
+begin
+  Gtk3.gtk_window_get_position(@self, root_x, root_y);
+end;
+
+function TGtkWindow.get_resizable: gboolean; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_resizable(@self);
+end;
+
+function TGtkWindow.get_resize_grip_area(rect: PGdkRectangle): gboolean; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_resize_grip_area(@self, rect);
+end;
+
+function TGtkWindow.get_role: Pgchar; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_role(@self);
+end;
+
+function TGtkWindow.get_screen: PGdkScreen; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_screen(@self);
+end;
+
+procedure TGtkWindow.get_size(width: Pgint; height: Pgint); cdecl;
+begin
+  Gtk3.gtk_window_get_size(@self, width, height);
+end;
+
+function TGtkWindow.get_skip_pager_hint: gboolean; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_skip_pager_hint(@self);
+end;
+
+function TGtkWindow.get_skip_taskbar_hint: gboolean; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_skip_taskbar_hint(@self);
+end;
+
+function TGtkWindow.get_title: Pgchar; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_title(@self);
+end;
+
+function TGtkWindow.get_transient_for: PGtkWindow; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_transient_for(@self);
+end;
+
+function TGtkWindow.get_type_hint: TGdkWindowTypeHint; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_type_hint(@self);
+end;
+
+function TGtkWindow.get_urgency_hint: gboolean; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_urgency_hint(@self);
+end;
+
+function TGtkWindow.get_window_type: TGtkWindowType; cdecl;
+begin
+  Result := Gtk3.gtk_window_get_window_type(@self);
+end;
+
+function TGtkWindow.has_group: gboolean; cdecl;
+begin
+  Result := Gtk3.gtk_window_has_group(@self);
+end;
+
+function TGtkWindow.has_toplevel_focus: gboolean; cdecl;
+begin
+  Result := Gtk3.gtk_window_has_toplevel_focus(@self);
+end;
+
+procedure TGtkWindow.iconify; cdecl;
+begin
+  Gtk3.gtk_window_iconify(@self);
+end;
+
+function TGtkWindow.is_active: gboolean; cdecl;
+begin
+  Result := Gtk3.gtk_window_is_active(@self);
+end;
+
+procedure TGtkWindow.maximize; cdecl;
+begin
+  Gtk3.gtk_window_maximize(@self);
+end;
+
+function TGtkWindow.mnemonic_activate(keyval: guint; modifier: TGdkModifierType): gboolean; cdecl;
+begin
+  Result := Gtk3.gtk_window_mnemonic_activate(@self, keyval, modifier);
+end;
+
+procedure TGtkWindow.move(x: gint; y: gint); cdecl;
+begin
+  Gtk3.gtk_window_move(@self, x, y);
+end;
+
+function TGtkWindow.parse_geometry(geometry: Pgchar): gboolean; cdecl;
+begin
+  Result := Gtk3.gtk_window_parse_geometry(@self, geometry);
+end;
+
+procedure TGtkWindow.present; cdecl;
+begin
+  Gtk3.gtk_window_present(@self);
+end;
+
+procedure TGtkWindow.present_with_time(timestamp: guint32); cdecl;
+begin
+  Gtk3.gtk_window_present_with_time(@self, timestamp);
+end;
+
+function TGtkWindow.propagate_key_event(event: PGdkEventKey): gboolean; cdecl;
+begin
+  Result := Gtk3.gtk_window_propagate_key_event(@self, event);
+end;
+
+procedure TGtkWindow.remove_accel_group(accel_group: PGtkAccelGroup); cdecl;
+begin
+  Gtk3.gtk_window_remove_accel_group(@self, accel_group);
+end;
+
+procedure TGtkWindow.remove_mnemonic(keyval: guint; target: PGtkWidget); cdecl;
+begin
+  Gtk3.gtk_window_remove_mnemonic(@self, keyval, target);
+end;
+
+procedure TGtkWindow.reshow_with_initial_size; cdecl;
+begin
+  Gtk3.gtk_window_reshow_with_initial_size(@self);
+end;
+
+procedure TGtkWindow.resize(width: gint; height: gint); cdecl;
+begin
+  Gtk3.gtk_window_resize(@self, width, height);
+end;
+
+function TGtkWindow.resize_grip_is_visible: gboolean; cdecl;
+begin
+  Result := Gtk3.gtk_window_resize_grip_is_visible(@self);
+end;
+
+procedure TGtkWindow.resize_to_geometry(width: gint; height: gint); cdecl;
+begin
+  Gtk3.gtk_window_resize_to_geometry(@self, width, height);
+end;
+
+procedure TGtkWindow.set_accept_focus(setting: gboolean); cdecl;
+begin
+  Gtk3.gtk_window_set_accept_focus(@self, setting);
+end;
+
+procedure TGtkWindow.set_application(application: PGtkApplication); cdecl;
+begin
+  Gtk3.gtk_window_set_application(@self, application);
+end;
+
+procedure TGtkWindow.set_decorated(setting: gboolean); cdecl;
+begin
+  Gtk3.gtk_window_set_decorated(@self, setting);
+end;
+
+procedure TGtkWindow.set_default(default_widget: PGtkWidget); cdecl;
+begin
+  Gtk3.gtk_window_set_default(@self, default_widget);
+end;
+
+procedure TGtkWindow.set_default_geometry(width: gint; height: gint); cdecl;
+begin
+  Gtk3.gtk_window_set_default_geometry(@self, width, height);
+end;
+
+procedure TGtkWindow.set_default_size(width: gint; height: gint); cdecl;
+begin
+  Gtk3.gtk_window_set_default_size(@self, width, height);
+end;
+
+procedure TGtkWindow.set_deletable(setting: gboolean); cdecl;
+begin
+  Gtk3.gtk_window_set_deletable(@self, setting);
+end;
+
+procedure TGtkWindow.set_destroy_with_parent(setting: gboolean); cdecl;
+begin
+  Gtk3.gtk_window_set_destroy_with_parent(@self, setting);
+end;
+
+procedure TGtkWindow.set_focus(focus: PGtkWidget); cdecl;
+begin
+  Gtk3.gtk_window_set_focus(@self, focus);
+end;
+
+procedure TGtkWindow.set_focus_on_map(setting: gboolean); cdecl;
+begin
+  Gtk3.gtk_window_set_focus_on_map(@self, setting);
+end;
+
+procedure TGtkWindow.set_focus_visible(setting: gboolean); cdecl;
+begin
+  Gtk3.gtk_window_set_focus_visible(@self, setting);
+end;
+
+procedure TGtkWindow.set_geometry_hints(geometry_widget: PGtkWidget; geometry: PGdkGeometry; geom_mask: TGdkWindowHints); cdecl;
+begin
+  Gtk3.gtk_window_set_geometry_hints(@self, geometry_widget, geometry, geom_mask);
+end;
+
+procedure TGtkWindow.set_gravity(gravity: TGdkGravity); cdecl;
+begin
+  Gtk3.gtk_window_set_gravity(@self, gravity);
+end;
+
+procedure TGtkWindow.set_has_resize_grip(value: gboolean); cdecl;
+begin
+  Gtk3.gtk_window_set_has_resize_grip(@self, value);
+end;
+
+procedure TGtkWindow.set_has_user_ref_count(setting: gboolean); cdecl;
+begin
+  Gtk3.gtk_window_set_has_user_ref_count(@self, setting);
+end;
+
+procedure TGtkWindow.set_icon(icon: PGdkPixbuf); cdecl;
+begin
+  Gtk3.gtk_window_set_icon(@self, icon);
+end;
+
+function TGtkWindow.set_icon_from_file(filename: Pgchar): gboolean; cdecl;
+begin
+  Result := Gtk3.gtk_window_set_icon_from_file(@self, filename);
+end;
+
+procedure TGtkWindow.set_icon_list(list: PGList); cdecl;
+begin
+  Gtk3.gtk_window_set_icon_list(@self, list);
+end;
+
+procedure TGtkWindow.set_icon_name(name: Pgchar); cdecl;
+begin
+  Gtk3.gtk_window_set_icon_name(@self, name);
+end;
+
+procedure TGtkWindow.set_keep_above(setting: gboolean); cdecl;
+begin
+  Gtk3.gtk_window_set_keep_above(@self, setting);
+end;
+
+procedure TGtkWindow.set_keep_below(setting: gboolean); cdecl;
+begin
+  Gtk3.gtk_window_set_keep_below(@self, setting);
+end;
+
+procedure TGtkWindow.set_mnemonic_modifier(modifier: TGdkModifierType); cdecl;
+begin
+  Gtk3.gtk_window_set_mnemonic_modifier(@self, modifier);
+end;
+
+procedure TGtkWindow.set_mnemonics_visible(setting: gboolean); cdecl;
+begin
+  Gtk3.gtk_window_set_mnemonics_visible(@self, setting);
+end;
+
+procedure TGtkWindow.set_modal(modal: gboolean); cdecl;
+begin
+  Gtk3.gtk_window_set_modal(@self, modal);
+end;
+
+procedure TGtkWindow.set_opacity(opacity: gdouble); cdecl;
+begin
+  Gtk3.gtk_window_set_opacity(@self, opacity);
+end;
+
+procedure TGtkWindow.set_position(position: TGtkWindowPosition); cdecl;
+begin
+  Gtk3.gtk_window_set_position(@self, position);
+end;
+
+procedure TGtkWindow.set_resizable(resizable: gboolean); cdecl;
+begin
+  Gtk3.gtk_window_set_resizable(@self, resizable);
+end;
+
+procedure TGtkWindow.set_role(role: Pgchar); cdecl;
+begin
+  Gtk3.gtk_window_set_role(@self, role);
+end;
+
+procedure TGtkWindow.set_screen(screen: PGdkScreen); cdecl;
+begin
+  Gtk3.gtk_window_set_screen(@self, screen);
+end;
+
+procedure TGtkWindow.set_skip_pager_hint(setting: gboolean); cdecl;
+begin
+  Gtk3.gtk_window_set_skip_pager_hint(@self, setting);
+end;
+
+procedure TGtkWindow.set_skip_taskbar_hint(setting: gboolean); cdecl;
+begin
+  Gtk3.gtk_window_set_skip_taskbar_hint(@self, setting);
+end;
+
+procedure TGtkWindow.set_startup_id(startup_id: Pgchar); cdecl;
+begin
+  Gtk3.gtk_window_set_startup_id(@self, startup_id);
+end;
+
+procedure TGtkWindow.set_title(title: Pgchar); cdecl;
+begin
+  Gtk3.gtk_window_set_title(@self, title);
+end;
+
+procedure TGtkWindow.set_transient_for(parent: PGtkWindow); cdecl;
+begin
+  Gtk3.gtk_window_set_transient_for(@self, parent);
+end;
+
+procedure TGtkWindow.set_type_hint(hint: TGdkWindowTypeHint); cdecl;
+begin
+  Gtk3.gtk_window_set_type_hint(@self, hint);
+end;
+
+procedure TGtkWindow.set_urgency_hint(setting: gboolean); cdecl;
+begin
+  Gtk3.gtk_window_set_urgency_hint(@self, setting);
+end;
+
+procedure TGtkWindow.set_wmclass(wmclass_name: Pgchar; wmclass_class: Pgchar); cdecl;
+begin
+  Gtk3.gtk_window_set_wmclass(@self, wmclass_name, wmclass_class);
+end;
+
+procedure TGtkWindow.stick; cdecl;
+begin
+  Gtk3.gtk_window_stick(@self);
+end;
+
+procedure TGtkWindow.unfullscreen; cdecl;
+begin
+  Gtk3.gtk_window_unfullscreen(@self);
+end;
+
+procedure TGtkWindow.unmaximize; cdecl;
+begin
+  Gtk3.gtk_window_unmaximize(@self);
+end;
+
+procedure TGtkWindow.unstick; cdecl;
+begin
+  Gtk3.gtk_window_unstick(@self);
 end;
 
 function TGtkDialog.new: PGtkDialog; cdecl;
@@ -15853,6 +16525,56 @@ begin
   Gtk3.gtk_about_dialog_set_wrap_license(@self, wrap_license);
 end;
 
+function TGtkContainerClass.find_child_property(property_name: Pgchar): PGParamSpec; cdecl;
+begin
+  Result := Gtk3.gtk_container_class_find_child_property(@self, property_name);
+end;
+
+procedure TGtkContainerClass.handle_border_width; cdecl;
+begin
+  Gtk3.gtk_container_class_handle_border_width(@self);
+end;
+
+procedure TGtkContainerClass.install_child_property(property_id: guint; pspec: PGParamSpec); cdecl;
+begin
+  Gtk3.gtk_container_class_install_child_property(@self, property_id, pspec);
+end;
+
+function TGtkContainerClass.list_child_properties(n_properties: Pguint): PPGParamSpec; cdecl;
+begin
+  Result := Gtk3.gtk_container_class_list_child_properties(@self, n_properties);
+end;
+
+function TGtkWidgetClass.find_style_property(property_name: Pgchar): PGParamSpec; cdecl;
+begin
+  Result := Gtk3.gtk_widget_class_find_style_property(@self, property_name);
+end;
+
+procedure TGtkWidgetClass.install_style_property(pspec: PGParamSpec); cdecl;
+begin
+  Gtk3.gtk_widget_class_install_style_property(@self, pspec);
+end;
+
+procedure TGtkWidgetClass.install_style_property_parser(pspec: PGParamSpec; parser: TGtkRcPropertyParser); cdecl;
+begin
+  Gtk3.gtk_widget_class_install_style_property_parser(@self, pspec, parser);
+end;
+
+function TGtkWidgetClass.list_style_properties(n_properties: Pguint): PPGParamSpec; cdecl;
+begin
+  Result := Gtk3.gtk_widget_class_list_style_properties(@self, n_properties);
+end;
+
+procedure TGtkWidgetClass.set_accessible_role(role: TAtkRole); cdecl;
+begin
+  Gtk3.gtk_widget_class_set_accessible_role(@self, role);
+end;
+
+procedure TGtkWidgetClass.set_accessible_type(type_: TGType); cdecl;
+begin
+  Gtk3.gtk_widget_class_set_accessible_type(@self, type_);
+end;
+
 function TGtkAccelGroup.new: PGtkAccelGroup; cdecl;
 begin
   Result := Gtk3.gtk_accel_group_new();
@@ -15916,6 +16638,26 @@ end;
 procedure TGtkAccelGroup.unlock; cdecl;
 begin
   Gtk3.gtk_accel_group_unlock(@self);
+end;
+
+procedure TGtkMisc.get_alignment(xalign: Pgfloat; yalign: Pgfloat); cdecl;
+begin
+  Gtk3.gtk_misc_get_alignment(@self, xalign, yalign);
+end;
+
+procedure TGtkMisc.get_padding(xpad: Pgint; ypad: Pgint); cdecl;
+begin
+  Gtk3.gtk_misc_get_padding(@self, xpad, ypad);
+end;
+
+procedure TGtkMisc.set_alignment(xalign: gfloat; yalign: gfloat); cdecl;
+begin
+  Gtk3.gtk_misc_set_alignment(@self, xalign, yalign);
+end;
+
+procedure TGtkMisc.set_padding(xpad: gint; ypad: gint); cdecl;
+begin
+  Gtk3.gtk_misc_set_padding(@self, xpad, ypad);
 end;
 
 function TGtkLabel.new(str: Pgchar): PGtkLabel; cdecl;
@@ -16543,7 +17285,7 @@ begin
   Gtk3.gtk_action_group_set_sensitive(@self, sensitive);
 end;
 
-procedure TGtkActionGroup.set_translate_func(func: TGTranslateFunc; data: gpointer; notify: TGDestroyNotify); cdecl;
+procedure TGtkActionGroup.set_translate_func(func: TGtkTranslateFunc; data: gpointer; notify: TGDestroyNotify); cdecl;
 begin
   Gtk3.gtk_action_group_set_translate_func(@self, func, data, notify);
 end;
@@ -16683,146 +17425,6 @@ begin
   Gtk3.gtk_adjustment_value_changed(@self);
 end;
 
-procedure TGtkContainer.add(widget: PGtkWidget); cdecl;
-begin
-  Gtk3.gtk_container_add(@self, widget);
-end;
-
-procedure TGtkContainer.check_resize; cdecl;
-begin
-  Gtk3.gtk_container_check_resize(@self);
-end;
-
-procedure TGtkContainer.child_get_property(child: PGtkWidget; property_name: Pgchar; value: PGValue); cdecl;
-begin
-  Gtk3.gtk_container_child_get_property(@self, child, property_name, value);
-end;
-
-procedure TGtkContainer.child_notify(child: PGtkWidget; child_property: Pgchar); cdecl;
-begin
-  Gtk3.gtk_container_child_notify(@self, child, child_property);
-end;
-
-procedure TGtkContainer.child_set_property(child: PGtkWidget; property_name: Pgchar; value: PGValue); cdecl;
-begin
-  Gtk3.gtk_container_child_set_property(@self, child, property_name, value);
-end;
-
-function TGtkContainer.child_type: TGType; cdecl;
-begin
-  Result := Gtk3.gtk_container_child_type(@self);
-end;
-
-procedure TGtkContainer.forall(callback: TGtkCallback; callback_data: gpointer); cdecl;
-begin
-  Gtk3.gtk_container_forall(@self, callback, callback_data);
-end;
-
-procedure TGtkContainer.foreach(callback: TGtkCallback; callback_data: gpointer); cdecl;
-begin
-  Gtk3.gtk_container_foreach(@self, callback, callback_data);
-end;
-
-function TGtkContainer.get_border_width: guint; cdecl;
-begin
-  Result := Gtk3.gtk_container_get_border_width(@self);
-end;
-
-function TGtkContainer.get_children: PGList; cdecl;
-begin
-  Result := Gtk3.gtk_container_get_children(@self);
-end;
-
-function TGtkContainer.get_focus_chain(focusable_widgets: PPGList): gboolean; cdecl;
-begin
-  Result := Gtk3.gtk_container_get_focus_chain(@self, focusable_widgets);
-end;
-
-function TGtkContainer.get_focus_child: PGtkWidget; cdecl;
-begin
-  Result := Gtk3.gtk_container_get_focus_child(@self);
-end;
-
-function TGtkContainer.get_focus_hadjustment: PGtkAdjustment; cdecl;
-begin
-  Result := Gtk3.gtk_container_get_focus_hadjustment(@self);
-end;
-
-function TGtkContainer.get_focus_vadjustment: PGtkAdjustment; cdecl;
-begin
-  Result := Gtk3.gtk_container_get_focus_vadjustment(@self);
-end;
-
-function TGtkContainer.get_path_for_child(child: PGtkWidget): PGtkWidgetPath; cdecl;
-begin
-  Result := Gtk3.gtk_container_get_path_for_child(@self, child);
-end;
-
-function TGtkContainer.get_resize_mode: TGtkResizeMode; cdecl;
-begin
-  Result := Gtk3.gtk_container_get_resize_mode(@self);
-end;
-
-procedure TGtkContainer.propagate_draw(child: PGtkWidget; cr: Pcairo_t); cdecl;
-begin
-  Gtk3.gtk_container_propagate_draw(@self, child, cr);
-end;
-
-procedure TGtkContainer.remove(widget: PGtkWidget); cdecl;
-begin
-  Gtk3.gtk_container_remove(@self, widget);
-end;
-
-procedure TGtkContainer.resize_children; cdecl;
-begin
-  Gtk3.gtk_container_resize_children(@self);
-end;
-
-procedure TGtkContainer.set_border_width(border_width: guint); cdecl;
-begin
-  Gtk3.gtk_container_set_border_width(@self, border_width);
-end;
-
-procedure TGtkContainer.set_focus_chain(focusable_widgets: PGList); cdecl;
-begin
-  Gtk3.gtk_container_set_focus_chain(@self, focusable_widgets);
-end;
-
-procedure TGtkContainer.set_focus_child(child: PGtkWidget); cdecl;
-begin
-  Gtk3.gtk_container_set_focus_child(@self, child);
-end;
-
-procedure TGtkContainer.set_focus_hadjustment(adjustment: PGtkAdjustment); cdecl;
-begin
-  Gtk3.gtk_container_set_focus_hadjustment(@self, adjustment);
-end;
-
-procedure TGtkContainer.set_focus_vadjustment(adjustment: PGtkAdjustment); cdecl;
-begin
-  Gtk3.gtk_container_set_focus_vadjustment(@self, adjustment);
-end;
-
-procedure TGtkContainer.set_reallocate_redraws(needs_redraws: gboolean); cdecl;
-begin
-  Gtk3.gtk_container_set_reallocate_redraws(@self, needs_redraws);
-end;
-
-procedure TGtkContainer.set_resize_mode(resize_mode: TGtkResizeMode); cdecl;
-begin
-  Gtk3.gtk_container_set_resize_mode(@self, resize_mode);
-end;
-
-procedure TGtkContainer.unset_focus_chain; cdecl;
-begin
-  Gtk3.gtk_container_unset_focus_chain(@self);
-end;
-
-function TGtkBin.get_child: PGtkWidget; cdecl;
-begin
-  Result := Gtk3.gtk_bin_get_child(@self);
-end;
-
 function TGtkAlignment.new(xalign: gfloat; yalign: gfloat; xscale: gfloat; yscale: gfloat): PGtkAlignment; cdecl;
 begin
   Result := Gtk3.gtk_alignment_new(xalign, yalign, xscale, yscale);
@@ -16841,56 +17443,6 @@ end;
 procedure TGtkAlignment.set_padding(padding_top: guint; padding_bottom: guint; padding_left: guint; padding_right: guint); cdecl;
 begin
   Gtk3.gtk_alignment_set_padding(@self, padding_top, padding_bottom, padding_left, padding_right);
-end;
-
-function TGtkContainerClass.find_child_property(property_name: Pgchar): PGParamSpec; cdecl;
-begin
-  Result := Gtk3.gtk_container_class_find_child_property(@self, property_name);
-end;
-
-procedure TGtkContainerClass.handle_border_width; cdecl;
-begin
-  Gtk3.gtk_container_class_handle_border_width(@self);
-end;
-
-procedure TGtkContainerClass.install_child_property(property_id: guint; pspec: PGParamSpec); cdecl;
-begin
-  Gtk3.gtk_container_class_install_child_property(@self, property_id, pspec);
-end;
-
-function TGtkContainerClass.list_child_properties(n_properties: Pguint): PPGParamSpec; cdecl;
-begin
-  Result := Gtk3.gtk_container_class_list_child_properties(@self, n_properties);
-end;
-
-function TGtkWidgetClass.find_style_property(property_name: Pgchar): PGParamSpec; cdecl;
-begin
-  Result := Gtk3.gtk_widget_class_find_style_property(@self, property_name);
-end;
-
-procedure TGtkWidgetClass.install_style_property(pspec: PGParamSpec); cdecl;
-begin
-  Gtk3.gtk_widget_class_install_style_property(@self, pspec);
-end;
-
-procedure TGtkWidgetClass.install_style_property_parser(pspec: PGParamSpec; parser: TGtkRcPropertyParser); cdecl;
-begin
-  Gtk3.gtk_widget_class_install_style_property_parser(@self, pspec, parser);
-end;
-
-function TGtkWidgetClass.list_style_properties(n_properties: Pguint): PPGParamSpec; cdecl;
-begin
-  Result := Gtk3.gtk_widget_class_list_style_properties(@self, n_properties);
-end;
-
-procedure TGtkWidgetClass.set_accessible_role(role: TAtkRole); cdecl;
-begin
-  Gtk3.gtk_widget_class_set_accessible_role(@self, role);
-end;
-
-procedure TGtkWidgetClass.set_accessible_type(type_: TGType); cdecl;
-begin
-  Gtk3.gtk_widget_class_set_accessible_type(@self, type_);
 end;
 
 function TGtkAppChooser.get_app_info: PGAppInfo; cdecl;
@@ -17213,12 +17765,12 @@ begin
   Gtk3.gtk_app_chooser_button_set_show_dialog_item(@self, setting);
 end;
 
-function TGtkAppChooserDialog.new(parent: PAtkWindow; flags: TGtkDialogFlags; file_: PGFile): PGtkAppChooserDialog; cdecl;
+function TGtkAppChooserDialog.new(parent: PGtkWindow; flags: TGtkDialogFlags; file_: PGFile): PGtkAppChooserDialog; cdecl;
 begin
   Result := Gtk3.gtk_app_chooser_dialog_new(parent, flags, file_);
 end;
 
-function TGtkAppChooserDialog.new_for_content_type(parent: PAtkWindow; flags: TGtkDialogFlags; content_type: Pgchar): PGtkAppChooserDialog; cdecl;
+function TGtkAppChooserDialog.new_for_content_type(parent: PGtkWindow; flags: TGtkDialogFlags; content_type: Pgchar): PGtkAppChooserDialog; cdecl;
 begin
   Result := Gtk3.gtk_app_chooser_dialog_new_for_content_type(parent, flags, content_type);
 end;
@@ -17563,7 +18115,7 @@ begin
   Result := Gtk3.gtk_application_new(application_id, flags);
 end;
 
-procedure TGtkApplication.add_window(window: PAtkWindow); cdecl;
+procedure TGtkApplication.add_window(window: PGtkWindow); cdecl;
 begin
   Gtk3.gtk_application_add_window(@self, window);
 end;
@@ -17573,7 +18125,7 @@ begin
   Result := Gtk3.gtk_application_get_windows(@self);
 end;
 
-procedure TGtkApplication.remove_window(window: PAtkWindow); cdecl;
+procedure TGtkApplication.remove_window(window: PGtkWindow); cdecl;
 begin
   Gtk3.gtk_application_remove_window(@self, window);
 end;
@@ -21040,7 +21592,7 @@ begin
   Gtk3.gtk_file_chooser_add_filter(@self, filter);
 end;
 
-function TGtkFileChooser.add_shortcut_folder(folder: Pchar): gboolean; cdecl;
+function TGtkFileChooser.add_shortcut_folder(folder: Pgchar): gboolean; cdecl;
 begin
   Result := Gtk3.gtk_file_chooser_add_shortcut_folder(@self, folder);
 end;
@@ -21120,7 +21672,7 @@ begin
   Result := Gtk3.gtk_file_chooser_get_preview_file(@self);
 end;
 
-function TGtkFileChooser.get_preview_filename: Pchar; cdecl;
+function TGtkFileChooser.get_preview_filename: Pgchar; cdecl;
 begin
   Result := Gtk3.gtk_file_chooser_get_preview_filename(@self);
 end;
@@ -21185,7 +21737,7 @@ begin
   Gtk3.gtk_file_chooser_remove_filter(@self, filter);
 end;
 
-function TGtkFileChooser.remove_shortcut_folder(folder: Pchar): gboolean; cdecl;
+function TGtkFileChooser.remove_shortcut_folder(folder: Pgchar): gboolean; cdecl;
 begin
   Result := Gtk3.gtk_file_chooser_remove_shortcut_folder(@self, folder);
 end;
@@ -21205,7 +21757,7 @@ begin
   Result := Gtk3.gtk_file_chooser_select_file(@self, file_);
 end;
 
-function TGtkFileChooser.select_filename(filename: Pchar): gboolean; cdecl;
+function TGtkFileChooser.select_filename(filename: Pgchar): gboolean; cdecl;
 begin
   Result := Gtk3.gtk_file_chooser_select_filename(@self, filename);
 end;
@@ -21260,7 +21812,7 @@ begin
   Result := Gtk3.gtk_file_chooser_set_file(@self, file_);
 end;
 
-function TGtkFileChooser.set_filename(filename: Pchar): gboolean; cdecl;
+function TGtkFileChooser.set_filename(filename: Pgchar): gboolean; cdecl;
 begin
   Result := Gtk3.gtk_file_chooser_set_filename(@self, filename);
 end;
@@ -21315,7 +21867,7 @@ begin
   Gtk3.gtk_file_chooser_unselect_file(@self, file_);
 end;
 
-procedure TGtkFileChooser.unselect_filename(filename: Pchar); cdecl;
+procedure TGtkFileChooser.unselect_filename(filename: Pgchar); cdecl;
 begin
   Gtk3.gtk_file_chooser_unselect_filename(@self, filename);
 end;
@@ -21510,7 +22062,7 @@ begin
   Gtk3.gtk_font_chooser_set_show_preview_entry(@self, show_preview_entry);
 end;
 
-function TGtkFontChooserDialog.new(title: Pgchar; window: PAtkWindow): PGtkFontChooserDialog; cdecl;
+function TGtkFontChooserDialog.new(title: Pgchar; window: PGtkWindow): PGtkFontChooserDialog; cdecl;
 begin
   Result := Gtk3.gtk_font_chooser_dialog_new(title, window);
 end;
@@ -22632,6 +23184,56 @@ begin
   Result := Gtk3.gtk_style_context_state_is_running(@self, state, progress);
 end;
 
+procedure TGtkStyle.apply_default_background(cr: Pcairo_t; window: PGdkWindow; state_type: TGtkStateType; x: gint; y: gint; width: gint; height: gint); cdecl;
+begin
+  Gtk3.gtk_style_apply_default_background(@self, cr, window, state_type, x, y, width, height);
+end;
+
+function TGtkStyle.attach(window: PGdkWindow): PGtkStyle; cdecl;
+begin
+  Result := Gtk3.gtk_style_attach(@self, window);
+end;
+
+function TGtkStyle.copy: PGtkStyle; cdecl;
+begin
+  Result := Gtk3.gtk_style_copy(@self);
+end;
+
+procedure TGtkStyle.detach; cdecl;
+begin
+  Gtk3.gtk_style_detach(@self);
+end;
+
+procedure TGtkStyle.get_style_property(widget_type: TGType; property_name: Pgchar; value: PGValue); cdecl;
+begin
+  Gtk3.gtk_style_get_style_property(@self, widget_type, property_name, value);
+end;
+
+function TGtkStyle.has_context: gboolean; cdecl;
+begin
+  Result := Gtk3.gtk_style_has_context(@self);
+end;
+
+function TGtkStyle.lookup_color(color_name: Pgchar; color: PGdkColor): gboolean; cdecl;
+begin
+  Result := Gtk3.gtk_style_lookup_color(@self, color_name, color);
+end;
+
+function TGtkStyle.lookup_icon_set(stock_id: Pgchar): PGtkIconSet; cdecl;
+begin
+  Result := Gtk3.gtk_style_lookup_icon_set(@self, stock_id);
+end;
+
+function TGtkStyle.render_icon(source: PGtkIconSource; direction: TGtkTextDirection; state: TGtkStateType; size: gint; widget: PGtkWidget; detail: Pgchar): PGdkPixbuf; cdecl;
+begin
+  Result := Gtk3.gtk_style_render_icon(@self, source, direction, state, size, widget, detail);
+end;
+
+procedure TGtkStyle.set_background(window: PGdkWindow; state_type: TGtkStateType); cdecl;
+begin
+  Gtk3.gtk_style_set_background(@self, window, state_type);
+end;
+
 function TGtkIconSource.new: PGtkIconSource; cdecl;
 begin
   Result := Gtk3.gtk_icon_source_new();
@@ -22682,7 +23284,7 @@ begin
   Result := Gtk3.gtk_icon_source_get_size_wildcarded(@self);
 end;
 
-function TGtkIconSource.get_state: TAtkStateType; cdecl;
+function TGtkIconSource.get_state: TGtkStateType; cdecl;
 begin
   Result := Gtk3.gtk_icon_source_get_state(@self);
 end;
@@ -22727,7 +23329,7 @@ begin
   Gtk3.gtk_icon_source_set_size_wildcarded(@self, setting);
 end;
 
-procedure TGtkIconSource.set_state(state: TAtkStateType); cdecl;
+procedure TGtkIconSource.set_state(state: TGtkStateType); cdecl;
 begin
   Gtk3.gtk_icon_source_set_state(@self, state);
 end;
@@ -22735,6 +23337,46 @@ end;
 procedure TGtkIconSource.set_state_wildcarded(setting: gboolean); cdecl;
 begin
   Gtk3.gtk_icon_source_set_state_wildcarded(@self, setting);
+end;
+
+function TGtkSettings.get_default: PGtkSettings; cdecl;
+begin
+  Result := Gtk3.gtk_settings_get_default();
+end;
+
+function TGtkSettings.get_for_screen(screen: PGdkScreen): PGtkSettings; cdecl;
+begin
+  Result := Gtk3.gtk_settings_get_for_screen(screen);
+end;
+
+procedure TGtkSettings.install_property(pspec: PGParamSpec); cdecl;
+begin
+  Gtk3.gtk_settings_install_property(pspec);
+end;
+
+procedure TGtkSettings.install_property_parser(pspec: PGParamSpec; parser: TGtkRcPropertyParser); cdecl;
+begin
+  Gtk3.gtk_settings_install_property_parser(pspec, parser);
+end;
+
+procedure TGtkSettings.set_double_property(name: Pgchar; v_double: gdouble; origin: Pgchar); cdecl;
+begin
+  Gtk3.gtk_settings_set_double_property(@self, name, v_double, origin);
+end;
+
+procedure TGtkSettings.set_long_property(name: Pgchar; v_long: glong; origin: Pgchar); cdecl;
+begin
+  Gtk3.gtk_settings_set_long_property(@self, name, v_long, origin);
+end;
+
+procedure TGtkSettings.set_property_value(name: Pgchar; svalue: PGtkSettingsValue); cdecl;
+begin
+  Gtk3.gtk_settings_set_property_value(@self, name, svalue);
+end;
+
+procedure TGtkSettings.set_string_property(name: Pgchar; v_string: Pgchar; origin: Pgchar); cdecl;
+begin
+  Gtk3.gtk_settings_set_string_property(@self, name, v_string, origin);
 end;
 
 function TGtkScrollable.get_hadjustment: PGtkAdjustment; cdecl;
@@ -23877,32 +24519,12 @@ begin
   Gtk3.gtk_message_dialog_set_markup(@self, str);
 end;
 
-procedure TGtkMisc.get_alignment(xalign: Pgfloat; yalign: Pgfloat); cdecl;
-begin
-  Gtk3.gtk_misc_get_alignment(@self, xalign, yalign);
-end;
-
-procedure TGtkMisc.get_padding(xpad: Pgint; ypad: Pgint); cdecl;
-begin
-  Gtk3.gtk_misc_get_padding(@self, xpad, ypad);
-end;
-
-procedure TGtkMisc.set_alignment(xalign: gfloat; yalign: gfloat); cdecl;
-begin
-  Gtk3.gtk_misc_set_alignment(@self, xalign, yalign);
-end;
-
-procedure TGtkMisc.set_padding(xpad: gint; ypad: gint); cdecl;
-begin
-  Gtk3.gtk_misc_set_padding(@self, xpad, ypad);
-end;
-
-function TGtkMountOperation.new(parent: PAtkWindow): PGtkMountOperation; cdecl;
+function TGtkMountOperation.new(parent: PGtkWindow): PGtkMountOperation; cdecl;
 begin
   Result := Gtk3.gtk_mount_operation_new(parent);
 end;
 
-function TGtkMountOperation.get_parent: PAtkWindow; cdecl;
+function TGtkMountOperation.get_parent: PGtkWindow; cdecl;
 begin
   Result := Gtk3.gtk_mount_operation_get_parent(@self);
 end;
@@ -23917,7 +24539,7 @@ begin
   Result := Gtk3.gtk_mount_operation_is_showing(@self);
 end;
 
-procedure TGtkMountOperation.set_parent(parent: PAtkWindow); cdecl;
+procedure TGtkMountOperation.set_parent(parent: PGtkWindow); cdecl;
 begin
   Gtk3.gtk_mount_operation_set_parent(@self, parent);
 end;
@@ -24302,7 +24924,7 @@ begin
   Result := Gtk3.gtk_page_setup_get_top_margin(@self, unit_);
 end;
 
-function TGtkPageSetup.load_file(file_name: Pchar): gboolean; cdecl;
+function TGtkPageSetup.load_file(file_name: Pgchar): gboolean; cdecl;
 begin
   Result := Gtk3.gtk_page_setup_load_file(@self, file_name);
 end;
@@ -24347,7 +24969,7 @@ begin
   Gtk3.gtk_page_setup_set_top_margin(@self, margin, unit_);
 end;
 
-function TGtkPageSetup.to_file(file_name: Pchar): gboolean; cdecl;
+function TGtkPageSetup.to_file(file_name: Pgchar): gboolean; cdecl;
 begin
   Result := Gtk3.gtk_page_setup_to_file(@self, file_name);
 end;
@@ -24632,7 +25254,7 @@ begin
   Result := Gtk3.gtk_print_operation_is_finished(@self);
 end;
 
-function TGtkPrintOperation.run(action: TGtkPrintOperationAction; parent: PAtkWindow): TGtkPrintOperationResult; cdecl;
+function TGtkPrintOperation.run(action: TGtkPrintOperationAction; parent: PGtkWindow): TGtkPrintOperationResult; cdecl;
 begin
   Result := Gtk3.gtk_print_operation_run(@self, action, parent);
 end;
@@ -25979,46 +26601,6 @@ begin
   Gtk3.gtk_separator_tool_item_set_draw(@self, draw);
 end;
 
-function TGtkSettings.get_default: PGSettings; cdecl;
-begin
-  Result := Gtk3.gtk_settings_get_default();
-end;
-
-function TGtkSettings.get_for_screen(screen: PGdkScreen): PGSettings; cdecl;
-begin
-  Result := Gtk3.gtk_settings_get_for_screen(screen);
-end;
-
-procedure TGtkSettings.install_property(pspec: PGParamSpec); cdecl;
-begin
-  Gtk3.gtk_settings_install_property(pspec);
-end;
-
-procedure TGtkSettings.install_property_parser(pspec: PGParamSpec; parser: TGtkRcPropertyParser); cdecl;
-begin
-  Gtk3.gtk_settings_install_property_parser(pspec, parser);
-end;
-
-procedure TGtkSettings.set_double_property(name: Pgchar; v_double: gdouble; origin: Pgchar); cdecl;
-begin
-  Gtk3.gtk_settings_set_double_property(@self, name, v_double, origin);
-end;
-
-procedure TGtkSettings.set_long_property(name: Pgchar; v_long: glong; origin: Pgchar); cdecl;
-begin
-  Gtk3.gtk_settings_set_long_property(@self, name, v_long, origin);
-end;
-
-procedure TGtkSettings.set_property_value(name: Pgchar; svalue: PGtkSettingsValue); cdecl;
-begin
-  Gtk3.gtk_settings_set_property_value(@self, name, svalue);
-end;
-
-procedure TGtkSettings.set_string_property(name: Pgchar; v_string: Pgchar; origin: Pgchar); cdecl;
-begin
-  Gtk3.gtk_settings_set_string_property(@self, name, v_string, origin);
-end;
-
 function TGtkSizeGroup.new(mode: TGtkSizeGroupMode): PGtkSizeGroup; cdecl;
 begin
   Result := Gtk3.gtk_size_group_new(mode);
@@ -26427,56 +27009,6 @@ end;
 procedure TGtkStockItem.free; cdecl;
 begin
   Gtk3.gtk_stock_item_free(@self);
-end;
-
-procedure TGtkStyle.apply_default_background(cr: Pcairo_t; window: PGdkWindow; state_type: TGtkStateType; x: gint; y: gint; width: gint; height: gint); cdecl;
-begin
-  Gtk3.gtk_style_apply_default_background(@self, cr, window, state_type, x, y, width, height);
-end;
-
-function TGtkStyle.attach(window: PGdkWindow): PPangoStyle; cdecl;
-begin
-  Result := Gtk3.gtk_style_attach(@self, window);
-end;
-
-function TGtkStyle.copy: PPangoStyle; cdecl;
-begin
-  Result := Gtk3.gtk_style_copy(@self);
-end;
-
-procedure TGtkStyle.detach; cdecl;
-begin
-  Gtk3.gtk_style_detach(@self);
-end;
-
-procedure TGtkStyle.get_style_property(widget_type: TGType; property_name: Pgchar; value: PGValue); cdecl;
-begin
-  Gtk3.gtk_style_get_style_property(@self, widget_type, property_name, value);
-end;
-
-function TGtkStyle.has_context: gboolean; cdecl;
-begin
-  Result := Gtk3.gtk_style_has_context(@self);
-end;
-
-function TGtkStyle.lookup_color(color_name: Pgchar; color: PGdkColor): gboolean; cdecl;
-begin
-  Result := Gtk3.gtk_style_lookup_color(@self, color_name, color);
-end;
-
-function TGtkStyle.lookup_icon_set(stock_id: Pgchar): PGtkIconSet; cdecl;
-begin
-  Result := Gtk3.gtk_style_lookup_icon_set(@self, stock_id);
-end;
-
-function TGtkStyle.render_icon(source: PGtkIconSource; direction: TGtkTextDirection; state: TGtkStateType; size: gint; widget: PGtkWidget; detail: Pgchar): PGdkPixbuf; cdecl;
-begin
-  Result := Gtk3.gtk_style_render_icon(@self, source, direction, state, size, widget, detail);
-end;
-
-procedure TGtkStyle.set_background(window: PGdkWindow; state_type: TGtkStateType); cdecl;
-begin
-  Gtk3.gtk_style_set_background(@self, window, state_type);
 end;
 
 function TGtkSwitch.new: PGtkSwitch; cdecl;
@@ -27321,7 +27853,7 @@ begin
   Result := Gtk3.gtk_text_view_get_window_type(@self, window);
 end;
 
-function TGtkTextView.get_wrap_mode: TPangoWrapMode; cdecl;
+function TGtkTextView.get_wrap_mode: TGtkWrapMode; cdecl;
 begin
   Result := Gtk3.gtk_text_view_get_wrap_mode(@self);
 end;
@@ -27441,7 +27973,7 @@ begin
   Gtk3.gtk_text_view_set_tabs(@self, tabs);
 end;
 
-procedure TGtkTextView.set_wrap_mode(wrap_mode: TPangoWrapMode); cdecl;
+procedure TGtkTextView.set_wrap_mode(wrap_mode: TGtkWrapMode); cdecl;
 begin
   Gtk3.gtk_text_view_set_wrap_mode(@self, wrap_mode);
 end;
@@ -29066,551 +29598,6 @@ end;
 procedure TGtkWindowGroup.remove_window(window: PGtkWindow); cdecl;
 begin
   Gtk3.gtk_window_group_remove_window(@self, window);
-end;
-
-function TGtkWindow.new(type_: TGdkWindowType): PGtkWindow; cdecl;
-begin
-  Result := Gtk3.gtk_window_new(type_);
-end;
-
-function TGtkWindow.get_default_icon_list: PGList; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_default_icon_list();
-end;
-
-function TGtkWindow.get_default_icon_name: Pgchar; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_default_icon_name();
-end;
-
-function TGtkWindow.list_toplevels: PGList; cdecl;
-begin
-  Result := Gtk3.gtk_window_list_toplevels();
-end;
-
-procedure TGtkWindow.set_auto_startup_notification(setting: gboolean); cdecl;
-begin
-  Gtk3.gtk_window_set_auto_startup_notification(setting);
-end;
-
-procedure TGtkWindow.set_default_icon(icon: PGdkPixbuf); cdecl;
-begin
-  Gtk3.gtk_window_set_default_icon(icon);
-end;
-
-function TGtkWindow.set_default_icon_from_file(filename: Pgchar): gboolean; cdecl;
-begin
-  Result := Gtk3.gtk_window_set_default_icon_from_file(filename);
-end;
-
-procedure TGtkWindow.set_default_icon_list(list: PGList); cdecl;
-begin
-  Gtk3.gtk_window_set_default_icon_list(list);
-end;
-
-procedure TGtkWindow.set_default_icon_name(name: Pgchar); cdecl;
-begin
-  Gtk3.gtk_window_set_default_icon_name(name);
-end;
-
-function TGtkWindow.activate_default: gboolean; cdecl;
-begin
-  Result := Gtk3.gtk_window_activate_default(@self);
-end;
-
-function TGtkWindow.activate_focus: gboolean; cdecl;
-begin
-  Result := Gtk3.gtk_window_activate_focus(@self);
-end;
-
-function TGtkWindow.activate_key(event: PGdkEventKey): gboolean; cdecl;
-begin
-  Result := Gtk3.gtk_window_activate_key(@self, event);
-end;
-
-procedure TGtkWindow.add_accel_group(accel_group: PGtkAccelGroup); cdecl;
-begin
-  Gtk3.gtk_window_add_accel_group(@self, accel_group);
-end;
-
-procedure TGtkWindow.add_mnemonic(keyval: guint; target: PGtkWidget); cdecl;
-begin
-  Gtk3.gtk_window_add_mnemonic(@self, keyval, target);
-end;
-
-procedure TGtkWindow.begin_move_drag(button: gint; root_x: gint; root_y: gint; timestamp: guint32); cdecl;
-begin
-  Gtk3.gtk_window_begin_move_drag(@self, button, root_x, root_y, timestamp);
-end;
-
-procedure TGtkWindow.begin_resize_drag(edge: TGdkWindowEdge; button: gint; root_x: gint; root_y: gint; timestamp: guint32); cdecl;
-begin
-  Gtk3.gtk_window_begin_resize_drag(@self, edge, button, root_x, root_y, timestamp);
-end;
-
-procedure TGtkWindow.deiconify; cdecl;
-begin
-  Gtk3.gtk_window_deiconify(@self);
-end;
-
-procedure TGtkWindow.fullscreen; cdecl;
-begin
-  Gtk3.gtk_window_fullscreen(@self);
-end;
-
-function TGtkWindow.get_accept_focus: gboolean; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_accept_focus(@self);
-end;
-
-function TGtkWindow.get_application: PGtkApplication; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_application(@self);
-end;
-
-function TGtkWindow.get_decorated: gboolean; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_decorated(@self);
-end;
-
-procedure TGtkWindow.get_default_size(width: Pgint; height: Pgint); cdecl;
-begin
-  Gtk3.gtk_window_get_default_size(@self, width, height);
-end;
-
-function TGtkWindow.get_default_widget: PGtkWidget; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_default_widget(@self);
-end;
-
-function TGtkWindow.get_deletable: gboolean; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_deletable(@self);
-end;
-
-function TGtkWindow.get_destroy_with_parent: gboolean; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_destroy_with_parent(@self);
-end;
-
-function TGtkWindow.get_focus: PGtkWidget; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_focus(@self);
-end;
-
-function TGtkWindow.get_focus_on_map: gboolean; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_focus_on_map(@self);
-end;
-
-function TGtkWindow.get_focus_visible: gboolean; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_focus_visible(@self);
-end;
-
-function TGtkWindow.get_gravity: TGdkGravity; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_gravity(@self);
-end;
-
-function TGtkWindow.get_group: PGtkWindowGroup; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_group(@self);
-end;
-
-function TGtkWindow.get_has_resize_grip: gboolean; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_has_resize_grip(@self);
-end;
-
-function TGtkWindow.get_icon: PGdkPixbuf; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_icon(@self);
-end;
-
-function TGtkWindow.get_icon_list: PGList; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_icon_list(@self);
-end;
-
-function TGtkWindow.get_icon_name: Pgchar; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_icon_name(@self);
-end;
-
-function TGtkWindow.get_mnemonic_modifier: TGdkModifierType; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_mnemonic_modifier(@self);
-end;
-
-function TGtkWindow.get_mnemonics_visible: gboolean; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_mnemonics_visible(@self);
-end;
-
-function TGtkWindow.get_modal: gboolean; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_modal(@self);
-end;
-
-function TGtkWindow.get_opacity: gdouble; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_opacity(@self);
-end;
-
-procedure TGtkWindow.get_position(root_x: Pgint; root_y: Pgint); cdecl;
-begin
-  Gtk3.gtk_window_get_position(@self, root_x, root_y);
-end;
-
-function TGtkWindow.get_resizable: gboolean; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_resizable(@self);
-end;
-
-function TGtkWindow.get_resize_grip_area(rect: PGdkRectangle): gboolean; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_resize_grip_area(@self, rect);
-end;
-
-function TGtkWindow.get_role: Pgchar; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_role(@self);
-end;
-
-function TGtkWindow.get_screen: PGdkScreen; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_screen(@self);
-end;
-
-procedure TGtkWindow.get_size(width: Pgint; height: Pgint); cdecl;
-begin
-  Gtk3.gtk_window_get_size(@self, width, height);
-end;
-
-function TGtkWindow.get_skip_pager_hint: gboolean; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_skip_pager_hint(@self);
-end;
-
-function TGtkWindow.get_skip_taskbar_hint: gboolean; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_skip_taskbar_hint(@self);
-end;
-
-function TGtkWindow.get_title: Pgchar; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_title(@self);
-end;
-
-function TGtkWindow.get_transient_for: PAtkWindow; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_transient_for(@self);
-end;
-
-function TGtkWindow.get_type_hint: TGdkWindowTypeHint; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_type_hint(@self);
-end;
-
-function TGtkWindow.get_urgency_hint: gboolean; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_urgency_hint(@self);
-end;
-
-function TGtkWindow.get_window_type: TGdkWindowType; cdecl;
-begin
-  Result := Gtk3.gtk_window_get_window_type(@self);
-end;
-
-function TGtkWindow.has_group: gboolean; cdecl;
-begin
-  Result := Gtk3.gtk_window_has_group(@self);
-end;
-
-function TGtkWindow.has_toplevel_focus: gboolean; cdecl;
-begin
-  Result := Gtk3.gtk_window_has_toplevel_focus(@self);
-end;
-
-procedure TGtkWindow.iconify; cdecl;
-begin
-  Gtk3.gtk_window_iconify(@self);
-end;
-
-function TGtkWindow.is_active: gboolean; cdecl;
-begin
-  Result := Gtk3.gtk_window_is_active(@self);
-end;
-
-procedure TGtkWindow.maximize; cdecl;
-begin
-  Gtk3.gtk_window_maximize(@self);
-end;
-
-function TGtkWindow.mnemonic_activate(keyval: guint; modifier: TGdkModifierType): gboolean; cdecl;
-begin
-  Result := Gtk3.gtk_window_mnemonic_activate(@self, keyval, modifier);
-end;
-
-procedure TGtkWindow.move(x: gint; y: gint); cdecl;
-begin
-  Gtk3.gtk_window_move(@self, x, y);
-end;
-
-function TGtkWindow.parse_geometry(geometry: Pgchar): gboolean; cdecl;
-begin
-  Result := Gtk3.gtk_window_parse_geometry(@self, geometry);
-end;
-
-procedure TGtkWindow.present; cdecl;
-begin
-  Gtk3.gtk_window_present(@self);
-end;
-
-procedure TGtkWindow.present_with_time(timestamp: guint32); cdecl;
-begin
-  Gtk3.gtk_window_present_with_time(@self, timestamp);
-end;
-
-function TGtkWindow.propagate_key_event(event: PGdkEventKey): gboolean; cdecl;
-begin
-  Result := Gtk3.gtk_window_propagate_key_event(@self, event);
-end;
-
-procedure TGtkWindow.remove_accel_group(accel_group: PGtkAccelGroup); cdecl;
-begin
-  Gtk3.gtk_window_remove_accel_group(@self, accel_group);
-end;
-
-procedure TGtkWindow.remove_mnemonic(keyval: guint; target: PGtkWidget); cdecl;
-begin
-  Gtk3.gtk_window_remove_mnemonic(@self, keyval, target);
-end;
-
-procedure TGtkWindow.reshow_with_initial_size; cdecl;
-begin
-  Gtk3.gtk_window_reshow_with_initial_size(@self);
-end;
-
-procedure TGtkWindow.resize(width: gint; height: gint); cdecl;
-begin
-  Gtk3.gtk_window_resize(@self, width, height);
-end;
-
-function TGtkWindow.resize_grip_is_visible: gboolean; cdecl;
-begin
-  Result := Gtk3.gtk_window_resize_grip_is_visible(@self);
-end;
-
-procedure TGtkWindow.resize_to_geometry(width: gint; height: gint); cdecl;
-begin
-  Gtk3.gtk_window_resize_to_geometry(@self, width, height);
-end;
-
-procedure TGtkWindow.set_accept_focus(setting: gboolean); cdecl;
-begin
-  Gtk3.gtk_window_set_accept_focus(@self, setting);
-end;
-
-procedure TGtkWindow.set_application(application: PGtkApplication); cdecl;
-begin
-  Gtk3.gtk_window_set_application(@self, application);
-end;
-
-procedure TGtkWindow.set_decorated(setting: gboolean); cdecl;
-begin
-  Gtk3.gtk_window_set_decorated(@self, setting);
-end;
-
-procedure TGtkWindow.set_default(default_widget: PGtkWidget); cdecl;
-begin
-  Gtk3.gtk_window_set_default(@self, default_widget);
-end;
-
-procedure TGtkWindow.set_default_geometry(width: gint; height: gint); cdecl;
-begin
-  Gtk3.gtk_window_set_default_geometry(@self, width, height);
-end;
-
-procedure TGtkWindow.set_default_size(width: gint; height: gint); cdecl;
-begin
-  Gtk3.gtk_window_set_default_size(@self, width, height);
-end;
-
-procedure TGtkWindow.set_deletable(setting: gboolean); cdecl;
-begin
-  Gtk3.gtk_window_set_deletable(@self, setting);
-end;
-
-procedure TGtkWindow.set_destroy_with_parent(setting: gboolean); cdecl;
-begin
-  Gtk3.gtk_window_set_destroy_with_parent(@self, setting);
-end;
-
-procedure TGtkWindow.set_focus(focus: PGtkWidget); cdecl;
-begin
-  Gtk3.gtk_window_set_focus(@self, focus);
-end;
-
-procedure TGtkWindow.set_focus_on_map(setting: gboolean); cdecl;
-begin
-  Gtk3.gtk_window_set_focus_on_map(@self, setting);
-end;
-
-procedure TGtkWindow.set_focus_visible(setting: gboolean); cdecl;
-begin
-  Gtk3.gtk_window_set_focus_visible(@self, setting);
-end;
-
-procedure TGtkWindow.set_geometry_hints(geometry_widget: PGtkWidget; geometry: PGdkGeometry; geom_mask: TGdkWindowHints); cdecl;
-begin
-  Gtk3.gtk_window_set_geometry_hints(@self, geometry_widget, geometry, geom_mask);
-end;
-
-procedure TGtkWindow.set_gravity(gravity: TGdkGravity); cdecl;
-begin
-  Gtk3.gtk_window_set_gravity(@self, gravity);
-end;
-
-procedure TGtkWindow.set_has_resize_grip(value: gboolean); cdecl;
-begin
-  Gtk3.gtk_window_set_has_resize_grip(@self, value);
-end;
-
-procedure TGtkWindow.set_has_user_ref_count(setting: gboolean); cdecl;
-begin
-  Gtk3.gtk_window_set_has_user_ref_count(@self, setting);
-end;
-
-procedure TGtkWindow.set_icon(icon: PGdkPixbuf); cdecl;
-begin
-  Gtk3.gtk_window_set_icon(@self, icon);
-end;
-
-function TGtkWindow.set_icon_from_file(filename: Pgchar): gboolean; cdecl;
-begin
-  Result := Gtk3.gtk_window_set_icon_from_file(@self, filename);
-end;
-
-procedure TGtkWindow.set_icon_list(list: PGList); cdecl;
-begin
-  Gtk3.gtk_window_set_icon_list(@self, list);
-end;
-
-procedure TGtkWindow.set_icon_name(name: Pgchar); cdecl;
-begin
-  Gtk3.gtk_window_set_icon_name(@self, name);
-end;
-
-procedure TGtkWindow.set_keep_above(setting: gboolean); cdecl;
-begin
-  Gtk3.gtk_window_set_keep_above(@self, setting);
-end;
-
-procedure TGtkWindow.set_keep_below(setting: gboolean); cdecl;
-begin
-  Gtk3.gtk_window_set_keep_below(@self, setting);
-end;
-
-procedure TGtkWindow.set_mnemonic_modifier(modifier: TGdkModifierType); cdecl;
-begin
-  Gtk3.gtk_window_set_mnemonic_modifier(@self, modifier);
-end;
-
-procedure TGtkWindow.set_mnemonics_visible(setting: gboolean); cdecl;
-begin
-  Gtk3.gtk_window_set_mnemonics_visible(@self, setting);
-end;
-
-procedure TGtkWindow.set_modal(modal: gboolean); cdecl;
-begin
-  Gtk3.gtk_window_set_modal(@self, modal);
-end;
-
-procedure TGtkWindow.set_opacity(opacity: gdouble); cdecl;
-begin
-  Gtk3.gtk_window_set_opacity(@self, opacity);
-end;
-
-procedure TGtkWindow.set_position(position: TGtkWindowPosition); cdecl;
-begin
-  Gtk3.gtk_window_set_position(@self, position);
-end;
-
-procedure TGtkWindow.set_resizable(resizable: gboolean); cdecl;
-begin
-  Gtk3.gtk_window_set_resizable(@self, resizable);
-end;
-
-procedure TGtkWindow.set_role(role: Pgchar); cdecl;
-begin
-  Gtk3.gtk_window_set_role(@self, role);
-end;
-
-procedure TGtkWindow.set_screen(screen: PGdkScreen); cdecl;
-begin
-  Gtk3.gtk_window_set_screen(@self, screen);
-end;
-
-procedure TGtkWindow.set_skip_pager_hint(setting: gboolean); cdecl;
-begin
-  Gtk3.gtk_window_set_skip_pager_hint(@self, setting);
-end;
-
-procedure TGtkWindow.set_skip_taskbar_hint(setting: gboolean); cdecl;
-begin
-  Gtk3.gtk_window_set_skip_taskbar_hint(@self, setting);
-end;
-
-procedure TGtkWindow.set_startup_id(startup_id: Pgchar); cdecl;
-begin
-  Gtk3.gtk_window_set_startup_id(@self, startup_id);
-end;
-
-procedure TGtkWindow.set_title(title: Pgchar); cdecl;
-begin
-  Gtk3.gtk_window_set_title(@self, title);
-end;
-
-procedure TGtkWindow.set_transient_for(parent: PAtkWindow); cdecl;
-begin
-  Gtk3.gtk_window_set_transient_for(@self, parent);
-end;
-
-procedure TGtkWindow.set_type_hint(hint: TGdkWindowTypeHint); cdecl;
-begin
-  Gtk3.gtk_window_set_type_hint(@self, hint);
-end;
-
-procedure TGtkWindow.set_urgency_hint(setting: gboolean); cdecl;
-begin
-  Gtk3.gtk_window_set_urgency_hint(@self, setting);
-end;
-
-procedure TGtkWindow.set_wmclass(wmclass_name: Pgchar; wmclass_class: Pgchar); cdecl;
-begin
-  Gtk3.gtk_window_set_wmclass(@self, wmclass_name, wmclass_class);
-end;
-
-procedure TGtkWindow.stick; cdecl;
-begin
-  Gtk3.gtk_window_stick(@self);
-end;
-
-procedure TGtkWindow.unfullscreen; cdecl;
-begin
-  Gtk3.gtk_window_unfullscreen(@self);
-end;
-
-procedure TGtkWindow.unmaximize; cdecl;
-begin
-  Gtk3.gtk_window_unmaximize(@self);
-end;
-
-procedure TGtkWindow.unstick; cdecl;
-begin
-  Gtk3.gtk_window_unstick(@self);
 end;
 
 end.

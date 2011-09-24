@@ -94,6 +94,8 @@ type
   PPGdkPixbuf = ^PGdkPixbuf;
   PGdkPixbuf = ^TGdkPixbuf;
 
+  Pguchar = ^Tguchar;
+
   PPGdkPixbufDestroyNotify = ^PGdkPixbufDestroyNotify;
   PGdkPixbufDestroyNotify = ^TGdkPixbufDestroyNotify;
   TGdkPixbufDestroyNotify = procedure(pixels: Pguint8; data: gpointer); cdecl;
@@ -112,7 +114,7 @@ type
   TGdkPixbufSaveFunc = function(buf: Pgchar; count: gsize; error: PPGError; data: gpointer): gboolean; cdecl;
   TGdkPixbuf = object(TGObject)
     function new(colorspace: TGdkColorspace; has_alpha: gboolean; bits_per_sample: gint; width: gint; height: gint): PGdkPixbuf; cdecl; inline; static;
-    function new_from_data(data: Pchar; colorspace: TGdkColorspace; has_alpha: gboolean; bits_per_sample: gint; width: gint; height: gint; rowstride: gint; destroy_fn: TGdkPixbufDestroyNotify; destroy_fn_data: gpointer): PGdkPixbuf; cdecl; inline; static;
+    function new_from_data(data: Pguchar; colorspace: TGdkColorspace; has_alpha: gboolean; bits_per_sample: gint; width: gint; height: gint; rowstride: gint; destroy_fn: TGdkPixbufDestroyNotify; destroy_fn_data: gpointer): PGdkPixbuf; cdecl; inline; static;
     function new_from_file(filename: Pgchar): PGdkPixbuf; cdecl; inline; static;
     function new_from_file_at_scale(filename: Pgchar; width: gint; height: gint; preserve_aspect_ratio: gboolean): PGdkPixbuf; cdecl; inline; static;
     function new_from_file_at_size(filename: Pgchar; width: gint; height: gint): PGdkPixbuf; cdecl; inline; static;
@@ -170,6 +172,13 @@ type
     property rowstride:  gint read get_rowstride  { property is writeable but setter not declared } ;
     property width:  gint read get_width  { property is writeable but setter not declared } ;
   end;
+
+  { guchar* }
+  Tguchar = record
+    { opaque type }
+    Unknown: Pointer;
+  end;
+
 
   PPGdkPixdataDumpType = ^PGdkPixdataDumpType;
   PGdkPixdataDumpType = ^TGdkPixdataDumpType;
@@ -349,7 +358,7 @@ function gdk_pixbuf_loader_new_with_mime_type(mime_type: Pgchar): PGdkPixbufLoad
 function gdk_pixbuf_loader_new_with_type(image_type: Pgchar): PGdkPixbufLoader; cdecl; external;
 function gdk_pixbuf_loader_write(APixbufLoader: PGdkPixbufLoader; buf: Pguint8; count: gsize): gboolean; cdecl; external;
 function gdk_pixbuf_new(colorspace: TGdkColorspace; has_alpha: gboolean; bits_per_sample: gint; width: gint; height: gint): PGdkPixbuf; cdecl; external;
-function gdk_pixbuf_new_from_data(data: Pchar; colorspace: TGdkColorspace; has_alpha: gboolean; bits_per_sample: gint; width: gint; height: gint; rowstride: gint; destroy_fn: TGdkPixbufDestroyNotify; destroy_fn_data: gpointer): PGdkPixbuf; cdecl; external;
+function gdk_pixbuf_new_from_data(data: Pguchar; colorspace: TGdkColorspace; has_alpha: gboolean; bits_per_sample: gint; width: gint; height: gint; rowstride: gint; destroy_fn: TGdkPixbufDestroyNotify; destroy_fn_data: gpointer): PGdkPixbuf; cdecl; external;
 function gdk_pixbuf_new_from_file(filename: Pgchar): PGdkPixbuf; cdecl; external;
 function gdk_pixbuf_new_from_file_at_scale(filename: Pgchar; width: gint; height: gint; preserve_aspect_ratio: gboolean): PGdkPixbuf; cdecl; external;
 function gdk_pixbuf_new_from_file_at_size(filename: Pgchar; width: gint; height: gint): PGdkPixbuf; cdecl; external;
@@ -397,7 +406,7 @@ begin
   Result := GdkPixbuf2.gdk_pixbuf_new(colorspace, has_alpha, bits_per_sample, width, height);
 end;
 
-function TGdkPixbuf.new_from_data(data: Pchar; colorspace: TGdkColorspace; has_alpha: gboolean; bits_per_sample: gint; width: gint; height: gint; rowstride: gint; destroy_fn: TGdkPixbufDestroyNotify; destroy_fn_data: gpointer): PGdkPixbuf; cdecl;
+function TGdkPixbuf.new_from_data(data: Pguchar; colorspace: TGdkColorspace; has_alpha: gboolean; bits_per_sample: gint; width: gint; height: gint; rowstride: gint; destroy_fn: TGdkPixbufDestroyNotify; destroy_fn_data: gpointer): PGdkPixbuf; cdecl;
 begin
   Result := GdkPixbuf2.gdk_pixbuf_new_from_data(data, colorspace, has_alpha, bits_per_sample, width, height, rowstride, destroy_fn, destroy_fn_data);
 end;

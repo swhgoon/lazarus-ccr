@@ -90,8 +90,6 @@ type
   PPGClosure = ^PGClosure;
   PGClosure = ^TGClosure;
 
-  PPPPPGValue = ^PPPPGValue;
-  PPPPGValue = ^PPPGValue;
   PPPGValue = ^PPGValue;
   PPGValue = ^PGValue;
   PGValue = ^TGValue;
@@ -101,12 +99,6 @@ type
   PGSignalCMarshaller = ^TGSignalCMarshaller;
   TGSignalCMarshaller = TGClosureMarshal;
 
-  PPPPPPPPGType = ^PPPPPPPGType;
-  PPPPPPPGType = ^PPPPPPGType;
-  PPPPPPGType = ^PPPPPGType;
-  PPPPPGType = ^PPPPGType;
-  PPPPGType = ^PPPGType;
-  PPPGType = ^PPGType;
   PPGType = ^PGType;
   PGType = ^TGType;
   TGType = gsize;

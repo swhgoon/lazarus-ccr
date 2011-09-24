@@ -100,12 +100,6 @@ type
     height: cint;
   end;
 
-  { void }
-  Tvoid = record
-    { opaque type }
-  end;
-
-
 function cairo_gobject_context_get_type: csize_t { TGType }; cdecl; external;
 function cairo_gobject_font_face_get_type: csize_t { TGType }; cdecl; external;
 function cairo_gobject_pattern_get_type: csize_t { TGType }; cdecl; external;

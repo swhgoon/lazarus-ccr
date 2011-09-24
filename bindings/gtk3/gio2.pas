@@ -1100,11 +1100,11 @@ type
     function has_uri_scheme(uri_scheme: Pgchar): gboolean; cdecl; inline;
     function icon_new: PGIcon; cdecl; inline;
     function is_native: gboolean; cdecl; inline;
-    function load_contents(cancellable: PGCancellable; contents: PPguint8; length: Pgsize; etag_out: PPgchar): gboolean; cdecl; inline;
+    function load_contents(cancellable: PGCancellable; contents: PPgchar; length: Pgsize; etag_out: PPgchar): gboolean; cdecl; inline;
     procedure load_contents_async(cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
-    function load_contents_finish(res: PGAsyncResult; contents: PPguint8; length: Pgsize; etag_out: PPgchar): gboolean; cdecl; inline;
+    function load_contents_finish(res: PGAsyncResult; contents: PPgchar; length: Pgsize; etag_out: PPgchar): gboolean; cdecl; inline;
     procedure load_partial_contents_async(cancellable: PGCancellable; read_more_callback: TGFileReadMoreCallback; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
-    function load_partial_contents_finish(res: PGAsyncResult; contents: PPguint8; length: Pgsize; etag_out: PPgchar): gboolean; cdecl; inline;
+    function load_partial_contents_finish(res: PGAsyncResult; contents: PPgchar; length: Pgsize; etag_out: PPgchar): gboolean; cdecl; inline;
     function make_directory(cancellable: PGCancellable): gboolean; cdecl; inline;
     function make_directory_with_parents(cancellable: PGCancellable): gboolean; cdecl; inline;
     function make_symbolic_link(symlink_value: Pgchar; cancellable: PGCancellable): gboolean; cdecl; inline;
@@ -1137,8 +1137,8 @@ type
     function read_finish(res: PGAsyncResult): PGFileInputStream; cdecl; inline;
     function replace(etag: Pgchar; make_backup: gboolean; flags: TGFileCreateFlags; cancellable: PGCancellable): PGFileOutputStream; cdecl; inline;
     procedure replace_async(etag: Pgchar; make_backup: gboolean; flags: TGFileCreateFlags; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
-    function replace_contents(contents: Pguint8; length: gsize; etag: Pgchar; make_backup: gboolean; flags: TGFileCreateFlags; new_etag: PPgchar; cancellable: PGCancellable): gboolean; cdecl; inline;
-    procedure replace_contents_async(contents: Pguint8; length: gsize; etag: Pgchar; make_backup: gboolean; flags: TGFileCreateFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function replace_contents(contents: Pgchar; length: gsize; etag: Pgchar; make_backup: gboolean; flags: TGFileCreateFlags; new_etag: PPgchar; cancellable: PGCancellable): gboolean; cdecl; inline;
+    procedure replace_contents_async(contents: Pgchar; length: gsize; etag: Pgchar; make_backup: gboolean; flags: TGFileCreateFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
     function replace_contents_finish(res: PGAsyncResult; new_etag: PPgchar): gboolean; cdecl; inline;
     function replace_finish(res: PGAsyncResult): PGFileOutputStream; cdecl; inline;
     function replace_readwrite(etag: Pgchar; make_backup: gboolean; flags: TGFileCreateFlags; cancellable: PGCancellable): PGFileIOStream; cdecl; inline;
@@ -2454,9 +2454,9 @@ type
     function read_int16(cancellable: PGCancellable): gint16; cdecl; inline;
     function read_int32(cancellable: PGCancellable): gint32; cdecl; inline;
     function read_int64(cancellable: PGCancellable): gint64; cdecl; inline;
-    function read_line(length: Pgsize; cancellable: PGCancellable): Pguint8; cdecl; inline;
+    function read_line(length: Pgsize; cancellable: PGCancellable): Pgchar; cdecl; inline;
     procedure read_line_async(io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
-    function read_line_finish(result_: PGAsyncResult; length: Pgsize): Pguint8; cdecl; inline;
+    function read_line_finish(result_: PGAsyncResult; length: Pgsize): Pgchar; cdecl; inline;
     function read_line_finish_utf8(result_: PGAsyncResult; length: Pgsize): Pgchar; cdecl; inline;
     function read_line_utf8(length: Pgsize; cancellable: PGCancellable): Pgchar; cdecl; inline;
     function read_uint16(cancellable: PGCancellable): guint16; cdecl; inline;
@@ -4168,7 +4168,6 @@ type
   PPGSocketConnection = ^PGSocketConnection;
   PGSocketConnection = ^TGSocketConnection;
 
-  PPPPGSocketControlMessage = ^PPPGSocketControlMessage;
   PPPGSocketControlMessage = ^PPGSocketControlMessage;
   PPGSocketControlMessage = ^PGSocketControlMessage;
   PGSocketControlMessage = ^TGSocketControlMessage;
@@ -5346,8 +5345,8 @@ function g_data_input_stream_read_byte(ADataInputStream: PGDataInputStream; canc
 function g_data_input_stream_read_int16(ADataInputStream: PGDataInputStream; cancellable: PGCancellable): gint16; cdecl; external;
 function g_data_input_stream_read_int32(ADataInputStream: PGDataInputStream; cancellable: PGCancellable): gint32; cdecl; external;
 function g_data_input_stream_read_int64(ADataInputStream: PGDataInputStream; cancellable: PGCancellable): gint64; cdecl; external;
-function g_data_input_stream_read_line(ADataInputStream: PGDataInputStream; length: Pgsize; cancellable: PGCancellable): Pguint8; cdecl; external;
-function g_data_input_stream_read_line_finish(ADataInputStream: PGDataInputStream; result_: PGAsyncResult; length: Pgsize): Pguint8; cdecl; external;
+function g_data_input_stream_read_line(ADataInputStream: PGDataInputStream; length: Pgsize; cancellable: PGCancellable): Pgchar; cdecl; external;
+function g_data_input_stream_read_line_finish(ADataInputStream: PGDataInputStream; result_: PGAsyncResult; length: Pgsize): Pgchar; cdecl; external;
 function g_data_input_stream_read_line_finish_utf8(ADataInputStream: PGDataInputStream; result_: PGAsyncResult; length: Pgsize): Pgchar; cdecl; external;
 function g_data_input_stream_read_line_utf8(ADataInputStream: PGDataInputStream; length: Pgsize; cancellable: PGCancellable): Pgchar; cdecl; external;
 function g_data_input_stream_read_uint16(ADataInputStream: PGDataInputStream; cancellable: PGCancellable): guint16; cdecl; external;
@@ -5686,9 +5685,9 @@ function g_file_io_stream_get_type: TGType; cdecl; external;
 function g_file_io_stream_query_info(AFileIOStream: PGFileIOStream; attributes: Pgchar; cancellable: PGCancellable): PGFileInfo; cdecl; external;
 function g_file_io_stream_query_info_finish(AFileIOStream: PGFileIOStream; result_: PGAsyncResult): PGFileInfo; cdecl; external;
 function g_file_is_native(AFile: PGFile): gboolean; cdecl; external;
-function g_file_load_contents(AFile: PGFile; cancellable: PGCancellable; contents: PPguint8; length: Pgsize; etag_out: PPgchar): gboolean; cdecl; external;
-function g_file_load_contents_finish(AFile: PGFile; res: PGAsyncResult; contents: PPguint8; length: Pgsize; etag_out: PPgchar): gboolean; cdecl; external;
-function g_file_load_partial_contents_finish(AFile: PGFile; res: PGAsyncResult; contents: PPguint8; length: Pgsize; etag_out: PPgchar): gboolean; cdecl; external;
+function g_file_load_contents(AFile: PGFile; cancellable: PGCancellable; contents: PPgchar; length: Pgsize; etag_out: PPgchar): gboolean; cdecl; external;
+function g_file_load_contents_finish(AFile: PGFile; res: PGAsyncResult; contents: PPgchar; length: Pgsize; etag_out: PPgchar): gboolean; cdecl; external;
+function g_file_load_partial_contents_finish(AFile: PGFile; res: PGAsyncResult; contents: PPgchar; length: Pgsize; etag_out: PPgchar): gboolean; cdecl; external;
 function g_file_make_directory(AFile: PGFile; cancellable: PGCancellable): gboolean; cdecl; external;
 function g_file_make_directory_with_parents(AFile: PGFile; cancellable: PGCancellable): gboolean; cdecl; external;
 function g_file_make_symbolic_link(AFile: PGFile; symlink_value: Pgchar; cancellable: PGCancellable): gboolean; cdecl; external;
@@ -5724,7 +5723,7 @@ function g_file_query_writable_namespaces(AFile: PGFile; cancellable: PGCancella
 function g_file_read(AFile: PGFile; cancellable: PGCancellable): PGFileInputStream; cdecl; external;
 function g_file_read_finish(AFile: PGFile; res: PGAsyncResult): PGFileInputStream; cdecl; external;
 function g_file_replace(AFile: PGFile; etag: Pgchar; make_backup: gboolean; flags: TGFileCreateFlags; cancellable: PGCancellable): PGFileOutputStream; cdecl; external;
-function g_file_replace_contents(AFile: PGFile; contents: Pguint8; length: gsize; etag: Pgchar; make_backup: gboolean; flags: TGFileCreateFlags; new_etag: PPgchar; cancellable: PGCancellable): gboolean; cdecl; external;
+function g_file_replace_contents(AFile: PGFile; contents: Pgchar; length: gsize; etag: Pgchar; make_backup: gboolean; flags: TGFileCreateFlags; new_etag: PPgchar; cancellable: PGCancellable): gboolean; cdecl; external;
 function g_file_replace_contents_finish(AFile: PGFile; res: PGAsyncResult; new_etag: PPgchar): gboolean; cdecl; external;
 function g_file_replace_finish(AFile: PGFile; res: PGAsyncResult): PGFileOutputStream; cdecl; external;
 function g_file_replace_readwrite(AFile: PGFile; etag: Pgchar; make_backup: gboolean; flags: TGFileCreateFlags; cancellable: PGCancellable): PGFileIOStream; cdecl; external;
@@ -6450,7 +6449,7 @@ procedure g_file_query_filesystem_info_async(AFile: PGFile; attributes: Pgchar; 
 procedure g_file_query_info_async(AFile: PGFile; attributes: Pgchar; flags: TGFileQueryInfoFlags; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_read_async(AFile: PGFile; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_replace_async(AFile: PGFile; etag: Pgchar; make_backup: gboolean; flags: TGFileCreateFlags; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
-procedure g_file_replace_contents_async(AFile: PGFile; contents: Pguint8; length: gsize; etag: Pgchar; make_backup: gboolean; flags: TGFileCreateFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
+procedure g_file_replace_contents_async(AFile: PGFile; contents: Pgchar; length: gsize; etag: Pgchar; make_backup: gboolean; flags: TGFileCreateFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_replace_readwrite_async(AFile: PGFile; etag: Pgchar; make_backup: gboolean; flags: TGFileCreateFlags; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_set_attributes_async(AFile: PGFile; info: PGFileInfo; flags: TGFileQueryInfoFlags; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_set_display_name_async(AFile: PGFile; display_name: Pgchar; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
@@ -7260,7 +7259,7 @@ begin
   Result := Gio2.g_file_is_native(@self);
 end;
 
-function TGFile.load_contents(cancellable: PGCancellable; contents: PPguint8; length: Pgsize; etag_out: PPgchar): gboolean; cdecl;
+function TGFile.load_contents(cancellable: PGCancellable; contents: PPgchar; length: Pgsize; etag_out: PPgchar): gboolean; cdecl;
 begin
   Result := Gio2.g_file_load_contents(@self, cancellable, contents, length, etag_out);
 end;
@@ -7270,7 +7269,7 @@ begin
   Gio2.g_file_load_contents_async(@self, cancellable, callback, user_data);
 end;
 
-function TGFile.load_contents_finish(res: PGAsyncResult; contents: PPguint8; length: Pgsize; etag_out: PPgchar): gboolean; cdecl;
+function TGFile.load_contents_finish(res: PGAsyncResult; contents: PPgchar; length: Pgsize; etag_out: PPgchar): gboolean; cdecl;
 begin
   Result := Gio2.g_file_load_contents_finish(@self, res, contents, length, etag_out);
 end;
@@ -7280,7 +7279,7 @@ begin
   Gio2.g_file_load_partial_contents_async(@self, cancellable, read_more_callback, callback, user_data);
 end;
 
-function TGFile.load_partial_contents_finish(res: PGAsyncResult; contents: PPguint8; length: Pgsize; etag_out: PPgchar): gboolean; cdecl;
+function TGFile.load_partial_contents_finish(res: PGAsyncResult; contents: PPgchar; length: Pgsize; etag_out: PPgchar): gboolean; cdecl;
 begin
   Result := Gio2.g_file_load_partial_contents_finish(@self, res, contents, length, etag_out);
 end;
@@ -7446,12 +7445,12 @@ begin
   Gio2.g_file_replace_async(@self, etag, make_backup, flags, io_priority, cancellable, callback, user_data);
 end;
 
-function TGFile.replace_contents(contents: Pguint8; length: gsize; etag: Pgchar; make_backup: gboolean; flags: TGFileCreateFlags; new_etag: PPgchar; cancellable: PGCancellable): gboolean; cdecl;
+function TGFile.replace_contents(contents: Pgchar; length: gsize; etag: Pgchar; make_backup: gboolean; flags: TGFileCreateFlags; new_etag: PPgchar; cancellable: PGCancellable): gboolean; cdecl;
 begin
   Result := Gio2.g_file_replace_contents(@self, contents, length, etag, make_backup, flags, new_etag, cancellable);
 end;
 
-procedure TGFile.replace_contents_async(contents: Pguint8; length: gsize; etag: Pgchar; make_backup: gboolean; flags: TGFileCreateFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+procedure TGFile.replace_contents_async(contents: Pgchar; length: gsize; etag: Pgchar; make_backup: gboolean; flags: TGFileCreateFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
 begin
   Gio2.g_file_replace_contents_async(@self, contents, length, etag, make_backup, flags, cancellable, callback, user_data);
 end;
@@ -9224,7 +9223,7 @@ begin
   Result := Gio2.g_data_input_stream_read_int64(@self, cancellable);
 end;
 
-function TGDataInputStream.read_line(length: Pgsize; cancellable: PGCancellable): Pguint8; cdecl;
+function TGDataInputStream.read_line(length: Pgsize; cancellable: PGCancellable): Pgchar; cdecl;
 begin
   Result := Gio2.g_data_input_stream_read_line(@self, length, cancellable);
 end;
@@ -9234,7 +9233,7 @@ begin
   Gio2.g_data_input_stream_read_line_async(@self, io_priority, cancellable, callback, user_data);
 end;
 
-function TGDataInputStream.read_line_finish(result_: PGAsyncResult; length: Pgsize): Pguint8; cdecl;
+function TGDataInputStream.read_line_finish(result_: PGAsyncResult; length: Pgsize): Pgchar; cdecl;
 begin
   Result := Gio2.g_data_input_stream_read_line_finish(@self, result_, length);
 end;

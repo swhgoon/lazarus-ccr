@@ -940,7 +940,9 @@ type
   glong = clong;
   gulong = culong;
   gushort = cushort;
+  gshort = cshort;
   gchar = char;
+  guchar = byte;
   gboolean = Boolean32;
   gssize = PtrInt;
   size_t = csize_t;
@@ -982,15 +984,10 @@ type
   PGTimeSpan = ^TGTimeSpan;
   TGTimeSpan = gint64;
 
+  PPPGType = ^PPGType;
   PPGType = ^PGType;
   PGType = ^TGType;
   TGType = gsize;
-
-  { void }
-  Tvoid = record
-    { opaque type }
-  end;
-
 
   PPGAllocator = ^PGAllocator;
   PGAllocator = ^TGAllocator;
@@ -1007,12 +1004,11 @@ type
     function new(name: Pgchar; n_preallocs: guint): PGAllocator; cdecl; inline; static;
   end;
 
-  PPPPPgint = ^PPPPgint;
-  PPPPgint = ^PPPgint;
   PPPgint = ^PPgint;
   PPgint = ^Pgint;
   Pgint = ^gint;
 
+  PPPgpointer = ^PPgpointer;
   PPgpointer = ^Pgpointer;
   Pgpointer = ^gpointer;
   TGCompareFunc = function(a: gpointer; b: gpointer): gint; cdecl;
@@ -1021,6 +1017,7 @@ type
   PPGArray = ^PGArray;
   PGArray = ^TGArray;
 
+  PPPgboolean = ^PPgboolean;
   PPgboolean = ^Pgboolean;
   Pgboolean = ^gboolean;
 
@@ -1098,6 +1095,7 @@ type
     function new_full(item_free_func: TGDestroyNotify): PGAsyncQueue; cdecl; inline; static;
   end;
 
+  PPPglong = ^PPglong;
   PPglong = ^Pglong;
   Pglong = ^glong;
   TGTimeVal = object
@@ -1111,6 +1109,7 @@ type
   PPGBookmarkFile = ^PGBookmarkFile;
   PGBookmarkFile = ^TGBookmarkFile;
 
+  PPPgsize = ^PPgsize;
   PPgsize = ^Pgsize;
   Pgsize = ^gsize;
   TGBookmarkFile = object
@@ -1162,11 +1161,6 @@ type
   PPGByteArray = ^PGByteArray;
   PGByteArray = ^TGByteArray;
 
-  PPPPPPPPguint8 = ^PPPPPPPguint8;
-  PPPPPPPguint8 = ^PPPPPPguint8;
-  PPPPPPguint8 = ^PPPPPguint8;
-  PPPPPguint8 = ^PPPPguint8;
-  PPPPguint8 = ^PPPguint8;
   PPPguint8 = ^PPguint8;
   PPguint8 = ^Pguint8;
   Pguint8 = ^guint8;
@@ -1226,6 +1220,7 @@ type
   PPGChecksum = ^PGChecksum;
   PGChecksum = ^TGChecksum;
 
+  PPPgssize = ^PPgssize;
   PPgssize = ^Pgssize;
   Pgssize = ^gssize;
 
@@ -1340,6 +1335,7 @@ type
   PPGDateMonth = ^PGDateMonth;
   PGDateMonth = ^TGDateMonth;
 
+  PPPguint32 = ^PPguint32;
   PPguint32 = ^Pguint32;
   Pguint32 = ^guint32;
 
@@ -1415,9 +1411,11 @@ type
   PPGTimeZone = ^PGTimeZone;
   PGTimeZone = ^TGTimeZone;
 
+  PPPgdouble = ^PPgdouble;
   PPgdouble = ^Pgdouble;
   Pgdouble = ^gdouble;
 
+  PPPgint64 = ^PPgint64;
   PPgint64 = ^Pgint64;
   Pgint64 = ^gint64;
 
@@ -1477,6 +1475,7 @@ type
   PPGTimeType = ^PGTimeType;
   PGTimeType = ^TGTimeType;
 
+  PPPgint32 = ^PPgint32;
   PPgint32 = ^Pgint32;
   Pgint32 = ^gint32;
   TGTimeZone = object
@@ -1600,6 +1599,7 @@ type
   { va_list }
   Tva_list = record
     { opaque type }
+    Unknown: Pointer;
   end;
 
   TGError = object
@@ -1629,6 +1629,7 @@ type
   end;
 
 
+  PPPgfloat = ^PPgfloat;
   PPgfloat = ^Pgfloat;
   Pgfloat = ^gfloat;
   TGFloatIEEE754 = record
@@ -1718,6 +1719,7 @@ type
   PPGHookList = ^PGHookList;
   PGHookList = ^TGHookList;
 
+  PPPgulong = ^PPgulong;
   PPgulong = ^Pgulong;
   Pgulong = ^gulong;
 
@@ -1860,6 +1862,7 @@ type
   PPGString = ^PGString;
   PGString = ^TGString;
 
+  PPPgunichar = ^PPgunichar;
   PPgunichar = ^Pgunichar;
   Pgunichar = ^gunichar;
   TGString = object
@@ -1976,6 +1979,7 @@ type
   PPGKeyFile = ^PGKeyFile;
   PGKeyFile = ^TGKeyFile;
 
+  PPPguint64 = ^PPguint64;
   PPguint64 = ^Pguint64;
   Pguint64 = ^guint64;
 
@@ -2049,6 +2053,7 @@ type
   PGLogLevelFlags = ^TGLogLevelFlags;
   TGLogFunc = procedure(log_domain: Pgchar; log_level: TGLogLevelFlags; message: Pgchar; user_data: gpointer); cdecl;
 
+  PPPgushort = ^PPgushort;
   PPgushort = ^Pgushort;
   Pgushort = ^gushort;
 
@@ -3137,9 +3142,11 @@ type
   PPGVariantType = ^PGVariantType;
   PGVariantType = ^TGVariantType;
 
+  PPPgint16 = ^PPgint16;
   PPgint16 = ^Pgint16;
   Pgint16 = ^gint16;
 
+  PPPguint16 = ^PPguint16;
   PPguint16 = ^Pguint16;
   Pguint16 = ^guint16;
 
@@ -4347,7 +4354,7 @@ procedure g_array_sort_with_data(array_: Pgpointer; compare_func: TGCompareDataF
 procedure g_array_unref(array_: Pgpointer); cdecl; external;
 procedure g_assert_warning(log_domain: Pgchar; file_: Pgchar; line: gint; pretty_function: Pgchar; expression: Pgchar); cdecl; external;
 procedure g_assertion_message(domain: Pgchar; file_: Pgchar; line: gint; func: Pgchar; message: Pgchar); cdecl; external;
-procedure g_assertion_message_cmpnum(domain: Pgchar; file_: Pgchar; line: gint; func: Pgchar; expr: Pgchar; arg1: long_double; cmp: Pgchar; arg2: long_double; numtype: char); cdecl; external;
+procedure g_assertion_message_cmpnum(domain: Pgchar; file_: Pgchar; line: gint; func: Pgchar; expr: Pgchar; arg1: long_double; cmp: Pgchar; arg2: long_double; numtype: gchar); cdecl; external;
 procedure g_assertion_message_cmpstr(domain: Pgchar; file_: Pgchar; line: gint; func: Pgchar; expr: Pgchar; arg1: Pgchar; cmp: Pgchar; arg2: Pgchar); cdecl; external;
 procedure g_assertion_message_error(domain: Pgchar; file_: Pgchar; line: gint; func: Pgchar; expr: Pgchar; error: PGError; error_domain: TGQuark; error_code: gint); cdecl; external;
 procedure g_assertion_message_expr(domain: Pgchar; file_: Pgchar; line: gint; func: Pgchar; expr: Pgchar); cdecl; external;

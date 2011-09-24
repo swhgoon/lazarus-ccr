@@ -202,14 +202,6 @@ const
   SOUP_CONNECTION_DISCONNECTED: TSoupConnectionState = 5;
 
 type
-  TSoupCookieJarAcceptPolicy = Integer;
-const
-  { SoupCookieJarAcceptPolicy }
-  SOUP_COOKIE_JAR_ACCEPT_ALWAYS: TSoupCookieJarAcceptPolicy = 0;
-  SOUP_COOKIE_JAR_ACCEPT_NEVER: TSoupCookieJarAcceptPolicy = 1;
-  SOUP_COOKIE_JAR_ACCEPT_NO_THIRD_PARTY: TSoupCookieJarAcceptPolicy = 2;
-
-type
   TSoupDateFormat = Integer;
 const
   { SoupDateFormat }
@@ -220,6 +212,14 @@ const
   SOUP_DATE_ISO8601_FULL: TSoupDateFormat = 5;
   SOUP_DATE_ISO8601: TSoupDateFormat = 5;
   SOUP_DATE_ISO8601_XMLRPC: TSoupDateFormat = 6;
+
+type
+  TSoupCookieJarAcceptPolicy = Integer;
+const
+  { SoupCookieJarAcceptPolicy }
+  SOUP_COOKIE_JAR_ACCEPT_ALWAYS: TSoupCookieJarAcceptPolicy = 0;
+  SOUP_COOKIE_JAR_ACCEPT_NEVER: TSoupCookieJarAcceptPolicy = 1;
+  SOUP_COOKIE_JAR_ACCEPT_NO_THIRD_PARTY: TSoupCookieJarAcceptPolicy = 2;
 
 type
   TSoupEncoding = Integer;
@@ -502,7 +502,7 @@ type
     procedure set_flags(flags: TSoupMessageFlags); cdecl; inline;
     procedure set_http_version(version: TSoupHTTPVersion); cdecl; inline;
     procedure set_request(content_type: Pgchar; req_use: TSoupMemoryUse; req_body: Pgchar; req_length: gsize); cdecl; inline;
-    procedure set_response(content_type: Pgchar; resp_use: TSoupMemoryUse; resp_body: Pguint8; resp_length: gsize); cdecl; inline;
+    procedure set_response(content_type: Pgchar; resp_use: TSoupMemoryUse; resp_body: Pgchar; resp_length: gsize); cdecl; inline;
     procedure set_status(status_code: guint); cdecl; inline;
     procedure set_status_full(status_code: guint; reason_phrase: Pgchar); cdecl; inline;
     procedure set_uri(uri: PSoupURI); cdecl; inline;
@@ -716,6 +716,46 @@ type
   end;
 
 
+  PPSoupSocket = ^PSoupSocket;
+  PSoupSocket = ^TSoupSocket;
+
+  PPSoupSocketCallback = ^PSoupSocketCallback;
+  PSoupSocketCallback = ^TSoupSocketCallback;
+  TSoupSocketCallback = procedure(sock: PSoupSocket; status: guint; user_data: gpointer); cdecl;
+
+  PPSoupSocketIOStatus = ^PSoupSocketIOStatus;
+  PSoupSocketIOStatus = ^TSoupSocketIOStatus;
+  TSoupSocket = object(TGObject)
+    //function new(optname1: Pgchar; args: array of const): PSoupSocket; cdecl; inline; static;
+    procedure connect_async(cancellable: PGCancellable; callback: TSoupSocketCallback; user_data: gpointer); cdecl; inline;
+    function connect_sync(cancellable: PGCancellable): guint; cdecl; inline;
+    procedure disconnect; cdecl; inline;
+    function get_fd: gint; cdecl; inline;
+    function get_local_address: PSoupAddress; cdecl; inline;
+    function get_remote_address: PSoupAddress; cdecl; inline;
+    function is_connected: gboolean; cdecl; inline;
+    function is_ssl: gboolean; cdecl; inline;
+    function listen: gboolean; cdecl; inline;
+    function read(buffer: gpointer; len: gsize; nread: Pgsize; cancellable: PGCancellable): TSoupSocketIOStatus; cdecl; inline;
+    function read_until(buffer: gpointer; len: gsize; boundary: gpointer; boundary_len: gsize; nread: Pgsize; got_boundary: Pgboolean; cancellable: PGCancellable): TSoupSocketIOStatus; cdecl; inline;
+    function start_proxy_ssl(ssl_host: Pgchar; cancellable: PGCancellable): gboolean; cdecl; inline;
+    function start_ssl(cancellable: PGCancellable): gboolean; cdecl; inline;
+    function write(buffer: gpointer; len: gsize; nwrote: Pgsize; cancellable: PGCancellable): TSoupSocketIOStatus; cdecl; inline;
+    //property async_context: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_async_context  { property is writeable but setter not declared } ;
+    //property clean_dispose: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_clean_dispose  { property is writeable but setter not declared } ;
+    //property is_server: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_is_server ;
+    property local_address:  PSoupAddress read get_local_address  { property is writeable but setter not declared } ;
+    //property non_blocking: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_non_blocking  { property is writeable but setter not declared } ;
+    property remote_address:  PSoupAddress read get_remote_address  { property is writeable but setter not declared } ;
+    //property ssl_creds: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_ssl_creds  { property is writeable but setter not declared } ;
+    //property ssl_fallback: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_ssl_fallback  { property is writeable but setter not declared } ;
+    //property ssl_strict: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_ssl_strict  { property is writeable but setter not declared } ;
+    //property timeout: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_timeout  { property is writeable but setter not declared } ;
+    //property tls_certificate: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_tls_certificate ;
+    //property tls_errors: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_tls_errors ;
+    //property trusted_certificate: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_trusted_certificate ;
+  end;
+
   PPSoupClientContext = ^PSoupClientContext;
   PSoupClientContext = ^TSoupClientContext;
   TSoupClientContext = object
@@ -723,7 +763,7 @@ type
     function get_auth_domain: PSoupAuthDomain; cdecl; inline;
     function get_auth_user: Pgchar; cdecl; inline;
     function get_host: Pgchar; cdecl; inline;
-    function get_socket: PGSocket; cdecl; inline;
+    function get_socket: PSoupSocket; cdecl; inline;
   end;
 
   PPSoupConnection = ^PSoupConnection;
@@ -804,6 +844,40 @@ type
     _libsoup_reserved5: procedure; cdecl;
   end;
 
+  PPSoupDate = ^PSoupDate;
+  PSoupDate = ^TSoupDate;
+
+  PPSoupDateFormat = ^PSoupDateFormat;
+  PSoupDateFormat = ^TSoupDateFormat;
+  TSoupDate = object
+    year: gint;
+    month: gint;
+    day: gint;
+    hour: gint;
+    minute: gint;
+    second: gint;
+    utc: gboolean;
+    offset: gint;
+    function new(year: gint; month: gint; day: gint; hour: gint; minute: gint; second: gint): PSoupDate; cdecl; inline; static;
+    function new_from_now(offset_seconds: gint): PSoupDate; cdecl; inline; static;
+    function new_from_string(date_string: Pgchar): PSoupDate; cdecl; inline; static;
+    function new_from_time_t(when: glong): PSoupDate; cdecl; inline; static;
+    function copy: PSoupDate; cdecl; inline;
+    procedure free; cdecl; inline;
+    function get_day: gint; cdecl; inline;
+    function get_hour: gint; cdecl; inline;
+    function get_minute: gint; cdecl; inline;
+    function get_month: gint; cdecl; inline;
+    function get_offset: gint; cdecl; inline;
+    function get_second: gint; cdecl; inline;
+    function get_utc: gint; cdecl; inline;
+    function get_year: gint; cdecl; inline;
+    function is_past: gboolean; cdecl; inline;
+    function to_string(format: TSoupDateFormat): Pgchar; cdecl; inline;
+    function to_time_t: glong; cdecl; inline;
+    procedure to_timeval(time: PGTimeVal); cdecl; inline;
+  end;
+
   PPSoupCookie = ^PSoupCookie;
   PSoupCookie = ^TSoupCookie;
   TSoupCookie = object
@@ -811,7 +885,7 @@ type
     value: Pgchar;
     domain: Pgchar;
     path: Pgchar;
-    expires: PGDate;
+    expires: PSoupDate;
     secure: gboolean;
     http_only: gboolean;
     function new(name: Pgchar; value: Pgchar; domain: Pgchar; path: Pgchar; max_age: gint): PSoupCookie; cdecl; inline; static;
@@ -821,14 +895,14 @@ type
     function equal(cookie2: PSoupCookie): gboolean; cdecl; inline;
     procedure free; cdecl; inline;
     function get_domain: Pgchar; cdecl; inline;
-    function get_expires: PGDate; cdecl; inline;
+    function get_expires: PSoupDate; cdecl; inline;
     function get_http_only: gboolean; cdecl; inline;
     function get_name: Pgchar; cdecl; inline;
     function get_path: Pgchar; cdecl; inline;
     function get_secure: gboolean; cdecl; inline;
     function get_value: Pgchar; cdecl; inline;
     procedure set_domain(domain: Pgchar); cdecl; inline;
-    procedure set_expires(expires: PGDate); cdecl; inline;
+    procedure set_expires(expires: PSoupDate); cdecl; inline;
     procedure set_http_only(http_only: gboolean); cdecl; inline;
     procedure set_max_age(max_age: gint); cdecl; inline;
     procedure set_name(name: Pgchar); cdecl; inline;
@@ -888,40 +962,6 @@ type
     _libsoup_reserved4: procedure; cdecl;
   end;
 
-  PPSoupDateFormat = ^PSoupDateFormat;
-  PSoupDateFormat = ^TSoupDateFormat;
-
-  PPSoupDate = ^PSoupDate;
-  PSoupDate = ^TSoupDate;
-  TSoupDate = object
-    year: gint;
-    month: gint;
-    day: gint;
-    hour: gint;
-    minute: gint;
-    second: gint;
-    utc: gboolean;
-    offset: gint;
-    function new(year: gint; month: gint; day: gint; hour: gint; minute: gint; second: gint): PSoupDate; cdecl; inline; static;
-    function new_from_now(offset_seconds: gint): PSoupDate; cdecl; inline; static;
-    function new_from_string(date_string: Pgchar): PSoupDate; cdecl; inline; static;
-    function new_from_time_t(when: glong): PSoupDate; cdecl; inline; static;
-    function copy: PGDate; cdecl; inline;
-    procedure free; cdecl; inline;
-    function get_day: gint; cdecl; inline;
-    function get_hour: gint; cdecl; inline;
-    function get_minute: gint; cdecl; inline;
-    function get_month: gint; cdecl; inline;
-    function get_offset: gint; cdecl; inline;
-    function get_second: gint; cdecl; inline;
-    function get_utc: gint; cdecl; inline;
-    function get_year: gint; cdecl; inline;
-    function is_past: gboolean; cdecl; inline;
-    function to_string(format: TSoupDateFormat): Pgchar; cdecl; inline;
-    function to_time_t: glong; cdecl; inline;
-    procedure to_timeval(time: PGTimeVal); cdecl; inline;
-  end;
-
   PPSoupEncoding = ^PSoupEncoding;
   PSoupEncoding = ^TSoupEncoding;
   TSoupExpectation = packed object(TBitObject32)
@@ -942,7 +982,7 @@ type
 
   PPSoupLoggerPrinter = ^PSoupLoggerPrinter;
   PSoupLoggerPrinter = ^TSoupLoggerPrinter;
-  TSoupLoggerPrinter = procedure(logger: PSoupLogger; level: TSoupLoggerLogLevel; direction: char; data: Pgchar; user_data: gpointer); cdecl;
+  TSoupLoggerPrinter = procedure(logger: PSoupLogger; level: TSoupLoggerLogLevel; direction: gchar; data: Pgchar; user_data: gpointer); cdecl;
 
   PPSoupLoggerFilter = ^PSoupLoggerFilter;
   PSoupLoggerFilter = ^TSoupLoggerFilter;
@@ -1180,7 +1220,7 @@ type
     procedure add_handler(path: Pgchar; callback: TSoupServerCallback; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; inline;
     procedure disconnect; cdecl; inline;
     function get_async_context: PGMainContext; cdecl; inline;
-    function get_listener: PGSocket; cdecl; inline;
+    function get_listener: PSoupSocket; cdecl; inline;
     function get_port: guint; cdecl; inline;
     function is_https: gboolean; cdecl; inline;
     procedure pause_message(msg: PSoupMessage); cdecl; inline;
@@ -1224,7 +1264,7 @@ type
   PSoupSessionClass = ^TSoupSessionClass;
   TSoupSessionClass = object
     parent_class: TGObjectClass;
-    request_started: procedure(session: PSoupSession; msg: PSoupMessage; socket: PGSocket); cdecl;
+    request_started: procedure(session: PSoupSession; msg: PSoupMessage; socket: PSoupSocket); cdecl;
     authenticate: procedure(session: PSoupSession; msg: PSoupMessage; auth: PSoupAuth; retrying: gboolean); cdecl;
     queue_message: procedure(session: PSoupSession; msg: PSoupMessage; callback: TSoupSessionCallback; user_data: gpointer); cdecl;
     requeue_message: procedure(session: PSoupSession; msg: PSoupMessage); cdecl;
@@ -1253,7 +1293,7 @@ type
     attach: procedure(feature: PSoupSessionFeature; session: PSoupSession); cdecl;
     detach: procedure(feature: PSoupSessionFeature; session: PSoupSession); cdecl;
     request_queued: procedure(feature: PSoupSessionFeature; session: PSoupSession; msg: PSoupMessage); cdecl;
-    request_started: procedure(feature: PSoupSessionFeature; session: PSoupSession; msg: PSoupMessage; socket: PGSocket); cdecl;
+    request_started: procedure(feature: PSoupSessionFeature; session: PSoupSession; msg: PSoupMessage; socket: PSoupSocket); cdecl;
     request_unqueued: procedure(feature: PSoupSessionFeature; session: PSoupSession; msg: PSoupMessage); cdecl;
     add_feature: function(feature: PSoupSessionFeature; type_: TGType): gboolean; cdecl;
     remove_feature: function(feature: PSoupSessionFeature; type_: TGType): gboolean; cdecl;
@@ -1275,46 +1315,6 @@ type
     _libsoup_reserved2: procedure; cdecl;
     _libsoup_reserved3: procedure; cdecl;
     _libsoup_reserved4: procedure; cdecl;
-  end;
-
-  PPSoupSocket = ^PSoupSocket;
-  PSoupSocket = ^TSoupSocket;
-  TSoupSocketCallback = procedure(sock: PSoupSocket; status: guint; user_data: gpointer); cdecl;
-
-  PPSoupSocketIOStatus = ^PSoupSocketIOStatus;
-  PSoupSocketIOStatus = ^TSoupSocketIOStatus;
-
-  PPSoupSocketCallback = ^PSoupSocketCallback;
-  PSoupSocketCallback = ^TSoupSocketCallback;
-  TSoupSocket = object(TGObject)
-    //function new(optname1: Pgchar; args: array of const): PSoupSocket; cdecl; inline; static;
-    procedure connect_async(cancellable: PGCancellable; callback: TSoupSocketCallback; user_data: gpointer); cdecl; inline;
-    function connect_sync(cancellable: PGCancellable): guint; cdecl; inline;
-    procedure disconnect; cdecl; inline;
-    function get_fd: gint; cdecl; inline;
-    function get_local_address: PSoupAddress; cdecl; inline;
-    function get_remote_address: PSoupAddress; cdecl; inline;
-    function is_connected: gboolean; cdecl; inline;
-    function is_ssl: gboolean; cdecl; inline;
-    function listen: gboolean; cdecl; inline;
-    function read(buffer: gpointer; len: gsize; nread: Pgsize; cancellable: PGCancellable): TSoupSocketIOStatus; cdecl; inline;
-    function read_until(buffer: gpointer; len: gsize; boundary: gpointer; boundary_len: gsize; nread: Pgsize; got_boundary: Pgboolean; cancellable: PGCancellable): TSoupSocketIOStatus; cdecl; inline;
-    function start_proxy_ssl(ssl_host: Pgchar; cancellable: PGCancellable): gboolean; cdecl; inline;
-    function start_ssl(cancellable: PGCancellable): gboolean; cdecl; inline;
-    function write(buffer: gpointer; len: gsize; nwrote: Pgsize; cancellable: PGCancellable): TSoupSocketIOStatus; cdecl; inline;
-    //property async_context: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_async_context  { property is writeable but setter not declared } ;
-    //property clean_dispose: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_clean_dispose  { property is writeable but setter not declared } ;
-    //property is_server: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_is_server ;
-    property local_address:  PSoupAddress read get_local_address  { property is writeable but setter not declared } ;
-    //property non_blocking: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_non_blocking  { property is writeable but setter not declared } ;
-    property remote_address:  PSoupAddress read get_remote_address  { property is writeable but setter not declared } ;
-    //property ssl_creds: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_ssl_creds  { property is writeable but setter not declared } ;
-    //property ssl_fallback: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_ssl_fallback  { property is writeable but setter not declared } ;
-    //property ssl_strict: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_ssl_strict  { property is writeable but setter not declared } ;
-    //property timeout: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_timeout  { property is writeable but setter not declared } ;
-    //property tls_certificate: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_tls_certificate ;
-    //property tls_errors: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_tls_errors ;
-    //property trusted_certificate: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_trusted_certificate ;
   end;
 
   PPSoupSocketClass = ^PSoupSocketClass;
@@ -1392,7 +1392,7 @@ function soup_client_context_get_address(AClientContext: PSoupClientContext): PS
 function soup_client_context_get_auth_domain(AClientContext: PSoupClientContext): PSoupAuthDomain; cdecl; external;
 function soup_client_context_get_auth_user(AClientContext: PSoupClientContext): Pgchar; cdecl; external;
 function soup_client_context_get_host(AClientContext: PSoupClientContext): Pgchar; cdecl; external;
-function soup_client_context_get_socket(AClientContext: PSoupClientContext): PGSocket; cdecl; external;
+function soup_client_context_get_socket(AClientContext: PSoupClientContext): PSoupSocket; cdecl; external;
 function soup_client_context_get_type: TGType; cdecl; external;
 function soup_content_decoder_get_type: TGType; cdecl; external;
 function soup_content_sniffer_get_type: TGType; cdecl; external;
@@ -1403,7 +1403,7 @@ function soup_cookie_copy(ACookie: PSoupCookie): PSoupCookie; cdecl; external;
 function soup_cookie_domain_matches(ACookie: PSoupCookie; host: Pgchar): gboolean; cdecl; external;
 function soup_cookie_equal(ACookie: PSoupCookie; cookie2: PSoupCookie): gboolean; cdecl; external;
 function soup_cookie_get_domain(ACookie: PSoupCookie): Pgchar; cdecl; external;
-function soup_cookie_get_expires(ACookie: PSoupCookie): PGDate; cdecl; external;
+function soup_cookie_get_expires(ACookie: PSoupCookie): PSoupDate; cdecl; external;
 function soup_cookie_get_http_only(ACookie: PSoupCookie): gboolean; cdecl; external;
 function soup_cookie_get_name(ACookie: PSoupCookie): Pgchar; cdecl; external;
 function soup_cookie_get_path(ACookie: PSoupCookie): Pgchar; cdecl; external;
@@ -1424,7 +1424,7 @@ function soup_cookie_to_set_cookie_header(ACookie: PSoupCookie): Pgchar; cdecl; 
 function soup_cookies_from_request(msg: PSoupMessage): PGSList; cdecl; external;
 function soup_cookies_from_response(msg: PSoupMessage): PGSList; cdecl; external;
 function soup_cookies_to_cookie_header(cookies: PGSList): Pgchar; cdecl; external;
-function soup_date_copy(ADate: PSoupDate): PGDate; cdecl; external;
+function soup_date_copy(ADate: PSoupDate): PSoupDate; cdecl; external;
 function soup_date_get_day(ADate: PSoupDate): gint; cdecl; external;
 function soup_date_get_hour(ADate: PSoupDate): gint; cdecl; external;
 function soup_date_get_minute(ADate: PSoupDate): gint; cdecl; external;
@@ -1502,7 +1502,7 @@ function soup_proxy_resolver_default_get_type: TGType; cdecl; external;
 function soup_proxy_uri_resolver_get_proxy_uri_sync(AProxyURIResolver: PSoupProxyURIResolver; uri: PSoupURI; cancellable: PGCancellable; proxy_uri: PPSoupURI): guint; cdecl; external;
 function soup_proxy_uri_resolver_get_type: TGType; cdecl; external;
 function soup_server_get_async_context(AServer: PSoupServer): PGMainContext; cdecl; external;
-function soup_server_get_listener(AServer: PSoupServer): PGSocket; cdecl; external;
+function soup_server_get_listener(AServer: PSoupServer): PSoupSocket; cdecl; external;
 function soup_server_get_port(AServer: PSoupServer): guint; cdecl; external;
 function soup_server_get_type: TGType; cdecl; external;
 function soup_server_is_https(AServer: PSoupServer): gboolean; cdecl; external;
@@ -1602,7 +1602,7 @@ procedure soup_cookie_jar_set_accept_policy(ACookieJar: PSoupCookieJar; policy: 
 procedure soup_cookie_jar_set_cookie(ACookieJar: PSoupCookieJar; uri: PSoupURI; cookie: Pgchar); cdecl; external;
 procedure soup_cookie_jar_set_cookie_with_first_party(ACookieJar: PSoupCookieJar; uri: PSoupURI; first_party: PSoupURI; cookie: Pgchar); cdecl; external;
 procedure soup_cookie_set_domain(ACookie: PSoupCookie; domain: Pgchar); cdecl; external;
-procedure soup_cookie_set_expires(ACookie: PSoupCookie; expires: PGDate); cdecl; external;
+procedure soup_cookie_set_expires(ACookie: PSoupCookie; expires: PSoupDate); cdecl; external;
 procedure soup_cookie_set_http_only(ACookie: PSoupCookie; http_only: gboolean); cdecl; external;
 procedure soup_cookie_set_max_age(ACookie: PSoupCookie; max_age: gint); cdecl; external;
 procedure soup_cookie_set_name(ACookie: PSoupCookie; name: Pgchar); cdecl; external;
@@ -1662,7 +1662,7 @@ procedure soup_message_set_first_party(AMessage: PSoupMessage; first_party: PSou
 procedure soup_message_set_flags(AMessage: PSoupMessage; flags: TSoupMessageFlags); cdecl; external;
 procedure soup_message_set_http_version(AMessage: PSoupMessage; version: TSoupHTTPVersion); cdecl; external;
 procedure soup_message_set_request(AMessage: PSoupMessage; content_type: Pgchar; req_use: TSoupMemoryUse; req_body: Pgchar; req_length: gsize); cdecl; external;
-procedure soup_message_set_response(AMessage: PSoupMessage; content_type: Pgchar; resp_use: TSoupMemoryUse; resp_body: Pguint8; resp_length: gsize); cdecl; external;
+procedure soup_message_set_response(AMessage: PSoupMessage; content_type: Pgchar; resp_use: TSoupMemoryUse; resp_body: Pgchar; resp_length: gsize); cdecl; external;
 procedure soup_message_set_status(AMessage: PSoupMessage; status_code: guint); cdecl; external;
 procedure soup_message_set_status_full(AMessage: PSoupMessage; status_code: guint; reason_phrase: Pgchar); cdecl; external;
 procedure soup_message_set_uri(AMessage: PSoupMessage; uri: PSoupURI); cdecl; external;
@@ -1978,7 +1978,7 @@ begin
   Soup2_4.soup_message_set_request(@self, content_type, req_use, req_body, req_length);
 end;
 
-procedure TSoupMessage.set_response(content_type: Pgchar; resp_use: TSoupMemoryUse; resp_body: Pguint8; resp_length: gsize); cdecl;
+procedure TSoupMessage.set_response(content_type: Pgchar; resp_use: TSoupMemoryUse; resp_body: Pgchar; resp_length: gsize); cdecl;
 begin
   Soup2_4.soup_message_set_response(@self, content_type, resp_use, resp_body, resp_length);
 end;
@@ -2279,6 +2279,76 @@ begin
 end;
 
 
+procedure TSoupSocket.connect_async(cancellable: PGCancellable; callback: TSoupSocketCallback; user_data: gpointer); cdecl;
+begin
+  Soup2_4.soup_socket_connect_async(@self, cancellable, callback, user_data);
+end;
+
+function TSoupSocket.connect_sync(cancellable: PGCancellable): guint; cdecl;
+begin
+  Result := Soup2_4.soup_socket_connect_sync(@self, cancellable);
+end;
+
+procedure TSoupSocket.disconnect; cdecl;
+begin
+  Soup2_4.soup_socket_disconnect(@self);
+end;
+
+function TSoupSocket.get_fd: gint; cdecl;
+begin
+  Result := Soup2_4.soup_socket_get_fd(@self);
+end;
+
+function TSoupSocket.get_local_address: PSoupAddress; cdecl;
+begin
+  Result := Soup2_4.soup_socket_get_local_address(@self);
+end;
+
+function TSoupSocket.get_remote_address: PSoupAddress; cdecl;
+begin
+  Result := Soup2_4.soup_socket_get_remote_address(@self);
+end;
+
+function TSoupSocket.is_connected: gboolean; cdecl;
+begin
+  Result := Soup2_4.soup_socket_is_connected(@self);
+end;
+
+function TSoupSocket.is_ssl: gboolean; cdecl;
+begin
+  Result := Soup2_4.soup_socket_is_ssl(@self);
+end;
+
+function TSoupSocket.listen: gboolean; cdecl;
+begin
+  Result := Soup2_4.soup_socket_listen(@self);
+end;
+
+function TSoupSocket.read(buffer: gpointer; len: gsize; nread: Pgsize; cancellable: PGCancellable): TSoupSocketIOStatus; cdecl;
+begin
+  Result := Soup2_4.soup_socket_read(@self, buffer, len, nread, cancellable);
+end;
+
+function TSoupSocket.read_until(buffer: gpointer; len: gsize; boundary: gpointer; boundary_len: gsize; nread: Pgsize; got_boundary: Pgboolean; cancellable: PGCancellable): TSoupSocketIOStatus; cdecl;
+begin
+  Result := Soup2_4.soup_socket_read_until(@self, buffer, len, boundary, boundary_len, nread, got_boundary, cancellable);
+end;
+
+function TSoupSocket.start_proxy_ssl(ssl_host: Pgchar; cancellable: PGCancellable): gboolean; cdecl;
+begin
+  Result := Soup2_4.soup_socket_start_proxy_ssl(@self, ssl_host, cancellable);
+end;
+
+function TSoupSocket.start_ssl(cancellable: PGCancellable): gboolean; cdecl;
+begin
+  Result := Soup2_4.soup_socket_start_ssl(@self, cancellable);
+end;
+
+function TSoupSocket.write(buffer: gpointer; len: gsize; nwrote: Pgsize; cancellable: PGCancellable): TSoupSocketIOStatus; cdecl;
+begin
+  Result := Soup2_4.soup_socket_write(@self, buffer, len, nwrote, cancellable);
+end;
+
 function TSoupClientContext.get_address: PSoupAddress; cdecl;
 begin
   Result := Soup2_4.soup_client_context_get_address(@self);
@@ -2299,7 +2369,7 @@ begin
   Result := Soup2_4.soup_client_context_get_host(@self);
 end;
 
-function TSoupClientContext.get_socket: PGSocket; cdecl;
+function TSoupClientContext.get_socket: PSoupSocket; cdecl;
 begin
   Result := Soup2_4.soup_client_context_get_socket(@self);
 end;
@@ -2339,6 +2409,96 @@ begin
   Result := Soup2_4.soup_content_sniffer_sniff(@self, msg, buffer, params);
 end;
 
+function TSoupDate.new(year: gint; month: gint; day: gint; hour: gint; minute: gint; second: gint): PSoupDate; cdecl;
+begin
+  Result := Soup2_4.soup_date_new(year, month, day, hour, minute, second);
+end;
+
+function TSoupDate.new_from_now(offset_seconds: gint): PSoupDate; cdecl;
+begin
+  Result := Soup2_4.soup_date_new_from_now(offset_seconds);
+end;
+
+function TSoupDate.new_from_string(date_string: Pgchar): PSoupDate; cdecl;
+begin
+  Result := Soup2_4.soup_date_new_from_string(date_string);
+end;
+
+function TSoupDate.new_from_time_t(when: glong): PSoupDate; cdecl;
+begin
+  Result := Soup2_4.soup_date_new_from_time_t(when);
+end;
+
+function TSoupDate.copy: PSoupDate; cdecl;
+begin
+  Result := Soup2_4.soup_date_copy(@self);
+end;
+
+procedure TSoupDate.free; cdecl;
+begin
+  Soup2_4.soup_date_free(@self);
+end;
+
+function TSoupDate.get_day: gint; cdecl;
+begin
+  Result := Soup2_4.soup_date_get_day(@self);
+end;
+
+function TSoupDate.get_hour: gint; cdecl;
+begin
+  Result := Soup2_4.soup_date_get_hour(@self);
+end;
+
+function TSoupDate.get_minute: gint; cdecl;
+begin
+  Result := Soup2_4.soup_date_get_minute(@self);
+end;
+
+function TSoupDate.get_month: gint; cdecl;
+begin
+  Result := Soup2_4.soup_date_get_month(@self);
+end;
+
+function TSoupDate.get_offset: gint; cdecl;
+begin
+  Result := Soup2_4.soup_date_get_offset(@self);
+end;
+
+function TSoupDate.get_second: gint; cdecl;
+begin
+  Result := Soup2_4.soup_date_get_second(@self);
+end;
+
+function TSoupDate.get_utc: gint; cdecl;
+begin
+  Result := Soup2_4.soup_date_get_utc(@self);
+end;
+
+function TSoupDate.get_year: gint; cdecl;
+begin
+  Result := Soup2_4.soup_date_get_year(@self);
+end;
+
+function TSoupDate.is_past: gboolean; cdecl;
+begin
+  Result := Soup2_4.soup_date_is_past(@self);
+end;
+
+function TSoupDate.to_string(format: TSoupDateFormat): Pgchar; cdecl;
+begin
+  Result := Soup2_4.soup_date_to_string(@self, format);
+end;
+
+function TSoupDate.to_time_t: glong; cdecl;
+begin
+  Result := Soup2_4.soup_date_to_time_t(@self);
+end;
+
+procedure TSoupDate.to_timeval(time: PGTimeVal); cdecl;
+begin
+  Soup2_4.soup_date_to_timeval(@self, time);
+end;
+
 function TSoupCookie.new(name: Pgchar; value: Pgchar; domain: Pgchar; path: Pgchar; max_age: gint): PSoupCookie; cdecl;
 begin
   Result := Soup2_4.soup_cookie_new(name, value, domain, path, max_age);
@@ -2374,7 +2534,7 @@ begin
   Result := Soup2_4.soup_cookie_get_domain(@self);
 end;
 
-function TSoupCookie.get_expires: PGDate; cdecl;
+function TSoupCookie.get_expires: PSoupDate; cdecl;
 begin
   Result := Soup2_4.soup_cookie_get_expires(@self);
 end;
@@ -2409,7 +2569,7 @@ begin
   Soup2_4.soup_cookie_set_domain(@self, domain);
 end;
 
-procedure TSoupCookie.set_expires(expires: PGDate); cdecl;
+procedure TSoupCookie.set_expires(expires: PSoupDate); cdecl;
 begin
   Soup2_4.soup_cookie_set_expires(@self, expires);
 end;
@@ -2512,96 +2672,6 @@ end;
 function TSoupCookieJarText.new(filename: Pgchar; read_only: gboolean): PSoupCookieJarText; cdecl;
 begin
   Result := Soup2_4.soup_cookie_jar_text_new(filename, read_only);
-end;
-
-function TSoupDate.new(year: gint; month: gint; day: gint; hour: gint; minute: gint; second: gint): PSoupDate; cdecl;
-begin
-  Result := Soup2_4.soup_date_new(year, month, day, hour, minute, second);
-end;
-
-function TSoupDate.new_from_now(offset_seconds: gint): PSoupDate; cdecl;
-begin
-  Result := Soup2_4.soup_date_new_from_now(offset_seconds);
-end;
-
-function TSoupDate.new_from_string(date_string: Pgchar): PSoupDate; cdecl;
-begin
-  Result := Soup2_4.soup_date_new_from_string(date_string);
-end;
-
-function TSoupDate.new_from_time_t(when: glong): PSoupDate; cdecl;
-begin
-  Result := Soup2_4.soup_date_new_from_time_t(when);
-end;
-
-function TSoupDate.copy: PGDate; cdecl;
-begin
-  Result := Soup2_4.soup_date_copy(@self);
-end;
-
-procedure TSoupDate.free; cdecl;
-begin
-  Soup2_4.soup_date_free(@self);
-end;
-
-function TSoupDate.get_day: gint; cdecl;
-begin
-  Result := Soup2_4.soup_date_get_day(@self);
-end;
-
-function TSoupDate.get_hour: gint; cdecl;
-begin
-  Result := Soup2_4.soup_date_get_hour(@self);
-end;
-
-function TSoupDate.get_minute: gint; cdecl;
-begin
-  Result := Soup2_4.soup_date_get_minute(@self);
-end;
-
-function TSoupDate.get_month: gint; cdecl;
-begin
-  Result := Soup2_4.soup_date_get_month(@self);
-end;
-
-function TSoupDate.get_offset: gint; cdecl;
-begin
-  Result := Soup2_4.soup_date_get_offset(@self);
-end;
-
-function TSoupDate.get_second: gint; cdecl;
-begin
-  Result := Soup2_4.soup_date_get_second(@self);
-end;
-
-function TSoupDate.get_utc: gint; cdecl;
-begin
-  Result := Soup2_4.soup_date_get_utc(@self);
-end;
-
-function TSoupDate.get_year: gint; cdecl;
-begin
-  Result := Soup2_4.soup_date_get_year(@self);
-end;
-
-function TSoupDate.is_past: gboolean; cdecl;
-begin
-  Result := Soup2_4.soup_date_is_past(@self);
-end;
-
-function TSoupDate.to_string(format: TSoupDateFormat): Pgchar; cdecl;
-begin
-  Result := Soup2_4.soup_date_to_string(@self, format);
-end;
-
-function TSoupDate.to_time_t: glong; cdecl;
-begin
-  Result := Soup2_4.soup_date_to_time_t(@self);
-end;
-
-procedure TSoupDate.to_timeval(time: PGTimeVal); cdecl;
-begin
-  Soup2_4.soup_date_to_timeval(@self, time);
 end;
 
 
@@ -3000,7 +3070,7 @@ begin
   Result := Soup2_4.soup_server_get_async_context(@self);
 end;
 
-function TSoupServer.get_listener: PGSocket; cdecl;
+function TSoupServer.get_listener: PSoupSocket; cdecl;
 begin
   Result := Soup2_4.soup_server_get_listener(@self);
 end;
@@ -3058,76 +3128,6 @@ end;
 function TSoupSessionSync.new: PSoupSessionSync; cdecl;
 begin
   Result := Soup2_4.soup_session_sync_new();
-end;
-
-procedure TSoupSocket.connect_async(cancellable: PGCancellable; callback: TSoupSocketCallback; user_data: gpointer); cdecl;
-begin
-  Soup2_4.soup_socket_connect_async(@self, cancellable, callback, user_data);
-end;
-
-function TSoupSocket.connect_sync(cancellable: PGCancellable): guint; cdecl;
-begin
-  Result := Soup2_4.soup_socket_connect_sync(@self, cancellable);
-end;
-
-procedure TSoupSocket.disconnect; cdecl;
-begin
-  Soup2_4.soup_socket_disconnect(@self);
-end;
-
-function TSoupSocket.get_fd: gint; cdecl;
-begin
-  Result := Soup2_4.soup_socket_get_fd(@self);
-end;
-
-function TSoupSocket.get_local_address: PSoupAddress; cdecl;
-begin
-  Result := Soup2_4.soup_socket_get_local_address(@self);
-end;
-
-function TSoupSocket.get_remote_address: PSoupAddress; cdecl;
-begin
-  Result := Soup2_4.soup_socket_get_remote_address(@self);
-end;
-
-function TSoupSocket.is_connected: gboolean; cdecl;
-begin
-  Result := Soup2_4.soup_socket_is_connected(@self);
-end;
-
-function TSoupSocket.is_ssl: gboolean; cdecl;
-begin
-  Result := Soup2_4.soup_socket_is_ssl(@self);
-end;
-
-function TSoupSocket.listen: gboolean; cdecl;
-begin
-  Result := Soup2_4.soup_socket_listen(@self);
-end;
-
-function TSoupSocket.read(buffer: gpointer; len: gsize; nread: Pgsize; cancellable: PGCancellable): TSoupSocketIOStatus; cdecl;
-begin
-  Result := Soup2_4.soup_socket_read(@self, buffer, len, nread, cancellable);
-end;
-
-function TSoupSocket.read_until(buffer: gpointer; len: gsize; boundary: gpointer; boundary_len: gsize; nread: Pgsize; got_boundary: Pgboolean; cancellable: PGCancellable): TSoupSocketIOStatus; cdecl;
-begin
-  Result := Soup2_4.soup_socket_read_until(@self, buffer, len, boundary, boundary_len, nread, got_boundary, cancellable);
-end;
-
-function TSoupSocket.start_proxy_ssl(ssl_host: Pgchar; cancellable: PGCancellable): gboolean; cdecl;
-begin
-  Result := Soup2_4.soup_socket_start_proxy_ssl(@self, ssl_host, cancellable);
-end;
-
-function TSoupSocket.start_ssl(cancellable: PGCancellable): gboolean; cdecl;
-begin
-  Result := Soup2_4.soup_socket_start_ssl(@self, cancellable);
-end;
-
-function TSoupSocket.write(buffer: gpointer; len: gsize; nwrote: Pgsize; cancellable: PGCancellable): TSoupSocketIOStatus; cdecl;
-begin
-  Result := Soup2_4.soup_socket_write(@self, buffer, len, nwrote, cancellable);
 end;
 
 end.

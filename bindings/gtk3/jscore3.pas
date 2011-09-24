@@ -19,18 +19,14 @@ type
   { JSGlobalContextRef }
   TJSGlobalContextRef = record
     { opaque type }
+    Unknown: Pointer;
   end;
 
 
   { JSObjectRef }
   TJSObjectRef = record
     { opaque type }
-  end;
-
-
-  { void }
-  Tvoid = record
-    { opaque type }
+    Unknown: Pointer;
   end;
 
 

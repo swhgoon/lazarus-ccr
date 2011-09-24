@@ -143,12 +143,6 @@ type
 
 
 
-  { void }
-  Tvoid = record
-    { opaque type }
-  end;
-
-
 procedure XOpenDisplay; cdecl; external;
 implementation
 end.

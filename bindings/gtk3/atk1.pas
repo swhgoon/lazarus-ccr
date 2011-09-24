@@ -35,37 +35,28 @@ const
   ATK_LAYER_OVERLAY: TAtkLayer = 6;
   ATK_LAYER_WINDOW: TAtkLayer = 7;
 
-  { AtkHyperlinkStateFlags }
-  ATK_HYPERLINK_IS_INLINE_ = 1;
-
 type
-  TAtkKeyEventType = Integer;
+  TAtkRelationType = Integer;
 const
-  { AtkKeyEventType }
-  ATK_KEY_EVENT_PRESS: TAtkKeyEventType = 0;
-  ATK_KEY_EVENT_RELEASE: TAtkKeyEventType = 1;
-  ATK_KEY_EVENT_LAST_DEFINED: TAtkKeyEventType = 2;
-
-type
-  TAtkTextClipType = Integer;
-const
-  { AtkTextClipType }
-  ATK_TEXT_CLIP_NONE: TAtkTextClipType = 0;
-  ATK_TEXT_CLIP_MIN: TAtkTextClipType = 1;
-  ATK_TEXT_CLIP_MAX: TAtkTextClipType = 2;
-  ATK_TEXT_CLIP_BOTH: TAtkTextClipType = 3;
-
-type
-  TAtkTextBoundary = Integer;
-const
-  { AtkTextBoundary }
-  ATK_TEXT_BOUNDARY_CHAR: TAtkTextBoundary = 0;
-  ATK_TEXT_BOUNDARY_WORD_START: TAtkTextBoundary = 1;
-  ATK_TEXT_BOUNDARY_WORD_END: TAtkTextBoundary = 2;
-  ATK_TEXT_BOUNDARY_SENTENCE_START: TAtkTextBoundary = 3;
-  ATK_TEXT_BOUNDARY_SENTENCE_END: TAtkTextBoundary = 4;
-  ATK_TEXT_BOUNDARY_LINE_START: TAtkTextBoundary = 5;
-  ATK_TEXT_BOUNDARY_LINE_END: TAtkTextBoundary = 6;
+  { AtkRelationType }
+  ATK_RELATION_NULL: TAtkRelationType = 0;
+  ATK_RELATION_CONTROLLED_BY: TAtkRelationType = 1;
+  ATK_RELATION_CONTROLLER_FOR: TAtkRelationType = 2;
+  ATK_RELATION_LABEL_FOR: TAtkRelationType = 3;
+  ATK_RELATION_LABELLED_BY: TAtkRelationType = 4;
+  ATK_RELATION_MEMBER_OF: TAtkRelationType = 5;
+  ATK_RELATION_NODE_CHILD_OF: TAtkRelationType = 6;
+  ATK_RELATION_FLOWS_TO: TAtkRelationType = 7;
+  ATK_RELATION_FLOWS_FROM: TAtkRelationType = 8;
+  ATK_RELATION_SUBWINDOW_OF: TAtkRelationType = 9;
+  ATK_RELATION_EMBEDS: TAtkRelationType = 10;
+  ATK_RELATION_EMBEDDED_BY: TAtkRelationType = 11;
+  ATK_RELATION_POPUP_FOR: TAtkRelationType = 12;
+  ATK_RELATION_PARENT_WINDOW_OF: TAtkRelationType = 13;
+  ATK_RELATION_DESCRIBED_BY: TAtkRelationType = 14;
+  ATK_RELATION_DESCRIPTION_FOR: TAtkRelationType = 15;
+  ATK_RELATION_NODE_PARENT_OF: TAtkRelationType = 16;
+  ATK_RELATION_LAST_DEFINED: TAtkRelationType = 17;
 
 type
   TAtkRole = Integer;
@@ -174,28 +165,37 @@ const
   ATK_ROLE_INFO_BAR: TAtkRole = 100;
   ATK_ROLE_LAST_DEFINED: TAtkRole = 101;
 
+  { AtkHyperlinkStateFlags }
+  ATK_HYPERLINK_IS_INLINE_ = 1;
+
 type
-  TAtkRelationType = Integer;
+  TAtkKeyEventType = Integer;
 const
-  { AtkRelationType }
-  ATK_RELATION_NULL: TAtkRelationType = 0;
-  ATK_RELATION_CONTROLLED_BY: TAtkRelationType = 1;
-  ATK_RELATION_CONTROLLER_FOR: TAtkRelationType = 2;
-  ATK_RELATION_LABEL_FOR: TAtkRelationType = 3;
-  ATK_RELATION_LABELLED_BY: TAtkRelationType = 4;
-  ATK_RELATION_MEMBER_OF: TAtkRelationType = 5;
-  ATK_RELATION_NODE_CHILD_OF: TAtkRelationType = 6;
-  ATK_RELATION_FLOWS_TO: TAtkRelationType = 7;
-  ATK_RELATION_FLOWS_FROM: TAtkRelationType = 8;
-  ATK_RELATION_SUBWINDOW_OF: TAtkRelationType = 9;
-  ATK_RELATION_EMBEDS: TAtkRelationType = 10;
-  ATK_RELATION_EMBEDDED_BY: TAtkRelationType = 11;
-  ATK_RELATION_POPUP_FOR: TAtkRelationType = 12;
-  ATK_RELATION_PARENT_WINDOW_OF: TAtkRelationType = 13;
-  ATK_RELATION_DESCRIBED_BY: TAtkRelationType = 14;
-  ATK_RELATION_DESCRIPTION_FOR: TAtkRelationType = 15;
-  ATK_RELATION_NODE_PARENT_OF: TAtkRelationType = 16;
-  ATK_RELATION_LAST_DEFINED: TAtkRelationType = 17;
+  { AtkKeyEventType }
+  ATK_KEY_EVENT_PRESS: TAtkKeyEventType = 0;
+  ATK_KEY_EVENT_RELEASE: TAtkKeyEventType = 1;
+  ATK_KEY_EVENT_LAST_DEFINED: TAtkKeyEventType = 2;
+
+type
+  TAtkTextClipType = Integer;
+const
+  { AtkTextClipType }
+  ATK_TEXT_CLIP_NONE: TAtkTextClipType = 0;
+  ATK_TEXT_CLIP_MIN: TAtkTextClipType = 1;
+  ATK_TEXT_CLIP_MAX: TAtkTextClipType = 2;
+  ATK_TEXT_CLIP_BOTH: TAtkTextClipType = 3;
+
+type
+  TAtkTextBoundary = Integer;
+const
+  { AtkTextBoundary }
+  ATK_TEXT_BOUNDARY_CHAR: TAtkTextBoundary = 0;
+  ATK_TEXT_BOUNDARY_WORD_START: TAtkTextBoundary = 1;
+  ATK_TEXT_BOUNDARY_WORD_END: TAtkTextBoundary = 2;
+  ATK_TEXT_BOUNDARY_SENTENCE_START: TAtkTextBoundary = 3;
+  ATK_TEXT_BOUNDARY_SENTENCE_END: TAtkTextBoundary = 4;
+  ATK_TEXT_BOUNDARY_LINE_START: TAtkTextBoundary = 5;
+  ATK_TEXT_BOUNDARY_LINE_END: TAtkTextBoundary = 6;
 
 type
   TAtkStateType = Integer;
@@ -324,7 +324,10 @@ type
   end;
 
 
-  TAtkFocusHandler = procedure(param0: PGObject; param1: gboolean); cdecl;
+
+  PPAtkObject = ^PAtkObject;
+  PAtkObject = ^TAtkObject;
+  TAtkFocusHandler = procedure(param0: PAtkObject; param1: gboolean); cdecl;
 
   PPAtkRectangle = ^PAtkRectangle;
   PAtkRectangle = ^TAtkRectangle;
@@ -340,6 +343,69 @@ type
 
   PPAtkLayer = ^PAtkLayer;
   PAtkLayer = ^TAtkLayer;
+
+  PPAtkRelationType = ^PAtkRelationType;
+  PAtkRelationType = ^TAtkRelationType;
+
+  PPAtkPropertyChangeHandler = ^PAtkPropertyChangeHandler;
+  PAtkPropertyChangeHandler = ^TAtkPropertyChangeHandler;
+
+  PAtkPropertyValues = ^TAtkPropertyValues;
+  TAtkPropertyChangeHandler = procedure(param0: PAtkObject; param1: PAtkPropertyValues); cdecl;
+
+  PPAtkRole = ^PAtkRole;
+  PAtkRole = ^TAtkRole;
+
+  PPAtkRelationSet = ^PAtkRelationSet;
+  PAtkRelationSet = ^TAtkRelationSet;
+
+  PPAtkStateSet = ^PAtkStateSet;
+  PAtkStateSet = ^TAtkStateSet;
+  TAtkObject = object(TGObject)
+    description: Pgchar;
+    name: Pgchar;
+    accessible_parent1: PAtkObject;
+    role: TAtkRole;
+    relation_set: PAtkRelationSet;
+    layer: TAtkLayer;
+    function add_relationship(relationship: TAtkRelationType; target: PAtkObject): gboolean; cdecl; inline;
+    function connect_property_change_handler(handler: PAtkPropertyChangeHandler): guint; cdecl; inline;
+    function get_attributes: PAtkAttributeSet; cdecl; inline;
+    function get_description: Pgchar; cdecl; inline;
+    function get_index_in_parent: gint; cdecl; inline;
+    function get_layer: TAtkLayer; cdecl; inline;
+    function get_mdi_zorder: gint; cdecl; inline;
+    function get_n_accessible_children: gint; cdecl; inline;
+    function get_name: Pgchar; cdecl; inline;
+    function get_parent: PAtkObject; cdecl; inline;
+    function get_role: TAtkRole; cdecl; inline;
+    procedure initialize(data: gpointer); cdecl; inline;
+    procedure notify_state_change(state: TAtkState; value: gboolean); cdecl; inline;
+    function ref_accessible_child(i: gint): PAtkObject; cdecl; inline;
+    function ref_relation_set: PAtkRelationSet; cdecl; inline;
+    function ref_state_set: PAtkStateSet; cdecl; inline;
+    procedure remove_property_change_handler(handler_id: guint); cdecl; inline;
+    function remove_relationship(relationship: TAtkRelationType; target: PAtkObject): gboolean; cdecl; inline;
+    procedure set_description(description: Pgchar); cdecl; inline;
+    procedure set_name(name: Pgchar); cdecl; inline;
+    procedure set_parent(parent: PAtkObject); cdecl; inline;
+    procedure set_role(role: TAtkRole); cdecl; inline;
+    //property accessible_component_layer: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_component_layer ;
+    //property accessible_component_mdi_zorder: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_component_mdi_zorder ;
+    //property accessible_description: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_description  { property is writeable but setter not declared } ;
+    //property accessible_hypertext_nlinks: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_hypertext_nlinks ;
+    //property accessible_name: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_name  { property is writeable but setter not declared } ;
+    //property accessible_parent: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_parent  { property is writeable but setter not declared } ;
+    //property accessible_role: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_role  { property is writeable but setter not declared } ;
+    //property accessible_table_caption: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_table_caption  { property is writeable but setter not declared } ;
+    //property accessible_table_caption_object: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_table_caption_object  { property is writeable but setter not declared } ;
+    //property accessible_table_column_description: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_table_column_description  { property is writeable but setter not declared } ;
+    //property accessible_table_column_header: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_table_column_header  { property is writeable but setter not declared } ;
+    //property accessible_table_row_description: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_table_row_description  { property is writeable but setter not declared } ;
+    //property accessible_table_row_header: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_table_row_header  { property is writeable but setter not declared } ;
+    //property accessible_table_summary: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_table_summary  { property is writeable but setter not declared } ;
+    //property accessible_value: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_value  { property is writeable but setter not declared } ;
+  end;
 
   PPAtkComponent = ^PAtkComponent;
   PAtkComponent = ^TAtkComponent;
@@ -357,7 +423,7 @@ type
     procedure get_position(x: Pgint; y: Pgint; coord_type: TAtkCoordType); cdecl; inline;
     procedure get_size(width: Pgint; height: Pgint); cdecl; inline;
     function grab_focus: gboolean; cdecl; inline;
-    function ref_accessible_at_point(x: gint; y: gint; coord_type: TAtkCoordType): PGObject; cdecl; inline;
+    function ref_accessible_at_point(x: gint; y: gint; coord_type: TAtkCoordType): PAtkObject; cdecl; inline;
     procedure remove_focus_handler(handler_id: guint); cdecl; inline;
     function set_extents(x: gint; y: gint; width: gint; height: gint; coord_type: TAtkCoordType): gboolean; cdecl; inline;
     function set_position(x: gint; y: gint; coord_type: TAtkCoordType): gboolean; cdecl; inline;
@@ -370,7 +436,7 @@ type
     parent: TGTypeInterface;
     add_focus_handler: function(component: PAtkComponent; handler: TAtkFocusHandler): guint; cdecl;
     contains: function(component: PAtkComponent; x: gint; y: gint; coord_type: TAtkCoordType): gboolean; cdecl;
-    ref_accessible_at_point: function(component: PAtkComponent; x: gint; y: gint; coord_type: TAtkCoordType): PGObject; cdecl;
+    ref_accessible_at_point: function(component: PAtkComponent; x: gint; y: gint; coord_type: TAtkCoordType): PAtkObject; cdecl;
     get_extents: procedure(component: PAtkComponent; x: Pgint; y: Pgint; width: Pgint; height: Pgint; coord_type: TAtkCoordType); cdecl;
     get_position: procedure(component: PAtkComponent; x: Pgint; y: Pgint; coord_type: TAtkCoordType); cdecl;
     get_size: procedure(component: PAtkComponent; width: Pgint; height: Pgint); cdecl;
@@ -441,21 +507,53 @@ type
     pad1: TAtkFunction;
     pad2: TAtkFunction;
   end;
-  TAtkEventListener = procedure(obj: PGObject); cdecl;
+  TAtkEventListener = procedure(obj: PAtkObject); cdecl;
   TAtkEventListenerInit = procedure; cdecl;
 
   PPAtkGObjectAccessible = ^PAtkGObjectAccessible;
   PAtkGObjectAccessible = ^TAtkGObjectAccessible;
-  TAtkGObjectAccessible = object
-    parent: TGObject;
-    function for_object(obj: PGObject): PGObject; cdecl; inline; static;
+  TAtkGObjectAccessible = object(TAtkObject)
+    function for_object(obj: PGObject): PAtkObject; cdecl; inline; static;
     function get_object: PGObject; cdecl; inline;
+  end;
+
+  PPAtkObjectClass = ^PAtkObjectClass;
+  PAtkObjectClass = ^TAtkObjectClass;
+  TAtkObjectClass = object
+    parent: TGObjectClass;
+    get_name: function(accessible: PAtkObject): Pgchar; cdecl;
+    get_description: function(accessible: PAtkObject): Pgchar; cdecl;
+    get_parent: function(accessible: PAtkObject): PAtkObject; cdecl;
+    get_n_children: function(accessible: PAtkObject): gint; cdecl;
+    ref_child: function(accessible: PAtkObject; i: gint): PAtkObject; cdecl;
+    get_index_in_parent: function(accessible: PAtkObject): gint; cdecl;
+    ref_relation_set: function(accessible: PAtkObject): PAtkRelationSet; cdecl;
+    get_role: function(accessible: PAtkObject): TAtkRole; cdecl;
+    get_layer: function(accessible: PAtkObject): TAtkLayer; cdecl;
+    get_mdi_zorder: function(accessible: PAtkObject): gint; cdecl;
+    ref_state_set: function(accessible: PAtkObject): PAtkStateSet; cdecl;
+    set_name: procedure(accessible: PAtkObject; name: Pgchar); cdecl;
+    set_description: procedure(accessible: PAtkObject; description: Pgchar); cdecl;
+    set_parent: procedure(accessible: PAtkObject; parent: PAtkObject); cdecl;
+    set_role: procedure(accessible: PAtkObject; role: TAtkRole); cdecl;
+    connect_property_change_handler: function(accessible: PAtkObject; handler: PAtkPropertyChangeHandler): guint; cdecl;
+    remove_property_change_handler: procedure(accessible: PAtkObject; handler_id: guint); cdecl;
+    initialize: procedure(accessible: PAtkObject; data: gpointer); cdecl;
+    children_changed: procedure(accessible: PAtkObject; change_index: guint; changed_child: gpointer); cdecl;
+    focus_event: procedure(accessible: PAtkObject; focus_in: gboolean); cdecl;
+    property_change: procedure(accessible: PAtkObject; values: PAtkPropertyValues); cdecl;
+    state_change: procedure(accessible: PAtkObject; name: Pgchar; state_set: gboolean); cdecl;
+    visible_data_changed: procedure(accessible: PAtkObject); cdecl;
+    active_descendant_changed: procedure(accessible: PAtkObject; child: Pgpointer); cdecl;
+    get_attributes: function(accessible: PAtkObject): PAtkAttributeSet; cdecl;
+    pad1: TAtkFunction;
+    pad2: TAtkFunction;
   end;
 
   PPAtkGObjectAccessibleClass = ^PAtkGObjectAccessibleClass;
   PAtkGObjectAccessibleClass = ^TAtkGObjectAccessibleClass;
   TAtkGObjectAccessibleClass = object
-    parent_class: TGObjectClass;
+    parent_class: TAtkObjectClass;
     pad1: TAtkFunction;
     pad2: TAtkFunction;
   end;
@@ -465,7 +563,7 @@ type
   TAtkHyperlink = object(TGObject)
     function get_end_index: gint; cdecl; inline;
     function get_n_anchors: gint; cdecl; inline;
-    function get_object(i: gint): PGObject; cdecl; inline;
+    function get_object(i: gint): PAtkObject; cdecl; inline;
     function get_start_index: gint; cdecl; inline;
     function get_uri(i: gint): Pgchar; cdecl; inline;
     function is_inline: gboolean; cdecl; inline;
@@ -482,7 +580,7 @@ type
   TAtkHyperlinkClass = object
     parent: TGObjectClass;
     get_uri: function(link_: PAtkHyperlink; i: gint): Pgchar; cdecl;
-    get_object: function(link_: PAtkHyperlink; i: gint): PGObject; cdecl;
+    get_object: function(link_: PAtkHyperlink; i: gint): PAtkObject; cdecl;
     get_end_index: function(link_: PAtkHyperlink): gint; cdecl;
     get_start_index: function(link_: PAtkHyperlink): gint; cdecl;
     is_valid: function(link_: PAtkHyperlink): gboolean; cdecl;
@@ -559,7 +657,7 @@ type
   PPAtkImplementor = ^PAtkImplementor;
   PAtkImplementor = ^TAtkImplementor;
   TAtkImplementor = object
-    function ref_accessible: PGObject; cdecl; inline;
+    function ref_accessible: PAtkObject; cdecl; inline;
   end;
 
   PPAtkImplementorIface = ^PAtkImplementorIface;
@@ -605,9 +703,6 @@ type
 
   PPAtkSelection = ^PAtkSelection;
   PAtkSelection = ^TAtkSelection;
-
-  PPAtkObject = ^PAtkObject;
-  PAtkObject = ^TAtkObject;
   TAtkSelection = object
     selection_changed: procedure; cdecl;
     function add_selection(i: gint): gboolean; cdecl; inline;
@@ -703,6 +798,16 @@ type
     function set_selection(selection_num: gint; start_offset: gint; end_offset: gint): gboolean; cdecl; inline;
   end;
 
+  PPAtkValue = ^PAtkValue;
+  PAtkValue = ^TAtkValue;
+  TAtkValue = object
+    procedure get_current_value(value: PGValue); cdecl; inline;
+    procedure get_maximum_value(value: PGValue); cdecl; inline;
+    procedure get_minimum_increment(value: PGValue); cdecl; inline;
+    procedure get_minimum_value(value: PGValue); cdecl; inline;
+    function set_current_value(value: PGValue): gboolean; cdecl; inline;
+  end;
+
   PPAtkWindow = ^PAtkWindow;
   PAtkWindow = ^TAtkWindow;
   TAtkWindow = object
@@ -719,15 +824,14 @@ type
 
   PPAtkNoOpObject = ^PAtkNoOpObject;
   PAtkNoOpObject = ^TAtkNoOpObject;
-  TAtkNoOpObject = object
-    parent: TGObject;
+  TAtkNoOpObject = object(TAtkObject)
     function new(obj: PGObject): PAtkNoOpObject; cdecl; inline; static;
   end;
 
   PPAtkNoOpObjectClass = ^PAtkNoOpObjectClass;
   PAtkNoOpObjectClass = ^TAtkNoOpObjectClass;
   TAtkNoOpObjectClass = object
-    parent_class: TGObjectClass;
+    parent_class: TAtkObjectClass;
   end;
 
   PPAtkObjectFactory = ^PAtkObjectFactory;
@@ -761,26 +865,15 @@ type
     parent_class: TAtkObjectFactoryClass;
   end;
 
-  PAtkPropertyValues = ^TAtkPropertyValues;
-  TAtkPropertyChangeHandler = procedure(param0: PAtkObject; param1: PAtkPropertyValues); cdecl;
-
-  PPAtkRole = ^PAtkRole;
-  PAtkRole = ^TAtkRole;
-
   { AtkPropertyValues* }
   TAtkPropertyValues = record
     { opaque type }
+    Unknown: Pointer;
   end;
 
 
-  PPAtkRelationSet = ^PAtkRelationSet;
-  PAtkRelationSet = ^TAtkRelationSet;
-
   PPAtkRelation = ^PAtkRelation;
   PAtkRelation = ^TAtkRelation;
-
-  PPAtkRelationType = ^PAtkRelationType;
-  PAtkRelationType = ^TAtkRelationType;
   TAtkRelationSet = object(TGObject)
     relations: gpointer;
     function new: PAtkRelationSet; cdecl; inline; static;
@@ -792,9 +885,6 @@ type
     function get_relation_by_type(relationship: TAtkRelationType): PAtkRelation; cdecl; inline;
     procedure remove(relation: PAtkRelation); cdecl; inline;
   end;
-
-  PPAtkStateSet = ^PAtkStateSet;
-  PAtkStateSet = ^TAtkStateSet;
 
   PPAtkStateType = ^PAtkStateType;
   PAtkStateType = ^TAtkStateType;
@@ -810,87 +900,6 @@ type
     function or_sets(compare_set: PAtkStateSet): PAtkStateSet; cdecl; inline;
     function remove_state(type_: TAtkStateType): gboolean; cdecl; inline;
     function xor_sets(compare_set: PAtkStateSet): PAtkStateSet; cdecl; inline;
-  end;
-
-  PPAtkPropertyChangeHandler = ^PAtkPropertyChangeHandler;
-  PAtkPropertyChangeHandler = ^TAtkPropertyChangeHandler;
-  TAtkObject = object(TGObject)
-    description: Pgchar;
-    name: Pgchar;
-    accessible_parent1: PGObject;
-    role: TAtkRole;
-    relation_set: PAtkRelationSet;
-    layer: TAtkLayer;
-    function add_relationship(relationship: TAtkRelationType; target: PGObject): gboolean; cdecl; inline;
-    function connect_property_change_handler(handler: PAtkPropertyChangeHandler): guint; cdecl; inline;
-    function get_attributes: PAtkAttributeSet; cdecl; inline;
-    function get_description: Pgchar; cdecl; inline;
-    function get_index_in_parent: gint; cdecl; inline;
-    function get_layer: TAtkLayer; cdecl; inline;
-    function get_mdi_zorder: gint; cdecl; inline;
-    function get_n_accessible_children: gint; cdecl; inline;
-    function get_name: Pgchar; cdecl; inline;
-    function get_parent: PGObject; cdecl; inline;
-    function get_role: TAtkRole; cdecl; inline;
-    procedure initialize(data: gpointer); cdecl; inline;
-    procedure notify_state_change(state: TAtkState; value: gboolean); cdecl; inline;
-    function ref_accessible_child(i: gint): PGObject; cdecl; inline;
-    function ref_relation_set: PAtkRelationSet; cdecl; inline;
-    function ref_state_set: PAtkStateSet; cdecl; inline;
-    procedure remove_property_change_handler(handler_id: guint); cdecl; inline;
-    function remove_relationship(relationship: TAtkRelationType; target: PGObject): gboolean; cdecl; inline;
-    procedure set_description(description: Pgchar); cdecl; inline;
-    procedure set_name(name: Pgchar); cdecl; inline;
-    procedure set_parent(parent: PGObject); cdecl; inline;
-    procedure set_role(role: TAtkRole); cdecl; inline;
-    //property accessible_component_layer: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_component_layer ;
-    //property accessible_component_mdi_zorder: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_component_mdi_zorder ;
-    //property accessible_description: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_description  { property is writeable but setter not declared } ;
-    //property accessible_hypertext_nlinks: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_hypertext_nlinks ;
-    //property accessible_name: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_name  { property is writeable but setter not declared } ;
-    //property accessible_parent: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_parent  { property is writeable but setter not declared } ;
-    //property accessible_role: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_role  { property is writeable but setter not declared } ;
-    //property accessible_table_caption: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_table_caption  { property is writeable but setter not declared } ;
-    //property accessible_table_caption_object: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_table_caption_object  { property is writeable but setter not declared } ;
-    //property accessible_table_column_description: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_table_column_description  { property is writeable but setter not declared } ;
-    //property accessible_table_column_header: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_table_column_header  { property is writeable but setter not declared } ;
-    //property accessible_table_row_description: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_table_row_description  { property is writeable but setter not declared } ;
-    //property accessible_table_row_header: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_table_row_header  { property is writeable but setter not declared } ;
-    //property accessible_table_summary: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_table_summary  { property is writeable but setter not declared } ;
-    //property accessible_value: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_accessible_value  { property is writeable but setter not declared } ;
-  end;
-
-  PPAtkObjectClass = ^PAtkObjectClass;
-  PAtkObjectClass = ^TAtkObjectClass;
-  TAtkObjectClass = object
-    parent: TGObjectClass;
-    get_name: function(accessible: PAtkObject): Pgchar; cdecl;
-    get_description: function(accessible: PAtkObject): Pgchar; cdecl;
-    get_parent: function(accessible: PAtkObject): PAtkObject; cdecl;
-    get_n_children: function(accessible: PAtkObject): gint; cdecl;
-    ref_child: function(accessible: PAtkObject; i: gint): PAtkObject; cdecl;
-    get_index_in_parent: function(accessible: PAtkObject): gint; cdecl;
-    ref_relation_set: function(accessible: PAtkObject): PAtkRelationSet; cdecl;
-    get_role: function(accessible: PAtkObject): TAtkRole; cdecl;
-    get_layer: function(accessible: PAtkObject): TAtkLayer; cdecl;
-    get_mdi_zorder: function(accessible: PAtkObject): gint; cdecl;
-    ref_state_set: function(accessible: PAtkObject): PAtkStateSet; cdecl;
-    set_name: procedure(accessible: PAtkObject; name: Pgchar); cdecl;
-    set_description: procedure(accessible: PAtkObject; description: Pgchar); cdecl;
-    set_parent: procedure(accessible: PAtkObject; parent: PAtkObject); cdecl;
-    set_role: procedure(accessible: PAtkObject; role: TAtkRole); cdecl;
-    connect_property_change_handler: function(accessible: PAtkObject; handler: PAtkPropertyChangeHandler): guint; cdecl;
-    remove_property_change_handler: procedure(accessible: PAtkObject; handler_id: guint); cdecl;
-    initialize: procedure(accessible: PAtkObject; data: gpointer); cdecl;
-    children_changed: procedure(accessible: PAtkObject; change_index: guint; changed_child: gpointer); cdecl;
-    focus_event: procedure(accessible: PAtkObject; focus_in: gboolean); cdecl;
-    property_change: procedure(accessible: PAtkObject; values: PAtkPropertyValues); cdecl;
-    state_change: procedure(accessible: PAtkObject; name: Pgchar; state_set: gboolean); cdecl;
-    visible_data_changed: procedure(accessible: PAtkObject); cdecl;
-    active_descendant_changed: procedure(accessible: PAtkObject; child: Pgpointer); cdecl;
-    get_attributes: function(accessible: PAtkObject): PAtkAttributeSet; cdecl;
-    pad1: TAtkFunction;
-    pad2: TAtkFunction;
   end;
 
   PPAtkPlug = ^PAtkPlug;
@@ -1115,16 +1124,6 @@ type
     get_toolkit_version: function: Pgchar; cdecl;
   end;
 
-  PPAtkValue = ^PAtkValue;
-  PAtkValue = ^TAtkValue;
-  TAtkValue = object
-    procedure get_current_value(value: PGValue); cdecl; inline;
-    procedure get_maximum_value(value: PGValue); cdecl; inline;
-    procedure get_minimum_increment(value: PGValue); cdecl; inline;
-    procedure get_minimum_value(value: PGValue); cdecl; inline;
-    function set_current_value(value: PGValue): gboolean; cdecl; inline;
-  end;
-
   PPAtkValueIface = ^PAtkValueIface;
   PAtkValueIface = ^TAtkValueIface;
   TAtkValueIface = object
@@ -1193,7 +1192,7 @@ function atk_component_get_layer(AComponent: PAtkComponent): TAtkLayer; cdecl; e
 function atk_component_get_mdi_zorder(AComponent: PAtkComponent): gint; cdecl; external;
 function atk_component_get_type: TGType; cdecl; external;
 function atk_component_grab_focus(AComponent: PAtkComponent): gboolean; cdecl; external;
-function atk_component_ref_accessible_at_point(AComponent: PAtkComponent; x: gint; y: gint; coord_type: TAtkCoordType): PGObject; cdecl; external;
+function atk_component_ref_accessible_at_point(AComponent: PAtkComponent; x: gint; y: gint; coord_type: TAtkCoordType): PAtkObject; cdecl; external;
 function atk_component_set_extents(AComponent: PAtkComponent; x: gint; y: gint; width: gint; height: gint; coord_type: TAtkCoordType): gboolean; cdecl; external;
 function atk_component_set_position(AComponent: PAtkComponent; x: gint; y: gint; coord_type: TAtkCoordType): gboolean; cdecl; external;
 function atk_component_set_size(AComponent: PAtkComponent; width: gint; height: gint): gboolean; cdecl; external;
@@ -1212,12 +1211,12 @@ function atk_get_root: PAtkObject; cdecl; external;
 function atk_get_toolkit_name: Pgchar; cdecl; external;
 function atk_get_toolkit_version: Pgchar; cdecl; external;
 function atk_get_version: Pgchar; cdecl; external;
-function atk_gobject_accessible_for_object(obj: PGObject): PGObject; cdecl; external;
+function atk_gobject_accessible_for_object(obj: PGObject): PAtkObject; cdecl; external;
 function atk_gobject_accessible_get_object(AGObjectAccessible: PAtkGObjectAccessible): PGObject; cdecl; external;
 function atk_gobject_accessible_get_type: TGType; cdecl; external;
 function atk_hyperlink_get_end_index(AHyperlink: PAtkHyperlink): gint; cdecl; external;
 function atk_hyperlink_get_n_anchors(AHyperlink: PAtkHyperlink): gint; cdecl; external;
-function atk_hyperlink_get_object(AHyperlink: PAtkHyperlink; i: gint): PGObject; cdecl; external;
+function atk_hyperlink_get_object(AHyperlink: PAtkHyperlink; i: gint): PAtkObject; cdecl; external;
 function atk_hyperlink_get_start_index(AHyperlink: PAtkHyperlink): gint; cdecl; external;
 function atk_hyperlink_get_type: TGType; cdecl; external;
 function atk_hyperlink_get_uri(AHyperlink: PAtkHyperlink; i: gint): Pgchar; cdecl; external;
@@ -1235,14 +1234,14 @@ function atk_image_get_image_locale(AImage: PAtkImage): Pgchar; cdecl; external;
 function atk_image_get_type: TGType; cdecl; external;
 function atk_image_set_image_description(AImage: PAtkImage; description: Pgchar): gboolean; cdecl; external;
 function atk_implementor_get_type: TGType; cdecl; external;
-function atk_implementor_ref_accessible(AImplementor: PAtkImplementor): PGObject; cdecl; external;
+function atk_implementor_ref_accessible(AImplementor: PAtkImplementor): PAtkObject; cdecl; external;
 function atk_misc_get_instance: PAtkMisc; cdecl; external;
 function atk_misc_get_type: TGType; cdecl; external;
 function atk_no_op_object_factory_get_type: TGType; cdecl; external;
 function atk_no_op_object_factory_new: PAtkNoOpObjectFactory; cdecl; external;
 function atk_no_op_object_get_type: TGType; cdecl; external;
 function atk_no_op_object_new(obj: PGObject): PAtkNoOpObject; cdecl; external;
-function atk_object_add_relationship(AObject: PAtkObject; relationship: TAtkRelationType; target: PGObject): gboolean; cdecl; external;
+function atk_object_add_relationship(AObject: PAtkObject; relationship: TAtkRelationType; target: PAtkObject): gboolean; cdecl; external;
 function atk_object_connect_property_change_handler(AObject: PAtkObject; handler: PAtkPropertyChangeHandler): guint; cdecl; external;
 function atk_object_factory_create_accessible(AObjectFactory: PAtkObjectFactory; obj: PGObject): PAtkObject; cdecl; external;
 function atk_object_factory_get_accessible_type(AObjectFactory: PAtkObjectFactory): TGType; cdecl; external;
@@ -1254,13 +1253,13 @@ function atk_object_get_layer(AObject: PAtkObject): TAtkLayer; cdecl; external;
 function atk_object_get_mdi_zorder(AObject: PAtkObject): gint; cdecl; external;
 function atk_object_get_n_accessible_children(AObject: PAtkObject): gint; cdecl; external;
 function atk_object_get_name(AObject: PAtkObject): Pgchar; cdecl; external;
-function atk_object_get_parent(AObject: PAtkObject): PGObject; cdecl; external;
+function atk_object_get_parent(AObject: PAtkObject): PAtkObject; cdecl; external;
 function atk_object_get_role(AObject: PAtkObject): TAtkRole; cdecl; external;
 function atk_object_get_type: TGType; cdecl; external;
-function atk_object_ref_accessible_child(AObject: PAtkObject; i: gint): PGObject; cdecl; external;
+function atk_object_ref_accessible_child(AObject: PAtkObject; i: gint): PAtkObject; cdecl; external;
 function atk_object_ref_relation_set(AObject: PAtkObject): PAtkRelationSet; cdecl; external;
 function atk_object_ref_state_set(AObject: PAtkObject): PAtkStateSet; cdecl; external;
-function atk_object_remove_relationship(AObject: PAtkObject; relationship: TAtkRelationType; target: PGObject): gboolean; cdecl; external;
+function atk_object_remove_relationship(AObject: PAtkObject; relationship: TAtkRelationType; target: PAtkObject): gboolean; cdecl; external;
 function atk_plug_get_id(APlug: PAtkPlug): Pgchar; cdecl; external;
 function atk_plug_get_type: TGType; cdecl; external;
 function atk_plug_new: PAtkPlug; cdecl; external;
@@ -1389,7 +1388,7 @@ procedure atk_object_notify_state_change(AObject: PAtkObject; state: TAtkState; 
 procedure atk_object_remove_property_change_handler(AObject: PAtkObject; handler_id: guint); cdecl; external;
 procedure atk_object_set_description(AObject: PAtkObject; description: Pgchar); cdecl; external;
 procedure atk_object_set_name(AObject: PAtkObject; name: Pgchar); cdecl; external;
-procedure atk_object_set_parent(AObject: PAtkObject; parent: PGObject); cdecl; external;
+procedure atk_object_set_parent(AObject: PAtkObject; parent: PAtkObject); cdecl; external;
 procedure atk_object_set_role(AObject: PAtkObject; role: TAtkRole); cdecl; external;
 procedure atk_registry_set_factory_type(ARegistry: PAtkRegistry; type_: TGType; factory_type: TGType); cdecl; external;
 procedure atk_relation_add_target(ARelation: PAtkRelation; target: PAtkObject); cdecl; external;
@@ -1451,6 +1450,116 @@ begin
   Result := Atk1.atk_action_set_description(@self, i, desc);
 end;
 
+function TAtkObject.add_relationship(relationship: TAtkRelationType; target: PAtkObject): gboolean; cdecl;
+begin
+  Result := Atk1.atk_object_add_relationship(@self, relationship, target);
+end;
+
+function TAtkObject.connect_property_change_handler(handler: PAtkPropertyChangeHandler): guint; cdecl;
+begin
+  Result := Atk1.atk_object_connect_property_change_handler(@self, handler);
+end;
+
+function TAtkObject.get_attributes: PAtkAttributeSet; cdecl;
+begin
+  Result := Atk1.atk_object_get_attributes(@self);
+end;
+
+function TAtkObject.get_description: Pgchar; cdecl;
+begin
+  Result := Atk1.atk_object_get_description(@self);
+end;
+
+function TAtkObject.get_index_in_parent: gint; cdecl;
+begin
+  Result := Atk1.atk_object_get_index_in_parent(@self);
+end;
+
+function TAtkObject.get_layer: TAtkLayer; cdecl;
+begin
+  Result := Atk1.atk_object_get_layer(@self);
+end;
+
+function TAtkObject.get_mdi_zorder: gint; cdecl;
+begin
+  Result := Atk1.atk_object_get_mdi_zorder(@self);
+end;
+
+function TAtkObject.get_n_accessible_children: gint; cdecl;
+begin
+  Result := Atk1.atk_object_get_n_accessible_children(@self);
+end;
+
+function TAtkObject.get_name: Pgchar; cdecl;
+begin
+  Result := Atk1.atk_object_get_name(@self);
+end;
+
+function TAtkObject.get_parent: PAtkObject; cdecl;
+begin
+  Result := Atk1.atk_object_get_parent(@self);
+end;
+
+function TAtkObject.get_role: TAtkRole; cdecl;
+begin
+  Result := Atk1.atk_object_get_role(@self);
+end;
+
+procedure TAtkObject.initialize(data: gpointer); cdecl;
+begin
+  Atk1.atk_object_initialize(@self, data);
+end;
+
+procedure TAtkObject.notify_state_change(state: TAtkState; value: gboolean); cdecl;
+begin
+  Atk1.atk_object_notify_state_change(@self, state, value);
+end;
+
+function TAtkObject.ref_accessible_child(i: gint): PAtkObject; cdecl;
+begin
+  Result := Atk1.atk_object_ref_accessible_child(@self, i);
+end;
+
+function TAtkObject.ref_relation_set: PAtkRelationSet; cdecl;
+begin
+  Result := Atk1.atk_object_ref_relation_set(@self);
+end;
+
+function TAtkObject.ref_state_set: PAtkStateSet; cdecl;
+begin
+  Result := Atk1.atk_object_ref_state_set(@self);
+end;
+
+procedure TAtkObject.remove_property_change_handler(handler_id: guint); cdecl;
+begin
+  Atk1.atk_object_remove_property_change_handler(@self, handler_id);
+end;
+
+function TAtkObject.remove_relationship(relationship: TAtkRelationType; target: PAtkObject): gboolean; cdecl;
+begin
+  Result := Atk1.atk_object_remove_relationship(@self, relationship, target);
+end;
+
+procedure TAtkObject.set_description(description: Pgchar); cdecl;
+begin
+  Atk1.atk_object_set_description(@self, description);
+end;
+
+procedure TAtkObject.set_name(name: Pgchar); cdecl;
+begin
+  Atk1.atk_object_set_name(@self, name);
+end;
+
+procedure TAtkObject.set_parent(parent: PAtkObject); cdecl;
+begin
+  Atk1.atk_object_set_parent(@self, parent);
+end;
+
+procedure TAtkObject.set_role(role: TAtkRole); cdecl;
+begin
+  Atk1.atk_object_set_role(@self, role);
+end;
+
 function TAtkComponent.add_focus_handler(handler: TAtkFocusHandler): guint; cdecl;
 begin
   Result := Atk1.atk_component_add_focus_handler(@self, handler);
@@ -1496,7 +1605,7 @@ begin
   Result := Atk1.atk_component_grab_focus(@self);
 end;
 
-function TAtkComponent.ref_accessible_at_point(x: gint; y: gint; coord_type: TAtkCoordType): PGObject; cdecl;
+function TAtkComponent.ref_accessible_at_point(x: gint; y: gint; coord_type: TAtkCoordType): PAtkObject; cdecl;
 begin
   Result := Atk1.atk_component_ref_accessible_at_point(@self, x, y, coord_type);
 end;
@@ -1586,7 +1695,7 @@ begin
   Atk1.atk_editable_text_set_text_contents(@self, string_);
 end;
 
-function TAtkGObjectAccessible.for_object(obj: PGObject): PGObject; cdecl;
+function TAtkGObjectAccessible.for_object(obj: PGObject): PAtkObject; cdecl;
 begin
   Result := Atk1.atk_gobject_accessible_for_object(obj);
 end;
@@ -1606,7 +1715,7 @@ begin
   Result := Atk1.atk_hyperlink_get_n_anchors(@self);
 end;
 
-function TAtkHyperlink.get_object(i: gint): PGObject; cdecl;
+function TAtkHyperlink.get_object(i: gint): PAtkObject; cdecl;
 begin
   Result := Atk1.atk_hyperlink_get_object(@self, i);
 end;
@@ -1682,7 +1791,7 @@ begin
   Result := Atk1.atk_image_set_image_description(@self, description);
 end;
 
-function TAtkImplementor.ref_accessible: PGObject; cdecl;
+function TAtkImplementor.ref_accessible: PAtkObject; cdecl;
 begin
   Result := Atk1.atk_implementor_ref_accessible(@self);
 end;
@@ -1977,6 +2086,31 @@ begin
   Result := Atk1.atk_text_set_selection(@self, selection_num, start_offset, end_offset);
 end;
 
+procedure TAtkValue.get_current_value(value: PGValue); cdecl;
+begin
+  Atk1.atk_value_get_current_value(@self, value);
+end;
+
+procedure TAtkValue.get_maximum_value(value: PGValue); cdecl;
+begin
+  Atk1.atk_value_get_maximum_value(@self, value);
+end;
+
+procedure TAtkValue.get_minimum_increment(value: PGValue); cdecl;
+begin
+  Atk1.atk_value_get_minimum_increment(@self, value);
+end;
+
+procedure TAtkValue.get_minimum_value(value: PGValue); cdecl;
+begin
+  Atk1.atk_value_get_minimum_value(@self, value);
+end;
+
+function TAtkValue.set_current_value(value: PGValue): gboolean; cdecl;
+begin
+  Result := Atk1.atk_value_set_current_value(@self, value);
+end;
+
 function TAtkNoOpObject.new(obj: PGObject): PAtkNoOpObject; cdecl;
 begin
   Result := Atk1.atk_no_op_object_new(obj);
@@ -2097,116 +2231,6 @@ begin
   Result := Atk1.atk_state_set_xor_sets(@self, compare_set);
 end;
 
-function TAtkObject.add_relationship(relationship: TAtkRelationType; target: PGObject): gboolean; cdecl;
-begin
-  Result := Atk1.atk_object_add_relationship(@self, relationship, target);
-end;
-
-function TAtkObject.connect_property_change_handler(handler: PAtkPropertyChangeHandler): guint; cdecl;
-begin
-  Result := Atk1.atk_object_connect_property_change_handler(@self, handler);
-end;
-
-function TAtkObject.get_attributes: PAtkAttributeSet; cdecl;
-begin
-  Result := Atk1.atk_object_get_attributes(@self);
-end;
-
-function TAtkObject.get_description: Pgchar; cdecl;
-begin
-  Result := Atk1.atk_object_get_description(@self);
-end;
-
-function TAtkObject.get_index_in_parent: gint; cdecl;
-begin
-  Result := Atk1.atk_object_get_index_in_parent(@self);
-end;
-
-function TAtkObject.get_layer: TAtkLayer; cdecl;
-begin
-  Result := Atk1.atk_object_get_layer(@self);
-end;
-
-function TAtkObject.get_mdi_zorder: gint; cdecl;
-begin
-  Result := Atk1.atk_object_get_mdi_zorder(@self);
-end;
-
-function TAtkObject.get_n_accessible_children: gint; cdecl;
-begin
-  Result := Atk1.atk_object_get_n_accessible_children(@self);
-end;
-
-function TAtkObject.get_name: Pgchar; cdecl;
-begin
-  Result := Atk1.atk_object_get_name(@self);
-end;
-
-function TAtkObject.get_parent: PGObject; cdecl;
-begin
-  Result := Atk1.atk_object_get_parent(@self);
-end;
-
-function TAtkObject.get_role: TAtkRole; cdecl;
-begin
-  Result := Atk1.atk_object_get_role(@self);
-end;
-
-procedure TAtkObject.initialize(data: gpointer); cdecl;
-begin
-  Atk1.atk_object_initialize(@self, data);
-end;
-
-procedure TAtkObject.notify_state_change(state: TAtkState; value: gboolean); cdecl;
-begin
-  Atk1.atk_object_notify_state_change(@self, state, value);
-end;
-
-function TAtkObject.ref_accessible_child(i: gint): PGObject; cdecl;
-begin
-  Result := Atk1.atk_object_ref_accessible_child(@self, i);
-end;
-
-function TAtkObject.ref_relation_set: PAtkRelationSet; cdecl;
-begin
-  Result := Atk1.atk_object_ref_relation_set(@self);
-end;
-
-function TAtkObject.ref_state_set: PAtkStateSet; cdecl;
-begin
-  Result := Atk1.atk_object_ref_state_set(@self);
-end;
-
-procedure TAtkObject.remove_property_change_handler(handler_id: guint); cdecl;
-begin
-  Atk1.atk_object_remove_property_change_handler(@self, handler_id);
-end;
-
-function TAtkObject.remove_relationship(relationship: TAtkRelationType; target: PGObject): gboolean; cdecl;
-begin
-  Result := Atk1.atk_object_remove_relationship(@self, relationship, target);
-end;
-
-procedure TAtkObject.set_description(description: Pgchar); cdecl;
-begin
-  Atk1.atk_object_set_description(@self, description);
-end;
-
-procedure TAtkObject.set_name(name: Pgchar); cdecl;
-begin
-  Atk1.atk_object_set_name(@self, name);
-end;
-
-procedure TAtkObject.set_parent(parent: PGObject); cdecl;
-begin
-  Atk1.atk_object_set_parent(@self, parent);
-end;
-
-procedure TAtkObject.set_role(role: TAtkRole); cdecl;
-begin
-  Atk1.atk_object_set_role(@self, role);
-end;
-
 function TAtkPlug.new: PAtkPlug; cdecl;
 begin
   Result := Atk1.atk_plug_new();
@@ -2290,31 +2314,6 @@ end;
 function TAtkStreamableContent.get_uri(mime_type: Pgchar): Pgchar; cdecl;
 begin
   Result := Atk1.atk_streamable_content_get_uri(@self, mime_type);
-end;
-
-procedure TAtkValue.get_current_value(value: PGValue); cdecl;
-begin
-  Atk1.atk_value_get_current_value(@self, value);
-end;
-
-procedure TAtkValue.get_maximum_value(value: PGValue); cdecl;
-begin
-  Atk1.atk_value_get_maximum_value(@self, value);
-end;
-
-procedure TAtkValue.get_minimum_increment(value: PGValue); cdecl;
-begin
-  Atk1.atk_value_get_minimum_increment(@self, value);
-end;
-
-procedure TAtkValue.get_minimum_value(value: PGValue); cdecl;
-begin
-  Atk1.atk_value_get_minimum_value(@self, value);
-end;
-
-function TAtkValue.set_current_value(value: PGValue): gboolean; cdecl;
-begin
-  Result := Atk1.atk_value_set_current_value(@self, value);
 end;
 
 end.

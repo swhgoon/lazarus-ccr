@@ -185,6 +185,13 @@ const
   PANGO_STYLE_ITALIC: TPangoStyle = 2;
 
 type
+  TPangoVariant = Integer;
+const
+  { PangoVariant }
+  PANGO_VARIANT_NORMAL: TPangoVariant = 0;
+  PANGO_VARIANT_SMALL_CAPS: TPangoVariant = 1;
+
+type
   TPangoWeight = Integer;
 const
   { PangoWeight }
@@ -294,13 +301,6 @@ const
   PANGO_UNDERLINE_DOUBLE: TPangoUnderline = 2;
   PANGO_UNDERLINE_LOW: TPangoUnderline = 3;
   PANGO_UNDERLINE_ERROR: TPangoUnderline = 4;
-
-type
-  TPangoVariant = Integer;
-const
-  { PangoVariant }
-  PANGO_VARIANT_NORMAL: TPangoVariant = 0;
-  PANGO_VARIANT_SMALL_CAPS: TPangoVariant = 1;
 type
 
   PPPangoGlyph = ^PPangoGlyph;
@@ -503,6 +503,9 @@ type
   PPPangoStyle = ^PPangoStyle;
   PPangoStyle = ^TPangoStyle;
 
+  PPPangoVariant = ^PPangoVariant;
+  PPangoVariant = ^TPangoVariant;
+
   PPPangoWeight = ^PPangoWeight;
   PPangoWeight = ^TPangoWeight;
   TPangoFontDescription = object
@@ -519,7 +522,7 @@ type
     function get_size_is_absolute: gboolean; cdecl; inline;
     function get_stretch: TPangoStretch; cdecl; inline;
     function get_style: TPangoStyle; cdecl; inline;
-    function get_variant: TGVariant; cdecl; inline;
+    function get_variant: TPangoVariant; cdecl; inline;
     function get_weight: TPangoWeight; cdecl; inline;
     function hash: guint; cdecl; inline;
     procedure merge(desc_to_merge: PPangoFontDescription; replace_existing: gboolean); cdecl; inline;
@@ -531,7 +534,7 @@ type
     procedure set_size(size: gint); cdecl; inline;
     procedure set_stretch(stretch: TPangoStretch); cdecl; inline;
     procedure set_style(style: TPangoStyle); cdecl; inline;
-    procedure set_variant(variant: TGVariant); cdecl; inline;
+    procedure set_variant(variant: TPangoVariant); cdecl; inline;
     procedure set_weight(weight: TPangoWeight); cdecl; inline;
     function to_filename: Pgchar; cdecl; inline;
     function to_string: Pgchar; cdecl; inline;
@@ -644,11 +647,17 @@ type
   PPPangoBidiType = ^PPangoBidiType;
   PPangoBidiType = ^TPangoBidiType;
 
+  PPPangoContext = ^PPangoContext;
+  PPangoContext = ^TPangoContext;
+
   PPPangoDirection = ^PPangoDirection;
   PPangoDirection = ^TPangoDirection;
 
-  PPPangoContext = ^PPangoContext;
-  PPangoContext = ^TPangoContext;
+  PPPangoGravityHint = ^PPangoGravityHint;
+  PPangoGravityHint = ^TPangoGravityHint;
+
+  PPPangoMatrix = ^PPangoMatrix;
+  PPangoMatrix = ^TPangoMatrix;
 
   PPPPangoFontFamily = ^PPPangoFontFamily;
   PPPangoFontFamily = ^PPangoFontFamily;
@@ -656,15 +665,53 @@ type
 
   PPPangoFontset = ^PPangoFontset;
   PPangoFontset = ^TPangoFontset;
+  TPangoContext = object(TGObject)
+    function new: PPangoContext; cdecl; inline; static;
+    function get_base_dir: TPangoDirection; cdecl; inline;
+    function get_base_gravity: TPangoGravity; cdecl; inline;
+    function get_font_description: PPangoFontDescription; cdecl; inline;
+    function get_font_map: PPangoFontMap; cdecl; inline;
+    function get_gravity: TPangoGravity; cdecl; inline;
+    function get_gravity_hint: TPangoGravityHint; cdecl; inline;
+    function get_language: PPangoLanguage; cdecl; inline;
+    function get_matrix: PPangoMatrix; cdecl; inline;
+    function get_metrics(desc: PPangoFontDescription; language: PPangoLanguage): PPangoFontMetrics; cdecl; inline;
+    procedure list_families(families: PPPPangoFontFamily; n_families: Pgint); cdecl; inline;
+    function load_font(desc: PPangoFontDescription): PPangoFont; cdecl; inline;
+    function load_fontset(desc: PPangoFontDescription; language: PPangoLanguage): PPangoFontset; cdecl; inline;
+    procedure set_base_dir(direction: TPangoDirection); cdecl; inline;
+    procedure set_base_gravity(gravity: TPangoGravity); cdecl; inline;
+    procedure set_font_description(desc: PPangoFontDescription); cdecl; inline;
+    procedure set_font_map(font_map: PPangoFontMap); cdecl; inline;
+    procedure set_gravity_hint(hint: TPangoGravityHint); cdecl; inline;
+    procedure set_language(language: PPangoLanguage); cdecl; inline;
+    procedure set_matrix(matrix: PPangoMatrix); cdecl; inline;
+  end;
   TPangoFontMap = object(TGObject)
     function create_context: PPangoContext; cdecl; inline;
     procedure list_families(families: PPPPangoFontFamily; n_families: Pgint); cdecl; inline;
     function load_font(context: PPangoContext; desc: PPangoFontDescription): PPangoFont; cdecl; inline;
     function load_fontset(context: PPangoContext; desc: PPangoFontDescription; language: PPangoLanguage): PPangoFontset; cdecl; inline;
   end;
-
-  PPPangoGravityHint = ^PPangoGravityHint;
-  PPangoGravityHint = ^TPangoGravityHint;
+  TPangoMatrix = object
+    xx: gdouble;
+    xy: gdouble;
+    yx: gdouble;
+    yy: gdouble;
+    x0: gdouble;
+    y0: gdouble;
+    procedure concat(new_matrix: PPangoMatrix); cdecl; inline;
+    function copy: PPangoMatrix; cdecl; inline;
+    procedure free; cdecl; inline;
+    function get_font_scale_factor: gdouble; cdecl; inline;
+    procedure rotate(degrees: gdouble); cdecl; inline;
+    procedure scale(scale_x: gdouble; scale_y: gdouble); cdecl; inline;
+    procedure transform_distance(dx: Pgdouble; dy: Pgdouble); cdecl; inline;
+    procedure transform_pixel_rectangle(rect: PPangoRectangle); cdecl; inline;
+    procedure transform_point(x: Pgdouble; y: Pgdouble); cdecl; inline;
+    procedure transform_rectangle(rect: PPangoRectangle); cdecl; inline;
+    procedure translate(tx: gdouble; ty: gdouble); cdecl; inline;
+  end;
   TPangoFontMetrics = object
     function get_approximate_char_width: gint; cdecl; inline;
     function get_approximate_digit_width: gint; cdecl; inline;
@@ -694,28 +741,6 @@ type
     procedure foreach(func: TPangoFontsetForeachFunc; data: gpointer); cdecl; inline;
     function get_font(wc: guint): PPangoFont; cdecl; inline;
     function get_metrics: PPangoFontMetrics; cdecl; inline;
-  end;
-  TPangoContext = object(TGObject)
-    function new: PPangoContext; cdecl; inline; static;
-    function get_base_dir: TPangoDirection; cdecl; inline;
-    function get_base_gravity: TPangoGravity; cdecl; inline;
-    function get_font_description: PPangoFontDescription; cdecl; inline;
-    function get_font_map: PPangoFontMap; cdecl; inline;
-    function get_gravity: TPangoGravity; cdecl; inline;
-    function get_gravity_hint: TPangoGravityHint; cdecl; inline;
-    function get_language: PPangoLanguage; cdecl; inline;
-    function get_matrix: Pcairo_matrix_t; cdecl; inline;
-    function get_metrics(desc: PPangoFontDescription; language: PPangoLanguage): PPangoFontMetrics; cdecl; inline;
-    procedure list_families(families: PPPPangoFontFamily; n_families: Pgint); cdecl; inline;
-    function load_font(desc: PPangoFontDescription): PPangoFont; cdecl; inline;
-    function load_fontset(desc: PPangoFontDescription; language: PPangoLanguage): PPangoFontset; cdecl; inline;
-    procedure set_base_dir(direction: TPangoDirection); cdecl; inline;
-    procedure set_base_gravity(gravity: TPangoGravity); cdecl; inline;
-    procedure set_font_description(desc: PPangoFontDescription); cdecl; inline;
-    procedure set_font_map(font_map: PPangoFontMap); cdecl; inline;
-    procedure set_gravity_hint(hint: TPangoGravityHint); cdecl; inline;
-    procedure set_language(language: PPangoLanguage); cdecl; inline;
-    procedure set_matrix(matrix: Pcairo_matrix_t); cdecl; inline;
   end;
 
   PPPangoContextClass = ^PPangoContextClass;
@@ -982,28 +1007,6 @@ type
   TPangoLayoutClass = object
   end;
 
-  PPPangoMatrix = ^PPangoMatrix;
-  PPangoMatrix = ^TPangoMatrix;
-  TPangoMatrix = object
-    xx: gdouble;
-    xy: gdouble;
-    yx: gdouble;
-    yy: gdouble;
-    x0: gdouble;
-    y0: gdouble;
-    procedure concat(new_matrix: Pcairo_matrix_t); cdecl; inline;
-    function copy: Pcairo_matrix_t; cdecl; inline;
-    procedure free; cdecl; inline;
-    function get_font_scale_factor: gdouble; cdecl; inline;
-    procedure rotate(degrees: gdouble); cdecl; inline;
-    procedure scale(scale_x: gdouble; scale_y: gdouble); cdecl; inline;
-    procedure transform_distance(dx: Pgdouble; dy: Pgdouble); cdecl; inline;
-    procedure transform_pixel_rectangle(rect: PPangoRectangle); cdecl; inline;
-    procedure transform_point(x: Pgdouble; y: Pgdouble); cdecl; inline;
-    procedure transform_rectangle(rect: PPangoRectangle); cdecl; inline;
-    procedure translate(tx: gdouble; ty: gdouble); cdecl; inline;
-  end;
-
   PPPangoRenderPart = ^PPangoRenderPart;
   PPangoRenderPart = ^TPangoRenderPart;
 
@@ -1074,9 +1077,6 @@ type
     function new(text: Pgchar; length: gint): PPangoScriptIter; cdecl; inline; static;
   end;
 
-  PPPangoVariant = ^PPangoVariant;
-  PPangoVariant = ^TPangoVariant;
-
   PP_PangoScriptForLang = ^P_PangoScriptForLang;
   P_PangoScriptForLang = ^T_PangoScriptForLang;
 
@@ -1136,7 +1136,7 @@ function pango_context_get_font_map(AContext: PPangoContext): PPangoFontMap; cde
 function pango_context_get_gravity(AContext: PPangoContext): TPangoGravity; cdecl; external;
 function pango_context_get_gravity_hint(AContext: PPangoContext): TPangoGravityHint; cdecl; external;
 function pango_context_get_language(AContext: PPangoContext): PPangoLanguage; cdecl; external;
-function pango_context_get_matrix(AContext: PPangoContext): Pcairo_matrix_t; cdecl; external;
+function pango_context_get_matrix(AContext: PPangoContext): PPangoMatrix; cdecl; external;
 function pango_context_get_metrics(AContext: PPangoContext; desc: PPangoFontDescription; language: PPangoLanguage): PPangoFontMetrics; cdecl; external;
 function pango_context_get_type: TGType; cdecl; external;
 function pango_context_load_font(AContext: PPangoContext; desc: PPangoFontDescription): PPangoFont; cdecl; external;
@@ -1163,7 +1163,7 @@ function pango_font_description_get_size_is_absolute(AFontDescription: PPangoFon
 function pango_font_description_get_stretch(AFontDescription: PPangoFontDescription): TPangoStretch; cdecl; external;
 function pango_font_description_get_style(AFontDescription: PPangoFontDescription): TPangoStyle; cdecl; external;
 function pango_font_description_get_type: TGType; cdecl; external;
-function pango_font_description_get_variant(AFontDescription: PPangoFontDescription): TGVariant; cdecl; external;
+function pango_font_description_get_variant(AFontDescription: PPangoFontDescription): TPangoVariant; cdecl; external;
 function pango_font_description_get_weight(AFontDescription: PPangoFontDescription): TPangoWeight; cdecl; external;
 function pango_font_description_hash(AFontDescription: PPangoFontDescription): guint; cdecl; external;
 function pango_font_description_new: PPangoFontDescription; cdecl; external;
@@ -1213,7 +1213,6 @@ function pango_glyph_string_copy(AGlyphString: PPangoGlyphString): PPangoGlyphSt
 function pango_glyph_string_get_type: TGType; cdecl; external;
 function pango_glyph_string_get_width(AGlyphString: PPangoGlyphString): gint; cdecl; external;
 function pango_glyph_string_new: PPangoGlyphString; cdecl; external;
-function pango_gravity_get_for_matrix(matrix: Pcairo_matrix_t): TPangoGravity; cdecl; external;
 function pango_gravity_get_for_matrix(matrix: PPangoMatrix): TPangoGravity; cdecl; external;
 function pango_gravity_get_for_script(script: TPangoScript; base_gravity: TPangoGravity; hint: TPangoGravityHint): TPangoGravity; cdecl; external;
 function pango_gravity_get_for_script_and_width(script: TPangoScript; wide: gboolean; base_gravity: TPangoGravity; hint: TPangoGravityHint): TPangoGravity; cdecl; external;
@@ -1282,7 +1281,7 @@ function pango_layout_line_x_to_index(ALayoutLine: PPangoLayoutLine; x_pos: gint
 function pango_layout_new(context: PPangoContext): PPangoLayout; cdecl; external;
 function pango_layout_xy_to_index(ALayout: PPangoLayout; x: gint; y: gint; index_: Pgint; trailing: Pgint): gboolean; cdecl; external;
 function pango_log2vis_get_embedding_levels(text: Pgchar; length: gint; pbase_dir: PPangoDirection): Pguint8; cdecl; external;
-function pango_matrix_copy(AMatrix: PPangoMatrix): Pcairo_matrix_t; cdecl; external;
+function pango_matrix_copy(AMatrix: PPangoMatrix): PPangoMatrix; cdecl; external;
 function pango_matrix_get_font_scale_factor(AMatrix: PPangoMatrix): gdouble; cdecl; external;
 function pango_matrix_get_type: TGType; cdecl; external;
 function pango_parse_enum(type_: TGType; str: Pgchar; value: Pgint; warn: gboolean; possible_values: PPgchar): gboolean; cdecl; external;
@@ -1339,7 +1338,7 @@ procedure pango_context_set_font_description(AContext: PPangoContext; desc: PPan
 procedure pango_context_set_font_map(AContext: PPangoContext; font_map: PPangoFontMap); cdecl; external;
 procedure pango_context_set_gravity_hint(AContext: PPangoContext; hint: TPangoGravityHint); cdecl; external;
 procedure pango_context_set_language(AContext: PPangoContext; language: PPangoLanguage); cdecl; external;
-procedure pango_context_set_matrix(AContext: PPangoContext; matrix: Pcairo_matrix_t); cdecl; external;
+procedure pango_context_set_matrix(AContext: PPangoContext; matrix: PPangoMatrix); cdecl; external;
 procedure pango_coverage_max(ACoverage: PPangoCoverage; other: PPangoCoverage); cdecl; external;
 procedure pango_coverage_set(ACoverage: PPangoCoverage; index_: gint; level: TPangoCoverageLevel); cdecl; external;
 procedure pango_coverage_to_bytes(ACoverage: PPangoCoverage; bytes: PPguint8; n_bytes: Pgint); cdecl; external;
@@ -1356,7 +1355,7 @@ procedure pango_font_description_set_gravity(AFontDescription: PPangoFontDescrip
 procedure pango_font_description_set_size(AFontDescription: PPangoFontDescription; size: gint); cdecl; external;
 procedure pango_font_description_set_stretch(AFontDescription: PPangoFontDescription; stretch: TPangoStretch); cdecl; external;
 procedure pango_font_description_set_style(AFontDescription: PPangoFontDescription; style: TPangoStyle); cdecl; external;
-procedure pango_font_description_set_variant(AFontDescription: PPangoFontDescription; variant: TGVariant); cdecl; external;
+procedure pango_font_description_set_variant(AFontDescription: PPangoFontDescription; variant: TPangoVariant); cdecl; external;
 procedure pango_font_description_set_weight(AFontDescription: PPangoFontDescription; weight: TPangoWeight); cdecl; external;
 procedure pango_font_description_unset_fields(AFontDescription: PPangoFontDescription; to_unset: TPangoFontMask); cdecl; external;
 procedure pango_font_descriptions_free(descs: PPPangoFontDescription; n_descs: gint); cdecl; external;
@@ -1417,7 +1416,7 @@ procedure pango_layout_set_tabs(ALayout: PPangoLayout; tabs: PPangoTabArray); cd
 procedure pango_layout_set_text(ALayout: PPangoLayout; text: Pgchar; length: gint); cdecl; external;
 procedure pango_layout_set_width(ALayout: PPangoLayout; width: gint); cdecl; external;
 procedure pango_layout_set_wrap(ALayout: PPangoLayout; wrap: TPangoWrapMode); cdecl; external;
-procedure pango_matrix_concat(AMatrix: PPangoMatrix; new_matrix: Pcairo_matrix_t); cdecl; external;
+procedure pango_matrix_concat(AMatrix: PPangoMatrix; new_matrix: PPangoMatrix); cdecl; external;
 procedure pango_matrix_free(AMatrix: PPangoMatrix); cdecl; external;
 procedure pango_matrix_rotate(AMatrix: PPangoMatrix; degrees: gdouble); cdecl; external;
 procedure pango_matrix_scale(AMatrix: PPangoMatrix; scale_x: gdouble; scale_y: gdouble); cdecl; external;
@@ -1660,7 +1659,7 @@ begin
   Result := Pango1.pango_font_description_get_style(@self);
 end;
 
-function TPangoFontDescription.get_variant: TGVariant; cdecl;
+function TPangoFontDescription.get_variant: TPangoVariant; cdecl;
 begin
   Result := Pango1.pango_font_description_get_variant(@self);
 end;
@@ -1720,7 +1719,7 @@ begin
   Pango1.pango_font_description_set_style(@self, style);
 end;
 
-procedure TPangoFontDescription.set_variant(variant: TGVariant); cdecl;
+procedure TPangoFontDescription.set_variant(variant: TPangoVariant); cdecl;
 begin
   Pango1.pango_font_description_set_variant(@self, variant);
 end;
@@ -1865,6 +1864,106 @@ begin
   Result := Pango1.pango_attr_size_new_absolute(size);
 end;
 
+function TPangoContext.new: PPangoContext; cdecl;
+begin
+  Result := Pango1.pango_context_new();
+end;
+
+function TPangoContext.get_base_dir: TPangoDirection; cdecl;
+begin
+  Result := Pango1.pango_context_get_base_dir(@self);
+end;
+
+function TPangoContext.get_base_gravity: TPangoGravity; cdecl;
+begin
+  Result := Pango1.pango_context_get_base_gravity(@self);
+end;
+
+function TPangoContext.get_font_description: PPangoFontDescription; cdecl;
+begin
+  Result := Pango1.pango_context_get_font_description(@self);
+end;
+
+function TPangoContext.get_font_map: PPangoFontMap; cdecl;
+begin
+  Result := Pango1.pango_context_get_font_map(@self);
+end;
+
+function TPangoContext.get_gravity: TPangoGravity; cdecl;
+begin
+  Result := Pango1.pango_context_get_gravity(@self);
+end;
+
+function TPangoContext.get_gravity_hint: TPangoGravityHint; cdecl;
+begin
+  Result := Pango1.pango_context_get_gravity_hint(@self);
+end;
+
+function TPangoContext.get_language: PPangoLanguage; cdecl;
+begin
+  Result := Pango1.pango_context_get_language(@self);
+end;
+
+function TPangoContext.get_matrix: PPangoMatrix; cdecl;
+begin
+  Result := Pango1.pango_context_get_matrix(@self);
+end;
+
+function TPangoContext.get_metrics(desc: PPangoFontDescription; language: PPangoLanguage): PPangoFontMetrics; cdecl;
+begin
+  Result := Pango1.pango_context_get_metrics(@self, desc, language);
+end;
+
+procedure TPangoContext.list_families(families: PPPPangoFontFamily; n_families: Pgint); cdecl;
+begin
+  Pango1.pango_context_list_families(@self, families, n_families);
+end;
+
+function TPangoContext.load_font(desc: PPangoFontDescription): PPangoFont; cdecl;
+begin
+  Result := Pango1.pango_context_load_font(@self, desc);
+end;
+
+function TPangoContext.load_fontset(desc: PPangoFontDescription; language: PPangoLanguage): PPangoFontset; cdecl;
+begin
+  Result := Pango1.pango_context_load_fontset(@self, desc, language);
+end;
+
+procedure TPangoContext.set_base_dir(direction: TPangoDirection); cdecl;
+begin
+  Pango1.pango_context_set_base_dir(@self, direction);
+end;
+
+procedure TPangoContext.set_base_gravity(gravity: TPangoGravity); cdecl;
+begin
+  Pango1.pango_context_set_base_gravity(@self, gravity);
+end;
+
+procedure TPangoContext.set_font_description(desc: PPangoFontDescription); cdecl;
+begin
+  Pango1.pango_context_set_font_description(@self, desc);
+end;
+
+procedure TPangoContext.set_font_map(font_map: PPangoFontMap); cdecl;
+begin
+  Pango1.pango_context_set_font_map(@self, font_map);
+end;
+
+procedure TPangoContext.set_gravity_hint(hint: TPangoGravityHint); cdecl;
+begin
+  Pango1.pango_context_set_gravity_hint(@self, hint);
+end;
+
+procedure TPangoContext.set_language(language: PPangoLanguage); cdecl;
+begin
+  Pango1.pango_context_set_language(@self, language);
+end;
+
+procedure TPangoContext.set_matrix(matrix: PPangoMatrix); cdecl;
+begin
+  Pango1.pango_context_set_matrix(@self, matrix);
+end;
+
 function TPangoFontMap.create_context: PPangoContext; cdecl;
 begin
   Result := Pango1.pango_font_map_create_context(@self);
@@ -1883,6 +1982,61 @@ end;
 function TPangoFontMap.load_fontset(context: PPangoContext; desc: PPangoFontDescription; language: PPangoLanguage): PPangoFontset; cdecl;
 begin
   Result := Pango1.pango_font_map_load_fontset(@self, context, desc, language);
+end;
+
+procedure TPangoMatrix.concat(new_matrix: PPangoMatrix); cdecl;
+begin
+  Pango1.pango_matrix_concat(@self, new_matrix);
+end;
+
+function TPangoMatrix.copy: PPangoMatrix; cdecl;
+begin
+  Result := Pango1.pango_matrix_copy(@self);
+end;
+
+procedure TPangoMatrix.free; cdecl;
+begin
+  Pango1.pango_matrix_free(@self);
+end;
+
+function TPangoMatrix.get_font_scale_factor: gdouble; cdecl;
+begin
+  Result := Pango1.pango_matrix_get_font_scale_factor(@self);
+end;
+
+procedure TPangoMatrix.rotate(degrees: gdouble); cdecl;
+begin
+  Pango1.pango_matrix_rotate(@self, degrees);
+end;
+
+procedure TPangoMatrix.scale(scale_x: gdouble; scale_y: gdouble); cdecl;
+begin
+  Pango1.pango_matrix_scale(@self, scale_x, scale_y);
+end;
+
+procedure TPangoMatrix.transform_distance(dx: Pgdouble; dy: Pgdouble); cdecl;
+begin
+  Pango1.pango_matrix_transform_distance(@self, dx, dy);
+end;
+
+procedure TPangoMatrix.transform_pixel_rectangle(rect: PPangoRectangle); cdecl;
+begin
+  Pango1.pango_matrix_transform_pixel_rectangle(@self, rect);
+end;
+
+procedure TPangoMatrix.transform_point(x: Pgdouble; y: Pgdouble); cdecl;
+begin
+  Pango1.pango_matrix_transform_point(@self, x, y);
+end;
+
+procedure TPangoMatrix.transform_rectangle(rect: PPangoRectangle); cdecl;
+begin
+  Pango1.pango_matrix_transform_rectangle(@self, rect);
+end;
+
+procedure TPangoMatrix.translate(tx: gdouble; ty: gdouble); cdecl;
+begin
+  Pango1.pango_matrix_translate(@self, tx, ty);
 end;
 
 function TPangoFontMetrics.get_approximate_char_width: gint; cdecl;
@@ -1963,106 +2117,6 @@ end;
 function TPangoFontset.get_metrics: PPangoFontMetrics; cdecl;
 begin
   Result := Pango1.pango_fontset_get_metrics(@self);
-end;
-
-function TPangoContext.new: PPangoContext; cdecl;
-begin
-  Result := Pango1.pango_context_new();
-end;
-
-function TPangoContext.get_base_dir: TPangoDirection; cdecl;
-begin
-  Result := Pango1.pango_context_get_base_dir(@self);
-end;
-
-function TPangoContext.get_base_gravity: TPangoGravity; cdecl;
-begin
-  Result := Pango1.pango_context_get_base_gravity(@self);
-end;
-
-function TPangoContext.get_font_description: PPangoFontDescription; cdecl;
-begin
-  Result := Pango1.pango_context_get_font_description(@self);
-end;
-
-function TPangoContext.get_font_map: PPangoFontMap; cdecl;
-begin
-  Result := Pango1.pango_context_get_font_map(@self);
-end;
-
-function TPangoContext.get_gravity: TPangoGravity; cdecl;
-begin
-  Result := Pango1.pango_context_get_gravity(@self);
-end;
-
-function TPangoContext.get_gravity_hint: TPangoGravityHint; cdecl;
-begin
-  Result := Pango1.pango_context_get_gravity_hint(@self);
-end;
-
-function TPangoContext.get_language: PPangoLanguage; cdecl;
-begin
-  Result := Pango1.pango_context_get_language(@self);
-end;
-
-function TPangoContext.get_matrix: Pcairo_matrix_t; cdecl;
-begin
-  Result := Pango1.pango_context_get_matrix(@self);
-end;
-
-function TPangoContext.get_metrics(desc: PPangoFontDescription; language: PPangoLanguage): PPangoFontMetrics; cdecl;
-begin
-  Result := Pango1.pango_context_get_metrics(@self, desc, language);
-end;
-
-procedure TPangoContext.list_families(families: PPPPangoFontFamily; n_families: Pgint); cdecl;
-begin
-  Pango1.pango_context_list_families(@self, families, n_families);
-end;
-
-function TPangoContext.load_font(desc: PPangoFontDescription): PPangoFont; cdecl;
-begin
-  Result := Pango1.pango_context_load_font(@self, desc);
-end;
-
-function TPangoContext.load_fontset(desc: PPangoFontDescription; language: PPangoLanguage): PPangoFontset; cdecl;
-begin
-  Result := Pango1.pango_context_load_fontset(@self, desc, language);
-end;
-
-procedure TPangoContext.set_base_dir(direction: TPangoDirection); cdecl;
-begin
-  Pango1.pango_context_set_base_dir(@self, direction);
-end;
-
-procedure TPangoContext.set_base_gravity(gravity: TPangoGravity); cdecl;
-begin
-  Pango1.pango_context_set_base_gravity(@self, gravity);
-end;
-
-procedure TPangoContext.set_font_description(desc: PPangoFontDescription); cdecl;
-begin
-  Pango1.pango_context_set_font_description(@self, desc);
-end;
-
-procedure TPangoContext.set_font_map(font_map: PPangoFontMap); cdecl;
-begin
-  Pango1.pango_context_set_font_map(@self, font_map);
-end;
-
-procedure TPangoContext.set_gravity_hint(hint: TPangoGravityHint); cdecl;
-begin
-  Pango1.pango_context_set_gravity_hint(@self, hint);
-end;
-
-procedure TPangoContext.set_language(language: PPangoLanguage); cdecl;
-begin
-  Pango1.pango_context_set_language(@self, language);
-end;
-
-procedure TPangoContext.set_matrix(matrix: Pcairo_matrix_t); cdecl;
-begin
-  Pango1.pango_context_set_matrix(@self, matrix);
 end;
 
 function TPangoCoverage.copy: PPangoCoverage; cdecl;
@@ -2688,61 +2742,6 @@ end;
 procedure TPangoTabArray.set_tab(tab_index: gint; alignment: TPangoTabAlign; location: gint); cdecl;
 begin
   Pango1.pango_tab_array_set_tab(@self, tab_index, alignment, location);
-end;
-
-procedure TPangoMatrix.concat(new_matrix: Pcairo_matrix_t); cdecl;
-begin
-  Pango1.pango_matrix_concat(@self, new_matrix);
-end;
-
-function TPangoMatrix.copy: Pcairo_matrix_t; cdecl;
-begin
-  Result := Pango1.pango_matrix_copy(@self);
-end;
-
-procedure TPangoMatrix.free; cdecl;
-begin
-  Pango1.pango_matrix_free(@self);
-end;
-
-function TPangoMatrix.get_font_scale_factor: gdouble; cdecl;
-begin
-  Result := Pango1.pango_matrix_get_font_scale_factor(@self);
-end;
-
-procedure TPangoMatrix.rotate(degrees: gdouble); cdecl;
-begin
-  Pango1.pango_matrix_rotate(@self, degrees);
-end;
-
-procedure TPangoMatrix.scale(scale_x: gdouble; scale_y: gdouble); cdecl;
-begin
-  Pango1.pango_matrix_scale(@self, scale_x, scale_y);
-end;
-
-procedure TPangoMatrix.transform_distance(dx: Pgdouble; dy: Pgdouble); cdecl;
-begin
-  Pango1.pango_matrix_transform_distance(@self, dx, dy);
-end;
-
-procedure TPangoMatrix.transform_pixel_rectangle(rect: PPangoRectangle); cdecl;
-begin
-  Pango1.pango_matrix_transform_pixel_rectangle(@self, rect);
-end;
-
-procedure TPangoMatrix.transform_point(x: Pgdouble; y: Pgdouble); cdecl;
-begin
-  Pango1.pango_matrix_transform_point(@self, x, y);
-end;
-
-procedure TPangoMatrix.transform_rectangle(rect: PPangoRectangle); cdecl;
-begin
-  Pango1.pango_matrix_transform_rectangle(@self, rect);
-end;
-
-procedure TPangoMatrix.translate(tx: gdouble; ty: gdouble); cdecl;
-begin
-  Pango1.pango_matrix_translate(@self, tx, ty);
 end;
 
 procedure TPangoRenderer.activate; cdecl;

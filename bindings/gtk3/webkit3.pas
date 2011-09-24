@@ -948,9 +948,9 @@ type
     function clone_contents: PWebKitDOMDocumentFragment; cdecl; inline;
     function clone_range: PWebKitDOMRange; cdecl; inline;
     procedure collapse(to_start: gboolean); cdecl; inline;
-    function compare_boundary_points(how: gushort; source_range: PWebKitDOMRange): Tgshort; cdecl; inline;
-    function compare_node(ref_node: PWebKitDOMNode): Tgshort; cdecl; inline;
-    function compare_point(ref_node: PWebKitDOMNode; offset: glong): Tgshort; cdecl; inline;
+    function compare_boundary_points(how: gushort; source_range: PWebKitDOMRange): gshort; cdecl; inline;
+    function compare_node(ref_node: PWebKitDOMNode): gshort; cdecl; inline;
+    function compare_point(ref_node: PWebKitDOMNode; offset: glong): gshort; cdecl; inline;
     function create_contextual_fragment(html: Pgchar): PWebKitDOMDocumentFragment; cdecl; inline;
     procedure delete_contents; cdecl; inline;
     procedure detach; cdecl; inline;
@@ -1247,7 +1247,7 @@ type
     property what_to_show:  gulong read get_what_to_show ;
   end;
   TWebKitDOMNodeFilter = object(TWebKitDOMObject)
-    function accept_node(n: PWebKitDOMNode): Tgshort; cdecl; inline;
+    function accept_node(n: PWebKitDOMNode): gshort; cdecl; inline;
   end;
   TWebKitDOMProcessingInstruction = object(TWebKitDOMNode)
     function get_data: Pgchar; cdecl; inline;
@@ -5580,7 +5580,7 @@ function webkit_dom_node_append_child(ADOMNode: PWebKitDOMNode; new_child: PWebK
 function webkit_dom_node_clone_node(ADOMNode: PWebKitDOMNode; deep: gboolean): PWebKitDOMNode; cdecl; external;
 function webkit_dom_node_compare_document_position(ADOMNode: PWebKitDOMNode; other: PWebKitDOMNode): gushort; cdecl; external;
 function webkit_dom_node_dispatch_event(ADOMNode: PWebKitDOMNode; event: PWebKitDOMEvent): gboolean; cdecl; external;
-function webkit_dom_node_filter_accept_node(ADOMNodeFilter: PWebKitDOMNodeFilter; n: PWebKitDOMNode): Tgshort; cdecl; external;
+function webkit_dom_node_filter_accept_node(ADOMNodeFilter: PWebKitDOMNodeFilter; n: PWebKitDOMNode): gshort; cdecl; external;
 function webkit_dom_node_filter_get_type: TGType; cdecl; external;
 function webkit_dom_node_get_attributes(ADOMNode: PWebKitDOMNode): PWebKitDOMNamedNodeMap; cdecl; external;
 function webkit_dom_node_get_base_uri(ADOMNode: PWebKitDOMNode): Pgchar; cdecl; external;
@@ -5630,9 +5630,9 @@ function webkit_dom_processing_instruction_get_target(ADOMProcessingInstruction:
 function webkit_dom_processing_instruction_get_type: TGType; cdecl; external;
 function webkit_dom_range_clone_contents(ADOMRange: PWebKitDOMRange): PWebKitDOMDocumentFragment; cdecl; external;
 function webkit_dom_range_clone_range(ADOMRange: PWebKitDOMRange): PWebKitDOMRange; cdecl; external;
-function webkit_dom_range_compare_boundary_points(ADOMRange: PWebKitDOMRange; how: gushort; source_range: PWebKitDOMRange): Tgshort; cdecl; external;
-function webkit_dom_range_compare_node(ADOMRange: PWebKitDOMRange; ref_node: PWebKitDOMNode): Tgshort; cdecl; external;
-function webkit_dom_range_compare_point(ADOMRange: PWebKitDOMRange; ref_node: PWebKitDOMNode; offset: glong): Tgshort; cdecl; external;
+function webkit_dom_range_compare_boundary_points(ADOMRange: PWebKitDOMRange; how: gushort; source_range: PWebKitDOMRange): gshort; cdecl; external;
+function webkit_dom_range_compare_node(ADOMRange: PWebKitDOMRange; ref_node: PWebKitDOMNode): gshort; cdecl; external;
+function webkit_dom_range_compare_point(ADOMRange: PWebKitDOMRange; ref_node: PWebKitDOMNode; offset: glong): gshort; cdecl; external;
 function webkit_dom_range_create_contextual_fragment(ADOMRange: PWebKitDOMRange; html: Pgchar): PWebKitDOMDocumentFragment; cdecl; external;
 function webkit_dom_range_extract_contents(ADOMRange: PWebKitDOMRange): PWebKitDOMDocumentFragment; cdecl; external;
 function webkit_dom_range_get_collapsed(ADOMRange: PWebKitDOMRange): gboolean; cdecl; external;
@@ -8007,17 +8007,17 @@ begin
   WebKit3.webkit_dom_range_collapse(@self, to_start);
 end;
 
-function TWebKitDOMRange.compare_boundary_points(how: gushort; source_range: PWebKitDOMRange): Tgshort; cdecl;
+function TWebKitDOMRange.compare_boundary_points(how: gushort; source_range: PWebKitDOMRange): gshort; cdecl;
 begin
   Result := WebKit3.webkit_dom_range_compare_boundary_points(@self, how, source_range);
 end;
 
-function TWebKitDOMRange.compare_node(ref_node: PWebKitDOMNode): Tgshort; cdecl;
+function TWebKitDOMRange.compare_node(ref_node: PWebKitDOMNode): gshort; cdecl;
 begin
   Result := WebKit3.webkit_dom_range_compare_node(@self, ref_node);
 end;
 
-function TWebKitDOMRange.compare_point(ref_node: PWebKitDOMNode; offset: glong): Tgshort; cdecl;
+function TWebKitDOMRange.compare_point(ref_node: PWebKitDOMNode; offset: glong): gshort; cdecl;
 begin
   Result := WebKit3.webkit_dom_range_compare_point(@self, ref_node, offset);
 end;
@@ -8702,7 +8702,7 @@ begin
   Result := WebKit3.webkit_dom_node_iterator_previous_node(@self);
 end;
 
-function TWebKitDOMNodeFilter.accept_node(n: PWebKitDOMNode): Tgshort; cdecl;
+function TWebKitDOMNodeFilter.accept_node(n: PWebKitDOMNode): gshort; cdecl;
 begin
   Result := WebKit3.webkit_dom_node_filter_accept_node(@self, n);
 end;
