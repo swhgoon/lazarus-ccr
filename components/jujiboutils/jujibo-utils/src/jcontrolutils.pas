@@ -30,6 +30,8 @@ function NormalizeDate(const Value: string; theValue: TDateTime;
   const theFormat: string = ''): string;
 function NormalizeTime(const Value: string; theValue: TTime;
   const theFormat: string = ''): string;
+function NormalizeDateTime(const Value: string; theValue: TDateTime;
+  const theFormat: string = ''): string;
 function NormalizeDateSeparator(const s: string): string;
 function IsValidDateString(const Value: string): boolean;
 function IsValidTimeString(const Value: string): boolean;
@@ -195,6 +197,33 @@ begin
   end;
   tokens.Free;
   //ShowMessage('Hora normalizada: ' + Result);
+end;
+
+function NormalizeDateTime(const Value: string; theValue: TDateTime;
+  const theFormat: string): string;
+var
+  tokens: TStringList;
+  theDateTime: TDateTime;
+  dateString, timeString: string;
+begin
+  if theValue = 0 then
+    theDateTime := Now
+  else
+    theDateTime := theValue;
+  Result := '';
+  Split(' ', Value, tokens);
+  if tokens.Count > 1 then
+  begin
+    if tokens[0] <> '' then
+      dateString := tokens[0];
+    if tokens[1] <> '' then
+      timeString := tokens[1];
+    dateString := NormalizeDate(dateString, theDateTime);
+    timeString := NormalizeTime(timeString, theDateTime);
+    if IsValidDateString(dateString) and IsValidTimeString(timeString) then
+      Result := dateString + ' ' + timeString;
+  end;
+  tokens.Free;
 end;
 
 function NormalizeDateSeparator(const s: string): string;
