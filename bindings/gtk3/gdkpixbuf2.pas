@@ -46,15 +46,18 @@ const
   GDK_PIXBUF_ROTATE_UPSIDEDOWN: TGdkPixbufRotation = 180;
   GDK_PIXBUF_ROTATE_CLOCKWISE: TGdkPixbufRotation = 270;
 
+type
+  TGdkPixdataDumpType = Integer;
+const
   { GdkPixdataDumpType }
-  GDK_PIXDATA_DUMP_PIXDATA_STREAM = 0;
-  GDK_PIXDATA_DUMP_PIXDATA_STRUCT = 1;
-  GDK_PIXDATA_DUMP_MACROS = 2;
-  GDK_PIXDATA_DUMP_GTYPES = 0;
-  GDK_PIXDATA_DUMP_CTYPES = 256;
-  GDK_PIXDATA_DUMP_STATIC = 512;
-  GDK_PIXDATA_DUMP_CONST = 1024;
-  GDK_PIXDATA_DUMP_RLE_DECODER = 65536;
+  GDK_PIXDATA_DUMP_PIXDATA_STREAM: TGdkPixdataDumpType = 0;
+  GDK_PIXDATA_DUMP_PIXDATA_STRUCT: TGdkPixdataDumpType = 1;
+  GDK_PIXDATA_DUMP_MACROS: TGdkPixdataDumpType = 2;
+  GDK_PIXDATA_DUMP_GTYPES: TGdkPixdataDumpType = 0;
+  GDK_PIXDATA_DUMP_CTYPES: TGdkPixdataDumpType = 256;
+  GDK_PIXDATA_DUMP_STATIC: TGdkPixdataDumpType = 512;
+  GDK_PIXDATA_DUMP_CONST: TGdkPixdataDumpType = 1024;
+  GDK_PIXDATA_DUMP_RLE_DECODER: TGdkPixdataDumpType = 65536;
 
 type
   TGdkPixbufAlphaMode = Integer;
@@ -74,15 +77,18 @@ const
   GDK_PIXBUF_ERROR_UNSUPPORTED_OPERATION: TGdkPixbufError = 4;
   GDK_PIXBUF_ERROR_FAILED: TGdkPixbufError = 5;
 
+type
+  TGdkPixdataType = Integer;
+const
   { GdkPixdataType }
-  GDK_PIXDATA_COLOR_TYPE_RGB = 1;
-  GDK_PIXDATA_COLOR_TYPE_RGBA = 2;
-  GDK_PIXDATA_COLOR_TYPE_MASK = 255;
-  GDK_PIXDATA_SAMPLE_WIDTH_8 = 65536;
-  GDK_PIXDATA_SAMPLE_WIDTH_MASK = 983040;
-  GDK_PIXDATA_ENCODING_RAW = 16777216;
-  GDK_PIXDATA_ENCODING_RLE = 33554432;
-  GDK_PIXDATA_ENCODING_MASK = 251658240;
+  GDK_PIXDATA_COLOR_TYPE_RGB: TGdkPixdataType = 1;
+  GDK_PIXDATA_COLOR_TYPE_RGBA: TGdkPixdataType = 2;
+  GDK_PIXDATA_COLOR_TYPE_MASK: TGdkPixdataType = 255;
+  GDK_PIXDATA_SAMPLE_WIDTH_8: TGdkPixdataType = 65536;
+  GDK_PIXDATA_SAMPLE_WIDTH_MASK: TGdkPixdataType = 983040;
+  GDK_PIXDATA_ENCODING_RAW: TGdkPixdataType = 16777216;
+  GDK_PIXDATA_ENCODING_RLE: TGdkPixdataType = 33554432;
+  GDK_PIXDATA_ENCODING_MASK: TGdkPixdataType = 251658240;
 type
 
   PPGdkColorspace = ^PGdkColorspace;
@@ -182,18 +188,6 @@ type
 
   PPGdkPixdataDumpType = ^PGdkPixdataDumpType;
   PGdkPixdataDumpType = ^TGdkPixdataDumpType;
-  TGdkPixdataDumpType = packed object(TBitObject32)
-  public
-    property pixdata_stream: DWord index 0 read GetBit write SetBit;
-    property pixdata_struct: DWord index 1 read GetBit write SetBit;
-    property macros: DWord index 2 read GetBit write SetBit;
-    property gtypes: DWord index 0 read GetBit write SetBit;
-    property ctypes: DWord index 256 read GetBit write SetBit;
-    property static: DWord index 512 read GetBit write SetBit;
-    property const_: DWord index 1024 read GetBit write SetBit;
-    property rle_decoder: DWord index 65536 read GetBit write SetBit;
-  end;
-
   TGdkPixdata = object
     magic: guint32;
     length: gint32;
@@ -293,18 +287,9 @@ type
   PGdkPixbufSimpleAnimIter = ^TGdkPixbufSimpleAnimIter;
   TGdkPixbufSimpleAnimIter = object(TGdkPixbufAnimationIter)
   end;
-  TGdkPixdataType = packed object(TBitObject32)
-  public
-    property color_type_rgb: DWord index 1 read GetBit write SetBit;
-    property color_type_rgba: DWord index 2 read GetBit write SetBit;
-    property color_type_mask: DWord index 255 read GetBit write SetBit;
-    property sample_width_8: DWord index 65536 read GetBit write SetBit;
-    property sample_width_mask: DWord index 983040 read GetBit write SetBit;
-    property encoding_raw: DWord index 16777216 read GetBit write SetBit;
-    property encoding_rle: DWord index 33554432 read GetBit write SetBit;
-    property encoding_mask: DWord index 251658240 read GetBit write SetBit;
-  end;
 
+  PPGdkPixdataType = ^PGdkPixdataType;
+  PGdkPixdataType = ^TGdkPixdataType;
 
 function gdk_pixbuf_add_alpha(APixbuf: PGdkPixbuf; substitute_color: gboolean; r: guint8; g: guint8; b: guint8): PGdkPixbuf; cdecl; external;
 function gdk_pixbuf_animation_get_height(APixbufAnimation: PGdkPixbufAnimation): gint; cdecl; external;
@@ -631,7 +616,6 @@ begin
   Result := GdkPixbuf2.gdk_pixdata_serialize(@self, stream_length_p);
 end;
 
-
 function TGdkPixdata.to_csource(name: Pgchar; dump_type: TGdkPixdataDumpType): PGString; cdecl;
 begin
   Result := GdkPixbuf2.gdk_pixdata_to_csource(@self, name, dump_type);
@@ -806,6 +790,5 @@ procedure TGdkPixbufSimpleAnim.set_loop(loop: gboolean); cdecl;
 begin
   GdkPixbuf2.gdk_pixbuf_simple_anim_set_loop(@self, loop);
 end;
-
 
 end.

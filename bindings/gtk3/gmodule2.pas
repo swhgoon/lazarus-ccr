@@ -15,10 +15,13 @@ const
   GModule2_library = 'libgmodule-2.0.so.0';
 
 
+type
+  TGModuleFlags = Integer;
+const
   { GModuleFlags }
-  G_MODULE_BIND_LAZY = 1;
-  G_MODULE_BIND_LOCAL = 2;
-  G_MODULE_BIND_MASK = 3;
+  G_MODULE_BIND_LAZY: TGModuleFlags = 1;
+  G_MODULE_BIND_LOCAL: TGModuleFlags = 2;
+  G_MODULE_BIND_MASK: TGModuleFlags = 3;
 type
 
   PPGModule = ^PGModule;
@@ -26,13 +29,6 @@ type
 
   PPGModuleFlags = ^PGModuleFlags;
   PGModuleFlags = ^TGModuleFlags;
-  TGModuleFlags = packed object(TBitObject32)
-  public
-    property lazy: DWord index 1 read GetBit write SetBit;
-    property local: DWord index 2 read GetBit write SetBit;
-    property mask: DWord index 3 read GetBit write SetBit;
-  end;
-
   TGModule = object
     function close: gboolean; cdecl; inline;
     procedure make_resident; cdecl; inline;
@@ -84,7 +80,6 @@ function TGModule.error: Pgchar; cdecl;
 begin
   Result := GModule2.g_module_error();
 end;
-
 
 function TGModule.open(file_name: Pgchar; flags: TGModuleFlags): PGModule; cdecl;
 begin

@@ -126,18 +126,21 @@ const
   VA_COPY_AS_ARRAY = 1;
   WIN32_MSG_HANDLE = 19981206;
 
+type
+  TGAsciiType = Integer;
+const
   { GAsciiType }
-  G_ASCII_ALNUM = 1;
-  G_ASCII_ALPHA = 2;
-  G_ASCII_CNTRL = 4;
-  G_ASCII_DIGIT = 8;
-  G_ASCII_GRAPH = 16;
-  G_ASCII_LOWER = 32;
-  G_ASCII_PRINT = 64;
-  G_ASCII_PUNCT = 128;
-  G_ASCII_SPACE = 256;
-  G_ASCII_UPPER = 512;
-  G_ASCII_XDIGIT = 1024;
+  G_ASCII_ALNUM: TGAsciiType = 1;
+  G_ASCII_ALPHA: TGAsciiType = 2;
+  G_ASCII_CNTRL: TGAsciiType = 4;
+  G_ASCII_DIGIT: TGAsciiType = 8;
+  G_ASCII_GRAPH: TGAsciiType = 16;
+  G_ASCII_LOWER: TGAsciiType = 32;
+  G_ASCII_PRINT: TGAsciiType = 64;
+  G_ASCII_PUNCT: TGAsciiType = 128;
+  G_ASCII_SPACE: TGAsciiType = 256;
+  G_ASCII_UPPER: TGAsciiType = 512;
+  G_ASCII_XDIGIT: TGAsciiType = 1024;
 
 type
   TGBookmarkFileError = Integer;
@@ -261,22 +264,31 @@ const
   G_FILE_ERROR_NOSYS: TGFileError = 23;
   G_FILE_ERROR_FAILED: TGFileError = 24;
 
+type
+  TGFileTest = Integer;
+const
   { GFileTest }
-  G_FILE_TEST_IS_REGULAR = 1;
-  G_FILE_TEST_IS_SYMLINK = 2;
-  G_FILE_TEST_IS_DIR = 4;
-  G_FILE_TEST_IS_EXECUTABLE = 8;
-  G_FILE_TEST_EXISTS = 16;
+  G_FILE_TEST_IS_REGULAR: TGFileTest = 1;
+  G_FILE_TEST_IS_SYMLINK: TGFileTest = 2;
+  G_FILE_TEST_IS_DIR: TGFileTest = 4;
+  G_FILE_TEST_IS_EXECUTABLE: TGFileTest = 8;
+  G_FILE_TEST_EXISTS: TGFileTest = 16;
 
+type
+  TGFormatSizeFlags = Integer;
+const
   { GFormatSizeFlags }
-  G_FORMAT_SIZE_DEFAULT = 0;
-  G_FORMAT_SIZE_LONG_FORMAT = 1;
-  G_FORMAT_SIZE_IEC_UNITS = 2;
+  G_FORMAT_SIZE_DEFAULT: TGFormatSizeFlags = 0;
+  G_FORMAT_SIZE_LONG_FORMAT: TGFormatSizeFlags = 1;
+  G_FORMAT_SIZE_IEC_UNITS: TGFormatSizeFlags = 2;
 
+type
+  TGHookFlagMask = Integer;
+const
   { GHookFlagMask }
-  G_HOOK_FLAG_ACTIVE = 1;
-  G_HOOK_FLAG_IN_CALL = 2;
-  G_HOOK_FLAG_MASK = 15;
+  G_HOOK_FLAG_ACTIVE: TGHookFlagMask = 1;
+  G_HOOK_FLAG_IN_CALL: TGHookFlagMask = 2;
+  G_HOOK_FLAG_MASK: TGHookFlagMask = 15;
 
 type
   TGSeekType = Integer;
@@ -286,23 +298,29 @@ const
   G_SEEK_SET: TGSeekType = 1;
   G_SEEK_END: TGSeekType = 2;
 
+type
+  TGIOCondition = Integer;
+const
   { GIOCondition }
-  G_IO_IN = 1;
-  G_IO_OUT = 4;
-  G_IO_PRI = 2;
-  G_IO_ERR = 8;
-  G_IO_HUP = 16;
-  G_IO_NVAL = 32;
+  G_IO_IN: TGIOCondition = 1;
+  G_IO_OUT: TGIOCondition = 4;
+  G_IO_PRI: TGIOCondition = 2;
+  G_IO_ERR: TGIOCondition = 8;
+  G_IO_HUP: TGIOCondition = 16;
+  G_IO_NVAL: TGIOCondition = 32;
 
+type
+  TGIOFlags = Integer;
+const
   { GIOFlags }
-  G_IO_FLAG_APPEND = 1;
-  G_IO_FLAG_NONBLOCK = 2;
-  G_IO_FLAG_IS_READABLE = 4;
-  G_IO_FLAG_IS_WRITEABLE = 8;
-  G_IO_FLAG_IS_SEEKABLE = 16;
-  G_IO_FLAG_MASK = 31;
-  G_IO_FLAG_GET_MASK = 31;
-  G_IO_FLAG_SET_MASK = 3;
+  G_IO_FLAG_APPEND: TGIOFlags = 1;
+  G_IO_FLAG_NONBLOCK: TGIOFlags = 2;
+  G_IO_FLAG_IS_READABLE: TGIOFlags = 4;
+  G_IO_FLAG_IS_WRITEABLE: TGIOFlags = 8;
+  G_IO_FLAG_IS_SEEKABLE: TGIOFlags = 16;
+  G_IO_FLAG_MASK: TGIOFlags = 31;
+  G_IO_FLAG_GET_MASK: TGIOFlags = 31;
+  G_IO_FLAG_SET_MASK: TGIOFlags = 3;
 
 type
   TGIOStatus = Integer;
@@ -336,10 +354,13 @@ const
   G_IO_CHANNEL_ERROR_PIPE: TGIOChannelError = 7;
   G_IO_CHANNEL_ERROR_FAILED: TGIOChannelError = 8;
 
+type
+  TGKeyFileFlags = Integer;
+const
   { GKeyFileFlags }
-  G_KEY_FILE_NONE = 0;
-  G_KEY_FILE_KEEP_COMMENTS = 1;
-  G_KEY_FILE_KEEP_TRANSLATIONS = 2;
+  G_KEY_FILE_NONE: TGKeyFileFlags = 0;
+  G_KEY_FILE_KEEP_COMMENTS: TGKeyFileFlags = 1;
+  G_KEY_FILE_KEEP_TRANSLATIONS: TGKeyFileFlags = 2;
 
 type
   TGKeyFileError = Integer;
@@ -352,24 +373,30 @@ const
   G_KEY_FILE_ERROR_GROUP_NOT_FOUND: TGKeyFileError = 4;
   G_KEY_FILE_ERROR_INVALID_VALUE: TGKeyFileError = 5;
 
+type
+  TGLogLevelFlags = Integer;
+const
   { GLogLevelFlags }
-  G_LOG_FLAG_RECURSION = 1;
-  G_LOG_FLAG_FATAL = 2;
-  G_LOG_LEVEL_ERROR = 4;
-  G_LOG_LEVEL_CRITICAL = 8;
-  G_LOG_LEVEL_WARNING = 16;
-  G_LOG_LEVEL_MESSAGE = 32;
-  G_LOG_LEVEL_INFO = 64;
-  G_LOG_LEVEL_DEBUG = 128;
-  G_LOG_LEVEL_MASK = -4;
+  G_LOG_FLAG_RECURSION: TGLogLevelFlags = 1;
+  G_LOG_FLAG_FATAL: TGLogLevelFlags = 2;
+  G_LOG_LEVEL_ERROR: TGLogLevelFlags = 4;
+  G_LOG_LEVEL_CRITICAL: TGLogLevelFlags = 8;
+  G_LOG_LEVEL_WARNING: TGLogLevelFlags = 16;
+  G_LOG_LEVEL_MESSAGE: TGLogLevelFlags = 32;
+  G_LOG_LEVEL_INFO: TGLogLevelFlags = 64;
+  G_LOG_LEVEL_DEBUG: TGLogLevelFlags = 128;
+  G_LOG_LEVEL_MASK: TGLogLevelFlags = -4;
 
+type
+  TGMarkupCollectType = Integer;
+const
   { GMarkupCollectType }
-  G_MARKUP_COLLECT_INVALID = 0;
-  G_MARKUP_COLLECT_STRING = 1;
-  G_MARKUP_COLLECT_STRDUP = 2;
-  G_MARKUP_COLLECT_BOOLEAN = 3;
-  G_MARKUP_COLLECT_TRISTATE = 4;
-  G_MARKUP_COLLECT_OPTIONAL = 65536;
+  G_MARKUP_COLLECT_INVALID: TGMarkupCollectType = 0;
+  G_MARKUP_COLLECT_STRING: TGMarkupCollectType = 1;
+  G_MARKUP_COLLECT_STRDUP: TGMarkupCollectType = 2;
+  G_MARKUP_COLLECT_BOOLEAN: TGMarkupCollectType = 3;
+  G_MARKUP_COLLECT_TRISTATE: TGMarkupCollectType = 4;
+  G_MARKUP_COLLECT_OPTIONAL: TGMarkupCollectType = 65536;
 
 type
   TGMarkupError = Integer;
@@ -383,45 +410,57 @@ const
   G_MARKUP_ERROR_INVALID_CONTENT: TGMarkupError = 5;
   G_MARKUP_ERROR_MISSING_ATTRIBUTE: TGMarkupError = 6;
 
+type
+  TGMarkupParseFlags = Integer;
+const
   { GMarkupParseFlags }
-  G_MARKUP_DO_NOT_USE_THIS_UNSUPPORTED_FLAG = 1;
-  G_MARKUP_TREAT_CDATA_AS_TEXT = 2;
-  G_MARKUP_PREFIX_ERROR_POSITION = 4;
+  G_MARKUP_DO_NOT_USE_THIS_UNSUPPORTED_FLAG: TGMarkupParseFlags = 1;
+  G_MARKUP_TREAT_CDATA_AS_TEXT: TGMarkupParseFlags = 2;
+  G_MARKUP_PREFIX_ERROR_POSITION: TGMarkupParseFlags = 4;
 
+type
+  TGRegexCompileFlags = Integer;
+const
   { GRegexCompileFlags }
-  G_REGEX_CASELESS = 1;
-  G_REGEX_MULTILINE = 2;
-  G_REGEX_DOTALL = 4;
-  G_REGEX_EXTENDED = 8;
-  G_REGEX_ANCHORED = 16;
-  G_REGEX_DOLLAR_ENDONLY = 32;
-  G_REGEX_UNGREEDY = 512;
-  G_REGEX_RAW = 2048;
-  G_REGEX_NO_AUTO_CAPTURE = 4096;
-  G_REGEX_OPTIMIZE = 8192;
-  G_REGEX_DUPNAMES = 524288;
-  G_REGEX_NEWLINE_CR = 1048576;
-  G_REGEX_NEWLINE_LF = 2097152;
-  G_REGEX_NEWLINE_CRLF = 3145728;
+  G_REGEX_CASELESS: TGRegexCompileFlags = 1;
+  G_REGEX_MULTILINE: TGRegexCompileFlags = 2;
+  G_REGEX_DOTALL: TGRegexCompileFlags = 4;
+  G_REGEX_EXTENDED: TGRegexCompileFlags = 8;
+  G_REGEX_ANCHORED: TGRegexCompileFlags = 16;
+  G_REGEX_DOLLAR_ENDONLY: TGRegexCompileFlags = 32;
+  G_REGEX_UNGREEDY: TGRegexCompileFlags = 512;
+  G_REGEX_RAW: TGRegexCompileFlags = 2048;
+  G_REGEX_NO_AUTO_CAPTURE: TGRegexCompileFlags = 4096;
+  G_REGEX_OPTIMIZE: TGRegexCompileFlags = 8192;
+  G_REGEX_DUPNAMES: TGRegexCompileFlags = 524288;
+  G_REGEX_NEWLINE_CR: TGRegexCompileFlags = 1048576;
+  G_REGEX_NEWLINE_LF: TGRegexCompileFlags = 2097152;
+  G_REGEX_NEWLINE_CRLF: TGRegexCompileFlags = 3145728;
 
+type
+  TGRegexMatchFlags = Integer;
+const
   { GRegexMatchFlags }
-  G_REGEX_MATCH_ANCHORED = 16;
-  G_REGEX_MATCH_NOTBOL = 128;
-  G_REGEX_MATCH_NOTEOL = 256;
-  G_REGEX_MATCH_NOTEMPTY = 1024;
-  G_REGEX_MATCH_PARTIAL = 32768;
-  G_REGEX_MATCH_NEWLINE_CR = 1048576;
-  G_REGEX_MATCH_NEWLINE_LF = 2097152;
-  G_REGEX_MATCH_NEWLINE_CRLF = 3145728;
-  G_REGEX_MATCH_NEWLINE_ANY = 4194304;
+  G_REGEX_MATCH_ANCHORED: TGRegexMatchFlags = 16;
+  G_REGEX_MATCH_NOTBOL: TGRegexMatchFlags = 128;
+  G_REGEX_MATCH_NOTEOL: TGRegexMatchFlags = 256;
+  G_REGEX_MATCH_NOTEMPTY: TGRegexMatchFlags = 1024;
+  G_REGEX_MATCH_PARTIAL: TGRegexMatchFlags = 32768;
+  G_REGEX_MATCH_NEWLINE_CR: TGRegexMatchFlags = 1048576;
+  G_REGEX_MATCH_NEWLINE_LF: TGRegexMatchFlags = 2097152;
+  G_REGEX_MATCH_NEWLINE_CRLF: TGRegexMatchFlags = 3145728;
+  G_REGEX_MATCH_NEWLINE_ANY: TGRegexMatchFlags = 4194304;
 
+type
+  TGTraverseFlags = Integer;
+const
   { GTraverseFlags }
-  G_TRAVERSE_LEAVES = 1;
-  G_TRAVERSE_NON_LEAVES = 2;
-  G_TRAVERSE_ALL = 3;
-  G_TRAVERSE_MASK = 3;
-  G_TRAVERSE_LEAFS = 1;
-  G_TRAVERSE_NON_LEAFS = 2;
+  G_TRAVERSE_LEAVES: TGTraverseFlags = 1;
+  G_TRAVERSE_NON_LEAVES: TGTraverseFlags = 2;
+  G_TRAVERSE_ALL: TGTraverseFlags = 3;
+  G_TRAVERSE_MASK: TGTraverseFlags = 3;
+  G_TRAVERSE_LEAFS: TGTraverseFlags = 1;
+  G_TRAVERSE_NON_LEAFS: TGTraverseFlags = 2;
 
 type
   TGTraverseType = Integer;
@@ -475,14 +514,17 @@ const
   G_OPTION_ERROR_BAD_VALUE: TGOptionError = 1;
   G_OPTION_ERROR_FAILED: TGOptionError = 2;
 
+type
+  TGOptionFlags = Integer;
+const
   { GOptionFlags }
-  G_OPTION_FLAG_HIDDEN = 1;
-  G_OPTION_FLAG_IN_MAIN = 2;
-  G_OPTION_FLAG_REVERSE = 4;
-  G_OPTION_FLAG_NO_ARG = 8;
-  G_OPTION_FLAG_FILENAME = 16;
-  G_OPTION_FLAG_OPTIONAL_ARG = 32;
-  G_OPTION_FLAG_NOALIAS = 64;
+  G_OPTION_FLAG_HIDDEN: TGOptionFlags = 1;
+  G_OPTION_FLAG_IN_MAIN: TGOptionFlags = 2;
+  G_OPTION_FLAG_REVERSE: TGOptionFlags = 4;
+  G_OPTION_FLAG_NO_ARG: TGOptionFlags = 8;
+  G_OPTION_FLAG_FILENAME: TGOptionFlags = 16;
+  G_OPTION_FLAG_OPTIONAL_ARG: TGOptionFlags = 32;
+  G_OPTION_FLAG_NOALIAS: TGOptionFlags = 64;
 
 type
   TGRegexError = Integer;
@@ -604,14 +646,17 @@ const
   G_SPAWN_ERROR_LIBBAD: TGSpawnError = 18;
   G_SPAWN_ERROR_FAILED: TGSpawnError = 19;
 
+type
+  TGSpawnFlags = Integer;
+const
   { GSpawnFlags }
-  G_SPAWN_LEAVE_DESCRIPTORS_OPEN = 1;
-  G_SPAWN_DO_NOT_REAP_CHILD = 2;
-  G_SPAWN_SEARCH_PATH = 4;
-  G_SPAWN_STDOUT_TO_DEV_NULL = 8;
-  G_SPAWN_STDERR_TO_DEV_NULL = 16;
-  G_SPAWN_CHILD_INHERITS_STDIN = 32;
-  G_SPAWN_FILE_AND_ARGV_ZERO = 64;
+  G_SPAWN_LEAVE_DESCRIPTORS_OPEN: TGSpawnFlags = 1;
+  G_SPAWN_DO_NOT_REAP_CHILD: TGSpawnFlags = 2;
+  G_SPAWN_SEARCH_PATH: TGSpawnFlags = 4;
+  G_SPAWN_STDOUT_TO_DEV_NULL: TGSpawnFlags = 8;
+  G_SPAWN_STDERR_TO_DEV_NULL: TGSpawnFlags = 16;
+  G_SPAWN_CHILD_INHERITS_STDIN: TGSpawnFlags = 32;
+  G_SPAWN_FILE_AND_ARGV_ZERO: TGSpawnFlags = 64;
 
 type
   TGTestLogType = Integer;
@@ -628,10 +673,13 @@ const
   G_TEST_LOG_MAX_RESULT: TGTestLogType = 8;
   G_TEST_LOG_MESSAGE: TGTestLogType = 9;
 
+type
+  TGTestTrapFlags = Integer;
+const
   { GTestTrapFlags }
-  G_TEST_TRAP_SILENCE_STDOUT = 128;
-  G_TEST_TRAP_SILENCE_STDERR = 256;
-  G_TEST_TRAP_INHERIT_STDIN = 512;
+  G_TEST_TRAP_SILENCE_STDOUT: TGTestTrapFlags = 128;
+  G_TEST_TRAP_SILENCE_STDERR: TGTestTrapFlags = 256;
+  G_TEST_TRAP_INHERIT_STDIN: TGTestTrapFlags = 512;
 
 type
   TGThreadPriority = Integer;
@@ -887,14 +935,6 @@ const
   G_VARIANT_PARSE_ERROR_UNTERMINATED_STRING_CONSTANT: TGVariantParseError = 16;
   G_VARIANT_PARSE_ERROR_VALUE_EXPECTED: TGVariantParseError = 17;
 type
-  TBitObject32 = object
-  protected
-    procedure SetBit(AMask: Integer; AValue: DWord);
-    function GetBit(AMask: Integer): DWord;
-  public
-    Flags0: DWord;
-    procedure Init(AFlags: DWord);
-  end;
   guint1 = 0..(1 shl 1-1);
   guint2 = 0..(1 shl 2-1);
   guint3 = 0..(1 shl 3-1);
@@ -1045,21 +1085,9 @@ type
     procedure sort_with_data(array_: Pgpointer; compare_func: TGCompareDataFunc; user_data: gpointer); cdecl; inline; static;
     procedure unref(array_: Pgpointer); cdecl; inline; static;
   end;
-  TGAsciiType = packed object(TBitObject32)
-  public
-    property alnum: DWord index 1 read GetBit write SetBit;
-    property alpha: DWord index 2 read GetBit write SetBit;
-    property cntrl: DWord index 4 read GetBit write SetBit;
-    property digit: DWord index 8 read GetBit write SetBit;
-    property graph: DWord index 16 read GetBit write SetBit;
-    property lower: DWord index 32 read GetBit write SetBit;
-    property print: DWord index 64 read GetBit write SetBit;
-    property punct: DWord index 128 read GetBit write SetBit;
-    property space: DWord index 256 read GetBit write SetBit;
-    property upper: DWord index 512 read GetBit write SetBit;
-    property xdigit: DWord index 1024 read GetBit write SetBit;
-  end;
 
+  PPGAsciiType = ^PGAsciiType;
+  PGAsciiType = ^TGAsciiType;
 
   PPGAsyncQueue = ^PGAsyncQueue;
   PGAsyncQueue = ^TGAsyncQueue;
@@ -1619,15 +1647,9 @@ type
 
   PPGFileError = ^PGFileError;
   PGFileError = ^TGFileError;
-  TGFileTest = packed object(TBitObject32)
-  public
-    property is_regular: DWord index 1 read GetBit write SetBit;
-    property is_symlink: DWord index 2 read GetBit write SetBit;
-    property is_dir: DWord index 4 read GetBit write SetBit;
-    property is_executable: DWord index 8 read GetBit write SetBit;
-    property exists: DWord index 16 read GetBit write SetBit;
-  end;
 
+  PPGFileTest = ^PGFileTest;
+  PGFileTest = ^TGFileTest;
 
   PPPgfloat = ^PPgfloat;
   PPgfloat = ^Pgfloat;
@@ -1646,13 +1668,9 @@ type
   end;
 
 
-  TGFormatSizeFlags = packed object(TBitObject32)
-  public
-    property default_: DWord index 0 read GetBit write SetBit;
-    property long_format: DWord index 1 read GetBit write SetBit;
-    property iec_units: DWord index 2 read GetBit write SetBit;
-  end;
 
+  PPGFormatSizeFlags = ^PGFormatSizeFlags;
+  PGFormatSizeFlags = ^TGFormatSizeFlags;
   TGFreeFunc = procedure(data: gpointer); cdecl;
   TGHRFunc = function(key: gpointer; value: gpointer; user_data: gpointer): gboolean; cdecl;
 
@@ -1789,13 +1807,9 @@ type
     procedure marshal_check(may_recurse: gboolean; marshaller: TGHookCheckMarshaller; marshal_data: gpointer); cdecl; inline;
   end;
   TGHookCheckFunc = function(data: gpointer): gboolean; cdecl;
-  TGHookFlagMask = packed object(TBitObject32)
-  public
-    property active: DWord index 1 read GetBit write SetBit;
-    property in_call: DWord index 2 read GetBit write SetBit;
-    property mask: DWord index 15 read GetBit write SetBit;
-  end;
 
+  PPGHookFlagMask = ^PGHookFlagMask;
+  PGHookFlagMask = ^TGHookFlagMask;
   TGHookFunc = procedure(data: gpointer); cdecl;
 
   PPGIConv = ^PGIConv;
@@ -1820,31 +1834,9 @@ type
 
   PPGIOCondition = ^PGIOCondition;
   PGIOCondition = ^TGIOCondition;
-  TGIOCondition = packed object(TBitObject32)
-  public
-    property in_: DWord index 1 read GetBit write SetBit;
-    property out_: DWord index 4 read GetBit write SetBit;
-    property pri: DWord index 2 read GetBit write SetBit;
-    property err: DWord index 8 read GetBit write SetBit;
-    property hup: DWord index 16 read GetBit write SetBit;
-    property nval: DWord index 32 read GetBit write SetBit;
-  end;
-
 
   PPGIOFlags = ^PGIOFlags;
   PGIOFlags = ^TGIOFlags;
-  TGIOFlags = packed object(TBitObject32)
-  public
-    property append: DWord index 1 read GetBit write SetBit;
-    property nonblock: DWord index 2 read GetBit write SetBit;
-    property is_readable: DWord index 4 read GetBit write SetBit;
-    property is_writeable: DWord index 8 read GetBit write SetBit;
-    property is_seekable: DWord index 16 read GetBit write SetBit;
-    property mask: DWord index 31 read GetBit write SetBit;
-    property get_mask: DWord index 31 read GetBit write SetBit;
-    property set_mask: DWord index 3 read GetBit write SetBit;
-  end;
-
 
   TGIOFuncs = record
     io_read: function(channel: PGIOChannel; buf: Pgchar; count: gsize; bytes_read: Pgsize): TGIOStatus; cdecl;
@@ -1968,13 +1960,9 @@ type
     function error_quark: TGQuark; cdecl; inline; static;
   end;
   TGIOFunc = function(source: PGIOChannel; condition: TGIOCondition; data: gpointer): gboolean; cdecl;
-  TGKeyFileFlags = packed object(TBitObject32)
-  public
-    property none: DWord index 0 read GetBit write SetBit;
-    property keep_comments: DWord index 1 read GetBit write SetBit;
-    property keep_translations: DWord index 2 read GetBit write SetBit;
-  end;
 
+  PPGKeyFileFlags = ^PGKeyFileFlags;
+  PGKeyFileFlags = ^TGKeyFileFlags;
 
   PPGKeyFile = ^PGKeyFile;
   PGKeyFile = ^TGKeyFile;
@@ -1982,9 +1970,6 @@ type
   PPPguint64 = ^PPguint64;
   PPguint64 = ^Pguint64;
   Pguint64 = ^guint64;
-
-  PPGKeyFileFlags = ^PGKeyFileFlags;
-  PGKeyFileFlags = ^TGKeyFileFlags;
   TGKeyFile = object
     procedure free; cdecl; inline;
     function get_boolean(group_name: Pgchar; key: Pgchar): gboolean; cdecl; inline;
@@ -2035,19 +2020,6 @@ type
 
   PPGKeyFileError = ^PGKeyFileError;
   PGKeyFileError = ^TGKeyFileError;
-  TGLogLevelFlags = packed object(TBitObject32)
-  public
-    property flag_recursion: DWord index 1 read GetBit write SetBit;
-    property flag_fatal: DWord index 2 read GetBit write SetBit;
-    property level_error: DWord index 4 read GetBit write SetBit;
-    property level_critical: DWord index 8 read GetBit write SetBit;
-    property level_warning: DWord index 16 read GetBit write SetBit;
-    property level_message: DWord index 32 read GetBit write SetBit;
-    property level_info: DWord index 64 read GetBit write SetBit;
-    property level_debug: DWord index 128 read GetBit write SetBit;
-    property level_mask: DWord index -4 read GetBit write SetBit;
-  end;
-
 
   PPGLogLevelFlags = ^PGLogLevelFlags;
   PGLogLevelFlags = ^TGLogLevelFlags;
@@ -2143,16 +2115,9 @@ type
     procedure unref; cdecl; inline;
     function new(filename: Pgchar; writable: gboolean): PGMappedFile; cdecl; inline; static;
   end;
-  TGMarkupCollectType = packed object(TBitObject32)
-  public
-    property invalid: DWord index 0 read GetBit write SetBit;
-    property string_: DWord index 1 read GetBit write SetBit;
-    property strdup: DWord index 2 read GetBit write SetBit;
-    property boolean_: DWord index 3 read GetBit write SetBit;
-    property tristate: DWord index 4 read GetBit write SetBit;
-    property optional: DWord index 65536 read GetBit write SetBit;
-  end;
 
+  PPGMarkupCollectType = ^PGMarkupCollectType;
+  PGMarkupCollectType = ^TGMarkupCollectType;
 
   PPGMarkupError = ^PGMarkupError;
   PGMarkupError = ^TGMarkupError;
@@ -2209,13 +2174,6 @@ type
 
   PPGMarkupParseFlags = ^PGMarkupParseFlags;
   PGMarkupParseFlags = ^TGMarkupParseFlags;
-  TGMarkupParseFlags = packed object(TBitObject32)
-  public
-    property do_not_use_this_unsupported_flag: DWord index 1 read GetBit write SetBit;
-    property treat_cdata_as_text: DWord index 2 read GetBit write SetBit;
-    property prefix_error_position: DWord index 4 read GetBit write SetBit;
-  end;
-
   TGMarkupParseContext = object
     function end_parse: gboolean; cdecl; inline;
     procedure free; cdecl; inline;
@@ -2234,40 +2192,9 @@ type
 
   PPGRegexCompileFlags = ^PGRegexCompileFlags;
   PGRegexCompileFlags = ^TGRegexCompileFlags;
-  TGRegexCompileFlags = packed object(TBitObject32)
-  public
-    property caseless: DWord index 1 read GetBit write SetBit;
-    property multiline: DWord index 2 read GetBit write SetBit;
-    property dotall: DWord index 4 read GetBit write SetBit;
-    property extended: DWord index 8 read GetBit write SetBit;
-    property anchored: DWord index 16 read GetBit write SetBit;
-    property dollar_endonly: DWord index 32 read GetBit write SetBit;
-    property ungreedy: DWord index 512 read GetBit write SetBit;
-    property raw: DWord index 2048 read GetBit write SetBit;
-    property no_auto_capture: DWord index 4096 read GetBit write SetBit;
-    property optimize: DWord index 8192 read GetBit write SetBit;
-    property dupnames: DWord index 524288 read GetBit write SetBit;
-    property newline_cr: DWord index 1048576 read GetBit write SetBit;
-    property newline_lf: DWord index 2097152 read GetBit write SetBit;
-    property newline_crlf: DWord index 3145728 read GetBit write SetBit;
-  end;
-
 
   PPGRegexMatchFlags = ^PGRegexMatchFlags;
   PGRegexMatchFlags = ^TGRegexMatchFlags;
-  TGRegexMatchFlags = packed object(TBitObject32)
-  public
-    property anchored: DWord index 16 read GetBit write SetBit;
-    property notbol: DWord index 128 read GetBit write SetBit;
-    property noteol: DWord index 256 read GetBit write SetBit;
-    property notempty: DWord index 1024 read GetBit write SetBit;
-    property partial: DWord index 32768 read GetBit write SetBit;
-    property newline_cr: DWord index 1048576 read GetBit write SetBit;
-    property newline_lf: DWord index 2097152 read GetBit write SetBit;
-    property newline_crlf: DWord index 3145728 read GetBit write SetBit;
-    property newline_any: DWord index 4194304 read GetBit write SetBit;
-  end;
-
 
   PPGMatchInfo = ^PGMatchInfo;
   PGMatchInfo = ^TGMatchInfo;
@@ -2352,16 +2279,6 @@ type
 
   PPGTraverseFlags = ^PGTraverseFlags;
   PGTraverseFlags = ^TGTraverseFlags;
-  TGTraverseFlags = packed object(TBitObject32)
-  public
-    property leaves: DWord index 1 read GetBit write SetBit;
-    property non_leaves: DWord index 2 read GetBit write SetBit;
-    property all: DWord index 3 read GetBit write SetBit;
-    property mask: DWord index 3 read GetBit write SetBit;
-    property leafs: DWord index 1 read GetBit write SetBit;
-    property non_leafs: DWord index 2 read GetBit write SetBit;
-  end;
-
 
   PPGNodeForeachFunc = ^PGNodeForeachFunc;
   PGNodeForeachFunc = ^TGNodeForeachFunc;
@@ -2501,17 +2418,9 @@ type
 
   PPGOptionError = ^PGOptionError;
   PGOptionError = ^TGOptionError;
-  TGOptionFlags = packed object(TBitObject32)
-  public
-    property hidden: DWord index 1 read GetBit write SetBit;
-    property in_main: DWord index 2 read GetBit write SetBit;
-    property reverse: DWord index 4 read GetBit write SetBit;
-    property no_arg: DWord index 8 read GetBit write SetBit;
-    property filename: DWord index 16 read GetBit write SetBit;
-    property optional_arg: DWord index 32 read GetBit write SetBit;
-    property noalias: DWord index 64 read GetBit write SetBit;
-  end;
 
+  PPGOptionFlags = ^PGOptionFlags;
+  PGOptionFlags = ^TGOptionFlags;
 
   PPGPatternSpec = ^PGPatternSpec;
   PGPatternSpec = ^TGPatternSpec;
@@ -2829,17 +2738,9 @@ type
 
   PPGSpawnError = ^PGSpawnError;
   PGSpawnError = ^TGSpawnError;
-  TGSpawnFlags = packed object(TBitObject32)
-  public
-    property leave_descriptors_open: DWord index 1 read GetBit write SetBit;
-    property do_not_reap_child: DWord index 2 read GetBit write SetBit;
-    property search_path: DWord index 4 read GetBit write SetBit;
-    property stdout_to_dev_null: DWord index 8 read GetBit write SetBit;
-    property stderr_to_dev_null: DWord index 16 read GetBit write SetBit;
-    property child_inherits_stdin: DWord index 32 read GetBit write SetBit;
-    property file_and_argv_zero: DWord index 64 read GetBit write SetBit;
-  end;
 
+  PPGSpawnFlags = ^PGSpawnFlags;
+  PGSpawnFlags = ^TGSpawnFlags;
 
   PPGStatBuf = ^PGStatBuf;
   PGStatBuf = ^TGStatBuf;
@@ -2992,13 +2893,9 @@ type
     procedure add(test_case: PGTestCase); cdecl; inline;
     procedure add_suite(nestedsuite: PGTestSuite); cdecl; inline;
   end;
-  TGTestTrapFlags = packed object(TBitObject32)
-  public
-    property silence_stdout: DWord index 128 read GetBit write SetBit;
-    property silence_stderr: DWord index 256 read GetBit write SetBit;
-    property inherit_stdin: DWord index 512 read GetBit write SetBit;
-  end;
 
+  PPGTestTrapFlags = ^PGTestTrapFlags;
+  PGTestTrapFlags = ^TGTestTrapFlags;
 
   PPGThreadPriority = ^PGThreadPriority;
   PGThreadPriority = ^TGThreadPriority;
@@ -4730,30 +4627,6 @@ procedure g_variant_unref(AVariant: PGVariant); cdecl; external;
 procedure g_warn_message(domain: Pgchar; file_: Pgchar; line: gint; func: Pgchar; warnexpr: Pgchar); cdecl; external;
 procedure glib_dummy_decl; cdecl; external;
 implementation
-procedure TBitObject32.Init(AFlags: DWord);
-begin
-  Flags0 := AFlags;
-end;
-
-procedure TBitObject32.SetBit(AMask: Integer; AValue: DWord);
-begin
-  if AValue <> 0 then
-  begin
-    if (Flags0 and AMask) = 0 then
-      Flags0 := Flags0 or AMask
-  end
-  else begin
-    if (Flags0 and AMask) <> 0 then
-      Flags0 := Flags0 xor AMask;
-  end;
-end;
-
-function TBitObject32.GetBit(AMask: Integer): DWord;
-begin
-  Result := Flags0 and AMask;
-  if Result > 1 then
-    Result := 1;
-end;
 procedure TGAllocator.free; cdecl;
 begin
   GLib2.g_allocator_free(@self);
@@ -4838,7 +4711,6 @@ procedure TGArray.unref(array_: Pgpointer); cdecl;
 begin
   GLib2.g_array_unref(array_);
 end;
-
 
 function TGAsyncQueue.length: gint; cdecl;
 begin
@@ -6165,8 +6037,6 @@ begin
   Result := GLib2.g_error_matches(@self, domain, code);
 end;
 
-
-
 procedure TGHashTable.destroy_(hash_table: PGHashTable); cdecl;
 begin
   GLib2.g_hash_table_destroy(hash_table);
@@ -6447,7 +6317,6 @@ begin
   GLib2.g_hook_list_marshal_check(@self, may_recurse, marshaller, marshal_data);
 end;
 
-
 function TGIConv.g_iconv(inbuf: PPgchar; inbytes_left: Pgsize; outbuf: PPgchar; outbytes_left: Pgsize): gsize; cdecl;
 begin
   Result := GLib2.g_iconv(@self, inbuf, inbytes_left, outbuf, outbytes_left);
@@ -6462,8 +6331,6 @@ function TGIConv.open(to_codeset: Pgchar; from_codeset: Pgchar): TGIConv; cdecl;
 begin
   Result := GLib2.g_iconv_open(to_codeset, from_codeset);
 end;
-
-
 
 function TGString.append(val: Pgchar): PGString; cdecl;
 begin
@@ -6770,7 +6637,6 @@ begin
   Result := GLib2.g_io_channel_error_quark();
 end;
 
-
 procedure TGKeyFile.free; cdecl;
 begin
   GLib2.g_key_file_free(@self);
@@ -6996,7 +6862,6 @@ begin
   Result := GLib2.g_key_file_new();
 end;
 
-
 function TGMainContext.acquire: gboolean; cdecl;
 begin
   Result := GLib2.g_main_context_acquire(@self);
@@ -7197,7 +7062,6 @@ begin
   Result := GLib2.g_mapped_file_new(filename, writable);
 end;
 
-
 function TGSList.alloc: PGSList; cdecl;
 begin
   Result := GLib2.g_slist_alloc();
@@ -7383,13 +7247,10 @@ begin
   GLib2.g_markup_parse_context_push(@self, parser, user_data);
 end;
 
-
 function TGMarkupParseContext.new(parser: PGMarkupParser; flags: TGMarkupParseFlags; user_data: gpointer; user_data_dnotify: TGDestroyNotify): PGMarkupParseContext; cdecl;
 begin
   Result := GLib2.g_markup_parse_context_new(parser, flags, user_data, user_data_dnotify);
 end;
-
-
 
 function TGRegex.new(pattern: Pgchar; compile_options: TGRegexCompileFlags; match_options: TGRegexMatchFlags): PGRegex; cdecl;
 begin
@@ -7640,7 +7501,6 @@ function TGNode.child_position(child: PGNode): gint; cdecl;
 begin
   Result := GLib2.g_node_child_position(@self, child);
 end;
-
 
 procedure TGNode.children_foreach(flags: TGTraverseFlags; func: TGNodeForeachFunc; data: gpointer); cdecl;
 begin
@@ -7916,7 +7776,6 @@ function TGOptionContext.new(parameter_string: Pgchar): PGOptionContext; cdecl;
 begin
   Result := GLib2.g_option_context_new(parameter_string);
 end;
-
 
 function TGPatternSpec.equal(pspec2: PGPatternSpec): gboolean; cdecl;
 begin
@@ -8553,7 +8412,6 @@ begin
   GLib2.g_sequence_swap(a, b);
 end;
 
-
 procedure TGStaticMutex.free; cdecl;
 begin
   GLib2.g_static_mutex_free(@self);
@@ -8728,7 +8586,6 @@ procedure TGTestSuite.add_suite(nestedsuite: PGTestSuite); cdecl;
 begin
   GLib2.g_test_suite_add_suite(@self, nestedsuite);
 end;
-
 
 function TGThread.join: gpointer; cdecl;
 begin

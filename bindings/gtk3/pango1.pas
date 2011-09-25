@@ -143,14 +143,17 @@ const
   PANGO_ATTR_GRAVITY: TPangoAttrType = 21;
   PANGO_ATTR_GRAVITY_HINT: TPangoAttrType = 22;
 
+type
+  TPangoFontMask = Integer;
+const
   { PangoFontMask }
-  PANGO_FONT_MASK_FAMILY = 1;
-  PANGO_FONT_MASK_STYLE = 2;
-  PANGO_FONT_MASK_VARIANT = 4;
-  PANGO_FONT_MASK_WEIGHT = 8;
-  PANGO_FONT_MASK_STRETCH = 16;
-  PANGO_FONT_MASK_SIZE = 32;
-  PANGO_FONT_MASK_GRAVITY = 64;
+  PANGO_FONT_MASK_FAMILY: TPangoFontMask = 1;
+  PANGO_FONT_MASK_STYLE: TPangoFontMask = 2;
+  PANGO_FONT_MASK_VARIANT: TPangoFontMask = 4;
+  PANGO_FONT_MASK_WEIGHT: TPangoFontMask = 8;
+  PANGO_FONT_MASK_STRETCH: TPangoFontMask = 16;
+  PANGO_FONT_MASK_SIZE: TPangoFontMask = 32;
+  PANGO_FONT_MASK_GRAVITY: TPangoFontMask = 64;
 
 type
   TPangoGravity = Integer;
@@ -485,17 +488,6 @@ type
 
   PPPangoFontMask = ^PPangoFontMask;
   PPangoFontMask = ^TPangoFontMask;
-  TPangoFontMask = packed object(TBitObject32)
-  public
-    property family: DWord index 1 read GetBit write SetBit;
-    property style: DWord index 2 read GetBit write SetBit;
-    property variant: DWord index 4 read GetBit write SetBit;
-    property weight: DWord index 8 read GetBit write SetBit;
-    property stretch: DWord index 16 read GetBit write SetBit;
-    property size: DWord index 32 read GetBit write SetBit;
-    property gravity: DWord index 64 read GetBit write SetBit;
-  end;
-
 
   PPPangoStretch = ^PPangoStretch;
   PPangoStretch = ^TPangoStretch;
@@ -1632,7 +1624,6 @@ function TPangoFontDescription.get_gravity: TPangoGravity; cdecl;
 begin
   Result := Pango1.pango_font_description_get_gravity(@self);
 end;
-
 
 function TPangoFontDescription.get_set_fields: TPangoFontMask; cdecl;
 begin

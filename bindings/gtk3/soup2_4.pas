@@ -146,12 +146,15 @@ const
   SOUP_ADDRESS_FAMILY_IPV4: TSoupAddressFamily = 2;
   SOUP_ADDRESS_FAMILY_IPV6: TSoupAddressFamily = 10;
 
+type
+  TSoupMessageFlags = Integer;
+const
   { SoupMessageFlags }
-  SOUP_MESSAGE_NO_REDIRECT = 2;
-  SOUP_MESSAGE_CAN_REBUILD = 4;
-  SOUP_MESSAGE_OVERWRITE_CHUNKS = 8;
-  SOUP_MESSAGE_CONTENT_DECODED = 16;
-  SOUP_MESSAGE_CERTIFICATE_TRUSTED = 32;
+  SOUP_MESSAGE_NO_REDIRECT: TSoupMessageFlags = 2;
+  SOUP_MESSAGE_CAN_REBUILD: TSoupMessageFlags = 4;
+  SOUP_MESSAGE_OVERWRITE_CHUNKS: TSoupMessageFlags = 8;
+  SOUP_MESSAGE_CONTENT_DECODED: TSoupMessageFlags = 16;
+  SOUP_MESSAGE_CERTIFICATE_TRUSTED: TSoupMessageFlags = 32;
 
 type
   TSoupHTTPVersion = Integer;
@@ -184,11 +187,14 @@ const
   SOUP_CACHE_SINGLE_USER: TSoupCacheType = 0;
   SOUP_CACHE_SHARED: TSoupCacheType = 1;
 
+type
+  TSoupCacheability = Integer;
+const
   { SoupCacheability }
-  SOUP_CACHE_CACHEABLE = 1;
-  SOUP_CACHE_UNCACHEABLE = 2;
-  SOUP_CACHE_INVALIDATES = 4;
-  SOUP_CACHE_VALIDATES = 8;
+  SOUP_CACHE_CACHEABLE: TSoupCacheability = 1;
+  SOUP_CACHE_UNCACHEABLE: TSoupCacheability = 2;
+  SOUP_CACHE_INVALIDATES: TSoupCacheability = 4;
+  SOUP_CACHE_VALIDATES: TSoupCacheability = 8;
 
 type
   TSoupConnectionState = Integer;
@@ -232,9 +238,12 @@ const
   SOUP_ENCODING_CHUNKED: TSoupEncoding = 4;
   SOUP_ENCODING_BYTERANGES: TSoupEncoding = 5;
 
+type
+  TSoupExpectation = Integer;
+const
   { SoupExpectation }
-  SOUP_EXPECTATION_UNRECOGNIZED = 1;
-  SOUP_EXPECTATION_CONTINUE = 2;
+  SOUP_EXPECTATION_UNRECOGNIZED: TSoupExpectation = 1;
+  SOUP_EXPECTATION_CONTINUE: TSoupExpectation = 2;
 
 type
   TSoupKnownStatusCode = Integer;
@@ -442,15 +451,6 @@ type
 
   PPSoupMessageFlags = ^PSoupMessageFlags;
   PSoupMessageFlags = ^TSoupMessageFlags;
-  TSoupMessageFlags = packed object(TBitObject32)
-  public
-    property no_redirect: DWord index 2 read GetBit write SetBit;
-    property can_rebuild: DWord index 4 read GetBit write SetBit;
-    property overwrite_chunks: DWord index 8 read GetBit write SetBit;
-    property content_decoded: DWord index 16 read GetBit write SetBit;
-    property certificate_trusted: DWord index 32 read GetBit write SetBit;
-  end;
-
 
   PPSoupHTTPVersion = ^PSoupHTTPVersion;
   PSoupHTTPVersion = ^TSoupHTTPVersion;
@@ -707,14 +707,9 @@ type
 
   PPSoupCacheType = ^PSoupCacheType;
   PSoupCacheType = ^TSoupCacheType;
-  TSoupCacheability = packed object(TBitObject32)
-  public
-    property cacheable: DWord index 1 read GetBit write SetBit;
-    property uncacheable: DWord index 2 read GetBit write SetBit;
-    property invalidates: DWord index 4 read GetBit write SetBit;
-    property validates: DWord index 8 read GetBit write SetBit;
-  end;
 
+  PPSoupCacheability = ^PSoupCacheability;
+  PSoupCacheability = ^TSoupCacheability;
 
   PPSoupSocket = ^PSoupSocket;
   PSoupSocket = ^TSoupSocket;
@@ -964,12 +959,9 @@ type
 
   PPSoupEncoding = ^PSoupEncoding;
   PSoupEncoding = ^TSoupEncoding;
-  TSoupExpectation = packed object(TBitObject32)
-  public
-    property unrecognized: DWord index 1 read GetBit write SetBit;
-    property continue: DWord index 2 read GetBit write SetBit;
-  end;
 
+  PPSoupExpectation = ^PSoupExpectation;
+  PSoupExpectation = ^TSoupExpectation;
 
   PPSoupKnownStatusCode = ^PSoupKnownStatusCode;
   PSoupKnownStatusCode = ^TSoupKnownStatusCode;
@@ -1069,9 +1061,6 @@ type
 
   PPSoupRange = ^PSoupRange;
   PSoupRange = ^TSoupRange;
-
-  PPSoupExpectation = ^PSoupExpectation;
-  PSoupExpectation = ^TSoupExpectation;
   TSoupMessageHeaders = object
     function new(type_: TSoupMessageHeadersType): PSoupMessageHeaders; cdecl; inline; static;
     procedure append(name: Pgchar; value: Pgchar); cdecl; inline;
@@ -1902,7 +1891,6 @@ begin
   Result := Soup2_4.soup_message_get_first_party(@self);
 end;
 
-
 function TSoupMessage.get_flags: TSoupMessageFlags; cdecl;
 begin
   Result := Soup2_4.soup_message_get_flags(@self);
@@ -2277,7 +2265,6 @@ function TSoupBuffer.new_subbuffer(offset: gsize; length: gsize): PSoupBuffer; c
 begin
   Result := Soup2_4.soup_buffer_new_subbuffer(@self, offset, length);
 end;
-
 
 procedure TSoupSocket.connect_async(cancellable: PGCancellable; callback: TSoupSocketCallback; user_data: gpointer); cdecl;
 begin
@@ -2673,7 +2660,6 @@ function TSoupCookieJarText.new(filename: Pgchar; read_only: gboolean): PSoupCoo
 begin
   Result := Soup2_4.soup_cookie_jar_text_new(filename, read_only);
 end;
-
 
 function TSoupLogger.new(level: TSoupLoggerLogLevel; max_body_size: gint): PSoupLogger; cdecl;
 begin

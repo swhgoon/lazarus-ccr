@@ -242,10 +242,13 @@ const
   GTK_TEXT_DIR_LTR: TGtkTextDirection = 1;
   GTK_TEXT_DIR_RTL: TGtkTextDirection = 2;
 
+type
+  TGtkAccelFlags = Integer;
+const
   { GtkAccelFlags }
-  GTK_ACCEL_VISIBLE = 1;
-  GTK_ACCEL_LOCKED = 2;
-  GTK_ACCEL_MASK = 7;
+  GTK_ACCEL_VISIBLE: TGtkAccelFlags = 1;
+  GTK_ACCEL_LOCKED: TGtkAccelFlags = 2;
+  GTK_ACCEL_MASK: TGtkAccelFlags = 7;
 
 type
   TGtkDirectionType = Integer;
@@ -265,20 +268,26 @@ const
   GTK_ORIENTATION_HORIZONTAL: TGtkOrientation = 0;
   GTK_ORIENTATION_VERTICAL: TGtkOrientation = 1;
 
+type
+  TGtkDestDefaults = Integer;
+const
   { GtkDestDefaults }
-  GTK_DEST_DEFAULT_MOTION = 1;
-  GTK_DEST_DEFAULT_HIGHLIGHT = 2;
-  GTK_DEST_DEFAULT_DROP = 4;
-  GTK_DEST_DEFAULT_ALL = 7;
+  GTK_DEST_DEFAULT_MOTION: TGtkDestDefaults = 1;
+  GTK_DEST_DEFAULT_HIGHLIGHT: TGtkDestDefaults = 2;
+  GTK_DEST_DEFAULT_DROP: TGtkDestDefaults = 4;
+  GTK_DEST_DEFAULT_ALL: TGtkDestDefaults = 7;
 
+type
+  TGtkStateFlags = Integer;
+const
   { GtkStateFlags }
-  GTK_STATE_FLAG_NORMAL = 0;
-  GTK_STATE_FLAG_ACTIVE = 1;
-  GTK_STATE_FLAG_PRELIGHT = 2;
-  GTK_STATE_FLAG_SELECTED = 4;
-  GTK_STATE_FLAG_INSENSITIVE = 8;
-  GTK_STATE_FLAG_INCONSISTENT = 16;
-  GTK_STATE_FLAG_FOCUSED = 32;
+  GTK_STATE_FLAG_NORMAL: TGtkStateFlags = 0;
+  GTK_STATE_FLAG_ACTIVE: TGtkStateFlags = 1;
+  GTK_STATE_FLAG_PRELIGHT: TGtkStateFlags = 2;
+  GTK_STATE_FLAG_SELECTED: TGtkStateFlags = 4;
+  GTK_STATE_FLAG_INSENSITIVE: TGtkStateFlags = 8;
+  GTK_STATE_FLAG_INCONSISTENT: TGtkStateFlags = 16;
+  GTK_STATE_FLAG_FOCUSED: TGtkStateFlags = 32;
 
 type
   TGtkStateType = Integer;
@@ -340,9 +349,12 @@ const
   GTK_WIN_POS_CENTER_ALWAYS: TGtkWindowPosition = 3;
   GTK_WIN_POS_CENTER_ON_PARENT: TGtkWindowPosition = 4;
 
+type
+  TGtkDialogFlags = Integer;
+const
   { GtkDialogFlags }
-  GTK_DIALOG_MODAL = 1;
-  GTK_DIALOG_DESTROY_WITH_PARENT = 2;
+  GTK_DIALOG_MODAL: TGtkDialogFlags = 1;
+  GTK_DIALOG_DESTROY_WITH_PARENT: TGtkDialogFlags = 2;
 
 type
   TGtkDragResult = Integer;
@@ -440,10 +452,13 @@ const
   GTK_ASSISTANT_PAGE_PROGRESS: TGtkAssistantPageType = 4;
   GTK_ASSISTANT_PAGE_CUSTOM: TGtkAssistantPageType = 5;
 
+type
+  TGtkAttachOptions = Integer;
+const
   { GtkAttachOptions }
-  GTK_EXPAND = 1;
-  GTK_SHRINK = 2;
-  GTK_FILL = 4;
+  GTK_EXPAND: TGtkAttachOptions = 1;
+  GTK_SHRINK: TGtkAttachOptions = 2;
+  GTK_FILL: TGtkAttachOptions = 4;
 
 type
   TGtkPathType = Integer;
@@ -525,23 +540,32 @@ const
   GTK_BUTTONS_YES_NO: TGtkButtonsType = 4;
   GTK_BUTTONS_OK_CANCEL: TGtkButtonsType = 5;
 
+type
+  TGtkCalendarDisplayOptions = Integer;
+const
   { GtkCalendarDisplayOptions }
-  GTK_CALENDAR_SHOW_HEADING = 1;
-  GTK_CALENDAR_SHOW_DAY_NAMES = 2;
-  GTK_CALENDAR_NO_MONTH_CHANGE = 4;
-  GTK_CALENDAR_SHOW_WEEK_NUMBERS = 8;
-  GTK_CALENDAR_SHOW_DETAILS = 32;
+  GTK_CALENDAR_SHOW_HEADING: TGtkCalendarDisplayOptions = 1;
+  GTK_CALENDAR_SHOW_DAY_NAMES: TGtkCalendarDisplayOptions = 2;
+  GTK_CALENDAR_NO_MONTH_CHANGE: TGtkCalendarDisplayOptions = 4;
+  GTK_CALENDAR_SHOW_WEEK_NUMBERS: TGtkCalendarDisplayOptions = 8;
+  GTK_CALENDAR_SHOW_DETAILS: TGtkCalendarDisplayOptions = 32;
 
+type
+  TGtkCellRendererState = Integer;
+const
   { GtkCellRendererState }
-  GTK_CELL_RENDERER_SELECTED = 1;
-  GTK_CELL_RENDERER_PRELIT = 2;
-  GTK_CELL_RENDERER_INSENSITIVE = 4;
-  GTK_CELL_RENDERER_SORTED = 8;
-  GTK_CELL_RENDERER_FOCUSED = 16;
+  GTK_CELL_RENDERER_SELECTED: TGtkCellRendererState = 1;
+  GTK_CELL_RENDERER_PRELIT: TGtkCellRendererState = 2;
+  GTK_CELL_RENDERER_INSENSITIVE: TGtkCellRendererState = 4;
+  GTK_CELL_RENDERER_SORTED: TGtkCellRendererState = 8;
+  GTK_CELL_RENDERER_FOCUSED: TGtkCellRendererState = 16;
 
+type
+  TGtkTreeModelFlags = Integer;
+const
   { GtkTreeModelFlags }
-  GTK_TREE_MODEL_ITERS_PERSIST = 1;
-  GTK_TREE_MODEL_LIST_ONLY = 2;
+  GTK_TREE_MODEL_ITERS_PERSIST: TGtkTreeModelFlags = 1;
+  GTK_TREE_MODEL_LIST_ONLY: TGtkTreeModelFlags = 2;
 
 type
   TGtkSizeRequestMode = Integer;
@@ -599,12 +623,15 @@ const
   GTK_SCROLL_START: TGtkScrollType = 14;
   GTK_SCROLL_END: TGtkScrollType = 15;
 
+type
+  TGtkRegionFlags = Integer;
+const
   { GtkRegionFlags }
-  GTK_REGION_EVEN = 1;
-  GTK_REGION_ODD = 2;
-  GTK_REGION_FIRST = 4;
-  GTK_REGION_LAST = 8;
-  GTK_REGION_SORTED = 32;
+  GTK_REGION_EVEN: TGtkRegionFlags = 1;
+  GTK_REGION_ODD: TGtkRegionFlags = 2;
+  GTK_REGION_FIRST: TGtkRegionFlags = 4;
+  GTK_REGION_LAST: TGtkRegionFlags = 8;
+  GTK_REGION_SORTED: TGtkRegionFlags = 32;
 
 type
   TGtkCornerType = Integer;
@@ -639,20 +666,23 @@ const
   GTK_CSS_SECTION_DECLARATION: TGtkCssSectionType = 6;
   GTK_CSS_SECTION_VALUE: TGtkCssSectionType = 7;
 
+type
+  TGtkDebugFlag = Integer;
+const
   { GtkDebugFlag }
-  GTK_DEBUG_MISC = 1;
-  GTK_DEBUG_PLUGSOCKET = 2;
-  GTK_DEBUG_TEXT = 4;
-  GTK_DEBUG_TREE = 8;
-  GTK_DEBUG_UPDATES = 16;
-  GTK_DEBUG_KEYBINDINGS = 32;
-  GTK_DEBUG_MULTIHEAD = 64;
-  GTK_DEBUG_MODULES = 128;
-  GTK_DEBUG_GEOMETRY = 256;
-  GTK_DEBUG_ICONTHEME = 512;
-  GTK_DEBUG_PRINTING = 1024;
-  GTK_DEBUG_BUILDER = 2048;
-  GTK_DEBUG_SIZE_REQUEST = 4096;
+  GTK_DEBUG_MISC: TGtkDebugFlag = 1;
+  GTK_DEBUG_PLUGSOCKET: TGtkDebugFlag = 2;
+  GTK_DEBUG_TEXT: TGtkDebugFlag = 4;
+  GTK_DEBUG_TREE: TGtkDebugFlag = 8;
+  GTK_DEBUG_UPDATES: TGtkDebugFlag = 16;
+  GTK_DEBUG_KEYBINDINGS: TGtkDebugFlag = 32;
+  GTK_DEBUG_MULTIHEAD: TGtkDebugFlag = 64;
+  GTK_DEBUG_MODULES: TGtkDebugFlag = 128;
+  GTK_DEBUG_GEOMETRY: TGtkDebugFlag = 256;
+  GTK_DEBUG_ICONTHEME: TGtkDebugFlag = 512;
+  GTK_DEBUG_PRINTING: TGtkDebugFlag = 1024;
+  GTK_DEBUG_BUILDER: TGtkDebugFlag = 2048;
+  GTK_DEBUG_SIZE_REQUEST: TGtkDebugFlag = 4096;
 
 type
   TGtkDeleteType = Integer;
@@ -695,11 +725,14 @@ const
   GTK_EXPANDER_SEMI_EXPANDED: TGtkExpanderStyle = 2;
   GTK_EXPANDER_EXPANDED: TGtkExpanderStyle = 3;
 
+type
+  TGtkFileFilterFlags = Integer;
+const
   { GtkFileFilterFlags }
-  GTK_FILE_FILTER_FILENAME = 1;
-  GTK_FILE_FILTER_URI = 2;
-  GTK_FILE_FILTER_DISPLAY_NAME = 4;
-  GTK_FILE_FILTER_MIME_TYPE = 8;
+  GTK_FILE_FILTER_FILENAME: TGtkFileFilterFlags = 1;
+  GTK_FILE_FILTER_URI: TGtkFileFilterFlags = 2;
+  GTK_FILE_FILTER_DISPLAY_NAME: TGtkFileFilterFlags = 4;
+  GTK_FILE_FILTER_MIME_TYPE: TGtkFileFilterFlags = 8;
 
 type
   TGtkFileChooserAction = Integer;
@@ -743,23 +776,29 @@ const
   GTK_IM_STATUS_CALLBACK: TGtkIMStatusStyle = 1;
   GTK_IM_STATUS_NONE: TGtkIMStatusStyle = 2;
 
+type
+  TGtkIconLookupFlags = Integer;
+const
   { GtkIconLookupFlags }
-  GTK_ICON_LOOKUP_NO_SVG = 1;
-  GTK_ICON_LOOKUP_FORCE_SVG = 2;
-  GTK_ICON_LOOKUP_USE_BUILTIN = 4;
-  GTK_ICON_LOOKUP_GENERIC_FALLBACK = 8;
-  GTK_ICON_LOOKUP_FORCE_SIZE = 16;
+  GTK_ICON_LOOKUP_NO_SVG: TGtkIconLookupFlags = 1;
+  GTK_ICON_LOOKUP_FORCE_SVG: TGtkIconLookupFlags = 2;
+  GTK_ICON_LOOKUP_USE_BUILTIN: TGtkIconLookupFlags = 4;
+  GTK_ICON_LOOKUP_GENERIC_FALLBACK: TGtkIconLookupFlags = 8;
+  GTK_ICON_LOOKUP_FORCE_SIZE: TGtkIconLookupFlags = 16;
 
+type
+  TGtkJunctionSides = Integer;
+const
   { GtkJunctionSides }
-  GTK_JUNCTION_NONE = 0;
-  GTK_JUNCTION_CORNER_TOPLEFT = 1;
-  GTK_JUNCTION_CORNER_TOPRIGHT = 2;
-  GTK_JUNCTION_CORNER_BOTTOMLEFT = 4;
-  GTK_JUNCTION_CORNER_BOTTOMRIGHT = 8;
-  GTK_JUNCTION_TOP = 3;
-  GTK_JUNCTION_BOTTOM = 12;
-  GTK_JUNCTION_LEFT = 5;
-  GTK_JUNCTION_RIGHT = 10;
+  GTK_JUNCTION_NONE: TGtkJunctionSides = 0;
+  GTK_JUNCTION_CORNER_TOPLEFT: TGtkJunctionSides = 1;
+  GTK_JUNCTION_CORNER_TOPRIGHT: TGtkJunctionSides = 2;
+  GTK_JUNCTION_CORNER_BOTTOMLEFT: TGtkJunctionSides = 4;
+  GTK_JUNCTION_CORNER_BOTTOMRIGHT: TGtkJunctionSides = 8;
+  GTK_JUNCTION_TOP: TGtkJunctionSides = 3;
+  GTK_JUNCTION_BOTTOM: TGtkJunctionSides = 12;
+  GTK_JUNCTION_LEFT: TGtkJunctionSides = 5;
+  GTK_JUNCTION_RIGHT: TGtkJunctionSides = 10;
 
 type
   TGtkIconThemeError = Integer;
@@ -951,11 +990,14 @@ const
   GTK_PRINT_STATUS_FINISHED: TGtkPrintStatus = 7;
   GTK_PRINT_STATUS_FINISHED_ABORTED: TGtkPrintStatus = 8;
 
+type
+  TGtkRcFlags = Integer;
+const
   { GtkRcFlags }
-  GTK_RC_FG = 1;
-  GTK_RC_BG = 2;
-  GTK_RC_TEXT = 4;
-  GTK_RC_BASE = 8;
+  GTK_RC_FG: TGtkRcFlags = 1;
+  GTK_RC_BG: TGtkRcFlags = 2;
+  GTK_RC_TEXT: TGtkRcFlags = 4;
+  GTK_RC_BASE: TGtkRcFlags = 8;
 
 type
   TGtkRcTokenType = Integer;
@@ -1011,13 +1053,16 @@ const
   GTK_RECENT_SORT_LRU: TGtkRecentSortType = 2;
   GTK_RECENT_SORT_CUSTOM: TGtkRecentSortType = 3;
 
+type
+  TGtkRecentFilterFlags = Integer;
+const
   { GtkRecentFilterFlags }
-  GTK_RECENT_FILTER_URI = 1;
-  GTK_RECENT_FILTER_DISPLAY_NAME = 2;
-  GTK_RECENT_FILTER_MIME_TYPE = 4;
-  GTK_RECENT_FILTER_APPLICATION = 8;
-  GTK_RECENT_FILTER_GROUP = 16;
-  GTK_RECENT_FILTER_AGE = 32;
+  GTK_RECENT_FILTER_URI: TGtkRecentFilterFlags = 1;
+  GTK_RECENT_FILTER_DISPLAY_NAME: TGtkRecentFilterFlags = 2;
+  GTK_RECENT_FILTER_MIME_TYPE: TGtkRecentFilterFlags = 4;
+  GTK_RECENT_FILTER_APPLICATION: TGtkRecentFilterFlags = 8;
+  GTK_RECENT_FILTER_GROUP: TGtkRecentFilterFlags = 16;
+  GTK_RECENT_FILTER_AGE: TGtkRecentFilterFlags = 32;
 
 type
   TGtkRecentChooserError = Integer;
@@ -1102,11 +1147,14 @@ const
   GTK_SPIN_END: TGtkSpinType = 5;
   GTK_SPIN_USER_DEFINED: TGtkSpinType = 6;
 
+type
+  TGtkTargetFlags = Integer;
+const
   { GtkTargetFlags }
-  GTK_TARGET_SAME_APP = 1;
-  GTK_TARGET_SAME_WIDGET = 2;
-  GTK_TARGET_OTHER_APP = 4;
-  GTK_TARGET_OTHER_WIDGET = 8;
+  GTK_TARGET_SAME_APP: TGtkTargetFlags = 1;
+  GTK_TARGET_SAME_WIDGET: TGtkTargetFlags = 2;
+  GTK_TARGET_OTHER_APP: TGtkTargetFlags = 4;
+  GTK_TARGET_OTHER_WIDGET: TGtkTargetFlags = 8;
 
 type
   TGtkWrapMode = Integer;
@@ -1117,10 +1165,13 @@ const
   GTK_WRAP_WORD: TGtkWrapMode = 2;
   GTK_WRAP_WORD_CHAR: TGtkWrapMode = 3;
 
+type
+  TGtkTextSearchFlags = Integer;
+const
   { GtkTextSearchFlags }
-  GTK_TEXT_SEARCH_VISIBLE_ONLY = 1;
-  GTK_TEXT_SEARCH_TEXT_ONLY = 2;
-  GTK_TEXT_SEARCH_CASE_INSENSITIVE = 4;
+  GTK_TEXT_SEARCH_VISIBLE_ONLY: TGtkTextSearchFlags = 1;
+  GTK_TEXT_SEARCH_TEXT_ONLY: TGtkTextSearchFlags = 2;
+  GTK_TEXT_SEARCH_CASE_INSENSITIVE: TGtkTextSearchFlags = 4;
 
 type
   TGtkTextBufferTargetInfo = Integer;
@@ -1142,9 +1193,12 @@ const
   GTK_TEXT_WINDOW_TOP: TGtkTextWindowType = 5;
   GTK_TEXT_WINDOW_BOTTOM: TGtkTextWindowType = 6;
 
+type
+  TGtkToolPaletteDragTargets = Integer;
+const
   { GtkToolPaletteDragTargets }
-  GTK_TOOL_PALETTE_DRAG_ITEMS = 1;
-  GTK_TOOL_PALETTE_DRAG_GROUPS = 2;
+  GTK_TOOL_PALETTE_DRAG_ITEMS: TGtkToolPaletteDragTargets = 1;
+  GTK_TOOL_PALETTE_DRAG_GROUPS: TGtkToolPaletteDragTargets = 2;
 
 type
   TGtkToolbarSpaceStyle = Integer;
@@ -1179,18 +1233,21 @@ const
   GTK_TREE_VIEW_GRID_LINES_VERTICAL: TGtkTreeViewGridLines = 2;
   GTK_TREE_VIEW_GRID_LINES_BOTH: TGtkTreeViewGridLines = 3;
 
+type
+  TGtkUIManagerItemType = Integer;
+const
   { GtkUIManagerItemType }
-  GTK_UI_MANAGER_AUTO = 0;
-  GTK_UI_MANAGER_MENUBAR = 1;
-  GTK_UI_MANAGER_MENU = 2;
-  GTK_UI_MANAGER_TOOLBAR = 4;
-  GTK_UI_MANAGER_PLACEHOLDER = 8;
-  GTK_UI_MANAGER_POPUP = 16;
-  GTK_UI_MANAGER_MENUITEM = 32;
-  GTK_UI_MANAGER_TOOLITEM = 64;
-  GTK_UI_MANAGER_SEPARATOR = 128;
-  GTK_UI_MANAGER_ACCELERATOR = 256;
-  GTK_UI_MANAGER_POPUP_WITH_ACCELS = 512;
+  GTK_UI_MANAGER_AUTO: TGtkUIManagerItemType = 0;
+  GTK_UI_MANAGER_MENUBAR: TGtkUIManagerItemType = 1;
+  GTK_UI_MANAGER_MENU: TGtkUIManagerItemType = 2;
+  GTK_UI_MANAGER_TOOLBAR: TGtkUIManagerItemType = 4;
+  GTK_UI_MANAGER_PLACEHOLDER: TGtkUIManagerItemType = 8;
+  GTK_UI_MANAGER_POPUP: TGtkUIManagerItemType = 16;
+  GTK_UI_MANAGER_MENUITEM: TGtkUIManagerItemType = 32;
+  GTK_UI_MANAGER_TOOLITEM: TGtkUIManagerItemType = 64;
+  GTK_UI_MANAGER_SEPARATOR: TGtkUIManagerItemType = 128;
+  GTK_UI_MANAGER_ACCELERATOR: TGtkUIManagerItemType = 256;
+  GTK_UI_MANAGER_POPUP_WITH_ACCELS: TGtkUIManagerItemType = 512;
 type
 
   PPGtkAllocation = ^PGtkAllocation;
@@ -1229,13 +1286,6 @@ type
 
   PPGtkAccelFlags = ^PGtkAccelFlags;
   PGtkAccelFlags = ^TGtkAccelFlags;
-  TGtkAccelFlags = packed object(TBitObject32)
-  public
-    property visible: DWord index 1 read GetBit write SetBit;
-    property locked: DWord index 2 read GetBit write SetBit;
-    property mask: DWord index 7 read GetBit write SetBit;
-  end;
-
 
   PPGtkDirectionType = ^PGtkDirectionType;
   PGtkDirectionType = ^TGtkDirectionType;
@@ -1248,14 +1298,6 @@ type
 
   PPGtkDestDefaults = ^PGtkDestDefaults;
   PGtkDestDefaults = ^TGtkDestDefaults;
-  TGtkDestDefaults = packed object(TBitObject32)
-  public
-    property motion: DWord index 1 read GetBit write SetBit;
-    property highlight: DWord index 2 read GetBit write SetBit;
-    property drop: DWord index 4 read GetBit write SetBit;
-    property all: DWord index 7 read GetBit write SetBit;
-  end;
-
 
   PPPGtkTargetEntry = ^PPGtkTargetEntry;
   PPGtkTargetEntry = ^PGtkTargetEntry;
@@ -1287,17 +1329,6 @@ type
 
   PPGtkStateFlags = ^PGtkStateFlags;
   PGtkStateFlags = ^TGtkStateFlags;
-  TGtkStateFlags = packed object(TBitObject32)
-  public
-    property normal: DWord index 0 read GetBit write SetBit;
-    property active: DWord index 1 read GetBit write SetBit;
-    property prelight: DWord index 2 read GetBit write SetBit;
-    property selected: DWord index 4 read GetBit write SetBit;
-    property insensitive: DWord index 8 read GetBit write SetBit;
-    property inconsistent: DWord index 16 read GetBit write SetBit;
-    property focused: DWord index 32 read GetBit write SetBit;
-  end;
-
 
   PPGtkStyleContext = ^PGtkStyleContext;
   PGtkStyleContext = ^TGtkStyleContext;
@@ -1810,12 +1841,6 @@ type
 
   PPGtkDialogFlags = ^PGtkDialogFlags;
   PGtkDialogFlags = ^TGtkDialogFlags;
-  TGtkDialogFlags = packed object(TBitObject32)
-  public
-    property modal: DWord index 1 read GetBit write SetBit;
-    property destroy_with_parent: DWord index 2 read GetBit write SetBit;
-  end;
-
 
   PPGtkDialogPrivate = ^PGtkDialogPrivate;
   PGtkDialogPrivate = ^TGtkDialogPrivate;
@@ -3210,13 +3235,9 @@ type
     _gtk_reserved4: procedure; cdecl;
     _gtk_reserved5: procedure; cdecl;
   end;
-  TGtkAttachOptions = packed object(TBitObject32)
-  public
-    property expand: DWord index 1 read GetBit write SetBit;
-    property shrink: DWord index 2 read GetBit write SetBit;
-    property fill: DWord index 4 read GetBit write SetBit;
-  end;
 
+  PPGtkAttachOptions = ^PGtkAttachOptions;
+  PGtkAttachOptions = ^TGtkAttachOptions;
 
   TGtkBinPrivate = record
   end;
@@ -3493,15 +3514,9 @@ type
 
   PPGtkButtonsType = ^PGtkButtonsType;
   PGtkButtonsType = ^TGtkButtonsType;
-  TGtkCalendarDisplayOptions = packed object(TBitObject32)
-  public
-    property show_heading: DWord index 1 read GetBit write SetBit;
-    property show_day_names: DWord index 2 read GetBit write SetBit;
-    property no_month_change: DWord index 4 read GetBit write SetBit;
-    property show_week_numbers: DWord index 8 read GetBit write SetBit;
-    property show_details: DWord index 32 read GetBit write SetBit;
-  end;
 
+  PPGtkCalendarDisplayOptions = ^PGtkCalendarDisplayOptions;
+  PGtkCalendarDisplayOptions = ^TGtkCalendarDisplayOptions;
 
   PPGtkCalendar = ^PGtkCalendar;
   PGtkCalendar = ^TGtkCalendar;
@@ -3514,9 +3529,6 @@ type
   end;
 
 
-
-  PPGtkCalendarDisplayOptions = ^PGtkCalendarDisplayOptions;
-  PGtkCalendarDisplayOptions = ^TGtkCalendarDisplayOptions;
 
   PPGtkCalendarDetailFunc = ^PGtkCalendarDetailFunc;
   PGtkCalendarDetailFunc = ^TGtkCalendarDetailFunc;
@@ -3568,15 +3580,6 @@ type
 
   PPGtkCellRendererState = ^PGtkCellRendererState;
   PGtkCellRendererState = ^TGtkCellRendererState;
-  TGtkCellRendererState = packed object(TBitObject32)
-  public
-    property selected: DWord index 1 read GetBit write SetBit;
-    property prelit: DWord index 2 read GetBit write SetBit;
-    property insensitive: DWord index 4 read GetBit write SetBit;
-    property sorted: DWord index 8 read GetBit write SetBit;
-    property focused: DWord index 16 read GetBit write SetBit;
-  end;
-
 
   PPGtkCellRendererPrivate = ^PGtkCellRendererPrivate;
   PGtkCellRendererPrivate = ^TGtkCellRendererPrivate;
@@ -3658,12 +3661,6 @@ type
 
   PPGtkTreeModelFlags = ^PGtkTreeModelFlags;
   PGtkTreeModelFlags = ^TGtkTreeModelFlags;
-  TGtkTreeModelFlags = packed object(TBitObject32)
-  public
-    property iters_persist: DWord index 1 read GetBit write SetBit;
-    property list_only: DWord index 2 read GetBit write SetBit;
-  end;
-
   TGtkTreePath = object
     function new: PGtkTreePath; cdecl; inline; static;
     function new_first: PGtkTreePath; cdecl; inline; static;
@@ -4815,15 +4812,6 @@ type
 
   PPGtkRegionFlags = ^PGtkRegionFlags;
   PGtkRegionFlags = ^TGtkRegionFlags;
-  TGtkRegionFlags = packed object(TBitObject32)
-  public
-    property even: DWord index 1 read GetBit write SetBit;
-    property odd: DWord index 2 read GetBit write SetBit;
-    property first: DWord index 4 read GetBit write SetBit;
-    property last: DWord index 8 read GetBit write SetBit;
-    property sorted: DWord index 32 read GetBit write SetBit;
-  end;
-
   TGtkWidgetPath = object
     function new: PGtkWidgetPath; cdecl; inline; static;
     function append_for_widget(widget: PGtkWidget): gint; cdecl; inline;
@@ -4933,23 +4921,9 @@ type
 
   PPGtkCssProviderError = ^PGtkCssProviderError;
   PGtkCssProviderError = ^TGtkCssProviderError;
-  TGtkDebugFlag = packed object(TBitObject32)
-  public
-    property misc: DWord index 1 read GetBit write SetBit;
-    property plugsocket: DWord index 2 read GetBit write SetBit;
-    property text: DWord index 4 read GetBit write SetBit;
-    property tree: DWord index 8 read GetBit write SetBit;
-    property updates: DWord index 16 read GetBit write SetBit;
-    property keybindings: DWord index 32 read GetBit write SetBit;
-    property multihead: DWord index 64 read GetBit write SetBit;
-    property modules: DWord index 128 read GetBit write SetBit;
-    property geometry: DWord index 256 read GetBit write SetBit;
-    property icontheme: DWord index 512 read GetBit write SetBit;
-    property printing: DWord index 1024 read GetBit write SetBit;
-    property builder: DWord index 2048 read GetBit write SetBit;
-    property size_request: DWord index 4096 read GetBit write SetBit;
-  end;
 
+  PPGtkDebugFlag = ^PGtkDebugFlag;
+  PGtkDebugFlag = ^TGtkDebugFlag;
 
   PPGtkDeleteType = ^PGtkDeleteType;
   PGtkDeleteType = ^TGtkDeleteType;
@@ -5384,14 +5358,6 @@ type
 
   PPGtkFileFilterFlags = ^PGtkFileFilterFlags;
   PGtkFileFilterFlags = ^TGtkFileFilterFlags;
-  TGtkFileFilterFlags = packed object(TBitObject32)
-  public
-    property filename: DWord index 1 read GetBit write SetBit;
-    property uri: DWord index 2 read GetBit write SetBit;
-    property display_name: DWord index 4 read GetBit write SetBit;
-    property mime_type: DWord index 8 read GetBit write SetBit;
-  end;
-
 
   PPGtkFileFilterFunc = ^PGtkFileFilterFunc;
   PGtkFileFilterFunc = ^TGtkFileFilterFunc;
@@ -6422,15 +6388,6 @@ type
 
   PPGtkIconLookupFlags = ^PGtkIconLookupFlags;
   PGtkIconLookupFlags = ^TGtkIconLookupFlags;
-  TGtkIconLookupFlags = packed object(TBitObject32)
-  public
-    property no_svg: DWord index 1 read GetBit write SetBit;
-    property force_svg: DWord index 2 read GetBit write SetBit;
-    property use_builtin: DWord index 4 read GetBit write SetBit;
-    property generic_fallback: DWord index 8 read GetBit write SetBit;
-    property force_size: DWord index 16 read GetBit write SetBit;
-  end;
-
 
   PPGtkIconThemePrivate = ^PGtkIconThemePrivate;
   PGtkIconThemePrivate = ^TGtkIconThemePrivate;
@@ -6460,19 +6417,6 @@ type
 
   PPGtkJunctionSides = ^PGtkJunctionSides;
   PGtkJunctionSides = ^TGtkJunctionSides;
-  TGtkJunctionSides = packed object(TBitObject32)
-  public
-    property none: DWord index 0 read GetBit write SetBit;
-    property corner_topleft: DWord index 1 read GetBit write SetBit;
-    property corner_topright: DWord index 2 read GetBit write SetBit;
-    property corner_bottomleft: DWord index 4 read GetBit write SetBit;
-    property corner_bottomright: DWord index 8 read GetBit write SetBit;
-    property top: DWord index 3 read GetBit write SetBit;
-    property bottom: DWord index 12 read GetBit write SetBit;
-    property left: DWord index 5 read GetBit write SetBit;
-    property right: DWord index 10 read GetBit write SetBit;
-  end;
-
 
   PPGtkStyleContextPrivate = ^PGtkStyleContextPrivate;
   PGtkStyleContextPrivate = ^TGtkStyleContextPrivate;
@@ -8290,14 +8234,9 @@ type
   end;
 
 
-  TGtkRcFlags = packed object(TBitObject32)
-  public
-    property fg: DWord index 1 read GetBit write SetBit;
-    property bg: DWord index 2 read GetBit write SetBit;
-    property text: DWord index 4 read GetBit write SetBit;
-    property base: DWord index 8 read GetBit write SetBit;
-  end;
 
+  PPGtkRcFlags = ^PGtkRcFlags;
+  PGtkRcFlags = ^TGtkRcFlags;
 
   PPGtkRcProperty = ^PGtkRcProperty;
   PGtkRcProperty = ^TGtkRcProperty;
@@ -8312,9 +8251,6 @@ type
     function parse_flags(pspec: PGParamSpec; gstring: PGString; property_value: PGValue): gboolean; cdecl; inline; static;
     function parse_requisition(pspec: PGParamSpec; gstring: PGString; property_value: PGValue): gboolean; cdecl; inline; static;
   end;
-
-  PPGtkRcFlags = ^PGtkRcFlags;
-  PGtkRcFlags = ^TGtkRcFlags;
   TGtkRcStyleBitfield0 = bitpacked record
     engine_specified: guint1 { changed from guint to accomodate 1 bitsize requirement };
   end;
@@ -8471,16 +8407,6 @@ type
 
   PPGtkRecentFilterFlags = ^PGtkRecentFilterFlags;
   PGtkRecentFilterFlags = ^TGtkRecentFilterFlags;
-  TGtkRecentFilterFlags = packed object(TBitObject32)
-  public
-    property uri: DWord index 1 read GetBit write SetBit;
-    property display_name: DWord index 2 read GetBit write SetBit;
-    property mime_type: DWord index 4 read GetBit write SetBit;
-    property application: DWord index 8 read GetBit write SetBit;
-    property group: DWord index 16 read GetBit write SetBit;
-    property age: DWord index 32 read GetBit write SetBit;
-  end;
-
 
   PPGtkRecentFilterFunc = ^PGtkRecentFilterFunc;
   PGtkRecentFilterFunc = ^TGtkRecentFilterFunc;
@@ -9274,9 +9200,6 @@ type
 
   PPGtkTable = ^PGtkTable;
   PGtkTable = ^TGtkTable;
-
-  PPGtkAttachOptions = ^PGtkAttachOptions;
-  PGtkAttachOptions = ^TGtkAttachOptions;
   TGtkTable = object(TGtkContainer)
     priv2: PGtkTablePrivate;
     function new(rows: guint; columns: guint; homogeneous: gboolean): PGtkTable; cdecl; inline; static;
@@ -9355,14 +9278,9 @@ type
   end;
 
 
-  TGtkTargetFlags = packed object(TBitObject32)
-  public
-    property same_app: DWord index 1 read GetBit write SetBit;
-    property same_widget: DWord index 2 read GetBit write SetBit;
-    property other_app: DWord index 4 read GetBit write SetBit;
-    property other_widget: DWord index 8 read GetBit write SetBit;
-  end;
 
+  PPGtkTargetFlags = ^PGtkTargetFlags;
+  PGtkTargetFlags = ^TGtkTargetFlags;
 
   PPGtkTearoffMenuItemPrivate = ^PGtkTearoffMenuItemPrivate;
   PGtkTearoffMenuItemPrivate = ^TGtkTearoffMenuItemPrivate;
@@ -9552,13 +9470,6 @@ type
 
   PPGtkTextSearchFlags = ^PGtkTextSearchFlags;
   PGtkTextSearchFlags = ^TGtkTextSearchFlags;
-  TGtkTextSearchFlags = packed object(TBitObject32)
-  public
-    property visible_only: DWord index 1 read GetBit write SetBit;
-    property text_only: DWord index 2 read GetBit write SetBit;
-    property case_insensitive: DWord index 4 read GetBit write SetBit;
-  end;
-
   TGtkTextIter = object
     dummy1: gpointer;
     dummy2: gpointer;
@@ -10042,12 +9953,9 @@ type
     _gtk_reserved3: procedure; cdecl;
     _gtk_reserved4: procedure; cdecl;
   end;
-  TGtkToolPaletteDragTargets = packed object(TBitObject32)
-  public
-    property items: DWord index 1 read GetBit write SetBit;
-    property groups: DWord index 2 read GetBit write SetBit;
-  end;
 
+  PPGtkToolPaletteDragTargets = ^PGtkToolPaletteDragTargets;
+  PGtkToolPaletteDragTargets = ^TGtkToolPaletteDragTargets;
 
   PPGtkToolPalettePrivate = ^PGtkToolPalettePrivate;
   PGtkToolPalettePrivate = ^TGtkToolPalettePrivate;
@@ -10059,9 +9967,6 @@ type
 
   PPGtkToolPalette = ^PGtkToolPalette;
   PGtkToolPalette = ^TGtkToolPalette;
-
-  PPGtkToolPaletteDragTargets = ^PGtkToolPaletteDragTargets;
-  PGtkToolPaletteDragTargets = ^TGtkToolPaletteDragTargets;
   TGtkToolPalette = object(TGtkContainer)
     priv2: PGtkToolPalettePrivate;
     function new: PGtkToolPalette; cdecl; inline; static;
@@ -10709,21 +10614,6 @@ type
 
   PPGtkUIManagerItemType = ^PGtkUIManagerItemType;
   PGtkUIManagerItemType = ^TGtkUIManagerItemType;
-  TGtkUIManagerItemType = packed object(TBitObject32)
-  public
-    property auto: DWord index 0 read GetBit write SetBit;
-    property menubar: DWord index 1 read GetBit write SetBit;
-    property menu: DWord index 2 read GetBit write SetBit;
-    property toolbar: DWord index 4 read GetBit write SetBit;
-    property placeholder: DWord index 8 read GetBit write SetBit;
-    property popup: DWord index 16 read GetBit write SetBit;
-    property menuitem: DWord index 32 read GetBit write SetBit;
-    property toolitem: DWord index 64 read GetBit write SetBit;
-    property separator: DWord index 128 read GetBit write SetBit;
-    property accelerator: DWord index 256 read GetBit write SetBit;
-    property popup_with_accels: DWord index 512 read GetBit write SetBit;
-  end;
-
 
   PPGtkUIManagerPrivate = ^PGtkUIManagerPrivate;
   PGtkUIManagerPrivate = ^TGtkUIManagerPrivate;
@@ -14511,7 +14401,6 @@ begin
   Result := Gtk3.gtk_widget_activate(@self);
 end;
 
-
 procedure TGtkWidget.add_accelerator(accel_signal: Pgchar; accel_group: PGtkAccelGroup; accel_key: guint; accel_mods: TGdkModifierType; accel_flags: TGtkAccelFlags); cdecl;
 begin
   Gtk3.gtk_widget_add_accelerator(@self, accel_signal, accel_group, accel_key, accel_mods, accel_flags);
@@ -14621,7 +14510,6 @@ function TGtkWidget.drag_dest_get_track_motion: gboolean; cdecl;
 begin
   Result := Gtk3.gtk_drag_dest_get_track_motion(@self);
 end;
-
 
 procedure TGtkWidget.drag_dest_set(flags: TGtkDestDefaults; targets: PGtkTargetEntry; n_targets: gint; actions: TGdkDragAction); cdecl;
 begin
@@ -14987,7 +14875,6 @@ function TGtkWidget.get_state: TGtkStateType; cdecl;
 begin
   Result := Gtk3.gtk_widget_get_state(@self);
 end;
-
 
 function TGtkWidget.get_state_flags: TGtkStateFlags; cdecl;
 begin
@@ -16313,7 +16200,6 @@ function TGtkDialog.new: PGtkDialog; cdecl;
 begin
   Result := Gtk3.gtk_dialog_new();
 end;
-
 
 procedure TGtkDialog.add_action_widget(child: PGtkWidget; response_id: gint); cdecl;
 begin
@@ -18305,7 +18191,6 @@ begin
   Gtk3.gtk_assistant_update_buttons_state(@self);
 end;
 
-
 function TGtkBindingSet.activate(keyval: guint; modifiers: TGdkModifierType; object_: PGObject): gboolean; cdecl;
 begin
   Result := Gtk3.gtk_binding_set_activate(@self, keyval, modifiers, object_);
@@ -18601,7 +18486,6 @@ begin
   Gtk3.gtk_button_box_set_layout(@self, layout_style);
 end;
 
-
 function TGtkCalendar.new: PGtkCalendar; cdecl;
 begin
   Result := Gtk3.gtk_calendar_new();
@@ -18676,7 +18560,6 @@ procedure TGtkCalendar.unmark_day(day: guint); cdecl;
 begin
   Gtk3.gtk_calendar_unmark_day(@self, day);
 end;
-
 
 function TGtkCellRenderer.activate(event: PGdkEvent; widget: PGtkWidget; path: Pgchar; background_area: PGdkRectangle; cell_area: PGdkRectangle; flags: TGtkCellRendererState): gboolean; cdecl;
 begin
@@ -18857,7 +18740,6 @@ function TGtkTreeModel.get_column_type(index_: gint): TGType; cdecl;
 begin
   Result := Gtk3.gtk_tree_model_get_column_type(@self, index_);
 end;
-
 
 function TGtkTreeModel.get_flags: TGtkTreeModelFlags; cdecl;
 begin
@@ -20574,7 +20456,6 @@ begin
   Gtk3.gtk_widget_path_iter_add_class(@self, pos, name);
 end;
 
-
 procedure TGtkWidgetPath.iter_add_region(pos: gint; name: Pgchar; flags: TGtkRegionFlags); cdecl;
 begin
   Gtk3.gtk_widget_path_iter_add_region(@self, pos, name, flags);
@@ -20789,7 +20670,6 @@ procedure TGtkCssSection.unref; cdecl;
 begin
   Gtk3.gtk_css_section_unref(@self);
 end;
-
 
 function TGtkDrawingArea.new: PGtkDrawingArea; cdecl;
 begin
@@ -21545,7 +21425,6 @@ function TGtkFileFilter.new: PGtkFileFilter; cdecl;
 begin
   Result := Gtk3.gtk_file_filter_new();
 end;
-
 
 procedure TGtkFileFilter.add_custom(needed: TGtkFileFilterFlags; func: TGtkFileFilterFunc; data: gpointer; notify: TGDestroyNotify); cdecl;
 begin
@@ -22882,7 +22761,6 @@ begin
   Gtk3.gtk_icon_theme_append_search_path(@self, path);
 end;
 
-
 function TGtkIconTheme.choose_icon(icon_names: Pgchar; size: gint; flags: TGtkIconLookupFlags): PGtkIconInfo; cdecl;
 begin
   Result := Gtk3.gtk_icon_theme_choose_icon(@self, icon_names, size, flags);
@@ -23027,7 +22905,6 @@ function TGtkStyleContext.get_font(state: TGtkStateFlags): PPangoFontDescription
 begin
   Result := Gtk3.gtk_style_context_get_font(@self, state);
 end;
-
 
 function TGtkStyleContext.get_junction_sides: TGtkJunctionSides; cdecl;
 begin
@@ -25974,7 +25851,6 @@ begin
   Gtk3.gtk_radio_tool_button_set_group(@self, group);
 end;
 
-
 function TGtkRcProperty.parse_border(pspec: PGParamSpec; gstring: PGString; property_value: PGValue): gboolean; cdecl;
 begin
   Result := Gtk3.gtk_rc_property_parse_border(pspec, gstring, property_value);
@@ -26239,7 +26115,6 @@ procedure TGtkRecentFilter.add_application(application: Pgchar); cdecl;
 begin
   Gtk3.gtk_recent_filter_add_application(@self, application);
 end;
-
 
 procedure TGtkRecentFilter.add_custom(needed: TGtkRecentFilterFlags; func: TGtkRecentFilterFunc; data: gpointer; data_destroy: TGDestroyNotify); cdecl;
 begin
@@ -27101,7 +26976,6 @@ begin
   Gtk3.gtk_table_set_row_spacings(@self, spacing);
 end;
 
-
 function TGtkTearoffMenuItem.new: PGtkTearoffMenuItem; cdecl;
 begin
   Result := Gtk3.gtk_tearoff_menu_item_new();
@@ -27221,7 +27095,6 @@ function TGtkTextIter.backward_lines(count: gint): gboolean; cdecl;
 begin
   Result := Gtk3.gtk_text_iter_backward_lines(@self, count);
 end;
-
 
 function TGtkTextIter.backward_search(str: Pgchar; flags: TGtkTextSearchFlags; match_start: PGtkTextIter; match_end: PGtkTextIter; limit: PGtkTextIter): gboolean; cdecl;
 begin
@@ -28217,7 +28090,6 @@ procedure TGtkToolItemGroup.set_label_widget(label_widget: PGtkWidget); cdecl;
 begin
   Gtk3.gtk_tool_item_group_set_label_widget(@self, label_widget);
 end;
-
 
 function TGtkToolPalette.new: PGtkToolPalette; cdecl;
 begin
@@ -29458,7 +29330,6 @@ function TGtkUIManager.new: PGtkUIManager; cdecl;
 begin
   Result := Gtk3.gtk_ui_manager_new();
 end;
-
 
 procedure TGtkUIManager.add_ui(merge_id: guint; path: Pgchar; name: Pgchar; action: Pgchar; type_: TGtkUIManagerItemType; top: gboolean); cdecl;
 begin

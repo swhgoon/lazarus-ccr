@@ -104,47 +104,68 @@ const
   VOLUME_IDENTIFIER_KIND_UUID = 'uuid';
   VOLUME_MONITOR_EXTENSION_POINT_NAME = 'gio-volume-monitor';
 
+type
+  TGAppInfoCreateFlags = Integer;
+const
   { GAppInfoCreateFlags }
-  G_APP_INFO_CREATE_NONE = 0;
-  G_APP_INFO_CREATE_NEEDS_TERMINAL = 1;
-  G_APP_INFO_CREATE_SUPPORTS_URIS = 2;
-  G_APP_INFO_CREATE_SUPPORTS_STARTUP_NOTIFICATION = 4;
+  G_APP_INFO_CREATE_NONE: TGAppInfoCreateFlags = 0;
+  G_APP_INFO_CREATE_NEEDS_TERMINAL: TGAppInfoCreateFlags = 1;
+  G_APP_INFO_CREATE_SUPPORTS_URIS: TGAppInfoCreateFlags = 2;
+  G_APP_INFO_CREATE_SUPPORTS_STARTUP_NOTIFICATION: TGAppInfoCreateFlags = 4;
 
+type
+  TGApplicationFlags = Integer;
+const
   { GApplicationFlags }
-  G_APPLICATION_FLAGS_NONE = 0;
-  G_APPLICATION_IS_SERVICE = 1;
-  G_APPLICATION_IS_LAUNCHER = 2;
-  G_APPLICATION_HANDLES_OPEN = 4;
-  G_APPLICATION_HANDLES_COMMAND_LINE = 8;
-  G_APPLICATION_SEND_ENVIRONMENT = 16;
-  G_APPLICATION_NON_UNIQUE = 32;
+  G_APPLICATION_FLAGS_NONE: TGApplicationFlags = 0;
+  G_APPLICATION_IS_SERVICE: TGApplicationFlags = 1;
+  G_APPLICATION_IS_LAUNCHER: TGApplicationFlags = 2;
+  G_APPLICATION_HANDLES_OPEN: TGApplicationFlags = 4;
+  G_APPLICATION_HANDLES_COMMAND_LINE: TGApplicationFlags = 8;
+  G_APPLICATION_SEND_ENVIRONMENT: TGApplicationFlags = 16;
+  G_APPLICATION_NON_UNIQUE: TGApplicationFlags = 32;
 
+type
+  TGFileCreateFlags = Integer;
+const
   { GFileCreateFlags }
-  G_FILE_CREATE_NONE = 0;
-  G_FILE_CREATE_PRIVATE = 1;
-  G_FILE_CREATE_REPLACE_DESTINATION = 2;
+  G_FILE_CREATE_NONE: TGFileCreateFlags = 0;
+  G_FILE_CREATE_PRIVATE: TGFileCreateFlags = 1;
+  G_FILE_CREATE_REPLACE_DESTINATION: TGFileCreateFlags = 2;
 
+type
+  TGFileCopyFlags = Integer;
+const
   { GFileCopyFlags }
-  G_FILE_COPY_NONE = 0;
-  G_FILE_COPY_OVERWRITE = 1;
-  G_FILE_COPY_BACKUP = 2;
-  G_FILE_COPY_NOFOLLOW_SYMLINKS = 4;
-  G_FILE_COPY_ALL_METADATA = 8;
-  G_FILE_COPY_NO_FALLBACK_FOR_MOVE = 16;
-  G_FILE_COPY_TARGET_DEFAULT_PERMS = 32;
+  G_FILE_COPY_NONE: TGFileCopyFlags = 0;
+  G_FILE_COPY_OVERWRITE: TGFileCopyFlags = 1;
+  G_FILE_COPY_BACKUP: TGFileCopyFlags = 2;
+  G_FILE_COPY_NOFOLLOW_SYMLINKS: TGFileCopyFlags = 4;
+  G_FILE_COPY_ALL_METADATA: TGFileCopyFlags = 8;
+  G_FILE_COPY_NO_FALLBACK_FOR_MOVE: TGFileCopyFlags = 16;
+  G_FILE_COPY_TARGET_DEFAULT_PERMS: TGFileCopyFlags = 32;
 
+type
+  TGMountUnmountFlags = Integer;
+const
   { GMountUnmountFlags }
-  G_MOUNT_UNMOUNT_NONE = 0;
-  G_MOUNT_UNMOUNT_FORCE = 1;
+  G_MOUNT_UNMOUNT_NONE: TGMountUnmountFlags = 0;
+  G_MOUNT_UNMOUNT_FORCE: TGMountUnmountFlags = 1;
 
+type
+  TGFileQueryInfoFlags = Integer;
+const
   { GFileQueryInfoFlags }
-  G_FILE_QUERY_INFO_NONE = 0;
-  G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS = 1;
+  G_FILE_QUERY_INFO_NONE: TGFileQueryInfoFlags = 0;
+  G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS: TGFileQueryInfoFlags = 1;
 
+type
+  TGFileMonitorFlags = Integer;
+const
   { GFileMonitorFlags }
-  G_FILE_MONITOR_NONE = 0;
-  G_FILE_MONITOR_WATCH_MOUNTS = 1;
-  G_FILE_MONITOR_SEND_MOVED = 2;
+  G_FILE_MONITOR_NONE: TGFileMonitorFlags = 0;
+  G_FILE_MONITOR_WATCH_MOUNTS: TGFileMonitorFlags = 1;
+  G_FILE_MONITOR_SEND_MOVED: TGFileMonitorFlags = 2;
 
 type
   TGMountMountFlags = Integer;
@@ -173,54 +194,84 @@ const
   { GDriveStartFlags }
   G_DRIVE_START_NONE: TGDriveStartFlags = 0;
 
+type
+  TGAskPasswordFlags = Integer;
+const
   { GAskPasswordFlags }
-  G_ASK_PASSWORD_NEED_PASSWORD = 1;
-  G_ASK_PASSWORD_NEED_USERNAME = 2;
-  G_ASK_PASSWORD_NEED_DOMAIN = 4;
-  G_ASK_PASSWORD_SAVING_SUPPORTED = 8;
-  G_ASK_PASSWORD_ANONYMOUS_SUPPORTED = 16;
+  G_ASK_PASSWORD_NEED_PASSWORD: TGAskPasswordFlags = 1;
+  G_ASK_PASSWORD_NEED_USERNAME: TGAskPasswordFlags = 2;
+  G_ASK_PASSWORD_NEED_DOMAIN: TGAskPasswordFlags = 4;
+  G_ASK_PASSWORD_SAVING_SUPPORTED: TGAskPasswordFlags = 8;
+  G_ASK_PASSWORD_ANONYMOUS_SUPPORTED: TGAskPasswordFlags = 16;
 
+type
+  TGOutputStreamSpliceFlags = Integer;
+const
   { GOutputStreamSpliceFlags }
-  G_OUTPUT_STREAM_SPLICE_NONE = 0;
-  G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE = 1;
-  G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET = 2;
+  G_OUTPUT_STREAM_SPLICE_NONE: TGOutputStreamSpliceFlags = 0;
+  G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE: TGOutputStreamSpliceFlags = 1;
+  G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET: TGOutputStreamSpliceFlags = 2;
 
+type
+  TGDBusConnectionFlags = Integer;
+const
   { GDBusConnectionFlags }
-  G_DBUS_CONNECTION_FLAGS_NONE = 0;
-  G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT = 1;
-  G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_SERVER = 2;
-  G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_ALLOW_ANONYMOUS = 4;
-  G_DBUS_CONNECTION_FLAGS_MESSAGE_BUS_CONNECTION = 8;
-  G_DBUS_CONNECTION_FLAGS_DELAY_MESSAGE_PROCESSING = 16;
+  G_DBUS_CONNECTION_FLAGS_NONE: TGDBusConnectionFlags = 0;
+  G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT: TGDBusConnectionFlags = 1;
+  G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_SERVER: TGDBusConnectionFlags = 2;
+  G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_ALLOW_ANONYMOUS: TGDBusConnectionFlags = 4;
+  G_DBUS_CONNECTION_FLAGS_MESSAGE_BUS_CONNECTION: TGDBusConnectionFlags = 8;
+  G_DBUS_CONNECTION_FLAGS_DELAY_MESSAGE_PROCESSING: TGDBusConnectionFlags = 16;
 
+type
+  TGDBusCallFlags = Integer;
+const
   { GDBusCallFlags }
-  G_DBUS_CALL_FLAGS_NONE = 0;
-  G_DBUS_CALL_FLAGS_NO_AUTO_START = 1;
+  G_DBUS_CALL_FLAGS_NONE: TGDBusCallFlags = 0;
+  G_DBUS_CALL_FLAGS_NO_AUTO_START: TGDBusCallFlags = 1;
 
+type
+  TGDBusCapabilityFlags = Integer;
+const
   { GDBusCapabilityFlags }
-  G_DBUS_CAPABILITY_FLAGS_NONE = 0;
-  G_DBUS_CAPABILITY_FLAGS_UNIX_FD_PASSING = 1;
+  G_DBUS_CAPABILITY_FLAGS_NONE: TGDBusCapabilityFlags = 0;
+  G_DBUS_CAPABILITY_FLAGS_UNIX_FD_PASSING: TGDBusCapabilityFlags = 1;
 
+type
+  TGDBusSubtreeFlags = Integer;
+const
   { GDBusSubtreeFlags }
-  G_DBUS_SUBTREE_FLAGS_NONE = 0;
-  G_DBUS_SUBTREE_FLAGS_DISPATCH_TO_UNENUMERATED_NODES = 1;
+  G_DBUS_SUBTREE_FLAGS_NONE: TGDBusSubtreeFlags = 0;
+  G_DBUS_SUBTREE_FLAGS_DISPATCH_TO_UNENUMERATED_NODES: TGDBusSubtreeFlags = 1;
 
+type
+  TGDBusSendMessageFlags = Integer;
+const
   { GDBusSendMessageFlags }
-  G_DBUS_SEND_MESSAGE_FLAGS_NONE = 0;
-  G_DBUS_SEND_MESSAGE_FLAGS_PRESERVE_SERIAL = 1;
+  G_DBUS_SEND_MESSAGE_FLAGS_NONE: TGDBusSendMessageFlags = 0;
+  G_DBUS_SEND_MESSAGE_FLAGS_PRESERVE_SERIAL: TGDBusSendMessageFlags = 1;
 
+type
+  TGDBusSignalFlags = Integer;
+const
   { GDBusSignalFlags }
-  G_DBUS_SIGNAL_FLAGS_NONE = 0;
-  G_DBUS_SIGNAL_FLAGS_NO_MATCH_RULE = 1;
+  G_DBUS_SIGNAL_FLAGS_NONE: TGDBusSignalFlags = 0;
+  G_DBUS_SIGNAL_FLAGS_NO_MATCH_RULE: TGDBusSignalFlags = 1;
 
+type
+  TGBusNameOwnerFlags = Integer;
+const
   { GBusNameOwnerFlags }
-  G_BUS_NAME_OWNER_FLAGS_NONE = 0;
-  G_BUS_NAME_OWNER_FLAGS_ALLOW_REPLACEMENT = 1;
-  G_BUS_NAME_OWNER_FLAGS_REPLACE = 2;
+  G_BUS_NAME_OWNER_FLAGS_NONE: TGBusNameOwnerFlags = 0;
+  G_BUS_NAME_OWNER_FLAGS_ALLOW_REPLACEMENT: TGBusNameOwnerFlags = 1;
+  G_BUS_NAME_OWNER_FLAGS_REPLACE: TGBusNameOwnerFlags = 2;
 
+type
+  TGBusNameWatcherFlags = Integer;
+const
   { GBusNameWatcherFlags }
-  G_BUS_NAME_WATCHER_FLAGS_NONE = 0;
-  G_BUS_NAME_WATCHER_FLAGS_AUTO_START = 1;
+  G_BUS_NAME_WATCHER_FLAGS_NONE: TGBusNameWatcherFlags = 0;
+  G_BUS_NAME_WATCHER_FLAGS_AUTO_START: TGBusNameWatcherFlags = 1;
 
 type
   TGBusType = Integer;
@@ -231,10 +282,13 @@ const
   G_BUS_TYPE_SYSTEM: TGBusType = 1;
   G_BUS_TYPE_SESSION: TGBusType = 2;
 
+type
+  TGConverterFlags = Integer;
+const
   { GConverterFlags }
-  G_CONVERTER_NO_FLAGS = 0;
-  G_CONVERTER_INPUT_AT_END = 1;
-  G_CONVERTER_FLUSH = 2;
+  G_CONVERTER_NO_FLAGS: TGConverterFlags = 0;
+  G_CONVERTER_INPUT_AT_END: TGConverterFlags = 1;
+  G_CONVERTER_FLUSH: TGConverterFlags = 2;
 
 type
   TGConverterResult = Integer;
@@ -254,16 +308,22 @@ const
   G_CREDENTIALS_TYPE_FREEBSD_CMSGCRED: TGCredentialsType = 2;
   G_CREDENTIALS_TYPE_OPENBSD_SOCKPEERCRED: TGCredentialsType = 3;
 
+type
+  TGIOStreamSpliceFlags = Integer;
+const
   { GIOStreamSpliceFlags }
-  G_IO_STREAM_SPLICE_NONE = 0;
-  G_IO_STREAM_SPLICE_CLOSE_STREAM1 = 1;
-  G_IO_STREAM_SPLICE_CLOSE_STREAM2 = 2;
-  G_IO_STREAM_SPLICE_WAIT_FOR_BOTH = 4;
+  G_IO_STREAM_SPLICE_NONE: TGIOStreamSpliceFlags = 0;
+  G_IO_STREAM_SPLICE_CLOSE_STREAM1: TGIOStreamSpliceFlags = 1;
+  G_IO_STREAM_SPLICE_CLOSE_STREAM2: TGIOStreamSpliceFlags = 2;
+  G_IO_STREAM_SPLICE_WAIT_FOR_BOTH: TGIOStreamSpliceFlags = 4;
 
+type
+  TGDBusMessageFlags = Integer;
+const
   { GDBusMessageFlags }
-  G_DBUS_MESSAGE_FLAGS_NONE = 0;
-  G_DBUS_MESSAGE_FLAGS_NO_REPLY_EXPECTED = 1;
-  G_DBUS_MESSAGE_FLAGS_NO_AUTO_START = 2;
+  G_DBUS_MESSAGE_FLAGS_NONE: TGDBusMessageFlags = 0;
+  G_DBUS_MESSAGE_FLAGS_NO_REPLY_EXPECTED: TGDBusMessageFlags = 1;
+  G_DBUS_MESSAGE_FLAGS_NO_AUTO_START: TGDBusMessageFlags = 2;
 
 type
   TGDBusMessageHeaderField = Integer;
@@ -343,29 +403,44 @@ const
   G_DBUS_ERROR_ADT_AUDIT_DATA_UNKNOWN: TGDBusError = 39;
   G_DBUS_ERROR_OBJECT_PATH_IN_USE: TGDBusError = 40;
 
+type
+  TGDBusPropertyInfoFlags = Integer;
+const
   { GDBusPropertyInfoFlags }
-  G_DBUS_PROPERTY_INFO_FLAGS_NONE = 0;
-  G_DBUS_PROPERTY_INFO_FLAGS_READABLE = 1;
-  G_DBUS_PROPERTY_INFO_FLAGS_WRITABLE = 2;
+  G_DBUS_PROPERTY_INFO_FLAGS_NONE: TGDBusPropertyInfoFlags = 0;
+  G_DBUS_PROPERTY_INFO_FLAGS_READABLE: TGDBusPropertyInfoFlags = 1;
+  G_DBUS_PROPERTY_INFO_FLAGS_WRITABLE: TGDBusPropertyInfoFlags = 2;
 
+type
+  TGDBusInterfaceSkeletonFlags = Integer;
+const
   { GDBusInterfaceSkeletonFlags }
-  G_DBUS_INTERFACE_SKELETON_FLAGS_NONE = 0;
-  G_DBUS_INTERFACE_SKELETON_FLAGS_HANDLE_METHOD_INVOCATIONS_IN_THREAD = 1;
+  G_DBUS_INTERFACE_SKELETON_FLAGS_NONE: TGDBusInterfaceSkeletonFlags = 0;
+  G_DBUS_INTERFACE_SKELETON_FLAGS_HANDLE_METHOD_INVOCATIONS_IN_THREAD: TGDBusInterfaceSkeletonFlags = 1;
 
+type
+  TGDBusObjectManagerClientFlags = Integer;
+const
   { GDBusObjectManagerClientFlags }
-  G_DBUS_OBJECT_MANAGER_CLIENT_FLAGS_NONE = 0;
-  G_DBUS_OBJECT_MANAGER_CLIENT_FLAGS_DO_NOT_AUTO_START = 1;
+  G_DBUS_OBJECT_MANAGER_CLIENT_FLAGS_NONE: TGDBusObjectManagerClientFlags = 0;
+  G_DBUS_OBJECT_MANAGER_CLIENT_FLAGS_DO_NOT_AUTO_START: TGDBusObjectManagerClientFlags = 1;
 
+type
+  TGDBusProxyFlags = Integer;
+const
   { GDBusProxyFlags }
-  G_DBUS_PROXY_FLAGS_NONE = 0;
-  G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES = 1;
-  G_DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS = 2;
-  G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START = 4;
+  G_DBUS_PROXY_FLAGS_NONE: TGDBusProxyFlags = 0;
+  G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES: TGDBusProxyFlags = 1;
+  G_DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS: TGDBusProxyFlags = 2;
+  G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START: TGDBusProxyFlags = 4;
 
+type
+  TGDBusServerFlags = Integer;
+const
   { GDBusServerFlags }
-  G_DBUS_SERVER_FLAGS_NONE = 0;
-  G_DBUS_SERVER_FLAGS_RUN_IN_THREAD = 1;
-  G_DBUS_SERVER_FLAGS_AUTHENTICATION_ALLOW_ANONYMOUS = 2;
+  G_DBUS_SERVER_FLAGS_NONE: TGDBusServerFlags = 0;
+  G_DBUS_SERVER_FLAGS_RUN_IN_THREAD: TGDBusServerFlags = 1;
+  G_DBUS_SERVER_FLAGS_AUTHENTICATION_ALLOW_ANONYMOUS: TGDBusServerFlags = 2;
 
 type
   TGDataStreamByteOrder = Integer;
@@ -452,10 +527,13 @@ const
   G_FILE_TYPE_SHORTCUT: TGFileType = 5;
   G_FILE_TYPE_MOUNTABLE: TGFileType = 6;
 
+type
+  TGFileAttributeInfoFlags = Integer;
+const
   { GFileAttributeInfoFlags }
-  G_FILE_ATTRIBUTE_INFO_NONE = 0;
-  G_FILE_ATTRIBUTE_INFO_COPY_WITH_FILE = 1;
-  G_FILE_ATTRIBUTE_INFO_COPY_WHEN_MOVED = 2;
+  G_FILE_ATTRIBUTE_INFO_NONE: TGFileAttributeInfoFlags = 0;
+  G_FILE_ATTRIBUTE_INFO_COPY_WITH_FILE: TGFileAttributeInfoFlags = 1;
+  G_FILE_ATTRIBUTE_INFO_COPY_WHEN_MOVED: TGFileAttributeInfoFlags = 2;
 
 type
   TGFilesystemPreviewType = Integer;
@@ -538,13 +616,16 @@ const
   G_RESOLVER_ERROR_TEMPORARY_FAILURE: TGResolverError = 1;
   G_RESOLVER_ERROR_INTERNAL: TGResolverError = 2;
 
+type
+  TGSettingsBindFlags = Integer;
+const
   { GSettingsBindFlags }
-  G_SETTINGS_BIND_DEFAULT = 0;
-  G_SETTINGS_BIND_GET = 1;
-  G_SETTINGS_BIND_SET = 2;
-  G_SETTINGS_BIND_NO_SENSITIVITY = 4;
-  G_SETTINGS_BIND_GET_NO_CHANGES = 8;
-  G_SETTINGS_BIND_INVERT_BOOLEAN = 16;
+  G_SETTINGS_BIND_DEFAULT: TGSettingsBindFlags = 0;
+  G_SETTINGS_BIND_GET: TGSettingsBindFlags = 1;
+  G_SETTINGS_BIND_SET: TGSettingsBindFlags = 2;
+  G_SETTINGS_BIND_NO_SENSITIVITY: TGSettingsBindFlags = 4;
+  G_SETTINGS_BIND_GET_NO_CHANGES: TGSettingsBindFlags = 8;
+  G_SETTINGS_BIND_INVERT_BOOLEAN: TGSettingsBindFlags = 16;
 
 type
   TGSocketType = Integer;
@@ -565,15 +646,18 @@ const
   G_SOCKET_PROTOCOL_UDP: TGSocketProtocol = 17;
   G_SOCKET_PROTOCOL_SCTP: TGSocketProtocol = 132;
 
+type
+  TGTlsCertificateFlags = Integer;
+const
   { GTlsCertificateFlags }
-  G_TLS_CERTIFICATE_UNKNOWN_CA = 1;
-  G_TLS_CERTIFICATE_BAD_IDENTITY = 2;
-  G_TLS_CERTIFICATE_NOT_ACTIVATED = 4;
-  G_TLS_CERTIFICATE_EXPIRED = 8;
-  G_TLS_CERTIFICATE_REVOKED = 16;
-  G_TLS_CERTIFICATE_INSECURE = 32;
-  G_TLS_CERTIFICATE_GENERIC_ERROR = 64;
-  G_TLS_CERTIFICATE_VALIDATE_ALL = 127;
+  G_TLS_CERTIFICATE_UNKNOWN_CA: TGTlsCertificateFlags = 1;
+  G_TLS_CERTIFICATE_BAD_IDENTITY: TGTlsCertificateFlags = 2;
+  G_TLS_CERTIFICATE_NOT_ACTIVATED: TGTlsCertificateFlags = 4;
+  G_TLS_CERTIFICATE_EXPIRED: TGTlsCertificateFlags = 8;
+  G_TLS_CERTIFICATE_REVOKED: TGTlsCertificateFlags = 16;
+  G_TLS_CERTIFICATE_INSECURE: TGTlsCertificateFlags = 32;
+  G_TLS_CERTIFICATE_GENERIC_ERROR: TGTlsCertificateFlags = 64;
+  G_TLS_CERTIFICATE_VALIDATE_ALL: TGTlsCertificateFlags = 127;
 
 type
   TGSocketMsgFlags = Integer;
@@ -633,11 +717,14 @@ const
   G_TLS_INTERACTION_HANDLED: TGTlsInteractionResult = 1;
   G_TLS_INTERACTION_FAILED: TGTlsInteractionResult = 2;
 
+type
+  TGTlsPasswordFlags = Integer;
+const
   { GTlsPasswordFlags }
-  G_TLS_PASSWORD_NONE = 0;
-  G_TLS_PASSWORD_RETRY = 2;
-  G_TLS_PASSWORD_MANY_TRIES = 4;
-  G_TLS_PASSWORD_FINAL_TRY = 8;
+  G_TLS_PASSWORD_NONE: TGTlsPasswordFlags = 0;
+  G_TLS_PASSWORD_RETRY: TGTlsPasswordFlags = 2;
+  G_TLS_PASSWORD_MANY_TRIES: TGTlsPasswordFlags = 4;
+  G_TLS_PASSWORD_FINAL_TRY: TGTlsPasswordFlags = 8;
 
 type
   TGUnixSocketAddressType = Integer;
@@ -764,14 +851,6 @@ type
 
   PPGAppInfoCreateFlags = ^PGAppInfoCreateFlags;
   PGAppInfoCreateFlags = ^TGAppInfoCreateFlags;
-  TGAppInfoCreateFlags = packed object(TBitObject32)
-  public
-    property none: DWord index 0 read GetBit write SetBit;
-    property needs_terminal: DWord index 1 read GetBit write SetBit;
-    property supports_uris: DWord index 2 read GetBit write SetBit;
-    property supports_startup_notification: DWord index 4 read GetBit write SetBit;
-  end;
-
 
   PPGAppLaunchContext = ^PGAppLaunchContext;
   PGAppLaunchContext = ^TGAppLaunchContext;
@@ -880,17 +959,6 @@ type
 
   PPGApplicationFlags = ^PGApplicationFlags;
   PGApplicationFlags = ^TGApplicationFlags;
-  TGApplicationFlags = packed object(TBitObject32)
-  public
-    property flags_none: DWord index 0 read GetBit write SetBit;
-    property is_service: DWord index 1 read GetBit write SetBit;
-    property is_launcher: DWord index 2 read GetBit write SetBit;
-    property handles_open: DWord index 4 read GetBit write SetBit;
-    property handles_command_line: DWord index 8 read GetBit write SetBit;
-    property send_environment: DWord index 16 read GetBit write SetBit;
-    property non_unique: DWord index 32 read GetBit write SetBit;
-  end;
-
 
   PPGFile = ^PGFile;
   PGFile = ^TGFile;
@@ -954,13 +1022,6 @@ type
 
   PPGFileCreateFlags = ^PGFileCreateFlags;
   PGFileCreateFlags = ^TGFileCreateFlags;
-  TGFileCreateFlags = packed object(TBitObject32)
-  public
-    property none: DWord index 0 read GetBit write SetBit;
-    property private_: DWord index 1 read GetBit write SetBit;
-    property replace_destination: DWord index 2 read GetBit write SetBit;
-  end;
-
 
   PPGAsyncReadyCallback = ^PGAsyncReadyCallback;
   PGAsyncReadyCallback = ^TGAsyncReadyCallback;
@@ -971,17 +1032,6 @@ type
 
   PPGFileCopyFlags = ^PGFileCopyFlags;
   PGFileCopyFlags = ^TGFileCopyFlags;
-  TGFileCopyFlags = packed object(TBitObject32)
-  public
-    property none: DWord index 0 read GetBit write SetBit;
-    property overwrite: DWord index 1 read GetBit write SetBit;
-    property backup: DWord index 2 read GetBit write SetBit;
-    property nofollow_symlinks: DWord index 4 read GetBit write SetBit;
-    property all_metadata: DWord index 8 read GetBit write SetBit;
-    property no_fallback_for_move: DWord index 16 read GetBit write SetBit;
-    property target_default_perms: DWord index 32 read GetBit write SetBit;
-  end;
-
 
   PPGFileProgressCallback = ^PGFileProgressCallback;
   PGFileProgressCallback = ^TGFileProgressCallback;
@@ -992,12 +1042,6 @@ type
 
   PPGMountUnmountFlags = ^PGMountUnmountFlags;
   PGMountUnmountFlags = ^TGMountUnmountFlags;
-  TGMountUnmountFlags = packed object(TBitObject32)
-  public
-    property none: DWord index 0 read GetBit write SetBit;
-    property force: DWord index 1 read GetBit write SetBit;
-  end;
-
 
   PPGMountOperation = ^PGMountOperation;
   PGMountOperation = ^TGMountOperation;
@@ -1007,12 +1051,6 @@ type
 
   PPGFileQueryInfoFlags = ^PGFileQueryInfoFlags;
   PGFileQueryInfoFlags = ^TGFileQueryInfoFlags;
-  TGFileQueryInfoFlags = packed object(TBitObject32)
-  public
-    property none: DWord index 0 read GetBit write SetBit;
-    property nofollow_symlinks: DWord index 1 read GetBit write SetBit;
-  end;
-
 
   PPGMount = ^PGMount;
   PGMount = ^TGMount;
@@ -1026,13 +1064,6 @@ type
 
   PPGFileMonitorFlags = ^PGFileMonitorFlags;
   PGFileMonitorFlags = ^TGFileMonitorFlags;
-  TGFileMonitorFlags = packed object(TBitObject32)
-  public
-    property none: DWord index 0 read GetBit write SetBit;
-    property watch_mounts: DWord index 1 read GetBit write SetBit;
-    property send_moved: DWord index 2 read GetBit write SetBit;
-  end;
-
 
   PPGMountMountFlags = ^PGMountMountFlags;
   PGMountMountFlags = ^TGMountMountFlags;
@@ -1225,15 +1256,9 @@ type
     printerr_literal: procedure(cmdline: PGApplicationCommandLine; message: Pgchar); cdecl;
     padding: array [0..11] of gpointer;
   end;
-  TGAskPasswordFlags = packed object(TBitObject32)
-  public
-    property need_password: DWord index 1 read GetBit write SetBit;
-    property need_username: DWord index 2 read GetBit write SetBit;
-    property need_domain: DWord index 4 read GetBit write SetBit;
-    property saving_supported: DWord index 8 read GetBit write SetBit;
-    property anonymous_supported: DWord index 16 read GetBit write SetBit;
-  end;
 
+  PPGAskPasswordFlags = ^PGAskPasswordFlags;
+  PGAskPasswordFlags = ^TGAskPasswordFlags;
   TGAsyncResult = object
     function get_source_object: PGObject; cdecl; inline;
     function get_user_data: gpointer; cdecl; inline;
@@ -1374,13 +1399,6 @@ type
 
   PPGOutputStreamSpliceFlags = ^PGOutputStreamSpliceFlags;
   PGOutputStreamSpliceFlags = ^TGOutputStreamSpliceFlags;
-  TGOutputStreamSpliceFlags = packed object(TBitObject32)
-  public
-    property none: DWord index 0 read GetBit write SetBit;
-    property close_source: DWord index 1 read GetBit write SetBit;
-    property close_target: DWord index 2 read GetBit write SetBit;
-  end;
-
 
   PPGOutputStreamPrivate = ^PGOutputStreamPrivate;
   PGOutputStreamPrivate = ^TGOutputStreamPrivate;
@@ -1487,16 +1505,6 @@ type
 
   PPGDBusConnectionFlags = ^PGDBusConnectionFlags;
   PGDBusConnectionFlags = ^TGDBusConnectionFlags;
-  TGDBusConnectionFlags = packed object(TBitObject32)
-  public
-    property none: DWord index 0 read GetBit write SetBit;
-    property authentication_client: DWord index 1 read GetBit write SetBit;
-    property authentication_server: DWord index 2 read GetBit write SetBit;
-    property authentication_allow_anonymous: DWord index 4 read GetBit write SetBit;
-    property message_bus_connection: DWord index 8 read GetBit write SetBit;
-    property delay_message_processing: DWord index 16 read GetBit write SetBit;
-  end;
-
 
   PPGDBusAuthObserver = ^PGDBusAuthObserver;
   PGDBusAuthObserver = ^TGDBusAuthObserver;
@@ -1513,24 +1521,12 @@ type
 
   PPGDBusCallFlags = ^PGDBusCallFlags;
   PGDBusCallFlags = ^TGDBusCallFlags;
-  TGDBusCallFlags = packed object(TBitObject32)
-  public
-    property none: DWord index 0 read GetBit write SetBit;
-    property no_auto_start: DWord index 1 read GetBit write SetBit;
-  end;
-
 
   PPGUnixFDList = ^PGUnixFDList;
   PGUnixFDList = ^TGUnixFDList;
 
   PPGDBusCapabilityFlags = ^PGDBusCapabilityFlags;
   PGDBusCapabilityFlags = ^TGDBusCapabilityFlags;
-  TGDBusCapabilityFlags = packed object(TBitObject32)
-  public
-    property none: DWord index 0 read GetBit write SetBit;
-    property unix_fd_passing: DWord index 1 read GetBit write SetBit;
-  end;
-
 
   PPGCredentials = ^PGCredentials;
   PGCredentials = ^TGCredentials;
@@ -1546,30 +1542,12 @@ type
 
   PPGDBusSubtreeFlags = ^PGDBusSubtreeFlags;
   PGDBusSubtreeFlags = ^TGDBusSubtreeFlags;
-  TGDBusSubtreeFlags = packed object(TBitObject32)
-  public
-    property none: DWord index 0 read GetBit write SetBit;
-    property dispatch_to_unenumerated_nodes: DWord index 1 read GetBit write SetBit;
-  end;
-
 
   PPGDBusSendMessageFlags = ^PGDBusSendMessageFlags;
   PGDBusSendMessageFlags = ^TGDBusSendMessageFlags;
-  TGDBusSendMessageFlags = packed object(TBitObject32)
-  public
-    property none: DWord index 0 read GetBit write SetBit;
-    property preserve_serial: DWord index 1 read GetBit write SetBit;
-  end;
-
 
   PPGDBusSignalFlags = ^PGDBusSignalFlags;
   PGDBusSignalFlags = ^TGDBusSignalFlags;
-  TGDBusSignalFlags = packed object(TBitObject32)
-  public
-    property none: DWord index 0 read GetBit write SetBit;
-    property no_match_rule: DWord index 1 read GetBit write SetBit;
-  end;
-
 
   PPGDBusSignalCallback = ^PGDBusSignalCallback;
   PGDBusSignalCallback = ^TGDBusSignalCallback;
@@ -1629,20 +1607,13 @@ type
   TGBusNameAcquiredCallback = procedure(connection: PGDBusConnection; name: Pgchar; user_data: gpointer); cdecl;
   TGBusNameAppearedCallback = procedure(connection: PGDBusConnection; name: Pgchar; name_owner: Pgchar; user_data: gpointer); cdecl;
   TGBusNameLostCallback = procedure(connection: PGDBusConnection; name: Pgchar; user_data: gpointer); cdecl;
-  TGBusNameOwnerFlags = packed object(TBitObject32)
-  public
-    property none: DWord index 0 read GetBit write SetBit;
-    property allow_replacement: DWord index 1 read GetBit write SetBit;
-    property replace: DWord index 2 read GetBit write SetBit;
-  end;
 
+  PPGBusNameOwnerFlags = ^PGBusNameOwnerFlags;
+  PGBusNameOwnerFlags = ^TGBusNameOwnerFlags;
   TGBusNameVanishedCallback = procedure(connection: PGDBusConnection; name: Pgchar; user_data: gpointer); cdecl;
-  TGBusNameWatcherFlags = packed object(TBitObject32)
-  public
-    property none: DWord index 0 read GetBit write SetBit;
-    property auto_start: DWord index 1 read GetBit write SetBit;
-  end;
 
+  PPGBusNameWatcherFlags = ^PGBusNameWatcherFlags;
+  PGBusNameWatcherFlags = ^TGBusNameWatcherFlags;
 
   PPGBusType = ^PGBusType;
   PGBusType = ^TGBusType;
@@ -1673,13 +1644,6 @@ type
 
   PPGConverterFlags = ^PGConverterFlags;
   PGConverterFlags = ^TGConverterFlags;
-  TGConverterFlags = packed object(TBitObject32)
-  public
-    property none: DWord index 0 read GetBit write SetBit;
-    property input_at_end: DWord index 1 read GetBit write SetBit;
-    property flush: DWord index 2 read GetBit write SetBit;
-  end;
-
   TGConverter = object
     function convert(inbuf: Pguint8; inbuf_size: gsize; outbuf: Pgpointer; outbuf_size: gsize; flags: TGConverterFlags; bytes_read: Pgsize; bytes_written: Pgsize): TGConverterResult; cdecl; inline;
     procedure reset; cdecl; inline;
@@ -1822,14 +1786,6 @@ type
 
   PPGIOStreamSpliceFlags = ^PGIOStreamSpliceFlags;
   PGIOStreamSpliceFlags = ^TGIOStreamSpliceFlags;
-  TGIOStreamSpliceFlags = packed object(TBitObject32)
-  public
-    property none: DWord index 0 read GetBit write SetBit;
-    property close_stream1: DWord index 1 read GetBit write SetBit;
-    property close_stream2: DWord index 2 read GetBit write SetBit;
-    property wait_for_both: DWord index 4 read GetBit write SetBit;
-  end;
-
 
   PPGIOStreamPrivate = ^PGIOStreamPrivate;
   PGIOStreamPrivate = ^TGIOStreamPrivate;
@@ -1939,13 +1895,6 @@ type
 
   PPGDBusMessageFlags = ^PGDBusMessageFlags;
   PGDBusMessageFlags = ^TGDBusMessageFlags;
-  TGDBusMessageFlags = packed object(TBitObject32)
-  public
-    property none: DWord index 0 read GetBit write SetBit;
-    property no_reply_expected: DWord index 1 read GetBit write SetBit;
-    property no_auto_start: DWord index 2 read GetBit write SetBit;
-  end;
-
 
   PPGDBusMessageHeaderField = ^PGDBusMessageHeaderField;
   PGDBusMessageHeaderField = ^TGDBusMessageHeaderField;
@@ -2064,13 +2013,6 @@ type
 
   PPGDBusPropertyInfoFlags = ^PGDBusPropertyInfoFlags;
   PGDBusPropertyInfoFlags = ^TGDBusPropertyInfoFlags;
-  TGDBusPropertyInfoFlags = packed object(TBitObject32)
-  public
-    property none: DWord index 0 read GetBit write SetBit;
-    property readable: DWord index 1 read GetBit write SetBit;
-    property writable: DWord index 2 read GetBit write SetBit;
-  end;
-
   TGDBusPropertyInfo = object
     ref_count: gint;
     name: Pgchar;
@@ -2099,12 +2041,9 @@ type
     procedure return_value_with_unix_fd_list(parameters: PGVariant; fd_list: PGUnixFDList); cdecl; inline;
     procedure take_error(error: PGError); cdecl; inline;
   end;
-  TGDBusInterfaceSkeletonFlags = packed object(TBitObject32)
-  public
-    property none: DWord index 0 read GetBit write SetBit;
-    property handle_method_invocations_in_thread: DWord index 1 read GetBit write SetBit;
-  end;
 
+  PPGDBusInterfaceSkeletonFlags = ^PGDBusInterfaceSkeletonFlags;
+  PGDBusInterfaceSkeletonFlags = ^TGDBusInterfaceSkeletonFlags;
 
   PPGDBusInterfaceSkeletonPrivate = ^PGDBusInterfaceSkeletonPrivate;
   PGDBusInterfaceSkeletonPrivate = ^TGDBusInterfaceSkeletonPrivate;
@@ -2116,9 +2055,6 @@ type
 
   PPGDBusInterfaceSkeleton = ^PGDBusInterfaceSkeleton;
   PGDBusInterfaceSkeleton = ^TGDBusInterfaceSkeleton;
-
-  PPGDBusInterfaceSkeletonFlags = ^PGDBusInterfaceSkeletonFlags;
-  PGDBusInterfaceSkeletonFlags = ^TGDBusInterfaceSkeletonFlags;
   TGDBusInterfaceSkeleton = object(TGObject)
     priv: PGDBusInterfaceSkeletonPrivate;
     function export(connection: PGDBusConnection; object_path: Pgchar): gboolean; cdecl; inline;
@@ -2191,12 +2127,6 @@ type
 
   PPGDBusObjectManagerClientFlags = ^PGDBusObjectManagerClientFlags;
   PGDBusObjectManagerClientFlags = ^TGDBusObjectManagerClientFlags;
-  TGDBusObjectManagerClientFlags = packed object(TBitObject32)
-  public
-    property none: DWord index 0 read GetBit write SetBit;
-    property do_not_auto_start: DWord index 1 read GetBit write SetBit;
-  end;
-
 
   PPGDBusProxyTypeFunc = ^PGDBusProxyTypeFunc;
   PGDBusProxyTypeFunc = ^TGDBusProxyTypeFunc;
@@ -2245,14 +2175,6 @@ type
 
   PPGDBusProxyFlags = ^PGDBusProxyFlags;
   PGDBusProxyFlags = ^TGDBusProxyFlags;
-  TGDBusProxyFlags = packed object(TBitObject32)
-  public
-    property none: DWord index 0 read GetBit write SetBit;
-    property do_not_load_properties: DWord index 1 read GetBit write SetBit;
-    property do_not_connect_signals: DWord index 2 read GetBit write SetBit;
-    property do_not_auto_start: DWord index 4 read GetBit write SetBit;
-  end;
-
 
   PPGDBusProxyPrivate = ^PGDBusProxyPrivate;
   PGDBusProxyPrivate = ^TGDBusProxyPrivate;
@@ -2411,13 +2333,6 @@ type
 
   PPGDBusServerFlags = ^PGDBusServerFlags;
   PGDBusServerFlags = ^TGDBusServerFlags;
-  TGDBusServerFlags = packed object(TBitObject32)
-  public
-    property none: DWord index 0 read GetBit write SetBit;
-    property run_in_thread: DWord index 1 read GetBit write SetBit;
-    property authentication_allow_anonymous: DWord index 2 read GetBit write SetBit;
-  end;
-
   TGDBusServer = object(TGObject)
     function new_sync(address: Pgchar; flags: TGDBusServerFlags; guid: Pgchar; observer: PGDBusAuthObserver; cancellable: PGCancellable): PGDBusServer; cdecl; inline; static;
     function get_client_address: Pgchar; cdecl; inline;
@@ -2871,13 +2786,6 @@ type
 
   PPGFileAttributeInfoFlags = ^PGFileAttributeInfoFlags;
   PGFileAttributeInfoFlags = ^TGFileAttributeInfoFlags;
-  TGFileAttributeInfoFlags = packed object(TBitObject32)
-  public
-    property none: DWord index 0 read GetBit write SetBit;
-    property copy_with_file: DWord index 1 read GetBit write SetBit;
-    property copy_when_moved: DWord index 2 read GetBit write SetBit;
-  end;
-
 
   PPGFileAttributeInfo = ^PGFileAttributeInfo;
   PGFileAttributeInfo = ^TGFileAttributeInfo;
@@ -3575,9 +3483,6 @@ type
 
   PPGMountOperationClass = ^PGMountOperationClass;
   PGMountOperationClass = ^TGMountOperationClass;
-
-  PPGAskPasswordFlags = ^PGAskPasswordFlags;
-  PGAskPasswordFlags = ^TGAskPasswordFlags;
   TGMountOperationClass = object
     parent_class: TGObjectClass;
     ask_password: procedure(op: PGMountOperation; message: Pgchar; default_user: Pgchar; default_domain: Pgchar; flags: TGAskPasswordFlags); cdecl;
@@ -3991,16 +3896,6 @@ type
 
   PPGSettingsBindFlags = ^PGSettingsBindFlags;
   PGSettingsBindFlags = ^TGSettingsBindFlags;
-  TGSettingsBindFlags = packed object(TBitObject32)
-  public
-    property default_: DWord index 0 read GetBit write SetBit;
-    property get: DWord index 1 read GetBit write SetBit;
-    property set_: DWord index 2 read GetBit write SetBit;
-    property no_sensitivity: DWord index 4 read GetBit write SetBit;
-    property get_no_changes: DWord index 8 read GetBit write SetBit;
-    property invert_boolean: DWord index 16 read GetBit write SetBit;
-  end;
-
 
   PPGSettingsBindGetMapping = ^PGSettingsBindGetMapping;
   PGSettingsBindGetMapping = ^TGSettingsBindGetMapping;
@@ -4276,18 +4171,6 @@ type
 
   PPGTlsCertificateFlags = ^PGTlsCertificateFlags;
   PGTlsCertificateFlags = ^TGTlsCertificateFlags;
-  TGTlsCertificateFlags = packed object(TBitObject32)
-  public
-    property unknown_ca: DWord index 1 read GetBit write SetBit;
-    property bad_identity: DWord index 2 read GetBit write SetBit;
-    property not_activated: DWord index 4 read GetBit write SetBit;
-    property expired: DWord index 8 read GetBit write SetBit;
-    property revoked: DWord index 16 read GetBit write SetBit;
-    property insecure: DWord index 32 read GetBit write SetBit;
-    property generic_error: DWord index 64 read GetBit write SetBit;
-    property validate_all: DWord index 127 read GetBit write SetBit;
-  end;
-
 
   PPGSocketClientPrivate = ^PGSocketClientPrivate;
   PGSocketClientPrivate = ^TGSocketClientPrivate;
@@ -4805,14 +4688,6 @@ type
 
   PPGTlsPasswordFlags = ^PGTlsPasswordFlags;
   PGTlsPasswordFlags = ^TGTlsPasswordFlags;
-  TGTlsPasswordFlags = packed object(TBitObject32)
-  public
-    property none: DWord index 0 read GetBit write SetBit;
-    property retry: DWord index 2 read GetBit write SetBit;
-    property many_tries: DWord index 4 read GetBit write SetBit;
-    property final_try: DWord index 8 read GetBit write SetBit;
-  end;
-
 
   PPGTlsPasswordPrivate = ^PGTlsPasswordPrivate;
   PGTlsPasswordPrivate = ^TGTlsPasswordPrivate;
@@ -6718,7 +6593,6 @@ begin
   Result := Gio2.g_action_group_list_actions(@self);
 end;
 
-
 function TGAppInfo.create_from_commandline(commandline: Pgchar; application_name: Pgchar; flags: TGAppInfoCreateFlags): PGAppInfo; cdecl;
 begin
   Result := Gio2.g_app_info_create_from_commandline(commandline, application_name, flags);
@@ -6914,7 +6788,6 @@ begin
   Result := Gio2.g_icon_to_string(@self);
 end;
 
-
 function TGApplication.new(application_id: Pgchar; flags: TGApplicationFlags): PGApplication; cdecl;
 begin
   Result := Gio2.g_application_new(application_id, flags);
@@ -7065,7 +6938,6 @@ begin
   Result := Gio2.g_file_parse_name(parse_name);
 end;
 
-
 function TGFile.append_to(flags: TGFileCreateFlags; cancellable: PGCancellable): PGFileOutputStream; cdecl;
 begin
   Result := Gio2.g_file_append_to(@self, flags, cancellable);
@@ -7080,7 +6952,6 @@ function TGFile.append_to_finish(res: PGAsyncResult): PGFileOutputStream; cdecl;
 begin
   Result := Gio2.g_file_append_to_finish(@self, res);
 end;
-
 
 function TGFile.copy(destination: PGFile; flags: TGFileCopyFlags; cancellable: PGCancellable; progress_callback: TGFileProgressCallback; progress_callback_data: gpointer): gboolean; cdecl;
 begin
@@ -7142,7 +7013,6 @@ begin
   Result := Gio2.g_file_dup(@self);
 end;
 
-
 procedure TGFile.eject_mountable_with_operation(flags: TGMountUnmountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
 begin
   Gio2.g_file_eject_mountable_with_operation(@self, flags, mount_operation, cancellable, callback, user_data);
@@ -7152,7 +7022,6 @@ function TGFile.eject_mountable_with_operation_finish(result_: PGAsyncResult): g
 begin
   Result := Gio2.g_file_eject_mountable_with_operation_finish(@self, result_);
 end;
-
 
 function TGFile.enumerate_children(attributes: Pgchar; flags: TGFileQueryInfoFlags; cancellable: PGCancellable): PGFileEnumerator; cdecl;
 begin
@@ -7298,7 +7167,6 @@ function TGFile.make_symbolic_link(symlink_value: Pgchar; cancellable: PGCancell
 begin
   Result := Gio2.g_file_make_symbolic_link(@self, symlink_value, cancellable);
 end;
-
 
 function TGFile.monitor(flags: TGFileMonitorFlags; cancellable: PGCancellable): PGFileMonitor; cdecl;
 begin
@@ -7660,7 +7528,6 @@ begin
   Result := Gio2.g_cancellable_source_new(@self);
 end;
 
-
 function TGAsyncResult.get_source_object: PGObject; cdecl;
 begin
   Result := Gio2.g_async_result_get_source_object(@self);
@@ -7886,7 +7753,6 @@ begin
   Result := Gio2.g_output_stream_set_pending(@self);
 end;
 
-
 function TGOutputStream.splice(source: PGInputStream; flags: TGOutputStreamSpliceFlags; cancellable: PGCancellable): gssize; cdecl;
 begin
   Result := Gio2.g_output_stream_splice(@self, source, flags, cancellable);
@@ -7977,7 +7843,6 @@ begin
   Result := Gio2.g_dbus_connection_new_for_address_finish(res);
 end;
 
-
 function TGDBusConnection.new_for_address_sync(address: Pgchar; flags: TGDBusConnectionFlags; observer: PGDBusAuthObserver; cancellable: PGCancellable): PGDBusConnection; cdecl;
 begin
   Result := Gio2.g_dbus_connection_new_for_address_sync(address, flags, observer, cancellable);
@@ -8002,7 +7867,6 @@ function TGDBusConnection.add_filter(filter_function: TGDBusMessageFilterFunctio
 begin
   Result := Gio2.g_dbus_connection_add_filter(@self, filter_function, user_data, user_data_free_func);
 end;
-
 
 procedure TGDBusConnection.call(bus_name: Pgchar; object_path: Pgchar; interface_name: Pgchar; method_name: Pgchar; parameters: PGVariant; reply_type: PGVariantType; flags: TGDBusCallFlags; timeout_msec: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
 begin
@@ -8069,7 +7933,6 @@ begin
   Result := Gio2.g_dbus_connection_flush_sync(@self, cancellable);
 end;
 
-
 function TGDBusConnection.get_capabilities: TGDBusCapabilityFlags; cdecl;
 begin
   Result := Gio2.g_dbus_connection_get_capabilities(@self);
@@ -8110,7 +7973,6 @@ begin
   Result := Gio2.g_dbus_connection_register_object(@self, object_path, interface_info, vtable, user_data, user_data_free_func);
 end;
 
-
 function TGDBusConnection.register_subtree(object_path: Pgchar; vtable: PGDBusSubtreeVTable; flags: TGDBusSubtreeFlags; user_data: gpointer; user_data_free_func: TGDestroyNotify): guint; cdecl;
 begin
   Result := Gio2.g_dbus_connection_register_subtree(@self, object_path, vtable, flags, user_data, user_data_free_func);
@@ -8120,7 +7982,6 @@ procedure TGDBusConnection.remove_filter(filter_id: guint); cdecl;
 begin
   Gio2.g_dbus_connection_remove_filter(@self, filter_id);
 end;
-
 
 function TGDBusConnection.send_message(message: PGDBusMessage; flags: TGDBusSendMessageFlags; out_serial: Pguint32): gboolean; cdecl;
 begin
@@ -8147,7 +8008,6 @@ begin
   Gio2.g_dbus_connection_set_exit_on_close(@self, exit_on_close);
 end;
 
-
 function TGDBusConnection.signal_subscribe(sender: Pgchar; interface_name: Pgchar; member: Pgchar; object_path: Pgchar; arg0: Pgchar; flags: TGDBusSignalFlags; callback: TGDBusSignalCallback; user_data: gpointer; user_data_free_func: TGDestroyNotify): guint; cdecl;
 begin
   Result := Gio2.g_dbus_connection_signal_subscribe(@self, sender, interface_name, member, object_path, arg0, flags, callback, user_data, user_data_free_func);
@@ -8172,9 +8032,6 @@ function TGDBusConnection.unregister_subtree(registration_id: guint): gboolean; 
 begin
   Result := Gio2.g_dbus_connection_unregister_subtree(@self, registration_id);
 end;
-
-
-
 
 function TGConverter.convert(inbuf: Pguint8; inbuf_size: gsize; outbuf: Pgpointer; outbuf_size: gsize; flags: TGConverterFlags; bytes_read: Pgsize; bytes_written: Pgsize): TGConverterResult; cdecl;
 begin
@@ -8356,7 +8213,6 @@ begin
   Result := Gio2.g_io_stream_set_pending(@self);
 end;
 
-
 procedure TGIOStream.splice_async(stream2: PGIOStream; flags: TGIOStreamSpliceFlags; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
 begin
   Gio2.g_io_stream_splice_async(@self, stream2, flags, io_priority, cancellable, callback, user_data);
@@ -8491,7 +8347,6 @@ function TGDBusMessage.get_error_name: Pgchar; cdecl;
 begin
   Result := Gio2.g_dbus_message_get_error_name(@self);
 end;
-
 
 function TGDBusMessage.get_flags: TGDBusMessageFlags; cdecl;
 begin
@@ -8733,7 +8588,6 @@ begin
   Gio2.g_dbus_property_info_unref(@self);
 end;
 
-
 function TGDBusMethodInvocation.get_connection: PGDBusConnection; cdecl;
 begin
   Result := Gio2.g_dbus_method_invocation_get_connection(@self);
@@ -8808,7 +8662,6 @@ procedure TGDBusMethodInvocation.take_error(error: PGError); cdecl;
 begin
   Gio2.g_dbus_method_invocation_take_error(@self, error);
 end;
-
 
 function TGDBusInterfaceSkeleton.export(connection: PGDBusConnection; object_path: Pgchar): gboolean; cdecl;
 begin
@@ -8915,7 +8768,6 @@ begin
   Result := Gio2.g_dbus_object_manager_client_new_for_bus_finish(res);
 end;
 
-
 function TGDBusObjectManagerClient.new_for_bus_sync(bus_type: TGBusType; flags: TGDBusObjectManagerClientFlags; name: Pgchar; object_path: Pgchar; get_proxy_type_func: TGDBusProxyTypeFunc; get_proxy_type_user_data: gpointer; get_proxy_type_destroy_notify: TGDestroyNotify; cancellable: PGCancellable): PGDBusObjectManagerClient; cdecl;
 begin
   Result := Gio2.g_dbus_object_manager_client_new_for_bus_sync(bus_type, flags, name, object_path, get_proxy_type_func, get_proxy_type_user_data, get_proxy_type_destroy_notify, cancellable);
@@ -8975,7 +8827,6 @@ function TGDBusProxy.new_for_bus_finish(res: PGAsyncResult): PGDBusProxy; cdecl;
 begin
   Result := Gio2.g_dbus_proxy_new_for_bus_finish(res);
 end;
-
 
 function TGDBusProxy.new_for_bus_sync(bus_type: TGBusType; flags: TGDBusProxyFlags; info: PGDBusInterfaceInfo; name: Pgchar; object_path: Pgchar; interface_name: Pgchar; cancellable: PGCancellable): PGDBusProxy; cdecl;
 begin
@@ -9151,7 +9002,6 @@ procedure TGDBusObjectSkeleton.set_object_path(object_path: Pgchar); cdecl;
 begin
   Gio2.g_dbus_object_skeleton_set_object_path(@self, object_path);
 end;
-
 
 function TGDBusServer.new_sync(address: Pgchar; flags: TGDBusServerFlags; guid: Pgchar; observer: PGDBusAuthObserver; cancellable: PGCancellable): PGDBusServer; cdecl;
 begin
@@ -10168,7 +10018,6 @@ begin
   Result := Gio2.g_file_attribute_info_list_new();
 end;
 
-
 procedure TGFileAttributeInfoList.add(name: Pgchar; type_: TGFileAttributeType; flags: TGFileAttributeInfoFlags); cdecl;
 begin
   Gio2.g_file_attribute_info_list_add(@self, name, type_, flags);
@@ -11034,7 +10883,6 @@ begin
   Gio2.g_settings_apply(@self);
 end;
 
-
 procedure TGSettings.bind(key: Pgchar; object_: TGObject; property_: Pgchar; flags: TGSettingsBindFlags); cdecl;
 begin
   Gio2.g_settings_bind(@self, key, object_, property_, flags);
@@ -11665,7 +11513,6 @@ begin
   Result := Gio2.g_socket_client_get_tls(@self);
 end;
 
-
 function TGSocketClient.get_tls_validation_flags: TGTlsCertificateFlags; cdecl;
 begin
   Result := Gio2.g_socket_client_get_tls_validation_flags(@self);
@@ -12160,7 +12007,6 @@ function TGTlsFileDatabase.new(anchors: Pgchar): PGTlsDatabase; cdecl;
 begin
   Result := Gio2.g_tls_file_database_new(anchors);
 end;
-
 
 function TGTlsPassword.new(flags: TGTlsPasswordFlags; description: Pgchar): PGTlsPassword; cdecl;
 begin

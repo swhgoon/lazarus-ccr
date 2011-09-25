@@ -2392,39 +2392,42 @@ const
   GDK_BLANK_CURSOR: TGdkCursorType = -2;
   GDK_CURSOR_IS_PIXMAP: TGdkCursorType = -1;
 
+type
+  TGdkModifierType = Integer;
+const
   { GdkModifierType }
-  GDK_SHIFT_MASK = 1;
-  GDK_LOCK_MASK = 2;
-  GDK_CONTROL_MASK = 4;
-  GDK_MOD1_MASK = 8;
-  GDK_MOD2_MASK = 16;
-  GDK_MOD3_MASK = 32;
-  GDK_MOD4_MASK = 64;
-  GDK_MOD5_MASK = 128;
-  GDK_BUTTON1_MASK = 256;
-  GDK_BUTTON2_MASK = 512;
-  GDK_BUTTON3_MASK = 1024;
-  GDK_BUTTON4_MASK = 2048;
-  GDK_BUTTON5_MASK = 4096;
-  GDK_MODIFIER_RESERVED_13_MASK = 8192;
-  GDK_MODIFIER_RESERVED_14_MASK = 16384;
-  GDK_MODIFIER_RESERVED_15_MASK = 32768;
-  GDK_MODIFIER_RESERVED_16_MASK = 65536;
-  GDK_MODIFIER_RESERVED_17_MASK = 131072;
-  GDK_MODIFIER_RESERVED_18_MASK = 262144;
-  GDK_MODIFIER_RESERVED_19_MASK = 524288;
-  GDK_MODIFIER_RESERVED_20_MASK = 1048576;
-  GDK_MODIFIER_RESERVED_21_MASK = 2097152;
-  GDK_MODIFIER_RESERVED_22_MASK = 4194304;
-  GDK_MODIFIER_RESERVED_23_MASK = 8388608;
-  GDK_MODIFIER_RESERVED_24_MASK = 16777216;
-  GDK_MODIFIER_RESERVED_25_MASK = 33554432;
-  GDK_SUPER_MASK = 67108864;
-  GDK_HYPER_MASK = 134217728;
-  GDK_META_MASK = 268435456;
-  GDK_MODIFIER_RESERVED_29_MASK = 536870912;
-  GDK_RELEASE_MASK = 1073741824;
-  GDK_MODIFIER_MASK = 1543512063;
+  GDK_SHIFT_MASK: TGdkModifierType = 1;
+  GDK_LOCK_MASK: TGdkModifierType = 2;
+  GDK_CONTROL_MASK: TGdkModifierType = 4;
+  GDK_MOD1_MASK: TGdkModifierType = 8;
+  GDK_MOD2_MASK: TGdkModifierType = 16;
+  GDK_MOD3_MASK: TGdkModifierType = 32;
+  GDK_MOD4_MASK: TGdkModifierType = 64;
+  GDK_MOD5_MASK: TGdkModifierType = 128;
+  GDK_BUTTON1_MASK: TGdkModifierType = 256;
+  GDK_BUTTON2_MASK: TGdkModifierType = 512;
+  GDK_BUTTON3_MASK: TGdkModifierType = 1024;
+  GDK_BUTTON4_MASK: TGdkModifierType = 2048;
+  GDK_BUTTON5_MASK: TGdkModifierType = 4096;
+  GDK_MODIFIER_RESERVED_13_MASK: TGdkModifierType = 8192;
+  GDK_MODIFIER_RESERVED_14_MASK: TGdkModifierType = 16384;
+  GDK_MODIFIER_RESERVED_15_MASK: TGdkModifierType = 32768;
+  GDK_MODIFIER_RESERVED_16_MASK: TGdkModifierType = 65536;
+  GDK_MODIFIER_RESERVED_17_MASK: TGdkModifierType = 131072;
+  GDK_MODIFIER_RESERVED_18_MASK: TGdkModifierType = 262144;
+  GDK_MODIFIER_RESERVED_19_MASK: TGdkModifierType = 524288;
+  GDK_MODIFIER_RESERVED_20_MASK: TGdkModifierType = 1048576;
+  GDK_MODIFIER_RESERVED_21_MASK: TGdkModifierType = 2097152;
+  GDK_MODIFIER_RESERVED_22_MASK: TGdkModifierType = 4194304;
+  GDK_MODIFIER_RESERVED_23_MASK: TGdkModifierType = 8388608;
+  GDK_MODIFIER_RESERVED_24_MASK: TGdkModifierType = 16777216;
+  GDK_MODIFIER_RESERVED_25_MASK: TGdkModifierType = 33554432;
+  GDK_SUPER_MASK: TGdkModifierType = 67108864;
+  GDK_HYPER_MASK: TGdkModifierType = 134217728;
+  GDK_META_MASK: TGdkModifierType = 268435456;
+  GDK_MODIFIER_RESERVED_29_MASK: TGdkModifierType = 536870912;
+  GDK_RELEASE_MASK: TGdkModifierType = 1073741824;
+  GDK_MODIFIER_MASK: TGdkModifierType = 1543512063;
 
 type
   TGdkGrabOwnership = Integer;
@@ -2434,29 +2437,32 @@ const
   GDK_OWNERSHIP_WINDOW: TGdkGrabOwnership = 1;
   GDK_OWNERSHIP_APPLICATION: TGdkGrabOwnership = 2;
 
+type
+  TGdkEventMask = Integer;
+const
   { GdkEventMask }
-  GDK_EXPOSURE_MASK = 2;
-  GDK_POINTER_MOTION_MASK = 4;
-  GDK_POINTER_MOTION_HINT_MASK = 8;
-  GDK_BUTTON_MOTION_MASK = 16;
-  GDK_BUTTON1_MOTION_MASK = 32;
-  GDK_BUTTON2_MOTION_MASK = 64;
-  GDK_BUTTON3_MOTION_MASK = 128;
-  GDK_BUTTON_PRESS_MASK = 256;
-  GDK_BUTTON_RELEASE_MASK = 512;
-  GDK_KEY_PRESS_MASK = 1024;
-  GDK_KEY_RELEASE_MASK = 2048;
-  GDK_ENTER_NOTIFY_MASK = 4096;
-  GDK_LEAVE_NOTIFY_MASK = 8192;
-  GDK_FOCUS_CHANGE_MASK = 16384;
-  GDK_STRUCTURE_MASK = 32768;
-  GDK_PROPERTY_CHANGE_MASK = 65536;
-  GDK_VISIBILITY_NOTIFY_MASK = 131072;
-  GDK_PROXIMITY_IN_MASK = 262144;
-  GDK_PROXIMITY_OUT_MASK = 524288;
-  GDK_SUBSTRUCTURE_MASK = 1048576;
-  GDK_SCROLL_MASK = 2097152;
-  GDK_ALL_EVENTS_MASK = 4194302;
+  GDK_EXPOSURE_MASK: TGdkEventMask = 2;
+  GDK_POINTER_MOTION_MASK: TGdkEventMask = 4;
+  GDK_POINTER_MOTION_HINT_MASK: TGdkEventMask = 8;
+  GDK_BUTTON_MOTION_MASK: TGdkEventMask = 16;
+  GDK_BUTTON1_MOTION_MASK: TGdkEventMask = 32;
+  GDK_BUTTON2_MOTION_MASK: TGdkEventMask = 64;
+  GDK_BUTTON3_MOTION_MASK: TGdkEventMask = 128;
+  GDK_BUTTON_PRESS_MASK: TGdkEventMask = 256;
+  GDK_BUTTON_RELEASE_MASK: TGdkEventMask = 512;
+  GDK_KEY_PRESS_MASK: TGdkEventMask = 1024;
+  GDK_KEY_RELEASE_MASK: TGdkEventMask = 2048;
+  GDK_ENTER_NOTIFY_MASK: TGdkEventMask = 4096;
+  GDK_LEAVE_NOTIFY_MASK: TGdkEventMask = 8192;
+  GDK_FOCUS_CHANGE_MASK: TGdkEventMask = 16384;
+  GDK_STRUCTURE_MASK: TGdkEventMask = 32768;
+  GDK_PROPERTY_CHANGE_MASK: TGdkEventMask = 65536;
+  GDK_VISIBILITY_NOTIFY_MASK: TGdkEventMask = 131072;
+  GDK_PROXIMITY_IN_MASK: TGdkEventMask = 262144;
+  GDK_PROXIMITY_OUT_MASK: TGdkEventMask = 524288;
+  GDK_SUBSTRUCTURE_MASK: TGdkEventMask = 1048576;
+  GDK_SCROLL_MASK: TGdkEventMask = 2097152;
+  GDK_ALL_EVENTS_MASK: TGdkEventMask = 4194302;
 
 type
   TGdkInputMode = Integer;
@@ -2479,14 +2485,17 @@ const
   GDK_WINDOW_EDGE_SOUTH: TGdkWindowEdge = 6;
   GDK_WINDOW_EDGE_SOUTH_EAST: TGdkWindowEdge = 7;
 
+type
+  TGdkWMDecoration = Integer;
+const
   { GdkWMDecoration }
-  GDK_DECOR_ALL = 1;
-  GDK_DECOR_BORDER = 2;
-  GDK_DECOR_RESIZEH = 4;
-  GDK_DECOR_TITLE = 8;
-  GDK_DECOR_MENU = 16;
-  GDK_DECOR_MINIMIZE = 32;
-  GDK_DECOR_MAXIMIZE = 64;
+  GDK_DECOR_ALL: TGdkWMDecoration = 1;
+  GDK_DECOR_BORDER: TGdkWMDecoration = 2;
+  GDK_DECOR_RESIZEH: TGdkWMDecoration = 4;
+  GDK_DECOR_TITLE: TGdkWMDecoration = 8;
+  GDK_DECOR_MENU: TGdkWMDecoration = 16;
+  GDK_DECOR_MINIMIZE: TGdkWMDecoration = 32;
+  GDK_DECOR_MAXIMIZE: TGdkWMDecoration = 64;
 
 type
   TGdkInputSource = Integer;
@@ -2498,33 +2507,42 @@ const
   GDK_SOURCE_CURSOR: TGdkInputSource = 3;
   GDK_SOURCE_KEYBOARD: TGdkInputSource = 4;
 
+type
+  TGdkWindowState = Integer;
+const
   { GdkWindowState }
-  GDK_WINDOW_STATE_WITHDRAWN = 1;
-  GDK_WINDOW_STATE_ICONIFIED = 2;
-  GDK_WINDOW_STATE_MAXIMIZED = 4;
-  GDK_WINDOW_STATE_STICKY = 8;
-  GDK_WINDOW_STATE_FULLSCREEN = 16;
-  GDK_WINDOW_STATE_ABOVE = 32;
-  GDK_WINDOW_STATE_BELOW = 64;
+  GDK_WINDOW_STATE_WITHDRAWN: TGdkWindowState = 1;
+  GDK_WINDOW_STATE_ICONIFIED: TGdkWindowState = 2;
+  GDK_WINDOW_STATE_MAXIMIZED: TGdkWindowState = 4;
+  GDK_WINDOW_STATE_STICKY: TGdkWindowState = 8;
+  GDK_WINDOW_STATE_FULLSCREEN: TGdkWindowState = 16;
+  GDK_WINDOW_STATE_ABOVE: TGdkWindowState = 32;
+  GDK_WINDOW_STATE_BELOW: TGdkWindowState = 64;
 
+type
+  TGdkWMFunction = Integer;
+const
   { GdkWMFunction }
-  GDK_FUNC_ALL = 1;
-  GDK_FUNC_RESIZE = 2;
-  GDK_FUNC_MOVE = 4;
-  GDK_FUNC_MINIMIZE = 8;
-  GDK_FUNC_MAXIMIZE = 16;
-  GDK_FUNC_CLOSE = 32;
+  GDK_FUNC_ALL: TGdkWMFunction = 1;
+  GDK_FUNC_RESIZE: TGdkWMFunction = 2;
+  GDK_FUNC_MOVE: TGdkWMFunction = 4;
+  GDK_FUNC_MINIMIZE: TGdkWMFunction = 8;
+  GDK_FUNC_MAXIMIZE: TGdkWMFunction = 16;
+  GDK_FUNC_CLOSE: TGdkWMFunction = 32;
 
+type
+  TGdkWindowHints = Integer;
+const
   { GdkWindowHints }
-  GDK_HINT_POS = 1;
-  GDK_HINT_MIN_SIZE = 2;
-  GDK_HINT_MAX_SIZE = 4;
-  GDK_HINT_BASE_SIZE = 8;
-  GDK_HINT_ASPECT = 16;
-  GDK_HINT_RESIZE_INC = 32;
-  GDK_HINT_WIN_GRAVITY = 64;
-  GDK_HINT_USER_POS = 128;
-  GDK_HINT_USER_SIZE = 256;
+  GDK_HINT_POS: TGdkWindowHints = 1;
+  GDK_HINT_MIN_SIZE: TGdkWindowHints = 2;
+  GDK_HINT_MAX_SIZE: TGdkWindowHints = 4;
+  GDK_HINT_BASE_SIZE: TGdkWindowHints = 8;
+  GDK_HINT_ASPECT: TGdkWindowHints = 16;
+  GDK_HINT_RESIZE_INC: TGdkWindowHints = 32;
+  GDK_HINT_WIN_GRAVITY: TGdkWindowHints = 64;
+  GDK_HINT_USER_POS: TGdkWindowHints = 128;
+  GDK_HINT_USER_SIZE: TGdkWindowHints = 256;
 
 type
   TGdkWindowTypeHint = Integer;
@@ -2650,13 +2668,16 @@ const
   GDK_SETTING_ACTION_CHANGED: TGdkSettingAction = 1;
   GDK_SETTING_ACTION_DELETED: TGdkSettingAction = 2;
 
+type
+  TGdkDragAction = Integer;
+const
   { GdkDragAction }
-  GDK_ACTION_DEFAULT = 1;
-  GDK_ACTION_COPY = 2;
-  GDK_ACTION_MOVE = 4;
-  GDK_ACTION_LINK = 8;
-  GDK_ACTION_PRIVATE = 16;
-  GDK_ACTION_ASK = 32;
+  GDK_ACTION_DEFAULT: TGdkDragAction = 1;
+  GDK_ACTION_COPY: TGdkDragAction = 2;
+  GDK_ACTION_MOVE: TGdkDragAction = 4;
+  GDK_ACTION_LINK: TGdkDragAction = 8;
+  GDK_ACTION_PRIVATE: TGdkDragAction = 16;
+  GDK_ACTION_ASK: TGdkDragAction = 32;
 
 type
   TGdkDragProtocol = Integer;
@@ -2755,15 +2776,18 @@ const
   GDK_WINDOW_FOREIGN: TGdkWindowType = 4;
   GDK_WINDOW_OFFSCREEN: TGdkWindowType = 5;
 
+type
+  TGdkWindowAttributesType = Integer;
+const
   { GdkWindowAttributesType }
-  GDK_WA_TITLE = 2;
-  GDK_WA_X = 4;
-  GDK_WA_Y = 8;
-  GDK_WA_CURSOR = 16;
-  GDK_WA_VISUAL = 32;
-  GDK_WA_WMCLASS = 64;
-  GDK_WA_NOREDIR = 128;
-  GDK_WA_TYPE_HINT = 256;
+  GDK_WA_TITLE: TGdkWindowAttributesType = 2;
+  GDK_WA_X: TGdkWindowAttributesType = 4;
+  GDK_WA_Y: TGdkWindowAttributesType = 8;
+  GDK_WA_CURSOR: TGdkWindowAttributesType = 16;
+  GDK_WA_VISUAL: TGdkWindowAttributesType = 32;
+  GDK_WA_WMCLASS: TGdkWindowAttributesType = 64;
+  GDK_WA_NOREDIR: TGdkWindowAttributesType = 128;
+  GDK_WA_TYPE_HINT: TGdkWindowAttributesType = 256;
 type
 
   PPGdkRectangle = ^PGdkRectangle;
@@ -2956,42 +2980,6 @@ type
 
   PPGdkModifierType = ^PGdkModifierType;
   PGdkModifierType = ^TGdkModifierType;
-  TGdkModifierType = packed object(TBitObject32)
-  public
-    property shift_mask: DWord index 1 read GetBit write SetBit;
-    property lock_mask: DWord index 2 read GetBit write SetBit;
-    property control_mask: DWord index 4 read GetBit write SetBit;
-    property mod1_mask: DWord index 8 read GetBit write SetBit;
-    property mod2_mask: DWord index 16 read GetBit write SetBit;
-    property mod3_mask: DWord index 32 read GetBit write SetBit;
-    property mod4_mask: DWord index 64 read GetBit write SetBit;
-    property mod5_mask: DWord index 128 read GetBit write SetBit;
-    property button1_mask: DWord index 256 read GetBit write SetBit;
-    property button2_mask: DWord index 512 read GetBit write SetBit;
-    property button3_mask: DWord index 1024 read GetBit write SetBit;
-    property button4_mask: DWord index 2048 read GetBit write SetBit;
-    property button5_mask: DWord index 4096 read GetBit write SetBit;
-    property modifier_reserved_13_mask: DWord index 8192 read GetBit write SetBit;
-    property modifier_reserved_14_mask: DWord index 16384 read GetBit write SetBit;
-    property modifier_reserved_15_mask: DWord index 32768 read GetBit write SetBit;
-    property modifier_reserved_16_mask: DWord index 65536 read GetBit write SetBit;
-    property modifier_reserved_17_mask: DWord index 131072 read GetBit write SetBit;
-    property modifier_reserved_18_mask: DWord index 262144 read GetBit write SetBit;
-    property modifier_reserved_19_mask: DWord index 524288 read GetBit write SetBit;
-    property modifier_reserved_20_mask: DWord index 1048576 read GetBit write SetBit;
-    property modifier_reserved_21_mask: DWord index 2097152 read GetBit write SetBit;
-    property modifier_reserved_22_mask: DWord index 4194304 read GetBit write SetBit;
-    property modifier_reserved_23_mask: DWord index 8388608 read GetBit write SetBit;
-    property modifier_reserved_24_mask: DWord index 16777216 read GetBit write SetBit;
-    property modifier_reserved_25_mask: DWord index 33554432 read GetBit write SetBit;
-    property super_mask: DWord index 67108864 read GetBit write SetBit;
-    property hyper_mask: DWord index 134217728 read GetBit write SetBit;
-    property meta_mask: DWord index 268435456 read GetBit write SetBit;
-    property modifier_reserved_29_mask: DWord index 536870912 read GetBit write SetBit;
-    property release_mask: DWord index 1073741824 read GetBit write SetBit;
-    property modifier_mask: DWord index 1543512063 read GetBit write SetBit;
-  end;
-
 
   PPGdkInputMode = ^PGdkInputMode;
   PGdkInputMode = ^TGdkInputMode;
@@ -3007,32 +2995,6 @@ type
 
   PPGdkEventMask = ^PGdkEventMask;
   PGdkEventMask = ^TGdkEventMask;
-  TGdkEventMask = packed object(TBitObject32)
-  public
-    property exposure_mask: DWord index 2 read GetBit write SetBit;
-    property pointer_motion_mask: DWord index 4 read GetBit write SetBit;
-    property pointer_motion_hint_mask: DWord index 8 read GetBit write SetBit;
-    property button_motion_mask: DWord index 16 read GetBit write SetBit;
-    property button1_motion_mask: DWord index 32 read GetBit write SetBit;
-    property button2_motion_mask: DWord index 64 read GetBit write SetBit;
-    property button3_motion_mask: DWord index 128 read GetBit write SetBit;
-    property button_press_mask: DWord index 256 read GetBit write SetBit;
-    property button_release_mask: DWord index 512 read GetBit write SetBit;
-    property key_press_mask: DWord index 1024 read GetBit write SetBit;
-    property key_release_mask: DWord index 2048 read GetBit write SetBit;
-    property enter_notify_mask: DWord index 4096 read GetBit write SetBit;
-    property leave_notify_mask: DWord index 8192 read GetBit write SetBit;
-    property focus_change_mask: DWord index 16384 read GetBit write SetBit;
-    property structure_mask: DWord index 32768 read GetBit write SetBit;
-    property property_change_mask: DWord index 65536 read GetBit write SetBit;
-    property visibility_notify_mask: DWord index 131072 read GetBit write SetBit;
-    property proximity_in_mask: DWord index 262144 read GetBit write SetBit;
-    property proximity_out_mask: DWord index 524288 read GetBit write SetBit;
-    property substructure_mask: DWord index 1048576 read GetBit write SetBit;
-    property scroll_mask: DWord index 2097152 read GetBit write SetBit;
-    property all_events_mask: DWord index 4194302 read GetBit write SetBit;
-  end;
-
   TGdkDevice = object(TGObject)
     procedure free_history(events: PPGdkTimeCoord; n_events: gint); cdecl; inline; static;
     function grab_info_libgtk_only(display: PGdkDisplay; device: PGdkDevice; grab_window: PPGdkWindow; owner_events: Pgboolean): gboolean; cdecl; inline; static;
@@ -3090,34 +3052,12 @@ type
 
   PPGdkWMDecoration = ^PGdkWMDecoration;
   PGdkWMDecoration = ^TGdkWMDecoration;
-  TGdkWMDecoration = packed object(TBitObject32)
-  public
-    property all: DWord index 1 read GetBit write SetBit;
-    property border: DWord index 2 read GetBit write SetBit;
-    property resizeh: DWord index 4 read GetBit write SetBit;
-    property title: DWord index 8 read GetBit write SetBit;
-    property menu: DWord index 16 read GetBit write SetBit;
-    property minimize: DWord index 32 read GetBit write SetBit;
-    property maximize: DWord index 64 read GetBit write SetBit;
-  end;
-
 
   PPGdkDragProtocol = ^PGdkDragProtocol;
   PGdkDragProtocol = ^TGdkDragProtocol;
 
   PPGdkWindowState = ^PGdkWindowState;
   PGdkWindowState = ^TGdkWindowState;
-  TGdkWindowState = packed object(TBitObject32)
-  public
-    property withdrawn: DWord index 1 read GetBit write SetBit;
-    property iconified: DWord index 2 read GetBit write SetBit;
-    property maximized: DWord index 4 read GetBit write SetBit;
-    property sticky: DWord index 8 read GetBit write SetBit;
-    property fullscreen: DWord index 16 read GetBit write SetBit;
-    property above: DWord index 32 read GetBit write SetBit;
-    property below: DWord index 64 read GetBit write SetBit;
-  end;
-
 
   PPGdkWindowTypeHint = ^PGdkWindowTypeHint;
   PGdkWindowTypeHint = ^TGdkWindowTypeHint;
@@ -3134,32 +3074,9 @@ type
 
   PPGdkWMFunction = ^PGdkWMFunction;
   PGdkWMFunction = ^TGdkWMFunction;
-  TGdkWMFunction = packed object(TBitObject32)
-  public
-    property all: DWord index 1 read GetBit write SetBit;
-    property resize: DWord index 2 read GetBit write SetBit;
-    property move: DWord index 4 read GetBit write SetBit;
-    property minimize: DWord index 8 read GetBit write SetBit;
-    property maximize: DWord index 16 read GetBit write SetBit;
-    property close: DWord index 32 read GetBit write SetBit;
-  end;
-
 
   PPGdkWindowHints = ^PGdkWindowHints;
   PGdkWindowHints = ^TGdkWindowHints;
-  TGdkWindowHints = packed object(TBitObject32)
-  public
-    property pos: DWord index 1 read GetBit write SetBit;
-    property min_size: DWord index 2 read GetBit write SetBit;
-    property max_size: DWord index 4 read GetBit write SetBit;
-    property base_size: DWord index 8 read GetBit write SetBit;
-    property aspect: DWord index 16 read GetBit write SetBit;
-    property resize_inc: DWord index 32 read GetBit write SetBit;
-    property win_gravity: DWord index 64 read GetBit write SetBit;
-    property user_pos: DWord index 128 read GetBit write SetBit;
-    property user_size: DWord index 256 read GetBit write SetBit;
-  end;
-
   TGdkWindow = object(TGObject)
     function new(parent: PGdkWindow; attributes: PGdkWindowAttr; attributes_mask: gint): PGdkWindow; cdecl; inline; static;
     
@@ -3676,16 +3593,6 @@ type
     procedure set_default_display(display: PGdkDisplay); cdecl; inline;
     property default_display:  PGdkDisplay read get_default_display  { property is writeable but setter not declared } ;
   end;
-  TGdkDragAction = packed object(TBitObject32)
-  public
-    property default_: DWord index 1 read GetBit write SetBit;
-    property copy: DWord index 2 read GetBit write SetBit;
-    property move: DWord index 4 read GetBit write SetBit;
-    property link: DWord index 8 read GetBit write SetBit;
-    property private_: DWord index 16 read GetBit write SetBit;
-    property ask: DWord index 32 read GetBit write SetBit;
-  end;
-
 
   PPGdkDragAction = ^PGdkDragAction;
   PGdkDragAction = ^TGdkDragAction;
@@ -3825,18 +3732,9 @@ type
   end;
 
 
-  TGdkWindowAttributesType = packed object(TBitObject32)
-  public
-    property title: DWord index 2 read GetBit write SetBit;
-    property x: DWord index 4 read GetBit write SetBit;
-    property y: DWord index 8 read GetBit write SetBit;
-    property cursor: DWord index 16 read GetBit write SetBit;
-    property visual: DWord index 32 read GetBit write SetBit;
-    property wmclass: DWord index 64 read GetBit write SetBit;
-    property noredir: DWord index 128 read GetBit write SetBit;
-    property type_hint: DWord index 256 read GetBit write SetBit;
-  end;
 
+  PPGdkWindowAttributesType = ^PGdkWindowAttributesType;
+  PGdkWindowAttributesType = ^TGdkWindowAttributesType;
 
   PPGdkWindowClass = ^PGdkWindowClass;
   PGdkWindowClass = ^TGdkWindowClass;
@@ -4797,7 +4695,6 @@ begin
   Result := Gdk3.gdk_device_get_history(@self, window, start, stop, events, n_events);
 end;
 
-
 function TGdkDevice.get_key(index_: guint; keyval: Pguint; modifiers: PGdkModifierType): gboolean; cdecl;
 begin
   Result := Gdk3.gdk_device_get_key(@self, index_, keyval, modifiers);
@@ -4842,7 +4739,6 @@ function TGdkDevice.get_window_at_position(win_x: Pgint; win_y: Pgint): PGdkWind
 begin
   Result := Gdk3.gdk_device_get_window_at_position(@self, win_x, win_y);
 end;
-
 
 function TGdkDevice.grab(window: PGdkWindow; grab_ownership: TGdkGrabOwnership; owner_events: gboolean; event_mask: TGdkEventMask; cursor: PGdkCursor; time_: guint32): TGdkGrabStatus; cdecl;
 begin
@@ -5044,7 +4940,6 @@ begin
   Result := Gdk3.gdk_window_get_cursor(@self);
 end;
 
-
 function TGdkWindow.get_decorations(decorations: PGdkWMDecoration): gboolean; cdecl;
 begin
   Result := Gdk3.gdk_window_get_decorations(@self, decorations);
@@ -5154,7 +5049,6 @@ function TGdkWindow.get_source_events(source: TGdkInputSource): TGdkEventMask; c
 begin
   Result := Gdk3.gdk_window_get_source_events(@self, source);
 end;
-
 
 function TGdkWindow.get_state: TGdkWindowState; cdecl;
 begin
@@ -5411,12 +5305,10 @@ begin
   Gdk3.gdk_window_set_focus_on_map(@self, focus_on_map);
 end;
 
-
 procedure TGdkWindow.set_functions(functions: TGdkWMFunction); cdecl;
 begin
   Gdk3.gdk_window_set_functions(@self, functions);
 end;
-
 
 procedure TGdkWindow.set_geometry_hints(geometry: PGdkGeometry; geom_mask: TGdkWindowHints); cdecl;
 begin
@@ -5612,7 +5504,6 @@ procedure TGdkDisplayManager.set_default_display(display: PGdkDisplay); cdecl;
 begin
   Gdk3.gdk_display_manager_set_default_display(@self, display);
 end;
-
 
 function TGdkDragContext.get_actions: TGdkDragAction; cdecl;
 begin
@@ -5828,6 +5719,5 @@ function TGdkVisual.get_visual_type: TGdkVisualType; cdecl;
 begin
   Result := Gdk3.gdk_visual_get_visual_type(@self);
 end;
-
 
 end.

@@ -165,8 +165,11 @@ const
   ATK_ROLE_INFO_BAR: TAtkRole = 100;
   ATK_ROLE_LAST_DEFINED: TAtkRole = 101;
 
+type
+  TAtkHyperlinkStateFlags = Integer;
+const
   { AtkHyperlinkStateFlags }
-  ATK_HYPERLINK_IS_INLINE_ = 1;
+  ATK_HYPERLINK_IS_INLINE_: TAtkHyperlinkStateFlags = 1;
 
 type
   TAtkKeyEventType = Integer;
@@ -604,11 +607,9 @@ type
     get_hyperlink: function(impl: PAtkHyperlinkImpl): PAtkHyperlink; cdecl;
     pad1: TAtkFunction;
   end;
-  TAtkHyperlinkStateFlags = packed object(TBitObject32)
-  public
-    property inline_: DWord index 1 read GetBit write SetBit;
-  end;
 
+  PPAtkHyperlinkStateFlags = ^PAtkHyperlinkStateFlags;
+  PAtkHyperlinkStateFlags = ^TAtkHyperlinkStateFlags;
 
   PPAtkHypertext = ^PAtkHypertext;
   PAtkHypertext = ^TAtkHypertext;
@@ -1749,7 +1750,6 @@ function TAtkHyperlinkImpl.get_hyperlink: PAtkHyperlink; cdecl;
 begin
   Result := Atk1.atk_hyperlink_impl_get_hyperlink(@self);
 end;
-
 
 function TAtkHypertext.get_link(link_index: gint): PAtkHyperlink; cdecl;
 begin

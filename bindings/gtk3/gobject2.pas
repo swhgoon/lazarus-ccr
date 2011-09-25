@@ -30,61 +30,85 @@ const
   VALUE_COLLECT_FORMAT_MAX_LENGTH = 8;
   VALUE_NOCOPY_CONTENTS = 134217728;
 
+type
+  TGBindingFlags = Integer;
+const
   { GBindingFlags }
-  G_BINDING_DEFAULT = 0;
-  G_BINDING_BIDIRECTIONAL = 1;
-  G_BINDING_SYNC_CREATE = 2;
-  G_BINDING_INVERT_BOOLEAN = 4;
+  G_BINDING_DEFAULT: TGBindingFlags = 0;
+  G_BINDING_BIDIRECTIONAL: TGBindingFlags = 1;
+  G_BINDING_SYNC_CREATE: TGBindingFlags = 2;
+  G_BINDING_INVERT_BOOLEAN: TGBindingFlags = 4;
 
+type
+  TGConnectFlags = Integer;
+const
   { GConnectFlags }
-  G_CONNECT_AFTER = 1;
-  G_CONNECT_SWAPPED = 2;
+  G_CONNECT_AFTER: TGConnectFlags = 1;
+  G_CONNECT_SWAPPED: TGConnectFlags = 2;
 
+type
+  TGParamFlags = Integer;
+const
   { GParamFlags }
-  G_PARAM_READABLE = 1;
-  G_PARAM_WRITABLE = 2;
-  G_PARAM_CONSTRUCT = 4;
-  G_PARAM_CONSTRUCT_ONLY = 8;
-  G_PARAM_LAX_VALIDATION = 16;
-  G_PARAM_STATIC_NAME = 32;
-  G_PARAM_PRIVATE = 32;
-  G_PARAM_STATIC_NICK = 64;
-  G_PARAM_STATIC_BLURB = 128;
-  G_PARAM_DEPRECATED = 2147483648;
+  G_PARAM_READABLE: TGParamFlags = 1;
+  G_PARAM_WRITABLE: TGParamFlags = 2;
+  G_PARAM_CONSTRUCT: TGParamFlags = 4;
+  G_PARAM_CONSTRUCT_ONLY: TGParamFlags = 8;
+  G_PARAM_LAX_VALIDATION: TGParamFlags = 16;
+  G_PARAM_STATIC_NAME: TGParamFlags = 32;
+  G_PARAM_PRIVATE: TGParamFlags = 32;
+  G_PARAM_STATIC_NICK: TGParamFlags = 64;
+  G_PARAM_STATIC_BLURB: TGParamFlags = 128;
+  G_PARAM_DEPRECATED: TGParamFlags = 2147483648;
 
+type
+  TGSignalFlags = Integer;
+const
   { GSignalFlags }
-  G_SIGNAL_RUN_FIRST = 1;
-  G_SIGNAL_RUN_LAST = 2;
-  G_SIGNAL_RUN_CLEANUP = 4;
-  G_SIGNAL_NO_RECURSE = 8;
-  G_SIGNAL_DETAILED = 16;
-  G_SIGNAL_ACTION = 32;
-  G_SIGNAL_NO_HOOKS = 64;
-  G_SIGNAL_MUST_COLLECT = 128;
+  G_SIGNAL_RUN_FIRST: TGSignalFlags = 1;
+  G_SIGNAL_RUN_LAST: TGSignalFlags = 2;
+  G_SIGNAL_RUN_CLEANUP: TGSignalFlags = 4;
+  G_SIGNAL_NO_RECURSE: TGSignalFlags = 8;
+  G_SIGNAL_DETAILED: TGSignalFlags = 16;
+  G_SIGNAL_ACTION: TGSignalFlags = 32;
+  G_SIGNAL_NO_HOOKS: TGSignalFlags = 64;
+  G_SIGNAL_MUST_COLLECT: TGSignalFlags = 128;
 
+type
+  TGSignalMatchType = Integer;
+const
   { GSignalMatchType }
-  G_SIGNAL_MATCH_ID = 1;
-  G_SIGNAL_MATCH_DETAIL = 2;
-  G_SIGNAL_MATCH_CLOSURE = 4;
-  G_SIGNAL_MATCH_FUNC = 8;
-  G_SIGNAL_MATCH_DATA = 16;
-  G_SIGNAL_MATCH_UNBLOCKED = 32;
+  G_SIGNAL_MATCH_ID: TGSignalMatchType = 1;
+  G_SIGNAL_MATCH_DETAIL: TGSignalMatchType = 2;
+  G_SIGNAL_MATCH_CLOSURE: TGSignalMatchType = 4;
+  G_SIGNAL_MATCH_FUNC: TGSignalMatchType = 8;
+  G_SIGNAL_MATCH_DATA: TGSignalMatchType = 16;
+  G_SIGNAL_MATCH_UNBLOCKED: TGSignalMatchType = 32;
 
+type
+  TGTypeDebugFlags = Integer;
+const
   { GTypeDebugFlags }
-  G_TYPE_DEBUG_NONE = 0;
-  G_TYPE_DEBUG_OBJECTS = 1;
-  G_TYPE_DEBUG_SIGNALS = 2;
-  G_TYPE_DEBUG_MASK = 3;
+  G_TYPE_DEBUG_NONE: TGTypeDebugFlags = 0;
+  G_TYPE_DEBUG_OBJECTS: TGTypeDebugFlags = 1;
+  G_TYPE_DEBUG_SIGNALS: TGTypeDebugFlags = 2;
+  G_TYPE_DEBUG_MASK: TGTypeDebugFlags = 3;
 
+type
+  TGTypeFlags = Integer;
+const
   { GTypeFlags }
-  G_TYPE_FLAG_ABSTRACT = 16;
-  G_TYPE_FLAG_VALUE_ABSTRACT = 32;
+  G_TYPE_FLAG_ABSTRACT: TGTypeFlags = 16;
+  G_TYPE_FLAG_VALUE_ABSTRACT: TGTypeFlags = 32;
 
+type
+  TGTypeFundamentalFlags = Integer;
+const
   { GTypeFundamentalFlags }
-  G_TYPE_FLAG_CLASSED = 1;
-  G_TYPE_FLAG_INSTANTIATABLE = 2;
-  G_TYPE_FLAG_DERIVABLE = 4;
-  G_TYPE_FLAG_DEEP_DERIVABLE = 8;
+  G_TYPE_FLAG_CLASSED: TGTypeFundamentalFlags = 1;
+  G_TYPE_FLAG_INSTANTIATABLE: TGTypeFundamentalFlags = 2;
+  G_TYPE_FLAG_DERIVABLE: TGTypeFundamentalFlags = 4;
+  G_TYPE_FLAG_DEEP_DERIVABLE: TGTypeFundamentalFlags = 8;
 type
 
   PPGClosure = ^PGClosure;
@@ -104,14 +128,9 @@ type
   TGType = gsize;
   TGBaseFinalizeFunc = procedure(g_class: gpointer); cdecl;
   TGBaseInitFunc = procedure(g_class: gpointer); cdecl;
-  TGBindingFlags = packed object(TBitObject32)
-  public
-    property default_: DWord index 0 read GetBit write SetBit;
-    property bidirectional: DWord index 1 read GetBit write SetBit;
-    property sync_create: DWord index 2 read GetBit write SetBit;
-    property invert_boolean: DWord index 4 read GetBit write SetBit;
-  end;
 
+  PPGBindingFlags = ^PGBindingFlags;
+  PGBindingFlags = ^TGBindingFlags;
 
   PPGObject = ^PGObject;
   PGObject = ^TGObject;
@@ -121,9 +140,6 @@ type
 
   PPGBinding = ^PGBinding;
   PGBinding = ^TGBinding;
-
-  PPGBindingFlags = ^PGBindingFlags;
-  PGBindingFlags = ^TGBindingFlags;
 
   PPGBindingTransformFunc = ^PGBindingTransformFunc;
   PGBindingTransformFunc = ^TGBindingTransformFunc;
@@ -375,12 +391,9 @@ type
   end;
 
 
-  TGConnectFlags = packed object(TBitObject32)
-  public
-    property after: DWord index 1 read GetBit write SetBit;
-    property swapped: DWord index 2 read GetBit write SetBit;
-  end;
 
+  PPGConnectFlags = ^PGConnectFlags;
+  PGConnectFlags = ^TGConnectFlags;
   TGTypeClass = object
     g_type: TGType;
     function get_private(private_type: TGType): gpointer; cdecl; inline;
@@ -457,20 +470,6 @@ type
 
   PPGParamFlags = ^PGParamFlags;
   PGParamFlags = ^TGParamFlags;
-  TGParamFlags = packed object(TBitObject32)
-  public
-    property readable: DWord index 1 read GetBit write SetBit;
-    property writable: DWord index 2 read GetBit write SetBit;
-    property construct: DWord index 4 read GetBit write SetBit;
-    property construct_only: DWord index 8 read GetBit write SetBit;
-    property lax_validation: DWord index 16 read GetBit write SetBit;
-    property static_name: DWord index 32 read GetBit write SetBit;
-    property private_: DWord index 32 read GetBit write SetBit;
-    property static_nick: DWord index 64 read GetBit write SetBit;
-    property static_blurb: DWord index 128 read GetBit write SetBit;
-    property deprecated: DWord index 2147483648 read GetBit write SetBit;
-  end;
-
   TGParamSpec = object
     g_type_instance: TGTypeInstance;
     name: Pgchar;
@@ -780,18 +779,6 @@ type
 
   PPGSignalFlags = ^PGSignalFlags;
   PGSignalFlags = ^TGSignalFlags;
-  TGSignalFlags = packed object(TBitObject32)
-  public
-    property run_first: DWord index 1 read GetBit write SetBit;
-    property run_last: DWord index 2 read GetBit write SetBit;
-    property run_cleanup: DWord index 4 read GetBit write SetBit;
-    property no_recurse: DWord index 8 read GetBit write SetBit;
-    property detailed: DWord index 16 read GetBit write SetBit;
-    property action: DWord index 32 read GetBit write SetBit;
-    property no_hooks: DWord index 64 read GetBit write SetBit;
-    property must_collect: DWord index 128 read GetBit write SetBit;
-  end;
-
 
   TGSignalInvocationHint = record
     signal_id: guint;
@@ -802,16 +789,9 @@ type
 
   TGSignalAccumulator = function(ihint: PGSignalInvocationHint; return_accu: PGValue; handler_return: PGValue; data: gpointer): gboolean; cdecl;
   TGSignalEmissionHook = function(ihint: PGSignalInvocationHint; n_param_values: guint; param_values: PGValue; data: gpointer): gboolean; cdecl;
-  TGSignalMatchType = packed object(TBitObject32)
-  public
-    property id: DWord index 1 read GetBit write SetBit;
-    property detail: DWord index 2 read GetBit write SetBit;
-    property closure: DWord index 4 read GetBit write SetBit;
-    property func: DWord index 8 read GetBit write SetBit;
-    property data: DWord index 16 read GetBit write SetBit;
-    property unblocked: DWord index 32 read GetBit write SetBit;
-  end;
 
+  PPGSignalMatchType = ^PGSignalMatchType;
+  PGSignalMatchType = ^TGSignalMatchType;
 
   PPGSignalQuery = ^PGSignalQuery;
   PGSignalQuery = ^TGSignalQuery;
@@ -838,34 +818,18 @@ type
 
 
   TGTypeClassCacheFunc = function(cache_data: gpointer; g_class: PGTypeClass): gboolean; cdecl;
-  TGTypeDebugFlags = packed object(TBitObject32)
-  public
-    property none: DWord index 0 read GetBit write SetBit;
-    property objects: DWord index 1 read GetBit write SetBit;
-    property signals: DWord index 2 read GetBit write SetBit;
-    property mask: DWord index 3 read GetBit write SetBit;
-  end;
 
-  TGTypeFlags = packed object(TBitObject32)
-  public
-    property abstract: DWord index 16 read GetBit write SetBit;
-    property value_abstract: DWord index 32 read GetBit write SetBit;
-  end;
+  PPGTypeDebugFlags = ^PGTypeDebugFlags;
+  PGTypeDebugFlags = ^TGTypeDebugFlags;
 
-  TGTypeFundamentalFlags = packed object(TBitObject32)
-  public
-    property classed: DWord index 1 read GetBit write SetBit;
-    property instantiatable: DWord index 2 read GetBit write SetBit;
-    property derivable: DWord index 4 read GetBit write SetBit;
-    property deep_derivable: DWord index 8 read GetBit write SetBit;
-  end;
-
-
-  PPGTypeFundamentalInfo = ^PGTypeFundamentalInfo;
-  PGTypeFundamentalInfo = ^TGTypeFundamentalInfo;
+  PPGTypeFlags = ^PGTypeFlags;
+  PGTypeFlags = ^TGTypeFlags;
 
   PPGTypeFundamentalFlags = ^PGTypeFundamentalFlags;
   PGTypeFundamentalFlags = ^TGTypeFundamentalFlags;
+
+  PPGTypeFundamentalInfo = ^PGTypeFundamentalInfo;
+  PGTypeFundamentalInfo = ^TGTypeFundamentalInfo;
 
   TGTypeFundamentalInfo = record
     type_flags: TGTypeFundamentalFlags;
@@ -947,9 +911,6 @@ type
 
   PPGTypeModule = ^PGTypeModule;
   PGTypeModule = ^TGTypeModule;
-
-  PPGTypeFlags = ^PGTypeFlags;
-  PGTypeFlags = ^TGTypeFlags;
   TGTypeModule = object(TGObject)
     use_count: guint;
     type_infos: PGSList;
@@ -1388,7 +1349,6 @@ procedure g_value_take_string(AValue: PGValue; v_string: Pgchar); cdecl; externa
 procedure g_value_take_variant(AValue: PGValue; variant: PGVariant); cdecl; external;
 procedure g_value_unset(AValue: PGValue); cdecl; external;
 implementation
-
 function TGObject.newv(object_type: TGType; n_parameters: guint; parameters: PGParameter): PGObject; cdecl;
 begin
   Result := GObject2.g_object_newv(object_type, n_parameters, parameters);
@@ -2109,7 +2069,6 @@ begin
   Result := GObject2.g_cclosure_new_swap(callback_func, user_data, destroy_data);
 end;
 
-
 function TGTypeClass.get_private(private_type: TGType): gpointer; cdecl;
 begin
   Result := GObject2.g_type_class_get_private(@self, private_type);
@@ -2149,7 +2108,6 @@ function TGTypeClass.ref(type_: TGType): TGTypeClass; cdecl;
 begin
   Result := GObject2.g_type_class_ref(type_);
 end;
-
 
 function TGParamSpec.internal(param_type: TGType; name: Pgchar; nick: Pgchar; blurb: Pgchar; flags: TGParamFlags): gpointer; cdecl;
 begin
@@ -2270,11 +2228,6 @@ function TGParamSpecPool.new(type_prefixing: gboolean): PGParamSpecPool; cdecl;
 begin
   Result := GObject2.g_param_spec_pool_new(type_prefixing);
 end;
-
-
-
-
-
 
 function TGTypeValueTable.peek(type_: TGType): PGTypeValueTable; cdecl;
 begin

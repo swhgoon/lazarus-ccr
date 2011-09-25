@@ -55,13 +55,16 @@ const
   WEBKIT_EDITING_BEHAVIOR_WINDOWS: TWebKitEditingBehavior = 1;
   WEBKIT_EDITING_BEHAVIOR_UNIX: TWebKitEditingBehavior = 2;
 
+type
+  TWebKitHitTestResultContext = Integer;
+const
   { WebKitHitTestResultContext }
-  WEBKIT_HIT_TEST_RESULT_CONTEXT_DOCUMENT = 2;
-  WEBKIT_HIT_TEST_RESULT_CONTEXT_LINK = 4;
-  WEBKIT_HIT_TEST_RESULT_CONTEXT_IMAGE = 8;
-  WEBKIT_HIT_TEST_RESULT_CONTEXT_MEDIA = 16;
-  WEBKIT_HIT_TEST_RESULT_CONTEXT_SELECTION = 32;
-  WEBKIT_HIT_TEST_RESULT_CONTEXT_EDITABLE = 64;
+  WEBKIT_HIT_TEST_RESULT_CONTEXT_DOCUMENT: TWebKitHitTestResultContext = 2;
+  WEBKIT_HIT_TEST_RESULT_CONTEXT_LINK: TWebKitHitTestResultContext = 4;
+  WEBKIT_HIT_TEST_RESULT_CONTEXT_IMAGE: TWebKitHitTestResultContext = 8;
+  WEBKIT_HIT_TEST_RESULT_CONTEXT_MEDIA: TWebKitHitTestResultContext = 16;
+  WEBKIT_HIT_TEST_RESULT_CONTEXT_SELECTION: TWebKitHitTestResultContext = 32;
+  WEBKIT_HIT_TEST_RESULT_CONTEXT_EDITABLE: TWebKitHitTestResultContext = 64;
 
 type
   TWebKitInsertAction = Integer;
@@ -3859,16 +3862,9 @@ type
     _webkit_reserved2: procedure; cdecl;
     _webkit_reserved3: procedure; cdecl;
   end;
-  TWebKitHitTestResultContext = packed object(TBitObject32)
-  public
-    property document: DWord index 2 read GetBit write SetBit;
-    property link: DWord index 4 read GetBit write SetBit;
-    property image: DWord index 8 read GetBit write SetBit;
-    property media: DWord index 16 read GetBit write SetBit;
-    property selection: DWord index 32 read GetBit write SetBit;
-    property editable: DWord index 64 read GetBit write SetBit;
-  end;
 
+  PPWebKitHitTestResultContext = ^PWebKitHitTestResultContext;
+  PWebKitHitTestResultContext = ^TWebKitHitTestResultContext;
 
   PPWebKitHitTestResultPrivate = ^PWebKitHitTestResultPrivate;
   PWebKitHitTestResultPrivate = ^TWebKitHitTestResultPrivate;
@@ -13526,7 +13522,6 @@ procedure TWebKitNetworkResponse.set_uri(uri: Pgchar); cdecl;
 begin
   WebKit3.webkit_network_response_set_uri(@self, uri);
 end;
-
 
 function TWebKitWebFrame.new(web_view: PWebKitWebView): PWebKitWebFrame; cdecl;
 begin
