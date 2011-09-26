@@ -18,7 +18,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="22">
+    <Files Count="24">
       <Item1>
         <Filename Value="src/jdbintegeredit.pas"/>
         <HasRegisterProc Value="True"/>
@@ -127,6 +127,16 @@
         <HasRegisterProc Value="True"/>
         <UnitName Value="JLabeledDateTimeEdit"/>
       </Item22>
+      <Item23>
+        <Filename Value="src/jdbdatetimeedit.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="JDBDateTimeEdit"/>
+      </Item23>
+      <Item24>
+        <Filename Value="src/jdblabeleddatetimeedit.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="JDBLabeledDateTimeEdit"/>
+      </Item24>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

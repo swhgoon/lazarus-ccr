@@ -1,4 +1,4 @@
-{ TJDBTimeEdit
+{ JDBLabeledDateTimeEdit
 
   Copyright (C) 2011 Julio Jiménez Borreguero
   Contact: jujibo at gmail dot com
@@ -15,20 +15,22 @@
 
 }
 
-unit JDBTimeEdit;
+unit JDBLabeledDateTimeEdit;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, LResources, Controls, StdCtrls, DB, DBCtrls, LMessages, LCLType, Dialogs,
-  SysUtils, jcontrolutils;
+  Classes, LResources, Controls, ExtCtrls, DB, DBCtrls, LMessages, LCLType, Dialogs,
+  SysUtils;
 
 type
-  TJDBTimeEdit = class(TCustomEdit)
+
+  { TJDBLabeledDateTimeEdit }
+
+  TJDBLabeledDateTimeEdit = class(TCustomLabeledEdit)
   private
-    { Private declarations }
     fFormat: string;
     FDataLink: TFieldDataLink;
 
@@ -129,15 +131,16 @@ procedure Register;
 
 implementation
 
+uses
+  jcontrolutils;
+
 procedure Register;
 begin
-  {$I jdbtimeedit_icon.lrs}
-  RegisterComponents('Data Controls', [TJDBTimeEdit]);
+  {$I jdblabeleddatetimeedit_icon.lrs}
+  RegisterComponents('Data Controls', [TJDBLabeledDateTimeEdit]);
 end;
 
-{ TJDBDateEdit }
-
-procedure TJDBTimeEdit.DataChange(Sender: TObject);
+procedure TJDBLabeledDateTimeEdit.DataChange(Sender: TObject);
 begin
   if FDataLink.Field <> nil then
   begin
@@ -150,25 +153,23 @@ begin
     Text := '';
 end;
 
-procedure TJDBTimeEdit.UpdateData(Sender: TObject);
+procedure TJDBLabeledDateTimeEdit.UpdateData(Sender: TObject);
 var
   theValue: string;
 begin
   if FDataLink.Field <> nil then
   begin
-    theValue := NormalizeTime(Text, FDataLink.Field.AsDateTime);
+    theValue := NormalizeDateTime(Text, FDataLink.Field.AsDateTime);
     if Text = '' then
-    begin
-      Field.Value := Null;
-    end
+      FDataLink.Field.Text := Text
     else
-    if IsValidTimeString(theValue) then
+    if IsValidDateTimeString(theValue) then
     begin
       FDataLink.Field.Text := theValue;
     end
     else
     begin
-      ShowMessage(Caption + ' no es una hora válida');
+      ShowMessage(Caption + ' no es un valor válido');
       Caption := FDataLink.Field.AsString;
       SelectAll;
       SetFocus;
@@ -178,27 +179,27 @@ begin
     Text := '';
 end;
 
-procedure TJDBTimeEdit.FocusRequest(Sender: TObject);
+procedure TJDBLabeledDateTimeEdit.FocusRequest(Sender: TObject);
 begin
   SetFocus;
 end;
 
-function TJDBTimeEdit.GetDataField: string;
+function TJDBLabeledDateTimeEdit.GetDataField: string;
 begin
   Result := FDataLink.FieldName;
 end;
 
-function TJDBTimeEdit.GetDataSource: TDataSource;
+function TJDBLabeledDateTimeEdit.GetDataSource: TDataSource;
 begin
   Result := FDataLink.DataSource;
 end;
 
-function TJDBTimeEdit.GetField: TField;
+function TJDBLabeledDateTimeEdit.GetField: TField;
 begin
   Result := FDataLink.Field;
 end;
 
-function TJDBTimeEdit.IsReadOnly: boolean;
+function TJDBLabeledDateTimeEdit.IsReadOnly: boolean;
 begin
   if FDatalink.Active then
     Result := not FDatalink.CanModify
@@ -206,19 +207,19 @@ begin
     Result := False;
 end;
 
-function TJDBTimeEdit.getFormat: string;
+function TJDBLabeledDateTimeEdit.getFormat: string;
 begin
   Result := fFormat;
 end;
 
-procedure TJDBTimeEdit.setFormat(const AValue: string);
+procedure TJDBLabeledDateTimeEdit.setFormat(const AValue: string);
 begin
   fFormat := AValue;
   if not Focused then
     formatInput;
 end;
 
-procedure TJDBTimeEdit.formatInput;
+procedure TJDBLabeledDateTimeEdit.formatInput;
 begin
   if FDataLink.Field <> nil then
     if (fFormat <> '') and (not FDataLink.Field.IsNull) then
@@ -229,41 +230,42 @@ begin
     Caption := 'nil';
 end;
 
-function TJDBTimeEdit.GetReadOnly: boolean;
+function TJDBLabeledDateTimeEdit.GetReadOnly: boolean;
 begin
   Result := FDataLink.ReadOnly;
 end;
 
-procedure TJDBTimeEdit.SetReadOnly(Value: boolean);
+procedure TJDBLabeledDateTimeEdit.SetReadOnly(Value: boolean);
 begin
   inherited;
   FDataLink.ReadOnly := Value;
 end;
 
-procedure TJDBTimeEdit.SetDataField(const Value: string);
+procedure TJDBLabeledDateTimeEdit.SetDataField(const Value: string);
 begin
   FDataLink.FieldName := Value;
 end;
 
-procedure TJDBTimeEdit.SetDataSource(Value: TDataSource);
+procedure TJDBLabeledDateTimeEdit.SetDataSource(Value: TDataSource);
 begin
   if not (FDataLink.DataSourceFixed and (csLoading in ComponentState)) then
     ChangeDataSource(Self, FDataLink, Value);
 end;
 
-procedure TJDBTimeEdit.CMGetDataLink(var Message: TLMessage);
+procedure TJDBLabeledDateTimeEdit.CMGetDataLink(var Message: TLMessage);
 begin
   Message.Result := PtrUInt(FDataLink); // Delphi dbctrls compatibility?
 end;
 
-procedure TJDBTimeEdit.Loaded;
+procedure TJDBLabeledDateTimeEdit.Loaded;
 begin
   inherited Loaded;
   if (csDesigning in ComponentState) then
     DataChange(Self);
 end;
 
-procedure TJDBTimeEdit.Notification(AComponent: TComponent; Operation: TOperation);
+procedure TJDBLabeledDateTimeEdit.Notification(AComponent: TComponent;
+  Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   // clean up
@@ -274,7 +276,7 @@ begin
   end;
 end;
 
-procedure TJDBTimeEdit.ActiveChange(Sender: TObject);
+procedure TJDBLabeledDateTimeEdit.ActiveChange(Sender: TObject);
 begin
   if FDatalink.Active then
     datachange(Sender)
@@ -282,7 +284,7 @@ begin
     Text := '';
 end;
 
-procedure TJDBTimeEdit.KeyDown(var Key: word; Shift: TShiftState);
+procedure TJDBLabeledDateTimeEdit.KeyDown(var Key: word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
   if Key = VK_ESCAPE then
@@ -301,9 +303,9 @@ begin
   end;
 end;
 
-procedure TJDBTimeEdit.KeyPress(var Key: char);
+procedure TJDBLabeledDateTimeEdit.KeyPress(var Key: char);
 begin
-  if not (Key in ['0'..'9', #8, #9, ':']) then
+  if not (Key in ['0'..'9', #8, #9, '.', '-', '/', ',', ':', ' ']) then
     Key := #0
   else
   if not IsReadOnly then
@@ -311,14 +313,14 @@ begin
   inherited KeyPress(Key);
 end;
 
-procedure TJDBTimeEdit.DoEnter;
+procedure TJDBLabeledDateTimeEdit.DoEnter;
 begin
   if FDataLink.Field <> nil then
     Caption := FDataLink.Field.AsString;
   inherited DoEnter;
 end;
 
-constructor TJDBTimeEdit.Create(TheOwner: TComponent);
+constructor TJDBLabeledDateTimeEdit.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   ControlStyle := ControlStyle + [csReplicatable];
@@ -331,14 +333,14 @@ begin
   //fFormat := ShortDateFormat;
 end;
 
-destructor TJDBTimeEdit.Destroy;
+destructor TJDBLabeledDateTimeEdit.Destroy;
 begin
   FDataLink.Free;
   FDataLink := nil;
   inherited Destroy;
 end;
 
-procedure TJDBTimeEdit.EditingDone;
+procedure TJDBLabeledDateTimeEdit.EditingDone;
 begin
   inherited EditingDone;
   if DataSource.State in [dsEdit, dsInsert] then

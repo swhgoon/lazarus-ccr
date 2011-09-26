@@ -5,7 +5,8 @@ Note: Lazarus Trunk required
 
 Version pre-1.0
 --------------------------------------------------
-2011-09-26  Added: TDateTimeEdit, TLabeledDateTimeEdit
+2011-09-26  Added: TJDateTimeEdit, TJLabeledDateTimeEdit
+                   TJDBDateTimeEdit, TJDBLabeledDateTimeEdit
 2011-09-23  Added: TJDBLabeledEdit, TJTimeEdit, TJLabeledTimeEdit,
                    TJDBTimeEdit, TJDBLabeledTimeEdit
 2011-09-22  Added: ftTime support
