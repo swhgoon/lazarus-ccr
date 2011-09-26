@@ -35,6 +35,7 @@ function NormalizeDateTime(const Value: string; theValue: TDateTime;
 function NormalizeDateSeparator(const s: string): string;
 function IsValidDateString(const Value: string): boolean;
 function IsValidTimeString(const Value: string): boolean;
+function IsValidDateTimeString(const Value: string): boolean;
 
 implementation
 
@@ -211,6 +212,7 @@ begin
   else
     theDateTime := theValue;
   Result := '';
+  tokens := TStringList.Create;
   Split(' ', Value, tokens);
   if tokens.Count > 1 then
   begin
@@ -237,11 +239,14 @@ begin
 end;
 
 function IsValidDateString(const Value: string): boolean;
+var
+  bTime: TDateTime;
 begin
-  if StrToDateDef(Value, MaxDateTime) = MaxDateTime then
-    Result := False
-  else
-    Result := True;
+  //if StrToDateDef(Value, MaxDateTime) = MaxDateTime then
+  //  Result := False
+  //else
+  //  Result := True;
+  Result:= TryStrToDate(Value, bTime);
 end;
 
 function IsValidTimeString(const Value: string): boolean;
@@ -249,6 +254,13 @@ var
   bTime: TDateTime;
 begin
   Result := TryStrToTime(Value, bTime);
+end;
+
+function IsValidDateTimeString(const Value: string): boolean;
+var
+  bTime: TDateTime;
+begin
+  Result := TryStrToDateTime(Value, bTime);
 end;
 
 end.
