@@ -177,19 +177,23 @@ begin
   CellEditor.Caption := NormalizeDateTime(CellEditor.Caption, theValue);
   if Length(CellEditor.Caption) = 0 then
   begin
+    Field.DataSet.DisableControls;
     Field.DataSet.Edit;
     Field.Value := Null;
     theValue := 0;
     updated := True;
+    Field.DataSet.EnableControls;
   end
   else
   if IsValidDateTimeString(CellEditor.Caption) then
   begin
     if (not updated) then
     begin
+      Field.DataSet.DisableControls;
       theValue := StrToDateTime(CellEditor.Caption);
       Field.DataSet.Edit;
       Field.AsDateTime := theValue;
+      Field.DataSet.EnableControls;
     end;
   end
   else
@@ -314,19 +318,23 @@ begin
   CellEditor.Caption := NormalizeTime(CellEditor.Caption, theValue);
   if Length(CellEditor.Caption) = 0 then
   begin
+    Field.DataSet.DisableControls;
     Field.DataSet.Edit;
     Field.Value := Null;
     theValue := 0;
     updated := True;
+    Field.DataSet.EnableControls;
   end
   else
   if IsValidTimeString(CellEditor.Caption) then
   begin
     if (not updated) then
     begin
+      Field.DataSet.DisableControls;
       theValue := StrToTime(CellEditor.Caption);
       Field.DataSet.Edit;
       Field.AsDateTime := theValue;
+      Field.DataSet.EnableControls;
     end;
   end
   else
@@ -458,19 +466,23 @@ begin
   CellEditor.Caption := NormalizeDate(CellEditor.Caption, theValue);
   if Length(CellEditor.Caption) = 0 then
   begin
+    Field.DataSet.DisableControls;
     Field.DataSet.Edit;
     Field.Value := Null;
     theValue := 0;
     updated := True;
+    Field.DataSet.EnableControls;
   end
   else
   if IsValidDateString(CellEditor.Caption) then
   begin
     if (not updated) then
     begin
+      Field.DataSet.DisableControls;
       theValue := StrToDate(CellEditor.Caption);
       Field.DataSet.Edit;
       Field.AsDateTime := theValue;
+      field.DataSet.EnableControls;
     end;
   end
   else
@@ -599,11 +611,11 @@ begin
     if (not updated) then
     begin
       theValue := StrToFloat(CellEditor.Caption);
+      Field.DataSet.DisableControls;
       Field.DataSet.Edit;
-      //theValue := redondear(theValue, fDecimales);
       Field.AsFloat := theValue;
-      // normalize value
       Field.Value := textNumber(Field.DisplayText);
+      Field.DataSet.EnableControls;
     end;
   end
   else
@@ -794,9 +806,11 @@ begin
   begin
     if (not updated) then
     begin
+      Field.DataSet.DisableControls;
       theValue := StrToInt(CellEditor.Caption);
       Field.DataSet.Edit;
       Field.AsInteger := theValue;
+      field.DataSet.EnableControls;
     end;
   end
   else
