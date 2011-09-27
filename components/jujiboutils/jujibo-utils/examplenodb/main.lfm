@@ -1,11 +1,11 @@
 object Form1: TForm1
-  Left = 378
+  Left = 365
   Height = 295
-  Top = 196
-  Width = 332
+  Top = 260
+  Width = 419
   Caption = 'Example'
   ClientHeight = 295
-  ClientWidth = 332
+  ClientWidth = 419
   LCLVersion = '0.9.31'
   object Label1: TLabel
     Left = 8
@@ -22,10 +22,10 @@ object Form1: TForm1
     Left = 24
     Height = 82
     Top = 40
-    Width = 288
+    Width = 375
     Caption = 'Labeled controls'
     ClientHeight = 63
-    ClientWidth = 284
+    ClientWidth = 371
     TabOrder = 0
     object JLabeledIntegerEdit1: TJLabeledIntegerEdit
       Left = 14
@@ -35,11 +35,13 @@ object Form1: TForm1
       DisplayFormat = '0'
       Value = 0
       EditLabel.AnchorSideLeft.Control = JLabeledIntegerEdit1
+      EditLabel.AnchorSideRight.Control = JLabeledIntegerEdit1
+      EditLabel.AnchorSideRight.Side = asrBottom
       EditLabel.AnchorSideBottom.Control = JLabeledIntegerEdit1
       EditLabel.Left = 14
       EditLabel.Height = 18
       EditLabel.Top = 2
-      EditLabel.Width = 45
+      EditLabel.Width = 80
       EditLabel.Caption = 'Integer'
       EditLabel.ParentColor = False
       TabOrder = 0
@@ -53,11 +55,13 @@ object Form1: TForm1
       Decimals = 2
       Value = 0
       EditLabel.AnchorSideLeft.Control = JLabeledCurrencyEdit1
+      EditLabel.AnchorSideRight.Control = JLabeledCurrencyEdit1
+      EditLabel.AnchorSideRight.Side = asrBottom
       EditLabel.AnchorSideBottom.Control = JLabeledCurrencyEdit1
       EditLabel.Left = 102
       EditLabel.Height = 18
       EditLabel.Top = 2
-      EditLabel.Width = 55
+      EditLabel.Width = 80
       EditLabel.Caption = 'Currency'
       EditLabel.ParentColor = False
       TabOrder = 1
@@ -70,24 +74,46 @@ object Form1: TForm1
       DisplayFormat = 'dd/mm/yy'
       Value = 0
       EditLabel.AnchorSideLeft.Control = JLabeledDateEdit1
+      EditLabel.AnchorSideRight.Control = JLabeledDateEdit1
+      EditLabel.AnchorSideRight.Side = asrBottom
       EditLabel.AnchorSideBottom.Control = JLabeledDateEdit1
       EditLabel.Left = 190
       EditLabel.Height = 18
       EditLabel.Top = 1
-      EditLabel.Width = 29
+      EditLabel.Width = 80
       EditLabel.Caption = 'Date'
       EditLabel.ParentColor = False
       TabOrder = 2
+    end
+    object JLabeledFloatEdit1: TJLabeledFloatEdit
+      Left = 280
+      Height = 27
+      Top = 23
+      Width = 80
+      DisplayFormat = '#,0.00'
+      Decimals = 2
+      Value = 0
+      EditLabel.AnchorSideLeft.Control = JLabeledFloatEdit1
+      EditLabel.AnchorSideRight.Control = JLabeledFloatEdit1
+      EditLabel.AnchorSideRight.Side = asrBottom
+      EditLabel.AnchorSideBottom.Control = JLabeledFloatEdit1
+      EditLabel.Left = 280
+      EditLabel.Height = 18
+      EditLabel.Top = 2
+      EditLabel.Width = 80
+      EditLabel.Caption = 'Float'
+      EditLabel.ParentColor = False
+      TabOrder = 3
     end
   end
   object GroupBox2: TGroupBox
     Left = 24
     Height = 105
     Top = 128
-    Width = 288
+    Width = 376
     Caption = 'Normal Controls'
     ClientHeight = 86
-    ClientWidth = 284
+    ClientWidth = 372
     TabOrder = 1
     object JIntegerEdit1: TJIntegerEdit
       Left = 14
@@ -117,9 +143,19 @@ object Form1: TForm1
       Value = 0
       TabOrder = 2
     end
+    object JFloatEdit1: TJFloatEdit
+      Left = 280
+      Height = 27
+      Top = 24
+      Width = 80
+      DisplayFormat = '#,0.00'
+      Decimals = 2
+      Value = 0
+      TabOrder = 3
+    end
   end
   object BitBtn1: TBitBtn
-    Left = 221
+    Left = 308
     Height = 30
     Top = 249
     Width = 91
