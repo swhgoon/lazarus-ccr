@@ -245,7 +245,7 @@ const
 
 implementation
 
-{$IFDEF WIN32}
+{$IFDEF WINDOWS}
 uses Windows;
 {$ENDIF}
 
