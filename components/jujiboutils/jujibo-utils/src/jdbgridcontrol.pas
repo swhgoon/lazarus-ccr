@@ -19,6 +19,7 @@ type
     timeDbGridControl: TJDbGridTimeCtrl;
     integerDbGridControl: TJDbGridIntegerCtrl;
     doubleDbGridControl: TJDbGridDoubleCtrl;
+    dateTimeDbGridControl: TJDbGridDateTimeCtrl;
   protected
     { Protected declarations }
     //procedure SelectEditor; override;
@@ -76,6 +77,7 @@ begin
       ftSmallint, ftInteger: Result := integerDbGridControl.Editor(Self);
       ftDate: Result := dateDbGridControl.Editor(Self);
       ftTime: Result := timeDbGridControl.Editor(Self);
+      ftDateTime: Result := dateTimeDbGridControl.Editor(Self);
       ftCurrency, ftFloat, ftBCD: Result := doubleDbGridControl.Editor(Self);
       // TODO: ftDateTime. strings?
     end;
@@ -85,7 +87,7 @@ end;
 procedure TJDBGridControl.UpdateData;
 begin
   if not (SelectedField.DataType in [ftSmallInt, ftInteger, ftDate,
-    ftTime, ftCurrency, ftFloat, ftBCD]) then
+    ftTime, ftDateTime, ftCurrency, ftFloat, ftBCD]) then
     inherited UpdateData;
   // TODO... think more about this
 end;
@@ -97,6 +99,7 @@ begin
   timeDbGridControl := TJDbGridTimeCtrl.Create;
   integerDbGridControl := TJDbGridIntegerCtrl.Create;
   doubleDbGridControl := TJDbGridDoubleCtrl.Create;
+  dateTimeDbGridControl := TJDbGridDateTimeCtrl.Create;
 end;
 
 destructor TJDBGridControl.Destroy;
@@ -105,6 +108,7 @@ begin
   timeDbGridControl.Free;
   integerDbGridControl.Free;
   doubleDbGridControl.Free;
+  dateTimeDbGridControl.Free;
   inherited Destroy;
 end;
 
