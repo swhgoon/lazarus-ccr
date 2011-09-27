@@ -5,10 +5,34 @@ unit JDBGridControl;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, DB, DBGrids,
+  Classes, SysUtils, LResources, Forms, Controls, Graphics, DB, Grids, DBGrids,
   Dialogs, jdbgridutils;
 
 type
+
+  { TJDBColumn }
+
+  TJDBColumn = class(TColumn)
+  private
+    fDecimals: integer;
+    function getDecimals: integer;
+    procedure setDecimals(AValue: integer);
+  published
+    property Decimals: integer read getDecimals write setDecimals;
+  end;
+
+  { TJDBGridColumns }
+
+  TJDBGridColumns = class(TDBGridColumns)
+  private
+    function GetColumn(Index: integer): TJDBColumn;
+    procedure SetColumn(Index: integer; AValue: TJDBColumn);
+  public
+    function add: TJDBColumn;
+    property Items[Index: integer]: TJDBColumn read GetColumn write SetColumn; default;
+  published
+
+  end;
 
   { TJDBGridControl }
 
@@ -20,11 +44,15 @@ type
     integerDbGridControl: TJDbGridIntegerCtrl;
     doubleDbGridControl: TJDbGridDoubleCtrl;
     dateTimeDbGridControl: TJDbGridDateTimeCtrl;
+    function GetColumns: TJDBGridColumns;
+    procedure SetColumns(AValue: TJDBGridColumns);
   protected
     { Protected declarations }
     //procedure SelectEditor; override;
+    function CreateColumns: TGridColumns; override;
     function GetDefaultEditor(Column: integer): TWinControl; override;
     procedure UpdateData; override;
+    property Columns: TJDBGridColumns read GetColumns write SetColumns;
   public
     { Public declarations }
     constructor Create(TheOwner: TComponent); override;
@@ -44,6 +72,34 @@ begin
   RegisterComponents('Data Controls', [TJDBGridControl]);
 end;
 
+function TJDBColumn.getDecimals: integer;
+begin
+  Result := fDecimals;
+end;
+
+procedure TJDBColumn.setDecimals(AValue: integer);
+begin
+  if (AValue >= 0) and (AValue <= 10) then
+    fDecimals := AValue;
+end;
+
+{ TJDBGridColumns }
+
+function TJDBGridColumns.GetColumn(Index: integer): TJDBColumn;
+begin
+  Result := TJDBColumn(inherited Items[Index]);
+end;
+
+procedure TJDBGridColumns.SetColumn(Index: integer; AValue: TJDBColumn);
+begin
+  Items[Index].Assign(AValue);
+end;
+
+function TJDBGridColumns.add: TJDBColumn;
+begin
+  Result := TJDBColumn(inherited add);
+end;
+
 { TJDBGridControl }
 
 //procedure TJDBGridControl.SelectEditor;
@@ -59,6 +115,21 @@ end;
 //    end;
 //  end;
 //end;
+
+function TJDBGridControl.GetColumns: TJDBGridColumns;
+begin
+  Result := TJDBGridColumns(inherited Columns);
+end;
+
+procedure TJDBGridControl.SetColumns(AValue: TJDBGridColumns);
+begin
+  inherited Columns := TDBGridColumns(AValue);
+end;
+
+function TJDBGridControl.CreateColumns: TGridColumns;
+begin
+  Result := TJDBGridColumns.Create(Self, TJDBColumn);
+end;
 
 function TJDBGridControl.GetDefaultEditor(Column: integer): TWinControl;
 var
