@@ -18,7 +18,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="26">
+    <Files Count="28">
       <Item1>
         <Filename Value="src/jdbintegeredit.pas"/>
         <HasRegisterProc Value="True"/>
@@ -147,6 +147,16 @@
         <HasRegisterProc Value="True"/>
         <UnitName Value="JLabeledFloatEdit"/>
       </Item26>
+      <Item27>
+        <Filename Value="src/jdbfloatedit.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="JDBFloatEdit"/>
+      </Item27>
+      <Item28>
+        <Filename Value="src/jdblabeledfloatedit.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="JDBLabeledFloatEdit"/>
+      </Item28>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

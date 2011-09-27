@@ -13,7 +13,7 @@ uses
   JDateEdit, JLabeledDateEdit, JDBGridControl, jdbgridutils, JDBLabeledEdit, 
   JTimeEdit, JLabeledTimeEdit, JDBTimeEdit, JDBLabeledTimeEdit, JDateTimeEdit, 
   JLabeledDateTimeEdit, JDBDateTimeEdit, JDBLabeledDateTimeEdit, JFloatEdit, 
-  JLabeledFloatEdit, LazarusPackageIntf;
+  JLabeledFloatEdit, JDBFloatEdit, JDBLabeledFloatEdit, LazarusPackageIntf;
 
 implementation
 
@@ -43,6 +43,8 @@ begin
   RegisterUnit('JDBLabeledDateTimeEdit', @JDBLabeledDateTimeEdit.Register); 
   RegisterUnit('JFloatEdit', @JFloatEdit.Register); 
   RegisterUnit('JLabeledFloatEdit', @JLabeledFloatEdit.Register); 
+  RegisterUnit('JDBFloatEdit', @JDBFloatEdit.Register); 
+  RegisterUnit('JDBLabeledFloatEdit', @JDBLabeledFloatEdit.Register); 
 end; 
 
 initialization

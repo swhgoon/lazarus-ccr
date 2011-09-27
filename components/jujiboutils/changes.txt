@@ -6,7 +6,8 @@ Note: Lazarus Trunk required
 Version pre-1.0
 --------------------------------------------------
 2011-09-27  Added: ftDateTime support to TJDBGridControl
-                   TJFloatEdit, TJLabeledFloatEdit
+                   TJFloatEdit, TJLabeledFloatEdit,
+                   TJDBFloatEdit, TJDBLabeledFloatEdit
                    Examplenodb updated
 2011-09-26  Added: TJDateTimeEdit, TJLabeledDateTimeEdit
                    TJDBDateTimeEdit, TJDBLabeledDateTimeEdit
