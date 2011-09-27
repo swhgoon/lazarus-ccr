@@ -174,7 +174,7 @@ end;
 
 procedure TJDbGridDateTimeCtrl.myEditOnEditingDone(Sender: TObject);
 begin
-  CellEditor.Caption := NormalizeDate(CellEditor.Caption, theValue);
+  CellEditor.Caption := NormalizeDateTime(CellEditor.Caption, theValue);
   if Length(CellEditor.Caption) = 0 then
   begin
     Field.DataSet.Edit;
@@ -183,11 +183,11 @@ begin
     updated := True;
   end
   else
-  if IsValidDateString(CellEditor.Caption) then
+  if IsValidDateTimeString(CellEditor.Caption) then
   begin
     if (not updated) then
     begin
-      theValue := StrToDate(CellEditor.Caption);
+      theValue := StrToDateTime(CellEditor.Caption);
       Field.DataSet.Edit;
       Field.AsDateTime := theValue;
     end;
