@@ -129,19 +129,19 @@ type
     Field: TField;
     updated: boolean;
     theValue: double;
-    fDecimales: integer;
-    function getDecimales: integer;
+    fDecimals: integer;
+    function getDecimals: integer;
     procedure myEditOnEnter(Sender: TObject);
     procedure myEditOnEditingDone(Sender: TObject);
-    procedure setDecimales(const AValue: integer);
+    procedure setDecimals(const AValue: integer);
     procedure OnKeyPress(Sender: TObject; var key: char);
     procedure OnKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
     function IsValidFloat(const Value: string): boolean;
-    function textNumber(const aValue: string): string;
+    function ScaleTo(const AValue: double; const NDecimals: integer): double;
   public
     CellEditor: TStringCellEditor;
     theGrid: TDBGrid;
-    property decimales: integer read getDecimales write setDecimales;
+    property decimals: integer read getDecimals write setDecimals;
     constructor Create;
     destructor Destroy; override;
     function Editor(aGrid: TDBGrid; aDecimals: integer = 2): TStringCellEditor;
@@ -587,9 +587,9 @@ end;
 
 { TJDbGridDoubleCtrl }
 
-function TJDbGridDoubleCtrl.getDecimales: integer;
+function TJDbGridDoubleCtrl.getDecimals: integer;
 begin
-  Result := fDecimales;
+  Result := fDecimals;
 end;
 
 procedure TJDbGridDoubleCtrl.myEditOnEnter(Sender: TObject);
@@ -613,8 +613,9 @@ begin
       theValue := StrToFloat(CellEditor.Caption);
       Field.DataSet.DisableControls;
       Field.DataSet.Edit;
-      Field.AsFloat := theValue;
-      Field.Value := textNumber(Field.DisplayText);
+      if decimals > 0 then
+        theValue := ScaleTo(theValue, fDecimals);
+      Field.Value := theValue;
       Field.DataSet.EnableControls;
     end;
   end
@@ -625,10 +626,10 @@ begin
   end;
 end;
 
-procedure TJDbGridDoubleCtrl.setDecimales(const AValue: integer);
+procedure TJDbGridDoubleCtrl.setDecimals(const AValue: integer);
 begin
-  if (AValue >= 0) and (AValue < 5) then
-    fDecimales := AValue;
+  if (AValue >= 0) and (AValue < 11) then
+    fDecimals := AValue;
 end;
 
 procedure TJDbGridDoubleCtrl.OnKeyPress(Sender: TObject; var key: char);
@@ -639,8 +640,8 @@ begin
     key := #0;
   if not (Key in ['0'..'9', DecimalSeparator, '+', '-', #8, #9]) then
     Key := #0;
-  if (Key = DecimalSeparator) and (fDecimales = 0) then
-    Key := #0;
+  //if (Key = DecimalSeparator) and (fDecimals = 0) then
+  //  Key := #0;    // Note: decimal=0 avoids rounding
 end;
 
 procedure TJDbGridDoubleCtrl.OnKeyDown(Sender: TObject; var Key: word;
@@ -661,7 +662,7 @@ begin
       CellEditor.Text := ''
     else
       CellEditor.Text := FloatToStr(Field.AsFloat);
-    //CellEditor.Text := CurrToStr(redondear(Field.AsCurrency, fDecimales));
+    //CellEditor.Text := CurrToStr(redondear(Field.AsCurrency, fDecimals));
     updated := True;
     theGrid.SetFocus; // No perder el foco
   end
@@ -677,9 +678,10 @@ begin
     begin
       theValue := StrToFloat(CellEditor.Caption);
       Field.DataSet.Edit;
-      Field.AsFloat := theValue;//redondear(theValue, fDecimales);
-      // normalize value
-      Field.Value := textNumber(Field.DisplayText);
+      if decimals > 0 then
+        theValue := ScaleTo(theValue, fDecimals);
+      Field.Value := theValue;
+      ;
       CellEditor.Text := Field.AsString;
       updated := True;
     end;
@@ -694,27 +696,10 @@ begin
     Result := True;
 end;
 
-function TJDbGridDoubleCtrl.textNumber(const aValue: string): string;
-var
-  i: integer;
-  aText: string;
+function TJDbGridDoubleCtrl.ScaleTo(const AValue: double;
+  const NDecimals: integer): double;
 begin
-  // Because there is no way to know the number scale (or I don't know how
-  // use display format to get a valid number with the desired scale (decimals)
-  // so if display format is 0.00  we'll get a number rounded to two decimals
-  // This is a bit tricky but works mostly...
-  aText := '';
-  if Length(aValue) = 0 then
-    aText := aValue
-  else
-  begin
-    if aValue[1] = '-' then
-      aText := '-'; // negative number?
-    for i := 1 to length(aValue) do
-      if aValue[i] in ['0'..'9', DecimalSeparator] then
-        aText += aValue[i];
-  end;
-  Result := aText;
+  Result := round(AValue * power(10, NDecimals)) / power(10, NDecimals);
 end;
 
 constructor TJDbGridDoubleCtrl.Create;
@@ -724,7 +709,7 @@ begin
   CellEditor.OnEnter := @myEditOnEnter;
   CellEditor.OnKeyDown := @OnKeyDown;
   CellEditor.OnEditingDone := @myEditOnEditingDone;
-  fDecimales := 2;
+  fDecimals := 2;
 end;
 
 destructor TJDbGridDoubleCtrl.Destroy;
@@ -736,7 +721,7 @@ end;
 function TJDbGridDoubleCtrl.Editor(aGrid: TDBGrid;
   aDecimals: integer): TStringCellEditor;
 begin
-  decimales := aDecimals;
+  decimals := aDecimals;
   theGrid := aGrid;
   Result := CellEditor;
 end;
