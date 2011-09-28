@@ -164,7 +164,7 @@ end;
 
 procedure TJDBLabeledCurrencyEdit.setDecimals(AValue: integer);
 begin
-  if AValue >= 0 then
+  if (AValue >= 0) and (AValue < 5) then
     fDecimales := AValue;
 end;
 
@@ -178,9 +178,10 @@ begin
     if IsValidCurrency(Text) then
     begin
       theValue := StrToCurr(Text);
-      theValue := ScaleTo(theValue, fDecimales);
+      if fDecimales > 0 then
+        theValue := ScaleTo(theValue, fDecimales);
       Text := CurrToStr(theValue);
-      FDataLink.Field.Text := Text;
+      FDataLink.Field.Value := theValue;
     end
     else
     begin
@@ -343,8 +344,6 @@ begin
   if (key = DecimalSeparator) and (Pos(key, Text) > 0) then
     key := #0;
   if not (Key in ['0'..'9', DecimalSeparator, '+', '-', #8, #9]) then
-    Key := #0;
-  if (Key = DecimalSeparator) and (fDecimales = 0) then
     Key := #0;
 
   if (Key <> #0) and (not IsReadOnly) then

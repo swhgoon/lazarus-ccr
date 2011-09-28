@@ -173,7 +173,10 @@ end;
 
 procedure TJCurrencyEdit.setValue(const AValue: currency);
 begin
-  theValue := scaleTo(AValue, fDecimals);
+  if fDecimals > 0 then
+    theValue := scaleTo(AValue, fDecimals)
+  else
+    theValue := AValue;
   formatInput;
 end;
 
@@ -194,7 +197,8 @@ begin
     ShowMessage(Text + ' no es un valor válido');
     SetFocus;
   end;
-  theValue := scaleTo(theValue, fDecimals);
+  if fDecimals > 0 then
+    theValue := scaleTo(theValue, fDecimals);
   formatInput;
 end;
 
@@ -205,8 +209,6 @@ begin
   if (key = DecimalSeparator) and (Pos(key, Text) > 0) then
     key := #0;
   if not (Key in ['0'..'9', DecimalSeparator, '+', '-', #8, #9]) then
-    Key := #0;
-  if (Key = DecimalSeparator) and (fDecimals = 0) then
     Key := #0;
   inherited KeyPress(Key);
 end;

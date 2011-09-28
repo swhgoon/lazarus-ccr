@@ -1,3 +1,20 @@
+{ JDBLabeledFloatEdit
+
+  Copyright (C) 2011 Julio Jiménez Borreguero
+  Contact: jujibo at gmail dot com
+
+  This library is free software; you can redistribute it and/or modify it
+  under the same terms as the Lazarus Component Library (LCL)
+
+  See the file license-jujiboutils.txt and COPYING.LGPL, included in this distribution,
+  for details about the license.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+}
+
 unit JDBLabeledFloatEdit;
 
 {$mode objfpc}{$H+}
@@ -157,9 +174,10 @@ begin
     if IsValidFloat(Text) then
     begin
       theValue := StrToFloat(Text);
-      theValue := ScaleTo(theValue, fDecimales);
+      if fDecimales > 0 then
+        theValue := ScaleTo(theValue, fDecimales);
       Text := FloatToStr(theValue);
-      FDataLink.Field.Text := Text;
+      FDataLink.Field.Value := theValue;
     end
     else
     begin
@@ -323,9 +341,6 @@ begin
     key := #0;
   if not (Key in ['0'..'9', DecimalSeparator, '+', '-', #8, #9]) then
     Key := #0;
-  if (Key = DecimalSeparator) and (fDecimales = 0) then
-    Key := #0;
-
   if (Key <> #0) and (not IsReadOnly) then
     FDatalink.Edit;
   inherited KeyPress(Key);

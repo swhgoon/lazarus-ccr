@@ -169,7 +169,10 @@ end;
 
 procedure TJLabeledCurrencyEdit.setValue(const AValue: currency);
 begin
-  theValue := scaleTo(AValue, fDecimals);
+  if fDecimals > 0 then
+    theValue := scaleTo(AValue, fDecimals)
+  else
+    theValue := AValue;
   formatInput;
 end;
 
@@ -190,7 +193,8 @@ begin
     ShowMessage(Text + ' no es un valor válido');
     SetFocus;
   end;
-  theValue := scaleTo(theValue, fDecimals);
+  if fDecimals > 0 then
+    theValue := scaleTo(theValue, fDecimals);
   formatInput;
 end;
 

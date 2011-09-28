@@ -1,3 +1,20 @@
+{ JDBFloatEdit
+
+  Copyright (C) 2011 Julio Jiménez Borreguero
+  Contact: jujibo at gmail dot com
+
+  This library is free software; you can redistribute it and/or modify it
+  under the same terms as the Lazarus Component Library (LCL)
+
+  See the file license-jujiboutils.txt and COPYING.LGPL, included in this distribution,
+  for details about the license.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+}
+
 unit JDBFloatEdit;
 
 {$mode objfpc}{$H+}
@@ -165,9 +182,10 @@ begin
     if IsValidFloat(Text) then
     begin
       theValue := StrToFloat(Text);
-      theValue := ScaleTo(theValue, fDecimales);
-      Text :=  FloatToStr(theValue);
-      FDataLink.Field.Text := Text;
+      if fDecimales > 0 then
+        theValue := ScaleTo(theValue, fDecimales);
+      Text := FloatToStr(theValue);
+      FDataLink.Field.Value := theValue;
     end
     else
     begin
@@ -271,8 +289,7 @@ begin
     Result := True;
 end;
 
-function TJDBFloatEdit.ScaleTo(const AValue: double;
-  const NDecimals: integer): double;
+function TJDBFloatEdit.ScaleTo(const AValue: double; const NDecimals: integer): double;
 begin
   Result := round(AValue * power(10, NDecimals)) / power(10, NDecimals);
 end;
@@ -329,8 +346,6 @@ begin
   if (key = DecimalSeparator) and (Pos(key, Text) > 0) then
     key := #0;
   if not (Key in ['0'..'9', DecimalSeparator, '+', '-', #8, #9]) then
-    Key := #0;
-  if (Key = DecimalSeparator) and (fDecimales = 0) then
     Key := #0;
 
   if (Key <> #0) and (not IsReadOnly) then
