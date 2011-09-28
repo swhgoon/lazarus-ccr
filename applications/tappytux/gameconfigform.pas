@@ -108,8 +108,14 @@ begin
 end;
 
 procedure TformConfig.FormCreate(Sender: TObject);
+var
+  i: Integer;
 begin
   TranslateUI();
+
+  // Initialize modules
+  for i := 0 to GetModuleCount() do
+    GetModule(i).InitModule();
 end;
 
 procedure TformConfig.TranslateUI;

@@ -23,6 +23,7 @@ type
     procedure TranslateTexts(ALanguage: Integer);
     procedure TranslateTextsToEnglish; virtual;
     procedure TranslateTextsToPortuguese; virtual;
+    procedure InitModule(); virtual;
     procedure StartNewGame(); virtual; abstract;
     procedure EndGame(); virtual; abstract;
   end;
@@ -73,8 +74,6 @@ begin
   imgLevel2 := TJPEGImage.Create;
   imgLevel3 := TJPEGImage.Create;
 
-  LoadImages();
-
   TranslateTexts(ID_ENGLISH);
 end;
 
@@ -117,6 +116,11 @@ end;
 procedure TTappyModule.TranslateTextsToPortuguese;
 begin
 
+end;
+
+procedure TTappyModule.InitModule;
+begin
+  LoadImages();
 end;
 
 initialization
