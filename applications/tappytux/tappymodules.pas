@@ -91,8 +91,8 @@ var
 begin
   lDir := vTappyTuxConfig.GetResourcesDir();
 
-  imgLevel2.LoadFromFile(lDir + 'images/levels/level2.jpg');
-  imgLevel3.LoadFromFile(lDir + 'images/levels/level3.jpg');
+  imgLevel2.LoadFromFile(lDir + 'images'+PathDelim+'levels'+PathDelim+'level2.jpg');
+  imgLevel3.LoadFromFile(lDir + 'images'+PathDelim+'levels'+PathDelim+'level3.jpg');
 end;
 
 function TTappyModule.GetBackgroundImage(ALevel: Integer): TJPEGImage;

@@ -1,7 +1,7 @@
 object formTappyTuxGame: TformTappyTuxGame
-  Left = 367
+  Left = 630
   Height = 421
-  Top = 122
+  Top = 249
   Width = 621
   Caption = 'Tappy Tux'
   ClientHeight = 421
@@ -19,7 +19,7 @@ object formTappyTuxGame: TformTappyTuxGame
   end
   object Edit1: TEdit
     Left = 104
-    Height = 25
+    Height = 23
     Top = 392
     Width = 514
     OnKeyPress = Edit1KeyPress
@@ -27,9 +27,9 @@ object formTappyTuxGame: TformTappyTuxGame
   end
   object Label1: TLabel
     Left = 8
-    Height = 34
+    Height = 39
     Top = 24
-    Width = 90
+    Width = 78
     Caption = 'Level '
     Color = 7737967
     Font.CharSet = ANSI_CHARSET
@@ -45,9 +45,9 @@ object formTappyTuxGame: TformTappyTuxGame
   end
   object Label2: TLabel
     Left = 8
-    Height = 34
+    Height = 39
     Top = 112
-    Width = 86
+    Width = 76
     Caption = 'Score'
     Color = 7737967
     Font.CharSet = ANSI_CHARSET
@@ -63,9 +63,9 @@ object formTappyTuxGame: TformTappyTuxGame
   end
   object Label3: TLabel
     Left = 9
-    Height = 34
+    Height = 39
     Top = 192
-    Width = 88
+    Width = 77
     Caption = 'Lives '
     Color = 7737967
     Font.CharSet = ANSI_CHARSET
@@ -81,7 +81,7 @@ object formTappyTuxGame: TformTappyTuxGame
   end
   object Edit2: TEdit
     Left = 8
-    Height = 25
+    Height = 23
     Top = 64
     Width = 76
     ReadOnly = True
@@ -89,7 +89,7 @@ object formTappyTuxGame: TformTappyTuxGame
   end
   object Edit3: TEdit
     Left = 8
-    Height = 25
+    Height = 23
     Top = 152
     Width = 76
     ReadOnly = True
@@ -97,7 +97,7 @@ object formTappyTuxGame: TformTappyTuxGame
   end
   object Edit4: TEdit
     Left = 8
-    Height = 25
+    Height = 23
     Top = 232
     Width = 76
     ReadOnly = True
