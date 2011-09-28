@@ -5,7 +5,7 @@ unit tappyconfig;
 interface
 
 uses
-  Classes, SysUtils, Forms, Graphics;
+  Classes, SysUtils, Forms, Graphics, LCLProc, FileUtil;
 
 type
 
@@ -13,7 +13,7 @@ type
 
   TTappyTuxConfig = class
   public
-    function GetResourcesDir: string;
+    function GetResourcesDir: utf8string;
   end;
 
 const
@@ -38,7 +38,7 @@ const
 
 { TChessConfig }
 
-function TTappyTuxConfig.GetResourcesDir: string;
+function TTappyTuxConfig.GetResourcesDir: utf8string;
 {$ifdef Darwin}
 var
   pathRef: CFURLRef;
@@ -50,7 +50,7 @@ begin
 {$ifdef Darwin}
   pathRef := CFBundleCopyBundleURL(CFBundleGetMainBundle());
   pathCFStr := CFURLCopyFileSystemPath(pathRef, kCFURLPOSIXPathStyle);
-  CFStringGetPascalString(pathCFStr, @pathStr, 255, CFStringGetSystemEncoding());
+  CFStringGetPascalString(pathCFStr, @pathStr, 255, kCFStringEncodingUTF8);
   CFRelease(pathRef);
   CFRelease(pathCFStr);
 
@@ -61,7 +61,7 @@ begin
 {$endif}
 
 {$ifdef Windows}
-  Result := ExtractFilePath(Application.EXEName);
+  Result := SysToUTF8(ExtractFilePath(Application.EXEName));
 {$endif}
 end;
 
