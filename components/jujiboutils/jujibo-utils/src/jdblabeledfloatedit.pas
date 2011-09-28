@@ -24,7 +24,7 @@ interface
 uses
   Classes, LResources, Controls, ExtCtrls, DB, DBCtrls,
   LMessages, LCLType, Dialogs,
-  SysUtils;
+  SysUtils, jinputconsts;
 
 type
   TJDBLabeledFloatEdit = class(TCustomLabeledEdit)
@@ -183,7 +183,7 @@ begin
     begin
       if FDataLink.Field <> nil then
       begin
-        ShowMessage(Caption + ' no es un valor válido');
+        ShowMessage(Format(SInvalidNumber, [Caption]));
         Caption := FDataLink.Field.AsString;
         SelectAll;
         SetFocus;

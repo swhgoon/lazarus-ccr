@@ -22,7 +22,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, ExtCtrls, Graphics,
-  Dialogs, jcontrolutils;
+  Dialogs, jcontrolutils, jinputconsts;
 
 type
 
@@ -161,7 +161,7 @@ begin
     theValue := StrToDate(Text)
   else
   begin
-    ShowMessage(Text + ' no es una fecha válida');
+    ShowMessage(Format(SInvalidDate, [Text]));
     SetFocus;
   end;
   formatInput;

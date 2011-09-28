@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, LResources, Controls, StdCtrls, DB, DBCtrls, LMessages, LCLType, Dialogs,
-  SysUtils;
+  SysUtils, jinputconsts;
 
 type
 
@@ -170,7 +170,7 @@ begin
     end
     else
     begin
-      ShowMessage(Caption + ' no es un valor válido');
+      ShowMessage(Format(SInvalidDateTime, [Caption]));
       Caption := FDataLink.Field.AsString;
       SelectAll;
       SetFocus;

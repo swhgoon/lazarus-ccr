@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, StdCtrls, Graphics,
-  Dialogs, jcontrolutils;
+  Dialogs, jcontrolutils, jinputconsts;
 
 type
 
@@ -16,7 +16,7 @@ type
   private
     { Private declarations }
     theValue: TTime;
-    hasValue: Boolean;
+    hasValue: boolean;
     fFormat: string;
     function getFormat: string;
     function getValue: TTime;
@@ -121,7 +121,7 @@ end;
 procedure TJTimeEdit.setValue(const AValue: TTime);
 begin
   theValue := AValue;
-  hasValue:= True;
+  hasValue := True;
   formatInput;
 end;
 
@@ -129,7 +129,8 @@ procedure TJTimeEdit.FormatInput;
 begin
   if hasValue then
     Text := FormatDateTime(fFormat, theValue)
-    else Text := '';
+  else
+    Text := '';
 end;
 
 procedure TJTimeEdit.DoEnter;
@@ -147,19 +148,19 @@ begin
   inherited DoExit;
   Text := NormalizeTime(Text, theValue);
   if Length(Text) = 0 then
-    begin
+  begin
     theValue := 0;
-    hasValue:= False;
-    end
+    hasValue := False;
+  end
   else
   if IsValidTimeString(Text) then
-    begin
+  begin
     theValue := StrToTime(Text);
-     hasValue:=True;
-    end
+    hasValue := True;
+  end
   else
   begin
-    ShowMessage(Text + ' no es una hora válida');
+    ShowMessage(Format(SInvalidTime, [Text]));
     SetFocus;
   end;
   formatInput;
@@ -178,7 +179,7 @@ begin
   Text := '';
   DisplayFormat := 'hh:mm:ss';
   Value := 0;
-  hasValue:= True;
+  hasValue := True;
 end;
 
 destructor TJTimeEdit.Destroy;

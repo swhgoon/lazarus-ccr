@@ -22,7 +22,8 @@ unit JCurrencyEdit;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, StdCtrls, Graphics, Dialogs;
+  Classes, SysUtils, LResources, Forms, Controls, StdCtrls, Graphics,
+  Dialogs, jinputconsts;
 
 type
 
@@ -194,7 +195,7 @@ begin
     theValue := StrToCurr(Text)
   else
   begin
-    ShowMessage(Text + ' no es un valor válido');
+    ShowMessage(Format(SInvalidNumber, [Text]));
     SetFocus;
   end;
   if fDecimals > 0 then

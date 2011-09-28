@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, SysUtils, Grids, Dialogs, LCLType, DBGrids, Controls, DB,
-  jcontrolutils;
+  jcontrolutils, jinputconsts;
 
 type
 
@@ -46,7 +46,7 @@ type
     CellEditor: TStringCellEditor;
     theGrid: TDBGrid;
     function isNull: boolean;
-    property format: string read getFormat write setFormat;
+    property DisplayFormat: string read getFormat write setFormat;
     constructor Create;
     destructor Destroy; override;
     function Editor(aGrid: TDBGrid): TStringCellEditor;
@@ -71,7 +71,7 @@ type
     CellEditor: TStringCellEditor;
     theGrid: TDBGrid;
     function isNull: boolean;
-    property format: string read getFormat write setFormat;
+    property DisplayFormat: string read getFormat write setFormat;
     constructor Create;
     destructor Destroy; override;
     function Editor(aGrid: TDBGrid): TStringCellEditor;
@@ -96,7 +96,7 @@ type
     CellEditor: TStringCellEditor;
     theGrid: TDBGrid;
     function isNull: boolean;
-    property format: string read getFormat write setFormat;
+    property DisplayFormat: string read getFormat write setFormat;
     constructor Create;
     destructor Destroy; override;
     function Editor(aGrid: TDBGrid): TStringCellEditor;
@@ -198,15 +198,15 @@ begin
   end
   else
   begin
-    ShowMessage(CellEditor.Caption + ' no es una fecha válida');
-    CellEditor.Text := FormatDateTime(format, theValue);
+    ShowMessage(Format(SInvalidDateTime, [CellEditor.Caption]));
+    CellEditor.Text := FormatDateTime(DisplayFormat, theValue);
   end;
 end;
 
 procedure TJDbGridDateTimeCtrl.formatInput;
 begin
   if theValue <> 0 then
-    CellEditor.Caption := FormatDateTime(format, theValue);
+    CellEditor.Caption := FormatDateTime(DisplayFormat, theValue);
 end;
 
 procedure TJDbGridDateTimeCtrl.setFormat(const AValue: string);
@@ -228,8 +228,8 @@ begin
     if (Key in [VK_RETURN, VK_TAB, VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT]) and
       (not IsValidDateTimeString(NormalizeDateTime(CellEditor.Caption, theValue))) then
     begin
-      ShowMessage(CellEditor.Caption + ' no es una fecha válida');
-      CellEditor.Text := FormatDateTime(format, theValue);
+      ShowMessage(Format(SInvalidDateTime, [CellEditor.Caption]));
+      CellEditor.Text := FormatDateTime(DisplayFormat, theValue);
       CellEditor.SelectAll;
       Key := VK_UNKNOWN;
     end
@@ -239,7 +239,7 @@ begin
       if Field.IsNull then
         CellEditor.Text := ''
       else
-        CellEditor.Text := FormatDateTime(format, Field.AsDateTime);
+        CellEditor.Text := FormatDateTime(DisplayFormat, Field.AsDateTime);
       updated := True;
       theGrid.SetFocus; // No perder el foco
     end
@@ -279,7 +279,7 @@ begin
   CellEditor.OnKeyDown := @OnKeyDown;
   CellEditor.OnEditingDone := @myEditOnEditingDone;
   CellEditor.OnKeyPress := @OnKeyPress;
-  format := ShortDateFormat + ' ' + ShortTimeFormat;
+  DisplayFormat := ShortDateFormat + ' ' + ShortTimeFormat;
 end;
 
 destructor TJDbGridDateTimeCtrl.Destroy;
@@ -339,15 +339,15 @@ begin
   end
   else
   begin
-    ShowMessage(CellEditor.Caption + ' no es una hora válida');
-    CellEditor.Text := FormatDateTime(format, theValue);
+    ShowMessage(Format(SInvalidTime, [CellEditor.Caption]));
+    CellEditor.Text := FormatDateTime(DisplayFormat, theValue);
   end;
 end;
 
 procedure TJDbGridTimeCtrl.formatInput;
 begin
   if theValue <> 0 then
-    CellEditor.Caption := FormatDateTime(format, theValue);
+    CellEditor.Caption := FormatDateTime(DisplayFormat, theValue);
 end;
 
 procedure TJDbGridTimeCtrl.setFormat(const AValue: string);
@@ -376,8 +376,8 @@ begin
   if (Key in [VK_RETURN, VK_TAB, VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT]) and
     (not IsValidTimeString(NormalizeTime(CellEditor.Caption, theValue))) then
   begin
-    ShowMessage(CellEditor.Caption + ' no es una hora válida');
-    CellEditor.Text := FormatDateTime(format, theValue);
+    ShowMessage(Format(SInvalidTime, [CellEditor.Caption]));
+    CellEditor.Text := FormatDateTime(DisplayFormat, theValue);
     CellEditor.SelectAll;
     Key := VK_UNKNOWN;
   end
@@ -387,7 +387,7 @@ begin
     if Field.IsNull then
       CellEditor.Text := ''
     else
-      CellEditor.Text := FormatDateTime(format, Field.AsDateTime);
+      CellEditor.Text := FormatDateTime(DisplayFormat, Field.AsDateTime);
     updated := True;
     theGrid.SetFocus; // No perder el foco
   end
@@ -427,7 +427,7 @@ begin
   CellEditor.OnKeyDown := @OnKeyDown;
   CellEditor.OnEditingDone := @myEditOnEditingDone;
   CellEditor.OnKeyPress := @OnKeyPress;   // se sobreescribe por el Grid :(
-  format := ShortTimeFormat;
+  DisplayFormat := ShortTimeFormat;
 end;
 
 destructor TJDbGridTimeCtrl.Destroy;
@@ -487,8 +487,8 @@ begin
   end
   else
   begin
-    ShowMessage(CellEditor.Caption + ' no es una fecha válida');
-    CellEditor.Text := FormatDateTime(format, theValue);
+    ShowMessage(Format(SInvalidDate, [CellEditor.Caption]));
+    CellEditor.Text := FormatDateTime(DisplayFormat, theValue);
   end;
   //formatInput;
 end;
@@ -496,7 +496,7 @@ end;
 procedure TJDbGridDateCtrl.formatInput;
 begin
   if theValue <> 0 then
-    CellEditor.Caption := FormatDateTime(format, theValue);
+    CellEditor.Caption := FormatDateTime(DisplayFormat, theValue);
 end;
 
 procedure TJDbGridDateCtrl.setFormat(const AValue: string);
@@ -518,8 +518,8 @@ begin
     if (Key in [VK_RETURN, VK_TAB, VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT]) and
       (not IsValidDateString(NormalizeDate(CellEditor.Caption, theValue))) then
     begin
-      ShowMessage(CellEditor.Caption + ' no es una fecha válida');
-      CellEditor.Text := FormatDateTime(format, theValue);
+      ShowMessage(Format(SInvalidDate, [CellEditor.Caption]));
+      CellEditor.Text := FormatDateTime(DisplayFormat, theValue);
       CellEditor.SelectAll;
       Key := VK_UNKNOWN;
     end
@@ -529,7 +529,7 @@ begin
       if Field.IsNull then
         CellEditor.Text := ''
       else
-        CellEditor.Text := FormatDateTime(format, Field.AsDateTime);
+        CellEditor.Text := FormatDateTime(DisplayFormat, Field.AsDateTime);
       updated := True;
       theGrid.SetFocus; // No perder el foco
     end
@@ -570,7 +570,7 @@ begin
   CellEditor.OnKeyDown := @OnKeyDown;
   CellEditor.OnEditingDone := @myEditOnEditingDone;
   CellEditor.OnKeyPress := @OnKeyPress;   // se sobreescribe por el Grid :(
-  format := ShortDateFormat;
+  DisplayFormat := ShortDateFormat;
 end;
 
 destructor TJDbGridDateCtrl.Destroy;
@@ -621,7 +621,7 @@ begin
   end
   else
   begin
-    ShowMessage(CellEditor.Caption + ' no es un número válido');
+    ShowMessage(Format(SInvalidNumber, [CellEditor.Caption]));
     CellEditor.Text := FloatToStr(theValue);
   end;
 end;
@@ -650,7 +650,7 @@ begin
   if (Key in [VK_RETURN, VK_TAB, VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT]) and
     (not IsValidFloat(CellEditor.Caption)) then
   begin
-    ShowMessage(CellEditor.Caption + ' no es número válido');
+    ShowMessage(Format(SInvalidNumber, [CellEditor.Caption]));
     CellEditor.Text := FloatToStr(theValue);
     CellEditor.SelectAll;
     Key := VK_UNKNOWN;
@@ -752,7 +752,7 @@ begin
   if (Key in [VK_RETURN, VK_TAB, VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT]) and
     (not IsValidInteger(CellEditor.Caption)) then
   begin
-    ShowMessage(CellEditor.Caption + ' no es un número válido');
+    ShowMessage(Format(SInvalidNumber, [CellEditor.Caption]));
     CellEditor.Text := IntToStr(theValue);
     CellEditor.SelectAll;
     Key := VK_UNKNOWN;
@@ -800,7 +800,7 @@ begin
   end
   else
   begin
-    ShowMessage(CellEditor.Caption + ' no es un número válido');
+    ShowMessage(Format(SInvalidNumber, [CellEditor.Caption]));
     CellEditor.Text := IntToStr(theValue);
   end;
 end;

@@ -13,7 +13,8 @@ uses
   JDateEdit, JLabeledDateEdit, JDBGridControl, jdbgridutils, JDBLabeledEdit, 
   JTimeEdit, JLabeledTimeEdit, JDBTimeEdit, JDBLabeledTimeEdit, JDateTimeEdit, 
   JLabeledDateTimeEdit, JDBDateTimeEdit, JDBLabeledDateTimeEdit, JFloatEdit, 
-  JLabeledFloatEdit, JDBFloatEdit, JDBLabeledFloatEdit, LazarusPackageIntf;
+  JLabeledFloatEdit, JDBFloatEdit, JDBLabeledFloatEdit, jinputconsts, 
+  LazarusPackageIntf;
 
 implementation
 

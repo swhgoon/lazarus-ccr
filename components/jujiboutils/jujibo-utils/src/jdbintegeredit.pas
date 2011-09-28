@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, LResources, Controls, StdCtrls, DB, DBCtrls, LMessages, LCLType, Dialogs,
-  SysUtils;
+  SysUtils, jinputconsts;
 
 type
 
@@ -164,7 +164,7 @@ begin
       FDataLink.Field.Text := Text
     else
     begin
-      ShowMessage(Caption + ' no es un valor válido');
+      ShowMessage(Format(SInvalidNumber, [Caption]));
       Caption := FDataLink.Field.AsString;
       SelectAll;
       SetFocus;

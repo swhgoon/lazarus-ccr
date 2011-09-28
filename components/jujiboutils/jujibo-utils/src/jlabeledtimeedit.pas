@@ -23,14 +23,14 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, ExtCtrls, Graphics,
-  Dialogs, jcontrolutils;
+  Dialogs, jcontrolutils, jinputconsts;
 
 type
   TJLabeledTimeEdit = class(TCustomLabeledEdit)
   private
     { Private declarations }
     theValue: TTime;
-    hasValue: Boolean;
+    hasValue: boolean;
     fFormat: string;
     function getFormat: string;
     function getValue: TTime;
@@ -108,7 +108,7 @@ implementation
 procedure Register;
 begin
   {$I jlabeledtimeedit_icon.lrs}
-  RegisterComponents('Additional',[TJLabeledTimeEdit]);
+  RegisterComponents('Additional', [TJLabeledTimeEdit]);
 end;
 
 
@@ -131,7 +131,7 @@ end;
 procedure TJLabeledTimeEdit.setValue(const AValue: TTime);
 begin
   theValue := AValue;
-  hasValue:= True;
+  hasValue := True;
   formatInput;
 end;
 
@@ -139,7 +139,8 @@ procedure TJLabeledTimeEdit.FormatInput;
 begin
   if hasValue then
     Text := FormatDateTime(fFormat, theValue)
-    else Text := '';
+  else
+    Text := '';
 end;
 
 procedure TJLabeledTimeEdit.DoEnter;
@@ -157,19 +158,19 @@ begin
   inherited DoExit;
   Text := NormalizeTime(Text, theValue);
   if Length(Text) = 0 then
-    begin
+  begin
     theValue := 0;
-    hasValue:= False;
-    end
+    hasValue := False;
+  end
   else
   if IsValidTimeString(Text) then
-    begin
+  begin
     theValue := StrToTime(Text);
-     hasValue:=True;
-    end
+    hasValue := True;
+  end
   else
   begin
-    ShowMessage(Text + ' no es una hora válida');
+    ShowMessage(Format(SInvalidTime, [Text]));
     SetFocus;
   end;
   formatInput;
@@ -188,7 +189,7 @@ begin
   Text := '';
   DisplayFormat := 'hh:mm:ss';
   Value := 0;
-  hasValue:= True;
+  hasValue := True;
 end;
 
 destructor TJLabeledTimeEdit.Destroy;
@@ -202,3 +203,4 @@ begin
 end;
 
 end.
+

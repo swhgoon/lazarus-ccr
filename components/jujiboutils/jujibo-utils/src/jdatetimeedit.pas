@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, StdCtrls, Graphics,
-  Dialogs, jcontrolutils;
+  Dialogs, jcontrolutils, jinputconsts;
 
 type
   TJDateTimeEdit = class(TCustomEdit)
@@ -161,7 +161,7 @@ begin
   Text := NormalizeDateTime(Text, theValue);
   if (Length(bufText) > 0) and (Length(Text) = 0) then
   begin
-    ShowMessage(bufText + ' no es una fecha-hora válida');
+    ShowMessage(Format(SInvalidDateTime, [bufText]));
     SetFocus;
   end
   else
@@ -172,7 +172,7 @@ begin
     theValue := StrToDateTime(Text)
   else
   begin
-    ShowMessage(Text + ' no es una fecha-hora válida');
+    ShowMessage(Format(SInvalidDateTime, [Text]));
     SetFocus;
   end;
   formatInput;

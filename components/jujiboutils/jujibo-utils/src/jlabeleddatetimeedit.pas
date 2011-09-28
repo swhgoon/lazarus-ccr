@@ -25,7 +25,7 @@ interface
 
 uses
   Classes, LResources, Controls, ExtCtrls, LCLType, Dialogs,
-  SysUtils;
+  SysUtils, jinputconsts;
 
 type
   TJLabeledDateTimeEdit = class(TCustomLabeledEdit)
@@ -53,7 +53,7 @@ type
     property DisplayFormat: string read getFormat write setFormat;
     property Value: TDateTime read getValue write setValue;
 
-     property Action;
+    property Action;
     property Align;
     property Alignment;
     property Anchors;
@@ -111,7 +111,7 @@ uses
 procedure Register;
 begin
   {$I jlabeleddatetimeedit_icon.lrs}
-  RegisterComponents('Additional',[TJLabeledDateTimeEdit]);
+  RegisterComponents('Additional', [TJLabeledDateTimeEdit]);
 end;
 
 function TJLabeledDateTimeEdit.getFormat: string;
@@ -161,7 +161,7 @@ begin
   Text := NormalizeDateTime(Text, theValue);
   if (Length(bufText) > 0) and (Length(Text) = 0) then
   begin
-    ShowMessage(bufText + ' no es una fecha-hora válida');
+    ShowMessage(Format(SInvalidDateTime, [bufText]));
     SetFocus;
   end
   else
@@ -172,7 +172,7 @@ begin
     theValue := StrToDateTime(Text)
   else
   begin
-    ShowMessage(Text + ' no es una fecha-hora válida');
+    ShowMessage(Format(SInvalidDateTime, [Text]));
     SetFocus;
   end;
   formatInput;
@@ -206,3 +206,4 @@ end;
 
 
 end.
+

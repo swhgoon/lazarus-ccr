@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, LResources, Controls, StdCtrls, DB, DBCtrls, LMessages, LCLType, Dialogs,
-  SysUtils, jcontrolutils;
+  SysUtils, jcontrolutils, jinputconsts;
 
 type
   TJDBTimeEdit = class(TCustomEdit)
@@ -168,7 +168,7 @@ begin
     end
     else
     begin
-      ShowMessage(Caption + ' no es una hora válida');
+      ShowMessage(Format(SInvalidTime, [Text]));
       Caption := FDataLink.Field.AsString;
       SelectAll;
       SetFocus;
