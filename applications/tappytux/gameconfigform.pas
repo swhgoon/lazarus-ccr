@@ -114,7 +114,7 @@ begin
   TranslateUI();
 
   // Initialize modules
-  for i := 0 to GetModuleCount() do
+  for i := 0 to GetModuleCount() -1 do
     GetModule(i).InitModule();
 end;
 
