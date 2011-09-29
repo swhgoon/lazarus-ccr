@@ -56,7 +56,7 @@ type
   TJDBGridControl = class(TDBGrid)
   private
     { Private declarations }
-    usingControl: Boolean;
+    usingControl: boolean;
     dateDbGridControl: TJDbGridDateCtrl;
     timeDbGridControl: TJDbGridTimeCtrl;
     integerDbGridControl: TJDbGridIntegerCtrl;
@@ -141,25 +141,46 @@ var
   aField: TField;
 begin
   Result := inherited GetDefaultEditor(Column);
-  usingControl:= False;
+  usingControl := False;
   if Result <> nil then
   begin
     C := ColumnFromGridColumn(Column);
     bs := C.ButtonStyle;
-    //aColumn := Columns.Items[Column - 1];
     aField := GetFieldFromGridColumn(Column);
-    //if aColumn <> nil then
     if (aField <> nil) and (bs in [cbsAuto, cbsNone]) then
     begin
-      usingControl:= True;
       case aField.DataType of
-        ftSmallint, ftInteger: Result := integerDbGridControl.Editor(Self);
-        ftDate: Result := dateDbGridControl.Editor(Self);
-        ftTime: Result := timeDbGridControl.Editor(Self);
-        ftDateTime: Result := dateTimeDbGridControl.Editor(Self);
-        ftCurrency, ftFloat: Result :=
+        ftSmallint, ftInteger:
+        begin
+          usingControl := True;
+          Result := integerDbGridControl.Editor(Self);
+        end;
+        ftDate:
+        begin
+          usingControl := True;
+          Result := dateDbGridControl.Editor(Self);
+        end;
+        ftTime:
+        begin
+          usingControl := True;
+          Result := timeDbGridControl.Editor(Self);
+        end;
+        ftDateTime:
+        begin
+          usingControl := True;
+          Result := dateTimeDbGridControl.Editor(Self);
+        end;
+        ftCurrency, ftFloat:
+        begin
+          usingControl := True;
+          Result :=
             doubleDbGridControl.Editor(Self, Columns.Items[Column - 1].Decimals);
-        ftBCD: Result := doubleDbGridControl.Editor(Self, aField.Size);
+        end;
+        ftBCD:
+        begin
+          usingControl := True;
+          Result := doubleDbGridControl.Editor(Self, aField.Size);
+        end;
       end;
     end;
   end;
@@ -167,8 +188,6 @@ end;
 
 procedure TJDBGridControl.UpdateData;
 begin
-  //if not (SelectedField.DataType in [ftSmallInt, ftInteger, ftDate,
-  //  ftTime, ftDateTime, ftCurrency, ftFloat, ftBCD]) then
   if not usingControl then
     inherited UpdateData;
 end;
