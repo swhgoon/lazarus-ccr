@@ -2,7 +2,7 @@
   This source is only used to compile and install the package.
  }
 
-unit jujibocontrols; 
+unit jujiboutils; 
 
 interface
 
@@ -34,5 +34,5 @@ begin
 end; 
 
 initialization
-  RegisterPackage('jujibocontrols', @Register); 
+  RegisterPackage('jujiboutils', @Register); 
 end.
