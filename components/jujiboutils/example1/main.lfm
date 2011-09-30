@@ -111,7 +111,7 @@ object Form1: TForm1
     Height = 27
     Top = 173
     Width = 80
-    DataField = 'ID'
+    DataField = 'ID2'
     DataSource = Datasource1
     Alignment = taRightJustify
     EditLabel.AnchorSideLeft.Control = JDBLabeledIntegerEdit2
