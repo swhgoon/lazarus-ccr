@@ -18,149 +18,89 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="29">
+    <Files Count="17">
       <Item1>
-        <Filename Value="src/jdbintegeredit.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="jdbintegeredit"/>
-      </Item1>
-      <Item2>
         <Filename Value="src/jdblabeledintegeredit.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="jdblabeledintegeredit"/>
-      </Item2>
-      <Item3>
-        <Filename Value="src/jdbcurrencyedit.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="jdbcurrencyedit"/>
-      </Item3>
-      <Item4>
+      </Item1>
+      <Item2>
         <Filename Value="src/jdblabeledcurrencyedit.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="jdblabeledcurrencyedit"/>
-      </Item4>
-      <Item5>
-        <Filename Value="src/jdbdateedit.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="jdbdateedit"/>
-      </Item5>
-      <Item6>
+      </Item2>
+      <Item3>
         <Filename Value="src/jdblabeleddateedit.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="jdblabeleddateedit"/>
-      </Item6>
-      <Item7>
+      </Item3>
+      <Item4>
         <Filename Value="src/jcontrolutils.pas"/>
         <UnitName Value="jcontrolutils"/>
-      </Item7>
-      <Item8>
-        <Filename Value="src/jintegeredit.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="JIntegerEdit"/>
-      </Item8>
-      <Item9>
+      </Item4>
+      <Item5>
         <Filename Value="src/jlabeledintegeredit.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="JLabeledIntegerEdit"/>
-      </Item9>
-      <Item10>
-        <Filename Value="src/jcurrencyedit.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="JCurrencyEdit"/>
-      </Item10>
-      <Item11>
+      </Item5>
+      <Item6>
         <Filename Value="src/jlabeledcurrencyedit.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="JLabeledCurrencyEdit"/>
-      </Item11>
-      <Item12>
-        <Filename Value="src/jdateedit.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="JDateEdit"/>
-      </Item12>
-      <Item13>
+      </Item6>
+      <Item7>
         <Filename Value="src/jlabeleddateedit.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="JLabeledDateEdit"/>
-      </Item13>
-      <Item14>
+      </Item7>
+      <Item8>
         <Filename Value="src/jdbgridcontrol.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="JDBGridControl"/>
-      </Item14>
-      <Item15>
+      </Item8>
+      <Item9>
         <Filename Value="src/jdbgridutils.pas"/>
         <UnitName Value="jdbgridutils"/>
-      </Item15>
-      <Item16>
+      </Item9>
+      <Item10>
         <Filename Value="src/jdblabelededit.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="JDBLabeledEdit"/>
-      </Item16>
-      <Item17>
-        <Filename Value="src/jtimeedit.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="JTimeEdit"/>
-      </Item17>
-      <Item18>
+      </Item10>
+      <Item11>
         <Filename Value="src/jlabeledtimeedit.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="JLabeledTimeEdit"/>
-      </Item18>
-      <Item19>
-        <Filename Value="src/jdbtimeedit.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="JDBTimeEdit"/>
-      </Item19>
-      <Item20>
+      </Item11>
+      <Item12>
         <Filename Value="src/jdblabeledtimeedit.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="JDBLabeledTimeEdit"/>
-      </Item20>
-      <Item21>
-        <Filename Value="src/jdatetimeedit.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="JDateTimeEdit"/>
-      </Item21>
-      <Item22>
+      </Item12>
+      <Item13>
         <Filename Value="src/jlabeleddatetimeedit.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="JLabeledDateTimeEdit"/>
-      </Item22>
-      <Item23>
-        <Filename Value="src/jdbdatetimeedit.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="JDBDateTimeEdit"/>
-      </Item23>
-      <Item24>
+      </Item13>
+      <Item14>
         <Filename Value="src/jdblabeleddatetimeedit.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="JDBLabeledDateTimeEdit"/>
-      </Item24>
-      <Item25>
-        <Filename Value="src/jfloatedit.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="JFloatEdit"/>
-      </Item25>
-      <Item26>
+      </Item14>
+      <Item15>
         <Filename Value="src/jlabeledfloatedit.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="JLabeledFloatEdit"/>
-      </Item26>
-      <Item27>
-        <Filename Value="src/jdbfloatedit.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="JDBFloatEdit"/>
-      </Item27>
-      <Item28>
+      </Item15>
+      <Item16>
         <Filename Value="src/jdblabeledfloatedit.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="JDBLabeledFloatEdit"/>
-      </Item28>
-      <Item29>
+      </Item16>
+      <Item17>
         <Filename Value="src/jinputconsts.pas"/>
         <UnitName Value="jinputconsts"/>
-      </Item29>
+      </Item17>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
