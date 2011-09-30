@@ -15,6 +15,9 @@
         </Debugging>
       </Linking>
       <Other>
+        <CompilerMessages>
+          <UseMsgFile Value="True"/>
+        </CompilerMessages>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
@@ -102,6 +105,10 @@
         <UnitName Value="jinputconsts"/>
       </Item17>
     </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
       <Item1>
