@@ -30,7 +30,7 @@
     </RunParams>
     <RequiredPackages Count="4">
       <Item1>
-        <PackageName Value="jujibocontrols"/>
+        <PackageName Value="jujiboutils"/>
       </Item1>
       <Item2>
         <PackageName Value="MemDSLaz"/>
