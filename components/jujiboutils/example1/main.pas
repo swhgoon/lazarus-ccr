@@ -5,9 +5,9 @@ unit main;
 interface
 
 uses
-  Classes, SysUtils, db, memds, FileUtil, Forms, Controls, Graphics,
-  Dialogs, StdCtrls, DbCtrls, Buttons, jdbintegeredit, jdbdateedit,
-  jdbcurrencyedit, jdblabeledcurrencyedit;
+  Classes, SysUtils, DB, memds, FileUtil, Forms, Controls, Graphics, Dialogs,
+  StdCtrls, DBCtrls, Buttons, jdblabeledcurrencyedit, jdblabeledintegeredit,
+  jdblabeleddateedit;
 
 type
 
@@ -17,14 +17,11 @@ type
     BitBtn1: TBitBtn;
     Datasource1: TDatasource;
     DBNavigator1: TDBNavigator;
-    JDBCurrencyEdit1: TJDBCurrencyEdit;
-    JDBDateEdit1: TJDBDateEdit;
-    JDBIntegerEdit1: TJDBIntegerEdit;
-    JDBIntegerEdit2: TJDBIntegerEdit;
     JDBLabeledCurrencyEdit1: TJDBLabeledCurrencyEdit;
+    JDBLabeledDateEdit1: TJDBLabeledDateEdit;
+    JDBLabeledIntegerEdit1: TJDBLabeledIntegerEdit;
+    JDBLabeledIntegerEdit2: TJDBLabeledIntegerEdit;
     Label1: TLabel;
-    Label2: TLabel;
-    Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
     MemDataset1: TMemDataset;
@@ -33,10 +30,10 @@ type
     { private declarations }
   public
     { public declarations }
-  end; 
+  end;
 
 var
-  Form1: TForm1; 
+  Form1: TForm1;
 
 implementation
 

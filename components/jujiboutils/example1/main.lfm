@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 285
+  Left = 576
   Height = 332
-  Top = 159
+  Top = 272
   Width = 366
   Caption = 'Form1'
   ClientHeight = 332
@@ -32,39 +32,7 @@ object Form1: TForm1
     ClientWidth = 241
     DataSource = Datasource1
     Options = []
-    TabOrder = 5
-  end
-  object Label2: TLabel
-    Left = 24
-    Height = 18
-    Top = 133
-    Width = 14
-    Caption = 'Id'
-    ParentColor = False
-  end
-  object Label3: TLabel
-    Left = 106
-    Height = 18
-    Top = 133
-    Width = 29
-    Caption = 'Date'
-    ParentColor = False
-  end
-  object Label4: TLabel
-    Left = 188
-    Height = 18
-    Top = 133
-    Width = 21
-    Caption = 'Id2'
-    ParentColor = False
-  end
-  object Label5: TLabel
-    Left = 272
-    Height = 18
-    Top = 133
-    Width = 30
-    Caption = 'Total'
-    ParentColor = False
+    TabOrder = 4
   end
   object BitBtn1: TBitBtn
     Left = 273
@@ -75,69 +43,88 @@ object Form1: TForm1
     Caption = '&Cerrar'
     Kind = bkClose
     ModalResult = 11
-    TabOrder = 6
+    TabOrder = 5
   end
   object JDBLabeledCurrencyEdit1: TJDBLabeledCurrencyEdit
     Left = 272
     Height = 27
-    Top = 200
+    Top = 173
     Width = 80
-    DisplayFormat = '#,0.00€'
+    DisplayFormat = '#,0.00 €'
     DataField = 'TOTAL'
     DataSource = Datasource1
     Decimals = 2
     Alignment = taRightJustify
     EditLabel.AnchorSideLeft.Control = JDBLabeledCurrencyEdit1
+    EditLabel.AnchorSideRight.Control = JDBLabeledCurrencyEdit1
+    EditLabel.AnchorSideRight.Side = asrBottom
     EditLabel.AnchorSideBottom.Control = JDBLabeledCurrencyEdit1
     EditLabel.Left = 272
     EditLabel.Height = 18
-    EditLabel.Top = 179
-    EditLabel.Width = 84
-    EditLabel.Caption = 'Total (labeled)'
+    EditLabel.Top = 152
+    EditLabel.Width = 80
+    EditLabel.Caption = 'Total'
     EditLabel.ParentColor = False
-    TabOrder = 4
+    TabOrder = 3
   end
-  object JDBIntegerEdit1: TJDBIntegerEdit
-    Left = 24
+  object JDBLabeledIntegerEdit1: TJDBLabeledIntegerEdit
+    Left = 21
     Height = 27
-    Top = 152
+    Top = 174
     Width = 80
     DataField = 'ID'
     DataSource = Datasource1
     Alignment = taRightJustify
+    EditLabel.AnchorSideLeft.Control = JDBLabeledIntegerEdit1
+    EditLabel.AnchorSideRight.Control = JDBLabeledIntegerEdit1
+    EditLabel.AnchorSideRight.Side = asrBottom
+    EditLabel.AnchorSideBottom.Control = JDBLabeledIntegerEdit1
+    EditLabel.Left = 21
+    EditLabel.Height = 18
+    EditLabel.Top = 153
+    EditLabel.Width = 80
+    EditLabel.Caption = 'Id'
+    EditLabel.ParentColor = False
     TabOrder = 0
   end
-  object JDBDateEdit1: TJDBDateEdit
+  object JDBLabeledDateEdit1: TJDBLabeledDateEdit
     Left = 106
     Height = 27
-    Top = 152
+    Top = 173
     Width = 80
     DataField = 'DATE'
     DataSource = Datasource1
+    EditLabel.AnchorSideLeft.Control = JDBLabeledDateEdit1
+    EditLabel.AnchorSideRight.Control = JDBLabeledDateEdit1
+    EditLabel.AnchorSideRight.Side = asrBottom
+    EditLabel.AnchorSideBottom.Control = JDBLabeledDateEdit1
+    EditLabel.Left = 106
+    EditLabel.Height = 18
+    EditLabel.Top = 152
+    EditLabel.Width = 80
+    EditLabel.Caption = 'Date'
+    EditLabel.ParentColor = False
     TabOrder = 1
   end
-  object JDBIntegerEdit2: TJDBIntegerEdit
+  object JDBLabeledIntegerEdit2: TJDBLabeledIntegerEdit
     Left = 188
     Height = 27
-    Top = 152
+    Top = 173
     Width = 80
-    DataField = 'ID2'
+    DataField = 'ID'
     DataSource = Datasource1
-    ReadOnly = True
     Alignment = taRightJustify
+    EditLabel.AnchorSideLeft.Control = JDBLabeledIntegerEdit2
+    EditLabel.AnchorSideRight.Control = JDBLabeledIntegerEdit2
+    EditLabel.AnchorSideRight.Side = asrBottom
+    EditLabel.AnchorSideBottom.Control = JDBLabeledIntegerEdit2
+    EditLabel.Left = 188
+    EditLabel.Height = 18
+    EditLabel.Top = 152
+    EditLabel.Width = 80
+    EditLabel.Caption = 'Id2'
+    EditLabel.ParentColor = False
     TabOrder = 2
-  end
-  object JDBCurrencyEdit1: TJDBCurrencyEdit
-    Left = 270
-    Height = 27
-    Top = 152
-    Width = 80
-    DisplayFormat = '#,0.00€'
-    DataField = 'TOTAL'
-    DataSource = Datasource1
-    Decimals = 2
-    Alignment = taRightJustify
-    TabOrder = 3
   end
   object Datasource1: TDatasource
     DataSet = MemDataset1
