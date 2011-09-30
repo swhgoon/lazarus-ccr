@@ -27,6 +27,8 @@ uses
 
 type
 
+  TJStringCellEditor = class(TStringCellEditor);
+
   { TJDbGridStringCtrl }
 
   TJDbGridStringCtrl = class(TObject)
@@ -233,7 +235,7 @@ end;
 constructor TJDbGridStringCtrl.Create;
 begin
   inherited Create;
-  CellEditor := TStringCellEditor.Create(nil);
+  CellEditor := TJStringCellEditor.Create(nil);
   CellEditor.OnEnter := @myEditEnter;
   CellEditor.OnKeyDown := @OnKeyDown;
   CellEditor.OnEditingDone := @myEditOnEditingDone;
@@ -375,7 +377,7 @@ end;
 constructor TJDbGridDateTimeCtrl.Create;
 begin
   inherited Create;
-  CellEditor := TStringCellEditor.Create(nil);
+  CellEditor := TJStringCellEditor.Create(nil);
   CellEditor.OnEnter := @myEditEnter;
   CellEditor.OnKeyDown := @OnKeyDown;
   CellEditor.OnEditingDone := @myEditOnEditingDone;
@@ -523,7 +525,7 @@ end;
 constructor TJDbGridTimeCtrl.Create;
 begin
   inherited Create;
-  CellEditor := TStringCellEditor.Create(nil);
+  CellEditor := TJStringCellEditor.Create(nil);
   CellEditor.OnEnter := @myEditEnter;
   CellEditor.OnKeyDown := @OnKeyDown;
   CellEditor.OnEditingDone := @myEditOnEditingDone;
@@ -666,7 +668,7 @@ end;
 constructor TJDbGridDateCtrl.Create;
 begin
   inherited Create;
-  CellEditor := TStringCellEditor.Create(nil);
+  CellEditor := TJStringCellEditor.Create(nil);
   CellEditor.OnEnter := @myEditEnter;
   CellEditor.OnKeyDown := @OnKeyDown;
   CellEditor.OnEditingDone := @myEditOnEditingDone;
@@ -806,7 +808,7 @@ end;
 constructor TJDbGridDoubleCtrl.Create;
 begin
   inherited Create;
-  CellEditor := TStringCellEditor.Create(nil);
+  CellEditor := TJStringCellEditor.Create(nil);
   CellEditor.OnEnter := @myEditOnEnter;
   CellEditor.OnKeyDown := @OnKeyDown;
   CellEditor.OnEditingDone := @myEditOnEditingDone;
@@ -917,7 +919,7 @@ end;
 constructor TJDbGridIntegerCtrl.Create;
 begin
   inherited Create;
-  CellEditor := TStringCellEditor.Create(nil);
+  CellEditor := TJStringCellEditor.Create(nil);
   CellEditor.OnEnter := @myEditOnEnter;
   CellEditor.OnKeyDown := @OnKeyDown;
   CellEditor.OnEditingDone := @myEditOnEditingDone;

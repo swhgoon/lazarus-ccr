@@ -60,7 +60,6 @@ type
   TJDBGridControl = class(TDBGrid)
   private
     { Private declarations }
-    usingControl: boolean;
     stringDbGridControl: TJDbGridStringCtrl;
     dateDbGridControl: TJDbGridDateCtrl;
     timeDbGridControl: TJDbGridTimeCtrl;
@@ -157,7 +156,6 @@ var
   aField: TField;
 begin
   Result := inherited GetDefaultEditor(Column);
-  usingControl := False;
   if Result <> nil then
   begin
     C := ColumnFromGridColumn(Column);
@@ -167,41 +165,20 @@ begin
     begin
       case aField.DataType of
         ftSmallint, ftInteger:
-        begin
-          usingControl := True;
           Result := integerDbGridControl.Editor(Self);
-        end;
         ftDate:
-        begin
-          usingControl := True;
           Result := dateDbGridControl.Editor(Self);
-        end;
         ftTime:
-        begin
-          usingControl := True;
           Result := timeDbGridControl.Editor(Self);
-        end;
         ftDateTime:
-        begin
-          usingControl := True;
           Result := dateTimeDbGridControl.Editor(Self);
-        end;
         ftCurrency, ftFloat:
-        begin
-          usingControl := True;
           Result :=
-            doubleDbGridControl.Editor(Self, Columns.Items[Column - 1].Decimals);
-        end;
+            doubleDbGridControl.Editor(Self, Columns[Column - 1].Decimals);
         ftBCD:
-        begin
-          usingControl := True;
           Result := doubleDbGridControl.Editor(Self, aField.Size);
-        end;
         ftString:
-        begin
-          usingControl:= True;
-          Result := stringDbGridControl.Editor(Self, Columns.Items[Column - 1].MaxLength);
-        end;
+          Result := stringDbGridControl.Editor(Self, Columns[Column - 1].MaxLength);
       end;
     end;
   end;
@@ -209,7 +186,7 @@ end;
 
 procedure TJDBGridControl.UpdateData;
 begin
-  if not usingControl then
+  if Editor is TJStringCellEditor then
     inherited UpdateData;
 end;
 
