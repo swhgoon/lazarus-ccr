@@ -32,10 +32,14 @@ type
   TJDBColumn = class(TColumn)
   private
     fDecimals: integer;
+    fMaxLength: integer;
     function getDecimals: integer;
+    function getMaxLength: integer;
     procedure setDecimals(AValue: integer);
+    procedure setMaxLength(AValue: integer);
   published
     property Decimals: integer read getDecimals write setDecimals;
+    property MaxLength: integer read getMaxLength write setMaxLength;
   end;
 
   { TJDBGridColumns }
@@ -57,6 +61,7 @@ type
   private
     { Private declarations }
     usingControl: boolean;
+    stringDbGridControl: TJDbGridStringCtrl;
     dateDbGridControl: TJDbGridDateCtrl;
     timeDbGridControl: TJDbGridTimeCtrl;
     integerDbGridControl: TJDbGridIntegerCtrl;
@@ -94,10 +99,21 @@ begin
   Result := fDecimals;
 end;
 
+function TJDBColumn.getMaxLength: integer;
+begin
+  Result := fMaxLength;
+end;
+
 procedure TJDBColumn.setDecimals(AValue: integer);
 begin
   if (AValue >= 0) and (AValue <= 10) then
     fDecimals := AValue;
+end;
+
+procedure TJDBColumn.setMaxLength(AValue: integer);
+begin
+  if AValue >= 0 then
+    fMaxLength := AValue;
 end;
 
 { TJDBGridColumns }
@@ -181,6 +197,11 @@ begin
           usingControl := True;
           Result := doubleDbGridControl.Editor(Self, aField.Size);
         end;
+        ftString:
+        begin
+          usingControl:= True;
+          Result := stringDbGridControl.Editor(Self, Columns.Items[Column - 1].MaxLength);
+        end;
       end;
     end;
   end;
@@ -195,6 +216,7 @@ end;
 constructor TJDBGridControl.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  stringDbGridControl := TJDbGridStringCtrl.Create;
   dateDbGridControl := TJDbGridDateCtrl.Create;
   timeDbGridControl := TJDbGridTimeCtrl.Create;
   integerDbGridControl := TJDbGridIntegerCtrl.Create;
@@ -204,6 +226,7 @@ end;
 
 destructor TJDBGridControl.Destroy;
 begin
+  stringDbGridControl.Free;
   dateDbGridControl.Free;
   timeDbGridControl.Free;
   integerDbGridControl.Free;

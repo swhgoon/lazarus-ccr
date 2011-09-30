@@ -22,10 +22,29 @@ unit jdbgridutils;
 interface
 
 uses
-  Classes, SysUtils, Grids, Dialogs, LCLType, DBGrids, Controls, DB,
+  Classes, SysUtils, Grids, Dialogs, LCLType, LCLProc, DBGrids, Controls, DB,
   jcontrolutils, jinputconsts;
 
 type
+
+  { TJDbGridStringCtrl }
+
+  TJDbGridStringCtrl = class(TObject)
+  private
+    Field: TField;
+    updated: boolean;
+    fMaxLength: integer;
+    procedure myEditEnter(Sender: TObject);
+    procedure myEditOnEditingDone(Sender: TObject);
+    procedure OnKeyPress(Sender: TObject; var key: char);
+    procedure OnKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
+  public
+    CellEditor: TStringCellEditor;
+    theGrid: TDBGrid;
+    constructor Create;
+    destructor Destroy; override;
+    function Editor(aGrid: TDBGrid; aMaxLength: integer = 0): TStringCellEditor;
+  end;
 
   { TJDbGridDateTimeCtrl }
 
@@ -152,6 +171,88 @@ implementation
 
 uses
   Math;
+
+{ TJDbGridStringCtrl }
+
+procedure TJDbGridStringCtrl.myEditEnter(Sender: TObject);
+begin
+  Field := theGrid.SelectedField;
+  CellEditor.BoundsRect := theGrid.SelectedFieldRect;
+  CellEditor.Text := Field.AsString;
+  CellEditor.OnKeyPress := @OnKeyPress;  // Recuperamos el control :-p
+  CellEditor.OnKeyDown := @OnKeyDown;
+  updated := False;
+  CellEditor.SelectAll;
+end;
+
+procedure TJDbGridStringCtrl.myEditOnEditingDone(Sender: TObject);
+begin
+  if (not updated) then
+  begin
+    Field.DataSet.DisableControls;
+    if (fMaxLength > 0) and (UTF8Length(CellEditor.Text) > fMaxLength) then
+      CellEditor.Text := UTF8Copy(CellEditor.Text, 0, fMaxLength);
+    Field.DataSet.Edit;
+    Field.AsString := CellEditor.Text;
+    field.DataSet.EnableControls;
+  end;
+end;
+
+procedure TJDbGridStringCtrl.OnKeyPress(Sender: TObject; var key: char);
+begin
+  if (fMaxLength > 0) and (UTF8Length(CellEditor.Text) >= fMaxLength) then
+    key := #0;
+end;
+
+procedure TJDbGridStringCtrl.OnKeyDown(Sender: TObject; var Key: word;
+  Shift: TShiftState);
+begin
+  if key = VK_ESCAPE then
+  begin
+    CellEditor.Text := Field.AsString;
+    updated := True;
+    theGrid.SetFocus; // No perder el foco
+  end
+  else
+  if Key in [VK_UP, VK_DOWN] then
+  begin
+    Key := VK_UNKNOWN;
+  end
+  else
+  if Key in [VK_RETURN, VK_TAB, VK_RIGHT, VK_LEFT] then
+  begin
+    Field.DataSet.Edit;
+    if (fMaxLength > 0) and (UTF8Length(CellEditor.Text) > fMaxLength) then
+      CellEditor.Text := UTF8Copy(CellEditor.Text, 0, fMaxLength);
+    Field.AsString := CellEditor.Text;
+    CellEditor.SelectAll;
+    updated := True;
+  end;
+end;
+
+constructor TJDbGridStringCtrl.Create;
+begin
+  inherited Create;
+  CellEditor := TStringCellEditor.Create(nil);
+  CellEditor.OnEnter := @myEditEnter;
+  CellEditor.OnKeyDown := @OnKeyDown;
+  CellEditor.OnEditingDone := @myEditOnEditingDone;
+  CellEditor.OnKeyPress := @OnKeyPress;
+end;
+
+destructor TJDbGridStringCtrl.Destroy;
+begin
+  CellEditor.Free;
+  inherited Destroy;
+end;
+
+function TJDbGridStringCtrl.Editor(aGrid: TDBGrid;
+  aMaxLength: integer): TStringCellEditor;
+begin
+  theGrid := aGrid;
+  fMaxLength := aMaxLength;
+  Result := CellEditor;
+end;
 
 { TJDbGridDateTimeCtrl }
 
