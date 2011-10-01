@@ -161,7 +161,7 @@ begin
     C := ColumnFromGridColumn(Column);
     bs := C.ButtonStyle;
     aField := GetFieldFromGridColumn(Column);
-    if (aField <> nil) and (bs in [cbsAuto, cbsNone]) then
+    if (aField <> nil) and (bs = cbsAuto) then
     begin
       case aField.DataType of
         ftSmallint, ftInteger:
