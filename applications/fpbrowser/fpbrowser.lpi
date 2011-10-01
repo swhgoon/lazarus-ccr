@@ -132,6 +132,10 @@
       </Checks>
     </CodeGeneration>
     <Linking>
+      <Debugging>
+        <GenerateDebugInfo Value="True"/>
+        <DebugInfoType Value="dsAuto"/>
+      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>

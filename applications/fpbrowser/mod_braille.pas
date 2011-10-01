@@ -27,19 +27,19 @@ type
 
 function ConvertUTF8TextToBraille(Line: string): string;
 function ConvertUTF8HtmlTextToBraille(AInput: string): string;
+function ConvertUTF8TextToBrailleNew(AInput: string): string;
 
 implementation
 
 type
-  dictionary = array[1..32] of string;
-  dictionary_pointer = ^dictionary;
+  dictionary = array[1..33] of string;
 
 const
 
   number_signal = chr($e2) + chr($a0) + chr($bc);
   caps_signal = chr($e2) + chr($a0) + chr($a8);
 
-  d1: dictionary = ({!} chr($96), {"} chr($a6), {#} 'TODO', {(*$*)} chr($b0),
+  d1: dictionary = ({<space>} chr($80), {!} chr($96), {"} chr($a6), {#} 'TODO', {(*$*)} chr($b0),
     {%} chr($b8) + chr($e2) + chr($a0) + chr($b4), {&} chr($af), {'} chr($84),
     {(} chr($a3) + chr($e2) + chr($a0) + chr($84), {)} chr($a0) + chr($e2) + chr($a0) + chr($9c),
     {*} chr($94), {+} chr($96), {,} chr($82), {-} chr($a4), {.} chr($84),
@@ -53,7 +53,7 @@ const
     {j} chr($9a), {k} chr($85), {l} chr($87), {m} chr($8d), {n} chr($9d),
     {o} chr($95), {p} chr($8f), {q} chr($9f), {r} chr($97), {s} chr($8e),
     {t} chr($9e), {u} chr($a5), {v} chr($a7), {w} chr($ba), {x} chr($ad),
-    {y} chr($bd), {z} chr($b5), '', '', '', '', '', '');
+    {y} chr($bd), {z} chr($b5), '', '', '', '', '', '', '');
 
   d3: dictionary = ({a + grave} chr($ab), {a + acute} chr($b7),
     {a + circumflex} chr($a1), {a + tilde} chr($9c), {a + diaeresis} 'TODO',
@@ -65,11 +65,7 @@ const
     {o + circumflex} chr($b9), {o + tilde} chr($aa), {o + diaeresis} 'TODO',
     {division sign} 'TODO', {o + stroke} 'TODO', {u + grave} chr($b1),
     {u + acute} chr($be), {u + circumflex} 'TODO', {u + diaeresis} chr($b3),
-    {y + acute} 'TODO', {thorn} 'TODO', {y + diaeresis} 'TODO');
-
-function ConvertUTF8CharacterToBraille(AInput: string): string;
-begin
-end;
+    {y + acute} 'TODO', {thorn} 'TODO', {y + diaeresis} 'TODO', '');
 
 function ConvertUTF8TextToBrailleNew(AInput: string): string;
 var
@@ -87,7 +83,7 @@ begin
 
     SetLength(lCurChar, lCharSize);
     Move(lCurChar[1], lInput^, lCharSize);
-    Result := Result + ConvertUTF8CharacterToBraille(lCurChar);
+    {Result := Result + ConvertUTF8CharacterToBraille(lCurChar);}
 
     Inc(lInput, lCharSize);
     Inc(lPos, lCharSize);
@@ -96,159 +92,218 @@ end;
 
 function ConvertUTF8TextToBraille(Line: string): string;
 var
-  Count, count_aux, n, n_aux, decr: integer;
-  Braille_string, string_aux: string;
-  num, accented: boolean;
-  dict_p: dictionary_pointer;
+  lCharSize, count, n, next_n, len: integer;
+  Braille_string: string;
+  Pline: Pchar;
+  num, caps: boolean;
+  f: TextFile;
+
 begin
   Braille_string := '';
   num := False;
-  accented := False;
-  New(dict_p);
-  decr := 0;
-  Count := 1;
-  n_aux := 0;
+  caps := False;
+  count := 1;
+  AssignFile(f, 'test');
+  Rewrite(f);
   if Line = '' then Result := '';
 
-  while Count <= length(Line) do
+  len := length(Line);
+  Pline := PChar(Line);
 
+  while count <= len do
   begin
-    if Line[Count] = ' ' then      {reproduce the empty space and go to next iteration}
-    begin
-      Braille_string := Braille_string + chr($e2) + chr($a0) + chr($80);
-      Count := Count + 1;
-      continue;
-    end;
 
-    if accented then
-      {if the last iteration found n = 195, it means we have an accented character. Print it and go to next iteration}
-    begin
-      dict_p^ := d3;
-      decr := 159;
-      n := Ord(Line[Count]);
-      if n < 160 then
-        {if it's a capital letter, put the caps signal and change to minuscule}
-      begin
-        Braille_string := Braille_string + caps_signal;
-        n := n + 32;
-      end;
-      Braille_string := Braille_string + chr($e2) + chr($a0) + (dict_p^)[n - decr];
-      accented := False;
-      Count := Count + 1;
-      continue;
-    end;
+    lCharSize := LCLProc.UTF8CharacterLength(PLine);
 
-    n := Ord(Line[Count]);
+    if (lCharSize = 1) then
+    begin
 
-    if ((n >= 97) and (n <= 122)) then      {if the char is a letter, choose d2}
-    begin
-      dict_p^ := d2;
-      decr := 96;
-    end
-    else
-    if n = 195 then      {if the char is an accented letter, flag it and go to next iteration}
-    begin
-      accented := True;
-      Count := Count + 1;
-      continue;
-    end
+      n := Ord(Line[count]);
 
-    else
-    if ((n >= 65) and (n <= 90)) then
-      {if it's a capital letter, choose d2 and see if it's only the first letter or if there are more capital letters}
-    begin
-      dict_p^ := d2;
-      decr := 96 - 32;
-      string_aux := chr($e2) + chr($a0) + (dict_p^)[n - decr];
-      count_aux := Count + 1;
-      if count_aux > length(Line) then
-      begin
-        Braille_string := Braille_string + caps_signal + string_aux;
-        break;
-      end;
-      n_aux := Ord(Line[count_aux]);
-      while ((n_aux >= 65) and (n_aux <= 90)) do
-      begin
-        string_aux := string_aux + chr($e2) + chr($a0) + (dict_p^)[n_aux - decr];
-        count_aux := count_aux + 1;
-        if count_aux > length(Line) then
-          break;
-        n_aux := Ord(Line[count_aux]);
-      end;
-      if length(string_aux) > 3 then
-        Braille_string := Braille_string + caps_signal + caps_signal + string_aux
+      if (n = 9) then Braille_string := Braille_string + #9
+
       else
-        Braille_string := Braille_string + caps_signal + string_aux;
-      Count := count_aux;
-      continue;
+      if (n = 10) then Braille_string := Braille_string + #10
+
+      else
+      begin
+
+      if ((n >= 97) and (n <= 122)) then            {a lower case letter}
+        Braille_string := Braille_string + chr($e2) + chr($a0) + d2[n - 96]
+
+      else
+      begin
+
+      if ((n >= 65) and (n <= 90)) then           {an upper case letter}
+      begin
+        if not caps then
+        begin
+          Braille_string := Braille_string + caps_signal;
+          if (count + 2 < length(Line)) then
+          begin
+            next_n := Ord(Line[count + 1]);
+            if ((next_n >= 65) and (next_n <= 90)) or ((next_n = 195) and ((Ord(Line[count + 2]) >= 128) and (Ord(Line[count + 2]) <= 159))) then {if the next char is also upper case, add another caps signal}
+            begin
+              Braille_string := Braille_string + caps_signal;
+              caps := True;
+            end;
+          end;
+        end;
+        Braille_string := Braille_string + chr($e2) + chr($a0) + d1[n - 31];
+        if (count + 1 <= length(Line)) then
+        begin
+          next_n := Ord(Line[count + 1]);
+          if not(((next_n >= 65) and (next_n <= 90)) or ((next_n = 195) and ((Ord(Line[count + 2]) >= 128) and (Ord(Line[count + 2]) <= 159)))) then caps := False;   {if the next char is not upper case, unflag <caps>}
+        end;
+      end
+
+      else
+      begin
+
+      if (n >= 48) and (n <= 57) then           {a number}
+      begin
+        if not num then Braille_string := Braille_string + number_signal;       {first algarism of a number, add a number signal}
+        num := True;
+        Braille_string := Braille_string + chr($e2) + chr($a0) + d1[n - 31];
+        if (count + 1 <= length(Line)) then
+        begin
+          next_n := Ord(Line[count + 1]);
+          if not ((next_n >= 48) and (next_n <= 57) or (next_n = 44) or (next_n = 46)) then num := False; {the next char is not a number, nor ',', nor '.', then unflag <num>}
+        end;
+      end
+
+      else
+      begin
+
+      if (n >= 32) and (n <= 64) then        {a char from the first dictionary}
+      begin
+        Braille_string := Braille_string + chr($e2) + chr($a0) + d1[n - 31];
+        if (count + 1 <= length(Line)) then
+        begin
+          next_n := Ord(Line[count + 1]);
+          if ((n = 44) or (n = 46)) and not ((next_n >= 48) and (next_n <= 57)) then num := False; {if the char is a ',' or a '.' but the next is not a number, unflag <num>}
+        end;
+      end;
+      end;
+      end;
+      end;
+      end;
     end
-    else      {or else, choose d1}
+
+    else
     begin
-      dict_p^ := d1;
-      decr := 32;
+
+      if (lCharSize = 2) then
+      begin
+        n := Ord(Line[count]);
+        if (n = 195) then
+        begin
+          n := Ord(Line[count + 1]);
+
+          if (n >= 128) and (n <= 159) then      {upper case accented char}
+          begin
+            if not caps then
+            begin
+              Braille_string := Braille_string + caps_signal;
+              if (count + 2 <= length(Line)) then
+              begin
+                next_n := Ord(Line[count + 2]);
+                if ((next_n >= 65) and (next_n <= 90)) or ((next_n = 195) and ((Ord(Line[count + 2]) >= 128) and (Ord(Line[count + 2]) <= 159))) then {if the next char is also upper case, add another caps signal}
+                begin
+                  Braille_string := Braille_string + caps_signal;
+                  caps := True;
+                end;
+              end;
+            end;
+            Braille_string := Braille_string + chr($e2) + chr($a0) + d3[n - 127];
+            if (count + 3 <= length(Line)) then
+            begin
+              next_n := Ord(Line[count + 2]);
+              if not(((next_n >= 65) and (next_n <= 90)) or ((next_n = 195) and ((Ord(Line[count + 3]) >= 128) and (Ord(Line[count + 3]) <= 159)))) then {if the next char is not upper case, unflag <caps>}
+                caps := False;
+            end;
+          end
+
+          else
+          if (n >= 160) and (n <= 191) then Braille_string := Braille_string + chr($e2) + chr($a0) + d3[n - 159];   {lower case accented letter}
+        end;
+      end;
     end;
-
-    if num and not (((n >= 48) and (n <= 57)) or (n = 46) or (n = 44)) then
-      {if the whole number has already been printed, change num to False again}
-      num := False;
-
-    if not num and ((n >= 48) and (n <= 57)) then
-      {if it's the first number to appear, print the number signal first}
-    begin
-      Braille_string := Braille_string + number_signal;
-      num := True;
-    end;
-
-    Braille_string := Braille_string + chr($e2) + chr($a0) + (dict_p^)[n - decr];
-
-    Count := Count + 1;
+    count := count + lCharSize;
+    Inc(Pline, lCharSize);
   end;
-
+  Close(f);
   Result := Braille_string;
 end;
 
 function ConvertUTF8HtmlTextToBraille(AInput: string): string;
 var
-  i: integer;
-  output, aux_string: string;
+  i, j, lCharSize: integer;
+  output, aux_string, end_string: string;
   is_text: boolean;
-  page: string;
+  Pline : PChar;
+
 begin
-  page := AInput;
   i := 1;
   output := '';
   aux_string := '';
-  is_text := True;
+  is_text := False;
+  Pline := PChar(AInput);
 
-  while i <= length(page) do
+  while i <= length(AInput) do
   begin
-    while is_text and (i <= length(page)) do
+    end_string := '';
+    while is_text and (i <= length(AInput)) do
     begin
-      if (page[i] = '<') or (page[i] = '/') then
+      if (AInput[i] = '<')  then
       begin
         is_text := False;
+        i := i + 1;
+        Inc(Pline, 1);
+        end_string := '<';
+        break;
+      end
+
+      else
+      begin
+
+      if ((AInput[i] = '/') and (AInput[i+1] = '/') and (AInput[i+2] = '<')) then
+      begin
+        is_text := False;
+        i := i + 3;
+        Inc(Pline, 3);
+        end_string := '//<';
         break
+      end
       end;
-      aux_string := aux_string + page[i];
-      i := i + 1;
+
+      lCharSize := LCLProc.UTF8CharacterLength(Pline);
+      for j := 0 to lCharSize - 1 do aux_string := aux_string + AInput[i + j];
+
+      i := i + lCharSize;
+      Inc(Pline, lCharSize);
     end;
 
-    output := output + ConvertUTF8TextToBraille(aux_string);
+    output := output + ConvertUTF8TextToBraille(aux_string) + end_string;
+    aux_string := '';
 
-    while (not is_text) and (i <= length(page))do
+    while (not is_text) and (i <= length(AInput))do
     begin
-      if (page[i] = '>') then
+      if (AInput[i] = '>') then
       begin
         is_text := True;
         i := i + 1;
+        Inc(Pline, 1);
         output := output + '>';
         break
       end;
-      output := output + page[i];
-      i := i + 1;
+      lCharSize := LCLProc.UTF8CharacterLength(Pline);
+      for j := 0 to lCharSize - 1 do
+        output := output + AInput[i + j];
+      i := i + lCharSize;
+      Inc(Pline, lCharSize);
     end;
   end;
-
   ConvertUTF8HtmlTextToBraille := output;
 
 end;
