@@ -242,10 +242,6 @@ function IsValidDateString(const Value: string): boolean;
 var
   bTime: TDateTime;
 begin
-  //if StrToDateDef(Value, MaxDateTime) = MaxDateTime then
-  //  Result := False
-  //else
-  //  Result := True;
   Result:= TryStrToDate(Value, bTime);
 end;
 

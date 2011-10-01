@@ -341,6 +341,19 @@ end;
 procedure TJDbGridDateTimeCtrl.OnKeyDown(Sender: TObject; var Key: word;
   Shift: TShiftState);
 begin
+  if Key in [VK_DELETE, VK_BACK] then
+    edited := True;
+  if Length(CellEditor.Caption) = 0 then
+  begin
+    if edited then
+    begin
+      Field.DataSet.Edit;
+      Field.Value := Null;
+      theValue := 0;
+      updated := True;
+    end;
+  end
+  else
   if Length(CellEditor.Caption) <> 0 then
     if (Key in [VK_RETURN, VK_TAB, VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT]) and
       (not IsValidDateTimeString(NormalizeDateTime(CellEditor.Caption, theValue))) then
@@ -488,12 +501,17 @@ end;
 procedure TJDbGridTimeCtrl.OnKeyDown(Sender: TObject; var Key: word;
   Shift: TShiftState);
 begin
+  if Key in [VK_DELETE, VK_BACK] then
+    edited := True;
   if Length(CellEditor.Caption) = 0 then
   begin
-    Field.DataSet.Edit;
-    Field.Value := Null;
-    theValue := 0;
-    updated := True;
+    if edited then
+    begin
+      Field.DataSet.Edit;
+      Field.Value := Null;
+      theValue := 0;
+      updated := True;
+    end;
   end
   else
   if (Key in [VK_RETURN, VK_TAB, VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT]) and
@@ -643,6 +661,19 @@ end;
 procedure TJDbGridDateCtrl.OnKeyDown(Sender: TObject; var Key: word;
   Shift: TShiftState);
 begin
+  if Key in [VK_DELETE, VK_BACK] then
+    edited := True;
+  if Length(CellEditor.Caption) = 0 then
+  begin
+    if edited then
+    begin
+      Field.DataSet.Edit;
+      Field.Value := Null;
+      theValue := 0;
+      updated := True;
+    end;
+  end
+  else
   if Length(CellEditor.Caption) <> 0 then
     if (Key in [VK_RETURN, VK_TAB, VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT]) and
       (not IsValidDateString(NormalizeDate(CellEditor.Caption, theValue))) then

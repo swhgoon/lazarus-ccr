@@ -186,7 +186,7 @@ end;
 
 procedure TJDBGridControl.UpdateData;
 begin
-  if Editor is TJStringCellEditor then
+  if not(Editor is TJStringCellEditor) then
     inherited UpdateData;
 end;
 
