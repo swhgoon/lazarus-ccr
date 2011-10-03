@@ -286,7 +286,6 @@ end;
 
 procedure TJDbGridDateTimeCtrl.myEditOnEditingDone(Sender: TObject);
 begin
-  CellEditor.Caption := NormalizeDateTime(CellEditor.Caption, theValue);
   if Length(CellEditor.Caption) = 0 then
   begin
     if edited then
@@ -300,21 +299,25 @@ begin
     end;
   end
   else
-  if IsValidDateTimeString(CellEditor.Caption) then
   begin
-    if edited and (not updated) then
+    CellEditor.Caption := NormalizeDateTime(CellEditor.Caption, theValue);
+    if IsValidDateTimeString(CellEditor.Caption) then
     begin
-      Field.DataSet.DisableControls;
-      theValue := StrToDateTime(CellEditor.Caption);
-      Field.DataSet.Edit;
-      Field.AsDateTime := theValue;
-      Field.DataSet.EnableControls;
+      if edited and (not updated) then
+      begin
+        Field.DataSet.DisableControls;
+        theValue := StrToDateTime(CellEditor.Caption);
+        Field.DataSet.Edit;
+        Field.AsDateTime := theValue;
+        Field.DataSet.EnableControls;
+      end;
+    end
+    else
+    begin
+      ShowMessage(Format(SInvalidDateTime, [CellEditor.Caption]));
+      CellEditor.Text := FormatDateTime(DisplayFormat, Field.AsDateTime);
     end;
-  end
-  else
-  begin
-    ShowMessage(Format(SInvalidDateTime, [CellEditor.Caption]));
-    CellEditor.Text := FormatDateTime(DisplayFormat, theValue);
+
   end;
 end;
 
@@ -446,7 +449,6 @@ end;
 
 procedure TJDbGridTimeCtrl.myEditOnEditingDone(Sender: TObject);
 begin
-  CellEditor.Caption := NormalizeTime(CellEditor.Caption, theValue);
   if Length(CellEditor.Caption) = 0 then
   begin
     if edited then
@@ -460,21 +462,24 @@ begin
     end;
   end
   else
-  if IsValidTimeString(CellEditor.Caption) then
   begin
-    if edited and (not updated) then
+    CellEditor.Caption := NormalizeTime(CellEditor.Caption, theValue);
+    if IsValidTimeString(CellEditor.Caption) then
     begin
-      Field.DataSet.DisableControls;
-      theValue := StrToTime(CellEditor.Caption);
-      Field.DataSet.Edit;
-      Field.AsDateTime := theValue;
-      Field.DataSet.EnableControls;
+      if edited and (not updated) then
+      begin
+        Field.DataSet.DisableControls;
+        theValue := StrToTime(CellEditor.Caption);
+        Field.DataSet.Edit;
+        Field.AsDateTime := theValue;
+        Field.DataSet.EnableControls;
+      end;
+    end
+    else
+    begin
+      ShowMessage(Format(SInvalidTime, [CellEditor.Caption]));
+      CellEditor.Text := FormatDateTime(DisplayFormat, Field.AsDateTime);
     end;
-  end
-  else
-  begin
-    ShowMessage(Format(SInvalidTime, [CellEditor.Caption]));
-    CellEditor.Text := FormatDateTime(DisplayFormat, theValue);
   end;
 end;
 
@@ -605,7 +610,6 @@ end;
 
 procedure TJDbGridDateCtrl.myEditOnEditingDone(Sender: TObject);
 begin
-  CellEditor.Caption := NormalizeDate(CellEditor.Caption, theValue);
   if Length(CellEditor.Caption) = 0 then
   begin
     if edited then
@@ -619,21 +623,24 @@ begin
     end;
   end
   else
-  if IsValidDateString(CellEditor.Caption) then
   begin
-    if edited and (not updated) then
+    CellEditor.Caption := NormalizeDate(CellEditor.Caption, theValue);
+    if IsValidDateString(CellEditor.Caption) then
     begin
-      Field.DataSet.DisableControls;
-      theValue := StrToDate(CellEditor.Caption);
-      Field.DataSet.Edit;
-      Field.AsDateTime := theValue;
-      field.DataSet.EnableControls;
+      if edited and (not updated) then
+      begin
+        Field.DataSet.DisableControls;
+        theValue := StrToDate(CellEditor.Caption);
+        Field.DataSet.Edit;
+        Field.AsDateTime := theValue;
+        field.DataSet.EnableControls;
+      end;
+    end
+    else
+    begin
+      ShowMessage(Format(SInvalidDate, [CellEditor.Caption]));
+      CellEditor.Text := FormatDateTime(DisplayFormat, Field.AsDateTime);
     end;
-  end
-  else
-  begin
-    ShowMessage(Format(SInvalidDate, [CellEditor.Caption]));
-    CellEditor.Text := FormatDateTime(DisplayFormat, theValue);
   end;
   //formatInput;
 end;
