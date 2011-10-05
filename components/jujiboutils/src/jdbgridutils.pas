@@ -189,6 +189,7 @@ begin
   CellEditor.Text := Field.AsString;
   CellEditor.OnKeyPress := @OnKeyPress;  // Recuperamos el control :-p
   CellEditor.OnKeyDown := @OnKeyDown;
+  CellEditor.MaxLength := fMaxLength;
   updated := False;
   CellEditor.SelectAll;
 end;
@@ -208,10 +209,7 @@ end;
 
 procedure TJDbGridStringCtrl.OnKeyPress(Sender: TObject; var key: char);
 begin
-  if (fMaxLength > 0) and (UTF8Length(CellEditor.Text) >= fMaxLength) then
-    key := #0
-  else
-    edited := True;
+  edited := True;
 end;
 
 procedure TJDbGridStringCtrl.OnKeyDown(Sender: TObject; var Key: word;
