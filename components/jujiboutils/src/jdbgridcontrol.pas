@@ -165,7 +165,6 @@ begin
       aField := GetFieldFromGridColumn(Column);
       if (aField <> nil) and (bs = cbsAuto) then
       begin
-        writeln(aField.DataType);
         case aField.DataType of
           ftSmallint, ftInteger:
             Result := integerDbGridControl.Editor(Self);
