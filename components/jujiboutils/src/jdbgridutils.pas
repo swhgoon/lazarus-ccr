@@ -22,7 +22,7 @@ unit jdbgridutils;
 interface
 
 uses
-  Classes, SysUtils, Grids, Dialogs, LCLType, LCLProc, DBGrids, Controls, DB,
+  Classes, SysUtils, Grids, Dialogs, LCLType, DBGrids, Controls, DB,
   jcontrolutils, jinputconsts;
 
 type
@@ -199,8 +199,6 @@ begin
   if edited and (not updated) then
   begin
     Field.DataSet.DisableControls;
-    if (fMaxLength > 0) and (UTF8Length(CellEditor.Text) > fMaxLength) then
-      CellEditor.Text := UTF8Copy(CellEditor.Text, 0, fMaxLength);
     Field.DataSet.Edit;
     Field.AsString := CellEditor.Text;
     field.DataSet.EnableControls;
@@ -230,8 +228,6 @@ begin
   if Key in [VK_RETURN, VK_TAB, VK_RIGHT, VK_LEFT] then
   begin
     Field.DataSet.Edit;
-    if (fMaxLength > 0) and (UTF8Length(CellEditor.Text) > fMaxLength) then
-      CellEditor.Text := UTF8Copy(CellEditor.Text, 0, fMaxLength);
     Field.AsString := CellEditor.Text;
     CellEditor.SelectAll;
     updated := True;
