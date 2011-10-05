@@ -176,6 +176,10 @@ end;
 procedure TJDBLabeledEdit.SetDataField(const Value: string);
 begin
   FDataLink.FieldName := Value;
+  if FDataLink.Field <> nil then
+    MaxLength := FDataLink.Field.Size
+  else
+    MaxLength := 0;
 end;
 
 procedure TJDBLabeledEdit.SetDataSource(Value: TDataSource);
