@@ -159,26 +159,30 @@ begin
   if Result <> nil then
   begin
     C := ColumnFromGridColumn(Column);
-    bs := C.ButtonStyle;
-    aField := GetFieldFromGridColumn(Column);
-    if (aField <> nil) and (bs = cbsAuto) then
+    if C <> nil then
     begin
-      case aField.DataType of
-        ftSmallint, ftInteger:
-          Result := integerDbGridControl.Editor(Self);
-        ftDate:
-          Result := dateDbGridControl.Editor(Self);
-        ftTime:
-          Result := timeDbGridControl.Editor(Self);
-        ftDateTime:
-          Result := dateTimeDbGridControl.Editor(Self);
-        ftCurrency, ftFloat:
-          Result :=
-            doubleDbGridControl.Editor(Self, Columns[Column - 1].Decimals);
-        ftBCD:
-          Result := doubleDbGridControl.Editor(Self, aField.Size);
-        ftString:
-          Result := stringDbGridControl.Editor(Self, Columns[Column - 1].MaxLength);
+      bs := C.ButtonStyle;
+      aField := GetFieldFromGridColumn(Column);
+      if (aField <> nil) and (bs = cbsAuto) then
+      begin
+        writeln(aField.DataType);
+        case aField.DataType of
+          ftSmallint, ftInteger:
+            Result := integerDbGridControl.Editor(Self);
+          ftDate:
+            Result := dateDbGridControl.Editor(Self);
+          ftTime:
+            Result := timeDbGridControl.Editor(Self);
+          ftDateTime:
+            Result := dateTimeDbGridControl.Editor(Self);
+          ftCurrency, ftFloat:
+            Result :=
+              doubleDbGridControl.Editor(Self, Columns[Column - 1].Decimals);
+          ftBCD:
+            Result := doubleDbGridControl.Editor(Self, aField.Size);
+          ftString:
+            Result := stringDbGridControl.Editor(Self, Columns[Column - 1].MaxLength);
+        end;
       end;
     end;
   end;
@@ -186,7 +190,7 @@ end;
 
 procedure TJDBGridControl.UpdateData;
 begin
-  if not(Editor is TJStringCellEditor) then
+  if not (Editor is TJStringCellEditor) then
     inherited UpdateData;
 end;
 
