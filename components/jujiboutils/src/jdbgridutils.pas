@@ -36,7 +36,6 @@ type
     Field: TField;
     updated: boolean;
     fMaxLength: integer;
-    edited: boolean;
     procedure myEditEnter(Sender: TObject);
     procedure myEditOnEditingDone(Sender: TObject);
     procedure OnKeyPress(Sender: TObject; var key: char);
@@ -55,7 +54,6 @@ type
   private
     Field: TField;
     updated: boolean;
-    edited: boolean;
     theValue: TDateTime;
     fFormat: string;
     function getFormat: string;
@@ -81,7 +79,6 @@ type
   private
     Field: TField;
     updated: boolean;
-    edited: boolean;
     theValue: TTime;
     fFormat: string;
     function getFormat: string;
@@ -107,7 +104,6 @@ type
   private
     Field: TField;
     updated: boolean;
-    edited: boolean;
     theValue: TDateTime;
     fFormat: string;
     function getFormat: string;
@@ -133,7 +129,6 @@ type
   private
     theValue: integer;
     updated: boolean;
-    edited: boolean;
     Field: TField;
     procedure myEditOnEnter(Sender: TObject);
     procedure OnKeyPress(Sender: TObject; var key: char);
@@ -154,7 +149,6 @@ type
   private
     Field: TField;
     updated: boolean;
-    edited: boolean;
     theValue: double;
     fDecimals: integer;
     function getDecimals: integer;
@@ -196,18 +190,21 @@ end;
 
 procedure TJDbGridStringCtrl.myEditOnEditingDone(Sender: TObject);
 begin
-  if edited and (not updated) then
+  if (not updated) then
   begin
-    Field.DataSet.DisableControls;
-    Field.DataSet.Edit;
-    Field.AsString := CellEditor.Text;
-    field.DataSet.EnableControls;
+    if CellEditor.Text <> Field.AsString then
+    begin
+      Field.DataSet.DisableControls;
+      Field.DataSet.Edit;
+      Field.AsString := CellEditor.Text;
+      field.DataSet.EnableControls;
+    end;
   end;
 end;
 
 procedure TJDbGridStringCtrl.OnKeyPress(Sender: TObject; var key: char);
 begin
-  edited := True;
+  // nothing right now
 end;
 
 procedure TJDbGridStringCtrl.OnKeyDown(Sender: TObject; var Key: word;
@@ -254,7 +251,6 @@ function TJDbGridStringCtrl.Editor(aGrid: TDBGrid;
   aMaxLength: integer): TStringCellEditor;
 begin
   theGrid := aGrid;
-  edited := False;
   fMaxLength := aMaxLength;
   Result := CellEditor;
 end;
@@ -282,7 +278,7 @@ procedure TJDbGridDateTimeCtrl.myEditOnEditingDone(Sender: TObject);
 begin
   if Length(CellEditor.Caption) = 0 then
   begin
-    if edited then
+    if Field.Value <> Null then
     begin
       Field.DataSet.DisableControls;
       Field.DataSet.Edit;
@@ -297,13 +293,16 @@ begin
     CellEditor.Caption := NormalizeDateTime(CellEditor.Caption, theValue);
     if IsValidDateTimeString(CellEditor.Caption) then
     begin
-      if edited and (not updated) then
+      if (not updated) then
       begin
-        Field.DataSet.DisableControls;
         theValue := StrToDateTime(CellEditor.Caption);
-        Field.DataSet.Edit;
-        Field.AsDateTime := theValue;
-        Field.DataSet.EnableControls;
+        if theValue <> Field.AsDateTime then
+        begin
+          Field.DataSet.DisableControls;
+          Field.DataSet.Edit;
+          Field.AsDateTime := theValue;
+          Field.DataSet.EnableControls;
+        end;
       end;
     end
     else
@@ -330,19 +329,15 @@ end;
 procedure TJDbGridDateTimeCtrl.OnKeyPress(Sender: TObject; var key: char);
 begin
   if not (Key in ['0'..'9', #8, #9, '.', '-', '/', ':', ' ']) then
-    Key := #0
-  else
-    edited := True;
+    Key := #0;
 end;
 
 procedure TJDbGridDateTimeCtrl.OnKeyDown(Sender: TObject; var Key: word;
   Shift: TShiftState);
 begin
-  if Key in [VK_DELETE, VK_BACK] then
-    edited := True;
   if Length(CellEditor.Caption) = 0 then
   begin
-    if edited then
+    if Field.Value <> Null then
     begin
       Field.DataSet.Edit;
       Field.Value := Null;
@@ -418,7 +413,6 @@ end;
 function TJDbGridDateTimeCtrl.Editor(aGrid: TDBGrid): TStringCellEditor;
 begin
   theGrid := aGrid;
-  edited := False;
   Result := CellEditor;
 end;
 
@@ -445,7 +439,7 @@ procedure TJDbGridTimeCtrl.myEditOnEditingDone(Sender: TObject);
 begin
   if Length(CellEditor.Caption) = 0 then
   begin
-    if edited then
+    if Field.Value <> Null then
     begin
       Field.DataSet.DisableControls;
       Field.DataSet.Edit;
@@ -460,13 +454,16 @@ begin
     CellEditor.Caption := NormalizeTime(CellEditor.Caption, theValue);
     if IsValidTimeString(CellEditor.Caption) then
     begin
-      if edited and (not updated) then
+      if (not updated) then
       begin
-        Field.DataSet.DisableControls;
         theValue := StrToTime(CellEditor.Caption);
-        Field.DataSet.Edit;
-        Field.AsDateTime := theValue;
-        Field.DataSet.EnableControls;
+        if theValue <> Field.AsDateTime then
+        begin
+          Field.DataSet.DisableControls;
+          Field.DataSet.Edit;
+          Field.AsDateTime := theValue;
+          Field.DataSet.EnableControls;
+        end;
       end;
     end
     else
@@ -492,19 +489,15 @@ end;
 procedure TJDbGridTimeCtrl.OnKeyPress(Sender: TObject; var key: char);
 begin
   if not (Key in ['0'..'9', #8, #9, ':']) then
-    Key := #0
-  else
-    edited := True;
+    Key := #0;
 end;
 
 procedure TJDbGridTimeCtrl.OnKeyDown(Sender: TObject; var Key: word;
   Shift: TShiftState);
 begin
-  if Key in [VK_DELETE, VK_BACK] then
-    edited := True;
   if Length(CellEditor.Caption) = 0 then
   begin
-    if edited then
+    if Field.Value <> Null then
     begin
       Field.DataSet.Edit;
       Field.Value := Null;
@@ -579,7 +572,6 @@ end;
 function TJDbGridTimeCtrl.Editor(aGrid: TDBGrid): TStringCellEditor;
 begin
   theGrid := aGrid;
-  edited := False;
   Result := CellEditor;
 end;
 
@@ -606,7 +598,7 @@ procedure TJDbGridDateCtrl.myEditOnEditingDone(Sender: TObject);
 begin
   if Length(CellEditor.Caption) = 0 then
   begin
-    if edited then
+    if Field.Value <> Null then
     begin
       Field.DataSet.DisableControls;
       Field.DataSet.Edit;
@@ -621,13 +613,16 @@ begin
     CellEditor.Caption := NormalizeDate(CellEditor.Caption, theValue);
     if IsValidDateString(CellEditor.Caption) then
     begin
-      if edited and (not updated) then
+      if (not updated) then
       begin
-        Field.DataSet.DisableControls;
         theValue := StrToDate(CellEditor.Caption);
-        Field.DataSet.Edit;
-        Field.AsDateTime := theValue;
-        field.DataSet.EnableControls;
+        if theValue <> Field.AsDateTime then
+        begin
+          Field.DataSet.DisableControls;
+          Field.DataSet.Edit;
+          Field.AsDateTime := theValue;
+          field.DataSet.EnableControls;
+        end;
       end;
     end
     else
@@ -636,7 +631,6 @@ begin
       CellEditor.Text := FormatDateTime(DisplayFormat, Field.AsDateTime);
     end;
   end;
-  //formatInput;
 end;
 
 procedure TJDbGridDateCtrl.formatInput;
@@ -654,19 +648,15 @@ end;
 procedure TJDbGridDateCtrl.OnKeyPress(Sender: TObject; var key: char);
 begin
   if not (Key in ['0'..'9', #8, #9, '.', '-', '/']) then
-    Key := #0
-  else
-    edited := True;
+    Key := #0;
 end;
 
 procedure TJDbGridDateCtrl.OnKeyDown(Sender: TObject; var Key: word;
   Shift: TShiftState);
 begin
-  if Key in [VK_DELETE, VK_BACK] then
-    edited := True;
   if Length(CellEditor.Caption) = 0 then
   begin
-    if edited then
+    if Field.Value <> null then
     begin
       Field.DataSet.Edit;
       Field.Value := Null;
@@ -743,7 +733,6 @@ end;
 function TJDbGridDateCtrl.Editor(aGrid: TDBGrid): TStringCellEditor;
 begin
   theGrid := aGrid;
-  edited := False;
   Result := CellEditor;
 end;
 
@@ -770,15 +759,18 @@ procedure TJDbGridDoubleCtrl.myEditOnEditingDone(Sender: TObject);
 begin
   if IsValidFloat(CellEditor.Caption) then
   begin
-    if edited and (not updated) then
+    if (not updated) then
     begin
       theValue := StrToFloat(CellEditor.Caption);
-      Field.DataSet.DisableControls;
-      Field.DataSet.Edit;
-      if decimals > 0 then
-        theValue := ScaleTo(theValue, fDecimals);
-      Field.Value := theValue;
-      Field.DataSet.EnableControls;
+      if theValue <> Field.AsFloat then
+      begin
+        Field.DataSet.DisableControls;
+        Field.DataSet.Edit;
+        if decimals > 0 then
+          theValue := ScaleTo(theValue, fDecimals);
+        Field.Value := theValue;
+        Field.DataSet.EnableControls;
+      end;
     end;
   end
   else
@@ -801,9 +793,7 @@ begin
   if (key = DecimalSeparator) and (Pos(key, CellEditor.Caption) > 0) then
     key := #0;
   if not (Key in ['0'..'9', DecimalSeparator, '+', '-', #8, #9]) then
-    Key := #0
-  else
-    edited := True;
+    Key := #0;
   //if (Key = DecimalSeparator) and (fDecimals = 0) then
   //  Key := #0;    // Note: decimal=0 avoids rounding
 end;
@@ -886,7 +876,6 @@ function TJDbGridDoubleCtrl.Editor(aGrid: TDBGrid;
   aDecimals: integer): TStringCellEditor;
 begin
   decimals := aDecimals;
-  edited := False;
   theGrid := aGrid;
   Result := CellEditor;
 end;
@@ -908,9 +897,7 @@ end;
 procedure TJDbGridIntegerCtrl.OnKeyPress(Sender: TObject; var key: char);
 begin
   if not (Key in ['0'..'9', #8, #9, '-']) then
-    Key := #0
-  else
-    edited := True;
+    Key := #0;
 end;
 
 procedure TJDbGridIntegerCtrl.OnKeyDown(Sender: TObject; var Key: word;
@@ -956,14 +943,17 @@ procedure TJDbGridIntegerCtrl.myEditOnEditingDone(Sender: TObject);
 begin
   if IsValidInteger(CellEditor.Caption) then
   begin
-    if edited and (not updated) then
+    if (not updated) then
     begin
-      Field.DataSet.DisableControls;
       theValue := StrToInt(CellEditor.Caption);
-      Field.DataSet.Edit;
-      Field.AsInteger := theValue;
-      field.DataSet.EnableControls;
-      updated := True;
+      if theValue <> Field.AsInteger then
+      begin
+        Field.DataSet.DisableControls;
+        Field.DataSet.Edit;
+        Field.AsInteger := theValue;
+        field.DataSet.EnableControls;
+        updated := True;
+      end;
     end;
   end
   else
@@ -1000,7 +990,6 @@ end;
 function TJDbGridIntegerCtrl.Editor(aGrid: TDBGrid): TStringCellEditor;
 begin
   theGrid := aGrid;
-  edited := False;
   Result := CellEditor;
 end;
 
