@@ -296,7 +296,7 @@ begin
       if (not updated) then
       begin
         theValue := StrToDateTime(CellEditor.Caption);
-        if theValue <> Field.AsDateTime then
+        if FormatDateTime(DisplayFormat,  theValue) <> FormatDateTime(DisplayFormat, Field.AsDateTime) then
         begin
           Field.DataSet.DisableControls;
           Field.DataSet.Edit;
@@ -457,7 +457,7 @@ begin
       if (not updated) then
       begin
         theValue := StrToTime(CellEditor.Caption);
-        if theValue <> Field.AsDateTime then
+        if FormatDateTime(DisplayFormat,  theValue) <> FormatDateTime(DisplayFormat, Field.AsDateTime) then
         begin
           Field.DataSet.DisableControls;
           Field.DataSet.Edit;
@@ -616,7 +616,7 @@ begin
       if (not updated) then
       begin
         theValue := StrToDate(CellEditor.Caption);
-        if theValue <> Field.AsDateTime then
+        if FormatDateTime(DisplayFormat,  theValue) <> FormatDateTime(DisplayFormat, Field.AsDateTime) then
         begin
           Field.DataSet.DisableControls;
           Field.DataSet.Edit;
