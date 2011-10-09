@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, DB, Grids, DBGrids,
-  Dialogs, jdbgridutils;
+  Dialogs, LCLType, jdbgridutils;
 
 type
 
@@ -74,6 +74,9 @@ type
     function GetDefaultEditor(Column: integer): TWinControl; override;
     procedure UpdateData; override;
     property Columns: TJDBGridColumns read GetColumns write SetColumns;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: integer);
+      override;
+    procedure KeyDown(var Key: word; Shift: TShiftState); override;
   public
     { Public declarations }
     constructor Create(TheOwner: TComponent); override;
@@ -191,6 +194,22 @@ procedure TJDBGridControl.UpdateData;
 begin
   if not (Editor is TJStringCellEditor) then
     inherited UpdateData;
+end;
+
+procedure TJDBGridControl.MouseDown(Button: TMouseButton; Shift: TShiftState;
+  X, Y: integer);
+begin
+  if integerDbGridControl.CanDefocus and doubleDbGridControl.CanDefocus and
+    dateTimeDbGridControl.CanDefocus and stringDbGridControl.CanDefocus and
+    dateDbGridControl.CanDefocus and timeDbGridControl.CanDefocus then
+    inherited MouseDown(Button, Shift, X, Y)
+  else
+    abort;
+end;
+
+procedure TJDBGridControl.KeyDown(var Key: word; Shift: TShiftState);
+begin
+  inherited KeyDown(Key, Shift);
 end;
 
 constructor TJDBGridControl.Create(TheOwner: TComponent);

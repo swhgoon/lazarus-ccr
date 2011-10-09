@@ -46,6 +46,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function Editor(aGrid: TDBGrid; aMaxLength: integer = 0): TStringCellEditor;
+    function CanDefocus: boolean;
   end;
 
   { TJDbGridDateTimeCtrl }
@@ -71,6 +72,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function Editor(aGrid: TDBGrid): TStringCellEditor;
+    function CanDefocus: boolean;
   end;
 
   { TJDbGridTimeCtrl }
@@ -96,6 +98,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function Editor(aGrid: TDBGrid): TStringCellEditor;
+    function CanDefocus: boolean;
   end;
 
   { TJDbGridDateCtrl }
@@ -121,6 +124,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function Editor(aGrid: TDBGrid): TStringCellEditor;
+    function CanDefocus: boolean;
   end;
 
   { TJDbGridIntegerCtrl }
@@ -141,6 +145,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function Editor(aGrid: TDBGrid): TStringCellEditor;
+    function CanDefocus: boolean;
   end;
 
   { TJDbGridDoubleCtrl }
@@ -166,6 +171,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function Editor(aGrid: TDBGrid; aDecimals: integer = 2): TStringCellEditor;
+    function CanDefocus: boolean;
   end;
 
 
@@ -255,6 +261,11 @@ begin
   Result := CellEditor;
 end;
 
+function TJDbGridStringCtrl.CanDefocus: boolean;
+begin
+  Result := True;
+end;
+
 { TJDbGridDateTimeCtrl }
 
 function TJDbGridDateTimeCtrl.getFormat: string;
@@ -296,7 +307,8 @@ begin
       if (not updated) then
       begin
         theValue := StrToDateTime(CellEditor.Caption);
-        if FormatDateTime(DisplayFormat,  theValue) <> FormatDateTime(DisplayFormat, Field.AsDateTime) then
+        if FormatDateTime(DisplayFormat, theValue) <>
+          FormatDateTime(DisplayFormat, Field.AsDateTime) then
         begin
           Field.DataSet.DisableControls;
           Field.DataSet.Edit;
@@ -416,6 +428,18 @@ begin
   Result := CellEditor;
 end;
 
+function TJDbGridDateTimeCtrl.CanDefocus: boolean;
+begin
+  if CellEditor.Focused and (Length(CellEditor.Text) = 0) then
+    Result := True
+  else
+  if CellEditor.Focused and not
+    (IsValidDateTimeString(NormalizeDateTime(CellEditor.Caption, theValue))) then
+    Result := False
+  else
+    Result := True;
+end;
+
 { TJDbGridTimeCtrl }
 
 function TJDbGridTimeCtrl.getFormat: string;
@@ -457,7 +481,8 @@ begin
       if (not updated) then
       begin
         theValue := StrToTime(CellEditor.Caption);
-        if FormatDateTime(DisplayFormat,  theValue) <> FormatDateTime(DisplayFormat, Field.AsDateTime) then
+        if FormatDateTime(DisplayFormat, theValue) <>
+          FormatDateTime(DisplayFormat, Field.AsDateTime) then
         begin
           Field.DataSet.DisableControls;
           Field.DataSet.Edit;
@@ -575,6 +600,18 @@ begin
   Result := CellEditor;
 end;
 
+function TJDbGridTimeCtrl.CanDefocus: boolean;
+begin
+  if CellEditor.Focused and (Length(CellEditor.Text) = 0) then
+    Result := True
+  else
+  if CellEditor.Focused and not
+    (IsValidTimeString(NormalizeTime(CellEditor.Caption, theValue))) then
+    Result := False
+  else
+    Result := True;
+end;
+
 { TJDbGridDateCtrl }
 
 function TJDbGridDateCtrl.getFormat: string;
@@ -616,7 +653,8 @@ begin
       if (not updated) then
       begin
         theValue := StrToDate(CellEditor.Caption);
-        if FormatDateTime(DisplayFormat,  theValue) <> FormatDateTime(DisplayFormat, Field.AsDateTime) then
+        if FormatDateTime(DisplayFormat, theValue) <>
+          FormatDateTime(DisplayFormat, Field.AsDateTime) then
         begin
           Field.DataSet.DisableControls;
           Field.DataSet.Edit;
@@ -736,6 +774,18 @@ begin
   Result := CellEditor;
 end;
 
+function TJDbGridDateCtrl.CanDefocus: boolean;
+begin
+  if CellEditor.Focused and (Length(CellEditor.Text) = 0) then
+    Result := True
+  else
+  if CellEditor.Focused and not
+    (IsValidDateTimeString(NormalizeDateTime(CellEditor.Caption, theValue))) then
+    Result := False
+  else
+    Result := True;
+end;
+
 { TJDbGridDoubleCtrl }
 
 function TJDbGridDoubleCtrl.getDecimals: integer;
@@ -816,7 +866,6 @@ begin
       CellEditor.Text := ''
     else
       CellEditor.Text := FloatToStr(Field.AsFloat);
-    //CellEditor.Text := CurrToStr(redondear(Field.AsCurrency, fDecimals));
     updated := True;
     theGrid.SetFocus; // No perder el foco
   end
@@ -878,6 +927,14 @@ begin
   decimals := aDecimals;
   theGrid := aGrid;
   Result := CellEditor;
+end;
+
+function TJDbGridDoubleCtrl.CanDefocus: boolean;
+begin
+  if CellEditor.Focused then
+    Result := IsValidFloat(CellEditor.Text)
+  else
+    Result := True;
 end;
 
 { TJDbGridIntegerCtrl }
@@ -991,6 +1048,14 @@ function TJDbGridIntegerCtrl.Editor(aGrid: TDBGrid): TStringCellEditor;
 begin
   theGrid := aGrid;
   Result := CellEditor;
+end;
+
+function TJDbGridIntegerCtrl.CanDefocus: boolean;
+begin
+  if CellEditor.Focused then
+    Result := IsValidInteger(CellEditor.Text)
+  else
+    Result := True;
 end;
 
 end.
