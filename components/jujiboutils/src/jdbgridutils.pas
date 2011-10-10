@@ -438,6 +438,8 @@ begin
     Result := False
   else
     Result := True;
+  if not Result then
+    ShowMessage(Format(SInvalidDateTime, [CellEditor.Text]));
 end;
 
 { TJDbGridTimeCtrl }
@@ -610,6 +612,8 @@ begin
     Result := False
   else
     Result := True;
+  if not Result then
+    ShowMessage(Format(SInvalidTime, [CellEditor.Text]));
 end;
 
 { TJDbGridDateCtrl }
@@ -784,6 +788,8 @@ begin
     Result := False
   else
     Result := True;
+  if not Result then
+    ShowMessage(Format(SInvalidDate, [CellEditor.Text]));
 end;
 
 { TJDbGridDoubleCtrl }
@@ -935,6 +941,8 @@ begin
     Result := IsValidFloat(CellEditor.Text)
   else
     Result := True;
+  if not Result then
+    ShowMessage(Format(SInvalidNumber, [CellEditor.Text]));
 end;
 
 { TJDbGridIntegerCtrl }
@@ -1056,6 +1064,8 @@ begin
     Result := IsValidInteger(CellEditor.Text)
   else
     Result := True;
+  if not Result then
+    ShowMessage(Format(SInvalidNumber, [CellEditor.Text]));
 end;
 
 end.
