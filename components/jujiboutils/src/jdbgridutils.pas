@@ -223,12 +223,12 @@ begin
     theGrid.SetFocus; // No perder el foco
   end
   else
-  if Key in [VK_UP, VK_DOWN] then
-  begin
-    Key := VK_UNKNOWN;
-  end
-  else
-  if Key in [VK_RETURN, VK_TAB, VK_RIGHT, VK_LEFT] then
+  //if Key in [VK_UP, VK_DOWN] then
+  //begin
+  //  Key := VK_UNKNOWN;
+  //end
+  //else
+  if Key in [VK_RETURN, VK_TAB, VK_UP, VK_DOWN] then
   begin
     Field.DataSet.Edit;
     Field.AsString := CellEditor.Text;
@@ -378,12 +378,12 @@ begin
       theGrid.SetFocus; // No perder el foco
     end
     else
-    if Key in [VK_UP, VK_DOWN] then
-    begin
-      Key := VK_UNKNOWN;
-    end
-    else
-    if Key in [VK_RETURN, VK_TAB, VK_RIGHT, VK_LEFT] then
+    //if Key in [VK_UP, VK_DOWN] then
+    //begin
+    //  Key := VK_UNKNOWN;
+    //end
+    //else
+    if Key in [VK_RETURN, VK_TAB, VK_UP, VK_DOWN] then
     begin
       CellEditor.Caption := NormalizeDateTime(CellEditor.Caption, theValue);
       if Length(CellEditor.Caption) = 0 then
@@ -552,12 +552,12 @@ begin
     theGrid.SetFocus; // No perder el foco
   end
   else
-  if Key in [VK_UP, VK_DOWN] then
-  begin
-    Key := VK_UNKNOWN;
-  end
-  else
-  if Key in [VK_RETURN, VK_TAB, VK_RIGHT, VK_LEFT] then
+  //if Key in [VK_UP, VK_DOWN] then
+  //begin
+  //  Key := VK_UNKNOWN;
+  //end
+  //else
+  if Key in [VK_RETURN, VK_TAB, VK_UP, VK_DOWN] then
   begin
     CellEditor.Caption := NormalizeTime(CellEditor.Caption, theValue);
     if Length(CellEditor.Caption) = 0 then
@@ -727,12 +727,12 @@ begin
       theGrid.SetFocus; // No perder el foco
     end
     else
-    if Key in [VK_UP, VK_DOWN] then
-    begin
-      Key := VK_UNKNOWN;
-    end
-    else
-    if Key in [VK_RETURN, VK_TAB, VK_RIGHT, VK_LEFT] then
+    //if Key in [VK_UP, VK_DOWN] then
+    //begin
+    //  Key := VK_UNKNOWN;
+    //end
+    //else
+    if Key in [VK_RETURN, VK_TAB, VK_UP, VK_DOWN] then
     begin
       CellEditor.Caption := NormalizeDate(CellEditor.Caption, theValue);
       if Length(CellEditor.Caption) = 0 then
@@ -876,12 +876,12 @@ begin
     theGrid.SetFocus; // No perder el foco
   end
   else
-  if key in [VK_UP, VK_DOWN] then
-  begin
-    Key := VK_UNKNOWN;
-  end
-  else
-  if Key in [VK_RETURN, VK_TAB] then
+  //if key in [VK_UP, VK_DOWN] then
+  //begin
+  //  Key := VK_UNKNOWN;
+  //end
+  //else
+  if Key in [VK_RETURN, VK_TAB, VK_UP, VK_DOWN] then
   begin
     if IsValidFloat(CellEditor.Caption) then
     begin
@@ -889,8 +889,7 @@ begin
       Field.DataSet.Edit;
       if decimals > 0 then
         theValue := ScaleTo(theValue, fDecimals);
-      Field.Value := theValue;
-      ;
+      Field.Value := theValue;       ;
       CellEditor.Text := Field.AsString;
       updated := True;
     end;
@@ -987,12 +986,12 @@ begin
     theGrid.SetFocus; // No perder el foco
   end
   else
-  if key in [VK_UP, VK_DOWN] then
-  begin
-    Key := VK_UNKNOWN;
-  end
-  else
-  if Key in [VK_RETURN, VK_TAB] then
+  //if key in [VK_UP, VK_DOWN] then
+  //begin
+  //  Key := VK_UNKNOWN;
+  //end
+  //else
+  if Key in [VK_RETURN, VK_TAB, VK_UP, VK_DOWN] then
   begin
     if IsValidInteger(CellEditor.Caption) then
     begin
