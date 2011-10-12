@@ -1,11 +1,11 @@
 object RxDBGridMainForm: TRxDBGridMainForm
-  Left = 299
+  Left = 232
   Height = 786
-  Top = 6
+  Top = 47
   Width = 1187
   ActiveControl = Panel1
   Caption = 'RxDBGrid Demo'
-  ClientHeight = 761
+  ClientHeight = 764
   ClientWidth = 1187
   Menu = MainMenu1
   OnCreate = FormCreate
@@ -13,8 +13,8 @@ object RxDBGridMainForm: TRxDBGridMainForm
   LCLVersion = '0.9.31'
   object RxDBGrid1: TRxDBGrid
     Left = 0
-    Height = 696
-    Top = 65
+    Height = 698
+    Top = 66
     Width = 1187
     TitleButtons = True
     AutoSort = True
@@ -208,28 +208,29 @@ object RxDBGridMainForm: TRxDBGridMainForm
     Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit, dgMultiselect, dgHeaderPushedLook]
     ParentColor = False
     PopupMenu = PopupMenu1
+    Scrollbars = ssVertical
     TabOrder = 0
     TitleStyle = tsNative
     UseXORFeatures = True
   end
   object Panel1: TPanel
     Left = 0
-    Height = 65
+    Height = 66
     Top = 0
     Width = 1187
     Align = alTop
     AutoSize = True
-    ClientHeight = 65
+    ClientHeight = 66
     ClientWidth = 1187
     TabOrder = 1
     object Label1: TLabel
       AnchorSideLeft.Control = Button2
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel1
-      Left = 260
-      Height = 18
+      Left = 279
+      Height = 14
       Top = 7
-      Width = 36
+      Width = 29
       BorderSpacing.Around = 6
       Caption = 'Mode'
       ParentColor = False
@@ -240,7 +241,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
       Left = 7
       Height = 29
       Top = 7
-      Width = 84
+      Width = 93
       Action = actCalcTotal
       AutoSize = True
       BorderSpacing.Around = 6
@@ -250,10 +251,10 @@ object RxDBGridMainForm: TRxDBGridMainForm
       AnchorSideLeft.Control = Button1
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel1
-      Left = 97
+      Left = 106
       Height = 29
       Top = 7
-      Width = 157
+      Width = 167
       Action = actOptimizeColumnsWidthAll
       AutoSize = True
       BorderSpacing.Around = 6
@@ -264,11 +265,11 @@ object RxDBGridMainForm: TRxDBGridMainForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = CheckBox2
       AnchorSideTop.Side = asrBottom
-      Left = 489
-      Height = 22
+      Left = 508
+      Height = 23
       Hint = 'Use filter line'
-      Top = 35
-      Width = 81
+      Top = 36
+      Width = 79
       BorderSpacing.Left = 6
       Caption = 'Use filter'
       OnChange = CheckBox1Change
@@ -278,12 +279,12 @@ object RxDBGridMainForm: TRxDBGridMainForm
       AnchorSideLeft.Control = Label1
       AnchorSideTop.Control = Label1
       AnchorSideTop.Side = asrBottom
-      Left = 266
+      Left = 285
       Height = 27
-      Top = 31
+      Top = 27
       Width = 217
       BorderSpacing.Around = 6
-      ItemHeight = 0
+      ItemHeight = 19
       ItemIndex = 0
       Items.Strings = (
         'Edit mode'
@@ -298,11 +299,11 @@ object RxDBGridMainForm: TRxDBGridMainForm
       AnchorSideLeft.Control = ComboBox1
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel1
-      Left = 489
-      Height = 22
+      Left = 508
+      Height = 23
       Hint = 'Auto fill column width'
       Top = 7
-      Width = 129
+      Width = 128
       BorderSpacing.Around = 6
       Caption = 'Auto fill columns'
       OnChange = CheckBox2Change
@@ -312,10 +313,10 @@ object RxDBGridMainForm: TRxDBGridMainForm
       AnchorSideLeft.Control = CheckBox2
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel1
-      Left = 624
-      Height = 22
+      Left = 642
+      Height = 23
       Top = 7
-      Width = 117
+      Width = 116
       BorderSpacing.Around = 6
       Caption = 'Show indicator'
       Checked = True
@@ -328,10 +329,10 @@ object RxDBGridMainForm: TRxDBGridMainForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = CheckBox3
       AnchorSideTop.Side = asrBottom
-      Left = 624
-      Height = 22
-      Top = 35
-      Width = 114
+      Left = 642
+      Height = 23
+      Top = 36
+      Width = 110
       BorderSpacing.Around = 6
       Caption = 'Show headers'
       Checked = True

@@ -370,7 +370,7 @@ type
 
     FFilterListEditor: TFilterListCellEditor;
 
-
+    FOldPosition: Integer;
     FVersion: integer;
     FPropertyStorageLink: TPropertyStorageLink;
     FRxDbGridLookupComboEditor: TCustomControl;
@@ -412,8 +412,9 @@ type
     procedure UpdateJMenuStates;
     procedure UpdateJMenuKeys;
     function SortEngineOptions: TRxSortEngineOptions;
-
-
+    procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
+    procedure GetScrollbarParams(out aRange, aPage, aPos: Integer);
+    procedure RestoreEditor;
     //storage
     procedure OnIniSave(Sender: TObject);
     procedure OnIniLoad(Sender: TObject);
@@ -1015,13 +1016,111 @@ begin
     );
 end;
 
-
 procedure TRxDBGrid.SetTitleButtons(const AValue: boolean);
 begin
   if AValue then
     Options := Options + [dgHeaderPushedLook]
   else
     Options := Options - [dgHeaderPushedLook];
+end;
+
+procedure TRxDBGrid.GetScrollbarParams(out aRange, aPage, aPos: Integer);
+begin
+  if (DataSource.DataSet<>nil) and DataSource.DataSet.Active then begin
+    if DataSource.DataSet.IsSequenced then begin
+      aRange := DataSource.DataSet.RecordCount + VisibleRowCount - 1;
+      aPage := VisibleRowCount;
+      if aPage<1 then aPage := 1;
+      if DataSource.DataSet.BOF then aPos := 0 else
+      if DataSource.DataSet.EOF then aPos := aRange
+      else
+        aPos := DataSource.DataSet.RecNo - 1; // RecNo is 1 based
+      if aPos<0 then aPos:=0;
+    end else begin
+      aRange := 6;
+      aPage := 2;
+      if DataSource.DataSet.EOF then aPos := 4 else
+      if DataSource.DataSet.BOF then aPos := 0
+      else aPos := 2;
+    end;
+  end else begin
+    aRange := 0;
+    aPage := 0;
+    aPos := 0;
+  end;
+end;
+
+procedure TRxDBGrid.RestoreEditor;
+begin
+  if EditorMode then begin
+    EditorMode := False;
+    EditorMode := True;
+  end;
+end;
+
+procedure TRxDBGrid.WMVScroll(var Message: TLMVScroll);
+var
+  IsSeq: boolean;
+  aPos, aRange, aPage: Integer;
+  DeltaRec: integer;
+
+  function MaxPos: Integer;
+  begin
+    if IsSeq then
+      result := DataSource.DataSet.RecordCount - 1
+    else
+      result := 4;
+  end;
+
+  procedure DsMoveBy(Delta: Integer);
+  begin
+    DataSource.DataSet.MoveBy(Delta);
+    GetScrollbarParams(aRange, aPage, aPos);
+  end;
+
+  procedure DsGoto(BOF: boolean);
+  begin
+    if BOF then DataSource.DataSet.First
+    else        DataSource.DataSet.Last;
+    GetScrollbarParams(aRange, aPage, aPos);
+  end;
+
+begin
+  if not DataSource.DataSet.Active then exit;
+
+  {$ifdef dbgDBGrid}
+  DebugLn('VSCROLL: Code=',SbCodeToStr(Message.ScrollCode),
+          ' Position=', dbgs(Message.Pos),' OldPos=',Dbgs(FOldPosition));
+  {$endif}
+
+  IsSeq := DataSource.DataSet.IsSequenced;
+  case Message.ScrollCode of
+    SB_TOP:
+      DsGoto(True);
+    SB_BOTTOM:
+      DsGoto(False);
+    SB_PAGEUP:
+      DsMoveBy(-VisibleRowCount);
+    SB_LINEUP:
+      DsMoveBy(-1);
+    SB_LINEDOWN:
+      DsMoveBy(1);
+    SB_PAGEDOWN:
+      DsMoveBy(VisibleRowCount);
+    SB_THUMBPOSITION:
+      DsMoveBy(Message.Pos - FOldPosition)
+    else
+      Exit;
+  end;
+
+  ScrollBarPosition(SB_VERT, aPos);
+  FOldPosition:=aPos;
+
+  if EditorMode then
+    RestoreEditor;
+  {$ifdef dbgDBGrid}
+  DebugLn('---- Diff=',dbgs(DeltaRec), ' FinalPos=',dbgs(aPos));
+  {$endif}
 end;
 
 procedure TRxDBGrid.SetAutoSort(const AValue: boolean);
