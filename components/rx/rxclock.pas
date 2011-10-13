@@ -34,7 +34,7 @@ unit rxclock;
 interface
 
 {$I rx.inc}
-uses LCLType, LMessages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
+uses LCLType, LMessages, SysUtils, Classes, Graphics, Controls, Forms, {StdCtrls,}
   ExtCtrls, Menus, messages;
 
 type

@@ -79,7 +79,7 @@ type
   end;
   
 implementation
-uses RxStrUtils, RxAppUtils;
+uses {RxStrUtils, }strutils, RxAppUtils;
 
 function MenuItemStr(S:string):string;
 var

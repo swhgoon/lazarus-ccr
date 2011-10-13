@@ -36,7 +36,7 @@ unit curredit;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, {StdCtrls,}
   LMessages, MaskEdit;
 
 type
@@ -203,7 +203,7 @@ type
   end;
 
 implementation
-uses rxstrutils, Math, tooledit;
+uses {rxstrutils, } strutils, Math, tooledit;
 
 function IsValidFloat(const Value: string; var RetValue: Extended): Boolean;
 var
@@ -419,14 +419,14 @@ end;
 
 function TCustomNumEdit.TextToValText(const AValue: string): string;
 begin
-  Result := DelRSpace(AValue);
+  Result := Trim(AValue);
   if DecimalSeparator <> ThousandSeparator then begin
     Result := DelChars(Result, ThousandSeparator);
   end;
   if (DecimalSeparator <> '.') and (ThousandSeparator <> '.') then
-    Result := ReplaceStr(Result, '.', DecimalSeparator);
+    Result := StringReplace(Result, '.', DecimalSeparator, [rfReplaceAll]);
   if (DecimalSeparator <> ',') and (ThousandSeparator <> ',') then
-    Result := ReplaceStr(Result, ',', DecimalSeparator);
+    Result := StringReplace(Result, ',', DecimalSeparator, [rfReplaceAll]);
   if Result = '' then Result := '0'
   else if Result = '-' then Result := '-0';
 end;
@@ -449,7 +449,7 @@ begin
       end;
     end;
     if RaiseOnError and (Result <> NewValue) then
-      raise ERangeError.CreateFmt(ReplaceStr('SOutOfRange %d %d %d %d', '%d', '%.*f'),
+      raise ERangeError.CreateFmt(StringReplace('SOutOfRange %d %d %d %d', '%d', '%.*f', [rfReplaceAll]),
         [DecimalPlaces, FMinValue, DecimalPlaces, FMaxValue]);
   end;
 end;
@@ -607,7 +607,7 @@ var
 begin
   EditFormat := '0';
   if FDecimalPlaces > 0 then
-    EditFormat := EditFormat + '.' + MakeStr('#', FDecimalPlaces);
+    EditFormat := EditFormat + '.' + DupeString('#', FDecimalPlaces);
   if (FValue = 0.0) and FZeroEmpty then
     EditText := ''
   else
@@ -690,7 +690,7 @@ var
   I: Integer;
   C: Char;
 begin
-  Result := ',0.' + MakeStr('0', CurrencyDecimals);
+  Result := ',0.' + DupeString('0', CurrencyDecimals);
   CurrStr := '';
   for I := 1 to Length(CurrencyString) do
   begin

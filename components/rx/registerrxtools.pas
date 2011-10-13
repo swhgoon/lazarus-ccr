@@ -41,7 +41,7 @@ uses
 procedure Register;
 
 implementation
-uses RxSystemServices, RxLogin, RxVersInfo;
+uses RxSystemServices, RxLogin, RxVersInfo, RxCloseFormValidator;
 const
   sRxToolsPage = 'RX Tools';
 
@@ -60,11 +60,18 @@ begin
   RegisterComponents(sRxToolsPage, [TRxVersionInfo]);
 end;
 
+procedure RegisterCloseFormValidator;
+begin
+  RegisterComponents('RX Tools',[TRxCloseFormValidator]);
+end;
+
 procedure Register;
 begin
   RegisterUnit('RxLogin', @RegisterRxLogin);
   RegisterUnit('RxVersInfo', @RegisterRxVersInfo);
   RegisterUnit('RxSystemServices', @RegisterRxSystemServices);
+  RegisterUnit('RxCloseFormValidator', @RegisterCloseFormValidator);
+
 end;
 
 end.

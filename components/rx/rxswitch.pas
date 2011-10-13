@@ -36,7 +36,7 @@ unit rxswitch;
 interface
 
 uses SysUtils, LCLType, LCLProc, LCLIntf, LMessages, Classes, Graphics,
-  Controls, Forms, StdCtrls, ExtCtrls, Menus;
+  Controls, Forms, {StdCtrls,} ExtCtrls, Menus;
 
 type
 

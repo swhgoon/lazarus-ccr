@@ -59,7 +59,7 @@ function OemToAnsiStr(const OemStr: string): string;
 { OemToAnsiStr translates a string from the OEM character set into the
   Windows character set. }
 
-function IsEmptyStr(const S: string; const EmptyChars: TCharSet): Boolean;
+function IsEmptyStr(const S: string; const EmptyChars: TCharSet): Boolean; deprecated; //use this function from fcl strutils
 { EmptyStr returns true if the given string contains only character
   from the EmptyChars. }
 
@@ -67,10 +67,10 @@ function ReplaceStr(const S, Srch, Replace: string): string;
 { Returns string with every occurrence of Srch string replaced with
   Replace string. }
 
-function DelSpace(const S: string): string;
+function DelSpace(const S: string): string;  deprecated; //use this function from fcl strutils
 { DelSpace return a string with all white spaces removed. }
 
-function DelChars(const S: string; Chr: Char): string;
+function DelChars(const S: string; Chr: Char): string; deprecated; //use this function from fcl strutils
 { DelChars return a string with all Chr characters removed. }
 
 function DelBSpace(const S: string): string;
@@ -82,24 +82,24 @@ function DelESpace(const S: string): string;
 function DelRSpace(const S: string): string;
 { DelRSpace trims leading and trailing spaces from the given string. }
 
-function DelSpace1(const S: string): string;
+function DelSpace1(const S: string): string; deprecated; //use this function from fcl strutils
 { DelSpace1 return a string with all non-single white spaces removed. }
 
-function Tab2Space(const S: string; Numb: Byte): string;
+function Tab2Space(const S: string; Numb: Byte): string; deprecated; //use this function from fcl strutils
 { Tab2Space converts any tabulation character in the given string to the
   Numb spaces characters. }
 
-function NPos(const C: string; S: string; N: Integer): Integer;
+function NPos(const C: string; S: string; N: Integer): Integer; deprecated; //use this function from fcl strutils
 { NPos searches for a N-th position of substring C in a given string. }
 
 function MakeStr(C: Char; N: Integer): string;
 function MS(C: Char; N: Integer): string;
 { MakeStr return a string of length N filled with character C. }
 
-function AddChar(C: Char; const S: string; N: Integer): string;
+function AddChar(C: Char; const S: string; N: Integer): string; deprecated; //use this function from fcl strutils
 { AddChar return a string left-padded to length N with characters C. }
 
-function AddCharR(C: Char; const S: string; N: Integer): string;
+function AddCharR(C: Char; const S: string; N: Integer): string; deprecated; //use this function from fcl strutils
 { AddCharR return a string right-padded to length N with characters C. }
 
 function LeftStr(const S: string; N: Integer): string;
@@ -120,48 +120,48 @@ function CompText(const S1, S2: string): Integer;
 { CompText compares S1 to S2, without case-sensitivity. The return value
   is the same as for CompStr. }
 
-function Copy2Symb(const S: string; Symb: Char): string;
+function Copy2Symb(const S: string; Symb: Char): string; deprecated; //use this function from fcl strutils
 { Copy2Symb returns a substring of a string S from begining to first
   character Symb. }
 
-function Copy2SymbDel(var S: string; Symb: Char): string;
+function Copy2SymbDel(var S: string; Symb: Char): string; deprecated; //use this function from fcl strutils
 { Copy2SymbDel returns a substring of a string S from begining to first
   character Symb and removes this substring from S. }
 
-function Copy2Space(const S: string): string;
+function Copy2Space(const S: string): string; deprecated; //use this function from fcl strutils
 { Copy2Symb returns a substring of a string S from begining to first
   white space. }
 
-function Copy2SpaceDel(var S: string): string;
+function Copy2SpaceDel(var S: string): string; deprecated; //use this function from fcl strutils
 { Copy2SpaceDel returns a substring of a string S from begining to first
   white space and removes this substring from S. }
 
-function AnsiProperCase(const S: string; const WordDelims: TCharSet): string;
+function AnsiProperCase(const S: string; const WordDelims: TCharSet): string; deprecated; //use this function from fcl strutils
 { Returns string, with the first letter of each word in uppercase,
   all other letters in lowercase. Words are delimited by WordDelims. }
 
-function WordCount(const S: string; const WordDelims: TCharSet): Integer;
+function WordCount(const S: string; const WordDelims: TCharSet): Integer; deprecated; //use this function from fcl strutils
 { WordCount given a set of word delimiters, returns number of words in S. }
 
 function WordPosition(const N: Integer; const S: string;
-  const WordDelims: TCharSet): Integer;
+  const WordDelims: TCharSet): Integer; deprecated; //use this function from fcl strutils
 { Given a set of word delimiters, returns start position of N'th word in S. }
 
 function ExtractWord(N: Integer; const S: string;
-  const WordDelims: TCharSet): string;
+  const WordDelims: TCharSet): string; deprecated; //use this function from fcl strutils
 function ExtractWordPos(N: Integer; const S: string;
-  const WordDelims: TCharSet; var Pos: Integer): string;
+  const WordDelims: TCharSet; var Pos: Integer): string; deprecated; //use this function from fcl strutils
 function ExtractDelimited(N: Integer; const S: string;
-  const Delims: TCharSet): string;
+  const Delims: TCharSet): string; deprecated; //use this function from fcl strutils
 { ExtractWord, ExtractWordPos and ExtractDelimited given a set of word
   delimiters, return the N'th word in S. }
 
 function ExtractSubstr(const S: string; var Pos: Integer;
-  const Delims: TCharSet): string;
+  const Delims: TCharSet): string; deprecated; //use this function from fcl strutils
 { ExtractSubstr given a set of word delimiters, returns the substring from S,
   that started from position Pos. }
 
-function IsWordPresent(const W, S: string; const WordDelims: TCharSet): Boolean;
+function IsWordPresent(const W, S: string; const WordDelims: TCharSet): Boolean; deprecated; //use this function from fcl strutils
 { IsWordPresent given a set of word delimiters, returns True if word W is
   present in string S. }
 
@@ -174,17 +174,17 @@ function ExtractQuotedString(const S: string; Quote: Char): string;
   end of a quoted string, and reduces pairs of Quote characters within
   the quoted string to a single character. }
 
-function FindPart(const HelpWilds, InputStr: string): Integer;
+function FindPart(const HelpWilds, InputStr: string): Integer; deprecated; //use this function from fcl strutils
 { FindPart compares a string with '?' and another, returns the position of
   HelpWilds in InputStr. }
 
-function IsWild(InputStr, Wilds: string; IgnoreCase: Boolean): Boolean;
+function IsWild(InputStr, Wilds: string; IgnoreCase: Boolean): Boolean; deprecated; //use this function from fcl strutils
 { IsWild compares InputString with WildCard string and returns True
   if corresponds. }
 
-function XorString(const Key, Src: ShortString): ShortString;
-function XorEncode(const Key, Source: string): string;
-function XorDecode(const Key, Source: string): string;
+function XorString(const Key, Src: ShortString): ShortString; deprecated; //use this function from fcl strutils
+function XorEncode(const Key, Source: string): string; deprecated; //use this function from fcl strutils
+function XorDecode(const Key, Source: string): string; deprecated; //use this function from fcl strutils
 
 //by alexs
 function StrToHexText(S:string):string;
@@ -196,40 +196,40 @@ function HexTextToStr(S:string):string;
 function FindCmdLineSwitch(const Switch: string; SwitchChars: TCharSet;
   IgnoreCase: Boolean): Boolean;
 {$ENDIF}
-function GetCmdLineArg(const Switch: string; SwitchChars: TCharSet): string;
+function GetCmdLineArg(const Switch: string; SwitchChars: TCharSet): string; deprecated; //use this function from fcl strutils
 
 { ** Numeric string handling routines ** }
 
-function Numb2USA(const S: string): string;
+function Numb2USA(const S: string): string; deprecated; //use this function from fcl strutils
 { Numb2USA converts numeric string S to USA-format. }
 
-function Dec2Hex(N: Longint; A: Byte): string;
-function D2H(N: Longint; A: Byte): string;
+function Dec2Hex(N: Longint; A: Byte): string; deprecated; //use this function from fcl strutils
+function D2H(N: Longint; A: Byte): string; deprecated; //use this function from fcl strutils
 { Dec2Hex converts the given value to a hexadecimal string representation
   with the minimum number of digits (A) specified. }
 
-function Hex2Dec(const S: string): Longint;
-function H2D(const S: string): Longint;
+function Hex2Dec(const S: string): Longint; deprecated; //use this function from fcl strutils
+function H2D(const S: string): Longint; deprecated; //use this function from fcl strutils
 { Hex2Dec converts the given hexadecimal string to the corresponding integer
   value. }
 
-function Dec2Numb(N: Longint; A, B: Byte): string;
+function Dec2Numb(N: Longint; A, B: Byte): string; deprecated; //use this function from fcl strutils
 { Dec2Numb converts the given value to a string representation with the
   base equal to B and with the minimum number of digits (A) specified. }
 
-function Numb2Dec(S: string; B: Byte): Longint;
+function Numb2Dec(S: string; B: Byte): Longint; deprecated; //use this function from fcl strutils
 { Numb2Dec converts the given B-based numeric string to the corresponding
   integer value. }
 
-function IntToBin(Value: Longint; Digits, Spaces: Integer): string;
+function IntToBin(Value: Longint; Digits, Spaces: Integer): string; deprecated; //use this function from fcl strutils
 { IntToBin converts the given value to a binary string representation
   with the minimum number of digits specified. }
 
-function IntToRoman(Value: Longint): string;
+function IntToRoman(Value: Longint): string; deprecated; //use this function from fcl strutils
 { IntToRoman converts the given value to a roman numeric string
   representation. }
 
-function RomanToInt(const S: string): Longint;
+function RomanToInt(const S: string): Longint; deprecated; //use this function from fcl strutils
 { RomanToInt converts the given string to an integer value. If the string
   doesn't contain a valid roman numeric value, the 0 value is returned. }
 

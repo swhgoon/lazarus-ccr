@@ -12,30 +12,31 @@ object pbMainForm: TpbMainForm
   Menu = MainMenu1
   OnCreate = FormCreate
   Position = poDesktopCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object ToolPanel1: TToolPanel
     Left = 0
-    Height = 23
+    Height = 31
     Top = 0
     Width = 849
     Items = <>
     Options = []
     ButtonAllign = tbaNone
     Align = alTop
-    AutoSize = True
     BorderWidth = 4
     TabOrder = 0
   end
   object RxDBGrid1: TRxDBGrid
     Left = 0
-    Height = 396
-    Top = 23
+    Height = 392
+    Top = 31
     Width = 849
     TitleButtons = False
     AutoSort = True
     Columns = <    
       item
         Title.Alignment = taCenter
+        Title.Caption = 'PATRONYMIC'
+        Title.PrefixOption = poNone
         Title.Orientation = toHorizontal
         Width = 190
         FieldName = 'PATRONYMIC'
@@ -47,6 +48,8 @@ object pbMainForm: TpbMainForm
       end    
       item
         Title.Alignment = taCenter
+        Title.Caption = 'NAME'
+        Title.PrefixOption = poNone
         Title.Orientation = toHorizontal
         Width = 150
         FieldName = 'NAME'
@@ -58,6 +61,8 @@ object pbMainForm: TpbMainForm
       end    
       item
         Title.Alignment = taCenter
+        Title.Caption = 'SURNAME'
+        Title.PrefixOption = poNone
         Title.Orientation = toHorizontal
         Width = 150
         FieldName = 'SURNAME'
@@ -69,6 +74,8 @@ object pbMainForm: TpbMainForm
       end    
       item
         Title.Alignment = taCenter
+        Title.Caption = 'PHONE'
+        Title.PrefixOption = poNone
         Title.Orientation = toHorizontal
         Width = 130
         FieldName = 'PHONE'
@@ -80,6 +87,8 @@ object pbMainForm: TpbMainForm
       end    
       item
         Title.Alignment = taCenter
+        Title.Caption = 'ICQ'
+        Title.PrefixOption = poNone
         Title.Orientation = toHorizontal
         FieldName = 'ICQ'
         Filter.Font.Style = [fsItalic]
@@ -90,6 +99,8 @@ object pbMainForm: TpbMainForm
       end    
       item
         Title.Alignment = taCenter
+        Title.Caption = 'MEMO'
+        Title.PrefixOption = poNone
         Title.Orientation = toHorizontal
         FieldName = 'MEMO'
         Filter.Font.Style = [fsItalic]
@@ -98,9 +109,42 @@ object pbMainForm: TpbMainForm
         Filter.EmptyFont.Style = [fsItalic]
         Filter.ItemIndex = -1
       end>
+    KeyStrokes = <    
+      item
+        Command = rxgcShowFindDlg
+        ShortCut = 16454
+        Enabled = True
+      end    
+      item
+        Command = rxgcShowColumnsDlg
+        ShortCut = 16471
+        Enabled = True
+      end    
+      item
+        Command = rxgcShowFilterDlg
+        ShortCut = 16468
+        Enabled = True
+      end    
+      item
+        Command = rxgcShowSortDlg
+        ShortCut = 16467
+        Enabled = True
+      end    
+      item
+        Command = rxgcShowQuickFilter
+        ShortCut = 16465
+        Enabled = True
+      end    
+      item
+        Command = rxgcHideQuickFilter
+        ShortCut = 16456
+        Enabled = True
+      end>
     OptionsRx = [rdgAllowColumnsForm, rdgAllowDialogFind]
     FooterColor = clYellow
     Align = alClient
+    Color = clWindow
+    DrawFullLine = False
     FocusColor = clRed
     SelectedColor = clHighlight
     GridLineStyle = psSolid
@@ -111,8 +155,8 @@ object pbMainForm: TpbMainForm
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 25
-    Top = 419
+    Height = 21
+    Top = 423
     Width = 849
     Panels = <>
   end

@@ -16,7 +16,8 @@ uses
   rxdconst, rxdice, rxFileUtils, rxfilterby, rxiconv, rxlogin, rxlookup, 
   rxmemds, rxpopupunit, rxsortmemds, rxspin, rxstrutils, rxswitch, 
   RxSystemServices, rxtbrsetup, RxTimeEdit, rxtoolbar, RxVersInfo, 
-  RxViewsPanel, rxxpman, seldsfrm, tooledit, vclutils, LazarusPackageIntf;
+  RxViewsPanel, rxxpman, seldsfrm, tooledit, vclutils, RxCloseFormValidator, 
+  LazarusPackageIntf;
 
 implementation
 

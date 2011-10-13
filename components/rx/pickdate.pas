@@ -262,7 +262,7 @@ const
 implementation
 
 uses Messages, RXCtrls, rxconst, ToolEdit, vclutils, math, LCLStrConsts,
-  rxstrutils, LResources;
+  {rxstrutils,} LResources;
 
 const
   SBtnGlyphs: array[0..3] of PChar = ('PREV2', 'PREV1', 'NEXT1', 'NEXT2');

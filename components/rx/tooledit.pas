@@ -425,7 +425,7 @@ begin
   if AValue <> FCalendarStyle then
   begin
     FCalendarStyle:=AValue;
-{    case AValue of
+(*    case AValue of
       csPopup:
         begin
           if FPopup = nil then
@@ -441,7 +441,7 @@ begin
           FPopup.Free;
           FPopup := nil;
         end;
-    end;}
+    end;*)
   end;
 end;
 

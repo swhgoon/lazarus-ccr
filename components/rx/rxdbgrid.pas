@@ -848,6 +848,7 @@ constructor TRxDBGridDateEditor.Create(Aowner: TComponent);
 begin
   inherited Create(Aowner);
   AutoSize := false;
+  UpdateMask;
 end;
 
 {procedure TRxDBGridDateEditor.SetBounds(aLeft, aTop, aWidth, aHeight: integer);

@@ -37,7 +37,7 @@ interface
 
 uses
   LCLType, LCLProc, LCLIntf, Classes, SysUtils, LResources, Forms, types,
-  Controls, Graphics, Dialogs, DB, EditBtn, DBGrids, StdCtrls, Buttons,
+  Controls, Graphics, Dialogs, DB, EditBtn, DBGrids, {StdCtrls,} Buttons,
   LMessages, DbCtrls, GraphType, dbutils, RxDbGrid, rxpopupunit, Themes;
 
 const
@@ -469,9 +469,9 @@ begin
 end;
 
 procedure TRxCustomDBLookupEdit.ShowList;
-var
+{var
   i,W:integer;
-  GC:TColumn;
+  GC:TColumn;}
 begin
   if FLookupDataLink.Active and not PopupVisible then
   begin
