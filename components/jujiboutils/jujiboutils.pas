@@ -7,30 +7,31 @@ unit jujiboutils;
 interface
 
 uses
-  jdblabeledintegeredit, jdblabeledcurrencyedit, jdblabeleddateedit, 
-  jcontrolutils, JLabeledIntegerEdit, JLabeledCurrencyEdit, JLabeledDateEdit, 
-  JDBGridControl, jdbgridutils, JDBLabeledEdit, JLabeledTimeEdit, 
-  JDBLabeledTimeEdit, JLabeledDateTimeEdit, JDBLabeledDateTimeEdit, 
-  JLabeledFloatEdit, JDBLabeledFloatEdit, jinputconsts, LazarusPackageIntf;
+  JDBGridControl, JDBLabeledEdit, jdblabeledintegeredit, JDBLabeledFloatEdit, 
+  jdblabeledcurrencyedit, jdblabeleddateedit, jcontrolutils, 
+  JLabeledIntegerEdit, JLabeledFloatEdit, JLabeledCurrencyEdit, 
+  JLabeledDateEdit, jdbgridutils, JLabeledTimeEdit, JDBLabeledTimeEdit, 
+  JLabeledDateTimeEdit, JDBLabeledDateTimeEdit, jinputconsts, 
+  LazarusPackageIntf;
 
 implementation
 
 procedure Register; 
 begin
+  RegisterUnit('JDBGridControl', @JDBGridControl.Register); 
+  RegisterUnit('JDBLabeledEdit', @JDBLabeledEdit.Register); 
   RegisterUnit('jdblabeledintegeredit', @jdblabeledintegeredit.Register); 
+  RegisterUnit('JDBLabeledFloatEdit', @JDBLabeledFloatEdit.Register); 
   RegisterUnit('jdblabeledcurrencyedit', @jdblabeledcurrencyedit.Register); 
   RegisterUnit('jdblabeleddateedit', @jdblabeleddateedit.Register); 
   RegisterUnit('JLabeledIntegerEdit', @JLabeledIntegerEdit.Register); 
+  RegisterUnit('JLabeledFloatEdit', @JLabeledFloatEdit.Register); 
   RegisterUnit('JLabeledCurrencyEdit', @JLabeledCurrencyEdit.Register); 
   RegisterUnit('JLabeledDateEdit', @JLabeledDateEdit.Register); 
-  RegisterUnit('JDBGridControl', @JDBGridControl.Register); 
-  RegisterUnit('JDBLabeledEdit', @JDBLabeledEdit.Register); 
   RegisterUnit('JLabeledTimeEdit', @JLabeledTimeEdit.Register); 
   RegisterUnit('JDBLabeledTimeEdit', @JDBLabeledTimeEdit.Register); 
   RegisterUnit('JLabeledDateTimeEdit', @JLabeledDateTimeEdit.Register); 
   RegisterUnit('JDBLabeledDateTimeEdit', @JDBLabeledDateTimeEdit.Register); 
-  RegisterUnit('JLabeledFloatEdit', @JLabeledFloatEdit.Register); 
-  RegisterUnit('JDBLabeledFloatEdit', @JDBLabeledFloatEdit.Register); 
 end; 
 
 initialization
