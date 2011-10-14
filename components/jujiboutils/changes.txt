@@ -5,6 +5,7 @@ Note: Lazarus Trunk required
 
 Version pre-1.0
 --------------------------------------------------
+2011-10-14  Released jujiboutils 1.0
 2011-09-30  Added: ftString support to TJDBGridControl. MaxLength property.
                    Translations support: spanish
 2011-09-27  Added: ftDateTime support to TJDBGridControl

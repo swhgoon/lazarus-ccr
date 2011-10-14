@@ -2,6 +2,7 @@
 <CONFIG>
   <Package Version="4">
     <Name Value="jujiboutils"/>
+    <Author Value="Julio Jiménez Borreguero"/>
     <CompilerOptions>
       <Version Value="10"/>
       <SearchPaths>
@@ -21,6 +22,11 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
+    <Description Value="Set of components to input and validate
+different kinds of data, floats, dates, etc. while working with 
+db and non db controls."/>
+    <License Value="LGPL with link exception. Read files license-jujiboutils and COPYING.LGPL"/>
+    <Version Major="1"/>
     <Files Count="17">
       <Item1>
         <Filename Value="src/jdbgridcontrol.pas"/>
