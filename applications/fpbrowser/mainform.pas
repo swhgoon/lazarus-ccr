@@ -243,7 +243,7 @@ begin
   History := TStringList.Create;
 
   AddBrowserTab('', True);
-  pageBrowser.OnPageChanged := HandlePageChanged;
+  pageBrowser.OnChange := HandlePageChanged;
 
   Position := poScreenCenter;
 
