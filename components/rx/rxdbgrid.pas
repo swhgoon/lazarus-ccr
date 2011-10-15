@@ -2615,7 +2615,7 @@ end;
 procedure TRxDBGrid.CheckNewCachedSizes(var AGCache: TGridDataCache);
 begin
   if (rdgFooterRows in OptionsRx) and (FooterRowCount > 0) then
-    Dec(GCache.ClientHeight, DefaultRowHeight * FooterRowCount + 2);
+    Dec(AGCache.ClientHeight, DefaultRowHeight * FooterRowCount + 2);
 end;
 
 procedure TRxDBGrid.ColRowMoved(IsColumn: boolean; FromIndex, ToIndex: integer);
