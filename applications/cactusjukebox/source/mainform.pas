@@ -977,7 +977,7 @@ var
   tmppos: integer;
   fileobj: TMediaFileClass;
 begin
-  DebugOutLn('[TMain.playtimerTimer] START', 1);
+  DebugOutLn('[TMain.playtimerTimer] START', 3);
   try
     // if PlayerObj.playing=false then stopClick(nil);
     if PlayerObj.PlaybackMode = STREAMING_MODE then
@@ -1001,18 +1001,18 @@ begin
       playwin.TimeImg.Canvas.Font.Color := ClNavy;
       playwin.TimeImg.Canvas.TextOut(5, 3, pnlPlaytime.Caption);
 
-      DebugOutLn('[TMain.playtimerTimer] B', 1);
+      DebugOutLn('[TMain.playtimerTimer] B', 3);
 
-      DebugOutLn(Format('[TMain.playtimerTimer] tmppos=%d', [tmppos]), 1);
+      DebugOutLn(Format('[TMain.playtimerTimer] tmppos=%d', [tmppos]), 3);
       tmppos := PlayerObj.Get_FilePosition;
       trackbar.position := tmppos;
       x2 := (trackbar.position * 2) - 3;
       if x2 < 3 then
         x2 := 3;
-      DebugOutLn('[TMain.playtimerTimer] D', 1);
+      DebugOutLn('[TMain.playtimerTimer] D', 3);
       if (tmppos = 100) then
       begin
-        DebugOutLn('[TMain.playtimerTimer] E', 1);
+        DebugOutLn('[TMain.playtimerTimer] E', 3);
         // writeln('nexttrack');
         // WriteLn(PlayerObj.CurrentTrack);
         if (PlayerObj.CurrentTrack < PlayerObj.Playlist.ItemCount) then
@@ -1022,7 +1022,7 @@ begin
       end;
       if CactusConfig.CoverDownload and (CoverFound = False) and (LoopCount < 20) then
       begin
-        DebugOutLn('[TMain.playtimerTimer] F', 1);
+        DebugOutLn('[TMain.playtimerTimer] F', 3);
         Inc(LoopCount);
         if (assigned(LastFMAPI)) and (LastFMAPI.data_ready) then
         begin
@@ -1042,17 +1042,17 @@ begin
       end
       else if (LoopCount >= 20) and (CoverFound = False) then
         CoverImage.Picture.Clear;
-      DebugOutLn('[TMain.playtimerTimer] G', 1);
+      DebugOutLn('[TMain.playtimerTimer] G', 3);
     end
     else
     begin
-      DebugOutLn('[TMain.playtimerTimer] H', 1);
+      DebugOutLn('[TMain.playtimerTimer] H', 3);
       {playtimer.Enabled:=false};
     end;
   except
     DebugOutLn('CAUGHT EXCEPTION IN PLAYTIMER!!!!', 1);
   end;
-  DebugOutLn('[TMain.playtimerTimer] END', 1);
+  DebugOutLn('[TMain.playtimerTimer] END', 3);
 end;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

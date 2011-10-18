@@ -95,14 +95,17 @@ const MPLAYER_BINARY='mplayer.exe';
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 procedure TMPlayerClass.SendCommand(cmd: string);
 begin
-  DebugOutLn('[TMPlayerClass.sendcommand] START cmd=' + cmd, 1);
-  cmd:=cmd+#13#10; //MPLayer always needs #10 as Lineending, no matter if win32 or linux
+  DebugOutLn('[TMPlayerClass.sendcommand] START cmd=' + cmd, 3);
+  cmd:=cmd+#10; //MPLayer always needs #10 as Lineending, no matter if win32 or linux
   try
-    DebugOutLn('[TMPlayerClass.sendcommand] 2', 1);
-    if GetMPlayerPlaying then MPlayerProcess.Input.write(cmd[1], length(cmd));
-    DebugOutLn('[TMPlayerClass.sendcommand] 3', 1);
+    if GetMPlayerPlaying then
+    begin
+      DebugOutLn('[TMPlayerClass.sendcommand] 2', 3);
+      MPlayerProcess.Input.write(cmd[1], length(cmd));
+    end;
+    DebugOutLn('[TMPlayerClass.sendcommand] 3', 3);
   except
-    DebugOutLn('EXCEPTION sending command to mplayer', 1);
+    DebugOutLn('EXCEPTION sending command to mplayer', 3);
   end;
 end;
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -180,7 +183,7 @@ function TMPlayerClass.play(index: integer): byte;
 var
   MPOptions: String;
 begin
-  DebugOutLn('[TMPlayerClass.play]', 1);
+  DebugOutLn('[TMPlayerClass.play]', 3);
   if (index<Playlist.ItemCount) and (index>=0)  then
   begin
     if (FileExists(playlist.items[index].path)) then
@@ -214,7 +217,7 @@ begin
 
       if MPlayerProcess.Running then
       begin
-        DebugOutLn('MPlayerProcess is Running', 1);
+        DebugOutLn('MPlayerProcess is Running', 3);
         FCurrentTrack:=index;
         FPlaying:=true;
         Playlist.Items[index].Played:=true;
@@ -385,17 +388,17 @@ var
   tmps: string;
   i:integer;
 begin
-  DebugOutLn('[TMPlayerClass.Get_FilePosition] START', 1);
+  DebugOutLn('[TMPlayerClass.Get_FilePosition] START', 3);
   if GetMPlayerPlaying then
   begin
-    DebugOutLn('[TMPlayerClass.Get_FilePosition] A', 1);
+    DebugOutLn('[TMPlayerClass.Get_FilePosition] A', 3);
     i:=0;
     repeat
       SendCommand('get_property percent_pos');
       sleep(8);
       tmps:=GetProcessOutput;
       inc(i);
-      DebugOutLn('[TMPlayerClass.Get_FilePosition] ' + tmps, 1);
+      DebugOutLn('[TMPlayerClass.Get_FilePosition] ' + tmps, 3);
     until (pos('percent_pos', tmps)>0) or (i>=5);
 
     // writeln('getpos');
@@ -412,7 +415,7 @@ begin
     result:=-1;
 
   if (result=-1) and (FLastGet_Pos>0) then Result:=100;
-  DebugOutLn('[TMPlayerClass.Get_FilePosition] END', 1);
+  DebugOutLn('[TMPlayerClass.Get_FilePosition] END', 3);
 end;
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function TMPlayerClass.get_FileLength: longint;

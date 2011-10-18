@@ -42,7 +42,11 @@ begin
  {$ifdef CactusDebug}
   CVerbosityLevel:=9;
  {$else}
-  CVerbosityLevel:=1;
+   {$ifdef Windows}
+   CVerbosityLevel:=0;
+   {$else}
+   CVerbosityLevel:=1;
+   {$endif}
  {$endif}
 
   DebugOutLn('', 1);
