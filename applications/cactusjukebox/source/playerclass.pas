@@ -33,7 +33,7 @@ TAudioBackend=(MPLAYERBACK, FMODBACK);
 
 { TPlayerClass }
 type
-TPlayerClass = class
+  TPlayerClass = class
    Protected
      fTotalLength: int64;
      FPlaying, FPaused: Boolean;

@@ -95,14 +95,15 @@ const MPLAYER_BINARY='mplayer.exe';
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 procedure TMPlayerClass.SendCommand(cmd: string);
 begin
- //  writeln('sendcommand');
-   cmd:=cmd+#10; //MPLayer always needs #10 as Lineending, no matter if win32 or linux
-   try
-  // writeln('sendcommand2');
-     if GetMPlayerPlaying then MPlayerProcess.Input.write(cmd[1], length(cmd));
-  // writeln('sendcommand3');
-   except writeln('EXCEPTION sending command to mplayer');
-   end;
+  DebugOutLn('[TMPlayerClass.sendcommand] START cmd=' + cmd, 1);
+  cmd:=cmd+#13#10; //MPLayer always needs #10 as Lineending, no matter if win32 or linux
+  try
+    DebugOutLn('[TMPlayerClass.sendcommand] 2', 1);
+    if GetMPlayerPlaying then MPlayerProcess.Input.write(cmd[1], length(cmd));
+    DebugOutLn('[TMPlayerClass.sendcommand] 3', 1);
+  except
+    DebugOutLn('EXCEPTION sending command to mplayer', 1);
+  end;
 end;
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function TMPlayerClass.GetProcessOutput: string;
@@ -176,39 +177,55 @@ end;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function TMPlayerClass.play(index: integer): byte;
-var MPOptions: String;
+var
+  MPOptions: String;
 begin
-if (index<Playlist.ItemCount) and (index>=0)  then begin
-  if (FileExists(playlist.items[index].path)) then begin
-    if FPlaying then stop;
-       MPlayerProcess:=TProcess.Create(nil);
+  DebugOutLn('[TMPlayerClass.play]', 1);
+  if (index<Playlist.ItemCount) and (index>=0)  then
+  begin
+    if (FileExists(playlist.items[index].path)) then
+    begin
+      if FPlaying then stop;
 
-       if not UseExternalConfig then begin
-           MPOptions:='-slave -quiet -softvol';
-           if OutputMode=ALSAOUT then MPOptions:=MPOptions+' -ao alsa';
-           if OutputMode=OSSOUT then MPOptions:=MPOptions+' -ao oss';
-       end else MPOptions:='-include '+ExternalConfigFile;
+      MPlayerProcess:=TProcess.Create(nil);
 
-       MPOptions:=' -af volume=' + IntToStr(IntTodB(FVolume, 100)) +' '+ MPOptions;// -volume xx only supported with patched mplayer;
+      if not UseExternalConfig then
+      begin
+        MPOptions:='-slave -quiet -softvol';
+        if OutputMode=ALSAOUT then MPOptions:=MPOptions+' -ao alsa';
+        if OutputMode=OSSOUT then MPOptions:=MPOptions+' -ao oss';
+      end
+      else
+        MPOptions:='-include '+ExternalConfigFile;
 
-       FPlaybackMode:=FILE_MODE;
-       //DebugOutLn('playing  -> '+playlist.items[index].path, 1);
-       // writeln(StringReplace(playlist.items[index].path, '''', '''''', [rfReplaceAll]));
-       MPlayerProcess.CommandLine:=FMplayerPath+' '+MPOptions+' "'+playlist.items[index].path+'"';
+      MPOptions:=' -af volume=' + IntToStr(IntTodB(FVolume, 100)) +' '+ MPOptions;// -volume xx only supported with patched mplayer;
 
-       DebugOutLn(MPlayerProcess.CommandLine,5);
-       FLastGet_Pos:=0;
-       MPlayerProcess.Options:= MPlayerProcess.Options + [poUsePipes, poDefaultErrorMode, poStderrToOutPut, poNoConsole];
-       MPlayerProcess.Execute;
+      FPlaybackMode:=FILE_MODE;
 
-       if MPlayerProcess.Running then begin
-          FCurrentTrack:=index;
-          FPlaying:=true;
-          Playlist.Items[index].Played:=true;
-          result:=0;
-       end;
-    end else result:=1;
-end else DebugOutLn('File not found ->'+playlist.items[index].path,0);
+      DebugOutLn('playing  -> '+playlist.items[index].path, 1);
+      DebugOutLn(StringReplace(playlist.items[index].path, '''', '''''', [rfReplaceAll]), 1);
+
+      MPlayerProcess.CommandLine:=FMplayerPath+' '+MPOptions+' "'+playlist.items[index].path+'"';
+
+      DebugOutLn(MPlayerProcess.CommandLine,5);
+      FLastGet_Pos:=0;
+      MPlayerProcess.Options:= MPlayerProcess.Options + [poUsePipes, poDefaultErrorMode, poStderrToOutPut, poNoConsole];
+      MPlayerProcess.Execute;
+
+      if MPlayerProcess.Running then
+      begin
+        DebugOutLn('MPlayerProcess is Running', 1);
+        FCurrentTrack:=index;
+        FPlaying:=true;
+        Playlist.Items[index].Played:=true;
+        result:=0;
+      end;
+    end
+    else
+      result:=1;
+  end
+  else
+    DebugOutLn('File not found ->'+playlist.items[index].path,0);
 end;
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function TMPlayerClass.play(url: string): byte;
@@ -364,27 +381,38 @@ end;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function TMPlayerClass.Get_FilePosition: longint;
-var tmps: string;
-    i:integer;
+var
+  tmps: string;
+  i:integer;
 begin
- if GetMPlayerPlaying then begin
-  i:=0;
-  repeat begin
-    SendCommand('get_property percent_pos');
-    sleep(8);
-    tmps:=GetProcessOutput;
-    inc(i);
-   // writeln('jj');
-   end;
-   until (pos('percent_pos', tmps)>0) or (i>=5);
-  // writeln('getpos');
-   i:=LastDelimiter('=', tmps);
-   if i > 0 then begin
-           FLastGet_Pos:=round(StrToFloat(Copy(tmps, i+1, Length(tmps)-i)));
-           result:=FLastGet_Pos;
-       end else result:=-1;
- end else result:=-1;
- if (result=-1) and (FLastGet_Pos>0) then Result:=100;
+  DebugOutLn('[TMPlayerClass.Get_FilePosition] START', 1);
+  if GetMPlayerPlaying then
+  begin
+    DebugOutLn('[TMPlayerClass.Get_FilePosition] A', 1);
+    i:=0;
+    repeat
+      SendCommand('get_property percent_pos');
+      sleep(8);
+      tmps:=GetProcessOutput;
+      inc(i);
+      DebugOutLn('[TMPlayerClass.Get_FilePosition] ' + tmps, 1);
+    until (pos('percent_pos', tmps)>0) or (i>=5);
+
+    // writeln('getpos');
+    i:=LastDelimiter('=', tmps);
+    if i > 0 then
+    begin
+      FLastGet_Pos:=round(StrToFloat(Copy(tmps, i+1, Length(tmps)-i)));
+      result:=FLastGet_Pos;
+    end
+    else
+      result:=-1;
+  end
+  else
+    result:=-1;
+
+  if (result=-1) and (FLastGet_Pos>0) then Result:=100;
+  DebugOutLn('[TMPlayerClass.Get_FilePosition] END', 1);
 end;
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function TMPlayerClass.get_FileLength: longint;

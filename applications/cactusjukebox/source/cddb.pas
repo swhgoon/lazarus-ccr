@@ -18,7 +18,7 @@ interface
 uses
   Classes, SysUtils,
   {$ifdef HAS_CDROM}cdrom, discid,{$endif}
-  lnet, config;
+  lnet, config, debug;
 
 
 type
@@ -127,7 +127,7 @@ begin
      ErrorCode:=0;
      s:='';
      asocket.GetMessage(s);
-     writeln('Socket message length: ', Length(s));
+     DebugOutLn(Format('Socket message length: %d', [Length(s)]), 1);
      if s<>'' then begin
         if length(s)>3 then begin
              posi:=pos(#13, s);
