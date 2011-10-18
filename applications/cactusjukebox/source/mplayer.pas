@@ -101,16 +101,17 @@ procedure TMPlayerClass.SendCommand(cmd: string);
 var
   res: DWORD;
 begin
-  DebugOutLn('[TMPlayerClass.sendcommand] START cmd=' + cmd, 3);
+  DebugOutLn('[TMPlayerClass.sendcommand] START cmd=' + cmd, 9);
   cmd:=cmd+#10; //MPLayer always needs #10 as Lineending, no matter if win32 or linux
   try
     if GetMPlayerPlaying then
     begin
-      //DebugOutLn('[TMPlayerClass.sendcommand] 2', 3);
       MPlayerProcess.Input.write(cmd[1], length(cmd));
+
+      // Equivalent using the Windows API, which freezes if the buffer is full (aka, not read by mplayer)
       //Windows.WriteFile(MPlayerProcess.Input.Handle,cmd[1],length(cmd), res, nil);
     end;
-    DebugOutLn('[TMPlayerClass.sendcommand] END', 3);
+    DebugOutLn('[TMPlayerClass.sendcommand] END', 9);
   except
     DebugOutLn('EXCEPTION sending command to mplayer', 3);
   end;
@@ -134,7 +135,7 @@ begin
   end;
   //writeln('endget');
   AStringList.Free;
-  DebugOutLn('[TMPlayerClass.GetProcessOutput] Result=' + Result, 3);
+  DebugOutLn('[TMPlayerClass.GetProcessOutput] Result=' + Result, 9);
 end;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -195,7 +196,7 @@ var
   MPOptions: String;
   i: Integer;
 begin
-  DebugOutLn('[TMPlayerClass.play]', 3);
+  DebugOutLn('[TMPlayerClass.play]', 5);
   if (index<Playlist.ItemCount) and (index>=0)  then
   begin
     if (FileExists(playlist.items[index].path)) then
@@ -222,14 +223,14 @@ begin
 
       MPlayerProcess.CommandLine:=FMplayerPath+' '+MPOptions+' "'+playlist.items[index].path+'"';
 
-      DebugOutLn(MPlayerProcess.CommandLine,5);
+      DebugOutLn(MPlayerProcess.CommandLine, 5);
       FLastGet_Pos:=0;
-      MPlayerProcess.Options:= MPlayerProcess.Options + [poUsePipes, poDefaultErrorMode{, poStderrToOutPut}, poNoConsole];
+      MPlayerProcess.Options:= MPlayerProcess.Options + [poUsePipes, poDefaultErrorMode, poNoConsole]; {, poStderrToOutPut <= This caused freezes in Windows}
       MPlayerProcess.Execute;
 
       if MPlayerProcess.Running then
       begin
-        DebugOutLn('MPlayerProcess is Running', 3);
+        DebugOutLn('MPlayerProcess is Running', 9);
         FCurrentTrack:=index;
         FPlaying:=true;
         Playlist.Items[index].Played:=true;
@@ -240,7 +241,7 @@ begin
       result:=1;
   end
   else
-    DebugOutLn('File not found ->'+playlist.items[index].path,0);
+    DebugOutLn('File not found ->'+playlist.items[index].path, 1);
 end;
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function TMPlayerClass.play(url: string): byte;
@@ -400,17 +401,17 @@ var
   tmps: string;
   i:integer;
 begin
-  DebugOutLn('[TMPlayerClass.Get_FilePosition] START', 3);
+  DebugOutLn('[TMPlayerClass.Get_FilePosition] START', 9);
   if GetMPlayerPlaying then
   begin
-    DebugOutLn('[TMPlayerClass.Get_FilePosition] A', 3);
+    DebugOutLn('[TMPlayerClass.Get_FilePosition] A', 9);
     i:=0;
     repeat
       SendCommand('get_property percent_pos');
       sleep(8);
       tmps:=GetProcessOutput;
       inc(i);
-      DebugOutLn('[TMPlayerClass.Get_FilePosition] GetProcessOutput=' + tmps, 3);
+      DebugOutLn('[TMPlayerClass.Get_FilePosition] GetProcessOutput=' + tmps, 9);
     until (pos('percent_pos', tmps)>0) or (i>=5);
 
     // writeln('getpos');
@@ -427,7 +428,7 @@ begin
     result:=-1;
 
   if (result=-1) and (FLastGet_Pos>0) then Result:=100;
-  DebugOutLn('[TMPlayerClass.Get_FilePosition] END', 3);
+  DebugOutLn('[TMPlayerClass.Get_FilePosition] END', 9);
 end;
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function TMPlayerClass.get_FileLength: longint;
