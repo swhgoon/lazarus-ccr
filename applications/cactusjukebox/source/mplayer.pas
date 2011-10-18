@@ -22,7 +22,10 @@ unit mplayer;
 interface
 
 uses
-  Classes, SysUtils, playerclass, process, debug, functions;
+  //{$ifdef Windows}
+  //Windows,
+  //{$endif}
+  Classes, SysUtils, Forms, playerclass, process, debug, functions;
 
 type
 
@@ -33,6 +36,7 @@ type
      FMPlayerPath: string;
      MPlayerProcess: TProcess;
      FLastGet_Pos: integer;
+     MPlayerFormatSettings: TFormatSettings;
      procedure SendCommand(cmd:string);
      function GetProcessOutput:string;
      function GetMPlayerPlaying: boolean;
@@ -94,38 +98,43 @@ const MPLAYER_BINARY='mplayer.exe';
 { TMPlayerClass }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 procedure TMPlayerClass.SendCommand(cmd: string);
+var
+  res: DWORD;
 begin
   DebugOutLn('[TMPlayerClass.sendcommand] START cmd=' + cmd, 3);
   cmd:=cmd+#10; //MPLayer always needs #10 as Lineending, no matter if win32 or linux
   try
     if GetMPlayerPlaying then
     begin
-      DebugOutLn('[TMPlayerClass.sendcommand] 2', 3);
+      //DebugOutLn('[TMPlayerClass.sendcommand] 2', 3);
       MPlayerProcess.Input.write(cmd[1], length(cmd));
+      //Windows.WriteFile(MPlayerProcess.Input.Handle,cmd[1],length(cmd), res, nil);
     end;
-    DebugOutLn('[TMPlayerClass.sendcommand] 3', 3);
+    DebugOutLn('[TMPlayerClass.sendcommand] END', 3);
   except
     DebugOutLn('EXCEPTION sending command to mplayer', 3);
   end;
 end;
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function TMPlayerClass.GetProcessOutput: string;
-var AStringList: TStringList;
+var
+  AStringList: TStringList;
 begin
-     // writeln('getoutput');
-   AStringList:=TStringList.Create;
-   try
-      if GetMPlayerPlaying then AStringList.LoadFromStream(MPlayerProcess.Output);
-      if AStringList.Count>0 then
-        Result:=AStringList.Strings[0]
-      else
-        Result := '';
-   //   writeln(Result);
-   except
-      writeln('EXCEPTION reading mplayer output');result:='';
-   end;
-   //writeln('endget');
-   AStringList.Free;
+  // writeln('getoutput');
+  AStringList:=TStringList.Create;
+  try
+     if GetMPlayerPlaying then AStringList.LoadFromStream(MPlayerProcess.Output);
+     if AStringList.Count>0 then
+       Result:=AStringList.Text//Strings[0]
+     else
+       Result := '';
+  //   writeln(Result);
+  except
+    writeln('EXCEPTION reading mplayer output');result:='';
+  end;
+  //writeln('endget');
+  AStringList.Free;
+  DebugOutLn('[TMPlayerClass.GetProcessOutput] Result=' + Result, 3);
 end;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -145,6 +154,8 @@ begin
   inherited;
 
   FMPlayerPath := GetMPlayerPath();
+  MPlayerFormatSettings := SysUtils.DefaultFormatSettings;
+  MPlayerFormatSettings.DecimalSeparator := '.';
 end;
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 destructor TMPlayerClass.destroy;
@@ -182,6 +193,7 @@ end;
 function TMPlayerClass.play(index: integer): byte;
 var
   MPOptions: String;
+  i: Integer;
 begin
   DebugOutLn('[TMPlayerClass.play]', 3);
   if (index<Playlist.ItemCount) and (index>=0)  then
@@ -212,7 +224,7 @@ begin
 
       DebugOutLn(MPlayerProcess.CommandLine,5);
       FLastGet_Pos:=0;
-      MPlayerProcess.Options:= MPlayerProcess.Options + [poUsePipes, poDefaultErrorMode, poStderrToOutPut, poNoConsole];
+      MPlayerProcess.Options:= MPlayerProcess.Options + [poUsePipes, poDefaultErrorMode{, poStderrToOutPut}, poNoConsole];
       MPlayerProcess.Execute;
 
       if MPlayerProcess.Running then
@@ -361,7 +373,7 @@ begin
    until (pos('time_pos', tmps)>0) or (i>=3);
    i:=LastDelimiter('=', tmps);
    if i > 0 then begin
-        time:= StrToFloat(Copy(tmps, i+1, Length(tmps)));
+        time:= StrToFloat(Copy(tmps, i+1, Length(tmps)), MPlayerFormatSettings);
         time:=time*1000;
         result:=round(time);
    end else result:=-1;
@@ -398,7 +410,7 @@ begin
       sleep(8);
       tmps:=GetProcessOutput;
       inc(i);
-      DebugOutLn('[TMPlayerClass.Get_FilePosition] ' + tmps, 3);
+      DebugOutLn('[TMPlayerClass.Get_FilePosition] GetProcessOutput=' + tmps, 3);
     until (pos('percent_pos', tmps)>0) or (i>=5);
 
     // writeln('getpos');
