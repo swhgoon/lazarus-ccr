@@ -27,7 +27,6 @@ type
 
 function ConvertUTF8TextToBraille(Line: string): string;
 function ConvertUTF8HtmlTextToBraille(AInput: string): string;
-function ConvertUTF8TextToBrailleNew(AInput: string): string;
 
 implementation
 
@@ -66,29 +65,6 @@ const
     {division sign} 'TODO', {o + stroke} 'TODO', {u + grave} chr($b1),
     {u + acute} chr($be), {u + circumflex} 'TODO', {u + diaeresis} chr($b3),
     {y + acute} 'TODO', {thorn} 'TODO', {y + diaeresis} 'TODO', '');
-
-function ConvertUTF8TextToBrailleNew(AInput: string): string;
-var
-  lInput: PChar;
-  lPos: Integer;
-  lCharSize: Integer;
-  lCurChar: string;
-begin
-  Result := '';
-  lInput := PChar(AInput);
-  lPos := 0;
-  while lPos < Length(AInput) do
-  begin
-    lCharSize := LCLProc.UTF8CharacterLength(lInput);
-
-    SetLength(lCurChar, lCharSize);
-    Move(lCurChar[1], lInput^, lCharSize);
-    {Result := Result + ConvertUTF8CharacterToBraille(lCurChar);}
-
-    Inc(lInput, lCharSize);
-    Inc(lPos, lCharSize);
-  end;
-end;
 
 function ConvertUTF8TextToBraille(Line: string): string;
 var
@@ -238,7 +214,7 @@ end;
 
 function ConvertUTF8HtmlTextToBraille(AInput: string): string;
 var
-  i, j, lCharSize: integer;
+  i, lCharSize: integer;
   output, aux_string, end_string: string;
   is_text: boolean;
   Pline : PChar;
@@ -255,41 +231,44 @@ begin
     end_string := '';
     while is_text and (i <= length(AInput)) do
     begin
-      if (AInput[i] = '<')  then
+      if (AInput[i] = '<')  then            { an instruction comes next }
       begin
         is_text := False;
         i := i + 1;
         Inc(Pline, 1);
         end_string := '<';
+        if (copy(AInput, i, 6) = 'script') then   { if it's a script, go through it and
+                                                     keep reading the text}
+        begin
+          i := i + 6;
+          Inc(Pline, 6);
+          end_string := end_string + 'script';
+          while (copy(AInput, i, 9) <> '</script>') do
+          begin
+            end_string := end_string + AInput[i];
+            i := i + 1;
+            Inc(Pline, 1);
+          end;
+          is_text := True;
+        end;
         break;
-      end
-
-      else
-      begin
-
-      if ((AInput[i] = '/') and (AInput[i+1] = '/') and (AInput[i+2] = '<')) then
-      begin
-        is_text := False;
-        i := i + 3;
-        Inc(Pline, 3);
-        end_string := '//<';
-        break
-      end
       end;
 
+      { Read the next UTF8 character add it to aux_string }
       lCharSize := LCLProc.UTF8CharacterLength(Pline);
-      for j := 0 to lCharSize - 1 do aux_string := aux_string + AInput[i + j];
+      aux_string := aux_string + copy(AInput, i, lCharSize);
 
       i := i + lCharSize;
       Inc(Pline, lCharSize);
     end;
 
+    { Translate aux_string to Braille and add it to output }
     output := output + ConvertUTF8TextToBraille(aux_string) + end_string;
     aux_string := '';
 
     while (not is_text) and (i <= length(AInput))do
     begin
-      if (AInput[i] = '>') then
+      if (AInput[i] = '>') then   { End of instruction }
       begin
         is_text := True;
         i := i + 1;
@@ -297,9 +276,11 @@ begin
         output := output + '>';
         break
       end;
+
+      { Add the next UTF8 character straight to output, without translating it }
+
       lCharSize := LCLProc.UTF8CharacterLength(Pline);
-      for j := 0 to lCharSize - 1 do
-        output := output + AInput[i + j];
+      output := output + copy(AInput, i, lCharSize);
       i := i + lCharSize;
       Inc(Pline, lCharSize);
     end;
