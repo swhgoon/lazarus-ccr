@@ -10,7 +10,7 @@ uses
   LclIntf, LMessages, LclType, LResources,
   Graphics, Controls,
   Forms, Dialogs, ExtCtrls, Menus, StdCtrls, Clipbrd,
-  PrintersDlgs, buttons,
+  PrintersDlgs, buttons, customdrawnextras,
   ComCtrls,
   {$IFDEF MSWINDOWS} ShellAPI, {$ELSE} Unix, {$ENDIF}
   HTMLabt,
@@ -27,7 +27,6 @@ type
     N1: TMenuItem;
     OpenDialog: TOpenDialog;   
     MainMenu: TMainMenu;
-    pageBrowser: TPageControl;
     panelBottom: TPanel;
     File1: TMenuItem;
     Open: TMenuItem;
@@ -121,6 +120,7 @@ type
     procedure HandlePageChanged(Sender: TObject);
   public
     { Public declarations }
+    pageBrowser: TCDPageControl;
     CurrentTab: Integer;
     procedure LoadURL(AURL: string);
     procedure AddBrowserTab(AURL: string; AGoToTab: Boolean);
@@ -140,6 +140,10 @@ uses
 
 procedure TformBrowser.FormCreate(Sender: TObject);
 begin
+  pageBrowser := TCDPageControl.Create(Self);
+  pageBrowser.Parent := Self;
+  pageBrowser.Align := alClient;
+
   InitializeForm();
 end;
 
@@ -340,7 +344,7 @@ procedure TformBrowser.HandlePageChanged(Sender: TObject);
 var
   lIndex: Integer;
 begin
-  lIndex := pageBrowser.ActivePageIndex;
+  lIndex := pageBrowser.TabIndex;
   SetCurrentBrowserViewer(lIndex);
 end;
 
@@ -768,12 +772,12 @@ end;
 procedure TformBrowser.AddBrowserTab(AURL: string; AGoToTab: Boolean);
 var
   lViewer: TBrowserViewer;
-  lTabSheet: TTabSheet;
+  lTabSheet: TCDTabSheet;
   lTopPanel: TPanel;
   lbuttonReload, lbuttonBack, lbuttonForward: TBitBtn;
   leditURL: TEdit;
 begin
-  lTabSheet := pageBrowser.AddTabSheet(); // This call requires Lazarus 0.9.31+
+  lTabSheet := pageBrowser.AddPage(''); // This call requires Lazarus 0.9.31+
   lTabSheet.Caption := 'WebPage';
 
   // Add the top panel of the tab with buttons and the edit box
@@ -831,11 +835,11 @@ end;
 procedure TformBrowser.AddMemoTab(AText: TStringList; ACaption: string;
   AGoToTab: Boolean);
 var
-  lTabSheet: TTabSheet;
+  lTabSheet: TCDTabSheet;
   lMemo: TMemo;
   lViewer: TBrowserViewer;
 begin
-  lTabSheet := pageBrowser.AddTabSheet(); // This call requires Lazarus 0.9.31+
+  lTabSheet := pageBrowser.AddPage(''); // This call requires Lazarus 0.9.31+
   lTabSheet.Caption := ACaption;
 
   // Add the top panel of the tab with buttons and the edit box

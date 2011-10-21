@@ -9,7 +9,7 @@ uses
 {$ENDIF}
   Interfaces,
   Forms,
-  printer4lazarus, turbopoweripro, laz_synapse,
+  printer4lazarus, turbopoweripro, customdrawn, laz_synapse,
   mainform {Form1},
   Submit in 'Submit.pas' {SubmitForm},
   Htmlabt in 'Htmlabt.pas' {AboutBox},
