@@ -981,8 +981,8 @@ type
   TSoupLoggerFilter = function(logger: PSoupLogger; msg: PSoupMessage; user_data: gpointer): TSoupLoggerLogLevel; cdecl;
   TSoupLogger = object(TGObject)
     function new(level: TSoupLoggerLogLevel; max_body_size: gint): PSoupLogger; cdecl; inline; static;
-    procedure attach(session: PSoupSession); cdecl; inline;
-    procedure detach(session: PSoupSession); cdecl; inline;
+    
+    
     procedure set_printer(printer: TSoupLoggerPrinter; printer_data: gpointer; destroy_: TGDestroyNotify); cdecl; inline;
     procedure set_request_filter(request_filter: TSoupLoggerFilter; filter_data: gpointer; destroy_: TGDestroyNotify); cdecl; inline;
     procedure set_response_filter(response_filter: TSoupLoggerFilter; filter_data: gpointer; destroy_: TGDestroyNotify); cdecl; inline;
@@ -1069,7 +1069,7 @@ type
     procedure foreach(func: TSoupMessageHeadersForeachFunc; user_data: gpointer); cdecl; inline;
     procedure free; cdecl; inline;
     procedure free_ranges(ranges: PSoupRange); cdecl; inline;
-    function get(name: Pgchar): Pgchar; cdecl; inline;
+    
     function get_content_disposition(disposition: PPgchar; params: PPGHashTable): gboolean; cdecl; inline;
     function get_content_length: gint64; cdecl; inline;
     function get_content_range(start: Pgint64; end_: Pgint64; total_length: Pgint64): gboolean; cdecl; inline;
@@ -1466,7 +1466,6 @@ function soup_message_get_http_version(AMessage: PSoupMessage): TSoupHTTPVersion
 function soup_message_get_https_status(AMessage: PSoupMessage; certificate: PPGTlsCertificate; errors: PGTlsCertificateFlags): gboolean; cdecl; external;
 function soup_message_get_type: TGType; cdecl; external;
 function soup_message_get_uri(AMessage: PSoupMessage): PSoupURI; cdecl; external;
-function soup_message_headers_get(AMessageHeaders: PSoupMessageHeaders; name: Pgchar): Pgchar; cdecl; external;
 function soup_message_headers_get_content_disposition(AMessageHeaders: PSoupMessageHeaders; disposition: PPgchar; params: PPGHashTable): gboolean; cdecl; external;
 function soup_message_headers_get_content_length(AMessageHeaders: PSoupMessageHeaders): gint64; cdecl; external;
 function soup_message_headers_get_content_range(AMessageHeaders: PSoupMessageHeaders; start: Pgint64; end_: Pgint64; total_length: Pgint64): gboolean; cdecl; external;
@@ -1607,8 +1606,6 @@ procedure soup_header_free_list(list: PGSList); cdecl; external;
 procedure soup_header_free_param_list(param_list: PGHashTable); cdecl; external;
 procedure soup_header_g_string_append_param(string_: PGString; name: Pgchar; value: Pgchar); cdecl; external;
 procedure soup_header_g_string_append_param_quoted(string_: PGString; name: Pgchar; value: Pgchar); cdecl; external;
-procedure soup_logger_attach(ALogger: PSoupLogger; session: PSoupSession); cdecl; external;
-procedure soup_logger_detach(ALogger: PSoupLogger; session: PSoupSession); cdecl; external;
 procedure soup_logger_set_printer(ALogger: PSoupLogger; printer: TSoupLoggerPrinter; printer_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
 procedure soup_logger_set_request_filter(ALogger: PSoupLogger; request_filter: TSoupLoggerFilter; filter_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
 procedure soup_logger_set_response_filter(ALogger: PSoupLogger; response_filter: TSoupLoggerFilter; filter_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
@@ -2666,16 +2663,6 @@ begin
   Result := Soup2_4.soup_logger_new(level, max_body_size);
 end;
 
-procedure TSoupLogger.attach(session: PSoupSession); cdecl;
-begin
-  Soup2_4.soup_logger_attach(@self, session);
-end;
-
-procedure TSoupLogger.detach(session: PSoupSession); cdecl;
-begin
-  Soup2_4.soup_logger_detach(@self, session);
-end;
-
 procedure TSoupLogger.set_printer(printer: TSoupLoggerPrinter; printer_data: gpointer; destroy_: TGDestroyNotify); cdecl;
 begin
   Soup2_4.soup_logger_set_printer(@self, printer, printer_data, destroy_);
@@ -2869,11 +2856,6 @@ end;
 procedure TSoupMessageHeaders.free_ranges(ranges: PSoupRange); cdecl;
 begin
   Soup2_4.soup_message_headers_free_ranges(@self, ranges);
-end;
-
-function TSoupMessageHeaders.get(name: Pgchar): Pgchar; cdecl;
-begin
-  Result := Soup2_4.soup_message_headers_get(@self, name);
 end;
 
 function TSoupMessageHeaders.get_content_disposition(disposition: PPgchar; params: PPGHashTable): gboolean; cdecl;

@@ -155,7 +155,7 @@ type
     function get_rowstride: gint; cdecl; inline;
     function get_width: gint; cdecl; inline;
     function new_subpixbuf(src_x: gint; src_y: gint; width: gint; height: gint): PGdkPixbuf; cdecl; inline;
-    function ref: PGdkPixbuf; cdecl; inline;
+    
     function rotate_simple(angle: TGdkPixbufRotation): PGdkPixbuf; cdecl; inline;
     procedure saturate_and_pixelate(dest: PGdkPixbuf; saturation: gfloat; pixelate: gboolean); cdecl; inline;
     //function save(filename: Pgchar; type_: Pgchar; error: PPGError; args: array of const): gboolean; cdecl; inline;
@@ -168,7 +168,7 @@ type
     function savev(filename: Pgchar; type_: Pgchar; option_keys: PPgchar; option_values: PPgchar): gboolean; cdecl; inline;
     procedure scale(dest: PGdkPixbuf; dest_x: gint; dest_y: gint; dest_width: gint; dest_height: gint; offset_x: gdouble; offset_y: gdouble; scale_x: gdouble; scale_y: gdouble; interp_type: TGdkInterpType); cdecl; inline;
     function scale_simple(dest_width: gint; dest_height: gint; interp_type: TGdkInterpType): PGdkPixbuf; cdecl; inline;
-    procedure unref; cdecl; inline;
+    
     property bits_per_sample:  gint read get_bits_per_sample  { property is writeable but setter not declared } ;
     property colorspace:  TGdkColorspace read get_colorspace  { property is writeable but setter not declared } ;
     property has_alpha:  gboolean read get_has_alpha  { property is writeable but setter not declared } ;
@@ -230,8 +230,8 @@ type
     function get_static_image: PGdkPixbuf; cdecl; inline;
     function get_width: gint; cdecl; inline;
     function is_static_image: gboolean; cdecl; inline;
-    function ref: PGdkPixbufAnimation; cdecl; inline;
-    procedure unref; cdecl; inline;
+    
+    
   end;
   TGdkPixbufAnimationIter = object(TGObject)
     function advance(current_time: PGTimeVal): gboolean; cdecl; inline;
@@ -304,7 +304,6 @@ function gdk_pixbuf_animation_iter_get_pixbuf(APixbufAnimationIter: PGdkPixbufAn
 function gdk_pixbuf_animation_iter_get_type: TGType; cdecl; external;
 function gdk_pixbuf_animation_iter_on_currently_loading_frame(APixbufAnimationIter: PGdkPixbufAnimationIter): gboolean; cdecl; external;
 function gdk_pixbuf_animation_new_from_file(filename: Pgchar): PGdkPixbufAnimation; cdecl; external;
-function gdk_pixbuf_animation_ref(APixbufAnimation: PGdkPixbufAnimation): PGdkPixbufAnimation; cdecl; external;
 function gdk_pixbuf_apply_embedded_orientation(APixbuf: PGdkPixbuf): PGdkPixbuf; cdecl; external;
 function gdk_pixbuf_composite_color_simple(APixbuf: PGdkPixbuf; dest_width: gint; dest_height: gint; interp_type: TGdkInterpType; overall_alpha: gint; check_size: gint; color1: guint32; color2: guint32): PGdkPixbuf; cdecl; external;
 function gdk_pixbuf_copy(APixbuf: PGdkPixbuf): PGdkPixbuf; cdecl; external;
@@ -354,7 +353,6 @@ function gdk_pixbuf_new_from_stream_at_scale(stream: PGInputStream; width: gint;
 function gdk_pixbuf_new_from_stream_finish(async_result: PGAsyncResult): PGdkPixbuf; cdecl; external;
 function gdk_pixbuf_new_from_xpm_data(data: PPgchar): PGdkPixbuf; cdecl; external;
 function gdk_pixbuf_new_subpixbuf(APixbuf: PGdkPixbuf; src_x: gint; src_y: gint; width: gint; height: gint): PGdkPixbuf; cdecl; external;
-function gdk_pixbuf_ref(APixbuf: PGdkPixbuf): PGdkPixbuf; cdecl; external;
 function gdk_pixbuf_rotate_simple(APixbuf: PGdkPixbuf; angle: TGdkPixbufRotation): PGdkPixbuf; cdecl; external;
 function gdk_pixbuf_save(APixbuf: PGdkPixbuf; filename: Pgchar; type_: Pgchar; error: PPGError; args: array of const): gboolean; cdecl; external;
 function gdk_pixbuf_save_to_buffer(APixbuf: PGdkPixbuf; buffer: PPgchar; buffer_size: Pgsize; type_: Pgchar; error: PPGError; args: array of const): gboolean; cdecl; external;
@@ -373,7 +371,6 @@ function gdk_pixdata_deserialize(APixdata: PGdkPixdata; stream_length: guint; st
 function gdk_pixdata_from_pixbuf(APixdata: PGdkPixdata; pixbuf: PGdkPixbuf; use_rle: gboolean): gpointer; cdecl; external;
 function gdk_pixdata_serialize(APixdata: PGdkPixdata; stream_length_p: Pguint): Pguint8; cdecl; external;
 function gdk_pixdata_to_csource(APixdata: PGdkPixdata; name: Pgchar; dump_type: TGdkPixdataDumpType): PGString; cdecl; external;
-procedure gdk_pixbuf_animation_unref(APixbufAnimation: PGdkPixbufAnimation); cdecl; external;
 procedure gdk_pixbuf_composite(APixbuf: PGdkPixbuf; dest: PGdkPixbuf; dest_x: gint; dest_y: gint; dest_width: gint; dest_height: gint; offset_x: gdouble; offset_y: gdouble; scale_x: gdouble; scale_y: gdouble; interp_type: TGdkInterpType; overall_alpha: gint); cdecl; external;
 procedure gdk_pixbuf_composite_color(APixbuf: PGdkPixbuf; dest: PGdkPixbuf; dest_x: gint; dest_y: gint; dest_width: gint; dest_height: gint; offset_x: gdouble; offset_y: gdouble; scale_x: gdouble; scale_y: gdouble; interp_type: TGdkInterpType; overall_alpha: gint; check_x: gint; check_y: gint; check_size: gint; color1: guint32; color2: guint32); cdecl; external;
 procedure gdk_pixbuf_copy_area(APixbuf: PGdkPixbuf; src_x: gint; src_y: gint; width: gint; height: gint; dest_pixbuf: PGdkPixbuf; dest_x: gint; dest_y: gint); cdecl; external;
@@ -388,7 +385,6 @@ procedure gdk_pixbuf_save_to_stream_async(APixbuf: PGdkPixbuf; stream: PGOutputS
 procedure gdk_pixbuf_scale(APixbuf: PGdkPixbuf; dest: PGdkPixbuf; dest_x: gint; dest_y: gint; dest_width: gint; dest_height: gint; offset_x: gdouble; offset_y: gdouble; scale_x: gdouble; scale_y: gdouble; interp_type: TGdkInterpType); cdecl; external;
 procedure gdk_pixbuf_simple_anim_add_frame(APixbufSimpleAnim: PGdkPixbufSimpleAnim; pixbuf: PGdkPixbuf); cdecl; external;
 procedure gdk_pixbuf_simple_anim_set_loop(APixbufSimpleAnim: PGdkPixbufSimpleAnim; loop: gboolean); cdecl; external;
-procedure gdk_pixbuf_unref(APixbuf: PGdkPixbuf); cdecl; external;
 implementation
 function TGdkPixbuf.new(colorspace: TGdkColorspace; has_alpha: gboolean; bits_per_sample: gint; width: gint; height: gint): PGdkPixbuf; cdecl;
 begin
@@ -570,11 +566,6 @@ begin
   Result := GdkPixbuf2.gdk_pixbuf_new_subpixbuf(@self, src_x, src_y, width, height);
 end;
 
-function TGdkPixbuf.ref: PGdkPixbuf; cdecl;
-begin
-  Result := GdkPixbuf2.gdk_pixbuf_ref(@self);
-end;
-
 function TGdkPixbuf.rotate_simple(angle: TGdkPixbufRotation): PGdkPixbuf; cdecl;
 begin
   Result := GdkPixbuf2.gdk_pixbuf_rotate_simple(@self, angle);
@@ -608,11 +599,6 @@ end;
 function TGdkPixbuf.scale_simple(dest_width: gint; dest_height: gint; interp_type: TGdkInterpType): PGdkPixbuf; cdecl;
 begin
   Result := GdkPixbuf2.gdk_pixbuf_scale_simple(@self, dest_width, dest_height, interp_type);
-end;
-
-procedure TGdkPixbuf.unref; cdecl;
-begin
-  GdkPixbuf2.gdk_pixbuf_unref(@self);
 end;
 
 function TGdkPixdata.deserialize(stream_length: guint; stream: Pguint8): gboolean; cdecl;
@@ -718,16 +704,6 @@ end;
 function TGdkPixbufAnimation.is_static_image: gboolean; cdecl;
 begin
   Result := GdkPixbuf2.gdk_pixbuf_animation_is_static_image(@self);
-end;
-
-function TGdkPixbufAnimation.ref: PGdkPixbufAnimation; cdecl;
-begin
-  Result := GdkPixbuf2.gdk_pixbuf_animation_ref(@self);
-end;
-
-procedure TGdkPixbufAnimation.unref; cdecl;
-begin
-  GdkPixbuf2.gdk_pixbuf_animation_unref(@self);
 end;
 
 function TGdkPixbufAnimationIter.advance(current_time: PGTimeVal): gboolean; cdecl;

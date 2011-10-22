@@ -280,7 +280,7 @@ type
     function reset: PGValue; cdecl; inline;
     procedure set_boolean(v_boolean: gboolean); cdecl; inline;
     procedure set_boxed(v_boxed: gpointer); cdecl; inline;
-    procedure set_boxed_take_ownership(v_boxed: gpointer); cdecl; inline;
+    
     procedure set_char(v_char: gchar); cdecl; inline;
     procedure set_double(v_double: gdouble); cdecl; inline;
     procedure set_enum(v_enum: gint); cdecl; inline;
@@ -292,14 +292,14 @@ type
     procedure set_int64(v_int64: gint64); cdecl; inline;
     procedure set_long(v_long: glong); cdecl; inline;
     procedure set_object(v_object: PGObject); cdecl; inline;
-    procedure set_object_take_ownership(v_object: gpointer); cdecl; inline;
+    
     procedure set_param(param: PGParamSpec); cdecl; inline;
-    procedure set_param_take_ownership(param: PGParamSpec); cdecl; inline;
+    
     procedure set_pointer(v_pointer: gpointer); cdecl; inline;
     procedure set_static_boxed(v_boxed: gpointer); cdecl; inline;
     procedure set_static_string(v_string: Pgchar); cdecl; inline;
     procedure set_string(v_string: Pgchar); cdecl; inline;
-    procedure set_string_take_ownership(v_string: Pgchar); cdecl; inline;
+    
     procedure set_uchar(v_uchar: guint8); cdecl; inline;
     procedure set_uint(v_uint: guint); cdecl; inline;
     procedure set_uint64(v_uint64: guint64); cdecl; inline;
@@ -1337,7 +1337,6 @@ procedure g_value_copy(AValue: PGValue; dest_value: PGValue); cdecl; external;
 procedure g_value_register_transform_func(src_type: TGType; dest_type: TGType; transform_func: TGValueTransform); cdecl; external;
 procedure g_value_set_boolean(AValue: PGValue; v_boolean: gboolean); cdecl; external;
 procedure g_value_set_boxed(AValue: PGValue; v_boxed: gpointer); cdecl; external;
-procedure g_value_set_boxed_take_ownership(AValue: PGValue; v_boxed: gpointer); cdecl; external;
 procedure g_value_set_char(AValue: PGValue; v_char: gchar); cdecl; external;
 procedure g_value_set_double(AValue: PGValue; v_double: gdouble); cdecl; external;
 procedure g_value_set_enum(AValue: PGValue; v_enum: gint); cdecl; external;
@@ -1349,14 +1348,11 @@ procedure g_value_set_int(AValue: PGValue; v_int: gint); cdecl; external;
 procedure g_value_set_int64(AValue: PGValue; v_int64: gint64); cdecl; external;
 procedure g_value_set_long(AValue: PGValue; v_long: glong); cdecl; external;
 procedure g_value_set_object(AValue: PGValue; v_object: PGObject); cdecl; external;
-procedure g_value_set_object_take_ownership(AValue: PGValue; v_object: gpointer); cdecl; external;
 procedure g_value_set_param(AValue: PGValue; param: PGParamSpec); cdecl; external;
-procedure g_value_set_param_take_ownership(AValue: PGValue; param: PGParamSpec); cdecl; external;
 procedure g_value_set_pointer(AValue: PGValue; v_pointer: gpointer); cdecl; external;
 procedure g_value_set_static_boxed(AValue: PGValue; v_boxed: gpointer); cdecl; external;
 procedure g_value_set_static_string(AValue: PGValue; v_string: Pgchar); cdecl; external;
 procedure g_value_set_string(AValue: PGValue; v_string: Pgchar); cdecl; external;
-procedure g_value_set_string_take_ownership(AValue: PGValue; v_string: Pgchar); cdecl; external;
 procedure g_value_set_uchar(AValue: PGValue; v_uchar: guint8); cdecl; external;
 procedure g_value_set_uint(AValue: PGValue; v_uint: guint); cdecl; external;
 procedure g_value_set_uint64(AValue: PGValue; v_uint64: guint64); cdecl; external;
@@ -1729,11 +1725,6 @@ begin
   GObject2.g_value_set_boxed(@self, v_boxed);
 end;
 
-procedure TGValue.set_boxed_take_ownership(v_boxed: gpointer); cdecl;
-begin
-  GObject2.g_value_set_boxed_take_ownership(@self, v_boxed);
-end;
-
 procedure TGValue.set_char(v_char: gchar); cdecl;
 begin
   GObject2.g_value_set_char(@self, v_char);
@@ -1789,19 +1780,9 @@ begin
   GObject2.g_value_set_object(@self, v_object);
 end;
 
-procedure TGValue.set_object_take_ownership(v_object: gpointer); cdecl;
-begin
-  GObject2.g_value_set_object_take_ownership(@self, v_object);
-end;
-
 procedure TGValue.set_param(param: PGParamSpec); cdecl;
 begin
   GObject2.g_value_set_param(@self, param);
-end;
-
-procedure TGValue.set_param_take_ownership(param: PGParamSpec); cdecl;
-begin
-  GObject2.g_value_set_param_take_ownership(@self, param);
 end;
 
 procedure TGValue.set_pointer(v_pointer: gpointer); cdecl;
@@ -1822,11 +1803,6 @@ end;
 procedure TGValue.set_string(v_string: Pgchar); cdecl;
 begin
   GObject2.g_value_set_string(@self, v_string);
-end;
-
-procedure TGValue.set_string_take_ownership(v_string: Pgchar); cdecl;
-begin
-  GObject2.g_value_set_string_take_ownership(@self, v_string);
 end;
 
 procedure TGValue.set_uchar(v_uchar: guint8); cdecl;

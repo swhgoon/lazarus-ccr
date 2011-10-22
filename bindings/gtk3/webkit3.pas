@@ -3906,9 +3906,6 @@ type
   PPWebKitWebFrame = ^PWebKitWebFrame;
   PWebKitWebFrame = ^TWebKitWebFrame;
 
-  PPWebKitWebView = ^PWebKitWebView;
-  PWebKitWebView = ^TWebKitWebView;
-
   PPWebKitWebDataSource = ^PWebKitWebDataSource;
   PWebKitWebDataSource = ^TWebKitWebDataSource;
 
@@ -3918,11 +3915,14 @@ type
   PPWebKitSecurityOrigin = ^PWebKitSecurityOrigin;
   PWebKitSecurityOrigin = ^TWebKitSecurityOrigin;
 
+  PPWebKitWebView = ^PWebKitWebView;
+  PWebKitWebView = ^TWebKitWebView;
+
   PPWebKitWebFramePrivate = ^PWebKitWebFramePrivate;
   PWebKitWebFramePrivate = ^TWebKitWebFramePrivate;
   TWebKitWebFrame = object(TGObject)
     priv: PWebKitWebFramePrivate;
-    function new(web_view: PWebKitWebView): PWebKitWebFrame; cdecl; inline; static;
+    
     function find_frame(name: Pgchar): PWebKitWebFrame; cdecl; inline;
     function get_data_source: PWebKitWebDataSource; cdecl; inline;
     function get_global_context: TJSGlobalContextRef; cdecl; inline;
@@ -4137,7 +4137,7 @@ type
   PWebKitWebBackForwardListPrivate = ^TWebKitWebBackForwardListPrivate;
   TWebKitWebBackForwardList = object(TGObject)
     priv: PWebKitWebBackForwardListPrivate;
-    function new_with_web_view(web_view: PWebKitWebView): PWebKitWebBackForwardList; cdecl; inline; static;
+    
     procedure add_item(history_item: TWebKitWebHistoryItem); cdecl; inline;
     procedure clear; cdecl; inline;
     function contains_item(history_item: TWebKitWebHistoryItem): gboolean; cdecl; inline;
@@ -4216,13 +4216,13 @@ type
     procedure go_forward; cdecl; inline;
     function go_to_back_forward_item(item: PWebKitWebHistoryItem): gboolean; cdecl; inline;
     function has_selection: gboolean; cdecl; inline;
-    procedure load_html_string(content: Pgchar; base_uri: Pgchar); cdecl; inline;
+    
     procedure load_request(request: PWebKitNetworkRequest); cdecl; inline;
     procedure load_string(content: Pgchar; mime_type: Pgchar; encoding: Pgchar; base_uri: Pgchar); cdecl; inline;
     procedure load_uri(uri: Pgchar); cdecl; inline;
     function mark_text_matches(string_: Pgchar; case_sensitive: gboolean; limit: guint): guint; cdecl; inline;
     procedure move_cursor(step: TGtkMovementStep; count: gint); cdecl; inline;
-    procedure open(uri: Pgchar); cdecl; inline;
+    
     procedure paste_clipboard; cdecl; inline;
     procedure redo; cdecl; inline;
     procedure reload; cdecl; inline;
@@ -5795,7 +5795,6 @@ function webkit_web_back_forward_list_get_forward_list_with_limit(AWebBackForwar
 function webkit_web_back_forward_list_get_limit(AWebBackForwardList: PWebKitWebBackForwardList): gint; cdecl; external;
 function webkit_web_back_forward_list_get_nth_item(AWebBackForwardList: PWebKitWebBackForwardList; index: gint): TWebKitWebHistoryItem; cdecl; external;
 function webkit_web_back_forward_list_get_type: TGType; cdecl; external;
-function webkit_web_back_forward_list_new_with_web_view(web_view: PWebKitWebView): PWebKitWebBackForwardList; cdecl; external;
 function webkit_web_data_source_get_data(AWebDataSource: PWebKitWebDataSource): PGString; cdecl; external;
 function webkit_web_data_source_get_encoding(AWebDataSource: PWebKitWebDataSource): Pgchar; cdecl; external;
 function webkit_web_data_source_get_initial_request(AWebDataSource: PWebKitWebDataSource): PWebKitNetworkRequest; cdecl; external;
@@ -5830,7 +5829,6 @@ function webkit_web_frame_get_type: TGType; cdecl; external;
 function webkit_web_frame_get_uri(AWebFrame: PWebKitWebFrame): Pgchar; cdecl; external;
 function webkit_web_frame_get_vertical_scrollbar_policy(AWebFrame: PWebKitWebFrame): TGtkPolicyType; cdecl; external;
 function webkit_web_frame_get_web_view(AWebFrame: PWebKitWebFrame): PWebKitWebView; cdecl; external;
-function webkit_web_frame_new(web_view: PWebKitWebView): PWebKitWebFrame; cdecl; external;
 function webkit_web_frame_print_full(AWebFrame: PWebKitWebFrame; operation: PGtkPrintOperation; action: TGtkPrintOperationAction): TGtkPrintOperationResult; cdecl; external;
 function webkit_web_history_item_copy(AWebHistoryItem: PWebKitWebHistoryItem): PWebKitWebHistoryItem; cdecl; external;
 function webkit_web_history_item_get_alternate_title(AWebHistoryItem: PWebKitWebHistoryItem): Pgchar; cdecl; external;
@@ -6461,12 +6459,10 @@ procedure webkit_web_view_execute_script(AWebView: PWebKitWebView; script: Pgcha
 procedure webkit_web_view_go_back(AWebView: PWebKitWebView); cdecl; external;
 procedure webkit_web_view_go_back_or_forward(AWebView: PWebKitWebView; steps: gint); cdecl; external;
 procedure webkit_web_view_go_forward(AWebView: PWebKitWebView); cdecl; external;
-procedure webkit_web_view_load_html_string(AWebView: PWebKitWebView; content: Pgchar; base_uri: Pgchar); cdecl; external;
 procedure webkit_web_view_load_request(AWebView: PWebKitWebView; request: PWebKitNetworkRequest); cdecl; external;
 procedure webkit_web_view_load_string(AWebView: PWebKitWebView; content: Pgchar; mime_type: Pgchar; encoding: Pgchar; base_uri: Pgchar); cdecl; external;
 procedure webkit_web_view_load_uri(AWebView: PWebKitWebView; uri: Pgchar); cdecl; external;
 procedure webkit_web_view_move_cursor(AWebView: PWebKitWebView; step: TGtkMovementStep; count: gint); cdecl; external;
-procedure webkit_web_view_open(AWebView: PWebKitWebView; uri: Pgchar); cdecl; external;
 procedure webkit_web_view_paste_clipboard(AWebView: PWebKitWebView); cdecl; external;
 procedure webkit_web_view_redo(AWebView: PWebKitWebView); cdecl; external;
 procedure webkit_web_view_reload(AWebView: PWebKitWebView); cdecl; external;
@@ -13523,11 +13519,6 @@ begin
   WebKit3.webkit_network_response_set_uri(@self, uri);
 end;
 
-function TWebKitWebFrame.new(web_view: PWebKitWebView): PWebKitWebFrame; cdecl;
-begin
-  Result := WebKit3.webkit_web_frame_new(web_view);
-end;
-
 function TWebKitWebFrame.find_frame(name: Pgchar): PWebKitWebFrame; cdecl;
 begin
   Result := WebKit3.webkit_web_frame_find_frame(@self, name);
@@ -13701,11 +13692,6 @@ end;
 procedure TWebKitViewportAttributes.recompute; cdecl;
 begin
   WebKit3.webkit_viewport_attributes_recompute(@self);
-end;
-
-function TWebKitWebBackForwardList.new_with_web_view(web_view: PWebKitWebView): PWebKitWebBackForwardList; cdecl;
-begin
-  Result := WebKit3.webkit_web_back_forward_list_new_with_web_view(web_view);
 end;
 
 function TWebKitWebHistoryItem.new: PWebKitWebHistoryItem; cdecl;
@@ -14053,11 +14039,6 @@ begin
   Result := WebKit3.webkit_web_view_has_selection(@self);
 end;
 
-procedure TWebKitWebView.load_html_string(content: Pgchar; base_uri: Pgchar); cdecl;
-begin
-  WebKit3.webkit_web_view_load_html_string(@self, content, base_uri);
-end;
-
 procedure TWebKitWebView.load_request(request: PWebKitNetworkRequest); cdecl;
 begin
   WebKit3.webkit_web_view_load_request(@self, request);
@@ -14081,11 +14062,6 @@ end;
 procedure TWebKitWebView.move_cursor(step: TGtkMovementStep; count: gint); cdecl;
 begin
   WebKit3.webkit_web_view_move_cursor(@self, step, count);
-end;
-
-procedure TWebKitWebView.open(uri: Pgchar); cdecl;
-begin
-  WebKit3.webkit_web_view_open(@self, uri);
 end;
 
 procedure TWebKitWebView.paste_clipboard; cdecl;

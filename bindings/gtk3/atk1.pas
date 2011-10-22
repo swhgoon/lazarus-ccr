@@ -376,8 +376,8 @@ type
     function get_attributes: PAtkAttributeSet; cdecl; inline;
     function get_description: Pgchar; cdecl; inline;
     function get_index_in_parent: gint; cdecl; inline;
-    function get_layer: TAtkLayer; cdecl; inline;
-    function get_mdi_zorder: gint; cdecl; inline;
+    
+    
     function get_n_accessible_children: gint; cdecl; inline;
     function get_name: Pgchar; cdecl; inline;
     function get_parent: PAtkObject; cdecl; inline;
@@ -1250,8 +1250,6 @@ function atk_object_factory_get_type: TGType; cdecl; external;
 function atk_object_get_attributes(AObject: PAtkObject): PAtkAttributeSet; cdecl; external;
 function atk_object_get_description(AObject: PAtkObject): Pgchar; cdecl; external;
 function atk_object_get_index_in_parent(AObject: PAtkObject): gint; cdecl; external;
-function atk_object_get_layer(AObject: PAtkObject): TAtkLayer; cdecl; external;
-function atk_object_get_mdi_zorder(AObject: PAtkObject): gint; cdecl; external;
 function atk_object_get_n_accessible_children(AObject: PAtkObject): gint; cdecl; external;
 function atk_object_get_name(AObject: PAtkObject): Pgchar; cdecl; external;
 function atk_object_get_parent(AObject: PAtkObject): PAtkObject; cdecl; external;
@@ -1474,16 +1472,6 @@ end;
 function TAtkObject.get_index_in_parent: gint; cdecl;
 begin
   Result := Atk1.atk_object_get_index_in_parent(@self);
-end;
-
-function TAtkObject.get_layer: TAtkLayer; cdecl;
-begin
-  Result := Atk1.atk_object_get_layer(@self);
-end;
-
-function TAtkObject.get_mdi_zorder: gint; cdecl;
-begin
-  Result := Atk1.atk_object_get_mdi_zorder(@self);
 end;
 
 function TAtkObject.get_n_accessible_children: gint; cdecl;
