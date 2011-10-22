@@ -1106,8 +1106,8 @@ type
     function create_readwrite_finish(res: PGAsyncResult): PGFileIOStream; cdecl; inline;
     function delete(cancellable: PGCancellable): gboolean; cdecl; inline;
     function dup: PGFile; cdecl; inline;
-    
-    
+    procedure eject_mountable(flags: TGMountUnmountFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function eject_mountable_finish(result_: PGAsyncResult): gboolean; cdecl; inline;
     procedure eject_mountable_with_operation(flags: TGMountUnmountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
     function eject_mountable_with_operation_finish(result_: PGAsyncResult): gboolean; cdecl; inline;
     function enumerate_children(attributes: Pgchar; flags: TGFileQueryInfoFlags; cancellable: PGCancellable): PGFileEnumerator; cdecl; inline;
@@ -1195,8 +1195,8 @@ type
     function stop_mountable_finish(result_: PGAsyncResult): gboolean; cdecl; inline;
     function supports_thread_contexts: gboolean; cdecl; inline;
     function trash(cancellable: PGCancellable): gboolean; cdecl; inline;
-    
-    
+    procedure unmount_mountable(flags: TGMountUnmountFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function unmount_mountable_finish(result_: PGAsyncResult): gboolean; cdecl; inline;
     procedure unmount_mountable_with_operation(flags: TGMountUnmountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
     function unmount_mountable_with_operation_finish(result_: PGAsyncResult): gboolean; cdecl; inline;
   end;
@@ -2166,8 +2166,8 @@ type
     priv: PGDBusObjectProxyPrivate;
     function new(connection: PGDBusConnection; object_path: Pgchar): PGDBusObjectProxy; cdecl; inline; static;
     function get_connection: PGDBusConnection; cdecl; inline;
-    property connection:  PGDBusConnection read get_connection  { property is writeable but setter not declared } ;
-    //property object_path: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_object_path  { property is writeable but setter not declared } ;
+    //property g_connection: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_g_connection  { property is writeable but setter not declared } ;
+    //property g_object_path: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_g_object_path  { property is writeable but setter not declared } ;
   end;
 
   PPGDBusProxy = ^PGDBusProxy;
@@ -2274,7 +2274,7 @@ type
     procedure remove_interface(interface_: PGDBusInterfaceSkeleton); cdecl; inline;
     procedure remove_interface_by_name(interface_name: Pgchar); cdecl; inline;
     procedure set_object_path(object_path: Pgchar); cdecl; inline;
-    //property object_path: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_object_path  { property is writeable but setter not declared } ;
+    //property g_object_path: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_g_object_path  { property is writeable but setter not declared } ;
   end;
 
   TGDBusObjectManagerServerPrivate = record
@@ -2529,8 +2529,8 @@ type
     function can_start: gboolean; cdecl; inline;
     function can_start_degraded: gboolean; cdecl; inline;
     function can_stop: gboolean; cdecl; inline;
-    
-    
+    procedure eject(flags: TGMountUnmountFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function eject_finish(result_: PGAsyncResult): gboolean; cdecl; inline;
     procedure eject_with_operation(flags: TGMountUnmountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
     function eject_with_operation_finish(result_: PGAsyncResult): gboolean; cdecl; inline;
     function enumerate_identifiers: PPgchar; cdecl; inline;
@@ -2676,8 +2676,8 @@ type
     unmounted: procedure; cdecl;
     function can_eject: gboolean; cdecl; inline;
     function can_unmount: gboolean; cdecl; inline;
-    
-    
+    procedure eject(flags: TGMountUnmountFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function eject_finish(result_: PGAsyncResult): gboolean; cdecl; inline;
     procedure eject_with_operation(flags: TGMountUnmountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
     function eject_with_operation_finish(result_: PGAsyncResult): gboolean; cdecl; inline;
     function get_default_location: PGFile; cdecl; inline;
@@ -2694,8 +2694,8 @@ type
     procedure remount(flags: TGMountMountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
     function remount_finish(result_: PGAsyncResult): gboolean; cdecl; inline;
     procedure shadow; cdecl; inline;
-    
-    
+    procedure unmount(flags: TGMountUnmountFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function unmount_finish(result_: PGAsyncResult): gboolean; cdecl; inline;
     procedure unmount_with_operation(flags: TGMountUnmountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
     function unmount_with_operation_finish(result_: PGAsyncResult): gboolean; cdecl; inline;
     procedure unshadow; cdecl; inline;
@@ -3428,8 +3428,8 @@ type
     removed: procedure; cdecl;
     function can_eject: gboolean; cdecl; inline;
     function can_mount: gboolean; cdecl; inline;
-    
-    
+    procedure eject(flags: TGMountUnmountFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function eject_finish(result_: PGAsyncResult): gboolean; cdecl; inline;
     procedure eject_with_operation(flags: TGMountUnmountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
     function eject_with_operation_finish(result_: PGAsyncResult): gboolean; cdecl; inline;
     function enumerate_identifiers: PPgchar; cdecl; inline;
@@ -3506,7 +3506,7 @@ type
   PGVolumeMonitor = ^TGVolumeMonitor;
   TGVolumeMonitor = object(TGObject)
     priv: gpointer;
-    
+    function adopt_orphan_mount(mount: PGMount): PGVolume; cdecl; inline; static;
     function get: PGVolumeMonitor; cdecl; inline; static;
     function get_connected_drives: PGList; cdecl; inline;
     function get_mount_for_uuid(uuid: Pgchar): PGMount; cdecl; inline;
@@ -3922,9 +3922,9 @@ type
     procedure sync; cdecl; inline; static;
     procedure unbind(object_: gpointer; property_: Pgchar); cdecl; inline; static;
     procedure apply; cdecl; inline;
-    procedure bind(key: Pgchar; object_: TGObject; property_: Pgchar; flags: TGSettingsBindFlags); cdecl; inline;
-    procedure bind_with_mapping(key: Pgchar; object_: TGObject; property_: Pgchar; flags: TGSettingsBindFlags; get_mapping: TGSettingsBindGetMapping; set_mapping: TGSettingsBindSetMapping; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; inline;
-    procedure bind_writable(key: Pgchar; object_: TGObject; property_: Pgchar; inverted: gboolean); cdecl; inline;
+    procedure bind(key: Pgchar; object_: PGObject; property_: Pgchar; flags: TGSettingsBindFlags); cdecl; inline;
+    procedure bind_with_mapping(key: Pgchar; object_: PGObject; property_: Pgchar; flags: TGSettingsBindFlags; get_mapping: TGSettingsBindGetMapping; set_mapping: TGSettingsBindSetMapping; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; inline;
+    procedure bind_writable(key: Pgchar; object_: PGObject; property_: Pgchar; inverted: gboolean); cdecl; inline;
     procedure delay; cdecl; inline;
     //procedure get(key: Pgchar; format: Pgchar; args: array of const); cdecl; inline;
     function get_boolean(key: Pgchar): gboolean; cdecl; inline;
@@ -4587,6 +4587,7 @@ type
     function ask_password(password: PGTlsPassword; cancellable: PGCancellable): TGTlsInteractionResult; cdecl; inline;
     procedure ask_password_async(password: PGTlsPassword; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
     function ask_password_finish(result_: PGAsyncResult): TGTlsInteractionResult; cdecl; inline;
+    function invoke_ask_password(password: PGTlsPassword; cancellable: PGCancellable): TGTlsInteractionResult; cdecl; inline;
   end;
 
   PPGTlsRehandshakeMode = ^PGTlsRehandshakeMode;
@@ -4612,7 +4613,7 @@ type
     function get_peer_certificate_errors: TGTlsCertificateFlags; cdecl; inline;
     function get_rehandshake_mode: TGTlsRehandshakeMode; cdecl; inline;
     function get_require_close_notify: gboolean; cdecl; inline;
-    
+    function get_use_system_certdb: gboolean; cdecl; inline;
     function handshake(cancellable: PGCancellable): gboolean; cdecl; inline;
     procedure handshake_async(io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
     function handshake_finish(result_: PGAsyncResult): gboolean; cdecl; inline;
@@ -4621,7 +4622,7 @@ type
     procedure set_interaction(interaction: PGTlsInteraction); cdecl; inline;
     procedure set_rehandshake_mode(mode: TGTlsRehandshakeMode); cdecl; inline;
     procedure set_require_close_notify(require_close_notify: gboolean); cdecl; inline;
-    
+    procedure set_use_system_certdb(use_system_certdb: gboolean); cdecl; inline;
     //property base_io_stream: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_base_io_stream  { property is writeable but setter not declared } ;
     property certificate:  PGTlsCertificate read get_certificate  { property is writeable but setter not declared } ;
     property database:  PGTlsDatabase read get_database  { property is writeable but setter not declared } ;
@@ -4630,7 +4631,7 @@ type
     property peer_certificate_errors:  TGTlsCertificateFlags read get_peer_certificate_errors ;
     property rehandshake_mode:  TGTlsRehandshakeMode read get_rehandshake_mode  { property is writeable but setter not declared } ;
     property require_close_notify:  gboolean read get_require_close_notify  { property is writeable but setter not declared } ;
-    //property use_system_certdb: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_use_system_certdb  { property is writeable but setter not declared } ;
+    property use_system_certdb:  gboolean read get_use_system_certdb  { property is writeable but setter not declared } ;
   end;
 
   PPGTlsConnectionClass = ^PGTlsConnectionClass;
@@ -5439,6 +5440,7 @@ function g_drive_can_poll_for_media(ADrive: PGDrive): gboolean; cdecl; external;
 function g_drive_can_start(ADrive: PGDrive): gboolean; cdecl; external;
 function g_drive_can_start_degraded(ADrive: PGDrive): gboolean; cdecl; external;
 function g_drive_can_stop(ADrive: PGDrive): gboolean; cdecl; external;
+function g_drive_eject_finish(ADrive: PGDrive; result_: PGAsyncResult): gboolean; cdecl; external;
 function g_drive_eject_with_operation_finish(ADrive: PGDrive; result_: PGAsyncResult): gboolean; cdecl; external;
 function g_drive_enumerate_identifiers(ADrive: PGDrive): PPgchar; cdecl; external;
 function g_drive_get_icon(ADrive: PGDrive): PGIcon; cdecl; external;
@@ -5488,6 +5490,7 @@ function g_file_delete(AFile: PGFile; cancellable: PGCancellable): gboolean; cde
 function g_file_descriptor_based_get_fd(AFileDescriptorBased: PGFileDescriptorBased): gint; cdecl; external;
 function g_file_descriptor_based_get_type: TGType; cdecl; external;
 function g_file_dup(AFile: PGFile): PGFile; cdecl; external;
+function g_file_eject_mountable_finish(AFile: PGFile; result_: PGAsyncResult): gboolean; cdecl; external;
 function g_file_eject_mountable_with_operation_finish(AFile: PGFile; result_: PGAsyncResult): gboolean; cdecl; external;
 function g_file_enumerate_children(AFile: PGFile; attributes: Pgchar; flags: TGFileQueryInfoFlags; cancellable: PGCancellable): PGFileEnumerator; cdecl; external;
 function g_file_enumerate_children_finish(AFile: PGFile; res: PGAsyncResult): PGFileEnumerator; cdecl; external;
@@ -5619,6 +5622,7 @@ function g_file_start_mountable_finish(AFile: PGFile; result_: PGAsyncResult): g
 function g_file_stop_mountable_finish(AFile: PGFile; result_: PGAsyncResult): gboolean; cdecl; external;
 function g_file_supports_thread_contexts(AFile: PGFile): gboolean; cdecl; external;
 function g_file_trash(AFile: PGFile; cancellable: PGCancellable): gboolean; cdecl; external;
+function g_file_unmount_mountable_finish(AFile: PGFile; result_: PGAsyncResult): gboolean; cdecl; external;
 function g_file_unmount_mountable_with_operation_finish(AFile: PGFile; result_: PGAsyncResult): gboolean; cdecl; external;
 function g_filename_completer_get_completion_suffix(AFilenameCompleter: PGFilenameCompleter; initial_text: Pgchar): Pgchar; cdecl; external;
 function g_filename_completer_get_completions(AFilenameCompleter: PGFilenameCompleter; initial_text: Pgchar): PPgchar; cdecl; external;
@@ -5716,6 +5720,7 @@ function g_memory_output_stream_new(data: gpointer; size: gsize; realloc_functio
 function g_memory_output_stream_steal_data(AMemoryOutputStream: PGMemoryOutputStream): gpointer; cdecl; external;
 function g_mount_can_eject(AMount: PGMount): gboolean; cdecl; external;
 function g_mount_can_unmount(AMount: PGMount): gboolean; cdecl; external;
+function g_mount_eject_finish(AMount: PGMount; result_: PGAsyncResult): gboolean; cdecl; external;
 function g_mount_eject_with_operation_finish(AMount: PGMount; result_: PGAsyncResult): gboolean; cdecl; external;
 function g_mount_get_default_location(AMount: PGMount): PGFile; cdecl; external;
 function g_mount_get_drive(AMount: PGMount): PGDrive; cdecl; external;
@@ -5737,6 +5742,7 @@ function g_mount_operation_get_type: TGType; cdecl; external;
 function g_mount_operation_get_username(AMountOperation: PGMountOperation): Pgchar; cdecl; external;
 function g_mount_operation_new: PGMountOperation; cdecl; external;
 function g_mount_remount_finish(AMount: PGMount; result_: PGAsyncResult): gboolean; cdecl; external;
+function g_mount_unmount_finish(AMount: PGMount; result_: PGAsyncResult): gboolean; cdecl; external;
 function g_mount_unmount_with_operation_finish(AMount: PGMount; result_: PGAsyncResult): gboolean; cdecl; external;
 function g_native_volume_monitor_get_type: TGType; cdecl; external;
 function g_network_address_get_hostname(ANetworkAddress: PGNetworkAddress): Pgchar; cdecl; external;
@@ -6009,6 +6015,7 @@ function g_tls_connection_get_peer_certificate_errors(ATlsConnection: PGTlsConne
 function g_tls_connection_get_rehandshake_mode(ATlsConnection: PGTlsConnection): TGTlsRehandshakeMode; cdecl; external;
 function g_tls_connection_get_require_close_notify(ATlsConnection: PGTlsConnection): gboolean; cdecl; external;
 function g_tls_connection_get_type: TGType; cdecl; external;
+function g_tls_connection_get_use_system_certdb(ATlsConnection: PGTlsConnection): gboolean; cdecl; external;
 function g_tls_connection_handshake(ATlsConnection: PGTlsConnection; cancellable: PGCancellable): gboolean; cdecl; external;
 function g_tls_connection_handshake_finish(ATlsConnection: PGTlsConnection; result_: PGAsyncResult): gboolean; cdecl; external;
 function g_tls_database_create_certificate_handle(ATlsDatabase: PGTlsDatabase; certificate: PGTlsCertificate): Pgchar; cdecl; external;
@@ -6027,6 +6034,7 @@ function g_tls_file_database_new(anchors: Pgchar): PGTlsDatabase; cdecl; externa
 function g_tls_interaction_ask_password(ATlsInteraction: PGTlsInteraction; password: PGTlsPassword; cancellable: PGCancellable): TGTlsInteractionResult; cdecl; external;
 function g_tls_interaction_ask_password_finish(ATlsInteraction: PGTlsInteraction; result_: PGAsyncResult): TGTlsInteractionResult; cdecl; external;
 function g_tls_interaction_get_type: TGType; cdecl; external;
+function g_tls_interaction_invoke_ask_password(ATlsInteraction: PGTlsInteraction; password: PGTlsPassword; cancellable: PGCancellable): TGTlsInteractionResult; cdecl; external;
 function g_tls_password_get_description(ATlsPassword: PGTlsPassword): Pgchar; cdecl; external;
 function g_tls_password_get_flags(ATlsPassword: PGTlsPassword): TGTlsPasswordFlags; cdecl; external;
 function g_tls_password_get_type: TGType; cdecl; external;
@@ -6114,6 +6122,7 @@ function g_vfs_is_active(AVfs: PGVfs): gboolean; cdecl; external;
 function g_vfs_parse_name(AVfs: PGVfs; parse_name: Pgchar): PGFile; cdecl; external;
 function g_volume_can_eject(AVolume: PGVolume): gboolean; cdecl; external;
 function g_volume_can_mount(AVolume: PGVolume): gboolean; cdecl; external;
+function g_volume_eject_finish(AVolume: PGVolume; result_: PGAsyncResult): gboolean; cdecl; external;
 function g_volume_eject_with_operation_finish(AVolume: PGVolume; result_: PGAsyncResult): gboolean; cdecl; external;
 function g_volume_enumerate_identifiers(AVolume: PGVolume): PPgchar; cdecl; external;
 function g_volume_get_activation_root(AVolume: PGVolume): PGFile; cdecl; external;
@@ -6124,6 +6133,7 @@ function g_volume_get_mount(AVolume: PGVolume): PGMount; cdecl; external;
 function g_volume_get_name(AVolume: PGVolume): Pgchar; cdecl; external;
 function g_volume_get_type: TGType; cdecl; external;
 function g_volume_get_uuid(AVolume: PGVolume): Pgchar; cdecl; external;
+function g_volume_monitor_adopt_orphan_mount(mount: PGMount): PGVolume; cdecl; external;
 function g_volume_monitor_get: PGVolumeMonitor; cdecl; external;
 function g_volume_monitor_get_connected_drives(AVolumeMonitor: PGVolumeMonitor): PGList; cdecl; external;
 function g_volume_monitor_get_mount_for_uuid(AVolumeMonitor: PGVolumeMonitor; uuid: Pgchar): PGMount; cdecl; external;
@@ -6262,6 +6272,7 @@ procedure g_dbus_server_start(ADBusServer: PGDBusServer); cdecl; external;
 procedure g_dbus_server_stop(ADBusServer: PGDBusServer); cdecl; external;
 procedure g_dbus_signal_info_unref(ADBusSignalInfo: PGDBusSignalInfo); cdecl; external;
 procedure g_desktop_app_info_set_desktop_env(desktop_env: Pgchar); cdecl; external;
+procedure g_drive_eject(ADrive: PGDrive; flags: TGMountUnmountFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_drive_eject_with_operation(ADrive: PGDrive; flags: TGMountUnmountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_drive_poll_for_media(ADrive: PGDrive; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_drive_start(ADrive: PGDrive; flags: TGDriveStartFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
@@ -6275,6 +6286,7 @@ procedure g_file_attribute_matcher_unref(AFileAttributeMatcher: PGFileAttributeM
 procedure g_file_copy_async(AFile: PGFile; destination: PGFile; flags: TGFileCopyFlags; io_priority: gint; cancellable: PGCancellable; progress_callback: TGFileProgressCallback; progress_callback_data: gpointer; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_create_async(AFile: PGFile; flags: TGFileCreateFlags; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_create_readwrite_async(AFile: PGFile; flags: TGFileCreateFlags; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
+procedure g_file_eject_mountable(AFile: PGFile; flags: TGMountUnmountFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_eject_mountable_with_operation(AFile: PGFile; flags: TGMountUnmountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_enumerate_children_async(AFile: PGFile; attributes: Pgchar; flags: TGFileQueryInfoFlags; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_enumerator_close_async(AFileEnumerator: PGFileEnumerator; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
@@ -6330,6 +6342,7 @@ procedure g_file_set_attributes_async(AFile: PGFile; info: PGFileInfo; flags: TG
 procedure g_file_set_display_name_async(AFile: PGFile; display_name: Pgchar; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_start_mountable(AFile: PGFile; flags: TGDriveStartFlags; start_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_stop_mountable(AFile: PGFile; flags: TGMountUnmountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
+procedure g_file_unmount_mountable(AFile: PGFile; flags: TGMountUnmountFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_unmount_mountable_with_operation(AFile: PGFile; flags: TGMountUnmountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_filename_completer_set_dirs_only(AFilenameCompleter: PGFilenameCompleter; dirs_only: gboolean); cdecl; external;
 procedure g_filter_input_stream_set_close_base_stream(AFilterInputStream: PGFilterInputStream; close_base: gboolean); cdecl; external;
@@ -6351,6 +6364,7 @@ procedure g_io_stream_close_async(AIOStream: PGIOStream; io_priority: gint; canc
 procedure g_io_stream_splice_async(AIOStream: PGIOStream; stream2: PGIOStream; flags: TGIOStreamSpliceFlags; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_loadable_icon_load_async(ALoadableIcon: PGLoadableIcon; size: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_memory_input_stream_add_data(AMemoryInputStream: PGMemoryInputStream; data: Pguint8; len: gssize; destroy_: TGDestroyNotify); cdecl; external;
+procedure g_mount_eject(AMount: PGMount; flags: TGMountUnmountFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_mount_eject_with_operation(AMount: PGMount; flags: TGMountUnmountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_mount_guess_content_type(AMount: PGMount; force_rescan: gboolean; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_mount_operation_reply(AMountOperation: PGMountOperation; result_: TGMountOperationResult); cdecl; external;
@@ -6362,6 +6376,7 @@ procedure g_mount_operation_set_password_save(AMountOperation: PGMountOperation;
 procedure g_mount_operation_set_username(AMountOperation: PGMountOperation; username: Pgchar); cdecl; external;
 procedure g_mount_remount(AMount: PGMount; flags: TGMountMountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_mount_shadow(AMount: PGMount); cdecl; external;
+procedure g_mount_unmount(AMount: PGMount; flags: TGMountUnmountFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_mount_unmount_with_operation(AMount: PGMount; flags: TGMountUnmountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_mount_unshadow(AMount: PGMount); cdecl; external;
 procedure g_network_service_set_scheme(ANetworkService: PGNetworkService; scheme: Pgchar); cdecl; external;
@@ -6382,9 +6397,9 @@ procedure g_resolver_lookup_by_name_async(AResolver: PGResolver; hostname: Pgcha
 procedure g_resolver_lookup_service_async(AResolver: PGResolver; service: Pgchar; protocol: Pgchar; domain: Pgchar; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_resolver_set_default(AResolver: PGResolver); cdecl; external;
 procedure g_settings_apply(ASettings: PGSettings); cdecl; external;
-procedure g_settings_bind(ASettings: PGSettings; key: Pgchar; object_: TGObject; property_: Pgchar; flags: TGSettingsBindFlags); cdecl; external;
-procedure g_settings_bind_with_mapping(ASettings: PGSettings; key: Pgchar; object_: TGObject; property_: Pgchar; flags: TGSettingsBindFlags; get_mapping: TGSettingsBindGetMapping; set_mapping: TGSettingsBindSetMapping; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
-procedure g_settings_bind_writable(ASettings: PGSettings; key: Pgchar; object_: TGObject; property_: Pgchar; inverted: gboolean); cdecl; external;
+procedure g_settings_bind(ASettings: PGSettings; key: Pgchar; object_: PGObject; property_: Pgchar; flags: TGSettingsBindFlags); cdecl; external;
+procedure g_settings_bind_with_mapping(ASettings: PGSettings; key: Pgchar; object_: PGObject; property_: Pgchar; flags: TGSettingsBindFlags; get_mapping: TGSettingsBindGetMapping; set_mapping: TGSettingsBindSetMapping; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
+procedure g_settings_bind_writable(ASettings: PGSettings; key: Pgchar; object_: PGObject; property_: Pgchar; inverted: gboolean); cdecl; external;
 procedure g_settings_delay(ASettings: PGSettings); cdecl; external;
 procedure g_settings_get(ASettings: PGSettings; key: Pgchar; format: Pgchar; args: array of const); cdecl; external;
 procedure g_settings_reset(ASettings: PGSettings; key: Pgchar); cdecl; external;
@@ -6449,6 +6464,7 @@ procedure g_tls_connection_set_database(ATlsConnection: PGTlsConnection; databas
 procedure g_tls_connection_set_interaction(ATlsConnection: PGTlsConnection; interaction: PGTlsInteraction); cdecl; external;
 procedure g_tls_connection_set_rehandshake_mode(ATlsConnection: PGTlsConnection; mode: TGTlsRehandshakeMode); cdecl; external;
 procedure g_tls_connection_set_require_close_notify(ATlsConnection: PGTlsConnection; require_close_notify: gboolean); cdecl; external;
+procedure g_tls_connection_set_use_system_certdb(ATlsConnection: PGTlsConnection; use_system_certdb: gboolean); cdecl; external;
 procedure g_tls_database_lookup_certificate_for_handle_async(ATlsDatabase: PGTlsDatabase; handle: Pgchar; interaction: PGTlsInteraction; flags: TGTlsDatabaseLookupFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_tls_database_lookup_certificate_issuer_async(ATlsDatabase: PGTlsDatabase; certificate: PGTlsCertificate; interaction: PGTlsInteraction; flags: TGTlsDatabaseLookupFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_tls_database_lookup_certificates_issued_by_async(ATlsDatabase: PGTlsDatabase; issuer_raw_dn: Pguint8; interaction: PGTlsInteraction; flags: TGTlsDatabaseLookupFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
@@ -6464,6 +6480,7 @@ procedure g_unix_mount_free(mount_entry: PGUnixMountEntry); cdecl; external;
 procedure g_unix_mount_monitor_set_rate_limit(AUnixMountMonitor: PGUnixMountMonitor; limit_msec: gint); cdecl; external;
 procedure g_unix_mount_point_free(AUnixMountPoint: PGUnixMountPoint); cdecl; external;
 procedure g_unix_output_stream_set_close_fd(AUnixOutputStream: PGUnixOutputStream; close_fd: gboolean); cdecl; external;
+procedure g_volume_eject(AVolume: PGVolume; flags: TGMountUnmountFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_volume_eject_with_operation(AVolume: PGVolume; flags: TGMountUnmountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_volume_mount(AVolume: PGVolume; flags: TGMountMountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_zlib_compressor_set_file_info(AZlibCompressor: PGZlibCompressor; file_info: PGFileInfo); cdecl; external;
@@ -7013,6 +7030,16 @@ begin
   Result := Gio2.g_file_dup(@self);
 end;
 
+procedure TGFile.eject_mountable(flags: TGMountUnmountFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  Gio2.g_file_eject_mountable(@self, flags, cancellable, callback, user_data);
+end;
+
+function TGFile.eject_mountable_finish(result_: PGAsyncResult): gboolean; cdecl;
+begin
+  Result := Gio2.g_file_eject_mountable_finish(@self, result_);
+end;
+
 procedure TGFile.eject_mountable_with_operation(flags: TGMountUnmountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
 begin
   Gio2.g_file_eject_mountable_with_operation(@self, flags, mount_operation, cancellable, callback, user_data);
@@ -7446,6 +7473,16 @@ end;
 function TGFile.trash(cancellable: PGCancellable): gboolean; cdecl;
 begin
   Result := Gio2.g_file_trash(@self, cancellable);
+end;
+
+procedure TGFile.unmount_mountable(flags: TGMountUnmountFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  Gio2.g_file_unmount_mountable(@self, flags, cancellable, callback, user_data);
+end;
+
+function TGFile.unmount_mountable_finish(result_: PGAsyncResult): gboolean; cdecl;
+begin
+  Result := Gio2.g_file_unmount_mountable_finish(@self, result_);
 end;
 
 procedure TGFile.unmount_mountable_with_operation(flags: TGMountUnmountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
@@ -9363,6 +9400,16 @@ begin
   Result := Gio2.g_drive_can_stop(@self);
 end;
 
+procedure TGDrive.eject(flags: TGMountUnmountFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  Gio2.g_drive_eject(@self, flags, cancellable, callback, user_data);
+end;
+
+function TGDrive.eject_finish(result_: PGAsyncResult): gboolean; cdecl;
+begin
+  Result := Gio2.g_drive_eject_finish(@self, result_);
+end;
+
 procedure TGDrive.eject_with_operation(flags: TGMountUnmountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
 begin
   Gio2.g_drive_eject_with_operation(@self, flags, mount_operation, cancellable, callback, user_data);
@@ -9598,6 +9645,16 @@ begin
   Result := Gio2.g_mount_can_unmount(@self);
 end;
 
+procedure TGMount.eject(flags: TGMountUnmountFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  Gio2.g_mount_eject(@self, flags, cancellable, callback, user_data);
+end;
+
+function TGMount.eject_finish(result_: PGAsyncResult): gboolean; cdecl;
+begin
+  Result := Gio2.g_mount_eject_finish(@self, result_);
+end;
+
 procedure TGMount.eject_with_operation(flags: TGMountUnmountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
 begin
   Gio2.g_mount_eject_with_operation(@self, flags, mount_operation, cancellable, callback, user_data);
@@ -9676,6 +9733,16 @@ end;
 procedure TGMount.shadow; cdecl;
 begin
   Gio2.g_mount_shadow(@self);
+end;
+
+procedure TGMount.unmount(flags: TGMountUnmountFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  Gio2.g_mount_unmount(@self, flags, cancellable, callback, user_data);
+end;
+
+function TGMount.unmount_finish(result_: PGAsyncResult): gboolean; cdecl;
+begin
+  Result := Gio2.g_mount_unmount_finish(@self, result_);
 end;
 
 procedure TGMount.unmount_with_operation(flags: TGMountUnmountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
@@ -10433,6 +10500,16 @@ begin
   Result := Gio2.g_volume_can_mount(@self);
 end;
 
+procedure TGVolume.eject(flags: TGMountUnmountFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  Gio2.g_volume_eject(@self, flags, cancellable, callback, user_data);
+end;
+
+function TGVolume.eject_finish(result_: PGAsyncResult): gboolean; cdecl;
+begin
+  Result := Gio2.g_volume_eject_finish(@self, result_);
+end;
+
 procedure TGVolume.eject_with_operation(flags: TGMountUnmountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
 begin
   Gio2.g_volume_eject_with_operation(@self, flags, mount_operation, cancellable, callback, user_data);
@@ -10496,6 +10573,11 @@ end;
 function TGVolume.should_automount: gboolean; cdecl;
 begin
   Result := Gio2.g_volume_should_automount(@self);
+end;
+
+function TGVolumeMonitor.adopt_orphan_mount(mount: PGMount): PGVolume; cdecl;
+begin
+  Result := Gio2.g_volume_monitor_adopt_orphan_mount(mount);
 end;
 
 function TGVolumeMonitor.get: PGVolumeMonitor; cdecl;
@@ -10883,17 +10965,17 @@ begin
   Gio2.g_settings_apply(@self);
 end;
 
-procedure TGSettings.bind(key: Pgchar; object_: TGObject; property_: Pgchar; flags: TGSettingsBindFlags); cdecl;
+procedure TGSettings.bind(key: Pgchar; object_: PGObject; property_: Pgchar; flags: TGSettingsBindFlags); cdecl;
 begin
   Gio2.g_settings_bind(@self, key, object_, property_, flags);
 end;
 
-procedure TGSettings.bind_with_mapping(key: Pgchar; object_: TGObject; property_: Pgchar; flags: TGSettingsBindFlags; get_mapping: TGSettingsBindGetMapping; set_mapping: TGSettingsBindSetMapping; user_data: gpointer; destroy_: TGDestroyNotify); cdecl;
+procedure TGSettings.bind_with_mapping(key: Pgchar; object_: PGObject; property_: Pgchar; flags: TGSettingsBindFlags; get_mapping: TGSettingsBindGetMapping; set_mapping: TGSettingsBindSetMapping; user_data: gpointer; destroy_: TGDestroyNotify); cdecl;
 begin
   Gio2.g_settings_bind_with_mapping(@self, key, object_, property_, flags, get_mapping, set_mapping, user_data, destroy_);
 end;
 
-procedure TGSettings.bind_writable(key: Pgchar; object_: TGObject; property_: Pgchar; inverted: gboolean); cdecl;
+procedure TGSettings.bind_writable(key: Pgchar; object_: PGObject; property_: Pgchar; inverted: gboolean); cdecl;
 begin
   Gio2.g_settings_bind_writable(@self, key, object_, property_, inverted);
 end;
@@ -11923,6 +12005,11 @@ begin
   Result := Gio2.g_tls_interaction_ask_password_finish(@self, result_);
 end;
 
+function TGTlsInteraction.invoke_ask_password(password: PGTlsPassword; cancellable: PGCancellable): TGTlsInteractionResult; cdecl;
+begin
+  Result := Gio2.g_tls_interaction_invoke_ask_password(@self, password, cancellable);
+end;
+
 function TGTlsConnection.emit_accept_certificate(peer_cert: PGTlsCertificate; errors: TGTlsCertificateFlags): gboolean; cdecl;
 begin
   Result := Gio2.g_tls_connection_emit_accept_certificate(@self, peer_cert, errors);
@@ -11963,6 +12050,11 @@ begin
   Result := Gio2.g_tls_connection_get_require_close_notify(@self);
 end;
 
+function TGTlsConnection.get_use_system_certdb: gboolean; cdecl;
+begin
+  Result := Gio2.g_tls_connection_get_use_system_certdb(@self);
+end;
+
 function TGTlsConnection.handshake(cancellable: PGCancellable): gboolean; cdecl;
 begin
   Result := Gio2.g_tls_connection_handshake(@self, cancellable);
@@ -12001,6 +12093,11 @@ end;
 procedure TGTlsConnection.set_require_close_notify(require_close_notify: gboolean); cdecl;
 begin
   Gio2.g_tls_connection_set_require_close_notify(@self, require_close_notify);
+end;
+
+procedure TGTlsConnection.set_use_system_certdb(use_system_certdb: gboolean); cdecl;
+begin
+  Gio2.g_tls_connection_set_use_system_certdb(@self, use_system_certdb);
 end;
 
 function TGTlsFileDatabase.new(anchors: Pgchar): PGTlsDatabase; cdecl;

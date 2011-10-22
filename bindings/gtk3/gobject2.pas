@@ -194,8 +194,8 @@ type
     function is_floating: gboolean; cdecl; inline;
     procedure notify(property_name: Pgchar); cdecl; inline;
     procedure notify_by_pspec(pspec: PGParamSpec); cdecl; inline;
-    function ref: TGObject; cdecl; inline;
-    function ref_sink: TGObject; cdecl; inline;
+    function ref: PGObject; cdecl; inline;
+    function ref_sink: PGObject; cdecl; inline;
     procedure remove_toggle_ref(notify: TGToggleNotify; data: gpointer); cdecl; inline;
     procedure remove_weak_pointer(weak_pointer_location: Pgpointer); cdecl; inline;
     procedure run_dispose; cdecl; inline;
@@ -229,12 +229,29 @@ type
   PPGValueTransform = ^PGValueTransform;
   PGValueTransform = ^TGValueTransform;
   TGValueTransform = procedure(src_value: PGValue; dest_value: PGValue); cdecl;
+
+  PP_Value__data__union = ^P_Value__data__union;
+  P_Value__data__union = ^T_Value__data__union;
+  T_Value__data__union = record
+    case longint of
+      0 : (v_int: gint);
+      1 : (v_uint: guint);
+      2 : (v_long: glong);
+      3 : (v_ulong: gulong);
+      4 : (v_int64: gint64);
+      5 : (v_uint64: guint64);
+      6 : (v_float: gfloat);
+      7 : (v_double: gdouble);
+      8 : (v_pointer: gpointer);
+  end;
+
+
   TGValue = object
     g_type: TGType;
-    data: array [0..1] of gpointer;
+    data: array [0..1] of T_Value__data__union;
     procedure copy(dest_value: PGValue); cdecl; inline;
     function dup_boxed: gpointer; cdecl; inline;
-    function dup_object: TGObject; cdecl; inline;
+    function dup_object: PGObject; cdecl; inline;
     function dup_param: PGParamSpec; cdecl; inline;
     function dup_string: Pgchar; cdecl; inline;
     function dup_variant: PGVariant; cdecl; inline;
@@ -249,7 +266,7 @@ type
     function get_int: gint; cdecl; inline;
     function get_int64: gint64; cdecl; inline;
     function get_long: glong; cdecl; inline;
-    function get_object: TGObject; cdecl; inline;
+    function get_object: PGObject; cdecl; inline;
     function get_param: PGParamSpec; cdecl; inline;
     function get_pointer: gpointer; cdecl; inline;
     function get_string: Pgchar; cdecl; inline;
@@ -263,7 +280,7 @@ type
     function reset: PGValue; cdecl; inline;
     procedure set_boolean(v_boolean: gboolean); cdecl; inline;
     procedure set_boxed(v_boxed: gpointer); cdecl; inline;
-    
+    procedure set_boxed_take_ownership(v_boxed: gpointer); cdecl; inline;
     procedure set_char(v_char: gchar); cdecl; inline;
     procedure set_double(v_double: gdouble); cdecl; inline;
     procedure set_enum(v_enum: gint); cdecl; inline;
@@ -274,15 +291,15 @@ type
     procedure set_int(v_int: gint); cdecl; inline;
     procedure set_int64(v_int64: gint64); cdecl; inline;
     procedure set_long(v_long: glong); cdecl; inline;
-    procedure set_object(v_object: TGObject); cdecl; inline;
-    
+    procedure set_object(v_object: PGObject); cdecl; inline;
+    procedure set_object_take_ownership(v_object: gpointer); cdecl; inline;
     procedure set_param(param: PGParamSpec); cdecl; inline;
-    
+    procedure set_param_take_ownership(param: PGParamSpec); cdecl; inline;
     procedure set_pointer(v_pointer: gpointer); cdecl; inline;
     procedure set_static_boxed(v_boxed: gpointer); cdecl; inline;
     procedure set_static_string(v_string: Pgchar); cdecl; inline;
     procedure set_string(v_string: Pgchar); cdecl; inline;
-    
+    procedure set_string_take_ownership(v_string: Pgchar); cdecl; inline;
     procedure set_uchar(v_uchar: guint8); cdecl; inline;
     procedure set_uint(v_uint: guint); cdecl; inline;
     procedure set_uint64(v_uint64: guint64); cdecl; inline;
@@ -397,13 +414,13 @@ type
   TGTypeClass = object
     g_type: TGType;
     function get_private(private_type: TGType): gpointer; cdecl; inline;
-    function peek_parent: TGTypeClass; cdecl; inline;
+    function peek_parent: PGTypeClass; cdecl; inline;
     procedure unref; cdecl; inline;
     procedure unref_uncached; cdecl; inline;
     procedure add_private(g_class: gpointer; private_size: gsize); cdecl; inline; static;
-    function peek(type_: TGType): TGTypeClass; cdecl; inline; static;
-    function peek_static(type_: TGType): TGTypeClass; cdecl; inline; static;
-    function ref(type_: TGType): TGTypeClass; cdecl; inline; static;
+    function peek(type_: TGType): PGTypeClass; cdecl; inline; static;
+    function peek_static(type_: TGType): PGTypeClass; cdecl; inline; static;
+    function ref(type_: TGType): PGTypeClass; cdecl; inline; static;
   end;
 
   PPGEnumValue = ^PGEnumValue;
@@ -895,10 +912,10 @@ type
   TGTypeInterface = object
     g_type: TGType;
     g_instance_type: TGType;
-    function peek_parent: TGTypeInterface; cdecl; inline;
+    function peek_parent: PGTypeInterface; cdecl; inline;
     procedure add_prerequisite(interface_type: TGType; prerequisite_type: TGType); cdecl; inline; static;
     function get_plugin(instance_type: TGType; interface_type: TGType): PGTypePlugin; cdecl; inline; static;
-    function peek(instance_class: TGTypeClass; iface_type: TGType): TGTypeInterface; cdecl; inline; static;
+    function peek(instance_class: PGTypeClass; iface_type: TGType): PGTypeInterface; cdecl; inline; static;
     function prerequisites(interface_type: TGType; n_prerequisites: Pguint): PGType; cdecl; inline; static;
   end;
   TGTypePlugin = object
@@ -1038,8 +1055,8 @@ function g_object_is_floating(AObject: PGObject): gboolean; cdecl; external;
 function g_object_new(object_type: TGType; first_property_name: Pgchar; args: array of const): gpointer; cdecl; external;
 function g_object_new_valist(object_type: TGType; first_property_name: Pgchar; var_args: Tva_list): PGObject; cdecl; external;
 function g_object_newv(object_type: TGType; n_parameters: guint; parameters: PGParameter): PGObject; cdecl; external;
-function g_object_ref(AObject: PGObject): TGObject; cdecl; external;
-function g_object_ref_sink(AObject: PGObject): TGObject; cdecl; external;
+function g_object_ref(AObject: PGObject): PGObject; cdecl; external;
+function g_object_ref_sink(AObject: PGObject): PGObject; cdecl; external;
 function g_object_steal_data(AObject: PGObject; key: Pgchar): gpointer; cdecl; external;
 function g_object_steal_qdata(AObject: PGObject; quark: TGQuark): gpointer; cdecl; external;
 function g_param_spec_boolean(name: Pgchar; nick: Pgchar; blurb: Pgchar; default_value: gboolean; flags: TGParamFlags): PGParamSpec; cdecl; external;
@@ -1118,13 +1135,13 @@ function g_type_check_value(value: PGValue): gboolean; cdecl; external;
 function g_type_check_value_holds(value: PGValue; type_: TGType): gboolean; cdecl; external;
 function g_type_children(type_: TGType; n_children: Pguint): PGType; cdecl; external;
 function g_type_class_get_private(ATypeClass: PGTypeClass; private_type: TGType): gpointer; cdecl; external;
-function g_type_class_peek(type_: TGType): TGTypeClass; cdecl; external;
-function g_type_class_peek_parent(ATypeClass: PGTypeClass): TGTypeClass; cdecl; external;
-function g_type_class_peek_static(type_: TGType): TGTypeClass; cdecl; external;
-function g_type_class_ref(type_: TGType): TGTypeClass; cdecl; external;
+function g_type_class_peek(type_: TGType): PGTypeClass; cdecl; external;
+function g_type_class_peek_parent(ATypeClass: PGTypeClass): PGTypeClass; cdecl; external;
+function g_type_class_peek_static(type_: TGType): PGTypeClass; cdecl; external;
+function g_type_class_ref(type_: TGType): PGTypeClass; cdecl; external;
 function g_type_create_instance(type_: TGType): PGTypeInstance; cdecl; external;
-function g_type_default_interface_peek(g_type: TGType): TGTypeInterface; cdecl; external;
-function g_type_default_interface_ref(g_type: TGType): TGTypeInterface; cdecl; external;
+function g_type_default_interface_peek(g_type: TGType): PGTypeInterface; cdecl; external;
+function g_type_default_interface_ref(g_type: TGType): PGTypeInterface; cdecl; external;
 function g_type_depth(type_: TGType): guint; cdecl; external;
 function g_type_from_name(name: Pgchar): TGType; cdecl; external;
 function g_type_fundamental(type_id: TGType): TGType; cdecl; external;
@@ -1133,8 +1150,8 @@ function g_type_get_plugin(type_: TGType): PGTypePlugin; cdecl; external;
 function g_type_get_qdata(type_: TGType; quark: TGQuark): gpointer; cdecl; external;
 function g_type_instance_get_private(ATypeInstance: PGTypeInstance; private_type: TGType): gpointer; cdecl; external;
 function g_type_interface_get_plugin(instance_type: TGType; interface_type: TGType): PGTypePlugin; cdecl; external;
-function g_type_interface_peek(instance_class: TGTypeClass; iface_type: TGType): TGTypeInterface; cdecl; external;
-function g_type_interface_peek_parent(ATypeInterface: PGTypeInterface): TGTypeInterface; cdecl; external;
+function g_type_interface_peek(instance_class: PGTypeClass; iface_type: TGType): PGTypeInterface; cdecl; external;
+function g_type_interface_peek_parent(ATypeInterface: PGTypeInterface): PGTypeInterface; cdecl; external;
 function g_type_interface_prerequisites(interface_type: TGType; n_prerequisites: Pguint): PGType; cdecl; external;
 function g_type_interfaces(type_: TGType; n_interfaces: Pguint): PGType; cdecl; external;
 function g_type_is_a(type_: TGType; is_a_type: TGType): gboolean; cdecl; external;
@@ -1167,7 +1184,7 @@ function g_value_array_remove(AValueArray: PGValueArray; index_: guint): PGValue
 function g_value_array_sort(AValueArray: PGValueArray; compare_func: TGCompareFunc): PGValueArray; cdecl; external;
 function g_value_array_sort_with_data(AValueArray: PGValueArray; compare_func: TGCompareDataFunc; user_data: gpointer): PGValueArray; cdecl; external;
 function g_value_dup_boxed(AValue: PGValue): gpointer; cdecl; external;
-function g_value_dup_object(AValue: PGValue): TGObject; cdecl; external;
+function g_value_dup_object(AValue: PGValue): PGObject; cdecl; external;
 function g_value_dup_param(AValue: PGValue): PGParamSpec; cdecl; external;
 function g_value_dup_string(AValue: PGValue): Pgchar; cdecl; external;
 function g_value_dup_variant(AValue: PGValue): PGVariant; cdecl; external;
@@ -1183,7 +1200,7 @@ function g_value_get_gtype(value: PGValue): TGType; cdecl; external;
 function g_value_get_int(AValue: PGValue): gint; cdecl; external;
 function g_value_get_int64(AValue: PGValue): gint64; cdecl; external;
 function g_value_get_long(AValue: PGValue): glong; cdecl; external;
-function g_value_get_object(AValue: PGValue): TGObject; cdecl; external;
+function g_value_get_object(AValue: PGValue): PGObject; cdecl; external;
 function g_value_get_param(AValue: PGValue): PGParamSpec; cdecl; external;
 function g_value_get_pointer(AValue: PGValue): gpointer; cdecl; external;
 function g_value_get_string(AValue: PGValue): Pgchar; cdecl; external;
@@ -1199,7 +1216,6 @@ function g_value_reset(AValue: PGValue): PGValue; cdecl; external;
 function g_value_transform(AValue: PGValue; dest_value: PGValue): gboolean; cdecl; external;
 function g_value_type_compatible(src_type: TGType; dest_type: TGType): gboolean; cdecl; external;
 function g_value_type_transformable(src_type: TGType; dest_type: TGType): gboolean; cdecl; external;
-function intern: TGType; cdecl; external;
 procedure g_boxed_free(boxed_type: TGType; boxed: gpointer); cdecl; external;
 procedure g_cclosure_marshal_BOOLEAN__BOXED_BOXED(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; external;
 procedure g_cclosure_marshal_BOOLEAN__FLAGS(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; external;
@@ -1300,7 +1316,7 @@ procedure g_type_add_interface_static(instance_type: TGType; interface_type: TGT
 procedure g_type_class_add_private(g_class: gpointer; private_size: gsize); cdecl; external;
 procedure g_type_class_unref(ATypeClass: PGTypeClass); cdecl; external;
 procedure g_type_class_unref_uncached(ATypeClass: PGTypeClass); cdecl; external;
-procedure g_type_default_interface_unref(g_iface: TGTypeInterface); cdecl; external;
+procedure g_type_default_interface_unref(g_iface: PGTypeInterface); cdecl; external;
 procedure g_type_free_instance(instance: PGTypeInstance); cdecl; external;
 procedure g_type_init; cdecl; external;
 procedure g_type_init_with_debug_flags(debug_flags: TGTypeDebugFlags); cdecl; external;
@@ -1321,6 +1337,7 @@ procedure g_value_copy(AValue: PGValue; dest_value: PGValue); cdecl; external;
 procedure g_value_register_transform_func(src_type: TGType; dest_type: TGType; transform_func: TGValueTransform); cdecl; external;
 procedure g_value_set_boolean(AValue: PGValue; v_boolean: gboolean); cdecl; external;
 procedure g_value_set_boxed(AValue: PGValue; v_boxed: gpointer); cdecl; external;
+procedure g_value_set_boxed_take_ownership(AValue: PGValue; v_boxed: gpointer); cdecl; external;
 procedure g_value_set_char(AValue: PGValue; v_char: gchar); cdecl; external;
 procedure g_value_set_double(AValue: PGValue; v_double: gdouble); cdecl; external;
 procedure g_value_set_enum(AValue: PGValue; v_enum: gint); cdecl; external;
@@ -1331,12 +1348,15 @@ procedure g_value_set_instance(AValue: PGValue; instance: gpointer); cdecl; exte
 procedure g_value_set_int(AValue: PGValue; v_int: gint); cdecl; external;
 procedure g_value_set_int64(AValue: PGValue; v_int64: gint64); cdecl; external;
 procedure g_value_set_long(AValue: PGValue; v_long: glong); cdecl; external;
-procedure g_value_set_object(AValue: PGValue; v_object: TGObject); cdecl; external;
+procedure g_value_set_object(AValue: PGValue; v_object: PGObject); cdecl; external;
+procedure g_value_set_object_take_ownership(AValue: PGValue; v_object: gpointer); cdecl; external;
 procedure g_value_set_param(AValue: PGValue; param: PGParamSpec); cdecl; external;
+procedure g_value_set_param_take_ownership(AValue: PGValue; param: PGParamSpec); cdecl; external;
 procedure g_value_set_pointer(AValue: PGValue; v_pointer: gpointer); cdecl; external;
 procedure g_value_set_static_boxed(AValue: PGValue; v_boxed: gpointer); cdecl; external;
 procedure g_value_set_static_string(AValue: PGValue; v_string: Pgchar); cdecl; external;
 procedure g_value_set_string(AValue: PGValue; v_string: Pgchar); cdecl; external;
+procedure g_value_set_string_take_ownership(AValue: PGValue; v_string: Pgchar); cdecl; external;
 procedure g_value_set_uchar(AValue: PGValue; v_uchar: guint8); cdecl; external;
 procedure g_value_set_uint(AValue: PGValue; v_uint: guint); cdecl; external;
 procedure g_value_set_uint64(AValue: PGValue; v_uint64: guint64); cdecl; external;
@@ -1439,12 +1459,12 @@ begin
   GObject2.g_object_notify_by_pspec(@self, pspec);
 end;
 
-function TGObject.ref: TGObject; cdecl;
+function TGObject.ref: PGObject; cdecl;
 begin
   Result := GObject2.g_object_ref(@self);
 end;
 
-function TGObject.ref_sink: TGObject; cdecl;
+function TGObject.ref_sink: PGObject; cdecl;
 begin
   Result := GObject2.g_object_ref_sink(@self);
 end;
@@ -1564,7 +1584,7 @@ begin
   Result := GObject2.g_value_dup_boxed(@self);
 end;
 
-function TGValue.dup_object: TGObject; cdecl;
+function TGValue.dup_object: PGObject; cdecl;
 begin
   Result := GObject2.g_value_dup_object(@self);
 end;
@@ -1639,7 +1659,7 @@ begin
   Result := GObject2.g_value_get_long(@self);
 end;
 
-function TGValue.get_object: TGObject; cdecl;
+function TGValue.get_object: PGObject; cdecl;
 begin
   Result := GObject2.g_value_get_object(@self);
 end;
@@ -1709,6 +1729,11 @@ begin
   GObject2.g_value_set_boxed(@self, v_boxed);
 end;
 
+procedure TGValue.set_boxed_take_ownership(v_boxed: gpointer); cdecl;
+begin
+  GObject2.g_value_set_boxed_take_ownership(@self, v_boxed);
+end;
+
 procedure TGValue.set_char(v_char: gchar); cdecl;
 begin
   GObject2.g_value_set_char(@self, v_char);
@@ -1759,14 +1784,24 @@ begin
   GObject2.g_value_set_long(@self, v_long);
 end;
 
-procedure TGValue.set_object(v_object: TGObject); cdecl;
+procedure TGValue.set_object(v_object: PGObject); cdecl;
 begin
   GObject2.g_value_set_object(@self, v_object);
+end;
+
+procedure TGValue.set_object_take_ownership(v_object: gpointer); cdecl;
+begin
+  GObject2.g_value_set_object_take_ownership(@self, v_object);
 end;
 
 procedure TGValue.set_param(param: PGParamSpec); cdecl;
 begin
   GObject2.g_value_set_param(@self, param);
+end;
+
+procedure TGValue.set_param_take_ownership(param: PGParamSpec); cdecl;
+begin
+  GObject2.g_value_set_param_take_ownership(@self, param);
 end;
 
 procedure TGValue.set_pointer(v_pointer: gpointer); cdecl;
@@ -1787,6 +1822,11 @@ end;
 procedure TGValue.set_string(v_string: Pgchar); cdecl;
 begin
   GObject2.g_value_set_string(@self, v_string);
+end;
+
+procedure TGValue.set_string_take_ownership(v_string: Pgchar); cdecl;
+begin
+  GObject2.g_value_set_string_take_ownership(@self, v_string);
 end;
 
 procedure TGValue.set_uchar(v_uchar: guint8); cdecl;
@@ -2074,7 +2114,7 @@ begin
   Result := GObject2.g_type_class_get_private(@self, private_type);
 end;
 
-function TGTypeClass.peek_parent: TGTypeClass; cdecl;
+function TGTypeClass.peek_parent: PGTypeClass; cdecl;
 begin
   Result := GObject2.g_type_class_peek_parent(@self);
 end;
@@ -2094,17 +2134,17 @@ begin
   GObject2.g_type_class_add_private(g_class, private_size);
 end;
 
-function TGTypeClass.peek(type_: TGType): TGTypeClass; cdecl;
+function TGTypeClass.peek(type_: TGType): PGTypeClass; cdecl;
 begin
   Result := GObject2.g_type_class_peek(type_);
 end;
 
-function TGTypeClass.peek_static(type_: TGType): TGTypeClass; cdecl;
+function TGTypeClass.peek_static(type_: TGType): PGTypeClass; cdecl;
 begin
   Result := GObject2.g_type_class_peek_static(type_);
 end;
 
-function TGTypeClass.ref(type_: TGType): TGTypeClass; cdecl;
+function TGTypeClass.ref(type_: TGType): PGTypeClass; cdecl;
 begin
   Result := GObject2.g_type_class_ref(type_);
 end;
@@ -2234,7 +2274,7 @@ begin
   Result := GObject2.g_type_value_table_peek(type_);
 end;
 
-function TGTypeInterface.peek_parent: TGTypeInterface; cdecl;
+function TGTypeInterface.peek_parent: PGTypeInterface; cdecl;
 begin
   Result := GObject2.g_type_interface_peek_parent(@self);
 end;
@@ -2249,7 +2289,7 @@ begin
   Result := GObject2.g_type_interface_get_plugin(instance_type, interface_type);
 end;
 
-function TGTypeInterface.peek(instance_class: TGTypeClass; iface_type: TGType): TGTypeInterface; cdecl;
+function TGTypeInterface.peek(instance_class: PGTypeClass; iface_type: TGType): PGTypeInterface; cdecl;
 begin
   Result := GObject2.g_type_interface_peek(instance_class, iface_type);
 end;

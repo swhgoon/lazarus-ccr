@@ -73,8 +73,9 @@ var
   err: PGtkButton;
 begin
   SetExceptionMask([exInvalidOp, exDenormalized, exZeroDivide, exOverflow, exUnderflow, exPrecision]);
+  WriteLn('Init starting');
 
-  gtk_init(@argc, @argv);
+  gtk_init(@argc, @argv);  WriteLn('Init done');
 
   window := TGtkWindow.new(GTK_WINDOW_TOPLEVEL);
   window^.set_position(GTK_WIN_POS_CENTER);

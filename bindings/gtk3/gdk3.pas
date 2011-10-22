@@ -2277,6 +2277,43 @@ const
   PRIORITY_REDRAW = 20;
 
 type
+  TGdkModifierType = Integer;
+const
+  { GdkModifierType }
+  GDK_SHIFT_MASK: TGdkModifierType = 1;
+  GDK_LOCK_MASK: TGdkModifierType = 2;
+  GDK_CONTROL_MASK: TGdkModifierType = 4;
+  GDK_MOD1_MASK: TGdkModifierType = 8;
+  GDK_MOD2_MASK: TGdkModifierType = 16;
+  GDK_MOD3_MASK: TGdkModifierType = 32;
+  GDK_MOD4_MASK: TGdkModifierType = 64;
+  GDK_MOD5_MASK: TGdkModifierType = 128;
+  GDK_BUTTON1_MASK: TGdkModifierType = 256;
+  GDK_BUTTON2_MASK: TGdkModifierType = 512;
+  GDK_BUTTON3_MASK: TGdkModifierType = 1024;
+  GDK_BUTTON4_MASK: TGdkModifierType = 2048;
+  GDK_BUTTON5_MASK: TGdkModifierType = 4096;
+  GDK_MODIFIER_RESERVED_13_MASK: TGdkModifierType = 8192;
+  GDK_MODIFIER_RESERVED_14_MASK: TGdkModifierType = 16384;
+  GDK_MODIFIER_RESERVED_15_MASK: TGdkModifierType = 32768;
+  GDK_MODIFIER_RESERVED_16_MASK: TGdkModifierType = 65536;
+  GDK_MODIFIER_RESERVED_17_MASK: TGdkModifierType = 131072;
+  GDK_MODIFIER_RESERVED_18_MASK: TGdkModifierType = 262144;
+  GDK_MODIFIER_RESERVED_19_MASK: TGdkModifierType = 524288;
+  GDK_MODIFIER_RESERVED_20_MASK: TGdkModifierType = 1048576;
+  GDK_MODIFIER_RESERVED_21_MASK: TGdkModifierType = 2097152;
+  GDK_MODIFIER_RESERVED_22_MASK: TGdkModifierType = 4194304;
+  GDK_MODIFIER_RESERVED_23_MASK: TGdkModifierType = 8388608;
+  GDK_MODIFIER_RESERVED_24_MASK: TGdkModifierType = 16777216;
+  GDK_MODIFIER_RESERVED_25_MASK: TGdkModifierType = 33554432;
+  GDK_SUPER_MASK: TGdkModifierType = 67108864;
+  GDK_HYPER_MASK: TGdkModifierType = 134217728;
+  GDK_META_MASK: TGdkModifierType = 268435456;
+  GDK_MODIFIER_RESERVED_29_MASK: TGdkModifierType = 536870912;
+  GDK_RELEASE_MASK: TGdkModifierType = 1073741824;
+  GDK_MODIFIER_MASK: TGdkModifierType = 1543512063;
+
+type
   TGdkAxisUse = Integer;
 const
   { GdkAxisUse }
@@ -2391,43 +2428,6 @@ const
   GDK_LAST_CURSOR: TGdkCursorType = 153;
   GDK_BLANK_CURSOR: TGdkCursorType = -2;
   GDK_CURSOR_IS_PIXMAP: TGdkCursorType = -1;
-
-type
-  TGdkModifierType = Integer;
-const
-  { GdkModifierType }
-  GDK_SHIFT_MASK: TGdkModifierType = 1;
-  GDK_LOCK_MASK: TGdkModifierType = 2;
-  GDK_CONTROL_MASK: TGdkModifierType = 4;
-  GDK_MOD1_MASK: TGdkModifierType = 8;
-  GDK_MOD2_MASK: TGdkModifierType = 16;
-  GDK_MOD3_MASK: TGdkModifierType = 32;
-  GDK_MOD4_MASK: TGdkModifierType = 64;
-  GDK_MOD5_MASK: TGdkModifierType = 128;
-  GDK_BUTTON1_MASK: TGdkModifierType = 256;
-  GDK_BUTTON2_MASK: TGdkModifierType = 512;
-  GDK_BUTTON3_MASK: TGdkModifierType = 1024;
-  GDK_BUTTON4_MASK: TGdkModifierType = 2048;
-  GDK_BUTTON5_MASK: TGdkModifierType = 4096;
-  GDK_MODIFIER_RESERVED_13_MASK: TGdkModifierType = 8192;
-  GDK_MODIFIER_RESERVED_14_MASK: TGdkModifierType = 16384;
-  GDK_MODIFIER_RESERVED_15_MASK: TGdkModifierType = 32768;
-  GDK_MODIFIER_RESERVED_16_MASK: TGdkModifierType = 65536;
-  GDK_MODIFIER_RESERVED_17_MASK: TGdkModifierType = 131072;
-  GDK_MODIFIER_RESERVED_18_MASK: TGdkModifierType = 262144;
-  GDK_MODIFIER_RESERVED_19_MASK: TGdkModifierType = 524288;
-  GDK_MODIFIER_RESERVED_20_MASK: TGdkModifierType = 1048576;
-  GDK_MODIFIER_RESERVED_21_MASK: TGdkModifierType = 2097152;
-  GDK_MODIFIER_RESERVED_22_MASK: TGdkModifierType = 4194304;
-  GDK_MODIFIER_RESERVED_23_MASK: TGdkModifierType = 8388608;
-  GDK_MODIFIER_RESERVED_24_MASK: TGdkModifierType = 16777216;
-  GDK_MODIFIER_RESERVED_25_MASK: TGdkModifierType = 33554432;
-  GDK_SUPER_MASK: TGdkModifierType = 67108864;
-  GDK_HYPER_MASK: TGdkModifierType = 134217728;
-  GDK_META_MASK: TGdkModifierType = 268435456;
-  GDK_MODIFIER_RESERVED_29_MASK: TGdkModifierType = 536870912;
-  GDK_RELEASE_MASK: TGdkModifierType = 1073741824;
-  GDK_MODIFIER_MASK: TGdkModifierType = 1543512063;
 
 type
   TGdkGrabOwnership = Integer;
@@ -2801,21 +2801,21 @@ type
   PPGdkAppLaunchContext = ^PGdkAppLaunchContext;
   PGdkAppLaunchContext = ^TGdkAppLaunchContext;
 
+  PPGdkDisplay = ^PGdkDisplay;
+  PGdkDisplay = ^TGdkDisplay;
+
   PPGdkScreen = ^PGdkScreen;
   PGdkScreen = ^TGdkScreen;
   TGdkAppLaunchContext = object(TGAppLaunchContext)
-    
+    function new: PGdkAppLaunchContext; cdecl; inline; static;
     procedure set_desktop(desktop: gint); cdecl; inline;
-    
+    procedure set_display(display: PGdkDisplay); cdecl; inline;
     procedure set_icon(icon: PGIcon); cdecl; inline;
     procedure set_icon_name(icon_name: Pgchar); cdecl; inline;
     procedure set_screen(screen: PGdkScreen); cdecl; inline;
     procedure set_timestamp(timestamp: guint32); cdecl; inline;
     //property display: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_display  { property is writeable but setter not declared } ;
   end;
-
-  PPGdkDisplay = ^PGdkDisplay;
-  PGdkDisplay = ^TGdkDisplay;
 
   PPGdkDevice = ^PGdkDevice;
   PGdkDevice = ^TGdkDevice;
@@ -2828,6 +2828,9 @@ type
 
   PPGdkEvent = ^PGdkEvent;
   PGdkEvent = ^TGdkEvent;
+
+  PPGdkModifierType = ^PGdkModifierType;
+  PGdkModifierType = ^TGdkModifierType;
 
   PPPGdkAtom = ^PPGdkAtom;
   PPGdkAtom = ^PGdkAtom;
@@ -2854,17 +2857,17 @@ type
     procedure get_maximal_cursor_size(width: Pguint; height: Pguint); cdecl; inline;
     function get_n_screens: gint; cdecl; inline;
     function get_name: Pgchar; cdecl; inline;
-    
+    procedure get_pointer(screen: PPGdkScreen; x: Pgint; y: Pgint; mask: PGdkModifierType); cdecl; inline;
     function get_screen(screen_num: gint): PGdkScreen; cdecl; inline;
-    
+    function get_window_at_pointer(win_x: Pgint; win_y: Pgint): PGdkWindow; cdecl; inline;
     function has_pending: gboolean; cdecl; inline;
     function is_closed: gboolean; cdecl; inline;
-    
-    
+    procedure keyboard_ungrab(time_: guint32); cdecl; inline;
+    function list_devices: PGList; cdecl; inline;
     procedure notify_startup_complete(startup_id: Pgchar); cdecl; inline;
     function peek_event: PGdkEvent; cdecl; inline;
-    
-    
+    function pointer_is_grabbed: gboolean; cdecl; inline;
+    procedure pointer_ungrab(time_: guint32); cdecl; inline;
     procedure put_event(event: PGdkEvent); cdecl; inline;
     function request_selection_notification(selection: TGdkAtom): gboolean; cdecl; inline;
     procedure set_double_click_distance(distance: guint); cdecl; inline;
@@ -2878,7 +2881,7 @@ type
     function supports_selection_notification: gboolean; cdecl; inline;
     function supports_shapes: gboolean; cdecl; inline;
     procedure sync; cdecl; inline;
-    
+    procedure warp_pointer(screen: PGdkScreen; x: gint; y: gint); cdecl; inline;
   end;
 
   PPGdkVisual = ^PGdkVisual;
@@ -2958,8 +2961,8 @@ type
     function get_cursor_type: TGdkCursorType; cdecl; inline;
     function get_display: PGdkDisplay; cdecl; inline;
     function get_image: PGdkPixbuf; cdecl; inline;
-    
-    
+    function ref: PGdkCursor; cdecl; inline;
+    procedure unref; cdecl; inline;
     property cursor_type:  TGdkCursorType read get_cursor_type  { property is writeable but setter not declared } ;
     property display:  PGdkDisplay read get_display  { property is writeable but setter not declared } ;
   end;
@@ -2977,9 +2980,6 @@ type
 
   PPGdkDeviceType = ^PGdkDeviceType;
   PGdkDeviceType = ^TGdkDeviceType;
-
-  PPGdkModifierType = ^PGdkModifierType;
-  PGdkModifierType = ^TGdkModifierType;
 
   PPGdkInputMode = ^PGdkInputMode;
   PGdkInputMode = ^TGdkInputMode;
@@ -3079,7 +3079,7 @@ type
   PGdkWindowHints = ^TGdkWindowHints;
   TGdkWindow = object(TGObject)
     function new(parent: PGdkWindow; attributes: PGdkWindowAttr; attributes_mask: gint): PGdkWindow; cdecl; inline; static;
-    
+    function at_pointer(win_x: Pgint; win_y: Pgint): PGdkWindow; cdecl; inline; static;
     procedure constrain_size(geometry: PGdkGeometry; flags: guint; width: gint; height: gint; new_width: Pgint; new_height: Pgint); cdecl; inline; static;
     procedure process_all_updates; cdecl; inline; static;
     procedure set_debug_updates(setting: gboolean); cdecl; inline; static;
@@ -3128,7 +3128,7 @@ type
     function get_modal_hint: gboolean; cdecl; inline;
     function get_origin(x: Pgint; y: Pgint): gint; cdecl; inline;
     function get_parent: PGdkWindow; cdecl; inline;
-    
+    function get_pointer(x: Pgint; y: Pgint; mask: PGdkModifierType): PGdkWindow; cdecl; inline;
     procedure get_position(x: Pgint; y: Pgint); cdecl; inline;
     procedure get_root_coords(x: gint; y: gint; root_x: Pgint; root_y: Pgint); cdecl; inline;
     procedure get_root_origin(x: Pgint; y: Pgint); cdecl; inline;
@@ -3206,7 +3206,7 @@ type
     procedure set_transient_for(parent: PGdkWindow); cdecl; inline;
     procedure set_type_hint(hint: TGdkWindowTypeHint); cdecl; inline;
     procedure set_urgency_hint(urgent: gboolean); cdecl; inline;
-    procedure set_user_data(user_data: TGObject); cdecl; inline;
+    procedure set_user_data(user_data: PGObject); cdecl; inline;
     procedure shape_combine_region(shape_region: Pcairo_region_t; offset_x: gint; offset_y: gint); cdecl; inline;
     procedure show; cdecl; inline;
     procedure show_unraised; cdecl; inline;
@@ -3763,6 +3763,7 @@ type
 
 
 function gdk_app_launch_context_get_type: TGType; cdecl; external;
+function gdk_app_launch_context_new: PGdkAppLaunchContext; cdecl; external;
 function gdk_atom_intern(atom_name: Pgchar; only_if_exists: gboolean): TGdkAtom; cdecl; external;
 function gdk_atom_intern_static_string(atom_name: Pgchar): TGdkAtom; cdecl; external;
 function gdk_atom_name(AAtom: PGdkAtom): Pgchar; cdecl; external;
@@ -3783,6 +3784,7 @@ function gdk_cursor_new(cursor_type: TGdkCursorType): PGdkCursor; cdecl; externa
 function gdk_cursor_new_for_display(display: PGdkDisplay; cursor_type: TGdkCursorType): PGdkCursor; cdecl; external;
 function gdk_cursor_new_from_name(display: PGdkDisplay; name: Pgchar): PGdkCursor; cdecl; external;
 function gdk_cursor_new_from_pixbuf(display: PGdkDisplay; pixbuf: PGdkPixbuf; x: gint; y: gint): PGdkCursor; cdecl; external;
+function gdk_cursor_ref(ACursor: PGdkCursor): PGdkCursor; cdecl; external;
 function gdk_device_get_associated_device(ADevice: PGdkDevice): PGdkDevice; cdecl; external;
 function gdk_device_get_axis(ADevice: PGdkDevice; axes: Pgdouble; use: TGdkAxisUse; value: Pgdouble): gboolean; cdecl; external;
 function gdk_device_get_axis_use(ADevice: PGdkDevice; index_: guint): TGdkAxisUse; cdecl; external;
@@ -3820,8 +3822,10 @@ function gdk_display_get_n_screens(ADisplay: PGdkDisplay): gint; cdecl; external
 function gdk_display_get_name(ADisplay: PGdkDisplay): Pgchar; cdecl; external;
 function gdk_display_get_screen(ADisplay: PGdkDisplay; screen_num: gint): PGdkScreen; cdecl; external;
 function gdk_display_get_type: TGType; cdecl; external;
+function gdk_display_get_window_at_pointer(ADisplay: PGdkDisplay; win_x: Pgint; win_y: Pgint): PGdkWindow; cdecl; external;
 function gdk_display_has_pending(ADisplay: PGdkDisplay): gboolean; cdecl; external;
 function gdk_display_is_closed(ADisplay: PGdkDisplay): gboolean; cdecl; external;
+function gdk_display_list_devices(ADisplay: PGdkDisplay): PGList; cdecl; external;
 function gdk_display_manager_get: PGdkDisplayManager; cdecl; external;
 function gdk_display_manager_get_default_display(ADisplayManager: PGdkDisplayManager): PGdkDisplay; cdecl; external;
 function gdk_display_manager_get_type: TGType; cdecl; external;
@@ -3830,6 +3834,7 @@ function gdk_display_manager_open_display(ADisplayManager: PGdkDisplayManager; n
 function gdk_display_open(display_name: Pgchar): PGdkDisplay; cdecl; external;
 function gdk_display_open_default_libgtk_only: PGdkDisplay; cdecl; external;
 function gdk_display_peek_event(ADisplay: PGdkDisplay): PGdkEvent; cdecl; external;
+function gdk_display_pointer_is_grabbed(ADisplay: PGdkDisplay): gboolean; cdecl; external;
 function gdk_display_request_selection_notification(ADisplay: PGdkDisplay; selection: TGdkAtom): gboolean; cdecl; external;
 function gdk_display_supports_clipboard_persistence(ADisplay: PGdkDisplay): gboolean; cdecl; external;
 function gdk_display_supports_composite(ADisplay: PGdkDisplay): gboolean; cdecl; external;
@@ -3982,6 +3987,7 @@ function gdk_visual_get_screen(AVisual: PGdkVisual): PGdkScreen; cdecl; external
 function gdk_visual_get_system: PGdkVisual; cdecl; external;
 function gdk_visual_get_type: TGType; cdecl; external;
 function gdk_visual_get_visual_type(AVisual: PGdkVisual): TGdkVisualType; cdecl; external;
+function gdk_window_at_pointer(win_x: Pgint; win_y: Pgint): PGdkWindow; cdecl; external;
 function gdk_window_create_similar_surface(AWindow: PGdkWindow; content: Tcairo_content_t; width: gint; height: gint): Pcairo_surface_t; cdecl; external;
 function gdk_window_ensure_native(AWindow: PGdkWindow): gboolean; cdecl; external;
 function gdk_window_get_accept_focus(AWindow: PGdkWindow): gboolean; cdecl; external;
@@ -4005,6 +4011,7 @@ function gdk_window_get_height(AWindow: PGdkWindow): gint; cdecl; external;
 function gdk_window_get_modal_hint(AWindow: PGdkWindow): gboolean; cdecl; external;
 function gdk_window_get_origin(AWindow: PGdkWindow; x: Pgint; y: Pgint): gint; cdecl; external;
 function gdk_window_get_parent(AWindow: PGdkWindow): PGdkWindow; cdecl; external;
+function gdk_window_get_pointer(AWindow: PGdkWindow; x: Pgint; y: Pgint; mask: PGdkModifierType): PGdkWindow; cdecl; external;
 function gdk_window_get_screen(AWindow: PGdkWindow): PGdkScreen; cdecl; external;
 function gdk_window_get_source_events(AWindow: PGdkWindow; source: TGdkInputSource): TGdkEventMask; cdecl; external;
 function gdk_window_get_state(AWindow: PGdkWindow): TGdkWindowState; cdecl; external;
@@ -4028,6 +4035,7 @@ function gdk_window_peek_children(AWindow: PGdkWindow): PGList; cdecl; external;
 function gdk_window_set_static_gravities(AWindow: PGdkWindow; use_static: gboolean): gboolean; cdecl; external;
 procedure gdk_add_option_entries_libgtk_only(group: PGOptionGroup); cdecl; external;
 procedure gdk_app_launch_context_set_desktop(AAppLaunchContext: PGdkAppLaunchContext; desktop: gint); cdecl; external;
+procedure gdk_app_launch_context_set_display(AAppLaunchContext: PGdkAppLaunchContext; display: PGdkDisplay); cdecl; external;
 procedure gdk_app_launch_context_set_icon(AAppLaunchContext: PGdkAppLaunchContext; icon: PGIcon); cdecl; external;
 procedure gdk_app_launch_context_set_icon_name(AAppLaunchContext: PGdkAppLaunchContext; icon_name: Pgchar); cdecl; external;
 procedure gdk_app_launch_context_set_screen(AAppLaunchContext: PGdkAppLaunchContext; screen: PGdkScreen); cdecl; external;
@@ -4040,6 +4048,7 @@ procedure gdk_cairo_set_source_pixbuf(cr: Pcairo_t; pixbuf: PGdkPixbuf; pixbuf_x
 procedure gdk_cairo_set_source_rgba(cr: Pcairo_t; rgba: PGdkRGBA); cdecl; external;
 procedure gdk_cairo_set_source_window(cr: Pcairo_t; window: PGdkWindow; x: gdouble; y: gdouble); cdecl; external;
 procedure gdk_color_free(AColor: PGdkColor); cdecl; external;
+procedure gdk_cursor_unref(ACursor: PGdkCursor); cdecl; external;
 procedure gdk_device_free_history(events: PPGdkTimeCoord; n_events: gint); cdecl; external;
 procedure gdk_device_get_position(ADevice: PGdkDevice; screen: PPGdkScreen; x: Pgint; y: Pgint); cdecl; external;
 procedure gdk_device_get_state(ADevice: PGdkDevice; window: PGdkWindow; axes: Pgdouble; mask: PGdkModifierType); cdecl; external;
@@ -4052,13 +4061,17 @@ procedure gdk_display_beep(ADisplay: PGdkDisplay); cdecl; external;
 procedure gdk_display_close(ADisplay: PGdkDisplay); cdecl; external;
 procedure gdk_display_flush(ADisplay: PGdkDisplay); cdecl; external;
 procedure gdk_display_get_maximal_cursor_size(ADisplay: PGdkDisplay; width: Pguint; height: Pguint); cdecl; external;
+procedure gdk_display_get_pointer(ADisplay: PGdkDisplay; screen: PPGdkScreen; x: Pgint; y: Pgint; mask: PGdkModifierType); cdecl; external;
+procedure gdk_display_keyboard_ungrab(ADisplay: PGdkDisplay; time_: guint32); cdecl; external;
 procedure gdk_display_manager_set_default_display(ADisplayManager: PGdkDisplayManager; display: PGdkDisplay); cdecl; external;
 procedure gdk_display_notify_startup_complete(ADisplay: PGdkDisplay; startup_id: Pgchar); cdecl; external;
+procedure gdk_display_pointer_ungrab(ADisplay: PGdkDisplay; time_: guint32); cdecl; external;
 procedure gdk_display_put_event(ADisplay: PGdkDisplay; event: PGdkEvent); cdecl; external;
 procedure gdk_display_set_double_click_distance(ADisplay: PGdkDisplay; distance: guint); cdecl; external;
 procedure gdk_display_set_double_click_time(ADisplay: PGdkDisplay; msec: guint); cdecl; external;
 procedure gdk_display_store_clipboard(ADisplay: PGdkDisplay; clipboard_window: PGdkWindow; time_: guint32; targets: PGdkAtom; n_targets: gint); cdecl; external;
 procedure gdk_display_sync(ADisplay: PGdkDisplay); cdecl; external;
+procedure gdk_display_warp_pointer(ADisplay: PGdkDisplay; screen: PGdkScreen; x: gint; y: gint); cdecl; external;
 procedure gdk_drag_abort(context: PGdkDragContext; time_: guint32); cdecl; external;
 procedure gdk_drag_context_set_device(ADragContext: PGdkDragContext; device: PGdkDevice); cdecl; external;
 procedure gdk_drag_drop(context: PGdkDragContext; time_: guint32); cdecl; external;
@@ -4193,7 +4206,7 @@ procedure gdk_window_set_title(AWindow: PGdkWindow; title: Pgchar); cdecl; exter
 procedure gdk_window_set_transient_for(AWindow: PGdkWindow; parent: PGdkWindow); cdecl; external;
 procedure gdk_window_set_type_hint(AWindow: PGdkWindow; hint: TGdkWindowTypeHint); cdecl; external;
 procedure gdk_window_set_urgency_hint(AWindow: PGdkWindow; urgent: gboolean); cdecl; external;
-procedure gdk_window_set_user_data(AWindow: PGdkWindow; user_data: TGObject); cdecl; external;
+procedure gdk_window_set_user_data(AWindow: PGdkWindow; user_data: PGObject); cdecl; external;
 procedure gdk_window_shape_combine_region(AWindow: PGdkWindow; shape_region: Pcairo_region_t; offset_x: gint; offset_y: gint); cdecl; external;
 procedure gdk_window_show(AWindow: PGdkWindow); cdecl; external;
 procedure gdk_window_show_unraised(AWindow: PGdkWindow); cdecl; external;
@@ -4205,9 +4218,19 @@ procedure gdk_window_unmaximize(AWindow: PGdkWindow); cdecl; external;
 procedure gdk_window_unstick(AWindow: PGdkWindow); cdecl; external;
 procedure gdk_window_withdraw(AWindow: PGdkWindow); cdecl; external;
 implementation
+function TGdkAppLaunchContext.new: PGdkAppLaunchContext; cdecl;
+begin
+  Result := Gdk3.gdk_app_launch_context_new();
+end;
+
 procedure TGdkAppLaunchContext.set_desktop(desktop: gint); cdecl;
 begin
   Gdk3.gdk_app_launch_context_set_desktop(@self, desktop);
+end;
+
+procedure TGdkAppLaunchContext.set_display(display: PGdkDisplay); cdecl;
+begin
+  Gdk3.gdk_app_launch_context_set_display(@self, display);
 end;
 
 procedure TGdkAppLaunchContext.set_icon(icon: PGIcon); cdecl;
@@ -4310,9 +4333,19 @@ begin
   Result := Gdk3.gdk_display_get_name(@self);
 end;
 
+procedure TGdkDisplay.get_pointer(screen: PPGdkScreen; x: Pgint; y: Pgint; mask: PGdkModifierType); cdecl;
+begin
+  Gdk3.gdk_display_get_pointer(@self, screen, x, y, mask);
+end;
+
 function TGdkDisplay.get_screen(screen_num: gint): PGdkScreen; cdecl;
 begin
   Result := Gdk3.gdk_display_get_screen(@self, screen_num);
+end;
+
+function TGdkDisplay.get_window_at_pointer(win_x: Pgint; win_y: Pgint): PGdkWindow; cdecl;
+begin
+  Result := Gdk3.gdk_display_get_window_at_pointer(@self, win_x, win_y);
 end;
 
 function TGdkDisplay.has_pending: gboolean; cdecl;
@@ -4325,6 +4358,16 @@ begin
   Result := Gdk3.gdk_display_is_closed(@self);
 end;
 
+procedure TGdkDisplay.keyboard_ungrab(time_: guint32); cdecl;
+begin
+  Gdk3.gdk_display_keyboard_ungrab(@self, time_);
+end;
+
+function TGdkDisplay.list_devices: PGList; cdecl;
+begin
+  Result := Gdk3.gdk_display_list_devices(@self);
+end;
+
 procedure TGdkDisplay.notify_startup_complete(startup_id: Pgchar); cdecl;
 begin
   Gdk3.gdk_display_notify_startup_complete(@self, startup_id);
@@ -4333,6 +4376,16 @@ end;
 function TGdkDisplay.peek_event: PGdkEvent; cdecl;
 begin
   Result := Gdk3.gdk_display_peek_event(@self);
+end;
+
+function TGdkDisplay.pointer_is_grabbed: gboolean; cdecl;
+begin
+  Result := Gdk3.gdk_display_pointer_is_grabbed(@self);
+end;
+
+procedure TGdkDisplay.pointer_ungrab(time_: guint32); cdecl;
+begin
+  Gdk3.gdk_display_pointer_ungrab(@self, time_);
 end;
 
 procedure TGdkDisplay.put_event(event: PGdkEvent); cdecl;
@@ -4413,6 +4466,11 @@ end;
 procedure TGdkDisplay.sync; cdecl;
 begin
   Gdk3.gdk_display_sync(@self);
+end;
+
+procedure TGdkDisplay.warp_pointer(screen: PGdkScreen; x: gint; y: gint); cdecl;
+begin
+  Gdk3.gdk_display_warp_pointer(@self, screen, x, y);
 end;
 
 function TGdkScreen.get_default: PGdkScreen; cdecl;
@@ -4645,6 +4703,16 @@ begin
   Result := Gdk3.gdk_cursor_get_image(@self);
 end;
 
+function TGdkCursor.ref: PGdkCursor; cdecl;
+begin
+  Result := Gdk3.gdk_cursor_ref(@self);
+end;
+
+procedure TGdkCursor.unref; cdecl;
+begin
+  Gdk3.gdk_cursor_unref(@self);
+end;
+
 procedure TGdkDevice.free_history(events: PPGdkTimeCoord; n_events: gint); cdecl;
 begin
   Gdk3.gdk_device_free_history(events, n_events);
@@ -4783,6 +4851,11 @@ end;
 function TGdkWindow.new(parent: PGdkWindow; attributes: PGdkWindowAttr; attributes_mask: gint): PGdkWindow; cdecl;
 begin
   Result := Gdk3.gdk_window_new(parent, attributes, attributes_mask);
+end;
+
+function TGdkWindow.at_pointer(win_x: Pgint; win_y: Pgint): PGdkWindow; cdecl;
+begin
+  Result := Gdk3.gdk_window_at_pointer(win_x, win_y);
 end;
 
 procedure TGdkWindow.constrain_size(geometry: PGdkGeometry; flags: guint; width: gint; height: gint; new_width: Pgint; new_height: Pgint); cdecl;
@@ -5023,6 +5096,11 @@ end;
 function TGdkWindow.get_parent: PGdkWindow; cdecl;
 begin
   Result := Gdk3.gdk_window_get_parent(@self);
+end;
+
+function TGdkWindow.get_pointer(x: Pgint; y: Pgint; mask: PGdkModifierType): PGdkWindow; cdecl;
+begin
+  Result := Gdk3.gdk_window_get_pointer(@self, x, y, mask);
 end;
 
 procedure TGdkWindow.get_position(x: Pgint; y: Pgint); cdecl;
@@ -5410,7 +5488,7 @@ begin
   Gdk3.gdk_window_set_urgency_hint(@self, urgent);
 end;
 
-procedure TGdkWindow.set_user_data(user_data: TGObject); cdecl;
+procedure TGdkWindow.set_user_data(user_data: PGObject); cdecl;
 begin
   Gdk3.gdk_window_set_user_data(@self, user_data);
 end;

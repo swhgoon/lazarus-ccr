@@ -92,8 +92,8 @@ const
   LOG_FATAL_MASK = 0;
   LOG_LEVEL_USER_SHIFT = 8;
   MAJOR_VERSION = 2;
-  MICRO_VERSION = 18;
-  MINOR_VERSION = 29;
+  MICRO_VERSION = 0;
+  MINOR_VERSION = 30;
   MODULE_SUFFIX = 'so';
   MUTEX_DEBUG_MAGIC = 4175530711;
   OPTION_REMAINING = '';
@@ -1264,7 +1264,7 @@ type
     function new(checksum_type: TGChecksumType): PGChecksum; cdecl; inline; static;
     function type_get_length(checksum_type: TGChecksumType): gssize; cdecl; inline; static;
   end;
-  TGChildWatchFunc = procedure(pid: TGPid; status: gint; data: gpointer); cdecl;
+  TGChildWatchFunc = procedure(pid: TGPid; status: gint; user_data: gpointer); cdecl;
 
   PPGList = ^PGList;
   PGList = ^TGList;
@@ -1315,24 +1315,24 @@ type
   PPGCompletion = ^PGCompletion;
   PGCompletion = ^TGCompletion;
 
-  PPGCompletionFunc = ^PGCompletionFunc;
-  PGCompletionFunc = ^TGCompletionFunc;
-
   PPGCompletionStrncmpFunc = ^PGCompletionStrncmpFunc;
   PGCompletionStrncmpFunc = ^TGCompletionStrncmpFunc;
+
+  PPGCompletionFunc = ^PGCompletionFunc;
+  PGCompletionFunc = ^TGCompletionFunc;
   TGCompletion = object
     items: PGList;
     func: TGCompletionFunc;
     prefix: Pgchar;
     cache: PGList;
     strncmp_func: TGCompletionStrncmpFunc;
-    
-    
-    
-    
-    
-    
-    
+    procedure add_items(items: PGList); cdecl; inline;
+    procedure clear_items; cdecl; inline;
+    function complete(prefix: Pgchar; new_prefix: PPgchar): PGList; cdecl; inline;
+    function complete_utf8(prefix: Pgchar; new_prefix: PPgchar): PGList; cdecl; inline;
+    procedure free; cdecl; inline;
+    procedure remove_items(items: PGList); cdecl; inline;
+    procedure set_compare(strncmp_func: TGCompletionStrncmpFunc); cdecl; inline;
     function new(func: TGCompletionFunc): PGCompletion; cdecl; inline; static;
   end;
 
@@ -1408,7 +1408,7 @@ type
     procedure set_julian(julian_date: guint32); cdecl; inline;
     procedure set_month(month: TGDateMonth); cdecl; inline;
     procedure set_parse(str: Pgchar); cdecl; inline;
-    
+    procedure set_time(time_: TGTime); cdecl; inline;
     procedure set_time_t(timet: glong); cdecl; inline;
     procedure set_time_val(timeval: PGTimeVal); cdecl; inline;
     procedure set_year(year: TGDateYear); cdecl; inline;
@@ -1446,9 +1446,6 @@ type
   PPPgint64 = ^PPgint64;
   PPgint64 = ^Pgint64;
   Pgint64 = ^gint64;
-
-  PPGSource = ^PGSource;
-  PGSource = ^TGSource;
   TGDateTime = object
     function new(tz: PGTimeZone; year: gint; month: gint; day: gint; hour: gint; minute: gint; seconds: gdouble): PGDateTime; cdecl; inline; static;
     function new_from_timeval_local(tv: PGTimeVal): PGDateTime; cdecl; inline; static;
@@ -1488,7 +1485,6 @@ type
     procedure get_ymd(year: Pgint; month: Pgint; day: Pgint); cdecl; inline;
     function is_daylight_savings: gboolean; cdecl; inline;
     function ref: PGDateTime; cdecl; inline;
-    function source_new(cancel_on_set: gboolean): PGSource; cdecl; inline;
     function to_local: PGDateTime; cdecl; inline;
     function to_timeval(tv: PGTimeVal): gboolean; cdecl; inline;
     function to_timezone(tz: PGTimeZone): PGDateTime; cdecl; inline;
@@ -1517,71 +1513,6 @@ type
     function new(identifier: Pgchar): PGTimeZone; cdecl; inline; static;
     function new_local: PGTimeZone; cdecl; inline; static;
     function new_utc: PGTimeZone; cdecl; inline; static;
-  end;
-
-  PPPGPollFD = ^PPGPollFD;
-  PPGPollFD = ^PGPollFD;
-  PGPollFD = ^TGPollFD;
-
-  PPGMainContext = ^PGMainContext;
-  PGMainContext = ^TGMainContext;
-
-  PPGSourceFunc = ^PGSourceFunc;
-  PGSourceFunc = ^TGSourceFunc;
-  TGSourceFunc = function(data: gpointer): gboolean; cdecl;
-
-  PPGSourceCallbackFuncs = ^PGSourceCallbackFuncs;
-  PGSourceCallbackFuncs = ^TGSourceCallbackFuncs;
-
-  PPGSourceFuncs = ^PGSourceFuncs;
-  PGSourceFuncs = ^TGSourceFuncs;
-
-  PPGSList = ^PGSList;
-  PGSList = ^TGSList;
-
-  PPGSourcePrivate = ^PGSourcePrivate;
-  PGSourcePrivate = ^TGSourcePrivate;
-  TGSource = object
-    callback_data: gpointer;
-    callback_funcs: PGSourceCallbackFuncs;
-    source_funcs: PGSourceFuncs;
-    ref_count: guint;
-    context: PGMainContext;
-    priority: gint;
-    flags: guint;
-    source_id: guint;
-    poll_fds: PGSList;
-    prev: PGSource;
-    next: PGSource;
-    name: Pgchar;
-    priv: PGSourcePrivate;
-    procedure add_child_source(child_source: PGSource); cdecl; inline;
-    procedure add_poll(fd: PGPollFD); cdecl; inline;
-    function attach(context: PGMainContext): guint; cdecl; inline;
-    procedure destroy_; cdecl; inline;
-    function get_can_recurse: gboolean; cdecl; inline;
-    function get_context: PGMainContext; cdecl; inline;
-    
-    function get_id: guint; cdecl; inline;
-    function get_name: Pgchar; cdecl; inline;
-    function get_priority: gint; cdecl; inline;
-    function get_time: gint64; cdecl; inline;
-    function is_destroyed: gboolean; cdecl; inline;
-    function ref: PGSource; cdecl; inline;
-    procedure remove_child_source(child_source: PGSource); cdecl; inline;
-    procedure remove_poll(fd: PGPollFD); cdecl; inline;
-    procedure set_callback(func: TGSourceFunc; data: gpointer; notify: TGDestroyNotify); cdecl; inline;
-    procedure set_callback_indirect(callback_data: gpointer; callback_funcs: PGSourceCallbackFuncs); cdecl; inline;
-    procedure set_can_recurse(can_recurse: gboolean); cdecl; inline;
-    procedure set_funcs(funcs: PGSourceFuncs); cdecl; inline;
-    procedure set_name(name: Pgchar); cdecl; inline;
-    procedure set_priority(priority: gint); cdecl; inline;
-    procedure unref; cdecl; inline;
-    function new(source_funcs: PGSourceFuncs; struct_size: guint): PGSource; cdecl; inline; static;
-    function remove(tag: guint): gboolean; cdecl; inline; static;
-    function remove_by_funcs_user_data(funcs: PGSourceFuncs; user_data: gpointer): gboolean; cdecl; inline; static;
-    function remove_by_user_data(user_data: gpointer): gboolean; cdecl; inline; static;
-    procedure set_name_by_id(tag: guint; name: Pgchar); cdecl; inline; static;
   end;
 
   PPGDebugKey = ^PGDebugKey;
@@ -1832,6 +1763,9 @@ type
   PPGSeekType = ^PGSeekType;
   PGSeekType = ^TGSeekType;
 
+  PPGSource = ^PGSource;
+  PGSource = ^TGSource;
+
   PPGIOCondition = ^PGIOCondition;
   PGIOCondition = ^TGIOCondition;
 
@@ -1961,6 +1895,71 @@ type
   end;
   TGIOFunc = function(source: PGIOChannel; condition: TGIOCondition; data: gpointer): gboolean; cdecl;
 
+  PPGSourceFuncs = ^PGSourceFuncs;
+  PGSourceFuncs = ^TGSourceFuncs;
+
+  PPPGPollFD = ^PPGPollFD;
+  PPGPollFD = ^PGPollFD;
+  PGPollFD = ^TGPollFD;
+
+  PPGMainContext = ^PGMainContext;
+  PGMainContext = ^TGMainContext;
+
+  PPGSourceFunc = ^PGSourceFunc;
+  PGSourceFunc = ^TGSourceFunc;
+  TGSourceFunc = function(user_data: gpointer): gboolean; cdecl;
+
+  PPGSourceCallbackFuncs = ^PGSourceCallbackFuncs;
+  PGSourceCallbackFuncs = ^TGSourceCallbackFuncs;
+
+  PPGSList = ^PGSList;
+  PGSList = ^TGSList;
+
+  PPGSourcePrivate = ^PGSourcePrivate;
+  PGSourcePrivate = ^TGSourcePrivate;
+  TGSource = object
+    callback_data: gpointer;
+    callback_funcs: PGSourceCallbackFuncs;
+    source_funcs: PGSourceFuncs;
+    ref_count: guint;
+    context: PGMainContext;
+    priority: gint;
+    flags: guint;
+    source_id: guint;
+    poll_fds: PGSList;
+    prev: PGSource;
+    next: PGSource;
+    name: Pgchar;
+    priv: PGSourcePrivate;
+    function new(source_funcs: PGSourceFuncs; struct_size: guint): PGSource; cdecl; inline; static;
+    procedure add_child_source(child_source: PGSource); cdecl; inline;
+    procedure add_poll(fd: PGPollFD); cdecl; inline;
+    function attach(context: PGMainContext): guint; cdecl; inline;
+    procedure destroy_; cdecl; inline;
+    function get_can_recurse: gboolean; cdecl; inline;
+    function get_context: PGMainContext; cdecl; inline;
+    procedure get_current_time(timeval: PGTimeVal); cdecl; inline;
+    function get_id: guint; cdecl; inline;
+    function get_name: Pgchar; cdecl; inline;
+    function get_priority: gint; cdecl; inline;
+    function get_time: gint64; cdecl; inline;
+    function is_destroyed: gboolean; cdecl; inline;
+    function ref: PGSource; cdecl; inline;
+    procedure remove_child_source(child_source: PGSource); cdecl; inline;
+    procedure remove_poll(fd: PGPollFD); cdecl; inline;
+    procedure set_callback(func: TGSourceFunc; data: gpointer; notify: TGDestroyNotify); cdecl; inline;
+    procedure set_callback_indirect(callback_data: gpointer; callback_funcs: PGSourceCallbackFuncs); cdecl; inline;
+    procedure set_can_recurse(can_recurse: gboolean); cdecl; inline;
+    procedure set_funcs(funcs: PGSourceFuncs); cdecl; inline;
+    procedure set_name(name: Pgchar); cdecl; inline;
+    procedure set_priority(priority: gint); cdecl; inline;
+    procedure unref; cdecl; inline;
+    function remove(tag: guint): gboolean; cdecl; inline; static;
+    function remove_by_funcs_user_data(funcs: PGSourceFuncs; user_data: gpointer): gboolean; cdecl; inline; static;
+    function remove_by_user_data(user_data: gpointer): gboolean; cdecl; inline; static;
+    procedure set_name_by_id(tag: guint; name: Pgchar); cdecl; inline; static;
+  end;
+
   PPGKeyFileFlags = ^PGKeyFileFlags;
   PGKeyFileFlags = ^TGKeyFileFlags;
 
@@ -2025,40 +2024,14 @@ type
   PGLogLevelFlags = ^TGLogLevelFlags;
   TGLogFunc = procedure(log_domain: Pgchar; log_level: TGLogLevelFlags; message: Pgchar; user_data: gpointer); cdecl;
 
-  PPPgushort = ^PPgushort;
-  PPgushort = ^Pgushort;
-  Pgushort = ^gushort;
-
-  TGPollFD = record
-    fd: gint;
-    events: gushort;
-    revents: gushort;
-  end;
-
-
-
-  PPGSourceDummyMarshal = ^PGSourceDummyMarshal;
-  PGSourceDummyMarshal = ^TGSourceDummyMarshal;
-  TGSourceDummyMarshal = procedure; cdecl;
-
-  TGSourceFuncs = record
-    prepare: function(source: PGSource; timeout_: Pgint): gboolean; cdecl;
-    check: function(source: PGSource): gboolean; cdecl;
-    dispatch: function(source: PGSource; callback: TGSourceFunc; user_data: gpointer): gboolean; cdecl;
-    finalize: procedure(source: PGSource); cdecl;
-    closure_callback: TGSourceFunc;
-    closure_marshal: TGSourceDummyMarshal;
-  end;
-
-
-  TGPollFunc = function(ufds: PGPollFD; nfsd: guint; timeout_: gint): gint; cdecl;
-
   PPGPollFunc = ^PGPollFunc;
   PGPollFunc = ^TGPollFunc;
+  TGPollFunc = function(ufds: PGPollFD; nfsd: guint; timeout_: gint): gint; cdecl;
 
   PPGMutex = ^PGMutex;
   PGMutex = ^TGMutex;
   TGMainContext = object
+    function new: PGMainContext; cdecl; inline; static;
     function acquire: gboolean; cdecl; inline;
     procedure add_poll(fd: PGPollFD; priority: gint); cdecl; inline;
     function check(max_priority: gint; fds: PGPollFD; n_fds: gint): gint; cdecl; inline;
@@ -2085,8 +2058,34 @@ type
     procedure wakeup; cdecl; inline;
     function default_: PGMainContext; cdecl; inline; static;
     function get_thread_default: PGMainContext; cdecl; inline; static;
-    function new: PGMainContext; cdecl; inline; static;
   end;
+
+  PPPgushort = ^PPgushort;
+  PPgushort = ^Pgushort;
+  Pgushort = ^gushort;
+
+  TGPollFD = record
+    fd: gint;
+    events: gushort;
+    revents: gushort;
+  end;
+
+
+
+  PPGSourceDummyMarshal = ^PGSourceDummyMarshal;
+  PGSourceDummyMarshal = ^TGSourceDummyMarshal;
+  TGSourceDummyMarshal = procedure; cdecl;
+
+  TGSourceFuncs = record
+    prepare: function(source: PGSource; timeout_: Pgint): gboolean; cdecl;
+    check: function(source: PGSource): gboolean; cdecl;
+    dispatch: function(source: PGSource; callback: TGSourceFunc; user_data: gpointer): gboolean; cdecl;
+    finalize: procedure(source: PGSource); cdecl;
+    closure_callback: TGSourceFunc;
+    closure_marshal: TGSourceDummyMarshal;
+  end;
+
+
 
   TGMutex = record
   end;
@@ -2096,13 +2095,13 @@ type
   PPGMainLoop = ^PGMainLoop;
   PGMainLoop = ^TGMainLoop;
   TGMainLoop = object
+    function new(context: PGMainContext; is_running: gboolean): PGMainLoop; cdecl; inline; static;
     function get_context: PGMainContext; cdecl; inline;
     function is_running: gboolean; cdecl; inline;
     procedure quit; cdecl; inline;
     function ref: PGMainLoop; cdecl; inline;
     procedure run; cdecl; inline;
     procedure unref; cdecl; inline;
-    function new(context: PGMainContext; is_running: gboolean): PGMainLoop; cdecl; inline; static;
   end;
 
   PPGMappedFile = ^PGMappedFile;
@@ -2144,10 +2143,10 @@ type
     function length(list: PGSList): guint; cdecl; inline; static;
     function nth(list: PGSList; n: guint): PGSList; cdecl; inline; static;
     function nth_data(list: PGSList; n: guint): gpointer; cdecl; inline; static;
-    
+    procedure pop_allocator; cdecl; inline; static;
     function position(list: PGSList; llink: PGSList): gint; cdecl; inline; static;
     function prepend(list: PGSList; data: gpointer): PGSList; cdecl; inline; static;
-    
+    procedure push_allocator(dummy: gpointer); cdecl; inline; static;
     function remove(list: PGSList; data: gpointer): PGSList; cdecl; inline; static;
     function remove_all(list: PGSList; data: gpointer): PGSList; cdecl; inline; static;
     function remove_link(list: PGSList; link_: PGSList): PGSList; cdecl; inline; static;
@@ -2534,22 +2533,22 @@ type
   PGTuples = ^TGTuples;
   TGTuples = object
     len: guint;
-    
-    
+    procedure destroy_; cdecl; inline;
+    function index(index_: gint; field: gint): gpointer; cdecl; inline;
   end;
 
   PPGRelation = ^PGRelation;
   PGRelation = ^TGRelation;
   TGRelation = object
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    function count(key: gpointer; field: gint): gint; cdecl; inline;
+    function delete(key: gpointer; field: gint): gint; cdecl; inline;
+    procedure destroy_; cdecl; inline;
+    //function exists(args: array of const): gboolean; cdecl; inline;
+    procedure index(field: gint; hash_func: TGHashFunc; key_equal_func: TGEqualFunc); cdecl; inline;
+    //procedure insert(args: array of const); cdecl; inline;
+    procedure print; cdecl; inline;
+    function select(key: gpointer; field: gint): PGTuples; cdecl; inline;
+    function new(fields: gint): PGRelation; cdecl; inline; static;
   end;
 
   PPGScannerConfig = ^PGScannerConfig;
@@ -3326,6 +3325,8 @@ function g_checksum_type_get_length(checksum_type: TGChecksumType): gssize; cdec
 function g_child_watch_add(pid: TGPid; function_: TGChildWatchFunc; data: gpointer): guint; cdecl; external;
 function g_child_watch_add_full(priority: gint; pid: TGPid; function_: TGChildWatchFunc; data: gpointer; notify: TGDestroyNotify): guint; cdecl; external;
 function g_child_watch_source_new(pid: TGPid): PGSource; cdecl; external;
+function g_completion_complete(ACompletion: PGCompletion; prefix: Pgchar; new_prefix: PPgchar): PGList; cdecl; external;
+function g_completion_complete_utf8(ACompletion: PGCompletion; prefix: Pgchar; new_prefix: PPgchar): PGList; cdecl; external;
 function g_completion_new(func: TGCompletionFunc): PGCompletion; cdecl; external;
 function g_compute_checksum_for_data(checksum_type: TGChecksumType; data: Pguint8; length: gsize): Pgchar; cdecl; external;
 function g_compute_checksum_for_string(checksum_type: TGChecksumType; str: Pgchar; length: gssize): Pgchar; cdecl; external;
@@ -3404,7 +3405,6 @@ function g_date_time_new_now_local: PGDateTime; cdecl; external;
 function g_date_time_new_now_utc: PGDateTime; cdecl; external;
 function g_date_time_new_utc(year: gint; month: gint; day: gint; hour: gint; minute: gint; seconds: gdouble): PGDateTime; cdecl; external;
 function g_date_time_ref(ADateTime: PGDateTime): PGDateTime; cdecl; external;
-function g_date_time_source_new(ADateTime: PGDateTime; cancel_on_set: gboolean): PGSource; cdecl; external;
 function g_date_time_to_local(ADateTime: PGDateTime): PGDateTime; cdecl; external;
 function g_date_time_to_timeval(ADateTime: PGDateTime; tv: PGTimeVal): gboolean; cdecl; external;
 function g_date_time_to_timezone(ADateTime: PGDateTime; tz: PGTimeZone): PGDateTime; cdecl; external;
@@ -3629,6 +3629,7 @@ function g_main_context_find_source_by_id(AMainContext: PGMainContext; source_id
 function g_main_context_find_source_by_user_data(AMainContext: PGMainContext; user_data: gpointer): PGSource; cdecl; external;
 function g_main_context_get_poll_func(AMainContext: PGMainContext): TGPollFunc; cdecl; external;
 function g_main_context_get_thread_default: PGMainContext; cdecl; external;
+function g_main_context_get_type: TGType; cdecl; external;
 function g_main_context_is_owner(AMainContext: PGMainContext): gboolean; cdecl; external;
 function g_main_context_iteration(AMainContext: PGMainContext; may_block: gboolean): gboolean; cdecl; external;
 function g_main_context_new: PGMainContext; cdecl; external;
@@ -3640,6 +3641,7 @@ function g_main_context_wait(AMainContext: PGMainContext; cond: PGCond; mutex: P
 function g_main_current_source: PGSource; cdecl; external;
 function g_main_depth: gint; cdecl; external;
 function g_main_loop_get_context(AMainLoop: PGMainLoop): PGMainContext; cdecl; external;
+function g_main_loop_get_type: TGType; cdecl; external;
 function g_main_loop_is_running(AMainLoop: PGMainLoop): gboolean; cdecl; external;
 function g_main_loop_new(context: PGMainContext; is_running: gboolean): PGMainLoop; cdecl; external;
 function g_main_loop_ref(AMainLoop: PGMainLoop): PGMainLoop; cdecl; external;
@@ -3810,6 +3812,11 @@ function g_regex_replace_literal(ARegex: PGRegex; string_: Pgchar; string_len: g
 function g_regex_split(ARegex: PGRegex; string_: Pgchar; match_options: TGRegexMatchFlags): PPgchar; cdecl; external;
 function g_regex_split_full(ARegex: PGRegex; string_: Pgchar; string_len: gssize; start_position: gint; match_options: TGRegexMatchFlags; max_tokens: gint): PPgchar; cdecl; external;
 function g_regex_split_simple(pattern: Pgchar; string_: Pgchar; compile_options: TGRegexCompileFlags; match_options: TGRegexMatchFlags): PPgchar; cdecl; external;
+function g_relation_count(ARelation: PGRelation; key: gpointer; field: gint): gint; cdecl; external;
+function g_relation_delete(ARelation: PGRelation; key: gpointer; field: gint): gint; cdecl; external;
+function g_relation_exists(ARelation: PGRelation; args: array of const): gboolean; cdecl; external;
+function g_relation_new(fields: gint): PGRelation; cdecl; external;
+function g_relation_select(ARelation: PGRelation; key: gpointer; field: gint): PGTuples; cdecl; external;
 function g_rmdir(filename: Pgchar): gint; cdecl; external;
 function g_scanner_cur_line(AScanner: PGScanner): guint; cdecl; external;
 function g_scanner_cur_position(AScanner: PGScanner): guint; cdecl; external;
@@ -3890,6 +3897,7 @@ function g_source_get_id(ASource: PGSource): guint; cdecl; external;
 function g_source_get_name(ASource: PGSource): Pgchar; cdecl; external;
 function g_source_get_priority(ASource: PGSource): gint; cdecl; external;
 function g_source_get_time(ASource: PGSource): gint64; cdecl; external;
+function g_source_get_type: TGType; cdecl; external;
 function g_source_is_destroyed(ASource: PGSource): gboolean; cdecl; external;
 function g_source_new(source_funcs: PGSourceFuncs; struct_size: guint): PGSource; cdecl; external;
 function g_source_ref(ASource: PGSource): PGSource; cdecl; external;
@@ -4050,6 +4058,7 @@ function g_try_malloc0_n(n_blocks: gsize; n_block_bytes: gsize): gpointer; cdecl
 function g_try_malloc_n(n_blocks: gsize; n_block_bytes: gsize): gpointer; cdecl; external;
 function g_try_realloc(mem: gpointer; n_bytes: gsize): gpointer; cdecl; external;
 function g_try_realloc_n(mem: gpointer; n_blocks: gsize; n_block_bytes: gsize): gpointer; cdecl; external;
+function g_tuples_index(ATuples: PGTuples; index_: gint; field: gint): gpointer; cdecl; external;
 function g_ucs4_to_utf16(str: Pgunichar; len: glong; items_read: Pglong; items_written: Pglong): Pguint16; cdecl; external;
 function g_ucs4_to_utf8(str: Pgunichar; len: glong; items_read: Pglong; items_written: Pglong): Pgchar; cdecl; external;
 function g_unichar_break_type(c: gunichar): TGUnicodeBreakType; cdecl; external;
@@ -4244,7 +4253,6 @@ function g_vprintf(format: Pgchar; args: Tva_list): gint; cdecl; external;
 function g_vsnprintf(string_: Pgchar; n: gulong; format: Pgchar; args: Tva_list): gint; cdecl; external;
 function g_vsprintf(string_: Pgchar; format: Pgchar; args: Tva_list): gint; cdecl; external;
 function glib_check_version(required_major: guint; required_minor: guint; required_micro: guint): Pgchar; cdecl; external;
-function intern: TGType; cdecl; external;
 procedure g_allocator_free(AAllocator: PGAllocator); cdecl; external;
 procedure g_array_sort(array_: Pgpointer; compare_func: TGCompareFunc); cdecl; external;
 procedure g_array_sort_with_data(array_: Pgpointer; compare_func: TGCompareDataFunc; user_data: gpointer); cdecl; external;
@@ -4297,6 +4305,11 @@ procedure g_checksum_get_digest(AChecksum: PGChecksum; buffer: Pguint8; digest_l
 procedure g_checksum_reset(AChecksum: PGChecksum); cdecl; external;
 procedure g_checksum_update(AChecksum: PGChecksum; data: Pguint8; length: gssize); cdecl; external;
 procedure g_clear_error; cdecl; external;
+procedure g_completion_add_items(ACompletion: PGCompletion; items: PGList); cdecl; external;
+procedure g_completion_clear_items(ACompletion: PGCompletion); cdecl; external;
+procedure g_completion_free(ACompletion: PGCompletion); cdecl; external;
+procedure g_completion_remove_items(ACompletion: PGCompletion; items: PGList); cdecl; external;
+procedure g_completion_set_compare(ACompletion: PGCompletion; strncmp_func: TGCompletionStrncmpFunc); cdecl; external;
 procedure g_datalist_clear(datalist: PPGData); cdecl; external;
 procedure g_datalist_foreach(datalist: PPGData; func: TGDataForeachFunc; user_data: gpointer); cdecl; external;
 procedure g_datalist_id_set_data_full(datalist: PPGData; key_id: TGQuark; data: gpointer; destroy_func: TGDestroyNotify); cdecl; external;
@@ -4318,6 +4331,7 @@ procedure g_date_set_dmy(ADate: PGDate; day: TGDateDay; month: TGDateMonth; y: T
 procedure g_date_set_julian(ADate: PGDate; julian_date: guint32); cdecl; external;
 procedure g_date_set_month(ADate: PGDate; month: TGDateMonth); cdecl; external;
 procedure g_date_set_parse(ADate: PGDate; str: Pgchar); cdecl; external;
+procedure g_date_set_time(ADate: PGDate; time_: TGTime); cdecl; external;
 procedure g_date_set_time_t(ADate: PGDate; timet: glong); cdecl; external;
 procedure g_date_set_time_val(ADate: PGDate; timeval: PGTimeVal); cdecl; external;
 procedure g_date_set_year(ADate: PGDate; year: TGDateYear); cdecl; external;
@@ -4485,6 +4499,10 @@ procedure g_rand_set_seed(ARand: PGRand; seed: guint32); cdecl; external;
 procedure g_rand_set_seed_array(ARand: PGRand; seed: Pguint32; seed_length: guint); cdecl; external;
 procedure g_random_set_seed(seed: guint32); cdecl; external;
 procedure g_regex_unref(ARegex: PGRegex); cdecl; external;
+procedure g_relation_destroy(ARelation: PGRelation); cdecl; external;
+procedure g_relation_index(ARelation: PGRelation; field: gint; hash_func: TGHashFunc; key_equal_func: TGEqualFunc); cdecl; external;
+procedure g_relation_insert(ARelation: PGRelation; args: array of const); cdecl; external;
+procedure g_relation_print(ARelation: PGRelation); cdecl; external;
 procedure g_reload_user_special_dirs_cache; cdecl; external;
 procedure g_return_if_fail_warning(log_domain: Pgchar; pretty_function: Pgchar; expression: Pgchar); cdecl; external;
 procedure g_scanner_destroy(AScanner: PGScanner); cdecl; external;
@@ -4526,6 +4544,7 @@ procedure g_slist_push_allocator(dummy: gpointer); cdecl; external;
 procedure g_source_add_child_source(ASource: PGSource; child_source: PGSource); cdecl; external;
 procedure g_source_add_poll(ASource: PGSource; fd: PGPollFD); cdecl; external;
 procedure g_source_destroy(ASource: PGSource); cdecl; external;
+procedure g_source_get_current_time(ASource: PGSource; timeval: PGTimeVal); cdecl; external;
 procedure g_source_remove_child_source(ASource: PGSource; child_source: PGSource); cdecl; external;
 procedure g_source_remove_poll(ASource: PGSource; fd: PGPollFD); cdecl; external;
 procedure g_source_set_callback(ASource: PGSource; func: TGSourceFunc; data: gpointer; notify: TGDestroyNotify); cdecl; external;
@@ -4606,6 +4625,7 @@ procedure g_tree_insert(ATree: PGTree; key: gpointer; value: gpointer); cdecl; e
 procedure g_tree_replace(ATree: PGTree; key: gpointer; value: gpointer); cdecl; external;
 procedure g_tree_traverse(ATree: PGTree; traverse_func: TGTraverseFunc; traverse_type: TGTraverseType; user_data: gpointer); cdecl; external;
 procedure g_tree_unref(ATree: PGTree); cdecl; external;
+procedure g_tuples_destroy(ATuples: PGTuples); cdecl; external;
 procedure g_unicode_canonical_ordering(string_: Pgunichar; len: gsize); cdecl; external;
 procedure g_unsetenv(variable: Pgchar); cdecl; external;
 procedure g_usleep(microseconds: gulong); cdecl; external;
@@ -5332,6 +5352,41 @@ begin
   Result := GLib2.g_list_sort_with_data(list, compare_func, user_data);
 end;
 
+procedure TGCompletion.add_items(items: PGList); cdecl;
+begin
+  GLib2.g_completion_add_items(@self, items);
+end;
+
+procedure TGCompletion.clear_items; cdecl;
+begin
+  GLib2.g_completion_clear_items(@self);
+end;
+
+function TGCompletion.complete(prefix: Pgchar; new_prefix: PPgchar): PGList; cdecl;
+begin
+  Result := GLib2.g_completion_complete(@self, prefix, new_prefix);
+end;
+
+function TGCompletion.complete_utf8(prefix: Pgchar; new_prefix: PPgchar): PGList; cdecl;
+begin
+  Result := GLib2.g_completion_complete_utf8(@self, prefix, new_prefix);
+end;
+
+procedure TGCompletion.free; cdecl;
+begin
+  GLib2.g_completion_free(@self);
+end;
+
+procedure TGCompletion.remove_items(items: PGList); cdecl;
+begin
+  GLib2.g_completion_remove_items(@self, items);
+end;
+
+procedure TGCompletion.set_compare(strncmp_func: TGCompletionStrncmpFunc); cdecl;
+begin
+  GLib2.g_completion_set_compare(@self, strncmp_func);
+end;
+
 function TGCompletion.new(func: TGCompletionFunc): PGCompletion; cdecl;
 begin
   Result := GLib2.g_completion_new(func);
@@ -5475,6 +5530,11 @@ end;
 procedure TGDate.set_parse(str: Pgchar); cdecl;
 begin
   GLib2.g_date_set_parse(@self, str);
+end;
+
+procedure TGDate.set_time(time_: TGTime); cdecl;
+begin
+  GLib2.g_date_set_time(@self, time_);
 end;
 
 procedure TGDate.set_time_t(timet: glong); cdecl;
@@ -5762,11 +5822,6 @@ begin
   Result := GLib2.g_date_time_ref(@self);
 end;
 
-function TGDateTime.source_new(cancel_on_set: gboolean): PGSource; cdecl;
-begin
-  Result := GLib2.g_date_time_source_new(@self, cancel_on_set);
-end;
-
 function TGDateTime.to_local: PGDateTime; cdecl;
 begin
   Result := GLib2.g_date_time_to_local(@self);
@@ -5860,136 +5915,6 @@ end;
 function TGTimeZone.new_utc: PGTimeZone; cdecl;
 begin
   Result := GLib2.g_time_zone_new_utc();
-end;
-
-procedure TGSource.add_child_source(child_source: PGSource); cdecl;
-begin
-  GLib2.g_source_add_child_source(@self, child_source);
-end;
-
-procedure TGSource.add_poll(fd: PGPollFD); cdecl;
-begin
-  GLib2.g_source_add_poll(@self, fd);
-end;
-
-function TGSource.attach(context: PGMainContext): guint; cdecl;
-begin
-  Result := GLib2.g_source_attach(@self, context);
-end;
-
-procedure TGSource.destroy_; cdecl;
-begin
-  GLib2.g_source_destroy(@self);
-end;
-
-function TGSource.get_can_recurse: gboolean; cdecl;
-begin
-  Result := GLib2.g_source_get_can_recurse(@self);
-end;
-
-function TGSource.get_context: PGMainContext; cdecl;
-begin
-  Result := GLib2.g_source_get_context(@self);
-end;
-
-function TGSource.get_id: guint; cdecl;
-begin
-  Result := GLib2.g_source_get_id(@self);
-end;
-
-function TGSource.get_name: Pgchar; cdecl;
-begin
-  Result := GLib2.g_source_get_name(@self);
-end;
-
-function TGSource.get_priority: gint; cdecl;
-begin
-  Result := GLib2.g_source_get_priority(@self);
-end;
-
-function TGSource.get_time: gint64; cdecl;
-begin
-  Result := GLib2.g_source_get_time(@self);
-end;
-
-function TGSource.is_destroyed: gboolean; cdecl;
-begin
-  Result := GLib2.g_source_is_destroyed(@self);
-end;
-
-function TGSource.ref: PGSource; cdecl;
-begin
-  Result := GLib2.g_source_ref(@self);
-end;
-
-procedure TGSource.remove_child_source(child_source: PGSource); cdecl;
-begin
-  GLib2.g_source_remove_child_source(@self, child_source);
-end;
-
-procedure TGSource.remove_poll(fd: PGPollFD); cdecl;
-begin
-  GLib2.g_source_remove_poll(@self, fd);
-end;
-
-procedure TGSource.set_callback(func: TGSourceFunc; data: gpointer; notify: TGDestroyNotify); cdecl;
-begin
-  GLib2.g_source_set_callback(@self, func, data, notify);
-end;
-
-procedure TGSource.set_callback_indirect(callback_data: gpointer; callback_funcs: PGSourceCallbackFuncs); cdecl;
-begin
-  GLib2.g_source_set_callback_indirect(@self, callback_data, callback_funcs);
-end;
-
-procedure TGSource.set_can_recurse(can_recurse: gboolean); cdecl;
-begin
-  GLib2.g_source_set_can_recurse(@self, can_recurse);
-end;
-
-procedure TGSource.set_funcs(funcs: PGSourceFuncs); cdecl;
-begin
-  GLib2.g_source_set_funcs(@self, funcs);
-end;
-
-procedure TGSource.set_name(name: Pgchar); cdecl;
-begin
-  GLib2.g_source_set_name(@self, name);
-end;
-
-procedure TGSource.set_priority(priority: gint); cdecl;
-begin
-  GLib2.g_source_set_priority(@self, priority);
-end;
-
-procedure TGSource.unref; cdecl;
-begin
-  GLib2.g_source_unref(@self);
-end;
-
-function TGSource.new(source_funcs: PGSourceFuncs; struct_size: guint): PGSource; cdecl;
-begin
-  Result := GLib2.g_source_new(source_funcs, struct_size);
-end;
-
-function TGSource.remove(tag: guint): gboolean; cdecl;
-begin
-  Result := GLib2.g_source_remove(tag);
-end;
-
-function TGSource.remove_by_funcs_user_data(funcs: PGSourceFuncs; user_data: gpointer): gboolean; cdecl;
-begin
-  Result := GLib2.g_source_remove_by_funcs_user_data(funcs, user_data);
-end;
-
-function TGSource.remove_by_user_data(user_data: gpointer): gboolean; cdecl;
-begin
-  Result := GLib2.g_source_remove_by_user_data(user_data);
-end;
-
-procedure TGSource.set_name_by_id(tag: guint; name: Pgchar); cdecl;
-begin
-  GLib2.g_source_set_name_by_id(tag, name);
 end;
 
 procedure TGDir.close; cdecl;
@@ -6637,6 +6562,141 @@ begin
   Result := GLib2.g_io_channel_error_quark();
 end;
 
+function TGSource.new(source_funcs: PGSourceFuncs; struct_size: guint): PGSource; cdecl;
+begin
+  Result := GLib2.g_source_new(source_funcs, struct_size);
+end;
+
+procedure TGSource.add_child_source(child_source: PGSource); cdecl;
+begin
+  GLib2.g_source_add_child_source(@self, child_source);
+end;
+
+procedure TGSource.add_poll(fd: PGPollFD); cdecl;
+begin
+  GLib2.g_source_add_poll(@self, fd);
+end;
+
+function TGSource.attach(context: PGMainContext): guint; cdecl;
+begin
+  Result := GLib2.g_source_attach(@self, context);
+end;
+
+procedure TGSource.destroy_; cdecl;
+begin
+  GLib2.g_source_destroy(@self);
+end;
+
+function TGSource.get_can_recurse: gboolean; cdecl;
+begin
+  Result := GLib2.g_source_get_can_recurse(@self);
+end;
+
+function TGSource.get_context: PGMainContext; cdecl;
+begin
+  Result := GLib2.g_source_get_context(@self);
+end;
+
+procedure TGSource.get_current_time(timeval: PGTimeVal); cdecl;
+begin
+  GLib2.g_source_get_current_time(@self, timeval);
+end;
+
+function TGSource.get_id: guint; cdecl;
+begin
+  Result := GLib2.g_source_get_id(@self);
+end;
+
+function TGSource.get_name: Pgchar; cdecl;
+begin
+  Result := GLib2.g_source_get_name(@self);
+end;
+
+function TGSource.get_priority: gint; cdecl;
+begin
+  Result := GLib2.g_source_get_priority(@self);
+end;
+
+function TGSource.get_time: gint64; cdecl;
+begin
+  Result := GLib2.g_source_get_time(@self);
+end;
+
+function TGSource.is_destroyed: gboolean; cdecl;
+begin
+  Result := GLib2.g_source_is_destroyed(@self);
+end;
+
+function TGSource.ref: PGSource; cdecl;
+begin
+  Result := GLib2.g_source_ref(@self);
+end;
+
+procedure TGSource.remove_child_source(child_source: PGSource); cdecl;
+begin
+  GLib2.g_source_remove_child_source(@self, child_source);
+end;
+
+procedure TGSource.remove_poll(fd: PGPollFD); cdecl;
+begin
+  GLib2.g_source_remove_poll(@self, fd);
+end;
+
+procedure TGSource.set_callback(func: TGSourceFunc; data: gpointer; notify: TGDestroyNotify); cdecl;
+begin
+  GLib2.g_source_set_callback(@self, func, data, notify);
+end;
+
+procedure TGSource.set_callback_indirect(callback_data: gpointer; callback_funcs: PGSourceCallbackFuncs); cdecl;
+begin
+  GLib2.g_source_set_callback_indirect(@self, callback_data, callback_funcs);
+end;
+
+procedure TGSource.set_can_recurse(can_recurse: gboolean); cdecl;
+begin
+  GLib2.g_source_set_can_recurse(@self, can_recurse);
+end;
+
+procedure TGSource.set_funcs(funcs: PGSourceFuncs); cdecl;
+begin
+  GLib2.g_source_set_funcs(@self, funcs);
+end;
+
+procedure TGSource.set_name(name: Pgchar); cdecl;
+begin
+  GLib2.g_source_set_name(@self, name);
+end;
+
+procedure TGSource.set_priority(priority: gint); cdecl;
+begin
+  GLib2.g_source_set_priority(@self, priority);
+end;
+
+procedure TGSource.unref; cdecl;
+begin
+  GLib2.g_source_unref(@self);
+end;
+
+function TGSource.remove(tag: guint): gboolean; cdecl;
+begin
+  Result := GLib2.g_source_remove(tag);
+end;
+
+function TGSource.remove_by_funcs_user_data(funcs: PGSourceFuncs; user_data: gpointer): gboolean; cdecl;
+begin
+  Result := GLib2.g_source_remove_by_funcs_user_data(funcs, user_data);
+end;
+
+function TGSource.remove_by_user_data(user_data: gpointer): gboolean; cdecl;
+begin
+  Result := GLib2.g_source_remove_by_user_data(user_data);
+end;
+
+procedure TGSource.set_name_by_id(tag: guint; name: Pgchar); cdecl;
+begin
+  GLib2.g_source_set_name_by_id(tag, name);
+end;
+
 procedure TGKeyFile.free; cdecl;
 begin
   GLib2.g_key_file_free(@self);
@@ -6862,6 +6922,11 @@ begin
   Result := GLib2.g_key_file_new();
 end;
 
+function TGMainContext.new: PGMainContext; cdecl;
+begin
+  Result := GLib2.g_main_context_new();
+end;
+
 function TGMainContext.acquire: gboolean; cdecl;
 begin
   Result := GLib2.g_main_context_acquire(@self);
@@ -6992,9 +7057,9 @@ begin
   Result := GLib2.g_main_context_get_thread_default();
 end;
 
-function TGMainContext.new: PGMainContext; cdecl;
+function TGMainLoop.new(context: PGMainContext; is_running: gboolean): PGMainLoop; cdecl;
 begin
-  Result := GLib2.g_main_context_new();
+  Result := GLib2.g_main_loop_new(context, is_running);
 end;
 
 function TGMainLoop.get_context: PGMainContext; cdecl;
@@ -7025,11 +7090,6 @@ end;
 procedure TGMainLoop.unref; cdecl;
 begin
   GLib2.g_main_loop_unref(@self);
-end;
-
-function TGMainLoop.new(context: PGMainContext; is_running: gboolean): PGMainLoop; cdecl;
-begin
-  Result := GLib2.g_main_loop_new(context, is_running);
 end;
 
 procedure TGMappedFile.free; cdecl;
@@ -7162,6 +7222,11 @@ begin
   Result := GLib2.g_slist_nth_data(list, n);
 end;
 
+procedure TGSList.pop_allocator; cdecl;
+begin
+  GLib2.g_slist_pop_allocator();
+end;
+
 function TGSList.position(list: PGSList; llink: PGSList): gint; cdecl;
 begin
   Result := GLib2.g_slist_position(list, llink);
@@ -7170,6 +7235,11 @@ end;
 function TGSList.prepend(list: PGSList; data: gpointer): PGSList; cdecl;
 begin
   Result := GLib2.g_slist_prepend(list, data);
+end;
+
+procedure TGSList.push_allocator(dummy: gpointer); cdecl;
+begin
+  GLib2.g_slist_push_allocator(dummy);
 end;
 
 function TGSList.remove(list: PGSList; data: gpointer): PGSList; cdecl;
@@ -8130,6 +8200,51 @@ end;
 function TGRand.new_with_seed_array(seed: Pguint32; seed_length: guint): PGRand; cdecl;
 begin
   Result := GLib2.g_rand_new_with_seed_array(seed, seed_length);
+end;
+
+procedure TGTuples.destroy_; cdecl;
+begin
+  GLib2.g_tuples_destroy(@self);
+end;
+
+function TGTuples.index(index_: gint; field: gint): gpointer; cdecl;
+begin
+  Result := GLib2.g_tuples_index(@self, index_, field);
+end;
+
+function TGRelation.count(key: gpointer; field: gint): gint; cdecl;
+begin
+  Result := GLib2.g_relation_count(@self, key, field);
+end;
+
+function TGRelation.delete(key: gpointer; field: gint): gint; cdecl;
+begin
+  Result := GLib2.g_relation_delete(@self, key, field);
+end;
+
+procedure TGRelation.destroy_; cdecl;
+begin
+  GLib2.g_relation_destroy(@self);
+end;
+
+procedure TGRelation.index(field: gint; hash_func: TGHashFunc; key_equal_func: TGEqualFunc); cdecl;
+begin
+  GLib2.g_relation_index(@self, field, hash_func, key_equal_func);
+end;
+
+procedure TGRelation.print; cdecl;
+begin
+  GLib2.g_relation_print(@self);
+end;
+
+function TGRelation.select(key: gpointer; field: gint): PGTuples; cdecl;
+begin
+  Result := GLib2.g_relation_select(@self, key, field);
+end;
+
+function TGRelation.new(fields: gint): PGRelation; cdecl;
+begin
+  Result := GLib2.g_relation_new(fields);
 end;
 
 function TGScanner.cur_line: guint; cdecl;
