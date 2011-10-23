@@ -51,12 +51,12 @@ type
     FLookupDisplayIndex: integer;
     FLookupDisplayField:string;
     procedure ClearFind;
-    procedure FindNextChar(UTF8Key: TUTF8Char);
+    procedure FindNextChar(var UTF8Key: TUTF8Char);
 //    procedure FindNextUTF8Char(UTF8Key: TUTF8Char);
     procedure FindPriorChar;
     procedure SetLookupDisplayIndex(const AValue: integer);
   protected
-    procedure KeyPress(var Key: char); override;
+//    procedure KeyPress(var Key: char); override;
     procedure UTF8KeyPress(var UTF8Key: TUTF8Char); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     property LookupDisplayIndex:integer read FLookupDisplayIndex write SetLookupDisplayIndex;
@@ -810,66 +810,43 @@ begin
     DataSource.DataSet.First;
 end;
 
-procedure TPopUpGrid.FindNextChar(UTF8Key: TUTF8Char);
-var
-  F:string;
+procedure TPopUpGrid.FindNextChar(var UTF8Key: TUTF8Char);
 begin
-  FFindLine:=FFindLine + UTF8Key;
   if DatalinkActive then
-    if DataSetLocateThrough(DataSource.DataSet, FLookupDisplayField, FFindLine, [loCaseInsensitive, loPartialKey]) then
+  begin
+    if DataSetLocateThrough(DataSource.DataSet, FLookupDisplayField, FFindLine + UTF8Key, [loCaseInsensitive, loPartialKey]) then
     begin
+      FFindLine:=FFindLine + UTF8Key;
       TPopUpForm(Owner).WControl.Caption:=FFindLine;
       TPopUpForm(Owner).WControl.Repaint;
-    end
-    else
-      FFindLine:=F;
+    end;
+    UTF8Key:='';
+  end;
 end;
-{
-procedure TPopUpGrid.FindNextUTF8Char(UTF8Key: TUTF8Char);
-var
-  F:string;
-begin
-  FFindLine:=FFindLine + AChar;
-  if DatalinkActive then
-    if DataSetLocateThrough(DataSource.DataSet, FLookupDisplayField, FFindLine, [loCaseInsensitive, loPartialKey]) then
-    begin
-      TPopUpForm(Owner).WControl.Caption:=FFindLine;
-      TPopUpForm(Owner).WControl.Repaint;
-    end
-    else
-      FFindLine:=F;
-end;
-}
+
 procedure TPopUpGrid.FindPriorChar;
 var
   F:string;
 begin
-  if FFindLine = '' then exit;
+  if (FFindLine = '') or (not DatalinkActive) then exit;
   F:=FFindLine;
   UTF8Delete(FFindLine, UTF8Length(FFindLine), 1);
-  //Delete(FFindLine, Length(FFindLine), 1);
-  if DatalinkActive then
-    if (FFindLine<>'') then
+  if (FFindLine<>'') then
+  begin
+    if DataSetLocateThrough(DataSource.DataSet, FLookupDisplayField, FFindLine, [loCaseInsensitive, loPartialKey]) then
     begin
-      if true then
-      begin
-        if DataSetLocateThrough(DataSource.DataSet, FLookupDisplayField, FFindLine, [loCaseInsensitive, loPartialKey]) then
-        begin
-    	  TPopUpForm(Owner).WControl.Caption:=FFindLine;
-          TPopUpForm(Owner).WControl.Repaint;
-        end
-        else
-          FFindLine:=F;
-      end
-      else
-      DataSetLocateThrough(DataSource.DataSet, FLookupDisplayField, FFindLine, [loCaseInsensitive, loPartialKey])
+     TPopUpForm(Owner).WControl.Caption:=FFindLine;
+     TPopUpForm(Owner).WControl.Repaint;
     end
     else
-    begin
-      TPopUpForm(Owner).WControl.Caption:=' ';
-      TPopUpForm(Owner).WControl.Repaint;
-      DataSource.DataSet.First;
-    end;
+      FFindLine:=F;
+  end
+  else
+  begin
+    TPopUpForm(Owner).WControl.Caption:=' ';
+    TPopUpForm(Owner).WControl.Repaint;
+    DataSource.DataSet.First;
+  end;
 end;
 
 procedure TPopUpGrid.SetLookupDisplayIndex(const AValue: integer);
@@ -878,36 +855,20 @@ begin
   FLookupDisplayField:=Columns[FLookupDisplayIndex].FieldName;
 end;
 
-procedure TPopUpGrid.KeyPress(var Key: char);
-begin
-  inherited KeyPress(Key);
-  if (Columns[FLookupDisplayIndex].Field.DataType<>ftString) and not (Key in ['0'..'9'])  then
-    Exit
-  else
-  if Key=#32 then
-    FindNextChar(Key)
-  else
-  if Key>#32 then
-    FindNextChar(Key)
-  else
-  if Key = #8 then
-    ClearFind;
-end;
-
 procedure TPopUpGrid.UTF8KeyPress(var UTF8Key: TUTF8Char);
 begin
   inherited UTF8KeyPress(UTF8Key);
-{  if (Columns[FLookupDisplayIndex].Field.DataType<>ftString) and not (Key in ['0'..'9'])  then
-    Exit
-  else}
-  if UTF8Key=#32 then
+  if UTF8Key>=#32 then
     FindNextChar(UTF8Key)
   else
   if UTF8Key>#32 then
     FindNextChar(UTF8Key)
   else
   if UTF8Key = #8 then
-    ClearFind;
+    ClearFind
+  else
+    exit;
+  UTF8Key:='';
 end;
 
 procedure TPopUpGrid.KeyDown(var Key: Word; Shift: TShiftState);
