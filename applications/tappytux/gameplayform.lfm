@@ -1,7 +1,7 @@
 object formTappyTuxGame: TformTappyTuxGame
-  Left = 630
+  Left = 388
   Height = 425
-  Top = 245
+  Top = 200
   Width = 621
   Caption = 'Tappy Tux'
   ClientHeight = 425
@@ -17,15 +17,15 @@ object formTappyTuxGame: TformTappyTuxGame
     OnClick = btnExitClick
     TabOrder = 0
   end
-  object Edit1: TEdit
+  object Answer: TEdit
     Left = 104
     Height = 23
     Top = 392
     Width = 514
-    OnKeyPress = Edit1KeyPress
+    OnKeyPress = AnswerKeyPress
     TabOrder = 1
   end
-  object Label1: TLabel
+  object LabelLevels: TLabel
     Left = 8
     Height = 39
     Top = 24
@@ -43,7 +43,7 @@ object formTappyTuxGame: TformTappyTuxGame
     ParentFont = False
     Transparent = False
   end
-  object Label2: TLabel
+  object LabelScore: TLabel
     Left = 8
     Height = 39
     Top = 112
@@ -61,7 +61,7 @@ object formTappyTuxGame: TformTappyTuxGame
     ParentFont = False
     Transparent = False
   end
-  object Label3: TLabel
+  object LabelLives: TLabel
     Left = 9
     Height = 39
     Top = 192
@@ -79,7 +79,7 @@ object formTappyTuxGame: TformTappyTuxGame
     ParentFont = False
     Transparent = False
   end
-  object Edit2: TEdit
+  object Level: TEdit
     Left = 8
     Height = 23
     Top = 64
@@ -87,7 +87,7 @@ object formTappyTuxGame: TformTappyTuxGame
     ReadOnly = True
     TabOrder = 2
   end
-  object Edit3: TEdit
+  object Score: TEdit
     Left = 8
     Height = 23
     Top = 152
@@ -95,7 +95,7 @@ object formTappyTuxGame: TformTappyTuxGame
     ReadOnly = True
     TabOrder = 3
   end
-  object Edit4: TEdit
+  object Lives: TEdit
     Left = 8
     Height = 23
     Top = 232
@@ -103,10 +103,10 @@ object formTappyTuxGame: TformTappyTuxGame
     ReadOnly = True
     TabOrder = 4
   end
-  object Memo1: TMemo
-    Left = 383
+  object Test: TMemo
+    Left = 480
     Height = 181
-    Top = 76
+    Top = 24
     Width = 130
     Lines.Strings = (
       '[TESTE]'
@@ -114,5 +114,51 @@ object formTappyTuxGame: TformTappyTuxGame
       ''
     )
     TabOrder = 5
+    Visible = False
+  end
+  object Question1: TEdit
+    Left = 120
+    Height = 23
+    Top = 216
+    Width = 82
+    ReadOnly = True
+    TabOrder = 6
+    Text = 'Melancia'
+  end
+  object Question2: TEdit
+    Left = 224
+    Height = 23
+    Top = 216
+    Width = 80
+    ReadOnly = True
+    TabOrder = 7
+    Text = 'Abacate'
+  end
+  object Question4: TEdit
+    Left = 320
+    Height = 23
+    Top = 216
+    Width = 80
+    ReadOnly = True
+    TabOrder = 8
+    Text = 'Cereja'
+  end
+  object Question3: TEdit
+    Left = 416
+    Height = 23
+    Top = 216
+    Width = 80
+    ReadOnly = True
+    TabOrder = 9
+    Text = 'Melão'
+  end
+  object Question5: TEdit
+    Left = 512
+    Height = 23
+    Top = 216
+    Width = 80
+    ReadOnly = True
+    TabOrder = 10
+    Text = 'Laranja'
   end
 end

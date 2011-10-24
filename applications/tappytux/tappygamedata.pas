@@ -33,16 +33,16 @@ implementation
 procedure TTappyGameData.SetSndFX(var newSndFX: Integer);
 begin
 Case newSndFx of
-  0: gameData.SndFX := true;
-  1: gameData.SndFX := false;
+  0: SndFX := true;
+  1: SndFX := false;
   end;
 end;
 
 procedure TTappyGameData.SetMusic(var newMusic: Integer);
 begin
 Case newMusic of
-  0: gameData.Music := true;
-  1: gameData.Music := false;
+  0: Music := true;
+  1: Music := false;
   end;
 end;
 

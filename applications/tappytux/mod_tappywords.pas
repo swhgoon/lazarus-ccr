@@ -18,6 +18,7 @@ type
   TTappyWords = class(TTappyModule)
   private
     timerWords: TTimer;
+    newGame : TTappyGameData;
     procedure HandleOnTimer(Sender: TObject);
   public
     constructor Create; override;
@@ -30,16 +31,21 @@ type
 
 implementation
 
-uses tappydrawer;
+uses tappydrawer, gameplayform;
 
 { TTappyWords }
 
 procedure TTappyWords.HandleOnTimer(Sender: TObject);
 begin
-  vTappyTuxDrawer.HandleAnimationOnTimer();
+  //vTappyTuxDrawer.HandleAnimationOnTimer();
+  formTappyTuxGame.Question1.Top:= formTappyTuxGame.Question1.Top + 10;
+  formTappyTuxGame.Question2.Top:= formTappyTuxGame.Question2.Top + 10;
+  formTappyTuxGame.Question3.Top:= formTappyTuxGame.Question3.Top + 10;
+  formTappyTuxGame.Question4.Top:= formTappyTuxGame.Question4.Top + 10;
+  formTappyTuxGame.Question5.Top:= formTappyTuxGame.Question5.Top + 10;
 
   // Create falling ballons here
-  vTappyTuxDrawer.AddAnimation(TBallonAnimation.Create);
+  //vTappyTuxDrawer.AddAnimation(TBallonAnimation.Create);
 end;
 
 constructor TTappyWords.Create;
@@ -74,15 +80,15 @@ procedure TTappyWords.StartNewGame(SndFX: Integer; Music: Integer; Level: Intege
 begin
 
   //Causam "External: SIGSEGV"
-  gameData.SetSndFX(SndFX);
-  gameData.SetMusic(Music);
-  gameData.SetLevel(Level);
+  //gameData.SetSndFX(SndFX);
+  //gameData.SetMusic(Music);
+  //gameData.SetLevel(Level);
 
   timerWords.Enabled := True;
 
+  //formTappyTuxGame.Question1.Top:= formTappyTuxGame.Question1.Top + timerWords.ComponentCount ;
 
-
-end;
+  end;
 
 procedure TTappyWords.EndGame;
 begin

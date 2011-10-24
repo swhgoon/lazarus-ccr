@@ -16,17 +16,23 @@ type
 
   TformTappyTuxGame = class(TForm)
     btnExit: TButton;
-    Edit1: TEdit;
-    Edit2: TEdit;
-    Edit3: TEdit;
-    Edit4: TEdit;
-    Label1: TLabel;
-    Label2: TLabel;
-    Label3: TLabel;
-    Memo1: TMemo;
+    Answer: TEdit;
+    Question2: TEdit;
+    Question4: TEdit;
+    Question3: TEdit;
+    Question5: TEdit;
+    Level: TEdit;
+    Score: TEdit;
+    Lives: TEdit;
+    Question1: TEdit;
+    LabelLevels: TLabel;
+    LabelScore: TLabel;
+    LabelLives: TLabel;
+    Test: TMemo;
     procedure btnExitClick(Sender: TObject);
-    procedure Edit1KeyPress(Sender: TObject; var Key: char);
+    procedure AnswerKeyPress(Sender: TObject; var Key: char);
     procedure FormCreate(Sender: TObject);
+
   private
     { private declarations }
   public
@@ -39,7 +45,7 @@ var
 
 implementation
 
-uses gameconfigform;
+uses gameconfigform, mod_tappywords;
 
 {$R *.lfm}
 
@@ -53,12 +59,19 @@ begin
   GetCurrentModule().EndGame();
 end;
 
-procedure TformTappyTuxGame.Edit1KeyPress(Sender: TObject; var Key: char);
+procedure TformTappyTuxGame.AnswerKeyPress(Sender: TObject; var Key: char);
 begin
   if Key = #13 then
   begin
-    formTappyTuxGame.Memo1.Lines.Add(Edit1.Text);
-    formTappyTuxGame.Edit1.Clear;
+    formTappyTuxGame.Test.Lines.Add(Answer.Text);
+
+    if (Answer.Text = Question1.Text) then Question1.Top := 50;
+    if (Answer.Text = Question2.Text) then Question2.Top := 50;
+    if (Answer.Text = Question3.Text) then Question3.Top := 50;
+    if (Answer.Text = Question4.Text) then Question4.Top := 50;
+    if (Answer.Text = Question5.Text) then Question5.Top := 50;
+
+    formTappyTuxGame.Answer.Clear;
     //TappyTuxGame.ThrowHammer();
 
   end;
@@ -75,6 +88,7 @@ begin
   vTappyTuxDrawer.Width := Width-vTappyTuxDrawer.Left;
   vTappyTuxDrawer.SendToBack();
 end;
+
 
 {procedure TformTappyTuxGame.OnClose;
 begin
