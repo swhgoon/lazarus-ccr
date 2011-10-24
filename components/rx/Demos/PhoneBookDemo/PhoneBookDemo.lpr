@@ -8,11 +8,13 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms,
-  pbMainUnit;
+  pbMainUnit,
+  pbEditDataUnit;
 
 {$R PhoneBookDemo.res}
 
 begin
+  Application.Title:='Phone book demo';
   Application.Initialize;
   Application.CreateForm(TpbMainForm, pbMainForm);
   Application.Run;
