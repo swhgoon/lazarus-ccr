@@ -24,7 +24,7 @@ type
     procedure TranslateTextsToEnglish; virtual;
     procedure TranslateTextsToPortuguese; virtual;
     procedure InitModule(); virtual;
-    procedure StartNewGame(); virtual; abstract;
+    procedure StartNewGame(SndFX: Integer; Music: Integer; Level: Integer); virtual; abstract;
     procedure EndGame(); virtual; abstract;
   end;
 
@@ -38,7 +38,7 @@ implementation
 
 var
   gTappyModules: TFPList;
-  gCurrentTappyModule: Integer = -1;
+  gCurrentTappyModule: Integer = 0;  //=-1
 
 procedure AddModule(AModule: TTappyModule);
 begin

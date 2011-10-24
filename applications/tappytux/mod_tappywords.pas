@@ -9,7 +9,7 @@ uses
   // LCL
   ExtCtrls,
   // TappyTux
-  tappymodules, tappydrawer;
+  tappymodules, tappygamedata;
 
 type
 
@@ -24,11 +24,13 @@ type
     destructor Destroy; override;
     procedure TranslateTextsToEnglish; override;
     procedure TranslateTextsToPortuguese; override;
-    procedure StartNewGame(); override;
+    procedure StartNewGame(SndFX: Integer; Music: Integer; Level: Integer); override;
     procedure EndGame(); override;
   end;
 
 implementation
+
+uses tappydrawer;
 
 { TTappyWords }
 
@@ -48,6 +50,7 @@ begin
   timerWords.Enabled := False;
   timerWords.Interval := 1000;
   timerWords.OnTimer := @HandleOnTimer;
+
 end;
 
 destructor TTappyWords.Destroy;
@@ -67,9 +70,18 @@ begin
   ShortDescription := 'TappyWords - Um jogo para aprender a digitar e ortografia';
 end;
 
-procedure TTappyWords.StartNewGame;
+procedure TTappyWords.StartNewGame(SndFX: Integer; Music: Integer; Level: Integer);
 begin
+
+  //Causam "External: SIGSEGV"
+  gameData.SetSndFX(SndFX);
+  gameData.SetMusic(Music);
+  gameData.SetLevel(Level);
+
   timerWords.Enabled := True;
+
+
+
 end;
 
 procedure TTappyWords.EndGame;

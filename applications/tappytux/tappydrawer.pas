@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Controls, Graphics, LCLType, IntfGraphics, fpimage,
   Math,
-  tappygamedata, tappyconfig, tappymodules;
+  {tappygamedata,} tappyconfig, tappymodules;
 
 type
 

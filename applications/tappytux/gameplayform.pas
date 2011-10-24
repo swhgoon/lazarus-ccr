@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls,
   // TappyTux
-  tappydrawer, tappymodules;
+  {GameData,} tappydrawer, tappymodules;
 
 type
 
@@ -59,6 +59,8 @@ begin
   begin
     formTappyTuxGame.Memo1.Lines.Add(Edit1.Text);
     formTappyTuxGame.Edit1.Clear;
+    //TappyTuxGame.ThrowHammer();
+
   end;
 end;
 
@@ -74,6 +76,10 @@ begin
   vTappyTuxDrawer.SendToBack();
 end;
 
+{procedure TformTappyTuxGame.OnClose;
+begin
+  formConfig
+end;}
 
 end.
 

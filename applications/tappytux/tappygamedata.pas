@@ -1,19 +1,100 @@
 unit tappygamedata;
+// Responsável apenas por guardar e alterar dados referentes aos jogos.
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, Forms, SysUtils, process;
-//  SynRegExpr,
-//  LCLProc,
-//  tappywords,
-//  util,
-//  tappyconfig;
+  Classes, SysUtils;
+
+type
+
+    { GameData }
+
+    TTappyGameData = class
+      ModuleName : String;
+      SndFX : Boolean;
+      Music : Boolean;
+      Level : Integer;
+      Lives : Integer;
+      Score : Integer;
+      procedure SetSndFX(var newSndFX: Integer);
+      procedure SetMusic(var newMusic: Integer);
+      procedure SetLevel(var newLevel: Integer);
+
+    end;
+
+var
+    gameData: TTappyGameData;
+
+implementation
+
+procedure TTappyGameData.SetSndFX(var newSndFX: Integer);
+begin
+Case newSndFx of
+  0: gameData.SndFX := true;
+  1: gameData.SndFX := false;
+  end;
+end;
+
+procedure TTappyGameData.SetMusic(var newMusic: Integer);
+begin
+Case newMusic of
+  0: gameData.Music := true;
+  1: gameData.Music := false;
+  end;
+end;
+
+procedure TTappyGameData.SetLevel(var newLevel: Integer);
+begin
+  Level := newLevel + 1;
+end;
+
+end.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{
+unit tappygamedata;
+
+{$mode objfpc}{$H+}
+
+interface
+
+uses
+  Classes, Forms, SysUtils, process, LCLProc, tappymodules, mod_tappywords,{ util,} tappyconfig;
   
 Type
-  TTappyGameData = object
+  {TTappyGameData = class
     SndFX : Boolean;
     SndMusic: Boolean;
     ModuleName : String;
@@ -28,22 +109,23 @@ Type
     QuestionList :TStringList;
     BGS : TStringList;
     BG : Integer;
-(*    Procedure Create;
+    Procedure Create;
     Function GetQuestion:String;
     Function CheckAnswer(Question,Answer:String):Integer;
     Procedure ScoreUp(ScorInc:Integer);
     Procedure LevelUp;
     Procedure LoseLife;
     Function NextSong: String;
-    Function NextBG:String;*)
+    Function NextBG:String; }
   end;
     
-(*  HammerQue = Object
+   HammerQue = Object
                Target : Array [1..10] of Integer;
+               Count: Integer; //teste
                Function addTarget(newTarget : Integer):Boolean;
                Procedure delTarget;
-               Count : Integer;
- end;
+               {Count : Integer;}
+   end;
  
 
    TSong = class(TThread)
@@ -62,17 +144,17 @@ Type
      Constructor Create(isSuspended : boolean);
    published
      property terminated;
-   end;*)
+   end;
 
 var
   gGameData: TTappyGameData;
-  //Question : TQuestion;
-  //Scale : Integer;
-  //TPTDIR: string;
+  Question : TQuestion;
+  Scale : Integer;
+  TPTDIR: string;
 
 implementation
 
-(*constructor TQuestion.Create(isSuspended : boolean);
+constructor TQuestion.Create(isSuspended : boolean);
  begin
    S := TSTringlist.Create;
    FreeOnTerminate := True;
@@ -86,27 +168,27 @@ Var CMD : String;
 Begin
 repeat
 If (Not Terminated) and
-(ThisGame.QuestionList.Count < 20) and
-(length(ThisGame.ModuleName) > 0) and
-(Length(ThisGame.Option) > 0) then
+(gGameData{ThisGame}.QuestionList.Count < 20) and
+(length(gGameData{ThisGame}.ModuleName) > 0) and
+(Length(gGameData{ThisGame}.Option) > 0) then
 Begin
-if pos('tappywords',ThisGame.ModuleName) <> 0 then
+if pos('tappywords',gGameData{ThisGame}.ModuleName) <> 0 then
 Begin
-     TheWord :=GetQuestion(ThisGame.Level);
-   If ThisGame.QuestionList.IndexOf(TheWord) = -1 then
-          ThisGame.QuestionList.Add(TheWord);
+     TheWord :=gGameData.GetQuestion({gGameDataThisGame.Level});
+   If gGameData{ThisGame}.QuestionList.IndexOf(TheWord) = -1 then
+          gGameData{ThisGame}.QuestionList.Add(TheWord);
 end else
 Begin
  S.Clear;
  Ps := TProcess.create(nil);;
-     CMD := ThisGame.ModuleName' "'ThisGAme.Option'" 'intToStr(ThisGame.Level)' --getquestion';
+     CMD := gGameData{ThisGame}.ModuleName;//TESTE' "'ThisGAme.Option'" 'intToStr(ThisGame.Level)' --getquestion';
  PS.CommandLine :=  cmd;
   Ps.Options := [poNoConsole,poUsePipes,poWaitOnExit];
   Ps.Execute;
    S.LoadFromStream(PS.OutPut);
    PS.Free;
-   If ThisGame.QuestionList.IndexOf(S[0]) = -1 then
-          ThisGame.QuestionList.Add(S[0]);
+   If gGameData{ThisGame}.QuestionList.IndexOf(S[0]) = -1 then
+          gGameData{ThisGame}.QuestionList.Add(S[0]);
 end;
 end;
  until Terminated;
@@ -125,7 +207,7 @@ var
 begin
   {To prevent ESD clashes - we slow this down on first run}
   sleep(5000);
-  with ThisGame do
+  with gGameData{ThisGame} do
   begin
     Process := TProcess.create(nil);
     while (NextSong <> 'NONE') and (not Terminated) do
@@ -156,7 +238,7 @@ begin
   if not(Score > 0) then Score := 0;
   
   Lives := 5;
-  SearchFiles(SongList,TPTDirpathdelim'music'pathdelim,'*.ogg','');
+  {TESTE  SearchFiles(SongList,TPTDirpathdelim'music'pathdelim,'*.ogg','');
   
   If Scale = 640 then
    SearchFiles(BGS,TPTDirpathdelim'levels','*.jpg','');
@@ -165,8 +247,9 @@ begin
    SearchFiles(BGS,TPTDirpathdelim'levels'pathdelim'800'pathdelim,'*.jpg','');
   
   If scale = 1024 then
-   SearchFiles(BGS,TPTDirpathdelim'levels'pathdelim'1024'pathdelim,'*.jpg','');
+   SearchFiles(BGS,TPTDirpathdelim'levels'pathdelim'1024'pathdelim,'*.jpg','');}
 end;
+
 
 Function TTappyGameData.GetQuestion:String;
 Var
@@ -180,13 +263,12 @@ While QuestionList.Count < 1 do
 end;
 
 
-
 Function TTappyGameData.CheckAnswer(Question,Answer:String):Integer;
 Var S: TStringList;
 Begin
 if (length(Question) <> 0) and (length(Answer) <> 0) then
 begin
-If ThisGame.ModuleName <> 'tappywords' then
+If gGameData{ThisGame}.ModuleName <> 'tappywords' then
 begin
 try
      execute(ModuleName' "'Option'" 'intToStr(Level)' --checkquestion "'Question'" "'answer'"',S);
@@ -271,6 +353,6 @@ Begin
         Target[X] := Target[X  1];
     Dec(Count);
 
-end;*)
+end;
 
-end.
+end.             }

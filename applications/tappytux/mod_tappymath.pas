@@ -6,6 +6,9 @@ interface
 
 uses
   Classes, SysUtils,
+  // LCL
+  ExtCtrls,
+  // TappyTux
   tappymodules;
 
 type
@@ -17,11 +20,13 @@ type
     constructor Create; override;
     procedure TranslateTextsToEnglish; override;
     procedure TranslateTextsToPortuguese; override;
-    procedure StartNewGame(); override;
+    procedure StartNewGame(SndFX: Integer; Music: Integer; Level: Integer); override;
     procedure EndGame(); override;
   end;
 
 implementation
+
+uses tappydrawer {,tappygamedata};
 
 { TTappyWords }
 
@@ -40,7 +45,7 @@ begin
   ShortDescription := 'TappyMath - Um jogo para aprender aritmética';
 end;
 
-procedure TTappyMath.StartNewGame;
+procedure TTappyMath.StartNewGame(SndFX: Integer; Music: Integer; Level: Integer);
 begin
 
 end;

@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls,
-  tappymodules, gameplayform;
+  tappymodules, gameplayform, tappygamedata;
 
 type
 
@@ -77,27 +77,25 @@ end;
 procedure TformConfig.btnLoadClick(Sender: TObject);
 begin
   SetCurrentModule(comboGameType.ItemIndex);
-  GetCurrentModule().StartNewGame();
-
+  GetCurrentModule().StartNewGame(comboSound.ItemIndex, comboMusic.ItemIndex, comboLevel.ItemIndex);
   formTappyTuxGame.Show;
+
   Hide;
 end;
 
 procedure TformConfig.comboSoundChange(Sender: TObject);
 begin
 
-  {
   Case comboSound.itemIndex of
   0: begin
-    TTappyGameData.SndFX = true;
+    //gameData.SndFX := true;
     end;
 
   1: begin
-    TTappyGameData.SndFX = false;
+    //gameData.SndFX := false;
     end;
 
-
-  end; }
+  end;
 
 
 end;
