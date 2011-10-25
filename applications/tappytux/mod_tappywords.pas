@@ -26,6 +26,7 @@ type
     procedure TranslateTextsToEnglish; override;
     procedure TranslateTextsToPortuguese; override;
     procedure StartNewGame(SndFX: Integer; Music: Integer; Level: Integer); override;
+    procedure Answered(); override;
     procedure EndGame(); override;
   end;
 
@@ -89,6 +90,16 @@ begin
   //formTappyTuxGame.Question1.Top:= formTappyTuxGame.Question1.Top + timerWords.ComponentCount ;
 
   end;
+
+procedure TTappyWords.Answered;
+begin
+  if (formTappyTuxGame.Answer.Text = formTappyTuxGame.Question1.Text) then formTappyTuxGame.Question1.Top := 50;
+  if (formTappyTuxGame.Answer.Text = formTappyTuxGame.Question2.Text) then formTappyTuxGame.Question2.Top := 50;
+  if (formTappyTuxGame.Answer.Text = formTappyTuxGame.Question3.Text) then formTappyTuxGame.Question3.Top := 50;
+  if (formTappyTuxGame.Answer.Text = formTappyTuxGame.Question4.Text) then formTappyTuxGame.Question4.Top := 50;
+  if (formTappyTuxGame.Answer.Text = formTappyTuxGame.Question5.Text) then formTappyTuxGame.Question5.Top := 50;
+
+end;
 
 procedure TTappyWords.EndGame;
 begin

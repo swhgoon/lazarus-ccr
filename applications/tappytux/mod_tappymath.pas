@@ -21,6 +21,7 @@ type
     procedure TranslateTextsToEnglish; override;
     procedure TranslateTextsToPortuguese; override;
     procedure StartNewGame(SndFX: Integer; Music: Integer; Level: Integer); override;
+    procedure Answered(); override;
     procedure EndGame(); override;
   end;
 
@@ -46,6 +47,11 @@ begin
 end;
 
 procedure TTappyMath.StartNewGame(SndFX: Integer; Music: Integer; Level: Integer);
+begin
+
+end;
+
+procedure TTappyMath.Answered;
 begin
 
 end;

@@ -86,18 +86,6 @@ end;
 procedure TformConfig.comboSoundChange(Sender: TObject);
 begin
 
-  Case comboSound.itemIndex of
-  0: begin
-    //gameData.SndFX := true;
-    end;
-
-  1: begin
-    //gameData.SndFX := false;
-    end;
-
-  end;
-
-
 end;
 
 procedure TformConfig.FormClick(Sender: TObject);

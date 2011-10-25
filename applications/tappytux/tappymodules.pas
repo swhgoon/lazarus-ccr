@@ -25,6 +25,7 @@ type
     procedure TranslateTextsToPortuguese; virtual;
     procedure InitModule(); virtual;
     procedure StartNewGame(SndFX: Integer; Music: Integer; Level: Integer); virtual; abstract;
+    procedure Answered(); virtual; abstract;
     procedure EndGame(); virtual; abstract;
   end;
 

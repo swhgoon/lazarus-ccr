@@ -64,15 +64,8 @@ begin
   if Key = #13 then
   begin
     formTappyTuxGame.Test.Lines.Add(Answer.Text);
-
-    if (Answer.Text = Question1.Text) then Question1.Top := 50;
-    if (Answer.Text = Question2.Text) then Question2.Top := 50;
-    if (Answer.Text = Question3.Text) then Question3.Top := 50;
-    if (Answer.Text = Question4.Text) then Question4.Top := 50;
-    if (Answer.Text = Question5.Text) then Question5.Top := 50;
-
+    GetCurrentModule().Answered();
     formTappyTuxGame.Answer.Clear;
-    //TappyTuxGame.ThrowHammer();
 
   end;
 end;
@@ -89,11 +82,6 @@ begin
   vTappyTuxDrawer.SendToBack();
 end;
 
-
-{procedure TformTappyTuxGame.OnClose;
-begin
-  formConfig
-end;}
 
 end.
 
