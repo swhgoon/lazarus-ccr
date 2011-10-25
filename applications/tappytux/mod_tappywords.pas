@@ -23,6 +23,9 @@ type
     gameSLevel : Integer;
     gameSndFX : Boolean;
     gameMusic : Boolean;
+    gameQuestionList : Integer;
+    gameFile : Text;
+    aux : string;
     timerWords: TTimer;
     {newGame : TTappyGameData;}
     procedure HandleOnTimer(Sender: TObject);
@@ -31,7 +34,7 @@ type
     destructor Destroy; override;
     procedure TranslateTextsToEnglish; override;
     procedure TranslateTextsToPortuguese; override;
-    procedure StartNewGame(SndFX: Integer; Music: Integer; Level: Integer); override;
+    procedure StartNewGame(SndFX: Integer; Music: Integer; Level: Integer; QuestionList: Integer); override;
     procedure Answered(); override;
     procedure EndGame(); override;
   end;
@@ -57,6 +60,7 @@ begin
        formTappyTuxGame.Lives.Text := IntToStr(gameLives);
        if (gameLives = 0) then EndGame();
        formTappyTuxGame.Question1.Top:= 24;
+       formTappyTuxGame.Question1.Text := formTappyTuxGame.Test.Lines.Strings[random(71)];
   end;
 
   if ((formTappyTuxGame.Question2.Top >= 370)) then
@@ -65,6 +69,7 @@ begin
        formTappyTuxGame.Lives.Text := IntToStr(gameLives);
        if (gameLives = 0) then EndGame();
        formTappyTuxGame.Question2.Top:= 24;
+       formTappyTuxGame.Question2.Text := formTappyTuxGame.Test.Lines.Strings[random(71)];
   end;
 
   if ((formTappyTuxGame.Question3.Top >= 370)) then
@@ -73,6 +78,7 @@ begin
        formTappyTuxGame.Lives.Text := IntToStr(gameLives);
        if (gameLives = 0) then EndGame();
        formTappyTuxGame.Question3.Top:= 24;
+       formTappyTuxGame.Question3.Text := formTappyTuxGame.Test.Lines.Strings[random(71)];
   end;
 
   if ((formTappyTuxGame.Question4.Top >= 370)) then
@@ -81,6 +87,7 @@ begin
        formTappyTuxGame.Lives.Text := IntToStr(gameLives);
        if (gameLives = 0) then EndGame();
        formTappyTuxGame.Question4.Top:= 24;
+       formTappyTuxGame.Question4.Text := formTappyTuxGame.Test.Lines.Strings[random(71)];
   end;
 
   if ((formTappyTuxGame.Question5.Top >= 370)) then
@@ -89,6 +96,7 @@ begin
        formTappyTuxGame.Lives.Text := IntToStr(gameLives);
        if (gameLives = 0) then EndGame();
        formTappyTuxGame.Question5.Top:= 24;
+       formTappyTuxGame.Question5.Text := formTappyTuxGame.Test.Lines.Strings[random(71)];
   end;
 
 
@@ -124,7 +132,7 @@ begin
   ShortDescription := 'TappyWords - Um jogo para aprender a digitar e ortografia';
 end;
 
-procedure TTappyWords.StartNewGame(SndFX: Integer; Music: Integer; Level: Integer);
+procedure TTappyWords.StartNewGame(SndFX: Integer; Music: Integer; Level: Integer; QuestionList: Integer);
 begin
 
   //Causam "External: SIGSEGV"
@@ -151,6 +159,22 @@ begin
   formTappyTuxGame.Score.Text := IntToStr(gameScore);
   formTappyTuxGame.Lives.Text := IntToStr(gameLives);
 
+  formTappyTuxGame.Question1.Text := formTappyTuxGame.Test.Lines.Strings[random(71)];
+  formTappyTuxGame.Question2.Text := formTappyTuxGame.Test.Lines.Strings[random(71)];
+  formTappyTuxGame.Question3.Text := formTappyTuxGame.Test.Lines.Strings[random(71)];
+  formTappyTuxGame.Question4.Text := formTappyTuxGame.Test.Lines.Strings[random(71)];
+  formTappyTuxGame.Question5.Text := formTappyTuxGame.Test.Lines.Strings[random(71)];
+
+  //gameQuestionList := QuestionList;
+  //if gameQuestionList < 0 then gameQuestionList := 0;
+  //Assign(gameFile, {IntToStr(gameQuestionList)}'4.txt')
+  //gameFile := SearchFile;
+  //Reset(gameFile);
+  //Readln(gameFile, aux);
+  //formTappyTuxGame.Question1.Text := aux;
+
+  //Assign(gameFile, gameQuestionList+'.txt');
+
 end;
 
 procedure TTappyWords.Answered;
@@ -158,6 +182,7 @@ begin
   if (formTappyTuxGame.Answer.Text = formTappyTuxGame.Question1.Text) then
   begin
        formTappyTuxGame.Question1.Top := 24;
+       formTappyTuxGame.Question1.Text := formTappyTuxGame.Test.Lines.Strings[random(71)];
        gameScore := gameScore +1;
        gameLevel := (gameScore div 20) + gameSLevel;
        formTappyTuxGame.Score.Text := IntToStr(gameScore);
@@ -166,6 +191,7 @@ begin
   if (formTappyTuxGame.Answer.Text = formTappyTuxGame.Question2.Text) then
   begin
        formTappyTuxGame.Question2.Top := 24;
+       formTappyTuxGame.Question2.Text := formTappyTuxGame.Test.Lines.Strings[random(71)];
        gameScore := gameScore +1;
        gameLevel := (gameScore div 20) + gameSLevel;
        formTappyTuxGame.Score.Text := IntToStr(gameScore);
@@ -174,6 +200,7 @@ begin
   if (formTappyTuxGame.Answer.Text = formTappyTuxGame.Question3.Text) then
   begin
        formTappyTuxGame.Question3.Top := 24;
+       formTappyTuxGame.Question3.Text := formTappyTuxGame.Test.Lines.Strings[random(71)];
        gameScore := gameScore +1;
        gameLevel := (gameScore div 20) + gameSLevel;
        formTappyTuxGame.Score.Text := IntToStr(gameScore);
@@ -182,6 +209,7 @@ begin
   if (formTappyTuxGame.Answer.Text = formTappyTuxGame.Question4.Text) then
   begin
        formTappyTuxGame.Question4.Top := 24;
+       formTappyTuxGame.Question4.Text := formTappyTuxGame.Test.Lines.Strings[random(71)];
        gameScore := gameScore +1;
        gameLevel := (gameScore div 20) + gameSLevel;
        formTappyTuxGame.Score.Text := IntToStr(gameScore);
@@ -190,6 +218,7 @@ begin
   if (formTappyTuxGame.Answer.Text = formTappyTuxGame.Question5.Text) then
   begin
        formTappyTuxGame.Question5.Top := 24;
+       formTappyTuxGame.Question5.Text := formTappyTuxGame.Test.Lines.Strings[random(71)];
        gameScore := gameScore +1;
        gameLevel := (gameScore div 20) + gameSLevel;
        formTappyTuxGame.Score.Text := IntToStr(gameScore);

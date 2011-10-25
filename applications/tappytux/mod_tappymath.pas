@@ -20,7 +20,7 @@ type
     constructor Create; override;
     procedure TranslateTextsToEnglish; override;
     procedure TranslateTextsToPortuguese; override;
-    procedure StartNewGame(SndFX: Integer; Music: Integer; Level: Integer); override;
+    procedure StartNewGame(SndFX: Integer; Music: Integer; Level: Integer; QuestionList: Integer); override;
     procedure Answered(); override;
     procedure EndGame(); override;
   end;
@@ -46,7 +46,7 @@ begin
   ShortDescription := 'TappyMath - Um jogo para aprender aritmética';
 end;
 
-procedure TTappyMath.StartNewGame(SndFX: Integer; Music: Integer; Level: Integer);
+procedure TTappyMath.StartNewGame(SndFX: Integer; Music: Integer; Level: Integer; QuestionList: Integer);
 begin
 
 end;

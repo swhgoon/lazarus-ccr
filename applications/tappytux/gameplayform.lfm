@@ -109,10 +109,79 @@ object formTappyTuxGame: TformTappyTuxGame
     Top = 200
     Width = 130
     Lines.Strings = (
-      '[TESTE]'
-      'Palavras escritas:'
-      ''
+      'cachorro'
+      'gato'
+      'peixe'
+      'pássaro'
+      'macaco'
+      'leão'
+      'tigre'
+      'elefante'
+      'crocodilo'
+      'abelha'
+      'mosca'
+      'água-viva'
+      'tartaruga'
+      'lagartixa'
+      'sapo'
+      'minhoca'
+      'centopéia'
+      'rinoceronte'
+      'coiote'
+      'águia'
+      'canguru'
+      'coala'
+      'morcego'
+      'gavião'
+      'pavão'
+      'cobra'
+      'camelo'
+      'lontra'
+      'tubarão'
+      'coelho'
+      'baleia'
+      'urso'
+      'foca'
+      'escorpião'
+      'touro'
+      'vaca'
+      'galinha'
+      'formiga'
+      'borboleta'
+      'girafa'
+      'arara'
+      'salamandra'
+      'rã'
+      'pinguim'
+      'tatu'
+      'avestruz'
+      'hiena'
+      'pelicano'
+      'pombo'
+      'orangotango'
+      'coruja'
+      'papagaio'
+      'tucano'
+      'ornitorrinco'
+      'gambá'
+      'rato'
+      'esquilo'
+      'golfinho'
+      'ovelha'
+      'morsa'
+      'suricato'
+      'ornitorrinco'
+      'toupeira'
+      'barata'
+      'lula'
+      'polvo'
+      'tamanduá'
+      'camarão'
+      'lêmure'
+      'besouro'
+      'onça'
     )
+    OnChange = TestChange
     TabOrder = 5
     Visible = False
   end
@@ -123,7 +192,7 @@ object formTappyTuxGame: TformTappyTuxGame
     Width = 82
     ReadOnly = True
     TabOrder = 6
-    Text = 'Melancia'
+    Text = 'Question'
   end
   object Question2: TEdit
     Left = 216
@@ -132,7 +201,7 @@ object formTappyTuxGame: TformTappyTuxGame
     Width = 80
     ReadOnly = True
     TabOrder = 7
-    Text = 'Abacate'
+    Text = 'Question'
   end
   object Question4: TEdit
     Left = 320
@@ -141,7 +210,7 @@ object formTappyTuxGame: TformTappyTuxGame
     Width = 80
     ReadOnly = True
     TabOrder = 8
-    Text = 'Cereja'
+    Text = 'Question'
   end
   object Question3: TEdit
     Left = 424
@@ -150,7 +219,7 @@ object formTappyTuxGame: TformTappyTuxGame
     Width = 80
     ReadOnly = True
     TabOrder = 9
-    Text = 'Melão'
+    Text = 'Question'
   end
   object Question5: TEdit
     Left = 528
@@ -159,7 +228,7 @@ object formTappyTuxGame: TformTappyTuxGame
     Width = 80
     ReadOnly = True
     TabOrder = 10
-    Text = 'Laranja'
+    Text = 'Question'
   end
   object GameOver: TToggleBox
     Left = 240

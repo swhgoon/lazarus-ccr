@@ -36,6 +36,7 @@ type
     procedure AnswerKeyPress(Sender: TObject; var Key: char);
     procedure FormCreate(Sender: TObject);
     procedure NoClick(Sender: TObject);
+    procedure TestChange(Sender: TObject);
     procedure YesClick(Sender: TObject);
 
   private
@@ -95,6 +96,11 @@ begin
 
 end;
 
+procedure TformTappyTuxGame.TestChange(Sender: TObject);
+begin
+
+end;
+
 procedure TformTappyTuxGame.YesClick(Sender: TObject);
 begin
   Question1.Top := 24;
@@ -104,7 +110,8 @@ begin
   Question5.Top := 24;
   GetCurrentModule().StartNewGame(formConfig.comboSound.ItemIndex,
                                   formConfig.comboMusic.ItemIndex,
-                                  formConfig.comboLevel.ItemIndex);
+                                  formConfig.comboLevel.ItemIndex,
+                                  formConfig.ltbWordlist.ItemIndex);
 end;
 
 
