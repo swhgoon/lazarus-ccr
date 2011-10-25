@@ -1,7 +1,7 @@
 object formConfig: TformConfig
-  Left = 731
+  Left = 779
   Height = 432
-  Top = 390
+  Top = 336
   Width = 582
   Caption = 'TappyTux Loader'
   ClientHeight = 432

@@ -17,6 +17,8 @@ type
   TformTappyTuxGame = class(TForm)
     btnExit: TButton;
     Answer: TEdit;
+    No: TButton;
+    Yes: TButton;
     Question2: TEdit;
     Question4: TEdit;
     Question3: TEdit;
@@ -29,9 +31,12 @@ type
     LabelScore: TLabel;
     LabelLives: TLabel;
     Test: TMemo;
+    GameOver: TToggleBox;
     procedure btnExitClick(Sender: TObject);
     procedure AnswerKeyPress(Sender: TObject; var Key: char);
     procedure FormCreate(Sender: TObject);
+    procedure NoClick(Sender: TObject);
+    procedure YesClick(Sender: TObject);
 
   private
     { private declarations }
@@ -53,10 +58,10 @@ uses gameconfigform, mod_tappywords;
 
 procedure TformTappyTuxGame.btnExitClick(Sender: TObject);
 begin
+  GetCurrentModule().EndGame();
   Close;
   formConfig.Show;
 
-  GetCurrentModule().EndGame();
 end;
 
 procedure TformTappyTuxGame.AnswerKeyPress(Sender: TObject; var Key: char);
@@ -80,6 +85,26 @@ begin
   vTappyTuxDrawer.Height := Height-vTappyTuxDrawer.Top;
   vTappyTuxDrawer.Width := Width-vTappyTuxDrawer.Left;
   vTappyTuxDrawer.SendToBack();
+end;
+
+procedure TformTappyTuxGame.NoClick(Sender: TObject);
+begin
+  GetCurrentModule().EndGame();
+  Close;
+  formConfig.Show;
+
+end;
+
+procedure TformTappyTuxGame.YesClick(Sender: TObject);
+begin
+  Question1.Top := 24;
+  Question2.Top := 24;
+  Question3.Top := 24;
+  Question4.Top := 24;
+  Question5.Top := 24;
+  GetCurrentModule().StartNewGame(formConfig.comboSound.ItemIndex,
+                                  formConfig.comboMusic.ItemIndex,
+                                  formConfig.comboLevel.ItemIndex);
 end;
 
 

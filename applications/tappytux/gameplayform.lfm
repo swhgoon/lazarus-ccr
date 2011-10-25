@@ -1,7 +1,7 @@
 object formTappyTuxGame: TformTappyTuxGame
-  Left = 388
+  Left = 377
   Height = 425
-  Top = 200
+  Top = 206
   Width = 621
   Caption = 'Tappy Tux'
   ClientHeight = 425
@@ -106,7 +106,7 @@ object formTappyTuxGame: TformTappyTuxGame
   object Test: TMemo
     Left = 480
     Height = 181
-    Top = 24
+    Top = 200
     Width = 130
     Lines.Strings = (
       '[TESTE]'
@@ -117,18 +117,18 @@ object formTappyTuxGame: TformTappyTuxGame
     Visible = False
   end
   object Question1: TEdit
-    Left = 120
+    Left = 112
     Height = 23
-    Top = 216
+    Top = 24
     Width = 82
     ReadOnly = True
     TabOrder = 6
     Text = 'Melancia'
   end
   object Question2: TEdit
-    Left = 224
+    Left = 216
     Height = 23
-    Top = 216
+    Top = 24
     Width = 80
     ReadOnly = True
     TabOrder = 7
@@ -137,28 +137,59 @@ object formTappyTuxGame: TformTappyTuxGame
   object Question4: TEdit
     Left = 320
     Height = 23
-    Top = 216
+    Top = 24
     Width = 80
     ReadOnly = True
     TabOrder = 8
     Text = 'Cereja'
   end
   object Question3: TEdit
-    Left = 416
+    Left = 424
     Height = 23
-    Top = 216
+    Top = 24
     Width = 80
     ReadOnly = True
     TabOrder = 9
     Text = 'Melão'
   end
   object Question5: TEdit
-    Left = 512
+    Left = 528
     Height = 23
-    Top = 216
+    Top = 24
     Width = 80
     ReadOnly = True
     TabOrder = 10
     Text = 'Laranja'
+  end
+  object GameOver: TToggleBox
+    Left = 240
+    Height = 64
+    Top = 152
+    Width = 172
+    Caption = 'Game Over'#13#10'Continue?'
+    Color = clRed
+    TabOrder = 11
+    Visible = False
+  end
+  object Yes: TButton
+    Left = 240
+    Height = 30
+    Top = 219
+    Width = 80
+    Caption = 'Yes'
+    Color = clRed
+    OnClick = YesClick
+    TabOrder = 12
+    Visible = False
+  end
+  object No: TButton
+    Left = 336
+    Height = 30
+    Top = 219
+    Width = 76
+    Caption = 'No'
+    Color = clRed
+    OnClick = NoClick
+    TabOrder = 13
   end
 end
