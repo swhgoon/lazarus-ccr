@@ -266,6 +266,7 @@ type
     procedure PanelPaperDblClick(Sender: TObject);
     procedure PanelPaperDragOver(Sender, Source: TObject; X, Y: integer;
       State: TDragState; var Accept: boolean);
+    procedure PanelZoomClick(Sender: TObject);
     procedure PicturePageChange(Sender: TObject);
     procedure PictureChange(Sender: TObject);
     procedure PicturePageClose(Sender: TObject);
@@ -844,6 +845,11 @@ begin
     if Sender = PanelOutline then
       ActivePictureEdit.OutlineColor := Palette.PickedColor;
   end;
+end;
+
+procedure TMainForm.PanelZoomClick(Sender: TObject);
+begin
+
 end;
 
 function TMainForm.GetActivePicture: TPictureBitmap;
