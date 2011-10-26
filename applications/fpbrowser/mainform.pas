@@ -10,7 +10,7 @@ uses
   LclIntf, LMessages, LclType, LResources,
   Graphics, Controls,
   Forms, Dialogs, ExtCtrls, Menus, StdCtrls, Clipbrd,
-  PrintersDlgs, buttons, customdrawnextras,
+  PrintersDlgs, buttons, customdrawnextras, customdrawncontrols,
   ComCtrls,
   {$IFDEF MSWINDOWS} ShellAPI, {$ELSE} Unix, {$ENDIF}
   HTMLabt,
