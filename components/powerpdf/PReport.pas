@@ -43,7 +43,7 @@ interface
 
 uses
   {$IFDEF LAZ_POWERPDF}
-  LCLType, LMessages, LCLIntf, GraphType, FPCanvas,
+  LCLType, LMessages, LCLIntf, GraphType, FPCanvas, LCLProc,
   {$ELSE}
   Windows, Messages,
   {$ENDIF}
@@ -1628,6 +1628,26 @@ begin
 end;
 
 // InternalTextout
+{$IFDEF LAZ_POWERPDF}
+function TPRCustomLabel.InternalTextout(APdfCanvas: TPdfCanvas;
+                       S: string; X, Y: integer): Single;
+var
+  Pos: Double;
+  i: integer;
+  Word: string;
+begin
+  Pos := X;
+  for i:=1 to UTF8Length(S) do begin
+    Word := UTF8Copy(s, i, 1);
+    Canvas.TextOut(Round(Pos), Y, Word);
+    with APdfCanvas do
+      Pos := Pos + TextWidth(Word) + Attribute.CharSpace;
+    if Word=' ' then
+      Pos := Pos + FWordSpace
+  end;
+  result := Pos;
+end;
+{$ELSE}
 function TPRCustomLabel.InternalTextout(APdfCanvas: TPdfCanvas;
                        S: string; X, Y: integer): Single;
 var
@@ -1664,6 +1684,7 @@ begin
   end;
   result := Pos;
 end;
+{$ENDIF}
 
 // GetFontClassName
 function TPRCustomLabel.GetFontClassName: string;
