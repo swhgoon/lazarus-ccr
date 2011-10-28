@@ -15120,13 +15120,10 @@ var
   ScrollLines: DWORD;
   RTLFactor: Integer;
   WheelFactor: Double;
-  State: TShiftState;
 begin
   //todo: rename to WM*
   {$ifdef DEBUG_VTV}Logger.EnterMethod([lcScroll],'CMMouseWheel');{$endif}
   StopWheelPanning;
-
-  State := KeysToShiftState(Message.Button);
 
   inherited WMMouseWheel(Message);
 
