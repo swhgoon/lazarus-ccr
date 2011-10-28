@@ -475,13 +475,16 @@ type
   private
     FSharedName: string;
     procedure SetStretch(Value: boolean);
+    procedure SetProportional(AValue: boolean);
   protected
     FPicture: TPicture;
     FSharedImage: boolean;
     FStretch: boolean;
+    FProportional: boolean;
     procedure SetPicture(Value: TPicture); virtual;
     procedure Paint; override;
     procedure Print(ACanvas: TPRCanvas; ARect: TRect); override;
+    procedure CalcProportionalBounds(var AWidth, AHeight: Integer);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -490,6 +493,7 @@ type
     property Picture: TPicture read FPicture write SetPicture;
     property SharedImage: boolean read FSharedImage write FSharedImage;
     property Stretch: boolean read FStretch write SetStretch default true;
+    property Proportional: boolean read FProportional write SetProportional;
   end;
 
   { TPRDestination }
@@ -2286,6 +2290,10 @@ end;
 
 // Paint
 procedure TPRImage.Paint;
+var
+  R: TRect;
+  AWidth,AHeight: Integer;
+  RatioH,RatioW: Double;
 begin
   if (FPicture = nil) or (FPicture.Graphic = nil) or
    (FPicture.Graphic.Empty) then
@@ -2300,7 +2308,18 @@ begin
     end
   else
   if FStretch then
-    Canvas.StretchDraw(GetClientRect, FPicture.Graphic)
+  begin
+    R := GetClientRect;
+
+    AWidth := R.Right-R.Left;
+    AHeight := R.Bottom-R.Top;
+    if FProportional then
+      CalcProportionalBounds(AWidth, AHeight);
+    R.Right := R.Left + AWidth;
+    R.Bottom := R.Top + AHeight;
+
+    Canvas.StretchDraw(R, FPicture.Graphic)
+  end
   else
     Canvas.Draw(0, 0, FPicture.Graphic);
 end;
@@ -2312,6 +2331,8 @@ var
   FXObjectName: string;
   i: integer;
   FIdx: integer;
+  AWidth,AHeight: Integer;
+  RatioH,RatioW: Double;
 begin
   if (FPicture = nil) or (FPicture.Graphic = nil) or
    (FPicture.Graphic.Empty) {or not (FPicture.Graphic is TFPImageBitmap)} then
@@ -2341,12 +2362,31 @@ begin
     FDoc.AddXObject(FXObjectName, CreatePdfImage(FPicture.Graphic, 'Pdf-Bitmap', FDoc.ObjectMgr));
   end;
   with ARect, ACanvas.PdfCanvas do
-    if FStretch then
-      DrawXObject(Left, GetPage.Height - Bottom, Width, Height, FXObjectName)
+    if FStretch then begin
+      AWidth := Width;
+      AHeight := Height;
+      if FProportional then
+        CalcProportionalBounds(AWidth, AHeight);
+      DrawXObject(Left, GetPage.Height - Top - AHeight, AWidth, AHeight, FXObjectName)
+    end
     else
       DrawXObjectEx(Left, GetPage.Height - Top - FPicture.Height,
             FPicture.Width, FPicture.Height,
             Left, GetPage.Height - Top - Height, Width, Height, FXObjectName);
+end;
+
+procedure TPRImage.CalcProportionalBounds(var AWidth, AHeight: Integer);
+var
+  RatioW,RatioH: Double;
+begin
+  if (FPicture.Height<>0) and (FPicture.Width<>0) then begin
+    RatioW := AWidth/FPicture.Width;
+    RatioH := AHeight/FPicture.Height;
+    if RatioH<RatioW then
+      RatioW := RatioH;
+    AWidth := Round(RatioW * FPicture.Width);
+    AHeight := Round(RatioW * FPicture.Height);
+  end;
 end;
 
 // Create
@@ -2377,6 +2417,15 @@ begin
   if Value = FStretch then Exit;
   FStretch := Value;
   Invalidate;
+end;
+
+procedure TPRImage.SetProportional(AValue: boolean);
+begin
+  if AValue <> FProportional then
+  begin
+    FProportional := AValue;
+    Invalidate;
+  end;
 end;
 
 // Destroy

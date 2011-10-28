@@ -47,7 +47,7 @@ procedure TPRJpegImage.Print(ACanvas: TPRCanvas; ARect: TRect);
 var
   FDoc: TPdfDoc;
   FXObjectName: string;
-  i: integer;
+  i,AWidth,AHeight: integer;
 begin
   if not Printable then Exit;
   
@@ -73,8 +73,13 @@ begin
     FDoc.AddXObject(FXObjectName, CreatePdfImage(FPicture.Graphic, 'Pdf-Jpeg'));
   end;
   with ARect, ACanvas.PdfCanvas do
-    if FStretch then
-      DrawXObject(Left, Self.Page.Height - Bottom, Width, Height, FXObjectName)
+    if FStretch then begin
+      AWidth := Width;
+      AHeight := Height;
+      if Proportional then
+        CalcProportionalBounds(AWidth, AHeight);
+      DrawXObject(Left, Self.Page.Height - Top - AHeight, AWidth, AHeight, FXObjectName)
+    end
     else
       DrawXObjectEx(Left, Self.Page.Height - Top - FPicture.Height,
             FPicture.Width, FPicture.Height,
