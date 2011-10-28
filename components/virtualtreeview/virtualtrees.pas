@@ -13321,11 +13321,8 @@ const
 var
   ScrollCount: Integer;
   ScrollLines: Integer;
-  State: TShiftState;
 begin
   StopWheelPanning;
-
-  State := KeysToShiftState(Message.Button);
 
   //inherited;
 
