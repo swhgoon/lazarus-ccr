@@ -51,7 +51,7 @@ interface
 
 uses
   SysUtils, Classes
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   , Types
   {$ELSE}
   , Windows

@@ -38,7 +38,7 @@ interface
 
 uses
   SysUtils, Classes
-{$IFNDEF LINUX}
+{$IFNDEF UNIX}
   , Windows
 {$ENDIF}
 {$IFNDEF NOZLIB}
