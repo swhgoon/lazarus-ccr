@@ -345,6 +345,7 @@ var
   i:integer;
 begin
   inherited Notification(AComponent, Operation);
+  if AComponent = Self then exit;
   if Operation = opRemove then
   begin
     for i:=0 to FItems.Count - 1 do
