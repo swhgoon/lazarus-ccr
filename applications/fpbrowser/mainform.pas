@@ -143,6 +143,7 @@ begin
   pageBrowser := TCDPageControl.Create(Self);
   pageBrowser.Parent := Self;
   pageBrowser.Align := alClient;
+  pageBrowser.DrawStyle := dsKDE;
 
   InitializeForm();
 end;
