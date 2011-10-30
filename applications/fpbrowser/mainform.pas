@@ -144,6 +144,8 @@ begin
   pageBrowser.Parent := Self;
   pageBrowser.Align := alClient;
   pageBrowser.DrawStyle := dsKDE;
+  pageBrowser.Options := [nboShowCloseButtons, nboHidePageListPopup,
+    nboKeyboardTabSwitch];
 
   InitializeForm();
 end;
