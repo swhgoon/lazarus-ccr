@@ -7,6 +7,8 @@ interface
 uses
   Classes, SysUtils, Graphics, Forms, Controls,
   //
+  fpreadgif, fpimage, fpwritebmp,
+  //
   browserviewer,
   //
   IPHtml, Ipfilebroker, IpMsg;
@@ -100,18 +102,54 @@ procedure TiProViewer.DataProvider1GetImage(Sender: TIpHtmlNode; const URL: stri
   var Picture: TPicture);
 var
   lStream: TMemoryStream = nil;
+  lConvertedStream: TMemoryStream = nil;
   lStr: String;
+  //
+  image: TFPCustomImage;
+  reader: TFPCustomImageReader;
+  writer: TFPCustomImageWriter;
+  lAbsURL: String;
 begin
-  WriteLn('TformBrowser.DataProvider1GetImage ',URL);
-  lStr := ExtractFileExt(URL);
+  WriteLn('TformBrowser.DataProvider1GetImage URL=', URL);
+
+  // Corrections of the URL
+  if (URL[1] = '/') and (URL[2] = '/') then lAbsURL := 'http:' + URL;
+
+  WriteLn('TformBrowser.DataProvider1GetImage Corrected URL=', lAbsURL);
+
+  lStr := ExtractFileExt(lAbsURL);
   if (lStr = '.jpeg') or (lStr = '.jpg') then
   begin
     try
-      MyPageLoader.LoadBinaryResource(URL, lStream);
+      MyPageLoader.LoadBinaryResource(lAbsURL, lStream);
+      lStream.Position := 0;
       Picture := TPicture.Create;
       Picture.Jpeg.LoadFromStream(lStream);
     finally
       lStream.Free
+    end;
+  end
+  else if (lStr = '.gif') then
+  begin
+    WriteLn('TformBrowser.DataProvider1GetImage Processing GIF');
+    try
+      MyPageLoader.LoadBinaryResource(lAbsURL, lStream);
+      lStream.Position := 0;
+      Picture := TPicture.Create;
+      Image := TFPMemoryImage.Create(10, 10);
+      Reader := TFPReaderGIF.Create;
+      Image.LoadFromStream(lStream, Reader);
+      Writer := TFPWriterBMP.Create;
+      lConvertedStream := TMemoryStream.Create;
+      Image.SaveToStream(lConvertedStream, Writer);
+      lConvertedStream.Position:=0;
+      Picture.Bitmap.LoadFromStream(lConvertedStream);
+    finally
+      lStream.Free;
+      image.Free;
+      reader.Free;
+      writer.Free;
+      lConvertedStream.Free;
     end;
   end
   else
