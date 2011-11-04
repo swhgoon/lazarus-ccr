@@ -15,6 +15,7 @@ type
   TTappyModule = class
   public
     imgLevel2, imgLevel3: TJPEGImage;
+    imgPenguim : TBitmap;
     ShortDescription, LongDescription: string;
     constructor Create; virtual;
     destructor Destroy; override;
@@ -94,6 +95,7 @@ begin
 
   imgLevel2.LoadFromFile(lDir + 'images'+PathDelim+'levels'+PathDelim+'level2.jpg');
   imgLevel3.LoadFromFile(lDir + 'images'+PathDelim+'levels'+PathDelim+'level3.jpg');
+  //imgPenguim.LoadFromFile(lDir + 'images'+PathDelim+'sprites'+PathDelim+'tuxside.xmp');
 end;
 
 function TTappyModule.GetBackgroundImage(ALevel: Integer): TJPEGImage;
