@@ -6,13 +6,15 @@ interface
 uses
   // RTL
   SysUtils, Classes, fpimage,
+  {$IFDEF MSWINDOWS} ShellAPI, {$ELSE} Unix, {$ENDIF}
   // LCL
   LclIntf, LMessages, LclType, LResources,
   Graphics, Controls,
   Forms, Dialogs, ExtCtrls, Menus, StdCtrls, Clipbrd,
-  PrintersDlgs, buttons, customdrawnextras, customdrawncontrols,
-  ComCtrls,
-  {$IFDEF MSWINDOWS} ShellAPI, {$ELSE} Unix, {$ENDIF}
+  PrintersDlgs, buttons, ComCtrls,
+  // Custom Drawn
+  customdrawnextras, customdrawncontrols,  customdrawndrawers, customdrawn_kde,
+  //
   HTMLabt,
   pageloader, browserviewer, browsermodules;
 
