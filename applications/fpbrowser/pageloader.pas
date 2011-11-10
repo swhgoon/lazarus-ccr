@@ -68,7 +68,10 @@ begin
     lModule := GetBrowserModule(i);
     if not lModule.Activated then Continue;
     if lModule.HandleOnPageLoad(PageLoader.Contents, lNewContents) then
+    begin
       PageLoader.Contents := lNewContents;
+      writeln(PageLoader.Contents);
+    end;
   end;
 end;
 
