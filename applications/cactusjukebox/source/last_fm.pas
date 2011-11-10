@@ -180,7 +180,7 @@ begin
       try
          HTTPConnection.Document.SaveToFile(FAlbumInfo.CoverSavePath);
       except
-         writeln('EXCEPTION writing cover art to disk');
+         DebugOutLn('EXCEPTION writing cover art to disk',0);
       end;
       HTTPConnection.Free;
     End else DebugOutLn('No cover found :(', 5);
@@ -195,7 +195,7 @@ begin
   FArtist:=artist;
   furl := Furlprefix + Format('?method=album.getinfo&api_key=%s&artist=%s&album=%s', [FAPIKey, FArtist, FAlbum]);
   furl := AnsiReplaceStr(furl, ' ', '%20');
-  writeln(furl);
+  DebugOutLn(furl,0);
   SendRequest(@album_getInfosRCV);
 end;
 

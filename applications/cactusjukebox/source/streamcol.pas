@@ -5,10 +5,11 @@ Unit streamcol;
 
 Interface
 
-Uses 
-Classes, SysUtils;
+uses
+  Classes, SysUtils,
+  debug;
 
-Type 
+type
 
    { TStreamInfoItemClass }
 
@@ -120,7 +121,7 @@ Begin
       End;
     result:=true;
   Except
-    writeln('ERROR reading stream collection');
+    DebugOutLn('ERROR reading stream collection',0);
     result:=false;
   End;
 End;

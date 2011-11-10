@@ -161,15 +161,8 @@ begin
       current_track_tmp := target;
       //  if dest<target then current_track_tmp:=target+1 else current_track_tmp:=target;
     end;
-    Write('dest');
-    writeln(dest);
-    Write('target');
-    writeln(target);
-    Write('curtrack_before');
-    writeln(CurrentTrack);
     CurrentTrack := current_track_tmp;
-
-    writeln(CurrentTrack);
+    DebugOutLn(Format('dest=%d target=%d curtrack_before=%d', [dest, target, CurrentTrack]), 0);
   end;
 end;
 

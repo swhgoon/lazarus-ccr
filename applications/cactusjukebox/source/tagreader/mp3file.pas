@@ -136,7 +136,7 @@ begin
             // doesn't work with VBR files !
           End;
       End
-    Else writeln(FFileName+' -> no valid mpeg header found');
+    Else DebugOutLn('[TMP3File.ReadHeader] '+FFileName+' -> no valid mpeg header found', 0);
 end;
 
 function TMP3File.GetId3V1Track: Integer;
@@ -248,7 +248,9 @@ Begin
             yearv2 := '';
         end;
       End;
-   except WriteLn(Filename+' -> exception while reading id3v2 tag... skipped!!'); end;
+   except
+     DebugOutLn('[TMP3File.ReadTag] '+Filename+' -> exception while reading id3v2 tag... skipped!!', 0);
+   end;
 {id3v1}
    try
     fileseek(mp3filehandle,-128, fsfromend);
@@ -284,7 +286,10 @@ Begin
         else
           ftrack := '';
       End; // else writeln('no id3v1 tag');
-  except WriteLn(Filename+' -> exception while reading id3v1 tag... skipped!!');  end;
+   except
+     DebugOutLn('TMP3File.ReadTag] '+Filename+
+       ' -> exception while reading id3v1 tag... skipped!!', 0);
+   end;
 (*  {$IFNDEF WINDOWS}
   If ((artistv2<>'')) And (CactusConfig.id3v2_prio Or (artist='')) Then Fartist := artistv2;
   If ((titlev2<>'')) And (CactusConfig.id3v2_prio Or (title=''))  Then Ftitle := titlev2;
@@ -518,15 +523,15 @@ Begin
 
   mp3filehandle := fileopen(Filename,fmOpenWrite);
   If mp3filehandle<>-1 Then
-    Begin
-      If FileGetAttr(Filename)=faReadOnly Then DebugOutLn('file is read only', 0);
-      fileseek(mp3filehandle,-128,fsfromend);
-      writeln(ftitle);
-      writeln(fartist);
-      filewrite(mp3filehandle,buf,128);
-      fileclose(mp3filehandle);
-    End
-  Else writeln('ERROR: cant write tag. file not found');
+  Begin
+    If FileGetAttr(Filename)=faReadOnly Then DebugOutLn('file is read only', 0);
+    fileseek(mp3filehandle,-128,fsfromend);
+    DebugOutLn(ftitle,0);
+    DebugOutLn(fartist,0);
+    filewrite(mp3filehandle,buf,128);
+    fileclose(mp3filehandle);
+  End
+  Else DebugOutLn('ERROR: cant write tag. file not found',0);
 
 end;
 

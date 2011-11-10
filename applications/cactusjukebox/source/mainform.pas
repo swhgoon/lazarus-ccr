@@ -269,7 +269,6 @@ type
     procedure LibraryModeBtnClick(Sender: TObject);
     procedure MenuItem15Click(Sender: TObject);
     procedure MenuItem25Click(Sender: TObject);
-    procedure menuShowCactusClick(Sender: TObject);
     procedure MIrandom_playlistClick(Sender: TObject);
     procedure MIViewAlbumClick(Sender: TObject);
     procedure MIViewArtistClick(Sender: TObject);
@@ -577,7 +576,7 @@ begin
   end
   else
   begin
-    writeln('finished');
+    DebugOutLn('finished', 0);
     TargetCollection.SaveToFile;
     TargetCollection.Free;
     main.connectDAP;
@@ -680,16 +679,15 @@ begin
     if MessageDlg('Some files on your harddisk seem to have changed.' + LineEnding +
       'Adopt changes in Cactus library?', mtWarning, mbOKCancel, 0) = mrOk then
     begin
-      writeln(1);
       fstatus := 255;
-      writeln('assigning');
+      DebugOutLn('[TScanThread.ShowStatus] assigning', 0);
 
       //             PTargetCollection^.Assign(tmpcollection);
-      writeln('saving');
+      DebugOutLn('saving', 0);
       //             PTargetCollection^.save_lib(PTargetCollection^.savepath);
       Main.clear_listClick(nil);
 
-      writeln('WARNING: if excption occurs, playlist has to be cleared here!');
+      DebugOutLn('WARNING: if excEption occurs, playlist has to be cleared here!', 0);
       //   Main.update_player_hdd_relations;
       main.update_artist_view;
       update_title_view;
@@ -702,11 +700,11 @@ begin
   if (fstatus = 0) or (fstatus = 128) then
   begin
     Main.StatusBar1.Panels[0].Text := 'Ready';
-    writeln('fstatus 0, 126');
+    DebugOutLn('fstatus 0, 126', 0);
     Main.StatusBar1.Panels[1].Alignment := taRightJustify;
     tmpcollection.Free;
   end;
-  writeln('showStatus');
+  DebugOutLn('showStatus', 0);
 end;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -790,7 +788,7 @@ begin
     y := Volumebar.Height;
   if y < 0 then
     y := 0;
-  writeln(y);
+  DebugOutLn(IntToStr(y), 0);
 
   newVolume := 100 - ((y * 100) div (Volumebar.Height));
   PlayerObj.set_volume(newVolume);
@@ -861,7 +859,7 @@ begin
     begin
       if oldindex >= 0 then
         playlist.Items[oldindex].ImageIndex := -1;
-      writeln(oldindex);
+      DebugOutLn(IntToStr(oldindex), 0);
       playlist.Items[i].ImageIndex := 0;
       playlist.Items[i].MakeVisible(False);
       playtimer.Enabled := True;
@@ -1163,16 +1161,12 @@ begin
   if FileExists(CactusConfig.DAPPath) then
   begin
     checkmobile.Enabled := False;
-    writeln('ooo');
     disconnectDAP;
-    writeln('aa');
     ScanCol := TMediaCollectionClass.Create;
     ScanCol.syncronize := @ScanSyncronize;
     Enabled := False;
-    writeln('ll');
     ScanCol.PathFmt := FRelative;
     ScanCol.savepath := CactusConfig.DAPPath + 'cactuslib';
-    writeln('dd');
     ScanCol.add_directory(CactusConfig.DAPPath);
     ScanCol.SaveToFile;
     ScanCol.Free;
@@ -1453,11 +1447,6 @@ procedure TMain.MenuItem25Click(Sender: TObject);
 begin
   addRadioForm := TaddRadioForm.Create(self);
   addRadioForm.ShowModal;
-end;
-
-procedure TMain.menuShowCactusClick(Sender: TObject);
-begin
-
 end;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -2162,7 +2151,7 @@ begin
   begin
     if StreamCollection.LoadFromFile(CactusConfig.StreamColPath) = False then
     begin
-      writeln('Error loading stream collection');
+      DebugOutLn('Error loading stream collection', 0);
     end;
   end;
 
@@ -2538,8 +2527,8 @@ begin
         end;
       until ((lowercase(ArtistTree.items[i].Text) = curartist) and
           (ArtistTree.Items[i].Level = 1)) or (i >= ArtistTree.items.Count - 1);
-      writeln(curartist);
-      writeln(ArtistTree.items[i].Text);
+      DebugOutLn(curartist, 0);
+      DebugOutLn(ArtistTree.items[i].Text, 0);
       if lowercase(ArtistTree.items[i].Text) = curartist then
       begin
         ArtistTree.selected := main.artisttree.items[i];
@@ -3034,7 +3023,7 @@ begin
     else
       DebugOutLn(' --> Invalid message/filename received via IPC', 2);
   end;
-  Writeln('IPC end');
+  DebugOutLn('IPC end', 0);
 end;
 
 procedure TMain.skinmenuClick(Sender: TObject);
@@ -3151,7 +3140,7 @@ begin
   sl := TStringList.Create;
   try
     IndexOfCurrentColumn := column.index;
-    writeln(IndexOfCurrentColumn);
+    DebugOutLn(Format('IndexOfCurrentColumn=%d', [IndexOfCurrentColumn]), 0);
 
     if IndexOfCurrentColumn <> 0 then
     begin
@@ -3344,7 +3333,7 @@ begin
       // get free memory on player, format string
       DebugOut('loaded', 2);
       tmps := ByteToFmtString(FreeSpaceOnDAP, 3, 2);
-      writeln(FreeSpaceOnDAP);
+      DebugOutLn(FreeSpaceOnDAP, 0);
       StatusBar1.Panels[1].Text := 'Device connected     ' + tmps + ' free';
       if CactusConfig.background_scan then
       begin
@@ -3425,9 +3414,8 @@ begin
   if CactusConfig.StopOnClear then
     StopButtonImgClick(Sender);
   Playlist.BeginUpdate;
-  writeln(Playlist.Items.Count);
+  DebugOutLn('clear', 0);
   Playlist.Items.Clear;
-  writeln('clear');
   playlist.Column[0].Caption := rsPlaylist;
   PlayerObj.playlist.Clear;
   Playlist.EndUpdate;
@@ -3738,7 +3726,6 @@ begin
           playlist.items[i - 1].Selected := True;
           //tempitem.MakeVisible(true);
         end;
-        writeln(playlist.Selected.Index);
       end;
 
     // Key DOWN
@@ -3901,7 +3888,7 @@ begin
     begin
       StatusBar1.Panels[0].Text := 'Buffering stream...';
       StreamInfoObj := TStreamInfoItemClass(ArtistTree.Selected.Data);
-      writeln(PlayerObj.play(StreamInfoObj.URL));
+      DebugOutLn(PlayerObj.play(StreamInfoObj.URL), 0);
       current_title_edit.Text := 'Playing radio stream...';
       current_title_edit1.Text := StreamInfoObj.Name;
       playtimer.Enabled := True;
@@ -3940,7 +3927,6 @@ var
   c: char;
   i: integer;
 begin
-  writeln(key);
   b := key;
   c := char(b);
   case key of
@@ -4337,7 +4323,7 @@ procedure TMain.titlelistmenuPopup(Sender: TObject);
 var
   MedFileObj: TMediaFileClass;
 begin
-  writeln('titletree popupmenu');
+  DebugOutLn('[TMain.titlelistmenuPopup]', 0);
   if TitleTree.Selected <> nil then
   begin
     MedFileObj := TMediaFileClass(TitleTree.Selected.Data);

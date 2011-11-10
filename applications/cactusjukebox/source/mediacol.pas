@@ -180,7 +180,7 @@ Var mp3search,dirsearch: TSearchrec;
   fHandle: file Of byte;
 Begin
   dir := IncludeTrailingPathDelimiter(dir);
-  writeln('scanning through:  '+dir);
+  DebugOutLn('scanning through:  '+dir, 0);
   syncronize(dir);
   If FindFirst(dir+'*.*',faAnyFile,mp3search)=0 Then
     Begin
@@ -283,7 +283,7 @@ Begin
   {$i+}
   if IoResult<>0 then begin
     result := false;
-    writeln('unable to open file ', path);
+    DebugOutLn('unable to open file '+path, 0);
     exit;
   end;
 
@@ -357,10 +357,8 @@ Begin
   Except
     close(lfile);
     fsorted := sortState;
-    writeln('lib seems corupted');
-    write('exception at entry ');
-    writeln(i);
-    write('line: ');writeln(linecount);
+    DebugOutLn('lib seems corupted', 0);
+    DebugOutLn(Format('exception at entry %d line: %d', [i, linecount]), 0);
     result := false;
   End;
 End;
@@ -522,8 +520,8 @@ Begin
         Else FEnumerated := false;
 
       except
-        writeln('exception sorting object in library');
-        writeln(MedFileObj.Path);
+        DebugOutLn('exception sorting object in library',0);
+        DebugOutLn(MedFileObj.Path,0);
       end;
     End
   Else
@@ -851,7 +849,6 @@ Begin
   try
   if FileExists(Path) then
   begin
-    writeln(path);
     OGGFile.ReadFromFile(Path);
     artist := UTF8Encode(OGGFile.Artist);
     title := UTF8Encode(OGGFile.Title);
@@ -955,7 +952,7 @@ Begin
 
     playtime := SecondsToFmtStr(Playlength);
   Except
-    writeln('**EXCEPTION reading wave file '+path+'**');
+    DebugOutLn('**EXCEPTION reading wave file '+path+'**',0);
   End;
 End;
 
@@ -968,7 +965,6 @@ Begin
   try
   if FileExists(Path) then
   begin
-   // writeln(path);
     MP3File.ReadTag(Path);
     artist := StrToUTF8(MP3File.Artist);
     title := StrToUTF8(MP3File.Title);
@@ -1094,7 +1090,6 @@ Begin
   start := index;
   If (Collection<>nil) and Collection.sorted Then
     Begin
-      writeln(i);
       If (i<Collection.Count-1) And (CompareText(FTitle, Collection.Items[i+1].Title)>0)
          And (CompareText(FArtist, Collection.Items[i+1].Artist)=0) Then
         Begin

@@ -6,8 +6,8 @@ Unit addradio;
 Interface
 
 Uses 
-Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-Buttons, EditBtn, streamcol, mainform;
+  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Buttons, EditBtn, streamcol, mainform, debug;
 
 Type 
 
@@ -87,7 +87,7 @@ Begin
   If FAdvanced Then
     Begin
       i := StreamCollection.add(StreamUrlEdit.Text, StationNameEdit.Text);
-      writeln(StreamUrlEdit.Text);
+      DebugOutLn(StreamUrlEdit.Text, 0);
     End
   Else
     Begin

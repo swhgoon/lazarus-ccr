@@ -302,7 +302,7 @@ procedure TCddbObject.Parsedata;
               title[i]:=Latin1toUTF8(title[i]);
               delete(s, 1, pos(#10, s));
               if i>8 then
-                 writeln('title ---> ',title[i]);
+                 DebugOutLn('title ---> '+title[i], 0);
              // deleted:=true;
              end;
 
@@ -371,10 +371,10 @@ begin
      {$endif}
      DebugOutLn(Format('%d CD-ROM drives autodetected', [DriveCount]), 0);
      For b:=1 to DriveCount do
-       Writeln('Drive ',b,' on device: ',CDRomDrives[b]);
+       DebugOutLn(Format('Drive %d on device: %s',[b, CDRomDrives[b]]), 0);
   Except
      On E : exception do
-       Writeln(E.ClassName,' exception caught with message: ',E.Message);
+       DebugOutLn('[TCddbObject.create] exception caught with message: '+E.Message, 0);
   end;
 
   if DriveCount=0 then

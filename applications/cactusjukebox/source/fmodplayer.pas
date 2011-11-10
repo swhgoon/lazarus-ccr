@@ -21,7 +21,7 @@ uses
   Classes, SysUtils,
   {$ifdef win32} fmoddyn, {$endif}
   {$ifdef unix} fmoddyn, {$endif}
-  fmodtypes, mediacol, playlist, playerclass;
+  fmodtypes, mediacol, playlist, playerclass, debug;
 
 type
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -121,8 +121,9 @@ begin
     if FSOUND_Init(44100, 32, 0)=true then begin
 
       FPlaybackMode:=FILE_MODE;
-      writeln('playing  -> '+playlist.items[index].path);
-      if (FileExists(playlist.items[index].path)) then begin
+      DebugOutLn('playing  -> '+playlist.items[index].path,0);
+      if (FileExists(playlist.items[index].path)) then
+      begin
          tmpp:=StrAlloc(length(playlist.items[index].path)+1);
          StrPCopy(tmpp,playlist.items[index].path);
 
@@ -138,18 +139,20 @@ begin
          if z = 0 then begin //If loading was succesful
             write(' start playing... ');
             FSOUND_Stream_Play (FSOUND_FREE,Soundhandle);      //   Start playing
-            writeln(' ready... ');
+            DebugOutLn(' ready... ',0);
             FSOUND_SetVolume(0, FVolume);
             playlist.items[index].played:=true;
             fplaying:=true;
             result:=0;
             FCurrentTrack:=index;
-           end else begin
-               write('error: can''t play file');writeln(z);
-              end;
-       end else result:=1;
-     end else result:=2;
-   end;
+         end
+         else
+           DebugOutLn(Format('error: can''t play file %d',[z]), 0);
+        end
+        else result:=1;
+      end
+      else result:=2;
+    end;
   end
   else begin
          writeln('INTERNAL error: playlistindex out of bound');
@@ -175,15 +178,15 @@ begin
    //FSOUND_Close;
  {$ifdef linux}
     if OutputMode = OSSOUT then begin
-           if FSOUND_SetOutput(FSOUND_OUTPUT_OSS) then writeln('Oss output openend') else writeln('failed opening oss output')
+           if FSOUND_SetOutput(FSOUND_OUTPUT_OSS) then DebugOutLn('Oss output openend',0) else writeln('failed opening oss output')
          end
          else begin
-           if FSOUND_SetOutput(FSOUND_OUTPUT_ALSA) then writeln('alsa output openend') else writeln('failed opening alsa output')
+           if FSOUND_SetOutput(FSOUND_OUTPUT_ALSA) then DebugOutLn('alsa output openend',0) else writeln('failed opening alsa output')
          end;
   {$endif}
     if FSOUND_Init(44100, 32, 0)=true then begin
       FPlaybackMode:=STREAMING_MODE;
-      writeln('playing  -> '+url);
+      DebugOutLn('playing  -> '+url,0);
          tmpp:=StrAlloc(length(url)+1);
          StrPCopy(tmpp,url);
 

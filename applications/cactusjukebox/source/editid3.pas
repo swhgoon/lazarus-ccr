@@ -419,7 +419,7 @@ Begin
 
   If (picrequest_send) And LastFMAPI.data_ready Then
     Begin
-      writeln(MedFileObj.CoverPath);
+      DebugOutLn(MedFileObj.CoverPath,0);
       AlbumCoverImg.Canvas.Clear;
       Try
         AlbumCoverImg.Picture.LoadFromFile(MedFileObj.CoverPath);
@@ -709,7 +709,7 @@ Begin
                   Try
                     AlbumCoverImg.Picture.LoadFromFile(MedFileObj.CoverPath);
                   Except
-                    writeln('EXCEPTION loading cover file from '+MedFileObj.CoverPath);
+                    DebugOutLn('EXCEPTION loading cover file from '+MedFileObj.CoverPath,0);
                   End;
                 End
               Else
@@ -761,7 +761,7 @@ Begin
       idlabel.Caption := 'File-Id: ' + IntToStr(MedFileObj.id);
       indexlabel.Caption := 'File-Index: ' + IntToStr(MedFileObj.index);
 
-      writeln('########AlbumCover');
+      DebugOutLn('########AlbumCover',0);
       // DEBUG-INFO
       If (MedFileObj.album<>'') and CactusConfig.CheckCoverPath
         Then
@@ -772,7 +772,7 @@ Begin
               Try
                 AlbumCoverImg.Picture.LoadFromFile(MedFileObj.CoverPath);
               Except
-                writeln('EXCEPTION loading cover');
+                DebugOutLn('EXCEPTION loading cover',0);
               End;
             End
           Else

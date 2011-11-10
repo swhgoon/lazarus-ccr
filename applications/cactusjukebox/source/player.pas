@@ -529,7 +529,6 @@ End;
 Procedure Tplaywin.playwinKeyDown(Sender: TObject; Var Key: Word;
                                   Shift: TShiftState);
 Begin
-  writeln(key);
   If key=113 Then Main.player_libClick(Nil);
   If key = 17 Then strg := true;
   If (strg=true) And (key=78) Then Main.nextClick(Nil);

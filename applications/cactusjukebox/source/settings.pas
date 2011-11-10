@@ -7,15 +7,7 @@ written by Sebastian Kraft, <c> 2006-2008
 Contact the author at: sebastian_kraft@gmx.de
 
 This Software is published under the GPL
-
-
-
-
-
-
 }
-
-
 Unit settings;
 
 {$mode objfpc}{$H+}
@@ -23,8 +15,9 @@ Unit settings;
 Interface
 
 Uses 
-Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-ExtCtrls, Buttons, ComCtrls, CheckLst, config, playerclass, mplayer;
+  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  ExtCtrls, Buttons, ComCtrls, CheckLst, config, playerclass, mplayer,
+  debug;
 
 resourcestring
 rsAutoloadLast = 'Load last library at startup';
@@ -309,8 +302,8 @@ Begin
   If DirectoryExists(CactusConfig.ConfigPrefix+DirectorySeparator+'covercache') Then
     Begin
       If EraseDirectory(CactusConfig.ConfigPrefix+DirectorySeparator+'covercache') Then
-        writeln('Covercache has been cleared...')
-      Else writeln('ERROR while clearing covercache...');
+        DebugOutLn('Covercache has been cleared...',0)
+      Else DebugOutLn('ERROR while clearing covercache...',0);
     End;
 End;
 

@@ -352,8 +352,6 @@ Begin
      {Main.ImageList1.Insert(0, tmpbmp, nil);
      Main.ImageList1.Insert(1, tmpbmp, nil);}
 
-  // writeln(skinxml.GetValue('Database/Play/Icon','ss'));
-
   main.PlayButtonImg.Picture.LoadFromFile(Self.play.Img);
   main.StopButtonImg.Picture.LoadFromFile(Self.stop.Img);
   main.PauseButtonImg.Picture.LoadFromFile(Self.pause.Img);

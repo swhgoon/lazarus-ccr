@@ -18,7 +18,8 @@ Unit functions;
 Interface
 
 Uses 
-Classes, SysUtils, math, config;
+  Classes, SysUtils, math,
+  debug, config;
 
 
 
@@ -181,7 +182,7 @@ Begin
       If utf16 Then
         Begin
           i := i+2;
-          writeln('utf16');
+          DebugOutLn('utf16',0);
           Repeat
             Begin
               inc(i);
@@ -321,8 +322,8 @@ Begin
   // get free memory on player, format string
   SetCurrentDir(CactusConfig.DAPPath);
   result := DiskFree(0);
-  writeln('------>');
-  writeln(DiskFree(0));
+  DebugOutLn('------>',0);
+  DebugOutLn(Format('DiskFree=%d',[DiskFree(0)]),0);
   SetCurrentDir(tmps);
 End;
 

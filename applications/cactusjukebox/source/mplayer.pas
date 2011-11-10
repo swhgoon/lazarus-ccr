@@ -131,7 +131,8 @@ begin
        Result := '';
   //   writeln(Result);
   except
-    writeln('EXCEPTION reading mplayer output');result:='';
+    DebugOutLn('EXCEPTION reading mplayer output', 0);
+    result:='';
   end;
   //writeln('endget');
   AStringList.Free;
@@ -278,7 +279,7 @@ begin
  if FPlaying and Assigned(MPlayerProcess) then begin
    SendCommand('pause');
    sleep(10);
-   writeln('pauseee');
+   DebugOutLn('pauseee', 0);
    FPaused:=not FPaused;
  end;
 end;
@@ -305,7 +306,7 @@ var r:byte;
 begin
   r:=127;
   if fplaying then begin
-    writeln('mnexttrack');
+    DebugOutLn('mnexttrack', 0);
     if FCurrentTrack<Playlist.ItemCount-1 then begin
        r:=play(FCurrentTrack+1);
      end;

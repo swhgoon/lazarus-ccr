@@ -5,9 +5,10 @@ Unit cdrip;
 
 Interface
 
-Uses 
-Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls,
-StdCtrls, Buttons, ExtCtrls, cddb, dos, Grids, DBCtrls, process;
+uses
+  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls,
+  StdCtrls, Buttons, ExtCtrls, cddb, dos, Grids, DBCtrls, process,
+  debug;
 
 
 resourcestring
@@ -132,7 +133,7 @@ Begin
 {$ifdef win32}
   Exec('eject.exe',CDDBcon.CDromDrives[drivebox.ItemIndex+1]);
 {$endif win32}
-  writeln('ATTENTION!! DIRTY! ejecting cdrom drive... ');
+  DebugOutLn('ATTENTION!! DIRTY! ejecting cdrom drive... ',0);
   Trackgrid.Clean([gzNormal, gzFixedCols]);
 End;
 
@@ -312,12 +313,7 @@ Begin
           Trackgrid.Clean([gzNormal, gzFixedCols]);
           Trackgrid.RowCount := 1;
           Trackgrid.ColWidths[0] := 20;
-          For i:= 1 To length(CDDBcon.album) Do
-            Begin
-              write(byte(CDDBcon.album[i]));
-              write('-');
-            End;
-          writeln;
+
           For b:= 1 To CDDBcon.NrTracks Do
             Begin
               str(b, tmps);
@@ -380,13 +376,13 @@ Begin
           OutFileNames[EncodeTrack] := IncludeTrailingPathDelimiter(outfolder)+OutFileNames[EncodeTrack];
           OutFileNames[EncodeTrack] := StringReplace(OutFileNames[EncodeTrack], #39, '', [
                                        rfReplaceAll]);
-          writeln(OutFileNames[EncodeTrack]);
+          DebugOutLn(OutFileNames[EncodeTrack],0);
           EncodeProcess.CommandLine := '/usr/bin/lame -h -b'+bitratebox.Items[bitratebox.ItemIndex]+
                                        ' --tt "'+UTF8toLatin1(Trackgrid.Cells[1, EncodeTrack])+
                                        '" --ta "'+UTF8toLatin1(artistedit.Text)+'" --tl "'+
                                        UTF8toLatin1(albumedit.Text)+'" --tn '+tmps+' "'+outfolder+
                                        '/Track'+tmps+'.wav"'+' "'+OutFileNames[EncodeTrack]+'"';
-          writeln(EncodeProcess.CommandLine);
+          DebugOutLn(EncodeProcess.CommandLine,0);
           Caption := 'Encoding Track '+inttostr(EncodeTrack)+' ...';
           EncodeProcess.Options := [poUsePipes, poStderrToOutPut];
           EncodeProcess.Execute;
@@ -404,7 +400,7 @@ Begin
             Begin
               DeleteFile(outfolder+'/Track'+tmps+'.wav');
               DeleteFile(outfolder+'/Track'+tmps+'.inf');
-              writeln('delete '+outfolder+'/Track'+tmps+'.wav');
+              DebugOutLn('delete '+outfolder+'/Track'+tmps+'.wav',0);
             End;
           Repeat
             inc(i)
@@ -428,13 +424,13 @@ Begin
                                           outfolder+'/Track'+tmps+'.wav''';
               RipProcess.Options := [poUsePipes,poStderrToOutPut, poDefaultErrorMode];
               Caption := 'Ripping Track '+tmps+' ...';
-              writeln('Ripping Track '+tmps);
+              DebugOutLn('Ripping Track '+tmps,0);
               RipProcess.Execute;
               Timer1.Enabled := true;
             End
           Else
             Begin
-              writeln('Finished all tracks');
+              DebugOutLn('Finished all tracks', 0);
               Trackgrid.Cells[2,RipTrack] := '100%';
               Caption := 'CD Rip... < Finished >';
               Trackgrid.Options:= Trackgrid.Options + [goEditing];
@@ -462,7 +458,7 @@ Begin
               tmps := copy(Outputstring.Strings[i], pos('%', Outputstring.Strings[i])-2, 2);
               if tmps<>'' then EncPercent:=tmps;
           end;
-          writeln(EncPercent);
+          DebugOutLn(EncPercent,0);
           Trackgrid.Cells[2,EncodeTrack] := EncPercent+'%';
           Application.ProcessMessages;
         End;
@@ -473,7 +469,7 @@ Begin
       ripping := true;
       encoding := false;
       ToEncode[RipTrack] := false;
-      writeln('adding file');
+      DebugOutLn('adding file',0);
       MediaCollection.add(OutFileNames[EncodeTrack]);
     End;
 End;
@@ -568,7 +564,7 @@ Begin
             RipProcess.CommandLine := '/usr/bin/cdda2wav -D'+CDDBcon.Device+' -t '+tmps+' "'+
                                       outfolder+'/Track'+tmps+'.wav"';
           RipProcess.Options := [poUsePipes, poStderrToOutPut, poDefaultErrorMode];
-          writeln('Ripping Track '+tmps);
+          DebugOutLn('Ripping Track '+tmps, 0);
           Caption := 'Ripping Track '+tmps+' ...';
           RipProcess.Execute;
           Timer1.Enabled := true;
