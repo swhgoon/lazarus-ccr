@@ -192,6 +192,8 @@ end;
 
 procedure TiProViewer.CreateViewer(AParent, AOwner: TWinControl);
 begin
+  ViewerName := 'Turbo Power iPro HTML viewer written in Pascal';
+
   DataProvider1:=TMyIpHtmlDataProvider.Create(AOwner);
   DataProvider1.Name:='DataProvider1';
   DataProvider1.OnCanHandle:=DataProvider1CanHandle;

@@ -47,7 +47,7 @@
         <PackageName Value="LCL"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="11">
+    <Units Count="12">
       <Unit0>
         <Filename Value="fpbrowser.dpr"/>
         <IsPartOfProject Value="True"/>
@@ -74,10 +74,12 @@
         <UnitName Value="Fontdlg"/>
       </Unit3>
       <Unit4>
-        <Filename Value="htmlabt.pas"/>
+        <Filename Value="dlgabout.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="AboutBox"/>
         <HasResources Value="True"/>
-        <UnitName Value="HTMLAbt"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="dlgabout"/>
       </Unit4>
       <Unit5>
         <Filename Value="pageloader.pas"/>
@@ -109,6 +111,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="mod_braille"/>
       </Unit10>
+      <Unit11>
+        <Filename Value="browserconstants.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="browserconstants"/>
+      </Unit11>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

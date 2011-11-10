@@ -12,7 +12,7 @@ uses
   printer4lazarus, turbopoweripro, customdrawn, laz_synapse,
   mainform {Form1},
   Submit in 'Submit.pas' {SubmitForm},
-  Htmlabt in 'Htmlabt.pas' {AboutBox},
+  dlgabout in 'Htmlabt.pas' {AboutBox},
 (*  Fontdlg in 'Fontdlg.pas' {FontForm},
   PreviewForm in 'PreviewForm.pas' {PreviewForm},
   Gopage in 'Gopage.pas' {GoPageForm},
@@ -25,7 +25,7 @@ uses
 {$ifdef FPBROWSER_TURBOPOWERIPRO}
   viewer_ipro,
 {$endif}
-  browserviewer, mod_braille;
+  browserviewer, mod_braille, browserconstants;
 
 begin
   Application.Initialize;

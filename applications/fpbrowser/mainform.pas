@@ -15,7 +15,7 @@ uses
   // Custom Drawn
   customdrawnextras, customdrawncontrols,  customdrawndrawers, customdrawn_kde,
   //
-  HTMLabt,
+  dlgabout, browserconstants,
   pageloader, browserviewer, browsermodules;
 
 type
@@ -262,7 +262,7 @@ begin
   OpenDialog.InitialDir := ExtractFilePath(ParamStr(0));
   {$ENDIF}
 
-  Caption := 'fpBrowser, Version '+HTMLAbt.Version;
+  Caption := 'fpBrowser '+BrowserVersion;
 
   (*for I := 0 to MaxHistories-1 do
   begin      {create the MenuItems for the history list}

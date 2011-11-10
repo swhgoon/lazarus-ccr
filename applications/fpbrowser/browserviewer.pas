@@ -19,6 +19,7 @@ type
     MyPageLoaderThread: TPageLoaderThread;
     MyPageLoader: TPageLoader;
     CurrentTab: Integer;
+    ViewerName: string;
     constructor Create; virtual;
     destructor Destroy; override;
     procedure CreateViewer(AParent, AOwner: TWinControl); virtual; abstract;

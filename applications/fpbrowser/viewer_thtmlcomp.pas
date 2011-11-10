@@ -312,6 +312,8 @@ end;
 
 procedure THtmlCompViewer.CreateViewer(AParent, AOwner: TWinControl);
 begin
+  ViewerName := 'THTMLComp written in Pascal';
+
   Viewer := THTMLViewer.Create(AOwner);
   Viewer.Left := 1;
   Viewer.Height := 358;

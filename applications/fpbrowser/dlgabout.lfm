@@ -1,0 +1,68 @@
+object AboutBox: TAboutBox
+  Left = 286
+  Height = 185
+  Top = 214
+  Width = 312
+  BorderIcons = [biSystemMenu]
+  Caption = 'About'
+  ClientHeight = 185
+  ClientWidth = 312
+  Color = clBtnFace
+  Font.Color = clWindowText
+  Font.Height = -13
+  Font.Name = 'Arial'
+  Position = poScreenCenter
+  LCLVersion = '0.9.31'
+  object BitBtn1: TBitBtn
+    Left = 114
+    Height = 30
+    Top = 144
+    Width = 77
+    Caption = 'Close'
+    Kind = bkOK
+    ModalResult = 1
+    TabOrder = 0
+  end
+  object labelTitle: TLabel
+    AnchorSideTop.Control = Owner
+    Left = 0
+    Height = 30
+    Top = 10
+    Width = 312
+    Align = alTop
+    Alignment = taCenter
+    BorderSpacing.Top = 10
+    Caption = 'FPBrowser'
+    Font.Color = clWindowText
+    Font.Height = -25
+    Font.Name = 'Arial'
+    ParentColor = False
+    ParentFont = False
+  end
+  object Label2: TLabel
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 40
+    Top = 48
+    Width = 312
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = False
+    Caption = '     A browser complely written in Free Pascal and Lazarus.'
+    ParentColor = False
+    WordWrap = True
+  end
+  object labelEngine: TLabel
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 32
+    Top = 88
+    Width = 312
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = False
+    Caption = '     Rendering Engine:'
+    ParentColor = False
+    WordWrap = True
+  end
+end
