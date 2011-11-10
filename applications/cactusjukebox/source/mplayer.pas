@@ -185,7 +185,7 @@ begin
   {$endif}
   if Result='' then
   begin
-     writeln('FATAL: Mplayer executable not found. Make sure it is properly installed in binary path');
+     DebugOutLn('FATAL: Mplayer executable not found. Make sure it is properly installed in binary path', 0);
   end
   else DebugOutLn('Mplayer executable found in '+Result, 2);
 end;
@@ -514,7 +514,7 @@ begin
   if FileExists(dir+MPLAYER_BINARY) then begin
       result:=true;
       FMPlayerPath:=dir+MPLAYER_BINARY;
-      WriteLn('Manually set MPlayer path to '+FMPlayerPath);
+      DebugOutLn('Manually set MPlayer path to '+FMPlayerPath, 0);
      end else begin
       result:=false;
       FMPlayerPath:='';

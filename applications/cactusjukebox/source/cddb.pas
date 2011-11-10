@@ -140,12 +140,12 @@ begin
               except
               end;
            end;
-        writeln('-------------------------------------------------');
-        writeln(s);
-        writeln(errorcode);
-        writeln(s1);
-        writeln(s2);
-        writeln('-------------------------------------------------');
+        DebugOutLn('-------------------------------------------------', 0);
+        DebugOutLn(s, 0);
+        DebugOutLn(errorcode, 0);
+        DebugOutLn(s1, 0);
+        DebugOutLn(s2, 0);
+        DebugOutLn('-------------------------------------------------', 0);
       end;
 
     if (ErrorCode=200) and query_send then begin
@@ -154,7 +154,7 @@ begin
         delete(s, 1, pos(' ', s));
         s1:=copy(s, 1, pos(' ',s));
         Connection.SendMessage('cddb read '+tmp+' '+s1+' '+#13+#10);
-        writeln('cddb read ',tmp,' ',s1,' ');
+        DebugOutLn('cddb read '+tmp+' '+s1+' ', 0);
       end;
       
     if (ErrorCode=211) and query_send then begin
@@ -164,13 +164,13 @@ begin
         delete(s, 1, pos(' ', s));
         s1:=copy(s, 1, pos(' ',s));
         Connection.SendMessage('cddb read '+tmp+' '+s1+' '+#10+#13);
-        writeln('cddb read ',tmp,' ',s1,' ');
+        DebugOutLn('cddb read '+tmp+' '+s1+' ', 0);
       end;
 
 
     if (ErrorCode=200) and (not query_send) then begin
         Connection.SendMessage('cddb query '+QueryString+#10+#13);
-        writeln('cddb query '+QueryString);
+        DebugOutLn('cddb query '+QueryString, 0);
         query_send:=true;
        end;
 
@@ -203,7 +203,7 @@ begin
               album:=Latin1toUTF8(album);
               data_ready:=true;
               receiving_data := false;
-              writeln('CDDB data ready...');
+              DebugOutLn('CDDB data ready...', 0);
             end;
         end;
 
@@ -216,15 +216,15 @@ end;
 
 procedure TCddbObject.OnErrorProc(const msg: string; asocket: TLSocket);
 begin
-     ErrorMsg:=msg;
-     writeln(ErrorMsg);
+  ErrorMsg:=msg;
+  DebugOutLn(ErrorMsg, 0);
 end;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 procedure TCddbObject.OnDisconnectProc(asocket: TLSocket);
 begin
-writeln('lost connection');
+  DebugOutLn('[TCddbObject.OnDisconnectProc] lost connection', 0);
 end;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -232,11 +232,11 @@ end;
 procedure TCddbObject.OnConnectProc(asocket: TLSocket);
 var s:string;
 begin
-    asocket.GetMessage(s);
-    writeln(s);
-    Connection.CallAction;
-    writeln('connected to cddb server, sending hello...');
-    asocket.SendMessage('cddb hello '+FUser+' '+FHostname+' '+FSoftware+' '+FVersion+#13+#10);
+  asocket.GetMessage(s);
+  DebugOutLn(s, 0);
+  Connection.CallAction;
+  DebugOutLn('connected to cddb server, sending hello...', 0);
+  asocket.SendMessage('cddb hello '+FUser+' '+FHostname+' '+FSoftware+' '+FVersion+#13+#10);
 end;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -255,8 +255,8 @@ begin
     {$ifdef HAS_CDROM}
     discid:=(CDDBDiscID(TOCEntries, NrTracks));
     querystring:=GetCDDBQueryString(TOCEntries, NrTracks);
-    writeln(QueryString);
-    writeln(hexStr(discid, 8));
+    DebugOutLn(QueryString, 0);
+    DebugOutLn(hexStr(discid, 8), 0);
     {$endif}
 
     FServer:=server;
@@ -369,7 +369,7 @@ begin
      {$ifdef HAS_CDROM}
      DriveCount:=GetCDRomDevices(CDromDrives);
      {$endif}
-     Writeln(DriveCount,' CD-ROM drives autodetected');
+     DebugOutLn(Format('%d CD-ROM drives autodetected', [DriveCount]), 0);
      For b:=1 to DriveCount do
        Writeln('Drive ',b,' on device: ',CDRomDrives[b]);
   Except

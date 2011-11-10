@@ -354,16 +354,11 @@ Begin
 
   // writeln(skinxml.GetValue('Database/Play/Icon','ss'));
 
-  With main Do
-    Begin
-      PlayButtonImg.Picture.LoadFromFile(play.Img);
-      StopButtonImg.Picture.LoadFromFile(stop.Img);
-      PauseButtonImg.Picture.LoadFromFile(pause.Img);
-      NextButtonImg.Picture.LoadFromFile(next.Img);
-      PreviousButtonImg.Picture.LoadFromFile(previous.Img);
-    End;
-
-
+  main.PlayButtonImg.Picture.LoadFromFile(Self.play.Img);
+  main.StopButtonImg.Picture.LoadFromFile(Self.stop.Img);
+  main.PauseButtonImg.Picture.LoadFromFile(Self.pause.Img);
+  main.NextButtonImg.Picture.LoadFromFile(Self.next.Img);
+  main.PreviousButtonImg.Picture.LoadFromFile(Self.previous.Img);
 End;
 
 

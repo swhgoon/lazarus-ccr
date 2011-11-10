@@ -40,7 +40,15 @@ var
 begin
   Application.Title:='cactus';
  {$ifdef CactusDebug}
-  CVerbosityLevel:=8;
+   {$ifdef CactusDebugVerbose}
+   CVerbosityLevel:=8;
+   {$else}
+     {$ifdef Windows}
+     CVerbosityLevel:=0;
+     {$else}
+     CVerbosityLevel:=1;
+     {$endif}
+   {$endif}
  {$else}
    {$ifdef Windows}
    CVerbosityLevel:=0;

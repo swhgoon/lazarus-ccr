@@ -18,9 +18,10 @@ Unit mediacol;
 Interface
 
 Uses 
-Classes, SysUtils,
-//Tagreader:
-WMAfile, OggVorbis, FLACfile, mp3file, debug, LCLProc, lconvencoding, guesstag;
+  Classes, SysUtils,
+  //Tagreader:
+  WMAfile, OggVorbis, FLACfile, mp3file, debug, LCLProc, lconvencoding,
+  guesstag;
 
 Type
   // PMediaCollectionClass = ^TMediaCollectionClass;
@@ -292,7 +293,7 @@ Begin
 
     readln(lfile, tmps);
     NumEntries := StrToInt(tmps);
-    writeln(NumEntries);
+    DebugOutLn('[TMediaCollectionClass.LoadFromFile] NumEntries='+tmps, 0);
     readln(lfile, tmps);
     If tmps[length(tmps)]=';' Then System.Delete(tmps, length(tmps), 1);
     i := pos(';', tmps);
@@ -351,7 +352,7 @@ Begin
     fsorted := sortState;
     AutoEnum := true;
     close(lfile);
-    writeln('library sucessfully loaded');
+    DebugOutLn('library sucessfully loaded', 0);
     result := true;
   Except
     close(lfile);
@@ -373,7 +374,7 @@ Var lfile: textfile;
   tmps: string;
 Begin
   savepath := path;
-  writeln('saving library to -> '+path);
+  DebugOutLn('saving library to -> '+path, 0);
   Try
     system.assign(lfile,path);
     rewrite(lfile);
@@ -415,16 +416,10 @@ Begin
         writeln(lfile,items[i].playtime);
       End;
     close(lfile);
-    write('written ');
-    write(i);
-    write(' of ');
-    writeln(ItemCount);
+    DebugOutLn(Format('written %d of %d', [i, ItemCount]), 0);
   Except
-    writeln('error writing library to disk: check permissions!');
-    write('written ');
-    write(i);
-    write(' of ');
-    writeln(ItemCount);
+    DebugOutLn('error writing library to disk: check permissions!', 0);
+    DebugOutLn(Format('written %d of %d', [i, ItemCount]), 0);
   End;
 End;
 

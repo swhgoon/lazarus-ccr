@@ -1,7 +1,7 @@
 object Main: TMain
-  Left = 191
+  Left = 139
   Height = 624
-  Top = 61
+  Top = 135
   Width = 893
   ActiveControl = Panel4
   Caption = 'titel'
@@ -1104,37 +1104,6 @@ object Main: TMain
     ClientWidth = 288
     TabOrder = 1
     OnClick = Panel4Click
-    object ArtistTree: TTreeView
-      Left = 26
-      Height = 571
-      Top = 5
-      Width = 259
-      Align = alClient
-      BorderSpacing.Top = 5
-      BorderSpacing.Right = 3
-      BorderSpacing.Bottom = 5
-      BorderSpacing.InnerBorder = 20
-      BorderSpacing.CellAlignHorizontal = ccaLeftTop
-      BorderSpacing.CellAlignVertical = ccaLeftTop
-      DefaultItemHeight = 16
-      DragMode = dmAutomatic
-      ExpandSignType = tvestArrow
-      Images = ImageList1
-      PopupMenu = artisttreemenu
-      ReadOnly = True
-      RightClickSelect = True
-      ScrollBars = ssAutoBoth
-      ShowRoot = False
-      TabOrder = 0
-      OnClick = ArtistTreeClick
-      OnDblClick = ArtistTreeDblClick
-      OnEndDrag = ArtistTreeEndDrag
-      OnKeyUp = ArtistTreeKeyUp
-      OnMouseDown = ArtistTreeMouseDown
-      OnSelectionChanged = ArtistTreeSelectionChanged
-      OnStartDrag = ArtistTreeStartDrag
-      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoToolTips]
-    end
     object ArtistSrchField: TPanel
       Left = 152
       Height = 64
@@ -1142,7 +1111,7 @@ object Main: TMain
       Width = 128
       ClientHeight = 64
       ClientWidth = 128
-      TabOrder = 1
+      TabOrder = 0
       Visible = False
       OnClick = ArtistSrchFieldClick
       object Label2: TLabel
@@ -1223,33 +1192,74 @@ object Main: TMain
       EdgeOuter = esNone
       HotImages = SidebarImgList
       Images = SidebarImgList
-      TabOrder = 2
+      TabOrder = 1
       Transparent = True
-      object LibModeBtn: TToolButton
+      object ArtistsModeBtn: TToolButton
         Left = 1
-        Top = 0
+        Top = 154
         AutoSize = True
-        Caption = 'Library'
+        Caption = 'Artists'
         ImageIndex = 0
-        OnClick = LibModeBtnClick
+        OnClick = ArtistsModeBtnClick
         Style = tbsCheck
       end
       object NetModeBtn: TToolButton
         Left = 1
-        Top = 154
+        Top = 308
         Caption = 'NetModeBtn'
         ImageIndex = 1
         OnClick = NetModeBtnClick
         Style = tbsCheck
       end
       object DeviceModeBtn: TToolButton
-        Left = 1
-        Top = 308
+        Left = 24
+        Top = 0
         Caption = 'DeviceModeBtn'
         ImageIndex = 2
         OnClick = DeviceModeBtnClick
         Style = tbsCheck
       end
+      object LibraryModeBtn: TToolButton
+        Left = 1
+        Top = 0
+        AutoSize = True
+        Caption = 'Artists'
+        ImageIndex = 0
+        OnClick = LibraryModeBtnClick
+        Style = tbsCheck
+        Visible = False
+      end
+    end
+    object ArtistTree: TTreeView
+      Left = 26
+      Height = 571
+      Top = 5
+      Width = 259
+      Align = alClient
+      BorderSpacing.Top = 5
+      BorderSpacing.Right = 3
+      BorderSpacing.Bottom = 5
+      BorderSpacing.InnerBorder = 20
+      BorderSpacing.CellAlignHorizontal = ccaLeftTop
+      BorderSpacing.CellAlignVertical = ccaLeftTop
+      DefaultItemHeight = 16
+      DragMode = dmAutomatic
+      ExpandSignType = tvestArrow
+      Images = ImageList1
+      PopupMenu = artisttreemenu
+      ReadOnly = True
+      RightClickSelect = True
+      ScrollBars = ssAutoBoth
+      ShowRoot = False
+      TabOrder = 2
+      OnClick = ArtistTreeClick
+      OnDblClick = ArtistTreeDblClick
+      OnEndDrag = ArtistTreeEndDrag
+      OnKeyUp = ArtistTreeKeyUp
+      OnMouseDown = ArtistTreeMouseDown
+      OnSelectionChanged = ArtistTreeSelectionChanged
+      OnStartDrag = ArtistTreeStartDrag
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoToolTips]
     end
   end
   object playlistmenu: TPopupMenu

@@ -38,7 +38,7 @@ uses
 {$IFDEF WINDOWS}
   Windows,
 {$ENDIF}
-  fmodtypes;
+  fmodtypes, debug;
 
 {
   Disable warning for unsafe types in Delphi 7
@@ -586,7 +586,7 @@ begin
   { If no library name given, use the default library names }
   if (LibName = nil) or (LibName='') then
     LibName := FMOD_DLL;
-  writeln('loading');
+  DebugOutLn('loading', 0);
   { Load the library }
 {$IFDEF WINDOWS}
   FMODHandle := LoadLibrary(LibName);

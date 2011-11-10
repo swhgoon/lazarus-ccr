@@ -4,7 +4,7 @@ unit mp3file;
 
 interface
 
-uses Classes, SysUtils;
+uses Classes, SysUtils, debug;
 
 
 Const ID3Genre: array[0..147] of string[32] = ('', 'Classic Rock', 'Country', 'Dance',
@@ -338,8 +338,8 @@ Begin
           tmps := char(0)+char(0)+char(0)+char(2)+char(0)+char(0)+char(0)+' ';
           bufstr := bufstr+'TPE1'+tmps+'TIT2'+tmps+'TRCK'+tmps+'TYER'+tmps+'TALB'+tmps+char(0)+
                     char(0);
-          writeln('creating new ID3v2 tag!');
-          writeln(bufstr);
+          DebugOutLn('creating new ID3v2 tag!', 0);
+          DebugOutLn(bufstr, 0);
           z := length(bufstr)-1;
           For i:= z To high(buf) Do
             bufstr := bufstr+char(0);
@@ -475,10 +475,10 @@ Begin
           filewrite(mp3filehandle,buf,high(buf));
           fileclose(mp3filehandle);
         End
-      Else writeln('ERROR: cant write tag. file not found');
+      Else DebugOutLn('ERROR: cant write tag. file not found', 0);
     End;
 {id3v1}
-  writeln('#####ID3V1#######');
+  DebugOutLn('#####ID3V1#######', 0);
   For i:=1 To 128 Do
     buf[i] := 0;
   buf[1] := 84;
@@ -519,7 +519,7 @@ Begin
   mp3filehandle := fileopen(Filename,fmOpenWrite);
   If mp3filehandle<>-1 Then
     Begin
-      If FileGetAttr(Filename)=faReadOnly Then writeln('file is read only');
+      If FileGetAttr(Filename)=faReadOnly Then DebugOutLn('file is read only', 0);
       fileseek(mp3filehandle,-128,fsfromend);
       writeln(ftitle);
       writeln(fartist);

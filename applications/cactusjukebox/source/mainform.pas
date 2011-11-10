@@ -76,6 +76,7 @@ resourcestring
   rsTrack = 'Track';
 
 type
+  TCactusViewMode = (cvmLibrary, cvmArtist, cvmDevice, cvmNetwork);
 
   TCactusFlags = (cfTrayIconPressed, cfProgHide);
 
@@ -83,8 +84,8 @@ type
 
   TMain = class(TForm)
     ApplicationProperties1: TApplicationProperties;
-    ArtistTree: TTreeView;
     artistsearch: TEdit;
+    ArtistTree: TTreeView;
     Button1: TButton;
     Button2: TButton;
     clear_list: TBitBtn;
@@ -98,6 +99,7 @@ type
     ImageListDis: TImageList;
     itemPlugins: TMenuItem;
     lblPath: TLabel;
+    LibraryModeBtn: TToolButton;
     Mainmenu1: TMainMenu;
     MenuItem12: TMenuItem;
     Menuitem21: TMenuItem;
@@ -194,7 +196,7 @@ type
     srch_button: TButton;
     StopButtonImg: TImage;
     ToolBar1: TToolBar;
-    LibModeBtn: TToolButton;
+    ArtistsModeBtn: TToolButton;
     NetModeBtn: TToolButton;
     DeviceModeBtn: TToolButton;
     Label2: TLabel;
@@ -262,7 +264,8 @@ type
       Shift: TShiftState; X, Y: integer);
     procedure itemTrayExitClick(Sender: TObject);
     procedure itemTrayPlayClick(Sender: TObject);
-    procedure LibModeBtnClick(Sender: TObject);
+    procedure ArtistsModeBtnClick(Sender: TObject);
+    procedure LibraryModeBtnClick(Sender: TObject);
     procedure MenuItem15Click(Sender: TObject);
     procedure MenuItem25Click(Sender: TObject);
     procedure MIrandom_playlistClick(Sender: TObject);
@@ -432,7 +435,7 @@ type
     oldSplitterWidth, LoopCount: integer;
     sourceitem: TListItem;
     CoverFound, title_drag, playlist_drag, artist_drag: boolean;
-    DeviceMode, NetworkMode, LibraryMode: boolean;
+    ViewMode: TCactusViewMode;
     LastFMAPI: TLastfmAPIObject;
     ScanSyncCount: integer;
     FileOpneDialogPath: string;
@@ -465,6 +468,7 @@ type
     function connectDAP: byte;
     procedure ScanSyncronize(dir: string);
     procedure update_artist_view;
+    procedure update_library_view;
 
     { public declarations }
 
@@ -924,8 +928,8 @@ begin
         Playlist.BeginUpdate;
         playitem.ImageIndex := 0;
         Playlist.EndUpdate;
-        writeln(playitem.ImageIndex);
-        writeln(playitem.index);
+        DebugOutLn(Format('ImageIndex=%d', [playitem.ImageIndex]), 0);
+        DebugOutLn(Format('index=%d', [playitem.index]), 0);
         playitem.MakeVisible(False);
         update_player_display;
         //CactusPlugins.SendEvent(evnStartPlay, PlayerObj.Playlist.Items[PlayerObj.CurrentTrack].artist+' - '+PlayerObj.Playlist.Items[PlayerObj.CurrentTrack].title);
@@ -1203,7 +1207,7 @@ var
 begin
   TitleTree.Items.Clear;
   TitleTree.BeginUpdate;
-  artisttree.selected := nil;
+  ArtistTree.selected := nil;
   searchstring := lowercase(searchstr.Text);
   found := False;
   for i := 0 to MediaCollection.ItemCount - 1 do
@@ -1272,7 +1276,7 @@ end;
 
 procedure TMain.ArtistTreeSelectionChanged(Sender: TObject);
 begin
-  if not NetworkMode then
+  if ViewMode <> cvmNetwork then
     update_title_view;
 end;
 
@@ -1351,14 +1355,12 @@ end;
 procedure TMain.DeviceModeBtnClick(Sender: TObject);
 begin
   DeviceModeBtn.Down := True;
-  if not DeviceMode then
+  if ViewMode <> cvmDevice then
   begin
     ArtistTree.Selected := nil;
-    LibModeBtn.Down := False;
+    ArtistsModeBtn.Down := False;
     NetModeBtn.Down := False;
-    LibraryMode := False;
-    DeviceMode := True;
-    NetworkMode := False;
+    ViewMode := cvmDevice;
     Playlist.Enabled := True;
     TitleTree.Enabled := True;
     trackbar.Enabled := True;
@@ -1393,21 +1395,37 @@ end;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-procedure TMain.LibModeBtnClick(Sender: TObject);
+procedure TMain.ArtistsModeBtnClick(Sender: TObject);
 begin
-  LibModeBtn.Down := True;
-  if not LibraryMode then
+  ArtistsModeBtn.Down := True;
+  if ViewMode <> cvmArtist then
   begin
     ArtistTree.Selected := nil;
     DeviceModeBtn.Down := False;
     NetModeBtn.Down := False;
-    LibraryMode := True;
-    DeviceMode := False;
-    NetworkMode := False;
+    LibraryModeBtn.Down := False;
+    ViewMode := cvmArtist;
     Playlist.Enabled := True;
     TitleTree.Enabled := True;
     trackbar.Enabled := True;
     update_artist_view;
+  end;
+end;
+
+procedure TMain.LibraryModeBtnClick(Sender: TObject);
+begin
+  LibraryModeBtn.Down := True;
+  if ViewMode <> cvmLibrary then
+  begin
+    ArtistTree.Selected := nil;
+    DeviceModeBtn.Down := False;
+    NetModeBtn.Down := False;
+    ArtistsModeBtn.Down := False;
+    ViewMode := cvmLibrary;
+    Playlist.Enabled := False;
+    TitleTree.Enabled := True;
+    trackbar.Enabled := True;
+    update_library_view;
   end;
 end;
 
@@ -1622,14 +1640,12 @@ end;
 procedure TMain.NetModeBtnClick(Sender: TObject);
 begin
   NetModeBtn.Down := True;
-  if not NetworkMode then
+  if ViewMode <> cvmNetwork then
   begin
     ArtistTree.Selected := nil;
     DeviceModeBtn.down := False;
-    LibModeBtn.down := False;
-    LibraryMode := False;
-    DeviceMode := False;
-    NetworkMode := True;
+    ArtistsModeBtn.down := False;
+    ViewMode := cvmNetwork;
     Playlist.Enabled := False;
     TitleTree.Enabled := False;
     trackbar.Enabled := False;
@@ -1870,7 +1886,7 @@ begin
   except
     DebugOutLn('ERROR: Exception while shutting down IPC server', 2);
   end;
-  writeln('end.');
+  DebugOutLn('end.', 0);
   //CactusPlugins.FlushPluginConfig;
   //CactusPlugins.Free;
   if CactusConfig.FlushConfig then
@@ -1906,10 +1922,8 @@ begin
   DebugOutLn('## Main.onCreate ##', 3);
   Caption := 'Cactus Jukebox ' + CACTUS_VERSION;
 
-  LibraryMode := True;
-  DeviceMode := False;
-  NetworkMode := False;
-  LibModeBtn.Down := True;
+  ViewMode := cvmLibrary;
+  ArtistsModeBtn.Down := True;
   DeviceModeBtn.Down := False;
   NetModeBtn.Down := False;
 
@@ -2352,7 +2366,7 @@ begin
   Enabled := False;
   StatusBar1.Panels[0].Text := 'Please wait... updating...';
   ArtistTree.OnSelectionChanged := nil;
-  //Disable event while working on selection in artisttree!!
+  //Disable event while working on selection in ArtistTree!!
   DebugOutLn('', 2);
   DebugOut('## update artist view... ', 2);
   tsnode := ArtistTree.Selected;
@@ -2374,11 +2388,11 @@ begin
   end
   else
     curartist := '';
-  artisttree.beginupdate;
+  ArtistTree.beginupdate;
   DebugOut(' clear tree...', 2);
   ArtistTree.Items.Clear;
 
-  if NetworkMode then
+  if ViewMode = cvmNetwork then
   begin
 
     TopNode := ArtistTree.Items.Add(nil, 'Webradio stations');
@@ -2396,7 +2410,7 @@ begin
     end;
   end;
   // If library mode add Mediacollection
-  if LibraryMode and (MediaCollection.Count > 0) then
+  if (ViewMode = cvmLibrary) and (MediaCollection.Count > 0) then
   begin
     TopNode := Main.ArtistTree.Items.Add(nil, rsLibrary);
     TopNode.ImageIndex := 4;
@@ -2443,7 +2457,7 @@ begin
   end;
 
   // If Device mode add playercollection and other devices
-  if DeviceMode and player_connected then
+  if (ViewMode = cvmDevice) and player_connected then
   begin
 
     TopNode := Main.ArtistTree.Items.Add(nil, rsMobileDevice);
@@ -2499,12 +2513,12 @@ begin
         MedFileObj := TMediaFileClass(ArtistTree.items[i].Data);
         Inc(i);
       end;
-    until ((lowercase(artisttree.items[i].Text) = curalbum) and
-        (ArtistTree.Items[i].Level = 2)) or (i >= artisttree.items.Count - 1);
+    until ((lowercase(ArtistTree.items[i].Text) = curalbum) and
+        (ArtistTree.Items[i].Level = 2)) or (i >= ArtistTree.items.Count - 1);
 
-    if lowercase(artisttree.items[i].Text) = curalbum then
+    if lowercase(ArtistTree.items[i].Text) = curalbum then
     begin
-      artisttree.selected := main.artisttree.items[i];
+      ArtistTree.selected := main.artisttree.items[i];
     end
 
     else if (curartist <> '') and (ArtistTree.Items.Count > 0) then
@@ -2515,13 +2529,13 @@ begin
           MedFileObj := TMediaFileClass(ArtistTree.items[i].Data);
           Inc(i);
         end;
-      until ((lowercase(artisttree.items[i].Text) = curartist) and
-          (ArtistTree.Items[i].Level = 1)) or (i >= artisttree.items.Count - 1);
+      until ((lowercase(ArtistTree.items[i].Text) = curartist) and
+          (ArtistTree.Items[i].Level = 1)) or (i >= ArtistTree.items.Count - 1);
       writeln(curartist);
-      writeln(artisttree.items[i].Text);
-      if lowercase(artisttree.items[i].Text) = curartist then
+      writeln(ArtistTree.items[i].Text);
+      if lowercase(ArtistTree.items[i].Text) = curartist then
       begin
-        artisttree.selected := main.artisttree.items[i];
+        ArtistTree.selected := main.artisttree.items[i];
       end;
     end;
 
@@ -2544,6 +2558,11 @@ begin
   DebugOutLn(' finished artistview ##', 2);
   StatusBar1.Panels[0].Text := 'Ready.';
   Enabled := restoreEnabled;
+
+end;
+
+procedure TMain.update_library_view;
+begin
 
 end;
 
@@ -3560,7 +3579,7 @@ var
   ind: integer;
   MedFileObj: TMediaFileClass;
 begin
-  if not NetworkMode then
+  if ViewMode <> cvmNetwork then
   begin
     DebugOutLn('ondragdrop', 3);
     Targetitem := nil;
@@ -3690,8 +3709,7 @@ var
   tempitem: TListItem;
   i: integer;
 begin
-  DebugOutLn('Playlist keypress event: Keycode ', 2);
-  writeln(key);
+  DebugOutLn(Format('Playlist keypress event: Keycode = %x', [Key]), 2);
   case key of
 
     // Key Ctrl
@@ -3864,13 +3882,13 @@ procedure TMain.ArtistTreeDblClick(Sender: TObject);
 var
   StreamInfoObj: TStreamInfoItemClass;
 begin
-  if LibraryMode or DeviceMode then
+  if ViewMode in [cvmLibrary, cvmDevice] then
   begin
     if (ArtistTree.Selected <> nil) and (ArtistTree.Selected.Level > 0) then
       artist_to_playlist;
   end;
 
-  if NetworkMode then
+  if ViewMode = cvmNetwork then
   begin
     if (ArtistTree.Selected <> nil) and (ArtistTree.Selected.Level > 0) then
     begin
@@ -3980,7 +3998,7 @@ begin
   // ensure that the popup menu is only opened when an item is selected
   if Button = mbRight then
   begin
-    if NetworkMode then
+    if ViewMode = cvmNetwork then
       ArtistTree.PopupMenu := NetworktreePopup
     else
       ArtistTree.PopupMenu := artisttreemenu;
