@@ -4389,6 +4389,10 @@ object Main: TMain
     Images = ImageListNormal
     left = 504
     top = 368
+    object menuShowCactus: TMenuItem
+      Caption = 'Show/Hide Cactus'
+      OnClick = TrayIconClick
+    end
     object itemTrayPrev: TMenuItem
       Caption = 'Previous Track'
       Bitmap.Data = {

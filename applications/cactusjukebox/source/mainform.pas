@@ -111,6 +111,7 @@ type
     itemTrayNext: TMenuItem;
     itemTrayPrev: TMenuItem;
     MenuItem27: TMenuItem;
+    menuShowCactus: TMenuItem;
     MenuItem34: TMenuItem;
     MenuItem35: TMenuItem;
     MIabout: TMenuItem;
@@ -268,6 +269,7 @@ type
     procedure LibraryModeBtnClick(Sender: TObject);
     procedure MenuItem15Click(Sender: TObject);
     procedure MenuItem25Click(Sender: TObject);
+    procedure menuShowCactusClick(Sender: TObject);
     procedure MIrandom_playlistClick(Sender: TObject);
     procedure MIViewAlbumClick(Sender: TObject);
     procedure MIViewArtistClick(Sender: TObject);
@@ -1451,6 +1453,11 @@ procedure TMain.MenuItem25Click(Sender: TObject);
 begin
   addRadioForm := TaddRadioForm.Create(self);
   addRadioForm.ShowModal;
+end;
+
+procedure TMain.menuShowCactusClick(Sender: TObject);
+begin
+
 end;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
