@@ -45,7 +45,7 @@
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
-      <Filename Value="android\libs\armeabi\libopengltest.so" ApplyConventions="False"/>
+      <Filename Value="android\libs\armeabi\libmain.so" ApplyConventions="False"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
