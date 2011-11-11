@@ -39,18 +39,20 @@ interface
   { Pointer to next line  }
 
   type
+  PointerTo_zint_render_line=^zint_render_line;
+  PointerTo_PointerTo_zint_render_line=^PointerTo_zint_render_line;
     zint_render_line = record
         x : single;
         y : single;
         length : single;
         width : single;
-        next : ^zint_render_line;
+        next : PointerTo_zint_render_line; // ^zint_render_line;
       end;
-    PointerTo_zint_render_line=^zint_render_line;
-    PointerTo_PointerTo_zint_render_line=^PointerTo_zint_render_line;
 
   { Suggested string width, may be 0 if none recommended  }
   { Pointer to next character  }
+  PointerTo_zint_render_string=^zint_render_string;
+  PointerTo_PointerTo_zint_render_string=^PointerTo_zint_render_string;
     zint_render_string = record
         x : single;
         y : single;
@@ -58,35 +60,34 @@ interface
         width : single;
         length : longint;
         text : ^byte;
-        next : ^zint_render_string;
+        next : PointerTo_zint_render_string; // ^zint_render_string;
       end;
-    PointerTo_zint_render_string=^zint_render_string;
-    PointerTo_PointerTo_zint_render_string=^PointerTo_zint_render_string;
 
   { Pointer to next ring  }
+  PointerTo_zint_render_ring=^zint_render_ring;
+  PointerTo_PointerTo_zint_render_ring=^PointerTo_zint_render_ring;
     zint_render_ring = record
         x : single;
         y : single;
         radius : single;
         line_width : single;
-        next : ^zint_render_ring;
+        next : PointerTo_zint_render_ring; // ^zint_render_ring;
       end;
-    PointerTo_zint_render_ring=^zint_render_ring;
-    PointerTo_PointerTo_zint_render_ring=^PointerTo_zint_render_ring;
 
   { Pointer to next hexagon  }
+  PointerTo_zint_render_hexagon=^zint_render_hexagon;
+  PointerTo_PointerTo_zint_render_hexagon=^PointerTo_zint_render_hexagon;
     zint_render_hexagon = record
         x : single;
         y : single;
-        next : ^zint_render_hexagon;
+        next : PointerTo_zint_render_hexagon; // ^zint_render_hexagon;
       end;
-    PointerTo_zint_render_hexagon=^zint_render_hexagon;
-    PointerTo_PointerTo_zint_render_hexagon=^PointerTo_zint_render_hexagon;
 
   { Pointer to first line  }
   { Pointer to first string  }
   { Pointer to first ring  }
   { Pointer to first hexagon  }
+  PointerTo_zint_render=^zint_render;
     zint_render = record
         width : single;
         height : single;
@@ -95,7 +96,6 @@ interface
         rings : ^zint_render_ring;
         hexagons : ^zint_render_hexagon;
       end;
-    PointerTo_zint_render=^zint_render;
 
   { Largest symbol is 177x177 QR Code  }
     zint_symbol = record
