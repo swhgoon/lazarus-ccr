@@ -278,12 +278,16 @@ begin
    end;
 end;
 
+// This code is unnecessary in FPC 2.6+,
+// it was required when the 2.5.1 snapshot was created
+{$ifdef ver2_5}
 procedure PASCALMAIN; external name 'PASCALMAIN';
 
 procedure FPC_SHARED_LIB_START; [public, alias: 'FPC_SHARED_LIB_START'];
 begin
    PASCALMAIN;
 end;
+{$endif}
 
 exports //android_main name 'android_main',
         ANativeActivity_onCreate name 'ANativeActivity_onCreate';
