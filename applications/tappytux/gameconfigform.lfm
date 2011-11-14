@@ -100,7 +100,6 @@ object formConfig: TformConfig
       'ON'
       'OFF'
     )
-    OnChange = comboSoundChange
     TabOrder = 3
     Text = 'Select'
   end

@@ -24,7 +24,7 @@ type
     gameSLevel : Integer;
     gameSndFX : Boolean;
     gameMusic : Boolean;
-    gameQuestionList : Integer;
+    gameQuestionList : TStringList;
     timerWords: TTimer;
     procedure HandleOnTimer(Sender: TObject);
 
@@ -84,12 +84,14 @@ end;
 
 procedure TTappyWords.TranslateTextsToEnglish;
 begin
-  ShortDescription := 'TappyWords - A game to learn typing and ortography';
+  ShortDescription := 'TappyWords';
+  LongDescription := 'A game to learn typing and ortography.'; // Hint: Try to keep looking at the screen instead of the keyboard!
 end;
 
 procedure TTappyWords.TranslateTextsToPortuguese;
 begin
-  ShortDescription := 'TappyWords - Um jogo para aprender a digitar e ortografia';
+  ShortDescription := 'TappyWords';
+  LongDescription := 'Um jogo para aprender a digitar e ortografia';
 end;
 
 procedure TTappyWords.StartNewGame(SndFX: Integer; Music: Integer; Level: Integer; QuestionList: Integer);
@@ -107,6 +109,10 @@ begin
   if (Music = 1) then gameMusic := false;
   gameSLevel := gameLevel;
 
+  gameQuestionList := TStringList.Create;
+  gameQuestionList.LoadFromFile(vTappyTuxConfig.GetResourcesDir()+ 'images'+PathDelim+'modules'+PathDelim+'tappywords'+PathDelim+'0.txt');
+  //gameQuestionList.LoadFromFile('C:/0.txt');
+
   formTappyTuxGame.Answer.ReadOnly := false;
   formTappyTuxGame.GameOver.Visible := false;
   formTappyTuxGame.Yes.Visible := false;
@@ -117,7 +123,8 @@ begin
 
   for i:= 1 to 5 do
   begin
-    Questions[i].Text := formTappyTuxGame.Test.Lines.Strings[random(71)];
+    //Questions[i].Text := formTappyTuxGame.Test.Lines.Strings[random(71)];
+    Questions[i].Text := gameQuestionList[random(gameQuestionList.Count - 1)];
   end
 
 end;

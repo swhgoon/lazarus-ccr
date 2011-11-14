@@ -34,8 +34,6 @@ type
     memoCredits: TMemo;
     procedure btnLoadClick(Sender: TObject);
     procedure comboGameTypeChange(Sender: TObject);
-    procedure comboSoundChange(Sender: TObject);
-    procedure FormClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
     { private declarations }
@@ -56,23 +54,8 @@ implementation
 
 procedure TformConfig.comboGameTypeChange(Sender: TObject);
 begin
-
-  Case comboGameType.itemIndex of
-  0: begin
-    memoGameType.Clear;
-    memoGameType.Lines.Add('Description: <Descrição do TappyWords>');
-    memoGameType.Lines.Add('');
-    memoGameType.Lines.Add('Hint: <Alguma dica para TappyWords>');
-    end;
-
-  1: begin
-    memoGameType.Clear;
-    memoGameType.Lines.Add('Description: <Descrição do TappyMath>');
-    memoGameType.Lines.Add('');
-    memoGameType.Lines.Add('Hint: <Alguma dica para TappyMath>');
-    end;
-
-  end;
+  memoGameType.Clear;
+  memoGameType.Lines.Add(GetModule(comboGameType.itemIndex).LongDescription);
 
 end;
 
@@ -84,16 +67,6 @@ begin
                                   comboLevel.ItemIndex, ltbWordlist.ItemIndex);
 
   Hide;
-end;
-
-procedure TformConfig.comboSoundChange(Sender: TObject);
-begin
-
-end;
-
-procedure TformConfig.FormClick(Sender: TObject);
-begin
-
 end;
 
 procedure TformConfig.FormCreate(Sender: TObject);

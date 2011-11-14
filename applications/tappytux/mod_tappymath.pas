@@ -85,12 +85,14 @@ end;
 
 procedure TTappyMath.TranslateTextsToEnglish;
 begin
-  ShortDescription := 'TappyMath - A game to learn arithmetics';
+  ShortDescription := 'TappyMath';
+  LongDescription := 'A game to learn arithmetics';
 end;
 
 procedure TTappyMath.TranslateTextsToPortuguese;
 begin
-  ShortDescription := 'TappyMath - Um jogo para aprender aritmética';
+  ShortDescription := 'TappyMath';
+  LongDescription := 'Um jogo para aprender aritmética';
 end;
 
 procedure TTappyMath.StartNewGame(SndFX: Integer; Music: Integer; Level: Integer; QuestionList: Integer);
@@ -154,7 +156,6 @@ end;
 
 procedure TTappyMath.QuestionGenerator(qNumber : Integer);
 begin
-
   questionType[1] := random(3);
 
   Case questionType[1] of
