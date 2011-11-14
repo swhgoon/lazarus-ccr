@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil,
   // LCL
-  ExtCtrls,
+  ExtCtrls, Graphics,
   // TappyTux
   tappyconfig, tappymodules;
 
@@ -27,7 +27,6 @@ type
     gameQuestionList : TStringList;
     timerWords: TTimer;
     procedure HandleOnTimer(Sender: TObject);
-
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -60,8 +59,9 @@ begin
        Questions[i].Top:= 24;
        Questions[i].Text := formTappyTuxGame.Test.Lines.Strings[random(71)];
     end;
-  end
+  end;
 
+  vTappyTuxDrawer.HandleAnimationOnTimer();
 end;
 
 constructor TTappyWords.Create;
@@ -72,7 +72,6 @@ begin
   timerWords.Enabled := False;
   timerWords.Interval := 1000;
   timerWords.OnTimer := @HandleOnTimer;
-
 end;
 
 destructor TTappyWords.Destroy;
@@ -97,6 +96,7 @@ end;
 procedure TTappyWords.StartNewGame(SndFX: Integer; Music: Integer; Level: Integer; QuestionList: Integer);
 var
   i: Integer;
+  lTuxAnimation: TTappySpriteAnimation;
 begin
   timerWords.Enabled := True;
   gameScore := 0;
@@ -125,8 +125,25 @@ begin
   begin
     //Questions[i].Text := formTappyTuxGame.Test.Lines.Strings[random(71)];
     Questions[i].Text := gameQuestionList[random(gameQuestionList.Count - 1)];
-  end
+  end;
 
+  // Adds the Tux animation
+  lTuxAnimation := TTappySpriteAnimation.Create;
+  lTuxAnimation.IsInfinite := True;
+  lTuxAnimation.StartPoint := Point(250, 300);
+  lTuxAnimation.EndPoint := lTuxAnimation.StartPoint;
+  SetLength(lTuxAnimation.Bitmaps, 6);
+  lTuxAnimation.Bitmaps[0] := TPortableNetworkGraphic.Create;
+  lTuxAnimation.Bitmaps[0].LoadFromFile(vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'tux_1.png');
+  lTuxAnimation.Bitmaps[1] := TPortableNetworkGraphic.Create;
+  lTuxAnimation.Bitmaps[1].LoadFromFile(vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'tux_2.png');
+  lTuxAnimation.Bitmaps[2] := TPortableNetworkGraphic.Create;
+  lTuxAnimation.Bitmaps[2].LoadFromFile(vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'tux_3.png');
+  lTuxAnimation.Bitmaps[3] := TPortableNetworkGraphic.Create;
+  lTuxAnimation.Bitmaps[3].LoadFromFile(vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'tux_4.png');
+  lTuxAnimation.Bitmaps[4] := lTuxAnimation.Bitmaps[2];
+  lTuxAnimation.Bitmaps[5] := lTuxAnimation.Bitmaps[1];
+  vTappyTuxDrawer.AddAnimation(lTuxAnimation);
 end;
 
 procedure TTappyWords.Answered;

@@ -28,7 +28,7 @@ type
   TTappySpriteAnimation = class(TTappyTuxAnimation)
   public
     StartPoint, EndPoint: TPoint;
-    Bitmaps: array of TBitmap;
+    Bitmaps: array of TFPImageBitmap;
     procedure DrawToIntfImg(AIntfImage: TLazIntfImage); override;
     procedure ExecuteFinal; override;
   end;
@@ -240,7 +240,6 @@ var
   IntfImage: TLazIntfImage;
   lDrawWidth, lDrawHeight: Integer;
   CurColor: TFPColor;
-  lCurColorDiv, lTranspColorDiv: Byte;
 begin
   IntfImage := TLazIntfImage.Create(0,0);
   try
@@ -259,10 +258,10 @@ begin
         // Never draw outside the destination
         if (CurX < 0) or (CurY < 0) then Continue;
 
-        CurColor := IntfImage.Colors[x, y]; // Good for debugging
-        lCurColorDiv := CurColor.Green div $FF;
-        lTranspColorDiv := AColor.Green div $FF;
-        if lCurColorDiv <> lTranspColorDiv then
+        CurColor := AImage.Canvas.Colors[x, y]; // Good for debugging
+        if ((CurColor.Green div $FF) <> (AColor.Green div $FF)) or
+          ((CurColor.Red div $FF) <> (AColor.Red div $FF)) or
+          ((CurColor.Blue div $FF) <> (AColor.Blue div $FF)) then
           ADest.Colors[CurX, CurY] := IntfImage.Colors[x, y];
       end;
     end;
