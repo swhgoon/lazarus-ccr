@@ -11,19 +11,25 @@ uses
 
 type
 
+  { TTappyTuxAnimation }
+
   TTappyTuxAnimation = class
     CurrentStep: Integer;
-    FinalStep: Integer;
+    StepCount: Integer;
+    IsInfinite: Boolean; // if True the animation will never end
     constructor Create; virtual;
-    procedure DrawToIntfImg(AIntfImg: TLazIntfImage); virtual; abstract;
-    procedure ExecuteFinal; virtual; abstract;
+    procedure DrawToCanvas(ACanvas: TCanvas); virtual;
+    procedure DrawToIntfImg(AIntfImage: TLazIntfImage); virtual;
+    procedure ExecuteFinal; virtual;
   end;
 
-  { TFireAnimation }
+  { TTappySpriteAnimation }
 
-  TFireAnimation = class(TTappyTuxAnimation)
+  TTappySpriteAnimation = class(TTappyTuxAnimation)
   public
-    procedure DrawToIntfImg(AIntfImg: TLazIntfImage); override;
+    StartPoint, EndPoint: TPoint;
+    Bitmaps: array of TBitmap;
+    procedure DrawToIntfImg(AIntfImage: TLazIntfImage); override;
     procedure ExecuteFinal; override;
   end;
 
@@ -32,7 +38,7 @@ type
   TBallonAnimation = class(TTappyTuxAnimation)
   public
     constructor Create; override;
-    procedure DrawToIntfImg(AIntfImg: TLazIntfImage); override;
+    procedure DrawToCanvas(ACanvas: TCanvas); override;
     procedure ExecuteFinal; override;
   end;
 
@@ -48,7 +54,7 @@ type
     procedure EraseBackground(DC: HDC); override;
     procedure Paint; override;
     procedure DrawToCanvas(ACanvas: TCanvas);
-    procedure DrawImageWithTransparentColor(
+    class procedure DrawImageWithTransparentColor(
       ADest: TLazIntfImage; const ADestX, ADestY: Integer; AColor: TFPColor;
       AImage: TFPImageBitmap);
     //function GetImage(ATile: TChessTile): TPortableNetworkGraphic;
@@ -59,6 +65,8 @@ type
                           Shift: TShiftState; X, Y: Integer);
     procedure HandleOnTimer(Sender: TObject);
     procedure AddAnimation(AAnimation: TTappyTuxAnimation);
+    function GetAnimation(AIndex: Integer): TTappyTuxAnimation;
+    function GetAnimationCount: Integer;
     procedure HandleAnimationOnTimer();
   end;
 
@@ -74,12 +82,12 @@ begin
   inherited Create;
 
   CurrentStep := 0;
-  FinalStep := 200;
+  StepCount := 200;
 end;
 
-procedure TBallonAnimation.DrawToIntfImg(AIntfImg: TLazIntfImage);
+procedure TBallonAnimation.DrawToCanvas(ACanvas: TCanvas);
 begin
-  AIntfImg.Colors[CurrentStep, CurrentStep] := colRed;
+  ACanvas.Pixels[CurrentStep, CurrentStep] := clRed;
 end;
 
 procedure TBallonAnimation.ExecuteFinal;
@@ -87,36 +95,30 @@ begin
   // Lost the game if the ballon reached its end
 end;
 
-{ TFireAnimation }
+{ TTappySpriteAnimation }
 
-procedure TFireAnimation.DrawToIntfImg(AIntfImg: TLazIntfImage);
+procedure TTappySpriteAnimation.DrawToIntfImg(AIntfImage: TLazIntfImage);
 var
-  lTileBmp: TPortableNetworkGraphic;
-  X, Y, SourceX, SourceY, DestX, DestY: integer;
-  dx, dy: Integer;
+  lNumBitmaps, lCurBmpIndex: Integer;
   t: Double;
-  //lTile: TChessTile;
+  lPos: TPoint;
 begin
-{  // Draw the moving tile
-  //WriteLn(Format('[TChessMoveAnimation.DrawToIntfImg] Afrom=%d,%d', [AFrom.X, AFrom.Y]));
-  lTile := vChessGame.Board[AFrom.X][AFrom.Y];
-  lTileBmp := vChessDrawer.GetChessTileImage(lTile);
-  if lTileBmp = nil then Exit;
+  lNumBitmaps := Length(Bitmaps);
+  if lNumBitmaps = 0 then Exit;
 
-  SourceX := (AFrom.X - 1) * INT_CHESSTILE_SIZE;
-  SourceY := (8 - AFrom.Y) * INT_CHESSTILE_SIZE;
-  DestX := (ATo.X - 1) * INT_CHESSTILE_SIZE;
-  DestY := (8 - ATo.Y) * INT_CHESSTILE_SIZE;
-  t := CurrentStep / FinalStep;
-  X := Round(t * DestX + (1-t) * SourceX);
-  Y := Round(t * DestY + (1-t) * SourceY);
+  lCurBmpIndex := CurrentStep mod lNumBitmaps;
 
-  vChessDrawer.DrawImageWithTransparentColor(AIntfImg, X, Y, FPCOLOR_TRANSPARENT_TILE, lTileBmp);}
+  t := CurrentStep / StepCount;
+  lPos.X := Round(StartPoint.X + t * (EndPoint.X - StartPoint.X));
+  lPos.Y := Round(StartPoint.Y + t * (EndPoint.Y - StartPoint.Y));
+
+  TTappyTuxDrawer.DrawImageWithTransparentColor(AIntfImage,
+   lPos.X, lPos.Y, colFuchsia, Bitmaps[lCurBmpIndex]);
 end;
 
-procedure TFireAnimation.ExecuteFinal;
+procedure TTappySpriteAnimation.ExecuteFinal;
 begin
-  //vChessGame.MovePiece(AFrom, ATo);
+  inherited ExecuteFinal;
 end;
 
 { TTappyTuxAnimation }
@@ -126,7 +128,22 @@ begin
   inherited Create;
 
   CurrentStep := 0;
-  FinalStep := 20;
+  StepCount := 20;
+end;
+
+procedure TTappyTuxAnimation.DrawToCanvas(ACanvas: TCanvas);
+begin
+
+end;
+
+procedure TTappyTuxAnimation.DrawToIntfImg(AIntfImage: TLazIntfImage);
+begin
+
+end;
+
+procedure TTappyTuxAnimation.ExecuteFinal;
+begin
+  // inherit from this class and add something to ExecuteFinal
 end;
 
 constructor TTappyTuxDrawer.Create(AOwner: TComponent);
@@ -134,20 +151,6 @@ begin
   inherited Create(AOwner);
 
   FAnimationList := TFPList.Create;
-
-{  imgBoard := TPortableNetworkGraphic.Create;
-  imgWPawn := TPortableNetworkGraphic.Create;
-  imgWKnight := TPortableNetworkGraphic.Create;
-  imgWBishop := TPortableNetworkGraphic.Create;
-  imgWRook := TPortableNetworkGraphic.Create;
-  imgWQueen := TPortableNetworkGraphic.Create;
-  imgWKing := TPortableNetworkGraphic.Create;
-  imgBPawn := TPortableNetworkGraphic.Create;
-  imgBKnight := TPortableNetworkGraphic.Create;
-  imgBBishop := TPortableNetworkGraphic.Create;
-  imgBRook := TPortableNetworkGraphic.Create;
-  imgBQueen := TPortableNetworkGraphic.Create;
-  imgBKing := TPortableNetworkGraphic.Create;}
 
   // Events
   OnMouseMove := @HandleMouseMove;
@@ -164,8 +167,7 @@ end;
 
 procedure TTappyTuxDrawer.EraseBackground(DC: HDC);
 begin
-  // Uncomment this to enable default background erasing
-  //inherited EraseBackground(DC);
+  // Don't erase the background
 end;
 
 procedure TTappyTuxDrawer.Paint;
@@ -185,8 +187,6 @@ begin
   finally
     Bitmap.Free;
   end;
-
-  //  inherited Paint;
 end;
 
 procedure TTappyTuxDrawer.DrawToCanvas(ACanvas: TCanvas);
@@ -204,27 +204,7 @@ begin
     // First draw the background
     lIntfImage.LoadFromBitmap(GetCurrentModule().GetBackgroundImage(2).Handle, 0{bmpBoard.MaskHandle});
 
-    // Now the module should draw itself
-
-    // Draw all animations
-
-{    // Now all pieces
-    for col := 1 to 8 do
-      for row := 1 to 8 do
-      begin
-        // Check if the animation wants us to skip drawing this piece
-        if Assigned(FAnimation) and FAnimation.SkipDrawingPiece(col, row) then Continue;
-
-        lTileBmp := GetChessTileImage(vChessGame.Board[col][row]);
-        if lTileBmp = nil then Continue;
-
-        X := (col - 1) * INT_CHESSTILE_SIZE;
-        Y := (8 - row) * INT_CHESSTILE_SIZE;
-
-        DrawImageWithTransparentColor(lIntfImage, X, Y, FPCOLOR_TRANSPARENT_TILE, lTileBmp);
-      end;}
-
-    // Now animations
+    // Draw all animations via TLazIntfImage
     for i := 0 to FAnimationList.Count - 1 do
     begin
       lAnimation := TTappyTuxAnimation(FAnimationList.Items[i]);
@@ -233,13 +213,27 @@ begin
 
     lTmpBmp.LoadFromIntfImage(lIntfImage);
     ACanvas.Draw(0, 0, lTmpBmp);
+
+    // -------------------------
+    // Now TCanvas drawings
+    // -------------------------
+
+    // Now the module should draw itself
+
+    // Draw all animations via TLazIntfImage
+    for i := 0 to FAnimationList.Count - 1 do
+    begin
+      lAnimation := TTappyTuxAnimation(FAnimationList.Items[i]);
+      lAnimation.DrawToCanvas(ACanvas);
+    end;
+
   finally
     lTmpBmp.Free;
     lIntfImage.Free;
   end;
 end;
 
-procedure TTappyTuxDrawer.DrawImageWithTransparentColor(ADest: TLazIntfImage;
+class procedure TTappyTuxDrawer.DrawImageWithTransparentColor(ADest: TLazIntfImage;
   const ADestX, ADestY: Integer; AColor: TFPColor; AImage: TFPImageBitmap);
 var
   x, y, CurX, CurY: Integer;
@@ -276,26 +270,6 @@ begin
     IntfImage.Free;
   end;
 end;
-
-{function TTappyTuxDrawer.GetChessTileImage(ATile: TChessTile): TPortableNetworkGraphic;
-begin
-  case ATile of
-    ctWPawn:   Result := imgWPawn;
-    ctWKnight: Result := imgWKnight;
-    ctWBishop: Result := imgWBishop;
-    ctWRook:   Result := imgWRook;
-    ctWQueen:  Result := imgWQueen;
-    ctWKing:   Result := imgWKing;
-    ctBPawn:   Result := imgBPawn;
-    ctBKnight: Result := imgBKnight;
-    ctBBishop: Result := imgBBishop;
-    ctBRook:   Result := imgBRook;
-    ctBQueen:  Result := imgBQueen;
-    ctBKing:   Result := imgBKing;
-  else
-    Result := nil;
-  end;
-end;}
 
 procedure TTappyTuxDrawer.HandleMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
@@ -337,6 +311,16 @@ end;
 procedure TTappyTuxDrawer.AddAnimation(AAnimation: TTappyTuxAnimation);
 begin
   FAnimationList.Add(AAnimation);
+end;
+
+function TTappyTuxDrawer.GetAnimation(AIndex: Integer): TTappyTuxAnimation;
+begin
+  Result := TTappyTuxAnimation(FAnimationList.Items[AIndex]);
+end;
+
+function TTappyTuxDrawer.GetAnimationCount: Integer;
+begin
+  Result := FAnimationList.Count;
 end;
 
 procedure TTappyTuxDrawer.HandleAnimationOnTimer;
