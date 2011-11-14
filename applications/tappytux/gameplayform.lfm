@@ -1,12 +1,13 @@
 object formTappyTuxGame: TformTappyTuxGame
-  Left = 377
+  Left = 375
   Height = 425
-  Top = 206
+  Top = 210
   Width = 621
   Caption = 'Tappy Tux'
   ClientHeight = 425
   ClientWidth = 621
   OnCreate = FormCreate
+  OnShow = FormShow
   LCLVersion = '0.9.31'
   object btnExit: TButton
     Left = 8

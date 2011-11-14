@@ -6,9 +6,10 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  // LCL
   ExtCtrls,
   // TappyTux
-  {GameData,} tappydrawer, tappymodules;
+  tappydrawer, tappymodules;
 
 type
 
@@ -19,6 +20,7 @@ type
     Answer: TEdit;
     No: TButton;
     Yes: TButton;
+    Question1: TEdit;
     Question2: TEdit;
     Question4: TEdit;
     Question3: TEdit;
@@ -26,7 +28,6 @@ type
     Level: TEdit;
     Score: TEdit;
     Lives: TEdit;
-    Question1: TEdit;
     LabelLevels: TLabel;
     LabelScore: TLabel;
     LabelLives: TLabel;
@@ -35,6 +36,7 @@ type
     procedure btnExitClick(Sender: TObject);
     procedure AnswerKeyPress(Sender: TObject; var Key: char);
     procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure NoClick(Sender: TObject);
     procedure TestChange(Sender: TObject);
     procedure YesClick(Sender: TObject);
@@ -48,6 +50,7 @@ type
 
 var
   formTappyTuxGame: TformTappyTuxGame;
+  Questions : array[1..5] of TEdit;
 
 implementation
 
@@ -86,6 +89,17 @@ begin
   vTappyTuxDrawer.Height := Height-vTappyTuxDrawer.Top;
   vTappyTuxDrawer.Width := Width-vTappyTuxDrawer.Left;
   vTappyTuxDrawer.SendToBack();
+
+end;
+
+procedure TformTappyTuxGame.FormShow(Sender: TObject);
+begin
+  Questions[1] := Question1;
+  Questions[2] := Question2;
+  Questions[3] := Question3;
+  Questions[4] := Question4;
+  Questions[5] := Question5;
+
 end;
 
 procedure TformTappyTuxGame.NoClick(Sender: TObject);
@@ -102,12 +116,13 @@ begin
 end;
 
 procedure TformTappyTuxGame.YesClick(Sender: TObject);
+var
+  i: Integer;
 begin
-  Question1.Top := 24;
-  Question2.Top := 24;
-  Question3.Top := 24;
-  Question4.Top := 24;
-  Question5.Top := 24;
+  for i:= 1 to 5 do
+  begin
+    Questions[i].Top := 24;
+  end;
   GetCurrentModule().StartNewGame(formConfig.comboSound.ItemIndex,
                                   formConfig.comboMusic.ItemIndex,
                                   formConfig.comboLevel.ItemIndex,

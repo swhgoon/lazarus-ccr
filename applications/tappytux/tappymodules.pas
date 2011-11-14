@@ -6,6 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics,
+  // TappyTux
   tappyconfig;
 
 type
@@ -95,7 +96,6 @@ begin
 
   imgLevel2.LoadFromFile(lDir + 'images'+PathDelim+'levels'+PathDelim+'level2.jpg');
   imgLevel3.LoadFromFile(lDir + 'images'+PathDelim+'levels'+PathDelim+'level3.jpg');
-  //imgPenguim.LoadFromFile(lDir + 'images'+PathDelim+'sprites'+PathDelim+'tuxside.xmp');
 end;
 
 function TTappyModule.GetBackgroundImage(ALevel: Integer): TJPEGImage;

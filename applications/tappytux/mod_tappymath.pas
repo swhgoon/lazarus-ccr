@@ -16,6 +16,7 @@ type
   { TTappyMath }
 
   TTappyMath = class(TTappyModule)
+
   private
     gameScore : Integer;
     gameLives : Integer;
@@ -25,9 +26,9 @@ type
     gameMusic : Boolean;
     questionType : array[1..3] of Integer;
     questionAnswer : array[1..5] of Integer;
-    questionNumber : Integer;
     timerMath : TTimer;
     procedure HandleOnTimer(Sender: TObject);
+
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -41,63 +42,26 @@ type
 
 implementation
 
-uses tappydrawer, gameplayform {,tappygamedata};
+uses tappydrawer, gameplayform;
 
 { TTappyMath }
 
 procedure TTappyMath.HandleOnTimer(Sender: TObject);
+var
+  i: Integer;
 begin
-
-  formTappyTuxGame.Question1.Top:= formTappyTuxGame.Question1.Top + (5*gameLevel);
-  formTappyTuxGame.Question2.Top:= formTappyTuxGame.Question2.Top + (5*gameLevel);
-  formTappyTuxGame.Question3.Top:= formTappyTuxGame.Question3.Top + (5*gameLevel);
-  formTappyTuxGame.Question4.Top:= formTappyTuxGame.Question4.Top + (5*gameLevel);
-  formTappyTuxGame.Question5.Top:= formTappyTuxGame.Question5.Top + (5*gameLevel);
-
-  if ((formTappyTuxGame.Question1.Top >= 370)) then
+  for i:= 1 to 5 do
   begin
+    Questions[i].Top := Questions[i].Top + (5*gameLevel);
+    if ((Questions[i].Top >= 370)) then
+    begin
        gameLives := gameLives - 1;
        formTappyTuxGame.Lives.Text := IntToStr(gameLives);
        if (gameLives = 0) then EndGame();
-       formTappyTuxGame.Question1.Top:= 24;
-       QuestionGenerator(1);
-  end;
-
-  if ((formTappyTuxGame.Question2.Top >= 370)) then
-  begin
-       gameLives := gameLives - 1;
-       formTappyTuxGame.Lives.Text := IntToStr(gameLives);
-       if (gameLives = 0) then EndGame();
-       formTappyTuxGame.Question2.Top:= 24;
-       QuestionGenerator(2);
-  end;
-
-  if ((formTappyTuxGame.Question3.Top >= 370)) then
-  begin
-       gameLives := gameLives - 1;
-       formTappyTuxGame.Lives.Text := IntToStr(gameLives);
-       if (gameLives = 0) then EndGame();
-       formTappyTuxGame.Question3.Top:= 24;
-       QuestionGenerator(3);
-  end;
-
-  if ((formTappyTuxGame.Question4.Top >= 370)) then
-  begin
-       gameLives := gameLives - 1;
-       formTappyTuxGame.Lives.Text := IntToStr(gameLives);
-       if (gameLives = 0) then EndGame();
-       formTappyTuxGame.Question4.Top:= 24;
-       QuestionGenerator(4);
-  end;
-
-  if ((formTappyTuxGame.Question5.Top >= 370)) then
-  begin
-       gameLives := gameLives - 1;
-       formTappyTuxGame.Lives.Text := IntToStr(gameLives);
-       if (gameLives = 0) then EndGame();
-       formTappyTuxGame.Question5.Top:= 24;
-       QuestionGenerator(5);
-  end;
+       Questions[i].Top:= 24;
+       QuestionGenerator(i);
+    end;
+  end
 
 end;
 
@@ -130,6 +94,8 @@ begin
 end;
 
 procedure TTappyMath.StartNewGame(SndFX: Integer; Music: Integer; Level: Integer; QuestionList: Integer);
+var
+  i: Integer;
 begin
 
   timerMath.Enabled := True;
@@ -151,62 +117,29 @@ begin
   formTappyTuxGame.Score.Text := IntToStr(gameScore);
   formTappyTuxGame.Lives.Text := IntToStr(gameLives);
 
-  QuestionGenerator(1);
-  QuestionGenerator(2);
-  QuestionGenerator(3);
-  QuestionGenerator(4);
-  QuestionGenerator(5);
+  for i:= 1 to 5 do
+  begin
+    QuestionGenerator(i);
+  end
 
 end;
 
 procedure TTappyMath.Answered;
+var
+  i: Integer;
 begin
-
-  if (formTappyTuxGame.Answer.Text = IntToStr(questionAnswer[1])) then
+  for i:= 1 to 5 do
   begin
-       formTappyTuxGame.Question1.Top := 24;
-       QuestionGenerator(1);
+    if (formTappyTuxGame.Answer.Text = IntToStr(questionAnswer[i])) then
+    begin
+       Questions[i].Top := 24;
+       QuestionGenerator(i);
        gameScore := gameScore +1;
        gameLevel := (gameScore div 20) + gameSLevel;
        formTappyTuxGame.Score.Text := IntToStr(gameScore);
        formTappyTuxGame.Level.Text := IntToStr(gameLevel);
-  end;
-  if (formTappyTuxGame.Answer.Text = IntToStr(questionAnswer[2])) then
-  begin
-       formTappyTuxGame.Question2.Top := 24;
-       QuestionGenerator(2);
-       gameScore := gameScore +1;
-       gameLevel := (gameScore div 20) + gameSLevel;
-       formTappyTuxGame.Score.Text := IntToStr(gameScore);
-       formTappyTuxGame.Level.Text := IntToStr(gameLevel);
-  end;
-  if (formTappyTuxGame.Answer.Text = IntToStr(questionAnswer[3])) then
-  begin
-       formTappyTuxGame.Question3.Top := 24;
-       QuestionGenerator(3);
-       gameScore := gameScore +1;
-       gameLevel := (gameScore div 20) + gameSLevel;
-       formTappyTuxGame.Score.Text := IntToStr(gameScore);
-       formTappyTuxGame.Level.Text := IntToStr(gameLevel);
-  end;
-  if (formTappyTuxGame.Answer.Text = IntToStr(questionAnswer[4])) then
-  begin
-       formTappyTuxGame.Question4.Top := 24;
-       QuestionGenerator(4);
-       gameScore := gameScore +1;
-       gameLevel := (gameScore div 20) + gameSLevel;
-       formTappyTuxGame.Score.Text := IntToStr(gameScore);
-       formTappyTuxGame.Level.Text := IntToStr(gameLevel);
-  end;
-  if (formTappyTuxGame.Answer.Text = IntToStr(questionAnswer[5])) then
-  begin
-       formTappyTuxGame.Question5.Top := 24;
-       QuestionGenerator(5);
-       gameScore := gameScore +1;
-       gameLevel := (gameScore div 20) + gameSLevel;
-       formTappyTuxGame.Score.Text := IntToStr(gameScore);
-       formTappyTuxGame.Level.Text := IntToStr(gameLevel);
-  end;
+    end;
+  end
 
 end;
 
@@ -229,33 +162,21 @@ begin
     questionType[2] := random(21);
     questionType[3] := random(21);
     questionAnswer[qNumber] := questionType[2] + questionType[3];
-    if (qNumber = 1) then formTappyTuxGame.Question1.Text := IntToStr(questionType[2])+' + ' +IntToStr(questionType[3]);
-    if (qNumber = 2) then formTappyTuxGame.Question2.Text := IntToStr(questionType[2])+' + ' +IntToStr(questionType[3]);
-    if (qNumber = 3) then formTappyTuxGame.Question3.Text := IntToStr(questionType[2])+' + ' +IntToStr(questionType[3]);
-    if (qNumber = 4) then formTappyTuxGame.Question4.Text := IntToStr(questionType[2])+' + ' +IntToStr(questionType[3]);
-    if (qNumber = 5) then formTappyTuxGame.Question5.Text := IntToStr(questionType[2])+' + ' +IntToStr(questionType[3]);
+    Questions[qNumber].Text := IntToStr(questionType[2])+' + ' +IntToStr(questionType[3]);
     end;
 
   1: begin
     questionType[2] := random(21);
     questionType[3] := random(questionType[2]);
     questionAnswer[qNumber] := questionType[2] - questionType[3];
-    if (qNumber = 1) then formTappyTuxGame.Question1.Text := IntToStr(questionType[2])+' - ' +IntToStr(questionType[3]);
-    if (qNumber = 2) then formTappyTuxGame.Question2.Text := IntToStr(questionType[2])+' - ' +IntToStr(questionType[3]);
-    if (qNumber = 3) then formTappyTuxGame.Question3.Text := IntToStr(questionType[2])+' - ' +IntToStr(questionType[3]);
-    if (qNumber = 4) then formTappyTuxGame.Question4.Text := IntToStr(questionType[2])+' - ' +IntToStr(questionType[3]);
-    if (qNumber = 5) then formTappyTuxGame.Question5.Text := IntToStr(questionType[2])+' - ' +IntToStr(questionType[3]);
+    Questions[qNumber].Text := IntToStr(questionType[2])+' - ' +IntToStr(questionType[3]);
     end;
 
   2: begin
     questionType[2] := random(11);
     questionType[3] := random(11);
     questionAnswer[qNumber] := questionType[2] * questionType[3];
-    if (qNumber = 1) then formTappyTuxGame.Question1.Text := IntToStr(questionType[2])+' x ' +IntToStr(questionType[3]);
-    if (qNumber = 2) then formTappyTuxGame.Question2.Text := IntToStr(questionType[2])+' x ' +IntToStr(questionType[3]);
-    if (qNumber = 3) then formTappyTuxGame.Question3.Text := IntToStr(questionType[2])+' x ' +IntToStr(questionType[3]);
-    if (qNumber = 4) then formTappyTuxGame.Question4.Text := IntToStr(questionType[2])+' x ' +IntToStr(questionType[3]);
-    if (qNumber = 5) then formTappyTuxGame.Question5.Text := IntToStr(questionType[2])+' x ' +IntToStr(questionType[3]);
+    Questions[qNumber].Text := IntToStr(questionType[2])+' x ' +IntToStr(questionType[3]);
     end;
 
   end;
