@@ -20,9 +20,17 @@ var
   al_context  : PALCcontext;
 
 type
-  TOpenALPlayer = class(TObject)
+  TOpenALPlayer = class(TSoundPlayer)
   private
-  public
+{    buffer : Cardinal;
+    sourcepos: array [0..2] of Single=(0.0, 0.0, 0.0);
+    sourcevel: array [0..2] of Single=(0.0, 0.0, 0.0);
+    listenerpos: array [0..2] of Single=(0.0, 0.0, 0.0);
+    listenervel: array [0..2] of Single=(0.0, 0.0, 0.0);
+    listenerori: array [0..5] of Single=(0.0, 0.0, -1.0, 0.0, 1.0, 0.0);
+    Context: PALCcontext;
+    Device: PALCdevice;}
+    //
     source     : TStream;
     codec_bs   : Longword;
     OPCSoundWasInitialized: Boolean;
@@ -34,6 +42,8 @@ type
     al_readbuf  : Pointer;
     al_rate     : Longword;
     wave       : TWaveReader;
+  public
+    //procedure OPCSoundPlayStreamEx(AStream: TStream);
     procedure OPCSoundOpenALPlay();
     procedure OPCSoundOpenALLoadWavFromStream(AStream: TStream);
     procedure OPCSoundOpenALInitialize();
@@ -42,9 +52,10 @@ type
     function alProcess: Boolean;
   end;
 
+
 implementation
 
-type
+(*type
   TWAVHeader = record
     RIFFHeader: array [1..4] of AnsiChar;
     FileSize: longint;
@@ -58,17 +69,6 @@ type
     BytesPerSample: Word;
     BitsPerSample: Word;
   end;
-
-var
-  buffer : Cardinal;
-  source : Cardinal;
-  sourcepos: array [0..2] of Single=(0.0, 0.0, 0.0);
-  sourcevel: array [0..2] of Single=(0.0, 0.0, 0.0);
-  listenerpos: array [0..2] of Single=(0.0, 0.0, 0.0);
-  listenervel: array [0..2] of Single=(0.0, 0.0, 0.0);
-  listenerori: array [0..5] of Single=(0.0, 0.0, -1.0, 0.0, 1.0, 0.0);
-  Context: PALCcontext;
-  Device: PALCdevice;
 
 function LoadWavStream(Stream: TStream; var format: integer; var data: Pointer;
   var size: LongInt; var freq: LongInt; var loop: LongInt): Boolean;
@@ -281,18 +281,18 @@ end;
 procedure TOpenALThread.DoOpenALPlay;
 begin
   OPCSoundPlayStreamEx(FAOwner);
-end;
+end;*)
 
 ///
 
-procedure TOPCAudioPlayer.alStop;
+procedure TOpenALPlayer.alStop;
 begin
   alSourceStop(al_source);
   alSourceRewind(al_source);
   alSourcei(al_source, AL_BUFFER, 0);
 end;
 
-function TOPCAudioPlayer.alProcess: Boolean;
+function TOpenALPlayer.alProcess: Boolean;
 var
   processed : ALint;
   buffer    : ALuint;
@@ -314,7 +314,7 @@ begin
   Result := True;
 end;
 
-procedure TOPCAudioPlayer.OPCSoundOpenALPlay();
+procedure TOpenALPlayer.OPCSoundOpenALPlay();
 var
   i: Integer;
   queued  : Integer;
@@ -350,7 +350,7 @@ begin
   until done;
 end;
 
-procedure TOPCAudioPlayer.OPCSoundOpenALLoadWavFromStream(AStream: TStream);
+procedure TOpenALPlayer.OPCSoundOpenALLoadWavFromStream(AStream: TStream);
 var
   Filename: String;
   queued  : Integer;
@@ -398,7 +398,7 @@ begin
   alProcess();
 end;
 
-procedure TOPCAudioPlayer.OPCSoundOpenALInitialize();
+procedure TOpenALPlayer.OPCSoundOpenALInitialize();
 begin
   OPCSoundWasInitialized := True;
 
@@ -409,7 +409,7 @@ begin
   GetMem(al_readbuf, al_bufsize);
 end;
 
-procedure TOPCAudioPlayer.OPCSoundOpenALFinalize();
+procedure TOpenALPlayer.OPCSoundOpenALFinalize();
 begin
   // finalize openal
   alDeleteSources(1, @al_source);
