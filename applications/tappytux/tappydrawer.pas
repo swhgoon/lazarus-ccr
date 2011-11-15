@@ -15,12 +15,14 @@ type
 
   TTappyTuxAnimation = class
     StartPoint, EndPoint: TPoint;
+    Position: TPoint;
     CurrentStep: Integer;
     StepCount: Integer;
     IsInfinite: Boolean; // if True the animation will never end
     constructor Create; virtual;
-    procedure DrawToCanvas(ACanvas: TCanvas); virtual;
     procedure DrawToIntfImg(AIntfImage: TLazIntfImage); virtual;
+    procedure DrawToCanvas(ACanvas: TCanvas); virtual;
+    procedure CalculatePosition;
     procedure ExecuteFinal; virtual;
   end;
 
@@ -85,20 +87,14 @@ implementation
 procedure TTappySpriteAnimation.DrawToIntfImg(AIntfImage: TLazIntfImage);
 var
   lNumBitmaps, lCurBmpIndex: Integer;
-  t: Double;
-  lPos: TPoint;
 begin
   lNumBitmaps := Length(Bitmaps);
   if lNumBitmaps = 0 then Exit;
 
   lCurBmpIndex := CurrentStep mod lNumBitmaps;
 
-  t := CurrentStep / StepCount;
-  lPos.X := Round(StartPoint.X + t * (EndPoint.X - StartPoint.X));
-  lPos.Y := Round(StartPoint.Y + t * (EndPoint.Y - StartPoint.Y));
-
   TTappyTuxDrawer.DrawImageWithTransparentColor(AIntfImage,
-   lPos.X, lPos.Y, colFuchsia, Bitmaps[lCurBmpIndex]);
+   Position.X, Position.Y, colFuchsia, Bitmaps[lCurBmpIndex]);
 end;
 
 procedure TTappySpriteAnimation.ExecuteFinal;
@@ -109,17 +105,9 @@ end;
 {TFallingText}
 
 procedure TFallingText.DrawToIntfImg(AIntfImage: TLazIntfImage);
-var
-  t: Double;
-  lPos: TPoint;
-
 begin
-  t := CurrentStep / StepCount;
-  lPos.X := Round(StartPoint.X + t * (EndPoint.X - StartPoint.X));
-  lPos.Y := Round(StartPoint.Y + t * (EndPoint.Y - StartPoint.Y));
-
   TTappyTuxDrawer.DrawImageWithTransparentColor(AIntfImage,
-   lPos.X, lPos.Y, colFuchsia, Bitmap);
+   Position.X, Position.Y, colFuchsia, Bitmap);
   QuestionBox := TCanvas.Create;
   //QuestionBox.TextOut(lPos.X, lPos.Y, QuestionText);
 end;
@@ -146,14 +134,23 @@ begin
   StepCount := 20;
 end;
 
+procedure TTappyTuxAnimation.DrawToIntfImg(AIntfImage: TLazIntfImage);
+begin
+
+end;
+
 procedure TTappyTuxAnimation.DrawToCanvas(ACanvas: TCanvas);
 begin
 
 end;
 
-procedure TTappyTuxAnimation.DrawToIntfImg(AIntfImage: TLazIntfImage);
+procedure TTappyTuxAnimation.CalculatePosition;
+var
+  t: Double;
 begin
-
+  t := CurrentStep / StepCount;
+  Position.X := Round(StartPoint.X + t * (EndPoint.X - StartPoint.X));
+  Position.Y := Round(StartPoint.Y + t * (EndPoint.Y - StartPoint.Y));
 end;
 
 procedure TTappyTuxAnimation.ExecuteFinal;
@@ -223,6 +220,7 @@ begin
     for i := 0 to FAnimationList.Count - 1 do
     begin
       lAnimation := TTappyTuxAnimation(FAnimationList.Items[i]);
+      lAnimation.CalculatePosition();
       lAnimation.DrawToIntfImg(lIntfImage);
     end;
 
