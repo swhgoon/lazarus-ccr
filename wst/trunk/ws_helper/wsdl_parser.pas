@@ -196,8 +196,8 @@ destructor TWsdlParser.Destroy();
   var
     j : PtrInt;
   begin
-    if Assigned(AList) then begin
-      for j := 0  to Pred(AList.Count) do begin
+    if Assigned(AList) and (AList.Count > 0) then begin
+      for j := Pred(AList.Count)  downto 0 do begin
         AList.Objects[j].Free();
         AList.Objects[j] := nil;
       end;

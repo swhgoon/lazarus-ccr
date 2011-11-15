@@ -337,6 +337,7 @@ end;
 function TTest_CustomXsdParser.ParseDoc(const ADoc: string): TwstPasTreeContainer;
 begin
   Result := ParseDoc(ADoc,False);
+  Result.DefaultSearchNameKinds := NAME_KINDS_DEFAULT;
 end;
 
 procedure TTest_CustomXsdParser.EmptySchema();
@@ -779,7 +780,7 @@ begin
       CheckIs(elt,TPasClassType);
       clsType := elt as TPasClassType;
         CheckNotNull(clsType.AncestorType,'AncestorType is null');
-        CheckSame(tr.FindElementNS('TComplexStringContentRemotable',sXSD_NS),clsType.AncestorType);
+        CheckSame(tr.FindElementNS('TComplexStringContentRemotable',sXSD_NS),clsType.AncestorType,clsType.AncestorType.Name);
 
         prpLs.Clear();
         for i := 0 to Pred(clsType.Members.Count) do begin

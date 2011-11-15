@@ -326,6 +326,8 @@ procedure AddSystemSymbol(
       ADest.InterfaceSection.Declarations.Add(splTyp);
       ADest.InterfaceSection.Types.Add(splTyp);
       typlst[i] := splTyp;
+    end;
+    for i := Low(SIMPLE_TYPES) to High(SIMPLE_TYPES) do begin
       s := SIMPLE_TYPES[i][1];
       if not IsStrEmpty(s) then begin
         syb := AContainer.FindElementInModule(SIMPLE_TYPES[i][1],ADest) as TPasNativeSimpleContentClassType;
@@ -334,7 +336,7 @@ procedure AddSystemSymbol(
           ADest.InterfaceSection.Declarations.Add(syb);
           ADest.InterfaceSection.Types.Add(syb);
         end;
-        splTyp.SetExtendableType(syb);
+        typlst[i].SetExtendableType(syb);
       end;
     end;
     for i := Low(SIMPLE_TYPES) to High(SIMPLE_TYPES) do begin
@@ -483,6 +485,7 @@ begin
       AddAlias('anyURI','string',Result);
       AddAlias('ID','string',Result);
       //AddAlias('float','Single',Result);
+      AddAlias('integer','int',Result);
       AddAlias('nonNegativeInteger','LongWord',Result);
       AddAlias('positiveInteger','nonNegativeInteger',Result);
   {$IFNDEF WST_HAS_TDURATIONREMOTABLE}

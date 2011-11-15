@@ -3261,9 +3261,15 @@ var
   oldCurrent, mdl : TPasModule;
   i : PtrInt;
   mdlList : TList;
+  oldCS : Boolean;
+  oldNamesKinds : TElementNameKinds;
 begin
+  oldCS := SymbolTable.CaseSensitive;
+  oldNamesKinds := SymbolTable.DefaultSearchNameKinds;
   oldCurrent := SymbolTable.CurrentModule;
   try
+    SymbolTable.CaseSensitive := False;
+    SymbolTable.DefaultSearchNameKinds := [elkName];
     mdlList := SymbolTable.Package.Modules;
     for i := 0 to Pred(mdlList.Count) do begin
       mdl := TPasModule(mdlList[i]);
@@ -3275,6 +3281,8 @@ begin
     end;
   finally
     SymbolTable.SetCurrentModule(oldCurrent);
+    SymbolTable.CaseSensitive := oldCS;
+    SymbolTable.DefaultSearchNameKinds := oldNamesKinds;
   end;
 end;
 

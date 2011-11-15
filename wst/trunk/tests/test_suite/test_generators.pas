@@ -123,11 +123,11 @@ begin
       cltyp.ObjKind := okClass;
       mdl.InterfaceSection.Declarations.Add(cltyp);
       mdl.InterfaceSection.Types.Add(cltyp);
-      AddProperty('intField','integer','1210',ptField);
+      AddProperty('intField','int','1210',ptField);
       AddProperty('strField','string','azerty',ptField);
       AddProperty('floatField','float','1234',ptField);
       AddProperty('strAtt','string','attribute azerty',ptAttribute);
-      AddProperty('intAtt','integer','789',ptAttribute);
+      AddProperty('intAtt','int','789',ptAttribute);
 
     locDoc := CreateDoc();
     g := CreateGenerator(locDoc);
@@ -193,12 +193,12 @@ begin
       cltyp.ObjKind := okClass;
       mdl.InterfaceSection.Declarations.Add(cltyp);
       mdl.InterfaceSection.Types.Add(cltyp);
-      p := AddProperty('intField','integer','',ptField,'uri-4#a','1210');
+      p := AddProperty('intField','int','',ptField,'uri-4#a','1210');
         tr.Properties.SetValue(p,'uri-4#b','uri-5#xx');
       AddProperty('strField','string','azerty',ptField,'uri-4#a','http://www.w3.org/2001/XMLSchema#int');
       AddProperty('floatField','float','',ptField,'','');
       AddProperty('strAtt','string','attribute azerty',ptAttribute,'uri-4#a','optional');
-      AddProperty('intAtt','integer','',ptAttribute,'','');
+      AddProperty('intAtt','int','',ptAttribute,'','');
 
     locDoc := CreateDoc();
     g := CreateGenerator(locDoc);
@@ -260,7 +260,7 @@ begin
       cltyp.AncestorType.AddRef();
       mdl.InterfaceSection.Declarations.Add(cltyp);
       mdl.InterfaceSection.Types.Add(cltyp);
-      AddProperty('intAtt','integer','',ptAttribute);
+      AddProperty('intAtt','int','',ptAttribute);
 
     cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TExtendBase64String',mdl.InterfaceSection,visDefault,'',0));
       cltyp.ObjKind := okClass;
@@ -337,11 +337,11 @@ begin
       cltyp.AncestorType.AddRef();
       mdl.InterfaceSection.Declarations.Add(cltyp);
       mdl.InterfaceSection.Types.Add(cltyp);
-      AddProperty('intField','integer','',ptField);
+      AddProperty('intField','int','',ptField);
       AddProperty('strField','string','',ptField);
       AddProperty('floatField','float','',ptField);
       AddProperty('strAtt','string','',ptAttribute);
-      AddProperty('intAtt','integer','',ptAttribute);
+      AddProperty('intAtt','int','',ptAttribute);
 
     locDoc := CreateDoc();
     g := CreateGenerator(locDoc);
@@ -404,7 +404,7 @@ begin
       mdl.InterfaceSection.Declarations.Add(cltyp);
       mdl.InterfaceSection.Types.Add(cltyp);
       AddProperty('strAtt','string','',ptAttribute);
-      AddProperty('intAtt','integer','',ptAttribute);
+      AddProperty('intAtt','int','',ptAttribute);
 
     locDoc := CreateDoc();
     g := CreateGenerator(locDoc);
