@@ -132,9 +132,8 @@ begin
 
   if QuestionList < 0 then QuestionList := 0;
   gameQuestionList := TStringList.Create;
-  //gameQuestionList.LoadFromFile(vTappyTuxConfig.GetResourcesDir() + 'images'+PathDelim+'modules'+PathDelim+'tappywords'+PathDelim+'0.txt');
-  //gameQuestionList.LoadFromFile('C:/Users/User/Lazarus/Arquivos/Repositorio/applications/tappytux/images/modules/tappywords/0.txt');
-  gameQuestionList.LoadFromFile('C:/'+IntToStr(QuestionList)+'.txt');
+  gameQuestionList.LoadFromFile(vTappyTuxConfig.GetResourcesDir() + 'images'+PathDelim+'modules'+PathDelim+'tappywords'+PathDelim+'0.txt');
+  //gameQuestionList.LoadFromFile('C:/'+IntToStr(QuestionList)+'.txt');
 
   formTappyTuxGame.Answer.ReadOnly := false;
   formTappyTuxGame.GameOver.Visible := false;

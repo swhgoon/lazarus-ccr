@@ -51,6 +51,7 @@ type
     QuestionText: String;
     QuestionBox: TCanvas;
     procedure DrawToIntfImg(AIntfImage: TLazIntfImage); override;
+    procedure DrawToCanvas(ACanvas: TCanvas); override;
     procedure ExecuteFinal; override;
   end;
 
@@ -148,7 +149,13 @@ begin
   TTappyTuxDrawer.DrawImageWithTransparentColor(AIntfImage,
    lPos.X, lPos.Y, colFuchsia, Bitmap);
   QuestionBox := TCanvas.Create;
-  QuestionBox.TextOut(lPos.X, lPos.Y, QuestionText);
+  //QuestionBox.TextOut(lPos.X, lPos.Y, QuestionText);
+end;
+
+procedure TFallingText.DrawToCanvas(ACanvas: TCanvas);
+begin
+  //ACanvas.Pixels[CurrentStep, CurrentStep] := clRed;
+  ACanvas.TextOut(StartPoint.X + 30, StartPoint.Y + 50, QuestionText);
 end;
 
 procedure TFallingText.ExecuteFinal;
