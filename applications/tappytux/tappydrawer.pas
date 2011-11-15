@@ -14,6 +14,7 @@ type
   { TTappyTuxAnimation }
 
   TTappyTuxAnimation = class
+    StartPoint, EndPoint: TPoint;
     CurrentStep: Integer;
     StepCount: Integer;
     IsInfinite: Boolean; // if True the animation will never end
@@ -27,18 +28,28 @@ type
 
   TTappySpriteAnimation = class(TTappyTuxAnimation)
   public
-    StartPoint, EndPoint: TPoint;
+    //StartPoint, EndPoint: TPoint; override;
     Bitmaps: array of TFPImageBitmap;
     procedure DrawToIntfImg(AIntfImage: TLazIntfImage); override;
     procedure ExecuteFinal; override;
   end;
 
-  { TBallonAnimation }
+  { TBallonAnimation
 
   TBallonAnimation = class(TTappyTuxAnimation)
   public
     constructor Create; override;
     procedure DrawToCanvas(ACanvas: TCanvas); override;
+    procedure ExecuteFinal; override;
+  end;}
+
+  { TFallingText }
+  TFallingText = class(TTappyTuxAnimation)
+  public
+    //StartPoint, EndPoint: TPoint; override;
+    Bitmap: TFPImageBitmap;
+    Question: TCanvas;
+    procedure DrawToIntfImg(AIntfImage: TLazIntfImage); override;
     procedure ExecuteFinal; override;
   end;
 
@@ -75,7 +86,7 @@ var
 
 implementation
 
-{ TBallonAnimation }
+{ TBallonAnimation
 
 constructor TBallonAnimation.Create;
 begin
@@ -93,7 +104,7 @@ end;
 procedure TBallonAnimation.ExecuteFinal;
 begin
   // Lost the game if the ballon reached its end
-end;
+end}
 
 { TTappySpriteAnimation }
 
@@ -120,6 +131,28 @@ procedure TTappySpriteAnimation.ExecuteFinal;
 begin
   inherited ExecuteFinal;
 end;
+
+{TFallingText}
+
+procedure TFallingText.DrawToIntfImg(AIntfImage: TLazIntfImage);
+var
+  t: Double;
+  lPos: TPoint;
+
+begin
+  t := CurrentStep / StepCount;
+  lPos.X := Round(StartPoint.X + t * (EndPoint.X - StartPoint.X));
+  lPos.Y := Round(StartPoint.Y + t * (EndPoint.Y - StartPoint.Y));
+
+  TTappyTuxDrawer.DrawImageWithTransparentColor(AIntfImage,
+   lPos.X, lPos.Y, colFuchsia, Bitmap);
+end;
+
+procedure TFallingText.ExecuteFinal;
+begin
+  inherited ExecuteFinal;
+end;
+
 
 { TTappyTuxAnimation }
 
@@ -332,6 +365,8 @@ begin
   begin
     lAnimation := TTappyTuxAnimation(FAnimationList.Items[i]);
     Inc(lAnimation.CurrentStep);
+
+    if lAnimation.InheritsFrom(TFallingText) then lAnimation.StartPoint.y := lAnimation.StartPoint.y + 10;
   end;
 
   Self.Invalidate;

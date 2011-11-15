@@ -9,7 +9,7 @@ uses
   // LCL
   ExtCtrls,
   // TappyTux
-  tappymodules;
+  tappyconfig, tappydrawer, tappymodules;
 
 type
 
@@ -35,6 +35,7 @@ type
     procedure TranslateTextsToEnglish; override;
     procedure TranslateTextsToPortuguese; override;
     procedure StartNewGame(SndFX: Integer; Music: Integer; Level: Integer; QuestionList: Integer); override;
+    procedure CreateQuestion(); override;
     procedure Answered(); override;
     procedure EndGame(); override;
     procedure QuestionGenerator(qNumber : Integer);
@@ -42,7 +43,7 @@ type
 
 implementation
 
-uses tappydrawer, gameplayform;
+uses gameplayform;
 
 { TTappyMath }
 
@@ -123,6 +124,11 @@ begin
   begin
     QuestionGenerator(i);
   end
+
+end;
+
+procedure TTappyMath.CreateQuestion;
+begin
 
 end;
 
