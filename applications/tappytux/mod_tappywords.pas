@@ -5,7 +5,7 @@ unit mod_tappywords;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls, fpSound,
   // LCL
   ExtCtrls,
   // TappyTux
@@ -38,6 +38,11 @@ type
     procedure Answered(); override;
     procedure EndGame(); override;
   end;
+
+var
+   backgroundMusic: TSoundDocument;
+   startupSound: TSoundDocument;
+
 
 implementation
 
@@ -132,8 +137,8 @@ begin
 
   if QuestionList < 0 then QuestionList := 0;
   gameQuestionList := TStringList.Create;
-  gameQuestionList.LoadFromFile(vTappyTuxConfig.GetResourcesDir() + 'images'+PathDelim+'modules'+PathDelim+'tappywords'+PathDelim+'0.txt');
-  //gameQuestionList.LoadFromFile('C:/'+IntToStr(QuestionList)+'.txt');
+  //gameQuestionList.LoadFromFile(vTappyTuxConfig.GetResourcesDir() + 'images'+PathDelim+'modules'+PathDelim+'tappywords'+PathDelim+'0.txt');
+  gameQuestionList.LoadFromFile('C:/'+IntToStr(QuestionList)+'.txt');
 
   formTappyTuxGame.Answer.ReadOnly := false;
   formTappyTuxGame.GameOver.Visible := false;
@@ -161,11 +166,18 @@ begin
   lTuxAnimation.Bitmaps[5] := lTuxAnimation.Bitmaps[1];
   vTappyTuxDrawer.AddAnimation(lTuxAnimation);
 
+  //Sound Creation
+  //backgroundMusic := TSoundDocument.Create;
+  //backgroundMusic.LoadFromFile(vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'music' + PathDelim + 'tux_1.png');
+  //startupSound := TSoundDocument.Create;
+  //startupSound.LoadFromFile(vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sounds' + PathDelim + 'startup.wav');
 
   for i:= 1 to 5 do
   begin
        CreateQuestion;
   end;
+
+  startupSound.Play;
 
 end;
 
@@ -251,6 +263,7 @@ procedure TTappyWords.Answered;
 var
   i: Integer;
   j: Integer;
+
 begin
   i:= 0;
   j:= vTappyTuxDrawer.GetAnimationCount - 1;
@@ -260,6 +273,7 @@ begin
     begin
        if (vTappyTuxDrawer.GetAnimation(i).caption = formTappyTuxGame.Answer.Text) then
        begin
+          (vTappyTuxDrawer.GetAnimation(i) as TFallingText).Bitmap.LoadFromFile(vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'snowmanhit.png');
           gameScore := gameScore +1;
           gameLevel := (gameScore div 20) + gameSLevel;
           formTappyTuxGame.Score.Text := IntToStr(gameScore);

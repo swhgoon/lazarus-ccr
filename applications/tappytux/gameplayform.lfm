@@ -1,7 +1,7 @@
 object formTappyTuxGame: TformTappyTuxGame
-  Left = 76
+  Left = 599
   Height = 425
-  Top = 292
+  Top = 312
   Width = 621
   Caption = 'Tappy Tux'
   ClientHeight = 425
