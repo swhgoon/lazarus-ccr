@@ -20,11 +20,6 @@ type
     Answer: TEdit;
     No: TButton;
     Yes: TButton;
-    Question1: TEdit;
-    Question2: TEdit;
-    Question4: TEdit;
-    Question3: TEdit;
-    Question5: TEdit;
     Level: TEdit;
     Score: TEdit;
     Lives: TEdit;
@@ -50,7 +45,6 @@ type
 
 var
   formTappyTuxGame: TformTappyTuxGame;
-  Questions : array[1..5] of TEdit;
 
 implementation
 
@@ -94,11 +88,6 @@ end;
 
 procedure TformTappyTuxGame.FormShow(Sender: TObject);
 begin
-  Questions[1] := Question1;
-  Questions[2] := Question2;
-  Questions[3] := Question3;
-  Questions[4] := Question4;
-  Questions[5] := Question5;
 
 end;
 
@@ -119,10 +108,6 @@ procedure TformTappyTuxGame.YesClick(Sender: TObject);
 var
   i: Integer;
 begin
-  for i:= 1 to 5 do
-  begin
-    Questions[i].Top := 24;
-  end;
   GetCurrentModule().StartNewGame(formConfig.comboSound.ItemIndex,
                                   formConfig.comboMusic.ItemIndex,
                                   formConfig.comboLevel.ItemIndex,

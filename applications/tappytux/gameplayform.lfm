@@ -186,51 +186,6 @@ object formTappyTuxGame: TformTappyTuxGame
     TabOrder = 5
     Visible = False
   end
-  object Question1: TEdit
-    Left = 112
-    Height = 23
-    Top = 24
-    Width = 82
-    ReadOnly = True
-    TabOrder = 6
-    Text = 'Question'
-  end
-  object Question2: TEdit
-    Left = 216
-    Height = 23
-    Top = 24
-    Width = 80
-    ReadOnly = True
-    TabOrder = 7
-    Text = 'Question'
-  end
-  object Question4: TEdit
-    Left = 320
-    Height = 23
-    Top = 24
-    Width = 80
-    ReadOnly = True
-    TabOrder = 8
-    Text = 'Question'
-  end
-  object Question3: TEdit
-    Left = 424
-    Height = 23
-    Top = 24
-    Width = 80
-    ReadOnly = True
-    TabOrder = 9
-    Text = 'Question'
-  end
-  object Question5: TEdit
-    Left = 528
-    Height = 23
-    Top = 24
-    Width = 80
-    ReadOnly = True
-    TabOrder = 10
-    Text = 'Question'
-  end
   object GameOver: TToggleBox
     Left = 240
     Height = 64
@@ -241,7 +196,7 @@ object formTappyTuxGame: TformTappyTuxGame
     Color = clRed
     Enabled = False
     State = cbChecked
-    TabOrder = 11
+    TabOrder = 6
     Visible = False
   end
   object Yes: TButton
@@ -252,7 +207,7 @@ object formTappyTuxGame: TformTappyTuxGame
     Caption = 'Yes'
     Color = clRed
     OnClick = YesClick
-    TabOrder = 12
+    TabOrder = 7
     Visible = False
   end
   object No: TButton
@@ -263,7 +218,7 @@ object formTappyTuxGame: TformTappyTuxGame
     Caption = 'No'
     Color = clRed
     OnClick = NoClick
-    TabOrder = 13
+    TabOrder = 8
     Visible = False
   end
 end

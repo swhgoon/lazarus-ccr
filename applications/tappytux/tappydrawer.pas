@@ -19,6 +19,8 @@ type
     CurrentStep: Integer;
     StepCount: Integer;
     IsInfinite: Boolean; // if True the animation will never end
+    caption: String;
+    value: String;
     constructor Create; virtual;
     procedure DrawToIntfImg(AIntfImage: TLazIntfImage); virtual;
     procedure DrawToCanvas(ACanvas: TCanvas); virtual;
@@ -41,8 +43,6 @@ type
   public
     //StartPoint, EndPoint: TPoint; override;
     Bitmap: TFPImageBitmap;
-    QuestionText: String;
-    QuestionBox: TCanvas;
     procedure DrawToIntfImg(AIntfImage: TLazIntfImage); override;
     procedure DrawToCanvas(ACanvas: TCanvas); override;
     procedure ExecuteFinal; override;
@@ -108,14 +108,12 @@ procedure TFallingText.DrawToIntfImg(AIntfImage: TLazIntfImage);
 begin
   TTappyTuxDrawer.DrawImageWithTransparentColor(AIntfImage,
    Position.X, Position.Y, colFuchsia, Bitmap);
-  QuestionBox := TCanvas.Create;
-  //QuestionBox.TextOut(lPos.X, lPos.Y, QuestionText);
 end;
 
 procedure TFallingText.DrawToCanvas(ACanvas: TCanvas);
 begin
   //ACanvas.Pixels[CurrentStep, CurrentStep] := clRed;
-  ACanvas.TextOut(StartPoint.X + 30, StartPoint.Y + 50, QuestionText);
+  ACanvas.TextOut(Position.X + 30, Position.Y + 50, caption);
 end;
 
 procedure TFallingText.ExecuteFinal;

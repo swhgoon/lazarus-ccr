@@ -5,7 +5,7 @@ unit mod_tappymath;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   // LCL
   ExtCtrls,
   // TappyTux
@@ -24,8 +24,10 @@ type
     gameSLevel : Integer;
     gameSndFX : Boolean;
     gameMusic : Boolean;
+    gameQuestionList : TStringList;
     questionType : array[1..3] of Integer;
     questionAnswer : array[1..5] of Integer;
+    count : Integer;
     timerMath : TTimer;
     procedure HandleOnTimer(Sender: TObject);
 
@@ -38,7 +40,6 @@ type
     procedure CreateQuestion(); override;
     procedure Answered(); override;
     procedure EndGame(); override;
-    procedure QuestionGenerator(qNumber : Integer);
   end;
 
 implementation
@@ -50,19 +51,38 @@ uses gameplayform;
 procedure TTappyMath.HandleOnTimer(Sender: TObject);
 var
   i: Integer;
+  j: Integer;
+  frequency: Integer;
 begin
-  for i:= 1 to 5 do
+  i:= 0;
+  j:= vTappyTuxDrawer.GetAnimationCount - 1;
+  while (i<= j) do
   begin
-    Questions[i].Top := Questions[i].Top + (5*gameLevel);
-    if ((Questions[i].Top >= 370)) then
+    if vTappyTuxDrawer.GetAnimation(i).InheritsFrom(TFallingText) then
     begin
-       gameLives := gameLives - 1;
-       formTappyTuxGame.Lives.Text := IntToStr(gameLives);
-       if (gameLives = 0) then EndGame();
-       Questions[i].Top:= 24;
-       QuestionGenerator(i);
+       if (vTappyTuxDrawer.GetAnimation(i).Position.y >= 270) then
+       begin
+          gameLives := gameLives - 1;
+          formTappyTuxGame.Lives.Text := IntToStr(gameLives);
+          vTappyTuxDrawer.RemoveAnimation(i);
+          i := i - 1;
+          if (gameLives = 0) then EndGame();
+          CreateQuestion;
+       end;
     end;
-  end
+    i := i + 1;
+    j := vTappyTuxDrawer.GetAnimationCount - 1;
+  end;
+
+  frequency := 30;
+  count := count + 1;
+  if count >= frequency then
+  begin
+     count := 0;
+     CreateQuestion();
+  end;
+
+  vTappyTuxDrawer.HandleAnimationOnTimer();
 
 end;
 
@@ -99,8 +119,9 @@ end;
 procedure TTappyMath.StartNewGame(SndFX: Integer; Music: Integer; Level: Integer; QuestionList: Integer);
 var
   i: Integer;
+  lTuxAnimation: TTappySpriteAnimation;
 begin
-
+  count := 0;
   timerMath.Enabled := True;
   gameScore := 0;
   gameLives := 5;
@@ -120,74 +141,195 @@ begin
   formTappyTuxGame.Score.Text := IntToStr(gameScore);
   formTappyTuxGame.Lives.Text := IntToStr(gameLives);
 
+  // Animations Creation
+  lTuxAnimation := TTappySpriteAnimation.Create;
+  lTuxAnimation.IsInfinite := True;
+  lTuxAnimation.StartPoint := Point(250, 328);
+  lTuxAnimation.EndPoint := lTuxAnimation.StartPoint;
+  SetLength(lTuxAnimation.Bitmaps, 6);
+  lTuxAnimation.Bitmaps[0] := TPortableNetworkGraphic.Create;
+  lTuxAnimation.Bitmaps[0].LoadFromFile(vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'tux_1.png');
+  lTuxAnimation.Bitmaps[1] := TPortableNetworkGraphic.Create;
+  lTuxAnimation.Bitmaps[1].LoadFromFile(vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'tux_2.png');
+  lTuxAnimation.Bitmaps[2] := TPortableNetworkGraphic.Create;
+  lTuxAnimation.Bitmaps[2].LoadFromFile(vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'tux_3.png');
+  lTuxAnimation.Bitmaps[3] := TPortableNetworkGraphic.Create;
+  lTuxAnimation.Bitmaps[3].LoadFromFile(vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'tux_4.png');
+  lTuxAnimation.Bitmaps[4] := lTuxAnimation.Bitmaps[2];
+  lTuxAnimation.Bitmaps[5] := lTuxAnimation.Bitmaps[1];
+  vTappyTuxDrawer.AddAnimation(lTuxAnimation);
+
   for i:= 1 to 5 do
   begin
-    QuestionGenerator(i);
+    CreateQuestion;
   end
 
 end;
 
 procedure TTappyMath.CreateQuestion;
-begin
-
-end;
-
-procedure TTappyMath.Answered;
 var
   i: Integer;
+  j: Integer;
+  xAux: Integer;
+  yAux: Integer;
+  heightAux: array [0..4] of integer;
+  existenceAux: array [0..4] of boolean;
+  snowmanAnimation: TFallingText;
+
 begin
-  for i:= 1 to 5 do
+
+  for i:= 0 to 4 do
   begin
-    if (formTappyTuxGame.Answer.Text = IntToStr(questionAnswer[i])) then
+     existenceAux[i]:= False;
+     heightAux[i] := 500;
+  end;
+
+  xAux:=5;
+  yAux:=5;
+
+  snowmanAnimation := TFallingText.Create;
+  snowmanAnimation.IsInfinite := False;
+
+
+  for i:= 0 to vTappyTuxDrawer.GetAnimationCount - 1 do
+  begin
+     if vTappyTuxDrawer.GetAnimation(i).InheritsFrom(TFallingText) then
+     begin
+        for j:= 0  to 4 do
+        begin
+           if vTappyTuxDrawer.GetAnimation(i).StartPoint.X = 5+(103*j) then
+           begin
+              existenceAux[j] := True;
+              if vTappyTuxDrawer.GetAnimation(i).Position.Y < heightAux[j] then heightAux[j] := vTappyTuxDrawer.GetAnimation(i).Position.Y;
+           end;
+        end;
+     end;
+  end;
+
+  for i:= 0 to 4 do
+  begin
+     if heightAux[i] > yAux then
+     begin
+        yAux := heightAux[i];
+        xAux := 5 + i*103;
+     end;
+  end;
+
+
+  if existenceAux[0] = false then xAux := 5
+  else
+  begin
+    if existenceAux[1] = false then xAux := 108
+    else
     begin
-       Questions[i].Top := 24;
-       QuestionGenerator(i);
-       gameScore := gameScore +1;
-       gameLevel := (gameScore div 20) + gameSLevel;
-       formTappyTuxGame.Score.Text := IntToStr(gameScore);
-       formTappyTuxGame.Level.Text := IntToStr(gameLevel);
+      if existenceAux[2] = false then xAux := 211
+      else
+      begin
+        if existenceAux[3] = false then xAux := 314
+        else
+        begin
+          if existenceAux[4] = false then xAux := 417
+        end;
+      end;
     end;
-  end
+  end;
 
-end;
+  snowmanAnimation.StartPoint := Point(xAux, 5);
+  snowmanAnimation.EndPoint := Point(xAux, 205);
+  snowmanAnimation.IsInfinite:= false;
+  snowmanAnimation.Bitmap := TPortableNetworkGraphic.Create;
+  //snowmanAnimation.caption:= gameQuestionList[random(gameQuestionList.Count - 1)];
+  snowmanAnimation.Bitmap.LoadFromFile(vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'snowman.png');
 
-procedure TTappyMath.EndGame;
-begin
-  timerMath.Enabled := False;
-  formTappyTuxGame.Answer.ReadOnly := true;
-  formTappyTuxGame.GameOver.Visible := true;
-  formTappyTuxGame.Yes.Visible := true;
-  formTappyTuxGame.No.Visible := true;
-end;
-
-procedure TTappyMath.QuestionGenerator(qNumber : Integer);
-begin
   questionType[1] := random(3);
 
   Case questionType[1] of
   0: begin
     questionType[2] := random(21);
     questionType[3] := random(21);
-    questionAnswer[qNumber] := questionType[2] + questionType[3];
-    Questions[qNumber].Text := IntToStr(questionType[2])+' + ' +IntToStr(questionType[3]);
+    snowmanAnimation.value := IntToStr(questionType[2] + questionType[3]);
+    snowmanAnimation.caption := IntToStr(questionType[2])+' + ' +IntToStr(questionType[3]);
     end;
 
   1: begin
     questionType[2] := random(21);
     questionType[3] := random(questionType[2]);
-    questionAnswer[qNumber] := questionType[2] - questionType[3];
-    Questions[qNumber].Text := IntToStr(questionType[2])+' - ' +IntToStr(questionType[3]);
+    snowmanAnimation.value := IntToStr(questionType[2] - questionType[3]);
+    snowmanAnimation.caption := IntToStr(questionType[2])+' - ' +IntToStr(questionType[3]);
     end;
 
   2: begin
     questionType[2] := random(11);
     questionType[3] := random(11);
-    questionAnswer[qNumber] := questionType[2] * questionType[3];
-    Questions[qNumber].Text := IntToStr(questionType[2])+' x ' +IntToStr(questionType[3]);
+    snowmanAnimation.value := IntToStr(questionType[2] * questionType[3]);
+    snowmanAnimation.caption := IntToStr(questionType[2])+' x ' +IntToStr(questionType[3]);
     end;
 
   end;
 
+  vTappyTuxDrawer.AddAnimation(snowmanAnimation);
+
+end;
+
+procedure TTappyMath.Answered;
+var
+  i: Integer;
+  j: Integer;
+begin
+  i:= 0;
+  j:= vTappyTuxDrawer.GetAnimationCount - 1;
+  while (i<= j) do
+  begin
+    if vTappyTuxDrawer.GetAnimation(i).InheritsFrom(TFallingText) then
+    begin
+       if (vTappyTuxDrawer.GetAnimation(i).value = formTappyTuxGame.Answer.Text) then
+       begin
+          gameScore := gameScore +1;
+          gameLevel := (gameScore div 20) + gameSLevel;
+          formTappyTuxGame.Score.Text := IntToStr(gameScore);
+          formTappyTuxGame.Level.Text := IntToStr(gameLevel);
+          vTappyTuxDrawer.RemoveAnimation(i);
+          i := i - 1;
+          CreateQuestion;
+       end;
+    end;
+    i := i + 1;
+    j := vTappyTuxDrawer.GetAnimationCount - 1;
+  end;
+
+end;
+
+procedure TTappyMath.EndGame;
+var
+  i : Integer;
+  j : Integer;
+  gameOverScreen: TTappySpriteAnimation;
+  continueBtn: TButton;
+  exitBtn: TButton;
+begin
+  timerMath.Enabled := False;
+  formTappyTuxGame.Answer.ReadOnly := true;
+
+  //gameOverScreen := TTappySpriteAnimation.Create;
+  //gameOverScreen.IsInfinite := True;
+  //gameOverScreen.StartPoint := Point(90, 150);
+  //gameOverScreen.EndPoint := gameOverScreen.StartPoint;
+  //SetLength(gameOverScreen.Bitmaps, 1);
+  //gameOverScreen.Bitmaps[0] := TPortableNetworkGraphic.Create;
+  //gameOverScreen.Bitmaps[0].LoadFromFile(vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'gameover.png');
+  //vTappyTuxDrawer.AddAnimation(gameOverScreen);
+
+  i:= 0;
+  j:= vTappyTuxDrawer.GetAnimationCount - 1;
+  while (i<= j) do
+  begin
+     vTappyTuxDrawer.RemoveAnimation(i);
+     j := vTappyTuxDrawer.GetAnimationCount - 1;
+  end;
+
+  formTappyTuxGame.GameOver.Visible := true;
+  formTappyTuxGame.Yes.Visible := true;
+  formTappyTuxGame.No.Visible := true;
 end;
 
 initialization
