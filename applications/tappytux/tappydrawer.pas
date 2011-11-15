@@ -34,15 +34,6 @@ type
     procedure ExecuteFinal; override;
   end;
 
-  { TBallonAnimation
-
-  TBallonAnimation = class(TTappyTuxAnimation)
-  public
-    constructor Create; override;
-    procedure DrawToCanvas(ACanvas: TCanvas); override;
-    procedure ExecuteFinal; override;
-  end;}
-
   { TFallingText }
   TFallingText = class(TTappyTuxAnimation)
   public
@@ -77,9 +68,10 @@ type
     procedure HandleMouseDown(Sender: TObject; Button: TMouseButton;
                           Shift: TShiftState; X, Y: Integer);
     procedure HandleOnTimer(Sender: TObject);
-    procedure AddAnimation(AAnimation: TTappyTuxAnimation);
+    function AddAnimation(AAnimation: TTappyTuxAnimation): Integer;
     function GetAnimation(AIndex: Integer): TTappyTuxAnimation;
     function GetAnimationCount: Integer;
+    procedure RemoveAnimation(AIndex: Integer);
     procedure HandleAnimationOnTimer();
   end;
 
@@ -87,26 +79,6 @@ var
   vTappyTuxDrawer: TTappyTuxDrawer;
 
 implementation
-
-{ TBallonAnimation
-
-constructor TBallonAnimation.Create;
-begin
-  inherited Create;
-
-  CurrentStep := 0;
-  StepCount := 200;
-end;
-
-procedure TBallonAnimation.DrawToCanvas(ACanvas: TCanvas);
-begin
-  ACanvas.Pixels[CurrentStep, CurrentStep] := clRed;
-end;
-
-procedure TBallonAnimation.ExecuteFinal;
-begin
-  // Lost the game if the ballon reached its end
-end}
 
 { TTappySpriteAnimation }
 
@@ -350,9 +322,9 @@ begin
   end;}
 end;
 
-procedure TTappyTuxDrawer.AddAnimation(AAnimation: TTappyTuxAnimation);
+function TTappyTuxDrawer.AddAnimation(AAnimation: TTappyTuxAnimation): Integer;
 begin
-  FAnimationList.Add(AAnimation);
+  Result := FAnimationList.Add(AAnimation);
 end;
 
 function TTappyTuxDrawer.GetAnimation(AIndex: Integer): TTappyTuxAnimation;
@@ -363,6 +335,11 @@ end;
 function TTappyTuxDrawer.GetAnimationCount: Integer;
 begin
   Result := FAnimationList.Count;
+end;
+
+procedure TTappyTuxDrawer.RemoveAnimation(AIndex: Integer);
+begin
+  FAnimationList.Delete(AIndex);
 end;
 
 procedure TTappyTuxDrawer.HandleAnimationOnTimer;
