@@ -32,7 +32,7 @@ Type
 
   TInProcessTransport = class(TBaseTransport,ITransport)
   Private
-    FAdress: string;
+    FAddress: string;
     FContentType: string;
     FFormat : string;
   Public                             
@@ -40,7 +40,7 @@ Type
     procedure SendAndReceive(ARequest,AResponse:TStream); override;
   Published
     property ContentType : string Read FContentType Write FContentType;
-    property Adress : string Read FAdress Write FAdress;
+    property Address : string Read FAddress Write FAddress;
     property Format : string read FFormat write FFormat;
   End;
 {$M+}
@@ -64,7 +64,7 @@ Var
   i : Int64;
 {$ENDIF WST_DBG}
 begin
-  bffr := TRequestBuffer.Create(Adress,ContentType,ARequest,AResponse,Format);
+  bffr := TRequestBuffer.Create(Address,ContentType,ARequest,AResponse,Format);
   HandleServiceRequest(bffr);
   {$IFDEF WST_DBG}
   i := AResponse.Position;
