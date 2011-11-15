@@ -3,7 +3,7 @@ object formBrowser: TformBrowser
   Height = 439
   Top = 186
   Width = 621
-  ClientHeight = 439
+  ClientHeight = 412
   ClientWidth = 621
   Color = clBtnFace
   Font.Color = clWindowText
@@ -18,7 +18,7 @@ object formBrowser: TformBrowser
   object panelBottom: TPanel
     Left = 0
     Height = 18
-    Top = 421
+    Top = 394
     Width = 621
     Align = alBottom
     Alignment = taLeftJustify
@@ -39,7 +39,7 @@ object formBrowser: TformBrowser
       Left = 319
       Height = 16
       Top = 3
-      Width = 22
+      Width = 21
       Caption = 'Idle'
       ParentColor = False
     end

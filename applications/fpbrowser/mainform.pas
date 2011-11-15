@@ -126,10 +126,12 @@ type
     CurrentTab: Integer;
     procedure LoadURL(AURL: string);
     procedure AddBrowserTab(AURL: string; AGoToTab: Boolean);
+    procedure AddBrowserControlsToTab(ATabSheet: TCDTabSheet);
     procedure AddMemoTab(AText: TStringList; ACaption: string; AGoToTab: Boolean);
     procedure AddURLToHistory(AURL: string);
     procedure HandlePageLoaderProgress(APercent: Integer);
     procedure HandlePageLoaderTerminated(Sender: TObject);
+    procedure HandleUserAddedPage(Sender: TObject; APage: TCDTabSheet);
   end;
 
 var
@@ -147,7 +149,8 @@ begin
   pageBrowser.Align := alClient;
   pageBrowser.DrawStyle := dsKDE;
   pageBrowser.Options := [nboShowCloseButtons, nboHidePageListPopup,
-    nboKeyboardTabSwitch];
+    nboKeyboardTabSwitch, nboShowAddTabButton];
+  pageBrowser.OnUserAddedPage := HandleUserAddedPage;
 
   InitializeForm();
 end;
@@ -776,18 +779,30 @@ end;
 
 procedure TformBrowser.AddBrowserTab(AURL: string; AGoToTab: Boolean);
 var
-  lViewer: TBrowserViewer;
   lTabSheet: TCDTabSheet;
-  lTopPanel: TPanel;
-  lbuttonReload, lbuttonBack, lbuttonForward: TBitBtn;
-  leditURL: TEdit;
 begin
   lTabSheet := pageBrowser.AddPage(''); // This call requires Lazarus 0.9.31+
   lTabSheet.Caption := 'WebPage';
 
+  AddBrowserControlsToTab(lTabSheet);
+
+  if AGoToTab then
+  begin
+    CurrentTab := GetBrowerViewerCount() - 1;
+    SetCurrentBrowserViewer(CurrentTab);
+  end;
+end;
+
+procedure TformBrowser.AddBrowserControlsToTab(ATabSheet: TCDTabSheet);
+var
+  lViewer: TBrowserViewer;
+  lTopPanel: TPanel;
+  lbuttonReload, lbuttonBack, lbuttonForward: TBitBtn;
+  leditURL: TEdit;
+begin
   // Add the top panel of the tab with buttons and the edit box
-  lTopPanel := TPanel.Create(lTabSheet);
-  lTopPanel.Parent := lTabSheet;
+  lTopPanel := TPanel.Create(ATabSheet);
+  lTopPanel.Parent := ATabSheet;
   lTopPanel.Align := alTop;
   lTopPanel.Height := 33;
 
@@ -828,13 +843,7 @@ begin
 
   // Add the HTML Viewer
   lViewer := AddBrowserViewer();
-  lViewer.CreateViewer(lTabSheet, Self);
-
-  if AGoToTab then
-  begin
-    CurrentTab := GetBrowerViewerCount() - 1;
-    SetCurrentBrowserViewer(CurrentTab);
-  end;
+  lViewer.CreateViewer(ATabSheet, Self);
 end;
 
 procedure TformBrowser.AddMemoTab(AText: TStringList; ACaption: string;
@@ -884,6 +893,11 @@ begin
 
 
   AddURLToHistory(MyPageLoader.LastPageURL);}
+end;
+
+procedure TformBrowser.HandleUserAddedPage(Sender: TObject; APage: TCDTabSheet);
+begin
+  AddBrowserControlsToTab(APage);
 end;
 
 procedure TformBrowser.Timer1Timer(Sender: TObject);

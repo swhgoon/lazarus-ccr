@@ -195,7 +195,7 @@ begin
   ViewerName := 'Turbo Power iPro HTML viewer written in Pascal';
 
   DataProvider1:=TMyIpHtmlDataProvider.Create(AOwner);
-  DataProvider1.Name:='DataProvider1';
+  //DataProvider1.Name:='DataProvider1';
   DataProvider1.OnCanHandle:=DataProvider1CanHandle;
   DataProvider1.OnGetHtml:=DataProvider1GetHtml;
   DataProvider1.OnGetImage:=DataProvider1GetImage;
@@ -204,7 +204,7 @@ begin
   DataProvider1.OnReportReference:=DataProvider1ReportReference;
 
   IpHtmlPanel1:=TIpHtmlPanel.Create(AOwner);
-  IpHtmlPanel1.Name:='IpHtmlPanel1';
+  //IpHtmlPanel1.Name:='IpHtmlPanel1';
   IpHtmlPanel1.Parent:=AParent;
   IpHtmlPanel1.Align:=alClient;
   IpHtmlPanel1.DefaultFontSize:=10;
