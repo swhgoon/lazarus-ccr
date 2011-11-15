@@ -63,6 +63,7 @@ type
     class procedure DrawImageWithTransparentColor(
       ADest: TLazIntfImage; const ADestX, ADestY: Integer; AColor: TFPColor;
       AImage: TFPImageBitmap);
+    class function DateTimeToMilliseconds(aDateTime: TDateTime): Int64;
     //function GetImage(ATile: TChessTile): TPortableNetworkGraphic;
     procedure HandleMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure HandleMouseUp(Sender: TObject; Button: TMouseButton;
@@ -207,7 +208,11 @@ var
   X, Y: integer;
   i: Integer;
   lAnimation: TTappyTuxAnimation;
+  lStartTime, lTimeDiff: TDateTime;
 begin
+  {$IFDEF TAPPY_PROFILER}
+  lStartTime := Now;
+  {$ENDIF}
   lIntfImage := TLazIntfImage.Create(0, 0);
   lTmpBmp := TBitmap.Create;
   try
@@ -242,6 +247,10 @@ begin
     lTmpBmp.Free;
     lIntfImage.Free;
   end;
+  {$IFDEF TAPPY_PROFILER}
+  lTimeDiff := Now - lStartTime;
+  // DebugLn(Format('[TwebLobbyServer.DataModuleRequest] END RequestClass=%s Performance: %7d ms', [Msg.ClassName, DateTimeToMilliseconds(lTimeDiff)]));
+  {$ENDIF}
 end;
 
 class procedure TTappyTuxDrawer.DrawImageWithTransparentColor(ADest: TLazIntfImage;
@@ -279,6 +288,17 @@ begin
   finally
     IntfImage.Free;
   end;
+end;
+
+class function TTappyTuxDrawer.DateTimeToMilliseconds(aDateTime: TDateTime
+  ): Int64;
+var
+  TimeStamp: TTimeStamp;
+begin
+  {Call DateTimeToTimeStamp to convert DateTime to TimeStamp:}
+  TimeStamp:= DateTimeToTimeStamp (aDateTime);
+  {Multiply and add to complete the conversion:}
+  Result:= TimeStamp.Time;
 end;
 
 procedure TTappyTuxDrawer.HandleMouseMove(Sender: TObject; Shift: TShiftState; X,
