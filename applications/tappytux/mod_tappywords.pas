@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls, fpSound,
   // LCL
-  ExtCtrls,
+  ExtCtrls, IntfGraphics,
   // TappyTux
   tappyconfig, tappydrawer, tappymodules;
 
@@ -99,10 +99,9 @@ begin
           snowmanWrong.StartPoint := vTappyTuxDrawer.GetAnimation(i).Position;
           snowmanWrong.EndPoint := vTappyTuxDrawer.GetAnimation(i).Position;
           snowmanWrong.Position := vTappyTuxDrawer.GetAnimation(i).Position;
-          snowmanWrong.Bitmap := TPortableNetworkGraphic.Create;
           snowmanWrong.caption:= 'Oh-oh!';
           snowmanWrong.value:= '0';
-          snowmanWrong.Bitmap.LoadFromFile(vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'snowmanwrong.png');
+          snowmanWrong.LoadImageFromPng(vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'snowmanwrong.png');
           vTappyTuxDrawer.AddAnimation(snowmanWrong);
           vTappyTuxDrawer.RemoveAnimation(i);
           i := i -1;
@@ -157,7 +156,6 @@ procedure TTappyWords.StartNewGame(SndFX: Integer; Music: Integer; Level: Intege
 var
   i: Integer;
   lTuxAnimation: TTappySpriteAnimation;
-
 begin
   count := 5;
   timerWords.Enabled := True;
@@ -174,8 +172,8 @@ begin
 
   if QuestionList < 0 then QuestionList := 0;
   gameQuestionList := TStringList.Create;
-  //gameQuestionList.LoadFromFile(vTappyTuxConfig.GetResourcesDir() + 'images'+PathDelim+'modules'+PathDelim+'tappywords'+PathDelim+'0.txt');
-  gameQuestionList.LoadFromFile('C:/'+IntToStr(QuestionList)+'.txt');
+  gameQuestionList.LoadFromFile(vTappyTuxConfig.GetResourcesDir() + 'images'+PathDelim+'modules'+PathDelim+'tappywords'+PathDelim+'0.txt');
+  //gameQuestionList.LoadFromFile('C:/'+IntToStr(QuestionList)+'.txt');
 
   formTappyTuxGame.Answer.ReadOnly := false;
   formTappyTuxGame.GameOver.Visible := false;
@@ -190,17 +188,13 @@ begin
   lTuxAnimation.IsInfinite := True;
   lTuxAnimation.StartPoint := Point(250, 328);
   lTuxAnimation.EndPoint := lTuxAnimation.StartPoint;
-  SetLength(lTuxAnimation.Bitmaps, 6);
-  lTuxAnimation.Bitmaps[0] := TPortableNetworkGraphic.Create;
-  lTuxAnimation.Bitmaps[0].LoadFromFile(vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'tux_1.png');
-  lTuxAnimation.Bitmaps[1] := TPortableNetworkGraphic.Create;
-  lTuxAnimation.Bitmaps[1].LoadFromFile(vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'tux_2.png');
-  lTuxAnimation.Bitmaps[2] := TPortableNetworkGraphic.Create;
-  lTuxAnimation.Bitmaps[2].LoadFromFile(vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'tux_3.png');
-  lTuxAnimation.Bitmaps[3] := TPortableNetworkGraphic.Create;
-  lTuxAnimation.Bitmaps[3].LoadFromFile(vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'tux_4.png');
-  lTuxAnimation.Bitmaps[4] := lTuxAnimation.Bitmaps[2];
-  lTuxAnimation.Bitmaps[5] := lTuxAnimation.Bitmaps[1];
+  SetLength(lTuxAnimation.Images, 6);
+  lTuxAnimation.LoadImageFromPng(0, vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'tux_1.png');
+  lTuxAnimation.LoadImageFromPng(1, vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'tux_2.png');
+  lTuxAnimation.LoadImageFromPng(2, vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'tux_3.png');
+  lTuxAnimation.LoadImageFromPng(3, vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'tux_4.png');
+  lTuxAnimation.LoadImageFromPng(4, vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'tux_3.png');
+  lTuxAnimation.LoadImageFromPng(5, vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'tux_2.png');
   vTappyTuxDrawer.AddAnimation(lTuxAnimation);
 
   //Sound Creation
@@ -227,7 +221,6 @@ var
   heightAux: array [0..4] of integer;
   existenceAux: array [0..4] of boolean;
   snowmanAnimation: TFallingText;
-
 begin
 
   for i:= 0 to 4 do
@@ -288,9 +281,8 @@ begin
   snowmanAnimation.StartPoint := Point(xAux, 5);
   snowmanAnimation.EndPoint := Point(xAux, 100);
   snowmanAnimation.IsInfinite:= false;
-  snowmanAnimation.Bitmap := TPortableNetworkGraphic.Create;
+  snowmanAnimation.LoadImageFromPng(vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'snowman.png');
   snowmanAnimation.caption:= gameQuestionList[random(gameQuestionList.Count - 1)];
-  snowmanAnimation.Bitmap.LoadFromFile(vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'snowman.png');
   vTappyTuxDrawer.AddAnimation(snowmanAnimation);
 
 end;
@@ -300,7 +292,6 @@ var
   i: Integer;
   j: Integer;
   snowmanRight: TFallingText;
-
 begin
   i:= 0;
   j:= vTappyTuxDrawer.GetAnimationCount - 1;
@@ -319,10 +310,9 @@ begin
           snowmanRight.StartPoint := vTappyTuxDrawer.GetAnimation(i).Position;
           snowmanRight.EndPoint := vTappyTuxDrawer.GetAnimation(i).Position;
           snowmanRight.Position := vTappyTuxDrawer.GetAnimation(i).Position;
-          snowmanRight.Bitmap := TPortableNetworkGraphic.Create;
+          snowmanRight.LoadImageFromPng(vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'snowmanright.png');
           snowmanRight.caption:= 'OK!';
           snowmanRight.value:= '0';
-          snowmanRight.Bitmap.LoadFromFile(vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'snowmanright.png');
           vTappyTuxDrawer.AddAnimation(snowmanRight);
           vTappyTuxDrawer.RemoveAnimation(i);
           i := i - 1;

@@ -1,7 +1,7 @@
 object formTappyTuxGame: TformTappyTuxGame
-  Left = 599
+  Left = 388
   Height = 425
-  Top = 312
+  Top = 172
   Width = 621
   Caption = 'Tappy Tux'
   ClientHeight = 425
@@ -21,7 +21,7 @@ object formTappyTuxGame: TformTappyTuxGame
   end
   object Answer: TEdit
     Left = 104
-    Height = 23
+    Height = 22
     Top = 392
     Width = 514
     OnKeyPress = AnswerKeyPress
@@ -83,7 +83,7 @@ object formTappyTuxGame: TformTappyTuxGame
   end
   object Level: TEdit
     Left = 8
-    Height = 23
+    Height = 22
     Top = 64
     Width = 76
     ReadOnly = True
@@ -91,7 +91,7 @@ object formTappyTuxGame: TformTappyTuxGame
   end
   object Score: TEdit
     Left = 8
-    Height = 23
+    Height = 22
     Top = 152
     Width = 76
     ReadOnly = True
@@ -99,7 +99,7 @@ object formTappyTuxGame: TformTappyTuxGame
   end
   object Lives: TEdit
     Left = 8
-    Height = 23
+    Height = 22
     Top = 232
     Width = 76
     ReadOnly = True

@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Controls, Graphics, LCLType, IntfGraphics, fpimage,
-  Math,
+  Math, LCLIntf,
   tappyconfig, tappymodules;
 
 type
@@ -14,6 +14,7 @@ type
   { TTappyTuxAnimation }
 
   TTappyTuxAnimation = class
+  public
     StartPoint, EndPoint: TPoint;
     Position: TPoint;
     CurrentStep: Integer;
@@ -32,20 +33,22 @@ type
 
   TTappySpriteAnimation = class(TTappyTuxAnimation)
   public
-    //StartPoint, EndPoint: TPoint; override;
-    Bitmaps: array of TFPImageBitmap;
+    Images: array of TLazIntfImage;
+    destructor Destroy; override;
     procedure DrawToIntfImg(AIntfImage: TLazIntfImage); override;
     procedure ExecuteFinal; override;
+    procedure LoadImageFromPng(AIndex: Integer; APath: string);
   end;
 
   { TFallingText }
   TFallingText = class(TTappyTuxAnimation)
   public
-    //StartPoint, EndPoint: TPoint; override;
-    Bitmap: TFPImageBitmap;
+    Image: TLazIntfImage;
+    destructor Destroy; override;
     procedure DrawToIntfImg(AIntfImage: TLazIntfImage); override;
     procedure DrawToCanvas(ACanvas: TCanvas); override;
     procedure ExecuteFinal; override;
+    procedure LoadImageFromPng(APath: string);
   end;
 
   { TTappyTuxDrawer }
@@ -62,7 +65,7 @@ type
     procedure DrawToCanvas(ACanvas: TCanvas);
     class procedure DrawImageWithTransparentColor(
       ADest: TLazIntfImage; const ADestX, ADestY: Integer; AColor: TFPColor;
-      AImage: TFPImageBitmap);
+      AImage: TLazIntfImage);
     class function DateTimeToMilliseconds(aDateTime: TDateTime): Int64;
     //function GetImage(ATile: TChessTile): TPortableNetworkGraphic;
     procedure HandleMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -85,17 +88,26 @@ implementation
 
 { TTappySpriteAnimation }
 
+destructor TTappySpriteAnimation.Destroy;
+var
+  i: Integer;
+begin
+{  for i := 0 to Length(Images)-1 do
+    if Assigned(Images[i]) then Images[i].Free;}
+  inherited Destroy;
+end;
+
 procedure TTappySpriteAnimation.DrawToIntfImg(AIntfImage: TLazIntfImage);
 var
   lNumBitmaps, lCurBmpIndex: Integer;
 begin
-  lNumBitmaps := Length(Bitmaps);
+  lNumBitmaps := Length(Images);
   if lNumBitmaps = 0 then Exit;
 
   lCurBmpIndex := CurrentStep mod lNumBitmaps;
 
   TTappyTuxDrawer.DrawImageWithTransparentColor(AIntfImage,
-   Position.X, Position.Y, colFuchsia, Bitmaps[lCurBmpIndex]);
+   Position.X, Position.Y, colFuchsia, Images[lCurBmpIndex]);
 end;
 
 procedure TTappySpriteAnimation.ExecuteFinal;
@@ -103,12 +115,32 @@ begin
   inherited ExecuteFinal;
 end;
 
+procedure TTappySpriteAnimation.LoadImageFromPng(AIndex: Integer; APath: string);
+var
+  lBitmap: TPortableNetworkGraphic;
+begin
+  lBitmap := TPortableNetworkGraphic.Create;
+  try
+    lBitmap.LoadFromFile(APath);
+    Images[AIndex] := TLazIntfImage.Create(0, 0);
+    Images[AIndex].LoadFromBitmap(lBitmap.Handle, 0);
+  finally
+    lBitmap.Free;
+  end;
+end;
+
 {TFallingText}
+
+destructor TFallingText.Destroy;
+begin
+  if Assigned(Image) then Image.Free;
+  inherited Destroy;
+end;
 
 procedure TFallingText.DrawToIntfImg(AIntfImage: TLazIntfImage);
 begin
   TTappyTuxDrawer.DrawImageWithTransparentColor(AIntfImage,
-   Position.X, Position.Y, colFuchsia, Bitmap);
+   Position.X, Position.Y, colFuchsia, Image);
 end;
 
 procedure TFallingText.DrawToCanvas(ACanvas: TCanvas);
@@ -120,6 +152,20 @@ end;
 procedure TFallingText.ExecuteFinal;
 begin
   inherited ExecuteFinal;
+end;
+
+procedure TFallingText.LoadImageFromPng(APath: string);
+var
+  lBitmap: TPortableNetworkGraphic;
+begin
+  lBitmap := TPortableNetworkGraphic.Create;
+  try
+    lBitmap.LoadFromFile(APath);
+    Image := TLazIntfImage.Create(0, 0);
+    Image.LoadFromBitmap(lBitmap.Handle, 0);
+  finally
+    lBitmap.Free;
+  end;
 end;
 
 
@@ -208,7 +254,7 @@ var
   X, Y: integer;
   i: Integer;
   lAnimation: TTappyTuxAnimation;
-  lStartTime, lTimeDiff: TDateTime;
+  lStartTime, lAnimTime, lTimeDiff: TDateTime;
 begin
   {$IFDEF TAPPY_PROFILER}
   lStartTime := Now;
@@ -224,7 +270,14 @@ begin
     begin
       lAnimation := TTappyTuxAnimation(FAnimationList.Items[i]);
       lAnimation.CalculatePosition();
+      {$IFDEF TAPPY_PROFILER}
+      lAnimTime := Now;
+      {$ENDIF}
       lAnimation.DrawToIntfImg(lIntfImage);
+      {$IFDEF TAPPY_PROFILER}
+      lTimeDiff := Now - lAnimTime;
+      WriteLn(Format('[TTappyTuxDrawer.DrawToCanvas] %s %d DrawToIntfImage Performance: %7d ms', [lAnimation.ClassName, i, DateTimeToMilliseconds(lTimeDiff)]));
+      {$ENDIF}
     end;
 
     lTmpBmp.LoadFromIntfImage(lIntfImage);
@@ -234,9 +287,7 @@ begin
     // Now TCanvas drawings
     // -------------------------
 
-    // Now the module should draw itself
-
-    // Draw all animations via TLazIntfImage
+    // Second pass of animation drawings, now draw via TCanvas for using fonts
     for i := 0 to FAnimationList.Count - 1 do
     begin
       lAnimation := TTappyTuxAnimation(FAnimationList.Items[i]);
@@ -249,44 +300,35 @@ begin
   end;
   {$IFDEF TAPPY_PROFILER}
   lTimeDiff := Now - lStartTime;
-  // DebugLn(Format('[TwebLobbyServer.DataModuleRequest] END RequestClass=%s Performance: %7d ms', [Msg.ClassName, DateTimeToMilliseconds(lTimeDiff)]));
+  WriteLn(Format('[TTappyTuxDrawer.DrawToCanvas] Performance: %7d ms', [DateTimeToMilliseconds(lTimeDiff)]));
   {$ENDIF}
 end;
 
 class procedure TTappyTuxDrawer.DrawImageWithTransparentColor(ADest: TLazIntfImage;
-  const ADestX, ADestY: Integer; AColor: TFPColor; AImage: TFPImageBitmap);
+  const ADestX, ADestY: Integer; AColor: TFPColor; AImage: TLazIntfImage);
 var
   x, y, CurX, CurY: Integer;
-  IntfImage: TLazIntfImage;
   lDrawWidth, lDrawHeight: Integer;
   CurColor: TFPColor;
 begin
-  IntfImage := TLazIntfImage.Create(0,0);
-  try
-    IntfImage.LoadFromBitmap(AImage.Handle, AImage.MaskHandle);
-
-    // Take care not to draw outside the destination area
-    lDrawWidth := Min(ADest.Width - ADestX, AImage.Width);
-    lDrawHeight := Min(ADest.Height - ADestY, AImage.Height);
-    for y := 0 to lDrawHeight - 1 do
+  // Take care not to draw outside the destination area
+  lDrawWidth := Min(ADest.Width - ADestX, AImage.Width);
+  lDrawHeight := Min(ADest.Height - ADestY, AImage.Height);
+  for y := 0 to lDrawHeight - 1 do
+  begin
+    for x := 0 to lDrawWidth - 1 do
     begin
-      for x := 0 to lDrawWidth - 1 do
-      begin
-        CurX := ADestX + x;
-        CurY := ADestY + y;
+      CurX := ADestX + x;
+      CurY := ADestY + y;
 
-        // Never draw outside the destination
-        if (CurX < 0) or (CurY < 0) then Continue;
+      // Never draw outside the destination
+      if (CurX < 0) or (CurY < 0) then Continue;
 
-        CurColor := AImage.Canvas.Colors[x, y]; // Good for debugging
-        if ((CurColor.Green div $FF) <> (AColor.Green div $FF)) or
-          ((CurColor.Red div $FF) <> (AColor.Red div $FF)) or
-          ((CurColor.Blue div $FF) <> (AColor.Blue div $FF)) then
-          ADest.Colors[CurX, CurY] := IntfImage.Colors[x, y];
-      end;
+      CurColor := AImage.Colors[x, y];
+      if (AColor.Green <> CurColor.Green) or (AColor.Red <> CurColor.Red)
+       or (AColor.Blue <> CurColor.Blue) then
+        ADest.Colors[CurX, CurY] := CurColor;
     end;
-  finally
-    IntfImage.Free;
   end;
 end;
 
