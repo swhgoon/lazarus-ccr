@@ -18,10 +18,8 @@ type
     StartPoint, EndPoint: TPoint;
     Position: TPoint;
     CurrentStep: Integer;
-    StepCount: Integer;
+    StepCount: Integer; // In miliseconds
     IsInfinite: Boolean; // if True the animation will never end
-    caption: String;
-    value: String;
     constructor Create; virtual;
     procedure DrawToIntfImg(AIntfImage: TLazIntfImage); virtual;
     procedure DrawToCanvas(ACanvas: TCanvas); virtual;
@@ -34,6 +32,8 @@ type
   TTappySpriteAnimation = class(TTappyTuxAnimation)
   public
     Images: array of TLazIntfImage;
+    SpriteChangeInterval: Integer;
+    constructor Create; override;
     destructor Destroy; override;
     procedure DrawToIntfImg(AIntfImage: TLazIntfImage); override;
     procedure ExecuteFinal; override;
@@ -43,7 +43,11 @@ type
   { TFallingText }
   TFallingText = class(TTappyTuxAnimation)
   public
+    Caption: String;
+    Value: Integer;
+    ProcessOnEnd: Boolean;
     Image: TLazIntfImage;
+    constructor Create; override;
     destructor Destroy; override;
     procedure DrawToIntfImg(AIntfImage: TLazIntfImage); override;
     procedure DrawToCanvas(ACanvas: TCanvas); override;
@@ -78,7 +82,7 @@ type
     function GetAnimation(AIndex: Integer): TTappyTuxAnimation;
     function GetAnimationCount: Integer;
     procedure RemoveAnimation(AIndex: Integer);
-    procedure HandleAnimationOnTimer();
+    procedure HandleAnimationOnTimer(AInterval: Integer);
   end;
 
 var
@@ -87,6 +91,12 @@ var
 implementation
 
 { TTappySpriteAnimation }
+
+constructor TTappySpriteAnimation.Create;
+begin
+  inherited Create;
+  SpriteChangeInterval := 1000;
+end;
 
 destructor TTappySpriteAnimation.Destroy;
 var
@@ -104,7 +114,7 @@ begin
   lNumBitmaps := Length(Images);
   if lNumBitmaps = 0 then Exit;
 
-  lCurBmpIndex := CurrentStep mod lNumBitmaps;
+  lCurBmpIndex := (CurrentStep div SpriteChangeInterval) mod lNumBitmaps;
 
   TTappyTuxDrawer.DrawImageWithTransparentColor(AIntfImage,
    Position.X, Position.Y, colFuchsia, Images[lCurBmpIndex]);
@@ -112,7 +122,7 @@ end;
 
 procedure TTappySpriteAnimation.ExecuteFinal;
 begin
-  inherited ExecuteFinal;
+
 end;
 
 procedure TTappySpriteAnimation.LoadImageFromPng(AIndex: Integer; APath: string);
@@ -131,6 +141,12 @@ end;
 
 {TFallingText}
 
+constructor TFallingText.Create;
+begin
+  inherited Create;
+  ProcessOnEnd := True;
+end;
+
 destructor TFallingText.Destroy;
 begin
   if Assigned(Image) then Image.Free;
@@ -145,13 +161,35 @@ end;
 
 procedure TFallingText.DrawToCanvas(ACanvas: TCanvas);
 begin
-  //ACanvas.Pixels[CurrentStep, CurrentStep] := clRed;
+  ACanvas.Brush.Style := bsSolid;
+  ACanvas.Brush.Color := clWhite;
+  ACanvas.Pen.Style := psSolid;
+  ACanvas.Pen.Color := clBlack;
+  ACanvas.Rectangle(Position.X + 25, Position.Y + 45,
+    Position.X + 30 + ACanvas.TextWidth(Caption)+5,
+    Position.Y + 50 + ACanvas.TextHeight(Caption)+5);
   ACanvas.TextOut(Position.X + 30, Position.Y + 50, caption);
 end;
 
 procedure TFallingText.ExecuteFinal;
+var
+  snowmanWrong: TFallingText;
 begin
-  inherited ExecuteFinal;
+  if ProcessOnEnd then
+  begin
+    snowmanWrong := TFallingText.Create;
+    snowmanWrong.IsInfinite := False;
+    snowmanWrong.StartPoint := Position;
+    snowmanWrong.EndPoint := Position;
+    snowmanWrong.Position := Position;
+    snowmanWrong.caption:= 'Oh-oh!';
+    snowmanWrong.ProcessOnEnd := False;
+    snowmanWrong.StepCount := 2000;
+    snowmanWrong.LoadImageFromPng(vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'snowmanwrong.png');
+    vTappyTuxDrawer.AddAnimation(snowmanWrong);
+
+    GetCurrentModule().ProcessFallingTextEnd();
+  end;
 end;
 
 procedure TFallingText.LoadImageFromPng(APath: string);
@@ -176,7 +214,7 @@ begin
   inherited Create;
 
   CurrentStep := 0;
-  StepCount := 20;
+  StepCount := 20000;
 end;
 
 procedure TTappyTuxAnimation.DrawToIntfImg(AIntfImage: TLazIntfImage);
@@ -400,16 +438,24 @@ begin
   FAnimationList.Delete(AIndex);
 end;
 
-procedure TTappyTuxDrawer.HandleAnimationOnTimer;
+procedure TTappyTuxDrawer.HandleAnimationOnTimer(AInterval: Integer);
 var
   i: Integer;
   lAnimation: TTappyTuxAnimation;
 begin
-
-  for i := 0 to FAnimationList.Count - 1 do
+  i := 0;
+  while i < FAnimationList.Count do
   begin
-    lAnimation := TTappyTuxAnimation(FAnimationList.Items[i]);
-    Inc(lAnimation.CurrentStep);
+    lAnimation := GetAnimation(i);
+    Inc(lAnimation.CurrentStep, AInterval);
+    if (not lAnimation.IsInfinite) and (lAnimation.CurrentStep >= lAnimation.StepCount) then
+    begin
+      lAnimation.ExecuteFinal();
+      RemoveAnimation(i);
+      Continue;
+    end;
+
+    Inc(i);
   end;
 
   Self.Invalidate;

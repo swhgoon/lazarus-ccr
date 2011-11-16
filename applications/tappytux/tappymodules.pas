@@ -22,14 +22,22 @@ type
     destructor Destroy; override;
     procedure LoadImages; virtual;
     function GetBackgroundImage(ALevel: Integer): TJPEGImage;
+    procedure GoToConfigForm;
+    procedure RestartGame;
+    procedure UpdateLevel(ALevel: Integer);
+    procedure UpdateScore(AScore: Integer);
+    procedure UpdateLives(ALives: Integer);
     procedure TranslateTexts(ALanguage: Integer);
     procedure TranslateTextsToEnglish; virtual;
     procedure TranslateTextsToPortuguese; virtual;
     procedure InitModule(); virtual;
     procedure StartNewGame(SndFX: Integer; Music: Integer; Level: Integer; QuestionList: Integer); virtual; abstract;
     procedure CreateQuestion(); virtual; abstract;
-    procedure Answered(); virtual; abstract;
+    procedure Answered(AText: string); virtual; abstract;
     procedure EndGame(); virtual; abstract;
+    procedure GameWon(); virtual; abstract;
+    procedure GameLost(); virtual; abstract;
+    procedure ProcessFallingTextEnd(); virtual; abstract;
   end;
 
 procedure AddModule(AModule: TTappyModule);
@@ -40,12 +48,16 @@ procedure SetCurrentModule(AIndex: Integer);
 
 implementation
 
+uses
+  gameplayform, gameconfigform;
+
 var
   gTappyModules: TFPList;
   gCurrentTappyModule: Integer = 0;  //=-1
 
 procedure AddModule(AModule: TTappyModule);
 begin
+  if gTappyModules = nil then gTappyModules := TFPList.Create;
   gTappyModules.Add(Pointer(AModule));
 end;
 
@@ -104,6 +116,35 @@ begin
   Result := imgLevel3;
 end;
 
+procedure TTappyModule.GoToConfigForm;
+begin
+  formConfig.Show;
+  formTappyTuxGame.Hide;
+end;
+
+procedure TTappyModule.RestartGame;
+begin
+  StartNewGame(formConfig.comboSound.ItemIndex,
+               formConfig.comboMusic.ItemIndex,
+               formConfig.comboLevel.ItemIndex,
+               formConfig.ltbWordlist.ItemIndex);
+end;
+
+procedure TTappyModule.UpdateLevel(ALevel: Integer);
+begin
+  formTappyTuxGame.Level.Text := IntToStr(ALevel);
+end;
+
+procedure TTappyModule.UpdateScore(AScore: Integer);
+begin
+  formTappyTuxGame.Score.Text := IntToStr(AScore);
+end;
+
+procedure TTappyModule.UpdateLives(ALives: Integer);
+begin
+  formTappyTuxGame.Lives.Text := IntToStr(ALives);
+end;
+
 procedure TTappyModule.TranslateTexts(ALanguage: Integer);
 begin
   case ALanguage of
@@ -128,7 +169,8 @@ begin
 end;
 
 initialization
-  gTappyModules := TFPList.Create;
+  if gTappyModules = nil then
+    gTappyModules := TFPList.Create;
 finalization
   gTappyModules.Free;
 end.

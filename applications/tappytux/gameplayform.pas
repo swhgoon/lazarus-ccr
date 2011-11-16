@@ -18,17 +18,15 @@ type
   TformTappyTuxGame = class(TForm)
     btnExit: TButton;
     Answer: TEdit;
-    No: TButton;
-    Yes: TButton;
     Level: TEdit;
     Score: TEdit;
     Lives: TEdit;
     LabelLevels: TLabel;
     LabelScore: TLabel;
     LabelLives: TLabel;
-    GameOver: TToggleBox;
     procedure btnExitClick(Sender: TObject);
     procedure AnswerKeyPress(Sender: TObject; var Key: char);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure NoClick(Sender: TObject);
@@ -65,10 +63,15 @@ procedure TformTappyTuxGame.AnswerKeyPress(Sender: TObject; var Key: char);
 begin
   if Key = #13 then
   begin
-    GetCurrentModule().Answered();
+    GetCurrentModule().Answered(Answer.Text);
     formTappyTuxGame.Answer.Clear;
-
   end;
+end;
+
+procedure TformTappyTuxGame.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  GetCurrentModule().EndGame();
 end;
 
 procedure TformTappyTuxGame.FormCreate(Sender: TObject);
@@ -91,9 +94,6 @@ end;
 
 procedure TformTappyTuxGame.NoClick(Sender: TObject);
 begin
-  GetCurrentModule().EndGame();
-  Close;
-  formConfig.Show;
 
 end;
 
@@ -103,13 +103,8 @@ begin
 end;
 
 procedure TformTappyTuxGame.YesClick(Sender: TObject);
-var
-  i: Integer;
 begin
-  GetCurrentModule().StartNewGame(formConfig.comboSound.ItemIndex,
-                                  formConfig.comboMusic.ItemIndex,
-                                  formConfig.comboLevel.ItemIndex,
-                                  formConfig.ltbWordlist.ItemIndex);
+
 end;
 
 

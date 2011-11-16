@@ -6,6 +6,7 @@ object formTappyTuxGame: TformTappyTuxGame
   Caption = 'Tappy Tux'
   ClientHeight = 425
   ClientWidth = 621
+  OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poDesktopCenter
@@ -104,40 +105,5 @@ object formTappyTuxGame: TformTappyTuxGame
     Width = 76
     ReadOnly = True
     TabOrder = 4
-  end
-  object GameOver: TToggleBox
-    Left = 240
-    Height = 64
-    Top = 152
-    Width = 172
-    Caption = 'Game Over'#13#10'Continue?'
-    Checked = True
-    Color = clRed
-    Enabled = False
-    State = cbChecked
-    TabOrder = 5
-    Visible = False
-  end
-  object Yes: TButton
-    Left = 240
-    Height = 30
-    Top = 216
-    Width = 80
-    Caption = 'Yes'
-    Color = clRed
-    OnClick = YesClick
-    TabOrder = 6
-    Visible = False
-  end
-  object No: TButton
-    Left = 336
-    Height = 30
-    Top = 219
-    Width = 76
-    Caption = 'No'
-    Color = clRed
-    OnClick = NoClick
-    TabOrder = 7
-    Visible = False
   end
 end
