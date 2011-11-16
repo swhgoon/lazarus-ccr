@@ -26,7 +26,6 @@ type
     LabelLevels: TLabel;
     LabelScore: TLabel;
     LabelLives: TLabel;
-    Test: TMemo;
     GameOver: TToggleBox;
     procedure btnExitClick(Sender: TObject);
     procedure AnswerKeyPress(Sender: TObject; var Key: char);
@@ -66,7 +65,6 @@ procedure TformTappyTuxGame.AnswerKeyPress(Sender: TObject; var Key: char);
 begin
   if Key = #13 then
   begin
-    formTappyTuxGame.Test.Lines.Add(Answer.Text);
     GetCurrentModule().Answered();
     formTappyTuxGame.Answer.Clear;
 

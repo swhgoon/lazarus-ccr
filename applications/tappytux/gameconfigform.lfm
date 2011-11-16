@@ -8,6 +8,7 @@ object formConfig: TformConfig
   ClientWidth = 582
   OnClick = btnLoadClick
   OnCreate = FormCreate
+  Position = poDesktopCenter
   LCLVersion = '0.9.31'
   Visible = True
   object comboGameType: TComboBox
@@ -150,22 +151,48 @@ object formConfig: TformConfig
     Height = 173
     Top = 189
     Width = 153
+    Font.Height = -9
     Lines.Strings = (
-      'Função 1:'
-      '     Nome 1.1'
+      'TappyTux 3.0 (2011)'
       ''
-      'Função 2:'
-      '     Nome 2.1'
-      '     Nome 2.2'
+      'Felipe Monteiro de Carvalho'
+      'Dennis T. S. C.'
+      'Ana Claudia M. V.'
+      'Felipe M. K. M.'
+      'Guilherme Henrique S. S.'
       ''
-      'Função 3:'
-      '     Nome 3.1'
-      '     Nome 3.2'
-      '     Nome 3.3'
       ''
-      'Função 4:'
-      '     Nome 4.1'
+      'TappyTux  2.2 (2004)'
+      ''
+      'Chief Software Architect'
+      '  A.J. Venter'
+      '  (aj@getopenlab.com)'
+      ''
+      'Artwork'
+      '  Silvia Hirano'
+      '  Karl Fischer'
+      '  A.J. Venter'
+      ''
+      'Additional Artwork'
+      ' The supertux project'
+      ''
+      'Sound Effects'
+      '  The KDE project'
+      ''
+      'Music'
+      '  DK Miller'
+      ''
+      'Design & Quality Control'
+      ' D.G. Brandjes'
+      ''
+      'This program is free '
+      'software under the '
+      'GNU GPL'
+      'http://www.gnu.org'
+      ''
     )
+    OnChange = memoCreditsChange
+    ParentFont = False
     ReadOnly = True
     ScrollBars = ssAutoVertical
     TabOrder = 6

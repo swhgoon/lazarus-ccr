@@ -8,6 +8,7 @@ object formTappyTuxGame: TformTappyTuxGame
   ClientWidth = 621
   OnCreate = FormCreate
   OnShow = FormShow
+  Position = poDesktopCenter
   LCLVersion = '0.9.31'
   object btnExit: TButton
     Left = 8
@@ -104,88 +105,6 @@ object formTappyTuxGame: TformTappyTuxGame
     ReadOnly = True
     TabOrder = 4
   end
-  object Test: TMemo
-    Left = 480
-    Height = 181
-    Top = 200
-    Width = 130
-    Lines.Strings = (
-      'cachorro'
-      'gato'
-      'peixe'
-      'pássaro'
-      'macaco'
-      'leão'
-      'tigre'
-      'elefante'
-      'crocodilo'
-      'abelha'
-      'mosca'
-      'água-viva'
-      'tartaruga'
-      'lagartixa'
-      'sapo'
-      'minhoca'
-      'centopéia'
-      'rinoceronte'
-      'coiote'
-      'águia'
-      'canguru'
-      'coala'
-      'morcego'
-      'gavião'
-      'pavão'
-      'cobra'
-      'camelo'
-      'lontra'
-      'tubarão'
-      'coelho'
-      'baleia'
-      'urso'
-      'foca'
-      'escorpião'
-      'touro'
-      'vaca'
-      'galinha'
-      'formiga'
-      'borboleta'
-      'girafa'
-      'arara'
-      'salamandra'
-      'rã'
-      'pinguim'
-      'tatu'
-      'avestruz'
-      'hiena'
-      'pelicano'
-      'pombo'
-      'orangotango'
-      'coruja'
-      'papagaio'
-      'tucano'
-      'ornitorrinco'
-      'gambá'
-      'rato'
-      'esquilo'
-      'golfinho'
-      'ovelha'
-      'morsa'
-      'suricato'
-      'ornitorrinco'
-      'toupeira'
-      'barata'
-      'lula'
-      'polvo'
-      'tamanduá'
-      'camarão'
-      'lêmure'
-      'besouro'
-      'onça'
-    )
-    OnChange = TestChange
-    TabOrder = 5
-    Visible = False
-  end
   object GameOver: TToggleBox
     Left = 240
     Height = 64
@@ -196,7 +115,7 @@ object formTappyTuxGame: TformTappyTuxGame
     Color = clRed
     Enabled = False
     State = cbChecked
-    TabOrder = 6
+    TabOrder = 5
     Visible = False
   end
   object Yes: TButton
@@ -207,7 +126,7 @@ object formTappyTuxGame: TformTappyTuxGame
     Caption = 'Yes'
     Color = clRed
     OnClick = YesClick
-    TabOrder = 7
+    TabOrder = 6
     Visible = False
   end
   object No: TButton
@@ -218,7 +137,7 @@ object formTappyTuxGame: TformTappyTuxGame
     Caption = 'No'
     Color = clRed
     OnClick = NoClick
-    TabOrder = 8
+    TabOrder = 7
     Visible = False
   end
 end

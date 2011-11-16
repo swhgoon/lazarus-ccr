@@ -53,6 +53,8 @@ var
   i: Integer;
   j: Integer;
   frequency: Integer;
+  snowmanWrong: TFallingText;
+
 begin
   i:= 0;
   j:= vTappyTuxDrawer.GetAnimationCount - 1;
@@ -60,21 +62,56 @@ begin
   begin
     if vTappyTuxDrawer.GetAnimation(i).InheritsFrom(TFallingText) then
     begin
-       if (vTappyTuxDrawer.GetAnimation(i).Position.y >= 270) then
+       if (vTappyTuxDrawer.GetAnimation(i).Caption = 'OK!') then
        begin
+          if (vTappyTuxDrawer.GetAnimation(i).Value = '1') then
+          begin
+             vTappyTuxDrawer.RemoveAnimation(i);
+             i := i - 1;
+          end;
+          if (vTappyTuxDrawer.GetAnimation(i).Value = '0') then vTappyTuxDrawer.GetAnimation(i).Value := '1';
+       end;
+       if (vTappyTuxDrawer.GetAnimation(i).Caption = 'Oh-oh!') then
+       begin
+          vTappyTuxDrawer.RemoveAnimation(i);
           gameLives := gameLives - 1;
           formTappyTuxGame.Lives.Text := IntToStr(gameLives);
-          vTappyTuxDrawer.RemoveAnimation(i);
+          CreateQuestion();
+          if gameLives <= 0 then EndGame();
           i := i - 1;
-          if (gameLives = 0) then EndGame();
-          CreateQuestion;
        end;
     end;
     i := i + 1;
     j := vTappyTuxDrawer.GetAnimationCount - 1;
   end;
 
-  frequency := 30;
+  i:= 0;
+  j:= vTappyTuxDrawer.GetAnimationCount - 1;
+  while (i<= j) do
+  begin
+    if vTappyTuxDrawer.GetAnimation(i).InheritsFrom(TFallingText) then
+    begin
+       if ((vTappyTuxDrawer.GetAnimation(i).Position.y >= 270) AND (vTappyTuxDrawer.GetAnimation(i).Caption <> 'Oh-oh!')) then
+       begin
+          snowmanWrong := TFallingText.Create;
+          snowmanWrong.IsInfinite := False;
+          snowmanWrong.StartPoint := vTappyTuxDrawer.GetAnimation(i).Position;
+          snowmanWrong.EndPoint := vTappyTuxDrawer.GetAnimation(i).Position;
+          snowmanWrong.Position := vTappyTuxDrawer.GetAnimation(i).Position;
+          snowmanWrong.Bitmap := TPortableNetworkGraphic.Create;
+          snowmanWrong.caption:= 'Oh-oh!';
+          snowmanWrong.value:= '0';
+          snowmanWrong.Bitmap.LoadFromFile(vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'snowmanwrong.png');
+          vTappyTuxDrawer.AddAnimation(snowmanWrong);
+          vTappyTuxDrawer.RemoveAnimation(i);
+          i := i -1;
+       end;
+    end;
+    i := i + 1;
+    j := vTappyTuxDrawer.GetAnimationCount - 1;
+  end;
+
+  frequency := 60;
   count := count + 1;
   if count >= frequency then
   begin
@@ -123,6 +160,7 @@ var
 begin
   count := 0;
   timerMath.Enabled := True;
+  timerMath.Interval:= 500;
   gameScore := 0;
   gameLives := 5;
   gameLevel := Level+1;
@@ -188,7 +226,6 @@ begin
   yAux:=5;
 
   snowmanAnimation := TFallingText.Create;
-  snowmanAnimation.IsInfinite := False;
 
 
   for i:= 0 to vTappyTuxDrawer.GetAnimationCount - 1 do
@@ -235,7 +272,7 @@ begin
   end;
 
   snowmanAnimation.StartPoint := Point(xAux, 5);
-  snowmanAnimation.EndPoint := Point(xAux, 205);
+  snowmanAnimation.EndPoint := Point(xAux, 100);
   snowmanAnimation.IsInfinite:= false;
   snowmanAnimation.Bitmap := TPortableNetworkGraphic.Create;
   //snowmanAnimation.caption:= gameQuestionList[random(gameQuestionList.Count - 1)];
@@ -275,6 +312,8 @@ procedure TTappyMath.Answered;
 var
   i: Integer;
   j: Integer;
+  snowmanRight: TFallingText;
+
 begin
   i:= 0;
   j:= vTappyTuxDrawer.GetAnimationCount - 1;
@@ -288,6 +327,16 @@ begin
           gameLevel := (gameScore div 20) + gameSLevel;
           formTappyTuxGame.Score.Text := IntToStr(gameScore);
           formTappyTuxGame.Level.Text := IntToStr(gameLevel);
+          snowmanRight := TFallingText.Create;
+          snowmanRight.IsInfinite := False;
+          snowmanRight.StartPoint := vTappyTuxDrawer.GetAnimation(i).Position;
+          snowmanRight.EndPoint := vTappyTuxDrawer.GetAnimation(i).Position;
+          snowmanRight.Position := vTappyTuxDrawer.GetAnimation(i).Position;
+          snowmanRight.Bitmap := TPortableNetworkGraphic.Create;
+          snowmanRight.caption:= 'OK!';
+          snowmanRight.value:= '0';
+          snowmanRight.Bitmap.LoadFromFile(vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'snowmanright.png');
+          vTappyTuxDrawer.AddAnimation(snowmanRight);
           vTappyTuxDrawer.RemoveAnimation(i);
           i := i - 1;
           CreateQuestion;

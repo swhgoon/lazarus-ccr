@@ -35,6 +35,7 @@ type
     procedure btnLoadClick(Sender: TObject);
     procedure comboGameTypeChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure memoCreditsChange(Sender: TObject);
   private
     { private declarations }
   public
@@ -78,6 +79,11 @@ begin
   // Initialize modules
   for i := 0 to GetModuleCount() -1 do
     GetModule(i).InitModule();
+end;
+
+procedure TformConfig.memoCreditsChange(Sender: TObject);
+begin
+
 end;
 
 procedure TformConfig.TranslateUI;
