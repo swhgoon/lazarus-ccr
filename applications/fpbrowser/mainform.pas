@@ -23,6 +23,7 @@ type
   { TformBrowser }
 
   TformBrowser = class(TForm)
+    pageBrowser: TCDPageControl;
     labelProgress: TLabel;
     menuToolsModules: TMenuItem;
     menuViewDebug: TMenuItem;
@@ -95,6 +96,7 @@ type
     procedure PrintpreviewClick(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure PrinterSetup1Click(Sender: TObject);
+    procedure HandleUserAddedPage(Sender: TObject; APage: TCDTabSheet);
   private
     { Private declarations }
 {$IFDEF LCLCarbon}
@@ -122,7 +124,6 @@ type
     procedure HandlePageChanged(Sender: TObject);
   public
     { Public declarations }
-    pageBrowser: TCDPageControl;
     CurrentTab: Integer;
     procedure LoadURL(AURL: string);
     procedure AddBrowserTab(AURL: string; AGoToTab: Boolean);
@@ -131,7 +132,6 @@ type
     procedure AddURLToHistory(AURL: string);
     procedure HandlePageLoaderProgress(APercent: Integer);
     procedure HandlePageLoaderTerminated(Sender: TObject);
-    procedure HandleUserAddedPage(Sender: TObject; APage: TCDTabSheet);
   end;
 
 var
@@ -144,14 +144,6 @@ uses
 
 procedure TformBrowser.FormCreate(Sender: TObject);
 begin
-  pageBrowser := TCDPageControl.Create(Self);
-  pageBrowser.Parent := Self;
-  pageBrowser.Align := alClient;
-  pageBrowser.DrawStyle := dsKDE;
-  pageBrowser.Options := [nboShowCloseButtons, nboHidePageListPopup,
-    nboKeyboardTabSwitch, nboShowAddTabButton];
-  pageBrowser.OnUserAddedPage := HandleUserAddedPage;
-
   InitializeForm();
 end;
 
@@ -255,7 +247,6 @@ begin
   History := TStringList.Create;
 
   AddBrowserTab('', True);
-  pageBrowser.OnChange := HandlePageChanged;
 
   Position := poScreenCenter;
 

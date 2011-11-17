@@ -5,12 +5,13 @@ unit viewer_ipro;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Forms, Controls,
+  Classes, SysUtils,
   //
   fpreadgif, fpimage, fpwritebmp,
+  // LCL
+  Graphics, Forms, Controls, LCLProc,
   //
   browserviewer,
-  //
   IPHtml, Ipfilebroker, IpMsg;
 
 type
@@ -55,7 +56,7 @@ var
   ms: TMemoryStream;
 begin
   Result:=nil;
-  WriteLn('TMyIpHtmlDataProvider.DoGetStream '+URL);
+  DebugLn('TMyIpHtmlDataProvider.DoGetStream '+URL);
 
   if URL='fpdoc.css' then begin
     //debugln(['TMyIpHtmlDataProvider.DoGetStream ',FileExists(URL)]);
@@ -73,14 +74,14 @@ end;
 function TiProViewer.DataProvider1CanHandle(Sender: TObject; const URL: string
   ): Boolean;
 begin
-  WriteLn('TformBrowser.DataProvider1CanHandle ',URL);
+  DebugLn('TformBrowser.DataProvider1CanHandle ',URL);
   Result:=True;
 end;
 
 procedure TiProViewer.DataProvider1CheckURL(Sender: TObject; const URL: string;
   var Available: Boolean; var ContentType: string);
 begin
-  WriteLn('TformBrowser.DataProvider1CheckURL ',URL);
+  DebugLn('TformBrowser.DataProvider1CheckURL ',URL);
   Available:=True;
   ContentType:='text/html';
 end;
@@ -90,7 +91,7 @@ procedure TiProViewer.DataProvider1GetHtml(Sender: TObject; const URL: string;
 var
   lStream: TMemoryStream;
 begin
-  WriteLn('TformBrowser.DataProvider1GetHtml ',URL);
+  DebugLn('TformBrowser.DataProvider1GetHtml ',URL);
 {  MyPageLoader.LoadBinaryResource(URL, lStream);
   Stream := lStream;
   lStream.Position := 0;}
@@ -110,12 +111,12 @@ var
   writer: TFPCustomImageWriter;
   lAbsURL: String;
 begin
-  WriteLn('TformBrowser.DataProvider1GetImage URL=', URL);
+  DebugLn('TformBrowser.DataProvider1GetImage URL=', URL);
 
   // Corrections of the URL
   if (URL[1] = '/') and (URL[2] = '/') then lAbsURL := 'http:' + URL;
 
-  WriteLn('TformBrowser.DataProvider1GetImage Corrected URL=', lAbsURL);
+  DebugLn('TformBrowser.DataProvider1GetImage Corrected URL=', lAbsURL);
 
   lStr := ExtractFileExt(lAbsURL);
   if (lStr = '.jpeg') or (lStr = '.jpg') then
@@ -131,7 +132,7 @@ begin
   end
   else if (lStr = '.gif') then
   begin
-    WriteLn('TformBrowser.DataProvider1GetImage Processing GIF');
+    DebugLn('TformBrowser.DataProvider1GetImage Processing GIF');
     try
       MyPageLoader.LoadBinaryResource(lAbsURL, lStream);
       lStream.Position := 0;
@@ -154,7 +155,7 @@ begin
   end
   else
   begin
-    WriteLn('TformBrowser.DataProvider1GetImage Unsupported format: ', lStr);
+    DebugLn('TformBrowser.DataProvider1GetImage Unsupported format: ', lStr);
     Picture := nil;
     Exit;
   end;

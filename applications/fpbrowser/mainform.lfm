@@ -3,7 +3,7 @@ object formBrowser: TformBrowser
   Height = 439
   Top = 186
   Width = 621
-  ClientHeight = 412
+  ClientHeight = 419
   ClientWidth = 621
   Color = clBtnFace
   Font.Color = clWindowText
@@ -18,7 +18,7 @@ object formBrowser: TformBrowser
   object panelBottom: TPanel
     Left = 0
     Height = 18
-    Top = 394
+    Top = 401
     Width = 621
     Align = alBottom
     Alignment = taLeftJustify
@@ -37,12 +37,25 @@ object formBrowser: TformBrowser
     end
     object labelProgress: TLabel
       Left = 319
-      Height = 16
+      Height = 17
       Top = 3
       Width = 21
       Caption = 'Idle'
       ParentColor = False
     end
+  end
+  object pageBrowser: TCDPageControl
+    Left = 0
+    Height = 401
+    Top = 0
+    Width = 621
+    Align = alClient
+    DrawStyle = dsCommon
+    Caption = 'pageBrowser'
+    PageIndex = 0
+    Options = [nboShowCloseButtons, nboHidePageListPopup, nboKeyboardTabSwitch, nboShowAddTabButton]
+    TabIndex = 0
+    OnUserAddedPage = HandleUserAddedPage
   end
   object OpenDialog: TOpenDialog
     DefaultExt = '.htm'
