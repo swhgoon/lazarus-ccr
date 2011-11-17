@@ -18,6 +18,7 @@ type
     imgLevel2, imgLevel3: TJPEGImage;
     imgPenguim : TBitmap;
     ShortDescription, LongDescription: string;
+    ConfigCaption, ConfigItems: string;
     constructor Create; virtual;
     destructor Destroy; override;
     procedure LoadImages; virtual;
@@ -127,7 +128,7 @@ begin
   StartNewGame(formConfig.comboSound.ItemIndex,
                formConfig.comboMusic.ItemIndex,
                formConfig.comboLevel.ItemIndex,
-               formConfig.ltbWordlist.ItemIndex);
+               formConfig.listWordlist.ItemIndex);
 end;
 
 procedure TTappyModule.UpdateLevel(ALevel: Integer);

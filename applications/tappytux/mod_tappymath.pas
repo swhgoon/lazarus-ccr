@@ -312,6 +312,8 @@ begin
      vTappyTuxDrawer.RemoveAnimation(i);
      j := vTappyTuxDrawer.GetAnimationCount - 1;
   end;
+
+  GoToConfigForm();
 end;
 
 procedure TTappyMath.GameWon;

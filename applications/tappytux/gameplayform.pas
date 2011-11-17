@@ -71,6 +71,7 @@ end;
 procedure TformTappyTuxGame.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
+  CloseAction := caHide;
   GetCurrentModule().EndGame();
 end;
 

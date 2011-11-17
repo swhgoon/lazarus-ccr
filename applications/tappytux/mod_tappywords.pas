@@ -40,6 +40,7 @@ type
     procedure StartNewGame(SndFX: Integer; Music: Integer; Level: Integer; QuestionList: Integer); override;
     procedure createQuestion(); override;
     function GetFallingDurationFromLevel: Integer;
+    function GetTextFileFromLanguageId(AID: Integer): string;
     procedure Answered(AText: string); override;
     procedure EndGame(); override;
     procedure GameWon(); override;
@@ -82,6 +83,14 @@ begin
   timerWords.OnTimer := @HandleOnTimer;
 
   NewQuestionFrequency := 5000;
+
+  ConfigItems :=
+    'English' + LineEnding +
+    'Portuguese' + LineEnding +
+    'French' + LineEnding +
+    'German' + LineEnding +
+    'Italian' + LineEnding +
+    'Afrikaans' + LineEnding;
 end;
 
 destructor TTappyWords.Destroy;
@@ -95,12 +104,14 @@ procedure TTappyWords.TranslateTextsToEnglish;
 begin
   ShortDescription := 'TappyWords';
   LongDescription := 'A game to learn typing and ortography.'; // Hint: Try to keep looking at the screen instead of the keyboard!
+  ConfigCaption := 'Select a list of words';
 end;
 
 procedure TTappyWords.TranslateTextsToPortuguese;
 begin
   ShortDescription := 'TappyWords';
   LongDescription := 'Um jogo para aprender a digitar e ortografia';
+  ConfigCaption := 'Selecione uma lista de palavras';
 end;
 
 procedure TTappyWords.StartNewGame(SndFX: Integer; Music: Integer; Level: Integer; QuestionList: Integer);
@@ -121,9 +132,12 @@ begin
   if (Music = 1) then gameMusic := false;
   gameSLevel := gameLevel;
 
+  // Loads the list of questions
   if QuestionList < 0 then QuestionList := 0;
   gameQuestionList := TStringList.Create;
-  gameQuestionList.LoadFromFile(vTappyTuxConfig.GetResourcesDir() + 'images'+PathDelim+'modules'+PathDelim+'tappywords'+PathDelim+'0.txt');
+  gameQuestionList.LoadFromFile(vTappyTuxConfig.GetResourcesDir() +
+    'images' + PathDelim + 'modules' + PathDelim + 'tappywords'
+    + PathDelim + GetTextFileFromLanguageId(QuestionList));
   //gameQuestionList.LoadFromFile('C:/'+IntToStr(QuestionList)+'.txt');
 
   UpdateLevel(gameLevel);
@@ -241,6 +255,19 @@ begin
   4: Result := 10000;
   else
     Result := 7000;
+  end;
+end;
+
+function TTappyWords.GetTextFileFromLanguageId(AID: Integer): string;
+begin
+  case AID of
+  1: Result := 'wordlist.Portuguese';
+  2: Result := 'wordlist.French';
+  3: Result := 'wordlist.German';
+  4: Result := 'wordlist.Italian';
+  5: Result := 'wordlist.Afrikaans';
+  else
+    Result := 'wordlist.English';
   end;
 end;
 

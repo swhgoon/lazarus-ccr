@@ -1,22 +1,23 @@
 object formConfig: TformConfig
-  Left = 779
+  Left = 290
   Height = 432
-  Top = 336
+  Top = 192
   Width = 582
   Caption = 'TappyTux Loader'
   ClientHeight = 432
   ClientWidth = 582
   OnClick = btnLoadClick
   OnCreate = FormCreate
+  OnShow = FormShow
   Position = poDesktopCenter
   LCLVersion = '0.9.31'
   Visible = True
   object comboGameType: TComboBox
     Left = 9
-    Height = 23
+    Height = 21
     Top = 38
     Width = 183
-    ItemHeight = 15
+    ItemHeight = 0
     OnChange = comboGameTypeChange
     TabOrder = 0
     Text = 'GameType'
@@ -29,74 +30,66 @@ object formConfig: TformConfig
     ReadOnly = True
     TabOrder = 1
   end
-  object listWordlist: TLabel
+  object labelWordlist: TLabel
     Left = 208
-    Height = 16
+    Height = 17
     Top = 16
-    Width = 79
+    Width = 93
     Caption = 'Select Wordlist'
     ParentColor = False
   end
-  object ltbWordlist: TListBox
+  object listWordlist: TListBox
     Left = 212
     Height = 300
     Top = 38
     Width = 132
-    Items.Strings = (
-      'English'
-      'German'
-      'Afrikaans'
-      'French'
-      'Portuguese'
-    )
-    ItemHeight = 15
-    ScrollWidth = 130
+    ItemHeight = 0
     TabOrder = 2
   end
   object lblSettings: TLabel
-    Left = 400
-    Height = 16
+    Left = 392
+    Height = 17
     Top = 16
-    Width = 43
+    Width = 52
     Caption = 'Settings'
     ParentColor = False
   end
   object lblSound: TLabel
-    Left = 408
-    Height = 16
-    Top = 47
-    Width = 53
+    Left = 367
+    Height = 17
+    Top = 72
+    Width = 63
     Caption = 'Sound FX'
     Font.Style = [fsBold]
     ParentColor = False
     ParentFont = False
   end
   object lblMusic: TLabel
-    Left = 408
-    Height = 16
-    Top = 79
-    Width = 33
+    Left = 367
+    Height = 17
+    Top = 104
+    Width = 40
     Caption = 'Music'
     Font.Style = [fsBold]
     ParentColor = False
     ParentFont = False
   end
   object lblLevel: TLabel
-    Left = 408
-    Height = 16
-    Top = 111
-    Width = 79
+    Left = 367
+    Height = 17
+    Top = 132
+    Width = 93
     Caption = 'Starting Level'
     Font.Style = [fsBold]
     ParentColor = False
     ParentFont = False
   end
   object comboSound: TComboBox
-    Left = 493
-    Height = 23
-    Top = 40
-    Width = 68
-    ItemHeight = 15
+    Left = 464
+    Height = 21
+    Top = 68
+    Width = 104
+    ItemHeight = 0
     Items.Strings = (
       'ON'
       'OFF'
@@ -105,11 +98,11 @@ object formConfig: TformConfig
     Text = 'Select'
   end
   object comboMusic: TComboBox
-    Left = 493
-    Height = 23
-    Top = 72
-    Width = 68
-    ItemHeight = 15
+    Left = 464
+    Height = 21
+    Top = 96
+    Width = 104
+    ItemHeight = 0
     Items.Strings = (
       'ON'
       'OFF'
@@ -118,11 +111,11 @@ object formConfig: TformConfig
     Text = 'Select'
   end
   object comboLevel: TComboBox
-    Left = 493
-    Height = 23
-    Top = 104
-    Width = 68
-    ItemHeight = 15
+    Left = 464
+    Height = 21
+    Top = 128
+    Width = 104
+    ItemHeight = 0
     Items.Strings = (
       '1'
       '2'
@@ -139,18 +132,18 @@ object formConfig: TformConfig
     Text = 'Select'
   end
   object lblCredits: TLabel
-    Left = 400
-    Height = 16
-    Top = 168
-    Width = 38
+    Left = 440
+    Height = 17
+    Top = 200
+    Width = 46
     Caption = 'Credits'
     ParentColor = False
   end
   object memoCredits: TMemo
-    Left = 408
-    Height = 173
-    Top = 189
-    Width = 153
+    Left = 367
+    Height = 125
+    Top = 237
+    Width = 201
     Font.Height = -9
     Lines.Strings = (
       'TappyTux 3.0 (2011)'
@@ -202,7 +195,7 @@ object formConfig: TformConfig
     Height = 37
     Top = 379
     Width = 542
-    Caption = 'Load'
+    Caption = 'Play'
     OnClick = btnLoadClick
     TabOrder = 7
   end
@@ -212,14 +205,41 @@ object formConfig: TformConfig
     Top = 342
     Width = 133
     Caption = 'Wordlist Editor'
+    Enabled = False
+    OnClick = btnWordlistClick
     TabOrder = 8
   end
   object lblGameType: TLabel
     Left = 16
-    Height = 16
+    Height = 17
     Top = 16
-    Width = 58
+    Width = 67
     Caption = 'GameType'
     ParentColor = False
+  end
+  object lblLevel1: TLabel
+    Left = 367
+    Height = 17
+    Top = 46
+    Width = 66
+    Caption = 'Language'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object comboLanguage: TComboBox
+    Left = 464
+    Height = 21
+    Top = 42
+    Width = 104
+    ItemHeight = 0
+    ItemIndex = 0
+    Items.Strings = (
+      'English'
+      'Portuguese'
+    )
+    OnChange = comboLanguageChange
+    TabOrder = 9
+    Text = 'English'
   end
 end
