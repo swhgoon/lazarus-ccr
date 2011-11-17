@@ -6,7 +6,6 @@ object formConfig: TformConfig
   Caption = 'TappyTux Loader'
   ClientHeight = 432
   ClientWidth = 582
-  OnClick = btnLoadClick
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poDesktopCenter
@@ -31,7 +30,7 @@ object formConfig: TformConfig
     TabOrder = 1
   end
   object labelWordlist: TLabel
-    Left = 208
+    Left = 212
     Height = 17
     Top = 16
     Width = 93
@@ -46,8 +45,8 @@ object formConfig: TformConfig
     ItemHeight = 0
     TabOrder = 2
   end
-  object lblSettings: TLabel
-    Left = 392
+  object labelSettings: TLabel
+    Left = 432
     Height = 17
     Top = 16
     Width = 52
@@ -132,7 +131,7 @@ object formConfig: TformConfig
     Text = 'Select'
   end
   object lblCredits: TLabel
-    Left = 440
+    Left = 432
     Height = 17
     Top = 200
     Width = 46
@@ -190,13 +189,13 @@ object formConfig: TformConfig
     ScrollBars = ssAutoVertical
     TabOrder = 6
   end
-  object btnLoad: TButton
+  object buttonLoad: TButton
     Left = 19
     Height = 37
     Top = 379
     Width = 542
     Caption = 'Play'
-    OnClick = btnLoadClick
+    OnClick = buttonLoadClick
     TabOrder = 7
   end
   object btnWordlist: TButton
@@ -209,12 +208,12 @@ object formConfig: TformConfig
     OnClick = btnWordlistClick
     TabOrder = 8
   end
-  object lblGameType: TLabel
-    Left = 16
+  object labelGameType: TLabel
+    Left = 9
     Height = 17
     Top = 16
-    Width = 67
-    Caption = 'GameType'
+    Width = 72
+    Caption = 'Game type:'
     ParentColor = False
   end
   object lblLevel1: TLabel

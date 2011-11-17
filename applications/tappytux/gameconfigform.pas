@@ -16,17 +16,17 @@ type
   { TformConfig }
 
   TformConfig = class(TForm)
-    btnLoad: TButton;
+    buttonLoad: TButton;
     btnWordlist: TButton;
     comboLanguage: TComboBox;
     comboGameType: TComboBox;
     comboSound: TComboBox;
     comboMusic: TComboBox;
     comboLevel: TComboBox;
-    lblGameType: TLabel;
+    labelGameType: TLabel;
     labelWordlist: TLabel;
     lblLevel1: TLabel;
-    lblSettings: TLabel;
+    labelSettings: TLabel;
     lblSound: TLabel;
     lblMusic: TLabel;
     lblLevel: TLabel;
@@ -34,7 +34,7 @@ type
     listWordlist: TListBox;
     memoGameType: TMemo;
     memoCredits: TMemo;
-    procedure btnLoadClick(Sender: TObject);
+    procedure buttonLoadClick(Sender: TObject);
     procedure btnWordlistClick(Sender: TObject);
     procedure comboGameTypeChange(Sender: TObject);
     procedure comboLanguageChange(Sender: TObject);
@@ -73,18 +73,22 @@ end;
 procedure TformConfig.comboLanguageChange(Sender: TObject);
 begin
   case comboLanguage.ItemIndex of
-  0:
+  0: // english
   begin
-
+    labelGameType.Caption := 'Game type:';
+    labelSettings.Caption := 'Settings';
+    buttonLoad.Caption := 'Play';
   end;
-  1:
+  1: // portuguese
   begin
-
+    labelGameType.Caption := 'Tipo do jogo:';
+    labelSettings.Caption := 'Configurações';
+    buttonLoad.Caption := 'Iniciar o Jogo';
   end;
   end;
 end;
 
-procedure TformConfig.btnLoadClick(Sender: TObject);
+procedure TformConfig.buttonLoadClick(Sender: TObject);
 begin
   SetCurrentModule(comboGameType.ItemIndex);
   formTappyTuxGame.Show;
@@ -112,6 +116,7 @@ end;
 
 procedure TformConfig.FormShow(Sender: TObject);
 begin
+  comboLanguageChange(Self);
   comboGameTypeChange(Self);
 end;
 
