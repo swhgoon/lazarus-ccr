@@ -67,7 +67,10 @@ begin
   labelWordlist.Caption := lModule.ConfigCaption;
   listWordlist.Items.Text := lModule.ConfigItems;
   if listWordlist.Items.Count >= comboLanguage.ItemIndex then
-    listWordlist.ItemIndex := comboLanguage.ItemIndex;
+  begin
+    if comboLanguage.ItemIndex < listWordlist.Items.Count then
+      listWordlist.ItemIndex := comboLanguage.ItemIndex;
+  end;
 end;
 
 procedure TformConfig.comboLanguageChange(Sender: TObject);

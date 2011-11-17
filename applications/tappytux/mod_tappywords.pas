@@ -46,6 +46,7 @@ type
     procedure GameWon(); override;
     procedure GameLost(); override;
     procedure ProcessFallingTextEnd(); override;
+    procedure ProcessSpriteEnd(AUserData: TObject; APosition: TPoint); override;
   end;
 
 var
@@ -237,7 +238,7 @@ begin
     end;
   end;
 
-  snowmanAnimation.StartPoint := Point(xAux, 5);
+  snowmanAnimation.StartPoint := Point(xAux, -100);
   snowmanAnimation.EndPoint := Point(xAux, 270);
   snowmanAnimation.IsInfinite := false;
   snowmanAnimation.StepCount := GetFallingDurationFromLevel();
@@ -275,8 +276,8 @@ procedure TTappyWords.Answered(AText: string);
 var
   i: Integer;
   j: Integer;
-  snowmanRight: TFallingText;
   lAnimation: TTappyTuxAnimation;
+  hammer: TTappySpriteAnimation;
 begin
   i:= 0;
   j:= vTappyTuxDrawer.GetAnimationCount - 1;
@@ -285,25 +286,30 @@ begin
     lAnimation := vTappyTuxDrawer.GetAnimation(i);
     if lAnimation is TFallingText then
     begin
-       if TFallingText(lAnimation).Caption = AText then
-       begin
-          gameScore := gameScore +1;
-          gameLevel := (gameScore div 20) + gameSLevel;
-          UpdateScore(gameScore);
-          UpdateLevel(gameLevel);
-          snowmanRight := TFallingText.Create;
-          snowmanRight.IsInfinite := False;
-          snowmanRight.StartPoint := vTappyTuxDrawer.GetAnimation(i).Position;
-          snowmanRight.EndPoint := vTappyTuxDrawer.GetAnimation(i).Position;
-          snowmanRight.Position := vTappyTuxDrawer.GetAnimation(i).Position;
-          snowmanRight.StepCount := 2000;
-          snowmanRight.LoadImageFromPng(vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'snowmanright.png');
-          snowmanRight.caption:= 'OK!';
-          snowmanRight.ProcessOnEnd := False;
-          vTappyTuxDrawer.AddAnimation(snowmanRight);
-          vTappyTuxDrawer.RemoveAnimation(i);
-          i := i - 1;
-       end;
+      if TFallingText(lAnimation).Caption = AText then
+      begin
+        gameScore := gameScore +1;
+        gameLevel := (gameScore div 20) + gameSLevel;
+        UpdateScore(gameScore);
+        UpdateLevel(gameLevel);
+
+        lAnimation.Stopped := True;
+
+        hammer := TTappySpriteAnimation.Create;
+        hammer.IsInfinite := False;
+        hammer.StartPoint := Point(250, 328);
+        hammer.EndPoint := lAnimation.Position;
+        hammer.StepCount := 1000;
+        hammer.SpriteChangeInterval := 200;
+        SetLength(hammer.Images, 4);
+        hammer.LoadImageFromPng(0, vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'hammer_1.png');
+        hammer.LoadImageFromPng(1, vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'hammer_2.png');
+        hammer.LoadImageFromPng(2, vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'hammer_3.png');
+        hammer.LoadImageFromPng(3, vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'hammer_4.png');
+        hammer.UserData := lAnimation;
+        hammer.UserPosition := lAnimation.Position;
+        vTappyTuxDrawer.AddAnimation(hammer);
+      end;
     end;
     i := i + 1;
     j := vTappyTuxDrawer.GetAnimationCount - 1;
@@ -363,6 +369,25 @@ begin
   gameLives := gameLives - 1;
   UpdateLives(gameLives);
   if gameLives <= 0 then GameLost();
+end;
+
+procedure TTappyWords.ProcessSpriteEnd(AUserData: TObject; APosition: TPoint);
+var
+  snowmanRight: TFallingText;
+  lIndex: Integer;
+begin
+  snowmanRight := TFallingText.Create;
+  snowmanRight.IsInfinite := False;
+  snowmanRight.StartPoint := APosition;
+  snowmanRight.EndPoint := APosition;
+  snowmanRight.Position := APosition;
+  snowmanRight.StepCount := 2000;
+  snowmanRight.LoadImageFromPng(vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'snowmanright.png');
+  snowmanRight.caption:= 'OK!';
+  snowmanRight.ProcessOnEnd := False;
+  vTappyTuxDrawer.AddAnimation(snowmanRight);
+  lIndex := vTappyTuxDrawer.GetAnimationIndex(TTappyTuxAnimation(AUserData));
+  if lIndex >= 0 then vTappyTuxDrawer.RemoveAnimation(lIndex);
 end;
 
 initialization

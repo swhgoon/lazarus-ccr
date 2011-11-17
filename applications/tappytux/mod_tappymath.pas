@@ -42,6 +42,7 @@ type
     procedure GameWon(); override;
     procedure GameLost(); override;
     procedure ProcessFallingTextEnd(); override;
+    procedure ProcessSpriteEnd(AUserData: TObject; APosition: TPoint); override;
   end;
 
 implementation
@@ -260,8 +261,8 @@ procedure TTappyMath.Answered(AText: string);
 var
   i: Integer;
   j: Integer;
-  snowmanRight: TFallingText;
   lAnimation: TTappyTuxAnimation;
+  hammer: TTappySpriteAnimation;
 begin
   i:= 0;
   j:= vTappyTuxDrawer.GetAnimationCount - 1;
@@ -276,18 +277,23 @@ begin
           gameLevel := (gameScore div 20) + gameSLevel;
           UpdateScore(gameScore);
           UpdateLevel(gameLevel);
-          snowmanRight := TFallingText.Create;
-          snowmanRight.IsInfinite := False;
-          snowmanRight.StartPoint := vTappyTuxDrawer.GetAnimation(i).Position;
-          snowmanRight.EndPoint := vTappyTuxDrawer.GetAnimation(i).Position;
-          snowmanRight.Position := vTappyTuxDrawer.GetAnimation(i).Position;
-          snowmanRight.StepCount := 2000;
-          snowmanRight.LoadImageFromPng(vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'snowmanright.png');
-          snowmanRight.caption:= 'OK!';
-          snowmanRight.ProcessOnEnd := False;
-          vTappyTuxDrawer.AddAnimation(snowmanRight);
-          vTappyTuxDrawer.RemoveAnimation(i);
-          i := i - 1;
+
+          lAnimation.Stopped := True;
+
+          hammer := TTappySpriteAnimation.Create;
+          hammer.IsInfinite := False;
+          hammer.StartPoint := Point(250, 328);
+          hammer.EndPoint := lAnimation.Position;
+          hammer.StepCount := 1000;
+          hammer.SpriteChangeInterval := 200;
+          SetLength(hammer.Images, 4);
+          hammer.LoadImageFromPng(0, vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'hammer_1.png');
+          hammer.LoadImageFromPng(1, vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'hammer_2.png');
+          hammer.LoadImageFromPng(2, vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'hammer_3.png');
+          hammer.LoadImageFromPng(3, vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'hammer_4.png');
+          hammer.UserData := lAnimation;
+          hammer.UserPosition := lAnimation.Position;
+          vTappyTuxDrawer.AddAnimation(hammer);
        end;
     end;
     i := i + 1;
@@ -347,6 +353,25 @@ begin
   gameLives := gameLives - 1;
   UpdateLives(gameLives);
   if gameLives <= 0 then GameLost();
+end;
+
+procedure TTappyMath.ProcessSpriteEnd(AUserData: TObject; APosition: TPoint);
+var
+  snowmanRight: TFallingText;
+  lIndex: Integer;
+begin
+  snowmanRight := TFallingText.Create;
+  snowmanRight.IsInfinite := False;
+  snowmanRight.StartPoint := APosition;
+  snowmanRight.EndPoint := APosition;
+  snowmanRight.Position := APosition;
+  snowmanRight.StepCount := 2000;
+  snowmanRight.LoadImageFromPng(vTappyTuxConfig.GetResourcesDir() + 'images' + PathDelim + 'sprites' + PathDelim + 'snowmanright.png');
+  snowmanRight.caption:= 'OK!';
+  snowmanRight.ProcessOnEnd := False;
+  vTappyTuxDrawer.AddAnimation(snowmanRight);
+  lIndex := vTappyTuxDrawer.GetAnimationIndex(TTappyTuxAnimation(AUserData));
+  if lIndex >= 0 then vTappyTuxDrawer.RemoveAnimation(lIndex);
 end;
 
 initialization

@@ -20,6 +20,10 @@ type
     CurrentStep: Integer;
     StepCount: Integer; // In miliseconds
     IsInfinite: Boolean; // if True the animation will never end
+    Stopped: Boolean;
+    // User data
+    UserData: TObject;
+    UserPosition: TPoint;
     constructor Create; virtual;
     procedure DrawToIntfImg(AIntfImage: TLazIntfImage); virtual;
     procedure DrawToCanvas(ACanvas: TCanvas); virtual;
@@ -80,6 +84,7 @@ type
     procedure HandleOnTimer(Sender: TObject);
     function AddAnimation(AAnimation: TTappyTuxAnimation): Integer;
     function GetAnimation(AIndex: Integer): TTappyTuxAnimation;
+    function GetAnimationIndex(AAnimation: TTappyTuxAnimation): Integer;
     function GetAnimationCount: Integer;
     procedure RemoveAnimation(AIndex: Integer);
     procedure HandleAnimationOnTimer(AInterval: Integer);
@@ -102,8 +107,8 @@ destructor TTappySpriteAnimation.Destroy;
 var
   i: Integer;
 begin
-{  for i := 0 to Length(Images)-1 do
-    if Assigned(Images[i]) then Images[i].Free;}
+  for i := 0 to Length(Images)-1 do
+    if Assigned(Images[i]) then Images[i].Free;
   inherited Destroy;
 end;
 
@@ -122,7 +127,7 @@ end;
 
 procedure TTappySpriteAnimation.ExecuteFinal;
 begin
-
+  GetCurrentModule().ProcessSpriteEnd(UserData, UserPosition);
 end;
 
 procedure TTappySpriteAnimation.LoadImageFromPng(AIndex: Integer; APath: string);
@@ -428,6 +433,12 @@ begin
   Result := TTappyTuxAnimation(FAnimationList.Items[AIndex]);
 end;
 
+function TTappyTuxDrawer.GetAnimationIndex(AAnimation: TTappyTuxAnimation
+  ): Integer;
+begin
+  Result := FAnimationList.IndexOf(AAnimation);
+end;
+
 function TTappyTuxDrawer.GetAnimationCount: Integer;
 begin
   Result := FAnimationList.Count;
@@ -447,8 +458,9 @@ begin
   while i < FAnimationList.Count do
   begin
     lAnimation := GetAnimation(i);
-    Inc(lAnimation.CurrentStep, AInterval);
-    if (not lAnimation.IsInfinite) and (lAnimation.CurrentStep >= lAnimation.StepCount) then
+    if (not lAnimation.Stopped) then Inc(lAnimation.CurrentStep, AInterval);
+    if (not lAnimation.IsInfinite) and (lAnimation.CurrentStep >= lAnimation.StepCount)
+      and (not lAnimation.Stopped) then
     begin
       lAnimation.ExecuteFinal();
       RemoveAnimation(i);

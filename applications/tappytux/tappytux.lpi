@@ -63,6 +63,7 @@
     <RequiredPackages Count="4">
       <Item1>
         <PackageName Value="fpsound_pkg"/>
+        <DefaultFilename Value="..\..\components\fpsound\fpsound_pkg.lpk" Prefer="True"/>
       </Item1>
       <Item2>
         <PackageName Value="LazUtils"/>

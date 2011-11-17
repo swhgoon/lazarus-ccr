@@ -39,6 +39,7 @@ type
     procedure GameWon(); virtual; abstract;
     procedure GameLost(); virtual; abstract;
     procedure ProcessFallingTextEnd(); virtual; abstract;
+    procedure ProcessSpriteEnd(AUserData: TObject; APosition: TPoint); virtual; abstract;
   end;
 
 procedure AddModule(AModule: TTappyModule);
