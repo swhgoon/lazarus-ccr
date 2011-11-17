@@ -55,6 +55,7 @@ object formBrowser: TformBrowser
     PageIndex = 0
     Options = [nboShowCloseButtons, nboHidePageListPopup, nboKeyboardTabSwitch, nboShowAddTabButton]
     TabIndex = 0
+    OnChange = pageBrowserChange
     OnUserAddedPage = HandleUserAddedPage
   end
   object OpenDialog: TOpenDialog

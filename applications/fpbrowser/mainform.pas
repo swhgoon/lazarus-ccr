@@ -63,6 +63,7 @@ type
     procedure editURLKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure menuViewDebugClick(Sender: TObject);
     procedure OpenFileClick(Sender: TObject);
+    procedure pageBrowserChange(Sender: TObject);
     procedure ShowImagesClick(Sender: TObject);
     procedure buttonReloadClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -171,6 +172,11 @@ begin
     GetCurrentBrowserViewer().LoadFromFile(OpenDialog.Filename);
     Caption := GetCurrentBrowserViewer().GetDocumentTitle();
   end;
+end;
+
+procedure TformBrowser.pageBrowserChange(Sender: TObject);
+begin
+  SetCurrentBrowserViewer(pageBrowser.PageIndex);
 end;
 
 procedure TformBrowser.editURLKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
