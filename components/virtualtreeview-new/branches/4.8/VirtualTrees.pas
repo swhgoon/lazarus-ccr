@@ -496,10 +496,6 @@ var // Clipboard format IDs used in OLE drag'n drop and clipboard transfers.
   IsWinVistaOrAbove: Boolean;
 
 type
-  {$ifdef VER2_2}
-  UnicodeString = WideString;
-  {$endif}
-
   // The exception used by the trees.
   EVirtualTreeError = class(Exception);
 
