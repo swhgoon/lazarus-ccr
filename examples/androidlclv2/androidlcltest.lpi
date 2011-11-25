@@ -64,6 +64,10 @@
       <TargetOS Value="linux"/>
     </CodeGeneration>
     <Linking>
+      <Debugging>
+        <GenerateDebugInfo Value="False"/>
+        <UseLineInfoUnit Value="False"/>
+      </Debugging>
       <Options>
         <ExecutableType Value="Library"/>
       </Options>
