@@ -62,7 +62,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <Libraries Value="/home/felipe/Programas/android-ndk-r5/platforms/android-9/arch-arm/usr/lib/"/>
+      <Libraries Value="/home/felipe/Programas/android-ndk-r5/platforms/android-9/arch-arm/usr/lib/;/home/felipe/Programas/android-ndk-r5/toolchains/arm-eabi-4.4.0/prebuilt/linux-x86/lib/gcc/arm-eabi/4.4.0/"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <CodeGeneration>
@@ -74,6 +74,7 @@
       <Debugging>
         <GenerateDebugInfo Value="False"/>
         <UseLineInfoUnit Value="False"/>
+        <StripSymbols Value="True"/>
       </Debugging>
       <Options>
         <ExecutableType Value="Library"/>
@@ -83,8 +84,7 @@
       <CompilerMessages>
         <UseMsgFile Value="True"/>
       </CompilerMessages>
-      <CustomOptions Value="-dANDROID
--Cccdecl"/>
+      <CustomOptions Value="-dANDROID -Xd -Cccdecl"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
