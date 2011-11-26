@@ -257,7 +257,7 @@ var
   typNode : TDOMNode;
 begin
   if not AEltNode.HasChildNodes() then begin;
-    raise EXsdParserException.Create(SERR_InvalidTypeDef_NoChild);
+    raise EXsdParserException.Create(AEltNode.NodeName+' : '+SERR_InvalidTypeDef_NoChild);
   end;
   typName := ATypeName;
   if IsStrEmpty(typName) then begin

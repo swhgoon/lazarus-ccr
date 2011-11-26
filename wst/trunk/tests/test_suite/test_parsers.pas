@@ -358,7 +358,7 @@ procedure TTest_CustomXsdParser.SimpleType_Enum();
 var
   tr : TwstPasTreeContainer;
   mdl : TPasModule;
-  ls : TList;
+  ls : TList2;
   elt : TPasElement;
   enumType : TPasEnumType;
   enumVal : TPasEnumValue;
@@ -407,7 +407,7 @@ procedure TTest_CustomXsdParser.SimpleType_Enum_Embedded();
 var
   tr : TwstPasTreeContainer;
   mdl : TPasModule;
-  ls : TList;
+  ls : TList2;
   elt : TPasElement;
   enumType : TPasEnumType;
   enumVal : TPasEnumValue;
@@ -446,7 +446,7 @@ procedure TTest_CustomXsdParser.SimpleType_AliasToNativeType();
 var
   tr : TwstPasTreeContainer;
   mdl : TPasModule;
-  ls : TList;
+  ls : TList2;
   elt : TPasElement;
   aliasType : TPasAliasType;
 begin
@@ -513,7 +513,7 @@ var
 
 var
   mdl : TPasModule;
-  ls : TList;
+  ls : TList2;
   elt : TPasElement;
   aliasType : TPasAliasType;
   i : Integer;
@@ -688,7 +688,7 @@ var
 var
   mdl : TPasModule;
   clsType : TPasClassType;
-  ls : TList;
+  ls : TList2;
   elt : TPasElement;
   i : Integer;
   prpLs : TList;
@@ -757,7 +757,7 @@ var
 
 var
   mdl : TPasModule;
-  ls : TList;
+  ls : TList2;
   elt : TPasElement;
   i : Integer;
   prpLs : TList;
@@ -981,7 +981,7 @@ var
 
 var
   mdl : TPasModule;
-  ls : TList;
+  ls : TList2;
   elt : TPasElement;
   i : Integer;
   prpLs : TList;
@@ -1056,7 +1056,7 @@ var
 
 var
   mdl : TPasModule;
-  ls : TList;
+  ls : TList2;
   elt : TPasElement;
   aliasType : TPasAliasType;
   i : Integer;
@@ -1116,7 +1116,7 @@ var
 
 var
   mdl : TPasModule;
-  ls : TList;
+  ls : TList2;
   elt : TPasElement;
   aliasType : TPasAliasType;
   i : Integer;
@@ -1172,7 +1172,7 @@ var
 
 var
   mdl : TPasModule;
-  ls : TList;
+  ls : TList2;
   elt : TPasElement;
   aliasType : TPasAliasType;
   i : Integer;
@@ -1231,7 +1231,7 @@ var
 
 var
   mdl : TPasModule;
-  ls : TList;
+  ls : TList2;
   elt : TPasElement;
   aliasType : TPasAliasType;
   i : Integer;
@@ -1290,7 +1290,7 @@ var
 
 var
   mdl : TPasModule;
-  ls : TList;
+  ls : TList2;
   elt : TPasElement;
   aliasType : TPasAliasType;
   i : Integer;
@@ -1385,7 +1385,7 @@ var
 
 var
   mdl : TPasModule;
-  ls : TList;
+  ls : TList2;
   elt : TPasElement;
   i : Integer;
   prpLs : TList;
@@ -1470,7 +1470,7 @@ var
 
 var
   mdl : TPasModule;
-  ls : TList;
+  ls : TList2;
   elt : TPasElement;
   arrayType : TPasArrayType;
   i : Integer;
@@ -1543,7 +1543,7 @@ procedure TTest_CustomXsdParser.ComplexType_ArraySequence_ItemName_Schema();
 var
   tr : TwstPasTreeContainer;
   mdl : TPasModule;
-  ls : TList;
+  ls : TList2;
   elt : TPasElement;
   arrayType : TPasArrayType;
 begin
@@ -1589,7 +1589,7 @@ var
 
 var
   mdl : TPasModule;
-  ls : TList;
+  ls : TList2;
   elt : TPasElement;
   arrayType : TPasArrayType;
   i : Integer;
@@ -1662,7 +1662,7 @@ procedure TTest_CustomXsdParser.ComplexType_Array_soaparray();
 var
   tr : TwstPasTreeContainer;
   mdl : TPasModule;
-  ls : TList;
+  ls : TList2;
   elt : TPasElement;
   arrayType : TPasArrayType;
 begin
@@ -1711,7 +1711,7 @@ var
 
 var
   mdl : TPasModule;
-  ls : TList;
+  ls : TList2;
   elt : TPasElement;
   arrayType : TPasArrayType;
   i : Integer;
@@ -1932,7 +1932,7 @@ var
 
 var
   mdl : TPasModule;
-  ls : TList;
+  ls : TList2;
   elt : TPasElement;
   i : Integer;
   prpLs : TList;
@@ -2007,7 +2007,7 @@ var
 
 var
   mdl : TPasModule;
-  ls : TList;
+  ls : TList2;
   elt : TPasElement;
   i : Integer;
   prpLs : TList;
@@ -2265,7 +2265,7 @@ const
 var
   tr : TwstPasTreeContainer;
   mdl : TPasModule;
-  ls : TList;
+  ls : TList2;
   elt, prpElt : TPasElement;
   prp : TPasProperty;
   baseType, scdClass : TPasClassType;
@@ -2303,7 +2303,7 @@ procedure TTest_CustomXsdParser.schema_include();
 var
   tr : TwstPasTreeContainer;
   mdl : TPasModule;
-  ls : TList;
+  ls : TList2;
   elt, prpElt : TPasElement;
   prp : TPasProperty;
   baseType, scdClass : TPasClassType;
@@ -2335,7 +2335,7 @@ procedure TTest_CustomXsdParser.schema_include_parent_no_types();
 var
   tr : TwstPasTreeContainer;
   mdl : TPasModule;
-  ls : TList;
+  ls : TList2;
   elt, prpElt : TPasElement;
   prp : TPasProperty;
   baseType, scdClass : TPasClassType;
@@ -2382,7 +2382,7 @@ procedure TTest_CustomXsdParser.schema_include_circular1();
 var
   tr : TwstPasTreeContainer;
   mdl : TPasModule;
-  ls : TList;
+  ls : TList2;
   elt, prpElt : TPasElement;
   prp : TPasProperty;
   baseType, scdClass : TPasClassType;
@@ -2411,7 +2411,7 @@ procedure TTest_CustomXsdParser.schema_include_circular2();
 var
   tr : TwstPasTreeContainer;
   mdl : TPasModule;
-  ls : TList;
+  ls : TList2;
   elt, prpElt : TPasElement;
   prp : TPasProperty;
   baseType, scdClass : TPasClassType;
@@ -2459,7 +2459,7 @@ var
 
 var
   mdl : TPasModule;
-  ls : TList;
+  ls : TList2;
   elt : TPasElement;
   aliasType : TPasAliasType;
   i : Integer;
@@ -2548,7 +2548,7 @@ var
 
 var
   mdl : TPasModule;
-  ls : TList;
+  ls : TList2;
   elt : TPasElement;
   aliasType : TPasAliasType;
   i : Integer;
@@ -2624,7 +2624,7 @@ var
 
 var
   mdl : TPasModule;
-  ls : TList;
+  ls : TList2;
   elt : TPasElement;
   aliasType : TPasAliasType;
   i : Integer;

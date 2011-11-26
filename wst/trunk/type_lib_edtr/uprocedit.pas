@@ -116,7 +116,7 @@ var
   b : Boolean;
   i : Integer;
   locProc : TPasProcedure;
-  memberList : TList;
+  memberList : TList2;
   locName : string;
 begin
   locName := edtName.Text;
@@ -204,7 +204,7 @@ var
   i : Integer;
   prp : TPasArgument;
   extName : string;
-  argList : TList;
+  argList : TList2;
 begin
   edtName.Text := '';
   edtParams.Clear();
@@ -231,7 +231,7 @@ procedure TfProcEdit.SaveToObject();
 
   procedure CopyArgs(AFrom,ATo  : TPasProcedureType);
   var
-    argList : TList;
+    argList : TList2;
     arg, newArg : TPasArgument;
     k, ck : Integer;
   begin

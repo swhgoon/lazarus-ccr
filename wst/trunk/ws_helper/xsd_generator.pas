@@ -1282,7 +1282,7 @@ var
   tri : TPasElement;
   g : IXsdTypeHandler;
   gr : IXsdTypeHandlerRegistry;
-  typeList : TList;
+  typeList : TList2;
   mdl : TPasModule;
 begin
   if ( ASymTable = nil ) then

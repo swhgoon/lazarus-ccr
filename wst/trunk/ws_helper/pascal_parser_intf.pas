@@ -41,6 +41,21 @@ type
 {$IFEND}
   
 type
+{$UNDEF wst_use_fplist}
+{$IFDEF FPC}
+  {$IF Defined(FPC_VERSION) and
+       ( (FPC_VERSION > 2) or
+         ( (FPC_VERSION = 2) and (FPC_RELEASE > 6) )
+       )
+  }
+    {$DEFINE wst_use_fplist}
+  {$IFEND}
+{$ENDIF FPC}
+{$IFDEF wst_use_fplist}
+  TList2 = TFPList;
+{$ELSE wst_use_fplist}
+  TList2 = TList;
+{$ENDIF wst_use_fplist}
 
   TElementNameKind = ( elkDeclaredName, elkName );
   TElementNameKinds = set of TElementNameKind;
@@ -225,7 +240,7 @@ type
   ) : TPasArgument;
   function FindMember(AClass : TPasClassType; const AName : string) : TPasElement ; overload;
   function FindMember(AClass : TPasRecordType; const AName : string) : TPasElement ; overload;
-  function GetElementCount(AList : TList; AElementClass : TPTreeElement):Integer ;
+  function GetElementCount(AList : TList2; AElementClass : TPTreeElement):Integer ;
   
   function GetUltimeType(AType : TPasType) : TPasType;
   function MakeInternalSymbolNameFrom(const AName : string) : string ;
@@ -515,7 +530,7 @@ begin
   end;
 end;
 
-function GetElementCount(AList : TList; AElementClass : TPTreeElement):Integer ;
+function GetElementCount(AList : TList2; AElementClass : TPTreeElement):Integer ;
 var
   i : Integer;
 begin
@@ -535,7 +550,7 @@ function GetParameterIndex(
   const AStartPos  : Integer
 ) : Integer;
 var
-  pl : TList;
+  pl : TList2;
   i : Integer;
 begin
   pl := AProcType.Args;
@@ -568,7 +583,7 @@ begin
   end;
 end;
 
-function InternalFindMember(AMemberList : TList; const AName : string) : TPasElement ;
+function InternalFindMember(AMemberList : TList2; const AName : string) : TPasElement ;
 var
   i : Integer;
 begin
@@ -615,7 +630,7 @@ var
   ct : TPasClassType;
   c, i : Integer;
   m : TPasModule;
-  ls : TList;
+  ls : TList2;
 begin        
   if ( ATree.CurrentModule <> nil ) then begin
     m := ATree.CurrentModule;
@@ -770,7 +785,7 @@ function TwstPasTreeContainer.FindElementInModule(
   const ANameKinds : TElementNameKinds
 ): TPasElement;
 var
-  decs : TList;
+  decs : TList2;
   i, c : Integer;
 begin
   Result := nil;
@@ -834,7 +849,7 @@ function TwstPasTreeContainer.FindElement(
 ): TPasElement;
 var
   i : Integer;
-  mls : TList;
+  mls : TList2;
   mdl : TPasModule;
 begin
   Result := FindElementInModule(AName,CurrentModule,ANameKinds);
@@ -855,7 +870,7 @@ end;
 function TwstPasTreeContainer.FindModule(const AName: String): TPasModule;
 var
   i , c : Integer;
-  mdl : TList;
+  mdl : TList2;
 begin
   Result := nil;
   mdl := Package.Modules;
@@ -871,8 +886,8 @@ function TwstPasTreeContainer.IsEnumItemNameUsed(const AName: string;AModule: TP
 var
   i, c, j : Integer;
   elt : TPasElement;
-  enumList : TList;
-  typeList : TList;
+  enumList : TList2;
+  typeList : TList2;
 begin
   Result := False;
   typeList := AModule.InterfaceSection.Declarations;
@@ -979,7 +994,7 @@ procedure TwstPasTreeContainer.FreeProperties(AObject: TPasElement);
 
   procedure FreeClassProps(AObj : TPasClassType);
   var
-    ls : TList;
+    ls : TList2;
     k : PtrInt;
   begin
     ls := AObj.Members;
@@ -990,7 +1005,7 @@ procedure TwstPasTreeContainer.FreeProperties(AObject: TPasElement);
   
   procedure FreeRecordFields(AObj : TPasRecordType);
   var
-    ls : TList;
+    ls : TList2;
     k : PtrInt;
   begin
     ls := AObj.Members;

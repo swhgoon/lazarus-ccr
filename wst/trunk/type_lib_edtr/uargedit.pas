@@ -70,7 +70,7 @@ var
   b : Boolean;
   i : Integer;
   locArg : TPasArgument;
-  argList : TList;
+  argList : TList2;
   locName : string;
 begin
   locName := edtName.Text;

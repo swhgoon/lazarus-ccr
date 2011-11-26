@@ -1,7 +1,7 @@
 object fClassEdit: TfClassEdit
-  Left = 640
+  Left = 642
   Height = 556
-  Top = 167
+  Top = 169
   Width = 552
   BorderStyle = bsSizeToolWin
   Caption = 'fClassEdit'
@@ -225,8 +225,32 @@ object fClassEdit: TfClassEdit
         ParentFont = False
         TabOrder = 0
         BookMarkOptions.Xoffset = 42
-        Gutter.Width = 67
+        Gutter.Width = 0
         Gutter.MouseActions = <        
+          item
+            Shift = []
+            ShiftMask = []
+            Button = mbLeft
+            ClickCount = ccAny
+            ClickDir = cdDown
+            Command = 13
+            MoveCaret = False
+            Option = 0
+            Priority = 0
+          end        
+          item
+            Shift = []
+            ShiftMask = []
+            Button = mbRight
+            ClickCount = ccSingle
+            ClickDir = cdUp
+            Command = 12
+            MoveCaret = False
+            Option = 0
+            Priority = 0
+          end>
+        RightGutter.Width = 0
+        RightGutter.MouseActions = <        
           item
             Shift = []
             ShiftMask = []
@@ -696,6 +720,8 @@ object fClassEdit: TfClassEdit
           end>
         ReadOnly = True
         BracketHighlightStyle = sbhsBoth
+        inline SynLeftGutterPartList1: TSynGutterPartList
+        end
       end
     end
     object tsDependencies: TTabSheet
@@ -809,6 +835,19 @@ object fClassEdit: TfClassEdit
   object SynXMLSyn1: TSynXMLSyn
     DefaultFilter = 'Documents XML (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd'
     Enabled = False
+    ElementAttri.FrameEdges = sfeAround
+    AttributeAttri.FrameEdges = sfeAround
+    NamespaceAttributeAttri.FrameEdges = sfeAround
+    AttributeValueAttri.FrameEdges = sfeAround
+    NamespaceAttributeValueAttri.FrameEdges = sfeAround
+    TextAttri.FrameEdges = sfeAround
+    CDATAAttri.FrameEdges = sfeAround
+    EntityRefAttri.FrameEdges = sfeAround
+    ProcessingInstructionAttri.FrameEdges = sfeAround
+    CommentAttri.FrameEdges = sfeAround
+    DocTypeAttri.FrameEdges = sfeAround
+    SpaceAttri.FrameEdges = sfeAround
+    SymbolAttri.FrameEdges = sfeAround
     WantBracesParsed = False
     left = 210
     top = 171

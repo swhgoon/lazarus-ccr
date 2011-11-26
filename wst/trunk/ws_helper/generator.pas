@@ -433,7 +433,7 @@ Var
   i,c : Integer;
   intf : TPasClassType;
   elt : TPasElement;
-  ls : TList;
+  ls : TList2;
   binding : TwstBinding;
   intfEasy : TPasClassType;
   HandleEasyIntf : Boolean;
@@ -515,7 +515,7 @@ var
   Var
     prmCnt,k : Integer;
     prm : TPasArgument;
-    prms : TList;
+    prms : TList2;
   Begin
     Indent();
     prms := AMthd.ProcType.Args;
@@ -555,7 +555,7 @@ var
   procedure WriteMethods();
   var
     k : Integer;
-    mthds : TList;
+    mthds : TList2;
     elt : TPasElement;
   begin
     if ( GetElementCount(AIntf.Members,TPasProcedure) = 0 ) then
@@ -652,7 +652,7 @@ Var
   Var
     prmCnt,k : Integer;
     prm : TPasArgument;
-    prms : TList;
+    prms : TList2;
   Begin
     prms := AMthd.ProcType.Args;
     prmCnt := prms.Count;
@@ -687,7 +687,7 @@ Var
 
   procedure WriteEasyMethodImp(AMthd : TPasProcedure);
   var
-    prms : TList;
+    prms : TList2;
     origineRes : TPasResultElement;
     origineResProp : TPasProperty;
 
@@ -901,7 +901,7 @@ Var
     prmCnt,k : Integer;
     prm : TPasArgument;
     resPrm : TPasResultElement;
-    prms : TList;
+    prms : TList2;
   Begin
     prms := AMthd.ProcType.Args;
     prmCnt := prms.Count;
@@ -1010,7 +1010,7 @@ Var
   procedure WriteMethods();
   var
     k : Integer;
-    mthds : TList;
+    mthds : TList2;
     elt : TPasElement;
   begin
     WriteTypeInfoMethod();
@@ -1119,7 +1119,7 @@ end;
 var
   m : TPasModule;
   k, currentModuleIndex : Integer;
-  mdlList : TList; 
+  mdlList : TList2;
   mdl : TPasModule;    
 begin
   Result := '';
@@ -1246,7 +1246,7 @@ procedure TBinderGenerator.GenerateIntf(AIntf: TPasClassType);
   procedure WriteMethods();
   var
     k : Integer;
-    mbrs : TList;
+    mbrs : TList2;
     elt : TPasElement;
   begin
     if ( GetElementCount(AIntf.Members,TPasProcedure) > 0 ) then begin
@@ -1333,7 +1333,7 @@ Var
   Var
     prmCnt,k : Integer;
     prm : TPasArgument;
-    prms : TList;
+    prms : TList2;
     resElt : TPasResultElement;
     strBuff : string;
   Begin
@@ -1496,7 +1496,7 @@ Var
   Var
     k : Integer;
     mtd : TPasProcedure;
-    mtds : TList;
+    mtds : TList2;
   Begin
     NewLine();
     WriteLn('constructor %s.Create();',[strClassName]);
@@ -1520,7 +1520,7 @@ Var
   procedure WriteMethods();
   var
     k : Integer;
-    mtds : TList;
+    mtds : TList2;
     mtd : TPasProcedure;
   begin
     mtds := AIntf.Members;
@@ -1618,7 +1618,7 @@ procedure TBinderGenerator.Execute();
 Var
   i,c : Integer;
   intf : TPasClassType;
-  typeList : TList;
+  typeList : TList2;
   elt : TPasElement;
 begin
   GenerateUnitHeader();
@@ -1700,7 +1700,7 @@ procedure TImplementationGenerator.GenerateIntf(AIntf: TPasClassType);
   var
     prmCnt,k : Integer;
     prm : TPasArgument;
-    prms : TList;
+    prms : TList2;
   begin
     Indent();
     prms := AMthd.ProcType.Args;
@@ -1737,7 +1737,7 @@ procedure TImplementationGenerator.GenerateIntf(AIntf: TPasClassType);
   procedure WriteMethods();
   var
     k : Integer;
-    mtds : TList;
+    mtds : TList2;
     elt : TPasElement;
   begin
     if ( GetElementCount(AIntf.Members,TPasProcedure) > 0 ) then begin
@@ -1792,7 +1792,7 @@ var
   procedure WriteMethodDec(AMthd : TPasProcedure);
   var
     prmCnt,k : Integer;
-    prms : TList;
+    prms : TList2;
     prm : TPasArgument;
   begin
     prms := AMthd.ProcType.Args;
@@ -1836,7 +1836,7 @@ var
   procedure WriteMethods();
   var
     k : Integer;
-    mbrs : TList;
+    mbrs : TList2;
     elt : TPasElement;
     mtd : TPasProcedure;
   begin
@@ -1909,7 +1909,7 @@ Var
   i,c : Integer;
   intf : TPasClassType;
   elt : TPasElement;
-  typeList : TList;
+  typeList : TList2;
 begin
   GenerateUnitHeader();
   GenerateUnitImplementationHeader();
@@ -2268,7 +2268,7 @@ procedure TInftGenerator.GenerateIntf(AIntf: TPasClassType);
   var
     prmCnt,k : Integer;
     prm : TPasArgument;
-    prms : TList;
+    prms : TList2;
   begin
     Indent();
     prms := AMthd.ProcType.Args;
@@ -2305,7 +2305,7 @@ procedure TInftGenerator.GenerateIntf(AIntf: TPasClassType);
   procedure WriteMethods();
   var
     k : Integer;
-    mbrs : TList;
+    mbrs : TList2;
     elt : TPasElement;
   begin
     IncIndent();
@@ -2936,7 +2936,7 @@ procedure TInftGenerator.GenerateCustomMetadatas();
   procedure WriteServiceDatas(ABinding : TwstBinding);
   var
     k : Integer;
-    opList : TList;
+    opList : TList2;
     elt : TPasElement;
   begin
     if not IsStrEmpty(ABinding.Address) then begin
@@ -3007,10 +3007,10 @@ end;
 
 procedure TInftGenerator.InternalExecute();
 
-  procedure SortRecords(AList : TList);
+  procedure SortRecords(AList : TList2);
   var
     j, k : PtrInt;
-    ordr_ls, mbrLs, locLs : TList;
+    ordr_ls, mbrLs, locLs : TList2;
     locMemberType : TPasType;
     rec, locRec : TPasRecordType;
     locStack : TStack;
@@ -3019,10 +3019,10 @@ procedure TInftGenerator.InternalExecute();
     if ( AList.Count > 0 ) then begin
       locStack := nil;
       locLs := nil;
-      ordr_ls := TList.Create();
+      ordr_ls := TList2.Create();
       try
         locStack := TStack.Create();
-        locLs := TList.Create();
+        locLs := TList2.Create();
         for j := 0 to Pred(AList.Count) do begin
           rec := TPasRecordType(AList[j]);
           if ( ordr_ls.IndexOf(rec) = -1 ) then begin
@@ -3075,10 +3075,10 @@ var
   clssTyp : TPasClassType;
   gnrClssLst : TObjectList;
   objLst : TObjectList;
-  typeList : TList;
+  typeList : TList2;
   elt : TPasElement;
   classAncestor : TPasElement;
-  tmpList : TList;
+  tmpList : TList2;
   intfCount : PtrInt;
   locBinding : TwstBinding;
 begin
@@ -3124,7 +3124,7 @@ begin
       end;
     end;
 
-    tmpList := TList.Create();
+    tmpList := TList2.Create();
     for i := 0 to c do begin
       elt := TPasElement(typeList[i]);
       if elt.InheritsFrom(TPasRecordType) then begin
@@ -3260,7 +3260,7 @@ procedure TInftGenerator.Execute();
 var
   oldCurrent, mdl : TPasModule;
   i : PtrInt;
-  mdlList : TList;
+  mdlList : TList2;
   oldCS : Boolean;
   oldNamesKinds : TElementNameKinds;
 begin

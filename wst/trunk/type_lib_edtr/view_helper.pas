@@ -258,7 +258,7 @@ var
   procedure ScanClassType(AItem : TPasClassType);
   var
     k : PtrInt;
-    pl : TList;
+    pl : TList2;
     m : TPasElement;
     p : TPasProperty;
   begin
@@ -289,7 +289,7 @@ var
   procedure ScanRecordType(AItem : TPasRecordType);
   var
     k : PtrInt;
-    pl : TList;
+    pl : TList2;
     m : TPasElement;
     p : TPasVariable;
   begin
@@ -313,7 +313,7 @@ var
 
 var
   i, c : PtrInt;
-  list : TList;
+  list : TList2;
   e : TPasType;
 begin
   list := ATree.CurrentModule.InterfaceSection.Types;
@@ -711,7 +711,7 @@ var
   objPtr : ISymbolPainter;
   {constNode,} typNode, intfNode : TTreeNode;
   objItm : TPasElement;
-  decList : TList;
+  decList : TList2;
 begin
   locObj := AObj as TPasModule;
   Result := inherited Paint(AContainer, locObj, AParent);
@@ -758,7 +758,7 @@ var
   ss : string;
   pmr : TPasArgument;
   locMthd : TPasProcedure;
-  memberList : TList;
+  memberList : TList2;
 begin
   locMthd := AObj as TPasProcedure;
   Result := AddChildNode(AParent,AContainer.GetExternalName(locMthd));
@@ -799,7 +799,7 @@ var
   locObj : TPasClassType;
   locMthd : TPasProcedure;
   i : Integer;
-  memberList : TList;
+  memberList : TList2;
   bindingsNode : TTreeNode;
   b : TwstBinding;
 begin

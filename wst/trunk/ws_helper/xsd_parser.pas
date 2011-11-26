@@ -359,7 +359,7 @@ var
   locOldCurrentModule : TPasModule;
   locLocator, locTempLocator : IDocumentLocator;
   locContext : IParserContext;
-  locUsesList : TList;
+  locUsesList : TList2;
   locModule : TPasModule;
   locName, s : string;
   i : Integer;
@@ -839,7 +839,7 @@ var
   locContinue : Boolean;
   locLocator, loctempLocator : IDocumentLocator;
   locContext : IParserContext; 
-  locUsesList : TList;
+  locUsesList : TList2;
   locModule : TPasModule;
   locName, s : string;
   i : Integer;             

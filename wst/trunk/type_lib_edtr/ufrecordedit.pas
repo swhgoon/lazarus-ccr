@@ -175,7 +175,7 @@ procedure TfRecordEdit.MovePropertyItem(AItem: TPasVariable; const ANewIndex: In
   function FindNewMemberPosition() : Integer;
   var
     k, kcounter : Integer;
-    mlist : TList;
+    mlist : TList2;
   begin
     Result := 0;
     kcounter := 0;

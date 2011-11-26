@@ -523,7 +523,7 @@ class function TClassUpdater.CloneObject(
   
   procedure CloneProperties(ASource, ADest : TPasClassType);
   var
-    ls : TList;
+    ls : TList2;
     k : Integer;
     locSource, locDest : TPasProperty;
   begin
@@ -783,7 +783,7 @@ procedure InternalFillList(
 var
   i : Integer;
   sym : TPasElement;
-  decList : TList;
+  decList : TList2;
 begin
   decList := AContainer.CurrentModule.InterfaceSection.Declarations;
   for i := 0 to Pred(decList.Count) do begin
@@ -830,7 +830,7 @@ procedure InternalFillTypeList(ALs : TStrings; AContainer : TwstPasTreeContainer
 var
   i, j : Integer;
   sym : TPasElement;
-  moduleList, decList : TList;
+  moduleList, decList : TList2;
   mdl : TPasModule;
   locExtName : string;
 begin

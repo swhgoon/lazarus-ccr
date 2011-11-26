@@ -1,7 +1,7 @@
 object fPropEdit: TfPropEdit
-  Left = 977
+  Left = 979
   Height = 326
-  Top = 144
+  Top = 146
   Width = 324
   HorzScrollBar.Page = 323
   VertScrollBar.Page = 325

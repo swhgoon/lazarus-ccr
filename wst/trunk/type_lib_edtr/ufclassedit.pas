@@ -240,7 +240,7 @@ procedure TfClassEdit.MovePropertyItem(AItem: TPasProperty; const ANewIndex: Int
   function FindNewMemberPosition() : Integer;
   var
     k, kcounter : Integer;
-    mlist : TList;
+    mlist : TList2;
   begin
     Result := 0;
     kcounter := 0;
@@ -280,7 +280,7 @@ procedure InternalFillList(
 var
   i, j : Integer;
   sym : TPasElement;
-  modulList, decList : TList;
+  modulList, decList : TList2;
   mdl : TPasModule;
   ok : Boolean;
   locExtName : string;   

@@ -54,7 +54,7 @@ uses
 procedure TMetadataGenerator.GenerateHeader();
 var
   c, i, k : LongInt;
-  typeList : TList;
+  typeList : TList2;
   elt : TPasElement;
 begin
   FStream.WriteAnsiStr(sWST_SIGNATURE);
@@ -90,7 +90,7 @@ procedure TMetadataGenerator.GenerateIntfMetadata(AIntf: TPasClassType);
 
   var
     j, k : LongInt;
-    argLst : TList;
+    argLst : TList2;
   begin
     argLst := AMeth.ProcType.Args;
     k := argLst.Count;
@@ -110,7 +110,7 @@ procedure TMetadataGenerator.GenerateIntfMetadata(AIntf: TPasClassType);
   
 var
   i, c : LongInt;
-  mbrs : TList;
+  mbrs : TList2;
   elt : TPasElement;
 begin
   FStream.WriteAnsiStr(AIntf.Name);
@@ -137,7 +137,7 @@ procedure TMetadataGenerator.Execute();
 Var
   i,c : Integer;
   intf : TPasClassType;
-  typeList : TList;
+  typeList : TList2;
   elt : TPasElement;
 begin
   GenerateHeader();

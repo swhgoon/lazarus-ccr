@@ -346,7 +346,7 @@ procedure TWsdlParser.Execute(const AMode: TParserMode; const AModuleName: strin
     typeCursor : IObjectCursor;
     schmNode, tmpNode : TDOMNode;
     s : string;
-    typeList : TList;
+    typeList : TList2;
     locXsdParser : IXsdPaser;
   begin
     if Assigned(FSchemaCursor) then begin
@@ -422,7 +422,7 @@ procedure TWsdlParser.Execute(const AMode: TParserMode; const AModuleName: strin
     locPrs : IParserContext;
     k : PtrInt;
     locModule : TPasModule;
-    locIntfUsesList : TList;
+    locIntfUsesList : TList2;
   begin
     locIntfUsesList := FModule.InterfaceSection.UsesList;
     for k := 0 to Pred(FXsdParsers.Count) do begin
@@ -702,7 +702,7 @@ function TWsdlParser.ParseOperation(
 
     procedure ParseOutputMessage();
     
-      function FindIndexOfResultArg(AArgList : TList) : PtrInt;
+      function FindIndexOfResultArg(AArgList : TList2) : PtrInt;
       const RESULT_ARG_NAMES : array[0..5] of string = ( 'result', 'return', '_result', 'result_', '_return', 'return_' );
       var
         p, q : PtrInt;

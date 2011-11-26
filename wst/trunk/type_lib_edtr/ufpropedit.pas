@@ -54,7 +54,7 @@ type
   private
     procedure LoadFromObject();
     procedure SaveToObject();
-    function GetMembers() : TList;
+    function GetMembers() : TList2;
     function IsClassType() : Boolean;
   public
     function UpdateObject(
@@ -224,7 +224,7 @@ begin
     FSymbolTable.SetPropertyAsAttribute(locObj,edtAttribute.Checked);
 end;
 
-function TfPropEdit.GetMembers() : TList;
+function TfPropEdit.GetMembers() : TList2;
 begin
   if ClassObject.InheritsFrom(TPasClassType) then
     Result := TPasClassType(ClassObject).Members
