@@ -12,11 +12,12 @@ public class AndroidJNITest extends Activity {
         super.onCreate(savedInstanceState);
           
         TextView  tv = new TextView(this);
-        tv.setText( stringFromJNI() );
+        tv.setText( Integer.toString(intFromJNI()) );
         setContentView(tv);
     }
     
     public native String stringFromJNI();
+    public native int intFromJNI();
     
     public long nativeCodeLoaded=0;
      
