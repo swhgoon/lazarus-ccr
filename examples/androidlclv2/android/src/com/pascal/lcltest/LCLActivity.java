@@ -1,4 +1,4 @@
-package com.pascal.jnitest;
+package com.pascal.lcltest;
 
 import android.app.*;
 import android.content.*;
