@@ -4,8 +4,8 @@ library nativetest;
 
 uses
   SysUtils,
-  jni in 'jni.pas',
-  log in 'log.pas';
+  jni,
+  log;
 
 const curClass:JClass=nil;
       nativeCodeLoaded:JfieldID=nil;
@@ -36,6 +36,7 @@ begin
   exit;
   end;
 
+  __android_log_write(ANDROID_LOG_INFO,'nativetest','Reading curClass');
   curClass:=curEnv^.FindClass(curEnv,'com/pascal/jnitest/AndroidJNITest');
   if not assigned(curClass) then begin
   __android_log_write(ANDROID_LOG_FATAL,'nativetest','curEnv^.FindClass failed');
