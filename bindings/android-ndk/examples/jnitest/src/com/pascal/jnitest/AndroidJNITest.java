@@ -10,7 +10,6 @@ public class AndroidJNITest extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
           
         TextView  tv = new TextView(this);
         tv.setText( stringFromJNI() );
