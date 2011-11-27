@@ -20,7 +20,7 @@ type
     EngineStringList: TStringList;
     side            : boolean; //Side to move true=human.
   public
-    constructor Create;
+    constructor Create; override;
     procedure CreateUserInterface(); override;
     procedure ShowUserInterface(AParent: TWinControl); override;
     procedure HideUserInterface(); override;
@@ -47,11 +47,11 @@ procedure TWinboardChessModule.CreateUserInterface;
 begin
   textEnginePatch := TStaticText.Create(nil);
   textEnginePatch.SetBounds(20, 20, 180, 50);
-  textEnginePatch.Caption := 'Full patch to the engine(with args)';
+  textEnginePatch.Caption := 'Full patch to the engine';
 
   editEnginePatch := TEdit.Create(nil);
   editEnginePatch.SetBounds(200, 20, 150, 50);
-  editEnginePatch.Text := 'gnuchess -x';
+  editEnginePatch.Text := 'gnuchess';
 end;
 
 procedure TWinboardChessModule.ShowUserInterface(AParent: TWinControl);
@@ -100,4 +100,6 @@ end;
 
 initialization
   RegisterChessModule(TWinboardChessModule.Create);
+finalization
+  vwinboardConn.stopEngine;
 end.
