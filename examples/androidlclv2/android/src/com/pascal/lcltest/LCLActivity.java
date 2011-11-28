@@ -16,8 +16,10 @@ public class LCLActivity extends Activity
     public LCLSurface(Context context)
     {
       super(context);
+      // Allows View.postInvalidate() to work
+      setWillNotDraw(false);
     }
-   
+
     @Override protected void onDraw(Canvas canvas)
     {
       int lWidth = getWidth();
@@ -43,16 +45,17 @@ public class LCLActivity extends Activity
 //        setContentView(tv);
     LCLSurface lclsurface = new LCLSurface(this);
     setContentView(lclsurface);
+    lclsurface.postInvalidate();
   }
   
   // JNI table of functions  
   public native String stringFromJNI();
   public native int intFromJNI();
   public native int LCLDrawToBitmap(int width, int height, Bitmap bitmap);
-    
+
   public long nativeCodeLoaded=0;
-     
-  static 
+    
+  static
   {
     try 
     {
