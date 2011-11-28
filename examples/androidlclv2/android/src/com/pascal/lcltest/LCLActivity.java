@@ -20,8 +20,14 @@ public class LCLActivity extends Activity
    
     @Override protected void onDraw(Canvas canvas)
     {
-      Bitmap lclbitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-      LCLDrawToBitmap(getWidth(), getHeight(), lclbitmap);
+      int lWidth = getWidth();
+      int lHeight = getHeight();
+
+      Log.v("?", "LCLSurface.onDraw width=" + Integer.toString(lWidth)
+        + " height=" + Integer.toString(lHeight));
+ 
+      Bitmap lclbitmap = Bitmap.createBitmap(lWidth, lHeight, Bitmap.Config.ARGB_8888);
+      LCLDrawToBitmap(lWidth, lHeight, lclbitmap);
       canvas.drawBitmap(lclbitmap, 0, 0, null);
     }
   }    
@@ -50,12 +56,12 @@ public class LCLActivity extends Activity
   {
     try 
     {
-      Log.i("JNI", "Trying to load libnativetest.so");  
-      System.loadLibrary("nativetest");
+      Log.i("JNI", "Trying to load liblclapp.so");  
+      System.loadLibrary("lclapp");
     } 
     catch(UnsatisfiedLinkError ule) 
     {
-      Log.e("JNI", "WARNING: Could not load libnativetest.so");
+      Log.e("JNI", "WARNING: Could not load liblclapp.so");
       ule.printStackTrace();
     }
   }
