@@ -2130,10 +2130,7 @@ begin
     Result := ClientWidth;
 
   if FRadius<0.0 then
-    Result := Result/4
-  else
-  if FRadius>Result/2 then
-    Result := Result/2
+    Result := Result/8  // min(w,h)/4 is default diamter
   else
     Result := FRadius;
 end;
@@ -2185,7 +2182,7 @@ begin
     end;
 
     if ARadius<>0 then
-      RoundRect(Left,Top,Right,Bottom,ARadius,ARadius);
+      RoundRect(Left,Top,Right,Bottom,ARadius*2,ARadius*2);
   end;
 end;
 
