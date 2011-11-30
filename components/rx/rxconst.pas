@@ -115,6 +115,9 @@ resourcestring
   sLicense              = 'License';
 
 
+  { TRxHistoryNavigator }
+  sHistoryDesc = 'History - "%s"';
+
 implementation
 
 uses Forms;
