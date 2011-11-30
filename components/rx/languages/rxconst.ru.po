@@ -93,6 +93,10 @@ msgstr "Графический интерфейс GTK 2"
 msgid "GTK widget set"
 msgstr "Графический интерфейс GTK"
 
+#: rxconst.shistorydesc
+msgid "History - \"%s\""
+msgstr ""
+
 #: rxconst.slclversion
 msgid "LCL Version: "
 msgstr "Версия LCL : "

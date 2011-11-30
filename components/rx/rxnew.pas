@@ -17,7 +17,7 @@ uses
   rxmemds, rxpopupunit, rxsortmemds, rxspin, rxstrutils, rxswitch, 
   RxSystemServices, rxtbrsetup, RxTimeEdit, rxtoolbar, RxVersInfo, 
   RxViewsPanel, rxxpman, seldsfrm, tooledit, vclutils, RxCloseFormValidator, 
-  LazarusPackageIntf;
+  RxHistoryNavigator, LazarusPackageIntf;
 
 implementation
 

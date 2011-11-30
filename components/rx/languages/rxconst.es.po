@@ -93,6 +93,10 @@ msgstr ""
 msgid "GTK widget set"
 msgstr ""
 
+#: rxconst.shistorydesc
+msgid "History - \"%s\""
+msgstr ""
+
 #: rxconst.slclversion
 msgid "LCL Version: "
 msgstr ""

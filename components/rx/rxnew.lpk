@@ -6,7 +6,7 @@
     <AddToProjectUsesSection Value="True"/>
     <Author Value="Lagunov Aleksey"/>
     <CompilerOptions>
-      <Version Value="10"/>
+      <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
@@ -17,12 +17,6 @@
           <UseAnsiStrings Value="False"/>
         </SyntaxOptions>
       </Parsing>
-      <Linking>
-        <Debugging>
-          <GenerateDebugInfo Value="True"/>
-          <DebugInfoType Value="dsAuto"/>
-        </Debugging>
-      </Linking>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
@@ -34,7 +28,7 @@ translate to Lazarus by alexs in 2005 - 2009
     <License Value="free ware
 "/>
     <Version Build="105" Major="2" Minor="1" Release="2"/>
-    <Files Count="60">
+    <Files Count="61">
       <Item1>
         <Filename Value="autopanel.pas"/>
         <UnitName Value="AutoPanel"/>
@@ -278,6 +272,10 @@ translate to Lazarus by alexs in 2005 - 2009
         <Filename Value="rxcloseformvalidator.pas"/>
         <UnitName Value="RxCloseFormValidator"/>
       </Item60>
+      <Item61>
+        <Filename Value="rxhistorynavigator.pas"/>
+        <UnitName Value="RxHistoryNavigator"/>
+      </Item61>
     </Files>
     <LazDoc Paths="docs\;\usr\local\share\lazarus\components\rxnew\docs\"/>
     <i18n>
