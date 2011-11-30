@@ -42,7 +42,7 @@ procedure Register;
 
 implementation
 uses
-  PropEdits, folderlister, duallist,
+  PropEdits, folderlister, duallist, RxHistoryNavigator,
   curredit, rxswitch, rxdice, rxtoolbar, rxxpman, PageMngr, RxAppIcon,
   Dialogs, ComponentEditors, DBPropEdits, DB, rxctrls,
   RxCustomChartPanel, AutoPanel, pickdate, rxconst, tooledit, rxclock,
@@ -73,6 +73,43 @@ begin
     DataSource.DataSet.GetFieldNames(Values);
 end;
 
+type
+
+  { THistoryButtonProperty }
+
+  THistoryButtonProperty = class(TStringPropertyEditor)
+  public
+    function  GetAttributes: TPropertyAttributes; override;
+    procedure GetValues(Proc: TGetStrProc); override;
+  end;
+
+
+
+{ THistoryButtonProperty }
+
+function THistoryButtonProperty.GetAttributes: TPropertyAttributes;
+begin
+  Result:= [paValueList, paSortList, paMultiSelect];
+end;
+
+procedure THistoryButtonProperty.GetValues(Proc: TGetStrProc);
+var
+  I: Integer;
+  Navigator:TRxHistoryNavigator;
+begin
+  Navigator:=TRxHistoryNavigator(GetComponent(0));
+  if Assigned(Navigator) then
+  begin
+    if Assigned(Navigator.ToolPanel) then
+    begin
+      for i:=0 to Navigator.ToolPanel.Items.Count - 1 do
+      begin
+        if Assigned(Navigator.ToolPanel.Items[i].Action) then
+          Proc(Navigator.ToolPanel.Items[i].Action.Name);
+      end;
+    end;
+  end;
+end;
 
 {$IFDEF USE_TRxAppIcon}
 procedure RegisterRxAppIcon;
@@ -174,6 +211,11 @@ begin
   RegisterComponents('RX',[TRxViewsPanel]);
 end;
 
+procedure RegisterRxHistoryNavigator;
+begin
+  RegisterComponents('RX Tools',[TRxHistoryNavigator]);
+end;
+
 procedure Register;
 begin
   //RX
@@ -200,9 +242,13 @@ begin
   RegisterUnit('RxTimeEdit', @RegisterRxTimeEdit);
   RegisterUnit('RxAboutDialog', @RegisterRxAboutDialog);
   RegisterUnit('RxViewsPanel', @RegisterRxViewsPanel);
+  RegisterUnit('RxHistoryNavigator', @RegisterRxHistoryNavigator);
+
 
 //
   RegisterPropertyEditor(TypeInfo(string), TPopUpColumn, 'FieldName', TPopUpColumnFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string), TRxHistoryNavigator, 'BackBtn', THistoryButtonProperty);
+  RegisterPropertyEditor(TypeInfo(string), TRxHistoryNavigator, 'ForwardBtn', THistoryButtonProperty);
   RegisterCEEditLookupFields;
 end;
 
