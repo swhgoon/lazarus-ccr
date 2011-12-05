@@ -472,7 +472,7 @@ type
     procedure DrawXObjectEx(X, Y, AWidth, AHeight: Single;
         ClipX, ClipY, ClipWidth, ClipHeight: Single; AXObjectName: string);
     procedure Ellipse(x, y, width, height: Single);
-    procedure RoundRect(x, y, width, height, rx, ry: Single);
+    procedure RoundRect(x, y, width, height, rx, ry: Single; SqrCorners:TPdfCorners=[]);
     function TextWidth(Text: string): Single;
     function MeasureText(Text: string; AWidth: Single): integer;
     function GetNextWord(const S: string; var Index: integer): string;
@@ -2174,20 +2174,39 @@ begin
              y+height/2);
 end;
 
-procedure TPdfCanvas.RoundRect(x, y, width, height, rx, ry: Single);
+procedure TPdfCanvas.RoundRect(x, y, width, height, rx, ry: Single;
+  SqrCorners:TPdfCorners=[]);
 var
   h1,w1:single;
 begin
+
+  if 2*rx>width then
+    rx := width/2;
+  if 2*ry>height then
+    ry := height/2;
   h1 := ry*11/20;
   w1 := rx*11/20;
+
   MoveTo(x, y+ry);
-  CurveToC(x, y+ry-h1, x+rx-w1, y, x+rx, y);
+  if pcBottomLeft in SqrCorners then
+    LineTo(x, y)
+  else
+    CurveToC(x, y+ry-h1, x+rx-w1, y, x+rx, y);
   LineTo(x+width-rx, y);
-  CurveToC(x+width-rx+w1, y, x+width, y+ry-h1, x+width, y+ry);
+  if pcBottomRight in SqrCorners then
+    LineTo(x+width, y)
+  else
+    CurveToC(x+width-rx+w1, y, x+width, y+ry-h1, x+width, y+ry);
   LineTo(x+width, y+height-ry);
-  CurveToC(x+width, y+height-ry+h1, x+width-rx+w1, y+height, x+width-rx, y+height);
+  if pcTopRight in SqrCorners then
+    LineTo(x+width, y+height)
+  else
+    CurveToC(x+width, y+height-ry+h1, x+width-rx+w1, y+height, x+width-rx, y+height);
   LineTo(x+rx, y+height);
-  CurveToC(x+rx-w1, y+height, x, y+height-ry+h1, x, y+height-ry);
+  if pcTopLeft in SqrCorners then
+    LineTo(x, y+height)
+  else
+    CurveToC(x+rx-w1, y+height, x, y+height-ry+h1, x, y+height-ry);
   LineTo(x, y+ry);
 end;
 

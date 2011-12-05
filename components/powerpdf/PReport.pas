@@ -47,7 +47,7 @@ uses
   {$ELSE}
   Windows, Messages,
   {$ENDIF}
-  SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Classes, GraphMath, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, PdfDoc, PdfFonts, PdfTypes, PdfImages
   {$IFDEF USE_JPFONTS}
   , PdfJPFonts
@@ -445,13 +445,16 @@ type
   TPRRect = class(TPRShape)
   private
     FRadius: Single;
+    FCorners: TPdfCorners;
     function GetRadius: single;
+    procedure SetCorners(AValue: TPdfCorners);
     procedure SetRadius(const AValue: single);
   protected
     procedure Paint; override;
     procedure Print(ACanvas: TPRCanvas; ARect: TRect); override;
   published
     property Radius: single read GetRadius write SetRadius;
+    property SquaredCorners: TPdfCorners read FCorners write SetCorners default [];
   end;
 
   { TPREllipse }
@@ -734,6 +737,71 @@ function PRPoint(x, y: single): TPRPoint;
 begin
   result.x := x;
   result.y := y;
+end;
+
+
+procedure MixedRoundRect(Canvas:TCanvas; X1, Y1, X2, Y2: integer; RX, RY: integer;
+  SqrCorners: TPdfCorners);
+var
+  Pts: PPoint;
+  c: Integer;
+  Mx,My: Integer;
+
+  procedure Corner(Ax,Ay,Bx,By,Cx,Cy:Integer);
+  begin
+    ReallocMem(Pts, SizeOf(TPoint)*(c+3));
+    Pts[c].x:=ax; Pts[c].y:=ay; inc(c);
+    Pts[c].x:=bx; Pts[c].y:=by; inc(c);
+    Pts[c].x:=cx; Pts[c].y:=cy; inc(c);
+  end;
+
+begin
+
+  X2 := X2-1;
+  Y2 := Y2-1;
+
+  // basic checks
+  if X1>X2 then
+  begin
+    c :=X2;
+    X2 := X1;
+    X1 := c;
+  end;
+  if Y1>Y2 then
+  begin
+    c := Y2;
+    Y2 := Y1;
+    Y1 := c;
+  end;
+  if RY>(Y2-Y1) then
+    RY:=(Y2-Y1);
+  if RX>(X2-X1) then
+    RX :=(X2-X1);
+
+  MX := RX div 2;
+  MY := RY div 2;
+
+  c := 0;
+  Pts := nil;
+  if pcTopLeft in SqrCorners then
+    Corner(X1+MX,Y1, X1,Y1, X1,Y1+MY)
+  else
+    BezierArcPoints(X1,Y1,RX,RY, 90*16, 90*16, 0, Pts, c);
+  if pcBottomLeft in SqrCorners then
+    Corner(X1,Y2-MY,X1,Y2,X1+MX,Y2)
+  else
+    BezierArcPoints(X1,Y2-RY,RX,RY, 180*16, 90*16, 0, Pts, c);
+  if pcBottomRight in SqrCorners then
+    Corner(X2-MX,Y2, X2,Y2, X2, Y2-MY)
+  else
+    BezierArcPoints(X2-RX,Y2-RY,RX,RY, 270*16, 90*16, 0, Pts, c);
+  if pcTopRight in SqrCorners then
+    Corner(X2,Y1+MY, X2,Y1, X2-MX,Y1)
+  else
+    BezierArcPoints(X2-RX,Y1,RX,RY, 0, 90*16, 0, Pts, c);
+
+  Canvas.Polygon(Pts, c);
+  ReallocMem(Pts, 0);
 end;
 
 { TPReport }
@@ -2135,6 +2203,13 @@ begin
     Result := FRadius;
 end;
 
+procedure TPRRect.SetCorners(AValue: TPdfCorners);
+begin
+  if FCorners=AValue then Exit;
+  FCorners:=AValue;
+  Invalidate;
+end;
+
 procedure TPRRect.SetRadius(const AValue: single);
 begin
   if AValue<>FRadius then begin
@@ -2182,7 +2257,8 @@ begin
     end;
 
     if ARadius<>0 then
-      RoundRect(Left,Top,Right,Bottom,ARadius*2,ARadius*2);
+      MixedRoundRect(Canvas, Left,Top,Right,Bottom,ARadius*2,ARadius*2,
+                     SquaredCorners);
   end;
 end;
 
@@ -2215,7 +2291,8 @@ begin
     with ACanvas.PdfCanvas do
     begin
       if ARadius<>0.0 then
-        RoundRect(Left, Bottom, Right-Left, Top-Bottom, ARadius, ARadius)
+        RoundRect(Left, Bottom, Right-Left, Top-Bottom, ARadius, ARadius,
+          SquaredCorners)
       else
       begin
         MoveTo(Left, Top);

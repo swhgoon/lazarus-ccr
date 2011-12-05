@@ -78,6 +78,8 @@ type
     Left, Top, Right, Bottom: Single;
   end;
 
+  TPdfCorners = set of (pcTopLeft, pcBottomLeft, pcBottomRight, pcTopRight);
+
   TPdfObjectType = (otDirectObject, otIndirectObject, otVirtualObject);
   TPdfAlignment = (paLeftJustify, paRightJustify, paCenter);
 
