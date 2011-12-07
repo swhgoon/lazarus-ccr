@@ -38,6 +38,10 @@ unit PReport;
 
 interface
 
+{$IFDEF LAZ_POWERPDF}
+{$mode objfpc}{$H+}
+{$ENDIF}
+
 //{$DEFINE USE_JPFONTS}
 //{$DEFINE USE_GBFONTS}
 
@@ -427,7 +431,7 @@ type
     procedure SetFillColor(Value: TColor);
     procedure SetLineWidth(Value: Single);
     procedure SetLineStyle(Value: TPenStyle);
-    procedure StdFillOrStroke(Canvas: TPdfCanvas);
+    procedure StdFillOrStroke(ACanvas: TPdfCanvas);
   protected
     procedure SetDash(ACanvas: TPdfCAnvas; APattern: TPenStyle);
     function  IsFillable: boolean; virtual;
@@ -467,7 +471,7 @@ type
   { TPRPolygon }
   TPRPolygon = class(TPRShape)
   protected
-    procedure Print(ACanvas: TPRCanvas; ARect: TRect); override;
+    procedure Print(prCanvas: TPRCanvas; ARect: TRect); override;
     function  IsFillable: boolean; override;
   public
     Points: TPRPointArray;
@@ -2110,9 +2114,9 @@ begin
   end;
 end;
 
-procedure TPRShape.StdFillOrStroke(Canvas: TPdfCanvas);
+procedure TPRShape.StdFillOrStroke(ACanvas: TPdfCanvas);
 begin
-  with Canvas do
+  with ACanvas do
   begin
     if (FillColor <> clNone) and IsFillable then
       SetRGBFillColor(FFillColor);
@@ -2672,9 +2676,9 @@ end;
 
 { TPRPolygon }
 
-procedure TPRPolygon.Print(ACanvas: TPRCanvas; ARect: TRect);
+procedure TPRPolygon.Print(prCanvas: TPRCanvas; ARect: TRect);
 var
-  Canvas: TPDFCanvas;
+  ACanvas: TPDFCanvas;
   i,h: Integer;
   Pts: TPRPointArray;
 begin
@@ -2690,15 +2694,15 @@ begin
     Pts[i].y := h - Points[i].y;
   end;
 
-  Canvas := ACanvas.PDFCanvas;
+  ACanvas := prCanvas.PDFCanvas;
 
-  SetDash(Canvas, FLineStyle);
+  SetDash(ACanvas, FLineStyle);
 
-  Canvas.MoveTo(Pts[0].x, Pts[0].y);
+  ACanvas.MoveTo(Pts[0].x, Pts[0].y);
   for i:=1 to Length(Pts)-1 do
-    Canvas.LineTo(Pts[i].x, Pts[i].y);
+    ACanvas.LineTo(Pts[i].x, Pts[i].y);
 
-  StdFillOrStroke(Canvas);
+  StdFillOrStroke(ACanvas);
 end;
 
 function TPRPolygon.IsFillable: boolean;
