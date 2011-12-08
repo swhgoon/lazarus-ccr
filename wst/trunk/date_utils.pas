@@ -323,14 +323,15 @@ begin
           mn := 0;
           ss := 0;
           ssss := 0;
-          if ( bufferPos >= bufferLen ) then begin
+          if (bufferPos >= bufferLen) {or (ADateKind = xdkDate)} then begin
             ok := True;
           end else begin
             ok := ( buffer[bufferPos] in [TIME_MARKER_CHAR,'-','+'] );
             if ok then begin
               if ( buffer[bufferPos] = TIME_MARKER_CHAR ) then begin
                 Inc(bufferPos);
-                ok := ( ADateKind = xdkDateTime ) and ReadInt(hh,TIME_SEP_CHAR);
+                ok := //( ADateKind = xdkDateTime ) and
+                      ReadInt(hh,TIME_SEP_CHAR);
                 if ok then begin
                   Inc(bufferPos);
                   ok := ReadInt(mn,TIME_SEP_CHAR);
@@ -368,7 +369,12 @@ begin
             if ( ( y + m + d + hh + mn + ss + ssss ) = 0 ) then
               ADate.Date := 0
             else
-              ADate.Date := EncodeDate(y,m,d) + EncodeTime(hh,mn,ss,ssss);
+              begin
+                if (ADateKind = xdkDate) then
+                  ADate.Date := EncodeDate(y,m,d)
+                else
+                  ADate.Date := EncodeDate(y,m,d) + EncodeTime(hh,mn,ss,ssss);
+              end;
             ADate.HourOffset := tz_hh;
             ADate.MinuteOffset := tz_mn;
             Result := True;
