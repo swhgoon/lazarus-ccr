@@ -14707,7 +14707,7 @@ begin
           Result := DROPEFFECT_MOVE or DROPEFFECT_COPY;
           DragOver(S, ShiftState, TDragState(ADragMessage), APosition, LongWord(Result));
           FLastVCLDragTarget := FDropTargetNode;
-          FVCLDragEffect := Result;
+          FVCLDragEffect := LongWord(Result);
           if (ADragMessage = dmDragLeave) and Assigned(FDropTargetNode) then
           begin
             InvalidateNode(FDropTargetNode);
@@ -15082,9 +15082,9 @@ begin
         begin
           SystemParametersInfo(SPI_GETWHEELSCROLLLINES, 0, @ScrollLines, 0);
           if ScrollLines = WHEEL_PAGESCROLL then
-            ScrollAmount := Trunc(WheelFactor * ClientHeight)
+            ScrollAmount := Integer(Trunc(WheelFactor * ClientHeight))
           else
-            ScrollAmount := Trunc(WheelFactor * ScrollLines * FDefaultNodeHeight);
+            ScrollAmount := Integer(Trunc(WheelFactor * ScrollLines * FDefaultNodeHeight));
         end;
         SetOffsetY(FOffsetY + ScrollAmount);
       end
