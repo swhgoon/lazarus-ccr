@@ -666,6 +666,7 @@ function TVTDragManager.GetIsDropTarget: Boolean;
 
 begin
   //Result := FIsDropTarget;
+  Result := True;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
