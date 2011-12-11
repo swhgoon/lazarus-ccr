@@ -359,6 +359,10 @@ const
     {$define ManualClipNeeded}
   {$endif}
 
+  {$if defined(LCLGtk2) or defined(LCLCarbon) or defined(LCLQt)}
+    {$define ContextMenuBeforeMouseUp}
+  {$endif}
+
   VTVersion = '4.8.7';
   VTTreeStreamVersion = 2;
   VTHeaderStreamVersion = 6;    // The header needs an own stream version to indicate changes only relevant to the header.
@@ -2691,7 +2695,7 @@ type
     procedure HandleIncrementalSearch(CharCode: Word); virtual;
     procedure HandleMouseDblClick(var Message: TLMMouse; const HitInfo: THitInfo); virtual;
     procedure HandleMouseDown(var Message: TLMMouse; var HitInfo: THitInfo); virtual;
-    procedure HandleMouseUp(var Message: TLMMouse; const HitInfo: THitInfo); virtual;
+    procedure HandleMouseUp(Keys: PtrUInt; const HitInfo: THitInfo); virtual;
     function HasImage(Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex): Boolean; virtual;
     function HasPopupMenu(Node: PVirtualNode; Column: TColumnIndex; const Pos: TPoint): Boolean; virtual;
     procedure InitChildren(Node: PVirtualNode); virtual;
@@ -15342,13 +15346,41 @@ procedure TBaseVirtualTree.WMContextMenu(var Message: TLMContextMenu);
 
 // This method is called when a popup menu is about to be displayed.
 // We have to cancel some pending states here to avoid interferences.
+//lcl: handle mouse up here because MouseUp is not called when popup is show
+var
+  HitInfo: THitInfo;
 
 begin
   {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMContextMenu');{$endif}
   DoStateChange([], [tsClearPending, tsEditPending, tsOLEDragPending, tsVCLDragPending]);
-
+  {$ifdef ContextMenuBeforeMouseUp}
+  if Assigned(PopupMenu) then
+  begin
+    if FHeader.FStates = [] then
+    begin
+      Application.CancelHint;
+      if IsMouseSelecting then
+      begin
+        // Reset selection state already here, before the inherited handler opens the default menu.
+        DoStateChange([], [tsDrawSelecting, tsDrawSelPending]);
+        Invalidate;
+      end;
+      inherited WMContextMenu(Message);
+      if (toRightClickSelect in FOptions.FSelectionOptions) then
+      begin
+        // get information about the hit
+        GetHitTestInfoAt(Message.XPos, Message.YPos, True, HitInfo);
+        HandleMouseUp(0, HitInfo);
+      end;
+    end;
+  end
+  else
+    inherited WMContextMenu(Message);
+  {$else}
   if not (tsPopupMenuShown in FStates) then
     inherited WMContextMenu(Message);
+  {$endif}
+
   {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMContextMenu');{$endif}
 end;
 
@@ -16189,7 +16221,7 @@ begin
 
   // get information about the hit
   GetHitTestInfoAt(Message.XPos, Message.YPos, True, HitInfo);
-  HandleMouseUp(Message, HitInfo);
+  HandleMouseUp(Message.Keys, HitInfo);
 
   inherited WMLButtonUp(Message);
   {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMLButtonUp');{$endif}
@@ -16283,7 +16315,7 @@ begin
       if toMiddleClickSelect in FOptions.FSelectionOptions then
       begin
         GetHitTestInfoAt(Message.XPos, Message.YPos, True, HitInfo);
-        HandleMouseUp(Message, HitInfo);
+        HandleMouseUp(Message.Keys, HitInfo);
       end;
     end;
   {$ifdef DEBUG_VTV}Logger.ExitMethod('WMMButtonUp');{$endif}
@@ -16565,7 +16597,7 @@ begin
     GetHitTestInfoAt(Message.XPos, Message.YPos, True, HitInfo);
 
     if toRightClickSelect in FOptions.FSelectionOptions then
-      HandleMouseUp(Message, HitInfo);
+      HandleMouseUp(Message.Keys, HitInfo);
 
     if not Assigned(PopupMenu) then
       DoPopupMenu(HitInfo.HitNode, HitInfo.HitColumn, Point(Message.XPos, Message.YPos));
@@ -21087,7 +21119,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.HandleMouseUp(var Message: TLMMouse; const HitInfo: THitInfo);
+procedure TBaseVirtualTree.HandleMouseUp(Keys: PtrUInt; const HitInfo: THitInfo);
 
 // Counterpart to the mouse down handler.
 
@@ -21140,7 +21172,7 @@ begin
     end;
 
     if (FHeader.FColumns.FClickIndex > NoColumn) and (FHeader.FColumns.FClickIndex = HitInfo.HitColumn) then
-      DoColumnClick(HitInfo.HitColumn, KeysToShiftState(Message.Keys));
+      DoColumnClick(HitInfo.HitColumn, KeysToShiftState(Keys));
 
     // handle a pending edit event
     if tsEditPending in FStates then
