@@ -1,0 +1,52 @@
+object MainForm: TMainForm
+  Left = 569
+  Height = 362
+  Top = 219
+  Width = 461
+  Caption = 'VTV Drag and Drop'
+  ClientHeight = 362
+  ClientWidth = 461
+  Position = poDesktopCenter
+  LCLVersion = '0.9.31'
+  object VirtualStringTree1: TVirtualStringTree
+    Left = 8
+    Height = 315
+    Top = 24
+    Width = 200
+    DefaultText = 'Node'
+    DragMode = dmAutomatic
+    DragType = dtVCL
+    Header.AutoSizeIndex = 0
+    Header.Columns = <>
+    Header.DefaultHeight = 17
+    Header.MainColumn = -1
+    RootNodeCount = 30
+    TabOrder = 0
+    TreeOptions.AutoOptions = [toAutoDropExpand, toAutoScroll, toAutoScrollOnExpand, toAutoTristateTracking, toAutoDeleteMovedNodes]
+    OnDragOver = VirtualStringTree1DragOver
+    OnDragDrop = VirtualStringTree1DragDrop
+    OnGetText = VirtualStringTree1GetText
+    OnGetNodeDataSize = VirtualStringTree1GetNodeDataSize
+    OnInitNode = VirtualStringTree1InitNode
+  end
+  object ListBox1: TListBox
+    Left = 256
+    Height = 315
+    Top = 24
+    Width = 192
+    DragMode = dmAutomatic
+    Items.Strings = (
+      'List Item 1'
+      'List Item 2'
+      'List Item 3'
+      'List Item 4'
+      'List Item 5'
+      'List Item 6'
+    )
+    ItemHeight = 23
+    OnDragDrop = ListBox1DragDrop
+    OnDragOver = ListBox1DragOver
+    ScrollWidth = 190
+    TabOrder = 1
+  end
+end
