@@ -418,6 +418,8 @@ type
     //storage
     procedure OnIniSave(Sender: TObject);
     procedure OnIniLoad(Sender: TObject);
+
+    procedure CleanDSEvent;
   protected
     function DatalinkActive: boolean;
     procedure DefaultDrawCellA(aCol, aRow: integer; aRect: TRect;
@@ -1717,6 +1719,15 @@ begin
             SortEngineOptions);
       end;
     end;
+  end;
+end;
+
+procedure TRxDBGrid.CleanDSEvent;
+begin
+  if Assigned(DataSource) and Assigned(DataSource.DataSet) then
+  begin
+    if DataSource.DataSet.OnPostError = @ErrorPo then
+      DataSource.DataSet.OnPostError := F_EventOnPostError;
   end;
 end;
 
@@ -3189,6 +3200,8 @@ end;
 
 destructor TRxDBGrid.Destroy;
 begin
+  CleanDSEvent;
+
   FreeAndNil(FRxDbGridLookupComboEditor);
   FreeAndNil(FRxDbGridDateEditor);
   FreeAndNil(FMarkerDown);

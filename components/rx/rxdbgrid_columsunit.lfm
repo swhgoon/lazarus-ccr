@@ -10,7 +10,7 @@ object rxDBGridColumsForm: TrxDBGridColumsForm
   OnCreate = FormCreate
   Position = poScreenCenter
   ShowHint = True
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object CheckListBox1: TCheckListBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -18,7 +18,7 @@ object rxDBGridColumsForm: TrxDBGridColumsForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel1
     Left = 6
-    Height = 317
+    Height = 315
     Top = 6
     Width = 436
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -29,9 +29,17 @@ object rxDBGridColumsForm: TrxDBGridColumsForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 329
+    Height = 42
+    Top = 327
     Width = 436
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel, pbHelp]
     object SpeedButton2: TSpeedButton
@@ -41,12 +49,11 @@ object rxDBGridColumsForm: TrxDBGridColumsForm
       AnchorSideBottom.Control = SpeedButton1
       AnchorSideBottom.Side = asrBottom
       Left = 143
-      Height = 32
+      Height = 34
       Top = 0
       Width = 23
       Anchors = [akTop, akLeft, akBottom]
       BorderSpacing.Left = 6
-      Color = clBtnFace
       Glyph.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
         2000000000000004000064000000640000000000000000000000000000000000
@@ -91,12 +98,11 @@ object rxDBGridColumsForm: TrxDBGridColumsForm
       AnchorSideTop.Control = ButtonPanel1
       AnchorSideBottom.Side = asrBottom
       Left = 114
-      Height = 32
+      Height = 34
       Top = 0
       Width = 23
       Anchors = [akTop, akLeft, akBottom]
       BorderSpacing.Left = 18
-      Color = clBtnFace
       Glyph.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
         2000000000000004000064000000640000000000000000000000000000000000

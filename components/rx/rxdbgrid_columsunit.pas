@@ -98,7 +98,7 @@ var
   S:string;
   i:integer;
 begin
-  if CheckListBox1.Items.Count > 1 then
+  if (CheckListBox1.Items.Count > 1) and (CheckListBox1.ItemIndex>-1) then
   begin
     if CheckListBox1.ItemIndex>0 then
     begin
@@ -116,7 +116,7 @@ var
   S:string;
   i:integer;
 begin
-  if CheckListBox1.Items.Count > 1 then
+  if (CheckListBox1.Items.Count > 1) and (CheckListBox1.ItemIndex>-1) then
   begin
     if CheckListBox1.ItemIndex<CheckListBox1.Items.Count-1 then
     begin
