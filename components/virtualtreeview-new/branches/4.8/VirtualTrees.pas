@@ -9218,12 +9218,17 @@ begin
     if Value <> FMainColumn then
     begin
       FMainColumn := Value;
-      if not (csLoading in Treeview.ComponentState) then
+      if Treeview.HandleAllocated then
       begin
         Treeview.MainColumnChanged;
         if not (toExtendedFocus in Treeview.FOptions.FSelectionOptions) then
-          Treeview.FocusedColumn := FMainColumn;
+          Treeview.FocusedColumn := Value;
         Treeview.Invalidate;
+      end
+      else
+      begin
+        if not (toExtendedFocus in Treeview.FOptions.FSelectionOptions) then
+          Treeview.FFocusedColumn := Value;
       end;
     end;
   end;
