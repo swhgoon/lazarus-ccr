@@ -6,7 +6,9 @@ interface
 
 uses
   Classes,SysUtils,FileUtil,Forms,Controls,Graphics,Dialogs,StdCtrls,ExtCtrls,
-  converteridesettings, ctopasconvert, LazIDEIntf;
+  converteridesettings, ctopasconvert,
+  //LazIDEIntf,
+  ComCtrls;
 
 type
 
@@ -22,6 +24,9 @@ type
     chkFuncAreExt:TCheckBox;
     chkEnums:TCheckBox;
     cmbCallConv:TComboBox;
+    PageControl1: TPageControl;
+    MainPage: TTabSheet;
+    ConvPage: TTabSheet;
     txtLibName:TEdit;
     edtDefines:TEdit;
     edtExtTool: TEdit;
@@ -31,10 +36,8 @@ type
     lblExtLibName:TLabel;
     lblDefines:TLabel;
     Memo1:TMemo;
-    Notebook1:TNotebook;
+    Notebook1:TPageControl;
     OpenDialog1: TOpenDialog;
-    pageMain:TPage;
-    pageConverter:TPage;
     Panel1:TPanel;
     Panel2:TPanel;
     Splitter1:TSplitter;
@@ -114,7 +117,7 @@ begin
     except
     end;
   end;
-  LazarusIDE.DoOpenEditorFile(edtDefines.Text, 0, 0, [ofQuiet, ofRegularFile, ofDoNotLoadResource, ofDoLoadResource]);
+  //LazarusIDE.DoOpenEditorFile(edtDefines.Text, 0, 0, [ofQuiet, ofRegularFile, ofDoNotLoadResource, ofDoLoadResource]);
 end;
 
 procedure TCtoPasConfig.FormClose(Sender:TObject;var CloseAction:TCloseAction);

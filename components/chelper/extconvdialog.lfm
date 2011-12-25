@@ -1,7 +1,7 @@
 object CtoPasConfig: TCtoPasConfig
-  Left = 406
+  Left = 482
   Height = 584
-  Top = 128
+  Top = 106
   Width = 668
   Caption = 'C to Pascal settings'
   ClientHeight = 584
@@ -9,27 +9,33 @@ object CtoPasConfig: TCtoPasConfig
   OnClose = FormClose
   OnResize = FormResize
   LCLVersion = '0.9.31'
-  object Notebook1: TNotebook
-    Left = 16
-    Height = 559
-    Top = 8
-    Width = 635
-    PageIndex = 0
-    Anchors = [akTop, akLeft, akRight, akBottom]
+  object PageControl1: TPageControl
+    Left = 10
+    Height = 564
+    Top = 10
+    Width = 648
+    ActivePage = ConvPage
+    Align = alClient
+    BorderSpacing.Left = 5
+    BorderSpacing.Top = 5
+    BorderSpacing.Right = 5
+    BorderSpacing.Bottom = 5
+    BorderSpacing.Around = 5
+    TabIndex = 1
     TabOrder = 0
-    TabStop = True
-    object pageMain: TPage
-      ClientWidth = 635
-      ClientHeight = 559
+    object MainPage: TTabSheet
+      Caption = 'Main'
+      ClientHeight = 525
+      ClientWidth = 642
       object Panel1: TPanel
         Left = 0
-        Height = 228
+        Height = 170
         Top = 0
-        Width = 635
+        Width = 642
         Align = alTop
         BevelOuter = bvNone
-        ClientHeight = 228
-        ClientWidth = 635
+        ClientHeight = 170
+        ClientWidth = 642
         TabOrder = 0
         object Label1: TLabel
           Left = 6
@@ -40,46 +46,59 @@ object CtoPasConfig: TCtoPasConfig
           ParentColor = False
         end
         object chkRecordsPacked: TCheckBox
+          AnchorSideLeft.Control = Label1
+          AnchorSideTop.Control = Label1
+          AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 18
-          Top = 36
+          Top = 27
           Width = 144
+          BorderSpacing.Top = 5
           Caption = 'Records are packed'
           TabOrder = 0
         end
         object chkFuncAreExt: TCheckBox
+          AnchorSideLeft.Control = chkRecordsPacked
+          AnchorSideTop.Control = chkRecordsPacked
+          AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 18
-          Top = 70
+          Top = 50
           Width = 161
+          BorderSpacing.Top = 5
           Caption = 'Functions are external'
           TabOrder = 1
         end
         object chkEnums: TCheckBox
+          AnchorSideTop.Control = txtLibName
+          AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 18
-          Top = 132
+          Top = 103
           Width = 244
+          BorderSpacing.Top = 5
           Caption = 'Enumerations are Integer constants'
           TabOrder = 2
         end
         object lblCallConv: TLabel
           AnchorSideLeft.Control = chkFuncAreExt
           AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = chkFuncAreExt
           Left = 187
           Height = 17
-          Top = 71
-          Width = 118
+          Top = 50
+          Width = 122
           BorderSpacing.Left = 20
-          Caption = 'Calling convention'
+          Caption = 'Calling convention:'
           ParentColor = False
         end
         object cmbCallConv: TComboBox
           AnchorSideLeft.Control = lblCallConv
           AnchorSideLeft.Side = asrBottom
-          Left = 325
+          AnchorSideTop.Control = lblCallConv
+          Left = 329
           Height = 21
-          Top = 70
+          Top = 50
           Width = 160
           BorderSpacing.Left = 20
           ItemHeight = 0
@@ -95,43 +114,51 @@ object CtoPasConfig: TCtoPasConfig
           Text = 'cdecl'
         end
         object lblDefines: TLabel
+          AnchorSideTop.Control = chkEnums
+          AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 17
-          Top = 172
+          Top = 131
           Width = 52
+          BorderSpacing.Top = 10
           Caption = 'Defines:'
           ParentColor = False
         end
         object edtDefines: TEdit
           AnchorSideLeft.Control = lblDefines
           AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = chkEnums
+          AnchorSideTop.Side = asrBottom
           AnchorSideRight.Control = btnSelect
           Left = 64
           Height = 22
-          Top = 172
-          Width = 394
+          Top = 131
+          Width = 411
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 6
+          BorderSpacing.Top = 10
           BorderSpacing.Right = 6
           TabOrder = 4
         end
         object btnSelect: TButton
+          AnchorSideTop.Control = btnEdit
           AnchorSideRight.Control = btnEdit
-          Left = 464
+          Left = 481
           Height = 20
-          Top = 172
+          Top = 131
           Width = 70
           Anchors = [akTop, akRight]
           AutoSize = True
-          BorderSpacing.Right = 20
+          BorderSpacing.Right = 10
           Caption = 'Select'
           OnClick = btnSelectClick
           TabOrder = 5
         end
         object btnEdit: TButton
-          Left = 554
+          AnchorSideTop.Control = edtDefines
+          Left = 561
           Height = 20
-          Top = 172
+          Top = 131
           Width = 70
           Anchors = [akTop, akRight]
           Caption = 'Edit'
@@ -140,19 +167,23 @@ object CtoPasConfig: TCtoPasConfig
         end
         object txtLibName: TEdit
           AnchorSideLeft.Control = cmbCallConv
-          Left = 325
+          AnchorSideTop.Control = cmbCallConv
+          AnchorSideTop.Side = asrBottom
+          Left = 329
           Height = 22
-          Top = 100
-          Width = 299
+          Top = 76
+          Width = 302
           Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Top = 5
           TabOrder = 7
         end
         object lblExtLibName: TLabel
           AnchorSideLeft.Control = chkFuncAreExt
           AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = txtLibName
           Left = 187
           Height = 17
-          Top = 103
+          Top = 76
           Width = 83
           BorderSpacing.Left = 20
           Caption = 'Library name'
@@ -161,21 +192,21 @@ object CtoPasConfig: TCtoPasConfig
       end
       object Panel2: TPanel
         Left = 0
-        Height = 331
-        Top = 228
-        Width = 635
+        Height = 355
+        Top = 170
+        Width = 642
         Align = alClient
         Alignment = taLeftJustify
         BevelOuter = bvNone
-        ClientHeight = 331
-        ClientWidth = 635
+        ClientHeight = 355
+        ClientWidth = 642
         TabOrder = 1
         object Splitter1: TSplitter
           Cursor = crVSplit
           Left = 0
           Height = 5
           Top = 0
-          Width = 635
+          Width = 642
           Align = alTop
           ResizeAnchor = akTop
         end
@@ -189,9 +220,9 @@ object CtoPasConfig: TCtoPasConfig
         end
         object Memo1: TMemo
           Left = 6
-          Height = 281
+          Height = 305
           Top = 44
-          Width = 623
+          Width = 630
           Align = alBottom
           Anchors = [akTop, akLeft, akRight, akBottom]
           BorderSpacing.Left = 6
@@ -204,7 +235,7 @@ object CtoPasConfig: TCtoPasConfig
           Left = 476
           Height = 20
           Top = 14
-          Width = 153
+          Width = 160
           Anchors = [akTop, akLeft, akRight]
           AutoSize = True
           Caption = 'Reset to defaults'
@@ -213,16 +244,17 @@ object CtoPasConfig: TCtoPasConfig
         end
       end
     end
-    object pageConverter: TPage
-      ClientWidth = 2464
-      ClientHeight = 1528
+    object ConvPage: TTabSheet
+      Caption = 'Converter'
+      ClientHeight = 525
+      ClientWidth = 642
       object edtExtTool: TEdit
         AnchorSideTop.Control = chkUseExternal
         AnchorSideTop.Side = asrBottom
         Left = 13
-        Height = 21
+        Height = 22
         Top = 32
-        Width = 511
+        Width = 959
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 10
         TabOrder = 0
@@ -230,7 +262,7 @@ object CtoPasConfig: TCtoPasConfig
       object Button1: TButton
         AnchorSideTop.Control = chkUseExternal
         AnchorSideTop.Side = asrBottom
-        Left = 538
+        Left = 986
         Height = 20
         Top = 32
         Width = 70
