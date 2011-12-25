@@ -8489,6 +8489,9 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+type
+  THeaderItemPosition = (thpLeft, thpCenter, thpRight);
+
 procedure TVirtualTreeColumns.PaintHeader(DC: HDC; const R: TRect; HOffset: Integer);
 
 // Main paint method to draw the header.
@@ -8498,6 +8501,9 @@ const
     (3, 5) {ascending}, (2, 4) {descending}
   );
 
+  HotThemedHeaders: array[THeaderItemPosition] of TThemedHeader = (thHeaderItemLeftHot, thHeaderItemHot, thHeaderItemRightHot);
+  PressedThemedHeaders: array[THeaderItemPosition] of TThemedHeader = (thHeaderItemLeftPressed, thHeaderItemPressed, thHeaderItemRightPressed);
+  NormalThemedHeaders: array[THeaderItemPosition] of TThemedHeader = (thHeaderItemLeftNormal, thHeaderItemNormal, thHeaderItemRightNormal);
 var
   I, Y,
   SortIndex: Integer;
@@ -8516,7 +8522,8 @@ var
   WrapCaption,
   AdvancedOwnerDraw: Boolean;
   {$ifdef ThemeSupport}
-    Details: TThemedElementDetails;
+  Details: TThemedElementDetails;
+  HeaderItemPosition: THeaderItemPosition;
   {$endif ThemeSupport}
 
   PaintInfo: THeaderPaintInfo;
@@ -8708,13 +8715,18 @@ begin
                 {$ifdef ThemeSupport}
                   if tsUseThemes in FHeader.Treeview.FStates then
                   begin
+                    if I = GetFirstVisibleColumn then
+                      HeaderItemPosition := thpLeft
+                    else
+                      HeaderItemPosition := thpCenter;
+                    //todo?: handle autoresize header. LastColumn.HeaderItemPosition := thpRight
                     if IsDownIndex then
-                      Details := ThemeServices.GetElementDetails(thHeaderItemPressed)
+                      Details := ThemeServices.GetElementDetails(PressedThemedHeaders[HeaderItemPosition])
                     else
                       if IsHoverIndex then
-                        Details := ThemeServices.GetElementDetails(thHeaderItemHot)
+                        Details := ThemeServices.GetElementDetails(HotThemedHeaders[HeaderItemPosition])
                       else
-                        Details := ThemeServices.GetElementDetails(thHeaderItemNormal);
+                        Details := ThemeServices.GetElementDetails(NormalThemedHeaders[HeaderItemPosition]);
                     ThemeServices.DrawElement(Handle, Details, PaintRectangle, @PaintRectangle);
                   end
                   else
