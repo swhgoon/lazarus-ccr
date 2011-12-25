@@ -14,14 +14,14 @@ object CtoPasConfig: TCtoPasConfig
     Height = 564
     Top = 10
     Width = 648
-    ActivePage = ConvPage
+    ActivePage = MainPage
     Align = alClient
     BorderSpacing.Left = 5
     BorderSpacing.Top = 5
     BorderSpacing.Right = 5
     BorderSpacing.Bottom = 5
     BorderSpacing.Around = 5
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 0
     object MainPage: TTabSheet
       Caption = 'Main'

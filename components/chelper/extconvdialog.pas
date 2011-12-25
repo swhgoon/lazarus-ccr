@@ -7,7 +7,7 @@ interface
 uses
   Classes,SysUtils,FileUtil,Forms,Controls,Graphics,Dialogs,StdCtrls,ExtCtrls,
   converteridesettings, ctopasconvert,
-  //LazIDEIntf,
+  LazIDEIntf,
   ComCtrls;
 
 type
@@ -117,7 +117,7 @@ begin
     except
     end;
   end;
-  //LazarusIDE.DoOpenEditorFile(edtDefines.Text, 0, 0, [ofQuiet, ofRegularFile, ofDoNotLoadResource, ofDoLoadResource]);
+  LazarusIDE.DoOpenEditorFile(edtDefines.Text, 0, 0, [ofQuiet, ofRegularFile, ofDoNotLoadResource, ofDoLoadResource]);
 end;
 
 procedure TCtoPasConfig.FormClose(Sender:TObject;var CloseAction:TCloseAction);
