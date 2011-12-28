@@ -776,7 +776,7 @@ end;
 procedure StretchDLBMPEx(ACanvas: TCanvas; Src: TDLBitmap;
   NewLeft, NewTop, NewWidth, NewHeight: integer; Posx, Posy, aWidth, aHeight: integer);
 var
-  iw, ih, dw, dh, i, j, k, m, ypos, xpos, ylen, xlen: DWord; Dest: TDLBitmap; sw, sh: Float; LScan1, LScan2: pRGBATriple;
+  iw, ih, th, ww, dw, dh, i, j, k, m, ypos, xpos, ylen, xlen: DWord; Dest: TDLBitmap; sw, sh: Float; LScan1, LScan2: pRGBATriple;
 begin
   Dest := TDLBitmap.Create;
   dw := NewWidth - NewLeft;
@@ -789,6 +789,10 @@ begin
     sw := 1;
   if sh = 0 then
     sh := 1;
+  if iw = 0 then
+    iw := 1;
+  if ih = 0 then
+    ih := 1;
   Dest.Width := dw;
   Dest.Height := dh;
   if dw > aWidth then
@@ -811,14 +815,15 @@ begin
     ylen := dh;
     ypos := 0
   end;
-  m := Trunc(ypos / sh);
+  m := ypos div ih;
+  ww := xpos div iw;
   for  i := ypos to ylen - 1 do
   begin
     LScan1 := Dest.Scanline[i];
     LScan2 := Src.Scanline[m];
     if (i mod ih) = 0 then
       m := m + 1;
-    k := Trunc(xpos / sw);;
+    k := ww;
     for  j := xpos to xlen - 1 do
     begin
       LScan1[j] := LScan2[k];
