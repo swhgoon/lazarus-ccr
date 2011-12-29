@@ -776,7 +776,7 @@ end;
 procedure StretchDLBMPEx(ACanvas: TCanvas; Src: TDLBitmap;
   NewLeft, NewTop, NewWidth, NewHeight: integer; Posx, Posy, aWidth, aHeight: integer);
 var
-  iw, ih, th, ww, dw, dh, i, j, k, m, ypos, xpos, ylen, xlen: DWord; Dest: TDLBitmap; sw, sh: Float; LScan1, LScan2: pRGBATriple;
+  iw, ih, th, dw, dh, i, j, k, m, n, ypos, xpos, ylen, xlen: DWord; Dest: TDLBitmap; sw, sh: Float; LScan1, LScan2: pRGBATriple;
 begin
   Dest := TDLBitmap.Create;
   dw := NewWidth - NewLeft;
@@ -816,14 +816,14 @@ begin
     ypos := 0
   end;
   m := ypos div ih;
-  ww := xpos div iw;
+  n := xpos div iw;
   for  i := ypos to ylen - 1 do
   begin
     LScan1 := Dest.Scanline[i];
     LScan2 := Src.Scanline[m];
     if (i mod ih) = 0 then
       m := m + 1;
-    k := ww;
+    k := n;
     for  j := xpos to xlen - 1 do
     begin
       LScan1[j] := LScan2[k];
@@ -835,6 +835,81 @@ begin
   ACanvas.Draw(NewLeft, NewTop, Dest);
   Dest.Free;
 end;
+
+{
+procedure StretchDLBMPEx(ACanvas: TCanvas; Src: TDLBitmap;
+  NewLeft, NewTop, NewWidth, NewHeight: integer; Posx, Posy, aWidth, aHeight: integer);
+var
+  iw, ih, th, dw, dh, i, j, k, m, n, q, r, ypos, xpos, ylen, xlen: DWord; Dest: TDLBitmap; sw, sh: Float; LScan1, LScan2: pRGBATriple;
+begin
+  Dest := TDLBitmap.Create;
+  dw := NewWidth - NewLeft;
+  dh := NewHeight - NewTop;
+  sw := dw / Src.Width;
+  sh := dh / Src.Height;
+  iw := dw div Src.Width;
+  ih := dh div Src.Height;
+  if sw = 0 then
+    sw := 1;
+  if sh = 0 then
+    sh := 1;
+  if iw = 0 then
+    iw := 1;
+  if ih = 0 then
+    ih := 1;
+  Dest.Width := dw;
+  Dest.Height := dh;
+  if dw > aWidth then
+  begin
+    xlen := Min(aWidth + Posx, dw);
+    xpos := Posx;
+  end
+  else
+  begin
+    xlen := dw;
+    xpos := 0
+  end;
+  if dh > aHeight then
+  begin
+    ylen := Min(aHeight + Posy, dh);
+    ypos := Posy;
+  end
+  else
+  begin
+    ylen := dh;
+    ypos := 0
+  end;
+  m := ypos div ih;
+  n := xpos div iw;
+  r := 1;
+  q := 1;
+  for  i := ypos to ylen - 1 do
+  begin
+    LScan1 := Dest.Scanline[i];
+    LScan2 := Src.Scanline[m];
+    if r = ih then
+    begin
+      m := m + 1;
+      r := 0;
+    end;
+    r := r + 1;
+    k := n;
+    q := 0;
+    for  j := xpos to xlen - 1 do
+    begin
+      LScan1[j] := LScan2[k];
+      if q = iw then
+      begin
+        k := k + 1;
+        q := 0;
+      end;
+      q := q + 1;
+    end;
+  end;
+  Dest.InvalidateScanLine;
+  ACanvas.Draw(NewLeft, NewTop, Dest);
+  Dest.Free;
+end;    }
 
 
 

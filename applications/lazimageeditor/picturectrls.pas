@@ -434,7 +434,9 @@ begin
   FScrollStop := TPanel.Create(Self);
   FScrollStop.SetBounds(0, 0, 0, 0);
   FScrollStop.Parent := Self;
-  Self.AutoScroll := True;
+
+  Self.HorzScrollBar.Increment:=100;
+  Self.VertScrollBar.Increment:=100;
 end;
 
 destructor TCustomPictureView.Destroy;

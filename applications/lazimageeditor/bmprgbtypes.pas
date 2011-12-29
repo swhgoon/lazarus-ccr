@@ -601,7 +601,7 @@ begin
  // if ACanvas <> nil then
   //  ACanvas.StretchDraw(Rect(DstX, DstY, DstWidth, DstHeight), Self);
  //   StretchDLBMP(Self, 3, 3);
-    StretchDLBMPEx(ACanvas, Self, DstX, DstY, DstWidth, DstHeight, HPos, VPos, aWidth, aHeight);
+  StretchDLBMPEx(ACanvas, Self, DstX, DstY, DstWidth, DstHeight, HPos, VPos, aWidth, aHeight);
   {begin
     ACanvas.AntialiasingMode:=amOff;
     ACanvas.CopyMode:=cmSrcPaint;
