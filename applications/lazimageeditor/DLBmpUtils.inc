@@ -793,8 +793,6 @@ begin
     iw := 1;
   if ih = 0 then
     ih := 1;
-  Dest.Width := dw;
-  Dest.Height := dh;
   if dw > aWidth then
   begin
     xlen := Min(aWidth + Posx, dw);
@@ -815,24 +813,30 @@ begin
     ylen := dh;
     ypos := 0
   end;
+  if dw > aWidth then
+    dw := aWidth;
+  if dh > aHeight then
+    dh := aHeight;
+  Dest.Width := dw;
+  Dest.Height := dh;
   m := ypos div ih;
   n := xpos div iw;
   for  i := ypos to ylen - 1 do
   begin
-    LScan1 := Dest.Scanline[i];
+    LScan1 := Dest.Scanline[i - ypos];
     LScan2 := Src.Scanline[m];
     if (i mod ih) = 0 then
       m := m + 1;
     k := n;
     for  j := xpos to xlen - 1 do
     begin
-      LScan1[j] := LScan2[k];
+      LScan1[j - xpos] := LScan2[k];
       if (j mod iw) = 0 then
         k := k + 1;
     end;
   end;
   Dest.InvalidateScanLine;
-  ACanvas.Draw(NewLeft, NewTop, Dest);
+  ACanvas.Draw(NewLeft + posx, NewTop + posy, Dest);
   Dest.Free;
 end;
 
