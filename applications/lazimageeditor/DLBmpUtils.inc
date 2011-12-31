@@ -819,8 +819,8 @@ begin
     dh := aHeight;
   Dest.Width := dw;
   Dest.Height := dh;
-  m := ypos div ih;
-  n := xpos div iw;
+  m := Trunc(ypos / ih);
+  n := Trunc(xpos / iw);
   for  i := ypos to ylen - 1 do
   begin
     LScan1 := Dest.Scanline[i - ypos];
