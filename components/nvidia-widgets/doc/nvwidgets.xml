@@ -104,7 +104,7 @@ The text can have multiple lines</descr>
       </element>
       <element name="UIContext.doCheckButton">
         <short>UI method for rendering and processing a check button</short>
-        <descr>Check button behaves similarly as a toggle button used to display and edit a bool property. </descr>
+        <descr>Check button behaves similarly as a toggle button used to display and edit a bool property.</descr>
       </element>
       <element name="UIContext.doCheckButton.r">
         <short>optionally provides a location and size for the button</short>
@@ -114,9 +114,94 @@ The text can have multiple lines</descr>
       </element>
       <element name="UIContext.doCheckButton.state">
         <short>whether the check button is checked or not</short>
-        <descr>if state is NULL; the buttoin behave like if a touch button unchecked</descr>
+        <descr>if state is NULL; the button behave like if a touch button unchecked</descr>
       </element>
       <element name="UIContext.doCheckButton.style">
+        <short>optional style flag to modify the look</short>
+      </element>
+      <element name="UIContext.doRadioButton">
+        <short>UI method for rendering and processing a radio button</short>
+        <descr>Radio buttons are typically used in groups to diplay and edit the possible reference values taken by an int value.
+
+One radio button is representing a possible reference value taken by the current value.
+It is displaying a boolean state true if the current value is equal to the reference value.
+</descr>
+      </element>
+      <element name="UIContext.doRadioButton.reference">
+        <short>The reference int value represented by this radio button.</short>
+      </element>
+      <element name="UIContext.doRadioButton.r">
+        <short>optionally provides a location and size for the button</short>
+      </element>
+      <element name="UIContext.doRadioButton.Text">
+        <short>text to display on the button</short>
+      </element>
+      <element name="UIContext.doRadioButton.Value">
+        <short>The value parameter compared to the reference value parameter.</short>
+        <descr>if value is NULL; the radio button is off</descr>
+      </element>
+      <element name="UIContext.doRadioButton.style">
+        <short>optional style flag to modify the look </short>
+      </element>
+      <element name="UIContext.doRadioButton.Result">
+        <short>True if the radio button value changed</short>
+      </element>
+      <element name="UIContext.doCheckButton.Result">
+        <short>True if the check button state changed</short>
+      </element>
+      <element name="UIContext.doHorizontalSlider">
+        <short>UI method for rendering and processing a horizontal slider</short>
+        <descr>Horizontal slider is used to edit and display a scalar value in the specified range [min; max].</descr>
+      </element>
+      <element name="UIContext.doHorizontalSlider.aRect">
+        <short>optionally provides a location and size for the widget</short>
+      </element>
+      <element name="UIContext.doHorizontalSlider.min">
+        <short>min bound of the varying range of the value</short>
+      </element>
+      <element name="UIContext.doHorizontalSlider.max">
+        <short>max bound of the varying range of the value</short>
+      </element>
+      <element name="UIContext.doHorizontalSlider.Value">
+        <short>the value edited by the widget</short>
+        <descr>if value is NULL; the value is set to min</descr>
+      </element>
+      <element name="UIContext.doHorizontalSlider.style">
+        <short>optional style flag to modify the look</short>
+      </element>
+      <element name="UIContext.doHorizontalSlider.Result">
+        <short>True if the slider value changed</short>
+      </element>
+      <element name="UIContext.doTextureView">
+        <short>UI method for drawing a texture view</short>
+        <descr>Several parameters control the equation used to display the texel
+
+<p>
+            <code>texel = texture2DFetch(...);
+pixel = texelSwizzling( texel * texelScale + texelOffset );
+</code>
+          </p>
+        </descr>
+      </element>
+      <element name="UIContext.doTextureView.aRect">
+        <short>provides a location and size for the texture view</short>
+      </element>
+      <element name="UIContext.doTextureView.texID">
+        <short>texture identifier (Graphics API specific)</short>
+      </element>
+      <element name="UIContext.doTextureView.zoomRect">
+        <short>rectangle area of the texture displayed</short>
+      </element>
+      <element name="UIContext.doTextureView.mipLevel">
+        <short>mip Level of the texture displayed</short>
+      </element>
+      <element name="UIContext.doTextureView.texelScale">
+        <short>scale applyed to the texel fetch</short>
+      </element>
+      <element name="UIContext.doTextureView.texelOffset">
+        <short>offset applyed to the texel after scale</short>
+      </element>
+      <element name="UIContext.doTextureView.style">
         <short>optional style flag to modify the look</short>
       </element>
     </module>

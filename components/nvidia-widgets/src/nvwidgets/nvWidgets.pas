@@ -288,10 +288,10 @@ type
     // rect - optionally provides a location and size for the button
     // text - text to display on the button
     // state -  whether the check button is checked or not
-    //          if state is NULL; the buttoin behave like if a touch button unchecked
+    //          if state is NULL; the button behave like if a touch button unchecked
     // style - optional style flag to modify the look
     //
-    // @return  True if the check button'state changed
+    // @return  True if the check button state changed
     //////////////////////////////////////////////////////////////////
     function doCheckButton(const r: Rect; const Text: string; var state: boolean; style: integer = 0): boolean;
 
@@ -310,7 +310,7 @@ type
     //          if value is NULL; the radio button is off
     // style - optional style flag to modify the look
     //
-    // @return  True if the radio button's value changed
+    // @return  True if the radio button value changed
     //////////////////////////////////////////////////////////////////
     function doRadioButton(reference: integer; const r: Rect; const Text: string; var Value: integer; style: integer = 0): boolean;
 
@@ -321,11 +321,11 @@ type
     // rect - optionally provides a location and size for the widget
     // min - min bound of the varying range of the value
     // max - max bound of the varying range of the value
-    // value -  the value edited byt the widget
+    // value -  the value edited by the widget
     //          if value is NULL; the value is set to min
     // style - optional style flag to modify the look
     //
-    // @return  True if the slider's value changed
+    // @return  True if the slider value changed
     //////////////////////////////////////////////////////////////////
     function doHorizontalSlider(const aRect: Rect; min: double; max: double; var Value: double; style: integer = 0): boolean;
 
