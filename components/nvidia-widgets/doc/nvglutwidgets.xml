@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="nvidia widgets">
+    <module name="nvGLutWidgets">
+      <element name="GlutUIContext.translateKey">
+        <short>Translate non-ascii keys from GLUT to nvWidgets</short>
+      </element>
+      <element name="GlutUIContext.specialKeyboard">
+        <short>UI method for processing key events</short>
+        <descr>Call this method from the glutReshapeFunc callback</descr>
+      </element>
+      <element name="GlutUIContext.mouse">
+        <short>UI method for processing GLUT mouse button events</short>
+        <descr>Call this method from the glutMouseFunc callback, the modifier parameter maps to glutGetModifiers.</descr>
+      </element>
+      <element name="GlutUIContext.init">
+        <short>One time initialization</short>
+      </element>
+      <element name="GlutUIContext.Destroy">
+        <short>UI destructor</short>
+      </element>
+      <element name="GlutUIContext.Create">
+        <short>UI constructor</short>
+        <descr>Allows for overriding the standard painter</descr>
+      </element>
+      <element name="GlutUIContext.m_ownPainter">
+        <short>Variable indicating a default painter object</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

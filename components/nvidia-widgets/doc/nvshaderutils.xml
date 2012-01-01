@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="nvidia widgets">
+    <module name="nvShaderUtils">
+
+    </module>
+  </package>
+</fpdoc-descriptions>

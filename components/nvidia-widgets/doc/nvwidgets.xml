@@ -1,0 +1,124 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="nvidia widgets">
+    <module name="nvWidgets">
+      <short/>
+      <descr/>
+      <element name="Point">
+        <short>2D point object</short>
+      </element>
+      <element name="SetPoint.Result">
+        <short>Initialize the point object</short>
+      </element>
+      <element name="Rect">
+        <short>Rectangle object</short>
+      </element>
+      <element name="Rect.x">
+        <short>X position of top left point</short>
+      </element>
+      <element name="Rect.y">
+        <short>Y position of top left point</short>
+      </element>
+      <element name="Rect.w">
+        <short>Width of rectangle</short>
+      </element>
+      <element name="Rect.h">
+        <short>Height of rectangle</short>
+      </element>
+      <element name="MouseButton_Left">
+        <short>An enum to identify the left mouse button</short>
+      </element>
+      <element name="MouseButton_Middle">
+        <short>An enum to identify the middle mouse button</short>
+      </element>
+      <element name="MouseButton_Right">
+        <short>An enum to identify the right mouse button</short>
+      </element>
+      <element name="UIContext.reshape">
+        <short>UI method for processing window size events</short>
+      </element>
+      <element name="UIContext.isOnFocus">
+        <short>Check if the UI is currently on Focus</short>
+      </element>
+      <element name="UIContext.mouse">
+        <short>UI method for processing mouse events</short>
+      </element>
+      <element name="Group">
+        <short>Group record</short>
+      </element>
+      <element name="Group.bounds">
+        <short>anchor point + width and height of the region </short>
+      </element>
+      <element name="Group.flags">
+        <short>group behavior</short>
+      </element>
+      <element name="Group.margin">
+        <short>border</short>
+      </element>
+      <element name="Group.space">
+        <short>interior</short>
+      </element>
+      <element name="UIContext.mouseMotion">
+        <short>UI method for processing mouse motion events</short>
+      </element>
+      <element name="UIContext.keyboard">
+        <short>UI method for processing key events</short>
+      </element>
+      <element name="UIContext._begin">
+        <short>UI method for entering UI processing mode</short>
+        <descr>This function must be used to begin the UI processing </descr>
+      </element>
+      <element name="UIContext._end">
+        <short>UI method for leaving UI processing mode</short>
+        <descr>This function must be used to end the UI processing</descr>
+      </element>
+      <element name="UIContext.doLabel">
+        <short>UI method for drawing a static text label</short>
+        <descr>The label display a non interactive text.
+The text can have multiple lines</descr>
+      </element>
+      <element name="UIContext.doLabel.r">
+        <short>optionally provides a location and size for the label</short>
+      </element>
+      <element name="UIContext.doLabel.Text">
+        <short>Text to display for the label (can have several lines)</short>
+      </element>
+      <element name="UIContext.doLabel.style">
+        <short>optional style flag to modify the look</short>
+      </element>
+      <element name="UIContext.doButton">
+        <short>UI method for rendering and processing a push button</short>
+      </element>
+      <element name="UIContext.doButton.r">
+        <short>optionally provides a location and size for the button</short>
+      </element>
+      <element name="UIContext.doButton.Text">
+        <short>text to display on the button</short>
+      </element>
+      <element name="UIContext.doButton.state">
+        <short>whether the button is depressed</short>
+        <descr>if state is NULL; the button behave like a touch button else; the button behave like a toggle button</descr>
+      </element>
+      <element name="UIContext.doButton.style">
+        <short>optional style flag to modify the look</short>
+      </element>
+      <element name="UIContext.doCheckButton">
+        <short>UI method for rendering and processing a check button</short>
+        <descr>Check button behaves similarly as a toggle button used to display and edit a bool property. </descr>
+      </element>
+      <element name="UIContext.doCheckButton.r">
+        <short>optionally provides a location and size for the button</short>
+      </element>
+      <element name="UIContext.doCheckButton.Text">
+        <short>text to display on the button</short>
+      </element>
+      <element name="UIContext.doCheckButton.state">
+        <short>whether the check button is checked or not</short>
+        <descr>if state is NULL; the buttoin behave like if a touch button unchecked</descr>
+      </element>
+      <element name="UIContext.doCheckButton.style">
+        <short>optional style flag to modify the look</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>
