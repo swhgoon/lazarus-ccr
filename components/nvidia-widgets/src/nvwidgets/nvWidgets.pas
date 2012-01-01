@@ -99,25 +99,25 @@ const
   GroupFlags_LayoutHorizontal = $04;
   GroupFlags_LayoutMask = $07;
   GroupFlags_LayoutXMask = $ffff xor GroupFlags_LayoutMask;
-  GroupFlags_AlignLeft = $10;
 
   // Alignment flags for the widgets inserted in the group
+  GroupFlags_AlignLeft = $10;
   GroupFlags_AlignRight = $20;
   GroupFlags_AlignTop = $40;
   GroupFlags_AlignBottom = $80;
   GroupFlags_AlignMask = $f0;
   GroupFlags_AlignXMask = $ffff xor GroupFlags_AlignMask;
-  GroupFlags_StartLeft = $100;
 
   // Start flags defining the starting origin of the group
+  GroupFlags_StartLeft = $100;
   GroupFlags_StartRight = $200;
   GroupFlags_StartTop = $400;
   GroupFlags_StartBottom = $800;
   GroupFlags_StartMask = $f00;
   GroupFlags_StartXMask = $ffff xor GroupFlags_StartMask;
-  GroupFlags_LayoutForce = $8000;
 
   // Optional flags
+  GroupFlags_LayoutForce = $8000;
   GroupFlags_LayoutDefault = $4000;
   GroupFlags_LayoutNoMargin = $2000;
   GroupFlags_LayoutNoSpace = $1000;

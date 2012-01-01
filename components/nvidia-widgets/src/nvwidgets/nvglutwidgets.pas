@@ -144,11 +144,11 @@ begin
   if button = GLUT_RIGHT_BUTTON then
     button := MouseButton_Right;
 
-  if (modifier and GLUT_ACTIVE_ALT) = 1 then
+  if (modifier and GLUT_ACTIVE_ALT) = GLUT_ACTIVE_ALT then
     modifierMask := modifierMask or (ButtonFlags_Alt);
-  if (modifier and GLUT_ACTIVE_SHIFT) = 1 then
+  if (modifier and GLUT_ACTIVE_SHIFT) = GLUT_ACTIVE_SHIFT then
     modifierMask := modifierMask or (ButtonFlags_Shift);
-  if (modifier and GLUT_ACTIVE_CTRL) = 1 then
+  if (modifier and GLUT_ACTIVE_CTRL) = GLUT_ACTIVE_CTRL then
     modifierMask := modifierMask or (ButtonFlags_Ctrl);
 
   if state = GLUT_DOWN then
