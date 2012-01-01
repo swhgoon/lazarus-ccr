@@ -28,45 +28,45 @@ type
 
   public
 
-
+    //
     // Default UI constructor
-
+    //
     //  Creates private OpenGL painter
     //////////////////////////////////////////////////////////////////
     constructor Create;
 
-
+    //
     // Alternate UI constructor
-
+    //
     //  Allows for overriding the standard painter
     //////////////////////////////////////////////////////////////////
     constructor Create(painter: UIPainter);
 
-
+    //
     // UI  destructor
-
+    //
     //  Destroy painter if it is private
     //////////////////////////////////////////////////////////////////
     destructor Destroy; override;
 
-
+    //
     // One time initialization
-
+    //
     //////////////////////////////////////////////////////////////////
     function init(w, h: integer): boolean;
 
-
+    //
     // UI method for processing GLUT mouse button events
-
+    //
     //  Call this method from the glutMouseFunc callback, the
     // modifier parameter maps to glutGetModifiers.
     //////////////////////////////////////////////////////////////////
     procedure mouse(button, state, modifier, x, y: integer);
     procedure mouse(button, state, x, y: integer);
 
-
+    //
     // UI method for processing key events
-
+    //
     //  Call this method from the glutReshapeFunc callback
     //////////////////////////////////////////////////////////////////
     procedure specialKeyboard(k, x, y: integer);
@@ -74,7 +74,7 @@ type
   private
     m_ownPainter: boolean;
 
-
+    //
     //  Translate non-ascii keys from GLUT to nvWidgets
     //////////////////////////////////////////////////////////////////
     function translateKey(k: integer): byte;

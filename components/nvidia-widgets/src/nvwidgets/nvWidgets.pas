@@ -214,18 +214,18 @@ type
     //////////////////////////////////////////////////////////////////
     procedure reshape(w: integer; h: integer);
 
-
+    //
     // Check if the UI is currently on Focus
     //////////////////////////////////////////////////////////////////
     function isOnFocus: boolean;
 
-
+    //
     // UI method for processing mouse events
     //////////////////////////////////////////////////////////////////
     procedure mouse(button: integer; state: integer; modifier: integer; x: integer; y: integer);
     procedure mouse(button: integer; state: integer; x: integer; y: integer);
 
-
+    //
     // UI method for processing mouse motion events
     //////////////////////////////////////////////////////////////////
     procedure mouseMotion(x: integer; y: integer);
@@ -235,7 +235,7 @@ type
     //////////////////////////////////////////////////////////////////
     procedure keyboard(k: byte; x: integer; y: integer);
 
-
+    //
     // UI method for entering UI processing mode
     //
     //  This function must be used to begin the UI processing
@@ -256,7 +256,7 @@ type
     // UI objects. These methods must be called between begin/end.
     ////////////////////////////////////////////////////////////////////////////
 
-
+    //
     // UI method for drawing a static text label
     // The label display a non interactive text.
     // The text can have multiple lines
@@ -266,7 +266,7 @@ type
     //////////////////////////////////////////////////////////////////
     procedure doLabel(const r: Rect; const Text: string; style: integer = 0);
 
-
+    //
     // UI method for rendering and processing a push button
     //
     // rect - optionally provides a location and size for the button
@@ -295,7 +295,7 @@ type
     //////////////////////////////////////////////////////////////////
     function doCheckButton(const r: Rect; const Text: string; var state: boolean; style: integer = 0): boolean;
 
-
+    //
     // UI method for rendering and processing a radio button
     // Radio buttons are typically used in groups to diplay and edit
     // the possible reference values taken by an int value.
@@ -314,7 +314,7 @@ type
     //////////////////////////////////////////////////////////////////
     function doRadioButton(reference: integer; const r: Rect; const Text: string; var Value: integer; style: integer = 0): boolean;
 
-
+    //
     // UI method for rendering and processing a horizontal slider
     // Horizontal slider is used to edit and display a scalar value in the specified range [min; max].
     //
@@ -353,7 +353,7 @@ type
 
     function getMouseState(button: integer): ButtonState;
 
-
+    //
     // UI method for drawing a texture view
     // Several parameters control the equation used to display the texel
     //      texel = texture2DFetch(...);
