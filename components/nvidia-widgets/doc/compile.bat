@@ -6,6 +6,9 @@ dot -Tpng nvwidgets.dot > ./images/nvwidgets.png
 
 del nvwidgets.dot
 
+::delete old chm documentation
+del *.chm
+
 ::create chm documentation
 fpdoc --package=nvidia-widgets --descr=nvwidgets.xml --input=../src/nvwidgets/nvWidgets.pas --descr=nvglwidgets.xml --input=../src/nvwidgets/nvglwidgets.pas --descr=nvglutwidgets.xml --input=../src/nvwidgets/nvglutwidgets.pas --descr=nvshaderutils.xml --input=../src/nvglutils/nvshaderutils.pas --css-file=fpdoc.css --format=chm --output=nvwidgets.chm
 
@@ -17,4 +20,4 @@ del /Q /S nvglwidgets\*.html
 del /Q /S nvshaderutils\*.html
 
 ::create html documentation
-fpdoc --package=nvidia-widgets --descr=nvwidgets.xml --input=../src/nvwidgets/nvWidgets.pas --descr=nvglwidgets.xml --input=../src/nvwidgets/nvglwidgets.pas --descr=nvglutwidgets.xml --input=../src/nvwidgets/nvglutwidgets.pas --descr=nvshaderutils.xml --input=../src/nvglutils/nvshaderutils.pas --css-file=fpdoc.css --format=html
+fpdoc --package=nvidia-widgets --descr=nvwidgets.xml --input=../src/nvwidgets/nvWidgets.pas --descr=nvglwidgets.xml --input=../src/nvwidgets/nvglwidgets.pas --descr=nvglutwidgets.xml --input=../src/nvwidgets/nvglutwidgets.pas --descr=nvshaderutils.xml --input=../src/nvglutils/nvshaderutils.pas --format=html

@@ -1,9 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <fpdoc-descriptions>
   <package name="nvidia-widgets">
     <module name="nvWidgets">
-      <short/>
-      <descr/>
       <element name="Point">
         <short>2D point object</short>
       </element>
@@ -239,6 +237,7 @@ False equals 0</descr>
       <element name="UIContext.beginGroup">
         <short>Begin grouping section of UI objects</short>
       </element>
+      <short>User Interface library</short>
     </module>
     <short>NVIDIA widget library</short>
     <descr>

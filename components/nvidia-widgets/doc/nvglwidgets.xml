@@ -1,13 +1,60 @@
 <?xml version="1.0"?>
 <fpdoc-descriptions>
   <package name="nvidia-widgets">
-    <module name="nvWidgets">
+    <module name="nvGLWidgets">
       <element name="nvGLWidgets">
         <short>User Interface library</short>
       </element>
       <element name="GLUIPainter">
         <short>OpenGL painter class</short>
       </element>
+      <element name="GLUIPainter.getCanvasMargin">
+        <short>Evaluate canvas margin</short>
+      </element>
+      <element name="GLUIPainter.getCanvasSpace">
+        <short>Evaluate canvas space</short>
+      </element>
+      <element name="GLUIPainter.getFontHeight">
+        <short>Evaluate font height</short>
+      </element>
+      <element name="GLUIPainter.getTextLineWidth">
+        <short>Evaluate text width</short>
+      </element>
+      <element name="GLUIPainter.getTextSize">
+        <short>Evaluate text size</short>
+        <descr>
+          <p>
+            <var>getTextSize</var>
+evaluates a string, it will calculate the number of lines it consists of and will return the length in pixels of the longest line.</p>
+        </descr>
+      </element>
+      <element name="GLUIPainter.getCanvasMargin.Result">
+        <short>Exterior margin</short>
+      </element>
+      <element name="GLUIPainter.getCanvasSpace.Result">
+        <short>Interior margin</short>
+      </element>
+      <element name="GLUIPainter.getFontHeight.Result">
+        <short>Font height in pixels</short>
+      </element>
+      <element name="GLUIPainter.getTextLineWidth.Result">
+        <short>Text width</short>
+      </element>
+      <element name="GLUIPainter.getTextSize.Result">
+        <short>Text width of widest line</short>
+      </element>
+      <element name="GLUIPainter.drawDebugRect">
+        <short>Draw a rectangle for debuggin purposes</short>
+        <descr>
+          <p>
+            <var>drawDebugRect</var>
+ draws a simple rectangle usefull for debugging purposes.</p>
+        </descr>
+      </element>
+      <element name="GLUIPainter.drawDebugRect.r">
+        <short>Rectangle size to draw</short>
+      </element>
+      <short>User Interface library specialized for OpenGL</short>
     </module>
   </package>
 </fpdoc-descriptions>

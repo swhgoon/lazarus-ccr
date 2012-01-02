@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <fpdoc-descriptions>
   <package name="nvidia-widgets">
     <module name="nvGLutWidgets">
@@ -26,11 +26,11 @@
       <element name="GlutUIContext.m_ownPainter">
         <short>Variable indicating a default painter object</short>
       </element>
-      <descr>Adaptor classes to integrate the nvWidgets UI library with the GLUT windowing toolkit. The adaptors convert native GLUT UI data to native nvWidgets data. All adaptor classes are implemented as in-line code in this header. The adaptor defaults to using the standard OpenGL painter implementation.
-</descr>
       <element name="GlutUIContext">
         <short>GLut specific UI context</short>
       </element>
+      <short>GLut adaptor class</short>
+      <descr>Adaptor classes to integrate the nvWidgets UI library with the GLUT windowing toolkit. The adaptors convert native GLUT UI data to native nvWidgets data. All adaptor classes are implemented as in-line code in this header. The adaptor defaults to using the standard OpenGL painter implementation.</descr>
     </module>
   </package>
 </fpdoc-descriptions>

@@ -140,6 +140,7 @@ var
 
     // Pass non-ui mouse events to the manipulator
     //updateManipulator(ui, manipulator);
+
     ui._end;
   end;
 

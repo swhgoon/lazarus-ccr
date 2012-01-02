@@ -278,6 +278,7 @@ begin
     glDeleteLists(m_foregroundDL, 1);
     m_foregroundDL := 0;
   end;
+
   //Restore state.
   glCallList(m_restoreStateDL);
 end;
@@ -756,14 +757,14 @@ begin
   glUniform4i(m_texelSwizzlingUniform, r, g, b, a);
 
   glBegin(GL_QUADS);
-  glTexCoord2f(rz.x / rt.w, rz.y / rt.h);
-  glVertex2f(aRect.x + rt.x, aRect.y + rt.y);
-  glTexCoord2f(rz.x / rt.w, (rz.y + rz.h) / rt.h);
-  glVertex2f(aRect.x + rt.x, aRect.y + rt.y + rt.h);
-  glTexCoord2f((rz.x + rz.w) / rt.w, (rz.y + rz.h) / rt.h);
-  glVertex2f(aRect.x + rt.x + rt.w, aRect.y + rt.y + rt.h);
-  glTexCoord2f((rz.x + rz.w) / rt.w, rz.y / rt.h);
-  glVertex2f(aRect.x + rt.x + rt.w, aRect.y + rt.y);
+    glTexCoord2f(rz.x / rt.w, rz.y / rt.h);
+    glVertex2f(aRect.x + rt.x, aRect.y + rt.y);
+    glTexCoord2f(rz.x / rt.w, (rz.y + rz.h) / rt.h);
+    glVertex2f(aRect.x + rt.x, aRect.y + rt.y + rt.h);
+    glTexCoord2f((rz.x + rz.w) / rt.w, (rz.y + rz.h) / rt.h);
+    glVertex2f(aRect.x + rt.x + rt.w, aRect.y + rt.y + rt.h);
+    glTexCoord2f((rz.x + rz.w) / rt.w, rz.y / rt.h);
+    glVertex2f(aRect.x + rt.x + rt.w, aRect.y + rt.y);
   glEnd;
   glUseProgram(0);
 
@@ -800,37 +801,23 @@ end;
 
 function GLUIPainter.getTextSize(const Text: string; out nbLines: integer): integer;
 var
-  w: integer;
-  wLine: integer;
+  w: integer = 0;
   i: integer;
   s: TStrings;
-  t: string;
-  j: Integer;
 begin
   s := TStringList.Create;
 
   try
     s.Text:= Text;
-    w := 0;
-    wLine := 0;
-
     nbLines := s.Count;
 
     for i := 0 to nbLines - 1 do
-    begin
-      wLine := 0;
-      t := s[i];
-
-      for j := 1 to Length(t) do
-        wLine := wLine + glutBitmapWidth(GLUT_BITMAP_HELVETICA_12, Ord(t[j]));
-
-      w := Max(w, wLine);
-    end;
+      w := Max(w, getTextLineWidth(s[i]));
   finally
     s.Free;
   end;
 
-  Result := Max(w, wLine) + 2;
+  Result := w;
 end;
 
 function GLUIPainter.getTextLineWidthAt(const Text: string; charNb: integer): integer;
@@ -885,11 +872,11 @@ end;
 procedure GLUIPainter.drawDebugRect(const r: Rect);
 begin
   glBegin(GL_LINE_STRIP);
-  glVertex2i(r.x + 1, r.y + 1);
-  glVertex2i(r.x + r.w, r.y + 1);
-  glVertex2i(r.x + r.w, r.y + r.h);
-  glVertex2i(r.x + 1, r.y + r.h);
-  glVertex2i(r.x + 1, r.y);
+    glVertex2i(r.x, r.y);
+    glVertex2i(r.x + r.w, r.y);
+    glVertex2i(r.x + r.w, r.y + r.h);
+    glVertex2i(r.x, r.y + r.h);
+    glVertex2i(r.x, r.y);
   glEnd;
 end;
 
