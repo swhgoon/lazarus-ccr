@@ -174,10 +174,12 @@ It is displaying a boolean state true if the current value is equal to the refer
       </element>
       <element name="UIContext.doTextureView">
         <short>UI method for drawing a texture view</short>
-        <descr>Several parameters control the equation used to display the texel
-
-texel = texture2DFetch(...);
-pixel = texelSwizzling( texel * texelScale + texelOffset );</descr>
+        <descr>
+          <p>Several parameters control the equation used to display the texel</p>
+          <code>texel = texture2DFetch(...);
+pixel = texelSwizzling( texel * texelScale + texelOffset );
+</code>
+        </descr>
       </element>
       <element name="UIContext.doTextureView.aRect">
         <short>provides a location and size for the texture view</short>
@@ -230,15 +232,17 @@ False equals 0</descr>
       </element>
     </module>
     <short>NVIDIA widget library</short>
-    <descr>This library is originally based on the NVIDIA widget library. NVIDIA Widgets is the <link id="https://mollyrocket.com/forums/viewforum.php?f=10">immediate mode graphical user interface</link> toolkit used by the <link id="http://developer.nvidia.com/object/sdk_home.html">NVIDIA SDK samples</link>.
-<p/>
-Originally ported to FPC by Darius Blaszyk in June 2011.
-<p/>
-This library is distributed under the 
-<link id="http://www.opensource.org/licenses/mit-license.php">MIT</link> license, as the original library was.
-<p/>
-The original code can be found here: 
-<link id="http://code.google.com/p/nvidia-widgets/">http://code.google.com/p/nvidia-widgets/</link><img file="nvwidgets.png" caption="nvidia-widgets class chart"/><p/>
-For more information see the <link id="http://wiki.lazarus.freepascal.org/nvidia-widgets">Lazarus wiki</link>.</descr>
+    <descr>
+      <p>This library is originally based on the NVIDIA widget library. NVIDIA Widgets is the 
+<url href="https://mollyrocket.com/forums/viewforum.php?f=10">immediate mode graphical user interface</url> toolkit used by the 
+<url href="http://developer.nvidia.com/object/sdk_home.html">NVIDIA SDK samples</url>.
+</p>
+      <p>Originally ported to FPC by Darius Blaszyk in June 2011.</p>
+      <p>This library is distributed under the <url href="http://www.opensource.org/licenses/mit-license.php">MIT</url> license, as the original library was.</p>
+      <p>The original code can be found here: <url href="http://code.google.com/p/nvidia-widgets/"/>
+      </p>
+      <img file="nvwidgets.png" caption="nvidia-widgets class chart"/>
+      <p>For more information see the <url href="http://wiki.lazarus.freepascal.org/nvidia-widgets">Lazarus wiki</url>.</p>
+    </descr>
   </package>
 </fpdoc-descriptions>
