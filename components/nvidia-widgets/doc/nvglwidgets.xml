@@ -5,6 +5,9 @@
       <element name="nvGLWidgets">
         <short>User Interface library</short>
       </element>
+      <element name="GLUIPainter">
+        <short>OpenGL painter class</short>
+      </element>
     </module>
   </package>
 </fpdoc-descriptions>

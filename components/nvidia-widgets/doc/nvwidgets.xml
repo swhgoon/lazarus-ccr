@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
   <package name="nvidia-widgets">
     <module name="nvWidgets">
@@ -230,6 +230,15 @@ False equals 0</descr>
       <element name="SetRect">
         <short>Helper function to initialize the rect object</short>
       </element>
+      <element name="UIContext">
+        <short>Basic UI context</short>
+      </element>
+      <element name="UIPainter">
+        <short>Basic painter class</short>
+      </element>
+      <element name="UIContext.beginGroup">
+        <short>Begin grouping section of UI objects</short>
+      </element>
     </module>
     <short>NVIDIA widget library</short>
     <descr>
@@ -241,7 +250,7 @@ False equals 0</descr>
       <p>This library is distributed under the <url href="http://www.opensource.org/licenses/mit-license.php">MIT</url> license, as the original library was.</p>
       <p>The original code can be found here: <url href="http://code.google.com/p/nvidia-widgets/"/>
       </p>
-      <img file="nvwidgets.png" caption="nvidia-widgets class chart"/>
+      <img file="./images/nvwidgets.png" caption="nvidia-widgets class chart"/>
       <p>For more information see the <url href="http://wiki.lazarus.freepascal.org/nvidia-widgets">Lazarus wiki</url>.</p>
     </descr>
   </package>

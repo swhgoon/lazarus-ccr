@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<title>UIContext.doTextureView</title>
+<link rel="stylesheet" href="../fpdoc.css" type="text/css">
+
+</head>
+<body>
+<table class="bar" width="100%" border="0" cellpadding="4" cellspacing="0">
+<tr>
+<td><b>[<a href="../nvwidgets/index.html">Overview</a>][<a href="../nvwidgets/index-2.html">Constants</a>][<a href="../nvwidgets/index-3.html">Types</a>][<a href="../nvwidgets/index-4.html">Classes</a>][<a href="../nvwidgets/index-5.html">Procedures and functions</a>][<a href="../nvwidgets/index-8.html">Index</a>]</b></td>
+<td align="right"><span class="bartitle">Reference for unit 'nvWidgets' (<a href="../index.html">#nvidia-widgets</a>)</span></td>
+</tr>
+</table>
+<h1>UIContext.doTextureView</h1>
+<p>UI method for drawing a texture view</p>
+<h2>Declaration</h2>
+<p>Source position: nvWidgets.pas line 371</p>
+<table cellpadding="0" cellspacing="0">
+<tr>
+<td><p><tt><span class="code"> <span class="kw">public</span> <span class="kw">procedure</span> <a href="../nvwidgets/uicontext.html">UIContext</a><span class="sym">.</span>doTextureView<span class="sym">(</span></span></tt></p></td>
+</tr>
+<tr>
+<td><p><tt><span class="code">&nbsp;&nbsp;<span class="kw">const </span>aRect<span class="sym">: </span><a href="../nvwidgets/rect.html">Rect</a><span class="sym">;</span></span></tt></p></td>
+</tr>
+<tr>
+<td><p><tt><span class="code">&nbsp;&nbsp;<span class="kw">const </span>texID<span class="sym">: </span>Integer<span class="sym">;</span></span></tt></p></td>
+</tr>
+<tr>
+<td><p><tt><span class="code">&nbsp;&nbsp;zoomRect<span class="sym">: </span><a href="../nvwidgets/rect.html">Rect</a><span class="sym">;</span></span></tt></p></td>
+</tr>
+<tr>
+<td><p><tt><span class="code">&nbsp;&nbsp;mipLevel<span class="sym">: </span>Integer <span class="sym">=</span> <span class="sym">-</span><span class="num">1</span><span class="sym">;</span></span></tt></p></td>
+</tr>
+<tr>
+<td><p><tt><span class="code">&nbsp;&nbsp;texelScale<span class="sym">: </span>Double <span class="sym">=</span> <span class="num">1</span><span class="sym">;</span></span></tt></p></td>
+</tr>
+<tr>
+<td><p><tt><span class="code">&nbsp;&nbsp;texelOffset<span class="sym">: </span>Double <span class="sym">=</span> <span class="num">0</span><span class="sym">;</span></span></tt></p></td>
+</tr>
+<tr>
+<td><p><tt><span class="code">&nbsp;&nbsp;red<span class="sym">: </span>Integer <span class="sym">=</span> <span class="num">0</span><span class="sym">;</span></span></tt></p></td>
+</tr>
+<tr>
+<td><p><tt><span class="code">&nbsp;&nbsp;green<span class="sym">: </span>Integer <span class="sym">=</span> <span class="num">1</span><span class="sym">;</span></span></tt></p></td>
+</tr>
+<tr>
+<td><p><tt><span class="code">&nbsp;&nbsp;blue<span class="sym">: </span>Integer <span class="sym">=</span> <span class="num">2</span><span class="sym">;</span></span></tt></p></td>
+</tr>
+<tr>
+<td><p><tt><span class="code">&nbsp;&nbsp;alpha<span class="sym">: </span>Integer <span class="sym">=</span> <span class="num">3</span><span class="sym">;</span></span></tt></p></td>
+</tr>
+<tr>
+<td><p><tt><span class="code">&nbsp;&nbsp;style<span class="sym">: </span>Integer <span class="sym">=</span> <span class="num">0</span></span></tt></p></td>
+</tr>
+<tr>
+<td><p><tt><span class="code"><span class="sym">)</span><span class="sym">;</span></span></tt></p></td>
+</tr>
+</table>
+<h2>Arguments</h2>
+<table cellpadding="0" cellspacing="0">
+<tr>
+<td valign="top"><p><tt><span class="code">aRect</span></tt></p></td>
+<td><p>&nbsp;&nbsp;</p></td>
+<td><p class="cmt">provides a location and size for the texture view</p></td>
+</tr>
+<tr>
+<td valign="top"><p><tt><span class="code">texID</span></tt></p></td>
+<td><p>&nbsp;&nbsp;</p></td>
+<td><p class="cmt">texture identifier (Graphics API specific)</p></td>
+</tr>
+<tr>
+<td valign="top"><p><tt><span class="code">zoomRect</span></tt></p></td>
+<td><p>&nbsp;&nbsp;</p></td>
+<td><p class="cmt">rectangle area of the texture displayed</p></td>
+</tr>
+<tr>
+<td valign="top"><p><tt><span class="code">mipLevel</span></tt></p></td>
+<td><p>&nbsp;&nbsp;</p></td>
+<td><p class="cmt">mip Level of the texture displayed</p></td>
+</tr>
+<tr>
+<td valign="top"><p><tt><span class="code">texelScale</span></tt></p></td>
+<td><p>&nbsp;&nbsp;</p></td>
+<td><p class="cmt">scale applyed to the texel fetch</p></td>
+</tr>
+<tr>
+<td valign="top"><p><tt><span class="code">texelOffset</span></tt></p></td>
+<td><p>&nbsp;&nbsp;</p></td>
+<td><p class="cmt">offset applyed to the texel after scale</p></td>
+</tr>
+<tr>
+<td valign="top"><p><tt><span class="code">style</span></tt></p></td>
+<td><p>&nbsp;&nbsp;</p></td>
+<td><p class="cmt">optional style flag to modify the look</p></td>
+</tr>
+</table>
+<h2>Description</h2>
+<p>Several parameters control the equation used to display the texel</p>
+<pre>texel <span class="sym">=</span> texture2DFetch<span class="sym">(</span><span class="sym">.</span><span class="sym">.</span><span class="sym">.</span><span class="sym">)</span><span class="sym">;</span>
+pixel <span class="sym">=</span> texelSwizzling<span class="sym">(</span> texel <span class="sym">*</span> texelScale <span class="sym">+</span> texelOffset <span class="sym">)</span><span class="sym">;</span>
+</pre>
+</body>
+</html>
