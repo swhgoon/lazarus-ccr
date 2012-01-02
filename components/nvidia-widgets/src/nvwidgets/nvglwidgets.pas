@@ -803,25 +803,34 @@ var
   w: integer;
   wLine: integer;
   i: integer;
+  s: TStrings;
+  t: string;
+  j: Integer;
 begin
-  w := 0;
-  wLine := 0;
-  nbLines := 1;
+  s := TStringList.Create;
 
-  for i := 1 to length(Text) do
-  begin
-    if (Text[i] <> #13) and (Text[i + 1] <> #10) then
-      wLine := wLine + glutBitmapWidth(GLUT_BITMAP_HELVETICA_12, Ord(Text[i]))
-    else
+  try
+    s.Text:= Text;
+    w := 0;
+    wLine := 0;
+
+    nbLines := s.Count;
+
+    for i := 0 to nbLines - 1 do
     begin
-      Inc(nbLines);
-      w := max(w, wLine);
       wLine := 0;
+      t := s[i];
+
+      for j := 1 to Length(t) do
+        wLine := wLine + glutBitmapWidth(GLUT_BITMAP_HELVETICA_12, Ord(t[j]));
+
+      w := Max(w, wLine);
     end;
+  finally
+    s.Free;
   end;
 
-  w := max(w, wLine) + 2;
-  Result := w;
+  Result := Max(w, wLine) + 2;
 end;
 
 function GLUIPainter.getTextLineWidthAt(const Text: string; charNb: integer): integer;
@@ -923,42 +932,24 @@ end;
 
 procedure GLUIPainter.drawString(x: integer; y: integer; Text: string; nbLines: integer);
 var
-  endNb: integer;
-  startNb: integer;
-  textOri: string;
-  lineNb: integer;
+  s: TStrings;
+  t: string;
+  i: Integer;
 begin
   glListBase(m_textListBase);
 
-  if nbLines < 2 then
-  begin
-    glRasterPos2i(x + 1, y + 4);
-    glCallLists(Length(Text), GL_UNSIGNED_BYTE, @Text[1]);
-  end
-  else
-  begin
-    lineNb := nbLines;
-    startNb := 0;
-    endNb := 0;
+  s := TStringList.Create;
+  try
+    s.Text := Text;
 
-    textOri := Text;
-    {$note fix multiline support, use TStrings instead of array of string}
-    //while lineNb <>0 do
-    //begin
-    //  if {*}text^<>#0)and( *text<>#13#10 then
-    //  begin
-    //    inc(endNb);
-    //  end
-    //  else
-    //  begin
-    //    dec(lineNb);
-    //    glRasterPos2i(x+1,y+4+lineNb*getFontHeight);
-    //    glCallLists(endNb-startNb,GL_UNSIGNED_BYTE,textOri+startNb);
-    //    inc(endNb);
-    //    startNb:= endNb;
-    //  end;
-    //  inc(text);
-    //end;
+    for i := 0 to s.Count - 1 do
+    begin
+      t := s[s.Count - 1 - i];
+      glRasterPos2i(x + 1, y + 4 + i * getFontHeight);
+      glCallLists(Length(t), GL_UNSIGNED_BYTE, @t[1]);
+    end;
+  finally
+    s.Free;
   end;
 end;
 
@@ -1023,67 +1014,69 @@ begin
   y3 := aRect.y + aRect.h;
 
   glBegin(GL_TRIANGLE_STRIP);
-  glTexCoord2f(xb, yb);
-  glVertex2f(x0, y0);
-  glTexCoord2f(0, yb);
-  glVertex2f(x1, y0);
+    glTexCoord2f(xb, yb);
+    glVertex2f(x0, y0);
+    glTexCoord2f(0, yb);
+    glVertex2f(x1, y0);
 
-  glTexCoord2f(xb, 0);
-  glVertex2f(x0, y1);
-  glTexCoord2f(0, 0);
-  glVertex2f(x1, y1);
+    glTexCoord2f(xb, 0);
+    glVertex2f(x0, y1);
+    glTexCoord2f(0, 0);
+    glVertex2f(x1, y1);
 
-  glTexCoord2f(xb, 0);
-  glVertex2f(x0, y2);
-  glTexCoord2f(0, 0);
-  glVertex2f(x1, y2);
+    glTexCoord2f(xb, 0);
+    glVertex2f(x0, y2);
+    glTexCoord2f(0, 0);
+    glVertex2f(x1, y2);
 
-  glTexCoord2f(xb, yb);
-  glVertex2f(x0, y3);
-  glTexCoord2f(0, yb);
-  glVertex2f(x1, y3);
+    glTexCoord2f(xb, yb);
+    glVertex2f(x0, y3);
+    glTexCoord2f(0, yb);
+    glVertex2f(x1, y3);
   glEnd;
+
   glBegin(GL_TRIANGLE_STRIP);
-  glTexCoord2f(0, yb);
-  glVertex2f(x2, y0);
-  glTexCoord2f(xb, yb);
-  glVertex2f(x3, y0);
+    glTexCoord2f(0, yb);
+    glVertex2f(x2, y0);
+    glTexCoord2f(xb, yb);
+    glVertex2f(x3, y0);
 
-  glTexCoord2f(0, 0);
-  glVertex2f(x2, y1);
-  glTexCoord2f(xb, 0);
-  glVertex2f(x3, y1);
+    glTexCoord2f(0, 0);
+    glVertex2f(x2, y1);
+    glTexCoord2f(xb, 0);
+    glVertex2f(x3, y1);
 
-  glTexCoord2f(0, 0);
-  glVertex2f(x2, y2);
-  glTexCoord2f(xb, 0);
-  glVertex2f(x3, y2);
+    glTexCoord2f(0, 0);
+    glVertex2f(x2, y2);
+    glTexCoord2f(xb, 0);
+    glVertex2f(x3, y2);
 
-  glTexCoord2f(0, yb);
-  glVertex2f(x2, y3);
-  glTexCoord2f(xb, yb);
-  glVertex2f(x3, y3);
+    glTexCoord2f(0, yb);
+    glVertex2f(x2, y3);
+    glTexCoord2f(xb, yb);
+    glVertex2f(x3, y3);
   glEnd;
+
   glBegin(GL_TRIANGLE_STRIP);
-  glTexCoord2f(0, yb);
-  glVertex2f(x1, y0);
-  glTexCoord2f(0, yb);
-  glVertex2f(x2, y0);
+    glTexCoord2f(0, yb);
+    glVertex2f(x1, y0);
+    glTexCoord2f(0, yb);
+    glVertex2f(x2, y0);
 
-  glTexCoord2f(0, 0);
-  glVertex2f(x1, y1);
-  glTexCoord2f(0, 0);
-  glVertex2f(x2, y1);
+    glTexCoord2f(0, 0);
+    glVertex2f(x1, y1);
+    glTexCoord2f(0, 0);
+    glVertex2f(x2, y1);
 
-  glTexCoord2f(0, 0);
-  glVertex2f(x1, y2);
-  glTexCoord2f(0, 0);
-  glVertex2f(x2, y2);
+    glTexCoord2f(0, 0);
+    glVertex2f(x1, y2);
+    glTexCoord2f(0, 0);
+    glVertex2f(x2, y2);
 
-  glTexCoord2f(0, yb);
-  glVertex2f(x1, y3);
-  glTexCoord2f(0, yb);
-  glVertex2f(x2, y3);
+    glTexCoord2f(0, yb);
+    glVertex2f(x1, y3);
+    glTexCoord2f(0, yb);
+    glVertex2f(x2, y3);
   glEnd;
 
   glUseProgram(0);
