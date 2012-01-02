@@ -26,7 +26,9 @@ function CompileGLSLShader(target: GLenum; shader: string): GLuint;
 var
   _object: GLuint;
   compiled: GLint;
+  {$ifdef NV_REPORT_COMPILE_ERRORS}
   temp: string;
+  {$endif}
 begin
   _object := glCreateShader(target);
   if _object = 0 then
@@ -90,9 +92,11 @@ end;
 function LinkGLSLProgram(vertexShader: GLuint; fragmentShader: GLuint): GLuint;
 var
   _program: GLuint;
+  {$ifdef NV_REPORT_COMPILE_ERRORS}
   infoLogLength: GLint;
   infoLog: string;
   charsWritten: GLint;
+  {$endif}
   linkSucceed: GLint;
 begin
   _program := glCreateProgram();
@@ -126,9 +130,11 @@ end;
 function LinkGLSLProgram(vertexShader: GLuint; geometryShader: GLuint; inputType: GLint; vertexOut: GLint; outputType: GLint; fragmentShader: GLuint): GLuint;
 var
   _program: GLuint;
+  {$ifdef NV_REPORT_COMPILE_ERRORS}
   charsWritten: GLint;
   infoLogLength: GLint;
   infoLog: string;
+  {$endif}
   linkSucceed: GLint;
 begin
   _program := glCreateProgram();
@@ -169,7 +175,9 @@ end;
 ////////////////////////////////////////////////////////////
 function CompileASMShader(program_type: GLenum; code: string): GLuint;
 var
+  {$ifdef NV_REPORT_COMPILE_ERRORS}
   error_string: string;
+  {$endif}
   program_id: GLuint;
   error_pos: GLint;
 begin
@@ -197,7 +205,6 @@ end;
 ////////////////////////////////////////////////////////////
 function CompileASMShaderFromFile(target: GLenum; filename: string): GLuint;
 var
-  size: integer;
   program_id: GLuint;
   s: TStrings;
 begin
@@ -207,7 +214,6 @@ begin
       s := TStringList.Create;
       s.LoadFromFile(filename);
 
-      size := Length(s.Text);
       program_id := CompileASMShader(target, s.Text);
       Result := program_id;
       exit;

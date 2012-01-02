@@ -1011,7 +1011,7 @@ var
   parentAlign: integer;
   newAlign: integer;
   newStart: integer;
-  newLayout: integer;
+  //newLayout: integer;
   aRect: Rect;
 begin
   // Push one more group.
