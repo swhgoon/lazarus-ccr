@@ -249,7 +249,7 @@ False equals 0</descr>
       <p>This library is distributed under the <url href="http://www.opensource.org/licenses/mit-license.php">MIT</url> license, as the original library was.</p>
       <p>The original code can be found here: <url href="http://code.google.com/p/nvidia-widgets/"/>
       </p>
-      <img file="./images/nvwidgets.png" caption="nvidia-widgets class chart"/>
+      <img file="nvwidgets.png" caption="nvidia-widgets class chart"/>
       <p>For more information see the <url href="http://wiki.lazarus.freepascal.org/nvidia-widgets">Lazarus wiki</url>.</p>
     </descr>
   </package>

@@ -6,7 +6,7 @@ program example;
 uses
   Classes, SysUtils,
   GLut, GL, GLu,
-  nvWidgets, nvGlutWidgets, nvGLWidgets, nvShaderUtils;
+  nvWidgets, nvGlutWidgets;
 
 type
   UIOption = (
