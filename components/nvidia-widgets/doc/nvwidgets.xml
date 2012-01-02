@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <fpdoc-descriptions>
   <package name="nvidia-widgets">
     <module name="nvWidgets">
@@ -209,6 +209,36 @@ pixel = texelSwizzling( texel * texelScale + texelOffset );</descr>
       <element name="UIContext.getPainter">
         <short>Active widget painter</short>
       </element>
+      <element name="EvalBool">
+        <short>Boolean evaluation function</short>
+        <descr>This function evaluates a boolean to a numerical value.
+
+True equals 1
+False equals 0</descr>
+      </element>
+      <element name="Point.Point">
+        <short>Constructor for the point object</short>
+      </element>
+      <element name="Rect.Rect">
+        <short>Constructor for the rect object</short>
+      </element>
+      <element name="SetPoint">
+        <short>Helper function to initialize the point object</short>
+      </element>
+      <element name="SetRect">
+        <short>Helper function to initialize the rect object</short>
+      </element>
     </module>
+    <short>NVIDIA widget library</short>
+    <descr>This library is originally based on the NVIDIA widget library. NVIDIA Widgets is the <link id="https://mollyrocket.com/forums/viewforum.php?f=10">immediate mode graphical user interface</link> toolkit used by the <link id="http://developer.nvidia.com/object/sdk_home.html">NVIDIA SDK samples</link>.
+<p/>
+Originally ported to FPC by Darius Blaszyk in June 2011.
+<p/>
+This library is distributed under the 
+<link id="http://www.opensource.org/licenses/mit-license.php">MIT</link> license, as the original library was.
+<p/>
+The original code can be found here: 
+<link id="http://code.google.com/p/nvidia-widgets/">http://code.google.com/p/nvidia-widgets/</link><img file="nvwidgets.png" caption="nvidia-widgets class chart"/><p/>
+For more information see the <link id="http://wiki.lazarus.freepascal.org/nvidia-widgets">Lazarus wiki</link>.</descr>
   </package>
 </fpdoc-descriptions>
