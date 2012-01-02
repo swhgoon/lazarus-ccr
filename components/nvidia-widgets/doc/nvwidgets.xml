@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <fpdoc-descriptions>
-  <package name="nvidia widgets">
+  <package name="nvidia-widgets">
     <module name="nvWidgets">
       <short/>
       <descr/>
@@ -176,12 +176,8 @@ It is displaying a boolean state true if the current value is equal to the refer
         <short>UI method for drawing a texture view</short>
         <descr>Several parameters control the equation used to display the texel
 
-<p>
-            <code>texel = texture2DFetch(...);
-pixel = texelSwizzling( texel * texelScale + texelOffset );
-</code>
-          </p>
-        </descr>
+texel = texture2DFetch(...);
+pixel = texelSwizzling( texel * texelScale + texelOffset );</descr>
       </element>
       <element name="UIContext.doTextureView.aRect">
         <short>provides a location and size for the texture view</short>
@@ -203,6 +199,12 @@ pixel = texelSwizzling( texel * texelScale + texelOffset );
       </element>
       <element name="UIContext.doTextureView.style">
         <short>optional style flag to modify the look</short>
+      </element>
+      <element name="Point.x">
+        <short>X location</short>
+      </element>
+      <element name="Point.y">
+        <short>Y location</short>
       </element>
     </module>
   </package>

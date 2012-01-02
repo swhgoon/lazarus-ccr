@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <fpdoc-descriptions>
-  <package name="nvidia widgets">
+  <package name="nvidia-widgets">
     <module name="nvGLutWidgets">
       <element name="GlutUIContext.translateKey">
         <short>Translate non-ascii keys from GLUT to nvWidgets</short>
