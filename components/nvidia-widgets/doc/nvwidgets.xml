@@ -206,6 +206,9 @@ pixel = texelSwizzling( texel * texelScale + texelOffset );</descr>
       <element name="Point.y">
         <short>Y location</short>
       </element>
+      <element name="UIContext.getPainter">
+        <short>Active widget painter</short>
+      </element>
     </module>
   </package>
 </fpdoc-descriptions>

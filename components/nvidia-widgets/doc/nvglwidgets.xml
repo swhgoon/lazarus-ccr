@@ -2,7 +2,9 @@
 <fpdoc-descriptions>
   <package name="nvidia-widgets">
     <module name="nvWidgets">
-
+      <element name="nvGLWidgets">
+        <short>User Interface library</short>
+      </element>
     </module>
   </package>
 </fpdoc-descriptions>
