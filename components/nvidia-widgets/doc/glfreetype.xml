@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="nvidia-widgets">
+    <module name="glFreeType">
+	<short>Free Type support for OpenGL</short>
+    </module>
+  </package>
+</fpdoc-descriptions>
