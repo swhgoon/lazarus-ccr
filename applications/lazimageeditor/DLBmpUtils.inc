@@ -819,7 +819,7 @@ begin
     dh := aHeight;
   Dest.Width := dw;
   Dest.Height := dh;
-  m := Trunc(ypos / ih);
+{  m := Trunc(ypos / ih);
   n := Trunc(xpos / iw);
   for  i := ypos to ylen - 1 do
   begin
@@ -833,6 +833,16 @@ begin
       LScan1[j - xpos] := LScan2[k];
       if (j mod iw) = 0 then
         k := k + 1;
+    end;
+  end;     }
+  for  i := ypos to ylen - 1 do
+  begin
+    LScan1 := Dest.Scanline[i - ypos];
+    LScan2 := Src.Scanline[Trunc(i / sh)];
+    for  j := xpos to xlen - 1 do
+    begin
+      k := Trunc(j / sw);
+      LScan1[j - xpos] := LScan2[k];
     end;
   end;
   Dest.InvalidateScanLine;
