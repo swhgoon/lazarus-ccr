@@ -212,7 +212,7 @@ type
 
     // UI method for processing window size events
     //////////////////////////////////////////////////////////////////
-    procedure reshape(w: integer; h: integer);
+    procedure reshape(w, h: integer);
 
     //
     // Check if the UI is currently on Focus
@@ -222,18 +222,18 @@ type
     //
     // UI method for processing mouse events
     //////////////////////////////////////////////////////////////////
-    procedure mouse(button: integer; state: integer; modifier: integer; x: integer; y: integer);
-    procedure mouse(button: integer; state: integer; x: integer; y: integer);
+    procedure mouse(button, state, modifier, x, y: integer);
+    procedure mouse(button, state, x, y: integer);
 
     //
     // UI method for processing mouse motion events
     //////////////////////////////////////////////////////////////////
-    procedure mouseMotion(x: integer; y: integer);
+    procedure mouseMotion(x, y: integer);
 
 
     // UI method for processing key events
     //////////////////////////////////////////////////////////////////
-    procedure keyboard(k: byte; x: integer; y: integer);
+    procedure keyboard(k: byte; x, y: integer);
 
     //
     // UI method for entering UI processing mode
@@ -497,7 +497,7 @@ begin
   m_focusCaretPos := -1;
 end;
 
-procedure UIContext.reshape(w: integer; h: integer);
+procedure UIContext.reshape(w, h: integer);
 begin
   m_window.x := 0;
   m_window.y := 0;
@@ -510,21 +510,18 @@ begin
   Result := m_uiOnFocus;
 end;
 
-procedure UIContext.mouse(button: integer; state: integer; modifier: integer; x: integer; y: integer);
+procedure UIContext.mouse(button, state, modifier, x, y: integer);
 var
   idx: integer;
 begin
   setCursor(x, y);
 
   idx := -1;
-  if button = MouseButton_Left then
-    idx := 0
-  else
-  if button = MouseButton_Middle then
-    idx := 1
-  else
-  if button = MouseButton_Right then
-    idx := 2;
+  case button of
+    MouseButton_Left: idx := 0;
+    MouseButton_Middle: idx := 1;
+    MouseButton_Right: idx := 2;
+  end;
 
   modifier := modifier and (ButtonFlags_Alt or ButtonFlags_Shift or ButtonFlags_Ctrl);
 
@@ -538,23 +535,21 @@ begin
       m_mouseButton[idx].cursor.y := m_window.h - y;
     end;
     if state = 0 then
-    begin
       m_mouseButton[idx].state := ButtonFlags_On or ButtonFlags_End or modifier;
-    end;
   end;
 end;
 
-procedure UIContext.mouse(button: integer; state: integer; x: integer; y: integer);
+procedure UIContext.mouse(button, state, x, y: integer);
 begin
   mouse(button, state, 0, x, y);
 end;
 
-procedure UIContext.mouseMotion(x: integer; y: integer);
+procedure UIContext.mouseMotion(x, y: integer);
 begin
   setCursor(x, y);
 end;
 
-procedure UIContext.keyboard(k: byte; x: integer; y: integer);
+procedure UIContext.keyboard(k: byte; x, y: integer);
 begin
   setCursor(x, y);
   m_keyBuffer[m_nbKeys] := k;
@@ -1122,6 +1117,8 @@ begin
     parentGroup^.bounds.y := minBoundY;
     parentGroup^.bounds.h := maxBoundY - minBoundY;
   end;
+
+  {$IFDEF DEBUG} m_painter.drawDebugRect(newGroup.bounds); {$ENDIF}
 end;
 
 procedure UIContext.beginFrame(groupFlags: integer; const rect: Rect; style: integer);
