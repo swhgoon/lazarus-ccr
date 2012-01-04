@@ -10,7 +10,7 @@ del nvwidgets.dot
 del *.chm
 
 ::create chm documentation
-fpdoc --package=nvidia-widgets --descr=nvwidgets.xml --input=../src/nvwidgets/nvWidgets.pas --descr=nvglwidgets.xml --input=../src/nvwidgets/nvglwidgets.pas --descr=nvglutwidgets.xml --input=../src/nvwidgets/nvglutwidgets.pas --descr=nvshaderutils.xml --input=../src/nvglutils/nvshaderutils.pas --descr=glfreetype.xml --input=../src/gl/glfreetype.pas --css-file=fpdoc.css --image-url=images/ --format=chm --output=nvwidgets.chm
+fpdoc --package=nvidia-widgets --auto-index --auto-toc --make-searchable --footer-date="mmm dd yyyy" --descr=nvwidgets.xml --input=../src/nvwidgets/nvWidgets.pas --descr=nvglwidgets.xml --input=../src/nvwidgets/nvglwidgets.pas --descr=nvglutwidgets.xml --input=../src/nvwidgets/nvglutwidgets.pas --descr=nvshaderutils.xml --input=../src/nvglutils/nvshaderutils.pas --descr=glfreetype.xml --input=../src/gl/glfreetype.pas --css-file=fpdoc.css --image-url=images/ --format=chm --output=nvwidgets.chm
 
 ::decompile the chm file (for debugging)
 ::del /Q /S html\*
@@ -24,4 +24,5 @@ del /Q /S nvglwidgets\*.html
 del /Q /S nvshaderutils\*.html
 
 ::create html documentation
+::once documentation settles add --footer-date="mmm dd yyyy" 
 fpdoc --package=nvidia-widgets --descr=nvwidgets.xml --input=../src/nvwidgets/nvWidgets.pas --descr=nvglwidgets.xml --input=../src/nvwidgets/nvglwidgets.pas --descr=nvglutwidgets.xml --input=../src/nvwidgets/nvglutwidgets.pas --descr=nvshaderutils.xml --input=../src/nvglutils/nvshaderutils.pas --descr=glfreetype.xml --input=../src/gl/glfreetype.pas --image-url=images/ --format=html
