@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
   <package name="nvidia-widgets">
     <module name="nvWidgets">
@@ -74,9 +74,9 @@
         <short>UI method for drawing a static text label</short>
         <descr>
           <p>The label displays a non interactive text.</p>
-          <p>The style flag enables to draw the label in two distict styles. The first one is default <var>(style = 0)</var> and displays the label simply as text. The alternative <var>(style = 1)</var> displays the label with a frame around it. An example is shown in then following figure.</p>
+          <p>The style flag enables to draw the label in two distinct styles. The first one is default <var>(style = 0)</var> and displays the label simply as text. The alternative <var>(style = 1)</var> displays the label with a frame around it. An example is shown in the following figure.</p>
           <img file="label.png"/>
-          <p>The Text can have multiple lines.</p>
+          <p>The <var>Text</var> variable can have multiple lines.</p>
         </descr>
       </element>
       <element name="UIContext.doLabel.r">
@@ -90,6 +90,10 @@
       </element>
       <element name="UIContext.doButton">
         <short>UI method for rendering and processing a push button</short>
+        <descr>
+          <p>The button method does only take a text and state variable. This variable is modified if the button is pressed or depressed. When a state change occurs the method function returns <var>True</var>.</p>
+          <img file="button.png"/>
+        </descr>
       </element>
       <element name="UIContext.doButton.r">
         <short>optionally provides a location and size for the button</short>
@@ -106,7 +110,10 @@
       </element>
       <element name="UIContext.doCheckButton">
         <short>UI method for rendering and processing a check button</short>
-        <descr>Check button behaves similarly as a toggle button used to display and edit a bool property.</descr>
+        <descr>
+          <p>Check button behaves similarly as a toggle button used to display and edit a boolean property.</p>
+          <img file="checkbutton.png"/>
+        </descr>
       </element>
       <element name="UIContext.doCheckButton.r">
         <short>optionally provides a location and size for the button</short>
@@ -123,11 +130,13 @@
       </element>
       <element name="UIContext.doRadioButton">
         <short>UI method for rendering and processing a radio button</short>
-        <descr>Radio buttons are typically used in groups to diplay and edit the possible reference values taken by an int value.
-
-One radio button is representing a possible reference value taken by the current value.
-It is displaying a boolean state true if the current value is equal to the reference value.
-</descr>
+        <descr>
+          <p>Radio buttons are typically used in groups to display and edit the possible reference values taken by an integer value.
+</p>
+          <p>One radio button is representing a possible reference value taken by the current value.
+It is displaying a boolean state true if the current value is equal to the reference value.</p>
+          <img file="radiobutton.png"/>
+        </descr>
       </element>
       <element name="UIContext.doRadioButton.reference">
         <short>The reference int value represented by this radio button.</short>
@@ -153,7 +162,10 @@ It is displaying a boolean state true if the current value is equal to the refer
       </element>
       <element name="UIContext.doHorizontalSlider">
         <short>UI method for rendering and processing a horizontal slider</short>
-        <descr>Horizontal slider is used to edit and display a scalar value in the specified range [min; max].</descr>
+        <descr>
+          <p>Horizontal slider is used to edit and display a scalar value in the specified range [min; max].</p>
+          <img file="horizontal_slider.png"/>
+        </descr>
       </element>
       <element name="UIContext.doHorizontalSlider.aRect">
         <short>optionally provides a location and size for the widget</short>
@@ -181,6 +193,7 @@ It is displaying a boolean state true if the current value is equal to the refer
           <code>texel = texture2DFetch(...);
 pixel = texelSwizzling( texel * texelScale + texelOffset );
 </code>
+          <img file="textureview.bmp"/>
         </descr>
       </element>
       <element name="UIContext.doTextureView.aRect">
@@ -215,22 +228,23 @@ pixel = texelSwizzling( texel * texelScale + texelOffset );
       </element>
       <element name="EvalBool">
         <short>Boolean evaluation function</short>
-        <descr>This function evaluates a boolean to a numerical value.
-
-True equals 1
-False equals 0</descr>
+        <descr>
+          <p>This function evaluates a boolean to a numerical value.</p>
+          <p>True equals 1
+False equals 0</p>
+        </descr>
       </element>
       <element name="Point.Point">
-        <short>Constructor for the point object</short>
+        <short>Constructor for the <link id="Point"/> object</short>
       </element>
       <element name="Rect.Rect">
-        <short>Constructor for the rect object</short>
+        <short>Constructor for the <link id="Rect"/> object</short>
       </element>
       <element name="SetPoint">
         <short>Helper function to initialize the point object</short>
       </element>
       <element name="SetRect">
-        <short>Helper function to initialize the rect object</short>
+        <short>Helper function to initialize the <link id="Rect"/> object</short>
       </element>
       <element name="UIContext">
         <short>Basic UI context</short>
@@ -242,6 +256,54 @@ False equals 0</descr>
         <short>Begin grouping section of UI objects</short>
       </element>
       <short>User Interface library</short>
+      <element name="UIContext.doListItem">
+        <short>List item widget</short>
+        <descr>
+          <img file="listitem.png"/>
+        </descr>
+      </element>
+      <element name="UIContext.doListBox">
+        <short>Listbox widget</short>
+        <descr>
+          <img file="listbox.png"/>
+        </descr>
+      </element>
+      <element name="UIContext.doComboBox">
+        <short>Combobox widget</short>
+        <descr>
+          <img file="combobox.png"/>
+        </descr>
+      </element>
+      <element name="UIContext.doLineEdit">
+        <short>Line edit widget</short>
+        <descr>
+          <img file="line_edit.png"/>
+        </descr>
+      </element>
+      <element name="UIContext.beginFrame">
+        <short>Frame positioning section</short>
+        <descr>
+          <img file="frame.png"/>
+        </descr>
+      </element>
+      <element name="UIContext.endFrame">
+        <short>Frame positioning widget</short>
+        <descr>
+          <img file="frame.png"/>
+        </descr>
+      </element>
+      <element name="UIContext.beginPanel">
+        <short>Panel positioning widget</short>
+        <descr>
+          <img file="panel.png"/>
+        </descr>
+      </element>
+      <element name="UIContext.endPanel">
+        <short>Panel positioning widget</short>
+        <descr>
+          <img file="panel.png"/>
+        </descr>
+      </element>
     </module>
     <short>NVIDIA widget library</short>
     <descr>
