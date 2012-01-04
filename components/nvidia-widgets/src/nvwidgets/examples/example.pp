@@ -25,7 +25,6 @@ var
   errorScale: double = 4;
   compressionRate: double = 1;
   texture: GLuint = 0;
-  let: string = 'linedit test';
 
   procedure closeapp;
   begin
@@ -80,8 +79,6 @@ var
     formatIdx: integer;
     Text: string;
     textureRect: Rect;
-
-    c: integer;
   begin
     none.Rect(0, 0);
 

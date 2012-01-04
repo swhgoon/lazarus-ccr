@@ -9,6 +9,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 unit nvGLWidgets;
 
+{$mode objfpc}{$H+}
+
 interface
 
 uses
@@ -124,7 +126,7 @@ type
 
   public
     constructor Create;
-    destructor Destroy;
+    destructor Destroy; override;
 
     procedure _begin(const window: Rect); override;
     procedure _end; override;
@@ -261,6 +263,7 @@ end;
 destructor GLUIPainter.Destroy;
 begin
   Font.Clean;
+  inherited Destroy;
 end;
 
 procedure GLUIPainter._begin(const window: Rect);
