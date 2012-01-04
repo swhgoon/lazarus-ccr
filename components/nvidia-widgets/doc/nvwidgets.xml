@@ -72,8 +72,12 @@
       </element>
       <element name="UIContext.doLabel">
         <short>UI method for drawing a static text label</short>
-        <descr>The label display a non interactive text.
-The text can have multiple lines</descr>
+        <descr>
+          <p>The label displays a non interactive text.</p>
+          <p>The style flag enables to draw the label in two distict styles. The first one is default <var>(style = 0)</var> and displays the label simply as text. The alternative <var>(style = 1)</var> displays the label with a frame around it. An example is shown in then following figure.</p>
+          <img file="label.png"/>
+          <p>The Text can have multiple lines.</p>
+        </descr>
       </element>
       <element name="UIContext.doLabel.r">
         <short>optionally provides a location and size for the label</short>

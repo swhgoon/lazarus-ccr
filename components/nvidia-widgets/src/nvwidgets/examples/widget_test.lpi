@@ -7,7 +7,6 @@
       <Flags>
         <MainUnitHasCreateFormStatements Value="False"/>
         <MainUnitHasTitleStatement Value="False"/>
-        <UseDefaultCompilerOptions Value="True"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
@@ -15,6 +14,7 @@
       <UseXPManifest Value="True"/>
       <Icon Value="0"/>
     </General>
+    <LazDoc Paths="..\..\..\doc"/>
     <i18n>
       <EnableI18N LFM="False"/>
     </i18n>
@@ -34,12 +34,17 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <Units Count="1">
+    <Units Count="2">
       <Unit0>
         <Filename Value="widget_test.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="widget_test"/>
       </Unit0>
+      <Unit1>
+        <Filename Value="..\nvWidgets.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="nvWidgets"/>
+      </Unit1>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
