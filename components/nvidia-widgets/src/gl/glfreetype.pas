@@ -3,7 +3,7 @@
   and distributed as part of a tutorial for nehe.gamedev.net.
   Sven Olsen, 2003
 *)
-unit glFreeType;
+unit GLFreeType;
 
 {$mode objfpc}{$H+}
 
@@ -44,7 +44,7 @@ function next_p2(a: integer): integer; inline;
 var
   rval: integer;
 begin
-  rval := 1;
+  rval := 2;
   while rval < a do
     rval := rval shl 1;
   Result := rval;
@@ -100,22 +100,16 @@ begin
   //We use the ?: operator so that value which we use
   //will be 0 if we are in the padding zone, and whatever
   //is the the Freetype bitmap otherwise.
-  for j := 0 to Height - 1 do
-  begin
-    for i := 0 to Width - 1 do
+  for j:=0 to height -1 do
+    for i:=0 to width - 1 do
     begin
-      if (i >= bitmap.Width) or (j >= bitmap.rows) then
-        expanded_data[2 * (i + j * Width)] := 0
-      else
-        expanded_data[2 * (i + j * Width)] := byte((bitmap.buffer + (i + bitmap.Width * j))^);
+          expanded_data[2*(i+j*width)] := 255;
 
-      //write(expanded_data[2 * (i + j * Width)]:3, ' ');
-
-      expanded_data[2 * (i + j * Width) + 1] := expanded_data[2 * (i + j * Width)];
+          if (i>=bitmap.width) or (j>=bitmap.rows) then
+          expanded_data[2*(i+j*width)+1] := 0
+          else
+            expanded_data[2*(i+j*width)+1] :=  byte((bitmap.buffer + (i + bitmap.Width * j))^);
     end;
-
-    //writeln;
-  end;
 
   glBindTexture(GL_TEXTURE_2D, tex_base[Ord(ch)]);
 
@@ -162,16 +156,15 @@ begin
   //so we need to link the texture to the quad
   //so that the result will be properly aligned.
   glBegin(GL_QUADS);
-    glTexCoord2d(0, 0);
-    glVertex2f(0, bitmap.rows);
-    glTexCoord2d(0, y);
-    glVertex2f(0, 0);
-    glTexCoord2d(x, y);
-    glVertex2f(bitmap.Width, 0);
-    glTexCoord2d(x, 0);
-    glVertex2f(bitmap.Width, bitmap.rows);
+  glTexCoord2d(0, 0);
+  glVertex2f(0, bitmap.rows);
+  glTexCoord2d(0, y);
+  glVertex2f(0, 0);
+  glTexCoord2d(x, y);
+  glVertex2f(bitmap.Width, 0);
+  glTexCoord2d(x, 0);
+  glVertex2f(bitmap.Width, bitmap.rows);
   glEnd;
-
   glPopMatrix;
   glTranslatef(face^.glyph^.advance.x shr 6, 0, 0);
 
@@ -181,6 +174,8 @@ begin
 
   //Finish the display list
   glEndList;
+
+  FT_Done_Glyph(glyph);
 end;
 
 procedure TGLFreeTypeFont.Init(const fname: string; AHeight: cardinal);

@@ -5,7 +5,7 @@ program example;
 
 uses
   Classes, SysUtils,
-  GLut, GL, GLu, glFreeType,
+  GLut, GL, GLu,
   nvWidgets, nvGlutWidgets;
 
 type
@@ -26,12 +26,10 @@ var
   compressionRate: double = 1;
   texture: GLuint = 0;
   let: string = 'linedit test';
-  glFont: TGLFreeTypeFont;
 
   procedure closeapp;
   begin
     FreeAndNil(ui);
-    glFont.clean;
     halt(0);
   end;
 
@@ -85,9 +83,6 @@ var
 
     c: integer;
   begin
-    glColor3ub(0, $ff, 0);
-    glFont.Print(10, 200, 'The quick brown fox jumps over the lazy dog');
-
     none.Rect(0, 0);
 
     ui._begin;
@@ -174,8 +169,6 @@ begin
   glutInitWindowSize(win_w, win_h);
   glutInitDisplayMode(GLUT_DOUBLE or GLUT_DEPTH or GLUT_RGB);
   glutCreateWindow('UI example');
-
-  glFont.Init('Ubuntu-R.ttf', 26);                   //Build the freetype font
 
   ui := GlutUIContext.Create;
 

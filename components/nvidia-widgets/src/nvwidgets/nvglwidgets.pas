@@ -12,7 +12,8 @@ unit nvGLWidgets;
 interface
 
 uses
-  Classes, nvWidgets, GL;
+  Classes, nvWidgets,
+  GL, ftFont, FPCanvas, GLFreeType;
 
 const
   cBase = 0;
@@ -123,6 +124,7 @@ type
 
   public
     constructor Create;
+    destructor Destroy;
 
     procedure _begin(const window: Rect); override;
     procedure _end; override;
@@ -192,9 +194,10 @@ type
 
     procedure init; override;
   private
+    Font: TGLFreeTypeFont;
+
     m_setupStateDL: integer;
     m_restoreStateDL: integer;
-    m_textListBase: integer;
     m_foregroundDL: integer;
     m_widgetProgram: integer;
     m_originUniform: integer;
@@ -241,7 +244,6 @@ begin
   inherited;
   m_setupStateDL := 0;
   m_restoreStateDL := 0;
-  m_textListBase := 0;
   m_foregroundDL := 0;
   m_widgetProgram := 0;
   m_fillColorUniform := 0;
@@ -252,6 +254,13 @@ begin
   m_texelScaleUniform := 0;
   m_texelOffsetUniform := 0;
   m_texelSwizzlingUniform := 0;
+
+  Font.Init('Ubuntu-R.ttf', 10);
+end;
+
+destructor GLUIPainter.Destroy;
+begin
+  Font.Clean;
 end;
 
 procedure GLUIPainter._begin(const window: Rect);
@@ -785,6 +794,8 @@ end;
 
 function GLUIPainter.getFontHeight: integer;
 begin
+  Result := Font.Height;
+  exit;
   Result := 12 + 4;
 end;
 
@@ -918,26 +929,8 @@ begin
 end;
 
 procedure GLUIPainter.drawString(x: integer; y: integer; Text: string; nbLines: integer);
-var
-  s: TStrings;
-  t: string;
-  i: Integer;
 begin
-  glListBase(m_textListBase);
-
-  s := TStringList.Create;
-  try
-    s.Text := Text;
-
-    for i := 0 to s.Count - 1 do
-    begin
-      t := s[s.Count - 1 - i];
-      glRasterPos2i(x + 1, y + 4 + i * getFontHeight);
-      glCallLists(Length(t), GL_UNSIGNED_BYTE, @t[1]);
-    end;
-  finally
-    s.Free;
-  end;
+  Font.Print(x, y, Text);
 end;
 
 procedure GLUIPainter.drawRect(aRect: Rect; fillColorId: integer; borderColorId: integer);
@@ -1099,67 +1092,71 @@ begin
   y3 := aRect.y + aRect.h;
 
   glBegin(GL_TRIANGLE_STRIP);
-  glTexCoord2f(xb, yb);
-  glVertex2f(x0, y0);
-  glTexCoord2f(0, yb);
-  glVertex2f(x1, y0);
-  glTexCoord2f(xb, 0);
+    glTexCoord2f(xb, yb);
+    glVertex2f(x0, y0);
+    glTexCoord2f(0, yb);
+    glVertex2f(x1, y0);
+    glTexCoord2f(xb, 0);
 
-  glVertex2f(x0, y1);
-  glTexCoord2f(0, 0);
-  glVertex2f(x1, y1);
-  glTexCoord2f(xb, 0);
+    glVertex2f(x0, y1);
+    glTexCoord2f(0, 0);
+    glVertex2f(x1, y1);
+    glTexCoord2f(xb, 0);
 
-  glVertex2f(x0, y2);
-  glTexCoord2f(0, 0);
-  glVertex2f(x1, y2);
-  glTexCoord2f(xb, yb);
+    glVertex2f(x0, y2);
+    glTexCoord2f(0, 0);
+    glVertex2f(x1, y2);
+    glTexCoord2f(xb, yb);
 
-  glVertex2f(x0, y3);
-  glTexCoord2f(0, yb);
-  glVertex2f(x1, y3);
+    glVertex2f(x0, y3);
+    glTexCoord2f(0, yb);
+    glVertex2f(x1, y3);
   glEnd;
+
   glBegin(GL_TRIANGLE_STRIP);
-  glTexCoord2f(0, yb);
-  glVertex2f(x2, y0);
-  glTexCoord2f(xb, yb);
-  glVertex2f(x3, y0);
-  glTexCoord2f(0, 0);
+    glTexCoord2f(0, yb);
+    glVertex2f(x2, y0);
+    glTexCoord2f(xb, yb);
+    glVertex2f(x3, y0);
+    glTexCoord2f(0, 0);
 
-  glVertex2f(x2, y1);
-  glTexCoord2f(xb, 0);
-  glVertex2f(x3, y1);
-  glTexCoord2f(0, 0);
+    glVertex2f(x2, y1);
+    glTexCoord2f(xb, 0);
+    glVertex2f(x3, y1);
+    glTexCoord2f(0, 0);
 
-  glVertex2f(x2, y2);
-  glTexCoord2f(xb, 0);
-  glVertex2f(x3, y2);
-  glTexCoord2f(0, yb);
-  glVertex2f(x2, y3);
-  glTexCoord2f(xb, yb);
-  glVertex2f(x3, y3);
+    glVertex2f(x2, y2);
+    glTexCoord2f(xb, 0);
+    glVertex2f(x3, y2);
+    glTexCoord2f(0, yb);
+    glVertex2f(x2, y3);
+    glTexCoord2f(xb, yb);
+    glVertex2f(x3, y3);
   glEnd;
+
   glBegin(GL_TRIANGLE_STRIP);
-  glTexCoord2f(0, yb);
-  glVertex2f(x1, y0);
-  glTexCoord2f(0, yb);
-  glVertex2f(x2, y0);
-  glTexCoord2f(0, 0);
+    glTexCoord2f(0, yb);
+    glVertex2f(x1, y0);
+    glTexCoord2f(0, yb);
+    glVertex2f(x2, y0);
+    glTexCoord2f(0, 0);
 
-  glVertex2f(x1, y1);
-  glTexCoord2f(0, 0);
-  glVertex2f(x2, y1);
+    glVertex2f(x1, y1);
+    glTexCoord2f(0, 0);
+    glVertex2f(x2, y1);
   glEnd;
+
   glBegin(GL_TRIANGLE_STRIP);
-  glTexCoord2f(0, 0);
-  glVertex2f(x1, y2);
-  glTexCoord2f(0, 0);
-  glVertex2f(x2, y2);
-  glTexCoord2f(0, yb);
-  glVertex2f(x1, y3);
-  glTexCoord2f(0, yb);
-  glVertex2f(x2, y3);
+    glTexCoord2f(0, 0);
+    glVertex2f(x1, y2);
+    glTexCoord2f(0, 0);
+    glVertex2f(x2, y2);
+    glTexCoord2f(0, yb);
+    glVertex2f(x1, y3);
+    glTexCoord2f(0, yb);
+    glVertex2f(x2, y3);
   glEnd;
+
   glUseProgram(0);
 end;
 
@@ -1185,15 +1182,16 @@ begin
   y1 := aRect.y + aRect.h;
 
   glBegin(GL_TRIANGLE_STRIP);
-  glTexCoord2f(-xb, -yb);
-  glVertex2f(x0, y0);
-  glTexCoord2f(xb, -yb);
-  glVertex2f(x1, y0);
-  glTexCoord2f(-xb, yb);
-  glVertex2f(x0, y1);
-  glTexCoord2f(xb, yb);
-  glVertex2f(x1, y1);
+    glTexCoord2f(-xb, -yb);
+    glVertex2f(x0, y0);
+    glTexCoord2f(xb, -yb);
+    glVertex2f(x1, y0);
+    glTexCoord2f(-xb, yb);
+    glVertex2f(x0, y1);
+    glTexCoord2f(xb, yb);
+    glVertex2f(x1, y1);
   glEnd;
+
   glUseProgram(0);
 end;
 
@@ -1219,27 +1217,28 @@ begin
   glUniform4fv(m_fillColorUniform, 1, @s_colors[fillColorId]);
   glUniform4fv(m_borderColorUniform, 1, @s_colors[borderColorId]);
   glUniform2f(m_zonesUniform, (xb) - 1, (xb) - 2);
+
   glBegin(GL_TRIANGLE_STRIP);
+    glTexCoord3f(-xb, -yb, 0);
+    glVertex2f(x0, y1 + yoff);
+    glTexCoord3f(xb, -yb, 0);
+    glVertex2f(x0, y1 - yoff);
+    glTexCoord3f(-xb, 0, 0);
+    glVertex2f(x0 + xoff, y1 + yoff);
+    glTexCoord3f(xb, 0, 0);
+    glVertex2f(x0 + xoff, y1 - yoff);
+    glTexCoord3f(-xb, 0, 0);
 
-  glTexCoord3f(-xb, -yb, 0);
-  glVertex2f(x0, y1 + yoff);
-  glTexCoord3f(xb, -yb, 0);
-  glVertex2f(x0, y1 - yoff);
-  glTexCoord3f(-xb, 0, 0);
-  glVertex2f(x0 + xoff, y1 + yoff);
-  glTexCoord3f(xb, 0, 0);
-  glVertex2f(x0 + xoff, y1 - yoff);
-  glTexCoord3f(-xb, 0, 0);
+    glVertex2f(x1 - xoff, y1 + yoff);
+    glTexCoord3f(xb, 0, 0);
+    glVertex2f(x1 - xoff, y1 - yoff);
+    glTexCoord3f(-xb, -yb, 0);
 
-  glVertex2f(x1 - xoff, y1 + yoff);
-  glTexCoord3f(xb, 0, 0);
-  glVertex2f(x1 - xoff, y1 - yoff);
-  glTexCoord3f(-xb, -yb, 0);
-
-  glVertex2f(x1, y1 + yoff);
-  glTexCoord3f(xb, -yb, 0);
-  glVertex2f(x1, y1 - yoff);
+    glVertex2f(x1, y1 + yoff);
+    glTexCoord3f(xb, -yb, 0);
+    glVertex2f(x1, y1 - yoff);
   glEnd;
+
   glUseProgram(0);
 end;
 
@@ -1355,6 +1354,7 @@ begin
     glTexCoord3f(xb, -yb, 0);
     glVertex2f(x1 - yoff, y2);
   glEnd;
+
   glUseProgram(0);
 end;
 
@@ -1390,44 +1390,44 @@ begin
   glUniform4fv(m_fillColorUniform, 1, @s_colors[fillColorId]);
   glUniform4fv(m_borderColorUniform, 1, @s_colors[borderColorId]);
   glUniform2f(m_zonesUniform, (xb) - 1, (xb) - 2);
+
   glBegin(GL_TRIANGLE_STRIP);
+    glTexCoord3f(-xb, -yb, 0);
+    glVertex2f(x0, y1 + yoff2);
+    glTexCoord3f(xb, -yb, 0);
+    glVertex2f(x0 - xoff2, y1);
+    glTexCoord3f(-xb, 0, 0);
+    glVertex2f(x0 + xoff, y1 + yoff);
+    glTexCoord3f(xb, 0, 0);
+    glVertex2f(x0 - xoff, y1 - yoff);
+    glTexCoord3f(-xb, 0, xb);
 
-  glTexCoord3f(-xb, -yb, 0);
-  glVertex2f(x0, y1 + yoff2);
-  glTexCoord3f(xb, -yb, 0);
-  glVertex2f(x0 - xoff2, y1);
-  glTexCoord3f(-xb, 0, 0);
-  glVertex2f(x0 + xoff, y1 + yoff);
-  glTexCoord3f(xb, 0, 0);
-  glVertex2f(x0 - xoff, y1 - yoff);
-  glTexCoord3f(-xb, 0, xb);
+    glVertex2f(x1, y0 + yoff2);
+    glTexCoord3f(xb, 0, xb);
+    glVertex2f(x1 - xoff2, y0);
+    glTexCoord3f(xb, 2 * yb, xb);
 
-  glVertex2f(x1, y0 + yoff2);
-  glTexCoord3f(xb, 0, xb);
-  glVertex2f(x1 - xoff2, y0);
-  glTexCoord3f(xb, 2 * yb, xb);
-
-  glVertex2f(x1, y0 - yoff2);
+    glVertex2f(x1, y0 - yoff2);
   glEnd;
 
   glBegin(GL_TRIANGLE_STRIP);
-  glTexCoord3f(xb, -yb, 0);
-  glVertex2f(x2 + xoff2, y1);
-  glTexCoord3f(-xb, -yb, 0);
-  glVertex2f(x2, y1 + yoff2);
-  glTexCoord3f(xb, 0, xb);
+    glTexCoord3f(xb, -yb, 0);
+    glVertex2f(x2 + xoff2, y1);
+    glTexCoord3f(-xb, -yb, 0);
+    glVertex2f(x2, y1 + yoff2);
+    glTexCoord3f(xb, 0, xb);
 
-  glVertex2f(x2 + xoff, y1 - yoff);
-  glTexCoord3f(-xb, 0, xb);
-  glVertex2f(x2 - xoff, y1 + yoff);
-  glTexCoord3f(xb, 0, xb);
+    glVertex2f(x2 + xoff, y1 - yoff);
+    glTexCoord3f(-xb, 0, xb);
+    glVertex2f(x2 - xoff, y1 + yoff);
+    glTexCoord3f(xb, 0, xb);
 
-  glVertex2f(x1 + xoff2, y0);
-  glTexCoord3f(-xb, 0, xb);
-  glVertex2f(x1, y0 + yoff2);
-  glTexCoord3f(xb, 2 * yb, xb);
+    glVertex2f(x1 + xoff2, y0);
+    glTexCoord3f(-xb, 0, xb);
+    glVertex2f(x1, y0 + yoff2);
+    glTexCoord3f(xb, 2 * yb, xb);
 
-  glVertex2f(x1, y0 - yoff2);
+    glVertex2f(x1, y0 - yoff2);
   glEnd;
 
   glUseProgram(0);
@@ -1465,44 +1465,44 @@ begin
   glUniform4fv(m_fillColorUniform, 1, @s_colors[fillColorId]);
   glUniform4fv(m_borderColorUniform, 1, @s_colors[borderColorId]);
   glUniform2f(m_zonesUniform, (xb) - 1, (xb) - 2);
+
   glBegin(GL_TRIANGLE_STRIP);
+    glTexCoord3f(-xb, -yb, 0);
+    glVertex2f(x0, y1 + yoff2);
+    glTexCoord3f(xb, -yb, 0);
+    glVertex2f(x0 - xoff2, y1);
+    glTexCoord3f(-xb, 0, 0);
+    glVertex2f(x0 + xoff, y1 + yoff);
+    glTexCoord3f(xb, 0, 0);
+    glVertex2f(x0 - xoff, y1 - yoff);
+    glTexCoord3f(-xb, 0, xb);
 
-  glTexCoord3f(-xb, -yb, 0);
-  glVertex2f(x0, y1 + yoff2);
-  glTexCoord3f(xb, -yb, 0);
-  glVertex2f(x0 - xoff2, y1);
-  glTexCoord3f(-xb, 0, 0);
-  glVertex2f(x0 + xoff, y1 + yoff);
-  glTexCoord3f(xb, 0, 0);
-  glVertex2f(x0 - xoff, y1 - yoff);
-  glTexCoord3f(-xb, 0, xb);
+    glVertex2f(x1, y0 + yoff2);
+    glTexCoord3f(xb, 0, xb);
+    glVertex2f(x1 - xoff2, y0);
+    glTexCoord3f(xb, 2 * yb, xb);
 
-  glVertex2f(x1, y0 + yoff2);
-  glTexCoord3f(xb, 0, xb);
-  glVertex2f(x1 - xoff2, y0);
-  glTexCoord3f(xb, 2 * yb, xb);
-
-  glVertex2f(x1, y0 - yoff2);
+    glVertex2f(x1, y0 - yoff2);
   glEnd;
 
   glBegin(GL_TRIANGLE_STRIP);
-  glTexCoord3f(xb, -yb, 0);
-  glVertex2f(x2 + xoff2, y1);
-  glTexCoord3f(-xb, -yb, 0);
-  glVertex2f(x2, y1 + yoff2);
-  glTexCoord3f(xb, 0, xb);
+    glTexCoord3f(xb, -yb, 0);
+    glVertex2f(x2 + xoff2, y1);
+    glTexCoord3f(-xb, -yb, 0);
+    glVertex2f(x2, y1 + yoff2);
+    glTexCoord3f(xb, 0, xb);
 
-  glVertex2f(x2 + xoff, y1 - yoff);
-  glTexCoord3f(-xb, 0, xb);
-  glVertex2f(x2 - xoff, y1 + yoff);
-  glTexCoord3f(xb, 0, xb);
+    glVertex2f(x2 + xoff, y1 - yoff);
+    glTexCoord3f(-xb, 0, xb);
+    glVertex2f(x2 - xoff, y1 + yoff);
+    glTexCoord3f(xb, 0, xb);
 
-  glVertex2f(x1 + xoff2, y0);
-  glTexCoord3f(-xb, 0, xb);
-  glVertex2f(x1, y0 + yoff2);
-  glTexCoord3f(xb, 2 * yb, xb);
+    glVertex2f(x1 + xoff2, y0);
+    glTexCoord3f(-xb, 0, xb);
+    glVertex2f(x1, y0 + yoff2);
+    glTexCoord3f(xb, 2 * yb, xb);
 
-  glVertex2f(x1, y0 - yoff2);
+    glVertex2f(x1, y0 - yoff2);
   glEnd;
 
   glUseProgram(0);
@@ -1592,19 +1592,6 @@ begin
       glPopMatrix;
     end;
     glEndList;
-  end;
-
-  if m_textListBase = 0 then
-  begin
-    //just doing 7-bit ascii
-    m_textListBase := glGenLists(128);
-
-    for ii := 0 to 127 do
-    begin
-      glNewList(m_textListBase + ii, GL_COMPILE);
-      glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, ii);
-      glEndList;
-    end;
   end;
 end;
 
