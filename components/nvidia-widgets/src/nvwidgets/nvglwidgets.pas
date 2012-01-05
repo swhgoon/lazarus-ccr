@@ -797,20 +797,12 @@ end;
 
 function GLUIPainter.getFontHeight: integer;
 begin
-  Result := Font.Height;
-  exit;
-  Result := 12 + 4;
+  Result := Font.Height + 4;
 end;
 
 function GLUIPainter.getTextLineWidth(const Text: string): integer;
-var
-  w: integer = 0;
-  i: integer;
 begin
-  for i := 1 to Length(Text) do
-    w := w + glutBitmapWidth(GLUT_BITMAP_HELVETICA_12, Ord(Text[i]));
-
-  Result := w + 2;
+  Result := Font.TextWidth(Text) + 2;
 end;
 
 function GLUIPainter.getTextSize(const Text: string; out nbLines: integer): integer;
@@ -842,7 +834,7 @@ begin
   for i := 0 to charNb - 1 do
   begin
     if (Text[i] <> #13) and (Text[i + 1] <> #10) then
-      w := w + glutBitmapWidth(GLUT_BITMAP_HELVETICA_12, Ord(Text[i]))
+      w := w + Font.TextWidth(Text[i])
     else
     begin
       Result := w + 1;
@@ -870,7 +862,7 @@ begin
   i := 0;
   while (i <= Length(Text)) and (Text[i] <> #13) and (Text[i + 1] <> #10) do
   begin
-    w := w + glutBitmapWidth(GLUT_BITMAP_HELVETICA_12, Ord(Text[i]));
+    w := w + Font.TextWidth(Text[i]);
     if at.x < w then
     begin
       Result := i - textstart;
@@ -933,7 +925,7 @@ end;
 
 procedure GLUIPainter.drawString(x: integer; y: integer; Text: string; nbLines: integer);
 begin
-  Font.Print(x, y, Text);
+  Font.Print(x, y + 2, Text);
 end;
 
 procedure GLUIPainter.drawRect(aRect: Rect; fillColorId: integer; borderColorId: integer);

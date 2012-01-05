@@ -15,6 +15,9 @@ uses
 //This holds all of the information related to any
 //freetype font that we want to create.
 type
+
+  { TGLFreeTypeFont }
+
   TGLFreeTypeFont = object
     Height: cardinal; //< Holds the height of the font.
     textures: pGLuint; //< Holds the texture id's
@@ -31,12 +34,18 @@ type
     //out text at window coordinates x, y, using the font ft_font.
     //The current modelview matrix will also be applied to the text.
     procedure Print(x, y: double; Text: string);
+
+    function TextWidth(const Text: string): integer;
   end;
 
 implementation
 
 const
   CHAR_NUM = 255;
+
+var
+  //this is the cached advance of each glyph in pixels
+  glyphadvance: array[0..CHAR_NUM - 1] of LongInt;
 
 //This function gets the first power of 2 >= the
 //int that we pass it.
@@ -156,21 +165,21 @@ begin
   //so we need to link the texture to the quad
   //so that the result will be properly aligned.
   glBegin(GL_QUADS);
-  glTexCoord2d(0, 0);
-  glVertex2f(0, bitmap.rows);
-  glTexCoord2d(0, y);
-  glVertex2f(0, 0);
-  glTexCoord2d(x, y);
-  glVertex2f(bitmap.Width, 0);
-  glTexCoord2d(x, 0);
-  glVertex2f(bitmap.Width, bitmap.rows);
+    glTexCoord2d(0, 0);
+    glVertex2f(0, bitmap.rows);
+    glTexCoord2d(0, y);
+    glVertex2f(0, 0);
+    glTexCoord2d(x, y);
+    glVertex2f(bitmap.Width, 0);
+    glTexCoord2d(x, 0);
+    glVertex2f(bitmap.Width, bitmap.rows);
   glEnd;
   glPopMatrix;
   glTranslatef(face^.glyph^.advance.x shr 6, 0, 0);
 
   //increment the raster position as if we were a bitmap font.
-  //(only needed if you want to calculate text length)
-  glBitmap(0, 0, 0, 0, face^.glyph^.advance.x shr 6, 0, nil);
+  //(needed if you want to calculate text length)
+  glyphadvance[Ord(ch)] := face^.glyph^.advance.x shr 6;
 
   //Finish the display list
   glEndList;
@@ -263,9 +272,9 @@ var
   font: GLuint;
   modelview_matrix: array [0..15] of double;
 begin
+  //We want a coordinate system where things coresponding to window pixels.
   pushScreenCoordinateMatrix;
 
-  //We want a coordinate system where things coresponding to window pixels.
   font := list_base;
 
   //Results Are Stored In Text
@@ -301,6 +310,15 @@ begin
 
   glPopAttrib;
   pop_projection_matrix;
+end;
+
+function TGLFreeTypeFont.TextWidth(const Text: string): integer;
+var
+  i: Integer;
+begin
+  Result := 0;
+  for i := 1 to Length(Text) do
+    Result += glyphadvance[Ord(Text[i])];
 end;
 
 end.
