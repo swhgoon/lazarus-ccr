@@ -25,7 +25,7 @@ type
     comboLevel: TComboBox;
     labelGameType: TLabel;
     labelWordlist: TLabel;
-    lblLevel1: TLabel;
+    lblLanguage: TLabel;
     labelSettings: TLabel;
     lblSound: TLabel;
     lblMusic: TLabel;
@@ -78,15 +78,35 @@ begin
   case comboLanguage.ItemIndex of
   0: // english
   begin
-    labelGameType.Caption := 'Game type:';
+    labelGameType.Caption := 'Game Type';
+    //labelWordlist.Caption := 'Select Wordlist';
     labelSettings.Caption := 'Settings';
+    lblLanguage.Caption := 'Language';
+    lblSound.Caption := 'SoundFX';
+    lblMusic.Caption := 'Music';
+    lblLevel.Caption := 'Starting Level';
+    lblCredits.Caption := 'Credits';
     buttonLoad.Caption := 'Play';
+    formTappyTuxGame.LabelLevels.Caption := 'Level';
+    formTappyTuxGame.LabelScore.Caption := 'Score';
+    formTappyTuxGame.LabelLives.Caption := 'Lives';
+    formTappyTuxGame.btnExit.Caption := 'Exit';
   end;
   1: // portuguese
   begin
-    labelGameType.Caption := 'Tipo do jogo:';
+    labelGameType.Caption := 'Tipo de Jogo';
+    //labelWordlist.Caption := 'Selecione Lista de Palavras';
     labelSettings.Caption := 'Configurações';
-    buttonLoad.Caption := 'Iniciar o Jogo';
+    lblLanguage.Caption := 'Idioma';
+    lblSound.Caption := 'Efeitos Sonoros';
+    lblMusic.Caption := 'Música';
+    lblLevel.Caption := 'Nível de início';
+    lblCredits.Caption := 'Créditos';
+    buttonLoad.Caption := 'Jogar';
+    formTappyTuxGame.LabelLevels.Caption := 'Nível';
+    formTappyTuxGame.LabelScore.Caption := 'Pontos';
+    formTappyTuxGame.LabelLives.Caption := 'Vidas';
+    formTappyTuxGame.btnExit.Caption := 'Sair';
   end;
   end;
 end;
