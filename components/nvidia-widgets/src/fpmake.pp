@@ -19,6 +19,7 @@ begin
 
     P.Version := '1.00';
 	//P.Options.Add('-MObjFPC');
+	P.Options.Add('-Sc');	
 	
 	if NV_DEBUG then
 	  for i := 0 to High(NV_DEBUG_FLAGS) do
@@ -29,6 +30,7 @@ begin
         P.Options.Add(NV_PROFILE_FLAGS[i]);
 	  
     //base widget units
+    P.Targets.AddUnit('./nvwidgets/nvbasefont.pas');
     P.Targets.AddUnit('./nvwidgets/nvwidgets.pas');
 
 	write('package ', P.Name, ' configured for ');

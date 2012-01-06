@@ -206,7 +206,7 @@ begin
   //Of all the places where the code might die, this is the most likely,
   //as FT_New_Face will die if the font file does not exist or is somehow broken.
   if FT_New_Face(library_, PChar(fname), 0, face) = 1 then
-    raise Exception.Create('FT_New_Face failed (there is probably a problem with your font file)');
+    raise Exception.CreateFmt('FT_New_Face failed (there is probably a problem with your font file "%s")', [fname]);
 
   //For some twisted reason, Freetype measures font size
   //in terms of 1/64ths of pixels.  Thus, to make a font
