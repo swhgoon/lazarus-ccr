@@ -77,6 +77,12 @@
           <p>The style flag enables to draw the label in two distinct styles. The first one is default <var>(style = 0)</var> and displays the label simply as text. The alternative <var>(style = 1)</var> displays the label with a frame around it. An example is shown in the following figure.</p>
           <img file="label.png"/>
           <p>The <var>Text</var> variable can have multiple lines.</p>
+          <p>Example code how to implement a label</p>
+          <code>none.Rect(0, 0);
+ui.beginGroup(GroupFlags_GrowDownFromRight);
+  ui.doLabel(none, Text);
+ui.endGroup;
+</code>
         </descr>
       </element>
       <element name="UIContext.doLabel.r">
@@ -93,6 +99,15 @@
         <descr>
           <p>The button method does only take a text and state variable. This variable is modified if the button is pressed or depressed. When a state change occurs the method function returns <var>True</var>.</p>
           <img file="button.png"/>
+          <p>Example code how to implement a button</p>
+          <code>none.Rect(0, 0);
+ui.beginGroup(GroupFlags_GrowDownFromRight);
+  if ui.doButton(none, 'Apply') then
+  begin
+    //code to apply your changes
+  end;
+ui.endGroup;
+</code>
         </descr>
       </element>
       <element name="UIContext.doButton.r">

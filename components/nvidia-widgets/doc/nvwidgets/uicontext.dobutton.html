@@ -22,69 +22,44 @@
 <td><p><tt><span class="code">  <span class="kw">function</span> <a href="../nvwidgets/uicontext.html">UIContext</a><span class="sym">.</span>doButton<span class="sym">(</span></span></tt></p></td>
 </tr>
 <tr>
-<td><p><tt><span class="code">&nbsp;&nbsp;<span class="kw">const </span>r<span class="sym">: </span><a href="../nvwidgets/rect.html">Rect</a><span class="sym">;</span></span></tt></p></td>
+<td><p><tt><span class="code">&nbsp;&nbsp;<span class="kw">const </span>r<span class="sym">: </span><a href="../nvwidgets/rect.html">Rect</a><span class="sym">;</span><span class="cmt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//optionally provides a location and size for the button</span></span></tt></p></td>
 </tr>
 <tr>
-<td><p><tt><span class="code">&nbsp;&nbsp;<span class="kw">const </span>Text<span class="sym">: </span><span class="sym">;</span></span></tt></p></td>
+<td><p><tt><span class="code">&nbsp;&nbsp;<span class="kw">const </span>Text<span class="sym">: </span><span class="sym">;</span><span class="cmt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//text to display on the button</span></span></tt></p></td>
 </tr>
 <tr>
-<td><p><tt><span class="code">&nbsp;&nbsp;<span class="kw">var </span>state<span class="sym">: </span>Boolean<span class="sym">;</span></span></tt></p></td>
+<td><p><tt><span class="code">&nbsp;&nbsp;<span class="kw">var </span>state<span class="sym">: </span>Boolean<span class="sym">;</span><span class="cmt">  //whether the button is depressed</span></span></tt></p></td>
 </tr>
 <tr>
-<td><p><tt><span class="code">&nbsp;&nbsp;style<span class="sym">: </span>Integer <span class="sym">=</span> <span class="num">0</span></span></tt></p></td>
+<td><p><tt><span class="code">&nbsp;&nbsp;style<span class="sym">: </span>Integer <span class="sym">=</span> <span class="num">0</span></span><span class="cmt">  &nbsp;//optional style flag to modify the look (default = 0)</span></span></tt></p></td>
 </tr>
 <tr>
-<td><p><tt><span class="code"><span class="sym">):</span>Boolean<span class="sym">;</span><br><br><span class="kw">function</span> <a href="../nvwidgets/uicontext.html">UIContext</a><span class="sym">.</span>doButton<span class="sym">(</span></span></tt></p></td>
+<td><p><tt><span class="code"><span class="sym">):</span>Boolean<span class="sym">;</span><span class="cmt"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Boolean result</span><br><br><span class="kw">function</span> <a href="../nvwidgets/uicontext.html">UIContext</a><span class="sym">.</span>doButton<span class="sym">(</span></span></tt></p></td>
 </tr>
 <tr>
-<td><p><tt><span class="code">&nbsp;&nbsp;<span class="kw">const </span>r<span class="sym">: </span><a href="../nvwidgets/rect.html">Rect</a><span class="sym">;</span></span></tt></p></td>
+<td><p><tt><span class="code">&nbsp;&nbsp;<span class="kw">const </span>r<span class="sym">: </span><a href="../nvwidgets/rect.html">Rect</a><span class="sym">;</span><span class="cmt">  &nbsp;&nbsp;&nbsp;&nbsp;//optionally provides a location and size for the button</span></span></tt></p></td>
 </tr>
 <tr>
-<td><p><tt><span class="code">&nbsp;&nbsp;<span class="kw">const </span>Text<span class="sym">: </span></span></tt></p></td>
+<td><p><tt><span class="code">&nbsp;&nbsp;<span class="kw">const </span>Text<span class="sym">: </span><span class="cmt"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //text to display on the button</span></span></tt></p></td>
 </tr>
 <tr>
-<td><p><tt><span class="code"><span class="sym">):</span>Boolean<span class="sym">;</span></span></tt></p></td>
+<td><p><tt><span class="code"><span class="sym">):</span>Integer<span class="sym">;</span><span class="cmt">  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//Integer result</span></span></tt></p></td>
 </tr>
 </table>
-<h2>Arguments</h2>
-<table cellpadding="0" cellspacing="0">
-<tr>
-<td valign="top"><p><tt><span class="code">r</span></tt></p></td>
-<td><p>&nbsp;&nbsp;</p></td>
-<td><p class="cmt">optionally provides a location and size for the button</p></td>
-</tr>
-<tr>
-<td valign="top"><p><tt><span class="code">Text</span></tt></p></td>
-<td><p>&nbsp;&nbsp;</p></td>
-<td><p class="cmt">text to display on the button</p></td>
-</tr>
-<tr>
-<td valign="top"><p><tt><span class="code">state</span></tt></p></td>
-<td><p>&nbsp;&nbsp;</p></td>
-<td><p class="cmt">whether the button is depressed</p></td>
-</tr>
-<tr>
-<td valign="top"><p><tt><span class="code">style</span></tt></p></td>
-<td><p>&nbsp;&nbsp;</p></td>
-<td><p class="cmt">optional style flag to modify the look</p></td>
-</tr>
-</table>
-<h2>Arguments</h2>
-<table cellpadding="0" cellspacing="0">
-<tr>
-<td valign="top"><p><tt><span class="code">r</span></tt></p></td>
-<td><p>&nbsp;&nbsp;</p></td>
-<td><p class="cmt">optionally provides a location and size for the button</p></td>
-</tr>
-<tr>
-<td valign="top"><p><tt><span class="code">Text</span></tt></p></td>
-<td><p>&nbsp;&nbsp;</p></td>
-<td><p class="cmt">text to display on the button</p></td>
-</tr>
-</table>
+
+
 <h2>Description</h2>
 <p>The button method does only take a text and state variable. This variable is modified if the button is pressed or depressed. When a state change occurs the method function returns <var>True</var>.</p>
 <img alt="" src="../images/button.png">
 
+<p>Example code how to implement a button</p>
+<pre>none<span class="sym">.</span>Rect<span class="sym">(</span><span class="num">0</span><span class="sym">,</span> <span class="num">0</span><span class="sym">)</span><span class="sym">;</span>
+ui<span class="sym">.</span>beginGroup<span class="sym">(</span>GroupFlags_GrowDownFromRight<span class="sym">)</span><span class="sym">;</span>
+  <span class="kw">if</span> ui<span class="sym">.</span>doButton<span class="sym">(</span>none<span class="sym">,</span> <span class="str">'Apply'</span><span class="sym">)</span> <span class="kw">then</span>
+  <span class="kw">begin</span>
+    <span class="cmt">//code to apply your changes</span>
+  <span class="kw">end</span><span class="sym">;</span>
+ui<span class="sym">.</span>endGroup<span class="sym">;</span>
+</pre>
 </body>
 </html>
