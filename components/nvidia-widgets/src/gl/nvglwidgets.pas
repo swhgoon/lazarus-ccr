@@ -1508,7 +1508,6 @@ var
   vShader: GLuint = 0;
   fShader: GLuint = 0;
   fShaderTex: GLuint = 0;
-  ii: integer;
 begin
   if m_widgetProgram = 0 then
   begin

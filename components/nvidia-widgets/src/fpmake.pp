@@ -48,8 +48,7 @@ begin
 	GL: begin
 	      writeln(' with the OpenGL painter');
 		  P.UnitPath.Add('./gl/');
-		  P.UnitPath.Add('./nvglutils/.');
-          P.Targets.AddUnit('./nvwidgets/nvglwidgets.pas');	
+	      P.Targets.AddUnit('./gl/nvglwidgets.pas');	
 	    end;
 	end;
 	
