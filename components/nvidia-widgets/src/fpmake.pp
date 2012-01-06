@@ -30,8 +30,8 @@ begin
         P.Options.Add(NV_PROFILE_FLAGS[i]);
 	  
     //base widget units
-    P.Targets.AddUnit('./nvwidgets/nvbasefont.pas');
-    P.Targets.AddUnit('./nvwidgets/nvwidgets.pas');
+    P.Targets.AddUnit('nvbasefont.pas');
+    P.Targets.AddUnit('nvwidgets.pas');
 
 	write('package ', P.Name, ' configured for ');
 
@@ -39,7 +39,7 @@ begin
     case NV_ACTIVE_CONTEXT of
 	  GLUT: begin
 	          write('the GLUT context');
-	          P.Targets.AddUnit('./nvwidgets/nvglutwidgets.pas');	
+	          P.Targets.AddUnit('./glut/nvglutwidgets.pas');	
 			end;
 	end;
 	

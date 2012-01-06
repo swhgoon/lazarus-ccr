@@ -14,7 +14,7 @@
       <UseXPManifest Value="True"/>
       <Icon Value="0"/>
     </General>
-    <LazDoc Paths="..\..\..\doc"/>
+    <LazDoc Paths="..\doc"/>
     <i18n>
       <EnableI18N LFM="False"/>
     </i18n>
@@ -41,7 +41,7 @@
         <UnitName Value="widget_test"/>
       </Unit0>
       <Unit1>
-        <Filename Value="..\nvWidgets.pas"/>
+        <Filename Value="..\src\nvWidgets.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="nvWidgets"/>
       </Unit1>
@@ -55,7 +55,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="..\..\nvglutils;.."/>
+      <OtherUnitFiles Value="..\src\;..\src\gl\;..\src\glut\"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Other>
