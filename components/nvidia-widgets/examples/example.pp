@@ -25,6 +25,7 @@ var
   errorScale: double = 4;
   compressionRate: double = 1;
   texture: GLuint = 0;
+  unfold: boolean = true;
 
   procedure closeapp;
   begin
@@ -84,66 +85,66 @@ var
 
     ui._begin;
 
-    ui.beginGroup(GroupFlags_GrowDownFromLeft);
+      ui.beginGroup(GroupFlags_GrowDownFromLeft);
 
-    ui.doCheckButton(none, 'Enable compression', options[OPTION_COMPRESS]);
+        ui.doCheckButton(none, 'Enable compression', options[OPTION_COMPRESS]);
 
-    if options[OPTION_COMPRESS] then
-    begin
-      ui.beginGroup(GroupFlags_GrowLeftFromTop or GroupFlags_LayoutNoMargin);
-      ui.doCheckButton(none, 'Show difference', options[OPTION_DIFF]);
+        if options[OPTION_COMPRESS] then
+        begin
+          ui.beginGroup(GroupFlags_GrowLeftFromTop or GroupFlags_LayoutNoMargin);
+            ui.doCheckButton(none, 'Show difference', options[OPTION_DIFF]);
 
-      ui.beginPanel(none, 'panel', true);
-      ui.doCheckButton(none, 'Show difference', options[OPTION_DIFF]);
-      ui.endPanel;
+            ui.beginPanel(none, 'panel', unfold);
+              ui.doCheckButton(none, 'Show difference', options[OPTION_DIFF]);
+            ui.endPanel;
 
-      if options[OPTION_DIFF] then
-        ui.doHorizontalSlider(none, 1, 16, errorScale);
+            if options[OPTION_DIFF] then
+              ui.doHorizontalSlider(none, 1, 16, errorScale);
+          ui.endGroup;
+
+          ui.beginGroup(GroupFlags_GrowLeftFromTop);
+            ui.doLabel(none, 'Format');
+
+            if options[OPTION_DXT5_YCOCG] then
+              formatIdx := 0
+            else
+              formatIdx := 1;
+
+            ui.doComboBox(none, 2, formatLabel, formatIdx);
+            options[OPTION_DXT5_YCOCG] := formatIdx = 0;
+          ui.endGroup;
+        end;
+
+        ui.doCheckButton(none, 'Display dummy texture', options[OPTION_THUMBNAIL]);
+
+        if options[OPTION_THUMBNAIL] then
+        begin
+          textureRect.Rect(0, 0, 100, 100);
+          ui.doTextureView(textureRect, texture, textureRect);
+        end;
 
       ui.endGroup;
 
-      ui.beginGroup(GroupFlags_GrowLeftFromTop);
-      ui.doLabel(none, 'Format');
-
-      if options[OPTION_DXT5_YCOCG] then
-        formatIdx := 0
-      else
-        formatIdx := 1;
-
-      ui.doComboBox(none, 2, formatLabel, formatIdx);
-      options[OPTION_DXT5_YCOCG] := formatIdx = 0;
-      ui.endGroup;
-    end;
-
-    ui.doCheckButton(none, 'Display dummy texture', options[OPTION_THUMBNAIL]);
-
-    if options[OPTION_THUMBNAIL] then
-    begin
-      textureRect.Rect(0, 0, 100, 100);
-      ui.doTextureView(textureRect, texture, textureRect);
-    end;
-    ui.endGroup;
-
-    if options[OPTION_COMPRESS] then
-    begin
-      ui.beginGroup(GroupFlags_GrowDownFromRight);
-
-      if ui.doButton(none, 'Benchmark') then
+      if options[OPTION_COMPRESS] then
       begin
-        // doBenchmark = true;
+        ui.beginGroup(GroupFlags_GrowDownFromRight);
+
+          if ui.doButton(none, 'Benchmark') then
+          begin
+            // doBenchmark = true;
+          end;
+
+          if compressionRate <> 0 then
+          begin
+            Text := Format('%.2d Mpixels/sec', [100]);
+            ui.doLabel(none, Text);
+          end;
+
+        ui.endGroup;
       end;
 
-      if compressionRate <> 0 then
-      begin
-        Text := Format('%.2d Mpixels/sec', [100]);
-        ui.doLabel(none, Text);
-      end;
-
-      ui.endGroup;
-    end;
-
-    // Pass non-ui mouse events to the manipulator
-    //updateManipulator(ui, manipulator);
+      // Pass non-ui mouse events to the manipulator
+      //updateManipulator(ui, manipulator);
 
     ui._end;
   end;

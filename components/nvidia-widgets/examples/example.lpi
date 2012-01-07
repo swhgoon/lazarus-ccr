@@ -50,7 +50,7 @@
         <UnitName Value="nvShaderUtils"/>
       </Unit2>
       <Unit3>
-        <Filename Value="..\src\nvWidgets.pas"/>
+        <Filename Value="..\src\nvwidgets.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="nvWidgets"/>
       </Unit3>
@@ -85,7 +85,6 @@
     </Parsing>
     <Linking>
       <Debugging>
-        <DebugInfoType Value="dsStabs"/>
         <UseHeaptrc Value="True"/>
       </Debugging>
     </Linking>

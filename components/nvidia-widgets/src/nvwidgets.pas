@@ -342,7 +342,7 @@ type
     procedure beginFrame(groupFlags: integer = GroupFlags_LayoutDefault; const rect: Rect = 0; style: integer = 0);
     procedure endFrame;
 
-    function beginPanel(r: Rect; const Text: string; isUnfold: boolean; groupFlags: integer = GroupFlags_LayoutDefault; style: integer = 0): boolean;
+    function beginPanel(var r: Rect; const Text: string; var isUnfold: boolean; groupFlags: integer = GroupFlags_LayoutDefault; style: integer = 0): boolean;
     procedure endPanel;
 
     function getGroupWidth: integer;
@@ -1057,29 +1057,30 @@ begin
     aRect.y := aRect.y + (parentGroup.bounds.y + newGroup^.margin + EvalBool((newStart and GroupFlags_StartTop) > 0) * parentGroup.bounds.h - EvalBool((newAlign and GroupFlags_AlignTop) > 0) * (2 * newGroup^.margin + aRect.h));
   end
   else
-  if parentLayout = GroupFlags_LayoutVertical then
-  begin
-    // Horizontal behavior.
-    aRect.x := aRect.x + (parentGroup.bounds.x + newGroup^.margin + EvalBool((parentAlign and GroupFlags_AlignRight) > 0) * (parentGroup.bounds.w - 2 * newGroup^.margin - aRect.w));
+    if parentLayout = GroupFlags_LayoutVertical then
+    begin
+      // Horizontal behavior.
+      aRect.x := aRect.x + (parentGroup.bounds.x + newGroup^.margin + EvalBool((parentAlign and GroupFlags_AlignRight) > 0) * (parentGroup.bounds.w - 2 * newGroup^.margin - aRect.w));
 
-    // Vertical behavior.
-    if (parentAlign and GroupFlags_AlignTop) > 0 then
-      aRect.y := aRect.y + (parentGroup.bounds.y - (EvalBool(parentGroup.bounds.h > 0) * parentGroup.space) - newGroup^.margin - aRect.h)
+      // Vertical behavior.
+      if (parentAlign and GroupFlags_AlignTop) > 0 then
+        aRect.y := aRect.y + (parentGroup.bounds.y - (EvalBool(parentGroup.bounds.h > 0) * parentGroup.space) - newGroup^.margin - aRect.h)
+      else
+        aRect.y := aRect.y + (parentGroup.bounds.y + parentGroup.bounds.h + EvalBool(parentGroup.bounds.h > 0) * parentGroup.space + newGroup^.margin);
+    end
     else
-      aRect.y := aRect.y + (parentGroup.bounds.y + parentGroup.bounds.h + EvalBool(parentGroup.bounds.h > 0) * parentGroup.space + newGroup^.margin);
-  end
-  else
-  if parentLayout = GroupFlags_LayoutHorizontal then
-  begin
-    // Horizontal behavior.
-    if (parentAlign and GroupFlags_AlignRight) > 0 then
-      aRect.x := aRect.x + (parentGroup.bounds.x - (EvalBool(parentGroup.bounds.w > 0) * parentGroup.space) - newGroup^.margin - aRect.w)
-    else
-      aRect.x := aRect.x + (parentGroup.bounds.x + parentGroup.bounds.w + EvalBool(parentGroup.bounds.w > 0) * parentGroup.space + newGroup^.margin);
+      if parentLayout = GroupFlags_LayoutHorizontal then
+      begin
+        // Horizontal behavior.
+        if (parentAlign and GroupFlags_AlignRight) > 0 then
+          aRect.x := aRect.x + (parentGroup.bounds.x - (EvalBool(parentGroup.bounds.w > 0) * parentGroup.space) - newGroup^.margin - aRect.w)
+        else
+          aRect.x := aRect.x + (parentGroup.bounds.x + parentGroup.bounds.w + EvalBool(parentGroup.bounds.w > 0) * parentGroup.space + newGroup^.margin);
 
-    // Vertical behavior.
-    aRect.y := aRect.y + (parentGroup.bounds.y + newGroup^.margin + EvalBool((parentAlign and GroupFlags_AlignTop) > 0) * (parentGroup.bounds.h - 2 * newGroup^.margin - aRect.h));
-  end;
+        // Vertical behavior.
+        aRect.y := aRect.y + (parentGroup.bounds.y + newGroup^.margin + EvalBool((parentAlign and GroupFlags_AlignTop) > 0) * (parentGroup.bounds.h - 2 * newGroup^.margin - aRect.h));
+      end;
+
   newGroup^.bounds := aRect;
 end;
 
@@ -1132,7 +1133,7 @@ begin
   m_painter.drawFrame(m_groupStack[m_groupIndex + 1].bounds, m_groupStack[m_groupIndex + 1].margin, 0);
 end;
 
-function UIContext.beginPanel(r: Rect; const Text: string; isUnfold: boolean; groupFlags: integer; style: integer): boolean;
+function UIContext.beginPanel(var r: Rect; const Text: string; var isUnfold: boolean; groupFlags: integer; style: integer): boolean;
 var
   rt: Rect;
   ra: Rect;
@@ -1143,13 +1144,17 @@ var
   tmp: Rect;
 begin
   rpanel := m_painter.getPanelRect(SetRect(r.x, r.y), Text, rt, ra);
+
   if (groupFlags and GroupFlags_LayoutDefault) > 0 then
     groupFlags := GroupFlags_LayoutDefaultFallback;
 
   beginGroup((groupFlags or GroupFlags_LayoutNoMargin or GroupFlags_LayoutNoSpace) and GroupFlags_StartXMask, rpanel);
+
   aRect := m_groupStack[m_groupIndex].bounds;
+
   focus := hasFocus(aRect);
   hover := isHover(aRect);
+
   if focus then
   begin
     m_uiOnFocus := True;

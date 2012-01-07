@@ -23,7 +23,7 @@ type
   protected
     procedure SetAngle(AValue: double); virtual;
   public
-    constructor Create(AName: string; ASize: integer);
+    constructor Create(AName: string; ASize: integer); virtual;
 
     //font characteristics
     property Name: string read FName;

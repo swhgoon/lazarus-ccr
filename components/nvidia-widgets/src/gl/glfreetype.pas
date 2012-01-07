@@ -10,7 +10,8 @@ unit GLFreeType;
 interface
 
 uses
-  SysUtils, freetypeh, GL, GLu;
+  SysUtils, freetypeh, GL, GLu,
+  nvBaseFont;
 
 //This holds all of the information related to any
 //freetype font that we want to create.
@@ -18,10 +19,24 @@ type
 
   { TGLFreeTypeFont }
 
-  TGLFreeTypeFont = object
-    Height: cardinal; //< Holds the height of the font.
+  TGLFreeTypeFont = object //class(TNVBaseFont)
     textures: pGLuint; //< Holds the texture id's
     list_base: GLuint; //< Holds the first display list id
+{  public
+    constructor Create(AName: string; ASize: integer); override;
+
+    //text metrics
+    function TextHeight(Text: string): integer; override;
+    function TextWidth(Text: string): integer; override;
+    procedure TextSize(Text: string; var w, h: integer); override;
+
+    //printing function
+    procedure TextOut(x, y: double; Text: string); override;
+}
+
+
+
+    Height: cardinal; //< Holds the height of the font.
 
     //The init function will create a font of
     //of the height h from the file fname.
