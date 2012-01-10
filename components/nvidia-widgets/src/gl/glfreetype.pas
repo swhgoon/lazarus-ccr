@@ -17,25 +17,11 @@ uses
 //freetype font that we want to create.
 type
 
-  { TGLFreeTypeFont }
+  { TGLFreeType }
 
-  TGLFreeTypeFont = object //class(TNVBaseFont)
+  TGLFreeType = object
     textures: pGLuint; //< Holds the texture id's
     list_base: GLuint; //< Holds the first display list id
-{  public
-    constructor Create(AName: string; ASize: integer); override;
-
-    //text metrics
-    function TextHeight(Text: string): integer; override;
-    function TextWidth(Text: string): integer; override;
-    procedure TextSize(Text: string; var w, h: integer); override;
-
-    //printing function
-    procedure TextOut(x, y: double; Text: string); override;
-}
-
-
-
     Height: cardinal; //< Holds the height of the font.
 
     //The init function will create a font of
@@ -202,7 +188,7 @@ begin
   FT_Done_Glyph(glyph);
 end;
 
-procedure TGLFreeTypeFont.Init(const fname: string; AHeight: cardinal);
+procedure TGLFreeType.Init(const fname: string; AHeight: cardinal);
 var
   library_: PFT_Library = nil;
   face: PFT_Face = nil; //The object in which Freetype holds information on a given font is called a "face".
@@ -247,7 +233,7 @@ begin
   FT_Done_FreeType(library_);
 end;
 
-procedure TGLFreeTypeFont.Clean;
+procedure TGLFreeType.Clean;
 begin
   glDeleteLists(list_base, CHAR_NUM);
   glDeleteTextures(CHAR_NUM, textures);
@@ -282,7 +268,7 @@ end;
 
 //Much like Nehe's glPrint function, but modified to work
 //with freetype fonts.
-procedure TGLFreeTypeFont.Print(x, y: double; Text: string);
+procedure TGLFreeType.Print(x, y: double; Text: string);
 var
   font: GLuint;
   modelview_matrix: array [0..15] of double;
@@ -327,7 +313,7 @@ begin
   pop_projection_matrix;
 end;
 
-function TGLFreeTypeFont.TextWidth(const Text: string): integer;
+function TGLFreeType.TextWidth(const Text: string): integer;
 var
   i: Integer;
 begin

@@ -16,14 +16,18 @@ type
     FAngle: double;
     FFlags: word;
     FName: string;
-    FSize: integer;
 
     function GetFlags(AIndex: integer): boolean;
-    procedure SetFlags(AIndex: integer; AValue: boolean);
   protected
+    FSize: integer;
+
     procedure SetAngle(AValue: double); virtual;
+    procedure SetFlags(AIndex: integer; AValue: boolean); virtual;
   public
     constructor Create(AName: string; ASize: integer); virtual;
+
+    //add stylized fonts
+    procedure Add(AName: string; ABold, AItalic, AStrikeTrough, AUnderline: boolean); virtual; abstract;
 
     //font characteristics
     property Name: string read FName;
@@ -32,7 +36,7 @@ type
     //text metrics
     function TextHeight(Text: string): integer; virtual; abstract;
     function TextWidth(Text: string): integer; virtual; abstract;
-    procedure TextSize(Text: string; var w, h: integer); virtual; abstract;
+    procedure TextSize(Text: string; var w, h: integer); virtual;
 
     //font flags <<possibly not implemented for all font classes>>
     property Angle: double read FAngle write SetAngle;
@@ -75,6 +79,12 @@ begin
   FFlags:= 0;
   FName := AName;
   FSize := ASize;
+end;
+
+procedure TNVBaseFont.TextSize(Text: string; var w, h: integer);
+begin
+  w := TextWidth(Text);
+  h := TextHeight(Text);
 end;
 
 end.

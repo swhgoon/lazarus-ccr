@@ -35,6 +35,18 @@ begin
 
 	write('package ', P.Name, ' configured for ');
 
+	//select font class
+    case NV_ACTIVE_FONT of
+	  GLFREETYPE: begin
+	                write('FreeType font ');
+	                P.Targets.AddUnit('./gl/glfreetypefont.pas');	
+			      end;
+	  GLUTBITMAP: begin
+	                write('GLUT font ');
+	                P.Targets.AddUnit('./glut/glutbitmapfont.pas');	
+                  end;	  
+	end;
+	
     //context units
     case NV_ACTIVE_CONTEXT of
 	  GLUT: begin

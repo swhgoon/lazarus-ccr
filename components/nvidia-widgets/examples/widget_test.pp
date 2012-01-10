@@ -5,7 +5,7 @@ program widget_test;
 uses
   Classes, SysUtils,
   GLut, GL, GLu,
-  nvWidgets, nvGlutWidgets;
+  nvWidgets, nvGLWidgets, nvBaseFont, nvGlutWidgets, GLFreeTypeFont;
 
 var
   ui: GlutUIContext;
@@ -195,6 +195,8 @@ begin
   glutCreateWindow('UI example');
 
   ui := GlutUIContext.Create;
+  ui.Painter := GLUIPainter.Create;
+  ui.Painter.Font := TGLFreeTypeFont.Create('Ubuntu-R.ttf', 10);
 
   if not ui.init(win_w, win_h) then
   begin

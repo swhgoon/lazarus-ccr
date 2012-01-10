@@ -2,6 +2,7 @@ type
   //add more here
   NV_CONTEXT = (GLUT);
   NV_PAINTER = (GL);
+  NV_FONT = (GLFREETYPE, GLUTBITMAP);
 
 const
   NV_DEBUG = True;
@@ -16,3 +17,6 @@ var
   
   //choose the painter
   NV_ACTIVE_PAINTER: NV_PAINTER = GL;
+  
+  //choose the font
+  NV_ACTIVE_FONT: NV_FONT = GLFREETYPE;  

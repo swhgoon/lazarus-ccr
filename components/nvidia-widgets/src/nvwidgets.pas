@@ -14,7 +14,7 @@ unit nvWidgets;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils, nvBaseFont;
 
 type
 
@@ -146,6 +146,9 @@ type
   // UIPainter
 
   UIPainter = class(TObject)
+  private
+    FFont: TnvBaseFont;
+    procedure SetFont(AValue: TnvBaseFont);
   public
     constructor Create;
 
@@ -202,13 +205,16 @@ type
     procedure drawDebugRect(const r: Rect); virtual; abstract;
 
     procedure init; virtual; abstract;
+  published
+    property Font: TnvBaseFont read FFont write SetFont;
   end;
 
   { UIContext }
 
   UIContext = class(TObject)
   public
-    constructor Create(painter: UIPainter);
+    constructor Create;
+    destructor Destroy; override;
 
     // UI method for processing window size events
     //////////////////////////////////////////////////////////////////
@@ -376,18 +382,21 @@ type
     function window: Rect;
 
   private
+    FPainter: UIPainter;
     procedure setCursor(x: integer; y: integer);
 
     function overlap(const aRect: Rect; const p: Point): boolean;
 
     function hasFocus(const aRect: Rect): boolean;
     function isHover(const aRect: Rect): boolean;
+    procedure SetPainter(AValue: UIPainter);
   protected
     function placeRect(const r: Rect): Rect;
 
-  protected
-    m_painter: UIPainter;
+  published
+    property Painter: UIPainter read FPainter write SetPainter;
 
+  protected
     m_groupIndex: integer;
     m_groupStack: array [0..63] of Group;
 
@@ -490,11 +499,18 @@ end;
 
 { UIContext }
 
-constructor UIContext.Create(painter: UIPainter);
+constructor UIContext.Create;
 begin
-  m_painter := painter;
   m_twoStepFocus := False;
   m_focusCaretPos := -1;
+end;
+
+destructor UIContext.Destroy;
+begin
+  if Assigned(Painter) then
+    Painter.Free;
+
+  inherited Destroy;
 end;
 
 procedure UIContext.reshape(w, h: integer);
@@ -558,12 +574,12 @@ end;
 
 procedure UIContext._begin;
 begin
-  m_painter._begin(m_window);
+  Painter._begin(m_window);
 
   m_groupIndex := 0;
   m_groupStack[m_groupIndex].flags := GroupFlags_LayoutNone;
-  m_groupStack[m_groupIndex].margin := m_painter.getCanvasMargin;
-  m_groupStack[m_groupIndex].space := m_painter.getCanvasSpace;
+  m_groupStack[m_groupIndex].margin := Painter.getCanvasMargin;
+  m_groupStack[m_groupIndex].space := Painter.getCanvasSpace;
   m_groupStack[m_groupIndex].bounds := m_window;
 end;
 
@@ -571,7 +587,7 @@ procedure UIContext._end;
 var
   i: integer;
 begin
-  m_painter._end;
+  Painter._end;
 
   // Release focus.
   if (m_mouseButton[0].state and ButtonFlags_End) > 0 then
@@ -597,8 +613,8 @@ var
   nbLines: integer;
   aRect: Rect;
 begin
-  aRect := placeRect(m_painter.getLabelRect(r, Text, rt, nbLines));
-  m_painter.drawLabel(aRect, Text, rt, nbLines, isHover(aRect), style);
+  aRect := placeRect(Painter.getLabelRect(r, Text, rt, nbLines));
+  Painter.drawLabel(aRect, Text, rt, nbLines, isHover(aRect), style);
 end;
 
 function UIContext.doButton(const r: Rect; const Text: string; var state: boolean; style: integer): boolean;
@@ -609,14 +625,14 @@ var
   hover: boolean;
   isDown: boolean;
 begin
-  aRect := placeRect(m_painter.getButtonRect(r, Text, rt));
+  aRect := placeRect(Painter.getButtonRect(r, Text, rt));
   focus := hasFocus(aRect);
   hover := isHover(aRect);
 
   isDown := state;
   //isDown := ((m_mouseButton[0].state and ButtonFlags_On)>0) and hover and focus;
 
-  m_painter.drawButton(aRect, Text, rt, isDown, hover, focus, style);
+  Painter.drawButton(aRect, Text, rt, isDown, hover, focus, style);
 
   if not focus then
     m_uiOnFocus := True;
@@ -646,10 +662,10 @@ var
   focus: boolean;
   hover: boolean;
 begin
-  aRect := placeRect(m_painter.getCheckRect(r, Text, rt, rc));
+  aRect := placeRect(Painter.getCheckRect(r, Text, rt, rc));
   focus := hasFocus(aRect);
   hover := isHover(aRect);
-  m_painter.drawCheckButton(aRect, Text, rt, rc, state, hover, focus, style);
+  Painter.drawCheckButton(aRect, Text, rt, rc, state, hover, focus, style);
 
   if hasFocus(aRect) then
     m_uiOnFocus := True;
@@ -672,10 +688,10 @@ var
   focus: boolean;
   hover: boolean;
 begin
-  aRect := placeRect(m_painter.getRadioRect(r, Text, rt, rr));
+  aRect := placeRect(Painter.getRadioRect(r, Text, rt, rr));
   focus := hasFocus(aRect);
   hover := isHover(aRect);
-  m_painter.drawRadioButton(aRect, Text, rt, rr, longbool(Value and EvalBool(reference = Value)), hover, focus, style);
+  Painter.drawRadioButton(aRect, Text, rt, rr, longbool(Value and EvalBool(reference = Value)), hover, focus, style);
 
   if focus then
     m_uiOnFocus := True;
@@ -709,7 +725,7 @@ begin
   if f > 1 then
     f := 1;
 
-  rr := placeRect(m_painter.getHorizontalSliderRect(aRect, rs, f, rc));
+  rr := placeRect(Painter.getHorizontalSliderRect(aRect, rs, f, rc));
 
   if hasFocus(rr) then
   begin
@@ -735,7 +751,7 @@ begin
     end;
   end;
 
-  m_painter.drawHorizontalSlider(rr, rs, f, rc, isHover(rr), style);
+  Painter.drawHorizontalSlider(rr, rs, f, rc, isHover(rr), style);
 
   Result := changed;
 end;
@@ -745,8 +761,8 @@ var
   rt: Rect;
   r: Rect;
 begin
-  r := placeRect(m_painter.getItemRect(aRect, Text, rt));
-  m_painter.drawListItem(r, Text, rt, longbool(selected and EvalBool(index = selected)), isHover(r), style);
+  r := placeRect(Painter.getItemRect(aRect, Text, rt));
+  Painter.drawListItem(r, Text, rt, longbool(selected and EvalBool(index = selected)), isHover(r), style);
 
   Result := isHover(r);
 end;
@@ -761,7 +777,7 @@ var
   hovered: integer = -1;
   lSelected: integer = -1;
 begin
-  rr := placeRect(m_painter.getListRect(aRect, numOptions, options, ri, rt));
+  rr := placeRect(Painter.getListRect(aRect, numOptions, options, ri, rt));
   focus := hasFocus(rr);
   hover := isHover(rr);
 
@@ -771,7 +787,7 @@ begin
   if selected <> 0 then
     lSelected := selected;
 
-  m_painter.drawListBox(rr, numOptions, options, ri, rt, lSelected, hovered, style);
+  Painter.drawListBox(rr, numOptions, options, ri, rt, lSelected, hovered, style);
 
   if focus then
     m_uiOnFocus := True;
@@ -800,7 +816,7 @@ var
   hoverOptions: boolean;
 begin
   // First get the rect of the combobox itself and do some test with it
-  rr := placeRect(m_painter.getComboRect(aRect, numOptions, options, selected, rt, ra));
+  rr := placeRect(Painter.getComboRect(aRect, numOptions, options, selected, rt, ra));
   focus := hasFocus(rr);
   hover := isHover(rr);
 
@@ -809,7 +825,7 @@ begin
     m_uiOnFocus := True;
 
     // then if the combo box has focus, we can look for the geometry of the options frame
-    ro := m_painter.getComboOptionsRect(rr, numOptions, options, ri, rit);
+    ro := Painter.getComboOptionsRect(rr, numOptions, options, ri, rit);
     hovered := -1;
     hoverOptions := overlap(ro, m_currentCursor);
 
@@ -817,10 +833,10 @@ begin
       hovered := numOptions - 1 - (m_currentCursor.y - (ro.y + ri.y)) div (ri.h);
 
     // draw combo anyway
-    m_painter.drawComboBox(rr, numOptions, options, rt, ra, selected, hover, focus, style);
+    Painter.drawComboBox(rr, numOptions, options, rt, ra, selected, hover, focus, style);
 
     // draw options
-    m_painter.drawComboOptions(ro, numOptions, options, ri, rit, selected, hovered, hover, focus, style);
+    Painter.drawComboOptions(ro, numOptions, options, ri, rit, selected, hovered, hover, focus, style);
 
     // When the widget get the focus, cache the focus point
     if not m_twoStepFocus then
@@ -860,7 +876,7 @@ begin
     end;
   end
   else
-    m_painter.drawComboBox(rr, numOptions, options, rt, ra, selected, hover, focus, style);
+    Painter.drawComboBox(rr, numOptions, options, rt, ra, selected, hover, focus, style);
 
   Result := False;
 end;
@@ -877,7 +893,7 @@ var
   nbKeys: integer;
   keyNb: integer;
 begin
-  rr := placeRect(m_painter.getLineEditRect(aRect, Text, rt));
+  rr := placeRect(Painter.getLineEditRect(aRect, Text, rt));
   focus := hasFocus(rr);
   hover := isHover(rr);
 
@@ -910,7 +926,7 @@ begin
 
     // Eval caret pos on every click hover
     if hover and ((m_mouseButton[0].state and ButtonFlags_Begin) > 0) then
-      m_focusCaretPos := m_painter.getPickedCharNb(Text, SetPoint(m_currentCursor.x - rt.x - rr.x, m_currentCursor.y - rt.y - rr.y));
+      m_focusCaretPos := Painter.getPickedCharNb(Text, SetPoint(m_currentCursor.x - rt.x - rr.x, m_currentCursor.y - rt.y - rr.y));
 
     // If keys are buffered, apply input to the edited text
     if m_nbKeys <> 0 then
@@ -993,7 +1009,7 @@ begin
     carretPos := m_focusCaretPos;
   end;
 
-  m_painter.drawLineEdit(rr, Text, rt, carretPos, focus, hover, style);
+  Painter.drawLineEdit(rr, Text, rt, carretPos, focus, hover, style);
 
   Result := _result;
 end;
@@ -1036,8 +1052,8 @@ begin
       groupFlags := (groupFlags and GroupFlags_AlignXMask) or parentAlign;
   end;
 
-  newGroup^.margin := EvalBool((groupFlags and GroupFlags_LayoutNoMargin) = 0) * m_painter.getCanvasMargin;
-  newGroup^.space := EvalBool((groupFlags and GroupFlags_LayoutNoSpace) = 0) * m_painter.getCanvasSpace;
+  newGroup^.margin := EvalBool((groupFlags and GroupFlags_LayoutNoMargin) = 0) * Painter.getCanvasMargin;
+  newGroup^.space := EvalBool((groupFlags and GroupFlags_LayoutNoSpace) = 0) * Painter.getCanvasSpace;
   newGroup^.flags := groupFlags;
 
   //newLayout := groupFlags and GroupFlags_LayoutMask;
@@ -1119,7 +1135,7 @@ begin
     parentGroup^.bounds.h := maxBoundY - minBoundY;
   end;
 
-  {$IFDEF DEBUG} m_painter.drawDebugRect(newGroup.bounds); {$ENDIF}
+  {$IFDEF DEBUG} Painter.drawDebugRect(newGroup.bounds); {$ENDIF}
 end;
 
 procedure UIContext.beginFrame(groupFlags: integer; const rect: Rect; style: integer);
@@ -1130,7 +1146,7 @@ end;
 procedure UIContext.endFrame;
 begin
   endGroup;
-  m_painter.drawFrame(m_groupStack[m_groupIndex + 1].bounds, m_groupStack[m_groupIndex + 1].margin, 0);
+  Painter.drawFrame(m_groupStack[m_groupIndex + 1].bounds, m_groupStack[m_groupIndex + 1].margin, 0);
 end;
 
 function UIContext.beginPanel(var r: Rect; const Text: string; var isUnfold: boolean; groupFlags: integer; style: integer): boolean;
@@ -1143,7 +1159,7 @@ var
   hover: boolean;
   tmp: Rect;
 begin
-  rpanel := m_painter.getPanelRect(SetRect(r.x, r.y), Text, rt, ra);
+  rpanel := Painter.getPanelRect(SetRect(r.x, r.y), Text, rt, ra);
 
   if (groupFlags and GroupFlags_LayoutDefault) > 0 then
     groupFlags := GroupFlags_LayoutDefaultFallback;
@@ -1168,7 +1184,7 @@ begin
   if ((m_mouseButton[0].state and ButtonFlags_End) > 0) and focus and (overlap(SetRect(aRect.x + ra.x, aRect.y + ra.y, ra.w, ra.h), m_currentCursor)) then
     isUnfold := not isUnfold;
 
-  m_painter.drawPanel(aRect, Text, rt, ra, isUnfold, hover, focus, style);
+  Painter.drawPanel(aRect, Text, rt, ra, isUnfold, hover, focus, style);
 
   if isUnfold then
   begin
@@ -1219,16 +1235,16 @@ var
   rt: Rect;
   rr: Rect;
 begin
-  rr := placeRect(m_painter.getTextureViewRect(aRect, rt));
+  rr := placeRect(Painter.getTextureViewRect(aRect, rt));
   if (zoomRect.w = 0) or (zoomRect.h = 0) then
     zoomRect.Rect(0, 0, rt.w, rt.h);
 
-  m_painter.drawTextureView(rr, texID, rt, zoomRect, mipLevel, texelScale, texelOffset, red, green, blue, alpha, style);
+  Painter.drawTextureView(rr, texID, rt, zoomRect, mipLevel, texelScale, texelOffset, red, green, blue, alpha, style);
 end;
 
 function UIContext.getPainter: UIPainter;
 begin
-  Result := m_painter;
+  Result := Painter;
 end;
 
 function UIContext.window: Rect;
@@ -1262,6 +1278,14 @@ begin
     Result := False
   else
     Result := overlap(aRect, m_currentCursor);
+end;
+
+procedure UIContext.SetPainter(AValue: UIPainter);
+begin
+  if FPainter=AValue then
+    exit;
+
+  FPainter:=AValue;
 end;
 
 function UIContext.placeRect(const r: Rect): Rect;
@@ -1352,6 +1376,12 @@ begin
 end;
 
 { UIPainter }
+
+procedure UIPainter.SetFont(AValue: TnvBaseFont);
+begin
+  if FFont=AValue then Exit;
+  FFont:=AValue;
+end;
 
 constructor UIPainter.Create;
 begin

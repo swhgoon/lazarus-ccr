@@ -15,7 +15,7 @@ interface
 
 uses
   Classes, nvWidgets,
-  GL, ftFont, FPCanvas, GLFreeType;
+  GL, ftFont, FPCanvas;
 
 const
   cBase = 0;
@@ -196,8 +196,6 @@ type
 
     procedure init; override;
   private
-    Font: TGLFreeTypeFont;
-
     m_setupStateDL: integer;
     m_restoreStateDL: integer;
     m_foregroundDL: integer;
@@ -256,13 +254,11 @@ begin
   m_texelScaleUniform := 0;
   m_texelOffsetUniform := 0;
   m_texelSwizzlingUniform := 0;
-
-  Font.Init('Ubuntu-R.ttf', 10);
 end;
 
 destructor GLUIPainter.Destroy;
 begin
-  Font.Clean;
+  Font.Free;
   inherited Destroy;
 end;
 
@@ -797,7 +793,7 @@ end;
 
 function GLUIPainter.getFontHeight: integer;
 begin
-  Result := Font.Height + 4;
+  Result := Font.TextHeight('X') + 4;
 end;
 
 function GLUIPainter.getTextLineWidth(const Text: string): integer;
@@ -925,7 +921,7 @@ end;
 
 procedure GLUIPainter.drawString(x: integer; y: integer; Text: string; nbLines: integer);
 begin
-  Font.Print(x, y + 2, Text);
+  Font.TextOut(x, y + 2, Text);
 end;
 
 procedure GLUIPainter.drawRect(aRect: Rect; fillColorId: integer; borderColorId: integer);

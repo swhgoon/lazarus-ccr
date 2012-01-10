@@ -29,27 +29,6 @@ type
   public
 
     //
-    // Default UI constructor
-    //
-    //  Creates private OpenGL painter
-    //////////////////////////////////////////////////////////////////
-    constructor Create;
-
-    //
-    // Alternate UI constructor
-    //
-    //  Allows for overriding the standard painter
-    //////////////////////////////////////////////////////////////////
-    constructor Create(painter: UIPainter);
-
-    //
-    // UI  destructor
-    //
-    //  Destroy painter if it is private
-    //////////////////////////////////////////////////////////////////
-    destructor Destroy; override;
-
-    //
     // One time initialization
     //
     //////////////////////////////////////////////////////////////////
@@ -72,46 +51,18 @@ type
     procedure specialKeyboard(k, x, y: integer);
 
   private
-    m_ownPainter: boolean;
-
     //
     //  Translate non-ascii keys from GLUT to nvWidgets
     //////////////////////////////////////////////////////////////////
     function translateKey(k: integer): byte;
-
   end;
 
 implementation
 
 uses
-  GLut, GLext, nvGLWidgets;
+  GLut, GLext;
 
 { GlutUIContext }
-
-constructor GlutUIContext.Create;
-begin
-  inherited Create(GLUIPainter.Create);
-  m_ownPainter := True;
-end;
-
-constructor GlutUIContext.Create(painter: UIPainter);
-begin
-  inherited Create(painter);
-  m_ownPainter := False;
-end;
-
-destructor GlutUIContext.Destroy;
-var
-  painter: UIPainter;
-begin
-  if m_ownPainter then
-  begin
-    painter := getPainter;
-    FreeAndNil(painter);
-  end;
-
-  inherited;
-end;
 
 function GlutUIContext.init(w, h: integer): boolean;
 begin
