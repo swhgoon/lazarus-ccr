@@ -131,10 +131,14 @@ end;
 procedure THTTPTransport.DoSendAndReceive(ARequest, AResponse: TStream);
 var
   EMsg : String;
+  i : Integer;
 begin
   try
     ARequest.position:=0;
     FConnection.RequestBody:=ARequest;
+    i := FConnection.IndexOfHeader('Content-length');
+    if (i >= 0) then
+      FConnection.RequestHeaders.Delete(i);
     FConnection.Post(FAddress,AResponse);
   except
     On E : Exception do
