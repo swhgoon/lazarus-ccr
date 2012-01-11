@@ -7,14 +7,14 @@
 //
 // Copyright (c) NVIDIA Corporation. All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////
-unit nvGLWidgets;
+unit nvGLPainter;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, nvWidgets,
+  Classes, nvPainter, nvTypes,
   GL, ftFont, FPCanvas;
 
 const

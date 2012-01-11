@@ -10,8 +10,7 @@ unit GLFreeType;
 interface
 
 uses
-  SysUtils, freetypeh, GL, GLu,
-  nvBaseFont;
+  SysUtils, freetypeh, GL, GLu;
 
 //This holds all of the information related to any
 //freetype font that we want to create.

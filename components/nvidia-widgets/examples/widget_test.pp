@@ -3,9 +3,8 @@ program widget_test;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils,
-  GLut, GL, GLu,
-  nvWidgets, nvGLWidgets, nvBaseFont, nvGlutWidgets, GLFreeTypeFont, GLUTBitmapFont;
+  Classes, SysUtils, GLut, GL, GLu, nvGLPainter,
+  nvGlutContext, GLFreeTypeFont, GLUTBitmapFont, nvTypes;
 
 var
   ui: GlutUIContext;

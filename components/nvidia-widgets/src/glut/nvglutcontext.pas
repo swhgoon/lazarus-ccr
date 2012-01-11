@@ -11,14 +11,14 @@
 //
 // Copyright (c) NVIDIA Corporation. All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-unit nvGlutWidgets;
+unit nvGlutContext;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  SysUtils, nvWidgets;
+  SysUtils, nvContext, nvTypes;
 
 type
 
