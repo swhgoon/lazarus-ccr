@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="widget_test">
+    <module name="GLFreeTypeFont">
+      <element name="TGLFreeTypeFont.TextHeight">
+        <short>Text height</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>
