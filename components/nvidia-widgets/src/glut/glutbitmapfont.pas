@@ -5,7 +5,7 @@ unit GLUTBitmapFont;
 interface
 
 uses
-  Classes, SysUtils, GLut, nvBaseFont;
+  Classes, SysUtils, GL, GLut, nvBaseFont;
 
 type
   TFontStyles = record
@@ -15,16 +15,18 @@ type
     StrikeTrough: boolean;
     Underline: boolean;
     Font: pointer;
+    TextListBase: integer;
   end;
 
-  { TGLUTFreeTypeFont }
+  { TGLUTBitmapFont }
 
-  TGLUTFreeTypeFont = class(TNVBaseFont)
+  TGLUTBitmapFont = class(TNVBaseFont)
   private
     FFontList: array of TFontStyles;
     FCount: integer;
     FActiveFont: integer;
     procedure FindStylizedFont;
+    function InitializeFont(AFont: pointer): integer;
   protected
     procedure SetFlags(AIndex: integer; AValue: boolean); override;
   public
@@ -44,9 +46,9 @@ type
 
 implementation
 
-{ TGLUTFreeTypeFont }
+{ TGLUTBitmapFont }
 
-procedure TGLUTFreeTypeFont.FindStylizedFont;
+procedure TGLUTBitmapFont.FindStylizedFont;
 var
   item: TFontStyles;
   i: integer;
@@ -71,14 +73,32 @@ begin
   FActiveFont := 0;
 end;
 
-procedure TGLUTFreeTypeFont.SetFlags(AIndex: integer; AValue: boolean);
+function TGLUTBitmapFont.InitializeFont(AFont: pointer): integer;
+var
+  TextListBase: integer;
+  i: integer;
+begin
+  //just doing 7-bit ascii
+  TextListBase := glGenLists(128);
+
+  for i := 0 to 127 do
+  begin
+    glNewList(TextListBase + i, GL_COMPILE);
+    glutBitmapCharacter(AFont, i);
+    glEndList;
+  end;
+
+  Result := TextListBase;
+end;
+
+procedure TGLUTBitmapFont.SetFlags(AIndex: integer; AValue: boolean);
 begin
   inherited SetFlags(AIndex, AValue);
 
   FindStylizedFont;
 end;
 
-constructor TGLUTFreeTypeFont.Create(AName: string; ASize: integer);
+constructor TGLUTBitmapFont.Create(AName: string; ASize: integer);
 begin
   inherited Create(AName, ASize);
 
@@ -87,7 +107,7 @@ begin
   FActiveFont := 0;
 end;
 
-destructor TGLUTFreeTypeFont.Destroy;
+destructor TGLUTBitmapFont.Destroy;
 var
   i: integer;
 begin
@@ -97,38 +117,63 @@ begin
   inherited Destroy;
 end;
 
-procedure TGLUTFreeTypeFont.Add(AName: string; ABold, AItalic, AStrikeTrough, AUnderline: boolean);
+procedure TGLUTBitmapFont.Add(AName: string; ABold, AItalic, AStrikeTrough, AUnderline: boolean);
 begin
   Inc(FCount);
   SetLength(FFontList, FCount);
 
   with FFontList[FCount - 1] do
   begin
-    //Font.Init(AName, Size);
+    case LowerCase(AName) of
+      'helvetica': case Size of
+                     10: Font := GLUT_BITMAP_HELVETICA_10;
+                     12: Font := GLUT_BITMAP_HELVETICA_12;
+                     18: Font := GLUT_BITMAP_HELVETICA_18;
+                   else
+                     raise Exception.CreateFmt('GLUT font size %d does not exist for font %s', [Size, AName]);
+                   end;
+      'times roman': case Size of
+                       10: Font := GLUT_BITMAP_TIMES_ROMAN_10;
+                       24: Font := GLUT_BITMAP_TIMES_ROMAN_24;
+                     else
+                       raise Exception.CreateFmt('GLUT font size %d does not exist for font %s', [Size, AName]);
+                     end;
+      'fixed': case Size of
+                 13: Font := GLUT_BITMAP_8_BY_13;
+                 15: Font := GLUT_BITMAP_9_BY_15;
+               else
+                 raise Exception.CreateFmt('GLUT font size %d does not exist for font %s', [Size, AName]);
+               end;
+    else
+      raise Exception.CreateFmt('GLUT font name not supported %s', [AName]);
+    end;
+
     Name := AName;
     Bold := ABold;
     Italic := AItalic;
     StrikeTrough := AStrikeTrough;
     Underline := AUnderline;
+    TextListBase := InitializeFont(Font);
   end;
 
   FindStylizedFont;
 end;
 
-function TGLUTFreeTypeFont.TextHeight(Text: string): integer;
+function TGLUTBitmapFont.TextHeight(Text: string): integer;
 begin
   Result := Size;
 end;
 
-function TGLUTFreeTypeFont.TextWidth(Text: string): integer;
+function TGLUTBitmapFont.TextWidth(Text: string): integer;
 begin
-  //only one font available or style not found then show default
-  //Result := FFontList[FActiveFont].Font.TextWidth(Text)
+  Result := glutBitmapLength(FFontList[FActiveFont].Font, PChar(Text));
 end;
 
-procedure TGLUTFreeTypeFont.TextOut(x, y: double; Text: string);
+procedure TGLUTBitmapFont.TextOut(x, y: double; Text: string);
 begin
-  //FFontList[FActiveFont].Font.Print(x, y, Text);
+  glListBase(FFontList[FActiveFont].TextListBase);
+  glRasterPos2f(x, y);
+  glCallLists(Length(Text), GL_UNSIGNED_BYTE, @Text[1]);
 end;
 
 end.
