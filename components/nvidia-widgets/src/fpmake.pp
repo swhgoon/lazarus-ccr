@@ -30,8 +30,10 @@ begin
         P.Options.Add(NV_PROFILE_FLAGS[i]);
 	  
     //base widget units
+    P.Targets.AddUnit('nvtypes.pas');
     P.Targets.AddUnit('nvbasefont.pas');
-    P.Targets.AddUnit('nvwidgets.pas');
+    P.Targets.AddUnit('nvcontext.pas');
+    P.Targets.AddUnit('nvpainter.pas');
 
 	write('package ', P.Name, ' configured for ');
 
@@ -39,6 +41,7 @@ begin
     case NV_ACTIVE_FONT of
 	  GLFREETYPE: begin
 	                write('FreeType font ');
+	                P.Targets.AddUnit('./gl/glfreetype.pas');	
 	                P.Targets.AddUnit('./gl/glfreetypefont.pas');	
 			      end;
 	  GLUTBITMAP: begin
@@ -51,7 +54,7 @@ begin
     case NV_ACTIVE_CONTEXT of
 	  GLUT: begin
 	          write('the GLUT context');
-	          P.Targets.AddUnit('./glut/nvglutwidgets.pas');	
+	          P.Targets.AddUnit('./glut/nvglutcontext.pas');	
 			end;
 	end;
 	
@@ -60,7 +63,8 @@ begin
 	GL: begin
 	      writeln(' with the OpenGL painter');
 		  P.UnitPath.Add('./gl/');
-	      P.Targets.AddUnit('./gl/nvglwidgets.pas');	
+	      P.Targets.AddUnit('./gl/nvshaderutils.pas');	
+	      P.Targets.AddUnit('./gl/nvglpainter.pas');	
 	    end;
 	end;
 	
