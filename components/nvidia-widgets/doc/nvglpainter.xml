@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <fpdoc-descriptions>
   <package name="nvidia-widgets">
-    <module name="nvGLWidgets">
-      <element name="nvGLWidgets">
+    <module name="nvGLPainter">
+      <element name="nvGLPainter">
         <short>User Interface library</short>
       </element>
       <element name="GLUIPainter">
