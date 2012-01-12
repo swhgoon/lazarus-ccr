@@ -7,9 +7,13 @@ uses
   Classes,
   SysUtils;
 
+{$define ALLPACKAGES}
+{$include config.inc}
+
 var
   P: TPackage;
   be: TBuildEngine;
+  i: integer;
 
   procedure CreateClassChart(Sender: TObject);
   var

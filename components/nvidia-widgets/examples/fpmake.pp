@@ -1,3 +1,4 @@
+{$ifndef ALLPACKAGES}
 program fpmake;
 
 {$mode objfpc} {$H+}
@@ -12,17 +13,23 @@ var
 begin
   with Installer do
   begin
+{$endif ALLPACKAGES}
+
     //create nvwidgets package
     P := AddPackage('nvwidget_examples');
 
+{$ifdef ALLPACKAGES}
+    P.Directory := 'examples';
+{$endif ALLPACKAGES}
+
     P.Dependencies.Add('nvwidget');
-    P.UnitPath.Add('../src');
 	
     //example applications
     P.Targets.AddUnit('example.pp');
     P.Targets.AddUnit('widget_test.pp');
 	
+{$ifndef ALLPACKAGES}
     Run;
   end;
 end.
-
+{$endif ALLPACKAGES}

@@ -1,3 +1,3 @@
-  add_examples;
-  add_src;
   add_utils;
+  add_src;
+  add_examples;

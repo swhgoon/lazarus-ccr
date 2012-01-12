@@ -4,7 +4,7 @@ program widget_test;
 
 uses
   Classes, SysUtils, GLut, GL, GLu, nvGLPainter, nvGlutContext, GLFreeTypeFont,
-  GLFreeType, GLUTBitmapFont, nvTypes, nvPainter, nvContext;
+  GLFreeType, {GLUTBitmapFont,} nvTypes, nvPainter, nvContext;
 
 var
   ui: GlutUIContext;
@@ -186,8 +186,6 @@ var
 
 var
   texture_data: array [0..3] of cardinal = ($FFFF0000, $FF0000FF, $FF00FF00, $FF00FF00);
-
-{$R *.res}
 
 begin
   glutInit(@argc, argv);
