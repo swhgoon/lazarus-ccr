@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="nvidia-widgets">
+    <module name="nvShaderUtils">
+	<short>Utility functions for compiling shaders and programs</short>
+      <element name="CompileGLSLShader"/>
+      <element name="LinkGLSLProgram">
+        <short>Create a program composed of vertex, geometry and fragment shaders.</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

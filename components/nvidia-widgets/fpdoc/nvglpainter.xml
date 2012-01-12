@@ -1,0 +1,237 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="nvidia-widgets">
+    <module name="nvGLPainter">
+      <element name="nvGLPainter">
+        <short>User Interface library</short>
+      </element>
+      <element name="GLUIPainter">
+        <short>OpenGL painter class</short>
+      </element>
+      <element name="GLUIPainter.getCanvasMargin">
+        <short>Evaluate canvas margin</short>
+      </element>
+      <element name="GLUIPainter.getCanvasSpace">
+        <short>Evaluate canvas space</short>
+      </element>
+      <element name="GLUIPainter.getFontHeight">
+        <short>Evaluate font height</short>
+      </element>
+      <element name="GLUIPainter.getTextLineWidth">
+        <short>Evaluate text width</short>
+      </element>
+      <element name="GLUIPainter.getTextSize">
+        <short>Evaluate text size</short>
+        <descr>
+          <p>
+            <var>getTextSize</var>
+evaluates a string, it will calculate the number of lines it consists of and will return the length in pixels of the longest line.</p>
+        </descr>
+      </element>
+      <element name="GLUIPainter.getCanvasMargin.Result">
+        <short>Exterior margin</short>
+      </element>
+      <element name="GLUIPainter.getCanvasSpace.Result">
+        <short>Interior margin</short>
+      </element>
+      <element name="GLUIPainter.getFontHeight.Result">
+        <short>Font height in pixels</short>
+      </element>
+      <element name="GLUIPainter.getTextLineWidth.Result">
+        <short>Text width</short>
+      </element>
+      <element name="GLUIPainter.getTextSize.Result">
+        <short>Text width of widest line</short>
+      </element>
+      <element name="GLUIPainter.drawDebugRect">
+        <short>Draw a rectangle for debugging purposes</short>
+        <descr>
+          <p>
+            <var>drawDebugRect</var>
+ draws a simple rectangle usefull for debugging purposes.</p>
+        </descr>
+      </element>
+      <element name="GLUIPainter.drawDebugRect.r">
+        <short>Rectangle size to draw</short>
+      </element>
+      <short>User Interface library specialized for OpenGL</short>
+      <element name="GLUIPainter.drawText">
+        <short>Draw text with rectangle primitive</short>
+      </element>
+      <element name="GLUIPainter.drawFrame">
+        <short>Draw frame primitive</short>
+      </element>
+      <element name="GLUIPainter.drawBoolFrame">
+        <short>Draw bool frame primitive</short>
+      </element>
+      <element name="GLUIPainter.drawString">
+        <short>Draw multi-line text primitive</short>
+      </element>
+      <element name="GLUIPainter.drawRect">
+        <short>Draw rectangle primitive</short>
+      </element>
+      <element name="GLUIPainter.drawRect.aRect">
+        <short>Rectangle to draw in</short>
+      </element>
+      <element name="GLUIPainter.drawRect.fillColorId">
+        <short>Fill color</short>
+      </element>
+      <element name="GLUIPainter.drawRect.borderColorId">
+        <short>Border color</short>
+      </element>
+      <element name="GLUIPainter.drawText.r">
+        <short>Rectangle to draw in</short>
+      </element>
+      <element name="GLUIPainter.drawText.nbLines">
+        <short>Number of lines in text</short>
+      </element>
+      <element name="GLUIPainter.drawText.caretPos">
+        <short>Caret position</short>
+      </element>
+      <element name="GLUIPainter.drawText.isHover">
+        <short>Boolean indicating if the mouse is hovering over it</short>
+      </element>
+      <element name="GLUIPainter.drawText.isOn">
+        <short>Boolean indicating if the widget is on</short>
+      </element>
+      <element name="GLUIPainter.drawText.isFocus">
+        <short>Boolean indicating if the widget has focus</short>
+      </element>
+      <element name="GLUIPainter.drawFrame.isFocus">
+        <short>Boolean indicating if the widget has focus</short>
+      </element>
+      <element name="GLUIPainter.drawBoolFrame.isFocus">
+        <short>Boolean indicating if the widget has focus</short>
+      </element>
+      <element name="GLUIPainter.drawFrame.isOn">
+        <short>Boolean indicating if the widget is on</short>
+      </element>
+      <element name="GLUIPainter.drawBoolFrame.isOn">
+        <short>Boolean indicating if the widget is on</short>
+      </element>
+      <element name="GLUIPainter.drawFrame.isHover">
+        <short>Boolean indicating if the mouse is hovering over it</short>
+      </element>
+      <element name="GLUIPainter.drawBoolFrame.isHover">
+        <short>Boolean indicating if the mouse is hovering over it</short>
+      </element>
+      <element name="GLUIPainter.drawString.nbLines">
+        <short>Number of lines in text</short>
+      </element>
+      <element name="GLUIPainter.drawRoundedRect.fillColorId">
+        <short>Fill color</short>
+      </element>
+      <element name="GLUIPainter.drawCircle.fillColorId">
+        <short>Fill color</short>
+      </element>
+      <element name="GLUIPainter.drawMinus.fillColorId">
+        <short>Fill color</short>
+      </element>
+      <element name="GLUIPainter.drawPlus.fillColorId">
+        <short>Fill color</short>
+      </element>
+      <element name="GLUIPainter.drawDownArrow.fillColorId">
+        <short>Fill color</short>
+      </element>
+      <element name="GLUIPainter.drawUpArrow.fillColorId">
+        <short>Fill color</short>
+      </element>
+      <element name="GLUIPainter.drawRoundedRect.borderColorId">
+        <short>Border color</short>
+      </element>
+      <element name="GLUIPainter.drawRoundedRectOutline.borderColorId">
+        <short>Border color</short>
+      </element>
+      <element name="GLUIPainter.drawCircle.borderColorId">
+        <short>Border color</short>
+      </element>
+      <element name="GLUIPainter.drawMinus.borderColorId">
+        <short>Border color</short>
+      </element>
+      <element name="GLUIPainter.drawPlus.borderColorId">
+        <short>Border color</short>
+      </element>
+      <element name="GLUIPainter.drawDownArrow.borderColorId">
+        <short>Border color</short>
+      </element>
+      <element name="GLUIPainter.drawUpArrow.borderColorId">
+        <short>Border color</short>
+      </element>
+      <element name="GLUIPainter.drawFrame.aRect">
+        <short>Rectangle to draw in</short>
+      </element>
+      <element name="GLUIPainter.drawBoolFrame.aRect">
+        <short>Rectangle to draw in</short>
+      </element>
+      <element name="GLUIPainter.drawRoundedRect.aRect">
+        <short>Rectangle to draw in</short>
+      </element>
+      <element name="GLUIPainter.drawRoundedRectOutline.aRect">
+        <short>Rectangle to draw in</short>
+      </element>
+      <element name="GLUIPainter.drawCircle.aRect">
+        <short>Rectangle to draw in</short>
+      </element>
+      <element name="GLUIPainter.drawMinus.aRect">
+        <short>Rectangle to draw in</short>
+      </element>
+      <element name="GLUIPainter.drawPlus.aRect">
+        <short>Rectangle to draw in</short>
+      </element>
+      <element name="GLUIPainter.drawDownArrow.aRect">
+        <short>Rectangle to draw in</short>
+      </element>
+      <element name="GLUIPainter.drawUpArrow.aRect">
+        <short>Rectangle to draw in</short>
+      </element>
+      <element name="GLUIPainter.drawUpArrow.Width">
+        <short>Width of the arrow</short>
+      </element>
+      <element name="GLUIPainter.drawDownArrow.Width">
+        <short>Width of the arrow</short>
+      </element>
+      <element name="GLUIPainter.drawPlus.Width">
+        <short>Width of the plus</short>
+      </element>
+      <element name="GLUIPainter.drawMinus.Width">
+        <short>Width of the minus</short>
+      </element>
+      <element name="GLUIPainter.drawRoundedRect.corner">
+        <short>Radius of the corner</short>
+      </element>
+      <element name="GLUIPainter.drawRoundedRectOutline.corner">
+        <short>Radius of the corner</short>
+      </element>
+      <element name="GLUIPainter.drawBoolFrame.corner">
+        <short>Radius of the corner</short>
+      </element>
+      <element name="GLUIPainter.drawFrame.corner">
+        <short>Radius of the corner</short>
+      </element>
+      <element name="GLUIPainter.drawRoundedRect">
+        <short>Draw rouded rectangle primitive</short>
+      </element>
+      <element name="GLUIPainter.drawRoundedRectOutline">
+        <short>Draw rouded rectangle outline primitive</short>
+      </element>
+      <element name="GLUIPainter.drawCircle">
+        <short>Draw circle primitive</short>
+      </element>
+      <element name="GLUIPainter.drawMinus">
+        <short>Draw minus primitive</short>
+      </element>
+      <element name="GLUIPainter.drawPlus">
+        <short>Draw plus primitive</short>
+      </element>
+      <element name="GLUIPainter.drawDownArrow">
+        <short>Draw down arrow primitive</short>
+      </element>
+      <element name="GLUIPainter.drawUpArrow">
+        <short>Draw up arrow primitive</short>
+      </element>
+      <element name="GLUIPainter.init">
+        <short>Initialization method of the painter class</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

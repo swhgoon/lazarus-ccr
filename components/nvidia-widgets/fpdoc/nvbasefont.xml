@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="nvidia-widgets">
+    <module name="nvBaseFont">
+      <short>Generic font support class</short>
+      <element name="TNVBaseFont.TextHeight">
+        <short>Text height</short>
+        <descr>Some fonts will only return the font size and not the actual text height</descr>
+      </element>
+      <element name="TNVBaseFont.Create">
+        <short>Contructor for the base font class</short>
+      </element>
+      <element name="TNVBaseFont.Add">
+        <short>Method that allows to add multiple stylized fonts</short>
+        <descr>To define font styles, you will need to add the fonts first. This method allows to add a named font style and set the styles of it.</descr>
+      </element>
+      <element name="TNVBaseFont.Name">
+        <short>Font name</short>
+      </element>
+      <element name="TNVBaseFont.Size">
+        <short>Font size</short>
+      </element>
+      <element name="TNVBaseFont.TextWidth">
+        <short>Text width</short>
+      </element>
+      <element name="TNVBaseFont.TextSize">
+        <short>Text size</short>
+        <seealso>TextWidth
+TextHeight</seealso>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

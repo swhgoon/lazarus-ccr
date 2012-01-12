@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="nvidia-widgets">
+    <module name="nvTypes">
+      <short>Base types and constants</short>
+      <element name="Point">
+        <short>2D point object</short>
+      </element>
+      <element name="SetPoint.Result">
+        <short>Initialize the point object</short>
+      </element>
+      <element name="Rect">
+        <short>Rectangle object</short>
+      </element>
+      <element name="Rect.x">
+        <short>X position of top left point</short>
+      </element>
+      <element name="Rect.y">
+        <short>Y position of top left point</short>
+      </element>
+      <element name="Rect.w">
+        <short>Width of rectangle</short>
+      </element>
+      <element name="Rect.h">
+        <short>Height of rectangle</short>
+      </element>
+      <element name="MouseButton_Left">
+        <short>An enum to identify the left mouse button</short>
+      </element>
+      <element name="MouseButton_Middle">
+        <short>An enum to identify the middle mouse button</short>
+      </element>
+      <element name="MouseButton_Right">
+        <short>An enum to identify the right mouse button</short>
+      </element>
+      <element name="Group">
+        <short>Group record</short>
+      </element>
+      <element name="Group.bounds">
+        <short>anchor point + width and height of the region </short>
+      </element>
+      <element name="Group.flags">
+        <short>group behavior</short>
+      </element>
+      <element name="Group.margin">
+        <short>border</short>
+      </element>
+      <element name="Group.space">
+        <short>interior</short>
+      </element>
+      <element name="Point.x">
+        <short>X location</short>
+      </element>
+      <element name="Point.y">
+        <short>Y location</short>
+      </element>
+      <element name="Point.Point">
+        <short>Constructor for the <link id="Point"/> object</short>
+      </element>
+      <element name="Rect.Rect">
+        <short>Constructor for the <link id="Rect"/> object</short>
+      </element>
+      <element name="SetPoint">
+        <short>Helper function to initialize the point object</short>
+      </element>
+      <element name="SetRect">
+        <short>Helper function to initialize the <link id="Rect"/> object</short>
+      </element>
+    </module>	  
+  </package>
+</fpdoc-descriptions>
