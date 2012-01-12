@@ -86,9 +86,6 @@ function EvalBool(b: boolean): byte;
 
 implementation
 
-uses
-  Math;
-
 function EvalBool(b: boolean): byte;
 begin
   if b then

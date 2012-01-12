@@ -14,7 +14,7 @@ unit nvContext;
 interface
 
 uses
-  Classes, SysUtils, nvTypes, nvPainter, nvBaseFont;
+  Classes, SysUtils, nvTypes, nvPainter;
 
 type
 
@@ -222,20 +222,10 @@ type
     m_uiOnFocus: boolean;
   end;
 
-function EvalBool(b: boolean): byte;
-
 implementation
 
 uses
   Math;
-
-function EvalBool(b: boolean): byte;
-begin
-  if b then
-    Result := 1
-  else
-    Result := 0;
-end;
 
 { UIContext }
 

@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<fpdoc-descriptions>
-  <package name="nvidia-widgets">
-    <module name="GLUTBitmapFont">
-	<short>GLUT bitmap font</short>
-    </module>
-  </package>
-</fpdoc-descriptions>
