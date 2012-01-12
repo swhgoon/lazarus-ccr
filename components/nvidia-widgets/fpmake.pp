@@ -48,7 +48,11 @@ var
     DeleteFile('nvwidgets.dot');
   end;
 
+  {$include fpmake_proc.inc}
+
 begin
+  {$include fpmake_add.inc}
+
   with Installer do
   begin
     be := BuildEngine;
