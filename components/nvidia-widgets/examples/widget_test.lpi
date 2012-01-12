@@ -13,7 +13,7 @@
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
     </General>
-    <LazDoc Paths="..\doc"/>
+    <LazDoc Paths="..\fpdoc"/>
     <i18n>
       <EnableI18N LFM="False"/>
     </i18n>
@@ -33,7 +33,7 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <Units Count="7">
+    <Units Count="11">
       <Unit0>
         <Filename Value="widget_test.pp"/>
         <IsPartOfProject Value="True"/>
@@ -69,6 +69,26 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="nvTypes"/>
       </Unit6>
+      <Unit7>
+        <Filename Value="..\src\gl\glfreetype.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="GLFreeType"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="..\src\nvcontext.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="nvContext"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="..\src\nvpainter.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="nvPainter"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="..\src\glut\nvglutcontext.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="nvGlutContext"/>
+      </Unit10>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

@@ -3,8 +3,8 @@ program widget_test;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, GLut, GL, GLu, nvGLPainter,
-  nvGlutContext, GLFreeTypeFont, GLUTBitmapFont, nvTypes;
+  Classes, SysUtils, GLut, GL, GLu, nvGLPainter, nvGlutContext, GLFreeTypeFont,
+  GLFreeType, GLUTBitmapFont, nvTypes, nvPainter, nvContext;
 
 var
   ui: GlutUIContext;
@@ -186,6 +186,8 @@ var
 
 var
   texture_data: array [0..3] of cardinal = ($FFFF0000, $FF0000FF, $FF00FF00, $FF00FF00);
+
+{$R *.res}
 
 begin
   glutInit(@argc, argv);

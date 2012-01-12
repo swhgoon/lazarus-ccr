@@ -10,11 +10,11 @@
 <table class="bar" width="100%" border="0" cellpadding="4" cellspacing="0">
 <tr>
 <td><b>[<a href="../nvcontext/index.html">Overview</a>][<a href="../nvcontext/index-4.html">Classes</a>][<a href="../nvcontext/index-8.html">Index</a>]</b></td>
-<td align="right"><span class="bartitle">Reference for unit 'nvContext' (<a href="../index.html">#nvwidgets</a>)</span></td>
+<td align="right"><span class="bartitle">Reference for unit 'nvContext' (<a href="../index.html">#nvidia-widgets</a>)</span></td>
 </tr>
 </table>
 <h1>UIContext.doRadioButton</h1>
-<p></p>
+<p>UI method for rendering and processing a radio button</p>
 <h2>Declaration</h2>
 <p>Source position: nvcontext.pas line 130</p>
 <table cellpadding="0" cellspacing="0">
@@ -40,8 +40,40 @@
 <td><p><tt><span class="code"><span class="sym">):</span>Boolean<span class="sym">;</span></span></tt></p></td>
 </tr>
 </table>
-<hr>
+<h2>Arguments</h2>
+<table cellpadding="0" cellspacing="0">
+<tr>
+<td valign="top"><p><tt><span class="code">reference</span></tt></p></td>
+<td><p>&nbsp;&nbsp;</p></td>
+<td><p class="cmt">The reference int value represented by this radio button.</p></td>
+</tr>
+<tr>
+<td valign="top"><p><tt><span class="code">r</span></tt></p></td>
+<td><p>&nbsp;&nbsp;</p></td>
+<td><p class="cmt">optionally provides a location and size for the button</p></td>
+</tr>
+<tr>
+<td valign="top"><p><tt><span class="code">Text</span></tt></p></td>
+<td><p>&nbsp;&nbsp;</p></td>
+<td><p class="cmt">text to display on the button</p></td>
+</tr>
+<tr>
+<td valign="top"><p><tt><span class="code">Value</span></tt></p></td>
+<td><p>&nbsp;&nbsp;</p></td>
+<td><p class="cmt">The value parameter compared to the reference value parameter.</p></td>
+</tr>
+<tr>
+<td valign="top"><p><tt><span class="code">style</span></tt></p></td>
+<td><p>&nbsp;&nbsp;</p></td>
+<td><p class="cmt">optional style flag to modify the look </p></td>
+</tr>
+</table>
+<h2>Function result</h2>
+<p>True if the radio button value changed</p>
+<h2>Description</h2>
+<p>Radio buttons are typically used in groups to display and edit the possible reference values taken by an integer value. </p>
+<p>One radio button is representing a possible reference value taken by the current value. It is displaying a boolean state true if the current value is equal to the reference value.</p>
+<img alt="" src="../fpdoc/images/radiobutton.png">
 
-<span class="footer">Documentation generated on: Jan 12 2012</span>
 </body>
 </html>

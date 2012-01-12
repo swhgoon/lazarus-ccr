@@ -186,8 +186,6 @@ type
     procedure doTextureView(const aRect: Rect; const texID: integer; zoomRect: Rect; mipLevel: integer = -1; texelScale: double = 1; texelOffset: double = 0; red: integer = 0; green: integer = 1; blue: integer = 2; alpha: integer = 3; style: integer = 0);
 
   protected
-    function getPainter: UIPainter;
-
     function window: Rect;
 
   private
@@ -970,11 +968,6 @@ begin
     zoomRect.Rect(0, 0, rt.w, rt.h);
 
   Painter.drawTextureView(rr, texID, rt, zoomRect, mipLevel, texelScale, texelOffset, red, green, blue, alpha, style);
-end;
-
-function UIContext.getPainter: UIPainter;
-begin
-  Result := Painter;
 end;
 
 function UIContext.window: Rect;

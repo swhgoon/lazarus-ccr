@@ -23,9 +23,6 @@
         <short>UI constructor</short>
         <descr>Allows for overriding the standard painter</descr>
       </element>
-      <element name="GlutUIContext.m_ownPainter">
-        <short>Variable indicating a default painter object</short>
-      </element>
       <element name="GlutUIContext">
         <short>GLut specific UI context</short>
       </element>

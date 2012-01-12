@@ -111,8 +111,8 @@ destructor TGLUTBitmapFont.Destroy;
 var
   i: integer;
 begin
-  //for i := 0 to FCount - 1 do
-  //  FFontList[i].Font.Clean;
+  for i := 0 to FCount - 1 do
+    glDeleteLists(FFontList[i].TextListBase, 128);
 
   inherited Destroy;
 end;

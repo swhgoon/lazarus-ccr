@@ -10,11 +10,11 @@
 <table class="bar" width="100%" border="0" cellpadding="4" cellspacing="0">
 <tr>
 <td><b>[<a href="../nvcontext/index.html">Overview</a>][<a href="../nvcontext/index-4.html">Classes</a>][<a href="../nvcontext/index-8.html">Index</a>]</b></td>
-<td align="right"><span class="bartitle">Reference for unit 'nvContext' (<a href="../index.html">#nvwidgets</a>)</span></td>
+<td align="right"><span class="bartitle">Reference for unit 'nvContext' (<a href="../index.html">#nvidia-widgets</a>)</span></td>
 </tr>
 </table>
 <h1>UIContext.doLabel</h1>
-<p></p>
+<p>UI method for drawing a static text label</p>
 <h2>Declaration</h2>
 <p>Source position: nvcontext.pas line 82</p>
 <table cellpadding="0" cellspacing="0">
@@ -34,8 +34,35 @@
 <td><p><tt><span class="code"><span class="sym">)</span><span class="sym">;</span></span></tt></p></td>
 </tr>
 </table>
-<hr>
+<h2>Arguments</h2>
+<table cellpadding="0" cellspacing="0">
+<tr>
+<td valign="top"><p><tt><span class="code">r</span></tt></p></td>
+<td><p>&nbsp;&nbsp;</p></td>
+<td><p class="cmt">optionally provides a location and size for the label</p></td>
+</tr>
+<tr>
+<td valign="top"><p><tt><span class="code">Text</span></tt></p></td>
+<td><p>&nbsp;&nbsp;</p></td>
+<td><p class="cmt">Text to display for the label (can have several lines)</p></td>
+</tr>
+<tr>
+<td valign="top"><p><tt><span class="code">style</span></tt></p></td>
+<td><p>&nbsp;&nbsp;</p></td>
+<td><p class="cmt">optional style flag to modify the look</p></td>
+</tr>
+</table>
+<h2>Description</h2>
+<p>The label displays a non interactive text.</p>
+<p>The style flag enables to draw the label in two distinct styles. The first one is default <var>(style = 0)</var> and displays the label simply as text. The alternative <var>(style = 1)</var> displays the label with a frame around it. An example is shown in the following figure.</p>
+<img alt="" src="../fpdoc/images/label.png">
 
-<span class="footer">Documentation generated on: Jan 12 2012</span>
+<p>The <var>Text</var> variable can have multiple lines.</p>
+<p>Example code how to implement a label</p>
+<pre>none<span class="sym">.</span>Rect<span class="sym">(</span><span class="num">0</span><span class="sym">,</span> <span class="num">0</span><span class="sym">)</span><span class="sym">;</span>
+ui<span class="sym">.</span>beginGroup<span class="sym">(</span>GroupFlags_GrowDownFromRight<span class="sym">)</span><span class="sym">;</span>
+  ui<span class="sym">.</span>doLabel<span class="sym">(</span>none<span class="sym">,</span> Text<span class="sym">)</span><span class="sym">;</span>
+ui<span class="sym">.</span>endGroup<span class="sym">;</span>
+</pre>
 </body>
 </html>
