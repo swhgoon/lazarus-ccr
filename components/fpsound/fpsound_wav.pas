@@ -1,4 +1,16 @@
 {
+WAV format reader for the fpSound library
+
+License: The same modified LGPL as the LCL
+
+Authors:
+
+JiXian Yang
+Felipe Monteiro de Carvalho
+
+Canonical WAV file description here:
+
+https://ccrma.stanford.edu/courses/422/projects/WaveFormat/
 }
 unit fpsound_wav;
 
@@ -7,95 +19,155 @@ unit fpsound_wav;
 interface
 
 uses
-  Classes, SysUtils; 
+  Classes, SysUtils, Math,
+  fpsound;
 
 // WAVE UTILS
 
 type
+  // WAV is formed by the following structures in this order
+  // All items are in little endian order, except the char arrays
+  // Items might be in big endian order if the RIFF identifier is RIFX
+
   TRiffHeader = packed record
-    ID      : array [0..3] of char;
-    Size    : LongWord;
-    Format  : array [0..3] of char;
+    ID      : array [0..3] of char; // should be RIFF
+    Size    : LongWord; // 4 + (8 + SubChunk1Size) + (8 + SubChunk2Size). The entire file size excluding TRiffHeader.ID and .Size
+    Format  : array [0..3] of char; // should be WAVE
   end;
 
   TWaveFormat = packed record
-    ID            : array [0..3] of char;
-    Size          : LongWord;
-    Format        : Word;
-    Channels      : Word;
-    SampleRate    : LongWord;
-    ByteRate      : LongWord;
-    BlockAlign    : Word;
-    BitsPerSample : Word;
+    ID            : array [0..3] of char; // Should be "fmt "
+    Size          : LongWord; // SubChunk1Size
+    Format        : Word; // PCM = 1 (Linear quantization), values > 1 indicate a compressed format
+    Channels      : Word; // Mono = 1, Stereo = 2, etc
+    SampleRate    : LongWord; // 8000, 44100, etc
+    ByteRate      : LongWord; // = SampleRate * NumChannels * BitsPerSample/8
+    BlockAlign    : Word; // = NumChannels * BitsPerSample/8
+    BitsPerSample : Word; // examples: 8 bits, 16 bits, etc
   end;
+  // If the format is not PCM then there will also be:
+//  TWaveFormatExtension = packed record
+//    ExtraParamSize: Word;
+//    ExtraParams...
+//  end;
 
   TDataChunk = packed record
-    Id      : array [0..3] of char;
-    Size    : LongWord;
+    Id      : array [0..3] of char; // should be "data"
+    Size    : LongWord; // == NumSamples * NumChannels * BitsPerSample/8
   end;
+  // And after this header the actual data comes, which is an array of samples
 
   { TWaveReader }
 
-  TWaveReader = class(TObject)
-  private
-    loaded    : Boolean;
-    chunkdata : TDataChunk;
-    chunkpos  : Int64;
-    pos       : Int64;
-    eof       : Boolean;
+  TWaveReader = class(TSoundReader)
   public
-    fmt   : TWaveFormat;
-    fStream   : TStream;
-    function LoadFromStream(AStream: TStream): Boolean;
-    function ReadBuf(var Buffer; BufferSize: Integer): Integer;
+    fmt: TWaveFormat;
+    datachunk: TDataChunk;
+    NumSamples: Integer;
+    procedure ReadFromStream(AStream: TStream; ADest: TSoundDocument); override;
+    procedure ReadHeaders(AStream: TStream; ADest: TSoundDocument);
+    procedure ReadAllSamples(AStream: TStream; ADest: TSoundDocument);
+    procedure ReadSample(AStream: TStream; ADest: TSoundDocument);
+    procedure ReadChannelData(AStream: TStream; out AValue: Integer);
+    //function ReadBuf(var Buffer; BufferSize: Integer): Integer;
   end;
 
 implementation
 
 const
   ID_RIFF = 'RIFF';
-  ID_WAVE = 'WAVE';
-  ID_fmt  = 'fmt ';
+  ID_WAVE ='WAVE';
+  fD_fmt  = 'fmt ';
   ID_data = 'data';
 
 { TWaveReader }
 
-function TWaveReader.LoadFromStream(AStream:TStream):Boolean;
+procedure TWaveReader.ReadFromStream(AStream:TStream; ADest: TSoundDocument);
+begin
+  ReadHeaders(AStream, ADest);
+  ReadAllSamples(AStream, ADest);
+end;
+
+procedure TWaveReader.ReadHeaders(AStream: TStream; ADest: TSoundDocument);
 var
   riff  : TRiffHeader;
+  lKeyElement: TSoundKeyElement;
 begin
-  fStream:=AStream;
-  loaded:=True;
-  try
-    Result:=fStream.Read(riff, sizeof(riff))=sizeof(riff);
-    riff.Size:=LEtoN(riff.Size);
-    Result:=Result and (riff.ID=ID_RIFF) and (riff.Format=ID_WAVE);
-    if not Result then Exit;
+  AStream.Read(riff, sizeof(riff));//=sizeof(riff);
+  riff.Size:=LEtoN(riff.Size);
+  //Result:=Result and (riff.ID=ID_RIFF) and (riff.Format=ID_WAVE);
+  //if not Result then Exit;
 
-    Result:=fStream.Read(fmt, sizeof(fmt))=sizeof(fmt);
-    fmt.Size:=LEtoN(fmt.Size);
-    fmt.Format:=LEtoN(fmt.Format);
-    fmt.Channels:=LEtoN(fmt.Channels);
-    fmt.SampleRate:=LEtoN(fmt.SampleRate);
-    fmt.ByteRate:=LEtoN(fmt.ByteRate);
-    fmt.BlockAlign:=LEtoN(fmt.BlockAlign);
-    fmt.BitsPerSample:=LEtoN(fmt.BitsPerSample);
+  AStream.Read(fmt, sizeof(fmt));//=sizeof(fmt);
+  fmt.Size:=LEtoN(fmt.Size);
+  fmt.Format:=LEtoN(fmt.Format);
+  fmt.Channels:=LEtoN(fmt.Channels);
+  fmt.SampleRate:=LEtoN(fmt.SampleRate);
+  fmt.ByteRate:=LEtoN(fmt.ByteRate);
+  fmt.BlockAlign:=LEtoN(fmt.BlockAlign);
+  fmt.BitsPerSample:=LEtoN(fmt.BitsPerSample);
 
-    Result:=fmt.ID=ID_fmt;
-    pos:=-1;
-  except
-    Result:=False;
-    Exit;
+  AStream.Read(datachunk, sizeof(datachunk));
+  datachunk.Size := LEtoN(datachunk.Size);
+
+  NumSamples := fmt.BlockAlign div datachunk.size;
+
+  //Result:=fmt.ID=ID_fmt;
+//  pos:=-1;
+
+  // Store the data in the document
+  lKeyElement := TSoundKeyElement.Create;
+  lKeyElement.SampleRate := fmt.SampleRate;
+  lKeyElement.Channels := fmt.Channels;
+  ADest.AddSoundElement(lKeyElement);
+end;
+
+procedure TWaveReader.ReadAllSamples(AStream: TStream; ADest: TSoundDocument);
+var
+  i: Integer;
+begin
+  for i := 0 to NumSamples - 1 do
+    ReadSample(AStream, ADest);
+end;
+
+procedure TWaveReader.ReadSample(AStream: TStream; ADest: TSoundDocument);
+var
+  lSoundSample: TSoundSample;
+  i: Integer;
+  lValue: Integer;
+begin
+  lSoundSample := TSoundSample.Create;
+
+  SetLength(lSoundSample.ChannelValues, fmt.Channels);
+  for i := 0 to fmt.Channels - 1 do
+  begin
+    ReadChannelData(AStream, lValue);
+    lSoundSample.ChannelValues[i] := lValue;
   end;
+
+  ADest.AddSoundElement(lSoundSample);
 end;
 
-function Min(a,b: Integer): Integer;
+procedure TWaveReader.ReadChannelData(AStream: TStream; out AValue: Integer);
+var
+  lByteData: Byte;
+  lWordData: SmallInt;
 begin
-  if a<b then Result:=a
-  else Result:=b;
+  if fmt.BitsPerSample = 8 then
+  begin
+    lByteData := AStream.ReadByte();
+    AValue := lByteData;
+  end
+  else if fmt.BitsPerSample = 16 then
+  begin
+    AStream.Read(lWordData, 2);
+    AValue := lWordData;
+  end
+  else
+    raise Exception.Create(Format('[TWaveReader.ReadChannelData] Invalid number of bits per sample: %d', [fmt.BitsPerSample]));
 end;
 
-function TWaveReader.ReadBuf(var Buffer;BufferSize:Integer):Integer;
+{function TWaveReader.ReadBuf(var Buffer;BufferSize:Integer):Integer;
 var
   sz  : Integer;
   p   : PByteArray;
@@ -135,7 +207,9 @@ begin
     end;
   end;
   Result:=i;
-end;
+end;}
 
+initialization
+  RegisterSoundReader(TWaveReader.Create, sfWav);
 end.
 

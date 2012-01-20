@@ -302,7 +302,7 @@ begin
   while (processed > 0) and (processed <= al_bufcount) do
   begin
     alSourceUnqueueBuffers(al_source, 1, @buffer);
-    sz:=wave.ReadBuf(al_readbuf^, al_bufsize);
+//f/    sz:=wave.ReadBuf(al_readbuf^, al_bufsize);
     if sz <= 0 then
     begin
       Exit(False);
@@ -328,7 +328,7 @@ begin
 
   for i := 0 to al_bufcount - 1 do
   begin
-    if wave.ReadBuf(al_readbuf^, al_bufsize) = 0 then
+//f/    if wave.ReadBuf(al_readbuf^, al_bufsize) = 0 then
       Break;
 
     alBufferData(al_buffers[i], al_format, al_readbuf, al_bufsize, al_rate);
@@ -370,7 +370,7 @@ begin
 
   // inittialize codec
   wave:=TWaveReader.Create;
-  if not wave.LoadFromStream(source) then
+//f/  if not wave.LoadFromStream(source) then
     raise Exception.Create('[OPCSoundLoadWavFromStream] unable to read WAVE format');
 
   if wave.fmt.Format<>1 then

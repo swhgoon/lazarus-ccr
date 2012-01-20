@@ -18,18 +18,40 @@ uses
 type
   TSoundDocument = class;
 
-  TSoundFormat = (sfWav, sfMP3);
+  TSoundFormat = (sfWav, sfMP3, sfOGG, sfMID, sfAMR, sf3GP, sfMP4);
+
+  { TSoundReader }
 
   TSoundReader = class
   public
+    constructor Create; virtual;
     procedure ReadFromStream(AStream: TStream; ADest: TSoundDocument); virtual; abstract;
   end;
 
-  TSoundPlayerKind = (spOpenAL, spMPlayer, spFMod, spExtra1);
+  TSoundPlayerKind = (spOpenAL, spMPlayer, spFMod, spExtra1, spExtra2);
+
+  { TSoundPlayer }
 
   TSoundPlayer = class
   public
+    constructor Create; virtual;
     procedure Play(ASound: TSoundDocument); virtual; abstract;
+  end;
+
+  // Sound data representation
+
+  TSoundElement = class
+  end;
+
+  // A Key element sets the basic information of the music for the following samples,
+  // such as sample rate. It has no sample data in itself
+  TSoundKeyElement = class(TSoundElement)
+    SampleRate: Cardinal; // example values: 8000, 44100, etc.
+    Channels: Byte; // Number of channels
+  end;
+
+  TSoundSample = class(TSoundElement)
+    ChannelValues: array of Integer;
   end;
 
   { TSoundDocument }
@@ -38,11 +60,18 @@ type
   private
     AStream: TStream;
     FPlayer: TSoundPlayer;
+    FSoundData: TFPList; // of TSoundElement
   public
     constructor Create; virtual;
     destructor Destroy; override;
+    // Document read/save methods
     procedure LoadFromFile(AFileName: string);
     procedure LoadFromFile(AFileName: string; AFormat: TSoundFormat);
+    class function GuessFormatFromSoundFile(AFileName: string): TSoundFormat;
+    // Document edition methods
+    procedure Clear;
+    procedure AddSoundElement(const AElement: TSoundElement);
+    // Document playing methods
     procedure Play;
     procedure Pause;
     procedure Seek(ANewPos: Double);
@@ -57,9 +86,9 @@ function GetSoundReader(AFormat: TSoundFormat): TSoundReader;
 implementation
 
 var
-  GSoundPlayers: array[TSoundPlayerKind] of TSoundPlayer = (nil, nil, nil, nil);
-  GSoundReader: array[TSoundFormat] of TSoundReader = (nil, nil);
-//  GSoundWriter: array[TSoundFormat] of TSoundWriter = (nil, nil);
+  GSoundPlayers: array[TSoundPlayerKind] of TSoundPlayer = (nil, nil, nil, nil, nil);
+  GSoundReaders: array[TSoundFormat] of TSoundReader = (nil, nil, nil, nil, nil, nil, nil);
+//  GSoundWriter: array[TSoundFormat] of TSoundWriter = (nil, nil, nil, nil, nil, nil, nil);
 
 procedure RegisterSoundPlayer(APlayer: TSoundPlayer; AKind: TSoundPlayerKind);
 begin
@@ -68,44 +97,94 @@ end;
 
 procedure RegisterSoundReader(AReader: TSoundReader; AFormat: TSoundFormat);
 begin
-  GSoundReader[AFormat] := AReader;
+  GSoundReaders[AFormat] := AReader;
 end;
 
 function GetSoundPlayer(AKind: TSoundPlayerKind): TSoundPlayer;
 begin
-
+  Result := GSoundPlayers[AKind];
 end;
 
 function GetSoundReader(AFormat: TSoundFormat): TSoundReader;
 begin
+  Result := GSoundReaders[AFormat];
+end;
 
+{ TSoundPlayer }
+
+constructor TSoundPlayer.Create;
+begin
+  inherited Create;
+end;
+
+{ TSoundReader }
+
+constructor TSoundReader.Create;
+begin
+  inherited Create;
 end;
 
 { TSoundDocument }
 
 constructor TSoundDocument.Create;
 begin
+  inherited Create;
 
+  FSoundData := TFPList.Create;
 end;
 
 destructor TSoundDocument.Destroy;
 begin
+  FSoundData.Free;
   inherited Destroy;
 end;
 
 procedure TSoundDocument.LoadFromFile(AFileName: string);
 var
-  lExt: String;
+  lFormat: TSoundFormat;
 begin
-  lExt := ExtractFileExt(AFileName);
-  if CompareText(lExt, 'wav') = 0 then LoadFromFile(AFileName, sfWav)
-  else
-    raise Exception.Create(Format('[TSoundDocument.LoadFromFile] Unknown extension: %s', [lExt]));
+  lFormat := GuessFormatFromSoundFile(AFileName);
+  LoadFromFile(AFileName, lFormat);
 end;
 
 procedure TSoundDocument.LoadFromFile(AFileName: string; AFormat: TSoundFormat);
+var
+  lReader: TSoundReader;
+  lStream: TFileStream;
 begin
+  lReader := GetSoundReader(AFormat);
+  lStream := TFileStream.Create(AFileName, fmOpenRead);
+  try
+    Clear();
+    lReader.ReadFromStream(lStream, Self);
+  finally
+    lStream.Free;
+  end;
+end;
 
+class function TSoundDocument.GuessFormatFromSoundFile(AFileName: string): TSoundFormat;
+var
+  lExt: String;
+begin
+  Result := sfWav;
+  lExt := ExtractFileExt(AFileName);
+  if CompareText(lExt, 'wav') = 0 then Result := sfWav;
+  //raise Exception.Create(Format('[TSoundDocument.LoadFromFile] Unknown extension: %s', [lExt]));
+end;
+
+procedure TSoundDocument.Clear;
+var
+  i: Integer;
+begin
+  for i := 0 to FSoundData.Count - 1 do
+    TSoundElement(FSoundData.Items[i]).Free;
+
+  FSoundData.Clear;
+end;
+
+procedure TSoundDocument.AddSoundElement(const AElement: TSoundElement);
+begin
+  FSoundData.Add(AElement);
 end;
 
 procedure TSoundDocument.Play;
@@ -128,5 +207,15 @@ begin
 
 end;
 
+var
+  lReaderIndex: TSoundFormat;
+  lPlayerIndex: TSoundPlayerKind;
+
+finalization
+  for lReaderIndex := Low(TSoundFormat) to High(TSoundFormat) do
+    if GSoundReaders[lReaderIndex] <> nil then GSoundReaders[lReaderIndex].Free;
+
+  for lPlayerIndex := Low(TSoundPlayerKind) to High(TSoundPlayerKind) do
+    if GSoundPlayers[lPlayerIndex] <> nil then GSoundPlayers[lPlayerIndex].Free;
 end.
 
