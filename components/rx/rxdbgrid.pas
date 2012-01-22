@@ -2136,7 +2136,14 @@ var
   TxS: TTextStyle;
 begin
   TotalWidth := GetClientRect.Right;
-  TotalYOffs := GCache.ClientHeight;
+  // от сель --------------
+    if ScrollBarIsVisible(SB_HORZ) then
+      TotalYOffs := GCache.ClientHeight - (GetSystemMetrics(SM_CYHSCROLL) +
+        GetSystemMetrics(SM_SWSCROLLBARSPACING))
+    else
+      TotalYOffs := GCache.ClientHeight;
+  // до сель --------------
+//  TotalYOffs := GCache.ClientHeight;
   FooterRect := Rect(0, TotalYOffs, TotalWidth, TotalYOffs +
     DefaultRowHeight * FooterRowCount + 2);
 
