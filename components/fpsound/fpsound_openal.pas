@@ -20,6 +20,9 @@ var
   al_context  : PALCcontext;
 
 type
+
+  { TOpenALPlayer }
+
   TOpenALPlayer = class(TSoundPlayer)
   private
 {    buffer : Cardinal;
@@ -43,13 +46,14 @@ type
     al_rate     : Longword;
     wave       : TWaveReader;
   public
+    procedure Initialize; override;
+    procedure Finalize; override;
+    procedure Play(ASound: TSoundDocument); override;
+    procedure AdjustToKeyElement(AElement: TSoundKeyElement);
     //procedure OPCSoundPlayStreamEx(AStream: TStream);
-    procedure OPCSoundOpenALPlay();
-    procedure OPCSoundOpenALLoadWavFromStream(AStream: TStream);
-    procedure OPCSoundOpenALInitialize();
-    procedure OPCSoundOpenALFinalize();
     procedure alStop;
     function alProcess: Boolean;
+    procedure alFillBuffer(ASound: TSoundDocument; AKeyElement: TSoundKeyElement);
   end;
 
 
@@ -314,22 +318,71 @@ begin
   Result := True;
 end;
 
-procedure TOpenALPlayer.OPCSoundOpenALPlay();
+procedure TOpenALPlayer.alFillBuffer(ASound: TSoundDocument; AKeyElement: TSoundKeyElement);
+var
+  lCurSample: TSoundSample;
+  lReadCount: Integer = 0;
+begin
+  while lReadCount < al_bufsize do
+  begin
+    lCurSample := ASound.GetNextSoundElement() as TSoundSample;
+    if lCurSample = nil then Exit;
+
+    lReadCount := lReadCount + AKeyElement.BitsPerSample div 8;
+
+    if AKeyElement.BitsPerSample = 8 then
+      PByte(al_readbuf)[lReadCount] := Lo(lCurSample.ChannelValues[0])
+    else
+      PWord(al_readbuf)[lReadCount div 2] := Word(lCurSample.ChannelValues[0])
+  end;
+end;
+
+procedure TOpenALPlayer.Initialize;
+begin
+  alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
+  alGenSources(1, @al_source);
+  alGenBuffers(al_bufcount, @al_buffers);
+
+  GetMem(al_readbuf, al_bufsize);
+end;
+
+procedure TOpenALPlayer.Finalize;
+begin
+  // finalize openal
+  alDeleteSources(1, @al_source);
+  alDeleteBuffers(al_bufcount, @al_buffers);
+  FreeMem(al_readbuf);
+
+//  wave.fStream := nil;
+//  source := nil;
+
+  // finalize codec
+  wave.Free;
+
+  // close file
+//  source.Free;
+end;
+
+procedure TOpenALPlayer.Play(ASound: TSoundDocument);
 var
   i: Integer;
   queued  : Integer;
   done    : Boolean;
+  lKeyElement: TSoundKeyElement;
 begin
-  if not OPCSoundStreamIsLoaded then Exit;
+  // First adjust to the first key element
+  lKeyElement := ASound.GetFirstSoundElement();
+  AdjustToKeyElement(lKeyElement);
 
+  // Now clean up the source
   alSourceStop(al_source);
   alSourceRewind(al_source);
   alSourcei(al_source, AL_BUFFER, 0);
 
   for i := 0 to al_bufcount - 1 do
   begin
-//f/    if wave.ReadBuf(al_readbuf^, al_bufsize) = 0 then
-      Break;
+    // Fill the buffer
+    AlFillBuffer(ASound, lKeyElement);
 
     alBufferData(al_buffers[i], al_format, al_readbuf, al_bufsize, al_rate);
     alSourceQueueBuffers(al_source, 1, @al_buffers[i]);
@@ -350,45 +403,26 @@ begin
   until done;
 end;
 
-procedure TOpenALPlayer.OPCSoundOpenALLoadWavFromStream(AStream: TStream);
-var
-  Filename: String;
-  queued  : Integer;
-  done    : Boolean;
+procedure TOpenALPlayer.AdjustToKeyElement(AElement: TSoundKeyElement);
 begin
-  if AStream = nil then
-  begin
-    OPCSoundStreamIsLoaded := False;
-    Exit;
-  end
-  else
-    OPCSoundStreamIsLoaded := True;
-
-  FreeAndNil(source);
   // define codec
-  source := AStream;
+  //source := AStream;
 
   // inittialize codec
-  wave:=TWaveReader.Create;
-//f/  if not wave.LoadFromStream(source) then
-    raise Exception.Create('[OPCSoundLoadWavFromStream] unable to read WAVE format');
-
-  if wave.fmt.Format<>1 then
-    raise Exception.Create('[OPCSoundLoadWavFromStream] WAVE files with compression aren''t supported');
-
-  if wave.fmt.Channels=2 then begin
-    if wave.fmt.BitsPerSample=8 then al_format:=AL_FORMAT_STEREO8
-    else al_format:=AL_FORMAT_STEREO16
-  end else begin
-    if wave.fmt.BitsPerSample=8 then al_format:=AL_FORMAT_MONO8
+  if AElement.Channels = 1 then
+  begin
+    if AElement.BitsPerSample=8 then al_format:=AL_FORMAT_MONO8
     else al_format:=AL_FORMAT_MONO16
+  end
+  else
+  begin
+    if AElement.BitsPerSample=8 then al_format := AL_FORMAT_STEREO8
+    else al_format:=AL_FORMAT_STEREO16
   end;
 
-  codec_bs:=2*wave.fmt.Channels;
-
-  //al_bufsize := 20000 - (20000 mod codec_bs);
+  codec_bs:=2*AElement.Channels;
   al_bufsize := 20000 - (20000 mod codec_bs);
-  al_rate:=wave.fmt.SampleRate;
+  al_rate:=AElement.SampleRate;
 //  WriteLn('Blocksize    : ', codec_bs);
 //  WriteLn('Rate         : ', wave.fmt.SampleRate);
 //  WriteLn('Channels     : ', wave.fmt.Channels);
@@ -398,35 +432,5 @@ begin
   alProcess();
 end;
 
-procedure TOpenALPlayer.OPCSoundOpenALInitialize();
-begin
-  OPCSoundWasInitialized := True;
-
-  alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
-  alGenSources(1, @al_source);
-  alGenBuffers(al_bufcount, @al_buffers);
-
-  GetMem(al_readbuf, al_bufsize);
-end;
-
-procedure TOpenALPlayer.OPCSoundOpenALFinalize();
-begin
-  // finalize openal
-  alDeleteSources(1, @al_source);
-  alDeleteBuffers(al_bufcount, @al_buffers);
-  FreeMem(al_readbuf);
-
-//  wave.fStream := nil;
-//  source := nil;
-
-  // finalize codec
-  wave.Free;
-
-  // close file
-//  source.Free;
-end;
-
-finalization
-  //if OPCSoundWasInitialized then OPCSoundOpenALFinalize();
 end.
 

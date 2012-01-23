@@ -16,6 +16,7 @@ type
     btnOpenPlayAndClose: TButton;
     pathEdit: TFileNameEdit;
     procedure btnOpenPlayAndCloseClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { private declarations }
   public
@@ -39,7 +40,16 @@ var
 begin
   lSoundDoc := TSoundDocument.Create;
   lSoundDoc.LoadFromFile(pathEdit.FileName);
-  lSoundDoc.Free;
+  lSoundDoc.SetSoundPlayer(spOpenAL);
+  lSoundDoc.Play;
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  {$ifdef Windows}
+  pathEdit.FileName := ExtractFilePath(Application.ExeName) + '..\testsounds\test.wav';
+  pathEdit.FileName := SysUtils.ExpandFileName(pathEdit.FileName);
+  {$endif}
 end;
 
 end.

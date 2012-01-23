@@ -118,6 +118,7 @@ begin
   // Store the data in the document
   lKeyElement := TSoundKeyElement.Create;
   lKeyElement.SampleRate := fmt.SampleRate;
+  lKeyElement.BitsPerSample := fmt.BitsPerSample;
   lKeyElement.Channels := fmt.Channels;
   ADest.AddSoundElement(lKeyElement);
 end;

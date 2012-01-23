@@ -35,7 +35,11 @@ type
   TSoundPlayer = class
   public
     constructor Create; virtual;
+    procedure Initialize; virtual; abstract;
+    procedure Finalize; virtual; abstract;
     procedure Play(ASound: TSoundDocument); virtual; abstract;
+    procedure Pause(ASound: TSoundDocument); virtual; abstract;
+    procedure Stop(ASound: TSoundDocument); virtual; abstract;
   end;
 
   // Sound data representation
@@ -46,12 +50,22 @@ type
   // A Key element sets the basic information of the music for the following samples,
   // such as sample rate. It has no sample data in itself
   TSoundKeyElement = class(TSoundElement)
+  public
     SampleRate: Cardinal; // example values: 8000, 44100, etc.
+    BitsPerSample: Byte; // Tipical values: 8 and 16
     Channels: Byte; // Number of channels
   end;
 
   TSoundSample = class(TSoundElement)
-    ChannelValues: array of Integer;
+  public
+    ChannelValues: array of SmallInt;
+  end;
+
+  { TSoundThread }
+
+  TSoundThread = class(TThread)
+  protected
+    procedure Execute; override;
   end;
 
   { TSoundDocument }
@@ -60,6 +74,7 @@ type
   private
     AStream: TStream;
     FPlayer: TSoundPlayer;
+    FCurElementIndex: Integer;
     FSoundData: TFPList; // of TSoundElement
   public
     constructor Create; virtual;
@@ -71,9 +86,14 @@ type
     // Document edition methods
     procedure Clear;
     procedure AddSoundElement(const AElement: TSoundElement);
+    function GetSoundElement(const AIndex: Integer): TSoundElement;
+    function GetSoundElementCount: Integer;
+    function GetFirstSoundElement: TSoundKeyElement;
+    function GetNextSoundElement: TSoundElement;
     // Document playing methods
     procedure Play;
     procedure Pause;
+    procedure Stop;
     procedure Seek(ANewPos: Double);
     procedure SetSoundPlayer(AKind: TSoundPlayerKind);
   end;
@@ -108,6 +128,13 @@ end;
 function GetSoundReader(AFormat: TSoundFormat): TSoundReader;
 begin
   Result := GSoundReaders[AFormat];
+end;
+
+{ TSoundThread }
+
+procedure TSoundThread.Execute;
+begin
+
 end;
 
 { TSoundPlayer }
@@ -187,24 +214,61 @@ begin
   FSoundData.Add(AElement);
 end;
 
+function TSoundDocument.GetSoundElement(const AIndex: Integer): TSoundElement;
+begin
+  Result := TSoundElement(FSoundData.Items[AIndex]);
+end;
+
+function TSoundDocument.GetSoundElementCount: Integer;
+begin
+  Result := FSoundData.Count;
+end;
+
+function TSoundDocument.GetFirstSoundElement: TSoundKeyElement;
+begin
+  if GetSoundElementCount() = 0 then
+    Result := nil
+  else
+    Result := GetSoundElement(0) as TSoundKeyElement;
+  FCurElementIndex := 1;
+end;
+
+function TSoundDocument.GetNextSoundElement: TSoundElement;
+begin
+  if GetSoundElementCount() >= FCurElementIndex then Exit(nil);
+  Result := GetSoundElement(FCurElementIndex);
+  Inc(FCurElementIndex);
+end;
+
 procedure TSoundDocument.Play;
 begin
-
+  if FPlayer = nil then Exit;
+  FPlayer.Play(Self);
 end;
 
 procedure TSoundDocument.Pause;
 begin
+  if FPlayer = nil then Exit;
+  FPlayer.Pause(Self);
+end;
 
+procedure TSoundDocument.Stop;
+begin
+  if FPlayer = nil then Exit;
+  FPlayer.Stop(Self);
+  FPlayer.Finalize;
 end;
 
 procedure TSoundDocument.Seek(ANewPos: Double);
 begin
+  if FPlayer = nil then Exit;
 
 end;
 
 procedure TSoundDocument.SetSoundPlayer(AKind: TSoundPlayerKind);
 begin
-
+  Stop;
+  FPlayer := GSoundPlayers[AKind];
 end;
 
 var
