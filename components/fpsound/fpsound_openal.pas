@@ -49,44 +49,6 @@ type
 
 implementation
 
-(*type
-  TOpenALThread = class(TThread)
-  private
-
-  public
-    FAOwner: TStream;
-    constructor Create(aOwner: TStream);
-    destructor Destroy; override;
-    procedure Execute; override;
-    procedure DoOpenALPlay;
-  end;
-
-var
-  TheLastThread: TOpenALThread;
-
-constructor TOpenALThread.Create(aOwner: TStream);
-begin
-  inherited Create(False);
-  FAOwner := aOwner;
-  FreeOnTerminate := True;
-end;
-
-destructor TOpenALThread.Destroy;
-begin
-
-  inherited Destroy;
-end;
-
-procedure TOpenALThread.Execute;
-begin
-  Synchronize(@DoOpenALPlay);
-end;
-
-procedure TOpenALThread.DoOpenALPlay;
-begin
-  OPCSoundPlayStreamEx(FAOwner);
-end;*)
-
 procedure TOpenALPlayer.alStop;
 begin
   alSourceStop(al_source);
