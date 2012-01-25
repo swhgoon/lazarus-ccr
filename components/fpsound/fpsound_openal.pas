@@ -9,16 +9,6 @@ interface
 uses
   Classes, SysUtils, openal, fpsound;
 
-// openal
-const
-  // Note: if you lower the al_bufcount, then you have to modify the al_polltime also!
-  al_bufcount           = 4;
-  al_polltime           = 100;
-
-var
-  al_device   : PALCdevice;
-  al_context  : PALCcontext;
-
 type
 
   { TOpenALPlayer }
@@ -30,17 +20,18 @@ type
     codec_bs   : Longword;
     al_source   : ALuint;
     al_format   : Integer;
-    al_buffers  : array[0..al_bufcount-1] of ALuint;
+    al_buffers  : array[0..0] of ALuint;
     al_bufsize  : Longword;
     al_readbuf  : Pointer;
     al_rate     : Longword;
+    al_bufcount : Integer;
   public
     procedure Initialize; override;
     procedure Finalize; override;
     procedure Play(ASound: TSoundDocument); override;
     procedure AdjustToKeyElement(ASound: TSoundDocument; AKeyElement: TSoundKeyElement);
     procedure alStop;
-    function alProcess(ASound: TSoundDocument; AKeyElement: TSoundKeyElement): Boolean;
+    //function alProcess(ASound: TSoundDocument; AKeyElement: TSoundKeyElement): Boolean;
     function alFillBuffer(ASound: TSoundDocument; AKeyElement: TSoundKeyElement): Integer;
   end;
 
@@ -54,7 +45,7 @@ begin
   alSourcei(al_source, AL_BUFFER, 0);
 end;
 
-function TOpenALPlayer.alProcess(ASound: TSoundDocument; AKeyElement: TSoundKeyElement): Boolean;
+{function TOpenALPlayer.alProcess(ASound: TSoundDocument; AKeyElement: TSoundKeyElement): Boolean;
 var
   processed : ALint;
   buffer    : ALuint;
@@ -74,14 +65,21 @@ begin
     Dec(processed);
   end;
   Result := True;
-end;
+end;}
 
 function TOpenALPlayer.alFillBuffer(ASound: TSoundDocument; AKeyElement: TSoundKeyElement): Integer;
 var
   lCurElement: TSoundElement;
   lReadCount: Integer = 0;
+  lBufferBytePtr: PByte;
+  lBufferWordPtr: PWord;
 begin
+  GetMem(al_readbuf, al_bufsize);
   Result := 0;
+
+  lBufferBytePtr := al_readbuf;
+  lBufferWordPtr := al_readbuf;
+
   while lReadCount < al_bufsize do
   begin
     lCurElement := ASound.GetNextSoundElement();
@@ -91,9 +89,15 @@ begin
     lReadCount := lReadCount + AKeyElement.BitsPerSample div 8;
 
     if AKeyElement.BitsPerSample = 8 then
-      PByte(al_readbuf)[lReadCount] := Lo((lCurElement as TSoundSample8).ChannelValues[0])
+    begin
+      lBufferBytePtr^ := Lo((lCurElement as TSoundSample8).ChannelValues[0]);
+      Inc(lBufferBytePtr);
+    end
     else
-      PWord(al_readbuf)[lReadCount div 2] := Word((lCurElement as TSoundSample16).ChannelValues[0])
+    begin
+      lBufferWordPtr^ := Word((lCurElement as TSoundSample16).ChannelValues[0]);
+      Inc(lBufferWordPtr, 2);
+    end;
   end;
 end;
 
@@ -116,6 +120,7 @@ begin
   alSourcei(al_source, AL_LOOPING, AL_FALSE);
 
 //  alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
+  al_bufcount := 1;
   alGenBuffers(al_bufcount, @al_buffers);
 end;
 
@@ -125,11 +130,12 @@ begin
   alDeleteSources(1, @al_source);
   alDeleteBuffers(al_bufcount, @al_buffers);
   if al_readbuf <> nil then FreeMem(al_readbuf);
+  alcDestroyContext(al_context);
+  alcCloseDevice(al_device);
 end;
 
 procedure TOpenALPlayer.Play(ASound: TSoundDocument);
 var
-  i: Integer;
   queued  : Integer;
   done    : Boolean;
   lKeyElement: TSoundKeyElement;
@@ -145,52 +151,13 @@ begin
   alSourceRewind(al_source);
   alSourcei(al_source, AL_BUFFER, 0);
 
-  for i := 0 to al_bufcount - 1 do
-  begin
-    // Fill the buffer
-    alFillBuffer(ASound, lKeyElement);
+  // Fill the buffer
+  alFillBuffer(ASound, lKeyElement);
+  alBufferData(al_buffers[0], al_format, al_readbuf, al_bufsize, al_rate);
+  alSourceQueueBuffers(al_source, 1, @al_buffers[0]);
 
-    alBufferData(al_buffers[i], al_format, al_readbuf, al_bufsize, al_rate);
-    alSourceQueueBuffers(al_source, 1, @al_buffers[i]);
-  end;
-
-  // Under windows, AL_LOOPING = AL_TRUE breaks queueing, no idea why
-  alSourcei(al_source, AL_LOOPING, AL_FALSE);
+  // Play the sound
   alSourcePlay(al_source);
-
-  {done:=False;
-  queued:=0;
-  repeat
-    if alProcess(ASound, lKeyElement) then
-    begin
-      alGetSourcei(al_source, AL_BUFFERS_QUEUED, queued);
-      done:=queued=0;
-    end;
-    Sleep(al_polltime);
-  until done;}
-
-  {
-  AlSourceStop(source);
-  AlGenBuffers(1, @buffer);
-  loop:=0;
-  LoadWavStream(AStream, format, data, size, freq, loop);
-  AlBufferData(buffer, format, data, size, freq);
-
-  if data<>nil then freemem(data);
-
-  AlGenSources(1, @source);
-  AlSourcei(source, AL_BUFFER, buffer);
-  AlSourcef(source, AL_PITCH, 1.0);
-  AlSourcef(source, AL_GAIN, 1.0);
-  AlSourcefv(source, AL_POSITION, @sourcepos);
-  AlSourcefv(source, AL_VELOCITY, @sourcevel);
-  // Under windows, AL_LOOPING = AL_TRUE breaks queueing, no idea why
-  // AlSourcei(source, AL_LOOPING, AL_TRUE);
-
-  AlListenerfv(AL_POSITION, @listenerpos);
-  AlListenerfv(AL_VELOCITY, @listenervel);
-  AlListenerfv(AL_ORIENTATION, @listenerori);
-  AlSourcePlay(source);}
 end;
 
 procedure TOpenALPlayer.AdjustToKeyElement(ASound: TSoundDocument; AKeyElement: TSoundKeyElement);
@@ -220,9 +187,8 @@ begin
 //  WriteLn('OpenAL Buffer Size : ', al_bufsize);
 
   if al_readbuf <> nil then FreeMem(al_readbuf);
-  GetMem(al_readbuf, al_bufsize);
 
-  alProcess(ASound, AKeyElement);
+  //alProcess(ASound, AKeyElement);
 end;
 
 initialization
