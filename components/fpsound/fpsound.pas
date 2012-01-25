@@ -28,11 +28,13 @@ type
     procedure ReadFromStream(AStream: TStream; ADest: TSoundDocument); virtual; abstract;
   end;
 
-  TSoundPlayerKind = (spOpenAL, spMPlayer, spFMod, spExtra1, spExtra2);
+  TSoundPlayerKind = (spNone, spOpenAL, spMPlayer, spFMod, spExtra1, spExtra2);
 
   { TSoundPlayer }
 
   TSoundPlayer = class
+  protected
+    FInitialized: Boolean;
   public
     constructor Create; virtual;
     procedure Initialize; virtual; abstract;
@@ -79,6 +81,7 @@ type
   private
     AStream: TStream;
     FPlayer: TSoundPlayer;
+    FPlayerKind: TSoundPlayerKind;
     FCurElementIndex: Integer;
     FSoundData: TFPList; // of TSoundElement
   public
@@ -103,6 +106,9 @@ type
     procedure SetSoundPlayer(AKind: TSoundPlayerKind);
   end;
 
+var
+  SoundPlayer: TSoundDocument;
+
 procedure RegisterSoundPlayer(APlayer: TSoundPlayer; AKind: TSoundPlayerKind);
 procedure RegisterSoundReader(AReader: TSoundReader; AFormat: TSoundFormat);
 function GetSoundPlayer(AKind: TSoundPlayerKind): TSoundPlayer;
@@ -111,7 +117,7 @@ function GetSoundReader(AFormat: TSoundFormat): TSoundReader;
 implementation
 
 var
-  GSoundPlayers: array[TSoundPlayerKind] of TSoundPlayer = (nil, nil, nil, nil, nil);
+  GSoundPlayers: array[TSoundPlayerKind] of TSoundPlayer = (nil, nil, nil, nil, nil, nil);
   GSoundReaders: array[TSoundFormat] of TSoundReader = (nil, nil, nil, nil, nil, nil, nil);
 //  GSoundWriter: array[TSoundFormat] of TSoundWriter = (nil, nil, nil, nil, nil, nil, nil);
 
@@ -168,6 +174,7 @@ end;
 destructor TSoundDocument.Destroy;
 begin
   FSoundData.Free;
+  if FPlayer <> nil then FPlayer.Finalize;
   inherited Destroy;
 end;
 
@@ -272,6 +279,8 @@ end;
 
 procedure TSoundDocument.SetSoundPlayer(AKind: TSoundPlayerKind);
 begin
+  if AKind = FPlayerKind then Exit;
+  FPlayerKind := AKind;
   Stop;
   FPlayer := GSoundPlayers[AKind];
 end;
@@ -280,7 +289,12 @@ var
   lReaderIndex: TSoundFormat;
   lPlayerIndex: TSoundPlayerKind;
 
+initialization
+  SoundPlayer := TSoundDocument.Create;
+
 finalization
+  SoundPlayer.Free;
+
   for lReaderIndex := Low(TSoundFormat) to High(TSoundFormat) do
     if GSoundReaders[lReaderIndex] <> nil then GSoundReaders[lReaderIndex].Free;
 

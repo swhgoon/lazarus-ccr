@@ -1,4 +1,12 @@
 {
+OpenAL player for the fpsound library
+
+License: The same modified LGPL as the LCL
+
+Authors:
+
+JiXian Yang
+Felipe Monteiro de Carvalho
 }
 unit fpsound_openal;
 
@@ -103,6 +111,8 @@ end;
 
 procedure TOpenALPlayer.Initialize;
 begin
+  if FInitialized then Exit;
+
   al_device := alcOpenDevice(nil);
   al_context := alcCreateContext(al_device, nil);
   alcMakeContextCurrent(al_context);
@@ -122,6 +132,8 @@ begin
 //  alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
   al_bufcount := 1;
   alGenBuffers(al_bufcount, @al_buffers);
+
+  FInitialized := True;
 end;
 
 procedure TOpenALPlayer.Finalize;
@@ -132,6 +144,7 @@ begin
   if al_readbuf <> nil then FreeMem(al_readbuf);
   alcDestroyContext(al_context);
   alcCloseDevice(al_device);
+  FInitialized := False;
 end;
 
 procedure TOpenALPlayer.Play(ASound: TSoundDocument);
@@ -140,7 +153,7 @@ var
   done    : Boolean;
   lKeyElement: TSoundKeyElement;
 begin
-  Initialize();
+  Initialize;
 
   // First adjust to the first key element
   lKeyElement := ASound.GetFirstSoundElement();
@@ -162,10 +175,7 @@ end;
 
 procedure TOpenALPlayer.AdjustToKeyElement(ASound: TSoundDocument; AKeyElement: TSoundKeyElement);
 begin
-  // define codec
-  //source := AStream;
-
-  // inittialize codec
+  // initialize codec
   if AKeyElement.Channels = 1 then
   begin
     if AKeyElement.BitsPerSample=8 then al_format:=AL_FORMAT_MONO8

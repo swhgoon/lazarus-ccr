@@ -13,7 +13,7 @@ object Form1: TForm1
     Height = 25
     Top = 48
     Width = 292
-    Caption = 'Open, Play and Close'
+    Caption = 'Load and Play'
     OnClick = btnOpenPlayAndCloseClick
     TabOrder = 0
   end

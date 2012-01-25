@@ -35,13 +35,10 @@ uses fpsound, fpsound_wav, fpsound_openal;
 { TForm1 }
 
 procedure TForm1.btnOpenPlayAndCloseClick(Sender: TObject);
-var
-  lSoundDoc: TSoundDocument;
 begin
-  lSoundDoc := TSoundDocument.Create;
-  lSoundDoc.LoadFromFile(pathEdit.FileName);
-  lSoundDoc.SetSoundPlayer(spOpenAL);
-  lSoundDoc.Play;
+  SoundPlayer.LoadFromFile(pathEdit.FileName);
+  SoundPlayer.SetSoundPlayer(spOpenAL);
+  SoundPlayer.Play;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
