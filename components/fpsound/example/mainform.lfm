@@ -19,7 +19,7 @@ object Form1: TForm1
   end
   object pathEdit: TFileNameEdit
     Left = 12
-    Height = 21
+    Height = 22
     Top = 13
     Width = 268
     FileName = '/home/felipe/Programas/lazarus-ccr/components/fpsound/testsounds/test.wav'

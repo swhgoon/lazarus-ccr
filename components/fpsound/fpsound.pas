@@ -56,7 +56,12 @@ type
     Channels: Byte; // Number of channels
   end;
 
-  TSoundSample = class(TSoundElement)
+  TSoundSample8 = class(TSoundElement)
+  public
+    ChannelValues: array of Byte;
+  end;
+
+  TSoundSample16 = class(TSoundElement)
   public
     ChannelValues: array of SmallInt;
   end;

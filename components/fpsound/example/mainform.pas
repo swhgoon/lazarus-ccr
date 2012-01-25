@@ -50,6 +50,10 @@ begin
   pathEdit.FileName := ExtractFilePath(Application.ExeName) + '..\testsounds\test.wav';
   pathEdit.FileName := SysUtils.ExpandFileName(pathEdit.FileName);
   {$endif}
+  {$ifdef Darwin}
+  pathEdit.FileName := ExtractFilePath(Application.ExeName) + '..\..\..\..\testsounds\test.wav';
+  pathEdit.FileName := SysUtils.ExpandFileName(pathEdit.FileName);
+  {$endif}
 end;
 
 end.

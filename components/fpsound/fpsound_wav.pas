@@ -68,7 +68,6 @@ type
     procedure ReadHeaders(AStream: TStream; ADest: TSoundDocument);
     procedure ReadAllSamples(AStream: TStream; ADest: TSoundDocument);
     procedure ReadSample(AStream: TStream; ADest: TSoundDocument);
-    procedure ReadChannelData(AStream: TStream; out AValue: Integer);
     //function ReadBuf(var Buffer; BufferSize: Integer): Integer;
   end;
 
@@ -133,39 +132,38 @@ end;
 
 procedure TWaveReader.ReadSample(AStream: TStream; ADest: TSoundDocument);
 var
-  lSoundSample: TSoundSample;
+  lSoundSample8: TSoundSample8;
+  lSoundSample16: TSoundSample16;
   i: Integer;
-  lValue: Integer;
-begin
-  lSoundSample := TSoundSample.Create;
-
-  SetLength(lSoundSample.ChannelValues, fmt.Channels);
-  for i := 0 to fmt.Channels - 1 do
-  begin
-    ReadChannelData(AStream, lValue);
-    lSoundSample.ChannelValues[i] := lValue;
-  end;
-
-  ADest.AddSoundElement(lSoundSample);
-end;
-
-procedure TWaveReader.ReadChannelData(AStream: TStream; out AValue: Integer);
-var
   lByteData: Byte;
   lWordData: SmallInt;
 begin
   if fmt.BitsPerSample = 8 then
   begin
-    lByteData := AStream.ReadByte();
-    AValue := lByteData;
+    lSoundSample8 := TSoundSample8.Create;
+    SetLength(lSoundSample8.ChannelValues, fmt.Channels);
+    for i := 0 to fmt.Channels - 1 do
+    begin
+      lByteData := AStream.ReadByte();
+      lSoundSample8.ChannelValues[i] := lByteData;
+    end;
+
+    ADest.AddSoundElement(lSoundSample8);
   end
   else if fmt.BitsPerSample = 16 then
   begin
-    AStream.Read(lWordData, 2);
-    AValue := lWordData;
+    lSoundSample16 := TSoundSample16.Create;
+    SetLength(lSoundSample16.ChannelValues, fmt.Channels);
+    for i := 0 to fmt.Channels - 1 do
+    begin
+      AStream.Read(lWordData, 2);
+      lSoundSample16.ChannelValues[i] := lWordData;
+    end;
+
+    ADest.AddSoundElement(lSoundSample16);
   end
   else
-    raise Exception.Create(Format('[TWaveReader.ReadChannelData] Invalid number of bits per sample: %d', [fmt.BitsPerSample]));
+    raise Exception.Create(Format('[TWaveReader.ReadSample] Invalid number of bits per sample: %d', [fmt.BitsPerSample]));
 end;
 
 {function TWaveReader.ReadBuf(var Buffer;BufferSize:Integer):Integer;

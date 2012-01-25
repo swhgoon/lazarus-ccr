@@ -49,11 +49,11 @@ type
     procedure Initialize; override;
     procedure Finalize; override;
     procedure Play(ASound: TSoundDocument); override;
-    procedure AdjustToKeyElement(AElement: TSoundKeyElement);
+    procedure AdjustToKeyElement(ASound: TSoundDocument; AKeyElement: TSoundKeyElement);
     //procedure OPCSoundPlayStreamEx(AStream: TStream);
     procedure alStop;
-    function alProcess: Boolean;
-    procedure alFillBuffer(ASound: TSoundDocument; AKeyElement: TSoundKeyElement);
+    function alProcess(ASound: TSoundDocument; AKeyElement: TSoundKeyElement): Boolean;
+    function alFillBuffer(ASound: TSoundDocument; AKeyElement: TSoundKeyElement): Integer;
   end;
 
 
@@ -296,7 +296,7 @@ begin
   alSourcei(al_source, AL_BUFFER, 0);
 end;
 
-function TOpenALPlayer.alProcess: Boolean;
+function TOpenALPlayer.alProcess(ASound: TSoundDocument; AKeyElement: TSoundKeyElement): Boolean;
 var
   processed : ALint;
   buffer    : ALuint;
@@ -306,7 +306,7 @@ begin
   while (processed > 0) and (processed <= al_bufcount) do
   begin
     alSourceUnqueueBuffers(al_source, 1, @buffer);
-//f/    sz:=wave.ReadBuf(al_readbuf^, al_bufsize);
+    sz := alFillBuffer(ASound, AKeyELement);
     if sz <= 0 then
     begin
       Exit(False);
@@ -318,22 +318,24 @@ begin
   Result := True;
 end;
 
-procedure TOpenALPlayer.alFillBuffer(ASound: TSoundDocument; AKeyElement: TSoundKeyElement);
+function TOpenALPlayer.alFillBuffer(ASound: TSoundDocument; AKeyElement: TSoundKeyElement): Integer;
 var
-  lCurSample: TSoundSample;
+  lCurElement: TSoundElement;
   lReadCount: Integer = 0;
 begin
+  Result := 0;
   while lReadCount < al_bufsize do
   begin
-    lCurSample := ASound.GetNextSoundElement() as TSoundSample;
-    if lCurSample = nil then Exit;
+    lCurElement := ASound.GetNextSoundElement();
+    if lCurElement = nil then Exit;
 
+    Inc(Result);
     lReadCount := lReadCount + AKeyElement.BitsPerSample div 8;
 
     if AKeyElement.BitsPerSample = 8 then
-      PByte(al_readbuf)[lReadCount] := Lo(lCurSample.ChannelValues[0])
+      PByte(al_readbuf)[lReadCount] := Lo((lCurElement as TSoundSample8).ChannelValues[0])
     else
-      PWord(al_readbuf)[lReadCount div 2] := Word(lCurSample.ChannelValues[0])
+      PWord(al_readbuf)[lReadCount div 2] := Word((lCurElement as TSoundSample16).ChannelValues[0])
   end;
 end;
 
@@ -372,7 +374,7 @@ var
 begin
   // First adjust to the first key element
   lKeyElement := ASound.GetFirstSoundElement();
-  AdjustToKeyElement(lKeyElement);
+  AdjustToKeyElement(ASound, lKeyElement);
 
   // Now clean up the source
   alSourceStop(al_source);
@@ -395,7 +397,8 @@ begin
   done:=False;
   queued:=0;
   repeat
-    if alProcess then begin
+    if alProcess(ASound, lKeyElement) then
+    begin
       alGetSourcei(al_source, AL_BUFFERS_QUEUED, queued);
       done:=queued=0;
     end;
@@ -403,33 +406,33 @@ begin
   until done;
 end;
 
-procedure TOpenALPlayer.AdjustToKeyElement(AElement: TSoundKeyElement);
+procedure TOpenALPlayer.AdjustToKeyElement(ASound: TSoundDocument; AKeyElement: TSoundKeyElement);
 begin
   // define codec
   //source := AStream;
 
   // inittialize codec
-  if AElement.Channels = 1 then
+  if AKeyElement.Channels = 1 then
   begin
-    if AElement.BitsPerSample=8 then al_format:=AL_FORMAT_MONO8
+    if AKeyElement.BitsPerSample=8 then al_format:=AL_FORMAT_MONO8
     else al_format:=AL_FORMAT_MONO16
   end
   else
   begin
-    if AElement.BitsPerSample=8 then al_format := AL_FORMAT_STEREO8
+    if AKeyElement.BitsPerSample=8 then al_format := AL_FORMAT_STEREO8
     else al_format:=AL_FORMAT_STEREO16
   end;
 
-  codec_bs:=2*AElement.Channels;
+  codec_bs:=2*AKeyElement.Channels;
   al_bufsize := 20000 - (20000 mod codec_bs);
-  al_rate:=AElement.SampleRate;
+  al_rate:=AKeyElement.SampleRate;
 //  WriteLn('Blocksize    : ', codec_bs);
 //  WriteLn('Rate         : ', wave.fmt.SampleRate);
 //  WriteLn('Channels     : ', wave.fmt.Channels);
 //  WriteLn('OpenAL Buffers     : ', al_bufcount);
 //  WriteLn('OpenAL Buffer Size : ', al_bufsize);
 
-  alProcess();
+  alProcess(ASound, AKeyElement);
 end;
 
 end.
