@@ -7,7 +7,7 @@ unit fpsound_openal;
 interface
 
 uses
-  Classes, SysUtils, openal, fpsound_wav, fpsound;
+  Classes, SysUtils, openal, fpsound;
 
 // openal
 const
@@ -35,7 +35,6 @@ type
     al_bufsize  : Longword;
     al_readbuf  : Pointer;
     al_rate     : Longword;
-    wave       : TWaveReader;
   public
     procedure Initialize; override;
     procedure Finalize; override;
