@@ -25,10 +25,9 @@ type
 
   TOpenALPlayer = class(TSoundPlayer)
   private
-    source     : TStream;
+    al_device: PALCdevice;
+    al_context: PALCcontext;
     codec_bs   : Longword;
-    OPCSoundWasInitialized: Boolean;
-    OPCSoundStreamIsLoaded: Boolean;
     al_source   : ALuint;
     al_format   : Integer;
     al_buffers  : array[0..al_bufcount-1] of ALuint;
@@ -100,14 +99,23 @@ end;
 
 procedure TOpenALPlayer.Initialize;
 begin
-//  alutInit(0, NULL);
+  al_device := alcOpenDevice(nil);
+  al_context := alcCreateContext(al_device, nil);
+  alcMakeContextCurrent(al_context);
 
-{  alListenerfv(AL_POSITION,listenerPos);
-  alListenerfv(AL_VELOCITY,listenerVel);
-  alListenerfv(AL_ORIENTATION,listenerOri);}
+  alListener3f(AL_POSITION, 0, 0, 0);
+  alListener3f(AL_VELOCITY, 0, 0, 0);
+  alListener3f(AL_ORIENTATION, 0, 0, -1);
 
-  alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
   alGenSources(1, @al_source);
+
+  alSourcef(al_source, AL_PITCH, 1);
+  alSourcef(al_source, AL_GAIN, 1);
+  alSource3f(al_source, AL_POSITION, 0, 0, 0);
+  alSource3f(al_source, AL_VELOCITY, 0, 0, 0);
+  alSourcei(al_source, AL_LOOPING, AL_FALSE);
+
+//  alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
   alGenBuffers(al_bufcount, @al_buffers);
 end;
 
@@ -117,15 +125,6 @@ begin
   alDeleteSources(1, @al_source);
   alDeleteBuffers(al_bufcount, @al_buffers);
   if al_readbuf <> nil then FreeMem(al_readbuf);
-
-//  wave.fStream := nil;
-//  source := nil;
-
-  // finalize codec
-//  wave.Free;
-
-  // close file
-//  source.Free;
 end;
 
 procedure TOpenALPlayer.Play(ASound: TSoundDocument);
@@ -134,15 +133,6 @@ var
   queued  : Integer;
   done    : Boolean;
   lKeyElement: TSoundKeyElement;
-  //
-{  buffer : Cardinal;
-  sourcepos: array [0..2] of Single=(0.0, 0.0, 0.0);
-  sourcevel: array [0..2] of Single=(0.0, 0.0, 0.0);
-  listenerpos: array [0..2] of Single=(0.0, 0.0, 0.0);
-  listenervel: array [0..2] of Single=(0.0, 0.0, 0.0);
-  listenerori: array [0..5] of Single=(0.0, 0.0, -1.0, 0.0, 1.0, 0.0);
-  Context: PALCcontext;
-  Device: PALCdevice;  }
 begin
   Initialize();
 
@@ -158,7 +148,7 @@ begin
   for i := 0 to al_bufcount - 1 do
   begin
     // Fill the buffer
-    AlFillBuffer(ASound, lKeyElement);
+    alFillBuffer(ASound, lKeyElement);
 
     alBufferData(al_buffers[i], al_format, al_readbuf, al_bufsize, al_rate);
     alSourceQueueBuffers(al_source, 1, @al_buffers[i]);
@@ -168,7 +158,7 @@ begin
   alSourcei(al_source, AL_LOOPING, AL_FALSE);
   alSourcePlay(al_source);
 
-  done:=False;
+  {done:=False;
   queued:=0;
   repeat
     if alProcess(ASound, lKeyElement) then
@@ -177,7 +167,7 @@ begin
       done:=queued=0;
     end;
     Sleep(al_polltime);
-  until done;
+  until done;}
 
   {
   AlSourceStop(source);
