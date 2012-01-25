@@ -25,15 +25,6 @@ type
 
   TOpenALPlayer = class(TSoundPlayer)
   private
-{    buffer : Cardinal;
-    sourcepos: array [0..2] of Single=(0.0, 0.0, 0.0);
-    sourcevel: array [0..2] of Single=(0.0, 0.0, 0.0);
-    listenerpos: array [0..2] of Single=(0.0, 0.0, 0.0);
-    listenervel: array [0..2] of Single=(0.0, 0.0, 0.0);
-    listenerori: array [0..5] of Single=(0.0, 0.0, -1.0, 0.0, 1.0, 0.0);
-    Context: PALCcontext;
-    Device: PALCdevice;}
-    //
     source     : TStream;
     codec_bs   : Longword;
     OPCSoundWasInitialized: Boolean;
@@ -50,7 +41,6 @@ type
     procedure Finalize; override;
     procedure Play(ASound: TSoundDocument); override;
     procedure AdjustToKeyElement(ASound: TSoundDocument; AKeyElement: TSoundKeyElement);
-    //procedure OPCSoundPlayStreamEx(AStream: TStream);
     procedure alStop;
     function alProcess(ASound: TSoundDocument; AKeyElement: TSoundKeyElement): Boolean;
     function alFillBuffer(ASound: TSoundDocument; AKeyElement: TSoundKeyElement): Integer;
@@ -60,141 +50,6 @@ type
 implementation
 
 (*type
-  TWAVHeader = record
-    RIFFHeader: array [1..4] of AnsiChar;
-    FileSize: longint;
-    WAVEHeader: array [1..4] of AnsiChar;
-    FormatHeader: array [1..4] of AnsiChar;
-    FormatHeaderSize: longint;
-    FormatCode: Word;
-    ChannelNumber: Word;
-    SampleRate: longint;
-    BytesPerSecond: longint;
-    BytesPerSample: Word;
-    BitsPerSample: Word;
-  end;
-
-function LoadWavStream(Stream: TStream; var format: integer; var data: Pointer;
-  var size: LongInt; var freq: LongInt; var loop: LongInt): Boolean;
-var
-  WavHeader: TWavHeader;
-  readname: pansichar;
-  name: ansistring;
-  readint: longint;
-begin
-    Result:=False;
-
-    size:=0;
-    data:=nil;
-
-    //Read wav header
-    stream.Read(WavHeader, sizeof(TWavHeader));
-
-    //Determine SampleRate
-    freq:=WavHeader.SampleRate;
-
-    //Detemine waveformat
-    if WavHeader.ChannelNumber = 1 then
-    case WavHeader.BitsPerSample of
-    8: format := AL_FORMAT_MONO8;
-    16: format := AL_FORMAT_MONO16;
-    end;
-
-    if WavHeader.ChannelNumber = 2 then
-    case WavHeader.BitsPerSample of
-    8: format := AL_FORMAT_STEREO8;
-    16: format := AL_FORMAT_STEREO16;
-    end;
-
-    //go to end of wavheader
-    stream.seek((8-44)+12+4+WavHeader.FormatHeaderSize+4,soFromCurrent); //hmm crappy...
-
-    getmem(readname,4); //only alloc memory once, thanks to zy.
-    //loop to rest of wave file data chunks
-    repeat
-      //read chunk name
-      stream.Read(readname^, 4);
-      name := readname[0]+readname[1]+readname[2]+readname[3];
-      if name='data' then
-      begin
-        //Get the size of the wave data
-        stream.Read(readint,4);
-        size:=readint;
-        //if WavHeader.BitsPerSample = 8 then size:=size+8; //fix for 8bit???
-        //Read the actual wave data
-        getmem(data,size);
-        stream.Read(Data^, size);
-
-        //Decode wave data if needed
-        if WavHeader.FormatCode=$0011 then
-        begin
-          //TODO: add code to decompress IMA ADPCM data
-        end;
-        if WavHeader.FormatCode=$0055 then
-        begin
-          //TODO: add code to decompress MP3 data
-        end;
-        Result:=True;
-      end
-      else
-      begin
-        //Skip unknown chunk(s)
-        stream.Read(readint,4);
-        stream.Position:=stream.Position+readint;
-      end;
-    until stream.Position>=stream.size;
-    freemem(readname);
-
-    loop:= 0;
-end;
-
-procedure alutLoadWAVFile(fname: string; var format: Integer; var data: Pointer;
-  var size: LongInt; var freq: LongInt; var loop: LongInt);
-var
-  Stream : TFileStream;
-begin
-  Stream:=TFileStream.Create(fname,$0000);
-  LoadWavStream(Stream, format, data, size, freq, loop);
-  Stream.Free;
-end;
-
-procedure OPCSoundPlayStreamEx(AStream: TStream);
-var
-  format: Integer;
-  size: LongInt;
-  freq: LongInt;
-  loop: LongInt;
-  data: Pointer;
-begin
-  AlSourceStop(source);
-
-  AlGenBuffers(1, @buffer);
-  loop:=0;
-  LoadWavStream(AStream, format, data, size, freq, loop);
-  AlBufferData(buffer, format, data, size, freq);
-
-  if data<>nil then freemem(data);
-
-  AlGenSources(1, @source);
-  AlSourcei(source, AL_BUFFER, buffer);
-  AlSourcef(source, AL_PITCH, 1.0);
-  AlSourcef(source, AL_GAIN, 1.0);
-  AlSourcefv(source, AL_POSITION, @sourcepos);
-  AlSourcefv(source, AL_VELOCITY, @sourcevel);
-  // Under windows, AL_LOOPING = AL_TRUE breaks queueing, no idea why
-  // AlSourcei(source, AL_LOOPING, AL_TRUE);
-
-  AlListenerfv(AL_POSITION, @listenerpos);
-  AlListenerfv(AL_VELOCITY, @listenervel);
-  AlListenerfv(AL_ORIENTATION, @listenerori);
-  AlSourcePlay(source);
-end;
-
-{$DEFINE OPC_SOUND_OPENAL_THREAD}
-
-{$ifdef WINDOWS}uses Windows; {$endif}
-
-type
   TOpenALThread = class(TThread)
   private
 
@@ -208,61 +63,6 @@ type
 
 var
   TheLastThread: TOpenALThread;
-
-procedure OPCSoundInitialize();
-begin
-
-end;
-
-procedure ResetOpenALThread;
-begin
-  if (TheLastThread <> nil) and (not TheLastThread.Terminated) then
-  begin
-    try
-      {$IFDEF MSWINDOWS}
-      TerminateThread(TheLastThread.Handle, 0);
-      {$ELSE}
-      TheLastThread.Terminate;
-      {$ENDIF}
-    except
-    end;
-  end;
-end;
-
-procedure OPCSoundLoadWavFromStream(AStream: TStream);
-begin
-  {$IFDEF OPC_SOUND_OPENAL_THREAD}
-  ResetOpenALThread;
-  TheLastThread := TOpenALThread.Create(AStream);
-  {$ELSE}
-  OPCSoundPlayStreamEx(AStream);
-  {$ENDIF}
-end;
-
-procedure OPCSoundPlay();
-begin
-  {$IFDEF OPC_SOUND_OPENAL_THREAD}
-
-  {$ELSE}
-  OPCAudioPlayer.OPCSoundOpenALInitialize();
-  OPCAudioPlayer.OPCSoundOpenALPlay();
-  OPCAudioPlayer.OPCSoundOpenALFinalize();
-  {$ENDIF}
-end;
-
-procedure OPCSoundFinalize();
-begin
-  {$IFDEF OPC_SOUND_OPENAL_THREAD}
-  ResetOpenALThread;
-  {$ELSE}
-  OPCAudioPlayer.OPCSoundOpenALFinalize();
-  {$ENDIF}
-end;
-
-procedure OPCSoundPlayStream(AStream: TStream);
-begin
-  OPCSoundLoadWavFromStream(AStream);
-end;
 
 constructor TOpenALThread.Create(aOwner: TStream);
 begin
@@ -286,8 +86,6 @@ procedure TOpenALThread.DoOpenALPlay;
 begin
   OPCSoundPlayStreamEx(FAOwner);
 end;*)
-
-///
 
 procedure TOpenALPlayer.alStop;
 begin
@@ -341,11 +139,15 @@ end;
 
 procedure TOpenALPlayer.Initialize;
 begin
+//  alutInit(0, NULL);
+
+{  alListenerfv(AL_POSITION,listenerPos);
+  alListenerfv(AL_VELOCITY,listenerVel);
+  alListenerfv(AL_ORIENTATION,listenerOri);}
+
   alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
   alGenSources(1, @al_source);
   alGenBuffers(al_bufcount, @al_buffers);
-
-  GetMem(al_readbuf, al_bufsize);
 end;
 
 procedure TOpenALPlayer.Finalize;
@@ -353,13 +155,13 @@ begin
   // finalize openal
   alDeleteSources(1, @al_source);
   alDeleteBuffers(al_bufcount, @al_buffers);
-  FreeMem(al_readbuf);
+  if al_readbuf <> nil then FreeMem(al_readbuf);
 
 //  wave.fStream := nil;
 //  source := nil;
 
   // finalize codec
-  wave.Free;
+//  wave.Free;
 
   // close file
 //  source.Free;
@@ -371,7 +173,18 @@ var
   queued  : Integer;
   done    : Boolean;
   lKeyElement: TSoundKeyElement;
+  //
+{  buffer : Cardinal;
+  sourcepos: array [0..2] of Single=(0.0, 0.0, 0.0);
+  sourcevel: array [0..2] of Single=(0.0, 0.0, 0.0);
+  listenerpos: array [0..2] of Single=(0.0, 0.0, 0.0);
+  listenervel: array [0..2] of Single=(0.0, 0.0, 0.0);
+  listenerori: array [0..5] of Single=(0.0, 0.0, -1.0, 0.0, 1.0, 0.0);
+  Context: PALCcontext;
+  Device: PALCdevice;  }
 begin
+  Initialize();
+
   // First adjust to the first key element
   lKeyElement := ASound.GetFirstSoundElement();
   AdjustToKeyElement(ASound, lKeyElement);
@@ -404,6 +217,29 @@ begin
     end;
     Sleep(al_polltime);
   until done;
+
+  {
+  AlSourceStop(source);
+  AlGenBuffers(1, @buffer);
+  loop:=0;
+  LoadWavStream(AStream, format, data, size, freq, loop);
+  AlBufferData(buffer, format, data, size, freq);
+
+  if data<>nil then freemem(data);
+
+  AlGenSources(1, @source);
+  AlSourcei(source, AL_BUFFER, buffer);
+  AlSourcef(source, AL_PITCH, 1.0);
+  AlSourcef(source, AL_GAIN, 1.0);
+  AlSourcefv(source, AL_POSITION, @sourcepos);
+  AlSourcefv(source, AL_VELOCITY, @sourcevel);
+  // Under windows, AL_LOOPING = AL_TRUE breaks queueing, no idea why
+  // AlSourcei(source, AL_LOOPING, AL_TRUE);
+
+  AlListenerfv(AL_POSITION, @listenerpos);
+  AlListenerfv(AL_VELOCITY, @listenervel);
+  AlListenerfv(AL_ORIENTATION, @listenerori);
+  AlSourcePlay(source);}
 end;
 
 procedure TOpenALPlayer.AdjustToKeyElement(ASound: TSoundDocument; AKeyElement: TSoundKeyElement);
@@ -432,8 +268,13 @@ begin
 //  WriteLn('OpenAL Buffers     : ', al_bufcount);
 //  WriteLn('OpenAL Buffer Size : ', al_bufsize);
 
+  if al_readbuf <> nil then FreeMem(al_readbuf);
+  GetMem(al_readbuf, al_bufsize);
+
   alProcess(ASound, AKeyElement);
 end;
 
+initialization
+  RegisterSoundPlayer(TOpenALPlayer.Create, spOpenAL);
 end.
 

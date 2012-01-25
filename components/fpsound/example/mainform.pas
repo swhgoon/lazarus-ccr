@@ -28,7 +28,7 @@ var
 
 implementation
 
-uses fpsound, fpsound_wav;
+uses fpsound, fpsound_wav, fpsound_openal;
 
 {$R *.lfm}
 
