@@ -190,8 +190,14 @@ end;
 procedure TRxHistoryNavigator.EnableAction(ActName: byte; Enable: boolean);
 begin
   if First=nil then Enable:=false;
-  if ActName = 0 then (FBackBtnItem.Action as TAction).Enabled:=Enable
-  else (FForwardBtnItem.Action as TAction).Enabled:=Enable
+  if ActName = 0 then
+  begin
+    if Assigned(FBackBtnItem) then
+      (FBackBtnItem.Action as TAction).Enabled:=Enable
+  end
+  else
+    if Assigned(FForwardBtnItem) then
+      (FForwardBtnItem.Action as TAction).Enabled:=Enable
 end;
 
 procedure TRxHistoryNavigator.BackProc(Sender: TObject);
