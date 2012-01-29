@@ -177,7 +177,11 @@ var
 procedure IncHour;
 begin
   H1:=H1+AValue;
-  if H1<0 then H1:=0;
+  if H1>23 then
+    H1:=0
+  else
+  if H1<0 then
+    H1:=23;
 end;
 
 procedure IncMin;
