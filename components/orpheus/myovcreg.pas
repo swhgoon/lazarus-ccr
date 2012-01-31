@@ -146,9 +146,9 @@ begin
   RegisterPropertyEditor(TypeInfo(string), TOvcURL, 'About', TOvcAboutProperty);
   RegisterPropertyEditor(TypeInfo(string), TOvcSpinner, 'About', TOvcAboutProperty);
   RegisterPropertyEditor(TypeInfo(string), TOvcVirtualListBox, 'About', TOvcAboutProperty);
-{$IFDEF MSWINDOWS}
+//{$IFDEF MSWINDOWS}
   RegisterPropertyEditor(TypeInfo(string), TOvcSimpleField, 'About', TOvcAboutProperty);
-{$ENDIF}
+//{$ENDIF}
   RegisterPropertyEditor(TypeInfo(string), TO32FlexEdit, 'About', TOvcAboutProperty);
 //  RegisterPropertyEditor(TypeInfo(string), TOvcCalculator, 'About', TOvcAboutProperty);
 //  RegisterPropertyEditor(TypeInfo(string), TOvcColorComboBox, 'About', TOvcAboutProperty);
@@ -156,9 +156,9 @@ begin
   RegisterPropertyEditor(TypeInfo(string), TOvcTCColHead, 'About', TOvcAboutProperty);
   RegisterPropertyEditor(TypeInfo(string), TOvcTCRowHead, 'About', TOvcAboutProperty);
   RegisterPropertyEditor(TypeInfo(string), TOvcTCString, 'About', TOvcAboutProperty);
-{$IFDEF MSWINDOWS}
+//{$IFDEF MSWINDOWS}
   RegisterPropertyEditor(TypeInfo(string), TOvcTCSimpleField, 'About', TOvcAboutProperty);
-{$ENDIF}
+//{$ENDIF}
   RegisterPropertyEditor(TypeInfo(string), TOvcTCMemo, 'About', TOvcAboutProperty);
   RegisterPropertyEditor(TypeInfo(string), TOvcTCCheckBox, 'About', TOvcAboutProperty);
   RegisterPropertyEditor(TypeInfo(string), TOvcTCComboBox, 'About', TOvcAboutProperty);
@@ -206,9 +206,9 @@ begin
   RegisterComponents('Orpheus', [TOvcURL]);
   RegisterComponents('Orpheus', [TOvcSpinner]);
   RegisterComponents('Orpheus', [TOvcVirtualListBox]);
-{$IFDEF MSWINDOWS}  //If used, crashes IDE with GTK, so only register if Windows
+//{$IFDEF MSWINDOWS}  //If used, crashes IDE with GTK, so only register if Windows
   RegisterComponents('Orpheus', [TOvcSimpleField]);
-{$ENDIF}
+//{$ENDIF}
   RegisterComponents('Orpheus', [TO32FlexEdit]);
   RegisterComponents('Orpheus', [TOvcCalendar]);
 //  RegisterComponents('Orpheus', [TOvcDateEdit]);  //Needs ButtonOkay fixes like TO32FlexEdit
@@ -218,9 +218,9 @@ begin
   RegisterComponents('Orpheus', [TOvcTCColHead]);
   RegisterComponents('Orpheus', [TOvcTCRowHead]);
   RegisterComponents('Orpheus', [TOvcTCString]);
-{$IFDEF MSWINDOWS}  //If used, crashes IDE with GTK, so only register if Windows
+//{$IFDEF MSWINDOWS}  //If used, crashes IDE with GTK, so only register if Windows
   RegisterComponents('Orpheus', [TOvcTCSimpleField]); 
-{$ENDIF}
+//{$ENDIF}
   RegisterComponents('Orpheus', [TOvcTCMemo]); 
   RegisterComponents('Orpheus', [TOvcTCCheckBox]); 
   RegisterComponents('Orpheus', [TOvcTCComboBox]); 
