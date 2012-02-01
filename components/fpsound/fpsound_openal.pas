@@ -15,7 +15,7 @@ unit fpsound_openal;
 interface
 
 uses
-  Classes, SysUtils, openal, fpsound;
+  Classes, SysUtils, OpenAL_NT, fpsound;
 
 type
 
@@ -26,9 +26,9 @@ type
     al_device: PALCdevice;
     al_context: PALCcontext;
     codec_bs   : Longword;
-    al_source   : ALuint;
+    al_source   : TALuint;
     al_format   : Integer;
-    al_buffers  : array[0..0] of ALuint;
+    al_buffers  : array[0..0] of TALuint;
     al_bufsize  : Longword;
     al_readbuf  : Pointer;
     al_rate     : Longword;
@@ -107,15 +107,24 @@ begin
       Inc(lBufferWordPtr, 2);
     end;
   end;
+  al_readbuf := ASound.GetSoundDocPtr;
 end;
 
 procedure TOpenALPlayer.Initialize;
+var argv: array of PALbyte;
 begin
   if FInitialized then Exit;
 
-  al_device := alcOpenDevice(nil);
+  IsMultiThread := False;
+  if not InitOpenAL then
+    Exception.Create('Initialize OpenAL failed');
+{  al_device := alcOpenDevice(nil);
   al_context := alcCreateContext(al_device, nil);
-  alcMakeContextCurrent(al_context);
+  alcMakeContextCurrent(al_context);  }
+
+  alutInit(nil, argv);
+  al_bufcount := 1;
+  alGenBuffers(al_bufcount, @al_buffers);
 
   alListener3f(AL_POSITION, 0, 0, 0);
   alListener3f(AL_VELOCITY, 0, 0, 0);
@@ -130,8 +139,6 @@ begin
   alSourcei(al_source, AL_LOOPING, AL_FALSE);
 
 //  alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
-  al_bufcount := 1;
-  alGenBuffers(al_bufcount, @al_buffers);
 
   FInitialized := True;
 end;

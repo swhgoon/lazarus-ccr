@@ -104,6 +104,7 @@ type
     procedure Stop;
     procedure Seek(ANewPos: Double);
     procedure SetSoundPlayer(AKind: TSoundPlayerKind);
+    function GetSoundDocPtr: Pointer;
   end;
 
 var
@@ -283,6 +284,13 @@ begin
   FPlayerKind := AKind;
   Stop;
   FPlayer := GSoundPlayers[AKind];
+end;
+
+function TSoundDocument.GetSoundDocPtr: Pointer;
+begin
+  aStream.Position := 0;
+  getmem(Result, aStream.Size);
+  aStream.Read(Result^, aStream.Size);
 end;
 
 var
