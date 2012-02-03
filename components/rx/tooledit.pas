@@ -93,7 +93,7 @@ type
     procedure SetYearDigits(const AValue: TYearDigits);
     procedure CalendarHintsChanged(Sender: TObject);
 
-//    function AcceptPopup(var Value: Variant): Boolean;
+    function AcceptPopup(var Value: TDateTime): Boolean;
     procedure AcceptValue(const AValue: TDateTime);
 //    procedure SetPopupValue(const Value: Variant);
   protected
@@ -217,7 +217,8 @@ function PaintComboEdit(Editor: TCustomMaskEdit; const AText: string;
 function EditorTextMargins(Editor: TCustomMaskEdit): TPoint;
 
 implementation
-uses lclintf, LCLStrConsts, rxconst, rxstrutils, LResources, Forms, LCLProc;
+uses lclintf, LCLStrConsts, rxconst, rxstrutils, LResources, Forms, LCLProc,
+  variants;
 
 type
   TPopupCalendarAccess = class(TPopupCalendar)
@@ -509,23 +510,19 @@ begin
   if not (csDesigning in ComponentState) then UpdatePopup;
 end;
 
-{function TCustomRxDateEdit.AcceptPopup(var Value: Variant): Boolean;
+function TCustomRxDateEdit.AcceptPopup(var Value: TDateTime): Boolean;
 var
   D: TDateTime;
 begin
   Result := True;
-  if Assigned(FOnAcceptDate) then begin
-    if VarIsNull(Value) or VarIsEmpty(Value) then D := NullDate
-    else
-      try
-        D := VarToDateTime(Value);
-      except
-        if DefaultToday then D := SysUtils.Date else D := NullDate;
-      end;
+  if Assigned(FOnAcceptDate) then
+  begin
+    D :=Value;
     FOnAcceptDate(Self, D, Result);
-    if Result then Value := VarFromDateTime(D);
+    if Result then
+      Value := D;
   end;
-end;}
+end;
 
 procedure TCustomRxDateEdit.AcceptValue(const AValue: TDateTime);
 begin
@@ -667,6 +664,7 @@ end;
 procedure TCustomRxDateEdit.ShowPopup(AOrigin: TPoint);
 var
   FAccept:boolean;
+  D:TDateTime;
 begin
   if not Assigned(FPopup) then
     FPopup:=CreatePopupForm;
@@ -677,10 +675,15 @@ begin
   FAccept:=FPopup.ShowModal = mrOk;
   if CanFocus then SetFocus;
 
-  if FAccept {and AcceptPopup(AValue) and EditCanModify }then
+  if FAccept and EditCanModify then
   begin
-    AcceptValue(FPopup.Date);
-    if Focused then inherited SelectAll;
+    D:=FPopup.Date;
+    if AcceptPopup(D) then
+    begin
+      FPopup.Date:=D;
+      AcceptValue(D);
+      if Focused then inherited SelectAll;
+    end;
   end;
 
 {  FPopup.Show(AOrigin);
