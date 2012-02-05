@@ -86,6 +86,16 @@ type
     function ValidatePawnMove(AFrom, ATo: TPoint;
       var AEnpassantSquare, AEnpassantSquareToClear: TPoint) : boolean;
     function ValidatePawnSimpleCapture(AFrom,ATo: TPoint): Boolean;
+    function RookHasValidMove(ASquare: TPoint): boolean;
+    function BishopHasValidMove(ASquare: TPoint): boolean;
+    function QueenHasValidMove(ASquare: TPoint): boolean;
+    function KnightHasValidMove(ASquare: TPoint): boolean;
+    function KingHasValidMove(ASquare: TPoint): boolean;
+    function PawnHasValidMove(ASquare, AEnPassantToClear: TPoint): boolean;
+    function verifyIfHasValidMoves(AEnPassantToClear: TPoint): boolean;
+    function makeMoveAndValidate(AFrom, Ato, AEnPassantToClear: TPoint): boolean;
+    function willBeCheckMate(AEnpassantToClear: TPoint): boolean;
+    function willBeStalemate(AEnpassantToClear: TPoint): boolean;
     function IsSquareOccupied(ASquare: TPoint): Boolean;
     procedure doPromotion(Position: TPoint);
   public
@@ -109,6 +119,7 @@ type
     IsBlackLeftRoquePossible, IsBlackRightRoquePossible: Boolean;
     Castle:boolean;//If the move will be a castle.
     CastleCord: TPoint;
+    eraseCastleFlags: Integer; // 1=no, 2=yes, 3=flags already erased
     // Callbacks
     OnAfterMove: TOnMoveCallback;  // For the modules
     OnBeforeMove: TOnMoveCallback; // For the UI
@@ -227,6 +238,7 @@ begin
   LEnpassantSquare := Point(-1, -1);
   LEnpassantToClear := Point(-1, -1);
   Castle:=false;
+  eraseCastleFlags:=1;
   Result := False;
 
   // Verify what is in the start and destination squares
@@ -270,6 +282,27 @@ begin
   // Change player
   IsWhitePlayerTurn := not IsWhitePlayerTurn;
 
+  // Check if the player got checkmated
+  if willBeCheckMate(EnpassantSquare) then
+  begin
+    if (IsWhitePlayerTurn) then
+    begin
+      ShowMessage('White checkmated, black wins');
+      //need to stop the timers and set the result.
+    end
+    else
+    begin
+      ShowMessage('Black checkmated, white wins');
+    end;
+  end
+  else
+  begin
+    if willBeStalemate(EnpassantSquare) then
+    begin
+      ShowMessage('Game draw');
+    end;
+  end;
+
   // Notify of the move
   if Assigned(OnAfterMove) then OnAfterMove(AFrom, ATo);
 end;
@@ -284,6 +317,11 @@ begin
   // If Enpassant, clear the remaining pawn
   if AEnpassantToClear.X <> -1 then
     Board[AEnpassantToClear.X][AEnpassantToClear.Y] := ctEmpty;
+
+  if (eraseCastleFlags=2) then
+    if   IsWhitePlayerTurn then ResetCastleVar(Point(5,1))
+    else                        ResetCastleVar(Point(5,8));
+
 end;
 
 procedure TChessGame.doPromotion(Position: TPoint);
@@ -351,13 +389,23 @@ begin
   end;
 end;
 
-//check if castle is still posible.
+//turn false the possibility of castle.
 procedure TChessGame.ResetCastleVar(AFrom : TPoint);
 begin
+  //It's the rook that moves
   if ((AFrom.X=1) and (AFrom.Y=1) and (IsWhiteLeftRoquePossible)) then IsWhiteLeftRoquePossible:=false;
   if ((AFrom.X=8) and (AFrom.Y=1) and (IsWhiteRightRoquePossible)) then IsWhiteRightRoquePossible:=false;
   if ((AFrom.X=1) and (AFrom.Y=8) and (IsBlackLeftRoquePossible)) then IsBlackLeftRoquePossible:=false;
   if ((AFrom.X=8) and (AFrom.Y=8) and (IsBlackLeftRoquePossible)) then IsBlackRightRoquePossible:=false;
+  //It's the king that moves
+  if ((AFrom.X=5) and (AFrom.Y=1)) then begin
+    IsWhiteLeftRoquePossible:=false;
+    IsWhiteRightRoquePossible:=false;
+  end;
+  if ((AFrom.X=5) and (AFrom.Y=8)) then begin
+    IsBlackLeftRoquePossible:=false;
+    IsBlackRightRoquePossible:=false;
+  end;
 end;
 
 {
@@ -502,6 +550,7 @@ begin
   if (AFrom.X > ATo.X + 1) or (AFrom.X + 1 < ATo.X) then Exit;
   if (AFrom.Y > ATo.Y + 1) or (AFrom.Y + 1 < ATo.Y) then Exit;
 
+  if (eraseCastleFlags<3) then inc(eraseCastleFlags);
   Result := True;
 end;
 
@@ -691,6 +740,279 @@ begin
       Result := True;
     end
   end;
+end;
+
+function TChessGame.RookHasValidMove(ASquare: TPoint): boolean;
+var i,j : integer;
+    nullPoint: TPoint; // because makeMoveandValidate needs a en passant point (and we know that a
+                       // rook can't capture en passant, than the point to clear is -1,-1)
+    bkpWhiteLeftCastle, bkpWhiteRightCastle, bkpBlackLeftRook, bkpBlackRightRook : boolean;
+begin
+  Result:=false;
+  nullPoint:=Point(-1,-1);
+
+  bkpWhiteLeftCastle :=IsWhiteLeftRoquePossible;
+  bkpWhiteRightCastle:=IsWhiteRightRoquePossible;
+  bkpBlackLeftRook   :=IsBlackLeftRoquePossible;
+  bkpBlackRightRook  :=IsBlackRightRoquePossible;
+
+  for i:=1 to 8 do
+  begin
+    if (CheckEndMove(Point(ASquare.X,i)) and ValidateRookMove(ASquare,Point(ASquare.X,i))) then  //check the vertical
+      if (makeMoveAndValidate(ASquare,Point(ASquare.X,i),nullPoint)) then
+      begin
+        IsWhiteLeftRoquePossible:=bkpWhiteLeftCastle;
+        IsWhiteRightRoquePossible:=bkpWhiteRightCastle;
+        IsBlackLeftRoquePossible:=bkpBlackLeftRook;
+        IsBlackRightRoquePossible:=bkpBlackRightRook;
+        exit(true);
+      end;
+    if (CheckEndMove(Point(i,ASquare.Y)) and ValidateRookMove(ASquare, Point(i,ASquare.Y))) then //check the horizontal
+      if (makeMoveAndValidate(ASquare,Point(i,ASquare.Y),nullPoint)) then
+      begin
+        IsWhiteLeftRoquePossible:=bkpWhiteLeftCastle;
+        IsWhiteRightRoquePossible:=bkpWhiteRightCastle;
+        IsBlackLeftRoquePossible:=bkpBlackLeftRook;
+        IsBlackRightRoquePossible:=bkpBlackRightRook;
+        exit(true);
+      end;
+  end;
+end;
+
+function TChessGame.KnightHasValidMove(ASquare: TPoint): boolean;
+var nullPoint: TPoint;
+    ATo: TPoint;
+begin
+  Result:=false;
+  nullPoint:=Point(-1,-1);
+
+  ATo:=Point(ASquare.X+1,ASquare.Y+2);
+  if (ASquare.X+1<=8) and (ASquare.Y+2<=8) and (CheckEndMove(ATo)) then
+    if (makeMoveAndValidate(ASquare,ATo,nullPoint)) then exit(true);
+
+  ATo:=Point(ASquare.X+2,ASquare.Y+1);
+  if (ASquare.X+2<=8) and (ASquare.Y+1<=8) and (CheckEndMove(ATo)) then
+    if (makeMoveAndValidate(ASquare,ATo,nullPoint)) then exit(true);
+
+  ATo:=Point(ASquare.X+2,ASquare.Y-1);
+  if (ASquare.X+2<=8) and (ASquare.Y-1>=1) and (CheckEndMove(ATo)) then
+    if (makeMoveAndValidate(ASquare,ATo,nullPoint)) then exit(true);
+
+  ATo:=Point(ASquare.X+1,ASquare.Y-2);
+  if (ASquare.X+1<=8) and (ASquare.Y-2>=1) and (CheckEndMove(ATo)) then
+    if (makeMoveAndValidate(ASquare,ATo,nullPoint)) then exit(true);
+
+  ATo:=Point(ASquare.X-1,ASquare.Y-2);
+  if (ASquare.X-1>=1) and (ASquare.Y-2>=1) and (CheckEndMove(ATo)) then
+    if (makeMoveAndValidate(ASquare,ATo,nullPoint)) then exit(true);
+
+  ATo:=Point(ASquare.X-2,ASquare.Y-1);
+  if (ASquare.X-2>=1) and (ASquare.Y-1>=1) and (CheckEndMove(ATo)) then
+    if (makeMoveAndValidate(ASquare,ATo,nullPoint)) then exit(true);
+
+  ATo:=Point(ASquare.X-2,ASquare.Y+1);
+  if (ASquare.X-2>=1) and (ASquare.Y+1<=8) and (CheckEndMove(ATo)) then
+    if (makeMoveAndValidate(ASquare,ATo,nullPoint)) then exit(true);
+
+  ATo:=Point(ASquare.X-1,ASquare.Y+2);
+  if (ASquare.X-1>=1) and (ASquare.Y+2<=8) and (CheckEndMove(ATo)) then
+    if (makeMoveAndValidate(ASquare,ATo,nullPoint)) then exit(true);
+
+end;
+
+function TChessGame.BishopHasValidMove(ASquare: TPoint): boolean;
+var i : integer;
+    nullPoint: TPoint;
+    ATo : TPoint;
+begin
+  Result:=false;
+  nullPoint:=Point(-1,-1);
+  for i:=1 to 8 do
+  begin
+
+    ATo := Point(ASquare.X+i,ASquare.Y+i);
+    if (ASquare.X+i<=8) and (ASquare.Y+i<=8) and (CheckEndMove(ATo)) and (ValidateBishopMove(ASquare,ATo)) then //check the upper right diagonal
+      if (makeMoveAndValidate(ASquare,ATo,nullPoint)) then exit(true);
+
+    ATo := Point(ASquare.X-i,ASquare.Y-i);
+    if (ASquare.X-i>=1) and (ASquare.Y-i>=1) and (CheckEndMove(ATo)) and (ValidateBishopMove(ASquare,ATo)) then //check the lower left diagonal
+      if (makeMoveAndValidate(ASquare,ATo,nullPoint)) then exit(true);
+
+    ATo := Point(ASquare.X+i,ASquare.Y-i);
+    if (ASquare.X+i<=8) and (ASquare.Y-i>=1) and (CheckEndMove(ATo)) and (ValidateBishopMove(ASquare,ATo)) then //check the lower right diagonal
+      if (makeMoveAndValidate(ASquare,ATo,nullPoint)) then exit(true);
+
+    ATo := Point(ASquare.X-i,ASquare.Y+i);
+    if (ASquare.X-i>=1) and (ASquare.Y+i<=8) and (CheckEndMove(ATo)) and (ValidateBishopMove(ASquare,ATo)) then //check the upper left diagonal
+      if (makeMoveAndValidate(ASquare,ATo,nullPoint)) then exit(true);
+  end;
+  result:=false;
+end;
+
+function TChessGame.QueenHasValidMove(ASquare: TPoint): boolean;
+begin
+  Result:=false;
+  if (RookHasValidMove(ASquare) and BishopHasValidMove(ASquare)) then exit(true);
+  result:=false;
+end;
+
+function TChessGame.KingHasValidMove(ASquare: TPoint): boolean;
+var nullPoint : TPoint;
+    ATo       : TPoint;
+begin
+  Result:=false;
+  nullPoint:=Point(-1,-1);
+
+  ATo:=Point(ASquare.X+1,ASquare.Y);
+  if (ASquare.X+1<=8) and CheckEndMove(ATo) then
+    if (makeMoveAndValidate(ASquare,ATo,nullPoint)) then exit(true);
+
+  ATo:=Point(ASquare.X+1,ASquare.Y+1);
+  if (ASquare.X+1<=8) and (ASquare.Y+1<=8) and CheckEndMove(ATo) then
+    if (makeMoveAndValidate(ASquare,ATo,nullPoint)) then exit(true);
+
+  ATo:=Point(ASquare.X,ASquare.Y+1);
+  if (ASquare.Y+1<=8) and CheckEndMove(ATo) then
+    if (makeMoveAndValidate(ASquare,ATo,nullPoint)) then exit(true);
+
+  ATo:=Point(ASquare.X-1,ASquare.Y+1);
+  if (ASquare.X-1>=1) and (ASquare.Y+1<=8) and CheckEndMove(ATo) then
+    if (makeMoveAndValidate(ASquare,ATo,nullPoint)) then exit(true);
+
+  ATo:=Point(ASquare.X-1,ASquare.Y);
+  if (ASquare.X-1>=1) and CheckEndMove(ATo) then
+    if (makeMoveAndValidate(ASquare,ATo,nullPoint)) then exit(true);
+
+  ATo:=Point(ASquare.X-1,ASquare.Y-1);
+  if (ASquare.X-1>=1) and (ASquare.Y-1>=1) and CheckEndMove(ATo) then
+    if (makeMoveAndValidate(ASquare,ATo,nullPoint)) then exit(true);
+
+  ATo:=Point(ASquare.X,ASquare.Y-1);
+  if (ASquare.Y-1>=1) and CheckEndMove(ATo) then
+    if (makeMoveAndValidate(ASquare,ATo,nullPoint)) then exit(true);
+
+  ATo:=Point(ASquare.X+1,ASquare.Y-1);
+  if (ASquare.X+1<=8) and (ASquare.Y-1>=1) and CheckEndMove(ATo) then
+    if (makeMoveAndValidate(ASquare,ATo,nullPoint)) then exit(true);
+end;
+
+// true = the move is valid
+function TChessGame.makeMoveAndValidate(AFrom, ATo,AEnpassantToClear: TPoint): boolean;
+begin
+  result:= not WillKingBeInCheck(AFrom,ATo,AEnpassantToClear);
+end;
+
+function TChessGame.PawnHasValidMove(ASquare, AEnPassantToClear: TPoint): boolean;
+var AEnPassantSquare, nullPoint: TPoint;
+    ATo: TPoint;
+begin
+  Result:=false;
+  nullPoint:=Point(-1,-1); //used when we know that the point does not matter.
+
+  if IsWhitePlayerTurn then
+  begin
+    ATo:=Point(ASquare.X,ASquare.Y+2);
+    if (ASquare.Y+2<=8) and (CheckEndMove(ATo)) and ValidatePawnMove(ASquare,ATo,nullPoint,nullPoint) then //try to move 2 squares
+      if (makeMoveAndValidate(ASquare,ATo,nullPoint)) then exit(true);
+
+    ATo:=Point(ASquare.X,ASquare.Y+1);
+    if (ASquare.Y+1<=8) and (Board[ATo.X][ATo.Y]=ctEmpty) then //try to move 1 square
+      if (makeMoveAndValidate(ASquare,ATo,nullPoint)) then exit(true);
+
+    ATo:=Point(ASquare.X-1,ASquare.Y+1);
+    if (ASquare.X-1>=1) and (ASquare.Y+1<=8) and (CheckEndMove(ATo)) and (ValidatePawnMove(ASquare,ATo,nullPoint,nullPoint)) then //try to capture to the left
+      if (makeMoveAndValidate(ASquare,ATo,Point(AEnPassantToClear.X,AEnPassantToClear.Y-1))) then exit(true);
+
+    ATo:=Point(ASquare.X+1,ASquare.Y+1);
+    if (ASquare.X+1<=8) and (ASquare.Y+1<=8) and (CheckEndMove(ATo)) and (ValidatePawnMove(ASquare,ATo,nullPoint,nullPoint)) then //try to capture to the right
+      if (makeMoveAndValidate(ASquare,ATo,Point(AEnPassantToClear.X,AEnPassantToClear.Y-1))) then exit(true);
+  end
+  else
+  begin
+    ATo:=Point(ASquare.X,ASquare.Y-2);
+    if (ASquare.Y-2>=1) and (CheckEndMove(ATo)) and ValidatePawnMove(ASquare,ATo,nullPoint,nullPoint) then //try to move 2 squares
+      if (makeMoveAndValidate(ASquare,ATo,nullPoint)) then exit(true);
+
+    ATo:=Point(ASquare.X,ASquare.Y-1);
+    if (ASquare.Y-1>=1) and (Board[ATo.X][ATo.Y] = ctEmpty) then //try to move 1 square
+      if (makeMoveAndValidate(ASquare,ATo,nullPoint)) then exit(true);
+
+    ATo:=Point(ASquare.X-1,ASquare.Y-1);
+    if (ASquare.X-1>=1) and (ASquare.Y-1>=1) and (CheckEndMove(ATo)) and (ValidatePawnMove(ASquare,ATo,nullPoint,nullPoint)) then //try to capture to the left
+      if (makeMoveAndValidate(ASquare,ATo,Point(AEnPassantToClear.X,AEnPassantToClear.Y+1))) then exit(true);
+
+    ATo:=Point(ASquare.X+1,ASquare.Y-1);
+    if (ASquare.X+1<=8) and (ASquare.Y-1>=1) and (CheckEndMove(ATo)) and (ValidatePawnMove(ASquare,ATo,nullPoint,nullPoint)) then //try to capture to the right
+      if (makeMoveAndValidate(ASquare,ATo,Point(AEnPassantToClear.X,AEnPassantToClear.Y+1))) then exit(true);
+  end;
+
+end;
+
+function TChessgame.verifyIfHasValidMoves(AEnPassantToClear: TPoint): boolean;
+var i, j : integer;
+begin
+  Result:=false;
+  if (IsWhitePlayerTurn) then
+  begin
+    for i:=1 to 8 do
+    begin
+      for j:=1 to 8 do
+      begin
+        if (Board[i][j]=ctWRook) then
+          if RookHasValidMove(Point(i,j)) then exit(true);
+        if (Board[i][j]=ctWBishop) then
+          if BishopHasValidMove(Point(i,j)) then exit(true);
+        if (Board[i][j]=ctWKnight) then
+          if KnightHasValidMove(Point(i,j)) then exit(true);
+        if (Board[i][j]=ctWKing) then
+          if KingHasValidMove(Point(i,j)) then exit(true);
+        if (Board[i][j]=ctWQueen) then
+          if QueenHasValidMove(Point(i,j)) then exit(true);
+        if (Board[i][j]=ctWPawn) then
+          if PawnHasValidMove(Point(i,j),AEnPassantToClear) then exit(true);
+      end;
+    end;
+  end
+  else
+  begin
+    for i:=1 to 8 do
+    begin
+      for j:=1 to 8 do
+      begin
+        if (Board[i][j]=ctBRook) then
+          if RookHasValidMove(Point(i,j)) then exit(true);
+        if (Board[i][j]=ctBBishop) then
+          if BishopHasValidMove(Point(i,j)) then exit(true);
+        if (Board[i][j]=ctBKnight) then
+          if KnightHasValidMove(Point(i,j)) then exit(true);
+        if (Board[i][j]=ctBKing) then
+          if KingHasValidMove(Point(i,j)) then exit(true);
+        if (Board[i][j]=ctBQueen) then
+          if QueenHasValidMove(Point(i,j)) then exit(true);
+        if (Board[i][j]=ctBPawn) then
+          if PawnHasValidMove(Point(i,j),AEnPassantToClear) then exit(true);
+      end;
+    end;
+  end;
+end;
+
+function TChessGame.willBeCheckMate(AEnpassantToClear: TPoint): boolean;
+var
+  kingPos: TPoint;
+begin
+  Result := false;
+
+  kingPos := FindKing();
+
+  if IsKingInCheck(kingPos) then
+  begin
+    if not verifyIfHasValidMoves(AEnpassantToClear) then exit(true);
+  end;
+end;
+
+function TChessGame.willBeStalemate(AEnpassantToClear: TPoint): boolean;
+begin
+  Result:= not verifyIfHasValidMoves(AEnpassantToClear);
 end;
 
 function TChessGame.IsSquareOccupied(ASquare: TPoint): Boolean;
