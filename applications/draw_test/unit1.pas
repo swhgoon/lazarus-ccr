@@ -69,17 +69,17 @@ procedure TForm1.FormCreate(Sender: TObject);
 var
   i: integer;
 begin
-  FileCache50 := TFileCache.Create('.\images50.cache');
-  FileCache100 := TFileCache.Create('.\images100.cache');
+  FileCache50 := TFileCache.Create('./images50.cache');
+  FileCache100 := TFileCache.Create('./images100.cache');
 
   png := TPortableNetworkGraphic.Create;
 
   //load all images to the caches
   for i := 1 to 23 do
   begin
-    png.LoadFromFile(Format('.\images\%.4d.png', [i]));
+    png.LoadFromFile(Format('./images/%.4d.png', [i]));
     FileCache100.Add(i, png);
-    png.LoadFromFile(Format('.\images_50\%.4d.png', [i]));
+    png.LoadFromFile(Format('./images_50/%.4d.png', [i]));
     FileCache50.Add(i, png);
   end;
 
