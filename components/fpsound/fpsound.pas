@@ -79,7 +79,7 @@ type
 
   TSoundDocument = class
   private
-    AStream: TStream;
+    AStream: TMemoryStream;
     FPlayer: TSoundPlayer;
     FPlayerKind: TSoundPlayerKind;
     FCurElementIndex: Integer;
@@ -104,7 +104,7 @@ type
     procedure Stop;
     procedure Seek(ANewPos: Double);
     procedure SetSoundPlayer(AKind: TSoundPlayerKind);
-    function GetSoundDocPtr: Pointer;
+    function GetSoundDocStream: TStream;
   end;
 
 var
@@ -170,11 +170,13 @@ begin
   inherited Create;
 
   FSoundData := TFPList.Create;
+  aStream := TMemoryStream.Create;
 end;
 
 destructor TSoundDocument.Destroy;
 begin
   FSoundData.Free;
+  aStream.Free;
   if FPlayer <> nil then FPlayer.Finalize;
   inherited Destroy;
 end;
@@ -197,6 +199,8 @@ begin
   try
     Clear();
     lReader.ReadFromStream(lStream, Self);
+    lStream.Position := 0;
+    aStream.LoadFromStream(lStream);
   finally
     lStream.Free;
   end;
@@ -286,11 +290,12 @@ begin
   FPlayer := GSoundPlayers[AKind];
 end;
 
-function TSoundDocument.GetSoundDocPtr: Pointer;
+function TSoundDocument.GetSoundDocStream: TStream;
 begin
-  aStream.Position := 0;
+  {aStream.Position := 0;
   getmem(Result, aStream.Size);
-  aStream.Read(Result^, aStream.Size);
+  aStream.Read(Result^, aStream.Size);  }
+  Result := aStream;
 end;
 
 var
