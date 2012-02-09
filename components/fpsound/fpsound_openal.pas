@@ -39,6 +39,8 @@ type
     procedure Initialize; override;
     procedure Finalize; override;
     procedure Play(ASound: TSoundDocument); override;
+    procedure Pause(ASound: TSoundDocument); override;
+    procedure Stop(ASound: TSoundDocument); override;
     procedure AdjustToKeyElement(ASound: TSoundDocument; AKeyElement: TSoundKeyElement);
     procedure alStop;
     //function alProcess(ASound: TSoundDocument; AKeyElement: TSoundKeyElement): Boolean;
@@ -193,7 +195,9 @@ begin
   // Now clean up the source
   alSourceStop(al_source);
   alSourceRewind(al_source);
-  alSourcei(al_source, AL_BUFFER, 0);
+//  alSourcei(al_source, AL_BUFFER, 0);
+  if al_readbuf <> nil then
+    FreeMem(al_readbuf);
 
   // Fill the buffer
   alFillBuffer(ASound, lKeyElement);
@@ -202,6 +206,16 @@ begin
 
   // Play the sound
   alSourcePlay(al_source);
+end;
+
+procedure TOpenALPlayer.Stop(ASound: TSoundDocument);
+begin
+  alSourceStop(al_source);
+end;
+
+procedure TOpenALPlayer.Pause(ASound: TSoundDocument);
+begin
+  alSourcePause(al_source);
 end;
 
 procedure TOpenALPlayer.AdjustToKeyElement(ASound: TSoundDocument;

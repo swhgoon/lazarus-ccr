@@ -200,6 +200,7 @@ begin
     Clear();
     lReader.ReadFromStream(lStream, Self);
     lStream.Position := 0;
+    aStream.Clear;
     aStream.LoadFromStream(lStream);
   finally
     lStream.Free;

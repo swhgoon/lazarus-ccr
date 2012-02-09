@@ -52,7 +52,7 @@
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="11"/>
+    <Version Value="10"/>
     <Target>
       <Filename Value="soundtest"/>
     </Target>
@@ -61,6 +61,10 @@
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
+      <Debugging>
+        <GenerateDebugInfo Value="True"/>
+        <DebugInfoType Value="dsAuto"/>
+      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>
