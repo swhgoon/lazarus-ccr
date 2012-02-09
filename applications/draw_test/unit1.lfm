@@ -4,7 +4,7 @@ object Form1: TForm1
   Top = 135
   Width = 569
   Caption = 'Form1'
-  ClientHeight = 535
+  ClientHeight = 555
   ClientWidth = 569
   Menu = MainMenu1
   OnCreate = FormCreate
@@ -12,12 +12,12 @@ object Form1: TForm1
   LCLVersion = '0.9.31'
   object PageControl1: TPageControl
     Left = 0
-    Height = 535
+    Height = 555
     Top = 0
-    Width = 362
-    ActivePage = GraphicControlTabSheet
+    Width = 328
+    ActivePage = ImageTabSheet
     Align = alClient
-    TabIndex = 2
+    TabIndex = 1
     TabOrder = 0
     object PaintBoxTabSheet: TTabSheet
       Caption = 'TPaintBox'
@@ -34,13 +34,13 @@ object Form1: TForm1
     end
     object ImageTabSheet: TTabSheet
       Caption = 'TImage'
-      ClientHeight = 509
-      ClientWidth = 354
+      ClientHeight = 516
+      ClientWidth = 322
       object Image1: TImage
         Left = 0
-        Height = 509
+        Height = 516
         Top = 0
-        Width = 354
+        Width = 322
         Align = alClient
       end
     end
@@ -49,10 +49,10 @@ object Form1: TForm1
     end
   end
   object ListView1: TListView
-    Left = 367
-    Height = 535
+    Left = 333
+    Height = 555
     Top = 0
-    Width = 202
+    Width = 236
     Align = alRight
     Columns = <    
       item
@@ -60,16 +60,15 @@ object Form1: TForm1
         Width = 100
       end    
       item
-        AutoSize = True
         Caption = 'FPS'
-        Width = 98
+        Width = 100
       end>
     TabOrder = 1
     ViewStyle = vsReport
   end
   object Splitter1: TSplitter
-    Left = 362
-    Height = 535
+    Left = 328
+    Height = 555
     Top = 0
     Width = 5
     Align = alRight
