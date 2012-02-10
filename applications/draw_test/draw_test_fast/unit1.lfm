@@ -1,0 +1,89 @@
+object Form1: TForm1
+  Left = 342
+  Height = 555
+  Top = 135
+  Width = 569
+  Caption = 'Form1'
+  ClientHeight = 535
+  ClientWidth = 569
+  Menu = MainMenu1
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '0.9.31'
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 535
+    Top = 0
+    Width = 362
+    ActivePage = ImageTabSheet
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 0
+    object ImageTabSheet: TTabSheet
+      Caption = 'TImage'
+      ClientHeight = 509
+      ClientWidth = 354
+      object Image1: TImage
+        Left = 0
+        Height = 509
+        Top = 0
+        Width = 354
+        Align = alClient
+      end
+    end
+  end
+  object ListView1: TListView
+    Left = 367
+    Height = 535
+    Top = 0
+    Width = 202
+    Align = alRight
+    Columns = <    
+      item
+        Caption = 'Method'
+        Width = 100
+      end    
+      item
+        Caption = 'FPS'
+        Width = 100
+      end>
+    TabOrder = 1
+    ViewStyle = vsReport
+  end
+  object Splitter1: TSplitter
+    Left = 362
+    Height = 535
+    Top = 0
+    Width = 5
+    Align = alRight
+    ResizeAnchor = akRight
+  end
+  object MainMenu1: TMainMenu
+    left = 447
+    top = 88
+    object MenuItem1: TMenuItem
+      Caption = 'Cache'
+      object MenuItem9: TMenuItem
+        Caption = 'Use cache'
+        object mnuHD50: TMenuItem
+          Caption = '50% HD (940x540)'
+          Checked = True
+          RadioItem = True
+          OnClick = mnuHD50Click
+        end
+        object mnuHD: TMenuItem
+          Caption = 'HD (1920x1050)'
+          RadioItem = True
+          OnClick = mnuHDClick
+        end
+      end
+    end
+    object MenuItem2: TMenuItem
+      Caption = 'Run tests'
+      object mnuTImage: TMenuItem
+        Caption = 'TImage'
+        OnClick = mnuTImageClick
+      end
+    end
+  end
+end

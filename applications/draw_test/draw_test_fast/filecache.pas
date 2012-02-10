@@ -5,7 +5,7 @@ unit FileCache;
 interface
 
 uses
-  Classes, SysUtils, Graphics;
+  Classes, SysUtils, Graphics, FastBitmap;
 
 type
   TFileCacheItem = record
@@ -26,8 +26,8 @@ type
     destructor Destroy; override;
 
     property Count: integer read FCount;
-    function GetData(Number: integer; var Bitmap: TPortableNetworkGraphic): boolean;
-    procedure Add(Number: integer; Bitmap: TPortableNetworkGraphic);
+    function GetData(Number: integer; var Bitmap: TFastBitmap): boolean;
+    procedure Add(Number: integer; Bitmap: TFastBitmap);
     procedure Clear;
   end;
 
@@ -49,7 +49,7 @@ begin
   inherited Destroy;
 end;
 
-function TFileCache.GetData(Number: integer; var Bitmap: TPortableNetworkGraphic): boolean;
+function TFileCache.GetData(Number: integer; var Bitmap: TFastBitmap): boolean;
 var
   i: integer;
 begin
@@ -58,13 +58,13 @@ begin
     if FCacheList[i].number = Number then
     begin
       cache_stream.Position := FCacheList[i].start;
-      Bitmap.LoadFromStream(cache_stream, FCacheList[i].length);
+      cache_stream.Read(Bitmap.PixelsData^, FCacheList[i].length);
       Result := True;
       exit;
     end;
 end;
 
-procedure TFileCache.Add(Number: integer; Bitmap: TPortableNetworkGraphic);
+procedure TFileCache.Add(Number: integer; Bitmap: TFastBitmap);
 begin
   if Bitmap = nil then
     exit;
@@ -78,7 +78,7 @@ begin
   cache_stream.Position := cache_stream.Size;
 
   FCacheList[FCount - 1].start := cache_stream.Position;
-  Bitmap.SaveToStream(cache_stream);
+  cache_stream.Write(Bitmap.PixelsData^, Bitmap.Size.x * Bitmap.Size.y * 4);
   FCacheList[FCount - 1].length := cache_stream.Position - FCacheList[FCount - 1].start;
 end;
 
