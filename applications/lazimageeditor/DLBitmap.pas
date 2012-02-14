@@ -666,8 +666,6 @@ end;
 destructor TTextEditor.Destroy;
 begin
   inherited;
-  FEdit.Free;
-  FTimer.Free;
 end;
 
 procedure TTextEditor.EraseBackground(DC: HDC);
