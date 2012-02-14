@@ -7,16 +7,17 @@
       <MainUnit Value="0"/>
       <Title Value="lazeyes2"/>
       <UseXPManifest Value="True"/>
+      <Icon Value="0"/>
       <ActiveWindowIndexAtStart Value="0"/>
     </General>
     <VersionInfo>
       <StringTable ProductVersion=""/>
     </VersionInfo>
-    <BuildModes Count="2" Active="debug">
+    <BuildModes Count="2" Active="release">
       <Item1 Name="debug" Default="True"/>
       <Item2 Name="release">
         <CompilerOptions>
-          <Version Value="10"/>
+          <Version Value="11"/>
           <PathDelim Value="\"/>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
@@ -29,6 +30,7 @@
           </Parsing>
           <Linking>
             <Debugging>
+              <GenerateDebugInfo Value="False"/>
               <UseLineInfoUnit Value="False"/>
               <StripSymbols Value="True"/>
             </Debugging>
@@ -90,7 +92,6 @@
         <TopLine Value="243"/>
         <CursorPos X="10" Y="267"/>
         <UsageCount Value="10"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit2>
       <Unit3>
         <Filename Value="..\..\..\lazarus\lcl\interfaces\win32\win32winapi.inc"/>
@@ -112,7 +113,6 @@
         <TopLine Value="224"/>
         <CursorPos X="3" Y="243"/>
         <UsageCount Value="11"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit5>
       <Unit6>
         <Filename Value="..\..\..\lazarus\lcl\include\cursorimage.inc"/>
@@ -120,7 +120,6 @@
         <TopLine Value="41"/>
         <CursorPos X="3" Y="43"/>
         <UsageCount Value="11"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit6>
       <Unit7>
         <Filename Value="lazeyes2painter.pas"/>
@@ -175,21 +174,17 @@
       </Unit12>
       <Unit13>
         <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk2\gtk2winapih.inc"/>
-        <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
         <TopLine Value="198"/>
         <CursorPos X="15" Y="230"/>
         <UsageCount Value="12"/>
-        <Loaded Value="True"/>
       </Unit13>
       <Unit14>
         <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk2\gtk2winapi.inc"/>
-        <EditorIndex Value="4"/>
         <WindowIndex Value="0"/>
         <TopLine Value="9026"/>
         <CursorPos X="7" Y="9026"/>
         <UsageCount Value="12"/>
-        <Loaded Value="True"/>
       </Unit14>
       <Unit15>
         <Filename Value="..\..\..\fpcbuild\fpcsrc\rtl\inc\ctypes.pp"/>
@@ -198,7 +193,6 @@
         <TopLine Value="95"/>
         <CursorPos X="35" Y="119"/>
         <UsageCount Value="10"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit15>
       <Unit16>
         <Filename Value="..\..\..\lazarus\lcl\include\winapi.inc"/>
@@ -206,7 +200,6 @@
         <TopLine Value="963"/>
         <CursorPos X="3" Y="965"/>
         <UsageCount Value="10"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit16>
       <Unit17>
         <Filename Value="..\..\..\lazarus\lcl\include\intfbasewinapi.inc"/>
@@ -214,29 +207,24 @@
         <TopLine Value="115"/>
         <CursorPos X="53" Y="139"/>
         <UsageCount Value="10"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit17>
       <Unit18>
         <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk2\gtk2proc.inc"/>
-        <EditorIndex Value="5"/>
         <WindowIndex Value="0"/>
         <TopLine Value="3766"/>
         <CursorPos X="22" Y="3769"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit18>
       <Unit19>
         <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk2\gtk2proc.pp"/>
         <UnitName Value="Gtk2Proc"/>
-        <EditorIndex Value="6"/>
         <WindowIndex Value="0"/>
         <TopLine Value="305"/>
         <CursorPos X="18" Y="342"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit19>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
+    <JumpHistory Count="4" HistoryIndex="3">
       <Position1>
         <Filename Value="lazeyes2form.pas"/>
         <Caret Line="203" Column="1" TopLine="191"/>
@@ -246,121 +234,17 @@
         <Caret Line="14" Column="18" TopLine="4"/>
       </Position2>
       <Position3>
-        <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk2\gtk2winapi.inc"/>
-        <Caret Line="1306" Column="22" TopLine="1289"/>
-      </Position3>
-      <Position4>
-        <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk2\gtk2winapih.inc"/>
-        <Caret Line="65" Column="21" TopLine="41"/>
-      </Position4>
-      <Position5>
-        <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk2\gtk2winapi.inc"/>
-        <Caret Line="1304" Column="57" TopLine="1282"/>
-      </Position5>
-      <Position6>
-        <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk2\gtk2winapih.inc"/>
-        <Caret Line="65" Column="42" TopLine="65"/>
-      </Position6>
-      <Position7>
-        <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk2\gtk2winapi.inc"/>
-        <Caret Line="1320" Column="49" TopLine="1295"/>
-      </Position7>
-      <Position8>
         <Filename Value="lazeyes2form.pas"/>
         <Caret Line="35" Column="33" TopLine="1"/>
-      </Position8>
-      <Position9>
+      </Position3>
+      <Position4>
         <Filename Value="lazeyes2form.pas"/>
         <Caret Line="234" Column="14" TopLine="191"/>
-      </Position9>
-      <Position10>
-        <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk2\gtk2winapi.inc"/>
-        <Caret Line="9013" Column="1" TopLine="9002"/>
-      </Position10>
-      <Position11>
-        <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk2\gtk2winapi.inc"/>
-        <Caret Line="9014" Column="1" TopLine="9002"/>
-      </Position11>
-      <Position12>
-        <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk2\gtk2winapi.inc"/>
-        <Caret Line="9016" Column="1" TopLine="9002"/>
-      </Position12>
-      <Position13>
-        <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk2\gtk2winapi.inc"/>
-        <Caret Line="9018" Column="1" TopLine="9002"/>
-      </Position13>
-      <Position14>
-        <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk2\gtk2winapi.inc"/>
-        <Caret Line="9019" Column="1" TopLine="9002"/>
-      </Position14>
-      <Position15>
-        <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk2\gtk2winapi.inc"/>
-        <Caret Line="9021" Column="1" TopLine="9002"/>
-      </Position15>
-      <Position16>
-        <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk2\gtk2winapi.inc"/>
-        <Caret Line="9024" Column="1" TopLine="9002"/>
-      </Position16>
-      <Position17>
-        <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk2\gtk2winapi.inc"/>
-        <Caret Line="9015" Column="8" TopLine="9002"/>
-      </Position17>
-      <Position18>
-        <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk2\gtk2winapi.inc"/>
-        <Caret Line="9013" Column="1" TopLine="9002"/>
-      </Position18>
-      <Position19>
-        <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk2\gtk2proc.inc"/>
-        <Caret Line="3720" Column="1" TopLine="3696"/>
-      </Position19>
-      <Position20>
-        <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk2\gtk2proc.inc"/>
-        <Caret Line="3723" Column="1" TopLine="3696"/>
-      </Position20>
-      <Position21>
-        <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk2\gtk2proc.inc"/>
-        <Caret Line="3724" Column="1" TopLine="3696"/>
-      </Position21>
-      <Position22>
-        <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk2\gtk2proc.inc"/>
-        <Caret Line="3725" Column="1" TopLine="3696"/>
-      </Position22>
-      <Position23>
-        <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk2\gtk2proc.inc"/>
-        <Caret Line="3727" Column="1" TopLine="3696"/>
-      </Position23>
-      <Position24>
-        <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk2\gtk2proc.inc"/>
-        <Caret Line="3732" Column="1" TopLine="3696"/>
-      </Position24>
-      <Position25>
-        <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk2\gtk2winapi.inc"/>
-        <Caret Line="9014" Column="1" TopLine="9002"/>
-      </Position25>
-      <Position26>
-        <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk2\gtk2winapi.inc"/>
-        <Caret Line="9013" Column="1" TopLine="9002"/>
-      </Position26>
-      <Position27>
-        <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk2\gtk2proc.inc"/>
-        <Caret Line="3720" Column="1" TopLine="3696"/>
-      </Position27>
-      <Position28>
-        <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk2\gtk2proc.inc"/>
-        <Caret Line="3723" Column="1" TopLine="3696"/>
-      </Position28>
-      <Position29>
-        <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk2\gtk2proc.inc"/>
-        <Caret Line="3724" Column="1" TopLine="3696"/>
-      </Position29>
-      <Position30>
-        <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk2\gtk2winapi.inc"/>
-        <Caret Line="9013" Column="21" TopLine="8996"/>
-      </Position30>
+      </Position4>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="10"/>
+    <Version Value="11"/>
     <PathDelim Value="\"/>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
