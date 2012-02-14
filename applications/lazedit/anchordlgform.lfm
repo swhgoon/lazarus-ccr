@@ -1,0 +1,136 @@
+object AnchorDlgForm: TAnchorDlgForm
+  Left = 781
+  Height = 377
+  Top = 138
+  Width = 320
+  BorderStyle = bsDialog
+  Caption = 'Hyperlink'
+  ClientHeight = 377
+  ClientWidth = 320
+  OnShow = FormShow
+  LCLVersion = '0.9.31'
+  object OkBtn: TBitBtn
+    Left = 237
+    Height = 30
+    Top = 336
+    Width = 75
+    Default = True
+    DefaultCaption = True
+    Kind = bkOK
+    ModalResult = 1
+    TabOrder = 0
+  end
+  object CancelBtn: TBitBtn
+    Left = 152
+    Height = 30
+    Top = 336
+    Width = 75
+    Cancel = True
+    DefaultCaption = True
+    Kind = bkCancel
+    ModalResult = 2
+    TabOrder = 1
+  end
+  object Label1: TLabel
+    Left = 8
+    Height = 14
+    Top = 8
+    Width = 61
+    Caption = 'Omschrijving'
+    ParentColor = False
+  end
+  object DescrEdit: TEdit
+    Left = 8
+    Height = 21
+    Top = 24
+    Width = 304
+    TabOrder = 2
+    Text = 'DescrEdit'
+  end
+  object UrlLabel: TLabel
+    Left = 8
+    Height = 14
+    Top = 56
+    Width = 14
+    Caption = 'Url'
+    ParentColor = False
+  end
+  object UrlEdit: TEdit
+    Left = 8
+    Height = 21
+    Top = 72
+    Width = 304
+    TabOrder = 3
+  end
+  object AnchorTypeGroup: TRadioGroup
+    Left = 8
+    Height = 81
+    Top = 104
+    Width = 304
+    AutoFill = True
+    Caption = 'Type hyperlink'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 63
+    ClientWidth = 300
+    ItemIndex = 0
+    Items.Strings = (
+      'Url'
+      'Lokaal anker maken'
+      'Naar lokaal anker verwijzen'
+    )
+    OnClick = AnchorTypeGroupClick
+    TabOrder = 4
+  end
+  object Label3: TLabel
+    Left = 8
+    Height = 14
+    Top = 192
+    Width = 21
+    Caption = 'Titel'
+    ParentColor = False
+  end
+  object TitleEdit: TEdit
+    Left = 8
+    Height = 21
+    Top = 208
+    Width = 304
+    TabOrder = 5
+  end
+  object Label4: TLabel
+    Left = 8
+    Height = 14
+    Top = 240
+    Width = 12
+    Caption = 'ID'
+    ParentColor = False
+  end
+  object IdEdit: TEdit
+    Left = 8
+    Height = 21
+    Top = 256
+    Width = 304
+    TabOrder = 6
+  end
+  object Label5: TLabel
+    Left = 8
+    Height = 14
+    Top = 288
+    Width = 26
+    Caption = 'Class'
+    ParentColor = False
+  end
+  object ClassEdit: TEdit
+    Left = 8
+    Height = 21
+    Top = 304
+    Width = 304
+    TabOrder = 7
+  end
+end
