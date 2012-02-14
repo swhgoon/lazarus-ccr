@@ -4,9 +4,9 @@
 [Setup]
 AppName=Lazarus Image Editor
 AppVerName=Lazarus Image Editor v0.9
-AppPublisherURL=http://magnifier.sourceforge.net/
-AppSupportURL=http://magnifier.sourceforge.net/
-AppUpdatesURL=http://magnifier.sourceforge.net/
+AppPublisherURL=http://wiki.lazarus.freepascal.org/Lazarus_Image_Editor
+AppSupportURL=http://wiki.lazarus.freepascal.org/Lazarus_Image_Editor
+AppUpdatesURL=http://wiki.lazarus.freepascal.org/Lazarus_Image_Editor
 DefaultDirName={pf}\Lazarus Image Editor
 DefaultGroupName=Free Pascal Applications Suite
 ; LicenseFile=..\license.txt
