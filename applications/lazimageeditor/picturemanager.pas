@@ -84,14 +84,17 @@ type
     procedure PageCloseQuery(var CanClose: Boolean); dynamic;
   public
     constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
     procedure New(AWidth, AHeight: Integer; APaperColor: TColor);
     procedure Load(const FileName: String);
     procedure Save;
     procedure Save(const FileName: String);
     procedure ExportAsLazarusResource(const AFileName, AName: String);
+    procedure ExportAsWindowsIcon(const AFileName: String);
     procedure Close;
     procedure CloseAll;
     procedure Paste;
+    function GetPicturePageByIndex(AIndex: Integer): TPicturePage;
     
     function CanEdit: Boolean;
   published
@@ -222,6 +225,11 @@ begin
   PageClass := TPicturePage;
 end;
 
+destructor TPictureManager.Destroy;
+begin
+  inherited Destroy;
+end;
+
 procedure TPictureManager.New(AWidth, AHeight: Integer; APaperColor: TColor);
 var
   NewPage: TPicturePage;
@@ -321,6 +329,31 @@ begin
   end;
 end;
 
+procedure TPictureManager.ExportAsWindowsIcon(const AFileName: String);
+var
+  lIcon: TIcon;
+  lPicturePage: TPicturePage;
+  i, lWidth, lHeight: Integer;
+begin
+  lIcon := TIcon.Create;
+  try
+    for i := 0 to Self.PageCount - 1 do
+    begin
+      lPicturePage := GetPicturePageByIndex(i);
+      if lPicturePage = nil then Continue;
+      lWidth := lPicturePage.PictureEdit.Picture.Width;
+      lHeight := lPicturePage.PictureEdit.Picture.height;
+
+      lIcon.Add(pf24bit, 16, 16);
+      lIcon.Current:=i;
+      lIcon.Canvas.Draw(0, 0, lPicturePage.PictureEdit.Picture); // Currently this crashes due to a bug in TIcon
+    end;
+    lIcon.SaveToFile(AFileName);
+  finally
+    lIcon.Free;
+  end;
+end;
+
 procedure TPictureManager.Close;
 var
   CanClose: Boolean;
@@ -353,6 +386,11 @@ procedure TPictureManager.Paste;
 begin
   //if CanEdit then
   ActivePicturePage.PictureEdit.Paste;
+end;
+
+function TPictureManager.GetPicturePageByIndex(AIndex: Integer): TPicturePage;
+begin
+  Result := TPicturePage(Self.GetPage(AIndex));
 end;
 
 function TPictureManager.CanEdit: Boolean;

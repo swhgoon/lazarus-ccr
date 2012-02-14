@@ -4,7 +4,7 @@
   Top = 60
   Width = 925
   Caption = 'Lazarus Image Editor'
-  ClientHeight = 717
+  ClientHeight = 719
   ClientWidth = 925
   Font.CharSet = GB2312_CHARSET
   Font.Height = -13
@@ -18,18 +18,18 @@
   LCLVersion = '0.9.31'
   object PanelTools: TPanel
     Left = 0
-    Height = 590
+    Height = 591
     Top = 105
     Width = 40
     Align = alLeft
     BevelOuter = bvNone
-    ClientHeight = 590
+    ClientHeight = 591
     ClientWidth = 40
     ParentColor = False
     TabOrder = 0
     object ToolBarTools: TToolBar
       Left = 0
-      Height = 590
+      Height = 591
       Top = 0
       Width = 40
       Align = alLeft
@@ -201,8 +201,8 @@
   end
   object StatusBar: TStatusBar
     Left = 0
-    Height = 22
-    Top = 695
+    Height = 23
+    Top = 696
     Width = 925
     Panels = <    
       item
@@ -229,18 +229,18 @@
   end
   object PanelPallete: TPanel
     Left = 850
-    Height = 590
+    Height = 591
     Top = 105
     Width = 75
     Align = alRight
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 590
+    ClientHeight = 591
     ClientWidth = 75
     TabOrder = 1
     object Palette: TColorPalette
       Left = 0
-      Height = 590
+      Height = 591
       Top = 0
       Width = 75
       Align = alClient
@@ -426,11 +426,11 @@
         OnClick = PanelZoomClick
         object ComboBoxZoom: TComboBox
           Left = 1
-          Height = 27
-          Top = 2
+          Height = 24
+          Top = 3
           Width = 75
           Anchors = [akLeft]
-          ItemHeight = 19
+          ItemHeight = 16
           ItemIndex = 2
           Items.Strings = (
             '25 %'
@@ -480,10 +480,10 @@
         TabOrder = 1
         object FontListBox: TComboBox
           Left = 2
-          Height = 27
+          Height = 24
           Top = 3
           Width = 112
-          ItemHeight = 19
+          ItemHeight = 16
           OnChange = FontListBoxChange
           OnClick = FontListBoxClick
           Style = csDropDownList
@@ -491,7 +491,7 @@
         end
         object FontSize: TSpinEdit
           Left = 117
-          Height = 27
+          Height = 24
           Top = 3
           Width = 50
           OnChange = FontSizeChange
@@ -516,7 +516,7 @@
         Left = 112
         Height = 34
         Top = 0
-        Width = 72
+        Width = 70
         Align = alLeft
         Caption = 'Fill, Outline:'
         Constraints.MinHeight = 32
@@ -535,10 +535,10 @@
         ParentColor = False
       end
       object LabelMaskTool: TLabel
-        Left = 284
+        Left = 282
         Height = 34
         Top = 0
-        Width = 67
+        Width = 64
         Align = alLeft
         Caption = 'Mask Tool:'
         Constraints.MinHeight = 32
@@ -546,10 +546,10 @@
         ParentColor = False
       end
       object PanelColors: TPanel
-        Left = 713
+        Left = 714
         Height = 34
         Top = 0
-        Width = 212
+        Width = 211
         Align = alRight
         AutoSize = True
         BorderSpacing.InnerBorder = 4
@@ -557,30 +557,30 @@
         BorderSpacing.CellAlignVertical = ccaCenter
         BevelOuter = bvNone
         ClientHeight = 34
-        ClientWidth = 212
+        ClientWidth = 211
         TabOrder = 0
         object LabelOutline: TLabel
           Left = 8
           Height = 34
           Top = 0
-          Width = 49
+          Width = 46
           Align = alRight
           Caption = 'Outline:'
           Layout = tlCenter
           ParentColor = False
         end
         object LabelFill: TLabel
-          Left = 89
+          Left = 86
           Height = 34
           Top = 0
-          Width = 20
+          Width = 22
           Align = alRight
           Caption = 'Fill:'
           Layout = tlCenter
           ParentColor = False
         end
         object LabelPaper: TLabel
-          Left = 141
+          Left = 140
           Height = 34
           Top = 0
           Width = 39
@@ -590,7 +590,7 @@
           ParentColor = False
         end
         object PanelOutline: TPanel
-          Left = 63
+          Left = 60
           Height = 22
           Top = 6
           Width = 20
@@ -605,7 +605,7 @@
           OnDragOver = PanelPaperDragOver
         end
         object PanelFill: TPanel
-          Left = 115
+          Left = 114
           Height = 22
           Top = 6
           Width = 20
@@ -620,7 +620,7 @@
           OnDragOver = PanelPaperDragOver
         end
         object PanelPaper: TPanel
-          Left = 186
+          Left = 185
           Height = 22
           Top = 6
           Width = 20
@@ -637,7 +637,7 @@
         end
       end
       object PanelFillOutline: TPanel
-        Left = 184
+        Left = 182
         Height = 34
         Top = 0
         Width = 100
@@ -967,7 +967,7 @@
         end
       end
       object PanelMaskTool: TPanel
-        Left = 351
+        Left = 346
         Height = 34
         Top = 0
         Width = 99
@@ -1201,23 +1201,23 @@
       end
       object Label1: TLabel
         Left = 521
-        Height = 20
+        Height = 17
         Top = 5
-        Width = 14
+        Width = 12
         Caption = 'to'
         ParentColor = False
       end
       object Label2: TLabel
         Left = 594
-        Height = 20
+        Height = 17
         Top = 7
-        Width = 62
+        Width = 58
         Caption = 'Poly num:'
         ParentColor = False
       end
       object PolyNum: TSpinEdit
         Left = 663
-        Height = 27
+        Height = 24
         Top = 4
         Width = 50
         MaxValue = 20
@@ -1241,7 +1241,7 @@
         Left = 0
         Height = 34
         Top = 0
-        Width = 28
+        Width = 30
         Align = alLeft
         Caption = 'Size:'
         Constraints.MinHeight = 32
@@ -1249,10 +1249,10 @@
         ParentColor = False
       end
       object LabelDensity: TLabel
-        Left = 234
+        Left = 233
         Height = 34
         Top = 0
-        Width = 50
+        Width = 47
         Align = alLeft
         Caption = 'Density:'
         Constraints.MinHeight = 32
@@ -1260,10 +1260,10 @@
         ParentColor = False
       end
       object LabelRoundness: TLabel
-        Left = 95
+        Left = 97
         Height = 34
         Top = 0
-        Width = 71
+        Width = 68
         Align = alLeft
         Caption = 'Roundness:'
         Constraints.MinHeight = 32
@@ -1271,7 +1271,7 @@
         ParentColor = False
       end
       object LabelTolerance: TLabel
-        Left = 353
+        Left = 349
         Height = 34
         Top = 0
         Width = 63
@@ -1282,7 +1282,7 @@
         ParentColor = False
       end
       object PanelSize: TPanel
-        Left = 28
+        Left = 30
         Height = 34
         Top = 0
         Width = 67
@@ -1293,7 +1293,7 @@
         TabOrder = 0
         object EditSize: TSpinEdit
           Left = 4
-          Height = 27
+          Height = 24
           Top = 3
           Width = 50
           OnChange = EditSizeChange
@@ -1302,7 +1302,7 @@
         end
       end
       object PanelDensity: TPanel
-        Left = 284
+        Left = 280
         Height = 34
         Top = 0
         Width = 69
@@ -1313,7 +1313,7 @@
         TabOrder = 1
         object EditDensity: TSpinEdit
           Left = 4
-          Height = 27
+          Height = 24
           Top = 3
           Width = 56
           OnChange = EditDensityChange
@@ -1322,7 +1322,7 @@
         end
       end
       object PanelRoundness: TPanel
-        Left = 166
+        Left = 165
         Height = 34
         Top = 0
         Width = 68
@@ -1333,7 +1333,7 @@
         TabOrder = 2
         object EditRoundness: TSpinEdit
           Left = 5
-          Height = 27
+          Height = 24
           Top = 3
           Width = 50
           OnChange = EditRoundnessChange
@@ -1341,7 +1341,7 @@
         end
       end
       object PanelTolerance: TPanel
-        Left = 416
+        Left = 412
         Height = 34
         Top = 0
         Width = 68
@@ -1352,7 +1352,7 @@
         TabOrder = 3
         object EditTolerance: TSpinEdit
           Left = 6
-          Height = 27
+          Height = 24
           Top = 3
           Width = 54
           OnChange = EditToleranceChange
@@ -1360,10 +1360,10 @@
         end
       end
       object LabelTolerance1: TLabel
-        Left = 484
+        Left = 480
         Height = 34
         Top = 0
-        Width = 59
+        Width = 58
         Align = alLeft
         Caption = 'Fill Alpha:'
         Constraints.MinHeight = 32
@@ -1371,7 +1371,7 @@
         ParentColor = False
       end
       object PanelTolerance1: TPanel
-        Left = 543
+        Left = 538
         Height = 34
         Top = 0
         Width = 68
@@ -1382,7 +1382,7 @@
         TabOrder = 4
         object spinFillAlpha: TSpinEdit
           Left = 10
-          Height = 27
+          Height = 24
           Top = 3
           Width = 53
           OnChange = spinFillAlphaChange
@@ -1391,10 +1391,10 @@
         end
       end
       object LabelTolerance2: TLabel
-        Left = 611
+        Left = 606
         Height = 34
         Top = 0
-        Width = 35
+        Width = 33
         Align = alLeft
         Caption = 'Fuzzy'
         Constraints.MinHeight = 32
@@ -1402,7 +1402,7 @@
         ParentColor = False
       end
       object PanelTolerance2: TPanel
-        Left = 646
+        Left = 639
         Height = 34
         Top = 0
         Width = 30
@@ -1413,9 +1413,9 @@
         TabOrder = 5
         object checkFuzzy: TCheckBox
           Left = 4
-          Height = 23
+          Height = 17
           Top = 5
-          Width = 24
+          Width = 18
           OnChange = checkFuzzyChange
           TabOrder = 0
         end
@@ -1424,7 +1424,7 @@
   end
   object PanelPictures: TPanel
     Left = 40
-    Height = 590
+    Height = 591
     Top = 105
     Width = 810
     Align = alClient
@@ -1626,8 +1626,12 @@
         OnClick = FileSaveAsExecute
       end
       object MenuItemExportAsLRS: TMenuItem
-        Caption = '&Export As *.lrs...'
+        Caption = '&Export as *.lrs...'
         OnClick = FileExportAsLRSExecute
+      end
+      object MenuItemExportAsICO: TMenuItem
+        Caption = 'Export as *.ico...'
+        OnClick = MenuItemExportAsICOClick
       end
       object MenuItemClose: TMenuItem
         Caption = '&Close'

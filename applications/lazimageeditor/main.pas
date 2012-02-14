@@ -68,6 +68,7 @@ type
     EditRoundness: TSpinEdit;
     EditDensity: TSpinEdit;
     EditTolerance: TSpinEdit;
+    MenuItemExportAsICO: TMenuItem;
     ToolsImageList: TImageList;
     PolyNum: TSpinEdit;
     Label1: TLabel;
@@ -256,6 +257,7 @@ type
     procedure MenuItemAboutClick(Sender: TObject);
     procedure MenuItemClipPaperToMaskClick(Sender: TObject);
     procedure MenuItemExitClick(Sender: TObject);
+    procedure MenuItemExportAsICOClick(Sender: TObject);
     procedure MenuItemResizeClick(Sender: TObject);
     procedure MenuItemResizePaperClick(Sender: TObject);
     procedure PaletteColorMouseMove(Sender: TObject; AColor: TColor;
@@ -359,6 +361,20 @@ end;
 procedure TMainForm.MenuItemExitClick(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TMainForm.MenuItemExportAsICOClick(Sender: TObject);
+var
+  lExt, Value: string;
+begin
+  ExportResourceDialog.Filter := 'Windows Icon (*.ico)|*.ico|All files (*.*)|*.*';
+  if ExportResourceDialog.Execute then
+  begin
+    Value := ExtractFileName(ExportResourceDialog.FileName);
+    lExt := ExtractFileExt(Value);
+    Value := Copy(Value, 1, Length(Value) - Length(lExt));
+    Pictures.ExportAsWindowsIcon(ExportResourceDialog.FileName);
+  end;
 end;
 
 procedure TMainForm.MenuItemResizeClick(Sender: TObject);
@@ -1227,12 +1243,14 @@ end;
 
 procedure TMainForm.FileExportAsLRSExecute(Sender: TObject);
 var
-  Value: string;
+  lExt, Value: string;
 begin
+  ExportResourceDialog.Filter := 'Lazarus resource (*.lrs)|*.lrs|All files (*.*)|*.*';
   if ExportResourceDialog.Execute then
   begin
     Value := ExtractFileName(ExportResourceDialog.FileName);
-    Value := Copy(Value, 1, Length(Value) - Length(ExtractFileExt(Value)));
+    lExt := ExtractFileExt(Value);
+    Value := Copy(Value, 1, Length(Value) - Length(lExt));
     if InputQuery(lieSetResource, lieResourceName, Value) then
     begin
       Pictures.ExportAsLazarusResource(ExportResourceDialog.FileName, Value);
