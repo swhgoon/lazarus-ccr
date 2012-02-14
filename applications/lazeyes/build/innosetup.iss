@@ -41,12 +41,12 @@ Source: "..\lazeyes2.exe"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\LazEyes"; Filename: "{app}\lazeyes2.exe"
-Name: "{group}\{cm:ProgramOnTheWeb,FPChess}"; Filename: "http://wiki.lazarus.freepascal.org/LazEyes"
-Name: "{group}\{cm:UninstallProgram,FPChess}"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\FPChess"; Filename: "{app}\lazeyes2.exe"; Tasks: desktopicon
+Name: "{group}\{cm:ProgramOnTheWeb,LazEyes}"; Filename: "http://wiki.lazarus.freepascal.org/LazEyes"
+Name: "{group}\{cm:UninstallProgram,LazEyes}"; Filename: "{uninstallexe}"
+Name: "{commondesktop}\LazEyes"; Filename: "{app}\lazeyes2.exe"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\lazeyes2.exe"; Description: "{cm:LaunchProgram,FPChess}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\lazeyes2.exe"; Description: "{cm:LaunchProgram,LazEyes}"; Flags: nowait postinstall skipifsilent
 
 
 
