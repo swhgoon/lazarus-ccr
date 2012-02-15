@@ -58,8 +58,8 @@ type
       mnuEditFindNext,
       mnuEditFind: string;
     //Insert menu
-    mnuInsert,
-    mnuInsertAnchor,
+    mnuHTMLTools,
+     mnuInsertAnchor,
 {    mnuInsertList,
       mnuInsertUList: TMenuItem;
       mnuInsertNList: TMenuItem;
@@ -205,57 +205,57 @@ begin
     mnuEditReplace := '&Replace';
     mnuEditFindNext := 'Find &Next';
     mnuEditFind := '&Find';
-  //Insert menu
-  mnuInsert := '&Insert';
-  mnuInsertAnchor := 'Insert Hyperlink';
-{    mnuInsertList,
-    mnuInsertUList: TMenuItem;
-    mnuInsertNList: TMenuItem;
-    mnuInsertWordList: TMenuItem;
-    mnuInsetListItem: TMenuItem;
-    mnuInsertWordTerm: TMenuItem;
-    mnuInsertWordDefinition: TMenuItem;
-  mnuInsertTable: TMenuItem;
-    mnInsertNewTable: TMenuItem;
-    mnuInsertTableCell: TMenuItem;
-    mnuInsertTableRow: TMenuItem;
-  mnuInsertPicture: TMenuItem;
-  mnuInsertSpecialChars: TMenuItem;
-  mnuInsertLineBreak: TMenuItem;
-  mnuInsertSep1: TMenuItem;
-  mnuInsertHtmlComment: TMenuItem;
-  mnuInsertJS: TMenuItem;
-  mnuInsertCssStyle: TMenuItem;}
-  //Layout menu
-  mnuLayout := '&Layout';
-    mnuLayoutBold := 'Bold';
-    mnuLayoutItalic := 'Italic';
-    mnuLayoutUnderline := 'Underline';
-    mnuLayoutSub := 'Subscript';
-    mnuLayoutSup := 'Superscript';
-    mnuLayoutEmphasis := 'Emphasis';
-    mnuLayoutStrong := 'Strong';
-    mnuLayoutHeadings := 'Headings';
-{        mnuLayoutH1: TMenuItem;
-      mnuLayoutH2: TMenuItem;
-      mnuLayoutH3: TMenuItem;
-      mnuLayoutH4: TMenuItem;
-      mnuLayoutH5: TMenuItem;
-      mnuLayoutH6: TMenuItem;
-    mnuLayoutAlign: TMenuItem;
-      mnuLayoutAlignLeft: TMenuItem;
-      mnuLayoutAlignRight: TMenuItem;
-      mnuLayoutAlignCenter: TMenuItem;
-      mnuLayoutAlignJustify := 'Volledig uitlijnen';
-    mnuLayoutCode: TMenuItem;
-    mnuLayoutQuote: TMenuItem;
-    mnuLayoutBlockQuote: TMenuItem;
-    mnuLayoutPreformatted: TMenuItem;}
-  //Grouping menu
-  mnuGrouping := '&Grouping';
-    mnuGroupingParagraph := 'Paragraph';
-    mnuGroupingDiv := 'Div';
-    mnuGroupingSpan := 'Span';
+  //HTML Tools menu
+  mnuHTMLTools := '&HTML Tools';
+    mnuInsertAnchor := 'Insert Hyperlink';
+  {    mnuInsertList,
+      mnuInsertUList: TMenuItem;
+      mnuInsertNList: TMenuItem;
+      mnuInsertWordList: TMenuItem;
+      mnuInsetListItem: TMenuItem;
+      mnuInsertWordTerm: TMenuItem;
+      mnuInsertWordDefinition: TMenuItem;
+    mnuInsertTable: TMenuItem;
+      mnInsertNewTable: TMenuItem;
+      mnuInsertTableCell: TMenuItem;
+      mnuInsertTableRow: TMenuItem;
+    mnuInsertPicture: TMenuItem;
+    mnuInsertSpecialChars: TMenuItem;
+    mnuInsertLineBreak: TMenuItem;
+    mnuInsertSep1: TMenuItem;
+    mnuInsertHtmlComment: TMenuItem;
+    mnuInsertJS: TMenuItem;
+    mnuInsertCssStyle: TMenuItem;}
+    //Layout menu
+    mnuLayout := '&Layout';
+      mnuLayoutBold := 'Bold';
+      mnuLayoutItalic := 'Italic';
+      mnuLayoutUnderline := 'Underline';
+      mnuLayoutSub := 'Subscript';
+      mnuLayoutSup := 'Superscript';
+      mnuLayoutEmphasis := 'Emphasis';
+      mnuLayoutStrong := 'Strong';
+      mnuLayoutHeadings := 'Headings';
+  {        mnuLayoutH1: TMenuItem;
+        mnuLayoutH2: TMenuItem;
+        mnuLayoutH3: TMenuItem;
+        mnuLayoutH4: TMenuItem;
+        mnuLayoutH5: TMenuItem;
+        mnuLayoutH6: TMenuItem;
+      mnuLayoutAlign: TMenuItem;
+        mnuLayoutAlignLeft: TMenuItem;
+        mnuLayoutAlignRight: TMenuItem;
+        mnuLayoutAlignCenter: TMenuItem;
+        mnuLayoutAlignJustify := 'Volledig uitlijnen';
+      mnuLayoutCode: TMenuItem;
+      mnuLayoutQuote: TMenuItem;
+      mnuLayoutBlockQuote: TMenuItem;
+      mnuLayoutPreformatted: TMenuItem;}
+    //Grouping menu
+    mnuGrouping := '&Grouping';
+      mnuGroupingParagraph := 'Paragraph';
+      mnuGroupingDiv := 'Div';
+      mnuGroupingSpan := 'Span';
   //View menu
   mnuView := '&View';
     mnuViewFontsize := '&Font Size';
@@ -303,56 +303,56 @@ begin
     mnuEditFindNext := '&Volgende zoeken';
     mnuEditFind := '&Zoeken';
   //Insert menu
-  mnuInsert := '&Invoegen';
-  mnuInsertAnchor := 'Hyperlink invoegen';
-{    mnuInsertList,
-    mnuInsertUList: TMenuItem;
-    mnuInsertNList: TMenuItem;
-    mnuInsertWordList: TMenuItem;
-    mnuInsetListItem: TMenuItem;
-    mnuInsertWordTerm: TMenuItem;
-    mnuInsertWordDefinition: TMenuItem;
-  mnuInsertTable: TMenuItem;
-    mnInsertNewTable: TMenuItem;
-    mnuInsertTableCell: TMenuItem;
-    mnuInsertTableRow: TMenuItem;
-  mnuInsertPicture: TMenuItem;
-  mnuInsertSpecialChars: TMenuItem;
-  mnuInsertLineBreak: TMenuItem;
-  mnuInsertSep1: TMenuItem;
-  mnuInsertHtmlComment: TMenuItem;
-  mnuInsertJS: TMenuItem;
-  mnuInsertCssStyle: TMenuItem;}
-  //Layout menu
-  mnuLayout := '&Opmaak';
-    mnuLayoutBold := 'Vet';
-    mnuLayoutItalic := 'Cursief';
-    mnuLayoutUnderline := 'Onderstreept';
-    mnuLayoutSub := 'Subscript';
-    mnuLayoutSup := 'Superscript';
-    mnuLayoutEmphasis := 'Nadruk';
-    mnuLayoutStrong := 'Sterke nadruk';
-    mnuLayoutHeadings := 'Kop';
-{        mnuLayoutH1: TMenuItem;
-      mnuLayoutH2: TMenuItem;
-      mnuLayoutH3: TMenuItem;
-      mnuLayoutH4: TMenuItem;
-      mnuLayoutH5: TMenuItem;
-      mnuLayoutH6: TMenuItem;
-    mnuLayoutAlign: TMenuItem;
-      mnuLayoutAlignLeft: TMenuItem;
-      mnuLayoutAlignRight: TMenuItem;
-      mnuLayoutAlignCenter: TMenuItem;
-      mnuLayoutAlignJustify := 'Volledig uitlijnen';
-    mnuLayoutCode: TMenuItem;
-    mnuLayoutQuote: TMenuItem;
-    mnuLayoutBlockQuote: TMenuItem;
-    mnuLayoutPreformatted: TMenuItem;}
-  //Grouping menu
-  mnuGrouping := 'In&deling';
-    mnuGroupingParagraph := 'Alinea';
-    mnuGroupingDiv := 'Div';
-    mnuGroupingSpan := 'Span';
+  mnuHTMLTools := '&HTML Tools';
+    mnuInsertAnchor := 'Hyperlink invoegen';
+  {    mnuInsertList,
+      mnuInsertUList: TMenuItem;
+      mnuInsertNList: TMenuItem;
+      mnuInsertWordList: TMenuItem;
+      mnuInsetListItem: TMenuItem;
+      mnuInsertWordTerm: TMenuItem;
+      mnuInsertWordDefinition: TMenuItem;
+    mnuInsertTable: TMenuItem;
+      mnInsertNewTable: TMenuItem;
+      mnuInsertTableCell: TMenuItem;
+      mnuInsertTableRow: TMenuItem;
+    mnuInsertPicture: TMenuItem;
+    mnuInsertSpecialChars: TMenuItem;
+    mnuInsertLineBreak: TMenuItem;
+    mnuInsertSep1: TMenuItem;
+    mnuInsertHtmlComment: TMenuItem;
+    mnuInsertJS: TMenuItem;
+    mnuInsertCssStyle: TMenuItem;}
+    //Layout menu
+    mnuLayout := '&Opmaak';
+      mnuLayoutBold := 'Vet';
+      mnuLayoutItalic := 'Cursief';
+      mnuLayoutUnderline := 'Onderstreept';
+      mnuLayoutSub := 'Subscript';
+      mnuLayoutSup := 'Superscript';
+      mnuLayoutEmphasis := 'Nadruk';
+      mnuLayoutStrong := 'Sterke nadruk';
+      mnuLayoutHeadings := 'Kop';
+  {        mnuLayoutH1: TMenuItem;
+        mnuLayoutH2: TMenuItem;
+        mnuLayoutH3: TMenuItem;
+        mnuLayoutH4: TMenuItem;
+        mnuLayoutH5: TMenuItem;
+        mnuLayoutH6: TMenuItem;
+      mnuLayoutAlign: TMenuItem;
+        mnuLayoutAlignLeft: TMenuItem;
+        mnuLayoutAlignRight: TMenuItem;
+        mnuLayoutAlignCenter: TMenuItem;
+        mnuLayoutAlignJustify := 'Volledig uitlijnen';
+      mnuLayoutCode: TMenuItem;
+      mnuLayoutQuote: TMenuItem;
+      mnuLayoutBlockQuote: TMenuItem;
+      mnuLayoutPreformatted: TMenuItem;}
+    //Grouping menu
+    mnuGrouping := 'In&deling';
+      mnuGroupingParagraph := 'Alinea';
+      mnuGroupingDiv := 'Div';
+      mnuGroupingSpan := 'Span';
   //View menu
   mnuView := 'Bee&ld';
     mnuViewFontsize := '&Tekengrootte';
@@ -361,11 +361,11 @@ end;
 procedure TTranslations.TranslateToPortuguese;
 begin
   mnuFile := '&Arquivo';
-    mnuFileOpen := 'Open';
-    mnuFileNewFromTemplate := 'Nieuw van sjabloon ...';
-    mnuFileNew := 'Open';
-  {        mnuFileNewText,
-      mnuFileNewHtml: TMenuItem;
+    mnuFileOpen := 'Abrir';
+    mnuFileNewFromTemplate := 'Novo do modelo ...';
+    mnuFileNew := 'Novo';
+      mnuFileNewText := 'Texto';
+      {mnuFileNewHtml: TMenuItem;
       mnuFileNewXml: TMenuItem;
       mnuFileNewCss: TMenuItem;
       mnuFileNewJS: TMenuItem;
@@ -377,23 +377,82 @@ begin
       mnuFileNewShellScript: TMenuItem;
       mnuFileNewBat: TMenuItem;
       mnuFileNewIni: TMenuItem;}
-    mnuFileSave := 'Open';
-    mnuFileSaveAs := 'Open';
-    mnuFileSaveAll := 'Open';
-    mnuFileCloseCurrent := 'Open';
+    mnuFileSave := 'Salvar';
+    mnuFileSaveAs := 'Salvar como';
+    mnuFileSaveAll := 'Salvar todos';
+    mnuFileCloseCurrent := 'Fechar arquivo';
     //mnuSep1: TMenuItem;
-    mnuFileOpenInBrowser := 'Open';
+    mnuFileOpenInBrowser := 'Abrir num navegador';
     //mnuSepAboveMru: TMenuItem;
-    mnuFileCloseApp := 'Open';
+    mnuFileCloseApp := 'Fechar o programa';
   //Edit menu
-  mnuEdit := 'Open';
-    mnuEditUndo := 'Open';
-    mnuEditRedo := 'Open';
+  mnuEdit := 'Editar';
+    mnuEditUndo := 'Desfazer';
+    mnuEditRedo := 'Refazer';
     //mnuSep11: TMenuItem;
-    mnuEditCopy := 'Open';
-    mnuEditCut := 'Open';
-    mnuEditPaste := 'Open';
-    mnuEditSelectAll := 'Open';
+    mnuEditCopy := 'Copiar';
+    mnuEditCut := 'Cortar';
+    mnuEditPaste := 'Colar';
+    //mnuEditPasteSpecial := 'Plakken speciaal';
+    mnuEditSelectAll := 'Selecionar tudo';
+    //mnuSep12: TMenuItem;
+    mnuEditReplace := '&Substituir';
+    mnuEditFindNext := 'Procurar Próximo';
+    mnuEditFind := '&Procurar';
+  //HTML Tools menu
+  mnuHTMLTools := 'Ferramentas &HTML';
+    mnuInsertAnchor := 'Inserir Hyperlink';
+  {    mnuInsertList,
+      mnuInsertUList: TMenuItem;
+      mnuInsertNList: TMenuItem;
+      mnuInsertWordList: TMenuItem;
+      mnuInsetListItem: TMenuItem;
+      mnuInsertWordTerm: TMenuItem;
+      mnuInsertWordDefinition: TMenuItem;
+    mnuInsertTable: TMenuItem;
+      mnInsertNewTable: TMenuItem;
+      mnuInsertTableCell: TMenuItem;
+      mnuInsertTableRow: TMenuItem;
+    mnuInsertPicture: TMenuItem;
+    mnuInsertSpecialChars: TMenuItem;
+    mnuInsertLineBreak: TMenuItem;
+    mnuInsertSep1: TMenuItem;
+    mnuInsertHtmlComment: TMenuItem;
+    mnuInsertJS: TMenuItem;
+    mnuInsertCssStyle: TMenuItem;}
+    //Layout menu
+    mnuLayout := '&Layout';
+      mnuLayoutBold := 'Negrito';
+      mnuLayoutItalic := 'Italico';
+      mnuLayoutUnderline := 'Sublinhado';
+      mnuLayoutSub := 'Subscrito';
+      mnuLayoutSup := 'Subrescrito';
+      mnuLayoutEmphasis := 'Ênfase';
+      mnuLayoutStrong := 'Forte';
+      mnuLayoutHeadings := 'Título';
+  {        mnuLayoutH1: TMenuItem;
+        mnuLayoutH2: TMenuItem;
+        mnuLayoutH3: TMenuItem;
+        mnuLayoutH4: TMenuItem;
+        mnuLayoutH5: TMenuItem;
+        mnuLayoutH6: TMenuItem;
+      mnuLayoutAlign: TMenuItem;
+        mnuLayoutAlignLeft: TMenuItem;
+        mnuLayoutAlignRight: TMenuItem;
+        mnuLayoutAlignCenter: TMenuItem;
+        mnuLayoutAlignJustify := 'Volledig uitlijnen';
+      mnuLayoutCode: TMenuItem;
+      mnuLayoutQuote: TMenuItem;
+      mnuLayoutBlockQuote: TMenuItem;
+      mnuLayoutPreformatted: TMenuItem;}
+    //Grouping menu
+    mnuGrouping := 'A&grupamento';
+      mnuGroupingParagraph := 'Paragrafo';
+      mnuGroupingDiv := 'Div';
+      mnuGroupingSpan := 'Span';
+  //View menu
+  mnuView := '&Vizualização';
+    mnuViewFontsize := 'Tamanho da &fonte';
 end;
 
 procedure TTranslations.TranslateToLanguageID(AID: Integer);

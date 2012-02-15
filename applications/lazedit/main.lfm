@@ -1485,7 +1485,7 @@ object EPlusForm: TEPlusForm
         OnClick = mnuEditReplaceClick
       end
     end
-    object mnuInsert: TMenuItem
+    object mnuHTMLTools: TMenuItem
       Caption = '&Invoegen'
       OnClick = TopLevelMenuClick
       object mnuInsertAnchor: TMenuItem
@@ -1556,95 +1556,98 @@ object EPlusForm: TEPlusForm
         Caption = 'Commentaar'
         OnClick = mnuInsertHtmlCommentClick
       end
-    end
-    object mnuLayout: TMenuItem
-      Caption = '&Opmaak'
-      OnClick = TopLevelMenuClick
-      object mnuLayoutBold: TMenuItem
-        Action = acLayoutBold
+      object mnuInsertSep2: TMenuItem
+        Caption = '-'
       end
-      object mnuLayoutItalic: TMenuItem
-        Action = acLayoutItalic
-      end
-      object mnuLayoutUnderline: TMenuItem
-        Action = acLayoutUnderline
-      end
-      object mnuLayoutSub: TMenuItem
-        Action = acLayoutSub
-      end
-      object mnuLayoutSup: TMenuItem
-        Action = acLayoutSup
-      end
-      object mnuLayoutEmphasis: TMenuItem
-        Action = acLayoutEmphasis
-      end
-      object mnuLayoutStrong: TMenuItem
-        Action = acLayoutStrong
-      end
-      object mnuLayoutHeadings: TMenuItem
-        Caption = 'Kop'
-        object mnuLayoutH1: TMenuItem
-          Action = acLayoutH1
+      object mnuLayout: TMenuItem
+        Caption = '&Opmaak'
+        OnClick = TopLevelMenuClick
+        object mnuLayoutBold: TMenuItem
+          Action = acLayoutBold
         end
-        object mnuLayoutH2: TMenuItem
-          Action = acLayoutH2
+        object mnuLayoutItalic: TMenuItem
+          Action = acLayoutItalic
         end
-        object mnuLayoutH3: TMenuItem
-          Action = acLayoutH3
+        object mnuLayoutUnderline: TMenuItem
+          Action = acLayoutUnderline
         end
-        object mnuLayoutH4: TMenuItem
-          Action = acLayoutH4
+        object mnuLayoutSub: TMenuItem
+          Action = acLayoutSub
         end
-        object mnuLayoutH5: TMenuItem
-          Action = acLayoutH5
+        object mnuLayoutSup: TMenuItem
+          Action = acLayoutSup
         end
-        object mnuLayoutH6: TMenuItem
-          Action = acLayoutH6
+        object mnuLayoutEmphasis: TMenuItem
+          Action = acLayoutEmphasis
+        end
+        object mnuLayoutStrong: TMenuItem
+          Action = acLayoutStrong
+        end
+        object mnuLayoutHeadings: TMenuItem
+          Caption = 'Kop'
+          object mnuLayoutH1: TMenuItem
+            Action = acLayoutH1
+          end
+          object mnuLayoutH2: TMenuItem
+            Action = acLayoutH2
+          end
+          object mnuLayoutH3: TMenuItem
+            Action = acLayoutH3
+          end
+          object mnuLayoutH4: TMenuItem
+            Action = acLayoutH4
+          end
+          object mnuLayoutH5: TMenuItem
+            Action = acLayoutH5
+          end
+          object mnuLayoutH6: TMenuItem
+            Action = acLayoutH6
+          end
+        end
+        object mnuLayoutAlign: TMenuItem
+          Caption = 'Uitlijnen'
+          object mnuLayoutAlignLeft: TMenuItem
+            Action = acLayoutAlignLeft
+          end
+          object mnuLayoutAlignRight: TMenuItem
+            Action = acLayoutAlignRight
+          end
+          object mnuLayoutAlignCenter: TMenuItem
+            Action = acLayoutAlignCenter
+          end
+          object mnuLayoutAlignJustify: TMenuItem
+            Action = acLayoutAlignJustify
+          end
+        end
+        object mnuLayoutCode: TMenuItem
+          Caption = 'Code (programmeertaal)'
+          OnClick = mnuLayoutCodeClick
+        end
+        object mnuLayoutQuote: TMenuItem
+          Caption = 'Quote'
+          OnClick = mnuLayoutQuoteClick
+        end
+        object mnuLayoutBlockQuote: TMenuItem
+          Caption = 'Blockquote'
+          OnClick = mnuLayoutBlockQuoteClick
+        end
+        object mnuLayoutPreformatted: TMenuItem
+          Caption = 'Voorgeformateerde tekst'
+          OnClick = mnuLayoutPreformattedClick
         end
       end
-      object mnuLayoutAlign: TMenuItem
-        Caption = 'Uitlijnen'
-        object mnuLayoutAlignLeft: TMenuItem
-          Action = acLayoutAlignLeft
+      object mnuGrouping: TMenuItem
+        Caption = 'In&deling'
+        OnClick = TopLevelMenuClick
+        object mnuGroupingParagraph: TMenuItem
+          Action = acGroupingParagraph
         end
-        object mnuLayoutAlignRight: TMenuItem
-          Action = acLayoutAlignRight
+        object mnuGroupingDiv: TMenuItem
+          Action = acGroupingDiv
         end
-        object mnuLayoutAlignCenter: TMenuItem
-          Action = acLayoutAlignCenter
+        object mnuGroupingSpan: TMenuItem
+          Action = acGroupingSpan
         end
-        object mnuLayoutAlignJustify: TMenuItem
-          Action = acLayoutAlignJustify
-        end
-      end
-      object mnuLayoutCode: TMenuItem
-        Caption = 'Code (programmeertaal)'
-        OnClick = mnuLayoutCodeClick
-      end
-      object mnuLayoutQuote: TMenuItem
-        Caption = 'Quote'
-        OnClick = mnuLayoutQuoteClick
-      end
-      object mnuLayoutBlockQuote: TMenuItem
-        Caption = 'Blockquote'
-        OnClick = mnuLayoutBlockQuoteClick
-      end
-      object mnuLayoutPreformatted: TMenuItem
-        Caption = 'Voorgeformateerde tekst'
-        OnClick = mnuLayoutPreformattedClick
-      end
-    end
-    object mnuGrouping: TMenuItem
-      Caption = 'In&deling'
-      OnClick = TopLevelMenuClick
-      object mnuGroupingParagraph: TMenuItem
-        Action = acGroupingParagraph
-      end
-      object mnuGroupingDiv: TMenuItem
-        Action = acGroupingDiv
-      end
-      object mnuGroupingSpan: TMenuItem
-        Action = acGroupingSpan
       end
     end
     object mnuView: TMenuItem
@@ -1744,12 +1747,12 @@ object EPlusForm: TEPlusForm
           OnClick = mnuLanguageChangeClick
         end
         object mnuDutch: TMenuItem
-          Tag = 1
+          Tag = -1
           Caption = 'Dutch'
           OnClick = mnuLanguageChangeClick
         end
         object mnuPortuguese: TMenuItem
-          Tag = 2
+          Tag = -2
           Caption = 'Português'
           OnClick = mnuLanguageChangeClick
         end

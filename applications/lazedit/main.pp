@@ -108,6 +108,7 @@ type
     HtmlToolbarImageList: TImageList;
     MainToolbarImageList: TImageList;
     MainMenu: TMainMenu;
+    mnuInsertSep2: TMenuItem;
     mnuLanguage: TMenuItem;
     mnuEnglish: TMenuItem;
     mnuDutch: TMenuItem;
@@ -164,7 +165,7 @@ type
       mnuEditFindNext: TMenuItem;
       mnuEditFind: TMenuItem;
     //Insert menu
-    mnuInsert: TMenuItem;
+    mnuHTMLTools: TMenuItem;
     mnuInsertAnchor: TMenuItem;
     mnuInsertList: TMenuItem;
       mnuInsertUList: TMenuItem;
@@ -626,7 +627,7 @@ end;
 
 procedure TEPlusForm.mnuLanguageChangeClick(Sender: TObject);
 begin
-  vTranslations.TranslateToLanguageID(TMenuItem(Sender).Tag);
+  vTranslations.TranslateToLanguageID(Abs(TMenuItem(Sender).Tag));
   DoTranslate();
 end;
 
@@ -1173,8 +1174,8 @@ begin
     mnuFileOpen.Caption := vTranslations.mnuFileOpen;
     mnuFileNewFromTemplate.Caption := vTranslations.mnuFileNewFromTemplate;
     mnuFileNew.Caption := vTranslations.mnuFileNew;
-{      mnuFileNewText: TMenuItem;
-      mnuFileNewHtml: TMenuItem;
+      mnuFileNewText.Caption := vTranslations.mnuFileNewText;
+{      mnuFileNewHtml: TMenuItem;
       mnuFileNewXml: TMenuItem;
       mnuFileNewCss: TMenuItem;
       mnuFileNewJS: TMenuItem;
@@ -1208,56 +1209,56 @@ begin
     mnuEditFindNext.Caption := vTranslations.mnuEditFindNext;
     mnuEditFind.Caption := vTranslations.mnuEditFind;
   //Insert menu
-  mnuInsert.Caption := vTranslations.mnuInsert;
-{  mnuInsertAnchor: TMenuItem;
-  mnuInsertList: TMenuItem;
-    mnuInsertUList: TMenuItem;
-    mnuInsertNList: TMenuItem;
-    mnuInsertWordList: TMenuItem;
-    mnuInsetListItem: TMenuItem;
-    mnuInsertWordTerm: TMenuItem;
-    mnuInsertWordDefinition: TMenuItem;
-  mnuInsertTable: TMenuItem;
-    mnInsertNewTable: TMenuItem;
-    mnuInsertTableCell: TMenuItem;
-    mnuInsertTableRow: TMenuItem;
-  mnuInsertPicture: TMenuItem;
-  mnuInsertSpecialChars: TMenuItem;
-  mnuInsertLineBreak: TMenuItem;
-  mnuInsertSep1: TMenuItem;
-  mnuInsertHtmlComment: TMenuItem;
-  mnuInsertJS: TMenuItem;
-  mnuInsertCssStyle: TMenuItem;}
-  //Layout menu
-  mnuLayout.Caption := vTranslations.mnuLayout;
-    mnuLayoutBold.Caption := vTranslations.mnuLayoutBold;
-    mnuLayoutAlignJustify.Caption := vTranslations.mnuLayoutAlignJustify;
-    mnuLayoutItalic.Caption := vTranslations.mnuLayoutItalic;
-    mnuLayoutUnderline.Caption := vTranslations.mnuLayoutUnderline;
-    mnuLayoutSub.Caption := vTranslations.mnuLayoutSub;
-    mnuLayoutSup.Caption := vTranslations.mnuLayoutSup;
-    mnuLayoutEmphasis.Caption := vTranslations.mnuLayoutEmphasis;
-    mnuLayoutStrong.Caption := vTranslations.mnuLayoutStrong;
-    mnuLayoutHeadings.Caption := vTranslations.mnuLayoutHeadings;
-{      mnuLayoutH1: TMenuItem;
-      mnuLayoutH2: TMenuItem;
-      mnuLayoutH3: TMenuItem;
-      mnuLayoutH4: TMenuItem;
-      mnuLayoutH5: TMenuItem;
-      mnuLayoutH6: TMenuItem;
-    mnuLayoutAlign: TMenuItem;
-      mnuLayoutAlignLeft: TMenuItem;
-      mnuLayoutAlignRight: TMenuItem;
-      mnuLayoutAlignCenter: TMenuItem;
-    mnuLayoutCode: TMenuItem;
-    mnuLayoutQuote: TMenuItem;
-    mnuLayoutBlockQuote: TMenuItem;
-    mnuLayoutPreformatted: TMenuItem;}
-  //Grouping menu
-  mnuGrouping.Caption := vTranslations.mnuGrouping;
-    mnuGroupingParagraph.Caption := vTranslations.mnuGroupingParagraph;
-    mnuGroupingDiv.Caption := vTranslations.mnuGroupingDiv;
-    mnuGroupingSpan.Caption := vTranslations.mnuGroupingSpan;
+  mnuHTMLTools.Caption := vTranslations.mnuHTMLTools;
+  {  mnuInsertAnchor: TMenuItem;
+    mnuInsertList: TMenuItem;
+      mnuInsertUList: TMenuItem;
+      mnuInsertNList: TMenuItem;
+      mnuInsertWordList: TMenuItem;
+      mnuInsetListItem: TMenuItem;
+      mnuInsertWordTerm: TMenuItem;
+      mnuInsertWordDefinition: TMenuItem;
+    mnuInsertTable: TMenuItem;
+      mnInsertNewTable: TMenuItem;
+      mnuInsertTableCell: TMenuItem;
+      mnuInsertTableRow: TMenuItem;
+    mnuInsertPicture: TMenuItem;
+    mnuInsertSpecialChars: TMenuItem;
+    mnuInsertLineBreak: TMenuItem;
+    mnuInsertSep1: TMenuItem;
+    mnuInsertHtmlComment: TMenuItem;
+    mnuInsertJS: TMenuItem;
+    mnuInsertCssStyle: TMenuItem;}
+    //Layout menu
+    mnuLayout.Caption := vTranslations.mnuLayout;
+      mnuLayoutBold.Caption := vTranslations.mnuLayoutBold;
+      mnuLayoutAlignJustify.Caption := vTranslations.mnuLayoutAlignJustify;
+      mnuLayoutItalic.Caption := vTranslations.mnuLayoutItalic;
+      mnuLayoutUnderline.Caption := vTranslations.mnuLayoutUnderline;
+      mnuLayoutSub.Caption := vTranslations.mnuLayoutSub;
+      mnuLayoutSup.Caption := vTranslations.mnuLayoutSup;
+      mnuLayoutEmphasis.Caption := vTranslations.mnuLayoutEmphasis;
+      mnuLayoutStrong.Caption := vTranslations.mnuLayoutStrong;
+      mnuLayoutHeadings.Caption := vTranslations.mnuLayoutHeadings;
+  {      mnuLayoutH1: TMenuItem;
+        mnuLayoutH2: TMenuItem;
+        mnuLayoutH3: TMenuItem;
+        mnuLayoutH4: TMenuItem;
+        mnuLayoutH5: TMenuItem;
+        mnuLayoutH6: TMenuItem;
+      mnuLayoutAlign: TMenuItem;
+        mnuLayoutAlignLeft: TMenuItem;
+        mnuLayoutAlignRight: TMenuItem;
+        mnuLayoutAlignCenter: TMenuItem;
+      mnuLayoutCode: TMenuItem;
+      mnuLayoutQuote: TMenuItem;
+      mnuLayoutBlockQuote: TMenuItem;
+      mnuLayoutPreformatted: TMenuItem;}
+    //Grouping menu
+    mnuGrouping.Caption := vTranslations.mnuGrouping;
+      mnuGroupingParagraph.Caption := vTranslations.mnuGroupingParagraph;
+      mnuGroupingDiv.Caption := vTranslations.mnuGroupingDiv;
+      mnuGroupingSpan.Caption := vTranslations.mnuGroupingSpan;
   //View menu
   mnuView.Caption := vTranslations.mnuView;
     mnuViewFontsize.Caption := vTranslations.mnuViewFontsize;
@@ -1638,7 +1639,7 @@ begin
     //Top level menus
     mnuFile.Tag := 0;
     mnuEdit.Tag := 0;
-    mnuInsert.Tag := 0;
+    mnuHTMLTools.Tag := 0;
     mnuGrouping.Tag := 0;
     mnuView.Tag := 0;
     mnuAbout.Tag := 0;
