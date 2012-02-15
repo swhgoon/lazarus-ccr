@@ -439,7 +439,9 @@ type
     MruMenuItems: Array[0..MruEntries-1] of TMenuItem;
 
     procedure SetUpAndConfigureLazEdit;
-    procedure DoTranslate;
+    procedure DoTranslateAll;
+    procedure DoTranslateMenus;
+    procedure DoTranslateHints;
     procedure SaveEplusConfiguration;
     procedure CleanUp;
 
@@ -534,32 +536,10 @@ const pXY  = 0;   //Panels constanten
       pMod = 1;
       pIns = 2;
       pName = 3;
-      SLine = 'Rg';
-      SCol = 'Kol';
-      SModified = 'Gewijzigd';
-      SIns = 'INS';
-      SOvr = 'OVR';
 
       tgNeedsEditor     = $01;
       tgNeedsSelection  = $02;
       tgNeedsClipPaste  = $04;
-
-
-      msgOpenError = 'Fout bij openen van bestand:'^m'%s';
-      msgSaveError = 'Fout bij opslaan van bestand:'^m'%s';
-      msgSaveAllError = 'De volgende bestanden zijn niet opgeslagen:'^m'%s';
-      msgFileIsNotText = 'Dit bestand lijkt geen tekstbestand te zijn'^m'%s'^m'Wilt u het toch openen?';
-      msgFileNotFound = 'Bestand niet gevonden:'^m'%s';
-      msgModifiedSave = 'Bestand is gewijzigd:'^m'%s'^m'Bestand opslaan?';
-      msgMruIndexOutOfBound = 'Index voor recent geopende bestanden ligt buiten de grenzen [%d]'^m+
-                              'Dit is uiteraard een fout van de programmeur';
-      msgFileTypeNotForBrowser = 'Dit bestandstype lijkt niet geschikt om te openen in een browser.'^m+
-                                  'Wilt u toch doorgaan?';
-      msgFileHasNoName = 'Dit bestand heeft nog geen naam.'^m +
-                         'U moet het bestand eerst opslaan om het in de browser te openen.';
-      msgErrorBrowser = 'Er is een fout opgetreden tijdens het openen van'^m+
-                        '%s'^m'in de browser.';
-      msgTextNotFound = 'Tekst niet gevonden:'^m'"%s"';
 
       //Initial text for FileNew commands
       itXml = '<?xml version="1.0"?>';
@@ -578,7 +558,10 @@ const pXY  = 0;   //Panels constanten
 procedure TEPlusForm.FormCreate(Sender: TObject);
 begin
   SetUpAndConfigureLazEdit;
-  Self.DoTranslate();
+  DoTranslateAll();
+  NoteBook.IsCreating := True;
+  DoFileNewByType(eftNone);
+  NoteBook.IsCreating := False;
 end;
 
 procedure TEPlusForm.FormDestroy(Sender: TObject);
@@ -615,7 +598,7 @@ begin
     begin
       if not TryFileOpen(FileNames[i]) then ShowError(Format('Fout bij openen van bestand'^m,[FileNames[i]]));
     end
-    else ShowError(Format(msgFileNotFound,[FileNames[i]]));
+    else ShowError(Format(vTranslations.msgFileNotFound,[FileNames[i]]));
   end;
 end;
 
@@ -628,7 +611,7 @@ end;
 procedure TEPlusForm.mnuLanguageChangeClick(Sender: TObject);
 begin
   vTranslations.TranslateToLanguageID(Abs(TMenuItem(Sender).Tag));
-  DoTranslate();
+  DoTranslateAll();
 end;
 
 
@@ -1163,8 +1146,15 @@ begin
 
 end;
 
-procedure TEPlusForm.DoTranslate;
+procedure TEPlusForm.DoTranslateAll;
 begin
+  DoTranslateMenus();
+  DoTranslateHints();
+end;
+
+procedure TEPlusForm.DoTranslateMenus;
+begin
+  { MENUS }
 {  mnuEditPasteTableContentTab: TMenuItem;
   mnuEditPasteSpecial: TMenuItem;
   mnuAbout: TMenuItem;
@@ -1298,6 +1288,41 @@ begin
     mnuPopupLayoutH3: TMenuItem;
     mnuPopupLayoutH2: TMenuItem;
     mnuPopupLayoutH1: TMenuItem;   }
+end;
+
+procedure TEPlusForm.DoTranslateHints;
+begin
+  { HINTS }
+  NewFromTemplateBtn.Hint := vTranslations.NewFromTemplateBtn;
+  NewPlainBtn.Hint := vTranslations.NewPlainBtn;
+  OpenBtn.Hint := vTranslations.OpenBtn;
+  SaveBtn.Hint := vTranslations.SaveBtn;
+  SaveAllBtn.Hint := vTranslations.SaveAllBtn;
+  CopyBtn.Hint := vTranslations.CopyBtn;
+  PasteBtn.Hint := vTranslations.PasteBtn;
+  FindBtn.Hint := vTranslations.FindBtn;
+  InfoBtn.Hint := vTranslations.InfoBtn;
+  AnchorBtn.Hint := vTranslations.AnchorBtn;
+  ImageBtn.Hint := vTranslations.ImageBtn;
+  UListBtn.Hint := vTranslations.UListBtn;
+  NListBtn.Hint := vTranslations.NListBtn;
+  ListItemBtn.Hint := vTranslations.ListItemBtn;
+  TableBtn.Hint := vTranslations.TableBtn;
+  BoldBtn.Hint := vTranslations.BoldBtn;
+  ItalicBtn.Hint := vTranslations.ItalicBtn;
+  UnderlineBtn.Hint := vTranslations.UnderlineBtn;
+  EmBtn.Hint := vTranslations.EmBtn;
+  StrongBtn.Hint := vTranslations.StrongBtn;
+  SupBtn.Hint := vTranslations.SupBtn;
+  SubBtn.Hint := vTranslations.SubBtn;
+  HeadingBtn.Hint := vTranslations.HeadingBtn;
+  LeftAlignBtn.Hint := vTranslations.LeftAlignBtn;
+  RightAlignBtn.Hint := vTranslations.RightAlignBtn;
+  CenterAlignBtn.Hint := vTranslations.CenterAlignBtn;
+  JustifyAlignBtn.Hint := vTranslations.JustifyAlignBtn;
+  ParaBtn.Hint := vTranslations.ParaBtn;
+  DivBtn.Hint := vTranslations.DivBtn;
+  SpanBtn.Hint := vTranslations.SpanBtn;
 end;
 
 procedure TEPlusForm.SaveEplusConfiguration;
@@ -1702,7 +1727,7 @@ begin
     begin
       Fn := Ed.FileName;
       if Fn = EmptyStr then Fn := Sender.Caption;  //this will differentiate between Noname and Noname [2]
-      Res :=  MessageDlg(AppName, Format(msgModifiedSave,[Fn]), mtConfirmation, [mbYes,mbNo,mbCancel], 0);
+      Res :=  MessageDlg(AppName, Format(vTranslations.msgModifiedSave,[Fn]), mtConfirmation, [mbYes,mbNo,mbCancel], 0);
       case Res of
         mrNo: Cancel := False;
         mrCancel: Cancel := True;
@@ -1732,17 +1757,17 @@ begin
     begin
       Col := CaretX;
       Line := CaretY;
-      StatusBar.Panels[pXY].Text := Format('%s %-3d  %s %-3d',[SLine,Line,SCol,Col]);
+      StatusBar.Panels[pXY].Text := Format('%s %-3d  %s %-3d',[vTranslations.SLine,Line,vTranslations.SCol,Col]);
     end;
     if (scModified in Changes) then
     begin
-      if Modified then StatusBar.Panels[pMod].Text := SModified
+      if Modified then StatusBar.Panels[pMod].Text := vTranslations.SModified
       else StatusBar.Panels[pMod].Text := '';
     end;
     if (scInsertMode in Changes) then
     begin
-      if InsertMode then StatusBar.Panels[pIns].Text := SIns
-      else StatusBar.Panels[pIns].Text := SOvr;
+      if InsertMode then StatusBar.Panels[pIns].Text := vTranslations.SIns
+      else StatusBar.Panels[pIns].Text := vTranslations.SOvr;
     end;
     if (scFileName in Changes) then
     begin
@@ -1992,10 +2017,10 @@ begin
   if (Fn = EmptyStr) then Exit;
   if FileExistsUtf8(Fn) then
   begin
-    if not TryFileOpen(Fn, False) then ShowError(Format(msgOpenError,[Fn]));
+    if not TryFileOpen(Fn, False) then ShowError(Format(vTranslations.msgOpenError,[Fn]));
   end
   else
-    ShowError(Format(msgFileNotFound,[Fn]));
+    ShowError(Format(vTranslations.msgFileNotFound,[Fn]));
 end;
 
 procedure TEPlusForm.DoMruOpen(const Index: Integer);
@@ -2004,12 +2029,12 @@ var
 begin
   if (Index < 0) or (Index > MruList.Count - 1) then
   begin
-    ShowError(Format(msgMruIndexOutOfBound,[Index]));
+    ShowError(Format(vTranslations.msgMruIndexOutOfBound,[Index]));
   end;
   Fn := MruList.Strings[Index];
   if (Fn <> '') then
   begin
-    if not TryFileOpen(Fn, False) then ShowError(Format(msgOpenError,[Fn]));
+    if not TryFileOpen(Fn, False) then ShowError(Format(vTranslations.msgOpenError,[Fn]));
   end
 end;
 
@@ -2021,17 +2046,17 @@ begin
   if (Fn = EmptyStr) then Exit;
   if FileExistsUtf8(Fn) then
   begin
-    if not TryFileOpen(Fn, True) then ShowError(Format(msgOpenError,[Fn]));
+    if not TryFileOpen(Fn, True) then ShowError(Format(vTranslations.msgOpenError,[Fn]));
   end
   else
-    ShowError(Format(msgFileNotFound,[Fn]));
+    ShowError(Format(vTranslations.msgFileNotFound,[Fn]));
 end;
 
 procedure TEPlusForm.DoFileSave(Editor: TEditor);
 begin
   if Assigned(Editor) then
   begin
-    if (TryFileSave(Editor, Editor.FileName) = IoFail) then ShowError(Format(msgSaveError,[Editor.FileName]));
+    if (TryFileSave(Editor, Editor.FileName) = IoFail) then ShowError(Format(vTranslations.msgSaveError,[Editor.FileName]));
   end;
 end;
 
@@ -2044,7 +2069,7 @@ begin
     Fn := AskFileNameSave(Editor.FileName, Editor.FileType);
     if (Fn <> EmptyStr) then
     begin
-      if (TryFileSave(Editor, Fn) = IoFail) then ShowError(Format(msgSaveError,[Fn]));
+      if (TryFileSave(Editor, Fn) = IoFail) then ShowError(Format(vTranslations.msgSaveError,[Fn]));
     end;
   end;
 end;
@@ -2058,7 +2083,7 @@ begin
     Fn := AskFileNameSaveTemplate;
     if (Fn <> EmptyStr) then
     begin
-      if (TryFileSave(Editor, Fn) = IoFail) then ShowError(Format(msgSaveError,[Fn]));
+      if (TryFileSave(Editor, Fn) = IoFail) then ShowError(Format(vTranslations.msgSaveError,[Fn]));
     end;
   end;
 end;
@@ -2071,7 +2096,7 @@ begin
   if not TryFileSaveAll(S) then
   begin
     S := Trim(S);   //get rid of trailing LineEndings
-    ShowError(Format(msgSaveAllError,[S]));
+    ShowError(Format(vTranslations.msgSaveAllError,[S]));
   end;
 end;
 
@@ -2105,15 +2130,15 @@ begin
   begin
     if (Ed.FileName = EmptyStr) then
     begin
-      ShowError(msgFileHasNoName);
+      ShowError(vTranslations.msgFileHasNoName);
       Exit;
     end;
     if not (Ed.FileType in [eftHtml, eftXml]) then
     begin
-      if (MessageDlg(AppName, msgFileTypeNotForBrowser, mtConfirmation, [mbYes,mbNo], 0, mbNo) <> mrYes) then
+      if (MessageDlg(AppName, vTranslations.msgFileTypeNotForBrowser, mtConfirmation, [mbYes,mbNo], 0, mbNo) <> mrYes) then
         Exit;
     end;
-    if not OpenUrl(Ed.FileName) then ShowError(Format(msgErrorBrowser, [Ed.FileName]));
+    if not OpenUrl(Ed.FileName) then ShowError(Format(vTranslations.msgErrorBrowser, [Ed.FileName]));
   end;
 end;
 
@@ -2213,7 +2238,7 @@ begin
     sOpt := FindOptions;
     sOpt := sOpt - [ssoBackWards];
     if Ed.SearchReplace(FindText,'',sOpt) = 0 then
-      ShowError(Format(msgTextNotFound,[FindText]));
+      ShowError(Format(vTranslations.msgTextNotFound,[FindText]));
   end;
 end;
 
@@ -2229,7 +2254,7 @@ begin
     sOpt := FindOptions;
     sOpt := sOpt + [ssoBackWards];
     if Ed.SearchReplace(FindText,'',sOpt) = 0 then
-      ShowError(Format(msgTextNotFound,[FindText]));
+      ShowError(Format(vTranslations.msgTextNotFound,[FindText]));
   end;
 end;
 
@@ -2282,7 +2307,7 @@ begin
     FindText := Dlg.FindText;
 
     if Ed.SearchReplace(FindText,'',FindOptions) = 0 then
-      ShowError(Format(msgTextNotFound,[FindText]));
+      ShowError(Format(vTranslations.msgTextNotFound,[FindText]));
 
   end;
 end;
@@ -2309,7 +2334,7 @@ begin
     ReplaceText := Dlg.ReplaceText;
 
     if Ed.SearchReplace(FindText,ReplaceText,ReplaceOptions) = 0 then
-      ShowError(Format(msgTextNotFound,[FindText]))
+      ShowError(Format(vTranslations.msgTextNotFound,[FindText]))
     else
     if (ssoReplace in ReplaceOptions) and not (ssoReplaceAll in ReplaceOptions) then
     begin

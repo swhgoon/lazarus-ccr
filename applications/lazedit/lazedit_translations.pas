@@ -94,20 +94,20 @@ type
         mnuLayoutH3: TMenuItem;
         mnuLayoutH4: TMenuItem;
         mnuLayoutH5: TMenuItem;
-        mnuLayoutH6: TMenuItem;
-      mnuLayoutAlign: TMenuItem;
-        mnuLayoutAlignLeft: TMenuItem;
-        mnuLayoutAlignRight: TMenuItem;
-        mnuLayoutAlignCenter: TMenuItem;
-      mnuLayoutCode: TMenuItem;
-      mnuLayoutQuote: TMenuItem;
-      mnuLayoutBlockQuote: TMenuItem;
-      mnuLayoutPreformatted: TMenuItem;}
+        mnuLayoutH6: TMenuItem;}
+      mnuLayoutAlign,
+        mnuLayoutAlignLeft,
+        mnuLayoutAlignRight,
+        mnuLayoutAlignCenter,
+      mnuLayoutCode,
+      mnuLayoutQuote,
+      mnuLayoutBlockQuote,
+      mnuLayoutPreformatted: string;
     //Grouping menu
     mnuGrouping,
       mnuGroupingParagraph,
       mnuGroupingDiv,
-      mnuGroupingSpan,
+      mnuGroupingSpan: string;
     //View menu
     mnuView,
       mnuViewFontsize: string;
@@ -147,6 +147,21 @@ type
       mnuPopupLayoutH3: TMenuItem;
       mnuPopupLayoutH2: TMenuItem;
       mnuPopupLayoutH1: TMenuItem;   }
+    // Other main.pp constants
+    SLine, SCol, SModified, SIns, SOvr,
+     msgOpenError, msgSaveError, msgSaveAllError, msgFileIsNotText,
+     msgFileNotFound, msgModifiedSave, msgMruIndexOutOfBound,
+     msgFileTypeNotForBrowser, msgFileHasNoName, msgErrorBrowser,
+     msgTextNotFound: string;
+    // main.pp hints in toolbar buttons
+    NewFromTemplateBtn, NewPlainBtn, OpenBtn, SaveBtn, SaveAllBtn,
+     CopyBtn, PasteBtn, FindBtn, InfoBtn,
+     AnchorBtn, ImageBtn, UListBtn, NListBtn, ListItemBtn, TableBtn,
+     BoldBtn, ItalicBtn, UnderlineBtn, EmBtn, StrongBtn, SupBtn, SubBtn,
+     HeadingBtn, LeftAlignBtn, RightAlignBtn, CenterAlignBtn, JustifyAlignBtn,
+     ParaBtn, DivBtn, SpanBtn: string;
+    // Other constants
+    NoName: string;
     { About box strings }
 //    lpSupport, lpSupportInfo, lpLicense, lpLicenseInfo, lpAuthors,
 //     lpContributorsTitle, lpAboutWindow, lpClose, lpInformation: string;
@@ -241,16 +256,16 @@ begin
         mnuLayoutH3: TMenuItem;
         mnuLayoutH4: TMenuItem;
         mnuLayoutH5: TMenuItem;
-        mnuLayoutH6: TMenuItem;
-      mnuLayoutAlign: TMenuItem;
-        mnuLayoutAlignLeft: TMenuItem;
-        mnuLayoutAlignRight: TMenuItem;
-        mnuLayoutAlignCenter: TMenuItem;
-        mnuLayoutAlignJustify := 'Volledig uitlijnen';
-      mnuLayoutCode: TMenuItem;
-      mnuLayoutQuote: TMenuItem;
-      mnuLayoutBlockQuote: TMenuItem;
-      mnuLayoutPreformatted: TMenuItem;}
+        mnuLayoutH6: TMenuItem;}
+      mnuLayoutAlign := 'Alignment';
+        mnuLayoutAlignLeft := 'left aligned';
+        mnuLayoutAlignRight := 'right aligned';
+        mnuLayoutAlignCenter := 'Centralized';
+        mnuLayoutAlignJustify := 'Justified';
+      mnuLayoutCode := 'Code';
+      mnuLayoutQuote := 'Quote';
+      mnuLayoutBlockQuote := 'Block Quote';
+      mnuLayoutPreformatted := 'Preformatted';
     //Grouping menu
     mnuGrouping := '&Grouping';
       mnuGroupingParagraph := 'Paragraph';
@@ -259,6 +274,60 @@ begin
   //View menu
   mnuView := '&View';
     mnuViewFontsize := '&Font Size';
+
+  SLine := 'Line';
+  SCol := 'Col';
+  SModified := 'Modified';
+  SIns := 'INS';
+  SOvr := 'OVR';
+  msgOpenError := 'The following open file error has occured:'^m'%s';
+  msgSaveError := 'The following save file error has occured:'^m'%s';
+  msgSaveAllError := 'The following save all error has occured:'^m'%s';
+  msgFileIsNotText := 'The selected file '^m'%s'^m' does not seam to be a text file.';
+  msgFileNotFound := 'File not found:'^m'%s';
+  msgModifiedSave := 'The following file was modified:'^m'%s'^m'Should it be saved?';
+  msgMruIndexOutOfBound := 'Index out of bounds [%d]'^m;
+  msgFileTypeNotForBrowser := 'The file type is not suited for a browser.'^m+'Continue anyway?';
+  msgFileHasNoName := 'The file has no name.'^m +
+                     'U moet het bestand eerst opslaan om het in de browser te openen.';
+  msgErrorBrowser := 'Er is een fout opgetreden tijdens het openen van'^m+
+                    '%s'^m'in de browser.';
+  msgTextNotFound := 'Text not found:'^m'"%s"';
+
+  // main.pp hints in toolbar buttons
+  NewFromTemplateBtn := mnuFileNewFromTemplate;
+  NewPlainBtn := mnuFileNew;
+  OpenBtn := mnuFileOpen;
+  SaveBtn := mnuFileSave;
+  SaveAllBtn := mnuFileSaveAll;
+  CopyBtn := mnuEditCopy;
+  PasteBtn := 'Paste';
+  FindBtn := 'Find';
+  InfoBtn := 'Help';
+  AnchorBtn := 'Insert Hyperlink';
+  ImageBtn := 'Image';
+  UListBtn := 'Bullets List';
+  NListBtn := 'Numeric List';
+  ListItemBtn := 'List item';
+  TableBtn := 'Table';
+  BoldBtn := mnuLayoutBold;
+  ItalicBtn := mnuLayoutItalic;
+  UnderlineBtn := mnuLayoutUnderline;
+  EmBtn := mnuLayoutEmphasis;
+  StrongBtn := mnuLayoutStrong;
+  SupBtn := mnuLayoutSub;
+  SubBtn := mnuLayoutSup;
+  HeadingBtn := 'Heading (H1..H6)';
+  LeftAlignBtn := mnuLayoutAlignLeft;
+  RightAlignBtn:= mnuLayoutAlignRight;
+  CenterAlignBtn:= mnuLayoutAlignCenter;
+  JustifyAlignBtn:= mnuLayoutAlignJustify;
+  ParaBtn := mnuGroupingParagraph;
+  DivBtn := mnuGroupingDiv;
+  SpanBtn := mnuGroupingSpan;
+
+  // Other constants
+  NoName := 'Untitled';
 end;
 
 procedure TTranslations.TranslateToDutch;
@@ -356,6 +425,62 @@ begin
   //View menu
   mnuView := 'Bee&ld';
     mnuViewFontsize := '&Tekengrootte';
+
+  SLine := 'Rg';
+  SCol := 'Kol';
+  SModified := 'Gewijzigd';
+  SIns := 'INS';
+  SOvr := 'OVR';
+  msgOpenError := 'Fout bij openen van bestand:'^m'%s';
+  msgSaveError := 'Fout bij opslaan van bestand:'^m'%s';
+  msgSaveAllError := 'De volgende bestanden zijn niet opgeslagen:'^m'%s';
+  msgFileIsNotText := 'Dit bestand lijkt geen tekstbestand te zijn'^m'%s'^m'Wilt u het toch openen?';
+  msgFileNotFound := 'Bestand niet gevonden:'^m'%s';
+  msgModifiedSave := 'Bestand is gewijzigd:'^m'%s'^m'Bestand opslaan?';
+  msgMruIndexOutOfBound := 'Index voor recent geopende bestanden ligt buiten de grenzen [%d]'^m+
+                          'Dit is uiteraard een fout van de programmeur';
+  msgFileTypeNotForBrowser := 'Dit bestandstype lijkt niet geschikt om te openen in een browser.'^m+
+                              'Wilt u toch doorgaan?';
+  msgFileHasNoName := 'Dit bestand heeft nog geen naam.'^m +
+                     'U moet het bestand eerst opslaan om het in de browser te openen.';
+  msgErrorBrowser := 'Er is een fout opgetreden tijdens het openen van'^m+
+                    '%s'^m'in de browser.';
+  msgTextNotFound := 'Tekst niet gevonden:'^m'"%s"';
+
+  // main.pp hints in toolbar buttons
+  NewFromTemplateBtn := mnuFileNewFromTemplate;
+  NewPlainBtn := mnuFileNew;
+  OpenBtn := mnuFileOpen;
+  SaveBtn := mnuFileSave;
+  SaveAllBtn := mnuFileSaveAll;
+  CopyBtn := mnuEditCopy;
+  PasteBtn := 'Paste';
+  FindBtn := 'Find';
+  InfoBtn := 'Help';
+  AnchorBtn := 'Hyperlink invoegen';
+  ImageBtn := 'Plaatje invoegen';
+  UListBtn := 'Ongenummerde lijst';
+  NListBtn := 'Genummerde ljst';
+  ListItemBtn := 'Lijstitem invoegen ((on)genummerde lijst)';
+  TableBtn := 'Tabel invoegen';
+  BoldBtn := mnuLayoutBold;
+  ItalicBtn := mnuLayoutItalic;
+  UnderlineBtn := mnuLayoutUnderline;
+  EmBtn := mnuLayoutEmphasis;
+  StrongBtn := mnuLayoutStrong;
+  SupBtn := mnuLayoutSub;
+  SubBtn := mnuLayoutSup;
+  HeadingBtn := 'Heading (H1..H6)';
+  LeftAlignBtn := mnuLayoutAlignLeft;
+  RightAlignBtn:= mnuLayoutAlignRight;
+  CenterAlignBtn:= mnuLayoutAlignCenter;
+  JustifyAlignBtn:= mnuLayoutAlignJustify;
+  ParaBtn := mnuGroupingParagraph;
+  DivBtn := mnuGroupingDiv;
+  SpanBtn := mnuGroupingSpan;
+
+  // Other constants
+  NoName := 'Naamloos';
 end;
 
 procedure TTranslations.TranslateToPortuguese;

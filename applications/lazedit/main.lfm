@@ -1,7 +1,7 @@
 object EPlusForm: TEPlusForm
-  Left = 634
+  Left = 286
   Height = 418
-  Top = 143
+  Top = 121
   Width = 575
   AllowDropFiles = True
   Caption = 'Lazarus Text Editor'
@@ -1486,7 +1486,7 @@ object EPlusForm: TEPlusForm
       end
     end
     object mnuHTMLTools: TMenuItem
-      Caption = '&Invoegen'
+      Caption = '&HTML Tools'
       OnClick = TopLevelMenuClick
       object mnuInsertAnchor: TMenuItem
         Action = acInsertAnchor

@@ -45,7 +45,7 @@ uses
   SynHighlighterPython, SynHighlighterBat, SynHighlighterIni, SynHighlighterJava,
   SynHighlighterUnixShellScript, SynHighLighterPo,
   SynEditMouseCmds, SynEditKeyCmds,
-  EPlus_Commons;
+  EPlus_Commons, lazedit_translations;
 
 
 
@@ -153,6 +153,7 @@ type
     property HighLighters[Index: TEditorFileType]: TSynCustomHighlighter read GetHighLighter;
     //property FileTypeMaskList: TFileTypeMaskList read FFileTypeMaskList write SetFiletypeMaskList;
   public
+    IsCreating: Boolean;
     function AddPage: TEditor;
     function ClosePage(Index: Integer): Boolean;
     function EditorAtPage(const Index: Integer): TEditor;
@@ -175,7 +176,6 @@ type
 
 const
   EmptyStr = '';
-  NoName = 'Naamloos';
 
 implementation
 
@@ -233,7 +233,7 @@ begin
     if (Utf8Fn <> EmptyStr) then
       FPage.Caption := ExtractFileName(Utf8Fn)
     else
-      FPage.Caption := NoName;
+      FPage.Caption := vTranslations.NoName;
     //Debugln('TEditor.SetFileName: setting FPageCaption to ',FPage.Caption);
   end;
   //debugln('TEditor.SetFileName: calling DoOnStatusChange(scAll)');
@@ -602,7 +602,7 @@ begin
     if AsTemplate then
     begin//blank out internal filename and update caption
       FFileName := EmptyStr;
-      if Assigned(FPage) then FPage.Caption := NoName;
+      if Assigned(FPage) then FPage.Caption := vTranslations.NoName;
       DoOnStatusChange([scFileName]);
     end;
     //DebugLn('TEditor.LoadFromFile: FileType = ',eftNames[FileType]);
@@ -923,7 +923,7 @@ begin
   NrOfNoNames := 0;
   Suffix := '';
   for i := 0 to PageCount - 1 do
-    if Pos(NoName, Pages[i].Caption) = 1 then Inc(NrOfNoNames);
+    if Pos(vTranslations.NoName, Pages[i].Caption) = 1 then Inc(NrOfNoNames);
   if NrOfNoNames > 0 then Suffix := ' [' + IntToStr(NrOfNoNames + 1) + ']';
 
   TS := TTabSheet.Create(Self);
@@ -931,7 +931,7 @@ begin
   TS.PageControl := Self;
   PgIdx := TS.PageIndex;
 
-  TS.Caption := NoName + Suffix;
+  TS.Caption := vTranslations.NoName + Suffix;
 
 //  exit;//<-------------------------------------------------------------
 
@@ -990,6 +990,10 @@ begin
   InternalEditorStatusChange(E, [scCaretX,scCaretY,scModified,scInsertMode,scFileName]);
 
   ActivePage := Pages[PgIdx];
+
+  // Don't try to set focus when creating the first page in TForm.OnCreate or else an exception comes
+  if Self.IsCreating then Exit;
+
   try
     E.SetFocus;
   except
