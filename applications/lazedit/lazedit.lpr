@@ -7,7 +7,8 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, main {,newtableform, test_ed, eplus_commons, CopyLeft, eplus_config, HtmlCharMap,
+  Forms, main, 
+lazedit_translations {,newtableform, test_ed, eplus_commons, CopyLeft, eplus_config, HtmlCharMap,
   HtmlDialogs, NewHtmlDlgForm, AnchorDlgForm, PictureDlgForm}
   { you can add units after this };
 

@@ -36,7 +36,7 @@ interface
 
 uses
   Classes, SysUtils, HtmlCode, Controls, Forms,
-  NewHtmlDlgForm, AnchorDlgForm, PictureDlgForm, HtmlCharMap, NewTableForm, CopyLeft;
+  NewHtmlDlgForm, AnchorDlgForm, PictureDlgForm, HtmlCharMap, NewTableForm, lazedit_constants;
 
 type
 

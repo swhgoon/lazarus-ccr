@@ -39,7 +39,7 @@ unit EPlus_Config;
 interface
 
 uses
-  SysUtils, Classes, EditorPageControl, EPlus_COmmons, CopyLeft, Forms,{FCL_Misc,} IniFiles,
+  SysUtils, Classes, EditorPageControl, EPlus_COmmons, lazedit_constants, Forms,{FCL_Misc,} IniFiles,
   LCLProc;
 
 type
@@ -71,6 +71,7 @@ type
     FileTypeMaskList: TFileTypeMaskList;
     TemplateMaskList: String;
     RecentFiles: Array[0..MruEntries - 1] of String;
+    Translation: Integer;
   end;
 
 function LoadOptions(var Options: TEPlusOptions; FileName: String): Boolean;
@@ -82,6 +83,8 @@ function GetDefaultIniDir: String;
 implementation
 
 const
+  scGeneral = 'General';
+    idTranslation = 'Translation';
   scMainForm = 'MainForm';
     idTop = 'Top';
     idLeft = 'Left';
@@ -159,6 +162,9 @@ begin
         if (S <> '') then Options.FileTypeMaskList[ftIndex] := S;
       end;
 
+      // Translation
+      Options.Translation := Ini.ReadInteger(scGeneral, idTranslation, 0);
+
     finally
       Ini.Free;
       Ini := Nil;
@@ -227,6 +233,9 @@ begin
       begin
         Ini.WriteString(scFileTypes, eftNames[ftIndex], Options.FileTypeMaskList[ftIndex]);
       end;
+
+      // Translation
+      Ini.WriteInteger(scGeneral, idTranslation, Options.Translation);
 
       try
         Ini.UpdateFile;

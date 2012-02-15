@@ -75,7 +75,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="95">
+    <Units Count="97">
       <Unit0>
         <Filename Value="lazedit.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -83,7 +83,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="17" Y="10"/>
-        <UsageCount Value="173"/>
+        <UsageCount Value="174"/>
       </Unit0>
       <Unit1>
         <Filename Value="main.pp"/>
@@ -94,9 +94,9 @@
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1266"/>
-        <CursorPos X="23" Y="1280"/>
-        <UsageCount Value="173"/>
+        <TopLine Value="1182"/>
+        <CursorPos X="43" Y="1198"/>
+        <UsageCount Value="174"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
@@ -115,7 +115,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="41" Y="8"/>
-        <UsageCount Value="173"/>
+        <UsageCount Value="174"/>
       </Unit3>
       <Unit4>
         <Filename Value="H:\Programmas\SvnLaz\components\synedit\synmemo.pas"/>
@@ -372,29 +372,29 @@
         <WindowIndex Value="0"/>
         <TopLine Value="33"/>
         <CursorPos X="31" Y="53"/>
-        <UsageCount Value="139"/>
+        <UsageCount Value="140"/>
         <Loaded Value="True"/>
       </Unit36>
       <Unit37>
-        <Filename Value="copyleft.pp"/>
+        <Filename Value="lazedit_constants.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="CopyLeft"/>
+        <UnitName Value="lazedit_constants"/>
         <EditorIndex Value="6"/>
         <WindowIndex Value="0"/>
         <TopLine Value="25"/>
-        <CursorPos X="21" Y="53"/>
-        <UsageCount Value="136"/>
+        <CursorPos X="8" Y="37"/>
+        <UsageCount Value="137"/>
         <Loaded Value="True"/>
       </Unit37>
       <Unit38>
         <Filename Value="eplus_config.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="EPlus_Config"/>
-        <EditorIndex Value="7"/>
+        <EditorIndex Value="8"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="231"/>
-        <CursorPos X="79" Y="261"/>
-        <UsageCount Value="123"/>
+        <TopLine Value="221"/>
+        <CursorPos X="58" Y="238"/>
+        <UsageCount Value="124"/>
         <Loaded Value="True"/>
       </Unit38>
       <Unit39>
@@ -445,7 +445,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="178"/>
         <CursorPos X="3" Y="181"/>
-        <UsageCount Value="113"/>
+        <UsageCount Value="114"/>
       </Unit44>
       <Unit45>
         <Filename Value="H:\Programmas\SvnLaz\lcl\grids.pas"/>
@@ -564,7 +564,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="84"/>
+        <UsageCount Value="85"/>
         <Loaded Value="True"/>
       </Unit59>
       <Unit60>
@@ -576,7 +576,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="114"/>
         <CursorPos X="24" Y="147"/>
-        <UsageCount Value="81"/>
+        <UsageCount Value="82"/>
       </Unit60>
       <Unit61>
         <Filename Value="newhtmldlgform.lfm"/>
@@ -603,7 +603,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="31" Y="9"/>
-        <UsageCount Value="72"/>
+        <UsageCount Value="73"/>
       </Unit63>
       <Unit64>
         <Filename Value="picturedlgform.pp"/>
@@ -615,7 +615,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="73"/>
         <CursorPos X="10" Y="99"/>
-        <UsageCount Value="65"/>
+        <UsageCount Value="66"/>
         <Loaded Value="True"/>
       </Unit64>
       <Unit65>
@@ -643,7 +643,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="42"/>
         <CursorPos X="32" Y="58"/>
-        <UsageCount Value="55"/>
+        <UsageCount Value="56"/>
       </Unit67>
       <Unit68>
         <Filename Value="..\MijnLib\mrulists.pas"/>
@@ -852,124 +852,147 @@
         <CursorPos X="3" Y="461"/>
         <UsageCount Value="10"/>
       </Unit94>
+      <Unit95>
+        <Filename Value="lazedit_translations.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="lazedit_translations"/>
+        <EditorIndex Value="7"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="10"/>
+        <CursorPos X="1" Y="23"/>
+        <UsageCount Value="21"/>
+        <Loaded Value="True"/>
+      </Unit95>
+      <Unit96>
+        <Filename Value="..\..\..\magnifier\translationsvmg.pas"/>
+        <UnitName Value="translationsvmg"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="865"/>
+        <CursorPos X="1" Y="898"/>
+        <UsageCount Value="10"/>
+      </Unit96>
     </Units>
-    <JumpHistory Count="29" HistoryIndex="28">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="htmlcode.pp"/>
-        <Caret Line="398" Column="41" TopLine="381"/>
+        <Filename Value="lazedit_translations.pas"/>
+        <Caret Line="157" Column="5" TopLine="133"/>
       </Position1>
       <Position2>
-        <Filename Value="picturedlgform.pp"/>
-        <Caret Line="156" Column="20" TopLine="135"/>
+        <Filename Value="main.pp"/>
+        <Caret Line="1149" Column="14" TopLine="1136"/>
       </Position2>
       <Position3>
-        <Filename Value="picturedlgform.pp"/>
-        <Caret Line="9" Column="41" TopLine="1"/>
+        <Filename Value="main.pp"/>
+        <Caret Line="573" Column="16" TopLine="571"/>
       </Position3>
       <Position4>
         <Filename Value="main.pp"/>
-        <Caret Line="50" Column="3" TopLine="33"/>
+        <Caret Line="434" Column="31" TopLine="417"/>
       </Position4>
       <Position5>
         <Filename Value="main.pp"/>
-        <Caret Line="430" Column="5" TopLine="413"/>
+        <Caret Line="1143" Column="16" TopLine="1120"/>
       </Position5>
       <Position6>
         <Filename Value="main.pp"/>
-        <Caret Line="1132" Column="8" TopLine="1115"/>
+        <Caret Line="1334" Column="59" TopLine="1334"/>
       </Position6>
       <Position7>
-        <Filename Value="main.pp"/>
-        <Caret Line="430" Column="17" TopLine="416"/>
+        <Filename Value="eplus_config.pp"/>
+        <Caret Line="120" Column="60" TopLine="101"/>
       </Position7>
       <Position8>
-        <Filename Value="main.pp"/>
-        <Caret Line="1133" Column="5" TopLine="1116"/>
+        <Filename Value="eplus_config.pp"/>
+        <Caret Line="84" Column="35" TopLine="61"/>
       </Position8>
       <Position9>
-        <Filename Value="main.pp"/>
-        <Caret Line="1143" Column="5" TopLine="1126"/>
+        <Filename Value="lazedit_translations.pas"/>
+        <Caret Line="180" Column="3" TopLine="154"/>
       </Position9>
       <Position10>
         <Filename Value="main.pp"/>
-        <Caret Line="1244" Column="13" TopLine="1227"/>
+        <Caret Line="1399" Column="37" TopLine="1375"/>
       </Position10>
       <Position11>
         <Filename Value="main.pp"/>
-        <Caret Line="430" Column="25" TopLine="413"/>
+        <Caret Line="1400" Column="37" TopLine="1376"/>
       </Position11>
       <Position12>
         <Filename Value="main.pp"/>
-        <Caret Line="1132" Column="25" TopLine="1115"/>
+        <Caret Line="1399" Column="37" TopLine="1375"/>
       </Position12>
       <Position13>
         <Filename Value="main.pp"/>
-        <Caret Line="1280" Column="46" TopLine="1263"/>
+        <Caret Line="1400" Column="37" TopLine="1376"/>
       </Position13>
       <Position14>
         <Filename Value="main.pp"/>
-        <Caret Line="1360" Column="34" TopLine="1328"/>
+        <Caret Line="1401" Column="37" TopLine="1377"/>
       </Position14>
       <Position15>
         <Filename Value="main.pp"/>
-        <Caret Line="1377" Column="8" TopLine="1351"/>
+        <Caret Line="1402" Column="37" TopLine="1378"/>
       </Position15>
       <Position16>
         <Filename Value="main.pp"/>
-        <Caret Line="1626" Column="48" TopLine="1610"/>
+        <Caret Line="1403" Column="37" TopLine="1379"/>
       </Position16>
       <Position17>
         <Filename Value="main.pp"/>
-        <Caret Line="1711" Column="7" TopLine="1694"/>
+        <Caret Line="1410" Column="37" TopLine="1386"/>
       </Position17>
       <Position18>
         <Filename Value="main.pp"/>
-        <Caret Line="1712" Column="9" TopLine="1700"/>
+        <Caret Line="627" Column="44" TopLine="624"/>
       </Position18>
       <Position19>
         <Filename Value="main.pp"/>
-        <Caret Line="1754" Column="8" TopLine="1732"/>
+        <Caret Line="361" Column="37" TopLine="361"/>
       </Position19>
       <Position20>
         <Filename Value="main.pp"/>
-        <Caret Line="1761" Column="21" TopLine="1744"/>
+        <Caret Line="395" Column="1" TopLine="378"/>
       </Position20>
       <Position21>
-        <Filename Value="main.pp"/>
-        <Caret Line="1783" Column="21" TopLine="1766"/>
+        <Filename Value="lazedit_translations.pas"/>
+        <Caret Line="164" Column="51" TopLine="144"/>
       </Position21>
       <Position22>
-        <Filename Value="main.pp"/>
-        <Caret Line="1850" Column="24" TopLine="1833"/>
+        <Filename Value="eplus_config.pp"/>
+        <Caret Line="266" Column="1" TopLine="240"/>
       </Position22>
       <Position23>
-        <Filename Value="main.pp"/>
-        <Caret Line="2338" Column="6" TopLine="2326"/>
+        <Filename Value="eplus_config.pp"/>
+        <Caret Line="166" Column="15" TopLine="149"/>
       </Position23>
       <Position24>
         <Filename Value="main.pp"/>
-        <Caret Line="1152" Column="10" TopLine="1135"/>
+        <Caret Line="1408" Column="1" TopLine="1397"/>
       </Position24>
       <Position25>
         <Filename Value="main.pp"/>
-        <Caret Line="1280" Column="23" TopLine="1257"/>
+        <Caret Line="579" Column="27" TopLine="562"/>
       </Position25>
       <Position26>
         <Filename Value="main.pp"/>
-        <Caret Line="1152" Column="14" TopLine="1135"/>
+        <Caret Line="580" Column="21" TopLine="563"/>
       </Position26>
       <Position27>
         <Filename Value="main.pp"/>
-        <Caret Line="1280" Column="1" TopLine="1266"/>
+        <Caret Line="629" Column="16" TopLine="612"/>
       </Position27>
       <Position28>
-        <Filename Value="main.pp"/>
-        <Caret Line="1283" Column="1" TopLine="1266"/>
+        <Filename Value="lazedit_translations.pas"/>
+        <Caret Line="23" Column="1" TopLine="6"/>
       </Position28>
       <Position29>
-        <Filename Value="main.pp"/>
-        <Caret Line="1280" Column="23" TopLine="1266"/>
+        <Filename Value="lazedit_translations.pas"/>
+        <Caret Line="278" Column="43" TopLine="248"/>
       </Position29>
+      <Position30>
+        <Filename Value="lazedit_translations.pas"/>
+        <Caret Line="153" Column="14" TopLine="122"/>
+      </Position30>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>

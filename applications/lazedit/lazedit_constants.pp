@@ -1,4 +1,4 @@
-unit CopyLeft;
+unit lazedit_constants;
 
 {
   EPlus: a text editor with built-in features for HTML editing and
@@ -42,11 +42,11 @@ interface
 //uses GPL;
 
 const
-  AppName = 'EPlus';
+  AppName = 'LazEdit';
   AboutTitle = 'Over ' + AppName;
-  AppVersion = 'Versie 1.0.0 RC1';
-  CopyLeftStatement = 'Copyright (c) 2011, 2012 by Bart Broersma & FlyingSheep Inc.';
-  MetaGeneratorName = AppName + #32 + AppVersion + ' by Bart Broersma and Flying Sheep Inc.';
+  AppVersion = 'Version 1.1';
+  CopyLeftStatement = 'Copyright (c) 2011, 2012 by Bart Broersma, FlyingSheep Inc. and Felipe Monteiro de Carvalho';
+  MetaGeneratorName = AppName + #32 + AppVersion;
   AuthorWebName = 'Bart & Mariska''s Webstek';
   AuthorWebUrl = 'http://home.tiscali.nl/~knmg0017/';
   LicenseText = ''; //LGPL_Text;

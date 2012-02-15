@@ -46,7 +46,8 @@ uses
   LMessages, {for overridden IsShortCut}
   SynEdit, SynEditTypes,
   EditorPageControl,
-  EPlus_Commons, EPlus_Config, HtmlCode, HtmlDialogs, CopyLeft{
+  EPlus_Commons, EPlus_Config, HtmlCode, HtmlDialogs, lazedit_constants,
+  lazedit_translations{
   MyFileUtils, Fcl_Misc, MruLists, MyGetOpt, ExtAbout, NlAutoTranslation};
 
 type
@@ -107,6 +108,11 @@ type
     HtmlToolbarImageList: TImageList;
     MainToolbarImageList: TImageList;
     MainMenu: TMainMenu;
+    mnuLanguage: TMenuItem;
+    mnuEnglish: TMenuItem;
+    mnuDutch: TMenuItem;
+    mnuPortuguese: TMenuItem;
+    mnuTools: TMenuItem;
     mnuEditPasteTableContentTab: TMenuItem;
     mnuEditPasteSpecial: TMenuItem;
     mnuAbout: TMenuItem;
@@ -352,6 +358,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of String);
     procedure FormShow(Sender: TObject);
+    procedure mnuLanguageChangeClick(Sender: TObject);
 
     //Main menu events
     procedure TopLevelMenuClick(Sender: TObject);
@@ -430,7 +437,8 @@ type
     MruList: TStringList;
     MruMenuItems: Array[0..MruEntries-1] of TMenuItem;
 
-    procedure SetUpAndConfigureEPlus;
+    procedure SetUpAndConfigureLazEdit;
+    procedure DoTranslate;
     procedure SaveEplusConfiguration;
     procedure CleanUp;
 
@@ -568,7 +576,8 @@ const pXY  = 0;   //Panels constanten
 
 procedure TEPlusForm.FormCreate(Sender: TObject);
 begin
-  SetUpAndConfigureEPlus;
+  SetUpAndConfigureLazEdit;
+  Self.DoTranslate();
 end;
 
 procedure TEPlusForm.FormDestroy(Sender: TObject);
@@ -613,6 +622,12 @@ procedure TEPlusForm.FormShow(Sender: TObject);
 begin
   //This needs to be done only after the mainform has become visible on the screen
   Application.QueueAsyncCall(@ParseCommandLineFileNames, 0);
+end;
+
+procedure TEPlusForm.mnuLanguageChangeClick(Sender: TObject);
+begin
+  vTranslations.TranslateToLanguageID(TMenuItem(Sender).Tag);
+  DoTranslate();
 end;
 
 
@@ -1081,7 +1096,7 @@ end;
 { ********************** [ Initializing and cleaning up ] ************* }
 
 
-procedure TEPlusForm.SetUpAndConfigureEPlus;
+procedure TEPlusForm.SetUpAndConfigureLazEdit;
 begin
   ConfigFileDir := GetDefaultIniDir;
   ParseCommandLineSwitches;
@@ -1145,6 +1160,143 @@ begin
   OnMruListChange(Self);
 
 
+end;
+
+procedure TEPlusForm.DoTranslate;
+begin
+{  mnuEditPasteTableContentTab: TMenuItem;
+  mnuEditPasteSpecial: TMenuItem;
+  mnuAbout: TMenuItem;
+  mnuViewFont: TMenuItem;}
+  //File menu
+  mnuFile.Caption := vTranslations.mnuFile;
+    mnuFileOpen.Caption := vTranslations.mnuFileOpen;
+    mnuFileNewFromTemplate.Caption := vTranslations.mnuFileNewFromTemplate;
+    mnuFileNew.Caption := vTranslations.mnuFileNew;
+{      mnuFileNewText: TMenuItem;
+      mnuFileNewHtml: TMenuItem;
+      mnuFileNewXml: TMenuItem;
+      mnuFileNewCss: TMenuItem;
+      mnuFileNewJS: TMenuItem;
+      mnuFileNewFpc: TMenuItem;
+      mnuFileNewC: TMenuItem;
+      mnuFileNewPy: TMenuItem;
+      mnuFileNewPhp: TMenuItem;
+      mnuFileNewPerl: TMenuItem;
+      mnuFileNewShellScript: TMenuItem;
+      mnuFileNewBat: TMenuItem;
+      mnuFileNewIni: TMenuItem;}
+    mnuFileSave.Caption := vTranslations.mnuFileSave;
+    mnuFileSaveAs.Caption := vTranslations.mnuFileSaveAs;
+    mnuFileSaveAll.Caption := vTranslations.mnuFileSaveAll;
+    mnuFileCloseCurrent.Caption := vTranslations.mnuFileCloseCurrent;
+    //mnuSep1: TMenuItem;
+    mnuFileOpenInBrowser.Caption := vTranslations.mnuFileOpenInBrowser;
+    //mnuSepAboveMru: TMenuItem;
+    mnuFileCloseApp.Caption := vTranslations.mnuFileCloseApp;
+  //Edit menu
+  mnuEdit.Caption := vTranslations.mnuEdit;
+    mnuEditUndo.Caption := vTranslations.mnuEditUndo;
+    mnuEditRedo.Caption := vTranslations.mnuEditRedo;
+    //mnuSep11: TMenuItem;
+    mnuEditCopy.Caption := vTranslations.mnuEditCopy;
+    mnuEditCut.Caption := vTranslations.mnuEditCut;
+    mnuEditPaste.Caption := vTranslations.mnuEditPaste;
+    mnuEditSelectAll.Caption := vTranslations.mnuEditSelectAll;
+    {mnuSep12: TMenuItem;
+    mnuEditReplace: TMenuItem;
+    mnuEditFindNext: TMenuItem;
+    mnuEditFind: TMenuItem;
+  //Insert menu
+  mnuInsert: TMenuItem;
+  mnuInsertAnchor: TMenuItem;
+  mnuInsertList: TMenuItem;
+    mnuInsertUList: TMenuItem;
+    mnuInsertNList: TMenuItem;
+    mnuInsertWordList: TMenuItem;
+    mnuInsetListItem: TMenuItem;
+    mnuInsertWordTerm: TMenuItem;
+    mnuInsertWordDefinition: TMenuItem;
+  mnuInsertTable: TMenuItem;
+    mnInsertNewTable: TMenuItem;
+    mnuInsertTableCell: TMenuItem;
+    mnuInsertTableRow: TMenuItem;
+  mnuInsertPicture: TMenuItem;
+  mnuInsertSpecialChars: TMenuItem;
+  mnuInsertLineBreak: TMenuItem;
+  mnuInsertSep1: TMenuItem;
+  mnuInsertHtmlComment: TMenuItem;
+  mnuInsertJS: TMenuItem;
+  mnuInsertCssStyle: TMenuItem;
+  //Layout menu
+  mnuLayout: TMenuItem;
+    mnuLayoutBold: TMenuItem;
+    mnuLayoutAlignJustify: TMenuItem;
+    mnuLayoutItalic: TMenuItem;
+    mnuLayoutUnderline: TMenuItem;
+    mnuLayoutSub: TMenuItem;
+    mnuLayoutSup: TMenuItem;
+    mnuLayoutEmphasis: TMenuItem;
+    mnuLayoutStrong: TMenuItem;
+    mnuLayoutHeadings: TMenuItem;
+      mnuLayoutH1: TMenuItem;
+      mnuLayoutH2: TMenuItem;
+      mnuLayoutH3: TMenuItem;
+      mnuLayoutH4: TMenuItem;
+      mnuLayoutH5: TMenuItem;
+      mnuLayoutH6: TMenuItem;
+    mnuLayoutAlign: TMenuItem;
+      mnuLayoutAlignLeft: TMenuItem;
+      mnuLayoutAlignRight: TMenuItem;
+      mnuLayoutAlignCenter: TMenuItem;
+    mnuLayoutCode: TMenuItem;
+    mnuLayoutQuote: TMenuItem;
+    mnuLayoutBlockQuote: TMenuItem;
+    mnuLayoutPreformatted: TMenuItem;
+  //Grouping menu
+  mnuGrouping: TMenuItem;
+    mnuGroupingParagraph: TMenuItem;
+    mnuGroupingDiv: TMenuItem;
+    mnuGroupingSpan: TMenuItem;
+  //View menu
+  mnuView: TMenuItem;
+    mnuViewFontsize: TMenuItem;
+      mnuViewFontSizeUp: TMenuItem;
+      mnuViewFontsizeDown: TMenuItem;
+    mnuViewHighlighter: TMenuItem;
+      //these menu items MUST have names that are built like this:
+      //'mnuViewHL' + eftNames[SomeIndex]
+      mnuViewHLeftNone: TMenuItem;
+      mnuViewHLeftHtml: TMenuItem;
+      mnuViewHLeftXml: TMenuItem;
+      mnuViewHLeftCss: TMenuItem;
+      mnuViewHLeftJS: TMenuItem;
+      mnuViewHLeftFpc: TMenuItem;
+      mnuViewHLeftLfm: TMenuItem;
+      mnuViewHLeftC: TMenuItem;
+      mnuViewHLeftPy: TMenuItem;
+      mnuViewHLeftPhp: TMenuItem;
+      mnuViewHLeftPerl: TMenuItem;
+      mnuViewHLeftUNIXShell: TMenuItem;
+      mnuViewHLeftBat: TMenuItem;
+      mnuViewHLeftDiff: TMenuItem;
+      mnuViewHLeftIni: TMenuItem;
+      mnuViewHLeftPo: TMenuItem;
+  //Popup menus
+  //Popup menu for editor
+  EditorPopupMenu: TPopupMenu;
+    mnuEditPopupSelectAll: TMenuItem;
+    mnuEditPopupPaste: TMenuItem;
+    mnuEditPopupCut: TMenuItem;
+    mnuEditPopupCopy: TMenuItem;
+  //Dropdownmenu for HeadingBtn
+  HeadingDropDownMenu: TPopupMenu;
+    mnuPopupLayoutH6: TMenuItem;
+    mnuPopupLayoutH5: TMenuItem;
+    mnuPopupLayoutH4: TMenuItem;
+    mnuPopupLayoutH3: TMenuItem;
+    mnuPopupLayoutH2: TMenuItem;
+    mnuPopupLayoutH1: TMenuItem;   }
 end;
 
 procedure TEPlusForm.SaveEplusConfiguration;
@@ -1243,6 +1395,9 @@ begin
     if (Options.RecentFiles[i] <> '') then
       MruList.Add(Options.RecentFiles[i]);
   end;
+
+  // Translation
+  vTranslations.TranslateToLanguageID(Options.Translation);
 end;
 
 procedure TEPlusForm.GatherAppOptions(var Options: TEplusOptions);

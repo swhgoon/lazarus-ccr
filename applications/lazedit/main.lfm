@@ -1735,6 +1735,26 @@ object EPlusForm: TEPlusForm
         end
       end
     end
+    object mnuTools: TMenuItem
+      Caption = 'Tools'
+      object mnuLanguage: TMenuItem
+        Caption = 'Language'
+        object mnuEnglish: TMenuItem
+          Caption = 'English'
+          OnClick = mnuLanguageChangeClick
+        end
+        object mnuDutch: TMenuItem
+          Tag = 1
+          Caption = 'Dutch'
+          OnClick = mnuLanguageChangeClick
+        end
+        object mnuPortuguese: TMenuItem
+          Tag = 2
+          Caption = 'Português'
+          OnClick = mnuLanguageChangeClick
+        end
+      end
+    end
     object mnuAbout: TMenuItem
       Action = acAbout
     end
