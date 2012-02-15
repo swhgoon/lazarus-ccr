@@ -23,8 +23,8 @@ type
       mnuFileOpen,
       mnuFileNewFromTemplate,
       mnuFileNew,
-{        mnuFileNewText,
-        mnuFileNewHtml: TMenuItem;
+        mnuFileNewText,
+{        mnuFileNewHtml: TMenuItem;
         mnuFileNewXml: TMenuItem;
         mnuFileNewCss: TMenuItem;
         mnuFileNewJS: TMenuItem;
@@ -43,7 +43,7 @@ type
       //mnuSep1: TMenuItem;
       mnuFileOpenInBrowser,
       //mnuSepAboveMru: TMenuItem;
-      mnuFileCloseApp,
+      mnuFileCloseApp: string;
     //Edit menu
     mnuEdit,
       mnuEditUndo,
@@ -52,15 +52,15 @@ type
       mnuEditCopy,
       mnuEditCut,
       mnuEditPaste,
-      mnuEditSelectAll
+      mnuEditSelectAll,
       //mnuSep12: TMenuItem;
-{      mnuEditReplace: TMenuItem;
-      mnuEditFindNext: TMenuItem;
-      mnuEditFind: TMenuItem;
+      mnuEditReplace,
+      mnuEditFindNext,
+      mnuEditFind: string;
     //Insert menu
-    mnuInsert: TMenuItem;
-    mnuInsertAnchor: TMenuItem;
-    mnuInsertList: TMenuItem;
+    mnuInsert,
+    mnuInsertAnchor,
+{    mnuInsertList,
       mnuInsertUList: TMenuItem;
       mnuInsertNList: TMenuItem;
       mnuInsertWordList: TMenuItem;
@@ -77,19 +77,19 @@ type
     mnuInsertSep1: TMenuItem;
     mnuInsertHtmlComment: TMenuItem;
     mnuInsertJS: TMenuItem;
-    mnuInsertCssStyle: TMenuItem;
+    mnuInsertCssStyle: TMenuItem;}
     //Layout menu
-    mnuLayout: TMenuItem;
-      mnuLayoutBold: TMenuItem;
-      mnuLayoutAlignJustify: TMenuItem;
-      mnuLayoutItalic: TMenuItem;
-      mnuLayoutUnderline: TMenuItem;
-      mnuLayoutSub: TMenuItem;
-      mnuLayoutSup: TMenuItem;
-      mnuLayoutEmphasis: TMenuItem;
-      mnuLayoutStrong: TMenuItem;
-      mnuLayoutHeadings: TMenuItem;
-        mnuLayoutH1: TMenuItem;
+    mnuLayout,
+      mnuLayoutBold,
+      mnuLayoutAlignJustify,
+      mnuLayoutItalic,
+      mnuLayoutUnderline,
+      mnuLayoutSub,
+      mnuLayoutSup,
+      mnuLayoutEmphasis,
+      mnuLayoutStrong,
+      mnuLayoutHeadings,
+{        mnuLayoutH1: TMenuItem;
         mnuLayoutH2: TMenuItem;
         mnuLayoutH3: TMenuItem;
         mnuLayoutH4: TMenuItem;
@@ -102,16 +102,16 @@ type
       mnuLayoutCode: TMenuItem;
       mnuLayoutQuote: TMenuItem;
       mnuLayoutBlockQuote: TMenuItem;
-      mnuLayoutPreformatted: TMenuItem;
+      mnuLayoutPreformatted: TMenuItem;}
     //Grouping menu
-    mnuGrouping: TMenuItem;
-      mnuGroupingParagraph: TMenuItem;
-      mnuGroupingDiv: TMenuItem;
-      mnuGroupingSpan: TMenuItem;
+    mnuGrouping,
+      mnuGroupingParagraph,
+      mnuGroupingDiv,
+      mnuGroupingSpan,
     //View menu
-    mnuView: TMenuItem;
-      mnuViewFontsize: TMenuItem;
-        mnuViewFontSizeUp: TMenuItem;
+    mnuView,
+      mnuViewFontsize: string;
+{        mnuViewFontSizeUp: TMenuItem;
         mnuViewFontsizeDown: TMenuItem;
       mnuViewHighlighter: TMenuItem;
         //these menu items MUST have names that are built like this:
@@ -150,11 +150,10 @@ type
     { About box strings }
 //    lpSupport, lpSupportInfo, lpLicense, lpLicenseInfo, lpAuthors,
 //     lpContributorsTitle, lpAboutWindow, lpClose, lpInformation: string;
-    : string;
     { Methods }
     procedure TranslateToEnglish;
-    procedure TranslateToPortuguese;
     procedure TranslateToDutch;
+    procedure TranslateToPortuguese;
     procedure TranslateToLanguageID(AID: Integer);
   end;
 
@@ -200,7 +199,163 @@ begin
     mnuEditCopy := 'Copy';
     mnuEditCut := 'Cut';
     mnuEditPaste := 'Paste';
+    //mnuEditPasteSpecial := 'Plakken speciaal';
     mnuEditSelectAll := 'Select all';
+    //mnuSep12: TMenuItem;
+    mnuEditReplace := '&Replace';
+    mnuEditFindNext := 'Find &Next';
+    mnuEditFind := '&Find';
+  //Insert menu
+  mnuInsert := '&Insert';
+  mnuInsertAnchor := 'Insert Hyperlink';
+{    mnuInsertList,
+    mnuInsertUList: TMenuItem;
+    mnuInsertNList: TMenuItem;
+    mnuInsertWordList: TMenuItem;
+    mnuInsetListItem: TMenuItem;
+    mnuInsertWordTerm: TMenuItem;
+    mnuInsertWordDefinition: TMenuItem;
+  mnuInsertTable: TMenuItem;
+    mnInsertNewTable: TMenuItem;
+    mnuInsertTableCell: TMenuItem;
+    mnuInsertTableRow: TMenuItem;
+  mnuInsertPicture: TMenuItem;
+  mnuInsertSpecialChars: TMenuItem;
+  mnuInsertLineBreak: TMenuItem;
+  mnuInsertSep1: TMenuItem;
+  mnuInsertHtmlComment: TMenuItem;
+  mnuInsertJS: TMenuItem;
+  mnuInsertCssStyle: TMenuItem;}
+  //Layout menu
+  mnuLayout := '&Layout';
+    mnuLayoutBold := 'Bold';
+    mnuLayoutItalic := 'Italic';
+    mnuLayoutUnderline := 'Underline';
+    mnuLayoutSub := 'Subscript';
+    mnuLayoutSup := 'Superscript';
+    mnuLayoutEmphasis := 'Emphasis';
+    mnuLayoutStrong := 'Strong';
+    mnuLayoutHeadings := 'Headings';
+{        mnuLayoutH1: TMenuItem;
+      mnuLayoutH2: TMenuItem;
+      mnuLayoutH3: TMenuItem;
+      mnuLayoutH4: TMenuItem;
+      mnuLayoutH5: TMenuItem;
+      mnuLayoutH6: TMenuItem;
+    mnuLayoutAlign: TMenuItem;
+      mnuLayoutAlignLeft: TMenuItem;
+      mnuLayoutAlignRight: TMenuItem;
+      mnuLayoutAlignCenter: TMenuItem;
+      mnuLayoutAlignJustify := 'Volledig uitlijnen';
+    mnuLayoutCode: TMenuItem;
+    mnuLayoutQuote: TMenuItem;
+    mnuLayoutBlockQuote: TMenuItem;
+    mnuLayoutPreformatted: TMenuItem;}
+  //Grouping menu
+  mnuGrouping := '&Grouping';
+    mnuGroupingParagraph := 'Paragraph';
+    mnuGroupingDiv := 'Div';
+    mnuGroupingSpan := 'Span';
+  //View menu
+  mnuView := '&View';
+    mnuViewFontsize := '&Font Size';
+end;
+
+procedure TTranslations.TranslateToDutch;
+begin
+  mnuFile := 'Bestand';
+    mnuFileOpen := 'Open';
+    mnuFileNewFromTemplate := 'Nieuw van sjabloon ...';
+    mnuFileNew := 'Open';
+      mnuFileNewText := 'Leeg blad';
+{      mnuFileNewHtml: TMenuItem;
+      mnuFileNewXml: TMenuItem;
+      mnuFileNewCss: TMenuItem;
+      mnuFileNewJS: TMenuItem;
+      mnuFileNewFpc: TMenuItem;
+      mnuFileNewC: TMenuItem;
+      mnuFileNewPy: TMenuItem;
+      mnuFileNewPhp: TMenuItem;
+      mnuFileNewPerl: TMenuItem;
+      mnuFileNewShellScript: TMenuItem;
+      mnuFileNewBat: TMenuItem;
+      mnuFileNewIni: TMenuItem;}
+    mnuFileSave := 'Op&slaan';
+    mnuFileSaveAs := 'Opslaan &als ...';
+    mnuFileSaveAll := '&Alles opslaan';
+    mnuFileCloseCurrent := 'Sl&uiten';
+    //mnuSep1: TMenuItem;
+    mnuFileOpenInBrowser := 'Open in &browser';
+    //mnuSepAboveMru: TMenuItem;
+    mnuFileCloseApp := 'Afsluiten';
+  //Edit menu
+  mnuEdit := 'Be&werken';
+    mnuEditUndo := '&Ongedaan maken';
+    mnuEditRedo := '&Herhalen';
+    //mnuSep11: TMenuItem;
+    mnuEditCopy := '&Kopiëren';
+    mnuEditCut := 'K&nippen';
+    mnuEditPaste := '&Plakken';
+    //mnuEditPasteSpecial := 'Plakken speciaal';
+    mnuEditSelectAll := '&Alles selecteren';
+    //mnuSep12: TMenuItem;
+    mnuEditReplace := 'Ve&rvangen';
+    mnuEditFindNext := '&Volgende zoeken';
+    mnuEditFind := '&Zoeken';
+  //Insert menu
+  mnuInsert := '&Invoegen';
+  mnuInsertAnchor := 'Hyperlink invoegen';
+{    mnuInsertList,
+    mnuInsertUList: TMenuItem;
+    mnuInsertNList: TMenuItem;
+    mnuInsertWordList: TMenuItem;
+    mnuInsetListItem: TMenuItem;
+    mnuInsertWordTerm: TMenuItem;
+    mnuInsertWordDefinition: TMenuItem;
+  mnuInsertTable: TMenuItem;
+    mnInsertNewTable: TMenuItem;
+    mnuInsertTableCell: TMenuItem;
+    mnuInsertTableRow: TMenuItem;
+  mnuInsertPicture: TMenuItem;
+  mnuInsertSpecialChars: TMenuItem;
+  mnuInsertLineBreak: TMenuItem;
+  mnuInsertSep1: TMenuItem;
+  mnuInsertHtmlComment: TMenuItem;
+  mnuInsertJS: TMenuItem;
+  mnuInsertCssStyle: TMenuItem;}
+  //Layout menu
+  mnuLayout := '&Opmaak';
+    mnuLayoutBold := 'Vet';
+    mnuLayoutItalic := 'Cursief';
+    mnuLayoutUnderline := 'Onderstreept';
+    mnuLayoutSub := 'Subscript';
+    mnuLayoutSup := 'Superscript';
+    mnuLayoutEmphasis := 'Nadruk';
+    mnuLayoutStrong := 'Sterke nadruk';
+    mnuLayoutHeadings := 'Kop';
+{        mnuLayoutH1: TMenuItem;
+      mnuLayoutH2: TMenuItem;
+      mnuLayoutH3: TMenuItem;
+      mnuLayoutH4: TMenuItem;
+      mnuLayoutH5: TMenuItem;
+      mnuLayoutH6: TMenuItem;
+    mnuLayoutAlign: TMenuItem;
+      mnuLayoutAlignLeft: TMenuItem;
+      mnuLayoutAlignRight: TMenuItem;
+      mnuLayoutAlignCenter: TMenuItem;
+      mnuLayoutAlignJustify := 'Volledig uitlijnen';
+    mnuLayoutCode: TMenuItem;
+    mnuLayoutQuote: TMenuItem;
+    mnuLayoutBlockQuote: TMenuItem;
+    mnuLayoutPreformatted: TMenuItem;}
+  //Grouping menu
+  mnuGrouping := 'In&deling';
+    mnuGroupingParagraph := 'Alinea';
+    mnuGroupingDiv := 'Div';
+    mnuGroupingSpan := 'Span';
+  //View menu
+  mnuView := 'Bee&ld';
+    mnuViewFontsize := '&Tekengrootte';
 end;
 
 procedure TTranslations.TranslateToPortuguese;
@@ -239,44 +394,6 @@ begin
     mnuEditCut := 'Open';
     mnuEditPaste := 'Open';
     mnuEditSelectAll := 'Open';
-end;
-
-procedure TTranslations.TranslateToDutch;
-begin
-  mnuFile := 'Bestand';
-    mnuFileOpen := 'Open';
-    mnuFileNewFromTemplate := 'Nieuw van sjabloon ...';
-    mnuFileNew := 'Open';
-  {        mnuFileNewText,
-      mnuFileNewHtml: TMenuItem;
-      mnuFileNewXml: TMenuItem;
-      mnuFileNewCss: TMenuItem;
-      mnuFileNewJS: TMenuItem;
-      mnuFileNewFpc: TMenuItem;
-      mnuFileNewC: TMenuItem;
-      mnuFileNewPy: TMenuItem;
-      mnuFileNewPhp: TMenuItem;
-      mnuFileNewPerl: TMenuItem;
-      mnuFileNewShellScript: TMenuItem;
-      mnuFileNewBat: TMenuItem;
-      mnuFileNewIni: TMenuItem;}
-    mnuFileSave := 'Op&slaan';
-    mnuFileSaveAs := 'Opslaan &als ...';
-    mnuFileSaveAll := '&Alles opslaan';
-    mnuFileCloseCurrent := 'Sl&uiten';
-    //mnuSep1: TMenuItem;
-    mnuFileOpenInBrowser := 'Open in &browser';
-    //mnuSepAboveMru: TMenuItem;
-    mnuFileCloseApp := 'Afsluiten';
-  //Edit menu
-  mnuEdit := 'Be&werken';
-    mnuEditUndo := '&Ongedaan maken';
-    mnuEditRedo := '&Herhalen';
-    //mnuSep11: TMenuItem;
-    mnuEditCopy := '&Kopiëren';
-    mnuEditCut := 'K&nippen';
-    mnuEditPaste := '&Plakken';
-    mnuEditSelectAll := '&Alles selecteren';
 end;
 
 procedure TTranslations.TranslateToLanguageID(AID: Integer);

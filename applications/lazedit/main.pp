@@ -1203,13 +1203,13 @@ begin
     mnuEditCut.Caption := vTranslations.mnuEditCut;
     mnuEditPaste.Caption := vTranslations.mnuEditPaste;
     mnuEditSelectAll.Caption := vTranslations.mnuEditSelectAll;
-    {mnuSep12: TMenuItem;
-    mnuEditReplace: TMenuItem;
-    mnuEditFindNext: TMenuItem;
-    mnuEditFind: TMenuItem;
+    //mnuSep12: TMenuItem;
+    mnuEditReplace.Caption := vTranslations.mnuEditReplace;
+    mnuEditFindNext.Caption := vTranslations.mnuEditFindNext;
+    mnuEditFind.Caption := vTranslations.mnuEditFind;
   //Insert menu
-  mnuInsert: TMenuItem;
-  mnuInsertAnchor: TMenuItem;
+  mnuInsert.Caption := vTranslations.mnuInsert;
+{  mnuInsertAnchor: TMenuItem;
   mnuInsertList: TMenuItem;
     mnuInsertUList: TMenuItem;
     mnuInsertNList: TMenuItem;
@@ -1227,19 +1227,19 @@ begin
   mnuInsertSep1: TMenuItem;
   mnuInsertHtmlComment: TMenuItem;
   mnuInsertJS: TMenuItem;
-  mnuInsertCssStyle: TMenuItem;
+  mnuInsertCssStyle: TMenuItem;}
   //Layout menu
-  mnuLayout: TMenuItem;
-    mnuLayoutBold: TMenuItem;
-    mnuLayoutAlignJustify: TMenuItem;
-    mnuLayoutItalic: TMenuItem;
-    mnuLayoutUnderline: TMenuItem;
-    mnuLayoutSub: TMenuItem;
-    mnuLayoutSup: TMenuItem;
-    mnuLayoutEmphasis: TMenuItem;
-    mnuLayoutStrong: TMenuItem;
-    mnuLayoutHeadings: TMenuItem;
-      mnuLayoutH1: TMenuItem;
+  mnuLayout.Caption := vTranslations.mnuLayout;
+    mnuLayoutBold.Caption := vTranslations.mnuLayoutBold;
+    mnuLayoutAlignJustify.Caption := vTranslations.mnuLayoutAlignJustify;
+    mnuLayoutItalic.Caption := vTranslations.mnuLayoutItalic;
+    mnuLayoutUnderline.Caption := vTranslations.mnuLayoutUnderline;
+    mnuLayoutSub.Caption := vTranslations.mnuLayoutSub;
+    mnuLayoutSup.Caption := vTranslations.mnuLayoutSup;
+    mnuLayoutEmphasis.Caption := vTranslations.mnuLayoutEmphasis;
+    mnuLayoutStrong.Caption := vTranslations.mnuLayoutStrong;
+    mnuLayoutHeadings.Caption := vTranslations.mnuLayoutHeadings;
+{      mnuLayoutH1: TMenuItem;
       mnuLayoutH2: TMenuItem;
       mnuLayoutH3: TMenuItem;
       mnuLayoutH4: TMenuItem;
@@ -1252,16 +1252,16 @@ begin
     mnuLayoutCode: TMenuItem;
     mnuLayoutQuote: TMenuItem;
     mnuLayoutBlockQuote: TMenuItem;
-    mnuLayoutPreformatted: TMenuItem;
+    mnuLayoutPreformatted: TMenuItem;}
   //Grouping menu
-  mnuGrouping: TMenuItem;
-    mnuGroupingParagraph: TMenuItem;
-    mnuGroupingDiv: TMenuItem;
-    mnuGroupingSpan: TMenuItem;
+  mnuGrouping.Caption := vTranslations.mnuGrouping;
+    mnuGroupingParagraph.Caption := vTranslations.mnuGroupingParagraph;
+    mnuGroupingDiv.Caption := vTranslations.mnuGroupingDiv;
+    mnuGroupingSpan.Caption := vTranslations.mnuGroupingSpan;
   //View menu
-  mnuView: TMenuItem;
-    mnuViewFontsize: TMenuItem;
-      mnuViewFontSizeUp: TMenuItem;
+  mnuView.Caption := vTranslations.mnuView;
+    mnuViewFontsize.Caption := vTranslations.mnuViewFontsize;
+{      mnuViewFontSizeUp: TMenuItem;
       mnuViewFontsizeDown: TMenuItem;
     mnuViewHighlighter: TMenuItem;
       //these menu items MUST have names that are built like this:
