@@ -7,16 +7,33 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, main, lazedit_translations, EditorPageControl, HtmlCode {,newtableform, test_ed, eplus_commons, CopyLeft, eplus_config, HtmlCharMap,
-  HtmlDialogs, NewHtmlDlgForm, AnchorDlgForm, PictureDlgForm}
-  { you can add units after this };
+  Forms, main,
+  lazedit_translations,
+  EditorPageControl,
+  HtmlCode,
+  lazedit_constants;
 
 {$R *.res}
 
 begin
   RequireDerivedFormResource := True;
   Application.Initialize;
-  Application.CreateForm(TEPlusForm, EPlusForm);
+  Application.CreateForm(TLazEditMainForm, LazEditMainForm);
+
+  {$ifndef Darwin}
+  // Parse the command line options
+
+  // if there are no files to open, then
+  if ParamCount = 0 then
+  begin
+    LazEditMainForm.NoteBook.IsCreating := True;
+    LazEditMainForm.DoFileNewByType(eftNone);
+    LazEditMainForm.NoteBook.IsCreating := False;
+  end
+  else
+    LazEditMainForm.TryFileOpen(ParamStr(1), False);
+  {$endif}
+
   Application.Run;
 end.
 

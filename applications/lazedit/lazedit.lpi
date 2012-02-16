@@ -23,7 +23,7 @@
           <Version Value="11"/>
           <PathDelim Value="\"/>
           <Target>
-            <Filename Value="eplus"/>
+            <Filename Value="lazedit"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
@@ -84,7 +84,7 @@
       <Unit1>
         <Filename Value="main.pp"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="EPlusForm"/>
+        <ComponentName Value="LazEditMainForm"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="main"/>
       </Unit1>

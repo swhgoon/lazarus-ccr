@@ -2,19 +2,19 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 [Setup]
-AppName=LazEyes
-AppVerName=LazEyes v2.0
-AppPublisherURL=http://wiki.lazarus.freepascal.org/LazEyes
-AppSupportURL=http://wiki.lazarus.freepascal.org/LazEyes
-AppUpdatesURL=http://wiki.lazarus.freepascal.org/LazEyes
-DefaultDirName={pf}\LazEyes
+AppName=LazEdit
+AppVerName=LazEdit v1.9
+AppPublisherURL=http://wiki.lazarus.freepascal.org/LazEdit
+AppSupportURL=http://wiki.lazarus.freepascal.org/LazEdit
+AppUpdatesURL=http://wiki.lazarus.freepascal.org/LazEdit
+DefaultDirName={pf}\LazEdit
 DefaultGroupName=Free Pascal Applications Suite
 ; LicenseFile=..\license.txt
 OutputDir=.\
-OutputBaseFilename=LazEyes2.0_install
+OutputBaseFilename=LazEdit1.9_install
 Compression=lzma
 SolidCompression=yes
-VersionInfoVersion=2.0
+VersionInfoVersion=1.9
 AllowNoIcons=yes
 
 [Languages]
@@ -33,20 +33,25 @@ Name: "japanese"; MessagesFile: "compiler:Languages\Japanese.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "..\lazeyes2.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\lazedit.exe"; DestDir: "{app}"; Flags: ignoreversion
 ; Source: "..\Images\*.png"; DestDir: "{app}\Images"; Flags: ignoreversion
 ; Source: "..\libraries\pas_overlays\pas_overlays.dll"; DestDir: "{app}"; Flags: ignoreversion
 ; Source: "..\libraries\videocard_checker\videocard_checker.dll"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
+[Registry]
+Root: HKCR; Subkey: "*\shell\LazEdit"; Flags: uninsdeletekeyifempty
+Root: HKCR; Subkey: "*\shell\LazEdit"; ValueType: string; ValueName: ""; ValueData: "Open with LazEdit"; Flags: uninsdeletekey
+Root: HKCR; Subkey: "*\shell\LazEdit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\lazedit.exe"" ""%1"""; Flags: uninsdeletekey
+
 [Icons]
-Name: "{group}\LazEyes"; Filename: "{app}\lazeyes2.exe"
-Name: "{group}\{cm:ProgramOnTheWeb,LazEyes}"; Filename: "http://wiki.lazarus.freepascal.org/LazEyes"
-Name: "{group}\{cm:UninstallProgram,LazEyes}"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\LazEyes"; Filename: "{app}\lazeyes2.exe"; Tasks: desktopicon
+Name: "{group}\LazEdit"; Filename: "{app}\lazedit.exe"
+Name: "{group}\{cm:ProgramOnTheWeb,LazEdit}"; Filename: "http://wiki.lazarus.freepascal.org/LazEdit"
+Name: "{group}\{cm:UninstallProgram,LazEdit}"; Filename: "{uninstallexe}"
+Name: "{commondesktop}\LazEdit"; Filename: "{app}\lazedit.exe"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\lazeyes2.exe"; Description: "{cm:LaunchProgram,LazEyes}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\lazedit.exe"; Description: "{cm:LaunchProgram,LazEdit}"; Flags: nowait postinstall skipifsilent
 
 
 

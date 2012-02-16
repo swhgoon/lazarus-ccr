@@ -44,7 +44,7 @@ uses
 
 type
   //globale type for all configurable options
-  TEPlusOptions = record
+  TLazEditOptions = record
     EditorOptions: TEditorOptions;
     MainForm: record
       Position: TRect; //used as Left, Top, Widht, Height
@@ -75,8 +75,8 @@ type
     Translation: Integer;
   end;
 
-function LoadOptions(var Options: TEPlusOptions; FileName: String): Boolean;
-function SaveOptions(const Options: TEPlusOptions; FileName: String): Boolean;
+function LoadOptions(var Options: TLazEditOptions; FileName: String): Boolean;
+function SaveOptions(const Options: TLazEditOptions; FileName: String): Boolean;
 function GetDefaultIniNameOnly: String;
 function GetDefaultIniDir: String;
 
@@ -107,7 +107,7 @@ const
     idFilePrefix = 'File_%d';
 
 
-function LoadOptions(var Options: TEPlusOptions; FileName: String): Boolean;
+function LoadOptions(var Options: TLazEditOptions; FileName: String): Boolean;
 var
   Ini: TIniFile;
   ftIndex: TEditorFileType;
@@ -165,7 +165,7 @@ begin
         if (S <> '') then Options.FileTypeMaskList[ftIndex] := S;
       end;
 
-      // Translation
+      // Translation and other general
       Options.Translation := Ini.ReadInteger(scGeneral, idTranslation, 0);
 
     finally
@@ -183,7 +183,7 @@ begin
   end;
 end;
 
-function SaveOptions(const Options: TEPlusOptions; FileName: String): Boolean;
+function SaveOptions(const Options: TLazEditOptions; FileName: String): Boolean;
 var
   Ini: TIniFile;
   ftIndex: TEditorFileType;
@@ -238,7 +238,7 @@ begin
         Ini.WriteString(scFileTypes, eftNames[ftIndex], Options.FileTypeMaskList[ftIndex]);
       end;
 
-      // Translation
+      // Translation and other general
       Ini.WriteInteger(scGeneral, idTranslation, Options.Translation);
 
       try

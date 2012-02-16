@@ -54,9 +54,9 @@ type
 
   TIoResult = (ioSuccess, ioFail, ioCancel);
 
-  { TEPlusForm }
+  { TLazEditMainForm }
 
-  TEPlusForm = class(TForm)
+  TLazEditMainForm = class(TForm)
     HtmlActionList: TActionList;
       acInsertAnchor: TAction;
       acInsertPicture: TAction;
@@ -425,7 +425,7 @@ type
     //overridden public form methods
     //prevent propagating shortcuts from non-modal windows (menu's, actions etc.)
     function IsShortcut(var Message: TLMKey): boolean; override;
-  private
+  public
     { private declarations }
     NoteBook: TEditorPageControl;
     OpenSaveFilter: String;
@@ -438,7 +438,7 @@ type
     FindOptions: TSynSearchOptions;
     ReplaceOptions: TSynSearchOptions;
 
-    AppOptions: TEPlusOptions;
+    AppOptions: TLazEditOptions;
     MruList: TStringList;
     MruMenuItems: Array[0..MruEntries-1] of TMenuItem;
 
@@ -450,9 +450,9 @@ type
     procedure SaveEplusConfiguration;
     procedure CleanUp;
 
-    function GetDefaultAppOptions: TEPlusOptions;
-    procedure ApplyAppOptions(const Options: TEplusOptions);
-    procedure GatherAppOptions(var Options: TEplusOptions);
+    function GetDefaultAppOptions: TLazEditOptions;
+    procedure ApplyAppOptions(const Options: TLazEditOptions);
+    procedure GatherAppOptions(var Options: TLazEditOptions);
 
     procedure TagMenuItemsAndActions;
     procedure UpdateMenuItems;
@@ -464,6 +464,7 @@ type
 
     //Helper functions for editor;
     function TryMarkSelection(const Pre, Post: String): Boolean;
+  public
     //File procedures
     function AskFileNameOpen: String;
     function AskFileNameOpenTemplate: String;
@@ -530,7 +531,7 @@ type
   end; 
 
 var
-  EPlusForm: TEPlusForm;
+  LazEditMainForm: TLazEditMainForm;
 
 implementation
 
@@ -556,30 +557,27 @@ const pXY  = 0;   //Panels constanten
       opt_short_blankpage = 'n';
 
 
-{ TEPlusForm }
+{ TLazEditMainForm }
 
 { ************************** [  Form event handlers] ***********************************}
 
-procedure TEPlusForm.FormCreate(Sender: TObject);
+procedure TLazEditMainForm.FormCreate(Sender: TObject);
 begin
   SetUpAndConfigureLazEdit;
   DoTranslateAll();
-  NoteBook.IsCreating := True;
-  DoFileNewByType(eftNone);
-  NoteBook.IsCreating := False;
 end;
 
-procedure TEPlusForm.FormDestroy(Sender: TObject);
+procedure TLazEditMainForm.FormDestroy(Sender: TObject);
 begin
   CleanUp;
 end;
 
-procedure TEPlusForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+procedure TLazEditMainForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   SaveEplusConfiguration;
 end;
 
-procedure TEPlusForm.FormCloseQuery(Sender: TObject; var CanClose: boolean);
+procedure TLazEditMainForm.FormCloseQuery(Sender: TObject; var CanClose: boolean);
 begin
   While NoteBook.PageCount > 0 do
   begin
@@ -593,7 +591,7 @@ begin
   end;
 end;
 
-procedure TEPlusForm.FormDropFiles(Sender: TObject; const FileNames: array of String);
+procedure TLazEditMainForm.FormDropFiles(Sender: TObject; const FileNames: array of String);
 var
   i: Integer;
 begin
@@ -607,13 +605,13 @@ begin
   end;
 end;
 
-procedure TEPlusForm.FormShow(Sender: TObject);
+procedure TLazEditMainForm.FormShow(Sender: TObject);
 begin
   //This needs to be done only after the mainform has become visible on the screen
   Application.QueueAsyncCall(@ParseCommandLineFileNames, 0);
 end;
 
-procedure TEPlusForm.HandleToolbarsMenuClick(Sender: TObject);
+procedure TLazEditMainForm.HandleToolbarsMenuClick(Sender: TObject);
 var
   lMenuItem: TMenuItem;
   lToolbar: TToolBar;
@@ -627,7 +625,7 @@ begin
   lToolbar.Visible := lMenuItem.Checked;
 end;
 
-procedure TEPlusForm.mnuLanguageChangeClick(Sender: TObject);
+procedure TLazEditMainForm.mnuLanguageChangeClick(Sender: TObject);
 begin
   vTranslations.TranslateToLanguageID(Abs(TMenuItem(Sender).Tag));
   DoTranslateAll();
@@ -636,192 +634,192 @@ end;
 
 { ********************** [ Menu OnClick Handlers ] ************************ }
 
-procedure TEPlusForm.mnuFileOpenInBrowserClick(Sender: TObject);
+procedure TLazEditMainForm.mnuFileOpenInBrowserClick(Sender: TObject);
 begin
   FileOpenInBrowser;
 end;
 
-procedure TEPlusForm.mnuEditPasteTableContentTabClick(Sender: TObject);
+procedure TLazEditMainForm.mnuEditPasteTableContentTabClick(Sender: TObject);
 begin
   EditPasteTableContentTab;
 end;
 
 
-procedure TEPlusForm.mnuInsertCssStyleClick(Sender: TObject);
+procedure TLazEditMainForm.mnuInsertCssStyleClick(Sender: TObject);
 begin
   TryMarkSelection(style_start, style_end);
 end;
 
-procedure TEPlusForm.mnuInsertHtmlCommentClick(Sender: TObject);
+procedure TLazEditMainForm.mnuInsertHtmlCommentClick(Sender: TObject);
 begin
   TryMarkSelection(comment_start, comment_end);
 end;
 
-procedure TEPlusForm.mnuInsertJSClick(Sender: TObject);
+procedure TLazEditMainForm.mnuInsertJSClick(Sender: TObject);
 begin
  TryMarkSelection(script_start, script_end);
 end;
 
-procedure TEPlusForm.mnuInsertSpecialCharsClick(Sender: TObject);
+procedure TLazEditMainForm.mnuInsertSpecialCharsClick(Sender: TObject);
 begin
   InsertSpecialChars;
 end;
 
-procedure TEPlusForm.mnuInsertTableCellClick(Sender: TObject);
+procedure TLazEditMainForm.mnuInsertTableCellClick(Sender: TObject);
 begin
   TryMarkSelection(col_start, col_end);
 end;
 
-procedure TEPlusForm.mnuInsertTableRowClick(Sender: TObject);
+procedure TLazEditMainForm.mnuInsertTableRowClick(Sender: TObject);
 begin
   TryMarkSelection(row_start, row_end);
 end;
 
-procedure TEPlusForm.mnuInsertWordDefinitionClick(Sender: TObject);
+procedure TLazEditMainForm.mnuInsertWordDefinitionClick(Sender: TObject);
 begin
   TryMarkSelection(worddef_start, worddef_end);
 end;
 
-procedure TEPlusForm.mnuInsertWordListClick(Sender: TObject);
+procedure TLazEditMainForm.mnuInsertWordListClick(Sender: TObject);
 begin
   TryMarkSelection(wordlist_start, wordlist_end);
 end;
 
-procedure TEPlusForm.mnuInsertWordTermClick(Sender: TObject);
+procedure TLazEditMainForm.mnuInsertWordTermClick(Sender: TObject);
 begin
   TryMarkSelection(wordterm_start, wordterm_end);
 end;
 
-procedure TEPlusForm.mnuLayoutBlockQuoteClick(Sender: TObject);
+procedure TLazEditMainForm.mnuLayoutBlockQuoteClick(Sender: TObject);
 begin
   TryMarkSelection(blockquote_start, blockquote_end);
 end;
 
-procedure TEPlusForm.mnuLayoutCodeClick(Sender: TObject);
+procedure TLazEditMainForm.mnuLayoutCodeClick(Sender: TObject);
 begin
   TryMarkSelection(code_start, code_end);
 end;
 
-procedure TEPlusForm.mnuLayoutPreformattedClick(Sender: TObject);
+procedure TLazEditMainForm.mnuLayoutPreformattedClick(Sender: TObject);
 begin
   TryMarkSelection(pre_start, pre_end);
 end;
 
-procedure TEPlusForm.mnuLayoutQuoteClick(Sender: TObject);
+procedure TLazEditMainForm.mnuLayoutQuoteClick(Sender: TObject);
 begin
   TryMarkSelection(quote_start, quote_end);
 end;
 
-procedure TEPlusForm.mnuViewFontClick(Sender: TObject);
+procedure TLazEditMainForm.mnuViewFontClick(Sender: TObject);
 begin
   EditorSelectFont;
 end;
 
 
-procedure TEPlusForm.mnuViewFontsizeDownClick(Sender: TObject);
+procedure TLazEditMainForm.mnuViewFontsizeDownClick(Sender: TObject);
 begin
   EditorFontSizeDown;
 end;
 
-procedure TEPlusForm.mnuViewFontSizeUpClick(Sender: TObject);
+procedure TLazEditMainForm.mnuViewFontSizeUpClick(Sender: TObject);
 begin
   EditorFontSizeUp;
 end;
 
 
-procedure TEPlusForm.TopLevelMenuClick(Sender: TObject);
+procedure TLazEditMainForm.TopLevelMenuClick(Sender: TObject);
 begin
   UpdateMenuItems;
 end;
 
-procedure TEPlusForm.mnuEditCutClick(Sender: TObject);
+procedure TLazEditMainForm.mnuEditCutClick(Sender: TObject);
 begin
   EditCut;
 end;
 
-procedure TEPlusForm.mnuFileCloseAppClick(Sender: TObject);
+procedure TLazEditMainForm.mnuFileCloseAppClick(Sender: TObject);
 begin
   Close;
 end;
 
-procedure TEPlusForm.mnuFileCloseCurrentClick(Sender: TObject);
+procedure TLazEditMainForm.mnuFileCloseCurrentClick(Sender: TObject);
 begin
   CloseCurrentEditor;
 end;
 
-procedure TEPlusForm.mnuFileSaveAsClick(Sender: TObject);
+procedure TLazEditMainForm.mnuFileSaveAsClick(Sender: TObject);
 begin
   DoFileSaveAs(NoteBook.CurrentEditor);
 end;
 
 
 
-procedure TEPlusForm.mnuFindNextClick(Sender: TObject);
+procedure TLazEditMainForm.mnuFindNextClick(Sender: TObject);
 begin
   EditFindNext;
 end;
 
-procedure TEPlusForm.mnuFileNewBatClick(Sender: TObject);
+procedure TLazEditMainForm.mnuFileNewBatClick(Sender: TObject);
 begin
   DoFileNewByType(eftBat, itBat);
 end;
 
-procedure TEPlusForm.mnuFileNewHtmlClick(Sender: TObject);
+procedure TLazEditMainForm.mnuFileNewHtmlClick(Sender: TObject);
 begin
   DoFileNewHtml;
 end;
 
-procedure TEPlusForm.mnuFileNewCClick(Sender: TObject);
+procedure TLazEditMainForm.mnuFileNewCClick(Sender: TObject);
 begin
     DoFileNewByType(eftC);
 end;
 
-procedure TEPlusForm.mnuFileNewCssClick(Sender: TObject);
+procedure TLazEditMainForm.mnuFileNewCssClick(Sender: TObject);
 begin
     DoFileNewByType(eftCss);
 end;
 
-procedure TEPlusForm.mnuFileNewFpcClick(Sender: TObject);
+procedure TLazEditMainForm.mnuFileNewFpcClick(Sender: TObject);
 begin
     DoFileNewByType(eftFpc);
 end;
 
-procedure TEPlusForm.mnuFileNewIniClick(Sender: TObject);
+procedure TLazEditMainForm.mnuFileNewIniClick(Sender: TObject);
 begin
   DoFileNewByType(eftIni);
 end;
 
-procedure TEPlusForm.mnuFileNewJSClick(Sender: TObject);
+procedure TLazEditMainForm.mnuFileNewJSClick(Sender: TObject);
 begin
     DoFileNewByType(eftJS);
 end;
 
-procedure TEPlusForm.mnuFileNewPerlClick(Sender: TObject);
+procedure TLazEditMainForm.mnuFileNewPerlClick(Sender: TObject);
 begin
   DoFileNewByType(eftPerl);
 end;
 
-procedure TEPlusForm.mnuFileNewPhpClick(Sender: TObject);
+procedure TLazEditMainForm.mnuFileNewPhpClick(Sender: TObject);
 begin
   DoFileNewByType(eftPerl);
 end;
 
-procedure TEPlusForm.mnuFileNewPyClick(Sender: TObject);
+procedure TLazEditMainForm.mnuFileNewPyClick(Sender: TObject);
 begin
   DoFileNewByType(eftPy);
 end;
 
-procedure TEPlusForm.mnuFileNewShellScriptClick(Sender: TObject);
+procedure TLazEditMainForm.mnuFileNewShellScriptClick(Sender: TObject);
 begin
   DoFileNewByType(eftUnixShell, itUnixShellScript);
 end;
 
-procedure TEPlusForm.mnuFileNewXmlClick(Sender: TObject);
+procedure TLazEditMainForm.mnuFileNewXmlClick(Sender: TObject);
 begin
   DoFileNewByType(eftXml, itXml);
 end;
 
-procedure TEPlusForm.mnuFileMruClick(Sender: TObject);
+procedure TLazEditMainForm.mnuFileMruClick(Sender: TObject);
 var
   Index: Integer;
 begin
@@ -830,17 +828,17 @@ begin
   DoMruOpen(Index);
 end;
 
-procedure TEPlusForm.mnuEditRedoClick(Sender: TObject);
+procedure TLazEditMainForm.mnuEditRedoClick(Sender: TObject);
 begin
   EditRedo;
 end;
 
-procedure TEPlusForm.mnuEditReplaceClick(Sender: TObject);
+procedure TLazEditMainForm.mnuEditReplaceClick(Sender: TObject);
 begin
   EditReplace;
 end;
 
-procedure TEPlusForm.mnuSetHighlighterClick(Sender: TObject);
+procedure TLazEditMainForm.mnuSetHighlighterClick(Sender: TObject);
 var
   AFileType: TEditorFileType;
 begin
@@ -852,12 +850,12 @@ end;
 
 
 
-procedure TEPlusForm.mnuEditSelectAllClick(Sender: TObject);
+procedure TLazEditMainForm.mnuEditSelectAllClick(Sender: TObject);
 begin
   EditSelectAll;
 end;
 
-procedure TEPlusForm.mnuEditUndoClick(Sender: TObject);
+procedure TLazEditMainForm.mnuEditUndoClick(Sender: TObject);
 begin
   EditUndo;
 end;
@@ -865,222 +863,222 @@ end;
 
 { ******************** [Action OnExecute Handlers ] *********************** }
 
-procedure TEPlusForm.acFileOpenExecute(Sender: TObject);
+procedure TLazEditMainForm.acFileOpenExecute(Sender: TObject);
 begin
   DoFileOpen;
 end;
 
-procedure TEPlusForm.acFileSaveAllExecute(Sender: TObject);
+procedure TLazEditMainForm.acFileSaveAllExecute(Sender: TObject);
 begin
   DoFileSaveAll;
 end;
 
-procedure TEPlusForm.acFileNewFromTemplateExecute(Sender: TObject);
+procedure TLazEditMainForm.acFileNewFromTemplateExecute(Sender: TObject);
 begin
   DoTemplateOpen;
 end;
 
-procedure TEPlusForm.acAboutExecute(Sender: TObject);
+procedure TLazEditMainForm.acAboutExecute(Sender: TObject);
 begin
   AboutEplus;
 end;
 
-procedure TEPlusForm.acEditFindNextExecute(Sender: TObject);
+procedure TLazEditMainForm.acEditFindNextExecute(Sender: TObject);
 begin
   EditFindNext;
 end;
 
-procedure TEPlusForm.acEditFindPreviousExecute(Sender: TObject);
+procedure TLazEditMainForm.acEditFindPreviousExecute(Sender: TObject);
 begin
   EditFindPrevious;
 end;
 
-procedure TEPlusForm.acInsertAmpersandExecute(Sender: TObject);
+procedure TLazEditMainForm.acInsertAmpersandExecute(Sender: TObject);
 begin
   InsertSpecial(Ampersand);
 end;
 
-procedure TEPlusForm.acInsertAnchorExecute(Sender: TObject);
+procedure TLazEditMainForm.acInsertAnchorExecute(Sender: TObject);
 begin
   InsertAnchor;
 end;
 
-procedure TEPlusForm.acInsertCopyrightExecute(Sender: TObject);
+procedure TLazEditMainForm.acInsertCopyrightExecute(Sender: TObject);
 begin
   InsertSpecial(CopyRight);
 end;
 
-procedure TEPlusForm.acInsertGreaterExecute(Sender: TObject);
+procedure TLazEditMainForm.acInsertGreaterExecute(Sender: TObject);
 begin
   InsertSpecial(Greater);
 end;
 
-procedure TEPlusForm.acInsertLesserExecute(Sender: TObject);
+procedure TLazEditMainForm.acInsertLesserExecute(Sender: TObject);
 begin
   InsertSpecial(Lesser);
 end;
 
-procedure TEPlusForm.acInsertLineBreakExecute(Sender: TObject);
+procedure TLazEditMainForm.acInsertLineBreakExecute(Sender: TObject);
 begin
   InsertSpecial(LineBreak);
 end;
 
-procedure TEPlusForm.acInsertListItemExecute(Sender: TObject);
+procedure TLazEditMainForm.acInsertListItemExecute(Sender: TObject);
 begin
   TryMarkSelection(listitem_start, listitem_end);
 end;
 
-procedure TEPlusForm.acInsertNbSpaceExecute(Sender: TObject);
+procedure TLazEditMainForm.acInsertNbSpaceExecute(Sender: TObject);
 begin
   InsertSpecial(NbSpace);
 end;
 
-procedure TEPlusForm.acInsertOlistExecute(Sender: TObject);
+procedure TLazEditMainForm.acInsertOlistExecute(Sender: TObject);
 begin
   TryMarkSelection(numberedlist_start, numberedlist_end);
 end;
 
-procedure TEPlusForm.acInsertPictureExecute(Sender: TObject);
+procedure TLazEditMainForm.acInsertPictureExecute(Sender: TObject);
 begin
   InsertPicture;
 end;
 
-procedure TEPlusForm.acInsertTableExecute(Sender: TObject);
+procedure TLazEditMainForm.acInsertTableExecute(Sender: TObject);
 begin
   InsertTable;
 end;
 
-procedure TEPlusForm.acInsertTradeMarkExecute(Sender: TObject);
+procedure TLazEditMainForm.acInsertTradeMarkExecute(Sender: TObject);
 begin
   InsertSpecial(TradeMark);
 end;
 
-procedure TEPlusForm.acInsertUListExecute(Sender: TObject);
+procedure TLazEditMainForm.acInsertUListExecute(Sender: TObject);
 begin
   TryMarkSelection(unnumberedlist_start, unnumberedlist_end);
 end;
 
-procedure TEPlusForm.acLayoutAlignCenterExecute(Sender: TObject);
+procedure TLazEditMainForm.acLayoutAlignCenterExecute(Sender: TObject);
 begin
   TryMarkSelection(centeralign_start, centeralign_end);
 end;
 
-procedure TEPlusForm.acLayoutAlignJustifyExecute(Sender: TObject);
+procedure TLazEditMainForm.acLayoutAlignJustifyExecute(Sender: TObject);
 begin
   TryMarkSelection(justifyalign_start, justifyalign_end);
 end;
 
-procedure TEPlusForm.acLayoutAlignLeftExecute(Sender: TObject);
+procedure TLazEditMainForm.acLayoutAlignLeftExecute(Sender: TObject);
 begin
   TryMarkSelection(leftalign_start, leftalign_end);
 end;
 
-procedure TEPlusForm.acLayoutAlignRightExecute(Sender: TObject);
+procedure TLazEditMainForm.acLayoutAlignRightExecute(Sender: TObject);
 begin
   TryMarkSelection(rightalign_start, rightalign_end);
 end;
 
-procedure TEPlusForm.acLayoutBoldExecute(Sender: TObject);
+procedure TLazEditMainForm.acLayoutBoldExecute(Sender: TObject);
 begin
   TryMarkSelection(bold_start, bold_end);
 end;
 
-procedure TEPlusForm.acGroupingDivExecute(Sender: TObject);
+procedure TLazEditMainForm.acGroupingDivExecute(Sender: TObject);
 begin
   TryMarkSelection(div_start, div_end);
 end;
 
-procedure TEPlusForm.acLayoutEmphasisExecute(Sender: TObject);
+procedure TLazEditMainForm.acLayoutEmphasisExecute(Sender: TObject);
 begin
   TryMarkSelection(emphasis_start, emphasis_end);
 end;
 
-procedure TEPlusForm.acLayoutH1Execute(Sender: TObject);
+procedure TLazEditMainForm.acLayoutH1Execute(Sender: TObject);
 begin
   LayoutHeading(1);
 end;
 
-procedure TEPlusForm.acLayoutH2Execute(Sender: TObject);
+procedure TLazEditMainForm.acLayoutH2Execute(Sender: TObject);
 begin
   LayoutHeading(2);
 end;
 
-procedure TEPlusForm.acLayoutH3Execute(Sender: TObject);
+procedure TLazEditMainForm.acLayoutH3Execute(Sender: TObject);
 begin
   LayoutHeading(3);
 end;
 
-procedure TEPlusForm.acLayoutH4Execute(Sender: TObject);
+procedure TLazEditMainForm.acLayoutH4Execute(Sender: TObject);
 begin
   LayoutHeading(4);
 end;
 
-procedure TEPlusForm.acLayoutH5Execute(Sender: TObject);
+procedure TLazEditMainForm.acLayoutH5Execute(Sender: TObject);
 begin
   LayoutHeading(5);
 end;
 
-procedure TEPlusForm.acLayoutH6Execute(Sender: TObject);
+procedure TLazEditMainForm.acLayoutH6Execute(Sender: TObject);
 begin
   LayoutHeading(6);
 end;
 
-procedure TEPlusForm.acLayoutItalicExecute(Sender: TObject);
+procedure TLazEditMainForm.acLayoutItalicExecute(Sender: TObject);
 begin
   TryMarkSelection(italic_start, italic_end);
 end;
 
-procedure TEPlusForm.acGroupingParagraphExecute(Sender: TObject);
+procedure TLazEditMainForm.acGroupingParagraphExecute(Sender: TObject);
 begin
   TryMarkSelection(paragraph_start, paragraph_end);
 end;
 
-procedure TEPlusForm.acGroupingSpanExecute(Sender: TObject);
+procedure TLazEditMainForm.acGroupingSpanExecute(Sender: TObject);
 begin
   TryMarkSelection(span_start, span_end);
 end;
 
-procedure TEPlusForm.acLayoutStrongExecute(Sender: TObject);
+procedure TLazEditMainForm.acLayoutStrongExecute(Sender: TObject);
 begin
   TryMarkSelection(strong_start, strong_end);
 end;
 
-procedure TEPlusForm.acLayoutSubExecute(Sender: TObject);
+procedure TLazEditMainForm.acLayoutSubExecute(Sender: TObject);
 begin
   TryMarkSelection(sub_start, sub_end);
 end;
 
-procedure TEPlusForm.acLayoutSupExecute(Sender: TObject);
+procedure TLazEditMainForm.acLayoutSupExecute(Sender: TObject);
 begin
   TryMarkSelection(sup_start, sup_end);
 end;
 
-procedure TEPlusForm.acLayoutUnderlineExecute(Sender: TObject);
+procedure TLazEditMainForm.acLayoutUnderlineExecute(Sender: TObject);
 begin
   TryMarkSelection(underline_start, underline_end);
 end;
 
-procedure TEPlusForm.acEditCopyExecute(Sender: TObject);
+procedure TLazEditMainForm.acEditCopyExecute(Sender: TObject);
 begin
   EditCopy;
 end;
 
-procedure TEPlusForm.acEditFindExecute(Sender: TObject);
+procedure TLazEditMainForm.acEditFindExecute(Sender: TObject);
 begin
   EditFind;
 end;
 
-procedure TEPlusForm.acEditPasteExecute(Sender: TObject);
+procedure TLazEditMainForm.acEditPasteExecute(Sender: TObject);
 begin
   EditPaste;
 end;
 
-procedure TEPlusForm.acFileNewPlainExecute(Sender: TObject);
+procedure TLazEditMainForm.acFileNewPlainExecute(Sender: TObject);
 begin
   DoFileNewByType(eftNone);
 end;
 
-procedure TEPlusForm.acFileSaveExecute(Sender: TObject);
+procedure TLazEditMainForm.acFileSaveExecute(Sender: TObject);
 begin
   DoFileSave(NoteBook.CurrentEditor);
 end;
@@ -1088,7 +1086,7 @@ end;
 
 { ********************** [ Form Methods ] ***************************** }
 
-function TEPlusForm.IsShortcut(var Message: TLMKey): boolean;
+function TLazEditMainForm.IsShortcut(var Message: TLMKey): boolean;
 begin
   if Active then
     Result := inherited IsShortcut(Message)
@@ -1099,7 +1097,7 @@ end;
 { ********************** [ Initializing and cleaning up ] ************* }
 
 
-procedure TEPlusForm.SetUpAndConfigureLazEdit;
+procedure TLazEditMainForm.SetUpAndConfigureLazEdit;
 begin
   ConfigFileDir := GetDefaultIniDir;
   ParseCommandLineSwitches;
@@ -1165,13 +1163,13 @@ begin
 
 end;
 
-procedure TEPlusForm.DoTranslateAll;
+procedure TLazEditMainForm.DoTranslateAll;
 begin
   DoTranslateMenus();
   DoTranslateHints();
 end;
 
-procedure TEPlusForm.DoTranslateMenus;
+procedure TLazEditMainForm.DoTranslateMenus;
 begin
   { MENUS }
 {
@@ -1301,7 +1299,7 @@ begin
       mnuToolbarsHTML.Caption := vTranslations.mnuToolbarsHTML;
 end;
 
-procedure TEPlusForm.DoTranslatePopUpMenus;
+procedure TLazEditMainForm.DoTranslatePopUpMenus;
 begin
   {  //Popup menus
     //Popup menu for editor
@@ -1320,7 +1318,7 @@ begin
       mnuPopupLayoutH1: TMenuItem;   }
 end;
 
-procedure TEPlusForm.DoTranslateHints;
+procedure TLazEditMainForm.DoTranslateHints;
 begin
   { HINTS }
   NewFromTemplateBtn.Hint := vTranslations.NewFromTemplateBtn;
@@ -1355,14 +1353,14 @@ begin
   SpanBtn.Hint := vTranslations.SpanBtn;
 end;
 
-procedure TEPlusForm.SaveEplusConfiguration;
+procedure TLazEditMainForm.SaveEplusConfiguration;
 begin
   GatherAppOptions(AppOptions);
   if not lazedit_config.SaveOptions(AppOptions, ConfigFileName) then
     DebugLn('Fout bij opslaan van opties:',LineEnding,'  ',ConfigFileName);
 end;
 
-procedure TEPlusForm.CleanUp;
+procedure TLazEditMainForm.CleanUp;
 begin
   HtmlCharMapDlg.OnHtmlCharClick := nil;
   HtmlCharMapDlg.Free;
@@ -1374,7 +1372,7 @@ end;
 
 { ********************** [ Configuration ] ************************** }
 
-function TEPlusForm.GetDefaultAppOptions: TEPlusOptions;
+function TLazEditMainForm.GetDefaultAppOptions: TLazEditOptions;
 var
   i: Integer;
 begin
@@ -1392,7 +1390,7 @@ begin
   Result.TemplateMaskList := DefaultTemplateMaskList;
 end;
 
-procedure TEPlusForm.ApplyAppOptions(const Options: TEplusOptions);
+procedure TLazEditMainForm.ApplyAppOptions(const Options: TLazEditOptions);
   function ValidPos(const New, Old: Integer): Integer;
   begin
     if (New < 0) then Result := Old else Result := New;
@@ -1460,7 +1458,7 @@ begin
   HtmlToolbar.Visible := Options.MainForm.ToolbarHTML;
 end;
 
-procedure TEPlusForm.GatherAppOptions(var Options: TEplusOptions);
+procedure TLazEditMainForm.GatherAppOptions(var Options: TLazEditOptions);
 var
   i: Integer;
 begin
@@ -1505,7 +1503,7 @@ begin
   Options.MainForm.ToolbarHTML := mnuToolbarsHTML.Checked;
 end;
 
-procedure TEPlusForm.ConstructOpenDialogFileFilters;
+procedure TLazEditMainForm.ConstructOpenDialogFileFilters;
   function AddWilds(const S: String): String;
   //S has the form of '.pp;.pas;.inc'
   //This function will add '*' in front of every extension in the list
@@ -1558,7 +1556,7 @@ end;
 
 { ********************** [ Commandline options ] ******************************** }
 
-procedure TEPlusForm.ParseCommandlineFilenames(Dummy: PtrInt);
+procedure TLazEditMainForm.ParseCommandlineFilenames(Dummy: PtrInt);
 var
   i: Integer;
   S: String;
@@ -1583,7 +1581,7 @@ begin
     DoFileNewByType(eftNone);   }
 end;
 
-procedure TEPlusForm.ParseCommandLineSwitches;
+procedure TLazEditMainForm.ParseCommandLineSwitches;
 var
   S: String;
 begin
@@ -1605,7 +1603,7 @@ end;
 { ***************** [ Menu-related Helper functions/procedures ] ************************ }
 
 
-procedure TEPlusForm.CreateMruMenuItemsArray;
+procedure TLazEditMainForm.CreateMruMenuItemsArray;
 var
   i, Nr: Integer;
   C: TComponent;
@@ -1634,7 +1632,7 @@ begin
   end;
 end;
 
-function TEPlusForm.TryHlMenuTagToFileType(ATag: PtrInt; out
+function TLazEditMainForm.TryHlMenuTagToFileType(ATag: PtrInt; out
   AFileType: TEditorFileType): Boolean;
 begin
   AFileType := eftNone;
@@ -1649,7 +1647,7 @@ end;
 
 
 
-procedure TEPlusForm.TagMenuItemsAndActions;
+procedure TLazEditMainForm.TagMenuItemsAndActions;
 var
   i: Integer;
   C: TComponent;
@@ -1721,7 +1719,7 @@ begin
   acEditCopy.Caption := 'Kopiëren';
 end;
 
-procedure TEPlusForm.UpdateMenuItems;
+procedure TLazEditMainForm.UpdateMenuItems;
 var
   i: Integer;
   C: TComponent;
@@ -1752,7 +1750,7 @@ end;
 { ******************** [ NoteBook / Editor event handlers ] ************************ }
 
 
-procedure TEPlusForm.OnBeforeCloseEditor(Sender: TTabSheet; var Cancel: Boolean);
+procedure TLazEditMainForm.OnBeforeCloseEditor(Sender: TTabSheet; var Cancel: Boolean);
 var
   Ed: TEditor;
   Fn: String;
@@ -1777,7 +1775,7 @@ begin
 end;
 
 
-procedure TEPlusForm.OnEditorStatusChange(Sender: TObject;
+procedure TLazEditMainForm.OnEditorStatusChange(Sender: TObject;
   Changes: TSynStatusChanges);
 var
   Line, Col: LongInt;
@@ -1815,13 +1813,13 @@ begin
   end;
 end;
 
-procedure TEPlusForm.OnCharsetChange(Sender: TEditor; const OldCharset, NewCharset: String; const LineNr: Integer);
+procedure TLazEditMainForm.OnCharsetChange(Sender: TEditor; const OldCharset, NewCharset: String; const LineNr: Integer);
 begin
   MessageDlg(Format('Let op: html charset is gewijzigd van %s naar %s'^m'(Regel %d)',[OldCharset, NewCharset, LineNr]),
              mtInformation, [mbOk], 0);
 end;
 
-procedure TEPlusForm.OnMruListChange(Sender: TObject);
+procedure TLazEditMainForm.OnMruListChange(Sender: TObject);
 var
   i: Integer;
   MnuItem: TMenuItem;
@@ -1853,7 +1851,7 @@ end;
 
 { ********************* [ CharMap event handlers ] ***************************** }
 
-procedure TEPlusForm.OnHtmlCharMapInsertText(AValue: String);
+procedure TLazEditMainForm.OnHtmlCharMapInsertText(AValue: String);
 var
   Ed: TEditor;
 begin
@@ -1872,12 +1870,12 @@ end;
 { ******************** [ General procedures/functions ] ************************ }
 
 
-procedure TEPlusForm.ShowError(const Msg: String);
+procedure TLazEditMainForm.ShowError(const Msg: String);
 begin
   MessageDlg(AppName, Msg, mtError, [mbOk], 0);
 end;
 
-function TEPlusForm.TryMarkSelection(const Pre, Post: String): Boolean;
+function TLazEditMainForm.TryMarkSelection(const Pre, Post: String): Boolean;
 var
   Ed: TEditor;
 begin
@@ -1899,7 +1897,7 @@ end;
 
 
 
-function TEPlusForm.AskFileNameOpen: String;
+function TLazEditMainForm.AskFileNameOpen: String;
 begin
   OpenDialog.Filter := OpenSaveFilter;
   OpenDialog.FilterIndex := 0;
@@ -1911,7 +1909,7 @@ begin
   else Result := EmptyStr;
 end;
 
-function TEPlusForm.AskFileNameOpenTemplate: String;
+function TLazEditMainForm.AskFileNameOpenTemplate: String;
 begin
   OpenDialog.Filter := TemplateFilter;
   OpenDialog.FilterIndex := 0;
@@ -1923,7 +1921,7 @@ begin
   else Result := EmptyStr;
 end;
 
-function TEPlusForm.AskFileNameSave(const Fn: String; const FileType: TEditorFileType): String;
+function TLazEditMainForm.AskFileNameSave(const Fn: String; const FileType: TEditorFileType): String;
 begin
   SaveDialog.Filter := OpenSaveFilter;
   SaveDialog.FilterIndex := 0;
@@ -1949,7 +1947,7 @@ begin
   else Result := EmptyStr;
 end;
 
-function TEPlusForm.AskFileNameSaveTemplate: String;
+function TLazEditMainForm.AskFileNameSaveTemplate: String;
 begin
   SaveDialog.Filter := TemplateFilter;
   SaveDialog.FilterIndex := 0;
@@ -1961,7 +1959,7 @@ begin
   else Result := EmptyStr;
 end;
 
-function TEPlusForm.TryFileOpen(const Fn: String; const AsTemplate: Boolean = False): Boolean;
+function TLazEditMainForm.TryFileOpen(const Fn: String; const AsTemplate: Boolean = False): Boolean;
 var
   Ed: TEditor;
 begin
@@ -1991,7 +1989,7 @@ begin
   else Result := False;
 end;
 
-function TEPlusForm.TryFileSave(Editor: TEditor; Fn: String): TIoResult;
+function TLazEditMainForm.TryFileSave(Editor: TEditor; Fn: String): TIoResult;
 begin
   if Assigned(Editor) then
   begin
@@ -2013,7 +2011,7 @@ begin
   else Result := IoFail;
 end;
 
-function TEPlusForm.CloseCurrentEditor: Boolean;
+function TLazEditMainForm.CloseCurrentEditor: Boolean;
 var
   Idx: Integer;
 begin
@@ -2023,7 +2021,7 @@ begin
   Result := NoteBook.ClosePage(Idx);
 end;
 
-function TEPlusForm.TryFileSaveAll(out Failures: String): Boolean;
+function TLazEditMainForm.TryFileSaveAll(out Failures: String): Boolean;
 var
   i: Integer;
   Ed: TEditor;
@@ -2048,7 +2046,7 @@ begin
   end;
 end;
 
-procedure TEPlusForm.DoFileOpen;
+procedure TLazEditMainForm.DoFileOpen;
 var
   Fn: String;
 begin
@@ -2062,7 +2060,7 @@ begin
     ShowError(Format(vTranslations.msgFileNotFound,[Fn]));
 end;
 
-procedure TEPlusForm.DoMruOpen(const Index: Integer);
+procedure TLazEditMainForm.DoMruOpen(const Index: Integer);
 var
   Fn: String;
 begin
@@ -2077,7 +2075,7 @@ begin
   end
 end;
 
-procedure TEPlusForm.DoTemplateOpen;
+procedure TLazEditMainForm.DoTemplateOpen;
 var
   Fn: String;
 begin
@@ -2091,7 +2089,7 @@ begin
     ShowError(Format(vTranslations.msgFileNotFound,[Fn]));
 end;
 
-procedure TEPlusForm.DoFileSave(Editor: TEditor);
+procedure TLazEditMainForm.DoFileSave(Editor: TEditor);
 begin
   if Assigned(Editor) then
   begin
@@ -2099,7 +2097,7 @@ begin
   end;
 end;
 
-procedure TEPlusForm.DoFileSaveAs(Editor: TEditor);
+procedure TLazEditMainForm.DoFileSaveAs(Editor: TEditor);
 var
   Fn: String;
 begin
@@ -2113,7 +2111,7 @@ begin
   end;
 end;
 
-procedure TEPlusForm.DoFileSaveAsTemplate(Editor: TEditor);
+procedure TLazEditMainForm.DoFileSaveAsTemplate(Editor: TEditor);
 var
   Fn: String;
 begin
@@ -2127,7 +2125,7 @@ begin
   end;
 end;
 
-procedure TEPlusForm.DoFileSaveAll;
+procedure TLazEditMainForm.DoFileSaveAll;
 var
   S: String;
 begin
@@ -2139,7 +2137,7 @@ begin
   end;
 end;
 
-procedure TEPlusForm.DoFileNewByType(const AFileType: TEditorFileType; const InitialText: String = '');
+procedure TLazEditMainForm.DoFileNewByType(const AFileType: TEditorFileType; const InitialText: String = '');
 var
   Ed: TEditor;
 begin
@@ -2154,13 +2152,13 @@ begin
   end;
 end;
 
-procedure TEPlusForm.DoFileNewHtml;
+procedure TLazEditMainForm.DoFileNewHtml;
 begin
   if NewHtmlDlg.Execute then DoFileNewByType(eftHtml, NewHtmlDlg.Text);
 end;
 
 
-procedure TEPlusForm.FileOpenInBrowser;
+procedure TLazEditMainForm.FileOpenInBrowser;
 var
   Ed: TEditor;
 begin
@@ -2186,7 +2184,7 @@ end;
 { ********************* [ Edit ] ********************************* }
 
 
-procedure TEPlusForm.EditUndo;
+procedure TLazEditMainForm.EditUndo;
 var
   Ed: TEditor;
 begin
@@ -2197,7 +2195,7 @@ begin
   end;
 end;
 
-procedure TEPlusForm.EditRedo;
+procedure TLazEditMainForm.EditRedo;
 var
   Ed: TEditor;
 begin
@@ -2208,7 +2206,7 @@ begin
   end;
 end;
 
-procedure TEPlusForm.EditCopy;
+procedure TLazEditMainForm.EditCopy;
 var
   Ed: TEditor;
 begin
@@ -2220,7 +2218,7 @@ begin
   end;
 end;
 
-procedure TEPlusForm.EditPaste;
+procedure TLazEditMainForm.EditPaste;
 var
   Ed: TEditor;
 begin
@@ -2232,7 +2230,7 @@ begin
 end;
 
 
-procedure TEPlusForm.EditCut;
+procedure TLazEditMainForm.EditCut;
 var
   Ed: TEditor;
 begin
@@ -2243,7 +2241,7 @@ begin
   end;
 end;
 
-procedure TEPlusForm.EditSelectAll;
+procedure TLazEditMainForm.EditSelectAll;
 var
   Ed: TEditor;
 begin
@@ -2254,7 +2252,7 @@ begin
   end;
 end;
 
-procedure TEPlusForm.EditFind;
+procedure TLazEditMainForm.EditFind;
 var
   Ed: TEditor;
 begin
@@ -2265,7 +2263,7 @@ begin
   end;
 end;
 
-procedure TEPlusForm.EditFindNext;
+procedure TLazEditMainForm.EditFindNext;
 var
   sOpt: TSynSearchOptions;
   Ed: TEditor;
@@ -2281,7 +2279,7 @@ begin
   end;
 end;
 
-procedure TEPlusForm.EditFindPrevious;
+procedure TLazEditMainForm.EditFindPrevious;
 var
   sOpt: TSynSearchOptions;
   Ed: TEditor;
@@ -2297,7 +2295,7 @@ begin
   end;
 end;
 
-procedure TEPlusForm.EditReplace;
+procedure TLazEditMainForm.EditReplace;
 var
   Ed: TEditor;
 begin
@@ -2308,7 +2306,7 @@ begin
   end;
 end;
 
-procedure TEPlusForm.EditPasteTableContentTab;
+procedure TLazEditMainForm.EditPasteTableContentTab;
 var
   Ed: TEditor;
   TabbedText: String;
@@ -2326,7 +2324,7 @@ end;
 
 
 
-procedure TEPlusForm.DoFind(Sender: TObject);
+procedure TLazEditMainForm.DoFind(Sender: TObject);
 var
   Ed: TEditor;
   Dlg: TFindDialog;
@@ -2351,7 +2349,7 @@ begin
   end;
 end;
 
-procedure TEPlusForm.DoReplace(Sender: TObject);
+procedure TLazEditMainForm.DoReplace(Sender: TObject);
 var
   Ed: TEditor;
   Dlg: TReplaceDialog;
@@ -2388,7 +2386,7 @@ end;
 
 
 
-procedure TEPlusForm.InsertAnchor;
+procedure TLazEditMainForm.InsertAnchor;
 var
   Ed: TEditor;
   SStart, SLen: Integer;
@@ -2423,7 +2421,7 @@ begin
   end;
 end;
 
-procedure TEPlusForm.InsertPicture;
+procedure TLazEditMainForm.InsertPicture;
 var
   Ed: TEditor;
 begin
@@ -2442,7 +2440,7 @@ begin
 end;
 
 
-procedure TEPlusForm.InsertTable;
+procedure TLazEditMainForm.InsertTable;
 var
   Ed: TEditor;
   TableText: String;
@@ -2461,7 +2459,7 @@ begin
 end;
 
 
-procedure TEPlusForm.InsertSpecialChars;
+procedure TLazEditMainForm.InsertSpecialChars;
 var
   Ed: TEditor;
 begin
@@ -2473,7 +2471,7 @@ begin
 end;
 
 
-procedure TEPlusForm.InsertSpecial(const AValue: String);
+procedure TLazEditMainForm.InsertSpecial(const AValue: String);
 var
   Ed: TEditor;
 begin
@@ -2488,7 +2486,7 @@ end;
 
 
 
-procedure TEPlusForm.LayoutHeading(const Level: Integer);
+procedure TLazEditMainForm.LayoutHeading(const Level: Integer);
 begin
   if not (Level in [1..6]) then Exit;
   TryMarkSelection(Format('<h%d>',[Level]),Format('</h%d>',[Level]));
@@ -2497,7 +2495,7 @@ end;
 
 { ************************** [ View ] ********************************* }
 
-procedure TEPlusForm.SetHighlighter(const AFileType: TEditorFileType);
+procedure TLazEditMainForm.SetHighlighter(const AFileType: TEditorFileType);
 var
   Ed: TEditor;
 begin
@@ -2509,7 +2507,7 @@ begin
   end;
 end;
 
-procedure TEPlusForm.EditorSelectFont;
+procedure TLazEditMainForm.EditorSelectFont;
 var
   EO: TEditorOptions;
 begin
@@ -2527,7 +2525,7 @@ begin
   end;
 end;
 
-procedure TEPlusForm.EditorFontSizeUp;
+procedure TLazEditMainForm.EditorFontSizeUp;
 var
   EO: TEditorOptions;
 begin
@@ -2539,7 +2537,7 @@ begin
   end;
 end;
 
-procedure TEPlusForm.EditorFontSizeDown;
+procedure TLazEditMainForm.EditorFontSizeDown;
 var
   EO: TEditorOptions;
 begin
@@ -2555,7 +2553,7 @@ end;
 
 { ************************** [ About ] *********************** }
 
-procedure TEPlusForm.AboutEPlus;
+procedure TLazEditMainForm.AboutEPlus;
 {var
   Dlg: TExtAboutDlg;}
 begin

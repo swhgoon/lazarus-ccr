@@ -1,4 +1,4 @@
-object EPlusForm: TEPlusForm
+object LazEditMainForm: TLazEditMainForm
   Left = 286
   Height = 418
   Top = 121
