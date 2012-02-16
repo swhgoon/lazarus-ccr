@@ -11,7 +11,7 @@ uses
   lazedit_translations,
   EditorPageControl,
   HtmlCode,
-  lazedit_constants;
+  lazedit_constants, lazedit_about;
 
 {$R *.res}
 
@@ -33,7 +33,7 @@ begin
   else
     LazEditMainForm.TryFileOpen(ParamStr(1), False);
   {$endif}
-
+  Application.CreateForm(TformAbout, formAbout);
   Application.Run;
 end.
 

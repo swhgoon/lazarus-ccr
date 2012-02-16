@@ -47,8 +47,7 @@ uses
   SynEdit, SynEditTypes,
   EditorPageControl,
   EPlus_Commons, lazedit_config, HtmlCode, HtmlDialogs, lazedit_constants,
-  lazedit_translations{
-  MyFileUtils, Fcl_Misc, MruLists, MyGetOpt, ExtAbout, NlAutoTranslation};
+  lazedit_translations, lazedit_about;
 
 type
 
@@ -415,8 +414,6 @@ type
     procedure mnuViewFontsizeDownClick(Sender: TObject);
     procedure mnuViewFontSizeUpClick(Sender: TObject);
     procedure mnuSetHighlighterClick(Sender: TObject);
-
-    procedure AboutEPlus;
 
     procedure DoFind(Sender: TObject);   //callback for FindDialog
     procedure DoReplace(Sender: TObject); //callback for ReplaceDialog
@@ -880,7 +877,7 @@ end;
 
 procedure TLazEditMainForm.acAboutExecute(Sender: TObject);
 begin
-  AboutEplus;
+  formAbout.ShowModal;
 end;
 
 procedure TLazEditMainForm.acEditFindNextExecute(Sender: TObject);
@@ -2549,33 +2546,6 @@ begin
     NoteBook.EditorOptions := EO;
   end;
 end;
-
-
-{ ************************** [ About ] *********************** }
-
-procedure TLazEditMainForm.AboutEPlus;
-{var
-  Dlg: TExtAboutDlg;}
-begin
-{  Dlg := TExtAboutDlg.Create;
-  try
-    Dlg.Caption := AboutTitle;
-    Dlg.ProductName := AppName;
-    Dlg.Version := AppVersion;
-    Dlg.CopyrightStatement := CopyLeftStatement;
-    Dlg.WebsiteCaption := AuthorWebName;
-    Dlg.WebsiteURL := AuthorWebUrl;
-    Dlg.LicenseText := LicenseText;
-    Dlg.LicenseWebsiteCaption := LicenseName;
-    Dlg.LicenseWebsiteURL := LicenseUrl;
-    Dlg.Top := Top + 20;
-    Dlg.Left := Left + 20;
-    Dlg.Execute;
-  finally
-    Dlg.Free;
-  end;}
-end;
-
 
 end.
 

@@ -42,7 +42,7 @@ interface
 const
   AppName = 'LazEdit';
   AboutTitle = 'Over ' + AppName;
-  AppVersion = 'Version 1.1';
+  AppVersion = 'Version 1.9';
   CopyLeftStatement = 'Copyright (c) 2011, 2012 by Bart Broersma, FlyingSheep Inc. and Felipe Monteiro de Carvalho';
   MetaGeneratorName = AppName + #32 + AppVersion;
   AuthorWebName = 'Bart & Mariska''s Webstek';

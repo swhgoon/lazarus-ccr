@@ -110,10 +110,8 @@ object LazEditMainForm: TLazEditMainForm
     end
     object InfoBtn: TToolButton
       Left = 215
-      Hint = 'Info'
       Top = 2
-      Caption = 'InfoBtn'
-      ImageIndex = 8
+      Action = acAbout
     end
   end
   object HtmlToolbar: TToolBar
