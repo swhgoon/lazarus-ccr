@@ -75,7 +75,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="15">
+    <Units Count="14">
       <Unit0>
         <Filename Value="lazedit.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -99,70 +99,65 @@
         <UnitName Value="EditorPageControl"/>
       </Unit3>
       <Unit4>
-        <Filename Value="eplus_commons.pp"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="EPlus_Commons"/>
-      </Unit4>
-      <Unit5>
         <Filename Value="lazedit_constants.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="lazedit_constants"/>
-      </Unit5>
-      <Unit6>
+      </Unit4>
+      <Unit5>
         <Filename Value="lazedit_config.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="lazedit_config"/>
-      </Unit6>
-      <Unit7>
+      </Unit5>
+      <Unit6>
         <Filename Value="htmlcharmap.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="HtmlCharmapForm"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="HtmlCharMap"/>
-      </Unit7>
-      <Unit8>
+      </Unit6>
+      <Unit7>
         <Filename Value="htmlcode.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="HtmlCode"/>
-      </Unit8>
-      <Unit9>
+      </Unit7>
+      <Unit8>
         <Filename Value="htmldialogs.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="HtmlDialogs"/>
-      </Unit9>
-      <Unit10>
+      </Unit8>
+      <Unit9>
         <Filename Value="newhtmldlgform.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="NewHtmlDlgForm"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="NewHtmlDlgForm"/>
-      </Unit10>
-      <Unit11>
+      </Unit9>
+      <Unit10>
         <Filename Value="anchordlgform.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="AnchorDlgForm"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="AnchorDlgForm"/>
-      </Unit11>
-      <Unit12>
+      </Unit10>
+      <Unit11>
         <Filename Value="picturedlgform.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="PictureDlgForm"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="PictureDlgForm"/>
-      </Unit12>
-      <Unit13>
+      </Unit11>
+      <Unit12>
         <Filename Value="newtableform.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="NewTableForm"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="NewTableForm"/>
-      </Unit13>
-      <Unit14>
+      </Unit12>
+      <Unit13>
         <Filename Value="lazedit_translations.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="lazedit_translations"/>
-      </Unit14>
+      </Unit13>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

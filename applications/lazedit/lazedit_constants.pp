@@ -39,8 +39,6 @@ unit lazedit_constants;
 
 interface
 
-//uses GPL;
-
 const
   AppName = 'LazEdit';
   AboutTitle = 'Over ' + AppName;
@@ -52,6 +50,80 @@ const
   LicenseText = ''; //LGPL_Text;
   LicenseUrl = '';//LGPL_Url;
   LicenseName = 'Gnu LGPL';
+
+Type
+
+  TEditorFileType = (eftNone, eftHtml, eftXml, eftCSS, eftJS, eftFpc, eftLfm, eftC, eftPy, eftPhp,
+                     eftPerl, eftUnixShell, eftBat, eftDiff, eftIni, eftPo);
+  TFileTypeMaskList = array[TEditorFileType] of string;
+
+const
+  HtmlTemplateExt = '.htmlt;.hks;';
+  CssTemplateExt = '.csst';
+  JavaTemplateExt = '.jst';
+  STemplate = 'Sjablonen';
+
+  eftNames: array[TEditorFileType] of string = ('eftNone', 'eftHtml', 'eftXml', 'eftCSS',
+                     'eftJS', 'eftFpc', 'eftLfm', 'eftC' , 'eftPy', 'eftPhp',
+                     'eftPerl', 'eftUnixShell', 'eftBat', 'eftDiff', 'eftIni', 'eftPo');
+
+
+  eftFilterNames: array[TEditorFileType] of string = ('', 'Html bestanden', 'XML bestanden', 'CSS bestanden',
+                     'Javascript bestanden', 'Pascal bronbestanden', 'Lazarus en Delphi forms', 'C en C++ bronbestanden' ,
+                     'Python bronbestanden', 'PHP bronbestanden',
+                     'Perl bronbestanden', 'Unix shellscripts', 'Batch bestanden', 'Diff''s en patches',
+                     'Configuratie bestanden', 'po language files');
+
+
+
+  {$IFDEF WINDOWS}
+  AllFilesMask = '*.*';
+  {$ENDIF}
+  FilterText = 'Tekst bestanden (*.txt)|*.txt';
+  FilterAll = 'Alle bestanden ('+ AllFilesMask + ')|' + AllFilesMask;
+
+  //Filter indexes
+  fiEftFirst = Ord(Low(TEditorFileType)) + 1;
+  fiHtml = Ord(eftHtml);
+  fiXml = Ord(eftXml);
+  fiCss = Ord(eftCss);
+  fiJS = Ord(eftJS);
+  fiFpc = Ord(eftFpc);
+  fiLfm = Ord(eftLfm);
+  fiC = Ord(eftC);
+  fiPy = Ord(eftPy);
+  fiPhp = Ord(eftPhp);
+  fiPerl = Ord(eftPerl);
+  fiUnixShell = Ord(eftUnixShell);
+  fiBat = Ord(eftBat);
+  fiDiff = Ord(eftDiff);
+  fiIni = Ord(eftIni);
+  fiPo = Ord(eftPo);
+  fiEftLast = Ord(High(TEditorFileType));
+
+  fiText = fiEftLast + 1;
+  fiAll = fiEftLast + 2;
+
+  DefaultFiletypeMaskList: TFileTypeMaskList = ('.txt',//eftNone  (no need to guess syntax for .txt files)
+         '.htm;.html;.xhtml;.xhtm;' + HtmlTemplateExt, //eftHtml
+         '.xml;.adfx',                                 //eftXml
+         '.css;' + CssTemplateExt,                     //eftCss
+         '.js;' + JavaTemplateExt,                     //eftJava
+         '.pp;.pas;.inc;.lpr;.dpr;.lrs;.lpk;.dpk',     //eftFpc
+         '.lfm;.dfm',                                  //eftLfm
+         '.c;.cpp;.h;.hpp;.hh;.gcc;.cc;.c++',          //eftC
+         '.py',                                        //eftPython
+         '.php',                                       //eftPhp
+         '.pl',                                        //eftPerl
+         '.sh',                                        //eftUnixShell
+         '.bat',                                       //eftBat
+         '.diff;.patch',                               //eftDiff
+         '.ini;.conf;.cfg',                            //eftIni
+         '.po');                                       //eftPo
+
+  DefaultTemplateMaskList =  HtmlTemplateExt + ';' + CssTemplateExt + ';' + JavaTemplateExt;
+
+  MruEntries = 6;
 
 implementation
 
