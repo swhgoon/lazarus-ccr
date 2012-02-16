@@ -45,7 +45,7 @@ uses
   SynHighlighterPython, SynHighlighterBat, SynHighlighterIni, SynHighlighterJava,
   SynHighlighterUnixShellScript, SynHighLighterPo,
   SynEditMouseCmds, SynEditKeyCmds,
-  EPlus_Commons, lazedit_translations, lazedit_constants;
+  lazedit_translations, lazedit_constants;
 
 
 

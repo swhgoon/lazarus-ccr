@@ -39,7 +39,7 @@ unit lazedit_config;
 interface
 
 uses
-  SysUtils, Classes, EditorPageControl, EPlus_COmmons, lazedit_constants, Forms,{FCL_Misc,} IniFiles,
+  SysUtils, Classes, EditorPageControl, lazedit_constants, Forms,{FCL_Misc,} IniFiles,
   LCLProc;
 
 type

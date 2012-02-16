@@ -46,7 +46,7 @@ uses
   LMessages, {for overridden IsShortCut}
   SynEdit, SynEditTypes,
   EditorPageControl,
-  EPlus_Commons, lazedit_config, HtmlCode, HtmlDialogs, lazedit_constants,
+  lazedit_config, HtmlCode, HtmlDialogs, lazedit_constants,
   lazedit_translations, lazedit_about;
 
 type
