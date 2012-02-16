@@ -32,7 +32,7 @@
   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 }
 
-unit EPlus_Config;
+unit lazedit_config;
 
 {$mode objfpc}{$H+}
 
@@ -49,6 +49,7 @@ type
     MainForm: record
       Position: TRect; //used as Left, Top, Widht, Height
       InitialDir: String;
+      ToolbarHTML: Boolean;
     end;
     HtmlCharMapDlg: record
       Position: TPoint;
@@ -91,6 +92,7 @@ const
     idWidth = 'Width';
     idHeight = 'Height';
     idInitialDir = 'InitialDir';  //Last opened folder
+    idToolbarHTML = 'HTML toolbar';
   scHtmlCharMapDlg = 'CharMapDlg';
   scNewHtmlDlg = 'NewHtmlDlg';
   scAnchorDlg = 'AnchorDlg';
@@ -127,6 +129,7 @@ begin
       Options.MainForm.Position.Right := Ini.ReadInteger(scMainForm, idWidth, -1);
       Options.MainForm.Position.Bottom := Ini.ReadInteger(scMainForm, idHeight, -1);
       Options.MainForm.InitialDir := Ini.ReadString(scMainForm, idInitialDir, '');
+      Options.MainForm.ToolbarHTML := Ini.ReadBool(scMainForm, idToolbarHTML, False);
 
       //Dialogs
       Options.NewHtmlDlg.Position.y := Ini.ReadInteger(scNewHtmlDlg, idTop, -1);
@@ -201,6 +204,7 @@ begin
       Ini.WriteInteger(scMainForm, idWidth, Options.MainForm.Position.Right);
       Ini.WriteInteger(scMainForm, idHeight, Options.MainForm.Position.Bottom);
       Ini.WriteString(scMainForm, idInitialDir, Options.MainForm.InitialDir);
+      Ini.WriteBool(scMainForm, idToolbarHTML, Options.MainForm.ToolbarHTML);
 
       //Dialogs
       Ini.WriteInteger(scNewHtmlDlg, idTop, Options.NewHtmlDlg.Position.y);

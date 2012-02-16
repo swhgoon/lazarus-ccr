@@ -12,6 +12,8 @@ type
   { TTranslations }
 
   TTranslations = class(TObject)
+  private
+    FLanguageId: Integer;
   public
     { Main form }
     {  mnuEditPasteTableContentTab: TMenuItem;
@@ -52,6 +54,8 @@ type
       mnuEditCopy,
       mnuEditCut,
       mnuEditPaste,
+      mnuEditPasteSpecial,
+        mnuEditPasteTableContentTab,
       mnuEditSelectAll,
       //mnuSep12: TMenuItem;
       mnuEditReplace,
@@ -59,25 +63,25 @@ type
       mnuEditFind: string;
     //Insert menu
     mnuHTMLTools,
-     mnuInsertAnchor,
-{    mnuInsertList,
-      mnuInsertUList: TMenuItem;
-      mnuInsertNList: TMenuItem;
-      mnuInsertWordList: TMenuItem;
-      mnuInsetListItem: TMenuItem;
-      mnuInsertWordTerm: TMenuItem;
-      mnuInsertWordDefinition: TMenuItem;
-    mnuInsertTable: TMenuItem;
-      mnInsertNewTable: TMenuItem;
-      mnuInsertTableCell: TMenuItem;
-      mnuInsertTableRow: TMenuItem;
-    mnuInsertPicture: TMenuItem;
-    mnuInsertSpecialChars: TMenuItem;
-    mnuInsertLineBreak: TMenuItem;
-    mnuInsertSep1: TMenuItem;
-    mnuInsertHtmlComment: TMenuItem;
-    mnuInsertJS: TMenuItem;
-    mnuInsertCssStyle: TMenuItem;}
+      mnuInsertAnchor,
+      mnuInsertList,
+        mnuInsertUList,
+        mnuInsertNList,
+        mnuInsertWordList,
+        mnuInsetListItem,
+        mnuInsertWordTerm,
+        mnuInsertWordDefinition,
+      mnuInsertTable,
+        mnInsertNewTable,
+        mnuInsertTableCell,
+        mnuInsertTableRow,
+      mnuInsertPicture,
+      mnuInsertSpecialChars,
+      mnuInsertLineBreak,
+      //mnuInsertSep1: TMenuItem;
+      mnuInsertHtmlComment,
+      mnuInsertJS,
+      mnuInsertCssStyle: string;
     //Layout menu
     mnuLayout,
       mnuLayoutBold,
@@ -110,14 +114,14 @@ type
       mnuGroupingSpan: string;
     //View menu
     mnuView,
-      mnuViewFontsize: string;
-{        mnuViewFontSizeUp: TMenuItem;
-        mnuViewFontsizeDown: TMenuItem;
-      mnuViewHighlighter: TMenuItem;
+      mnuViewFontsize,
+        mnuViewFontSizeUp,
+        mnuViewFontsizeDown,
+//      mnuViewHighlighter: TMenuItem;
         //these menu items MUST have names that are built like this:
         //'mnuViewHL' + eftNames[SomeIndex]
-        mnuViewHLeftNone: TMenuItem;
-        mnuViewHLeftHtml: TMenuItem;
+        mnuViewHLeftNone: string;
+{        mnuViewHLeftHtml: TMenuItem;
         mnuViewHLeftXml: TMenuItem;
         mnuViewHLeftCss: TMenuItem;
         mnuViewHLeftJS: TMenuItem;
@@ -131,8 +135,13 @@ type
         mnuViewHLeftBat: TMenuItem;
         mnuViewHLeftDiff: TMenuItem;
         mnuViewHLeftIni: TMenuItem;
-        mnuViewHLeftPo: TMenuItem;
-    //Popup menus
+        mnuViewHLeftPo: TMenuItem;}
+    mnuTools,
+      mnuToolsLanguage,
+      mnuToolsToolbars,
+        mnuToolbarsMain,
+        mnuToolbarsHTML: string;
+{    //Popup menus
     //Popup menu for editor
     EditorPopupMenu: TPopupMenu;
       mnuEditPopupSelectAll: TMenuItem;
@@ -170,6 +179,7 @@ type
     procedure TranslateToDutch;
     procedure TranslateToPortuguese;
     procedure TranslateToLanguageID(AID: Integer);
+    function GetCurrentLanguageID: Integer;
   end;
 
 var
@@ -214,7 +224,8 @@ begin
     mnuEditCopy := 'Copy';
     mnuEditCut := 'Cut';
     mnuEditPaste := 'Paste';
-    //mnuEditPasteSpecial := 'Plakken speciaal';
+    mnuEditPasteSpecial := 'Paste special';
+      mnuEditPasteTableContentTab := 'Paste table content';
     mnuEditSelectAll := 'Select all';
     //mnuSep12: TMenuItem;
     mnuEditReplace := '&Replace';
@@ -223,24 +234,24 @@ begin
   //HTML Tools menu
   mnuHTMLTools := '&HTML Tools';
     mnuInsertAnchor := 'Insert Hyperlink';
-  {    mnuInsertList,
-      mnuInsertUList: TMenuItem;
-      mnuInsertNList: TMenuItem;
-      mnuInsertWordList: TMenuItem;
-      mnuInsetListItem: TMenuItem;
-      mnuInsertWordTerm: TMenuItem;
-      mnuInsertWordDefinition: TMenuItem;
-    mnuInsertTable: TMenuItem;
-      mnInsertNewTable: TMenuItem;
-      mnuInsertTableCell: TMenuItem;
-      mnuInsertTableRow: TMenuItem;
-    mnuInsertPicture: TMenuItem;
-    mnuInsertSpecialChars: TMenuItem;
-    mnuInsertLineBreak: TMenuItem;
-    mnuInsertSep1: TMenuItem;
-    mnuInsertHtmlComment: TMenuItem;
-    mnuInsertJS: TMenuItem;
-    mnuInsertCssStyle: TMenuItem;}
+      mnuInsertList := 'Insert list...';
+      mnuInsertUList := 'Bullets list';
+      mnuInsertNList := 'Numeric list';
+      mnuInsertWordList := 'List of words';
+      mnuInsetListItem := 'List item';
+      mnuInsertWordTerm := 'Word term';
+      mnuInsertWordDefinition := 'Word definition';
+    mnuInsertTable := 'Insert Table';
+      mnInsertNewTable := 'New table';
+      mnuInsertTableCell := 'Table cell';
+      mnuInsertTableRow := 'Table row';
+    mnuInsertPicture := 'Insert Picture';
+    mnuInsertSpecialChars := 'Insert special chars';
+    mnuInsertLineBreak := 'Insert line break';
+    //mnuInsertSep1: TMenuItem;
+    mnuInsertHtmlComment := 'Insert HTML comment';
+    mnuInsertJS := 'Insert Javascript';
+    mnuInsertCssStyle := 'Insert CSS Style';
     //Layout menu
     mnuLayout := '&Layout';
       mnuLayoutBold := 'Bold';
@@ -274,6 +285,15 @@ begin
   //View menu
   mnuView := '&View';
     mnuViewFontsize := '&Font Size';
+      mnuViewFontSizeUp := 'Bigger';
+      mnuViewFontsizeDown := 'Smaller';
+    //mnuViewHighlighter: TMenuItem;
+      mnuViewHLeftNone := 'None';
+  mnuTools := '&Tools';
+    mnuToolsLanguage := 'Language';
+    mnuToolsToolbars := 'Toolbars';
+    mnuToolbarsMain := 'Main Toolbar';
+    mnuToolbarsHTML := 'HTML Toolbar';
 
   SLine := 'Line';
   SCol := 'Col';
@@ -365,7 +385,8 @@ begin
     mnuEditCopy := '&Kopiëren';
     mnuEditCut := 'K&nippen';
     mnuEditPaste := '&Plakken';
-    //mnuEditPasteSpecial := 'Plakken speciaal';
+    mnuEditPasteSpecial := 'Plakken speciaal';
+      mnuEditPasteTableContentTab := 'Tabelinhoud (Tab-gescheiden)';
     mnuEditSelectAll := '&Alles selecteren';
     //mnuSep12: TMenuItem;
     mnuEditReplace := 'Ve&rvangen';
@@ -374,24 +395,26 @@ begin
   //Insert menu
   mnuHTMLTools := '&HTML Tools';
     mnuInsertAnchor := 'Hyperlink invoegen';
-  {    mnuInsertList,
-      mnuInsertUList: TMenuItem;
-      mnuInsertNList: TMenuItem;
-      mnuInsertWordList: TMenuItem;
-      mnuInsetListItem: TMenuItem;
-      mnuInsertWordTerm: TMenuItem;
-      mnuInsertWordDefinition: TMenuItem;
-    mnuInsertTable: TMenuItem;
-      mnInsertNewTable: TMenuItem;
-      mnuInsertTableCell: TMenuItem;
-      mnuInsertTableRow: TMenuItem;
-    mnuInsertPicture: TMenuItem;
-    mnuInsertSpecialChars: TMenuItem;
-    mnuInsertLineBreak: TMenuItem;
-    mnuInsertSep1: TMenuItem;
-    mnuInsertHtmlComment: TMenuItem;
-    mnuInsertJS: TMenuItem;
-    mnuInsertCssStyle: TMenuItem;}
+  mnuHTMLTools := '&HTML Tools';
+    mnuInsertAnchor := 'Insert Hyperlink';
+      mnuInsertList := 'Lijst';
+      mnuInsertUList := 'Ongenummerde lijst';
+      mnuInsertNList := 'Genummerde lijst';
+      mnuInsertWordList := '&Woordenlijst';
+      mnuInsetListItem := 'Lijst item invoegen';
+      mnuInsertWordTerm := 'Woordenlijst term';
+      mnuInsertWordDefinition := 'Woordenlijst definitie';
+    mnuInsertTable := 'Tabel';
+      mnInsertNewTable := 'Tabel invoegen ...';
+      mnuInsertTableCell := 'Cel';
+      mnuInsertTableRow := 'Rij';
+    mnuInsertPicture := 'Plaatje invoegen';
+    mnuInsertSpecialChars := 'Speciale tekens';
+    mnuInsertLineBreak := 'Nieuwe regel';
+    //mnuInsertSep1: TMenuItem;
+    mnuInsertHtmlComment := 'Commentaar';
+    mnuInsertJS := 'JavaScript';
+    mnuInsertCssStyle := 'Css stijl';
     //Layout menu
     mnuLayout := '&Opmaak';
       mnuLayoutBold := 'Vet';
@@ -425,6 +448,10 @@ begin
   //View menu
   mnuView := 'Bee&ld';
     mnuViewFontsize := '&Tekengrootte';
+      mnuViewFontSizeUp := '&Groter';
+      mnuViewFontsizeDown := '&Kleiner';
+    //mnuViewHighlighter: TMenuItem;
+      mnuViewHLeftNone := 'Geen';
 
   SLine := 'Rg';
   SCol := 'Kol';
@@ -582,12 +609,18 @@ end;
 
 procedure TTranslations.TranslateToLanguageID(AID: Integer);
 begin
+  FLanguageID := AID;
   case AID of
   1: TranslateToDutch;
   2: TranslateToPortuguese;
   else
     TranslateToEnglish;
   end;
+end;
+
+function TTranslations.GetCurrentLanguageID: Integer;
+begin
+  Result := FLanguageID;
 end;
 
 initialization

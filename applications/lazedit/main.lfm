@@ -127,6 +127,7 @@ object EPlusForm: TEPlusForm
     ParentShowHint = False
     ShowHint = True
     TabOrder = 2
+    Visible = False
     object AnchorBtn: TToolButton
       Left = 1
       Top = 2
@@ -1311,7 +1312,7 @@ object EPlusForm: TEPlusForm
     left = 432
     top = 96
     object mnuFile: TMenuItem
-      Caption = '&Bestand'
+      Caption = 'mnuFile'
       OnClick = TopLevelMenuClick
       object mnuFileOpen: TMenuItem
         Action = acFileOpen
@@ -1433,7 +1434,7 @@ object EPlusForm: TEPlusForm
       end
     end
     object mnuEdit: TMenuItem
-      Caption = 'Be&werken'
+      Caption = 'mnuEdit'
       OnClick = TopLevelMenuClick
       object mnuEditUndo: TMenuItem
         Caption = '&Ongedaan maken'
@@ -1651,7 +1652,7 @@ object EPlusForm: TEPlusForm
       end
     end
     object mnuView: TMenuItem
-      Caption = 'Bee&ld'
+      Caption = 'mnuView'
       OnClick = TopLevelMenuClick
       object mnuViewFont: TMenuItem
         Caption = 'Lettertype...'
@@ -1739,9 +1740,9 @@ object EPlusForm: TEPlusForm
       end
     end
     object mnuTools: TMenuItem
-      Caption = 'Tools'
-      object mnuLanguage: TMenuItem
-        Caption = 'Language'
+      Caption = 'mnuTools'
+      object mnuToolsLanguage: TMenuItem
+        Caption = 'mnuToolsLanguage'
         object mnuEnglish: TMenuItem
           Caption = 'English'
           OnClick = mnuLanguageChangeClick
@@ -1755,6 +1756,18 @@ object EPlusForm: TEPlusForm
           Tag = -2
           Caption = 'Português'
           OnClick = mnuLanguageChangeClick
+        end
+      end
+      object mnuToolsToolbars: TMenuItem
+        Caption = 'mnuToolsToolbars'
+        object mnuToolbarsMain: TMenuItem
+          Caption = 'mnuToolbarsMain'
+          Checked = True
+          OnClick = HandleToolbarsMenuClick
+        end
+        object mnuToolbarsHTML: TMenuItem
+          Caption = 'mnuToolbarsHTML'
+          OnClick = HandleToolbarsMenuClick
         end
       end
     end

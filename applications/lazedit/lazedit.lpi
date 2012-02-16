@@ -109,9 +109,9 @@
         <UnitName Value="lazedit_constants"/>
       </Unit5>
       <Unit6>
-        <Filename Value="eplus_config.pp"/>
+        <Filename Value="lazedit_config.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="EPlus_Config"/>
+        <UnitName Value="lazedit_config"/>
       </Unit6>
       <Unit7>
         <Filename Value="htmlcharmap.pp"/>
