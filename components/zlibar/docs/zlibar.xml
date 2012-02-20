@@ -1,0 +1,725 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="zlibar">
+    <!--
+  ====================================================================
+    zlibar
+  ====================================================================
+-->
+    <module name="zlibar">
+      <short/>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="paszlib">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="md5">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PFileInfo">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TFileInfo">
+        <short>Used internally</short>
+        <descr>This holds temporarily the compressed size if a stream and it's MD5 checksum.</descr>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFileInfo.CompressedSize">
+        <short>The compressed size of a stream</short>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFileInfo.Md5Sum">
+        <short>The TMD5Digest of the original uncompressed stream.</short>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TZlibFilesList">
+        <short>Used to store the list of files to be compressed</short>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TZlibFilesList.FFileList">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TZlibFilesList.FPathList">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TZlibFilesList.FFileInfoList">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TZlibFilesList.GetFileName.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibFilesList.GetFileName.AIndex">
+        <short/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TZlibFilesList.GetPath.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibFilesList.GetPath.AIndex">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibFilesList.SetFileName.AIndex">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibFilesList.SetFileName.AFIleName">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibFilesList.SetPath.AIndex">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibFilesList.SetPath.APath">
+        <short/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TZlibFilesList.GetFileInfo.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibFilesList.GetFileInfo.AIndex">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibFilesList.SetFileInfo.AIndex">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibFilesList.SetFileInfo.AFileInfo">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TZlibFilesList.Create"/>
+      <!-- destructor Visibility: public -->
+      <element name="TZlibFilesList.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TZlibFilesList.Add">
+        <short>Add a File to be compressed</short>
+        <descr>Should be a fully qualified filename. Stored in the archive as just the filename without paths. To set a releative path for the file use AddPath.</descr>
+        <seealso>
+          <link id="TZlibFilesList.AddPath"/>
+          <link id="TZlibFilesList.Insert"/>
+        </seealso>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TZlibFilesList.Add.Result">
+        <short>The index of the filename in the list</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibFilesList.Add.AFileName">
+        <short>Fully qualified FileName to be added</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TZlibFilesList.AddPath">
+        <short>Adds a FileName and a relative path</short>
+        <seealso>
+          <link id="TZlibFilesList.Add"/>
+        </seealso>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TZlibFilesList.AddPath.Result">
+        <short>Index of added file name in the list</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibFilesList.AddPath.AFileName">
+        <short>Fully qualified filename to be compressed</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibFilesList.AddPath.APath">
+        <short>Relative path to be decompressed to</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TZlibFilesList.Insert">
+        <short>Used to insert a file to be compressed into the list at a specific index</short>
+        <seealso>
+          <link id="TZlibFilesList.Add"/>
+        </seealso>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TZlibFilesList.Insert.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibFilesList.Insert.AIndex">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibFilesList.Insert.AFileName">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TZlibFilesList.InsertPath">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TZlibFilesList.InsertPath.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibFilesList.InsertPath.AIndex">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibFilesList.InsertPath.AFileName">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibFilesList.InsertPath.APath">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TZlibFilesList.Delete">
+        <short>Deletes the filename at index from the list</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibFilesList.Delete.AIndex">
+        <short>Index of the filename to be removed</short>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TZlibFilesList.Clear">
+        <short>Removes all files from the list of files to be compressed</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TZlibFilesList.Count">
+        <short>Number of files in the list to be compressed</short>
+        <descr>Zero based so to do a loop using Count you must do Count-1</descr>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TZlibFilesList.Count.Result">
+        <short>The number of files in the list</short>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TZlibFilesList.FileName">
+        <short>Used to retrieve the fully qualified filename that is to be compressed</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibFilesList.FileName.Index">
+        <short>Index of the filename you wish to retrieve the FileName from.</short>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TZlibFilesList.Path">
+        <short>Used to retrieve the releative path the file should be extracted to</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibFilesList.Path.Index">
+        <short>Index of the filename you wish to retrieve the relative path from.</short>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TZlibFilesList.FileInfo">
+        <short>Used internally to obtain the compressed size of the file</short>
+        <descr>Only usefull after the file has been compressed</descr>
+        <seealso>
+          <link id="TFileInfo"/>
+        </seealso>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibFilesList.FileInfo.Index">
+        <short>Index of the filename you wish to retrieve the TFileInfo from.</short>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TZlibArchiveHeader">
+        <short>The information at the beggining of a TZlibArchive</short>
+        <descr>Contains vital information about the archive.
+
+Major Minor and Micro hold the version of the archive.</descr>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TZlibArchiveHeader.FileType">
+        <short>The file identifier</short>
+        <descr>The first four bytes of the file. Z A R #0. Used to verify the type of file.</descr>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TZlibArchiveHeader.MajorVersion">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TZlibArchiveHeader.MinorVersion">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TZlibArchiveHeader.MicroVersion">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TZlibArchiveHeader.TOCLength">
+        <short>Length of the table of contents.</short>
+        <descr>Used internally to be able to determine the lenght of the TOC</descr>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TZlibArchiveHeader.TOCMD5Sum">
+        <short>Checksum of the uncompressed TOC</short>
+        <descr>The table of contents is stored compressed in the archive. This is used to ensure that  the TOC is intact.</descr>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PTOCEntry">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TTOCEntry">
+        <short>The structure of a table of contents entry</short>
+        <descr>Used to manage various information about the size and position of a file in the TZlibArchive</descr>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TTOCEntry.FileName">
+        <short>The file name only</short>
+        <descr>This contains no path information.</descr>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TTOCEntry.FilePath">
+        <short>The desired relative path for the file to be extracted to.</short>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TTOCEntry.Position">
+        <short>The position of the compressed stream in the TZLibArchive stream.</short>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TTOCEntry.CompressedSize">
+        <short>The size of a compressed file</short>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TTOCEntry.Md5sum">
+        <short>The checksum used to verify the file is the same as the original</short>
+      </element>
+      <!-- procedure type Visibility: default -->
+      <element name="TZlibCompressProgProc">
+        <short>Callback used to follow the progress of overall and current progress</short>
+        <descr>Used to provide feedback to the user of the progress of compression.</descr>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibCompressProgProc.Sender">
+        <short>TZlibWriteArchive Object</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibCompressProgProc.FileIndex">
+        <short>Index of the current file that is being compressed.</short>
+        <seealso>
+          <link id="TZlibFilesList"/>
+        </seealso>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibCompressProgProc.FileSize">
+        <short>Total size of the InStream to be compressed</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibCompressProgProc.FilePos">
+        <short>Amount of the InStream that has been compressed.</short>
+      </element>
+      <!-- procedure type Visibility: default -->
+      <element name="TZlibExtractProgProc">
+        <short>Callback for progress during decompression</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibExtractProgProc.Sender">
+        <short>TZlibReadArchive object</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibExtractProgProc.FileSize">
+        <short>Total size of the InStream</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibExtractProgProc.FilePos">
+        <short>Current position of the InStream</short>
+      </element>
+      <!-- procedure type Visibility: default -->
+      <element name="TZlibErrorProc">
+        <short>Error Callback</short>
+        <descr>Used to catch error before an exception is raised.</descr>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibErrorProc.Sender">
+        <short>TZlibReadArchive or TZlibWriteArchive object</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibErrorProc.ErrorCode">
+        <short>Error code that has occured</short>
+        <descr>Set to 0 to avoid an exception</descr>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibErrorProc.ErrorStr">
+        <short>Description of the error.</short>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TZlibWriteArchive">
+        <short>Object used to create ZibArchive files.</short>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TZlibWriteArchive.fInputFiles">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TZlibWriteArchive.fOnCompress">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TZlibWriteArchive.fOnError">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibWriteArchive.WriteHeader.AHeader">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibWriteArchive.WriteTOCEntry.Entry">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibWriteArchive.WriteTOCEntry.TOCStream">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibWriteArchive.DoError.ErrorCode">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibWriteArchive.DoError.ErrorString">
+        <short/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TZlibWriteArchive.InternalCompressStream.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibWriteArchive.InternalCompressStream.FileIndex">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibWriteArchive.InternalCompressStream.InStream">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZlibWriteArchive.InternalCompressStream.OutStream">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TZlibWriteArchive.Create">
+        <short>Creates an instance of the TZlibWriteArchive object</short>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TZlibWriteArchive.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TZlibWriteArchive.CreateArchive">
+        <short>Compresses and write all the files in the list to OutStream</short>
+        <descr>The Stream is written to starting from the beginning. The Previos contents of the stream are lost.</descr>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TZlibWriteArchive.CreateArchive.Result">
+        <short>True if successful False otherwise</short>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TZlibWriteArchive.OnError">
+        <short>Callback used to intercept errors before an exception is raised</short>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TZlibWriteArchive.OnCompress">
+        <short>Callback used to imform the user of the compression progress</short>
+        <seealso>
+          <link id="TZlibCompressProgProc"/>
+        </seealso>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TZlibWriteArchive.OutStream">
+        <short>Stream the compressed archive it written to</short>
+        <descr>If this is not assigned a TMemoryStream is automatically created and assigned to OutStream.</descr>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TZlibWriteArchive.InputFiles">
+        <short>List of files to be compressed</short>
+        <seealso>
+          <link id="TZlibFilesList"/>
+        </seealso>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TZLibReadArchive">
+        <short>Object to read and extract files made with TZLibWriteArchive</short>
+        <descr>A TZlibReadArchive object is not capable of writing or changing an archive. You must use a TZLibWriteArchive object to do that.</descr>
+        <seealso>
+          <link id="TZlibWriteArchive"/>
+        </seealso>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TZLibReadArchive.fTOCList">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TZLibReadArchive.fOnError">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TZLibReadArchive.fOnExtract">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZLibReadArchive.SetFileName.AValue">
+        <short/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TZLibReadArchive.GetCount.Result">
+        <short/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TZLibReadArchive.GetTOCEntry.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZLibReadArchive.GetTOCEntry.AIndex">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZLibReadArchive.DoError.ErrorCode">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZLibReadArchive.DoError.ErrorString">
+        <short/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TZLibReadArchive.InternalExtractStream.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZLibReadArchive.InternalExtractStream.InStream">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZLibReadArchive.InternalExtractStream.OutStream">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TZLibReadArchive.Create">
+        <short>Creates a TZlibReadArchive object and opens an archive from a TStream</short>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TZLibReadArchive.Create">
+        <short>Creates an instance of the object</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZLibReadArchive.Create.InStream">
+        <short>Stream that you wish to be opened</short>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TZLibReadArchive.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TZLibReadArchive.ExtractFileToStream">
+        <short>Extract the file at Index to a user provided stream</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZLibReadArchive.ExtractFileToStream.AIndex">
+        <short>Index of the file to be extracted</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZLibReadArchive.ExtractFileToStream.Stream">
+        <short>User provided stream for the compressed file to be decompressed into</short>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TZLibReadArchive.Header">
+        <short>Retrieves the header of the file</short>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TZLibReadArchive.FilesInArchive">
+        <short>Contains information about the file in the archive</short>
+        <seealso>
+          <link id="TTOCEntry"/>
+        </seealso>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TZLibReadArchive.FilesInArchive.Index">
+        <short>Index of the file you want information about</short>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TZLibReadArchive.Count">
+        <short>Number of files in the archive</short>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TZLibReadArchive.OnError">
+        <short>Callback to intercept errors before they trigger an Exception</short>
+        <seealso>
+          <link id="TZlibErrorProc"/>
+        </seealso>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TZLibReadArchive.OnExtract">
+        <short>Callback used to monitor the progress of a file as it is being extracted</short>
+        <seealso>
+          <link id="TZlibExtractProgProc"/>
+        </seealso>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TZLibReadArchive.InStream">
+        <short>TStream that is currently loaded</short>
+        <descr>Set to nil to close the file</descr>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ZLibFileType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ZAR_MAJOR_VERSION">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ZAR_MINOR_VERSION">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ZAR_MICRO_VERSION">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ERR_CORRUPT_TOC">
+        <short>Error Code</short>
+        <descr>The table of contents has been corrupted. A MD5 checksum is made before the TOC is compressed. If the checksum of the extracted TOC does not match this error occurs.</descr>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ERR_CORRUPT_FILE">
+        <short>Error Code</short>
+        <descr>The file you are trying to open does not have the correct header, or is not a recognized file format.</descr>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ERR_CHECKSUM_FAILED">
+        <short>Error Code</short>
+        <descr>The file you are trying to compress does not match the checksum of the original file before it was compressed.</descr>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ERR_UNKOWN_ERROR">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CompressStream">
+        <short>Compresses InStream into OutStream</short>
+        <descr>Generic independant function to compress InStream into OutStream.</descr>
+        <seealso>
+          <link id="ExtractStream"/>
+        </seealso>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="CompressStream.Result">
+        <short>The size of the compressed stream in bytes</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CompressStream.InStream">
+        <short>The TStream that you wish to be compressed</short>
+        <descr>InStream is read from the begining of InStream.</descr>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CompressStream.OutStream">
+        <short>The compressed stream</short>
+        <descr>OutStream is written to from the current position of OutStream.Position.</descr>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="ExtractStream">
+        <short>Decompresses InStream to OutStream</short>
+        <descr>Decompresses InStream to OutStream.</descr>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="ExtractStream.Result">
+        <short>The Size of OutStream in bytes</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ExtractStream.InStream">
+        <short>The Stream that you wish to compress</short>
+        <descr>InStream is read from position 0 to the end.</descr>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ExtractStream.OutStream">
+        <short>The stream that the decompressed data will be written into</short>
+        <descr>OutStream is written to at the current position it happens to be in the stream.</descr>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="StreamMD5">
+        <short>Creates a TMD5Digest from a TMemoryStream</short>
+        <descr>Use this to create a TMD5Digest from a Stream. This is used to ensure that a file matches in every way by comparing it to a previous TMD5Digest.</descr>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="StreamMD5.Result">
+        <short>Returns a TMd5Digest</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="StreamMD5.Stream">
+        <short>The stream you wish to be scanned</short>
+      </element>
+    </module>
+    <!-- zlibar -->
+  </package>
+</fpdoc-descriptions>
