@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, DateUtils;
+  ExtCtrls, DateUtils,
+  clock_control;
 
 type
 
@@ -17,20 +18,23 @@ type
     btnStart: TButton;
     btnStop: TButton;
     btnReset: TButton;
+    btnClock: TButton;
     labelCronometer: TLabel;
     Notebook: TNotebook;
     Page1: TPage;
     pageCronometer: TPage;
     timerCronometer: TTimer;
     timerClock: TTimer;
-    procedure btnCronometerClick(Sender: TObject);
+    procedure HandleChangePage(Sender: TObject);
     procedure btnResetClick(Sender: TObject);
     procedure btnStartClick(Sender: TObject);
     procedure btnStopClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure timerClockTimer(Sender: TObject);
     procedure timerCronometerTimer(Sender: TObject);
   private
     { private declarations }
+    LazClockControl: TLazClockControl;
   public
     { public declarations }
     CronometerStarted: Boolean;
@@ -48,7 +52,7 @@ implementation
 
 procedure TForm1.timerClockTimer(Sender: TObject);
 begin
-
+  LazClockControl.Invalidate;
 end;
 
 procedure TForm1.timerCronometerTimer(Sender: TObject);
@@ -64,9 +68,9 @@ begin
   labelCronometer.Caption := SysUtils.TimeToStr(CronometerTime, lFormatSettings);
 end;
 
-procedure TForm1.btnCronometerClick(Sender: TObject);
+procedure TForm1.HandleChangePage(Sender: TObject);
 begin
-  Notebook.PageIndex := 1;
+  Notebook.PageIndex := (Sender as TButton).Tag;
 end;
 
 procedure TForm1.btnResetClick(Sender: TObject);
@@ -85,6 +89,17 @@ procedure TForm1.btnStopClick(Sender: TObject);
 begin
   CronometerStarted := False;
   timerCronometer.Enabled := False;
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  LazClockControl := TLazClockControl.Create(Self);
+  LazClockControl.Height := 400;
+  LazClockControl.Width := 400;
+  LazClockControl.Top := 0;
+  LazClockControl.Left := 0;
+  LazClockControl.Parent := Notebook.Page[0];
+  LazClockControl.DoubleBuffered := True;
 end;
 
 end.

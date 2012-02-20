@@ -6,13 +6,14 @@ object Form1: TForm1
   Caption = 'LazClock'
   ClientHeight = 444
   ClientWidth = 400
+  OnCreate = FormCreate
   LCLVersion = '0.9.31'
   object Notebook: TNotebook
     Left = 0
     Height = 400
     Top = 44
     Width = 400
-    PageIndex = 1
+    PageIndex = 0
     Align = alBottom
     TabOrder = 0
     TabStop = True
@@ -24,7 +25,7 @@ object Form1: TForm1
         Height = 25
         Top = 68
         Width = 75
-        Caption = 'btnStart'
+        Caption = 'Start'
         OnClick = btnStartClick
         TabOrder = 0
       end
@@ -33,7 +34,7 @@ object Form1: TForm1
         Height = 25
         Top = 100
         Width = 75
-        Caption = 'btnStop'
+        Caption = 'Stop'
         OnClick = btnStopClick
         TabOrder = 1
       end
@@ -42,7 +43,7 @@ object Form1: TForm1
         Height = 25
         Top = 132
         Width = 75
-        Caption = 'btnReset'
+        Caption = 'Reset'
         OnClick = btnResetClick
         TabOrder = 2
       end
@@ -59,16 +60,25 @@ object Form1: TForm1
     end
   end
   object btnCronometer: TButton
-    Left = 10
+    Tag = 1
+    Left = 88
     Height = 25
     Top = 11
     Width = 75
     Caption = 'Cronometer'
-    OnClick = btnCronometerClick
+    OnClick = HandleChangePage
     TabOrder = 1
   end
+  object btnClock: TButton
+    Left = 8
+    Height = 25
+    Top = 11
+    Width = 75
+    Caption = 'Clock'
+    OnClick = HandleChangePage
+    TabOrder = 2
+  end
   object timerClock: TTimer
-    Enabled = False
     OnTimer = timerClockTimer
     left = 312
     top = 110
