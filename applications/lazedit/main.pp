@@ -1558,6 +1558,7 @@ begin
   if Dummy = 12345 then Exit; //Get rid of annoying hint
   Count := 0;
   OpenBlankPage := False;
+  {$ifndef darwin}
   for i := 1 to ParamCount do
   begin
     S := ParamStrUtf8(i);
@@ -1574,6 +1575,9 @@ begin
     end
     else if S = opt_short_prefix + opt_short_blankpage then OpenBlankPage := True;
   end;
+  {$else}
+  OpenBlankPage := True; //we cannot pass -n on darwin, so offer blank page to the user
+  {$endif}
   if (Count = 0) and OpenBlankPage then DoFileNewByType(eftNone);
 end;
 
@@ -1583,6 +1587,7 @@ var
   i: Integer;
 begin
   //debugln('TLazEditMainForm.ParseCommandlineSwitches');
+  {$ifndef darwin}
   _PCP := EmptyStr;
   for i := 1 to ParamCount do
   begin
@@ -1601,6 +1606,7 @@ begin
     //inifiles uses system-encoding
     ConfigFileDir := Utf8ToSys(_PCP);
   end;
+  {$endif}
 end;
 
 
