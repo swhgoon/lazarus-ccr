@@ -78,6 +78,7 @@ end;
 procedure TAnchorDlgForm.FormShow(Sender: TObject);
 begin
   ActiveControl := DescrEdit;
+  UrlEdit.Text := '';
 end;
 
 function TAnchorDlgForm.GetAnchorType: TAnchorType;
