@@ -47,7 +47,7 @@ uses
   SynEdit, SynEditTypes,
   EditorPageControl,
   lazedit_config, HtmlCode, HtmlDialogs, lazedit_constants,
-  lazedit_translations, lazedit_about;
+  lazedit_translations, lazedit_about, mrulists;
 
 type
 
@@ -436,7 +436,7 @@ type
     ReplaceOptions: TSynSearchOptions;
 
     AppOptions: TLazEditOptions;
-    MruList: TStringList;
+    MruList: TMruList;
     MruMenuItems: Array[0..MruEntries-1] of TMenuItem;
 
     procedure SetUpAndConfigureLazEdit;
@@ -550,6 +550,8 @@ const pXY  = 0;   //Panels constanten
       itUnixShellScript = '#!/bin/bash';
 
       //Commandline options
+      opt_long_prefix = '--';
+      opt_short_prefix = '-';
       opt_long_PCP = 'pcp';  //--pcp=path/to/configfile
       opt_short_blankpage = 'n';
 
@@ -592,6 +594,7 @@ procedure TLazEditMainForm.FormDropFiles(Sender: TObject; const FileNames: array
 var
   i: Integer;
 begin
+debugln('DropFiles');
   for i := Low(FileNames) to High(FileNames) do
   begin
     if FileExistsUtf8(FileNames[i]) then
@@ -1114,12 +1117,6 @@ begin
   ConfigFileName := IncludeTrailingPathDelimiter(ConfigFileDir) + GetDefaultIniNameOnly;
   //DebugLn('ConfigFileName = ',ConfigFileName);
 
-
-  // REMOVE !!
-  //ConfigFileName := 'F:\LazarusProjecten\EPlus\EPlus.ini';
-  //debugln('Temporarily using: ',ConfigFileName);
-  //^^^^^^^^^^^^^^
-
   Caption := AppName;
 
   TagMenuItemsAndActions;
@@ -1142,22 +1139,20 @@ begin
   TableDlg := TTableDlg.Create;
 
   //MruList
-  MruList := TStringList.Create();
-  //MruList.MaxEntries := MruEntries;
+  MruList := TMruList.Create(Self);
+  MruList.MaxEntries := MruEntries;
 
   //Configurable options
   AppOptions := GetDefaultAppOptions;
   if not LoadOptions(AppOptions, ConfigFileName) then
-    DebugLn('Fout bij laden van opties:',LineEnding,'  ',ConfigFileName)
+    DebugLn('Error loading options',LineEnding,'  ',ConfigFileName)
   else
     ApplyAppOptions(AppOptions);
   ConstructOpenDialogFileFilters;
   //Attach the OnChange handler after filling the list (in LoadOptions)
-  //MruList.OnChange := @OnMruListChange;
+  MruList.OnChange := @OnMruListChange;
   //Update the MRU menu entries
   OnMruListChange(Self);
-
-
 end;
 
 procedure TLazEditMainForm.DoTranslateAll;
@@ -1354,7 +1349,7 @@ procedure TLazEditMainForm.SaveEplusConfiguration;
 begin
   GatherAppOptions(AppOptions);
   if not lazedit_config.SaveOptions(AppOptions, ConfigFileName) then
-    DebugLn('Fout bij opslaan van opties:',LineEnding,'  ',ConfigFileName);
+    DebugLn('Error saving options:',LineEnding,'  ',ConfigFileName);
 end;
 
 procedure TLazEditMainForm.CleanUp;
@@ -1488,7 +1483,7 @@ begin
   for i := 0 to MruEntries - 1 do
   begin
     if MruList.Count > i then
-      Options.RecentFiles[i] := MruList.Strings[i]
+      Options.RecentFiles[i] := MruList.Items[i]
     else
       Options.RecentFiles[i] := '';
   end;
@@ -1555,44 +1550,57 @@ end;
 
 procedure TLazEditMainForm.ParseCommandlineFilenames(Dummy: PtrInt);
 var
-  i: Integer;
+  i, Count: Integer;
   S: String;
+  OpenBlankPage: Boolean;
 begin
-  //debugln('ParseCommandlineFilenames, FileNamesCount = ',DbgS(FileNamesCount));
+  //debugln('TLazEditMainForm.ParseCommandlineFilenames');
   if Dummy = 12345 then Exit; //Get rid of annoying hint
-{  for i := 1 to MyGetOpt.FileNamesCount do
+  Count := 0;
+  OpenBlankPage := False;
+  for i := 1 to ParamCount do
   begin
-    S := MyGetOpt.FileNameStr(i);
-    if (S <> EmptyStr) then
+    S := ParamStrUtf8(i);
+    if not ((Utf8Pos(opt_short_prefix, S) = 1) or (Utf8Pos(opt_long_prefix, S) = 1)) then
     begin
-      //it is a file to open
+      //It seems to be not an option, treat it as a filename
+      Inc(Count);
       S := ExpandFileNameUtf8(S); //we want full filename here, e.g. for filename in statusbar
       if FileExistsUtf8(S) then
       begin
-        if not TryFileOpen(S) then ShowError(Format(msgOpenError,[S]));
+        if not TryFileOpen(S) then ShowError(Format(vTranslations.msgOpenError,[S]));
       end
-      else ShowError(Format(msgFileNotFound,[S]));
+      else ShowError(Format(vTranslations.msgFileNotFound,[S]));
     end
+    else if S = opt_short_prefix + opt_short_blankpage then OpenBlankPage := True;
   end;
-  if (MyGetOpt.FileNamesCount = 0) and MyGetOpt.HasOption(opt_short_blankpage,False) then
-    DoFileNewByType(eftNone);   }
+  if (Count = 0) and OpenBlankPage then DoFileNewByType(eftNone);
 end;
 
 procedure TLazEditMainForm.ParseCommandLineSwitches;
 var
-  S: String;
+  S, _PCP: String;
+  i: Integer;
 begin
-  //debugln('ParseCommandlineSwitches');
-{  if MyGetOpt.HasOption(opt_long_PCP, False, S) then
+  //debugln('TLazEditMainForm.ParseCommandlineSwitches');
+  _PCP := EmptyStr;
+  for i := 1 to ParamCount do
   begin
-    if (S <> EmptyStr) then
+    S := ParamStrUtf8(i);
+    if Utf8Pos(opt_long_prefix+opt_long_pcp+'=', S) = 1 then
     begin
-      S := ExcludeTrailingPathdelimiter(ExpandFileName(S));
-      //MyGetOpt returns parameters as UTF8
-      //inifiles uses system-encoding
-      ConfigFileDir := Utf8ToSys(S);
+      _PCP := S;
+      System.Delete(_PCP, 1, Length(opt_long_prefix) + Length('='));
+      Break;
     end;
-  end;}
+  end;
+  if (_PCP <> EmptyStr) then
+  begin
+    _PCP := ExcludeTrailingPathdelimiter(ExpandFileName(_PCP));
+    //MyGetOpt returns parameters as UTF8
+    //inifiles uses system-encoding
+    ConfigFileDir := Utf8ToSys(_PCP);
+  end;
 end;
 
 
@@ -1722,8 +1730,11 @@ var
   C: TComponent;
   HasEditor, HasSelection, HasClipPaste: Boolean;
   NeedsEditor, NeedsSelection, NeedsClipPaste: Boolean;
+  AFileType: TEditorFileType;
+  Ed: TEditor;
 begin
-  HasEditor := Assigned(NoteBook.CurrentEditor);
+  Ed := NoteBook.CurrentEditor;
+  HasEditor := Assigned(Ed);
   HasSelection := HasEditor and (NoteBook.CurrentEditor.SelAvail);
   HasClipPaste := (ClipBoard.AsText <> EmptyStr);
   for i := 0 to ComponentCount - 1 do
@@ -1737,6 +1748,14 @@ begin
       TMenuItem(C).Enabled := ((NeedsEditor and HasEditor) or (not NeedsEditor)) and
                               ((NeedsSelection and HasSelection) or (not NeedsSelection)) and
                               ((NeedsClipPaste and HasClipPaste) or (not NeedsClipPaste));
+
+      if  HasEditor and (Pos('MNUVIEWHL', UpperCase(C.Name)) = 1) then
+      begin
+        if TryHlMenuTagToFileType(C.Tag, AFileType) then
+          TMenuItem(C).Checked := Ed.FileType = AFileType
+        else
+          TMenuItem(C).Checked := False;
+      end;
     end;
   end;
 end;
@@ -1822,7 +1841,7 @@ var
   MnuItem: TMenuItem;
   Fn: String;
 begin
-{  for i := 0 to MruList.Count - 1 do
+  for i := 0 to MruList.Count - 1 do
   begin
     MnuItem := MruMenuItems[i];
     Fn := ExtractFileName(MruList.Items[i]);
@@ -1841,7 +1860,7 @@ begin
     MnuItem.Visible := False;
   end;
   mnuSepAboveMru.Enabled := MruList.Count > 0;
-  mnuSepAboveMru.Visible := MruList.Count > 0;}
+  mnuSepAboveMru.Visible := MruList.Count > 0;
 end;
 
 
@@ -2065,7 +2084,7 @@ begin
   begin
     ShowError(Format(vTranslations.msgMruIndexOutOfBound,[Index]));
   end;
-  Fn := MruList.Strings[Index];
+  Fn := MruList.Items[Index];
   if (Fn <> '') then
   begin
     if not TryFileOpen(Fn, False) then ShowError(Format(vTranslations.msgOpenError,[Fn]));

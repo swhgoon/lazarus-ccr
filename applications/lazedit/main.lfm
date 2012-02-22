@@ -5,7 +5,7 @@ object LazEditMainForm: TLazEditMainForm
   Width = 575
   AllowDropFiles = True
   Caption = 'Lazarus Text Editor'
-  ClientHeight = 398
+  ClientHeight = 399
   ClientWidth = 575
   Menu = MainMenu
   OnClose = FormClose
@@ -17,8 +17,8 @@ object LazEditMainForm: TLazEditMainForm
   LCLVersion = '0.9.31'
   object StatusBar: TStatusBar
     Left = 0
-    Height = 23
-    Top = 375
+    Height = 20
+    Top = 379
     Width = 575
     Panels = <    
       item
@@ -1673,66 +1673,82 @@ object LazEditMainForm: TLazEditMainForm
         Caption = '&Highlighter'
         object mnuViewHLeftNone: TMenuItem
           Caption = 'Geen'
+          RadioItem = True
           OnClick = mnuSetHighlighterClick
         end
         object mnuViewHLeftHtml: TMenuItem
           Caption = 'Html'
+          RadioItem = True
           OnClick = mnuSetHighlighterClick
         end
         object mnuViewHLeftXml: TMenuItem
           Caption = 'Xml'
+          RadioItem = True
           OnClick = mnuSetHighlighterClick
         end
         object mnuViewHLeftCss: TMenuItem
           Caption = 'Css'
+          RadioItem = True
           OnClick = mnuSetHighlighterClick
         end
         object mnuViewHLeftJS: TMenuItem
           Caption = 'JavaScript'
+          RadioItem = True
           OnClick = mnuSetHighlighterClick
         end
         object mnuViewHLeftFpc: TMenuItem
           Caption = 'Pascal'
+          RadioItem = True
           OnClick = mnuSetHighlighterClick
         end
         object mnuViewHLeftLfm: TMenuItem
           Caption = 'Lazarus/Delphi forms'
+          RadioItem = True
           OnClick = mnuSetHighlighterClick
         end
         object mnuViewHLeftC: TMenuItem
           Caption = 'C'
+          RadioItem = True
           OnClick = mnuSetHighlighterClick
         end
         object mnuViewHLeftPy: TMenuItem
           Caption = 'Python'
+          RadioItem = True
           OnClick = mnuSetHighlighterClick
         end
         object mnuViewHLeftPhp: TMenuItem
           Caption = 'Php'
+          RadioItem = True
           OnClick = mnuSetHighlighterClick
         end
         object mnuViewHLeftPerl: TMenuItem
           Caption = 'Perl'
+          RadioItem = True
           OnClick = mnuSetHighlighterClick
         end
         object mnuViewHLeftUNIXShell: TMenuItem
           Caption = 'Unix shell script'
+          RadioItem = True
           OnClick = mnuSetHighlighterClick
         end
         object mnuViewHLeftBat: TMenuItem
           Caption = 'Dos/Windows batch'
+          RadioItem = True
           OnClick = mnuSetHighlighterClick
         end
         object mnuViewHLeftDiff: TMenuItem
           Caption = 'Diff'
+          RadioItem = True
           OnClick = mnuSetHighlighterClick
         end
         object mnuViewHLeftIni: TMenuItem
           Caption = 'Ini'
+          RadioItem = True
           OnClick = mnuSetHighlighterClick
         end
         object mnuViewHLeftPo: TMenuItem
           Caption = 'Po taalbestanden'
+          RadioItem = True
           OnClick = mnuSetHighlighterClick
         end
       end

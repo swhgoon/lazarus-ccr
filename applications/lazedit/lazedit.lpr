@@ -19,7 +19,7 @@ begin
   RequireDerivedFormResource := True;
   Application.Initialize;
   Application.CreateForm(TLazEditMainForm, LazEditMainForm);
-
+(*
   {$ifndef Darwin}
   // Parse the command line options
 
@@ -33,6 +33,7 @@ begin
   else
     LazEditMainForm.TryFileOpen(ParamStr(1), False);
   {$endif}
+*)
   Application.CreateForm(TformAbout, formAbout);
   Application.Run;
 end.

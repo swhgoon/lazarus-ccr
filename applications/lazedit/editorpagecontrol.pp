@@ -79,6 +79,7 @@ type
     procedure SetAutoFiletypeDetection(AValue: Boolean);
     procedure SetEditorOptions(AValue: TEditorOptions);
     procedure UpdateEditorOptions(Sender: TObject);
+    function GetUniquePageCaption(const AName: String): String;
     procedure SetFileName(const Utf8Fn: String; const UpdateFileType: Boolean);
     function ExtToFileType(const Ext: String): TEditorFileType;
     function GuessFileType: TEditorFileType;
@@ -133,6 +134,7 @@ type
     FOnBeforeCloseEditor: TCloseEditorEvent;
     FOnEditorCharsetChanged: TEditorCharsetChangedEvent;
     function GetCurrentEditor: TEditor;
+    function FindPageCaption(const ACaption: String): TTabSheet;
     function GetHighLighter(Index: TEditorFileType): TSynCustomHighlighter;
     function GetFileTypeMaskLists(Index: TEditorFileType): String;
     procedure SetEditorOptions(AValue: TEditorOptions);
@@ -226,17 +228,13 @@ end;
 procedure TEditor.SetFileName(const Utf8Fn: String; const UpdateFileType: Boolean);
 begin
   //debugln('TEditor.SetFileName: Utf8Fn = ',Utf8ToSys(Utf8Fn));
-  if (FFileName = Utf8Fn) then Exit;
+  if (FFileName = Utf8Fn) and (Utf8Fn <> EmptyStr) then Exit;
   FFileName := Utf8Fn;
   if Assigned(FPage) then
   begin
-    if (Utf8Fn <> EmptyStr) then
-      FPage.Caption := ExtractFileName(Utf8Fn)
-    else
-      FPage.Caption := vTranslations.NoName;
+    FPage.Caption := GetUniquePageCaption(Utf8Fn);
     //Debugln('TEditor.SetFileName: setting FPageCaption to ',FPage.Caption);
   end;
-  //debugln('TEditor.SetFileName: calling DoOnStatusChange(scAll)');
   //Unless you change ReadOnly, the scFileName will be removed from Changes in TSynEdit.DoOnStatuschange
   ReadOnly := True;
   DoOnStatusChange(scAll);
@@ -272,6 +270,62 @@ begin
     Font.Pitch := fpFixed;
   end;
   if (FEditorOptions.FontSize <> Font.Size) and (FEditorOptions.FontSize <> 0) then Font.Size := FEditorOptions.FontSize;
+end;
+
+
+function TEditor.GetUniquePageCaption(const AName: String): String;
+var
+  Index, DupNr, CurDupNr: Integer;
+  ShortName, ACap, Dup: String;
+  Pg: TTabSheet;
+  FoundIndexedMatch, FoundExactMatch: Boolean;
+begin
+  //debugln('TEditor.GetUniquePageCaption');
+  if (AName = EmptyStr)
+    then ShortName := vTranslations.NoName
+  else
+    ShortName := ExtractFileName(AName);
+  Result := ShortName;
+  //if not (Assigned(FPage) and Assigned(FEditorPageControl)) then debugln('  FPage or FEditorPageControl unassigned');
+  if not (Assigned(FPage) and Assigned(FEditorPageControl)) then Exit;
+  DupNr := 0;
+  //First try to find exact name, if it is not found we can use it now
+  //even if we already have a ShortName [1]
+  FoundExactMatch := (FEditorPageControl.FindPageCaption(ShortName) <> nil);
+  if not FoundExactMatch then Exit;
+  //Now find any ShortName [x]
+  FoundIndexedMatch := False;
+  for Index := 0 to FEditorPageControl.PageCount - 1 do
+  begin
+    Pg := FEditorPageControl.Pages[Index];
+    //debugln(' Index: ',dbgs(index),' P.Caption = ',Pg.Caption,' ShortName = ',ShortName);
+    if (Pg <> FPage) then
+    begin
+      ACap := Pg.Caption;
+      //we already handled any ShortName = ACap
+      if (Pos(ShortName + ' [', ACap) = 1) and (ACap[Length(ACap)] = ']') then
+      begin
+        Dup := Copy(ACap, Length(ShortName) + 3, MaxInt);
+        System.Delete(Dup, Length(Dup), 1);
+        //debugln('    Dup = ',Dup);
+        FoundIndexedMatch := (Length(Dup) > 0) and TryStrToInt(Dup, CurDupNr);
+      end;
+      if FoundIndexedMatch then Break;
+      //debugln('  FoundIndexedMatch = ',dbgs(FoundIndexedMatch),' DupNr = ',dbgs(dupnr));
+    end;
+  end;
+  if not (FoundIndexedMatch or FoundExactMatch) then Exit;
+  DupNr := 1;
+  //if there are more then MaxInt Tabs with the same file open, then bad luck
+  while (FEditorPageControl.FindPageCaption(ShortName + ' [' + IntToStr(DupNr) + ']') <> nil) and
+        (DupNr < MaxInt) do
+  begin
+    //debugln('  ',ShortName,' [',dbgs(dupnr),'] was found');
+    Inc(DupNr);
+  end;
+  ShortName := ShortName + ' [' + IntToStr(DupNr) + ']';
+  Result := ShortName;
+  //debugln('TEditor.GetUniquePageCaption End');
 end;
 
 function TEditor.ExtToFileType(const Ext: String): TEditorFileType;
@@ -639,6 +693,7 @@ begin
   if Assigned(FEditorPageControl) then
   begin
     Highlighter := FEditorPageControl.HighLighters[AFileType];
+    FFileType := AFileType;
     if Permanent then FNoFileTypeChangeOnSave := True;
   end;
 end;
@@ -721,6 +776,23 @@ begin
   begin
     Pg := Pages[ActivePageIndex];
     Result := EditorAtPage(Pg);
+  end;
+end;
+
+function TEditorPageControl.FindPageCaption(const ACaption: String): TTabSheet;
+var
+  Index: Integer;
+  Pg: TTabSheet;
+begin
+  Result := nil;
+  for Index := 0 to PageCount - 1 do
+  begin
+    Pg := Pages[Index];
+    if Pg.Caption = ACaption then
+    begin
+      Result := Pg;
+      Exit;
+    end;
   end;
 end;
 
@@ -920,12 +992,13 @@ var
 begin
   Result := nil;
   Inc(FCounter);
+  {
   NrOfNoNames := 0;
   Suffix := '';
   for i := 0 to PageCount - 1 do
     if Pos(vTranslations.NoName, Pages[i].Caption) = 1 then Inc(NrOfNoNames);
   if NrOfNoNames > 0 then Suffix := ' [' + IntToStr(NrOfNoNames + 1) + ']';
-
+  }
   TS := TTabSheet.Create(Self);
   TS.Name := 'TS' + IntToStr(FCounter);
   TS.PageControl := Self;
@@ -944,7 +1017,7 @@ begin
   E.Align := alClient;
 
 
-
+  //This will add suffix to TS.Caption if needed
   E.SetFileName(EmptyStr, E.AutoFileTypeDetection);
 
   //E.Lines.Clear;

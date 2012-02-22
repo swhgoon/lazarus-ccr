@@ -309,9 +309,9 @@ begin
   msgMruIndexOutOfBound := 'Index out of bounds [%d]'^m;
   msgFileTypeNotForBrowser := 'The file type is not suited for a browser.'^m+'Continue anyway?';
   msgFileHasNoName := 'The file has no name.'^m +
-                     'U moet het bestand eerst opslaan om het in de browser te openen.';
-  msgErrorBrowser := 'Er is een fout opgetreden tijdens het openen van'^m+
-                    '%s'^m'in de browser.';
+                     'You must first save the file in order to open it in the browser.';
+  msgErrorBrowser := 'An error has occured while opening'^m+
+                    '%s'^m'in the browser.';
   msgTextNotFound := 'Text not found:'^m'"%s"';
 
   // main.pp hints in toolbar buttons
