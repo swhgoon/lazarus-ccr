@@ -25,11 +25,12 @@ uses
 {$ifdef FPBROWSER_TURBOPOWERIPRO}
   viewer_ipro,
 {$endif}
-  browserviewer, mod_braille, browserconstants;
+  browserviewer, mod_braille, browserconstants, dlgconfig, browserconfig;
 
 begin
   Application.Initialize;
   Application.CreateForm(TformBrowser, formBrowser);
   Application.CreateForm(TSubmitForm, SubmitForm);
+  Application.CreateForm(TformConfig, formConfig);
   Application.Run;
 end.

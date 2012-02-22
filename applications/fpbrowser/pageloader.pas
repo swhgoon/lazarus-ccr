@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils,
-  browsermodules;
+  browsermodules, browserconfig;
 
 type
 
@@ -16,7 +16,6 @@ type
   public
     Contents: string;
     LastPageURL: string;
-    UserAgent: string;
     ContentsList: TStringList;
     DebugInfo: TStringList;
     constructor Create;
@@ -86,7 +85,6 @@ constructor TPageLoader.Create;
 begin
   ContentsList := TStringList.Create;
   DebugInfo := TStringList.Create;
-  UserAgent := 'FPBrowser/1.0 (Mobile; U; en-GB)';
 end;
 
 destructor TPageLoader.Destroy;
@@ -112,7 +110,7 @@ begin
     Client.Headers.Add('Accept-Language:	en-gb,en;q=0.5');
 //    Client.Headers.Add('Accept-Encoding:	gzip,deflate');
     Client.Headers.Add('Accept-Charset:	utf-8;q=0.7,*;q=0.7'); // ISO-8859-1,
-    Client.UserAgent := UserAgent;
+    Client.UserAgent := FPBrowserConfig.UserAgent;
     Client.HttpMethod('GET', LastPageURL);
 
 //    Client.Headers;

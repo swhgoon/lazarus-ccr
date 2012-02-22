@@ -16,13 +16,14 @@ uses
   customdrawnextras, customdrawncontrols,  customdrawndrawers, customdrawn_kde,
   //
   dlgabout, browserconstants,
-  pageloader, browserviewer, browsermodules;
+  pageloader, browserviewer, browsermodules, dlgconfig;
 
 type
 
   { TformBrowser }
 
   TformBrowser = class(TForm)
+    mnuPreferences: TMenuItem;
     pageBrowser: TCDPageControl;
     labelProgress: TLabel;
     menuToolsModules: TMenuItem;
@@ -62,6 +63,7 @@ type
     PrinterSetup1: TMenuItem;
     procedure editURLKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure menuViewDebugClick(Sender: TObject);
+    procedure mnuPreferencesClick(Sender: TObject);
     procedure OpenFileClick(Sender: TObject);
     procedure pageBrowserChange(Sender: TObject);
     procedure ShowImagesClick(Sender: TObject);
@@ -199,6 +201,11 @@ begin
 
   AddMemoTab(lContents, 'Source', False);
   AddMemoTab(lDebugInfo, 'Debug', False);
+end;
+
+procedure TformBrowser.mnuPreferencesClick(Sender: TObject);
+begin
+  formConfig.ShowModal;
 end;
 
 {The Show Images menu item was clicked}

@@ -92,7 +92,7 @@
         <PackageName Value="LCL"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="12">
+    <Units Count="14">
       <Unit0>
         <Filename Value="fpbrowser.dpr"/>
         <IsPartOfProject Value="True"/>
@@ -161,6 +161,18 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="browserconstants"/>
       </Unit11>
+      <Unit12>
+        <Filename Value="dlgconfig.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="formConfig"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="dlgconfig"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="browserconfig.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="browserconfig"/>
+      </Unit13>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

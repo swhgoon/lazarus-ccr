@@ -1,0 +1,50 @@
+object formConfig: TformConfig
+  Left = 439
+  Height = 240
+  Top = 244
+  Width = 320
+  Caption = 'FPBrowser Preferences'
+  ClientHeight = 240
+  ClientWidth = 320
+  LCLVersion = '0.9.31'
+  object Label1: TLabel
+    Left = 8
+    Height = 14
+    Top = 8
+    Width = 59
+    Caption = 'User Agent:'
+    ParentColor = False
+  end
+  object comboUserAgent: TComboBox
+    Left = 8
+    Height = 21
+    Top = 24
+    Width = 304
+    ItemHeight = 13
+    ItemIndex = 0
+    Items.Strings = (
+      'FPBrowser/1.0 (Mobile; U; en-GB)'
+      'Opera/9.80 (iPhone; Opera Mini/6.5.1.23995/27.1227; U; pt) Presto/2.8.119 Version/11.10'
+    )
+    TabOrder = 0
+    Text = 'FPBrowser/1.0 (Mobile; U; en-GB)'
+  end
+  object btnClose: TButton
+    Left = 176
+    Height = 25
+    Top = 200
+    Width = 115
+    Caption = 'Save and Close'
+    OnClick = btnCloseClick
+    TabOrder = 1
+  end
+  object btnCancel: TButton
+    Left = 24
+    Height = 25
+    Top = 200
+    Width = 115
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 2
+  end
+end

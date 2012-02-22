@@ -129,6 +129,10 @@ object formBrowser: TformBrowser
     end
     object menuOptions: TMenuItem
       Caption = '&Tools'
+      object mnuPreferences: TMenuItem
+        Caption = 'Preferences'
+        OnClick = mnuPreferencesClick
+      end
       object ShowImages: TMenuItem
         Caption = '&Show images'
         OnClick = ShowImagesClick
