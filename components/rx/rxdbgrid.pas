@@ -50,6 +50,11 @@ const
     VK_END, VK_SPACE, VK_MULTIPLY];
 
 type
+  //forward declarations
+  TRxDBGrid = class;
+  TRxColumn = class;
+
+
   TRxQuickSearchNotifyEvent = procedure(Sender: TObject; Field: TField;
     var AValue: string) of object;
 
@@ -139,7 +144,31 @@ type
       default;
   end;
 
-  TRxColumn = class;
+  { TRxDBGridFooterOptions }
+
+  TRxDBGridFooterOptions = class(TPersistent)
+  private
+    FActive: boolean;
+    FColor: TColor;
+    FOwner: TRxDBGrid;
+    FRowCount: integer;
+    FStyle: TTitleStyle;
+    procedure SetActive(AValue: boolean);
+    procedure SetColor(AValue: TColor);
+    procedure SetRowCount(AValue: integer);
+    procedure SetStyle(AValue: TTitleStyle);
+  protected
+    procedure AssignTo(Dest: TPersistent); override;
+  public
+    constructor Create(Owner: TRxDBGrid);
+    destructor Destroy; override;
+  published
+    property Active: boolean read FActive write SetActive default false;
+    property Color: TColor read FColor write SetColor default clWindow;
+    property RowCount: integer read FRowCount write SetRowCount default 0;
+    property Style: TTitleStyle read FStyle write SetStyle default tsLazarus;
+  end;
+
 
   { TRxDBGridSortEngine }
   TRxSortEngineOption = (seoCaseInsensitiveSort);
@@ -327,10 +356,11 @@ type
   { TRxDBGrid }
   TRxDBGrid = class(TCustomDBGrid)
   private
+    FFooterOptions: TRxDBGridFooterOptions;
     FSortingNow:Boolean;
     FInProcessCalc: integer;
     FAllowedOperations: TRxDBGridAllowedOperations;
-    FFooterColor: TColor;
+    //FFooterColor: TColor;
     FFooterRowCount: integer;
     FKeyStrokes: TRxDBGridKeyStrokes;
     FOnGetCellProps: TGetCellPropsEvent;
@@ -382,12 +412,15 @@ type
 
     procedure DoCreateJMenu;
     function GetColumns: TRxDbGridColumns;
+    function GetFooterColor: TColor;
+    function GetFooterRowCount: integer;
     function GetPropertyStorage: TCustomPropertyStorage;
     function GetTitleButtons: boolean;
     function IsColumnsStored: boolean;
     procedure SetAutoSort(const AValue: boolean);
     procedure SetColumns(const AValue: TRxDbGridColumns);
     procedure SetFooterColor(const AValue: TColor);
+    procedure SetFooterOptions(AValue: TRxDBGridFooterOptions);
     procedure SetFooterRowCount(const AValue: integer);
     procedure SetKeyStrokes(const AValue: TRxDBGridKeyStrokes);
     procedure SetOptionsRx(const AValue: TOptionsRx);
@@ -513,6 +546,7 @@ type
     property Columns: TRxDbGridColumns
       read GetColumns write SetColumns stored IsColumnsStored;
     property KeyStrokes: TRxDBGridKeyStrokes read FKeyStrokes write SetKeyStrokes;
+    property FooterOptions:TRxDBGridFooterOptions read FFooterOptions write SetFooterOptions;
 
     //storage
     property PropertyStorage: TCustomPropertyStorage
@@ -522,10 +556,13 @@ type
       read FAllowedOperations write FAllowedOperations default
       [aoInsert, aoUpdate, aoDelete, aoAppend];
     property OptionsRx: TOptionsRx read FOptionsRx write SetOptionsRx;
-    property FooterColor: TColor read FFooterColor write SetFooterColor default clWindow;
-    property FooterRowCount: integer read FFooterRowCount
-      write SetFooterRowCount default 0;
+//    property FooterColor: TColor read FFooterColor write SetFooterColor default clWindow;
+    property FooterColor: TColor read GetFooterColor write SetFooterColor default clWindow; deprecated;
+//    property FooterRowCount: integer read FFooterRowCount write SetFooterRowCount default 0;
+    property FooterRowCount: integer read GetFooterRowCount write SetFooterRowCount default 0; deprecated;
+
     property OnFiltred: TNotifyEvent read FOnFiltred write FOnFiltred;
+
     //from DBGrid
     property Align;
     property AlternateColor;
@@ -699,6 +736,64 @@ type
     //    procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
     procedure EditingDone; override;
   end;
+
+{ TRxDBGridFooterOptions }
+
+procedure TRxDBGridFooterOptions.SetActive(AValue: boolean);
+begin
+  if FActive=AValue then Exit;
+  FActive:=AValue;
+end;
+
+procedure TRxDBGridFooterOptions.SetColor(AValue: TColor);
+begin
+  if FColor=AValue then Exit;
+  FColor:=AValue;
+  FOwner.Invalidate;
+end;
+
+procedure TRxDBGridFooterOptions.SetRowCount(AValue: integer);
+begin
+  if FRowCount=AValue then Exit;
+  FRowCount:=AValue;
+  FOwner.VisualChange;
+end;
+
+procedure TRxDBGridFooterOptions.SetStyle(AValue: TTitleStyle);
+begin
+  if FStyle=AValue then Exit;
+  FStyle:=AValue;
+end;
+
+procedure TRxDBGridFooterOptions.AssignTo(Dest: TPersistent);
+var
+  FO:TRxDBGridFooterOptions absolute Dest;
+begin
+  if Dest is TRxDBGridFooterOptions then
+  begin
+    FO.Active:=Active;
+    FO.Color:=Color;
+    FO.RowCount:=RowCount;
+    FO.Style:=Style;
+  end
+  else
+    inherited AssignTo(Dest);
+end;
+
+constructor TRxDBGridFooterOptions.Create(Owner: TRxDBGrid);
+begin
+  inherited Create;
+  FOwner:=Owner;
+
+  FColor := clWindow;
+  FRowCount := 0;
+  FStyle := tsLazarus;
+end;
+
+destructor TRxDBGridFooterOptions.Destroy;
+begin
+  inherited Destroy;
+end;
 
 
 { TRxDBGridDateEditor }
@@ -1152,6 +1247,16 @@ begin
   Result := TRxDbGridColumns(TCustomDrawGrid(Self).Columns);
 end;
 
+function TRxDBGrid.GetFooterColor: TColor;
+begin
+  Result:=FFooterOptions.FColor;
+end;
+
+function TRxDBGrid.GetFooterRowCount: integer;
+begin
+  Result:=FFooterOptions.RowCount;
+end;
+
 function TRxDBGrid.GetDrawFullLine: boolean;
 begin
   Result := FDrawFullLine;
@@ -1212,19 +1317,26 @@ end;
 
 procedure TRxDBGrid.SetFooterColor(const AValue: TColor);
 begin
-  if FFooterColor = AValue then
+{  if FFooterColor = AValue then
     exit;
-  FFooterColor := AValue;
-  Invalidate;
+  FFooterOptions.FColor := AValue;
+  Invalidate;}
+  FFooterOptions.Color := AValue;
+end;
+
+procedure TRxDBGrid.SetFooterOptions(AValue: TRxDBGridFooterOptions);
+begin
+  FFooterOptions.AssignTo(AValue);
 end;
 
 procedure TRxDBGrid.SetFooterRowCount(const AValue: integer);
 begin
-  if FFooterRowCount = AValue then
+{  if FFooterRowCount = AValue then
     exit;
   FFooterRowCount := AValue;
   VisualChange;
-  //  Invalidate;
+  //  Invalidate;}
+  FFooterOptions.RowCount:=AValue;
 end;
 
 procedure TRxDBGrid.SetKeyStrokes(const AValue: TRxDBGridKeyStrokes);
@@ -1516,7 +1628,7 @@ begin
     DrawThemedCell(aCol, aRow, aRect, aState)
   else
   begin
-    //    Canvas.FillRect(aRect);
+    Canvas.FillRect(aRect);
     DrawCellGrid(aCol, aRow, aRect, aState);
   end;
 
@@ -1887,14 +1999,34 @@ var
   TxS: TTextStyle;
 
 begin
-  if (dgIndicator in Options) and (aCol = 0) then
+{  if (dgIndicator in Options) and (aCol = 0) then
   begin
     Canvas.FillRect(aRect);
     DrawCellGrid(aCol, aRow, aRect, aState);
     exit;
   end;
 
-  DrawCellGrid(aCol, aRow, aRect, aState);
+  DrawCellGrid(aCol, aRow, aRect, aState);}
+  if (dgIndicator in Options) and (aCol = 0) then
+  begin
+    if (TitleStyle = tsNative) then
+      DrawThemedCell(aCol, aRow, aRect, aState)
+    else
+    begin
+      Canvas.FillRect(aRect);
+      DrawCellGrid(aCol, aRow, aRect, aState);
+    end;
+    exit;
+  end;
+
+  if (TitleStyle = tsNative) then
+    DrawThemedCell(aCol, aRow, aRect, aState)
+  else
+  begin
+    Canvas.FillRect(aRect);
+    DrawCellGrid(aCol, aRow, aRect, aState);
+  end;
+
   Inc(aRect.Left, 1);
   Dec(aRect.Right, 1);
   Inc(aRect.Top, 1);
@@ -1904,14 +2036,21 @@ begin
   begin
     bg := Canvas.Brush.Color;
     al := Canvas.TextStyle.Alignment;
-    ft := Canvas.Font;
+//    ft := Canvas.Font;
+    ft:=TFont.Create;
+    ft.Assign(Canvas.Font);
     TxS := Canvas.TextStyle;
 
     MyCol := Columns.RealIndex(aCol - 1);
     with TRxColumn(Columns[MyCol]).Filter do
     begin
-      Canvas.Brush.Color := Color;
-      Canvas.FillRect(aRect);
+//      Canvas.Brush.Color := Color;
+//      Canvas.FillRect(aRect);
+      if (TitleStyle <> tsNative) then
+      begin
+        Canvas.Brush.Color := Color;
+        Canvas.FillRect(aRect);
+      end;
 
       if Value <> '' then
       begin
@@ -1937,7 +2076,9 @@ begin
       end;
     end;
 
-    Canvas.Font := ft;
+//    Canvas.Font := ft;
+    Canvas.Font.Assign(ft);
+    ft.Free;
     Canvas.Brush.Color := bg;
     //    Canvas.TextStyle.Alignment := al;
     TxS.Alignment := al;
@@ -2101,6 +2242,8 @@ begin
         DataSource.DataSet.OnPostError := @ErrorPo;
       end;
       CalcStatTotals;
+      if rdgFilter in OptionsRx then
+         OnFilter(nil);
     end
     else
     begin
@@ -2116,7 +2259,9 @@ begin
         F_EventOnDeleteError := nil;
         DataSource.DataSet.OnPostError := F_EventOnPostError;
         F_EventOnPostError := nil;
-        OptionsRx := OptionsRx - [rdgFilter];
+//        OptionsRx := OptionsRx - [rdgFilter];
+        if rdgFilter in OptionsRx then
+           OnFilter(nil);
       end;
       F_LastFilter.Clear;
     end;
@@ -2154,7 +2299,7 @@ begin
   R.Top := TotalYOffs;
   R.Bottom := TotalYOffs + DefaultRowHeight * FooterRowCount + 2;
 
-  Canvas.Brush.Color := FFooterColor;
+  Canvas.Brush.Color := FFooterOptions.FColor;
   if (Columns.Count > 0) then
   begin
     TxS := Canvas.TextStyle;
@@ -2198,7 +2343,11 @@ begin
     for i := 0 to FixedCols - 1 do
     begin
       ColRowToOffset(True, True, i, R.Left, R.Right);
-      DrawCellGrid(i, 0, R, [gdFixed]);
+      if FFooterOptions.FStyle = tsNative then
+        DrawThemedCell(i, 0, R, [gdFixed])
+      else
+        DrawCellGrid(i, 0, R, [gdFixed]);
+
       if ((R.Left < ClipArea.Right) and (R.Right > ClipArea.Left)) then
         DrawCell(i, 0, R, [gdFixed]);
     end;
@@ -3055,21 +3204,24 @@ begin
     C.Filter.ValueList.Add(C.Filter.EmptyValue);
   end;
 
-  DataSource.DataSet.DisableControls;
-  DataSource.DataSet.Filtered := True;
-  DataSource.DataSet.First;
-  while not DataSource.DataSet.EOF do
+  if DatalinkActive then
   begin
-    for i := 0 to Columns.Count - 1 do
+    DataSource.DataSet.DisableControls;
+    DataSource.DataSet.Filtered := True;
+    DataSource.DataSet.First;
+    while not DataSource.DataSet.EOF do
     begin
-      C := TRxColumn(Columns[i]);
-      if (C.Field <> nil) and (C.Filter.ValueList.IndexOf(C.Field.DisplayText) < 0) then
-        C.Filter.ValueList.Add(C.Field.DisplayText);
+      for i := 0 to Columns.Count - 1 do
+      begin
+        C := TRxColumn(Columns[i]);
+        if (C.Field <> nil) and (C.Filter.ValueList.IndexOf(C.Field.DisplayText) < 0) then
+          C.Filter.ValueList.Add(C.Field.DisplayText);
+      end;
+      DataSource.DataSet.Next;
     end;
-    DataSource.DataSet.Next;
+    DataSource.DataSet.First;
+    DataSource.DataSet.EnableControls;
   end;
-  DataSource.DataSet.First;
-  DataSource.DataSet.EnableControls;
 end;
 
 procedure TRxDBGrid.OnFilterClose(Sender: TObject);
@@ -3177,8 +3329,8 @@ begin
   //  FTitleLines := TITLE_DEFAULT;
   FAllowedOperations := [aoInsert, aoUpdate, aoDelete, aoAppend];
 
-  //  FFooterColor:=clWindow;
-  FFooterColor := clYellow;
+  //FFooterColor:=clWindow;
+  //FFooterColor := clYellow;
   FFooterRowCount := 0;
 
   FFilterListEditor := TFilterListCellEditor.Create(nil);
@@ -3202,12 +3354,16 @@ begin
   FRxDbGridDateEditor.Name := 'RxDbGridDateEditor';
   FRxDbGridDateEditor.Visible := False;
 
+  FFooterOptions:=TRxDBGridFooterOptions.Create(Self);
+
   UpdateJMenuKeys;
 end;
 
 destructor TRxDBGrid.Destroy;
 begin
   CleanDSEvent;
+
+  FreeAndNil(FFooterOptions);
 
   FreeAndNil(FRxDbGridLookupComboEditor);
   FreeAndNil(FRxDbGridDateEditor);
@@ -3886,7 +4042,7 @@ begin
   //  FColor := clSkyBlue;
   FEmptyFont.Style := [fsItalic];
   FEmptyValue := sRxDBGridEmptiFilter;
-  FFont.Style := [fsItalic];
+  //FFont.Style := [fsItalic];
 end;
 
 destructor TRxColumnFilter.Destroy;
