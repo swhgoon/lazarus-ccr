@@ -13,7 +13,7 @@ object Form1: TForm1
     Height = 400
     Top = 44
     Width = 400
-    PageIndex = 0
+    PageIndex = 1
     Align = alBottom
     TabOrder = 0
     TabStop = True
@@ -51,8 +51,8 @@ object Form1: TForm1
         Left = 8
         Height = 65
         Top = -4
-        Width = 387
-        Caption = 'labelCronometer'
+        Width = 319
+        Caption = '00:00:00:000'
         Font.Height = -53
         ParentColor = False
         ParentFont = False
