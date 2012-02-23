@@ -1,7 +1,7 @@
 object SearchForm: TSearchForm
-  Left = 1005
+  Left = 409
   Height = 204
-  Top = 825
+  Top = 156
   Width = 330
   BorderStyle = bsDialog
   Caption = 'Find Text'
@@ -11,7 +11,7 @@ object SearchForm: TSearchForm
   Font.Name = 'Tahoma'
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object LBFindText: TLabel
     Left = 8
     Height = 14
@@ -93,8 +93,8 @@ object SearchForm: TSearchForm
       Width = 58
       Caption = 'Forwar&d'
       Checked = True
-      State = cbChecked
       TabOrder = 0
+      TabStop = True
     end
     object RBBackward: TRadioButton
       Left = 8
@@ -103,7 +103,6 @@ object SearchForm: TSearchForm
       Width = 64
       Caption = '&Backward'
       TabOrder = 1
-      TabStop = False
     end
   end
   object GBScope: TGroupBox
@@ -122,8 +121,8 @@ object SearchForm: TSearchForm
       Width = 47
       Caption = '&Global'
       Checked = True
-      State = cbChecked
       TabOrder = 0
+      TabStop = True
     end
     object RBSelectedOnly: TRadioButton
       Left = 8
@@ -132,7 +131,6 @@ object SearchForm: TSearchForm
       Width = 82
       Caption = '&Selected only'
       TabOrder = 1
-      TabStop = False
     end
   end
   object GBOrigin: TGroupBox
@@ -151,8 +149,8 @@ object SearchForm: TSearchForm
       Width = 75
       Caption = 'Fro&m cursor'
       Checked = True
-      State = cbChecked
       TabOrder = 0
+      TabStop = True
     end
     object RBEntireScope: TRadioButton
       Left = 8
@@ -161,7 +159,6 @@ object SearchForm: TSearchForm
       Width = 77
       Caption = '&Entire scope'
       TabOrder = 1
-      TabStop = False
     end
   end
 end

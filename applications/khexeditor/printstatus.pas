@@ -1,6 +1,6 @@
 unit PrintStatus;
 
-{$include kcontrols.inc}
+{$include lazhexeditor.inc}
 
 interface
 

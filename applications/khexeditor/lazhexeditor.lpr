@@ -1,4 +1,4 @@
-program hexeditorlaz;
+program lazhexeditor;
 
 uses
   Interfaces,
@@ -13,7 +13,7 @@ uses
   Main in 'Main.pas' {MainForm},
   PrintStatus in 'PrintStatus.pas', kcontrolslaz;
 
-{$IFDEF WINDOWS}{$R hexeditorlaz.rc}{$ENDIF}
+//{$IFDEF WINDOWS}{$R lazhexeditor.rc}{$ENDIF}
 
 {$R *.res}
 

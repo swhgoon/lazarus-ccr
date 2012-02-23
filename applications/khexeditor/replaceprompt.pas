@@ -1,6 +1,6 @@
 unit ReplacePrompt;
 
-{$include kcontrols.inc}
+{$include lazhexeditor.inc}
 
 interface
 

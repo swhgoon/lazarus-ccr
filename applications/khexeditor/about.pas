@@ -1,6 +1,6 @@
 unit About;
 
-{$include kcontrols.inc}
+{$include lazhexeditor.inc}
 
 interface
 

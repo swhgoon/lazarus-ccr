@@ -6,6 +6,7 @@
     <General>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
+      <Title Value="lazhexeditor"/>
       <UseXPManifest Value="True"/>
     </General>
     <VersionInfo>
@@ -30,6 +31,7 @@
     <RequiredPackages Count="3">
       <Item1>
         <PackageName Value="KControlsLaz"/>
+        <DefaultFilename Value="..\..\components\kcontrols\source\kcontrolslaz.lpk"/>
       </Item1>
       <Item2>
         <PackageName Value="Printer4Lazarus"/>
@@ -38,10 +40,11 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="9">
+    <Units Count="11">
       <Unit0>
-        <Filename Value="hexeditorlaz.lpr"/>
+        <Filename Value="lazhexeditor.lpr"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="lazhexeditor"/>
       </Unit0>
       <Unit1>
         <Filename Value="about.pas"/>
@@ -104,10 +107,19 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Search"/>
       </Unit8>
+      <Unit9>
+        <Filename Value="basic.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Basic"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="lazhexeditor.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit10>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="10"/>
+    <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
       <Filename Value="khexeditor"/>

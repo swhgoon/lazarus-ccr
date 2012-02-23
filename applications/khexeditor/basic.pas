@@ -1,6 +1,6 @@
 unit Basic;
 
-{$include kcontrols.inc}
+{$include lazhexeditor.inc}
 
 interface
 
@@ -10,7 +10,7 @@ uses
 {$ELSE}
   Windows, Messages,
 {$ENDIF}
-  Classes, SysUtils, Graphics, StdCtrls, KHexEditor, KControls;
+  Classes, SysUtils, Graphics, StdCtrls, khexeditor, KControls;
 
 type
   TEnvironmentPacked = packed record
