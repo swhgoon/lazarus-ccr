@@ -361,7 +361,7 @@ type
     FInProcessCalc: integer;
     FAllowedOperations: TRxDBGridAllowedOperations;
     //FFooterColor: TColor;
-    FFooterRowCount: integer;
+    //FFooterRowCount: integer;
     FKeyStrokes: TRxDBGridKeyStrokes;
     FOnGetCellProps: TGetCellPropsEvent;
     FOptionsRx: TOptionsRx;
@@ -743,6 +743,14 @@ procedure TRxDBGridFooterOptions.SetActive(AValue: boolean);
 begin
   if FActive=AValue then Exit;
   FActive:=AValue;
+
+  { TODO : Устаревший код - в следующей версии необходимо убрать }
+  if FActive then
+    FOwner.FOptionsRx:=FOwner.FOptionsRx + [rdgFooterRows]
+  else
+    FOwner.FOptionsRx:=FOwner.FOptionsRx - [rdgFooterRows];
+
+  FOwner.VisualChange;
 end;
 
 procedure TRxDBGridFooterOptions.SetColor(AValue: TColor);
@@ -1317,10 +1325,6 @@ end;
 
 procedure TRxDBGrid.SetFooterColor(const AValue: TColor);
 begin
-{  if FFooterColor = AValue then
-    exit;
-  FFooterOptions.FColor := AValue;
-  Invalidate;}
   FFooterOptions.Color := AValue;
 end;
 
@@ -1331,11 +1335,6 @@ end;
 
 procedure TRxDBGrid.SetFooterRowCount(const AValue: integer);
 begin
-{  if FFooterRowCount = AValue then
-    exit;
-  FFooterRowCount := AValue;
-  VisualChange;
-  //  Invalidate;}
   FFooterOptions.RowCount:=AValue;
 end;
 
@@ -1374,6 +1373,8 @@ begin
     CalcTitle;
     EndUpdate;
   end;
+
+  FFooterOptions.FActive:=rdgFooterRows in FOptionsRx;
   VisualChange;
 end;
 
@@ -2281,23 +2282,19 @@ var
   TxS: TTextStyle;
 begin
   TotalWidth := GetClientRect.Right;
-  // от сель --------------
-    if ScrollBarIsVisible(SB_HORZ) then
-      TotalYOffs := GCache.ClientHeight - (GetSystemMetrics(SM_CYHSCROLL) +
-        GetSystemMetrics(SM_SWSCROLLBARSPACING))
-    else
-      TotalYOffs := GCache.ClientHeight;
-  // до сель --------------
-//  TotalYOffs := GCache.ClientHeight;
-  FooterRect := Rect(0, TotalYOffs, TotalWidth, TotalYOffs +
-    DefaultRowHeight * FooterRowCount + 2);
+  if ScrollBarIsVisible(SB_HORZ) then
+    TotalYOffs := GCache.ClientHeight - (GetSystemMetrics(SM_CYHSCROLL) + GetSystemMetrics(SM_SWSCROLLBARSPACING))
+  else
+    TotalYOffs := GCache.ClientHeight;
+
+  FooterRect := Rect(0, TotalYOffs, TotalWidth, TotalYOffs + DefaultRowHeight * FFooterOptions.RowCount + 2);
 
   Background := Canvas.Brush.Color;
   Canvas.Brush.Color := Color;
   Canvas.FillRect(FooterRect);
 
   R.Top := TotalYOffs;
-  R.Bottom := TotalYOffs + DefaultRowHeight * FooterRowCount + 2;
+  R.Bottom := TotalYOffs + DefaultRowHeight * FFooterOptions.RowCount + 2;
 
   Canvas.Brush.Color := FFooterOptions.FColor;
   if (Columns.Count > 0) then
@@ -2403,8 +2400,7 @@ begin
   if FColumnResizing and (MouseToGridZone(X, Y) = gzFixedCols) then
   begin
     CalcTitle;
-    if (rdgFooterRows in OptionsRx) and (dgColumnResize in Options) and
-      (FooterRowCount > 0) then
+    if FFooterOptions.Active and (dgColumnResize in Options) and (FFooterOptions.RowCount > 0) then
       DrawFooterRows;
   end;
 end;
@@ -2781,8 +2777,8 @@ end;
 
 procedure TRxDBGrid.CheckNewCachedSizes(var AGCache: TGridDataCache);
 begin
-  if (rdgFooterRows in OptionsRx) and (FooterRowCount > 0) then
-    Dec(AGCache.ClientHeight, DefaultRowHeight * FooterRowCount + 2);
+  if FFooterOptions.Active and (FooterOptions.RowCount > 0) then
+    Dec(AGCache.ClientHeight, DefaultRowHeight * FooterOptions.RowCount + 2);
 end;
 
 procedure TRxDBGrid.ColRowMoved(IsColumn: boolean; FromIndex, ToIndex: integer);
@@ -2795,7 +2791,7 @@ end;
 procedure TRxDBGrid.Paint;
 begin
   inherited Paint;
-  if (rdgFooterRows in OptionsRx) and (FooterRowCount > 0) then
+  if FFooterOptions.Active and (FFooterOptions.RowCount > 0) then
     DrawFooterRows;
 end;
 
@@ -2810,8 +2806,8 @@ begin
     CalcStatTotals;
   end
   else
-  if (rdgFooterRows in OptionsRx) and (FooterRowCount > 0) and
-    DatalinkActive and (DataSource.DataSet.State = dsBrowse) then
+  if Assigned(FFooterOptions) and FFooterOptions.Active and (FFooterOptions.RowCount > 0) and
+       DatalinkActive and (DataSource.DataSet.State = dsBrowse) then
     CalcStatTotals;
 end;
 
@@ -2823,7 +2819,7 @@ end;
 procedure TRxDBGrid.MoveSelection;
 begin
   inherited MoveSelection;
-  if (rdgFooterRows in OptionsRx) and (FooterRowCount > 0) then
+  if Assigned(FFooterOptions) and FFooterOptions.Active and (FFooterOptions.RowCount > 0) then
     DrawFooterRows;
 end;
 
@@ -2986,7 +2982,7 @@ var
   i: integer;
   APresent: boolean;
 begin
-  if (not ((rdgFooterRows in OptionsRx) and DatalinkActive)) or (Columns.Count = 0) then
+  if (not (FFooterOptions.Active and DatalinkActive)) or (Columns.Count = 0) then
     Exit;
   //Дополнительно проверим - а стоит ли делать пробег по данным - есть ли агрегатные функции
   APresent := False;
@@ -3098,7 +3094,7 @@ procedure TRxDBGrid.BeforeDel(DataSet: TDataSet);
 var
   i: integer;
 begin
-  if (rdgFooterRows in OptionsRx) and (DatalinkActive) then
+  if FFooterOptions.Active and (DatalinkActive) then
     for i := 0 to Columns.Count - 1 do
       if not TRxColumn(Columns[i]).Footer.DeleteTestValue then
       begin
@@ -3113,7 +3109,7 @@ procedure TRxDBGrid.BeforePo(DataSet: TDataSet);
 var
   i: integer;
 begin
-  if (rdgFooterRows in OptionsRx) and (DatalinkActive) then
+  if FooterOptions.Active and (DatalinkActive) then
     for i := 0 to Columns.Count - 1 do
       if not TRxColumn(Columns[i]).Footer.PostTestValue then
       begin
@@ -3129,7 +3125,7 @@ procedure TRxDBGrid.ErrorDel(DataSet: TDataSet; E: EDatabaseError;
 var
   i: integer;
 begin
-  if (rdgFooterRows in OptionsRx) and (DatalinkActive) then
+  if FFooterOptions.Active and (DatalinkActive) then
     for i := 0 to Columns.Count - 1 do
       if not TRxColumn(Columns[i]).Footer.ErrorTestValue then
       begin
@@ -3145,7 +3141,7 @@ procedure TRxDBGrid.ErrorPo(DataSet: TDataSet; E: EDatabaseError;
 var
   i: integer;
 begin
-  if (rdgFooterRows in OptionsRx) and (DatalinkActive) then
+  if FFooterOptions.Active and (DatalinkActive) then
     for i := 0 to Columns.Count - 1 do
       if not TRxColumn(Columns[i]).Footer.ErrorTestValue then
       begin
@@ -3300,6 +3296,7 @@ begin
 {$IFDEF RXDBGRID_OPTIONS_WO_CANCEL_ON_EXIT}
   Options := Options - [dgCancelOnExit];
 {$ENDIF}
+  FFooterOptions:=TRxDBGridFooterOptions.Create(Self);
 
   FKeyStrokes := TRxDBGridKeyStrokes.Create(Self);
   FKeyStrokes.ResetDefaults;
@@ -3329,10 +3326,6 @@ begin
   //  FTitleLines := TITLE_DEFAULT;
   FAllowedOperations := [aoInsert, aoUpdate, aoDelete, aoAppend];
 
-  //FFooterColor:=clWindow;
-  //FFooterColor := clYellow;
-  FFooterRowCount := 0;
-
   FFilterListEditor := TFilterListCellEditor.Create(nil);
   with FFilterListEditor do
   begin
@@ -3353,8 +3346,6 @@ begin
   FRxDbGridDateEditor := TRxDBGridDateEditor.Create(nil);
   FRxDbGridDateEditor.Name := 'RxDbGridDateEditor';
   FRxDbGridDateEditor.Visible := False;
-
-  FFooterOptions:=TRxDBGridFooterOptions.Create(Self);
 
   UpdateJMenuKeys;
 end;
@@ -3791,7 +3782,7 @@ var
 begin
   if ValueType in [fvtSum, fvtAvg, fvtMax, fvtMin] then
   begin
-    F := TRxDBGrid(FOwner.Grid).DataSource.DataSet.FieldByName(FFieldName);
+    F := TRxDBGrid(FOwner.Grid).DataSource.DataSet.FindField(FFieldName);
     if Assigned(F) then
     begin
       if F.DataType in [ftDate, ftTime, ftDateTime, ftTimeStamp] then
