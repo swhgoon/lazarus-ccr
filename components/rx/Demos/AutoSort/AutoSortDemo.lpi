@@ -1,19 +1,21 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="7"/>
+    <Version Value="9"/>
     <General>
       <MainUnit Value="0"/>
-      <TargetFileExt Value=""/>
-      <Icon Value="0"/>
       <UseXPManifest Value="True"/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <Icon Value="0"/>
+      <ActiveWindowIndexAtStart Value="0"/>
     </General>
     <VersionInfo>
-      <ProjectVersion Value=""/>
       <Language Value=""/>
       <CharSet Value=""/>
+      <StringTable ProductVersion=""/>
     </VersionInfo>
+    <BuildModes Count="1">
+      <Item1 Name="default" Default="True"/>
+    </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
@@ -44,58 +46,66 @@
         <Filename Value="AutoSortDemo.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="AutoSortDemo"/>
-        <CursorPos X="1" Y="20"/>
         <TopLine Value="1"/>
+        <CursorPos X="1" Y="20"/>
         <UsageCount Value="20"/>
       </Unit0>
       <Unit1>
         <Filename Value="asdmainunit.pas"/>
-        <ComponentName Value="Form1"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form1"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="asdMainUnit"/>
-        <CursorPos X="20" Y="39"/>
-        <TopLine Value="22"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="22"/>
+        <CursorPos X="20" Y="39"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit1>
       <Unit2>
-        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/rxsortmemds.pas"/>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxsortmemds.pas"/>
         <UnitName Value="rxsortmemds"/>
-        <CursorPos X="69" Y="52"/>
         <TopLine Value="24"/>
+        <CursorPos X="69" Y="52"/>
         <UsageCount Value="10"/>
       </Unit2>
       <Unit3>
-        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
         <UnitName Value="rxdbgrid"/>
-        <CursorPos X="1" Y="1410"/>
         <TopLine Value="1393"/>
+        <CursorPos X="1" Y="1410"/>
         <UsageCount Value="10"/>
       </Unit3>
       <Unit4>
-        <Filename Value="../../../../../../../../usr/local/share/lazarus/lcl/dbgrids.pas"/>
+        <Filename Value="/usr/local/share/lazarus/lcl/dbgrids.pas"/>
         <UnitName Value="DBGrids"/>
-        <CursorPos X="1" Y="688"/>
         <TopLine Value="671"/>
+        <CursorPos X="1" Y="688"/>
         <UsageCount Value="10"/>
       </Unit4>
       <Unit5>
-        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/rxmemds.pas"/>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxmemds.pas"/>
         <UnitName Value="rxmemds"/>
-        <CursorPos X="1" Y="1346"/>
         <TopLine Value="1329"/>
+        <CursorPos X="1" Y="1346"/>
         <UsageCount Value="10"/>
       </Unit5>
     </Units>
     <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="8"/>
+    <Version Value="11"/>
     <SearchPaths>
-      <IncludeFiles Value="$(ProjOutDir)/"/>
+      <IncludeFiles Value="$(ProjOutDir)"/>
     </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <UseAnsiStrings Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
     <Linking>
       <Options>
         <Win32>
@@ -110,7 +120,10 @@
   <Debugging>
     <BreakPoints Count="1">
       <Item1>
-        <Source Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsGlobal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
         <Line Value="741"/>
       </Item1>
     </BreakPoints>

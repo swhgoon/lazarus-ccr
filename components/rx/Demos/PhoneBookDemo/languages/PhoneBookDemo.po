@@ -1,127 +1,127 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
-#: TPBEDITDATAFORM.CAPTION
+#: tpbeditdataform.caption
 msgid "Phone book data"
 msgstr ""
 
-#: TPBEDITDATAFORM.LABEL1.CAPTION
+#: tpbeditdataform.label1.caption
 msgid "Patronymic"
 msgstr ""
 
-#: TPBEDITDATAFORM.LABEL2.CAPTION
+#: tpbeditdataform.label2.caption
 msgid "Name"
 msgstr ""
 
-#: TPBEDITDATAFORM.LABEL3.CAPTION
+#: tpbeditdataform.label3.caption
 msgid "Surname"
 msgstr ""
 
-#: TPBEDITDATAFORM.LABEL4.CAPTION
+#: tpbeditdataform.label4.caption
 msgid "Phone"
 msgstr ""
 
-#: TPBEDITDATAFORM.LABEL5.CAPTION
+#: tpbeditdataform.label5.caption
 msgctxt "TPBEDITDATAFORM.LABEL5.CAPTION"
 msgid "ICQ"
 msgstr ""
 
-#: TPBEDITDATAFORM.LABEL6.CAPTION
+#: tpbeditdataform.label6.caption
 msgid "Memo"
 msgstr ""
 
-#: TPBMAINFORM.CAPTION
+#: tpbmainform.caption
 msgid "Phone book"
 msgstr ""
 
-#: TPBMAINFORM.EDTDELETE.CAPTION
+#: tpbmainform.edtdelete.caption
 msgid "Delete"
 msgstr ""
 
-#: TPBMAINFORM.EDTEDIT.CAPTION
+#: tpbmainform.edtedit.caption
 msgctxt "TPBMAINFORM.EDTEDIT.CAPTION"
 msgid "Edit"
 msgstr ""
 
-#: TPBMAINFORM.EDTFIND.CAPTION
+#: tpbmainform.edtfind.caption
 msgid "Find"
 msgstr ""
 
-#: TPBMAINFORM.EDTNEW.CAPTION
+#: tpbmainform.edtnew.caption
 msgid "New"
 msgstr ""
 
-#: TPBMAINFORM.EDTPRINT.CAPTION
+#: tpbmainform.edtprint.caption
 msgid "Print"
 msgstr ""
 
-#: TPBMAINFORM.HLPABOUT.CAPTION
+#: tpbmainform.hlpabout.caption
 msgid "About"
 msgstr ""
 
-#: TPBMAINFORM.MENUITEM1.CAPTION
+#: tpbmainform.menuitem1.caption
 msgid "System"
 msgstr ""
 
-#: TPBMAINFORM.MENUITEM10.CAPTION
+#: tpbmainform.menuitem10.caption
 msgctxt "TPBMAINFORM.MENUITEM10.CAPTION"
 msgid "-"
 msgstr ""
 
-#: TPBMAINFORM.MENUITEM14.CAPTION
+#: tpbmainform.menuitem14.caption
 msgctxt "TPBMAINFORM.MENUITEM14.CAPTION"
 msgid "-"
 msgstr ""
 
-#: TPBMAINFORM.MENUITEM16.CAPTION
+#: tpbmainform.menuitem16.caption
 msgctxt "TPBMAINFORM.MENUITEM16.CAPTION"
 msgid "-"
 msgstr ""
 
-#: TPBMAINFORM.MENUITEM18.CAPTION
+#: tpbmainform.menuitem18.caption
 msgid "Help"
 msgstr ""
 
-#: TPBMAINFORM.MENUITEM3.CAPTION
+#: tpbmainform.menuitem3.caption
 msgctxt "TPBMAINFORM.MENUITEM3.CAPTION"
 msgid "Edit"
 msgstr ""
 
-#: TPBMAINFORM.MENUITEM7.CAPTION
+#: tpbmainform.menuitem7.caption
 msgctxt "TPBMAINFORM.MENUITEM7.CAPTION"
 msgid "-"
 msgstr ""
 
-#: TPBMAINFORM.RXDBGRID1.COLUMNS[0].TITLE.CAPTION
+#: tpbmainform.rxdbgrid1.columns[0].title.caption
 msgid "ID"
 msgstr ""
 
-#: TPBMAINFORM.RXDBGRID1.COLUMNS[1].TITLE.CAPTION
+#: tpbmainform.rxdbgrid1.columns[1].title.caption
 msgid "PATRONYMIC"
 msgstr ""
 
-#: TPBMAINFORM.RXDBGRID1.COLUMNS[2].TITLE.CAPTION
+#: tpbmainform.rxdbgrid1.columns[2].title.caption
 msgid "NAME"
 msgstr ""
 
-#: TPBMAINFORM.RXDBGRID1.COLUMNS[3].TITLE.CAPTION
+#: tpbmainform.rxdbgrid1.columns[3].title.caption
 msgid "SURNAME"
 msgstr ""
 
-#: TPBMAINFORM.RXDBGRID1.COLUMNS[4].TITLE.CAPTION
+#: tpbmainform.rxdbgrid1.columns[4].title.caption
 msgid "PHONE"
 msgstr ""
 
-#: TPBMAINFORM.RXDBGRID1.COLUMNS[5].TITLE.CAPTION
+#: tpbmainform.rxdbgrid1.columns[5].title.caption
 msgctxt "TPBMAINFORM.RXDBGRID1.COLUMNS[5].TITLE.CAPTION"
 msgid "ICQ"
 msgstr ""
 
-#: TPBMAINFORM.RXDBGRID1.COLUMNS[6].TITLE.CAPTION
+#: tpbmainform.rxdbgrid1.columns[6].title.caption
 msgid "MEMO"
 msgstr ""
 
-#: TPBMAINFORM.SYSEXIT.CAPTION
+#: tpbmainform.sysexit.caption
 msgid "Exit"
 msgstr ""
 

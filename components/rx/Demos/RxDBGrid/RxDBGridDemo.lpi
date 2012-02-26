@@ -51,7 +51,7 @@
       </Item3>
       <Item4>
         <PackageName Value="rxnew"/>
-        <MinVersion Build="56" Major="1" Valid="True" Release="18"/>
+        <MinVersion Major="1" Release="18" Build="56" Valid="True"/>
       </Item4>
     </RequiredPackages>
     <Units Count="58">
@@ -59,10 +59,12 @@
         <Filename Value="RxDBGridDemo.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="RxDBGridDemo"/>
+        <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="9" Y="16"/>
         <UsageCount Value="54"/>
+        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="rxdbgridmainunit.pas"/>
@@ -73,7 +75,7 @@
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="93"/>
+        <TopLine Value="105"/>
         <CursorPos X="3" Y="97"/>
         <UsageCount Value="54"/>
         <Loaded Value="True"/>
@@ -501,7 +503,7 @@
         <UsageCount Value="10"/>
       </Unit57>
     </Units>
-    <JumpHistory Count="3" HistoryIndex="2">
+    <JumpHistory Count="4" HistoryIndex="3">
       <Position1>
         <Filename Value="rxdbgridmainunit.pas"/>
         <Caret Line="9" Column="11" TopLine="1"/>
@@ -514,10 +516,14 @@
         <Filename Value="rxdbgridmainunit.pas"/>
         <Caret Line="96" Column="3" TopLine="92"/>
       </Position3>
+      <Position4>
+        <Filename Value="RxDBGridDemo.lpr"/>
+        <Caret Line="16" Column="9" TopLine="1"/>
+      </Position4>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="10"/>
+    <Version Value="11"/>
     <Target>
       <Filename Value="RxDBGridDemo"/>
     </Target>
@@ -531,10 +537,6 @@
       </SyntaxOptions>
     </Parsing>
     <Linking>
-      <Debugging>
-        <GenerateDebugInfo Value="True"/>
-        <DebugInfoType Value="dsAuto"/>
-      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>

@@ -219,25 +219,8 @@ end;
 
 procedure RotateLabel(Canvas: TCanvas; x, y: Integer; const St: String; RotDegree: Integer);
 var
-{  OldFont, NewFont: HFONT;
-  LogRec: TLOGFONT;
-  DC: HDC;}
   L:integer;
 begin
-{  with Canvas do
-  begin
-    Brush.Style := bsClear;
-    GetObject(Font.Handle, SizeOf(LogRec), @LogRec);
-    LogRec.lfEscapement   := RotDegree * 10;
-    LogRec.lfOrientation  := 0;
-    LogRec.lfOutPrecision := OUT_TT_ONLY_PRECIS;
-    NewFont := CreateFontIndirect(LogRec);
-    DC := Handle;
-  end;
-  OldFont := SelectObject(DC, NewFont);
-  TextOut(DC, X, Y, @St[1], Length(St));
-  DeleteObject(SelectObject(DC, OldFont));}
-
   L:=Canvas.Font.Orientation;
   Canvas.Font.Orientation:=RotDegree * 10;
   Canvas.TextOut(X, Y, St);

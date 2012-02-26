@@ -49,4 +49,4 @@
 
 //
 {.$DEFINE DBDateEdit_OLD}
-{.$DEFINE OLD_STYLE_TEXT_ROTATE}
+
