@@ -1,17 +1,17 @@
 object Form1: TForm1
-  Left = 429
-  Height = 626
-  Top = 142
-  Width = 889
+  Left = 292
+  Height = 667
+  Top = 120
+  Width = 935
   ActiveControl = ToolPanel1
   Caption = 'RxViewsPanel demo'
-  ClientHeight = 626
-  ClientWidth = 889
+  ClientHeight = 667
+  ClientWidth = 935
   OnCreate = FormCreate
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object RxViewsPanel1: TRxViewsPanel
     Left = 0
-    Height = 574
+    Height = 617
     Top = 31
     Width = 128
     Align = alLeft
@@ -44,157 +44,109 @@ object Form1: TForm1
     OnSelectViewEvent = RxViewsPanel1SelectViewEvent
     ItemIndex = 0
     BevelOuter = bvLowered
-    ClientHeight = 574
+    ClientHeight = 617
     ClientWidth = 128
     ParentColor = False
     TabOrder = 0
   end
   object Splitter1: TSplitter
     Left = 128
-    Height = 574
+    Height = 617
     Top = 31
     Width = 5
   end
   object ExtendedNotebook1: TExtendedNotebook
     Left = 133
-    Height = 574
+    Height = 617
     Top = 31
-    Width = 756
+    Width = 802
+    ActivePage = TabSheet4
     Align = alClient
-    PageIndex = 2
     ShowTabs = False
+    TabIndex = 3
     TabOrder = 2
-    object Page1: TPage
-      Caption = 'Gant'
-      ClientWidth = 750
-      ClientHeight = 568
-      object StringGrid2: TStringGrid
-        Left = 0
-        Height = 620
-        Top = 0
-        Width = 328
-        Align = alLeft
-        TabOrder = 0
-      end
-      object PaintBox1: TPaintBox
-        Left = 333
-        Height = 620
-        Top = 0
-        Width = 417
-        Align = alClient
-      end
-      object Splitter2: TSplitter
-        Left = 328
-        Height = 620
-        Top = 0
-        Width = 5
-      end
-    end
-    object Page2: TPage
-      Caption = 'Tasks'
-      ClientWidth = 750
-      ClientHeight = 568
+    object TabSheet1: TTabSheet
+      Caption = 'TabSheet1'
+      ClientHeight = 611
+      ClientWidth = 796
       object StringGrid1: TStringGrid
-        Left = 0
-        Height = 620
-        Top = 0
-        Width = 750
-        Align = alClient
+        Left = 19
+        Height = 302
+        Top = 13
+        Width = 510
         TabOrder = 0
       end
     end
-    object Page3: TPage
-      Caption = 'Resourses'
-      ClientWidth = 750
-      ClientHeight = 568
+    object TabSheet2: TTabSheet
+      Caption = 'TabSheet2'
+      ClientHeight = 611
+      ClientWidth = 796
+      object StringGrid2: TStringGrid
+        Left = 151
+        Height = 341
+        Top = 10
+        Width = 509
+        TabOrder = 0
+      end
+    end
+    object TabSheet3: TTabSheet
+      Caption = 'TabSheet3'
+      ClientHeight = 611
+      ClientWidth = 796
       object StringGrid3: TStringGrid
-        Left = 0
-        Height = 568
-        Top = 0
-        Width = 750
-        Align = alClient
-        AutoFillColumns = True
-        ColCount = 7
-        Columns = <        
-          item
-            Title.Caption = 'Resourse name'
-            Width = 106
-          end        
-          item
-            Title.Caption = 'Short name'
-            Width = 106
-          end        
-          item
-            Title.Caption = 'Type'
-            Width = 106
-          end        
-          item
-            Title.Caption = 'Group'
-            Width = 106
-          end        
-          item
-            Title.Caption = 'email'
-            Width = 106
-          end        
-          item
-            Title.Caption = 'Cost'
-            Width = 106
-          end        
-          item
-            Title.Caption = 'Desc'
-            Width = 112
-          end>
-        FixedCols = 0
+        Left = 109
+        Height = 325
+        Top = 146
+        Width = 607
         TabOrder = 0
-        ColWidths = (
-          106
-          106
-          106
-          106
-          106
-          106
-          112
-        )
       end
     end
-    object Page4: TPage
-      Caption = 'Use resourses'
-      ClientWidth = 750
-      ClientHeight = 568
+    object TabSheet4: TTabSheet
+      Caption = 'TabSheet4'
+      ClientHeight = 611
+      ClientWidth = 796
       object StringGrid4: TStringGrid
         Left = 0
-        Height = 568
+        Height = 177
         Top = 0
-        Width = 750
-        Align = alClient
-        AutoFillColumns = True
-        ColCount = 6
-        FixedCols = 0
-        RowCount = 1
+        Width = 796
+        Align = alTop
         TabOrder = 0
-        ColWidths = (
-          125
-          125
-          125
-          125
-          125
-          125
+      end
+      object Splitter2: TSplitter
+        Cursor = crVSplit
+        Left = 0
+        Height = 5
+        Top = 177
+        Width = 796
+        Align = alTop
+        ResizeAnchor = akTop
+      end
+      object Memo1: TMemo
+        Left = 0
+        Height = 429
+        Top = 182
+        Width = 796
+        Align = alClient
+        Lines.Strings = (
+          'Memo1'
         )
+        TabOrder = 2
       end
     end
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 21
-    Top = 605
-    Width = 889
+    Height = 19
+    Top = 648
+    Width = 935
     Panels = <>
   end
   object ToolPanel1: TToolPanel
     Left = 0
     Height = 31
     Top = 0
-    Width = 889
+    Width = 935
     Items = <>
     Options = []
     Align = alTop

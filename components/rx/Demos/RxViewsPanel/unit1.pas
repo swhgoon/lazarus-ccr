@@ -15,6 +15,7 @@ type
   TForm1 = class(TForm)
     ExtendedNotebook1: TExtendedNotebook;
     ImageList2: TImageList;
+    Memo1: TMemo;
     Page1: TPage;
     Page2: TPage;
     Page3: TPage;
@@ -28,6 +29,10 @@ type
     StringGrid2: TStringGrid;
     StringGrid3: TStringGrid;
     StringGrid4: TStringGrid;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
+    TabSheet3: TTabSheet;
+    TabSheet4: TTabSheet;
     ToolPanel1: TToolPanel;
     procedure FormCreate(Sender: TObject);
     procedure RxViewsPanel1SelectViewEvent(ItemIndex: integer;
