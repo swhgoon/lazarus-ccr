@@ -1192,13 +1192,7 @@ var
   end;
 
 begin
-  if not DataSource.DataSet.Active then exit;
-
-  {$ifdef dbgDBGrid}
-  DebugLn('VSCROLL: Code=',SbCodeToStr(Message.ScrollCode),
-          ' Position=', dbgs(Message.Pos),' OldPos=',Dbgs(FOldPosition));
-  {$endif}
-
+  if not DatalinkActive then exit;
   IsSeq := DataSource.DataSet.IsSequenced;
   case Message.ScrollCode of
     SB_TOP:
@@ -3894,29 +3888,35 @@ begin
   begin
     F := TRxDBGrid(FOwner.Grid).DataSource.DataSet.FieldByName(FFieldName);
     if Assigned(F) then
+    begin
       if F.DataType in [ftDate, ftTime, ftDateTime, ftTimeStamp] then
       begin
         if FValueType in [fvtMax, fvtMin] then
+        begin
           if not (F.IsNull) and (FTestValue = F.AsDateTime) then
             Result := False
           else
           if (F.DataSet.RecordCount <> 0) and (F.OldValue <> null) then
+          begin
             case FValueType of
               fvtMax: FTestValue := Max(FTestValue, TDateTime(F.OldValue));
               fvtMin: FTestValue := Min(FTestValue, TDateTime(F.OldValue));
             end;
+          end;
+        end;
       end
       else
-      if (FValueType in [fvtMax, fvtMin]) and not (F.IsNull) and
-        (FTestValue = F.AsFloat) then
+      if (FValueType in [fvtMax, fvtMin]) and not (F.IsNull) and (FTestValue = F.AsFloat) then
         Result := False
       else
+      begin
         case FValueType of
           fvtSum:
             if F.DataSet.RecordCount = 0 then
             begin
-              if not F.IsNull then
-                FTestValue := FTestValue - F.AsFloat;
+{              if not F.IsNull then
+                FTestValue := FTestValue - F.AsFloat;}
+              { TODO -oalexs : need rewrite this code - where difficult! }
             end
             else
             begin
@@ -3932,6 +3932,8 @@ begin
             if (F.DataSet.RecordCount <> 0) and (F.OldValue <> null) then
               FTestValue := Min(FTestValue, Float(F.OldValue));
         end;
+      end;
+    end;
   end;
 end;
 ///!
