@@ -1520,7 +1520,6 @@ procedure TLazEditMainForm.ConstructOpenDialogFileFilters;
   end;
 var
   Filter, SubFilter, WildFilter, AllSupportedExt: String;
-  Index: Integer;
   FileType: TEditorFileType;
 begin
   //First filter for OpenSave
