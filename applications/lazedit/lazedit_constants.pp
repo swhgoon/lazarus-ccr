@@ -39,6 +39,8 @@ unit lazedit_constants;
 
 interface
 
+Uses Classes, SysUtils, LCLProc;
+
 const
   AppName = 'LazEdit';
   AboutTitle = 'Over ' + AppName;
@@ -81,28 +83,21 @@ const
   {$ENDIF}
   FilterText = 'Tekst bestanden (*.txt)|*.txt';
   FilterAll = 'Alle bestanden ('+ AllFilesMask + ')|' + AllFilesMask;
+  fiMaskText = '*.txt';
+  fiNameText = 'Tekst bestanden';
+  fiNameAll = 'Alle bestanden';
+  fiNameAllSupported = 'Alle ondersteunde bestandstypen';
 
+  //FilterIndexes all start with FilterAllSupported, then all individually supported filetypes followed by .txt, templates and *
   //Filter indexes
-  fiEftFirst = Ord(Low(TEditorFileType)) + 1;
-  fiHtml = Ord(eftHtml);
-  fiXml = Ord(eftXml);
-  fiCss = Ord(eftCss);
-  fiJS = Ord(eftJS);
-  fiFpc = Ord(eftFpc);
-  fiLfm = Ord(eftLfm);
-  fiC = Ord(eftC);
-  fiPy = Ord(eftPy);
-  fiPhp = Ord(eftPhp);
-  fiPerl = Ord(eftPerl);
-  fiUnixShell = Ord(eftUnixShell);
-  fiBat = Ord(eftBat);
-  fiDiff = Ord(eftDiff);
-  fiIni = Ord(eftIni);
-  fiPo = Ord(eftPo);
-  fiEftLast = Ord(High(TEditorFileType));
+  fiAllSupported = 1; //FilterIndexes are 1-based!
+
+  fiEftFirst = Ord(Low(TEditorFileType)) + 2; //skip eftNone, add 1 for fiAllSupported
+  fiEftLast = Ord(High(TEditorFileType)) + 1; //Add 1 for fiAllSupported
 
   fiText = fiEftLast + 1;
-  fiAll = fiEftLast + 2;
+  fiTemplate = fiText + 1;
+  fiAll = fiTemplate + 1;
 
   DefaultFiletypeMaskList: TFileTypeMaskList = ('.txt',//eftNone  (no need to guess syntax for .txt files)
          '.htm;.html;.xhtml;.xhtm;' + HtmlTemplateExt, //eftHtml
@@ -125,7 +120,56 @@ const
 
   MruEntries = 6;
 
+function ExtToFileType(const Ext: String; AFileTypeMaskList: TFileTypeMaskList): TEditorFileType;
+function FindInMaskList(const Ext, MaskList: String): Boolean;
+
 implementation
+
+function FindInMaskList(const Ext, MaskList: String): Boolean;
+var
+  SL: TStringList;
+  i: Integer;
+begin
+  Result := False;
+  if (Length(Ext) = 0) or (Length(MaskList) = 0) then Exit;
+  SL := TStringList.Create;
+  try
+    SL.StrictDelimiter := True;
+    SL.Delimiter := ';';
+    SL.CaseSensitive := False;
+    SL.Duplicates := dupAccept;
+    SL.DelimitedText := Trim(MaskList);
+    for i := 0 to SL.Count - 1 do
+    begin
+      if CompareText(Ext, SL.Strings[i]) = 0 then
+      begin
+        Result := True;
+        Break;
+      end;
+    end;
+  finally
+    SL.Free;
+  end;
+end;
+
+function ExtToFileType(const Ext: String; AFileTypeMaskList: TFileTypeMaskList): TEditorFileType;
+var
+  Index: TEditorFileType;
+begin
+  //DebugLn('ExtToFileType: Ext = "',Ext,'"');
+  Result := eftNone;
+  if (Length(Ext) = 0) then Exit;
+  for Index := Low(TEditorFileType) to High(TEditorFileType) do
+  begin
+    if FindInMaskList(Ext, AFileTypeMaskList[Index]) then
+    begin
+      Result := Index;
+      Exit;
+    end;
+  end;
+  //Debugln('ExtToFileType: Result = ',eftNames[Result]);
+  //DebugLn('ExtToFileType: End');
+end;
 
 end.
 

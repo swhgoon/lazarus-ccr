@@ -81,7 +81,7 @@ type
     procedure UpdateEditorOptions(Sender: TObject);
     function GetUniquePageCaption(const AName: String): String;
     procedure SetFileName(const Utf8Fn: String; const UpdateFileType: Boolean);
-    function ExtToFileType(const Ext: String): TEditorFileType;
+    //function ExtToFileType(const Ext: String): TEditorFileType;
     function GuessFileType: TEditorFileType;
     function GuessSyntaxFromString(S: String): TEditorFileType;
     procedure SetFileType(AFileType: TEditorFileType);
@@ -328,6 +328,7 @@ begin
   //debugln('TEditor.GetUniquePageCaption End');
 end;
 
+{
 function TEditor.ExtToFileType(const Ext: String): TEditorFileType;
 var
   Index: TEditorFileType;
@@ -346,6 +347,7 @@ begin
   //Debugln('TEditor.ExtToFileType: Result = ',eftNames[Result]);
   //DebugLn('TEditor.ExtToFileType: End');
 end;
+}
 
 function TEditor.GuessSyntaxFromString(S: String): TEditorFileType;
 const
@@ -379,7 +381,7 @@ begin
   Ext := ExtractFileExt(FFileName);
   //DebugLn('TEditor.GuessFileType: Ext = "',Ext,'"');
   if (Ext = FFileName) then Ext := '';  //filenames starting with a period (on linux mostly)
-  Result := ExtToFileType(Ext);
+  Result := ExtToFileType(Ext, FileMaskList);
   if (Result = eftNone) and (FindInMaskList(Ext, FileMaskList[eftNone])) then
   begin
     //Debugln('TEditor.GuessFileType: explicitely defined eftNone extension found: ',Ext);

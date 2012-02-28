@@ -456,6 +456,7 @@ type
     procedure CreateMruMenuItemsArray;
     function TryHlMenuTagToFileType(ATag: PtrInt; out AFileType: TEditorFileType): Boolean;
 
+    function FileTypeToFilterIndex(const Index: TEditorFileType): Integer;
     procedure ConstructOpenDialogFileFilters;
     procedure ShowError(const Msg: String);
 
@@ -1519,31 +1520,37 @@ procedure TLazEditMainForm.ConstructOpenDialogFileFilters;
     end;
   end;
 var
-  Filter, SubFilter, WildFilter: String;
+  Filter, SubFilter, WildFilter, AllSupportedExt: String;
   Index: Integer;
   FileType: TEditorFileType;
 begin
   //First filter for OpenSave
   Filter := '';
-  for Index := fiEftFirst to fiEftLast do
+  AllSupportedExt := '';
+  //first "AllSupported"
+  for FileType := Succ(Low(TEditorFileType)) to High(TEditorFileType) do
+    AllSupportedExt := AllSupportedExt + AppOptions.FileTypeMaskList[FileType];
+  Filter := Filter + fiNameAllSupported + '|' + AddWilds(AllSupportedExt);
+  //Add supported filetypes indivdually
+  for FileType := Succ(Low(TEditorFileType)) to High(TEditorFileType) do
   begin
-    FileType := TEditorFileType(Index);
     //DbgOut(eftNames[FileType],' -> ');
     WildFilter := AddWilds(AppOptions.FileTypeMaskList[FileType]);
     //DebugLn(WildFilter);
-    SubFilter := eftFilterNames[FileType] + ' (' + WildFilter + ')|'+ WildFilter;
+    SubFilter := eftFilterNames[FileType] + {' (' + WildFilter + ')}'|'+ WildFilter;
     Filter := Filter + '|' + SubFilter;
   end;
-  Filter := Filter + '|' + FilterText;
+  //Add Text files
+  Filter := Filter + '|' + fiNameText + '|'+ fiMaskText;
   WildFilter := AddWilds(AppOptions.TemplateMaskList);
-  //Also add template filter to Open/SaveFilter
-  Filter :=  Filter + '|' + STemplate + ' (' + WildFilter + ')|' + WildFilter;
-  Filter := Filter + '|' + FilterAll;
+  //Add template filter
+  Filter :=  Filter + '|' + STemplate + {' (' + WildFilter + ')}'|' + WildFilter;
+  Filter := Filter + '|' + fiNameAll + '|' + AllFilesMask;
   while (Length(Filter) > 0) and (Filter[1] = '|') do System.Delete(Filter,1,1);
   OpenSaveFilter := Filter;
 
   //Now filter for Open/Save as Template
-  TemplateFilter := STemplate + ' (' + WildFilter + ')|' + WildFilter + '|' + FilterAll;
+  TemplateFilter := STemplate + {' (' + WildFilter + ')}'|' + WildFilter + '|' + FilterAll;
 end;
 
 { ********************** [ Commandline options ] ******************************** }
@@ -1656,6 +1663,16 @@ begin
   if Result then AFileType := TEditorFileType(ATag);
 end;
 
+function TLazEditMainForm.FileTypeToFilterIndex(const Index: TEditorFileType
+  ): Integer;
+const
+  OffSet = fiEftFirst - 1;
+begin
+  if Index > eftNone then
+    Result := Ord(Index) + OffSet
+  else
+    Result := fiAll;
+end;
 
 
 procedure TLazEditMainForm.TagMenuItemsAndActions;
@@ -1946,21 +1963,25 @@ end;
 function TLazEditMainForm.AskFileNameSave(const Fn: String; const FileType: TEditorFileType): String;
 begin
   SaveDialog.Filter := OpenSaveFilter;
-  SaveDialog.FilterIndex := 0;
+  SaveDialog.FilterIndex := fiAllSupported;
   if (Fn <> EmptyStr) then
   begin
     SaveDialog.FileName := ExtractFileName(Fn);
     SaveDialog.InitialDir := ExtractFileDir(Fn);
-    //f/SaveDialog.FilterIndex := GetFilterIndexFromFileName(SaveDialog.Filter, Fn);
-    //f/SaveDialog.DefaultExt := GetExtensionFromFilterAtIndex(SaveDialog.Filter, SaveDialog.FilterIndex);
+    //SaveDialog.FilterIndex := GetFilterIndexFromFileName(SaveDialog.Filter, Fn);
+    SaveDialog.FilterIndex := FileTypeToFilterIndex(ExtToFileType(ExtractFileExt(Fn),AppOptions.FileTypeMaskList));
+    //SaveDialog.DefaultExt := GetExtensionFromFilterAtIndex(SaveDialog.Filter, SaveDialog.FilterIndex);
+    SaveDialog.DefaultExt := EmptyStr;
   end
   else
   begin
-    if (FileType <> eftNone) then SaveDialog.FilterIndex := Ord(FileType);
-    //f/SaveDialog.DefaultExt := GetExtensionFromFilterAtIndex(SaveDialog.Filter, SaveDialog.FilterIndex);
+    if (FileType <> eftNone) then SaveDialog.FilterIndex := FileTypeToFilterIndex(FileType);
+    //SaveDialog.DefaultExt := GetExtensionFromFilterAtIndex(SaveDialog.Filter, SaveDialog.FilterIndex);
+    SaveDialog.DefaultExt := EmptyStr;
   end;
   //debugln('SaveDialog.FilterIndex = ',dbgs(SaveDialog.FilterIndex));
   //debugln('SaveDialog.DefaultExt = ',SaveDialog.DefaultExt);
+
   if SaveDialog.Execute then
   begin
     Result := SaveDialog.FileName;
