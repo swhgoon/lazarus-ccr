@@ -40,7 +40,6 @@ unit main;
 interface
 
 uses
-  {$ifdef windows}Win9xWSManager,{$endif}
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ComCtrls,
   LCLProc, Menus, ActnList, ClipBrd, LclIntf,
   LMessages, {for overridden IsShortCut}
