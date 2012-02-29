@@ -2300,6 +2300,7 @@ begin
   Ed := NoteBook.CurrentEditor;
   if Assigned(Ed) then
   begin
+    if Ed.SelAvail and (Ed.BlockBegin.Y = Ed.BlockEnd.Y) then FindDialog.FindText := Ed.SelText;
     FindDialog.Execute;
   end;
 end;
