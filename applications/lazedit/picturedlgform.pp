@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, ExtCtrls, ExtDlgs, {PicsLib,} HtmlCode;
+  Buttons, ExtCtrls, ExtDlgs, LazEdit_PicsLib, HtmlCode;
 
 type
 
@@ -86,7 +86,7 @@ begin
     Fn := OpenPictureDialog.FileName;
     FInitialDir := ExtractFileDir(Fn);
     SrcEdit.Text := ExtractFileName(Fn);
-    {if GetImageSize(Fn, W, H) then
+    if GetImageSize(Fn, W, H) then
     begin
       WidthEdit.Text := IntToStr(W);
       HeightEdit.Text := IntToStr(H);
@@ -95,7 +95,7 @@ begin
     begin
       WidthEdit.Text := '';
       HeightEdit.Text := '';
-    end;}
+    end;
   end;
 end;
 
