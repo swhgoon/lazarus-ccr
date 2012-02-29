@@ -91,6 +91,7 @@ const
   //FilterIndexes all start with FilterAllSupported, then all individually supported filetypes followed by .txt, templates and *
   //Filter indexes
   fiAllSupported = 1; //FilterIndexes are 1-based!
+  fiTemplates = 1; //for use with Open/SaveAsTemplate dialog only!
 
   fiEftFirst = Ord(Low(TEditorFileType)) + 2; //skip eftNone, add 1 for fiAllSupported
   fiEftLast = Ord(High(TEditorFileType)) + 1; //Add 1 for fiAllSupported

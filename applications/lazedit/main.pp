@@ -1937,7 +1937,7 @@ end;
 function TLazEditMainForm.AskFileNameOpen: String;
 begin
   OpenDialog.Filter := OpenSaveFilter;
-  OpenDialog.FilterIndex := 0;
+  OpenDialog.FilterIndex := fiAllSupported;
   if OpenDialog.Execute then
   begin
     Result := OpenDialog.FileName;
@@ -1949,7 +1949,7 @@ end;
 function TLazEditMainForm.AskFileNameOpenTemplate: String;
 begin
   OpenDialog.Filter := TemplateFilter;
-  OpenDialog.FilterIndex := 0;
+  OpenDialog.FilterIndex := fiTemplates;
   if OpenDialog.Execute then
   begin
     Result := OpenDialog.FileName;
@@ -1991,7 +1991,7 @@ end;
 function TLazEditMainForm.AskFileNameSaveTemplate: String;
 begin
   SaveDialog.Filter := TemplateFilter;
-  SaveDialog.FilterIndex := 0;
+  SaveDialog.FilterIndex := fiTemplates;
   if SaveDialog.Execute then
   begin
     Result := SaveDialog.FileName;
