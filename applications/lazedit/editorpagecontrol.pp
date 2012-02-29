@@ -989,26 +989,13 @@ var
   TS: TTabSheet;
   E: TEditor;
   PgIdx: Integer;
-  i, NrOfNoNames: Integer;
-  Suffix: String;
 begin
   Result := nil;
   Inc(FCounter);
-  {
-  NrOfNoNames := 0;
-  Suffix := '';
-  for i := 0 to PageCount - 1 do
-    if Pos(vTranslations.NoName, Pages[i].Caption) = 1 then Inc(NrOfNoNames);
-  if NrOfNoNames > 0 then Suffix := ' [' + IntToStr(NrOfNoNames + 1) + ']';
-  }
   TS := TTabSheet.Create(Self);
   TS.Name := 'TS' + IntToStr(FCounter);
   TS.PageControl := Self;
   PgIdx := TS.PageIndex;
-
-  TS.Caption := vTranslations.NoName + Suffix;
-
-//  exit;//<-------------------------------------------------------------
 
   E := TEditor.Create(TS);
   Result := E;
