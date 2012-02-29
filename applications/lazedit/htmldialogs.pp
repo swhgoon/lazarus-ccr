@@ -95,7 +95,6 @@ type
     FDlg: TAnchorDlgForm;
     function GetLinkRef: String; // the < a href=""> part
   protected
-    function GetAnchorText: String;
     procedure GetFormValues;
     procedure SetFormValues;
   public
@@ -345,10 +344,6 @@ begin
   end;
 end;
 
-function TAnchorDlg.GetAnchorText: String;
-begin
-
-end;
 
 procedure TAnchorDlg.GetFormValues;
 begin
