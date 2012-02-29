@@ -108,7 +108,6 @@ implementation
 
 const
   EntryLimit = 50;  //I don't think one needs a 50-items long MRU list, but feel free to alter
-  FilePrefix = 'File';
 
 //Helper functions
 
