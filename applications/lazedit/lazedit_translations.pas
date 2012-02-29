@@ -230,8 +230,8 @@ begin
     mnuFileOpen := 'Open';
     mnuFileNewFromTemplate := 'New from template ...';
     mnuFileNew := 'New';
-  {        mnuFileNewText,
-      mnuFileNewHtml: TMenuItem;
+          mnuFileNewText := 'Plain text';
+  {   mnuFileNewHtml: TMenuItem;
       mnuFileNewXml: TMenuItem;
       mnuFileNewCss: TMenuItem;
       mnuFileNewJS: TMenuItem;
