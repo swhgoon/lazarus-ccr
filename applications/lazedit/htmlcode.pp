@@ -33,7 +33,7 @@ unit HtmlCode;
 
 interface
 
-uses {CopyLeft,} Classes, SysUtils, Graphics, StdCtrls, fpimage{, LCL_Misc};
+uses {CopyLeft,} Classes, SysUtils, Graphics, fpimage{, LCL_Misc};
 
 type
   THtmlDocType = (DocType_Html_401_Strict, DocType_Html_401_TR, DocType_Html_5, DocType_None);

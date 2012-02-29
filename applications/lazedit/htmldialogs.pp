@@ -185,7 +185,6 @@ type
   private
     FDlg: TNewTableForm;
     FTop: Integer;
-    TFop: Integer;
     FLeft: Integer;
     FDomId: String;
     FDomClass: String;

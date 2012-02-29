@@ -73,7 +73,6 @@ implementation
 const
   idxLeft = 0;
   idxRight = 1;
-  idxNone = 2;
 
 { TPictureDlgForm }
 
