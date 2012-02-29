@@ -511,6 +511,8 @@ type
     procedure EditorFontSizeUp;
     procedure EditorFontSizeDown;
 
+    procedure AboutLazEdit;
+
 
     procedure ParseCommandlineFilenames(Dummy: PtrInt); //Dummy is needed for QueueAsyncCall()
     procedure ParseCommandLineSwitches;
@@ -880,7 +882,7 @@ end;
 
 procedure TLazEditMainForm.acAboutExecute(Sender: TObject);
 begin
-  formAbout.ShowModal;
+  AboutLazEdit;
 end;
 
 procedure TLazEditMainForm.acEditFindNextExecute(Sender: TObject);
@@ -2590,6 +2592,16 @@ begin
     if EO.FontSize < 0 then EO.FontSize := 2;
     NoteBook.EditorOptions := EO;
   end;
+end;
+
+procedure TLazEditMainForm.AboutLazEdit;
+begin
+  FormAbout.SetCopyrightInfo(CopyLeftStatement, AuthorWebName, AuthorWebUrl);
+  FormAbout.SetVersionInfo(AppName, AppVersion, '','', '');
+  FormAbout.SetLicenseInfo(LicenseText, LicenseName, LicenseUrl);
+  FormAbout.Top := Top + 15;
+  FormAbout.Left := Left + 15;
+  FormAbout.ShowModal;
 end;
 
 end.

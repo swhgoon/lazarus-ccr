@@ -43,14 +43,16 @@ Uses Classes, SysUtils, LCLProc;
 
 const
   AppName = 'LazEdit';
-  AboutTitle = 'Over ' + AppName;
-  AppVersion = 'Version 1.9';
-  CopyLeftStatement = 'Copyright (c) 2011, 2012 by Bart Broersma, FlyingSheep Inc. and Felipe Monteiro de Carvalho';
+  AboutTitle = 'About ' + AppName;
+  AppVersion = 'Version 0.9';
+  CopyLeftStatement = 'Copyright (c) 2011, 2012 by Bart Broersma, FlyingSheep Inc. and'+ LineEnding +
+                      'Felipe Monteiro de Carvalho';
   MetaGeneratorName = AppName + #32 + AppVersion;
-  AuthorWebName = 'Bart & Mariska''s Webstek';
-  AuthorWebUrl = 'http://home.tiscali.nl/~knmg0017/';
-  LicenseText = ''; //LGPL_Text;
-  LicenseUrl = '';//LGPL_Url;
+  AuthorWebName = 'LazEdit homepage';
+  AuthorWebUrl = 'http://wiki.lazarus.freepascal.org/LazEdit';
+  {$I license.inc}
+  LicenseText = LGPL_Text;
+  LicenseUrl = LGPL_Url;
   LicenseName = 'Gnu LGPL';
 
 Type
