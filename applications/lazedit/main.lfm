@@ -5,7 +5,7 @@ object LazEditMainForm: TLazEditMainForm
   Width = 575
   AllowDropFiles = True
   Caption = 'Lazarus Text Editor'
-  ClientHeight = 399
+  ClientHeight = 398
   ClientWidth = 575
   Menu = MainMenu
   OnClose = FormClose
@@ -17,8 +17,8 @@ object LazEditMainForm: TLazEditMainForm
   LCLVersion = '0.9.31'
   object StatusBar: TStatusBar
     Left = 0
-    Height = 20
-    Top = 379
+    Height = 23
+    Top = 375
     Width = 575
     Panels = <    
       item

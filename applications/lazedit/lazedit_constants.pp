@@ -1,12 +1,13 @@
 unit lazedit_constants;
 
 {
-  EPlus: a text editor with built-in features for HTML editing and
+  LazEdit: a text editor with built-in features for HTML editing and
   Syntax Highlighting for several text formats
   (html, xml, css, javascript, pascal, c/c++, perl, python, php, bat, ini, diff)
 
-  Copyright (C) 2011 by Bart Broersma & Flying Sheep Inc.
-  http://home.tiscali.nl/~knmg0017/software.htm
+  Copyright (C) 2011, 2012 by Bart Broersma & Flying Sheep Inc. and
+  Felipe Monteiro de Carvalho
+  http://wiki.lazarus.freepascal.org/LazEdit
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Library General Public License as published by
