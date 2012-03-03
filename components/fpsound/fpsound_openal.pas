@@ -28,7 +28,7 @@ type
     codec_bs: longword;
     al_source: TALuint;
     al_format: integer;
-    al_buffers: array[0..0] of TALuint;
+    al_buffers: TALuint;
     al_bufsize: longword;
     al_readbuf: Pointer;
     al_rate: longword;
@@ -99,7 +99,7 @@ var
   lReadCount: integer = 0;
   lBufferBytePtr: PByte;
   lBufferWordPtr: PWord;
-  loop: TALInt;
+  loop: TALInt;       aaa: TStringList;
 begin
   GetMem(al_readbuf, al_bufsize);
   Result := 0;
@@ -129,7 +129,11 @@ begin
   end;
   //AlutLoadWavFile('T:\fpsound\testsounds\test.wav', al_format, al_readbuf, al_bufsize, al_rate, loop);
   //alutLoadWAVMemory(ASound.GetSoundDocPtr, al_format, al_readbuf, al_bufsize, al_rate, loop);
-  LoadWavStream(ASound.GetSoundDocStream, al_format, al_readbuf, al_bufsize, al_rate, loop);
+  LoadWavStream(ASound.SoundDocStream, al_format, al_readbuf, al_bufsize, al_rate, loop);
+
+aaa := TStringList.Create;
+aaa.Add(IntToStr(ASound.SoundDocStream.Size));
+aaa.SaveToFile(IntToStr(ASound.SoundDocStream.Size) + '.txt');
 end;
 
 procedure TOpenALPlayer.Initialize;
@@ -201,8 +205,8 @@ begin
 
   // Fill the buffer
   alFillBuffer(ASound, lKeyElement);
-  alBufferData(al_buffers[0], al_format, al_readbuf, al_bufsize, al_rate);
-  alSourceQueueBuffers(al_source, 1, @al_buffers[0]);
+  alBufferData(al_buffers, al_format, al_readbuf, al_bufsize, al_rate);
+  alSourceQueueBuffers(al_source, 1, @al_buffers);
 
   // Play the sound
   alSourcePlay(al_source);

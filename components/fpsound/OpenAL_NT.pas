@@ -38,6 +38,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *)
 
+//The original file name is openal.pas
 unit OpenAL_NT;
 
 {$IFDEF FPC}
@@ -2341,7 +2342,6 @@ begin
       stream.Position := stream.Position + readint;
     end;
   until stream.Position >= stream.size;
-
 end;
 
 procedure alutLoadWAVFile(fname: string; var format: TALenum; var data: TALvoid;
