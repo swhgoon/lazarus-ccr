@@ -381,7 +381,6 @@ function DataSetLocateThrough(DataSet: TDataSet; const KeyFields: string;
 var
   FieldCount: Integer;
   Fields: TList;
-  Bookmark: TBookmarkStr;
 
   function CompareField(Field: TField; Value: Variant): Boolean;
   var
@@ -417,6 +416,8 @@ var
     end;
   end;
 
+var
+  Bookmark: TBookmark;
 begin
   Result := False;
   with DataSet do begin
@@ -446,6 +447,7 @@ begin
           DataSet.Bookmark := Bookmark;
       end;
     finally
+      DataSet.FreeBookmark(Bookmark);
       DataSet.EnableControls;
     end;
   finally
@@ -914,7 +916,7 @@ end;
 procedure FillValueForField(const Field: TField; Value: Variant);
 var
   DS:TDataSet;
-  P:TBookmarkStr;
+  P:TBookmark;
 begin
   DS:=Field.DataSet;
   DS.DisableControls;
@@ -930,6 +932,7 @@ begin
     end;
   finally
     DS.Bookmark:=P;
+    DS.FreeBookmark(P);
     DS.EnableControls;
   end;
 end;

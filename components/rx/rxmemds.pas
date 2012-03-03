@@ -1290,7 +1290,6 @@ function DataSetLocateThrough(DataSet: TDataSet; const KeyFields: string;
 var
   FieldCount: Integer;
   Fields: TList;
-  Bookmark: TBookmarkStr;
 
   function CompareField(Field: TField; Value: Variant): Boolean;
   var
@@ -1325,7 +1324,8 @@ var
         Result := Result and CompareField(TField(Fields[I]), KeyValues[I]);
     end;
   end;
-
+var
+  Bookmark: TBookmark;
 begin
   Result := False;
   with DataSet do begin
@@ -1355,6 +1355,7 @@ begin
           DataSet.Bookmark := Bookmark;
       end;
     finally
+      DataSet.FreeBookmark(Bookmark);
       DataSet.EnableControls;
     end;
   finally
@@ -1576,7 +1577,7 @@ end;
 
 procedure TRxMemoryData.Sort;
 var
-  Pos: TBookmarkStr;
+  Pos: TBookmark;
 begin
   if Active and (FRecords <> nil) and (FRecords.Count > 0) then
   begin
@@ -1595,6 +1596,7 @@ begin
       end;
     finally
       Bookmark := Pos;
+      FreeBookmark(Pos);
     end;
     Resync([]);
   end;
