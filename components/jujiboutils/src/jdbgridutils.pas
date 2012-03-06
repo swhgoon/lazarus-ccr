@@ -430,6 +430,9 @@ end;
 
 function TJDbGridDateTimeCtrl.CanDefocus: boolean;
 begin
+  if not updated then
+    Result:= True
+  else
   if CellEditor.Focused and (Length(CellEditor.Text) = 0) then
     Result := True
   else
@@ -604,6 +607,9 @@ end;
 
 function TJDbGridTimeCtrl.CanDefocus: boolean;
 begin
+  if not updated then
+    Result:= True
+  else
   if CellEditor.Focused and (Length(CellEditor.Text) = 0) then
     Result := True
   else
@@ -780,6 +786,9 @@ end;
 
 function TJDbGridDateCtrl.CanDefocus: boolean;
 begin
+  if not updated then
+    Result:= True
+  else
   if CellEditor.Focused and (Length(CellEditor.Text) = 0) then
     Result := True
   else

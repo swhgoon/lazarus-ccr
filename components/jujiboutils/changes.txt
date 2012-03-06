@@ -3,7 +3,11 @@ JUJIBOUTILS
 
 Note: Lazarus Trunk required
 
-Version pre-1.0
+Version pre-1.1
+--------------------------------------------------
+2012-03-06 Fixed:  Focus issues
+
+Version 1.0
 --------------------------------------------------
 2011-10-14  Released jujiboutils 1.0
 2011-09-30  Added: ftString support to TJDBGridControl. MaxLength property.

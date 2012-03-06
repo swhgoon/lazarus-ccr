@@ -27,6 +27,9 @@ uses
   SysUtils, jinputconsts;
 
 type
+
+  { TJDBLabeledFloatEdit }
+
   TJDBLabeledFloatEdit = class(TCustomLabeledEdit)
   private
     fFormat: string;
@@ -63,6 +66,7 @@ type
     procedure KeyDown(var Key: word; Shift: TShiftState); override;
     procedure KeyPress(var Key: char); override;
     procedure DoEnter; override;
+    procedure DoExit; override;
     function GetReadOnly: boolean; override;
     procedure SetReadOnly(Value: boolean); override;
 
@@ -351,6 +355,12 @@ begin
   if FDataLink.Field <> nil then
     Caption := FDataLink.Field.AsString;
   inherited DoEnter;
+end;
+
+procedure TJDBLabeledFloatEdit.DoExit;
+begin
+  formatInput;
+  inherited DoExit;
 end;
 
 constructor TJDBLabeledFloatEdit.Create(TheOwner: TComponent);
