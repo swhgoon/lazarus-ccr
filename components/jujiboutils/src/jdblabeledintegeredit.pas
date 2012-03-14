@@ -34,6 +34,7 @@ type
   private
     fFormat: string;
     FDataLink: TFieldDataLink;
+    fUpdated: boolean;
 
     procedure DataChange(Sender: TObject);
     procedure UpdateData(Sender: TObject);
@@ -154,20 +155,24 @@ end;
 
 procedure TJDBLabeledIntegerEdit.UpdateData(Sender: TObject);
 begin
-  if FDataLink.Field <> nil then
-  begin
-    if IsValidInteger(Caption) then
-      FDataLink.Field.Text := Text
-    else
+  if not fUpdated then
+    if FDataLink.Field <> nil then
     begin
-      ShowMessage(Format(SInvalidNumber, [Caption]));
-      Caption := FDataLink.Field.AsString;
-      SelectAll;
-      SetFocus;
-    end;
-  end
-  else
-    Text := '';
+      if IsValidInteger(Caption) then
+      begin
+        FDataLink.Field.Text := Text;
+        fUpdated:= True
+      end
+      else
+      begin
+        ShowMessage(Format(SInvalidNumber, [Caption]));
+        Caption := FDataLink.Field.AsString;
+        SelectAll;
+        SetFocus;
+      end;
+    end
+    else
+      Text := '';
 end;
 
 procedure TJDBLabeledIntegerEdit.FocusRequest(Sender: TObject);
@@ -317,13 +322,15 @@ procedure TJDBLabeledIntegerEdit.DoEnter;
 begin
   if FDataLink.Field <> nil then
     Caption := FDataLink.Field.AsString;
+  fUpdated:= False;
   inherited DoEnter;
 end;
 
 procedure TJDBLabeledIntegerEdit.DoExit;
 begin
-  formatInput;
   inherited DoExit;
+  UpdateData(nil);
+  formatInput;
 end;
 
 constructor TJDBLabeledIntegerEdit.Create(TheOwner: TComponent);

@@ -35,6 +35,7 @@ type
     fFormat: string;
     FDataLink: TFieldDataLink;
     fDecimales: integer;
+    fUpdated: boolean;
 
     procedure DataChange(Sender: TObject);
     function getDecimals: integer;
@@ -174,29 +175,31 @@ procedure TJDBLabeledCurrencyEdit.UpdateData(Sender: TObject);
 var
   theValue: currency;
 begin
-  if FDataLink.Field <> nil then
-  begin
-    if IsValidCurrency(Text) then
+  if not fUpdated then
+    if FDataLink.Field <> nil then
     begin
-      theValue := StrToCurr(Text);
-      if fDecimales > 0 then
-        theValue := ScaleTo(theValue, fDecimales);
-      Text := CurrToStr(theValue);
-      FDataLink.Field.Value := theValue;
+      if IsValidCurrency(Text) then
+      begin
+        theValue := StrToCurr(Text);
+        if fDecimales > 0 then
+          theValue := ScaleTo(theValue, fDecimales);
+        Text := CurrToStr(theValue);
+        FDataLink.Field.Value := theValue;
+        fUpdated:= True;
+      end
+      else
+      begin
+        if FDataLink.Field <> nil then
+        begin
+          ShowMessage(Format(SInvalidNumber, [Caption]));
+          Caption := FDataLink.Field.AsString;
+          SelectAll;
+          SetFocus;
+        end;
+      end;
     end
     else
-    begin
-      if FDataLink.Field <> nil then
-      begin
-        ShowMessage(Format(SInvalidNumber, [Caption]));
-        Caption := FDataLink.Field.AsString;
-        SelectAll;
-        SetFocus;
-      end;
-    end;
-  end
-  else
-    Text := '';
+      Text := '';
 end;
 
 procedure TJDBLabeledCurrencyEdit.FocusRequest(Sender: TObject);
@@ -356,13 +359,15 @@ procedure TJDBLabeledCurrencyEdit.DoEnter;
 begin
   if FDataLink.Field <> nil then
     Caption := FDataLink.Field.AsString;
+  fUpdated:= False;
   inherited DoEnter;
 end;
 
 procedure TJDBLabeledCurrencyEdit.DoExit;
 begin
-  formatInput;
   inherited DoExit;
+  UpdateData(nil);
+  formatInput;
 end;
 
 constructor TJDBLabeledCurrencyEdit.Create(TheOwner: TComponent);
