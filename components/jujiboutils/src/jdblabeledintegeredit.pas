@@ -34,7 +34,6 @@ type
   private
     fFormat: string;
     FDataLink: TFieldDataLink;
-    fUpdated: boolean;
 
     procedure DataChange(Sender: TObject);
     procedure UpdateData(Sender: TObject);
@@ -63,7 +62,6 @@ type
     procedure KeyDown(var Key: word; Shift: TShiftState); override;
     procedure KeyPress(var Key: char); override;
     procedure DoEnter; override;
-    procedure DoExit; override;
     function GetReadOnly: boolean; override;
     procedure SetReadOnly(Value: boolean); override;
 
@@ -155,13 +153,11 @@ end;
 
 procedure TJDBLabeledIntegerEdit.UpdateData(Sender: TObject);
 begin
-  if not fUpdated then
     if FDataLink.Field <> nil then
     begin
       if IsValidInteger(Caption) then
       begin
         FDataLink.Field.Text := Text;
-        fUpdated:= True
       end
       else
       begin
@@ -322,15 +318,7 @@ procedure TJDBLabeledIntegerEdit.DoEnter;
 begin
   if FDataLink.Field <> nil then
     Caption := FDataLink.Field.AsString;
-  fUpdated:= False;
   inherited DoEnter;
-end;
-
-procedure TJDBLabeledIntegerEdit.DoExit;
-begin
-  inherited DoExit;
-  UpdateData(nil);
-  formatInput;
 end;
 
 constructor TJDBLabeledIntegerEdit.Create(TheOwner: TComponent);
@@ -355,7 +343,9 @@ procedure TJDBLabeledIntegerEdit.EditingDone;
 begin
   inherited EditingDone;
   if DataSource.State in [dsEdit, dsInsert] then
-    UpdateData(self);
+    UpdateData(self)
+  else
+    formatInput;
 end;
 
 end.

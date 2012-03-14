@@ -351,7 +351,9 @@ procedure TJDBLabeledDateEdit.EditingDone;
 begin
   inherited EditingDone;
   if DataSource.State in [dsEdit, dsInsert] then
-    UpdateData(self);
+    UpdateData(self)
+  else
+    formatInput;
 end;
 
 end.

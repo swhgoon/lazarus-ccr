@@ -35,7 +35,6 @@ type
     fFormat: string;
     FDataLink: TFieldDataLink;
     fDecimales: integer;
-    fUpdated: boolean;
 
     procedure DataChange(Sender: TObject);
     function getDecimals: integer;
@@ -67,7 +66,6 @@ type
     procedure KeyDown(var Key: word; Shift: TShiftState); override;
     procedure KeyPress(var Key: char); override;
     procedure DoEnter; override;
-    procedure DoExit; override;
     function GetReadOnly: boolean; override;
     procedure SetReadOnly(Value: boolean); override;
 
@@ -174,7 +172,6 @@ procedure TJDBLabeledFloatEdit.UpdateData(Sender: TObject);
 var
   theValue: double;
 begin
-  if not fUpdated then
     if FDataLink.Field <> nil then
     begin
       if IsValidFloat(Text) then
@@ -184,7 +181,6 @@ begin
           theValue := ScaleTo(theValue, fDecimales);
         Text := FloatToStr(theValue);
         FDataLink.Field.Value := theValue;
-        fUpdated := True;
       end
       else
       begin
@@ -357,15 +353,7 @@ procedure TJDBLabeledFloatEdit.DoEnter;
 begin
   if FDataLink.Field <> nil then
     Caption := FDataLink.Field.AsString;
-  fUpdated := False;
   inherited DoEnter;
-end;
-
-procedure TJDBLabeledFloatEdit.DoExit;
-begin
-  inherited DoExit;
-  UpdateData(nil);
-  formatInput;
 end;
 
 constructor TJDBLabeledFloatEdit.Create(TheOwner: TComponent);
@@ -393,7 +381,9 @@ procedure TJDBLabeledFloatEdit.EditingDone;
 begin
   inherited EditingDone;
   if DataSource.State in [dsEdit, dsInsert] then
-    UpdateData(self);
+    UpdateData(self)
+  else
+    formatInput;
 end;
 
 

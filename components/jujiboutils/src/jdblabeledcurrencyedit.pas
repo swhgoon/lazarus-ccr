@@ -35,7 +35,6 @@ type
     fFormat: string;
     FDataLink: TFieldDataLink;
     fDecimales: integer;
-    fUpdated: boolean;
 
     procedure DataChange(Sender: TObject);
     function getDecimals: integer;
@@ -67,7 +66,6 @@ type
     procedure KeyDown(var Key: word; Shift: TShiftState); override;
     procedure KeyPress(var Key: char); override;
     procedure DoEnter; override;
-    procedure DoExit; override;
     function GetReadOnly: boolean; override;
     procedure SetReadOnly(Value: boolean); override;
 
@@ -175,31 +173,29 @@ procedure TJDBLabeledCurrencyEdit.UpdateData(Sender: TObject);
 var
   theValue: currency;
 begin
-  if not fUpdated then
-    if FDataLink.Field <> nil then
+  if FDataLink.Field <> nil then
+  begin
+    if IsValidCurrency(Text) then
     begin
-      if IsValidCurrency(Text) then
-      begin
-        theValue := StrToCurr(Text);
-        if fDecimales > 0 then
-          theValue := ScaleTo(theValue, fDecimales);
-        Text := CurrToStr(theValue);
-        FDataLink.Field.Value := theValue;
-        fUpdated:= True;
-      end
-      else
-      begin
-        if FDataLink.Field <> nil then
-        begin
-          ShowMessage(Format(SInvalidNumber, [Caption]));
-          Caption := FDataLink.Field.AsString;
-          SelectAll;
-          SetFocus;
-        end;
-      end;
+      theValue := StrToCurr(Text);
+      if fDecimales > 0 then
+        theValue := ScaleTo(theValue, fDecimales);
+      Text := CurrToStr(theValue);
+      FDataLink.Field.Value := theValue;
     end
     else
-      Text := '';
+    begin
+      if FDataLink.Field <> nil then
+      begin
+        ShowMessage(Format(SInvalidNumber, [Caption]));
+        Caption := FDataLink.Field.AsString;
+        SelectAll;
+        SetFocus;
+      end;
+    end;
+  end
+  else
+    Text := '';
 end;
 
 procedure TJDBLabeledCurrencyEdit.FocusRequest(Sender: TObject);
@@ -359,15 +355,7 @@ procedure TJDBLabeledCurrencyEdit.DoEnter;
 begin
   if FDataLink.Field <> nil then
     Caption := FDataLink.Field.AsString;
-  fUpdated:= False;
   inherited DoEnter;
-end;
-
-procedure TJDBLabeledCurrencyEdit.DoExit;
-begin
-  inherited DoExit;
-  UpdateData(nil);
-  formatInput;
 end;
 
 constructor TJDBLabeledCurrencyEdit.Create(TheOwner: TComponent);
@@ -395,7 +383,9 @@ procedure TJDBLabeledCurrencyEdit.EditingDone;
 begin
   inherited EditingDone;
   if DataSource.State in [dsEdit, dsInsert] then
-    UpdateData(self);
+    UpdateData(self)
+  else
+    formatInput;
 end;
 
 end.
