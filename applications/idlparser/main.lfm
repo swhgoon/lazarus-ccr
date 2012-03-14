@@ -1,0 +1,121 @@
+object MainForm: TMainForm
+  Left = 468
+  Height = 438
+  Top = 319
+  Width = 680
+  Caption = 'IDL to Pascal parser'
+  ClientHeight = 438
+  ClientWidth = 680
+  LCLVersion = '0.9.31'
+  object memoPascalfile: TMemo
+    Left = 355
+    Height = 400
+    Top = 0
+    Width = 325
+    Align = alClient
+    Lines.Strings = (
+      ''
+    )
+    ScrollBars = ssAutoBoth
+    TabOrder = 0
+  end
+  object memoIDLFile: TMemo
+    Left = 0
+    Height = 400
+    Top = 0
+    Width = 350
+    Align = alLeft
+    Lines.Strings = (
+      ''
+    )
+    ScrollBars = ssAutoBoth
+    TabOrder = 1
+  end
+  object pBottom: TPanel
+    Left = 0
+    Height = 38
+    Top = 400
+    Width = 680
+    Align = alBottom
+    ClientHeight = 38
+    ClientWidth = 680
+    TabOrder = 2
+    object bConvert: TButton
+      Left = 80
+      Height = 32
+      Top = 3
+      Width = 100
+      Align = alLeft
+      BorderSpacing.Around = 2
+      Caption = 'IDL to Pascal'
+      OnClick = bConvertClick
+      TabOrder = 0
+    end
+    object bOpen: TButton
+      Left = 3
+      Height = 32
+      Top = 3
+      Width = 75
+      Align = alLeft
+      BorderSpacing.Around = 2
+      Caption = 'Open IDL'
+      OnClick = bOpenClick
+      TabOrder = 1
+    end
+    object bSave: TButton
+      Left = 182
+      Height = 32
+      Top = 3
+      Width = 139
+      Align = alLeft
+      BorderSpacing.Around = 2
+      Caption = 'Save to include file'
+      OnClick = bSaveClick
+      TabOrder = 2
+    end
+    object Label1: TLabel
+      Left = 458
+      Height = 36
+      Top = 1
+      Width = 1
+      Align = alLeft
+      Layout = tlCenter
+      ParentColor = False
+    end
+    object cbParamPrefix: TCheckBox
+      Left = 323
+      Height = 36
+      Top = 1
+      Width = 135
+      Align = alLeft
+      Caption = 'Add param prefix'
+      TabOrder = 3
+    end
+    object bSettings: TButton
+      Left = 608
+      Height = 32
+      Top = 3
+      Width = 69
+      Align = alRight
+      BorderSpacing.Around = 2
+      Caption = 'Settings'
+      OnClick = bSettingsClick
+      TabOrder = 4
+    end
+  end
+  object Splitter1: TSplitter
+    Left = 350
+    Height = 400
+    Top = 0
+    Width = 5
+  end
+  object OpenDialog: TOpenDialog
+    Filter = 'IDL-files|*.idl|All-diles|*'
+    left = 32
+    top = 8
+  end
+  object SaveDialog: TSaveDialog
+    left = 120
+    top = 8
+  end
+end

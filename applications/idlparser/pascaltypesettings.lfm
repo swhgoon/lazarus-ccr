@@ -1,0 +1,190 @@
+object TypeSettings: TTypeSettings
+  Left = 901
+  Height = 277
+  Top = 640
+  Width = 498
+  Caption = 'IDL to Pascal type translation settings'
+  ClientHeight = 277
+  ClientWidth = 498
+  LCLVersion = '0.9.31'
+  object pLeft: TPanel
+    Left = 0
+    Height = 277
+    Top = 0
+    Width = 240
+    Align = alLeft
+    BevelOuter = bvNone
+    ClientHeight = 277
+    ClientWidth = 240
+    TabOrder = 0
+    object ValueListEditor1: TValueListEditor
+      Left = 0
+      Height = 225
+      Top = 22
+      Width = 240
+      Align = alClient
+      AutoFillColumns = True
+      FixedCols = 0
+      FixedRows = 0
+      RowCount = 3
+      TabOrder = 0
+      Strings.Strings = (
+        '--=see lazarus bug 21480 '
+        'wstring=PWideChar'
+        'boolean=longbool'
+        ''
+      )
+      TitleCaptions.Strings = (
+        'IDL-Type'
+        'Pascal-Type'
+      )
+      ColWidths = (
+        119
+        119
+      )
+      Cells = (
+        6
+        0
+        0
+        'IDL-Type'
+        0
+        1
+        'wstring'
+        0
+        2
+        'boolean'
+        1
+        0
+        'Pascal-Type'
+        1
+        1
+        'PWideChar'
+        1
+        2
+        'longbool'
+      )
+    end
+    object Label2: TLabel
+      Left = 0
+      Height = 22
+      Top = 0
+      Width = 240
+      Align = alTop
+      Caption = 'Map IDL-types to Pascal-types'
+      ParentColor = False
+    end
+    object pMapBottom: TPanel
+      Left = 0
+      Height = 30
+      Top = 247
+      Width = 240
+      Align = alBottom
+      BevelOuter = bvNone
+      ClientHeight = 30
+      ClientWidth = 240
+      TabOrder = 1
+      object bSaveMap: TButton
+        Left = 138
+        Height = 26
+        Top = 2
+        Width = 100
+        Align = alRight
+        BorderSpacing.Around = 2
+        Caption = 'Save to file'
+        OnClick = bSaveMapClick
+        TabOrder = 0
+      end
+      object bLoadMap: TButton
+        Left = 2
+        Height = 26
+        Top = 2
+        Width = 100
+        Align = alLeft
+        BorderSpacing.Around = 2
+        Caption = 'Load from file'
+        OnClick = bLoadMapClick
+        TabOrder = 1
+      end
+    end
+  end
+  object Splitter1: TSplitter
+    Left = 240
+    Height = 277
+    Top = 0
+    Width = 5
+  end
+  object pRight: TPanel
+    Left = 245
+    Height = 277
+    Top = 0
+    Width = 253
+    Align = alClient
+    BevelOuter = bvNone
+    ClientHeight = 277
+    ClientWidth = 253
+    TabOrder = 2
+    object cTypes: TMemo
+      Left = 0
+      Height = 225
+      Top = 22
+      Width = 253
+      Align = alClient
+      Lines.Strings = (
+        'long'
+        'short'
+        'float'
+      )
+      TabOrder = 0
+    end
+    object Label3: TLabel
+      Left = 0
+      Height = 22
+      Top = 0
+      Width = 253
+      Align = alTop
+      Caption = 'List of c-types'
+      ParentColor = False
+    end
+    object pCListBottom: TPanel
+      Left = 0
+      Height = 30
+      Top = 247
+      Width = 253
+      Align = alBottom
+      BevelOuter = bvNone
+      ClientHeight = 30
+      ClientWidth = 253
+      TabOrder = 1
+      object bSaveClist: TButton
+        Left = 151
+        Height = 26
+        Top = 2
+        Width = 100
+        Align = alRight
+        BorderSpacing.Around = 2
+        Caption = 'Save to file'
+        OnClick = bSaveClistClick
+        TabOrder = 0
+      end
+      object bLoadCList: TButton
+        Left = 2
+        Height = 26
+        Top = 2
+        Width = 100
+        Align = alLeft
+        BorderSpacing.Around = 2
+        Caption = 'Load from file'
+        OnClick = bLoadCListClick
+        TabOrder = 1
+      end
+    end
+  end
+  object OpenDialog: TOpenDialog
+    left = 54
+    top = 153
+  end
+  object SaveDialog: TSaveDialog
+    left = 152
+    top = 152
+  end
+end
