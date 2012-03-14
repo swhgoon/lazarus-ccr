@@ -5,7 +5,7 @@ unit clock_control;
 interface
 
 uses
-  Classes, SysUtils, Controls, Graphics, LCLType, DateUtils;
+  Classes, SysUtils, Controls, Graphics, LCLType, DateUtils, Types;
 
 type
 
@@ -17,16 +17,22 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure EraseBackground(DC: HDC); override;
     procedure Paint; override;
+    function GetResourcesDir: string;
   end;
 
 implementation
+
+{$ifdef Darwin}
+uses
+  MacOSAll;
+{$endif}
 
 constructor TLazClockControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
   BackgroundImage := TPortableNetworkGraphic.Create;
-  BackgroundImage.LoadFromFile('skins\wallclock1.PNG');
+  BackgroundImage.LoadFromFile(GetResourcesDir() + 'skins' + PathDelim + 'wallclock1.PNG');
 end;
 
 procedure TLazClockControl.EraseBackground(DC: HDC);
@@ -46,7 +52,7 @@ begin
   Canvas.Draw(0, 0, BackgroundImage);
   lCurTime := Now();
   SysUtils.DecodeTime(lCurTime, lHours, lMinutes, lSeconds, lMilliseconds);
-  ClockCenter := Point(Width div 2, Height div 2);
+  ClockCenter := Types.Point(Width div 2, Height div 2);
 
   // Seconds indicator
   lPointerAngleMajor := - 2 * Pi * (lSeconds / 60);
@@ -84,6 +90,33 @@ begin
   Canvas.Pen.Color := clBlack;
   Canvas.Pen.Width := 7;
   Canvas.Line(MinorPos, MajorPos);
+end;
+
+function TLazClockControl.GetResourcesDir: string;
+{$ifdef Darwin}
+var
+  pathRef: CFURLRef;
+  pathCFStr: CFStringRef;
+  pathStr: shortstring;
+{$endif}
+begin
+{$ifdef UNIX}
+{$ifdef Darwin}
+  pathRef := CFBundleCopyBundleURL(CFBundleGetMainBundle());
+  pathCFStr := CFURLCopyFileSystemPath(pathRef, kCFURLPOSIXPathStyle);
+  CFStringGetPascalString(pathCFStr, @pathStr, 255, CFStringGetSystemEncoding());
+  CFRelease(pathRef);
+  CFRelease(pathCFStr);
+
+  Result := pathStr + '/Contents/Resources/';
+{$else}
+  Result := '/usr/share/lazclock/';
+{$endif}
+{$endif}
+
+{$ifdef Windows}
+  Result := ExtractFilePath(Application.EXEName);
+{$endif}
 end;
 
 end.
