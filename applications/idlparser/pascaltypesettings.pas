@@ -80,7 +80,7 @@ implementation
 procedure TTypeSettings.bLoadMapClick(Sender: TObject);
 begin
   if OpenDialog.Execute then
-    ValueListEditor1.LoadFromFile(OpenDialog.FileName);
+    ValueListEditor1.Strings.LoadFromFile(OpenDialog.FileName);
 end;
 
 procedure TTypeSettings.bSaveClistClick(Sender: TObject);
@@ -98,7 +98,7 @@ end;
 procedure TTypeSettings.bSaveMapClick(Sender: TObject);
 begin
   if SaveDialog.Execute then
-    ValueListEditor1.SaveToFile(SaveDialog.FileName);
+    ValueListEditor1.Strings.SaveToFile(SaveDialog.FileName);
 end;
 
 
