@@ -29,7 +29,7 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <CommandLineParams Value="/home/CNOC/joost/svn/geckoport/xulrunner-sdk-10/idl/nsIPrompt.idl"/>
+        <CommandLineParams Value="/home/CNOC/joost/svn/geckoport/xulrunner-sdk-10/idl/nsIInterfaceRequestor.idl"/>
       </local>
     </RunParams>
     <Units Count="3">

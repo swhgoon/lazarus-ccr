@@ -24,7 +24,7 @@ type
 
 { TIDLToPascal }
 
-procedure HandleIDLFile(AFilename: string; AnOutput: TStrings; TypeConvList, CTypesList: TStrings; AlwaysAddPrefixToParam: boolean);
+procedure HandleIDLFile(AFilename: string; AnOutput, ForwardOutput: TStrings; TypeConvList, CTypesList: TStrings; AlwaysAddPrefixToParam: boolean);
 var
   AnIDLList: TIDLList;
   AnInput: TStrings;
@@ -35,7 +35,7 @@ begin
     AnIDLList := TIDLList.create;
     try
       ParseFile(AnIDLList, AnInput);
-      GeneratePascalSource(AnIDLList,AnOutput,TypeConvList, CTypesList, AlwaysAddPrefixToParam);
+      GeneratePascalSource(AnIDLList,AnOutput,TypeConvList, CTypesList, AlwaysAddPrefixToParam, ForwardOutput);
     finally
       AnIDLList.Free;
     end;
@@ -49,7 +49,7 @@ var
   ErrorMsg: String;
   i: integer;
   filenames: TStrings;
-  output: TStrings;
+  output, forwardoutput: TStringList;
   OutputToFile: boolean;
   OutputFilename: string;
   CTypes, TypeMapList: TStrings;
@@ -61,7 +61,7 @@ begin
   TypeMapList := TStringList.Create;
   try
     // quick check parameters
-    ErrorMsg:=CheckOptions('hpo::c:m:',nil,nil,filenames);
+    ErrorMsg:=CheckOptions('hpo::c:m:f:',nil,nil,filenames);
     if ErrorMsg<>'' then
       begin
       ShowException(Exception.Create(ErrorMsg));
@@ -87,9 +87,20 @@ begin
       TypeMapList.LoadFromFile(GetOptionValue('m'));
       end;
 
+
     OutputToFile := HasOption('o');
     OutputFilename := GetOptionValue('o');
     AlwaysAddPrefixToParam := HasOption('p');
+
+    if HasOption('f') then
+      begin
+      forwardoutput := TStringList.Create;
+      forwardoutput.CaseSensitive:=false;
+      forwardoutput.Sorted:=true;
+      forwardoutput.Duplicates:=dupIgnore;
+      end
+    else
+      forwardoutput := nil;
 
     output := TStringList.Create;
     try
@@ -98,7 +109,7 @@ begin
         if OutputToFile and (OutputFilename='') then
           Output.Clear;
 
-        HandleIDLFile(filenames.Strings[i], output, TypeMapList, CTypes, AlwaysAddPrefixToParam);
+        HandleIDLFile(filenames.Strings[i], output, forwardoutput, TypeMapList, CTypes, AlwaysAddPrefixToParam);
 
         if OutputToFile and (OutputFilename='') then
           output.SaveToFile(LowerCase(ExtractFileName(ChangeFileExt(filenames.Strings[i],'.inc'))));
@@ -108,8 +119,12 @@ begin
       else if OutputFilename<>'' then
         output.SaveToFile(OutputFilename);
 
+      if assigned(forwardoutput) and (forwardoutput.Count<>0) then
+        forwardoutput.SaveToFile(GetOptionValue('f'));
+
     finally
       output.Free;
+      forwardoutput.Free;
     end;
 
   finally
@@ -150,6 +165,8 @@ begin
   writeln('              prefixed with ''c'' or ''cu'' (as used in the ctypes unit)');
   writeln(' -m filename  Read ''filename'' for a list of mappings between idl-type names');
   writeln('              and their Pascal counterpart');
+  writeln(' -f filename  Place all forward declarations into one file called ''filename''');
+
 end;
 
 var

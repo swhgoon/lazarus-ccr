@@ -38,7 +38,7 @@ uses
   Classes, SysUtils, strutils,
   idlParser;
 
-procedure GeneratePascalSource(const AnIdlList: TIDLList; const PascalCode: tstrings;TypeConvList, CTypesList: TStrings; AlwaysAddPrefixToParam: boolean);
+procedure GeneratePascalSource(const AnIdlList: TIDLList; const PascalCode: tstrings;TypeConvList, CTypesList: TStrings; AlwaysAddPrefixToParam: boolean; AForwardDeclList: TStrings = nil);
 
 implementation
 
@@ -91,12 +91,14 @@ begin
   case lowercase(AName) of
     'type': result := 'a'+AName;
     'end' : result := 'an'+AName;
+    'implementation' : result := 'an'+AName;
+    'set' : result := 'a'+AName;
   else
     result := AName;
   end;
 end;
 
-procedure GeneratePascalSource(const AnIdlList: TIDLList; const PascalCode: tstrings;TypeConvList, CTypesList: TStrings; AlwaysAddPrefixToParam: boolean);
+procedure GeneratePascalSource(const AnIdlList: TIDLList; const PascalCode: tstrings;TypeConvList, CTypesList: TStrings; AlwaysAddPrefixToParam: boolean; AForwardDeclList: TStrings = nil);
 
 var
   i,l,m: integer;
@@ -183,7 +185,15 @@ begin
       s := LineEnding + s + LineEnding+'  end;' + LineEnding
     else
       s := s + ';';
-    PascalCode.Add(s);
+
+    if assigned(AForwardDeclList) and (anIDL.InterfaceType='') then
+      begin
+      if AForwardDeclList.Count=0 then
+        AForwardDeclList.Add('type');
+      AForwardDeclList.Add(s);
+      end
+    else
+      PascalCode.Add(s);
 
     if consts<>'' then
       begin
