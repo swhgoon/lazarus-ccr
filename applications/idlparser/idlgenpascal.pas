@@ -77,6 +77,16 @@ begin
     result := AValue;
 end;
 
+function IdentifierNameToPascalName(AName: string) : string;
+begin
+  case lowercase(AName) of
+    'type': result := 'a'+AName;
+    'end' : result := 'an'+AName;
+  else
+    result := AName;
+  end;
+end;
+
 procedure GeneratePascalSource(const AnIdlList: TIDLList; const PascalCode: tstrings;TypeConvList, CTypesList: TStrings; AlwaysAddPrefixToParam: boolean);
 
 var
@@ -117,17 +127,17 @@ begin
             s := s + '    procedure '
           else
             s := s + '    function ';
-          s := s + anIDLMember.MemberName + '(';
+          s := s + IdentifierNameToPascalName(anIDLMember.MemberName) + '(';
           for m := 0 to anIDLMember.Params.Count-1 do
             begin
             anIDLMemberParameter := (anIDLMember.Params.Items[m]) as TIDLMemberParameter;
-            AParamName := anIDLMemberParameter.ParamName;
+            AParamName := IdentifierNameToPascalName(anIDLMemberParameter.ParamName);
             if AlwaysAddPrefixToParam or HasDoubleIdentifier(anIDL,AParamName) then // It could be that the name is used in a inherited class
               begin
               if AParamName[1] in ['a','e','o','u','i'] then
-                AParamName := 'An'+AParamName
+                AParamName := 'an'+AParamName
               else
-                AParamName := 'A'+AParamName;
+                AParamName := 'a'+AParamName;
               end;
 
             if m > 0 then s := s + '; ';
@@ -147,7 +157,7 @@ begin
           if not anIDLMember.MemberReadonly then
             s := s + '    procedure Set' +anIDLMember.MemberName + '(a'+anIDLMember.MemberName+': '+ PasType+'); safecall;' + LineEnding;
 
-          s := s + '    property ' +anIDLMember.MemberName+  ' : '+PasType+
+          s := s + '    property ' +IdentifierNameToPascalName(anIDLMember.MemberName)+  ' : '+PasType+
                ' read Get' +anIDLMember.MemberName;
           if not anIDLMember.MemberReadonly then
             s := s + ' write Set' +anIDLMember.MemberName;
