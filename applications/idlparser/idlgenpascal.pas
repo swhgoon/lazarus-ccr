@@ -35,7 +35,8 @@ unit idlGenPascal;
 interface
 
 uses
-  Classes, SysUtils, idlParser;
+  Classes, SysUtils, strutils,
+  idlParser;
 
 procedure GeneratePascalSource(const AnIdlList: TIDLList; const PascalCode: tstrings;TypeConvList, CTypesList: TStrings; AlwaysAddPrefixToParam: boolean);
 
@@ -71,10 +72,18 @@ end;
 
 function CValueToPascalValue(AValue: string) : string;
 begin
+  AValue := trim(AValue);
   if copy(AValue,1,2)='0x' then
     result := '$'+copy(AValue,3,16)
   else
+    begin
+    if (pos('''',AValue)<0) and (pos('"',AValue)<0) then
+      // the constant does not contain any strings
+      begin
+      AValue := StringsReplace(AValue,['<<','>>'],['shl','shr'],[rfReplaceAll]);
+      end;
     result := AValue;
+    end
 end;
 
 function IdentifierNameToPascalName(AName: string) : string;

@@ -227,14 +227,36 @@ var
       else if PriorState = psInterfaceBlockFuncName then
         CurrentIDLMember.MemberName:=AWord
       else if PriorState = psInterfaceBlockFuncParamName then
-        CurrentIDLMemberParam.ParamName:=AWord
-      else if PriorState = psConstValue then
-        begin
-        if CurrentIDLMember.ConstValue<>'' then CurrentIDLMember.ConstValue := CurrentIDLMember.ConstValue + ' ';
-        CurrentIDLMember.ConstValue:=CurrentIDLMember.ConstValue + AWord;
-        end;
+        CurrentIDLMemberParam.ParamName:=AWord;
       ParseState := ASetParseState;
       result := True;
+      end;
+  end;
+
+  function CheckStartConst: boolean;
+  begin
+    result := CheckChar(idlConstAssign,psConstValue);
+    if Result then
+      begin
+      pWordStart:=pCurrent;
+      ParseState := psConstValue;
+      inc(pcurrent);
+      end;
+  end;
+
+  function CheckEndConst: boolean;
+  var
+    i: integer;
+  begin
+    result := CheckChar(idlMemberEnd,psInterfaceBlock);
+    if result then
+      begin
+      i := pCurrent-pWordStart-1;
+      SetLength(AWord,i);
+      move(pWordStart^,AWord[1],i);
+      CurrentIDLMember.ConstValue:=AWord;
+      ParseState := psInterfaceBlock;
+      inc(pcurrent);
       end;
   end;
 
@@ -428,7 +450,7 @@ begin
         if not (CheckStartWord(psWord, psInterfaceBlockFuncName) or
                 CheckChar(idlStartFuncParams,psInterfaceBlockFuncParams) or
                 CheckChar(idlMemberEnd,psInterfaceBlock) or
-                CheckChar(idlConstAssign,psConstValue) or
+                CheckStartConst or
                 CheckChar(idlStartMultiLineComment,psMultiLineComment,ParseState)) then
           inc(pCurrent)
         end;
@@ -468,9 +490,9 @@ begin
         end;
       psConstValue:
         begin
-        if not (CheckStartWord(psWord, psConstValue) or
-                CheckChar(idlStartMultiLineComment,psMultiLineComment,ParseState) or
-                CheckChar(idlMemberEnd,psInterfaceBlock)) then
+        if not (CheckChar(idlStartMultiLineComment,psMultiLineComment,ParseState) or
+                CheckChar(idlStartSingleLineComment,psSingleLineComment,ParseState) or
+                CheckEndConst) then
         inc(pCurrent)
         end;
       psWord:
