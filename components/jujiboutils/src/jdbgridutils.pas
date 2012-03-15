@@ -320,7 +320,10 @@ begin
     else
     begin
       ShowMessage(Format(SInvalidDateTime, [CellEditor.Caption]));
-      CellEditor.Text := FormatDateTime(DisplayFormat, Field.AsDateTime);
+      if Field.IsNull then
+        CellEditor.Text:= ''
+      else
+        CellEditor.Text := FormatDateTime(DisplayFormat, Field.AsDateTime);
     end;
 
   end;
@@ -363,7 +366,10 @@ begin
       (not IsValidDateTimeString(NormalizeDateTime(CellEditor.Caption, theValue))) then
     begin
       ShowMessage(Format(SInvalidDateTime, [CellEditor.Caption]));
-      CellEditor.Text := FormatDateTime(DisplayFormat, theValue);
+      if Field.IsNull then
+        CellEditor.Text:= ''
+      else
+        CellEditor.Text := FormatDateTime(DisplayFormat, theValue);
       CellEditor.SelectAll;
       Key := VK_UNKNOWN;
     end
@@ -499,7 +505,10 @@ begin
     else
     begin
       ShowMessage(Format(SInvalidTime, [CellEditor.Caption]));
-      CellEditor.Text := FormatDateTime(DisplayFormat, Field.AsDateTime);
+      if Field.IsNull then
+        CellEditor.Text:= ''
+      else
+        CellEditor.Text := FormatDateTime(DisplayFormat, Field.AsDateTime);
     end;
   end;
 end;
@@ -540,7 +549,10 @@ begin
     (not IsValidTimeString(NormalizeTime(CellEditor.Caption, theValue))) then
   begin
     ShowMessage(Format(SInvalidTime, [CellEditor.Caption]));
-    CellEditor.Text := FormatDateTime(DisplayFormat, theValue);
+    if Field.IsNull then
+      CellEditor.Text:= ''
+    else
+      CellEditor.Text := FormatDateTime(DisplayFormat, theValue);
     CellEditor.SelectAll;
     Key := VK_UNKNOWN;
   end
@@ -676,7 +688,10 @@ begin
     else
     begin
       ShowMessage(Format(SInvalidDate, [CellEditor.Caption]));
-      CellEditor.Text := FormatDateTime(DisplayFormat, Field.AsDateTime);
+      if Field.IsNull then
+        CellEditor.Text:= ''
+      else
+        CellEditor.Text := FormatDateTime(DisplayFormat, Field.AsDateTime);
     end;
   end;
 end;
@@ -718,7 +733,10 @@ begin
       (not IsValidDateString(NormalizeDate(CellEditor.Caption, theValue))) then
     begin
       ShowMessage(Format(SInvalidDate, [CellEditor.Caption]));
-      CellEditor.Text := FormatDateTime(DisplayFormat, theValue);
+      if Field.IsNull then
+        CellEditor.Text:= ''
+      else
+        CellEditor.Text := FormatDateTime(DisplayFormat, theValue);
       CellEditor.SelectAll;
       Key := VK_UNKNOWN;
     end
