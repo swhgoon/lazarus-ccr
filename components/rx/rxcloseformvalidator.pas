@@ -89,7 +89,6 @@ type
     FOnCloseQuery : TCloseQueryEvent;
     FItems:TValidateItems;
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
-    function CheckCloseForm:boolean;
     function GetItems: TValidateItems;
     procedure SetCloseQueryHandler;
     procedure SetItems(AValue: TValidateItems);
@@ -100,6 +99,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function CheckCloseForm:boolean;
   published
     property ErrorMsgCaption:string read FErrorMsgCaption write FErrorMsgCaption;
     property Items:TValidateItems read GetItems write SetItems;
