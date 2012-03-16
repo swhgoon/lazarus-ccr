@@ -1,0 +1,12 @@
+object GeckoChromeForm: TGeckoChromeForm
+  Left = 192
+  Height = 600
+  Top = 107
+  Width = 800
+  Font.Height = -12
+  Font.Name = 'Tahoma'
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnResize = FormResize
+  LCLVersion = '0.9.29'
+end

@@ -1,0 +1,150 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="3">
+    <Name Value="GeckoComponents"/>
+    <AddToProjectUsesSection Value="False"/>
+    <Author Value="Gecko Components for Delphi; ported to Lazarus by Phil Hess"/>
+    <CompilerOptions>
+      <Version Value="9"/>
+      <SearchPaths>
+        <OtherUnitFiles Value="..;../each-version"/>
+        <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Parsing>
+        <SyntaxOptions>
+          <SyntaxMode Value="Delphi"/>
+          <CStyleOperator Value="False"/>
+          <IncludeAssertionCode Value="True"/>
+          <AllowLabel Value="False"/>
+          <CPPInline Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
+      <CodeGeneration>
+        <Checks>
+          <IOChecks Value="True"/>
+          <RangeChecks Value="True"/>
+          <OverflowChecks Value="True"/>
+          <StackChecks Value="True"/>
+        </Checks>
+        <VerifyObjMethodCallValidity Value="True"/>
+      </CodeGeneration>
+      <Linking>
+        <Debugging>
+          <GenerateDebugInfo Value="True"/>
+          <UseHeaptrc Value="True"/>
+        </Debugging>
+      </Linking>
+      <Other>
+        <WriteFPCLogo Value="False"/>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="Gecko Components for Lazarus"/>
+    <License Value="MPL 1.1"/>
+    <Version Release="3"/>
+    <Files Count="21">
+      <Item1>
+        <Filename Value="GeckoBrowser.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="GeckoBrowser"/>
+      </Item1>
+      <Item2>
+        <Filename Value="GeckoChromeWindow.lfm"/>
+        <Type Value="LFM"/>
+      </Item2>
+      <Item3>
+        <Filename Value="GeckoChromeWindow.lrs"/>
+        <Type Value="LRS"/>
+      </Item3>
+      <Item4>
+        <Filename Value="GeckoChromeWindow.pas"/>
+        <UnitName Value="GeckoChromeWindow"/>
+      </Item4>
+      <Item5>
+        <Filename Value="GeckoInit.pas"/>
+        <UnitName Value="GeckoInit"/>
+      </Item5>
+      <Item6>
+        <Filename Value="../nsCID.pas"/>
+        <UnitName Value="nsCID"/>
+      </Item6>
+      <Item7>
+        <Filename Value="../nsConsts.pas"/>
+        <UnitName Value="nsConsts"/>
+      </Item7>
+      <Item8>
+        <Filename Value="../nsEnumerators.pas"/>
+        <UnitName Value="nsEnumerators"/>
+      </Item8>
+      <Item9>
+        <Filename Value="../nsError.pas"/>
+        <UnitName Value="nsError"/>
+      </Item9>
+      <Item10>
+        <Filename Value="../nsErrorUtils.pas"/>
+        <UnitName Value="nsErrorUtils"/>
+      </Item10>
+      <Item11>
+        <Filename Value="../nsGeckoStrings.pas"/>
+        <UnitName Value="nsGeckoStrings"/>
+      </Item11>
+      <Item12>
+        <Filename Value="../nsInit.pas"/>
+        <UnitName Value="nsInit"/>
+      </Item12>
+      <Item13>
+        <Filename Value="../nsMemory.pas"/>
+        <UnitName Value="nsMemory"/>
+      </Item13>
+      <Item14>
+        <Filename Value="../nsNetUtil.pas"/>
+        <UnitName Value="nsNetUtil"/>
+      </Item14>
+      <Item15>
+        <Filename Value="../nsStream.pas"/>
+        <UnitName Value="nsStream"/>
+      </Item15>
+      <Item16>
+        <Filename Value="../nsTypes.pas"/>
+        <UnitName Value="nsTypes"/>
+      </Item16>
+      <Item17>
+        <Filename Value="../nsXPCOM.pas"/>
+        <UnitName Value="nsXPCOM"/>
+      </Item17>
+      <Item18>
+        <Filename Value="../nsXPCOMGlue.pas"/>
+        <UnitName Value="nsXPCOMGlue"/>
+      </Item18>
+      <Item19>
+        <Filename Value="../nsXRE.pas"/>
+        <UnitName Value="nsXRE"/>
+      </Item19>
+      <Item20>
+        <Filename Value="../each-version/nsXPCOM_std19.pas"/>
+        <UnitName Value="nsXPCOM_std19"/>
+      </Item20>
+      <Item21>
+        <Filename Value="GeckoPromptService.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="GeckoPromptService"/>
+      </Item21>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="2">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="IDEIntf"/>
+      </Item2>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)/"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
