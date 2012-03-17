@@ -70,7 +70,6 @@ type
     procedure BitBtn6Click(Sender: TObject);
     procedure CheckBox1Change(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
-    procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure ListBox1DrawItem(Control: TWinControl; Index: Integer;
@@ -80,6 +79,7 @@ type
   private
     procedure FillItems(List:TStrings; AVisible:boolean);
     procedure UpdateStates;
+    procedure Localize;
   public
     FToolPanel:TToolPanel;
     constructor CreateSetupForm(AToolPanel:TToolPanel);
@@ -90,6 +90,8 @@ var
 
 implementation
 uses vclutils, ActnList, boxprocs, rxconst;
+
+{$R *.lfm}
 
 type
   THackToolPanel = class(TToolPanel);
@@ -203,13 +205,7 @@ begin
   cbFlatBtn.Checked:=tpTransparentBtns in FToolPanel.Options;
 end;
 
-procedure TToolPanelSetupForm.FormClose(Sender: TObject;
-  var CloseAction: TCloseAction);
-begin
-  CloseAction:=caFree;
-end;
-
-procedure TToolPanelSetupForm.FormCreate(Sender: TObject);
+procedure TToolPanelSetupForm.Localize;
 begin
   Caption:=sToolPanelSetup;
   TabSheet1.Caption:=sVisibleButtons;
@@ -233,6 +229,11 @@ begin
   RadioGroup1.Items.Add(sButtonAlign3);
 end;
 
+procedure TToolPanelSetupForm.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  CloseAction:=caFree;
+end;
 
 procedure TToolPanelSetupForm.CheckBox1Change(Sender: TObject);
 var
@@ -285,6 +286,8 @@ end;
 constructor TToolPanelSetupForm.CreateSetupForm(AToolPanel: TToolPanel);
 begin
   inherited Create(AToolPanel);
+  Localize;
+  PageControl1.ActivePageIndex:=0;
   FormResize(nil);
   FToolPanel:=AToolPanel;
 
@@ -292,10 +295,13 @@ begin
   cbFlatBtn.Checked:=tpFlatBtns in FToolPanel.Options;
   cbTransp.Checked:=tpTransparentBtns in FToolPanel.Options;
   cbShowHint.Checked:=FToolPanel.ShowHint;
+
   ListBtnAvaliable.ItemHeight:=FToolPanel.BtnHeight + 4;
   ListBtnVisible.ItemHeight:=FToolPanel.BtnHeight + 4;
+
   FillItems(ListBtnVisible.Items, true);
   FillItems(ListBtnAvaliable.Items, false);
+
   RadioGroup1.ItemIndex:=Ord(FToolPanel.ButtonAllign);
   RadioGroup2.ItemIndex:=Ord(FToolPanel.ToolBarStyle);
 
@@ -307,12 +313,7 @@ begin
   RadioGroup1.OnClick:=@CheckBox1Change;
   RadioGroup2.OnClick:=@CheckBox1Change;
 
-  ListBtnAvaliable.ItemHeight:=FToolPanel.BtnHeight + 4;
-  ListBtnVisible.ItemHeight:=FToolPanel.BtnHeight + 4;
 end;
-
-initialization
-  {$I rxtbrsetup.lrs}
 
 end.
 

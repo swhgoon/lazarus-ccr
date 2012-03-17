@@ -902,7 +902,11 @@ begin
   
   if not (csLoading in ComponentState) then
     for i:=0 to FToolbarItems.Count - 1 do
-      FToolbarItems[i].FButton.Align:=BtnAl2Align[AValue];
+    begin
+//      if Assigned(FToolbarItems[i]) then
+//        if Assigned(FToolbarItems[i].FButton) then
+          FToolbarItems[i].FButton.Align:=BtnAl2Align[AValue];
+    end;
 end;
 
 procedure TToolPanel.SetImageList(const AValue: TImageList);
