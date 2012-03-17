@@ -39,14 +39,14 @@ unit nsMemory;
 interface
 
 uses
-  nsXPCOM;
+  nsXPCOM, nsTypes;
 
 const
   NS_MEMORY_CONTRACTID = '@mozilla.org/xpcom/memory-service;1';
   NS_MEMORY_CLASSNAME = 'Global Memory Service';
   NS_MEMORY_CID: TGUID = '{30a04e40-38e7-11d4-8cf5-0060b0fc14a3}';
 
-function Alloc(size: Integer): Pointer;
+function Alloc(size: size_t): Pointer;
 function Realloc(ptr: Pointer; size: Integer): Pointer;
 function Free(ptr: Pointer): Integer;
 function HeapMinimize(aImmediate: Boolean): Longword;
@@ -100,11 +100,11 @@ begin
     Result := False;
 end;
 
-function Alloc(size: Integer): Pointer;
+function Alloc(size: size_t): Pointer;
 begin
   Result := nil;
   if ENSURE_ALLOCATOR then
-    Result := gMemory.Alloc(size);
+    Result := gMemory.Alloc(size_t(size));
 end;
 
 function Realloc(ptr: Pointer; size: Integer): Pointer;

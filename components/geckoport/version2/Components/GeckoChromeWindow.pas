@@ -55,7 +55,7 @@ interface
 uses
   {$IFNDEF LCL} Windows, Messages, {$ELSE} LclIntf, LResources, {$ENDIF}
   SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, CallbackInterfaces, nsXPCOM, nsTypes, nsXPCOM_std19
+  Dialogs, CallbackInterfaces, nsXPCOM, nsTypes, ctypes
   {$IFDEF LCLCarbon}, CarbonPrivate {$ENDIF}
   {$IFDEF LCLGtk2}, gtk2 {$ENDIF}
   {$IFDEF LCLCocoa}, CocoaAll, CocoaUtils, CocoaPrivate {$ENDIF};
@@ -68,14 +68,12 @@ type
   //Win64   WindowHandle 64 bits THANDLE 64 bits
   //Linux32 WindowHandle 32 bits THANDLE 32 bits
   //Linux64 WindowHandle 64 bits THANDLE 32 bits
-  nativeWindow = PtrUInt;
 
   TGeckoChromeForm = class(TForm,
                            IGeckoCreateWindowTarget,
                            nsIWebBrowserChrome,
                            nsIEmbeddingSiteWindow,
                            nsIWebProgressListener,
-                           nsIInterfaceRequestor_std19,
                            nsIWeakReference,
                            nsISupportsWeakReference)
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -87,36 +85,35 @@ type
     FChromeFlags: Longword;
 
     // nsIWebBrowserChrome
-    procedure SetStatus(statusType: PRUint32; const status: PWideChar); safecall;
+    procedure SetStatus(statusType: idlulong; status: PWideChar); safecall;
     function GetWebBrowser(): nsIWebBrowser; safecall;
     procedure SetWebBrowser(aWebBrowser: nsIWebBrowser); safecall;
-    function GetChromeFlags: PRUint32; safecall;
-    procedure SetChromeFlags(aChromeFlags: PRUint32); safecall;
+    function GetChromeFlags: idlulong; safecall;
+    procedure SetChromeFlags(aChromeFlags: idlulong); safecall;
     procedure DestroyBrowserWindow(); safecall;
-    procedure SizeBrowserTo(aCX: PRInt32; aCY: PRInt32); safecall;
+    procedure SizeBrowserTo(aCX: idllong; aCY: idllong); safecall;
     procedure ShowAsModal(); safecall;
-    function IsWindowModal(): PRBool; safecall;
+    function IsWindowModal(): longbool; safecall;
     procedure ExitModalEventLoop(aStatus: nsresult); safecall;
     // nsIEmbeddingSiteWindow
-    procedure SetDimensions(flags: PRUint32; x, y, cx, cy: PRInt32); safecall;
-    procedure GetDimensions(flags: Longword; out x, y, cx, cy: PRInt32); safecall;
+    procedure SetDimensions(flags: idlulong; x, y, cx, cy: idllong); safecall;
+    procedure GetDimensions(flags: idlulong; out x, y, cx, cy: idllong); safecall;
     procedure SetFocus; reintroduce; safecall;
-    function GetVisibility(): PRBool; safecall;
-    procedure SetVisibility(Value: PRBool); safecall;
+    function GetVisibility(): longbool; safecall;
+    procedure SetVisibility(Value: longbool); safecall;
     function GetTitle(): PWideChar; safecall;
-    procedure SetTitle(const Value: PWideChar); safecall;
+    procedure SetTitle(Value: PWideChar); safecall;
     function GetSiteWindow: Pointer; safecall;
     // nsIWebProgressListener
-    procedure OnStateChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aStateFlags: PRUint32; aStatus: nsresult); safecall;
-    procedure OnProgressChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aCurSelfProgress: PRInt32; aMaxSelfProgress: PRInt32; aCurTotalProgress: PRInt32; aMaxTotalProgress: PRInt32); safecall;
+    procedure OnStateChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aStateFlags: idlulong; aStatus: nsresult); safecall;
+    procedure OnProgressChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aCurSelfProgress: idllong; aMaxSelfProgress: idllong; aCurTotalProgress: idllong; aMaxTotalProgress: idllong); safecall;
     procedure OnLocationChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; location: nsIURI); safecall;
-    procedure OnStatusChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aStatus: nsresult; const aMessage: PWideChar); safecall;
-    procedure OnSecurityChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; state: PRUint32); safecall;
+    procedure OnStatusChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aStatus: nsresult; aMessage: PWideChar); safecall;
+    procedure OnSecurityChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; state: idlulong); safecall;
     // nsIInterfaceRequestor
     function NS_GetInterface(constref uuid: TGUID; out Intf): nsresult; extdecl;
-    function nsIInterfaceRequestor_std19.GetInterface = NS_GetInterface;
     // for nsIWeakReference
-    procedure QueryReferent(constref IID: TGUID; out Obj); safecall;
+    procedure QueryReferent(constref uuid: TGuid; out result); safecall;
     // for nsISupportsWeakReference
     function GetWeakReference(): nsIWeakReference; safecall;
 
@@ -269,7 +266,7 @@ begin
   Result := Self;
 end;
 
-procedure TGeckoChromeForm.SetStatus(statusType: Longword; const status: PWideChar);
+procedure TGeckoChromeForm.SetStatus(statusType: idlulong; status: PWideChar);
 begin
   UseParameter(statusType);
 end;
@@ -284,12 +281,12 @@ begin
   UseParameter(aWebBrowser);
 end;
 
-function TGeckoChromeForm.GetChromeFlags: PRUint32;
+function TGeckoChromeForm.GetChromeFlags: idlulong;
 begin
   Result := FChromeFlags;
 end;
 
-procedure TGeckoChromeForm.SetChromeFlags(aChromeFlags: Longword);
+procedure TGeckoChromeForm.SetChromeFlags(aChromeFlags: idlulong);
 begin
   FChromeFlags := aChromeFlags;
   UpdateChrome;
@@ -300,7 +297,7 @@ begin
   Close;
 end;
 
-procedure TGeckoChromeForm.SizeBrowserTo(aCX, aCY: Integer);
+procedure TGeckoChromeForm.SizeBrowserTo(aCX, aCY: idllong);
 var
   dx, dy: Integer;
 begin
@@ -315,7 +312,7 @@ begin
   ShowModal;
 end;
 
-function TGeckoChromeForm.IsWindowModal: PRBool;
+function TGeckoChromeForm.IsWindowModal: longbool;
 begin
   Result := False;
 end;
@@ -326,11 +323,11 @@ begin
   ModalResult := 1;
 end;
 
-procedure TGeckoChromeForm.SetDimensions(flags: Longword; x, y, cx, cy: Longint);
+procedure TGeckoChromeForm.SetDimensions(flags: idlulong; x, y, cx, cy: idllong);
 const
-  FLAGS_POSITION   = NS_IEMBEDDINGSITEWINDOW_DIM_FLAGS_POSITION;
-  FLAGS_SIZE_INNER = ns_IEmbeddingSiteWindow_DIM_FLAGS_SIZE_INNER;
-  FLAGS_SIZE_OUTER = ns_IEmbeddingSiteWindow_DIM_FLAGS_SIZE_OUTER;
+  FLAGS_POSITION   = NSIEMBEDDINGSITEWINDOW_DIM_FLAGS_POSITION;
+  FLAGS_SIZE_INNER = nsIEmbeddingSiteWindow_DIM_FLAGS_SIZE_INNER;
+  FLAGS_SIZE_OUTER = nsIEmbeddingSiteWindow_DIM_FLAGS_SIZE_OUTER;
 var
   dx, dy: Integer;
 begin
@@ -361,11 +358,11 @@ begin
   end;
 end;
 
-procedure TGeckoChromeForm.GetDimensions(flags: Longword; out x, y, cx, cy: Longint);
+procedure TGeckoChromeForm.GetDimensions(flags: idlulong; out x, y, cx, cy: idllong);
 const
-  FLAGS_POSITION   = ns_IEmbeddingSiteWindow_DIM_FLAGS_POSITION;
-  FLAGS_SIZE_INNER = ns_IEmbeddingSiteWindow_DIM_FLAGS_SIZE_INNER;
-  FLAGS_SIZE_OUTER = ns_IEmbeddingSiteWindow_DIM_FLAGS_SIZE_OUTER;
+  FLAGS_POSITION   = nsIEmbeddingSiteWindow_DIM_FLAGS_POSITION;
+  FLAGS_SIZE_INNER = nsIEmbeddingSiteWindow_DIM_FLAGS_SIZE_INNER;
+  FLAGS_SIZE_OUTER = nsIEmbeddingSiteWindow_DIM_FLAGS_SIZE_OUTER;
 begin
   if (flags and FLAGS_POSITION)<>0 then
   begin
@@ -389,7 +386,7 @@ procedure TGeckoChromeForm.SetFocus();
 begin
 end;
 
-function TGeckoChromeForm.GetVisibility: PRBool;
+function TGeckoChromeForm.GetVisibility: longbool;
 begin
   Result := True;
 end;
@@ -405,7 +402,7 @@ begin
   Result := nil;
 end;
 
-procedure TGeckoChromeForm.SetTitle(const Value: PWideChar);
+procedure TGeckoChromeForm.SetTitle(Value: PWideChar);
 begin
   Caption := WideString(Value);
 end;
@@ -419,19 +416,19 @@ begin
 {$POP}
 end;
 
-procedure TGeckoChromeForm.OnStateChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aStateFlags: PRUint32; aStatus: nsresult);
+procedure TGeckoChromeForm.OnStateChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aStateFlags: idlulong; aStatus: nsresult);
 begin
   UseParameter(aWebProgress);
   UseParameter(aRequest);
   UseParameter(aStatus);
-  if ((aStateFlags and NS_IWEBPROGRESSLISTENER_STATE_STOP)<>0) and
-     ((aStateFlags and NS_IWEBPROGRESSLISTENER_STATE_IS_DOCUMENT)<>0) then
+  if ((aStateFlags and NSIWEBPROGRESSLISTENER_STATE_STOP)<>0) and
+     ((aStateFlags and NSIWEBPROGRESSLISTENER_STATE_IS_DOCUMENT)<>0) then
   begin
     ContentFinishedLoading();
   end;
 end;
 
-procedure TGeckoChromeForm.OnProgressChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aCurSelfProgress: PRInt32; aMaxSelfProgress: PRInt32; aCurTotalProgress: PRInt32; aMaxTotalProgress: PRInt32);
+procedure TGeckoChromeForm.OnProgressChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aCurSelfProgress: idllong; aMaxSelfProgress: idllong; aCurTotalProgress: idllong; aMaxTotalProgress: idllong);
 begin
   UseParameter(aWebProgress);
   UseParameter(aRequest);
@@ -448,14 +445,14 @@ begin
   UseParameter(location);
 end;
 
-procedure TGeckoChromeForm.OnStatusChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aStatus: nsresult; const aMessage: PWideChar);
+procedure TGeckoChromeForm.OnStatusChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aStatus: nsresult; aMessage: PWideChar);
 begin
   UseParameter(aWebProgress);
   UseParameter(aRequest);
   UseParameter(aStatus);
 end;
 
-procedure TGeckoChromeForm.OnSecurityChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; state: PRUint32);
+procedure TGeckoChromeForm.OnSecurityChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; state: idlulong);
 begin
   UseParameter(aWebProgress);
   UseParameter(aRequest);
@@ -476,7 +473,7 @@ begin
       Result := NS_ERROR_NOT_INITIALIZED;
   end else
   begin
-// FPC port: Result is PRUInt32, but QueryInterface returns Longint,
+// FPC port: Result is idlulong, but QueryInterface returns Longint,
 //  so cast to nsresult to prevent range check error.
     try
     Result := nsresult(QueryInterface(uuid, Intf));
@@ -487,11 +484,11 @@ begin
   end;
 end;
 
-procedure TGeckoChromeForm.QueryReferent(constref IID: TGUID; out Obj);
+procedure TGeckoChromeForm.QueryReferent(constref uuid: TGuid; out result);
 var
   rv: nsresult;
 begin
-  rv := QueryInterface(IID, Obj);
+  rv := QueryInterface(uuid, result);
   if NS_FAILED(rv) then
     raise EIntfCastError.Create('QueryReferent');
 end;

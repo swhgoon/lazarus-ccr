@@ -1,0 +1,226 @@
+type
+
+  nsIDOMMozURLProperty = interface(nsISupports)
+  ['{8fc58f56-f769-4368-a098-edd08550cf1a}']
+    function createObjectURL(blob: nsIDOMBlob) : DOMString; safecall;
+    procedure revokeObjectURL(URL: DOMString); safecall;
+
+  end;
+
+
+  nsIDOMWindow = interface(nsISupports)
+  ['{8f577294-d572-4473-94b1-d2c5a74a2a74}']
+    function Getwindow(): nsIDOMWindow; safecall;
+    property window : nsIDOMWindow read Getwindow;
+    function Getself(): nsIDOMWindow; safecall;
+    property self : nsIDOMWindow read Getself;
+    function Getdocument(): nsIDOMDocument; safecall;
+    property document : nsIDOMDocument read Getdocument;
+    function Getname(): DOMString; safecall;
+    procedure Setname(aname: DOMString); safecall;
+    property name : DOMString read Getname write Setname;
+    function Getlocation(): nsIDOMLocation; safecall;
+    property location : nsIDOMLocation read Getlocation;
+    function Gethistory(): nsIDOMHistory; safecall;
+    property history : nsIDOMHistory read Gethistory;
+    function Getlocationbar(): nsIDOMBarProp; safecall;
+    property locationbar : nsIDOMBarProp read Getlocationbar;
+    function Getmenubar(): nsIDOMBarProp; safecall;
+    property menubar : nsIDOMBarProp read Getmenubar;
+    function Getpersonalbar(): nsIDOMBarProp; safecall;
+    property personalbar : nsIDOMBarProp read Getpersonalbar;
+    function Getscrollbars(): nsIDOMBarProp; safecall;
+    property scrollbars : nsIDOMBarProp read Getscrollbars;
+    function Getstatusbar(): nsIDOMBarProp; safecall;
+    property statusbar : nsIDOMBarProp read Getstatusbar;
+    function Gettoolbar(): nsIDOMBarProp; safecall;
+    property toolbar : nsIDOMBarProp read Gettoolbar;
+    function Getstatus(): DOMString; safecall;
+    procedure Setstatus(astatus: DOMString); safecall;
+    property status : DOMString read Getstatus write Setstatus;
+    procedure close(); safecall;
+    procedure stop(); safecall;
+    procedure focus(); safecall;
+    procedure blur(); safecall;
+    function Getlength(): idlulong; safecall;
+    property length : idlulong read Getlength;
+    function Gettop(): nsIDOMWindow; safecall;
+    property top : nsIDOMWindow read Gettop;
+    function Getopener(): nsIDOMWindow; safecall;
+    procedure Setopener(aopener: nsIDOMWindow); safecall;
+    property opener : nsIDOMWindow read Getopener write Setopener;
+    function Getparent(): nsIDOMWindow; safecall;
+    property parent : nsIDOMWindow read Getparent;
+    function GetframeElement(): nsIDOMElement; safecall;
+    property frameElement : nsIDOMElement read GetframeElement;
+    function Getnavigator(): nsIDOMNavigator; safecall;
+    property navigator : nsIDOMNavigator read Getnavigator;
+    function GetapplicationCache(): nsIDOMOfflineResourceList; safecall;
+    property applicationCache : nsIDOMOfflineResourceList read GetapplicationCache;
+    procedure alert(text: DOMString); safecall;
+    function confirm(text: DOMString) : longbool; safecall;
+    function prompt(aMessage: DOMString; aInitial: DOMString) : DOMString; safecall;
+    procedure print(); safecall;
+    function showModalDialog(aURI: DOMString; aArgs: nsIVariant; aOptions: DOMString) : nsIVariant; safecall;
+    procedure postMessage(message: jsval; targetOrigin: DOMString); safecall;
+    function atob(aAsciiString: DOMString) : DOMString; safecall;
+    function btoa(aBase64Data: DOMString) : DOMString; safecall;
+    function GetsessionStorage(): nsIDOMStorage; safecall;
+    property sessionStorage : nsIDOMStorage read GetsessionStorage;
+    function GetlocalStorage(): nsIDOMStorage; safecall;
+    property localStorage : nsIDOMStorage read GetlocalStorage;
+    function getSelection() : nsISelection; safecall;
+    function matchMedia(media_query_list: DOMString) : nsIDOMMediaQueryList; safecall;
+    function Getscreen(): nsIDOMScreen; safecall;
+    property screen : nsIDOMScreen read Getscreen;
+    function GetinnerWidth(): idllong; safecall;
+    procedure SetinnerWidth(ainnerWidth: idllong); safecall;
+    property innerWidth : idllong read GetinnerWidth write SetinnerWidth;
+    function GetinnerHeight(): idllong; safecall;
+    procedure SetinnerHeight(ainnerHeight: idllong); safecall;
+    property innerHeight : idllong read GetinnerHeight write SetinnerHeight;
+    function GetscrollX(): idllong; safecall;
+    property scrollX : idllong read GetscrollX;
+    function GetpageXOffset(): idllong; safecall;
+    property pageXOffset : idllong read GetpageXOffset;
+    function GetscrollY(): idllong; safecall;
+    property scrollY : idllong read GetscrollY;
+    function GetpageYOffset(): idllong; safecall;
+    property pageYOffset : idllong read GetpageYOffset;
+    procedure scroll(xScroll: idllong; yScroll: idllong); safecall;
+    procedure scrollTo(xScroll: idllong; yScroll: idllong); safecall;
+    procedure scrollBy(xScrollDif: idllong; yScrollDif: idllong); safecall;
+    function GetscreenX(): idllong; safecall;
+    procedure SetscreenX(ascreenX: idllong); safecall;
+    property screenX : idllong read GetscreenX write SetscreenX;
+    function GetscreenY(): idllong; safecall;
+    procedure SetscreenY(ascreenY: idllong); safecall;
+    property screenY : idllong read GetscreenY write SetscreenY;
+    function GetouterWidth(): idllong; safecall;
+    procedure SetouterWidth(aouterWidth: idllong); safecall;
+    property outerWidth : idllong read GetouterWidth write SetouterWidth;
+    function GetouterHeight(): idllong; safecall;
+    procedure SetouterHeight(aouterHeight: idllong); safecall;
+    property outerHeight : idllong read GetouterHeight write SetouterHeight;
+    function getComputedStyle(elt: nsIDOMElement; pseudoElt: DOMString) : nsIDOMCSSStyleDeclaration; safecall;
+    function GetwindowRoot(): nsIDOMEventTarget; safecall;
+    property windowRoot : nsIDOMEventTarget read GetwindowRoot;
+    function Getframes(): nsIDOMWindowCollection; safecall;
+    property frames : nsIDOMWindowCollection read Getframes;
+    function GettextZoom(): idlfloat; safecall;
+    procedure SettextZoom(atextZoom: idlfloat); safecall;
+    property textZoom : idlfloat read GettextZoom write SettextZoom;
+    procedure scrollByLines(numLines: idllong); safecall;
+    procedure scrollByPages(numPages: idllong); safecall;
+    procedure sizeToContent(); safecall;
+    function Getcontent(): nsIDOMWindow; safecall;
+    property content : nsIDOMWindow read Getcontent;
+    function Getprompter(): nsIPrompt; safecall;
+    property prompter : nsIPrompt read Getprompter;
+    function Getclosed(): longbool; safecall;
+    property closed : longbool read Getclosed;
+    function Getcrypto(): nsIDOMCrypto; safecall;
+    property crypto : nsIDOMCrypto read Getcrypto;
+    function Getpkcs11(): nsIDOMPkcs11; safecall;
+    property pkcs11 : nsIDOMPkcs11 read Getpkcs11;
+    function Getcontrollers(): nsIControllers; safecall;
+    property controllers : nsIControllers read Getcontrollers;
+    function GetdefaultStatus(): DOMString; safecall;
+    procedure SetdefaultStatus(adefaultStatus: DOMString); safecall;
+    property defaultStatus : DOMString read GetdefaultStatus write SetdefaultStatus;
+    function GetmozInnerScreenX(): idlfloat; safecall;
+    property mozInnerScreenX : idlfloat read GetmozInnerScreenX;
+    function GetmozInnerScreenY(): idlfloat; safecall;
+    property mozInnerScreenY : idlfloat read GetmozInnerScreenY;
+    function GetscrollMaxX(): idllong; safecall;
+    property scrollMaxX : idllong read GetscrollMaxX;
+    function GetscrollMaxY(): idllong; safecall;
+    property scrollMaxY : idllong read GetscrollMaxY;
+    function GetfullScreen(): longbool; safecall;
+    procedure SetfullScreen(afullScreen: longbool); safecall;
+    property fullScreen : longbool read GetfullScreen write SetfullScreen;
+    procedure back(); safecall;
+    procedure forward(); safecall;
+    procedure home(); safecall;
+    procedure moveTo(xPos: idllong; yPos: idllong); safecall;
+    procedure moveBy(xDif: idllong; yDif: idllong); safecall;
+    procedure resizeTo(width: idllong; height: idllong); safecall;
+    procedure resizeBy(widthDif: idllong; heightDif: idllong); safecall;
+    function open(anurl: DOMString; aname: DOMString; options: DOMString) : nsIDOMWindow; safecall;
+    function openDialog(anurl: DOMString; aname: DOMString; options: DOMString; aExtraArgument: nsISupports) : nsIDOMWindow; safecall;
+    procedure updateCommands(action: DOMString); safecall;
+    function find(str: DOMString; caseSensitive: longbool; backwards: longbool; wrapAround: longbool; wholeWord: longbool; searchInFrames: longbool; showDialog: longbool) : longbool; safecall;
+    function GetmozPaintCount(): idlulong; safecall;
+    property mozPaintCount : idlulong read GetmozPaintCount;
+    procedure mozRequestAnimationFrame(aListener: nsIAnimationFrameListener); safecall;
+    function GetmozAnimationStartTime(): idllong; safecall;
+    property mozAnimationStartTime : idllong read GetmozAnimationStartTime;
+    function GetURL(): nsIDOMMozURLProperty; safecall;
+    property URL : nsIDOMMozURLProperty read GetURL;
+    function GetglobalStorage(): nsIDOMStorageList; safecall;
+    property globalStorage : nsIDOMStorageList read GetglobalStorage;
+    function Getonafterprint(): jsval; safecall;
+    procedure Setonafterprint(aonafterprint: jsval); safecall;
+    property onafterprint : jsval read Getonafterprint write Setonafterprint;
+    function Getonbeforeprint(): jsval; safecall;
+    procedure Setonbeforeprint(aonbeforeprint: jsval); safecall;
+    property onbeforeprint : jsval read Getonbeforeprint write Setonbeforeprint;
+    function Getonbeforeunload(): jsval; safecall;
+    procedure Setonbeforeunload(aonbeforeunload: jsval); safecall;
+    property onbeforeunload : jsval read Getonbeforeunload write Setonbeforeunload;
+    function Getonhashchange(): jsval; safecall;
+    procedure Setonhashchange(aonhashchange: jsval); safecall;
+    property onhashchange : jsval read Getonhashchange write Setonhashchange;
+    function Getonmessage(): jsval; safecall;
+    procedure Setonmessage(aonmessage: jsval); safecall;
+    property onmessage : jsval read Getonmessage write Setonmessage;
+    function Getonoffline(): jsval; safecall;
+    procedure Setonoffline(aonoffline: jsval); safecall;
+    property onoffline : jsval read Getonoffline write Setonoffline;
+    function Getononline(): jsval; safecall;
+    procedure Setononline(aononline: jsval); safecall;
+    property ononline : jsval read Getononline write Setononline;
+    function Getonpopstate(): jsval; safecall;
+    procedure Setonpopstate(aonpopstate: jsval); safecall;
+    property onpopstate : jsval read Getonpopstate write Setonpopstate;
+    function Getonpagehide(): jsval; safecall;
+    procedure Setonpagehide(aonpagehide: jsval); safecall;
+    property onpagehide : jsval read Getonpagehide write Setonpagehide;
+    function Getonpageshow(): jsval; safecall;
+    procedure Setonpageshow(aonpageshow: jsval); safecall;
+    property onpageshow : jsval read Getonpageshow write Setonpageshow;
+    function Getonresize(): jsval; safecall;
+    procedure Setonresize(aonresize: jsval); safecall;
+    property onresize : jsval read Getonresize write Setonresize;
+    function Getonunload(): jsval; safecall;
+    procedure Setonunload(aonunload: jsval); safecall;
+    property onunload : jsval read Getonunload write Setonunload;
+    function Getondevicemotion(): jsval; safecall;
+    procedure Setondevicemotion(aondevicemotion: jsval); safecall;
+    property ondevicemotion : jsval read Getondevicemotion write Setondevicemotion;
+    function Getondeviceorientation(): jsval; safecall;
+    procedure Setondeviceorientation(aondeviceorientation: jsval); safecall;
+    property ondeviceorientation : jsval read Getondeviceorientation write Setondeviceorientation;
+    function Getonmouseenter(): jsval; safecall;
+    procedure Setonmouseenter(aonmouseenter: jsval); safecall;
+    property onmouseenter : jsval read Getonmouseenter write Setonmouseenter;
+    function Getonmouseleave(): jsval; safecall;
+    procedure Setonmouseleave(aonmouseleave: jsval); safecall;
+    property onmouseleave : jsval read Getonmouseleave write Setonmouseleave;
+
+  end;
+
+
+  nsIDOMWindowPerformance = interface(nsISupports)
+  ['{2146c906-57f7-486c-a1b4-8cdb57ef577f}']
+    function Getperformance(): nsIDOMPerformance; safecall;
+    property performance : nsIDOMPerformance read Getperformance;
+
+  end;
+
+
+  nsIDOMWindowInternal = interface(nsIDOMWindow)
+  ['{8da641ab-906a-456e-97f2-b77df4ca2d95}']
+
+  end;
+

@@ -91,10 +91,6 @@ type
   gfxIImageFrame = interface;
   imgIContainer = interface;
   imgIContainerObserver = interface;
-  nsIBaseWindow = interface;
-  nsIContextMenuListener2 = interface;
-  nsIContextMenuInfo = interface;
-  nsIWebNavigation = interface;
 (***
  * A color is a 32 bit unsigned integer with
  * four components: R, G, B and A.
@@ -121,7 +117,6 @@ type
   //Win64   WindowHandle 64 bits THANDLE 64 bits
   //Linux32 WindowHandle 32 bits THANDLE 32 bits
   //Linux64 WindowHandle 64 bits THANDLE 32 bits
-  nativeWindow = PtrUInt;
   gfxIFormats = interface
   ['{96d086e6-1dd1-11b2-b6b2-b77b59390247}']
   end;
@@ -129,9 +124,9 @@ type
   gfxIImageFrame = interface(nsISupports)
   ['{51cc27a8-1dd2-11b2-a1aa-dad33ab193b4}']
     procedure Init(aX: nscoord; aY: nscoord; aWidth: nscoord; aHeight: nscoord; aFormat: gfx_format; aDepth: gfx_depth); safecall;
-    function GetMutable(): PRBool; safecall;
-    procedure SetMutable(aMutable: PRBool); safecall;
-    property Mutable: PRBool read GetMutable write SetMutable;
+    function GetMutable(): longbool; safecall;
+    procedure SetMutable(aMutable: longbool); safecall;
+    property Mutable: longbool read GetMutable write SetMutable;
     function GetX(): nscoord; safecall;
     property X: nscoord read GetX;
     function GetY(): nscoord; safecall;
@@ -206,46 +201,6 @@ type
     procedure FrameChanged(aContainer: imgIContainer; aFrame: gfxIImageFrame; const aDirtyRect: nsRect); safecall;
   end;
 
-  nsIBaseWindow = interface(nsISupports)
-  ['{046bc8a0-8015-11d3-af70-00a024ffc08c}']
-    procedure InitWindow(parentNativeWindow: nativeWindow; parentWidget: nsIWidget; x: PRInt32; y: PRInt32; cx: PRInt32; cy: PRInt32); safecall;
-    procedure Create(); safecall;
-    procedure Destroy(); safecall;
-    procedure SetPosition(x: PRInt32; y: PRInt32); safecall;
-    procedure GetPosition(out x: PRInt32; out y: PRInt32); safecall;
-    procedure SetSize(cx: PRInt32; cy: PRInt32; fRepaint: PRBool); safecall;
-    procedure GetSize(out cx: PRInt32; out cy: PRInt32); safecall;
-    procedure SetPositionAndSize(x: PRInt32; y: PRInt32; cx: PRInt32; cy: PRInt32; fRepaint: PRBool); safecall;
-    procedure GetPositionAndSize(out x: PRInt32; out y: PRInt32; out cx: PRInt32; out cy: PRInt32); safecall;
-    procedure Repaint(force: PRBool); safecall;
-    function GetParentWidget(): nsIWidget; safecall;
-    procedure SetParentWidget(aParentWidget: nsIWidget); safecall;
-    property ParentWidget: nsIWidget read GetParentWidget write SetParentWidget;
-    function GetParentNativeWindow(): nativeWindow; safecall;
-    procedure SetParentNativeWindow(aParentNativeWindow: nativeWindow); safecall;
-    property ParentNativeWindow: nativeWindow read GetParentNativeWindow write SetParentNativeWindow;
-    function GetVisibility(): PRBool; safecall;
-    procedure SetVisibility(aVisibility: PRBool); safecall;
-    property Visibility: PRBool read GetVisibility write SetVisibility;
-    function GetEnabled(): PRBool; safecall;
-    procedure SetEnabled(aEnabled: PRBool); safecall;
-    property Enabled: PRBool read GetEnabled write SetEnabled;
-    function GetBlurSuppression(): PRBool; safecall;
-    procedure SetBlurSuppression(aBlurSuppression: PRBool); safecall;
-    property BlurSuppression: PRBool read GetBlurSuppression write SetBlurSuppression;
-    function GetMainWidget(): nsIWidget; safecall;
-    property MainWidget: nsIWidget read GetMainWidget;
-    procedure SetFocus(); safecall;
-    function GetTitle(): PWideChar; safecall;
-    procedure SetTitle(const aTitle: PWideChar); safecall;
-    property Title: PWideChar read GetTitle write SetTitle;
-  end;
-
-  nsIContextMenuListener2 = interface(nsISupports)
-  ['{7fb719b3-d804-4964-9596-77cf924ee314}']
-    procedure OnShowContextMenu(aContextFlags: PRUint32; aUtils: nsIContextMenuInfo); safecall;
-  end;
-
   nsIContextMenuInfo = interface(nsISupports)
   ['{2f977d56-5485-11d4-87e2-0010a4e75ef2}']
     function GetMouseEvent(): nsIDOMEvent; safecall;
@@ -263,28 +218,6 @@ type
     property BackgroundImageSrc: nsIURI read GetBackgroundImageSrc;
   end;
 
-  nsIWebNavigation = interface(nsISupports)
-  ['{f5d9e7b0-d930-11d3-b057-00a024ffc08c}']
-    function GetCanGoBack(): PRBool; safecall;
-    property CanGoBack: PRBool read GetCanGoBack;
-    function GetCanGoForward(): PRBool; safecall;
-    property CanGoForward: PRBool read GetCanGoForward;
-    procedure GoBack(); safecall;
-    procedure GoForward(); safecall;
-    procedure GotoIndex(index: PRInt32); safecall;
-    procedure LoadURI(const uri: PWideChar; loadFlags: PRUint32; referrer: nsIURI; postData: nsIInputStream; headers: nsIInputStream); safecall;
-    procedure Reload(reloadFlags: PRUint32); safecall;
-    procedure Stop(stopFlags: PRUint32); safecall;
-    function GetDocument(): nsIDOMDocument; safecall;
-    property Document: nsIDOMDocument read GetDocument;
-    function GetCurrentURI(): nsIURI; safecall;
-    property CurrentURI: nsIURI read GetCurrentURI;
-    function GetReferringURI(): nsIURI; safecall;
-    property ReferringURI: nsIURI read GetReferringURI;
-    function GetSessionHistory(): nsISHistory; safecall;
-    procedure SetSessionHistory(aSessionHistory: nsISHistory); safecall;
-    property SessionHistory: nsISHistory read GetSessionHistory write SetSessionHistory;
-  end;
 
 implementation
 

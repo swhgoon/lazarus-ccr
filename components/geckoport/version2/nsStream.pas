@@ -61,10 +61,10 @@ type
     destructor Destroy; override;
 
     procedure Close(); safecall;
-    function Available(): PRUint32; safecall;
-    function Read(aBuf: PAnsiChar; aCount: Longword): PRUint32; safecall;
-    function ReadSegments(aWriter: nsWriteSegmentFun; aClosure: Pointer; aCount: Longword): PRUint32; safecall;
-    function IsNonBlocking(): PRBool; safecall;
+    function Available(): idlulong; safecall;
+    function Read(aBuf: charPtr; aCount: idlulong): idlulong; safecall;
+    function ReadSegments(aWriter: nsWriteSegmentFun; aClosure: voidPtr; aCount: idlulong): idlulong; safecall;
+    function IsNonBlocking(): longbool; safecall;
   end;
 
 constructor nsByteArrayInputStream.Create(const Buffer: Pointer; nBytes: Longword);
@@ -82,7 +82,7 @@ begin
   inherited;
 end;
 
-function nsByteArrayInputStream.Available(): PRUint32;
+function nsByteArrayInputStream.Available(): idlulong;
 begin
   if (FNBytes=0) or not Assigned(FBuffer) then
     Result := 0
@@ -92,8 +92,8 @@ end;
 
 procedure CopyMemory(var ADst; const ASrc; ASize: Integer); register; forward;
 
-function nsByteArrayInputStream.Read(aBuf: PAnsiChar;
-                                     aCount: Longword): PRUint32;
+function nsByteArrayInputStream.Read(aBuf: charPtr;
+                                     aCount: idlulong): idlulong;
 begin
   if (aCount=0) or (FPos = FNBytes) then
     Result := 0
@@ -118,11 +118,11 @@ begin
 end;
 
 function nsByteArrayInputStream.ReadSegments(aWriter: nsWriteSegmentFun;
-                                             aClosure: Pointer;
-                                             aCount: Longword): PRUint32;
+                                             aClosure: voidPtr;
+                                             aCount: idlulong): idlulong;
 var
   readCount: Longword;
-  rv: Longword;
+  rv: idlulong;
   newPtr: PByte;
 begin
   if FNBytes=0 then
@@ -147,7 +147,7 @@ begin
   end;
 end;
 
-function nsByteArrayInputStream.IsNonBlocking(): PRBool;
+function nsByteArrayInputStream.IsNonBlocking(): longbool;
 begin
   Result := True;
 end;
@@ -185,10 +185,10 @@ type
 
     // nsIInputStream
     procedure Close(); safecall;
-    function Available(): PRUint32; safecall;
-    function Read(aBuf: PAnsiChar; aCount: PRUint32): PRUint32; safecall;
-    function ReadSegments(aWriter: nsWriteSegmentFun; aClosure: Pointer; aCount: PRUint32): PRUint32; safecall;
-    function IsNonBlocking(): PRBool; safecall;
+    function Available(): idlulong; safecall;
+    function Read(aBuf: PAnsiChar; aCount: idlulong): idlulong; safecall;
+    function ReadSegments(aWriter: nsWriteSegmentFun; aClosure: voidPtr; aCount: idlulong): idlulong; safecall;
+    function IsNonBlocking(): longbool; safecall;
   end;
 
 constructor TInputStream.Create(stream: TStream; own: Boolean);
@@ -215,7 +215,7 @@ begin
   FStream := nil;
 end;
 
-function TInputStream.Available: PRUint32;
+function TInputStream.Available: idlulong;
 var
   size, pos: Int64;
 begin
@@ -230,13 +230,13 @@ begin
   end;
 end;
 
-function TInputStream.Read(aBuf: PAnsiChar; aCount: PRUint32): PRUint32;
+function TInputStream.Read(aBuf: PAnsiChar; aCount: idlulong): idlulong;
 begin
   Result := FStream.Read(aBuf^, aCount);
 end;
 
 function TInputStream.ReadSegments(aWriter: nsWriteSegmentFun;
-        aClosure: Pointer; aCount: PRUint32): PRUint32;
+        aClosure: voidPtr; aCount: idlulong): idlulong;
 type
   nsWriteSegmentFunc = function (aInStream: nsIInputStream;
                                  aClosure: Pointer;
@@ -258,7 +258,7 @@ begin
   end;
 end;
 
-function TInputStream.IsNonBlocking: PRBool;
+function TInputStream.IsNonBlocking: longbool;
 begin
   Result := True;
 end;
@@ -279,10 +279,10 @@ type
 
     procedure Close(); safecall;
     procedure Flush(); safecall;
-    function Write(const aBuf: PAnsiChar; aCount: PRUint32): PRUint32; safecall;
-    function WriteFrom(aFromStream: nsIInputStream; aCount: PRUint32): PRUint32; safecall;
-    function WriteSegments(aReader: nsReadSegmentFun; aClosure: Pointer; aCount: PRUint32): PRUint32; safecall;
-    function IsNonBlocking(): PRBool; safecall;
+    function Write(aBuf: PAnsiChar; aCount: idlulong): idlulong; safecall;
+    function WriteFrom(aFromStream: nsIInputStream; aCount: idlulong): idlulong; safecall;
+    function WriteSegments(aReader: nsReadSegmentFun; aClosure: Pointer; aCount: idlulong): idlulong; safecall;
+    function IsNonBlocking(): longbool; safecall;
   end;
 
 constructor TOutputStream.Create(output: TStream; own: Boolean);
@@ -313,12 +313,12 @@ procedure TOutputStream.Flush;
 begin
 end;
 
-function TOutputStream.Write(const aBuf: PAnsiChar; aCount: PRUint32): PRUint32;
+function TOutputStream.Write(aBuf: PAnsiChar; aCount: idlulong): idlulong;
 begin
   Result := FStream.Write(aBuf^, aCount);
 end;
 
-function TOutputStream.WriteFrom(aFromStream: nsIInputStream; aCount: PRUint32): PRUint32;
+function TOutputStream.WriteFrom(aFromStream: nsIInputStream; aCount: idlulong): idlulong;
 var
   data: Pointer;
 begin
@@ -332,7 +332,7 @@ begin
 end;
 
 function TOutputStream.WriteSegments(aReader: nsReadSegmentFun;
-        aClosure: Pointer; aCount: PRUint32): PRUint32;
+        aClosure: Pointer; aCount: idlulong): idlulong;
 type
   nsReadSegmentFunc = function (aOutStream: nsIOutputStream;
                                 aClosure: Pointer;
@@ -353,7 +353,7 @@ begin
   end;
 end;
 
-function TOutputStream.IsNonBlocking: PRBool;
+function TOutputStream.IsNonBlocking: longbool;
 begin
   Result := True;
 end;

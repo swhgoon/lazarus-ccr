@@ -1,0 +1,26 @@
+type
+
+  nsIDOMNodeFilter = interface(nsISupports)
+  ['{e4723748-1dd1-11b2-8ee6-866a532a6237}']
+    function acceptNode(n: nsIDOMNode) : idlshort; safecall;
+
+  end;
+
+const
+  nsIDOMNodeFilter_FILTER_ACCEPT=1;
+  nsIDOMNodeFilter_FILTER_REJECT=2;
+  nsIDOMNodeFilter_FILTER_SKIP=3;
+  nsIDOMNodeFilter_SHOW_ALL=$FFFFFFFF;
+  nsIDOMNodeFilter_SHOW_ELEMENT=$00000001;
+  nsIDOMNodeFilter_SHOW_ATTRIBUTE=$00000002;
+  nsIDOMNodeFilter_SHOW_TEXT=$00000004;
+  nsIDOMNodeFilter_SHOW_CDATA_SECTION=$00000008;
+  nsIDOMNodeFilter_SHOW_ENTITY_REFERENCE=$00000010;
+  nsIDOMNodeFilter_SHOW_ENTITY=$00000020;
+  nsIDOMNodeFilter_SHOW_PROCESSING_INSTRUCTION=$00000040;
+  nsIDOMNodeFilter_SHOW_COMMENT=$00000080;
+  nsIDOMNodeFilter_SHOW_DOCUMENT=$00000100;
+  nsIDOMNodeFilter_SHOW_DOCUMENT_TYPE=$00000200;
+  nsIDOMNodeFilter_SHOW_DOCUMENT_FRAGMENT=$00000400;
+  nsIDOMNodeFilter_SHOW_NOTATION=$00000800;
+

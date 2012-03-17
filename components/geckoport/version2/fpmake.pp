@@ -7,7 +7,7 @@ program fpmake;
 {$ENDIF}
 {$ENDIF}
 
-uses sysutils, lazmkunit, fpmkunit;
+uses fpmkunit, sysutils, lazmkunit;
 
 Var
   P : TLazPackage;
@@ -28,6 +28,9 @@ begin
     P.Description := 'Gecko headers and components to use Gecko in Free Pascal or Lazarus using XPCom.';
     P.Options.add('-Sm');
     P.Options.add('-Sd');
+
+    P.IncludePath.Add('gecko9');
+    P.IncludePath.Add('gecko10');
 
     P.Dependencies.Add('lazmkunit');
     P.Dependencies.Add('fcl-registry',AllWindowsOSes);
@@ -95,7 +98,7 @@ begin
       Dependencies.AddUnit('nsXPCOMGlue');
       Dependencies.AddUnit('nsTypes');
       end;
-
+{
     with P.Targets.AddUnit('nsEnumerators.pas') do
       begin
       Dependencies.AddUnit('nsTypes');
@@ -108,7 +111,7 @@ begin
       Dependencies.AddUnit('nsTypes');
       Dependencies.AddUnit('nsGeckoStrings');
       end;
-
+}
     with P.Targets.AddUnit('nsNetUtil.pas') do
       begin
       Dependencies.AddUnit('nsTypes');
@@ -145,13 +148,6 @@ begin
       Dependencies.AddUnit('nsError');
       end;}
 
-{    with P.Targets.AddUnit('each-version\nsXPCOM_safe19.pas') do
-      begin
-      Dependencies.AddUnit('nsTypes');
-      Dependencies.AddUnit('nsConsts');
-      Dependencies.AddUnit('nsGeckoStrings');
-      end;}
-
     P.Targets.AddExampleProgram('SampleApps/ChromeWin.dpr');
     P.Sources.AddExample('SampleApps/ChromeWin.dpr','examples');
     P.Sources.AddExample('SampleApps/ChromeWin.lpi','examples');
@@ -170,6 +166,7 @@ begin
     P.LazPackageFiles.AddLazFile('Components/CallbackInterfaces.pas');
     P.LazPackageFiles.AddLazFile('Components/GeckoBrowser.pas');
     P.LazPackageFiles.AddLazFile('Components/GeckoBrowser.lrs');
+    P.LazPackageFiles.AddLazFile('Components/GeckoPromptService.pas');
     P.LazPackageFiles.AddLazFile('Components/GeckoChromeWindow.pas');
     P.LazPackageFiles.AddLazFile('Components/GeckoChromeWindow.lfm');
     P.LazPackageFiles.AddLazFile('Components/GeckoChromeWindow.lrs');

@@ -60,8 +60,8 @@ function NS_GetServiceManager(out servMgr: nsIServiceManager): nsresult; cdecl;
 function NS_GetComponentManager(out compMgr: nsIComponentManager): nsresult; cdecl;
 function NS_GetComponentRegistrar(out compReg: nsIComponentRegistrar): nsresult; cdecl;
 function NS_GetMemoryManager(out memMgr: nsIMemory): nsresult; cdecl;
-function NS_NewLocalFile(const Path: nsAString; FollowLinks: PRBool; out newFile: nsILocalFile): nsresult; cdecl;
-function NS_NewNativeLocalFile(const Path: nsACString; FollowLinks: PRBool; out newFile: nsILocalFile): nsresult; cdecl;
+function NS_NewLocalFile(const Path: nsAString; FollowLinks: longbool; out newFile: nsILocalFile): nsresult; cdecl;
+function NS_NewNativeLocalFile(const Path: nsACString; FollowLinks: longbool; out newFile: nsILocalFile): nsresult; cdecl;
 function NS_GetDebug(out debug: nsIDebug): nsresult; cdecl;
 function NS_GetTraceRefcnt(out traceRefcnt: nsITraceRefcnt): nsresult; cdecl;
 
@@ -110,18 +110,18 @@ type
   end;
   nsStaticModuleInfoArray = array[0..MaxInt div Sizeof(nsStaticModuleInfo)-1] of nsStaticModuleInfo;
 
-function NS_Alloc(size: PRSize): Pointer; cdecl;
-function NS_Realloc(ptr: Pointer; size: PRSize): Pointer; cdecl;
+function NS_Alloc(size: PtrInt): Pointer; cdecl;
+function NS_Realloc(ptr: Pointer; size: PtrInt): Pointer; cdecl;
 procedure NS_Free(ptr: Pointer); cdecl;
 function NS_InitXPCOM3(out servMgr: nsIServiceManager; binDir: nsIFile; appFileLocationProvider: nsIDirectoryServiceProvider; var staticComponents: nsStaticModuleInfoArray; componentCount: PRUint32): nsresult; cdecl;
 
 function NS_StringContainerInit2(var aContainer: nsStringContainer; const aStr: PWideChar; aOffset, aLength: PRUint32): nsresult; cdecl;
-procedure NS_StringSetIsVoid(aStr: nsAString; const aIsVoid: PRBool); cdecl;
-function NS_StringGetIsVoid(const aStr: nsAString): PRBool; cdecl;
+procedure NS_StringSetIsVoid(aStr: nsAString; const aIsVoid: longbool); cdecl;
+function NS_StringGetIsVoid(const aStr: nsAString): longbool; cdecl;
 
 function NS_CStringContainerInit2(var aContainer: nsCStringContainer; const aStr: PAnsiChar; aOffset, aLength: PRUint32): nsresult; cdecl;
-procedure NS_CStringSetIsVoid(aStr: nsACString; const aIsVoid: PRBool); cdecl;
-function NS_CStringGetIsVoid(const aStr: nsACString): PRBool; cdecl;
+procedure NS_CStringSetIsVoid(aStr: nsACString; const aIsVoid: longbool); cdecl;
+function NS_CStringGetIsVoid(const aStr: nsACString): longbool; cdecl;
 
 // Added for Gecko 1.9
 const
@@ -169,7 +169,7 @@ type
   TD_UINT64:            (u64: PRUint64);
   TD_FLOAT:             (f: Single);
   TD_DOUBLE:            (d: Double);
-  TD_BOOL:              (b: PRBool);
+  TD_BOOL:              (b: longbool);
   TD_CHAR:              (c: AnsiChar);
   TD_WCHAR:             (w: WideChar);
   TD_VOID:              (p: Pointer);
@@ -240,9 +240,9 @@ type
   PGREVersionRange = ^TGREVersionRange;
   TGREVersionRange = record
     lower: PAnsiChar;
-    lowerInclusive: PRBool;
+    lowerInclusive: longbool;
     upper: PAnsiChar;
-    upperInclusive: PRBool;
+    upperInclusive: longbool;
   end;
   TGREVersionRangeArray = array [0..MaxInt div SizeOf(TGREVersionRange)-1] of TGREVersionRange;
 
@@ -317,7 +317,7 @@ type
 type
   nsIDirectoryServiceProvider_stdcall = interface(nsISupports)
   ['{bbf8cab0-d43a-11d3-8cc2-00609792278c}']
-    function GetFile(const prop: PAnsiChar; out persistent: PRBool; out AFile: nsIFile): nsresult; extdecl;
+    function GetFile(const prop: PAnsiChar; out persistent: longbool; out AFile: nsIFile): nsresult; extdecl;
   end;
 
   nsGREDirServiceProvider = class(TInterfacedObject,
@@ -326,7 +326,7 @@ type
     FPathEnvString: TMaxPathChar;
     class function NewInstance: TObject; override;
     procedure FreeInstance; override;
-    function GetFile(const prop: PAnsiChar; out persistent: PRBool; out AFile: nsIFile): nsresult; extdecl;
+    function GetFile(const prop: PAnsiChar; out persistent: longbool; out AFile: nsIFile): nsresult; extdecl;
     function GetGreDirectory(out AFile: nsILocalFile): nsresult;
   end;
 
@@ -355,8 +355,8 @@ type
   RegisterXPCOMExitRoutineFunc = function (exitRoutine: XPCOMExitRoutine; proproty: Longword): Longword; cdecl;
   UnregisterXPCOMExitRoutineFunc = function (exitRoutine: XPCOMExitRoutine): Longword; cdecl;
   // Added for Gecko 1.8
-  AllocFunc = function (size: PRSize): Pointer; cdecl;
-  ReallocFunc = function (ptr: Pointer; size: PRSize): Pointer; cdecl;
+  AllocFunc = function (size: ptrint): Pointer; cdecl;
+  ReallocFunc = function (ptr: Pointer; size: ptrint): Pointer; cdecl;
   FreeFunc = procedure (ptr: Pointer); cdecl;
   Init3Func = function (out servMgr: nsIServiceManager; binDir: nsIFile; provider: nsIDirectoryServiceProvider; var staticComponents: nsStaticModuleInfoArray; componentCount: PRUint32): nsresult; cdecl;
 
@@ -372,11 +372,11 @@ type
   GetXPTCallStubFunc = function (constref guid: TGUID; proxy: nsIXPTCProxy; out aIntf): nsresult; cdecl;
   DestroyXPTCallStubFunc = procedure (aStub: nsISupports); cdecl;
   InvokeByIndexFunc = function (aStub: nsISupports; methodIndex: PRUint32; paramCount: PRUint32; params: PXPTCVariantArray): nsresult; cdecl;
-  CycleCollectorFunc = function (aStub: nsISupports): PRBool; cdecl;
+  CycleCollectorFunc = function (aStub: nsISupports): longbool; cdecl;
 
   StringContainerInitFunc = function (var container: nsStringContainer): Longword; cdecl;
   StringContainerFinishFunc = procedure (var container: nsStringContainer); cdecl;
-  StringGetDataFunc = function (const str: nsAString; out data: PWideChar; aTerminated: PLongBool): Longword; cdecl;
+  StringGetDataFunc = function (const str: nsAString; var data: PWideChar; aTerminated: PLongBool): Longword; cdecl;
   StringCloneDataFunc = function (const str: nsAString): PWideChar; cdecl;
   StringSetDataFunc = procedure (str: nsAString; const data: PWideChar; length: Longword); cdecl;
   StringSetDataRangeFunc = procedure (str: nsAString; aCutOffset, aCutLength: Longword; const data: PWideChar; length: Longword); cdecl;
@@ -385,8 +385,8 @@ type
   StringContainerInit2Func = function (var container: nsStringContainer; const str: PWideChar; offset, length: PRUint32): nsresult; cdecl;
   StringGetMutableDataFunc = function (container: nsAString; aLength: PRUint32; out retval: PWideChar): PRUint32; cdecl;
   // Added for Gecko 1.9
-  StringSetIsVoidFunc = procedure (dst: nsAString; const isVoid: PRBool); cdecl;
-  StringGetIsVoidFunc = function (src: nsAString): PRBool; cdecl;
+  StringSetIsVoidFunc = procedure (dst: nsAString; const isVoid: longbool); cdecl;
+  StringGetIsVoidFunc = function (src: nsAString): longbool; cdecl;
 
   CStringContainerInitFunc = function (var container: nsCStringContainer): Longword; cdecl;
   CStringContainerFinishFunc = procedure (var container: nsCStringContainer); cdecl;
@@ -399,8 +399,8 @@ type
   CStringContainerInit2Func = function (var container: nsCStringContainer; const str: PAnsiChar; offset, length: PRUint32): nsresult; cdecl;
   CStringGetMutableDataFunc = function (container: nsACString; aLength: PRUint32; out retval: PAnsiChar): PRUint32; cdecl;
   // Added for Gecko 1.9
-  CStringSetIsVoidFunc = procedure (dst: nsACString; const isVoid: PRBool); cdecl;
-  CStringGetIsVoidFunc = function (src: nsACString): PRBool; cdecl;
+  CStringSetIsVoidFunc = procedure (dst: nsACString; const isVoid: longbool); cdecl;
+  CStringGetIsVoidFunc = function (src: nsACString): longbool; cdecl;
 
   CStringToUTF16Func = function (const src: nsACString; encoding: nsSourceEncoding; dst: nsAString): Longword; cdecl;
   UTF16ToCStringFunc = function (const src: nsAString; encoding: nsSourceEncoding; dst: nsACString): Longword; cdecl;
@@ -530,7 +530,7 @@ begin
 end;
 
 function NS_NewLocalFile(const path: nsAString;
-                         followLinks: PRBool;
+                         followLinks: longbool;
                          out newFile: nsILocalFile): nsresult;
 begin
   if Assigned(xpcomFunc.newLocalFile) then
@@ -540,7 +540,7 @@ begin
 end;
 
 function NS_NewNativeLocalFile(const path: nsACString;
-                               followLinks: PRBool;
+                               followLinks: longbool;
                                out newFile: nsILocalFile): nsresult;
 begin
   if Assigned(xpcomFunc.newNativeLocalFile) then
@@ -725,7 +725,7 @@ begin
 end;
 
 // Added for Gecko 1.8
-function NS_Alloc(size: PRSize): Pointer; cdecl;
+function NS_Alloc(size: PtrInt): Pointer; cdecl;
 begin
   if Assigned(xpcomFunc.alloc) then
     Result := xpcomFunc.alloc(size)
@@ -733,7 +733,7 @@ begin
     Result := nil;
 end;
 
-function NS_Realloc(ptr: Pointer; size: PRSize): Pointer; cdecl;
+function NS_Realloc(ptr: Pointer; size: PtrInt): Pointer; cdecl;
 begin
   if Assigned(xpcomFunc.realloc) then
     Result := xpcomFunc.realloc(ptr, size)
@@ -765,13 +765,13 @@ begin
     Result := NS_ERROR_FAILURE;
 end;
 
-procedure NS_StringSetIsVoid(aStr: nsAString; const aIsVoid: PRBool); cdecl;
+procedure NS_StringSetIsVoid(aStr: nsAString; const aIsVoid: longbool); cdecl;
 begin
   if Assigned(xpcomFunc.stringSetIsVoid) then
     xpcomFunc.stringSetIsVoid(aStr, aIsVoid);
 end;
 
-function NS_StringGetIsVoid(const aStr: nsAString): PRBool; cdecl;
+function NS_StringGetIsVoid(const aStr: nsAString): longbool; cdecl;
 begin
   if Assigned(xpcomFunc.stringGetIsVoid) then
     Result := xpcomFunc.stringGetIsVoid(aStr)
@@ -787,13 +787,13 @@ begin
     Result := NS_ERROR_FAILURE;
 end;
 
-procedure NS_CStringSetIsVoid(aStr: nsACString; const aIsVoid: PRBool); cdecl;
+procedure NS_CStringSetIsVoid(aStr: nsACString; const aIsVoid: longbool); cdecl;
 begin
   if Assigned(xpcomFunc.cstringSetIsVoid) then
     xpcomFunc.cstringSetIsVoid(aStr, aIsVoid);
 end;
 
-function NS_CStringGetIsVoid(const aStr: nsACString): PRBool; cdecl;
+function NS_CStringGetIsVoid(const aStr: nsACString): longbool; cdecl;
 begin
   if Assigned(xpcomFunc.cstringGetIsVoid) then
     Result := xpcomFunc.cstringGetIsVoid(aStr)
@@ -881,7 +881,7 @@ end;
 
 function CheckVersion(toCheck: PAnsiChar;
                       const versions: PGREVersionRangeArray;
-                      versionsLength: PRUint32): PRBool; forward;
+                      versionsLength: PRUint32): longbool; forward;
 
 {$IFDEF MSWINDOWS}
 function GRE_GetPathFromRegKey(
@@ -890,7 +890,7 @@ function GRE_GetPathFromRegKey(
                 versionsLength: PRUint32;
                 properties: PGREPropertyArray;
                 propertiesLength: PRUint32;
-                buf: PAnsiChar; buflen: PRUint32): PRBool; forward;
+                buf: PAnsiChar; buflen: PRUint32): longbool; forward;
 {$ENDIF}
 
 function GRE_GetGREPathWithProperties(
@@ -904,7 +904,7 @@ var
 {$IFDEF MSWINDOWS}
   hRegKey: HKEY;
 {$ENDIF}
-  ok: PRBool;
+  ok: longbool;
   versions: PGREVersionRangeArray;
   properties: PGREPropertyArray;
   GeckoVersion: String;
@@ -1006,7 +1006,7 @@ end;
 
 function CheckVersion(toCheck: PAnsiChar;
                       const versions: PGREVersionRangeArray;
-                      versionsLength: PRUint32): PRBool;
+                      versionsLength: PRUint32): longbool;
 var
   i: DWORD;
   c: PRInt32;
@@ -1040,7 +1040,7 @@ function CopyWithEnvExpansion(
                 aDest: PAnsiChar;
                 aSource: PAnsiChar;
                 aBufLen: PRUint32;
-                aType: DWORD): PRBool;
+                aType: DWORD): longbool;
 begin
   Result := False;
   case aType of
@@ -1065,7 +1065,7 @@ function GRE_GetPathFromRegKey(
                 versionsLength: PRUint32;
                 properties: PGREPropertyArray;
                 propertiesLength: PRUint32;
-                buf: PAnsiChar; buflen: PRUint32): PRBool;
+                buf: PAnsiChar; buflen: PRUint32): longbool;
 var
   i, j: DWORD;
   name: array [0..MAX_PATH] of AnsiChar;
@@ -1073,7 +1073,7 @@ var
   subKey: HKEY;
   ver: array[0..40] of AnsiChar;
   verLen: DWORD;
-  ok: PRBool;
+  ok: longbool;
   propbuf: array[0..MAX_PATH] of AnsiChar;
   proplen: DWORD;
   pathtype: DWORD;
@@ -1375,6 +1375,9 @@ const
 var
   func: GetFrozenFunctionsFunc;
 begin
+  FillChar(xpcomFunc, SizeOf(xpcomFunc), Byte(0));
+
+
   Result := NS_ERROR_FAILURE;
 
   xpcomFunc.version := XPCOM_GLUE_VERSION;
@@ -2165,7 +2168,7 @@ begin
     Result := nil;
 end;
 
-function safe_strncat(Dest: PAnsiChar; Append: PAnsiChar; count: PRUint32): PRBool;
+function safe_strncat(Dest: PAnsiChar; Append: PAnsiChar; count: PRUint32): longbool;
 var
   last: PAnsiChar;
 begin

@@ -55,8 +55,8 @@ interface
 uses
   LclIntf, LMessages, LclType, LResources, Graphics,
   SysUtils, Classes, Controls, nsXPCOM,
-  nsGeckoStrings, nsTypes, CallbackInterfaces, nsXPCOMGlue, BrowserSupports,
-  nsXPCOM_std19, GeckoPromptService
+  nsGeckoStrings, nsTypes, CallbackInterfaces, nsXPCOMGlue,
+  GeckoPromptService
   {$IFDEF LCLCarbon}, CarbonPrivate {$ENDIF}
   {$IFDEF LCLCocoa}, CocoaPrivate, CocoaAll, CocoaUtils {$ENDIF}
   {$IFDEF LCLGtk2}, gtk2,
@@ -346,27 +346,27 @@ type
     //destructor Destroy;
   protected
     // nsIWebBrowser
-    procedure SetStatus(statusType: PRUint32; const status: PWideChar); virtual; safecall; abstract;
+    procedure SetStatus(statusType: idlulong; status: PWideChar); virtual; safecall; abstract;
     function GetWebBrowser(): nsIWebBrowser; virtual; safecall; abstract;
     procedure SetWebBrowser(aWebBrowser: nsIWebBrowser); virtual; safecall; abstract;
-    function GetChromeFlags(): PRUint32; virtual; safecall; abstract;
-    procedure SetChromeFlags(aChromeFlags: PRUint32); virtual; safecall; abstract;
+    function GetChromeFlags(): idlulong; virtual; safecall; abstract;
+    procedure SetChromeFlags(aChromeFlags: idlulong); virtual; safecall; abstract;
     procedure DestroyBrowserWindow(); virtual; safecall; abstract;
-    procedure SizeBrowserTo(aCX: PRInt32; aCY: PRInt32); virtual; safecall; abstract;
+    procedure SizeBrowserTo(aCX: idllong; aCY: idllong); virtual; safecall; abstract;
     procedure ShowAsModal(); virtual; safecall; abstract;
-    function IsWindowModal(): PRBool; virtual; safecall; abstract;
+    function IsWindowModal(): longbool; virtual; safecall; abstract;
     procedure ExitModalEventLoop(aStatus: nsresult); virtual; safecall; abstract;
     // nsIWebBrowserChromeFocus
     procedure FocusNextElement(); virtual; safecall; abstract;
     procedure FocusPrevElement(); virtual; safecall; abstract;
     // nsIEmbeddingSiteWindow
-    procedure SetDimensions(flags: PRUint32; x: PRInt32; y: PRInt32; cx: PRInt32; cy: PRInt32); virtual; safecall; abstract;
-    procedure GetDimensions(flags: PRUint32; out x: PRInt32; out y: PRInt32; out cx: PRInt32; out cy: PRInt32); virtual; safecall; abstract;
+    procedure SetDimensions(flags: idlulong; x: idllong; y: idllong; cx: idllong; cy: idllong); virtual; safecall; abstract;
+    procedure GetDimensions(flags: idlulong; out x: idllong; out y: idllong; out cx: idllong; out cy: idllong); virtual; safecall; abstract;
     procedure SetFocus(); virtual; safecall; abstract;
-    function GetVisibility(): PRBool; virtual; safecall; abstract;
-    procedure SetVisibility(aVisibility: PRBool); virtual; safecall; abstract;
+    function GetVisibility(): longbool; virtual; safecall; abstract;
+    procedure SetVisibility(aVisibility: longbool); virtual; safecall; abstract;
     function GetTitle(): PWideChar; virtual; safecall; abstract;
-    procedure SetTitle(const aTitle: PWideChar); virtual; safecall; abstract;
+    procedure SetTitle(aTitle: PWideChar); virtual; safecall; abstract;
     function GetSiteWindow(): Pointer; virtual; safecall; abstract;
 
     // IGeckoBrowserChrome;
@@ -391,11 +391,11 @@ type
     procedure AddWebBrowserListener(browser: nsIWebBrowser); safecall;
     procedure RemoveWebBrowserListener(browser: nsIWebBrowser); safecall;
     // nsIWebProgressListener
-    procedure OnStateChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aStateFlags: PRUint32; aStatus: nsresult); virtual; safecall; abstract;
-    procedure OnProgressChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aCurSelfProgress: PRInt32; aMaxSelfProgress: PRInt32; aCurTotalProgress: PRInt32; aMaxTotalProgress: PRInt32); virtual; safecall; abstract;
+    procedure OnStateChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aStateFlags: idlulong; aStatus: nsresult); virtual; safecall; abstract;
+    procedure OnProgressChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aCurSelfProgress: idllong; aMaxSelfProgress: idllong; aCurTotalProgress: idllong; aMaxTotalProgress: idllong); virtual; safecall; abstract;
     procedure OnLocationChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; location: nsIURI); virtual; safecall; abstract;
-    procedure OnStatusChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aStatus: nsresult; const aMessage: PWideChar); virtual; safecall; abstract;
-    procedure OnSecurityChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; state: PRUint32); virtual; safecall; abstract;
+    procedure OnStatusChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aStatus: nsresult; aMessage: PWideChar); virtual; safecall; abstract;
+    procedure OnSecurityChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; state: idlulong); virtual; safecall; abstract;
     // nsIDOMEventListener
     procedure HandleEvent(aEvent: nsIDOMEvent); safecall;
   public
@@ -538,7 +538,7 @@ type
   { TGeckoBrowserChrome }
 
   TGeckoBrowserChrome = class(TCustomGeckoBrowserChrome,
-                              nsIInterfaceRequestor_std19,
+                              nsIInterfaceRequestor,
                               nsIContextMenuListener2,
                               nsITooltipListener)
   private
@@ -549,36 +549,36 @@ type
     destructor Destroy; override;
   protected
     // nsIWebBrowserChrome
-    procedure SetStatus(statusType: PRUint32; const status: PWideChar); override;
+    procedure SetStatus(statusType: idlulong; status: PWideChar); override;
     function GetWebBrowser(): nsIWebBrowser; override;
     procedure SetWebBrowser(aWebBrowser: nsIWebBrowser); override;
-    function GetChromeFlags(): PRUint32; override; {$IFDEF FPC} safecall; {$ENDIF}
-    procedure SetChromeFlags(aChromeFlags: PRUint32); override;
+    function GetChromeFlags(): idlulong; override; {$IFDEF FPC} safecall; {$ENDIF}
+    procedure SetChromeFlags(aChromeFlags: idlulong); override;
     procedure DestroyBrowserWindow(); override;
-    procedure SizeBrowserTo(aCX: PRInt32; aCY: PRInt32); override;
+    procedure SizeBrowserTo(aCX: idllong; aCY: idllong); override;
     procedure ShowAsModal(); override;
-    function IsWindowModal(): PRBool; override; {$IFDEF FPC} safecall; {$ENDIF}
+    function IsWindowModal(): longbool; override; {$IFDEF FPC} safecall; {$ENDIF}
     procedure ExitModalEventLoop(aStatus: nsresult); override;
     // nsIWebBrowserChromeFocus
     procedure FocusNextElement(); override;
     procedure FocusPrevElement(); override;
     // nsIEmbeddingSiteWindow
-    procedure SetDimensions(flags: PRUint32; x: PRInt32; y: PRInt32; cx: PRInt32; cy: PRInt32); override;
-    procedure GetDimensions(flags: PRUint32; out x: PRInt32; out y: PRInt32; out cx: PRInt32; out cy: PRInt32); override;
+    procedure SetDimensions(flags: idlulong; x: idllong; y: idllong; cx: idllong; cy: idllong); override;
+    procedure GetDimensions(flags: idlulong; out x: idllong; out y: idllong; out cx: idllong; out cy: idllong); override;
     procedure SetFocus(); override;
-    function GetVisibility(): PRBool; override; {$IFDEF FPC} safecall; {$ENDIF}
-    procedure SetVisibility(aVisibility: PRBool); override;
+    function GetVisibility(): longbool; override; {$IFDEF FPC} safecall; {$ENDIF}
+    procedure SetVisibility(aVisibility: longbool); override;
     function GetTitle(): PWideChar; override; {$IFDEF FPC} safecall; {$ENDIF}
-    procedure SetTitle(const aTitle: PWideChar); override;
+    procedure SetTitle(aTitle: PWideChar); override;
     function GetSiteWindow(): Pointer; override; {$IFDEF FPC} safecall; {$ENDIF}
     // nsIInterfaceRequestor
-    function NS_GetInterface(constref uuid: TGUID; out _result): nsresult; extdecl;
-    function nsIInterfaceRequestor_std19.GetInterface = NS_GetInterface;
+    procedure NS_GetInterface(constref uuid: TGuid; out _result); safecall;
+    function nsIInterfaceRequestor.GetInterface = NS_GetInterface;
     // nsIContextMenuListener2
-    procedure OnShowContextMenu(aContextFlags: PRUint32;
+    procedure OnShowContextMenu(aContextFlags: idlulong;
       aUtils: nsIContextMenuInfo); safecall;
     // nsITooltipListener
-    procedure OnShowTooltip(aXCoords: PRInt32; aYCoords: PRInt32; const aTipText: PWideChar); safecall;
+    procedure OnShowTooltip(aXCoords: idllong; aYCoords: idllong; aTipText: PWideChar); safecall;
     procedure OnHideTooltip(); safecall;
 
     // IGeckoBrowserChrome;
@@ -591,18 +591,18 @@ type
                                   nsIDOMEventListener)
   protected
     // nsIWebProgressListener
-    procedure OnStateChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aStateFlags: PRUint32; aStatus: nsresult); override;
-    procedure OnProgressChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aCurSelfProgress: PRInt32; aMaxSelfProgress: PRInt32; aCurTotalProgress: PRInt32; aMaxTotalProgress: PRInt32); override;
+    procedure OnStateChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aStateFlags: idlulong; aStatus: nsresult); override;
+    procedure OnProgressChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aCurSelfProgress: idllong; aMaxSelfProgress: idllong; aCurTotalProgress: idllong; aMaxTotalProgress: idllong); override;
     procedure OnLocationChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; location: nsIURI); override;
-    procedure OnStatusChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aStatus: nsresult; const aMessage: PWideChar); override;
-    procedure OnSecurityChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; state: PRUint32); override;
+    procedure OnStatusChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aStatus: nsresult; aMessage: PWideChar); override;
+    procedure OnSecurityChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; state: idlulong); override;
     // nsISHistoryListener
     procedure OnHistoryNewEntry(aNewURI: nsIURI); safecall;
-    function OnHistoryGoBack(aBackURI: nsIURI): PRBool; safecall;
-    function OnHistoryGoForward(aForwardURI: nsIURI): PRBool; safecall;
-    function OnHistoryReload(aReloadURI: nsIURI; aReloadFlags: PRUint32): PRBool; safecall;
-    function OnHistoryGotoIndex(aIndex: PRInt32; aGotoURI: nsIURI): PRBool; safecall;
-    function OnHistoryPurge(aNumEntries: PRInt32): PRBool; safecall;
+    function OnHistoryGoBack(aBackURI: nsIURI): longbool; safecall;
+    function OnHistoryGoForward(aForwardURI: nsIURI): longbool; safecall;
+    function OnHistoryReload(aReloadURI: nsIURI; aReloadFlags: idlulong): longbool; safecall;
+    function OnHistoryGotoIndex(aIndex: idllong; aGotoURI: nsIURI): longbool; safecall;
+    function OnHistoryPurge(aNumEntries: idllong): longbool; safecall;
     // nsIDOMEventListener
     //procedure HandleEvent(aEvent: nsIDOMEvent); safecall;
   public
@@ -727,7 +727,7 @@ procedure Register;
 {$IFNDEF LCL}
 {$R *.dcr}
 {$ELSE}
-{$IFNDEF DARWIN}
+{$IFDEF WINDOWS}
 {$R geckoresources.rc}
 {$ENDIF}
 {$ENDIF}
@@ -945,12 +945,12 @@ begin
   begin
     I := 0;
     domWin := browser.ContentWindow;
-    target := (domWin as nsIDOMWindow2).WindowRoot;
+    target := domWin.WindowRoot;
     while FDOMEvents[I].eventType <> etNone do
     begin
       with FDOMEvents[I] do
       begin
-        target.AddEventListener(NewString(Name).AString, Self, true);
+        target.AddEventListener(NewString(Name).AString, Self, true, false);
       end;
       Inc(I);
     end;
@@ -969,12 +969,12 @@ begin
   begin
     I := 0;
     domWin := browser.ContentWindow;
-    target := (domWin as nsIDOMWindow2).WindowRoot;
+    target := domWin.WindowRoot;
     while FDOMEvents[I].eventType <> etNone do
     begin
       with FDOMEvents[I] do
       begin
-        target.AddEventListener(NewString(Name).AString, Self, False);
+        target.AddEventListener(NewString(Name).AString, Self, False, false);
       end;
       Inc(I);
     end;
@@ -1016,7 +1016,7 @@ begin
 {$ELSE}
  {$PUSH}
   {$R-}
-      browser.RemoveWebBrowserListener(weak, table.Entries[i].IID^);
+      browser.RemoveWebBrowserListener(weak, table.Entries[i].IID);
  {$POP}
 {$ENDIF}
 end;
@@ -1040,7 +1040,7 @@ begin
   if Assigned(FDOMEvents) then
   begin
     str := NewString;
-    aEvent.GetType(str.AString);
+    str.assign(aEvent.GetType());
     eventType := str.ToString;
     I := 0;
     while FDOMEvents[I].eventType <>etNone do
@@ -1075,10 +1075,12 @@ begin
   if not (csDesigning in ComponentState) then
   begin
   end else begin
+    {$IFDEF windows}
     Logo:=TResourceStream.Create(HINSTANCE,'ID_GECKO_LOGO',pchar(RT_RCDATA));
     FDesignTimeLogo:=TPortableNetworkGraphic.Create;
     FDesignTimeLogo.LoadFromStream(Logo);
     Logo.Free;
+    {$ENDIF windows}
   end;
 end;
 
@@ -1295,7 +1297,7 @@ begin
 end;
 procedure TCustomGeckoBrowser.Reload;
 begin
-  ReloadWithFlags(NS_IWEBNAVIGATION_LOAD_FLAGS_NONE);
+  ReloadWithFlags(NSIWEBNAVIGATION_LOAD_FLAGS_NONE);
 end;
 
 procedure TCustomGeckoBrowser.ReloadWithFlags(AFlags: PRUint32);
@@ -1357,7 +1359,7 @@ begin
   try
     if FInitialized then begin
       iWebSetup:=Self.FWebBrowser as nsIWebBrowserSetup;
-      iWebSetup.SetProperty(NS_IWEBBROWSERSETUP_SETUP_ALLOW_JAVASCRIPT,PRInt32(not AValue));
+      iWebSetup.SetProperty(NSIWEBBROWSERSETUP_SETUP_ALLOW_JAVASCRIPT,PRInt32(not AValue));
     end;
     FDisableJavaScript:=AValue;
   except
@@ -1407,8 +1409,8 @@ begin
 end;
 
 procedure TGeckoBrowserChrome.SetStatus(
-                statusType: PRUint32;
-                const status: PWideChar);
+                statusType: idlulong;
+                status: PWideChar);
 begin
   {$IFDEF DEBUG}
   {
@@ -1435,14 +1437,14 @@ begin
 end;
 
 function TGeckoBrowserChrome.GetChromeFlags()
-                : PRUint32;
+                : idlulong;
 begin
   //TODO 2 -cTGeckoBrowserChrome: Chrome ƒtƒ‰ƒO‚Ìˆµ‚¢‚ð‚Ç‚¤‚µ‚æ‚¤‚©
-  Result := NS_IWEBBROWSERCHROME_CHROME_DEFAULT;
+  Result := NSIWEBBROWSERCHROME_CHROME_DEFAULT;
 end;
 
 procedure TGeckoBrowserChrome.SetChromeFlags(
-                aChromeFlags: PRUint32);
+                aChromeFlags: idlulong);
 begin
   UseParameter(aChromeFlags);
 end;
@@ -1454,8 +1456,8 @@ begin
 end;
 
 procedure TGeckoBrowserChrome.SizeBrowserTo(
-                aCX: PRInt32;
-                aCY: PRInt32);
+                aCX: idllong;
+                aCY: idllong);
 begin
   FBrowser.Width := aCX;
   FBrowser.Height:= aCY;
@@ -1466,7 +1468,7 @@ begin
 end;
 
 function TGeckoBrowserChrome.IsWindowModal()
-                : PRBool;
+                : longbool;
 begin
   Result := False;
 end;
@@ -1478,15 +1480,15 @@ begin
 end;
 
 procedure TGeckoBrowserChrome.SetDimensions(
-                flags: PRUint32;
-                x: PRInt32;
-                y: PRInt32;
-                cx: PRInt32;
-                cy: PRInt32);
+                flags: idlulong;
+                x: idllong;
+                y: idllong;
+                cx: idllong;
+                cy: idllong);
 const
-  FLAGS_POSITION   = ns_IEmbeddingSiteWindow_DIM_FLAGS_POSITION;
-  FLAGS_SIZE_INNER = ns_IEmbeddingSiteWindow_DIM_FLAGS_SIZE_INNER;
-  FLAGS_SIZE_OUTER = ns_IEmbeddingSiteWindow_DIM_FLAGS_SIZE_OUTER;
+  FLAGS_POSITION   = nsIEmbeddingSiteWindow_DIM_FLAGS_POSITION;
+  FLAGS_SIZE_INNER = nsIEmbeddingSiteWindow_DIM_FLAGS_SIZE_INNER;
+  FLAGS_SIZE_OUTER = nsIEmbeddingSiteWindow_DIM_FLAGS_SIZE_OUTER;
 var
   bounds: TRect;
   clientrect: TRect;
@@ -1524,15 +1526,15 @@ begin
 end;
 
 procedure TGeckoBrowserChrome.GetDimensions(
-                flags: PRUint32;
-                out x: PRInt32;
-                out y: PRInt32;
-                out cx: PRInt32;
-                out cy: PRInt32);
+                flags: idlulong;
+                out x: idllong;
+                out y: idllong;
+                out cx: idllong;
+                out cy: idllong);
 const
-  FLAGS_POSITION   = NS_IEMBEDDINGSITEWINDOW_DIM_FLAGS_POSITION;
-  FLAGS_SIZE_INNER = NS_IEMBEDDINGSITEWINDOW_DIM_FLAGS_SIZE_INNER;
-  FLAGS_SIZE_OUTER = NS_IEMBEDDINGSITEWINDOW_DIM_FLAGS_SIZE_OUTER;
+  FLAGS_POSITION   = NSIEMBEDDINGSITEWINDOW_DIM_FLAGS_POSITION;
+  FLAGS_SIZE_INNER = NSIEMBEDDINGSITEWINDOW_DIM_FLAGS_SIZE_INNER;
+  FLAGS_SIZE_OUTER = NSIEMBEDDINGSITEWINDOW_DIM_FLAGS_SIZE_OUTER;
 begin
   if (flags and FLAGS_POSITION)<>0 then
   begin
@@ -1565,14 +1567,14 @@ begin
   end;
 end;
 
-function TGeckoBrowserChrome.GetVisibility(): PRBool;
+function TGeckoBrowserChrome.GetVisibility(): longbool;
 begin
   // TODO 1 -cTGeckoBrowserChrome: TGeckoBrowserChrome.GetVisibility ‚Í‚Ç‚¤‚·‚×‚«‚©
   Result := True;
 end;
 
 procedure TGeckoBrowserChrome.SetVisibility(
-                aVisibility: PRBool);
+                aVisibility: longbool);
 begin
   UseParameter(aVisibility);
   //TODO 1 -cTGeckoBrowserChrome: TGeckoBrowserChrome.SetVisibility ‚ÌŽÀ‘•
@@ -1593,7 +1595,7 @@ begin
 end;
 
 procedure TGeckoBrowserChrome.SetTitle(
-                const aTitle: PWideChar);
+                aTitle: PWideChar);
 begin
   FBrowser.FTitle := aTitle;
   if Assigned(FBrowser.OnTitleChange) then
@@ -1637,7 +1639,7 @@ end;
 procedure TGeckoBrowserListener.OnStateChange(
                 aWebProgress: nsIWebProgress;
                 aRequest: nsIRequest;
-                aStateFlags: PRUint32;
+                aStateFlags: idlulong;
                 aStatus: nsresult);
 {$IFDEF DEBUG}
 var
@@ -1646,10 +1648,10 @@ var
   channel: nsIChannel;
 {$ENDIF}
 const
-  STATE_IS_DOCUMENT = NS_IWEBPROGRESSLISTENER_STATE_IS_DOCUMENT;
-  STATE_IS_NETWORK  = NS_IWEBPROGRESSLISTENER_STATE_IS_NETWORK;
-  STATE_START       = NS_IWEBPROGRESSLISTENER_STATE_START;
-  STATE_STOP        = NS_IWEBPROGRESSLISTENER_STATE_STOP;
+  STATE_IS_DOCUMENT = NSIWEBPROGRESSLISTENER_STATE_IS_DOCUMENT;
+  STATE_IS_NETWORK  = NSIWEBPROGRESSLISTENER_STATE_IS_NETWORK;
+  STATE_START       = NSIWEBPROGRESSLISTENER_STATE_START;
+  STATE_STOP        = NSIWEBPROGRESSLISTENER_STATE_STOP;
 begin
   UseParameter(aWebProgress);
   UseParameter(aRequest);
@@ -1721,10 +1723,10 @@ end;
 procedure TGeckoBrowserListener.OnProgressChange(
                 aWebProgress: nsIWebProgress;
                 aRequest: nsIRequest;
-                aCurSelfProgress: PRInt32;
-                aMaxSelfProgress: PRInt32;
-                aCurTotalProgress: PRInt32;
-                aMaxTotalProgress: PRInt32);
+                aCurSelfProgress: idllong;
+                aMaxSelfProgress: idllong;
+                aCurTotalProgress: idllong;
+                aMaxTotalProgress: idllong);
 begin
   UseParameter(aWebProgress);
   UseParameter(aRequest);
@@ -1753,7 +1755,8 @@ begin
   UseParameter(aWebProgress);
   UseParameter(aRequest);
   str := NewCString;
-  location.GetSpec(str.ACString);
+  // This leads to crashes. Seems to be a problem in the calling-convention.
+  //str.assign(location.GetSpec());
   {$IFDEF DEBUG}
   {
   OutputDebugStringA(PAnsiChar(
@@ -1769,7 +1772,7 @@ procedure TGeckoBrowserListener.OnStatusChange(
                 aWebProgress: nsIWebProgress;
                 aRequest: nsIRequest;
                 aStatus: nsresult;
-                const aMessage: PWideChar);
+                aMessage: PWideChar);
 begin
   UseParameter(aWebProgress);
   UseParameter(aRequest);
@@ -1788,7 +1791,7 @@ end;
 procedure TGeckoBrowserListener.OnSecurityChange(
                 aWebProgress: nsIWebProgress;
                 aRequest: nsIRequest;
-                state: PRUint32);
+                state: idlulong);
 begin
   UseParameter(aWebProgress);
   UseParameter(aRequest);
@@ -1860,21 +1863,24 @@ begin
   end;
 end;
 
-function TGeckoBrowserChrome.NS_GetInterface(constref uuid: TGUID; out _result): nsresult;
+procedure TGeckoBrowserChrome.NS_GetInterface(constref uuid: TGuid; out _result);
+var
+  Res: nsresult;
 begin
   if IsEqualGUID(uuid, nsIDOMWindow) then
   begin
-    Result:= nsresult(FBrowser.GetContentWindow.QueryInterface(uuid, _result));
+    Res:= nsresult(FBrowser.GetContentWindow.QueryInterface(uuid, _result));
   end else
   begin
 // FPC port: Result is PRUInt32, but QueryInterface returns Longint,
 //  so cast to nsresult to prevent range check error.
-//    Result := QueryInterface(uuid, _result);
-    Result := nsresult(QueryInterface(uuid, _result));
+    Res := nsresult(QueryInterface(uuid, _result));
   end;
+  if NS_FAILED(res) then
+    raise Exception.Create('Failed to get interface');
 end;
 
-procedure TGeckoBrowserChrome.OnShowContextMenu(aContextFlags: PRUint32;
+procedure TGeckoBrowserChrome.OnShowContextMenu(aContextFlags: idlulong;
   aUtils: nsIContextMenuInfo);
 (*
 const
@@ -1899,7 +1905,7 @@ begin
   end;
 end;
 
-procedure TGeckoBrowserChrome.OnShowTooltip(aXCoords: PRInt32; aYCoords: PRInt32; const aTipText: PWideChar); safecall;
+procedure TGeckoBrowserChrome.OnShowTooltip(aXCoords: idllong; aYCoords: idllong; aTipText: PWideChar); safecall;
 {$IFNDEF FPC}
 var
   r:TRect;
@@ -2139,7 +2145,7 @@ begin
   str :=NewUTF8String;
 //URI
   if Self.WebNavigation <> nil then
-    Self.WebNavigation.CurrentURI.GetSpec(str.AUTF8String);
+    str.assign(Self.WebNavigation.CurrentURI.GetSpec);
   Result := str.ToString;
 end;
 
@@ -2175,10 +2181,10 @@ begin
   UseParameter(aNewURI);
 end;
 
-function TGeckoBrowserListener.OnHistoryGoBack(aBackURI: nsIURI): PRBool;
+function TGeckoBrowserListener.OnHistoryGoBack(aBackURI: nsIURI): longbool;
 var
   Handled:Boolean;
-  aContinue:PRBool;
+  aContinue:longbool;
 begin
   Handled:=false;
   if Assigned(FBrowser.FOnGoBack) then
@@ -2195,10 +2201,10 @@ begin
   end;
 end;
 
-function TGeckoBrowserListener.OnHistoryGoForward(aForwardURI: nsIURI): PRBool;
+function TGeckoBrowserListener.OnHistoryGoForward(aForwardURI: nsIURI): longbool;
 var
   Handled:Boolean;
-  aContinue:PRBool;
+  aContinue:longbool;
 begin
   Handled:=false;
   if Assigned(FBrowser.FOnGoForward) then
@@ -2215,17 +2221,17 @@ begin
   end;
 end;
 
-function TGeckoBrowserListener.OnHistoryReload(aReloadURI: nsIURI; aReloadFlags: PRUint32): PRBool;
+function TGeckoBrowserListener.OnHistoryReload(aReloadURI: nsIURI; aReloadFlags: idlulong): longbool;
 begin
   UseParameter(aReloadURI);
   UseParameter(aReloadFlags);
   Result := True;
 end;
 
-function TGeckoBrowserListener.OnHistoryGotoIndex(aIndex: PRInt32; aGotoURI: nsIURI): PRBool;
+function TGeckoBrowserListener.OnHistoryGotoIndex(aIndex: idllong; aGotoURI: nsIURI): longbool;
 var
   Handled:Boolean;
-  aContinue:PRBool;
+  aContinue:longbool;
 begin
   Handled:=false;
   if Assigned(FBrowser.FOnGoToIndex) then
@@ -2243,7 +2249,7 @@ begin
   end;
 end;
 
-function TGeckoBrowserListener.OnHistoryPurge(aNumEntries: PRInt32): PRBool;
+function TGeckoBrowserListener.OnHistoryPurge(aNumEntries: idllong): longbool;
 begin
   UseParameter(aNumEntries);
   Result := True;
@@ -2256,17 +2262,17 @@ begin
   FInfo := info;
   FFlags := [];
 
-  if 0<>(flags and ns_IContextMenuListener2_CONTEXT_LINK) then
+  if 0<>(flags and nsIContextMenuListener2_CONTEXT_LINK) then
     FFlags := FFlags + [cmfLink];
-  if 0<>(flags and ns_IContextMenuListener2_CONTEXT_IMAGE) then
+  if 0<>(flags and nsIContextMenuListener2_CONTEXT_IMAGE) then
     FFlags := FFlags + [cmfImage];
-  if 0<>(flags and ns_IContextMenuListener2_CONTEXT_DOCUMENT) then
+  if 0<>(flags and nsIContextMenuListener2_CONTEXT_DOCUMENT) then
     FFlags := FFlags + [cmfDocument];
-  if 0<>(flags and ns_IContextMenuListener2_CONTEXT_TEXT) then
+  if 0<>(flags and nsIContextMenuListener2_CONTEXT_TEXT) then
     FFlags := FFlags + [cmfText];
-  if 0<>(flags and ns_IContextMenuListener2_CONTEXT_INPUT) then
+  if 0<>(flags and nsIContextMenuListener2_CONTEXT_INPUT) then
     FFlags := FFlags + [cmfInput];
-  if 0<>(flags and ns_IContextMenuListener2_CONTEXT_BACKGROUND_IMAGE) then
+  if 0<>(flags and nsIContextMenuListener2_CONTEXT_BACKGROUND_IMAGE) then
     FFlags := FFlags + [cmfBGImage];
 end;
 
@@ -2276,7 +2282,7 @@ var
 begin
   try
     str := NewString;
-    FInfo.GetAssociatedLink(str.AString);
+    str.assign(FInfo.GetAssociatedLink);
     Result := str.ToString;
   except
   end;
@@ -2290,7 +2296,7 @@ begin
   try
     str := NewUTF8String;
     uri := FInfo.GetImageSrc();
-    uri.GetSpec(str.AUTF8String);
+    str.assign(uri.GetSpec);
     Result := str.ToString;
   except
   end;
@@ -2304,7 +2310,7 @@ begin
   try
     str := NewUTF8String;
     uri := FInfo.GetBackgroundImageSrc();
-    uri.GetSpec(str.AUTF8String);
+    str.assign(uri.GetSpec);
     Result := str.ToString;
   except
   end;

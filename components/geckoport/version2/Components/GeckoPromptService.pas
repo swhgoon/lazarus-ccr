@@ -5,7 +5,7 @@ unit GeckoPromptService;
 interface
 
 uses
-  Classes, SysUtils, nsXPCOM, nsTypes;
+  Classes, SysUtils, nsXPCOM, nsTypes, ctypes;
 
 const
   NS_PROMPT_SERVICE_CID: TGUID =    '{a2112d6a-0e28-421f-b46a-25c0b308cbd0}';
@@ -32,25 +32,25 @@ type
   private
   public
     //nsIPromptService
-    procedure Alert(aParent: nsIDOMWindow; const aDialogTitle: PWideChar; const aText: PWideChar); safecall;
-    procedure AlertCheck(aParent: nsIDOMWindow; const aDialogTitle: PWideChar; const aText: PWideChar; const aCheckMsg: PWideChar; out aCheckState: PRBool); safecall;
-    function Confirm(aParent: nsIDOMWindow; const aDialogTitle: PWideChar; const aText: PWideChar): PRBool; safecall;
-    function ConfirmCheck(aParent: nsIDOMWindow; const aDialogTitle: PWideChar; const aText: PWideChar; const aCheckMsg: PWideChar; out aCheckState: PRBool): PRBool; safecall;
-    function ConfirmEx(aParent: nsIDOMWindow; const aDialogTitle: PWideChar; const aText: PWideChar; aButtonFlags: PRUint32; const aButton0Title: PWideChar; const aButton1Title: PWideChar; const aButton2Title: PWideChar; const aCheckMsg: PWideChar; out aCheckState: PRBool): PRInt32; safecall;
-    function Prompt(aParent: nsIDOMWindow; const aDialogTitle: PWideChar; const aText: PWideChar; var aValue: PWideChar; const aCheckMsg: PWideChar; var aCheckState: PRBool): PRBool; safecall;
-    function PromptUsernameAndPassword(aParent: nsIDOMWindow; const aDialogTitle: PWideChar; const aText: PWideChar; out aUsername: PWideChar; out aPassword: PWideChar; const aCheckMsg: PWideChar; out aCheckState: PRBool): PRBool; safecall;
-    function PromptPassword(aParent: nsIDOMWindow; const aDialogTitle: PWideChar; const aText: PWideChar; out aPassword: PWideChar; const aCheckMsg: PWideChar; out aCheckState: PRBool): PRBool; safecall;
-    function Select(aParent: nsIDOMWindow; const aDialogTitle: PWideChar; const aText: PWideChar; aCount: PRUint32; const aSelectList_array; out aOutSelection: PRInt32): PRBool; safecall;
+    procedure Alert(aParent: nsIDOMWindow; aDialogTitle: PWideChar; aText: PWideChar); safecall;
+    procedure AlertCheck(aParent: nsIDOMWindow; aDialogTitle: PWideChar; aText: PWideChar; aCheckMsg: PWideChar; var aCheckState: longbool); safecall;
+    function Confirm(aParent: nsIDOMWindow; aDialogTitle: PWideChar; aText: PWideChar): longbool; safecall;
+    function ConfirmCheck(aParent: nsIDOMWindow; aDialogTitle: PWideChar; aText: PWideChar; aCheckMsg: PWideChar; var aCheckState: longbool): longbool; safecall;
+    function ConfirmEx(aParent: nsIDOMWindow; aDialogTitle: PWideChar; aText: PWideChar; aButtonFlags: idlulong; aButton0Title: PWideChar; aButton1Title: PWideChar; aButton2Title: PWideChar; aCheckMsg: PWideChar; var aCheckState: longbool): PRInt32; safecall;
+    function Prompt(aParent: nsIDOMWindow; aDialogTitle: PWideChar; aText: PWideChar; var aValue: PWideChar; aCheckMsg: PWideChar; var aCheckState: longbool): longbool; safecall;
+    function PromptUsernameAndPassword(aParent: nsIDOMWindow; aDialogTitle: PWideChar; aText: PWideChar; var aUsername: PWideChar; var aPassword: PWideChar; aCheckMsg: PWideChar; var aCheckState: longbool): longbool; safecall;
+    function PromptPassword(aParent: nsIDOMWindow; aDialogTitle: PWideChar; aText: PWideChar; var aPassword: PWideChar;  aCheckMsg: PWideChar; var aCheckState: longbool): longbool; safecall;
+    function Select(aParent: nsIDOMWindow; aDialogTitle: PWideChar; aText: PWideChar; aCount: PRUint32; aSelectList: PWideChar; out aOutSelection: idllong): longbool; safecall;
     //nsIPromptService2
-    function PromptAuth(aParent: nsIDOMWindow; aChannel: nsIChannel; level: PRUint32; authInfo: nsIAuthInformation; const checkboxLabel: PWideChar; var checkValue: LongBool): LongBool; safecall;
-    function AsyncPromptAuth(aParent: nsIDOMWindow; aChannel: nsIChannel; aCallback: nsIAuthPromptCallback; aContext: nsISupports; level: PRUint32; authInfo: nsIAuthInformation; const checkboxLabel: PWideChar; var checkValue: LongBool): nsICancelable; safecall;
+    function PromptAuth(aParent: nsIDOMWindow; aChannel: nsIChannel; level: PRUint32; authInfo: nsIAuthInformation; checkboxLabel: PWideChar; var checkValue: LongBool): LongBool; safecall;
+    function AsyncPromptAuth(aParent: nsIDOMWindow; aChannel: nsIChannel; aCallback: nsIAuthPromptCallback; aContext: nsISupports; level: PRUint32; authInfo: nsIAuthInformation; checkboxLabel: PWideChar; var checkValue: LongBool): nsICancelable; safecall;
   end;
 
   { IPromptServiceFactory }
 
   IPromptServiceFactory = class(TInterfacedObject,nsIFactory)
-    procedure CreateInstance(aOuter: nsISupports; constref iid: TGUID; out _result); safecall;
-    procedure LockFactory(lock: PRBool); safecall;
+    procedure CreateInstance(aOuter: nsISupports; iid: nsIIDRef; out result); safecall;
+    procedure LockFactory(lock: longbool); safecall;
   end;
 
   TCustomGeckoPrompt=class(TComponent)
@@ -184,51 +184,51 @@ begin
   if not Assigned(GeckoPromptServiceFactory) then begin
     NS_GetComponentRegistrar(ComponentRegistrar);
     GeckoPromptServiceFactory:=IPromptServiceFactory.Create;
-    ComponentRegistrar.RegisterFactory(NS_PROMPT_SERVICE_CID,'Prompt Service',nil,GeckoPromptServiceFactory);
+    ComponentRegistrar.RegisterFactory(@NS_PROMPT_SERVICE_CID,'Prompt Service',nil,GeckoPromptServiceFactory);
   end;
 end;
 
 { IPromptService }
 
 procedure IPromptService.Alert(aParent: nsIDOMWindow;
-  const aDialogTitle: PWideChar; const aText: PWideChar); safecall;
+  aDialogTitle: PWideChar; aText: PWideChar); safecall;
 begin
   Unimplemented;
 end;
 
 procedure IPromptService.AlertCheck(aParent: nsIDOMWindow;
-  const aDialogTitle: PWideChar; const aText: PWideChar;
-  const aCheckMsg: PWideChar; out aCheckState: PRBool); safecall;
+  aDialogTitle: PWideChar; aText: PWideChar;
+  aCheckMsg: PWideChar; var aCheckState: longbool); safecall;
 begin
   Unimplemented;
 end;
 
 function IPromptService.Confirm(aParent: nsIDOMWindow;
-  const aDialogTitle: PWideChar; const aText: PWideChar): PRBool; safecall;
+  aDialogTitle: PWideChar; aText: PWideChar): longbool; safecall;
 begin
   Result:=Unimplemented;
 end;
 
 function IPromptService.ConfirmCheck(aParent: nsIDOMWindow;
-  const aDialogTitle: PWideChar; const aText: PWideChar;
-  const aCheckMsg: PWideChar; out aCheckState: PRBool): PRBool; safecall;
+  aDialogTitle: PWideChar; aText: PWideChar;
+  aCheckMsg: PWideChar; var aCheckState: longbool): longbool; safecall;
 begin
   Result:=Unimplemented;
 end;
 
 function IPromptService.ConfirmEx(aParent: nsIDOMWindow;
-  const aDialogTitle: PWideChar; const aText: PWideChar;
-  aButtonFlags: PRUint32; const aButton0Title: PWideChar;
-  const aButton1Title: PWideChar; const aButton2Title: PWideChar;
-  const aCheckMsg: PWideChar; out aCheckState: PRBool): PRInt32; safecall;
+  aDialogTitle: PWideChar; aText: PWideChar;
+  aButtonFlags: idlulong; aButton0Title: PWideChar;
+  aButton1Title: PWideChar; aButton2Title: PWideChar;
+  aCheckMsg: PWideChar; var aCheckState: longbool): PRInt32; safecall;
 begin
   UnImplemented;
   Result:=0;
 end;
 
 function IPromptService.Prompt(aParent: nsIDOMWindow;
-  const aDialogTitle: PWideChar; const aText: PWideChar; var aValue: PWideChar;
-  const aCheckMsg: PWideChar; var aCheckState: PRBool): PRBool; safecall;
+  aDialogTitle: PWideChar; aText: PWideChar; var aValue: PWideChar;
+  aCheckMsg: PWideChar; var aCheckState: longbool): longbool; safecall;
 var
   ThePrompt: TGeckoPrompt;
   Gecko: TGeckoBrowser;
@@ -260,31 +260,31 @@ begin
 end;
 
 function IPromptService.PromptUsernameAndPassword(aParent: nsIDOMWindow;
-  const aDialogTitle: PWideChar; const aText: PWideChar; out
-  aUsername: PWideChar; out aPassword: PWideChar; const aCheckMsg: PWideChar;
-  out aCheckState: PRBool): PRBool; safecall;
+  aDialogTitle: PWideChar; aText: PWideChar; var
+  aUsername: PWideChar; var aPassword: PWideChar; aCheckMsg: PWideChar;
+  var aCheckState: longbool): longbool; safecall;
 begin
   Result:=Unimplemented;
 end;
 
 function IPromptService.PromptPassword(aParent: nsIDOMWindow;
-  const aDialogTitle: PWideChar; const aText: PWideChar; out
-  aPassword: PWideChar; const aCheckMsg: PWideChar; out aCheckState: PRBool
-  ): PRBool; safecall;
+  aDialogTitle: PWideChar; aText: PWideChar; var
+  aPassword: PWideChar; aCheckMsg: PWideChar; var aCheckState: longbool
+  ): longbool; safecall;
 begin
   Result:=Unimplemented;
 end;
 
 function IPromptService.Select(aParent: nsIDOMWindow;
-  const aDialogTitle: PWideChar; const aText: PWideChar; aCount: PRUint32;
-  const aSelectList_array; out aOutSelection: PRInt32): PRBool; safecall;
+  aDialogTitle: PWideChar; aText: PWideChar; aCount: PRUint32;
+  aSelectList: PWideChar; out aOutSelection: idllong): longbool; safecall;
 begin
   Result:=Unimplemented;
 end;
 
 function IPromptService.PromptAuth(aParent: nsIDOMWindow; aChannel: nsIChannel;
   level: PRUint32; authInfo: nsIAuthInformation;
-  const checkboxLabel: PWideChar; var checkValue: LongBool): LongBool; safecall;
+  checkboxLabel: PWideChar; var checkValue: LongBool): LongBool; safecall;
 var
   ThePrompt: TGeckoPrompt;
   Gecko: TGeckoBrowser;
@@ -307,14 +307,14 @@ begin
       Result:=RetryOnFail;
     end else if Assigned(ThePrompt.FOnPromptAuthSimple) then begin
       //Simple Auth mode only for host, proxy and others must be handled by OnPromptAuth
-      authInfo.GetFlags(Flags);
-      if (Flags and not(NS_IAUTHINFORMATION_AUTH_HOST))=0 then begin
+      Flags := authInfo.GetFlags();
+      if (Flags and not(NSIAUTHINFORMATION_AUTH_HOST))=0 then begin
         UserName:=NewString;
         Password:=NewString;
         Realm:=NewString;
-        authInfo.GetUsername(UserName.AString);
-        authInfo.GetPassword(Password.AString);
-        authInfo.GetRealm(Realm.AString);
+        //authInfo.GetUsername(UserName.AString);
+        //authInfo.GetPassword(Password.AString);
+        //authInfo.GetRealm(Realm.AString);
         pUserName:=UTF8Encode(UserName.ToString);
         pPassword:=UTF8Encode(Password.ToString);
         CheckBoxValue:=checkValue;
@@ -324,8 +324,8 @@ begin
         UserName.Assign(UTF8Decode(pUserName));
         Password.Assign(UTF8Decode(pPassword));
         checkValue:=CheckBoxValue;
-        authInfo.SetUsername(UserName.AString);
-        authInfo.SetPassword(Password.AString);
+        //authInfo.SetUsername(UserName.AString);
+        //authInfo.SetPassword(Password.AString);
       end;
     end;
   end;
@@ -334,22 +334,21 @@ end;
 function IPromptService.AsyncPromptAuth(aParent: nsIDOMWindow;
   aChannel: nsIChannel; aCallback: nsIAuthPromptCallback;
   aContext: nsISupports; level: PRUint32; authInfo: nsIAuthInformation;
-  const checkboxLabel: PWideChar; var checkValue: LongBool): nsICancelable; safecall;
+  checkboxLabel: PWideChar; var checkValue: LongBool): nsICancelable; safecall;
 begin
   Result:=nil;
 end;
 
 { IPromptServiceFactory }
 
-procedure IPromptServiceFactory.CreateInstance(aOuter: nsISupports; constref
-  iid: TGUID; out _result); safecall;
+procedure IPromptServiceFactory.CreateInstance(aOuter: nsISupports; iid: nsIIDRef; out result); safecall;
 begin
   if not Assigned(ThisGeckoPromptService) then
     ThisGeckoPromptService:=IPromptService.Create;
-  ThisGeckoPromptService.QueryInterface(IID,_result);
+  ThisGeckoPromptService.QueryInterface(IID^,result);
 end;
 
-procedure IPromptServiceFactory.LockFactory(lock: PRBool); safecall;
+procedure IPromptServiceFactory.LockFactory(lock: longbool); safecall;
 begin
   //Unused by Gecko but keep to be ABI compatible in Win32.
 end;

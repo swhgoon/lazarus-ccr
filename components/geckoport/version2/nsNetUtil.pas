@@ -56,18 +56,18 @@ function NS_NewChannel(uri: nsIURI;
                        ioService: nsIIOService=nil;
                        loadGroup: nsILoadGroup=nil;
                        callbacks: nsIInterfaceRequestor=nil;
-                       loadFlags: Longword=NS_IREQUEST_LOAD_NORMAL): nsIChannel;
+                       loadFlags: Longword=nsIRequest_LOAD_NORMAL): nsIChannel;
 function NS_OpenURI(uri: nsIURI;
                     ioService: nsIIOService=nil;
                     loadGroup: nsILoadGroup=nil;
                     callbacks: nsIInterfaceRequestor=nil;
-                    loadFlags: Longword=NS_IREQUEST_LOAD_NORMAL): nsIInputStream; overload;
+                    loadFlags: Longword=NSIREQUEST_LOAD_NORMAL): nsIInputStream; overload;
 procedure NS_OpenURI(listener: nsIStreamListener;
                      context: nsISupports; uri:
                      nsIURI; ioService: nsIIOService=nil;
                      loadGroup: nsILoadGroup=nil;
                      callbacks: nsIInterfaceRequestor=nil;
-                     loadFlags: Longword=NS_IREQUEST_LOAD_NORMAL); overload;
+                     loadFlags: Longword=NSIREQUEST_LOAD_NORMAL); overload;
 procedure NS_MakeAbsoluteURI(uri: nsAUTF8String;
                             const spec: nsAUTF8String;
                             baseURI: nsIURI;
@@ -166,7 +166,7 @@ begin
     Result := grip.NewFileURI(spec);
   except
     str := NewUTF8String;
-    spec.GetNativePath(str.AUTF8String);
+    str.assign(spec.GetNativePath());
     raise EGeckoError.CreateResFmt(PResStringRec(@SNewFileURIError), [str.ToString]);
   end;
 end;
@@ -187,7 +187,7 @@ begin
       chan.SetLoadGroup(loadGroup);
     if Assigned(callbacks) then
       chan.SetNotificationCallbacks(callbacks);
-    if loadFlags <> NS_IREQUEST_LOAD_NORMAL then
+    if loadFlags <> NSIREQUEST_LOAD_NORMAL then
       chan.SetLoadFlags(loadFlags);
     Result :=  chan;
   except
@@ -211,7 +211,7 @@ begin
     Result := st;
   except
     str := NewCString;
-    uri.GetSpec(str.ACString);
+    str.assign(uri.GetSpec());
     raise EGeckoError.CreateResFmt(PResStringRec(@SOpenURIError), [str.ToString]);
   end;
 end;
@@ -231,7 +231,7 @@ begin
     channel.AsyncOpen(listener, context);
   except
     str := NewCString;
-    uri.GetSpec(str.ACString);
+    str.assign(uri.GetSpec);
     raise EGeckoError.CreateResFmt(PResStringRec(@SOpenURIError), [str.ToString]);
   end;
 end;
@@ -252,7 +252,7 @@ begin
   end else
   if uri2.Length()>0 then
   try
-    baseURI.Resolve(spec2.AUTF8String, uri2.AUTF8String);
+    uri2.assign(baseURI.Resolve(spec2.AUTF8String));
   except
     raise EGeckoError.CreateRes(PResStringRec(@SMakeAbsoluteURIError));
   end else
@@ -276,11 +276,11 @@ begin
   end else
   try
     if uri2.Length()=0 then
-      baseURI.GetSpec(buf1.AUTF8String)
+      buf1.assign(baseURI.GetSpec())
     else
     begin
       NS_UTF16ToCString(spec,NS_ENCODING_UTF8,buf2.AUTF8String);
-      baseURI.Resolve(buf2.AUTF8String, buf1.AUTF8String);
+      buf1.assign(baseURI.Resolve(buf2.AUTF8String));
     end;
     rv := NS_CStringToUTF16(buf1.AUTF8String, NS_ENCODING_UTF8, uri);
     if NS_FAILED(rv) then

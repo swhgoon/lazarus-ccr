@@ -165,9 +165,9 @@ procedure NS_CreateInstance(const CID, IID: TGUID; out Intf); overload;
 procedure NS_CreateInstance(ContractID: PAnsiChar; constref IID: TGUID; out Intf); overload;
 function NS_GetWeakReference(Instance: nsISupports): nsIWeakReference;
 procedure NS_GetInterface(Source: nsISupports; constref IID: TGUID; out Instance);
-procedure NS_GetService(const CID, IID: TGUID; out Intf); overload;
+procedure NS_GetService(CID, IID: TGUID; out Intf); overload;
 procedure NS_GetService(ContractID: PAnsiChar; constref IID: TGUID; out Intf); overload;
-function NS_GetSpecialDirectory(const specialDirName: PAnsiChar): nsIFile;
+function NS_GetSpecialDirectory(specialDirName: PAnsiChar): nsIFile;
 
 const
   NS_PREFLOCALIZEDSTRING_CID: TGUID = '{064d9cee-1dd2-11b2-83e3-d25ab0193c26}';
@@ -290,7 +290,7 @@ type
   public
     constructor Create(supports: TSupportsWeakReference);
     destructor Destroy; override;
-    procedure QueryReferent(constref uuid: TGUID; out Intf); safecall;
+    procedure QueryReferent(constref uuid: TGuid; out result); safecall;
   end;
 
   TSupportsWeakReference = class(TInterfacedObject, nsISupportsWeakReference)
@@ -311,7 +311,7 @@ type
     procedure SetCacheDir(const AValue: UTF8String);
     procedure SetProfileDir(const AValue: UTF8String);
   public
-    function GetFile(const prop: PAnsiChar; out persistent: PRBool): nsIFile; safecall;
+    function GetFile(prop: PAnsiChar; out persistent: longbool): nsIFile; safecall;
     property CacheParentDir: UTF8String read FCacheParentDir write SetCacheDir;
     property ProfileDir: UTF8String read FProfileDir write SetProfileDir;
   end;
@@ -354,7 +354,7 @@ begin
     raise EGeckoError.CreateRes(PResStringRec(@SGetComponentManagerError));
 
   try
-    sCompMgr.CreateInstance(CID, nil, IID, Intf);
+    sCompMgr.CreateInstance(@CID, nil, @IID, Intf);
   except
     raise EGeckoError.CreateResFmt(PResStringRec(@SCreateInstanceError), [GUIDToString(CID)]);
   end;
@@ -371,13 +371,13 @@ begin
     raise EGeckoError.CreateRes(PResStringRec(@SGetComponentManagerError));
 
   try
-    sCompMgr.CreateInstanceByContractID(ContractID, nil, IID, Intf);
+    sCompMgr.CreateInstanceByContractID(ContractID, nil, @IID, Intf);
   except
     raise EGeckoError.CreateResFmt(PResStringRec(@SCreateInstanceError), [String(ContractID)]);
   end;
 end;
 
-procedure NS_GetService(const CID, IID: TGUID; out Intf);
+procedure NS_GetService(CID, IID: TGUID; out Intf);
 var
   rv: nsresult;
 begin
@@ -405,13 +405,13 @@ begin
     raise EGeckoError.CreateRes(PResStringRec(@SGetServiceManagerError));
 
   try
-    sSrvMgr.GetServiceByContractID(ContractID, IID, Intf);
+    sSrvMgr.GetServiceByContractID(ContractID, @IID, Intf);
   except
     raise EGeckoError.CreateResFmt(PResStringRec(@SGetServiceError), [ContractID]);
   end;
 end;
 
-function NS_GetSpecialDirectory(const specialDirName: PAnsiChar): nsIFile;
+function NS_GetSpecialDirectory(specialDirName: PAnsiChar): nsIFile;
 var
   serv: nsIProperties;
 const
@@ -439,18 +439,18 @@ begin
   inherited;
 end;
 
-procedure TWeakReference.QueryReferent(constref uuid: TGUID; out Intf);
+procedure TWeakReference.QueryReferent(constref uuid: TGuid; out result);
 var
   rv: nsresult;
 begin
-  rv := FSupports.QueryInterface(uuid, Intf);
+  rv := FSupports.QueryInterface(uuid, result);
   if NS_FAILED(rv) then begin
     //This is not a catastrophic error, so no exception is needed.
     //In example the uuid {DDE39DE0-E4E0-11DA-8AD9-0800200C9A66} request
     //for a nsIWebProgressListener2. Just answering nothing does not
     //produce an "error".
     {$IFDEF DEBUG}
-    OutputDebugString('Missing interface in TWeakReference.QueryReferent '+GUIDToString(uuid));
+    OutputDebugString('Missing interface in TWeakReference.QueryReferent '+GUIDToString(uuid^));
     {$ENDIF}
     //raise EGeckoError.Create('QueryReference Error');
     //System.Error(reIntfCastError);
@@ -518,7 +518,7 @@ type
     FReferent: TSupportsWeakReferenceInternal;
     constructor Create(aReferent: TSupportsWeakReferenceInternal);
     destructor Destroy; override;
-    procedure QueryReferent(constref iid: TGUID; out Intf); safecall;
+    procedure QueryReferent(constref uuid: TGuid; out result); safecall;
   end;
 
 function NS_NewSupportsWeakReferenceDelegate(aTarget: nsISupports): nsISupportsWeakReference;
@@ -565,9 +565,9 @@ begin
   inherited;
 end;
 
-procedure TWeakReferenceInternal.QueryReferent(constref iid: TGUID; out intf);
+procedure TWeakReferenceInternal.QueryReferent(constref uuid: TGuid; out result);
 begin
-  if not Supports(FReferent.FTarget, iid, intf) then
+  if not Supports(FReferent.FTarget, uuid, result) then
     System.Error(reIntfCastError);
 end;
 
@@ -585,8 +585,8 @@ begin
   FProfileDir:=AValue;
 end;
 
-function IDirectoryServiceProvider.GetFile(const prop: PAnsiChar; out
-  persistent: PRBool): nsIFile; safecall;
+function IDirectoryServiceProvider.GetFile(prop: PAnsiChar; out
+  persistent: longbool): nsIFile; safecall;
 var
   Local: nsILocalFile;
 begin

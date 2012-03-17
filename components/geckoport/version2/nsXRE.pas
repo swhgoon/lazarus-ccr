@@ -1,5 +1,5 @@
 unit nsXRE;
-
+{$define XULRUNNER2}
 interface
 
 uses
@@ -44,25 +44,25 @@ const
 
 // XRE Functions
 function XRE_FindGRE(const lowerVer: PAnsiChar;
-                     lowerInclusive: PRBool;
+                     lowerInclusive: longbool;
                      const upperVer: PAnsiChar;
-                     upperInclusive: PRBool;
+                     upperInclusive: longbool;
                      GREPath: PAnsiChar;
                      GREPathLen: PRUint32): nsresult;
 function XRE_LoadGRE(GREPath: PAnsiChar): nsresult;
 function XRE_UnloadGRE(): nsresult;
 function XRE_FindAndLoadGRE(const lowerVer: PAnsiChar;
-                     lowerInclusive: PRBool;
+                     lowerInclusive: longbool;
                      const upperVer: PAnsiChar;
-                     upperInclusive: PRBool;
+                     upperInclusive: longbool;
                      XPComPath: string = ''): nsresult;
 function XRE_GetLoadedGREPath(GREPath: PAnsiChar;
                               GREPathLen: Cardinal): nsresult;
 
 function XRE_Startup(const lowerVer: PAnsiChar;
-                     lowerInclusive: PRBool;
+                     lowerInclusive: longbool;
                      const upperVer: PAnsiChar;
-                     upperInclusive: PRBool;
+                     upperInclusive: longbool;
                      XPComPath: string = ''): nsresult;
 function XRE_Shutdown(): nsresult;
 
@@ -95,7 +95,7 @@ implementation
 
 uses
   nsError, nsGeckoStrings,
-  {$IFDEF MSWINDOWS} Windows, {$ELSE} DynLibs, {$ENDIF} SysUtils;
+  {$IFDEF MSWINDOWS} Windows, {$ELSE} DynLibs, {$ENDIF} SysUtils, Math;
 
 var
   mainFunc :
@@ -156,9 +156,9 @@ begin
 end;
 
 function XRE_FindGRE(const lowerVer: PAnsiChar;
-                     lowerInclusive: PRBool;
+                     lowerInclusive: longbool;
                      const upperVer: PAnsiChar;
-                     upperInclusive: PRBool;
+                     upperInclusive: longbool;
                      GREPath: PAnsiChar;
                      GREPathLen: PRUint32): nsresult;
 const
@@ -240,6 +240,7 @@ begin
  {$IFDEF DARWIN}
 //  NS_StrLCopy(GREPath, '/Applications/Firefox.app/Contents/MacOS/libxpcom.dylib', GREPathLen);
   NS_StrLCopy(GREPath, '/Library/Frameworks/XUL.framework/Versions/Current/libxpcom.dylib', GREPathLen);
+  Result := NS_OK;
  {$ELSE}  //Linux
   //NS_StrLCopy(GREPath, '/home/user/xulrunner/libxpcom.so', GREPathLen);
   Result:=NS_ERROR_NOT_AVAILABLE;
@@ -261,7 +262,6 @@ begin
   end;
   LDPATHItems.Free;
  {$ENDIF}
-  Result := NS_OK;
 {$ENDIF}
 end;
 
@@ -350,9 +350,9 @@ begin
 end;
 
 function XRE_FindAndLoadGRE(const lowerVer: PAnsiChar;
-                     lowerInclusive: PRBool;
+                     lowerInclusive: longbool;
                      const upperVer: PAnsiChar;
-                     upperInclusive: PRBool;
+                     upperInclusive: longbool;
                      XPComPath: string = ''): nsresult;
 var
   grePath: array[0..MAX_PATH] of AnsiChar;
@@ -371,7 +371,7 @@ begin
     end
   else
     begin
-    result := NS_ERROR_FILE_ACCESS_DENIED;
+    result := NS_ERROR_FILE_NOT_FOUND;
     Exit;
     end;
 
@@ -391,9 +391,9 @@ begin
 end;
 
 function XRE_Startup(const lowerVer: PAnsiChar;
-                     lowerInclusive: PRBool;
+                     lowerInclusive: longbool;
                      const upperVer: PAnsiChar;
-                     upperInclusive: PRBool;
+                     upperInclusive: longbool;
                      XPComPath: string = ''): nsresult;
 var
   grePath: array[0..MAX_PATH] of AnsiChar;
@@ -446,6 +446,8 @@ begin
 //  NS_LogInit();
   //Warning, do not pass GeckoEngineDirectoryService to XRE_InitEmbedding, it
   //will crash Gecko versions prior to 1.9.2.x with AV in line "basewin.Create"
+  SetExceptionMask([exInvalidOp, exDenormalized, exZeroDivide, exOverflow, exUnderflow, exPrecision]);
+
   Result := XRE_InitEmbedding(xulDir, appDir, nil, nil, 0);
 //  NS_LogTerm();
 end;
