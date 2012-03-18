@@ -120,7 +120,12 @@ begin
         output.SaveToFile(OutputFilename);
 
       if assigned(forwardoutput) and (forwardoutput.Count<>0) then
+        begin
+        forwardoutput.Sorted:=false;
+        forwardoutput.Insert(0,'type');
         forwardoutput.SaveToFile(GetOptionValue('f'));
+
+        end;
 
     finally
       output.Free;

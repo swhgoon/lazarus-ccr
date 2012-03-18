@@ -40,7 +40,7 @@ uses
 
 type
   TMemberType=(mtFunc,mtAttribute,mtConst);
-  TParamInOutType=(piOut,piIn);
+  TParamInOutType=(piNormal,piOut,piIn,piInOut);
 
   { TIDLMemberParameter }
 
@@ -298,10 +298,14 @@ var
     if result then
       begin
       CurrentIDLMemberParam := TIDLMemberParameter.Create;
-      if IsParamIn then
-        CurrentIDLMemberParam.ParamInOutType:=piIn;
-      if IsParamOut then
-        CurrentIDLMemberParam.ParamInOutType:=piOut;
+      if IsParamIn and IsParamOut then
+        CurrentIDLMemberParam.ParamInOutType:=piInOut
+      else if IsParamIn then
+        CurrentIDLMemberParam.ParamInOutType:=piIn
+      else if IsParamOut then
+        CurrentIDLMemberParam.ParamInOutType:=piOut
+      else
+        CurrentIDLMemberParam.ParamInOutType:=piNormal;
       IsParamIn:=false;
       IsParamOut:=false;
       CurrentIDLMember.Params.Add(CurrentIDLMemberParam);
@@ -363,6 +367,8 @@ begin
   IsReadonly:=false;
   IsUnsigned:=false;
   IsConst:=false;
+  IsParamIn:=false;
+  IsParamOut:=false;
   UUIDAttribute:='';
   pCurrent:=@IDLString[1];
   while pCurrent^ <> #0 do

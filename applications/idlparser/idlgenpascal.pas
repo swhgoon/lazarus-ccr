@@ -48,7 +48,7 @@ begin
     result := TypeConvList.Values[AValue]
   else if CTypesList.IndexOf(AValue) > -1 then
     begin
-    result := 'c';
+    result := 'idl';
     if unsigned then result := Result + 'u';
     result := result+AValue;
     end
@@ -153,7 +153,9 @@ begin
 
             if m > 0 then s := s + '; ';
             if anIDLMemberParameter.ParamInOutType=piOut then
-              s := s + 'out ';
+              s := s + 'out '
+            else if anIDLMemberParameter.ParamInOutType=piInOut then
+              s := s + 'var ';
             s := s + AParamName +': ' + CTypeToPascalType(anIDLMemberParameter.ParamType,anIDLMemberParameter.ParamTypeUnsigned,TypeConvList,CTypesList);
             end;
           s := s + ')';
@@ -187,11 +189,7 @@ begin
       s := s + ';';
 
     if assigned(AForwardDeclList) and (anIDL.InterfaceType='') then
-      begin
-      if AForwardDeclList.Count=0 then
-        AForwardDeclList.Add('type');
-      AForwardDeclList.Add(s);
-      end
+      AForwardDeclList.Add(s)
     else
       PascalCode.Add(s);
 
