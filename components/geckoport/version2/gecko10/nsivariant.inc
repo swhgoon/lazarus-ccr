@@ -55,9 +55,9 @@ type
     function getAsWChar() : wchar; safecall;
     function getAsID(out retval: nsID) : nsresult; safecall;
     function getAsAString() : AString; safecall;
-    function getAsDOMString() : DOMString; safecall;
-    function getAsACString() : ACString; safecall;
-    function getAsAUTF8String() : AUTF8String; safecall;
+    procedure getAsDOMString( result_: DOMString); safecall;
+    procedure getAsACString( result_: ACString); safecall;
+    procedure getAsAUTF8String( result_: AUTF8String); safecall;
     function getAsString() : PAnsiChar; safecall;
     function getAsWString() : PWideChar; safecall;
     function getAsISupports() : nsISupports; safecall;
@@ -96,7 +96,7 @@ type
     procedure setAsString(aValue: PAnsiChar); safecall;
     procedure setAsWString(aValue: PWideChar); safecall;
     procedure setAsISupports(aValue: nsISupports); safecall;
-    procedure setAsInterface(iid: nsIIDRef; iface: nsQIResult); safecall;
+    procedure setAsInterface(constref iid: TGuid; iface: nsQIResult); safecall;
     procedure setAsArray(atype: PRUint16; iid: nsIIDPtr; count: PRUint32; ptr: voidPtr); safecall;
     procedure setAsStringWithSize(size: PRUint32; str: PAnsiChar); safecall;
     procedure setAsWStringWithSize(size: PRUint32; str: PWideChar); safecall;

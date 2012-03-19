@@ -49,7 +49,7 @@ type
   { IPromptServiceFactory }
 
   IPromptServiceFactory = class(TInterfacedObject,nsIFactory)
-    procedure CreateInstance(aOuter: nsISupports; iid: nsIIDRef; out result); safecall;
+    procedure CreateInstance(aOuter: nsISupports; constref iid: Tguid; out result); safecall;
     procedure LockFactory(lock: longbool); safecall;
   end;
 
@@ -184,7 +184,7 @@ begin
   if not Assigned(GeckoPromptServiceFactory) then begin
     NS_GetComponentRegistrar(ComponentRegistrar);
     GeckoPromptServiceFactory:=IPromptServiceFactory.Create;
-    ComponentRegistrar.RegisterFactory(@NS_PROMPT_SERVICE_CID,'Prompt Service',nil,GeckoPromptServiceFactory);
+    ComponentRegistrar.RegisterFactory(NS_PROMPT_SERVICE_CID,'Prompt Service',nil,GeckoPromptServiceFactory);
   end;
 end;
 
@@ -341,11 +341,11 @@ end;
 
 { IPromptServiceFactory }
 
-procedure IPromptServiceFactory.CreateInstance(aOuter: nsISupports; iid: nsIIDRef; out result); safecall;
+procedure IPromptServiceFactory.CreateInstance(aOuter: nsISupports; constref iid: Tguid; out result); safecall;
 begin
   if not Assigned(ThisGeckoPromptService) then
     ThisGeckoPromptService:=IPromptService.Create;
-  ThisGeckoPromptService.QueryInterface(IID^,result);
+  ThisGeckoPromptService.QueryInterface(IID,result);
 end;
 
 procedure IPromptServiceFactory.LockFactory(lock: longbool); safecall;

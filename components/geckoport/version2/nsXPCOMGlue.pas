@@ -354,7 +354,7 @@ begin
     raise EGeckoError.CreateRes(PResStringRec(@SGetComponentManagerError));
 
   try
-    sCompMgr.CreateInstance(@CID, nil, @IID, Intf);
+    sCompMgr.CreateInstance(CID, nil, IID, Intf);
   except
     raise EGeckoError.CreateResFmt(PResStringRec(@SCreateInstanceError), [GUIDToString(CID)]);
   end;
@@ -371,7 +371,7 @@ begin
     raise EGeckoError.CreateRes(PResStringRec(@SGetComponentManagerError));
 
   try
-    sCompMgr.CreateInstanceByContractID(ContractID, nil, @IID, Intf);
+    sCompMgr.CreateInstanceByContractID(ContractID, nil, IID, Intf);
   except
     raise EGeckoError.CreateResFmt(PResStringRec(@SCreateInstanceError), [String(ContractID)]);
   end;
@@ -405,7 +405,7 @@ begin
     raise EGeckoError.CreateRes(PResStringRec(@SGetServiceManagerError));
 
   try
-    sSrvMgr.GetServiceByContractID(ContractID, @IID, Intf);
+    sSrvMgr.GetServiceByContractID(ContractID, IID, Intf);
   except
     raise EGeckoError.CreateResFmt(PResStringRec(@SGetServiceError), [ContractID]);
   end;

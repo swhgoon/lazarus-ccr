@@ -1,5 +1,5 @@
 type
-  nsDOMPerformanceNavigationType = cushort;
+  nsDOMPerformanceNavigationType = idlushort;
 
 
 type

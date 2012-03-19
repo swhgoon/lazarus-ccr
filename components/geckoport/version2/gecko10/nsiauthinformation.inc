@@ -6,8 +6,7 @@ type
     property flags : idlulong read Getflags;
     function Getrealm(): AString; safecall;
     property realm : AString read Getrealm;
-    function GetauthenticationScheme(): AUTF8String; safecall;
-    property authenticationScheme : AUTF8String read GetauthenticationScheme;
+    procedure GetauthenticationScheme( result_: AUTF8String); safecall;
     function Getusername(): AString; safecall;
     procedure Setusername(ausername: AString); safecall;
     property username : AString read Getusername write Setusername;

@@ -12,7 +12,7 @@ type
     procedure Setoffline(aoffline: longbool); safecall;
     property offline : longbool read Getoffline write Setoffline;
     function allowPort(aPort: idllong; aScheme: PAnsiChar) : longbool; safecall;
-    function extractScheme(urlString: AUTF8String) : ACString; safecall;
+    procedure extractScheme(urlString: AUTF8String; result_: ACString); safecall;
 
   end;
 

@@ -1,5 +1,5 @@
 type
-  DOMTimeMilliSec = culonglong;
+  DOMTimeMilliSec = qword;
 
 type
 //  nsIDOMAttr = interface;

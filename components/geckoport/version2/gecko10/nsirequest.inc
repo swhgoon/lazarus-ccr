@@ -2,8 +2,7 @@ type
 
   nsIRequest = interface(nsISupports)
   ['{ef6bfbd2-fd46-48d8-96b7-9f8f0fd387fe}']
-    function Getname(): AUTF8String; safecall;
-    property name : AUTF8String read Getname;
+    procedure Getname( result_: AUTF8String); safecall;
     function isPending() : longbool; safecall;
     function Getstatus(): nsresult; safecall;
     property status : nsresult read Getstatus;

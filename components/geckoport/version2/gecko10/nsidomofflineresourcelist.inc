@@ -7,7 +7,7 @@ type
     function mozHasItem(uri: DOMString) : longbool; safecall;
     function GetmozLength(): idlulong; safecall;
     property mozLength : idlulong read GetmozLength;
-    function mozItem(index: idlulong) : DOMString; safecall;
+    procedure mozItem(index: idlulong; result_: DOMString); safecall;
     procedure mozAdd(uri: DOMString); safecall;
     procedure mozRemove(uri: DOMString); safecall;
     function Getstatus(): idlushort; safecall;

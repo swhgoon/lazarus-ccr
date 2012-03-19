@@ -15,12 +15,10 @@ type
     property notificationCallbacks : nsIInterfaceRequestor read GetnotificationCallbacks write SetnotificationCallbacks;
     function GetsecurityInfo(): nsISupports; safecall;
     property securityInfo : nsISupports read GetsecurityInfo;
-    function GetcontentType(): ACString; safecall;
+    procedure GetcontentType( result_: ACString); safecall;
     procedure SetcontentType(acontentType: ACString); safecall;
-    property contentType : ACString read GetcontentType write SetcontentType;
-    function GetcontentCharset(): ACString; safecall;
+    procedure GetcontentCharset( result_: ACString); safecall;
     procedure SetcontentCharset(acontentCharset: ACString); safecall;
-    property contentCharset : ACString read GetcontentCharset write SetcontentCharset;
     function GetcontentLength(): idllong; safecall;
     procedure SetcontentLength(acontentLength: idllong); safecall;
     property contentLength : idllong read GetcontentLength write SetcontentLength;
@@ -30,8 +28,7 @@ type
     property contentDisposition : idlulong read GetcontentDisposition;
     function GetcontentDispositionFilename(): AString; safecall;
     property contentDispositionFilename : AString read GetcontentDispositionFilename;
-    function GetcontentDispositionHeader(): ACString; safecall;
-    property contentDispositionHeader : ACString read GetcontentDispositionHeader;
+    procedure GetcontentDispositionHeader( result_: ACString); safecall;
 
   end;
 

@@ -1016,7 +1016,7 @@ begin
 {$ELSE}
  {$PUSH}
   {$R-}
-      browser.RemoveWebBrowserListener(weak, table.Entries[i].IID);
+      browser.RemoveWebBrowserListener(weak, table.Entries[i].IID^);
  {$POP}
 {$ENDIF}
 end;
@@ -1040,7 +1040,7 @@ begin
   if Assigned(FDOMEvents) then
   begin
     str := NewString;
-    str.assign(aEvent.GetType());
+    aEvent.GetType(str.AString);
     eventType := str.ToString;
     I := 0;
     while FDOMEvents[I].eventType <>etNone do
@@ -1755,8 +1755,7 @@ begin
   UseParameter(aWebProgress);
   UseParameter(aRequest);
   str := NewCString;
-  // This leads to crashes. Seems to be a problem in the calling-convention.
-  //str.assign(location.GetSpec());
+  location.GetSpec(str.ACString);
   {$IFDEF DEBUG}
   {
   OutputDebugStringA(PAnsiChar(
@@ -2145,7 +2144,7 @@ begin
   str :=NewUTF8String;
 //URI
   if Self.WebNavigation <> nil then
-    str.assign(Self.WebNavigation.CurrentURI.GetSpec);
+    Self.WebNavigation.CurrentURI.GetSpec(str.AUtf8String);
   Result := str.ToString;
 end;
 
@@ -2296,7 +2295,7 @@ begin
   try
     str := NewUTF8String;
     uri := FInfo.GetImageSrc();
-    str.assign(uri.GetSpec);
+    uri.GetSpec(str.Autf8String);
     Result := str.ToString;
   except
   end;
@@ -2310,7 +2309,7 @@ begin
   try
     str := NewUTF8String;
     uri := FInfo.GetBackgroundImageSrc();
-    str.assign(uri.GetSpec);
+    uri.GetSpec(str.AUtf8String);
     Result := str.ToString;
   except
   end;

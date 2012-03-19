@@ -2,8 +2,7 @@ type
 
   nsIDOMEvent = interface(nsISupports)
   ['{e85cff74-951f-45c1-be0c-89442ea2f500}']
-    function Gettype(): DOMString; safecall;
-    property atype : DOMString read Gettype;
+    procedure Gettype( result_: DOMString); safecall;
     function Gettarget(): nsIDOMEventTarget; safecall;
     property target : nsIDOMEventTarget read Gettarget;
     function GetcurrentTarget(): nsIDOMEventTarget; safecall;

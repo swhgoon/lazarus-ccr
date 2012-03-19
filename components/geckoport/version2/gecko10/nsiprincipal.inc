@@ -26,14 +26,11 @@ type
     property origin : PAnsiChar read Getorigin;
     function GethasCertificate(): longbool; safecall;
     property hasCertificate : longbool read GethasCertificate;
-    function Getfingerprint(): AUTF8String; safecall;
-    property fingerprint : AUTF8String read Getfingerprint;
-    function GetprettyName(): AUTF8String; safecall;
-    property prettyName : AUTF8String read GetprettyName;
+    procedure Getfingerprint( result_: AUTF8String); safecall;
+    procedure GetprettyName( result_: AUTF8String); safecall;
     function subsumes(other: nsIPrincipal) : longbool; safecall;
     procedure checkMayLoad(anuri: nsIURI; report: longbool); safecall;
-    function GetsubjectName(): AUTF8String; safecall;
-    property subjectName : AUTF8String read GetsubjectName;
+    procedure GetsubjectName( result_: AUTF8String); safecall;
     function Getcertificate(): nsISupports; safecall;
     property certificate : nsISupports read Getcertificate;
     function Getcsp(): nsIContentSecurityPolicy; safecall;

@@ -13,7 +13,7 @@ fi
 idltopas $1/nsIDOMDocument.idl \
     $1/nsIDOMElement.idl \
     $1/nsISHEntry.idl \
-    -c idlctypes.cfg -m idltypemap.cfg -p -f forwarddecl.inc -o
+    -m idltypemap.cfg -p -f forwarddecl.inc -o
 
 idltopas $1/nsIWebProgressListener.idl \
     $1/nsIDOMNodeIterator.idl \
@@ -151,4 +151,4 @@ idltopas $1/nsIWebProgressListener.idl \
     $1/nsIDOMStorage.idl \
     $1/nsIContextMenuListener2.idl \
     $1/nsIDOMText.idl \
-    -c idlctypes.cfg -m idltypemap.cfg -f forwarddecl.inc -o
+    -m idltypemap.cfg -f forwarddecl.inc -o

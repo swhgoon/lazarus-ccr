@@ -2,7 +2,7 @@ type
 
   nsIDOMMozURLProperty = interface(nsISupports)
   ['{8fc58f56-f769-4368-a098-edd08550cf1a}']
-    function createObjectURL(blob: nsIDOMBlob) : DOMString; safecall;
+    procedure createObjectURL(blob: nsIDOMBlob; result_: DOMString); safecall;
     procedure revokeObjectURL(URL: DOMString); safecall;
 
   end;
@@ -16,9 +16,8 @@ type
     property self : nsIDOMWindow read Getself;
     function Getdocument(): nsIDOMDocument; safecall;
     property document : nsIDOMDocument read Getdocument;
-    function Getname(): DOMString; safecall;
+    procedure Getname( result_: DOMString); safecall;
     procedure Setname(aname: DOMString); safecall;
-    property name : DOMString read Getname write Setname;
     function Getlocation(): nsIDOMLocation; safecall;
     property location : nsIDOMLocation read Getlocation;
     function Gethistory(): nsIDOMHistory; safecall;
@@ -35,9 +34,8 @@ type
     property statusbar : nsIDOMBarProp read Getstatusbar;
     function Gettoolbar(): nsIDOMBarProp; safecall;
     property toolbar : nsIDOMBarProp read Gettoolbar;
-    function Getstatus(): DOMString; safecall;
+    procedure Getstatus( result_: DOMString); safecall;
     procedure Setstatus(astatus: DOMString); safecall;
-    property status : DOMString read Getstatus write Setstatus;
     procedure close(); safecall;
     procedure stop(); safecall;
     procedure focus(); safecall;
@@ -59,12 +57,12 @@ type
     property applicationCache : nsIDOMOfflineResourceList read GetapplicationCache;
     procedure alert(text: DOMString); safecall;
     function confirm(text: DOMString) : longbool; safecall;
-    function prompt(aMessage: DOMString; aInitial: DOMString) : DOMString; safecall;
+    procedure prompt(aMessage: DOMString; aInitial: DOMString; result_: DOMString); safecall;
     procedure print(); safecall;
     function showModalDialog(aURI: DOMString; aArgs: nsIVariant; aOptions: DOMString) : nsIVariant; safecall;
     procedure postMessage(message: jsval; targetOrigin: DOMString); safecall;
-    function atob(aAsciiString: DOMString) : DOMString; safecall;
-    function btoa(aBase64Data: DOMString) : DOMString; safecall;
+    procedure atob(aAsciiString: DOMString; result_: DOMString); safecall;
+    procedure btoa(aBase64Data: DOMString; result_: DOMString); safecall;
     function GetsessionStorage(): nsIDOMStorage; safecall;
     property sessionStorage : nsIDOMStorage read GetsessionStorage;
     function GetlocalStorage(): nsIDOMStorage; safecall;
@@ -125,9 +123,8 @@ type
     property pkcs11 : nsIDOMPkcs11 read Getpkcs11;
     function Getcontrollers(): nsIControllers; safecall;
     property controllers : nsIControllers read Getcontrollers;
-    function GetdefaultStatus(): DOMString; safecall;
+    procedure GetdefaultStatus( result_: DOMString); safecall;
     procedure SetdefaultStatus(adefaultStatus: DOMString); safecall;
-    property defaultStatus : DOMString read GetdefaultStatus write SetdefaultStatus;
     function GetmozInnerScreenX(): idlfloat; safecall;
     property mozInnerScreenX : idlfloat read GetmozInnerScreenX;
     function GetmozInnerScreenY(): idlfloat; safecall;

@@ -9,9 +9,8 @@ type
     function GetleafName(): AString; safecall;
     procedure SetleafName(aleafName: AString); safecall;
     property leafName : AString read GetleafName write SetleafName;
-    function GetnativeLeafName(): ACString; safecall;
+    procedure GetnativeLeafName( result_: ACString); safecall;
     procedure SetnativeLeafName(anativeLeafName: ACString); safecall;
-    property nativeLeafName : ACString read GetnativeLeafName write SetnativeLeafName;
     procedure copyTo(newParentDir: nsIFile; newName: AString); safecall;
     procedure CopyToNative(newParentDir: nsIFile; newName: ACString); safecall;
     procedure copyToFollowingLinks(newParentDir: nsIFile; newName: AString); safecall;
@@ -38,12 +37,10 @@ type
     property fileSizeOfLink : PRInt64 read GetfileSizeOfLink;
     function Gettarget(): AString; safecall;
     property target : AString read Gettarget;
-    function GetnativeTarget(): ACString; safecall;
-    property nativeTarget : ACString read GetnativeTarget;
+    procedure GetnativeTarget( result_: ACString); safecall;
     function Getpath(): AString; safecall;
     property path : AString read Getpath;
-    function GetnativePath(): ACString; safecall;
-    property nativePath : ACString read GetnativePath;
+    procedure GetnativePath( result_: ACString); safecall;
     function exists() : longbool; safecall;
     function isWritable() : longbool; safecall;
     function isReadable() : longbool; safecall;

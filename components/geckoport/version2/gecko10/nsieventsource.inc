@@ -2,8 +2,7 @@ type
 
   nsIEventSource = interface(nsISupports)
   ['{755e2d2d-a836-4539-83f4-16b51156341f}']
-    function Geturl(): DOMString; safecall;
-    property url : DOMString read Geturl;
+    procedure Geturl( result_: DOMString); safecall;
     function GetreadyState(): idllong; safecall;
     property readyState : idllong read GetreadyState;
     function Getonopen(): nsIDOMEventListener; safecall;

@@ -14,7 +14,6 @@ unit nsXPCOM;
 interface
 
 uses
-  BaseUnix,
   nsTypes;
 
 {$i forwarddecl.inc}

@@ -2,11 +2,9 @@ type
 
   nsIDOMNode = interface(nsISupports)
   ['{ce82fb71-60f2-4c38-be31-de5f2f90dada}']
-    function GetnodeName(): DOMString; safecall;
-    property nodeName : DOMString read GetnodeName;
-    function GetnodeValue(): DOMString; safecall;
+    procedure GetnodeName( result_: DOMString); safecall;
+    procedure GetnodeValue( result_: DOMString); safecall;
     procedure SetnodeValue(anodeValue: DOMString); safecall;
-    property nodeValue : DOMString read GetnodeValue write SetnodeValue;
     function GetnodeType(): idlushort; safecall;
     property nodeType : idlushort read GetnodeType;
     function GetparentNode(): nsIDOMNode; safecall;
@@ -35,22 +33,17 @@ type
     function cloneNode(deep: longbool) : nsIDOMNode; safecall;
     procedure normalize(); safecall;
     function isSupported(feature: DOMString; version: DOMString) : longbool; safecall;
-    function GetnamespaceURI(): DOMString; safecall;
-    property namespaceURI : DOMString read GetnamespaceURI;
-    function Getprefix(): DOMString; safecall;
-    property prefix : DOMString read Getprefix;
-    function GetlocalName(): DOMString; safecall;
-    property localName : DOMString read GetlocalName;
+    procedure GetnamespaceURI( result_: DOMString); safecall;
+    procedure Getprefix( result_: DOMString); safecall;
+    procedure GetlocalName( result_: DOMString); safecall;
     function hasAttributes() : longbool; safecall;
-    function GetbaseURI(): DOMString; safecall;
-    property baseURI : DOMString read GetbaseURI;
+    procedure GetbaseURI( result_: DOMString); safecall;
     function compareDocumentPosition(other: nsIDOMNode) : idlushort; safecall;
-    function GettextContent(): DOMString; safecall;
+    procedure GettextContent( result_: DOMString); safecall;
     procedure SettextContent(atextContent: DOMString); safecall;
-    property textContent : DOMString read GettextContent write SettextContent;
-    function lookupPrefix(anamespaceURI: DOMString) : DOMString; safecall;
+    procedure lookupPrefix(anamespaceURI: DOMString; result_: DOMString); safecall;
     function isDefaultNamespace(anamespaceURI: DOMString) : longbool; safecall;
-    function lookupNamespaceURI(aprefix: DOMString) : DOMString; safecall;
+    procedure lookupNamespaceURI(aprefix: DOMString; result_: DOMString); safecall;
     function isEqualNode(arg: nsIDOMNode) : longbool; safecall;
     function setUserData(key: DOMString; data: nsIVariant; handler: nsIDOMUserDataHandler) : nsIVariant; safecall;
     function getUserData(key: DOMString) : nsIVariant; safecall;

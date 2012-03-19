@@ -2,10 +2,8 @@ type
 
   nsIWebBrowser = interface(nsISupports)
   ['{33e9d001-caab-4ba9-8961-54902f197202}']
-    // aIID parameter is manually converted to constref/TGuid, so that it is possible
-    // to assign an interface to this parameter.
     procedure addWebBrowserListener(aListener: nsIWeakReference; constref aIID: TGuid); safecall;
-    procedure removeWebBrowserListener(aListener: nsIWeakReference; aIID: nsIIDRef); safecall;
+    procedure removeWebBrowserListener(aListener: nsIWeakReference; constref aIID: TGuid); safecall;
     function GetcontainerWindow(): nsIWebBrowserChrome; safecall;
     procedure SetcontainerWindow(acontainerWindow: nsIWebBrowserChrome); safecall;
     property containerWindow : nsIWebBrowserChrome read GetcontainerWindow write SetcontainerWindow;

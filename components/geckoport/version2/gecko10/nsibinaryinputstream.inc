@@ -10,7 +10,7 @@ type
     function read64() : PRUint64; safecall;
     function readFloat() : idlfloat; safecall;
     function readDouble() : double; safecall;
-    function readCString() : ACString; safecall;
+    procedure readCString( result_: ACString); safecall;
     function readString() : AString; safecall;
     procedure readBytes(aLength: PRUint32; out aString: PAnsiChar); safecall;
     procedure readByteArray(aLength: PRUint32; out aBytes: PRUint8); safecall;

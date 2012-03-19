@@ -166,7 +166,7 @@ begin
     Result := grip.NewFileURI(spec);
   except
     str := NewUTF8String;
-    str.assign(spec.GetNativePath());
+    spec.GetNativePath(str.AUTF8String);
     raise EGeckoError.CreateResFmt(PResStringRec(@SNewFileURIError), [str.ToString]);
   end;
 end;
@@ -211,7 +211,7 @@ begin
     Result := st;
   except
     str := NewCString;
-    str.assign(uri.GetSpec());
+    uri.GetSpec(str.ACString);
     raise EGeckoError.CreateResFmt(PResStringRec(@SOpenURIError), [str.ToString]);
   end;
 end;
@@ -231,7 +231,7 @@ begin
     channel.AsyncOpen(listener, context);
   except
     str := NewCString;
-    str.assign(uri.GetSpec);
+    uri.GetSpec(str.ACString);
     raise EGeckoError.CreateResFmt(PResStringRec(@SOpenURIError), [str.ToString]);
   end;
 end;
@@ -252,7 +252,7 @@ begin
   end else
   if uri2.Length()>0 then
   try
-    uri2.assign(baseURI.Resolve(spec2.AUTF8String));
+    baseURI.Resolve(spec2.AUTF8String, uri2.AUTF8String);
   except
     raise EGeckoError.CreateRes(PResStringRec(@SMakeAbsoluteURIError));
   end else
@@ -276,11 +276,11 @@ begin
   end else
   try
     if uri2.Length()=0 then
-      buf1.assign(baseURI.GetSpec())
+      baseURI.GetSpec(buf1.AUTF8String)
     else
     begin
       NS_UTF16ToCString(spec,NS_ENCODING_UTF8,buf2.AUTF8String);
-      buf1.assign(baseURI.Resolve(buf2.AUTF8String));
+      baseURI.Resolve(buf2.AUTF8String, buf1.AUTF8String);
     end;
     rv := NS_CStringToUTF16(buf1.AUTF8String, NS_ENCODING_UTF8, uri);
     if NS_FAILED(rv) then

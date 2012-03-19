@@ -49,9 +49,8 @@ type
     function GetexpirationStatus(): longbool; safecall;
     procedure SetexpirationStatus(aexpirationStatus: longbool); safecall;
     property expirationStatus : longbool read GetexpirationStatus write SetexpirationStatus;
-    function GetcontentType(): ACString; safecall;
+    procedure GetcontentType( result_: ACString); safecall;
     procedure SetcontentType(acontentType: ACString); safecall;
-    property contentType : ACString read GetcontentType write SetcontentType;
     function GetURIWasModified(): longbool; safecall;
     procedure SetURIWasModified(aURIWasModified: longbool); safecall;
     property URIWasModified : longbool read GetURIWasModified write SetURIWasModified;

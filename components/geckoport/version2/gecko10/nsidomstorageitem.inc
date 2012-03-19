@@ -5,9 +5,8 @@ type
     function Getsecure(): longbool; safecall;
     procedure Setsecure(asecure: longbool); safecall;
     property secure : longbool read Getsecure write Setsecure;
-    function Getvalue(): DOMString; safecall;
+    procedure Getvalue( result_: DOMString); safecall;
     procedure Setvalue(avalue: DOMString); safecall;
-    property value : DOMString read Getvalue write Setvalue;
 
   end;
 

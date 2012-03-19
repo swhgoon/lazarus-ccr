@@ -4,15 +4,15 @@ type
   ['{2417cbfe-65ad-48a6-b4b6-eb84db174392}']
     procedure autoRegister(aSpec: nsIFile); safecall;
     procedure autoUnregister(aSpec: nsIFile); safecall;
-    procedure registerFactory(aClass: nsCIDRef; aClassName: PAnsiChar; aContractID: PAnsiChar; aFactory: nsIFactory); safecall;
-    procedure unregisterFactory(aClass: nsCIDRef; aFactory: nsIFactory); safecall;
-    procedure registerFactoryLocation(aClass: nsCIDRef; aClassName: PAnsiChar; aContractID: PAnsiChar; aFile: nsIFile; aLoaderStr: PAnsiChar; aType: PAnsiChar); safecall;
-    procedure unregisterFactoryLocation(aClass: nsCIDRef; aFile: nsIFile); safecall;
-    function isCIDRegistered(aClass: nsCIDRef) : longbool; safecall;
+    procedure registerFactory(constref aClass: TGuid; aClassName: PAnsiChar; aContractID: PAnsiChar; aFactory: nsIFactory); safecall;
+    procedure unregisterFactory(constref aClass: TGuid; aFactory: nsIFactory); safecall;
+    procedure registerFactoryLocation(constref aClass: TGuid; aClassName: PAnsiChar; aContractID: PAnsiChar; aFile: nsIFile; aLoaderStr: PAnsiChar; aType: PAnsiChar); safecall;
+    procedure unregisterFactoryLocation(constref aClass: TGuid; aFile: nsIFile); safecall;
+    function isCIDRegistered(constref aClass: TGuid) : longbool; safecall;
     function isContractIDRegistered(aContractID: PAnsiChar) : longbool; safecall;
     function enumerateCIDs() : nsISimpleEnumerator; safecall;
     function enumerateContractIDs() : nsISimpleEnumerator; safecall;
-    function CIDToContractID(aClass: nsCIDRef) : PAnsiChar; safecall;
+    function CIDToContractID(constref aClass: TGuid) : PAnsiChar; safecall;
     function contractIDToCID(aContractID: PAnsiChar) : nsCIDPtr; safecall;
 
   end;

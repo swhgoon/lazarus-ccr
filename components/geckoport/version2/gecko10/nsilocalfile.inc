@@ -15,12 +15,11 @@ type
     property diskSpaceAvailable : PRInt64 read GetdiskSpaceAvailable;
     procedure appendRelativePath(relativeFilePath: AString); safecall;
     procedure appendRelativeNativePath(relativeFilePath: ACString); safecall;
-    function GetpersistentDescriptor(): ACString; safecall;
+    procedure GetpersistentDescriptor( result_: ACString); safecall;
     procedure SetpersistentDescriptor(apersistentDescriptor: ACString); safecall;
-    property persistentDescriptor : ACString read GetpersistentDescriptor write SetpersistentDescriptor;
     procedure reveal(); safecall;
     procedure launch(); safecall;
-    function getRelativeDescriptor(fromFile: nsILocalFile) : ACString; safecall;
+    procedure getRelativeDescriptor(fromFile: nsILocalFile; result_: ACString); safecall;
     procedure setRelativeDescriptor(fromFile: nsILocalFile; relativeDesc: ACString); safecall;
 
   end;

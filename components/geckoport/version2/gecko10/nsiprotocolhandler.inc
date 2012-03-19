@@ -2,8 +2,7 @@ type
 
   nsIProtocolHandler = interface(nsISupports)
   ['{15fd6940-8ea7-11d3-93ad-00104ba0fd40}']
-    function Getscheme(): ACString; safecall;
-    property scheme : ACString read Getscheme;
+    procedure Getscheme( result_: ACString); safecall;
     function GetdefaultPort(): idllong; safecall;
     property defaultPort : idllong read GetdefaultPort;
     function GetprotocolFlags(): idlulong; safecall;

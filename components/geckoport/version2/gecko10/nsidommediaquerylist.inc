@@ -2,8 +2,7 @@ type
 
   nsIDOMMediaQueryList = interface(nsISupports)
   ['{e0e49c52-915b-40f9-9cba-6026305cdf3e}']
-    function Getmedia(): DOMString; safecall;
-    property media : DOMString read Getmedia;
+    procedure Getmedia( result_: DOMString); safecall;
     function Getmatches(): longbool; safecall;
     property matches : longbool read Getmatches;
     procedure addListener(listener: nsIDOMMediaQueryListListener); safecall;

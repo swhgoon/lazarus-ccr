@@ -2,12 +2,11 @@ type
 
   nsIDOMCharacterData = interface(nsIDOMNode)
   ['{cb75c251-afc7-444f-b2d6-b9635555f3ed}']
-    function Getdata(): DOMString; safecall;
+    procedure Getdata( result_: DOMString); safecall;
     procedure Setdata(adata: DOMString); safecall;
-    property data : DOMString read Getdata write Setdata;
     function Getlength(): idlulong; safecall;
     property length : idlulong read Getlength;
-    function substringData(offset: idlulong; count: idlulong) : DOMString; safecall;
+    procedure substringData(offset: idlulong; count: idlulong; result_: DOMString); safecall;
     procedure appendData(arg: DOMString); safecall;
     procedure insertData(offset: idlulong; arg: DOMString); safecall;
     procedure deleteData(offset: idlulong; count: idlulong); safecall;
