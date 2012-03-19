@@ -158,7 +158,6 @@ type TParseState = (psBegin,
 var
   PriorState: TParseState;
   ParseState: TParseState;
-  LineNr: integer;
   IDLString: string;
   pCurrent: pchar;
   AWord: string;
@@ -192,8 +191,6 @@ var
   end;
 
   function CheckStartWord(ASetParseState, ASetPriorParseState: TParseState; AllowMinus: boolean = false): boolean;
-  var
-    c: char;
   begin
     result := false;
     wordchars:=['a'..'z','A'..'Z','0'..'9','_'];
