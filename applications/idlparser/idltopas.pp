@@ -24,7 +24,7 @@ type
 
 { TIDLToPascal }
 
-procedure HandleIDLFile(AFilename: string; AnOutput, ForwardOutput: TStrings; TypeConvList, CTypesList: TStrings; AlwaysAddPrefixToParam: boolean);
+procedure HandleIDLFile(AFilename: string; AnOutput, ForwardOutput: TStrings; TypeConvList: TStrings; AlwaysAddPrefixToParam: boolean);
 var
   AnIDLList: TIDLList;
   AnInput: TStrings;
@@ -35,7 +35,7 @@ begin
     AnIDLList := TIDLList.create;
     try
       ParseFile(AnIDLList, AnInput);
-      GeneratePascalSource(AnIDLList,AnOutput,TypeConvList, CTypesList, AlwaysAddPrefixToParam, ForwardOutput);
+      GeneratePascalSource(AnIDLList,AnOutput,TypeConvList, AlwaysAddPrefixToParam, ForwardOutput);
     finally
       AnIDLList.Free;
     end;
@@ -52,16 +52,15 @@ var
   output, forwardoutput: TStringList;
   OutputToFile: boolean;
   OutputFilename: string;
-  CTypes, TypeMapList: TStrings;
+  TypeMapList: TStrings;
   AlwaysAddPrefixToParam: boolean;
 
 begin
   filenames := TStringList.Create;
-  CTypes := TStringList.Create;
   TypeMapList := TStringList.Create;
   try
     // quick check parameters
-    ErrorMsg:=CheckOptions('hpo::c:m:f:',nil,nil,filenames);
+    ErrorMsg:=CheckOptions('hpo::m:f:',nil,nil,filenames);
     if ErrorMsg<>'' then
       begin
       ShowException(Exception.Create(ErrorMsg));
@@ -75,11 +74,6 @@ begin
       WriteHelp;
       Terminate;
       Exit;
-      end;
-
-    if HasOption('c') then
-      begin
-      CTypes.LoadFromFile(GetOptionValue('c'));
       end;
 
     if HasOption('m') then
@@ -109,7 +103,7 @@ begin
         if OutputToFile and (OutputFilename='') then
           Output.Clear;
 
-        HandleIDLFile(filenames.Strings[i], output, forwardoutput, TypeMapList, CTypes, AlwaysAddPrefixToParam);
+        HandleIDLFile(filenames.Strings[i], output, forwardoutput, TypeMapList, AlwaysAddPrefixToParam);
 
         if OutputToFile and (OutputFilename='') then
           output.SaveToFile(LowerCase(ExtractFileName(ChangeFileExt(filenames.Strings[i],'.inc'))));
@@ -134,10 +128,8 @@ begin
 
   finally
     filenames.Free;
-    CTypes.Free;
     TypeMapList.Free;
   end;
-
 
   // stop program loop
   Terminate;
@@ -166,8 +158,6 @@ begin
   writeln('              directory with the same filenames name as the input files but with');
   writeln('              the ''.inc'' extension');
   writeln(' -o filename  Write the output to one file called ''filename''');
-  writeln(' -c filename  Read ''filename'' to get a list of typenames that have to be');
-  writeln('              prefixed with ''c'' or ''cu'' (as used in the ctypes unit)');
   writeln(' -m filename  Read ''filename'' for a list of mappings between idl-type names');
   writeln('              and their Pascal counterpart');
   writeln(' -f filename  Place all forward declarations into one file called ''filename''');

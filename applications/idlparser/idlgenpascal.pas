@@ -38,24 +38,9 @@ uses
   Classes, SysUtils, strutils,
   idlParser;
 
-procedure GeneratePascalSource(const AnIdlList: TIDLList; const PascalCode: tstrings;TypeConvList, CTypesList: TStrings; AlwaysAddPrefixToParam: boolean; AForwardDeclList: TStrings = nil);
+procedure GeneratePascalSource(const AnIdlList: TIDLList; const PascalCode: tstrings;TypeConvList: TStrings; AlwaysAddPrefixToParam: boolean; AForwardDeclList: TStrings = nil);
 
 implementation
-
-function CTypeToPascalType(AValue: string; unsigned: boolean; TypeConvList, CTypesList: TStrings): string;
-begin
-  if TypeConvList.Values[AValue]<>'' then
-    result := TypeConvList.Values[AValue]
-  else if CTypesList.IndexOf(AValue) > -1 then
-    begin
-    result := 'idl';
-    if unsigned then result := Result + 'u';
-    result := result+AValue;
-    end
-  else
-    result := AValue;
-end;
-
 
 function HasDoubleIdentifier(const AnIDL: TIDL; AValue: string): boolean;
 var
@@ -98,7 +83,142 @@ begin
   end;
 end;
 
-procedure GeneratePascalSource(const AnIdlList: TIDLList; const PascalCode: tstrings;TypeConvList, CTypesList: TStrings; AlwaysAddPrefixToParam: boolean; AForwardDeclList: TStrings = nil);
+function IsReturnTypeFunction(AnIDLMember: TIDLMember; TypeConvList: TStrings; var AParamStr: string; var AReturnType: string) : boolean;
+var
+  found: boolean;
+  Isfunction: boolean;
+
+  function Search(const AValue: string): boolean;
+  var
+    i,c: integer;
+    res: string;
+  begin
+    result := true;
+    if AValue='' then
+      AReturnType := AnIDLMember.ReturnType
+    else
+      begin
+      result := false;
+      i := TypeConvList.IndexOfName(AValue);
+      if i > -1 then
+        begin
+        result := true;
+        res := TypeConvList.ValueFromIndex[i];
+        c := pos(',',res);
+        if c>0 then
+          begin
+          IsFunction:=false;
+          AReturnType:= copy(res,1,c-1);
+          AParamStr := copy(res,c+1,10) + ' result_: ' + AReturnType;
+          end
+        else
+          AReturnType := res;
+        end;
+      end;
+  end;
+
+begin
+  found := false;
+  IsFunction:=true;
+  AReturnType:='';
+  AParamStr:='';
+  if AnIDLMember.ReturnTypeUnsigned then
+    begin
+    found := Search(AnIDLMember.ReturnType+',unsigned,f');
+    if not found then
+      found := Search(AnIDLMember.ReturnType+',f');
+    if not found then
+      found := Search(AnIDLMember.ReturnType+',unsigned');
+    end;
+
+  if not found then
+    found := Search(AnIDLMember.ReturnType+',f');
+
+  if not found then
+    found := Search(AnIDLMember.ReturnType);
+
+  if not found then
+    found := Search('');
+
+  result := Isfunction;
+end;
+
+function GetIdentifierDeclaration(AParamName: String; AnIDLMemberParameter: TIDLMemberParameter; TypeConvList: TStrings) : string;
+var
+  s: string;
+  SearchFor: string;
+  found: boolean;
+  defprefix: string;
+
+  function Search(const AValue: string): boolean;
+  var
+    i,c: integer;
+    res: string;
+  begin
+    result := true;
+    if avalue='' then
+      s := defprefix + AParamName + ': ' +AnIDLMemberParameter.ParamType
+    else
+      begin
+      result := false;
+      i := TypeConvList.IndexOfName(AValue);
+      if (i > -1) then
+        begin
+        result := true;
+        res := TypeConvList.ValueFromIndex[i];
+        if res = '' then
+          s := 'out ' + AParamName
+        else
+          begin
+          c := pos(',',res);
+          if c > 0 then
+            begin
+            s := copy(res,c+1,10) + ' ' +AParamName + ': ' + copy(res,1,c-1);
+            end
+          else
+            s := defprefix + AParamName + ': ' +res;
+          end;
+        end;
+      end;
+  end;
+
+begin
+  defprefix := '';
+  if anIDLMemberParameter.ParamInOutType=piOut then
+    begin
+    SearchFor := AnIDLMemberParameter.ParamType + ',out';
+    defprefix:='out ';
+    end
+  else if anIDLMemberParameter.ParamInOutType=piInOut then
+    begin
+    SearchFor := AnIDLMemberParameter.ParamType + ',inout';
+    defprefix:='var ';
+    end
+  else if anIDLMemberParameter.ParamInOutType=piIn then
+    SearchFor := AnIDLMemberParameter.ParamType + ',in';
+
+  if AnIDLMemberParameter.ParamTypeUnsigned then
+    begin
+    Found := search(SearchFor+',unsigned');
+    if not Found then
+      Found := search(AnIDLMemberParameter.ParamType+',unsigned');
+    end
+  else
+    Found := false;
+
+  if not Found then
+    Found := search(SearchFor);
+
+  if not found then
+    Found := search(AnIDLMemberParameter.ParamType);
+
+  if not Found then
+    search('');
+
+  result := s;
+end;
+
+procedure GeneratePascalSource(const AnIdlList: TIDLList; const PascalCode: tstrings;TypeConvList: TStrings; AlwaysAddPrefixToParam: boolean; AForwardDeclList: TStrings = nil);
 
 var
   i,l,m: integer;
@@ -110,6 +230,8 @@ var
   ml: boolean;
   AParamName: string;
   PasType: string;
+  FuncRet: string;
+  IsFunc: boolean;
 
 begin
   PascalCode.add('type');
@@ -135,9 +257,18 @@ begin
         if anIDLMember.MemberType=mtFunc then
           begin
           if anIDLMember.ReturnType = 'void' then
-            s := s + '    procedure '
+            begin
+            IsFunc:=false;
+            FuncRet:='';
+            end
           else
-            s := s + '    function ';
+            IsFunc := IsReturnTypeFunction(anIDLMember, TypeConvList, FuncRet, PasType);
+
+          if IsFunc then
+            s := s + '    function '
+          else
+            s := s + '    procedure ';
+
           s := s + IdentifierNameToPascalName(anIDLMember.MemberName) + '(';
           for m := 0 to anIDLMember.Params.Count-1 do
             begin
@@ -152,30 +283,39 @@ begin
               end;
 
             if m > 0 then s := s + '; ';
-            if anIDLMemberParameter.ParamInOutType=piOut then
-              s := s + 'out '
-            else if anIDLMemberParameter.ParamInOutType=piInOut then
-              s := s + 'var ';
-            s := s + AParamName +': ' + CTypeToPascalType(anIDLMemberParameter.ParamType,anIDLMemberParameter.ParamTypeUnsigned,TypeConvList,CTypesList);
+
+            s := s + GetIdentifierDeclaration(AParamName, AnIDLMemberParameter, TypeConvList);
+            end;
+          if not IsFunc and (FuncRet<>'') then
+            begin
+            // Pass the function result as a parameter
+            if anIDLMember.Params.Count>0 then
+              s := s + ';';
+            s := s + FuncRet;
             end;
           s := s + ')';
-          if anIDLMember.ReturnType <> 'void' then
-            s := s + ' : '+ CTypeToPascalType(anIDLMember.ReturnType,anIDLMember.ReturnTypeUnsigned,TypeConvList,CTypesList);
+          if IsFunc then
+            s := s + ' : '+ PasType;
           s := s + '; safecall;'+ LineEnding
           end
         else if anIDLMember.MemberType=mtAttribute then
           begin
-          PasType:= CTypeToPascalType(anIDLMember.ReturnType, anIDLMember.ReturnTypeUnsigned,TypeConvList,CTypesList);
-          s := s + '    function Get' +anIDLMember.MemberName + '(): ' + PasType + '; safecall;' + LineEnding;
+          IsFunc := IsReturnTypeFunction(anIDLMember, TypeConvList, FuncRet, PasType);
+          if IsFunc then
+            s := s + '    function Get' +anIDLMember.MemberName + '(): ' + PasType + '; safecall;' + LineEnding
+          else // Pass the function result as a parameter
+            s := s + '    procedure Get' +anIDLMember.MemberName + '('+FuncRet+'); safecall;' + LineEnding;
           if not anIDLMember.MemberReadonly then
             s := s + '    procedure Set' +anIDLMember.MemberName + '(a'+anIDLMember.MemberName+': '+ PasType+'); safecall;' + LineEnding;
 
-          s := s + '    property ' +IdentifierNameToPascalName(anIDLMember.MemberName)+  ' : '+PasType+
-               ' read Get' +anIDLMember.MemberName;
-          if not anIDLMember.MemberReadonly then
-            s := s + ' write Set' +anIDLMember.MemberName;
-          s := s + ';' +LineEnding;
-
+          if IsFunc then
+            begin
+            s := s + '    property ' +IdentifierNameToPascalName(anIDLMember.MemberName)+  ' : '+PasType+
+                 ' read Get' +anIDLMember.MemberName;
+            if not anIDLMember.MemberReadonly then
+              s := s + ' write Set' +anIDLMember.MemberName;
+            s := s + ';' +LineEnding;
+            end;
           end
         else
           Consts:=Consts + '  ' + anIDL.InterfaceName +'_'+ anIDLMember.MemberName + '=' + CValueToPascalValue(anIDLMember.ConstValue) + ';'+LineEnding;
