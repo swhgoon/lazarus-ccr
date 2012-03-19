@@ -1,11 +1,10 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="3">
+  <Package Version="4">
     <Name Value="GeckoComponents"/>
-    <AddToProjectUsesSection Value="False"/>
     <Author Value="Gecko Components for Delphi; ported to Lazarus by Phil Hess"/>
     <CompilerOptions>
-      <Version Value="9"/>
+      <Version Value="11"/>
       <SearchPaths>
         <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
@@ -28,20 +27,14 @@
         </Checks>
         <VerifyObjMethodCallValidity Value="True"/>
       </CodeGeneration>
-      <Linking>
-        <Debugging>
-          <GenerateDebugInfo Value="True"/>
-          <UseHeaptrc Value="True"/>
-        </Debugging>
-      </Linking>
       <Other>
         <WriteFPCLogo Value="False"/>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Description Value="Gecko Components for Lazarus"/>
+    <Description Value="Gecko Components for Lazarus (fpmake)"/>
     <License Value="MPL 1.1"/>
-    <Version Release="3"/>
+    <Version Major="2" Minor="9" Release="1"/>
     <Files Count="5">
       <Item1>
         <Filename Value="GeckoBrowser.pas"/>
