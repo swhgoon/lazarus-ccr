@@ -161,6 +161,7 @@ var
   IDLString: string;
   pCurrent: pchar;
   AWord: string;
+  LineNr: integer;
   pWordStart: pchar;
   wordchars: set of char;
   UUIDAttribute: string;

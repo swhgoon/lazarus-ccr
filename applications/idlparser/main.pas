@@ -96,7 +96,7 @@ begin
   try
     IDLList.OwnsObjects:=true;
     ParseFile(IDLList, memoIDLFile.Lines);
-    GeneratePascalSource(IDLList,memoPascalfile.Lines,TypeSettings.ValueListEditor1.Strings,TypeSettings.cTypes.Lines, cbParamPrefix.Checked);
+    GeneratePascalSource(IDLList,memoPascalfile.Lines,TypeSettings.ValueListEditor1.Strings, cbParamPrefix.Checked);
   finally
     IDLList.Free;
   end;

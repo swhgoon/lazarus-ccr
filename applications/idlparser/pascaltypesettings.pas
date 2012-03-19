@@ -43,13 +43,10 @@ type
   { TTypeSettings }
 
   TTypeSettings = class(TForm)
-    bLoadCList: TButton;
     bSaveMap: TButton;
     bLoadMap: TButton;
-    bSaveClist: TButton;
-    cTypes: TMemo;
+    Label1: TLabel;
     Label2: TLabel;
-    Label3: TLabel;
     OpenDialog: TOpenDialog;
     pMapBottom: TPanel;
     pCListBottom: TPanel;
@@ -58,9 +55,7 @@ type
     SaveDialog: TSaveDialog;
     Splitter1: TSplitter;
     ValueListEditor1: TValueListEditor;
-    procedure bLoadCListClick(Sender: TObject);
     procedure bLoadMapClick(Sender: TObject);
-    procedure bSaveClistClick(Sender: TObject);
     procedure bSaveMapClick(Sender: TObject);
   private
     { private declarations }
@@ -81,18 +76,6 @@ procedure TTypeSettings.bLoadMapClick(Sender: TObject);
 begin
   if OpenDialog.Execute then
     ValueListEditor1.Strings.LoadFromFile(OpenDialog.FileName);
-end;
-
-procedure TTypeSettings.bSaveClistClick(Sender: TObject);
-begin
-  if SaveDialog.Execute then
-    cTypes.Lines.SaveToFile(SaveDialog.FileName);
-end;
-
-procedure TTypeSettings.bLoadCListClick(Sender: TObject);
-begin
-  if OpenDialog.Execute then
-    cTypes.Lines.LoadFromFile(OpenDialog.FileName);
 end;
 
 procedure TTypeSettings.bSaveMapClick(Sender: TObject);
