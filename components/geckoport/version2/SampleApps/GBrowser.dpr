@@ -7,7 +7,9 @@ uses
   Math,
  {$ENDIF}
 {$ENDIF}
+  sysutils,
   Forms,
+  GeckoInit,
   gec10 in 'gec10.pas';
 
 
@@ -20,6 +22,18 @@ begin
 {$ENDIF}
 
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
-  Application.Run;
+  try
+    GeckoComponentsStartup(ParamStr(1));
+  except
+    on E: Exception do
+      raise Exception.CreateFmt('Failed to initialize xulrunner. Try to pass the complete filename ' +
+                                'of the libxpcom library (including the path) as first parameter to ' +
+                                'the command line. Original error message: %s', [E.Message]);
+  end;
+  try
+    Application.CreateForm(TForm1, Form1);
+    Application.Run;
+  finally
+    GeckoComponentsShutdown;
+  end;
 end.
