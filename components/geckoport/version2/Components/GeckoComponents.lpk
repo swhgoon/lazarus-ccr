@@ -1,13 +1,11 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="3">
+  <Package Version="4">
     <Name Value="GeckoComponents"/>
-    <AddToProjectUsesSection Value="False"/>
     <Author Value="Gecko Components for Delphi; ported to Lazarus by Phil Hess"/>
     <CompilerOptions>
-      <Version Value="9"/>
+      <Version Value="11"/>
       <SearchPaths>
-        <OtherUnitFiles Value="..;../each-version"/>
         <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Parsing>
@@ -17,6 +15,7 @@
           <IncludeAssertionCode Value="True"/>
           <AllowLabel Value="False"/>
           <CPPInline Value="False"/>
+          <UseAnsiStrings Value="False"/>
         </SyntaxOptions>
       </Parsing>
       <CodeGeneration>
@@ -28,12 +27,6 @@
         </Checks>
         <VerifyObjMethodCallValidity Value="True"/>
       </CodeGeneration>
-      <Linking>
-        <Debugging>
-          <GenerateDebugInfo Value="True"/>
-          <UseHeaptrc Value="True"/>
-        </Debugging>
-      </Linking>
       <Other>
         <WriteFPCLogo Value="False"/>
         <CompilerPath Value="$(CompPath)"/>
@@ -41,8 +34,8 @@
     </CompilerOptions>
     <Description Value="Gecko Components for Lazarus"/>
     <License Value="MPL 1.1"/>
-    <Version Release="3"/>
-    <Files Count="21">
+    <Version Major="2" Minor="9" Release="1"/>
+    <Files Count="5">
       <Item1>
         <Filename Value="GeckoBrowser.pas"/>
         <HasRegisterProc Value="True"/>
@@ -64,71 +57,6 @@
         <Filename Value="GeckoInit.pas"/>
         <UnitName Value="GeckoInit"/>
       </Item5>
-      <Item6>
-        <Filename Value="../nsCID.pas"/>
-        <UnitName Value="nsCID"/>
-      </Item6>
-      <Item7>
-        <Filename Value="../nsConsts.pas"/>
-        <UnitName Value="nsConsts"/>
-      </Item7>
-      <Item8>
-        <Filename Value="../nsEnumerators.pas"/>
-        <UnitName Value="nsEnumerators"/>
-      </Item8>
-      <Item9>
-        <Filename Value="../nsError.pas"/>
-        <UnitName Value="nsError"/>
-      </Item9>
-      <Item10>
-        <Filename Value="../nsErrorUtils.pas"/>
-        <UnitName Value="nsErrorUtils"/>
-      </Item10>
-      <Item11>
-        <Filename Value="../nsGeckoStrings.pas"/>
-        <UnitName Value="nsGeckoStrings"/>
-      </Item11>
-      <Item12>
-        <Filename Value="../nsInit.pas"/>
-        <UnitName Value="nsInit"/>
-      </Item12>
-      <Item13>
-        <Filename Value="../nsMemory.pas"/>
-        <UnitName Value="nsMemory"/>
-      </Item13>
-      <Item14>
-        <Filename Value="../nsNetUtil.pas"/>
-        <UnitName Value="nsNetUtil"/>
-      </Item14>
-      <Item15>
-        <Filename Value="../nsStream.pas"/>
-        <UnitName Value="nsStream"/>
-      </Item15>
-      <Item16>
-        <Filename Value="../nsTypes.pas"/>
-        <UnitName Value="nsTypes"/>
-      </Item16>
-      <Item17>
-        <Filename Value="../nsXPCOM.pas"/>
-        <UnitName Value="nsXPCOM"/>
-      </Item17>
-      <Item18>
-        <Filename Value="../nsXPCOMGlue.pas"/>
-        <UnitName Value="nsXPCOMGlue"/>
-      </Item18>
-      <Item19>
-        <Filename Value="../nsXRE.pas"/>
-        <UnitName Value="nsXRE"/>
-      </Item19>
-      <Item20>
-        <Filename Value="../each-version/nsXPCOM_std19.pas"/>
-        <UnitName Value="nsXPCOM_std19"/>
-      </Item20>
-      <Item21>
-        <Filename Value="GeckoPromptService.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="GeckoPromptService"/>
-      </Item21>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
@@ -140,7 +68,7 @@
       </Item2>
     </RequiredPkgs>
     <UsageOptions>
-      <UnitPath Value="$(PkgOutDir)/"/>
+      <UnitPath Value="$(PkgOutDir)"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
