@@ -1,48 +1,74 @@
 object Form1: TForm1
-  Left = 0
-  Top = 0
-  Width = 666
-  Height = 427
+  Left = 612
+  Height = 422
+  Top = 209
+  Width = 660
   Caption = 'Form1'
+  ClientHeight = 422
+  ClientWidth = 660
   Color = clBtnFace
-  Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Tahoma'
-  Font.Style = []
   OnShow = FormShow
-  PixelsPerInch = 96
-  object lblProg: TLabel
-    Left = 296
-    Top = 400
-    Width = 32
-    Height = 13
-    Caption = 'lblProg'
-  end
-  object lblProgMax: TLabel
-    Left = 352
-    Top = 400
-    Width = 52
-    Height = 13
-    Caption = 'lblProgMax'
-  end
+  LCLVersion = '0.9.31'
   object GeckoBrowser1: TGeckoBrowser
     Left = 0
-    Top = 16
-    Width = 665
-    Height = 257
+    Height = 274
+    Top = 0
+    Width = 660
+    Align = alClient
     TabOrder = 0
     TabStop = False
-    OnStatusChange = GeckoBrowser1StatusChange
-    OnProgressChange = GeckoBrowser1ProgressChange
     OnLocationChange = GeckoBrowser1LocationChange
+    OnProgressChange = GeckoBrowser1ProgressChange
+    OnStatusChange = GeckoBrowser1StatusChange
+    DisableJavaScript = False
   end
   object ListBox1: TListBox
     Left = 0
-    Top = 280
-    Width = 665
     Height = 113
-    ItemHeight = 13
+    Top = 279
+    Width = 660
+    Align = alBottom
+    ItemHeight = 0
+    ScrollWidth = 658
     TabOrder = 1
+    TopIndex = -1
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 30
+    Top = 392
+    Width = 660
+    Align = alBottom
+    ClientHeight = 30
+    ClientWidth = 660
+    TabOrder = 2
+    object lblProg: TLabel
+      Left = 240
+      Height = 14
+      Top = 6
+      Width = 40
+      Caption = 'lblProg'
+      ParentColor = False
+    end
+    object lblProgMax: TLabel
+      Left = 344
+      Height = 14
+      Top = 6
+      Width = 62
+      Caption = 'lblProgMax'
+      ParentColor = False
+    end
+  end
+  object Splitter1: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 274
+    Width = 660
+    Align = alBottom
+    ResizeAnchor = akBottom
   end
 end

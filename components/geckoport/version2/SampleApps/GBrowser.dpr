@@ -8,11 +8,8 @@ uses
  {$ENDIF}
 {$ENDIF}
   Forms,
-  gec10 in 'gec10.pas' {Form1};
+  gec10 in 'gec10.pas';
 
-{$IFDEF MSWINDOWS}
-{$R *.res}
-{$ENDIF}
 
 begin
 {$IFDEF FPC}
