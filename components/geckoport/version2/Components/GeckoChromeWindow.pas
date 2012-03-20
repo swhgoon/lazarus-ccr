@@ -107,7 +107,7 @@ type
     // nsIWebProgressListener
     procedure OnStateChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aStateFlags: idlulong; aStatus: nsresult); safecall;
     procedure OnProgressChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aCurSelfProgress: idllong; aMaxSelfProgress: idllong; aCurTotalProgress: idllong; aMaxTotalProgress: idllong); safecall;
-    procedure OnLocationChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; location: nsIURI); safecall;
+    procedure OnLocationChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; Location: nsIURI{$ifdef gecko11}; aFlags: idlulong{$endif gecko11}); safecall;
     procedure OnStatusChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aStatus: nsresult; aMessage: PWideChar); safecall;
     procedure OnSecurityChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; state: idlulong); safecall;
     // nsIInterfaceRequestor
@@ -438,7 +438,7 @@ begin
   UseParameter(aMaxTotalProgress);
 end;
 
-procedure TGeckoChromeForm.OnLocationChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; location: nsIURI);
+procedure TGeckoChromeForm.OnLocationChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; Location: nsIURI{$ifdef gecko11}; aFlags: idlulong{$endif gecko11});
 begin
   UseParameter(aWebProgress);
   UseParameter(aRequest);

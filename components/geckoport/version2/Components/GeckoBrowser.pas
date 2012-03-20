@@ -393,7 +393,7 @@ type
     // nsIWebProgressListener
     procedure OnStateChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aStateFlags: idlulong; aStatus: nsresult); virtual; safecall; abstract;
     procedure OnProgressChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aCurSelfProgress: idllong; aMaxSelfProgress: idllong; aCurTotalProgress: idllong; aMaxTotalProgress: idllong); virtual; safecall; abstract;
-    procedure OnLocationChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; location: nsIURI); virtual; safecall; abstract;
+    procedure OnLocationChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; location: nsIURI{$ifdef gecko11}; aFlags: idlulong{$endif gecko11}); virtual; safecall; abstract;
     procedure OnStatusChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aStatus: nsresult; aMessage: PWideChar); virtual; safecall; abstract;
     procedure OnSecurityChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; state: idlulong); virtual; safecall; abstract;
     // nsIDOMEventListener
@@ -593,7 +593,7 @@ type
     // nsIWebProgressListener
     procedure OnStateChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aStateFlags: idlulong; aStatus: nsresult); override;
     procedure OnProgressChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aCurSelfProgress: idllong; aMaxSelfProgress: idllong; aCurTotalProgress: idllong; aMaxTotalProgress: idllong); override;
-    procedure OnLocationChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; location: nsIURI); override;
+    procedure OnLocationChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; location: nsIURI{$ifdef gecko11}; aFlags: idlulong{$endif gecko11}); override;
     procedure OnStatusChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aStatus: nsresult; aMessage: PWideChar); override;
     procedure OnSecurityChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; state: idlulong); override;
     // nsISHistoryListener
@@ -1748,7 +1748,8 @@ end;
 procedure TGeckoBrowserListener.OnLocationChange(
                 aWebProgress: nsIWebProgress;
                 aRequest: nsIRequest;
-                location: nsIURI);
+                location: nsIURI
+                {$ifdef gecko11}; aFlags: idlulong{$endif gecko11});
 var
   str: IInterfacedCString;
 begin

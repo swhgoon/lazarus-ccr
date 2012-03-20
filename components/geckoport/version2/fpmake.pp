@@ -7,6 +7,10 @@ program fpmake;
 {$ENDIF}
 {$ENDIF}
 
+// By default build for Gecko9, because embedding Gecko 10 and 11 is impossible
+// on linux due to bug https://bugzilla.mozilla.org/show_bug.cgi?id=720682
+{$define gecko9}
+
 uses fpmkunit, sysutils, lazmkunit;
 
 Var
@@ -29,7 +33,14 @@ begin
     P.Options.add('-Sm');
     P.Options.add('-Sd');
 
+
+    {$ifdef gecko11}
+    P.Options.add('-dgecko11');
+    P.IncludePath.Add('gecko11');
+    {$endif gecko11}
+    {$ifdef gecko9}
     P.IncludePath.Add('gecko9');
+    {$endif gecko9}
     P.IncludePath.Add('gecko10');
 
     P.Dependencies.Add('lazmkunit');
@@ -188,6 +199,12 @@ begin
       Dependencies.AddInclude('nsidomstorage.inc');
       Dependencies.AddInclude('nsicontextmenulistener2.inc');
       Dependencies.AddInclude('nsidomtext.inc');
+      {$ifdef gecko11}
+      Dependencies.AddInclude('nsidomdomtokenlist.inc');
+      Dependencies.AddInclude('nsidomdomclientrect.inc');
+      Dependencies.AddInclude('nsidomclientrectlist.inc');
+      Dependencies.AddInclude('nsiframerequestcallback.inc');
+      {$endif gecko11}
       end;
 
     with P.Targets.AddUnit('nsInit.pas') do

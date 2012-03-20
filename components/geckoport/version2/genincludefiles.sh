@@ -112,7 +112,8 @@ idltopas $1/nsIWebProgressListener.idl \
    $1/nsISHistoryListener.idl \
    $1/nsIMemory.idl \
    $1/nsIWebBrowserChrome.idl \
-   $1/nsIAnimationFrameListener.idl \
+# This idl was removed from Gecko 11 
+#  $1/nsIAnimationFrameListener.idl \
    $1/nsIDOMUserDataHandler.idl \
    $1/nsIVariant.idl \
    $1/nsIWebBrowserFocus.idl \
@@ -151,4 +152,9 @@ idltopas $1/nsIWebProgressListener.idl \
     $1/nsIDOMStorage.idl \
     $1/nsIContextMenuListener2.idl \
     $1/nsIDOMText.idl \
+# These idl's were added in Gecko 11.
+    $1/nsIDOMDOMTokenList.idl \
+    $1/nsIDOMClientRectList.idl \
+    $1/nsIDOMClientRect.idl \
+    $1/nsIFrameRequestCallback.idl \
     -m idltypemap.cfg -f forwarddecl.inc -o

@@ -54,6 +54,12 @@ type
 
 {$i domstubs.inc}
 
+{$ifdef gecko11}
+{$i nsidomdomtokenlist.inc}
+{$i nsidomclientrect.inc}
+{$i nsidomclientrectlist.inc}
+{$i nsiframerequestcallback.inc}
+{$endif gecko11}
 {$i nsiwebbrowser.inc}
 {$i nsiwebbrowserchrome.inc}
 {$i nsiinterfacerequestor.inc}
