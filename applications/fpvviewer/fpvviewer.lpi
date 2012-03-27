@@ -21,7 +21,7 @@
           <Macro1 Name="LCLWidgetType" Value="qt"/>
         </MacroValues>
         <CompilerOptions>
-          <Version Value="10"/>
+          <Version Value="11"/>
           <Target>
             <Filename Value="fpvviewer"/>
           </Target>
@@ -69,7 +69,7 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="4">
+    <Units Count="5">
       <Unit0>
         <Filename Value="fpvviewer.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -92,16 +92,20 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="fpvv_drawer"/>
       </Unit3>
+      <Unit4>
+        <Filename Value="coreconrec.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CoreConRec"/>
+      </Unit4>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="10"/>
+    <Version Value="11"/>
     <Target>
       <Filename Value="fpvviewer"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="fpvectorialsrc"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
