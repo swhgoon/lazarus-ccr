@@ -285,7 +285,11 @@ procedure TfrmFPVViewer.MyContourLineDrawingProc(z, x1, y1, x2, y2: Double);
 begin
   Drawer.Drawing.Canvas.Pen.Style := psSolid;
   Drawer.Drawing.Canvas.Pen.Color := clBlack;
-  Drawer.Drawing.Canvas.Line(Round(x1 / 20), Round(y1 / 20), Round(x2 / 20), Round(y2 / 20));
+  Drawer.Drawing.Canvas.Line(
+    Round(x1 * spinScale.Value / 20),
+    Round(y1 * spinScale.Value / 20),
+    Round(x2 * spinScale.Value / 20),
+    Round(y2 * spinScale.Value / 20));
 end;
 
 end.
