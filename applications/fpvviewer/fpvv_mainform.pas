@@ -35,7 +35,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure spinScaleChange(Sender: TObject);
   private
-    { private declarations }
+    procedure MyContourLineDrawingProc(z,x1,y1,x2,y2: Double);
   public
     { public declarations }
     Drawer: TFPVVDrawer;
@@ -109,8 +109,8 @@ end;
 
 procedure TfrmFPVViewer.btnContourLinesClick(Sender: TObject);
 const
-  dimx = 100;  // dimension west - east
-  dimy = 100;  // dimenstion north west
+  dimx = 1024;  // dimension west - east
+  dimy = 1024;  // dimenstion north west
   dimh = 10;   // dimension for contour levels
 var
   Mat:TMatrix;  // 2D - Datafield
@@ -120,45 +120,70 @@ var
   i,j:Integer;  // adress indexes
   x,y:Double;   // coord. values
   mi,ma:Double; // for minimum & maximum
+  Vec: TvVectorialDocument;
+  lPage: TvVectorialPage;
+  lRasterImage: TvRasterImage;
 begin
-  setlength(scx,dimx); // create dynamicly the vectors and datafield
+  // Drawing size setting and initialization
+  Drawer.Drawing.Width := Drawer.Width;
+  Drawer.Drawing.Height := Drawer.Height;
+  Drawer.Drawing.Canvas.Brush.Color := clWhite;
+  Drawer.Drawing.Canvas.Brush.Style := bsSolid;
+  Drawer.Drawing.Canvas.FillRect(0, 0, Drawer.Drawing.Width, Drawer.Drawing.Height);
+
+  Vec := TvVectorialDocument.Create;
+  Vec.ReadFromFile(editFileName.FileName);
+  lPage := Vec.GetPage(0);
+  lRasterImage := TvRasterImage(lPage.GetEntity(0));
+
+  // create dynamicaly the vectors and datafield
+  setlength(scx,dimx);
   setlength(scy,dimy);
   setlength(hgt,dimh);
   setlength(mat,dimx);
-  For i:=0 to dimx-1 Do Setlength(mat[i],dimy);
+  for i:=0 to dimx-1 do Setlength(mat[i],dimy);
+  try
+    for i:=0 to dimx-1 do scx[i]:= i * 10; // set scaling vector west - east
+    for i:=0 to dimy-1 do scy[i]:= i * 10; // set scaling vector north - south
 
-  For i:=0 to dimx-1 Do scx[i]:= i * 10; // set scaling vector west - east
-  For i:=0 to dimy-1 Do scy[i]:= i * 10; // set scaling vector north - south
+    for i:=0 to dimx-1 do  // ----------------------------------- set 2d data field
+      for j:=0 to dimy-1 do
+      begin
+        x:=i-dimx/2;
+        y:=j-dimy/2;
+        mat[i,j]:= Round(lRasterImage.RasterImage.Colors[i, j].red * 10 / $FFFF);
+                 { (sin(x/dimx*4*pi)    * cos(y/dimy*4*pi)) +
+                  (sin(x/dimx*2*pi)    * cos(y/dimy*2*pi)) +
+                  (sin(x/dimx*1*pi)    * cos(y/dimy*1*pi)) +
+                  (sin(x/dimx*0.5*pi)  * cos(y/dimy*0.5*pi))+
+                  (sin(x/dimx*0.25*pi) * cos(y/dimy*0.25*pi));}
+      end; // -----------------------------------------------------------------------
 
-  For i:=0 to dimx-1 Do  // ----------------------------------- set 2d data field
-    For j:=0 to dimy-1 Do Begin
-      x:=i-dimx/2;
-      y:=j-dimy/2;
-      mat[i,j]:= (sin(x/dimx*4*pi)    * cos(y/dimy*4*pi)) +
-                (sin(x/dimx*2*pi)    * cos(y/dimy*2*pi)) +
-                (sin(x/dimx*1*pi)    * cos(y/dimy*1*pi)) +
-                (sin(x/dimx*0.5*pi)  * cos(y/dimy*0.5*pi))+
-                (sin(x/dimx*0.25*pi) * cos(y/dimy*0.25*pi));
-    end; // -----------------------------------------------------------------------
+    mi:=1e16;    // ------------    Set the minimunm and maximum fof the data field
+    ma:=-1e16;
+    for i:=0 to dimx-1 Do
+      for j:=0 to dimy-1 do
+      begin
+        if mat[i,j]<mi then mi:=mat[i,j];
+        if mat[i,j]>ma then ma:=mat[i,j];
+      end;        //----------------------------------------------------------------
 
-  mi:=1e16;    // ------------    Set the minimunm and maximum fof the data field
-  ma:=-1e16;
-  For i:=0 to dimx-1 Do
-    For j:=0 to dimy-1 do
-    begin
-      if mat[i,j]<mi then mi:=mat[i,j];
-      if mat[i,j]>ma then ma:=mat[i,j];
-    End;        //----------------------------------------------------------------
+    For i:=0 to dimh-1 Do hgt[i]:=mi+i*(ma-mi)/(dimh-1); // ----- create cut levels
 
-  For i:=0 to dimh-1 Do hgt[i]:=mi+i*(ma-mi)/(dimh-1); // ----- create cut levels
-    conrec(mat,0,dimx-1,0,dimy-1,scx,scy,dimh,hgt); // call the contour algorithm*)
+    ContourLineDrawingProc := @MyContourLineDrawingProc;
+    // call the contour algorithm
+    conrec(mat,0,dimx-1,0,dimy-1,scx,scy,dimh,hgt);
+  finally
+    // Finalization of allocated memory
+    setlength(scx, 0);
+    setlength(scy, 0);
+    setlength(hgt, 0);
+    For i:=0 to dimx-1 Do Setlength(mat[i], 0);
+    setlength(mat, 0);
+    Vec.Free;
+  end;
 
-  // Finalization of allocated memory
-  setlength(scx, 0);
-  setlength(scy, 0);
-  setlength(hgt, 0);
-  For i:=0 to dimx-1 Do Setlength(mat[i], 0);
-  setlength(mat, 0);
+  Drawer.Invalidate;
 end;
 
 procedure TfrmFPVViewer.btnViewDXFTokensClick(Sender: TObject);
@@ -254,6 +279,13 @@ begin
   if spinScale.Value <= 0.2 then spinScale.Increment := 0.01
   else if spinScale.Value <= 2 then spinScale.Increment := 0.1
   else spinScale.Increment := 1;
+end;
+
+procedure TfrmFPVViewer.MyContourLineDrawingProc(z, x1, y1, x2, y2: Double);
+begin
+  Drawer.Drawing.Canvas.Pen.Style := psSolid;
+  Drawer.Drawing.Canvas.Pen.Color := clBlack;
+  Drawer.Drawing.Canvas.Line(Round(x1 / 20), Round(y1 / 20), Round(x2 / 20), Round(y2 / 20));
 end;
 
 end.

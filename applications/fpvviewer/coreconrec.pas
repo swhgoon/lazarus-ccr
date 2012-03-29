@@ -65,13 +65,13 @@ uses
 
 //------------------------------------------------------------------------------
 type
-  TMatrix    = Array Of Array of Double;
-  TVector    = Array Of Double;
-  TVectorL4D = Array [0..4] of Double;
-  TVectorL4I = Array [0..4] of Integer;
-  TCastArray = Array [0..2,0..2,0..2] of Integer;
+  TMatrix    = array of array of Double;
+  TVector    = array of Double;
+  TVectorL4D = array [0..4] of Double;
+  TVectorL4I = array [0..4] of Integer;
+  TCastArray = array [0..2,0..2,0..2] of Integer;
 
-Procedure Conrec(D:  TMatrix ; // 2D - Data field
+procedure Conrec(D:  TMatrix ; // 2D - Data field
                  ilb,iub,           // west - east   ilb lower bound
                                     //               iub upper bound
                  jlb,jub : Integer; // north - south jlb lower bound
@@ -81,9 +81,15 @@ Procedure Conrec(D:  TMatrix ; // 2D - Data field
                  nc: Integer;       // nc number of cut levels
                  z : TVector);      // values of cut levels
 
+type
+  TContourLineDrawingProc = procedure(z,x1,y1,x2,y2: Double) of object;
+
+var
+  ContourLineDrawingProc: TContourLineDrawingProc;
+
 implementation
 
-Procedure Conrec(D:  TMatrix ; // 2D - Data field
+procedure Conrec(D:  TMatrix ; // 2D - Data field
                  ilb,iub,           // west - east   ilb lower bound
                                     //               iub upper bound
                  jlb,jub : Integer; // north - south jlb lower bound
@@ -93,8 +99,8 @@ Procedure Conrec(D:  TMatrix ; // 2D - Data field
                  nc: Integer;       // nc number of cut levels
                  z : TVector);      // values of cut levels
 const
- im : Array [0..3] of Integer = (0,1,1,0);   // coord. cast array west - east
- jm : Array [0..3] of Integer = (0,0,1,1);   // coord. cast array north - south
+ im : array [0..3] of Integer = (0,1,1,0);   // coord. cast array west - east
+ jm : array [0..3] of Integer = (0,0,1,1);   // coord. cast array north - south
 var
   m1,m2,m3,deside:Integer;
   dmin,dmax,x1,x2,y1,y2:Double;
@@ -106,16 +112,16 @@ var
   temp1,temp2:Double ;
   r:Byte;
 
- // ------- service xsec west east lin. interpol -------------------------------
- Function xsec(p1,p2:Integer):Double;
+  // ------- service xsec west east lin. interpol -------------------------------
+  function xsec(p1,p2:Integer):Double;
   Begin
-   result:=(h[p2]*xh[p1]-h[p1]*xh[p2])/(h[p2]-h[p1]);
+    result:=(h[p2]*xh[p1]-h[p1]*xh[p2])/(h[p2]-h[p1]);
   End;
 
- //------- service ysec north south lin interpol -------------------------------
- Function ysec(p1,p2:Integer):Double;
+  //------- service ysec north south lin interpol -------------------------------
+  Function ysec(p1,p2:Integer):Double;
   Begin
-   result := (h[p2]*yh[p1]-h[p1]*yh[p2])/(h[p2]-h[p1]);
+    result := (h[p2]*yh[p1]-h[p1]*yh[p2])/(h[p2]-h[p1]);
   End;
 
 begin
@@ -135,8 +141,10 @@ begin
   // set line counter
   lcnt:=0;
   //-----------------------------------------------------------------------------
-  For j:=jub-1 DownTo jlb Do Begin     // over all north - south and              +For j
-    For i:=ilb To iub-1 Do Begin        // east - west coordinates of datafield    +For i
+  For j:=jub-1 DownTo jlb Do      // over all north - south and              +For j
+  begin
+    For i:=ilb To iub-1 Do         // east - west coordinates of datafield    +For i
+    begin
      // set casting bounds from array
      temp1 := min(D[i  , j],D[i  ,j+1]);
      temp2 := min(D[i+1, j],D[i+1,j+1]);
@@ -199,7 +207,8 @@ begin
          m1 := m; m2 := 0;
          If NOT(m=4) Then m3 := m+1 Else m3 :=1;
          deside := casttab[sh[m1]+1 ,sh[m2]+1, sh[m3]+1];
-         If NOT(deside=0) Then Begin // ask is there a desition available -------- +If If NOT(deside=0)
+         if not(deside=0) then // ask is there a desition available -------- +If If NOT(deside=0)
+         begin
           Case deside Of // ------- determin the by desided cast cuts ------------ +Case deside;
             1: Begin x1:=xh[m1]; y1:=yh[m1]; x2:=xh[m2]; y2:=yh[m2]; End;
             2: Begin x1:=xh[m2]; y1:=yh[m2]; x2:=xh[m3]; y2:=yh[m3]; End;
@@ -225,7 +234,7 @@ begin
 
           // Writeln(Format('%2.2f %2.2f %2.2f %2.2f %2.2f',
           //  [z[k],x1,y1,x2,y2]));
-          //DrawingProc(z[k],x1,y1,x2,y2);
+          ContourLineDrawingProc(z[k],x1,y1,x2,y2);
 
           // -------------------------------------------------------------------
          end; // -----------------------------------------------------------------  -If Not(deside=0)
