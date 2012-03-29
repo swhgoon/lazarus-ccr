@@ -111,7 +111,7 @@ procedure TfrmFPVViewer.btnContourLinesClick(Sender: TObject);
 const
   dimx = 1024;  // dimension west - east
   dimy = 1024;  // dimenstion north west
-  dimh = 10;   // dimension for contour levels
+  dimh = 20;   // dimension for contour levels
 var
   Mat:TMatrix;  // 2D - Datafield
   scx:TVector;  // scaling vector west - east
@@ -151,7 +151,7 @@ begin
       begin
         x:=i-dimx/2;
         y:=j-dimy/2;
-        mat[i,j]:= Round(lRasterImage.RasterImage.Colors[i, j].red * 10 / $FFFF);
+        mat[i,j]:= Round(lRasterImage.RasterImage.Colors[i, j].red * dimh / $FFFF);
                  { (sin(x/dimx*4*pi)    * cos(y/dimy*4*pi)) +
                   (sin(x/dimx*2*pi)    * cos(y/dimy*2*pi)) +
                   (sin(x/dimx*1*pi)    * cos(y/dimy*1*pi)) +
