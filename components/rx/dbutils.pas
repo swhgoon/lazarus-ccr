@@ -120,6 +120,7 @@ procedure CheckRequiredField(Field: TField);
 procedure CheckRequiredFields(const Fields: array of TField);
 function ExtractFieldName(const Fields: string; var Pos: Integer): string;
 procedure FillValueForField(const Field: TField; Value:Variant);
+procedure CloneRecord(DataSet: TDataSet; IgnoreFields: array of const);
 
 { SQL expressions }
 
@@ -934,6 +935,62 @@ begin
     DS.Bookmark:=P;
     DS.FreeBookmark(P);
     DS.EnableControls;
+  end;
+end;
+
+function FieldInArray(Field: TField; Arr: array of const): boolean;
+var
+  i: integer;
+  CI: boolean;
+begin
+  Result := False;
+  for i := Low(Arr) to High(Arr) do
+  begin
+    with Arr[i] do
+    begin
+      case VType of
+        vtInteger: Result := Field.Index = VInteger;
+        vtPChar:
+          Result :=
+            AnsiUpperCase(Field.FieldName) = AnsiUpperCase(vPChar);
+        vtString,
+        vtAnsiString:
+          Result :=UpperCase(Field.FieldName) = UpperCase(string(VAnsiString));
+      end
+    end;
+    if Result then
+      exit;
+  end;
+end;
+
+procedure CloneRecord(DataSet: TDataSet; IgnoreFields: array of const);
+var
+  Rec:Array of variant;
+  i:integer;
+begin
+  if not DataSet.Active then exit;
+  i:=DataSet.FieldCount;
+  SetLength(Rec, DataSet.FieldCount);
+
+  for i:=0 to DataSet.FieldCount-1 do
+  begin
+    if (DataSet.Fields[i].FieldKind in [fkData]) and (not DataSet.Fields[i].IsBlob)
+      and (not FieldInArray(DataSet.Fields[i], IgnoreFields)) then
+    begin
+      Rec[i] := DataSet.Fields[i].Value;
+    end;
+  end;
+
+  DataSet.Append;
+
+  for i:=0 to DataSet.FieldCount-1 do
+  begin
+    if (DataSet.Fields[i].FieldKind in [fkData]) and (not DataSet.Fields[i].IsBlob)
+      and (not FieldInArray(DataSet.Fields[i], IgnoreFields)) then
+    begin
+      DataSet.Fields[i].Value:=Rec[i];
+      Rec[i]:=Null;
+    end;
   end;
 end;
 

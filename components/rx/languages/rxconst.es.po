@@ -41,6 +41,10 @@ msgstr "Derecho"
 msgid "Carbon widget set"
 msgstr ""
 
+#: rxconst.sclosevaliderror
+msgid "Error. Expected vailes..."
+msgstr ""
+
 #: rxconst.sdatedlgtitle
 msgid "Select a Date"
 msgstr "Seleccionar Fecha"
@@ -64,6 +68,10 @@ msgstr "Destino"
 #: rxconst.sduallistsrccaption
 msgid "Source"
 msgstr "Fuente"
+
+#: rxconst.sexptcontrolnotfound
+msgid "Control not found in validate %s."
+msgstr ""
 
 #: rxconst.sfilenotexec
 msgid "File specified is not an executable file, dynamic-link library, or icon file"
@@ -139,6 +147,10 @@ msgstr "Anterior A?o|"
 
 #: rxconst.sqtwidgetset
 msgid "QT widget set"
+msgstr ""
+
+#: rxconst.sreqvalue
+msgid "Error. Expected value for filed %s."
 msgstr ""
 
 #: rxconst.sshowcaption

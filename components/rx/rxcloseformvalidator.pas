@@ -38,11 +38,6 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, DB;
 
-const
-  { TODO : В дальнейшем эти константы оформить в виде ресурсов и вынести в соответсвующий модуль }
-  sCloseValidError = 'Ошибка. Не все требуемые поля заполнены!';
-  sReqValue        = 'Поле %s. Требуется значение';
-
 type
 
   { TValidateItem }
@@ -100,13 +95,14 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function CheckCloseForm:boolean;
+    function ByControl(AControl: TWinControl):TValidateItem;
   published
     property ErrorMsgCaption:string read FErrorMsgCaption write FErrorMsgCaption;
     property Items:TValidateItems read GetItems write SetItems;
   end;
 
 implementation
-uses LCLType, StdCtrls, DbCtrls, typinfo, ComCtrls, ExtCtrls;
+uses LCLType, StdCtrls, DbCtrls, typinfo, ComCtrls, ExtCtrls, rxconst;
 
 { TValidateItems }
 
@@ -317,6 +313,22 @@ begin
     end;
   end;
   Result:=true;
+end;
+
+function TRxCloseFormValidator.ByControl(AControl: TWinControl): TValidateItem;
+var
+  i:integer;
+begin
+  Result:=nil;
+  for i:=0 to FItems.Count - 1 do
+  begin
+    if FItems[i].FControl = AControl then
+    begin
+      Result:=FItems[i];
+      exit;
+    end;
+  end;
+  raise Exception.CreateFmt(sExptControlNotFound, [Name]);
 end;
 
 function TRxCloseFormValidator.GetItems: TValidateItems;

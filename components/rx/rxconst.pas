@@ -55,24 +55,24 @@ const
   crHand     = TCursor(14000);
   crDragHand = TCursor(14001);
 
-const
-{ TBitmap.GetTransparentColor from GRAPHICS.PAS uses this value }
-  PaletteMask = $02000000;
+//const
+//{ TBitmap.GetTransparentColor from GRAPHICS.PAS uses this value }
+//  PaletteMask = $02000000;
 
 resourcestring
-  sBrowse          = 'Browse';
-  sDefaultFilter   = 'All files (*.*)|*.*';
-  sDateDlgTitle    = 'Select a Date';
-  sNextYear        = 'Next Year|';
-  sNextMonth       = 'Next Month|';
-  sPrevYear        = 'Previous Year|';
-  sPrevMonth       = 'Previous Month|';
-  sNotImplemented  = 'Function not yet implemented';
-  sFileNotExec     = 'File specified is not an executable file, dynamic-link library, or icon file';
-  sLoadLibError    = 'Could not load ''%s'' library';
-  sDetails         = 'Details';
-  sWindowsIcoFiles = 'Windows Ico files (*.ico)|*.ico|All files (*.*)|*.*';
-  sToCurDate       = 'Set current date';
+  sBrowse               = 'Browse';
+  sDefaultFilter        = 'All files (*.*)|*.*';
+  sDateDlgTitle         = 'Select a Date';
+  sNextYear             = 'Next Year|';
+  sNextMonth            = 'Next Month|';
+  sPrevYear             = 'Previous Year|';
+  sPrevMonth            = 'Previous Month|';
+  sNotImplemented       = 'Function not yet implemented';
+  sFileNotExec          = 'File specified is not an executable file, dynamic-link library, or icon file';
+  sLoadLibError         = 'Could not load ''%s'' library';
+  sDetails              = 'Details';
+  sWindowsIcoFiles      = 'Windows Ico files (*.ico)|*.ico|All files (*.*)|*.*';
+  sToCurDate            = 'Set current date';
 
   //TDualListDialog
   SDualListSrcCaption   = 'Source';
@@ -116,13 +116,13 @@ resourcestring
 
 
   { TRxHistoryNavigator }
-  sHistoryDesc = 'History - "%s"';
+  sHistoryDesc          = 'History - "%s"';
+
+  { RxCloseFormValidator }
+  sCloseValidError      = 'Error. Expected vailes...';
+  sReqValue             = 'Error. Expected value for filed %s.';
+  sExptControlNotFound  = 'Control not found in validate %s.';
 
 implementation
 
-uses Forms;
-
-{initialization
-  Screen.Cursors[crHand] := LoadCursor(hInstance, 'RX_HANDCUR');
-  Screen.Cursors[crDragHand] := LoadCursor(hInstance, 'RX_DRAGCUR'); }
 end.

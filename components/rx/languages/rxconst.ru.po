@@ -41,6 +41,10 @@ msgstr "Вправо"
 msgid "Carbon widget set"
 msgstr "Графический интерфейс Carbon"
 
+#: rxconst.sclosevaliderror
+msgid "Error. Expected vailes..."
+msgstr "Ошибка. Ожидается значение..."
+
 #: rxconst.sdatedlgtitle
 msgid "Select a Date"
 msgstr "Выберите дату"
@@ -64,6 +68,10 @@ msgstr "Выбор"
 #: rxconst.sduallistsrccaption
 msgid "Source"
 msgstr "Источник"
+
+#: rxconst.sexptcontrolnotfound
+msgid "Control not found in validate %s."
+msgstr "Элемент управления не найден в валидаторе %s"
 
 #: rxconst.sfilenotexec
 msgid "File specified is not an executable file, dynamic-link library, or icon file"
@@ -140,6 +148,10 @@ msgstr "Превыдущий год|"
 #: rxconst.sqtwidgetset
 msgid "QT widget set"
 msgstr "Графический интерфейс QT"
+
+#: rxconst.sreqvalue
+msgid "Error. Expected value for filed %s."
+msgstr "Поле %s. Требуется значение"
 
 #: rxconst.sshowcaption
 msgid "Show caption"

@@ -41,6 +41,10 @@ msgstr ""
 msgid "Carbon widget set"
 msgstr ""
 
+#: rxconst.sclosevaliderror
+msgid "Error. Expected vailes..."
+msgstr ""
+
 #: rxconst.sdatedlgtitle
 msgid "Select a Date"
 msgstr ""
@@ -63,6 +67,10 @@ msgstr ""
 
 #: rxconst.sduallistsrccaption
 msgid "Source"
+msgstr ""
+
+#: rxconst.sexptcontrolnotfound
+msgid "Control not found in validate %s."
 msgstr ""
 
 #: rxconst.sfilenotexec
@@ -139,6 +147,10 @@ msgstr ""
 
 #: rxconst.sqtwidgetset
 msgid "QT widget set"
+msgstr ""
+
+#: rxconst.sreqvalue
+msgid "Error. Expected value for filed %s."
 msgstr ""
 
 #: rxconst.sshowcaption
