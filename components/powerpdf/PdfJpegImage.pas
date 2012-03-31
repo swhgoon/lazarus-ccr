@@ -55,7 +55,10 @@ begin
     begin
       AddItem('Type', TPdfName.CreateName('XObject'));
       AddItem('Subtype', TPdfName.CreateName('Image'));
-      AddItem('ColorSpace', TPdfName.CreateName('DeviceRGB'));
+      if TJPegImage(AImage).GrayScale then
+        AddItem('ColorSpace', TPdfName.CreateName('DeviceGray'))
+      else
+        AddItem('ColorSpace', TPdfName.CreateName('DeviceRGB'));
       AddItem('Width', TPdfNumber.CreateNumber(AImage.Width));
       AddItem('Height', TPdfNumber.CreateNumber(AImage.Height));
       AddItem('BitsPerComponent', TPdfNumber.CreateNumber(8));
