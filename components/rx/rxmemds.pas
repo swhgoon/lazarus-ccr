@@ -1340,7 +1340,7 @@ begin
     if Result then Exit;
     DataSet.DisableControls;
     try
-      Bookmark := DataSet.Bookmark;
+      Bookmark := DataSet.GetBookmark;
       try
         with DataSet do begin
           First;
@@ -1352,7 +1352,7 @@ begin
         end;
       finally
         if not Result and DataSet.BookmarkValid(PChar(Bookmark)) then
-          DataSet.Bookmark := Bookmark;
+          DataSet.GotoBookmark(Bookmark);
       end;
     finally
       DataSet.FreeBookmark(Bookmark);
@@ -1581,7 +1581,7 @@ var
 begin
   if Active and (FRecords <> nil) and (FRecords.Count > 0) then
   begin
-    Pos := Bookmark;
+    Pos := GetBookmark;
     try
       QuickSort(0, FRecords.Count - 1, @CompareRecords);
       SetBufListSize(0);
@@ -1595,7 +1595,7 @@ begin
         raise;
       end;
     finally
-      Bookmark := Pos;
+      GotoBookmark(Pos);
       FreeBookmark(Pos);
     end;
     Resync([]);

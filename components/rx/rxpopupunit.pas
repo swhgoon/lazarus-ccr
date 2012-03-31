@@ -454,6 +454,7 @@ begin
   FDataSource:=TDataSource.Create(Self);
   FPopUpFormOptions:=APopUpFormOptions;
   FFieldList:=AFieldList;
+  OnClose := @FormClose;
 
 {$IFDEF LINUX}
   PopupOrigin:=TCustomControl(AOwner).Parent.ControlToScreen(Point(TCustomControl(AOwner).Left, TCustomControl(AOwner).Height + TCustomControl(AOwner).Top));

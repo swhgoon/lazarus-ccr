@@ -433,7 +433,7 @@ begin
     if Result then Exit;
     DataSet.DisableControls;
     try
-      Bookmark := DataSet.Bookmark;
+      Bookmark := DataSet.GetBookmark;
       try
         with DataSet do begin
           First;
@@ -445,7 +445,7 @@ begin
         end;
       finally
         if not Result and DataSet.BookmarkValid(PChar(Bookmark)) then
-          DataSet.Bookmark := Bookmark;
+          DataSet.GotoBookmark(Bookmark);
       end;
     finally
       DataSet.FreeBookmark(Bookmark);
@@ -921,7 +921,7 @@ var
 begin
   DS:=Field.DataSet;
   DS.DisableControls;
-  P:=DS.Bookmark;
+  P:=DS.GetBookmark;
   try
     DS.First;
     while not DS.EOF do
@@ -932,7 +932,7 @@ begin
       DS.Next;
     end;
   finally
-    DS.Bookmark:=P;
+    DS.GotoBookmark(P);
     DS.FreeBookmark(P);
     DS.EnableControls;
   end;
