@@ -985,7 +985,7 @@ begin
 
   for i:=0 to DataSet.FieldCount-1 do
   begin
-    if (DataSet.Fields[i].FieldKind in [fkData]) and (not DataSet.Fields[i].IsBlob)
+    if (DataSet.Fields[i].FieldKind in [fkData]) and (not DataSet.Fields[i].IsBlob) and (not DataSet.Fields[i].ReadOnly)
       and (not FieldInArray(DataSet.Fields[i], IgnoreFields)) then
     begin
       DataSet.Fields[i].Value:=Rec[i];
