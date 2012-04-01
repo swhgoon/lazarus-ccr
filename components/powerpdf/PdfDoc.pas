@@ -447,7 +447,7 @@ type
     procedure BeginText;                                         {  BT  }
     procedure EndText;                                           {  ET  }
     procedure MoveTextPoint(tx, ty: Single);                     {  Td  }
-    procedure SetTextMatrix(a, b, c, d, x, y: Word);             {  Tm  }
+    procedure SetTextMatrix(a, b, c, d, x, y: Single);           {  Tm  }
     procedure MoveToNextLine;                                    {  T*  }
     procedure ShowText(s: string);                               {  Tj  }
     procedure ShowTextNextLine(s: string);                       {  '   }
@@ -2056,16 +2056,16 @@ begin
 end;
 
 // SetTextMatrix
-procedure TPdfCanvas.SetTextMatrix(a, b, c, d, x, y: Word);
+procedure TPdfCanvas.SetTextMatrix(a, b, c, d, x, y: Single);
 var
   S: string;
 begin
-  S := IntToStr(a) + ' ' +
-       IntToStr(b) + ' ' +
-       IntToStr(c) + ' ' +
-       IntToStr(d) + ' ' +
-       IntToStr(x) + ' ' +
-       IntToStr(y) + ' Tm'#10;
+  S := _FloatToStrR(a) + ' ' +
+       _FloatToStrR(b) + ' ' +
+       _FloatToStrR(c) + ' ' +
+       _FloatToStrR(d) + ' ' +
+       _FloatToStrR(x) + ' ' +
+       _FloatToStrR(y) + ' Tm'#10;
   WriteString(S);
 end;
 
