@@ -1819,8 +1819,8 @@ begin
     tmpWidth := PdfCanvas.TextWidth(FText);
 
     case FAlignment of
-      taCenter: XPos := Round((Width - tmpWidth) / 2);
-      taRightJustify: XPos :=Width - Round(tmpWidth);
+      taCenter: XPos := Round((Self.Width - tmpWidth) / 2);
+      taRightJustify: XPos :=Self.Width - Round(tmpWidth);
     else
       XPos := 0;
     end;
