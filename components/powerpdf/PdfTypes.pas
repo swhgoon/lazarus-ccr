@@ -1002,7 +1002,7 @@ var
   i: integer;
 begin
   result := '';
-  {$IFNDEF LINUX}
+  {$IFNDEF UNIX}
   Len := MultiByteToWideChar(0, CP_ACP,
     PChar(Value), Length(Value), nil, 0);
   GetMem(PW, Len * 2);

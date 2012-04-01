@@ -30,7 +30,7 @@ unit PdfImages;
 
 interface
 
-{$IFDEF LINUX}
+{$IFDEF UNIX}
   {$IFDEF LAZ_POWERPDF}
   {$ELSE}
   {$DEFINE USE_CLX}
