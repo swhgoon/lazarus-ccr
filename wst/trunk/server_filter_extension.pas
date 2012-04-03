@@ -32,8 +32,16 @@ type
     function GetFilterString: string;
     procedure SetFilterString(const Value: string);
   private
-    procedure FilterInput(ASource, ADest : TStream);
-    procedure FilterOutput(ASource, ADest : TStream);
+    procedure FilterInput(
+            ASource,
+            ADest  : TStream;
+      const AProps : IPropertyManager
+    );
+    procedure FilterOutput(
+            ASource,
+            ADest  : TStream;
+      const AProps : IPropertyManager
+    );
   protected
     procedure ProcessMessage(
       const AMessageStage  : TMessageStage;
@@ -68,7 +76,9 @@ var
   rb : IRequestBuffer;
   strm : TStream;
   locStream : TMemoryStream;
+  locProps : IPropertyManager;
 begin
+  locProps := ACallContext.GetPropertyManager();
   case AMessageStage of
     msBeforeDeserialize :
       begin
@@ -79,7 +89,7 @@ begin
 {$ENDIF WST_DBG}
         locStream := TMemoryStream.Create();
         try
-          FilterOutput(strm,locStream);
+          FilterOutput(strm,locStream,locProps);
 {$IFDEF WST_DBG}
           locStream.SaveToFile('req.log');
 {$ENDIF WST_DBG}
@@ -97,7 +107,7 @@ begin
         strm := rb.GetResponse();
         locStream := TMemoryStream.Create();
         try
-          FilterInput(strm,locStream);
+          FilterInput(strm,locStream,locProps);
           strm.Size := locStream.Size;
           strm.Position := 0;
           strm.CopyFrom(locStream,0);
@@ -109,13 +119,17 @@ begin
   end;
 end;
 
-procedure TFilterExtension.FilterInput(ASource, ADest: TStream);
+procedure TFilterExtension.FilterInput(
+         ASource,
+         ADest  : TStream;
+   const AProps : IPropertyManager
+);
 var
   locInBuffer, locBuffer : TByteDynArray;
   locOldPos : Int64;
 begin
   if ASource.InheritsFrom(TMemoryStream) then begin
-    locBuffer := FFilter.ExecuteInput(TMemoryStream(ASource).Memory^,ASource.Size);
+    locBuffer := FFilter.ExecuteInput(TMemoryStream(ASource).Memory^,ASource.Size,AProps);
   end else begin
     SetLength(locInBuffer,ASource.Size);
     locOldPos := ASource.Position;
@@ -125,7 +139,7 @@ begin
     finally
       ASource.Position := locOldPos;
     end;
-    locBuffer := FFilter.ExecuteInput(locInBuffer[0],Length(locInBuffer));
+    locBuffer := FFilter.ExecuteInput(locInBuffer[0],Length(locInBuffer),AProps);
   end;
   ADest.Size := Length(locBuffer);
   ADest.Position := 0;
@@ -133,13 +147,17 @@ begin
   ADest.Position := 0;
 end;
 
-procedure TFilterExtension.FilterOutput(ASource, ADest: TStream);
+procedure TFilterExtension.FilterOutput(
+        ASource,
+        ADest  : TStream;
+  const AProps : IPropertyManager
+);
 var
   locInBuffer, locBuffer : TByteDynArray;
   locOldPos : Int64;
 begin
   if ASource.InheritsFrom(TMemoryStream) then begin
-    locBuffer := FFilter.ExecuteOutput(TMemoryStream(ASource).Memory^,ASource.Size);
+    locBuffer := FFilter.ExecuteOutput(TMemoryStream(ASource).Memory^,ASource.Size,AProps);
   end else begin
     SetLength(locInBuffer,ASource.Size);
     locOldPos := ASource.Position;
@@ -149,7 +167,7 @@ begin
     finally
       ASource.Position := locOldPos;
     end;
-    locBuffer := FFilter.ExecuteOutput(locInBuffer[0],Length(locInBuffer));
+    locBuffer := FFilter.ExecuteOutput(locInBuffer[0],Length(locInBuffer),AProps);
   end;
   ADest.Size := Length(locBuffer);
   ADest.Position := 0;
