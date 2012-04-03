@@ -28,8 +28,16 @@ type
     ['{9D9886A4-37B6-4D62-BD3B-603A8EF00A13}']
     function GetPropertyManager() : IPropertyManager;
     function GetName() : string;
-    function ExecuteInput(const AData; const ASize : Integer) : TByteDynArray;
-    function ExecuteOutput(const AData; const ASize : Integer) : TByteDynArray;
+    function ExecuteInput(
+      const AData;
+      const ASize      : Integer;
+            ADataProps : IPropertyManager
+    ) : TByteDynArray;
+    function ExecuteOutput(
+      const AData;
+      const ASize      : Integer;
+            ADataProps : IPropertyManager
+    ) : TByteDynArray;
     function GetNext() : IDataFilter;
     procedure SetNext(AItem: IDataFilter);
   end;
@@ -55,13 +63,29 @@ type
     FPropertyManager : IPropertyManager;
     FNext : IDataFilter;
   protected
-    function DoExecuteInput(const AData; const ASize : Integer) : TByteDynArray;virtual;abstract;
-    function DoExecuteOutput(const AData; const ASize : Integer) : TByteDynArray;virtual;abstract;
+    function DoExecuteInput(
+      const AData;
+      const ASize      : Integer;
+            ADataProps : IPropertyManager
+    ) : TByteDynArray;virtual;abstract;
+    function DoExecuteOutput(
+      const AData;
+      const ASize      : Integer;
+            ADataProps : IPropertyManager
+    ) : TByteDynArray;virtual;abstract;
   protected
     function GetPropertyManager() : IPropertyManager;
     function GetName() : string;virtual;abstract;
-    function ExecuteInput(const AData; const ASize : Integer) : TByteDynArray;
-    function ExecuteOutput(const AData; const ASize : Integer) : TByteDynArray;
+    function ExecuteInput(
+      const AData;
+      const ASize      : Integer;
+            ADataProps : IPropertyManager
+    ) : TByteDynArray;
+    function ExecuteOutput(
+      const AData;
+      const ASize      : Integer;
+            ADataProps : IPropertyManager
+    ) : TByteDynArray;
     function GetNext() : IDataFilter;
     procedure SetNext(AItem: IDataFilter);                                    
   public
@@ -197,30 +221,38 @@ begin
   Result := FPropertyManager;
 end;
 
-function TBaseFilter.ExecuteInput(const AData; const ASize : Integer) : TByteDynArray; 
+function TBaseFilter.ExecuteInput(
+  const AData;
+  const ASize      : Integer;
+        ADataProps : IPropertyManager
+) : TByteDynArray;
 var
   n : IDataFilter;
   r : TByteDynArray;
 begin
-  Result := DoExecuteInput(AData,ASize);
+  Result := DoExecuteInput(AData,ASize,ADataProps);
   n := GetNext();
   if (n <> nil) then begin
     r := Result;
-    Result := n.ExecuteInput(r[Low(r)],Length(r));
+    Result := n.ExecuteInput(r[Low(r)],Length(r),ADataProps);
   end;
 end;
 
-function TBaseFilter.ExecuteOutput(const AData; const ASize : Integer) : TByteDynArray; 
+function TBaseFilter.ExecuteOutput(
+  const AData;
+  const ASize      : Integer;
+        ADataProps : IPropertyManager
+) : TByteDynArray;
 var
   n : IDataFilter;
   r : TByteDynArray;                    
 begin
   n := GetNext();
   if (n = nil) then begin
-    Result := DoExecuteOutput(AData,ASize);
+    Result := DoExecuteOutput(AData,ASize,ADataProps);
   end else begin
-    r := n.ExecuteOutput(AData,ASize);  
-    Result := DoExecuteOutput(r[Low(r)],Length(r));
+    r := n.ExecuteOutput(AData,ASize,ADataProps);
+    Result := DoExecuteOutput(r[Low(r)],Length(r),ADataProps);
   end;                                   
 end;
 
@@ -238,7 +270,7 @@ end;
 constructor TBaseFilter.Create();  
 begin
   inherited;
-  FPropertyManager := TPublishedPropertyManager.Create(Self);
+  FPropertyManager := TPublishedPropertyManager.Create(Self,True);
 end;
 
 { TDataFilterRegistry }

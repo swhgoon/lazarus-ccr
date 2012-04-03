@@ -227,7 +227,11 @@ var
   locOldPos : Int64;
 begin
   if ASource.InheritsFrom(TMemoryStream) then begin
-    locBuffer := FFilter.ExecuteInput(TMemoryStream(ASource).Memory^,ASource.Size);
+    locBuffer := FFilter.ExecuteInput(
+                           TMemoryStream(ASource).Memory^,
+                           ASource.Size,
+                           FFilter.GetPropertyManager()
+                         );
   end else begin
     SetLength(locInBuffer,ASource.Size);
     locOldPos := ASource.Position;
@@ -237,7 +241,7 @@ begin
     finally
       ASource.Position := locOldPos;
     end;
-    locBuffer := FFilter.ExecuteInput(locInBuffer[0],Length(locInBuffer));
+    locBuffer := FFilter.ExecuteInput(locInBuffer[0],Length(locInBuffer),FFilter.GetPropertyManager());
   end;
   ADest.Size := Length(locBuffer);
   ADest.Position := 0;
@@ -251,7 +255,7 @@ var
   locOldPos : Int64;
 begin
   if ASource.InheritsFrom(TMemoryStream) then begin
-    locBuffer := FFilter.ExecuteOutput(TMemoryStream(ASource).Memory^,ASource.Size);
+    locBuffer := FFilter.ExecuteOutput(TMemoryStream(ASource).Memory^,ASource.Size,FFilter.GetPropertyManager());
   end else begin
     SetLength(locInBuffer,ASource.Size);
     locOldPos := ASource.Position;
@@ -261,7 +265,7 @@ begin
     finally
       ASource.Position := locOldPos;
     end;
-    locBuffer := FFilter.ExecuteOutput(locInBuffer[0],Length(locInBuffer));
+    locBuffer := FFilter.ExecuteOutput(locInBuffer[0],Length(locInBuffer),FFilter.GetPropertyManager());
   end;
   ADest.Size := Length(locBuffer);
   ADest.Position := 0;
