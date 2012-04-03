@@ -29,6 +29,9 @@ Type
   TPublishedPropertyManager = class(TInterfacedObject,IPropertyManager)
   Private
     FParent : TObject;
+    FUnknownProps : IPropertyManager;
+    FHandleUnknownProps : Boolean;
+  private
     procedure Error(Const AMsg:string);overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure Error(Const AMsg:string; Const AArgs : array of const);overload;
   Protected
@@ -39,7 +42,10 @@ Type
     procedure Clear();
     procedure Copy(ASource:IPropertyManager; Const AClearBefore : Boolean);
   Public
-    constructor Create(AParent : TObject);
+    constructor Create(
+            AParent             : TObject;
+      const AHandleUnknownProps : Boolean = False
+    );
   End;
 
   function IsStrEmpty(Const AStr:String):Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}overload;
@@ -209,27 +215,31 @@ Var
   int64Val : Int64;
 begin
   pinf := GetPropInfo(FParent,AName);
-  If Assigned(pinf) And Assigned(pinf^.SetProc) Then Begin
-    Case pinf^.PropType^.Kind of
-      tkLString
-      {$IFDEF WST_DELPHI},tkString{$ENDIF}
-      {$IFDEF FPC},tkSString,tkAString{$ENDIF}
-      {$IFDEF WST_UNICODESTRING},tkUString{$ENDIF}
-      ,tkWString :
-        SetStrProp(FParent,pinf,AValue);
-      tkEnumeration :
-        SetEnumProp(FParent,pinf,AValue);
-      tkInteger,tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
-        Begin
-          If TryStrToInt64(AValue,int64Val) Then
-            SetOrdProp(FParent,AName,int64Val);
-        End;
-      {$IFDEF FPC}
-      tkBool :
-        SetOrdProp(FParent,AName,Ord(StrToBool(AValue)));
-      {$ENDIF}
-    End;
-  End;
+  if Assigned(pinf) then begin
+    if Assigned(pinf^.SetProc) then begin
+      Case pinf^.PropType^.Kind of
+        tkLString
+        {$IFDEF WST_DELPHI},tkString{$ENDIF}
+        {$IFDEF FPC},tkSString,tkAString{$ENDIF}
+        {$IFDEF WST_UNICODESTRING},tkUString{$ENDIF}
+        ,tkWString :
+          SetStrProp(FParent,pinf,AValue);
+        tkEnumeration :
+          SetEnumProp(FParent,pinf,AValue);
+        tkInteger,tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
+          Begin
+            If TryStrToInt64(AValue,int64Val) Then
+              SetOrdProp(FParent,AName,int64Val);
+          End;
+        {$IFDEF FPC}
+        tkBool :
+          SetOrdProp(FParent,AName,Ord(StrToBool(AValue)));
+        {$ENDIF}
+      End;
+    end;
+  end else if FHandleUnknownProps then begin
+    FUnknownProps.SetProperty(AName,AValue);
+  end;
 end;
 
 procedure TPublishedPropertyManager.SetProperties(const APropsStr: string);
@@ -257,20 +267,24 @@ Var
 begin
   Result := '';
   pinf := GetPropInfo(FParent,AName);
-  If Assigned(pinf) And Assigned(pinf^.SetProc) Then Begin
-    Case pinf^.PropType^.Kind of
-      tkLString
-      {$IFDEF WST_DELPHI},tkString{$ENDIF}
-      {$IFDEF FPC},tkSString,tkAString{$ENDIF}
-      {$IFDEF WST_UNICODESTRING},tkUString{$ENDIF}
-      ,tkWString :
-        Result := GetStrProp(FParent,pinf);
-      tkEnumeration :
-        Result := GetEnumProp(FParent,pinf);
-      tkInteger,tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
-        Result := IntToStr(GetOrdProp(FParent,pinf));
-    End;
-  End;
+  if Assigned(pinf) then begin
+    if Assigned(pinf^.SetProc) then begin
+      Case pinf^.PropType^.Kind of
+        tkLString
+        {$IFDEF WST_DELPHI},tkString{$ENDIF}
+        {$IFDEF FPC},tkSString,tkAString{$ENDIF}
+        {$IFDEF WST_UNICODESTRING},tkUString{$ENDIF}
+        ,tkWString :
+          Result := GetStrProp(FParent,pinf);
+        tkEnumeration :
+          Result := GetEnumProp(FParent,pinf);
+        tkInteger,tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
+          Result := IntToStr(GetOrdProp(FParent,pinf));
+      End;
+    end;
+  end else if FHandleUnknownProps then begin
+    Result := FUnknownProps.GetProperty(AName);
+  end;
 end;
 
 function TPublishedPropertyManager.GetPropertyNames(ADest: TStrings): Integer;
@@ -279,6 +293,8 @@ Var
   i, propListLen : Integer;
 begin
   ADest.Clear();
+  if FHandleUnknownProps then
+    FUnknownProps.GetPropertyNames(ADest);
   propListLen := GetPropList(PTypeInfo(FParent.ClassInfo),propList);
   if (propListLen > 0) then begin
     Try
@@ -329,10 +345,16 @@ begin
   End;
 end;
 
-constructor TPublishedPropertyManager.Create(AParent: TObject);
+constructor TPublishedPropertyManager.Create(
+        AParent             : TObject;
+  const AHandleUnknownProps : Boolean = False
+);
 begin
   Assert(Assigned(AParent));
   FParent := AParent;
+  FHandleUnknownProps := AHandleUnknownProps;
+  if FHandleUnknownProps then
+    FUnknownProps := TStoredPropertyManager.Create() as IPropertyManager;
 end;
 
 
