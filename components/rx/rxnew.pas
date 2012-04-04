@@ -2,7 +2,7 @@
   This source is only used to compile and install the package.
  }
 
-unit rxnew; 
+unit rxnew;
 
 interface
 
@@ -17,17 +17,18 @@ uses
   rxmemds, rxpopupunit, rxsortmemds, rxspin, rxstrutils, rxswitch, 
   RxSystemServices, rxtbrsetup, RxTimeEdit, rxtoolbar, RxVersInfo, 
   RxViewsPanel, rxxpman, seldsfrm, tooledit, vclutils, RxCloseFormValidator, 
-  RxHistoryNavigator, LazarusPackageIntf;
+  RxHistoryNavigator, ex_rx_bin_datapacket, ex_rx_datapacket, 
+  ex_rx_xml_datapacket, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('registerrx', @registerrx.Register); 
-  RegisterUnit('RegisterRxDB', @RegisterRxDB.Register); 
-  RegisterUnit('RegisterRxTools', @RegisterRxTools.Register); 
-end; 
+  RegisterUnit('registerrx', @registerrx.Register);
+  RegisterUnit('RegisterRxDB', @RegisterRxDB.Register);
+  RegisterUnit('RegisterRxTools', @RegisterRxTools.Register);
+end;
 
 initialization
-  RegisterPackage('rxnew', @Register); 
+  RegisterPackage('rxnew', @Register);
 end.

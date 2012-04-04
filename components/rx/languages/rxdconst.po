@@ -405,6 +405,10 @@ msgstr ""
 msgid "SUnknownFieldType %s"
 msgstr ""
 
+#: rxdconst.sunknownxmldatasetformat
+msgid "Unknown XML Dataset format"
+msgstr ""
+
 #: rxdconst.sunlockcaption
 msgid "Unloock"
 msgstr ""

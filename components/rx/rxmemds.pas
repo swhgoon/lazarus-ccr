@@ -37,7 +37,7 @@ unit rxmemds;
 interface
 
 
-uses SysUtils, Classes, DB;
+uses SysUtils, Classes, DB, ex_rx_datapacket;
 
 { TRxMemoryData }
 
@@ -67,6 +67,19 @@ type
     FIndexList: TList;
     FCaseInsensitiveSort: Boolean;
     FDescendingSort: Boolean;
+
+    FFileName: string;
+    FFileStream     : TFileStream;
+    FDatasetReader  : TRxDataPacketReader;
+    FPacketRecords: Integer;
+    FFilterBuffer   : pchar;
+    FNullmaskSize   : byte;
+    FBRecordCount   : integer;
+    function  IntAllocRecordBuffer: PChar;
+    procedure IntLoadFielddefsFromFile;
+    procedure IntLoadRecordsFromFile;
+    procedure SetPacketRecords(const AValue: Integer);
+
     function AddRecord: TMemoryRecord;
     procedure CopyRecord(RecordData, Buffer: PChar);
     function GetOnFilterRecordEx: TFilterRecordEvent;
@@ -98,9 +111,9 @@ type
     procedure SetBlobData(Field: TField; Buffer: PChar; Value: TMemBlobData);
     function AllocRecordBuffer: PChar; override;
     procedure FreeRecordBuffer(var Buffer: PChar); override;
-    function BCDToCurr(BCD: Pointer; var Curr: Currency): Boolean; //override;
-    function CurrToBCD(const Curr: Currency; BCD: Pointer; Precision,
-      Decimals: Integer): Boolean; //override;
+    function BCDToCurr(BCD: Pointer; var Curr: Currency): Boolean;
+    function CurrToBCD(const Curr: Currency; BCD: Pointer;
+      Precision, Decimals: Integer): Boolean;
     procedure InternalInitRecord(Buffer: PChar); override;
     procedure ClearCalcFields(Buffer: PChar); override;
     function GetRecord(Buffer: PChar; GetMode: TGetMode;
@@ -153,6 +166,13 @@ type
       Mode: TLoadMode): Integer;
     function SaveToDataSet(Dest: TDataSet; ARecordCount: Integer): Integer;
     procedure AppendRecord(const Values: array of const);
+
+    procedure SetDatasetPacket(AReader : TRxDataPacketReader);
+    procedure GetDatasetPacket(AWriter : TRxDataPacketReader);
+    procedure LoadFromStream(AStream : TStream; Format: TRxDataPacketFormat = dfBinary);
+    procedure SaveToStream(AStream : TStream; Format: TRxDataPacketFormat = dfBinary);
+    procedure LoadFromFile(AFileName: string = ''; Format: TRxDataPacketFormat = dfAny);
+    procedure SaveToFile(AFileName: string = ''; Format: TRxDataPacketFormat = dfAny);
   published
     property Capacity: Integer read GetCapacity write SetCapacity default 0;
     property Active;
@@ -183,6 +203,9 @@ type
     property OnFilterRecordEx: TFilterRecordEvent read GetOnFilterRecordEx write SetOnFilterRecordEx;
     property OnNewRecord;
     property OnPostError;
+
+    property FileName : string read FFileName write FFileName;
+    property PacketRecords : Integer read FPacketRecords write SetPacketRecords default 10;
   end;
 
 { TMemBlobStream }
@@ -1221,13 +1244,6 @@ begin
   BindFields(True);
   InitBufferPointers(True);
   InternalFirst;
-//  OpenCursor(false);
-  //           Убрать после исправления бага в лазарусе насчёт сохранения в ресурс FieldDefs
-{  Fields.Clear;
-  CreateFields;
-  if DefaultFields then CreateFields;
-  BindFields(True);}
-  //
 end;
 
 procedure TRxMemoryData.InternalClose;
@@ -1243,7 +1259,6 @@ end;
 procedure TRxMemoryData.InternalHandleException;
 begin
   CustomApplication.HandleException(Self);
-  //Application.HandleException(Self);
 end;
 
 procedure TRxMemoryData.InternalInitFieldDefs;
@@ -1308,7 +1323,6 @@ var
       else
         Result := AnsiCompareStr(S, S1) = 0;
     end
-//    else Result := false //(Field.Value = Value);
     else Result := (Field.Value = Value);
   end;
 
@@ -1698,6 +1712,199 @@ procedure TRxMemoryData.FreeIndexList;
 begin
   FIndexList.Free;
   FIndexList := nil;
+end;
+
+function TRxMemoryData.IntAllocRecordBuffer: PChar;
+begin
+  // do nothing
+end;
+
+procedure TRxMemoryData.IntLoadFielddefsFromFile;
+begin
+  FDatasetReader.LoadFielddefs(FieldDefs);
+  if DefaultFields then CreateFields;
+end;
+
+procedure TRxMemoryData.IntLoadRecordsFromFile;
+var StoreState      : TDataSetState;
+    AddRecordBuffer : boolean;
+    ARowState       : TRowState;
+    AUpdOrder       : integer;
+
+begin
+  FDatasetReader.InitLoadRecords;
+  StoreState:=SetTempState(dsFilter);
+
+  while FDatasetReader.GetCurrentRecord do
+    begin
+    ARowState := FDatasetReader.GetRecordRowState(AUpdOrder);
+
+      FDatasetReader.RestoreRecord(self);
+      inc(FBRecordCount);
+
+      FDatasetReader.GotoNextRecord;
+    end;
+
+  RestoreState(StoreState);
+
+  if assigned(FFileStream) then
+    begin
+    FreeAndNil(FFileStream);
+    FreeAndNil(FDatasetReader);
+    end;
+
+end;
+
+procedure TRxMemoryData.SetPacketRecords(const AValue: Integer);
+begin
+  if FPacketRecords=AValue then exit;
+  FPacketRecords:=AValue;
+end;
+
+procedure TRxMemoryData.SetDatasetPacket(AReader: TRxDataPacketReader);
+var
+    StoreDSState   : TDataSetState;
+    ARowState       : TRowState;
+    AUpdOrder       : integer;
+begin
+  FDatasetReader := AReader;
+
+  DisableControls;
+    try
+      Filtered := False;
+
+      Close;       // must be inactive to do IntLoadFielddefsFromFile
+      // load fields defs
+      IntLoadFielddefsFromFile;
+
+      FreeIndexList;
+
+      if not Active then Open;
+      Resync([]);                   // clears buffers if empty dataset
+      CheckBrowseMode;
+
+      FDatasetReader.InitLoadRecords;
+
+      try
+        while FDatasetReader.GetCurrentRecord do
+        begin
+          Append;
+
+          ARowState := FDatasetReader.GetRecordRowState(AUpdOrder);       // added for binary export
+
+          FDatasetReader.RestoreRecord(TRxMemoryData(Self));
+
+          Post;
+
+          FDatasetReader.GotoNextRecord;
+          inc(FBRecordCount);
+
+        end;
+      finally
+        First;
+      end;
+
+    finally
+      EnableControls;
+    end;
+
+    if assigned(FFileStream) then
+    begin
+      FreeAndNil(FFileStream);
+      FreeAndNil(FDatasetReader);
+    end;
+
+end;
+
+procedure TRxMemoryData.GetDatasetPacket(AWriter: TRxDataPacketReader);
+var
+   StoreDSState   : TDataSetState;
+begin
+
+  CheckBrowseMode;
+  UpdateCursorPos;
+
+  FDatasetReader := AWriter;
+  try
+    DisableControls;
+    try
+
+      FDatasetReader.StoreFieldDefs(FieldDefs);
+
+      First;
+      while not EOF do
+      begin
+        // ** NOTE ** had to cast self to TRxMemoryData just save current values
+        // otherwise the as string value in ex_rx_datapacket would not write.
+        FDatasetReader.StoreRecord(TRxMemoryData(Self),[]);
+        Next;
+      end;
+
+      FDatasetReader.FinalizeStoreRecords;
+    finally
+      EnableControls;
+    end;
+  finally
+    FDatasetReader := nil;
+  end;
+end;
+
+procedure TRxMemoryData.LoadFromStream(AStream: TStream;
+  Format: TRxDataPacketFormat);
+var APacketReaderReg : TRxDatapacketReaderRegistration;
+    APacketReader : TRxDataPacketReader;
+begin
+  if GetRegisterDatapacketReader(AStream,format,APacketReaderReg) then
+    APacketReader := APacketReaderReg.ReaderClass.create(AStream)
+  else
+    DatabaseError(SStreamNotRecognised);
+  try
+    SetDatasetPacket(APacketReader);
+  finally
+    APacketReader.Free;
+  end;
+end;
+
+procedure TRxMemoryData.SaveToStream(AStream: TStream;
+  Format: TRxDataPacketFormat);
+var APacketReaderReg : TRxDatapacketReaderRegistration;
+    APacketWriter : TRxDataPacketReader;
+begin
+  if GetRegisterDatapacketReader(Nil,format,APacketReaderReg) then
+    APacketWriter := APacketReaderReg.ReaderClass.create(AStream)
+  else
+    DatabaseError(SNoReaderClassRegistered);
+  try
+    GetDatasetPacket(APacketWriter);
+  finally
+    APacketWriter.Free;
+  end;
+end;
+
+procedure TRxMemoryData.LoadFromFile(AFileName: string;
+  Format: TRxDataPacketFormat);
+var AFileStream : TFileStream;
+begin
+  if AFileName='' then AFileName := FFileName;
+  AFileStream := TFileStream.Create(AFileName,fmOpenRead);
+  try
+    LoadFromStream(AFileStream, Format);
+  finally
+    AFileStream.Free;
+  end;
+end;
+
+procedure TRxMemoryData.SaveToFile(AFileName: string;
+  Format: TRxDataPacketFormat);
+var AFileStream : TFileStream;
+begin
+  if AFileName='' then AFileName := FFileName;
+  AFileStream := TFileStream.Create(AFileName,fmCreate);
+  try
+    SaveToStream(AFileStream, Format);
+  finally
+    AFileStream.Free;
+  end;
 end;
 
 { TMemBlobStream }

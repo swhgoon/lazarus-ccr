@@ -160,6 +160,8 @@ resourcestring
   sRxCopyOnlyMetadata      = 'Copy only metadata';
   sRxSourseDataset         = 'Sourse dataset';
 
+  sUnknownXMLDatasetFormat = 'Unknown XML Dataset format';
+
 const
   { The following strings should not be localized }
   sAction       = '.Action';

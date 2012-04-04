@@ -407,6 +407,10 @@ msgstr "buscar"
 msgid "SUnknownFieldType %s"
 msgstr "STipoCampoDesconocido %s"
 
+#: rxdconst.sunknownxmldatasetformat
+msgid "Unknown XML Dataset format"
+msgstr ""
+
 #: rxdconst.sunlockcaption
 msgid "Unloock"
 msgstr "Desbloquear"

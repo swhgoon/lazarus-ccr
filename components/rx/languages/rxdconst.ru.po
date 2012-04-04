@@ -23,7 +23,7 @@ msgstr "Изменить пароль"
 
 #: rxdconst.scirculardatalink
 msgid "SCircularDataLink"
-msgstr ""
+msgstr "Перекрёстная ссылка данных"
 
 #: rxdconst.sconfirmpasswordlabel
 msgid "&Confirm:"
@@ -43,7 +43,7 @@ msgstr ""
 
 #: rxdconst.sdbcomboboxfieldnotassigned
 msgid "%s:TDBComboBox - DataField not assigned"
-msgstr ""
+msgstr "%s:TDBComboBox - Не присвоено свойство DataField"
 
 #: rxdconst.sdbexceptcaption
 msgid "Error in DB engine"
@@ -111,7 +111,7 @@ msgstr "Ошибка в окончании выражения фильтра"
 
 #: rxdconst.sfieldreadonly
 msgid "SFieldReadOnly %s"
-msgstr ""
+msgstr "Поле %s только для чтения"
 
 #: rxdconst.sfieldrequired
 msgid "Field '%s' must have a value"
@@ -386,8 +386,6 @@ msgid "&Selected fields:"
 msgstr "&Выбранные поля"
 
 #: rxdconst.srxsortbyformsortorder
-#, fuzzy
-#| msgid "Select field for sort data:"
 msgid "Select f&ield for sort data:"
 msgstr "Укажите поля для сортировки данных :"
 
@@ -405,7 +403,11 @@ msgstr "поиск"
 
 #: rxdconst.sunknownfieldtype
 msgid "SUnknownFieldType %s"
-msgstr ""
+msgstr "Не определён тип данных для поля %s"
+
+#: rxdconst.sunknownxmldatasetformat
+msgid "Unknown XML Dataset format"
+msgstr "Не известный формат XML данных"
 
 #: rxdconst.sunlockcaption
 msgid "Unloock"
