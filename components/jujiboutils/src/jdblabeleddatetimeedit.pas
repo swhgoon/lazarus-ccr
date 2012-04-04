@@ -90,6 +90,7 @@ type
     property DragCursor;
     property DragKind;
     property DragMode;
+    property EditLabel;
     property Enabled;
     property Font;
     property HideSelection;
