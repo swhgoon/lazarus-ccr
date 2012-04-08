@@ -57,7 +57,7 @@ const
    head_start = '<head>';
    head_end = '</head>';
 
-   meta_content_charset_utf8 = '<meta http-equiv="content-type" content="text/html; charset=utf8">';
+   meta_content_charset_utf8 = '<meta http-equiv="content-type" content="text/html; charset=utf-8">';
    meta_content_style_type = '<meta http-equiv="content-style-type" content="text/css">';
    meta_content_script_type = '<meta http-equiv="content-script-type" content="text/javascript">';
    meta_name_author = '<meta name="author" content="%s">';
