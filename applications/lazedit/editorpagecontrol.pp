@@ -466,7 +466,7 @@ begin
                   begin
                     //DebugLn('Changing charset to utf-8');
                     TextBetweenPoints[Point(CharsetStart,LineNr+1),Point(CharSetEnd,LineNr+1)] := 'utf-8';
-                    DoCharsetChanged(OldCharSet, 'utf-8', LineNr);
+                    DoCharsetChanged(OldCharSet, 'utf-8', LineNr+1);
                   end;
                   Break;
                 end;
