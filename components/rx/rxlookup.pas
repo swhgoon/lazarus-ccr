@@ -37,7 +37,7 @@ interface
 
 uses
   LCLType, LCLProc, LCLIntf, Classes, SysUtils, LResources, Forms, types,
-  Controls, Graphics, Dialogs, DB, EditBtn, DBGrids, {StdCtrls,} Buttons,
+  Controls, Graphics, Dialogs, DB, EditBtn, DBGrids, Buttons,
   LMessages, DbCtrls, GraphType, dbutils, RxDbGrid, rxpopupunit, Themes;
 
 const

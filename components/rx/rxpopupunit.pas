@@ -52,11 +52,9 @@ type
     FLookupDisplayField:string;
     procedure ClearFind;
     procedure FindNextChar(var UTF8Key: TUTF8Char);
-//    procedure FindNextUTF8Char(UTF8Key: TUTF8Char);
     procedure FindPriorChar;
     procedure SetLookupDisplayIndex(const AValue: integer);
   protected
-//    procedure KeyPress(var Key: char); override;
     procedure UTF8KeyPress(var UTF8Key: TUTF8Char); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     property LookupDisplayIndex:integer read FLookupDisplayIndex write SetLookupDisplayIndex;
@@ -100,6 +98,7 @@ type
     FFieldName: string;
     FFont: TFont;
     FImageList: TImageList;
+    FSizePriority: Integer;
     FTitle: TPopUpColumnTitle;
     FValueChecked: string;
     FValueUnchecked: string;
@@ -110,6 +109,7 @@ type
     procedure SetFieldName(const AValue: string);
     procedure SetFont(const AValue: TFont);
     procedure SetImageList(const AValue: TImageList);
+    procedure SetSizePriority(AValue: Integer);
     procedure SetTitle(const AValue: TPopUpColumnTitle);
     procedure SetValueChecked(const AValue: string);
     procedure SetValueUnchecked(const AValue: string);
@@ -128,6 +128,7 @@ type
     property ImageList:TImageList read FImageList write SetImageList;
     property ValueChecked: string read FValueChecked write SetValueChecked;
     property ValueUnchecked: string read FValueUnchecked write SetValueUnchecked;
+    property SizePriority: Integer read FSizePriority write SetSizePriority default 1;
     property Title:TPopUpColumnTitle read FTitle write SetTitle;
     property Width: Integer read FWidth write SetWidth;
   end;
@@ -416,6 +417,7 @@ var
   i:integer;
   Column:TPopUpColumn;
 begin
+  FGrid.BeginUpdate;
   for i:=0 to FPopUpFormOptions.Columns.Count - 1 do
   begin
     GK:=FGrid.Columns.Add as TRxColumn;
@@ -426,6 +428,7 @@ begin
     GK.DisplayFormat:=Column.DisplayFormat;
 //    GK.Font:=Column.Font;
     GK.ImageList:=Column.ImageList;
+    GK.SizePriority:=Column.SizePriority;
     GK.ValueChecked:=Column.ValueChecked;
     GK.ValueUnchecked:=Column.ValueUnchecked;
 
@@ -438,6 +441,7 @@ begin
     GK.Title.Layout:=Column.Title.Layout;
     GK.Title.Caption:=Column.Title.Caption;
   end;
+  FGrid.EndUpdate;
 end;
 
 constructor TPopUpForm.CreatePopUp(AOwner: TComponent;
@@ -738,6 +742,12 @@ begin
   FImageList:=AValue;
 end;
 
+procedure TPopUpColumn.SetSizePriority(AValue: Integer);
+begin
+  if FSizePriority=AValue then Exit;
+  FSizePriority:=AValue;
+end;
+
 procedure TPopUpColumn.SetTitle(const AValue: TPopUpColumnTitle);
 begin
   FTitle.Assign(AValue);
@@ -779,6 +789,7 @@ begin
   FTitle:=TPopUpColumnTitle.Create;
   FColor:=clWindow;
   FWidth:=65;
+  FSizePriority:=1;
 end;
 
 destructor TPopUpColumn.Destroy;
