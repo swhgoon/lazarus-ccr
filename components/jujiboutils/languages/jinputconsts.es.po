@@ -15,5 +15,5 @@ msgstr "%s no es un número válido"
 
 #: jinputconsts.sinvalidtime
 msgid "%s is not a valid time"
-msgstr "%s no es una horar válida"
+msgstr "%s no es una hora válida"
 
