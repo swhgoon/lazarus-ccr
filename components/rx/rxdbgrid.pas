@@ -1835,6 +1835,28 @@ begin
   begin
     if DataSource.DataSet.OnPostError = @ErrorPo then
       DataSource.DataSet.OnPostError := F_EventOnPostError;
+
+    if DataSource.DataSet.OnFilterRecord = @FilterRec then
+      DataSource.DataSet.OnFilterRecord := F_EventOnFilterRec;
+
+    if DataSource.DataSet.BeforeDelete = @BeforeDel then
+      DataSource.DataSet.BeforeDelete := F_EventOnBeforeDelete;
+
+    if DataSource.DataSet.BeforePost = @BeforePo then
+      DataSource.DataSet.BeforePost:=F_EventOnBeforePost;
+
+    if DataSource.DataSet.OnDeleteError = @ErrorDel then
+      DataSource.DataSet.OnDeleteError:=F_EventOnDeleteError;
+
+    if DataSource.DataSet.OnPostError = @ErrorPo then
+      DataSource.DataSet.OnPostError:=F_EventOnPostError;
+
+    F_EventOnPostError:=nil;
+    F_EventOnFilterRec:=nil;
+    F_EventOnBeforeDelete:=nil;
+    F_EventOnBeforePost:=nil;
+    F_EventOnDeleteError:=nil;
+    F_EventOnPostError:=nil;
   end;
 end;
 
@@ -2207,7 +2229,7 @@ begin
   end;
 
   F_SortListField.Clear;
-  if not (csDestroying in ComponentState) and not (csDesigning in ComponentState) then
+  if {not (csDestroying in ComponentState) and} not (csDesigning in ComponentState) then
   begin
     if Value then
     begin
@@ -2975,6 +2997,7 @@ var
   DS: TDataSet;
   i: integer;
   APresent: boolean;
+  SEA, SEB:TDataSetNotifyEvent;
 begin
   if (not (FFooterOptions.Active and DatalinkActive)) or (Columns.Count = 0) then
     Exit;
@@ -2996,6 +3019,10 @@ begin
   ;
   P := Ds.GetBookMark;
   DS.DisableControls;
+  SEB:=DS.BeforeScroll;
+  SEA:=DS.AfterScroll;
+  DS.BeforeScroll:=nil;
+  DS.AfterScroll:=nil;
   try
     DS.First;
     for i := 0 to Columns.Count - 1 do
@@ -3010,6 +3037,8 @@ begin
   finally
     DS.GotoBookmark(P);
     DS.FreeBookmark(P);
+    DS.BeforeScroll:=SEB;
+    DS.AfterScroll:=SEA;
     DS.EnableControls;
   end;
 
