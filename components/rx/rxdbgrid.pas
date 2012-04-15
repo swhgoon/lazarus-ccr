@@ -505,6 +505,7 @@ type
     procedure OnSortBy(Sender: TObject);
     procedure OnChooseVisibleFields(Sender: TObject);
     procedure Loaded; override;
+    procedure UpdateFooterRowOnUpdateActive;
   public
     procedure FilterRec(DataSet: TDataSet; var Accept: boolean);
 
@@ -2824,7 +2825,8 @@ begin
   else
   if Assigned(FFooterOptions) and FFooterOptions.Active and (FFooterOptions.RowCount > 0) and
        DatalinkActive and (DataSource.DataSet.State = dsBrowse) then
-    CalcStatTotals;
+    UpdateFooterRowOnUpdateActive;
+//    CalcStatTotals;
 end;
 
 procedure TRxDBGrid.UpdateData;
@@ -3299,6 +3301,11 @@ procedure TRxDBGrid.Loaded;
 begin
   inherited Loaded;
   UpdateJMenuKeys;
+end;
+
+procedure TRxDBGrid.UpdateFooterRowOnUpdateActive;
+begin
+  //
 end;
 
 procedure TRxDBGrid.GetOnCreateLookup;
