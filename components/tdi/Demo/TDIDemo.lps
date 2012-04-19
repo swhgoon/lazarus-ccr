@@ -1,0 +1,632 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectSession>
+    <PathDelim Value="\"/>
+    <Version Value="9"/>
+    <BuildModes Active="Default"/>
+    <Units Count="61">
+      <Unit0>
+        <Filename Value="TDIDemo.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TDIDemo"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="36" Y="18"/>
+        <UsageCount Value="84"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="mainform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Main"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="MainForm"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="10" Y="8"/>
+        <UsageCount Value="84"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="uform1.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form1"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uForm1"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="24"/>
+        <CursorPos X="15" Y="35"/>
+        <UsageCount Value="84"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="umainform.pas"/>
+        <ComponentName Value="fMainForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uMainForm"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="0"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="29"/>
+        <CursorPos X="23" Y="36"/>
+        <UsageCount Value="42"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="..\tdiclass.pas"/>
+        <UnitName Value="TDIClass"/>
+        <EditorIndex Value="2"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="237"/>
+        <CursorPos X="18" Y="249"/>
+        <UsageCount Value="42"/>
+        <Bookmarks Count="3">
+          <Item0 X="17" Y="728" ID="3"/>
+          <Item1 X="1" Y="687" ID="1"/>
+          <Item2 X="3" Y="649" ID="2"/>
+        </Bookmarks>
+        <Loaded Value="True"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="..\tdinotebookclass.pas"/>
+        <UnitName Value="TDINoteBookClass"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="10"/>
+        <UsageCount Value="4"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="C:\lazarus\lcl\include\customnotebook.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="740"/>
+        <CursorPos X="1" Y="751"/>
+        <UsageCount Value="18"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="C:\lazarus\lcl\include\control.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="2124"/>
+        <CursorPos X="1" Y="2135"/>
+        <UsageCount Value="11"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="..\tdireg.pas"/>
+        <UnitName Value="TDIReg"/>
+        <EditorIndex Value="6"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="23" Y="5"/>
+        <UsageCount Value="26"/>
+        <Loaded Value="True"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="..\..\..\TOOLS\DJ_FormPrincipal.pas"/>
+        <ComponentName Value="FormDJ_Main"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="DJ_FormPrincipal"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="130"/>
+        <CursorPos X="37" Y="146"/>
+        <UsageCount Value="35"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="C:\lazarus\lcl\stdctrls.pp"/>
+        <UnitName Value="StdCtrls"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1126"/>
+        <CursorPos X="3" Y="1137"/>
+        <UsageCount Value="9"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="C:\lazarus\lcl\buttons.pp"/>
+        <UnitName Value="Buttons"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="173"/>
+        <CursorPos X="14" Y="184"/>
+        <UsageCount Value="10"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="..\..\..\TOOLS\DJ_FormPrincipal.lfm"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="2191"/>
+        <CursorPos X="1" Y="2212"/>
+        <UsageCount Value="7"/>
+        <DefaultSyntaxHighlighter Value="LFM"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="..\..\..\ACBr\trunk\Fontes\ACBrTEFD\ACBrTEFD.pas"/>
+        <UnitName Value="ACBrTEFD"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="349"/>
+        <CursorPos X="22" Y="12"/>
+        <UsageCount Value="6"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="umainform.lfm"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="2229"/>
+        <CursorPos X="1" Y="2239"/>
+        <ExtraEditorCount Value="1"/>
+        <ExtraEditor1>
+          <WindowIndex Value="0"/>
+          <TopLine Value="2474"/>
+          <CursorPos X="32" Y="2480"/>
+        </ExtraEditor1>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="LFM"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="..\tdiconst.pas"/>
+        <UnitName Value="TDIConst"/>
+        <EditorIndex Value="5"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="17" Y="9"/>
+        <UsageCount Value="39"/>
+        <Loaded Value="True"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="C:\lazarus\lcl\controls.pp"/>
+        <UnitName Value="Controls"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="2104"/>
+        <CursorPos X="21" Y="2123"/>
+        <UsageCount Value="10"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="C:\lazarus\lcl\graphics.pp"/>
+        <UnitName Value="Graphics"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1466"/>
+        <CursorPos X="3" Y="1477"/>
+        <UsageCount Value="6"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="C:\lazarus\components\lazcontrols\extendednotebook.pas"/>
+        <UnitName Value="ExtendedNotebook"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="35"/>
+        <CursorPos X="3" Y="57"/>
+        <UsageCount Value="20"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="C:\lazarus\lcl\comctrls.pp"/>
+        <UnitName Value="ComCtrls"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="218"/>
+        <CursorPos X="3" Y="218"/>
+        <UsageCount Value="22"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="C:\lazarus\lcl\include\pagecontrol.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="22"/>
+        <CursorPos X="1" Y="34"/>
+        <UsageCount Value="16"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="..\..\..\ACBr\trunk\Fontes\ACBrComum\ACBrAAC.pas"/>
+        <UnitName Value="ACBrAAC"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="5"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="..\..\..\ACBr\trunk\Fontes\ACBrComum\ACBrPAFClass.pas"/>
+        <UnitName Value="ACBrPAFClass"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="241"/>
+        <CursorPos X="17" Y="252"/>
+        <UsageCount Value="5"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="C:\lazarus\lcl\include\bitbtn.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="67"/>
+        <CursorPos X="40" Y="79"/>
+        <UsageCount Value="7"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="C:\lazarus\lcl\menus.pp"/>
+        <UnitName Value="Menus"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="110"/>
+        <CursorPos X="3" Y="118"/>
+        <UsageCount Value="8"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="C:\lazarus\lcl\include\menuitem.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1085"/>
+        <CursorPos X="1" Y="1103"/>
+        <UsageCount Value="9"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="C:\lazarus\lcl\include\buttons.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="234"/>
+        <CursorPos X="42" Y="254"/>
+        <UsageCount Value="7"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="C:\lazarus\lcl\actnlist.pas"/>
+        <UnitName Value="ActnList"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="365"/>
+        <CursorPos X="1" Y="378"/>
+        <UsageCount Value="7"/>
+      </Unit27>
+      <Unit28>
+        <Filename Value="C:\lazarus\lcl\extctrls.pp"/>
+        <UnitName Value="ExtCtrls"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1144"/>
+        <CursorPos X="19" Y="1161"/>
+        <UsageCount Value="7"/>
+      </Unit28>
+      <Unit29>
+        <Filename Value="C:\lazarus\lcl\include\buttonglyph.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="209"/>
+        <CursorPos X="61" Y="219"/>
+        <UsageCount Value="7"/>
+      </Unit29>
+      <Unit30>
+        <Filename Value="C:\lazarus\lcl\alllclunits.pp"/>
+        <UnitName Value="alllclunits"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="19"/>
+        <CursorPos X="1" Y="34"/>
+        <UsageCount Value="7"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="C:\lazarus\lcl\arrow.pp"/>
+        <UnitName Value="Arrow"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="69"/>
+        <CursorPos X="1" Y="87"/>
+        <UsageCount Value="7"/>
+      </Unit31>
+      <Unit32>
+        <Filename Value="C:\lazarus\lcl\customdrawndrawers.pas"/>
+        <UnitName Value="customdrawndrawers"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="402"/>
+        <CursorPos X="3" Y="404"/>
+        <UsageCount Value="7"/>
+      </Unit32>
+      <Unit33>
+        <Filename Value="C:\lazarus\lcl\interfaces\wince\wincewsfactory.pas"/>
+        <UnitName Value="WinCEWSFactory"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="503"/>
+        <CursorPos X="23" Y="514"/>
+        <UsageCount Value="7"/>
+      </Unit33>
+      <Unit34>
+        <Filename Value="C:\lazarus\lcl\widgetset\wsmenus.pp"/>
+        <UnitName Value="WSMenus"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="196"/>
+        <CursorPos X="3" Y="200"/>
+        <UsageCount Value="7"/>
+      </Unit34>
+      <Unit35>
+        <Filename Value="C:\lazarus\lcl\widgetset\wsfactory.pas"/>
+        <UnitName Value="WSFactory"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="89"/>
+        <CursorPos X="10" Y="100"/>
+        <UsageCount Value="7"/>
+      </Unit35>
+      <Unit36>
+        <Filename Value="C:\lazarus\lcl\include\menu.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="72"/>
+        <CursorPos X="8" Y="82"/>
+        <UsageCount Value="7"/>
+      </Unit36>
+      <Unit37>
+        <Filename Value="C:\lazarus\fpc\2.6.0\source\rtl\objpas\classes\classesh.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1535"/>
+        <CursorPos X="5" Y="1546"/>
+        <UsageCount Value="8"/>
+      </Unit37>
+      <Unit38>
+        <Filename Value="C:\lazarus\lcl\registerlcl.pas"/>
+        <UnitName Value="RegisterLCL"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="50"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="7"/>
+      </Unit38>
+      <Unit39>
+        <Filename Value="C:\lazarus\lcl\imglist.pp"/>
+        <UnitName Value="ImgList"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="47"/>
+        <CursorPos X="12" Y="58"/>
+        <UsageCount Value="7"/>
+      </Unit39>
+      <Unit40>
+        <Filename Value="C:\lazarus\lcl\include\custompage.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="151"/>
+        <CursorPos X="1" Y="166"/>
+        <UsageCount Value="10"/>
+      </Unit40>
+      <Unit41>
+        <Filename Value="C:\lazarus\lcl\lclclasses.pp"/>
+        <UnitName Value="LCLClasses"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="137"/>
+        <CursorPos X="1" Y="149"/>
+        <UsageCount Value="10"/>
+      </Unit41>
+      <Unit42>
+        <Filename Value="C:\lazarus\lcl\buttonpanel.pas"/>
+        <UnitName Value="ButtonPanel"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="183"/>
+        <CursorPos X="45" Y="194"/>
+        <UsageCount Value="9"/>
+      </Unit42>
+      <Unit43>
+        <Filename Value="..\..\..\ACBr\trunk\Fontes\ACBrSerial\ACBrECF.pas"/>
+        <UnitName Value="ACBrECF"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="5128"/>
+        <CursorPos X="1" Y="5148"/>
+        <UsageCount Value="8"/>
+      </Unit43>
+      <Unit44>
+        <Filename Value="C:\lazarus\lcl\include\wincontrol.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="4516"/>
+        <CursorPos X="3" Y="4521"/>
+        <UsageCount Value="10"/>
+      </Unit44>
+      <Unit45>
+        <Filename Value="..\..\..\djpdv\djmonitor\DAV.pas"/>
+        <ComponentName Value="frDAV"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Dav"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="997"/>
+        <CursorPos X="3" Y="999"/>
+        <UsageCount Value="8"/>
+      </Unit45>
+      <Unit46>
+        <Filename Value="C:\lazarus\lcl\include\customform.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="2132"/>
+        <CursorPos X="3" Y="2132"/>
+        <UsageCount Value="11"/>
+      </Unit46>
+      <Unit47>
+        <Filename Value="C:\lazarus\lcl\include\screen.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="978"/>
+        <CursorPos X="1" Y="989"/>
+        <UsageCount Value="10"/>
+      </Unit47>
+      <Unit48>
+        <Filename Value="C:\lazarus\lcl\forms.pp"/>
+        <UnitName Value="Forms"/>
+        <EditorIndex Value="3"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="697"/>
+        <CursorPos X="3" Y="708"/>
+        <UsageCount Value="13"/>
+        <Loaded Value="True"/>
+      </Unit48>
+      <Unit49>
+        <Filename Value="C:\lazarus\lcl\lclmessageglue.pas"/>
+        <UnitName Value="LCLMessageGlue"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="116"/>
+        <CursorPos X="1" Y="128"/>
+        <UsageCount Value="10"/>
+      </Unit49>
+      <Unit50>
+        <Filename Value="C:\lazarus\lcl\interfaces\win32\win32pagecontrol.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="254"/>
+        <CursorPos X="1" Y="262"/>
+        <UsageCount Value="10"/>
+      </Unit50>
+      <Unit51>
+        <Filename Value="C:\lazarus\lcl\interfaces\win32\win32wsforms.pp"/>
+        <UnitName Value="Win32WSForms"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="361"/>
+        <CursorPos X="1" Y="375"/>
+        <UsageCount Value="8"/>
+      </Unit51>
+      <Unit52>
+        <Filename Value="C:\lazarus\lcl\widgetset\wslclclasses.pp"/>
+        <UnitName Value="WSLCLClasses"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="421"/>
+        <CursorPos X="3" Y="414"/>
+        <UsageCount Value="8"/>
+      </Unit52>
+      <Unit53>
+        <Filename Value="C:\lazarus\lcl\lclproc.pas"/>
+        <UnitName Value="LCLProc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="851"/>
+        <CursorPos X="1" Y="865"/>
+        <UsageCount Value="9"/>
+      </Unit53>
+      <Unit54>
+        <Filename Value="C:\lazarus\lcl\include\tabsheet.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="49"/>
+        <CursorPos X="3" Y="69"/>
+        <UsageCount Value="9"/>
+      </Unit54>
+      <Unit55>
+        <Filename Value="C:\lazarus\lcl\include\winapi.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="314"/>
+        <CursorPos X="30" Y="322"/>
+        <UsageCount Value="10"/>
+      </Unit55>
+      <Unit56>
+        <Filename Value="C:\lazarus\lcl\interfaces\win32\win32callback.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="211"/>
+        <CursorPos X="14" Y="214"/>
+        <UsageCount Value="10"/>
+      </Unit56>
+      <Unit57>
+        <Filename Value="..\..\..\..\TOOLS\DJ_FormPrincipal.pas"/>
+        <ComponentName Value="FormDJ_Main"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="DJ_FormPrincipal"/>
+        <EditorIndex Value="4"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="132"/>
+        <CursorPos X="1" Y="154"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit57>
+      <Unit58>
+        <Filename Value="C:\lazarus\fpc\2.6.0\source\rtl\objpas\sysutils\sysstrh.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="208"/>
+        <CursorPos X="30" Y="219"/>
+        <UsageCount Value="10"/>
+      </Unit58>
+      <Unit59>
+        <Filename Value="C:\lazarus\fpc\2.6.0\source\rtl\objpas\sysutils\sysstr.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1803"/>
+        <CursorPos X="3" Y="1806"/>
+        <UsageCount Value="10"/>
+      </Unit59>
+      <Unit60>
+        <Filename Value="C:\lazarus\lcl\include\customcontrol.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="79"/>
+        <CursorPos X="15" Y="90"/>
+        <UsageCount Value="10"/>
+      </Unit60>
+    </Units>
+    <General>
+      <ActiveWindowIndexAtStart Value="0"/>
+    </General>
+    <JumpHistory Count="25" HistoryIndex="24">
+      <Position1>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="606" Column="1" TopLine="594"/>
+      </Position1>
+      <Position2>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="608" Column="1" TopLine="594"/>
+      </Position2>
+      <Position3>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="609" Column="1" TopLine="594"/>
+      </Position3>
+      <Position4>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="611" Column="1" TopLine="594"/>
+      </Position4>
+      <Position5>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="612" Column="1" TopLine="594"/>
+      </Position5>
+      <Position6>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="611" Column="1" TopLine="594"/>
+      </Position6>
+      <Position7>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="612" Column="1" TopLine="594"/>
+      </Position7>
+      <Position8>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="609" Column="37" TopLine="584"/>
+      </Position8>
+      <Position9>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="615" Column="19" TopLine="593"/>
+      </Position9>
+      <Position10>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position10>
+      <Position11>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="222" Column="9" TopLine="203"/>
+      </Position11>
+      <Position12>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="229" Column="1" TopLine="209"/>
+      </Position12>
+      <Position13>
+        <Filename Value="uform1.pas"/>
+        <Caret Line="69" Column="25" TopLine="47"/>
+      </Position13>
+      <Position14>
+        <Filename Value="umainform.pas"/>
+        <Caret Line="91" Column="83" TopLine="82"/>
+      </Position14>
+      <Position15>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="58" Column="15" TopLine="47"/>
+      </Position15>
+      <Position16>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="254" Column="3" TopLine="248"/>
+      </Position16>
+      <Position17>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="221" Column="1" TopLine="211"/>
+      </Position17>
+      <Position18>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="8" Column="38" TopLine="1"/>
+      </Position18>
+      <Position19>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="252" Column="1" TopLine="241"/>
+      </Position19>
+      <Position20>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="256" Column="1" TopLine="241"/>
+      </Position20>
+      <Position21>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="54" Column="1" TopLine="45"/>
+      </Position21>
+      <Position22>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="188" Column="1" TopLine="178"/>
+      </Position22>
+      <Position23>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="225" Column="1" TopLine="215"/>
+      </Position23>
+      <Position24>
+        <Filename Value="umainform.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position24>
+      <Position25>
+        <Filename Value="umainform.pas"/>
+        <Caret Line="40" Column="48" TopLine="29"/>
+      </Position25>
+    </JumpHistory>
+  </ProjectSession>
+</CONFIG>

@@ -1,0 +1,10 @@
+What is TDI ?
+Please see:
+http://en.wikipedia.org/wiki/Tab_%28GUI%29
+
+This is a very alfa post...  
+I will write a Page on Wiki, and adjust all files for LGPL License
+
+Author:
+Daniel Simões de Almeida
+daniel@djsystem.com.br
