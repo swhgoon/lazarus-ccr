@@ -32,13 +32,13 @@ object fMainForm: TfMainForm
     Top = 0
     Width = 587
     TabStop = False
-    ActivePage = TabSheet2
+    ActivePage = TabSheet1
     Align = alClient
     Constraints.MinHeight = 300
     Constraints.MinWidth = 500
     Images = ImageList1
     MultiLine = True
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 1
     OnChange = TDINoteBook1Change
     Options = [nboShowCloseButtons, nboMultiLine, nboKeyboardTabSwitch, nboShowAddTabButton]
@@ -2277,8 +2277,8 @@ object fMainForm: TfMainForm
   end
   object MainMenu1: TMainMenu
     Images = ImageList1
-    left = 206
-    top = 69
+    left = 504
+    top = 400
     object MenuItem1: TMenuItem
       Caption = 'Forms'
       object miForm1: TMenuItem
@@ -2298,8 +2298,8 @@ object fMainForm: TfMainForm
     end
   end
   object ImageList1: TImageList
-    left = 320
-    top = 72
+    left = 416
+    top = 400
     Bitmap = {
       4C69060000001000000010000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

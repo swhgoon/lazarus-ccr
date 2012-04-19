@@ -207,8 +207,8 @@ begin
   end
   else
   begin
-    { No LastActiveControle ? Ok, if current Screen control isn't on Tab,
-      go to first Control on Tab... }
+    { No LastActiveControle ? Ok, if current Screen control isn't in TabSheet,
+      go to first Control on TabSheet... }
     if not Self.ContainsControl( Screen.ActiveControl ) then
       Self.SelectNext( Self, True, True);
   end
@@ -224,7 +224,7 @@ begin
 
   // Adjusting AForm Border Style and Align //
   fsFormInPage.BorderStyle := bsNone ;
-  //fsFormInPage.Align     := alClient ;
+  //fsFormInPage.Align     := alClient ;   // This will be done in OnResizeTDIPage
 
   // Change Form Parent to the Page //
   fsFormInPage.Parent := Self;
@@ -233,7 +233,7 @@ begin
   // Show the Form //
   fsFormInPage.Visible := True ;
 
-  // Saving the ActiveControl on the Form //
+  // Saving the current ActiveControl in the Form //
   fsLastActiveControl := fsFormInPage.ActiveControl;
 end ;
 
@@ -242,17 +242,15 @@ procedure TTDIPage.Notification(AComponent : TComponent ; Operation : TOperation
 begin
   inherited Notification(AComponent, Operation) ;
 
-  if (fsFormInPage <> nil) and
-     (Operation = opRemove) and
-     (AComponent = fsFormInPage) then
-       fsFormInPage := nil;
+  if (Operation = opRemove) and (AComponent = fsFormInPage) then
+    fsFormInPage := nil;
 end ;
 
 procedure TTDIPage.OnResizeTDIPage(Sender : TObject) ;
 begin
   if not Assigned(fsFormInPage) then exit ;
 
-  { If Form has MaxConstrains and doesn't fit all the Screen, Centralize on
+  { If Form has MaxConstrains and doesn't fill all the Screen, Centralize on
     TabSheet }
   if (fsFormInPage.Width < Width) and (fsFormInPage.Height < Height) then
   begin
@@ -287,7 +285,7 @@ begin
   FTabsMenuItem          := nil;
   FTDIActions            := TTDIActions.Create;
 
-  { This is ugly, I know... but I didn't find a best solution to restore Last
+  { This is ugly, I know... but I didn't found a best solution to restore Last
     Focused Control of TDIPage }
   FTimerRestoreLastControl := TTimer.Create(Self);
   FTimerRestoreLastControl.Enabled  := False;
@@ -300,7 +298,7 @@ begin
   if Assigned( FCloseBitBtn )  then
     FCloseBitBtn.Free ;
 
-  { // Don't Destroy MenuItens... They will be destroyed by MainMenu //
+  { // Don't Destroy Menu Items... They will be destroyed by MainMenu //
 
   if Assigned( FCloseMenuItem )  then
     FCloseMenuItem.Free ;
@@ -345,7 +343,7 @@ begin
   if Self.Owner is TWinControl then
     FCloseBitBtn.Parent := TWinControl(Self.Owner) ;
 
-  // Seting Image to FCloseBitBtn //;
+  // Setting Image to FCloseBitBtn //;
   if Assigned( Images ) and (FTDIActions.CloseTab.ImageIndex > -1) then
   begin
      Images.GetBitmap( FTDIActions.CloseTab.ImageIndex, FCloseBitBtn.Glyph );
@@ -441,6 +439,9 @@ procedure TTDINoteBook.SetBackgroundImage(AValue : TImage) ;
 begin
   if FBackgroundImage = AValue then Exit ;
   FBackgroundImage := AValue ;
+
+  if Visible then
+    DrawBackgroundImage;
 end ;
 
 procedure TTDINoteBook.SetBackgroundCorner(AValue : TTDIBackgroundCorner) ;
@@ -501,7 +502,7 @@ begin
 
   Visible := (PageCount > 0);
 
-  // Checking for Close Buttom visibility //
+  // Checking for Close Button visibility //
   if (FCloseTabButtom <> tbNone) then
   begin
     if Visible then
@@ -514,7 +515,7 @@ begin
   if FTabsMenuItem <> nil then
      FTabsMenuItem.Visible := Visible ;
 
-  // Drawing Back ground Image //
+  // Drawing Background Image //
   if Visible then
     DrawBackgroundImage;
 end ;
@@ -617,7 +618,7 @@ Var
   I : Integer ;
   NewMenuItem : TMenuItem ;
 begin
-  // Removing MenuItens until find Separator '-' //
+  // Removing Menu Items until find Separator '-' //
   NewMenuItem := FTabsMenuItem.Items[0] ;
   while (NewMenuItem.Caption <> '-') do
   begin
@@ -626,7 +627,7 @@ begin
      NewMenuItem := FTabsMenuItem.Items[0] ;
   end ;
 
-  // Inserting on MenuItens existing Tabs //
+  // Inserting on Menu Items for existing Tabs //
   for I := PageCount-1 downto 0 do
   begin
      NewMenuItem := TMenuItem.Create(FTabsMenuItem);
@@ -678,7 +679,7 @@ begin
               control focus. This may occurs in TWinControl.OnExit Validation }
             Self.SetFocus;
 
-            { If steel on same ActiveControl, maybe Focus Control was traped on
+            { If still on same ActiveControl, maybe Focus Control was trapped on
               some OnExit Validation }
             Result := ( AWinControl <> Screen.ActiveControl );
           end ;
@@ -699,13 +700,13 @@ begin
   CheckInterface;
 
   {
-  // This doesn't work on Win32, Focus Control always go to first control on Page //
+  // This doesn't work on Win32, Focus always go to first control on Page //
   if FRestoreActiveControl then
     if (ActivePage is TTDIPage) then
       TTDIPage( ActivePage ).RestoreLastFocusedControl;
   }
 
-  // This is a ulgy work around.. but it works :) //
+  // This is a ugly workaround.. but it works :) //
   FTimerRestoreLastControl.Enabled := True;
 end ;
 

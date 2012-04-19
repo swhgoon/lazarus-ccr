@@ -48,8 +48,8 @@ procedure TForm1.Edit2Exit(Sender : TObject) ;
 begin
   if Edit2.Text = '' then
   begin
-    Label1.Caption := 'Edit2 cant be empty';
-    ShowMessage( 'Edit2 cant be empty' );
+    Label1.Caption := 'Edit2 cannot be empty';
+    ShowMessage( 'Edit2 cannot be empty' );
     Edit2.SetFocus;
   end ;
 end;
@@ -65,7 +65,7 @@ begin
   if Edit2.Text = '' then
   begin
     CanClose := False;
-    ShowMessage( 'Remember... Edit2 cant be empty' );
+    ShowMessage( 'Remember... Edit2 cannot be empty' );
     Edit2.Text := 'Ok, fixed';
   end ;
   fMainForm.mEvents.Lines.Add( 'Form1.CloseQuery: '+BoolToStr(CanClose,'True','False') );
