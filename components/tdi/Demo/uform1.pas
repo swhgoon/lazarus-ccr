@@ -5,22 +5,32 @@ unit uForm1 ;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls ;
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  ExtCtrls ;
 
 type
 
   { TForm1 }
 
   TForm1 = class(TForm)
-    Button1 : TButton ;
+    bClose : TButton ;
+    bHide : TButton ;
     Edit1 : TEdit ;
     Edit2 : TEdit ;
     Label1 : TLabel ;
-    procedure Button1Click(Sender : TObject) ;
+    Label2 : TLabel ;
+    Label3 : TLabel ;
+    Label4 : TLabel ;
+    Label5 : TLabel ;
+    lShowmeAgain : TLabel ;
+    tShowmeAgain : TTimer ;
+    procedure bCloseClick(Sender : TObject) ;
+    procedure bHideClick(Sender : TObject) ;
     procedure Edit2Exit(Sender : TObject) ;
     procedure FormClose(Sender : TObject ; var CloseAction : TCloseAction) ;
     procedure FormCloseQuery(Sender : TObject ; var CanClose : boolean) ;
     procedure FormDestroy(Sender : TObject) ;
+    procedure tShowmeAgainTimer(Sender : TObject) ;
   private
     { private declarations }
   public
@@ -38,10 +48,16 @@ Uses uMainForm;
 
 { TForm1 }
 
-procedure TForm1.Button1Click(Sender : TObject) ;
+procedure TForm1.bCloseClick(Sender : TObject) ;
 begin
-  // You can close Forms from Inside, TDI will detect and close the parent Page //
+  // You can close Forms from Inside, TDINoteBook will detect and close the parent Page //
   Close ;
+end;
+
+procedure TForm1.bHideClick(Sender : TObject) ;
+begin
+  Hide;
+  tShowmeAgain.Enabled := True;
 end;
 
 procedure TForm1.Edit2Exit(Sender : TObject) ;
@@ -74,6 +90,13 @@ end;
 procedure TForm1.FormDestroy(Sender : TObject) ;
 begin
   fMainForm.mEvents.Lines.Add( 'Form1.Destroy' );
+end;
+
+procedure TForm1.tShowmeAgainTimer(Sender : TObject) ;
+begin
+  tShowmeAgain.Enabled := False;
+  Show;
+  lShowmeAgain.Visible := True;
 end;
 
 end.

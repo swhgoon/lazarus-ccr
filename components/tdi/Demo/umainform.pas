@@ -14,15 +14,13 @@ type
 
   TfMainForm = class(TForm)
     Button1 : TButton ;
-    Button2 : TButton ;
     cbxBackgroundCorner : TComboBox ;
     Edit1 : TEdit ;
     Edit2 : TEdit ;
-    Edit3 : TEdit ;
-    Edit4 : TEdit ;
     Image1 : TImage ;
     ImageList1 : TImageList ;
     Label1 : TLabel ;
+    Label2 : TLabel ;
     MainMenu1 : TMainMenu ;
     mEvents : TMemo ;
     MenuItem1 : TMenuItem ;
@@ -34,7 +32,6 @@ type
     Splitter1 : TSplitter ;
     StatusBar1 : TStatusBar ;
     TabSheet1 : TTabSheet ;
-    TabSheet2 : TTabSheet ;
     TDINoteBook1 : TTDINoteBook ;
     procedure cbxBackgroundCornerChange(Sender : TObject) ;
     procedure FormClose(Sender : TObject ; var CloseAction : TCloseAction) ;

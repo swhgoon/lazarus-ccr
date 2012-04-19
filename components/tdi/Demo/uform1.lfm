@@ -15,18 +15,18 @@ object Form1: TForm1
   OnCloseQuery = FormCloseQuery
   OnDestroy = FormDestroy
   LCLVersion = '1.1'
-  object Button1: TButton
-    Left = 376
+  object bClose: TButton
+    Left = 400
     Height = 25
-    Top = 248
+    Top = 224
     Width = 86
     AutoSize = True
     Caption = 'Close Form'
-    OnClick = Button1Click
+    OnClick = bCloseClick
     TabOrder = 2
   end
   object Edit1: TEdit
-    Left = 40
+    Left = 24
     Height = 23
     Top = 24
     Width = 82
@@ -34,19 +34,82 @@ object Form1: TForm1
     Text = 'Edit1'
   end
   object Edit2: TEdit
-    Left = 40
+    Left = 24
     Height = 23
-    Top = 56
+    Top = 96
     Width = 82
     OnExit = Edit2Exit
     TabOrder = 1
   end
   object Label1: TLabel
-    Left = 51
-    Height = 16
-    Top = 268
-    Width = 35
-    Caption = 'Label1'
+    Left = 144
+    Height = 1
+    Top = 63
+    Width = 1
     ParentColor = False
+  end
+  object Label2: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    Left = 23
+    Height = 16
+    Top = 143
+    Width = 454
+    Caption = 'This Form has Max Constraints. It will be centralized on Tab Sheet if it is smaller than it'
+    ParentColor = False
+  end
+  object Label3: TLabel
+    Left = 16
+    Height = 46
+    Top = 208
+    Width = 360
+    Caption = 'You can Close or Hide your Forms the same way you used to.'#13#10'No Special method is necessary. TDINotebook will detect by internal'#13#10'Notification and Close the Tab Sheet'
+    ParentColor = False
+  end
+  object bHide: TButton
+    AnchorSideLeft.Control = bClose
+    AnchorSideLeft.Side = asrCenter
+    Left = 402
+    Height = 25
+    Top = 256
+    Width = 82
+    AutoSize = True
+    Caption = 'Hide Form'
+    OnClick = bHideClick
+    TabOrder = 3
+  end
+  object lShowmeAgain: TLabel
+    Left = 16
+    Height = 16
+    Top = 272
+    Width = 364
+    Caption = 'But, If you Hide the Form, is better you have a way to Show it again :)'
+    Font.Color = clRed
+    ParentColor = False
+    ParentFont = False
+    Visible = False
+  end
+  object Label4: TLabel
+    Left = 24
+    Height = 16
+    Top = 8
+    Width = 106
+    Caption = 'This is a regular Edit'
+    ParentColor = False
+  end
+  object Label5: TLabel
+    Left = 24
+    Height = 31
+    Top = 63
+    Width = 450
+    Caption = 'This Edit has a OnExit Validation, who doesn''t  allow Page Change if this Edit is empty'#13#10'This can be configured by "VerifyIfCanChange" property'
+    ParentColor = False
+  end
+  object tShowmeAgain: TTimer
+    Enabled = False
+    Interval = 3000
+    OnTimer = tShowmeAgainTimer
+    left = 450
+    top = 8
   end
 end
