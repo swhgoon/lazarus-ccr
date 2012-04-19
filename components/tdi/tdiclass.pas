@@ -751,16 +751,17 @@ Var
 begin
   CanRemovePage := True;
 
-  if Pages[Index] is TTDIPage then
-    with TTDIPage(Pages[Index]) do
-    begin
-      if Assigned( FormInPage ) then
+  if ([csDesigning, csDestroying] * ComponentState = []) then
+    if Pages[Index] is TTDIPage then
+      with TTDIPage(Pages[Index]) do
       begin
-        CanRemovePage := FormInPage.CloseQuery ;
-        if CanRemovePage then
-          FormInPage.Close ;
+        if Assigned( FormInPage ) then
+        begin
+          CanRemovePage := FormInPage.CloseQuery ;
+          if CanRemovePage then
+            FormInPage.Close ;
+        end ;
       end ;
-    end ;
 
   if CanRemovePage then
   begin
