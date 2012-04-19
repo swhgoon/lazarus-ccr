@@ -28,7 +28,7 @@ object Form1: TForm1
   object Edit1: TEdit
     Left = 24
     Height = 23
-    Top = 24
+    Top = 80
     Width = 82
     TabOrder = 0
     Text = 'Edit1'
@@ -36,7 +36,7 @@ object Form1: TForm1
   object Edit2: TEdit
     Left = 24
     Height = 23
-    Top = 96
+    Top = 136
     Width = 82
     OnExit = Edit2Exit
     TabOrder = 1
@@ -51,12 +51,15 @@ object Form1: TForm1
   object Label2: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideLeft.Side = asrCenter
-    Left = 23
-    Height = 16
-    Top = 143
-    Width = 454
-    Caption = 'This Form has Max Constraints. It will be centralized on Tab Sheet if it is smaller than it'
+    Left = 98
+    Height = 31
+    Top = 16
+    Width = 305
+    Alignment = taCenter
+    Caption = 'This Form has Max Constraints.'#13#10'It will be centralized on Tab Sheet if it is smaller than it'
+    Font.Style = [fsBold]
     ParentColor = False
+    ParentFont = False
   end
   object Label3: TLabel
     Left = 16
@@ -90,19 +93,23 @@ object Form1: TForm1
     Visible = False
   end
   object Label4: TLabel
-    Left = 24
+    AnchorSideTop.Control = Edit1
+    AnchorSideTop.Side = asrCenter
+    Left = 120
     Height = 16
-    Top = 8
+    Top = 83
     Width = 106
     Caption = 'This is a regular Edit'
     ParentColor = False
   end
   object Label5: TLabel
-    Left = 24
-    Height = 31
-    Top = 63
-    Width = 450
-    Caption = 'This Edit has a OnExit Validation, who doesn''t  allow Page Change if this Edit is empty'#13#10'This can be configured by "VerifyIfCanChange" property'
+    AnchorSideTop.Control = Edit2
+    AnchorSideTop.Side = asrCenter
+    Left = 120
+    Height = 46
+    Top = 124
+    Width = 347
+    Caption = 'This Edit has a OnExit Validation, who doesn''t  allow Page Change'#13#10' if this Edit is empty, and the focus is on it...  '#13#10'This can be disabled  changing the property "VerifyIfCanChange"'
     ParentColor = False
   end
   object tShowmeAgain: TTimer

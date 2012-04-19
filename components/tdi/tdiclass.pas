@@ -56,6 +56,7 @@ type
     procedure SetFormInPage(AValue : TForm) ;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure CheckFormAlign ;
 
   public
     constructor Create(TheOwner: TComponent );  override;
@@ -81,6 +82,7 @@ type
     procedure SetBackgroundCorner(AValue : TTDIBackgroundCorner) ;
     procedure SetCloseTabButtom(AValue : TTDICloseTabButtom) ;
     procedure SetMainMenu(AValue : TMainMenu) ;
+    procedure SetFixedPages(AValue : Integer) ;
   private
     FCloseBitBtn : TBitBtn ;
     FCloseMenuItem : TMenuItem ;
@@ -110,6 +112,8 @@ type
     function CanChange: Boolean; override;
     procedure DoChange; override;
     procedure Loaded; override;
+    procedure RemovePage(Index: Integer); override;
+
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
   public
@@ -138,7 +142,7 @@ type
       write FRestoreActiveControl default True;
     property VerifyIfCanChangePage : Boolean read FVerifyIfCanChangePage
       write FVerifyIfCanChangePage default True;
-    property FixedPages : Integer read FFixedPages write FFixedPages default 0;
+    property FixedPages : Integer read FFixedPages write SetFixedPages default 0;
   end ;
 
 
@@ -246,7 +250,7 @@ begin
     fsFormInPage := nil;
 end ;
 
-procedure TTDIPage.OnResizeTDIPage(Sender : TObject) ;
+procedure TTDIPage.CheckFormAlign ;
 begin
   if not Assigned(fsFormInPage) then exit ;
 
@@ -264,6 +268,11 @@ begin
   end
   else
     fsFormInPage.Align := alClient;
+end ;
+
+procedure TTDIPage.OnResizeTDIPage(Sender : TObject) ;
+begin
+  CheckFormAlign;
 end ;
 
 { TTDINoteBook }
@@ -435,6 +444,14 @@ begin
   FTabsMenuItem.Add(FCloseAllTabsMenuItem);
 end ;
 
+procedure TTDINoteBook.SetFixedPages(AValue : Integer) ;
+begin
+  if FFixedPages = AValue then Exit ;
+  FFixedPages := AValue ;
+
+  CheckInterface;
+end ;
+
 procedure TTDINoteBook.SetBackgroundImage(AValue : TImage) ;
 begin
   if FBackgroundImage = AValue then Exit ;
@@ -483,17 +500,24 @@ procedure TTDINoteBook.ShowForInNewPage(AForm : TForm ; ImageIndex : Integer) ;
 Var
   NewPage : TTDIPage ;
 begin
-  Visible := True;
-
   // Create a new Page
   NewPage := TTDIPage.Create(Self);
   NewPage.ImageIndex := ImageIndex;
+
+  Visible := True;
 
   // This will call TTDIPage.SetFormInPage, who does the magic //
   NewPage.FormInPage := AForm;
 
   // Activate the new Page
   ActivePage := NewPage;
+
+  // First Page always need a little help for align form inside //
+  if PageCount = 1 then
+  begin
+    NewPage.CheckFormAlign ;
+    CheckInterface;
+  end ;
 end ;
 
 procedure TTDINoteBook.CheckInterface ;
@@ -558,8 +582,7 @@ end ;
 
 procedure TTDINoteBook.CloseTabClicked(Sender : TObject) ;
 begin
-  if CanCloseAPage( ActivePageIndex ) then
-    RemovePage( ActivePageIndex );
+  RemovePage( ActivePageIndex );
 end ;
 
 procedure TTDINoteBook.CloseAllTabsClicked(Sender : TObject) ;
@@ -573,9 +596,9 @@ begin
    // Close while have pages, and Pages still being closed //
    while (PageCount > FFixedPages) and (LastPageCount <> PageCount) do
    begin
-      LastPageCount := PageCount ;
-      CloseTabClicked(Sender);
-      Application.ProcessMessages;
+     LastPageCount := PageCount ;
+     RemovePage( ActivePageIndex );
+     Application.ProcessMessages;
    end;
 end ;
 
@@ -720,6 +743,32 @@ begin
      CreateTabsMenuItem;
 
   CheckInterface;
+end ;
+
+procedure TTDINoteBook.RemovePage(Index : Integer) ;
+Var
+  CanRemovePage : Boolean ;
+begin
+  CanRemovePage := True;
+
+  if Pages[Index] is TTDIPage then
+    with TTDIPage(Pages[Index]) do
+    begin
+      if Assigned( FormInPage ) then
+      begin
+        CanRemovePage := FormInPage.CloseQuery ;
+        if CanRemovePage then
+          FormInPage.Close ;
+      end ;
+    end ;
+
+  if CanRemovePage then
+  begin
+    inherited RemovePage(Index) ;
+
+    if PageCount < 1 then  // On this case, DoChange is not fired //
+      CheckInterface;
+  end ;
 end ;
 
 procedure TTDINoteBook.Notification(AComponent : TComponent ;

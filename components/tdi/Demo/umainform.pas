@@ -6,19 +6,21 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Menus,
-  ComCtrls, Buttons, StdCtrls, ExtCtrls, TDIClass , types, SynMemo, IpHtml;
+  ComCtrls, Buttons, StdCtrls, ExtCtrls, Spin, TDIClass , types, IpHtml;
 
 type
 
   { TfMainForm }
 
   TfMainForm = class(TForm)
+    bToggleLog : TButton ;
     cbxBackgroundCorner : TComboBox ;
     Image1 : TImage ;
     ImageList1 : TImageList ;
     IpHtmlPanel1 : TIpHtmlPanel ;
     Label1 : TLabel ;
     Label2 : TLabel ;
+    Label3 : TLabel ;
     MainMenu1 : TMainMenu ;
     mEvents : TMemo ;
     MenuItem1 : TMenuItem ;
@@ -27,16 +29,19 @@ type
     miForm2 : TMenuItem ;
     miForm1 : TMenuItem ;
     pBottom : TPanel ;
+    seFixedPages : TSpinEdit ;
     Splitter1 : TSplitter ;
     StatusBar1 : TStatusBar ;
-    TabSheet1 : TTabSheet ;
+    tsFixed : TTabSheet ;
     TDINoteBook1 : TTDINoteBook ;
+    procedure bToggleLogClick(Sender : TObject) ;
     procedure cbxBackgroundCornerChange(Sender : TObject) ;
     procedure FormClose(Sender : TObject ; var CloseAction : TCloseAction) ;
     procedure FormCloseQuery(Sender : TObject ; var CanClose : boolean) ;
     procedure FormCreate(Sender : TObject) ;
     procedure miExitClick(Sender : TObject) ;
     procedure miForm1Click(Sender : TObject) ;
+    procedure seFixedPagesChange(Sender : TObject) ;
     procedure TDINoteBook1Change(Sender : TObject) ;
   private
     { private declarations }
@@ -70,6 +75,16 @@ begin
   TDINoteBook1.BackgroundCorner := TTDIBackgroundCorner( cbxBackgroundCorner.ItemIndex );
 end;
 
+procedure TfMainForm.bToggleLogClick(Sender : TObject) ;
+begin
+  mEvents.Visible := not mEvents.Visible ;
+
+  if mEvents.Visible then
+    bToggleLog.Caption := 'Hide Log >'
+  else
+    bToggleLog.Caption := '< Show Log' ;
+end;
+
 procedure TfMainForm.FormClose(Sender : TObject ; var CloseAction : TCloseAction
   ) ;
 begin
@@ -90,6 +105,11 @@ procedure TfMainForm.miForm1Click(Sender : TObject) ;
 begin
   // You can Use Form Types //
   TDINoteBook1.CreateFormInNewPage( TForm1, 3 );
+end;
+
+procedure TfMainForm.seFixedPagesChange(Sender : TObject) ;
+begin
+  TDINoteBook1.FixedPages := seFixedPages.Value;
 end;
 
 procedure TfMainForm.TDINoteBook1Change(Sender : TObject) ;

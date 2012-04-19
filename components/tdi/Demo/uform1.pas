@@ -84,7 +84,9 @@ begin
     ShowMessage( 'Remember... Edit2 cannot be empty' );
     Edit2.Text := 'Ok, fixed';
   end ;
-  fMainForm.mEvents.Lines.Add( 'Form1.CloseQuery: '+BoolToStr(CanClose,'True','False') );
+
+  if Assigned( fMainForm ) then
+    fMainForm.mEvents.Lines.Add( 'Form1.CloseQuery: '+BoolToStr(CanClose,'True','False') );
 end;
 
 procedure TForm1.FormDestroy(Sender : TObject) ;

@@ -32,7 +32,7 @@ object fMainForm: TfMainForm
     Top = 0
     Width = 587
     TabStop = False
-    ActivePage = TabSheet1
+    ActivePage = tsFixed
     Align = alClient
     Constraints.MinHeight = 300
     Constraints.MinWidth = 500
@@ -53,13 +53,13 @@ object fMainForm: TfMainForm
     TDIActions.CloseAllTabs.Caption = 'Close All Tabs'
     TDIActions.CloseAllTabs.ImageIndex = 2
     FixedPages = 1
-    object TabSheet1: TTabSheet
-      Caption = 'TabSheet1'
+    object tsFixed: TTabSheet
+      Caption = 'TTDINotebook Demo'
       ClientHeight = 363
       ClientWidth = 579
       ImageIndex = 5
       object Label2: TLabel
-        AnchorSideLeft.Control = TabSheet1
+        AnchorSideLeft.Control = tsFixed
         AnchorSideLeft.Side = asrCenter
         Left = 167
         Height = 31
@@ -119,6 +119,37 @@ object fMainForm: TfMainForm
       Width = 101
       Caption = 'BackgroundCorner'
       ParentColor = False
+    end
+    object bToggleLog: TButton
+      AnchorSideTop.Control = pBottom
+      AnchorSideTop.Side = asrCenter
+      Left = 622
+      Height = 25
+      Top = 13
+      Width = 85
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      Caption = 'Hide Log >'
+      OnClick = bToggleLogClick
+      TabOrder = 1
+    end
+    object Label3: TLabel
+      Left = 182
+      Height = 16
+      Top = 1
+      Width = 59
+      Caption = 'FixedPages'
+      ParentColor = False
+    end
+    object seFixedPages: TSpinEdit
+      Left = 184
+      Height = 23
+      Top = 17
+      Width = 50
+      MaxValue = 10
+      OnChange = seFixedPagesChange
+      TabOrder = 2
+      Value = 1
     end
   end
   object mEvents: TMemo
