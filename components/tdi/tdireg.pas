@@ -18,6 +18,8 @@ begin
   RegisterComponents('TDI', [ TTDINoteBook ]);
 end ;
 
+initialization
+{$I tdi.lrs}
 
 end.
 

@@ -6,19 +6,17 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Menus,
-  ComCtrls, Buttons, StdCtrls, ExtCtrls, TDIClass , types;
+  ComCtrls, Buttons, StdCtrls, ExtCtrls, TDIClass , types, SynMemo, IpHtml;
 
 type
 
   { TfMainForm }
 
   TfMainForm = class(TForm)
-    Button1 : TButton ;
     cbxBackgroundCorner : TComboBox ;
-    Edit1 : TEdit ;
-    Edit2 : TEdit ;
     Image1 : TImage ;
     ImageList1 : TImageList ;
+    IpHtmlPanel1 : TIpHtmlPanel ;
     Label1 : TLabel ;
     Label2 : TLabel ;
     MainMenu1 : TMainMenu ;
