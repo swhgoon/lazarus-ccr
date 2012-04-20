@@ -41,6 +41,7 @@ type
     procedure FormCreate(Sender : TObject) ;
     procedure miExitClick(Sender : TObject) ;
     procedure miForm1Click(Sender : TObject) ;
+    procedure miForm2Click(Sender : TObject) ;
     procedure seFixedPagesChange(Sender : TObject) ;
     procedure TDINoteBook1Change(Sender : TObject) ;
   private
@@ -56,7 +57,7 @@ var
 
 implementation
 
-Uses uForm1 ;
+Uses uForm1, uForm2 ;
 
 {$R *.lfm}
 
@@ -105,6 +106,11 @@ procedure TfMainForm.miForm1Click(Sender : TObject) ;
 begin
   // You can Use Form Types //
   TDINoteBook1.CreateFormInNewPage( TForm1, 3 );
+end;
+
+procedure TfMainForm.miForm2Click(Sender : TObject) ;
+begin
+  TDINoteBook1.ShowForInNewPage( Form2, 4 );
 end;
 
 procedure TfMainForm.seFixedPagesChange(Sender : TObject) ;

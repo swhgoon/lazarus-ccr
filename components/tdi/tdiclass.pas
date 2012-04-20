@@ -122,6 +122,7 @@ type
 
     procedure CreateFormInNewPage( AFormClass: TFormClass; ImageIndex : Integer = -1 ) ;
     procedure ShowForInNewPage( AForm: TForm; ImageIndex : Integer = -1 );
+    Function FindFormInPages( AForm: TForm): Integer ;
 
     Function CanCloseAllPages: Boolean ;
     Function CanCloseAPage( APageIndex: Integer): Boolean;
@@ -499,7 +500,16 @@ end ;
 procedure TTDINoteBook.ShowForInNewPage(AForm : TForm ; ImageIndex : Integer) ;
 Var
   NewPage : TTDIPage ;
+  AlreadyExistingPage : Integer ;
 begin
+  // Looking for a Page with same AForm Object //
+  AlreadyExistingPage := FindFormInPages( AForm );
+  if AlreadyExistingPage >= 0 then
+  begin
+    PageIndex := AlreadyExistingPage;
+    exit ;
+  end ;
+
   // Create a new Page
   NewPage := TTDIPage.Create(Self);
   NewPage.ImageIndex := ImageIndex;
@@ -517,6 +527,26 @@ begin
   begin
     NewPage.CheckFormAlign ;
     CheckInterface;
+  end ;
+end ;
+
+function TTDINoteBook.FindFormInPages(AForm : TForm) : Integer ;
+var
+  I : Integer ;
+begin
+  Result := -1;
+
+  I := 0;
+  while (Result < 0) and (I < PageCount) do
+  begin
+     if Pages[I] is TTDIPage then
+       with TTDIPage( Pages[I] ) do
+       begin
+         if AForm = FormInPage then
+           Result := I;
+       end ;
+
+     Inc( I ) ;
   end ;
 end ;
 

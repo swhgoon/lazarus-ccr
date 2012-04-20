@@ -44,7 +44,7 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="4">
       <Unit0>
         <Filename Value="TDIDemo.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -65,6 +65,13 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uForm1"/>
       </Unit2>
+      <Unit3>
+        <Filename Value="uform2.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form2"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uForm2"/>
+      </Unit3>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

@@ -16,12 +16,12 @@ object Form1: TForm1
   OnDestroy = FormDestroy
   LCLVersion = '1.1'
   object bClose: TButton
-    Left = 400
+    Left = 376
     Height = 25
-    Top = 224
-    Width = 86
+    Top = 216
+    Width = 111
     AutoSize = True
-    Caption = 'Close Form'
+    Caption = 'Close,Free Form'
     OnClick = bCloseClick
     TabOrder = 2
   end
@@ -65,14 +65,14 @@ object Form1: TForm1
     Left = 16
     Height = 46
     Top = 208
-    Width = 360
-    Caption = 'You can Close or Hide your Forms the same way you used to.'#13#10'No Special method is necessary. TDINotebook will detect by internal'#13#10'Notification and Close the Tab Sheet'
+    Width = 324
+    Caption = 'You can Close or Hide your Forms the same way you used to.'#13#10'No Special method is necessary. TDINotebook will detect by '#13#10'internal Notification and Close the Tab Sheet'
     ParentColor = False
   end
   object bHide: TButton
     AnchorSideLeft.Control = bClose
     AnchorSideLeft.Side = asrCenter
-    Left = 402
+    Left = 390
     Height = 25
     Top = 256
     Width = 82
