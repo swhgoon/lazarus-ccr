@@ -1,22 +1,24 @@
 object fMainForm: TfMainForm
-  Left = 471
+  Left = 374
   Height = 484
-  Top = 200
-  Width = 746
+  Top = 155
+  Width = 799
   Caption = 'fMainForm'
-  ClientHeight = 464
-  ClientWidth = 746
+  ClientHeight = 461
+  ClientWidth = 799
+  KeyPreview = True
   Menu = MainMenu1
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnKeyDown = FormKeyDown
   LCLVersion = '1.1'
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 23
-    Top = 441
-    Width = 746
+    Height = 17
+    Top = 444
+    Width = 799
     Panels = <    
       item
         Text = 'Active Control'
@@ -29,9 +31,9 @@ object fMainForm: TfMainForm
   end
   object TDINoteBook1: TTDINoteBook
     Left = 0
-    Height = 391
+    Height = 394
     Top = 0
-    Width = 587
+    Width = 579
     ActivePage = tsFixed
     Align = alClient
     Constraints.MinHeight = 300
@@ -42,6 +44,7 @@ object fMainForm: TfMainForm
     TabOrder = 1
     OnChange = TDINoteBook1Change
     OnCloseTabClicked = TDINoteBook1CloseTabClicked
+    OnMouseDown = TDINoteBook1MouseDown
     Options = [nboShowCloseButtons, nboMultiLine, nboKeyboardTabSwitch, nboShowAddTabButton]
     TabDragMode = dmAutomatic
     TabDragAcceptMode = dmAutomatic
@@ -53,28 +56,29 @@ object fMainForm: TfMainForm
     TDIActions.CloseTab.ImageIndex = 1
     TDIActions.CloseAllTabs.Caption = 'Close All Tabs'
     TDIActions.CloseAllTabs.ImageIndex = 2
+    ClosePageShortCut = 16499
     FixedPages = 1
     object tsFixed: TTabSheet
       Caption = 'TTDINotebook Demo'
-      ClientHeight = 363
-      ClientWidth = 579
+      ClientHeight = 364
+      ClientWidth = 577
       ImageIndex = 5
       object Label2: TLabel
         AnchorSideLeft.Control = tsFixed
         AnchorSideLeft.Side = asrCenter
-        Left = 167
-        Height = 31
+        Left = 152
+        Height = 39
         Top = 312
-        Width = 244
+        Width = 272
         Alignment = taCenter
         Caption = 'This is a Fixed Page, and cannot be closed.'#13#10'You can configure it on "FixedPages" Property'
         ParentColor = False
       end
       object IpHtmlPanel1: TIpHtmlPanel
         Left = 0
-        Height = 290
+        Height = 267
         Top = 0
-        Width = 579
+        Width = 577
         Align = alTop
         FixedTypeface = 'Courier New'
         DefaultTypeFace = 'default'
@@ -87,25 +91,22 @@ object fMainForm: TfMainForm
         TabOrder = 0
       end
     end
-    object TabSheet1: TTabSheet
-      Caption = 'TabSheet1'
-    end
   end
   object pBottom: TPanel
     Left = 0
     Height = 50
-    Top = 391
-    Width = 746
+    Top = 394
+    Width = 799
     Align = alBottom
     ClientHeight = 50
-    ClientWidth = 746
+    ClientWidth = 799
     TabOrder = 2
     object cbxBackgroundCorner: TComboBox
       Left = 21
-      Height = 23
+      Height = 31
       Top = 18
       Width = 115
-      ItemHeight = 15
+      ItemHeight = 0
       Items.Strings = (
         'coTopLeft'
         'coTopRight'
@@ -118,19 +119,19 @@ object fMainForm: TfMainForm
     end
     object Label1: TLabel
       Left = 22
-      Height = 16
+      Height = 18
       Top = 1
-      Width = 101
+      Width = 114
       Caption = 'BackgroundCorner'
       ParentColor = False
     end
     object bToggleLog: TButton
       AnchorSideTop.Control = pBottom
       AnchorSideTop.Side = asrCenter
-      Left = 622
-      Height = 25
-      Top = 13
-      Width = 85
+      Left = 688
+      Height = 29
+      Top = 11
+      Width = 72
       Anchors = [akTop, akRight]
       AutoSize = True
       Caption = 'Hide Log >'
@@ -139,15 +140,15 @@ object fMainForm: TfMainForm
     end
     object Label3: TLabel
       Left = 182
-      Height = 16
+      Height = 18
       Top = 1
-      Width = 59
+      Width = 68
       Caption = 'FixedPages'
       ParentColor = False
     end
     object seFixedPages: TSpinEdit
       Left = 184
-      Height = 23
+      Height = 27
       Top = 17
       Width = 50
       MaxValue = 10
@@ -157,19 +158,20 @@ object fMainForm: TfMainForm
     end
   end
   object mEvents: TMemo
-    Left = 592
-    Height = 391
+    Left = 584
+    Height = 394
     Top = 0
-    Width = 154
+    Width = 215
     Align = alRight
     Lines.Strings = (
       'Events Log'
     )
+    ScrollBars = ssAutoBoth
     TabOrder = 4
   end
   object Splitter1: TSplitter
-    Left = 587
-    Height = 391
+    Left = 579
+    Height = 394
     Top = 0
     Width = 5
     Align = alRight
@@ -178,9 +180,9 @@ object fMainForm: TfMainForm
   object Image1: TImage
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Side = asrBottom
-    Left = 485
+    Left = 538
     Height = 94
-    Top = 269
+    Top = 266
     Width = 94
     Anchors = [akRight, akBottom]
     AutoSize = True

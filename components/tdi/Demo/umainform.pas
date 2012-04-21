@@ -33,7 +33,6 @@ type
     seFixedPages : TSpinEdit ;
     Splitter1 : TSplitter ;
     StatusBar1 : TStatusBar ;
-    TabSheet1 : TTabSheet ;
     tsFixed : TTabSheet ;
     TDINoteBook1 : TTDINoteBook ;
     procedure bToggleLogClick(Sender : TObject) ;
@@ -42,6 +41,7 @@ type
     procedure FormCloseQuery(Sender : TObject ; var CanClose : boolean) ;
     procedure FormCreate(Sender : TObject) ;
     procedure FormDestroy(Sender : TObject) ;
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure MenuItem3Click(Sender : TObject) ;
     procedure miExitClick(Sender : TObject) ;
     procedure miForm1Click(Sender : TObject) ;
@@ -49,6 +49,8 @@ type
     procedure seFixedPagesChange(Sender : TObject) ;
     procedure TDINoteBook1Change(Sender : TObject) ;
     procedure TDINoteBook1CloseTabClicked(Sender : TObject) ;
+    procedure TDINoteBook1MouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
   private
     { private declarations }
     Procedure ShowNewControl(Sender: TObject);
@@ -79,6 +81,12 @@ end;
 procedure TfMainForm.FormDestroy(Sender : TObject) ;
 begin
   mEvents.Lines.Add('fMainForm.Destroy');
+end;
+
+procedure TfMainForm.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  mEvents.Lines.Add('fMainForm.FormKeyDown');
 end;
 
 procedure TfMainForm.MenuItem3Click(Sender : TObject) ;
@@ -141,6 +149,12 @@ end;
 procedure TfMainForm.TDINoteBook1CloseTabClicked(Sender : TObject) ;
 begin
   mEvents.Lines.Add( 'TDINoteBook1.OnCloseTabClicked' );
+end;
+
+procedure TfMainForm.TDINoteBook1MouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  mEvents.Lines.Add( 'TDINoteBook1.OnMouseDown' );
 end;
 
 procedure TfMainForm.ShowNewControl(Sender : TObject) ;

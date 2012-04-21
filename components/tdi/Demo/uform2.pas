@@ -25,6 +25,7 @@ type
     procedure FormCloseQuery(Sender : TObject ; var CanClose : boolean) ;
     procedure FormDestroy(Sender : TObject) ;
     procedure FormHide(Sender : TObject) ;
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender : TObject) ;
   private
     { private declarations }
@@ -65,6 +66,12 @@ end;
 procedure TForm2.FormHide(Sender : TObject) ;
 begin
   fMainForm.mEvents.Lines.Add( 'Form2.Hide' );
+end;
+
+procedure TForm2.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState
+  );
+begin
+  fMainForm.mEvents.Lines.Add( 'Form2.FormKeyDown');
 end;
 
 procedure TForm2.FormShow(Sender : TObject) ;

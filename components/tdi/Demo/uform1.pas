@@ -32,6 +32,7 @@ type
     procedure FormClose(Sender : TObject ; var CloseAction : TCloseAction) ;
     procedure FormCloseQuery(Sender : TObject ; var CanClose : boolean) ;
     procedure FormDestroy(Sender : TObject) ;
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure tShowmeAgainTimer(Sender : TObject) ;
   private
     { private declarations }
@@ -93,6 +94,12 @@ end;
 procedure TForm1.FormDestroy(Sender : TObject) ;
 begin
   fMainForm.mEvents.Lines.Add( 'Form1.Destroy' );
+end;
+
+procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState
+  );
+begin
+  fMainForm.mEvents.Lines.Add( 'Form1.KeyDown' );
 end;
 
 procedure TForm1.tShowmeAgainTimer(Sender : TObject) ;

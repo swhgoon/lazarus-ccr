@@ -85,6 +85,8 @@ type
     FMainMenu : TMainMenu ;
     FBackgroundCorner : TTDIBackgroundCorner ;
     FTDIActions : TTDIActions ;
+    FClosePageShortCut: TShortCut;
+    FClosePageMouseMiddleButtom: Boolean;
 
     procedure SetBackgroundImage(AValue : TImage) ;
     procedure SetBackgroundCorner(AValue : TTDIBackgroundCorner) ;
@@ -124,11 +126,15 @@ type
     procedure Loaded; override;
     procedure RemovePage(Index: Integer); override;
 
+    procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
   public
-    constructor Create(TheOwner: TComponent );  override;
+    constructor Create(TheOwner: TComponent);  override;
     destructor Destroy ; override;
+    procedure DoCloseTabClicked(APage: TCustomPage); override;
 
     procedure CreateFormInNewPage( AFormClass: TFormClass; ImageIndex : Integer = -1 ) ;
     procedure ShowForInNewPage( AForm: TForm; ImageIndex : Integer = -1 );
@@ -148,6 +154,11 @@ type
       write SetCloseTabButtom default tbMenu ;
 
     property TDIActions : TTDIActions read FTDIActions write FTDIActions ;
+
+    property ClosePageMouseMiddleButtom : Boolean read FClosePageMouseMiddleButtom
+      write FClosePageMouseMiddleButtom default True;
+    property ClosePageShortCut: TShortCut read FClosePageShortCut
+      write FClosePageShortCut default 0;
 
     property RestoreActiveControl : Boolean read FRestoreActiveControl
       write FRestoreActiveControl default True;
@@ -357,19 +368,21 @@ constructor TTDINoteBook.Create(TheOwner : TComponent) ;
 begin
   inherited Create(TheOwner) ;
 
-  FCloseTabButtom        := tbMenu;
-  FBackgroundCorner      := coBottomRight;
-  FFixedPages            := 0;
-  FRestoreActiveControl  := True;
-  FVerifyIfCanChangePage := True;
-  FIsRemovingAPage       := False;
-  FBackgroundImage       := nil;
-  FCloseBitBtn           := nil;
-  FCloseMenuItem         := nil;
-  FCloseMenuItem2        := nil;
-  FCloseAllTabsMenuItem  := nil;
-  FTabsMenuItem          := nil;
-  FTDIActions            := TTDIActions.Create;
+  FCloseTabButtom            := tbMenu;
+  FBackgroundCorner          := coBottomRight;
+  FFixedPages                := 0;
+  FRestoreActiveControl      := True;
+  FVerifyIfCanChangePage     := True;
+  FIsRemovingAPage           := False;
+  FClosePageMouseMiddleButtom:= True;
+  FClosePageShortCut         := 0;
+  FBackgroundImage           := nil;
+  FCloseBitBtn               := nil;
+  FCloseMenuItem             := nil;
+  FCloseMenuItem2            := nil;
+  FCloseAllTabsMenuItem      := nil;
+  FTabsMenuItem              := nil;
+  FTDIActions                := TTDIActions.Create;
 
   { This is ugly, I know... but I didn't found a best solution to restore Last
     Focused Control of TDIPage }
@@ -403,6 +416,23 @@ begin
 
   inherited Destroy;
 end ;
+
+procedure TTDINoteBook.DoCloseTabClicked(APage: TCustomPage);
+var
+  LastPageCount: Integer;
+begin
+  LastPageCount := PageCount;
+
+  inherited DoCloseTabClicked(APage);
+
+  if Assigned( APage ) and (LastPageCount = PageCount) then  // If Page was not closed...
+  begin
+    PageIndex := APage.PageIndex;
+
+    if PageIndex >= FixedPages then
+      RemovePage( APage.PageIndex );
+  end;
+end;
 
 procedure TTDINoteBook.CreateCloseBitBtn ;
 begin
@@ -891,6 +921,38 @@ begin
     FIsRemovingAPage := False;
   end ;
 end ;
+
+procedure TTDINoteBook.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
+  Y: Integer);
+var
+  APageIndex : Integer ;
+begin
+  if FClosePageMouseMiddleButtom and (Button = mbMiddle) then
+  begin
+     APageIndex := TabIndexAtClientPos( Point(X,Y) );
+     if (APageIndex >= 0) and (APageIndex >= FixedPages) then
+     begin
+       RemovePage( APageIndex );
+       exit;
+     end;
+  end;
+
+  inherited MouseDown(Button, Shift, X, Y);
+end;
+
+procedure TTDINoteBook.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  // TODO: HiJack TDIPage.Form.OnKeyDown to detect ShortCut inside the Form //
+
+  if ShortCut(Key, Shift) = FClosePageShortCut then
+    if PageIndex >= FFixedPages then
+    begin
+      RemovePage( PageIndex );
+      exit;
+    end;
+
+  inherited KeyDown(Key, Shift);
+end;
 
 procedure TTDINoteBook.Notification(AComponent : TComponent ;
   Operation : TOperation) ;
