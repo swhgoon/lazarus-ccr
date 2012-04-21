@@ -16,19 +16,19 @@ object Form1: TForm1
   OnDestroy = FormDestroy
   LCLVersion = '1.1'
   object bClose: TButton
-    Left = 376
+    Left = 392
     Height = 25
     Top = 216
-    Width = 111
+    Width = 86
     AutoSize = True
-    Caption = 'Close,Free Form'
+    Caption = 'Close Form'
     OnClick = bCloseClick
     TabOrder = 2
   end
   object Edit1: TEdit
     Left = 24
     Height = 23
-    Top = 80
+    Top = 62
     Width = 82
     TabOrder = 0
     Text = 'Edit1'
@@ -36,7 +36,7 @@ object Form1: TForm1
   object Edit2: TEdit
     Left = 24
     Height = 23
-    Top = 136
+    Top = 104
     Width = 82
     OnExit = Edit2Exit
     TabOrder = 1
@@ -62,9 +62,11 @@ object Form1: TForm1
     ParentFont = False
   end
   object Label3: TLabel
-    Left = 16
+    AnchorSideTop.Control = bClose
+    AnchorSideTop.Side = asrCenter
+    Left = 32
     Height = 46
-    Top = 208
+    Top = 205
     Width = 324
     Caption = 'You can Close or Hide your Forms the same way you used to.'#13#10'No Special method is necessary. TDINotebook will detect by '#13#10'internal Notification and Close the Tab Sheet'
     ParentColor = False
@@ -72,9 +74,9 @@ object Form1: TForm1
   object bHide: TButton
     AnchorSideLeft.Control = bClose
     AnchorSideLeft.Side = asrCenter
-    Left = 390
+    Left = 394
     Height = 25
-    Top = 256
+    Top = 159
     Width = 82
     AutoSize = True
     Caption = 'Hide Form'
@@ -82,9 +84,11 @@ object Form1: TForm1
     TabOrder = 3
   end
   object lShowmeAgain: TLabel
+    AnchorSideTop.Control = bHide
+    AnchorSideTop.Side = asrCenter
     Left = 16
     Height = 16
-    Top = 272
+    Top = 163
     Width = 364
     Caption = 'But, If you Hide the Form, is better you have a way to Show it again :)'
     Font.Color = clRed
@@ -97,7 +101,7 @@ object Form1: TForm1
     AnchorSideTop.Side = asrCenter
     Left = 120
     Height = 16
-    Top = 83
+    Top = 65
     Width = 106
     Caption = 'This is a regular Edit'
     ParentColor = False
@@ -107,9 +111,34 @@ object Form1: TForm1
     AnchorSideTop.Side = asrCenter
     Left = 120
     Height = 46
-    Top = 124
+    Top = 92
     Width = 347
     Caption = 'This Edit has a OnExit Validation, who doesn''t  allow Page Change'#13#10' if this Edit is empty, and the focus is on it...  '#13#10'This can be disabled  changing the property "VerifyIfCanChange"'
+    ParentColor = False
+  end
+  object Label6: TLabel
+    AnchorSideLeft.Control = bClose
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = bClose
+    Left = 379
+    Height = 16
+    Top = 194
+    Width = 112
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Bottom = 6
+    Caption = 'This Form use caFree'
+    ParentColor = False
+  end
+  object Label7: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Side = asrCenter
+    Left = 35
+    Height = 16
+    Top = 264
+    Width = 431
+    Caption = 'This Form demonstrate that TDINotebook respects your OnCloseQuery Validation'
     ParentColor = False
   end
   object tShowmeAgain: TTimer

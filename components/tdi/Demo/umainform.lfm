@@ -32,7 +32,6 @@ object fMainForm: TfMainForm
     Height = 391
     Top = 0
     Width = 587
-    TabStop = False
     ActivePage = tsFixed
     Align = alClient
     Constraints.MinHeight = 300
@@ -42,6 +41,7 @@ object fMainForm: TfMainForm
     TabIndex = 0
     TabOrder = 1
     OnChange = TDINoteBook1Change
+    OnCloseTabClicked = TDINoteBook1CloseTabClicked
     Options = [nboShowCloseButtons, nboMultiLine, nboKeyboardTabSwitch, nboShowAddTabButton]
     TabDragMode = dmAutomatic
     TabDragAcceptMode = dmAutomatic
@@ -86,6 +86,9 @@ object fMainForm: TfMainForm
         PrintSettings.MarginBottom = 0.5
         TabOrder = 0
       end
+    end
+    object TabSheet1: TTabSheet
+      Caption = 'TabSheet1'
     end
   end
   object pBottom: TPanel

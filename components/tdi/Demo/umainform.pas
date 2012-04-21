@@ -33,6 +33,7 @@ type
     seFixedPages : TSpinEdit ;
     Splitter1 : TSplitter ;
     StatusBar1 : TStatusBar ;
+    TabSheet1 : TTabSheet ;
     tsFixed : TTabSheet ;
     TDINoteBook1 : TTDINoteBook ;
     procedure bToggleLogClick(Sender : TObject) ;
@@ -47,6 +48,7 @@ type
     procedure miForm2Click(Sender : TObject) ;
     procedure seFixedPagesChange(Sender : TObject) ;
     procedure TDINoteBook1Change(Sender : TObject) ;
+    procedure TDINoteBook1CloseTabClicked(Sender : TObject) ;
   private
     { private declarations }
     Procedure ShowNewControl(Sender: TObject);
@@ -134,6 +136,11 @@ end;
 procedure TfMainForm.TDINoteBook1Change(Sender : TObject) ;
 begin
   mEvents.Lines.Add('OnChange');
+end;
+
+procedure TfMainForm.TDINoteBook1CloseTabClicked(Sender : TObject) ;
+begin
+  mEvents.Lines.Add( 'TDINoteBook1.OnCloseTabClicked' );
 end;
 
 procedure TfMainForm.ShowNewControl(Sender : TObject) ;

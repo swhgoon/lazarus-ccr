@@ -100,6 +100,7 @@ type
     FTabsMenuItem : TMenuItem ;
     FTimerRestoreLastControl : TTimer;
     FVerifyIfCanChangePage : Boolean ;
+    FIsRemovingAPage : Boolean;
 
     procedure CreateCloseBitBtn ;
     procedure CreateCloseMenuItem ;
@@ -269,9 +270,6 @@ begin
     RestoreFormProperties;
 
     fsFormInPage := nil;
-
-    if Assigned( Parent ) then
-      Parent.RemoveComponent( Self );
   end ;
 end ;
 
@@ -312,7 +310,14 @@ begin
 
   // This will force this page be killed by TTDINoteBook.Notification();
   if Assigned( fsFormInPage ) then
-    RemoveComponent( fsFormInPage );
+  begin
+    RestoreFormProperties;
+
+    fsFormInPage := nil;
+
+    if Assigned( Parent ) then
+      Parent.RemoveComponent( Self );
+  end ;
 end ;
 
 procedure TTDIPage.SaveFormProperties ;
@@ -333,15 +338,17 @@ procedure TTDIPage.RestoreFormProperties ;
 begin
   if not Assigned( fsFormInPage ) then exit ;
 
+  if ([csDesigning, csDestroying] * fsFormInPage.ComponentState <> []) then exit ;
+
   fsFormInPage.Parent      := fsFormOldParent;
   fsFormInPage.Visible     := False;
-  fsFormInPage.OnClose     := fsFormOldCloseEvent;
   fsFormInPage.Align       := fsFormOldAlign;
   fsFormInPage.BorderStyle := fsFormOldBorderStyle;
   fsFormInPage.Top         := fsFormOldClientRect.Top;
   fsFormInPage.Left        := fsFormOldClientRect.Left;
   fsFormInPage.Width       := fsFormOldClientRect.Right;
   fsFormInPage.Height      := fsFormOldClientRect.Bottom;
+  fsFormInPage.OnClose     := fsFormOldCloseEvent;
 end ;
 
 { TTDINoteBook }
@@ -355,6 +362,7 @@ begin
   FFixedPages            := 0;
   FRestoreActiveControl  := True;
   FVerifyIfCanChangePage := True;
+  FIsRemovingAPage       := False;
   FBackgroundImage       := nil;
   FCloseBitBtn           := nil;
   FCloseMenuItem         := nil;
@@ -846,27 +854,41 @@ end ;
 procedure TTDINoteBook.RemovePage(Index : Integer) ;
 Var
   CanRemovePage : Boolean ;
+  LastPageCount : Integer ;
 begin
   CanRemovePage := True;
+  FIsRemovingAPage := True;
 
-  if ([csDesigning, csDestroying] * ComponentState = []) then
-    if Pages[Index] is TTDIPage then
-      with TTDIPage(Pages[Index]) do
-      begin
-        if Assigned( FormInPage ) then
+  try
+    if ([csDesigning, csDestroying] * ComponentState = []) then
+      if Pages[Index] is TTDIPage then
+        with TTDIPage(Pages[Index]) do
         begin
-          CanRemovePage := FormInPage.CloseQuery ;
-          if CanRemovePage then
+          if Assigned( FormInPage ) then
+          begin
+            { // This code is ok, but calls CloseQuery twice //
+             CanRemovePage := FormInPage.CloseQuery ;
+             if CanRemovePage then
+               FormInPage.Close ;
+            }
+            LastPageCount := PageCount;
             FormInPage.Close ;
+            CanRemovePage := (LastPageCount = PageCount ) and  // Page wasn't removed by Notification ?
+                             ( (not Assigned(FormInPage)) or   // Form Isn't valid ?
+                               ( not FormInPage.Showing )      // Form is not showing ?
+                             );
+          end ;
         end ;
-      end ;
 
-  if CanRemovePage then
-  begin
-    inherited RemovePage(Index) ;
+    if CanRemovePage then
+    begin
+      inherited RemovePage(Index) ;
 
-    if PageCount < 1 then  // On this case, DoChange is not fired //
-      CheckInterface;
+      if PageCount < 1 then  // On this case, DoChange is not fired //
+        CheckInterface;
+    end ;
+  finally
+    FIsRemovingAPage := False;
   end ;
 end ;
 
@@ -878,15 +900,18 @@ begin
   if (Operation = opRemove) then
   begin
      if (AComponent = FBackgroundImage) then
-       FBackgroundImage := nil ;
+       FBackgroundImage := nil
 
-     if (AComponent = FMainMenu) then
-       FMainMenu := nil ;
+     else if (AComponent = FMainMenu) then
+       FMainMenu := nil
 
-     if ([csDesigning, csDestroying] * ComponentState <> []) then exit ;
+     else if ([csDesigning, csDestroying] * ComponentState <> []) then
 
-     if {(AComponent is TForm) or} (AComponent is TTDIPage)  then
-       RemoveInvalidPages;
+     else if (AComponent is TForm) then
+       RemoveInvalidPages
+
+     else if (AComponent is TTDIPage) and (not FIsRemovingAPage) then
+        RemovePage( TTDIPage( AComponent ).PageIndex ) ;
   end ;
 end ;
 
