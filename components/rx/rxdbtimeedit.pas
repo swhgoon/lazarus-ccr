@@ -146,7 +146,7 @@ type
 
 procedure TCustomRxDBTimeEdit.DataChange(Sender: TObject);
 begin
-  if Assigned(FDataLink.Field) and (FDataLink.Field.DataType in TimeDataTypes) then
+  if Assigned(FDataLink.Field) and (FDataLink.Field.DataType in DataTimeTypes) then
     Self.Time:=FDatalink.Field.AsDateTime
   else
     Text := '';
@@ -190,7 +190,7 @@ end;
 
 procedure TCustomRxDBTimeEdit.UpdateData(Sender: TObject);
 begin
-  if Assigned(FDataLink.Field) and (FDataLink.Field.DataType in TimeDataTypes) then
+  if Assigned(FDataLink.Field) and (FDataLink.Field.DataType in DataTimeTypes) then
   begin
     FDataLink.Field.AsDateTime := Self.Time;
   end;

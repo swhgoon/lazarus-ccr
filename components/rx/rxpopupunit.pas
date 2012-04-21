@@ -823,11 +823,30 @@ begin
 end;
 
 procedure TPopUpGrid.FindNextChar(var UTF8Key: TUTF8Char);
+var
+  F:TField;
+  V:boolean;
 begin
   if DatalinkActive then
   begin
-    if DataSetLocateThrough(DataSource.DataSet, FLookupDisplayField, FFindLine + UTF8Key, [loCaseInsensitive, loPartialKey]) then
+    F:=Columns[FLookupDisplayIndex].Field;
+    if F.DataType in StringTypes then
+      V:=true
+    else
     begin
+      if Length(UTF8Key) = 1 then
+        V:=F.IsValidChar(UTF8Key[1])
+      else
+        V:=false;
+    end;
+    if V then
+    begin
+      if DataSetLocateThrough(DataSource.DataSet, FLookupDisplayField, FFindLine + UTF8Key, [loCaseInsensitive, loPartialKey]) then
+      begin
+//        TPopUpForm(Owner).WControl.Caption:=FFindLine;
+//        TPopUpForm(Owner).WControl.Repaint;
+      end;
+
       FFindLine:=FFindLine + UTF8Key;
       TPopUpForm(Owner).WControl.Caption:=FFindLine;
       TPopUpForm(Owner).WControl.Repaint;
@@ -847,11 +866,16 @@ begin
   begin
     if DataSetLocateThrough(DataSource.DataSet, FLookupDisplayField, FFindLine, [loCaseInsensitive, loPartialKey]) then
     begin
-     TPopUpForm(Owner).WControl.Caption:=FFindLine;
-     TPopUpForm(Owner).WControl.Repaint;
-    end
-    else
-      FFindLine:=F;
+//     TPopUpForm(Owner).WControl.Caption:=FFindLine;
+//     TPopUpForm(Owner).WControl.Repaint;
+    end;
+//    else
+//      FFindLine:=F;
+
+    //FFindLine:=FFindLine + UTF8Key;
+    TPopUpForm(Owner).WControl.Caption:=FFindLine;
+    TPopUpForm(Owner).WControl.Repaint;
+
   end
   else
   begin
