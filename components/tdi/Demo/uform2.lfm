@@ -1,11 +1,11 @@
 object Form2: TForm2
   Left = 709
-  Height = 240
+  Height = 243
   Top = 330
-  Width = 320
+  Width = 307
   Caption = 'Form2'
-  ClientHeight = 240
-  ClientWidth = 320
+  ClientHeight = 243
+  ClientWidth = 307
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnDestroy = FormDestroy
@@ -13,42 +13,45 @@ object Form2: TForm2
   OnShow = FormShow
   LCLVersion = '1.1'
   object Edit1: TEdit
-    Left = 51
+    Left = 56
     Height = 23
-    Top = 37
-    Width = 80
+    Top = 32
+    Width = 211
+    Anchors = [akTop, akLeft, akRight]
     TabOrder = 0
     Text = 'Edit1'
   end
   object Edit2: TEdit
-    Left = 159
+    Left = 56
     Height = 23
-    Top = 37
-    Width = 80
+    Top = 72
+    Width = 211
+    Anchors = [akTop, akLeft, akRight]
     TabOrder = 1
     Text = 'Edit2'
   end
   object CheckBox1: TCheckBox
-    Left = 51
+    Left = 56
     Height = 19
-    Top = 72
+    Top = 104
     Width = 78
     Caption = 'CheckBox1'
     TabOrder = 2
   end
   object CheckBox2: TCheckBox
-    Left = 51
+    Left = 56
     Height = 19
-    Top = 104
+    Top = 136
     Width = 78
     Caption = 'CheckBox2'
     TabOrder = 3
   end
   object Button1: TButton
-    Left = 208
+    Left = 195
     Height = 25
-    Top = 186
+    Top = 189
     Width = 86
+    Anchors = [akRight, akBottom]
     AutoSize = True
     Caption = 'Close Form'
     OnClick = Button1Click

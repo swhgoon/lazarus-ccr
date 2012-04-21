@@ -49,9 +49,17 @@ type
   TTDIPage = class(TTabSheet)
   private
     fsFormInPage : TForm ;
+    fsFormOldParent: TWinControl;
+    fsFormOldCloseEvent : TCloseEvent;
+    fsFormOldAlign : TAlign;
+    fsFormOldClientRect : TRect;
+    fsFormOldBorderStyle : TFormBorderStyle;
     fsLastActiveControl: TWinControl;
 
     procedure OnResizeTDIPage(Sender : TObject) ;
+    procedure OnFormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure SaveFormProperties ;
+    procedure RestoreFormProperties ;
 
     procedure SetFormInPage(AValue : TForm) ;
   protected
@@ -108,6 +116,7 @@ type
 
     procedure TimerRestoreLastFocus( Sender: TObject );
 
+    procedure RemoveInvalidPages ;
   protected
     function CanChange: Boolean; override;
     procedure DoChange; override;
@@ -223,13 +232,19 @@ procedure TTDIPage.SetFormInPage(AValue : TForm) ;
 begin
   fsFormInPage := AValue ;
 
+  // Saving Form Properties //
+  SaveFormProperties ;
+
   // Adjusting Page Caption and Color as the Form //
   Caption := fsFormInPage.Caption;
   //Color := fsFormInPage.Color;
 
+  // HiJacking the Form.OnClose Event, to detect Form Closed from Inside //
+  fsFormInPage.OnClose := @OnFormClose;
+
   // Adjusting AForm Border Style and Align //
   fsFormInPage.BorderStyle := bsNone ;
-  //fsFormInPage.Align     := alClient ;   // This will be done in OnResizeTDIPage
+  fsFormInPage.Align       := alClient ; 
 
   // Change Form Parent to the Page //
   fsFormInPage.Parent := Self;
@@ -247,8 +262,17 @@ procedure TTDIPage.Notification(AComponent : TComponent ; Operation : TOperation
 begin
   inherited Notification(AComponent, Operation) ;
 
+  if ([csDesigning, csDestroying] * ComponentState <> []) then exit ;
+
   if (Operation = opRemove) and (AComponent = fsFormInPage) then
+  begin
+    RestoreFormProperties;
+
     fsFormInPage := nil;
+
+    if Assigned( Parent ) then
+      Parent.RemoveComponent( Self );
+  end ;
 end ;
 
 procedure TTDIPage.CheckFormAlign ;
@@ -257,15 +281,19 @@ begin
 
   { If Form has MaxConstrains and doesn't fill all the Screen, Centralize on
     TabSheet }
-  if (fsFormInPage.Width < Width) and (fsFormInPage.Height < Height) then
+  if (fsFormInPage.Width < Width) or (fsFormInPage.Height < Height) then
   begin
     fsFormInPage.Align := alNone;
 
     if (fsFormInPage.Width < Width) then
-      fsFormInPage.Left  := Trunc( (Width - fsFormInPage.Width) / 2 );
+      fsFormInPage.Left := Trunc( (Width - fsFormInPage.Width) / 2 )
+    else
+      fsFormInPage.Left := 0 ;
 
     if (fsFormInPage.Height < Height) then
-      fsFormInPage.Top   := Trunc( (Height - fsFormInPage.Height) / 2 );
+      fsFormInPage.Top := Trunc( (Height - fsFormInPage.Height) / 2 )
+    else
+      fsFormInPage.Top := 0 ;
   end
   else
     fsFormInPage.Align := alClient;
@@ -274,6 +302,46 @@ end ;
 procedure TTDIPage.OnResizeTDIPage(Sender : TObject) ;
 begin
   CheckFormAlign;
+end ;
+
+procedure TTDIPage.OnFormClose(Sender : TObject ; var CloseAction : TCloseAction
+  ) ;
+begin
+  if Assigned( fsFormOldCloseEvent ) then
+     fsFormOldCloseEvent( Sender, CloseAction );
+
+  // This will force this page be killed by TTDINoteBook.Notification();
+  if Assigned( fsFormInPage ) then
+    RemoveComponent( fsFormInPage );
+end ;
+
+procedure TTDIPage.SaveFormProperties ;
+begin
+  if not Assigned( fsFormInPage ) then exit ;
+
+  fsFormOldParent            := fsFormInPage.Parent;
+  fsFormOldCloseEvent        := fsFormInPage.OnClose;
+  fsFormOldAlign             := fsFormInPage.Align;
+  fsFormOldBorderStyle       := fsFormInPage.BorderStyle;
+  fsFormOldClientRect.Top    := fsFormInPage.Top;
+  fsFormOldClientRect.Left   := fsFormInPage.Left;
+  fsFormOldClientRect.Right  := fsFormInPage.Width;
+  fsFormOldClientRect.Bottom := fsFormInPage.Height;
+end ;
+
+procedure TTDIPage.RestoreFormProperties ;
+begin
+  if not Assigned( fsFormInPage ) then exit ;
+
+  fsFormInPage.Parent      := fsFormOldParent;
+  fsFormInPage.Visible     := False;
+  fsFormInPage.OnClose     := fsFormOldCloseEvent;
+  fsFormInPage.Align       := fsFormOldAlign;
+  fsFormInPage.BorderStyle := fsFormOldBorderStyle;
+  fsFormInPage.Top         := fsFormOldClientRect.Top;
+  fsFormInPage.Left        := fsFormOldClientRect.Left;
+  fsFormInPage.Width       := fsFormOldClientRect.Right;
+  fsFormInPage.Height      := fsFormOldClientRect.Bottom;
 end ;
 
 { TTDINoteBook }
@@ -815,12 +883,10 @@ begin
      if (AComponent = FMainMenu) then
        FMainMenu := nil ;
 
-
      if ([csDesigning, csDestroying] * ComponentState <> []) then exit ;
 
-     if (AComponent is TForm) then
-       if TForm(AComponent).Parent is TTDIPage then
-         RemovePage( TTDIPage(TForm(AComponent).Parent).PageIndex  );
+     if {(AComponent is TForm) or} (AComponent is TTDIPage)  then
+       RemoveInvalidPages;
   end ;
 end ;
 
@@ -866,6 +932,30 @@ begin
   end ;
 
   FBackgroundImage.Visible := True ;
+end ;
+
+procedure TTDINoteBook.RemoveInvalidPages ;
+var
+  I : Integer ;
+begin
+  // Remove all TTDIPage with FormInPage not assigned //;
+  I := 0 ;
+  while I < PageCount do
+  begin
+    if Page[I] is TTDIPage then
+    begin
+      with TTDIPage( Page[I] ) do
+      begin
+        if FormInPage = nil then
+        begin
+          RemovePage( I );
+          Dec( I ) ;
+        end ;
+      end ;
+    end ;
+
+    Inc( I ) ;
+  end ;
 end ;
 
 end.

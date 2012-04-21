@@ -69,6 +69,7 @@
         <Filename Value="uform2.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="Form2"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uForm2"/>
       </Unit3>

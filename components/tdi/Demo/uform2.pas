@@ -47,6 +47,7 @@ end;
 procedure TForm2.Button1Click(Sender : TObject) ;
 begin
   Close;
+  ClientRect;
 end;
 
 procedure TForm2.FormCloseQuery(Sender : TObject ; var CanClose : boolean) ;

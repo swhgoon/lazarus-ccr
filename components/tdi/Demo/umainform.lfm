@@ -10,6 +10,7 @@ object fMainForm: TfMainForm
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   LCLVersion = '1.1'
   object StatusBar1: TStatusBar
     Left = 0
@@ -673,6 +674,10 @@ object fMainForm: TfMainForm
       object miForm2: TMenuItem
         Caption = 'Show Already Created Form 2'
         OnClick = miForm2Click
+      end
+      object MenuItem3: TMenuItem
+        Caption = 'Show Form2'
+        OnClick = MenuItem3Click
       end
       object MenuItem2: TMenuItem
         Caption = '-'

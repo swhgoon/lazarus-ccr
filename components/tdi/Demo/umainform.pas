@@ -22,6 +22,7 @@ type
     Label2 : TLabel ;
     Label3 : TLabel ;
     MainMenu1 : TMainMenu ;
+    MenuItem3 : TMenuItem ;
     mEvents : TMemo ;
     MenuItem1 : TMenuItem ;
     MenuItem2 : TMenuItem ;
@@ -39,6 +40,8 @@ type
     procedure FormClose(Sender : TObject ; var CloseAction : TCloseAction) ;
     procedure FormCloseQuery(Sender : TObject ; var CanClose : boolean) ;
     procedure FormCreate(Sender : TObject) ;
+    procedure FormDestroy(Sender : TObject) ;
+    procedure MenuItem3Click(Sender : TObject) ;
     procedure miExitClick(Sender : TObject) ;
     procedure miForm1Click(Sender : TObject) ;
     procedure miForm2Click(Sender : TObject) ;
@@ -69,6 +72,16 @@ begin
   Screen.OnActiveControlChange := @ShowNewControl;
 
   cbxBackgroundCorner.ItemIndex := Integer(TDINoteBook1.BackgroundCorner);
+end;
+
+procedure TfMainForm.FormDestroy(Sender : TObject) ;
+begin
+  mEvents.Lines.Add('fMainForm.Destroy');
+end;
+
+procedure TfMainForm.MenuItem3Click(Sender : TObject) ;
+begin
+  Form2.Show;
 end;
 
 procedure TfMainForm.cbxBackgroundCornerChange(Sender : TObject) ;
