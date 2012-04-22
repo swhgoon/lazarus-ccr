@@ -3001,7 +3001,8 @@ var
   APresent: boolean;
   SEA, SEB:TDataSetNotifyEvent;
 begin
-  if (not (FFooterOptions.Active and DatalinkActive)) or (Columns.Count = 0) then
+  if (not (FFooterOptions.Active and DatalinkActive)) or (Columns.Count = 0) or
+     (DataSource.DataSet.RecordCount<=0) then
     Exit;
   //Дополнительно проверим - а стоит ли делать пробег по данным - есть ли агрегатные функции
   APresent := False;
