@@ -3744,7 +3744,7 @@ begin
     if Assigned(F) then
     begin
       if F.DataType in [ftSmallint, ftInteger, ftWord, ftFloat, ftCurrency,
-        ftDate, ftTime, ftDateTime, ftTimeStamp] then
+        ftDate, ftTime, ftDateTime, ftTimeStamp, ftLargeint] then
       begin
         if F.DataType in [ftDate, ftTime, ftDateTime, ftTimeStamp] then
         begin
@@ -3760,7 +3760,7 @@ begin
             Result := FormatDateTime(FDisplayFormat, FTestValue);
         end
         else
-        if F.DataType in [ftSmallint, ftInteger, ftWord] then
+        if F.DataType in [ftSmallint, ftInteger, ftWord, ftLargeint] then
         begin
           if FDisplayFormat = '' then
             Result := IntToStr(Round(FTestValue))
