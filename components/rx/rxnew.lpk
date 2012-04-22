@@ -26,7 +26,7 @@ Copyright (c) 1998 Master-Bank
 translate to Lazarus by alexs in 2005 - 2012
 "/>
     <License Value="LGPL"/>
-    <Version Major="2" Minor="2" Release="1" Build="106"/>
+    <Version Major="2" Minor="2" Release="1" Build="109"/>
     <Files Count="64">
       <Item1>
         <Filename Value="autopanel.pas"/>
@@ -93,7 +93,7 @@ translate to Lazarus by alexs in 2005 - 2012
       <Item16>
         <Filename Value="registerrxtools.pas"/>
         <HasRegisterProc Value="True"/>
-        <UnitName Value="registerrxtools"/>
+        <UnitName Value="RegisterRxTools"/>
       </Item16>
       <Item17>
         <Filename Value="rx.inc"/>
