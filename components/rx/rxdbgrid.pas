@@ -3928,7 +3928,7 @@ begin
     begin
       if F.DataType in [ftDate, ftTime, ftDateTime, ftTimeStamp] then
       begin
-        if FValueType in [fvtMax, fvtMin] then
+        if (FValueType in [fvtMax, fvtMin]) and not (F.IsNull) then
         begin
           if not (F.IsNull) and (FTestValue = F.AsDateTime) then
             Result := False
