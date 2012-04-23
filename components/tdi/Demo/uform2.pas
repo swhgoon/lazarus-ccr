@@ -14,13 +14,16 @@ type
 
   TForm2 = class(TForm)
     bClose : TButton ;
+    bToggle1 : TButton ;
+    bToggle2 : TButton ;
     CheckBox1 : TCheckBox ;
-    CheckBox2 : TCheckBox ;
     Edit1 : TEdit ;
     Edit2 : TEdit ;
     Label1 : TLabel ;
     Label2 : TLabel ;
     procedure bCloseClick(Sender : TObject) ;
+    procedure bToggle1Click(Sender : TObject) ;
+    procedure CheckBox1Change(Sender : TObject) ;
     procedure FormClose(Sender : TObject ; var CloseAction : TCloseAction) ;
     procedure FormCloseQuery(Sender : TObject ; var CanClose : boolean) ;
     procedure FormDestroy(Sender : TObject) ;
@@ -51,6 +54,17 @@ procedure TForm2.bCloseClick(Sender : TObject) ;
 begin
   Close;
   ClientRect;
+end;
+
+procedure TForm2.bToggle1Click(Sender : TObject) ;
+begin
+  bToggle1.Enabled := not bToggle1.Enabled;
+  bToggle2.Enabled := not bToggle1.Enabled;
+end;
+
+procedure TForm2.CheckBox1Change(Sender : TObject) ;
+begin
+  Edit1.Enabled := CheckBox1.Checked;
 end;
 
 procedure TForm2.FormCloseQuery(Sender : TObject ; var CanClose : boolean) ;

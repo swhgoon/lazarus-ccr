@@ -16,8 +16,8 @@ object Form2: TForm2
   LCLVersion = '1.1'
   object Edit1: TEdit
     Left = 48
-    Height = 27
-    Top = 80
+    Height = 23
+    Top = 72
     Width = 403
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 0
@@ -25,47 +25,42 @@ object Form2: TForm2
   end
   object Edit2: TEdit
     Left = 48
-    Height = 27
-    Top = 120
+    Height = 23
+    Top = 128
     Width = 403
     Anchors = [akTop, akLeft, akRight]
-    TabOrder = 1
+    TabOrder = 2
     Text = 'Edit2'
   end
   object CheckBox1: TCheckBox
     Left = 48
-    Height = 21
-    Top = 152
-    Width = 89
-    Caption = 'CheckBox1'
-    TabOrder = 2
-  end
-  object CheckBox2: TCheckBox
-    Left = 48
-    Height = 21
-    Top = 184
-    Width = 89
-    Caption = 'CheckBox2'
-    TabOrder = 3
+    Height = 19
+    Top = 98
+    Width = 90
+    Caption = 'Disable Edit 1'
+    Checked = True
+    OnChange = CheckBox1Change
+    State = cbChecked
+    TabOrder = 1
   end
   object bClose: TButton
-    Left = 374
-    Height = 29
-    Top = 188
-    Width = 77
+    Left = 365
+    Height = 25
+    Top = 192
+    Width = 86
     Anchors = [akRight, akBottom]
     AutoSize = True
     Caption = 'Close Form'
     OnClick = bCloseClick
-    TabOrder = 4
+    TabOrder = 5
   end
   object Label2: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideLeft.Side = asrCenter
-    Left = 12
-    Height = 39
+    Left = 44
+    Height = 31
     Top = 16
-    Width = 474
+    Width = 411
     Alignment = taCenter
     Caption = 'This Form does NOT have Max Constraints. It will be Aligned by "alClient". '#13#10'Design forms like this using Anchors to expand controls all over the Page'
     Font.Style = [fsBold]
@@ -77,12 +72,31 @@ object Form2: TForm2
     AnchorSideLeft.Side = asrCenter
     AnchorSideTop.Control = bClose
     AnchorSideTop.Side = asrBottom
-    Left = 346
-    Height = 18
+    Left = 349
+    Height = 16
     Top = 223
-    Width = 133
+    Width = 118
     BorderSpacing.Top = 6
     Caption = 'This Form is not Freed'
     ParentColor = False
+  end
+  object bToggle1: TButton
+    Left = 48
+    Height = 25
+    Top = 192
+    Width = 75
+    Caption = 'Toggle 1'
+    OnClick = bToggle1Click
+    TabOrder = 3
+  end
+  object bToggle2: TButton
+    Left = 144
+    Height = 25
+    Top = 192
+    Width = 75
+    Caption = 'Toggle 2'
+    Enabled = False
+    OnClick = bToggle1Click
+    TabOrder = 4
   end
 end

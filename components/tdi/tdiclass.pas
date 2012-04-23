@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, ComCtrls, ExtCtrls, Menus,
-  ExtendedNotebook, Buttons, Graphics ;
+  ExtendedNotebook, Buttons, Graphics  ;
 
 type
 
@@ -21,11 +21,13 @@ type
   private
     FCaption : String ;
     FImageIndex : Integer ;
+    FVisible : Boolean ;
   public
     Constructor Create ;
   published
     property Caption    : String  read FCaption    write FCaption ;
     property ImageIndex : Integer read FImageIndex write FImageIndex ;
+    property Visible    : Boolean read FVisible    write FVisible;
   end ;
 
   { TTDIActions }
@@ -34,6 +36,8 @@ type
   private
     FCloseAllTabs : TTDIAction ;
     FCloseTab : TTDIAction ;
+    FNextTab : TTDIAction ;
+    FPreviousTab : TTDIAction ;
     FTabsMenu : TTDIAction ;
   public
     Constructor Create ;
@@ -42,6 +46,8 @@ type
     property TabsMenu     : TTDIAction read FTabsMenu     write FTabsMenu ;
     property CloseTab     : TTDIAction read FCloseTab     write FCloseTab ;
     property CloseAllTabs : TTDIAction read FCloseAllTabs write FCloseAllTabs ;
+    property NextTab      : TTDIAction read FNextTab      write FNextTab ;
+    property PreviousTab  : TTDIAction read FPreviousTab  write FPreviousTab ;
   end ;
 
   { TTDIPage }
@@ -75,6 +81,10 @@ type
     property LastActiveControl : TWinControl read fsLastActiveControl write fsLastActiveControl ;
   end ;
 
+
+  TTDIOption = ( tdiMiddleButtomClosePage, tdiRestoreLastActiveControl,
+                 tdiVerifyIfCanChangePage ) ;
+  TTDIOptions = set of TTDIOption ;
   { TTDINoteBook }
 
   TTDINoteBook = class(TExtendedNotebook)
@@ -85,8 +95,8 @@ type
     FMainMenu : TMainMenu ;
     FBackgroundCorner : TTDIBackgroundCorner ;
     FTDIActions : TTDIActions ;
-    FClosePageShortCut: TShortCut;
-    FClosePageMouseMiddleButtom: Boolean;
+    FTDIOptions : TTDIOptions ;
+    FShortCutClosePage: TShortCut;
 
     procedure SetBackgroundImage(AValue : TImage) ;
     procedure SetBackgroundCorner(AValue : TTDIBackgroundCorner) ;
@@ -98,10 +108,8 @@ type
     FCloseMenuItem : TMenuItem ;
     FCloseMenuItem2 : TMenuItem ;
     FCloseAllTabsMenuItem : TMenuItem ;
-    FRestoreActiveControl : Boolean ;
     FTabsMenuItem : TMenuItem ;
     FTimerRestoreLastControl : TTimer;
-    FVerifyIfCanChangePage : Boolean ;
     FIsRemovingAPage : Boolean;
 
     procedure CreateCloseBitBtn ;
@@ -116,6 +124,8 @@ type
     procedure CloseAllTabsClicked( Sender: TObject );
     procedure SelectTabByMenu( Sender: TObject );
     procedure DropDownTabsMenu( Sender: TObject );
+    procedure NextPageClicked( Sender: TObject );
+    procedure PreviousPageClicked( Sender: TObject );
 
     procedure TimerRestoreLastFocus( Sender: TObject );
 
@@ -142,6 +152,8 @@ type
 
     Function CanCloseAllPages: Boolean ;
     Function CanCloseAPage( APageIndex: Integer): Boolean;
+
+    procedure ScrollPage( ToForward: Boolean );
     procedure CheckInterface;
 
   published
@@ -155,22 +167,19 @@ type
 
     property TDIActions : TTDIActions read FTDIActions write FTDIActions ;
 
-    property ClosePageMouseMiddleButtom : Boolean read FClosePageMouseMiddleButtom
-      write FClosePageMouseMiddleButtom default True;
-    property ClosePageShortCut: TShortCut read FClosePageShortCut
-      write FClosePageShortCut default 0;
+    property TDIOptions : TTDIOptions read FTDIOptions write FTDIOptions
+      default [ tdiMiddleButtomClosePage, tdiRestoreLastActiveControl,
+                tdiVerifyIfCanChangePage ];
+    property ShortCutClosePage: TShortCut read FShortCutClosePage
+      write FShortCutClosePage default 16499;  // Ctrl+F4
 
-    property RestoreActiveControl : Boolean read FRestoreActiveControl
-      write FRestoreActiveControl default True;
-    property VerifyIfCanChangePage : Boolean read FVerifyIfCanChangePage
-      write FVerifyIfCanChangePage default True;
     property FixedPages : Integer read FFixedPages write SetFixedPages default 0;
   end ;
 
 
 implementation
 
-Uses TDIConst ;
+Uses LCLType, TDIConst;
 
 { TTDIAction }
 
@@ -178,6 +187,7 @@ constructor TTDIAction.Create ;
 begin
   FCaption    := '';
   FImageIndex := -1;
+  FVisible    := True;
 end ;
 
 { TTDIActions }
@@ -192,6 +202,14 @@ begin
 
   FTabsMenu := TTDIAction.Create;
   FTabsMenu.Caption := sActionTabsMenu;
+
+  FNextTab := TTDIAction.Create;
+  FNextTab.Caption := sActionNextTab;
+  FNextTab.Visible := False;
+
+  FPreviousTab := TTDIAction.Create;
+  FPreviousTab.Caption := sActionPreviousTab;
+  FPreviousTab.Visible := False;
 end ;
 
 destructor TTDIActions.Destroy ;
@@ -368,21 +386,21 @@ constructor TTDINoteBook.Create(TheOwner : TComponent) ;
 begin
   inherited Create(TheOwner) ;
 
-  FCloseTabButtom            := tbMenu;
-  FBackgroundCorner          := coBottomRight;
-  FFixedPages                := 0;
-  FRestoreActiveControl      := True;
-  FVerifyIfCanChangePage     := True;
-  FIsRemovingAPage           := False;
-  FClosePageMouseMiddleButtom:= True;
-  FClosePageShortCut         := 0;
-  FBackgroundImage           := nil;
-  FCloseBitBtn               := nil;
-  FCloseMenuItem             := nil;
-  FCloseMenuItem2            := nil;
-  FCloseAllTabsMenuItem      := nil;
-  FTabsMenuItem              := nil;
-  FTDIActions                := TTDIActions.Create;
+  FCloseTabButtom        := tbMenu;
+  FBackgroundCorner      := coBottomRight;
+  FFixedPages            := 0;
+  FIsRemovingAPage       := False;
+  FShortCutClosePage     := 16499;
+  FBackgroundImage       := nil;
+  FCloseBitBtn           := nil;
+  FCloseMenuItem         := nil;
+  FCloseMenuItem2        := nil;
+  FCloseAllTabsMenuItem  := nil;
+  FTabsMenuItem          := nil;
+  FTDIActions            := TTDIActions.Create;
+  FTDIOptions            := [ tdiMiddleButtomClosePage,
+                              tdiRestoreLastActiveControl,
+                              tdiVerifyIfCanChangePage ] ;
 
   { This is ugly, I know... but I didn't found a best solution to restore Last
     Focused Control of TDIPage }
@@ -510,6 +528,7 @@ begin
   begin
     Name         := 'miTDITabsMenuItem';
     Caption      := TDIActions.TabsMenu.Caption;
+    Visible      := TDIActions.TabsMenu.Visible;
     ImageIndex   := TDIActions.TabsMenu.ImageIndex;
     RightJustify := True ;
     OnClick      := @DropDownTabsMenu;
@@ -523,10 +542,49 @@ begin
   NewMenuItem := TMenuItem.Create( FTabsMenuItem );
   with NewMenuItem do
   begin
-    Name    := 'miTDISeparator';
+    Name    := 'miTDISeparator1';
     Caption := '-';
   end ;
   FTabsMenuItem.Add(NewMenuItem);
+
+  if (nboKeyboardTabSwitch in Options) then
+  begin
+    NewMenuItem := TMenuItem.Create( FTabsMenuItem );
+    with NewMenuItem do
+    begin
+      Name       := 'miTDINextPage';
+      Caption    := TDIActions.NextTab.Caption;
+      Visible    := TDIActions.NextTab.Visible;
+      ImageIndex := TDIActions.NextTab.ImageIndex;
+      ShortCut   := Menus.ShortCut(VK_TAB, [ssCtrl] );
+      OnClick    := @NextPageClicked;
+    end ;
+    FTabsMenuItem.Add(NewMenuItem);
+
+    NewMenuItem := TMenuItem.Create( FTabsMenuItem );
+    with NewMenuItem do
+    begin
+      Name       := 'miTDIPreviousPage';
+      Caption    := TDIActions.PreviousTab.Caption;
+      Visible    := TDIActions.PreviousTab.Visible;
+      ImageIndex := TDIActions.PreviousTab.ImageIndex;
+      ShortCut   := Menus.ShortCut(VK_TAB, [ssCtrl,ssShift] );
+      OnClick    := @PreviousPageClicked;
+    end ;
+    FTabsMenuItem.Add(NewMenuItem);
+
+    if TDIActions.NextTab.Visible or TDIActions.PreviousTab.Visible then
+    begin
+      // Creating a Separator //
+      NewMenuItem := TMenuItem.Create( FTabsMenuItem );
+      with NewMenuItem do
+      begin
+        Name    := 'miTDISeparator2';
+        Caption := '-';
+      end ;
+      FTabsMenuItem.Add(NewMenuItem);
+    end;
+  end ;
 
   // Creating Close Tab MenuItem //
   FCloseMenuItem2 := TMenuItem.Create( FTabsMenuItem );
@@ -534,8 +592,10 @@ begin
   begin
     Name       := 'miTDICloseTab';
     Caption    := TDIActions.CloseTab.Caption;
+    Visible    := TDIActions.CloseTab.Visible;
     ImageIndex := TDIActions.CloseTab.ImageIndex;
     OnClick    := @CloseTabClicked;
+    ShortCut   := FShortCutClosePage;
   end ;
   FTabsMenuItem.Add(FCloseMenuItem2);
 
@@ -545,6 +605,7 @@ begin
   begin
     Name       := 'miTDICloseAllTabs';
     Caption    := TDIActions.CloseAllTabs.Caption;
+    Visible    := TDIActions.CloseAllTabs.Visible;
     ImageIndex := TDIActions.CloseAllTabs.ImageIndex;
     OnClick    := @CloseAllTabsClicked;
   end ;
@@ -765,6 +826,26 @@ begin
     end ;
 end ;
 
+procedure TTDINoteBook.ScrollPage(ToForward : Boolean) ;
+var
+  NewPage : Integer ;
+begin
+  if ToForward then
+  begin
+    NewPage := PageIndex + 1 ;
+    if NewPage >= PageCount then
+      NewPage := 0;
+  end
+  else
+  begin
+    NewPage := PageIndex - 1 ;
+    if NewPage < 0 then
+      NewPage := PageCount-1 ;
+  end ;
+
+  PageIndex := NewPage;
+end ;
+
 
 procedure TTDINoteBook.SelectTabByMenu(Sender : TObject) ;
 begin
@@ -804,6 +885,16 @@ begin
   FCloseAllTabsMenuItem.Enabled := (PageCount > 0);
 end ;
 
+procedure TTDINoteBook.NextPageClicked(Sender : TObject) ;
+begin
+  ScrollPage( True );
+end ;
+
+procedure TTDINoteBook.PreviousPageClicked(Sender : TObject) ;
+begin
+  ScrollPage( False );
+end ;
+
 procedure TTDINoteBook.TimerRestoreLastFocus(Sender : TObject) ;
 begin
   FTimerRestoreLastControl.Enabled := False;
@@ -832,7 +923,7 @@ begin
         begin
           TTDIPage( ActivePage ).LastActiveControl := AWinControl;
 
-          if FVerifyIfCanChangePage then
+          if tdiVerifyIfCanChangePage in FTDIOptions then
           begin
             { Try to detect if occurs some exception when leaving current
               control focus. This may occurs in TWinControl.OnExit Validation }
@@ -866,7 +957,8 @@ begin
   }
 
   // This is a ugly workaround.. but it works :) //
-  FTimerRestoreLastControl.Enabled := True;
+  if tdiRestoreLastActiveControl in FTDIOptions then
+    FTimerRestoreLastControl.Enabled := True;
 end ;
 
 procedure TTDINoteBook.Loaded ;
@@ -927,7 +1019,7 @@ procedure TTDINoteBook.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
 var
   APageIndex : Integer ;
 begin
-  if FClosePageMouseMiddleButtom and (Button = mbMiddle) then
+  if (tdiMiddleButtomClosePage in FTDIOptions) and (Button = mbMiddle) then
   begin
      APageIndex := TabIndexAtClientPos( Point(X,Y) );
      if (APageIndex >= 0) and (APageIndex >= FixedPages) then
@@ -940,18 +1032,33 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
 end;
 
-procedure TTDINoteBook.KeyDown(var Key: Word; Shift: TShiftState);
+procedure TTDINoteBook.KeyDown(var Key : Word; Shift : TShiftState) ;
 begin
-  // TODO: HiJack TDIPage.Form.OnKeyDown to detect ShortCut inside the Form //
-
-  if ShortCut(Key, Shift) = FClosePageShortCut then
-    if PageIndex >= FFixedPages then
+  if (FTabsMenuItem = nil) then  // Is already Handled by TabsMenu itens?
+  begin
+    if (PageIndex >= FFixedPages) and
+       (ShortCut(Key, Shift) = FShortCutClosePage) then
     begin
+      Key := 0;
       RemovePage( PageIndex );
       exit;
     end;
+  end
+  else if (Key = VK_TAB) and (ssCtrl in Shift) then   // TabsMenu will do it...
+    exit ;
 
-  inherited KeyDown(Key, Shift);
+  if ActivePage is TTDIPage then
+  begin
+    with TTDIPage( ActivePage ) do
+    begin
+      RestoreLastFocusedControl;
+
+      // TODO: Propagate Key Pressed to FormInPage //
+      //FormInPage.OnKeyDown(Self,Key,Shift);
+    end ;
+  end
+  else
+    inherited KeyDown(Key, Shift);
 end;
 
 procedure TTDINoteBook.Notification(AComponent : TComponent ;

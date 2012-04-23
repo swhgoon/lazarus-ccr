@@ -13,6 +13,8 @@ resourcestring
   sActionTabsMenu = 'Tabs';
   sActionCloseTab = 'Close Tab';
   sActionCloseAllTabs = 'Close All Tabs';
+  sActionNextTab = 'Next Tab';
+  sActionPreviousTab = 'Previous Tab';
 
 implementation
 
