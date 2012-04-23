@@ -61,9 +61,11 @@ type
     fsFormOldClientRect : TRect;
     fsFormOldBorderStyle : TFormBorderStyle;
     fsLastActiveControl: TWinControl;
+    fsFormCloseAction: TCloseAction;
 
     procedure OnResizeTDIPage(Sender : TObject) ;
     procedure OnFormClose(Sender: TObject; var CloseAction: TCloseAction);
+
     procedure SaveFormProperties ;
     procedure RestoreFormProperties ;
 
@@ -105,6 +107,8 @@ type
     procedure SetFixedPages(AValue : Integer) ;
   private
     FCloseBitBtn : TBitBtn ;
+    FNextMenuItem : TMenuItem;
+    FPreviousMenuItem : TMenuItem;
     FCloseMenuItem : TMenuItem ;
     FCloseMenuItem2 : TMenuItem ;
     FCloseAllTabsMenuItem : TMenuItem ;
@@ -147,14 +151,17 @@ type
     procedure DoCloseTabClicked(APage: TCustomPage); override;
 
     procedure CreateFormInNewPage( AFormClass: TFormClass; ImageIndex : Integer = -1 ) ;
-    procedure ShowForInNewPage( AForm: TForm; ImageIndex : Integer = -1 );
+    procedure ShowFormInNewPage( AForm: TForm; ImageIndex : Integer = -1 );
     Function FindFormInPages( AForm: TForm): Integer ;
 
     Function CanCloseAllPages: Boolean ;
     Function CanCloseAPage( APageIndex: Integer): Boolean;
 
+    procedure RestoreLastFocusedControl ;
     procedure ScrollPage( ToForward: Boolean );
     procedure CheckInterface;
+
+    procedure UpdateTabsMenuItem ;
 
   published
     property BackgroundImage : TImage read FBackgroundImage
@@ -231,6 +238,7 @@ begin
   Self.OnResize := @OnResizeTDIPage ;
 
   fsLastActiveControl := nil ;
+  fsFormCloseAction   := caNone;
 end ;
 
 procedure TTDIPage.RestoreLastFocusedControl ;
@@ -337,13 +345,15 @@ begin
   if Assigned( fsFormOldCloseEvent ) then
      fsFormOldCloseEvent( Sender, CloseAction );
 
-  // This will force this page be killed by TTDINoteBook.Notification();
+  fsFormCloseAction := CloseAction;
+
   if Assigned( fsFormInPage ) then
   begin
     RestoreFormProperties;
 
     fsFormInPage := nil;
 
+    // This will force this page be killed by TTDINoteBook.Notification();
     if Assigned( Parent ) then
       Parent.RemoveComponent( Self );
   end ;
@@ -367,10 +377,14 @@ procedure TTDIPage.RestoreFormProperties ;
 begin
   if not Assigned( fsFormInPage ) then exit ;
 
-  if ([csDesigning, csDestroying] * fsFormInPage.ComponentState <> []) then exit ;
+
+  if (fsFormCloseAction = caFree) or    // Form will be destroyed ?
+     ([csDesigning, csDestroying] * fsFormInPage.ComponentState <> []) then
+     exit ;
 
   fsFormInPage.Parent      := fsFormOldParent;
-  fsFormInPage.Visible     := False;
+  fsFormInPage.Visible     := False;  // Setting new Parent for Visible = True ;
+
   fsFormInPage.Align       := fsFormOldAlign;
   fsFormInPage.BorderStyle := fsFormOldBorderStyle;
   fsFormInPage.Top         := fsFormOldClientRect.Top;
@@ -397,6 +411,8 @@ begin
   FCloseMenuItem2        := nil;
   FCloseAllTabsMenuItem  := nil;
   FTabsMenuItem          := nil;
+  FNextMenuItem          := nil;
+  FPreviousMenuItem      := nil;
   FTDIActions            := TTDIActions.Create;
   FTDIOptions            := [ tdiMiddleButtomClosePage,
                               tdiRestoreLastActiveControl,
@@ -527,12 +543,8 @@ begin
   with FTabsMenuItem do
   begin
     Name         := 'miTDITabsMenuItem';
-    Caption      := TDIActions.TabsMenu.Caption;
-    Visible      := TDIActions.TabsMenu.Visible;
-    ImageIndex   := TDIActions.TabsMenu.ImageIndex;
     RightJustify := True ;
     OnClick      := @DropDownTabsMenu;
-
   end ;
   FMainMenu.Items.Add( FTabsMenuItem );
 
@@ -549,29 +561,23 @@ begin
 
   if (nboKeyboardTabSwitch in Options) then
   begin
-    NewMenuItem := TMenuItem.Create( FTabsMenuItem );
-    with NewMenuItem do
+    FNextMenuItem := TMenuItem.Create( FTabsMenuItem );
+    with FNextMenuItem do
     begin
       Name       := 'miTDINextPage';
-      Caption    := TDIActions.NextTab.Caption;
-      Visible    := TDIActions.NextTab.Visible;
-      ImageIndex := TDIActions.NextTab.ImageIndex;
       ShortCut   := Menus.ShortCut(VK_TAB, [ssCtrl] );
       OnClick    := @NextPageClicked;
     end ;
-    FTabsMenuItem.Add(NewMenuItem);
+    FTabsMenuItem.Add(FNextMenuItem);
 
-    NewMenuItem := TMenuItem.Create( FTabsMenuItem );
-    with NewMenuItem do
+    FPreviousMenuItem := TMenuItem.Create( FTabsMenuItem );
+    with FPreviousMenuItem do
     begin
       Name       := 'miTDIPreviousPage';
-      Caption    := TDIActions.PreviousTab.Caption;
-      Visible    := TDIActions.PreviousTab.Visible;
-      ImageIndex := TDIActions.PreviousTab.ImageIndex;
       ShortCut   := Menus.ShortCut(VK_TAB, [ssCtrl,ssShift] );
       OnClick    := @PreviousPageClicked;
     end ;
-    FTabsMenuItem.Add(NewMenuItem);
+    FTabsMenuItem.Add(FPreviousMenuItem);
 
     if TDIActions.NextTab.Visible or TDIActions.PreviousTab.Visible then
     begin
@@ -591,9 +597,6 @@ begin
   with FCloseMenuItem2 do
   begin
     Name       := 'miTDICloseTab';
-    Caption    := TDIActions.CloseTab.Caption;
-    Visible    := TDIActions.CloseTab.Visible;
-    ImageIndex := TDIActions.CloseTab.ImageIndex;
     OnClick    := @CloseTabClicked;
     ShortCut   := FShortCutClosePage;
   end ;
@@ -604,12 +607,11 @@ begin
   with FCloseAllTabsMenuItem do
   begin
     Name       := 'miTDICloseAllTabs';
-    Caption    := TDIActions.CloseAllTabs.Caption;
-    Visible    := TDIActions.CloseAllTabs.Visible;
-    ImageIndex := TDIActions.CloseAllTabs.ImageIndex;
     OnClick    := @CloseAllTabsClicked;
   end ;
   FTabsMenuItem.Add(FCloseAllTabsMenuItem);
+
+  UpdateTabsMenuItem;
 end ;
 
 procedure TTDINoteBook.SetFixedPages(AValue : Integer) ;
@@ -661,10 +663,10 @@ Var
 begin
   NewForm := AFormClass.Create(nil);
 
-  ShowForInNewPage( NewForm, ImageIndex );
+  ShowFormInNewPage( NewForm, ImageIndex );
 end ;
 
-procedure TTDINoteBook.ShowForInNewPage(AForm : TForm ; ImageIndex : Integer) ;
+procedure TTDINoteBook.ShowFormInNewPage(AForm : TForm ; ImageIndex : Integer) ;
 Var
   NewPage : TTDIPage ;
   AlreadyExistingPage : Integer ;
@@ -733,8 +735,15 @@ begin
   end ;
 
   // Checking for Tabs Menu visibility //
-  if FTabsMenuItem <> nil then
-     FTabsMenuItem.Visible := Visible ;
+  if Visible and (FTabsMenuItem <> nil) then
+  begin
+    with FTabsMenuItem do
+    begin
+      Caption    := TDIActions.TabsMenu.Caption;
+      Visible    := TDIActions.TabsMenu.Visible;
+      ImageIndex := TDIActions.TabsMenu.ImageIndex;
+    end ;
+  end ;
 
   // Drawing Background Image //
   if Visible then
@@ -826,6 +835,11 @@ begin
     end ;
 end ;
 
+procedure TTDINoteBook.RestoreLastFocusedControl ;
+begin
+  FTimerRestoreLastControl.Enabled := True;
+end ;
+
 procedure TTDINoteBook.ScrollPage(ToForward : Boolean) ;
 var
   NewPage : Integer ;
@@ -854,6 +868,11 @@ begin
 end ;
 
 procedure TTDINoteBook.DropDownTabsMenu(Sender : TObject) ;
+begin
+  UpdateTabsMenuItem;
+end ;
+
+procedure TTDINoteBook.UpdateTabsMenuItem ;
 Var
   I : Integer ;
   NewMenuItem : TMenuItem ;
@@ -880,9 +899,40 @@ begin
      FTabsMenuItem.Insert(0,NewMenuItem);
   end ;
 
-  FCloseMenuItem2.Enabled       := (PageCount > 0) and
-                                   (ActivePageIndex >= FFixedPages);
-  FCloseAllTabsMenuItem.Enabled := (PageCount > 0);
+  // Updating already existing MenuItems //
+  with FCloseMenuItem2 do
+  begin
+    Enabled    := (PageCount > 0) and (ActivePageIndex >= FFixedPages);
+    Caption    := TDIActions.CloseTab.Caption;
+    Visible    := TDIActions.CloseTab.Visible;
+    ImageIndex := TDIActions.CloseTab.ImageIndex;
+  end ;
+
+  with FCloseAllTabsMenuItem do
+  begin
+    Enabled    := (PageCount > 0);
+    Caption    := TDIActions.CloseAllTabs.Caption;
+    Visible    := TDIActions.CloseAllTabs.Visible;
+    ImageIndex := TDIActions.CloseAllTabs.ImageIndex;
+  end ;
+
+  if FNextMenuItem <> nil then
+    with FNextMenuItem do
+    begin
+      Enabled    := (PageCount > 0);
+      Caption    := TDIActions.NextTab.Caption;
+      Visible    := TDIActions.NextTab.Visible;
+      ImageIndex := TDIActions.NextTab.ImageIndex;
+    end ;
+
+  if FPreviousMenuItem <> nil then
+    with FPreviousMenuItem do
+    begin
+      Enabled    := (PageCount > 0);
+      Caption    := TDIActions.PreviousTab.Caption;
+      Visible    := TDIActions.PreviousTab.Visible;
+      ImageIndex := TDIActions.PreviousTab.ImageIndex;
+    end ;
 end ;
 
 procedure TTDINoteBook.NextPageClicked(Sender : TObject) ;
@@ -958,7 +1008,7 @@ begin
 
   // This is a ugly workaround.. but it works :) //
   if tdiRestoreLastActiveControl in FTDIOptions then
-    FTimerRestoreLastControl.Enabled := True;
+    RestoreLastFocusedControl;
 end ;
 
 procedure TTDINoteBook.Loaded ;

@@ -133,7 +133,7 @@ end;
 
 procedure TfMainForm.miForm2Click(Sender : TObject) ;
 begin
-  TDINoteBook1.ShowForInNewPage( Form2, 4 );
+  TDINoteBook1.ShowFormInNewPage( Form2, 4 );
 end;
 
 procedure TfMainForm.seFixedPagesChange(Sender : TObject) ;
