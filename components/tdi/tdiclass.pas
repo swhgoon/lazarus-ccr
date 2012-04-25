@@ -297,12 +297,6 @@ begin
 
   // Change Form Parent to the Page //
   fsFormInPage.Parent := Self;
-
-  // Show the Form //
-  fsFormInPage.Visible := True ;
-
-  // Saving the current ActiveControl in the Form //
-  fsLastActiveControl := fsFormInPage.ActiveControl;
 end ;
 
 procedure TTDIPage.Notification(AComponent : TComponent ; Operation : TOperation
@@ -314,8 +308,6 @@ begin
 
   if (Operation = opRemove) and (AComponent = fsFormInPage) then
   begin
-    RestoreFormProperties;
-
     fsFormInPage := nil;
   end ;
 end ;
@@ -357,7 +349,7 @@ begin
   if Assigned( fsFormOldCloseEvent ) then
      fsFormOldCloseEvent( Sender, CloseAction );
 
-  if (CloseAction <> caFree) and Assigned( fsFormInPage ) then
+  if {(CloseAction <> caFree) and} Assigned( fsFormInPage ) then
     RestoreFormProperties;
 
   fsFormInPage := nil;
@@ -389,8 +381,8 @@ procedure TTDIPage.RestoreFormProperties ;
 begin
   if not Assigned( fsFormInPage ) then exit ;
 
-  if ([csDesigning, csDestroying] * fsFormInPage.ComponentState <> []) then
-     exit ;
+{  if ([csDesigning, csDestroying] * fsFormInPage.ComponentState <> []) then
+     exit ;}
 
   fsFormInPage.Visible     := False;  // This prevent OnFormShow be fired
   fsFormInPage.Parent      := fsFormOldParent;
@@ -700,12 +692,20 @@ begin
   // Activate the new Page
   ActivePage := NewPage;
 
-  // First Page always need a little help for align form inside //
+  // Show the Form //
+  AForm.Visible := True ;
+
+  // Saving the current ActiveControl in the Form //
+  NewPage.LastActiveControl := AForm.ActiveControl;
+
+  // Checking Form alignment //
+  if (AForm.Constraints.MaxHeight <= 0) or
+     (AForm.Constraints.MaxWidth <= 0) then
+    AForm.Align := alClient;                   // Try to expand the Form
+  NewPage.CheckFormAlign ;
+
   if PageCount = 1 then
-  begin
-    NewPage.CheckFormAlign ;
     CheckInterface;
-  end ;
 end ;
 
 function TTDINoteBook.FindFormInPages(AForm : TForm) : Integer ;

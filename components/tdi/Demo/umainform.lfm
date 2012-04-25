@@ -53,7 +53,7 @@ object fMainForm: TfMainForm
     MainMenu = MainMenu1
     TDIActions.TabsMenu.Caption = 'Tabs'
     TDIActions.TabsMenu.ImageIndex = 0
-    TDIActions.TabsMenu.Visible = False
+    TDIActions.TabsMenu.Visible = True
     TDIActions.CloseTab.Caption = 'Close Tab'
     TDIActions.CloseTab.ImageIndex = 1
     TDIActions.CloseTab.Visible = True

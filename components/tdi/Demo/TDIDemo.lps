@@ -9,12 +9,10 @@
         <Filename Value="TDIDemo.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TDIDemo"/>
-        <EditorIndex Value="6"/>
         <WindowIndex Value="0"/>
         <TopLine Value="9"/>
         <CursorPos X="22" Y="21"/>
         <UsageCount Value="152"/>
-        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="mainform.pas"/>
@@ -66,7 +64,7 @@
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
-        <CursorPos X="57" Y="4"/>
+        <CursorPos X="26" Y="8"/>
         <UsageCount Value="73"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -75,17 +73,17 @@
         <Filename Value="..\tdiclass.pas"/>
         <UnitName Value="TDIClass"/>
         <IsVisibleTab Value="True"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="669"/>
-        <CursorPos X="46" Y="682"/>
+        <TopLine Value="372"/>
+        <CursorPos X="41" Y="386"/>
         <UsageCount Value="73"/>
         <Bookmarks Count="6">
-          <Item0 X="3" Y="1043" ID="3"/>
-          <Item1 X="1" Y="348" ID="2"/>
-          <Item2 X="32" Y="693" ID="4"/>
+          <Item0 X="3" Y="1041" ID="3"/>
+          <Item1 X="1" Y="346" ID="2"/>
+          <Item2 X="32" Y="691" ID="4"/>
           <Item3 X="3" Y="282" ID="6"/>
-          <Item4 X="3" Y="358" ID="5"/>
+          <Item4 X="3" Y="356" ID="5"/>
           <Item5 X="17" Y="311" ID="7"/>
         </Bookmarks>
         <Loaded Value="True"/>
@@ -99,10 +97,12 @@
       </Unit6>
       <Unit7>
         <Filename Value="C:\lazarus\lcl\include\control.inc"/>
+        <EditorIndex Value="4"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="3207"/>
-        <CursorPos X="1" Y="3219"/>
+        <TopLine Value="1323"/>
+        <CursorPos X="1" Y="1333"/>
         <UsageCount Value="13"/>
+        <Loaded Value="True"/>
       </Unit7>
       <Unit8>
         <Filename Value="..\tdireg.pas"/>
@@ -234,9 +234,9 @@
       <Unit23>
         <Filename Value="C:\lazarus\lcl\include\menuitem.inc"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="268"/>
-        <CursorPos X="1" Y="278"/>
-        <UsageCount Value="8"/>
+        <TopLine Value="1360"/>
+        <CursorPos X="1" Y="1370"/>
+        <UsageCount Value="10"/>
       </Unit23>
       <Unit24>
         <Filename Value="C:\lazarus\lcl\include\buttons.inc"/>
@@ -412,12 +412,10 @@
       <Unit46>
         <Filename Value="C:\lazarus\lcl\forms.pp"/>
         <UnitName Value="Forms"/>
-        <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1358"/>
         <CursorPos X="15" Y="1368"/>
         <UsageCount Value="38"/>
-        <Loaded Value="True"/>
       </Unit46>
       <Unit47>
         <Filename Value="C:\lazarus\lcl\lclmessageglue.pas"/>
@@ -520,12 +518,10 @@
       </Unit59>
       <Unit60>
         <Filename Value="C:\lazarus\lcl\include\application.inc"/>
-        <EditorIndex Value="4"/>
         <WindowIndex Value="0"/>
         <TopLine Value="2177"/>
         <CursorPos X="3" Y="2155"/>
         <UsageCount Value="12"/>
-        <Loaded Value="True"/>
       </Unit60>
       <Unit61>
         <Filename Value="C:\lazarus\fpc\2.6.0\source\rtl\win\wininc\struct.inc"/>
@@ -698,127 +694,123 @@
     <General>
       <ActiveWindowIndexAtStart Value="0"/>
     </General>
-    <JumpHistory Count="30" HistoryIndex="29">
+    <JumpHistory Count="29" HistoryIndex="28">
       <Position1>
         <Filename Value="..\tdiclass.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Caret Line="741" Column="1" TopLine="737"/>
       </Position1>
       <Position2>
         <Filename Value="..\tdiclass.pas"/>
-        <Caret Line="76" Column="21" TopLine="66"/>
+        <Caret Line="747" Column="1" TopLine="740"/>
       </Position2>
       <Position3>
         <Filename Value="..\tdiclass.pas"/>
-        <Caret Line="1136" Column="26" TopLine="1123"/>
+        <Caret Line="749" Column="1" TopLine="743"/>
       </Position3>
       <Position4>
         <Filename Value="..\tdiclass.pas"/>
-        <Caret Line="1131" Column="25" TopLine="1123"/>
+        <Caret Line="751" Column="1" TopLine="743"/>
       </Position4>
       <Position5>
         <Filename Value="..\tdiclass.pas"/>
-        <Caret Line="1123" Column="1" TopLine="1113"/>
+        <Caret Line="752" Column="1" TopLine="743"/>
       </Position5>
       <Position6>
         <Filename Value="..\tdiclass.pas"/>
-        <Caret Line="1070" Column="22" TopLine="1060"/>
+        <Caret Line="753" Column="1" TopLine="743"/>
       </Position6>
       <Position7>
         <Filename Value="..\tdiclass.pas"/>
-        <Caret Line="312" Column="1" TopLine="302"/>
+        <Caret Line="728" Column="18" TopLine="725"/>
       </Position7>
       <Position8>
         <Filename Value="..\tdiclass.pas"/>
-        <Caret Line="1041" Column="1" TopLine="1034"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position8>
       <Position9>
         <Filename Value="..\tdiclass.pas"/>
-        <Caret Line="1136" Column="1" TopLine="1126"/>
+        <Caret Line="72" Column="22" TopLine="55"/>
       </Position9>
       <Position10>
         <Filename Value="..\tdiclass.pas"/>
-        <Caret Line="1198" Column="1" TopLine="1188"/>
+        <Caret Line="83" Column="22" TopLine="66"/>
       </Position10>
       <Position11>
         <Filename Value="..\tdiclass.pas"/>
-        <Caret Line="1044" Column="20" TopLine="1037"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position11>
       <Position12>
         <Filename Value="..\tdiclass.pas"/>
-        <Caret Line="1042" Column="1" TopLine="1037"/>
+        <Caret Line="390" Column="29" TopLine="385"/>
       </Position12>
       <Position13>
         <Filename Value="..\tdiclass.pas"/>
-        <Caret Line="1043" Column="1" TopLine="1037"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position13>
       <Position14>
         <Filename Value="..\tdiclass.pas"/>
-        <Caret Line="1044" Column="1" TopLine="1037"/>
+        <Caret Line="72" Column="22" TopLine="55"/>
       </Position14>
       <Position15>
         <Filename Value="..\tdiclass.pas"/>
-        <Caret Line="1045" Column="1" TopLine="1037"/>
+        <Caret Line="83" Column="22" TopLine="66"/>
       </Position15>
       <Position16>
         <Filename Value="..\tdiclass.pas"/>
-        <Caret Line="1046" Column="1" TopLine="1037"/>
+        <Caret Line="90" Column="54" TopLine="73"/>
       </Position16>
       <Position17>
         <Filename Value="..\tdiclass.pas"/>
-        <Caret Line="1049" Column="1" TopLine="1037"/>
+        <Caret Line="119" Column="18" TopLine="102"/>
       </Position17>
       <Position18>
         <Filename Value="..\tdiclass.pas"/>
-        <Caret Line="1056" Column="1" TopLine="1042"/>
+        <Caret Line="137" Column="27" TopLine="120"/>
       </Position18>
       <Position19>
         <Filename Value="..\tdiclass.pas"/>
-        <Caret Line="1058" Column="1" TopLine="1042"/>
+        <Caret Line="165" Column="22" TopLine="148"/>
       </Position19>
       <Position20>
         <Filename Value="..\tdiclass.pas"/>
-        <Caret Line="1060" Column="1" TopLine="1040"/>
+        <Caret Line="183" Column="53" TopLine="166"/>
       </Position20>
       <Position21>
         <Filename Value="..\tdiclass.pas"/>
-        <Caret Line="1064" Column="1" TopLine="1057"/>
+        <Caret Line="256" Column="27" TopLine="238"/>
       </Position21>
       <Position22>
         <Filename Value="..\tdiclass.pas"/>
-        <Caret Line="1069" Column="18" TopLine="1057"/>
+        <Caret Line="318" Column="23" TopLine="312"/>
       </Position22>
       <Position23>
-        <Filename Value="umainform.pas"/>
-        <Caret Line="118" Column="15" TopLine="115"/>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="360" Column="7" TopLine="347"/>
       </Position23>
       <Position24>
-        <Filename Value="umainform.pas"/>
-        <Caret Line="134" Column="37" TopLine="128"/>
+        <Filename Value="uform1.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position24>
       <Position25>
-        <Filename Value="umainform.pas"/>
-        <Caret Line="99" Column="1" TopLine="95"/>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="317" Column="1" TopLine="307"/>
       </Position25>
       <Position26>
-        <Filename Value="umainform.pas"/>
-        <Caret Line="146" Column="20" TopLine="139"/>
+        <Filename Value="C:\lazarus\lcl\include\control.inc"/>
+        <Caret Line="1333" Column="1" TopLine="1323"/>
       </Position26>
       <Position27>
-        <Filename Value="TDIDemo.lpr"/>
-        <Caret Line="21" Column="22" TopLine="9"/>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="72" Column="36" TopLine="62"/>
       </Position27>
       <Position28>
-        <Filename Value="umainform.pas"/>
-        <Caret Line="146" Column="20" TopLine="139"/>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="317" Column="1" TopLine="300"/>
       </Position28>
       <Position29>
-        <Filename Value="umainform.pas"/>
-        <Caret Line="164" Column="25" TopLine="151"/>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="359" Column="26" TopLine="348"/>
       </Position29>
-      <Position30>
-        <Filename Value="umainform.pas"/>
-        <Caret Line="9" Column="71" TopLine="1"/>
-      </Position30>
     </JumpHistory>
   </ProjectSession>
 </CONFIG>
