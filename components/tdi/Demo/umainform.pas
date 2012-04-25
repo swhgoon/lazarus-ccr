@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Menus,
-  ComCtrls, Buttons, StdCtrls, ExtCtrls, Spin, TDIClass , types, IpHtml;
+  ComCtrls, Buttons, StdCtrls, ExtCtrls, Spin, TDIClass, IpHtml;
 
 type
 
@@ -14,6 +14,7 @@ type
 
   TfMainForm = class(TForm)
     bToggleLog : TButton ;
+    Button1 : TButton ;
     cbxBackgroundCorner : TComboBox ;
     Image1 : TImage ;
     ImageList1 : TImageList ;
@@ -36,6 +37,7 @@ type
     tsFixed : TTabSheet ;
     TDINoteBook1 : TTDINoteBook ;
     procedure bToggleLogClick(Sender : TObject) ;
+    procedure Button1Click(Sender : TObject) ;
     procedure cbxBackgroundCornerChange(Sender : TObject) ;
     procedure FormClose(Sender : TObject ; var CloseAction : TCloseAction) ;
     procedure FormCloseQuery(Sender : TObject ; var CanClose : boolean) ;
@@ -91,6 +93,8 @@ end;
 
 procedure TfMainForm.MenuItem3Click(Sender : TObject) ;
 begin
+  if not Assigned( Form2 ) then
+    Form2 := TForm2.Create(Self);
   Form2.Show;
 end;
 
@@ -107,6 +111,12 @@ begin
     bToggleLog.Caption := 'Hide Log >'
   else
     bToggleLog.Caption := '< Show Log' ;
+end;
+
+procedure TfMainForm.Button1Click(Sender : TObject) ;
+begin
+  Form2.Free;
+  Form2 := nil;
 end;
 
 procedure TfMainForm.FormClose(Sender : TObject ; var CloseAction : TCloseAction
@@ -133,7 +143,9 @@ end;
 
 procedure TfMainForm.miForm2Click(Sender : TObject) ;
 begin
-  TDINoteBook1.ShowFormInNewPage( Form2, 4 );
+  if not Assigned( Form2 ) then
+    Form2 := TForm2.Create(Self);
+  TDINoteBook1.ShowFormInPage( Form2, 4 );
 end;
 
 procedure TfMainForm.seFixedPagesChange(Sender : TObject) ;

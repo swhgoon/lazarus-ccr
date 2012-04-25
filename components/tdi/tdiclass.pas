@@ -6,7 +6,10 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, ComCtrls, ExtCtrls, Menus,
-  ExtendedNotebook, Buttons, Graphics  ;
+  ExtendedNotebook, Buttons, Graphics, LMessages  ;
+
+const
+  TDIM_CLOSEPAGE = LM_INTERFACELAST + 500;
 
 type
 
@@ -75,6 +78,7 @@ type
 
   public
     constructor Create(TheOwner: TComponent );  override;
+    destructor Destroy ; override;
 
     procedure RestoreLastFocusedControl ;
 
@@ -139,6 +143,8 @@ type
     procedure Loaded; override;
     procedure RemovePage(Index: Integer); override;
 
+    procedure msg_ClosePage(var Msg: TLMessage); message TDIM_CLOSEPAGE;
+
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
 
@@ -150,7 +156,7 @@ type
     procedure DoCloseTabClicked(APage: TCustomPage); override;
 
     procedure CreateFormInNewPage( AFormClass: TFormClass; ImageIndex : Integer = -1 ) ;
-    procedure ShowFormInNewPage( AForm: TForm; ImageIndex : Integer = -1 );
+    procedure ShowFormInPage( AForm: TForm; ImageIndex : Integer = -1 );
     Function FindFormInPages( AForm: TForm): Integer ;
 
     Function CanCloseAllPages: Boolean ;
@@ -223,6 +229,8 @@ begin
   FCloseAllTabs.Free;
   FCloseTab.Free;
   FTabsMenu.Free;
+  FNextTab.Free;
+  FPreviousTab.Free;
 
   inherited Destroy;
 end ;
@@ -237,6 +245,11 @@ begin
   Self.OnResize := @OnResizeTDIPage ;
 
   fsLastActiveControl := nil ;
+end ;
+
+destructor TTDIPage.Destroy ;
+begin
+  inherited Destroy ;
 end ;
 
 procedure TTDIPage.RestoreLastFocusedControl ;
@@ -284,7 +297,6 @@ begin
 
   // Change Form Parent to the Page //
   fsFormInPage.Parent := Self;
-  //fsFormInPage.FreeNotification(Self);  // This cause a SIGSEGV, when Form is Closed from inside
 
   // Show the Form //
   fsFormInPage.Visible := True ;
@@ -339,6 +351,8 @@ end ;
 
 procedure TTDIPage.OnFormClose(Sender : TObject ; var CloseAction : TCloseAction
   ) ;
+var
+  Msg: TLMessage;
 begin
   if Assigned( fsFormOldCloseEvent ) then
      fsFormOldCloseEvent( Sender, CloseAction );
@@ -348,9 +362,13 @@ begin
 
   fsFormInPage := nil;
 
-  // This will force this page be killed by TTDINoteBook.Notification();
   if Assigned( Parent ) then
-    Parent.RemoveComponent( Self );
+  begin
+    Msg.msg    := TDIM_CLOSEPAGE;
+    Msg.lParam := PageIndex;
+
+    Parent.Dispatch( Msg );
+  end ;
 end ;
 
 procedure TTDIPage.SaveFormProperties ;
@@ -652,12 +670,12 @@ procedure TTDINoteBook.CreateFormInNewPage(AFormClass : TFormClass ;
 Var
   NewForm : TForm ;
 begin
-  NewForm := AFormClass.Create(nil);
+  NewForm := AFormClass.Create(Application);
 
-  ShowFormInNewPage( NewForm, ImageIndex );
+  ShowFormInPage( NewForm, ImageIndex );
 end ;
 
-procedure TTDINoteBook.ShowFormInNewPage(AForm : TForm ; ImageIndex : Integer) ;
+procedure TTDINoteBook.ShowFormInPage(AForm : TForm ; ImageIndex : Integer) ;
 Var
   NewPage : TTDIPage ;
   AlreadyExistingPage : Integer ;
@@ -910,7 +928,7 @@ begin
   if FNextMenuItem <> nil then
     with FNextMenuItem do
     begin
-      Enabled    := (PageCount > 0);
+      Enabled    := (PageCount > 1);
       Caption    := TDIActions.NextTab.Caption;
       Visible    := TDIActions.NextTab.Visible;
       ImageIndex := TDIActions.NextTab.ImageIndex;
@@ -919,7 +937,7 @@ begin
   if FPreviousMenuItem <> nil then
     with FPreviousMenuItem do
     begin
-      Enabled    := (PageCount > 0);
+      Enabled    := (PageCount > 1);
       Caption    := TDIActions.PreviousTab.Caption;
       Visible    := TDIActions.PreviousTab.Visible;
       ImageIndex := TDIActions.PreviousTab.ImageIndex;
@@ -1017,35 +1035,26 @@ end ;
 procedure TTDINoteBook.RemovePage(Index : Integer) ;
 Var
   CanRemovePage : Boolean ;
-  LastPageCount : Integer ;
+  APage         : TTabSheet;
 begin
-  CanRemovePage := True;
+  CanRemovePage    := True;
   FIsRemovingAPage := True;
-
+  APage            := Pages[Index] ;
   try
     if ([csDesigning, csDestroying] * ComponentState = []) then
-      if Pages[Index] is TTDIPage then
-        with TTDIPage(Pages[Index]) do
+      if APage is TTDIPage then
+        with TTDIPage(APage) do
         begin
           if Assigned( FormInPage ) then
           begin
-            { // This code is ok, but calls CloseQuery twice //
-             CanRemovePage := FormInPage.CloseQuery ;
-             if CanRemovePage then
-               FormInPage.Close ;
-            }
-            LastPageCount := PageCount;
+            CanRemovePage := False;
             FormInPage.Close ;
-            CanRemovePage := (LastPageCount = PageCount ) and  // Page wasn't removed by Notification ?
-                             ( (not Assigned(FormInPage)) or   // Form Isn't valid ?
-                               ( not FormInPage.Showing )      // Form is not showing ?
-                             );
           end ;
         end ;
 
     if CanRemovePage then
     begin
-      inherited RemovePage(Index) ;
+      inherited RemovePage(APage.PageIndex) ;
 
       if PageCount < 1 then  // On this case, DoChange is not fired //
         CheckInterface;
@@ -1053,6 +1062,11 @@ begin
   finally
     FIsRemovingAPage := False;
   end ;
+end ;
+
+procedure TTDINoteBook.msg_ClosePage(var Msg : TLMessage) ;
+begin
+  RemovePage( Msg.lParam );
 end ;
 
 procedure TTDINoteBook.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
@@ -1118,10 +1132,7 @@ begin
      else if ([csDesigning, csDestroying] * ComponentState <> []) then
 
      else if (AComponent is TForm) then
-       RemoveInvalidPages
-
-     else if (AComponent is TTDIPage) and (not FIsRemovingAPage) then
-        RemovePage( TTDIPage( AComponent ).PageIndex ) ;
+       RemoveInvalidPages ;
   end ;
 end ;
 

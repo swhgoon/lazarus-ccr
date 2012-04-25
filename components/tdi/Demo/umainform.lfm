@@ -165,6 +165,18 @@ object fMainForm: TfMainForm
       TabOrder = 2
       Value = 1
     end
+    object Button1: TButton
+      AnchorSideTop.Control = pBottom
+      AnchorSideTop.Side = asrCenter
+      Left = 304
+      Height = 25
+      Top = 13
+      Width = 85
+      AutoSize = True
+      Caption = 'Free Form2'
+      OnClick = Button1Click
+      TabOrder = 3
+    end
   end
   object mEvents: TMemo
     Left = 584

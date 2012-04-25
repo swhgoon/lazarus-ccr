@@ -7,13 +7,20 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, uMainForm, uForm2
+  Forms, uMainForm, uForm2, sysutils
   { you can add units after this };
 
 {$R *.res}
 
+var
+   HeapTraceFile : String ;
 begin
-  RequireDerivedFormResource := True;
+
+   HeapTraceFile := ExtractFilePath(ParamStr(0))+ 'heaptrclog.trc' ;
+   DeleteFile( HeapTraceFile );
+   SetHeapTraceOutput( HeapTraceFile );
+
+   RequireDerivedFormResource := True;
   Application.Initialize;
   Application.CreateForm(TfMainForm, fMainForm) ;
   Application.CreateForm(TForm2, Form2) ;
