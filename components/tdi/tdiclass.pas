@@ -61,7 +61,6 @@ type
     fsFormOldClientRect : TRect;
     fsFormOldBorderStyle : TFormBorderStyle;
     fsLastActiveControl: TWinControl;
-    fsFormCloseAction: TCloseAction;
 
     procedure OnResizeTDIPage(Sender : TObject) ;
     procedure OnFormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -238,7 +237,6 @@ begin
   Self.OnResize := @OnResizeTDIPage ;
 
   fsLastActiveControl := nil ;
-  fsFormCloseAction   := caNone;
 end ;
 
 procedure TTDIPage.RestoreLastFocusedControl ;
@@ -345,18 +343,14 @@ begin
   if Assigned( fsFormOldCloseEvent ) then
      fsFormOldCloseEvent( Sender, CloseAction );
 
-  fsFormCloseAction := CloseAction;
-
-  if Assigned( fsFormInPage ) then
-  begin
+  if (CloseAction <> caFree) and Assigned( fsFormInPage ) then
     RestoreFormProperties;
 
-    fsFormInPage := nil;
+  fsFormInPage := nil;
 
-    // This will force this page be killed by TTDINoteBook.Notification();
-    if Assigned( Parent ) then
-      Parent.RemoveComponent( Self );
-  end ;
+  // This will force this page be killed by TTDINoteBook.Notification();
+  if Assigned( Parent ) then
+    Parent.RemoveComponent( Self );
 end ;
 
 procedure TTDIPage.SaveFormProperties ;
@@ -377,14 +371,11 @@ procedure TTDIPage.RestoreFormProperties ;
 begin
   if not Assigned( fsFormInPage ) then exit ;
 
-
-  if (fsFormCloseAction = caFree) or    // Form will be destroyed ?
-     ([csDesigning, csDestroying] * fsFormInPage.ComponentState <> []) then
+  if ([csDesigning, csDestroying] * fsFormInPage.ComponentState <> []) then
      exit ;
 
+  fsFormInPage.Visible     := False;  // This prevent OnFormShow be fired
   fsFormInPage.Parent      := fsFormOldParent;
-  fsFormInPage.Visible     := False;  // Setting new Parent for Visible = True ;
-
   fsFormInPage.Align       := fsFormOldAlign;
   fsFormInPage.BorderStyle := fsFormOldBorderStyle;
   fsFormInPage.Top         := fsFormOldClientRect.Top;
