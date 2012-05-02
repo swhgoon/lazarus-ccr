@@ -445,7 +445,11 @@ begin
           end;
         end;
       finally
+{$IFDEF NoAutomatedBookmark}
         if not Result and DataSet.BookmarkValid(PChar(Bookmark)) then
+{$ELSE}
+        if not Result and DataSet.BookmarkValid(Bookmark) then
+{$ENDIF}
           DataSet.GotoBookmark(Bookmark);
       end;
     finally

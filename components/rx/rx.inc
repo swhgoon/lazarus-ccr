@@ -50,3 +50,7 @@
 //
 {.$DEFINE DBDateEdit_OLD}
 
+{$if FPC_FULLVERSION<20701}
+  {$DEFINE NoAutomatedBookmark}
+{$endif}
+

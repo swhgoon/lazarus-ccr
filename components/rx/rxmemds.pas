@@ -125,7 +125,11 @@ type
     procedure CloseBlob(Field: TField); override;
     procedure GetBookmarkData(Buffer: PChar; Data: Pointer); override;
     function GetBookmarkFlag(Buffer: PChar): TBookmarkFlag; override;
+    {$IFDEF NoAutomatedBookmark}
     procedure InternalGotoBookmark(ABookmark: TBookmark); override;
+    {$ELSE}
+    procedure InternalGotoBookmark(ABookmark: Pointer); override;
+    {$ENDIF}
     procedure InternalSetToRecord(Buffer: PChar); override;
     procedure SetBookmarkFlag(Buffer: PChar; Value: TBookmarkFlag); override;
     procedure SetBookmarkData(Buffer: PChar; Data: Pointer); override;
@@ -1051,18 +1055,37 @@ end;
 
 function TRxMemoryData.BookmarkValid(ABookmark: TBookmark): Boolean;
 begin
+  {$IFDEF NoAutomatedBookmark}
   Result := FActive and (TBookmarkData(ABookmark^) > Low(Integer)) and
     (TBookmarkData(ABookmark^) <= FLastID);
+  {$ELSE}
+  Result := FActive and (TBookmarkData(pointer(ABookmark)^) > Low(Integer)) and
+    (TBookmarkData(pointer(ABookmark)^) <= FLastID);
+  {$ENDIF}
 end;
 
 function TRxMemoryData.CompareBookmarks(Bookmark1, Bookmark2: TBookmark): Integer;
 begin
   if (Bookmark1 = nil) and (Bookmark2 = nil) then Result := 0
-  else if (Bookmark1 <> nil) and (Bookmark2 = nil) then Result := 1
-  else if (Bookmark1 = nil) and (Bookmark2 <> nil) then Result := -1
-  else if TBookmarkData(Bookmark1^) > TBookmarkData(Bookmark2^) then
+  else
+  if (Bookmark1 <> nil) and (Bookmark2 = nil) then Result := 1
+  else
+  if (Bookmark1 = nil) and (Bookmark2 <> nil) then Result := -1
+  {$IFDEF NoAutomatedBookmark}
+  else
+  if TBookmarkData(Bookmark1^) > TBookmarkData(Bookmark2^) then
+  {$ELSE}
+  else
+  if TBookmarkData(pointer(Bookmark1)^) > TBookmarkData(pointer(Bookmark2)^) then
+  {$ENDIF}
     Result := 1
-  else if TBookmarkData(Bookmark1^) < TBookmarkData(Bookmark2^) then
+  {$IFDEF NoAutomatedBookmark}
+  else
+  if TBookmarkData(Bookmark1^) < TBookmarkData(Bookmark2^) then
+  {$ELSE}
+  else
+  if TBookmarkData(pointer(Bookmark1)^) < TBookmarkData(pointer(Bookmark2)^) then
+  {$ENDIF}
     Result := -1
   else Result := 0;
 end;
@@ -1089,7 +1112,11 @@ begin
   PMemBookmarkInfo(Buffer + FBookmarkOfs)^.BookmarkFlag := Value;
 end;
 
+{$IFDEF NoAutomatedBookmark}
 procedure TRxMemoryData.InternalGotoBookmark(ABookmark: TBookmark);
+{$ELSE}
+procedure TRxMemoryData.InternalGotoBookmark(ABookmark: Pointer);
+{$ENDIF}
 var
   Rec: TMemoryRecord;
   SavePos: Integer;
@@ -1365,7 +1392,11 @@ begin
           end;
         end;
       finally
+{$IFDEF NoAutomatedBookmark}
         if not Result and DataSet.BookmarkValid(PChar(Bookmark)) then
+{$ELSE}
+        if not Result and DataSet.BookmarkValid(Bookmark) then
+{$ENDIF}
           DataSet.GotoBookmark(Bookmark);
       end;
     finally
