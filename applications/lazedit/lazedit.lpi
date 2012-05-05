@@ -86,6 +86,7 @@
         <Filename Value="main.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="LazEditMainForm"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="main"/>
       </Unit1>

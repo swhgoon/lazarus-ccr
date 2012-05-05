@@ -1132,6 +1132,7 @@ begin
   NoteBook.OnStatusChange := @OnEditorStatusChange;
   NoteBook.OnBeforeCloseEditor := @OnBeforeCloseEditor;
   NoteBook.OnEditorCharsetChange := @OnCharsetChange;
+  NoteBook.EditorPopUpMenu := EditorPopupMenu;
 
   //Creating dialogs
   HtmlCharMapDlg := THtmlCharMapDlg.Create;
