@@ -17876,11 +17876,14 @@ begin
         Include(Result, sdLeft);
       if (ClientWidth + FEffectiveOffsetX < Integer(FRangeX)) and (X > ClientWidth - Integer(FDefaultNodeHeight)) then
         Include(Result, sdRight);
+      //lclheader
+      if (ClientHeight - FOffsetY < Integer(FRangeY)) and (Y > inherited GetClientRect.Bottom - Integer(FDefaultNodeHeight)) then
+        Include(Result, sdDown);
+      if hoVisible in FHeader.FOptions then
+        Dec(Y, FHeader.Height);
 
       if (Y < Integer(FDefaultNodeHeight)) and (FOffsetY <> 0) then
         Include(Result, sdUp);
-      if (ClientHeight - FOffsetY < Integer(FRangeY)) and (Y > ClientHeight - Integer(FDefaultNodeHeight)) then
-        Include(Result, sdDown);
 
       //todo: probably the code below is bug due to poor timeGetTime implementation
       // Since scrolling during dragging is not handled via the timer we do a check here whether the auto
@@ -19383,7 +19386,8 @@ var
 
 begin
   GetCursorPos(P);
-  R := ClientRect;
+  //lclheader
+  R := inherited GetClientRect;
   ClipRect := R;
   //todo: add MapWindowPoints to LCL??
   {$ifndef INCOMPLETE_WINAPI}
