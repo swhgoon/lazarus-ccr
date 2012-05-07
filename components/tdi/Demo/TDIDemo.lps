@@ -49,7 +49,7 @@
         <UnitName Value="uForm2"/>
         <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="79"/>
+        <TopLine Value="78"/>
         <CursorPos X="19" Y="82"/>
         <UsageCount Value="74"/>
         <Loaded Value="True"/>
@@ -61,10 +61,11 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uMainForm"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
-        <CursorPos X="26" Y="8"/>
+        <CursorPos X="19" Y="10"/>
         <UsageCount Value="73"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -72,11 +73,10 @@
       <Unit5>
         <Filename Value="..\tdiclass.pas"/>
         <UnitName Value="TDIClass"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="372"/>
-        <CursorPos X="41" Y="386"/>
+        <TopLine Value="371"/>
+        <CursorPos X="21" Y="382"/>
         <UsageCount Value="73"/>
         <Bookmarks Count="6">
           <Item0 X="3" Y="1041" ID="3"/>
@@ -694,7 +694,7 @@
     <General>
       <ActiveWindowIndexAtStart Value="0"/>
     </General>
-    <JumpHistory Count="29" HistoryIndex="28">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="..\tdiclass.pas"/>
         <Caret Line="741" Column="1" TopLine="737"/>
@@ -811,6 +811,10 @@
         <Filename Value="..\tdiclass.pas"/>
         <Caret Line="359" Column="26" TopLine="348"/>
       </Position29>
+      <Position30>
+        <Filename Value="umainform.pas"/>
+        <Caret Line="10" Column="19" TopLine="1"/>
+      </Position30>
     </JumpHistory>
   </ProjectSession>
 </CONFIG>

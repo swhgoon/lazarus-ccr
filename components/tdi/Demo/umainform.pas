@@ -18,11 +18,11 @@ type
     cbxBackgroundCorner : TComboBox ;
     Image1 : TImage ;
     ImageList1 : TImageList ;
-    IpHtmlPanel1 : TIpHtmlPanel ;
     Label1 : TLabel ;
     Label2 : TLabel ;
     Label3 : TLabel ;
     MainMenu1 : TMainMenu ;
+    Memo1 : TMemo ;
     MenuItem3 : TMenuItem ;
     mEvents : TMemo ;
     MenuItem1 : TMenuItem ;
