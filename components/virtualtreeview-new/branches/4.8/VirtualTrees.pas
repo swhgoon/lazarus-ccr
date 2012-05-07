@@ -17882,7 +17882,7 @@ begin
       if hoVisible in FHeader.FOptions then
         Dec(Y, FHeader.Height);
 
-      if (Y < Integer(FDefaultNodeHeight)) and (FOffsetY <> 0) then
+      if (Y > 0) and (Y < Integer(FDefaultNodeHeight)) and (FOffsetY <> 0) then
         Include(Result, sdUp);
 
       //todo: probably the code below is bug due to poor timeGetTime implementation
