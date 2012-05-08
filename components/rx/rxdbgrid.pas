@@ -409,6 +409,7 @@ type
     FAfterQuickSearch: TRxQuickSearchNotifyEvent;
     FBeforeQuickSearch: TRxQuickSearchNotifyEvent;
     FQuickUTF8Search: string;
+    FOldDataSetState:TDataSetState;
 
     procedure DoCreateJMenu;
     function GetColumns: TRxDbGridColumns;
@@ -2820,7 +2821,7 @@ begin
   if FInProcessCalc < 0 then
   begin
     FInProcessCalc := 0;
-    CalcStatTotals;
+    UpdateFooterRowOnUpdateActive;
   end
   else
   if Assigned(FFooterOptions) and FFooterOptions.Active and (FFooterOptions.RowCount > 0) and
@@ -3306,7 +3307,17 @@ end;
 
 procedure TRxDBGrid.UpdateFooterRowOnUpdateActive;
 begin
-  //
+  if Assigned(DataSource) then
+  begin
+    if DataSource.State <> FOldDataSetState then
+    begin
+      if (FOldDataSetState in dsEditModes) and (DataSource.State = dsBrowse) then
+        CalcStatTotals;
+      FOldDataSetState:=DataSource.State;
+    end;
+  end
+  else
+    FOldDataSetState:=dsInactive;
 end;
 
 procedure TRxDBGrid.GetOnCreateLookup;
