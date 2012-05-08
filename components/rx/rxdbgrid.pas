@@ -2824,8 +2824,8 @@ begin
     UpdateFooterRowOnUpdateActive;
   end
   else
-  if Assigned(FFooterOptions) and FFooterOptions.Active and (FFooterOptions.RowCount > 0) and
-       DatalinkActive and (DataSource.DataSet.State = dsBrowse) then
+  if Assigned(FFooterOptions) and FFooterOptions.Active and (FFooterOptions.RowCount > 0) {and
+       DatalinkActive and (DataSource.DataSet.State = dsBrowse) }then
     UpdateFooterRowOnUpdateActive;
 //    CalcStatTotals;
 end;
