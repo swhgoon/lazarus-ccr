@@ -79,6 +79,7 @@
         <Filename Value="fpvv_mainform.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmFPVViewer"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fpvv_mainform"/>
       </Unit1>

@@ -20,9 +20,13 @@ type
     btnContourLines: TButton;
     buttonRenderingTest: TButton;
     editFileName: TFileNameEdit;
+    Label2: TLabel;
+    Label3: TLabel;
     notebook: TNotebook;
     pageViewer: TPage;
     Page2: TPage;
+    spinAdjustY: TSpinEdit;
+    spinAdjustX: TSpinEdit;
     spinScale: TFloatSpinEdit;
     Label1: TLabel;
     DXFTreeView: TTreeView;
@@ -97,8 +101,8 @@ begin
     DrawFPVectorialToCanvas(
       Vec.GetPage(0),
       Drawer.Drawing.Canvas,
-      FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS,
-      Drawer.Drawing.Height - FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS,
+      FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS + spinAdjustX.Value,
+      Drawer.Drawing.Height - FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS + spinAdjustY.Value,
       spinScale.Value,
       -1 * spinScale.Value);
     Drawer.Invalidate;

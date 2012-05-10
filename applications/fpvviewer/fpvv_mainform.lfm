@@ -1,14 +1,14 @@
 object frmFPVViewer: TfrmFPVViewer
   Left = 322
-  Height = 473
+  Height = 538
   Top = 143
   Width = 485
   Caption = 'Free Pascal Vectorial Viewer'
-  ClientHeight = 473
+  ClientHeight = 538
   ClientWidth = 485
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object editFileName: TFileNameEdit
     Left = 8
     Height = 21
@@ -34,7 +34,7 @@ object frmFPVViewer: TfrmFPVViewer
   object spinScale: TFloatSpinEdit
     Left = 72
     Height = 21
-    Top = 72
+    Top = 97
     Width = 168
     DecimalPlaces = 6
     Increment = 0.1
@@ -47,7 +47,7 @@ object frmFPVViewer: TfrmFPVViewer
   object Label1: TLabel
     Left = 8
     Height = 14
-    Top = 79
+    Top = 97
     Width = 45
     Caption = 'Scale by:'
     ParentColor = False
@@ -67,8 +67,8 @@ object frmFPVViewer: TfrmFPVViewer
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 369
-    Top = 104
+    Height = 410
+    Top = 128
     Width = 485
     PageIndex = 0
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -108,10 +108,46 @@ object frmFPVViewer: TfrmFPVViewer
   object btnContourLines: TButton
     Left = 256
     Height = 25
-    Top = 71
+    Top = 97
     Width = 224
     Caption = 'Generate Contour Lines'
     OnClick = btnContourLinesClick
     TabOrder = 7
+  end
+  object Label2: TLabel
+    Left = 8
+    Height = 14
+    Top = 72
+    Width = 68
+    Caption = 'Y adjustment:'
+    ParentColor = False
+  end
+  object spinAdjustY: TSpinEdit
+    Left = 80
+    Height = 21
+    Top = 72
+    Width = 72
+    Increment = 100
+    MaxValue = 1000
+    MinValue = -1000
+    TabOrder = 8
+  end
+  object spinAdjustX: TSpinEdit
+    Left = 232
+    Height = 21
+    Top = 72
+    Width = 72
+    Increment = 50
+    MaxValue = 1000
+    MinValue = -1000
+    TabOrder = 9
+  end
+  object Label3: TLabel
+    Left = 160
+    Height = 14
+    Top = 72
+    Width = 68
+    Caption = 'X adjustment:'
+    ParentColor = False
   end
 end
