@@ -14726,9 +14726,9 @@ begin
         end;
       dmFindTarget:
         begin
-          Result := Integer(ControlAtPos(ScreenToClient(APosition), False));
+          Result := LRESULT(ControlAtPos(ScreenToClient(APosition), False));
           if Result = 0 then
-            Result := Integer(Self);
+            Result := LRESULT(Self);
 
           // This is a reliable place to check whether VCL drag has
           // really begun.
