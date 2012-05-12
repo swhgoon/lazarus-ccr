@@ -8522,7 +8522,6 @@ var
   RequestedElements,
   ActualElements: THeaderPaintElements;
 
-  SavedDC: Integer;
   Temp: TRect;
   ColCaptionText: String;
   ColImages: TCustomImageList;
@@ -8852,9 +8851,9 @@ begin
 
               if ActualElements <> [] then
               begin
-                SavedDC := SaveDC(Handle);
+                SaveHandleState;
                 FHeader.Treeview.DoAdvancedHeaderDraw(PaintInfo, ActualElements);
-                RestoreDC(Handle, SavedDC);
+                RestoreHandleState;
               end;
             end
             else // Let application draw the header.
