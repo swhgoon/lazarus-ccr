@@ -289,14 +289,14 @@ unit VirtualTrees;
 // For full document history see help file.
 //
 // Credits for their valuable assistance and code donations go to:
-//   Freddy Ertl, Marian Aldenhövel, Thomas Bogenrieder, Jim Kuenemann, Werner Lehmann, Jens Treichler,
-//   Paul Gallagher (IBO tree), Ondrej Kelle, Ronaldo Melo Ferraz, Heri Bender, Roland Bedürftig (BCB)
+//   Freddy Ertl, Marian Aldenhï¿½vel, Thomas Bogenrieder, Jim Kuenemann, Werner Lehmann, Jens Treichler,
+//   Paul Gallagher (IBO tree), Ondrej Kelle, Ronaldo Melo Ferraz, Heri Bender, Roland Bedï¿½rftig (BCB)
 //   Anthony Mills, Alexander Egorushkin (BCB), Mathias Torell (BCB), Frank van den Bergh, Vadim Sedulin, Peter Evans,
 //   Milan Vandrovec (BCB), Steve Moss, Joe White, David Clark, Anders Thomsen, Igor Afanasyev, Eugene Programmer,
 //   Corbin Dunn, Richard Pringle, Uli Gerhardt, Azza, Igor Savkic, Daniel Bauten, Timo Tegtmeier, Dmitry Zegebart,
 //   Andreas Hausladen
 // Beta testers:
-//   Freddy Ertl, Hans-Jürgen Schnorrenberg, Werner Lehmann, Jim Kueneman, Vadim Sedulin, Moritz Franckenstein,
+//   Freddy Ertl, Hans-Jï¿½rgen Schnorrenberg, Werner Lehmann, Jim Kueneman, Vadim Sedulin, Moritz Franckenstein,
 //   Wim van der Vegt, Franc v/d Westelaken
 // Indirect contribution (via publicly accessible work of those persons):
 //   Alex Denissov, Hiroyuki Hori (MMXAsm expert)
@@ -310,7 +310,7 @@ unit VirtualTrees;
 // Accessability implementation:
 //   Marco Zehe (with help from Sebastian Modersohn)
 // LCL Port:
-//   Luiz Américo Pereira Câmara
+//   Luiz Amï¿½rico Pereira Cï¿½mara
 //----------------------------------------------------------------------------------------------------------------------
 
 interface
@@ -2466,7 +2466,7 @@ type
     procedure StaticBackground(Source: TBitmap; Target: TCanvas; const Offset: TPoint; const R: TRect);
     procedure TileBackground(Source: TBitmap; Target: TCanvas; const Offset: TPoint; R: TRect);
     function ToggleCallback(Step, StepSize: Integer; Data: Pointer): Boolean;
-
+  protected
     procedure CMColorChange(var Message: TLMessage); message CM_COLORCHANGED;
     procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
     procedure CMDenySubclassing(var Message: TLMessage); message CM_DENYSUBCLASSING;
@@ -2525,7 +2525,6 @@ type
     {$endif}
     {$endif ThemeSupport}
     procedure WMVScroll(var Message: TLMVScroll); message LM_VSCROLL;
-  protected
     procedure AddToSelection(Node: PVirtualNode); overload; virtual;
     procedure AddToSelection(const NewItems: TNodeArray; NewLength: Integer; ForceInsert: Boolean = False); overload; virtual;
     procedure AdjustPaintCellRect(var PaintInfo: TVTPaintInfo; out NextNonEmpty: TColumnIndex); virtual;
@@ -3922,7 +3921,7 @@ const
 
   // Do not modify the copyright in any way! Usage of this unit is prohibited without the copyright notice
   // in the compiled binary file.
-  Copyright: string = 'Virtual Treeview © 1999, 2010 Mike Lischke';
+  Copyright: string = 'Virtual Treeview ï¿½ 1999, 2010 Mike Lischke';
 
 var
   //Workaround to LCL bug 8553
@@ -19373,7 +19372,6 @@ begin
   //lclheader
   R := inherited GetClientRect;
   ClipRect := R;
-  //todo: add MapWindowPoints to LCL??
   {$ifndef INCOMPLETE_WINAPI}
   MapWindowPoints(Handle, 0, R, 2);
   {$endif}
@@ -19825,6 +19823,8 @@ var
 
 begin
   //{$ifdef DEBUG_VTV}Logger.EnterMethod([lcDrag],'DragOver');{$endif}
+  //todo: the check to FDragManager disable drag images in non windows.
+  //This should be reviewed as soon as drag image is implemented in non windows
   if Assigned(FDragManager) and not VTVDragManager.DropTargetHelperSupported and (Source is TBaseVirtualTree) then
   begin
     Tree := Source as TBaseVirtualTree;
@@ -31687,7 +31687,7 @@ function TCustomVirtualStringTree.ContentToHTML(Source: TVSTTextSourceType; cons
 
 // Renders the current tree content (depending on Source) as HTML text encoded in UTF-8.
 // If Caption is not empty then it is used to create and fill the header for the table built here.
-// Based on ideas and code from Frank van den Bergh and Andreas Hörstemeier.
+// Based on ideas and code from Frank van den Bergh and Andreas Hï¿½rstemeier.
 
 var
   Buffer: TBufferedUTF8String;
@@ -32101,7 +32101,7 @@ end;
 function TCustomVirtualStringTree.ContentToRTF(Source: TVSTTextSourceType): AnsiString;
 
 // Renders the current tree content (depending on Source) as RTF (rich text).
-// Based on ideas and code from Frank van den Bergh and Andreas Hörstemeier.
+// Based on ideas and code from Frank van den Bergh and Andreas Hï¿½rstemeier.
 
 var
   Fonts: TStringList;
