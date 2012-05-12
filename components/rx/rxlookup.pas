@@ -913,7 +913,7 @@ begin
     F:=LookupSource.DataSet.FieldByName(FFieldList[i]);
     S := FValuesList[i];
 
-    if FPopUpFormOptions.Columns.Count>i then
+    if (FPopUpFormOptions.Columns.Count>i) and (I<LastIndex) then
       W := FPopUpFormOptions.Columns[i].Width
     else
     begin

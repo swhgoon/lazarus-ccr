@@ -416,6 +416,7 @@ type
     function GetFooterColor: TColor;
     function GetFooterRowCount: integer;
     function GetPropertyStorage: TCustomPropertyStorage;
+    function GetSortField: string;
     function GetTitleButtons: boolean;
     function IsColumnsStored: boolean;
     procedure SetAutoSort(const AValue: boolean);
@@ -508,16 +509,23 @@ type
     procedure Loaded; override;
     procedure UpdateFooterRowOnUpdateActive;
   public
-    procedure FilterRec(DataSet: TDataSet; var Accept: boolean);
-
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    procedure FilterRec(DataSet: TDataSet; var Accept: boolean);
     function EditorByStyle(Style: TColumnButtonStyle): TWinControl; override;
     procedure LayoutChanged; override;
     procedure ShowFindDialog;
     procedure ShowColumnsDialog;
     function ColumnByFieldName(AFieldName: string): TRxColumn;
     function ColumnByCaption(ACaption: string): TRxColumn;
+    procedure CalcStatTotals;
+    procedure OptimizeColumnsWidth(AColList: string);
+    procedure OptimizeColumnsWidthAll;
+    procedure UpdateTitleHight;
+    procedure GetOnCreateLookup;
+    procedure GetOnDisplayLookup;
+
     property Canvas;
     property DefaultTextStyle;
     property EditorBorderStyle;
@@ -526,14 +534,10 @@ type
     property FastEditing;
     property FocusRectVisible;
     property SelectedRows;
-    procedure CalcStatTotals;
-    procedure OptimizeColumnsWidth(AColList: string);
-    procedure OptimizeColumnsWidthAll;
-    procedure UpdateTitleHight;
     property QuickUTF8Search: string read FQuickUTF8Search write SetQuickUTF8Search;
+    property SortField:string read GetSortField;
+    property SortOrder:TSortMarker read FSortOrder;
 
-    procedure GetOnCreateLookup;
-    procedure GetOnDisplayLookup;
   published
     property AfterQuickSearch: TRxQuickSearchNotifyEvent
       read FAfterQuickSearch write FAfterQuickSearch;
@@ -1302,6 +1306,14 @@ end;
 function TRxDBGrid.GetPropertyStorage: TCustomPropertyStorage;
 begin
   Result := FPropertyStorageLink.Storage;
+end;
+
+function TRxDBGrid.GetSortField: string;
+begin
+  if Assigned(FSortField) then
+    Result:=FSortField.FieldName
+  else
+    Result:='';
 end;
 
 function TRxDBGrid.GetTitleButtons: boolean;
