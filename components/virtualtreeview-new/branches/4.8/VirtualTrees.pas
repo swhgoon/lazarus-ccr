@@ -9697,7 +9697,8 @@ begin
   Result := False;
   with Message do
   begin
-    P := Point(XPos, YPos);
+    //lclheader
+    P := Point(XPos, YPos - Treeview.FHeader.Height);
     if hsColumnWidthTrackPending in FStates then
     begin
       KillTimer(Treeview.Handle, HeaderTimer);
@@ -10106,42 +10107,36 @@ begin
 
         P := Point(XPos,YPos);
         //P := Treeview.ScreenToClient(Point(XPos, YPos));
-        if not InHeader(P) then
-          Exit;
-        Treeview.DoHeaderMouseMove(GetShiftState, P.X, P.Y);
-        if ((AdjustHoverColumn(P)) or ((FDownIndex >= 0) and (FHoverIndex <> FDownIndex))) then
+        IsInHeader := InHeader(P);
+        if IsInHeader then
         begin
-          // We need a mouse leave detection from here for the non client area. The best solution available would be the
-          // TrackMouseEvent API. Unfortunately, it leaves Win95 totally and WinNT4 for non-client stuff out and
-          // currently I cannot ignore these systems. Hence I go the only other reliable way and use a timer
-          // (although, I don't like it...).
-          KillTimer(Treeview.Handle, HeaderTimer);
-          SetTimer(Treeview.Handle, HeaderTimer, 50, nil);
-          // todo: under lcl, the hint is show even if HintMouseMessage is not implemented
-          // Is it necessary here?
-          // use Delphi's internal hint handling for header hints too
-          if hoShowHint in FOptions then
+          Treeview.DoHeaderMouseMove(GetShiftState, P.X, P.Y);
+          if ((AdjustHoverColumn(P)) or ((FDownIndex >= 0) and (FHoverIndex <> FDownIndex))) then
           begin
-            // client coordinates!
-            XPos := P.x;
-            YPos := P.y;
-            Application.HintMouseMessage(Treeview, Message);
+            // We need a mouse leave detection from here for the non client area. The best solution available would be the
+            // TrackMouseEvent API. Unfortunately, it leaves Win95 totally and WinNT4 for non-client stuff out and
+            // currently I cannot ignore these systems. Hence I go the only other reliable way and use a timer
+            // (although, I don't like it...).
+            KillTimer(Treeview.Handle, HeaderTimer);
+            SetTimer(Treeview.Handle, HeaderTimer, 50, nil);
+            // todo: under lcl, the hint is show even if HintMouseMessage is not implemented
+            // Is it necessary here?
+            // use Delphi's internal hint handling for header hints too
+            if hoShowHint in FOptions then
+            begin
+              // client coordinates!
+              XPos := P.x;
+              YPos := P.y;
+              Application.HintMouseMessage(Treeview, Message);
+            end;
           end;
         end;
         //Adjust Cursor
         if not (csDesigning in FOwner.ComponentState) and (FStates = []) then
         begin
-          //lcl: The code above already did these checks
-          {
-          // Retrieve last cursor position (GetMessagePos does not work here, I don't know why).
-          GetCursorPos(P);
-          // Is the mouse in the header rectangle?
-          P := Treeview.ScreenToClient(P);
-          if InHeader(P) then
-          }
-          //todo: see a way to store the  user defined cursor.
-          IsHSplitterHit := HSplitterHit;
-          IsVSplitterHit := InHeaderSplitterArea(P) and (hoHeightResize in FOptions);
+          //todo: see a way to store the user defined cursor.
+          IsHSplitterHit := IsInHeader and HSplitterHit;
+          IsVSplitterHit := (hoHeightResize in FOptions) and InHeaderSplitterArea(P);
           
           if IsVSplitterHit or IsHSplitterHit then
           begin
@@ -10582,26 +10577,15 @@ function TVTHeader.InHeaderSplitterArea(P: TPoint): Boolean;
 // Determines whether the given point (client coordinates!) hits the horizontal splitter area of the header.
 
 var
-  R, RW: TRect;
+  R: TRect;
 
 begin
-  //todo: see if is necessary MapWindowPoints
-  if (P.Y > 2) or (P.Y < -2) or not (hoVisible in FOptions) then
-    Result := False
-  else
+  Result := (hoVisible in FOptions);
+  if Result then
   begin
     R := Treeview.FHeaderRect;
+    R.Top := R.Bottom - 2;
     Inc(R.Bottom, 2);
-
-    // Current position of the owner in screen coordinates.
-    GetWindowRect(Treeview.Handle, RW);
-
-    {$ifndef INCOMPLETE_WINAPI}
-    // Convert to client coordinates.
-    MapWindowPoints(0, Treeview.Handle, RW, 2);
-    {$endif}
-    // Consider the header within this rectangle.
-    OffsetRect(R, RW.Left, RW.Top);
     Result := PtInRect(R, P);
   end;
 end;
