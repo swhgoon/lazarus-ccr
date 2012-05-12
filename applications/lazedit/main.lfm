@@ -1859,6 +1859,7 @@ object LazEditMainForm: TLazEditMainForm
   end
   object EditorPopupMenu: TPopupMenu
     Images = MainToolbarImageList
+    OnPopup = TopLevelMenuClick
     left = 432
     top = 224
     object mnuEditPopupCopy: TMenuItem
