@@ -151,8 +151,13 @@ begin
 end;
 
 function TPictureDlgForm.GetSrc: String;
+var
+  S: String;
 begin
-  Result := UrlEscape(SrcEdit.Text);
+  S := Trim(DefFolderEdit.Text);
+  if (S <> '') then S := IncludeTrailingPathDelimiter(S);
+  S := S + SrcEdit.Text;
+  Result := UrlEscape(S);
 end;
 
 function TPictureDlgForm.GetTitle: String;
