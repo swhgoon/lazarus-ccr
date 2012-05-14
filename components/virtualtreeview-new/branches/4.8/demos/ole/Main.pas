@@ -71,7 +71,7 @@ type
     procedure AddUnicodeText(DataObject: IDataObject; Target: TVirtualStringTree; Mode: TVTNodeAttachMode);
     procedure AddVCLText(Target: TVirtualStringTree; const Text: String; Mode: TVTNodeAttachMode);
     function FindCPFormatDescription(CPFormat: Word): string;
-    procedure InsertData(Sender: TVirtualStringTree; DataObject: IDataObject; Formats: TFormatArray; Effect: Integer;
+    procedure InsertData(Sender: TVirtualStringTree; DataObject: IDataObject; Formats: TFormatArray; Effect: LongWord;
       Mode: TVTNodeAttachMode);
   end;
 
@@ -633,7 +633,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TMainForm.InsertData(Sender: TVirtualStringTree; DataObject: IDataObject; Formats: TFormatArray;
-  Effect: Integer; Mode: TVTNodeAttachMode);
+  Effect: LongWord; Mode: TVTNodeAttachMode);
 
 var
   FormatAccepted: Boolean;

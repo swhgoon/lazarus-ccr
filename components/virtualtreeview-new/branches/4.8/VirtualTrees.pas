@@ -947,10 +947,10 @@ type
 
   IDropTargetHelper = interface(IUnknown)
     [SID_IDropTargetHelper]
-    function DragEnter(hwndTarget: HWND; pDataObject: IDataObject; var ppt: TPoint; dwEffect: Integer): HRESULT; stdcall;
+    function DragEnter(hwndTarget: HWND; pDataObject: IDataObject; var ppt: TPoint; dwEffect: LongWord): HRESULT; stdcall;
     function DragLeave: HRESULT; stdcall;
-    function DragOver(var ppt: TPoint; dwEffect: Integer): HRESULT; stdcall;
-    function Drop(pDataObject: IDataObject; var ppt: TPoint; dwEffect: Integer): HRESULT; stdcall;
+    function DragOver(var ppt: TPoint; dwEffect: LongWord): HRESULT; stdcall;
+    function Drop(pDataObject: IDataObject; var ppt: TPoint; dwEffect: LongWord): HRESULT; stdcall;
     function Show(fShow: Boolean): HRESULT; stdcall;
   end;
 
@@ -1046,8 +1046,13 @@ type
     function DragOver(KeyState: LongWord; Pt: TPoint; var Effect: LongWord): HResult; stdcall;
     function Drop(const DataObject: IDataObject; KeyState: LongWord; Pt: TPoint; var Effect: LongWord): HResult; stdcall;
     procedure ForceDragLeave; stdcall;
-    function GiveFeedback(Effect: Integer): HResult; stdcall;
-    function QueryContinueDrag(EscapePressed: BOOL; KeyState: Integer): HResult; stdcall;
+    {$IF (FPC_FULLVERSION < 020701) and DEFINED(LCLWin32)}
+    function GiveFeedback(Effect: Longint): HResult; stdcall;
+    function QueryContinueDrag(EscapePressed: BOOL; KeyState: Longint): HResult; stdcall;
+    {$ELSE}
+    function GiveFeedback(Effect: LongWord): HResult; stdcall;
+    function QueryContinueDrag(EscapePressed: BOOL; KeyState: LongWord): HResult; stdcall;
+    {$ENDIF}
   end;
 
   PVTHintData = ^TVTHintData;
@@ -2012,9 +2017,9 @@ type
   TVTDragAllowedEvent = procedure(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
     var Allowed: Boolean) of object;
   TVTDragOverEvent = procedure(Sender: TBaseVirtualTree; Source: TObject; Shift: TShiftState; State: TDragState;
-    const Pt: TPoint; Mode: TDropMode; var Effect: Integer; var Accept: Boolean) of object;
+    const Pt: TPoint; Mode: TDropMode; var Effect: LongWord; var Accept: Boolean) of object;
   TVTDragDropEvent = procedure(Sender: TBaseVirtualTree; Source: TObject; DataObject: IDataObject;
-    Formats: TFormatArray; Shift: TShiftState; const Pt: TPoint; var Effect: Integer; Mode: TDropMode) of object;
+    Formats: TFormatArray; Shift: TShiftState; const Pt: TPoint; var Effect: LongWord; Mode: TDropMode) of object;
   TVTRenderOLEDataEvent = procedure(Sender: TBaseVirtualTree; const FormatEtcIn: TFormatEtc; out Medium: TStgMedium;
     ForClipboard: Boolean; var Result: HRESULT) of object;
   TVTGetUserClipboardFormatsEvent = procedure(Sender: TBaseVirtualTree; var Formats: TFormatEtcArray) of object;
@@ -2660,15 +2665,15 @@ type
     procedure DoTimerScroll; virtual;
     procedure DoUpdating(State: TVTUpdateState); virtual;
     function DoValidateCache: Boolean; virtual;
-    procedure DragAndDrop(AllowedEffects: Integer; DataObject: IDataObject;
-      DragEffect: Integer); virtual;
+    procedure DragAndDrop(AllowedEffects: LongWord; DataObject: IDataObject;
+      DragEffect: LongWord); virtual;
     procedure DragCanceled; override;
-    function DragDrop(const DataObject: IDataObject; KeyState: Integer; Pt: TPoint;
+    function DragDrop(const DataObject: IDataObject; KeyState: LongWord; Pt: TPoint;
       var Effect: LongWord): HResult; reintroduce; virtual;
-    function DragEnter(KeyState: Integer; Pt: TPoint; var Effect: LongWord): HResult; virtual;
+    function DragEnter(KeyState: LongWord; Pt: TPoint; var Effect: LongWord): HResult; virtual;
     procedure DragFinished; virtual;
     procedure DragLeave; virtual;
-    function DragOver(Source: TObject; KeyState: Integer; DragState: TDragState; Pt: TPoint;
+    function DragOver(Source: TObject; KeyState: LongWord; DragState: TDragState; Pt: TPoint;
       var Effect: LongWord): HResult; reintroduce; virtual;
     procedure DrawDottedHLine(const PaintInfo: TVTPaintInfo; Left, Right, Top: Integer); virtual;
     procedure DrawDottedVLine(const PaintInfo: TVTPaintInfo; Top, Bottom, Left: Integer); virtual;
@@ -2744,7 +2749,7 @@ type
     procedure StartWheelPanning(const Position: TPoint); virtual;
     procedure StopWheelPanning; virtual;
     procedure StructureChange(Node: PVirtualNode; Reason: TChangeReason); virtual;
-    function SuggestDropEffect(Source: TObject; Shift: TShiftState; const Pt: TPoint; AllowedEffects: Integer): Integer; virtual;
+    function SuggestDropEffect(Source: TObject; Shift: TShiftState; const Pt: TPoint; AllowedEffects: LongWord): LongWord; virtual;
     procedure ToggleSelection(StartNode, EndNode: PVirtualNode); virtual;
     procedure UnselectNodes(StartNode, EndNode: PVirtualNode); virtual;
     //lcl
@@ -3059,7 +3064,7 @@ type
     {$ifdef EnablePrint}
     procedure Print(Printer: TPrinter; PrintHeader: Boolean);
     {$endif}
-    function ProcessDrop(DataObject: IDataObject; TargetNode: PVirtualNode; var Effect: Integer; Mode:
+    function ProcessDrop(DataObject: IDataObject; TargetNode: PVirtualNode; var Effect: LongWord; Mode:
       TVTNodeAttachMode): Boolean;
     function ProcessOLEData(Source: TBaseVirtualTree; DataObject: IDataObject; TargetNode: PVirtualNode;
       Mode: TVTNodeAttachMode; Optimized: Boolean): Boolean;
@@ -14653,7 +14658,7 @@ function TBaseVirtualTree.DoDragMsg(ADragMessage: TDragMessage; APosition: TPoin
 
 var
   S: TObject;
-  ShiftState: Integer;
+  KeyState: LongWord;
   P: TPoint;
   Formats: TFormatArray;
 
@@ -14683,18 +14688,18 @@ begin
             with ScreenToClient(APosition) do
               DoAutoScroll(X, Y);
 
-          ShiftState := 0;
+          KeyState := 0;
           // Alt key will be queried by the KeysToShiftState function in DragOver.
           if GetKeyState(VK_SHIFT) < 0 then
-            ShiftState := ShiftState or MK_SHIFT;
+            KeyState := KeyState or MK_SHIFT;
           if GetKeyState(VK_CONTROL) < 0 then
-            ShiftState := ShiftState or MK_CONTROL;
+            KeyState := KeyState or MK_CONTROL;
 
           // Allowed drop effects are simulated for VCL dd.
-          Result := DROPEFFECT_MOVE or DROPEFFECT_COPY;
-          DragOver(S, ShiftState, TDragState(ADragMessage), APosition, LongWord(Result));
+          FVCLDragEffect := DROPEFFECT_MOVE or DROPEFFECT_COPY;
+          DragOver(S, KeyState, TDragState(ADragMessage), APosition, FVCLDragEffect);
+          Result := LRESULT(FVCLDragEffect);
           FLastVCLDragTarget := FDropTargetNode;
-          FVCLDragEffect := LongWord(Result);
           if (ADragMessage = dmDragLeave) and Assigned(FDropTargetNode) then
           begin
             InvalidateNode(FDropTargetNode);
@@ -14703,12 +14708,12 @@ begin
         end;
       dmDragDrop:
         begin
-          ShiftState := 0;
+          KeyState := 0;
           // Alt key will be queried by the KeysToShiftState function in DragOver
           if GetKeyState(VK_SHIFT) < 0 then
-            ShiftState := ShiftState or MK_SHIFT;
+            KeyState := KeyState or MK_SHIFT;
           if GetKeyState(VK_CONTROL) < 0 then
-            ShiftState := ShiftState or MK_CONTROL;
+            KeyState := KeyState or MK_CONTROL;
 
           // allowed drop effects are simulated for VCL dd,
           // replace target node with cached node from other VCL dd messages
@@ -14716,7 +14721,7 @@ begin
             InvalidateNode(FDropTargetNode);
           FDropTargetNode := FLastVCLDragTarget;
           P := ScreenToClient(APosition);
-          DoDragDrop(S, nil, Formats, KeysToShiftState(ShiftState), P, FVCLDragEffect, FLastDropMode);
+          DoDragDrop(S, nil, Formats, KeysToShiftState(KeyState), P, FVCLDragEffect, FLastDropMode);
           if Assigned(FDropTargetNode) then
           begin
             InvalidateNode(FDropTargetNode);
@@ -18266,7 +18271,7 @@ procedure TBaseVirtualTree.DoDragging(P: TPoint);
 
   //--------------- local function --------------------------------------------
 
-  function GetDragOperations: Integer;
+  function GetDragOperations: LongWord;
 
   begin
     if FDragOperations = [] then
@@ -18286,9 +18291,8 @@ procedure TBaseVirtualTree.DoDragging(P: TPoint);
   //--------------- end local function ----------------------------------------
 
 var
-  DragEffect: LongWord;
-  I,
-  AllowedEffects: Integer;
+  DragEffect, AllowedEffects: LongWord;
+  I: Integer;
   DragObject: TDragObject;
 
   DataObject: IDataObject;
@@ -19595,8 +19599,8 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.DragAndDrop(AllowedEffects: Integer;
-  DataObject: IDataObject; DragEffect: Integer);
+procedure TBaseVirtualTree.DragAndDrop(AllowedEffects: LongWord;
+  DataObject: IDataObject; DragEffect: LongWord);
 
 begin
   {$ifdef Windows}
@@ -19618,7 +19622,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TBaseVirtualTree.DragDrop(const DataObject: IDataObject; KeyState: Integer; Pt: TPoint;
+function TBaseVirtualTree.DragDrop(const DataObject: IDataObject; KeyState: LongWord; Pt: TPoint;
   var Effect: LongWord): HResult;
 
 var
@@ -19685,7 +19689,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TBaseVirtualTree.DragEnter(KeyState: Integer; Pt: TPoint; var Effect: LongWord): HResult;
+function TBaseVirtualTree.DragEnter(KeyState: LongWord; Pt: TPoint; var Effect: LongWord): HResult;
 
 // callback routine for the drop target interface
 
@@ -19797,7 +19801,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TBaseVirtualTree.DragOver(Source: TObject; KeyState: Integer; DragState: TDragState; Pt: TPoint;
+function TBaseVirtualTree.DragOver(Source: TObject; KeyState: LongWord; DragState: TDragState; Pt: TPoint;
   var Effect: LongWord): HResult;
 
 // callback routine for the drop target interface
@@ -23338,7 +23342,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 function TBaseVirtualTree.SuggestDropEffect(Source: TObject; Shift: TShiftState; const Pt: TPoint;
-  AllowedEffects: Integer): Integer;
+  AllowedEffects: LongWord): LongWord;
 
 // determines the drop action to take if the drag'n drop operation ends on this tree
 // Note: Source can be any Delphi object not just a virtual tree
@@ -29036,7 +29040,7 @@ end;
 {$endif}
 //----------------------------------------------------------------------------------------------------------------------
 
-function TBaseVirtualTree.ProcessDrop(DataObject: IDataObject; TargetNode: PVirtualNode; var Effect: Integer;
+function TBaseVirtualTree.ProcessDrop(DataObject: IDataObject; TargetNode: PVirtualNode; var Effect: LongWord;
   Mode: TVTNodeAttachMode): Boolean;
 
 // Recreates the (sub) tree structure serialized into memory and provided by DataObject. The new nodes are attached to
