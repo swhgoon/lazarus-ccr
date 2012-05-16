@@ -28840,6 +28840,9 @@ begin
     with TreeRect do
     begin
       PaintRect := TreeRect;
+      //lclheader
+      if hoVisible in FHeader.Options then
+        OffsetRect(PaintRect, 0, -FHeader.Height);
       if Left < 0 then
       begin
         PaintTarget.X := -Left;
@@ -28849,7 +28852,7 @@ begin
         PaintTarget.X := 0;
       if Top < 0 then
       begin
-        PaintTarget.Y := -Top;
+        PaintTarget.Y := -PaintRect.Top;
         PaintRect.Top := 0;
       end
       else
