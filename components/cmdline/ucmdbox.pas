@@ -2887,6 +2887,7 @@ begin
       ScrollBarPosition(SB_VERT, 0);
       ScrollBarRange(SB_VERT, 0, FPageHeight);
       ShowScrollBar(Handle, SB_VERT, True); { Disable the Scrollbar ! }
+      ShowScrollBar(Handle, SB_HORZ, False);
     end;
   end
   else
@@ -2895,6 +2896,7 @@ begin
     begin
       ScrollBarRange(SB_VERT, FVisibleLineCount, FPageHeight);
       ShowScrollBar(Handle, SB_VERT, True);
+      ShowScrollBar(Handle, SB_HORZ, False);
     end;
   end;
   Invalidate;
