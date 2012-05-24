@@ -483,6 +483,9 @@ type
     property Doc: TPdfDoc read GetDoc;
     property PageWidth: integer read GetPageWidth write SetPageWidth;
     property PageHeight: integer read GetPageHeight write SetPageHeight;
+
+    {* Text rotated up *}
+    procedure TextOutRotatedUp(X, Y: Single; Text: string);
   end;
 
   TPdfDictionaryWrapper = class(TPersistent)
@@ -2257,6 +2260,14 @@ begin
       inc(i);
 
    Index := i + 1;
+end;
+
+procedure TPdfCanvas.TextOutRotatedUp(X, Y: Single; Text: string);
+begin
+  BeginText;
+  SetTextMatrix(0, 1, -1, 0, X, Y); //  down to up
+  ShowText(Text);
+  EndText;
 end;
 
 // GetDoc

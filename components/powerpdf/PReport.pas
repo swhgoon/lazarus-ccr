@@ -401,6 +401,7 @@ type
     FWordwrap: boolean;
     FLeading: Single;
     FLines: TStrings;
+    FAngle: integer;
     procedure SetLeading(Value: Single);
     procedure SetWordwrap(Value: boolean);
     procedure SetLines(Value: TStrings);
@@ -414,6 +415,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Text: string read GetText write SetText;
+    property Angle: integer read Fangle write Fangle;
   published
     property Leading: Single read FLeading write SetLeading;
     property Lines: TStrings read GetLines write SetLines;
@@ -2021,7 +2023,10 @@ begin
     SetWordSpace(WordSpace);
     SetLeading(Leading);
     Attribute.FontUnderline:=FontUnderline;
-
+    // Only one line of text rotated for now. It's the begining
+    if Angle=90 then
+      TextOutRotatedUp(Left + FontSize,  GetPage.Height- Top, Text)
+    else
     with ARect do
       MultilineTextRect(_PdfRect(Left, GetPage.Height- Top, Right, GetPage.Height- Bottom),
         Text, WordWrap);
