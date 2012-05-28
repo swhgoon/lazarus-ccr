@@ -6,6 +6,7 @@
 *.csv
 *.lpk
 csvdocument/demo/csvdemo.res
+csvdocument/demo/csvdemo_lazarus_0_9_30.res
 csvdocument/testsuite/tests/msexcel/
 csvdocument/testsuite/tests/oocalc/
 csvdocument/testsuite/tests/rfc4180/
