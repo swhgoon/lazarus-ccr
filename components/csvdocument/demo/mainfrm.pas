@@ -109,6 +109,7 @@ procedure TfmCSVTest.btnLoadClick(Sender: TObject);
 begin
   if OpenDialog.Execute then
     FDoc.LoadFromFile(OpenDialog.FileName);
+  UpdateView;
 end;
 
 procedure TfmCSVTest.UpdateView;
