@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Menus,
-  ComCtrls, Buttons, StdCtrls, ExtCtrls, Spin, TDIClass, IpHtml;
+  ComCtrls, Buttons, StdCtrls, ExtCtrls, Spin, TDIClass;
 
 type
 
@@ -78,6 +78,10 @@ begin
   Screen.OnActiveControlChange := @ShowNewControl;
 
   cbxBackgroundCorner.ItemIndex := Integer(TDINoteBook1.BackgroundCorner);
+  try
+    Memo1.Lines.LoadFromFile( ExtractFilePath(Application.ExeName)+'..'+PathDelim+'read-me.txt' );
+  except
+  end;
 end;
 
 procedure TfMainForm.FormDestroy(Sender : TObject) ;

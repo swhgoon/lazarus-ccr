@@ -92,6 +92,7 @@ object fMainForm: TfMainForm
         Lines.Strings = (
           'Memo1'
         )
+        ScrollBars = ssAutoBoth
         TabOrder = 0
       end
     end

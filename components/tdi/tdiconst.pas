@@ -19,7 +19,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
   You can also get a copy of the license accessing the address:
-  Http://www.opensource.org/licenses/gpl-license.php
+  http://www.opensource.org/licenses/lgpl-license.php
 
   Daniel Simões de Almeida  -  daniel@djsystem.com.br  -  www.djsystem.com.br
        Rua Coronel Aureliano de Camargo, 973 - Tatuí - SP - 18270-170
