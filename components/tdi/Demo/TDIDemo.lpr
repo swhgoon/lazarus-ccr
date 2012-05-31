@@ -20,7 +20,6 @@ begin
    DeleteFile( HeapTraceFile );
    SetHeapTraceOutput( HeapTraceFile );
 
-   RequireDerivedFormResource := True;
   Application.Initialize;
   Application.CreateForm(TfMainForm, fMainForm) ;
   Application.CreateForm(TForm2, Form2) ;

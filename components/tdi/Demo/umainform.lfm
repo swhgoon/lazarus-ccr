@@ -1,7 +1,7 @@
 object fMainForm: TfMainForm
-  Left = 428
+  Left = 409
   Height = 484
-  Top = 154
+  Top = 156
   Width = 799
   Caption = 'fMainForm'
   ClientHeight = 464
@@ -46,7 +46,7 @@ object fMainForm: TfMainForm
     OnChange = TDINoteBook1Change
     OnCloseTabClicked = TDINoteBook1CloseTabClicked
     OnMouseDown = TDINoteBook1MouseDown
-    Options = [nboShowCloseButtons, nboMultiLine, nboKeyboardTabSwitch, nboShowAddTabButton]
+    Options = [nboMultiLine]
     TabDragMode = dmAutomatic
     TabDragAcceptMode = dmAutomatic
     BackgroundImage = Image1
@@ -89,6 +89,7 @@ object fMainForm: TfMainForm
         Top = 0
         Width = 571
         Align = alTop
+        Anchors = [akTop, akLeft, akRight, akBottom]
         Lines.Strings = (
           'Memo1'
         )

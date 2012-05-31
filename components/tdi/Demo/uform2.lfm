@@ -1,7 +1,7 @@
 object Form2: TForm2
-  Left = 564
+  Left = 555
   Height = 252
-  Top = 330
+  Top = 328
   Width = 499
   Caption = 'Form2'
   ClientHeight = 252
@@ -13,7 +13,7 @@ object Form2: TForm2
   OnHide = FormHide
   OnKeyDown = FormKeyDown
   OnShow = FormShow
-  LCLVersion = '1.1'
+  LCLVersion = '0.9.30.4'
   object Edit1: TEdit
     Left = 48
     Height = 23

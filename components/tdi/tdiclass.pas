@@ -33,7 +33,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, ComCtrls, ExtCtrls, Menus,
-  ExtendedNotebook, Buttons, Graphics, LMessages  ;
+  ExtendedNotebook, Buttons, Graphics, LMessages, LCLVersion  ;
 
 const
   TDIM_CLOSEPAGE = LM_INTERFACELAST + 500;
@@ -165,10 +165,12 @@ type
 
     procedure RemoveInvalidPages ;
   protected
-    function CanChange: Boolean; override;
+    function CanChange: Boolean;
+       {$if (lcl_major > 0) or (lcl_release > 30)} override; {$endif}
     procedure DoChange; override;
     procedure Loaded; override;
-    procedure RemovePage(Index: Integer); override;
+    procedure RemovePage(Index: Integer);
+       {$if (lcl_major > 0) or (lcl_release > 30)} override; {$endif}
 
     procedure msg_ClosePage(var Msg: TLMessage); message TDIM_CLOSEPAGE;
 
@@ -587,7 +589,11 @@ begin
   end ;
   FTabsMenuItem.Add(NewMenuItem);
 
-  if (nboKeyboardTabSwitch in Options) then
+  if {$if (lcl_major > 0) or (lcl_release > 30)}
+      (nboKeyboardTabSwitch in Options)
+     {$else}
+      True
+     {$endif} then
   begin
     FNextMenuItem := TMenuItem.Create( FTabsMenuItem );
     with FNextMenuItem do
@@ -808,7 +814,7 @@ begin
           CreateCloseMenuItem;
 
         FCloseMenuItem.Visible := True ;
-        FCloseMenuItem.Enabled   := ( ActivePageIndex >= FFixedPages );
+        FCloseMenuItem.Enabled := ( ActivePageIndex >= FFixedPages );
       end ;
   end ;
 
@@ -946,7 +952,7 @@ begin
 
   with FCloseAllTabsMenuItem do
   begin
-    Enabled    := (PageCount > 0);
+    Enabled    := (PageCount > FFixedPages);
     Caption    := TDIActions.CloseAllTabs.Caption;
     Visible    := TDIActions.CloseAllTabs.Visible;
     ImageIndex := TDIActions.CloseAllTabs.ImageIndex;
@@ -1024,7 +1030,10 @@ begin
     end ;
   end ;
 
-  Result := Result and (inherited CanChange) ;
+  Result := Result
+    {$if (lcl_major > 0) or (lcl_release > 30)}
+      and (inherited CanChange)
+    {$endif};
 end ;
 
 procedure TTDINoteBook.DoChange ;
@@ -1081,7 +1090,11 @@ begin
 
     if CanRemovePage then
     begin
-      inherited RemovePage(APage.PageIndex) ;
+      {$if (lcl_major > 0) or (lcl_release > 30)}
+        inherited RemovePage(APage.PageIndex) ;
+      {$else}
+        APage.Free;
+      {$endif}
 
       if PageCount < 1 then  // On this case, DoChange is not fired //
         CheckInterface;
