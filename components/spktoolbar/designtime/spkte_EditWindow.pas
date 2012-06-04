@@ -14,6 +14,12 @@ type TCreateItemFunc = function(Pane : TSpkPane) : TSpkBaseItem;
 
 type
   TfrmEditWindow = class(TForm)
+    aAddCheckbox: TAction;
+    aAddRadioButton: TAction;
+    MenuItem1: TMenuItem;
+    MenuItem2: TMenuItem;
+    MenuItem3: TMenuItem;
+    MenuItem4: TMenuItem;
     tvStructure: TTreeView;
     ilTreeImages: TImageList;
     tbToolBar: TToolBar;
@@ -67,6 +73,9 @@ type
     procedure aAddLargeButtonExecute(Sender: TObject);
     procedure aRemoveItemExecute(Sender: TObject);
     procedure aAddSmallButtonExecute(Sender: TObject);
+    procedure aAddCheckboxExecute(Sender: TObject);
+    procedure aAddRadioButtonExecute(Sender: TObject);
+    procedure tvStructureDeletion(Sender:TObject; Node:TTreeNode);
     procedure tvStructureKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormActivate(Sender: TObject);
@@ -151,6 +160,7 @@ if Obj is TSpkTab then
    begin
    Tab:=TSpkTab(Obj);
    Pane:=Tab.Panes.Add;
+   Pane.Name := FDesigner.UniqueName(Pane.ClassName);
    NewNode:=tvStructure.Items.AddChild(Node, Pane.Caption);
    NewNode.Data:=Pane;
    NewNode.ImageIndex:=1;
@@ -168,6 +178,7 @@ if Obj is TSpkPane then
 
    Tab:=TSpkTab(Node.Parent.Data);
    Pane:=Tab.Panes.Add;
+   Pane.Name := FDesigner.UniqueName(Pane.ClassName);
    NewNode:=tvStructure.Items.AddChild(Node.Parent, Pane.Caption);
    NewNode.Data:=Pane;
    NewNode.ImageIndex:=1;
@@ -185,6 +196,7 @@ if Obj is TSpkBaseItem then
 
    Tab:=TSpkTab(Node.Parent.Parent.Data);
    Pane:=Tab.Panes.Add;
+   Pane.Name := FDesigner.UniqueName(Pane.ClassName);
    NewNode:=tvStructure.Items.AddChild(Node.Parent.Parent, Pane.Caption);
    NewNode.Data:=Pane;
    NewNode.ImageIndex:=1;
@@ -212,6 +224,30 @@ if (FToolbar=nil) or (FDesigner=nil) then
 AddItem(@CreateSmallButton);
 end;
 
+function CreateCheckbox(Pane: TSpkPane): TSpkBaseItem;
+begin
+  result := Pane.Items.AddCheckbox;
+end;
+
+procedure TfrmEditWindow.aAddCheckboxExecute(Sender: TObject);
+begin
+  if (FToolbar = nil) or (FDesigner = nil) then
+    exit;
+  AddItem(@CreateCheckbox);
+end;
+
+function CreateRadioButton(Pane: TSpkPane): TSpkBaseItem;
+begin
+  result := Pane.Items.AddRadioButton;
+end;
+
+procedure TfrmEditWindow.aAddRadioButtonExecute(Sender: TObject);
+begin
+  if (FToolbar = nil) or (FDesigner = nil) then
+    exit;
+  AddItem(@CreateRadioButton);
+end;
+
 procedure TfrmEditWindow.aAddTabExecute(Sender: TObject);
 
 var Node : TTreeNode;
@@ -222,6 +258,7 @@ if (FToolbar=nil) or (FDesigner=nil) then
    exit;
 
 Tab:=FToolbar.Tabs.Add;
+Tab.Name := FDesigner.UniqueName(Tab.ClassName);
 Node:=tvStructure.Items.AddChild(nil, Tab.Caption);
 Node.Data:=Tab;
 Node.ImageIndex:=0;
@@ -257,6 +294,7 @@ if Obj is TSpkPane then
    begin
    Pane:=TSpkPane(Obj);
    Item:=CreateItemFunc(Pane);
+   Item.Name := FDesigner.UniqueName(Item.ClassName);
    s:=GetItemCaption(Item);
    NewNode:=tvStructure.Items.AddChild(Node, s);
    NewNode.Data:=Item;
@@ -275,6 +313,7 @@ if Obj is TSpkBaseItem then
 
    Pane:=TSpkPane(Node.Parent.Data);
    Item:=CreateItemFunc(Pane);
+   Item.Name := FDesigner.UniqueName(Item.ClassName);
    s:=GetItemCaption(Item);
    NewNode:=tvStructure.Items.AddChild(Node.Parent, s);
    NewNode.Data:=Item;
@@ -502,6 +541,8 @@ if (FToolbar=nil) or (FDesigner=nil) then
    aRemovePane.Enabled:=false;
    aAddLargeButton.Enabled:=false;
    aAddSmallButton.Enabled:=false;
+   aAddCheckbox.Enabled := false;
+   aAddRadioButton.Enabled := false;
    aRemoveItem.Enabled:=false;
    aMoveUp.Enabled:=false;
    aMoveDown.Enabled:=false;
@@ -519,6 +560,8 @@ else
       aRemovePane.Enabled:=false;
       aAddLargeButton.Enabled:=false;
       aAddSmallButton.Enabled:=false;
+      aAddCheckbox.Enabled := false;
+      aAddRadioButton.Enabled := false;
       aRemoveItem.Enabled:=false;
       aMoveUp.Enabled:=false;
       aMoveDown.Enabled:=false;
@@ -542,6 +585,8 @@ else
          aRemovePane.Enabled:=false;
          aAddLargeButton.Enabled:=false;
          aAddSmallButton.Enabled:=false;
+         aAddCheckbox.Enabled := false;
+         aAddRadioButton.Enabled := false;
          aRemoveItem.Enabled:=false;
 
          index:=FToolbar.Tabs.IndexOf(Tab);
@@ -566,6 +611,8 @@ else
          aRemovePane.Enabled:=true;
          aAddLargeButton.Enabled:=true;
          aAddSmallButton.Enabled:=true;
+         aAddCheckbox.Enabled := true;
+         aAddRadiobutton.Enabled := true;
          aRemoveItem.Enabled:=false;
 
          index:=Tab.Panes.IndexOf(Pane);
@@ -591,6 +638,8 @@ else
          aRemovePane.Enabled:=false;
          aAddLargeButton.Enabled:=true;
          aAddSmallButton.Enabled:=true;
+         aAddCheckbox.Enabled := true;
+         aAddRadioButton.Enabled := true;
          aRemoveItem.Enabled:=true;
 
          index:=Pane.Items.IndexOf(Item);
@@ -843,9 +892,14 @@ var
   itemnode: TTreeNode;
   Obj: TSpkBaseItem;
   s: string;
+  node: TTreeNode;
 begin
   Caption:='Editing TSpkToolbar contents';
+
+  // Clear tree, but don't remove existing toolbar children from the form
+  tvStructure.OnDeletion := nil;
   tvStructure.Items.Clear;
+  tvStructure.OnDeletion := tvStructureDeletion;
 
   if (FToolbar<>nil) and (FDesigner<>nil) then
      begin
@@ -878,8 +932,18 @@ begin
        end;
      end;
 
-  if tvStructure.Items.Count > 0 then
-    tvStructure.Items[0].Selected := true;
+  if (tvStructure.Items.Count > 0) and (FToolbar.TabIndex > -1) then begin
+    node := tvStructure.Items[0];
+    while (node <> nil) do begin
+      if TSpkTab(node.Data) = FToolbar.Tabs[FToolbar.TabIndex] then break;
+      node := node.GetNextSibling;
+    end;
+    if (node <> nil) then begin
+      node.Selected := true;
+      node.Expand(true);
+    end;
+  end;
+
   CheckActionsAvailability;
 end;
 
@@ -1001,6 +1065,24 @@ if assigned(Node) then
        end;
 
 CheckActionsAvailability;
+end;
+
+procedure TfrmEditWindow.tvStructureDeletion(Sender:TObject; Node:TTreeNode);
+var
+  RunNode: TTreeNode;
+  index: Integer;
+  comp: TSpkComponent;
+begin
+  if Node = nil then
+    exit;
+  // Recursively delete children and destroy their data
+  RunNode := Node.GetFirstChild;
+  while RunNode <> nil do begin
+    RunNode.Delete;
+    RunNode := RunNode.GetNextSibling;
+  end;
+  // Destroy node's data
+  TSpkComponent(Node.Data).Free;
 end;
 
 procedure TfrmEditWindow.tvStructureEdited(Sender: TObject; Node: TTreeNode;

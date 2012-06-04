@@ -929,7 +929,7 @@ result.Parent:=Parent;
 
 if FRootComponent<>nil then
    begin
-   i:=1;
+   i:=0;
    while FRootComponent.Owner.FindComponent('SpkPane'+inttostr(i))<>nil do
          inc(i);
 
@@ -985,7 +985,7 @@ result.Parent:=Parent;
 
 if FRootComponent<>nil then
    begin
-   i:=1;
+   i:=0;
    while FRootComponent.Owner.FindComponent('SpkPane'+inttostr(i))<>nil do
          inc(i);
 

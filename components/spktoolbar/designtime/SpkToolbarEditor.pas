@@ -4,9 +4,9 @@ unit SpkToolbarEditor;
 
 interface
 
-uses Forms, Controls, Classes, ComponentEditors, PropEdits, LazarusPackageIntf, LazIdeIntf, TypInfo, Dialogs,
-     SysUtils,
-     spkToolbar, spkt_Tab, spkt_Pane, spkt_Appearance,
+uses Forms, Controls, Classes, ComponentEditors, PropEdits, LazarusPackageIntf, LazIdeIntf, TypInfo, Dialogs, 
+     SysUtils, ImgList, GraphPropEdits,
+     spkToolbar, spkt_Tab, spkt_Buttons,
      spkte_EditWindow, spkte_AppearanceEditor;
 
 const PROPERTY_CONTENTS_NAME = 'Contents';
@@ -82,6 +82,11 @@ type TSpkToolbarEditor = class(TComponentEditor)
        procedure ExecuteVerb(Index: Integer); override;
        function GetVerb(Index: Integer): string; override;
        function GetVerbCount: Integer; override;
+     end;
+
+type TSpkImageIndexPropertyEditor = class(TImageIndexPropertyEditor)
+     protected
+       function GetImageList: TCustomImageList; override;
      end;
 
 var EditWindow : TfrmEditWindow;
@@ -307,6 +312,20 @@ procedure TSpkToolbarCaptionEditor.SetValue(const Value: string);
 begin
   inherited;
   EditWindow.RefreshNames;
+end;
+
+{ TSpkImageIndexPropertyEditor }
+
+function TSpkImageIndexPropertyEditor.GetImagelist: TCustomImageList;
+var
+  Instance: TPersistent;
+begin
+  Result := nil;
+  Instance := GetComponent(0);
+  if (Instance is TSpkLargeButton) then
+    Result := TSpkLargeButton(Instance).Images
+  else if (Instance is TSpkSmallButton) then
+    Result := TSpkSmallButton(Instance).Images;
 end;
 
 { TSpkToolbarAppearanceEditor }

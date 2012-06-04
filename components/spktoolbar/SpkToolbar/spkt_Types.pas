@@ -19,26 +19,6 @@ uses Controls, Classes, ContNrs, SysUtils, Dialogs,
 
 type TSpkListState = (lsNeedsProcessing, lsReady);
 
-type TSpkComponent = class(TComponent)
-     private
-     protected
-       FParent : TComponent;
-
-     // *** Gettery i settery ***
-       function GetParent: TComponent;
-       procedure SetParent(const Value: TComponent);
-     public
-     // *** Konstruktor ***
-       constructor Create(AOwner : TComponent); override;
-
-     // *** Obs³uga parenta ***
-       function HasParent : boolean; override;
-       function GetParentComponent : TComponent; override;
-       procedure SetParentComponent(Value : TComponent); override;
-
-       property Parent : TComponent read GetParent write SetParent;
-     end;
-
 type TSpkCollection = class(TPersistent)
      private
      protected
@@ -79,6 +59,29 @@ type TSpkCollection = class(TPersistent)
 
        property ListState : TSpkListState read FListState;
        property Items[index : integer] : TComponent read GetItems; default;
+       property RootComponent: TComponent read FRootComponent;
+     end;
+
+type TSpkComponent = class(TComponent)
+     private
+     protected
+       FParent : TComponent;
+       FCollection: TSpkCollection;
+
+     // *** Gettery i settery ***
+       function GetParent: TComponent;
+       procedure SetParent(const Value: TComponent);
+     public
+     // *** Konstruktor ***
+       constructor Create(AOwner : TComponent); override;
+
+     // *** Obs³uga parenta ***
+       function HasParent : boolean; override;
+       function GetParentComponent : TComponent; override;
+       procedure SetParentComponent(Value : TComponent); override;
+
+       property Parent : TComponent read GetParent write SetParent;
+       property Collection: TSpkCollection read FCollection;
      end;
 
 implementation
@@ -92,6 +95,9 @@ begin
 
 Notify(AItem, opInsert);
 FList.Add(AItem);
+
+if AItem is TSpkComponent then
+  TSpkComponent(AItem).FCollection := self;
 
 Update;
 end;
@@ -166,6 +172,8 @@ if (index<0) or (index>FList.Count) then
 Notify(AItem, opInsert);
 
 FList.Insert(index, AItem);
+if AItem is TSpkComponent then
+   TSpkComponent(AItem).FCollection := self;
 
 Update;
 end;

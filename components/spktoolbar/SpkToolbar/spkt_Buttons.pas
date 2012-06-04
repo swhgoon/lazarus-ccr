@@ -17,8 +17,8 @@ interface
 
 uses
   Graphics, Classes, Controls, Menus, ActnList, Math,
-     Dialogs,
-     SpkGuiTools, SpkGraphTools, SpkMath,
+     Dialogs, ImgList, Forms,
+     SpkGUITools, SpkGraphTools, SpkMath,
      spkt_Const, spkt_BaseItem, spkt_Exceptions, spkt_Tools;
 
 type TSpkButtonState = (bsIdle,
@@ -38,11 +38,13 @@ type TSpkBaseButton = class;
        function IsOnExecuteLinked: Boolean; override;
        procedure SetCaption(const Value: string); override;
        procedure SetEnabled(Value: Boolean); override;
+       procedure SetImageIndex(Value: integer); override;
        procedure SetVisible(Value: Boolean); override;
        procedure SetOnExecute(Value: TNotifyEvent); override;
      public
       function IsCaptionLinked: Boolean; override;
       function IsEnabledLinked: Boolean; override;
+      function IsImageIndexLinked: Boolean; override;
       function IsVisibleLinked: Boolean; override;
      end;
 
@@ -74,7 +76,10 @@ type TSpkBaseButton = class;
 
      // *** Obs³uga akcji ***
 
-       procedure ActionChange(Sender : TObject);
+       procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); virtual;
+       procedure DoActionChange(Sender: TObject);
+       procedure Click; virtual;
+       function GetDefaultCaption: String; virtual;
 
      // *** Gettery i settery ***
 
@@ -82,9 +87,13 @@ type TSpkBaseButton = class;
        procedure SetDropdownMenu(const Value : TPopupMenu);
        procedure SetRect(const Value: T2DIntRect); override;
        procedure SetCaption(const Value : string);
-       procedure SetAction(const Value : TBasicAction);
+       procedure SetAction(const Value : TBasicAction); virtual;
        procedure SetButtonKind(const Value : TSpkButtonKind);
        function GetAction: TBasicAction;
+
+       property ButtonKind : TSpkButtonKind read FButtonKind write SetButtonKind;
+       property DropdownMenu : TPopupMenu read FDropdownMenu write SetDropdownMenu;
+
      public
        constructor Create(AOwner : TComponent); override;
 
@@ -94,9 +103,10 @@ type TSpkBaseButton = class;
        procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
        procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
          X, Y: Integer); override;
+
+       function GetRootComponent: TComponent;
+
      published
-       property ButtonKind : TSpkButtonKind read FButtonKind write SetButtonKind;
-       property DropdownMenu : TPopupMenu read FDropdownMenu write SetDropdownMenu;
        property Caption : string read FCaption write SetCaption;
        property Action : TBasicAction read GetAction write SetAction;
        property OnClick : TNotifyEvent read FOnClick write FOnClick;
@@ -106,11 +116,11 @@ type TSpkLargeButton = class(TSpkBaseButton)
      private
        procedure FindBreakPlace(s : string; out Position : integer; out Width : integer);
      protected
-       FLargeImageIndex : integer;
+       FLargeImageIndex: TImageIndex;
 
        procedure CalcRects; override;
        function GetDropdownPoint : T2DIntPoint; override;
-       procedure SetLargeImageIndex(const Value: integer);
+       procedure SetLargeImageIndex(const Value: TImageIndex);
      public
        constructor Create(AOwner : TComponent); override;
        function GetWidth : integer; override;
@@ -119,13 +129,15 @@ type TSpkLargeButton = class(TSpkBaseButton)
        function GetSize : TSpkItemSize; override;
        procedure Draw(ABuffer : TBitmap; ClipRect : T2DIntRect); override;
      published
-       property LargeImageIndex : integer read FLargeImageIndex write SetLargeImageIndex;
+       property LargeImageIndex: TImageIndex read FLargeImageIndex write SetLargeImageIndex default -1;
+       property ButtonKind;
+       property DropdownMenu;
      end;
 
 type TSpkSmallButton = class(TSpkBaseButton)
      private
      protected
-       FImageIndex : integer;
+       FImageIndex : TImageIndex;
 
        FTableBehaviour : TSpkItemTableBehaviour;
        FGroupBehaviour : TSPkItemGroupBehaviour;
@@ -135,7 +147,7 @@ type TSpkSmallButton = class(TSpkBaseButton)
        procedure CalcRects; override;
        function GetDropdownPoint : T2DIntPoint; override;
        procedure ConstructRects(var BtnRect, DropRect : T2DIntRect);
-       procedure SetImageIndex(const Value : integer);
+       procedure SetImageIndex(const Value : TImageIndex);
        procedure SetGroupBehaviour(const Value: TSpkItemGroupBehaviour);
        procedure SetHideFrameWhenIdle(const Value: boolean);
        procedure SetTableBehaviour(const Value: TSpkItemTableBehaviour);
@@ -153,13 +165,15 @@ type TSpkSmallButton = class(TSpkBaseButton)
        property TableBehaviour : TSpkItemTableBehaviour read FTableBehaviour write SetTableBehaviour;
        property GroupBehaviour : TSpkItemGroupBehaviour read FGroupBehaviour write SetGroupBehaviour;
        property HideFrameWhenIdle : boolean read FHideFrameWhenIdle write SetHideFrameWhenIdle;
-       property ImageIndex : integer read FImageIndex write SetImageIndex;
+       property ImageIndex : TImageIndex read FImageIndex write SetImageIndex default -1;
+       property ButtonKind;
+       property DropdownMenu;
      end;
 
 implementation
 
 uses
-  LCLType, LCLIntf;
+  LCLType, LCLIntf, LCLProc, SysUtils, spkt_Pane;
 
 { TSpkButtonActionLink }
 
@@ -189,6 +203,18 @@ begin
     (@TSpkBaseButton(FClient).OnClick = @Action.OnExecute);
 end;
 
+function TSpkButtonActionLink.IsImageIndexLinked: Boolean;
+begin
+  Result := (inherited IsImageIndexLinked) and
+    (
+      ((FClient is TSpkSmallButton)
+        and (TSpkSmallButton(FClient).ImageIndex = (Action as TCustomAction).ImageIndex))
+      or
+      ((FClient is TSpkLargeButton)
+        and (TSpkLargeButton(FClient).LargeImageIndex = (Action as TCustomAction).ImageIndex))
+    );
+end;
+
 function TSpkButtonActionLink.IsVisibleLinked: Boolean;
 begin
 result:=(inherited IsVisibleLinked) and
@@ -206,6 +232,16 @@ begin
   if IsEnabledLinked then FClient.Enabled := Value;
 end;
 
+procedure TSpkButtonActionLink.SetImageIndex(Value: integer);
+begin
+  if IsImageIndexLinked then begin
+    if (FClient is TSpkSmallButton) then
+      (TSpkSmallButton(FClient)).ImageIndex := Value;
+    if (FClient is TSpkLargeButton) then
+      (TSpkLargeButton(FClient)).LargeImageIndex := Value;
+  end;
+end;
+
 procedure TSpkButtonActionLink.SetOnExecute(Value: TNotifyEvent);
 begin
   if IsOnExecuteLinked then FClient.OnClick := Value;
@@ -218,26 +254,34 @@ end;
 
 { TSpkBaseButton }
 
-procedure TSpkBaseButton.ActionChange(Sender: TObject);
+procedure TSpkBaseButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
 begin
   if Sender is TCustomAction then
     with TCustomAction(Sender) do
     begin
-      if (Self.Caption = '') or (Self.Caption = 'Button') then
+      if not CheckDefaults or (Self.Caption = '') or (Self.Caption = GetDefaultCaption) then
          Self.Caption := Caption;
-      if (Self.Enabled = True) then
+      if not CheckDefaults or (Self.Enabled = True) then
          Self.Enabled := Enabled;
-      if (Self.Visible = True) then
+      if not CheckDefaults or (Self.Visible = True) then
          Self.Visible := Visible;
-      if not Assigned(Self.OnClick) then
+      if not CheckDefaults or not Assigned(Self.OnClick) then
          Self.OnClick := OnExecute;
+      if self is TSpkSmallButton then begin
+        if not CheckDefaults or (TSpkSmallButton(self).ImageIndex < 0) then
+          TSpkSmallButton(self).ImageIndex := ImageIndex;
+      end;
+      if self is TSpkLargeButton then begin
+        if not CheckDefaults or (TSpkLargeButton(self).LargeImageIndex < 0) then
+          TSpkLargeButton(Self).LargeImageIndex := ImageIndex;
+      end;
     end;
 end;
 
 constructor TSpkBaseButton.Create(AOwner : TComponent);
 begin
   inherited Create(AOwner);
-  FCaption:='Button';
+  FCaption:=GetDefaultCaption;
   FButtonState:=bsIdle;
   FButtonKind:=bkButton;
   {$IFDEF EnhancedRecordSupport}
@@ -251,11 +295,45 @@ begin
   FMouseActiveElement:=beNone;
 end;
 
+procedure TSpkBaseButton.Click;
+begin
+  if Assigned(FOnClick) then
+    FOnClick(self)
+end;
+
+procedure TSpkBaseButton.DoActionChange(Sender: TObject);
+begin
+  if Sender = Action then ActionChange(Sender, False);
+end;
+
 function TSpkBaseButton.GetAction: TBasicAction;
 begin
 if assigned(FActionLink) then
    result:=FActionLink.Action else
    result:=nil;
+end;
+
+function TSpkBaseButton.GetDefaultCaption: String;
+begin
+  result := 'Button';
+end;
+
+function TSpkBaseButton.GetRootComponent: TComponent;
+var
+  pane: TSpkBaseItem;
+  tab: TSpkBaseItem;
+begin
+  result := nil;
+  if Collection <> nil then
+    pane := TSpkBaseItem(Collection.RootComponent)
+  else
+    exit;
+  if (pane <> nil) and (pane.Collection <> nil) then
+    tab := TSpkBaseItem(pane.Collection.RootComponent)
+  else
+    exit;
+  if (tab <> nil) and (tab.Collection <> nil) then
+    result := tab.Collection.RootComponent;
 end;
 
 procedure TSpkBaseButton.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
@@ -478,8 +556,10 @@ if FEnabled then
          begin
          if FButtonKind in [bkButton, bkButtonDropdown] then
             begin
-            if assigned(FOnClick) then
-               FOnClick(self)
+              Click;
+              FButtonState:=bsBtnHottrack;
+              if assigned(FToolbarDispatch) then
+                 FToolbarDispatch.NotifyVisualsChanged;
             end else
          if FButtonKind = bkDropdown then
             begin
@@ -487,6 +567,9 @@ if FEnabled then
                begin
                DropPoint:=FToolbarDispatch.ClientToScreen(GetDropdownPoint);
                FDropdownMenu.Popup(DropPoint.x, DropPoint.y);
+               FButtonState:=bsBtnHottrack;
+               if assigned(FToolbarDispatch) then
+                  FToolbarDispatch.NotifyVisualsChanged;
                end;
             end;
          end;
@@ -502,6 +585,9 @@ if FEnabled then
             begin
             DropPoint:=FToolbarDispatch.ClientToScreen(GetDropdownPoint);
             FDropdownMenu.Popup(DropPoint.x, DropPoint.y);
+            FButtonState:=bsBtnHottrack;
+            if assigned(FToolbarDispatch) then
+               FToolbarDispatch.NotifyVisualsChanged;
             end;
          end;
       end;
@@ -571,8 +657,8 @@ begin
      if FActionLink = nil then
         FActionLink := TSpkButtonActionLink.Create(self);
     FActionLink.Action := Value;
-    FActionLink.OnChange := ActionChange;
-    ActionChange(Value);
+    FActionLink.OnChange := DoActionChange;
+    ActionChange(Value, csLoading in Value.ComponentState);
   end;
 end;
 
@@ -1552,7 +1638,7 @@ else
 result:=max(LARGEBUTTON_MIN_WIDTH, max(GlyphWidth, TextWidth));
 end;
 
-procedure TSpkLargeButton.SetLargeImageIndex(const Value: integer);
+procedure TSpkLargeButton.SetLargeImageIndex(const Value: TImageIndex);
 begin
 FLargeImageIndex:=Value;
 
@@ -2151,7 +2237,7 @@ begin
      FToolbarDispatch.NotifyVisualsChanged;
 end;
 
-procedure TSpkSmallButton.SetImageIndex(const Value: integer);
+procedure TSpkSmallButton.SetImageIndex(const Value: TImageIndex);
 begin
   FImageIndex:=Value;
 

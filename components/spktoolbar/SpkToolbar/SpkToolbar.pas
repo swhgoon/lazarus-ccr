@@ -13,6 +13,31 @@ unit SpkToolbar;
 *                                                                              *
 *******************************************************************************)
 
+{
+changes by Werner Pamler --> version 0.2 (c) 2012:
+* add TSpkCheckbox and TSpkRadiobutton (unit spkt_Checkboxes.pas)
+* apply ImageIndex when assigning an action
+* add property editor for image index
+  - use specialized ImageIndexPropertyEditor to link to the imagelist
+  - assign default values to ImageIndex properties
+  - use types TImageIndex instead of integer
+* make sure that properties (caption, imageindex etc) are updated when the
+  action changes
+* Fixed button state to change immediately after mouse-up from pressed to hover
+* Found bug in ComponentEditor form causing "Class not found" error: added tabs,
+  panes, or items were nameless. Assigning a name by FDesigner.UniqueName fixed
+  the issue.
+* Duplicate components after Cut & Paste because missing destruction of
+  components after deletion from internal list
+* Naming issue of components added by designer (counter starting at 2, not 1) fixed
+* Change default color of the SpkToolbar to clSkyBlue
+* add component icon
+* Add events for OnClick (Tab), and OnTabChanging and OnTabChange (Toolbar)
+
+- Still open: units of the added controls are not added to uses clause automatically
+  Note: add some other component to form and the missing units are added!
+}
+
 interface
 
 uses
@@ -115,6 +140,10 @@ type TSpkToolbar = class;
      /// metryk i bufora w momencie, gdy u¿ytkownik przebudowuje zawartoœæ
      /// komponentu. FUpdating jest sterowana przez u¿ytkownika.</summary>
        FUpdating : boolean;
+
+       FOnTabChanging: TNotifyEvent;
+       FOnTabChanged: TNotifyEvent;
+
      protected
      /// <summary>Instancja obiektu wygl¹du, przechowuj¹cego kolory i czcionki
      /// u¿ywane podczas renderowania komponentu</summary>
@@ -313,7 +342,7 @@ type TSpkToolbar = class;
        property Tabs : TSpkTabs read FTabs;
      published
      /// <summary>Kolor t³a komponentu</summary>
-       property Color : TColor read GetColor write SetColor;
+       property Color : TColor read GetColor write SetColor default clSkyBlue;
      /// <summary>Obiekt zawieraj¹cy atrybuty wygl¹du toolbara</summary>
        property Appearance : TSpkToolbarAppearance read FAppearance write SetAppearance;
      /// <summary>Wysokoœæ toolbara (tylko do odczytu)</summary>
@@ -328,6 +357,10 @@ type TSpkToolbar = class;
        property LargeImages : TImageList read FLargeImages write SetLargeImages;
      /// <summary>Lista du¿ych obrazków w stanie "disabled"</summary>
        property DisabledLargeImages : TImageList read FDisabledLargeImages write SetDisabledLargeImages;
+
+     // <summary>Events called before and after a different tab is selected</summary>  
+       property OnTabChanging: TNotifyEvent read FOnTabChanging write FOnTabChanging;
+       property OnTabChanged: TNotifyEvent read FOnTabChanged write FOnTabChanged;
      end;
 
 implementation
@@ -463,6 +496,7 @@ begin
   FTabs.Appearance:=FAppearance;
 
   FTabIndex:=-1;
+  Color := clSkyBlue;
 end;
 
 procedure TSpkToolbar.DefineProperties(Filer: TFiler);
@@ -807,6 +841,9 @@ var Tab : TSpkTab;
 begin
   inherited;
 
+  if Operation <> opRemove then
+     exit;
+
   if AComponent is TSpkTab then
      begin
      FreeingTab(AComponent as TSpkTab);
@@ -849,6 +886,8 @@ end;
 
 procedure TSpkToolbar.NotifyItemsChanged;
 begin
+  if Assigned(FOnTabChanging) then FOnTabChanging(self);
+
   // Poprawianie TabIndex o ile zachodzi taka potrzeba
   if not(AtLeastOneTabVisible) then FTabIndex:=-1
   else
@@ -866,6 +905,8 @@ begin
 
   if not(FInternalUpdating or FUpdating) then
      Repaint;
+
+  if Assigned(FOnTabChanged) then FOnTabChanged(self);
 end;
 
 procedure TSpkToolbar.NotifyVisualsChanged;
@@ -968,6 +1009,8 @@ end;
 
 procedure TSpkToolbar.SetTabIndex(const Value: integer);
 begin
+  if Assigned(FOnTabChanging) then FOnTabChanging(self);
+
   if not(AtLeastOneTabVisible) then FTabIndex:=-1
   else
     begin
@@ -984,6 +1027,8 @@ begin
 
   if not(FInternalUpdating or FUpdating) then
      Repaint;
+
+  if Assigned(FOnTabChanged) then FOnTabChanged(self);
 end;
 
 procedure TSpkToolbar.TabMouseDown(Button: TMouseButton; Shift: TShiftState; X,
@@ -1016,9 +1061,11 @@ if AtLeastOneTabVisible then
 // zmieñ zaznaczenie.
 if (Button = mbLeft) and (SelTab<>-1) and (SelTab<>FTabIndex) then
    begin
+   if Assigned(FOnTabChanging) then FOnTabChanging(self);
    FTabIndex:=SelTab;
    SetMetricsInvalid;
    Repaint;
+   if Assigned(FOnTabChanged) then FOnTabChanged(self);
    end;
 end;
 
@@ -1075,6 +1122,9 @@ begin
 // Podczas procesu przebudowy mysz jest ignorowana.
 if FInternalUpdating or FUpdating then
    exit;
+
+if (FTabIndex > -1) then
+  FTabs[FTabIndex].ExecOnClick;
 
 // Zak³adki nie potrzebuj¹ obs³ugi MouseUp.
 end;

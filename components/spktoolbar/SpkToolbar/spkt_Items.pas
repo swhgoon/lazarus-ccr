@@ -17,7 +17,7 @@ interface
 
 uses Classes, Controls, SysUtils, Dialogs,
      spkt_Appearance, spkt_Dispatch, spkt_BaseItem, spkt_Types,
-     spkt_Buttons;
+     spkt_Buttons, spkt_Checkboxes;
 
 type TSpkItems = class(TSpkCollection)
      private
@@ -43,6 +43,8 @@ type TSpkItems = class(TSpkCollection)
 
        function AddLargeButton : TSpkLargeButton;
        function AddSmallButton : TSpkSmallButton;
+       function AddCheckbox: TSpkCheckbox;
+       function AddRadioButton: TSpkRadioButton;
 
      // *** Reakcja na zmiany listy ***
        procedure Notify(Item: TComponent; Operation : TOperation); override;
@@ -83,7 +85,7 @@ result.Parent:=Parent;
 
 if FRootComponent<>nil then
    begin
-   i:=1;
+   i:=0;
    while FRootComponent.Owner.FindComponent('SpkLargeButton'+inttostr(i))<>nil do
          inc(i);
 
@@ -115,7 +117,7 @@ result.Parent:=Parent;
 
 if FRootComponent<>nil then
    begin
-   i:=1;
+   i:=0;
    while FRootComponent.Owner.FindComponent('SpkSmallButton'+inttostr(i))<>nil do
          inc(i);
 
@@ -123,6 +125,56 @@ if FRootComponent<>nil then
    end;
 
 AddItem(result);
+end;
+
+function TSpkItems.AddCheckbox: TSpkCheckbox;
+var
+  Owner, Parent : TComponent;
+  i: Integer;
+begin
+  if FRootComponent <> nil then begin
+    Owner := FRootComponent.Owner;
+    Parent := FRootComponent;
+  end else begin
+    Owner := nil;
+    Parent := nil;
+  end;
+  result := TSpkCheckbox.Create(Owner);
+  result.Parent := Parent;
+
+  if FRootComponent <> nil then begin
+    i := 0;
+    while FRootComponent.Owner.FindComponent('SpkCheckbox'+IntToStr(i)) <> nil do
+      inc(i);
+    result.Name := 'SpkCheckbox' + IntToStr(i);
+  end;
+
+  AddItem(result);
+end;
+
+function TSpkItems.AddRadioButton: TSpkRadioButton;
+var
+  Owner, Parent : TComponent;
+  i: Integer;
+begin
+  if FRootComponent <> nil then begin
+    Owner := FRootComponent.Owner;
+    Parent := FRootComponent;
+  end else begin
+    Owner := nil;
+    Parent := nil;
+  end;
+  result := TSpkRadioButton.Create(Owner);
+  result.Parent := Parent;
+
+  if FRootComponent <> nil then begin
+    i := 0;
+    while FRootComponent.Owner.FindComponent('SpkRadioButton'+IntToStr(i)) <> nil do
+      inc(i);
+    result.Name := 'SpkRadioButton' + IntToStr(i);
+  end;
+
+  AddItem(result);
 end;
 
 constructor TSpkItems.Create(RootComponent : TComponent);

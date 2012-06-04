@@ -48,6 +48,9 @@ type TSpkTab = class;
 
        FMouseHoverElement : TSpkMouseTabElement;
        FMouseActiveElement : TSpkMouseTabElement;
+
+       FOnClick: TNotifyEvent;
+
      protected
        FToolbarDispatch : TSpkBaseToolbarDispatch;
        FCaption : string;
@@ -109,6 +112,8 @@ type TSpkTab = class;
      // *** Obs³uga elementów ***
        procedure FreeingPane(APane : TSpkPane);
 
+       procedure ExecOnClick;
+
        property ToolbarDispatch : TSpkBaseToolbarDispatch read FToolbarDispatch write SetToolbarDispatch;
        property Appearance : TSpkToolbarAppearance read FAppearance write SetAppearance;
 
@@ -123,6 +128,7 @@ type TSpkTab = class;
        property Caption : string read FCaption write SetCaption;
        property OverrideAppearance : boolean read FOverrideAppearance write SetOverrideAppearance;
        property Visible : boolean read FVisible write SetVisible;
+       property OnClick: TNotifyEvent read FOnClick write FOnClick;
      end;
 
 type TSpkTabs = class(TSpkCollection)
@@ -299,6 +305,12 @@ if AtLeastOnePaneVisible then
           if AClipRect.IntersectsWith(FPanes[i].Rect, LocalClipRect) then
              FPanes[i].Draw(ABuffer, LocalClipRect);
           end;
+end;
+
+procedure TSpkTab.ExecOnClick;
+begin
+  if Assigned(FOnClick) then
+    FOnClick(self);
 end;
 
 function TSpkTab.FindPaneAt(x, y: integer): integer;
@@ -625,7 +637,7 @@ result.Parent:=Parent;
 
 if FRootComponent<>nil then
    begin
-   i:=1;
+   i:=0;
    while FRootComponent.Owner.FindComponent('SpkTab'+inttostr(i))<>nil do
          inc(i);
 
@@ -681,7 +693,7 @@ result.Parent:=Parent;
 
 if FRootComponent<>nil then
    begin
-   i:=1;
+   i:=0;
    while FRootComponent.Owner.FindComponent('SpkTab'+inttostr(i))<>nil do
          inc(i);
 

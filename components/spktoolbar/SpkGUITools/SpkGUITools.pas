@@ -1,4 +1,4 @@
-﻿unit SpkGuiTools;
+﻿unit SpkGUITools;
 
 {$mode ObjFpc}
 {$H+}
@@ -12,13 +12,16 @@ interface
 {$MESSAGE HINT 'W tym module konsekwentnie ka¿dy rect opisuje dok³adny prostok¹t (a nie, jak w przypadku WINAPI - bez dolnej i prawej krawêdzi)'}
 
 uses
-  LCLType, Graphics, SysUtils, Classes, Controls, SpkGraphTools, SpkMath;
+  LCLType, Graphics, SysUtils, Classes, Controls, StdCtrls, SpkGraphTools, SpkMath;
 
 type
   TCornerPos = (cpLeftTop, cpRightTop, cpLeftBottom, cpRightBottom);
   TCornerKind = (cpRound, cpNormal);
   TBackgroundKind = (bkSolid, bkVerticalGradient, bkHorizontalGradient,
                     bkConcave);
+
+  TSpkCheckboxStyle = (cbsCheckbox, cbsRadioButton);
+  TSpkCheckboxState = (cbsIdle, cbsHotTrack, cbsPressed, cbsDisabled);
 
   TGUITools = class(TObject)
   protected
@@ -287,6 +290,19 @@ type
                                      Point : T2DIntVector;
                                      ClipRect : T2DIntRect); overload; inline;
 
+    // Checkbox
+    class procedure DrawCheckbox(ACanvas: TCanvas;
+                                 x,y: Integer;
+                                 AState: TCheckboxState;
+                                 ACheckboxState: TSpkCheckboxState;
+                                 AStyle: TSpkCheckboxStyle); overload;
+    class procedure DrawCheckbox(ACanvas: TCanvas;
+                                 x,y: Integer;
+                                 AState: TCheckboxState;
+                                 ACheckboxState: TSpkCheckboxState;
+                                 AStyle: TSpkCheckboxStyle;
+                                 ClipRect: T2DIntRect); overload;
+
     // Text tools
     class procedure DrawText(ABitmap : TBitmap;
                         x, y : integer;
@@ -371,7 +387,7 @@ end;
 implementation
 
 uses
-  LCLIntf, IntfGraphics, Math;
+  LCLIntf, IntfGraphics, Math, Themes;
 
 { TSpkGUITools }
 
@@ -1452,7 +1468,7 @@ if (ABitmap.width=0) or (ABitmap.height=0) then
    exit;
 
 {$IFDEF EnhancedRecordSupport}
-// ród³owy rect...
+// �?ród³owy rect...
 OrgCornerRect:=T2DIntRect.create(Point.x,
                                  Point.y,
                                  Point.x + radius - 1,
@@ -1461,7 +1477,7 @@ OrgCornerRect:=T2DIntRect.create(Point.x,
 // ...przycinamy do rozmiarów bitmapy
 BitmapRect:=T2DIntRect.create(0, 0, ABitmap.width-1, ABitmap.height-1);
 {$ELSE}
-// ród³owy rect...
+// �?ród³owy rect...
 OrgCornerRect.create(Point.x,
                                  Point.y,
                                  Point.x + radius - 1,
@@ -1551,7 +1567,7 @@ if (ABitmap.width=0) or (ABitmap.height=0) then
    exit;
 
 {$IFDEF EnhancedRecordSupport}
-// ród³owy rect...
+// �?ród³owy rect...
 OrgCornerRect:=T2DIntRect.create(Point.x,
                                  Point.y,
                                  Point.x + radius - 1,
@@ -1560,7 +1576,7 @@ OrgCornerRect:=T2DIntRect.create(Point.x,
 // ...przycinamy do rozmiarów bitmapy
 BitmapRect:=T2DIntRect.create(0, 0, ABitmap.width-1, ABitmap.height-1);
 {$ELSE}
-// ród³owy rect...
+// �?ród³owy rect...
 OrgCornerRect.create(Point.x,
                                  Point.y,
                                  Point.x + radius - 1,
@@ -1643,7 +1659,7 @@ if Radius<1 then
    exit;
 
 {$IFDEF EnhancedRecordSupport}
-// ród³owy rect...
+// �?ród³owy rect...
 CornerRect:=T2DIntRect.create(Point.x,
                               Point.y,
                               Point.x + radius - 1,
@@ -1657,7 +1673,7 @@ case CornerPos of
      cpRightBottom: Center:=T2DIntVector.Create(Point.x, Point.y);
 end;
 {$ELSE}
-// ród³owy rect...
+// �?ród³owy rect...
 CornerRect.create(Point.x,
                               Point.y,
                               Point.x + radius - 1,
@@ -2850,6 +2866,59 @@ begin
 DcStackPos:=SaveDC(ACanvas.Handle);
 ImageList.Draw(ACanvas, Point.x, Point.y, ImageIndex, false);
 RestoreDC(ACanvas.Handle, DcStackPos);
+end;
+
+class procedure TGUITools.DrawCheckbox(ACanvas:TCanvas; x,y: Integer;
+  AState: TCheckboxState; ACheckboxState:TSpkCheckboxState;
+  AStyle: TSpkCheckboxStyle; ClipRect:T2DIntRect);
+var
+  UseOrgClipRgn: Boolean;
+  OrgRgn: HRGN;
+  ClipRgn: HRGN;
+  te: TThemedElementDetails;
+  Rect: TRect;
+begin
+  SaveClipRgn(ACanvas.Handle, UseOrgClipRgn, OrgRgn);
+  ClipRgn := CreateRectRgn(ClipRect.left, ClipRect.Top, ClipRect.Right+1, ClipRect.Bottom+1);
+  if UseOrgClipRgn then
+    CombineRgn(ClipRgn, ClipRgn, OrgRgn, RGN_AND);
+  SelectClipRgn(ACanvas.Handle, ClipRgn);
+  DrawCheckbox(ACanvas, x,y, AState, ACheckboxState, AStyle);
+  RestoreClipRgn(ACanvas.Handle, UseOrgClipRgn, OrgRgn);
+  DeleteObject(ClipRgn);
+end;
+
+class procedure TGUITools.DrawCheckbox(ACanvas: TCanvas; x,y: Integer;
+  AState: TCheckboxState; ACheckboxState: TSpkCheckboxState;
+  AStyle:TSpkCheckboxStyle);
+const
+  UNTHEMED_FLAGS: array [TSpkCheckboxStyle, TCheckboxState] of Integer = (
+    (DFCS_BUTTONCHECK, DFCS_BUTTONCHECK or DFCS_CHECKED, DFCS_BUTTONCHECK or DFCS_BUTTON3STATE),
+    (DFCS_BUTTONRADIO, DFCS_BUTTONRADIO or DFCS_CHECKED, DFCS_BUTTONRADIO or DFCS_BUTTON3STATE)
+  );
+  THEMED_FLAGS: array [TSpkCheckboxStyle, TCheckboxState, TSpkCheckboxState] of TThemedButton = (
+    ( (tbCheckboxUncheckedNormal, tbCheckboxUncheckedHot, tbCheckboxUncheckedPressed, tbCheckboxUncheckedDisabled),
+      (tbCheckboxCheckedNormal, tbCheckboxCheckedHot, tbCheckboxCheckedPressed, tbCheckboxCheckedDisabled),
+      (tbCheckboxMixedNormal, tbCheckboxMixedHot, tbCheckboxMixedPressed, tbCheckboxMixedDisabled)
+    ),
+    ( (tbRadioButtonUncheckedNormal, tbRadioButtonUncheckedHot, tbRadioButtonUncheckedPressed, tbRadioButtonUncheckedDisabled),
+      (tbRadioButtonCheckedNormal, tbRadioButtonCheckedHot, tbRadioButtonCheckedPressed, tbRadioButtonCheckedDisabled),
+      (tbRadioButtonCheckedNormal, tbRadioButtonCheckedHot, tbRadioButtonCheckedPressed, tbRadioButtonCheckedDisabled)
+    )
+  );
+var
+  R: TRect;
+  w: Integer;
+  te: TThemedElementDetails;
+begin
+  w := GetSystemMetrics(SM_CYMENUCHECK);
+  R := Bounds(x, y, w, w);
+  if ThemeServices.ThemesEnabled then begin
+    te := ThemeServices.GetElementDetails(THEMED_FLAGS[AStyle, AState, ACheckboxState]);
+    ThemeServices.DrawElement(ACanvas.Handle, te, R);
+  end else
+    DrawFrameControl(
+      ACanvas.Handle, R, DFC_BUTTON, UNTHEMED_FLAGS[AStyle, AState]);
 end;
 
 end.
