@@ -2,7 +2,7 @@
   This source is only used to compile and install the package.
  }
 
-unit SpkToolbarPackage; 
+unit SpkToolbarPackage;
 
 interface
 
@@ -11,15 +11,15 @@ uses
   spkt_Exceptions, spkt_Items, spkt_Pane, spkt_Tab, spkt_Tools, spkt_Types, 
   SpkToolbar, SpkMath, SpkGUITools, SpkGraphTools, SpkXMLIni, SpkXMLParser, 
   SpkXMLTools, RegisterSpkToolbar, SpkToolbarEditor, spkte_AppearanceEditor, 
-  spkte_EditWindow, LazarusPackageIntf;
+  spkte_EditWindow, spkt_Checkboxes, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('RegisterSpkToolbar', @RegisterSpkToolbar.Register); 
-end; 
+  RegisterUnit('RegisterSpkToolbar', @RegisterSpkToolbar.Register);
+end;
 
 initialization
-  RegisterPackage('SpkToolbarPackage', @Register); 
+  RegisterPackage('SpkToolbarPackage', @Register);
 end.

@@ -53,7 +53,6 @@ type
     SpkSmallButton11: TSpkSmallButton;
     SpkSmallButton12: TSpkSmallButton;
     SpkSmallButton13: TSpkSmallButton;
-    Button1: TButton;
     procedure Button2Click(Sender: TObject);
   private
     { Private declarations }
