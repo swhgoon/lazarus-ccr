@@ -50,6 +50,9 @@ type /// <summary>Typ opisuj¹cy regiony toolbara, które s¹ u¿ywane podczas
      /// obs³ugi interakcji z mysz¹</summary>
      TSpkMouseToolbarElement = (teNone, teToolbarArea, teTabs, teTabContents);
 
+     TSpkTabChangingEvent = procedure (Sender: TObject; OldIndex, NewIndex: Integer;
+                              var Allowed: Boolean) of object;
+
 type TSpkToolbar = class;
 
      /// <summary>Klasa dyspozytora s³u¿¹ca do bezpiecznego przyjmowania
@@ -96,6 +99,9 @@ type TSpkToolbar = class;
 
      /// <summary>Rozszerzony pasek narzêdzi inspirowany Microsoft Fluent
      /// UI</summary>
+
+     { TSpkToolbar }
+
      TSpkToolbar = class(TCustomControl)
      private
      /// <summary>Instancja obiektu dyspozytora przekazywanego elementom
@@ -141,7 +147,7 @@ type TSpkToolbar = class;
      /// komponentu. FUpdating jest sterowana przez u¿ytkownika.</summary>
        FUpdating : boolean;
 
-       FOnTabChanging: TNotifyEvent;
+       FOnTabChanging: TSpkTabChangingEvent;
        FOnTabChanged: TNotifyEvent;
 
      protected
@@ -165,6 +171,7 @@ type TSpkToolbar = class;
      /// </summary>
        FDisabledLargeImages : TImageList;
 
+       function DoTabChanging(OldIndex, NewIndex: Integer): Boolean;
      // *******************************************
      // *** Zarz¹dzanie stanem metryki i bufora ***
      // *******************************************
@@ -359,7 +366,7 @@ type TSpkToolbar = class;
        property DisabledLargeImages : TImageList read FDisabledLargeImages write SetDisabledLargeImages;
 
      // <summary>Events called before and after a different tab is selected</summary>  
-       property OnTabChanging: TNotifyEvent read FOnTabChanging write FOnTabChanging;
+       property OnTabChanging: TSpkTabChangingEvent read FOnTabChanging write FOnTabChanging;
        property OnTabChanged: TNotifyEvent read FOnTabChanged write FOnTabChanged;
      end;
 
@@ -885,9 +892,10 @@ begin
 end;
 
 procedure TSpkToolbar.NotifyItemsChanged;
+var
+  OldTabIndex: Integer;
 begin
-  if Assigned(FOnTabChanging) then FOnTabChanging(self);
-
+  OldTabIndex := FTabIndex;
   // Poprawianie TabIndex o ile zachodzi taka potrzeba
   if not(AtLeastOneTabVisible) then FTabIndex:=-1
   else
@@ -901,12 +909,16 @@ begin
     end;
   FTabHover:=-1;
 
-  SetMetricsInvalid;
+  if DoTabChanging(OldTabIndex, FTabIndex) then begin
+    SetMetricsInvalid;
 
-  if not(FInternalUpdating or FUpdating) then
-     Repaint;
+    if not(FInternalUpdating or FUpdating) then
+       Repaint;
 
-  if Assigned(FOnTabChanged) then FOnTabChanged(self);
+    if Assigned(FOnTabChanged) then FOnTabChanged(self);
+  end else
+    FTabIndex := OldTabIndex;
+
 end;
 
 procedure TSpkToolbar.NotifyVisualsChanged;
@@ -1001,6 +1013,13 @@ begin
      Repaint;
 end;
 
+function TSpkToolbar.DoTabChanging(OldIndex, NewIndex: Integer): Boolean;
+begin
+  Result := True;
+  if Assigned(FOnTabChanging) then
+    FOnTabChanging(Self, OldIndex, NewIndex, Result);
+end;
+
 procedure TSpkToolbar.SetMetricsInvalid;
 begin
 FMetricsValid:=false;
@@ -1008,8 +1027,10 @@ FBufferValid:=false;
 end;
 
 procedure TSpkToolbar.SetTabIndex(const Value: integer);
+var
+  OldTabIndex: Integer;
 begin
-  if Assigned(FOnTabChanging) then FOnTabChanging(self);
+  OldTabIndex := FTabIndex;
 
   if not(AtLeastOneTabVisible) then FTabIndex:=-1
   else
@@ -1023,12 +1044,13 @@ begin
     end;
   FTabHover:=-1;
 
-  SetMetricsInvalid;
-
-  if not(FInternalUpdating or FUpdating) then
-     Repaint;
-
-  if Assigned(FOnTabChanged) then FOnTabChanged(self);
+  if DoTabChanging(OldTabIndex, FTabIndex) then begin
+    SetMetricsInvalid;
+    if not(FInternalUpdating or FUpdating) then
+       Repaint;
+    if Assigned(FOnTabChanged) then FOnTabChanged(self);
+  end else
+    FTabIndex := OldTabIndex;
 end;
 
 procedure TSpkToolbar.TabMouseDown(Button: TMouseButton; Shift: TShiftState; X,
@@ -1061,11 +1083,12 @@ if AtLeastOneTabVisible then
 // zmieñ zaznaczenie.
 if (Button = mbLeft) and (SelTab<>-1) and (SelTab<>FTabIndex) then
    begin
-   if Assigned(FOnTabChanging) then FOnTabChanging(self);
-   FTabIndex:=SelTab;
-   SetMetricsInvalid;
-   Repaint;
-   if Assigned(FOnTabChanged) then FOnTabChanged(self);
+   if DoTabChanging(FTabIndex, SelTab) then begin
+     FTabIndex:=SelTab;
+     SetMetricsInvalid;
+     Repaint;
+     if Assigned(FOnTabChanged) then FOnTabChanged(self);
+   end;
    end;
 end;
 
