@@ -321,7 +321,7 @@ begin
     begin
       ShowMessage(Format(SInvalidDateTime, [CellEditor.Caption]));
       if Field.IsNull then
-        CellEditor.Text:= ''
+        CellEditor.Text := ''
       else
         CellEditor.Text := FormatDateTime(DisplayFormat, Field.AsDateTime);
     end;
@@ -367,7 +367,7 @@ begin
     begin
       ShowMessage(Format(SInvalidDateTime, [CellEditor.Caption]));
       if Field.IsNull then
-        CellEditor.Text:= ''
+        CellEditor.Text := ''
       else
         CellEditor.Text := FormatDateTime(DisplayFormat, theValue);
       CellEditor.SelectAll;
@@ -437,7 +437,7 @@ end;
 function TJDbGridDateTimeCtrl.CanDefocus: boolean;
 begin
   if not updated then
-    Result:= True
+    Result := True
   else
   if CellEditor.Focused and (Length(CellEditor.Text) = 0) then
     Result := True
@@ -497,7 +497,7 @@ begin
         begin
           Field.DataSet.DisableControls;
           Field.DataSet.Edit;
-          Field.AsDateTime := theValue;
+          Field.Text := NormalizeTime(CellEditor.Caption, Field.AsDateTime);
           Field.DataSet.EnableControls;
         end;
       end;
@@ -506,7 +506,7 @@ begin
     begin
       ShowMessage(Format(SInvalidTime, [CellEditor.Caption]));
       if Field.IsNull then
-        CellEditor.Text:= ''
+        CellEditor.Text := ''
       else
         CellEditor.Text := FormatDateTime(DisplayFormat, Field.AsDateTime);
     end;
@@ -545,48 +545,49 @@ begin
     end;
   end
   else
-  if (Key in [VK_RETURN, VK_TAB, VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT]) and
-    (not IsValidTimeString(NormalizeTime(CellEditor.Caption, theValue))) then
-  begin
-    ShowMessage(Format(SInvalidTime, [CellEditor.Caption]));
-    if Field.IsNull then
-      CellEditor.Text:= ''
-    else
-      CellEditor.Text := FormatDateTime(DisplayFormat, theValue);
-    CellEditor.SelectAll;
-    Key := VK_UNKNOWN;
-  end
-  else
-  if key = VK_ESCAPE then
-  begin
-    if Field.IsNull then
-      CellEditor.Text := ''
-    else
-      CellEditor.Text := FormatDateTime(DisplayFormat, Field.AsDateTime);
-    updated := True;
-    theGrid.SetFocus; // No perder el foco
-  end
-  else
-  //if Key in [VK_UP, VK_DOWN] then
-  //begin
-  //  Key := VK_UNKNOWN;
-  //end
-  //else
-  if Key in [VK_RETURN, VK_TAB, VK_UP, VK_DOWN] then
-  begin
-    CellEditor.Caption := NormalizeTime(CellEditor.Caption, theValue);
-    if Length(CellEditor.Caption) = 0 then
-      theValue := 0
-    else
-    if IsValidTimeString(CellEditor.Caption) then
+  if Length(CellEditor.Caption) <> 0 then
+    if (Key in [VK_RETURN, VK_TAB, VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT]) and
+      (not IsValidTimeString(NormalizeTime(CellEditor.Caption, theValue))) then
     begin
-      theValue := StrToTime(CellEditor.Caption);
-      Field.DataSet.Edit;
-      Field.AsDateTime := theValue;
+      ShowMessage(Format(SInvalidTime, [CellEditor.Caption]));
+      if Field.IsNull then
+        CellEditor.Text := ''
+      else
+        CellEditor.Text := FormatDateTime(DisplayFormat, theValue);
       CellEditor.SelectAll;
+      Key := VK_UNKNOWN;
+    end
+    else
+    if key = VK_ESCAPE then
+    begin
+      if Field.IsNull then
+        CellEditor.Text := ''
+      else
+        CellEditor.Text := FormatDateTime(DisplayFormat, Field.AsDateTime);
       updated := True;
+      theGrid.SetFocus; // No perder el foco
+    end
+    else
+    //if Key in [VK_UP, VK_DOWN] then
+    //begin
+    //  Key := VK_UNKNOWN;
+    //end
+    //else
+    if Key in [VK_RETURN, VK_TAB, VK_UP, VK_DOWN] then
+    begin
+      CellEditor.Caption := NormalizeTime(CellEditor.Caption, theValue);
+      if Length(CellEditor.Caption) = 0 then
+        theValue := 0
+      else
+      if IsValidTimeString(CellEditor.Caption) then
+      begin
+        theValue := StrToTime(CellEditor.Caption);
+        Field.DataSet.Edit;
+        Field.Text := NormalizeTime(CellEditor.Caption, Field.AsDateTime);
+        CellEditor.SelectAll;
+        updated := True;
+      end;
     end;
-  end;
 end;
 
 function TJDbGridTimeCtrl.isNull: boolean;
@@ -620,7 +621,7 @@ end;
 function TJDbGridTimeCtrl.CanDefocus: boolean;
 begin
   if not updated then
-    Result:= True
+    Result := True
   else
   if CellEditor.Focused and (Length(CellEditor.Text) = 0) then
     Result := True
@@ -689,7 +690,7 @@ begin
     begin
       ShowMessage(Format(SInvalidDate, [CellEditor.Caption]));
       if Field.IsNull then
-        CellEditor.Text:= ''
+        CellEditor.Text := ''
       else
         CellEditor.Text := FormatDateTime(DisplayFormat, Field.AsDateTime);
     end;
@@ -734,7 +735,7 @@ begin
     begin
       ShowMessage(Format(SInvalidDate, [CellEditor.Caption]));
       if Field.IsNull then
-        CellEditor.Text:= ''
+        CellEditor.Text := ''
       else
         CellEditor.Text := FormatDateTime(DisplayFormat, theValue);
       CellEditor.SelectAll;
@@ -805,7 +806,7 @@ end;
 function TJDbGridDateCtrl.CanDefocus: boolean;
 begin
   if not updated then
-    Result:= True
+    Result := True
   else
   if CellEditor.Focused and (Length(CellEditor.Text) = 0) then
     Result := True
@@ -916,7 +917,7 @@ begin
       Field.DataSet.Edit;
       if decimals > 0 then
         theValue := ScaleTo(theValue, fDecimals);
-      Field.Value := theValue;       ;
+      Field.Value := theValue;
       CellEditor.Text := Field.AsString;
       updated := True;
     end;
@@ -1095,4 +1096,3 @@ begin
 end;
 
 end.
-

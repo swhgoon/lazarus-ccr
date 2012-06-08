@@ -194,7 +194,7 @@ begin
     begin
       aTime := StrToTime(texto);
       Result := TimeString;// FormatDateTime(aTimeFormat, aTime);
-    end;
+    end
   end;
   tokens.Free;
   //ShowMessage('Hora normalizada: ' + Result);
