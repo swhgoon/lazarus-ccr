@@ -268,13 +268,11 @@ var Component : TComponent;
 
 begin
 Component:=self.GetComponent;
-if not(assigned(Component)) then
-   exit;
 
 if not(Component is TSpkToolbar) then
    exit;
 
-Toolbar:=Component as TSpkToolbar;
+Toolbar:=TSpkToolbar(Component);
 Designer:=self.GetDesigner;
 
 EditWindow.SetData(Toolbar,Designer);
@@ -341,7 +339,7 @@ begin
 Obj:=GetComponent(0);
 if Obj is TSpkToolbar then
    begin
-   Toolbar:=(Obj as TSpkToolbar);
+   Toolbar:=TSpkToolbar(Obj);
 
    AppearanceEditor:=TfrmAppearanceEditWindow.Create(nil);
    try
@@ -358,7 +356,7 @@ if Obj is TSpkToolbar then
    end else
 if Obj is TSpkTab then
    begin
-   Tab:=(Obj as TSpkTab);
+   Tab:=TSpkTab(Obj);
 
    AppearanceEditor:=TfrmAppearanceEditWindow.Create(nil);
    try
