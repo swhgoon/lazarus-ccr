@@ -262,9 +262,8 @@ implementation
 
 procedure TSpkToolbarEditor.DoOpenContentsEditor;
 
-var Component : TComponent;
-    Toolbar : TSpkToolbar;
-    Designer : TIDesigner;
+var
+  Component : TComponent;
 
 begin
 Component:=self.GetComponent;
@@ -272,10 +271,7 @@ Component:=self.GetComponent;
 if not(Component is TSpkToolbar) then
    exit;
 
-Toolbar:=TSpkToolbar(Component);
-Designer:=self.GetDesigner;
-
-EditWindow.SetData(Toolbar,Designer);
+EditWindow.SetData(TSpkToolbar(Component),Self);
 EditWindow.Show;
 end;
 
