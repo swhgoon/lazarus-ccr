@@ -22,7 +22,7 @@ type TSpkItemSize = (isLarge, isNormal);
      TSpkItemTableBehaviour = (tbBeginsRow, tbBeginsColumn, tbContinuesRow);
      TSpkItemGroupBehaviour = (gbSingleItem, gbBeginsGroup, gbContinuesGroup, gbEndsGroup);
 
-type TSpkBaseItem = class abstract(TSpkComponent)
+     TSpkBaseItem = class abstract(TSpkComponent)
      private
      protected
        FRect : T2DIntRect;

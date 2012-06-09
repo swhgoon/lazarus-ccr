@@ -37,10 +37,6 @@ type TSpkItems = class(TSpkCollection)
        procedure SetLargeImages(const Value : TImageList);
        procedure SetDisabledLargeImages(const Value : TImageList);
      public
-     // *** Konstruktor, destruktor ***
-       constructor Create(RootComponent : TComponent); override;
-       destructor Destroy; override;
-
        function AddLargeButton : TSpkLargeButton;
        function AddSmallButton : TSpkSmallButton;
        function AddCheckbox: TSpkCheckbox;
@@ -64,133 +60,31 @@ implementation
 { TSpkItems }
 
 function TSpkItems.AddLargeButton: TSpkLargeButton;
-
-var Owner, Parent : TComponent;
-    i: Integer;
-
 begin
-if FRootComponent<>nil then
-   begin
-   Owner:=FRootComponent.Owner;
-   Parent:=FRootComponent;
-   end
-else
-   begin
-   Owner:=nil;
-   Parent:=nil;
-   end;
-
-result:=TSpkLargeButton.Create(Owner);
-result.Parent:=Parent;
-
-if FRootComponent<>nil then
-   begin
-   i:=0;
-   while FRootComponent.Owner.FindComponent('SpkLargeButton'+inttostr(i))<>nil do
-         inc(i);
-
-   result.Name:='SpkLargeButton'+inttostr(i);
-   end;
-
-AddItem(result);
+  Result := TSpkLargeButton.Create(FRootComponent);
+  Result.Parent := FRootComponent;
+  AddItem(Result);
 end;
 
 function TSpkItems.AddSmallButton: TSpkSmallButton;
-
-var Owner, Parent : TComponent;
-    i: Integer;
-
 begin
-if FRootComponent<>nil then
-   begin
-   Owner:=FRootComponent.Owner;
-   Parent:=FRootComponent;
-   end
-else
-   begin
-   Owner:=nil;
-   Parent:=nil;
-   end;
-
-result:=TSpkSmallButton.Create(Owner);
-result.Parent:=Parent;
-
-if FRootComponent<>nil then
-   begin
-   i:=0;
-   while FRootComponent.Owner.FindComponent('SpkSmallButton'+inttostr(i))<>nil do
-         inc(i);
-
-   result.Name:='SpkSmallButton'+inttostr(i);
-   end;
-
-AddItem(result);
+  Result := TSpkSmallButton.Create(FRootComponent);
+  Result.Parent := FRootComponent;
+  AddItem(Result);
 end;
 
 function TSpkItems.AddCheckbox: TSpkCheckbox;
-var
-  Owner, Parent : TComponent;
-  i: Integer;
 begin
-  if FRootComponent <> nil then begin
-    Owner := FRootComponent.Owner;
-    Parent := FRootComponent;
-  end else begin
-    Owner := nil;
-    Parent := nil;
-  end;
-  result := TSpkCheckbox.Create(Owner);
-  result.Parent := Parent;
-
-  if FRootComponent <> nil then begin
-    i := 0;
-    while FRootComponent.Owner.FindComponent('SpkCheckbox'+IntToStr(i)) <> nil do
-      inc(i);
-    result.Name := 'SpkCheckbox' + IntToStr(i);
-  end;
-
-  AddItem(result);
+  Result := TSpkCheckbox.Create(FRootComponent);
+  Result.Parent := FRootComponent;
+  AddItem(Result);
 end;
 
 function TSpkItems.AddRadioButton: TSpkRadioButton;
-var
-  Owner, Parent : TComponent;
-  i: Integer;
 begin
-  if FRootComponent <> nil then begin
-    Owner := FRootComponent.Owner;
-    Parent := FRootComponent;
-  end else begin
-    Owner := nil;
-    Parent := nil;
-  end;
-  result := TSpkRadioButton.Create(Owner);
-  result.Parent := Parent;
-
-  if FRootComponent <> nil then begin
-    i := 0;
-    while FRootComponent.Owner.FindComponent('SpkRadioButton'+IntToStr(i)) <> nil do
-      inc(i);
-    result.Name := 'SpkRadioButton' + IntToStr(i);
-  end;
-
-  AddItem(result);
-end;
-
-constructor TSpkItems.Create(RootComponent : TComponent);
-begin
-inherited Create(RootComponent);
-FToolbarDispatch:=nil;
-FAppearance:=nil;
-FImages:=nil;
-FDisabledImages:=nil;
-FLargeImages:=nil;
-FDisabledLargeImages:=nil;
-end;
-
-destructor TSpkItems.Destroy;
-begin
-  inherited Destroy;
+  Result := TSpkRadioButton.Create(FRootComponent);
+  Result.Parent := FRootComponent;
+  AddItem(Result);
 end;
 
 function TSpkItems.GetItems(index: integer): TSpkBaseItem;
@@ -236,9 +130,8 @@ var i: Integer;
 
 begin
   FAppearance := Value;
-  if self.Count>0 then
-     for i := 0 to self.count - 1 do
-         Items[i].Appearance:=FAppearance;
+  for i := 0 to Count - 1 do
+    Items[i].Appearance := Value;
 end;
 
 procedure TSpkItems.SetDisabledImages(const Value: TImageList);
@@ -247,9 +140,8 @@ var i: Integer;
 
 begin
   FDisabledImages := Value;
-  if self.Count>0 then
-     for i := 0 to self.count - 1 do
-         Items[i].DisabledImages:=FDisabledImages;
+  for i := 0 to Count - 1 do
+    Items[i].DisabledImages := Value;
 end;
 
 procedure TSpkItems.SetDisabledLargeImages(const Value: TImageList);
@@ -258,9 +150,8 @@ var i: Integer;
 
 begin
   FDisabledLargeImages := Value;
-  if self.Count>0 then
-     for i := 0 to self.count - 1 do
-         Items[i].DisabledLargeImages:=FDisabledLargeImages;
+  for i := 0 to Count - 1 do
+    Items[i].DisabledLargeImages := Value;
 end;
 
 procedure TSpkItems.SetImages(const Value: TImageList);
@@ -269,9 +160,8 @@ var i: Integer;
 
 begin
   FImages := Value;
-  if self.Count>0 then
-     for i := 0 to self.count - 1 do
-         Items[i].Images:=FImages;
+  for i := 0 to Count - 1 do
+    Items[i].Images := Value;
 end;
 
 procedure TSpkItems.SetLargeImages(const Value: TImageList);
@@ -280,9 +170,8 @@ var i: Integer;
 
 begin
   FLargeImages := Value;
-  if self.Count>0 then
-     for i := 0 to self.count - 1 do
-         Items[i].LargeImages:=FLargeImages;
+  for i := 0 to Count - 1 do
+    Items[i].LargeImages := Value;
 end;
 
 procedure TSpkItems.SetToolbarDispatch(const Value: TSpkBaseToolbarDispatch);
@@ -291,9 +180,8 @@ var i : integer;
 
 begin
   FToolbarDispatch := Value;
-  if self.Count>0 then
-     for i := 0 to self.count - 1 do
-         Items[i].ToolbarDispatch:=FToolbarDispatch;
+  for i := 0 to Count - 1 do
+    Items[i].ToolbarDispatch := Value;
 end;
 
 procedure TSpkItems.Update;

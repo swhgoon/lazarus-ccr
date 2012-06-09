@@ -126,10 +126,6 @@ type TSpkPanes = class(TSpkCollection)
        procedure SetLargeImages(const Value: TImageList);
        procedure SetDisabledLargeImages(const Value : TImageList);
      public
-     // *** Konstruktor, destruktor ***
-       constructor Create(RootComponent : TComponent); override;
-       destructor Destroy; override;
-
      // *** Dodawanie i wstawianie elementów ***
        function Add : TSpkPane;
        function Insert(index : integer) : TSpkPane;
@@ -908,51 +904,10 @@ end;
 { TSpkPanes }
 
 function TSpkPanes.Add: TSpkPane;
-
-var Owner, Parent : TComponent;
-  i: Integer;
-
 begin
-if FRootComponent<>nil then
-   begin
-   Owner:=FRootComponent.Owner;
-   Parent:=FRootComponent;
-   end
-else
-   begin
-   Owner:=nil;
-   Parent:=nil;
-   end;
-
-result:=TSpkPane.Create(Owner);
-result.Parent:=Parent;
-
-if FRootComponent<>nil then
-   begin
-   i:=0;
-   while FRootComponent.Owner.FindComponent('SpkPane'+inttostr(i))<>nil do
-         inc(i);
-
-   result.Name:='SpkPane'+inttostr(i);
-   end;
-
-AddItem(result);
-end;
-
-constructor TSpkPanes.Create(RootComponent : TComponent);
-begin
-  inherited Create(RootComponent);
-  FToolbarDispatch:=nil;
-  FAppearance:=nil;
-  FImages:=nil;
-  FDisabledImages:=nil;
-  FLargeImages:=nil;
-  FDisabledLargeImages:=nil;
-end;
-
-destructor TSpkPanes.Destroy;
-begin
-  inherited Destroy;
+  Result:=TSpkPane.Create(FRootComponent);
+  Result.Parent:=FRootComponent;
+  AddItem(Result);
 end;
 
 function TSpkPanes.GetItems(index: integer): TSpkPane;

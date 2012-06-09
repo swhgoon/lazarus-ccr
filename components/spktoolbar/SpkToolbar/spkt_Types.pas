@@ -22,7 +22,7 @@ type TSpkListState = (lsNeedsProcessing, lsReady);
 type TSpkCollection = class(TPersistent)
      private
      protected
-       FList : TObjectList;
+       FList : TFPObjectList;
        FNames : TStringList;
        FListState : TSpkListState;
        FRootComponent : TComponent;
@@ -32,9 +32,6 @@ type TSpkCollection = class(TPersistent)
        procedure Update; virtual;
 
      // *** Wewnêtrzne metody dodawania i wstawiania elementów ***
-       procedure AddItem(AItem : TComponent);
-       procedure InsertItem(index : integer; AItem : TComponent);
-
      // *** Gettery i settery ***
        function GetItems(index: integer): TComponent; virtual;
      public
@@ -43,6 +40,8 @@ type TSpkCollection = class(TPersistent)
        destructor Destroy; override;
 
      // *** Obs³uga listy ***
+       procedure AddItem(AItem : TComponent);
+       procedure InsertItem(index : integer; AItem : TComponent);
        procedure Clear;
        function Count : integer;
        procedure Delete(index : integer); virtual;
@@ -67,20 +66,13 @@ type TSpkComponent = class(TComponent)
      protected
        FParent : TComponent;
        FCollection: TSpkCollection;
-
-     // *** Gettery i settery ***
-       function GetParent: TComponent;
-       procedure SetParent(const Value: TComponent);
      public
-     // *** Konstruktor ***
-       constructor Create(AOwner : TComponent); override;
-
      // *** Obs³uga parenta ***
        function HasParent : boolean; override;
        function GetParentComponent : TComponent; override;
        procedure SetParentComponent(Value : TComponent); override;
 
-       property Parent : TComponent read GetParent write SetParent;
+       property Parent : TComponent read FParent write SetParentComponent;
        property Collection: TSpkCollection read FCollection;
      end;
 
@@ -121,7 +113,7 @@ FRootComponent:=RootComponent;
 
 FNames:=TStringList.create;
 
-FList:=TObjectList.create(False);
+FList:=TFPObjectList.create(False);
 
 FListState:=lsReady;
 end;
@@ -263,30 +255,16 @@ begin
 end;
 
 procedure TSpkCollection.WriteNames(Writer: TWriter);
-
-var Item : pointer;
-
+var
+  i: Integer;
 begin
-Writer.WriteListBegin;
-
-for Item in FList do
-    Writer.WriteString(TComponent(Item).Name);
-
-Writer.WriteListEnd;
+  Writer.WriteListBegin;
+  for i := 0 to FList.Count - 1 do
+    Writer.WriteString(TComponent(FList[i]).Name);
+  Writer.WriteListEnd;
 end;
 
 { TSpkComponent }
-
-constructor TSpkComponent.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FParent:=nil;
-end;
-
-function TSpkComponent.GetParent: TComponent;
-begin
-  result:=GetParentComponent;
-end;
 
 function TSpkComponent.GetParentComponent: TComponent;
 begin
@@ -296,11 +274,6 @@ end;
 function TSpkComponent.HasParent: boolean;
 begin
   result:=FParent<>nil;
-end;
-
-procedure TSpkComponent.SetParent(const Value: TComponent);
-begin
-  SetParentComponent(Value);
 end;
 
 procedure TSpkComponent.SetParentComponent(Value: TComponent);

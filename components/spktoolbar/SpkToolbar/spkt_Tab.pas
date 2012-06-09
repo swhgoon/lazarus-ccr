@@ -149,9 +149,6 @@ type TSpkTabs = class(TSpkCollection)
        procedure SetLargeImages(const Value : TImageList);
        procedure SetDisabledLargeImages(const Value : TImageList);
      public
-       constructor Create(RootComponent : TComponent); override;
-       destructor Destroy; override;
-
        function Add : TSpkTab;
        function Insert(index : integer) : TSpkTab;
 
@@ -616,51 +613,10 @@ end;
 { TSpkTabs }
 
 function TSpkTabs.Add: TSpkTab;
-
-var Owner, Parent : TComponent;
-  i: Integer;
-
 begin
-if FRootComponent<>nil then
-   begin
-   Owner:=FRootComponent.Owner;
-   Parent:=FRootComponent;
-   end
-else
-   begin
-   Owner:=nil;
-   Parent:=nil;
-   end;
-
-result:=TSpkTab.create(Owner);
-result.Parent:=Parent;
-
-if FRootComponent<>nil then
-   begin
-   i:=0;
-   while FRootComponent.Owner.FindComponent('SpkTab'+inttostr(i))<>nil do
-         inc(i);
-
-   result.Name:='SpkTab'+inttostr(i);
-   end;
-
-AddItem(result);
-end;
-
-constructor TSpkTabs.Create(RootComponent : TComponent);
-begin
-  inherited Create(RootComponent);
-  FToolbarDispatch:=nil;
-  FAppearance:=nil;
-  FImages:=nil;
-  FDisabledImages:=nil;
-  FLargeImages:=nil;
-  FDisabledLargeImages:=nil;
-end;
-
-destructor TSpkTabs.Destroy;
-begin
-  inherited Destroy;
+  Result:=TSpkTab.create(FRootComponent);
+  Result.Parent:=FRootComponent;
+  AddItem(Result);
 end;
 
 function TSpkTabs.GetItems(index: integer): TSpkTab;
