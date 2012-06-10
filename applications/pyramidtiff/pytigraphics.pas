@@ -216,15 +216,37 @@ type
     function MaxSupport: double; virtual;
   end;
 
+{ Create a descriptor to select a memimg class }
 function GetPTMemImgDesc(Gray: boolean; Depth: word; HasAlpha: boolean): TPTMemImgDesc;
+
+{ Returns a memimg class that fits the descriptor }
 function GetPTMemImgClass(const Desc: TPTMemImgDesc): TPTMemImgBaseClass;
+
+{ Create a memimg with the descriptor }
 function CreatePTMemImg(const Desc: TPTMemImgDesc; Width, Height: integer): TFPCustomImage;
+
+{ Create a memimg with the same features as Img.
+  If Img is a TPTMemImgBaseClass it will create that.
+  Otherwise it returns a memimg that fits the Img using GetMinimumPTDesc. }
 function CreateCompatiblePTMemImg(Img: TFPCustomImage; Width, Height: integer
   ): TFPCustomImage;
+
+{ As CreateCompatiblePTMemImg, but the image has always an alpha channel. }
 function CreateCompatiblePTMemImgWithAlpha(Img: TFPCustomImage;
   Width, Height: integer): TFPCustomImage;
-function GetMinimumPTDesc(Img: TFPCustomImage): TPTMemImgDesc;
-function GetMinimumPTMemImg(Img: TFPCustomImage; FreeImg: boolean): TFPCustomImage;
+
+{ Returns the smallest descriptor that allows to store the Img.
+  It returns HasAlpha=false if all pixel are opaque.
+  It returns Gray=true if all red=green=blue.
+  It returns Depth=8 if all lo byte equals the hi byte or all lo bytes are 0.
+  To ignore rounding errors you can pass a FuzzyDepth. For example a FuzzyDepth
+  of 3 ignores the lower 3 bits when comparing.  }
+function GetMinimumPTDesc(Img: TFPCustomImage; FuzzyDepth: word = 4): TPTMemImgDesc;
+
+{ Create a smaller memimg with the same information as Img.
+  Pass FreeImg=true to call Img.Free }
+function GetMinimumPTMemImg(Img: TFPCustomImage; FreeImg: boolean;
+  FuzzyDepth: word = 4): TFPCustomImage;
 
 procedure SetFPImgExtraTiff(const Desc: TPTMemImgDesc; Img: TFPCustomImage;
   ClearTiffExtras: boolean);
@@ -317,7 +339,7 @@ begin
   if Img is TPTMemImgBase then
     Result:=CreatePTMemImg(TPTMemImgBase(Img).Desc,Width,Height)
   else
-    Result:=TPTMemImgRGBA16Bit.create(Width,Height);
+    Result:=CreatePTMemImg(GetMinimumPTDesc(Img),Width,Height);
   //DebugLn(['CreateCompatibleQVMemImg '+Img.ClassName+' '+Result.ClassName]);
 end;
 
@@ -326,22 +348,27 @@ function CreateCompatiblePTMemImgWithAlpha(Img: TFPCustomImage; Width,
 var
   Desc: TPTMemImgDesc;
 begin
-  if Img is TPTMemImgBase then begin
-    Desc:=TPTMemImgBase(Img).Desc;
-    Desc.HasAlpha:=true;
-    Result:=CreatePTMemImg(Desc,Width,Height)
-  end else
-    Result:=TPTMemImgRGBA16Bit.create(Width,Height);
+  if Img is TPTMemImgBase then
+    Desc:=TPTMemImgBase(Img).Desc
+  else
+    Desc:=GetMinimumPTDesc(Img);
+  Desc.HasAlpha:=true;
+  Result:=CreatePTMemImg(Desc,Width,Height);
 end;
 
-function GetMinimumPTDesc(Img: TFPCustomImage): TPTMemImgDesc;
+function GetMinimumPTDesc(Img: TFPCustomImage; FuzzyDepth: word = 4): TPTMemImgDesc;
+var
+  AllLoEqualsHi, AllLoAre0: Boolean;
+  FuzzyMaskLoHi: Word;
 
-  function Need16Bit(c: word): boolean; inline;
+  procedure Need16Bit(c: word); inline;
   var
     l: Byte;
   begin
+    c:=c and FuzzyMaskLoHi;
     l:=Lo(c);
-    Result:=(l<>0) and (l<>Hi(c));
+    AllLoAre0:=AllLoAre0 and (l=0);
+    AllLoEqualsHi:=AllLoEqualsHi and (l=Hi(c));
   end;
 
 var
@@ -353,10 +380,12 @@ var
   y: Integer;
   x: Integer;
   col: TFPColor;
+  FuzzyMaskWord: Word;
+  FuzzyOpaque: Word;
 begin
   TestGray:=true;
   TestAlpha:=true;
-  Test16Bit:=true;
+  Test16Bit:=FuzzyDepth<8;
   Result.HasAlpha:=false;
   Result.Gray:=true;
   Result.Depth:=8;
@@ -367,26 +396,35 @@ begin
     if ImgDesc.Gray then TestGray:=false;
     if not ImgDesc.HasAlpha then TestAlpha:=false;
   end;
+
+  if (not TestGray) and (not TestAlpha) and (not Test16Bit) then exit;
+
+  FuzzyMaskWord:=Word($ffff) shl FuzzyDepth;
+  FuzzyOpaque:=alphaOpaque and FuzzyMaskWord;
+  FuzzyMaskLoHi:=Word(lo(FuzzyMaskWord))+(Word(lo(FuzzyMaskWord)) shl 8);
+  AllLoAre0:=true;
+  AllLoEqualsHi:=true;
   for y:=0 to Img.Height-1 do begin
     for x:=0 to Img.Width-1 do begin
       col:=Img.Colors[x,y];
-      if TestAlpha and (col.alpha<>alphaOpaque) then begin
+      if TestAlpha and ((col.alpha and FuzzyMaskWord)<>FuzzyOpaque) then begin
         TestAlpha:=false;
         Result.HasAlpha:=true;
         if (not TestGray) and (not Test16Bit) then break;
       end;
       if TestGray
-      and ((col.red<>col.green) or (col.red<>col.blue)) then begin
+      and ((col.red and FuzzyMaskWord)<>(col.green and FuzzyMaskWord))
+      or ((col.red and FuzzyMaskWord)<>(col.blue and FuzzyMaskWord)) then begin
         TestGray:=false;
         Result.Gray:=false;
         if (not TestAlpha) and (not Test16Bit) then break;
       end;
       if Test16Bit then begin
-        if Need16Bit(col.red)
-        or Need16Bit(col.green)
-        or Need16Bit(col.blue)
-        or Need16Bit(col.alpha)
-        then begin
+        Need16Bit(col.red);
+        Need16Bit(col.green);
+        Need16Bit(col.blue);
+        Need16Bit(col.alpha);
+        if (not AllLoAre0) and (not AllLoEqualsHi) then begin
           Test16Bit:=false;
           Result.Depth:=16;
           if (not TestAlpha) and (not TestGray) then break;
@@ -396,15 +434,15 @@ begin
   end;
 end;
 
-function GetMinimumPTMemImg(Img: TFPCustomImage; FreeImg: boolean
-  ): TFPCustomImage;
+function GetMinimumPTMemImg(Img: TFPCustomImage; FreeImg: boolean;
+  FuzzyDepth: word = 4): TFPCustomImage;
 var
   Desc: TPTMemImgDesc;
   ImgClass: TPTMemImgBaseClass;
   y: Integer;
   x: Integer;
 begin
-  Desc:=GetMinimumPTDesc(Img);
+  Desc:=GetMinimumPTDesc(Img,FuzzyDepth);
   //debugln(['GetMinimumQVMemImg Depth=',Desc.Depth,' Gray=',Desc.Gray,' HasAlpha=',Desc.HasAlpha]);
   ImgClass:=GetPTMemImgClass(Desc);
   if Img.ClassType=ImgClass then
