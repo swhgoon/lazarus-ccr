@@ -36,13 +36,13 @@ unit PyTiGraphics;
 interface
 
 uses
-  Math, sysutils, Classes, FPimage, FPImgCanv,
+  Math, sysutils, Classes, FPimage,
   LazLogger, FPCanvas, FPWriteTiff, FPTiffCmn;
 
 type
   TPTMemImgDesc = record
-    Gray: boolean;
-    Depth: word;
+    Gray: boolean; // true = red=green=blue, false: a RGB image
+    Depth: word; // 8 or 16 bit
     HasAlpha: boolean;
   end;
 
@@ -229,7 +229,6 @@ function GetMinimumPTMemImg(Img: TFPCustomImage; FreeImg: boolean): TFPCustomIma
 procedure SetFPImgExtraTiff(const Desc: TPTMemImgDesc; Img: TFPCustomImage;
   ClearTiffExtras: boolean);
 
-procedure SaveAsDebugTiff(Img: TFPCustomImage; Filename: string);
 function dbgs(const Desc: TPTMemImgDesc): string; overload;
 
 implementation
@@ -252,26 +251,6 @@ begin
     Img.Extra[TiffAlphaBits]:=IntToStr(Desc.Depth)
   else
     Img.Extra[TiffAlphaBits]:='0';
-end;
-
-procedure SaveAsDebugTiff(Img: TFPCustomImage; Filename: string);
-var
-  Writer: TFPWriterTiff;
-  ms: TMemoryStream;
-begin
-  ms:=nil;
-  Writer:=nil;
-  try
-    ms:=TMemoryStream.Create;
-    Writer:=TFPWriterTiff.Create;
-    Writer.ImageWrite(ms,Img);
-    ms.Position:=0;
-    ms.SaveToFile(Filename);
-    DebugLn(['SaveAsDebugTiff ',Img.ClassName,' ',Img.Width,'x',Img.Height,' ',Filename]);
-  finally
-    Writer.Free;
-    ms.Free;
-  end;
 end;
 
 function dbgs(const Desc: TPTMemImgDesc): string;
