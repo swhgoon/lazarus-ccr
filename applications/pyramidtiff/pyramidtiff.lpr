@@ -133,7 +133,7 @@ begin
                           IFD.GreenBits),
                           IFD.BlueBits),
                           IFD.GrayBits);
-  IFD.Img:=CreateQVMemImg(Desc,IFD.ImageWidth,IFD.ImageHeight);
+  IFD.Img:=CreatePTMemImg(Desc,IFD.ImageWidth,IFD.ImageHeight);
 end;
 
 function TPyramidTiffer.ShrinkImage(LastImg: TPTMemImgBase): TPTMemImgBase;
@@ -147,7 +147,7 @@ function TPyramidTiffer.ShrinkImage(LastImg: TPTMemImgBase): TPTMemImgBase;
 var
   ImgCanvas: TFPImageCanvas;
 begin
-  Result:=TPTMemImgBase(CreateQVMemImg(LastImg.Desc, Half(LastImg.Width), Half(
+  Result:=TPTMemImgBase(CreatePTMemImg(LastImg.Desc, Half(LastImg.Width), Half(
     LastImg.Height)));
   ImgCanvas:=TFPImageCanvas.create(Result);
   ImgCanvas.Interpolation:=TLinearInterpolation.Create;
@@ -173,7 +173,7 @@ procedure TPyramidTiffer.LoadOther(out Img: TPTMemImgBase;
 begin
   Img:=TPTMemImgRGBA8Bit.Create(0, 0);
   Reader.ImageRead(InStream, Img);
-  Img:=GetMinimumQVMemImg(Img, true) as TPTMemImgBase;
+  Img:=GetMinimumPTMemImg(Img, true) as TPTMemImgBase;
 end;
 
 procedure TPyramidTiffer.DoRun;

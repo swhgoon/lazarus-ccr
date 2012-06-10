@@ -216,15 +216,15 @@ type
     function MaxSupport: double; virtual;
   end;
 
-function GeTPTMemImgDesc(Gray: boolean; Depth: word; HasAlpha: boolean): TPTMemImgDesc;
-function GeTPTMemImgClass(const Desc: TPTMemImgDesc): TPTMemImgBaseClass;
-function CreateQVMemImg(const Desc: TPTMemImgDesc; Width, Height: integer): TFPCustomImage;
-function CreateCompatibleQVMemImg(Img: TFPCustomImage; Width, Height: integer
+function GetPTMemImgDesc(Gray: boolean; Depth: word; HasAlpha: boolean): TPTMemImgDesc;
+function GetPTMemImgClass(const Desc: TPTMemImgDesc): TPTMemImgBaseClass;
+function CreatePTMemImg(const Desc: TPTMemImgDesc; Width, Height: integer): TFPCustomImage;
+function CreateCompatiblePTMemImg(Img: TFPCustomImage; Width, Height: integer
   ): TFPCustomImage;
-function CreateCompatibleQVMemImgWithAlpha(Img: TFPCustomImage;
+function CreateCompatiblePTMemImgWithAlpha(Img: TFPCustomImage;
   Width, Height: integer): TFPCustomImage;
-function GetMinimumQVDesc(Img: TFPCustomImage): TPTMemImgDesc;
-function GetMinimumQVMemImg(Img: TFPCustomImage; FreeImg: boolean): TFPCustomImage;
+function GetMinimumPTDesc(Img: TFPCustomImage): TPTMemImgDesc;
+function GetMinimumPTMemImg(Img: TFPCustomImage; FreeImg: boolean): TFPCustomImage;
 
 procedure SetFPImgExtraTiff(const Desc: TPTMemImgDesc; Img: TFPCustomImage;
   ClearTiffExtras: boolean);
@@ -281,7 +281,7 @@ begin
     +',HasAlpha='+dbgs(Desc.HasAlpha);
 end;
 
-function GeTPTMemImgDesc(Gray: boolean; Depth: word; HasAlpha: boolean
+function GetPTMemImgDesc(Gray: boolean; Depth: word; HasAlpha: boolean
   ): TPTMemImgDesc;
 begin
   Result.Gray:=Gray;
@@ -289,7 +289,7 @@ begin
   Result.HasAlpha:=HasAlpha;
 end;
 
-function GeTPTMemImgClass(const Desc: TPTMemImgDesc): TPTMemImgBaseClass;
+function GetPTMemImgClass(const Desc: TPTMemImgDesc): TPTMemImgBaseClass;
 begin
   if Desc.Gray then begin
     if Desc.HasAlpha then begin
@@ -323,26 +323,26 @@ begin
   end;
 end;
 
-function CreateQVMemImg(const Desc: TPTMemImgDesc; Width, Height: integer
+function CreatePTMemImg(const Desc: TPTMemImgDesc; Width, Height: integer
   ): TFPCustomImage;
 var
   ImgClass: TPTMemImgBaseClass;
 begin
-  ImgClass:=GeTPTMemImgClass(Desc);
+  ImgClass:=GetPTMemImgClass(Desc);
   Result:=ImgClass.Create(Width,Height);
 end;
 
-function CreateCompatibleQVMemImg(Img: TFPCustomImage; Width, Height: integer
+function CreateCompatiblePTMemImg(Img: TFPCustomImage; Width, Height: integer
   ): TFPCustomImage;
 begin
   if Img is TPTMemImgBase then
-    Result:=CreateQVMemImg(TPTMemImgBase(Img).Desc,Width,Height)
+    Result:=CreatePTMemImg(TPTMemImgBase(Img).Desc,Width,Height)
   else
     Result:=TPTMemImgRGBA16Bit.create(Width,Height);
   //DebugLn(['CreateCompatibleQVMemImg '+Img.ClassName+' '+Result.ClassName]);
 end;
 
-function CreateCompatibleQVMemImgWithAlpha(Img: TFPCustomImage; Width,
+function CreateCompatiblePTMemImgWithAlpha(Img: TFPCustomImage; Width,
   Height: integer): TFPCustomImage;
 var
   Desc: TPTMemImgDesc;
@@ -350,12 +350,12 @@ begin
   if Img is TPTMemImgBase then begin
     Desc:=TPTMemImgBase(Img).Desc;
     Desc.HasAlpha:=true;
-    Result:=CreateQVMemImg(Desc,Width,Height)
+    Result:=CreatePTMemImg(Desc,Width,Height)
   end else
     Result:=TPTMemImgRGBA16Bit.create(Width,Height);
 end;
 
-function GetMinimumQVDesc(Img: TFPCustomImage): TPTMemImgDesc;
+function GetMinimumPTDesc(Img: TFPCustomImage): TPTMemImgDesc;
 
   function Need16Bit(c: word): boolean; inline;
   var
@@ -417,7 +417,7 @@ begin
   end;
 end;
 
-function GetMinimumQVMemImg(Img: TFPCustomImage; FreeImg: boolean
+function GetMinimumPTMemImg(Img: TFPCustomImage; FreeImg: boolean
   ): TFPCustomImage;
 var
   Desc: TPTMemImgDesc;
@@ -425,12 +425,12 @@ var
   y: Integer;
   x: Integer;
 begin
-  Desc:=GetMinimumQVDesc(Img);
+  Desc:=GetMinimumPTDesc(Img);
   //debugln(['GetMinimumQVMemImg Depth=',Desc.Depth,' Gray=',Desc.Gray,' HasAlpha=',Desc.HasAlpha]);
-  ImgClass:=GeTPTMemImgClass(Desc);
+  ImgClass:=GetPTMemImgClass(Desc);
   if Img.ClassType=ImgClass then
     exit(Img);
-  Result:=CreateQVMemImg(Desc,Img.Width,Img.Height);
+  Result:=CreatePTMemImg(Desc,Img.Width,Img.Height);
   for y:=0 to Img.Height-1 do
     for x:=0 to Img.Width-1 do
       Result.Colors[x,y]:=Img.Colors[x,y];
@@ -484,7 +484,7 @@ end;
 
 constructor TPTMemImgGrayAlpha16Bit.Create(AWidth, AHeight: integer);
 begin
-  FDesc:=GeTPTMemImgDesc(true,16,true);
+  FDesc:=GetPTMemImgDesc(true,16,true);
   inherited Create(AWidth, AHeight);
 end;
 
@@ -537,7 +537,7 @@ end;
 
 constructor TPTMemImgGrayAlpha8Bit.Create(AWidth, AHeight: integer);
 begin
-  FDesc:=GeTPTMemImgDesc(true,8,true);
+  FDesc:=GetPTMemImgDesc(true,8,true);
   inherited Create(AWidth, AHeight);
 end;
 
@@ -582,7 +582,7 @@ end;
 
 constructor TPTMemImgGray16Bit.Create(AWidth, AHeight: integer);
 begin
-  FDesc:=GeTPTMemImgDesc(true,16,false);
+  FDesc:=GetPTMemImgDesc(true,16,false);
   inherited Create(AWidth, AHeight);
 end;
 
@@ -628,7 +628,7 @@ end;
 
 constructor TPTMemImgGray8Bit.Create(AWidth, AHeight: integer);
 begin
-  FDesc:=GeTPTMemImgDesc(true,8,false);
+  FDesc:=GetPTMemImgDesc(true,8,false);
   inherited Create(AWidth, AHeight);
 end;
 
@@ -682,7 +682,7 @@ end;
 
 constructor TPTMemImgRGBA8Bit.Create(AWidth, AHeight: integer);
 begin
-  FDesc:=GeTPTMemImgDesc(false,8,true);
+  FDesc:=GetPTMemImgDesc(false,8,true);
   inherited Create(AWidth, AHeight);
 end;
 
@@ -735,7 +735,7 @@ end;
 
 constructor TPTMemImgRGB8Bit.Create(AWidth, AHeight: integer);
 begin
-  FDesc:=GeTPTMemImgDesc(false,8,false);
+  FDesc:=GetPTMemImgDesc(false,8,false);
   inherited Create(AWidth, AHeight);
 end;
 
@@ -788,7 +788,7 @@ end;
 
 constructor TPTMemImgRGB16Bit.Create(AWidth, AHeight: integer);
 begin
-  FDesc:=GeTPTMemImgDesc(false,16,false);
+  FDesc:=GetPTMemImgDesc(false,16,false);
   inherited Create(AWidth, AHeight);
 end;
 
@@ -830,7 +830,7 @@ end;
 
 constructor TPTMemImgRGBA16Bit.Create(AWidth, AHeight: integer);
 begin
-  FDesc:=GeTPTMemImgDesc(false,16,true);
+  FDesc:=GetPTMemImgDesc(false,16,true);
   inherited Create(AWidth, AHeight);
 end;
 
