@@ -11,7 +11,6 @@ object frmEditWindow: TfrmEditWindow
   Font.Height = -11
   Font.Name = 'Tahoma'
   OnActivate = FormActivate
-  OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
   LCLVersion = '1.1'

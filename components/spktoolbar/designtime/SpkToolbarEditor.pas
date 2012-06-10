@@ -271,7 +271,7 @@ Component:=self.GetComponent;
 if not(Component is TSpkToolbar) then
    exit;
 
-EditWindow.SetData(TSpkToolbar(Component),Self);
+EditWindow.SetData(TSpkToolbar(Component),Self.GetDesigner);
 EditWindow.Show;
 end;
 

@@ -81,13 +81,12 @@ type
     procedure FormActivate(Sender: TObject);
     procedure tvStructureEdited(Sender: TObject; Node: TTreeNode;
       var S: string);
-    procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
     { Private declarations }
   protected
     FToolbar: TSpkToolbar;
-    FEditor: TComponentEditor;
+    FDesigner: TComponentEditorDesigner;
 
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
@@ -110,7 +109,7 @@ type
     procedure BuildTreeData;
     procedure RefreshNames;
 
-    procedure SetData(AToolbar : TSpkToolbar; AEditor: TComponentEditor);
+    procedure SetData(AToolbar : TSpkToolbar; ADesigner: TComponentEditorDesigner);
 
     property Toolbar : TSpkToolbar read FToolbar;
   end;
@@ -131,11 +130,10 @@ var Obj : TObject;
     NewNode : TTreeNode;
     Tab : TSpkTab;
     Pane : TSpkPane;
-    Hook: TPropertyEditorHook;
 begin
-if (FToolbar=nil) or (FEditor=nil) then
+if (FToolbar=nil) or (FDesigner=nil) then
    exit;
-if not FEditor.GetHook(Hook) then
+if FDesigner.PropertyEditorHook = nil then
    Exit;
 
 Node:=tvStructure.Selected;
@@ -150,7 +148,7 @@ if Obj is TSpkTab then
    Tab:=TSpkTab(Obj);
    Pane:=TSpkPane.Create(FToolbar.Owner);
    Pane.Parent:=FToolbar;
-   Pane.Name := FEditor.Designer.CreateUniqueComponentName(Pane.ClassName);
+   Pane.Name := FDesigner.CreateUniqueComponentName(Pane.ClassName);
    Tab.Panes.AddItem(Pane);
    NewNode:=tvStructure.Items.AddChild(Node, Pane.Caption);
    NewNode.Data:=Pane;
@@ -167,7 +165,7 @@ if Obj is TSpkPane then
    Tab:=TSpkTab(Node.Parent.Data);
    Pane:=TSpkPane.Create(FToolbar.Owner);
    Pane.Parent:=FToolbar;
-   Pane.Name:=FEditor.Designer.CreateUniqueComponentName(Pane.ClassName);
+   Pane.Name:=FDesigner.CreateUniqueComponentName(Pane.ClassName);
    Tab.Panes.AddItem(Pane);
    NewNode:=tvStructure.Items.AddChild(Node.Parent, Pane.Caption);
    NewNode.Data:=Pane;
@@ -185,7 +183,7 @@ if Obj is TSpkBaseItem then
    Tab:=TSpkTab(Node.Parent.Parent.Data);
    Pane:=TSpkPane.Create(FToolbar.Owner);
    Pane.Parent:=FToolbar;
-   Pane.Name:=FEditor.Designer.CreateUniqueComponentName(Pane.ClassName);
+   Pane.Name:=FDesigner.CreateUniqueComponentName(Pane.ClassName);
    Tab.Panes.AddItem(Pane);
    NewNode:=tvStructure.Items.AddChild(Node.Parent.Parent, Pane.Caption);
    NewNode.Data:=Pane;
@@ -195,8 +193,8 @@ if Obj is TSpkBaseItem then
    CheckActionsAvailability;
    end else
        raise exception.create('TfrmEditWindow.aAddPaneExecute: Nieprawid³owy obiekt podwieszony pod ga³êzi¹!');
-   Hook.PersistentAdded(Pane,True);
-   FEditor.Modified;
+   FDesigner.PropertyEditorHook.PersistentAdded(Pane,True);
+   FDesigner.Modified;
 end;
 
 procedure TfrmEditWindow.aAddSmallButtonExecute(Sender: TObject);
@@ -223,18 +221,17 @@ procedure TfrmEditWindow.aAddTabExecute(Sender: TObject);
 
 var Node : TTreeNode;
     Tab : TSpkTab;
-    Hook: TPropertyEditorHook;
 
 begin
-if (FToolbar=nil) or (FEditor=nil) then
+if (FToolbar=nil) or (FDesigner=nil) then
    exit;
-if not FEditor.GetHook(Hook) then
+if FDesigner.PropertyEditorHook = nil then
    Exit;
 
 Tab:=TSpkTab.Create(FToolbar.Owner);
 Tab.Parent:=FToolbar;
 FToolbar.Tabs.AddItem(Tab);
-Tab.Name:=FEditor.Designer.CreateUniqueComponentName(Tab.ClassName);
+Tab.Name:=FDesigner.CreateUniqueComponentName(Tab.ClassName);
 Node:=tvStructure.Items.AddChild(nil, Tab.Caption);
 Node.Data:=Tab;
 Node.ImageIndex:=0;
@@ -242,8 +239,8 @@ Node.SelectedIndex:=0;
 Node.Selected:=true;
 CheckActionsAvailability;
 
-Hook.PersistentAdded(Tab,True);
-FEditor.Modified;
+FDesigner.PropertyEditorHook.PersistentAdded(Tab,True);
+FDesigner.Modified;
 end;
 
 procedure TfrmEditWindow.AddItem(ItemClass: TSpkBaseItemClass);
@@ -254,11 +251,10 @@ var Node : TTreeNode;
     Item: TSpkBaseItem;
     NewNode: TTreeNode;
     s: string;
-    Hook: TPropertyEditorHook;
 begin
-if (FToolbar=nil) or (FEditor=nil) then
+if (FToolbar=nil) or (FDesigner=nil) then
   Exit;
-if not FEditor.GetHook(Hook) then
+if FDesigner.PropertyEditorHook = nil then
   Exit;
 
 Node:=tvStructure.Selected;
@@ -274,7 +270,7 @@ if Obj is TSpkPane then
    Item:=ItemClass.Create(FToolbar.Owner);
    Item.Parent:=FToolbar;
    Pane.Items.AddItem(Item);
-   Item.Name:=FEditor.Designer.CreateUniqueComponentName(Item.ClassName);
+   Item.Name:=FDesigner.CreateUniqueComponentName(Item.ClassName);
    s:=GetItemCaption(Item);
    NewNode:=tvStructure.Items.AddChild(Node, s);
    NewNode.Data:=Item;
@@ -292,7 +288,7 @@ if Obj is TSpkBaseItem then
    Item:=ItemClass.Create(FToolbar.Owner);
    Item.Parent:=FToolbar;
    Pane.Items.AddItem(Item);
-   Item.Name:=FEditor.Designer.CreateUniqueComponentName(Item.ClassName);
+   Item.Name:=FDesigner.CreateUniqueComponentName(Item.ClassName);
    s:=GetItemCaption(Item);
    NewNode:=tvStructure.Items.AddChild(Node.Parent, s);
    NewNode.Data:=Item;
@@ -302,8 +298,8 @@ if Obj is TSpkBaseItem then
    CheckActionsAvailability;
    end else
        raise exception.create('TfrmEditWindow.AddItem: Nieprawid³owy obiekt podwieszony pod ga³êzi¹!');
-   Hook.PersistentAdded(Item,True);
-   FEditor.Modified;
+   FDesigner.PropertyEditorHook.PersistentAdded(Item,True);
+   FDesigner.Modified;
 end;
 
 procedure TfrmEditWindow.aMoveDownExecute(Sender: TObject);
@@ -316,7 +312,7 @@ var Node : TTreeNode;
   Item: TSpkBaseItem;
 
 begin
-if (FToolbar=nil) or (FEditor=nil) then
+if (FToolbar=nil) or (FDesigner=nil) then
    exit;
 
 Node:=tvStructure.Selected;
@@ -399,7 +395,7 @@ var Node : TTreeNode;
   Item: TSpkBaseItem;
 
 begin
-if (FToolbar=nil) or (FEditor=nil) then
+if (FToolbar=nil) or (FDesigner=nil) then
    exit;
 
 Node:=tvStructure.Selected;
@@ -475,7 +471,7 @@ end;
 procedure TfrmEditWindow.aRemoveItemExecute(Sender: TObject);
 
 begin
-if (FToolbar=nil) or (FEditor=nil) then
+if (FToolbar=nil) or (FDesigner=nil) then
    exit;
 
 DoRemoveItem;
@@ -484,7 +480,7 @@ end;
 procedure TfrmEditWindow.aRemovePaneExecute(Sender: TObject);
 
 begin
-if (FToolbar=nil) or (FEditor=nil) then
+if (FToolbar=nil) or (FDesigner=nil) then
    exit;
 
 DoRemovePane;
@@ -493,7 +489,7 @@ end;
 procedure TfrmEditWindow.aRemoveTabExecute(Sender: TObject);
 
 begin
-if (FToolbar=nil) or (FEditor=nil) then
+if (FToolbar=nil) or (FDesigner=nil) then
    exit;
 
 DoRemoveTab;
@@ -509,7 +505,7 @@ var Node : TTreeNode;
     Item: TSpkBaseItem;
 
 begin
-if (FToolbar=nil) or (FEditor=nil) then
+if (FToolbar=nil) or (FDesigner=nil) then
    begin
    // Brak toolbara lub designera
 
@@ -637,7 +633,7 @@ end;
 function TfrmEditWindow.CheckValidItemNode(Node: TTreeNode): boolean;
 begin
 result:=false;
-if (FToolbar=nil) or (FEditor=nil) then
+if (FToolbar=nil) or (FDesigner=nil) then
    exit;
 
 {$B-}
@@ -650,7 +646,7 @@ end;
 function TfrmEditWindow.CheckValidPaneNode(Node: TTreeNode): boolean;
 begin
 result:=false;
-if (FToolbar=nil) or (FEditor=nil) then
+if (FToolbar=nil) or (FDesigner=nil) then
    exit;
 
 {$B-}
@@ -663,7 +659,7 @@ end;
 function TfrmEditWindow.CheckValidTabNode(Node: TTreeNode): boolean;
 begin
 result:=false;
-if (FToolbar=nil) or (FEditor=nil) then
+if (FToolbar=nil) or (FDesigner=nil) then
    exit;
 
 {$B-}
@@ -674,17 +670,11 @@ end;
 
 procedure TfrmEditWindow.FormActivate(Sender: TObject);
 begin
-if (FToolbar=nil) or (FEditor=nil) then
+if (FToolbar=nil) or (FDesigner=nil) then
    exit;
 
 if not(ValidateTreeData) then
    BuildTreeData;
-end;
-
-procedure TfrmEditWindow.FormCreate(Sender: TObject);
-begin
-FToolbar:=nil;
-FEditor:=nil;
 end;
 
 procedure TfrmEditWindow.FormDestroy(Sender: TObject);
@@ -695,7 +685,7 @@ end;
 
 procedure TfrmEditWindow.FormShow(Sender: TObject);
 begin
-if (FToolbar=nil) or (FEditor=nil) then
+if (FToolbar=nil) or (FDesigner=nil) then
    exit;
 
 BuildTreeData;
@@ -703,7 +693,7 @@ end;
 
 function TfrmEditWindow.GetItemCaption(Item: TSpkBaseItem): string;
 begin
-if (FToolbar=nil) or (FEditor=nil) then
+if (FToolbar=nil) or (FDesigner=nil) then
    exit;
 
 if Item is TSpkBaseButton then
@@ -731,21 +721,21 @@ end;
 
 procedure TfrmEditWindow.SetItemCaption(Item: TSpkBaseItem; const Value : string);
 begin
-if (FToolbar=nil) or (FEditor=nil) then
+if (FToolbar=nil) or (FDesigner=nil) then
    exit;
 
 if Item is TSpkBaseButton then
    TSpkBaseButton(Item).Caption:=Value;
 end;
 
-procedure TfrmEditWindow.SetData(AToolbar: TSpkToolbar; AEditor: TComponentEditor);
+procedure TfrmEditWindow.SetData(AToolbar: TSpkToolbar; ADesigner: TComponentEditorDesigner);
 
 begin
 if FToolbar<>nil then
    FToolbar.RemoveFreeNotification(self);
 
 FToolbar:=AToolbar;
-FEditor:=AEditor;
+FDesigner:=ADesigner;
 
 if FToolbar<>nil then
    FToolbar.FreeNotification(self);
@@ -761,7 +751,7 @@ var
   Pane: TSpkPane;
   NextNode: TTreeNode;
 begin
-if (FToolbar=nil) or (FEditor=nil) then
+if (FToolbar=nil) or (FDesigner=nil) then
    exit;
 
   Node := tvStructure.Selected;
@@ -792,7 +782,7 @@ var
   Node: TTreeNode;
   Tab: TSpkTab;
 begin
-if (FToolbar=nil) or (FEditor=nil) then
+if (FToolbar=nil) or (FDesigner=nil) then
    exit;
 
   Node := tvStructure.Selected;
@@ -823,7 +813,7 @@ var
   NextNode: TTreeNode;
   //DesignObj: IDesignObject;
 begin
-if (FToolbar=nil) or (FEditor=nil) then
+if (FToolbar=nil) or (FDesigner=nil) then
    exit;
 
   Node := tvStructure.Selected;
@@ -855,7 +845,7 @@ if (FToolbar=nil) or (FEditor=nil) then
     // wypadku IDE bêdzie próbowa³o wyœwietliæ w Object Inspectorze w³aœciwoœci
     // w³aœnie zwolnionego obiektu, co skoñczy siê, powiedzmy, niezbyt mi³o)
     //DesignObj := PersistentToDesignObject(FToolbar);
-    FEditor.Designer.SelectOnlyThisComponent(FToolbar);
+    FDesigner.SelectOnlyThisComponent(FToolbar);
     CheckActionsAvailability;
   end;
 end;
@@ -879,7 +869,7 @@ begin
   tvStructure.Items.Clear;
   tvStructure.OnDeletion := tvStructureDeletion;
 
-  if (FToolbar<>nil) and (FEditor<>nil) then
+  if (FToolbar<>nil) and (FDesigner<>nil) then
      begin
      if FToolbar.Tabs.Count > 0 then
        for i := 0 to FToolbar.Tabs.Count - 1 do
@@ -932,7 +922,7 @@ var tabnode, panenode, itemnode : TTreeNode;
     s: string;
 
 begin
-if (FToolbar=nil) or (FEditor=nil) then
+if (FToolbar=nil) or (FDesigner=nil) then
    exit;
 
 tabnode:=tvStructure.Items.GetFirstNode;
@@ -982,7 +972,7 @@ var Obj : TObject;
     index : integer;
 
 begin
-if (FToolbar=nil) or (FEditor=nil) then
+if (FToolbar=nil) or (FDesigner=nil) then
    exit;
 
 if assigned(Node) then
@@ -994,10 +984,8 @@ if assigned(Node) then
 
    if Obj is TSpkTab then
       begin
-      Tab:=Obj as TSpkTab;
-      //DesignObj:=PersistentToDesignObject(Tab);
-      FEditor.Designer.SelectOnlyThisComponent(Tab);
-
+      Tab:=TSpkTab(Obj);
+      FDesigner.SelectOnlyThisComponent(Tab);
       index:=FToolbar.Tabs.IndexOf(Tab);
       if index=-1 then
          raise exception.create('TfrmEditWindow.tvStructureChange: Uszkodzona struktura drzewa!');
@@ -1005,9 +993,8 @@ if assigned(Node) then
       end else
    if Obj is TSpkPane then
       begin
-      Pane:=Obj as TSpkPane;
-      //DesignObj:=PersistentToDesignObject(Pane);
-      FEditor.Designer.SelectOnlyThisComponent(Pane);
+      Pane:=TSpkPane(Obj);
+      FDesigner.SelectOnlyThisComponent(Pane);
 
       if not(CheckValidPaneNode(Node)) then
          raise exception.create('TfrmEditWindow.tvStructureChange: Uszkodzona struktura drzewa!');
@@ -1021,9 +1008,8 @@ if assigned(Node) then
       end else
    if Obj is TSpkBaseItem then
       begin
-      Item:=Obj as TSpkBaseItem;
-      //DesignObj:=PersistentToDesignObject(Item);
-      FEditor.Designer.SelectOnlyThisComponent(Item);
+      Item:=TSpkBaseItem(Obj);
+      FDesigner.SelectOnlyThisComponent(Item);
 
       if not(CheckValidItemNode(Node)) then
          raise exception.create('TfrmEditWindow.tvStructureChange: Uszkodzona struktura drzewa!');
@@ -1038,8 +1024,7 @@ if assigned(Node) then
           raise exception.create('TfrmEditWindow.tvStructureChange: Nieprawid³owy obiekt podwieszony pod ga³êzi¹!');
    end else
        begin
-       //DesignObj:=PersistentToDesignObject(FToolbar);
-       FEditor.Designer.SelectOnlyThisComponent(FToolbar);
+       FDesigner.SelectOnlyThisComponent(FToolbar);
        end;
 
 CheckActionsAvailability;
@@ -1071,7 +1056,7 @@ var
   Item: TSpkBaseItem;
 
 begin
-if (FToolbar=nil) or (FEditor=nil) then
+if (FToolbar=nil) or (FDesigner=nil) then
    exit;
 
 if Node.Data = nil then
@@ -1079,24 +1064,24 @@ if Node.Data = nil then
 
 if TObject(Node.Data) is TSpkTab then
    begin
-   Tab:=TObject(Node.Data) as TSpkTab;
+   Tab:=TSpkTab(Node.Data);
    Tab.Caption:=S;
 
-   FEditor.Modified;
+   FDesigner.Modified;
    end else
 if TObject(Node.Data) is TSpkPane then
    begin
-   Pane:=TObject(Node.Data) as TSpkPane;
+   Pane:=TSpkPane(Node.Data);
    Pane.Caption:=S;
 
-   FEditor.Modified;
+   FDesigner.Modified;
    end else
 if TObject(Node.Data) is TSpkBaseItem then
    begin
-   Item:=TObject(Node.Data) as TSpkBaseItem;
+   Item:=TSpkBaseItem(Node.Data);
    SetItemCaption(Item, S);
 
-   FEditor.Modified;
+   FDesigner.Modified;
    end else
        raise exception.create('TfrmEditWindow.tvStructureEdited: Uszkodzona struktura drzewa!');
 end;
@@ -1104,7 +1089,7 @@ end;
 procedure TfrmEditWindow.tvStructureKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-if (FToolbar=nil) or (FEditor=nil) then
+if (FToolbar=nil) or (FDesigner=nil) then
    exit;
 
 if Key = VK_DELETE then
@@ -1145,7 +1130,7 @@ var
 
 begin
 result:=false;
-if (FToolbar=nil) or (FEditor=nil) then
+if (FToolbar=nil) or (FDesigner=nil) then
    exit;
 
 i:=0;
