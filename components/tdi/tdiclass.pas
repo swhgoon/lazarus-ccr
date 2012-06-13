@@ -705,6 +705,9 @@ Var
   NewPage : TTDIPage ;
   AlreadyExistingPage : Integer ;
 begin
+  if not Assigned( AForm ) then
+     raise ETDIError.Create( sFormNotAssigned ) ;
+
   // Looking for a Page with same AForm Object //
   AlreadyExistingPage := FindFormInPages( AForm );
   if AlreadyExistingPage >= 0 then

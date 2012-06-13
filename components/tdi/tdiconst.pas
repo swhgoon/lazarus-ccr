@@ -36,6 +36,7 @@ uses
 
 resourcestring
   sOwnerIsNotWinControl = 'TDINoteBook.Owner is not a TWinControl descendant';
+  sFormNotAssigned = 'Parameter AForm not Assigned';
   sMainMenuNotAssigned = 'TTDINoteBook.MainMenu not assigned';
   sActionTabsMenu = 'Tabs';
   sActionCloseTab = 'Close Tab';
