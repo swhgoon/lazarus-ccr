@@ -70,16 +70,17 @@ end;
 
 procedure wst_finalize();
 var
-  i, c : Integer;
+  i : Integer;
   p : TwstInitializationProc;
 begin
   if Initialized then begin
     Initialized := False;
     if ( FinalProcs <> nil ) then begin
-      c := FinalProcs.Count;
-      for i := 0 to Pred(c) do begin
+      i := FinalProcs.Count - 1;
+      while (i >= 0) do begin
         p := TwstFinalizationProc(FinalProcs[i]);
         p();
+        Dec(i);
       end;
     end;
   end;
