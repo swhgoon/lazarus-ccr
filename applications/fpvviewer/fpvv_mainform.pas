@@ -18,13 +18,14 @@ type
     btnViewDXFTokens: TButton;
     Button1: TButton;
     btnContourLines: TButton;
+    Button2: TButton;
     buttonRenderingTest: TButton;
     editFileName: TFileNameEdit;
     Label2: TLabel;
     Label3: TLabel;
     notebook: TNotebook;
     pageViewer: TPage;
-    Page2: TPage;
+    pageTreeData: TPage;
     spinAdjustY: TSpinEdit;
     spinAdjustX: TSpinEdit;
     spinScale: TFloatSpinEdit;
@@ -34,12 +35,14 @@ type
     procedure btnVisualizeClick(Sender: TObject);
     procedure btnViewDXFTokensClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
     procedure buttonRenderingTestClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure spinScaleChange(Sender: TObject);
   private
     procedure MyContourLineDrawingProc(z,x1,y1,x2,y2: Double);
+    function FPVDebugAddItemProc(AStr: string; AParent: Pointer): Pointer;
   public
     { public declarations }
     Drawer: TFPVVDrawer;
@@ -224,6 +227,26 @@ begin
   end;
 end;
 
+procedure TfrmFPVViewer.Button2Click(Sender: TObject);
+var
+  Vec: TvVectorialDocument;
+begin
+  // First check the in input
+  //if not CheckInput() then Exit;
+
+  notebook.PageIndex := 1;
+
+  Vec := TvVectorialDocument.Create;
+  try
+    Vec.ReadFromFile(editFileName.FileName);
+
+    DXFTreeView.Items.Clear;
+    Vec.GenerateDebugTree(@FPVDebugAddItemProc);
+  finally
+    Vec.Free;
+  end;
+end;
+
 procedure TfrmFPVViewer.buttonRenderingTestClick(Sender: TObject);
 var
   VecDoc: TvVectorialDocument;
@@ -294,6 +317,14 @@ begin
     Round(y1 * spinScale.Value / 20),
     Round(x2 * spinScale.Value / 20),
     Round(y2 * spinScale.Value / 20));
+end;
+
+function TfrmFPVViewer.FPVDebugAddItemProc(AStr: string; AParent: Pointer): Pointer;
+var
+  lTreeItem: TTreeNode;
+begin
+  lTreeItem := DXFTreeView.Items.AddChild(TTreeNode(AParent), AStr);
+  Result := lTreeItem;
 end;
 
 end.

@@ -11,14 +11,14 @@ object frmFPVViewer: TfrmFPVViewer
   LCLVersion = '1.1'
   object editFileName: TFileNameEdit
     Left = 8
-    Height = 21
+    Height = 23
     Top = 8
     Width = 304
     DialogOptions = []
     FilterIndex = 0
     HideDirectories = False
     ButtonWidth = 23
-    NumGlyphs = 0
+    NumGlyphs = 1
     MaxLength = 0
     TabOrder = 0
   end
@@ -33,7 +33,7 @@ object frmFPVViewer: TfrmFPVViewer
   end
   object spinScale: TFloatSpinEdit
     Left = 72
-    Height = 21
+    Height = 23
     Top = 97
     Width = 168
     DecimalPlaces = 6
@@ -46,9 +46,9 @@ object frmFPVViewer: TfrmFPVViewer
   end
   object Label1: TLabel
     Left = 8
-    Height = 14
+    Height = 16
     Top = 97
-    Width = 45
+    Width = 47
     Caption = 'Scale by:'
     ParentColor = False
   end
@@ -70,19 +70,19 @@ object frmFPVViewer: TfrmFPVViewer
     Height = 410
     Top = 128
     Width = 485
-    PageIndex = 0
+    PageIndex = 1
     Anchors = [akTop, akLeft, akRight, akBottom]
     TabOrder = 4
     TabStop = True
     object pageViewer: TPage
     end
-    object Page2: TPage
+    object pageTreeData: TPage
       object DXFTreeView: TTreeView
         Left = 8
         Height = 313
         Top = 0
         Width = 321
-        DefaultItemHeight = 19
+        DefaultItemHeight = 18
         TabOrder = 0
       end
     end
@@ -116,15 +116,15 @@ object frmFPVViewer: TfrmFPVViewer
   end
   object Label2: TLabel
     Left = 8
-    Height = 14
+    Height = 16
     Top = 72
-    Width = 68
+    Width = 74
     Caption = 'Y adjustment:'
     ParentColor = False
   end
   object spinAdjustY: TSpinEdit
     Left = 80
-    Height = 21
+    Height = 23
     Top = 72
     Width = 72
     Increment = 100
@@ -134,7 +134,7 @@ object frmFPVViewer: TfrmFPVViewer
   end
   object spinAdjustX: TSpinEdit
     Left = 232
-    Height = 21
+    Height = 23
     Top = 72
     Width = 72
     Increment = 50
@@ -144,10 +144,19 @@ object frmFPVViewer: TfrmFPVViewer
   end
   object Label3: TLabel
     Left = 160
-    Height = 14
+    Height = 16
     Top = 72
-    Width = 68
+    Width = 74
     Caption = 'X adjustment:'
     ParentColor = False
+  end
+  object Button2: TButton
+    Left = 312
+    Height = 25
+    Top = 70
+    Width = 168
+    Caption = 'View FPVectorial Tokens'
+    OnClick = Button2Click
+    TabOrder = 10
   end
 end
