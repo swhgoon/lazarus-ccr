@@ -184,7 +184,8 @@ type
     destructor Destroy ; override;
     procedure DoCloseTabClicked(APage: TCustomPage); override;
 
-    procedure CreateFormInNewPage( AFormClass: TFormClass; ImageIndex : Integer = -1 ) ;
+    function CreateFormInNewPage( AFormClass: TFormClass;
+      ImageIndex : Integer = -1 ) : TForm;
     procedure ShowFormInPage( AForm: TForm; ImageIndex : Integer = -1 );
     Function FindFormInPages( AForm: TForm): Integer ;
 
@@ -690,14 +691,12 @@ begin
   FMainMenu := AValue ;
 end ;
 
-procedure TTDINoteBook.CreateFormInNewPage(AFormClass : TFormClass ;
-  ImageIndex : Integer) ;
-Var
-  NewForm : TForm ;
+function TTDINoteBook.CreateFormInNewPage(AFormClass: TFormClass;
+   ImageIndex: Integer): TForm;
 begin
-  NewForm := AFormClass.Create(Application);
+  Result := AFormClass.Create(Application);
 
-  ShowFormInPage( NewForm, ImageIndex );
+  ShowFormInPage( Result, ImageIndex );
 end ;
 
 procedure TTDINoteBook.ShowFormInPage(AForm : TForm ; ImageIndex : Integer) ;
