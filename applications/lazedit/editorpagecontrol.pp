@@ -359,7 +359,7 @@ begin
   if (Pos(Shebang,S) = 1) and ((Pos('/bin/bash',S) > 0) or (Pos('/bin/sh',S) > 0)) then Result := eftUnixShell
   else if (Pos(Shebang,S) = 1) and (Pos('/perl',S) > 0) then Result := eftPerl
   else if Pos('<!DOCTYPE HTML',UpperCase(S)) = 1 then Result := eftHtml
-  else if Pos('<?XML VERSION',S) = 1 then Result := eftXml
+  else if Pos('<?XML VERSION',UpperCase(S)) = 1 then Result := eftXml
   else if Pos('#INCLUDE <',UpperCase(S)) = 1 then Result := eftC
   {
   else if Pos('',S) = 0 then Result := eft
