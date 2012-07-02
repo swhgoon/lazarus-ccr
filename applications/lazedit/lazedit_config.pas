@@ -40,8 +40,8 @@ unit lazedit_config;
 interface
 
 uses
-  SysUtils, Classes, EditorPageControl, lazedit_constants, Forms,{FCL_Misc,} IniFiles,
-  LCLProc;
+  SysUtils, Classes, EditorPageControl, lazedit_constants, lazedit_translations,
+  Forms, IniFiles, LCLProc;
 
 type
   //globale type for all configurable options
@@ -73,7 +73,7 @@ type
     FileTypeMaskList: TFileTypeMaskList;
     TemplateMaskList: String;
     RecentFiles: Array[0..MruEntries - 1] of String;
-    Translation: Integer;
+    Translation: TLanguageIds;
   end;
 
 function LoadOptions(var Options: TLazEditOptions; FileName: String): Boolean;
@@ -114,6 +114,7 @@ var
   ftIndex: TEditorFileType;
   S: String;
   i: Integer;
+  Lang: LongInt;
 begin
   Result := False;
   try
@@ -167,7 +168,11 @@ begin
       end;
 
       // Translation and other general
-      Options.Translation := Ini.ReadInteger(scGeneral, idTranslation, 0);
+      Lang := Ini.ReadInteger(scGeneral, idTranslation, 0);
+      if (Lang >= Ord(Low(TLanguageIds))) and (Lang <= Ord(High(TLanguageIds))) then
+        Options.Translation := TLanguageIds(Lang)
+      else
+        Options.Translation := lidEnglish;
 
     finally
       Ini.Free;
@@ -240,7 +245,7 @@ begin
       end;
 
       // Translation and other general
-      Ini.WriteInteger(scGeneral, idTranslation, Options.Translation);
+      Ini.WriteInteger(scGeneral, idTranslation, Ord(Options.Translation));
 
       try
         Ini.UpdateFile;

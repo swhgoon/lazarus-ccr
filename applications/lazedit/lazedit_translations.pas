@@ -46,9 +46,16 @@ type
 
   { TTranslations }
 
+  TLanguageIds = (lidEnglish, lidDutch, lidPortuguese);
+
+const
+  MenuLangNameSuffixes: Array[TLanguageIds] of string = ('English','Dutch','Portuguese');
+
+type
+
   TTranslations = class(TObject)
   private
-    FLanguageId: Integer;
+    FLanguageId: TLanguageIds;
   public
     { Main form }
     {  mnuEditPasteTableContentTab: TMenuItem;
@@ -213,8 +220,8 @@ type
     procedure TranslateToEnglish;
     procedure TranslateToDutch;
     procedure TranslateToPortuguese;
-    procedure TranslateToLanguageID(AID: Integer);
-    function GetCurrentLanguageID: Integer;
+    procedure TranslateToLanguageID(ALangId: TLanguageIds);
+    function GetCurrentLanguageID: TLanguageIds;
   end;
 
 var
@@ -642,18 +649,18 @@ begin
     mnuViewFontsize := 'Tamanho da &fonte';
 end;
 
-procedure TTranslations.TranslateToLanguageID(AID: Integer);
+procedure TTranslations.TranslateToLanguageID(ALangId: TLanguageIds);
 begin
-  FLanguageID := AID;
-  case AID of
-  1: TranslateToDutch;
-  2: TranslateToPortuguese;
+  FLanguageID := ALangId;
+  case ALangId of
+  lidDutch: TranslateToDutch;
+  lidPortuguese: TranslateToPortuguese;
   else
     TranslateToEnglish;
   end;
 end;
 
-function TTranslations.GetCurrentLanguageID: Integer;
+function TTranslations.GetCurrentLanguageID: TLanguageIds;
 begin
   Result := FLanguageID;
 end;

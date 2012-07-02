@@ -112,9 +112,9 @@ type
     mnuToolbarsMain: TMenuItem;
     mnuInsertSep2: TMenuItem;
     mnuToolsLanguage: TMenuItem;
-    mnuEnglish: TMenuItem;
-    mnuDutch: TMenuItem;
-    mnuPortuguese: TMenuItem;
+    mnuLanguageEnglish: TMenuItem;
+    mnuLanguageDutch: TMenuItem;
+    mnuLanguagePortuguese: TMenuItem;
     mnuTools: TMenuItem;
     mnuAbout: TMenuItem;
     mnuViewFont: TMenuItem;
@@ -455,6 +455,7 @@ type
     procedure UpdateMenuItems;
     procedure CreateMruMenuItemsArray;
     function TryHlMenuTagToFileType(ATag: PtrInt; out AFileType: TEditorFileType): Boolean;
+    function TryLangMenuTagToLangId(ATag: PtrInt; out ALangId: TLanguageIds): Boolean;
 
     function FileTypeToFilterIndex(const Index: TEditorFileType): Integer;
     procedure ConstructOpenDialogFileFilters;
@@ -629,9 +630,15 @@ begin
 end;
 
 procedure TLazEditMainForm.mnuLanguageChangeClick(Sender: TObject);
+var
+  ALangId: TLanguageIds;
 begin
-  vTranslations.TranslateToLanguageID(Abs(TMenuItem(Sender).Tag));
-  DoTranslateAll();
+  if TryLangMenuTagToLangId((Sender as TMenuItem).Tag, ALangId) then
+  begin
+    vTranslations.TranslateToLanguageID(ALangId);
+    DoTranslateAll();
+  end
+  else debugln(Format('Error: Invalid tag for MenuItem %s: %x',[(Sender as TMenuItem).Name,(Sender as TMenuItem).Tag]));;
 end;
 
 
@@ -1447,6 +1454,7 @@ begin
   end;
 
   // Translation
+
   vTranslations.TranslateToLanguageID(Options.Translation);
 
   // Toolbars
@@ -1665,6 +1673,15 @@ begin
   if Result then AFileType := TEditorFileType(ATag);
 end;
 
+function TLazEditMainForm.TryLangMenuTagToLangId(ATag: PtrInt; out
+  ALangId: TLanguageIds): Boolean;
+begin
+  ATag := ATag and $FF0000;
+  ATag := ATag shr 16;
+  Result := (ATag >= Ord(Low(TLanguageIds))) and (ATag <= Ord(High(TLanguageIds)));
+  if Result then ALangId := TLanguageIds(ATag);
+end;
+
 function TLazEditMainForm.FileTypeToFilterIndex(const Index: TEditorFileType
   ): Integer;
 const
@@ -1685,6 +1702,7 @@ var
   //NE: Boolean;
   //NS: Boolean;
   Index: TEditorFileType;
+  LangId: TLanguageIds;
 begin
   for i := 0 to self.ComponentCount - 1 do
   begin
@@ -1692,6 +1710,7 @@ begin
     N := C.Name;
     if (C is TAction) or (C is TMenuItem) then
     begin
+      C.Tag := 0;  //initialize all Tags to 0
       //Things that need an open editor
       if Pos('LAYOUT',UpperCase(N)) > 0 then C.Tag := C.Tag or tgNeedsEditor;
       if Pos('EDIT',UpperCase(N)) > 0 then C.Tag := C.Tag or tgNeedsEditor;
@@ -1711,6 +1730,16 @@ begin
           begin
             C.Tag := C.Tag or (Ord(Index) shl 8);
             //debugln(Format('%-25s',[N]),' ->', IntToHex(C.Tag,8));
+          end;
+        end;
+      end;
+      if Pos('MNULANGUAGE', Uppercase(N)) > 0 then
+      begin
+        for LangId := Low(TLanguageIds) to High(TLanguageIds) do
+        begin
+          if ('MNULANGUAGE' + Uppercase(MenuLangNameSuffixes[LangId])= Uppercase(N)) then
+          begin
+            C.Tag := C.Tag or (Ord(LangId) shl 16);
           end;
         end;
       end;
@@ -1738,6 +1767,7 @@ begin
 
     {
     if (C is TMenuItem) or (C is TAction) then
+    //if (C = mnuLanguageEnglish)  or (C = mnuLanguageDutch) or (C = mnuLanguagePortuguese) then
     begin
       NE := (C.Tag and tgNeedsEditor) > 0;
       NS := (C.Tag and tgNeedsSelection) > 0;

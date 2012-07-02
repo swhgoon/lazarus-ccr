@@ -1757,16 +1757,16 @@ object LazEditMainForm: TLazEditMainForm
       Caption = 'mnuTools'
       object mnuToolsLanguage: TMenuItem
         Caption = 'mnuToolsLanguage'
-        object mnuEnglish: TMenuItem
+        object mnuLanguageEnglish: TMenuItem
           Caption = 'English'
           OnClick = mnuLanguageChangeClick
         end
-        object mnuDutch: TMenuItem
+        object mnuLanguageDutch: TMenuItem
           Tag = -1
           Caption = 'Dutch'
           OnClick = mnuLanguageChangeClick
         end
-        object mnuPortuguese: TMenuItem
+        object mnuLanguagePortuguese: TMenuItem
           Tag = -2
           Caption = 'Português'
           OnClick = mnuLanguageChangeClick
