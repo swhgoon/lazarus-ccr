@@ -637,7 +637,7 @@ begin
       Result := not IsSquareOccupied(ATo);
     end
     // Initial double move forward
-    else if (AFrom.X = ATo.X) and (AFrom.Y = 2) and (AFrom.Y = ATo.Y - 2) then
+    else if (AFrom.X = ATo.X) and (AFrom.Y = 2) and (AFrom.Y = ATo.Y - 2) and (not IsSquareOccupied(Point(AFrom.X,AFrom.Y+1))) then
     begin
       Result := not IsSquareOccupied(ATo);
       AEnpassantSquare := Point(AFrom.X, ATo.Y - 1);
@@ -675,7 +675,7 @@ begin
       Result := not IsSquareOccupied(ATo);
     end
     // Initial double move forward
-    else if (AFrom.X = ATo.X) and (AFrom.Y = 7) and (AFrom.Y = ATo.Y + 2) then
+    else if (AFrom.X = ATo.X) and (AFrom.Y = 7) and (AFrom.Y = ATo.Y + 2) and (not IsSquareOccupied(Point(AFrom.X,AFrom.Y-1))) then
     begin
       Result := not IsSquareOccupied(ATo);
       AEnpassantSquare := Point(AFrom.X, ATo.Y + 1);
@@ -913,11 +913,11 @@ begin
   begin
     ATo:=Point(ASquare.X,ASquare.Y+2);
     if (ASquare.Y+2<=8) and (CheckEndMove(ATo)) and ValidatePawnMove(ASquare,ATo,nullPoint,nullPoint) then //try to move 2 squares
-      if (makeMoveAndValidate(ASquare,ATo,nullPoint)) then exit(true);
+      if (makeMoveAndValidate(ASquare,ATo,Point(-1,-1))) then exit(true);
 
     ATo:=Point(ASquare.X,ASquare.Y+1);
     if (ASquare.Y+1<=8) and (Board[ATo.X][ATo.Y]=ctEmpty) then //try to move 1 square
-      if (makeMoveAndValidate(ASquare,ATo,nullPoint)) then exit(true);
+      if (makeMoveAndValidate(ASquare,ATo,Point(-1,-1))) then exit(true);
 
     ATo:=Point(ASquare.X-1,ASquare.Y+1);
     if (ASquare.X-1>=1) and (ASquare.Y+1<=8) and (CheckEndMove(ATo)) and (ValidatePawnMove(ASquare,ATo,nullPoint,nullPoint)) then //try to capture to the left
@@ -930,12 +930,12 @@ begin
   else
   begin
     ATo:=Point(ASquare.X,ASquare.Y-2);
-    if (ASquare.Y-2>=1) and (CheckEndMove(ATo)) and ValidatePawnMove(ASquare,ATo,nullPoint,nullPoint) then //try to move 2 squares
-      if (makeMoveAndValidate(ASquare,ATo,nullPoint)) then exit(true);
+    if (ASquare.Y-2>=1) and (CheckEndMove(ATo)) and (ValidatePawnMove(ASquare,ATo,nullPoint,nullPoint)) then //try to move 2 squares
+      if (makeMoveAndValidate(ASquare,ATo,Point(-1,-1))) then exit(true);
 
     ATo:=Point(ASquare.X,ASquare.Y-1);
     if (ASquare.Y-1>=1) and (Board[ATo.X][ATo.Y] = ctEmpty) then //try to move 1 square
-      if (makeMoveAndValidate(ASquare,ATo,nullPoint)) then exit(true);
+      if (makeMoveAndValidate(ASquare,ATo,Point(-1,-1))) then exit(true);
 
     ATo:=Point(ASquare.X-1,ASquare.Y-1);
     if (ASquare.X-1>=1) and (ASquare.Y-1>=1) and (CheckEndMove(ATo)) and (ValidatePawnMove(ASquare,ATo,nullPoint,nullPoint)) then //try to capture to the left
