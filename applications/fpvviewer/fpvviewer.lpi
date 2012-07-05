@@ -43,6 +43,7 @@
             </CompilerMessages>
             <CompilerPath Value="$(CompPath)"/>
           </Other>
+          <LCLWidgetType Value="qt"/>
         </CompilerOptions>
       </Item2>
     </BuildModes>

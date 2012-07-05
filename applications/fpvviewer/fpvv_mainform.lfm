@@ -70,7 +70,7 @@ object frmFPVViewer: TfrmFPVViewer
     Height = 410
     Top = 128
     Width = 485
-    PageIndex = 1
+    PageIndex = 0
     Anchors = [akTop, akLeft, akRight, akBottom]
     TabOrder = 4
     TabStop = True

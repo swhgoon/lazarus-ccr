@@ -240,6 +240,9 @@ begin
   try
     Vec.ReadFromFile(editFileName.FileName);
 
+    // Generate the positioning info
+    TvFormula(Vec.GetPage(0).GetEntity(0)).PositionElements(Canvas, 0, 0);
+
     DXFTreeView.Items.Clear;
     Vec.GenerateDebugTree(@FPVDebugAddItemProc);
   finally
