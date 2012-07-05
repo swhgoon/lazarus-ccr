@@ -70,7 +70,7 @@ object frmFPVViewer: TfrmFPVViewer
     Height = 410
     Top = 128
     Width = 485
-    PageIndex = 0
+    PageIndex = 1
     Anchors = [akTop, akLeft, akRight, akBottom]
     TabOrder = 4
     TabStop = True
@@ -78,10 +78,11 @@ object frmFPVViewer: TfrmFPVViewer
     end
     object pageTreeData: TPage
       object DXFTreeView: TTreeView
-        Left = 8
-        Height = 313
+        Left = 0
+        Height = 410
         Top = 0
-        Width = 321
+        Width = 485
+        Align = alClient
         DefaultItemHeight = 18
         TabOrder = 0
       end
