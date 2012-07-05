@@ -11,19 +11,19 @@ object FormAbout: TFormAbout
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnShow = FormShow
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object NoteBook: TPageControl
     Left = 0
     Height = 408
     Top = 0
     Width = 545
-    ActivePage = LicensePage
+    ActivePage = MainPage
     Align = alTop
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 0
     object MainPage: TTabSheet
       Caption = 'General'
-      ClientHeight = 382
+      ClientHeight = 380
       ClientWidth = 537
       object Image1: TImage
         Left = 440
@@ -513,9 +513,9 @@ object FormAbout: TFormAbout
       end
       object ProductLabel: TLabel
         Left = 12
-        Height = 21
+        Height = 22
         Top = 24
-        Width = 110
+        Width = 107
         Caption = 'ProductName'
         Font.Color = clRed
         Font.Height = -16
@@ -526,9 +526,9 @@ object FormAbout: TFormAbout
       end
       object VersionLabel: TLabel
         Left = 12
-        Height = 17
+        Height = 18
         Top = 58
-        Width = 55
+        Width = 48
         Caption = 'Version'
         Font.Height = -13
         Font.Style = [fsBold]
@@ -538,18 +538,18 @@ object FormAbout: TFormAbout
       end
       object BuildDateLabel: TLabel
         Left = 12
-        Height = 14
+        Height = 16
         Top = 82
-        Width = 73
+        Width = 80
         Caption = 'BuildDateLabel'
         ParentColor = False
         ShowAccelChar = False
       end
       object CopyrightLabel: TLabel
         Left = 12
-        Height = 14
+        Height = 16
         Top = 234
-        Width = 86
+        Width = 84
         Caption = 'CopyrightLabel'
         Font.Style = [fsBold]
         ParentColor = False
@@ -558,18 +558,18 @@ object FormAbout: TFormAbout
       end
       object LazLabel: TLabel
         Left = 12
-        Height = 14
+        Height = 16
         Top = 106
-        Width = 44
+        Width = 46
         Caption = 'LazLabel'
         ParentColor = False
         ShowAccelChar = False
       end
       object FpcLabel: TLabel
         Left = 12
-        Height = 14
+        Height = 16
         Top = 130
-        Width = 45
+        Width = 48
         Caption = 'FpcLabel'
         ParentColor = False
         ShowAccelChar = False
@@ -577,9 +577,9 @@ object FormAbout: TFormAbout
       object WebsiteLabel: TLabel
         Cursor = crHandPoint
         Left = 12
-        Height = 14
+        Height = 16
         Top = 274
-        Width = 79
+        Width = 76
         Caption = 'WebsiteLabel'
         Font.Color = clBlue
         Font.Style = [fsBold]
@@ -593,7 +593,7 @@ object FormAbout: TFormAbout
     end
     object LicensePage: TTabSheet
       Caption = 'License'
-      ClientHeight = 382
+      ClientHeight = 380
       ClientWidth = 537
       object LicenseMemo: TMemo
         Left = 0
@@ -612,9 +612,9 @@ object FormAbout: TFormAbout
       object LicenseUrlLabel: TLabel
         Cursor = crHandPoint
         Left = 0
-        Height = 14
+        Height = 16
         Top = 352
-        Width = 93
+        Width = 88
         Caption = 'LicenseUrlLabel'
         Font.Color = clBlue
         Font.Style = [fsBold]

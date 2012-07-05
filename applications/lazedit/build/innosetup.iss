@@ -3,7 +3,7 @@
 
 [Setup]
 AppName=LazEdit
-AppVerName=LazEdit v1.9
+AppVerName=LazEdit v2.0
 AppPublisherURL=http://wiki.lazarus.freepascal.org/LazEdit
 AppSupportURL=http://wiki.lazarus.freepascal.org/LazEdit
 AppUpdatesURL=http://wiki.lazarus.freepascal.org/LazEdit
@@ -11,10 +11,10 @@ DefaultDirName={pf}\LazEdit
 DefaultGroupName=Free Pascal Applications Suite
 ; LicenseFile=..\license.txt
 OutputDir=.\
-OutputBaseFilename=LazEdit1.9_install
+OutputBaseFilename=LazEdit2.0_install
 Compression=lzma
 SolidCompression=yes
-VersionInfoVersion=1.9
+VersionInfoVersion=2.0
 AllowNoIcons=yes
 
 [Languages]
