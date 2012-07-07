@@ -2048,7 +2048,11 @@ begin
       Exit;
     end;
   end;}
-  Ed := NoteBook.AddPage;
+  //If available, open new file in unused open Tab (if that is the current active one)
+  if (Assigned(NoteBook.CurrentEditor) and (NoteBook.CurrentEditor.IsUnused)) then
+    Ed := NoteBook.CurrentEditor
+  else
+    Ed := NoteBook.AddPage;
   if Assigned(Ed) then
   begin
     try

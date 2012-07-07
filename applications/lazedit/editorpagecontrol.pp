@@ -99,6 +99,7 @@ type
     procedure LoadFromFileUtf8(const Utf8Fn: String; const AsTemplate: Boolean = False);
     procedure SaveToFileAnsi(const AnsiFn: String);
     procedure SaveToFileUtf8(const Utf8Fn: String);
+    function IsUnused: Boolean;
     procedure SetHighlighterByFileType(const AFileType: TEditorFileType; const Permanent: Boolean = False);
     procedure MarkSelection(const Pre, Post: String);
 
@@ -688,6 +689,12 @@ begin
     SetFileName(EmptyStr, AutoFileTypeDetection and (not FNoFileTypeChangeOnSave));
     Raise;
   end;
+end;
+
+function TEditor.IsUnused: Boolean;
+begin
+  //debugln('TEditor.IsUnused: Modified = ',DbgS(Modified),', FFileName = "',FFileName,'", Length(Text) = ',DbgS(Length(Text)));
+  Result := (not Modified) and (FFileName = EmptyStr)  and (Length(Text) = 0);
 end;
 
 procedure TEditor.SetHighlighterByFileType(const AFileType: TEditorFileType; const Permanent: Boolean = False);
