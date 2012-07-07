@@ -1569,12 +1569,10 @@ procedure TLazEditMainForm.ParseCommandlineFilenames(Dummy: PtrInt);
 var
   i, Count: Integer;
   S: String;
-  OpenBlankPage: Boolean;
 begin
   //debugln('TLazEditMainForm.ParseCommandlineFilenames');
   if Dummy = 12345 then Exit; //Get rid of annoying hint
   Count := 0;
-  OpenBlankPage := False;
   {$ifndef darwin}
   for i := 1 to ParamCount do
   begin
@@ -1589,13 +1587,12 @@ begin
         if not TryFileOpen(S) then ShowError(Format(vTranslations.msgOpenError,[S]));
       end
       else ShowError(Format(vTranslations.msgFileNotFound,[S]));
-    end
-    else if S = opt_short_prefix + opt_short_blankpage then OpenBlankPage := True;
+    end;
   end;
-  {$else}
-  OpenBlankPage := True; //we cannot pass -n on darwin, so offer blank page to the user
-  {$endif}
-  if (Count = 0) and OpenBlankPage then DoFileNewByType(eftNone);
+  //Start with blank page if no files are specified on commandline
+  if (Count = 0) then
+  {$endif} //and do this by default on darwin, since we cannot specify -n on commandline for app bundle
+   DoFileNewByType(eftNone);
 end;
 
 procedure TLazEditMainForm.ParseCommandLineSwitches;
