@@ -222,7 +222,7 @@ uses
   binary_streamer, wst_resources_utils, xsd_generator, wsdl_generator,
   uabout, edit_helper, udm, ufrmsaveoption, pparser, SynEditTypes
   {$IFDEF WST_IDE},LazIDEIntf,IDEMsgIntf{$ENDIF}
-  , xsd_consts, parserutils;
+  , xsd_consts, parserutils, locators;
 
 {$IFDEF WST_IDE}
 function GetCurrentProjectLibraryFile():TLazProjectFile;
@@ -300,6 +300,8 @@ var
   locDoc : TXMLDocument;
   prsr : IParser;
   symName : string;
+  locContext : IParserContext;
+  locLocator : IDocumentLocator;
 begin
   Result := nil;
   symName := ChangeFileExt(ExtractFileName(AFileName),'');
@@ -312,6 +314,11 @@ begin
     Result := TwstPasTreeContainer.Create();
     try
       prsr := TWsdlParser.Create(locDoc,Result,ANotifier);
+      locContext := prsr as IParserContext;
+      if (locContext <> nil) then begin
+        locLocator := TFileDocumentLocator.Create(ExtractFilePath(AFileName));
+        locContext.SetDocumentLocator(locLocator);
+      end;
       prsr.Execute(pmAllTypes,symName);
     except
       FreeAndNil(Result);
@@ -351,6 +358,8 @@ var
   locDoc : TXMLDocument;
   prsr : IXsdPaser;
   symName : string;
+  locContext : IParserContext;
+  locLocator : IDocumentLocator;
 begin
   Result := nil;
   symName := ChangeFileExt(ExtractFileName(AFileName),'');
@@ -363,6 +372,11 @@ begin
     Result := TwstPasTreeContainer.Create();
     try
       prsr := TXsdParser.Create(locDoc,Result,'',ANotifier);
+      locContext := prsr as IParserContext;
+      if Assigned(locContext) then begin
+        locLocator := TFileDocumentLocator.Create(ExtractFilePath(AFileName));
+        locContext.SetDocumentLocator(locLocator);
+      end;
       prsr.ParseTypes();
     except
       FreeAndNil(Result);
