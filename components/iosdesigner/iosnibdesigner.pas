@@ -258,6 +258,7 @@ procedure TNSObjectDesignerMediator.Paint;
   begin
     with LCLForm.Canvas do
       begin
+      SaveHandleState;
       if AWidget is NSObject then
         begin
         Brush.Style:=bsClear;
@@ -269,25 +270,19 @@ procedure TNSObjectDesignerMediator.Paint;
         begin
         AWidget.Paint(LCLForm.Canvas);
         end;
+      RestoreHandleState;
       // children
       if AWidget.ChildCount>0 then
         begin
-        //SaveHandleState;
-        // clip client area
-        {if IntersectClipRect(Handle, AWidget.left, AWidget.Top, AWidget.left+AWidget.Width,
-                             AWidget.Height+AWidget.Top)<>NullRegion
-        then} begin
-          for i:=0 to AWidget.ChildCount-1 do begin
-            SaveHandleState;
-            Child:=AWidget.Children[i];
-            // clip child area
-            MoveWindowOrgEx(Handle,Child.Left,Child.Top);
-            if IntersectClipRect(Handle,0,0,Child.Width,Child.Height)<>NullRegion then
-              PaintWidget(Child);
-            RestoreHandleState;
+        for i:=0 to AWidget.ChildCount-1 do begin
+          SaveHandleState;
+          Child:=AWidget.Children[i];
+          // clip child area
+          MoveWindowOrgEx(Handle,Child.Left,Child.Top);
+          if IntersectClipRect(Handle,0,0,Child.Width,Child.Height)<>NullRegion then
+            PaintWidget(Child);
+          RestoreHandleState;
           end;
-        end;
-        //RestoreHandleState;
         end;
       end;
   end;
