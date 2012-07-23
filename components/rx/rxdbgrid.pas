@@ -1477,13 +1477,15 @@ begin
 
                 if Assigned(rxTitleNext) and (rxTitleNext.CaptionLinesCount > j) then
                 begin
-                  //make links to next column (and in the next column set link to prior-current)
+                  //make links to next column - and in the next column set link to prior-current
                   MLRec2 := rxTitleNext.CaptionLine(j);
                   if MLRec1.Caption = MLRec2.Caption then
                   begin
                     MLRec1.Next := MLRec2;
                     MLRec2.Prior := MLRec1;
-                  end;
+                  end
+                  else
+                    break;
                 end;
 
                 MLRec1.Width := tmpCanvas.TextWidth(MLRec1.Caption) + 2;
@@ -2487,9 +2489,9 @@ begin
       begin
         if (dgColumnResize in Options) and (Button = mbRight) then
         begin
-          Button := mbLeft;
-          FSwapButtons := True;
-          MouseCapture := True;
+//          Button := mbLeft;
+//          FSwapButtons := True;
+//          MouseCapture := True;
           Shift := Shift + [ssLeft];
           inherited MouseDown(Button, Shift, X, Y);
         end
@@ -2513,6 +2515,7 @@ begin
             FTracking := True;
             FPressedCol := TColumn(ColumnFromGridColumn(Cell.X));
             TrackButton(X, Y);
+            inherited MouseDown(Button, Shift, X, Y);
           end;
         end;
       end
