@@ -680,11 +680,11 @@ begin
           RctTemp := Rect(0, IV + Round(I*Step), CR.Right-CR.Left, IV + Round((I+1)*Step))
         else
           RctTemp := Rect(IU + Round(I*Step), 0, IU + Round((I+1)*Step), CR.Bottom-CR.Top);
-{$IFNDEF LCL}
+//{$IFNDEF LCL}
         BmpWork.Canvas.BrushCopy(RctTemp, BmpTemp, RctTemp, BmpTemp.Canvas.Font.Color);
-{$ELSE}  
-        BrushCopy(BmpWork.Canvas, RctTemp, BmpTemp, RctTemp, BmpTemp.Canvas.Font.Color); 
-{$ENDIF}        
+//{$ELSE}  
+//        BrushCopy(BmpWork.Canvas, RctTemp, BmpTemp, RctTemp, BmpTemp.Canvas.Font.Color); 
+//{$ENDIF}        
       end;
     end;
 

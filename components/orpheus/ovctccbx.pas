@@ -615,11 +615,11 @@ procedure TOvcTCCustomComboBox.DrawButton(Canvas       : TCanvas;
             Right := Left + Wd;
             Bottom := Top + Ht;
           end;
-{$IFNDEF LCL}
+//{$IFNDEF LCL}
         BrushCopy(DestRect, OvcComboBoxBitmap, SrcRect, clSilver);
-{$ELSE}
-        BrushCopy(Canvas, DestRect, OvcComboBoxBitmap, SrcRect, clSilver);
-{$ENDIF}
+//{$ELSE}
+//        BrushCopy(Canvas, DestRect, OvcComboBoxBitmap, SrcRect, clSilver);
+//{$ENDIF}
       end;
   end;
 {--------}

@@ -185,11 +185,11 @@ procedure TOvcTCBaseBitMap.tcPaint(TableCanvas : TCanvas;
         Bottom := Top + DisplayHt;
       end;
     {brush copy the bitmap onto the table}
-{$IFNDEF LCL}
-    TableCanvas.BrushCopy(DestRect, BMInfo^.BM, SrcRect, TransparentColor);
-{$ELSE}
+//{$IFNDEF LCL}
+//    TableCanvas.BrushCopy(DestRect, BMInfo^.BM, SrcRect, TransparentColor);
+//{$ELSE}
     BrushCopy(TableCanvas, DestRect, BMInfo^.BM, SrcRect, TransparentColor);
-{$ENDIF}
+//{$ENDIF}
   end;
 
 function  TOvcTCBaseBitMap.EditHandle : THandle;

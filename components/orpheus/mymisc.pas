@@ -319,7 +319,7 @@ procedure RecreateWnd(const AWinControl:TWinControl);
 procedure Frame3D(Canvas: TCanvas; var Rect: TRect;
                   TopColor, BottomColor: TColor; Width: Integer);
 
- {This should be a TCanvas method}
+// {This should be a TCanvas method} <--it is now, but still needed for TBitMap.BrushCopy.
 procedure BrushCopy(DestCanvas: TCanvas; const Dest: TRect; Bitmap: TBitmap; 
                     const Source: TRect; Color: TColor);
 
