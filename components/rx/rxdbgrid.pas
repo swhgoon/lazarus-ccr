@@ -3929,10 +3929,12 @@ begin
         case FValueType of
           fvtSum:
           begin
-            if F.OldValue <> null then
-              FTestValue := FTestValue - Float(F.OldValue);
             if not F.IsNull then
+            begin
+              if F.OldValue <> null then
+                FTestValue := FTestValue - Float(F.OldValue);
               FTestValue := FTestValue + F.AsFloat;
+            end;
           end;
           fvtMax: if not F.IsNull then
               FTestValue := Max(FTestValue, F.AsFloat);
