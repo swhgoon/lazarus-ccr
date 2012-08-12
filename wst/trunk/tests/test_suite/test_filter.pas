@@ -21,7 +21,7 @@ uses
 {$ELSE}
   TestFrameWork,
 {$ENDIF}
-  wst_types, filter_intf;   
+  wst_types, filter_intf, base_service_intf;
 
 type
   
@@ -52,8 +52,16 @@ type
   THexDataFilter = class(TBaseFilter,IDataFilter)
   protected
     function GetName() : string;override;
-    function DoExecuteInput(const AData; const ASize : Integer) : TByteDynArray;override;
-    function DoExecuteOutput(const AData; const ASize : Integer) : TByteDynArray;override;
+    function DoExecuteInput(
+      const AData;
+      const ASize      : Integer;
+            ADataProps : IPropertyManager
+    ) : TByteDynArray;override;
+    function DoExecuteOutput(
+      const AData;
+      const ASize      : Integer;
+            ADataProps : IPropertyManager
+    ) : TByteDynArray;override;
   end;            
 
   { TMod256DataFilter }
@@ -61,8 +69,16 @@ type
   TMod256DataFilter = class(TBaseFilter,IDataFilter)
   protected
     function GetName() : string;override;
-    function DoExecuteInput(const AData; const ASize : Integer) : TByteDynArray;override;
-    function DoExecuteOutput(const AData; const ASize : Integer) : TByteDynArray;override;
+    function DoExecuteInput(
+      const AData;
+      const ASize      : Integer;
+            ADataProps : IPropertyManager
+    ) : TByteDynArray;override;
+    function DoExecuteOutput(
+      const AData;
+      const ASize      : Integer;
+            ADataProps : IPropertyManager
+    ) : TByteDynArray;override;
   end;     
 
   { TXorDataFilter }
@@ -73,8 +89,16 @@ type
   protected
     function GetName() : string;override;
     function ExecuteXor(const AData; const ASize : Integer) : TByteDynArray;
-    function DoExecuteInput(const AData; const ASize : Integer) : TByteDynArray;override;
-    function DoExecuteOutput(const AData; const ASize : Integer) : TByteDynArray;override;
+    function DoExecuteInput(
+      const AData;
+      const ASize      : Integer;
+            ADataProps : IPropertyManager
+    ) : TByteDynArray;override;
+    function DoExecuteOutput(
+      const AData;
+      const ASize      : Integer;
+            ADataProps : IPropertyManager
+    ) : TByteDynArray;override;
   published
     property XorConstant : Byte read FXorConstant write FXorConstant;
   end;                      
@@ -82,7 +106,7 @@ type
 implementation
 uses
   Classes,
-  wst_consts, basex_encode, imp_utils, base_service_intf;
+  wst_consts, basex_encode, imp_utils;
 
        
 { TXorDataFilter }
@@ -107,12 +131,20 @@ begin
   end;
 end;
 
-function TXorDataFilter.DoExecuteInput(const AData; const ASize : Integer) : TByteDynArray;  
+function TXorDataFilter.DoExecuteInput(
+  const AData;
+  const ASize      : Integer;
+        ADataProps : IPropertyManager
+) : TByteDynArray;
 begin
   Result := ExecuteXor(AData,ASize);
 end;
 
-function TXorDataFilter.DoExecuteOutput(const AData; const ASize : Integer) : TByteDynArray;  
+function TXorDataFilter.DoExecuteOutput(
+  const AData;
+  const ASize      : Integer;
+        ADataProps : IPropertyManager
+) : TByteDynArray;
 begin                               
   Result := ExecuteXor(AData,ASize);
 end;
@@ -130,9 +162,9 @@ begin
   Move(s[1],inBuffer[0],Length(inBuffer));
   
   f := AFilter;
-  outBuffer := f.ExecuteInput(inBuffer[0],Length(inBuffer));
+  outBuffer := f.ExecuteInput(inBuffer[0],Length(inBuffer),nil);
     Check(Length(outBuffer) > 0);
-  calcBuffer := f.ExecuteOutput(outBuffer[0],Length(outBuffer));
+  calcBuffer := f.ExecuteOutput(outBuffer[0],Length(outBuffer),nil);
     Check(Length(calcBuffer) > 0);
   SetLength(s2,Length(calcBuffer));
   Move(calcBuffer[0],s2[1],Length(calcBuffer));
@@ -346,14 +378,22 @@ begin
   Result := 'mod256';
 end;
 
-function TMod256DataFilter.DoExecuteInput(const AData; const ASize : Integer) : TByteDynArray;  
+function TMod256DataFilter.DoExecuteInput(
+  const AData;
+  const ASize      : Integer;
+        ADataProps : IPropertyManager
+) : TByteDynArray;
 begin
   SetLength(Result,ASize + 1);
   Move(AData,Result[0],ASize);
   Result[ASize] := ASize mod 256;
 end;
 
-function TMod256DataFilter.DoExecuteOutput(const AData; const ASize : Integer) : TByteDynArray;  
+function TMod256DataFilter.DoExecuteOutput(
+  const AData;
+  const ASize      : Integer;
+        ADataProps : IPropertyManager
+) : TByteDynArray;
 var
   m : Byte;
 begin
@@ -374,7 +414,11 @@ begin
   Result := 'hex';
 end;
 
-function THexDataFilter.DoExecuteInput(const AData; const ASize : Integer) : TByteDynArray;  
+function THexDataFilter.DoExecuteInput(
+  const AData;
+  const ASize      : Integer;
+        ADataProps : IPropertyManager
+) : TByteDynArray;
 begin
   if (ASize < 1) then begin
     Result := nil;
@@ -385,7 +429,11 @@ begin
   Base16Encode(AData,ASize,PAnsiChar(@Result[0]));
 end;
 
-function THexDataFilter.DoExecuteOutput(const AData; const ASize : Integer) : TByteDynArray;  
+function THexDataFilter.DoExecuteOutput(
+  const AData;
+  const ASize      : Integer;
+        ADataProps : IPropertyManager
+) : TByteDynArray;
 var
   i : Integer;
 begin 
