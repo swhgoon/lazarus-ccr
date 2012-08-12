@@ -344,6 +344,7 @@ type
       const ANameSpace        : string;
       const ACreateIfNotFound : Boolean
     ):shortstring;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function FindXMLNodeWithNamespaceInSubScope(ANameSpace, ANodeName: string): TDOMNode;
   protected
     function GetCurrentScope():String;
     function GetCurrentScopeObject():TDOMElement;
@@ -832,6 +833,42 @@ begin
     Result := '';
   end;
 end;
+function TSOAPBaseFormatter.FindXMLNodeWithNamespaceInSubScope(
+  ANameSpace,
+  ANodeName  : string
+) : TDOMNode;
+
+  function ScanNode(ANode: TDOMNode): TDOMNode;
+  var
+    AttrName : string;
+  begin
+    Result := nil;
+    if FindAttributeByValueInNode(ANameSpace, ANode, AttrName) then begin
+      if not IsStrEmpty(AttrName) then begin
+        AttrName := ExtractNameSpaceShortName(AttrName);
+        if not IsStrEmpty(AttrName) then begin
+          if(ANode.NodeName = AttrName + ':' + ANodeName) then
+            Result := ANode;
+        end;
+      end;
+    end;
+  end;
+
+var
+  locNode : TDOMNode;
+begin
+  locNode := GetCurrentScopeObject();
+  Result := ScanNode(locNode);
+  if (Result <> nil) or not(locNode.HasChildNodes) then
+    exit;
+  locNode := locNode.FirstChild;
+  while (locNode <> nil) do begin
+    Result := ScanNode(locNode);
+    if (Result <> nil) then
+      Break;
+    locNode := locNode.NextSibling;
+  end;
+end;
 
 function TSOAPBaseFormatter.InternalPutData(
   const ANameSpace : string;
@@ -1047,6 +1084,8 @@ begin
   end else begin
     locElt := GetCurrentScopeObject().GetAttributeNode(strNodeName);
   end;
+  if (locElt = nil) and (Style = Document) then
+    locElt := FindXMLNodeWithNamespaceInSubScope(ANameSpace,AName);
 
   Result := ( locElt <> nil );
   if Result then begin
@@ -1572,6 +1611,8 @@ begin
      ( ( AScopeType = stArray ) and ( AStyle = asScoped ) )
   then begin
     locNode := stk.FindNode(strNodeName);
+    if (locNode = nil) and (Style = Document) then
+      locNode := FindXMLNodeWithNamespaceInSubScope(nmspc,AScopeName);
   end else begin
     locNode := stk.ScopeObject;
   end;
