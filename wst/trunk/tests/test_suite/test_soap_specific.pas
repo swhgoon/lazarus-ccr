@@ -177,6 +177,7 @@ type
   TTest_SoapFormatterClient = class(TTestCase)
   published
     procedure test_soap_href_id();
+    procedure inline_namespace();
   end;
 
   { TTest_THeaderBlockProxy }
@@ -917,6 +918,58 @@ begin
   finally
     FreeAndNil(locReturn);
     FreeAndNil(strm);
+  end;
+end;
+
+procedure TTest_SoapFormatterClient.inline_namespace();
+var
+  f : IFormatterClient;
+  strm : TMemoryStream;
+  c, c_readed : TNameSpaceC_Class;
+  strName : string;
+begin
+  c_readed := nil;
+  strm := nil;
+  f := soap_formatter.TSOAPFormatter.Create() as IFormatterClient;
+  f.GetPropertyManager().SetProperty('Style','Document');
+  f.GetPropertyManager().SetProperty('EncodingStyle','Literal');
+  c := TNameSpaceC_Class.Create();
+  try
+      c.Prop_String := 'This property should be in : ' + c.GetNameSpace() ;
+      c.Prop_A.Qualified_Val_String := 'This property should be in : ' + TNameSpaceA_Class.GetNameSpace() ;
+      c.Prop_B.Val_Bool := True;
+      c.Prop_B.Val_String := 'local elemet. This property should be in : ' + TNameSpaceB_Class.GetNameSpace() ;
+      c.Prop_B.Qualified_Val_Bool := False;
+      c.Prop_B.Qualified_Val_Enum := steFour;
+      c.Prop_B.Qualified_Val_Integer := 789;
+      c.Prop_B.Qualified_Val_Int64 := 64;
+      c.Prop_B.Qualified_Val_String := 'This inherited property should be in : ' + TNameSpaceA_Class.GetNameSpace() ;
+    strm := TMemoryStream.Create();
+    strm.LoadFromFile(GetFileFullName('soap_inline_ns.xml'));
+    strm.Position := 0;
+    f.LoadFromStream(strm);
+    c_readed := TNameSpaceC_Class.Create();
+    f.BeginCallRead(TSimpleCallContext.Create());
+      strName := 'c';
+      Check(f.Get(TypeInfo(TNameSpaceC_Class),strName,c_readed),'Reading from Formatter');
+    f.EndScopeRead();
+
+    CheckEquals(c.Prop_String,c_readed.Prop_String,'Prop_String');
+    CheckNotNull(c_readed.Prop_A,'Prop_A');
+    CheckEquals(c.Prop_A.Qualified_Val_String,c_readed.Prop_A.Qualified_Val_String,'Prop_A.Qualified_Val_String');
+    CheckNotNull(c_readed.Prop_B,'Prop_B');
+    CheckEquals(c.Prop_B.Val_Bool,c_readed.Prop_B.Val_Bool,'Prop_B.Val_Bool');
+    CheckEquals(c.Prop_B.Val_String,c_readed.Prop_B.Val_String,'Prop_B.Val_String');
+    CheckEquals(c.Prop_B.Qualified_Val_Bool,c_readed.Prop_B.Qualified_Val_Bool,'Prop_B.Qualified_Val_Bool');
+    CheckEquals(Ord(c.Prop_B.Qualified_Val_Enum),Ord(c_readed.Prop_B.Qualified_Val_Enum),'Prop_B.Qualified_Val_Enum');
+    CheckEquals(c.Prop_B.Qualified_Val_Integer,c_readed.Prop_B.Qualified_Val_Integer,'Prop_B.Qualified_Val_Integer');
+    CheckEquals(c.Prop_B.Qualified_Val_Int64,c_readed.Prop_B.Qualified_Val_Int64,'Prop_B.Qualified_Val_Int64');
+    CheckEquals(c.Prop_B.Qualified_Val_String,c_readed.Prop_B.Qualified_Val_String,'Prop_B.Qualified_Val_String');
+    Check(c.Equal(c_readed) and c_readed.Equal(c),'c');
+  finally
+    c_readed.Free();
+    c.Free();
+    strm.Free();
   end;
 end;
 
