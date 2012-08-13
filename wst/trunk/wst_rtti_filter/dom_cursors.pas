@@ -30,8 +30,10 @@ uses
 
 const
 
-  s_NODE_NAME = 'NodeName';
+  s_LOCAL_NAME = 'LocalName';
+  s_NODE_NAME  = 'NodeName';
   s_NODE_VALUE = 'NodeValue';
+  s_NS_URI     = 'NamespaceURI';
 
 type
 
@@ -93,6 +95,8 @@ type
   TDOMNodeRttiExposer = class(TPersistent)
   private
     FInnerObject: TDOMNode;
+    function GetLocalName : DOMString;
+    function GetNamespaceURI : DOMString;
     function GetNodeName: DOMString;
     function GetNodeValue: DOMString;
     procedure SetInnerObject(const AValue: TDOMNode);
@@ -102,6 +106,8 @@ type
   published
     property NodeName: DOMString read GetNodeName;
     property NodeValue: DOMString read GetNodeValue;
+    property LocalName : DOMString read GetLocalName;
+    property NamespaceURI : DOMString read GetNamespaceURI;
   end;
 
   { TDOMNodeRttiExposerCursor }
@@ -253,6 +259,16 @@ end;
 function TDOMNodeRttiExposer.GetNodeName: DOMString;
 begin
   Result := InnerObject.NodeName;
+end;
+
+function TDOMNodeRttiExposer.GetLocalName : DOMString;
+begin
+  Result := InnerObject.LocalName;
+end;
+
+function TDOMNodeRttiExposer.GetNamespaceURI : DOMString;
+begin
+  Result := InnerObject.NamespaceURI;
 end;
 
 function TDOMNodeRttiExposer.GetNodeValue: DOMString;

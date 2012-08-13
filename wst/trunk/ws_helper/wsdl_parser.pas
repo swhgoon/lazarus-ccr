@@ -900,12 +900,14 @@ procedure TWsdlParser.ParsePort(ANode: TDOMNode);
   function FindBindingNode(const AName : WideString):TDOMNode;
   var
     crs : IObjectCursor;
+    s : string;
   begin
     Result := FindNamedNode(FBindingCursor,AName);
     if Assigned(Result) then begin
       crs := CreateChildrenCursor(Result,cetRttiNode);
       if Assigned(crs) then begin
-        crs := CreateCursorOn(crs,ParseFilter(CreateQualifiedNameFilterStr(s_binding,FSoapShortNames),TDOMNodeRttiExposer));
+        s := Format('%s = %s and %s = %s',[s_LOCAL_NAME,QuotedStr(s_binding), s_NS_URI, QuotedStr(s_soap)]);
+        crs := CreateCursorOn(crs,ParseFilter(s,TDOMNodeRttiExposer));
         crs.Reset();
         if not crs.MoveNext() then begin
           Result := nil;
@@ -959,12 +961,14 @@ procedure TWsdlParser.ParsePort(ANode: TDOMNode);
   var
     tmpCrs : IObjectCursor;
     nd : TDOMNode;
+    s : string;
   begin
     Result := '';
     if ANode.HasChildNodes() then begin
+      s := Format('%s = %s and %s = %s',[s_LOCAL_NAME,QuotedStr(s_address),s_NS_URI,QuotedStr(s_soap)]);
       tmpCrs := CreateCursorOn(
                   CreateChildrenCursor(ANode,cetRttiNode),
-                  ParseFilter(CreateQualifiedNameFilterStr(s_address,FSoapShortNames),TDOMNodeRttiExposer)
+                  ParseFilter(s,TDOMNodeRttiExposer)
                 );
       tmpCrs.Reset();
       if tmpCrs.MoveNext() then begin
@@ -989,7 +993,7 @@ procedure TWsdlParser.ParsePort(ANode: TDOMNode);
     Result := False;
     childrenCrs := CreateChildrenCursor(ABindingNode,cetRttiNode);
     if Assigned(childrenCrs) then begin
-      s := CreateQualifiedNameFilterStr(s_binding,FSoapShortNames);
+      s := Format('%s = %s and %s = %s',[s_LOCAL_NAME,QuotedStr(s_binding), s_NS_URI, QuotedStr(s_soap)]);
       crs := CreateCursorOn(childrenCrs,ParseFilter(s,TDOMNodeRttiExposer));
       crs.Reset();
       if crs.MoveNext() then begin
@@ -1086,9 +1090,10 @@ var
         Inc(in_out_count);
         nd := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
         if nd.HasChildNodes() then begin
+          strBuffer := Format('%s = %s and %s = %s',[s_LOCAL_NAME,QuotedStr(s_body),s_NS_URI,QuotedStr(s_soap)]);
           tmpSoapCrs := CreateCursorOn(
                           CreateChildrenCursor(nd,cetRttiNode),
-                          ParseFilter(CreateQualifiedNameFilterStr(s_body,FSoapShortNames),TDOMNodeRttiExposer)
+                          ParseFilter(strBuffer,TDOMNodeRttiExposer)
                         );
           tmpSoapCrs.Reset();
           if tmpSoapCrs.MoveNext() then begin
@@ -1121,17 +1126,17 @@ var
   var
     nd : TDOMNode;
     tmpCrs : IObjectCursor;
-    //s : string;
-    //ws : widestring;
+    locStrBuffer : string;
   begin
     ws := '';
     s := SymbolTable.GetExternalName(AOp);
     ws := s;
     nd := FindNamedNode(ABndngOpCurs,ws);
     if Assigned(nd) and nd.HasChildNodes() then begin
+      locStrBuffer := Format('%s = %s and %s = %s',[s_LOCAL_NAME,QuotedStr(s_operation),s_NS_URI,QuotedStr(s_soap)]);
       tmpCrs := CreateCursorOn(
                   CreateChildrenCursor(nd,cetRttiNode),
-                  ParseFilter(CreateQualifiedNameFilterStr(s_operation,FSoapShortNames),TDOMNodeRttiExposer)
+                  ParseFilter(locStrBuffer,TDOMNodeRttiExposer)
                 );
       tmpCrs.Reset();
       if tmpCrs.MoveNext() then begin

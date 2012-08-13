@@ -17,7 +17,7 @@ interface
 uses
   Classes, SysUtils,
 {$IFDEF FPC}
-  fpcunit, testutils, testregistry, DOM, XmlRead, wst_fpc_xml,
+  fpcunit, testutils, testregistry, DOM, wst_fpc_xml,
 {$ELSE}
   TestFrameWork, xmldom, wst_delphi_xml,
 {$ENDIF}
@@ -328,8 +328,7 @@ const
 
 function LoadXmlFile(const AFileName : string) : TXMLDocument;
 begin
-  Result := nil;
-  ReadXMLFile(Result,AFileName);
+  Result := ReadXMLFile(AFileName);
 end;
 
 { TTest_CustomXsdParser }

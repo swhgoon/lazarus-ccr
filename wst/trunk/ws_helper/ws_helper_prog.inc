@@ -23,6 +23,7 @@ resourcestring
            '  -f  Specify unit(s) renaming option : oldName= NewName(;oldName= NewName)* ';
   sCOPYRIGHT = 'ws_helper, Web Service Toolkit 0.6 Copyright (c) 2006, 2007, 2008, 2009, 2010,2011 by Inoussa OUEDRAOGO';
 
+
 type
   TSourceFileType = ( sftPascal, sftWSDL, sftXsd );
   
@@ -113,7 +114,7 @@ var
       prsrW : IParser;
       prsrCtx : IParserContext;
     begin
-      ReadXMLFile(locDoc,inFileName);
+      locDoc := ReadXMLFile(inFileName);
 {$IFNDEF WST_INTF_DOM}
       try
 {$ENDIF}
@@ -137,7 +138,7 @@ var
       prsrCtx : IParserContext;
     begin
       prsr := nil;
-      ReadXMLFile(locDoc,inFileName);
+      locDoc := ReadXMLFile(inFileName);
 {$IFNDEF WST_INTF_DOM}
       try
 {$ENDIF}

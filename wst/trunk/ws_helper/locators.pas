@@ -21,7 +21,7 @@ uses
   , xmldom, wst_delphi_xml
 {$ENDIF WST_DELPHI}
 {$IFDEF FPC}
-  , DOM, XMLRead
+  , DOM, wst_fpc_xml
 {$ENDIF FPC}
   , xsd_parser;
 
@@ -80,7 +80,7 @@ begin
   locFileName := FindFileName(ADocLocation);
   Result := (locFileName <> '');
   if Result then
-    ReadXMLFile(ADoc,locFileName);
+    ADoc := ReadXMLFile(locFileName);
 end;
 
 function TFileDocumentLocator.FindPath(ADocLocation : string) : string; 

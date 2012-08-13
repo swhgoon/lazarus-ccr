@@ -38,9 +38,12 @@ type
   procedure ReleaseDomNode(ADomNode : TDOMNodeList);overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
   procedure ReleaseDomNode(ADomNode : TDOMNamedNodeMap);overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
   function CreateDoc() : TXMLDocument ;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  function ReadXMLFile(AFileName : string) : TXMLDocument;overload;
+  function ReadXMLFile(AStreeam : TStream) : TXMLDocument;overload;
   function FindNode(ANode : TDOMNode;const ANodeName : string) : TDOMNode;{$IFDEF USE_INLINE}inline;{$ENDIF}
 
   function NodeToBuffer(ANode : TDOMNode):string ;
+
   
 resourcestring
   SERR_NoNodeXpathExpression = 'This XPath expression does not correspond to node(s) : %s.';
@@ -48,7 +51,34 @@ resourcestring
 
 implementation
 uses
-  XMLWrite, xpath;
+  XMLWrite, XMLRead, xpath;
+
+function ReadXMLFile(AStreeam : TStream) : TXMLDocument;
+begin
+  ReadXMLFile(Result,AStreeam);
+end;
+
+function ReadXMLFile(AFileName : string) : TXMLDocument;
+var
+  p : TDOMParser;
+  s : TXMLInputSource;
+  st : TMemoryStream;
+begin
+  s := nil;
+  p := nil;
+  st := TMemoryStream.Create();
+  try
+    st.LoadFromFile(AFileName);
+    s := TXMLInputSource.Create(st);
+    p := TDOMParser.Create();
+    p.Options.Namespaces := True;
+    p.Parse(s,Result);
+  finally
+    p.Free();
+    s.Free();
+    st.Free();
+  end;
+end;
 
 function GetNodeItemsCount(const ANode : TDOMNode): Integer;
 var

@@ -26,10 +26,12 @@ type
   function CreateDoc() : TXMLDocument ;
   procedure WriteXML(Element: TDOMNode; const AFileName: String);overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
   procedure WriteXML(Element: TDOMNode; AStream: TStream); overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  function ReadXMLFile(AStream : TStream) : TXMLDocument;overload;
   procedure WriteXMLFile(doc: TXMLDocument; const AFileName: String); overload;
   procedure WriteXMLFile(ADoc : TXMLDocument; AStream : TStream);overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
   procedure ReadXMLFile(out ADoc : TXMLDocument; AStream : TStream);overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
   procedure ReadXMLFile(out ADoc: TXMLDocument; const AFilename: String);overload;
+  function ReadXMLFile(const AFilename: String) :  TXMLDocument;overload;
   function NodeToBuffer(ANode : TDOMNode):string ;
 
   function FilterList(const ALIst : IDOMNodeList; const ANodeName : DOMString):IDOMNodeList;overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
@@ -97,6 +99,11 @@ begin
   (ADoc as IDOMPersist).loadFromStream(AStream);
 end;
 
+function ReadXMLFile(AStream : TStream) : TXMLDocument;
+begin
+  ReadXMLFile(Result,AStream);
+end;
+
 procedure ReadXMLFile(out ADoc: TXMLDocument; const AFilename: String);
 var
   FileStream: TStream;
@@ -108,6 +115,11 @@ begin
   finally
     FileStream.Free;
   end;
+end;
+
+function ReadXMLFile(const AFilename: String) :  TXMLDocument;
+begin
+  ReadXMLFile(Result, AFilename);
 end;
 
 function GetNodeItemsCount(const ANode : TDOMNode): Integer;
