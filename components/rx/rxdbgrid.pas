@@ -37,7 +37,7 @@ unit rxdbgrid;
 interface
 
 uses
-  Classes, SysUtils, LResources, LCLType, LCLIntf, Forms, Controls,
+  Classes, SysUtils, LResources, LCLType, LCLIntf, Forms, Controls, Buttons,
   Graphics, Dialogs, Grids, dbutils, DBGrids, DB, PropertyStorage, vclutils,
   LMessages, types, StdCtrls, Menus;
 
@@ -69,6 +69,9 @@ type
 
   TRxDBGridAllowedOperation = (aoInsert, aoUpdate, aoDelete, aoAppend);
   TRxDBGridAllowedOperations = set of TRxDBGridAllowedOperation;
+
+  TRxColumnEditButtonStyle = (ebsDropDownRx, ebsEllipsisRx, ebsGlyphRx, ebsUpDownRx,
+    ebsPlusRx, ebsMinusRx);
 
   TFooterValueType = (fvtNon, fvtSum, fvtAvg, fvtCount, fvtFieldValue,
     fvtStaticText, fvtMax, fvtMin, fvtRecNo);
@@ -294,11 +297,64 @@ type
     property ItemIndex: integer read GetItemIndex write SetItemIndex;
   end;
 
+  { TRxColumnEditButton }
+
+  TRxColumnEditButton = class(TCollectionItem)
+  private
+    FShortCut: TShortCut;
+    FStyle: TRxColumnEditButtonStyle;
+    FButton:TSpeedButton;
+    FVisible: Boolean;
+    function GetGlyph: TBitmap;
+    function GetHint: String;
+    function GetNumGlyphs: Integer;
+    function GetOnButtonClick: TNotifyEvent;
+    function GetWidth: Integer;
+    procedure SetGlyph(AValue: TBitmap);
+    procedure SetHint(AValue: String);
+    procedure SetNumGlyphs(AValue: Integer);
+    procedure SetOnButtonClick(AValue: TNotifyEvent);
+    procedure SetStyle(AValue: TRxColumnEditButtonStyle);
+    procedure SetVisible(AValue: Boolean);
+    procedure SetWidth(AValue: Integer);
+  protected
+    function GetDisplayName: string; override;
+  public
+    constructor Create(ACollection: TCollection); override;
+    destructor Destroy; override;
+  published
+    //property DropdownMenu: TPopupMenu read FDropdownMenu write FDropdownMenu; :TODO:
+    property Glyph: TBitmap read GetGlyph write SetGlyph;
+    property Hint: String read GetHint write SetHint;
+    property NumGlyphs: Integer read GetNumGlyphs write SetNumGlyphs default 1;
+    property ShortCut: TShortCut read FShortCut write FShortCut default scNone;
+    property Style: TRxColumnEditButtonStyle read FStyle write SetStyle default ebsDropDownRx;
+    property Visible: Boolean read FVisible write SetVisible default true;
+    property Width: Integer read GetWidth write SetWidth default 15;
+    property OnClick: TNotifyEvent read GetOnButtonClick write SetOnButtonClick;
+    //property OnDown: TNotifyEvent read FOnButtonDown write FOnButtonDown;
+  end;
+
+  TRxColumnEditButtons = class(TCollection)
+  private
+    FOwner: TPersistent;
+    function GetItem(Index: integer): TRxColumnEditButton;
+    procedure SetItem(Index: integer; AValue: TRxColumnEditButton);
+  protected
+    procedure Update(Item: TCollectionItem); override;
+  public
+    constructor Create(AOwner: TPersistent);
+    function Add: TRxColumnEditButton;
+  public
+    property Items[Index: integer]: TRxColumnEditButton read GetItem write SetItem; default;
+  end;
+
   { TRxColumn }
 
   TRxColumn = class(TColumn)
   private
     FDirectInput: boolean;
+    FEditButtons: TRxColumnEditButtons;
     FFooter: TRxColumnFooter;
     FFilter: TRxColumnFilter;
     FImageList: TImageList;
@@ -306,6 +362,7 @@ type
     FNotInKeyListIndex: integer;
     function GetFooter: TRxColumnFooter;
     function GetKeyList: TStrings;
+    procedure SetEditButtons(AValue: TRxColumnEditButtons);
     procedure SetFilter(const AValue: TRxColumnFilter);
     procedure SetFooter(const AValue: TRxColumnFooter);
     procedure SetImageList(const AValue: TImageList);
@@ -325,6 +382,7 @@ type
       write SetNotInKeyListIndex default -1;
     property Filter: TRxColumnFilter read FFilter write SetFilter;
     property DirectInput : boolean read FDirectInput write FDirectInput default true;
+    property EditButtons:TRxColumnEditButtons read FEditButtons write SetEditButtons;
   end;
 
   { TRxDbGridColumns }
@@ -469,6 +527,7 @@ type
       override;
     procedure LinkActive(Value: boolean); override;
     procedure DrawFooterRows; virtual;
+
     procedure DoTitleClick(ACol: longint; AField: TField); virtual;
     procedure MouseMove(Shift: TShiftState; X, Y: integer); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -508,6 +567,10 @@ type
     procedure OnChooseVisibleFields(Sender: TObject);
     procedure Loaded; override;
     procedure UpdateFooterRowOnUpdateActive;
+
+    procedure DoEditorHide; override;
+    procedure DoEditorShow; override;
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -742,6 +805,125 @@ type
     //    procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
     procedure EditingDone; override;
   end;
+
+{ TRxColumnEditButton }
+
+function TRxColumnEditButton.GetGlyph: TBitmap;
+begin
+  Result:=FButton.Glyph;
+end;
+
+function TRxColumnEditButton.GetHint: String;
+begin
+  Result:=FButton.Hint;
+end;
+
+function TRxColumnEditButton.GetNumGlyphs: Integer;
+begin
+  Result:=FButton.NumGlyphs;
+end;
+
+function TRxColumnEditButton.GetOnButtonClick: TNotifyEvent;
+begin
+  Result:=FButton.OnClick;
+end;
+
+function TRxColumnEditButton.GetWidth: Integer;
+begin
+  Result:=FButton.Width;
+end;
+
+procedure TRxColumnEditButton.SetGlyph(AValue: TBitmap);
+begin
+  FButton.Glyph.Assign(AValue);
+  if not (csLoading in TRxDBGrid(TRxColumnEditButtons(Collection).Owner).ComponentState) then
+    FStyle:=ebsGlyphRx;
+end;
+
+procedure TRxColumnEditButton.SetHint(AValue: String);
+begin
+  FButton.Hint:=AValue;
+end;
+
+procedure TRxColumnEditButton.SetNumGlyphs(AValue: Integer);
+begin
+  FButton.NumGlyphs:=AValue;
+end;
+
+procedure TRxColumnEditButton.SetOnButtonClick(AValue: TNotifyEvent);
+begin
+  FButton.OnClick:=AValue;
+end;
+
+procedure TRxColumnEditButton.SetStyle(AValue: TRxColumnEditButtonStyle);
+begin
+  if FStyle=AValue then Exit;
+  FStyle:=AValue;
+end;
+
+procedure TRxColumnEditButton.SetVisible(AValue: Boolean);
+begin
+  if FVisible=AValue then Exit;
+  FVisible:=AValue;
+  FButton.Visible:=AValue;
+end;
+
+procedure TRxColumnEditButton.SetWidth(AValue: Integer);
+begin
+  FButton.Width:=AValue;
+end;
+
+function TRxColumnEditButton.GetDisplayName: string;
+begin
+  if Hint<>'' then
+    Result:=Hint
+  else
+    Result:='TRxColumnEditButton';
+end;
+
+constructor TRxColumnEditButton.Create(ACollection: TCollection);
+begin
+  inherited Create(ACollection);
+  FButton:=TSpeedButton.Create(nil);
+  FButton.Glyph:=LoadLazResBitmapImage('rx_markerdown');
+  FVisible:=true;
+  Width:=15;
+end;
+
+destructor TRxColumnEditButton.Destroy;
+begin
+  FreeAndNil(FButton);
+  inherited Destroy;
+end;
+
+{ TRxColumnEditButtons }
+
+function TRxColumnEditButtons.GetItem(Index: integer): TRxColumnEditButton;
+begin
+  Result:= TRxColumnEditButton(inherited Items[Index]);
+end;
+
+procedure TRxColumnEditButtons.SetItem(Index: integer;
+  AValue: TRxColumnEditButton);
+begin
+  inherited SetItem(Index, AValue);
+end;
+
+procedure TRxColumnEditButtons.Update(Item: TCollectionItem);
+begin
+  inherited Update(Item);
+end;
+
+constructor TRxColumnEditButtons.Create(AOwner: TPersistent);
+begin
+  inherited Create(TRxColumnEditButton);
+  FOwner:=AOwner;
+end;
+
+function TRxColumnEditButtons.Add: TRxColumnEditButton;
+begin
+  Result := TRxColumnEditButton(inherited Add);
+end;
 
 { TRxDBGridFooterOptions }
 
@@ -3335,6 +3517,57 @@ begin
     FOldDataSetState:=dsInactive;
 end;
 
+procedure TRxDBGrid.DoEditorHide;
+var
+  R:TRxColumn;
+  i, w:integer;
+begin
+  inherited DoEditorHide;
+  R:=SelectedColumn as TRxColumn;
+
+  if Assigned(Editor) then
+  for i:=0 to R.EditButtons.Count-1 do
+    R.EditButtons[i].FButton.Visible:=false;
+end;
+
+procedure TRxDBGrid.DoEditorShow;
+var
+  R:TRxColumn;
+  i, w:integer;
+begin
+  inherited DoEditorShow;
+
+  R:=SelectedColumn as TRxColumn;
+
+  if Assigned(Editor) then
+  begin
+    W:=0;
+    for i:=0 to R.EditButtons.Count-1 do
+    begin
+      if R.EditButtons[i].Visible then
+        W:=W+R.EditButtons[i].Width;
+    end;
+
+    if W>0 then
+    begin
+      Editor.Width:=Editor.Width - W;
+      W:=Editor.Width + Editor.Left;
+
+      for i:=0 to R.EditButtons.Count-1 do
+      if R.EditButtons[i].Visible then
+      begin
+        R.EditButtons[i].FButton.Parent:=Self;
+        R.EditButtons[i].FButton.Left:=W;
+        R.EditButtons[i].FButton.Top:=Editor.Top;
+        R.EditButtons[i].FButton.Height:=Editor.Height;
+        R.EditButtons[i].FButton.Visible:=true;
+
+        W:=W+R.EditButtons[i].FButton.Width;
+      end;
+    end;
+  end;
+end;
+
 procedure TRxDBGrid.GetOnCreateLookup;
 begin
   if Assigned(F_CreateLookup) then
@@ -3490,6 +3723,11 @@ begin
   Result := FKeyList;
 end;
 
+procedure TRxColumn.SetEditButtons(AValue: TRxColumnEditButtons);
+begin
+  FEditButtons.Assign(AValue);
+end;
+
 procedure TRxColumn.SetFilter(const AValue: TRxColumnFilter);
 begin
   FFilter.Assign(AValue);
@@ -3546,10 +3784,12 @@ begin
   FFooter := TRxColumnFooter.Create(Self);
   FFilter := TRxColumnFilter.Create(Self);
   FDirectInput := true;
+  FEditButtons:=TRxColumnEditButtons.Create(Self);
 end;
 
 destructor TRxColumn.Destroy;
 begin
+  FreeAndNil(FEditButtons);
   if FKeyList <> nil then
   begin
     FKeyList.Free;

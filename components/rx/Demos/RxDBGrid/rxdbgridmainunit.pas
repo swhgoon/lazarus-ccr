@@ -21,6 +21,7 @@ type
     MenuItem9: TMenuItem;
     RxAboutDialog1: TRxAboutDialog;
     RxMemoryData1RAIT: TStringField;
+    SpeedButton1: TSpeedButton;
     sysExit: TAction;
     hlpAbout: TAction;
     CheckBox2: TCheckBox;
@@ -77,6 +78,9 @@ type
     procedure showColumnsDialogExecute(Sender: TObject);
     procedure showFindDialogExecute(Sender: TObject);
     procedure sysExitExecute(Sender: TObject);
+    procedure TRxColumnEditButtons0Click(Sender: TObject);
+    procedure TRxColumnEditButtons1Click(Sender: TObject);
+    procedure TRxColumnEditButtons2Click(Sender: TObject);
   private
     procedure DoFillFilters;
   public
@@ -129,9 +133,9 @@ begin
   RxMemoryData1.AppendRecord([14, 'Бух. комплекс "45-я Параллель"', 180, 'ООО "Boot"', EncodeDate(2007, 2, 1), 3]);
   RxMemoryData1.AppendRecord([15, 'Консультант+', 380, 'Консультант+', EncodeDate(2007, 2, 1), 3]);
   RxMemoryData1.AppendRecord([16, 'Гарант', 480, 'Гарант', EncodeDate(2007, 2, 1), 3]);
-//  DoFillFilters;
+
   RxMemoryData1.First;
-  RxDBGrid1.CalcStatTotals; //fix error in GotoBookmark
+//  RxDBGrid1.CalcStatTotals; //fix error in GotoBookmark
 
 
 end;
@@ -179,6 +183,24 @@ begin
   Close;
 end;
 
+procedure TRxDBGridMainForm.TRxColumnEditButtons0Click(Sender: TObject);
+begin
+  ShowMessage('Click first button');
+end;
+
+procedure TRxDBGridMainForm.TRxColumnEditButtons1Click(Sender: TObject);
+begin
+  ShowMessage('Click next button');
+end;
+
+procedure TRxDBGridMainForm.TRxColumnEditButtons2Click(Sender: TObject);
+begin
+  if RxMemoryData1.State <> dsEdit then
+    RxMemoryData1.Edit;
+  RxMemoryData1PRICE1.Clear;
+  RxMemoryData1.Post;
+end;
+
 procedure TRxDBGridMainForm.DoFillFilters;
 var
   C:TRxColumn;
@@ -206,7 +228,7 @@ end;
 
 procedure TRxDBGridMainForm.actCalcTotalExecute(Sender: TObject);
 begin
-  RxDBGrid1.CalcStatTotals; //fix error in GotoBookmark
+  RxDBGrid1.CalcStatTotals;
 end;
 
 procedure TRxDBGridMainForm.actOptimizeColumnsWidthAllExecute(Sender: TObject);
@@ -253,8 +275,6 @@ procedure TRxDBGridMainForm.ComboBox1Change(Sender: TObject);
 begin
   RxDBGrid1.ReadOnly:=ComboBox1.ItemIndex <> 0;
 end;
-
-//TRxAboutDialog
 
 end.
 
