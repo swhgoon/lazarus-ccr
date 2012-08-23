@@ -3550,8 +3550,16 @@ begin
 
     if W>0 then
     begin
-      Editor.Width:=Editor.Width - W;
-      W:=Editor.Width + Editor.Left;
+      if Editor.Name = 'ButtonEditor' then
+      begin
+        Editor.Left:=Editor.Left - W;
+        W:=Editor.Width + Editor.Left;
+      end
+      else
+      begin
+        Editor.Width:=Editor.Width - W;
+        W:=Editor.Width + Editor.Left;
+      end;
 
       for i:=0 to R.EditButtons.Count-1 do
       if R.EditButtons[i].Visible then
