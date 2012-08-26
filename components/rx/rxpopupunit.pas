@@ -55,6 +55,7 @@ type
     procedure FindPriorChar;
     procedure SetLookupDisplayIndex(const AValue: integer);
   protected
+    procedure SetDBHandlers(Value: boolean);override;
     procedure UTF8KeyPress(var UTF8Key: TUTF8Char); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     property LookupDisplayIndex:integer read FLookupDisplayIndex write SetLookupDisplayIndex;
@@ -891,12 +892,14 @@ begin
   FLookupDisplayField:=Columns[FLookupDisplayIndex].FieldName;
 end;
 
+procedure TPopUpGrid.SetDBHandlers(Value: boolean);
+begin
+  //
+end;
+
 procedure TPopUpGrid.UTF8KeyPress(var UTF8Key: TUTF8Char);
 begin
   inherited UTF8KeyPress(UTF8Key);
-  if UTF8Key>=#32 then
-    FindNextChar(UTF8Key)
-  else
   if UTF8Key>#32 then
     FindNextChar(UTF8Key)
   else
