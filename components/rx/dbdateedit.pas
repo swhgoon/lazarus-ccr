@@ -159,6 +159,7 @@ end;
 
 procedure TDBDateEdit.SetReadOnly(const AValue: Boolean);
 begin
+  inherited SetReadOnly(AValue);
   FDataLink.ReadOnly:=AValue;
 end;
 

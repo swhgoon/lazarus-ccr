@@ -526,6 +526,8 @@ type
     procedure DrawCell(aCol, aRow: integer; aRect: TRect; aState: TGridDrawState);
       override;
     procedure LinkActive(Value: boolean); override;
+    procedure SetDBHandlers(Value: boolean);virtual;
+
     procedure DrawFooterRows; virtual;
 
     procedure DoTitleClick(ACol: longint; AField: TField); virtual;
@@ -2428,58 +2430,60 @@ begin
 
   F_SortListField.Clear;
   if {not (csDestroying in ComponentState) and} not (csDesigning in ComponentState) then
+    SetDBHandlers(Value);
+end;
+
+procedure TRxDBGrid.SetDBHandlers(Value: boolean);
+begin
+  if Value then
   begin
-    if Value then
+    if DataSource.DataSet.OnFilterRecord <> @FilterRec then
     begin
-      if DataSource.DataSet.OnFilterRecord <> @FilterRec then
-      begin
-        F_EventOnFilterRec := DataSource.DataSet.OnFilterRecord;
-        DataSource.DataSet.OnFilterRecord := @FilterRec;
-      end;
-      if DataSource.DataSet.BeforeDelete <> @BeforeDel then
-      begin
-        F_EventOnBeforeDelete := DataSource.DataSet.BeforeDelete;
-        DataSource.DataSet.BeforeDelete := @BeforeDel;
-      end;
-      if DataSource.DataSet.BeforePost <> @BeforePo then
-      begin
-        F_EventOnBeforePost := DataSource.DataSet.BeforePost;
-        DataSource.DataSet.BeforePost := @BeforePo;
-      end;
-      if DataSource.DataSet.OnDeleteError <> @ErrorDel then
-      begin
-        F_EventOnDeleteError := DataSource.DataSet.OnDeleteError;
-        DataSource.DataSet.OnDeleteError := @ErrorDel;
-      end;
-      if DataSource.DataSet.OnPostError <> @ErrorPo then
-      begin
-        F_EventOnPostError := DataSource.DataSet.OnPostError;
-        DataSource.DataSet.OnPostError := @ErrorPo;
-      end;
-      CalcStatTotals;
+      F_EventOnFilterRec := DataSource.DataSet.OnFilterRecord;
+      DataSource.DataSet.OnFilterRecord := @FilterRec;
+    end;
+    if DataSource.DataSet.BeforeDelete <> @BeforeDel then
+    begin
+      F_EventOnBeforeDelete := DataSource.DataSet.BeforeDelete;
+      DataSource.DataSet.BeforeDelete := @BeforeDel;
+    end;
+    if DataSource.DataSet.BeforePost <> @BeforePo then
+    begin
+      F_EventOnBeforePost := DataSource.DataSet.BeforePost;
+      DataSource.DataSet.BeforePost := @BeforePo;
+    end;
+    if DataSource.DataSet.OnDeleteError <> @ErrorDel then
+    begin
+      F_EventOnDeleteError := DataSource.DataSet.OnDeleteError;
+      DataSource.DataSet.OnDeleteError := @ErrorDel;
+    end;
+    if DataSource.DataSet.OnPostError <> @ErrorPo then
+    begin
+      F_EventOnPostError := DataSource.DataSet.OnPostError;
+      DataSource.DataSet.OnPostError := @ErrorPo;
+    end;
+    CalcStatTotals;
+    if rdgFilter in OptionsRx then
+       OnFilter(nil);
+  end
+  else
+  begin
+    if Assigned(DataSource) and Assigned(DataSource.DataSet) then
+    begin
+      DataSource.DataSet.OnFilterRecord := F_EventOnFilterRec;
+      F_EventOnFilterRec := nil;
+      DataSource.DataSet.BeforeDelete := F_EventOnBeforeDelete;
+      F_EventOnBeforeDelete := nil;
+      DataSource.DataSet.BeforePost := F_EventOnBeforePost;
+      F_EventOnBeforePost := nil;
+      DataSource.DataSet.OnDeleteError := F_EventOnDeleteError;
+      F_EventOnDeleteError := nil;
+      DataSource.DataSet.OnPostError := F_EventOnPostError;
+      F_EventOnPostError := nil;
       if rdgFilter in OptionsRx then
          OnFilter(nil);
-    end
-    else
-    begin
-      if Assigned(DataSource) and Assigned(DataSource.DataSet) then
-      begin
-        DataSource.DataSet.OnFilterRecord := F_EventOnFilterRec;
-        F_EventOnFilterRec := nil;
-        DataSource.DataSet.BeforeDelete := F_EventOnBeforeDelete;
-        F_EventOnBeforeDelete := nil;
-        DataSource.DataSet.BeforePost := F_EventOnBeforePost;
-        F_EventOnBeforePost := nil;
-        DataSource.DataSet.OnDeleteError := F_EventOnDeleteError;
-        F_EventOnDeleteError := nil;
-        DataSource.DataSet.OnPostError := F_EventOnPostError;
-        F_EventOnPostError := nil;
-//        OptionsRx := OptionsRx - [rdgFilter];
-        if rdgFilter in OptionsRx then
-           OnFilter(nil);
-      end;
-      F_LastFilter.Clear;
     end;
+    F_LastFilter.Clear;
   end;
 end;
 
