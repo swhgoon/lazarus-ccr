@@ -3,6 +3,9 @@ program Project1;
 uses
 {$IFDEF LCL}
   Interfaces,
+ {$IFDEF UNIX}
+  clocale,
+ {$ENDIF}
 {$ENDIF}
   Forms,
   Unit1 in 'Unit1.pas' {Form1};

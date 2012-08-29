@@ -41,7 +41,7 @@ unit ovccal;
 interface
 
 uses
-  {$IFNDEF LCL} Windows, Messages, {$ELSE} LclIntf, LMessages, LclType, MyMisc, {$ENDIF}
+  {$IFNDEF LCL} Windows, Messages, {$ELSE} LclIntf, LMessages, LclType, MyMisc, FileUtil,{$ENDIF}
   Buttons, Classes, Controls, Forms, Graphics, Menus, 
   SysUtils, OvcBase, OvcConst, OvcData, OvcIntl,
   OvcMisc, OvcDate;
@@ -1449,6 +1449,10 @@ var
       if Canvas.TextWidth(S) > R.Right-R.Left then
         S := FormatDateTime('mmm yyyy', FDate);
 
+{$IFDEF LCL}
+    S := SysToUTF8(S);  //DrawText expects UTF8 with most widgetsets
+{$ENDIF}
+
     Canvas.Font.Color := FColors.MonthAndYear;
     if Assigned(FOnDrawDate) then
       FOnDrawDate(Self, FDate, R)
@@ -1474,6 +1478,10 @@ var
 
       {get the day name}
       S := Copy(ShortDayNames[Ord(DOW)+1], 1, FDayNameWidth);
+
+{$IFDEF LCL}
+      S := SysToUTF8(S);
+{$ENDIF}
 
       {draw the day name above each column}
       DrawText(Canvas.Handle, @S[1], Length(S), clRowCol[1,I],
@@ -1533,6 +1541,9 @@ var
         FOnGetHighlight(Self, FDate+(NewIdx-OldIdx), Cl);
         Canvas.Font.Color := Cl;
       end;
+{$IFDEF LCL}
+      S := SysToUTF8(S);
+{$ENDIF}
       if Assigned(FOnDrawItem) then
         FOnDrawItem(Self, FDate+(NewIdx-OldIdx), clRowCol[R,C])
       else
@@ -1555,6 +1566,9 @@ var
       R := DrawButtonFace(Canvas, calGetCurrentRectangle, 1, BS, True, True, False)
     else
       R := DrawButtonFace(Canvas, calGetCurrentRectangle, 1, BS, True, False, False);
+{$IFDEF LCL}
+    S := SysToUTF8(S);
+{$ENDIF}
     DrawText(Canvas.Handle, @S[1], Length(S), R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
   end;
 
