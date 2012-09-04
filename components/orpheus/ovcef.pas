@@ -809,6 +809,7 @@ begin
   FZeroDisplayValue  := 0;
 {$IFDEF LCL}
   FCtl3D             := True;
+  Color              := clWindow;
 {$ENDIF}
 
   efRangeLo          := BlankRange;
