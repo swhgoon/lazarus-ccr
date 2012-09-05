@@ -42,11 +42,11 @@ object RxDBGridMainForm: TRxDBGridMainForm
       end    
       item
         Title.Alignment = taCenter
-        Title.Caption = 'Code'
-        Title.Orientation = toHorizontal
+        Title.Caption = 'Code - ID'
+        Title.Orientation = toVertical90
         Title.Hint = 'Code - ID'
         Title.ShowHint = True
-        Width = 136
+        Width = 100
         FieldName = 'ID'
         Footer.Alignment = taRightJustify
         Footer.DisplayFormat = 'Count: %d'
@@ -122,6 +122,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
               0000EEEEEEEEEEE00000EEEEEEEEEEE00000
             }
             Hint = 'Clear value'
+            NumGlyphs = 0
             OnClick = TRxColumnEditButtons2Click
           end>
       end    
@@ -185,6 +186,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
               BB06666600000000006666666000066666666666666666666666
             }
             Hint = 'Первая кнопка'
+            NumGlyphs = 0
             Width = 16
             OnClick = TRxColumnEditButtons0Click
           end        
@@ -207,6 +209,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
               00000000000000000000
             }
             Hint = 'Вторая кнопка'
+            NumGlyphs = 0
             OnClick = TRxColumnEditButtons1Click
           end>
       end>
@@ -279,10 +282,10 @@ object RxDBGridMainForm: TRxDBGridMainForm
       AnchorSideLeft.Control = Button2
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel1
-      Left = 270
+      Left = 245
       Height = 15
       Top = 7
-      Width = 35
+      Width = 34
       BorderSpacing.Around = 6
       Caption = 'Mode'
       ParentColor = False
@@ -293,7 +296,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
       Left = 7
       Height = 27
       Top = 7
-      Width = 86
+      Width = 77
       Action = actCalcTotal
       AutoSize = True
       BorderSpacing.Around = 6
@@ -303,10 +306,10 @@ object RxDBGridMainForm: TRxDBGridMainForm
       AnchorSideLeft.Control = Button1
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel1
-      Left = 99
+      Left = 90
       Height = 27
       Top = 7
-      Width = 165
+      Width = 149
       Action = actOptimizeColumnsWidthAll
       AutoSize = True
       BorderSpacing.Around = 6
@@ -317,11 +320,11 @@ object RxDBGridMainForm: TRxDBGridMainForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = CheckBox2
       AnchorSideTop.Side = asrBottom
-      Left = 499
+      Left = 474
       Height = 22
       Hint = 'Use filter line'
       Top = 35
-      Width = 83
+      Width = 78
       BorderSpacing.Left = 6
       Caption = 'Use filter'
       OnChange = CheckBox1Change
@@ -331,7 +334,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
       AnchorSideLeft.Control = Label1
       AnchorSideTop.Control = Label1
       AnchorSideTop.Side = asrBottom
-      Left = 276
+      Left = 251
       Height = 25
       Top = 28
       Width = 217
@@ -351,11 +354,11 @@ object RxDBGridMainForm: TRxDBGridMainForm
       AnchorSideLeft.Control = ComboBox1
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel1
-      Left = 499
+      Left = 474
       Height = 22
       Hint = 'Auto fill column width'
       Top = 7
-      Width = 133
+      Width = 122
       BorderSpacing.Around = 6
       Caption = 'Auto fill columns'
       OnChange = CheckBox2Change
@@ -365,10 +368,10 @@ object RxDBGridMainForm: TRxDBGridMainForm
       AnchorSideLeft.Control = CheckBox2
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel1
-      Left = 638
+      Left = 602
       Height = 22
       Top = 7
-      Width = 120
+      Width = 113
       BorderSpacing.Around = 6
       Caption = 'Show indicator'
       Checked = True
@@ -381,10 +384,10 @@ object RxDBGridMainForm: TRxDBGridMainForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = CheckBox3
       AnchorSideTop.Side = asrBottom
-      Left = 638
+      Left = 602
       Height = 22
       Top = 35
-      Width = 115
+      Width = 111
       BorderSpacing.Around = 6
       Caption = 'Show headers'
       Checked = True

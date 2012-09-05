@@ -105,6 +105,8 @@ type
     rxgcHideQuickFilter
     );
 
+  TRxDSState = (rxdsInactive, rxdsActive);
+
   { TRxDBGridKeyStroke }
 
   TRxDBGridKeyStroke = class(TCollectionItem)
@@ -414,6 +416,7 @@ type
   { TRxDBGrid }
   TRxDBGrid = class(TCustomDBGrid)
   private
+    FrxDSState:TRxDSState;
     FFooterOptions: TRxDBGridFooterOptions;
     FSortingNow:Boolean;
     FInProcessCalc: integer;
@@ -515,6 +518,8 @@ type
     procedure CleanDSEvent;
   protected
     function DatalinkActive: boolean;
+    procedure LinkActive(Value: Boolean); override;
+
     procedure DefaultDrawCellA(aCol, aRow: integer; aRect: TRect;
       aState: TGridDrawState);
     procedure DefaultDrawTitle(aCol, aRow: integer; aRect: TRect;
@@ -525,7 +530,6 @@ type
       aState: TGridDrawState);
     procedure DrawCell(aCol, aRow: integer; aRect: TRect; aState: TGridDrawState);
       override;
-    procedure LinkActive(Value: boolean); override;
     procedure SetDBHandlers(Value: boolean);virtual;
 
     procedure DrawFooterRows; virtual;
@@ -3025,8 +3029,7 @@ begin
     UpdateFooterRowOnUpdateActive;
   end
   else
-  if Assigned(FFooterOptions) and FFooterOptions.Active and (FFooterOptions.RowCount > 0) {and
-       DatalinkActive and (DataSource.DataSet.State = dsBrowse) }then
+  if FFooterOptions.Active and (FFooterOptions.RowCount > 0) then
     UpdateFooterRowOnUpdateActive;
 //    CalcStatTotals;
 end;
@@ -3594,11 +3597,11 @@ end;
 //!!!
 constructor TRxDBGrid.Create(AOwner: TComponent);
 begin
+  FFooterOptions:=TRxDBGridFooterOptions.Create(Self);
   inherited Create(AOwner);
 {$IFDEF RXDBGRID_OPTIONS_WO_CANCEL_ON_EXIT}
   Options := Options - [dgCancelOnExit];
 {$ENDIF}
-  FFooterOptions:=TRxDBGridFooterOptions.Create(Self);
 
   FKeyStrokes := TRxDBGridKeyStrokes.Create(Self);
   FKeyStrokes.ResetDefaults;
@@ -3677,7 +3680,8 @@ end;
 procedure TRxDBGrid.LayoutChanged;
 begin
   inherited LayoutChanged;
-  //  CalcTitle;
+  if DatalinkActive and (FInProcessCalc = 0) and (Datalink.DataSet.State = dsBrowse) then
+    CalcStatTotals;
 end;
 
 procedure TRxDBGrid.ShowFindDialog;
@@ -4023,7 +4027,7 @@ begin
     if Assigned(F) then
     begin
       if F.DataType in [ftSmallint, ftInteger, ftWord, ftFloat, ftCurrency,
-        ftDate, ftTime, ftDateTime, ftTimeStamp, ftLargeint] then
+        ftDate, ftTime, ftDateTime, ftTimeStamp, ftLargeint, ftBCD] then
       begin
         if F.DataType in [ftDate, ftTime, ftDateTime, ftTimeStamp] then
         begin
