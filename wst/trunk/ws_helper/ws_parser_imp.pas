@@ -257,7 +257,7 @@ var
   typNode : TDOMNode;
 begin
   if not AEltNode.HasChildNodes() then begin;
-    raise EXsdParserException.Create(AEltNode.NodeName+' : '+SERR_InvalidTypeDef_NoChild);
+    raise EXsdParserException.CreateFmt('%s : Type Name = "%s", NodeName = "%s" .',[SERR_InvalidTypeDef_NoChild,ATypeName,AEltNode.NodeName]);
   end;
   typName := ATypeName;
   if IsStrEmpty(typName) then begin
@@ -942,14 +942,18 @@ var
         locTypeHint := ExtractTypeHint(AElement);
       end else begin
         locTypeName := Format('%s_%s_Type',[FTypeName,locName]);
-        locType := TAbstractTypeParser.ExtractEmbeddedTypeFromElement(Context,AElement,FSymbols,locTypeName);
-        if ( locType = nil ) then begin
-          raise EXsdInvalidElementDefinitionException.CreateFmt(SERR_InvalidElementDef_Type,[FTypeName,locName]);
-        end;
-        Self.Module.InterfaceSection.Declarations.Add(locType);
-        Self.Module.InterfaceSection.Types.Add(locType);
-        if locType.InheritsFrom(TPasClassType) then begin
-          Self.Module.InterfaceSection.Classes.Add(locType);
+        if AElement.HasChildNodes() then begin
+          locType := TAbstractTypeParser.ExtractEmbeddedTypeFromElement(Context,AElement,FSymbols,locTypeName);
+          if ( locType = nil ) then begin
+            raise EXsdInvalidElementDefinitionException.CreateFmt(SERR_InvalidElementDef_Type,[FTypeName,locName]);
+          end;
+          Self.Module.InterfaceSection.Declarations.Add(locType);
+          Self.Module.InterfaceSection.Types.Add(locType);
+          if locType.InheritsFrom(TPasClassType) then begin
+            Self.Module.InterfaceSection.Classes.Add(locType);
+          end;
+        end else begin
+          locTypeName := 'anyType';
         end;
       end;
     end;
@@ -1667,7 +1671,7 @@ function TSimpleTypeParser.ParseEnumContent(): TPasType;
   
 var
   locRes : TPasEnumType;
-  locOrder : Integer;
+  //locOrder : Integer;
   prefixItems : Boolean;
   
   procedure ParseEnumItem(AItemNode : TDOMNode);
@@ -1709,11 +1713,11 @@ var
       end;
     end;
     locItem := TPasEnumValue(FSymbols.CreateElement(TPasEnumValue,locInternalItemName,locRes,visDefault,'',0));
-    locItem.Value := locOrder;
+    //locItem.Value := locOrder;
     locRes.Values.Add(locItem);
     if locHasInternalName then
       FSymbols.RegisterExternalAlias(locItem,locItemName);
-    Inc(locOrder);
+    //Inc(locOrder);
   end;
   
 var
@@ -1736,7 +1740,7 @@ begin
     if hasIntrnName then
       FSymbols.RegisterExternalAlias(locRes,FTypeName);
     locEnumCrs.Reset();
-    locOrder := 0;
+    //locOrder := 0;
     while locEnumCrs.MoveNext() do begin
       ParseEnumItem((locEnumCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject);
     end;
