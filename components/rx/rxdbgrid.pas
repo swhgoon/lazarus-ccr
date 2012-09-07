@@ -3532,7 +3532,7 @@ begin
   inherited DoEditorHide;
   R:=SelectedColumn as TRxColumn;
 
-  if Assigned(Editor) then
+  if Assigned(Editor) and Assigned(R) then
   for i:=0 to R.EditButtons.Count-1 do
     R.EditButtons[i].FButton.Visible:=false;
 end;
@@ -3546,7 +3546,7 @@ begin
 
   R:=SelectedColumn as TRxColumn;
 
-  if Assigned(Editor) then
+  if Assigned(Editor) and Assigned(R) then
   begin
     W:=0;
     for i:=0 to R.EditButtons.Count-1 do
