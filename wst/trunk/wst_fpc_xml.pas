@@ -123,7 +123,7 @@ end;
 function CreateDoc() : TXMLDocument ;
 begin
   Result := TXMLDocument.Create();
-{$IF ((FPC_VERSION = 2) and (FPC_RELEASE = 6)) }  
+{$IF (FPC_FULLVERSION <= 20600) }
   Result.Encoding := 'UTF-8';
 {$IFEND}
 end;
