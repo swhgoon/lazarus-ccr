@@ -125,7 +125,7 @@ begin
   Result := Value;
   for i := 1 to length(Result) do begin
     if ( Result[i] = '.' ) then
-      Result[i] := DecimalSeparator;
+      Result[i] := DefaultFormatSettings.DecimalSeparator;
   end;
 end;
 
