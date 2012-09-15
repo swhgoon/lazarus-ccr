@@ -1643,7 +1643,7 @@ begin
         begin
           if rxTit.Orientation in [toVertical270, toVertical90] then
             H := Max((tmpCanvas.TextWidth(Columns[i].Title.Caption) +
-              tmpCanvas.TextWidth('W')) div DefaultRowHeight, H)
+              tmpCanvas.TextWidth('W')*2) div DefaultRowHeight, H)
           else
           begin
             rxColNext := nil;

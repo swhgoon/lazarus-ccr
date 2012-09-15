@@ -222,8 +222,16 @@ var
   L:integer;
 begin
   L:=Canvas.Font.Orientation;
+
+  SetBkMode(Canvas.Handle, TRANSPARENT);
+
   Canvas.Font.Orientation:=RotDegree * 10;
   Canvas.TextOut(X, Y, St);
+
+{  DrawText(ACanvas.Handle, PChar(Text), Length(Text), DrawRect,
+    ALIGN_FLAGS_HEADER[Alignment]  or DT_WORDBREAK
+    );}
+
   Canvas.Font.Orientation:=L;
 end;
 
