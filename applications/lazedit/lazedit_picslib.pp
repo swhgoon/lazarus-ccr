@@ -2,7 +2,7 @@ unit LazEdit_PicsLib;
 { $DEFINE DEBUG}
 interface
 
-uses Windows;
+uses LCLIntf, LCLType;
 
 function GetBMPSize(const Fn: String; out Width, Height: dword): Boolean;
 function GetGIFSize(const Fn: String; out Width, Height: dword): Boolean;
