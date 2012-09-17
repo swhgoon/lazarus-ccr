@@ -421,8 +421,7 @@ type
     FSortingNow:Boolean;
     FInProcessCalc: integer;
     FAllowedOperations: TRxDBGridAllowedOperations;
-    //FFooterColor: TColor;
-    //FFooterRowCount: integer;
+    //
     FKeyStrokes: TRxDBGridKeyStrokes;
     FOnGetCellProps: TGetCellPropsEvent;
     FOptionsRx: TOptionsRx;
@@ -436,6 +435,7 @@ type
     FSortOrder: TSortMarker;
     FSortEngine: TRxDBGridSortEngine;
     FPressedCol: TColumn;
+    //
     FPressed: boolean;
     FSwapButtons: boolean;
     FTracking: boolean;
@@ -2594,6 +2594,10 @@ begin
     FSortEngine.Sort(FSortField, DataSource.DataSet, FSortOrder =
       smUp, SortEngineOptions);
     FSortingNow:=false;
+
+    F_SortListField.Clear;
+    if Assigned(FSortField) then
+      F_SortListField.Add(FSortField.FieldName);
   end
   else
     HeaderClick(True, ACol);
@@ -3398,7 +3402,7 @@ begin
     OptionsRx := OptionsRx - [rdgFilter];
     rxFilterByForm := TrxFilterByForm.Create(Application);
     NewFilter := DataSource.DataSet.Filter;
-    if rxFilterByForm.Execute(DataSource.DataSet, NewFilter, F_LastFilter) then
+    if rxFilterByForm.Execute(Self, NewFilter, F_LastFilter) then
     begin
       if NewFilter <> '' then
       begin
@@ -3473,7 +3477,7 @@ begin
     rxSortByForm := TrxSortByForm.Create(Application);
     rxSortByForm.CheckBox1.Checked := rdgCaseInsensitiveSort in FOptionsRx;
     o := not (FSortOrder = smDown);
-    if rxSortByForm.Execute(DataSource.DataSet, F_SortListField, o) then
+    if rxSortByForm.Execute(Self, F_SortListField, o) then
     begin
       for i := 0 to F_SortListField.Count - 1 do
       begin

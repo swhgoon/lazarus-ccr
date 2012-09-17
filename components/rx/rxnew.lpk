@@ -27,7 +27,7 @@ translate to Lazarus by alexs in 2005 - 2012
 "/>
     <License Value="LGPL"/>
     <Version Major="2" Minor="2" Release="2" Build="112"/>
-    <Files Count="64">
+    <Files Count="66">
       <Item1>
         <Filename Value="autopanel.pas"/>
         <UnitName Value="AutoPanel"/>
@@ -287,6 +287,14 @@ translate to Lazarus by alexs in 2005 - 2012
         <Filename Value="ex_rx_xml_datapacket.pas"/>
         <UnitName Value="ex_rx_xml_datapacket"/>
       </Item64>
+      <Item65>
+        <Filename Value="rxsortby.lfm"/>
+        <Type Value="LFM"/>
+      </Item65>
+      <Item66>
+        <Filename Value="rxsortby.pas"/>
+        <UnitName Value="rxsortby"/>
+      </Item66>
     </Files>
     <LazDoc Paths="docs;\usr\local\share\lazarus\components\rxnew\docs"/>
     <i18n>

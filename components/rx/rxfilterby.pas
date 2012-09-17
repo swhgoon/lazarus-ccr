@@ -36,8 +36,8 @@ unit rxfilterby;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, db;
+  Classes, SysUtils, FileUtil, rxdbgrid, LResources, Forms, Controls, Graphics,
+  Dialogs, StdCtrls, db;
 
 type
 
@@ -100,19 +100,20 @@ type
     Combo_2 : Array[1..9] of TComboBox;
     Edit_1  : Array[1..9] of TEdit;
     Combo_3 : Array[1..9] of TComboBox;
-    Table   : TDataSet;
-    procedure ClearALL(adoTable : TDataSet);
+
+    FGrid : TRxDBGrid;
+    procedure ClearALL(AGrid : TRxDBGrid);
     function  FindCombo(CB:TComboBox):Integer;
     function  FindEdit(ED:TEdit):Integer;
   public
-    function Execute(adoTable : TDataSet; Var FilterStr : String; Var LastFilter : TstringList):Boolean;
+    function Execute(AGrid : TRxDBGrid; var FilterStr : String; var LastFilter : TstringList):Boolean;
   end;
 
 var
   rxFilterByForm: TrxFilterByForm;
 
 implementation
-uses rxdconst;
+uses rxdconst, rxstrutils, DBGrids;
 
 {$R *.lfm}
 
@@ -120,12 +121,12 @@ uses rxdconst;
 
 procedure TrxFilterByForm.Button2Click(Sender: TObject);
 begin
- ModalResult := mrCancel;
+  ModalResult := mrCancel;
 end;
 
 procedure TrxFilterByForm.Button3Click(Sender: TObject);
 begin
- ClearALL(Table);
+  ClearALL(FGrid);
 end;
 
 procedure TrxFilterByForm.ComboBoxChange(Sender: TObject);
@@ -178,24 +179,25 @@ begin
  ModalResult := mrOK;
 end;
 
-procedure TrxFilterByForm.ClearALL(adoTable : TDataSet);
+procedure TrxFilterByForm.ClearALL(AGrid: TRxDBGrid);
 var
-  X : Integer;
+  i : Integer;
 begin
  //*****************************************************************************
  Combo_1[1].Items.Clear;
  Combo_1[1].Items.Add('');
- For X := 0 To adoTable.FieldCount-1 do
-     Begin
-      if (adoTable.Fields[X].FieldKind=fkData) And (adoTable.Fields[X].Visible) Then
-         Combo_1[1].Items.Add(adoTable.Fields[X].FieldName);
-     End;
+ for i := 0 To AGrid.Columns.Count-1 do
+ begin
+   if (AGrid.Columns[i].Field.FieldKind=fkData) and (AGrid.Columns[i].Visible) then
+     Combo_1[1].Items.Objects[Combo_1[1].Items.Add(AGrid.Columns[i].Title.Caption)]:=AGrid.Columns[i].Field;
+ end;
+
   Combo_1[1].ItemIndex := 0;
-  For X := 2 To 9 do
-     Begin
-       Combo_1[X].Items.Assign(Combo_1[1].Items);
-       Combo_1[X].ItemIndex := 0;
-     End;
+  for i := 2 To 9 do
+  Begin
+    Combo_1[i].Items.Assign(Combo_1[1].Items);
+    Combo_1[i].ItemIndex := 0;
+  End;
 
   Combo_2[1].Items.Clear;
   Combo_2[1].Items.Add(' = ');
@@ -208,155 +210,160 @@ begin
   Combo_2[1].Items.Add(' IS NULL ');
   Combo_2[1].Items.Add(' IS NOT NULL ');
   Combo_2[1].ItemIndex := 0;
-  for X := 2 To 9 do
+  for i := 2 To 9 do
   begin
-    Combo_2[X].Items.Assign(Combo_2[1].Items);
-    Combo_2[X].ItemIndex := 0;
+    Combo_2[i].Items.Assign(Combo_2[1].Items);
+    Combo_2[i].ItemIndex := 0;
   end;
-  for X := 1 To 9 do
+  for i := 1 To 9 do
   begin
-    Combo_3[X].ItemIndex := 0;
+    Combo_3[i].ItemIndex := 0;
   end;
-  for X := 1 To 9 do Edit_1[X].Text := '';
+  for i := 1 To 9 do Edit_1[i].Text := '';
  //*****************************************************************************
 end;
 
-function TrxFilterByForm.Execute(adoTable : TDataSet; Var FilterStr : String; Var LastFilter : TstringList):Boolean;
+function TrxFilterByForm.Execute(AGrid: TRxDBGrid; var FilterStr: String;
+  var LastFilter: TstringList): Boolean;
 Var
  X  : Integer;
  P  : Integer;
- S  : String;
+ S, S1 : String;
  SD : String;
- FF : TField;
+ C : TColumn;
 Begin
- Result := False;
+  Result := False;
+  //*****************************************************************************
+  Combo_1[1]:= ComboBox1;
+  Combo_1[2]:= ComboBox4;
+  Combo_1[3]:= ComboBox7;
+  Combo_1[4]:= ComboBox10;
+  Combo_1[5]:= ComboBox13;
+  Combo_1[6]:= ComboBox16;
+  Combo_1[7]:= ComboBox19;
+  Combo_1[8]:= ComboBox22;
+  Combo_1[9]:= ComboBox25;
+
+  Combo_2[1]:= ComboBox2;
+  Combo_2[2]:= ComboBox5;
+  Combo_2[3]:= ComboBox8;
+  Combo_2[4]:= ComboBox11;
+  Combo_2[5]:= ComboBox14;
+  Combo_2[6]:= ComboBox17;
+  Combo_2[7]:= ComboBox20;
+  Combo_2[8]:= ComboBox23;
+  Combo_2[9]:= ComboBox26;
+
+  Combo_3[1]:= ComboBox3;
+  Combo_3[2]:= ComboBox6;
+  Combo_3[3]:= ComboBox9;
+  Combo_3[4]:= ComboBox12;
+  Combo_3[5]:= ComboBox15;
+  Combo_3[6]:= ComboBox18;
+  Combo_3[7]:= ComboBox21;
+  Combo_3[8]:= ComboBox24;
+  Combo_3[9]:= ComboBox27;
+  Combo_3[9].Visible := False;
+
+  Edit_1[1] := Edit1;
+  Edit_1[2] := Edit2;
+  Edit_1[3] := Edit3;
+  Edit_1[4] := Edit4;
+  Edit_1[5] := Edit5;
+  Edit_1[6] := Edit6;
+  Edit_1[7] := Edit7;
+  Edit_1[8] := Edit8;
+  Edit_1[9] := Edit9;
+
  //*****************************************************************************
- Combo_1[1]:= ComboBox1;
- Combo_1[2]:= ComboBox4;
- Combo_1[3]:= ComboBox7;
- Combo_1[4]:= ComboBox10;
- Combo_1[5]:= ComboBox13;
- Combo_1[6]:= ComboBox16;
- Combo_1[7]:= ComboBox19;
- Combo_1[8]:= ComboBox22;
- Combo_1[9]:= ComboBox25;
+  FGrid := AGrid;
+  ClearALL(FGrid);
+  if LastFilter.Count > 0 Then
+  begin
+    for X := 0 To LastFilter.Count-1 do
+    begin
+      S := LastFilter.Strings[X];
+      P := Pos('|||',S);
+      if P > 0 Then
+      begin
+        S1:=System.Copy(S,1,P-1);
+        C:=FGrid.ColumnByFieldName(S1);
+        Combo_1[X+1].ItemIndex := Combo_1[X+1].Items.IndexOf(C.Title.Caption);
+        System.Delete(S,1,P+2);
+      end;
 
- Combo_2[1]:= ComboBox2;
- Combo_2[2]:= ComboBox5;
- Combo_2[3]:= ComboBox8;
- Combo_2[4]:= ComboBox11;
- Combo_2[5]:= ComboBox14;
- Combo_2[6]:= ComboBox17;
- Combo_2[7]:= ComboBox20;
- Combo_2[8]:= ComboBox23;
- Combo_2[9]:= ComboBox26;
+      P := Pos('|||',S);
+      if P > 0 Then
+      begin
+        SD:=System.Copy(S,1,P-1);
+        Combo_2[X+1].ItemIndex :=  Combo_2[X+1].Items.IndexOf(System.Copy(S,1,P-1));
+        System.Delete(S,1,P+2);
+        if (SD=' IS NULL ') or (SD=' IS NOT NULL ') Then
+        Begin
+          Edit_1[X+1].Text:= '';
+          Edit_1[X+1].Enabled := False;
+          Edit_1[X+1].Color   := clInactiveCaption;
+        End;
+      end;
 
- Combo_3[1]:= ComboBox3;
- Combo_3[2]:= ComboBox6;
- Combo_3[3]:= ComboBox9;
- Combo_3[4]:= ComboBox12;
- Combo_3[5]:= ComboBox15;
- Combo_3[6]:= ComboBox18;
- Combo_3[7]:= ComboBox21;
- Combo_3[8]:= ComboBox24;
- Combo_3[9]:= ComboBox27;
- Combo_3[9].Visible := False;
+      P := Pos('|||',S);
+      if P > 0 then
+      begin
+        Edit_1[X+1].Text := System.Copy(S,1,P-1);
+        System.Delete(S,1,P+2);
+      end;
+      Combo_3[X+1].ItemIndex := Combo_3[X+1].Items.IndexOf(S);
 
- Edit_1[1] := Edit1;
- Edit_1[2] := Edit2;
- Edit_1[3] := Edit3;
- Edit_1[4] := Edit4;
- Edit_1[5] := Edit5;
- Edit_1[6] := Edit6;
- Edit_1[7] := Edit7;
- Edit_1[8] := Edit8;
- Edit_1[9] := Edit9;
+      if Combo_3[X+1].ItemIndex = -1 Then Combo_3[X+1].ItemIndex := 0;
+    end;
+  end;
 
- //*****************************************************************************
- Table := adoTable;
- ClearALL(Table);
- if LastFilter.Count > 0 Then
-    Begin
-     For X := 0 To LastFilter.Count-1 do
-         Begin
-           S := LastFilter.Strings[X];
-           P := Pos('|||',S);
-           if P > 0 Then
-              Begin
-                Combo_1[X+1].ItemIndex := Combo_1[X+1].Items.IndexOf(System.Copy(S,1,P-1));
-                System.Delete(S,1,P+2);
-              End;
-           P := Pos('|||',S);
-           if P > 0 Then
-              Begin
-                SD:=System.Copy(S,1,P-1);
-                Combo_2[X+1].ItemIndex :=  Combo_2[X+1].Items.IndexOf(System.Copy(S,1,P-1));
-                System.Delete(S,1,P+2);
-                if (SD=' IS NULL ') or (SD=' IS NOT NULL ') Then
-                   Begin
-                     Edit_1[X+1].Text    := '';
-                     Edit_1[X+1].Enabled := False;
-                     Edit_1[X+1].Color   := clInactiveCaption;
-                   End;
-              End;
-           P := Pos('|||',S);
-           if P > 0 Then
-              Begin
-                Edit_1[X+1].Text := System.Copy(S,1,P-1);
-                System.Delete(S,1,P+2);
-              End;
-           Combo_3[X+1].ItemIndex := Combo_3[X+1].Items.IndexOf(S);
-           if Combo_3[X+1].ItemIndex = -1 Then Combo_3[X+1].ItemIndex := 0;
-         End;
-    End;
+  if ShowModal = mrOK Then
+  begin
+    Result    := True;
+    FilterStr := '';
+    LastFilter.Clear;
+    for X := 1 to 9 Do
+    begin
+      if  (Combo_1[X].Text <> '') and (Combo_2[X].Text <> '') then
+      begin
+        if (Edit_1[X].Enabled=False) or (Edit_1[X].Text <> '') Then
+        begin
+          if X>1 Then
+            FilterStr := FilterStr+Combo_3[X-1].Text+' ';
 
- ShowModal;
- if ModalResult=mrOK Then
-    Begin
-      Result    := True;
-      FilterStr := '';
-      LastFilter.Clear;
-      For X := 1 to 9 Do
-          Begin
-           if  (Combo_1[X].Text <> '')
-           And (Combo_2[X].Text <> '') Then
-             Begin
-              if (Edit_1[X].Enabled=False) or (Edit_1[X].Text <> '') Then
-                 Begin
-                   if X>1 Then
-                      FilterStr := FilterStr+Combo_3[X-1].Text+' ';
-                   FF  := Table.FindField(Combo_1[X].Text);
-                   Case FF.DataType of
-                        ftDateTime   ,
-                        ftDate       : FilterStr := FilterStr+'('+Combo_1[X].Text+Combo_2[X].Text+Char(39)+Copy(Edit_1[X].Text,7,4)+Copy(Edit_1[X].Text,3,4)+Copy(Edit_1[X].Text,1,2)+Copy(Edit_1[X].Text,11,9)+Char(39)+') ';
-                        ftUnknown    : FilterStr := FilterStr+'('+Combo_1[X].Text+Combo_2[X].Text+Edit_1[X].Text+') ';
-                        ftTime,
-                        ftString,
-                        ftMemo       : FilterStr := FilterStr+'('+Combo_1[X].Text+Combo_2[X].Text+Char(39)+Edit_1[X].Text+Char(39)+') ';
-                   else
-                        FilterStr := FilterStr+'('+Combo_1[X].Text+Combo_2[X].Text+Edit_1[X].Text+') ';
-                   End;
-                   LastFilter.Add(Combo_1[X].Text+'|||'+Combo_2[X].Text+'|||'+Edit_1[X].Text+'|||'+Combo_3[X].Text);
-                 End;
-             End;
-          End;
-    End;
-End;
+          C:=FGrid.ColumnByCaption(Combo_1[X].Text);
+          case C.Field.DataType of
+            ftDateTime   ,
+            ftDate       : FilterStr := FilterStr+'('+C.FieldName+Combo_2[X].Text+Char(39)+Copy(Edit_1[X].Text,7,4)+Copy(Edit_1[X].Text,3,4)+Copy(Edit_1[X].Text,1,2)+Copy(Edit_1[X].Text,11,9)+Char(39)+') ';
+            ftUnknown    : FilterStr := FilterStr+'('+C.FieldName+Combo_2[X].Text+Edit_1[X].Text+') ';
+            ftTime,
+            ftString,
+            ftMemo       : FilterStr := FilterStr+'('+C.FieldName+Combo_2[X].Text+QuotedString(Edit_1[X].Text, '''')+') ';
+          else
+            FilterStr := FilterStr+'('+C.FieldName+Combo_2[X].Text+Edit_1[X].Text+') ';
+          end;
+          LastFilter.Add(C.FieldName+'|||'+Combo_2[X].Text+'|||'+Edit_1[X].Text+'|||'+Combo_3[X].Text);
+        end;
+      end;
+    end;
+  end;
+end;
 
 Function  TrxFilterByForm.FindCombo(CB:TComboBox):Integer;
-Var
- X : Integer;
-Begin
- Result :=0;
- For X := 1 to 9 do
-     Begin
-      if Combo_2[X]=CB Then
-         Begin
-           Result := X;
-           Exit;
-         End;
-     End;
-End;
+var
+  X : Integer;
+begin
+  Result :=0;
+  for X := 1 to 9 do
+  begin
+    if Combo_2[X]=CB Then
+    begin
+      Result := X;
+      Exit;
+    end;
+  end;
+end;
 
 function  TrxFilterByForm.FindEdit(ED:TEdit):Integer;
 var

@@ -54,16 +54,16 @@
         <MinVersion Major="1" Release="18" Build="56" Valid="True"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="69">
+    <Units Count="74">
       <Unit0>
         <Filename Value="RxDBGridDemo.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="RxDBGridDemo"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="6"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="9" Y="16"/>
-        <UsageCount Value="56"/>
+        <UsageCount Value="60"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -77,7 +77,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="196"/>
         <CursorPos X="21" Y="201"/>
-        <UsageCount Value="56"/>
+        <UsageCount Value="60"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
@@ -501,9 +501,9 @@
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1846"/>
-        <CursorPos X="1" Y="1847"/>
-        <UsageCount Value="11"/>
+        <TopLine Value="3384"/>
+        <CursorPos X="35" Y="3405"/>
+        <UsageCount Value="13"/>
         <Bookmarks Count="3">
           <Item0 X="3" Y="73" ID="1"/>
           <Item1 X="13" Y="328" ID="2"/>
@@ -553,11 +553,11 @@
       <Unit64>
         <Filename Value="/usr/local/share/lazarus/components/rxnew/vclutils.pas"/>
         <UnitName Value="vclutils"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="5"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="187"/>
-        <CursorPos X="11" Y="220"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="35"/>
+        <UsageCount Value="12"/>
         <Loaded Value="True"/>
       </Unit64>
       <Unit65>
@@ -570,12 +570,10 @@
       <Unit66>
         <Filename Value="/usr/local/share/lazarus/lcl/graphics.pp"/>
         <UnitName Value="Graphics"/>
-        <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
         <TopLine Value="93"/>
         <CursorPos X="3" Y="99"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="11"/>
       </Unit66>
       <Unit67>
         <Filename Value="/usr/local/share/lazarus/lcl/include/lclintf.inc"/>
@@ -591,64 +589,180 @@
         <CursorPos X="1" Y="190"/>
         <UsageCount Value="10"/>
       </Unit68>
+      <Unit69>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxsortby.pas"/>
+        <ComponentName Value="rxSortByForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="rxsortby"/>
+        <EditorIndex Value="4"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="50"/>
+        <CursorPos X="14" Y="65"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit69>
+      <Unit70>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxfilterby.pas"/>
+        <ComponentName Value="rxFilterByForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="rxfilterby"/>
+        <EditorIndex Value="2"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="315"/>
+        <CursorPos X="1" Y="350"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit70>
+      <Unit71>
+        <Filename Value="../../../../../../install/source/fpcsrc/rtl/objpas/classes/classesh.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="645"/>
+        <CursorPos X="15" Y="666"/>
+        <UsageCount Value="10"/>
+      </Unit71>
+      <Unit72>
+        <Filename Value="../../../../../../install/source/fpcsrc/rtl/objpas/classes/stringl.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="593"/>
+        <CursorPos X="3" Y="598"/>
+        <UsageCount Value="10"/>
+      </Unit72>
+      <Unit73>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxstrutils.pas"/>
+        <UnitName Value="rxstrutils"/>
+        <EditorIndex Value="3"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="140"/>
+        <CursorPos X="23" Y="168"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit73>
     </Units>
-    <JumpHistory Count="14" HistoryIndex="13">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="/usr/local/share/lazarus/lcl/graphics.pp"/>
-        <Caret Line="1179" Column="14" TopLine="1128"/>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxsortby.pas"/>
+        <Caret Line="72" Column="7" TopLine="53"/>
       </Position1>
       <Position2>
-        <Filename Value="/usr/local/share/lazarus/components/rxnew/vclutils.pas"/>
-        <Caret Line="227" Column="1" TopLine="203"/>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxsortby.pas"/>
+        <Caret Line="87" Column="14" TopLine="52"/>
       </Position2>
       <Position3>
-        <Filename Value="/usr/local/share/lazarus/components/rxnew/vclutils.pas"/>
-        <Caret Line="228" Column="1" TopLine="203"/>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxsortby.pas"/>
+        <Caret Line="245" Column="64" TopLine="222"/>
       </Position3>
       <Position4>
-        <Filename Value="/usr/local/share/lazarus/components/rxnew/vclutils.pas"/>
-        <Caret Line="316" Column="1" TopLine="295"/>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
+        <Caret Line="3476" Column="64" TopLine="3441"/>
       </Position4>
       <Position5>
-        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
-        <Caret Line="1867" Column="19" TopLine="1842"/>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxsortby.pas"/>
+        <Caret Line="96" Column="25" TopLine="67"/>
       </Position5>
       <Position6>
-        <Filename Value="/usr/local/share/lazarus/lcl/graphics.pp"/>
-        <Caret Line="1179" Column="14" TopLine="1158"/>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxsortby.pas"/>
+        <Caret Line="69" Column="7" TopLine="41"/>
       </Position6>
       <Position7>
-        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
-        <Caret Line="1869" Column="33" TopLine="1842"/>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxsortby.pas"/>
+        <Caret Line="118" Column="45" TopLine="94"/>
       </Position7>
       <Position8>
-        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
-        <Caret Line="1867" Column="19" TopLine="1846"/>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxsortby.pas"/>
+        <Caret Line="256" Column="3" TopLine="235"/>
       </Position8>
       <Position9>
-        <Filename Value="/usr/local/share/lazarus/lcl/graphics.pp"/>
-        <Caret Line="1179" Column="14" TopLine="1158"/>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxsortby.pas"/>
+        <Caret Line="260" Column="1" TopLine="238"/>
       </Position9>
       <Position10>
         <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
-        <Caret Line="1867" Column="19" TopLine="1846"/>
+        <Caret Line="3476" Column="29" TopLine="3455"/>
       </Position10>
       <Position11>
-        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
-        <Caret Line="1870" Column="19" TopLine="1846"/>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxsortby.pas"/>
+        <Caret Line="223" Column="1" TopLine="181"/>
       </Position11>
       <Position12>
-        <Filename Value="/usr/local/share/lazarus/lcl/graphics.pp"/>
-        <Caret Line="1179" Column="14" TopLine="1158"/>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxsortby.pas"/>
+        <Caret Line="70" Column="21" TopLine="50"/>
       </Position12>
       <Position13>
         <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
-        <Caret Line="1870" Column="15" TopLine="1846"/>
+        <Caret Line="3477" Column="34" TopLine="3455"/>
       </Position13>
       <Position14>
-        <Filename Value="/usr/local/share/lazarus/components/rxnew/vclutils.pas"/>
-        <Caret Line="298" Column="3" TopLine="280"/>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
+        <Caret Line="1483" Column="3" TopLine="1465"/>
       </Position14>
+      <Position15>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
+        <Caret Line="3400" Column="3" TopLine="3394"/>
+      </Position15>
+      <Position16>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxfilterby.pas"/>
+        <Caret Line="240" Column="2" TopLine="223"/>
+      </Position16>
+      <Position17>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxfilterby.pas"/>
+        <Caret Line="277" Column="1" TopLine="264"/>
+      </Position17>
+      <Position18>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxfilterby.pas"/>
+        <Caret Line="104" Column="41" TopLine="84"/>
+      </Position18>
+      <Position19>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxfilterby.pas"/>
+        <Caret Line="105" Column="5" TopLine="88"/>
+      </Position19>
+      <Position20>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxfilterby.pas"/>
+        <Caret Line="182" Column="37" TopLine="181"/>
+      </Position20>
+      <Position21>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxfilterby.pas"/>
+        <Caret Line="129" Column="17" TopLine="107"/>
+      </Position21>
+      <Position22>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxfilterby.pas"/>
+        <Caret Line="182" Column="36" TopLine="161"/>
+      </Position22>
+      <Position23>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxfilterby.pas"/>
+        <Caret Line="109" Column="15" TopLine="103"/>
+      </Position23>
+      <Position24>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxfilterby.pas"/>
+        <Caret Line="199" Column="5" TopLine="168"/>
+      </Position24>
+      <Position25>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxfilterby.pas"/>
+        <Caret Line="234" Column="12" TopLine="213"/>
+      </Position25>
+      <Position26>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxfilterby.pas"/>
+        <Caret Line="222" Column="30" TopLine="192"/>
+      </Position26>
+      <Position27>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxfilterby.pas"/>
+        <Caret Line="291" Column="12" TopLine="271"/>
+      </Position27>
+      <Position28>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxfilterby.pas"/>
+        <Caret Line="293" Column="1" TopLine="277"/>
+      </Position28>
+      <Position29>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxfilterby.pas"/>
+        <Caret Line="136" Column="16" TopLine="107"/>
+      </Position29>
+      <Position30>
+        <Filename Value="/usr/local/share/lazarus/components/rxnew/rxdbgrid.pas"/>
+        <Caret Line="3400" Column="3" TopLine="3394"/>
+      </Position30>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>

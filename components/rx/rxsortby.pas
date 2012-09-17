@@ -31,13 +31,13 @@
 
 unit rxsortby;
 
-{$mode objfpc}{$H+}
+{$I rx.inc}
 
 interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Buttons, ButtonPanel, db;
+  StdCtrls, Buttons, ButtonPanel, rxdbgrid, db;
 
 type
 
@@ -58,25 +58,23 @@ type
     UpBtn: TBitBtn;
     procedure AddBtnClick(Sender: TObject);
     procedure DownBtnClick(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure ListBox1DblClick(Sender: TObject);
     procedure ListBox2DblClick(Sender: TObject);
     procedure RemoveBtnClick(Sender: TObject);
     procedure UpBtnClick(Sender: TObject);
   private
-    OrderListTemp: TStringList;
-    OrderAsc:boolean;
+
   public
     { public declarations }
-    function Execute(adoTable : TDataSet; SortFieldNames:TStringList; var Asc:boolean):Boolean;
+    function Execute(ADBGrid:TRxDBGrid; SortFieldNames:TStringList; var Asc:boolean):Boolean;
   end;
 
 var
   rxSortByForm: TrxSortByForm;
 
 implementation
-uses rxdconst;
+uses rxdconst, DBGrids;
 
 {$R *.lfm}
 
@@ -85,29 +83,22 @@ uses rxdconst;
 procedure TrxSortByForm.DownBtnClick(Sender: TObject);
 var
   TmpField:String;
-  Poz     : Integer;
+  C1:TObject;
+  Poz: Integer;
 begin
   if ListBox1.ItemIndex < ListBox1.Items.Count-1 Then
   begin
     Poz:=ListBox1.ItemIndex;
-    TmpField:=ListBox1.Items[Poz+1];
-    ListBox1.Items[Poz+1]:=ListBox1.Items[Poz];
-    ListBox1.Items[Poz]:=TmpField;
-    ListBox1.ItemIndex:=Poz+1;
-  end;
-end;
 
-procedure TrxSortByForm.FormClose(Sender: TObject; var CloseAction: TCloseAction
-  );
-var
-  X:Integer;
-begin
-  if ModalResult = mrOk then
-  begin
-    OrderAsc:=(ComboBox1.ItemIndex=0);
-    OrderListTemp.Clear;
-    for X:=0 To ListBox1.Items.Count-1 do
-      OrderListTemp.Add(ListBox1.Items[X]);
+    TmpField:=ListBox1.Items[Poz+1];
+    C1:=ListBox1.Items.Objects[Poz+1];
+
+    ListBox1.Items[Poz+1]:=ListBox1.Items[Poz];
+    ListBox1.Items.Objects[Poz+1]:=ListBox1.Items.Objects[Poz];
+
+    ListBox1.Items[Poz]:=TmpField;
+    ListBox1.Items.Objects[Poz]:=C1;
+    ListBox1.ItemIndex:=Poz+1;
   end;
 end;
 
@@ -143,7 +134,7 @@ procedure TrxSortByForm.AddBtnClick(Sender: TObject);
 begin
   if ListBox2.ItemIndex <> -1 Then
   begin
-    ListBox1.Items.Add(ListBox2.Items.Strings[ListBox2.ItemIndex]);
+    ListBox1.Items.Objects[ListBox1.Items.Add(ListBox2.Items[ListBox2.ItemIndex])]:=ListBox2.Items.Objects[ListBox2.ItemIndex];
     ListBox2.Items.Delete(ListBox2.ItemIndex);
     ListBox1.ItemIndex:=ListBox1.Items.Count-1;
   end;
@@ -153,7 +144,7 @@ procedure TrxSortByForm.RemoveBtnClick(Sender: TObject);
 begin
   if ListBox1.ItemIndex <> -1 Then
   begin
-    ListBox2.Items.Add(ListBox1.Items.Strings[ListBox1.ItemIndex]);
+    ListBox2.Items.Objects[ListBox2.Items.Add(ListBox1.Items[ListBox1.ItemIndex])]:=ListBox1.Items.Objects[ListBox1.ItemIndex];
     ListBox1.Items.Delete(ListBox1.ItemIndex);
   end;
 end;
@@ -162,61 +153,66 @@ procedure TrxSortByForm.UpBtnClick(Sender: TObject);
 var
   TmpField:String;
   Poz     : Integer;
+  C1:TObject;
 begin
   if ListBox1.ItemIndex > 0 Then
   begin
     Poz:=ListBox1.ItemIndex;
     TmpField:=ListBox1.Items[Poz-1];
+    C1:=ListBox1.Items.Objects[Poz-1];
+
     ListBox1.Items[Poz-1]:=ListBox1.Items[Poz];
+    ListBox1.Items.Objects[Poz-1]:=ListBox1.Items.Objects[Poz];
+
     ListBox1.Items[Poz]:=TmpField;
+    ListBox1.Items.Objects[Poz]:=C1;
+
     ListBox1.ItemIndex:=Poz-1;
   end;
 end;
 
 
-function TrxSortByForm.Execute(adoTable : TDataSet; SortFieldNames: TStringList; var Asc:boolean): Boolean;
+function TrxSortByForm.Execute(ADBGrid: TRxDBGrid;
+  SortFieldNames: TStringList; var Asc: boolean): Boolean;
 var
-  X,P           : Integer;
+  i, j : Integer;
   S             : String;
-  SortFieldNamesTmp : TStringList;
+  C:TColumn;
 begin
   Result:=False;
+  if not (Assigned(ADBGrid.DataSource) and Assigned(ADBGrid.DataSource.DataSet) and ADBGrid.DataSource.DataSet.Active) then  exit;
+  ListBox1.Clear;
+  ListBox2.Clear;
+
   if not Asc then
     ComboBox1.ItemIndex:=1
   else
     ComboBox1.ItemIndex:=0;
-  SortFieldNamesTmp:=TStringList.Create;
-  for X:=0 to adoTable.FieldDefs.Count-1 do
-//  If (NOT adoTable.FieldDefs[X].FieldClass.IsBlob) Then
-    SortFieldNamesTmp.Add(adoTable.FieldDefs.Items[X].Name);
-  if SortFieldNames.Count > 0 Then
-  begin
-    ListBox1.Clear;
-    for X:=0 To SortFieldNames.Count-1 Do
-    begin
-      S:=SortFieldNames.Strings[X];
-      ListBox1.Items.Add(S);
-      P:=SortFieldNamesTmp.IndexOF(SortFieldNames.Strings[X]);
-      if P > -1 then
-        SortFieldNamesTmp.Delete(P);
-    end;
-  end;
-  if SortFieldNamesTmp.Count > 0 then
-  begin
-    ListBox2.Clear;
-    for X:=0 To SortFieldNamesTmp.Count-1 do
-      ListBox2.Items.Add(SortFieldNamesTmp.Strings[X]);
-  end;
-  SortFieldNamesTmp.Free;
 
-  OrderListTemp:=SortFieldNames;
-  OrderAsc:=Asc;
+  for i:=0 to ADBGrid.Columns.Count-1 do
+  begin
+    C:=ADBGrid.Columns[i];
+    if SortFieldNames.IndexOf(C.Field.FieldName) > -1 then
+      ListBox1.Items.Objects[ListBox1.Items.Add(C.Title.Caption)]:=C
+    else
+      ListBox2.Items.Objects[ListBox2.Items.Add(C.Title.Caption)]:=C;
+  end;
+
   if ShowModal = mrOK Then
   begin
-    Asc:=OrderAsc;
+    Asc:= ComboBox1.ItemIndex = 0;
+
+    SortFieldNames.Clear;
+    for i:=0 to ListBox1.Items.Count-1 do
+    begin
+      C:=ListBox1.Items.Objects[i] as TColumn;
+      SortFieldNames.Add(C.FieldName);
+    end;
+
     Result:=True;
   end;
 end;
 
 end.
+
 

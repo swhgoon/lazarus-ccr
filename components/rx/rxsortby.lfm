@@ -7,30 +7,29 @@ object rxSortByForm: TrxSortByForm
   Caption = 'Sort by fields'
   ClientHeight = 411
   ClientWidth = 684
-  OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object Label1: TLabel
-    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Control = AddBtn
+    AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Owner
-    Left = 6
-    Height = 18
+    Left = 417
+    Height = 15
     Top = 6
-    Width = 109
+    Width = 105
     BorderSpacing.Around = 6
     Caption = '&Fields for sorting:'
     FocusControl = ListBox1
     ParentColor = False
   end
   object Label2: TLabel
-    AnchorSideLeft.Control = AddBtn
-    AnchorSideLeft.Side = asrBottom
+    AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
-    Left = 415
-    Height = 18
+    Left = 6
+    Height = 15
     Top = 6
-    Width = 57
+    Width = 55
     BorderSpacing.Around = 6
     Caption = '&All fields:'
     FocusControl = ListBox2
@@ -41,9 +40,9 @@ object rxSortByForm: TrxSortByForm
     AnchorSideBottom.Control = ComboBox1
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 18
-    Top = 318
-    Width = 108
+    Height = 15
+    Top = 314
+    Width = 104
     Anchors = [akLeft, akBottom]
     BorderSpacing.Left = 6
     Caption = 'Select sort order'
@@ -51,22 +50,20 @@ object rxSortByForm: TrxSortByForm
     ParentColor = False
   end
   object ListBox2: TListBox
-    AnchorSideLeft.Control = AddBtn
-    AnchorSideLeft.Side = asrBottom
+    AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Label2
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
+    AnchorSideRight.Control = AddBtn
     AnchorSideBottom.Control = ComboBox1
-    Left = 415
-    Height = 273
-    Top = 30
-    Width = 263
+    Left = 6
+    Height = 267
+    Top = 27
+    Width = 262
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     ItemHeight = 0
     OnDblClick = ListBox2DblClick
-    ScrollWidth = 261
+    ScrollWidth = 260
     TabOrder = 0
     TopIndex = -1
   end
@@ -76,10 +73,10 @@ object rxSortByForm: TrxSortByForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = AddBtn
     AnchorSideRight.Side = asrBottom
-    Left = 275
-    Height = 29
-    Top = 65
-    Width = 134
+    Left = 274
+    Height = 35
+    Top = 68
+    Width = 137
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
@@ -89,18 +86,16 @@ object rxSortByForm: TrxSortByForm
       0400000000001401000000000000000000001000000010000000000000000000
       80000080000000808000800000008000800080800000C0C0C000808080000000
       C80000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00777777777777
-      7777777777777777777777877777777777777777777777007777777777777777
-      7777770907777777777777777777770990777777777777777777770999077777
-      7777777777777709999077777777777800000009999907777777777099999999
-      9999907777777770999999999999990777777770999999999999999077777770
-      9999999999999999F7777770999999999999999F7777777099999999999999F7
-      777777709999999999999F7777777778FFFFFF899999F7777777777777777789
-      999F7777777777777777778999F7777777777777777777899F77777777777777
-      77777789F7777777777777777777778F7777777777777777777777F777777777
+      7777777777777777777777777877777777777777777777770077777777777777
+      7777777090777777777777777777770990777777777777777777709990777777
+      7777777777770999907777777777777777709999900000008777777777099999
+      999999990777777770999999999999990777777709999999999999990777777F
+      999999999999999907777777F999999999999999077777777F99999999999999
+      0777777777F999999999999907777777777F999998FFFFFF877777777777F999
+      987777777777777777777F999877777777777777777777F99877777777777777
+      7777777F987777777777777777777777F877777777777777777777777F777777
       7777777777777777777777777777
     }
-    Layout = blGlyphRight
-    NumGlyphs = 0
     OnClick = RemoveBtnClick
     TabOrder = 2
   end
@@ -110,10 +105,10 @@ object rxSortByForm: TrxSortByForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = AddBtn
     AnchorSideRight.Side = asrBottom
-    Left = 275
-    Height = 30
-    Top = 100
-    Width = 134
+    Left = 274
+    Height = 36
+    Top = 109
+    Width = 137
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
@@ -133,7 +128,6 @@ object rxSortByForm: TrxSortByForm
       77777709F7777777777077777777777F77777777777077777777777777777777
       7770777777777777777777777770777777777777777777777770
     }
-    NumGlyphs = 0
     OnClick = UpBtnClick
     TabOrder = 3
   end
@@ -143,10 +137,10 @@ object rxSortByForm: TrxSortByForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = AddBtn
     AnchorSideRight.Side = asrBottom
-    Left = 275
-    Height = 30
-    Top = 136
-    Width = 134
+    Left = 274
+    Height = 36
+    Top = 151
+    Width = 137
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
@@ -166,7 +160,6 @@ object rxSortByForm: TrxSortByForm
       77709999999F7777777077777778000000087777777077777777777777777777
       7770777777777777777777777770777777777777777777777770
     }
-    NumGlyphs = 0
     OnClick = DownBtnClick
     TabOrder = 4
   end
@@ -176,10 +169,10 @@ object rxSortByForm: TrxSortByForm
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = CheckBox1
-    Left = 120
-    Height = 27
-    Top = 309
-    Width = 558
+    Left = 116
+    Height = 29
+    Top = 300
+    Width = 562
     Anchors = [akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     ItemHeight = 0
@@ -187,20 +180,22 @@ object rxSortByForm: TrxSortByForm
     TabOrder = 5
   end
   object ListBox1: TListBox
-    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Control = AddBtn
+    AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Label1
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = AddBtn
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ComboBox1
-    Left = 6
-    Height = 273
-    Top = 30
-    Width = 263
+    Left = 417
+    Height = 267
+    Top = 27
+    Width = 261
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     ItemHeight = 0
     OnDblClick = ListBox1DblClick
-    ScrollWidth = 261
+    ScrollWidth = 259
     TabOrder = 6
     TopIndex = -1
   end
@@ -208,10 +203,10 @@ object rxSortByForm: TrxSortByForm
     AnchorSideLeft.Control = Owner
     AnchorSideLeft.Side = asrCenter
     AnchorSideTop.Control = ListBox1
-    Left = 275
-    Height = 29
-    Top = 30
-    Width = 134
+    Left = 274
+    Height = 35
+    Top = 27
+    Width = 137
     AutoSize = True
     Caption = '&Add field to sort'
     Glyph.Data = {
@@ -219,33 +214,33 @@ object rxSortByForm: TrxSortByForm
       0400000000001401000000000000000000001000000010000000000000000000
       80000080000000808000800000008000800080800000C0C0C000808080000000
       C80000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00777777777777
-      7777777777777777777777777877777777777777777777770077777777777777
-      7777777090777777777777777777770990777777777777777777709990777777
-      7777777777770999907777777777777777709999900000008777777777099999
-      999999990777777770999999999999990777777709999999999999990777777F
-      999999999999999907777777F999999999999999077777777F99999999999999
-      0777777777F999999999999907777777777F999998FFFFFF877777777777F999
-      987777777777777777777F999877777777777777777777F99877777777777777
-      7777777F987777777777777777777777F877777777777777777777777F777777
+      7777777777777777777777877777777777777777777777007777777777777777
+      7777770907777777777777777777770990777777777777777777770999077777
+      7777777777777709999077777777777800000009999907777777777099999999
+      9999907777777770999999999999990777777770999999999999999077777770
+      9999999999999999F7777770999999999999999F7777777099999999999999F7
+      777777709999999999999F7777777778FFFFFF899999F7777777777777777789
+      999F7777777777777777778999F7777777777777777777899F77777777777777
+      77777789F7777777777777777777778F7777777777777777777777F777777777
       7777777777777777777777777777
     }
-    NumGlyphs = 0
+    Layout = blGlyphRight
     OnClick = AddBtnClick
     TabOrder = 1
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 36
-    Top = 369
+    Height = 42
+    Top = 363
     Width = 672
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&ОК'
+    OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Справка'
+    HelpButton.DefaultCaption = True
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = '&Закрыть'
+    CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = 'Отмена'
+    CancelButton.DefaultCaption = True
     TabOrder = 7
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
@@ -255,9 +250,9 @@ object rxSortByForm: TrxSortByForm
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel1
     Left = 6
-    Height = 21
-    Top = 342
-    Width = 155
+    Height = 22
+    Top = 335
+    Width = 151
     Anchors = [akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Case insensitive sort'
