@@ -362,6 +362,7 @@ type
     FImageList: TImageList;
     FKeyList: TStrings;
     FNotInKeyListIndex: integer;
+    FOnDrawColumnCell: TDrawColumnCellEvent;
     function GetFooter: TRxColumnFooter;
     function GetKeyList: TStrings;
     procedure SetEditButtons(AValue: TRxColumnEditButtons);
@@ -385,6 +386,7 @@ type
     property Filter: TRxColumnFilter read FFilter write SetFilter;
     property DirectInput : boolean read FDirectInput write FDirectInput default true;
     property EditButtons:TRxColumnEditButtons read FEditButtons write SetEditButtons;
+    property OnDrawColumnCell: TDrawColumnCellEvent read FOnDrawColumnCell write FOnDrawColumnCell;
   end;
 
   { TRxDbGridColumns }
@@ -2328,30 +2330,35 @@ begin
   begin
     F := GetFieldFromGridColumn(aCol);
     C := ColumnFromGridColumn(aCol) as TRxColumn;
-    case ColumnEditorStyle(aCol, F) of
-      cbsCheckBoxColumn: DrawCheckBoxBitmaps(aCol, aRect, F);
-      else
-        if F <> nil then
-        begin
-          if F.dataType <> ftBlob then
+    if Assigned(C.FOnDrawColumnCell) then
+      C.OnDrawColumnCell(Self, aRect, aCol, TColumn(ColumnFromGridColumn(aCol)), aState)
+    else
+    begin
+      case ColumnEditorStyle(aCol, F) of
+        cbsCheckBoxColumn: DrawCheckBoxBitmaps(aCol, aRect, F);
+        else
+          if F <> nil then
           begin
-{          if Assigned(F.LookupDataSet) and (F.LookupResultField<>'') then
-            S := F.LookupDataSet.FieldByName(F.LookupResultField).DisplayText
-          else}
-            S := F.DisplayText;
-            if Assigned(C) and (C.KeyList.Count > 0) and (C.PickList.Count > 0) then
+            if F.dataType <> ftBlob then
             begin
-              J := C.KeyList.IndexOf(S);
-              if (J >= 0) and (J < C.PickList.Count) then
-                S := C.PickList[j];
-            end;
+  {          if Assigned(F.LookupDataSet) and (F.LookupResultField<>'') then
+              S := F.LookupDataSet.FieldByName(F.LookupResultField).DisplayText
+            else}
+              S := F.DisplayText;
+              if Assigned(C) and (C.KeyList.Count > 0) and (C.PickList.Count > 0) then
+              begin
+                J := C.KeyList.IndexOf(S);
+                if (J >= 0) and (J < C.PickList.Count) then
+                  S := C.PickList[j];
+              end;
+            end
+            else
+              S := '(blob)';
           end
           else
-            S := '(blob)';
-        end
-        else
-          S := '';
-        DrawCellText(aCol, aRow, aRect, aState, S);
+            S := '';
+          DrawCellText(aCol, aRow, aRect, aState, S);
+      end;
     end;
   end;
 end;
