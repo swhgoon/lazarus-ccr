@@ -411,7 +411,7 @@ end;
 
 procedure TCSVParser.ParseValue;
 begin
-  while not ((FCurrentChar = FDelimiter) or EndOfFile or EndOfLine) do
+  while not ((FCurrentChar = FDelimiter) or EndOfLine or EndOfFile) do
   begin
     AppendStr(FWhitespaceBuffer, FCurrentChar);
     NextChar;
