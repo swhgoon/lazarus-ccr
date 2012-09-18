@@ -1,12 +1,13 @@
 {
-  CSV Parser and Document classes.
-  Version 0.4 2011-05-10
+  CSV Parser, Builder and Document classes.
+  Version 0.5 2012-09-20
 
-  Copyright (C) 2010-2011 Vladimir Zhirov <vvzh.home@gmail.com>
+  Copyright (C) 2010-2012 Vladimir Zhirov <vvzh.home@gmail.com>
 
   Contributors:
     Luiz Americo Pereira Camara
     Mattias Gaertner
+    Reinier Olislagers
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Library General Public License as published by
@@ -82,6 +83,7 @@ type
     property EqualColCountPerRow: Boolean read FEqualColCountPerRow write FEqualColCountPerRow;
   end;
 
+  // Sequential input from CSV stream
   TCSVParser = class(TCSVHandler)
   private
     // fields
@@ -93,6 +95,7 @@ type
     FCurrentChar: TCSVChar;
     FCurrentRow: Integer;
     FCurrentCol: Integer;
+    FMaxColCount: Integer;
     // output buffers
     FCellBuffer: String;
     FWhitespaceBuffer: String;
@@ -105,6 +108,7 @@ type
     // complex parsing
     procedure ParseCell;
     procedure ParseQuotedValue;
+    // simple parsing
     procedure ParseValue;
   public
     constructor Create;
@@ -116,8 +120,11 @@ type
     property CurrentRow: Integer read FCurrentRow;
     property CurrentCol: Integer read FCurrentCol;
     property CurrentCellText: String read FCellBuffer;
+    // The maximum number of columns found in the stream:
+    property MaxColCount: Integer read FMaxColCount;
   end;
 
+  // Sequential output to CSV stream
   TCSVBuilder = class(TCSVHandler)
   private
     FOutputStream: TStream;
@@ -138,6 +145,7 @@ type
     property DefaultOutputAsString: String read GetDefaultOutputAsString;
   end;
 
+  // Random access to CSV document. Reads entire document into memory.
   TCSVDocument = class(TCSVHandler)
   private
     FRows: TFPObjectList;
@@ -321,6 +329,7 @@ begin
   FWhitespaceBuffer := '';
   FCurrentRow := 0;
   FCurrentCol := -1;
+  FMaxColCount := 0;
 end;
 
 procedure TCSVParser.SkipEndOfLine;
@@ -449,13 +458,22 @@ begin
   NextChar;
 end;
 
+// Parses next cell; returns true if it could be parsed.
 function TCSVParser.ParseNextCell: Boolean;
+var
+  LineColCount: Integer;
 begin
   if EndOfFile then
     Exit(False);
 
+  // Handle line ending
   if EndOfLine then
   begin
+    // Having read the previous line, adjust column count if necessary:
+    LineColCount := FCurrentCol + 1;
+    if LineColCount > FMaxColCount then
+      FMaxColCount := LineColCount;
+
     SkipEndOfLine;
     if EndOfFile then
       Exit(False);
@@ -781,10 +799,14 @@ begin
     Result := 0;
 end;
 
+// Returns maximum number of columns in the document
 function TCSVDocument.GetMaxColCount: Integer;
 var
   I, CC: Integer;
 begin
+  // While calling MaxColCount in TCSVParser could work,
+  // we'd need to adjust for any subsequent changes in
+  // TCSVDocument
   Result := 0;
   for I := 0 to RowCount - 1 do
   begin
