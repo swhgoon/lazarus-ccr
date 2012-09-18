@@ -463,17 +463,20 @@ function TCSVParser.ParseNextCell: Boolean;
 var
   LineColCount: Integer;
 begin
+  if EndOfLine or EndOfFile then
+  begin
+    // Having read the previous line, adjust column count if necessary:
+    LineColCount := FCurrentCol + 1;
+    if LineColCount > FMaxColCount then
+      FMaxColCount := LineColCount;
+  end;
+
   if EndOfFile then
     Exit(False);
 
   // Handle line ending
   if EndOfLine then
   begin
-    // Having read the previous line, adjust column count if necessary:
-    LineColCount := FCurrentCol + 1;
-    if LineColCount > FMaxColCount then
-      FMaxColCount := LineColCount;
-
     SkipEndOfLine;
     if EndOfFile then
       Exit(False);
