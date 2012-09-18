@@ -2330,7 +2330,7 @@ begin
   begin
     F := GetFieldFromGridColumn(aCol);
     C := ColumnFromGridColumn(aCol) as TRxColumn;
-    if Assigned(C.FOnDrawColumnCell) then
+    if Assigned(C) and Assigned(C.FOnDrawColumnCell) then
       C.OnDrawColumnCell(Self, aRect, aCol, TColumn(ColumnFromGridColumn(aCol)), aState)
     else
     begin
