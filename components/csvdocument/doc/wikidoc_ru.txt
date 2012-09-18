@@ -23,6 +23,7 @@
 === Участники, внесшие вклад в развитие библитеки ===
 Luiz Américo Pereira Câmara
 Mattias Gärtner
+Reinier Olislagers
 
 === Лицензия ===
 [http://svn.freepascal.org/svn/lazarus/trunk/COPYING.modifiedLGPL Modified] [http://svn.freepascal.org/svn/lazarus/trunk/COPYING.LGPL LGPL] (та же, что у FPC RTL и Lazarus LCL).
@@ -57,8 +58,9 @@ Mattias Gärtner
 * исправлены мелкие недоработки в demo-приложении.
 * включен оптимизированный вариант функции ChangeLineEndings, созданный Mattias Gärtner.
 * оптимизации по скорости, улучшения в demo-приложении и пакет для Lazarus от Luiz Américo Pereira Câmara.
-==== Версия 0.5 (ещё не выпущена) ====
+==== Версия 0.5 (20.09.2012) ====
 * исправления в demo-приложении (обновление интерфейса после загрузки документа, отдельные файлы проекта для Lazarus 0.9.30)
+* добавлено свойство TCSVParser.MaxColCount (патч от Reinier Olislagers)
 
 === Статус ===
 Beta

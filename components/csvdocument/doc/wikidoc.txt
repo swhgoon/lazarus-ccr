@@ -23,6 +23,7 @@ Vladimir Zhirov
 === Contributors ===
 Luiz Americo Pereira Camara
 Mattias Gaertner
+Reinier Olislagers
 
 === License ===
 [http://svn.freepascal.org/svn/lazarus/trunk/COPYING.modifiedLGPL Modified] [http://svn.freepascal.org/svn/lazarus/trunk/COPYING.LGPL LGPL] (same as FPC RTL and Lazarus LCL).
@@ -57,8 +58,9 @@ The library is a single Pascal source file that only depends on FPC RTL and FCL.
 * fixed minor annoyances in demo application.
 * included optimized ChangeLineEndings function by Mattias Gaertner.
 * speed optimizations, demo improvements and Lazarus package by Luiz Americo Pereira Camara.
-==== Version 0.5 (not released yet) ====
+==== Version 0.5 (2012-09-20) ====
 * fixes in demo application (updating view after loading csv document, separate project files for Lazarus 0.9.30)
+* implemented TCSVParser.MaxColCount property (patch by Reinier Olislagers)
 
 === Status ===
 Beta
