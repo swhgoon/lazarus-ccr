@@ -458,7 +458,7 @@ begin
   NextChar;
 end;
 
-// Parses next cell; returns true if it could be parsed.
+// Parses next cell; returns True if there are more cells in the input stream.
 function TCSVParser.ParseNextCell: Boolean;
 var
   LineColCount: Integer;
