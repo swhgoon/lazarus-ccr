@@ -148,6 +148,7 @@ resourcestring
   sRxDbGridFindRangeAll    = 'All';
   sRxDbGridFindRangeForw   = 'Forward';
   sRxDbGridFindRangeBack   = 'Backward';
+  sRxFindMore              = 'Find more';
 
   //TrxDBGridColumsForm
   sRxDbGridSelColCaption   = 'Grid columns';

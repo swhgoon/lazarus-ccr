@@ -68,7 +68,7 @@ type
 procedure ShowRxDBGridFindForm(Grid:TRxDBGrid);
 
 implementation
-uses dbutils, DBGrids, rxdconst;
+uses dbutils, DBGrids, rxdconst, LCLStrConsts;
 
 {$R *.lfm}
 
@@ -101,6 +101,8 @@ begin
   RadioGroup1.Items.Add(sRxDbGridFindRangeAll);
   RadioGroup1.Items.Add(sRxDbGridFindRangeForw);
   RadioGroup1.Items.Add(sRxDbGridFindRangeBack);
+  BtnFind.Caption:=sRxFindMore;
+  Button2.Caption:=rsMbClose;
 end;
 
 procedure TrxDBGridFindForm.FormShow(Sender: TObject);

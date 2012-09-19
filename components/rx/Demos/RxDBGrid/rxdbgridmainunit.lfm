@@ -122,7 +122,6 @@ object RxDBGridMainForm: TRxDBGridMainForm
               0000EEEEEEEEEEE00000EEEEEEEEEEE00000
             }
             Hint = 'Clear value'
-            NumGlyphs = 0
             OnClick = TRxColumnEditButtons2Click
           end>
       end    
@@ -186,7 +185,6 @@ object RxDBGridMainForm: TRxDBGridMainForm
               BB06666600000000006666666000066666666666666666666666
             }
             Hint = 'Первая кнопка'
-            NumGlyphs = 0
             Width = 16
             OnClick = TRxColumnEditButtons0Click
           end        
@@ -209,7 +207,6 @@ object RxDBGridMainForm: TRxDBGridMainForm
               00000000000000000000
             }
             Hint = 'Вторая кнопка'
-            NumGlyphs = 0
             OnClick = TRxColumnEditButtons1Click
           end>
       end>
@@ -492,7 +489,11 @@ object RxDBGridMainForm: TRxDBGridMainForm
       FieldKind = fkData
       FieldName = 'Developer'
       Index = 3
+      KeyFields = 'DEVELOPER_ID'
       LookupCache = False
+      LookupDataSet = RxMemoryData2
+      LookupKeyFields = 'DEVELOPER_ID'
+      LookupResultField = 'DEVELOPER_NAME'
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
       Required = False
@@ -513,11 +514,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
       FieldKind = fkData
       FieldName = 'DEVELOPER_ID'
       Index = 5
-      KeyFields = 'DEVELOPER_ID'
       LookupCache = False
-      LookupDataSet = RxMemoryData2
-      LookupKeyFields = 'DEVELOPER_ID'
-      LookupResultField = 'DEVELOPER_NAME'
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
       Required = False
@@ -605,8 +602,8 @@ object RxDBGridMainForm: TRxDBGridMainForm
   end
   object Datasource2: TDatasource
     DataSet = RxMemoryData2
-    left = 207
-    top = 264
+    left = 288
+    top = 368
   end
   object RxMemoryData2: TRxMemoryData
     AutoCalcFields = False
@@ -624,8 +621,8 @@ object RxDBGridMainForm: TRxDBGridMainForm
         Size = 130
       end>
     PacketRecords = 0
-    left = 248
-    top = 264
+    left = 329
+    top = 368
     object RxMemoryData2DEVELOPER_ID1: TLongintField
       DisplayWidth = 10
       FieldKind = fkData

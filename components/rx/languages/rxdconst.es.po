@@ -349,6 +349,10 @@ msgstr "Operando :"
 msgid "Enter filter expression for data in table:"
 msgstr "Seleccionar todos los registros que cumplan las siguientes condiciónes :"
 
+#: rxdconst.srxfindmore
+msgid "Find more"
+msgstr ""
+
 #: rxdconst.srxselectdatasetstruct
 msgid "Select dataset to copy to"
 msgstr "Seleccionar conjunto de datos para copiar"

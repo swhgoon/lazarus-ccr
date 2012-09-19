@@ -1476,8 +1476,9 @@ begin
     begin
       if Assigned(FDataField) and FDataField.IsNull then
       begin
+        SetRect(R1, 6, 6, ClientWidth - 6 - GetButtonWidth, ClientHeight - 6);
         Canvas.Brush.Color:=FEmptyItemColor;
-        Canvas.FillRect(R);
+        Canvas.FillRect(R1);
         AText:=FEmptyValue
       end
       else
@@ -1584,7 +1585,8 @@ begin
   FButton.ControlStyle := FButton.ControlStyle + [csNoDesignSelectable];
   FButton.Align:=alRight;
   FButton.BorderSpacing.Around:=2;
-  
+  //FButton.TabStop:=true;
+
   ControlStyle := ControlStyle - [csSetCaption];
   FDirectInput := True;
   ParentColor:=false;

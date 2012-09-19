@@ -788,6 +788,7 @@ type
     procedure msg_SetGrid(var Msg: TGridMessage); message GM_SETGRID;
     procedure msg_SetValue(var Msg: TGridMessage); message GM_SETVALUE;
     procedure ShowList; override;
+    procedure OnInternalClosePopup(AResult:boolean);override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1261,6 +1262,19 @@ procedure TRxDBGridLookupComboEditor.ShowList;
 begin
   FGrid.GetOnDisplayLookup;
   inherited ShowList;
+end;
+
+procedure TRxDBGridLookupComboEditor.OnInternalClosePopup(AResult: boolean);
+var
+  F:TField;
+begin
+  inherited OnInternalClosePopup(AResult);
+  if (AResult) and Assigned(FGrid.SelectedField) and Assigned(FLDS.DataSet) then
+  begin
+    F:=FLDS.DataSet.FieldByName(LookupDisplay);
+    if Assigned(F) then
+      FGrid.SelectedField.Assign(F);
+  end;
 end;
 
 constructor TRxDBGridLookupComboEditor.Create(AOwner: TComponent);
@@ -2643,6 +2657,8 @@ var
   Cell: TGridCoord;
   Rect: TRect;
 begin
+  QuickUTF8Search := '';
+
   Cell := MouseCoord(X, Y);
   if (DatalinkActive) and (DataSource.DataSet.State = dsBrowse) and
     (Button = mbLeft) and (Cell.X = 0) and (Cell.Y = 0) and

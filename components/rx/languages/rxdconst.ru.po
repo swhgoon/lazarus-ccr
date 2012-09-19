@@ -266,7 +266,7 @@ msgstr "Искать по полю"
 
 #: rxdconst.srxdbgridfindpartial
 msgid "Partial key"
-msgstr "Частиный поиск"
+msgstr "Поиск по вхождению"
 
 #: rxdconst.srxdbgridfindrangeall
 msgid "All"
@@ -348,6 +348,10 @@ msgstr "Операнд :"
 #: rxdconst.srxfilterformselectexp
 msgid "Enter filter expression for data in table:"
 msgstr "Введите выражение фильтрации данных в таблице:"
+
+#: rxdconst.srxfindmore
+msgid "Find more"
+msgstr "Искать далее"
 
 #: rxdconst.srxselectdatasetstruct
 msgid "Select dataset to copy to"
