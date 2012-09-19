@@ -1,6 +1,8 @@
 === TODO ===
 
 * Write more tests for different CSV format variations, especially those used by Excel and Calc.
+* Optimize TCSVDocument.LoadFromStream / SaveToStream by changing "Cells[CurrentCol, CurrentRow]" usage
+  to direct manipulation with underlying data structures. This approach will help to eliminate redundant sanity checks.
 
 === Warning about speed optimizations ===
 
