@@ -3706,6 +3706,9 @@ end;
 
 procedure TRxDBGrid.LayoutChanged;
 begin
+  if csDestroying in ComponentState then
+    exit;
+
   inherited LayoutChanged;
   if DatalinkActive and (FInProcessCalc = 0) and (Datalink.DataSet.State = dsBrowse) then
     CalcStatTotals;
