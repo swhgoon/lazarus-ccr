@@ -38,6 +38,7 @@ type
     function getDecimals: integer;
     function getFormat: string;
     function getValue: double;
+    function getCurrentValue: double;
     procedure formatInput;
     procedure setDecimals(const AValue: integer);
     procedure setFormat(const AValue: string);
@@ -53,6 +54,7 @@ type
     { Public declarations }
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    property CurrentValue: double read getCurrentValue;
   published
     { Published declarations }
     property DisplayFormat: string read getFormat write setFormat;
@@ -133,6 +135,11 @@ end;
 function TJLabeledFloatEdit.getValue: double;
 begin
   Result := theValue;
+end;
+
+function TJLabeledFloatEdit.getCurrentValue: double;
+begin
+  Result:= StrToFloatDef(Text, Value);
 end;
 
 procedure TJLabeledFloatEdit.formatInput;
