@@ -36,6 +36,7 @@ type
     fFormat: string;
     function getFormat: string;
     function getValue: integer;
+    function getCurrentValue: integer;
     procedure setFormat(const AValue: string);
     procedure setValue(const AValue: integer);
     function IsValidInteger(const Value: string): boolean;
@@ -49,6 +50,7 @@ type
     { Public declarations }
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    property CurrentValue: integer read getCurrentValue;
   published
     { Published declarations }
     property DisplayFormat: string read getFormat write setFormat;
@@ -123,6 +125,11 @@ end;
 function TJLabeledIntegerEdit.getValue: integer;
 begin
   Result := theValue;
+end;
+
+function TJLabeledIntegerEdit.getCurrentValue: integer;
+begin
+  Result:= StrToIntDef(Text, Value);
 end;
 
 procedure TJLabeledIntegerEdit.setFormat(const AValue: string);

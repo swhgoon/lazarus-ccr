@@ -5,6 +5,7 @@ Note: Lazarus Trunk required
 
 Version pre-1.1
 --------------------------------------------------
+2012-09-20 Added:  TJLabeledIntegerEdit property CurrentValue
 2012-06-12 Fixed:  TJDbGridTimeCtrl, store time value
 2012-03-14 Fixed:  Prevent double updates (QT widgetset) in edit widgets
 2012-03-06 Fixed:  Focus issues
