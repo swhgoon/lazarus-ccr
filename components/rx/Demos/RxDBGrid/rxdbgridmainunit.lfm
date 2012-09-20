@@ -257,7 +257,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
     SelectedColor = clHighlight
     GridLineStyle = psSolid
     DataSource = Datasource1
-    Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit, dgMultiselect, dgHeaderPushedLook]
+    Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgMultiselect, dgHeaderPushedLook]
     ParentColor = False
     PopupMenu = PopupMenu1
     Scrollbars = ssVertical

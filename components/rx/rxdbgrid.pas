@@ -787,8 +787,9 @@ type
     procedure KeyDown(var Key: word; Shift: TShiftState); override;
     procedure msg_SetGrid(var Msg: TGridMessage); message GM_SETGRID;
     procedure msg_SetValue(var Msg: TGridMessage); message GM_SETVALUE;
-    procedure ShowList; override;
+    procedure msg_GetValue(var Msg: TGridMessage); message GM_GETVALUE;
     procedure OnInternalClosePopup(AResult:boolean);override;
+    procedure ShowList; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1191,6 +1192,7 @@ procedure TRxDBGridLookupComboEditor.KeyDown(var Key: word; Shift: TShiftState);
   procedure doGridKeyDown;
   begin
     if Assigned(FGrid) then
+//      FGrid.EditorkeyDown(Self, key, shift);
       FGrid.KeyDown(Key, shift);
   end;
 
@@ -1207,14 +1209,21 @@ procedure TRxDBGridLookupComboEditor.KeyDown(var Key: word; Shift: TShiftState);
     else
       Result := False;
   end;
+  procedure CheckEditingKey;
+  begin
+    if (FGrid=nil) or FGrid.EditorIsReadOnly then
+      Key := 0;
+  end;
 
 begin
+  CheckEditingKey;
   case Key of
     VK_UP,
     VK_DOWN:
       if (not PopupVisible) and (not (ssAlt in Shift)) then
       begin
         doGridKeyDown;
+        Key:=0;
         exit;
       end;
     VK_LEFT, VK_RIGHT:
@@ -1231,6 +1240,8 @@ begin
     end;
   end;
   inherited KeyDown(Key, Shift);
+{  if FGrid<>nil then
+    FGrid.EditingDone;}
 end;
 
 procedure TRxDBGridLookupComboEditor.msg_SetGrid(var Msg: TGridMessage);
@@ -1258,6 +1269,22 @@ begin
   end;
 end;
 
+procedure TRxDBGridLookupComboEditor.msg_GetValue(var Msg: TGridMessage);
+var
+  sText: string;
+  F:TField;
+begin
+  if Assigned(FGrid.SelectedField) and Assigned(FLDS.DataSet) then
+  begin
+    F:=FLDS.DataSet.FieldByName(LookupDisplay);
+    if Assigned(F) then
+    begin
+      sText := F.DisplayText;
+      Msg.Value := sText;
+    end;
+  end;
+end;
+
 procedure TRxDBGridLookupComboEditor.ShowList;
 begin
   FGrid.GetOnDisplayLookup;
@@ -1265,15 +1292,26 @@ begin
 end;
 
 procedure TRxDBGridLookupComboEditor.OnInternalClosePopup(AResult: boolean);
+  procedure CheckEditingKey;
+  begin
+    if (FGrid=nil) or FGrid.EditorIsReadOnly then
+//      Key := 0;
+  end;
 var
   F:TField;
 begin
   inherited OnInternalClosePopup(AResult);
+  CheckEditingKey;
   if (AResult) and Assigned(FGrid.SelectedField) and Assigned(FLDS.DataSet) then
   begin
     F:=FLDS.DataSet.FieldByName(LookupDisplay);
     if Assigned(F) then
-      FGrid.SelectedField.Assign(F);
+    begin
+      //FGrid.SelectedField.Assign(F);
+      if (FGrid<>nil) and Visible then begin
+        FGrid.SetEditText(FCol, FRow, F.DisplayText);
+      end;
+    end;
   end;
 end;
 

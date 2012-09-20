@@ -326,6 +326,8 @@ begin
   case Key of
     VK_ESCAPE:Deactivate;
     VK_RETURN:begin
+                Key:=0;
+                Shift:=[];
                 CloseOk;
                 exit;{In that case we need to exit away.}
               end;
