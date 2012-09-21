@@ -1,11 +1,11 @@
 object rxSortByForm: TrxSortByForm
   Left = 450
-  Height = 411
+  Height = 398
   Top = 243
   Width = 684
   ActiveControl = AddBtn
   Caption = 'Sort by fields'
-  ClientHeight = 411
+  ClientHeight = 398
   ClientWidth = 684
   OnCreate = FormCreate
   Position = poScreenCenter
@@ -35,28 +35,14 @@ object rxSortByForm: TrxSortByForm
     FocusControl = ListBox2
     ParentColor = False
   end
-  object Label4: TLabel
-    AnchorSideLeft.Control = Owner
-    AnchorSideBottom.Control = ComboBox1
-    AnchorSideBottom.Side = asrBottom
-    Left = 6
-    Height = 15
-    Top = 314
-    Width = 104
-    Anchors = [akLeft, akBottom]
-    BorderSpacing.Left = 6
-    Caption = 'Select sort order'
-    FocusControl = ComboBox1
-    ParentColor = False
-  end
   object ListBox2: TListBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Label2
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = AddBtn
-    AnchorSideBottom.Control = ComboBox1
+    AnchorSideBottom.Control = CheckBox1
     Left = 6
-    Height = 267
+    Height = 289
     Top = 27
     Width = 262
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -163,22 +149,6 @@ object rxSortByForm: TrxSortByForm
     OnClick = DownBtnClick
     TabOrder = 4
   end
-  object ComboBox1: TComboBox
-    AnchorSideLeft.Control = Label4
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = CheckBox1
-    Left = 116
-    Height = 29
-    Top = 300
-    Width = 562
-    Anchors = [akLeft, akRight, akBottom]
-    BorderSpacing.Around = 6
-    ItemHeight = 0
-    Style = csDropDownList
-    TabOrder = 5
-  end
   object ListBox1: TListBox
     AnchorSideLeft.Control = AddBtn
     AnchorSideLeft.Side = asrBottom
@@ -186,17 +156,19 @@ object rxSortByForm: TrxSortByForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = ComboBox1
+    AnchorSideBottom.Control = CheckBox1
     Left = 417
-    Height = 267
+    Height = 289
     Top = 27
     Width = 261
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     ItemHeight = 0
-    OnDblClick = ListBox1DblClick
+    OnDblClick = SpeedButton1Click
+    OnDrawItem = ListBox1DrawItem
     ScrollWidth = 259
-    TabOrder = 6
+    Style = lbOwnerDrawFixed
+    TabOrder = 5
     TopIndex = -1
   end
   object AddBtn: TBitBtn
@@ -231,7 +203,7 @@ object rxSortByForm: TrxSortByForm
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 42
-    Top = 363
+    Top = 350
     Width = 672
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -241,21 +213,21 @@ object rxSortByForm: TrxSortByForm
     CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
-    TabOrder = 7
+    TabOrder = 6
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
   object CheckBox1: TCheckBox
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = Label4
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel1
     Left = 6
     Height = 22
-    Top = 335
+    Top = 322
     Width = 151
     Anchors = [akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Case insensitive sort'
-    TabOrder = 8
+    Enabled = False
+    TabOrder = 7
   end
 end

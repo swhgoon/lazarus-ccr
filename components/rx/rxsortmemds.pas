@@ -45,7 +45,7 @@ type
   TRxMemoryDataSortEngine = class(TRxDBGridSortEngine)
   public
     procedure Sort(Field:TField; ADataSet:TDataSet; Asc:boolean; SortOptions:TRxSortEngineOptions);override;
-    procedure SortList(ListField:string; ADataSet:TDataSet; Asc:boolean);override;
+    procedure SortList(ListField:string; ADataSet:TDataSet; Asc: array of boolean; SortOptions: TRxSortEngineOptions);override;
   end;
 
 implementation
@@ -59,10 +59,10 @@ begin
 end;
 
 procedure TRxMemoryDataSortEngine.SortList(ListField: string;
-  ADataSet: TDataSet; Asc: boolean);
+  ADataSet: TDataSet; Asc: array of boolean; SortOptions: TRxSortEngineOptions);
 begin
   if Assigned(ADataSet) then
-    (ADataSet as TRxMemoryData).SortOnFields(ListField, true, not Asc);
+    (ADataSet as TRxMemoryData).SortOnFieldsEx(ListField, seoCaseInsensitiveSort in SortOptions, Asc);
 end;
 
 initialization

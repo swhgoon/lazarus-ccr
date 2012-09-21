@@ -163,6 +163,8 @@ type
       Options: TLocateOptions): Boolean; override;
     procedure SortOnFields(const FieldNames: string;
       CaseInsensitive: Boolean = True; Descending: Boolean = False);
+    procedure SortOnFieldsEx(const FieldNames: string;
+      CaseInsensitive: Boolean = True; Asc: array of boolean);
     procedure EmptyTable;
     procedure CloseOpen;
     procedure CopyStructure(Source: TDataSet);
@@ -1618,6 +1620,12 @@ begin
     FreeIndexList;
     raise;
   end;
+end;
+
+procedure TRxMemoryData.SortOnFieldsEx(const FieldNames: string;
+  CaseInsensitive: Boolean; Asc: array of boolean);
+begin
+
 end;
 
 procedure TRxMemoryData.Sort;

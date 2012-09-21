@@ -37,7 +37,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Buttons, ButtonPanel, rxdbgrid, db;
+  StdCtrls, Buttons, ButtonPanel, rxdbgrid, db, types;
 
 type
 
@@ -47,11 +47,9 @@ type
     AddBtn: TBitBtn;
     ButtonPanel1: TButtonPanel;
     CheckBox1: TCheckBox;
-    ComboBox1: TComboBox;
     DownBtn: TBitBtn;
     Label1: TLabel;
     Label2: TLabel;
-    Label4: TLabel;
     ListBox1: TListBox;
     ListBox2: TListBox;
     RemoveBtn: TBitBtn;
@@ -60,14 +58,17 @@ type
     procedure DownBtnClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure ListBox1DblClick(Sender: TObject);
+    procedure ListBox1DrawItem(Control: TWinControl; Index: Integer;
+      ARect: TRect; State: TOwnerDrawState);
     procedure ListBox2DblClick(Sender: TObject);
     procedure RemoveBtnClick(Sender: TObject);
+    procedure SpeedButton1Click(Sender: TObject);
     procedure UpBtnClick(Sender: TObject);
   private
-
+    FDBGrid:TRxDBGrid;
   public
     { public declarations }
-    function Execute(ADBGrid:TRxDBGrid; SortFieldNames:TStringList; var Asc:boolean):Boolean;
+    function Execute(ADBGrid:TRxDBGrid; SortNames:TStringList):Boolean;
   end;
 
 var
@@ -104,13 +105,13 @@ end;
 
 procedure TrxSortByForm.FormCreate(Sender: TObject);
 begin
-  ComboBox1.Clear;
+{  ComboBox1.Clear;
   ComboBox1.Items.Add(sRxAscendign);
-  ComboBox1.Items.Add(sRxDescending);
+  ComboBox1.Items.Add(sRxDescending);}
   Caption:=sRxSortByFormCaption;
   Label2.Caption:=sRxSortByFormAllFields;
   Label1.Caption:=sRxSortByFormSortFields;
-  Label4.Caption:=sRxSortByFormSortOrder;
+//  Label4.Caption:=sRxSortByFormSortOrder;
   AddBtn.Caption:=sRxSortByFormAddField;
   RemoveBtn.Caption:=sRxSortByFormRemoveField;
   UpBtn.Caption:=sRxSortByFormMoveUpField;
@@ -123,6 +124,31 @@ begin
   RemoveBtn.Click;
 end;
 
+procedure TrxSortByForm.ListBox1DrawItem(Control: TWinControl; Index: Integer;
+  ARect: TRect; State: TOwnerDrawState);
+var
+  X, Y:integer;
+  P:TRxColumn;
+  S1, S2:string;
+  Cnv:TCanvas;
+begin
+  Cnv:=ListBox1.Canvas;
+  Cnv.FillRect(ARect);       { clear the rectangle }
+  P:=TRxColumn(ListBox1.Items.Objects[Index]);
+  S1:=ListBox1.Items[Index];
+  S2:=Copy(S1, 1, 1);
+  Delete(S1, 1, 1);
+
+  X := aRect.Left + 2;
+  Y := Trunc((aRect.Top + aRect.Bottom - UpBtn.Glyph.Height) / 2);
+
+  if S2 = '1' then
+    Cnv.Draw(X, Y, UpBtn.Glyph)
+  else
+    Cnv.Draw(X, Y, DownBtn.Glyph);
+
+  Cnv.TextOut(ARect.Left + UpBtn.Glyph.Width + 6, (ARect.Top + ARect.Bottom  - Cnv.TextHeight('Wg')) div 2, S1);
+end;
 
 procedure TrxSortByForm.ListBox2DblClick(Sender: TObject);
 begin
@@ -131,21 +157,42 @@ end;
 
 
 procedure TrxSortByForm.AddBtnClick(Sender: TObject);
+var
+  S:string;
 begin
   if ListBox2.ItemIndex <> -1 Then
   begin
-    ListBox1.Items.Objects[ListBox1.Items.Add(ListBox2.Items[ListBox2.ItemIndex])]:=ListBox2.Items.Objects[ListBox2.ItemIndex];
+    S:='1'+ListBox2.Items[ListBox2.ItemIndex];
+    ListBox1.Items.Objects[ListBox1.Items.Add(S)]:=ListBox2.Items.Objects[ListBox2.ItemIndex];
     ListBox2.Items.Delete(ListBox2.ItemIndex);
     ListBox1.ItemIndex:=ListBox1.Items.Count-1;
   end;
 end;
 
 procedure TrxSortByForm.RemoveBtnClick(Sender: TObject);
+var
+  S:string;
 begin
   if ListBox1.ItemIndex <> -1 Then
   begin
-    ListBox2.Items.Objects[ListBox2.Items.Add(ListBox1.Items[ListBox1.ItemIndex])]:=ListBox1.Items.Objects[ListBox1.ItemIndex];
+    S:=TRxColumn(ListBox1.Items.Objects[ListBox1.ItemIndex]).Title.Caption;
+    ListBox2.Items.Objects[ListBox2.Items.Add(S)]:=ListBox1.Items.Objects[ListBox1.ItemIndex];
     ListBox1.Items.Delete(ListBox1.ItemIndex);
+  end;
+end;
+
+procedure TrxSortByForm.SpeedButton1Click(Sender: TObject);
+var
+  S:string;
+begin
+  if (ListBox1.ItemIndex <> -1) then
+  begin
+    S:=ListBox1.Items[ListBox1.ItemIndex];
+    if S[1] = '1' then
+      S[1] := '0'
+    else
+      S[1] := '1';
+    ListBox1.Items[ListBox1.ItemIndex]:=S;
   end;
 end;
 
@@ -172,41 +219,48 @@ begin
 end;
 
 
-function TrxSortByForm.Execute(ADBGrid: TRxDBGrid;
-  SortFieldNames: TStringList; var Asc: boolean): Boolean;
+function TrxSortByForm.Execute(ADBGrid: TRxDBGrid; SortNames: TStringList
+  ): Boolean;
 var
   i, j : Integer;
   S             : String;
-  C:TColumn;
+  C:TRxColumn;
 begin
   Result:=False;
   if not (Assigned(ADBGrid.DataSource) and Assigned(ADBGrid.DataSource.DataSet) and ADBGrid.DataSource.DataSet.Active) then  exit;
+
+  FDBGrid:=ADBGrid;
+
   ListBox1.Clear;
   ListBox2.Clear;
 
-  if not Asc then
-    ComboBox1.ItemIndex:=1
-  else
-    ComboBox1.ItemIndex:=0;
 
   for i:=0 to ADBGrid.Columns.Count-1 do
   begin
-    C:=ADBGrid.Columns[i];
-    if SortFieldNames.IndexOf(C.Field.FieldName) > -1 then
-      ListBox1.Items.Objects[ListBox1.Items.Add(C.Title.Caption)]:=C
-    else
+    C:=TRxColumn(ADBGrid.Columns[i]);
+    if C.SortOrder = smNone then
       ListBox2.Items.Objects[ListBox2.Items.Add(C.Title.Caption)]:=C;
+  end;
+
+  for i:=0 to ADBGrid.SortColumns.Count-1 do
+  begin
+    C:=ADBGrid.SortColumns[i];
+
+    if C.SortOrder = smUp then
+      S:='1'+C.Title.Caption
+    else
+      S:='0'+C.Title.Caption;
+
+    ListBox1.Items.Objects[ListBox1.Items.Add(S)]:=C
   end;
 
   if ShowModal = mrOK Then
   begin
-    Asc:= ComboBox1.ItemIndex = 0;
-
-    SortFieldNames.Clear;
+    SortNames.Clear;
     for i:=0 to ListBox1.Items.Count-1 do
     begin
-      C:=ListBox1.Items.Objects[i] as TColumn;
-      SortFieldNames.Add(C.FieldName);
+      C:=ListBox1.Items.Objects[i] as TRxColumn;
+      SortNames.Add(Copy(ListBox1.Items[i], 1, 1) + C.FieldName);
     end;
 
     Result:=True;

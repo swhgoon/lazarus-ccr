@@ -183,9 +183,8 @@ type
   private
     FDataSetClass: TDataSetClass;
   public
-    procedure Sort(Field: TField; ADataSet: TDataSet; Asc: boolean;
-      SortOptions: TRxSortEngineOptions); virtual; abstract;
-    procedure SortList(ListField: string; ADataSet: TDataSet; Asc: boolean); virtual;
+    procedure Sort(Field: TField; ADataSet: TDataSet; Asc: boolean; SortOptions: TRxSortEngineOptions); virtual; abstract;
+    procedure SortList(ListField: string; ADataSet: TDataSet; Asc: array of boolean; SortOptions: TRxSortEngineOptions); virtual;
   end;
 
   TRxDBGridSortEngineClass = class of TRxDBGridSortEngine;
@@ -363,6 +362,8 @@ type
     FKeyList: TStrings;
     FNotInKeyListIndex: integer;
     FOnDrawColumnCell: TDrawColumnCellEvent;
+    FSortOrder: TSortMarker;
+    FSortPosition: integer;
     function GetFooter: TRxColumnFooter;
     function GetKeyList: TStrings;
     procedure SetEditButtons(AValue: TRxColumnEditButtons);
@@ -377,6 +378,8 @@ type
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
     procedure OptimizeWidth;
+    property SortOrder: TSortMarker read FSortOrder;
+    property SortPosition: integer read FSortPosition;
   published
     property Footer: TRxColumnFooter read GetFooter write SetFooter;
     property ImageList: TImageList read FImageList write SetImageList;
@@ -392,8 +395,18 @@ type
   { TRxDbGridColumns }
   TRxDbGridColumns = class(TDbGridColumns)
   protected
+    procedure Notify(Item: TCollectionItem;Action: TCollectionNotification); override;
   public
     function Add: TRxColumn;
+  end;
+
+  { TRxDbGridColumnsSortList }
+
+  TRxDbGridColumnsSortList = class(TFPList)
+  private
+    function GetCollumn(Index: Integer): TRxColumn;
+  public
+    property Collumn[Index: Integer]: TRxColumn read GetCollumn; default;
   end;
 
   { TFilterListCellEditor }
@@ -420,6 +433,7 @@ type
   private
     FrxDSState:TRxDSState;
     FFooterOptions: TRxDBGridFooterOptions;
+    FSortColumns: TRxDbGridColumnsSortList;
     FSortingNow:Boolean;
     FInProcessCalc: integer;
     FAllowedOperations: TRxDBGridAllowedOperations;
@@ -428,15 +442,16 @@ type
     FOnGetCellProps: TGetCellPropsEvent;
     FOptionsRx: TOptionsRx;
     //    FTitleLines: Integer;
-    FAutoSort: boolean;
-    FMarkerUp, FMarkerDown: TBitmap;
+
     FOnGetBtnParams: TGetBtnParamsEvent;
     FOnFiltred: TNotifyEvent;
     //auto sort support
-    FSortField: TField;
-    FSortOrder: TSortMarker;
-    FSortEngine: TRxDBGridSortEngine;
-    FPressedCol: TColumn;
+
+    FMarkerUp   : TBitmap;
+    FMarkerDown : TBitmap;
+    FAutoSort   : boolean;
+    FSortEngine : TRxDBGridSortEngine;
+    FPressedCol : TRxColumn;
     //
     FPressed: boolean;
     FSwapButtons: boolean;
@@ -453,7 +468,7 @@ type
     F_EventOnDeleteError: TDataSetErrorEvent;
     F_EventOnPostError: TDataSetErrorEvent;
     F_LastFilter: TStringList;
-    F_SortListField: TStringList;
+    //F_SortListField: TStringList;
     F_CreateLookup: TCreateLookup;
     F_DisplayLookup: TDisplayLookup;
 
@@ -478,8 +493,11 @@ type
     function GetColumns: TRxDbGridColumns;
     function GetFooterColor: TColor;
     function GetFooterRowCount: integer;
+    function GetMarkerDown: TBitmap;
+    function GetMarkerUp: TBitmap;
     function GetPropertyStorage: TCustomPropertyStorage;
     function GetSortField: string;
+    function GetSortOrder: TSortMarker;
     function GetTitleButtons: boolean;
     function IsColumnsStored: boolean;
     procedure SetAutoSort(const AValue: boolean);
@@ -488,6 +506,8 @@ type
     procedure SetFooterOptions(AValue: TRxDBGridFooterOptions);
     procedure SetFooterRowCount(const AValue: integer);
     procedure SetKeyStrokes(const AValue: TRxDBGridKeyStrokes);
+    procedure SetMarkerDown(AValue: TBitmap);
+    procedure SetMarkerUp(AValue: TBitmap);
     procedure SetOptionsRx(const AValue: TOptionsRx);
     procedure SetPropertyStorage(const AValue: TCustomPropertyStorage);
     procedure SetTitleButtons(const AValue: boolean);
@@ -518,6 +538,9 @@ type
     procedure OnIniLoad(Sender: TObject);
 
     procedure CleanDSEvent;
+    procedure CollumnSortListUpdate;
+    procedure CollumnSortListClear;
+    procedure CollumnSortListApply;
   protected
     function DatalinkActive: boolean;
     procedure LinkActive(Value: Boolean); override;
@@ -536,7 +559,7 @@ type
 
     procedure DrawFooterRows; virtual;
 
-    procedure DoTitleClick(ACol: longint; AField: TField); virtual;
+    procedure DoTitleClick(ACol: longint; ACollumn: TRxColumn; Shift: TShiftState); virtual;
     procedure MouseMove(Shift: TShiftState; X, Y: integer); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: integer); override;
@@ -588,6 +611,7 @@ type
     procedure LayoutChanged; override;
     procedure ShowFindDialog;
     procedure ShowColumnsDialog;
+    procedure ShowSortDialog;
     function ColumnByFieldName(AFieldName: string): TRxColumn;
     function ColumnByCaption(ACaption: string): TRxColumn;
     procedure CalcStatTotals;
@@ -606,9 +630,13 @@ type
     property FocusRectVisible;
     property SelectedRows;
     property QuickUTF8Search: string read FQuickUTF8Search write SetQuickUTF8Search;
-    property SortField:string read GetSortField;
-    property SortOrder:TSortMarker read FSortOrder;
 
+    property SortField:string read GetSortField;
+    property SortOrder:TSortMarker read GetSortOrder;
+
+    property SortColumns:TRxDbGridColumnsSortList read FSortColumns;
+    property MarkerUp : TBitmap read GetMarkerUp write SetMarkerUp;
+    property MarkerDown : TBitmap read GetMarkerDown write SetMarkerDown;
   published
     property AfterQuickSearch: TRxQuickSearchNotifyEvent
       read FAfterQuickSearch write FAfterQuickSearch;
@@ -815,6 +843,13 @@ type
     //    procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
     procedure EditingDone; override;
   end;
+
+{ TRxDbGridColumnsSortList }
+
+function TRxDbGridColumnsSortList.GetCollumn(Index: Integer): TRxColumn;
+begin
+  Result:=TRxColumn(Items[Index]);
+end;
 
 { TRxColumnEditButton }
 
@@ -1487,8 +1522,9 @@ begin
       FSortEngine := RxDBGridSortEngineList.Objects[Pos] as TRxDBGridSortEngine
     else
       FSortEngine := nil;
-    FSortField := nil;
-    FSortOrder := smNone;
+{    FSortField := nil;
+    FSortOrder := smNone;}
+    FSortColumns.Clear;
   end;
 end;
 
@@ -1505,6 +1541,16 @@ end;
 function TRxDBGrid.GetFooterRowCount: integer;
 begin
   Result:=FFooterOptions.RowCount;
+end;
+
+function TRxDBGrid.GetMarkerDown: TBitmap;
+begin
+  Result:=FMarkerDown;
+end;
+
+function TRxDBGrid.GetMarkerUp: TBitmap;
+begin
+  Result:=FMarkerUp;
 end;
 
 function TRxDBGrid.GetDrawFullLine: boolean;
@@ -1552,10 +1598,18 @@ end;
 
 function TRxDBGrid.GetSortField: string;
 begin
-  if Assigned(FSortField) then
-    Result:=FSortField.FieldName
+  if FSortColumns.Count > 0 then
+    Result:=FSortColumns[0].FieldName
   else
     Result:='';
+end;
+
+function TRxDBGrid.GetSortOrder: TSortMarker;
+begin
+  if FSortColumns.Count > 0 then
+    Result:=FSortColumns[0].SortOrder
+  else
+    Result:=smNone;
 end;
 
 function TRxDBGrid.GetTitleButtons: boolean;
@@ -1596,6 +1650,16 @@ begin
     FKeyStrokes.Clear;
 
   UpdateJMenuKeys;
+end;
+
+procedure TRxDBGrid.SetMarkerDown(AValue: TBitmap);
+begin
+  FMarkerDown.Assign(AValue);
+end;
+
+procedure TRxDBGrid.SetMarkerUp(AValue: TBitmap);
+begin
+  FMarkerUp.Assign(AValue);
 end;
 
 procedure TRxDBGrid.SetOptionsRx(const AValue: TOptionsRx);
@@ -2029,6 +2093,9 @@ begin
     FPropertyStorageLink.Storage.WriteInteger(S1 + sVisible, Ord(C.Visible));
   end;
 
+  { TODO : Необходимо подключить сохранение списка колонок сортировки }
+{
+  FSortColumns;
   if Assigned(FSortField) then
   begin
     FPropertyStorageLink.Storage.WriteInteger(S1 + sSortMarker, Ord(FSortOrder));
@@ -2036,6 +2103,7 @@ begin
   end
   else
     FPropertyStorageLink.Storage.WriteInteger(S1 + sSortMarker, Ord(smNone));
+}
 end;
 
 procedure TRxDBGrid.OnIniLoad(Sender: TObject);
@@ -2071,7 +2139,8 @@ begin
       end;
     end;
 
-    FSortOrder := TSortMarker(FPropertyStorageLink.Storage.ReadInteger(
+    { TODO : Необходимо подключить востановление списка колонок сортировки }
+{    FSortOrder := TSortMarker(FPropertyStorageLink.Storage.ReadInteger(
       S1 + sSortMarker, Ord(smNone)));
     if Assigned(FSortEngine) and (FSortOrder <> smNone) and DatalinkActive then
     begin
@@ -2083,7 +2152,7 @@ begin
           FSortEngine.Sort(FSortField, DataSource.DataSet, FSortOrder = smUp,
             SortEngineOptions);
       end;
-    end;
+    end;}
   end;
 end;
 
@@ -2118,6 +2187,72 @@ begin
   end;
 end;
 
+procedure TRxDBGrid.CollumnSortListUpdate;
+var
+  i, J:integer;
+  C:TRxColumn;
+
+begin
+  FSortColumns.Clear;
+  for i:=0 to Columns.Count - 1 do
+  begin
+    C:=TRxColumn(Columns[i]);
+    if C.SortOrder <> smNone then
+    begin
+      if FSortColumns.Count <> 0 then
+      begin
+        for j:=0 to FSortColumns.Count-1 do
+          if FSortColumns[j].FSortPosition > C.FSortPosition then
+          begin
+            FSortColumns.Insert(j, C);
+            C:=nil;
+            Break;
+          end;
+      end;
+      if C<>nil then
+        FSortColumns.Add(C);
+    end;
+  end;
+
+  for i:=0 to FSortColumns.Count - 1 do
+    FSortColumns[i].FSortPosition:=i;
+end;
+
+procedure TRxDBGrid.CollumnSortListClear;
+var
+  i:integer;
+begin
+  FSortColumns.Clear;
+  for i:=0 to Columns.Count - 1 do
+  begin
+    TRxColumn(Columns[i]).FSortOrder:=smNone;
+    TRxColumn(Columns[i]).FSortPosition:=0;
+  end;
+end;
+
+procedure TRxDBGrid.CollumnSortListApply;
+var
+  i:integer;
+  S:string;
+  Asc:array of boolean;
+begin
+  SetLength(Asc, FSortColumns.Count);
+  for i := 0 to FSortColumns.Count - 1 do
+  begin
+    Asc[i]:=FSortColumns[i].FSortOrder = smUp;
+    if S<>'' then
+        S:=S+';';
+    S:=S + FSortColumns[i].FieldName;
+  end;
+  { TODO : Необходимо добавить опцию регистронезависимого поиска }
+
+  FSortingNow:=true;
+  FSortEngine.SortList(S, DataSource.DataSet, Asc, SortEngineOptions);
+  //FSortEngine.Sort(FSortColumns[0].Field, DataSource.DataSet, FSortColumns[0].FSortOrder = smUp, SortEngineOptions);
+  FSortingNow:=false;
+end;
+
+
 procedure TRxDBGrid.DefaultDrawCellA(aCol, aRow: integer; aRect: TRect;
   aState: TGridDrawState);
 begin
@@ -2140,8 +2275,10 @@ var
   i: integer;
   Down: boolean;
   aRect2: TRect;
+
   FTitle: TRxColumnTitle;
-  GrdCol: TGridColumn;
+  GrdCol: TRxColumn;
+
   MLI, MLINext: TMLCaptionItem;
 
 begin
@@ -2162,13 +2299,19 @@ begin
     exit;
   end;
 
+  GrdCol := TRxColumn(ColumnFromGridColumn(aCol));
+
   Down := FPressed and (dgHeaderPushedLook in Options) and
-    (FPressedCol = TColumn(ColumnFromGridColumn(aCol)));
+    (FPressedCol = GrdCol);
 
+{
   ASortMarker := smNone;
-
   if (FSortField = GetFieldFromGridColumn(aCol)) then
-    ASortMarker := FSortOrder;
+    ASortMarker := FSortOrder;}
+  if Assigned(GrdCol) then
+    ASortMarker := GrdCol.FSortOrder
+  else
+    ASortMarker := smNone;
 
   if Assigned(FOnGetBtnParams) and Assigned(GetFieldFromGridColumn(aCol)) then
   begin
@@ -2181,7 +2324,7 @@ begin
   if (gdFixed in aState) and (aRow = 0) and (ACol >= FixedCols) then
   begin
 
-    GrdCol := ColumnFromGridColumn(aCol);
+    //GrdCol := ColumnFromGridColumn(aCol);
     if Assigned(GrdCol) then
       FTitle := TRxColumnTitle(GrdCol.Title)
     else
@@ -2254,6 +2397,7 @@ begin
     begin
       OutCaptionCellText(aCol, aRow, aRect, aState, GetDefaultColumnTitle(aCol));
     end;
+
     OutCaptionSortMarker(aRect, ASortMarker);
   end
   else
@@ -2486,12 +2630,16 @@ begin
     if SelectedRows.Count > 0 then
       SelectedRows.Clear;
   end;
-  if not FSortingNow then begin
+
+  if not FSortingNow then
+    CollumnSortListClear;
+{  begin
     FSortField := nil;
     FSortOrder := smNone;
   end;
 
   F_SortListField.Clear;
+}
   if {not (csDestroying in ComponentState) and} not (csDesigning in ComponentState) then
     SetDBHandlers(Value);
 end;
@@ -2633,30 +2781,47 @@ begin
   Canvas.Brush.Color := Background;
 end;
 
-procedure TRxDBGrid.DoTitleClick(ACol: longint; AField: TField);
+procedure TRxDBGrid.DoTitleClick(ACol: longint; ACollumn: TRxColumn;
+  Shift: TShiftState);
 begin
-  if FAutoSort and (FSortEngine <> nil) and (AField <> nil) then
+  if FAutoSort and (FSortEngine <> nil) and (ACollumn.Field <> nil) then
   begin
-    if AField = FSortField then
+    if ssCtrl in Shift then
     begin
-      if FSortOrder = smUp then
-        FSortOrder := smDown
+      if ACollumn.FSortOrder <> smNone then
+      begin
+        if ACollumn.FSortOrder = smUp then
+          ACollumn.FSortOrder := smDown
+        else
+        begin
+          ACollumn.FSortOrder := smNone;
+          ACollumn.FSortPosition:=0;
+        end;
+      end
       else
-        FSortOrder := smUp;
+      begin
+        ACollumn.FSortOrder := smUp;
+        ACollumn.FSortPosition:=FSortColumns.Count;
+      end;
     end
     else
     begin
-      FSortField := AField;
-      FSortOrder := smUp;
+      if (FSortColumns.Count>0) and (FSortColumns[0] = ACollumn) then
+      begin
+        if FSortColumns[0].FSortOrder = smUp then
+          FSortColumns[0].FSortOrder := smDown
+        else
+          FSortColumns[0].FSortOrder := smUp;
+      end
+      else
+      begin
+        CollumnSortListClear;
+        ACollumn.FSortOrder := smUp;
+      end;
     end;
-    FSortingNow:=true;
-    FSortEngine.Sort(FSortField, DataSource.DataSet, FSortOrder =
-      smUp, SortEngineOptions);
-    FSortingNow:=false;
 
-    F_SortListField.Clear;
-    if Assigned(FSortField) then
-      F_SortListField.Add(FSortField.FieldName);
+    CollumnSortListUpdate;
+    CollumnSortListApply;
   end
   else
     HeaderClick(True, ACol);
@@ -2768,7 +2933,7 @@ begin
           begin
             MouseCapture := True;
             FTracking := True;
-            FPressedCol := TColumn(ColumnFromGridColumn(Cell.X));
+            FPressedCol := TRxColumn(ColumnFromGridColumn(Cell.X));
             TrackButton(X, Y);
             inherited MouseDown(Button, Shift, X, Y);
           end;
@@ -2813,7 +2978,7 @@ begin
   begin
     Cell := MouseCoord(X, Y);
     DoClick := PtInRect(Rect(0, 0, ClientWidth, ClientHeight), Point(X, Y)) and
-      (Cell.Y < RowHeights[0]) and (FPressedCol = TColumn(ColumnFromGridColumn(Cell.X)));
+      (Cell.Y < RowHeights[0]) and (FPressedCol = TRxColumn(ColumnFromGridColumn(Cell.X)));
     StopTracking;
     if DoClick then
     begin
@@ -2822,12 +2987,9 @@ begin
         Dec(ACol);
       if DataLinkActive and (ACol >= 0) and (ACol < Columns.Count) then
       begin
-        FPressedCol := ColumnFromGridColumn(Cell.X) as TColumn;
+        FPressedCol := TRxColumn(ColumnFromGridColumn(Cell.X));
         if Assigned(FPressedCol) then
-        begin
-          F_SortListField.Clear;
-          DoTitleClick(FPressedCol.Index, FPressedCol.Field);
-        end;
+          DoTitleClick(FPressedCol.Index, FPressedCol, Shift);
       end;
     end;
   end
@@ -3529,35 +3691,44 @@ end;
 procedure TRxDBGrid.OnSortBy(Sender: TObject);
 var
   i: integer;
-  s: string;
-  o: boolean;
+  S1: string;
+  FSortListField:TStringList;
+  FColumn:TRxColumn;
 begin
   if DatalinkActive then
   begin
-    FSortField := nil;
-    rxSortByForm := TrxSortByForm.Create(Application);
-    rxSortByForm.CheckBox1.Checked := rdgCaseInsensitiveSort in FOptionsRx;
-    o := not (FSortOrder = smDown);
-    if rxSortByForm.Execute(Self, F_SortListField, o) then
-    begin
-      for i := 0 to F_SortListField.Count - 1 do
+    FSortListField:=TStringList.Create;
+    try
+      rxSortByForm := TrxSortByForm.Create(Application);
+      rxSortByForm.CheckBox1.Checked := rdgCaseInsensitiveSort in FOptionsRx;
+      if rxSortByForm.Execute(Self, FSortListField) then
       begin
-        s := s + F_SortListField.Strings[i] + ';';
+        for i := 0 to FSortListField.Count - 1 do
+        begin
+          S1:=FSortListField.Strings[i];
+          FColumn:=TRxColumn(ColumnByFieldName(Copy(S1, 2, Length(S1))));
+          if S1[1] = '1' then
+            FColumn.FSortOrder := smUp
+          else
+            FColumn.FSortOrder := smDown;
+
+          FColumn.FSortPosition:=i;
+        end;
+
+        CollumnSortListUpdate;
+
+        if rxSortByForm.CheckBox1.Checked then
+          Include(FOptionsRx, rdgCaseInsensitiveSort)
+        else
+          Exclude(FOptionsRx, rdgCaseInsensitiveSort);
+
+        CollumnSortListApply;
       end;
-      s := Copy(s, 1, Length(s) - 1);
-      if o then
-        FSortOrder := smUp
-      else
-        FSortOrder := smDown;
 
-      if rxSortByForm.CheckBox1.Checked then
-        Include(FOptionsRx, rdgCaseInsensitiveSort)
-      else
-        Exclude(FOptionsRx, rdgCaseInsensitiveSort);
-
-      FSortEngine.SortList(s, DataSource.DataSet, o);
+    finally
+      FreeAndNil(rxSortByForm);
+      FreeAndNil(FSortListField);
     end;
-    FreeAndNil(rxSortByForm);
     Invalidate;
   end;
 end;
@@ -3668,11 +3839,13 @@ begin
   Options := Options - [dgCancelOnExit];
 {$ENDIF}
 
+  FSortColumns:=TRxDbGridColumnsSortList.Create;
   FKeyStrokes := TRxDBGridKeyStrokes.Create(Self);
   FKeyStrokes.ResetDefaults;
 
   FMarkerUp := LoadLazResBitmapImage('rx_markerup');
   FMarkerDown := LoadLazResBitmapImage('rx_markerdown');
+
   Options := Options - [dgTabs];
   OptionsRx := OptionsRx + [rdgAllowColumnsForm, rdgAllowDialogFind,
     rdgAllowQuickFilter];
@@ -3687,7 +3860,7 @@ begin
   DoCreateJMenu;
 
   F_LastFilter := TStringList.Create;
-  F_SortListField := TStringList.Create;
+  //F_SortListField := TStringList.Create;
 
   FPropertyStorageLink := TPropertyStorageLink.Create;
   FPropertyStorageLink.OnSave := @OnIniSave;
@@ -3736,10 +3909,10 @@ begin
   FreeAndNil(F_PopupMenu);
   FreeAndNil(F_MenuBMP);
   FreeAndNil(F_LastFilter);
-  FreeAndNil(F_SortListField);
 
   FreeAndNil(FKeyStrokes);
   inherited Destroy;
+  FreeAndNil(FSortColumns);
 end;
 
 procedure TRxDBGrid.LayoutChanged;
@@ -3760,6 +3933,11 @@ end;
 procedure TRxDBGrid.ShowColumnsDialog;
 begin
   ShowRxDBGridColumsForm(Self);
+end;
+
+procedure TRxDBGrid.ShowSortDialog;
+begin
+  OnSortBy(nil);
 end;
 
 function TRxDBGrid.ColumnByFieldName(AFieldName: string): TRxColumn;
@@ -3790,6 +3968,13 @@ begin
       Result := TRxColumn(Columns[i]);
       exit;
     end;
+end;
+
+procedure TRxDbGridColumns.Notify(Item: TCollectionItem;
+  Action: TCollectionNotification);
+begin
+  inherited Notify(Item, Action);
+  TRxDBGrid(Grid).CollumnSortListUpdate;
 end;
 
 { TRxDbGridColumns }
@@ -4438,7 +4623,7 @@ end;
 { TExDBGridSortEngine }
 
 procedure TRxDBGridSortEngine.SortList(ListField: string; ADataSet: TDataSet;
-  Asc: boolean);
+  Asc: array of boolean; SortOptions: TRxSortEngineOptions);
 begin
 
 end;
