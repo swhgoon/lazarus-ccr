@@ -1,6 +1,11 @@
 uses
   gtk2def, gdk2, GTK2Proc, Cairo;
 
+{$MACRO ON}
+
+{$ifndef LAZARUS_1_0}
+{$define TGtk2DeviceContext:=TGtkDeviceContext}
+{$endif}
 
 function gdk_cairo_create(drawable: PGdkDrawable): Pcairo_t cdecl external gdklib;
 
