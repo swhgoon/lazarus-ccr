@@ -44,3 +44,6 @@
 {$ifdef Windows}
   {$define EnableThreadSupport}
 {$endif}
+{$ifdef CPU64}
+  {$define PACKARRAYPASCAL}
+{$endif}

@@ -2416,8 +2416,11 @@ type
     //lcl
     procedure LoadPanningCursors;
     function MakeNewNode: PVirtualNode;
-    function PackArrayPascal(TheArray: TNodeArray; Count: Integer): Integer;
+    {$ifdef PACKARRAYPASCAL}
+    function PackArray(const TheArray: TNodeArray; Count: Integer): Integer;
+    {$else}
     function PackArray(TheArray: TNodeArray; Count: Integer): Integer;
+    {$endif}
     procedure PrepareBitmaps(NeedButtons, NeedLines: Boolean);
     procedure SetAlignment(const Value: TAlignment);
     procedure SetAnimationDuration(const Value: Cardinal);
@@ -4895,6 +4898,14 @@ begin
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
+{$ifdef CPU64}
+
+function HasMMX: Boolean;
+begin
+  Result := True;
+end;
+
+{$else}
 
 function HasMMX: Boolean;
 
@@ -4928,7 +4939,7 @@ asm
 @1:
         POP     EBX
 end;
-
+{$endif}
 //----------------------------------------------------------------------------------------------------------------------
 {$ifdef EnablePrint}
 procedure PrtStretchDrawDIB(Canvas: TCanvas; DestRect: TRect; ABitmap: TBitmap);
@@ -13152,27 +13163,42 @@ begin
   end;
 end;
 
-function TBaseVirtualTree.PackArrayPascal(TheArray: TNodeArray; Count: Integer): Integer;
+{$ifdef PACKARRAYPASCAL}
+
+function TBaseVirtualTree.PackArray(const TheArray: TNodeArray; Count: Integer): Integer;
 var
-  i, l: Integer;
+  Source, Dest: ^PVirtualNode;
+  ConstOne: PtrInt;
 begin
-  //todo_lcl Remove l var and use Result instead. See the differences
-  Result := -1;
-
-  if Count = 0 then
-    Exit;
-
-  l := 0;
-  for i := 0 to Count - 1 do begin
-    if vsSelected in TheArray[i]^.States then begin
-      TheArray[l] := TheArray[i];
-      Inc(l);
-    end;
+  Source := Pointer(TheArray);
+  ConstOne := 1;
+  Result := 0;
+  // Do the fastest scan possible to find the first entry
+  while (Count <> 0) and {not Odd(NativeInt(Source^))} (PtrInt(Source^) and ConstOne = 0) do
+  begin
+    Inc(Result);
+    Inc(Source);
+    Dec(Count);
   end;
 
-  Result := l;     // return length
+  if Count <> 0 then
+  begin
+    Dest := Source;
+    repeat
+      // Skip odd entries
+      if {not Odd(NativeInt(Source^))} PtrInt(Source^) and ConstOne = 0 then
+      begin
+        Dest^ := Source^;
+        Inc(Result);
+        Inc(Dest);
+      end;
+      Inc(Source); // Point to the next entry
+      Dec(Count);
+    until Count = 0;
+  end;
 end;
 
+{$else}
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -13234,6 +13260,8 @@ asm
 end;
 
 {$IMPLICITEXCEPTIONS ON}
+
+{$endif}
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TBaseVirtualTree.PrepareBitmaps(NeedButtons, NeedLines: Boolean);
