@@ -332,7 +332,6 @@ uses
   LclExt,
   {$endif}
   virtualpanningwindow,
-  LCLVersion,
   VTGraphics, //alpha blend functions
   {$ifdef DEBUG_VTV}
   vtlogger,
@@ -5569,7 +5568,6 @@ begin
       else
       begin
         //todo remove this define as soon as 0.9.30 is released to avoid future problems
-        {$if lcl_release >= 29}
         if Column <= NoColumn then
         begin
           BidiMode := Tree.BidiMode;
@@ -5580,7 +5578,6 @@ begin
           BidiMode := Tree.Header.Columns[Column].BidiMode;
           Alignment := Tree.Header.Columns[Column].Alignment;
         end;
-        {$endif}
         //select font according to the type of hint
         if (Node = nil) or (Tree.FHintMode <> hmToolTip) then
           Canvas.Font := Screen.HintFont
