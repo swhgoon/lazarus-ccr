@@ -411,7 +411,6 @@ const
   // as this is more economical.
   ExpandTimer = 1;
   EditTimer = 2;
-  HeaderTimer = 3;
   ScrollTimer = 4;
   ChangeTimer = 5;
   StructureChangeTimer = 6;
@@ -9715,14 +9714,12 @@ begin
     P := Point(XPos, YPos - Treeview.FHeader.Height);
     if hsColumnWidthTrackPending in FStates then
     begin
-      KillTimer(Treeview.Handle, HeaderTimer);
       FStates := FStates - [hsColumnWidthTrackPending] + [hsColumnWidthTracking];
       HandleHeaderMouseMove := True;
       Result := 0;
     end
     else if hsHeightTrackPending in FStates then
     begin
-      KillTimer(Treeview.Handle, HeaderTimer);
       FStates := FStates - [hsHeightTrackPending] + [hsHeightTracking];
       HandleHeaderMouseMove := True;
       Result := 0;
@@ -9758,7 +9755,6 @@ begin
             begin
               {$ifdef DEBUG_VTV}Logger.Send([lcDrag], 'HandleHeaderMouseMove - DragIndex: %d - DownIndex: %d',
                 [FColumns.FDragIndex, FColumns.FDownIndex]);{$endif}
-              KillTimer(Treeview.Handle, HeaderTimer);
               I := FColumns.FDownIndex;
               FColumns.FDownIndex := NoColumn;
               FColumns.FHoverIndex := NoColumn;
@@ -10004,7 +10000,6 @@ begin
             if Assigned(Menu) then
             begin
               KillTimer(Treeview.Handle, ScrollTimer);
-              KillTimer(Treeview.Handle, HeaderTimer);
               FColumns.FHoverIndex := NoColumn;
               Treeview.DoStateChange([], [tsScrollPending, tsScrolling]);
               Menu.PopupComponent := Treeview;
@@ -10125,14 +10120,9 @@ begin
         if IsInHeader then
         begin
           Treeview.DoHeaderMouseMove(GetShiftState, P.X, P.Y);
-          if ((AdjustHoverColumn(P)) or ((FDownIndex >= 0) and (FHoverIndex <> FDownIndex))) then
+          if ((AdjustHoverColumn(P)) or ((FDownIndex > NoColumn) and (FHoverIndex <> FDownIndex))) then
           begin
-            // We need a mouse leave detection from here for the non client area. The best solution available would be the
-            // TrackMouseEvent API. Unfortunately, it leaves Win95 totally and WinNT4 for non-client stuff out and
-            // currently I cannot ignore these systems. Hence I go the only other reliable way and use a timer
-            // (although, I don't like it...).
-            KillTimer(Treeview.Handle, HeaderTimer);
-            SetTimer(Treeview.Handle, HeaderTimer, 50, nil);
+            Invalidate(nil);
             // todo: under lcl, the hint is show even if HintMouseMessage is not implemented
             // Is it necessary here?
             // use Delphi's internal hint handling for header hints too
@@ -10144,6 +10134,14 @@ begin
               Application.HintMouseMessage(Treeview, Message);
             end;
           end;
+        end
+        else
+        begin
+          if FHoverIndex > NoColumn then
+            Invalidate(Items[FHoverIndex]);
+          FHoverIndex := NoColumn;
+          FClickIndex := NoColumn;
+          FDownIndex := NoColumn;
         end;
         //Adjust Cursor
         if not (csDesigning in FOwner.ComponentState) and (FStates = []) then
@@ -10173,27 +10171,6 @@ begin
         begin
           Message.Result := 1;
           HandleMessage := True;
-        end;
-      end;
-
-    LM_TIMER:
-      if TLMTimer(Message).TimerID = HeaderTimer then
-      begin
-        // determine current mouse position to check if it left the window
-        GetCursorPos(P);
-        P := Treeview.ScreenToClient(P);
-        with FColumns do
-        begin
-          if not InHeader(P) or ((FDownIndex > NoColumn) and (FHoverIndex <> FDownIndex)) then
-          begin
-            KillTimer(Treeview.Handle, HeaderTimer);
-            FHoverIndex := NoColumn;
-            FClickIndex := NoColumn;
-            FDownIndex := NoColumn;
-            Result := True;
-            Message.Result := 0;
-            Invalidate(nil);
-          end;
         end;
       end;
     LM_KEYDOWN,
@@ -15297,7 +15274,6 @@ begin
   // Clear any transient state.
   KillTimer(Handle, ExpandTimer);
   KillTimer(Handle, EditTimer);
-  KillTimer(Handle, HeaderTimer);
   KillTimer(Handle, ScrollTimer);
   KillTimer(Handle, SearchTimer);
   FSearchBuffer := '';
@@ -16171,7 +16147,6 @@ begin
   // Don't let any timer continue if the tree is no longer the active control (except change timers).
   KillTimer(Handle, ExpandTimer);
   KillTimer(Handle, EditTimer);
-  KillTimer(Handle, HeaderTimer);
   KillTimer(Handle, ScrollTimer);
   KillTimer(Handle, SearchTimer);
   FSearchBuffer := '';
@@ -22033,7 +22008,6 @@ begin
     // Stop timers
     KillTimer(Handle, ExpandTimer);
     KillTimer(Handle, EditTimer);
-    KillTimer(Handle, HeaderTimer);
     KillTimer(Handle, ScrollTimer);
     KillTimer(Handle, SearchTimer);
     FSearchBuffer := '';
@@ -24268,7 +24242,6 @@ begin
       KillTimer(Handle, StructureChangeTimer);
       KillTimer(Handle, ExpandTimer);
       KillTimer(Handle, EditTimer);
-      KillTimer(Handle, HeaderTimer);
       KillTimer(Handle, ScrollTimer);
       KillTimer(Handle, SearchTimer);
       FSearchBuffer := '';
