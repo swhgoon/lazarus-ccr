@@ -1,6 +1,8 @@
 uses
   qt4, qtobjects;
 
+{$ifdef CPU32}
+
 procedure AlphaBlendLineConstant(Source, Destination: Pointer; Count: Integer; ConstantAlpha, Bias: Integer);
 
 // Blends a line of Count pixels from Source to Destination using a constant alpha value.
@@ -290,6 +292,38 @@ procedure EMMS;
 asm
         DB      $0F, $77               /// EMMS
 end;
+{$else}
+procedure AlphaBlendLineConstant(Source, Destination: Pointer; Count: Integer; ConstantAlpha, Bias: Integer);
+
+begin
+  //
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+procedure AlphaBlendLinePerPixel(Source, Destination: Pointer; Count, Bias: Integer);
+
+begin
+  //
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+procedure AlphaBlendLineMaster(Source, Destination: Pointer; Count: Integer; ConstantAlpha, Bias: Integer);
+begin
+  //
+end;
+
+procedure AlphaBlendLineMasterAndColor(Destination: Pointer; Count: Integer; ConstantAlpha, Color: Integer);
+begin
+  //
+end;
+
+procedure EMMS;
+begin
+  //
+end;
+{$endif}
 
 //----------------------------------------------------------------------------------------------------------------------
 
