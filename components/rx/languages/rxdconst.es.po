@@ -296,6 +296,10 @@ msgstr "Mover columna seleccionada para arriba"
 msgid "Move selected column down"
 msgstr "Mover columna seleccionada para abajo"
 
+#: rxdconst.srxdbgridselectallrows
+msgid "Select all rows"
+msgstr ""
+
 #: rxdconst.srxdbgridselectcolumns
 msgid "Select visible collumns"
 msgstr "Seleccionar Columnas Visibles"

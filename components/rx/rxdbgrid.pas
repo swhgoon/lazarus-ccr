@@ -102,7 +102,9 @@ type
 
   TRxDBGridCommand = (rxgcNone, rxgcShowFindDlg, rxgcShowColumnsDlg,
     rxgcShowFilterDlg, rxgcShowSortDlg, rxgcShowQuickFilter,
-    rxgcHideQuickFilter
+    rxgcHideQuickFilter, rxgcSelectAll, rxgcDeSelectAll, rxgcInvertSelection,
+    rxgcOptimizeColumnsWidth
+
     );
 
   TRxDSState = (rxdsInactive, rxdsActive);
@@ -596,6 +598,7 @@ type
     procedure OnFilterClose(Sender: TObject);
     procedure OnSortBy(Sender: TObject);
     procedure OnChooseVisibleFields(Sender: TObject);
+    procedure OnSelectAllRows(Sender: TObject);
     procedure Loaded; override;
     procedure UpdateFooterRowOnUpdateActive;
 
@@ -620,6 +623,9 @@ type
     procedure UpdateTitleHight;
     procedure GetOnCreateLookup;
     procedure GetOnDisplayLookup;
+    procedure SelectAllRows;
+    procedure DeSelectAllRows;
+    procedure InvertSelection;
 
     property Canvas;
     property DefaultTextStyle;
@@ -765,7 +771,7 @@ uses Math, rxdconst, rxstrutils, rxdbgrid_findunit, rxdbgrid_columsunit,
   rxlookup, tooledit, LCLProc, rxfilterby, rxsortby;
 
 const
-  EditorCommandStrs: array[0..6] of TIdentMapEntry =
+  EditorCommandStrs: array[0..10] of TIdentMapEntry =
     (
     (Value: Ord(rxgcNone); Name: 'rxcgNone'),
     (Value: Ord(rxgcShowFindDlg); Name: 'rxgcShowFindDlg'),
@@ -773,7 +779,11 @@ const
     (Value: Ord(rxgcShowFilterDlg); Name: 'rxgcShowFilterDlg'),
     (Value: Ord(rxgcShowSortDlg); Name: 'rxgcShowSortDlg'),
     (Value: Ord(rxgcShowQuickFilter); Name: 'rxgcShowQuickFilter'),
-    (Value: Ord(rxgcHideQuickFilter); Name: 'rxgcHideQuickFilter')
+    (Value: Ord(rxgcHideQuickFilter); Name: 'rxgcHideQuickFilter'),
+    (Value: Ord(rxgcSelectAll); Name: 'rxgcSelectAll'),
+    (Value: Ord(rxgcDeSelectAll); Name: 'rxgcDeSelectAll'),
+    (Value: Ord(rxgcInvertSelection); Name: 'rxgcInvertSelection'),
+    (Value: Ord(rxgcOptimizeColumnsWidth); Name: 'rxgcOptimizeColumnsWidth')
     );
 
 var
@@ -1589,6 +1599,7 @@ begin
   CreateMenuItem(#0, '-', nil);
   CreateMenuItem('C', sRxDBGridSortByColumns, @OnSortBy);
   CreateMenuItem('W', sRxDBGridSelectColumns, @OnChooseVisibleFields);
+  CreateMenuItem('A', sRxDBGridSelectAllRows, @OnSelectAllRows);
 end;
 
 function TRxDBGrid.GetPropertyStorage: TCustomPropertyStorage;
@@ -2063,6 +2074,7 @@ begin
   F_PopupMenu.Items[3].ShortCut := DoShortCut(rxgcHideQuickFilter);
   F_PopupMenu.Items[5].ShortCut := DoShortCut(rxgcShowSortDlg);
   F_PopupMenu.Items[6].ShortCut := DoShortCut(rxgcShowColumnsDlg);
+  F_PopupMenu.Items[7].ShortCut := DoShortCut(rxgcSelectAll);
 end;
 
 function TRxDBGrid.SortEngineOptions: TRxSortEngineOptions;
@@ -3167,8 +3179,12 @@ begin
       rxgcShowQuickFilter: DoShowQuickFilter;
       rxgcHideQuickFilter: OnFilterClose(Self);
       rxgcShowSortDlg: OnSortBy(Self);
-      else
-        exit;
+      rxgcSelectAll: SelectAllRows;
+      rxgcDeSelectAll: DeSelectAllRows;
+      rxgcInvertSelection:InvertSelection;
+      rxgcOptimizeColumnsWidth:OptimizeColumnsWidthAll;
+    else
+      exit;
     end;
     Key := 0;
   end;
@@ -3739,6 +3755,11 @@ begin
     ShowColumnsDialog;
 end;
 
+procedure TRxDBGrid.OnSelectAllRows(Sender: TObject);
+begin
+  SelectAllRows;
+end;
+
 procedure TRxDBGrid.Loaded;
 begin
   inherited Loaded;
@@ -3830,6 +3851,76 @@ begin
   if Assigned(F_DisplayLookup) then
     F_DisplayLookup(FRxDbGridLookupComboEditor);
 end;
+
+procedure TRxDBGrid.SelectAllRows;
+var
+  P:TBookMark;
+begin
+  if DatalinkActive then
+  begin
+    DataSource.DataSet.DisableControls;
+    P:=DataSource.DataSet.Bookmark;
+    try
+      DataSource.DataSet.First;
+      while not DataSource.DataSet.EOF do
+      begin
+        SelectedRows.CurrentRowSelected:=true;
+        DataSource.DataSet.Next;
+      end;
+    finally
+      DataSource.DataSet.Bookmark:=P;
+      DataSource.DataSet.EnableControls;
+    end;
+    Invalidate;
+  end;
+end;
+
+procedure TRxDBGrid.DeSelectAllRows;
+var
+  P:TBookMark;
+begin
+  if DatalinkActive then
+  begin
+    DataSource.DataSet.DisableControls;
+    P:=DataSource.DataSet.Bookmark;
+    try
+      DataSource.DataSet.First;
+      while not DataSource.DataSet.EOF do
+      begin
+        SelectedRows.CurrentRowSelected:=false;
+        DataSource.DataSet.Next;
+      end;
+    finally
+      DataSource.DataSet.Bookmark:=P;
+      DataSource.DataSet.EnableControls;
+    end;
+    Invalidate;
+  end;
+end;
+
+procedure TRxDBGrid.InvertSelection;
+var
+  P:TBookMark;
+begin
+  if DatalinkActive then
+  begin
+    DataSource.DataSet.DisableControls;
+    P:=DataSource.DataSet.Bookmark;
+    try
+      DataSource.DataSet.First;
+      while not DataSource.DataSet.EOF do
+      begin
+        SelectedRows.CurrentRowSelected:=not SelectedRows.CurrentRowSelected;
+        DataSource.DataSet.Next;
+      end;
+    finally
+      DataSource.DataSet.Bookmark:=P;
+      DataSource.DataSet.EnableControls;
+    end;
+    Invalidate;
+  end;
+end;
+
 //!!!
 constructor TRxDBGrid.Create(AOwner: TComponent);
 begin
@@ -4704,6 +4795,10 @@ begin
   AddE(rxgcShowSortDlg, Menus.ShortCut(Ord('S'), [ssCtrl]));
   AddE(rxgcShowQuickFilter, Menus.ShortCut(Ord('Q'), [ssCtrl]));
   AddE(rxgcHideQuickFilter, Menus.ShortCut(Ord('H'), [ssCtrl]));
+  AddE(rxgcSelectAll, Menus.ShortCut(Ord('A'), [ssCtrl]));
+  AddE(rxgcDeSelectAll, Menus.ShortCut(Ord('-'), [ssCtrl]));
+  AddE(rxgcInvertSelection, Menus.ShortCut(Ord('*'), [ssCtrl]));
+  AddE(rxgcOptimizeColumnsWidth, Menus.ShortCut(Ord('+'), [ssCtrl]));
 end;
 
 function TRxDBGridKeyStrokes.FindRxCommand(AKey: word;

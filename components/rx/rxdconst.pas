@@ -110,6 +110,7 @@ resourcestring
   sRxDBGridSortByColumns   = 'Sort data for collumns';//     Ctrl+C';'Ordenar por Columnas     Ctrl+C';
   sRxDBGridSelectColumns   = 'Select visible collumns';//      Ctrl+W';'Seleccionar Columnas      Ctrl+W';
   sRxDBGridEmptiFilter     = '(Empty)';
+  sRxDBGridSelectAllRows   = 'Select all rows';//      Ctrl+W';'Seleccionar Columnas      Ctrl+W';
 
   //RxDBGrid filter form
   sRxFilterFormSelectExp   = 'Enter filter expression for data in table:';

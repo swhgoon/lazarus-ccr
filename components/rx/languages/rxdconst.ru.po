@@ -296,6 +296,10 @@ msgstr "Переместить выбранное поле выше"
 msgid "Move selected column down"
 msgstr "Переместить выбранное поле ниже"
 
+#: rxdconst.srxdbgridselectallrows
+msgid "Select all rows"
+msgstr "Выделить все строки"
+
 #: rxdconst.srxdbgridselectcolumns
 msgid "Select visible collumns"
 msgstr "Выбор столбцов для отображения"

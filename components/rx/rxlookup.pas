@@ -1204,6 +1204,7 @@ begin
   if AResult and Assigned(FDataLink.DataSource) then
   begin
     FDataLink.Edit;
+    Visible:=true;
     NeedUpdateData;//We need to update DataField;
   end;
 
