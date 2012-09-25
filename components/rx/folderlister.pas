@@ -79,7 +79,7 @@ type
   end;
   
 implementation
-uses {RxStrUtils, }strutils, RxAppUtils;
+uses FileUtil, strutils, RxAppUtils, LazUTF8;
 
 function MenuItemStr(S:string):string;
 var
@@ -139,7 +139,7 @@ begin
   AFileList:=TStringList.Create;
   AFolderList.Sorted:=true;
   try
-    R:=FindFirst(S+AllMask,faAnyFile, Rec);
+    R:=FindFirstUTF8(S+AllMask,faAnyFile, Rec);
     while R=0 do
     begin
       if ((Rec.Attr and faDirectory) <>0) and (Rec.Name<>'.') and (Rec.Name<>'..') then
@@ -149,9 +149,9 @@ begin
         if AnsiLowerCase(ExtractFileExt(Rec.Name))=AnsiLowerCase(FDefaultExt) then
           AFileList.Add(S+Rec.Name);
       end;
-      R:=FindNext(Rec);
+      R:=FindNextUTF8(Rec);
     end;
-    FindClose(Rec);
+    FindCloseUTF8(Rec);
     CreateSubItems;
     CreateItems;
   finally
