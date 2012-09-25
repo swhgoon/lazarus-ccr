@@ -3859,7 +3859,11 @@ begin
   if DatalinkActive then
   begin
     DataSource.DataSet.DisableControls;
+{$IFDEF NoAutomatedBookmark}
+    P:=DataSource.DataSet.GetBookmark;
+{$ELSE}
     P:=DataSource.DataSet.Bookmark;
+{$ENDIF}
     try
       DataSource.DataSet.First;
       while not DataSource.DataSet.EOF do
@@ -3868,7 +3872,12 @@ begin
         DataSource.DataSet.Next;
       end;
     finally
+{$IFDEF NoAutomatedBookmark}
+      DataSource.DataSet.GotoBookmark(P);
+      DataSource.DataSet.FreeBookmark(P);
+{$ELSE}
       DataSource.DataSet.Bookmark:=P;
+{$ENDIF}
       DataSource.DataSet.EnableControls;
     end;
     Invalidate;
@@ -3882,7 +3891,11 @@ begin
   if DatalinkActive then
   begin
     DataSource.DataSet.DisableControls;
+{$IFDEF NoAutomatedBookmark}
+    P:=DataSource.DataSet.GetBookmark;
+{$ELSE}
     P:=DataSource.DataSet.Bookmark;
+{$ENDIF}
     try
       DataSource.DataSet.First;
       while not DataSource.DataSet.EOF do
@@ -3891,7 +3904,12 @@ begin
         DataSource.DataSet.Next;
       end;
     finally
+{$IFDEF NoAutomatedBookmark}
+      DataSource.DataSet.GotoBookmark(P);
+      DataSource.DataSet.FreeBookmark(P);
+{$ELSE}
       DataSource.DataSet.Bookmark:=P;
+{$ENDIF}
       DataSource.DataSet.EnableControls;
     end;
     Invalidate;
@@ -3905,7 +3923,11 @@ begin
   if DatalinkActive then
   begin
     DataSource.DataSet.DisableControls;
+    {$IFDEF NoAutomatedBookmark}
+    P:=DataSource.DataSet.GetBookmark;
+    {$ELSE}
     P:=DataSource.DataSet.Bookmark;
+    {$ENDIF}
     try
       DataSource.DataSet.First;
       while not DataSource.DataSet.EOF do
@@ -3914,7 +3936,12 @@ begin
         DataSource.DataSet.Next;
       end;
     finally
+      {$IFDEF NoAutomatedBookmark}
+      DataSource.DataSet.GotoBookmark(P);
+      DataSource.DataSet.FreeBookmark(P);
+      {$ELSE}
       DataSource.DataSet.Bookmark:=P;
+      {$ENDIF}
       DataSource.DataSet.EnableControls;
     end;
     Invalidate;

@@ -54,3 +54,7 @@
   {$DEFINE NoAutomatedBookmark}
 {$endif}
 
+{$IFDEF NoAutomatedBookmark}
+{$ELSE}
+{$ENDIF}
+
