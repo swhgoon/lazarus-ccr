@@ -1,7 +1,7 @@
 object RxDBGridMainForm: TRxDBGridMainForm
-  Left = 296
+  Left = 144
   Height = 721
-  Top = 115
+  Top = 149
   Width = 1187
   ActiveControl = Panel1
   Caption = 'RxDBGrid Demo'
@@ -444,8 +444,6 @@ object RxDBGridMainForm: TRxDBGridMainForm
         Precision = 0
         Size = 15
       end>
-    OnFilterRecord = RxMemoryData1FilterRecordEx
-    OnFilterRecordEx = RxMemoryData1FilterRecordEx
     PacketRecords = 0
     left = 152
     top = 264

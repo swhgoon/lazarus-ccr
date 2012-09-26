@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, rxmemds,
   DB, rxdbgrid, RxAboutDialog, ExtCtrls, Buttons, Menus, ActnList, StdCtrls,
-  DBGrids, XMLPropStorage;
+  DBGrids, XMLPropStorage, types;
 
 type
 
@@ -73,8 +73,6 @@ type
     procedure FormCreate(Sender: TObject);
     procedure hlpAboutExecute(Sender: TObject);
     procedure RxDBGrid1Filtred(Sender: TObject);
-    procedure RxMemoryData1FilterRecordEx(DataSet: TDataSet; var Accept: Boolean
-      );
     procedure showColumnsDialogExecute(Sender: TObject);
     procedure showFindDialogExecute(Sender: TObject);
     procedure sysExitExecute(Sender: TObject);
@@ -150,23 +148,6 @@ begin
   RxMemoryData1.First;
 end;
 
-
-procedure TRxDBGridMainForm.RxMemoryData1FilterRecordEx(DataSet: TDataSet;
-  var Accept: Boolean);
-var
-  i:integer;
-begin
-  Accept:=true;
-  for i:=0 to RxDBGrid1.Columns.Count-1 do
-  begin
-    with TRxColumn(RxDBGrid1.Columns[i]) do
-      if (Filter.Value<>'') and (Filter.Value<>Field.AsString) then
-      begin
-        Accept:=false;
-        exit;
-      end;
-  end;
-end;
 
 procedure TRxDBGridMainForm.showColumnsDialogExecute(Sender: TObject);
 begin

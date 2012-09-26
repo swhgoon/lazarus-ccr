@@ -526,7 +526,7 @@ type
     procedure OutCaptionCellText90(aCol, aRow: integer; const aRect: TRect;
       aState: TGridDrawState; const ACaption: string;
       const TextOrient: TTextOrientation);
-    procedure OutCaptionSortMarker(const aRect: TRect; ASortMarker: TSortMarker);
+    procedure OutCaptionSortMarker(const aRect: TRect; ASortMarker: TSortMarker; ASortPosition:integer);
     procedure OutCaptionMLCellText(aCol, aRow: integer; aRect: TRect;
       aState: TGridDrawState; MLI: TMLCaptionItem);
     procedure UpdateJMenuStates;
@@ -1451,7 +1451,8 @@ end;
 
 procedure TRxDBGrid.RestoreEditor;
 begin
-  if EditorMode then begin
+  if EditorMode then
+  begin
     EditorMode := False;
     EditorMode := True;
   end;
@@ -2000,25 +2001,54 @@ begin
   OutTextXY90(Canvas, aRect.Left + dY, aRect.Top + dw, ACaption, TextOrient);
 end;
 
-procedure TRxDBGrid.OutCaptionSortMarker(const aRect: TRect; ASortMarker: TSortMarker);
+procedure TRxDBGrid.OutCaptionSortMarker(const aRect: TRect;
+  ASortMarker: TSortMarker; ASortPosition: integer);
 var
-  X, Y: integer;
+  X, Y, W: integer;
+  S:string;
+  F:TFont;
 begin
   if (dgHeaderPushedLook in Options) then
   begin
+    if (ASortMarker <> smNone) and (ASortPosition>0) then
+    begin
+      F:=TFont.Create;
+      F.Assign(Font);
+
+      if Font.Size = 0 then
+        Font.Size:=7
+      else
+        Font.Size:=Font.Size-2;
+      S:='('+IntToStr(ASortPosition)+')';
+      W:=Canvas.TextWidth(S) + 10;
+    end
+    else
+    begin
+      W:=6;
+      F:=nil;
+    end;
+
     if ASortMarker = smDown then
     begin
-      X := aRect.Right - FMarkerDown.Width - 6;
+      X := aRect.Right - FMarkerDown.Width - W;
       Y := Trunc((aRect.Top + aRect.Bottom - FMarkerDown.Height) / 2);
       Canvas.Draw(X, Y, FMarkerDown);
     end
     else
     if ASortMarker = smUp then
     begin
-      X := aRect.Right - FMarkerUp.Width - 6;
+      X := aRect.Right - FMarkerUp.Width - W;
       Y := Trunc((aRect.Top + aRect.Bottom - FMarkerUp.Height) / 2);
       Canvas.Draw(X, Y, FMarkerUp);
     end;
+
+    if Assigned(F) then
+    begin
+      Canvas.TextOut( X + FMarkerDown.Width, Y,  S);
+      Font.Assign(F);
+      FreeAndNil(F);
+    end;
+
   end;
 end;
 
@@ -2248,19 +2278,22 @@ var
   S:string;
   Asc:array of boolean;
 begin
-  SetLength(Asc, FSortColumns.Count);
-  for i := 0 to FSortColumns.Count - 1 do
-  begin
-    Asc[i]:=FSortColumns[i].FSortOrder = smUp;
-    if S<>'' then
-        S:=S+';';
-    S:=S + FSortColumns[i].FieldName;
-  end;
-  { TODO : Необходимо добавить опцию регистронезависимого поиска }
-
   FSortingNow:=true;
-  FSortEngine.SortList(S, DataSource.DataSet, Asc, SortEngineOptions);
-  //FSortEngine.Sort(FSortColumns[0].Field, DataSource.DataSet, FSortColumns[0].FSortOrder = smUp, SortEngineOptions);
+  if FSortColumns.Count>1 then
+  begin
+    SetLength(Asc, FSortColumns.Count);
+    for i := 0 to FSortColumns.Count - 1 do
+    begin
+      Asc[i]:=FSortColumns[i].FSortOrder = smUp;
+      if S<>'' then
+          S:=S+';';
+      S:=S + FSortColumns[i].FieldName;
+    end;
+    { TODO : Необходимо добавить опцию регистронезависимого поиска }
+    FSortEngine.SortList(S, DataSource.DataSet, Asc, SortEngineOptions);
+  end
+  else
+    FSortEngine.Sort(FSortColumns[0].Field, DataSource.DataSet, FSortColumns[0].FSortOrder = smUp, SortEngineOptions);
   FSortingNow:=false;
 end;
 
@@ -2283,6 +2316,8 @@ procedure TRxDBGrid.DefaultDrawTitle(aCol, aRow: integer; aRect: TRect;
 
 var
   ASortMarker: TSortMarker;
+  ASortPosition: integer;
+
   Background: TColor;
   i: integer;
   Down: boolean;
@@ -2316,12 +2351,14 @@ begin
   Down := FPressed and (dgHeaderPushedLook in Options) and
     (FPressedCol = GrdCol);
 
-{
-  ASortMarker := smNone;
-  if (FSortField = GetFieldFromGridColumn(aCol)) then
-    ASortMarker := FSortOrder;}
   if Assigned(GrdCol) then
-    ASortMarker := GrdCol.FSortOrder
+  begin
+    ASortMarker := GrdCol.FSortOrder;
+    if FSortColumns.Count>1 then
+      ASortPosition:=GrdCol.FSortPosition
+    else
+      ASortPosition:=-1;
+  end
   else
     ASortMarker := smNone;
 
@@ -2367,11 +2404,15 @@ begin
             aRect2.Bottom := aRect.Bottom;
             aRect.Top := ARect2.Top;
             if Down then
-              aState := aState + [gdPushed];
+              aState := aState + [gdPushed]
+            else
+              aState := aState - [gdPushed]
+              ;
           end
           else
           begin
             aRect2.Bottom := aRect2.Top + MLI.Hegth * DefaultRowHeight;
+            aState := aState - [gdPushed];
           end;
 
 
@@ -2410,7 +2451,7 @@ begin
       OutCaptionCellText(aCol, aRow, aRect, aState, GetDefaultColumnTitle(aCol));
     end;
 
-    OutCaptionSortMarker(aRect, ASortMarker);
+    OutCaptionSortMarker(aRect, ASortMarker, ASortPosition+1);
   end
   else
   begin
@@ -3554,11 +3595,16 @@ begin
   for i := 0 to Columns.Count - 1 do
   begin
     with TRxColumn(Columns[i]) do
-      if (Filter.Value <> '') and (Filter.Value <> Field.DisplayText) then
+    begin
+      if (Filter.Value <> '') then
       begin
-        Accept := False;
-        break;
+        if (Filter.Value <> Field.DisplayText) then
+        begin
+          Accept := False;
+          break;
+        end;
       end;
+    end;
   end;
   if Assigned(F_EventOnFilterRec) then
     F_EventOnFilterRec(DataSet, Accept);
