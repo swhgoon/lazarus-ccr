@@ -71,6 +71,6 @@ begin
 end;
 
 initialization
-  RegisterRxDBGridSortEngine(TFBDataSetSortEngine, TFBDataSet);
+  RegisterRxDBGridSortEngine(TFBDataSetSortEngine, 'TFBDataSet');
 end.
 

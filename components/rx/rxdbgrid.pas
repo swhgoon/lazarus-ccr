@@ -182,8 +182,6 @@ type
   TRxSortEngineOptions = set of TRxSortEngineOption;
 
   TRxDBGridSortEngine = class
-  private
-    FDataSetClass: TDataSetClass;
   public
     procedure Sort(Field: TField; ADataSet: TDataSet; Asc: boolean; SortOptions: TRxSortEngineOptions); virtual; abstract;
     procedure SortList(ListField: string; ADataSet: TDataSet; Asc: array of boolean; SortOptions: TRxSortEngineOptions); virtual;
@@ -763,7 +761,7 @@ type
   end;
 
 procedure RegisterRxDBGridSortEngine(RxDBGridSortEngineClass: TRxDBGridSortEngineClass;
-  DataSetClass: TDataSetClass);
+  DataSetClassName: string);
 
 implementation
 
@@ -789,17 +787,16 @@ const
 var
   RxDBGridSortEngineList: TStringList;
 
-procedure RegisterRxDBGridSortEngine(RxDBGridSortEngineClass: TRxDBGridSortEngineClass;
-  DataSetClass: TDataSetClass);
+procedure RegisterRxDBGridSortEngine(
+  RxDBGridSortEngineClass: TRxDBGridSortEngineClass; DataSetClassName: string);
 var
   Pos: integer;
   RxDBGridSortEngine: TRxDBGridSortEngine;
 begin
-  if not RxDBGridSortEngineList.Find(DataSetClass.ClassName, Pos) then
+  if not RxDBGridSortEngineList.Find(DataSetClassName, Pos) then
   begin
     RxDBGridSortEngine := RxDBGridSortEngineClass.Create;
-    RxDBGridSortEngine.FDataSetClass := DataSetClass;
-    RxDBGridSortEngineList.AddObject(DataSetClass.ClassName, RxDBGridSortEngine);
+    RxDBGridSortEngineList.AddObject(DataSetClassName, RxDBGridSortEngine);
   end;
 end;
 

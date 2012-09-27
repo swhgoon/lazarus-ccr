@@ -5,8 +5,7 @@ unit exsortzeos;
 interface
 
 uses
-  Classes, SysUtils, DB, RxDBGrid, ZConnection, ZDataset, ZAbstractRODataset,
-  ZMacroQuery;
+  Classes, SysUtils, DB, RxDBGrid, ZConnection, ZDataset, ZAbstractDataset, ZAbstractRODataset;
 
 type
 
@@ -23,31 +22,13 @@ implementation
 procedure TZeosDataSetSortEngine.Sort(Field:TField; ADataSet:TDataSet; Asc:boolean; SortOptions:TRxSortEngineOptions);
 begin
   if not Assigned(ADataSet) then exit;
-  if ADataSet.ClassName='TZReadOnlyQuery' then
+  if ADataSet is TZAbstractDataset then
   begin
-    (ADataSet as TZReadOnlyQuery).SortedFields:=Field.FieldName;
+    TZAbstractDataset(ADataSet).SortedFields:=Field.FieldName;
     if Asc then
-      (ADataSet as TZReadOnlyQuery).SortType:=stAscending
+      TZAbstractDataset(ADataSet).SortType:=stAscending
     else
-      (ADataSet as TZReadOnlyQuery).SortType:=stDescending;
-  end
-  else
-  if (ADataSet.ClassName='TZQuery') or (ADataSet is TZMacroQuery) then
-  begin
-        (ADataSet as TZQuery).SortedFields:=Field.FieldName;
-        if Asc then
-          (ADataSet as TZQuery).SortType:=stAscending
-        else
-          (ADataSet as TZQuery).SortType:=stDescending;
-  end
-  else
-  if ADataSet.ClassName='TZTable' then
-  begin
-          (ADataSet as TZTable).SortedFields:=Field.FieldName;
-          if Asc then
-            (ADataSet as TZTable).SortType:=stAscending
-          else
-            (ADataSet as TZTable).SortType:=stDescending;
+      TZAbstractDataset(ADataSet).SortType:=stDescending;
   end;
 end;
 
@@ -83,23 +64,13 @@ begin
   end;
 
   (ADataSet as TZAbstractRODataset).SortedFields:=S;
-
-{  if ADataSet.ClassName='TZReadOnlyQuery' then
-    (ADataSet as TZReadOnlyQuery).SortedFields:=S
-  else
-  if (ADataSet.ClassName='TZQuery') or (ADataSet is TZMacroQuery) then
-    (ADataSet as TZQuery).SortedFields:=S
-  else
-  if ADataSet.ClassName='TZTable' then
-  begin
-    (ADataSet as TZTable).SortedFields:=S}
 end;
 
 
 initialization
-  RegisterRxDBGridSortEngine(TZeosDataSetSortEngine, TZReadOnlyQuery);
-  RegisterRxDBGridSortEngine(TZeosDataSetSortEngine, TZQuery);
-  RegisterRxDBGridSortEngine(TZeosDataSetSortEngine, TZTable);
-  RegisterRxDBGridSortEngine(TZeosDataSetSortEngine, TZMacroQuery);
+  RegisterRxDBGridSortEngine(TZeosDataSetSortEngine, 'TZReadOnlyQuery');
+  RegisterRxDBGridSortEngine(TZeosDataSetSortEngine, 'TZQuery');
+  RegisterRxDBGridSortEngine(TZeosDataSetSortEngine, 'TZTable');
+  RegisterRxDBGridSortEngine(TZeosDataSetSortEngine, 'TZMacroQuery');
 end.
 

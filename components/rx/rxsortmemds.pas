@@ -66,6 +66,6 @@ begin
 end;
 
 initialization
-  RegisterRxDBGridSortEngine(TRxMemoryDataSortEngine, TRxMemoryData);
+  RegisterRxDBGridSortEngine(TRxMemoryDataSortEngine, 'TRxMemoryData');
 end.
 
