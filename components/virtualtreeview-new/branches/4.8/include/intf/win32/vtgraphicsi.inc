@@ -6,13 +6,19 @@ procedure AlphaBlendLineConstant(Source, Destination: Pointer; Count: Integer; C
 // ConstantAlpha must be in the range 0..255 where 0 means totally transparent (destination pixel only)
 // and 255 totally opaque (source pixel only).
 // Bias is an additional value which gets added to every component and must be in the range -128..127
-//
+
+asm
+
+{$ifdef CPU64}
+
+
+{$else}
 // EAX contains Source
 // EDX contains Destination
 // ECX contains Count
 // ConstantAlpha and Bias are on the stack
 
-asm
+
         PUSH    ESI                    // save used registers
         PUSH    EDI
 
@@ -69,6 +75,7 @@ asm
         JNZ     @1
         POP     EDI
         POP     ESI
+{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -78,13 +85,19 @@ procedure AlphaBlendLinePerPixel(Source, Destination: Pointer; Count, Bias: Inte
 // Blends a line of Count pixels from Source to Destination using the alpha value of the source pixels.
 // The layout of a pixel must be BGRA.
 // Bias is an additional value which gets added to every component and must be in the range -128..127
-//
+
+asm
+
+{$ifdef CPU64}
+
+
+{$else}
+
 // EAX contains Source
 // EDX contains Destination
 // ECX contains Count
 // Bias is on the stack
 
-asm
         PUSH    ESI                    // save used registers
         PUSH    EDI
 
@@ -140,6 +153,7 @@ asm
         JNZ     @1
         POP     EDI
         POP     ESI
+{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -150,13 +164,20 @@ procedure AlphaBlendLineMaster(Source, Destination: Pointer; Count: Integer; Con
 // The layout of a pixel must be BGRA.
 // ConstantAlpha must be in the range 0..255.
 // Bias is an additional value which gets added to every component and must be in the range -128..127
-//
+
+asm
+
+{$ifdef CPU64}
+
+
+{$else}
+
 // EAX contains Source
 // EDX contains Destination
 // ECX contains Count
 // ConstantAlpha and Bias are on the stack
 
-asm
+
         PUSH    ESI                    // save used registers
         PUSH    EDI
 
@@ -221,6 +242,7 @@ asm
         JNZ     @1
         POP     EDI
         POP     ESI
+{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -230,13 +252,20 @@ procedure AlphaBlendLineMasterAndColor(Destination: Pointer; Count: Integer; Con
 // Blends a line of Count pixels in Destination against the given color using a constant alpha value.
 // The layout of a pixel must be BGRA and Color must be rrggbb00 (as stored by a COLORREF).
 // ConstantAlpha must be in the range 0..255.
-//
+
+asm
+
+{$ifdef CPU64}
+
+
+{$else}
+
 // EAX contains Destination
 // EDX contains Count
 // ECX contains ConstantAlpha
 // Color is passed on the stack
 
-asm
+
         // The used formula is: target = (alpha * color + (256 - alpha) * target) / 256.
         // alpha * color (factor 1) and 256 - alpha (factor 2) are constant values which can be calculated in advance.
         // The remaining calculation is therefore: target = (F1 + F2 * target) / 256
@@ -277,6 +306,7 @@ asm
         ADD     EAX, 4
         DEC     EDX
         JNZ     @1
+{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -285,9 +315,17 @@ procedure EMMS;
 
 // Reset MMX state to use the FPU for other tasks again.
 
+{$ifdef CPU64}
+  inline;
+  begin
+  end;
+
+{$else}
+
 asm
         DB      $0F, $77               /// EMMS
 end;
+{$endif}
 
 //----------------------------------------------------------------------------------------------------------------------
 
