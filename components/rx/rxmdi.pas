@@ -37,7 +37,7 @@ type
     FNavForm: TForm;
     FNavPanel:TRxMDITasks;
     FSaveClose:TCloseEvent;
-    procedure SeTRxMDIForm(AValue: TForm);
+    procedure SetRxMDIForm(AValue: TForm);
     procedure DoCreateMenuItems;
 
     procedure DoCloseMenu(Sender: TObject);
@@ -539,7 +539,7 @@ end;
 
 { TRxMDIButton }
 
-procedure TRxMDIButton.SeTRxMDIForm(AValue: TForm);
+procedure TRxMDIButton.SetRxMDIForm(AValue: TForm);
 var
   FImageIndex:integer;
   B:TBitmap;
@@ -553,8 +553,8 @@ begin
     Caption:=' '+FNavForm.Caption+' ';
     DoCreateButtonImage;
 
-
-    FNavPanel.FMainPanel.CurrentChildWindow:=NavForm;
+    if Assigned(FNavPanel) then
+      FNavPanel.FMainPanel.CurrentChildWindow:=NavForm;
   end;
 
 {  if NavForm is TfbmDBObjectEditorForm then
