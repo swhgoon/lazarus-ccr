@@ -116,6 +116,7 @@ type
     procedure SetTaskPanel(AValue: TRxMDITasks);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure Loaded; override;
   public
     constructor Create(TheOwner: TComponent); override;
     procedure ShowWindow(F:TForm);
@@ -276,6 +277,12 @@ begin
   else
   if (AComponent = FTaskPanel) and (Operation = opRemove) then
     FTaskPanel:=nil;
+end;
+
+procedure TRxMDIPanel.Loaded;
+begin
+  inherited Loaded;
+  CurrentChildWindow:=nil;
 end;
 
 constructor TRxMDIPanel.Create(TheOwner: TComponent);
