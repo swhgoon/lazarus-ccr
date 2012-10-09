@@ -47,7 +47,7 @@ uses
   Dialogs, ComponentEditors, DBPropEdits, DB, rxctrls,
   RxCustomChartPanel, AutoPanel, pickdate, rxconst, tooledit, rxclock,
   rxceEditLookupFields, rxpopupunit, rxspin, RxTimeEdit,
-  RxAboutDialog, RxViewsPanel;
+  RxAboutDialog, RxViewsPanel, RxMDI;
 
 type
 
@@ -211,6 +211,11 @@ begin
   RegisterComponents('RX',[TRxViewsPanel]);
 end;
 
+procedure RegisterRxMDI;
+begin
+  RegisterComponents('RX',[TRxMDICloseButton, TRxMDIPanel, TRxMDITasks]);
+end;
+
 procedure RegisterRxHistoryNavigator;
 begin
   RegisterComponents('RX Tools',[TRxHistoryNavigator]);
@@ -243,6 +248,8 @@ begin
   RegisterUnit('RxAboutDialog', @RegisterRxAboutDialog);
   RegisterUnit('RxViewsPanel', @RegisterRxViewsPanel);
   RegisterUnit('RxHistoryNavigator', @RegisterRxHistoryNavigator);
+  RegisterUnit('RxMDI', @RegisterRxMDI);
+
 
 
 //

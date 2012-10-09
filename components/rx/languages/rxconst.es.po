@@ -41,8 +41,20 @@ msgstr "Derecho"
 msgid "Carbon widget set"
 msgstr ""
 
+#: rxconst.scloseallexceptthis
+msgid "Close all except this"
+msgstr ""
+
+#: rxconst.scloseallwindows
+msgid "Close all windows"
+msgstr ""
+
 #: rxconst.sclosevaliderror
 msgid "Error. Expected vailes..."
+msgstr ""
+
+#: rxconst.sclosewindows
+msgid "Close window"
 msgstr ""
 
 #: rxconst.sdatedlgtitle

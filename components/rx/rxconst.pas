@@ -123,6 +123,11 @@ resourcestring
   sReqValue             = 'Error. Expected value for filed %s.';
   sExptControlNotFound  = 'Control not found in validate %s.';
 
+  { RxMDI }
+  sCloseWindows = 'Close window';
+  sCloseAllExceptThis = 'Close all except this';
+  sCloseAllWindows = 'Close all windows';
+
 implementation
 
 end.
