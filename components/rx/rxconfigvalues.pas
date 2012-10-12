@@ -75,7 +75,7 @@ type
     property AsFloat:Double read GetAsFloat write SetAsFloat;
     property AsBoolean:boolean read GetAsBoolean write SetAsBoolean;
     property AsDateTime:TDateTime read GetAsDateTime write SetAsDateTime;
-    property Modified:boolean read FModified;
+    property Modified:boolean read FModified write FModified;
     property DataType:byte read FDataType;
     property Value:string read GetValue;
   end;
