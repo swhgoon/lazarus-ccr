@@ -106,7 +106,7 @@ begin
     begin
       if hpeBackground in Elements then
       begin
-        TargetCanvas.Brush.Color := clBackground;
+        TargetCanvas.Brush.Color := clBtnFace;
         TargetCanvas.FillRect(PaintRectangle);
       end;
     end
