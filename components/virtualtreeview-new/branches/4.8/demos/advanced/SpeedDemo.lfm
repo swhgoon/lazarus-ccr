@@ -9,30 +9,29 @@ object SpeedForm: TSpeedForm
   ClientWidth = 566
   Font.Height = -13
   Font.Name = 'MS Sans Serif'
-  LCLVersion = '0.9.29'
-  Visible = True
+  LCLVersion = '1.1'
   object Label1: TLabel
     Left = 7
-    Height = 18
+    Height = 16
     Top = 8
-    Width = 156
+    Width = 139
     Caption = 'Last operation duration:'
     ParentColor = False
   end
   object Label3: TLabel
     Left = 6
-    Height = 18
-    Top = 508
-    Width = 104
+    Height = 16
+    Top = 510
+    Width = 93
     Anchors = [akLeft, akBottom]
     Caption = 'Nodes in tree: 0'
     ParentColor = False
   end
   object Label6: TLabel
     Left = 164
-    Height = 18
-    Top = 508
-    Width = 73
+    Height = 16
+    Top = 510
+    Width = 67
     Anchors = [akLeft, akBottom]
     Caption = 'Selected: 0'
     ParentColor = False
@@ -42,9 +41,9 @@ object SpeedForm: TSpeedForm
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = VST1
     Left = 261
-    Height = 102
+    Height = 16
     Top = 24
-    Width = 296
+    Width = 1203
     BorderSpacing.Left = 4
     Caption = 'Test how fast the Virtual Treeview is. You can add and delete nodes as much as you like (provided your system has enough memory). An upper limit of one million nodes for a 128MB system is a good start.'
     ParentColor = False
@@ -56,9 +55,9 @@ object SpeedForm: TSpeedForm
     AnchorSideTop.Control = Label4
     AnchorSideTop.Side = asrBottom
     Left = 261
-    Height = 18
-    Top = 136
-    Width = 135
+    Height = 16
+    Top = 50
+    Width = 121
     BorderSpacing.Left = 4
     BorderSpacing.Top = 10
     Caption = 'As an orientation:'
@@ -74,9 +73,9 @@ object SpeedForm: TSpeedForm
     AnchorSideTop.Control = Label2
     AnchorSideTop.Side = asrBottom
     Left = 265
-    Height = 60
-    Top = 156
-    Width = 292
+    Height = 16
+    Top = 68
+    Width = 520
     BorderSpacing.Left = 8
     BorderSpacing.Top = 2
     Caption = '1.000.000 nodes on Windows XP Pro, 650Mhz Athlon, 256 MB RAM, take ~ 850ms to add.'
@@ -89,9 +88,9 @@ object SpeedForm: TSpeedForm
     AnchorSideTop.Control = Label5
     AnchorSideTop.Side = asrBottom
     Left = 265
-    Height = 39
-    Top = 218
-    Width = 292
+    Height = 16
+    Top = 86
+    Width = 519
     BorderSpacing.Left = 8
     BorderSpacing.Top = 2
     Caption = '5.000.000 nodes on Windows XP Pro, 1.8Ghz Pentium M , 1 GB RAM, are added in ~1.6s.'
@@ -1576,7 +1575,6 @@ object SpeedForm: TSpeedForm
     TreeOptions.SelectionOptions = [toMultiSelect]
     OnChange = VST1Change
     OnGetText = VST1GetText
-    OnStateChange = VST1StateChange
     OnStructureChange = VST1StructureChange
   end
   object GroupBox2: TGroupBox
@@ -1588,15 +1586,15 @@ object SpeedForm: TSpeedForm
     Width = 281
     Anchors = [akRight, akBottom]
     Caption = ' Background '
-    ClientHeight = 38
+    ClientHeight = 39
     ClientWidth = 277
     DragMode = dmAutomatic
     TabOrder = 1
     object SBCheckBox: TCheckBox
       Left = 24
-      Height = 22
+      Height = 20
       Top = 10
-      Width = 140
+      Width = 129
       Caption = 'Show Background'
       OnClick = SBCheckBoxClick
       TabOrder = 0
@@ -1622,7 +1620,7 @@ object SpeedForm: TSpeedForm
     Anchors = [akRight, akBottom]
     BorderSpacing.Bottom = 10
     Caption = ' Add and remove nodes '
-    ClientHeight = 103
+    ClientHeight = 104
     ClientWidth = 277
     TabOrder = 2
     object AddRootButton: TButton
@@ -1637,7 +1635,7 @@ object SpeedForm: TSpeedForm
     end
     object NodeCountEdit: TEdit
       Left = 12
-      Height = 27
+      Height = 24
       Top = 16
       Width = 81
       TabOrder = 1

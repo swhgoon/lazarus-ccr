@@ -11,7 +11,7 @@ interface
 
 uses
   LCLIntf, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, VirtualTrees, ExtDlgs, ComCtrls, Menus, LResources, Buttons;
+  StdCtrls, VirtualTrees, ExtDlgs, Menus, LResources, Buttons;
 
 type
   TSpeedForm = class(TForm)
