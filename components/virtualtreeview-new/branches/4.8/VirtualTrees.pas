@@ -5005,6 +5005,7 @@ begin
   CF_VTREFERENCE := ClipboardRegisterFormat(CFSTR_VTREFERENCE);
 
   UtilityImages := TBitmap.Create;
+  UtilityImages.Transparent := True;
   UtilityImages.LoadFromLazarusResource('VT_UTILITIES');
 
   // Specify an useful timer resolution for timeGetTime.
@@ -20261,7 +20262,7 @@ begin
   else
   begin
     FCheckImages := TBitmap.Create;
-    FCheckImages.TransparentColor := clDefault;
+    FCheckImages.Transparent := True;
     FCheckImages.LoadFromLazarusResource(CheckImagesStrings[FCheckImageKind]);
   end;
 end;
