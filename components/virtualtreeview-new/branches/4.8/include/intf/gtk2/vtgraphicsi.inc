@@ -1,9 +1,9 @@
 uses
-  gtk2def, gdk2, GTK2Proc, Cairo;
+  gtk2def, gdk2, GTK2Proc, Cairo, LCLVersion;
 
 {$MACRO ON}
 
-{$ifndef LAZARUS_1_0}
+{$if (lcl_major <> 1) or (lcl_minor <> 0)}
 {$define TGtk2DeviceContext:=TGtkDeviceContext}
 {$endif}
 
