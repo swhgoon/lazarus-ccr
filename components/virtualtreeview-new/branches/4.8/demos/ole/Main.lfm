@@ -1,23 +1,23 @@
 object MainForm: TMainForm
-  Left = 192
-  Height = 575
-  Top = 261
+  Left = 356
+  Height = 574
+  Top = 70
   Width = 790
   ActiveControl = Button1
   Caption = 'Demo for drag''n drop and clipboard transfers'
-  ClientHeight = 575
+  ClientHeight = 574
   ClientWidth = 790
   Font.CharSet = ANSI_CHARSET
   Font.Height = -12
   Font.Name = 'Arial'
   OnCreate = FormCreate
-  LCLVersion = '0.9.27'
+  LCLVersion = '1.1'
   Visible = True
   object Label1: TLabel
-    Left = 10
-    Height = 15
+    Left = 8
+    Height = 14
     Top = 96
-    Width = 239
+    Width = 238
     Caption = 'Tree 1 uses OLE when initiating a drag operation.'
     Font.CharSet = ANSI_CHARSET
     Font.Height = -11
@@ -26,7 +26,7 @@ object MainForm: TMainForm
     ParentFont = False
   end
   object Label2: TLabel
-    Left = 360
+    Left = 364
     Height = 33
     Top = 80
     Width = 337
@@ -40,7 +40,9 @@ object MainForm: TMainForm
     WordWrap = True
   end
   object Panel3: TPanel
+    Left = 0
     Height = 69
+    Top = 0
     Width = 790
     Align = alTop
     ClientHeight = 69
@@ -67,7 +69,7 @@ object MainForm: TMainForm
   object Button1: TButton
     Left = 705
     Height = 25
-    Top = 527
+    Top = 526
     Width = 75
     Anchors = [akRight, akBottom]
     BorderSpacing.InnerBorder = 4
@@ -92,7 +94,6 @@ object MainForm: TMainForm
     Height = 180
     Top = 116
     Width = 330
-    BorderStyle = bsSingle
     ClipboardFormats.Strings = (
       'Plain text'
       'Unicode text'
@@ -109,9 +110,12 @@ object MainForm: TMainForm
     Font.CharSet = ANSI_CHARSET
     Font.Height = -11
     Font.Name = 'Lucida Sans Unicode'
+    Header.AutoSizeIndex = 0
     Header.Columns = <>
+    Header.DefaultHeight = 17
     Header.Font.Height = -11
     Header.Font.Name = 'MS Sans Serif'
+    Header.Height = 24
     Header.MainColumn = -1
     Header.Options = [hoColumnResize, hoDrag]
     HintMode = hmTooltip
@@ -137,7 +141,6 @@ object MainForm: TMainForm
     Height = 180
     Top = 116
     Width = 330
-    BorderStyle = bsSingle
     ClipboardFormats.Strings = (
       'CSV'
       'HTML Format'
@@ -156,9 +159,12 @@ object MainForm: TMainForm
     Font.CharSet = ANSI_CHARSET
     Font.Height = -11
     Font.Name = 'Verdana'
+    Header.AutoSizeIndex = 0
     Header.Columns = <>
+    Header.DefaultHeight = 17
     Header.Font.Height = -11
     Header.Font.Name = 'MS Sans Serif'
+    Header.Height = 24
     Header.MainColumn = -1
     Header.Options = [hoColumnResize, hoDrag]
     HintMode = hmTooltip
@@ -179,32 +185,33 @@ object MainForm: TMainForm
     OnNewText = Tree1NewText
   end
   object PageControl1: TPageControl
-    Left = 12
-    Height = 245
-    Top = 308
-    Width = 685
-    ActivePage = TabSheet1
+    Left = 8
+    Height = 224
+    Top = 328
+    Width = 686
+    ActivePage = LogTabSheet
     Anchors = [akTop, akLeft, akBottom]
-    TabIndex = 3
+    TabIndex = 1
     TabOrder = 5
     object RichTextTabSheet: TTabSheet
       Caption = 'Rich text'
-      ClientHeight = 217
-      ClientWidth = 677
+      ClientHeight = 196
+      ClientWidth = 678
       ImageIndex = 1
+      TabVisible = False
       object Label3: TLabel
         Left = 8
         Height = 15
         Top = 8
-        Width = 453
+        Width = 452
         Caption = 'You can use the rich edit control as source and as target. It initiates OLE drag'' drop.'
         ParentColor = False
       end
     end
     object LogTabSheet: TTabSheet
       Caption = 'Drag''n drop operation log'
-      ClientHeight = 217
-      ClientWidth = 677
+      ClientHeight = 196
+      ClientWidth = 678
       object Label7: TLabel
         Left = 6
         Height = 41
@@ -217,18 +224,19 @@ object MainForm: TMainForm
       end
       object LogListBox: TListBox
         Left = 4
-        Height = 143
+        Height = 122
         Hint = 'Use the list box to initiate a VCL drag''n drop.'
         Top = 56
-        Width = 661
+        Width = 662
         Anchors = [akTop, akLeft, akRight, akBottom]
         DragMode = dmAutomatic
+        ItemHeight = 0
         ParentShowHint = False
         ShowHint = True
         TabOrder = 0
       end
       object Button2: TButton
-        Left = 590
+        Left = 591
         Height = 25
         Top = 10
         Width = 75
@@ -241,7 +249,7 @@ object MainForm: TMainForm
     end
     object TabSheet2: TTabSheet
       Caption = 'More info'
-      ClientHeight = 217
+      ClientHeight = 197
       ClientWidth = 677
       ImageIndex = 3
       object Label4: TLabel
@@ -277,7 +285,7 @@ object MainForm: TMainForm
     end
     object TabSheet1: TTabSheet
       Caption = 'Tips'
-      ClientHeight = 217
+      ClientHeight = 197
       ClientWidth = 677
       ImageIndex = 2
       object Label8: TLabel
@@ -302,24 +310,39 @@ object MainForm: TMainForm
       end
     end
   end
+  object ShowHeader1CheckBox: TCheckBox
+    Left = 8
+    Height = 19
+    Top = 302
+    Width = 95
+    Caption = 'Show Header'
+    OnChange = ShowHeader1CheckBoxChange
+    TabOrder = 6
+  end
+  object ShowHeader2CheckBox: TCheckBox
+    Left = 364
+    Height = 19
+    Top = 302
+    Width = 95
+    Caption = 'Show Header'
+    OnChange = ShowHeader2CheckBoxChange
+    TabOrder = 7
+  end
   object ActionList1: TActionList
     left = 724
     top = 156
     object CutAction: TAction
       Caption = 'Cut'
-      DisableIfNoHandler = True
       OnExecute = CutActionExecute
       ShortCut = 16472
     end
     object CopyAction: TAction
       Caption = 'Copy'
-      DisableIfNoHandler = True
       OnExecute = CopyActionExecute
       ShortCut = 16451
     end
     object PasteAction: TAction
       Caption = 'Paste'
-      DisableIfNoHandler = True
       OnExecute = PasteActionExecute
       ShortCut = 16470
     end
@@ -327,6 +350,8 @@ object MainForm: TMainForm
   object FontDialog: TFontDialog
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
+    MinFontSize = 0
+    MaxFontSize = 0
     left = 756
     top = 168
   end

@@ -19,6 +19,7 @@ type
 
   TMainForm = class(TForm)
     ActionList1: TActionList;
+    ShowHeader1CheckBox: TCheckBox;
     CutAction: TAction;
     CopyAction: TAction;
     PasteAction: TAction;
@@ -27,6 +28,7 @@ type
     Label6: TLabel;
     Button1: TButton;
     Button3: TButton;
+    ShowHeader2CheckBox: TCheckBox;
     Tree2: TVirtualStringTree;
     Label1: TLabel;
     Tree1: TVirtualStringTree;
@@ -51,6 +53,8 @@ type
     procedure CutActionExecute(Sender: TObject);
     procedure CopyActionExecute(Sender: TObject);
     procedure PasteActionExecute(Sender: TObject);
+    procedure ShowHeader1CheckBoxChange(Sender: TObject);
+    procedure ShowHeader2CheckBoxChange(Sender: TObject);
     procedure TreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure Tree1GetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
       var Text: String);
@@ -185,6 +189,22 @@ begin
   else;
     //if ActiveControl = RichEdit1 then
     //  RichEdit1.PasteFromClipboard;
+end;
+
+procedure TMainForm.ShowHeader1CheckBoxChange(Sender: TObject);
+begin
+  if ShowHeader1CheckBox.Checked then
+    Tree1.Header.Options := Tree1.Header.Options + [hoVisible]
+  else
+    Tree1.Header.Options := Tree1.Header.Options - [hoVisible];
+end;
+
+procedure TMainForm.ShowHeader2CheckBoxChange(Sender: TObject);
+begin
+  if ShowHeader2CheckBox.Checked then
+    Tree2.Header.Options := Tree2.Header.Options + [hoVisible]
+  else
+    Tree2.Header.Options := Tree2.Header.Options - [hoVisible];
 end;
 
 procedure TMainForm.TreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);

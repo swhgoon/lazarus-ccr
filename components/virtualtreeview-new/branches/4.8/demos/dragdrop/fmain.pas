@@ -13,11 +13,13 @@ type
   { TMainForm }
 
   TMainForm = class(TForm)
+    ShowHeaderCheckBox: TCheckBox;
     ListBox1: TListBox;
     VirtualStringTree1: TVirtualStringTree;
     procedure ListBox1DragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure ListBox1DragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
+    procedure ShowHeaderCheckBoxChange(Sender: TObject);
     procedure VirtualStringTree1DragDrop(Sender: TBaseVirtualTree;
       Source: TObject; DataObject: IDataObject; Formats: TFormatArray;
       Shift: TShiftState; const Pt: TPoint; var Effect: Integer; Mode: TDropMode);
@@ -71,6 +73,14 @@ procedure TMainForm.ListBox1DragOver(Sender, Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 begin
   Accept := (Source = VirtualStringTree1) or (Source = ListBox1);
+end;
+
+procedure TMainForm.ShowHeaderCheckBoxChange(Sender: TObject);
+begin
+  if ShowHeaderCheckBox.Checked then
+    VirtualStringTree1.Header.Options := VirtualStringTree1.Header.Options + [hoVisible]
+  else
+    VirtualStringTree1.Header.Options := VirtualStringTree1.Header.Options - [hoVisible];
 end;
 
 procedure TMainForm.ListBox1DragDrop(Sender, Source: TObject; X, Y: Integer);
