@@ -9,8 +9,7 @@ interface
 
 uses
   LCLIntf, delphicompat, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, VirtualTrees, ExtDlgs,  Buttons, ExtCtrls, ComCtrls,
-  MaskEdit, LCLType, EditBtn;
+  StdCtrls, VirtualTrees, Buttons, ExtCtrls, MaskEdit, LCLType, EditBtn;
 
 type
   // Describes the type of value a property tree node stores in its data property.
@@ -36,6 +35,9 @@ type
   end;
 
   // Our own edit link to implement several different node editors.
+
+  { TPropertyEditLink }
+
   TPropertyEditLink = class(TInterfacedObject, IVTEditLink)
   private
     FEdit: TWinControl;        // One of the property editor classes.
@@ -43,6 +45,7 @@ type
     FNode: PVirtualNode;       // The node being edited.
     FColumn: Integer;          // The column of the node being edited.
   protected
+    procedure EditExit(Sender: TObject);
     procedure EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   public
     destructor Destroy; override;
@@ -201,11 +204,16 @@ uses
 destructor TPropertyEditLink.Destroy;
 
 begin
-  FEdit.Free;
+  Application.ReleaseComponent(FEdit);
   inherited;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
+
+procedure TPropertyEditLink.EditExit(Sender: TObject);
+begin
+  FTree.EndEditNode;
+end;
 
 procedure TPropertyEditLink.EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 
@@ -252,7 +260,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TPropertyEditLink.BeginEdit: Boolean;
+function TPropertyEditLink.BeginEdit: Boolean; stdcall;
 
 begin
   Result := True;
@@ -262,7 +270,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TPropertyEditLink.CancelEdit: Boolean;
+function TPropertyEditLink.CancelEdit: Boolean; stdcall;
 
 begin
   Result := True;
@@ -271,7 +279,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TPropertyEditLink.EndEdit: Boolean;
+function TPropertyEditLink.EndEdit: Boolean; stdcall;
 
 var
   Data: PPropertyData;
@@ -304,7 +312,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TPropertyEditLink.GetBounds: TRect;
+function TPropertyEditLink.GetBounds: TRect; stdcall;
 
 begin
   Result := FEdit.BoundsRect;
@@ -312,7 +320,8 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TPropertyEditLink.PrepareEdit(Tree: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex): Boolean;
+function TPropertyEditLink.PrepareEdit(Tree: TBaseVirtualTree; Node: PVirtualNode;
+  Column: TColumnIndex): Boolean; stdcall;
 
 var
   Data: PPropertyData;
@@ -336,7 +345,6 @@ begin
           Visible := False;
           Parent := Tree;
           Text := Data.Value;
-          OnKeyDown := EditKeyDown;
         end;
       end;
     vtPickString:
@@ -351,7 +359,6 @@ begin
           Items.Add('Standard');
           Items.Add('Additional');
           Items.Add('Win32');
-          OnKeyDown := EditKeyDown;
         end;
       end;
     vtNumber:
@@ -363,7 +370,6 @@ begin
           Parent := Tree;
           EditMask := '9999';
           Text := Data.Value;
-          OnKeyDown := EditKeyDown;
         end;
       end;
     vtPickNumber:
@@ -374,7 +380,6 @@ begin
           Visible := False;
           Parent := Tree;
           Text := Data.Value;
-          OnKeyDown := EditKeyDown;
         end;
       end;
     vtMemo:
@@ -388,7 +393,6 @@ begin
           Parent := Tree;
           Text := Data.Value;
           Items.Add(Data.Value);
-          OnKeyDown := EditKeyDown;
         end;
       end;
     vtDate:
@@ -399,17 +403,21 @@ begin
           Visible := False;
           Parent := Tree;
           Date := StrToDate(Data.Value);
-          OnKeyDown := EditKeyDown;
         end;
       end;
   else
     Result := False;
   end;
+  if Result then
+  begin
+    FEdit.OnKeyDown := EditKeyDown;
+    FEdit.OnExit := EditExit;
+  end;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TPropertyEditLink.ProcessMessage(var Message: TMessage);
+procedure TPropertyEditLink.ProcessMessage(var Message: TMessage); stdcall;
 
 begin
   FEdit.WindowProc(Message);
@@ -417,7 +425,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TPropertyEditLink.SetBounds(R: TRect);
+procedure TPropertyEditLink.SetBounds(R: TRect); stdcall;
 
 var
   Dummy: Integer;
