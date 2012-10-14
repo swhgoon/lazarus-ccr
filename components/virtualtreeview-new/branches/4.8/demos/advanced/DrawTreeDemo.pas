@@ -21,7 +21,7 @@ uses
   Windows,
   {$endif}
   LCLIntf, delphicompat, LCLType, SysUtils, Classes, ComCtrls, Graphics, Controls, Forms, Dialogs,
-  VirtualTrees, StdCtrls,  shlobjext, LResources;
+  VirtualTrees, StdCtrls,  shlobjext, LResources, FileUtil;
 
 type
   TDrawTreeForm = class(TForm)
@@ -96,10 +96,10 @@ var
   SR: TSearchRec;
 
 begin
-  Result := FindFirst(IncludeTrailingPathDelimiter(Folder) + {$ifdef Windows}'*.*'{$else}'*'{$endif},
+  Result := FindFirstUTF8(IncludeTrailingPathDelimiter(Folder) + {$ifdef Windows}'*.*'{$else}'*'{$endif},
     faAnyFile, SR) = 0;
   if Result then
-    FindClose(SR);
+    FindCloseUTF8(SR);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -529,7 +529,7 @@ var
 
 begin
   Data := Sender.GetNodeData(Node);
-  if FindFirst(IncludeTrailingPathDelimiter(Data.FullPath) + {$ifdef Windows}'*.*'{$else}'*'{$endif},
+  if FindFirstUTF8(IncludeTrailingPathDelimiter(Data.FullPath) + {$ifdef Windows}'*.*'{$else}'*'{$endif},
     faAnyFile, SR) = 0 then
   begin
     Screen.Cursor := crHourGlass;
@@ -554,14 +554,14 @@ begin
             Sender.ValidateNode(Node, False);
           end;
         end;
-      until FindNext(SR) <> 0;
+      until FindNextUTF8(SR) <> 0;
       ChildCount := Sender.ChildCount[Node];
 
       // finally sort node
       if ChildCount > 0 then
         Sender.Sort(Node, 0, TVirtualStringTree(Sender).Header.SortDirection, False);
     finally
-      FindClose(SR);
+      FindCloseUTF8(SR);
       Screen.Cursor := crDefault;
     end;
   end;
