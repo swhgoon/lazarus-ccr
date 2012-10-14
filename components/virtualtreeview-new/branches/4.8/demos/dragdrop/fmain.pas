@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  VirtualTrees, FakeActiveX;
+  VirtualTrees, {$ifdef windows}ActiveX{$else}FakeActiveX{$endif};
 
 type
 
@@ -20,8 +20,7 @@ type
       State: TDragState; var Accept: Boolean);
     procedure VirtualStringTree1DragDrop(Sender: TBaseVirtualTree;
       Source: TObject; DataObject: IDataObject; Formats: TFormatArray;
-      Shift: TShiftState; const Pt: TPoint; var Effect: Integer; Mode: TDropMode
-      );
+      Shift: TShiftState; const Pt: TPoint; var Effect: Integer; Mode: TDropMode);
     procedure VirtualStringTree1DragOver(Sender: TBaseVirtualTree;
       Source: TObject; Shift: TShiftState; State: TDragState; const Pt: TPoint;
       Mode: TDropMode; var Effect: Integer; var Accept: Boolean);
@@ -91,24 +90,30 @@ procedure TMainForm.VirtualStringTree1DragDrop(Sender: TBaseVirtualTree;
   Shift: TShiftState; const Pt: TPoint; var Effect: Integer; Mode: TDropMode);
 var
   Node: PVirtualNode;
-  S: String;
+  NodeTitle: String;
 begin
+  case Mode of
+    dmAbove: Node := Sender.InsertNode(Sender.DropTargetNode, amInsertBefore);
+    dmBelow: Node := Sender.InsertNode(Sender.DropTargetNode, amInsertAfter);
+    dmNowhere: Node := Sender.InsertNode(Sender.DropTargetNode, amNoWhere);
+  else
+    Node := Sender.AddChild(Sender.DropTargetNode);
+  end;
+  Sender.ValidateNode(Node, True);
   if Source = ListBox1 then
   begin
-    Node := Sender.AddChild(Sender.DropTargetNode);
     if ListBox1.ItemIndex = -1 then
-      S := 'Unknow Item from List'
+      NodeTitle := 'Unknow Item from List'
     else
-      S := ListBox1.Items[ListBox1.ItemIndex];
-    Sender.ValidateNode(Node, True);
-    PNodeData(Sender.GetNodeData(Node))^.Title := S;
+      NodeTitle := ListBox1.Items[ListBox1.ItemIndex];
   end
   else if Source = Sender then
   begin
-    Node := Sender.AddChild(Sender.DropTargetNode);
-    Sender.ValidateNode(Node, True);
-    PNodeData(Sender.GetNodeData(Node))^.Title := VirtualStringTree1.Text[Sender.FocusedNode, 0];
-  end;
+    NodeTitle := VirtualStringTree1.Text[Sender.FocusedNode, 0];
+  end
+  else
+    NodeTitle := 'Unknow Source';
+  PNodeData(Sender.GetNodeData(Node))^.Title := NodeTitle;
 end;
 
 procedure TMainForm.VirtualStringTree1DragOver(Sender: TBaseVirtualTree;

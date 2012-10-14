@@ -7,7 +7,7 @@ object MainForm: TMainForm
   ClientHeight = 362
   ClientWidth = 461
   Position = poDesktopCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object VirtualStringTree1: TVirtualStringTree
     Left = 8
     Height = 315
@@ -43,7 +43,7 @@ object MainForm: TMainForm
       'List Item 5'
       'List Item 6'
     )
-    ItemHeight = 23
+    ItemHeight = 15
     OnDragDrop = ListBox1DragDrop
     OnDragOver = ListBox1DragOver
     ScrollWidth = 190
