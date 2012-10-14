@@ -8,7 +8,7 @@ object MainForm: TMainForm
   ClientWidth = 613
   OnCreate = FormCreate
   Position = poDesktopCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object MainNotebook: TPageControl
     Left = 0
     Height = 504
@@ -20,13 +20,13 @@ object MainForm: TMainForm
     TabOrder = 0
     object WelcomePage: TTabSheet
       Caption = 'Welcome Translations'
-      ClientHeight = 478
-      ClientWidth = 605
+      ClientHeight = 465
+      ClientWidth = 607
       object WelcomeTree: TVirtualStringTree
         Left = 3
-        Height = 444
+        Height = 431
         Top = 31
-        Width = 599
+        Width = 601
         Align = alClient
         BorderSpacing.Around = 3
         DefaultText = 'Node'
@@ -43,6 +43,7 @@ object MainForm: TMainForm
             Width = 200
           end>
         Header.DefaultHeight = 17
+        Header.Height = 20
         Header.Options = [hoColumnResize, hoDrag, hoVisible]
         TabOrder = 0
         OnFreeNode = WelcomeTreeFreeNode
@@ -52,11 +53,11 @@ object MainForm: TMainForm
         Left = 0
         Height = 28
         Top = 0
-        Width = 605
+        Width = 607
         Align = alTop
         BevelOuter = bvNone
         ClientHeight = 28
-        ClientWidth = 605
+        ClientWidth = 607
         TabOrder = 1
         object ChooseWelcomeFontButton: TButton
           Left = 4
@@ -73,8 +74,8 @@ object MainForm: TMainForm
     end
     object LCLTextPage: TTabSheet
       Caption = 'LCL Text'
-      ClientHeight = 478
-      ClientWidth = 605
+      ClientHeight = 465
+      ClientWidth = 607
       object LCLTextTree: TVirtualStringTree
         Left = 3
         Height = 440
@@ -88,7 +89,7 @@ object MainForm: TMainForm
         Header.MainColumn = -1
         Header.Options = [hoColumnResize, hoDrag]
         TabOrder = 0
-        TreeOptions.MiscOptions = [toAcceptOLEDrop, toEditable, toFullRepaintOnResize, toInitOnSave, toToggleOnDblClick, toWheelPanning]
+        TreeOptions.MiscOptions = [toEditable, toFullRepaintOnResize, toInitOnSave, toToggleOnDblClick, toWheelPanning]
         OnFreeNode = LCLTextTreeFreeNode
         OnGetText = LCLTextTreeGetText
         OnNewText = LCLTextTreeNewText
@@ -114,7 +115,7 @@ object MainForm: TMainForm
         Height = 21
         Top = 58
         Width = 184
-        ItemHeight = 13
+        ItemHeight = 0
         Items.Strings = (
           'Não'
           'Coração'
@@ -141,8 +142,10 @@ object MainForm: TMainForm
           'Coração'
           'Sim'
         )
-        ItemHeight = 13
+        ItemHeight = 0
+        ScrollWidth = 182
         TabOrder = 5
+        TopIndex = -1
       end
       object AddListTextButton: TButton
         Left = 476
