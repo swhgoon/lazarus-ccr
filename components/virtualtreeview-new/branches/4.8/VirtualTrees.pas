@@ -9708,8 +9708,7 @@ begin
   Result := False;
   with Message do
   begin
-    //lclheader
-    P := Point(XPos, YPos - Treeview.FHeader.Height);
+    P := Point(XPos, YPos);
     if hsColumnWidthTrackPending in FStates then
     begin
       FStates := FStates - [hsColumnWidthTrackPending] + [hsColumnWidthTracking];
@@ -9735,6 +9734,9 @@ begin
       end
       else if hsHeightTracking in FStates then
       begin
+        //lclheader
+        //fixes setting height
+        Dec(P.Y, FHeight);
         if DoHeightTracking(P, GetShiftState) then
           SetHeight(Integer(FHeight) + P.Y);
         HandleHeaderMouseMove := True;
@@ -9769,7 +9771,7 @@ begin
         else
           if hsDragging in FStates then
           begin
-            DragTo(Treeview.ClientToScreen(Point(XPos, YPos)));
+            DragTo(Treeview.ClientToScreen(P));
             HandleHeaderMouseMove := True;
             Result := 0;
           end;
