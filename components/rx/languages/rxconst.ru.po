@@ -43,11 +43,11 @@ msgstr "Графический интерфейс Carbon"
 
 #: rxconst.scloseallexceptthis
 msgid "Close all except this"
-msgstr ""
+msgstr "Закрыть все окна, за исключением этого"
 
 #: rxconst.scloseallwindows
 msgid "Close all windows"
-msgstr ""
+msgstr "Закрыть все окна"
 
 #: rxconst.sclosevaliderror
 msgid "Error. Expected vailes..."
@@ -55,7 +55,7 @@ msgstr "Ошибка. Ожидается значение..."
 
 #: rxconst.sclosewindows
 msgid "Close window"
-msgstr ""
+msgstr "Закрыть окно"
 
 #: rxconst.sdatedlgtitle
 msgid "Select a Date"
