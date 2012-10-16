@@ -67,6 +67,7 @@ type
     procedure ScrollRigthExecute(Sender: TObject);
     procedure ShowHiddenBtnOnResize;
     procedure ChildWindowsShowLast;
+    procedure DoCloseAll(AIgnoreBtn:TRxMDIButton);
   protected
     procedure Paint; override;
     procedure Resize; override;
@@ -124,6 +125,7 @@ type
     procedure ChildWindowsAdd(F:TForm);
     procedure ChildWindowsCreate(var AForm; FC:TFormClass);
     procedure ChildWindowsUpdateCaption(F:TForm);
+    procedure CloseAll;
 
     property CurrentChildWindow:TForm read FCurrentChildWindow write SetCurrentChildWindow;
   published
@@ -340,6 +342,12 @@ begin
   end;
 end;
 
+procedure TRxMDIPanel.CloseAll;
+begin
+  if Assigned(FTaskPanel) then
+    FTaskPanel.DoCloseAll(nil);
+end;
+
 
 { TRxMDITasks }
 
@@ -425,6 +433,17 @@ begin
   else
     FMainPanel.CurrentChildWindow:=nil;
   Invalidate;
+end;
+
+procedure TRxMDITasks.DoCloseAll(AIgnoreBtn: TRxMDIButton);
+var
+  i:integer;
+begin
+  for i:=ComponentCount-1 downto 0 do
+  begin
+    if (Components[i] is TRxMDIButton) and (TRxMDIButton(Components[i]) <> AIgnoreBtn) then
+      TRxMDIButton(Components[i]).DoCloseMenu(nil);
+  end;
 end;
 
 procedure TRxMDITasks.Paint;
@@ -616,24 +635,12 @@ end;
 
 procedure TRxMDIButton.DoCloseAllMenu(Sender: TObject);
 begin
-{  if Assigned(WindowTabs) then
-    CloseAllWindowTabs;}
+  FNavPanel.DoCloseAll(nil);
 end;
 
 procedure TRxMDIButton.DoCloseAllExcepThisMenu(Sender: TObject);
-var
-  i:integer;
-  F:TForm;
 begin
-{  if Assigned(WindowTabs) then
-  begin
-    for i:=WindowTabs.WindowCount-1 downto 0 do
-    begin
-      F:=WindowTabs.Item[i];
-      if F<>FNavForm then
-        F.Close;
-    end;
-  end;}
+  FNavPanel.DoCloseAll(Self);
 end;
 
 procedure TRxMDIButton.DoActivateMenu(Sender: TObject);
