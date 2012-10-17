@@ -362,7 +362,9 @@ const
     {$define ContextMenuBeforeMouseUp}
   {$endif}
 
-  VTVersion = '4.8.7';
+  VTMajorVersion = 4;
+  VTMinorVersion = 8;
+  VTReleaseVersion = 7;
   VTTreeStreamVersion = 2;
   VTHeaderStreamVersion = 6;    // The header needs an own stream version to indicate changes only relevant to the header.
 
