@@ -15,6 +15,7 @@ type
 
   TRxDBGridMainForm = class(TForm)
     actCalcTotal: TAction;
+    CheckBox5: TCheckBox;
     MenuItem10: TMenuItem;
     MenuItem11: TMenuItem;
     MenuItem8: TMenuItem;
@@ -69,6 +70,7 @@ type
     procedure CheckBox2Change(Sender: TObject);
     procedure CheckBox3Change(Sender: TObject);
     procedure CheckBox4Change(Sender: TObject);
+    procedure CheckBox5Change(Sender: TObject);
     procedure ComboBox1Change(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure hlpAboutExecute(Sender: TObject);
@@ -250,6 +252,14 @@ begin
     RxDBGrid1.Options:=RxDBGrid1.Options + [dgTitles]
   else
     RxDBGrid1.Options:=RxDBGrid1.Options - [dgTitles];
+end;
+
+procedure TRxDBGridMainForm.CheckBox5Change(Sender: TObject);
+begin
+  if CheckBox5.Checked then
+    RxDBGrid1.OptionsRx:=RxDBGrid1.OptionsRx + [rdgWordWrap]
+  else
+    RxDBGrid1.OptionsRx:=RxDBGrid1.OptionsRx - [rdgWordWrap];
 end;
 
 procedure TRxDBGridMainForm.ComboBox1Change(Sender: TObject);

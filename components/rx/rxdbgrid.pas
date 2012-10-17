@@ -91,7 +91,8 @@ type
     rdgAllowFilterForm,
     rdgAllowSortForm,
     rdgAllowToolMenu,
-    rdgCaseInsensitiveSort
+    rdgCaseInsensitiveSort,
+    rdgWordWrap
     );
 
   TOptionsRx = set of TOptionRx;
@@ -364,6 +365,7 @@ type
     FOnDrawColumnCell: TDrawColumnCellEvent;
     FSortOrder: TSortMarker;
     FSortPosition: integer;
+    FWordWrap: boolean;
     function GetFooter: TRxColumnFooter;
     function GetKeyList: TStrings;
     procedure SetEditButtons(AValue: TRxColumnEditButtons);
@@ -372,6 +374,7 @@ type
     procedure SetImageList(const AValue: TImageList);
     procedure SetKeyList(const AValue: TStrings);
     procedure SetNotInKeyListIndex(const AValue: integer);
+    procedure SetWordWrap(AValue: boolean);
   protected
     function CreateTitle: TGridColumnTitle; override;
   public
@@ -390,6 +393,7 @@ type
     property DirectInput : boolean read FDirectInput write FDirectInput default true;
     property EditButtons:TRxColumnEditButtons read FEditButtons write SetEditButtons;
     property OnDrawColumnCell: TDrawColumnCellEvent read FOnDrawColumnCell write FOnDrawColumnCell;
+    property WordWrap:boolean read FWordWrap write SetWordWrap default false;
   end;
 
   { TRxDbGridColumns }
@@ -541,6 +545,9 @@ type
     procedure CollumnSortListUpdate;
     procedure CollumnSortListClear;
     procedure CollumnSortListApply;
+
+    procedure UpdateRowsHeight;
+    procedure ResetRowHeght;
   protected
     function DatalinkActive: boolean;
     procedure LinkActive(Value: Boolean); override;
@@ -577,6 +584,7 @@ type
     procedure UpdateActive; override;
     procedure UpdateData; override;
     procedure MoveSelection; override;
+    //function  GetBufferCount: integer; override;
     procedure CMHintShow(var Message: TLMessage); message CM_HINTSHOW;
     procedure FFilterListEditorOnChange(Sender: TObject);
     procedure FFilterListEditorOnCloseUp(Sender: TObject);
@@ -847,7 +855,7 @@ type
 
   public
     constructor Create(Aowner : TComponent); override;
-    //    procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
+    //procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
     procedure EditingDone; override;
   end;
 
@@ -1196,13 +1204,15 @@ begin
   UpdateMask;
 end;
 
-{procedure TRxDBGridDateEditor.SetBounds(aLeft, aTop, aWidth, aHeight: integer);
+{
+procedure TRxDBGridDateEditor.SetBounds(aLeft, aTop, aWidth, aHeight: integer);
 begin
   BeginUpdateBounds;
-  Dec(aWidth, 25);
+  Dec(aWidth, 25); //ButtonWidth);
   inherited SetBounds(aLeft, aTop, aWidth, aHeight);
   EndUpdateBounds;
-end;}
+end;
+}
 
 procedure TRxDBGridDateEditor.EditingDone;
 begin
@@ -1698,6 +1708,10 @@ begin
   end;
 
   FFooterOptions.FActive:=rdgFooterRows in FOptionsRx;
+
+  if (rdgWordWrap in OldOpt) and not (rdgWordWrap in FOptionsRx) then
+    ResetRowHeght;
+
   VisualChange;
 end;
 
@@ -2294,6 +2308,58 @@ begin
   FSortingNow:=false;
 end;
 
+procedure TRxDBGrid.UpdateRowsHeight;
+var
+  i, J, H, H1:integer;
+  B:boolean;
+  F:TField;
+  S:string;
+  CurActiveRecord: Integer;
+  R:TRxColumn;
+begin
+  if not (Assigned(DataLink) and DataLink.Active) then
+    exit;
+
+  CurActiveRecord:=DataLink.ActiveRecord;
+  for i:=GCache.VisibleGrid.Top to GCache.VisibleGrid.Bottom do
+  begin
+    DataLink.ActiveRecord:=i - FixedRows;
+    H:=1;
+    for j:=0 to Columns.Count-1 do
+    begin
+      R:=Columns[j] as TRxColumn;;
+      if R.WordWrap then
+      begin
+        F:=R.Field;
+        if Assigned(F) then
+          S:=F.DisplayText
+        else
+          S:='';
+
+        H1 := Max((Canvas.TextWidth(S) + 2) div R.Width + 1, H);
+        if H1 > WordCount(S, [' ']) then
+          H1 := WordCount(S, [' ']);
+      end
+      else
+        H1:=1;
+      H:=Max(H, H1);
+    end;
+
+    if i<RowCount then
+      RowHeights[i] := DefaultRowHeight * H;
+
+  end;
+  DataLink.ActiveRecord:=CurActiveRecord;
+end;
+
+procedure TRxDBGrid.ResetRowHeght;
+var
+  i:integer;
+begin
+  for i:=1 to RowCount-1 do
+    RowHeights[i] := DefaultRowHeight;
+end;
+
 
 procedure TRxDBGrid.DefaultDrawCellA(aCol, aRow: integer; aRect: TRect;
   aState: TGridDrawState);
@@ -2603,7 +2669,10 @@ begin
           end
           else
             S := '';
-          DrawCellText(aCol, aRow, aRect, aState, S);
+          if (rdgWordWrap in FOptionsRx) and Assigned(C) and (C.WordWrap) then
+            WriteTextHeader(Canvas, aRect, S, C.Alignment)
+          else
+            DrawCellText(aCol, aRow, aRect, aState, S);
       end;
     end;
   end;
@@ -2618,13 +2687,6 @@ begin
   if (gdFixed in aState) and (aRow = 0) then
   begin
     DefaultDrawCellA(aCol, aRow, aRect, aState);
-{    if (ARect.Top<=0) and (aCol=0) and (aRow=0) and (DatalinkActive) and (DataSource.DataSet.State = dsBrowse) then
-    begin
-//      F_TopRect := ARect;
-      Canvas.Lock;
-      Canvas.Draw((ARect.Left+ARect.Right-F_MenuBMP.Width) div 2,(ARect.Top + ARect.Bottom - F_MenuBMP.Height) div 2, F_MenuBMP);
-      Canvas.UnLock;
-    end;}
   end
   else
   if not ((gdFixed in aState) or ((aCol = 0) and (dgIndicator in Options)) or
@@ -3327,6 +3389,82 @@ begin
     DrawFooterRows;
 end;
 
+(*
+function TRxDBGrid.GetBufferCount: integer;
+var
+  i, J, W, H, H1, HW, k:integer;
+  B:boolean;
+  F:TField;
+  S:string;
+
+  CurActiveRecord: Integer;
+begin
+  b:=false;
+  for i:=0 to Columns.Count-1 do
+  begin
+    if TRxColumn(Columns[i]).WordWrap then
+    begin
+      B:=true;
+      Break;
+    end;
+  end;
+  if not B then
+    Result:=inherited GetBufferCount
+  else
+  begin
+    CurActiveRecord:=DataLink.ActiveRecord;
+    Result:=0;
+    HW:=0;
+    K:=1;
+    for i:=GCache.VisibleGrid.Top to GCache.VisibleGrid.Bottom do
+    begin
+      DataLink.ActiveRecord:=i - FixedRows;
+      H:=1; //DefaultRowHeight;
+      for j:=0 to Columns.Count-1 do
+      begin
+        W:=Columns[i].Width;
+        if TRxColumn(Columns[i]).WordWrap then
+        begin
+          F:=Columns[i].Field;
+          if Assigned(F) then
+            S:=F.DisplayText
+          else
+            S:='';
+
+          H1 := Max((Canvas.TextWidth(S) + 2) div W + 1, H);
+          if H1 > WordCount(S, [' ']) then
+            H1 := WordCount(S, [' ']);
+        end;
+        H:=Max(H, H1);
+      end;
+      HW:=HW + H * DefaultRowHeight;
+
+      if HW>Height then
+        break;
+
+      RowHeights[K] := DefaultRowHeight * H;
+
+      inc(K);
+      inc(Result);
+    end;
+    DataLink.ActiveRecord:=CurActiveRecord;
+{
+    if (ARow>=FixedRows) and FDataLink.Active then
+    begin
+      FDataLink.ActiveRecord:=ARow-FixedRows;
+      FDrawingActiveRecord := ARow = Row;
+      FDrawingMultiSelRecord := (dgMultiSelect in Options) and
+        SelectedRows.CurrentRowSelected
+    end else begin
+      FDrawingActiveRecord := False;
+      FDrawingMultiSelRecord := False;
+    end;
+
+    }
+  end;
+end;
+*)
+
 procedure TRxDBGrid.CMHintShow(var Message: TLMessage);
 var
   Cell: TGridCoord;
@@ -3440,8 +3578,10 @@ end;
 procedure TRxDBGrid.VisualChange;
 begin
   inherited VisualChange;
-  //  if Canvas.HandleAllocated then
   CalcTitle;
+
+  if rdgWordWrap in FOptionsRx then
+    UpdateRowsHeight;
 end;
 
 function TRxDBGrid.EditorByStyle(Style: TColumnButtonStyle): TWinControl;
@@ -4200,6 +4340,12 @@ begin
   FNotInKeyListIndex := AValue;
   if Grid <> nil then
     Grid.Invalidate;
+end;
+
+procedure TRxColumn.SetWordWrap(AValue: boolean);
+begin
+  if FWordWrap=AValue then Exit;
+  FWordWrap:=AValue;
 end;
 
 function TRxColumn.CreateTitle: TGridColumnTitle;

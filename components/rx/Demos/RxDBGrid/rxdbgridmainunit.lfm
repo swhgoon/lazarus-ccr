@@ -90,6 +90,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
         Filter.EmptyFont.Style = [fsItalic]
         Filter.ItemIndex = -1
         EditButtons = <>
+        WordWrap = True
       end    
       item
         Title.Alignment = taCenter
@@ -391,6 +392,19 @@ object RxDBGridMainForm: TRxDBGridMainForm
       OnChange = CheckBox4Change
       State = cbChecked
       TabOrder = 6
+    end
+    object CheckBox5: TCheckBox
+      AnchorSideLeft.Control = CheckBox3
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      Left = 721
+      Height = 22
+      Top = 7
+      Width = 90
+      BorderSpacing.Around = 6
+      Caption = 'Word wrap'
+      OnChange = CheckBox5Change
+      TabOrder = 7
     end
   end
   object SpeedButton1: TSpeedButton
