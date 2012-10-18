@@ -2086,13 +2086,14 @@ end;
 
 procedure TRxDBGrid.UpdateJMenuStates;
 begin
-  F_PopupMenu.Items[0].Enabled := rdgAllowDialogFind in FOptionsRx;
-  F_PopupMenu.Items[1].Enabled := rdgAllowFilterForm in FOptionsRx;
-  F_PopupMenu.Items[2].Enabled := rdgAllowQuickFilter in FOptionsRx;
-  F_PopupMenu.Items[3].Enabled :=
+  F_PopupMenu.Items[0].Visible := rdgAllowDialogFind in FOptionsRx;
+  F_PopupMenu.Items[1].Visible := rdgAllowFilterForm in FOptionsRx;
+  F_PopupMenu.Items[2].Visible := rdgAllowQuickFilter in FOptionsRx;
+  F_PopupMenu.Items[3].Visible :=
     (rdgFilter in FOptionsRx) or (rdgAllowFilterForm in FOptionsRx);
-  F_PopupMenu.Items[5].Enabled := rdgAllowSortForm in FOptionsRx;
-  F_PopupMenu.Items[6].Enabled := rdgAllowColumnsForm in FOptionsRx;
+  F_PopupMenu.Items[5].Visible := rdgAllowSortForm in FOptionsRx;
+  F_PopupMenu.Items[6].Visible := rdgAllowColumnsForm in FOptionsRx;
+  F_PopupMenu.Items[7].Visible := dgMultiselect in Options;
 end;
 
 procedure TRxDBGrid.UpdateJMenuKeys;
@@ -3139,7 +3140,7 @@ begin
     else
       MPT.Y := Rct.Bottom;
     MPT := ClientToScreen(MPT);
-    //    DrawCell(0,0,F_TopRect,[gdFixed]);
+
     UpdateJMenuStates;
     F_PopupMenu.Popup(MPT.X, MPT.Y);
   end;
@@ -3260,14 +3261,18 @@ begin
           exit;
         end;
 
-    VK_DOWN: if not (aoAppend in FAllowedOperations) then
+    VK_DOWN:
+      if not (aoAppend in FAllowedOperations) then
       begin
         FTmpReadOnly := ReadOnly;
         ReadOnly := True;
         inherited KeyDown(Key, Shift);
         ReadOnly := FTmpReadOnly;
         exit;
-      end;
+      end
+{      else
+        UpdateRowsHeight;
+    VK_UP:UpdateRowsHeight};
   end;
   inherited KeyDown(Key, Shift);
   if Key <> 0 then
@@ -3356,6 +3361,9 @@ end;
 
 procedure TRxDBGrid.Paint;
 begin
+  if rdgWordWrap in FOptionsRx then
+    UpdateRowsHeight;
+
   inherited Paint;
   if FFooterOptions.Active and (FFooterOptions.RowCount > 0) then
     DrawFooterRows;
@@ -3374,7 +3382,8 @@ begin
   else
   if FFooterOptions.Active and (FFooterOptions.RowCount > 0) then
     UpdateFooterRowOnUpdateActive;
-//    CalcStatTotals;
+
+ // UpdateRowsHeight;
 end;
 
 procedure TRxDBGrid.UpdateData;
@@ -3387,83 +3396,8 @@ begin
   inherited MoveSelection;
   if Assigned(FFooterOptions) and FFooterOptions.Active and (FFooterOptions.RowCount > 0) then
     DrawFooterRows;
+//  UpdateRowsHeight;
 end;
-
-(*
-function TRxDBGrid.GetBufferCount: integer;
-var
-  i, J, W, H, H1, HW, k:integer;
-  B:boolean;
-  F:TField;
-  S:string;
-
-  CurActiveRecord: Integer;
-begin
-  b:=false;
-  for i:=0 to Columns.Count-1 do
-  begin
-    if TRxColumn(Columns[i]).WordWrap then
-    begin
-      B:=true;
-      Break;
-    end;
-  end;
-  if not B then
-    Result:=inherited GetBufferCount
-  else
-  begin
-    CurActiveRecord:=DataLink.ActiveRecord;
-    Result:=0;
-    HW:=0;
-    K:=1;
-    for i:=GCache.VisibleGrid.Top to GCache.VisibleGrid.Bottom do
-    begin
-      DataLink.ActiveRecord:=i - FixedRows;
-      H:=1; //DefaultRowHeight;
-      for j:=0 to Columns.Count-1 do
-      begin
-        W:=Columns[i].Width;
-        if TRxColumn(Columns[i]).WordWrap then
-        begin
-          F:=Columns[i].Field;
-          if Assigned(F) then
-            S:=F.DisplayText
-          else
-            S:='';
-
-          H1 := Max((Canvas.TextWidth(S) + 2) div W + 1, H);
-          if H1 > WordCount(S, [' ']) then
-            H1 := WordCount(S, [' ']);
-        end;
-        H:=Max(H, H1);
-      end;
-      HW:=HW + H * DefaultRowHeight;
-
-      if HW>Height then
-        break;
-
-      RowHeights[K] := DefaultRowHeight * H;
-
-      inc(K);
-      inc(Result);
-    end;
-    DataLink.ActiveRecord:=CurActiveRecord;
-{
-    if (ARow>=FixedRows) and FDataLink.Active then
-    begin
-      FDataLink.ActiveRecord:=ARow-FixedRows;
-      FDrawingActiveRecord := ARow = Row;
-      FDrawingMultiSelRecord := (dgMultiSelect in Options) and
-        SelectedRows.CurrentRowSelected
-    end else begin
-      FDrawingActiveRecord := False;
-      FDrawingMultiSelRecord := False;
-    end;
-
-    }
-  end;
-end;
-*)
 
 procedure TRxDBGrid.CMHintShow(var Message: TLMessage);
 var
@@ -3580,8 +3514,8 @@ begin
   inherited VisualChange;
   CalcTitle;
 
-  if rdgWordWrap in FOptionsRx then
-    UpdateRowsHeight;
+{  if rdgWordWrap in FOptionsRx then
+    UpdateRowsHeight;}
 end;
 
 function TRxDBGrid.EditorByStyle(Style: TColumnButtonStyle): TWinControl;
