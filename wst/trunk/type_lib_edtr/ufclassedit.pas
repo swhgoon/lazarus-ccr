@@ -153,42 +153,42 @@ end;
 
 procedure TfClassEdit.actMoveDownExecute(Sender: TObject);
 begin
-  MovePropertyItem(TPasProperty(edtProp.ItemFocused.Data),(edtProp.ItemFocused.Index + 1));
+  MovePropertyItem(TPasProperty(edtProp.Items[edtProp.ItemIndex].Data),(edtProp.ItemIndex + 1));
 end;
 
 procedure TfClassEdit.actMoveDownUpdate(Sender: TObject);
 begin
-  TAction(Sender).Enabled := Assigned(edtProp.ItemFocused) and ( edtProp.ItemFocused.Index < Pred(edtProp.Items.Count) );
+  TAction(Sender).Enabled := (edtProp.ItemIndex >= 0) and ( edtProp.ItemIndex < Pred(edtProp.Items.Count) );
 end;
 
 procedure TfClassEdit.actMoveFirstExecute(Sender : TObject);
 begin
-  MovePropertyItem(TPasProperty(edtProp.ItemFocused.Data),0);
+  MovePropertyItem(TPasProperty(edtProp.Items[edtProp.ItemIndex].Data),0);
 end;
 
 procedure TfClassEdit.actMoveLastExecute(Sender : TObject);
 begin
-  MovePropertyItem(TPasProperty(edtProp.ItemFocused.Data),(edtProp.Items.Count - 1)); 
+  MovePropertyItem(TPasProperty(edtProp.Items[edtProp.ItemIndex].Data),(edtProp.Items.Count - 1));
 end;
 
 procedure TfClassEdit.actMoveUpExecute(Sender: TObject);
 begin
-  MovePropertyItem(TPasProperty(edtProp.ItemFocused.Data),(edtProp.ItemFocused.Index - 1));
+  MovePropertyItem(TPasProperty(edtProp.Items[edtProp.ItemIndex].Data),(edtProp.ItemIndex - 1));
 end;
 
 procedure TfClassEdit.actMoveUpUpdate(Sender: TObject);
 begin
-  TAction(Sender).Enabled := Assigned(edtProp.ItemFocused) and ( edtProp.ItemFocused.Index > 0 );
+  TAction(Sender).Enabled := ( edtProp.ItemIndex > 0 );
 end;
 
 procedure TfClassEdit.actPropDeleteExecute(Sender: TObject);
 var
   prop : TPasProperty;
 begin
-  prop := TPasProperty(edtProp.ItemFocused.Data);
+  prop := TPasProperty(edtProp.Items[edtProp.ItemIndex].Data);
   FObject.Members.Extract(prop);
   prop.Release();
-  edtProp.ItemFocused.Free();
+  edtProp.Items[edtProp.ItemIndex].Free();
 end;
 
 procedure TfClassEdit.actPropEditExecute(Sender: TObject);
@@ -197,7 +197,7 @@ var
   itm : TListItem;
   oldPos : Integer;
 begin
-  itm := edtProp.ItemFocused;
+  itm := edtProp.Items[edtProp.ItemIndex];
   if Assigned(itm) then begin
     prp := TPasProperty(itm.Data);
     if UpdateProperty(prp,FSymbolTable) then begin
@@ -210,7 +210,7 @@ end;
 
 procedure TfClassEdit.actPropEditUpdate(Sender: TObject);
 begin
-  TAction(Sender).Enabled := Assigned(edtProp.ItemFocused);
+  TAction(Sender).Enabled := (edtProp.ItemIndex >= 0);
 end;
 
 procedure TfClassEdit.edtPropDblClick(Sender: TObject);
@@ -258,16 +258,18 @@ procedure TfClassEdit.MovePropertyItem(AItem: TPasProperty; const ANewIndex: Int
 
 var
   locItem : TListItem;
+  i : Integer;
 begin
   if ( AItem <> nil ) and
      ( ( ANewIndex >= 0 ) and ( ANewIndex < edtProp.Items.Count ) )
   then begin
+    //i := edtProp.ItemIndex;
     locItem := FindItem(FSymbolTable.GetExternalName(AItem),edtProp.Items);
     if ( locItem <> nil ) then
       locItem.Free();
     FObject.Members.Exchange(FObject.Members.IndexOf(AItem),FindNewMemberPosition());
     locItem := LoadProperty(AItem,ANewIndex);
-    edtProp.ItemFocused := locItem;
+    //edtProp.Items[i] := locItem;
     edtProp.Selected := locItem;
     FApplied := True;
   end;
