@@ -136,7 +136,7 @@ type
     );virtual;abstract;
     function GetOwner() : IXsdGenerator;
     class function CanHandle(ASymbol : TObject) : Boolean;virtual;abstract;
-    function GetSchemaNode(ADocument : TDOMDocument) : TDOMNode;
+    function GetSchemaNode(ADocument : TDOMDocument) : TDOMElement;
     procedure DeclareNameSpaceOf_WST(ADocument : TDOMDocument);
     procedure DeclareAttributeOf_WST(AElement : TDOMElement; const AAttName, AAttValue : DOMString);
     function GetRegistry() : IXsdTypeHandlerRegistry;{$IFDEF USE_INLINE}inline;{$ENDIF}
@@ -362,8 +362,9 @@ function FindAttributeByValueInNode(
   const AAttValue        : string;
   const ANode            : TDOMNode;
   out   AResAtt          : string;
-  const AStartIndex      : Integer = 0;
-  const AStartingWith    : string = ''
+  const AStartIndex      : Integer;
+  const AStartingWith    : string;
+  var   AFoundPosition   : Integer
 ):boolean;
 var
   i,c : Integer;
@@ -380,6 +381,7 @@ begin
          ( b or ( Pos(AStartingWith,ANode.Attributes.Item[i].NodeName) = 1 ))
       then begin
         AResAtt := ANode.Attributes.Item[i].NodeName;
+        AFoundPosition := i;
         Result := True;
         Exit;
       end;
@@ -388,21 +390,69 @@ begin
   Result := False;
 end;
 
+function FindAttributeByValueInNode(
+  const AAttValue        : string;
+  const ANode            : TDOMNode;
+  out   AResAtt          : string;
+  const AStartIndex      : Integer = 0;
+  const AStartingWith    : string = ''
+):boolean;
+var
+  i,c : Integer;
+  b : Boolean;
+  k : Integer;
+begin
+  Result := FindAttributeByValueInNode(
+              AAttValue,ANode,AResAtt,AStartIndex,AStartingWith,k
+            );
+end;
+
 function GetNameSpaceShortName(
   const ANameSpace    : string;
         ADocument : TDOMDocument;
   const APreferedList : TStrings
-):string;
+) : string;
+var
+  k : Integer;
 begin
-  if FindAttributeByValueInNode(ANameSpace,ADocument.DocumentElement,Result,0, s_xmlns) then begin
+  k := -1;
+  while FindAttributeByValueInNode(ANameSpace,ADocument.DocumentElement,Result,(k+1), s_xmlns,k) do begin
     Result := Copy(Result,Length(s_xmlns+':')+1,MaxInt);
-  end else begin
-    if ( APreferedList <> nil ) then
-      Result := Trim(APreferedList.Values[ANameSpace]);
-    if ( Result = '' ) then
-      Result := Format('ns%d',[GetNodeListCount(ADocument.DocumentElement.Attributes)]) ;
-    ADocument.DocumentElement.SetAttribute(Format('%s:%s',[s_xmlns,Result]),ANameSpace);
+    if (Result = '') then begin
+      k := k + 1;
+      Continue;
+    end;
+    exit;
   end;
+  if ( APreferedList <> nil ) then
+    Result := Trim(APreferedList.Values[ANameSpace]);
+  if ( Result = '' ) then
+    Result := Format('ns%d',[GetNodeListCount(ADocument.DocumentElement.Attributes)]) ;
+  ADocument.DocumentElement.SetAttribute(Format('%s:%s',[s_xmlns,Result]),ANameSpace);
+end;
+
+function GetNameSpaceShortName(
+  const ANameSpace    : string;
+        ADocument : TDOMElement;
+  const APreferedList : TStrings
+):string;
+var
+  k : Integer;
+begin
+  k := -1;
+  while FindAttributeByValueInNode(ANameSpace,ADocument,Result,(k+1), s_xmlns,k) do begin
+    Result := Copy(Result,Length(s_xmlns+':')+1,MaxInt);
+    if (Result = '') then begin
+      k := k + 1;
+      Continue;
+    end;
+    exit;
+  end;
+  if ( APreferedList <> nil ) then
+    Result := Trim(APreferedList.Values[ANameSpace]);
+  if ( Result = '' ) then
+    Result := Format('ns%d',[GetNodeListCount(ADocument.Attributes)]) ;
+  ADocument.SetAttribute(Format('%s:%s',[s_xmlns,Result]),ANameSpace);
 end;
 
 function CreateElement(const ANodeName : DOMString; AParent : TDOMNode; ADoc : TDOMDocument):TDOMElement;//inline;
@@ -590,9 +640,9 @@ begin
   Result := IXsdGenerator(FOwner);
 end;
 
-function TBaseTypeHandler.GetSchemaNode(ADocument : TDOMDocument) : TDOMNode;
+function TBaseTypeHandler.GetSchemaNode(ADocument : TDOMDocument) : TDOMElement;
 begin
-  Result := GetOwner().GetSchemaNode(ADocument);
+  Result := GetOwner().GetSchemaNode(ADocument) as TDOMElement;
 end;
 
 procedure TBaseTypeHandler.DeclareNameSpaceOf_WST(ADocument : TDOMDocument);
@@ -684,8 +734,8 @@ begin
   typItm := ASymbol as TPasAliasType;
   if Assigned(typItm) then begin
     unitExternalName := GetTypeNameSpace(AContainer,ASymbol);
-    GetNameSpaceShortName(unitExternalName,ADocument,GetOwner().GetPreferedShortNames());
     defSchemaNode := GetSchemaNode(ADocument) as TDOMElement;
+    GetNameSpaceShortName(unitExternalName,defSchemaNode,GetOwner().GetPreferedShortNames());
 
     s := Format('%s:%s',[s_xs_short,s_element]);
     resNode := CreateElement(s,defSchemaNode,ADocument);
@@ -704,7 +754,7 @@ begin
     if trueDestType.InheritsFrom(TPasUnresolvedTypeRef) then
       trueDestType := AContainer.FindElement(AContainer.GetExternalName(typItm.DestType)) as TPasType;
     baseUnitExternalName := GetTypeNameSpace(AContainer,trueDestType);
-    s := GetNameSpaceShortName(baseUnitExternalName,ADocument,GetOwner().GetPreferedShortNames());
+    s := GetNameSpaceShortName(baseUnitExternalName,defSchemaNode,GetOwner().GetPreferedShortNames());
     s := Format('%s:%s',[s,AContainer.GetExternalName(trueDestType)]);
     resNode.SetAttribute(s_type,s) ;
     if trueDestType.InheritsFrom(TPasNativeSpecialSimpleType) then begin
@@ -821,14 +871,14 @@ procedure TClassTypeDefinition_TypeHandler.Generate(
         if ( q > 0 ) then begin
           ns := Copy(line,1,Pred(q));
           localName := Copy(line,Succ(q),MaxInt);
-          ns_short := GetNameSpaceShortName(ns,ADocument,GetOwner().GetPreferedShortNames());
+          ns_short := GetNameSpaceShortName(ns,GetSchemaNode(ADocument),GetOwner().GetPreferedShortNames());
           attName := Format('%s:%s',[ns_short,localName]);
           line := ls.Values[line];
           q := Pos('#',line);
           if ( q > 0 ) then begin
             ns := Copy(line,1,Pred(q));
             localName := Copy(line,Succ(q),MaxInt);
-            ns_short := GetNameSpaceShortName(ns,ADocument,GetOwner().GetPreferedShortNames());
+            ns_short := GetNameSpaceShortName(ns,GetSchemaNode(ADocument),GetOwner().GetPreferedShortNames());
             attValue := Format('%s:%s',[ns_short,localName]);
           end else begin
             attValue := line;
@@ -922,7 +972,7 @@ var
         if isEmbeddedArray then begin
           s := AContainer.GetExternalName(TPasArrayType(propItmUltimeType).ElType);
           arrayItemType := TPasArrayType(propItmUltimeType).ElType;
-          prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,arrayItemType),ADocument,GetOwner().GetPreferedShortNames());
+          prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,arrayItemType),GetSchemaNode(ADocument),GetOwner().GetPreferedShortNames());
           propNode.SetAttribute(s_type,Format('%s:%s',[prop_ns_shortName,s]));
           if arrayItemType.InheritsFrom(TPasNativeSpecialSimpleType) then begin
             if GetRegistry().FindHelper(arrayItemType,typeHelper) then
@@ -930,7 +980,7 @@ var
           end;
         end else begin
           s := AContainer.GetExternalName(propTypItm);
-          prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,propTypItm),ADocument,GetOwner().GetPreferedShortNames());
+          prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,propTypItm),GetSchemaNode(ADocument),GetOwner().GetPreferedShortNames());
           propNode.SetAttribute(s_type,Format('%s:%s',[prop_ns_shortName,s]));
           if propTypItm.InheritsFrom(TPasNativeSpecialSimpleType) then begin
             if GetRegistry().FindHelper(propTypItm,typeHelper) then
@@ -980,7 +1030,7 @@ begin
   inherited;
   typItm := ASymbol as TPasClassType;
   if Assigned(typItm) then begin
-    GetNameSpaceShortName(AContainer.GetExternalName(AContainer.CurrentModule) ,ADocument,GetOwner().GetPreferedShortNames());
+    GetNameSpaceShortName(AContainer.GetExternalName(AContainer.CurrentModule) ,GetSchemaNode(ADocument),GetOwner().GetPreferedShortNames());
     defSchemaNode := GetSchemaNode(ADocument) as TDOMElement;
 
     s := Format('%s:%s',[s_xs_short,s_complexType]);
@@ -1028,7 +1078,7 @@ begin
           end else begin
             derivationNode := CreateElement(Format('%s:%s',[s_xs_short,s_extension]),cplxNode,ADocument);
           end;
-          s := Trim(GetNameSpaceShortName(GetTypeNameSpace(AContainer,trueParent),ADocument,GetOwner().GetPreferedShortNames()));
+          s := Trim(GetNameSpaceShortName(GetTypeNameSpace(AContainer,trueParent),GetSchemaNode(ADocument),GetOwner().GetPreferedShortNames()));
           if ( Length(s) > 0 ) then
             s := s + ':';
           s := s + AContainer.GetExternalName(trueParent);
@@ -1107,7 +1157,7 @@ begin
   inherited;
   typItm := ASymbol as TPasRecordType;
   if Assigned(typItm) then begin
-    GetNameSpaceShortName(AContainer.GetExternalName(AContainer.CurrentModule) ,ADocument,GetOwner().GetPreferedShortNames());
+    GetNameSpaceShortName(AContainer.GetExternalName(AContainer.CurrentModule) ,GetSchemaNode(ADocument),GetOwner().GetPreferedShortNames());
     defSchemaNode := GetSchemaNode(ADocument) as TDOMElement;
 
     s := Format('%s:%s',[s_xs_short,s_complexType]);
@@ -1157,7 +1207,7 @@ begin
         if Assigned(propTypItm) then begin
           if propTypItm.InheritsFrom(TPasUnresolvedTypeRef) then
             propTypItm := AContainer.FindElement(AContainer.GetExternalName(propTypItm)) as TPasType;
-          prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,propTypItm),ADocument,GetOwner().GetPreferedShortNames());
+          prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,propTypItm),GetSchemaNode(ADocument),GetOwner().GetPreferedShortNames());
           propNode.SetAttribute(s_type,Format('%s:%s',[prop_ns_shortName,AContainer.GetExternalName(propTypItm)]));
           if propTypItm.InheritsFrom(TPasNativeSpecialSimpleType) then begin
             if GetRegistry().FindHelper(propTypItm,typeHelper) then
@@ -1200,14 +1250,9 @@ procedure TBaseArrayRemotable_TypeHandler.Generate(
         ADocument : TDOMDocument
 );
 
-  function GetNameSpaceShortName(const ANameSpace : string):string;
+  function GetNameSpaceShortName(const ANameSpace : string):string;overload;
   begin
-    if FindAttributeByValueInNode(ANameSpace,ADocument.DocumentElement,Result,0,s_xmlns) then begin
-      Result := Copy(Result,Length(s_xmlns+':')+1,MaxInt);
-    end else begin
-      Result := Format('ns%d',[GetNodeListCount(ADocument.DocumentElement.Attributes)]) ;
-      ADocument.DocumentElement.SetAttribute(Format('%s:%s',[s_xmlns,Result]),ANameSpace);
-    end;
+    Result := GetNameSpaceShortName(ANameSpace,GetSchemaNode(ADocument),GetOwner().GetPreferedShortNames());
   end;
 
 var
@@ -1347,6 +1392,10 @@ begin
   sl := TStringList(FShortNames);
   //sl.Sorted := True;
   sl.Duplicates := dupIgnore;
+  SetPreferedShortNames(s_soap,s_soap_short_name);
+  SetPreferedShortNames(s_xs,s_xs_short);
+  SetPreferedShortNames(s_WST_base_namespace,s_WST);
+  SetPreferedShortNames(s_wsdl,'wsdl');
 end;
 
 procedure TCustomXsdGenerator.SetPreferedShortNames(const ALongName, AShortName: string);
