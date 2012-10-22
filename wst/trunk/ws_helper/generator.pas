@@ -1137,7 +1137,7 @@ begin
 end;}
 function TBaseGenerator.GenerateExtraUses() : string; 
 var
-  locUsesList : TList;
+  locUsesList : TList2;
   locModule : TPasElement;
   i : Integer;
 begin
