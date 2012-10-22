@@ -105,10 +105,10 @@ procedure TfProcEdit.actDeleteArgumentExecute(Sender: TObject);
 var
   prop : TPasArgument;
 begin
-  prop := TPasArgument(edtParams.ItemFocused.Data);
+  prop := TPasArgument(edtParams.Items[edtParams.ItemIndex].Data);
   FObject.ProcType.Args.Extract(prop);
   prop.Release();
-  edtParams.ItemFocused.Free();
+  edtParams.Items[edtParams.ItemIndex].Free();
 end;
 
 procedure TfProcEdit.actOkUpdate(Sender: TObject);
@@ -148,7 +148,7 @@ var
   prp : TPasArgument;
   itm : TListItem;
 begin
-  itm := edtParams.ItemFocused;
+  itm := edtParams.Items[edtParams.ItemIndex];
   if Assigned(itm) then begin
     prp := TPasArgument(itm.Data);
     if edit_helper.UpdateObject(TPasElement(prp),FSymbolTable) then begin
@@ -160,7 +160,7 @@ end;
 
 procedure TfProcEdit.actUpdateArgumentUpdate(Sender: TObject);
 begin
-  TAction(Sender).Enabled := Assigned(edtParams.ItemFocused);
+  TAction(Sender).Enabled := (edtParams.ItemIndex >= 0);
 end;
 
 procedure TfProcEdit.edtFunctionClick(Sender: TObject);
@@ -244,7 +244,7 @@ procedure TfProcEdit.SaveToObject();
       newArg.Access := arg.Access;
       newArg.ArgType := arg.ArgType;
         newArg.ArgType.AddRef();
-      newArg.Value := arg.Value;
+      //newArg.Value := arg.Value;
     end;
   end;
   
