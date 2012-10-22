@@ -54,8 +54,21 @@ uses
   XMLWrite, XMLRead, xpath;
 
 function ReadXMLFile(AStreeam : TStream) : TXMLDocument;
+var
+  p : TDOMParser;
+  s : TXMLInputSource;
 begin
-  ReadXMLFile(Result,AStreeam);
+  s := nil;
+  p := nil;
+  try
+    s := TXMLInputSource.Create(AStreeam);
+    p := TDOMParser.Create();
+    p.Options.Namespaces := True;
+    p.Parse(s,Result);
+  finally
+    p.Free();
+    s.Free();
+  end;
 end;
 
 function ReadXMLFile(AFileName : string) : TXMLDocument;
