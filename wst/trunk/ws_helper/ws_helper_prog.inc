@@ -207,7 +207,7 @@ var
   var
     namesSpecif, strBuffer, oldName, newName : string;
     k : Integer;
-    mdlList : TList; 
+    mdlList : TList2;
     mdl : TPasModule;
     found : Boolean;
   begin
