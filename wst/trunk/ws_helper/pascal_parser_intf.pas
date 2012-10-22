@@ -43,11 +43,7 @@ type
 type
 {$UNDEF wst_use_fplist}
 {$IFDEF FPC}
-  {$IF Defined(FPC_VERSION) and
-       ( (FPC_VERSION > 2) or
-         ( (FPC_VERSION = 2) and (FPC_RELEASE > 6) )
-       )
-  }
+  {$IF Defined(FPC_FULLVERSION) and (FPC_FULLVERSION>=20601)}
     {$DEFINE wst_use_fplist}
   {$IFEND}
 {$ENDIF FPC}
