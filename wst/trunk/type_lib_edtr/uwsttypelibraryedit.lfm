@@ -1,22 +1,22 @@
 object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
   Left = 141
   Height = 644
-  Top = 194
+  Top = 163
   Width = 833
   AllowDropFiles = True
   Caption = '[Web Services Toolkit ] Type Library Editor'
-  ClientHeight = 624
+  ClientHeight = 619
   ClientWidth = 833
   Menu = MainMenu1
   OnClose = FormClose
   OnDropFiles = FormDropFiles
   OnShow = FormShow
   Position = poDesktopCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.0.1.4'
   object SB: TStatusBar
     Left = 0
-    Height = 23
-    Top = 601
+    Height = 21
+    Top = 598
     Width = 833
     Panels = <    
       item
@@ -29,20 +29,19 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
   end
   object Panel1: TPanel
     Left = 0
-    Height = 601
+    Height = 598
     Top = 0
     Width = 314
     Align = alLeft
-    ClientHeight = 601
+    ClientHeight = 598
     ClientWidth = 314
     TabOrder = 0
     object trvSchema: TTreeView
       Left = 1
-      Height = 599
+      Height = 596
       Top = 1
       Width = 312
       Align = alClient
-      DefaultItemHeight = 16
       PopupMenu = PopupMenu1
       ReadOnly = True
       TabOrder = 0
@@ -52,16 +51,16 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
   end
   object Panel2: TPanel
     Left = 322
-    Height = 601
+    Height = 598
     Top = 0
     Width = 511
     Align = alClient
-    ClientHeight = 601
+    ClientHeight = 598
     ClientWidth = 511
     TabOrder = 1
     object PC: TPageControl
       Left = 1
-      Height = 463
+      Height = 460
       Top = 1
       Width = 509
       ActivePage = tsInterface
@@ -70,13 +69,13 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
       TabOrder = 0
       object tsInterface: TTabSheet
         Caption = '&Interface'
-        ClientHeight = 437
-        ClientWidth = 501
+        ClientHeight = 425
+        ClientWidth = 503
         inline srcInterface: TSynEdit
           Left = 0
-          Height = 437
+          Height = 425
           Top = 0
-          Width = 501
+          Width = 503
           Align = alClient
           Font.Color = clBlack
           Font.Height = -13
@@ -594,8 +593,8 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
       end
       object tsWSDL: TTabSheet
         Caption = '&WSDL'
-        ClientHeight = 437
-        ClientWidth = 501
+        ClientHeight = 425
+        ClientWidth = 503
         inline srcWSDL: TSynEdit
           Left = 0
           Height = 437
@@ -1119,8 +1118,8 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
       end
       object tsProxy: TTabSheet
         Caption = '&Proxy'
-        ClientHeight = 437
-        ClientWidth = 501
+        ClientHeight = 425
+        ClientWidth = 503
         inline srcProxy: TSynEdit
           Left = 0
           Height = 437
@@ -1644,8 +1643,8 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
       end
       object tsImp: TTabSheet
         Caption = 'Im&plementation Skeleton'
-        ClientHeight = 437
-        ClientWidth = 501
+        ClientHeight = 425
+        ClientWidth = 503
         inline srcImp: TSynEdit
           Left = 0
           Height = 437
@@ -2169,8 +2168,8 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
       end
       object tsBinder: TTabSheet
         Caption = '&Binder'
-        ClientHeight = 437
-        ClientWidth = 501
+        ClientHeight = 425
+        ClientWidth = 503
         inline srcBinder: TSynEdit
           Left = 0
           Height = 437
@@ -2694,8 +2693,8 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
       end
       object tsLog: TTabSheet
         Caption = '&Log'
-        ClientHeight = 437
-        ClientWidth = 501
+        ClientHeight = 425
+        ClientWidth = 503
         object mmoLog: TMemo
           Left = 0
           Height = 437
@@ -2713,7 +2712,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
     object PCInfos: TPageControl
       Left = 1
       Height = 128
-      Top = 472
+      Top = 469
       Width = 509
       ActivePage = tsDocumentation
       Align = alBottom
@@ -2721,13 +2720,13 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
       TabOrder = 1
       object tsDocumentation: TTabSheet
         Caption = 'Documentation'
-        ClientHeight = 102
-        ClientWidth = 501
+        ClientHeight = 93
+        ClientWidth = 503
         object edtDocumentation: TMemo
           Left = 0
-          Height = 102
+          Height = 93
           Top = 0
-          Width = 501
+          Width = 503
           Align = alClient
           Color = clSilver
           ReadOnly = True
@@ -2738,8 +2737,8 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
       end
       object tsXSD: TTabSheet
         Caption = 'XML Schema Definition ( XSD )'
-        ClientHeight = 102
-        ClientWidth = 501
+        ClientHeight = 93
+        ClientWidth = 503
         inline edtXSD: TSynEdit
           Left = 0
           Height = 102
@@ -3262,8 +3261,8 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
       end
       object tsDependencies: TTabSheet
         Caption = 'Used by'
-        ClientHeight = 102
-        ClientWidth = 501
+        ClientHeight = 93
+        ClientWidth = 503
         object tvDependency: TTreeView
           Left = 0
           Height = 102
@@ -3283,7 +3282,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
       Cursor = crVSplit
       Left = 1
       Height = 8
-      Top = 464
+      Top = 461
       Width = 509
       Align = alBottom
       Color = clBlack
@@ -3293,7 +3292,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
   end
   object Splitter1: TSplitter
     Left = 314
-    Height = 601
+    Height = 598
     Top = 0
     Width = 8
     Color = clBlack
@@ -3524,8 +3523,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
     end
   end
   object OD: TOpenDialog
-    Filter = 'WDSL files(*.WSDL)|*.wsdl|Pascal file (*.pas)|*.pas|XSD files ( *.xsd )|*.xsd'
-    FilterIndex = 0
+    Filter = 'wsdl files(*.wsdl)|*.wsdl|Pascal file (*.pas)|*.pas|XSD files ( *.xsd )|*.xsd|WDSL files(*.WSDL)|*.WSDL'
     InitialDir = '.\'
     Options = [ofPathMustExist, ofFileMustExist, ofEnableSizing, ofViewDetail]
     left = 409
@@ -3557,7 +3555,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
   end
   object SD: TSaveDialog
     DefaultExt = '.WSDL'
-    Filter = 'WDSL files (*.wsdl)|*.wsdl|XSD files ( *.xsd )|*.xsd'
+    Filter = 'wsdl files (*.wsdl)|*.wsdl|XSD files ( *.xsd )|*.xsd|WDSL files (*.WDSL)|*.WDSL'
     FilterIndex = 0
     Options = [ofPathMustExist, ofEnableSizing, ofViewDetail]
     left = 498

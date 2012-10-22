@@ -217,7 +217,7 @@ var
 
 implementation
 uses
-  view_helper, DOM, XMLRead, XMLWrite, //HeapTrc,
+  view_helper, DOM, wst_fpc_xml, XMLWrite, //HeapTrc,
   xsd_parser, wsdl_parser, source_utils, command_line_parser, generator, metadata_generator,
   binary_streamer, wst_resources_utils, xsd_generator, wsdl_generator,
   uabout, edit_helper, udm, ufrmsaveoption, pparser, SynEditTypes
@@ -309,7 +309,7 @@ begin
     Delete(symName,Length(symName),1);
   end;
   prsr := nil;
-  ReadXMLFile(locDoc,AContent);
+  locDoc := ReadXMLFile(AContent);
   try
     Result := TwstPasTreeContainer.Create();
     try
@@ -367,7 +367,7 @@ begin
     Delete(symName,Length(symName),1);
   end;
   prsr := nil;
-  ReadXMLFile(locDoc,AContent);
+  locDoc := ReadXMLFile(AContent);
   try
     Result := TwstPasTreeContainer.Create();
     try
