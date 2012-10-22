@@ -22,9 +22,14 @@ uses
 
 type
 
+  IObjectRef = interface
+    ['{B62EC733-999D-4DEC-A69F-B7546A16F661}']
+    function GetObject() : TObject;
+  end;
+
   { TFPWorkerObject }
 
-  TFPWorkerObject = class
+  TFPWorkerObject = class(TInterfacedObject,IObjectRef)
   private
     FHTTPServerObject: TFPHTTPServer;
     FRootAddress : string;
@@ -52,6 +57,8 @@ type
       Var ARequest  : TFPHTTPConnectionRequest;
       Var AResponse : TFPHTTPConnectionResponse
     );
+  protected
+    function GetObject() : TObject;
   public
     constructor Create();
     destructor Destroy(); override;
@@ -70,7 +77,7 @@ type
 
   TServerListnerThread = class(TThread)
   private
-    FWorkerObject : TFPWorkerObject;
+    FWorkerObject : IObjectRef;
   public
     constructor Create(AWorkerObject : TFPWorkerObject);
     procedure Execute(); override;
@@ -84,6 +91,7 @@ type
   TwstFPHttpListener = class(TwstListener)
   private
     FOptions : TListenerOptions;
+    FWorkerObjectRef : IObjectRef;
     FWorkerObject : TFPWorkerObject;
   protected
     procedure SetOnNotifyMessage(const AValue : TListnerNotifyMessage);override;
@@ -141,14 +149,17 @@ end;
 constructor TServerListnerThread.Create(AWorkerObject : TFPWorkerObject);
 begin
   FreeOnTerminate := True;
-  FWorkerObject := AWorkerObject;
+  FWorkerObject := AWorkerObject as IObjectRef;
   inherited Create(False);
 end;
 
 procedure TServerListnerThread.Execute();
+var
+  locObject : TFPWorkerObject;
 begin
   try
-    FWorkerObject.Start();
+    locObject := TFPWorkerObject(FWorkerObject.GetObject());
+    locObject.Start();
   except
   end;
 end;
@@ -262,6 +273,11 @@ begin
   end;
 end;
 
+function TFPWorkerObject.GetObject : TObject;
+begin
+  Result := Self;
+end;
+
 procedure TFPWorkerObject.SetHandleRequestInThread(const AValue : Boolean);
 begin
   if FHTTPServerObject.Active then
@@ -326,7 +342,8 @@ constructor TwstFPHttpListener.Create(
 
 begin
   inherited Create();
-  FWorkerObject := TFPWorkerObject.Create();
+  FWorkerObjectRef := TFPWorkerObject.Create() as IObjectRef;
+  FWorkerObject := TFPWorkerObject(FWorkerObjectRef.GetObject());
   FWorkerObject.RootAddress := AServerIpAddress;
   FWorkerObject.ServerSoftware := AServerSoftware;
   FWorkerObject.ListeningPort := AListningPort;
@@ -336,7 +353,7 @@ destructor TwstFPHttpListener.Destroy();
 begin
   if (FWorkerObject <> nil) then
     Stop();
-  FreeAndNil(FWorkerObject);
+  FWorkerObjectRef := nil;
   inherited Destroy();
 end;
 
