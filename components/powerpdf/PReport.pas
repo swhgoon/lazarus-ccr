@@ -380,12 +380,15 @@ type
     FAlignment: TAlignment;
     FClipping: boolean;
     FAlignJustified: boolean;
+    FAngle: integer;
     procedure SetAlignment(Value: TAlignment);
     procedure SetAlignJustified(Value: boolean);
     procedure SetCanvasProperties(ACanvas: TPdfCanvas);
   protected
     procedure Paint; override;
     procedure Print(ACanvas: TPRCanvas; ARect: TRect); override;
+  public
+    property Angle: integer read Fangle write Fangle;
   published
     function GetTextWidth: Single;
     property Caption;
@@ -1837,7 +1840,11 @@ begin
 
   SetCanvasProperties(ACanvas.PdfCanvas);
 
-  ACanvas.TextRect(ARect, Caption, FAlignment, Clipping);
+  // Only one line of text rotated for now. It's the begining
+  if Angle=90 then
+    ACanvas.PdfCanvas.TextOutRotatedUp(ARect.Left + FontSize,  GetPage.Height - ARect.Top, Caption)
+  else
+    ACanvas.TextRect(ARect, Caption, FAlignment, Clipping);
 end;
 
 function TPRLabel.GetTextWidth: Single;
