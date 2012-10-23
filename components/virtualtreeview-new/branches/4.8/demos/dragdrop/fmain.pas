@@ -105,7 +105,7 @@ begin
   case Mode of
     dmAbove: Node := Sender.InsertNode(Sender.DropTargetNode, amInsertBefore);
     dmBelow: Node := Sender.InsertNode(Sender.DropTargetNode, amInsertAfter);
-    dmNowhere: Node := Sender.InsertNode(Sender.DropTargetNode, amNoWhere);
+    dmNowhere: Exit;
   else
     Node := Sender.AddChild(Sender.DropTargetNode);
   end;
@@ -119,10 +119,13 @@ begin
   end
   else if Source = Sender then
   begin
-    NodeTitle := VirtualStringTree1.Text[Sender.FocusedNode, 0];
+    if Sender.FocusedNode <> nil then
+      NodeTitle := VirtualStringTree1.Text[Sender.FocusedNode, 0]
+    else
+      NodeTitle := 'Unknow Source Node';
   end
   else
-    NodeTitle := 'Unknow Source';
+    NodeTitle := 'Unknow Source Control';
   PNodeData(Sender.GetNodeData(Node))^.Title := NodeTitle;
 end;
 
