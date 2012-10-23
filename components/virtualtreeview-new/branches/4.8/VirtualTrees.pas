@@ -10109,6 +10109,15 @@ begin
                               hsHeightTracking, hsHeightTrackPending];
       end;
     // hovering, mouse leave detection
+    CM_MOUSELEAVE:
+      with FColumns do
+      begin
+        if FHoverIndex > NoColumn then
+          Invalidate(Items[FHoverIndex]);
+        FHoverIndex := NoColumn;
+        FClickIndex := NoColumn;
+        FDownIndex := NoColumn;
+      end;
     //todo: see the difference to below
     LM_MOUSEMOVE:
       with TLMMouseMove(Message), FColumns do
