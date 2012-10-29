@@ -51,11 +51,17 @@
       {$IFEND}
     {$IFEND}
     {$IF Defined(FPC_211)}
-      {$DEFINE HAS_FORMAT_SETTINGS}                                              
+      {$DEFINE HAS_FORMAT_SETTINGS}
     {$IFEND}
     {$IFDEF WINDOWS}
       {$DEFINE WST_SEMAPHORE_TIMEOUT}
     {$ENDIF WINDOWS}
+    {$IF Defined(FPC_FULLVERSION) and (FPC_FULLVERSION >= 20600) }
+      {$DEFINE HAS_DEFAULT_FORMAT_SETTINGS}
+    {$IFEND}
+    {$IF Defined(FPC_FULLVERSION) and (FPC_FULLVERSION > 20601) }
+      {$DEFINE HAS_EXP_TREE}
+    {$IFEND}
   {$ENDIF}
 
   {$IFNDEF FPC}

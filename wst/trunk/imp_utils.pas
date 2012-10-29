@@ -125,7 +125,7 @@ begin
   Result := Value;
   for i := 1 to length(Result) do begin
     if ( Result[i] = '.' ) then
-      Result[i] := DefaultFormatSettings.DecimalSeparator;
+      Result[i] := {$IFDEF HAS_DEFAULT_FORMAT_SETTINGS}DefaultFormatSettings.{$ENDIF}DecimalSeparator;
   end;
 end;
 
