@@ -751,6 +751,7 @@ function xsd_DurationToStr(const AValue : TDurationRec) : string;
 var
   strTime, strDate : string;
 begin
+  Result := '';
   if ( AValue.FractionalSecond > 0 ) then begin
     strTime := IntToStr(AValue.Second) + '.' + IntToStr(AValue.FractionalSecond) + 'S';
   end else begin
