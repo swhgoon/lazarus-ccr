@@ -10,9 +10,8 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
+{$INCLUDE wst_global.inc}
 unit uinterfaceedit;
-
-{$mode objfpc}{$H+}
 
 interface
 
@@ -273,8 +272,14 @@ begin
     end;
     FObject := TPasClassType(FSymbolTable.CreateElement(TPasClassType,intName,FSymbolTable.CurrentModule.InterfaceSection,visDefault,'',0));
     FObject.ObjKind := okInterface;
-    if ( CreateGUID(g) = 0 ) then
+    if ( CreateGUID(g) = 0 ) then begin
+{$IFDEF HAS_EXP_TREE}
+      FreeAndNil(FObject.GUIDExpr);
+      FObject.GUIDExpr:=TPrimitiveExpr.Create(FObject,pekString,GUIDToString(g));
+{$ELSE HAS_EXP_TREE}
       FObject.InterfaceGUID := GUIDToString(g);
+{$ENDIF HAS_EXP_TREE}
+    end;
     FSymbolTable.CurrentModule.InterfaceSection.Declarations.Add(FObject);
     FSymbolTable.CurrentModule.InterfaceSection.Types.Add(FObject);
     FSymbolTable.AddBinding(Format('%sBinding',[FObject.Name]),FObject).BindingStyle := bsRPC;

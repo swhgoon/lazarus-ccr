@@ -1225,9 +1225,19 @@ begin
     FModule.InterfaceSection.Classes.Add(locIntf);
     locIntf.ObjKind := okInterface;
     Result := locIntf;
+{$IFDEF HAS_EXP_TREE}
+    locIntf.GUIDExpr:=TPrimitiveExpr.Create(locIntf,pekString,ParseIntfGuid());
+{$ELSE HAS_EXP_TREE}
     locIntf.InterfaceGUID := ParseIntfGuid();
-    if IsStrEmpty(locIntf.InterfaceGUID) and ( CreateGUID(inft_guid) = 0 ) then
+{$ENDIF HAS_EXP_TREE}
+    if IsStrEmpty(locIntf.InterfaceGUID) and ( CreateGUID(inft_guid) = 0 ) then begin
+{$IFDEF HAS_EXP_TREE}
+      FreeAndNil(locIntf.GUIDExpr);
+      locIntf.GUIDExpr:=TPrimitiveExpr.Create(locIntf,pekString,GUIDToString(inft_guid) );
+{$ELSE HAS_EXP_TREE}
       locIntf.InterfaceGUID := GUIDToString(inft_guid);
+{$ENDIF HAS_EXP_TREE}
+    end;
     locCursor := CreateChildrenCursor(ANode,cetRttiNode);
     if Assigned(locCursor) then begin
       locOpCursor := CreateCursorOn(locCursor,ParseFilter(CreateQualifiedNameFilterStr(s_operation,FWsdlShortNames),TDOMNodeRttiExposer));

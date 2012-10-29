@@ -1,7 +1,7 @@
 object fPropEdit: TfPropEdit
-  Left = 979
+  Left = 486
   Height = 326
-  Top = 146
+  Top = 236
   Width = 324
   HorzScrollBar.Page = 323
   VertScrollBar.Page = 325
@@ -11,7 +11,7 @@ object fPropEdit: TfPropEdit
   ClientHeight = 326
   ClientWidth = 324
   Position = poDesktopCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object Panel1: TPanel
     Left = 0
     Height = 50

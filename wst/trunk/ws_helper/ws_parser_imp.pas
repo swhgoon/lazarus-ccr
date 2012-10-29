@@ -1074,7 +1074,11 @@ var
     locPartCursor := CreateCursorOn(locAttCursor.Clone() as IObjectCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_default)]),TDOMNodeRttiExposer));
     locPartCursor.Reset();
     if locPartCursor.MoveNext() then
+    {$IFDEF HAS_EXP_TREE}
+      locProp.DefaultExpr:=TPrimitiveExpr.Create(locProp,pekString,(locPartCursor.GetCurrent() as TDOMNodeRttiExposer).NodeValue);
+    {$ELSE HAS_EXP_TREE}
       locProp.DefaultValue := (locPartCursor.GetCurrent() as TDOMNodeRttiExposer).NodeValue;
+    {$ENDIF HAS_EXP_TREE}
     ExtractExtendedMetadata(locProp,AElement);
   end;
 

@@ -100,7 +100,11 @@ var
     p.VarType := tr.FindElement(ATypeName) as TPasType;
     Check( (p.VarType <> nil), Format('Type not found : "%s".',[ATypeName]));
     p.VarType.AddRef();
+{$IFDEF HAS_EXP_TREE}
+    p.DefaultExpr := TPrimitiveExpr.Create(p,pekString,ADefault);
+{$ELSE HAS_EXP_TREE}
     p.DefaultValue := ADefault;
+{$ENDIF HAS_EXP_TREE}
     p.Visibility := visPublished;
     p.StoredAccessorName := 'True';
     if ( AKind = ptAttribute ) then
@@ -166,7 +170,11 @@ var
     p.VarType := tr.FindElement(ATypeName) as TPasType;
     Check( (p.VarType <> nil), Format('Type not found : "%s".',[ATypeName]));
     p.VarType.AddRef();
+{$IFDEF HAS_EXP_TREE}
+    p.DefaultExpr := TPrimitiveExpr.Create(p,pekString,ADefault);
+{$ELSE HAS_EXP_TREE}
     p.DefaultValue := ADefault;
+{$ENDIF HAS_EXP_TREE}
     p.Visibility := visPublished;
     p.StoredAccessorName := 'True';
     if ( AKind = ptAttribute ) then
@@ -235,7 +243,11 @@ var
     p.VarType := tr.FindElement(ATypeName) as TPasType;
     Check( (p.VarType <> nil), Format('Type not found : "%s".',[ATypeName]));
     p.VarType.AddRef();
+{$IFDEF HAS_EXP_TREE}
+    p.DefaultExpr := TPrimitiveExpr.Create(p,pekString,ADefault);
+{$ELSE HAS_EXP_TREE}
     p.DefaultValue := ADefault;
+{$ENDIF HAS_EXP_TREE}
     p.Visibility := visPublished;
     p.StoredAccessorName := 'True';
     if ( AKind = ptAttribute ) then
@@ -305,7 +317,11 @@ var
     p.VarType := tr.FindElement(ATypeName) as TPasType;
     Check( (p.VarType <> nil), Format('Type not found : "%s".',[ATypeName]));
     p.VarType.AddRef();
+{$IFDEF HAS_EXP_TREE}
+    p.DefaultExpr := TPrimitiveExpr.Create(p,pekString,ADefault);
+{$ELSE HAS_EXP_TREE}
     p.DefaultValue := ADefault;
+{$ENDIF HAS_EXP_TREE}
     p.Visibility := visPublished;
     p.StoredAccessorName := 'True';
     if ( AKind = ptAttribute ) then
@@ -378,7 +394,11 @@ var
     p.VarType := tr.FindElement(ATypeName) as TPasType;
     Check( (p.VarType <> nil), Format('Type not found : "%s".',[ATypeName]));
     p.VarType.AddRef();
+{$IFDEF HAS_EXP_TREE}
+    p.DefaultExpr := TPrimitiveExpr.Create(p,pekString,ADefault);
+{$ELSE HAS_EXP_TREE}
     p.DefaultValue := ADefault;
+{$ENDIF HAS_EXP_TREE}
     p.Visibility := visPublished;
     p.StoredAccessorName := 'True';
     if ( AKind = ptAttribute ) then
@@ -441,7 +461,11 @@ var
     p.VarType := tr.FindElement(ATypeName) as TPasType;
     Check( (p.VarType <> nil), Format('Type not found : "%s".',[ATypeName]));
     p.VarType.AddRef();
+{$IFDEF HAS_EXP_TREE}
+    p.DefaultExpr := TPrimitiveExpr.Create(p,pekString,ADefault);
+{$ELSE HAS_EXP_TREE}
     p.DefaultValue := ADefault;
+{$ENDIF HAS_EXP_TREE}
     p.Visibility := visPublished;
     p.StoredAccessorName := 'True';
     if ( AKind = ptAttribute ) then
@@ -503,7 +527,11 @@ var
     p.VarType := tr.FindElement(ATypeName) as TPasType;
     Check( (p.VarType <> nil), Format('Type not found : "%s".',[ATypeName]));
     p.VarType.AddRef();
+{$IFDEF HAS_EXP_TREE}
+    p.DefaultExpr := TPrimitiveExpr.Create(p,pekString,ADefault);
+{$ELSE HAS_EXP_TREE}
     p.DefaultValue := ADefault;
+{$ENDIF HAS_EXP_TREE}
     p.Visibility := visPublished;
     p.StoredAccessorName := 'True';
     if ( AKind = ptAttribute ) then
@@ -1013,7 +1041,11 @@ var
     p.VarType := tr.FindElement(ATypeName) as TPasType;
     Check( (p.VarType <> nil), Format('Type not found : "%s".',[ATypeName]));
     p.VarType.AddRef();
+{$IFDEF HAS_EXP_TREE}
+    p.DefaultExpr := TPrimitiveExpr.Create(p,pekString,ADefault);
+{$ELSE HAS_EXP_TREE}
     p.DefaultValue := ADefault;
+{$ENDIF HAS_EXP_TREE}
     p.Visibility := visPublished;
     p.StoredAccessorName := 'True';
     if ( AKind = ptAttribute ) then
@@ -1074,7 +1106,11 @@ var
     p.VarType := tr.FindElement(ATypeName) as TPasType;
     Check( (p.VarType <> nil), Format('Type not found : "%s".',[ATypeName]));
     p.VarType.AddRef();
+{$IFDEF HAS_EXP_TREE}
+    p.DefaultExpr := TPrimitiveExpr.Create(p,pekString,ADefault);
+{$ELSE HAS_EXP_TREE}
     p.DefaultValue := ADefault;
+{$ENDIF HAS_EXP_TREE}
     p.Visibility := visPublished;
     p.StoredAccessorName := 'True';
     if ( AKind = ptAttribute ) then
@@ -1135,7 +1171,11 @@ var
     p.VarType := tr.FindElement(ATypeName) as TPasType;
     Check( (p.VarType <> nil), Format('Type not found : "%s".',[ATypeName]));
     p.VarType.AddRef();
+{$IFDEF HAS_EXP_TREE}
+    p.DefaultExpr := TPrimitiveExpr.Create(p,pekString,ADefault);
+{$ELSE HAS_EXP_TREE}
     p.DefaultValue := ADefault;
+{$ENDIF HAS_EXP_TREE}
     p.Visibility := visPublished;
     p.StoredAccessorName := 'True';
     if ( AKind = ptAttribute ) then
@@ -1236,7 +1276,11 @@ begin
     mdl.InterfaceSection := TInterfaceSection(tr.CreateElement(TInterfaceSection,'',mdl,visDefault,'',0));
     cltyp := TPasClassType(tr.CreateElement(TPasClassType,'IEchoService',mdl.InterfaceSection,visDefault,'',0));
       cltyp.ObjKind := okInterface;
+{$IFDEF HAS_EXP_TREE}
+      cltyp.GUIDExpr := TPrimitiveExpr.Create(cltyp,pekString,'{FCD0F68F-3023-46C6-AD09-1DDA4A2989EB}');
+{$ELSE HAS_EXP_TREE}
       cltyp.InterfaceGUID := '{FCD0F68F-3023-46C6-AD09-1DDA4A2989EB}';
+{$ENDIF HAS_EXP_TREE}
       mdl.InterfaceSection.Declarations.Add(cltyp);
       mdl.InterfaceSection.Types.Add(cltyp);
       tr.AddBinding('IEchoServiceBinding',cltyp);

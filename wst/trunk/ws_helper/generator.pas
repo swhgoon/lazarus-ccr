@@ -336,7 +336,11 @@ begin
   try
     locRes.ObjKind := okInterface;
     if ( CreateGUID(g) = 0 ) then
+{$IFDEF HAS_EXP_TREE}
+      locRes.GUIDExpr:=TPrimitiveExpr.Create(locRes,pekString,GUIDToString(g));
+{$ELSE HAS_EXP_TREE}
       locRes.InterfaceGUID := GUIDToString(g);
+{$ENDIF HAS_EXP_TREE}
     c := ARawInt.Members.Count;
     if ( c > 0 ) then begin
       for i := 0 to ( c - 1 ) do begin
