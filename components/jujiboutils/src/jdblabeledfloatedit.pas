@@ -150,7 +150,7 @@ begin
     if not Focused then
       formatInput
     else
-      Caption := FDataLink.Field.AsString;
+      Caption := FloatToStr(FDataLink.Field.AsFloat);
   end
   else
     Text := '';
@@ -187,7 +187,7 @@ begin
         if FDataLink.Field <> nil then
         begin
           ShowMessage(Format(SInvalidNumber, [Caption]));
-          Caption := FDataLink.Field.AsString;
+          Caption := FloatToStr(FDataLink.Field.AsFloat);
           SelectAll;
           SetFocus;
         end;
@@ -352,7 +352,7 @@ end;
 procedure TJDBLabeledFloatEdit.DoEnter;
 begin
   if FDataLink.Field <> nil then
-    Caption := FDataLink.Field.AsString;
+    Caption :=  FloatToStr(FDataLink.Field.AsFloat);  //FDataLink.Field.AsString;
   inherited DoEnter;
 end;
 
