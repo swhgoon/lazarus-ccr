@@ -35,7 +35,7 @@ type
     TabSheet4: TTabSheet;
     ToolPanel1: TToolPanel;
     procedure FormCreate(Sender: TObject);
-    procedure RxViewsPanel1SelectViewEvent(ItemIndex: integer;
+    procedure RxViewsPanel1SelectViewEvent(Sender: TObject; ItemIndex: integer;
       const Item: TRxViewsPanelItem);
   private
     //
@@ -52,15 +52,15 @@ implementation
 
 { TForm1 }
 
-procedure TForm1.RxViewsPanel1SelectViewEvent(ItemIndex: integer;
-  const Item: TRxViewsPanelItem);
-begin
-  ExtendedNotebook1.PageIndex:=ItemIndex
-end;
-
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   RxViewsPanel1.ItemIndex:=1;
+end;
+
+procedure TForm1.RxViewsPanel1SelectViewEvent(Sender: TObject;
+  ItemIndex: integer; const Item: TRxViewsPanelItem);
+begin
+  ExtendedNotebook1.PageIndex:=ItemIndex
 end;
 
 end.

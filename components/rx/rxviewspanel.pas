@@ -44,7 +44,7 @@ type
   TRxViewsPanel = class;
   TRxViewsPanelItem = class;
 
-  TSelectViewEvent = procedure (ItemIndex:integer;const Item:TRxViewsPanelItem) of object;
+  TSelectViewEvent = procedure (Sender: TObject; ItemIndex:integer; const Item:TRxViewsPanelItem) of object;
   { TRxViewsPanelItem }
 
   TRxViewsPanelItem = class(TCollectionItem)
@@ -232,7 +232,7 @@ procedure TRxViewsPanel.InternalSelectView(Item: TRxViewsPanelItem);
 begin
   FItemIndex:=Item.Index;
   if Assigned(FOnSelectViewEvent) then
-    FOnSelectViewEvent(Item.Index, Item);
+    FOnSelectViewEvent(Self, Item.Index, Item);
 end;
 
 procedure TRxViewsPanel.Loaded;

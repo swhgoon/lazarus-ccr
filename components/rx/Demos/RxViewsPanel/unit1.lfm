@@ -8,7 +8,7 @@ object Form1: TForm1
   ClientHeight = 667
   ClientWidth = 935
   OnCreate = FormCreate
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object RxViewsPanel1: TRxViewsPanel
     Left = 0
     Height = 617
