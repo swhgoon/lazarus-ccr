@@ -240,6 +240,8 @@ begin
   inherited Loaded;
   FItems.Update(nil);
   FItems.UpdateImages;
+  if (FItems.Count>0) and (FItemIndex>-1) and (FItemIndex < FItems.Count) then
+    FItems[FItemIndex].FButton.Down:=true;
 end;
 
 constructor TRxViewsPanel.Create(AOwner: TComponent);
