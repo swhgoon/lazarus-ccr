@@ -611,6 +611,7 @@ type
     procedure DoEditorHide; override;
     procedure DoEditorShow; override;
 
+    procedure EraseBackground(DC: HDC); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -4203,6 +4204,11 @@ begin
       Result := TRxColumn(Columns[i]);
       exit;
     end;
+end;
+
+procedure TRxDBGrid.EraseBackground(DC: HDC);
+begin
+  // The correct implementation is doing nothing
 end;
 
 procedure TRxDbGridColumns.Notify(Item: TCollectionItem;
