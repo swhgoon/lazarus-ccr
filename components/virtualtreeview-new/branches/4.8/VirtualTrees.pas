@@ -11647,7 +11647,6 @@ begin
       ctRadioButton:
         if Value = csCheckedNormal then
         begin
-          Value := csCheckedNormal;
           // Make sure only this node is checked.
           Run := Parent.FirstChild;
           while Assigned(Run) do
