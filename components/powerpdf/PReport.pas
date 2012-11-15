@@ -486,6 +486,8 @@ type
   TPRImage = class(TPRItem)
   private
     FSharedName: string;
+    function GetScaleX: Single;
+    function GetScaleY: Single;
     procedure SetStretch(Value: boolean);
     procedure SetProportional(AValue: boolean);
   protected
@@ -493,6 +495,7 @@ type
     FSharedImage: boolean;
     FStretch: boolean;
     FProportional: boolean;
+    FScaleX,FScaleY: Single;
     procedure SetPicture(Value: TPicture); virtual;
     procedure Paint; override;
     procedure Print(ACanvas: TPRCanvas; ARect: TRect); override;
@@ -500,6 +503,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    property ScaleX: Single read GetScaleX write FScaleX;
+    Property ScaleY: Single read GetScaleY write FScaleY;
     property SharedName: string read FSharedName write FSharedName;
   published
     property Picture: TPicture read FPicture write SetPicture;
@@ -2443,7 +2448,7 @@ var
   i: integer;
   FIdx: integer;
   AWidth,AHeight: Integer;
-  RatioH,RatioW: Double;
+  WidthF,HeightF: Single;
 begin
   if (FPicture = nil) or (FPicture.Graphic = nil) or
    (FPicture.Graphic.Empty) {or not (FPicture.Graphic is TFPImageBitmap)} then
@@ -2480,10 +2485,12 @@ begin
         CalcProportionalBounds(AWidth, AHeight);
       DrawXObject(Left, GetPage.Height - Top - AHeight, AWidth, AHeight, FXObjectName)
     end
-    else
-      DrawXObjectEx(Left, GetPage.Height - Top - FPicture.Height,
-            FPicture.Width, FPicture.Height,
+    else begin
+      WidthF := FPicture.Width * ScaleX;
+      HeightF := FPicture.Height * ScaleY;
+      DrawXObjectEx(Left, GetPage.Height - Top - HeightF, WidthF, HeightF,
             Left, GetPage.Height - Top - Height, Width, Height, FXObjectName);
+    end;
 end;
 
 procedure TPRImage.CalcProportionalBounds(var AWidth, AHeight: Integer);
@@ -2507,6 +2514,8 @@ begin
   FPicture := TPicture.Create;
   FSharedImage := true;
   FStretch := true;
+  FScaleX := 1.0;
+  FScaleY := 1.0;
   Randomize;
 end;
 
@@ -2528,6 +2537,22 @@ begin
   if Value = FStretch then Exit;
   FStretch := Value;
   Invalidate;
+end;
+
+function TPRImage.GetScaleX: Single;
+begin
+  if FScaleX<=0 then
+    result := 1.0
+  else
+    result := FScaleX;
+end;
+
+function TPRImage.GetScaleY: Single;
+begin
+  if FScaleY<=0 then
+    result := 1.0
+  else
+    result := FScaleY;
 end;
 
 procedure TPRImage.SetProportional(AValue: boolean);
