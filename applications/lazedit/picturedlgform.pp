@@ -86,7 +86,8 @@ begin
     Fn := OpenPictureDialog.FileName;
     FInitialDir := ExtractFileDir(Fn);
     SrcEdit.Text := ExtractFileName(Fn);
-    if GetImageSize(Fn, W, H) then
+    //GetImageSize uses system encoding
+    if GetImageSize(Utf8ToSys(Fn), W, H) then
     begin
       WidthEdit.Text := IntToStr(W);
       HeightEdit.Text := IntToStr(H);
