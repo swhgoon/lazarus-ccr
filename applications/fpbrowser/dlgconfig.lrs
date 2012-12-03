@@ -3,16 +3,16 @@
 LazarusResources.Add('TformConfig','FORMDATA',[
   'TPF0'#11'TformConfig'#10'formConfig'#4'Left'#3#183#1#6'Height'#3#240#0#3'Top'
   +#3#244#0#5'Width'#3'@'#1#7'Caption'#6#21'FPBrowser Preferences'#12'ClientHei'
-  +'ght'#3#240#0#11'ClientWidth'#3'@'#1#10'LCLVersion'#6#6'0.9.31'#0#6'TLabel'#6
-  +'Label1'#4'Left'#2#8#6'Height'#2#14#3'Top'#2#8#5'Width'#2';'#7'Caption'#6#11
+  +'ght'#3#240#0#11'ClientWidth'#3'@'#1#10'LCLVersion'#6#3'1.1'#0#6'TLabel'#6'L'
+  +'abel1'#4'Left'#2#8#6'Height'#2#15#3'Top'#2#8#5'Width'#2'B'#7'Caption'#6#11
   +'User Agent:'#11'ParentColor'#8#0#0#9'TComboBox'#14'comboUserAgent'#4'Left'#2
-  +#8#6'Height'#2#21#3'Top'#2#24#5'Width'#3'0'#1#10'ItemHeight'#2#13#9'ItemInde'
-  +'x'#2#0#13'Items.Strings'#1#6' FPBrowser/1.0 (Mobile; U; en-GB)'#6'WOpera/9.'
-  +'80 (iPhone; Opera Mini/6.5.1.23995/27.1227; U; pt) Presto/2.8.119 Version/1'
-  +'1.10'#0#8'TabOrder'#2#0#4'Text'#6' FPBrowser/1.0 (Mobile; U; en-GB)'#0#0#7
-  +'TButton'#8'btnClose'#4'Left'#3#176#0#6'Height'#2#25#3'Top'#3#200#0#5'Width'
-  +#2's'#7'Caption'#6#14'Save and Close'#7'OnClick'#7#13'btnCloseClick'#8'TabOr'
-  +'der'#2#1#0#0#7'TButton'#9'btnCancel'#4'Left'#2#24#6'Height'#2#25#3'Top'#3
-  +#200#0#5'Width'#2's'#7'Caption'#6#6'Cancel'#11'ModalResult'#2#2#8'TabOrder'#2
-  +#2#0#0#0
+  +#8#6'Height'#2#21#3'Top'#2#24#5'Width'#3'0'#1#10'ItemHeight'#2#0#13'Items.St'
+  +'rings'#1#6' FPBrowser/1.0 (Mobile; U; en-GB)'#6'WOpera/9.80 (iPhone; Opera '
+  +'Mini/6.5.1.23995/27.1227; U; pt) Presto/2.8.119 Version/11.10'#6'OMozilla/5'
+  +'.0 (X11; U; Linux i686; en-US; rv:1.7.12) Gecko/20060101 Firefox/1.0.8'#0#8
+  +'TabOrder'#2#0#4'Text'#6' FPBrowser/1.0 (Mobile; U; en-GB)'#0#0#7'TButton'#8
+  +'btnClose'#4'Left'#3#176#0#6'Height'#2#25#3'Top'#3#200#0#5'Width'#2's'#7'Cap'
+  +'tion'#6#14'Save and Close'#7'OnClick'#7#13'btnCloseClick'#8'TabOrder'#2#1#0
+  +#0#7'TButton'#9'btnCancel'#4'Left'#2#24#6'Height'#2#25#3'Top'#3#200#0#5'Widt'
+  +'h'#2's'#7'Caption'#6#6'Cancel'#11'ModalResult'#2#2#8'TabOrder'#2#2#0#0#0
 ]);

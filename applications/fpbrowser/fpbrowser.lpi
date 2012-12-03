@@ -165,6 +165,7 @@
         <Filename Value="dlgconfig.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="formConfig"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="dlgconfig"/>
       </Unit12>
