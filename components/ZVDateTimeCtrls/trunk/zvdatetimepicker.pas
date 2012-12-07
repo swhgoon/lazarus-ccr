@@ -115,6 +115,7 @@ type
 
   TCustomZVDateTimePicker = class(TCustomControl)
   private
+    FCascade: Boolean;
     FCenturyFrom, FEffectiveCenturyFrom: Word;
     FDateDisplayOrder: TDateDisplayOrder;
     FKind: TDateTimeKind;
@@ -341,6 +342,7 @@ type
     property Time: TTime read GetTime write SetTime;
     property Date: TDate read GetDate write SetDate;
     property DateMode: TDTDateMode read FDateMode write SetDateMode;
+    property Cascade: Boolean read FCascade write FCascade default False;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -401,6 +403,7 @@ type
     property Date;
     property Time;
     property UseDefaultSeparators;
+    property Cascade;
 // events:
     property OnChange;
     property OnCheckBoxChange;
@@ -429,6 +432,8 @@ function EqualDateTime(const A, B: TDateTime): Boolean;
 function IsNullDate(DT: TDateTime): Boolean;
 
 implementation
+
+uses DateUtils;
 
 function NumberOfDaysInMonth(const Month, Year: Word): Word;
 begin
@@ -2059,18 +2064,22 @@ var
   N: Word;
 begin
   SelectMonth;
-  YMD := GetYYYYMMDD(True);
+  if Cascade then
+    SetDateTime(IncMonth(DateTime))
+  else begin
+    YMD := GetYYYYMMDD(True);
 
-  if YMD.Month >= 12 then
-    YMD.Month := 1
-  else
-    Inc(YMD.Month);
+    if YMD.Month >= 12 then
+      YMD.Month := 1
+    else
+      Inc(YMD.Month);
 
-  N := NumberOfDaysInMonth(YMD.Month, YMD.Year);
-  if YMD.Day > N then
-    YMD.Day := N;
+    N := NumberOfDaysInMonth(YMD.Month, YMD.Year);
+    if YMD.Day > N then
+      YMD.Day := N;
 
-  SetYYYYMMDD(YMD);
+    SetYYYYMMDD(YMD);
+  end;
 end;
 
 procedure TCustomZVDateTimePicker.IncreaseYear;
@@ -2092,14 +2101,18 @@ var
   YMD: TYMD;
 begin
   SelectDay;
-  YMD := GetYYYYMMDD(True);
+  if Cascade then
+    SetDateTime(IncDay(DateTime))
+  else begin
+    YMD := GetYYYYMMDD(True);
 
-  if YMD.Day >= NumberOfDaysInMonth(YMD.Month, YMD.Year) then
-    YMD.Day := 1
-  else
-    Inc(YMD.Day);
+    if YMD.Day >= NumberOfDaysInMonth(YMD.Month, YMD.Year) then
+      YMD.Day := 1
+    else
+      Inc(YMD.Day);
 
-  SetYYYYMMDD(YMD);
+    SetYYYYMMDD(YMD);
+  end;
 end;
 
 procedure TCustomZVDateTimePicker.DecreaseMonth;
@@ -2108,18 +2121,22 @@ var
   N: Word;
 begin
   SelectMonth;
-  YMD := GetYYYYMMDD(True);
+  if Cascade then
+    SetDateTime(IncMonth(DateTime, -1))
+  else begin
+    YMD := GetYYYYMMDD(True);
 
-  if YMD.Month <= 1 then
-    YMD.Month := 12
-  else
-    Dec(YMD.Month);
+    if YMD.Month <= 1 then
+      YMD.Month := 12
+    else
+      Dec(YMD.Month);
 
-  N := NumberOfDaysInMonth(YMD.Month, YMD.Year);
-  if YMD.Day > N then
-    YMD.Day := N;
+    N := NumberOfDaysInMonth(YMD.Month, YMD.Year);
+    if YMD.Day > N then
+      YMD.Day := N;
 
-  SetYYYYMMDD(YMD);
+    SetYYYYMMDD(YMD);
+  end;
 end;
 
 procedure TCustomZVDateTimePicker.DecreaseYear;
@@ -2139,14 +2156,18 @@ var
   YMD: TYMD;
 begin
   SelectDay;
-  YMD := GetYYYYMMDD(True);
+  if Cascade then
+    SetDateTime(IncDay(DateTime, -1))
+  else begin
+    YMD := GetYYYYMMDD(True);
 
-  if YMD.Day <= 1 then
-    YMD.Day := NumberOfDaysInMonth(YMD.Month, YMD.Year)
-  else
-    Dec(YMD.Day);
+    if YMD.Day <= 1 then
+      YMD.Day := NumberOfDaysInMonth(YMD.Month, YMD.Year)
+    else
+      Dec(YMD.Day);
 
-  SetYYYYMMDD(YMD);
+    SetYYYYMMDD(YMD);
+  end;
 end;
 
 procedure TCustomZVDateTimePicker.IncreaseHour;
@@ -2154,14 +2175,18 @@ var
   HMSMs: THMSMs;
 begin
   SelectHour;
-  HMSMs := GetHMSMs(True);
+  if Cascade then
+    SetDateTime(IncHour(DateTime))
+  else begin
+    HMSMs := GetHMSMs(True);
 
-  if HMSMs.Hour >= 23 then
-    HMSMs.Hour := 0
-  else
-    Inc(HMSMs.Hour);
+    if HMSMs.Hour >= 23 then
+      HMSMs.Hour := 0
+    else
+      Inc(HMSMs.Hour);
 
-  SetHMSMs(HMSMs);
+    SetHMSMs(HMSMs);
+  end;
 end;
 
 procedure TCustomZVDateTimePicker.IncreaseMinute;
@@ -2169,14 +2194,18 @@ var
   HMSMs: THMSMs;
 begin
   SelectMinute;
-  HMSMs := GetHMSMs(True);
+  if Cascade then
+    SetDateTime(IncMinute(DateTime))
+  else begin
+    HMSMs := GetHMSMs(True);
 
-  if HMSMs.Minute >= 59 then
-    HMSMs.Minute := 0
-  else
-    Inc(HMSMs.Minute);
+    if HMSMs.Minute >= 59 then
+      HMSMs.Minute := 0
+    else
+      Inc(HMSMs.Minute);
 
-  SetHMSMs(HMSMs);
+    SetHMSMs(HMSMs);
+  end;
 end;
 
 procedure TCustomZVDateTimePicker.IncreaseSecond;
@@ -2184,14 +2213,18 @@ var
   HMSMs: THMSMs;
 begin
   SelectSecond;
-  HMSMs := GetHMSMs(True);
+  if Cascade then
+    SetDateTime(IncSecond(DateTime))
+  else begin
+    HMSMs := GetHMSMs(True);
 
-  if HMSMs.Second >= 59 then
-    HMSMs.Second := 0
-  else
-    Inc(HMSMs.Second);
+    if HMSMs.Second >= 59 then
+      HMSMs.Second := 0
+    else
+      Inc(HMSMs.Second);
 
-  SetHMSMs(HMSMs);
+    SetHMSMs(HMSMs);
+  end;
 end;
 
 procedure TCustomZVDateTimePicker.IncreaseMiliSec;
@@ -2199,14 +2232,18 @@ var
   HMSMs: THMSMs;
 begin
   SelectMiliSec;
-  HMSMs := GetHMSMs(True);
+  if Cascade then
+    SetDateTime(IncMilliSecond(DateTime))
+  else begin
+    HMSMs := GetHMSMs(True);
 
-  if HMSMs.MiliSec >= 999 then
-    HMSMs.MiliSec := 0
-  else
-    Inc(HMSMs.MiliSec);
+    if HMSMs.MiliSec >= 999 then
+      HMSMs.MiliSec := 0
+    else
+      Inc(HMSMs.MiliSec);
 
-  SetHMSMs(HMSMs);
+    SetHMSMs(HMSMs);
+  end;
 end;
 
 procedure TCustomZVDateTimePicker.DecreaseHour;
@@ -2214,14 +2251,18 @@ var
   HMSMs: THMSMs;
 begin
   SelectHour;
-  HMSMs := GetHMSMs(True);
+  if Cascade then
+    SetDateTime(IncHour(DateTime, -1))
+  else begin
+    HMSMs := GetHMSMs(True);
 
-  if HMSMs.Hour <= 0 then
-    HMSMS.Hour := 23
-  else
-    Dec(HMSMs.Hour);
+    if HMSMs.Hour <= 0 then
+      HMSMS.Hour := 23
+    else
+      Dec(HMSMs.Hour);
 
-  SetHMSMs(HMSMs);
+    SetHMSMs(HMSMs);
+  end;
 end;
 
 procedure TCustomZVDateTimePicker.DecreaseMinute;
@@ -2229,14 +2270,18 @@ var
   HMSMs: THMSMs;
 begin
   SelectMinute;
-  HMSMs := GetHMSMs(True);
+  if Cascade then
+    SetDateTime(IncMinute(DateTime, -1))
+  else begin
+    HMSMs := GetHMSMs(True);
 
-  if HMSMs.Minute <= 0 then
-    HMSMs.Minute := 59
-  else
-    Dec(HMSMs.Minute);
+    if HMSMs.Minute <= 0 then
+      HMSMs.Minute := 59
+    else
+      Dec(HMSMs.Minute);
 
-  SetHMSMs(HMSMs);
+    SetHMSMs(HMSMs);
+  end;
 end;
 
 procedure TCustomZVDateTimePicker.DecreaseSecond;
@@ -2244,14 +2289,18 @@ var
   HMSMs: THMSMs;
 begin
   SelectSecond;
-  HMSMs := GetHMSMs(True);
+  if Cascade then
+    SetDateTime(IncSecond(DateTime, -1))
+  else begin
+    HMSMs := GetHMSMs(True);
 
-  if HMSMs.Second <= 0 then
-    HMSMs.Second := 59
-  else
-    Dec(HMSMs.Second);
+    if HMSMs.Second <= 0 then
+      HMSMs.Second := 59
+    else
+      Dec(HMSMs.Second);
 
-  SetHMSMs(HMSMs);
+    SetHMSMs(HMSMs);
+  end;
 end;
 
 procedure TCustomZVDateTimePicker.DecreaseMiliSec;
@@ -2259,14 +2308,18 @@ var
   HMSMs: THMSMs;
 begin
   SelectMiliSec;
-  HMSMs := GetHMSMs(True);
+  if Cascade then
+    SetDateTime(IncMilliSecond(DateTime, -1))
+  else begin
+    HMSMs := GetHMSMs(True);
 
-  if HMSMs.MiliSec <= 0 then
-    HMSMs.MiliSec := 999
-  else
-    Dec(HMSMs.MiliSec);
+    if HMSMs.MiliSec <= 0 then
+      HMSMs.MiliSec := 999
+    else
+      Dec(HMSMs.MiliSec);
 
-  SetHMSMs(HMSMs);
+    SetHMSMs(HMSMs);
+  end;
 end;
 
 procedure TCustomZVDateTimePicker.ChangeAMPM;
@@ -3253,6 +3306,7 @@ begin
   FTextEnabled := True;
   FCalendarForm := nil;
   FDoNotArrangeControls := True;
+  FCascade := False;
 
   AdjustEffectiveDateDisplayOrder;
 

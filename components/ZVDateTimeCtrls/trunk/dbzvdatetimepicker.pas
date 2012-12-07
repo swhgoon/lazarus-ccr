@@ -108,6 +108,7 @@ type
                            accidentally added in first release. }
     property DateMode;
     property UseDefaultSeparators;
+    property Cascade;
   //events:
     property OnChange;
     property OnCheckBoxChange;
