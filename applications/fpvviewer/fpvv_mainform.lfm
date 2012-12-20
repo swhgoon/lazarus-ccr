@@ -46,9 +46,9 @@ object frmFPVViewer: TfrmFPVViewer
   end
   object Label1: TLabel
     Left = 8
-    Height = 16
+    Height = 15
     Top = 97
-    Width = 47
+    Width = 46
     Caption = 'Scale by:'
     ParentColor = False
   end
@@ -77,14 +77,31 @@ object frmFPVViewer: TfrmFPVViewer
     object pageViewer: TPage
     end
     object pageTreeData: TPage
-      object DXFTreeView: TTreeView
+      object TokensTreeView: TTreeView
         Left = 0
-        Height = 410
-        Top = 0
+        Height = 378
+        Top = 32
         Width = 485
-        Align = alClient
+        Align = alBottom
         DefaultItemHeight = 18
         TabOrder = 0
+      end
+      object editSearchInTokens: TEdit
+        Left = 4
+        Height = 23
+        Top = 0
+        Width = 156
+        TabOrder = 1
+        Text = 'editSearchInTokens'
+      end
+      object btnSearchInTokens: TButton
+        Left = 168
+        Height = 25
+        Top = 0
+        Width = 155
+        Caption = 'Search in Token Tree'
+        OnClick = btnSearchInTokensClick
+        TabOrder = 2
       end
     end
   end
@@ -117,9 +134,9 @@ object frmFPVViewer: TfrmFPVViewer
   end
   object Label2: TLabel
     Left = 8
-    Height = 16
+    Height = 15
     Top = 72
-    Width = 74
+    Width = 73
     Caption = 'Y adjustment:'
     ParentColor = False
   end
@@ -145,9 +162,9 @@ object frmFPVViewer: TfrmFPVViewer
   end
   object Label3: TLabel
     Left = 160
-    Height = 16
+    Height = 15
     Top = 72
-    Width = 74
+    Width = 73
     Caption = 'X adjustment:'
     ParentColor = False
   end

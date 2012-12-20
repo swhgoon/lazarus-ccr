@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, EditBtn,
-  StdCtrls, Spin, ExtCtrls, ComCtrls, Grids,
+  StdCtrls, Spin, ExtCtrls, ComCtrls, Grids, Math,
   fpvv_drawer, fpimage, fpcanvas, coreconrec;
 
 type
@@ -19,7 +19,9 @@ type
     Button1: TButton;
     btnContourLines: TButton;
     Button2: TButton;
+    btnSearchInTokens: TButton;
     buttonRenderingTest: TButton;
+    editSearchInTokens: TEdit;
     editFileName: TFileNameEdit;
     Label2: TLabel;
     Label3: TLabel;
@@ -30,8 +32,9 @@ type
     spinAdjustX: TSpinEdit;
     spinScale: TFloatSpinEdit;
     Label1: TLabel;
-    DXFTreeView: TTreeView;
+    TokensTreeView: TTreeView;
     procedure btnContourLinesClick(Sender: TObject);
+    procedure btnSearchInTokensClick(Sender: TObject);
     procedure btnVisualizeClick(Sender: TObject);
     procedure btnViewDXFTokensClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
@@ -193,6 +196,46 @@ begin
   Drawer.Invalidate;
 end;
 
+procedure TfrmFPVViewer.btnSearchInTokensClick(Sender: TObject);
+var
+  lTokenWithText, lCurNode: TTreeNode;
+  // minimal positions, based on the currently selected item to do "search next"
+  lSearchStart: Word = 0;
+  i, j: Integer;
+  lStr, lText: TCaption;
+  lNodesCount: Integer;
+begin
+  lText := editSearchInTokens.Text;
+
+  // if something is selected, set this position as a minimum
+  if TokensTreeView.Selected <> nil then
+    lSearchStart := TokensTreeView.Selected.AbsoluteIndex;
+
+  // Now do the actual search
+  lTokenWithText := nil;
+  lNodesCount := TokensTreeView.Items.Count-1;
+  for i := 0 to lNodesCount do
+  begin
+    lCurNode := TokensTreeView.Items.Item[i];
+    if lCurNode = nil then Continue;
+
+    // Check the minimum level first
+    if lSearchStart >= lCurNode.AbsoluteIndex then Continue;
+
+    // Check the text
+    lStr := lCurNode.Text;
+    if System.Pos(lText, lStr) > 0 then
+    begin
+      lTokenWithText := lCurNode;
+      Break;
+    end;
+  end;
+  if lTokenWithText <> nil then
+  begin
+    TokensTreeView.Selected := lTokenWithText;
+  end;
+end;
+
 procedure TfrmFPVViewer.btnViewDXFTokensClick(Sender: TObject);
 var
   Reader: TvDXFVectorialReader;
@@ -207,7 +250,7 @@ begin
   Vec := TvVectorialDocument.Create;
   try
     Reader.ReadFromFile(editFileName.FileName, Vec);
-    ConvertDXFTokensToTreeView(Reader.Tokenizer.Tokens, DXFTreeView);
+    ConvertDXFTokensToTreeView(Reader.Tokenizer.Tokens, TokensTreeView);
   finally
     Reader.Free;
     Vec.Free;
@@ -243,7 +286,7 @@ begin
     // Generate the positioning info
     TvFormula(Vec.GetPage(0).GetEntity(0)).PositionElements(Canvas, 0, 0);
 
-    DXFTreeView.Items.Clear;
+    TokensTreeView.Items.Clear;
     Vec.GenerateDebugTree(@FPVDebugAddItemProc);
   finally
     Vec.Free;
@@ -326,7 +369,7 @@ function TfrmFPVViewer.FPVDebugAddItemProc(AStr: string; AParent: Pointer): Poin
 var
   lTreeItem: TTreeNode;
 begin
-  lTreeItem := DXFTreeView.Items.AddChild(TTreeNode(AParent), AStr);
+  lTreeItem := TokensTreeView.Items.AddChild(TTreeNode(AParent), AStr);
   Result := lTreeItem;
 end;
 
