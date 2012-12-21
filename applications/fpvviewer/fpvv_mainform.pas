@@ -21,10 +21,13 @@ type
     Button2: TButton;
     btnSearchInTokens: TButton;
     buttonRenderingTest: TButton;
+    comboEncoding: TComboBox;
     editSearchInTokens: TEdit;
     editFileName: TFileNameEdit;
     Label2: TLabel;
     Label3: TLabel;
+    Label4: TLabel;
+    labelFileEncoding: TLabel;
     notebook: TNotebook;
     pageViewer: TPage;
     pageTreeData: TPage;
@@ -84,7 +87,15 @@ begin
 
   Vec := TvVectorialDocument.Create;
   try
+    // If we desire, force a encoding for the read operation
+    if comboEncoding.ItemIndex > 0 then
+      Vec.ForcedEncodingOnRead := comboEncoding.Text
+    else Vec.ForcedEncodingOnRead := '';
+
     Vec.ReadFromFile(editFileName.FileName);
+
+    // Show document properties
+    labelFileEncoding.Caption := 'File encoding: ' + Vec.Encoding;
 
     // We need to be robust, because sometimes the document size won't be given
     // also give up drawing everything if we need more then 4MB of RAM for the image
