@@ -3,41 +3,42 @@ object lazfpsmainform: Tlazfpsmainform
   Height = 401
   Top = 170
   Width = 700
-  Caption = 'FPSpreadsheet Chart Example'
+  Caption = 'LazSpreadsheet'
   ClientHeight = 401
   ClientWidth = 700
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   LCLVersion = '1.1'
   object pagesSheets: TPageControl
     Left = 0
-    Height = 343
-    Top = 58
+    Height = 321
+    Top = 80
     Width = 700
     Align = alClient
     TabOrder = 0
   end
   object Panel1: TPanel
     Left = 0
-    Height = 58
+    Height = 80
     Top = 0
     Width = 700
     Align = alTop
-    ClientHeight = 58
+    ClientHeight = 80
     ClientWidth = 700
     TabOrder = 1
     object btnLoadSpreadsheet: TButton
-      Left = 312
+      Left = 304
       Height = 25
-      Top = 24
+      Top = 8
       Width = 75
       Caption = 'Load'
       OnClick = btnLoadSpreadsheetClick
       TabOrder = 0
     end
     object editSourceFile: TFileNameEdit
-      Left = 146
+      Left = 136
       Height = 21
-      Top = 24
+      Top = 8
       Width = 136
       DialogOptions = []
       FilterIndex = 0
@@ -50,10 +51,29 @@ object lazfpsmainform: Tlazfpsmainform
     object Label2: TLabel
       Left = 8
       Height = 15
-      Top = 30
+      Top = 14
       Width = 116
       Caption = 'Source Spreadsheet:'
       ParentColor = False
+    end
+    object buttonReadCellInfo: TButton
+      Left = 384
+      Height = 25
+      Top = 8
+      Width = 120
+      Caption = 'Read Cell Info'
+      OnClick = buttonReadCellInfoClick
+      TabOrder = 2
+    end
+    object memoCellData: TMemo
+      Left = 512
+      Height = 64
+      Top = 8
+      Width = 182
+      Lines.Strings = (
+        'memoCellData'
+      )
+      TabOrder = 3
     end
   end
 end

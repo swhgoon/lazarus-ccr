@@ -45,7 +45,7 @@
         <UnitName Value="lazspreadsheet"/>
       </Unit0>
       <Unit1>
-        <Filename Value="../../components/fpspreadsheet/examples/lazspreadsheet/about.pas"/>
+        <Filename Value="about.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="Form1"/>
         <HasResources Value="True"/>
@@ -53,7 +53,7 @@
         <UnitName Value="about"/>
       </Unit1>
       <Unit2>
-        <Filename Value="../../components/fpspreadsheet/examples/lazspreadsheet/mainform.pas"/>
+        <Filename Value="mainform.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="lazfpsmainform"/>
         <HasResources Value="True"/>
