@@ -86,9 +86,9 @@ begin
   lX := Worksheets[lCurTab].Selection.Left;
   lY := Worksheets[lCurTab].Selection.Top;
   lCurWorksheet := Workbook.GetWorksheetByIndex(lCurTab);
-  lCurCell := lCurWorksheet.GetCell(lX, lY);
+  lCurCell := lCurWorksheet.GetCell(lY, lX);
   memoCellData.Lines.Text := '';
-  memoCellData.Lines.Add(Format('Col: %d Row: %d (zero-based)', [lX, lY]));
+  memoCellData.Lines.Add(Format('Row: %d Col: %d (zero-based)', [lY, lX]));
   memoCellData.Lines.Add(Format('ContentType: %s', [GetEnumName(TypeInfo(TCellContentType), integer(lCurCell^.ContentType))]));
   memoCellData.Lines.Add(Format('NumberValue: %f', [lCurCell^.NumberValue]));
   memoCellData.Lines.Add(Format('UTF8StringValue: %s', [lCurCell^.UTF8StringValue]));
@@ -97,6 +97,8 @@ begin
   memoCellData.Lines.Add(Format('TextRotation: %s', [GetEnumName(TypeInfo(TsTextRotation), integer(lCurCell^.TextRotation))]));
   //memoCellData.Lines.Add(Format('Border: %f', [lCurCell^.NumberValue]));
   memoCellData.Lines.Add(Format('BackgroundColor: %s', [GetEnumName(TypeInfo(TsColor), integer(lCurCell^.BackgroundColor))]));
+  memoCellData.Lines.Add('');
+  memoCellData.Lines.Add(Format('ReadAsUTF8Text(): %s', [lCurWorksheet.ReadAsUTF8Text(lY, lX)]));
 end;
 
 procedure Tlazfpsmainform.DeleteAllSheets;

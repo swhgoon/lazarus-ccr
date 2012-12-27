@@ -1,7 +1,7 @@
 object lazfpsmainform: Tlazfpsmainform
   Left = 234
   Height = 401
-  Top = 170
+  Top = 195
   Width = 700
   Caption = 'LazSpreadsheet'
   ClientHeight = 401
@@ -11,19 +11,19 @@ object lazfpsmainform: Tlazfpsmainform
   LCLVersion = '1.1'
   object pagesSheets: TPageControl
     Left = 0
-    Height = 321
-    Top = 80
+    Height = 289
+    Top = 112
     Width = 700
     Align = alClient
     TabOrder = 0
   end
   object Panel1: TPanel
     Left = 0
-    Height = 80
+    Height = 112
     Top = 0
     Width = 700
     Align = alTop
-    ClientHeight = 80
+    ClientHeight = 112
     ClientWidth = 700
     TabOrder = 1
     object btnLoadSpreadsheet: TButton
@@ -57,22 +57,23 @@ object lazfpsmainform: Tlazfpsmainform
       ParentColor = False
     end
     object buttonReadCellInfo: TButton
-      Left = 384
+      Left = 296
       Height = 25
-      Top = 8
+      Top = 72
       Width = 120
       Caption = 'Read Cell Info'
       OnClick = buttonReadCellInfoClick
       TabOrder = 2
     end
     object memoCellData: TMemo
-      Left = 512
-      Height = 64
+      Left = 424
+      Height = 96
       Top = 8
-      Width = 182
+      Width = 230
       Lines.Strings = (
         'memoCellData'
       )
+      ScrollBars = ssVertical
       TabOrder = 3
     end
   end
