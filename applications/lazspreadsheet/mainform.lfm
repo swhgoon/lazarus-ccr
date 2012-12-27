@@ -1,0 +1,59 @@
+object lazfpsmainform: Tlazfpsmainform
+  Left = 234
+  Height = 401
+  Top = 170
+  Width = 700
+  Caption = 'FPSpreadsheet Chart Example'
+  ClientHeight = 401
+  ClientWidth = 700
+  OnCreate = FormCreate
+  LCLVersion = '1.1'
+  object pagesSheets: TPageControl
+    Left = 0
+    Height = 343
+    Top = 58
+    Width = 700
+    Align = alClient
+    TabOrder = 0
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 58
+    Top = 0
+    Width = 700
+    Align = alTop
+    ClientHeight = 58
+    ClientWidth = 700
+    TabOrder = 1
+    object btnLoadSpreadsheet: TButton
+      Left = 312
+      Height = 25
+      Top = 24
+      Width = 75
+      Caption = 'Load'
+      OnClick = btnLoadSpreadsheetClick
+      TabOrder = 0
+    end
+    object editSourceFile: TFileNameEdit
+      Left = 146
+      Height = 21
+      Top = 24
+      Width = 136
+      DialogOptions = []
+      FilterIndex = 0
+      HideDirectories = False
+      ButtonWidth = 23
+      NumGlyphs = 1
+      MaxLength = 0
+      TabOrder = 1
+    end
+    object Label2: TLabel
+      Left = 8
+      Height = 15
+      Top = 30
+      Width = 116
+      Caption = 'Source Spreadsheet:'
+      ParentColor = False
+    end
+  end
+end
