@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, EditBtn,
-  StdCtrls, Spin, ExtCtrls, ComCtrls, Grids, Math,
+  StdCtrls, Spin, ExtCtrls, ComCtrls, Grids, ColorBox, Math,
   fpvv_drawer, fpimage, fpcanvas, coreconrec;
 
 type
@@ -14,16 +14,18 @@ type
   { TfrmFPVViewer }
 
   TfrmFPVViewer = class(TForm)
-    btnVisualize: TButton;
-    btnViewDXFTokens: TButton;
-    Button1: TButton;
     btnContourLines: TButton;
-    Button2: TButton;
     btnSearchInTokens: TButton;
+    btnViewDXFTokens: TButton;
+    btnVisualize: TButton;
+    Button1: TButton;
+    Button2: TButton;
     buttonRenderingTest: TButton;
+    checkForceWhiteBackground: TCheckBox;
     comboEncoding: TComboBox;
-    editSearchInTokens: TEdit;
     editFileName: TFileNameEdit;
+    editSearchInTokens: TEdit;
+    Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
@@ -31,10 +33,10 @@ type
     notebook: TNotebook;
     pageViewer: TPage;
     pageTreeData: TPage;
-    spinAdjustY: TSpinEdit;
+    Panel1: TPanel;
     spinAdjustX: TSpinEdit;
+    spinAdjustY: TSpinEdit;
     spinScale: TFloatSpinEdit;
-    Label1: TLabel;
     TokensTreeView: TTreeView;
     procedure btnContourLinesClick(Sender: TObject);
     procedure btnSearchInTokensClick(Sender: TObject);
@@ -115,6 +117,9 @@ begin
     Drawer.Drawing.Canvas.Brush.Color := clWhite;
     Drawer.Drawing.Canvas.Brush.Style := bsSolid;
     Drawer.Drawing.Canvas.FillRect(0, 0, Drawer.Drawing.Width, Drawer.Drawing.Height);
+    if checkForceWhiteBackground.Checked then Vec.GetPage(0).BackgroundColor := colWhite;
+    if not checkForceWhiteBackground.Checked then
+      Vec.GetPage(0).DrawBackground(Drawer.Drawing.Canvas);
     DrawFPVectorialToCanvas(
       Vec.GetPage(0),
       Drawer.Drawing.Canvas,
