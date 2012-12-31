@@ -23830,11 +23830,10 @@ begin
     if not (csDesigning in ComponentState) and
        ((Message.Msg = LM_LBUTTONDOWN) or (Message.Msg = LM_LBUTTONDBLCLK)) then
     begin
-      if (DragMode = dmAutomatic) and (DragKind = dkDrag) then
+      Handled := (DragMode = dmAutomatic) and (DragKind = dkDrag);
+      if Handled then
       begin
-        if IsControlMouseMsg(TLMMouse(Message)) then
-          Handled := True;
-        if not Handled then
+        if not IsControlMouseMsg(TLMMouse(Message)) then
         begin
           //lclheader
           //let the header handle the message here
@@ -23842,7 +23841,6 @@ begin
           FHeader.HandleMessage(Message);
           ControlState := ControlState + [csLButtonDown];
           Dispatch(Message);  // overrides TControl's BeginDrag
-          Handled := True;
         end;
       end;
     end;
@@ -23851,12 +23849,7 @@ begin
       Handled := FHeader.HandleMessage(Message);
 
     if not Handled then
-    begin
-      //lcl: probably not necessary
-      //if (Message.Msg in [WM_NCLBUTTONDOWN, WM_NCRBUTTONDOWN, WM_NCMBUTTONDOWN]) and not Focused and CanFocus then
-      //  SetFocus;
       inherited;
-    end;
   end;
 end;
 
