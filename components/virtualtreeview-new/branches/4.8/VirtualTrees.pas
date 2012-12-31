@@ -16207,8 +16207,10 @@ begin
 
   // get information about the hit
   GetHitTestInfoAt(Message.XPos, Message.YPos, True, HitInfo);
+  {$ifdef DEBUG_VTV}
   if HitInfo.HitNode <> nil then
-    {$ifdef DEBUG_VTV}Logger.Send([lcPaintHeader, lcMouseEvent],'WMLButtonDown - HitNode.Index', HitInfo.HitNode^.Index);{$endif}
+    Logger.Send([lcPaintHeader, lcMouseEvent],'WMLButtonDown - HitNode.Index', HitInfo.HitNode^.Index);
+  {$endif}
   HandleMouseDown(Message, HitInfo);
   {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMLButtonDown');{$endif}
 end;
