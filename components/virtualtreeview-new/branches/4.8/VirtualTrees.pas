@@ -11354,8 +11354,7 @@ begin
   if HandleAllocated then
     DestroyWindowHandle;
   }
-  FHeader.Free;
-  FHeader := nil;
+  FreeAndNil(FHeader);
 
   if FCheckImages <> FCustomCheckImages then
     FCheckImages.Free;
@@ -22149,14 +22148,11 @@ begin
           PopupMenu := nil
         else
           // Check for components linked to the header.
-          if Assigned(FHeader) then
-          begin
-            if AComponent = FHeader.FImages then
-              FHeader.Images := nil
-            else
-              if AComponent = FHeader.PopupMenu then
-                FHeader.PopupMenu := nil;
-          end;
+          if AComponent = FHeader.FImages then
+            FHeader.Images := nil
+          else
+            if AComponent = FHeader.PopupMenu then
+              FHeader.PopupMenu := nil;
   end;
   inherited;
 end;
