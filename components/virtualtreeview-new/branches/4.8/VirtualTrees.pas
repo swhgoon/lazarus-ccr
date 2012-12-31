@@ -289,14 +289,14 @@ unit VirtualTrees;
 // For full document history see help file.
 //
 // Credits for their valuable assistance and code donations go to:
-//   Freddy Ertl, Marian Aldenh�vel, Thomas Bogenrieder, Jim Kuenemann, Werner Lehmann, Jens Treichler,
-//   Paul Gallagher (IBO tree), Ondrej Kelle, Ronaldo Melo Ferraz, Heri Bender, Roland Bed�rftig (BCB)
+//   Freddy Ertl, Marian Aldenh?vel, Thomas Bogenrieder, Jim Kuenemann, Werner Lehmann, Jens Treichler,
+//   Paul Gallagher (IBO tree), Ondrej Kelle, Ronaldo Melo Ferraz, Heri Bender, Roland Bed?rftig (BCB)
 //   Anthony Mills, Alexander Egorushkin (BCB), Mathias Torell (BCB), Frank van den Bergh, Vadim Sedulin, Peter Evans,
 //   Milan Vandrovec (BCB), Steve Moss, Joe White, David Clark, Anders Thomsen, Igor Afanasyev, Eugene Programmer,
 //   Corbin Dunn, Richard Pringle, Uli Gerhardt, Azza, Igor Savkic, Daniel Bauten, Timo Tegtmeier, Dmitry Zegebart,
 //   Andreas Hausladen
 // Beta testers:
-//   Freddy Ertl, Hans-J�rgen Schnorrenberg, Werner Lehmann, Jim Kueneman, Vadim Sedulin, Moritz Franckenstein,
+//   Freddy Ertl, Hans-J?rgen Schnorrenberg, Werner Lehmann, Jim Kueneman, Vadim Sedulin, Moritz Franckenstein,
 //   Wim van der Vegt, Franc v/d Westelaken
 // Indirect contribution (via publicly accessible work of those persons):
 //   Alex Denissov, Hiroyuki Hori (MMXAsm expert)
@@ -310,7 +310,7 @@ unit VirtualTrees;
 // Accessability implementation:
 //   Marco Zehe (with help from Sebastian Modersohn)
 // LCL Port:
-//   Luiz Am�rico Pereira C�mara
+//   Luiz Am?rico Pereira C?mara
 //----------------------------------------------------------------------------------------------------------------------
 
 interface
@@ -3929,7 +3929,7 @@ const
 
   // Do not modify the copyright in any way! Usage of this unit is prohibited without the copyright notice
   // in the compiled binary file.
-  Copyright: string = 'Virtual Treeview � 1999, 2010 Mike Lischke';
+  Copyright: string = 'Virtual Treeview ? 1999, 2010 Mike Lischke';
 
 var
   //Workaround to LCL bug 8553
@@ -23836,16 +23836,16 @@ begin
     if not (csDesigning in ComponentState) and
        ((Message.Msg = LM_LBUTTONDOWN) or (Message.Msg = LM_LBUTTONDBLCLK)) then
     begin
-      //lclheader
-      //when FHeader.FStates = [] it comes until here unlike Delphi (uses NC messages)
-      //skip this code when is clicked inside the header
-      if (DragMode = dmAutomatic) and (DragKind = dkDrag) and
-        not FHeader.InHeader(SmallPointToPoint(TLMMouse(Message).Pos)) then
+      if (DragMode = dmAutomatic) and (DragKind = dkDrag) then
       begin
         if IsControlMouseMsg(TLMMouse(Message)) then
           Handled := True;
         if not Handled then
         begin
+          //lclheader
+          //let the header handle the message here
+          //otherwise no header click event will be fired
+          FHeader.HandleMessage(Message);
           ControlState := ControlState + [csLButtonDown];
           Dispatch(Message);  // overrides TControl's BeginDrag
           Handled := True;
@@ -31704,7 +31704,7 @@ function TCustomVirtualStringTree.ContentToHTML(Source: TVSTTextSourceType; cons
 
 // Renders the current tree content (depending on Source) as HTML text encoded in UTF-8.
 // If Caption is not empty then it is used to create and fill the header for the table built here.
-// Based on ideas and code from Frank van den Bergh and Andreas H�rstemeier.
+// Based on ideas and code from Frank van den Bergh and Andreas H?rstemeier.
 
 var
   Buffer: TBufferedUTF8String;
@@ -32118,7 +32118,7 @@ end;
 function TCustomVirtualStringTree.ContentToRTF(Source: TVSTTextSourceType): AnsiString;
 
 // Renders the current tree content (depending on Source) as RTF (rich text).
-// Based on ideas and code from Frank van den Bergh and Andreas H�rstemeier.
+// Based on ideas and code from Frank van den Bergh and Andreas H?rstemeier.
 
 var
   Fonts: TStringList;
