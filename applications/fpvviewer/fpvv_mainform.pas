@@ -120,8 +120,7 @@ begin
     if checkForceWhiteBackground.Checked then Vec.GetPage(0).BackgroundColor := colWhite;
     if not checkForceWhiteBackground.Checked then
       Vec.GetPage(0).DrawBackground(Drawer.Drawing.Canvas);
-    DrawFPVectorialToCanvas(
-      Vec.GetPage(0),
+    Vec.GetPage(0).Render(
       Drawer.Drawing.Canvas,
       FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS + spinAdjustX.Value,
       Drawer.Drawing.Height - FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS + spinAdjustY.Value,
