@@ -1,0 +1,22 @@
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" 
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="12cm" height="4cm" viewBox="0 0 1200 400"
+     xmlns="http://www.w3.org/2000/svg" version="1.1">
+
+       <rect x="1" y="1" width="1198" height="398"
+        fill="white" stroke="gray" stroke-width="2"/>
+        
+<circle cx="800" cy="200" r="100"
+        fill="blue" stroke="black" stroke-width="15"
+        stroke-dasharray="50px 40px 10px 20px"/>
+        
+<ellipse cx="300" cy="200" rx="200" ry="100"
+         fill="blue" stroke="gray" 
+         stroke-width="15" />
+<ellipse cx="500" cy="200" rx="90" ry="90"
+         fill="lightblue" stroke="red"
+         stroke-width="15" opacity="0.7" />
+        
+
+</svg>
+
