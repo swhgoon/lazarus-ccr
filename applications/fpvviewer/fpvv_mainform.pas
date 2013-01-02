@@ -288,6 +288,7 @@ end;
 procedure TfrmFPVViewer.Button2Click(Sender: TObject);
 var
   Vec: TvVectorialDocument;
+  i: Integer;
 begin
   // First check the in input
   //if not CheckInput() then Exit;
@@ -299,7 +300,8 @@ begin
     Vec.ReadFromFile(editFileName.FileName);
 
     // Generate the positioning info
-    TvFormula(Vec.GetPage(0).GetEntity(0)).PositionElements(Canvas, 0, 0);
+    for i := 0 to Vec.GetPageCount()-1 do
+      Vec.GetPage(i).PositionEntitySubparts(Canvas, 0, 0);
 
     TokensTreeView.Items.Clear;
     Vec.GenerateDebugTree(@FPVDebugAddItemProc);
