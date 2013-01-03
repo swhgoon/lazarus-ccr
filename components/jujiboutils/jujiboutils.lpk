@@ -4,17 +4,11 @@
     <Name Value="jujiboutils"/>
     <Author Value="Julio Jiménez Borreguero"/>
     <CompilerOptions>
-      <Version Value="10"/>
+      <Version Value="11"/>
       <SearchPaths>
         <OtherUnitFiles Value="src"/>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <Linking>
-        <Debugging>
-          <GenerateDebugInfo Value="True"/>
-          <DebugInfoType Value="dsAuto"/>
-        </Debugging>
-      </Linking>
       <Other>
         <CompilerMessages>
           <UseMsgFile Value="True"/>
@@ -27,7 +21,7 @@ different kinds of data, floats, dates, etc. while working with
 db and non db controls."/>
     <License Value="LGPL with link exception. Read files license-jujiboutils and COPYING.LGPL"/>
     <Version Major="1"/>
-    <Files Count="17">
+    <Files Count="18">
       <Item1>
         <Filename Value="src/jdbgridcontrol.pas"/>
         <HasRegisterProc Value="True"/>
@@ -110,6 +104,11 @@ db and non db controls."/>
         <Filename Value="src/jinputconsts.pas"/>
         <UnitName Value="jinputconsts"/>
       </Item17>
+      <Item18>
+        <Filename Value="src/jdbenumcombo.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="JDbEnumCombo"/>
+      </Item18>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
