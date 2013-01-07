@@ -83,6 +83,7 @@ type
     procedure PageClose; dynamic;
     procedure PageCloseQuery(var CanClose: Boolean); dynamic;
   public
+    GraphicFileName: string;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure New(AWidth, AHeight: Integer; APaperColor: TColor);
@@ -169,7 +170,7 @@ begin
   Result := TPicturePage.Create(Self, AWidth, AHeight, APaperColor);
   Result.PageControl := Self;
   SetPageEvents(Result);
-  
+
   FileNameChange;
 end;
 
@@ -178,7 +179,7 @@ begin
   Result := TPicturePage.Create(Self, Filename);
   Result.PageControl := Self;
   SetPageEvents(Result);
-  
+  GraphicFileName := FileName;
   FileNameChange;
 end;
 
