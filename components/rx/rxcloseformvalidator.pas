@@ -56,7 +56,7 @@ type
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
-    function CheckClose:boolean;
+    function CheckClose(AForm:TCustomForm):boolean;
     function ErrorMessage:string;
     procedure SetFocus;
   published
@@ -228,7 +228,7 @@ begin
   inherited Destroy;
 end;
 
-function TValidateItem.CheckClose: boolean;
+function TValidateItem.CheckClose(AForm: TCustomForm): boolean;
 var
   P:TObject;
   PI1, PI2:PPropInfo;
@@ -237,6 +237,10 @@ var
 begin
   Result:=true;
   if not Assigned(FControl) then exit;
+  if FControl = AForm.ActiveControl then
+  begin
+    AForm.SelectNext(FControl, true, true);
+  end;
   //Сначала проверим - вдруги это завязки на работу с БД
   PI1:=GetPropInfo(Control, 'DataSource');
   PI2:=GetPropInfo(Control, 'DataField');
@@ -305,7 +309,7 @@ begin
   Result:=false;
   for i:=0 to FItems.Count-1 do
   begin
-    if FItems[i].Enabled and (not FItems[i].CheckClose) then
+    if FItems[i].Enabled and (not FItems[i].CheckClose(Owner as TCustomForm)) then
     begin
       FItems[i].SetFocus;
       Application.MessageBox(PChar(FItems[i].ErrorMessage), PChar(FErrorMsgCaption), MB_OK + MB_ICONERROR);
