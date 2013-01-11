@@ -83,7 +83,7 @@ begin
     ext:=ExtractFileExt(Result);
     Result:=Copy(Result, 1, length(Result)-length( ext ) );
   end;
-  Project.LongenFilename(Result);
+  Result := ResolveProjectPath(Result);
 end;
 
 { TiPhoneExtension }
@@ -287,7 +287,7 @@ begin
   Result:=false;
   //todo: find a better way of getting the file
   icofile:=ChangeFileExt(LazarusIDE.ActiveProject.MainFile.Filename, '.ico');
-  LazarusIDE.ActiveProject.LongenFilename(icofile);
+  icofile := ResolveProjectPath(icofile);
   if not FileExists(icofile) then begin
     // no icon. it should be deleted!
     DeleteFile(FullName);
@@ -384,8 +384,7 @@ begin
 
 	build.Values['FPC_CUSTOM_OPTIONS'] :='"'+opt+'"';
 
-  dir:='xcode';
-  LazarusIDE.ActiveProject.LongenFilename(dir);
+  dir:=ResolveProjectPath('xcode');
   dir:=dir+'/';
 
   name:=ExtractFileName(GetProjectExeName(LazarusIDE.ActiveProject));

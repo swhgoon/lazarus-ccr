@@ -104,8 +104,7 @@ var
   tmp : AnsiString;
 begin
   path:=Trim(edtResDir.Text);
-  if (path='') or (path[1]<>PathDelim) then // project relative path
-    LazarusIDE.ActiveProject.LongenFilename(path);
+  path:=ResolveProjectPath(path);
 
   ForceDirectoriesUTF8(path);
 
@@ -131,7 +130,7 @@ begin
 
   if (newXibForm.Execute(FileName, SrcXib)) and (SrcXib<>'')then begin
     ResDir:=edtResDir.Text;
-    LazarusIDE.ActiveProject.LongenFilename(ResDir);
+    ResDir := ResolveProjectPath(ResDir);
 
     ForceDirectoriesUTF8(ResDir);
     if not CopyFile(SrcXib, ChangeFileExt(IncludeTrailingPathDelimiter(ResDir)+FileName,'.xib')) then
@@ -149,7 +148,7 @@ begin
   if nibFilesBox.ItemIndex<0 then Exit;
 
   XibName:=edtResDir.Text;
-  LazarusIDE.ActiveProject.LongenFilename(XibName);
+  XibName := ResolveProjectPath(XibName);
 
   XibName:=ChangeFileExt(IncludeTrailingPathDelimiter(XibName)+nibFilesBox.Items[nibFilesBox.ItemIndex],'.xib');
   if FileExistsUTF8(XibName) then DeleteFileUTF8(XibName);
@@ -216,7 +215,7 @@ var
 begin
   if SelXibFile ='' then Exit;
   s:=ChangeFileExt(IncludeTrailingPathDelimiter (edtResDir.Text) + SelXibFile,'.xib');
-  LazarusIDE.ActiveProject.LongenFilename(s);
+  s := ResolveProjectPath(s);
   DumpClasses(s, pas);
 
   p:=Parent;
@@ -232,7 +231,7 @@ var
   path  : AnsiString;
 begin
   path:=ChangeFileExt(IncludeTrailingPathDelimiter(edtResDir.Text)+SelXibFile,'.xib');
-  LazarusIDE.ActiveProject.LongenFilename(path);
+  path := ResolveProjectPath(path);
   ExecCmdLineNoWait('open ' + path);
 end;
 
@@ -291,10 +290,9 @@ var
   st    : TStringList;
   i     : Integer;
 begin
-  path := edtResDir.Text;
+  path := ResolveProjectPath(edtResDir.Text);
   st:=TStringList.Create;
   try
-    LazarusIDE.ActiveProject.LongenFilename(path);
     EnumFilesAtDir(path, '*.xib', st);
     nibFilesBox.Clear;
     for i:=0 to st.Count-1 do
@@ -459,8 +457,7 @@ begin
   xibcls.Free;
 
   unitNm:='dump'+ChangeFileExt(ExtractFileName(XibFileName),'');
-  PascalFileName:=unitNm+'.pas';
-  LazarusIDE.ActiveProject.LongenFilename(PascalFileName);
+  PascalFileName:=ResolveProjectPath(unitNm+'.pas');
 
   fs:=TFileStream.Create(PascalFileName, fmCreate);
 
