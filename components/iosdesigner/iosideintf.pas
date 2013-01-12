@@ -63,7 +63,7 @@ procedure register;
 
 implementation
 
-uses LazIDEIntf, Controls, iOS_Views;
+uses LazIDEIntf, Controls, iOS_Views, iOSXIBResource, UnitResources;
 
 procedure register;
 begin
@@ -76,6 +76,7 @@ begin
   GiOSObjectDelegateWindowFileDesc:=TiOSObjectDelegateWindowFileDesc.Create;
   RegisterProjectFileDescriptor(GiOSObjectDelegateWindowFileDesc);
 
+  RegisterUnitResourcefileFormat(TXIBResourcefileFormat);
 end;
 
 { TiOSObjectDelegateWindowFileDesc }
@@ -90,6 +91,7 @@ begin
   inherited Create;
   Name:='iOS NIB-Delegate';
   ResourceClass:=NSObject;
+  DefaultResFileExt:='.xib';
   UseCreateFormStatements:=false;
   VisibleInNewDialog:=true;
 end;
@@ -107,7 +109,7 @@ begin
     '  inherited dealloc;' + LineEnding +
     'end;' + LineEnding +
     LineEnding +
-    '{$R *.lfm}' + LineEnding + LineEnding;
+    '{$FakeResource *.xib}' + LineEnding + LineEnding;
 end;
 
 function TiOSObjectDelegateWindowFileDesc.GetInterfaceSource(const Filename, SourceName, ResourceName: string): string;

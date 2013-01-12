@@ -44,9 +44,6 @@ uses
   IDEWindowIntf,
   LazIDEIntf,
   Dialogs,
-{$ifndef OutsideIDE}
-  CustomNonFormDesigner,
-{$endif OutsideIDE}
   Controls,
   ComponentReg,
   typinfo,
@@ -59,11 +56,7 @@ type
   TNSObjectDesignerMediator = class(TDesignerMediator,IMyWidgetDesigner)
   private
     FMyForm: NSObject;
-    procedure DoOnLoadBounds(Sender: TObject);
-  protected
-    procedure SetLCLForm(const AValue: TForm); override;
   public
-    procedure SaveToXIB(AForm: NSObject);
     // needed by the lazarus form editor
     class function CreateMediator(TheOwner, aForm: TComponent): TDesignerMediator; override;
     class function FormClass: TComponentClass; override;
@@ -155,43 +148,6 @@ begin
   if FMyForm<>nil then FMyForm.Designer:=nil;
   FMyForm:=nil;
   inherited Destroy;
-end;
-
-procedure TNSObjectDesignerMediator.DoOnLoadBounds(Sender: TObject);
-begin
-  //debugln('----onsaveloadbounds--------');
-  SaveToXIB(FMyForm);
-end;
-
-procedure TNSObjectDesignerMediator.SetLCLForm(const AValue: TForm);
-begin
-{$ifndef OutsideIDE}
-  if assigned(LCLForm) then
-    TCustomNonFormDesignerForm(LCLForm).OnSaveBounds:=nil;
-{$endif OutsideIDE}
-  inherited SetLCLForm(AValue);
-{$ifndef OutsideIDE}
-  if assigned(LCLForm) then
-    TCustomNonFormDesignerForm(LCLForm).OnSaveBounds:=@DoOnLoadBounds;
-{$endif OutsideIDE}
-end;
-
-procedure TNSObjectDesignerMediator.SaveToXIB(AForm: NSObject);
-var
-  AFileName: string;
-  AResourcesPath: string;
-  ALazFile: TLazProjectFile;
-begin
-  ALazFile := LazarusIDE.GetProjectFileWithRootComponent(AForm);
-  if assigned(ALazFile) then
-    begin
-      AFileName:=ChangeFileExt(ALazFile.Filename,'.xib');
-      AResourcesPath:=ExtractFilePath(AFileName)+'Resources';
-      ForceDirectories(AResourcesPath);
-      AFileName:=AResourcesPath+PathDelim+ExtractFileName(AFileName);
-      AForm.SaveAsXIB(AFileName);
-      //DebugLn('XIB saved: '+AFileName);
-    end;
 end;
 
 class function TNSObjectDesignerMediator.CreateMediator(TheOwner, aForm: TComponent): TDesignerMediator;
@@ -307,7 +263,7 @@ procedure TNSObjectDesignerMediator.InitComponent(AComponent, NewParent: TCompon
 begin
   inherited InitComponent(AComponent, NewParent, NewBounds);
   if AComponent is tiOSFakeComponent then
-    tiOSFakeComponent(AComponent).InitializeDefaultChildren;
+    tiOSFakeComponent(AComponent).InitializeDefaults;
 end;
 
 function TNSObjectDesignerMediator.CreateComponent(ParentComp: TComponent;

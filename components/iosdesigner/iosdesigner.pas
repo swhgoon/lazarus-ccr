@@ -7,7 +7,7 @@ unit iOSDesigner;
 interface
 
 uses
-  iOSNIBDesigner, iOS_Views, iOSIdeIntf, LazarusPackageIntf;
+  iOSNIBDesigner, iOS_Views, iOSIdeIntf, iOSXIBResource, LazarusPackageIntf;
 
 implementation
 
