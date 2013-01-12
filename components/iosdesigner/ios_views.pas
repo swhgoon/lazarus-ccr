@@ -37,7 +37,36 @@ unit iOS_Views;
 interface
 
 uses
-  Classes, SysUtils, Math, types, DOM, XMLWrite, Graphics;
+  Classes, SysUtils, Math, types, DOM, XMLWrite, XMLRead, Graphics, strutils;
+
+type
+  TXIBProperties = (
+    bvOpaque,
+    bvHighlighted,
+    bvAlpha,
+    bvText,
+    bvSuperview,
+    bvLines,
+    bvBackgroundColor,
+    bvEnabled);
+
+  TXIBProperty = record
+    APropertyName: string;
+    ADefaultValue: string;
+  end;
+
+
+const
+  XIBPropertiesStrings : array[TXIBProperties] of TXIBProperty = (
+    (APropertyName: 'IBUIOpaque'     ; ADefaultValue: 'NO'),
+    (APropertyName: 'IBUIHighlighted'; ADefaultValue: 'NO'),
+    (APropertyName: 'IBUIAlpha'      ; ADefaultValue: '1'),
+    (APropertyName: 'IBUIText'       ; ADefaultValue: 'Label'),
+    (APropertyName: 'NSSuperview'    ; ADefaultValue: ''),
+    (APropertyName: 'Lines'          ; ADefaultValue: '1'),
+    (APropertyName: 'IBUIBackgroundColor' ; ADefaultValue: ''),
+    (APropertyName: 'IBUIEnabled'    ; ADefaultValue: 'NO'));
+
 
 type
   IMyWidgetDesigner = interface(IUnknown)
@@ -67,25 +96,35 @@ type
   { tiOSFakeComponent }
 
   tiOSWriteDomMethod = function (AnObjectDomElement: TDOMElement): TDOMElement of object;
+  TiOSXIBPos = (sLeft, sTop, sWidth, sHeight);
 
+  NSObject = class;
   tiOSFakeComponent = class(TComponent)
   private
     FAcceptChildsAtDesignTime: boolean;
     FChilds: TFPList; // list of tiOSFakeComponent
-    FHeight: integer;
-    FLeft: integer;
-    FObjectID: integer;
-    FParent: tiOSFakeComponent;
     FTop: integer;
-    FWidth: integer;
+    FLeft: integer;
+    FXIBObjectElement: TDOMElement;
+    FParent: tiOSFakeComponent;
     // iOS
-    FRef: integer;
+    procedure AddChildToDom(const AValue: tiOSFakeComponent);
     function ElementToString(AWriteDomMethod: tiOSWriteDomMethod): string;
+    function GetObjectID: integer;
+    function GetPosition(APosition: TiOSXIBPos): integer;
+    function GetRef: integer;
+    function GetXIBDocument: TXMLDocument; virtual;
+    function GetXIBOrderedObjects: TDOMElement;
+    function GetXIBObjectRecords: TDOMElement;
+    function GetXIBObjects: TDOMElement;
+    function GetXIBRootObjects: TDOMElement;
+    function GetNextObjectID: integer;
+    function FindOrderdObjectByRef(ARef: int64): TDOMElement;
   protected
+    procedure AddChild(const AValue: tiOSFakeComponent); virtual;
+    procedure RemoveChild(const AValue: tiOSFakeComponent); virtual;
     procedure SetParentComponent(Value: TComponent); override;
     procedure SetParent(const AValue: tiOSFakeComponent);
-    function HasParent: Boolean; override;
-    function GetParentComponent: TComponent; override;
     procedure SetHeight(const AValue: integer);
     procedure SetLeft(const AValue: integer);
     procedure SetTop(const AValue: integer);
@@ -93,6 +132,7 @@ type
     function GetChilds(Index: integer): tiOSFakeComponent;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure InternalInvalidateRect(ARect: TRect; Erase: boolean); virtual;
+    function  StoreSizeAsFrameSize: boolean; virtual;
     // iOS
     procedure AddConnectionRecord(AnObjectDomElement: TDOMElement; AConnectionType, ALabel, AEventType: string);
     procedure WriteToDomElement(AnObjectDomElement: TDOMElement); virtual;
@@ -105,11 +145,35 @@ type
     function GetLeft: integer; virtual;
     function GetTop: integer; virtual;
     function GetWidth: integer; virtual;
+
+    function StringToBytes(const AString: string): string;
+    function BytesToString(AString: string): string;
+
+    function GetXIBBoolean(index: TXIBProperties): boolean;
+    procedure SetXIBBoolean(index: TXIBProperties; AValue: boolean);
+    function GetXIBFloat(index: TXIBProperties): double; virtual;
+    procedure SetXIBFloat(index: TXIBProperties; AValue: double);
+    function GetXIBString(index: TXIBProperties; ANodeName: string): string;
+    procedure SetXIBString(index: TXIBProperties; ANodeName, AValue: string);
+    function GetXIBString(index: TXIBProperties): string;
+    procedure SetXIBString(index: TXIBProperties; AValue: string);
+    function GetXIBInteger(index: TXIBProperties): integer; virtual;
+    procedure SetXIBInteger(index: TXIBProperties; AValue: integer);
+    function GetXIBColor(index: TXIBProperties): TColor; virtual;
+    procedure SetXIBColor(index: TXIBProperties; AValue: TColor);
+
+    function GetNSObject: NSObject; virtual;
+    // Streaming
+    procedure DefineProperties(Filer: TFiler); override;
+    function GetKeyNode(AParentNode: TDOMNode; NodeName, Key: string; AClass: string =''): TDOMElement;
   public
+    procedure InitializeDefaults; virtual;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure InitializeDefaultChildren; virtual;
     procedure paint(ACanvas: TCanvas); virtual;
+    function HasParent: Boolean; override;
+    function GetParentComponent: TComponent; override;
     procedure SetBounds(NewLeft, NewTop, NewWidth, NewHeight: integer); virtual;
     procedure InvalidateRect(ARect: TRect; Erase: boolean);
     procedure Invalidate;
@@ -121,8 +185,8 @@ type
     function getAsXIBObject: string; virtual;
     function getConnectionRecords: string; virtual;
     function getObjectRecord: string; virtual;
-    property Ref: integer read FRef write FRef;
-    property ObjectID: integer read FObjectID;
+    property Ref: integer read GetRef;
+    property ObjectID: integer read GetObjectID;
     // Dom utils
     function AddElement(ADomNode: TDOMElement; AName: string): TDOMElement;
     function AddIBInt(ADomNode: TDOMElement; APropName: string; APropValue: integer; ADefaultValue: integer = MaxInt): TDOMElement;
@@ -138,6 +202,8 @@ type
     function AddIBObject(ADomDocument: TXMLDocument; APropName: string; AClass: string): TDOMElement;
     function AddIBColor(ADomNode: TDOMElement; APropName: string; AColor: TColor): TDOMElement;
     function AddIBFontDescription(ADomNode: TDOMElement; APropName: string; AFontDescription: TiOSFakeFontDescription): TDOMElement;
+    // XIB Streaming
+    property XIBObjectElement: TDOMElement read FXIBObjectElement;
   published
     property Left: integer read GetLeft write SetLeft;
     property Top: integer read GetTop write SetTop;
@@ -149,29 +215,27 @@ type
 
   UIView = class(tiOSFakeComponent)
   private
-    FCaption: string;
     FNSNextResponder: UIView;
-    FOpaque: boolean;
-    FAlpha: double;
     FBackgroundColor: TColor;
     FHidden: boolean;
     function GetNSSuperview: UIView;
-    procedure SetCaption(const AValue: string);
+    function ObtainSuperview: UIView;
+    procedure SetNSSuperView(AValue: UIView);
   protected
     procedure SetName(const NewName: TComponentName); override;
-    // Dom
     procedure WriteToDomElement(AnObjectDomElement: TDOMElement); override;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure paint(ACanvas: TCanvas); override;
+    procedure InitializeDefaults; override;
+    procedure  paint(ACanvas: TCanvas); override;
     class function GetIBClassName: string; override;
-    property NSSuperview: UIView read GetNSSuperview;
+    property NSSuperview: UIView read GetNSSuperview write SetNSSuperView;
     property NSNextResponder: UIView read FNSNextResponder write FNSNextResponder;
   published
-    property Caption: string read FCaption write SetCaption;
-    property Opaque: boolean read FOpaque write FOpaque;
-    property BackgroundColor: TColor read FBackgroundColor write FBackgroundColor;
-    property Alpha: double read FAlpha write FAlpha;
+    property Caption: string index bvText read GetXIBString write SetXIBString;
+    property Opaque: boolean index bvOpaque read GetXIBBoolean write SetXIBBoolean;
+    property BackgroundColor: TColor index bvBackgroundColor read GetXIBColor write SetXIBColor;
+    property Alpha: double index bvAlpha read GetXIBFloat write SetXIBFloat;
     property Hidden: boolean read FHidden write FHidden;
   end;
   TUIViewClass = class of UIView;
@@ -184,20 +248,35 @@ type
     FFilesOwnerClass: string;
     FHiddenObjectOutletName: string;
     FIsHiddenObject: boolean;
+    FNIBDocument: TXMLDocument;
+    FWidth, FHeight: integer;
+    FXIBUsesObjectsForArrays: boolean;
     procedure GetXIBSaveParam(Sender: TObject; const ParamName: String; out AValue: String);
     function IsNIBRoot: boolean;
     function GetFilesOwnerID: string;
   protected
     function GetFlattenedProperties: string;
+    function GetNSObject: NSObject; override;
     procedure InternalInvalidateRect(ARect: TRect; Erase: boolean); override;
+    procedure DefineProperties(Filer: TFiler); override;
+    function GetLeft: integer; override;
+    function GetTop: integer; override;
+    function GetHeight: integer; override;
+    function GetWidth: integer; override;
+    procedure SetBounds(NewLeft, NewTop, NewWidth, NewHeight: integer); override;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure SaveAsXIB(const Filename: string);
     function getObjectRecord: string; override;
     function getAsXIBObject: string; override;
     function getConnectionRecords: string; override;
     function GetDesigner: IMyWidgetDesigner; override;
+    procedure InitializeDefaults; override;
+    class function GetIBClassName: string; override;
     property Designer: IMyWidgetDesigner read FDesigner write FDesigner;
+    property NIBDocument: TXMLDocument read FNIBDocument;
+    property XIBUsesObjectsForArrays: boolean read FXIBUsesObjectsForArrays;
   published
     property FilesOwnerClass: string read FFilesOwnerClass write FFilesOwnerClass stored IsNIBRoot;
     property IsHiddenObject: boolean read FIsHiddenObject write FIsHiddenObject stored IsNIBRoot;
@@ -211,9 +290,11 @@ type
   UIWindow = class(UIView)
   private
   protected
+    function StoreSizeAsFrameSize: boolean; override;
     procedure WriteToDomElement(AnObjectDomElement: TDOMElement); override;
     procedure SetBounds(NewLeft, NewTop, NewWidth, NewHeight: integer); override;
   public
+    procedure InitializeDefaults; override;
     constructor Create(AOwner: TComponent); override;
     procedure paint(ACanvas: TCanvas); override;
     class function GetIBClassName: string; override;
@@ -283,6 +364,7 @@ type
     procedure WriteToDomElement(AnObjectDomElement: TDOMElement); override;
     function WriteToConnectionRecords(AnObjectDomElement: TDOMElement): TDOMElement; override;
   public
+    procedure InitializeDefaults; override;
     constructor Create(AOwner: TComponent); override;
     class function GetIBClassName: string; override;
 
@@ -298,11 +380,8 @@ type
 
   UILabel = class(UIView)
   private
-    FEnabled: boolean;
     FFont: TiOSFakeFontDescription;
-    FHighlighted: boolean;
     FLineBreaks: TLineBreaks;
-    FLines: integer;
     FTextAlignment: TiOSFakeAlignment;
     FTextColor: TColor;
     procedure SetFont(AValue: TiOSFakeFontDescription);
@@ -314,12 +393,12 @@ type
     class function GetIBClassName: string; override;
     procedure paint(ACanvas: TCanvas); override;
   published
-    property Lines: integer read FLines write FLines;
+    property Lines: integer index bvLines read GetXIBInteger write SetXIBInteger;
     property TextAlignment: TiOSFakeAlignment read FTextAlignment write FTextAlignment;
     property TextColor: TColor read FTextColor write FTextColor;
     property Font: TiOSFakeFontDescription read FFont write SetFont;
-    property Enabled: boolean read FEnabled write FEnabled;
-    property Highlighted: boolean read FHighlighted write FHighlighted;
+    property Enabled: boolean index bvEnabled read GetXIBBoolean write SetXIBBoolean;
+    property Highlighted: boolean index bvHighlighted read GetXIBBoolean write SetXIBBoolean;
     property LineBreaks: TLineBreaks read FLineBreaks write FLineBreaks;
   end;
 
@@ -411,6 +490,109 @@ type
     property trackTintColor: TColor read FtrackTintColor write FtrackTintColor;
   end;
 
+  { TNIBObjectWriter }
+
+  TNIBObjectWriter = class(TAbstractObjectWriter)
+  private
+    FStream: TStream;
+    FIsWritten: Boolean;
+  public
+    constructor create(AStream: TStream); virtual;
+    procedure BeginCollection; override;
+    procedure BeginComponent(Component: TComponent; Flags: TFilerFlags;
+      ChildPos: Integer); override;
+    procedure BeginList; override;
+    procedure EndList; override;
+    procedure BeginProperty(const PropName: String); override;
+    procedure EndProperty; override;
+
+    //Please don't use write, better use WriteBinary whenever possible
+    procedure Write(const Buffer; Count: Longint); override;
+    procedure WriteBinary(const Buffer; Count: LongInt); override;
+    procedure WriteBoolean(Value: Boolean); override;
+
+    procedure WriteCurrency(const Value: Currency); override;
+    procedure WriteIdent(const Ident: string); override;
+    procedure WriteInteger(Value: Int64); override;
+    procedure WriteUInt64(Value: QWord); override;
+    procedure WriteMethodName(const Name: String); override;
+    procedure WriteSet(Value: LongInt; SetType: Pointer); override;
+    procedure WriteString(const Value: String); override;
+    procedure WriteWideString(const Value: WideString); override;
+    procedure WriteUnicodeString(const Value: UnicodeString); override;
+    procedure WriteVariant(const VarValue: Variant);override;
+
+    procedure WriteFloat(const Value: Extended);  override;
+    procedure WriteSingle(const Value: Single); override;
+    procedure WriteDate(const Value: TDateTime); override;
+  end;
+
+  { TXIBReader }
+
+  TXIBReader = class(TReader)
+  protected
+    procedure SetRoot(ARoot: TComponent); override;
+    function CreateDriver(Stream: TStream; BufSize: Integer): TAbstractObjectReader; override;
+  end;
+
+  { TXIBObjectReader }
+  TXIBObjectReaderState = (rsMainProp, rsMainPropIsSet, rsHasRootChilds, rsHasChilds, rsRootObject, rsRootObjectProp, rsObject, rsObjectProp);
+
+  TXIBObjectReader = class(TAbstractObjectReader)
+  private
+    FStream: TStream;
+    FXMLDocument: TXMLDocument;
+    FXIBDocumentSet: boolean;
+    FConnectionRecords: TDOMElement;
+    FOrderedObjects: TDOMElement;
+    FCurrentObject: TDOMElement;
+    FCurrentOrderedObject: TDOMElement;
+    FMainOrderedObject: TDOMElement;
+
+    FRootObjects: TDOMElement;
+    FReadChilds: boolean;
+    ReadState: TXIBObjectReaderState;
+    FFilesOwnerID: int64;
+    FRefStack: array of int64;
+  private
+    FXIBUsesObjectsForArrays: boolean;
+    function GetConnectionRef(AnIBConnectionRecord: TDOMElement; key: string): int64;
+    function GetObjectFromRef(ARef: int64): TDOMElement;
+    function GetConnectionLabel(AnIBConnectionRecord: TDOMElement): string;
+    function GetNextChild(ACurrentNode: TDOMNode; ParentRef: int64): TDOMElement;
+    function FindOrderdObjectByRef(ARef: int64): TDOMElement;
+    function FindFirstChild: TDOMElement;
+    function FindNextChild(ARef: int64): TDOMElement;
+    function FindNextOrderedObject: TDOMElement;
+    function GetRefFromOrderedObject(AnOrderedObject: TDOMElement): int64;
+  public
+    constructor create(AStream: TStream); virtual;
+    procedure BeginRootComponent; override;
+    procedure BeginComponent(var Flags: TFilerFlags; var AChildPos: Integer;
+      var CompClassName, CompName: String); override;
+
+    function NextValue: TValueType; override;
+    function ReadValue: TValueType; override;
+    function BeginProperty: String; override;
+
+    { All ReadXXX methods are called _after_ the value type has been read! }
+    procedure ReadBinary(const DestData: TMemoryStream); override;
+    function ReadCurrency: Currency; override;
+    function ReadIdent(ValueType: TValueType): String; override;
+    function ReadInt8: ShortInt; override;
+    function ReadInt16: SmallInt; override;
+    function ReadInt32: LongInt; override;
+    function ReadInt64: Int64; override;
+    function ReadSet(EnumType: Pointer): Integer; override;
+    function ReadStr: String; override;
+    function ReadString(StringType: TValueType): String; override;
+    function ReadWideString: WideString; override;
+    function ReadUnicodeString: UnicodeString; override;
+    procedure SkipComponent(SkipComponentInfos: Boolean); override;
+    procedure SkipValue; override;
+    property XIBUsesObjectsForArrays: boolean read FXIBUsesObjectsForArrays;
+  end;
+
 
 implementation
 
@@ -426,6 +608,656 @@ uses
 
 var
   GConnectionID: integer;
+
+function FindKeyNode(AParentNode: TDOMNode; NodeName, Key: string): TDOMElement;
+var
+  ANode: TDOMNode;
+begin
+  result := nil;
+  ANode := AParentNode.FirstChild;
+  while assigned(ANode) do
+    begin
+    if (ANode.NodeName=NodeName) and (ANode is TDOMElement) and (TDOMElement(ANode).AttribStrings['key']=key) then
+      begin
+      result := TDOMElement(ANode);
+      break;
+      end;
+    ANode := ANode.NextSibling;
+    end;
+end;
+
+
+{ TXIBReader }
+
+procedure TXIBReader.SetRoot(ARoot: TComponent);
+begin
+end;
+
+function TXIBReader.CreateDriver(Stream: TStream; BufSize: Integer): TAbstractObjectReader;
+begin
+  Result := TXIBObjectReader.Create(Stream);
+end;
+
+{ TXIBObjectReader }
+
+function TXIBObjectReader.GetConnectionRef(AnIBConnectionRecord: TDOMElement; key: string): int64;
+var
+  ATempNode: TDOMElement;
+  AReferenceNode: TDOMElement;
+begin
+  ATempNode := FindKeyNode(AnIBConnectionRecord,'object','connection') as TDOMElement;
+  AReferenceNode := FindKeyNode(ATempNode,'reference',key);
+  result:=StrToInt(TDOMElement(AReferenceNode).AttribStrings['ref']);
+end;
+
+function TXIBObjectReader.GetObjectFromRef(ARef: int64): TDOMElement;
+
+  function FindObj(AStartNode: TDOMNode): TDOMElement;
+  var
+    ATempNode: TDOMNode;
+  begin
+    result := nil;
+    ATempNode := AStartNode.FirstChild;
+
+    while assigned(ATempNode) do
+      begin
+      if ((ATempNode.NodeName='object') or (ATempNode.NodeName='array')) and (ATempNode is TDOMElement) then
+        begin
+        if (TDOMElement(ATempNode).AttribStrings['id']=inttostr(ARef)) then
+          begin
+          result := TDOMElement(ATempNode);
+          break;
+          end;
+        result := FindObj(ATempNode);
+        if assigned(result) then
+          break;
+        end;
+      ATempNode := ATempNode.NextSibling;
+      end;
+  end;
+
+begin
+  result := FindObj(FRootObjects);
+end;
+
+function TXIBObjectReader.GetConnectionLabel(AnIBConnectionRecord: TDOMElement): string;
+var
+  ATempNode: TDOMElement;
+  ALabelNode: TDOMElement;
+begin
+  ATempNode := FindKeyNode(AnIBConnectionRecord,'object','connection') as TDOMElement;
+  ALabelNode := FindKeyNode(ATempNode,'string','label');
+  result:=ALabelNode.TextContent;
+end;
+
+function TXIBObjectReader.GetNextChild(ACurrentNode: TDOMNode; ParentRef: int64): TDOMElement;
+begin
+  result := nil;
+  if not assigned(ACurrentNode) then
+    ACurrentNode := FConnectionRecords.FirstChild
+  else
+    ACurrentNode := ACurrentNode.NextSibling;
+  while assigned(ACurrentNode) do
+    begin
+    if (ACurrentNode.NodeName='object') then
+      begin
+      if GetConnectionRef(ACurrentNode as TDOMElement,'source')=ParentRef then
+        begin
+        result := ACurrentNode as TDOMElement;
+        break
+        end;
+      end;
+    ACurrentNode := ACurrentNode.NextSibling;
+    end;
+end;
+
+function TXIBObjectReader.FindOrderdObjectByRef(ARef: int64): TDOMElement;
+var
+  ANode: TDOMNode;
+  ARefNode: TDOMElement;
+begin
+  result := nil;
+  ANode := FOrderedObjects.FirstChild;
+  while assigned(ANode) do
+    begin
+    if (ANode.NodeName='object') and (ANode is TDOMElement) and (TDOMElement(ANode).AttribStrings['class']='IBObjectRecord') then
+      begin
+      ARefNode := FindKeyNode(ANode,'reference','object');
+      if assigned(ARefNode) and (ARefNode.AttribStrings['ref']=inttostr(ARef)) then
+        begin
+        result := ANode as TDOMElement;
+        break;
+        end;
+      end;
+    ANode := ANode.NextSibling;
+    end;
+end;
+
+function TXIBObjectReader.FindFirstChild: TDOMElement;
+var
+  ANode: TDOMNode;
+begin
+  result := nil;
+  ANode := FindKeyNode(FCurrentOrderedObject,'array','children');
+  if not assigned(ANode) then
+    ANode := FindKeyNode(FCurrentOrderedObject,'object','children');
+  if assigned(ANode) then
+    begin
+    ANode := ANode.FirstChild;
+    while assigned(ANode) do
+      begin
+      if (ANode.NodeName='reference') then
+        begin
+        result := anode as TDOMElement;
+        break;
+        end;
+      ANode := ANode.NextSibling;
+      end;
+    end;
+end;
+
+function TXIBObjectReader.FindNextChild(ARef: int64): TDOMElement;
+var
+  ANode: TDOMElement;
+  Pass: boolean;
+begin
+  result := nil;
+  pass := false;
+  ANode := FindKeyNode(FCurrentOrderedObject,'object','children');
+  if assigned(ANode) then
+    begin
+    ANode := ANode.FirstChild as TDOMElement;
+    while assigned(ANode) do
+      begin
+      if (ANode.NodeName='reference') then
+        begin
+        if Pass then
+          begin
+          result := anode as TDOMElement;
+          break;
+          end
+        else if ANode.AttribStrings['ref']=IntToStr(ARef) then
+          pass := true;
+        end;
+      ANode := ANode.NextSibling as TDOMElement;
+      end;
+    end;
+end;
+
+function TXIBObjectReader.FindNextOrderedObject: TDOMElement;
+var
+  ANode: TDOMElement;
+  ARefNode: TDOMElement;
+begin
+  result := nil;
+  if not assigned(FCurrentOrderedObject) then
+    begin
+    ANode := FOrderedObjects.FirstChild as TDOMElement;
+    assert(ANode.NodeName<>'object');
+    end
+  else
+    ANode := FCurrentOrderedObject;
+
+  ANode := ANode.NextSibling as TDOMElement;
+  while assigned(ANode) do
+    begin
+    // This function is to search for root-objects which are encapsulated
+    // within the main-object.
+    // So ignore the main object itself, the file's owner and the main responder
+    // (The IBProxyObjects with a negative ObjectID)
+    // Also ignore the objects with a parent<>0, since those are not root-objects
+    // and are handled elsewhere.
+    if (ANode.NodeName='object') and (ANode<>FMainOrderedObject) then
+      begin
+      ARefNode := FindKeyNode(ANode,'reference','parent');
+      if assigned(ARefNode) and (ARefNode.AttribStrings['ref']='0') then
+        begin
+        ARefNode := FindKeyNode(ANode,'reference','object');
+        if ARefNode.AttribStrings['ref']<>inttostr(FFilesOwnerID) then
+          begin
+          ARefNode := FindKeyNode(ANode, 'int','objectID');
+          if StrToInt(ARefNode.TextContent)>0 then
+            begin
+            result := ANode;
+            break;
+            end;
+          end;
+        end;
+      end;
+    ANode := ANode.NextSibling as TDOMElement;
+    end;
+end;
+
+function TXIBObjectReader.GetRefFromOrderedObject(AnOrderedObject: TDOMElement): int64;
+var
+  ANode: TDOMElement;
+begin
+  ANode := FindKeyNode(AnOrderedObject, 'reference' ,'object');
+  result := StrToInt(ANode.AttribStrings['ref']);
+end;
+
+constructor TXIBObjectReader.create(AStream: TStream);
+begin
+  FStream := AStream;
+end;
+
+procedure TXIBObjectReader.BeginRootComponent;
+var
+  ArchiveNode, DataNode: TDOMNode;
+  Objects: TDOMNode;
+  ANode, ATempNode: TDOMNode;
+  AReferenceNode: TDOMNode;
+  MainObjectRef: int64;
+
+begin
+  ReadXMLFile(FXMLDocument, FStream);
+
+  ArchiveNode := FXMLDocument.FirstChild;
+  assert(ArchiveNode.NodeName='archive');
+  DataNode := ArchiveNode.FindNode('data');
+  FRootObjects := FindKeyNode(DataNode,'array','IBDocument.RootObjects');
+  if not assigned(FRootObjects) then
+    // Older XCode versions this:
+    begin
+    FRootObjects := FindKeyNode(DataNode,'object','IBDocument.RootObjects');
+    FXIBUsesObjectsForArrays:=true;
+    end;
+  ANode := FRootObjects.FirstChild;
+  while assigned(ANode) do
+    begin
+    if (ANode.NodeName='object') and (ANode is TDOMElement) and (TDOMElement(ANode).AttribStrings['class']='IBProxyObject') then
+      begin
+      ATempNode := FindKeyNode(ANode, 'string', 'IBProxiedObjectIdentifier');
+      if ATempNode.TextContent='IBFilesOwner' then
+        begin
+        FFilesOwnerID:=StrToInt(TDOMElement(ANode).AttribStrings['id']);
+        break;
+        end;
+      end;
+    ANode := ANode.NextSibling;
+    end;
+
+  Objects := FindKeyNode(DataNode,'object','IBDocument.Objects');
+  FConnectionRecords := FindKeyNode(Objects,'array','connectionRecords') as TDOMElement;
+  if not assigned(FConnectionRecords) then
+    // Interface builder v3.1 and below uses 'object' instead of 'array'
+    FConnectionRecords := FindKeyNode(Objects,'object','connectionRecords') as TDOMElement;
+  ANode := FindKeyNode(Objects,'object','objectRecords');
+  FOrderedObjects := FindKeyNode(ANode,'array','orderedObjects');
+  if not assigned(FOrderedObjects) then
+    // Interface builder v3.1 and below uses 'object' instead of 'array'
+    FOrderedObjects := FindKeyNode(ANode,'object','orderedObjects');
+
+  MainObjectRef:=0;
+  ANode := FConnectionRecords.FirstChild;
+  while assigned(ANode) do
+    begin
+    if (ANode.NodeName='object') and (ANode is TDOMElement) and (TDOMElement(ANode).AttribStrings['class']='IBConnectionRecord') then
+      begin
+      //FCurrentConnectionNode := TDOMElement(ANode);
+      if GetConnectionRef(TDOMElement(ANode),'source')=FFilesOwnerID then
+        begin
+        MainObjectRef:=GetConnectionRef(TDOMElement(ANode),'destination');
+        break;
+        end;
+      end;
+    ANode := ANode.NextSibling;
+    end;
+
+  if MainObjectRef<>0 then
+    FMainOrderedObject := FindOrderdObjectByRef(MainObjectRef)
+  else
+    begin
+    ANode := FOrderedObjects.FirstChild;
+    while assigned(ANode) do
+      begin
+      if (ANode.NodeName='object') and (ANode is TDOMElement) and (TDOMElement(ANode).AttribStrings['class']='IBObjectRecord') then
+        begin
+        ATempNode := FindKeyNode(ANode,'int','objectID');
+        if StrToIntDef(ATempNode.TextContent,0)>0 then
+          begin
+          FMainOrderedObject := ANode as TDOMElement;
+          break;
+          end;
+        end;
+      ANode := ANode.NextSibling;
+      end;
+    end;
+
+  FCurrentOrderedObject := FMainOrderedObject;
+  ReadState := rsMainProp;
+end;
+
+procedure TXIBObjectReader.BeginComponent(var Flags: TFilerFlags;
+  var AChildPos: Integer; var CompClassName, CompName: String);
+var
+  ObjectNode: TDOMElement;
+  Ref: Int64;
+begin
+  Ref := GetRefFromOrderedObject(FCurrentOrderedObject);
+
+  ObjectNode := GetObjectFromRef(Ref);
+  CompClassName:=ObjectNode.AttribStrings['class'];
+  if copy(CompClassName,1,2)='IB' then
+    CompClassName:=copy(CompClassName,3,250);
+  FReadChilds := False;
+  if ReadState=rsHasRootChilds then
+    ReadState:=rsRootObjectProp
+  else if ReadState=rsHasChilds then
+    ReadState:=rsObjectProp;
+end;
+
+function TXIBObjectReader.NextValue: TValueType;
+begin
+  case ReadState of
+    rsMainProp,
+    rsRootObjectProp,
+    rsObjectProp    : result := vaString;
+    rsMainPropIsSet : result := vaNull;
+    rsHasRootChilds,
+    rsHasChilds     : if assigned(FCurrentOrderedObject) then result := vaIdent else Result := vaNull;
+    rsObject,
+    rsRootObject    : result := vaNull;
+  end;
+end;
+
+function TXIBObjectReader.ReadValue: TValueType;
+var
+  ANode: TDOMElement;
+  CurrentChildRef: TDOMElement;
+  Ref: Int64;
+begin
+  case readstate of
+    rsMainPropIsSet:
+      begin
+      FCurrentOrderedObject := nil;
+      FCurrentOrderedObject := FindNextOrderedObject;
+      if assigned(FCurrentOrderedObject) then
+        begin
+        SetLength(FRefStack,length(FRefStack)+1);
+        FRefStack[high(FRefStack)]:=GetRefFromOrderedObject(FCurrentOrderedObject);
+        end;
+      result := vaNull;
+      readstate := rsHasRootChilds;
+      end;
+    rsRootObject:
+      begin
+      // The properties of the root-object are read, now see if there are any
+      // chilren.
+      CurrentChildRef := FindFirstChild;
+      if assigned(CurrentChildRef) then
+        begin
+        FCurrentOrderedObject := FindOrderdObjectByRef(StrToInt(CurrentChildRef.AttribStrings['ref']));
+        SetLength(FRefStack,length(FRefStack)+1);
+        FRefStack[high(FRefStack)]:=GetRefFromOrderedObject(FCurrentOrderedObject);
+        end
+      else
+        FCurrentOrderedObject := nil;
+      ReadState:=rsHasChilds;
+      result := vaNull;
+      end;
+    rsObject:
+      begin
+      CurrentChildRef := FindFirstChild;
+      if assigned(CurrentChildRef) then
+        begin
+        FCurrentOrderedObject := FindOrderdObjectByRef(StrToInt(CurrentChildRef.AttribStrings['ref']));
+        SetLength(FRefStack,length(FRefStack)+1);
+        FRefStack[high(FRefStack)]:=GetRefFromOrderedObject(FCurrentOrderedObject);
+        end
+      else
+        FCurrentOrderedObject := nil;
+      ReadState:=rsHasChilds;
+      result := vaNull;
+      end;
+    rsHasChilds:
+      begin
+      // The current object ran out of childs, so go back to the prior object
+      if length(FRefStack)>1 then
+        begin
+        ref := FRefStack[high(FRefStack)];
+        setlength(FRefStack, high(FRefStack));
+        FCurrentOrderedObject := FindOrderdObjectByRef(ref);
+        ANode := FindKeyNode(FCurrentOrderedObject,'reference','parent');
+        FCurrentOrderedObject := FindOrderdObjectByRef(StrToInt(ANode.AttribStrings['ref']));
+
+        CurrentChildRef := FindNextChild(ref);
+        if assigned(CurrentChildRef) then
+          begin
+          FCurrentOrderedObject := FindOrderdObjectByRef(StrToInt(CurrentChildRef.AttribStrings['ref']));
+          SetLength(FRefStack,length(FRefStack)+1);
+          FRefStack[high(FRefStack)]:=GetRefFromOrderedObject(FCurrentOrderedObject);
+          end
+        else
+          FCurrentOrderedObject := nil;;
+        end
+      else
+        begin
+        ref := FRefStack[high(FRefStack)];
+        setlength(FRefStack, high(FRefStack));
+        FCurrentOrderedObject := FindOrderdObjectByRef(ref);
+        FCurrentOrderedObject := FindNextOrderedObject;
+        if assigned(FCurrentOrderedObject) then
+          begin
+          SetLength(FRefStack,length(FRefStack)+1);
+          FRefStack[high(FRefStack)]:=GetRefFromOrderedObject(FCurrentOrderedObject);
+          end;
+        result := vaNull;
+        readstate := rsHasRootChilds;
+        end;
+      result := vaNull;
+      end
+    else
+      result := vaNull;
+    end;
+end;
+
+function TXIBObjectReader.BeginProperty: String;
+begin
+  if assigned(FCurrentOrderedObject) then
+    FCurrentObject := GetObjectFromRef(GetRefFromOrderedObject(FCurrentOrderedObject));
+  case ReadState of
+    rsMainProp       : readstate := rsMainPropIsSet;
+    rsObjectProp     : ReadState := rsObject;
+    rsRootObjectProp : ReadState := rsRootObject;
+  end;
+  result := '';
+end;
+
+procedure TXIBObjectReader.ReadBinary(const DestData: TMemoryStream);
+begin
+
+end;
+
+function TXIBObjectReader.ReadCurrency: Currency;
+begin
+
+end;
+
+function TXIBObjectReader.ReadIdent(ValueType: TValueType): String;
+begin
+
+end;
+
+function TXIBObjectReader.ReadInt8: ShortInt;
+begin
+
+end;
+
+function TXIBObjectReader.ReadInt16: SmallInt;
+begin
+
+end;
+
+function TXIBObjectReader.ReadInt32: LongInt;
+begin
+
+end;
+
+function TXIBObjectReader.ReadInt64: Int64;
+begin
+
+end;
+
+function TXIBObjectReader.ReadSet(EnumType: Pointer): Integer;
+begin
+
+end;
+
+function TXIBObjectReader.ReadStr: String;
+begin
+
+end;
+
+function TXIBObjectReader.ReadString(StringType: TValueType): String;
+begin
+
+end;
+
+function TXIBObjectReader.ReadWideString: WideString;
+begin
+
+end;
+
+function TXIBObjectReader.ReadUnicodeString: UnicodeString;
+begin
+
+end;
+
+procedure TXIBObjectReader.SkipComponent(SkipComponentInfos: Boolean);
+begin
+
+end;
+
+procedure TXIBObjectReader.SkipValue;
+begin
+
+end;
+
+{ TNIBObjectWriter }
+
+constructor TNIBObjectWriter.create(AStream: TStream);
+begin
+  FStream := AStream;
+end;
+
+procedure TNIBObjectWriter.BeginCollection;
+begin
+
+end;
+
+procedure TNIBObjectWriter.BeginComponent(Component: TComponent;
+  Flags: TFilerFlags; ChildPos: Integer);
+begin
+  if not FIsWritten then
+    begin
+    if (Component is NSObject) then
+      begin
+      WriteXML(NSObject(Component).FNIBDocument, FStream);
+      FIsWritten:=true;
+      end;
+    end;
+end;
+
+procedure TNIBObjectWriter.BeginList;
+begin
+
+end;
+
+procedure TNIBObjectWriter.EndList;
+begin
+
+end;
+
+procedure TNIBObjectWriter.BeginProperty(const PropName: String);
+begin
+
+end;
+
+procedure TNIBObjectWriter.EndProperty;
+begin
+
+end;
+
+procedure TNIBObjectWriter.Write(const Buffer; Count: Longint);
+begin
+
+end;
+
+procedure TNIBObjectWriter.WriteBinary(const Buffer; Count: LongInt);
+begin
+
+end;
+
+procedure TNIBObjectWriter.WriteBoolean(Value: Boolean);
+begin
+
+end;
+
+procedure TNIBObjectWriter.WriteCurrency(const Value: Currency);
+begin
+
+end;
+
+procedure TNIBObjectWriter.WriteIdent(const Ident: string);
+begin
+
+end;
+
+procedure TNIBObjectWriter.WriteInteger(Value: Int64);
+begin
+
+end;
+
+procedure TNIBObjectWriter.WriteUInt64(Value: QWord);
+begin
+
+end;
+
+procedure TNIBObjectWriter.WriteMethodName(const Name: String);
+begin
+
+end;
+
+procedure TNIBObjectWriter.WriteSet(Value: LongInt; SetType: Pointer);
+begin
+
+end;
+
+procedure TNIBObjectWriter.WriteString(const Value: String);
+begin
+
+end;
+
+procedure TNIBObjectWriter.WriteWideString(const Value: WideString);
+begin
+
+end;
+
+procedure TNIBObjectWriter.WriteUnicodeString(const Value: UnicodeString);
+begin
+
+end;
+
+procedure TNIBObjectWriter.WriteVariant(const VarValue: Variant);
+begin
+
+end;
+
+procedure TNIBObjectWriter.WriteFloat(const Value: Extended);
+begin
+
+end;
+
+procedure TNIBObjectWriter.WriteSingle(const Value: Single);
+begin
+
+end;
+
+procedure TNIBObjectWriter.WriteDate(const Value: TDateTime);
+begin
+
+end;
 
 { UIProgressView }
 
@@ -469,7 +1301,7 @@ end;
 constructor UINavigationItem.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FHeight:=44;
+  Height:=44;
 end;
 
 class function UINavigationItem.GetIBClassName: string;
@@ -498,39 +1330,40 @@ end;
 
 function UIViewController.GetHeight: integer;
 begin
-  if FHeight<>0 then
+{  if FHeight<>0 then
     result := FHeight
   else if assigned(parent) then
     result := min(Parent.Height,480)
   else
-    result := 480;
+    result := 480;}
+  result := inherited;
 end;
 
 function UIViewController.GetWidth: integer;
 begin
-  if FWidth <> 0 then
+  result := inherited;
+{  if FWidth <> 0 then
     result := FWidth
   else if assigned(parent) then
     result := min(Parent.Width,320)
   else
-    result := 320;
+    result := 320;}
 end;
 
 procedure UIViewController.SetBounds(NewLeft, NewTop, NewWidth, NewHeight: integer);
 begin
+  inherited;
+{
   if (FWidth<>0) or (FHeight<>0) or ((width=320) and (height=480)) then
     inherited SetBounds(NewLeft, NewTop, Width, Height)
   else
-    inherited SetBounds(Left, Top, Width, Height)
+    inherited SetBounds(Left, Top, Width, Height)}
 end;
 
 constructor UIViewController.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FAcceptChildsAtDesignTime:=true;
-  FObjectID:=GConnectionID;
-  inc(GConnectionID);
-  FRef:=random(999999999);
 end;
 
 class function UIViewController.GetIBClassName: string;
@@ -612,8 +1445,8 @@ constructor UINavigationController.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FAcceptChildsAtDesignTime:=false;
-  FWidth:=320;
-  FHeight:=480;
+  //FWidth:=320;
+  //FHeight:=480;
 end;
 
 procedure UINavigationController.InitializeDefaultChildren;
@@ -649,6 +1482,11 @@ end;
 
 { UIWindow }
 
+function UIWindow.StoreSizeAsFrameSize: boolean;
+begin
+  Result:=true;
+end;
+
 procedure UIWindow.WriteToDomElement(AnObjectDomElement: TDOMElement);
 begin
   inherited WriteToDomElement(AnObjectDomElement);
@@ -662,15 +1500,19 @@ begin
   inherited SetBounds(NewLeft, NewTop, Width, Height);
 end;
 
+procedure UIWindow.InitializeDefaults;
+begin
+  inherited InitializeDefaults;
+  Inherited SetBounds(left, top, 320, 480);
+end;
+
 constructor UIWindow.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   NSNextResponder:=self;
-  FWidth:=320;
-  FHeight:=480;
+  FLeft := 10;
+  FTop := 10;
   BackgroundColor:=clWhite;
-  // Value from template
-  FObjectID:=2;
 end;
 
 procedure UIWindow.paint(ACanvas: TCanvas);
@@ -737,6 +1579,11 @@ begin
     Result:='841351856'
   else
     Result:='664661524';
+end;
+
+function NSObject.GetNSObject: NSObject;
+begin
+  Result:=self;
 end;
 
 function NSObject.GetFlattenedProperties: string;
@@ -817,6 +1664,53 @@ begin
     Designer.InvalidateRect(Self,ARect,Erase);
 end;
 
+procedure NSObject.DefineProperties(Filer: TFiler);
+begin
+  inherited;
+  if filer is TXIBReader then
+    begin
+    FNIBDocument.Free;
+    FNIBDocument := TXIBObjectReader(TReader(Filer).Driver).FXMLDocument;
+    FXIBUsesObjectsForArrays := TXIBObjectReader(TReader(Filer).Driver).XIBUsesObjectsForArrays;
+    end;
+end;
+
+function NSObject.GetLeft: integer;
+begin
+  // There is no way to store this in the xib file
+  result := FLeft;
+end;
+
+function NSObject.GetTop: integer;
+begin
+  // There is no way to store this in the xib file
+  result := FTop;
+end;
+
+function NSObject.GetHeight: integer;
+begin
+  // There is no way to store this in the xib file
+  result := FHeight;
+end;
+
+function NSObject.GetWidth: integer;
+begin
+  // There is no way to store this in the xib file
+  result := FWidth;
+end;
+
+procedure NSObject.SetBounds(NewLeft, NewTop, NewWidth, NewHeight: integer);
+begin
+  if (Left=NewLeft) and (Top=NewTop) and (Width=NewWidth) and (Height=NewHeight) then
+    exit;
+  Invalidate;
+  FLeft:=NewLeft;
+  FTop:=NewTop;
+  FWidth:=NewWidth;
+  FHeight:=NewHeight;
+  Invalidate;
+end;
+
 function NSObject.getObjectRecord: string;
 begin
   if IsNIBRoot then
@@ -893,12 +1787,145 @@ begin
 end;
 
 constructor NSObject.Create(AOwner: TComponent);
+var
+  ss: TStringStream;
+  s: string;
 begin
   inherited Create(AOwner);
   FIsHiddenObject:=true;
   FHiddenObjectOutletName:='delegate';
-  FWidth:=320;
-  FHeight:=480;
+  FWidth:=340;
+  FHeight:=500;
+  FTop := 100;
+  FLeft := 100;
+
+  s :='<archive type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="7.10">' +
+      ' <data>' +
+      '		<int key="IBDocument.SystemTarget">1280</int>' +
+      '		<string key="IBDocument.SystemVersion">11D50</string>' +
+      '		<string key="IBDocument.InterfaceBuilderVersion">2182</string>' +
+      '		<string key="IBDocument.AppKitVersion">1138.32</string>' +
+      '		<string key="IBDocument.HIToolboxVersion">568.00</string>' +
+      '		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">' +
+      '			<string key="NS.key.0">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>' +
+      '			<string key="NS.object.0">1181</string>' +
+      '		</object>' +
+      '		<object class="NSArray" key="IBDocument.IntegratedClassDependencies">' +
+      '			<bool key="EncodedWithXMLCoder">YES</bool>' +
+      '			<string>IBUIWindow</string>' +
+      '			<string>IBUICustomObject</string>' +
+      '			<string>IBUIButton</string>' +
+      '			<string>IBProxyObject</string>' +
+      '		</object>' +
+      '		<object class="NSArray" key="IBDocument.PluginDependencies">' +
+      '			<bool key="EncodedWithXMLCoder">YES</bool>' +
+      '			<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>' +
+      '		</object>' +
+      '		<object class="NSMutableDictionary" key="IBDocument.Metadata">' +
+      '			<string key="NS.key.0">PluginDependencyRecalculationVersion</string>' +
+      '			<integer value="1" key="NS.object.0"/>' +
+      '		</object>' +
+      '		<object class="NSMutableArray" key="IBDocument.RootObjects" id="1000">' +
+      '			<bool key="EncodedWithXMLCoder">YES</bool>' +
+      '                 <object class="IBProxyObject" id="841351856">' +
+      '              	        <string key="IBProxiedObjectIdentifier">IBFilesOwner</string>' +
+      '         	        <string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>' +
+      '                 </object>' +
+      '                 <object class="IBProxyObject" id="371349661">' +
+      '         	        <string key="IBProxiedObjectIdentifier">IBFirstResponder</string>' +
+      '      	                <string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>' +
+      '                 </object>' +
+      '		</object>' +
+      '		<object class="IBObjectContainer" key="IBDocument.Objects">' +
+      '			<object class="NSMutableArray" key="connectionRecords">' +
+      '				<bool key="EncodedWithXMLCoder">YES</bool>' +
+      '			</object>' +
+      '			<object class="IBMutableOrderedSet" key="objectRecords">' +
+      '				<object class="NSArray" key="orderedObjects">' +
+      '					<bool key="EncodedWithXMLCoder">YES</bool>' +
+      '					<object class="IBObjectRecord">' +
+      '						<int key="objectID">0</int>' +
+      '						<object class="NSArray" key="object" id="0">' +
+      '							<bool key="EncodedWithXMLCoder">YES</bool>' +
+      '						</object>' +
+      '						<reference key="children" ref="1000"/>' +
+      '						<nil key="parent"/>' +
+      '					</object>' +
+      '                                 <object class="IBObjectRecord">' +
+      '      	                                <int key="objectID">-1</int>' +
+      '      	                                <reference key="object" ref="841351856"/>' +
+      '      	                                <reference key="parent" ref="0"/>' +
+      '      	                                <string key="objectName">File''s Owner</string>' +
+      '                                 </object>' +
+      '                                 <object class="IBObjectRecord">' +
+      '      	                                <int key="objectID">-2</int>' +
+      '      	                                <reference key="object" ref="371349661"/>' +
+      '      	                                <reference key="parent" ref="0"/>' +
+      '                                 </object>' +
+      '				</object>' +
+      '			</object>' +
+      '			<object class="NSMutableDictionary" key="unlocalizedProperties">' +
+      '				<bool key="EncodedWithXMLCoder">YES</bool>' +
+      '				<reference key="dict.sortedKeys" ref="0"/>' +
+      '				<reference key="dict.values" ref="0"/>' +
+      '			</object>' +
+      '			<nil key="activeLocalization"/>' +
+      '			<object class="NSMutableDictionary" key="localizations">' +
+      '				<bool key="EncodedWithXMLCoder">YES</bool>' +
+      '				<reference key="dict.sortedKeys" ref="0"/>' +
+      '				<reference key="dict.values" ref="0"/>' +
+      '			</object>' +
+      '			<nil key="sourceID"/>' +
+      '			<int key="maxID">1</int>' +
+      '		</object>' +
+      '		<object class="IBClassDescriber" key="IBDocument.Classes">' +
+      '			<object class="NSMutableArray" key="referencedPartialClassDescriptions">' +
+      '				<bool key="EncodedWithXMLCoder">YES</bool>' +
+      '				<object class="IBPartialClassDescription">' +
+      '					<string key="className">AppDelegate</string>' +
+      '					<string key="superclassName">NSObject</string>' +
+      '					<object class="NSMutableDictionary" key="outlets">' +
+      '						<string key="NS.key.0">window</string>' +
+      '						<string key="NS.object.0">UIWindow</string>' +
+      '					</object>' +
+      '					<object class="NSMutableDictionary" key="toOneOutletInfosByName">' +
+      '						<string key="NS.key.0">window</string>' +
+      '						<object class="IBToOneOutletInfo" key="NS.object.0">' +
+      '							<string key="name">window</string>' +
+      '							<string key="candidateClassName">UIWindow</string>' +
+      '						</object>' +
+      '					</object>' +
+      '					<object class="IBClassDescriptionSource" key="sourceIdentifier">' +
+      '						<string key="majorKey">IBProjectSource</string>' +
+      '						<string key="minorKey">./Classes/AppDelegate.h</string>' +
+      '					</object>' +
+      '				</object>' +
+      '			</object>' +
+      '		</object>' +
+      '		<int key="IBDocument.localizationMode">0</int>' +
+      '		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaTouchFramework</string>' +
+      '		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDevelopmentDependencies">' +
+      '			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaTouchPlugin.InterfaceBuilder3</string>' +
+      '			<integer value="3100" key="NS.object.0"/>' +
+      '		</object>' +
+      '		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>' +
+      '		<int key="IBDocument.defaultPropertyAccessControl">3</int>' +
+      '		<string key="IBCocoaTouchPluginVersion">1181</string>' +
+      '	</data>' +
+      '</archive>';
+  ss := TStringStream.Create(s);
+  try
+    ReadXMLFile(FNIBDocument, ss);
+  finally
+    ss.Free;
+  end;
+  AddChildToDom(self);
+end;
+
+destructor NSObject.Destroy;
+begin
+  FNIBDocument.Free;
+  inherited Destroy;
 end;
 
 procedure NSObject.SaveAsXIB(const Filename: string);
@@ -943,6 +1970,28 @@ begin
   Result:=Designer;
 end;
 
+procedure NSObject.InitializeDefaults;
+begin
+  inherited InitializeDefaults;
+end;
+
+class function NSObject.GetIBClassName: string;
+begin
+  Result:='IBUICustomObject';
+end;
+
+function tiOSFakeComponent.GetNextObjectID: integer;
+var
+  AMaxNode: TDOMNode;
+  i: integer;
+begin
+  AMaxNode := GetKeyNode(GetXIBObjects,'int','maxID');
+  i := StrToIntDef(AMaxNode.TextContent,1);
+  inc(i);
+  AMaxNode.TextContent:=IntToStr(i);
+  result := i;
+end;
+
 { tiOSFakeComponent }
 
 procedure tiOSFakeComponent.SetHeight(const AValue: integer);
@@ -981,24 +2030,384 @@ begin
   end;
 end;
 
+function tiOSFakeComponent.GetObjectID: integer;
+var
+  ANode: TDOMNode;
+begin
+  ANode := FindOrderdObjectByRef(Ref);
+  ANode := FindKeyNode(ANode,'int','objectID');
+  result := StrToInt(ANode.TextContent);
+end;
+
+function tiOSFakeComponent.GetPosition(APosition: TiOSXIBPos): integer;
+
+var
+  State: TiOSXIBPos;
+
+  function ParseDOMElement(AnElement: TDOMNode): integer;
+  var
+    s,s1: string;
+    p: pchar;
+  begin
+    s := AnElement.TextContent;
+    s1 := '';
+    p := @s[1];
+    while p^<>#0 do
+      begin
+      if p^ in ['0'..'9'] then
+        s1 := s1 + p^;
+      if p^ =',' then
+        begin
+        if APosition =State then
+          begin
+          result := strtoint(s1);
+          exit;
+          end;
+        s1 := '';
+        inc(State);
+        end;
+      inc(p);
+      end;
+    if APosition=sHeight then
+      result := StrToInt(s1)
+    else
+      raise Exception.create('Invalid NSFrame value');
+  end;
+
+var
+  AFrameNode: TDOMNode;
+begin
+  result := 0;
+  if assigned(FXIBObjectElement) then
+    begin
+    AFrameNode := FindKeyNode(FXIBObjectElement,'string','NSFrame');
+    if assigned(AFrameNode) then
+      begin
+      state := sLeft;
+      result := ParseDOMElement(AFrameNode);
+      end
+    else if APosition in [sWidth, sHeight] then
+      begin
+      AFrameNode := FindKeyNode(FXIBObjectElement,'string','NSFrameSize');
+      if assigned(AFrameNode) then
+        begin
+        state := sWidth;
+        result := ParseDOMElement(AFrameNode);
+        end;
+      end;
+    end;
+end;
+
+function tiOSFakeComponent.GetRef: integer;
+begin
+  if assigned(FXIBObjectElement) then
+     result := StrToInt(FXIBObjectElement.AttribStrings['id'])
+  else
+    result := 0;
+end;
+
+function tiOSFakeComponent.GetXIBDocument: TXMLDocument;
+begin
+  result := GetNSObject.NIBDocument;
+end;
+
+function tiOSFakeComponent.GetXIBOrderedObjects: TDOMElement;
+begin
+  Result := FindKeyNode(GetXIBObjectRecords,'array','orderedObjects');
+  if not assigned(result) then
+    Result := FindKeyNode(GetXIBObjectRecords,'object','orderedObjects');
+end;
+
+function tiOSFakeComponent.GetXIBObjectRecords: TDOMElement;
+begin
+  Result := FindKeyNode(GetXIBObjects,'object','objectRecords');
+end;
+
+function tiOSFakeComponent.GetXIBObjects: TDOMElement;
+var
+  ArchiveNode: TDOMNode;
+  DataNode: TDOMNode;
+begin
+   ArchiveNode := GetXIBDocument.FirstChild;
+  assert(ArchiveNode.NodeName='archive');
+  DataNode := ArchiveNode.FindNode('data');
+  Result := FindKeyNode(DataNode,'object','IBDocument.Objects');
+end;
+
+function tiOSFakeComponent.GetXIBRootObjects: TDOMElement;
+var
+  ArchiveNode: TDOMNode;
+  DataNode: TDOMNode;
+begin
+   ArchiveNode := GetXIBDocument.FirstChild;
+  assert(ArchiveNode.NodeName='archive');
+  DataNode := ArchiveNode.FindNode('data');
+  Result := FindKeyNode(DataNode,'object','IBDocument.RootObjects');
+end;
+
+function tiOSFakeComponent.FindOrderdObjectByRef(ARef: int64): TDOMElement;
+var
+  ANode: TDOMNode;
+  ARefNode: TDOMElement;
+begin
+  result := nil;
+  ANode := GetXIBOrderedObjects.FirstChild;
+  while assigned(ANode) do
+    begin
+    if (ANode.NodeName='object') and (ANode is TDOMElement) and (TDOMElement(ANode).AttribStrings['class']='IBObjectRecord') then
+      begin
+      ARefNode := FindKeyNode(ANode,'reference','object');
+      if assigned(ARefNode) and (ARefNode.AttribStrings['ref']=inttostr(ARef)) then
+        begin
+        result := ANode as TDOMElement;
+        break;
+        end;
+      end;
+    ANode := ANode.NextSibling;
+    end;
+end;
+
+procedure tiOSFakeComponent.AddChild(const AValue: tiOSFakeComponent);
+var
+  AComp: UIView;
+begin
+  FChilds.Add(AValue);
+  AddChildToDom(AValue);
+  if (AValue is UIView) and not (csLoading in ComponentState) then
+    begin
+    AComp := UIView(AValue).ObtainSuperview;
+    if AComp<>AValue then
+      UIView(AValue).NSSuperview := AComp as UIView;
+    end;
+
+end;
+
+procedure tiOSFakeComponent.AddChildToDom(const AValue: tiOSFakeComponent);
+var
+  ANode: TDOMElement;
+  AOrderedObjects: TDOMElement;
+  s: string;
+  ARef: integer;
+  IsRootObject: boolean;
+begin
+  if not (csLoading in ComponentState) {and assigned(FXIBObjectElement)} then
+    begin
+    AValue.FXIBObjectElement := GetXIBDocument.CreateElement('object');
+    ARef := random(999999999);
+    AValue.FXIBObjectElement.AttribStrings['class'] := AValue.GetIBClassName;
+    AValue.FXIBObjectElement.AttribStrings['id'] := IntToStr(ARef);
+
+    if GetNSObject.XIBUsesObjectsForArrays then
+      s := 'object'
+    else
+      s := 'array';
+
+    IsRootObject:=not assigned(parent);
+
+    if IsRootObject then
+      ANode := GetXIBRootObjects
+    else
+      ANode := GetKeyNode(FXIBObjectElement,s,'NSSubviews','NSMutableArray');
+
+    ANode.AppendChild(AValue.FXIBObjectElement);
+
+    AOrderedObjects := GetXIBOrderedObjects;
+    ANode := AddElement(AOrderedObjects,'object');
+    ANode.AttribStrings['class'] := 'IBObjectRecord';
+    AddIBInt(ANode,'objectID',GetNextObjectID);
+    AddIBReference(ANode, 'object', IntToStr(ARef));
+    if IsRootObject then
+      AddIBReference(ANode, 'parent', '0')
+    else
+      AddIBReference(ANode, 'parent', Self, True);
+
+    if not IsRootObject then
+      begin
+      ANode := FindOrderdObjectByRef(Ref);
+      ANode := GetKeyNode(ANode, s,'children','NSMutableArray');
+      ANode := AddElement(ANode,'reference');
+      ANode.AttribStrings['ref']:=IntToStr(ARef);
+      end;
+    end;
+end;
+
+procedure tiOSFakeComponent.RemoveChild(const AValue: tiOSFakeComponent);
+begin
+  FChilds.Remove(AValue);
+end;
+
 function tiOSFakeComponent.GetHeight: integer;
 begin
-  result := FHeight;
+  result := GetPosition(sHeight);
 end;
 
 function tiOSFakeComponent.GetLeft: integer;
+
 begin
-  result := FLeft;
+  if StoreSizeAsFrameSize then
+    result := FLeft
+  else
+    result := GetPosition(sLeft);
 end;
 
 function tiOSFakeComponent.GetTop: integer;
 begin
-  result := FTop;
+  if StoreSizeAsFrameSize then
+    result := FTop
+  else
+    result := GetPosition(sTop);
 end;
 
 function tiOSFakeComponent.GetWidth: integer;
 begin
-  result := FWidth;
+  result := GetPosition(sWidth);
+end;
+
+function tiOSFakeComponent.StringToBytes(const AString: string): string;
+begin
+  result:=EncodeStringBase64(AString);
+  while Result[length(Result)]='=' do
+    Result:=copy(Result,1,length(Result)-1);
+end;
+
+function tiOSFakeComponent.BytesToString(AString: string): string;
+var
+  i: integer;
+begin
+  if (length(AString) mod 4) <> 0 then
+    for i := 0 to 3-(length(AString) mod 4) do
+      AString := AString + '=';
+  result:=DecodeStringBase64(AString);
+end;
+
+function tiOSFakeComponent.GetXIBInteger(index: TXIBProperties): integer;
+begin
+  result := StrToInt(GetXIBString(index,'int'));
+end;
+
+procedure tiOSFakeComponent.SetXIBInteger(index: TXIBProperties; AValue: integer);
+begin
+  SetXIBString(index, 'int', IntToStr(AValue));
+end;
+
+function tiOSFakeComponent.GetXIBColor(index: TXIBProperties): TColor;
+var
+  AnElement: TDOMElement;
+  l: longint;
+  fr,fg,fb: single;
+  b: byte;
+  s,sf: string;
+  p1, p2: byte;
+
+begin
+  result := clDefault;
+  if Assigned(FXIBObjectElement) then
+    begin
+    AnElement := FindKeyNode(FXIBObjectElement, 'object', XIBPropertiesStrings[index].APropertyName);
+    if assigned(AnElement) then
+      begin
+      AnElement := FindKeyNode(AnElement, 'bytes', 'NSRGB');
+      if assigned(AnElement) then
+        begin
+        s := AnElement.TextContent;
+        s := BytesToString(s);
+
+        p1 := pos(' ',s);
+        sf := copy(s,1,p1-1);
+        fr := StrToFloat(sf) * $ff;
+
+        p2 := PosEx(' ',s,p1+1);
+        sf := copy(s,p1+1,p2-p1-1);
+        fg := StrToFloat(sf) * $ff;
+
+        sf := copy(s,p2+1,length(s)-p2);
+        fb := StrToFloat(sf) * $ff;
+
+        result := RGBToColor(round(fr),round(fg),round(fb));
+        end;
+      end
+    end
+end;
+
+procedure tiOSFakeComponent.SetXIBColor(index: TXIBProperties; AValue: TColor);
+var
+  l: longint;
+  fr,fg,fb: single;
+  b: byte;
+  s: string;
+  AnElement: TDOMElement;
+begin
+  if GetXIBColor(index)=AValue then
+    Exit;
+
+  if Assigned(FXIBObjectElement) then
+    begin
+    if (AValue = clDefault) then
+      begin
+      // Value is set to default, remove node
+      AnElement := FindKeyNode(FXIBObjectElement, 'object', XIBPropertiesStrings[index].APropertyName);
+      if assigned(AnElement) then
+        AnElement.ParentNode.RemoveChild(AnElement);
+      end
+    else
+      begin
+      l:=ColorToRGB(AValue);
+      b := l and ($ff0000) shr 16;
+      fb := b / $ff;
+      b := l and ($00ff00) shr 8;
+      fg := b / $ff;
+      b := l and ($0000ff);
+      fr := b / $ff;
+      s := FloatToStr(fr)+' '+FloatToStr(fg)+' '+FloatToStr(fb);
+
+      AnElement := FindKeyNode(FXIBObjectElement, 'object', XIBPropertiesStrings[index].APropertyName);
+      if assigned(AnElement) then
+        begin
+        AnElement := FindKeyNode(AnElement,'bytes','NSRGB');
+        AnElement.TextContent:=StringToBytes(s);
+        end
+      else
+        begin
+        AnElement := GetKeyNode(FXIBObjectElement, 'object', XIBPropertiesStrings[index].APropertyName);
+        AnElement.AttribStrings['class'] := 'NSColor';
+        AddIBInt(AnElement,'NSColorSpace',1);
+        AddIBBytes(AnElement,'NSRGB',s);
+        end;
+      end;
+    Invalidate;
+    end;
+end;
+
+function tiOSFakeComponent.GetNSObject: NSObject;
+begin
+  if assigned(Parent) then
+    result := Parent.GetNSObject
+  else
+    result := nil;
+end;
+
+procedure tiOSFakeComponent.InitializeDefaults;
+begin
+  InitializeDefaultChildren;
+end;
+
+procedure tiOSFakeComponent.DefineProperties(Filer: TFiler);
+begin
+  inherited DefineProperties(Filer);
+  if filer is TXIBReader then
+    FXIBObjectElement := TXIBObjectReader(TReader(Filer).Driver).FCurrentObject;
+end;
+
+function tiOSFakeComponent.GetKeyNode(AParentNode: TDOMNode; NodeName, Key: string; AClass: string): TDOMElement;
+begin
+  result := FindKeyNode(AParentNode, NodeName, Key);
+  if not assigned(result) then
+    begin
+    result := AddElement(AParentNode as TDOMElement,NodeName);
+    result.AttribStrings['key']:=Key;
+    if AClass<>'' then
+      result.AttribStrings['class']:=AClass;
+    end;
 end;
 
 procedure tiOSFakeComponent.SetParentComponent(Value: TComponent);
@@ -1012,11 +2421,11 @@ begin
   if FParent=AValue then exit;
   if FParent<>nil then begin
     Invalidate;
-    FParent.FChilds.Remove(Self);
+    FParent.RemoveChild(self);
   end;
   FParent:=AValue;
   if FParent<>nil then begin
-    FParent.FChilds.Add(Self);
+    FParent.AddChild(Self);
   end;
   Invalidate;
 end;
@@ -1058,6 +2467,11 @@ end;
 procedure tiOSFakeComponent.InternalInvalidateRect(ARect: TRect; Erase: boolean);
 begin
   //
+end;
+
+function tiOSFakeComponent.StoreSizeAsFrameSize: boolean;
+begin
+  result := False;
 end;
 
 procedure tiOSFakeComponent.AddConnectionRecord(AnObjectDomElement: TDOMElement; AConnectionType, ALabel, AEventType: string);
@@ -1197,14 +2611,30 @@ begin
 end;
 
 procedure tiOSFakeComponent.SetBounds(NewLeft, NewTop, NewWidth, NewHeight: integer);
+var
+  AFrameNode: TDOMNode;
+  s: string;
 begin
   if (Left=NewLeft) and (Top=NewTop) and (Width=NewWidth) and (Height=NewHeight) then
     exit;
   Invalidate;
-  FLeft:=NewLeft;
-  FTop:=NewTop;
-  FWidth:=NewWidth;
-  FHeight:=NewHeight;
+
+  if assigned(FXIBObjectElement) then
+    begin
+    if StoreSizeAsFrameSize then
+      begin
+      AFrameNode := GetKeyNode(FXIBObjectElement,'string','NSFrameSize');
+      s := Format('{%d, %d}',[NewWidth, NewHeight]);
+      FLeft:=NewLeft;
+      FTop:=NewTop;
+      end
+    else
+      begin
+      AFrameNode := GetKeyNode(FXIBObjectElement,'string','NSFrame');
+      s := Format('{{%d, %d}, {%D, %d}}',[NewLeft, NewTop, NewWidth, NewHeight]);
+      end;
+    AFrameNode.TextContent:=s;
+    end;
   Invalidate;
 end;
 
@@ -1525,9 +2955,8 @@ constructor UILabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FAcceptChildsAtDesignTime:=false;
-  FLines := 1;
   FFont := TiOSFakeFontDescription.Create;
-  FEnabled := true;
+  Enabled := true;
 end;
 
 destructor UILabel.Destroy;
@@ -1578,18 +3007,101 @@ end;
 { UIView }
 
 function UIView.GetNSSuperView: UIView;
+
+  function FindComponentByRef(AComp: tiOSFakeComponent;const ARef: Int64): tiOSFakeComponent;
+  var
+    i: Integer;
+  begin
+    for i := 0 to AComp.ChildCount-1 do
+      begin
+      if AComp.Children[i].Ref=ARef then
+        begin
+        result := AComp.Children[i];
+        exit;
+        end;
+      if AComp.Children[i]=AComp then
+        raise exception.create('Circular reference in components');
+      result := FindComponentByRef(AComp.Children[i], ARef);
+      if assigned(result) then
+        exit;
+      end;
+    result := nil;
+  end;
+
+var
+  s: string;
+  ANode: TDOMElement;
+begin
+  ANode := FindKeyNode(FXIBObjectElement, 'reference', 'NSSuperview');
+  if assigned(ANode) then
+    begin
+    s  := ANode.AttribStrings['ref'];
+    result := FindComponentByRef(Owner as tiOSFakeComponent, StrToIntDef(s,-1)) as UIView;
+    end
+  else
+    result := nil;
+end;
+
+function UIView.ObtainSuperview: UIView;
 begin
   if assigned(Parent) and (Parent is UIView) then
-    result := uiview(parent).GetNSSuperView
+    result := uiview(parent).ObtainSuperView
   else
     result := self;
 end;
 
-procedure UIView.SetCaption(const AValue: string);
+procedure UIView.SetNSSuperView(AValue: UIView);
+var
+  ANode: TDOMElement;
 begin
-  if FCaption=AValue then exit;
-  FCaption:=AValue;
+  if not assigned(FXIBObjectElement) then
+    raise exception.create('NoObjectElement');
+  if assigned(AValue) then
+    begin
+    ANode := GetKeyNode(FXIBObjectElement, 'reference', 'NSSuperview');
+    ANode.AttribStrings['ref'] := IntToStr(AValue.Ref);
+    end
+  else
+    begin
+    ANode := FindKeyNode(FXIBObjectElement, 'reference', 'NSSuperview');
+    if assigned(ANode) then
+      ANode.ParentNode.RemoveChild(ANode);
+    end;
   Invalidate;
+end;
+
+procedure tiOSFakeComponent.SetXIBString(index: TXIBProperties; ANodeName, AValue: string);
+var
+  ANode: TDOMNode;
+begin
+  if GetXIBString(index, ANodeName)=AValue then
+    Exit;
+  if Assigned(FXIBObjectElement) then
+    begin
+    if (AValue = XIBPropertiesStrings[index].ADefaultValue) then
+      begin
+      // Value is set to default, remove node
+      ANode := FindKeyNode(FXIBObjectElement, ANodeName, XIBPropertiesStrings[index].APropertyName);
+      if assigned(ANode) then
+        ANode.ParentNode.RemoveChild(ANode);
+      end
+    else
+      begin
+      ANode := GetKeyNode(FXIBObjectElement, ANodeName, XIBPropertiesStrings[index].APropertyName);
+      ANode.TextContent:=AValue;
+      end;
+    Invalidate;
+    end;
+end;
+
+function tiOSFakeComponent.GetXIBString(index: TXIBProperties): string;
+begin
+  result := GetXIBString(index, 'string');
+end;
+
+procedure tiOSFakeComponent.SetXIBString(index: TXIBProperties; AValue: string);
+begin
+  SetXIBString(index, 'string', AValue);
 end;
 
 procedure UIView.SetName(const NewName: TComponentName);
@@ -1615,15 +3127,66 @@ begin
   inherited WriteToDomElement(AnObjectDomElement);
 end;
 
+function tiOSFakeComponent.GetXIBBoolean(index: TXIBProperties): boolean;
+var
+  s: string;
+begin
+  s := GetXIBString(index, 'bool');
+  if s='YES' then
+    result := true
+  else
+    result := false;
+end;
+
+procedure tiOSFakeComponent.SetXIBBoolean(index: TXIBProperties; AValue: boolean);
+begin
+  if AValue then
+    SetXIBString(index,'bool','YES')
+  else
+    SetXIBString(index,'bool','NO')
+end;
+
+function tiOSFakeComponent.GetXIBFloat(index: TXIBProperties): double;
+var
+  s: string;
+begin
+  s := GetXIBString(index, 'float');
+  result := StrToFloat(s);
+end;
+
+procedure tiOSFakeComponent.SetXIBFloat(index: TXIBProperties; AValue: double);
+begin
+  SetXIBString(index,'float',FloatToStr(AValue));
+end;
+
+function tiOSFakeComponent.GetXIBString(index: TXIBProperties; ANodeName: string): string;
+var
+  ANode: TDOMNode;
+begin
+  if Assigned(FXIBObjectElement) then
+    begin
+    ANode := FindKeyNode(FXIBObjectElement, ANodeName, XIBPropertiesStrings[index].APropertyName);
+    if not assigned(ANode) then
+      result := XIBPropertiesStrings[index].ADefaultValue
+    else
+      result := ANode.TextContent
+    end
+  else
+    result := XIBPropertiesStrings[index].ADefaultValue;
+end;
+
 constructor UIView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FObjectID:=GConnectionID;
-  inc(GConnectionID);
-  FRef:=random(999999999);
   FAcceptChildsAtDesignTime:=true;
-  FAlpha:=1;
   FBackgroundColor:=clDefault;
+end;
+
+procedure UIView.InitializeDefaults;
+begin
+  inherited InitializeDefaults;
+  BackgroundColor:=clWhite;
+  Alpha:=1;
 end;
 
 procedure UIView.paint(ACanvas: TCanvas);
@@ -1678,6 +3241,12 @@ begin
     end
   else
     writeln('AA- Geen Touchdown ' + self.Name);
+end;
+
+procedure UIButton.InitializeDefaults;
+begin
+  inherited InitializeDefaults;
+  SetBounds(10,10,72,37);
 end;
 
 constructor UIButton.Create(AOwner: TComponent);
