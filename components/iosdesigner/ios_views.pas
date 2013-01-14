@@ -121,6 +121,7 @@ type
     function GetNextObjectID: integer;
     function FindOrderdObjectByRef(ARef: int64): TDOMElement;
   protected
+    procedure SetXIBObjectElement(const AValue: TDOMElement);
     procedure AddChild(const AValue: tiOSFakeComponent); virtual;
     procedure RemoveChild(const AValue: tiOSFakeComponent); virtual;
     procedure SetParentComponent(Value: TComponent); override;
@@ -133,6 +134,8 @@ type
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure InternalInvalidateRect(ARect: TRect; Erase: boolean); virtual;
     function  StoreSizeAsFrameSize: boolean; virtual;
+
+    procedure SetName(const NewName: TComponentName); override;
     // iOS
     procedure AddConnectionRecord(AnObjectDomElement: TDOMElement; AConnectionType, ALabel, AEventType: string);
     procedure WriteToDomElement(AnObjectDomElement: TDOMElement); virtual;
@@ -556,11 +559,11 @@ type
     FRefStack: array of int64;
   private
     FXIBUsesObjectsForArrays: boolean;
-    function GetConnectionRef(AnIBConnectionRecord: TDOMElement; key: string): int64;
+    //function GetConnectionRef(AnIBConnectionRecord: TDOMElement; key: string): int64;
     function GetObjectFromRef(ARef: int64): TDOMElement;
     function GetConnectionLabel(AnIBConnectionRecord: TDOMElement): string;
     function GetNextChild(ACurrentNode: TDOMNode; ParentRef: int64): TDOMElement;
-    function FindOrderdObjectByRef(ARef: int64): TDOMElement;
+    function FindOrderedObjectByRef(ARef: int64): TDOMElement;
     function FindFirstChild: TDOMElement;
     function FindNextChild(ARef: int64): TDOMElement;
     function FindNextOrderedObject: TDOMElement;
@@ -592,6 +595,12 @@ type
     procedure SkipValue; override;
     property XIBUsesObjectsForArrays: boolean read FXIBUsesObjectsForArrays;
   end;
+
+procedure ObtainBaseObjectInfoFromXIB(AStream: TStream; out AXMLDocument: TXMLDocument;
+                                      out ARootObjects, AConnectionRecords, AOrderedObjects, AMainOrderedObject: TDOMElement;
+                                      out AFilesOwnerID: int64;
+                                      out AXIBUsesObjectsForArrays: boolean);
+function FindKeyNode(AParentNode: TDOMNode; NodeName, Key: string): TDOMElement;
 
 
 implementation
@@ -640,7 +649,7 @@ end;
 
 { TXIBObjectReader }
 
-function TXIBObjectReader.GetConnectionRef(AnIBConnectionRecord: TDOMElement; key: string): int64;
+function GetConnectionRef(AnIBConnectionRecord: TDOMElement; key: string): int64;
 var
   ATempNode: TDOMElement;
   AReferenceNode: TDOMElement;
@@ -711,13 +720,13 @@ begin
     end;
 end;
 
-function TXIBObjectReader.FindOrderdObjectByRef(ARef: int64): TDOMElement;
+function FindOrderdObjectByRefA(AnOrderedObjects: TDOMElement; ARef: int64): TDOMElement;
 var
   ANode: TDOMNode;
   ARefNode: TDOMElement;
 begin
   result := nil;
-  ANode := FOrderedObjects.FirstChild;
+  ANode := AnOrderedObjects.FirstChild;
   while assigned(ANode) do
     begin
     if (ANode.NodeName='object') and (ANode is TDOMElement) and (TDOMElement(ANode).AttribStrings['class']='IBObjectRecord') then
@@ -731,6 +740,11 @@ begin
       end;
     ANode := ANode.NextSibling;
     end;
+end;
+
+function TXIBObjectReader.FindOrderedObjectByRef(ARef: int64): TDOMElement;
+begin
+  result := FindOrderdObjectByRefA(FOrderedObjects, ARef);
 end;
 
 function TXIBObjectReader.FindFirstChild: TDOMElement;
@@ -764,6 +778,8 @@ begin
   result := nil;
   pass := false;
   ANode := FindKeyNode(FCurrentOrderedObject,'object','children');
+  if not assigned(ANode) then
+    ANode := FindKeyNode(FCurrentOrderedObject,'array','children');
   if assigned(ANode) then
     begin
     ANode := ANode.FirstChild as TDOMElement;
@@ -841,7 +857,10 @@ begin
   FStream := AStream;
 end;
 
-procedure TXIBObjectReader.BeginRootComponent;
+procedure ObtainBaseObjectInfoFromXIB(AStream: TStream; out AXMLDocument: TXMLDocument;
+                                      out ARootObjects, AConnectionRecords, AOrderedObjects, AMainOrderedObject: TDOMElement;
+                                      out AFilesOwnerID: int64;
+                                      out AXIBUsesObjectsForArrays: boolean);
 var
   ArchiveNode, DataNode: TDOMNode;
   Objects: TDOMNode;
@@ -850,19 +869,22 @@ var
   MainObjectRef: int64;
 
 begin
-  ReadXMLFile(FXMLDocument, FStream);
+  ReadXMLFile(AXMLDocument, AStream);
 
-  ArchiveNode := FXMLDocument.FirstChild;
+  ArchiveNode := AXMLDocument.FirstChild;
   assert(ArchiveNode.NodeName='archive');
   DataNode := ArchiveNode.FindNode('data');
-  FRootObjects := FindKeyNode(DataNode,'array','IBDocument.RootObjects');
-  if not assigned(FRootObjects) then
+  ARootObjects := FindKeyNode(DataNode,'array','IBDocument.RootObjects');
+  if not assigned(ARootObjects) then
     // Older XCode versions this:
     begin
-    FRootObjects := FindKeyNode(DataNode,'object','IBDocument.RootObjects');
-    FXIBUsesObjectsForArrays:=true;
-    end;
-  ANode := FRootObjects.FirstChild;
+    ARootObjects := FindKeyNode(DataNode,'object','IBDocument.RootObjects');
+    AXIBUsesObjectsForArrays:=true;
+    end
+  else
+    AXIBUsesObjectsForArrays:=False;
+
+  ANode := ARootObjects.FirstChild;
   while assigned(ANode) do
     begin
     if (ANode.NodeName='object') and (ANode is TDOMElement) and (TDOMElement(ANode).AttribStrings['class']='IBProxyObject') then
@@ -870,7 +892,7 @@ begin
       ATempNode := FindKeyNode(ANode, 'string', 'IBProxiedObjectIdentifier');
       if ATempNode.TextContent='IBFilesOwner' then
         begin
-        FFilesOwnerID:=StrToInt(TDOMElement(ANode).AttribStrings['id']);
+        AFilesOwnerID:=StrToInt(TDOMElement(ANode).AttribStrings['id']);
         break;
         end;
       end;
@@ -878,24 +900,24 @@ begin
     end;
 
   Objects := FindKeyNode(DataNode,'object','IBDocument.Objects');
-  FConnectionRecords := FindKeyNode(Objects,'array','connectionRecords') as TDOMElement;
-  if not assigned(FConnectionRecords) then
+  AConnectionRecords := FindKeyNode(Objects,'array','connectionRecords') as TDOMElement;
+  if not assigned(AConnectionRecords) then
     // Interface builder v3.1 and below uses 'object' instead of 'array'
-    FConnectionRecords := FindKeyNode(Objects,'object','connectionRecords') as TDOMElement;
+    AConnectionRecords := FindKeyNode(Objects,'object','connectionRecords') as TDOMElement;
   ANode := FindKeyNode(Objects,'object','objectRecords');
-  FOrderedObjects := FindKeyNode(ANode,'array','orderedObjects');
-  if not assigned(FOrderedObjects) then
+  AOrderedObjects := FindKeyNode(ANode,'array','orderedObjects');
+  if not assigned(AOrderedObjects) then
     // Interface builder v3.1 and below uses 'object' instead of 'array'
-    FOrderedObjects := FindKeyNode(ANode,'object','orderedObjects');
+    AOrderedObjects := FindKeyNode(ANode,'object','orderedObjects');
 
   MainObjectRef:=0;
-  ANode := FConnectionRecords.FirstChild;
+  ANode := AConnectionRecords.FirstChild;
   while assigned(ANode) do
     begin
     if (ANode.NodeName='object') and (ANode is TDOMElement) and (TDOMElement(ANode).AttribStrings['class']='IBConnectionRecord') then
       begin
       //FCurrentConnectionNode := TDOMElement(ANode);
-      if GetConnectionRef(TDOMElement(ANode),'source')=FFilesOwnerID then
+      if GetConnectionRef(TDOMElement(ANode),'source')=AFilesOwnerID then
         begin
         MainObjectRef:=GetConnectionRef(TDOMElement(ANode),'destination');
         break;
@@ -905,10 +927,10 @@ begin
     end;
 
   if MainObjectRef<>0 then
-    FMainOrderedObject := FindOrderdObjectByRef(MainObjectRef)
+    AMainOrderedObject := FindOrderdObjectByRefA(AOrderedObjects, MainObjectRef)
   else
     begin
-    ANode := FOrderedObjects.FirstChild;
+    ANode := AOrderedObjects.FirstChild;
     while assigned(ANode) do
       begin
       if (ANode.NodeName='object') and (ANode is TDOMElement) and (TDOMElement(ANode).AttribStrings['class']='IBObjectRecord') then
@@ -916,7 +938,7 @@ begin
         ATempNode := FindKeyNode(ANode,'int','objectID');
         if StrToIntDef(ATempNode.TextContent,0)>0 then
           begin
-          FMainOrderedObject := ANode as TDOMElement;
+          AMainOrderedObject := ANode as TDOMElement;
           break;
           end;
         end;
@@ -924,7 +946,14 @@ begin
       end;
     end;
 
+end;
+
+procedure TXIBObjectReader.BeginRootComponent;
+begin
+  ObtainBaseObjectInfoFromXIB(FStream, FXMLDocument, FRootObjects, FConnectionRecords, FOrderedObjects, FMainOrderedObject, FFilesOwnerID, FXIBUsesObjectsForArrays);
+
   FCurrentOrderedObject := FMainOrderedObject;
+
   ReadState := rsMainProp;
 end;
 
@@ -938,6 +967,11 @@ begin
 
   ObjectNode := GetObjectFromRef(Ref);
   CompClassName:=ObjectNode.AttribStrings['class'];
+
+  ObjectNode := FindKeyNode(FCurrentOrderedObject,'string','objectName');
+  if assigned(ObjectNode) then
+    CompName:=ObjectNode.TextContent;
+
   if copy(CompClassName,1,2)='IB' then
     CompClassName:=copy(CompClassName,3,250);
   FReadChilds := False;
@@ -987,7 +1021,7 @@ begin
       CurrentChildRef := FindFirstChild;
       if assigned(CurrentChildRef) then
         begin
-        FCurrentOrderedObject := FindOrderdObjectByRef(StrToInt(CurrentChildRef.AttribStrings['ref']));
+        FCurrentOrderedObject := FindOrderedObjectByRef(StrToInt(CurrentChildRef.AttribStrings['ref']));
         SetLength(FRefStack,length(FRefStack)+1);
         FRefStack[high(FRefStack)]:=GetRefFromOrderedObject(FCurrentOrderedObject);
         end
@@ -1001,7 +1035,7 @@ begin
       CurrentChildRef := FindFirstChild;
       if assigned(CurrentChildRef) then
         begin
-        FCurrentOrderedObject := FindOrderdObjectByRef(StrToInt(CurrentChildRef.AttribStrings['ref']));
+        FCurrentOrderedObject := FindOrderedObjectByRef(StrToInt(CurrentChildRef.AttribStrings['ref']));
         SetLength(FRefStack,length(FRefStack)+1);
         FRefStack[high(FRefStack)]:=GetRefFromOrderedObject(FCurrentOrderedObject);
         end
@@ -1017,14 +1051,14 @@ begin
         begin
         ref := FRefStack[high(FRefStack)];
         setlength(FRefStack, high(FRefStack));
-        FCurrentOrderedObject := FindOrderdObjectByRef(ref);
+        FCurrentOrderedObject := FindOrderedObjectByRef(ref);
         ANode := FindKeyNode(FCurrentOrderedObject,'reference','parent');
-        FCurrentOrderedObject := FindOrderdObjectByRef(StrToInt(ANode.AttribStrings['ref']));
+        FCurrentOrderedObject := FindOrderedObjectByRef(StrToInt(ANode.AttribStrings['ref']));
 
         CurrentChildRef := FindNextChild(ref);
         if assigned(CurrentChildRef) then
           begin
-          FCurrentOrderedObject := FindOrderdObjectByRef(StrToInt(CurrentChildRef.AttribStrings['ref']));
+          FCurrentOrderedObject := FindOrderedObjectByRef(StrToInt(CurrentChildRef.AttribStrings['ref']));
           SetLength(FRefStack,length(FRefStack)+1);
           FRefStack[high(FRefStack)]:=GetRefFromOrderedObject(FCurrentOrderedObject);
           end
@@ -1035,7 +1069,7 @@ begin
         begin
         ref := FRefStack[high(FRefStack)];
         setlength(FRefStack, high(FRefStack));
-        FCurrentOrderedObject := FindOrderdObjectByRef(ref);
+        FCurrentOrderedObject := FindOrderedObjectByRef(ref);
         FCurrentOrderedObject := FindNextOrderedObject;
         if assigned(FCurrentOrderedObject) then
           begin
@@ -2078,9 +2112,9 @@ var
   AFrameNode: TDOMNode;
 begin
   result := 0;
-  if assigned(FXIBObjectElement) then
+  if assigned(XIBObjectElement) then
     begin
-    AFrameNode := FindKeyNode(FXIBObjectElement,'string','NSFrame');
+    AFrameNode := FindKeyNode(XIBObjectElement,'string','NSFrame');
     if assigned(AFrameNode) then
       begin
       state := sLeft;
@@ -2088,7 +2122,7 @@ begin
       end
     else if APosition in [sWidth, sHeight] then
       begin
-      AFrameNode := FindKeyNode(FXIBObjectElement,'string','NSFrameSize');
+      AFrameNode := FindKeyNode(XIBObjectElement,'string','NSFrameSize');
       if assigned(AFrameNode) then
         begin
         state := sWidth;
@@ -2100,8 +2134,8 @@ end;
 
 function tiOSFakeComponent.GetRef: integer;
 begin
-  if assigned(FXIBObjectElement) then
-     result := StrToInt(FXIBObjectElement.AttribStrings['id'])
+  if assigned(XIBObjectElement) then
+     result := StrToIntDef(XIBObjectElement.AttribStrings['id'],0)
   else
     result := 0;
 end;
@@ -2167,6 +2201,26 @@ begin
     end;
 end;
 
+procedure tiOSFakeComponent.SetXIBObjectElement(const AValue: TDOMElement);
+var
+  AnElement: TDOMElement;
+  ARef: integer;
+begin
+  FXIBObjectElement := AValue;
+  if csLoading in ComponentState then
+    Exit;
+  if (Name<>'') then
+    begin
+    ARef := Ref;
+    if ARef<>0 then
+      begin
+      AnElement := FindOrderdObjectByRef(ARef);
+      AnElement := GetKeyNode(AnElement,'string','objectName');
+      AnElement.TextContent:=Name;
+      end;
+    end;
+end;
+
 procedure tiOSFakeComponent.AddChild(const AValue: tiOSFakeComponent);
 var
   AComp: UIView;
@@ -2192,10 +2246,12 @@ var
 begin
   if not (csLoading in ComponentState) {and assigned(FXIBObjectElement)} then
     begin
-    AValue.FXIBObjectElement := GetXIBDocument.CreateElement('object');
+    AValue.SetXIBObjectElement(GetXIBDocument.CreateElement('object'));
     ARef := random(999999999);
-    AValue.FXIBObjectElement.AttribStrings['class'] := AValue.GetIBClassName;
-    AValue.FXIBObjectElement.AttribStrings['id'] := IntToStr(ARef);
+    while assigned(AValue.FindOrderdObjectByRef(ARef)) do
+      ARef := random(999999999);
+    AValue.XIBObjectElement.AttribStrings['class'] := AValue.GetIBClassName;
+    AValue.XIBObjectElement.AttribStrings['id'] := IntToStr(ARef);
 
     if GetNSObject.XIBUsesObjectsForArrays then
       s := 'object'
@@ -2207,14 +2263,16 @@ begin
     if IsRootObject then
       ANode := GetXIBRootObjects
     else
-      ANode := GetKeyNode(FXIBObjectElement,s,'NSSubviews','NSMutableArray');
+      ANode := GetKeyNode(XIBObjectElement,s,'NSSubviews','NSMutableArray');
 
-    ANode.AppendChild(AValue.FXIBObjectElement);
+    ANode.AppendChild(AValue.XIBObjectElement);
 
     AOrderedObjects := GetXIBOrderedObjects;
     ANode := AddElement(AOrderedObjects,'object');
     ANode.AttribStrings['class'] := 'IBObjectRecord';
     AddIBInt(ANode,'objectID',GetNextObjectID);
+    if AValue.Name<>'' then
+      AddIBString(ANode, 'objectName', AValue.Name);
     AddIBReference(ANode, 'object', IntToStr(ARef));
     if IsRootObject then
       AddIBReference(ANode, 'parent', '0')
@@ -2301,9 +2359,9 @@ var
 
 begin
   result := clDefault;
-  if Assigned(FXIBObjectElement) then
+  if Assigned(XIBObjectElement) then
     begin
-    AnElement := FindKeyNode(FXIBObjectElement, 'object', XIBPropertiesStrings[index].APropertyName);
+    AnElement := FindKeyNode(XIBObjectElement, 'object', XIBPropertiesStrings[index].APropertyName);
     if assigned(AnElement) then
       begin
       AnElement := FindKeyNode(AnElement, 'bytes', 'NSRGB');
@@ -2340,12 +2398,12 @@ begin
   if GetXIBColor(index)=AValue then
     Exit;
 
-  if Assigned(FXIBObjectElement) then
+  if Assigned(XIBObjectElement) then
     begin
     if (AValue = clDefault) then
       begin
       // Value is set to default, remove node
-      AnElement := FindKeyNode(FXIBObjectElement, 'object', XIBPropertiesStrings[index].APropertyName);
+      AnElement := FindKeyNode(XIBObjectElement, 'object', XIBPropertiesStrings[index].APropertyName);
       if assigned(AnElement) then
         AnElement.ParentNode.RemoveChild(AnElement);
       end
@@ -2360,7 +2418,7 @@ begin
       fr := b / $ff;
       s := FloatToStr(fr)+' '+FloatToStr(fg)+' '+FloatToStr(fb);
 
-      AnElement := FindKeyNode(FXIBObjectElement, 'object', XIBPropertiesStrings[index].APropertyName);
+      AnElement := FindKeyNode(XIBObjectElement, 'object', XIBPropertiesStrings[index].APropertyName);
       if assigned(AnElement) then
         begin
         AnElement := FindKeyNode(AnElement,'bytes','NSRGB');
@@ -2368,7 +2426,7 @@ begin
         end
       else
         begin
-        AnElement := GetKeyNode(FXIBObjectElement, 'object', XIBPropertiesStrings[index].APropertyName);
+        AnElement := GetKeyNode(XIBObjectElement, 'object', XIBPropertiesStrings[index].APropertyName);
         AnElement.AttribStrings['class'] := 'NSColor';
         AddIBInt(AnElement,'NSColorSpace',1);
         AddIBBytes(AnElement,'NSRGB',s);
@@ -2395,7 +2453,7 @@ procedure tiOSFakeComponent.DefineProperties(Filer: TFiler);
 begin
   inherited DefineProperties(Filer);
   if filer is TXIBReader then
-    FXIBObjectElement := TXIBObjectReader(TReader(Filer).Driver).FCurrentObject;
+    SetXIBObjectElement(TXIBObjectReader(TReader(Filer).Driver).FCurrentObject);
 end;
 
 function tiOSFakeComponent.GetKeyNode(AParentNode: TDOMNode; NodeName, Key: string; AClass: string): TDOMElement;
@@ -2472,6 +2530,19 @@ end;
 function tiOSFakeComponent.StoreSizeAsFrameSize: boolean;
 begin
   result := False;
+end;
+
+procedure tiOSFakeComponent.SetName(const NewName: TComponentName);
+var
+  AnElement: TDOMElement;
+begin
+  inherited SetName(NewName);
+  if not (csLoading in ComponentState) and assigned(XIBObjectElement) then
+    begin
+    AnElement := FindOrderdObjectByRef(Ref);
+    AnElement := GetKeyNode(AnElement, 'string','objectName');
+    AnElement.TextContent := NewName;
+    end;
 end;
 
 procedure tiOSFakeComponent.AddConnectionRecord(AnObjectDomElement: TDOMElement; AConnectionType, ALabel, AEventType: string);
@@ -2619,18 +2690,18 @@ begin
     exit;
   Invalidate;
 
-  if assigned(FXIBObjectElement) then
+  if assigned(XIBObjectElement) then
     begin
     if StoreSizeAsFrameSize then
       begin
-      AFrameNode := GetKeyNode(FXIBObjectElement,'string','NSFrameSize');
+      AFrameNode := GetKeyNode(XIBObjectElement,'string','NSFrameSize');
       s := Format('{%d, %d}',[NewWidth, NewHeight]);
       FLeft:=NewLeft;
       FTop:=NewTop;
       end
     else
       begin
-      AFrameNode := GetKeyNode(FXIBObjectElement,'string','NSFrame');
+      AFrameNode := GetKeyNode(XIBObjectElement,'string','NSFrame');
       s := Format('{{%d, %d}, {%D, %d}}',[NewLeft, NewTop, NewWidth, NewHeight]);
       end;
     AFrameNode.TextContent:=s;
@@ -3032,7 +3103,7 @@ var
   s: string;
   ANode: TDOMElement;
 begin
-  ANode := FindKeyNode(FXIBObjectElement, 'reference', 'NSSuperview');
+  ANode := FindKeyNode(XIBObjectElement, 'reference', 'NSSuperview');
   if assigned(ANode) then
     begin
     s  := ANode.AttribStrings['ref'];
@@ -3054,16 +3125,16 @@ procedure UIView.SetNSSuperView(AValue: UIView);
 var
   ANode: TDOMElement;
 begin
-  if not assigned(FXIBObjectElement) then
+  if not assigned(XIBObjectElement) then
     raise exception.create('NoObjectElement');
   if assigned(AValue) then
     begin
-    ANode := GetKeyNode(FXIBObjectElement, 'reference', 'NSSuperview');
+    ANode := GetKeyNode(XIBObjectElement, 'reference', 'NSSuperview');
     ANode.AttribStrings['ref'] := IntToStr(AValue.Ref);
     end
   else
     begin
-    ANode := FindKeyNode(FXIBObjectElement, 'reference', 'NSSuperview');
+    ANode := FindKeyNode(XIBObjectElement, 'reference', 'NSSuperview');
     if assigned(ANode) then
       ANode.ParentNode.RemoveChild(ANode);
     end;
@@ -3076,18 +3147,18 @@ var
 begin
   if GetXIBString(index, ANodeName)=AValue then
     Exit;
-  if Assigned(FXIBObjectElement) then
+  if Assigned(XIBObjectElement) then
     begin
     if (AValue = XIBPropertiesStrings[index].ADefaultValue) then
       begin
       // Value is set to default, remove node
-      ANode := FindKeyNode(FXIBObjectElement, ANodeName, XIBPropertiesStrings[index].APropertyName);
+      ANode := FindKeyNode(XIBObjectElement, ANodeName, XIBPropertiesStrings[index].APropertyName);
       if assigned(ANode) then
         ANode.ParentNode.RemoveChild(ANode);
       end
     else
       begin
-      ANode := GetKeyNode(FXIBObjectElement, ANodeName, XIBPropertiesStrings[index].APropertyName);
+      ANode := GetKeyNode(XIBObjectElement, ANodeName, XIBPropertiesStrings[index].APropertyName);
       ANode.TextContent:=AValue;
       end;
     Invalidate;
@@ -3163,9 +3234,9 @@ function tiOSFakeComponent.GetXIBString(index: TXIBProperties; ANodeName: string
 var
   ANode: TDOMNode;
 begin
-  if Assigned(FXIBObjectElement) then
+  if Assigned(XIBObjectElement) then
     begin
-    ANode := FindKeyNode(FXIBObjectElement, ANodeName, XIBPropertiesStrings[index].APropertyName);
+    ANode := FindKeyNode(XIBObjectElement, ANodeName, XIBPropertiesStrings[index].APropertyName);
     if not assigned(ANode) then
       result := XIBPropertiesStrings[index].ADefaultValue
     else

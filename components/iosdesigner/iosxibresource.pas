@@ -45,7 +45,6 @@ var
   nx,ny,nt: integer;
   r,p: integer;
 begin
-//  CodeToolBoss.find;
   r := FindNextCompilerDirectiveWithName((source as TCodeBuffer).Source, -1, 'FakeResource', False, p);
   result := (r > -1)
 end;
@@ -76,7 +75,7 @@ end;
 class function TXIBResourcefileFormat.GetClassNameFromStream(s: TStream; out
   IsInherited: Boolean): shortstring;
 begin
-  result := 'TSObject1';
+  result := 'TAppDelegate_iPhone';
 end;
 
 class function TXIBResourcefileFormat.CreateReader(s: TStream;
@@ -94,11 +93,32 @@ end;
 class function TXIBResourcefileFormat.QuickCheckResourceBuffer(PascalBuffer,
   LFMBuffer: TObject; out LFMType, LFMComponentName, LFMClassName: string; out
   LCLVersion: string; out MissingClasses: TStrings): TModalResult;
+var
+  ms: TStream;
+  XMLDocument: TXMLDocument;
+  RO, CR, OO, MO : TDOMElement;
+  i: int64;
+  b: boolean;
+  AnElement: TDOMElement;
+
 begin
+  ms := TStringStream.Create((LFMBuffer as TCodeBuffer).Source);
+  try
+    ObtainBaseObjectInfoFromXIB(ms, XMLDocument, RO, CR, OO, MO,i, b);
+    try
+      AnElement := FindKeyNode(MO,'string','objectName');
+      if assigned(AnElement) then
+        LFMComponentName:=AnElement.TextContent;
+    finally
+      XMLDocument.Free;
+    end;
+  finally
+    ms.Free;
+  end;
+
   LCLVersion:='1.1';
   LFMType:='unknown';
-  LFMClassName:='TSObject1';
-  LFMComponentName:='SObject1';
+  LFMClassName:='TAppDelegate_iPhone';
 end;
 
 end.
