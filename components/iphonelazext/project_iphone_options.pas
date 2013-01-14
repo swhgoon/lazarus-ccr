@@ -289,10 +289,19 @@ var
   path  : AnsiString;
   st    : TStringList;
   i     : Integer;
+  AProjectFile: TLazProjectFile;
+
 begin
-  path := ResolveProjectPath(edtResDir.Text);
+  path := ResolveProjectPath(trim(edtResDir.Text));
   st:=TStringList.Create;
   try
+    for i := 0 to LazarusIDE.ActiveProject.FileCount-1 do
+      begin
+      AProjectFile := LazarusIDE.ActiveProject.Files[i];
+      if (AProjectFile.IsPartOfProject) and FileExistsUTF8(ChangeFileExt(AProjectFile.filename,'.xib')) then
+        st.add(AProjectFile.filename);
+      end;
+
     EnumFilesAtDir(path, '*.xib', st);
     nibFilesBox.Clear;
     for i:=0 to st.Count-1 do
