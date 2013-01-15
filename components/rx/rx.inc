@@ -47,6 +47,8 @@
 {.DEFINE USE_TRXXPManifest}
 {.$DEFINE USE_TRxAppIcon}
 
+{.$DEFINE USE_DEPRECATES}
+
 //
 {.$DEFINE DBDateEdit_OLD}
 

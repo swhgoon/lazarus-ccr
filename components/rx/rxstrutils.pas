@@ -120,6 +120,7 @@ function CompText(const S1, S2: string): Integer;
 { CompText compares S1 to S2, without case-sensitivity. The return value
   is the same as for CompStr. }
 
+{$IFDEF USE_DEPRECATES}
 function Copy2Symb(const S: string; Symb: Char): string; deprecated; //use this function from fcl strutils
 { Copy2Symb returns a substring of a string S from begining to first
   character Symb. }
@@ -135,7 +136,7 @@ function Copy2Space(const S: string): string; deprecated; //use this function fr
 function Copy2SpaceDel(var S: string): string; deprecated; //use this function from fcl strutils
 { Copy2SpaceDel returns a substring of a string S from begining to first
   white space and removes this substring from S. }
-
+{$ENDIF}
 function AnsiProperCase(const S: string; const WordDelims: TCharSet): string; deprecated; //use this function from fcl strutils
 { Returns string, with the first letter of each word in uppercase,
   all other letters in lowercase. Words are delimited by WordDelims. }
@@ -447,6 +448,7 @@ begin
 {$ENDIF}
 end;
 
+{$IFDEF USE_DEPRECATES}
 function Copy2Symb(const S: string; Symb: Char): string;
 var
   P: Integer;
@@ -471,6 +473,7 @@ function Copy2SpaceDel(var S: string): string;
 begin
   Result := Copy2SymbDel(S, ' ');
 end;
+{$ENDIF}
 
 function AnsiProperCase(const S: string; const WordDelims: TCharSet): string;
 var
