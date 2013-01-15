@@ -38,9 +38,7 @@ type
     MainNib     : WideString;
   end;
 
-function GetUserHomeDir: WideString;
-
-function GetiPhoneSimUserPath(const UserHomeDir: WideString=''): WideString;
+function GetiPhoneSimUserPath: WideString;
 
 procedure MakeSimSpaceStruct(const BundleName: WideString; var BundleAppDir: WideString);
 procedure MakeSimSpaceStruct(const iPhoneSimUserPath, BundleName: WideString; var BundleAppDir: WideString);
@@ -61,6 +59,10 @@ function AddPathDelim(const w: WideString): WideString;
 function RandomSpaceName: WideString;
 
 implementation
+
+uses
+  FileUtil,
+  iPhoneExtOptions;
 
 function RandomSpaceName: WideString;
 var
@@ -114,7 +116,12 @@ begin
   space8:=UTF8Encode(SpaceName);
 
   p:=IncludeTrailingPathDelimiter(IncludeTrailingPathDelimiter(path8)+space8);
-  Result:=UTF8Decode(p);
+  if DirectoryExistsUTF8(p) then
+    Result:=UTF8Decode(p)
+  else if DirectoryExistsUTF8(path8) then
+    result:=path8
+  else
+    result :='';
 end;
 
 procedure CreateBundle(const BundleName, ExeName: WideString; const Info: TiPhoneBundleInfo; var FullBundlePath, FullExeName: WideString);
@@ -132,21 +139,13 @@ begin
     Result:=w+PathDelim;
 end;
 
-function GetUserHomeDir: WideString;
-begin
-  Result:=UTF8Decode(GetUserDir);
-end;
-
-function GetiPhoneSimUserPath(const UserHomeDir: WideString=''): WideString;
+function GetiPhoneSimUserPath: WideString;
 var
-  nm : WideString;
+  s : String;
 begin
-  if UserHomeDir = '' then nm:=GetUserHomeDir
-  else nm:=UserHomeDir;
-
-  if nm='' then Exit;
-  if nm[length(nm)]<>'/' then nm:=nm+'/';
-  Result:=nm+'Library/Application Support/iPhone Simulator/User/Applications/';
+  s := EnvOptions.SimAppsPath;
+  EnvOptions.SubstituteMacros(s);
+  result := s;
 end;
 
 {

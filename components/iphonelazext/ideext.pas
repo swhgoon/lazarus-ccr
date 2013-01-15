@@ -452,6 +452,7 @@ begin
   try
     //ProjectBuilding(nil);
     path:=IncludeTrailingPathDelimiter(EnvOptions.SimBundle)+'Contents/MacOS/iPhone Simulator';
+    EnvOptions.SubstituteMacros(path);
     t.CommandLine:='"'+path+'"';
     t.CurrentDirectory:=UTF8Encode(GetSandBoxDir(ProjOptions.SpaceName));
     t.Execute;

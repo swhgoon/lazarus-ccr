@@ -20,8 +20,8 @@ unit iPhoneExtOptions;
 interface
 
 uses
-  Classes, SysUtils, IDEOptionsIntf, LazIDEIntf, ProjectIntf,
-  iPhoneBundle, DOM, XMLRead, XMLConf, XcodeUtils;
+  Classes, SysUtils, IDEOptionsIntf, LazIDEIntf, ProjectIntf, MacroIntf,
+  iPhoneBundle, DOM, XMLRead, XMLConf, XcodeUtils, FileUtil;
 
 const
   DefaultResourceDir = 'Resources';
@@ -94,6 +94,8 @@ type
 
     function GetSDKName(const SDKVer: String; simulator: Boolean): String;
     function GetSDKFullPath(const SDKVer: String; simulator: Boolean): String;
+
+    function SubstituteMacros(var s: string): boolean;
 
     procedure GetSDKVersions(Strings: TStrings);
     procedure RefreshVersions;
@@ -213,22 +215,21 @@ end;
 
 function GetDefaultPlatformPath: WideString;
 begin
-  //todo:
-  Result:='/Developer/Platforms';
+  result := '/Applications/Xcode.app/Contents/Developer/Platforms';
+  if not DirectoryExistsUTF8(result) then
+    Result:='/Developer/Platforms';
 end;
 
 function GetDefaultSimBundlePath: WideString;
 begin
-  //todo:
-  Result:=IncludeTrailingPathDelimiter(GetDefaultPlatformPath)+
+  Result:='$(iOSPlatformsPath)' +
           'iPhoneSimulator.platform/Developer/Applications/iPhone Simulator.app';
 end;
 
 function GetDefaultSimAppPath: WideSTring;
 begin
-  //todo:
-  Result:=IncludeTrailingPathDelimiter(GetUserDir)+
-          'Library/Applications Support/iPhone Simulator/User/Applications/';
+  Result:='$(home)'+
+          'Library/Application Support/iPhone Simulator/$(iOSSDK)/Applications/';
 end;
 
 constructor TiPhoneEnvironmentOptions.Create;
@@ -326,6 +327,13 @@ begin
     if simulator then Result:=info.simPath
     else Result:=info.devPath;
   end;
+end;
+
+function TiPhoneEnvironmentOptions.SubstituteMacros(var s: string): boolean;
+begin
+  s := StringReplace(s, '$(iOSPlatformsPath)', IncludeTrailingPathDelimiter(PlatformsBaseDir), [rfReplaceAll, rfIgnoreCase]);
+  s := StringReplace(s, '$(iOSSDK)', DefaultSDK, [rfReplaceAll, rfIgnoreCase]);
+  result := IDEMacros.SubstituteMacros(s);
 end;
 
 procedure TiPhoneEnvironmentOptions.GetSDKVersions(Strings: TStrings);
