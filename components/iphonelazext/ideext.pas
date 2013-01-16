@@ -107,14 +107,18 @@ var
   Space       : WideString;
   RealSpace   : WideString;
   Info        : TiPhoneBundleInfo;
+  AProjectFile: TLazProjectFile;
 
   xiblist : TStringList;
   i       : Integer;
+  s       : string;
 begin
   Space:=ProjOptions.SpaceName; // LazarusIDE.ActiveProject.CustomData.;
 
   bundleName:=ExtractFileName(LazarusIDE.ActiveProject.ProjectInfoFile);
   bundleName:=Copy(bundleName, 1, length(bundleName)-length(ExtractFileExt(bundleName)));
+  if bundlename='' then
+    bundlename:='project1';
 
   nm:=GetProjectExeName(LazarusIDE.ActiveProject);
 
@@ -139,6 +143,15 @@ begin
 
   xiblist := TStringList.Create;
   try
+    // Scan for resource-files in the .xib file-format, which are
+    // used by the iOSDesigner package
+    for i := 0 to LazarusIDE.ActiveProject.FileCount-1 do
+      begin
+      AProjectFile := LazarusIDE.ActiveProject.Files[i];
+      s := ChangeFileExt(AProjectFile.filename,'.xib');
+      if (AProjectFile.IsPartOfProject) and FileExistsUTF8(s) then
+        xiblist.add(s);
+      end;
     EnumFilesAtDir(ResolveProjectPath(ProjOptions.ResourceDir), '*.xib', xiblist);
     for i:=0 to xiblist.Count-1 do begin
       dstpath:=IncludeTrailingPathDelimiter(bundlepath)+ChangeFileExt(ExtractFileName(xiblist[i]), '.nib');
