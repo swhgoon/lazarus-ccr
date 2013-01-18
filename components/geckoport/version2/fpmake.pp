@@ -23,7 +23,7 @@ begin
     P:=AddPackage('gecko') as TLazPackage;
     p.AfterInstall := @TLazInstaller(Installer).DoRegisterLazarusPackages;
 
-    P.Version:='2.9.0-1';
+    P.Version:='2.9.0-2';
     P.OSes:=AllUnixOSes+[Win32,Win64];
     P.Author := 'Takanori Ito';
     P.License := 'MPL 1.1';
@@ -250,14 +250,15 @@ begin
       ResourceStrings := true;
       end;
 
-    // Is this unit used at all?!?
+{   This part does not compile and is not used anywhere...
+    P.Sources.AddSrc('nsProfile.pas');
     with P.Targets.AddUnit('nsProfile.pas',AllWindowsOSes) do
       begin
       Dependencies.AddUnit('nsXPCOM');
       Dependencies.AddUnit('nsXPCOMGlue');
       Dependencies.AddUnit('nsTypes');
       end;
-{
+
     with P.Targets.AddUnit('nsEnumerators.pas') do
       begin
       Dependencies.AddUnit('nsTypes');
