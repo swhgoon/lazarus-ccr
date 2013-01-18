@@ -32,13 +32,13 @@ type
   ['{101d5941-d820-4e85-a266-9a3469940807}']
     procedure _set(aName: nsAString; aValue: nsAString); safecall;
     procedure get(aName: nsAString; aResult: nsAString); safecall;
-    function exists(aName: nsAString): PRBool; safecall;
+    function exists(aName: nsAString): LongBool; safecall;
   end;
 
   nsIEventTarget = interface(nsISupports)
   ['{4e8febe4-6631-49dc-8ac9-308c1cb9b09c}']
     procedure dispatch(event: nsIRunnable; flags: PRUint32); safecall;
-    function isOnCurrentThread(): PRBool; safecall;
+    function isOnCurrentThread(): LongBool; safecall;
   end;
 
   nsIProcess = interface(nsISupports)
@@ -46,7 +46,7 @@ type
     procedure init(aExecutable: nsIFile); safecall;
     procedure initWithPid(aPid: PRUint32); safecall;
     procedure kill(); safecall;
-    function run(aBlocking: PRBool; aArgs: PAnsiCharArray; aCount: PRUint32): PRUint32; safecall;
+    function run(aBlocking: LongBool; aArgs: PAnsiCharArray; aCount: PRUint32): PRUint32; safecall;
     function getLocation(): nsIFile; safecall;
     property location: nsIFile read getLocation;
     function getPid(): PRUint32; safecall;
@@ -77,8 +77,8 @@ type
     function getPRThread: Pointer; safecall;
     property PRThread: Pointer read getPRThread;
     procedure shutdown(); safecall;
-    function hasPendingEvents(): PRBool; safecall;
-    function processNextEvent(mayWait: PRBool): PRBool; safecall;
+    function hasPendingEvents(): LongBool; safecall;
+    function processNextEvent(mayWait: LongBool): LongBool; safecall;
   end;
 
   nsIThreadInternal = interface(nsISupports)
@@ -93,13 +93,13 @@ type
   nsIThreadObserver = interface(nsISupports)
   ['{81D0B509-F198-4417-8020-08EB4271491F}']
     procedure onDispatchedEvent(aThread: nsIThreadInternal); safecall;
-    procedure onProcessNextEvent(aThread: nsIThreadInternal; aMayWait: PRBool; aRecursionDepth: PRUint32); safecall;
+    procedure onProcessNextEvent(aThread: nsIThreadInternal; aMayWait: LongBool; aRecursionDepth: PRUint32); safecall;
     procedure afterProcessNextEvent(aThread: nsIThreadInternal; aRecursionDepth: PRUint32); safecall;
   end;
 
   nsIThreadEventFilter = interface(nsISupports)
   ['{a0605c0b-17f5-4681-b8cd-a1cd75d42559}']
-    function acceptEvent(aEvent: nsIRunnable): PRBool; extdecl;
+    function acceptEvent(aEvent: nsIRunnable): LongBool; extdecl;
   end;
 
   nsIThreadManager = interface(nsISupports)
@@ -110,8 +110,8 @@ type
     property mainThread: nsIThread read getMainThread;
     function getCurrentThread: nsIThread; safecall;
     property currentThread: nsIThread read getCurrentThread;
-    function getIsMainThread: PRBool; safecall;
-    property isMainThread: PRbool read getIsMainThread;
+    function getIsMainThread: LongBool; safecall;
+    property isMainThread: LongBool read getIsMainThread;
   end;
 
   nsIThreadPoolListener = interface(nsISupports)
@@ -164,16 +164,16 @@ type
 function NS_NewThread(aInitialEvent: nsIRunnable = nil): nsIThread;
 function NS_GetCurrentThread(): nsIThread;
 function NS_GetMainThread(): nsIThread;
-function NS_IsMainThread(): PRBool;
+function NS_IsMainThread(): LongBool;
 procedure NS_DispatchToCurrentThread(aEvent: nsIRunnable);
 procedure NS_DispatchToMainThread(aEvent: nsIRunnable;
                 aDispatchFlags: PRUint32 = NS_DISPATCH_NORMAL);
 procedure NS_ProcessPendingEvents(aThread: nsIThread;
                 aTimeout: PRUint32 = $ffffffff);
 // const PR_INTERVAL_NO_TIMEOUT = $ffffffff;
-function NS_HasPendingEvents(aThread: nsIThread = nil): PRBool;
+function NS_HasPendingEvents(aThread: nsIThread = nil): LongBool;
 function NS_ProcessNextEvent(aThread: nsIThread = nil;
-                aMayWait: PRBool = True): PRBool;
+                aMayWait: LongBool = True): LongBool;
 
 implementation
 
@@ -208,7 +208,7 @@ begin
   Result := tm.mainThread;
 end;
 
-function NS_IsMainThread(): PRBool;
+function NS_IsMainThread(): LongBool;
 var
   tm: nsIThreadManager;
 begin
@@ -241,7 +241,7 @@ procedure NS_ProcessPendingEvents(aThread: nsIThread;
                 aTimeout: PRUint32);
 var
   start: PRUint32;
-  processedEvent: PRBool;
+  processedEvent: LongBool;
 begin
   if not Assigned(aThread) then
     aThread := NS_GetCurrentThread;
@@ -256,14 +256,14 @@ begin
   end;
 end;
 
-function NS_HasPendingEvents(aThread: nsIThread): PRBool;
+function NS_HasPendingEvents(aThread: nsIThread): LongBool;
 begin
   if not Assigned(aThread) then
     aThread := NS_GetCurrentThread;
   result := aThread.hasPendingEvents;
 end;
 
-function NS_ProcessNextEvent(aThread: nsIThread; aMayWait: PRBool): PRBool;
+function NS_ProcessNextEvent(aThread: nsIThread; aMayWait: LongBool): LongBool;
 begin
   if not Assigned(aThread) then
     aThread := NS_GetCurrentThread;
