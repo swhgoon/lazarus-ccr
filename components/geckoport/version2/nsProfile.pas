@@ -50,7 +50,7 @@ type
 
   EGeckoProfileError = class(EGeckoError);
 
-function NS_NewProfileDirServiceProvider(aNotifyObservers: PRBool): nsProfileDirServiceProvider;
+function NS_NewProfileDirServiceProvider(aNotifyObservers: LongBool): nsProfileDirServiceProvider;
 
 resourcestring
   SProfileRegisterError = 'Failed to register profile.';
@@ -84,16 +84,16 @@ type
                                      nsIDirectoryServiceProvider)
     FProfileDir: nsIFile;
     FProfileDirLock: TProfileDirLock;
-    FNotifyObservers: PRBool;
+    FNotifyObservers: LongBool;
     FSharingEnabled: Boolean;
     FNonSharedDirName: IInterfacedString;
     FNonSharedProfileDir: nsIFile;
-    function GetFile(const prop: PAnsiChar; out persistent: PRBool): nsIFile; safecall;
+    function GetFile(const prop: PAnsiChar; out persistent: LongBool): nsIFile; safecall;
     procedure SetProfileDir(AProfileDir: nsIFile);
     procedure Register;
     procedure Shutdown;
 
-    constructor Create(aNotifyObservers: PRBool = True);
+    constructor Create(aNotifyObservers: LongBool = True);
     destructor Destroy; override;
 
     procedure Initialize;
@@ -141,7 +141,7 @@ function TProfileDirLock.Lock(aFile: nsILocalFile): nsresult;
 const
   LOCKFILE_NAME = 'parent.lock';
 var
-  isDir: PRBool;
+  isDir: LongBool;
   lockFile: nsIFile;
   lockFileName: IInterfacedString;
   filePath: IInterfacedCString;
@@ -207,7 +207,7 @@ begin
   end;
 end;
 
-constructor TProfileDirServiceProvider.Create(aNotifyObservers: PRBool);
+constructor TProfileDirServiceProvider.Create(aNotifyObservers: LongBool);
 begin
   inherited Create;
   FNotifyObservers := aNotifyObservers;
@@ -299,7 +299,7 @@ begin
   end;
 end;
 
-function TProfileDirServiceProvider.GetFile(const prop: PAnsiChar; out persistent: PRBool): nsIFile;
+function TProfileDirServiceProvider.GetFile(const prop: PAnsiChar; out persistent: LongBool): nsIFile;
 var
   localFile: nsIFile;
   domainDir: nsIFile;
@@ -430,11 +430,11 @@ end;
 
 procedure TProfileDirServiceProvider.InitProfileDir(profileDir: nsIFile);
 var
-  exists: PRBool;
+  exists: LongBool;
   profileDefaultsDir: nsIFile;
   profileDirParent: nsIFile;
   profileDirName: IInterfacedCString;
-  isDir: PRBool;
+  isDir: LongBool;
 begin
   try
     profileDirName := NewCString;
@@ -475,8 +475,8 @@ end;
 procedure TProfileDirServiceProvider.InitNonSharedProfileDir;
 var
   localDir: nsIFile;
-  exists: PRBool;
-  isDir: PRBool;
+  exists: LongBool;
+  isDir: LongBool;
 begin
   try
     localDir := FProfileDir.Clone();
@@ -500,7 +500,7 @@ end;
 
 procedure TProfileDirServiceProvider.EnsureProfileFileExists(aFile: nsIFile; destDir: nsIFile);
 var
-  exists: PRBool;
+  exists: LongBool;
   defaultsFile: nsIFile;
   leafName: IInterfacedCString;
 begin
@@ -570,7 +570,7 @@ begin
   Result := HResult(NS_ERROR_FAILURE);
 end;
 
-function NS_NewProfileDirServiceProvider(aNotifyObservers: PRBool): nsProfileDirServiceProvider;
+function NS_NewProfileDirServiceProvider(aNotifyObservers: LongBool): nsProfileDirServiceProvider;
 var
   prov: TProfileDirServiceProvider;
 begin

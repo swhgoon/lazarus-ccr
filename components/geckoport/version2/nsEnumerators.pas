@@ -28,7 +28,7 @@ type
     FOwn: Boolean;
     FIndex: Integer;
     destructor Destroy; override;
-    function HasMoreElements(out _retval: PRBool): nsresult; extdecl;
+    function HasMoreElements(out _retval: longbool): nsresult; extdecl;
     function GetNext(out _retval: nsISupports_std19): nsresult; extdecl;
   end;
 
@@ -52,7 +52,7 @@ begin
 end;
 
 function TSimpleEnumeratorWithInterfaceList.HasMoreElements(out _retval
-                : PRBool): nsresult;
+                : Longbool): nsresult;
 begin
   _retval :=  (FIndex < FList.Count);
   Result := NS_OK;
