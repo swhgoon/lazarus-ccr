@@ -5,7 +5,7 @@ unit iOSIdeIntf;
 interface
 
 uses
-  Classes, Forms, ProjectIntf, iPhoneExtOptions;
+  Classes, Forms, ProjectIntf, iPhoneExtOptions, ComponentEditors;
 
 type
 
@@ -53,17 +53,35 @@ type
     function CreateSource(const Filename, SourceName, ResourceName: string): string; override;
   end;
 
+  { TiOSShowInXCode }
+
+  TiOSShowInXCode = Class(TComponentEditor)
+  private
+    FStartIndex : Integer;
+  Public
+    procedure ExecuteVerb(Index: Integer); override;
+    function GetVerb(Index: Integer): string; override;
+    function GetVerbCount: Integer; override;
+  end;
+
+
 var
   GiOSApplicationDescriptor: TiOSApplicationDescriptor;
   GiOSAppDelegateWindowFileDesc: TiOSAppDelegateWindowFileDesc;
   GiOSInfo_PlistFileDesc: TiOSInfo_PlistFileDesc;
   GiOSObjectDelegateWindowFileDesc: TiOSObjectDelegateWindowFileDesc;
 
+resourcestring
+  SShowInXCode = 'Show in XCode';
+
 procedure register;
 
 implementation
 
-uses LazIDEIntf, Controls, iOS_Views, iOSXIBResource, UnitResources;
+uses
+  LazIDEIntf, Controls, iOS_Views, iOSXIBResource, UnitResources,
+  LazFilesUtils,
+  FileUtil;
 
 procedure register;
 begin
@@ -76,7 +94,42 @@ begin
   GiOSObjectDelegateWindowFileDesc:=TiOSObjectDelegateWindowFileDesc.Create;
   RegisterProjectFileDescriptor(GiOSObjectDelegateWindowFileDesc);
 
+  RegisterComponentEditor(NSObject, TiOSShowInXCode);
+
   RegisterUnitResourcefileFormat(TXIBResourcefileFormat);
+end;
+
+{ TiOSShowInXCode }
+
+procedure TiOSShowInXCode.ExecuteVerb(Index: Integer);
+var
+  s: string;
+begin
+  If Index<FStartIndex then
+    inherited ExecuteVerb(Index)
+  else
+    case (Index-FstartIndex) of
+      0 : begin
+          s := '/Users/joost/svn/testlrs/onzin/appdelegate_iphoneu.xib';
+          if FileExistsUTF8(s) then ExecCmdLineNoWait('open "'+s +'"');
+          end;
+    end;
+end;
+
+function TiOSShowInXCode.GetVerb(Index: Integer): string;
+begin
+  If Index<FStartIndex then
+    Result:=inherited GetVerb(Index)
+  else
+    case (Index-FstartIndex) of
+      0 : Result:=SShowInXCode;
+    end;
+end;
+
+function TiOSShowInXCode.GetVerbCount: Integer;
+begin
+  FStartIndex:=inherited GetVerbCount;
+  Result:=FStartIndex+1;
 end;
 
 { TiOSObjectDelegateWindowFileDesc }
