@@ -1833,7 +1833,7 @@ begin
   FTop := 100;
   FLeft := 100;
 
-  s :='<archive type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="7.10">' +
+  s :='<archive type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="8.00">' +
       ' <data>' +
       '		<int key="IBDocument.SystemTarget">1280</int>' +
       '		<string key="IBDocument.SystemVersion">11D50</string>' +
@@ -1844,23 +1844,20 @@ begin
       '			<string key="NS.key.0">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>' +
       '			<string key="NS.object.0">1181</string>' +
       '		</object>' +
-      '		<object class="NSArray" key="IBDocument.IntegratedClassDependencies">' +
-      '			<bool key="EncodedWithXMLCoder">YES</bool>' +
+      '		<array key="IBDocument.IntegratedClassDependencies">' +
       '			<string>IBUIWindow</string>' +
       '			<string>IBUICustomObject</string>' +
       '			<string>IBUIButton</string>' +
       '			<string>IBProxyObject</string>' +
-      '		</object>' +
-      '		<object class="NSArray" key="IBDocument.PluginDependencies">' +
-      '			<bool key="EncodedWithXMLCoder">YES</bool>' +
+      '		</array>' +
+      '		<array key="IBDocument.PluginDependencies">' +
       '			<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>' +
-      '		</object>' +
+      '		</array>' +
       '		<object class="NSMutableDictionary" key="IBDocument.Metadata">' +
       '			<string key="NS.key.0">PluginDependencyRecalculationVersion</string>' +
       '			<integer value="1" key="NS.object.0"/>' +
       '		</object>' +
-      '		<object class="NSMutableArray" key="IBDocument.RootObjects" id="1000">' +
-      '			<bool key="EncodedWithXMLCoder">YES</bool>' +
+      '		<array class="NSMutableArray" key="IBDocument.RootObjects" id="1000">' +
       '                 <object class="IBProxyObject" id="841351856">' +
       '              	        <string key="IBProxiedObjectIdentifier">IBFilesOwner</string>' +
       '         	        <string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>' +
@@ -1869,19 +1866,14 @@ begin
       '         	        <string key="IBProxiedObjectIdentifier">IBFirstResponder</string>' +
       '      	                <string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>' +
       '                 </object>' +
-      '		</object>' +
+      '		</array>' +
       '		<object class="IBObjectContainer" key="IBDocument.Objects">' +
-      '			<object class="NSMutableArray" key="connectionRecords">' +
-      '				<bool key="EncodedWithXMLCoder">YES</bool>' +
-      '			</object>' +
+      '			<array class="NSMutableArray" key="connectionRecords"/>' +
       '			<object class="IBMutableOrderedSet" key="objectRecords">' +
-      '				<object class="NSArray" key="orderedObjects">' +
-      '					<bool key="EncodedWithXMLCoder">YES</bool>' +
+      '				<array key="orderedObjects">' +
       '					<object class="IBObjectRecord">' +
       '						<int key="objectID">0</int>' +
-      '						<object class="NSArray" key="object" id="0">' +
-      '							<bool key="EncodedWithXMLCoder">YES</bool>' +
-      '						</object>' +
+      '						<array key="object" id="0"/>' +
       '						<reference key="children" ref="1000"/>' +
       '						<nil key="parent"/>' +
       '					</object>' +
@@ -1896,19 +1888,11 @@ begin
       '      	                                <reference key="object" ref="371349661"/>' +
       '      	                                <reference key="parent" ref="0"/>' +
       '                                 </object>' +
-      '				</object>' +
+      '				</array>' +
       '			</object>' +
-      '			<object class="NSMutableDictionary" key="unlocalizedProperties">' +
-      '				<bool key="EncodedWithXMLCoder">YES</bool>' +
-      '				<reference key="dict.sortedKeys" ref="0"/>' +
-      '				<reference key="dict.values" ref="0"/>' +
-      '			</object>' +
+      '			<dictionary class="NSMutableDictionary" key="unlocalizedProperties"/>' +
       '			<nil key="activeLocalization"/>' +
-      '			<object class="NSMutableDictionary" key="localizations">' +
-      '				<bool key="EncodedWithXMLCoder">YES</bool>' +
-      '				<reference key="dict.sortedKeys" ref="0"/>' +
-      '				<reference key="dict.values" ref="0"/>' +
-      '			</object>' +
+      '			<dictionary class="NSMutableDictionary" key="localizations"/>' +
       '			<nil key="sourceID"/>' +
       '			<int key="maxID">1</int>' +
       '		</object>' +
@@ -1940,7 +1924,7 @@ begin
       '		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaTouchFramework</string>' +
       '		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDevelopmentDependencies">' +
       '			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaTouchPlugin.InterfaceBuilder3</string>' +
-      '			<integer value="3100" key="NS.object.0"/>' +
+      '			<real value="4300" key="NS.object.0"/>' +
       '		</object>' +
       '		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>' +
       '		<int key="IBDocument.defaultPropertyAccessControl">3</int>' +
@@ -2176,7 +2160,9 @@ begin
    ArchiveNode := GetXIBDocument.FirstChild;
   assert(ArchiveNode.NodeName='archive');
   DataNode := ArchiveNode.FindNode('data');
-  Result := FindKeyNode(DataNode,'object','IBDocument.RootObjects');
+  Result := FindKeyNode(DataNode,'array','IBDocument.RootObjects');
+  if not assigned(Result) then
+    Result := FindKeyNode(DataNode,'object','IBDocument.RootObjects');
 end;
 
 function tiOSFakeComponent.FindOrderdObjectByRef(ARef: int64): TDOMElement;
