@@ -98,6 +98,8 @@ type
   tiOSWriteDomMethod = function (AnObjectDomElement: TDOMElement): TDOMElement of object;
   TiOSXIBPos = (sLeft, sTop, sWidth, sHeight);
 
+  TiOSXIBConnectionType = (ctOutlet, ctEvent);
+
   NSObject = class;
   tiOSFakeComponent = class(TComponent)
   private
@@ -118,7 +120,10 @@ type
     function GetXIBObjectRecords: TDOMElement;
     function GetXIBObjects: TDOMElement;
     function GetXIBRootObjects: TDOMElement;
+    function GetXIBFlattenedProperties: TDOMElement;
+    function GetXIBConnectionRecords: TDOMElement;
     function GetNextObjectID: integer;
+    function GetXIBConnection(ASourceRef, ADestinationRef: int64; ConnectionType: TiOSXIBConnectionType; CreateIfNotExists: boolean): TDOMElement;
     function FindOrderdObjectByRef(ARef: int64): TDOMElement;
   protected
     procedure SetXIBObjectElement(const AValue: TDOMElement);
@@ -249,14 +254,15 @@ type
   private
     FDesigner: IMyWidgetDesigner;
     FFilesOwnerClass: string;
-    FHiddenObjectOutletName: string;
     FIsHiddenObject: boolean;
     FNIBDocument: TXMLDocument;
     FWidth, FHeight: integer;
     FXIBUsesObjectsForArrays: boolean;
+    function GetFilesOwnerOutletName: string;
     procedure GetXIBSaveParam(Sender: TObject; const ParamName: String; out AValue: String);
     function IsNIBRoot: boolean;
     function GetFilesOwnerID: string;
+    procedure SetFilesOwnerOutletName(AValue: string);
   protected
     function GetFlattenedProperties: string;
     function GetNSObject: NSObject; override;
@@ -283,7 +289,7 @@ type
   published
     property FilesOwnerClass: string read FFilesOwnerClass write FFilesOwnerClass stored IsNIBRoot;
     property IsHiddenObject: boolean read FIsHiddenObject write FIsHiddenObject stored IsNIBRoot;
-    property HiddenObjectOutletName: string read FHiddenObjectOutletName write FHiddenObjectOutletName stored IsNIBRoot;
+    property FilesOwnerOutletName: string read GetFilesOwnerOutletName write SetFilesOwnerOutletName;
   end;
 
   UIResponder = class(NSObject);
@@ -1182,11 +1188,18 @@ end;
 
 procedure TNIBObjectWriter.BeginComponent(Component: TComponent;
   Flags: TFilerFlags; ChildPos: Integer);
+var
+  FakeComp: tiOSFakeComponent;
+  AnElement: TDOMElement;
 begin
   if not FIsWritten then
     begin
     if (Component is NSObject) then
       begin
+      FakeComp := tiOSFakeComponent(Component);
+      AnElement := FakeComp.GetXIBFlattenedProperties;
+      AnElement := FakeComp.GetKeyNode(AnElement,'string', inttostr(FakeComp.ObjectID) +'.CustomClassName');
+      AnElement.TextContent:=FakeComp.ClassName;
       WriteXML(NSObject(Component).FNIBDocument, FStream);
       FIsWritten:=true;
       end;
@@ -1602,6 +1615,20 @@ begin
     end;
 end;
 
+function NSObject.GetFilesOwnerOutletName: string;
+var
+  AnElement: TDOMElement;
+begin
+  result := '';
+  AnElement := GetXIBConnection(841351856, Ref, ctOutlet, false);
+  if assigned(AnElement) then
+    begin
+    AnElement := FindKeyNode(AnElement, 'string' ,'label');
+    if assigned(AnElement) then
+      result := AnElement.TextContent;
+    end;
+end;
+
 function NSObject.IsNIBRoot: boolean;
 begin
   result := Parent=Nil;
@@ -1613,6 +1640,18 @@ begin
     Result:='841351856'
   else
     Result:='664661524';
+end;
+
+procedure NSObject.SetFilesOwnerOutletName(AValue: string);
+var
+  AnElement: TDOMElement;
+begin
+  if AValue=GetFilesOwnerOutletName then
+    Exit;
+
+  AnElement := GetXIBConnection(841351856, Ref, ctOutlet, True);
+  AnElement := GetKeyNode(AnElement, 'string' ,'label');
+  AnElement.TextContent := AValue;
 end;
 
 function NSObject.GetNSObject: NSObject;
@@ -1809,7 +1848,7 @@ begin
       result := result +
       '<object class="IBConnectionRecord">' + LineEnding +
       '	<object class="IBCocoaTouchOutletConnection" key="connection">' + LineEnding +
-      '		<string key="label">'+HiddenObjectOutletName+'</string>' + LineEnding +
+      '		<string key="label">delegate</string>' + LineEnding +
       '		<reference key="source" ref="'+GetFilesOwnerID+'"/>' + LineEnding +
       '		<reference key="destination" ref="664661524"/>' + LineEnding +
       '	</object>' + LineEnding +
@@ -1827,7 +1866,6 @@ var
 begin
   inherited Create(AOwner);
   FIsHiddenObject:=true;
-  FHiddenObjectOutletName:='delegate';
   FWidth:=340;
   FHeight:=500;
   FTop := 100;
@@ -1890,6 +1928,10 @@ begin
       '                                 </object>' +
       '				</array>' +
       '			</object>' +
+      '                 <dictionary class="NSMutableDictionary" key="flattenedProperties">' +
+      '                         <string key="-1.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>' +
+      '                         <string key="-2.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>' +
+      '                 </dictionary>' +
       '			<dictionary class="NSMutableDictionary" key="unlocalizedProperties"/>' +
       '			<nil key="activeLocalization"/>' +
       '			<dictionary class="NSMutableDictionary" key="localizations"/>' +
@@ -1991,6 +2033,7 @@ end;
 procedure NSObject.InitializeDefaults;
 begin
   inherited InitializeDefaults;
+  FilesOwnerOutletName:='delegate';
 end;
 
 class function NSObject.GetIBClassName: string;
@@ -2008,6 +2051,60 @@ begin
   inc(i);
   AMaxNode.TextContent:=IntToStr(i);
   result := i;
+end;
+
+function tiOSFakeComponent.GetXIBConnection(ASourceRef, ADestinationRef: int64;
+  ConnectionType: TiOSXIBConnectionType; CreateIfNotExists: boolean): TDOMElement;
+var
+  AnElement: TDOMElement;
+  AnOutletElement: TDOMElement;
+  SourceElement: TDOMElement;
+  DestElement: TDOMElement;
+begin
+  result := nil;
+  AnElement := GetXIBConnectionRecords.FirstChild as TDOMElement;
+  while assigned(AnElement) do
+    begin
+    if (AnElement.NodeName='object') and (AnElement.AttribStrings['class']='IBConnectionRecord') then
+      begin
+      AnOutletElement := FindKeyNode(AnElement, 'object', 'connection');
+      if assigned(AnOutletElement) then
+        begin
+        SourceElement := FindKeyNode(AnOutletElement, 'reference', 'source');
+        DestElement := FindKeyNode(AnOutletElement, 'reference', 'destination');
+        if assigned(SourceElement) and assigned(DestElement) and
+           (SourceElement.AttribStrings['ref']=IntToStr(ASourceRef)) and
+           (DestElement.AttribStrings['ref']=IntToStr(ADestinationRef)) then
+          begin
+          if ((ConnectionType=ctOutlet) and (AnOutletElement.AttribStrings['class']='IBCocoaTouchOutletConnection')) or
+             ((ConnectionType=ctEvent) and (AnOutletElement.AttribStrings['class']='IBCocoaTouchEventConnection')) then
+            begin
+            result := AnOutletElement;
+            exit;
+            end;
+          end;
+        end;
+      end;
+    AnElement := AnElement.NextSibling as TDOMElement;
+    end;
+  if CreateIfNotExists then
+    begin
+    AnElement := AddElement(GetXIBConnectionRecords, 'object');
+    AnElement.AttribStrings['class']:='IBConnectionRecord';
+    AnOutletElement := GetKeyNode(AnElement,'object','connection');
+    if ConnectionType=ctOutlet then
+      AnOutletElement.AttribStrings['class'] := 'IBCocoaTouchOutletConnection'
+    else if ConnectionType=ctEvent then
+      AnOutletElement.AttribStrings['class'] := 'IBCocoaTouchEventConnection';
+    SourceElement := GetKeyNode(AnOutletElement,'reference','source');
+    SourceElement.AttribStrings['ref'] := IntToStr(ASourceRef);
+    DestElement := GetKeyNode(AnOutletElement,'reference','destination');
+    DestElement.AttribStrings['ref'] := IntToStr(ADestinationRef);
+    result := AnOutletElement;
+
+    GetKeyNode(AnElement,'int','connectionID').TextContent:=IntToStr(GConnectionID);
+    inc(GConnectionID);
+    end;
 end;
 
 { tiOSFakeComponent }
@@ -2146,7 +2243,7 @@ var
   ArchiveNode: TDOMNode;
   DataNode: TDOMNode;
 begin
-   ArchiveNode := GetXIBDocument.FirstChild;
+  ArchiveNode := GetXIBDocument.FirstChild;
   assert(ArchiveNode.NodeName='archive');
   DataNode := ArchiveNode.FindNode('data');
   Result := FindKeyNode(DataNode,'object','IBDocument.Objects');
@@ -2163,6 +2260,19 @@ begin
   Result := FindKeyNode(DataNode,'array','IBDocument.RootObjects');
   if not assigned(Result) then
     Result := FindKeyNode(DataNode,'object','IBDocument.RootObjects');
+end;
+
+function tiOSFakeComponent.GetXIBFlattenedProperties: TDOMElement;
+var
+  AnElement: TDOMElement;
+begin
+  AnElement := GetXIBObjects;
+  result := GetKeyNode(AnElement, 'dictionary', 'flattenedProperties', 'NSMutableDictionary');
+end;
+
+function tiOSFakeComponent.GetXIBConnectionRecords: TDOMElement;
+begin
+  Result := GetKeyNode(GetXIBObjects, 'array', 'connectionRecords', 'NSMutableArray');
 end;
 
 function tiOSFakeComponent.FindOrderdObjectByRef(ARef: int64): TDOMElement;
