@@ -23,7 +23,7 @@ begin
     P:=AddPackage('gecko') as TLazPackage;
     p.AfterInstall := @TLazInstaller(Installer).DoRegisterLazarusPackages;
 
-    P.Version:='2.9.0-2';
+    P.Version:='2.9.0-3';
     P.OSes:=AllUnixOSes+[Win32,Win64];
     P.Author := 'Takanori Ito';
     P.License := 'MPL 1.1';

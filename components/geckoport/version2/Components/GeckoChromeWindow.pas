@@ -172,7 +172,7 @@ var
   AView : NSView;
 {$ENDIF}
 begin
-   {$IFDEF MSWINDOWS}Result := Handle;{$ENDIF}
+   {$IFDEF MSWINDOWS}Result := nativeWindow(Handle);{$ENDIF}
 
    {$IFDEF LCLCarbon}Result := THANDLE(TCarbonWindow(Handle).Window);{$ENDIF}
     //Carbon doesn't work but leave in so package compiles in Carbon IDE.

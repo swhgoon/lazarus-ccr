@@ -2070,7 +2070,7 @@ var
 {$ENDIF}
 begin
 {$IFDEF MSWINDOWS}
-  Result := Handle;
+  Result := nativeWindow(Handle);
 {$ENDIF}
 {$IFDEF LCLCarbon}
   Result := nativeWindow(TCarbonWindow(Handle).Window);
