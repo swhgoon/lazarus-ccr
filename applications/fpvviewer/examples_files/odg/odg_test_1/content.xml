@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<office:document-content xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0" xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0" xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0" xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0" xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:meta="urn:oasis:names:tc:opendocument:xmlns:meta:1.0" xmlns:number="urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0" xmlns:presentation="urn:oasis:names:tc:opendocument:xmlns:presentation:1.0" xmlns:svg="urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0" xmlns:chart="urn:oasis:names:tc:opendocument:xmlns:chart:1.0" xmlns:dr3d="urn:oasis:names:tc:opendocument:xmlns:dr3d:1.0" xmlns:math="http://www.w3.org/1998/Math/MathML" xmlns:form="urn:oasis:names:tc:opendocument:xmlns:form:1.0" xmlns:script="urn:oasis:names:tc:opendocument:xmlns:script:1.0" xmlns:ooo="http://openoffice.org/2004/office" xmlns:ooow="http://openoffice.org/2004/writer" xmlns:oooc="http://openoffice.org/2004/calc" xmlns:dom="http://www.w3.org/2001/xml-events" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:smil="urn:oasis:names:tc:opendocument:xmlns:smil-compatible:1.0" xmlns:anim="urn:oasis:names:tc:opendocument:xmlns:animation:1.0" xmlns:rpt="http://openoffice.org/2005/report" xmlns:of="urn:oasis:names:tc:opendocument:xmlns:of:1.2" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:grddl="http://www.w3.org/2003/g/data-view#" xmlns:officeooo="http://openoffice.org/2009/office" xmlns:tableooo="http://openoffice.org/2009/table" xmlns:drawooo="http://openoffice.org/2010/draw" xmlns:field="urn:openoffice:names:experimental:ooo-ms-interop:xmlns:field:1.0" office:version="1.2" grddl:transformation="http://docs.oasis-open.org/office/1.2/xslt/odf2rdf.xsl">
+<office:scripts/>
+<office:automatic-styles>
+  <style:style style:name="dp1" style:family="drawing-page"/>
+  <style:style style:name="gr1" style:family="graphic" style:parent-style-name="standard">
+    <style:graphic-properties draw:fill="solid" draw:fill-color="#ffffcc" draw:textarea-horizontal-align="justify" draw:textarea-vertical-align="middle" draw:auto-grow-height="false"/>
+  </style:style>
+  <style:style style:name="gr2" style:family="graphic" style:parent-style-name="standard">
+    <style:graphic-properties draw:fill="solid" draw:fill-color="#ffff99" draw:textarea-horizontal-align="center" draw:textarea-vertical-align="middle"/>
+  </style:style>
+  <style:style style:name="gr3" style:family="graphic" style:parent-style-name="standard">
+    <style:graphic-properties draw:stroke="none" svg:stroke-color="#000000" draw:fill="none" draw:fill-color="#ffffff" draw:textarea-horizontal-align="left" draw:auto-grow-height="true" draw:auto-grow-width="true" fo:min-height="0cm" fo:min-width="0cm"/>
+  </style:style>
+  <style:style style:name="gr4" style:family="graphic" style:parent-style-name="standard">
+    <style:graphic-properties draw:fill="solid" draw:fill-color="#ffff00" draw:textarea-vertical-align="middle" draw:auto-grow-height="false" fo:min-height="0.749cm" fo:min-width="0.499cm"/>
+  </style:style>
+  <style:style style:name="gr5" style:family="graphic" style:parent-style-name="standard">
+    <style:graphic-properties draw:fill="solid" draw:fill-color="#ff3366" draw:textarea-vertical-align="middle" draw:auto-grow-height="false" fo:min-height="0.08cm" fo:min-width="0.028cm" fo:wrap-option="wrap"/>
+  </style:style>
+  <style:style style:name="gr6" style:family="graphic" style:parent-style-name="standard">
+    <style:graphic-properties draw:stroke="dash" draw:stroke-dash="Fine_20_Dashed_20__28_var_29_" svg:stroke-width="0.1cm" draw:marker-start="Arrow" draw:marker-start-width="0.45cm" draw:marker-end="Circle" draw:marker-end-width="0.45cm" draw:fill="solid" draw:fill-color="#9999ff" draw:textarea-horizontal-align="center" draw:textarea-vertical-align="middle" fo:padding-top="0.175cm" fo:padding-bottom="0.175cm" fo:padding-left="0.3cm" fo:padding-right="0.3cm"/>
+  </style:style>
+  <style:style style:name="gr7" style:family="graphic" style:parent-style-name="standard">
+    <style:graphic-properties draw:fill="solid" draw:fill-color="#ff00ff" draw:textarea-vertical-align="middle" draw:auto-grow-height="false" fo:min-height="0.749cm" fo:min-width="0.499cm"/>
+  </style:style>
+  <style:style style:name="gr8" style:family="graphic" style:parent-style-name="standard">
+    <style:graphic-properties draw:fill="solid" draw:fill-color="#ffff66" draw:textarea-vertical-align="middle" draw:auto-grow-height="false" fo:min-height="0.749cm" fo:min-width="0.499cm"/>
+  </style:style>
+  <style:style style:name="gr9" style:family="graphic" style:parent-style-name="standard">
+    <style:graphic-properties svg:stroke-width="0.2cm" svg:stroke-color="#008000" draw:marker-start-width="0.5cm" draw:marker-end-width="0.5cm" draw:textarea-horizontal-align="center" draw:textarea-vertical-align="middle" fo:padding-top="0.225cm" fo:padding-bottom="0.225cm" fo:padding-left="0.35cm" fo:padding-right="0.35cm"/>
+  </style:style>
+  <style:style style:name="gr10" style:family="graphic" style:parent-style-name="standard">
+    <style:graphic-properties svg:stroke-color="#33cc66" draw:fill="solid" draw:fill-color="#00ae00" draw:opacity-name="Transparency_20_1" draw:textarea-horizontal-align="center" draw:textarea-vertical-align="middle"/>
+  </style:style>
+  <style:style style:name="gr11" style:family="graphic" style:parent-style-name="objectwithoutfill">
+    <style:graphic-properties svg:stroke-width="0.2cm" svg:stroke-color="#008000" draw:marker-start-width="0.5cm" draw:marker-end-width="0.5cm" draw:fill="none" draw:textarea-horizontal-align="center" draw:textarea-vertical-align="middle" fo:padding-top="0.225cm" fo:padding-bottom="0.225cm" fo:padding-left="0.35cm" fo:padding-right="0.35cm"/>
+  </style:style>
+  <style:style style:name="gr12" style:family="graphic" style:parent-style-name="standard">
+    <style:graphic-properties draw:stroke="none" svg:stroke-color="#000000" draw:fill="none" draw:fill-color="#ffffff" fo:min-height="1cm"/>
+  </style:style>
+  <style:style style:name="P1" style:family="paragraph"><style:paragraph-properties fo:text-align="center"/>
+  </style:style>
+  <style:style style:name="P2" style:family="paragraph"><style:text-properties fo:font-family="&apos;Times New Roman&apos;" style:font-family-generic="roman" style:font-pitch="variable" fo:font-size="20pt" style:font-size-asian="20pt" style:font-size-complex="20pt"/>
+  </style:style>
+  <style:style style:name="T1" style:family="text">
+    <style:text-properties fo:font-family="&apos;Times New Roman&apos;" style:font-family-generic="roman" style:font-pitch="variable" fo:font-size="20pt" style:font-size-asian="20pt" style:font-size-complex="20pt"/>
+  </style:style>
+  <text:list-style style:name="L1">
+    <text:list-level-style-bullet text:level="1" text:bullet-char="●">
+      <style:list-level-properties/><style:text-properties fo:font-family="StarSymbol" style:use-window-font-color="true" fo:font-size="45%"/></text:list-level-style-bullet><text:list-level-style-bullet text:level="2" text:bullet-char="●"><style:list-level-properties text:space-before="0.6cm" text:min-label-width="0.6cm"/><style:text-properties fo:font-family="StarSymbol" style:use-window-font-color="true" fo:font-size="45%"/></text:list-level-style-bullet><text:list-level-style-bullet text:level="3" text:bullet-char="●"><style:list-level-properties text:space-before="1.2cm" text:min-label-width="0.6cm"/><style:text-properties fo:font-family="StarSymbol" style:use-window-font-color="true" fo:font-size="45%"/></text:list-level-style-bullet><text:list-level-style-bullet text:level="4" text:bullet-char="●"><style:list-level-properties text:space-before="1.8cm" text:min-label-width="0.6cm"/><style:text-properties fo:font-family="StarSymbol" style:use-window-font-color="true" fo:font-size="45%"/></text:list-level-style-bullet><text:list-level-style-bullet text:level="5" text:bullet-char="●"><style:list-level-properties text:space-before="2.4cm" text:min-label-width="0.6cm"/><style:text-properties fo:font-family="StarSymbol" style:use-window-font-color="true" fo:font-size="45%"/></text:list-level-style-bullet><text:list-level-style-bullet text:level="6" text:bullet-char="●"><style:list-level-properties text:space-before="3cm" text:min-label-width="0.6cm"/><style:text-properties fo:font-family="StarSymbol" style:use-window-font-color="true" fo:font-size="45%"/></text:list-level-style-bullet><text:list-level-style-bullet text:level="7" text:bullet-char="●"><style:list-level-properties text:space-before="3.6cm" text:min-label-width="0.6cm"/><style:text-properties fo:font-family="StarSymbol" style:use-window-font-color="true" fo:font-size="45%"/></text:list-level-style-bullet><text:list-level-style-bullet text:level="8" text:bullet-char="●"><style:list-level-properties text:space-before="4.2cm" text:min-label-width="0.6cm"/><style:text-properties fo:font-family="StarSymbol" style:use-window-font-color="true" fo:font-size="45%"/></text:list-level-style-bullet><text:list-level-style-bullet text:level="9" text:bullet-char="●"><style:list-level-properties text:space-before="4.8cm" text:min-label-width="0.6cm"/><style:text-properties fo:font-family="StarSymbol" style:use-window-font-color="true" fo:font-size="45%"/></text:list-level-style-bullet><text:list-level-style-bullet text:level="10" text:bullet-char="●"><style:list-level-properties text:space-before="5.4cm" text:min-label-width="0.6cm"/><style:text-properties fo:font-family="StarSymbol" style:use-window-font-color="true" fo:font-size="45%"/></text:list-level-style-bullet></text:list-style>
+</office:automatic-styles>
+<office:body>
+<office:drawing>
+  <draw:page draw:name="page1" draw:style-name="dp1" draw:master-page-name="Oletus">
+    <draw:custom-shape draw:style-name="gr1" draw:text-style-name="P1" draw:layer="layout" svg:width="17cm" svg:height="15cm" svg:x="2.5cm" svg:y="3cm">
+      <text:p/>
+      <draw:enhanced-geometry svg:viewBox="0 0 21600 21600" draw:path-stretchpoint-x="11000" draw:path-stretchpoint-y="10800" draw:text-areas="?f0 ?f0 ?f3 ?f12" draw:type="vertical-scroll" draw:modifiers="2700" draw:enhanced-path="M ?f1 21600 X 0 ?f11 ?f1 ?f12 L ?f0 ?f12 ?f0 ?f1 Y ?f4 0 L ?f2 0 X 21600 ?f1 ?f2 ?f0 L ?f3 ?f0 ?f3 ?f11 Y ?f5 21600 Z N M ?f6 ?f1 Y ?f4 ?f0 X ?f8 ?f9 ?f4 ?f1 Z N M ?f0 ?f11 Y ?f1 21600 0 ?f11 ?f1 ?f12 X ?f9 ?f10 ?f1 ?f11 Z N M ?f4 0 X ?f6 ?f1 N M ?f0 ?f12 L ?f0 ?f11 N M ?f4 ?f0 L ?f2 ?f0 N">
+        <draw:equation draw:name="f0" draw:formula="$0 "/>
+        <draw:equation draw:name="f1" draw:formula="?f0 /2"/>
+        <draw:equation draw:name="f2" draw:formula="right-?f1 "/>
+        <draw:equation draw:name="f3" draw:formula="right-?f0 "/>
+        <draw:equation draw:name="f4" draw:formula="?f0 +?f1 "/>
+        <draw:equation draw:name="f5" draw:formula="right-?f4 "/>
+        <draw:equation draw:name="f6" draw:formula="?f0 *2"/>
+        <draw:equation draw:name="f7" draw:formula="?f1 /2"/>
+        <draw:equation draw:name="f8" draw:formula="?f0 +?f7 "/>
+        <draw:equation draw:name="f9" draw:formula="?f1 +?f7 "/>
+        <draw:equation draw:name="f10" draw:formula="bottom-?f9 "/>
+        <draw:equation draw:name="f11" draw:formula="bottom-?f1 "/>
+        <draw:equation draw:name="f12" draw:formula="bottom-?f0 "/>
+        <draw:equation draw:name="f13" draw:formula="bottom-?f4 "/>
+        <draw:handle draw:handle-position="left $0" draw:handle-range-y-minimum="0" draw:handle-range-y-maximum="5400"/>
+      </draw:enhanced-geometry>
+    </draw:custom-shape>
+    <draw:ellipse draw:style-name="gr2" draw:text-style-name="P1" draw:layer="layout" svg:width="11cm" svg:height="3cm" svg:x="5.5cm" svg:y="6.5cm">
+      <text:p/>
+    </draw:ellipse>
+    <draw:frame draw:style-name="gr3" draw:layer="layout" svg:width="2.2cm" svg:height="0.963cm" svg:x="9.921cm" svg:y="7.508cm">
+      <draw:text-box>
+        <text:p>Test 1</text:p>
+      </draw:text-box>
+    </draw:frame>
+    <draw:custom-shape draw:style-name="gr4" draw:text-style-name="P1" draw:layer="layout" svg:width="2.5cm" svg:height="2cm" svg:x="5cm" svg:y="9.5cm">
+      <text:p/>
+      <draw:enhanced-geometry svg:viewBox="0 0 780 907" draw:type="non-primitive" draw:enhanced-path="M 390 0 L 492 276 780 228 594 457 780 679 492 631 390 907 288 631 0 679 186 457 0 228 288 276 390 0 Z N"/>
+    </draw:custom-shape>
+    <draw:custom-shape draw:style-name="gr5" draw:text-style-name="P1" draw:layer="layout" svg:width="2.5cm" svg:height="3cm" svg:x="14.5cm" svg:y="14.5cm">
+      <text:p/>
+      <draw:enhanced-geometry svg:viewBox="0 0 3448 4947" draw:text-areas="660 790 2480 2420" draw:type="non-primitive" draw:enhanced-path="M 1944 2928 C 1941 2982 1938 3036 1933 3090 1924 3131 1915 3172 1905 3214 1891 3246 1877 3278 1861 3312 1843 3340 1825 3368 1805 3398 1775 3437 1745 3476 1715 3517 1685 3548 1655 3579 1625 3612 1602 3646 1579 3680 1556 3716 1547 3766 1538 3816 1529 3868 1532 3914 1535 3960 1538 4008 1545 4052 1552 4096 1560 4141 1569 4183 1578 4225 1587 4268 1595 4309 1603 4350 1612 4393 1620 4412 1628 4431 1636 4451 1645 4475 1654 4499 1664 4524 1671 4545 1678 4566 1685 4587 1688 4596 1691 4605 1695 4614 1711 4604 1727 4594 1745 4582 1765 4577 1785 4572 1805 4565 1825 4563 1845 4561 1866 4559 1882 4559 1898 4559 1916 4559 1935 4560 1954 4561 1973 4563 1997 4566 2021 4569 2047 4573 2068 4576 2089 4579 2110 4582 2119 4583 2128 4584 2137 4587 2125 4570 2113 4553 2100 4536 2091 4515 2082 4494 2071 4472 2063 4449 2055 4426 2047 4403 2040 4382 2033 4361 2026 4338 2001 4275 1976 4212 1951 4149 1941 4103 1931 4057 1921 4009 1922 3975 1923 3941 1925 3905 1934 3879 1943 3853 1954 3825 1969 3803 1984 3781 1999 3757 2034 3705 2069 3653 2105 3599 2138 3549 2171 3499 2206 3449 2232 3398 2258 3347 2286 3294 2301 3237 2316 3180 2331 3122 2331 3100 2331 3078 2331 3054 2331 3029 2331 3004 2331 2979 2331 2953 2331 2927 2331 2899 2331 2872 2331 2845 2331 2817 2324 2811 2317 2805 2310 2797 2305 2791 2300 2785 2293 2779 2289 2775 2285 2771 2280 2766 2279 2765 2278 2764 2276 2762 2243 2770 2210 2778 2177 2788 2148 2800 2119 2812 2088 2824 2062 2839 2036 2854 2010 2870 1988 2889 1966 2908 1944 2928 Z M 2635 2707 C 2587 2712 2539 2717 2491 2722 2467 2724 2443 2726 2417 2730 2408 2731 2399 2732 2389 2733 2388 2733 2387 2733 2386 2734 2378 2734 2370 2734 2360 2734 2350 2734 2340 2734 2330 2734 2320 2734 2310 2734 2300 2734 2292 2734 2284 2734 2276 2734 2276 2735 2276 2736 2276 2738 2276 2741 2276 2744 2276 2748 2276 2751 2276 2754 2276 2757 2276 2758 2276 2759 2276 2762 2277 2763 2278 2764 2280 2766 2284 2770 2288 2774 2293 2779 2298 2785 2303 2791 2310 2797 2317 2803 2324 2809 2331 2817 2349 2840 2367 2863 2386 2888 2397 2918 2408 2948 2419 2979 2422 3019 2425 3059 2428 3099 2422 3153 2416 3207 2408 3263 2392 3335 2376 3407 2358 3481 2349 3515 2340 3549 2329 3584 2317 3618 2305 3652 2292 3688 2282 3722 2272 3756 2260 3791 2256 3826 2252 3861 2247 3896 2252 3967 2257 4038 2263 4110 2280 4172 2297 4234 2315 4297 2344 4355 2373 4413 2402 4472 2443 4530 2484 4588 2527 4647 2581 4709 2635 4771 2690 4835 2701 4840 2712 4845 2723 4852 2738 4864 2753 4876 2770 4890 2783 4902 2796 4914 2811 4928 2817 4934 2823 4940 2829 4946 2852 4925 2875 4904 2899 4881 2927 4869 2955 4857 2983 4845 3013 4839 3043 4833 3073 4825 3102 4820 3131 4815 3161 4808 3167 4808 3173 4808 3180 4808 3186 4809 3192 4810 3198 4811 3202 4813 3206 4815 3210 4819 3211 4824 3212 4829 3215 4835 3178 4809 3141 4783 3104 4757 3076 4734 3048 4711 3018 4686 2995 4665 2972 4644 2947 4621 2926 4601 2905 4581 2884 4559 2844 4512 2804 4465 2762 4416 2731 4370 2700 4324 2668 4277 2649 4226 2630 4175 2610 4122 2606 4060 2602 3998 2596 3936 2609 3858 2622 3780 2635 3702 2654 3628 2673 3554 2694 3480 2709 3423 2724 3366 2741 3307 2751 3262 2761 3217 2773 3170 2779 3132 2785 3094 2793 3056 2795 3023 2797 2990 2800 2955 2798 2929 2796 2903 2794 2877 2789 2855 2784 2833 2779 2810 2771 2791 2763 2772 2754 2753 2742 2738 2730 2723 2718 2707 2711 2707 2704 2707 2697 2707 2690 2707 2683 2707 2676 2707 2669 2707 2662 2707 2655 2707 2649 2707 2643 2707 2635 2707 Z M 3298 1325 C 3285 1318 3272 1311 3257 1304 3245 1298 3233 1292 3219 1286 3208 1282 3197 1278 3185 1273 3177 1272 3169 1271 3160 1269 3118 1251 3076 1233 3033 1215 2994 1187 2955 1159 2914 1131 2884 1089 2854 1047 2822 1005 2806 946 2790 887 2774 827 2774 774 2774 721 2774 667 2774 640 2774 613 2774 585 2774 575 2774 565 2774 555 2774 554 2774 553 2774 551 2755 487 2736 423 2717 358 2678 318 2639 278 2600 236 2544 218 2488 200 2431 181 2361 184 2291 187 2221 192 2173 202 2125 212 2076 223 2052 228 2028 233 2002 239 1993 241 1984 243 1974 245 1973 245 1972 245 1971 246 1937 249 1903 252 1868 255 1839 252 1810 249 1779 245 1747 234 1715 223 1683 212 1642 191 1601 170 1560 149 1504 117 1448 85 1391 53 1353 36 1315 19 1275 0 1233 2 1191 4 1149 8 1111 29 1073 50 1033 72 1005 112 977 152 949 192 921 257 893 322 863 387 840 431 817 475 793 521 769 551 745 581 721 613 691 635 661 657 631 681 590 702 549 723 506 745 464 766 422 787 378 808 356 819 334 830 312 841 304 845 296 849 288 853 287 853 286 853 285 855 244 891 203 927 161 964 137 1005 113 1046 88 1089 83 1137 78 1185 71 1235 87 1292 103 1349 120 1408 133 1456 146 1504 161 1554 162 1611 163 1668 164 1725 153 1782 142 1839 130 1897 108 1945 86 1993 64 2043 43 2092 22 2141 0 2191 2 2238 4 2285 8 2333 31 2373 54 2413 79 2455 120 2484 161 2513 202 2542 213 2543 224 2544 236 2546 254 2549 272 2552 292 2555 313 2558 334 2561 357 2564 379 2565 401 2566 423 2569 462 2573 501 2577 541 2581 588 2595 635 2609 682 2624 734 2652 786 2680 839 2709 894 2754 949 2799 1004 2846 1018 2865 1032 2884 1046 2904 1061 2924 1076 2944 1093 2966 1112 2991 1131 3016 1151 3043 1175 3078 1199 3113 1225 3149 1262 3173 1299 3197 1338 3222 1387 3227 1436 3232 1487 3239 1537 3227 1587 3215 1637 3203 1674 3176 1711 3149 1750 3122 1758 3114 1766 3106 1775 3096 1786 3085 1797 3074 1809 3063 1821 3050 1833 3037 1847 3024 1861 3011 1875 2998 1889 2984 1911 2965 1933 2946 1955 2926 1981 2911 2007 2896 2033 2880 2062 2868 2091 2856 2122 2844 2155 2836 2188 2828 2221 2818 2221 2817 2221 2816 2221 2813 2221 2810 2221 2807 2221 2804 2221 2801 2221 2798 2221 2794 2221 2793 2221 2792 2221 2790 2229 2790 2237 2790 2245 2790 2255 2790 2265 2790 2275 2790 2285 2790 2295 2790 2305 2790 2313 2790 2321 2790 2331 2790 2378 2785 2425 2780 2474 2774 2498 2772 2522 2770 2548 2766 2557 2765 2566 2764 2576 2763 2577 2763 2578 2763 2580 2763 2586 2763 2592 2763 2600 2763 2607 2763 2614 2763 2621 2763 2628 2763 2635 2763 2642 2763 2649 2763 2656 2763 2663 2763 2668 2763 2673 2763 2679 2763 2682 2763 2685 2763 2690 2763 2693 2763 2696 2763 2701 2763 2706 2763 2711 2763 2718 2763 2761 2738 2804 2713 2847 2686 2878 2654 2909 2622 2942 2590 2961 2554 2980 2518 3001 2482 3008 2447 3015 2412 3022 2375 3027 2310 3032 2245 3038 2180 3062 2134 3086 2088 3111 2040 3146 2006 3181 1972 3216 1936 3253 1908 3290 1880 3327 1850 3357 1809 3387 1768 3419 1725 3428 1676 3437 1627 3447 1577 3434 1530 3421 1483 3407 1434 3371 1398 3335 1362 3298 1325 Z M 1788 2817 C 1678 2823 1568 2829 1458 2837 1354 2814 1250 2791 1145 2767 1051 2718 957 2669 862 2619 783 2548 704 2477 625 2405 567 2315 509 2225 449 2134 417 2030 385 1926 351 1821 348 1708 345 1595 340 1482 364 1377 388 1272 413 1165 462 1072 511 979 561 884 632 807 703 730 776 651 867 594 958 537 1049 480 1157 448 1265 416 1373 383 1482 380 1591 377 1700 372 1803 396 1906 420 2010 444 2103 492 2196 540 2289 590 2367 660 2445 730 2524 801 2583 889 2642 977 2702 1067 2738 1171 2774 1275 2811 1379 2813 1492 2815 1605 2819 1718 2794 1823 2769 1928 2742 2034 2692 2127 2642 2220 2590 2315 2518 2392 2446 2469 2373 2548 2283 2605 2193 2662 2102 2719 1998 2751 1894 2783 1788 2817 Z N"/>
+    </draw:custom-shape>
+    <draw:line draw:style-name="gr6" draw:text-style-name="P1" draw:layer="layout" svg:x1="8.5cm" svg:y1="10.5cm" svg:x2="12.5cm" svg:y2="10.5cm"><text:p/></draw:line>
+    <draw:custom-shape draw:style-name="gr7" draw:text-style-name="P1" draw:layer="layout" svg:width="2.5cm" svg:height="2.5cm" svg:x="5cm" svg:y="12cm">
+      <text:p/>
+      <draw:enhanced-geometry draw:glue-point-type="segments" draw:type="mso-spt100" draw:modifiers="-90 0" draw:enhanced-path="V 0 0 21600 21600 ?f5 ?f7 ?f1 ?f3 L 10800 10800 Z N">
+        <draw:equation draw:name="f0" draw:formula="10800*cos($0 *(pi/180))"/>
+        <draw:equation draw:name="f1" draw:formula="?f0 +10800"/>
+        <draw:equation draw:name="f2" draw:formula="10800*sin($0 *(pi/180))"/>
+        <draw:equation draw:name="f3" draw:formula="?f2 +10800"/>
+        <draw:equation draw:name="f4" draw:formula="10800*cos($1 *(pi/180))"/>
+        <draw:equation draw:name="f5" draw:formula="?f4 +10800"/>
+        <draw:equation draw:name="f6" draw:formula="10800*sin($1 *(pi/180))"/>
+        <draw:equation draw:name="f7" draw:formula="?f6 +10800"/>
+        <draw:handle draw:handle-position="10800 $0" draw:handle-polar="10800 10800" draw:handle-radius-range-minimum="10800" draw:handle-radius-range-maximum="10800"/>
+        <draw:handle draw:handle-position="10800 $1" draw:handle-polar="10800 10800" draw:handle-radius-range-minimum="10800" draw:handle-radius-range-maximum="10800"/>
+      </draw:enhanced-geometry>
+    </draw:custom-shape>
+    <draw:custom-shape draw:style-name="gr8" draw:text-style-name="P1" draw:layer="layout" svg:width="3cm" svg:height="2.5cm" svg:x="12.5cm" svg:y="20cm">
+      <text:p/>
+      <draw:enhanced-geometry svg:viewBox="0 0 707 799" draw:mirror-horizontal="false" draw:mirror-vertical="false" draw:type="non-primitive" draw:enhanced-path="M 637 408 L 637 402 631 402 626 402 620 396 626 396 631 396 637 396 637 390 678 354 702 306 707 252 684 198 655 156 608 132 555 132 503 150 497 150 497 156 491 156 491 162 491 156 491 150 491 150 491 144 479 96 462 60 433 30 398 6 357 0 310 6 275 30 245 60 228 96 222 144 222 150 222 150 222 156 222 162 216 156 210 156 205 150 205 150 152 132 99 132 52 156 23 198 0 252 6 306 29 354 70 390 70 396 76 396 82 396 88 396 82 402 76 402 70 402 70 408 29 444 6 493 0 541 23 595 52 637 99 661 152 667 205 649 205 643 210 643 216 643 222 637 222 643 222 649 222 649 222 655 228 703 245 739 275 769 310 793 357 799 398 793 433 769 462 739 479 703 491 655 491 649 491 649 491 643 491 637 491 643 497 643 497 643 503 649 555 667 608 661 655 637 684 595 707 541 702 493 678 444 637 408 Z M 357 252 L 310 258 269 282 234 312 216 354 210 402 216 444 234 487 269 517 310 541 357 547 398 541 438 517 474 487 491 444 503 402 491 354 474 312 438 282 398 258 357 252 Z N"/>
+    </draw:custom-shape>
+    <draw:line draw:style-name="gr9" draw:text-style-name="P1" draw:layer="layout" svg:x1="14cm" svg:y1="22.5cm" svg:x2="14cm" svg:y2="23.5cm"><text:p/></draw:line>
+    <draw:line draw:style-name="gr9" draw:text-style-name="P1" draw:layer="layout" svg:x1="14cm" svg:y1="23.5cm" svg:x2="13.5cm" svg:y2="25.5cm"><text:p/></draw:line>
+    <draw:ellipse draw:style-name="gr10" draw:text-style-name="P1" draw:layer="layout" svg:width="0.813cm" svg:height="3.244cm" draw:transform="skewX (0.0129154364647555) rotate (-0.707032879983956) translate (15.645cm 22.266cm)"><text:p/></draw:ellipse>
+    <draw:path draw:style-name="gr11" draw:text-style-name="P1" draw:layer="layout" svg:width="9.429cm" svg:height="4.491cm" draw:transform="skewX (-4.3967693286338E-017) rotate (0.417482757076965) translate (6.73314019682066cm 26.0928070675985cm)" svg:viewBox="0 0 9430 4492" svg:d="m0 5c688-5 1345-23 2075 66 1374 167-412 989 814 1282 591 141 1129 504 1795 401 694-107 1142 607 1686 945 551 342 1077 719 1509 1195l501 355 549 243 501-238"><text:p/></draw:path>
+    <draw:frame draw:style-name="gr12" draw:text-style-name="P2" draw:layer="layout" svg:width="4.5cm" svg:height="1.25cm" svg:x="4cm" svg:y="20cm">
+      <draw:text-box><text:p text:style-name="P2"><text:span text:style-name="T1">Kesäyö</text:span></text:p></draw:text-box>
+    </draw:frame>
+  </draw:page>
+</office:drawing>
+</office:body>
+</office:document-content>
