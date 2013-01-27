@@ -55,6 +55,8 @@ type
     ADefaultValue: string;
   end;
 
+  id = ^objc_object;
+  TcocoaEvent = procedure(sender: id) of object;
 
 const
   XIBPropertiesStrings : array[TXIBProperties] of TXIBProperty = (
@@ -67,6 +69,8 @@ const
     (APropertyName: 'IBUIBackgroundColor' ; ADefaultValue: ''),
     (APropertyName: 'IBUIEnabled'    ; ADefaultValue: 'NO'));
 
+  EventNames : array[1..1] of string = (
+    'onTouchDown');
 
 type
   IMyWidgetDesigner = interface(IUnknown)
@@ -125,7 +129,8 @@ type
     function GetXIBFlattenedProperties: TDOMElement;
     function GetXIBConnectionRecords: TDOMElement;
     function GetNextObjectID: integer;
-    function GetXIBConnection(ASourceRef, ADestinationRef: int64; ConnectionType: TiOSXIBConnectionType; CreateIfNotExists: boolean): TDOMElement;
+    function GetXIBConnection(ASourceRef, ADestinationRef: int64;
+      ConnectionType: TiOSXIBConnectionType; CreateIfNotExists: boolean; IBEventType: integer): TDOMElement;
     function FindComponentByRef(ARef: int64): tiOSFakeComponent;
     function FindOrderdObjectByRef(ARef: int64): TDOMElement;
   protected
@@ -172,6 +177,8 @@ type
     procedure SetXIBInteger(index: TXIBProperties; AValue: integer);
     function GetXIBColor(index: TXIBProperties): TColor; virtual;
     procedure SetXIBColor(index: TXIBProperties; AValue: TColor);
+    function GetXIBEvent(index: integer): TCocoaEvent;
+    procedure SetXIBEvent(Index: integer; AValue: TCocoaEvent);
 
     function GetNSObject: NSObject; virtual;
     // Streaming
@@ -364,19 +371,14 @@ type
   end;
 
   { UIButton }
-  id = ^objc_object;
-  TcocoaEvent = procedure(sender: id) of object;
 
   UIButton = class(UIView)
   private
     FNSNextKeyView: UIView;
     FTextColor: TColor;
-    function GetonTouchDown: TCocoaEvent;
-    procedure SetonTouchDown(AValue: TCocoaEvent);
   protected
     procedure WriteToDomElement(AnObjectDomElement: TDOMElement); override;
     function WriteToConnectionRecords(AnObjectDomElement: TDOMElement): TDOMElement; override;
-    procedure DefineProperties(Filer: TFiler); override;
   public
     procedure InitializeDefaults; override;
     constructor Create(AOwner: TComponent); override;
@@ -385,7 +387,7 @@ type
     property NSNextKeyView: UIView read FNSNextKeyView write FNSNextKeyView;
   published
     property TextColor: TColor read FTextColor write FTextColor;
-    property onTouchDown: TCocoaEvent read GetonTouchDown write SetonTouchDown;
+    property onTouchDown: TCocoaEvent index 1 read GetXIBEvent write SetXIBEvent;
   end;
 
   { UILabel }
@@ -1622,7 +1624,7 @@ var
   AnElement: TDOMElement;
 begin
   result := '';
-  AnElement := GetXIBConnection(841351856, Ref, ctOutlet, false);
+  AnElement := GetXIBConnection(841351856, Ref, ctOutlet, false, -1);
   if assigned(AnElement) then
     begin
     AnElement := FindKeyNode(AnElement, 'string' ,'label');
@@ -1651,7 +1653,7 @@ begin
   if AValue=GetFilesOwnerOutletName then
     Exit;
 
-  AnElement := GetXIBConnection(841351856, Ref, ctOutlet, True);
+  AnElement := GetXIBConnection(841351856, Ref, ctOutlet, True, -1);
   AnElement := GetKeyNode(AnElement, 'string' ,'label');
   AnElement.TextContent := AValue;
 end;
@@ -2056,12 +2058,14 @@ begin
 end;
 
 function tiOSFakeComponent.GetXIBConnection(ASourceRef, ADestinationRef: int64;
-  ConnectionType: TiOSXIBConnectionType; CreateIfNotExists: boolean): TDOMElement;
+  ConnectionType: TiOSXIBConnectionType; CreateIfNotExists: boolean; IBEventType: integer): TDOMElement;
 var
   AnElement: TDOMElement;
   AnOutletElement: TDOMElement;
   SourceElement: TDOMElement;
   DestElement: TDOMElement;
+  EventTypeElement: TDOMElement;
+  AnIBEventType: integer;
 begin
   result := nil;
   AnElement := GetXIBConnectionRecords.FirstChild as TDOMElement;
@@ -2074,12 +2078,19 @@ begin
         begin
         SourceElement := FindKeyNode(AnOutletElement, 'reference', 'source');
         DestElement := FindKeyNode(AnOutletElement, 'reference', 'destination');
+
         if assigned(SourceElement) and (SourceElement.AttribStrings['ref']=IntToStr(ASourceRef)) and
            ((assigned(DestElement) and (DestElement.AttribStrings['ref']=IntToStr(ADestinationRef))) or
             (ConnectionType=ctEvent)) then
           begin
+          EventTypeElement := FindKeyNode(AnOutletElement,'int','IBEventType');
+          if assigned(EventTypeElement) then
+            AnIBEventType:=StrToIntDef(EventTypeElement.TextContent,-1)
+          else
+            AnIBEventType:=-1;
+
           if ((ConnectionType=ctOutlet) and (AnOutletElement.AttribStrings['class']='IBCocoaTouchOutletConnection')) or
-             ((ConnectionType=ctEvent) and (AnOutletElement.AttribStrings['class']='IBCocoaTouchEventConnection')) then
+             ((ConnectionType=ctEvent) and (AnOutletElement.AttribStrings['class']='IBCocoaTouchEventConnection') and (AnIBEventType=IBEventType)) then
             begin
             result := AnOutletElement;
             exit;
@@ -2103,7 +2114,7 @@ begin
     DestElement := GetKeyNode(AnOutletElement,'reference','destination');
     DestElement.AttribStrings['ref'] := IntToStr(ADestinationRef);
     if ConnectionType=ctEvent then
-      GetKeyNode(AnOutletElement,'int', 'IBEventType').TextContent := '1';
+      GetKeyNode(AnOutletElement,'int', 'IBEventType').TextContent := IntToStr(IBEventType);
     result := AnOutletElement;
 
     GetKeyNode(AnElement,'int','connectionID').TextContent:=IntToStr(GetNextObjectID);
@@ -2351,7 +2362,7 @@ begin
     if AComp<>AValue then
       UIView(AValue).NSSuperview := AComp as UIView;
 
-    AnElement := GetXIBConnection(GetNSObject.Ref, AValue.Ref, ctOutlet, true);
+    AnElement := GetXIBConnection(GetNSObject.Ref, AValue.Ref, ctOutlet, true, -1);
     AnElement := GetKeyNode(AnElement,'string','label');
     AnElement.TextContent:=AValue.Name;
     end;
@@ -2558,6 +2569,84 @@ begin
     end;
 end;
 
+function tiOSFakeComponent.GetXIBEvent(index: integer): TCocoaEvent;
+var
+  ConnectionElement: TDOMElement;
+  AnComponent: tiOSFakeComponent;
+  AnElement: TDOMElement;
+  s: shortstring;
+  i: integer;
+begin
+  ConnectionElement:=GetXIBConnection(Ref, 0, ctEvent, false, index);
+  if assigned(ConnectionElement) then
+    begin
+    AnElement:=FindKeyNode(ConnectionElement,'reference','destination');
+    AnComponent:=GetNSObject.FindComponentByRef(StrToInt(AnElement.AttribStrings['ref']));
+    AnElement:=FindKeyNode(ConnectionElement,'string','label');
+    s := AnElement.TextContent;
+    i := pos(':',s);
+    if i > 0 then
+      s := copy(s,1,i-1);
+
+    i := AnComponent.FStoredEvents.IndexOf(s);
+    if i > -1 then
+      begin
+      TMethod(Result).Code := nil;
+      TMethod(Result).Data := AnComponent.FStoredEvents.Objects[i];
+      end
+    else
+      begin
+      TMethod(Result).Data := AnComponent;
+      TMethod(Result).Code := AnComponent.MethodAddress(s);
+      end;
+    end
+  else
+    result := nil;
+end;
+
+procedure tiOSFakeComponent.SetXIBEvent(Index: integer; AValue: TCocoaEvent);
+var
+  AnElement: TDOMElement;
+  AnComponent: TObject;
+  AMethodName: shortstring;
+  ARef: int64;
+  EventOwner: tiOSFakeComponent;
+  s: string;
+begin
+  // Lazarus's fake-events can not be compared to each other. So Lazarus always
+  // sets an event to a bogus value first. Checking if the new value is different
+  // from the old value is pointless in that case.
+  if assigned(TMethod(AValue).Data) then
+    begin
+    // Check if the event is a Lazarus bogus-event. If this is the case, just
+    // ignore.
+    if TMethod(AValue).Code=pointer(1) then
+      Exit;
+
+    AnComponent := Tobject(TMethod(AValue).Data);
+    AMethodName := GlobalDesignHook.GetMethodName(TMethod(AValue), nil);
+
+    if (AnComponent is tiOSFakeComponent) then
+      EventOwner := tiOSFakeComponent(AnComponent)
+    else
+      EventOwner := GetNSObject;
+
+    ARef := EventOwner.Ref;
+    EventOwner.FStoredEvents.AddObject(AMethodName,TObject(TMethod(AValue).Data));
+
+    AnElement:=GetXIBConnection(ref, ARef, ctEvent, True, Index);
+    AnElement:=GetKeyNode(AnElement, 'string', 'label');
+    AnElement.TextContent:=AMethodName + ':';
+    end
+  else
+    begin
+    AnElement:=GetXIBConnection(Ref, 0, ctEvent, False, Index);
+    if assigned(AnElement) then
+      AnElement.ParentNode.ParentNode.RemoveChild(AnElement.ParentNode);
+    end;
+
+end;
+
 function tiOSFakeComponent.GetNSObject: NSObject;
 begin
   if assigned(Parent) then
@@ -2572,10 +2661,62 @@ begin
 end;
 
 procedure tiOSFakeComponent.DefineProperties(Filer: TFiler);
+
+var
+  AnElement: TDOMElement;
+  AnComponent: TObject;
+  AMethodName: shortstring;
+  ARef: int64;
+  s: string;
+  Reader: TXIBReader;
+  Handled: boolean;
+  ConnectionElement: TDOMElement;
+  SourceElement: TDOMElement;
+  DestElement: TDOMElement;
+  LabelElement: TDOMElement;
+  EventTypeElement: TDOMElement;
+  i: integer;
+  IBEventType: integer;
+
 begin
   inherited DefineProperties(Filer);
   if filer is TXIBReader then
+    begin
     SetXIBObjectElement(TXIBObjectReader(TReader(Filer).Driver).FCurrentObject);
+
+    // Explicitely set the value for all events. This because Lazarus uses
+    // some sort of artificial events, which are created by setting them
+    // during the component's read.
+    AnElement := GetXIBConnectionRecords.FirstChild as TDOMElement;
+    while assigned(AnElement) do
+      begin
+      ConnectionElement := FindKeyNode(AnElement, 'object', 'connection');
+      if ConnectionElement.AttribStrings['class'] = 'IBCocoaTouchEventConnection' then
+        begin
+        SourceElement := FindKeyNode(ConnectionElement, 'reference', 'source');
+        if SourceElement.AttribStrings['ref']=IntToStr(Ref) then
+          begin
+
+          DestElement:=FindKeyNode(ConnectionElement,'reference','destination');
+          EventTypeElement:=FindKeyNode(ConnectionElement, 'int', 'IBEventType');
+          IBEventType:=StrToIntDef(EventTypeElement.TextContent,-1);
+          AnComponent:=GetNSObject.FindComponentByRef(StrToInt(DestElement.AttribStrings['ref']));
+          LabelElement:=FindKeyNode(ConnectionElement,'string','label');
+          s := AnElement.TextContent;
+          i := pos(':',s);
+          if i > 0 then
+            s := copy(s,1,i-1);
+
+          Reader  := TXIBReader(Filer);
+          if IBEventType in [low(EventNames)..high(EventNames)] then
+            Reader.OnSetMethodProperty(Reader, Self, GetPropInfo(self,EventNames[IBEventType]),s,Handled);
+          end
+
+        end;
+
+      AnElement := AnElement.NextSibling as TDOMElement;
+      end;
+    end;
 end;
 
 function tiOSFakeComponent.GetKeyNode(AParentNode: TDOMNode; NodeName, Key: string; AClass: string): TDOMElement;
@@ -2665,7 +2806,7 @@ begin
     AnElement := GetKeyNode(AnElement, 'string','objectName');
     AnElement.TextContent := NewName;
 
-    AnElement := GetXIBConnection(GetNSObject.Ref, Ref, ctOutlet, false);
+    AnElement := GetXIBConnection(GetNSObject.Ref, Ref, ctOutlet, false, -1);
     if assigned(AnElement) then
       begin
       AnElement := GetKeyNode(AnElement, 'string', 'label');
@@ -3419,81 +3560,6 @@ end;
 
 { UIButton }
 
-function UIButton.GetonTouchDown: TCocoaEvent;
-var
-  ConnectionElement: TDOMElement;
-  AnComponent: tiOSFakeComponent;
-  AnElement: TDOMElement;
-  s: shortstring;
-  i: integer;
-begin
-  ConnectionElement:=GetXIBConnection(Ref, 0, ctEvent, false);
-  if assigned(ConnectionElement) then
-    begin
-    AnElement:=FindKeyNode(ConnectionElement,'reference','destination');
-    AnComponent:=GetNSObject.FindComponentByRef(StrToInt(AnElement.AttribStrings['ref']));
-    AnElement:=FindKeyNode(ConnectionElement,'string','label');
-    s := AnElement.TextContent;
-    i := pos(':',s);
-    if i > 0 then
-      s := copy(s,1,i-1);
-
-    i := FStoredEvents.IndexOf(s);
-    if i > -1 then
-      begin
-      TMethod(Result).Code := nil;
-      TMethod(Result).Data := FStoredEvents.Objects[i];
-      end
-    else
-      begin
-      TMethod(Result).Data := AnComponent;
-      TMethod(Result).Code := AnComponent.MethodAddress(s);
-      end;
-    end
-  else
-    result := nil;
-end;
-
-procedure UIButton.SetonTouchDown(AValue: TCocoaEvent);
-var
-  AnElement: TDOMElement;
-  AnComponent: TObject;
-  AMethodName: shortstring;
-  ARef: int64;
-  s: string;
-begin
-  //if (GetonTouchDown=AValue) then
-  //  Exit;
-  if assigned(TMethod(AValue).Data) then
-    begin
-    //AnComponent := Tobject(TMethod(AValue).Data) as TComponent;
-    //AMethodName:=AnComponent.MethodName(TMethod(AValue).Code);
-    if TMethod(AValue).Code=pointer(1) then
-      Exit;
-
-    AnComponent := Tobject(TMethod(AValue).Data);
-
-    AMethodName := GlobalDesignHook.GetMethodName(TMethod(AValue), nil);
-
-    if (AnComponent is tiOSFakeComponent) then
-      ARef := tiOSFakeComponent(AnComponent).Ref
-    else
-      ARef := GetNSObject.Ref;
-
-    AnElement:=GetXIBConnection(ref, ARef, ctEvent, True);
-    AnElement:=GetKeyNode(AnElement, 'string', 'label');
-    AnElement.TextContent:=AMethodName + ':';
-
-    FStoredEvents.AddObject(AMethodName,TObject(TMethod(AValue).Data));
-    end
-  else
-    begin
-    AnElement:=GetXIBConnection(Ref, 0, ctEvent, False);
-    if assigned(AnElement) then
-      AnElement.ParentNode.ParentNode.RemoveChild(AnElement.ParentNode);
-    end;
-end;
-
 procedure UIButton.WriteToDomElement(AnObjectDomElement: TDOMElement);
 
 begin
@@ -3520,41 +3586,6 @@ begin
     end
   else
     writeln('AA- Geen Touchdown ' + self.Name);
-end;
-
-procedure UIButton.DefineProperties(Filer: TFiler);
-
-var
-  AnElement: TDOMElement;
-  AnComponent: TObject;
-  AMethodName: shortstring;
-  ARef: int64;
-  s: string;
-  Reader: TXIBReader;
-  Handled: boolean;
-  ConnectionElement: TDOMElement;
-  i: integer;
-
-begin
-  inherited DefineProperties(Filer);
-  if filer is TXIBReader then
-    begin
-
-    ConnectionElement:=GetXIBConnection(Ref, 0, ctEvent, false);
-    if assigned(ConnectionElement) then
-      begin
-      AnElement:=FindKeyNode(ConnectionElement,'reference','destination');
-      AnComponent:=GetNSObject.FindComponentByRef(StrToInt(AnElement.AttribStrings['ref']));
-      AnElement:=FindKeyNode(ConnectionElement,'string','label');
-      s := AnElement.TextContent;
-      i := pos(':',s);
-      if i > 0 then
-        s := copy(s,1,i-1);
-
-      Reader  := TXIBReader(Filer);
-      Reader.OnSetMethodProperty(Reader, Self, GetPropInfo(self,'onTouchDown'),s,Handled);
-      end
-    end;
 end;
 
 procedure UIButton.InitializeDefaults;
