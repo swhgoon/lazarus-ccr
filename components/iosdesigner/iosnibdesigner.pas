@@ -87,9 +87,21 @@ type
     class function FormClass: TComponentClass; override;
   end;
 
+
+  { TiOSMethodPropertyEditor }
+
+  TiOSMethodPropertyEditor = class(TMethodPropertyEditor)
+  public
+    procedure GetValues(Proc: TGetStrProc); override;
+    procedure SetValue(const NewValue: ansistring); override;
+  end;
+
 procedure Register;
 
 implementation
+
+uses
+  ObjInspStrConsts;
 
 procedure Register;
 
@@ -121,6 +133,8 @@ begin
   RegisterClass(UIViewController);
   RegisterClass(UINavigationBar);
 
+  RegisterPropertyEditor(FindPropInfo(UIButton, 'onTouchDown')^.PropType , tiOSFakeComponent,'onTouchDown',TiOSMethodPropertyEditor);
+
   // This is a hack to overwrite the unitname RTTI-information of these objects.
   // This is to make sure that the Codetools add the right unit-name to the
   // source when an object is added to the NIB-file.
@@ -134,6 +148,104 @@ begin
   SetFakeUnitname(UINavigationController);
   SetFakeUnitname(UIViewController);
   SetFakeUnitname(UIProgressView);
+end;
+
+{ TiOSMethodPropertyEditor }
+
+procedure TiOSMethodPropertyEditor.GetValues(Proc: TGetStrProc);
+begin
+  proc(oisNone);
+end;
+
+procedure TiOSMethodPropertyEditor.SetValue(const NewValue: ansistring);
+var
+  CreateNewMethod: Boolean;
+  CurValue: string;
+  NewMethodExists, NewMethodIsCompatible, NewMethodIsPublished,
+  NewIdentIsMethod: boolean;
+  IsNil: Boolean;
+  NewMethod: TMethod;
+begin
+  CurValue := GetValue;
+  if CurValue = NewValue then exit;
+  //DebugLn('### TMethodPropertyEditor.SetValue A OldValue="',CurValue,'" NewValue=',NewValue);
+  IsNil := (NewValue='') or (NewValue=oisNone);
+
+  if (not IsNil) and (not IsValidIdent(NewValue)) then
+  begin
+    MessageDlg(oisIncompatibleIdentifier,
+      Format(oisIsNotAValidMethodName,['"',NewValue,'"']), mtError,
+      [mbCancel, mbIgnore], 0);
+    exit;
+  end;
+
+  NewMethodExists := (not IsNil); {and
+    PropertyHook.CompatibleMethodExists(NewValue, GetInstProp,
+                   NewMethodIsCompatible, NewMethodIsPublished, NewIdentIsMethod);}
+  //DebugLn('### TMethodPropertyEditor.SetValue B NewMethodExists=',NewMethodExists,' NewMethodIsCompatible=',NewMethodIsCompatible,' ',NewMethodIsPublished,' ',NewIdentIsMethod);
+{  if NewMethodExists then
+  begin
+    if not NewIdentIsMethod then
+    begin
+      if MessageDlg(oisIncompatibleIdentifier,
+        Format(oisTheIdentifierIsNotAMethodPressCancelToUndoPressIgn,
+               ['"', NewValue, '"', LineEnding, LineEnding]),
+        mtWarning, [mbCancel, mbIgnore], 0)<>mrIgnore
+      then
+        exit;
+    end;
+    if not NewMethodIsPublished then
+    begin
+      if MessageDlg(oisIncompatibleMethod,
+        Format(oisTheMethodIsNotPublishedPressCancelToUndoPressIgnor,
+               ['"', NewValue, '"', LineEnding, LineEnding]),
+        mtWarning, [mbCancel, mbIgnore], 0)<>mrIgnore
+      then
+        exit;
+    end;
+    if not NewMethodIsCompatible then
+    begin
+      if MessageDlg(oisIncompatibleMethod,
+        Format(oisTheMethodIsIncompatibleToThisEventPressCancelToUnd,
+               ['"', NewValue, '"', GetName, LineEnding, LineEnding]),
+          mtWarning, [mbCancel, mbIgnore], 0)<>mrIgnore
+      then
+        exit;
+    end;
+  end;  }
+  //DebugLn('### TMethodPropertyEditor.SetValue C');
+  if IsNil then
+  begin
+    NewMethod.Data := nil;
+    NewMethod.Code := nil;
+    SetMethodValue(NewMethod);
+  end
+  else
+  if IsValidIdent(CurValue) and
+     not NewMethodExists and
+     not PropertyHook.MethodFromAncestor(GetMethodValue) then
+  begin
+    // rename the method
+    // Note:
+    //   All other not selected properties that use this method, contain just
+    //   the TMethod record. So, changing the name in the jitform will change
+    //   all other event names in all other components automatically.
+    PropertyHook.RenameMethod(CurValue, NewValue)
+  end else
+  begin
+    //DebugLn('### TMethodPropertyEditor.SetValue E');
+    CreateNewMethod := not NewMethodExists;
+    SetMethodValue(
+       PropertyHook.CreateMethod(NewValue, GetPropType,
+                                 GetComponent(0), GetPropertyPath(0)));
+    //DebugLn('### TMethodPropertyEditor.SetValue F NewValue=',GetValue);
+    if CreateNewMethod then
+    begin
+      //DebugLn('### TMethodPropertyEditor.SetValue G');
+      PropertyHook.ShowMethod(NewValue);
+    end;
+  end;
+  //DebugLn('### TMethodPropertyEditor.SetValue END  NewValue=',GetValue);
 end;
 
 { TNSObjectDesignerMediator }
