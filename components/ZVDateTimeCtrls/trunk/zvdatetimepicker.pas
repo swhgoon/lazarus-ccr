@@ -2822,10 +2822,15 @@ begin
   SetFocusIfPossible;
 
   if not FReadOnly then begin
-    if Button = btNext then
-      IncreaseCurrentTextPart
-    else
-      DecreaseCurrentTextPart;
+    Inc(FUserChanging);
+    try
+      if Button = btNext then
+        IncreaseCurrentTextPart
+      else
+        DecreaseCurrentTextPart;
+    finally
+      Dec(FUserChanging);
+    end;
   end;
 end;
 
