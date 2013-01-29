@@ -117,7 +117,6 @@ type
     FParent: tiOSFakeComponent;
     // iOS
     procedure AddChildToDom(const AValue: tiOSFakeComponent);
-    function ElementToString(AWriteDomMethod: tiOSWriteDomMethod): string;
     function GetObjectID: integer;
     function GetPosition(APosition: TiOSXIBPos): integer;
     function GetRef: integer;
@@ -151,10 +150,6 @@ type
     procedure SetName(const NewName: TComponentName); override;
     // iOS
     procedure AddConnectionRecord(AnObjectDomElement: TDOMElement; AConnectionType, ALabel, AEventType: string);
-    procedure WriteToDomElement(AnObjectDomElement: TDOMElement); virtual;
-    function WriteToObject(AnObjectDomElement: TDOMElement): TDOMElement; virtual;
-    function WriteToConnectionRecords(AnObjectDomElement: TDOMElement): TDOMElement; virtual;
-    function WriteToObjectRecord(AnObjectDomElement: TDOMElement): TDOMElement; virtual;
     class function GetIBClassName: string; virtual;
     function GetDesigner: IMyWidgetDesigner; virtual;
     function GetHeight: integer; virtual;
@@ -200,9 +195,6 @@ type
     property Children[Index: integer]: tiOSFakeComponent read GetChilds;
     property AcceptChildsAtDesignTime: boolean read FAcceptChildsAtDesignTime;
     // iOS
-    function getAsXIBObject: string; virtual;
-    function getConnectionRecords: string; virtual;
-    function getObjectRecord: string; virtual;
     property Ref: integer read GetRef;
     property ObjectID: integer read GetObjectID;
     // Dom utils
@@ -241,7 +233,6 @@ type
     procedure SetNSSuperView(AValue: UIView);
   protected
     procedure SetName(const NewName: TComponentName); override;
-    procedure WriteToDomElement(AnObjectDomElement: TDOMElement); override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure InitializeDefaults; override;
@@ -269,7 +260,6 @@ type
     FWidth, FHeight: integer;
     FXIBUsesObjectsForArrays: boolean;
     function GetFilesOwnerOutletName: string;
-    procedure GetXIBSaveParam(Sender: TObject; const ParamName: String; out AValue: String);
     function IsNIBRoot: boolean;
     function GetFilesOwnerID: string;
     procedure SetFilesOwnerOutletName(AValue: string);
@@ -286,10 +276,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure SaveAsXIB(const Filename: string);
-    function getObjectRecord: string; override;
-    function getAsXIBObject: string; override;
-    function getConnectionRecords: string; override;
     function GetDesigner: IMyWidgetDesigner; override;
     procedure InitializeDefaults; override;
     class function GetIBClassName: string; override;
@@ -310,7 +296,6 @@ type
   private
   protected
     function StoreSizeAsFrameSize: boolean; override;
-    procedure WriteToDomElement(AnObjectDomElement: TDOMElement); override;
     procedure SetBounds(NewLeft, NewTop, NewWidth, NewHeight: integer); override;
   public
     procedure InitializeDefaults; override;
@@ -324,7 +309,6 @@ type
 
   UIViewController = class(tiOSFakeComponent)
   protected
-    procedure WriteToDomElement(AnObjectDomElement: TDOMElement); override;
     function GetHeight: integer; override;
     function GetWidth: integer; override;
     procedure SetBounds(NewLeft, NewTop, NewWidth, NewHeight: integer); override;
@@ -337,7 +321,6 @@ type
 
   UINavigationBar = class(UIView)
   protected
-    procedure WriteToDomElement(AnObjectDomElement: TDOMElement); override;
     procedure SetBounds(NewLeft, NewTop, NewWidth, NewHeight: integer); override;
     procedure paint(ACanvas: TCanvas); override;
   public
@@ -361,7 +344,6 @@ type
   UINavigationController = class(UIViewController)
   private
   protected
-    procedure WriteToDomElement(AnObjectDomElement: TDOMElement); override;
      procedure SetBounds(NewLeft, NewTop, NewWidth, NewHeight: integer); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -376,9 +358,6 @@ type
   private
     FNSNextKeyView: UIView;
     FTextColor: TColor;
-  protected
-    procedure WriteToDomElement(AnObjectDomElement: TDOMElement); override;
-    function WriteToConnectionRecords(AnObjectDomElement: TDOMElement): TDOMElement; override;
   public
     procedure InitializeDefaults; override;
     constructor Create(AOwner: TComponent); override;
@@ -401,8 +380,6 @@ type
     FTextAlignment: TiOSFakeAlignment;
     FTextColor: TColor;
     procedure SetFont(AValue: TiOSFakeFontDescription);
-  protected
-    procedure WriteToDomElement(AnObjectDomElement: TDOMElement); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -425,8 +402,6 @@ type
     FPlaceholder: string;
     FText: string;
     FTextAlignment: TiOSFakeAlignment;
-  protected
-    procedure WriteToDomElement(AnObjectDomElement: TDOMElement); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -450,8 +425,6 @@ type
     FSectionHeaderHeight: float;
     FSeparatorColor: TColor;
     FSeparatorStyle: TiOSFakeSeparatorStyle;
-  protected
-    procedure WriteToDomElement(AnObjectDomElement: TDOMElement); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -472,8 +445,6 @@ type
     FPlaceholder: string;
     FPrompt: string;
     FText: string;
-  protected
-    procedure WriteToDomElement(AnObjectDomElement: TDOMElement); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -494,8 +465,6 @@ type
     FprogressTintColor: TColor;
     FProgressViewStyle: TiOSFakeProgressViewStyle;
     FtrackTintColor: TColor;
-  protected
-    procedure WriteToDomElement(AnObjectDomElement: TDOMElement); override;
   public
     constructor Create(AOwner: TComponent); override;
     class function GetIBClassName: string; override;
@@ -1311,7 +1280,7 @@ begin
 end;
 
 { UIProgressView }
-
+{
 procedure UIProgressView.WriteToDomElement(AnObjectDomElement: TDOMElement);
 begin
   inherited WriteToDomElement(AnObjectDomElement);
@@ -1320,7 +1289,7 @@ begin
   AddIBColor(AnObjectDomElement,'IBUIProgressTintColor',progressTintColor);
   AddIBColor(AnObjectDomElement,'IBUITrackTintColor',trackTintColor);
 end;
-
+}
 constructor UIProgressView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -1361,7 +1330,7 @@ begin
 end;
 
 { UIViewController }
-
+{
 procedure UIViewController.WriteToDomElement(AnObjectDomElement: TDOMElement);
 var
   ASubElement: TDOMElement;
@@ -1378,7 +1347,7 @@ begin
       ASubElement.AttribStrings['key']:=Children[i].GetIBClassName;
     end;
 end;
-
+}
 function UIViewController.GetHeight: integer;
 begin
 {  if FHeight<>0 then
@@ -1423,7 +1392,7 @@ begin
 end;
 
 { UINavigationBar }
-
+{
 procedure UINavigationBar.WriteToDomElement(AnObjectDomElement: TDOMElement);
 var
   AnElement: TDOMElement;
@@ -1433,7 +1402,7 @@ begin
   if assigned(AnElement) then
     AnElement.NodeValue:='{{0, -44}, {0, 44}}';
 end;
-
+}
 procedure UINavigationBar.SetBounds(NewLeft, NewTop, NewWidth, NewHeight: integer);
 begin
   inherited SetBounds(0, 0, 0, 0);
@@ -1456,7 +1425,7 @@ begin
 end;
 
 { UINavigationController }
-
+{
 procedure UINavigationController.WriteToDomElement(AnObjectDomElement: TDOMElement);
 var
   NavigationBarElement: TDOMElement;
@@ -1486,7 +1455,7 @@ begin
     end;
 
 end;
-
+}
 procedure UINavigationController.SetBounds(NewLeft, NewTop, NewWidth, NewHeight: integer);
 begin
   inherited SetBounds(NewLeft, NewTop, Width, Height);
@@ -1537,7 +1506,7 @@ function UIWindow.StoreSizeAsFrameSize: boolean;
 begin
   Result:=true;
 end;
-
+{
 procedure UIWindow.WriteToDomElement(AnObjectDomElement: TDOMElement);
 begin
   inherited WriteToDomElement(AnObjectDomElement);
@@ -1545,7 +1514,7 @@ begin
   AddIBString(AnObjectDomElement,'targetRuntimeIdentifier','IBCocoaTouchFramework');
   AddIBBoolean(AnObjectDomElement,'IBUIResizesToFullScreen',True);
 end;
-
+}
 procedure UIWindow.SetBounds(NewLeft, NewTop, NewWidth, NewHeight: integer);
 begin
   inherited SetBounds(NewLeft, NewTop, Width, Height);
@@ -1584,40 +1553,6 @@ begin
 end;
 
 { NSObject }
-
-procedure NSObject.GetXIBSaveParam(Sender: TObject; const ParamName: String; out AValue: String);
-var
-  i: Integer;
-begin
-  if ParamName='Objects' then
-    begin
-    AValue:=getAsXIBObject;
-    for i := 0 to self.ChildCount-1 do
-      begin
-        avalue := AValue + self.Children[i].getAsXIBObject;
-      end;
-    end
-  else if ParamName='flattenedProperties' then
-    begin
-    AValue := GetFlattenedProperties;
-    end
-  else if ParamName='ConnectionRecords' then
-    begin
-    avalue := getConnectionRecords;
-    for i := 0 to self.ChildCount-1 do
-      begin
-        avalue := AValue + self.Children[i].getConnectionRecords;
-      end;
-    end
-  else if ParamName='ObjectRecords' then
-    begin
-    AValue := getObjectRecord;
-    for i := 0 to self.ChildCount-1 do
-      begin
-        avalue := AValue + self.Children[i].getObjectRecord;
-      end;
-    end;
-end;
 
 function NSObject.GetFilesOwnerOutletName: string;
 var
@@ -1788,81 +1723,6 @@ begin
   Invalidate;
 end;
 
-function NSObject.getObjectRecord: string;
-begin
-  if IsNIBRoot then
-    begin
-    // ObjectRecord's for the File's Owner and First Responder
-    result :=
-      '<object class="IBObjectRecord">' + LineEnding +
-      '	<int key="objectID">-1</int>' +LineEnding +
-      '	<reference key="object" ref="'+GetFilesOwnerID+'"/>' + LineEnding +
-      '	<reference key="parent" ref="0"/>' + LineEnding +
-      '	<string key="objectName">File''s Owner</string>' + LineEnding +
-      '</object>' + LineEnding +
-      '<object class="IBObjectRecord">' + LineEnding +
-      '	<int key="objectID">-2</int>' + LineEnding +
-      '	<reference key="object" ref="427554174"/>' + LineEnding +
-      '	<reference key="parent" ref="0"/>' + LineEnding +
-      '</object>'+ LineEnding;
-    if IsHiddenObject then
-      result := result +
-      '<object class="IBObjectRecord">' + LineEnding +
-      '	<int key="objectID">3</int>' + LineEnding +
-      '	<reference key="object" ref="664661524"/>' + LineEnding +
-      '	<reference key="parent" ref="0"/>' + LineEnding +
-      '</object>' + LineEnding;
-    end
-  else
-    result := inherited getObjectRecord;
-end;
-
-function NSObject.getAsXIBObject: string;
-begin
-  if IsNIBRoot then
-    begin
-    // Objects for the File's Owner and First Responder
-    result :=
-      // File's owner
-      '<object class="IBProxyObject" id="'+GetFilesOwnerID+'">' + LineEnding +
-      '	<string key="IBProxiedObjectIdentifier">IBFilesOwner</string>' + LineEnding +
-      '	<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>' + LineEnding +
-      '</object>' + LineEnding +
-      // First responder
-      '<object class="IBProxyObject" id="427554174">' + LineEnding +
-      '	<string key="IBProxiedObjectIdentifier">IBFirstResponder</string>' + LineEnding +
-      '	<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>' + LineEnding +
-      '</object>' + LineEnding;
-    if IsHiddenObject then
-      result := result +
-        '<object class="IBUICustomObject" id="664661524">' + LineEnding +
-        '	<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>' + LineEnding +
-        '</object>' + LineEnding;
-
-    end
-  else
-    result := inherited getObjectRecord;
-end;
-
-function NSObject.getConnectionRecords: string;
-begin
-  if IsNIBRoot then
-    begin
-    if IsHiddenObject then
-      result := result +
-      '<object class="IBConnectionRecord">' + LineEnding +
-      '	<object class="IBCocoaTouchOutletConnection" key="connection">' + LineEnding +
-      '		<string key="label">delegate</string>' + LineEnding +
-      '		<reference key="source" ref="'+GetFilesOwnerID+'"/>' + LineEnding +
-      '		<reference key="destination" ref="664661524"/>' + LineEnding +
-      '	</object>' + LineEnding +
-      '	<int key="connectionID">4</int>' + LineEnding +
-      '</object>' + LineEnding;
-    end
-  else
-    Result:=inherited getConnectionRecords;
-end;
-
 constructor NSObject.Create(AOwner: TComponent);
 var
   ss: TStringStream;
@@ -1992,43 +1852,6 @@ begin
   inherited Destroy;
 end;
 
-procedure NSObject.SaveAsXIB(const Filename: string);
-var
-  ATemplate: TFPTemplate;
-  fs: TFileStream;
-  s: string;
-  dir: string;
-
-begin
-  ATemplate := TFPTemplate.Create;
-  try
-    ATemplate.StartDelimiter:='[{';
-    ATemplate.EndDelimiter:='}]';
-
-{$ifndef OutsideIDE}
-    dir := '$PkgDir(iOSDesigner)';
-    IDEMacros.SubstituteMacros(dir);
-{$else}
-    dir :=  '/Users/joost/svn/ccr-components/iosdesigner';
-{$endif OutsideIDE}
-    if dir <>'' then
-      ATemplate.FileName:=dir+PathDelim+ 'MainWindow_iPhone.template'
-    else
-      raise exception.create('iOSDesigner package could not be found.');
-
-    ATemplate.OnGetParam :=@GetXIBSaveParam;
-    s := ATemplate.GetContent;
-    fs := TFileStream.Create(Filename,fmCreate);
-    try
-      fs.Write(s[1],length(s));
-    finally
-      fs.free;
-    end;
-  finally
-    ATemplate.Free;
-  end;
-end;
-
 function NSObject.GetDesigner: IMyWidgetDesigner;
 begin
   Result:=Designer;
@@ -2149,32 +1972,6 @@ end;
 procedure tiOSFakeComponent.SetLeft(const AValue: integer);
 begin
   SetBounds(AValue,Top,Width,Height);
-end;
-
-function tiOSFakeComponent.ElementToString(AWriteDomMethod: tiOSWriteDomMethod): string;
-var
-  XMLDoc: TXMLDocument;
-  AStream: TStringStream;
-  RootElement: TDOMElement;
-  i: integer;
-begin
-  XMLDoc := TXMLDocument.Create;
-  try
-    RootElement := XMLDoc.CreateElement('root');
-    XMLDoc.AppendChild(RootElement);
-    AWriteDomMethod(RootElement);
-
-    AStream := TStringStream.Create('');
-    try
-      for i := 0 to RootElement.ChildNodes.Count-1 do
-        WriteXML(RootElement.ChildNodes.Item[i],AStream);
-      result := AStream.DataString;
-    finally
-      AStream.Free;
-    end;
-  finally
-    XMLDoc.Free;
-  end;
 end;
 
 function tiOSFakeComponent.GetObjectID: integer;
@@ -2842,71 +2639,6 @@ begin
     AddIBInt(IBConnectionElement,'IBEventType',StrToInt64Def(AEventType,1));
 end;
 
-procedure tiOSFakeComponent.WriteToDomElement(AnObjectDomElement: TDOMElement);
-var
-  ChildsMutableArray: TDOMElement;
-  i: Integer;
-begin
-  if ChildCount>0 then
-    begin
-    ChildsMutableArray := AddIBObject(AnObjectDomElement,'NSSubviews','NSMutableArray');
-    AddIBBoolean(ChildsMutableArray,'EncodedWithXMLCoder',true);
-    for i := 0 to ChildCount-1 do
-      Children[i].WriteToObject(ChildsMutableArray);
-    end;
-end;
-
-function tiOSFakeComponent.WriteToObject(AnObjectDomElement: TDOMElement) : TDOMElement;
-var
-  ClassDomElement: TDOMElement;
-  AnAttribute: TDOMNode;
-
-begin
-  ClassDomElement := AddIBObject(AnObjectDomElement,'',GetIBClassName);
-  ClassDomElement.AttribStrings['id']:=IntToStr(Ref);
-
-  WriteToDomElement(ClassDomElement);
-  result := ClassDomElement;
-end;
-
-function tiOSFakeComponent.WriteToConnectionRecords(
-  AnObjectDomElement: TDOMElement): TDOMElement;
-var
-  i: Integer;
-begin
-  AddConnectionRecord(AnObjectDomElement,'IBCocoaTouchOutletConnection',Name,'');
-  for i := 0 to ChildCount-1 do
-    Children[i].WriteToConnectionRecords(AnObjectDomElement);
-end;
-
-function tiOSFakeComponent.WriteToObjectRecord(AnObjectDomElement: TDOMElement
-  ): TDOMElement;
-var
-  ObjectRecordElement: TDOMElement;
-  ChildArray: TDOMElement;
-  i: Integer;
-begin
-  ObjectRecordElement := AddIBObject(AnObjectDomElement,'','IBObjectRecord');
-  AddIBInt(ObjectRecordElement,'objectID',ObjectID);
-  AddIBReference(ObjectRecordElement,'object',self,True);
-
-  if ChildCount>0 then
-    begin
-    ChildArray := AddIBObject(ObjectRecordElement,'children','NSMutableArray');
-    AddIBBoolean(ChildArray,'EncodedWithXMLCoder',True);
-    for i := 0 to ChildCount-1 do
-      AddIBReference(ChildArray,'',Children[i]);
-    end;
-
-  if assigned(Parent) then
-    AddIBReference(ObjectRecordElement,'parent',parent)
-  else
-    AddIBReference(ObjectRecordElement,'parent','0');
-  for i := 0 to ChildCount-1 do
-    Children[i].WriteToObjectRecord(AnObjectDomElement);
-  result := ObjectRecordElement;
-end;
-
 class function tiOSFakeComponent.GetIBClassName: string;
 begin
   result := '';
@@ -3005,23 +2737,6 @@ end;
 function tiOSFakeComponent.ChildCount: integer;
 begin
   Result:=FChilds.Count;
-end;
-
-function tiOSFakeComponent.getAsXIBObject: string;
-begin
-  result := ElementToString(@WriteToObject);
-end;
-
-function tiOSFakeComponent.getConnectionRecords: string;
-begin
-  result := ElementToString(@WriteToConnectionRecords);
-  inherited;
-end;
-
-function tiOSFakeComponent.getObjectRecord: string;
-
-begin
-  result := ElementToString(@WriteToObjectRecord);
 end;
 
 function tiOSFakeComponent.AddElement(ADomNode: TDomElement; AName: string): TDOMElement;
@@ -3178,7 +2893,7 @@ end;
 
 
 { UISearchBar }
-
+{
 procedure UISearchBar.WriteToDomElement(AnObjectDomElement: TDOMElement);
 begin
   inherited WriteToDomElement(AnObjectDomElement);
@@ -3186,7 +2901,7 @@ begin
   AddIBString(AnObjectDomElement,'IBPlaceholder',Placeholder);
   AddIBString(AnObjectDomElement,'IBPrompt',Prompt);
 end;
-
+}
 constructor UISearchBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -3204,7 +2919,7 @@ begin
 end;
 
 { UITableView }
-
+{
 procedure UITableView.WriteToDomElement(AnObjectDomElement: TDOMElement);
 begin
   inherited WriteToDomElement(AnObjectDomElement);
@@ -3215,7 +2930,7 @@ begin
   AddIBColor(AnObjectDomElement,'IBUISeparatorColor',SeparatorColor);
   AddIBBoolean(AnObjectDomElement,'IBUIClipsSubviews',ClipSubviews);
 end;
-
+}
 constructor UITableView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -3240,7 +2955,7 @@ begin
 end;
 
 { UITextField }
-
+{
 procedure UITextField.WriteToDomElement(AnObjectDomElement: TDOMElement);
 begin
   inherited WriteToDomElement(AnObjectDomElement);
@@ -3248,7 +2963,7 @@ begin
   AddIBString(AnObjectDomElement,'IBUIPlaceholder',Placeholder);
   AddIBInt(AnObjectDomElement,'IBUITextAlignment',ord(Alignment),0)
 end;
-
+}
 constructor UITextField.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -3279,7 +2994,7 @@ begin
   if FFont=AValue then Exit;
   FFont.Assign(AValue);
 end;
-
+{
 procedure UILabel.WriteToDomElement(AnObjectDomElement: TDOMElement);
 var
   AnElement: TDOMElement;
@@ -3294,7 +3009,7 @@ begin
   AddIBBoolean(AnObjectDomElement,'IBUIHighlighted',Highlighted,false);
   AddIBInt(AnObjectDomElement,'IBUILineBreakMode',ord(LineBreaks),4);
 end;
-
+}
 
 constructor UILabel.Create(AOwner: TComponent);
 begin
@@ -3454,7 +3169,7 @@ begin
   if Name=Caption then Caption:=NewName;
   inherited SetName(NewName);
 end;
-
+{
 procedure UIView.WriteToDomElement(AnObjectDomElement: TDOMElement);
 var
   b: integer;
@@ -3471,7 +3186,7 @@ begin
   AddIBColor(AnObjectDomElement,'IBUIBackgroundColor',BackgroundColor);
   inherited WriteToDomElement(AnObjectDomElement);
 end;
-
+}
 function tiOSFakeComponent.GetXIBBoolean(index: TXIBProperties): boolean;
 var
   s: string;
@@ -3559,7 +3274,7 @@ begin
 end;
 
 { UIButton }
-
+{
 procedure UIButton.WriteToDomElement(AnObjectDomElement: TDOMElement);
 
 begin
@@ -3569,24 +3284,7 @@ begin
   AddIBString(AnObjectDomElement,'IBUINormalTitle',Caption);
   AddIBColor(AnObjectDomElement,'IBUINormalTitleColor',TextColor);
 end;
-
-function UIButton.WriteToConnectionRecords(AnObjectDomElement: TDOMElement): TDOMElement;
-var
-  AMethod: TMethod;
-begin
-  inherited WriteToConnectionRecords(AnObjectDomElement);
-  //writeln('PROPVAL: ' + vartostr(GetPropValue(self,'onTouchDown')));
-  AMethod := LazGetMethodProp(self,GetPropInfo(self,'onTouchDown'));
-
-  writeln('PROPVAL: ' + hexStr(PtrInt( AMethod.Code),8) + ' - ' + hexStr(ptrint(AMethod.Data),8));
-  if AMethod.Data<>nil then
-    begin
-    AddConnectionRecord(AnObjectDomElement,'IBCocoaTouchEventConnection',Name+'TouchDown:','1');
-    writeln(TObject(AMethod.Data).MethodName(self));
-    end
-  else
-    writeln('AA- Geen Touchdown ' + self.Name);
-end;
+}
 
 procedure UIButton.InitializeDefaults;
 begin
