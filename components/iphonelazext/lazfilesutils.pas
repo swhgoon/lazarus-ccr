@@ -214,7 +214,7 @@ begin
   proc:=TProcess.Create(nil);
   try
     proc.CommandLine:=CmdLineUtf8;
-    //proc.WaitOnExit:=WaitExit;
+    proc.Options := [poUsePipes,poNoConsole,poStderrToOutPut];
     proc.Execute;
   finally
     proc.Free;
