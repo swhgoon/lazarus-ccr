@@ -45,9 +45,17 @@ type
     bvHighlighted,
     bvAlpha,
     bvText,
+    bvTextColor,
+    bvTextAlignment,
+    bvNormalTitle,
+    bvNormalTitleColor,
     bvSuperview,
     bvLines,
     bvBackgroundColor,
+    bvFlags,
+    bvButtonType,
+    bvLineBreak,
+    bvPlaceHolder,
     bvEnabled);
 
   TXIBProperty = record
@@ -60,14 +68,22 @@ type
 
 const
   XIBPropertiesStrings : array[TXIBProperties] of TXIBProperty = (
-    (APropertyName: 'IBUIOpaque'     ; ADefaultValue: 'NO'),
+    (APropertyName: 'IBUIOpaque'     ; ADefaultValue: 'YES'),
     (APropertyName: 'IBUIHighlighted'; ADefaultValue: 'NO'),
     (APropertyName: 'IBUIAlpha'      ; ADefaultValue: '1'),
     (APropertyName: 'IBUIText'       ; ADefaultValue: 'Label'),
+    (APropertyName: 'IBUITextColor'  ; ADefaultValue: ''),
+    (APropertyName: 'IBUITextAlignment' ; ADefaultValue: '0'),
+    (APropertyName: 'IBUINormalTitle' ; ADefaultValue: ''),
+    (APropertyName: 'IBUINormalTitleColor' ; ADefaultValue: ''),
     (APropertyName: 'NSSuperview'    ; ADefaultValue: ''),
-    (APropertyName: 'Lines'          ; ADefaultValue: '1'),
+    (APropertyName: 'IBUINumberOfLines' ; ADefaultValue: '1'),
     (APropertyName: 'IBUIBackgroundColor' ; ADefaultValue: ''),
-    (APropertyName: 'IBUIEnabled'    ; ADefaultValue: 'NO'));
+    (APropertyName: 'NSvFlags'       ; ADefaultValue: '0'),
+    (APropertyName: 'IBUIButtonType' ; ADefaultValue: '0'),
+    (APropertyName: 'IBUILineBreakMode' ; ADefaultValue: '4'),
+    (APropertyName: 'IBUIPlaceholder' ; ADefaultValue: ''),
+    (APropertyName: 'IBUIEnabled'    ; ADefaultValue: 'YES'));
 
   EventNames : array[1..1] of string = (
     'onTouchDown');
@@ -170,6 +186,8 @@ type
     procedure SetXIBString(index: TXIBProperties; AValue: string);
     function GetXIBInteger(index: TXIBProperties): integer; virtual;
     procedure SetXIBInteger(index: TXIBProperties; AValue: integer);
+    function GetXIBInt64(index: TXIBProperties): int64; virtual;
+    procedure SetXIBInt64(index: TXIBProperties; AValue: int64);
     function GetXIBColor(index: TXIBProperties): TColor; virtual;
     procedure SetXIBColor(index: TXIBProperties; AValue: TColor);
     function GetXIBEvent(index: integer): TCocoaEvent;
@@ -227,12 +245,14 @@ type
   private
     FNSNextResponder: UIView;
     FBackgroundColor: TColor;
-    FHidden: boolean;
+    function GetFlags(AIndex: Integer): boolean;
     function GetNSSuperview: UIView;
     function ObtainSuperview: UIView;
+    procedure SetFlags(AIndex: Integer; AValue: boolean);
     procedure SetNSSuperView(AValue: UIView);
   protected
     procedure SetName(const NewName: TComponentName); override;
+    property Caption: string index bvText read GetXIBString write SetXIBString;
   public
     constructor Create(AOwner: TComponent); override;
     procedure InitializeDefaults; override;
@@ -240,12 +260,12 @@ type
     class function GetIBClassName: string; override;
     property NSSuperview: UIView read GetNSSuperview write SetNSSuperView;
     property NSNextResponder: UIView read FNSNextResponder write FNSNextResponder;
+    property Flags: Int64 index bvFlags read GetXIBInt64 write SetXIBInt64;
   published
-    property Caption: string index bvText read GetXIBString write SetXIBString;
     property Opaque: boolean index bvOpaque read GetXIBBoolean write SetXIBBoolean;
     property BackgroundColor: TColor index bvBackgroundColor read GetXIBColor write SetXIBColor;
     property Alpha: double index bvAlpha read GetXIBFloat write SetXIBFloat;
-    property Hidden: boolean read FHidden write FHidden;
+    property Hidden: boolean index 31 read GetFlags write SetFlags;
   end;
   TUIViewClass = class of UIView;
 
@@ -264,7 +284,6 @@ type
     function GetFilesOwnerID: string;
     procedure SetFilesOwnerOutletName(AValue: string);
   protected
-    function GetFlattenedProperties: string;
     function GetNSObject: NSObject; override;
     procedure InternalInvalidateRect(ARect: TRect; Erase: boolean); override;
     procedure DefineProperties(Filer: TFiler); override;
@@ -354,10 +373,19 @@ type
 
   { UIButton }
 
+  TiOSFakeButtonType = (
+    Custom = 0,
+    RoundedRect = 1,
+    DetailDisclosure = 2,
+    InfoLight = 3,
+    InfoDark = 4,
+    ContactAdd = 5);
+
   UIButton = class(UIView)
   private
     FNSNextKeyView: UIView;
-    FTextColor: TColor;
+    function GetButtonType: TiOSFakeButtonType;
+    procedure SetButtonType(AValue: TiOSFakeButtonType);
   public
     procedure InitializeDefaults; override;
     constructor Create(AOwner: TComponent); override;
@@ -365,7 +393,9 @@ type
 
     property NSNextKeyView: UIView read FNSNextKeyView write FNSNextKeyView;
   published
-    property TextColor: TColor read FTextColor write FTextColor;
+    property NormalTitle: string index bvNormalTitle read GetXIBString write SetXIBString;
+    property NotmalTitleColor: TColor index bvNormalTitleColor read GetXIBColor write SetXIBColor;
+    property ButtonType: TiOSFakeButtonType read GetButtonType write SetButtonType;
     property onTouchDown: TCocoaEvent index 1 read GetXIBEvent write SetXIBEvent;
   end;
 
@@ -376,10 +406,11 @@ type
   UILabel = class(UIView)
   private
     FFont: TiOSFakeFontDescription;
-    FLineBreaks: TLineBreaks;
-    FTextAlignment: TiOSFakeAlignment;
-    FTextColor: TColor;
+    function GetLineBreaks: TLineBreaks;
     procedure SetFont(AValue: TiOSFakeFontDescription);
+    procedure SetLineBreaks(AValue: TLineBreaks);
+    function GetTextAlignment: TiOSFakeAlignment;
+    procedure SetTextAlignment(AValue: TiOSFakeAlignment);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -387,30 +418,28 @@ type
     procedure paint(ACanvas: TCanvas); override;
   published
     property Lines: integer index bvLines read GetXIBInteger write SetXIBInteger;
-    property TextAlignment: TiOSFakeAlignment read FTextAlignment write FTextAlignment;
-    property TextColor: TColor read FTextColor write FTextColor;
+    property TextAlignment: TiOSFakeAlignment read GetTextAlignment write SetTextAlignment;
+    property TextColor: TColor index bvTextColor read GetXIBColor write SetXIBColor;
     property Font: TiOSFakeFontDescription read FFont write SetFont;
     property Enabled: boolean index bvEnabled read GetXIBBoolean write SetXIBBoolean;
     property Highlighted: boolean index bvHighlighted read GetXIBBoolean write SetXIBBoolean;
-    property LineBreaks: TLineBreaks read FLineBreaks write FLineBreaks;
+    property LineBreaks: TLineBreaks read GetLineBreaks write SetLineBreaks;
+    property Caption;
   end;
 
   { UITextField }
 
   UITextField = class(UIView)
   private
-    FPlaceholder: string;
-    FText: string;
-    FTextAlignment: TiOSFakeAlignment;
+    function GetTextAlignment: TiOSFakeAlignment;
+    procedure SetTextAlignment(AValue: TiOSFakeAlignment);
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     class function GetIBClassName: string; override;
-    //procedure paint(ACanvas: TCanvas); override;
   published
-    property Text: string read FText write FText;
-    property Placeholder: string read FPlaceholder write FPlaceholder;
-    property Alignment: TiOSFakeAlignment read FTextAlignment write FTextAlignment;
+    property Placeholder: string index bvPlaceHolder read GetXIBString write SetXIBString;
+    property TextAlignment: TiOSFakeAlignment read GetTextAlignment write SetTextAlignment;
+    property caption;
   end;
 
   TiOSFakeSeparatorStyle = (ssNone,ssSingleLine,ssSingleLineEtched);
@@ -1598,78 +1627,6 @@ begin
   Result:=self;
 end;
 
-function NSObject.GetFlattenedProperties: string;
-var
-  XMLDoc: TXMLDocument;
-  AStream: TStringStream;
-  FlattenedPropertiesElement: TDOMElement;
-  SortedKeysElements: TDOMElement;
-  ValuesElements: TDOMElement;
-  AnElement: TDOMElement;
-  i: integer;
-begin
-//  assert(self is AppDelegate);
-  XMLDoc := TXMLDocument.Create;
-  try
-    FlattenedPropertiesElement := AddIBObject(XMLDoc,'flattenedProperties','NSMutableDictionary');
-    AddIBBoolean(FlattenedPropertiesElement,'EncodedWithXMLCoder',True);
-
-    SortedKeysElements := AddIBObject(FlattenedPropertiesElement,'dict.sortedKeys','NSArray');
-    AddIBBoolean(SortedKeysElements,'EncodedWithXMLCoder',True);
-    // Add props for File's Owner
-    AddIBString(SortedKeysElements,'','-1.CustomClassName');
-    AddIBString(SortedKeysElements,'','-1.IBPluginDependency');
-    // Add props for First Responder
-    AddIBString(SortedKeysElements,'','-2.CustomClassName');
-    AddIBString(SortedKeysElements,'','-2.IBPluginDependency');
-    AddIBString(SortedKeysElements,'','10.IBPluginDependency');
-    AddIBString(SortedKeysElements,'','2.IBAttributePlaceholdersKey');
-    AddIBString(SortedKeysElements,'','2.IBPluginDependency');
-    if IsHiddenObject then
-      begin
-      AddIBString(SortedKeysElements,'','3.CustomClassName');
-      AddIBString(SortedKeysElements,'','3.IBPluginDependency');
-      end;
-    for i := 0 to ChildCount -1 do
-      AddIBString(SortedKeysElements,'',inttostr(Children[i].ObjectID)+'.IBPluginDependency');
-
-    ValuesElements := AddIBObject(FlattenedPropertiesElement,'dict.values','NSArray');
-    AddIBBoolean(ValuesElements,'EncodedWithXMLCoder',True);
-    // Add props for File's Owner
-    AddIBString(ValuesElements,'',FilesOwnerClass);
-    AddIBString(ValuesElements,'','com.apple.InterfaceBuilder.IBCocoaTouchPlugin');
-    // Add props for First Responder
-    AddIBString(ValuesElements,'','UIResponder');
-    AddIBString(ValuesElements,'','com.apple.InterfaceBuilder.IBCocoaTouchPlugin');
-    AddIBString(ValuesElements,'','com.apple.InterfaceBuilder.IBCocoaTouchPlugin');
-
-    AnElement := AddIBObject(ValuesElements,'','NSMutableDictionary');
-    AddIBBoolean(AnElement,'EncodedWithXMLCoder',True);
-    AddIBReference(AnElement,'dict.sortedKeys','0');
-    AddIBReference(AnElement,'dict.values','0');
-
-    AddIBString(ValuesElements,'','com.apple.InterfaceBuilder.IBCocoaTouchPlugin');
-    if IsHiddenObject then
-      begin
-      AddIBString(ValuesElements,'',self.ClassName);
-      AddIBString(ValuesElements,'','com.apple.InterfaceBuilder.IBCocoaTouchPlugin');
-      end;
-    for i := 0 to ChildCount -1 do
-      AddIBString(ValuesElements,'','com.apple.InterfaceBuilder.IBCocoaTouchPlugin');
-
-    AStream := TStringStream.Create('');
-    try
-      for i := 0 to XMLDoc.ChildNodes.Count-1 do
-        WriteXML(XMLDoc.ChildNodes.Item[i],AStream);
-      result := AStream.DataString;
-    finally
-      AStream.Free;
-    end;
-  finally
-    XMLDoc.Free;
-  end;
-end;
-
 procedure NSObject.InternalInvalidateRect(ARect: TRect; Erase: boolean);
 begin
   if (Parent=nil) and (Designer<>nil) then
@@ -2274,6 +2231,16 @@ begin
 end;
 
 procedure tiOSFakeComponent.SetXIBInteger(index: TXIBProperties; AValue: integer);
+begin
+  SetXIBString(index, 'int', IntToStr(AValue));
+end;
+
+function tiOSFakeComponent.GetXIBInt64(index: TXIBProperties): int64;
+begin
+  result := StrToInt64(GetXIBString(index,'int'));
+end;
+
+procedure tiOSFakeComponent.SetXIBInt64(index: TXIBProperties; AValue: int64);
 begin
   SetXIBString(index, 'int', IntToStr(AValue));
 end;
@@ -2955,6 +2922,17 @@ begin
 end;
 
 { UITextField }
+
+function UITextField.GetTextAlignment: TiOSFakeAlignment;
+begin
+  result := TiOSFakeAlignment(GetXIBInteger(bvTextAlignment));
+end;
+
+procedure UITextField.SetTextAlignment(AValue: TiOSFakeAlignment);
+begin
+  SetXIBInteger(bvTextAlignment,ord(AValue));
+end;
+
 {
 procedure UITextField.WriteToDomElement(AnObjectDomElement: TDOMElement);
 begin
@@ -2968,11 +2946,6 @@ constructor UITextField.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FAcceptChildsAtDesignTime:=false;
-end;
-
-destructor UITextField.Destroy;
-begin
-  inherited Destroy;
 end;
 
 class function UITextField.GetIBClassName: string;
@@ -2994,6 +2967,27 @@ begin
   if FFont=AValue then Exit;
   FFont.Assign(AValue);
 end;
+
+function UILabel.GetLineBreaks: TLineBreaks;
+begin
+  result := TLineBreaks(GetXIBInteger(bvLineBreak));
+end;
+
+procedure UILabel.SetLineBreaks(AValue: TLineBreaks);
+begin
+  SetXIBInteger(bvLineBreak,ord(AValue));
+end;
+
+function UILabel.GetTextAlignment: TiOSFakeAlignment;
+begin
+  result := TiOSFakeAlignment(GetXIBInteger(bvTextAlignment));
+end;
+
+procedure UILabel.SetTextAlignment(AValue: TiOSFakeAlignment);
+begin
+  SetXIBInteger(bvTextAlignment,ord(AValue));
+end;
+
 {
 procedure UILabel.WriteToDomElement(AnObjectDomElement: TDOMElement);
 var
@@ -3102,12 +3096,25 @@ begin
     result := nil;
 end;
 
+function UIView.GetFlags(AIndex: Integer): boolean;
+begin
+  result := (Flags and (1 shl AIndex)) = (1 shl AIndex);
+end;
+
 function UIView.ObtainSuperview: UIView;
 begin
   if assigned(Parent) and (Parent is UIView) then
     result := uiview(parent).ObtainSuperView
   else
     result := self;
+end;
+
+procedure UIView.SetFlags(AIndex: Integer; AValue: boolean);
+begin
+  if AValue then
+    Flags := flags or (1 shl AIndex)
+  else
+    Flags := flags and (not (1 shl AIndex));
 end;
 
 procedure UIView.SetNSSuperView(AValue: UIView);
@@ -3245,6 +3252,7 @@ end;
 procedure UIView.InitializeDefaults;
 begin
   inherited InitializeDefaults;
+  SetBounds(10,10,72,37);
   BackgroundColor:=clWhite;
   Alpha:=1;
 end;
@@ -3280,16 +3288,23 @@ procedure UIButton.WriteToDomElement(AnObjectDomElement: TDOMElement);
 begin
   inherited WriteToDomElement(AnObjectDomElement);
   AddIBReference(AnObjectDomElement,'NSNextKeyView',NSNextKeyView);
-  AddIBInt(AnObjectDomElement,'IBUIButtonType',1);
-  AddIBString(AnObjectDomElement,'IBUINormalTitle',Caption);
-  AddIBColor(AnObjectDomElement,'IBUINormalTitleColor',TextColor);
 end;
 }
+
+function UIButton.GetButtonType: TiOSFakeButtonType;
+begin
+  result := TiOSFakeButtonType(GetXIBInteger(bvButtonType));
+end;
+
+procedure UIButton.SetButtonType(AValue: TiOSFakeButtonType);
+begin
+  SetXIBInteger(bvButtonType, Ord(AValue));
+end;
 
 procedure UIButton.InitializeDefaults;
 begin
   inherited InitializeDefaults;
-  SetBounds(10,10,72,37);
+  ButtonType:=RoundedRect;
 end;
 
 constructor UIButton.Create(AOwner: TComponent);
