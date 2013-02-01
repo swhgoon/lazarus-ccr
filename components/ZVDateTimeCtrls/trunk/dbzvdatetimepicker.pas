@@ -4,8 +4,6 @@ TDBZVDateTimePicker control for Lazarus
 Author: Zoran Vučenović, January and February 2010
         Зоран Вученовић, јануар и фебруар 2010.
 
-Last change: August 2012
-
 This unit is part of ZVDateTimeCtrls package for Lazarus.
 TDBZVDateTimePicker is data-aware version of TZVDateTimePicker control.
 
@@ -109,6 +107,7 @@ type
     property DateMode;
     property UseDefaultSeparators;
     property Cascade;
+    property AutoButtonSize;
   //events:
     property OnChange;
     property OnCheckBoxChange;

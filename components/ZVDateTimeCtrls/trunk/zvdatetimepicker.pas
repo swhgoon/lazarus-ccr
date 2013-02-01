@@ -4,8 +4,6 @@ TZVDateTimePicker control for Lazarus
 Author: Zoran Vučenović, January and February 2010
         Зоран Вученовић, јануар и фебруар 2010.
 
-Last change: September 2012
-
    This unit is part of ZVDateTimeCtrls package for Lazarus.
 
    Delphi's Visual Component Library (VCL) has a control named TDateTimePicker,
@@ -45,7 +43,7 @@ interface
 
 uses
   {$ifdef unix}
-  clocale, // needed to initialize default local settings on Linux.
+  clocale, // needed to initialize default locale settings on Linux.
   {$endif}
   Classes, SysUtils, LCLProc, Controls, LCLType, Graphics, Math, StdCtrls,
   Buttons, ExtCtrls, Forms, Calendar, ComCtrls, Types, LMessages
@@ -115,6 +113,7 @@ type
 
   TCustomZVDateTimePicker = class(TCustomControl)
   private
+    FAutoButtonSize: Boolean;
     FCascade: Boolean;
     FCenturyFrom, FEffectiveCenturyFrom: Word;
     FDateDisplayOrder: TDateDisplayOrder;
@@ -172,6 +171,7 @@ type
     function GetShowCheckBox: Boolean;
     function GetTime: TTime;
     procedure SetArrowShape(const AValue: TArrowShape);
+    procedure SetAutoButtonSize(AValue: Boolean);
     procedure SetCenturyFrom(const AValue: Word);
     procedure SetChecked(const AValue: Boolean);
     procedure CheckTextEnabled;
@@ -232,9 +232,11 @@ type
     procedure UpDownClick(Sender: TObject; Button: TUDBtnType);
     procedure CheckBoxChange(Sender: TObject);
     procedure SetFocusIfPossible;
+    procedure AutoResizeButton;
 
   protected
     procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
+    procedure WMSize(var Message: TLMSize); message LM_SIZE;
 
     class function GetControlClassDefaultSize: TSize; override;
 
@@ -343,6 +345,8 @@ type
     property Date: TDate read GetDate write SetDate;
     property DateMode: TDTDateMode read FDateMode write SetDateMode;
     property Cascade: Boolean read FCascade write FCascade default False;
+    property AutoButtonSize: Boolean
+             read FAutoButtonSize write SetAutoButtonSize default False;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -404,6 +408,7 @@ type
     property Time;
     property UseDefaultSeparators;
     property Cascade;
+    property AutoButtonSize;
 // events:
     property OnChange;
     property OnCheckBoxChange;
@@ -2939,6 +2944,27 @@ begin
   DrawArrowButtonGlyph;
 end;
 
+const
+  DefaultUpDownWidth = 15;
+  DefaultArrowButtonWidth = DefaultUpDownWidth + 2;
+
+procedure TCustomZVDateTimePicker.SetAutoButtonSize(AValue: Boolean);
+begin
+  if FAutoButtonSize <> AValue then begin
+    FAutoButtonSize := AValue;
+
+    if AValue then
+      AutoResizeButton
+    else begin
+      if Assigned(FUpDown) then
+        FUpDown.Width := DefaultUpDownWidth
+      else if Assigned(FArrowButton) then
+        FArrowButton.Width := DefaultArrowButtonWidth;
+    end;
+
+  end;
+end;
+
 procedure TCustomZVDateTimePicker.SetCenturyFrom(const AValue: Word);
 begin
   if FCenturyFrom = AValue then Exit;
@@ -2975,6 +3001,15 @@ begin
   end;
 end;
 
+procedure TCustomZVDateTimePicker.AutoResizeButton;
+begin
+  if Assigned(FArrowButton) then
+    FArrowButton.Width := MulDiv(ClientHeight, 9, 10)
+  else if Assigned(FUpDown) then
+    FUpDown.Width := MulDiv(ClientHeight, 79, 100);
+
+end;
+
 procedure TCustomZVDateTimePicker.WMKillFocus(var Message: TLMKillFocus);
 begin
   // On Qt it seems that WMKillFocus happens even when focus jumps to some other
@@ -2983,6 +3018,14 @@ begin
   // least for our calendar, because it triggers EditingDone.
   if Screen.ActiveCustomForm <> FCalendarForm then
     inherited WMKillFocus(Message);
+end;
+
+procedure TCustomZVDateTimePicker.WMSize(var Message: TLMSize);
+begin
+  inherited WMSize(Message);
+
+  if FAutoButtonSize then
+    AutoResizeButton;
 end;
 
 {$ifdef LCLGtk2}
@@ -3150,7 +3193,7 @@ procedure TCustomZVDateTimePicker.UpdateShowArrowButton(
       FArrowButton.ControlStyle := FArrowButton.ControlStyle +
                                             [csNoFocus, csNoDesignSelectable];
       TDTSpeedButton(FArrowButton).DTPicker := Self;
-      FArrowButton.SetBounds(0, 0, 17, 1);
+      FArrowButton.SetBounds(0, 0, DefaultArrowButtonWidth, 1);
       FArrowButton.Align := alRight;
       FArrowButton.BringToFront;
 
@@ -3175,7 +3218,7 @@ procedure TCustomZVDateTimePicker.UpdateShowArrowButton(
 
       TDTUpDown(FUpDown).DTPicker := Self;
 
-      FUpDown.SetBounds(0, 0, 15, 1);
+      FUpDown.SetBounds(0, 0, DefaultUpDownWidth, 1);
       FUpDown.Align := alRight;
       FUpDown.BringToFront;
 
@@ -3312,6 +3355,7 @@ begin
   FCalendarForm := nil;
   FDoNotArrangeControls := True;
   FCascade := False;
+  FAutoButtonSize := False;
 
   AdjustEffectiveDateDisplayOrder;
 
