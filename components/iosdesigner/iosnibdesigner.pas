@@ -57,6 +57,7 @@ type
   private
     FMyForm: NSObject;
   public
+    function UseRTTIForMethods(aComponent: TComponent): boolean; override;
     // needed by the lazarus form editor
     class function CreateMediator(TheOwner, aForm: TComponent): TDesignerMediator; override;
     class function FormClass: TComponentClass; override;
@@ -260,6 +261,14 @@ begin
   if FMyForm<>nil then FMyForm.Designer:=nil;
   FMyForm:=nil;
   inherited Destroy;
+end;
+
+function TNSObjectDesignerMediator.UseRTTIForMethods(aComponent: TComponent): boolean;
+begin
+  if aComponent is tiOSFakeComponent then
+    result := true
+  else
+    Result:=inherited UseRTTIForMethods(aComponent);
 end;
 
 class function TNSObjectDesignerMediator.CreateMediator(TheOwner, aForm: TComponent): TDesignerMediator;
