@@ -20,7 +20,7 @@ interface
 
 uses
   Unix, BaseUnix, process,
-  Classes, SysUtils,
+  Classes, SysUtils, contnrs,
   Graphics, Controls, Forms, Dialogs, FileUtil,
   {Lazarus Interface}
   LazIDEIntf, MenuIntf, ProjectIntf, IDEOptionsIntf, IDEMsgIntf,
@@ -352,7 +352,7 @@ end;
 procedure TiPhoneExtension.UpdateXcode(Sender: TObject);
 var
   templates : TStringList;
-  build     : TStringList;
+  build     : TFPStringHashTable;
   dir       : string;
   projdir   : string;
   proj      : TStringList;
@@ -366,26 +366,31 @@ var
   name  : string;
 
   opt   : string;
+  optSim: string;
 begin
   FillBunldeInfo(false, Info);
   // the create .plist would be used by XCode project
   // the simulator .plist in created with InstallAppToSim.
   // they differ with SDKs used
 
-  build := TStringList.Create;
+  build := TFPStringHashTable.Create;
 
   tname:=ExtractFileName( LazarusIDE.ActiveProject.MainFile.Filename);
   tname:=ChangeFileExt(tname, '');
   plistname:=tname+'.plist';
 
-  build.Values['INFOPLIST_FILE'] := '"'+plistname+'"';
-  build.Values['PRODUCT_NAME'] := '"'+tname+'"';
-  build.Values['SDKROOT'] := EnvOptions.GetSDKName(ProjOptions.SDK, false);
-	build.Values['FPC_COMPILER_PATH'] := '"'+EnvOptions.CompilerPath+'"';
-	build.Values['FPC_MAIN_FILE'] := '"'+LazarusIDE.ActiveProject.MainFile.Filename+'"';
+  build.Add('INFOPLIST_FILE','"'+plistname+'"');
+  build.Add('PRODUCT_NAME','"'+tname+'"');
+  build.Add('SDKROOT',EnvOptions.GetSDKName(ProjOptions.SDK, false));
+	build.Add('FPC_COMPILER_PATH','"'+EnvOptions.CompilerPath+'"');
+	build.Add('FPC_MAIN_FILE','"'+LazarusIDE.ActiveProject.MainFile.Filename+'"');
   opt :=
     ' -XR'+EnvOptions.GetSDKFullPath(ProjOptions.SDK, false)+' ' +
     ' -FD'+IncludeTrailingPathDelimiter(EnvOptions.PlatformsBaseDir)+'iPhoneOS.platform/Developer/usr/bin ' +
+    EnvOptions.CommonOpt;
+  optSim :=
+    ' -XR'+EnvOptions.GetSDKFullPath(ProjOptions.SDK, true)+' ' +
+    ' -FD'+IncludeTrailingPathDelimiter(EnvOptions.PlatformsBaseDir)+'iPhoneSimulator.platform/Developer/usr/bin ' +
     EnvOptions.CommonOpt;
 
   with LazarusIDE.ActiveProject.LazCompilerOptions do begin
@@ -393,9 +398,14 @@ begin
     opt:=opt + ' ' +BreakPathsStringToOption(IncludePath, '-Fi', '\"');
     opt:=opt + ' ' +BreakPathsStringToOption(ObjectPath, '-Fo', '\"');
     opt:=opt + ' ' +BreakPathsStringToOption(Libraries, '-Fl', '\"');
+    optSim:=optSim + ' ' +BreakPathsStringToOption(OtherUnitFiles, '-Fu', '\"');
+    optSim:=optSim + ' ' +BreakPathsStringToOption(IncludePath, '-Fi', '\"');
+    optSim:=optSim + ' ' +BreakPathsStringToOption(ObjectPath, '-Fo', '\"');
+    optSim:=optSim + ' ' +BreakPathsStringToOption(Libraries, '-Fl', '\"');
   end;
 
-	build.Values['FPC_CUSTOM_OPTIONS'] :='"'+opt+'"';
+        build.Add('FPC_CUSTOM_OPTIONS','"'+opt+'"');
+        build.Add('"FPC_CUSTOM_OPTIONS[sdk=iphonesimulator*]"','"'+optSim+'"');
 
   dir:=ResolveProjectPath('xcode');
   dir:=dir+'/';

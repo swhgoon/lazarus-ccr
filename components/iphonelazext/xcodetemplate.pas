@@ -21,7 +21,7 @@ interface
 uses
   Classes, SysUtils, contnrs;
 
-procedure PrepareTemplateFile(Src, TemplateValues, BuildSettings: TStrings);
+procedure PrepareTemplateFile(Src, TemplateValues: TStrings; BuildSettings: TFPStringHashTable);
 
 const
   XCodeProjectTemplateIconID : AnsiString ='0AE3FFA610F3C9AF00A9B007,';
@@ -137,11 +137,14 @@ const
     '			isa = XCBuildConfiguration;'#10+
     '			buildSettings = {'#10+
     '				ARCHS = "$(ARCHS_STANDARD_32_BIT)";'#10+
+    '                           "ARCHS[sdk=iphonesimulator*]" = "$(ARCHS_STANDARD_32_BIT)";'#10+
     '				COPY_PHASE_STRIP = YES;'#10+
     '				FPC_OUTPUT_FILE = $BUILT_PRODUCTS_DIR/$EXECUTABLE_PATH;'#10+
     '				FPC_COMPILER_OPTIONS = "-Parm -o$FPC_OUTPUT_FILE $FPC_CUSTOM_OPTIONS";'#10+
+    '                           "FPC_COMPILER_OPTIONS[sdk=iphonesimulator*]" = "-Tiphonesim -Pi386 -o$FPC_OUTPUT_FILE $FPC_CUSTOM_OPTIONS";'#10+
     '				FPC_COMPILER_PATH = ;'#10+
     '				FPC_CUSTOM_OPTIONS = ;'#10+
+    '                           "FPC_CUSTOM_OPTIONS[sdk=iphonesimulator*]" = ;'#10+
     '				FPC_MAIN_FILE = ;'#10+
     '				SDKROOT = iphoneos2.0;'#10+
     '				VALID_ARCHS = "armv6 armv7";'#10+
@@ -201,17 +204,24 @@ implementation
 function GetValueName(const Source: String; idx: Integer): String;
 var
   i : integer;
+  InQuote: boolean;
 const
   //todo: expand symbols charset
   Symbols: set of char = [#9, #32, #10,#13,
     '=',':',';','-','+','*','/','\','!','@','#',
-    '$','%','^','&','(',')','~','`','''','"' ];
+    '$','%','^','&','(',')','~','`',''''];
 begin
-  for i:=idx to length(Source) do
-    if Source[i] in Symbols then begin
+  InQuote:=false;
+  for i:=idx to length(Source) do begin
+    if InQuote then begin
+      if Source[i]='"' then InQuote := false;
+    end else if Source[i] = '"' then
+      InQuote := true
+    else if Source[i] in Symbols then begin
       Result:=Copy(Source, idx, i-idx);
       Exit;
     end;
+  end;
   Result:=Copy(Source, idx, length(Source)-idx+1);
 end;
 
@@ -234,13 +244,12 @@ begin
   end;
 end;
 
-procedure PrepareTemplateFile(Src, TemplateValues, BuildSettings: TStrings);
+procedure PrepareTemplateFile(Src, TemplateValues: TStrings; BuildSettings: TFPStringHashTable);
 //todo: Better code to update XCode project file!
 var
   i, j       : Integer;
   nm, s, v   : String;
   isSettings : Boolean;
-  buildhash  : TFPStringHashTable;
 
 begin
   if not Assigned(Src) then Exit;
@@ -252,10 +261,6 @@ begin
   isSettings:=false;
 
   if Assigned(BuildSettings) and (BuildSettings.Count>0) then begin
-    buildhash := TFPStringHashTable.Create;
-
-    for i :=0 to BuildSettings.Count-1 do
-      buildhash.Add(BuildSettings.Names[i], BuildSettings.ValueFromIndex[i]);
 
     for i:=0 to Src.Count-1 do begin
       if not isSettings then
@@ -271,14 +276,13 @@ begin
 
           nm:=GetValueName(s, j);
 
-          if Assigned(buildhash.Find(nm)) then begin
-            v:=buildhash.Items[nm];
+          if Assigned(BuildSettings.Find(nm)) then begin
+            v:=BuildSettings.Items[nm];
             Src[i]:=Copy(Src[i], 1, j-1)+nm+ ' = ' + v + ';';
           end;
         end;
       end; {of else}
     end;
-    buildhash.Free;
   end;
 end;
 
