@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="9"/>
+    <General>
+      <Flags>
+        <MainUnitHasCreateFormStatements Value="False"/>
+      </Flags>
+      <SessionStorage Value="InProjectDir"/>
+      <MainUnit Value="0"/>
+      <Title Value="HelloWorld"/>
+      <UseAppBundle Value="False"/>
+      <ResourceType Value="res"/>
+    </General>
+    <i18n>
+      <EnableI18N LFM="False"/>
+    </i18n>
+    <VersionInfo>
+      <StringTable ProductVersion=""/>
+    </VersionInfo>
+    <CustomData Count="7">
+      <Item0 Name="iPhone/AppID" Value="org.lazarus.helloworld"/>
+      <Item1 Name="iPhone/ExcludeMask"/>
+      <Item2 Name="iPhone/MainNib" Value="appdelegate_iphoneu"/>
+      <Item3 Name="iPhone/ResourceDir" Value="Resources"/>
+      <Item4 Name="iPhone/SDK" Value="5.1"/>
+      <Item5 Name="iPhone/SimSpaceName" Value="47A400B6-1981-CE32-8E0A-F881730320A5"/>
+      <Item6 Name="iPhone/isiPhoneApp" Value="true"/>
+    </CustomData>
+    <BuildModes Count="1">
+      <Item1 Name="Default" Default="True"/>
+    </BuildModes>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="2">
+      <Item1>
+        <PackageName Value="iOSDesigner"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="FCL"/>
+      </Item2>
+    </RequiredPackages>
+    <Units Count="2">
+      <Unit0>
+        <Filename Value="HelloWorld.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="HelloWorld"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="appdelegate_iphoneu.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="AppDelegate_iPhone"/>
+        <HasResources Value="True"/>
+        <UnitName Value="appdelegate_iphoneu"/>
+      </Unit1>
+    </Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="11"/>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)"/>
+    </SearchPaths>
+    <CodeGeneration>
+      <TargetOS Value="iphonesim"/>
+    </CodeGeneration>
+    <Other>
+      <CompilerMessages>
+        <MsgFileName Value=""/>
+      </CompilerMessages>
+      <CustomOptions Value="-XR/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.1.sdk"/>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="3">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EFOpenError"/>
+      </Item3>
+    </Exceptions>
+  </Debugging>
+</CONFIG>
