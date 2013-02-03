@@ -343,6 +343,8 @@ begin
   GiOSAppDelegateWindowFileDesc.DefaultResourceName:='AppDelegate_iPhone';
   LazarusIDE.DoNewEditorFile(GiOSAppDelegateWindowFileDesc,'appdelegate_iphoneu.pas','',[nfIsPartOfProject,nfOpenInEditor,nfCreateDefaultSrc]);
   result := mrOK;
+
+  ProjOptions.Reset;
   ProjOptions.isIPhoneApp:=true;
   ProjOptions.MainNib:='appdelegate_iphoneu';
   ProjOptions.Save;
