@@ -45,14 +45,6 @@ type
     constructor Create; override;
   end;
 
-  { TiOSInfo_PlistFileDesc }
-
-  TiOSInfo_PlistFileDesc = class(TProjectFileDescriptor)
-  public
-    constructor Create; override;
-    function CreateSource(const Filename, SourceName, ResourceName: string): string; override;
-  end;
-
   { TiOSShowInXCode }
 
   TiOSShowInXCode = Class(TComponentEditor)
@@ -68,7 +60,6 @@ type
 var
   GiOSApplicationDescriptor: TiOSApplicationDescriptor;
   GiOSAppDelegateWindowFileDesc: TiOSAppDelegateWindowFileDesc;
-  GiOSInfo_PlistFileDesc: TiOSInfo_PlistFileDesc;
   GiOSObjectDelegateWindowFileDesc: TiOSObjectDelegateWindowFileDesc;
 
 resourcestring
@@ -89,8 +80,6 @@ begin
   RegisterProjectDescriptor(GiOSApplicationDescriptor);
   GiOSAppDelegateWindowFileDesc:=TiOSAppDelegateWindowFileDesc.Create;
   RegisterProjectFileDescriptor(GiOSAppDelegateWindowFileDesc);
-  GiOSInfo_PlistFileDesc:=TiOSInfo_PlistFileDesc.Create;
-  RegisterProjectFileDescriptor(GiOSInfo_PlistFileDesc);
   GiOSObjectDelegateWindowFileDesc:=TiOSObjectDelegateWindowFileDesc.Create;
   RegisterProjectFileDescriptor(GiOSObjectDelegateWindowFileDesc);
 
@@ -197,68 +186,6 @@ function TiOSObjectDelegateWindowFileDesc.GetLocalizedDescription: string;
 begin
   Result:='Create a new iOS-NIB file with a delegate to handle it''s contents. '+
     'The contents of the NIB can be changed with the designer.';
-end;
-
-{ TiOSInfo_PlistFileDesc }
-
-constructor TiOSInfo_PlistFileDesc.Create;
-begin
-  inherited Create;
-  Name:='Info_Plist';
-  DefaultFilename:='Info.Plist';
-  IsPascalUnit:=false;
-  VisibleInNewDialog:=false;
-end;
-
-function TiOSInfo_PlistFileDesc.CreateSource(const Filename, SourceName, ResourceName: string): string;
-begin
-  Result:='<?xml version="1.0" encoding="UTF-8"?>' + LineEnding +
-    '<!DOCTYPE plist public "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' + LineEnding +
-    '<plist version="1.0">' + LineEnding +
-    '<dict>' + LineEnding +
-    '	<key>CFBundleDevelopmentRegion</key>' + LineEnding +
-    '	<string>en</string>' + LineEnding +
-    '	<key>CFBundleDisplayName</key>' + LineEnding +
-    '	<string>${PRODUCT_NAME}</string>' + LineEnding +
-    '	<key>CFBundleExecutable</key>' + LineEnding +
-    '	<string>${EXECUTABLE_NAME}</string>' + LineEnding +
-    '	<key>CFBundleIconFile</key>' + LineEnding +
-    '	<string></string>' + LineEnding +
-    '	<key>CFBundleIdentifier</key>' + LineEnding +
-    '	<string>CNOC.${PRODUCT_NAME:rfc1034identifier}</string>' + LineEnding +
-    '	<key>CFBundleInfoDictionaryVersion</key>' + LineEnding +
-    '	<string>6.0</string>' + LineEnding +
-    '	<key>CFBundleName</key>' + LineEnding +
-    '	<string>${PRODUCT_NAME}</string>' + LineEnding +
-    '	<key>CFBundlePackageType</key>' + LineEnding +
-    '	<string>APPL</string>' + LineEnding +
-    '	<key>CFBundleShortVersionString</key>' + LineEnding +
-    '	<string>1.0</string>' + LineEnding +
-    '	<key>CFBundleSignature</key>' + LineEnding +
-    '	<string>????</string>' + LineEnding +
-    '	<key>CFBundleVersion</key>' + LineEnding +
-    '	<string>1.0</string>' + LineEnding +
-    '	<key>LSRequiresIPhoneOS</key>' + LineEnding +
-    '	<true/>' + LineEnding +
-    '	<key>NSMainNibFile</key>' + LineEnding +
-    '	<string>MainWindow_iPhone</string>' + LineEnding +
-    '	<key>NSMainNibFile~ipad</key>' + LineEnding +
-    '	<string>MainWindow_iPad</string>' + LineEnding +
-    '	<key>UISupportedInterfaceOrientations</key>' + LineEnding +
-    '	<array>' + LineEnding +
-    '		<string>UIInterfaceOrientationLandscapeLeft</string>' + LineEnding +
-    '		<string>UIInterfaceOrientationLandscapeRight</string>' + LineEnding +
-    '		<string>UIInterfaceOrientationPortrait</string>' + LineEnding +
-    '	</array>' + LineEnding +
-    '	<key>UISupportedInterfaceOrientations~ipad</key>' + LineEnding +
-    '	<array>' + LineEnding +
-    '		<string>UIInterfaceOrientationPortrait</string>' + LineEnding +
-    '		<string>UIInterfaceOrientationPortraitUpsideDown</string>' + LineEnding +
-    '		<string>UIInterfaceOrientationLandscapeLeft</string>' + LineEnding +
-    '		<string>UIInterfaceOrientationLandscapeRight</string>' + LineEnding +
-    '	</array>' + LineEnding +
-    '</dict>' + LineEnding +
-    '</plist>'+LineEnding+LineEnding;
 end;
 
 { TiOSAppDelegateWindowFileDesc }
