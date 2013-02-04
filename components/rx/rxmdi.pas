@@ -675,10 +675,10 @@ procedure TRxMDIButton.FormClose(Sender: TObject; var CloseAction: TCloseAction)
 begin
   if Assigned(FSaveClose) then
     FSaveClose(Sender, CloseAction);
-  Free;
-
   FNavPanel.ChildWindowsShowLast;
   FNavPanel.ShowHiddenBtnOnResize;
+
+  Free;
 end;
 
 constructor TRxMDIButton.CreateButton(AOwner: TRxMDITasks; AForm: TForm);

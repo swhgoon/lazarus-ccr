@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <fpdoc-descriptions>
   <package name="dcl_rx_fpc">
     <short>Пакет времени разработки</short>
@@ -153,6 +153,7 @@
           <p>
             <link id="TOptionRx">Набор флагов</link>, управлюящих поведением 
   
+            
             
             
             
@@ -568,6 +569,7 @@
             
             
             
+            
             <link id="TRxDBGrid">RxDBGrid</link>-а.</p>
         </descr>
         <seealso>
@@ -610,7 +612,10 @@
           <link id="TRxDBGridSortEngine"/>
         </seealso>
       </element>
-      <element name="TMLCaptionItem"/>
+      <element name="TMLCaptionItem">
+        <short>Элемент многострочного заголовка</short>
+        <descr>Элемент многострочного заголовка</descr>
+      </element>
       <element name="TRxDbGridColumns"/>
       <element name="TRxDbGridColumns.Add"/>
       <element name="TFilterListCellEditor"/>
@@ -1124,6 +1129,7 @@ TRxDBCalcEdit является наследником TDBCalcEdit и имеет 
         <descr>
           <p>Свойство - массив, содержит в себе список всех файлов и каталогов, которые были обнаружены в указанной папке.</p>
 Кол-во элементов данного массива находится в свойстве 
+          
           
           
           
@@ -2434,7 +2440,9 @@ Description
             
             
             
+            
             <b>const</b> SearchDomain, FileName:
+            
             
             
             
@@ -2480,7 +2488,9 @@ Description
             
             
             
+            
             <b>out</b> UserName, DomainName:
+            
             
             
             
@@ -2543,7 +2553,9 @@ Description
             
             
             
+            
             <b>const</b> DirName:
+            
             
             
             
@@ -2577,6 +2589,7 @@ Description
             
             
             
+            
             <b>string</b>;</p>
           <p>Функция проверяет все разделители каталогов в указанном имени файла/каталога и, если нужно, меняет их на значение константы<b>DirectorySeparator</b>.</p>
         </descr>
@@ -2587,6 +2600,7 @@ Description
         <descr>
           <p>
             <b>function</b> GetUserName: 
+            
             
             
             
