@@ -53,8 +53,6 @@ uses
   SysUtils, Classes
   {$IFDEF UNIX}
   , Types
-  {$ELSE}
-  , Windows
   {$ENDIF}
   {$IFDEF LAZ_POWERPDF}
   , LCLProc
@@ -275,7 +273,7 @@ type
 
   TPdfXref = class(TPdfObjectMgr)
   private
-    FXrefEntries: TList;
+    FXrefEntries: TFpList;
     function GetItem(ObjectID: integer): TPdfXrefEntry;
     function GetItemCount: integer;
   protected
@@ -309,8 +307,8 @@ type
     FXref: TPdfXref;
     FInfo: TPdfInfo;
     FHasDoc: boolean;
-    FFontList: TList;
-    FObjectList: TList;
+    FFontList: TFpList;
+    FObjectList: TFpList;
     FOutlineRoot: TPdfOutlineRoot;
     FXObjectList: TPdfArray;
     FDefaultPageWidth: Word;
@@ -325,21 +323,21 @@ type
     procedure CreateInfo;
     procedure CreateOutlines;
     function CreateCatalog: TPdfDictionary;
-    function CreateFont(FontName: string): TPdfFont;
+    function CreateFont(const FontName: string): TPdfFont;
     function CreatePages(Parent: TPdfDictionary): TPdfDictionary;
   public
-    procedure RegisterXObject(AObject: TPdfXObject; AName: string);
+    procedure RegisterXObject(AObject: TPdfXObject; const AName: string);
     constructor Create;
     destructor Destroy; override;
     procedure NewDoc;
     procedure FreeDoc;
     procedure AddPage;
-    procedure AddXObject(AName: string; AXObject: TPdfXObject);
+    procedure AddXObject(const AName: string; AXObject: TPdfXObject);
     procedure SaveToStream(AStream: TStream);
     procedure SetVirtualMode;
-    function GetFont(FontName: string): TPdfFont;
-    function GetXObject(AName: string): TPdfXObject;
-    function CreateAnnotation(AType: TPdfAnnotationSubType; ARect: TPdfRect): TPdfDictionary;
+    function GetFont(const FontName: string): TPdfFont;
+    function GetXObject(const AName: string): TPdfXObject;
+    function CreateAnnotation(AType: TPdfAnnotationSubType; const ARect: TPdfRect): TPdfDictionary;
     function CreateDestination: TPdfDestination;
     property HasDoc: boolean read FHasDoc;
     property Canvas: TPdfCanvas read GetCanvas;
@@ -392,7 +390,7 @@ type
     FIsVirtual: boolean;
     procedure SetPageWidth(AValue: integer);
     procedure SetPageHeight(AValue: integer);
-    procedure WriteString(S: string);
+    procedure WriteString(const S: string);
     function GetDoc: TPdfDoc;
     function GetPage: TPdfDictionary;
     function GetPageWidth: Integer;
@@ -441,7 +439,7 @@ type
     procedure SetWordSpace(wordSpace: Single);                   {  Tw  }
     procedure SetHorizontalScaling(hScaling: Word);              {  Tz  }
     procedure SetLeading(leading: Single);                       {  TL  }
-    procedure SetFontAndSize(fontname: string; size: Single);    {  Tf  }
+    procedure SetFontAndSize(const fontname: string; size: Single);    {  Tf  }
     procedure SetTextRenderingMode(mode: TTextRenderingMode);    {  Tr  }
     procedure SetTextRise(rise: Word);                           {  Ts  }
     procedure BeginText;                                         {  BT  }
@@ -449,11 +447,11 @@ type
     procedure MoveTextPoint(tx, ty: Single);                     {  Td  }
     procedure SetTextMatrix(a, b, c, d, x, y: Single);           {  Tm  }
     procedure MoveToNextLine;                                    {  T*  }
-    procedure ShowText(s: string);                               {  Tj  }
-    procedure ShowTextNextLine(s: string);                       {  '   }
+    procedure ShowText(const s: string);                               {  Tj  }
+    procedure ShowTextNextLine(const s: string);                       {  '   }
 
     {* external objects *}
-    procedure ExecuteXObject(xObject: string);                   {  Do  }
+    procedure ExecuteXObject(const xObject: string);                   {  Do  }
 
     {* Device-dependent color space operators *}
     procedure SetRGBFillColor(Value: TPdfColor);                 {  rg  }
@@ -461,16 +459,16 @@ type
 
     {* utility routines *}
     procedure SetPage(APage: TPdfDictionary);
-    procedure SetFont(AName: string; ASize: Single);
-    procedure TextOut(X, Y: Single; Text: string);
+    procedure SetFont(const AName: string; ASize: Single);
+    procedure TextOut(X, Y: Single; const Text: string);
     procedure TextRect(ARect: TPdfRect; Text: string;
         Alignment: TPdfAlignment; Clipping: boolean);
     procedure MultilineTextRect(ARect: TPdfRect;
-        Text: string; WordWrap: boolean);
+        const Text: string; WordWrap: boolean);
     procedure DrawXObject(X, Y, AWidth, AHeight: Single;
-        AXObjectName: string);
+        const AXObjectName: string);
     procedure DrawXObjectEx(X, Y, AWidth, AHeight: Single;
-        ClipX, ClipY, ClipWidth, ClipHeight: Single; AXObjectName: string);
+        ClipX, ClipY, ClipWidth, ClipHeight: Single; const AXObjectName: string);
     procedure Ellipse(x, y, width, height: Single);
     procedure RoundRect(x, y, width, height, rx, ry: Single; SqrCorners:TPdfCorners=[]);
     function TextWidth(Text: string): Single;
@@ -485,7 +483,7 @@ type
     property PageHeight: integer read GetPageHeight write SetPageHeight;
 
     {* Text rotated up *}
-    procedure TextOutRotatedUp(X, Y: Single; Text: string);
+    procedure TextOutRotatedUp(X, Y: Single; const Text: string);
   end;
 
   TPdfDictionaryWrapper = class(TPersistent)
@@ -502,17 +500,17 @@ type
   TPdfInfo = class(TPdfDictionaryWrapper)
   private
     function GetAuthor: string;
-    procedure SetAuthor(Value: string);
+    procedure SetAuthor(const Value: string);
     function GetCreationDate: TDateTime;
     procedure SetCreationDate(Value: TDateTime);
     function GetCreator: string;
-    procedure SetCreator(Value: string);
+    procedure SetCreator(const Value: string);
     function GetKeywords: string;
-    procedure SetKeywords(Value: string);
+    procedure SetKeywords(const Value: string);
     function GetSubject: string;
-    procedure SetSubject(Value: string);
+    procedure SetSubject(const Value: string);
     function GetTitle: string;
-    procedure SetTitle(Value: string);
+    procedure SetTitle(const Value: string);
     function GetModDate: TDateTime;
     procedure SetModDate(Value: TDateTime);
   public
@@ -562,8 +560,8 @@ type
     procedure AddStrElements(ADic: TPdfDictionary; ATable: array of TPDF_STR_TBL);
     procedure AddIntElements(ADic: TPdfDictionary; ATable: array of TPDF_INT_TBL);
   public
-    constructor Create(AXref: TPdfXref; AName: string); virtual;
-    function GetCharWidth(AText: string; APos: integer): integer; virtual;
+    constructor Create(AXref: TPdfXref; const AName: string); virtual;
+    function GetCharWidth(const AText: string; APos: integer): integer; virtual;
     property Name: string read FName;
     property UnderlinePosition: Integer read FUnderlinePosition write FUnderlinePosition;
     property UnderlineThickness: Integer read FUnderlineThickness write FUnderlineThickness;
@@ -754,7 +752,7 @@ constructor TPdfXref.Create;
 var
   RootEntry: TPdfXrefEntry;
 begin
-  FXrefEntries := TList.Create;
+  FXrefEntries := TFpList.Create;
   RootEntry := TPdfXrefEntry.Create(nil);
   RootEntry.GenerationNumber := PDF_MAX_GENERATION_NUM;
   FXrefEntries.Add(RootEntry);
@@ -890,7 +888,7 @@ begin
 end;
 
 // CreateFont
-function TPdfDoc.CreateFont(FontName: string): TPdfFont;
+function TPdfDoc.CreateFont(const FontName: string): TPdfFont;
 var
   PdfFont: TPdfFont;
 begin
@@ -910,7 +908,7 @@ begin
 end;
 
 // RegisterXObject
-procedure TPdfDoc.RegisterXObject(AObject: TPdfXObject; AName: string);
+procedure TPdfDoc.RegisterXObject(AObject: TPdfXObject; const AName: string);
 begin
    // check object and register it.
    if AObject = nil then
@@ -969,7 +967,7 @@ begin
 end;
 
 // GetFont
-function TPdfDoc.GetFont(FontName: string): TPdfFont;
+function TPdfDoc.GetFont(const FontName: string): TPdfFont;
 var
   FFont: TPdfFont;
   i :integer;
@@ -993,7 +991,7 @@ begin
 end;
 
 // GetXObject
-function TPdfDoc.GetXObject(AName: string): TPdfXObject;
+function TPdfDoc.GetXObject(const AName: string): TPdfXObject;
 var
   FXObject: TPdfXObject;
   i :integer;
@@ -1012,7 +1010,7 @@ begin
 end;
 
 // CreateAnnotation
-function TPdfDoc.CreateAnnotation(AType: TPdfAnnotationSubType; ARect: TPdfRect): TPdfDictionary;
+function TPdfDoc.CreateAnnotation(AType: TPdfAnnotationSubType; const ARect: TPdfRect): TPdfDictionary;
 var
   FAnnotation: TPdfDictionary;
   FArray: TPdfArray;
@@ -1069,9 +1067,9 @@ begin
   FXref := TPdfXref.Create;
   FHeader := TPdfHeader.Create;
   FTrailer := TPdfTrailer.Create(FXref);
-  FFontList := TList.Create;
+  FFontList := TFpList.Create;
   FXObjectList := TPdfArray.CreateArray(FXref);
-  FObjectList := TList.Create;
+  FObjectList := TFpList.Create;
 
   FRoot := TPdfCatalog.Create;
   FRoot.SetData(CreateCatalog);
@@ -1090,7 +1088,7 @@ begin
 end;
 
 // AddXObject
-procedure TPdfDoc.AddXObject(AName: string; AXObject: TPdfXObject);
+procedure TPdfDoc.AddXObject(const AName: string; AXObject: TPdfXObject);
 begin
   if GetXObject(AName) <> nil then
     raise Exception.CreateFmt('AddImage --the image named %s is already exists..', [AName]);
@@ -1402,7 +1400,7 @@ begin
 end;
 
 // WriteString
-procedure TPdfCanvas.WriteString(S: string);
+procedure TPdfCanvas.WriteString(const S: string);
 begin
   if (not FIsVirtual) and (FContents <> nil) then
     _WriteString(S, FContents.Stream);
@@ -1502,7 +1500,7 @@ begin
 end;
 
 // SetFont
-procedure TPdfCanvas.SetFont(AName: string; ASize: Single);
+procedure TPdfCanvas.SetFont(const AName: string; ASize: Single);
 var
   FFont: TPdfFont;
   FFontList: TPdfDictionary;
@@ -1523,7 +1521,7 @@ begin
 end;
 
 // TextOut
-procedure TPdfCanvas.TextOut(X, Y: Single; Text: string);
+procedure TPdfCanvas.TextOut(X, Y: Single; const Text: string);
 var
   UPos, UWidth: Single;
 begin
@@ -1595,7 +1593,7 @@ begin
 end;
 
 // MultilineTextRect
-procedure TPdfCanvas.MultilineTextRect(ARect: TPdfRect; Text: string;
+procedure TPdfCanvas.MultilineTextRect(ARect: TPdfRect; const Text: string;
   WordWrap: boolean);
 var
   i: integer;
@@ -1702,7 +1700,7 @@ end;
 
 // DrawXObject
 procedure TPdfCanvas.DrawXObject(X, Y, AWidth, AHeight: Single;
-    AXObjectName: string);
+    const AXObjectName: string);
 var
   XObject: TPdfXObject;
   FXObjectList: TPdfDictionary;
@@ -1724,7 +1722,7 @@ end;
 
 // DrawXObjectEx
 procedure TPdfCanvas.DrawXObjectEx(X, Y, AWidth, AHeight: Single;
-      ClipX, ClipY, ClipWidth, ClipHeight: Single; AXObjectName: string);
+      ClipX, ClipY, ClipWidth, ClipHeight: Single; const AXObjectName: string);
 var
   XObject: TPdfXObject;
   FXObjectList: TPdfDictionary;
@@ -2015,7 +2013,7 @@ begin
 end;
 
 // SetFontAndSize
-procedure TPdfCanvas.SetFontAndSize(fontname: string; size: Single);
+procedure TPdfCanvas.SetFontAndSize(const fontname: string; size: Single);
 var
   S: string;
 begin
@@ -2079,7 +2077,7 @@ begin
 end;
 
 // ShowText
-procedure TPdfCanvas.ShowText(s: string);
+procedure TPdfCanvas.ShowText(const s: string);
 var
   FString: string;
 begin
@@ -2091,7 +2089,7 @@ begin
 end;
 
 // ShowTextNextLine
-procedure TPdfCanvas.ShowTextNextLine(s: string);
+procedure TPdfCanvas.ShowTextNextLine(const s: string);
 var
   FString: string;
 begin
@@ -2105,7 +2103,7 @@ end;
 {* external objects *}
 
 // ExecuteXObject
-procedure TPdfCanvas.ExecuteXObject(xObject: string);
+procedure TPdfCanvas.ExecuteXObject(const xObject: string);
 var
   S: string;
 begin
@@ -2262,7 +2260,7 @@ begin
    Index := i + 1;
 end;
 
-procedure TPdfCanvas.TextOutRotatedUp(X, Y: Single; Text: string);
+procedure TPdfCanvas.TextOutRotatedUp(X, Y: Single; const Text: string);
 begin
   BeginText;
   SetTextMatrix(0, 1, -1, 0, X, Y); //  down to up
@@ -2297,7 +2295,7 @@ end;
 { TPdfInfo }
 
 // SetAuthor
-procedure TPdfInfo.SetAuthor(Value: string);
+procedure TPdfInfo.SetAuthor(const Value: string);
 begin
   FData.AddItem('Author', TPdfText.CreateText(Value));
 end;
@@ -2315,25 +2313,25 @@ begin
 end;
 
 // SetCreator
-procedure TPdfInfo.SetCreator(Value: string);
+procedure TPdfInfo.SetCreator(const Value: string);
 begin
   FData.AddItem('Creator', TPdfText.CreateText(Value));
 end;
 
 // SetTitle
-procedure TPdfInfo.SetTitle(Value: string);
+procedure TPdfInfo.SetTitle(const Value: string);
 begin
   FData.AddItem('Title', TPdfText.CreateText(Value));
 end;
 
 // SetSubject
-procedure TPdfInfo.SetSubject(Value: string);
+procedure TPdfInfo.SetSubject(const Value: string);
 begin
   FData.AddItem('Subject', TPdfText.CreateText(Value));
 end;
 
 // SetKeywords
-procedure TPdfInfo.SetKeywords(Value: string);
+procedure TPdfInfo.SetKeywords(const Value: string);
 begin
   FData.AddItem('Keywords', TPdfText.CreateText(Value));
 end;
@@ -2653,13 +2651,13 @@ begin
 end;
 
 // GetCharWidth
-function TPdfFont.GetCharWidth(AText: string; APos: integer): integer;
+function TPdfFont.GetCharWidth(const AText: string; APos: integer): integer;
 begin
   result := 0;
 end;
 
 // Create
-constructor TPdfFont.Create(AXref: TPdfXref; AName: string);
+constructor TPdfFont.Create(AXref: TPdfXref; const AName: string);
 begin
   inherited Create;
   FName := AName;

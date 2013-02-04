@@ -500,78 +500,78 @@ type
     FArray: array[0..255] of Word;
   public
     procedure SetData(Value: TPdfDictionary); override;
-    function GetCharWidth(AText: string; APos: integer): integer; override;
+    function GetCharWidth(const AText: string; APos: integer): integer; override;
   end;
 
   TPdfFixedWidth = class(TPdfType1Font)
   public
-    constructor Create(AXref: TPdfXref; AName: string); override;
+    constructor Create(AXref: TPdfXref; const AName: string); override;
   end;
 
   TPdfFixedWidthBold = class(TPdfType1Font)
   public
-    constructor Create(AXref: TPdfXref; AName: string); override;
+    constructor Create(AXref: TPdfXref; const AName: string); override;
   end;
 
   TPdfFixedWidthItalic = class(TPdfType1Font)
   public
-    constructor Create(AXref: TPdfXref; AName: string); override;
+    constructor Create(AXref: TPdfXref; const AName: string); override;
   end;
 
   TPdfFixedWidthBoldItalic = class(TPdfType1Font)
   public
-    constructor Create(AXref: TPdfXref; AName: string); override;
+    constructor Create(AXref: TPdfXref; const AName: string); override;
   end;
 
   TPdfArial = class(TPdfType1Font)
   public
-    constructor Create(AXref: TPdfXref; AName: string); override;
+    constructor Create(AXref: TPdfXref; const AName: string); override;
   end;
 
   TPdfArialBold = class(TPdfType1Font)
   public
-    constructor Create(AXref: TPdfXref; AName: string); override;
+    constructor Create(AXref: TPdfXref; const AName: string); override;
   end;
 
   TPdfArialItalic = class(TPdfType1Font)
   public
-    constructor Create(AXref: TPdfXref; AName: string); override;
+    constructor Create(AXref: TPdfXref; const AName: string); override;
   end;
 
   TPdfArialBoldItalic = class(TPdfType1Font)
   public
-    constructor Create(AXref: TPdfXref; AName: string); override;
+    constructor Create(AXref: TPdfXref; const AName: string); override;
   end;
 
   TPdfTimesRoman = class(TPdfType1Font)
   public
-    constructor Create(AXref: TPdfXref; AName: string); override;
+    constructor Create(AXref: TPdfXref; const AName: string); override;
   end;
 
   TPdfTimesBold = class(TPdfType1Font)
   public
-    constructor Create(AXref: TPdfXref; AName: string); override;
+    constructor Create(AXref: TPdfXref; const AName: string); override;
   end;
 
   TPdfTimesItalic = class(TPdfType1Font)
   public
-    constructor Create(AXref: TPdfXref; AName: string); override;
+    constructor Create(AXref: TPdfXref; const AName: string); override;
   end;
 
   TPdfTimesBoldItalic = class(TPdfType1Font)
   public
-    constructor Create(AXref: TPdfXref; AName: string); override;
+    constructor Create(AXref: TPdfXref; const AName: string); override;
   end;
 
   TPdfScript = class(TPdfType1Font)
   public
-    constructor Create(AXref: TPdfXref; AName: string); override;
+    constructor Create(AXref: TPdfXref; const AName: string); override;
   end;
 
 implementation
 
 { TPdfType1Font }
-function TPdfType1Font.GetCharWidth(AText: string; APos: integer): integer;
+function TPdfType1Font.GetCharWidth(const AText: string; APos: integer): integer;
 begin
   result := FArray[ord(AText[APos])];
 end;
@@ -604,7 +604,7 @@ begin
 end;
 
 { FixedWidth }
-constructor TPdfFixedWidth.Create(AXref: TPdfXref; AName: string);
+constructor TPdfFixedWidth.Create(AXref: TPdfXref; const AName: string);
 var
   FWidths: TPdfArray;
   FFont: TPdfDictionary;
@@ -628,7 +628,7 @@ begin
 end;
 
 { FixedWidthBold }
-constructor TPdfFixedWidthBold.Create(AXref: TPdfXref; AName: string);
+constructor TPdfFixedWidthBold.Create(AXref: TPdfXref; const AName: string);
 var
   FWidths: TPdfArray;
   FFont: TPdfDictionary;
@@ -648,7 +648,7 @@ begin
 end;
 
 { FixedWidthItalic }
-constructor TPdfFixedWidthItalic.Create(AXref: TPdfXref; AName: string);
+constructor TPdfFixedWidthItalic.Create(AXref: TPdfXref; const AName: string);
 var
   FWidths: TPdfArray;
   FFont: TPdfDictionary;
@@ -668,7 +668,7 @@ begin
 end;
 
 { FixedWidthBoldItalic }
-constructor TPdfFixedWidthBoldItalic.Create(AXref: TPdfXref; AName: string);
+constructor TPdfFixedWidthBoldItalic.Create(AXref: TPdfXref; const AName: string);
 var
   FWidths: TPdfArray;
   FFont: TPdfDictionary;
@@ -688,7 +688,7 @@ begin
 end;
 
 { Arial }
-constructor TPdfArial.Create(AXref: TPdfXref; AName: string);
+constructor TPdfArial.Create(AXref: TPdfXref; const AName: string);
 var
   FWidths: TPdfArray;
   FFont: TPdfDictionary;
@@ -710,7 +710,7 @@ begin
 end;
 
 { Arial-Bold }
-constructor TPdfArialBold.Create(AXref: TPdfXref; AName: string);
+constructor TPdfArialBold.Create(AXref: TPdfXref; const AName: string);
 var
   FWidths: TPdfArray;
   FFont: TPdfDictionary;
@@ -733,7 +733,7 @@ begin
 end;
 
 { Arial-Italic }
-constructor TPdfArialItalic.Create(AXref: TPdfXref; AName: string);
+constructor TPdfArialItalic.Create(AXref: TPdfXref; const AName: string);
 var
   FWidths: TPdfArray;
   FFont: TPdfDictionary;
@@ -755,7 +755,7 @@ begin
 end;
 
 { Arial-BoldItalic }
-constructor TPdfArialBoldItalic.Create(AXref: TPdfXref; AName: string);
+constructor TPdfArialBoldItalic.Create(AXref: TPdfXref; const AName: string);
 var
   FWidths: TPdfArray;
   FFont: TPdfDictionary;
@@ -778,7 +778,7 @@ begin
 end;
 
 { TPdfTimesRoman }
-constructor TPdfTimesRoman.Create(AXref: TPdfXref; AName: string);
+constructor TPdfTimesRoman.Create(AXref: TPdfXref; const AName: string);
 var
   FWidths: TPdfArray;
   FFont: TPdfDictionary;
@@ -798,7 +798,7 @@ begin
 end;
 
 { TPdfTimesBold }
-constructor TPdfTimesBold.Create(AXref: TPdfXref; AName: string);
+constructor TPdfTimesBold.Create(AXref: TPdfXref; const AName: string);
 var
   FWidths: TPdfArray;
   FFont: TPdfDictionary;
@@ -818,7 +818,7 @@ begin
 end;
 
 { TPdfTimesItalic }
-constructor TPdfTimesItalic.Create(AXref: TPdfXref; AName: string);
+constructor TPdfTimesItalic.Create(AXref: TPdfXref; const AName: string);
 var
   FWidths: TPdfArray;
   FFont: TPdfDictionary;
@@ -838,7 +838,7 @@ begin
 end;
 
 { TPdfTimesBoldItalic }
-constructor TPdfTimesBoldItalic.Create(AXref: TPdfXref; AName: string);
+constructor TPdfTimesBoldItalic.Create(AXref: TPdfXref; const AName: string);
 var
   FWidths: TPdfArray;
   FFont: TPdfDictionary;
@@ -858,7 +858,7 @@ begin
 end;
 
 { TPdfScript }
-constructor TPdfScript.Create(AXref: TPdfXref; AName: string);
+constructor TPdfScript.Create(AXref: TPdfXref; const AName: string);
 var
   FWidths: TPdfArray;
   FFontDescriptor: TPdfDictionary;
