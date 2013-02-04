@@ -251,6 +251,7 @@ type
     procedure SetFlags(AIndex: Integer; AValue: boolean);
     procedure SetNSSuperView(AValue: UIView);
   protected
+    function GetPaintText: string; virtual;
     procedure SetName(const NewName: TComponentName); override;
     property Caption: string index bvText read GetXIBString write SetXIBString;
   public
@@ -311,8 +312,12 @@ type
 
   { UIWindow }
 
+  TiOSFakeStatusBarStyle = (sbsGrey=0, sbsBlackTranslucent=1, sbsBlack = 2, sbsNone=3);
+
   UIWindow = class(UIView)
   private
+    function GetStatusBar: TiOSFakeStatusBarStyle;
+    procedure SetStatusBar(AValue: TiOSFakeStatusBarStyle);
   protected
     function StoreSizeAsFrameSize: boolean; override;
     procedure SetBounds(NewLeft, NewTop, NewWidth, NewHeight: integer); override;
@@ -322,6 +327,7 @@ type
     procedure paint(ACanvas: TCanvas); override;
     class function GetIBClassName: string; override;
   published
+    property StatusBar: TiOSFakeStatusBarStyle read GetStatusBar write SetStatusBar;
   end;
 
   { UIViewController }
@@ -386,6 +392,8 @@ type
     FNSNextKeyView: UIView;
     function GetButtonType: TiOSFakeButtonType;
     procedure SetButtonType(AValue: TiOSFakeButtonType);
+  protected
+    function GetPaintText: string; override;
   public
     procedure InitializeDefaults; override;
     constructor Create(AOwner: TComponent); override;
@@ -394,7 +402,7 @@ type
     property NSNextKeyView: UIView read FNSNextKeyView write FNSNextKeyView;
   published
     property NormalTitle: string index bvNormalTitle read GetXIBString write SetXIBString;
-    property NotmalTitleColor: TColor index bvNormalTitleColor read GetXIBColor write SetXIBColor;
+    property NormalTitleColor: TColor index bvNormalTitleColor read GetXIBColor write SetXIBColor;
     property ButtonType: TiOSFakeButtonType read GetButtonType write SetButtonType;
     property onTouchDown: TCocoaEvent index 1 read GetXIBEvent write SetXIBEvent;
   end;
@@ -1531,6 +1539,57 @@ end;
 
 { UIWindow }
 
+function UIWindow.GetStatusBar: TiOSFakeStatusBarStyle;
+var
+  ANode: TDOMNode;
+begin
+  if Assigned(XIBObjectElement) then
+    begin
+    ANode := FindKeyNode(XIBObjectElement, 'object', 'IBUISimulatedStatusBarMetrics');
+    if assigned(ANode) then
+      begin
+      ANode := FindKeyNode(ANode, 'int', 'IBUIStatusBarStyle');
+      if assigned(ANode) then
+        begin
+        result := TiOSFakeStatusBarStyle(StrToInt(ANode.TextContent));
+        end
+      else
+        result := sbsGrey;
+      end
+    else
+      result := sbsNone;
+    end
+  else
+    result := sbsNone;
+end;
+
+procedure UIWindow.SetStatusBar(AValue: TiOSFakeStatusBarStyle);
+var
+  ANode: TDOMNode;
+begin
+  if AValue = sbsNone then
+    begin
+    ANode := FindKeyNode(XIBObjectElement, 'object', 'IBUISimulatedStatusBarMetrics');
+    if assigned(ANode) then
+      ANode.ParentNode.RemoveChild(ANode);
+    end
+  else
+    begin
+    ANode := GetKeyNode(XIBObjectElement, 'object', 'IBUISimulatedStatusBarMetrics', 'IBUISimulatedStatusBarMetrics');
+    if AValue<>sbsGrey then
+      begin
+      ANode := GetKeyNode(ANode, 'int', 'IBUIStatusBarStyle');
+      anode.TextContent:=IntToStr(ord(AValue));
+      end
+    else
+      begin
+      ANode := FindKeyNode(ANode, 'int', 'IBUIStatusBarStyle');
+      if assigned(ANode) then
+        ANode.ParentNode.RemoveChild(ANode);
+      end;
+    end;
+end;
+
 function UIWindow.StoreSizeAsFrameSize: boolean;
 begin
   Result:=true;
@@ -1553,6 +1612,8 @@ procedure UIWindow.InitializeDefaults;
 begin
   inherited InitializeDefaults;
   Inherited SetBounds(left, top, 320, 480);
+  BackgroundColor:=clWhite;
+  StatusBar:=sbsGrey;
 end;
 
 constructor UIWindow.Create(AOwner: TComponent);
@@ -3137,6 +3198,11 @@ begin
   Invalidate;
 end;
 
+function UIView.GetPaintText: string;
+begin
+  result := Caption;
+end;
+
 procedure tiOSFakeComponent.SetXIBString(index: TXIBProperties; ANodeName, AValue: string);
 var
   ANode: TDOMNode;
@@ -3253,8 +3319,9 @@ procedure UIView.InitializeDefaults;
 begin
   inherited InitializeDefaults;
   SetBounds(10,10,72,37);
-  BackgroundColor:=clWhite;
   Alpha:=1;
+  Opaque:=False;
+  Flags := 292;
 end;
 
 procedure UIView.paint(ACanvas: TCanvas);
@@ -3272,7 +3339,7 @@ begin
     Font.Size:=12;
     Font.Italic:=false;
     Font.Bold:=false;
-    TextOut(5,2,Caption);
+    TextOut(5,2,GetPaintText);
     end;
 end;
 
@@ -3301,9 +3368,15 @@ begin
   SetXIBInteger(bvButtonType, Ord(AValue));
 end;
 
+function UIButton.GetPaintText: string;
+begin
+  result := NormalTitle;
+end;
+
 procedure UIButton.InitializeDefaults;
 begin
   inherited InitializeDefaults;
+  NormalTitleColor:=$00854F32;
   ButtonType:=RoundedRect;
 end;
 
