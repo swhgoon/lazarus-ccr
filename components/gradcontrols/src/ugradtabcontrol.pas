@@ -16,7 +16,7 @@ unit ugradtabcontrol;
 interface
 
 uses
-  Classes, LResources, SysUtils, Menus, LCLType,
+  Classes, LResources, SysUtils, Menus, LCLType, ComCtrls,
   LCLProc, LCLIntf, ExtCtrls, Graphics, ugradbtn, Controls,
   uRotateBitmap, Buttons, Forms, ImgList, gradtabstyle
   {$IFDEF DEBUGTAB}
@@ -580,7 +580,8 @@ var
 begin
   if not HasParent then Exit;
 
-  GetBackgroundRect(TheRect);
+  //GetBackgroundRect(TheRect);
+  GetContentRect(TheRect);
 
   DisplayWidth:= TheRect.Right-TheRect.Left;
   DisplayHeight:=TheRect.Bottom-TheRect.Top;
@@ -1461,7 +1462,7 @@ begin
       B.BorderSides := NewBorderSides;
       B.GradientType := NewGradientType;
 
-      Logger.Send('Before');
+      Logger.Send('Before', 0);
       Logger.Send('i', i);
       Logger.Send('Width', B.Width);
       Logger.Send('Height', B.Height);
@@ -1555,7 +1556,7 @@ begin
         end;
       end;
 
-      Logger.Send('After');
+      Logger.Send('After', 0);
       Logger.Send('i', i);
       Logger.Send('Width', B.Width);
       Logger.Send('Height', B.Height);
@@ -1853,7 +1854,7 @@ begin
       OrderButtons;
       if IsVisible(PIndex) then
       begin
-        Logger.Send('Tab is Visible');
+        Logger.Send('Tab is Visible', 0);
         Logger.ExitMethod(Self, 'ScrollToTab('+IntToStr(PIndex)+')');
         Exit;
       end;
@@ -2276,7 +2277,7 @@ begin
 
   if FPagesBar.NeedOrderButtons then
   begin
-    Logger.Send('OrderButtonsNeeded');
+    Logger.Send('OrderButtonsNeeded', 0);
     FPagesBar.OrderButtons;
   end;
   Logger.ExitMethod(Self, 'EndUpdate');
@@ -2951,9 +2952,7 @@ begin
     if (pfAdded in APage.FFlags) then exit;
     Include(APage.FFlags,pfAdding);
     APage.FFlags:=APage.FFlags+[pfAdded]-[pfAdding];
-    {$IFNDEF DARWIN}
-    APage.ResizeDelayedAutoSizeChildren;
-    {$ENDIF}
+    APage.AdjustSize;
   end else begin
     {$IFDEF NOTEBOOK_DEBUG}
     DebugLn(['TGradTabControl.AddRemovePageHandle REMOVE ',DbgSName(APage),' pfAdded=',pfAdded in APage.FFlags]);

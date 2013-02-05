@@ -5,7 +5,7 @@ unit gradtabcontroleditor;
 interface
 
 uses
-  Classes, SysUtils, ugradtabcontrol, ComponentEditors, Menus, PropEdits;
+  Classes, SysUtils, ComCtrls, ugradtabcontrol, ComponentEditors, Menus, PropEdits;
 
 type
   { TGradTabControlComponentEditor
@@ -111,7 +111,7 @@ begin
   if (OldIndex>=0) and (OldIndex<GradTabControl.PageCount) then begin
     if not GetHook(Hook) then exit;
     PageComponent:=TComponent(GradTabControl.Tabs.Objects[OldIndex]);
-    Hook.DeletePersistent(PageComponent);
+    Hook.DeletePersistent(TPersistent(PageComponent));
   end;
 end;
 

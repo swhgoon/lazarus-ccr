@@ -11,7 +11,7 @@ Style-Class for TGradTabControl
 interface
 
 uses
-  Classes, SysUtils, Controls, Graphics, Buttons, ExtCtrls, ugradbtn
+  Classes, SysUtils, Controls, Graphics, Buttons, ComCtrls, ExtCtrls, ugradbtn
   {$IFDEF DEBUGTAB}
   , sharedloggerlcl
   {$ELSE}

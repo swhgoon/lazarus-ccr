@@ -17,8 +17,8 @@ type
     procedure ExitMethod(AStr: string);
     procedure EnterMethod(AObj: TObject; AStr: string);
     procedure ExitMethod(AObj: TObject; AStr: string);
-    procedure Send(AStr: string; AVar: Variant = 0);
-    procedure Watch(AStr: string; AVar: Variant = 0);
+    procedure Send(AStr: string; AVar: Variant);
+    procedure Watch(AStr: string; AVar: Variant);
   end;
 
 var
