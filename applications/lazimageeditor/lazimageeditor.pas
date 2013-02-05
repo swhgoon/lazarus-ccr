@@ -16,7 +16,8 @@ uses
   ResizeDialog,
   ResizePaperDialog,
   PictureDialog,
-  AboutDialog, DLBitmap, IconStrConsts, appsettings, lieconstants;
+  AboutDialog, DLBitmap, IconStrConsts, appsettings, lieconstants, 
+iconsizeselection;
 
 {$R *.res}
 
@@ -37,6 +38,7 @@ begin
     MainForm.OpenImageFile(ParamStr(1))
   else
     MainForm.FileNewOnStart;
+  Application.CreateForm(TSelectIconSizeForm, SelectIconSizeForm);
   Application.Run;
 end.
 

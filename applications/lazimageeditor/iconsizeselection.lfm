@@ -1,0 +1,42 @@
+object SelectIconSizeForm: TSelectIconSizeForm
+  Left = 304
+  Height = 99
+  Top = 61
+  Width = 213
+  BorderStyle = bsDialog
+  Caption = 'Select a size of the ICON'
+  ClientHeight = 99
+  ClientWidth = 213
+  Font.CharSet = GB2312_CHARSET
+  Font.Height = -13
+  Font.Name = '微软雅黑'
+  Font.Pitch = fpVariable
+  Font.Quality = fqDraft
+  Position = poMainFormCenter
+  LCLVersion = '1.1'
+  object IconSizeComboBox: TComboBox
+    Left = 28
+    Height = 27
+    Top = 19
+    Width = 159
+    ItemHeight = 19
+    ItemIndex = 0
+    Items.Strings = (
+      '32'
+      '48'
+      '64'
+    )
+    Style = csDropDownList
+    TabOrder = 0
+    Text = '32'
+  end
+  object Button1: TButton
+    Left = 104
+    Height = 29
+    Top = 56
+    Width = 83
+    Caption = '&OK'
+    ModalResult = 1
+    TabOrder = 1
+  end
+end

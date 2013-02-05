@@ -340,7 +340,7 @@ var
 
 implementation
 
-uses Test, IconStrConsts;
+uses Test, IconStrConsts, iconsizeselection;
 
 procedure SetControlsEnabled(AControl: TControl; AEnabled: boolean);
 var
@@ -1230,6 +1230,8 @@ end;
 
 procedure TMainForm.OpenImageFile(FileName: string);
 begin
+  if UpperCase(ExtractFileExt(FileName)) = '.ICO' then
+    SelectIconSizeForm.ShowModal;
   Pictures.Load(FileName);
 end;
 
