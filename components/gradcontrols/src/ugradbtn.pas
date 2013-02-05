@@ -1118,7 +1118,8 @@ begin
 
     ACanvas.FillRect(FDropdownMarkAreaRect); 
     ACanvas.Draw(FDropdownMarkAreaRect.Left, FDropdownMarkAreaRect.Top, FBackgroundSplitCaches[FDropDownState]);
-  end;
+  end else
+    ACanvas.Brush.Style := bsClear;
 
   TextOffset := IfThen(tempState = bsDown, 1);
   
