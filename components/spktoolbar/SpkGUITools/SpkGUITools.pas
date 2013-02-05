@@ -1,4 +1,4 @@
-﻿unit SpkGUITools;
+﻿﻿unit SpkGUITools;
 
 {$mode ObjFpc}
 {$H+}
@@ -484,8 +484,8 @@ if Convex then
           SrcLine:=SrcImg.GetDataLineStart(y);
           DstLine:=DestImg.GetDataLineStart(y+Offset.y);
 
-          SrcPtr:=pointer(integer(SrcLine) + 3*SrcRect.left);
-          DstPtr:=pointer(integer(DstLine) + 3*(SrcRect.left + Offset.x));
+          SrcPtr:=pointer(PtrInt(SrcLine) + 3*SrcRect.left);
+          DstPtr:=pointer(PtrInt(DstLine) + 3*(SrcRect.left + Offset.x));
           for x := SrcRect.left to SrcRect.right do
               begin
               {$ifdef EnhancedRecordSupport}
@@ -516,8 +516,8 @@ else
           SrcLine:=SrcImg.GetDataLineStart(y);
           DstLine:=DestImg.GetDataLineStart(y+Offset.y);
 
-          SrcPtr:=pointer(integer(SrcLine) + 3*SrcRect.left);
-          DstPtr:=pointer(integer(DstLine) + 3*(SrcRect.left + Offset.x));
+          SrcPtr:=pointer(PtrInt(SrcLine) + 3*SrcRect.left);
+          DstPtr:=pointer(PtrInt(DstLine) + 3*(SrcRect.left + Offset.x));
           for x := SrcRect.left to SrcRect.right do
               begin
               {$ifdef EnhancedRecordSupport}
@@ -960,8 +960,8 @@ if not(SrcRect.IntersectsWith(DstRect - Offset, ClippedSrcRect)) then exit;
        SrcLine:=SrcImg.GetDataLineStart(y);
        DstLine:=DestImg.GetDataLineStart(y+Offset.y);
 
-       Move(pointer(integer(SrcLine) + 3*ClippedSrcRect.left)^,
-            pointer(integer(DstLine) + 3*(ClippedSrcRect.left + Offset.x))^,
+       Move(pointer(PtrInt(SrcLine) + 3*ClippedSrcRect.left)^,
+            pointer(PtrInt(DstLine) + 3*(ClippedSrcRect.left + Offset.x))^,
             3*ClippedSrcRect.Width);
       end;
      ABitmap.LoadFromIntfImage(DestImg);
@@ -1068,22 +1068,22 @@ begin
    for y := ClippedSrcRect.top to ClippedSrcRect.bottom do
        begin
        SrcLine:=SrcImg.GetDataLineStart(y);
-       SrcLine:=pointer(integer(SrcLine) + 3 * ClippedSrcRect.left);
+       SrcLine:=pointer(PtrInt(SrcLine) + 3 * ClippedSrcRect.left);
 
        MaskLine:=MaskImg.GetDataLineStart(y);
-       MaskLine:=pointer(integer(MaskLine) + ClippedSrcRect.left);
+       MaskLine:=pointer(PtrInt(MaskLine) + ClippedSrcRect.left);
 
        DstLine:=DestImg.GetDataLineStart(y+Offset.y);
-       DstLine:=pointer(integer(DstLine) + 3 * (ClippedSrcRect.left + Offset.x));
+       DstLine:=pointer(PtrInt(DstLine) + 3 * (ClippedSrcRect.left + Offset.x));
 
        for i := 0 to ClippedSrcRect.Width - 1 do
            begin
            if PByte(MaskLine)^<128 then
               Move(SrcLine^,DstLine^,3);
 
-           SrcLine:=pointer(integer(SrcLine)+3);
-           DstLine:=pointer(integer(DstLine)+3);
-           MaskLine:=pointer(integer(MaskLine)+1);
+           SrcLine:=pointer(PtrInt(SrcLine)+3);
+           DstLine:=pointer(PtrInt(DstLine)+3);
+           MaskLine:=pointer(PtrInt(MaskLine)+1);
            end;
        end;
    ABitmap.LoadFromIntfImage(DestImg);
@@ -1181,22 +1181,22 @@ begin
    for y := ClippedSrcRect.top to ClippedSrcRect.bottom do
        begin
        SrcLine:=SrcImg.GetDataLineStart(y);
-       SrcLine:=pointer(integer(SrcLine) + 3 * ClippedSrcRect.left);
+       SrcLine:=pointer(PtrInt(SrcLine) + 3 * ClippedSrcRect.left);
 
        MaskLine:=MaskImg.GetDataLineStart(y);
-       MaskLine:=pointer(integer(MaskLine) + ClippedSrcRect.left);
+       MaskLine:=pointer(PtrInt(MaskLine) + ClippedSrcRect.left);
 
        DstLine:=DestImg.GetDataLineStart(y+Offset.y);
-       DstLine:=pointer(integer(DstLine) + 3 * (ClippedSrcRect.left + Offset.x));
+       DstLine:=pointer(PtrInt(DstLine) + 3 * (ClippedSrcRect.left + Offset.x));
 
        for i := 0 to ClippedSrcRect.width - 1 do
            begin
            if PByte(MaskLine)^<128 then
               Move(SrcLine^, DstLine^, 3);
 
-           SrcLine:=pointer(integer(SrcLine)+3);
-           DstLine:=pointer(integer(DstLine)+3);
-           MaskLine:=pointer(integer(MaskLine)+1);
+           SrcLine:=pointer(PtrInt(SrcLine)+3);
+           DstLine:=pointer(PtrInt(DstLine)+3);
+           MaskLine:=pointer(PtrInt(MaskLine)+1);
            end;
        end;
    ABitmap.LoadFromIntfImage(DestImg);
@@ -1285,8 +1285,8 @@ begin
        SrcLine:=SrcImg.GetDataLineStart(y);
        DstLine:=DestImg.GetDataLineStart(y+Offset.y);
 
-       Move(pointer(integer(SrcLine) + 3*ClippedSrcRect.left)^,
-            pointer(integer(DstLine) + 3*(ClippedSrcRect.left + Offset.x))^,
+       Move(pointer(PtrInt(SrcLine) + 3*ClippedSrcRect.left)^,
+            pointer(PtrInt(DstLine) + 3*(ClippedSrcRect.left + Offset.x))^,
             3*ClippedSrcRect.Width);
        end;
   ABitmap.LoadFromIntfImage(DestImg);
@@ -1388,8 +1388,8 @@ if Convex then
           SrcLine:=SrcImg.GetDataLineStart(y);
           DstLine:=DestImg.GetDataLineStart(y+Offset.y);
 
-          SrcPtr:=pointer(integer(SrcLine) + 3*SrcRect.left);
-          DstPtr:=pointer(integer(DstLine) + 3*(SrcRect.left + Offset.x));
+          SrcPtr:=pointer(PtrInt(SrcLine) + 3*SrcRect.left);
+          DstPtr:=pointer(PtrInt(DstLine) + 3*(SrcRect.left + Offset.x));
           for x := SrcRect.left to SrcRect.right do
               begin
               {$IFDEF EnhancedRecordSupport}
@@ -1420,8 +1420,8 @@ else
           SrcLine:=SrcImg.GetDataLineStart(y);
           DstLine:=DestImg.GetDataLineStart(y+Offset.y);
 
-          SrcPtr:=pointer(integer(SrcLine) + 3*SrcRect.left);
-          DstPtr:=pointer(integer(DstLine) + 3*(SrcRect.left + Offset.x));
+          SrcPtr:=pointer(PtrInt(SrcLine) + 3*SrcRect.left);
+          DstPtr:=pointer(PtrInt(DstLine) + 3*(SrcRect.left + Offset.x));
           for x := SrcRect.left to SrcRect.right do
               begin
               {$IFDEF EnhancedRecordSupport}
@@ -1468,7 +1468,7 @@ if (ABitmap.width=0) or (ABitmap.height=0) then
    exit;
 
 {$IFDEF EnhancedRecordSupport}
-// �?ród³owy rect...
+// �?ród³owy rect...
 OrgCornerRect:=T2DIntRect.create(Point.x,
                                  Point.y,
                                  Point.x + radius - 1,
@@ -1477,7 +1477,7 @@ OrgCornerRect:=T2DIntRect.create(Point.x,
 // ...przycinamy do rozmiarów bitmapy
 BitmapRect:=T2DIntRect.create(0, 0, ABitmap.width-1, ABitmap.height-1);
 {$ELSE}
-// �?ród³owy rect...
+// �?ród³owy rect...
 OrgCornerRect.create(Point.x,
                                  Point.y,
                                  Point.x + radius - 1,
@@ -1529,7 +1529,7 @@ for y := CornerRect.top to CornerRect.bottom do
         {$ENDIF}
         if RadiusDist>0 then
            begin
-           Ptr:=pointer(integer(Line) + 3*x);
+           Ptr:=pointer(PtrInt(Line) + 3*x);
            Ptr^:=round(Ptr^ + (ColorB - Ptr^) * RadiusDist); inc(Ptr);
            Ptr^:=round(Ptr^ + (ColorG - Ptr^) * RadiusDist); inc(Ptr);
            Ptr^:=round(Ptr^ + (ColorR - Ptr^) * RadiusDist);
@@ -1567,7 +1567,7 @@ if (ABitmap.width=0) or (ABitmap.height=0) then
    exit;
 
 {$IFDEF EnhancedRecordSupport}
-// �?ród³owy rect...
+// �?ród³owy rect...
 OrgCornerRect:=T2DIntRect.create(Point.x,
                                  Point.y,
                                  Point.x + radius - 1,
@@ -1576,7 +1576,7 @@ OrgCornerRect:=T2DIntRect.create(Point.x,
 // ...przycinamy do rozmiarów bitmapy
 BitmapRect:=T2DIntRect.create(0, 0, ABitmap.width-1, ABitmap.height-1);
 {$ELSE}
-// �?ród³owy rect...
+// �?ród³owy rect...
 OrgCornerRect.create(Point.x,
                                  Point.y,
                                  Point.x + radius - 1,
@@ -1633,7 +1633,7 @@ for y := CornerRect.top to CornerRect.bottom do
         {$ENDIF}
         if RadiusDist>0 then
            begin
-           Ptr:=pointer(integer(Line) + 3*x);
+           Ptr:=pointer(PtrInt(Line) + 3*x);
            Ptr^:=round(Ptr^ + (ColorB - Ptr^) * RadiusDist); inc(Ptr);
            Ptr^:=round(Ptr^ + (ColorG - Ptr^) * RadiusDist); inc(Ptr);
            Ptr^:=round(Ptr^ + (ColorR - Ptr^) * RadiusDist);
@@ -1659,7 +1659,7 @@ if Radius<1 then
    exit;
 
 {$IFDEF EnhancedRecordSupport}
-// �?ród³owy rect...
+// �?ród³owy rect...
 CornerRect:=T2DIntRect.create(Point.x,
                               Point.y,
                               Point.x + radius - 1,
@@ -1673,7 +1673,7 @@ case CornerPos of
      cpRightBottom: Center:=T2DIntVector.Create(Point.x, Point.y);
 end;
 {$ELSE}
-// �?ród³owy rect...
+// �?ród³owy rect...
 CornerRect.create(Point.x,
                               Point.y,
                               Point.x + radius - 1,
