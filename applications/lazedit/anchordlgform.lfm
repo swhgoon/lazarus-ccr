@@ -8,7 +8,7 @@ object AnchorDlgForm: TAnchorDlgForm
   ClientHeight = 377
   ClientWidth = 320
   OnShow = FormShow
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object OkBtn: TBitBtn
     Left = 237
     Height = 30
@@ -33,15 +33,15 @@ object AnchorDlgForm: TAnchorDlgForm
   end
   object Label1: TLabel
     Left = 8
-    Height = 14
+    Height = 15
     Top = 8
-    Width = 61
-    Caption = 'Omschrijving'
+    Width = 60
+    Caption = 'Description'
     ParentColor = False
   end
   object DescrEdit: TEdit
     Left = 8
-    Height = 21
+    Height = 23
     Top = 24
     Width = 304
     TabOrder = 2
@@ -49,15 +49,15 @@ object AnchorDlgForm: TAnchorDlgForm
   end
   object UrlLabel: TLabel
     Left = 8
-    Height = 14
+    Height = 15
     Top = 56
-    Width = 14
+    Width = 15
     Caption = 'Url'
     ParentColor = False
   end
   object UrlEdit: TEdit
     Left = 8
-    Height = 21
+    Height = 23
     Top = 72
     Width = 304
     TabOrder = 3
@@ -68,7 +68,7 @@ object AnchorDlgForm: TAnchorDlgForm
     Top = 104
     Width = 304
     AutoFill = True
-    Caption = 'Type hyperlink'
+    Caption = 'Type of hyperlink'
     ChildSizing.LeftRightSpacing = 6
     ChildSizing.TopBottomSpacing = 6
     ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
@@ -82,53 +82,53 @@ object AnchorDlgForm: TAnchorDlgForm
     ItemIndex = 0
     Items.Strings = (
       'Url'
-      'Lokaal anker maken'
-      'Naar lokaal anker verwijzen'
+      'Make local anchor'
+      'Link to a local anchor'
     )
     OnClick = AnchorTypeGroupClick
     TabOrder = 4
   end
   object Label3: TLabel
     Left = 8
-    Height = 14
+    Height = 15
     Top = 192
-    Width = 21
-    Caption = 'Titel'
+    Width = 23
+    Caption = 'Title'
     ParentColor = False
   end
   object TitleEdit: TEdit
     Left = 8
-    Height = 21
+    Height = 23
     Top = 208
     Width = 304
     TabOrder = 5
   end
   object Label4: TLabel
     Left = 8
-    Height = 14
+    Height = 15
     Top = 240
-    Width = 12
+    Width = 11
     Caption = 'ID'
     ParentColor = False
   end
   object IdEdit: TEdit
     Left = 8
-    Height = 21
+    Height = 23
     Top = 256
     Width = 304
     TabOrder = 6
   end
   object Label5: TLabel
     Left = 8
-    Height = 14
+    Height = 15
     Top = 288
-    Width = 26
+    Width = 27
     Caption = 'Class'
     ParentColor = False
   end
   object ClassEdit: TEdit
     Left = 8
-    Height = 21
+    Height = 23
     Top = 304
     Width = 304
     TabOrder = 7
