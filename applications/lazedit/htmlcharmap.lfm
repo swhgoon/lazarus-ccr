@@ -4,12 +4,12 @@ object HtmlCharmapForm: THtmlCharmapForm
   Top = 122
   Width = 431
   BorderStyle = bsDialog
-  Caption = 'Speciale tekens'
+  Caption = 'Special characters'
   ClientHeight = 227
   ClientWidth = 431
   OnCreate = FormCreate
   OnShow = FormShow
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object EntityGrid: TStringGrid
     Left = 0
     Height = 160
@@ -43,39 +43,36 @@ object HtmlCharmapForm: THtmlCharmapForm
   end
   object SelectionBox: TComboBox
     Left = 0
-    Height = 21
+    Height = 23
     Top = 160
     Width = 431
     Align = alTop
-    ItemHeight = 13
-    ItemIndex = 0
+    ItemHeight = 15
     Items.Strings = (
-      'Divers'
-      'Grieks'
-      'Wiskunde en rekenen'
-      'Pijltjes'
+      'Misc'
+      'Greek'
+      'Math'
+      'Arrows'
     )
     OnChange = SelectionBoxChange
     Style = csDropDownList
     TabOrder = 1
-    Text = 'Divers'
   end
   object CloseBtn: TBitBtn
     Left = 304
     Height = 30
     Top = 192
     Width = 123
-    Cancel = True
-    Caption = '&Sluiten'
+    DefaultCaption = True
     Kind = bkClose
     ModalResult = 11
     TabOrder = 2
   end
   object ExampleLabel: TLabel
     Left = 80
-    Height = 14
+    Height = 15
     Top = 200
-    Width = 80
+    Width = 76
     Caption = 'ExampleLabel'
     Font.Color = clRed
     Font.Style = [fsBold]
@@ -85,10 +82,10 @@ object HtmlCharmapForm: THtmlCharmapForm
   end
   object Label1: TLabel
     Left = 12
-    Height = 14
+    Height = 15
     Top = 201
-    Width = 63
-    Caption = 'Voorbeeld:'
+    Width = 47
+    Caption = 'Example'
     Font.Style = [fsBold]
     ParentColor = False
     ParentFont = False
