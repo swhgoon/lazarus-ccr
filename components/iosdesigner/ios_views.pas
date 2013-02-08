@@ -52,6 +52,8 @@ type
     bvSuperview,
     bvLines,
     bvBackgroundColor,
+    bvFullScreen,
+    bvClearContext,
     bvFlags,
     bvButtonType,
     bvLineBreak,
@@ -79,6 +81,8 @@ const
     (APropertyName: 'NSSuperview'    ; ADefaultValue: ''),
     (APropertyName: 'IBUINumberOfLines' ; ADefaultValue: '1'),
     (APropertyName: 'IBUIBackgroundColor' ; ADefaultValue: ''),
+    (APropertyName: 'IBUIResizesToFullScreen' ; ADefaultValue: 'NO'),
+    (APropertyName: 'IBUIClearsContextBeforeDrawing' ; ADefaultValue: 'YES'),
     (APropertyName: 'NSvFlags'       ; ADefaultValue: '0'),
     (APropertyName: 'IBUIButtonType' ; ADefaultValue: '0'),
     (APropertyName: 'IBUILineBreakMode' ; ADefaultValue: '4'),
@@ -133,6 +137,7 @@ type
     FParent: tiOSFakeComponent;
     // iOS
     procedure AddChildToDom(const AValue: tiOSFakeComponent);
+    procedure RemoveChildFromDom(const AValue: tiOSFakeComponent);
     function GetObjectID: integer;
     function GetPosition(APosition: TiOSXIBPos): integer;
     function GetRef: integer;
@@ -328,6 +333,8 @@ type
     class function GetIBClassName: string; override;
   published
     property StatusBar: TiOSFakeStatusBarStyle read GetStatusBar write SetStatusBar;
+    property ResizesToFullScreen: boolean index bvFullScreen read GetXIBBoolean write SetXIBBoolean;
+    property ClearGraphincsContext: boolean index bvClearContext read GetXIBBoolean write SetXIBBoolean;
   end;
 
   { UIViewController }
@@ -1614,6 +1621,8 @@ begin
   Inherited SetBounds(left, top, 320, 480);
   BackgroundColor:=clWhite;
   StatusBar:=sbsGrey;
+  ResizesToFullScreen:=true;
+  ClearGraphincsContext := False;
 end;
 
 constructor UIWindow.Create(AOwner: TComponent);
@@ -1634,6 +1643,15 @@ begin
     // outer frame
     Pen.Color:=clRed;
     Rectangle(0,0,self.Width,self.Height);
+    if StatusBar<>sbsNone then
+      begin
+      Pen.Color:=clBlack;
+      if StatusBar = sbsBlack then
+        Brush.Color:=clBlack
+      else
+        Brush.Color:=clGray;
+      Rectangle(0,0,self.Width,19);
+      end;
     end;
 end;
 
@@ -1866,8 +1884,8 @@ end;
 
 destructor NSObject.Destroy;
 begin
-  FNIBDocument.Free;
   inherited Destroy;
+  FNIBDocument.Free;
 end;
 
 function NSObject.GetDesigner: IMyWidgetDesigner;
@@ -2237,9 +2255,73 @@ begin
     end;
 end;
 
+procedure tiOSFakeComponent.RemoveChildFromDom(const AValue: tiOSFakeComponent);
+var
+  AnElement: TDOMElement;
+  AnOutletElement: TDOMElement;
+  ARefElement: TDOMElement;
+  ARemove: boolean;
+  ARemoveElement: TDOMElement;
+begin
+  if assigned(XIBObjectElement) then
+    begin
+    // Remove possible connections
+    AnElement := GetXIBConnectionRecords.FirstChild as TDOMElement;
+    while assigned(AnElement) do
+      begin
+      ARemove:=false;
+      if (AnElement.NodeName='object') and (AnElement.AttribStrings['class']='IBConnectionRecord') then
+        begin
+        AnOutletElement := FindKeyNode(AnElement, 'object', 'connection');
+        if assigned(AnOutletElement) then
+          begin
+          ARefElement := FindKeyNode(AnOutletElement, 'reference', 'source');
+          if assigned(ARefElement) and (ARefElement.AttribStrings['ref']=inttostr(AValue.Ref)) then
+            ARemove:=true;
+          ARefElement := FindKeyNode(AnOutletElement, 'reference', 'destination');
+          if assigned(ARefElement) and (ARefElement.AttribStrings['ref']=inttostr(AValue.Ref)) then
+            ARemove:=true;
+          end;
+        end;
+      ARemoveElement := AnElement;
+      AnElement := AnElement.NextSibling as TDOMElement;
+      if ARemove then
+        ARemoveElement.ParentNode.RemoveChild(ARemoveElement);
+      end;
+
+    // Remove ObjectRecord
+    AnElement := FindOrderdObjectByRef(AValue.Ref);
+    AnElement.ParentNode.RemoveChild(AnElement);
+
+    // Remove from Parent's ObjectRecord, unless AValue is a RootObject
+    if assigned(parent) then
+      begin
+      AnElement := FindOrderdObjectByRef(Ref);
+      ARefElement := FindKeyNode(AnElement,'array','children');
+      if not assigned(ARefElement) then
+        ARefElement := FindKeyNode(AnElement,'object','children');
+      ARefElement := ARefElement.FirstChild as TDOMElement;
+      while assigned(ARefElement) do
+        begin
+        if ARefElement.AttribStrings['ref']=IntToStr(AValue.Ref) then
+          begin
+          ARefElement.ParentNode.RemoveChild(ARefElement);
+          break;
+          end;
+        ARefElement := ARefElement.NextSibling as TDOMElement;
+        end;
+    end;
+
+    // Remove object itself
+    AValue.XIBObjectElement.ParentNode.RemoveChild(AValue.XIBObjectElement);
+    AValue.FXIBObjectElement :=nil;
+    end;
+end;
+
 procedure tiOSFakeComponent.RemoveChild(const AValue: tiOSFakeComponent);
 begin
   FChilds.Remove(AValue);
+  RemoveChildFromDom(AValue);
 end;
 
 function tiOSFakeComponent.GetHeight: integer;
@@ -2691,8 +2773,8 @@ end;
 
 destructor tiOSFakeComponent.Destroy;
 begin
-  Parent:=nil;
   while ChildCount>0 do Children[ChildCount-1].Free;
+  Parent:=nil;
   FreeAndNil(FChilds);
   FreeAndNil(FStoredEvents);
   inherited Destroy;
@@ -2767,7 +2849,8 @@ begin
   Result:=FChilds.Count;
 end;
 
-function tiOSFakeComponent.AddElement(ADomNode: TDomElement; AName: string): TDOMElement;
+function tiOSFakeComponent.AddElement(ADomNode: TDOMElement; AName: string
+  ): TDOMElement;
 begin
   result := ADomNode.OwnerDocument.CreateElement(AName);
   ADomNode.AppendChild(result);
@@ -3318,7 +3401,7 @@ end;
 procedure UIView.InitializeDefaults;
 begin
   inherited InitializeDefaults;
-  SetBounds(10,10,72,37);
+  SetBounds(10,30,72,37);
   Alpha:=1;
   Opaque:=False;
   Flags := 292;
