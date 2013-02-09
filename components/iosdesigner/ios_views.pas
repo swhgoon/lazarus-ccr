@@ -58,6 +58,7 @@ type
     bvButtonType,
     bvLineBreak,
     bvPlaceHolder,
+    bvFont,
     bvEnabled);
 
   TXIBProperty = record
@@ -73,7 +74,7 @@ const
     (APropertyName: 'IBUIOpaque'     ; ADefaultValue: 'YES'),
     (APropertyName: 'IBUIHighlighted'; ADefaultValue: 'NO'),
     (APropertyName: 'IBUIAlpha'      ; ADefaultValue: '1'),
-    (APropertyName: 'IBUIText'       ; ADefaultValue: 'Label'),
+    (APropertyName: 'IBUIText'       ; ADefaultValue: ''),
     (APropertyName: 'IBUITextColor'  ; ADefaultValue: ''),
     (APropertyName: 'IBUITextAlignment' ; ADefaultValue: '0'),
     (APropertyName: 'IBUINormalTitle' ; ADefaultValue: ''),
@@ -87,6 +88,7 @@ const
     (APropertyName: 'IBUIButtonType' ; ADefaultValue: '0'),
     (APropertyName: 'IBUILineBreakMode' ; ADefaultValue: '4'),
     (APropertyName: 'IBUIPlaceholder' ; ADefaultValue: ''),
+    (APropertyName: 'IBUIFontDescription' ; ADefaultValue: ''),
     (APropertyName: 'IBUIEnabled'    ; ADefaultValue: 'YES'));
 
   EventNames : array[1..1] of string = (
@@ -102,19 +104,24 @@ type
                              DisableAutoSize: boolean): TComponent;
   end;
 
-  TiOSFakeFontType = (ftNotSet, ftSystem, ftSystemBold, ftSystemItalic);
+  TiOSFakeFontType = (ftNotSet, ftSystem=1, ftSystemBold=2, ftSystemItalic=3, ftCustom=4);
 
   { TiOSFakeFontDescription }
 
   TiOSFakeFontDescription = class(TPersistent)
   private
-    FFontType: TiOSFakeFontType;
-    FpointSize: double;
+    FXIBObjectElement: TDOMElement;
+    procedure SetFont(AFontType: TiOSFakeFontType; APointSize: double);
+    function GetFontType: TiOSFakeFontType;
+    function GetpointSize: double;
+    procedure SetFontType(AValue: TiOSFakeFontType);
+    procedure SetpointSize(AValue: double);
   public
     constructor Create;
+    procedure ApplyToLCLFont(AFont: TFont);
   published
-    property FontType: TiOSFakeFontType read FFontType write FFontType;
-    property pointSize: double read FpointSize write FpointSize;
+    property FontType: TiOSFakeFontType read GetFontType write SetFontType;
+    property pointSize: double read GetpointSize write SetpointSize;
   end;
 
   { tiOSFakeComponent }
@@ -135,6 +142,7 @@ type
     FLeft: integer;
     FXIBObjectElement: TDOMElement;
     FParent: tiOSFakeComponent;
+    FFont: TiOSFakeFontDescription;
     // iOS
     procedure AddChildToDom(const AValue: tiOSFakeComponent);
     procedure RemoveChildFromDom(const AValue: tiOSFakeComponent);
@@ -197,11 +205,12 @@ type
     procedure SetXIBColor(index: TXIBProperties; AValue: TColor);
     function GetXIBEvent(index: integer): TCocoaEvent;
     procedure SetXIBEvent(Index: integer; AValue: TCocoaEvent);
+    function GetXIBFont(index: TXIBProperties): TiOSFakeFontDescription;
 
     function GetNSObject: NSObject; virtual;
     // Streaming
     procedure DefineProperties(Filer: TFiler); override;
-    function GetKeyNode(AParentNode: TDOMNode; NodeName, Key: string; AClass: string =''): TDOMElement;
+    property Font: TiOSFakeFontDescription index bvFont read GetXIBFont; // write SetXIBFont;
   public
     procedure InitializeDefaults; virtual;
     constructor Create(AOwner: TComponent); override;
@@ -262,7 +271,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure InitializeDefaults; override;
-    procedure  paint(ACanvas: TCanvas); override;
+    procedure paint(ACanvas: TCanvas); override;
     class function GetIBClassName: string; override;
     property NSSuperview: UIView read GetNSSuperview write SetNSSuperView;
     property NSNextResponder: UIView read FNSNextResponder write FNSNextResponder;
@@ -405,6 +414,7 @@ type
     procedure InitializeDefaults; override;
     constructor Create(AOwner: TComponent); override;
     class function GetIBClassName: string; override;
+    procedure paint(ACanvas: TCanvas); override;
 
     property NSNextKeyView: UIView read FNSNextKeyView write FNSNextKeyView;
   published
@@ -412,6 +422,7 @@ type
     property NormalTitleColor: TColor index bvNormalTitleColor read GetXIBColor write SetXIBColor;
     property ButtonType: TiOSFakeButtonType read GetButtonType write SetButtonType;
     property onTouchDown: TCocoaEvent index 1 read GetXIBEvent write SetXIBEvent;
+    property Font;
   end;
 
   { UILabel }
@@ -420,22 +431,19 @@ type
 
   UILabel = class(UIView)
   private
-    FFont: TiOSFakeFontDescription;
     function GetLineBreaks: TLineBreaks;
-    procedure SetFont(AValue: TiOSFakeFontDescription);
     procedure SetLineBreaks(AValue: TLineBreaks);
     function GetTextAlignment: TiOSFakeAlignment;
     procedure SetTextAlignment(AValue: TiOSFakeAlignment);
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     class function GetIBClassName: string; override;
     procedure paint(ACanvas: TCanvas); override;
   published
     property Lines: integer index bvLines read GetXIBInteger write SetXIBInteger;
     property TextAlignment: TiOSFakeAlignment read GetTextAlignment write SetTextAlignment;
     property TextColor: TColor index bvTextColor read GetXIBColor write SetXIBColor;
-    property Font: TiOSFakeFontDescription read FFont write SetFont;
+    property Font;
     property Enabled: boolean index bvEnabled read GetXIBBoolean write SetXIBBoolean;
     property Highlighted: boolean index bvHighlighted read GetXIBBoolean write SetXIBBoolean;
     property LineBreaks: TLineBreaks read GetLineBreaks write SetLineBreaks;
@@ -451,10 +459,13 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     class function GetIBClassName: string; override;
+    procedure paint(ACanvas: TCanvas); override;
   published
     property Placeholder: string index bvPlaceHolder read GetXIBString write SetXIBString;
     property TextAlignment: TiOSFakeAlignment read GetTextAlignment write SetTextAlignment;
+    property TextColor: TColor index bvTextColor read GetXIBColor write SetXIBColor;
     property caption;
+    property font;
   end;
 
   TiOSFakeSeparatorStyle = (ssNone,ssSingleLine,ssSingleLineEtched);
@@ -627,6 +638,8 @@ procedure ObtainBaseObjectInfoFromXIB(AStream: TStream; out AXMLDocument: TXMLDo
                                       out AFilesOwnerID: int64;
                                       out AXIBUsesObjectsForArrays: boolean);
 function FindKeyNode(AParentNode: TDOMNode; NodeName, Key: string): TDOMElement;
+function GetKeyNode(AParentNode: TDOMNode; NodeName, Key: string; AClass: string =''): TDOMElement;
+function AddElement(ADomNode: TDOMElement; AName: string): TDOMElement;
 
 
 implementation
@@ -1215,7 +1228,7 @@ begin
       begin
       FakeComp := tiOSFakeComponent(Component);
       AnElement := FakeComp.GetXIBFlattenedProperties;
-      AnElement := FakeComp.GetKeyNode(AnElement,'string', inttostr(FakeComp.ObjectID) +'.CustomClassName');
+      AnElement := GetKeyNode(AnElement,'string', inttostr(FakeComp.ObjectID) +'.CustomClassName');
       AnElement.TextContent:=FakeComp.ClassName;
       WriteXML(NSObject(Component).FNIBDocument, FStream);
       FIsWritten:=true;
@@ -2554,6 +2567,12 @@ begin
 
 end;
 
+function tiOSFakeComponent.GetXIBFont(index: TXIBProperties): TiOSFakeFontDescription;
+begin
+  FFont.FXIBObjectElement := XIBObjectElement;
+  result := FFont;
+end;
+
 function tiOSFakeComponent.GetNSObject: NSObject;
 begin
   if assigned(Parent) then
@@ -2626,7 +2645,7 @@ begin
     end;
 end;
 
-function tiOSFakeComponent.GetKeyNode(AParentNode: TDOMNode; NodeName, Key: string; AClass: string): TDOMElement;
+function GetKeyNode(AParentNode: TDOMNode; NodeName, Key: string; AClass: string): TDOMElement;
 begin
   result := FindKeyNode(AParentNode, NodeName, Key);
   if not assigned(result) then
@@ -2636,6 +2655,12 @@ begin
     if AClass<>'' then
       result.AttribStrings['class']:=AClass;
     end;
+end;
+
+function AddElement(ADomNode: TDOMElement; AName: string): TDOMElement;
+begin
+  result := ADomNode.OwnerDocument.CreateElement(AName);
+  ADomNode.AppendChild(result);
 end;
 
 procedure tiOSFakeComponent.SetParentComponent(Value: TComponent);
@@ -2766,6 +2791,7 @@ constructor tiOSFakeComponent.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FChilds:=TFPList.Create;
+  FFont := TiOSFakeFontDescription.Create;
   FStoredEvents := TStringList.Create;
   FStoredEvents.Sorted:=true;
   FStoredEvents.Duplicates:=dupIgnore;
@@ -2777,6 +2803,7 @@ begin
   Parent:=nil;
   FreeAndNil(FChilds);
   FreeAndNil(FStoredEvents);
+  FFont.Free;
   inherited Destroy;
 end;
 
@@ -3097,20 +3124,145 @@ begin
   Result:='IBUITextField';
 end;
 
+procedure UITextField.paint(ACanvas: TCanvas);
+begin
+  inherited;
+  ACanvas.Font.Color:=TextColor;
+  Font.ApplyToLCLFont(ACanvas.Font);
+  ACanvas.TextOut(5,2,Caption);
+end;
+
 { TiOSFakeFontDescription }
+
+procedure TiOSFakeFontDescription.SetFont(AFontType: TiOSFakeFontType; APointSize: double);
+var
+  ADescNode: TDOMNode;
+  AFontNode: TDOMNode;
+  ANode: TDOMNode;
+begin
+  if Assigned(FXIBObjectElement) then
+    begin
+    ADescNode := FindKeyNode(FXIBObjectElement, 'object', 'IBUIFontDescription');
+    AFontNode := FindKeyNode(FXIBObjectElement, 'object', 'NSFont');
+    if AFontType = ftNotSet then
+      begin
+      if Assigned(ADescNode) then
+        ADescNode.ParentNode.RemoveChild(ADescNode);
+      if Assigned(AFontNode) then
+        AFontNode.ParentNode.RemoveChild(AFontNode);
+      end
+    else
+      begin
+      if not assigned(ADescNode) then
+        ADescNode := GetKeyNode(FXIBObjectElement, 'object', 'IBUIFontDescription', 'IBUIFontDescription');
+      if not assigned(AFontNode) then
+        AFontNode := GetKeyNode(FXIBObjectElement, 'object', 'IBUIFont', 'NSFont');
+
+      ANode := GetKeyNode(ADescNode,'double','pointSize');
+      ANode.TextContent:=FloatToStr(ApointSize);
+      ANode := GetKeyNode(AFontNode,'double','NSSize');
+      ANode.TextContent:=FloatToStr(ApointSize);
+
+      ANode := GetKeyNode(ADescNode, 'int', 'type');
+      ANode.TextContent:=IntToStr(ord(AFontType));
+      ANode := GetKeyNode(AFontNode, 'int', 'NSfFlags');
+      ANode.TextContent:='16';
+
+      ANode := GetKeyNode(AFontNode, 'string', 'NSName');
+      case AFontType of
+        ftSystem: ANode.TextContent:='Helvetica';
+        ftSystemBold: ANode.TextContent:='Helvetica-Bold';
+        ftSystemItalic: ANode.TextContent:='Helvetica-Oblique';
+      end;
+
+      end;
+    end;
+end;
+
+function TiOSFakeFontDescription.GetFontType: TiOSFakeFontType;
+var
+  ANode: TDOMElement;
+begin
+  Result := ftNotSet;
+  if Assigned(FXIBObjectElement) then
+    begin
+    ANode := FindKeyNode(FXIBObjectElement, 'object', 'IBUIFontDescription');
+    if assigned(ANode) then
+      begin
+      ANode := FindKeyNode(ANode,'int','type');
+      if assigned(ANode) then
+        Result:=TiOSFakeFontType(StrToInt(ANode.TextContent))
+      else
+        Result:=ftCustom;
+      end;
+    end
+end;
+
+function TiOSFakeFontDescription.GetpointSize: double;
+var
+  ANode: TDOMElement;
+begin
+  Result := -1;
+  if Assigned(FXIBObjectElement) then
+    begin
+    ANode := FindKeyNode(FXIBObjectElement, 'object', 'IBUIFontDescription');
+    if assigned(ANode) then
+      begin
+      ANode := FindKeyNode(ANode,'double','pointSize');
+      if assigned(ANode) then
+        Result:=StrToFloat(ANode.TextContent)
+      else
+        Result:=-1;
+      end;
+    end
+end;
+
+procedure TiOSFakeFontDescription.SetFontType(AValue: TiOSFakeFontType);
+begin
+  SetFont(AValue, pointSize);
+end;
+
+procedure TiOSFakeFontDescription.SetpointSize(AValue: double);
+begin
+  SetFont(FontType, AValue);
+end;
 
 constructor TiOSFakeFontDescription.Create;
 begin
   pointSize:=12;
 end;
 
-{ TMyLabelButton }
-
-procedure UILabel.SetFont(AValue: TiOSFakeFontDescription);
+procedure TiOSFakeFontDescription.ApplyToLCLFont(AFont: TFont);
 begin
-  if FFont=AValue then Exit;
-  FFont.Assign(AValue);
+  if pointSize>0 then
+    AFont.Size:=round(pointSize)
+  else
+    AFont.Size:=12;
+
+  AFont.Name:='Helvetica';
+  case FontType of
+    ftSystemBold: begin
+                  AFont.Bold:=true;
+                  AFont.Italic:=False;
+                  end;
+    ftSystem:     begin
+                  AFont.Bold:=false;
+                  AFont.Italic:=False;
+                  end;
+    ftSystemItalic: begin
+                    AFont.Italic:=true;
+                    AFont.Bold:=false;
+                    end
+  else
+    begin
+    AFont.Italic:=false;
+    AFont.Bold:=false;
+    end;
+  end;
+
 end;
+
+{ TMyLabelButton }
 
 function UILabel.GetLineBreaks: TLineBreaks;
 begin
@@ -3153,14 +3305,6 @@ constructor UILabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FAcceptChildsAtDesignTime:=false;
-  FFont := TiOSFakeFontDescription.Create;
-  Enabled := true;
-end;
-
-destructor UILabel.Destroy;
-begin
-  FFont.Free;
-  inherited Destroy;
 end;
 
 class function UILabel.GetIBClassName: string;
@@ -3170,34 +3314,8 @@ end;
 
 procedure UILabel.paint(ACanvas: TCanvas);
 begin
+  Font.ApplyToLCLFont(ACanvas.Font);
   ACanvas.Font.Color:=TextColor;
-  case Font.FontType of
-    ftSystemBold: begin
-                  ACanvas.font.Name:='Helvetica';
-                  ACanvas.Font.Size:=round(Font.FpointSize);
-                  ACanvas.Font.Bold:=true;
-                  ACanvas.Font.Italic:=False;
-                  end;
-    ftSystem:     begin
-                  ACanvas.font.Name:='Helvetica';
-                  ACanvas.Font.Size:=round(Font.FpointSize);
-                  ACanvas.Font.Bold:=false;
-                  ACanvas.Font.Italic:=False;
-                  end;
-    ftSystemItalic: begin
-                    ACanvas.font.Name:='Helvetica';
-                    ACanvas.Font.Size:=round(Font.FpointSize);
-                    ACanvas.Font.Italic:=true;
-                    ACanvas.Font.Bold:=false;
-                    end
-  else
-    begin
-    ACanvas.font.Name:='Helvetica';
-    ACanvas.Font.Size:=12;
-    ACanvas.Font.Italic:=false;
-    ACanvas.Font.Bold:=false;
-    end;
-  end;
   ACanvas.TextOut(5,2,Caption);
 end;
 
@@ -3411,18 +3529,21 @@ procedure UIView.paint(ACanvas: TCanvas);
 begin
   with ACanvas do
     begin
-    Brush.Style:=bsSolid;
     Brush.Color:=BackgroundColor;
-    // outer frame
-    Pen.Color:=clRed;
+    Pen.Color:=BackgroundColor;
+    if (BackgroundColor = clDefault) then
+      begin
+      Brush.Style:=bsClear;
+      pen.Style:=psClear;
+      end
+    else
+      begin
+      Brush.Style:=bsSolid;
+      pen.Style:=psSolid;
+      end;
+
+    // Background
     Rectangle(0,0,self.Width,self.Height);
-    // caption
-    Font.Color:=clBlack;
-    Font.Name:='Helvetica';
-    Font.Size:=12;
-    Font.Italic:=false;
-    Font.Bold:=false;
-    TextOut(5,2,GetPaintText);
     end;
 end;
 
@@ -3472,6 +3593,29 @@ end;
 class function UIButton.GetIBClassName: string;
 begin
   result := 'IBUIButton';
+end;
+
+procedure UIButton.paint(ACanvas: TCanvas);
+var
+  ARadius: integer;
+begin
+  inherited;
+  with ACanvas do
+    begin
+    brush.Color:=clWhite;
+    pen.Color:=clGray;
+    pen.Style := psSolid;
+
+    ARadius := min(self.Width,self.Height);
+    ARadius := min(ARadius, 22);
+
+    RoundRect(0,0,self.Width,self.Height,ARadius, ARadius);
+
+    // caption
+    Font.Color:=NormalTitleColor;
+    self.Font.ApplyToLCLFont(Font);
+    TextOut(5,2,GetPaintText);
+    end;
 end;
 
 end.
