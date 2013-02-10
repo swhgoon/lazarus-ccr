@@ -496,6 +496,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure InitializeDefaults; override;
+    procedure paint(ACanvas: TCanvas); override;
     class function GetIBClassName: string; override;
   published
     property RowHeight: double index bvRowHeight read GetXIBFloat write SetXIBFloat;
@@ -3153,6 +3154,47 @@ begin
   BackgroundColor:=clWhite;
   ShowSelectionOnTouch:=true;
   BounceVertically:=true;
+end;
+
+procedure UITableView.paint(ACanvas: TCanvas);
+var
+  TS: TTextStyle;
+  i: integer;
+  Count: integer;
+begin
+  Inherited;
+  with ACanvas do
+    begin
+    pen.Style:=psSolid;
+    TS.Alignment:=taLeftJustify;
+    TS.Layout:=tlCenter;
+    font.Bold:=true;
+    font.Size:=16;
+    font.color:=clWhite;
+    GradientFill(rect(0,round(self.Height-SectionFooterHeight),self.Width,self.Height-1),clLtGray, clGray, gdVertical);
+    TextRect(rect(8,round(self.Height-SectionFooterHeight),self.Width-8,Self.Height),8,round(self.Height-SectionFooterHeight),'Section Footer',TS);
+
+    GradientFill(rect(0,0,self.Width,round(SectionHeaderHeight-1)),clLtGray, clGray, gdVertical);
+    TextRect(rect(8,0,self.Width-8,round(SectionHeaderHeight-1)),8,0,'Netherlands',TS);
+
+    pen.Color:=SeparatorColor;
+    font.Color:=clBlack;
+    font.Size:=18;
+    count := trunc((self.Height-SectionFooterHeight-SectionHeaderHeight) / RowHeight);
+    for i := 0 to count-1 do
+      begin
+      TextRect(rect(8,round(SectionHeaderHeight+(i*RowHeight)),self.Width-8,round(SectionHeaderHeight+((i+1)*RowHeight))),8,round(SectionHeaderHeight+(i*RowHeight)),'Item',TS);
+      if SeparatorStyle=ssNone then
+        pen.Style:=psClear
+      else if SeparatorStyle=ssSingleLine then
+        pen.Style:=psSolid
+      else if SeparatorStyle=ssSingleLineEtched then
+        pen.Style:=psDash;
+
+      Line(0,round(SectionHeaderHeight+((i+1)*RowHeight)),self.Width-1,round(SectionHeaderHeight+((i+1)*RowHeight)));
+      end;
+
+    end;
 end;
 
 class function UITableView.GetIBClassName: string;
