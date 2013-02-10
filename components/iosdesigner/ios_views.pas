@@ -52,6 +52,7 @@ type
     bvSuperview,
     bvLines,
     bvBackgroundColor,
+    bvSeparatorColor,
     bvFullScreen,
     bvClearContext,
     bvFlags,
@@ -59,6 +60,14 @@ type
     bvLineBreak,
     bvPlaceHolder,
     bvFont,
+    bvPrompt,
+    bvRowHeight,
+    bvSectionHeaderHeigh,
+    bvSectionFooterHeight,
+    bvSeparatorStyle,
+    bvClipSubviews,
+    bvShowSelectionOnTouch,
+    bvBounceVertically,
     bvEnabled);
 
   TXIBProperty = record
@@ -82,6 +91,7 @@ const
     (APropertyName: 'NSSuperview'    ; ADefaultValue: ''),
     (APropertyName: 'IBUINumberOfLines' ; ADefaultValue: '1'),
     (APropertyName: 'IBUIBackgroundColor' ; ADefaultValue: ''),
+    (APropertyName: 'IBUISeparatorColor' ; ADefaultValue: ''),
     (APropertyName: 'IBUIResizesToFullScreen' ; ADefaultValue: 'NO'),
     (APropertyName: 'IBUIClearsContextBeforeDrawing' ; ADefaultValue: 'YES'),
     (APropertyName: 'NSvFlags'       ; ADefaultValue: '0'),
@@ -89,6 +99,14 @@ const
     (APropertyName: 'IBUILineBreakMode' ; ADefaultValue: '4'),
     (APropertyName: 'IBUIPlaceholder' ; ADefaultValue: ''),
     (APropertyName: 'IBUIFontDescription' ; ADefaultValue: ''),
+    (APropertyName: 'IBPrompt'       ; ADefaultValue: ''),
+    (APropertyName: 'IBUIRowHeight'  ; ADefaultValue: ''),
+    (APropertyName: 'IBUISectionHeaderHeight' ; ADefaultValue: ''),
+    (APropertyName: 'IBUISectionFooterHeight' ; ADefaultValue: ''),
+    (APropertyName: 'IBUISeparatorStyle' ; ADefaultValue: ''),
+    (APropertyName: 'IBUIClipsSubviews' ; ADefaultValue: ''),
+    (APropertyName: 'IBUIShowsSelectionImmediatelyOnTouchBegin' ; ADefaultValue: ''),
+    (APropertyName: 'IBUIAlwaysBounceVertical' ; ADefaultValue: ''),
     (APropertyName: 'IBUIEnabled'    ; ADefaultValue: 'YES'));
 
   EventNames : array[1..1] of string = (
@@ -258,7 +276,6 @@ type
   UIView = class(tiOSFakeComponent)
   private
     FNSNextResponder: UIView;
-    FBackgroundColor: TColor;
     function GetFlags(AIndex: Integer): boolean;
     function GetNSSuperview: UIView;
     function ObtainSuperview: UIView;
@@ -474,40 +491,40 @@ type
 
   UITableView = class(UIView)
   private
-    FClipSubviews: boolean;
-    FRowHeight: float;
-    FSectionFooterHeight: float;
-    FSectionHeaderHeight: float;
-    FSeparatorColor: TColor;
-    FSeparatorStyle: TiOSFakeSeparatorStyle;
+    function GetSeparatorStyle: TiOSFakeSeparatorStyle;
+    procedure SetSeparatorStyle(AValue: TiOSFakeSeparatorStyle);
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
+    procedure InitializeDefaults; override;
     class function GetIBClassName: string; override;
   published
-    property RowHeight: float read FRowHeight write FRowHeight;
-    property SectionHeaderHeight: float read FSectionHeaderHeight write FSectionHeaderHeight;
-    property SectionFooterHeight: float read FSectionFooterHeight write FSectionFooterHeight;
-    property SeparatorStyle: TiOSFakeSeparatorStyle read FSeparatorStyle write FSeparatorStyle;
-    property SeparatorColor: TColor read FSeparatorColor write FSeparatorColor;
-    property ClipSubviews: boolean read FClipSubviews write FClipSubviews;
+    property RowHeight: double index bvRowHeight read GetXIBFloat write SetXIBFloat;
+    property SectionHeaderHeight: double index bvSectionHeaderHeigh read GetXIBFloat write SetXIBFloat;
+    property SectionFooterHeight: double index bvSectionFooterHeight read GetXIBFloat write SetXIBFloat;
+    property SeparatorStyle: TiOSFakeSeparatorStyle read GetSeparatorStyle write SetSeparatorStyle;
+    property SeparatorColor: TColor index bvSeparatorColor read GetXIBColor write SetXIBColor;
+    property BackgroundColor: TColor index bvBackgroundColor read GetXIBColor write SetXIBColor;
+    property ClipSubviews: boolean index bvClipSubviews read GetXIBBoolean write SetXIBBoolean;
+    property ShowSelectionOnTouch: boolean index bvShowSelectionOnTouch read GetXIBBoolean write SetXIBBoolean;
+    property BounceVertically: boolean index bvBounceVertically read GetXIBBoolean write SetXIBBoolean;
   end;
 
   { UISearchBar }
 
   UISearchBar = class(UIView)
   private
-    FPlaceholder: string;
-    FPrompt: string;
-    FText: string;
+    procedure SetPrompt(AIndex: TXIBProperties; AValue: string);
+  protected
+    procedure SetBounds(NewLeft, NewTop, NewWidth, NewHeight: integer); override;
+    procedure paint(ACanvas: TCanvas); override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
+    procedure InitializeDefaults; override;
     class function GetIBClassName: string; override;
   published
-    property Text: string read FText write FText;
-    property Placeholder: string read FPlaceholder write FPlaceholder;
-    property Prompt: string read FPrompt write FPrompt;
+    property Caption;
+    property Placeholder: string index bvPlaceHolder read GetXIBString write SetXIBString;
+    property Prompt: string index bvPrompt read GetXIBString write SetPrompt;
   end;
 
   { UIProgressView }
@@ -1654,11 +1671,11 @@ begin
     Brush.Style:=bsSolid;
     Brush.Color:=BackgroundColor;
     // outer frame
-    Pen.Color:=clRed;
+    Pen.Style:=psSolid;
+    Pen.Color:=clBlack;
     Rectangle(0,0,self.Width,self.Height);
     if StatusBar<>sbsNone then
       begin
-      Pen.Color:=clBlack;
       if StatusBar = sbsBlack then
         Brush.Color:=clBlack
       else
@@ -3028,27 +3045,76 @@ begin
     end;
 end;
 
+procedure UISearchBar.SetBounds(NewLeft, NewTop, NewWidth, NewHeight: integer);
+begin
+  if Prompt<>'' then
+    NewHeight := 75
+  else
+    NewHeight := 44;
+  inherited SetBounds(NewLeft, NewTop, NewWidth, NewHeight);
+end;
 
+procedure UISearchBar.paint(ACanvas: TCanvas);
+var
+  ATop: integer;
+  ts: TTextStyle;
+begin
+  with ACanvas do
+    begin
+    brush.Style := bsSolid;
+    pen.Color := $dfd5cd;
+    pen.style := psSolid;
+    if Prompt='' then
+      begin
+      ATop:=0;
+      Line(0,0,self.Width-1,0);
+      GradientFill(rect(0,ATop,self.Width, self.Height),$cdbcb0,$a2846d,gdVertical);
+      end
+    else
+      begin
+      brush.Color:=$cdbcb0;
+      pen.Color:=$cdbcb0;
+      ATop:=30;
+      Rectangle(0,0,self.Width-1,ATop);
+      Font.Size:=14;
+      Font.Italic:=false;
+      font.Bold:=false;
+      ts := TextStyle;
+      TS.Alignment:=taCenter;
+      TS.Layout:=tlCenter;
+      TextRect(rect(2,2,self.Width-3,ATop-2),2,2,Prompt,ts);
+      brush.Color:=$a2846d;
+      Rectangle(0,ATop,self.Width, self.Height);
+      end;
+
+    Brush.Color:=clWhite;
+    pen.Style := psSolid;
+    pen.Color := $2d3642;
+    RoundRect(6,ATop+6,self.Width-7, self.Height-7,24,24);
+    Line(0,self.Height-1,self.Width-1,Self.Height-1);
+    end;
+end;
+
+procedure UISearchBar.SetPrompt(AIndex: TXIBProperties; AValue: string);
+begin
+  SetXIBString(AIndex,AValue);
+  SetHeight(-1);
+end;
 
 { UISearchBar }
-{
-procedure UISearchBar.WriteToDomElement(AnObjectDomElement: TDOMElement);
-begin
-  inherited WriteToDomElement(AnObjectDomElement);
-  AddIBString(AnObjectDomElement,'IBText',Text);
-  AddIBString(AnObjectDomElement,'IBPlaceholder',Placeholder);
-  AddIBString(AnObjectDomElement,'IBPrompt',Prompt);
-end;
-}
+
 constructor UISearchBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FAcceptChildsAtDesignTime:=false;
 end;
 
-destructor UISearchBar.Destroy;
+procedure UISearchBar.InitializeDefaults;
 begin
-  inherited Destroy;
+  inherited InitializeDefaults;
+  Height:=44;
+  Width:=320;
+  Opaque:=true;
 end;
 
 class function UISearchBar.GetIBClassName: string;
@@ -3056,35 +3122,37 @@ begin
   Result:='IBUISearchBar';
 end;
 
-{ UITableView }
-{
-procedure UITableView.WriteToDomElement(AnObjectDomElement: TDOMElement);
+function UITableView.GetSeparatorStyle: TiOSFakeSeparatorStyle;
 begin
-  inherited WriteToDomElement(AnObjectDomElement);
-  AddIBFloat(AnObjectDomElement,'IBUIRowHeight',RowHeight);
-  AddIBFloat(AnObjectDomElement,'IBUISectionHeaderHeight',SectionHeaderHeight);
-  AddIBFloat(AnObjectDomElement,'IBUISectionFooterHeight',SectionFooterHeight);
-  AddIBInt(AnObjectDomElement,'IBUISeparatorStyle',ord(SeparatorStyle),0);
-  AddIBColor(AnObjectDomElement,'IBUISeparatorColor',SeparatorColor);
-  AddIBBoolean(AnObjectDomElement,'IBUIClipsSubviews',ClipSubviews);
+  result := TiOSFakeSeparatorStyle(GetXIBInteger(bvSeparatorStyle));
 end;
-}
+
+procedure UITableView.SetSeparatorStyle(AValue: TiOSFakeSeparatorStyle);
+begin
+  SetXIBInteger(bvSeparatorStyle, ord(AValue));
+end;
+
+{ UITableView }
+
 constructor UITableView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FRowHeight:=44;
-  FSectionFooterHeight:=22;
-  FSectionHeaderHeight:=22;
-  FSeparatorStyle:=ssSingleLine;
-  FSeparatorColor:=clDefault;
-  FClipSubviews:=true;
+  //FSeparatorColor:=clDefault;
   FAcceptChildsAtDesignTime:=false;
-  FBackgroundColor := clWhite;
 end;
 
-destructor UITableView.Destroy;
+procedure UITableView.InitializeDefaults;
 begin
-  inherited Destroy;
+  inherited InitializeDefaults;
+  RowHeight:=44;
+  SectionFooterHeight:=22;
+  SectionHeaderHeight:=22;
+  SeparatorStyle:=ssSingleLine;
+  Opaque:=true;
+  ClipSubviews:=true;
+  BackgroundColor:=clWhite;
+  ShowSelectionOnTouch:=true;
+  BounceVertically:=true;
 end;
 
 class function UITableView.GetIBClassName: string;
@@ -3513,7 +3581,6 @@ constructor UIView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FAcceptChildsAtDesignTime:=true;
-  FBackgroundColor:=clDefault;
 end;
 
 procedure UIView.InitializeDefaults;
