@@ -902,7 +902,7 @@ end;
 procedure TPopUpGrid.UTF8KeyPress(var UTF8Key: TUTF8Char);
 begin
   inherited UTF8KeyPress(UTF8Key);
-  if UTF8Key>#32 then
+  if UTF8Key>=#32 then
     FindNextChar(UTF8Key)
   else
   if UTF8Key = #8 then
