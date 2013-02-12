@@ -20,6 +20,7 @@ type
     btnLoadSpreadsheet: TButton;
     buttonReadCellInfo: TButton;
     editSourceFile: TFileNameEdit;
+    labelCurCell: TLabel;
     Label2: TLabel;
     memoCellData: TMemo;
     pagesSheets: TPageControl;
@@ -30,6 +31,7 @@ type
     procedure FormDestroy(Sender: TObject);
   private
     { private declarations }
+    procedure HandleSelectionChanged(Sender: TObject; aCol, aRow: Integer);
   public
     { public declarations }
     Worksheets: array of TsWorksheetGrid;
@@ -72,6 +74,7 @@ begin
     Worksheets[i].Align := alClient;
     //Worksheets[i].Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
     Worksheets[i].LoadFromWorksheet(lCurWorksheet);
+    Worksheets[i].OnSelection := @HandleSelectionChanged;
     lCurPage.Caption := lCurWorksheet.Name;
   end;
 end;
@@ -122,6 +125,12 @@ end;
 procedure Tlazfpsmainform.FormDestroy(Sender: TObject);
 begin
   Workbook.Free;
+end;
+
+procedure Tlazfpsmainform.HandleSelectionChanged(Sender: TObject; aCol,
+  aRow: Integer);
+begin
+  labelCurCell.Caption := Format('Current Cell: Row=%d Col=%d', [ARow, ACol]);
 end;
 
 end.

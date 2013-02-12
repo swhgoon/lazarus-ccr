@@ -37,7 +37,7 @@ object lazfpsmainform: Tlazfpsmainform
     end
     object editSourceFile: TFileNameEdit
       Left = 136
-      Height = 21
+      Height = 23
       Top = 8
       Width = 136
       DialogOptions = []
@@ -52,7 +52,7 @@ object lazfpsmainform: Tlazfpsmainform
       Left = 8
       Height = 15
       Top = 14
-      Width = 116
+      Width = 106
       Caption = 'Source Spreadsheet:'
       ParentColor = False
     end
@@ -75,6 +75,14 @@ object lazfpsmainform: Tlazfpsmainform
       )
       ScrollBars = ssVertical
       TabOrder = 3
+    end
+    object labelCurCell: TLabel
+      Left = 8
+      Height = 15
+      Top = 40
+      Width = 66
+      Caption = 'Current Cell:'
+      ParentColor = False
     end
   end
 end
