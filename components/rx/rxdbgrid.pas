@@ -124,7 +124,7 @@ type
   protected
     function GetDisplayName: string; override;
   public
-
+    procedure Assign(Source: TPersistent); override;
   published
     property Command: TRxDBGridCommand read FCommand write SetCommand;
     property ShortCut: TShortCut read FShortCut write SetShortCut;
@@ -133,15 +133,17 @@ type
 
   { TRxDBGridKeyStrokes }
 
-  TRxDBGridKeyStrokes = class(TCollection)
+  TRxDBGridKeyStrokes = class(TOwnedCollection)
   private
-    FOwner: TPersistent;
+    //FOwn: TPersistent;
     function GetItem(Index: integer): TRxDBGridKeyStroke;
     procedure SetItem(Index: integer; const AValue: TRxDBGridKeyStroke);
   protected
+    //function GetOwner: TPersistent; override;
     procedure Update(Item: TCollectionItem); override;
   public
     constructor Create(AOwner: TPersistent);
+    procedure Assign(Source: TPersistent); override;
     function Add: TRxDBGridKeyStroke;
     function AddE(ACommand: TRxDBGridCommand; AShortCut: TShortCut): TRxDBGridKeyStroke;
     procedure ResetDefaults;
@@ -4076,8 +4078,6 @@ begin
 {$ENDIF}
 
   FSortColumns:=TRxDbGridColumnsSortList.Create;
-  FKeyStrokes := TRxDBGridKeyStrokes.Create(Self);
-  FKeyStrokes.ResetDefaults;
 
   FMarkerUp := LoadLazResBitmapImage('rx_markerup');
   FMarkerDown := LoadLazResBitmapImage('rx_markerdown');
@@ -4090,10 +4090,12 @@ begin
   //  FTitleButtons:=True;
 
   F_Clicked := False;
-  //  F_MenuBMP           := TBitmap.Create;
   F_MenuBMP := LoadLazResBitmapImage('menu_grid');
 
   DoCreateJMenu;
+
+  FKeyStrokes := TRxDBGridKeyStrokes.Create(Self);
+  FKeyStrokes.ResetDefaults;
 
   F_LastFilter := TStringList.Create;
   //F_SortListField := TStringList.Create;
@@ -4102,7 +4104,6 @@ begin
   FPropertyStorageLink.OnSave := @OnIniSave;
   FPropertyStorageLink.OnLoad := @OnIniLoad;
 
-  //  FTitleLines := TITLE_DEFAULT;
   FAllowedOperations := [aoInsert, aoUpdate, aoDelete, aoAppend];
 
   FFilterListEditor := TFilterListCellEditor.Create(nil);
@@ -4127,6 +4128,7 @@ begin
   FRxDbGridDateEditor.Visible := False;
 
   UpdateJMenuKeys;
+
 end;
 
 destructor TRxDBGrid.Destroy;
@@ -4882,7 +4884,8 @@ begin
   if FCommand = AValue then
     exit;
   FCommand := AValue;
-  Changed(False);
+  Changed(true);
+///  Changed(False);
 end;
 
 procedure TRxDBGridKeyStroke.SetShortCut(const AValue: TShortCut);
@@ -4891,13 +4894,29 @@ begin
     exit;
   FShortCut := AValue;
   Menus.ShortCutToKey(FShortCut, FKey, FShift);
-  Changed(False);
+  Changed(true);
+///  Changed(False);
 end;
 
 function TRxDBGridKeyStroke.GetDisplayName: string;
 begin
   IntToIdent(Ord(FCommand), Result, EditorCommandStrs);
   Result := Result + ' - ' + ShortCutToText(FShortCut);
+end;
+
+procedure TRxDBGridKeyStroke.Assign(Source: TPersistent);
+begin
+  if Source is TRxDBGridKeyStroke then
+  begin
+    Command := TRxDBGridKeyStroke(Source).Command;
+    ShortCut := TRxDBGridKeyStroke(Source).ShortCut;
+    Enabled := TRxDBGridKeyStroke(Source).Enabled;
+
+{    Shift := TSynEditKeyStroke(Source).Shift;
+    Shift2 := TSynEditKeyStroke(Source).Shift2; }
+  end
+  else
+    inherited Assign(Source);
 end;
 
 { TRxDBGridKeyStrokes }
@@ -4912,6 +4931,11 @@ begin
   inherited SetItem(Index, AValue);
 end;
 
+{function TRxDBGridKeyStrokes.GetOwner: TPersistent;
+begin
+  Result:=FOwn;
+end;
+}
 procedure TRxDBGridKeyStrokes.Update(Item: TCollectionItem);
 begin
   inherited Update(Item);
@@ -4923,8 +4947,24 @@ end;
 
 constructor TRxDBGridKeyStrokes.Create(AOwner: TPersistent);
 begin
-  inherited Create(TRxDBGridKeyStroke);
-  FOwner := AOwner;
+  //FOwn := AOwner;
+  inherited Create(AOwner, TRxDBGridKeyStroke);
+end;
+
+procedure TRxDBGridKeyStrokes.Assign(Source: TPersistent);
+var
+  i: integer;
+begin
+  if Source is TRxDBGridKeyStrokes then
+  begin
+    Clear;
+    for i := 0 to TRxDBGridKeyStrokes(Source).Count-1 do
+    begin
+      with Add do
+        Assign(TRxDBGridKeyStrokes(Source)[i]);
+    end;
+  end else
+    inherited Assign(Source);
 end;
 
 function TRxDBGridKeyStrokes.Add: TRxDBGridKeyStroke;
