@@ -621,7 +621,7 @@ begin
   Glyph.Assign(P);
   P.Free;
   ButtonWidth:=15;
-  FPopUpFormOptions:=TPopUpFormOptions.Create;
+  FPopUpFormOptions:=TPopUpFormOptions.Create(Self);
 end;
 
 destructor TRxCustomDBLookupEdit.Destroy;
@@ -1562,7 +1562,7 @@ begin
   FFieldList := TStringList.Create;
   FValuesList:= TStringList.Create;
   FLocateObject:=CreateLocate(nil);
-  FPopUpFormOptions:=TPopUpFormOptions.Create;
+  FPopUpFormOptions:=TPopUpFormOptions.Create(Self);
   //Lookup
   FLookupDataLink:=TLookupSourceLink.Create;
 //  FLookupDataLink.FDataControl:=Self;

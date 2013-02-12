@@ -136,12 +136,14 @@ type
   
   { TPopUpFormColumns }
 
-  TPopUpFormColumns = class(TCollection)
+  TPopUpFormColumns = class(TOwnedCollection)
   private
     FPopUpFormOptions: TPopUpFormOptions;
     function GetPopUpColumn(Index: Integer): TPopUpColumn;
     procedure SetPopUpColumn(Index: Integer; const AValue: TPopUpColumn);
   public
+    Constructor Create(AOwner: TPersistent);
+    procedure Assign(Source: TPersistent); override;
     property PopUpFormOptions:TPopUpFormOptions read FPopUpFormOptions write FPopUpFormOptions;
     property Items[Index: Integer]: TPopUpColumn read GetPopUpColumn write SetPopUpColumn; default;
   end;
@@ -162,6 +164,7 @@ type
     FShowTitles: boolean;
     FTitleButtons: boolean;
     FTitleStyle: TTitleStyle;
+    FOwner:TPersistent;
     function GetColumns: TPopUpFormColumns;
     procedure SetAutoFillColumns(const AValue: boolean);
     procedure SetAutoSort(const AValue: boolean);
@@ -172,8 +175,10 @@ type
     procedure SetShowTitles(const AValue: boolean);
     procedure SetTitleButtons(const AValue: boolean);
     procedure SetTitleStyle(const AValue: TTitleStyle);
+  protected
+    function  GetOwner: TPersistent; dynamic;
   public
-    constructor Create;
+    constructor Create(AOwner:TPersistent);
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     property DataSource:TDataSource read FDataSource write FDataSource;
@@ -615,8 +620,14 @@ begin
   FTitleStyle:=AValue;
 end;
 
-constructor TPopUpFormOptions.Create;
+function TPopUpFormOptions.GetOwner: TPersistent;
 begin
+  Result:=FOwner;
+end;
+
+constructor TPopUpFormOptions.Create(AOwner: TPersistent);
+begin
+  FOwner:=AOwner;
   inherited Create;
   FAutoSort:=false;
   FDropDownCount:=8;
@@ -626,7 +637,7 @@ begin
   FTitleButtons:=false;
   FTitleStyle:=tsLazarus;
   FBorderStyle:=bsNone;
-  FColumns:=TPopUpFormColumns.Create(TPopUpColumn);
+  FColumns:=TPopUpFormColumns.Create(AOwner);
   FColumns.FPopUpFormOptions:=Self;
 end;
 
@@ -812,6 +823,27 @@ procedure TPopUpFormColumns.SetPopUpColumn(Index: Integer;
   const AValue: TPopUpColumn);
 begin
   Items[Index].Assign( AValue );
+end;
+
+constructor TPopUpFormColumns.Create(AOwner: TPersistent);
+begin
+  inherited Create(AOwner, TPopUpColumn);
+end;
+
+procedure TPopUpFormColumns.Assign(Source: TPersistent);
+var
+  i: integer;
+begin
+  if Source is TPopUpFormColumns then
+  begin
+    Clear;
+    for i := 0 to TPopUpFormColumns(Source).Count-1 do
+    begin
+      with Add do
+        Assign(TPopUpFormColumns(Source)[i]);
+    end;
+  end else
+    inherited Assign(Source);
 end;
 
 { TPopUpGrid }

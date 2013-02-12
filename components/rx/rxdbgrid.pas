@@ -4884,8 +4884,7 @@ begin
   if FCommand = AValue then
     exit;
   FCommand := AValue;
-  Changed(true);
-///  Changed(False);
+  Changed(False);
 end;
 
 procedure TRxDBGridKeyStroke.SetShortCut(const AValue: TShortCut);
@@ -4894,8 +4893,7 @@ begin
     exit;
   FShortCut := AValue;
   Menus.ShortCutToKey(FShortCut, FKey, FShift);
-  Changed(true);
-///  Changed(False);
+  Changed(False);
 end;
 
 function TRxDBGridKeyStroke.GetDisplayName: string;
@@ -4911,9 +4909,6 @@ begin
     Command := TRxDBGridKeyStroke(Source).Command;
     ShortCut := TRxDBGridKeyStroke(Source).ShortCut;
     Enabled := TRxDBGridKeyStroke(Source).Enabled;
-
-{    Shift := TSynEditKeyStroke(Source).Shift;
-    Shift2 := TSynEditKeyStroke(Source).Shift2; }
   end
   else
     inherited Assign(Source);
