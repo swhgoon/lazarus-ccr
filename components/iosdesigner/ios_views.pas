@@ -1673,15 +1673,24 @@ begin
     Brush.Color:=BackgroundColor;
     // outer frame
     Pen.Style:=psSolid;
-    Pen.Color:=clBlack;
+    Pen.Color:=clWhite;
+    // This rectangle is drawn inside the window, it should be drawn around it.
     Rectangle(0,0,self.Width,self.Height);
     if StatusBar<>sbsNone then
       begin
       if StatusBar = sbsBlack then
-        Brush.Color:=clBlack
+        begin
+        Brush.Color:=clBlack;
+        Pen.Color:=clBlack;
+        end
       else
+        begin
         Brush.Color:=clGray;
-      Rectangle(0,0,self.Width,19);
+        Pen.Color:=clGray;
+        end;
+      Rectangle(0,0,self.Width,20);
+      Pen.Color:=clBlack;
+      line(0,19,self.Width,19);
       end;
     end;
 end;
@@ -3068,8 +3077,8 @@ begin
     if Prompt='' then
       begin
       ATop:=0;
-      Line(0,0,self.Width-1,0);
-      GradientFill(rect(0,ATop,self.Width, self.Height),$cdbcb0,$a2846d,gdVertical);
+      Line(0,0,self.Width,0);
+      GradientFill(rect(-1,ATop,self.Width+2, self.Height),$cdbcb0,$a2846d,gdVertical);
       end
     else
       begin
@@ -3171,11 +3180,11 @@ begin
     font.Bold:=true;
     font.Size:=16;
     font.color:=clWhite;
-    GradientFill(rect(0,round(self.Height-SectionFooterHeight),self.Width,self.Height-1),clLtGray, clGray, gdVertical);
+    GradientFill(rect(-1,round(self.Height-SectionFooterHeight),self.Width+2,self.Height-1),clLtGray, clGray, gdVertical);
     TextRect(rect(8,round(self.Height-SectionFooterHeight),self.Width-8,Self.Height),8,round(self.Height-SectionFooterHeight),'Section Footer',TS);
 
-    GradientFill(rect(0,0,self.Width,round(SectionHeaderHeight-1)),clLtGray, clGray, gdVertical);
-    TextRect(rect(8,0,self.Width-8,round(SectionHeaderHeight-1)),8,0,'Netherlands',TS);
+    GradientFill(rect(-1,0,self.Width+2,round(SectionHeaderHeight)),clLtGray, clGray, gdVertical);
+    TextRect(rect(8,0,self.Width-8,round(SectionHeaderHeight)),8,0,'Netherlands',TS);
 
     pen.Color:=SeparatorColor;
     font.Color:=clBlack;
@@ -3191,7 +3200,7 @@ begin
       else if SeparatorStyle=ssSingleLineEtched then
         pen.Style:=psDash;
 
-      Line(0,round(SectionHeaderHeight+((i+1)*RowHeight)),self.Width-1,round(SectionHeaderHeight+((i+1)*RowHeight)));
+      Line(0,round(SectionHeaderHeight+((i+1)*RowHeight)),self.Width,round(SectionHeaderHeight+((i+1)*RowHeight)));
       end;
 
     end;
