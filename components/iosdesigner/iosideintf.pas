@@ -72,6 +72,7 @@ implementation
 uses
   LazIDEIntf, Controls, iOS_Views, iOSXIBResource, UnitResources,
   LazFilesUtils,
+  sysutils,
   FileUtil;
 
 procedure register;
@@ -93,14 +94,16 @@ end;
 procedure TiOSShowInXCode.ExecuteVerb(Index: Integer);
 var
   s: string;
+  ProjFile: TLazProjectFile;
 begin
   If Index<FStartIndex then
     inherited ExecuteVerb(Index)
   else
     case (Index-FstartIndex) of
       0 : begin
-          s := '/Users/joost/svn/testlrs/onzin/appdelegate_iphoneu.xib';
-          if FileExistsUTF8(s) then ExecCmdLineNoWait('open "'+s +'"');
+          ProjFile := LazarusIDE.GetProjectFileWithRootComponent(Component);
+          s := ChangeFileExt(ProjFile.Filename,'.xib');
+          if FileExistsUTF8(s) then ExecCmdLineNoWait('open "'+s+'"');
           end;
     end;
 end;
