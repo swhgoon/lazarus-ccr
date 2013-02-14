@@ -164,7 +164,7 @@ end;
 procedure TrxFilterByForm.FormCreate(Sender: TObject);
 begin
   Label1.Caption:=sRxFilterFormSelectExp;
-  Label2.Caption:=sRxFilterFormSelectExp;
+  Label2.Caption:=sRxFilterFormOnField;
   Label3.Caption:=sRxFilterFormOperaion;
   Label4.Caption:=sRxFilterFormCondition;
   Label5.Caption:=sRxFilterFormOperand;
