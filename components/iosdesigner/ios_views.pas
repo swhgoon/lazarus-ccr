@@ -41,6 +41,7 @@ uses
 
 type
   TXIBProperties = (
+    bvNextResponder,
     bvOpaque,
     bvHighlighted,
     bvAlpha,
@@ -80,6 +81,7 @@ type
 
 const
   XIBPropertiesStrings : array[TXIBProperties] of TXIBProperty = (
+    (APropertyName: 'NSNextResponder'; ADefaultValue: ''),
     (APropertyName: 'IBUIOpaque'     ; ADefaultValue: 'YES'),
     (APropertyName: 'IBUIHighlighted'; ADefaultValue: 'NO'),
     (APropertyName: 'IBUIAlpha'      ; ADefaultValue: '1'),
@@ -275,23 +277,23 @@ type
 
   UIView = class(tiOSFakeComponent)
   private
-    FNSNextResponder: UIView;
     function GetFlags(AIndex: Integer): boolean;
-    function GetNSSuperview: UIView;
+    function GetXIBObject(AIndex: TXIBProperties): UIView;
     function ObtainSuperview: UIView;
     procedure SetFlags(AIndex: Integer; AValue: boolean);
-    procedure SetNSSuperView(AValue: UIView);
+    procedure SetXIBObject(AIndex: TXIBProperties; AValue: UIView);
   protected
     function GetPaintText: string; virtual;
     procedure SetName(const NewName: TComponentName); override;
     property Caption: string index bvText read GetXIBString write SetXIBString;
+    procedure AddChild(const AValue: tiOSFakeComponent); override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure InitializeDefaults; override;
     procedure paint(ACanvas: TCanvas); override;
     class function GetIBClassName: string; override;
-    property NSSuperview: UIView read GetNSSuperview write SetNSSuperView;
-    property NSNextResponder: UIView read FNSNextResponder write FNSNextResponder;
+    property NSSuperview: UIView index bvSuperview read GetXIBObject write SetXIBObject;
+    property NSNextResponder: UIView index bvNextResponder read GetXIBObject write SetXIBObject;
     property Flags: Int64 index bvFlags read GetXIBInt64 write SetXIBInt64;
   published
     property Opaque: boolean index bvOpaque read GetXIBBoolean write SetXIBBoolean;
@@ -1659,7 +1661,6 @@ end;
 constructor UIWindow.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  NSNextResponder:=self;
   FLeft := 10;
   FTop := 10;
   BackgroundColor:=clWhite;
@@ -3441,7 +3442,7 @@ end;
 
 { UIView }
 
-function UIView.GetNSSuperView: UIView;
+function UIView.GetXIBObject(AIndex: TXIBProperties): UIView;
 
   function FindComponentByRef(AComp: tiOSFakeComponent;const ARef: Int64): tiOSFakeComponent;
   var
@@ -3467,7 +3468,7 @@ var
   s: string;
   ANode: TDOMElement;
 begin
-  ANode := FindKeyNode(XIBObjectElement, 'reference', 'NSSuperview');
+  ANode := FindKeyNode(XIBObjectElement, 'reference', XIBPropertiesStrings[AIndex].APropertyName);
   if assigned(ANode) then
     begin
     s  := ANode.AttribStrings['ref'];
@@ -3498,7 +3499,7 @@ begin
     Flags := flags and (not (1 shl AIndex));
 end;
 
-procedure UIView.SetNSSuperView(AValue: UIView);
+procedure UIView.SetXIBObject(AIndex: TXIBProperties; AValue: UIView);
 var
   ANode: TDOMElement;
 begin
@@ -3506,12 +3507,12 @@ begin
     raise exception.create('NoObjectElement');
   if assigned(AValue) then
     begin
-    ANode := GetKeyNode(XIBObjectElement, 'reference', 'NSSuperview');
+    ANode := GetKeyNode(XIBObjectElement, 'reference', XIBPropertiesStrings[AIndex].APropertyName);
     ANode.AttribStrings['ref'] := IntToStr(AValue.Ref);
     end
   else
     begin
-    ANode := FindKeyNode(XIBObjectElement, 'reference', 'NSSuperview');
+    ANode := FindKeyNode(XIBObjectElement, 'reference', XIBPropertiesStrings[AIndex].APropertyName);
     if assigned(ANode) then
       ANode.ParentNode.RemoveChild(ANode);
     end;
@@ -3562,6 +3563,17 @@ begin
   if Name=Caption then Caption:=NewName;
   inherited SetName(NewName);
 end;
+
+procedure UIView.AddChild(const AValue: tiOSFakeComponent);
+begin
+  inherited AddChild(AValue);
+
+  if (AValue is UIView) and not (csLoading in ComponentState) then
+    begin
+    UIView(AValue).NSNextResponder:=self;
+    end;
+end;
+
 {
 procedure UIView.WriteToDomElement(AnObjectDomElement: TDOMElement);
 var
