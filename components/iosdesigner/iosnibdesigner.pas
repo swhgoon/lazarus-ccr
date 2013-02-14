@@ -104,6 +104,25 @@ implementation
 uses
   ObjInspStrConsts;
 
+type
+
+  { TiOSEventHandlers }
+
+  TiOSEventHandlers = class
+  private
+    FUpdateVisibleHandlerSet: boolean;
+    FUpdateVisibleHandlerDesignerSet: boolean;
+  public
+    constructor create;
+    destructor destroy;
+    procedure ChangeLookupRoot;
+    procedure HandlerUpdateVisible(AComponent: TRegisteredComponent; var VoteVisible: integer);
+    procedure HandlerUpdateVisibleDesigner(AComponent: TRegisteredComponent; var VoteVisible: integer);
+  end;
+
+var
+  GiOSEventHandlers: TiOSEventHandlers = nil;
+
 procedure Register;
 
   procedure SetFakeUnitname(AClass: TClass);
@@ -130,6 +149,8 @@ begin
   FormEditingHook.RegisterDesignerMediator(TUIResponderDesignerMediator);
   RegisterComponents('iOS',[UIWindow,UINavigationController,UIButton,UILabel,UITextField,UITableView,UISearchBar,UIView,UIViewController, UIProgressView]);
 
+  GiOSEventHandlers := TiOSEventHandlers.Create;
+
   RegisterClass(UINavigationItem);
   RegisterClass(UIViewController);
   RegisterClass(UINavigationBar);
@@ -149,6 +170,75 @@ begin
   SetFakeUnitname(UINavigationController);
   SetFakeUnitname(UIViewController);
   SetFakeUnitname(UIProgressView);
+end;
+
+{ TiOSEventHandlers }
+
+constructor TiOSEventHandlers.create;
+begin
+  GlobalDesignHook.AddHandlerChangeLookupRoot(@ChangeLookupRoot);
+end;
+
+destructor TiOSEventHandlers.destroy;
+begin
+  GlobalDesignHook.RemoveAllHandlersForObject(self);
+end;
+
+procedure TiOSEventHandlers.ChangeLookupRoot;
+begin
+  if GlobalDesignHook.LookupRoot is tiOSFakeComponent then
+    begin
+    if not FUpdateVisibleHandlerDesignerSet then
+      begin
+      IDEComponentPalette.AddHandlerUpdateVisible(@GiOSEventHandlers.HandlerUpdateVisibleDesigner);
+      FUpdateVisibleHandlerDesignerSet := true;
+      end;
+    if FUpdateVisibleHandlerSet then
+      begin
+      IDEComponentPalette.RemoveHandlerUpdateVisible(@GiOSEventHandlers.HandlerUpdateVisible);
+      FUpdateVisibleHandlerSet := false;
+      end;
+    end
+  else if assigned(GlobalDesignHook.LookupRoot) then
+    begin
+    if FUpdateVisibleHandlerDesignerSet then
+      begin
+      IDEComponentPalette.RemoveHandlerUpdateVisible(@GiOSEventHandlers.HandlerUpdateVisibleDesigner);
+      FUpdateVisibleHandlerDesignerSet := False;
+      end;
+    if not FUpdateVisibleHandlerSet then
+      begin
+      IDEComponentPalette.AddHandlerUpdateVisible(@GiOSEventHandlers.HandlerUpdateVisible);
+      FUpdateVisibleHandlerSet := true;
+      end;
+    end
+  else
+    begin
+    if FUpdateVisibleHandlerDesignerSet then
+      begin
+      IDEComponentPalette.RemoveHandlerUpdateVisible(@GiOSEventHandlers.HandlerUpdateVisibleDesigner);
+      FUpdateVisibleHandlerDesignerSet := False;
+      end;
+    if FUpdateVisibleHandlerSet then
+      begin
+      IDEComponentPalette.RemoveHandlerUpdateVisible(@GiOSEventHandlers.HandlerUpdateVisible);
+      FUpdateVisibleHandlerSet := false;
+      end;
+    end;
+end;
+
+procedure TiOSEventHandlers.HandlerUpdateVisible(
+  AComponent: TRegisteredComponent; var VoteVisible: integer);
+begin
+  if assigned(AComponent) and assigned(AComponent.ComponentClass) and AComponent.ComponentClass.InheritsFrom(tiOSFakeComponent) then
+    dec(VoteVisible);
+end;
+
+procedure TiOSEventHandlers.HandlerUpdateVisibleDesigner(
+  AComponent: TRegisteredComponent; var VoteVisible: integer);
+begin
+  if not AComponent.ComponentClass.InheritsFrom(tiOSFakeComponent) then
+    dec(VoteVisible);
 end;
 
 { TiOSMethodPropertyEditor }
