@@ -49,6 +49,9 @@ const
 
 
 type
+  TRxSearchDirection = (rsdAll, rsdForward, rsdBackward);
+
+type
 
 { TLocateObject }
 
@@ -107,7 +110,8 @@ procedure InternalRestoreFields(DataSet: TDataSet; IniFile: TObject;
   const Section: string; RestoreVisible: Boolean);}
   
 function DataSetLocateThrough(DataSet: TDataSet; const KeyFields: string;
-  const KeyValues: Variant; Options: TLocateOptions): Boolean;
+  const KeyValues: Variant; Options: TLocateOptions; SearchOrigin:TRxSearchDirection = rsdAll): Boolean;
+
 procedure SaveFieldsReg(DataSet: TDataSet; IniFile: TRegIniFile);
 procedure RestoreFieldsReg(DataSet: TDataSet; IniFile: TRegIniFile;
   RestoreVisible: Boolean);
@@ -379,7 +383,7 @@ end;
 
 { DataSet locate routines }
 function DataSetLocateThrough(DataSet: TDataSet; const KeyFields: string;
-  const KeyValues: Variant; Options: TLocateOptions): Boolean;
+  const KeyValues: Variant; Options: TLocateOptions; SearchOrigin:TRxSearchDirection = rsdAll): Boolean;
 var
   FieldCount: Integer;
   Fields: TList;
@@ -430,20 +434,40 @@ begin
   try
     DataSet.GetFieldList(Fields, KeyFields);
     FieldCount := Fields.Count;
-    Result := CompareRecord;
-    if Result then Exit;
+
+    if SearchOrigin = rsdAll then
+    begin
+      Result := CompareRecord;
+      if Result then Exit;
+    end;
+
     DataSet.DisableControls;
     try
       Bookmark := DataSet.GetBookmark;
       try
-        with DataSet do begin
-          First;
-          while not EOF do begin
+        if SearchOrigin in [rsdAll, rsdForward] then
+        begin
+          if SearchOrigin = rsdAll then
+            DataSet.First;
+          while not DataSet.EOF do
+          begin
             Result := CompareRecord;
             if Result then Break;
-            Next;
+            DataSet.Next;
+          end;
+        end
+        else
+        if SearchOrigin = rsdBackward then
+        begin
+          //DataSet.Last;
+          while not DataSet.BOF do
+          begin
+            Result := CompareRecord;
+            if Result then Break;
+            DataSet.Prior;
           end;
         end;
+
       finally
 {$IFDEF NoAutomatedBookmark}
         if not Result and DataSet.BookmarkValid(PChar(Bookmark)) then

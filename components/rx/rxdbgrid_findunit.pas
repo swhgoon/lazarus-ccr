@@ -52,6 +52,7 @@ type
     Edit1: TEdit;
     Label1: TLabel;
     Label2: TLabel;
+    Panel1: TPanel;
     RadioGroup1: TRadioGroup;
     procedure BtnFindClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -103,6 +104,8 @@ begin
   RadioGroup1.Items.Add(sRxDbGridFindRangeBack);
   BtnFind.Caption:=sRxFindMore;
   Button2.Caption:=rsMbClose;
+
+  RadioGroup1.ItemIndex:=0;
 end;
 
 procedure TrxDBGridFindForm.FormShow(Sender: TObject);
@@ -114,6 +117,9 @@ procedure TrxDBGridFindForm.BtnFindClick(Sender: TObject);
 var
   FieldName:string;
   LOptions: TLocateOptions;
+  SearchOrigin:TRxSearchDirection;
+  P:TBookMark;
+  R:boolean;
 begin
   if Edit1.Text<>'' then
   begin
@@ -125,8 +131,18 @@ begin
 
       if CheckBox2.Checked then
         LOptions:=LOptions+[loPartialKey];
-      DataSetLocateThrough(FDataSet, FieldName, Edit1.Text, LOptions);
+
+      SearchOrigin:=TRxSearchDirection(RadioGroup1.ItemIndex);
+      P:=FDataSet.Bookmark;
+      if SearchOrigin = rsdForward then
+        FDataSet.Next
+      else
+      if SearchOrigin = rsdBackward then
+        FDataSet.Prior;
+      R:=DataSetLocateThrough(FDataSet, FieldName, Edit1.Text, LOptions, SearchOrigin);
     finally
+      if not R then
+        FDataSet.Bookmark:=P;
     end;
   end;
 end;
