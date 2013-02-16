@@ -69,6 +69,10 @@ type
     bvClipSubviews,
     bvShowSelectionOnTouch,
     bvBounceVertically,
+    bvProgress,
+    bvProgressTintColor,
+    bvTrackTintColor,
+    bvProgressViewStyle,
     bvEnabled);
 
   TXIBProperty = record
@@ -109,6 +113,10 @@ const
     (APropertyName: 'IBUIClipsSubviews' ; ADefaultValue: ''),
     (APropertyName: 'IBUIShowsSelectionImmediatelyOnTouchBegin' ; ADefaultValue: ''),
     (APropertyName: 'IBUIAlwaysBounceVertical' ; ADefaultValue: ''),
+    (APropertyName: 'IBUIProgress' ; ADefaultValue: '0'),
+    (APropertyName: 'IBUIProgressTintColor' ; ADefaultValue: ''),
+    (APropertyName: 'IBUITrackTintColor' ; ADefaultValue: ''),
+    (APropertyName: 'IBUIProgressViewStyle' ; ADefaultValue: '0'),
     (APropertyName: 'IBUIEnabled'    ; ADefaultValue: 'YES'));
 
   EventNames : array[1..1] of string = (
@@ -536,18 +544,16 @@ type
 
   UIProgressView = class(UIView)
   private
-    FProgress: float;
-    FprogressTintColor: TColor;
-    FProgressViewStyle: TiOSFakeProgressViewStyle;
-    FtrackTintColor: TColor;
+    function GetProgressViewStyle: TiOSFakeProgressViewStyle;
+    procedure SetProgressViewStyle(AValue: TiOSFakeProgressViewStyle);
   public
     constructor Create(AOwner: TComponent); override;
     class function GetIBClassName: string; override;
   published
-    property progressViewStyle: TiOSFakeProgressViewStyle read FProgressViewStyle write FprogressViewStyle;
-    property progress: float read FProgress write FProgress;
-    property progressTintColor: TColor read FprogressTintColor write FprogressTintColor;
-    property trackTintColor: TColor read FtrackTintColor write FtrackTintColor;
+    property progressViewStyle: TiOSFakeProgressViewStyle read GetProgressViewStyle write SetProgressViewStyle;
+    property progress: double index bvProgress read GetXIBFloat write SetXIBFloat;
+    property progressTintColor: TColor index bvProgressTintColor read GetXIBColor write SetXIBColor;
+    property trackTintColor: TColor index bvTrackTintColor read GetXIBColor write SetXIBColor;
   end;
 
   { TNIBObjectWriter }
@@ -1356,6 +1362,16 @@ begin
 
 end;
 
+function UIProgressView.GetProgressViewStyle: TiOSFakeProgressViewStyle;
+begin
+  result := TiOSFakeProgressViewStyle(GetXIBInteger(bvProgressViewStyle));
+end;
+
+procedure UIProgressView.SetProgressViewStyle(AValue: TiOSFakeProgressViewStyle);
+begin
+  SetXIBInteger(bvProgressViewStyle,ord(AValue));
+end;
+
 { UIProgressView }
 {
 procedure UIProgressView.WriteToDomElement(AnObjectDomElement: TDOMElement);
@@ -1371,8 +1387,8 @@ constructor UIProgressView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FAcceptChildsAtDesignTime := false;
-  FprogressTintColor := clDefault;
-  FtrackTintColor := clDefault;
+  progressTintColor := clDefault;
+  trackTintColor := clDefault;
 end;
 
 class function UIProgressView.GetIBClassName: string;
@@ -2411,7 +2427,7 @@ end;
 
 function tiOSFakeComponent.GetXIBInteger(index: TXIBProperties): integer;
 begin
-  result := StrToInt(GetXIBString(index,'int'));
+  result := StrToIntDef(GetXIBString(index,'int'),0);
 end;
 
 procedure tiOSFakeComponent.SetXIBInteger(index: TXIBProperties; AValue: integer);
