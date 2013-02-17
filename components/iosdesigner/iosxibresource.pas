@@ -18,7 +18,7 @@ type
   public
     class function FindResourceDirective(Source: TObject): boolean; override;
     class function ResourceDirectiveFilename: string; override;
-    class function GetUnitResourceFilename(AUnitFilenae: string): string; override;
+    class function GetUnitResourceFilename(AUnitFilename: string; Loading: boolean): string; override;
     class procedure TextStreamToBinStream(ATxtStream, ABinStream: TExtMemoryStream); override;
     class procedure BinStreamToTextStream(ABinStream, ATextStream: TExtMemoryStream); override;
     class function GetClassNameFromStream(s: TStream; out IsInherited: Boolean): shortstring; override;
@@ -55,9 +55,9 @@ begin
 end;
 
 class function TXIBResourcefileFormat.GetUnitResourceFilename(
-  AUnitFilenae: string): string;
+  AUnitFilename: string; Loading: boolean): string;
 begin
-  result := ChangeFileExt(AUnitFilenae,'.xib');
+  result := ChangeFileExt(AUnitFilename,'.xib');
 end;
 
 class procedure TXIBResourcefileFormat.TextStreamToBinStream(ATxtStream,
