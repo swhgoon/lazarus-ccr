@@ -31,7 +31,7 @@ Copyright (C) 2005-2010 Lagunov Aleksey alexs@hotbox.ru and Lazarus team
 
 unit rxdbgrid_findunit;
 
-{$mode objfpc}{$H+}
+{$I rx.inc}
 
 interface
 
@@ -133,7 +133,11 @@ begin
         LOptions:=LOptions+[loPartialKey];
 
       SearchOrigin:=TRxSearchDirection(RadioGroup1.ItemIndex);
+      {$IFDEF NoAutomatedBookmark}
+      P:=FDataSet.GetBookmark;
+      {$ELSE}
       P:=FDataSet.Bookmark;
+      {$ENDIF}
       if SearchOrigin = rsdForward then
         FDataSet.Next
       else
@@ -141,8 +145,14 @@ begin
         FDataSet.Prior;
       R:=DataSetLocateThrough(FDataSet, FieldName, Edit1.Text, LOptions, SearchOrigin);
     finally
+      {$IFDEF NoAutomatedBookmark}
+      if not R then
+        FDataSet.GotoBookmark(P);
+      FDataSet.FreeBookmark(P);
+      {$ELSE}
       if not R then
         FDataSet.Bookmark:=P;
+      {$ENDIF}
     end;
   end;
 end;

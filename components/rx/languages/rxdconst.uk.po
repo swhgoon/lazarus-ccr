@@ -437,3 +437,4 @@ msgstr "Введіть ваш пароль"
 #: rxdconst.susernamelabel
 msgid "&User name:"
 msgstr "&Ім'я користувача"
+

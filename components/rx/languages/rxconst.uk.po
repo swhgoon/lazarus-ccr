@@ -95,8 +95,7 @@ msgid "Control not found in validate %s."
 msgstr "Елемент управління не знайдений в валідаторі %s"
 
 #: rxconst.sfilenotexec
-msgid ""
-"File specified is not an executable file, dynamic-link library, or icon file"
+msgid "File specified is not an executable file, dynamic-link library, or icon file"
 msgstr "Вказаний файл не виконуваний, не бібліотека і не іконка"
 
 #: rxconst.sflatbuttons
@@ -234,3 +233,4 @@ msgstr "Набір віджетів WinCE"
 #: rxconst.swindowsicofiles
 msgid "Windows Ico files (*.ico)|*.ico|All files (*.*)|*.*"
 msgstr "Файли іконок Windows (*.ico)|*.ico|Всі файли (*.*)|*.*"
+
