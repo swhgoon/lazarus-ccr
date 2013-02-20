@@ -67,12 +67,12 @@ type
 
   { TValidateItems }
 
-  TValidateItems = class(TCollection)
+  TValidateItems = class(TOwnedCollection)
   private
     function GetItems(Index: Integer): TValidateItem;
     procedure SetItems(Index: Integer; AValue: TValidateItem);
   public
-    constructor Create;
+    //constructor Create();
     property Items[Index: Integer]: TValidateItem read GetItems write SetItems; default;
   end;
 
@@ -116,10 +116,10 @@ begin
   Items[Index].Assign( AValue );
 end;
 
-constructor TValidateItems.Create;
+{constructor TValidateItems.Create;
 begin
   inherited Create(TValidateItem);
-end;
+end;}
 
 { TValidateItem }
 
@@ -380,7 +380,7 @@ constructor TRxCloseFormValidator.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FErrorMsgCaption:=sCloseValidError;
-  FItems:=TValidateItems.Create;
+  FItems:=TValidateItems.Create(Self, TValidateItem);
 end;
 
 destructor TRxCloseFormValidator.Destroy;
