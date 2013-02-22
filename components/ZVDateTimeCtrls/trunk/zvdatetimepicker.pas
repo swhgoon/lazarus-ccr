@@ -583,39 +583,38 @@ end;
 
 procedure TDTCalendarForm.CloseCalendarForm(const AndSetTheDate: Boolean);
 begin
-  if not FClosing then begin
-    SetClosingCalendarForm;
-
-    if Assigned(DTPicker) and DTPicker.IsVisible then begin
-
-      if AndSetTheDate then begin
-        Inc(DTPicker.FUserChanging);
-        try
-          if DTPicker.DateIsNull then begin
-            // we'll set the time to 0.0 (midnight):
-            DTPicker.SetDateTime(Int(Cal.DateTime));
-          end else if not EqualDateTime(Int(DTPicker.DateTime),
-                                        Int(Cal.DateTime)) then begin
-            // we'll change the date, but keep the time:
-            DTPicker.SetDateTime(ComposeDateTime(Cal.DateTime, DTPicker.DateTime));
-          end;
-        finally
-          Dec(DTPicker.FUserChanging);
-        end;
-      end;
-
-      if Screen.ActiveCustomForm = Self then
-        DTPicker.SetFocusIfPossible;
-
+  if not FClosing then
+    try
+      SetClosingCalendarForm;
       Visible := False;
 
-      Close;
-      DTPicker.DoCloseUp;
+      if Assigned(DTPicker) and DTPicker.IsVisible then begin
 
-    end else
-      Close;
+        if AndSetTheDate then begin
+          Inc(DTPicker.FUserChanging);
+          try
+            if DTPicker.DateIsNull then begin
+              // we'll set the time to 0.0 (midnight):
+              DTPicker.SetDateTime(Int(Cal.DateTime));
+            end else if not EqualDateTime(Int(DTPicker.DateTime),
+                                          Int(Cal.DateTime)) then begin
+              // we'll change the date, but keep the time:
+              DTPicker.SetDateTime(ComposeDateTime(Cal.DateTime, DTPicker.DateTime));
+            end;
+          finally
+            Dec(DTPicker.FUserChanging);
+          end;
+        end;
 
-  end;
+        if Screen.ActiveCustomForm = Self then
+          DTPicker.SetFocusIfPossible;
+
+        DTPicker.DoCloseUp;
+      end;
+
+    finally
+      Release;
+    end;
 
 end;
 
@@ -2343,11 +2342,15 @@ begin
 end;
 
 procedure TCustomZVDateTimePicker.UpdateDate;
+const
+  InRecursiveCall: Boolean = False;
+
 var
   W: Array[1..3] of Word;
   WT: Array[TTimeTextPart] of Word;
   YearPos, I: Integer;
   TTP, TTPEnd: TTimeTextPart;
+
 begin
   FUserChangedText := False;
 
@@ -2357,6 +2360,24 @@ begin
 
     if FDateTime < FMinDate then
       FDateTime := ComposeDateTime(FMinDate, FDateTime);
+  end;
+
+  if not InRecursiveCall then begin // we'll skip the next part in
+         // recursive calls which could be made through Change or UndoChanges
+    InRecursiveCall := True;
+    try
+      if FUserChanging > 0 then begin // this means that the change is caused by user interaction
+        try
+          Change;
+        except
+          UndoChanges;
+          raise;
+        end
+      end else
+        FConfirmedDateTime := FDateTime;
+    finally
+      InRecursiveCall := False;
+    end;
   end;
 
   if FKind in [dtkTime, dtkDateTime] then begin
@@ -2459,11 +2480,6 @@ begin
   end else
     for I := Low(FTextPart) to High(FTextPart) do
       FTextPart[I] := '';
-
-  if FUserChanging > 0 then // this means that the change is caused by user interaction
-    Change
-  else
-    FConfirmedDateTime := FDateTime;
 
   Invalidate;
 end;
