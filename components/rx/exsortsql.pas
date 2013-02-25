@@ -101,5 +101,5 @@ begin
 end;
 
 initialization
-  RegisterRxDBGridSortEngine(TSQLQuerySortEngine, TSQLQuery);
+  RegisterRxDBGridSortEngine(TSQLQuerySortEngine, 'TSQLQuery');
 end.
