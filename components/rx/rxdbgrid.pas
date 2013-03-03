@@ -586,7 +586,7 @@ type
     procedure UpdateActive; override;
     procedure UpdateData; override;
     procedure MoveSelection; override;
-    //function  GetBufferCount: integer; override;
+    function  GetBufferCount: integer; override;
     procedure CMHintShow(var Message: TLMessage); message CM_HINTSHOW;
     procedure FFilterListEditorOnChange(Sender: TObject);
     procedure FFilterListEditorOnCloseUp(Sender: TObject);
@@ -1909,9 +1909,13 @@ begin
     if rdgFilter in OptionsRx then
     begin
       if Assigned(FFilterListEditor) then
+      begin
         RowHeights[0] := RowHeights[0] + FFilterListEditor.Height
+      end
       else
+      begin
         RowHeights[0] := RowHeights[0] + DefaultRowHeight;
+      end;
     end;
 
   finally
@@ -2726,7 +2730,7 @@ begin
     inherited DrawCell(aCol, aRow, aRect, aState);
 end;
 
-procedure TRxDBGrid.LinkActive(Value: boolean);
+procedure TRxDBGrid.LinkActive(Value: Boolean);
 var
   S: string;
   Pos: integer;
@@ -3400,6 +3404,17 @@ begin
   if Assigned(FFooterOptions) and FFooterOptions.Active and (FFooterOptions.RowCount > 0) then
     DrawFooterRows;
 //  UpdateRowsHeight;
+end;
+
+function TRxDBGrid.GetBufferCount: integer;
+begin
+  Result := ClientHeight div DefaultRowHeight;
+  if dgTitles in Options then
+  begin
+    Dec(Result, RowHeights[0] div DefaultRowHeight);
+  end;
+  if FFooterOptions.Active then
+    Dec(Result, FFooterOptions.RowCount);
 end;
 
 procedure TRxDBGrid.CMHintShow(var Message: TLMessage);
