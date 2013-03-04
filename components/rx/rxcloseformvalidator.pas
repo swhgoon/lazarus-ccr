@@ -305,11 +305,19 @@ end;
 function TRxCloseFormValidator.CheckCloseForm: boolean;
 var
   i:integer;
+  F:TComponent;
 begin
+  F:=Owner;
+  while Assigned(F) and not (F is TCustomForm) do
+    F:=F.Owner;
+
   Result:=false;
+
+  if not Assigned(F) then exit;
+
   for i:=0 to FItems.Count-1 do
   begin
-    if FItems[i].Enabled and (not FItems[i].CheckClose(Owner as TCustomForm)) then
+    if FItems[i].Enabled and (not FItems[i].CheckClose(F as TCustomForm)) then
     begin
       FItems[i].SetFocus;
       Application.MessageBox(PChar(FItems[i].ErrorMessage), PChar(FErrorMsgCaption), MB_OK + MB_ICONERROR);
