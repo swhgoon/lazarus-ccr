@@ -1413,28 +1413,59 @@ var
     locAttObj : TPasProperty;
     locInternalEltName : string;
     locHasInternalName : boolean;
+    locIsRefElement : Boolean;
+    locTypeInternalName : string;
+    locTypeAddRef : Boolean;
   begin
+    locIsRefElement := False;
+    locTypeAddRef := True;
     locAttCursor := CreateAttributesCursor(AElement,cetRttiNode);
     locPartCursor := CreateCursorOn(locAttCursor.Clone() as IObjectCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_name)]),TDOMNodeRttiExposer));
     locPartCursor.Reset();
-    if not locPartCursor.MoveNext() then
-      raise EXsdInvalidDefinitionException.Create(SERR_InvalidAttributeDef_MissingName);
+    if not locPartCursor.MoveNext() then begin
+      locPartCursor := CreateCursorOn(locAttCursor.Clone() as IObjectCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_ref)]),TDOMNodeRttiExposer));
+      locPartCursor.Reset();
+      if not locPartCursor.MoveNext() then
+        raise EXsdInvalidDefinitionException.Create(SERR_InvalidAttributeDef_MissingName);
+      locIsRefElement := True;
+    end;
     locName := (locPartCursor.GetCurrent() as TDOMNodeRttiExposer).NodeValue;
+    if locIsRefElement then
+      locName := ExtractNameFromQName(locName);
     if IsStrEmpty(locName) then
       raise EXsdInvalidDefinitionException.Create(SERR_InvalidAttributeDef_EmptyName);
 
-    locPartCursor := CreateCursorOn(locAttCursor.Clone() as IObjectCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_type)]),TDOMNodeRttiExposer));
-    locPartCursor.Reset();
-    if not locPartCursor.MoveNext() then
-      raise EXsdInvalidDefinitionException.Create(SERR_InvalidAttributeDef_MissingType);
-    locTypeName := ExtractNameFromQName((locPartCursor.GetCurrent() as TDOMNodeRttiExposer).NodeValue);
+    if locIsRefElement then begin
+      locTypeName := locName;
+    end else begin
+      locPartCursor := CreateCursorOn(locAttCursor.Clone() as IObjectCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_type)]),TDOMNodeRttiExposer));
+      locPartCursor.Reset();
+      if not locPartCursor.MoveNext() then
+        raise EXsdInvalidDefinitionException.Create(SERR_InvalidAttributeDef_MissingType);
+      locTypeName := ExtractNameFromQName((locPartCursor.GetCurrent() as TDOMNodeRttiExposer).NodeValue);
+    end;
     if IsStrEmpty(locTypeName) then
       raise EXsdInvalidDefinitionException.Create(SERR_InvalidAttributeDef_EmptyType);
     locType := FSymbols.FindElement(locTypeName) as TPasType;
-    if not Assigned(locType) then begin
-      locType := TPasUnresolvedTypeRef(FSymbols.CreateElement(TPasUnresolvedTypeRef,locTypeName,Self.Module.InterfaceSection,visPublic,'',0));
-      Self.Module.InterfaceSection.Declarations.Add(locType);
-      Self.Module.InterfaceSection.Types.Add(locType);
+    if Assigned(locType) then begin
+      if locIsRefElement then begin
+        locTypeInternalName := locTypeName;
+        locTypeInternalName := locTypeInternalName + '_Type';
+        locType.Name := locTypeInternalName;
+        FSymbols.RegisterExternalAlias(locType,locTypeName);
+      end;
+    end else begin
+      locTypeInternalName := ExtractIdentifier(locTypeName);
+      if locIsRefElement or AnsiSameText(locTypeInternalName,locInternalEltName) then begin
+        locTypeInternalName := locTypeInternalName + '_Type';
+      end;
+      if IsReservedKeyWord(locTypeInternalName) then begin
+        locTypeInternalName := '_' + locTypeInternalName;
+      end;
+      locType := TPasUnresolvedTypeRef(FSymbols.CreateElement(TPasUnresolvedTypeRef,locTypeInternalName,nil{Self.Module.InterfaceSection},visDefault,'',0));
+      locTypeAddRef := False;
+      if not AnsiSameText(locTypeInternalName,locTypeName) then
+        FSymbols.RegisterExternalAlias(locType,locTypeName);
     end;
     
     locPartCursor := CreateCursorOn(locAttCursor.Clone() as IObjectCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_use)]),TDOMNodeRttiExposer));
@@ -1458,7 +1489,8 @@ var
     locAttObj := TPasProperty(FSymbols.CreateElement(TPasProperty,locInternalEltName,locClassDef,visPublished,'',0));
     locClassDef.Members.Add(locAttObj);
     locAttObj.VarType := locType as TPasType;
-    locAttObj.VarType.AddRef();
+    if locTypeAddRef then
+      locType.AddRef();
     if locHasInternalName then
       FSymbols.RegisterExternalAlias(locAttObj,locName);
     FSymbols.SetPropertyAsAttribute(locAttObj,True);

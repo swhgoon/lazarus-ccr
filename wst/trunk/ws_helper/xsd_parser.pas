@@ -644,7 +644,9 @@ var
       typNd := FindNamedNode(crsSchemaChild,localTypeName);
     if not Assigned(typNd) then
       raise EXsdTypeNotFoundException.CreateFmt(SERR_TypeDefinitionNotFound,['1',AName]);
-    if AnsiSameText(ExtractNameFromQName(typNd.NodeName),s_element) then begin
+    if AnsiSameText(ExtractNameFromQName(typNd.NodeName),s_element) or
+       AnsiSameText(ExtractNameFromQName(typNd.NodeName),s_attribute)
+    then begin
       crs := CreateCursorOn(CreateAttributesCursor(typNd,cetRttiNode),ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_type)]),TDOMNodeRttiExposer));
       crs.Reset();
       if crs.MoveNext() then begin
@@ -923,10 +925,11 @@ begin
   if Assigned(FChildCursor) then begin
     crsSchemaChild := FChildCursor.Clone() as IObjectCursor;
     typFilterStr := Format(
-                      '%s or %s or %s',
+                      '%s or %s or %s or %s',
                       [ CreateQualifiedNameFilterStr(s_complexType,FXSShortNames),
                         CreateQualifiedNameFilterStr(s_simpleType,FXSShortNames),
-                        CreateQualifiedNameFilterStr(s_element,FXSShortNames)
+                        CreateQualifiedNameFilterStr(s_element,FXSShortNames),
+                        CreateQualifiedNameFilterStr(s_attribute,FXSShortNames)
                       ]
                     );
     crsSchemaChild := CreateCursorOn(crsSchemaChild,ParseFilter(typFilterStr,TDOMNodeRttiExposer));

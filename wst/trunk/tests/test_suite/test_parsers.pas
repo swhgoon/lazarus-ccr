@@ -80,6 +80,8 @@ type
     function load_schema_case_sensitive() : TwstPasTreeContainer;virtual;abstract;
     function load_schema_case_sensitive2() : TwstPasTreeContainer;virtual;abstract;
     function load_schema_case_sensitive_import() : TwstPasTreeContainer;virtual;abstract;
+
+    function load_global_attribute() : TwstPasTreeContainer;virtual;abstract;
   published
     procedure EmptySchema();
 
@@ -132,6 +134,8 @@ type
     procedure case_sensitive();
     procedure case_sensitive2();
     procedure case_sensitive_import();
+
+    procedure global_attribute();
   end;
 
   { TTest_XsdParser }
@@ -189,6 +193,8 @@ type
     function load_schema_case_sensitive() : TwstPasTreeContainer;override;
     function load_schema_case_sensitive2() : TwstPasTreeContainer;override;
     function load_schema_case_sensitive_import() : TwstPasTreeContainer;override;
+
+    function load_global_attribute() : TwstPasTreeContainer;override;
   end;
 
   { TTest_WsdlParser }
@@ -246,6 +252,8 @@ type
     function load_schema_case_sensitive() : TwstPasTreeContainer;override;
     function load_schema_case_sensitive2() : TwstPasTreeContainer;override;
     function load_schema_case_sensitive_import() : TwstPasTreeContainer;override;
+
+    function load_global_attribute() : TwstPasTreeContainer;override;
   published
     procedure no_binding_style();
     procedure signature_last();
@@ -2704,6 +2712,52 @@ begin
   end;
 end;
 
+procedure TTest_CustomXsdParser.global_attribute();
+const s_class_name = 'TSampleClass';
+var
+  clsType : TPasClassType;
+  tr : TwstPasTreeContainer;
+
+  procedure CheckProperty(
+    const AName,
+          ADeclaredName,
+          ATypeName      : string;
+    const AFieldType     : TPropertyType
+  );
+  var
+    prp : TPasProperty;
+    t : TPasType;
+  begin
+    prp := FindMember(clsType,AName) as TPasProperty;
+      CheckNotNull(prp);
+      CheckEquals(AName,prp.Name,'Name');
+      CheckEquals(ADeclaredName,tr.GetExternalName(prp),'External Name');
+      CheckNotNull(prp.VarType);
+      t := GetUltimeType(prp.VarType);
+      CheckNotNull(t,'Property''s Ultime Type not found.');
+      CheckEquals(ATypeName,tr.GetExternalName(t),'TypeName');
+      CheckEquals(PropertyType_Att[AFieldType],tr.IsAttributeProperty(prp));
+  end;
+
+var
+  mdl : TPasModule;
+  elt : TPasElement;
+begin
+  tr := load_global_attribute();
+  try
+    mdl := tr.FindModule('urn:wst-test');
+    CheckNotNull(mdl,'urn:wst-test');
+    elt := tr.FindElement(s_class_name);
+      CheckNotNull(elt,s_class_name);
+      CheckIs(elt,TPasClassType);
+      clsType := elt as TPasClassType;
+      CheckProperty('intAtt','intAtt','int',ptAttribute);
+      CheckProperty('strAtt','strAtt','string',ptAttribute);
+  finally
+    tr.Free();
+  end;
+end;
+
 { TTest_XsdParser }
 
 function TTest_XsdParser.ParseDoc(
@@ -2894,6 +2948,11 @@ end;
 function TTest_XsdParser.load_schema_case_sensitive_import(): TwstPasTreeContainer;
 begin
   Result := ParseDoc('case_sensitive3',True);
+end;
+
+function TTest_XsdParser.load_global_attribute() : TwstPasTreeContainer;
+begin
+  Result := ParseDoc('global_attribute');
 end;
 
 function TTest_XsdParser.load_class_widechar_property() : TwstPasTreeContainer;
@@ -3720,6 +3779,11 @@ end;
 function TTest_WsdlParser.load_schema_case_sensitive_import(): TwstPasTreeContainer;
 begin
   Result := ParseDoc('case_sensitive3',True);
+end;
+
+function TTest_WsdlParser.load_global_attribute() : TwstPasTreeContainer;
+begin
+  Result := ParseDoc('global_attribute',True);
 end;
 
 initialization
