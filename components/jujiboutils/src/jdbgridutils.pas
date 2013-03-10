@@ -185,6 +185,8 @@ uses
 procedure TJDbGridStringCtrl.myEditEnter(Sender: TObject);
 begin
   Field := theGrid.SelectedField;
+  if not Assigned(Field) then
+    abort;
   CellEditor.BoundsRect := theGrid.SelectedFieldRect;
   CellEditor.Text := Field.AsString;
   CellEditor.OnKeyPress := @OnKeyPress;  // Recuperamos el control :-p
@@ -196,6 +198,8 @@ end;
 
 procedure TJDbGridStringCtrl.myEditOnEditingDone(Sender: TObject);
 begin
+  if not Assigned(Field) or not Assigned(Field.Dataset) or not Field.DataSet.Active then
+    exit;
   if (not updated) then
   begin
     if CellEditor.Text <> Field.AsString then
@@ -276,6 +280,8 @@ end;
 procedure TJDbGridDateTimeCtrl.myEditEnter(Sender: TObject);
 begin
   Field := theGrid.SelectedField;
+  if not Assigned(Field) then
+    abort;
   CellEditor.BoundsRect := theGrid.SelectedFieldRect;
   CellEditor.Text := Field.AsString;
   CellEditor.OnKeyPress := @OnKeyPress;  // Recuperamos el control :-p
@@ -287,6 +293,10 @@ end;
 
 procedure TJDbGridDateTimeCtrl.myEditOnEditingDone(Sender: TObject);
 begin
+  if not Assigned(Field) or not Assigned(Field.Dataset) or not Field.DataSet.Active then
+    exit;
+  if not Assigned(Field) or not Assigned(Field.Dataset) or not Field.DataSet.Active then
+    exit;
   if Length(CellEditor.Caption) = 0 then
   begin
     if Field.Value <> Null then
@@ -310,7 +320,7 @@ begin
         if FormatDateTime(DisplayFormat, theValue) <>
           FormatDateTime(DisplayFormat, Field.AsDateTime) then
         begin
-          Field.DataSet.DisableControls;
+          // Field.DataSet.DisableControls;
           Field.DataSet.Edit;
           Field.AsDateTime := theValue;
           Field.DataSet.EnableControls;
@@ -461,6 +471,8 @@ end;
 procedure TJDbGridTimeCtrl.myEditEnter(Sender: TObject);
 begin
   Field := theGrid.SelectedField;
+  if not Assigned(Field) then
+    abort;
   CellEditor.BoundsRect := theGrid.SelectedFieldRect;
   CellEditor.Text := Field.AsString;
   CellEditor.OnKeyPress := @OnKeyPress;  // Recuperamos el control :-p
@@ -472,6 +484,8 @@ end;
 
 procedure TJDbGridTimeCtrl.myEditOnEditingDone(Sender: TObject);
 begin
+  if not Assigned(Field) or not Assigned(Field.Dataset) or not Field.DataSet.Active then
+    exit;
   if Length(CellEditor.Caption) = 0 then
   begin
     if Field.Value <> Null then
@@ -645,6 +659,8 @@ end;
 procedure TJDbGridDateCtrl.myEditEnter(Sender: TObject);
 begin
   Field := theGrid.SelectedField;
+  if not Assigned(Field) then
+    abort;
   CellEditor.BoundsRect := theGrid.SelectedFieldRect;
   CellEditor.Text := Field.AsString;
   CellEditor.OnKeyPress := @OnKeyPress;  // Recuperamos el control :-p
@@ -656,6 +672,8 @@ end;
 
 procedure TJDbGridDateCtrl.myEditOnEditingDone(Sender: TObject);
 begin
+  if not Assigned(Field) or not Assigned(Field.Dataset) or not Field.DataSet.Active then
+    exit;
   if Length(CellEditor.Caption) = 0 then
   begin
     if Field.Value <> Null then
@@ -830,6 +848,8 @@ end;
 procedure TJDbGridDoubleCtrl.myEditOnEnter(Sender: TObject);
 begin
   Field := theGrid.SelectedField;
+  if not Assigned(Field) then
+    Abort;
   CellEditor.BoundsRect := theGrid.SelectedFieldRect;
   CellEditor.Text := Field.AsString;
   CellEditor.OnKeyPress := @OnKeyPress;  // Recuperamos el control :-p
@@ -841,6 +861,8 @@ end;
 
 procedure TJDbGridDoubleCtrl.myEditOnEditingDone(Sender: TObject);
 begin
+  if not Assigned(Field) or not Assigned(Field.Dataset) or not Field.DataSet.Active then
+    exit;
   if IsValidFloat(CellEditor.Caption) then
   begin
     if (not updated) then
@@ -1033,6 +1055,8 @@ end;
 
 procedure TJDbGridIntegerCtrl.myEditOnEditingDone(Sender: TObject);
 begin
+  if not Assigned(Field) or not Assigned(Field.Dataset) or not Field.DataSet.Active then
+    exit;
   if IsValidInteger(CellEditor.Caption) then
   begin
     if (not updated) then
