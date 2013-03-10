@@ -550,6 +550,7 @@ end;
 
 procedure TDTCalendarForm.AdjustCalendarFormScreenPosition;
 var
+  M: TMonitor;
   R: TRect;
   P: TPoint;
   H, W: Integer;
@@ -558,8 +559,14 @@ begin
   W := Width;
 
   P := DTPicker.ControlToScreen(Point(0, DTPicker.Height));
+  M := Screen.MonitorFromWindow(DTPicker.Handle);
 
-  R := Screen.MonitorFromWindow(DTPicker.Handle).WorkareaRect;
+  R := M.WorkareaRect;
+  // WorkareaRect sometimes is not implemented (gtk2?). Depends on widgetset
+  // and window manager or something like that. Then it returns (0,0,0,0) and
+  // the best we can do is use BoundsRect instead:
+  if (R.Right <= R.Left) or (R.Bottom <= R.Top) then
+    R := M.BoundsRect;
 
   if P.y > R.Bottom - H then
     P.y := P.y - H - DTPicker.Height;
