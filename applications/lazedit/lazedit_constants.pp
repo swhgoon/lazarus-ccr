@@ -108,7 +108,7 @@ const
          '.xml;.adfx',                                 //eftXml
          '.css;' + CssTemplateExt,                     //eftCss
          '.js;' + JavaTemplateExt,                     //eftJava
-         '.pp;.pas;.inc;.lpr;.dpr;.lrs;.lpk;.dpk',     //eftFpc
+         '.pp;.pas;.p;.inc;.lpr;.dpr;.lrs;.lpk;.dpk',  //eftFpc
          '.lfm;.dfm',                                  //eftLfm
          '.c;.cpp;.h;.hpp;.hh;.gcc;.cc;.c++',          //eftC
          '.py',                                        //eftPython
