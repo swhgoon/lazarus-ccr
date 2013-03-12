@@ -198,6 +198,7 @@ type
     Hegth: integer;
     Next: TMLCaptionItem;
     Prior: TMLCaptionItem;
+    FInvalidDraw:integer;
     Col: TGridColumn;
   end;
 
@@ -550,6 +551,9 @@ type
 
     procedure UpdateRowsHeight;
     procedure ResetRowHeght;
+
+    procedure DoClearInvalidTitle;
+    procedure DoDrawInvalidTitle;
   protected
     function DatalinkActive: boolean;
     procedure LinkActive(Value: Boolean); override;
@@ -2368,6 +2372,64 @@ begin
     RowHeights[i] := DefaultRowHeight;
 end;
 
+procedure TRxDBGrid.DoClearInvalidTitle;
+var
+  i, j:integer;
+  FTitle:TRxColumnTitle;
+begin
+  for i:=0 to Columns.Count-1 do
+  begin
+    FTitle:=TRxColumnTitle(Columns[i].Title);
+    for j:=0 to FTitle.CaptionLinesCount-1 do
+      FTitle.CaptionLine(j).FInvalidDraw:=0;
+  end;
+end;
+
+procedure TRxDBGrid.DoDrawInvalidTitle;
+var
+  {C, }i, j{, CB, CE}:integer;
+  MLI:TMLCaptionItem;
+  FTitle:TRxColumnTitle;
+begin
+{  CE:=-1;
+  CB:=Columns.Count;}
+
+  for i:=0 to Columns.Count-1 do
+  begin
+    FTitle:=TRxColumnTitle(Columns[i].Title);
+    for j:=0 to FTitle.CaptionLinesCount - 1 do
+    begin
+      MLI:=FTitle.CaptionLine(j);
+      if MLI.FInvalidDraw<0 then
+      begin
+        InvalidateRow(0);
+{        CE:=Max(CE, i);
+        while Assigned(MLI.Prior) do
+          MLI:=MLI.Prior;
+        CB:=Min(MLI.Col.Index, CB);}
+        exit;
+      end;
+    end;
+  end;
+(*
+  if CE>=CB then
+  begin
+    DebugLn('------');
+    InvalidateRow(0);
+{    for i:=CE downto CB do
+    begin
+      DebugLn(['DoTestInvalidCaption', CE, ' ', CB, ' ', i]);
+      if i = 2 then
+      begin
+
+      end;
+
+      InvalidateCell(i, 0, true);
+    end;  }
+  end;
+*)
+end;
+
 
 procedure TRxDBGrid.DefaultDrawCellA(aCol, aRow: integer; aRect: TRect;
   aState: TGridDrawState);
@@ -2385,6 +2447,15 @@ end;
 procedure TRxDBGrid.DefaultDrawTitle(aCol, aRow: integer; aRect: TRect;
   aState: TGridDrawState);
 
+procedure DoClearMLIInvalid(MLI1: TMLCaptionItem);
+begin
+  while Assigned(MLI1) do
+  begin
+    inc(MLI1.FInvalidDraw);
+    MLI1:=MLI1.Next;
+  end;
+end;
+
 var
   ASortMarker: TSortMarker;
   ASortPosition: integer;
@@ -2397,7 +2468,7 @@ var
   FTitle: TRxColumnTitle;
   GrdCol: TRxColumn;
 
-  MLI, MLINext: TMLCaptionItem;
+  MLI, MLINext, MLI1: TMLCaptionItem;
 
 begin
   if (dgIndicator in Options) and (aCol = 0) then
@@ -2492,20 +2563,36 @@ begin
             if Assigned(MLI.Prior) then
             begin
               if aCol = LeftCol then
+              begin
                 OutCaptionMLCellText(aCol, aRow, aRect2, aState, MLI);
+                DoClearMLIInvalid(MLI);
+              end
+              else
+                Dec(MLI.FInvalidDraw);
             end
             else
+            begin
               OutCaptionMLCellText(aCol, aRow, aRect2, aState, MLI);
+              DoClearMLIInvalid(MLI);
+            end;
           end
           else
           begin
             if not Assigned(MLI.Prior) then
             begin
               OutCaptionCellText(aCol, aRow, aRect2, aState, MLI.Caption);
+              DoClearMLIInvalid(MLI);
             end
             else
-            if aCol = LeftCol then
-              OutCaptionMLCellText(aCol, aRow, aRect2, aState, MLI);
+            begin
+              if aCol = LeftCol then
+              begin
+                OutCaptionMLCellText(aCol, aRow, aRect2, aState, MLI);
+                DoClearMLIInvalid(MLI);
+              end
+              else
+                Dec(MLI.FInvalidDraw);
+            end;
           end;
           aRect2.Top := aRect2.Bottom;
         end;
@@ -3371,7 +3458,12 @@ begin
   if rdgWordWrap in FOptionsRx then
     UpdateRowsHeight;
 
+  DoClearInvalidTitle;
+
   inherited Paint;
+
+  DoDrawInvalidTitle;
+
   if FFooterOptions.Active and (FFooterOptions.RowCount > 0) then
     DrawFooterRows;
 end;
@@ -3717,14 +3809,29 @@ end;
 procedure TRxDBGrid.BeforePo(DataSet: TDataSet);
 var
   i: integer;
+  C:TRxColumn;
 begin
-  if FooterOptions.Active and (DatalinkActive) then
+  if DatalinkActive then
+  begin
+    if FooterOptions.Active  then
     for i := 0 to Columns.Count - 1 do
+    begin
       if not TRxColumn(Columns[i]).Footer.PostTestValue then
       begin
-        FInProcessCalc := -1;
-        Break;
+          FInProcessCalc := -1;
+          Break;
       end;
+    end;
+
+    if rdgFilter in OptionsRx then
+    for i := 0 to Columns.Count - 1 do
+    begin
+      C:=TRxColumn(Columns[i]);
+      if Assigned(C.Field) and (C.Filter.ValueList.IndexOf(C.Field.DisplayText)<  0) then
+        C.Filter.ValueList.Add(C.Field.DisplayText);
+    end;
+  end;
+
   if Assigned(F_EventOnBeforePost) then
     F_EventOnBeforePost(DataSet);
 end;
