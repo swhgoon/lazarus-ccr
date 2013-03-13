@@ -233,10 +233,10 @@ implementation
 
 procedure TTranslations.TranslateToEnglish;
 begin
-  mnuFile := 'File';
-    mnuFileOpen := 'Open';
+  mnuFile := '&File';
+    mnuFileOpen := '&Open ...';
     mnuFileNewFromTemplate := 'New from template ...';
-    mnuFileNew := 'New';
+    mnuFileNew := '&New';
           mnuFileNewText := 'Plain text';
   {   mnuFileNewHtml: TMenuItem;
       mnuFileNewXml: TMenuItem;
@@ -250,25 +250,25 @@ begin
       mnuFileNewShellScript: TMenuItem;
       mnuFileNewBat: TMenuItem;
       mnuFileNewIni: TMenuItem;}
-    mnuFileSave := 'Save';
-    mnuFileSaveAs := 'Save as';
+    mnuFileSave := '&Save';
+    mnuFileSaveAs := 'Save &As';
     mnuFileSaveAll := 'Save all';
-    mnuFileCloseCurrent := 'Close current';
+    mnuFileCloseCurrent := '&Close current';
     //mnuSep1: TMenuItem;
     mnuFileOpenInBrowser := 'Open in browser';
     //mnuSepAboveMru: TMenuItem;
     mnuFileCloseApp := 'Close application';
   //Edit menu
-  mnuEdit := 'Edit';
-    mnuEditUndo := 'Undo';
-    mnuEditRedo := 'Redo';
+  mnuEdit := '&Edit';
+    mnuEditUndo := '&Undo';
+    mnuEditRedo := '&Redo';
     //mnuSep11: TMenuItem;
-    mnuEditCopy := 'Copy';
-    mnuEditCut := 'Cut';
-    mnuEditPaste := 'Paste';
+    mnuEditCopy := '&Copy';
+    mnuEditCut := 'Cu&t';
+    mnuEditPaste := '&Paste';
     mnuEditPasteSpecial := 'Paste special';
       mnuEditPasteTableContentTab := 'Paste table content';
-    mnuEditSelectAll := 'Select all';
+    mnuEditSelectAll := 'Select &All';
     //mnuSep12: TMenuItem;
     mnuEditReplace := '&Replace';
     mnuEditFindNext := 'Find &Next';
@@ -296,9 +296,9 @@ begin
     mnuInsertCssStyle := 'Insert CSS Style';
     //Layout menu
     mnuLayout := '&Layout';
-      mnuLayoutBold := 'Bold';
-      mnuLayoutItalic := 'Italic';
-      mnuLayoutUnderline := 'Underline';
+      mnuLayoutBold := '&Bold';
+      mnuLayoutItalic := '&Italic';
+      mnuLayoutUnderline := '&Underline';
       mnuLayoutSub := 'Subscript';
       mnuLayoutSup := 'Superscript';
       mnuLayoutEmphasis := 'Emphasis';
@@ -311,10 +311,10 @@ begin
         mnuLayoutH5: TMenuItem;
         mnuLayoutH6: TMenuItem;}
       mnuLayoutAlign := 'Alignment';
-        mnuLayoutAlignLeft := 'left aligned';
-        mnuLayoutAlignRight := 'right aligned';
-        mnuLayoutAlignCenter := 'Centralized';
-        mnuLayoutAlignJustify := 'Justified';
+        mnuLayoutAlignLeft := '&Left aligned';
+        mnuLayoutAlignRight := '&Right aligned';
+        mnuLayoutAlignCenter := '&Centered';
+        mnuLayoutAlignJustify := '&Justified';
       mnuLayoutCode := 'Code';
       mnuLayoutQuote := 'Quote';
       mnuLayoutBlockQuote := 'Block Quote';
@@ -337,6 +337,7 @@ begin
     mnuToolbarsMain := 'Main Toolbar';
     mnuToolbarsHTML := 'HTML Toolbar';
 
+  //messages
   SLine := 'Line';
   SCol := 'Col';
   SModified := 'Modified';
@@ -358,32 +359,32 @@ begin
 
   // main.pp hints in toolbar buttons
   NewFromTemplateBtn := mnuFileNewFromTemplate;
-  NewPlainBtn := mnuFileNew;
-  OpenBtn := mnuFileOpen;
-  SaveBtn := mnuFileSave;
+  NewPlainBtn := 'New plain text file' {mnuFileNew};
+  OpenBtn := 'Open' {mnuFileOpen};
+  SaveBtn := 'Save' {mnuFileSave};
   SaveAllBtn := mnuFileSaveAll;
-  CopyBtn := mnuEditCopy;
+  CopyBtn := 'Copy'{mnuEditCopy};
   PasteBtn := 'Paste';
   FindBtn := 'Find';
-  InfoBtn := 'Help';
+  InfoBtn := 'Info';
   AnchorBtn := 'Insert Hyperlink';
   ImageBtn := 'Image';
   UListBtn := 'Bullets List';
   NListBtn := 'Numeric List';
   ListItemBtn := 'List item';
   TableBtn := 'Table';
-  BoldBtn := mnuLayoutBold;
-  ItalicBtn := mnuLayoutItalic;
-  UnderlineBtn := mnuLayoutUnderline;
+  BoldBtn := 'Bold' {mnuLayoutBold};
+  ItalicBtn := 'Italic' {mnuLayoutItalic};
+  UnderlineBtn := 'Underline' {mnuLayoutUnderline};
   EmBtn := mnuLayoutEmphasis;
   StrongBtn := mnuLayoutStrong;
   SupBtn := mnuLayoutSub;
   SubBtn := mnuLayoutSup;
   HeadingBtn := 'Heading (H1..H6)';
-  LeftAlignBtn := mnuLayoutAlignLeft;
-  RightAlignBtn:= mnuLayoutAlignRight;
-  CenterAlignBtn:= mnuLayoutAlignCenter;
-  JustifyAlignBtn:= mnuLayoutAlignJustify;
+  LeftAlignBtn := 'Align Left' {mnuLayoutAlignLeft};
+  RightAlignBtn:= 'Align Right' {mnuLayoutAlignRight};
+  CenterAlignBtn:= 'Centered' {mnuLayoutAlignCenter};
+  JustifyAlignBtn:= 'Justified' {mnuLayoutAlignJustify};
   ParaBtn := mnuGroupingParagraph;
   DivBtn := mnuGroupingDiv;
   SpanBtn := mnuGroupingSpan;
@@ -495,6 +496,7 @@ begin
     //mnuViewHighlighter: TMenuItem;
       mnuViewHLeftNone := 'Geen';
 
+  //messages
   SLine := 'Rg';
   SCol := 'Kol';
   SModified := 'Gewijzigd';
@@ -525,7 +527,7 @@ begin
   CopyBtn := mnuEditCopy;
   PasteBtn := 'Paste';
   FindBtn := 'Find';
-  InfoBtn := 'Help';
+//  InfoBtn := 'Help'; //set to 'Info' in English
   AnchorBtn := 'Hyperlink invoegen';
   ImageBtn := 'Plaatje invoegen';
   UListBtn := 'Ongenummerde lijst';
