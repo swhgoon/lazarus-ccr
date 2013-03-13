@@ -1219,6 +1219,11 @@ begin
     mnuEditReplace.Caption := vTranslations.mnuEditReplace;
     mnuEditFindNext.Caption := vTranslations.mnuEditFindNext;
     mnuEditFind.Caption := vTranslations.mnuEditFind;
+  //Popup Edit menu
+  mnuEditPopupCopy.Caption := vTranslations.mnuEditCopy;
+  mnuEditPopupCut.Caption := vTranslations.mnuEditCut;
+  mnuEditPopupPaste.Caption := vTranslations.mnuEditPaste;
+  mnuEditPopupSelectAll.Caption := vTranslations.mnuEditSelectAll;
   //Insert menu
   mnuHTMLTools.Caption := vTranslations.mnuHTMLTools;
     mnuInsertAnchor.Caption := vTranslations.mnuInsertAnchor;
