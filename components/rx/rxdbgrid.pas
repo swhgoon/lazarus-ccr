@@ -680,9 +680,7 @@ type
       read FAllowedOperations write FAllowedOperations default
       [aoInsert, aoUpdate, aoDelete, aoAppend];
     property OptionsRx: TOptionsRx read FOptionsRx write SetOptionsRx;
-//    property FooterColor: TColor read FFooterColor write SetFooterColor default clWindow;
     property FooterColor: TColor read GetFooterColor write SetFooterColor default clWindow; deprecated;
-//    property FooterRowCount: integer read FFooterRowCount write SetFooterRowCount default 0;
     property FooterRowCount: integer read GetFooterRowCount write SetFooterRowCount default 0; deprecated;
 
     property OnFiltred: TNotifyEvent read FOnFiltred write FOnFiltred;
@@ -1694,24 +1692,25 @@ var
 begin
   if FOptionsRx = AValue then
     exit;
+  BeginUpdate;
   OldOpt := FOptionsRx;
   FOptionsRx := AValue;
   UseXORFeatures := rdgXORColSizing in AValue;
   if (rdgFilter in AValue) and not (rdgFilter in OldOpt) then
   begin
     LayoutChanged;
-    BeginUpdate;
+{    BeginUpdate;
     CalcTitle;
-    EndUpdate;
+    EndUpdate;}
   end
   else
   if rdgFilter in OldOpt then
   begin
     FFilterListEditor.Hide;
     LayoutChanged;
-    BeginUpdate;
+{    BeginUpdate;
     CalcTitle;
-    EndUpdate;
+    EndUpdate;}
   end;
 
   FFooterOptions.FActive:=rdgFooterRows in FOptionsRx;
@@ -1719,7 +1718,8 @@ begin
   if (rdgWordWrap in OldOpt) and not (rdgWordWrap in FOptionsRx) then
     ResetRowHeght;
 
-  VisualChange;
+//  VisualChange;
+  EndUpdate;
 end;
 
 procedure TRxDBGrid.SetPropertyStorage(const AValue: TCustomPropertyStorage);
@@ -3066,6 +3066,7 @@ procedure TRxDBGrid.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: in
 var
   Cell: TGridCoord;
   Rect: TRect;
+  C:TRxColumn;
 begin
   QuickUTF8Search := '';
 
@@ -3086,20 +3087,23 @@ begin
       Rect := getFilterRect(CellRect(Cell.x, Cell.y));
       if (Cell.Y = 0) and (Cell.X >= Ord(dgIndicator in Options)) and (Rect.Top < Y) then
       begin
-        if TRxColumn(Columns[Columns.RealIndex(Cell.x - 1)]).Filter.ValueList.Count > 0 then
-          with FFilterListEditor do
-          begin
-            Items.Clear;
-            Items.AddStrings(TRxColumn(Columns[Columns.RealIndex(Cell.x - 1)]).Filter.ValueList);
-            Parent := Self;
-            Width := Rect.Right - Rect.Left;
-            Height := Rect.Bottom - Rect.Top;
-            BoundsRect := Rect;
-            Style := csDropDownList;
-            DropDownCount := TRxColumn(Columns[Columns.RealIndex(Cell.x - 1)]).Filter.DropDownRows;
-            Text := TRxColumn(Columns[Columns.RealIndex(Cell.x - 1)]).Filter.Value;
-            Show(Self, Cell.x - 1);
-          end;
+        C:=TRxColumn (Columns[Columns.RealIndex(Cell.x - 1)]);
+        if C.Filter.ValueList.Count > 0 then
+        begin
+          FFilterListEditor.Style := csDropDownList;
+          if C.Filter.DropDownRows>0 then
+            FFilterListEditor.DropDownCount := C.Filter.DropDownRows;
+
+          FFilterListEditor.Parent := Self;
+          FFilterListEditor.Width := Rect.Right - Rect.Left;
+          FFilterListEditor.Height := Rect.Bottom - Rect.Top;
+          FFilterListEditor.BoundsRect := Rect;
+
+          FFilterListEditor.Items.Assign(C.Filter.ValueList);
+
+          FFilterListEditor.Text := C.Filter.Value;
+          FFilterListEditor.Show(Self, Cell.x - 1);
+        end;
         exit;
       end;
     end;
@@ -3905,6 +3909,7 @@ var
   C: TRxColumn;
   i: integer;
 begin
+  BeginUpdate;
   OptionsRx := OptionsRx + [rdgFilter];
 
   for i := 0 to Columns.Count - 1 do
@@ -3934,6 +3939,8 @@ begin
     DataSource.DataSet.First;
     DataSource.DataSet.EnableControls;
   end;
+
+  EndUpdate;
 end;
 
 procedure TRxDBGrid.OnFilterClose(Sender: TObject);
@@ -4977,10 +4984,8 @@ begin
   FValueList.Sorted := True;
   FColor := clWhite;
 
-  //  FColor := clSkyBlue;
   FEmptyFont.Style := [fsItalic];
   FEmptyValue := sRxDBGridEmptiFilter;
-  //FFont.Style := [fsItalic];
 end;
 
 destructor TRxColumnFilter.Destroy;

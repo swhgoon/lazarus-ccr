@@ -252,13 +252,11 @@ begin
   Result.DataSet:=ADataSet;
   Result.LookupDisplayIndex:=ALookupDisplayIndex;
 
-//  AControl.Caption:='';
   Result.WControl:=AControl;
 
   if Assigned(Font) then
   begin
     Result.FGrid.Font.Assign(Font);
-//    Result.Font.Assign(Font);
   end;
 
 {$IFDEF LINUX}
@@ -299,7 +297,7 @@ end;
 procedure TPopUpForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   CloseAction:=caFree;
-  if Assigned(FOnPopUpCloseEvent) then
+  if (ModalResult <> mrOk) and Assigned(FOnPopUpCloseEvent) then
     FOnPopUpCloseEvent(FFindResult);
 end;
 
@@ -321,7 +319,7 @@ end;
 procedure TPopUpForm.Deactivate;
 begin
   inherited Deactivate;
-  if Assigned(FOnPopUpCloseEvent) then
+  if (ModalResult = mrOk) and Assigned(FOnPopUpCloseEvent) then
     FOnPopUpCloseEvent(FFindResult);
   Close;
 end;

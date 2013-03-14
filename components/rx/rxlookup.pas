@@ -1075,7 +1075,7 @@ begin
 {$IFDEF LINUX}
       TempF:=FRxPopUpForm;
       if FRxPopUpForm.ShowModal = mrOk then
-        OnInternalClosePopup(true);
+        {OnInternalClosePopup(true)};
       TempF.Free;
       FRxPopUpForm:=nil
 {$ENDIF}
