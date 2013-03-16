@@ -4,8 +4,6 @@ ZVDateTimePickerPropEdit
 Author: Zoran Vučenović, January and February 2010
         Зоран Вученовић, јануар и фебруар 2010.
 
-Last change: August 2012.
-
    This unit is part of ZVDateTimeCtrls package for Lazarus. It contains
 component and property editors for TZVDateTimePicker control.
 
@@ -212,6 +210,7 @@ var
 
   L, T, W, H: Integer;
   R: TRect;
+  M: TMonitor;
 begin
   if Assigned(Caller) then begin
     CallerZVDateTimePicker := Caller;
@@ -276,7 +275,14 @@ begin
 
     H := 2 * ZVDateTimePickerMax.Height + LabelNull.Height + ButtonPanel.Height + 58;
 
-    R := Screen.MonitorFromWindow(CallerZVDateTimePicker.Handle).WorkareaRect;
+    M := Screen.MonitorFromWindow(CallerZVDateTimePicker.Handle);
+
+    R := M.WorkareaRect;
+    // But if WorkareaRect doesn't work (not implemented for all widgetsets),
+    // then take BoundsRect:
+    if (R.Right <= R.Left) or (R.Bottom <= R.Top) then
+      R := M.BoundsRect;
+
     L := (R.Left + R.Right - W) div 2;
     T := (R.Top + R.Bottom - H) div 2;
 
