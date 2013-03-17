@@ -149,12 +149,12 @@ type
     property Enabled;
     property Font;
     property FormatOnEditing;
-//    property HideSelection;
+    property HideSelection;
     property Anchors;
-//    property BiDiMode;
+    property BiDiMode;
     property Constraints;
     property DragKind;
-//    property ParentBiDiMode;
+    property ParentBiDiMode;
 {$IFDEF WIN32}
   {$IFNDEF VER90}
 //    property ImeMode;
@@ -190,20 +190,15 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-{$IFDEF RX_D5}
+
     property OnContextPopup;
-{$ENDIF}
-{$IFDEF WIN32}
     property OnStartDrag;
-{$ENDIF}
-{$IFDEF RX_D4}
     property OnEndDock;
     property OnStartDock;
-{$ENDIF}
   end;
 
 implementation
-uses {rxstrutils, } strutils, Math, tooledit;
+uses {rxstrutils, } strutils, Math, tooledit, rxconst;
 
 function IsValidFloat(const Value: string; var RetValue: Extended): Boolean;
 var
@@ -285,8 +280,8 @@ begin
   FDisplayFormat := DefaultDisplayFormat;
   FDecimalPlaces := 2;
   FZeroEmpty := True;
-//  inherited Text := '';
-//  inherited Alignment := taLeftJustify;
+  inherited Text := '';
+  inherited Alignment := taLeftJustify;
 //  FDefNumGlyphs := 2;
   { forces update }
   DataChanged;
@@ -449,7 +444,7 @@ begin
       end;
     end;
     if RaiseOnError and (Result <> NewValue) then
-      raise ERangeError.CreateFmt(StringReplace('SOutOfRange %d %d %d %d', '%d', '%.*f', [rfReplaceAll]),
+      raise ERangeError.CreateFmt(StringReplace(SOutOfRange, '%d', '%.*f', [rfReplaceAll]),
         [DecimalPlaces, FMinValue, DecimalPlaces, FMaxValue]);
   end;
 end;
@@ -631,11 +626,13 @@ begin
   if Key in ['.', ','] - [ThousandSeparator] then
     Key := DecimalSeparator;
   inherited KeyPress(Key);
-  if (Key in [#32..#255]) and not IsValidChar(Key) then begin
+  if (Key in [#32..#255]) and not IsValidChar(Key) then
+  begin
 //    if BeepOnError then MessageBeep(0);
     Key := #0;
   end
-  else if Key = #27 then begin
+  else
+  if Key = #27 then begin
     Reset;
     Key := #0;
   end;
@@ -663,6 +660,9 @@ begin
       DecPos := Length(S) - DecPos;
     if DecPos > Integer(FDecimalPlaces) then
       Exit;
+
+    if S[1] = DecimalSeparator then
+      s := '0' + s;
   end;
   Result := IsValidFloat(S, RetValue);
   if Result and (FMinValue >= 0) and (FMaxValue > 0) and (RetValue < 0) then

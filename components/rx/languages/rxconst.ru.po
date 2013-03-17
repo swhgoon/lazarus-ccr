@@ -149,6 +149,10 @@ msgstr "Параметры"
 msgid "Other gui"
 msgstr "Неизвестный графический интерфейс"
 
+#: rxconst.soutofrange
+msgid "Out of range %d %d %d %d"
+msgstr ""
+
 #: rxconst.sprevmonth
 msgid "Previous Month|"
 msgstr "Превыдущий месяц|"

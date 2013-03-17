@@ -158,6 +158,10 @@ msgstr "Параметри"
 msgid "Other gui"
 msgstr "Інші GUI"
 
+#: rxconst.soutofrange
+msgid "Out of range %d %d %d %d"
+msgstr ""
+
 #: rxconst.sprevmonth
 msgid "Previous Month|"
 msgstr "Попередній місяць|"
