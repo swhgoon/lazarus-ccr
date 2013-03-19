@@ -12,12 +12,49 @@ type
   { TZeosDataSetSortEngine }
 
   TZeosDataSetSortEngine = class(TRxDBGridSortEngine)
+  protected
+    procedure UpdateFooterRows(ADataSet:TDataSet; AGrid:TRxDBGrid);override;
+    function EnabledFooterRowsCalc:boolean;override;
   public
     procedure Sort(Field:TField; ADataSet:TDataSet; Asc:boolean; SortOptions:TRxSortEngineOptions);override;
     procedure SortList(ListField: string; ADataSet: TDataSet; Asc: array of boolean; SortOptions: TRxSortEngineOptions); override;
   end;
 
 implementation
+uses ZDbcIntfs, ZVariant;
+
+type
+  THackZeosDS = class(TZAbstractRODataset);
+  THackRxColumnFooter = class(TRxColumnFooter);
+
+procedure TZeosDataSetSortEngine.UpdateFooterRows(ADataSet: TDataSet;
+  AGrid: TRxDBGrid);
+var
+  RS:IZResultSet;
+  CurRow, i:integer;
+  Col:TRxColumn;
+begin
+  if not Assigned(ADataSet) then exit;
+  RS:=THackZeosDS(ADataSet).ResultSet;
+  CurRow:=RS.GetRow;
+  RS.First;
+  while not RS.IsLast do
+  begin
+    for i:=0 to AGrid.Columns.Count-1 do
+    begin
+      Col:=TRxColumn(AGrid.Columns[i]);
+      if THackRxColumnFooter(Col.Footer).ValueType in [fvtSum, fvtAvg, fvtMax, fvtMin] then
+        THackRxColumnFooter(Col.Footer).UpdateTestValueFromVar(EncodeVariant(RS.GetValueByName(Col.FieldName)));
+    end;
+    RS.Next;
+  end;
+  RS.MoveAbsolute(CurRow);
+end;
+
+function TZeosDataSetSortEngine.EnabledFooterRowsCalc: boolean;
+begin
+  Result:=true;
+end;
 
 procedure TZeosDataSetSortEngine.Sort(Field:TField; ADataSet:TDataSet; Asc:boolean; SortOptions:TRxSortEngineOptions);
 begin

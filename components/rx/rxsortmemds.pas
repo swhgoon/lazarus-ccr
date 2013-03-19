@@ -43,6 +43,9 @@ type
   { TRxMemoryDataSortEngine }
 
   TRxMemoryDataSortEngine = class(TRxDBGridSortEngine)
+  protected
+    procedure UpdateFooterRows(ADataSet:TDataSet; AGrid:TRxDBGrid);override;
+    function EnabledFooterRowsCalc:boolean;override;
   public
     procedure Sort(Field:TField; ADataSet:TDataSet; Asc:boolean; SortOptions:TRxSortEngineOptions);override;
     procedure SortList(ListField:string; ADataSet:TDataSet; Asc: array of boolean; SortOptions: TRxSortEngineOptions);override;
@@ -50,6 +53,35 @@ type
 
 implementation
 uses rxmemds;
+
+type
+  THackRxMemoryData = class(TRxMemoryData);
+  THackRxColumnFooter = class(TRxColumnFooter);
+
+procedure TRxMemoryDataSortEngine.UpdateFooterRows(ADataSet: TDataSet;
+  AGrid: TRxDBGrid);
+var
+  i, j:integer;
+  Col:TRxColumn;
+begin
+  if not Assigned(ADataSet) then exit;
+
+  for j:=0 to ADataSet.RecordCount-1 do
+  begin
+    for i:=0 to AGrid.Columns.Count-1 do
+    begin
+      Col:=TRxColumn(AGrid.Columns[i]);
+      if THackRxColumnFooter(Col.Footer).ValueType in [fvtSum, fvtAvg, fvtMax, fvtMin] then
+        THackRxColumnFooter(Col.Footer).UpdateTestValueFromVar( THackRxMemoryData(ADataSet).GetAnyRecField(j, ADataSet.FieldByName(Col.Footer.FieldName)));
+    end;
+  end;
+
+end;
+
+function TRxMemoryDataSortEngine.EnabledFooterRowsCalc: boolean;
+begin
+  Result:=true;
+end;
 
 procedure TRxMemoryDataSortEngine.Sort(Field:TField; ADataSet:TDataSet;
     Asc:boolean; SortOptions:TRxSortEngineOptions);

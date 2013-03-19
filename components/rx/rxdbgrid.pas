@@ -185,6 +185,10 @@ type
   TRxSortEngineOptions = set of TRxSortEngineOption;
 
   TRxDBGridSortEngine = class
+  protected
+    FGrid:TRxDBGrid;
+    procedure UpdateFooterRows(ADataSet:TDataSet; AGrid:TRxDBGrid);virtual; abstract;
+    function EnabledFooterRowsCalc:boolean;virtual;
   public
     procedure Sort(Field: TField; ADataSet: TDataSet; Asc: boolean; SortOptions: TRxSortEngineOptions); virtual; abstract;
     procedure SortList(ListField: string; ADataSet: TDataSet; Asc: array of boolean; SortOptions: TRxSortEngineOptions); virtual;
@@ -254,6 +258,8 @@ type
     function DeleteTestValue: boolean;
     function PostTestValue: boolean;
     function ErrorTestValue: boolean;
+  protected
+    procedure UpdateTestValueFromVar(AValue:Variant);
   public
     constructor Create(Owner: TRxColumn);
     property Owner: TRxColumn read FOwner;
@@ -779,7 +785,7 @@ procedure RegisterRxDBGridSortEngine(RxDBGridSortEngineClass: TRxDBGridSortEngin
 implementation
 
 uses Math, rxdconst, rxstrutils, rxdbgrid_findunit, rxdbgrid_columsunit,
-  rxlookup, tooledit, LCLProc, rxfilterby, rxsortby;
+  rxlookup, tooledit, LCLProc, rxfilterby, rxsortby, variants;
 
 const
   EditorCommandStrs: array[0..10] of TIdentMapEntry =
@@ -3691,6 +3697,16 @@ begin
   if not APresent then
     exit;
 
+  if Assigned(FSortEngine) and (FSortEngine.EnabledFooterRowsCalc) then
+  begin
+    for i := 0 to Columns.Count - 1 do
+      TRxColumn(Columns[i]).Footer.ResetTestValue;
+
+    FSortEngine.UpdateFooterRows(DataSource.DataSet, Self);
+
+    exit;
+  end;
+
   Inc(FInProcessCalc);
   DS := DataSource.DataSet;
   ;
@@ -4888,6 +4904,36 @@ begin
     end;
   end;
 end;
+
+procedure TRxColumnFooter.UpdateTestValueFromVar(AValue: Variant);
+var
+  F: TField;
+begin
+  if ValueType in [fvtSum, fvtAvg, fvtMax, fvtMin] then
+  begin
+    F := TRxDBGrid(FOwner.Grid).DataSource.DataSet.FindField(FFieldName);
+    if (not VarIsEmpty(AValue)) and (AValue <> null) and Assigned(F) then
+    begin
+      if F.DataType in [ftDate, ftTime, ftDateTime, ftTimeStamp] then
+      begin
+        case FValueType of
+          fvtMax: FTestValue := Max(FTestValue, AValue);
+          fvtMin: FTestValue := Min(FTestValue, AValue);
+        end;
+      end
+      else
+      begin
+        case FValueType of
+          fvtSum: FTestValue := FTestValue + AValue;
+          //        fvtAvg:
+          fvtMax: FTestValue := Max(FTestValue, AValue);
+          fvtMin: FTestValue := Min(FTestValue, AValue);
+        end;
+      end;
+    end;
+  end;
+end;
+
 ///!
 constructor TRxColumnFooter.Create(Owner: TRxColumn);
 begin
@@ -4997,6 +5043,11 @@ begin
 end;
 
 { TExDBGridSortEngine }
+
+function TRxDBGridSortEngine.EnabledFooterRowsCalc: boolean;
+begin
+  Result:=false;
+end;
 
 procedure TRxDBGridSortEngine.SortList(ListField: string; ADataSet: TDataSet;
   Asc: array of boolean; SortOptions: TRxSortEngineOptions);

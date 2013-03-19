@@ -150,6 +150,7 @@ type
     function GetRecNo: Integer; override;
     procedure SetRecNo(Value: Integer); override;
     property Records[Index: Integer]: TMemoryRecord read GetMemoryRecord;
+    function GetAnyRecField(SrcRecNo:integer; AField:TField):variant;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1320,6 +1321,41 @@ begin
   begin
     FRecordPos := Value - 1;
     Resync([]);
+  end;
+end;
+
+function TRxMemoryData.GetAnyRecField(SrcRecNo: integer; AField: TField
+  ): variant;
+var
+  Data1: PChar;
+  I: Integer;
+  Item:TMemoryRecord;
+begin
+  Item:=Records[SrcRecNo];
+  Data1 := FindFieldData(Item.Data, AField);
+  Inc(Data1);  //Skip null flag
+
+  case AField.DataType of
+    ftString:Result := PChar(Data1);
+    ftSmallint:Result:=SmallInt(Data1^);
+    ftInteger,
+    ftDate,
+    ftTime,
+    ftAutoInc:Result:=Longint(Data1^);
+    ftWord:Result:=Word(Data1^);
+    ftBoolean:Result:=WordBool(Data1^);
+    ftFloat, ftCurrency:Result:=PDouble(Data1)^;
+    ftDateTime:Result:=PDateTime(Data1)^;
+    ftFixedChar:Result:=PChar(Data1);
+    ftWideString:Result:=PWideChar(Data1);
+    ftLargeint:Result:=Int64(Data1^);
+    ftVariant:
+      begin
+        Result := PVariant(Data1)^;
+      end;
+    ftGuid:Result:=PChar(Data1);
+  else
+    Result:=null;
   end;
 end;
 
