@@ -38,7 +38,8 @@ begin
   RS:=THackZeosDS(ADataSet).ResultSet;
   CurRow:=RS.GetRow;
   RS.First;
-  while not RS.IsLast do
+//  while not RS.IsLast do
+  while not RS.IsAfterLast do
   begin
     for i:=0 to AGrid.Columns.Count-1 do
     begin
