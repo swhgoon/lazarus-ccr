@@ -51,6 +51,8 @@ type
   private
     procedure MyContourLineDrawingProc(z,x1,y1,x2,y2: Double);
     function FPVDebugAddItemProc(AStr: string; AParent: Pointer): Pointer;
+    procedure HandleDrawerMouseWheel(Sender: TObject; Shift: TShiftState;
+       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
   public
     { public declarations }
     Drawer: TFPVVDrawer;
@@ -357,6 +359,7 @@ begin
   Drawer.Left := 5;
   Drawer.AnchorClient(5);
   Drawer.TabStop := True;
+  Drawer.OnMouseWheel := @HandleDrawerMouseWheel;
 end;
 
 procedure TfrmFPVViewer.FormDestroy(Sender: TObject);
@@ -388,6 +391,18 @@ var
 begin
   lTreeItem := TokensTreeView.Items.AddChild(TTreeNode(AParent), AStr);
   Result := lTreeItem;
+end;
+
+procedure TfrmFPVViewer.HandleDrawerMouseWheel(Sender: TObject;
+  Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint;
+  var Handled: Boolean);
+begin
+  if WheelDelta > 0 then
+    spinScale.Value := spinScale.Value + spinScale.Increment
+  else
+    spinScale.Value := spinScale.Value - spinScale.Increment;
+
+  btnVisualize.Click();
 end;
 
 end.
