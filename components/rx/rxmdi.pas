@@ -677,7 +677,7 @@ begin
     FSaveClose(Sender, CloseAction);
   FNavPanel.ChildWindowsShowLast;
   FNavPanel.ShowHiddenBtnOnResize;
-
+  CloseAction:=caFree;
   Free;
 end;
 
