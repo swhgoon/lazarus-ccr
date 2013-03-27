@@ -401,9 +401,9 @@ var
         Delete(S, Length(S1) + 1, MaxInt);
         
       if (loCaseInsensitive in Options) then
-        Result := AnsiCompareText(S, S1) = 0
+        Result := UTF8CompareText(S, S1) = 0
       else
-        Result := AnsiCompareStr(S, S1) = 0;
+        Result := UTF8CompareStr(S, S1) = 0;
     end
 //    else Result := false //(Field.Value = Value);
     else Result := (Field.Value = Value);
