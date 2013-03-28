@@ -2884,7 +2884,6 @@ var
   S: string;
   Pos: integer;
 begin
-  inherited LinkActive(Value);
   if Value then
   begin
     S := DataSource.DataSet.ClassName;
@@ -2892,8 +2891,18 @@ begin
       FSortEngine := RxDBGridSortEngineList.Objects[Pos] as TRxDBGridSortEngine
     else
       FSortEngine := nil;
+  end;
+
+  inherited LinkActive(Value);
+  if not Value then
+{  begin
+    S := DataSource.DataSet.ClassName;
+    if RxDBGridSortEngineList.Find(S, Pos) then
+      FSortEngine := RxDBGridSortEngineList.Objects[Pos] as TRxDBGridSortEngine
+    else
+      FSortEngine := nil;
   end
-  else
+  else}
   begin
     FSortEngine := nil;
     if SelectedRows.Count > 0 then
@@ -3538,18 +3547,18 @@ end;
 
 procedure TRxDBGrid.UpdateActive;
 begin
-{  if FInProcessCalc > 0 then
-    exit;}
+  if FInProcessCalc > 0 then
+    exit;
   inherited UpdateActive;
-{  if FInProcessCalc < 0 then
+  if FInProcessCalc < 0 then
   begin
     FInProcessCalc := 0;
     UpdateFooterRowOnUpdateActive;
   end
-  else
+{  else
   if FFooterOptions.Active and (FFooterOptions.RowCount > 0) then
-    UpdateFooterRowOnUpdateActive;
-}
+    UpdateFooterRowOnUpdateActive;}
+
  // UpdateRowsHeight;
 end;
 
@@ -4375,8 +4384,8 @@ begin
     exit;
 
   inherited LayoutChanged;
-  if DatalinkActive and (FInProcessCalc = 0) and (Datalink.DataSet.State = dsBrowse) then
-    CalcStatTotals;
+{  if DatalinkActive and (FInProcessCalc = 0) and (Datalink.DataSet.State = dsBrowse) then
+    CalcStatTotals;}
 end;
 
 procedure TRxDBGrid.SetFocus;

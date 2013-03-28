@@ -43,11 +43,24 @@ var
   SaveState:TDataSetState;
   SavePos:integer;
   SaveActiveRecord:integer;
+
+  SaveAfterScroll:TDataSetNotifyEvent;
+  SaveBeforeScroll:TDataSetNotifyEvent;
 begin
   if not Assigned(ADataSet) then exit;
+  if not Assigned(AGrid) then
+  begin
+    SavePos:=SavePos;
+    exit;
+  end;
   DHL:=THackDataLink(THackRxDBGrid(AGrid).Datalink);
   DHS:=THackDataSet(ADataSet);
   SaveState:=DHS.SetTempState(dsBrowse);
+
+  SaveAfterScroll:=ADataSet.AfterScroll;
+  SaveBeforeScroll:=ADataSet.BeforeScroll;
+  ADataSet.AfterScroll:=nil;
+  ADataSet.BeforeScroll:=nil;
 
   SaveActiveRecord:=DHL.ActiveRecord;
   DHL.ActiveRecord:=0;
@@ -80,6 +93,8 @@ begin
   DHL.ActiveRecord:=SaveActiveRecord;
   DHS.RestoreState(SaveState);
 
+  ADataSet.AfterScroll  := SaveAfterScroll;
+  ADataSet.BeforeScroll := SaveBeforeScroll;
 {  RS:=THackZeosDS(ADataSet).ResultSet;
   CurRow:=RS.GetRow;
   RS.First;
