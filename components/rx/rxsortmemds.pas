@@ -57,25 +57,58 @@ uses rxmemds;
 type
   THackRxMemoryData = class(TRxMemoryData);
   THackRxColumnFooter = class(TRxColumnFooter);
+  THackDataLink = class(TDataLink);
+  THackDataSet = class(TDataSet);
+  THackRxDBGrid = class(TRxDBGrid);
 
 procedure TRxMemoryDataSortEngine.UpdateFooterRows(ADataSet: TDataSet;
   AGrid: TRxDBGrid);
 var
   i, j:integer;
   Col:TRxColumn;
+
+  DHL:THackDataLink;
+  DHS:THackDataSet;
+  SaveState:TDataSetState;
+  SavePos:integer;
+  SaveActiveRecord:integer;
 begin
   if not Assigned(ADataSet) then exit;
 
-  for j:=0 to ADataSet.RecordCount-1 do
+  DHL:=THackDataLink(THackRxDBGrid(AGrid).Datalink);
+  DHS:=THackDataSet(ADataSet);
+  SaveState:=DHS.SetTempState(dsBrowse);
+
+  SaveActiveRecord:=DHL.ActiveRecord;
+  DHL.ActiveRecord:=0;
+  SavePos:=ADataSet.RecNo;
+
+
+  ADataSet.First;
+  while not ADataSet.EOF do
   begin
+
     for i:=0 to AGrid.Columns.Count-1 do
     begin
       Col:=TRxColumn(AGrid.Columns[i]);
       if THackRxColumnFooter(Col.Footer).ValueType in [fvtSum, fvtAvg, fvtMax, fvtMin] then
-        THackRxColumnFooter(Col.Footer).UpdateTestValueFromVar( THackRxMemoryData(ADataSet).GetAnyRecField(j, ADataSet.FieldByName(Col.Footer.FieldName)));
+        THackRxColumnFooter(Col.Footer).UpdateTestValueFromVar( ADataSet.FieldByName(Col.Footer.FieldName).Value);
     end;
+
+    ADataSet.Next;
   end;
 
+  DHS.RecNo := DHL.RecordCount + SavePos + 1;
+
+  while not ADataSet.BOF do
+  begin
+    if SavePos = ADataSet.RecNo then
+      break;
+    ADataSet.Prior;
+  end;
+
+  DHL.ActiveRecord:=SaveActiveRecord;
+  DHS.RestoreState(SaveState);
 end;
 
 function TRxMemoryDataSortEngine.EnabledFooterRowsCalc: boolean;

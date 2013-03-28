@@ -110,6 +110,7 @@ type
 
   TRxDSState = (rxdsInactive, rxdsActive);
 
+  TRxFilterOpCode = (fopEQ, fopNotEQ, fopStartFrom, fopEndTo, fopLike, fopNotLike);
   { TRxDBGridKeyStroke }
 
   TRxDBGridKeyStroke = class(TCollectionItem)
@@ -135,11 +136,9 @@ type
 
   TRxDBGridKeyStrokes = class(TOwnedCollection)
   private
-    //FOwn: TPersistent;
     function GetItem(Index: integer): TRxDBGridKeyStroke;
     procedure SetItem(Index: integer; const AValue: TRxDBGridKeyStroke);
   protected
-    //function GetOwner: TPersistent; override;
     procedure Update(Item: TCollectionItem); override;
   public
     constructor Create(AOwner: TPersistent);
@@ -150,8 +149,7 @@ type
     function FindRxCommand(AKey: word; AShift: TShiftState): TRxDBGridCommand;
     function FindRxKeyStrokes(ACommand: TRxDBGridCommand): TRxDBGridKeyStroke;
   public
-    property Items[Index: integer]: TRxDBGridKeyStroke read GetItem write SetItem;
-      default;
+    property Items[Index: integer]: TRxDBGridKeyStroke read GetItem write SetItem; default;
   end;
 
   { TRxDBGridFooterOptions }
@@ -275,6 +273,22 @@ type
       read FValueType write SetValueType default fvtNon;
   end;
 
+
+  { TRxFilterItem }
+
+  TRxFilterItem = class
+    FVAlue:string;
+    FCol:TRxColumn;
+    OpCode:TRxFilterOpCode;
+    function TestValue:Boolean;
+  end;
+
+  { TRxFilterItems }
+
+  TRxFilterItems = class(TFPList)
+    function AcceptRecord:boolean;
+  end;
+
   { TRxColumnFilter }
 
   TRxColumnFilter = class(TPersistent)
@@ -390,7 +404,7 @@ type
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
     procedure OptimizeWidth;
-    property SortOrder: TSortMarker read FSortOrder;
+    property SortOrder: TSortMarker read FSortOrder write FSortOrder;
     property SortPosition: integer read FSortPosition;
   published
     property Footer: TRxColumnFooter read GetFooter write SetFooter;
@@ -551,9 +565,7 @@ type
     procedure OnIniLoad(Sender: TObject);
 
     procedure CleanDSEvent;
-    procedure CollumnSortListUpdate;
-    procedure CollumnSortListClear;
-    procedure CollumnSortListApply;
+
 
     procedure UpdateRowsHeight;
     procedure ResetRowHeght;
@@ -561,6 +573,10 @@ type
     procedure DoClearInvalidTitle;
     procedure DoDrawInvalidTitle;
   protected
+    procedure CollumnSortListUpdate;
+    procedure CollumnSortListClear;
+    procedure CollumnSortListApply;
+
     function DatalinkActive: boolean;
     procedure LinkActive(Value: Boolean); override;
 
@@ -603,8 +619,9 @@ type
     procedure InternalOptimizeColumnsWidth(AColList: TList);
     function IsDefaultRowHeightStored: boolean;
     procedure VisualChange; override;
-    procedure SetQuickUTF8Search(AValue: string);
+    procedure EditorWidthChanged(aCol,aWidth: Integer); override;
 
+    procedure SetQuickUTF8Search(AValue: string);
     procedure BeforeDel(DataSet: TDataSet);
     procedure BeforePo(DataSet: TDataSet);
     procedure ErrorDel(DataSet: TDataSet; E: EDatabaseError;
@@ -631,9 +648,11 @@ type
     procedure FilterRec(DataSet: TDataSet; var Accept: boolean);
     function EditorByStyle(Style: TColumnButtonStyle): TWinControl; override;
     procedure LayoutChanged; override;
+    procedure SetFocus; override;
     procedure ShowFindDialog;
     procedure ShowColumnsDialog;
     procedure ShowSortDialog;
+    procedure ShowFilterDialog;
     function ColumnByFieldName(AFieldName: string): TRxColumn;
     function ColumnByCaption(ACaption: string): TRxColumn;
     procedure CalcStatTotals;
@@ -869,6 +888,42 @@ type
     //procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
     procedure EditingDone; override;
   end;
+
+{ TRxFilterItems }
+
+function TRxFilterItems.AcceptRecord: boolean;
+var
+  i:integer;
+begin
+  Result:=true;
+  for i:=0 to Count-1 do
+  begin
+    if not TRxFilterItem(Items[i]).TestValue then
+    begin
+      Result:=false;
+      exit;
+    end;
+  end;
+end;
+
+{ TRxFilterItem }
+
+function TRxFilterItem.TestValue: Boolean;
+var
+  ATestValue: string;
+begin
+  ATestValue:=FCol.Field.DisplayText;
+  case OpCode of
+    fopEQ:Result:=ATestValue = FVAlue;
+    fopNotEQ:Result:=ATestValue <> FVAlue;
+    fopStartFrom:Result:=UTF8Copy(ATestValue, 1, UTF8Length(FVAlue)) = FVAlue;
+    fopEndTo:Result:=Copy(ATestValue, UTF8Length(ATestValue) - UTF8Length(FVAlue), UTF8Length(FVAlue)) = FVAlue;
+    fopLike:Result:=UTF8Pos(FVAlue, ATestValue) > 0;
+    fopNotLike:Result:=UTF8Pos(FVAlue, ATestValue) = 0;
+  else
+    Result:=false;
+  end;
+end;
 
 { TRxDbGridColumnsSortList }
 
@@ -1886,16 +1941,16 @@ begin
             S := MLRec1.Caption;
             if not Assigned(MLRec1.Prior) then
             begin
-              W := rxCol.Width;//MLRec1.Width;
+              W := rxCol.Width;
               P := MLRec1.Next;
               while Assigned(P) do
               begin
-                Inc(W, P.Col.Width);//P.Width);
+                Inc(W, P.Col.Width);
                 P := P.Next;
               end;
               W1 := tmpCanvas.TextWidth(MLRec1.Caption) + 2;
               if W1 > W then
-                MLRec1.Hegth := W1 div Max(W, 1) + 1
+                MLRec1.Hegth := Min(W1 div Max(W, 1) + 1, UTF8Length(MLRec1.Caption))
               else
                 MLRec1.Hegth := 1;
 
@@ -2307,6 +2362,7 @@ var
   S:string;
   Asc:array of boolean;
 begin
+  if (FSortColumns.Count = 0) then exit;
   FSortingNow:=true;
   if FSortColumns.Count>1 then
   begin
@@ -3465,6 +3521,7 @@ end;
 
 procedure TRxDBGrid.Paint;
 begin
+  Inc(FInProcessCalc);
   if rdgWordWrap in FOptionsRx then
     UpdateRowsHeight;
 
@@ -3476,14 +3533,15 @@ begin
 
   if FFooterOptions.Active and (FFooterOptions.RowCount > 0) then
     DrawFooterRows;
+  Dec(FInProcessCalc);
 end;
 
 procedure TRxDBGrid.UpdateActive;
 begin
-  if FInProcessCalc > 0 then
-    exit;
+{  if FInProcessCalc > 0 then
+    exit;}
   inherited UpdateActive;
-  if FInProcessCalc < 0 then
+{  if FInProcessCalc < 0 then
   begin
     FInProcessCalc := 0;
     UpdateFooterRowOnUpdateActive;
@@ -3491,7 +3549,7 @@ begin
   else
   if FFooterOptions.Active and (FFooterOptions.RowCount > 0) then
     UpdateFooterRowOnUpdateActive;
-
+}
  // UpdateRowsHeight;
 end;
 
@@ -3636,6 +3694,19 @@ begin
 
 {  if rdgWordWrap in FOptionsRx then
     UpdateRowsHeight;}
+end;
+
+procedure TRxDBGrid.EditorWidthChanged(aCol, aWidth: Integer);
+var
+  R:TRect;
+begin
+  inherited EditorWidthChanged(aCol, aWidth);
+  if FFilterListEditor.Visible then
+  begin
+    R:=CellRect(FFilterListEditor.Col+1,0);
+    FFilterListEditor.Width:=Columns[FFilterListEditor.Col].Width;
+    FFilterListEditor.Left:=R.Left;
+  end;
 end;
 
 function TRxDBGrid.EditorByStyle(Style: TColumnButtonStyle): TWinControl;
@@ -4308,6 +4379,13 @@ begin
     CalcStatTotals;
 end;
 
+procedure TRxDBGrid.SetFocus;
+begin
+  inherited SetFocus;
+  if FFilterListEditor.Visible then
+    FFilterListEditor.Hide;
+end;
+
 procedure TRxDBGrid.ShowFindDialog;
 begin
   ShowRxDBGridFindForm(Self);
@@ -4321,6 +4399,11 @@ end;
 procedure TRxDBGrid.ShowSortDialog;
 begin
   OnSortBy(nil);
+end;
+
+procedure TRxDBGrid.ShowFilterDialog;
+begin
+  OnFilterBy(nil);
 end;
 
 function TRxDBGrid.ColumnByFieldName(AFieldName: string): TRxColumn;
