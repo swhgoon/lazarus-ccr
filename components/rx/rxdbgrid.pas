@@ -847,6 +847,11 @@ begin
 end;
 
 type
+  THackDataLink = class(TDataLink);
+  THackDataSet = class(TDataSet);
+
+
+type
 
   { TRxDBGridLookupComboEditor }
 
@@ -3755,11 +3760,22 @@ end;
 
 procedure TRxDBGrid.CalcStatTotals;
 var
-  P: TBookmark;
-  DS: TDataSet;
+  //P: TBookmark;
+  //DS: TDataSet;
   i: integer;
   APresent: boolean;
-  SEA, SEB:TDataSetNotifyEvent;
+  //SEA, SEB:TDataSetNotifyEvent;
+
+  DHL:THackDataLink;
+  DHS:THackDataSet;
+
+  SaveState:TDataSetState;
+  SavePos:integer;
+  SaveActiveRecord:integer;
+
+  SaveAfterScroll:TDataSetNotifyEvent;
+  SaveBeforeScroll:TDataSetNotifyEvent;
+  RCol:TRxColumn;
 begin
   if (not (FFooterOptions.Active and DatalinkActive)) or (Columns.Count = 0) or
      (DataSource.DataSet.RecordCount<=0) then
@@ -3777,6 +3793,9 @@ begin
   if not APresent then
     exit;
 
+  Inc(FInProcessCalc);
+
+  (*
   if Assigned(FSortEngine) and (FSortEngine.EnabledFooterRowsCalc) then
   begin
     for i := 0 to Columns.Count - 1 do
@@ -3787,7 +3806,6 @@ begin
     exit;
   end;
 
-  Inc(FInProcessCalc);
   DS := DataSource.DataSet;
   ;
   P := Ds.GetBookMark;
@@ -3814,6 +3832,51 @@ begin
     DS.AfterScroll:=SEA;
     DS.EnableControls;
   end;
+*)
+
+  for i := 0 to Columns.Count - 1 do
+    TRxColumn(Columns[i]).Footer.ResetTestValue;
+
+  DHL:=THackDataLink(Datalink);
+  DHS:=THackDataSet(DataSource.DataSet);
+  SaveState:=DHS.SetTempState(dsBrowse);
+
+  SaveAfterScroll:=DHS.AfterScroll;
+  SaveBeforeScroll:=DHS.BeforeScroll;
+  DHS.AfterScroll:=nil;
+  DHS.BeforeScroll:=nil;
+
+  SaveActiveRecord:=DHL.ActiveRecord;
+  DHL.ActiveRecord:=0;
+  SavePos:=DHS.RecNo;
+
+
+  DHS.First;
+  while not DHS.EOF do
+  begin
+    for i:=0 to Columns.Count-1 do
+    begin
+      RCol:=TRxColumn(Columns[i]);
+      if RCol.Footer.ValueType in [fvtSum, fvtAvg, fvtMax, fvtMin] then
+          RCol.Footer.UpdateTestValueFromVar( DHS.FieldByName(RCol.Footer.FieldName).Value);
+    end;
+    DHS.Next;
+  end;
+
+  DHS.RecNo := DHL.RecordCount + SavePos + 1;
+
+  while not DHS.BOF do
+  begin
+    if SavePos = DHS.RecNo then
+      break;
+    DHS.Prior;
+  end;
+
+  DHL.ActiveRecord:=SaveActiveRecord;
+  DHS.RestoreState(SaveState);
+
+  DHS.AfterScroll  := SaveAfterScroll;
+  DHS.BeforeScroll := SaveBeforeScroll;
 
   Dec(FInProcessCalc);
   if FInProcessCalc < 0 then
@@ -4384,8 +4447,8 @@ begin
     exit;
 
   inherited LayoutChanged;
-{  if DatalinkActive and (FInProcessCalc = 0) and (Datalink.DataSet.State = dsBrowse) then
-    CalcStatTotals;}
+  if DatalinkActive and (FInProcessCalc = 0) and (Datalink.DataSet.State = dsBrowse) then
+    CalcStatTotals;
 end;
 
 procedure TRxDBGrid.SetFocus;
