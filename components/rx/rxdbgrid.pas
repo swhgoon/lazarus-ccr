@@ -239,6 +239,7 @@ type
     FValue: string;
     FValueType: TFooterValueType;
     FTestValue: double;
+    FCountRec:integer;
     procedure SetAlignment(const AValue: TAlignment);
     procedure SetDisplayFormat(const AValue: string);
     procedure SetFieldName(const AValue: string);
@@ -3058,7 +3059,12 @@ begin
         DrawCellGrid(i, 0, R, [gdFixed]);
 
       if ((R.Left < ClipArea.Right) and (R.Right > ClipArea.Left)) then
-        DrawCell(i, 0, R, [gdFixed]);
+      begin
+//        DrawCell(i, 0, R, [gdFixed]);
+
+//        PrepareCanvas(i, 0, [gdFixed]);
+        DefaultDrawTitle(i, 0, getTitleRect(R), [gdFixed]);
+      end;
     end;
   end;
   Canvas.Brush.Color := Background;
@@ -3762,7 +3768,7 @@ procedure TRxDBGrid.CalcStatTotals;
 var
   //P: TBookmark;
   //DS: TDataSet;
-  i: integer;
+  i, cnt: integer;
   APresent: boolean;
   //SEA, SEB:TDataSetNotifyEvent;
 
@@ -3785,7 +3791,7 @@ begin
   for i := 0 to Columns.Count - 1 do
   begin
     APresent := TRxColumn(Columns[i]).Footer.FValueType in
-      [fvtSum, fvtAvg, fvtMax, fvtMin];
+      [fvtSum, fvtAvg, fvtMax, fvtMin, fvtCount];
     if APresent then
       break;
   end;
@@ -3834,6 +3840,7 @@ begin
   end;
 *)
 
+  cnt:=0;
   for i := 0 to Columns.Count - 1 do
     TRxColumn(Columns[i]).Footer.ResetTestValue;
 
@@ -3860,7 +3867,15 @@ begin
       if RCol.Footer.ValueType in [fvtSum, fvtAvg, fvtMax, fvtMin] then
           RCol.Footer.UpdateTestValueFromVar( DHS.FieldByName(RCol.Footer.FieldName).Value);
     end;
+    inc(cnt);
     DHS.Next;
+  end;
+
+  for i:=0 to Columns.Count-1 do
+  begin
+    RCol:=TRxColumn(Columns[i]);
+    if RCol.Footer.ValueType = fvtCount then
+        RCol.Footer.FCountRec:=Cnt; //( DHS.FieldByName(RCol.Footer.FieldName).Value);
   end;
 
   DHS.RecNo := DHL.RecordCount + SavePos + 1;
@@ -4797,9 +4812,9 @@ begin
   begin
     if DisplayFormat <> '' then
       Result := Format(DisplayFormat,
-        [TRxDBGrid(FOwner.Grid).DataSource.DataSet.RecordCount])
+        [{TRxDBGrid(FOwner.Grid).DataSource.DataSet.RecordCount} FCountRec])
     else
-      Result := IntToStr(TRxDBGrid(FOwner.Grid).DataSource.DataSet.RecordCount);
+      Result := IntToStr(FCountRec); //TRxDBGrid(FOwner.Grid).DataSource.DataSet.RecordCount);
   end
   else
     Result := '';
@@ -4878,6 +4893,7 @@ var
   F: TField;
 begin
   FTestValue := 0;
+  FCountRec:=0;
 
   if (ValueType = fvtMin) and (TRxDBGrid(
     FOwner.Grid).DataSource.DataSet.RecordCount <> 0) then
