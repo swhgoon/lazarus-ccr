@@ -1,0 +1,40 @@
+object Form1: TForm1
+  Left = 241
+  Height = 121
+  Top = 161
+  Width = 320
+  Caption = 'GZ Uncompressor'
+  ClientHeight = 121
+  ClientWidth = 320
+  LCLVersion = '1.1'
+  object editFileName: TFileNameEdit
+    Left = 8
+    Height = 23
+    Top = 32
+    Width = 264
+    FileName = 'D:\lazarusccr\applications\fpvviewer\examples_files\svgz\tassu_20130329_b.svgz'
+    FilterIndex = 0
+    HideDirectories = False
+    ButtonWidth = 23
+    NumGlyphs = 1
+    MaxLength = 0
+    TabOrder = 0
+  end
+  object Button1: TButton
+    Left = 16
+    Height = 25
+    Top = 80
+    Width = 288
+    Caption = 'Uncompress gz'
+    OnClick = Button1Click
+    TabOrder = 1
+  end
+  object Label1: TLabel
+    Left = 8
+    Height = 15
+    Top = 15
+    Width = 132
+    Caption = 'File to be uncompressed:'
+    ParentColor = False
+  end
+end
