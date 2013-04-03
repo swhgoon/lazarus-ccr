@@ -14,12 +14,12 @@ type
 
   TForm1 = class(TForm)
     Button1: TButton;
-    Button2: TButton;
+    buttonUncompressAndShow: TButton;
     editFileName: TFileNameEdit;
     Label1: TLabel;
     memoOutput: TMemo;
     procedure Button1Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
+    procedure buttonUncompressAndShowClick(Sender: TObject);
   private
     { private declarations }
   public
@@ -52,7 +52,7 @@ begin
   end;
 end;
 
-procedure TForm1.Button2Click(Sender: TObject);
+procedure TForm1.buttonUncompressAndShowClick(Sender: TObject);
 var
   DestStream: TMemoryStream;
   i: Integer;
@@ -66,10 +66,7 @@ begin
     for i := 0 to DestStream.Size-1 do
     begin
       lByte := DestStream.ReadByte();
-      {if not (lByte in [10, 13]) then}
-        lStr := lStr + Format('%x=%s ', [lByte, Char(lByte)])
-{      else
-        lStr := lStr + Format('%x ', [lByte]);}
+      lStr := lStr + Format('%x=%s ', [lByte, Char(lByte)])
     end;
     memoOutput.Text := lStr;
   finally
