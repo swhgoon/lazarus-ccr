@@ -1,10 +1,10 @@
 object Form1: TForm1
   Left = 241
-  Height = 121
+  Height = 357
   Top = 161
   Width = 320
   Caption = 'GZ Uncompressor'
-  ClientHeight = 121
+  ClientHeight = 357
   ClientWidth = 320
   LCLVersion = '1.1'
   object editFileName: TFileNameEdit
@@ -36,5 +36,31 @@ object Form1: TForm1
     Width = 132
     Caption = 'File to be uncompressed:'
     ParentColor = False
+  end
+  object Button2: TButton
+    Left = 16
+    Height = 25
+    Top = 120
+    Width = 288
+    Caption = 'Uncompress to a memory stream and show it'
+    OnClick = Button2Click
+    TabOrder = 2
+  end
+  object memoOutput: TMemo
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 16
+    Height = 179
+    Top = 168
+    Width = 294
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Right = 10
+    BorderSpacing.Bottom = 10
+    Lines.Strings = (
+      'memoOutput'
+    )
+    TabOrder = 3
   end
 end
