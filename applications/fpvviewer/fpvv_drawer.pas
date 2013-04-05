@@ -18,6 +18,8 @@ type
   public
     PosX, PosY: Integer;
     Drawing: TBitmap;
+    RedrawCallback: TNotifyEvent;
+    PosChangedCallback: TNotifyEvent;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure EraseBackground(DC: HDC); override;
@@ -78,7 +80,7 @@ begin
   Canvas.Brush.Color := clWhite;
   Canvas.Brush.Style := bsSolid;
   Canvas.FillRect(Self.ClientRect);
-  Canvas.Draw(PosX, PosY, Drawing);
+  Canvas.Draw(0, 0, Drawing); // (PosX, PosY,..
 //  inherited Paint;
 end;
 
@@ -93,6 +95,8 @@ begin
   else
     Exit;
   end;
+  if Assigned(PosChangedCallback) then PosChangedCallback(Self);
+  if Assigned(RedrawCallback) then RedrawCallback(Self);
   Invalidate();
 end;
 
@@ -119,6 +123,8 @@ begin
     DragDropStarted := False;
     PosX := PosX + (X - DragStartPos.X);
     PosY := PosY + (Y - DragStartPos.Y);
+    if Assigned(PosChangedCallback) then PosChangedCallback(Self);
+    if Assigned(RedrawCallback) then RedrawCallback(Self);
     Invalidate();
   end;
 end;
@@ -127,6 +133,7 @@ procedure TFPVVDrawer.Clear;
 begin
   PosX := 0;
   PosY := 0;
+  if Assigned(PosChangedCallback) then PosChangedCallback(Self);
 end;
 
 end.

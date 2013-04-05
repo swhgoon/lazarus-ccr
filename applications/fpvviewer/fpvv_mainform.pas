@@ -47,12 +47,16 @@ type
     procedure buttonRenderingTestClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure spinAdjustXChange(Sender: TObject);
+    procedure spinAdjustYChange(Sender: TObject);
     procedure spinScaleChange(Sender: TObject);
   private
     procedure MyContourLineDrawingProc(z,x1,y1,x2,y2: Double);
     function FPVDebugAddItemProc(AStr: string; AParent: Pointer): Pointer;
     procedure HandleDrawerMouseWheel(Sender: TObject; Shift: TShiftState;
        WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+    procedure HandleDrawerPosChanged(Sender: TObject);
+    procedure HandleDrawerRedraw(Sender: TObject);
   public
     { public declarations }
     Drawer: TFPVVDrawer;
@@ -86,8 +90,6 @@ begin
   //if not CheckInput() then Exit;
 
   notebook.PageIndex := 0;
-
-  Drawer.Clear;
 
   Vec := TvVectorialDocument.Create;
   try
@@ -124,8 +126,8 @@ begin
       Vec.GetPage(0).DrawBackground(Drawer.Drawing.Canvas);
     Vec.GetPage(0).Render(
       Drawer.Drawing.Canvas,
-      FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS + spinAdjustX.Value,
-      Drawer.Drawing.Height - FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS + spinAdjustY.Value,
+      FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS + Drawer.PosX,
+      Drawer.Drawing.Height - FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS + Drawer.PosY,
       spinScale.Value,
       -1 * spinScale.Value);
     Drawer.Invalidate;
@@ -360,11 +362,23 @@ begin
   Drawer.AnchorClient(5);
   Drawer.TabStop := True;
   Drawer.OnMouseWheel := @HandleDrawerMouseWheel;
+  Drawer.PosChangedCallback := @HandleDrawerPosChanged;
+  Drawer.RedrawCallback := @HandleDrawerRedraw;
 end;
 
 procedure TfrmFPVViewer.FormDestroy(Sender: TObject);
 begin
   Drawer.Free;
+end;
+
+procedure TfrmFPVViewer.spinAdjustXChange(Sender: TObject);
+begin
+  Drawer.PosX := spinAdjustX.Value;
+end;
+
+procedure TfrmFPVViewer.spinAdjustYChange(Sender: TObject);
+begin
+  Drawer.PosY := spinAdjustY.Value;
 end;
 
 procedure TfrmFPVViewer.spinScaleChange(Sender: TObject);
@@ -403,6 +417,17 @@ begin
     spinScale.Value := spinScale.Value - spinScale.Increment;
 
   btnVisualize.Click();
+end;
+
+procedure TfrmFPVViewer.HandleDrawerPosChanged(Sender: TObject);
+begin
+  spinAdjustX.Value := Drawer.PosX;
+  spinAdjustY.Value := Drawer.PosY;
+end;
+
+procedure TfrmFPVViewer.HandleDrawerRedraw(Sender: TObject);
+begin
+  btnVisualizeClick(Sender);
 end;
 
 end.
