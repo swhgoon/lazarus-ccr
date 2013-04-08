@@ -508,12 +508,12 @@ type
     procedure CalendarMouseUp(Sender: TObject; Button: TMouseButton;
                                       Shift: TShiftState; X, Y: Integer);
     procedure VisibleOfParentChanged(Sender: TObject);
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
   protected
     procedure Deactivate; override;
     procedure DoShow; override;
     procedure DoClose(var CloseAction: TCloseAction); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
   public
     constructor CreateNewDTCalendarForm(AOwner: TComponent;
