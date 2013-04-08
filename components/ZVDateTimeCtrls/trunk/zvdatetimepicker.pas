@@ -1764,7 +1764,7 @@ var
   YMD: TYMD;
   HMSMs: THMSMs;
   D, T: TDateTime;
-  Finished: Boolean;
+  Finished, ForceChange: Boolean;
 
 begin
   if FTextEnabled then begin
@@ -1774,6 +1774,7 @@ begin
 
       if (not FReadOnly) then begin
         Finished := False;
+        ForceChange := False;
 
         if FSelectedTextPart = 8 then begin
           case upCase(Key) of
@@ -1782,8 +1783,10 @@ begin
           else
             Finished := True;
           end;
+          ForceChange := True;
 
         end else if Key in ['0'..'9'] then begin
+
           TTP := ttpAMPM;
           DTP := GetCurrentDateTextPart;
 
@@ -1806,9 +1809,8 @@ begin
               while (UTF8Length(S) > 1) and (UTF8Copy(S, 1, 1) = '0') do
                 UTF8Delete(S, 1, 1);
 
-          end else begin
+          end else
             S := Key;
-          end;
 
           if (UTF8Length(S) >= N) then begin
 
@@ -1820,20 +1822,25 @@ begin
                 dtpMonth: YMD.Month := L;
                 dtpYear: YMD.Year := L;
               end;
-              if not TryEncodeDate(YMD.Year, YMD.Month, YMD.Day, D) then begin
+              if not TryEncodeDate(YMD.Year, YMD.Month, YMD.Day, D) then
                 D := MinDate - 1;
-              end;
+
               if (D < MinDate) or (D > MaxDate) then begin
                 if N = 4 then begin
                   UpdateDate;
                   Finished := True;
                 end else
                   S := Key;
-              end;
+
+              end else
+                ForceChange := True;
+
             end else begin
               if (TTP = ttpHour) and (FTimeFormat = tf12) then begin
                 if not (L in [1..12]) then
-                  S := Key;
+                  S := Key
+                else
+                  ForceChange := True;
 
               end else begin
 
@@ -1846,7 +1853,9 @@ begin
                 end;
                 if not TryEncodeTime(HMSMs.Hour, HMSMs.Minute, HMSMs.Second,
                                              HMSMs.MiliSec, T) then
-                  S := Key;
+                  S := Key
+                else
+                  ForceChange := True;
 
               end;
             end;
@@ -1869,7 +1878,11 @@ begin
 
           FUserChangedText := True;
 
-          Invalidate;
+          if ForceChange then
+            UpdateIfUserChangedText
+          else
+            Invalidate;
+
         end;
 
       end;
