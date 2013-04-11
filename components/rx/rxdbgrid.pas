@@ -3784,7 +3784,7 @@ var
   RCol:TRxColumn;
 begin
   if (not (FFooterOptions.Active and DatalinkActive)) or (Columns.Count = 0) or
-     (DataSource.DataSet.RecordCount<=0) then
+     (DataSource.DataSet.RecordCount<=0) or (gsAddingAutoColumns in GridStatus)  then
     Exit;
   //Дополнительно проверим - а стоит ли делать пробег по данным - есть ли агрегатные функции
   APresent := False;

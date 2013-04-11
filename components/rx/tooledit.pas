@@ -233,7 +233,7 @@ var
 begin
   with Editor do
   begin
-    if NewStyleControls then
+(*    if NewStyleControls then
     begin
       if BorderStyle = bsNone then
         I := 0
@@ -245,7 +245,7 @@ begin
       Result.X := {SendMessage(Handle, LM_GETMARGINS, 0, 0) and $0000FFFF} + I;
       Result.Y := I;
     end
-    else
+    else *)
     begin
       if BorderStyle = bsNone then
         I := 0
