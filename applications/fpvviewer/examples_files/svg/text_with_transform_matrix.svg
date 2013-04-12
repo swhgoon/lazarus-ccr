@@ -1,0 +1,178 @@
+<?xml version="1.0" standalone="no"?>
+<svg viewBox="0 0 1024 768" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" stroke-linecap="round" stroke-linejoin="round" fill-rule="evenodd" xml:space="preserve" >
+<defs >
+<clipPath id="clipId0" >
+<path d="M0,768 1024,768 1024,0 0,0 z" />
+</clipPath>
+<font id="ROMAND.SHX" >
+<font-face font-family="ROMAND.SHX.shx" />
+<glyph unicode="W" d="M2,21 7,0 12,21 17,0 22,21 " horiz-adv-x="24" vert-adv-y="34" />
+<glyph unicode="E" d="M17,0 4,0 4,21 17,21 M4,11 12,11 " horiz-adv-x="19" vert-adv-y="34" />
+<glyph unicode="I" d="M4,21 4,0 " horiz-adv-x="8" vert-adv-y="34" />
+<glyph unicode="G" d="M18,16 17,18 15,20 13,21 9,21 7,20 5,18 4,16 3,13 3,8 4,5 5,3 7,1 9,0 13,0 15,1 17,3 18,5 18,8 13,8 " horiz-adv-x="21" vert-adv-y="34" />
+<glyph unicode="H" d="M4,21 4,0 M4,11 18,11 M18,21 18,0 " horiz-adv-x="22" vert-adv-y="34" />
+<glyph unicode="N" d="M4,0 4,21 18,0 18,21 " horiz-adv-x="22" vert-adv-y="34" />
+<glyph unicode="S" d="M3,3 5,1 8,0 12,0 15,1 17,3 17,6 16,8 15,9 13,10 7,12 5,13 4,14 3,16 3,18 5,20 8,21 12,21 15,20 17,18 " horiz-adv-x="20" vert-adv-y="34" />
+<glyph unicode="C" d="M18,5 17,3 15,1 13,0 9,0 7,1 5,3 4,5 3,8 3,13 4,16 5,18 7,20 9,21 13,21 15,20 17,18 18,16 " horiz-adv-x="21" vert-adv-y="34" />
+<glyph unicode="R" d="M4,0 4,21 13,21 16,20 17,19 18,17 18,15 17,13 16,12 13,11 4,11 M11,11 18,0 " horiz-adv-x="21" vert-adv-y="34" />
+<glyph unicode=" " horiz-adv-x="21" vert-adv-y="30" />
+<glyph unicode="&amp;" d="M23,12 23,13 22,14 21,14 20,13 19,11 17,6 15,3 13,1 11,0 7,0 5,1 4,2 3,4 3,6 4,8 5,9 12,13 13,14 14,16 14,18 13,20 11,21 9,20 8,18 8,16 9,13 11,10 16,3 18,1 20,0 22,0 23,1 23,2 " horiz-adv-x="26" vert-adv-y="34" />
+<glyph unicode="M" d="M4,0 4,21 12,0 20,21 20,0 " horiz-adv-x="24" vert-adv-y="34" />
+<glyph unicode="A" d="M1,0 9,21 17,0 M4,7 14,7 " horiz-adv-x="18" vert-adv-y="34" />
+<glyph unicode="U" d="M4,21 4,6 5,3 7,1 10,0 12,0 15,1 17,3 18,6 18,21 " horiz-adv-x="22" vert-adv-y="34" />
+<glyph unicode="L" d="M4,21 4,0 16,0 " horiz-adv-x="17" vert-adv-y="34" />
+<glyph unicode="T" d="M1,21 15,21 M8,21 8,0 " horiz-adv-x="16" vert-adv-y="34" />
+<glyph unicode="X" d="M17,21 3,0 M3,21 17,0 " horiz-adv-x="20" vert-adv-y="34" />
+<glyph unicode="O" d="M9,0 7,1 5,3 4,5 3,8 3,13 4,16 5,18 7,20 9,21 13,21 15,20 17,18 18,16 19,13 19,8 18,5 17,3 15,1 13,0 9,0 " horiz-adv-x="22" vert-adv-y="34" />
+<glyph unicode="D" d="M4,0 4,21 11,21 14,20 16,18 17,16 18,13 18,8 17,5 16,3 14,1 11,0 4,0 " horiz-adv-x="21" vert-adv-y="34" />
+<glyph unicode="V" d="M1,21 9,0 17,21 " horiz-adv-x="18" vert-adv-y="34" />
+<glyph unicode="K" d="M4,21 4,0 M18,21 4,7 M9,12 18,0 " horiz-adv-x="21" vert-adv-y="34" />
+<glyph unicode="B" d="M4,0 4,21 13,21 16,20 17,19 18,17 18,15 17,13 16,12 13,11 4,11 13,11 16,10 17,9 18,7 18,4 17,2 16,1 13,0 4,0 " horiz-adv-x="21" vert-adv-y="34" />
+</font>
+<font id="ROMANS" >
+<font-face font-family="ROMANS.shx" />
+<glyph unicode="M" d="M4,0 4,21 12,0 20,21 20,0 " horiz-adv-x="24" vert-adv-y="34" />
+<glyph unicode="E" d="M17,0 4,0 4,21 17,21 M4,11 12,11 " horiz-adv-x="19" vert-adv-y="34" />
+<glyph unicode="T" d="M1,21 15,21 M8,21 8,0 " horiz-adv-x="16" vert-adv-y="34" />
+<glyph unicode="A" d="M1,0 9,21 17,0 M4,7 14,7 " horiz-adv-x="18" vert-adv-y="34" />
+<glyph unicode="L" d="M4,21 4,0 16,0 " horiz-adv-x="17" vert-adv-y="34" />
+<glyph unicode="U" d="M4,21 4,6 5,3 7,1 10,0 12,0 15,1 17,3 18,6 18,21 " horiz-adv-x="22" vert-adv-y="34" />
+<glyph unicode="R" d="M4,0 4,21 13,21 16,20 17,19 18,17 18,15 17,13 16,12 13,11 4,11 M11,11 18,0 " horiz-adv-x="21" vert-adv-y="34" />
+<glyph unicode="G" d="M18,16 17,18 15,20 13,21 9,21 7,20 5,18 4,16 3,13 3,8 4,5 5,3 7,1 9,0 13,0 15,1 17,3 18,5 18,8 13,8 " horiz-adv-x="21" vert-adv-y="34" />
+<glyph unicode="I" d="M4,21 4,0 " horiz-adv-x="8" vert-adv-y="34" />
+<glyph unicode="C" d="M18,5 17,3 15,1 13,0 9,0 7,1 5,3 4,5 3,8 3,13 4,16 5,18 7,20 9,21 13,21 15,20 17,18 18,16 " horiz-adv-x="21" vert-adv-y="34" />
+<glyph unicode="S" d="M3,3 5,1 8,0 12,0 15,1 17,3 17,6 16,8 15,9 13,10 7,12 5,13 4,14 3,16 3,18 5,20 8,21 12,21 15,20 17,18 " horiz-adv-x="20" vert-adv-y="34" />
+<glyph unicode="P" d="M4,0 4,21 13,21 16,20 17,19 18,17 18,14 17,12 16,11 13,10 4,10 " horiz-adv-x="21" vert-adv-y="34" />
+<glyph unicode=" " horiz-adv-x="21" vert-adv-y="30" />
+<glyph unicode="&lt;" d="M20,0 4,9 20,18 " horiz-adv-x="24" vert-adv-y="34" />
+<glyph unicode="1" d="M6,17 8,18 11,21 11,0 " horiz-adv-x="20" vert-adv-y="34" />
+<glyph unicode="5" d="M3,4 4,2 5,1 8,0 11,0 14,1 16,3 17,6 17,8 16,11 14,13 11,14 8,14 5,13 4,12 5,21 15,21 " horiz-adv-x="20" vert-adv-y="34" />
+<glyph unicode="0" d="M11,0 14,1 16,4 17,9 17,12 16,17 14,20 11,21 9,21 6,20 4,17 3,12 3,9 4,4 6,1 9,0 11,0 " horiz-adv-x="20" vert-adv-y="34" />
+<glyph unicode="m" d="M4,14 4,0 M4,10 7,13 9,14 12,14 14,13 15,10 15,0 M15,10 18,13 20,14 23,14 25,13 26,10 26,0 " horiz-adv-x="30" vert-adv-y="34" />
+<glyph unicode="9" d="M4,3 5,1 8,0 10,0 13,1 15,4 16,9 16,14 15,18 13,20 10,21 9,21 6,20 4,18 3,15 3,14 4,11 6,9 9,8 10,8 13,9 15,11 16,14 " horiz-adv-x="20" vert-adv-y="34" />
+<glyph unicode="O" d="M9,0 7,1 5,3 4,5 3,8 3,13 4,16 5,18 7,20 9,21 13,21 15,20 17,18 18,16 19,13 19,8 18,5 17,3 15,1 13,0 9,0 " horiz-adv-x="22" vert-adv-y="34" />
+<glyph unicode="F" d="M4,0 4,21 17,21 M4,11 12,11 " horiz-adv-x="18" vert-adv-y="34" />
+<glyph unicode="D" d="M4,0 4,21 11,21 14,20 16,18 17,16 18,13 18,8 17,5 16,3 14,1 11,0 4,0 " horiz-adv-x="21" vert-adv-y="34" />
+<glyph unicode="B" d="M4,0 4,21 13,21 16,20 17,19 18,17 18,15 17,13 16,12 13,11 4,11 13,11 16,10 17,9 18,7 18,4 17,2 16,1 13,0 4,0 " horiz-adv-x="21" vert-adv-y="34" />
+<glyph unicode="Y" d="M1,21 9,11 17,21 M9,11 9,0 " horiz-adv-x="18" vert-adv-y="34" />
+<glyph unicode="W" d="M2,21 7,0 12,21 17,0 22,21 " horiz-adv-x="24" vert-adv-y="34" />
+<glyph unicode="N" d="M4,0 4,21 18,0 18,21 " horiz-adv-x="22" vert-adv-y="34" />
+<glyph unicode="." d="M5,0 6,1 5,2 4,1 5,0 " horiz-adv-x="10" vert-adv-y="34" />
+<glyph unicode="X" d="M17,21 3,0 M3,21 17,0 " horiz-adv-x="20" vert-adv-y="34" />
+<glyph unicode="o" d="M4,3 3,6 3,8 4,11 6,13 8,14 11,14 13,13 15,11 16,8 16,6 15,3 13,1 11,0 8,0 6,1 4,3 " horiz-adv-x="19" vert-adv-y="34" />
+<glyph unicode="(" d="M11,-7 9,-5 7,-2 5,2 4,7 4,11 5,16 7,20 9,23 11,25 " horiz-adv-x="14" vert-adv-y="34" />
+<glyph unicode=")" d="M3,-7 5,-5 7,-2 9,2 10,7 10,11 9,16 7,20 5,23 3,25 " horiz-adv-x="14" vert-adv-y="34" />
+<glyph unicode="2" d="M4,16 4,17 5,19 6,20 8,21 12,21 14,20 15,19 16,17 16,15 15,13 13,10 3,0 17,0 " horiz-adv-x="20" vert-adv-y="34" />
+<glyph unicode="8" d="M8,0 12,0 15,1 16,2 17,4 17,7 16,9 14,11 11,12 7,13 5,14 4,16 4,18 5,20 8,21 12,21 15,20 16,18 16,16 15,14 13,13 9,12 6,11 4,9 3,7 3,4 4,2 5,1 8,0 " horiz-adv-x="20" vert-adv-y="34" />
+<glyph unicode="7" d="M7,0 17,21 3,21 " horiz-adv-x="20" vert-adv-y="34" />
+<glyph unicode="/" d="M20,25 2,-7 " horiz-adv-x="22" vert-adv-y="34" />
+<glyph unicode="3" d="M5,21 16,21 10,13 13,13 15,12 16,11 17,8 17,6 16,3 14,1 11,0 8,0 5,1 4,2 3,4 " horiz-adv-x="20" vert-adv-y="34" />
+<glyph unicode="6" d="M16,18 15,20 12,21 10,21 7,20 5,17 4,12 4,7 5,3 7,1 10,0 11,0 14,1 16,3 17,6 17,7 16,10 14,12 11,13 10,13 7,12 5,10 4,7 " horiz-adv-x="20" vert-adv-y="34" />
+<glyph unicode="V" d="M1,21 9,0 17,21 " horiz-adv-x="18" vert-adv-y="34" />
+<glyph unicode="H" d="M4,21 4,0 M4,11 18,11 M18,21 18,0 " horiz-adv-x="22" vert-adv-y="34" />
+<glyph unicode="J" d="M2,7 2,5 3,2 4,1 6,0 8,0 10,1 11,2 12,5 12,21 " horiz-adv-x="16" vert-adv-y="34" />
+<glyph unicode="&amp;" d="M23,12 23,13 22,14 21,14 20,13 19,11 17,6 15,3 13,1 11,0 7,0 5,1 4,2 3,4 3,6 4,8 5,9 12,13 13,14 14,16 14,18 13,20 11,21 9,20 8,18 8,16 9,13 11,10 16,3 18,1 20,0 22,0 23,1 23,2 " horiz-adv-x="26" vert-adv-y="34" />
+<glyph unicode="," d="M4,-4 5,-3 6,-1 6,1 5,2 4,1 5,0 6,1 " horiz-adv-x="10" vert-adv-y="34" />
+<glyph unicode="K" d="M4,21 4,0 M18,21 4,7 M9,12 18,0 " horiz-adv-x="21" vert-adv-y="34" />
+<glyph unicode="-" d="M4,9 22,9 " horiz-adv-x="26" vert-adv-y="34" />
+<glyph unicode="4" d="M13,0 13,21 3,7 18,7 " horiz-adv-x="20" vert-adv-y="34" />
+<glyph unicode="Q" d="M9,0 7,1 5,3 4,5 3,8 3,13 4,16 5,18 7,20 9,21 13,21 15,20 17,18 18,16 19,13 19,8 18,5 17,3 15,1 13,0 9,0 M12,4 18,-2 " horiz-adv-x="22" vert-adv-y="34" />
+<glyph unicode="t" d="M2,14 9,14 M5,21 5,4 6,1 8,0 10,0 " horiz-adv-x="12" vert-adv-y="34" />
+<glyph unicode="p" d="M4,14 4,-7 M4,11 6,13 8,14 11,14 13,13 15,11 16,8 16,6 15,3 13,1 11,0 8,0 6,1 4,3 " horiz-adv-x="19" vert-adv-y="34" />
+<glyph unicode="h" d="M4,10 7,13 9,14 12,14 14,13 15,10 15,0 M4,21 4,0 " horiz-adv-x="19" vert-adv-y="34" />
+<glyph unicode="k" d="M4,21 4,0 M14,14 4,4 M8,8 15,0 " horiz-adv-x="17" vert-adv-y="34" />
+<glyph unicode="g" d="M6,-6 8,-7 11,-7 13,-6 14,-5 15,-2 15,14 M15,11 13,13 11,14 8,14 6,13 4,11 3,8 3,6 4,3 6,1 8,0 11,0 13,1 15,3 " horiz-adv-x="19" vert-adv-y="34" />
+<glyph unicode="%" d="M8,21 10,19 10,17 9,15 7,14 5,14 3,16 3,18 4,20 6,21 8,21 10,20 13,19 16,19 19,20 21,21 3,0 M14,2 14,4 15,6 17,7 19,7 21,5 21,3 20,1 18,0 16,0 14,2 " horiz-adv-x="24" vert-adv-y="34" />
+</font>
+<font id="ROMANS.SHX" >
+<font-face font-family="ROMANS.SHX.shx" />
+<glyph unicode="S" d="M3,3 5,1 8,0 12,0 15,1 17,3 17,6 16,8 15,9 13,10 7,12 5,13 4,14 3,16 3,18 5,20 8,21 12,21 15,20 17,18 " horiz-adv-x="20" vert-adv-y="34" />
+<glyph unicode="L" d="M4,21 4,0 16,0 " horiz-adv-x="17" vert-adv-y="34" />
+<glyph unicode="4" d="M13,0 13,21 3,7 18,7 " horiz-adv-x="20" vert-adv-y="34" />
+<glyph unicode="0" d="M11,0 14,1 16,4 17,9 17,12 16,17 14,20 11,21 9,21 6,20 4,17 3,12 3,9 4,4 6,1 9,0 11,0 " horiz-adv-x="20" vert-adv-y="34" />
+<glyph unicode="-" d="M4,9 22,9 " horiz-adv-x="26" vert-adv-y="34" />
+<glyph unicode="B" d="M4,0 4,21 13,21 16,20 17,19 18,17 18,15 17,13 16,12 13,11 4,11 13,11 16,10 17,9 18,7 18,4 17,2 16,1 13,0 4,0 " horiz-adv-x="21" vert-adv-y="34" />
+<glyph unicode="N" d="M4,0 4,21 18,0 18,21 " horiz-adv-x="22" vert-adv-y="34" />
+<glyph unicode="2" d="M4,16 4,17 5,19 6,20 8,21 12,21 14,20 15,19 16,17 16,15 15,13 13,10 3,0 17,0 " horiz-adv-x="20" vert-adv-y="34" />
+<glyph unicode="3" d="M5,21 16,21 10,13 13,13 15,12 16,11 17,8 17,6 16,3 14,1 11,0 8,0 5,1 4,2 3,4 " horiz-adv-x="20" vert-adv-y="34" />
+<glyph unicode="1" d="M6,17 8,18 11,21 11,0 " horiz-adv-x="20" vert-adv-y="34" />
+<glyph unicode="F" d="M4,0 4,21 17,21 M4,11 12,11 " horiz-adv-x="18" vert-adv-y="34" />
+<glyph unicode="V" d="M1,21 9,0 17,21 " horiz-adv-x="18" vert-adv-y="34" />
+<glyph unicode="C" d="M18,5 17,3 15,1 13,0 9,0 7,1 5,3 4,5 3,8 3,13 4,16 5,18 7,20 9,21 13,21 15,20 17,18 18,16 " horiz-adv-x="21" vert-adv-y="34" />
+<glyph unicode="H" d="M4,21 4,0 M4,11 18,11 M18,21 18,0 " horiz-adv-x="22" vert-adv-y="34" />
+<glyph unicode="7" d="M7,0 17,21 3,21 " horiz-adv-x="20" vert-adv-y="34" />
+<glyph unicode="Q" d="M9,0 7,1 5,3 4,5 3,8 3,13 4,16 5,18 7,20 9,21 13,21 15,20 17,18 18,16 19,13 19,8 18,5 17,3 15,1 13,0 9,0 M12,4 18,-2 " horiz-adv-x="22" vert-adv-y="34" />
+<glyph unicode="5" d="M3,4 4,2 5,1 8,0 11,0 14,1 16,3 17,6 17,8 16,11 14,13 11,14 8,14 5,13 4,12 5,21 15,21 " horiz-adv-x="20" vert-adv-y="34" />
+<glyph unicode="6" d="M16,18 15,20 12,21 10,21 7,20 5,17 4,12 4,7 5,3 7,1 10,0 11,0 14,1 16,3 17,6 17,7 16,10 14,12 11,13 10,13 7,12 5,10 4,7 " horiz-adv-x="20" vert-adv-y="34" />
+<glyph unicode="8" d="M8,0 12,0 15,1 16,2 17,4 17,7 16,9 14,11 11,12 7,13 5,14 4,16 4,18 5,20 8,21 12,21 15,20 16,18 16,16 15,14 13,13 9,12 6,11 4,9 3,7 3,4 4,2 5,1 8,0 " horiz-adv-x="20" vert-adv-y="34" />
+<glyph unicode="R" d="M4,0 4,21 13,21 16,20 17,19 18,17 18,15 17,13 16,12 13,11 4,11 M11,11 18,0 " horiz-adv-x="21" vert-adv-y="34" />
+<glyph unicode="E" d="M17,0 4,0 4,21 17,21 M4,11 12,11 " horiz-adv-x="19" vert-adv-y="34" />
+<glyph unicode="I" d="M4,21 4,0 " horiz-adv-x="8" vert-adv-y="34" />
+<glyph unicode="O" d="M9,0 7,1 5,3 4,5 3,8 3,13 4,16 5,18 7,20 9,21 13,21 15,20 17,18 18,16 19,13 19,8 18,5 17,3 15,1 13,0 9,0 " horiz-adv-x="22" vert-adv-y="34" />
+<glyph unicode="9" d="M4,3 5,1 8,0 10,0 13,1 15,4 16,9 16,14 15,18 13,20 10,21 9,21 6,20 4,18 3,15 3,14 4,11 6,9 9,8 10,8 13,9 15,11 16,14 " horiz-adv-x="20" vert-adv-y="34" />
+<glyph unicode="D" d="M4,0 4,21 11,21 14,20 16,18 17,16 18,13 18,8 17,5 16,3 14,1 11,0 4,0 " horiz-adv-x="21" vert-adv-y="34" />
+<glyph unicode="Y" d="M1,21 9,11 17,21 M9,11 9,0 " horiz-adv-x="18" vert-adv-y="34" />
+<glyph unicode="P" d="M4,0 4,21 13,21 16,20 17,19 18,17 18,14 17,12 16,11 13,10 4,10 " horiz-adv-x="21" vert-adv-y="34" />
+<glyph unicode="U" d="M4,21 4,6 5,3 7,1 10,0 12,0 15,1 17,3 18,6 18,21 " horiz-adv-x="22" vert-adv-y="34" />
+<glyph unicode=" " horiz-adv-x="21" vert-adv-y="30" />
+<glyph unicode="T" d="M1,21 15,21 M8,21 8,0 " horiz-adv-x="16" vert-adv-y="34" />
+<glyph unicode="A" d="M1,0 9,21 17,0 M4,7 14,7 " horiz-adv-x="18" vert-adv-y="34" />
+<glyph unicode="G" d="M18,16 17,18 15,20 13,21 9,21 7,20 5,18 4,16 3,13 3,8 4,5 5,3 7,1 9,0 13,0 15,1 17,3 18,5 18,8 13,8 " horiz-adv-x="21" vert-adv-y="34" />
+<glyph unicode="W" d="M2,21 7,0 12,21 17,0 22,21 " horiz-adv-x="24" vert-adv-y="34" />
+<glyph unicode="+" d="M13,18 13,0 M4,9 22,9 " horiz-adv-x="26" vert-adv-y="34" />
+</font>
+<font id="simplex" >
+<font-face font-family="simplex.shx" />
+<glyph unicode="A" d="M1,0 9,21 17,0 M4,7 14,7 " horiz-adv-x="18" vert-adv-y="34" />
+<glyph unicode="2" d="M4,16 4,17 5,19 6,20 8,21 12,21 14,20 15,19 16,17 16,15 15,13 13,10 3,0 17,0 " horiz-adv-x="20" vert-adv-y="34" />
+</font>
+<font id="swisseb.ttf" >
+<font-face font-family="swisseb.ttf.shx" />
+<glyph unicode="R" d="M4,0 4,21 13,21 16,20 17,19 18,17 18,15 17,13 16,12 13,11 4,11 M11,11 18,0 " horiz-adv-x="21" vert-adv-y="34" />
+<glyph unicode="A" d="M1,0 9,21 17,0 M4,7 14,7 " horiz-adv-x="18" vert-adv-y="34" />
+<glyph unicode="D" d="M4,0 4,21 11,21 14,20 16,18 17,16 18,13 18,8 17,5 16,3 14,1 11,0 4,0 " horiz-adv-x="21" vert-adv-y="34" />
+</font>
+</defs>
+<g stroke-width="0.05" clip-path="url(#clipId0)" fill="none" stroke="rgb(0,0,0)" >
+<text transform="matrix(0.932101 0 -0 1.16513 429.424 478.306)" font-size="1.28571" style="font-family: ROMANS.shx" >PROF. ENG.</text>
+<text transform="matrix(0.932101 0 -0 1.16513 474.165 490.424)" font-size="1.28571" style="font-family: ROMANS.shx" >PROJ. ENG &amp; PROCESS</text>
+<text transform="matrix(0.932101 0 -0 1.16513 429.424 485.297)" font-size="1.28571" style="font-family: ROMANS.shx" >SERVICES ENG.</text>
+<text transform="matrix(0.932101 0 -0 0.932101 408.417 500.846)" font-size="1.28571" style="font-family: ROMANS.shx" >ENG.</text>
+<text transform="matrix(0.932101 0 -0 0.932101 444.663 471.244)" font-size="1.28571" style="font-family: ROMANS.shx" >NAME</text>
+</g>
+<g stroke-width="0.05" clip-path="url(#clipId0)" fill="none" stroke="rgb(255,255,0)" >
+<text transform="matrix(1.30494 0 -0 1.63118 535.135 484.406)" font-size="1.28571" style="font-family: ROMANS.shx" >ASSMANG KHUMANI IRON ORE PROJECT</text>
+<text transform="matrix(1.30494 0 -0 1.63118 535.135 493.145)" font-size="1.28571" style="font-family: ROMANS.shx" >PROCESS FLOW DIAGRAM</text>
+<text transform="matrix(1.30494 0 -0 1.63118 534.603 500.98)" font-size="1.28571" style="font-family: ROMANS.shx" >C2505-PFD-970</text>
+<text transform="matrix(1.30494 0 -0 1.63118 561.122 500.596)" font-size="1.28571" style="font-family: ROMANS.shx" >5</text>
+<text transform="matrix(1.30494 0 -0 1.63118 574.529 497.974)" font-size="1.28571" style="font-family: ROMANS.shx" >NTS</text>
+<text transform="matrix(0.860815 0 -0 1.07602 339.302 496.165)" font-size="1.28571" style="font-family: ROMANS.shx" >0</text>
+<text transform="matrix(0.860815 0 -0 1.07602 342.143 496.165)" font-size="1.28571" style="font-family: ROMANS.shx" >MMK</text>
+<text transform="matrix(0.860815 0 -0 1.07602 345.991 496.165)" font-size="1.28571" style="font-family: ROMANS.shx" >20/01/06</text>
+<text transform="matrix(0.860815 0 -0 1.07602 354.095 496.165)" font-size="1.28571" style="font-family: ROMANS.shx" >ISSUED FOR START OF PROJECT</text>
+<text transform="matrix(0.860815 0 -0 1.07602 339.425 492.668)" font-size="1.28571" style="font-family: ROMANS.shx" >1</text>
+<text transform="matrix(0.860815 0 -0 1.07602 342.143 492.668)" font-size="1.28571" style="font-family: ROMANS.shx" >MMK</text>
+<text transform="matrix(0.860815 0 -0 1.07602 345.991 492.668)" font-size="1.28571" style="font-family: ROMANS.shx" >21/04/06</text>
+<text transform="matrix(0.860815 0 -0 1.07602 354.095 492.668)" font-size="1.28571" style="font-family: ROMANS.shx" >GENERAL UPDATE</text>
+<text transform="matrix(0.860815 0 -0 1.07602 339.302 489.171)" font-size="1.28571" style="font-family: ROMANS.shx" >2</text>
+<text transform="matrix(0.860815 0 -0 1.07602 342.143 489.171)" font-size="1.28571" style="font-family: ROMANS.shx" >MMK</text>
+<text transform="matrix(0.860815 0 -0 1.07602 345.991 489.171)" font-size="1.28571" style="font-family: ROMANS.shx" >21/07/06</text>
+<text transform="matrix(0.860815 0 -0 1.07602 354.095 489.171)" font-size="1.28571" style="font-family: ROMANS.shx" >EQUIPMENT NUMBER CHANGED</text>
+<text transform="matrix(0.860815 0 -0 1.07602 339.302 485.674)" font-size="1.28571" style="font-family: ROMANS.shx" >3</text>
+<text transform="matrix(0.860815 0 -0 1.07602 342.143 485.674)" font-size="1.28571" style="font-family: ROMANS.shx" >MMK</text>
+<text transform="matrix(0.860815 0 -0 1.07602 345.991 485.674)" font-size="1.28571" style="font-family: ROMANS.shx" >08/09/06</text>
+<text transform="matrix(0.860815 0 -0 1.07602 354.095 485.674)" font-size="1.28571" style="font-family: ROMANS.shx" >GENERAL UPDATE</text>
+<text transform="matrix(0.860815 0 -0 1.07602 339.282 482.177)" font-size="1.28571" style="font-family: ROMANS.shx" >4</text>
+<text transform="matrix(0.860815 0 -0 1.07602 342.143 482.177)" font-size="1.28571" style="font-family: ROMANS.shx" >MMK</text>
+<text transform="matrix(0.860815 0 -0 1.07602 345.991 482.177)" font-size="1.28571" style="font-family: ROMANS.shx" >24/11/06</text>
+<text transform="matrix(0.860815 0 -0 1.07602 354.095 482.177)" font-size="1.28571" style="font-family: ROMANS.shx" >GENERAL UPDATE</text>
+<text transform="matrix(0.860815 0 -0 1.07602 339.302 478.68)" font-size="1.28571" style="font-family: ROMANS.shx" >5</text>
+<text transform="matrix(0.860815 0 -0 1.07602 342.143 478.68)" font-size="1.28571" style="font-family: ROMANS.shx" >MMK</text>
+<text transform="matrix(0.860815 0 -0 1.07602 345.991 478.68)" font-size="1.28571" style="font-family: ROMANS.shx" >23/01/07</text>
+<text transform="matrix(0.860815 0 -0 1.07602 354.095 478.68)" font-size="1.28571" style="font-family: ROMANS.shx" >GENERAL UPDATE</text>
+<text transform="matrix(0.918202 0 -0 1.14775 441.541 495.783)" font-size="1.28571" style="font-family: ROMANS.shx" >M. KOK</text>
+<text transform="matrix(0.918202 0 -0 1.14775 441.541 492.288)" font-size="1.28571" style="font-family: ROMANS.shx" >H. GOODLAD</text>
+<text transform="matrix(0.918202 0 -0 1.14775 441.541 488.792)" font-size="1.28571" style="font-family: ROMANS.shx" >H. GOODLAD</text>
+<text transform="matrix(0.918202 0 -0 1.14775 441.541 485.297)" font-size="1.28571" style="font-family: ROMANS.shx" >W. MADEL</text>
+</g>
+</svg>
