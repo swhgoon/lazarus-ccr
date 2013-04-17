@@ -44,6 +44,7 @@ type
   TSQLQuerySortEngine = class(TRxDBGridSortEngine)
   public
     procedure Sort(Field:TField; ADataSet:TDataSet; Asc:boolean; SortOptions:TRxSortEngineOptions);override;
+    procedure SortList(ListField: string; ADataSet: TDataSet; Asc: array of boolean; SortOptions: TRxSortEngineOptions); override;
   end;
 
 implementation
@@ -52,13 +53,48 @@ uses SQLDB, synRegExpr, strUtils;
 
 procedure TSQLQuerySortEngine.Sort(Field: TField; ADataSet: TDataSet;
   Asc: boolean; SortOptions: TRxSortEngineOptions);
-var cmd:string;
+begin
+  SortList(Field.FieldName,ADataSet,Asc,SortOptions);
+end;
+
+procedure TSQLQuerySortEngine.SortList(ListField: string; ADataSet: TDataSet;
+  Asc: array of boolean; SortOptions: TRxSortEngineOptions);
+var
+  S:string;
+  i, C:integer;
+  cmd:string;
   strLen:Integer;
   RegExpr: TRegExpr;
   Mask:String;
-  s:String;
+  OldParams:TParams;
 begin
-  if Assigned(ADataSet) and ADataset.Active then begin
+    if not (Assigned(ADataSet) and ADataset.Active) then exit;
+
+    S:='';
+    C:=Pos(';', ListField);
+    i:=0;
+    while C>0 do
+    begin
+      if S<>'' then S:=S+',';
+      S:=S + Copy(ListField, 1, C-1);
+      Delete(ListField, 1, C);
+
+      if (i<=High(Asc)) and (not Asc[i]) then
+        S:=S + ' DESC';
+      C:=Pos(';', ListField);
+      inc(i);
+    end;
+
+    if ListField<>'' then
+    begin
+      if S<>'' then S:=S+',';
+      S:=S + ListField;
+      if (i<=High(Asc)) and (not Asc[i]) then
+        S:=S + ' DESC';
+    end;
+
+    OldParams:=TParams.Create;
+    OldParams.Assign((ADataSet as TSQLQuery).Params);
     cmd:=(ADataSet as TSQLQuery).SQL.Text;
     strlen:=length(cmd);
     //Регулярное выражение позволяет найти уже имеющуюся конструкцию ORDER BY,
@@ -77,27 +113,20 @@ begin
       if Exec(cmd) then begin
         s:=LeftStr(cmd,MatchPos[0]-1)
         +slinebreak+'order by '
-        +Field.FieldName
-        +' ';
-        if not asc then s:=s+'DESC';
-        s:=s+slineBreak
+        +s+slineBreak
         +RightStr(cmd, strlen-MatchPos[0]-MatchLen[0]+1);
       end
       else
-      begin
-        s:=cmd+slinebreak+'order by '
-        +Field.FieldName
-        +' ';
-        if not asc then s:=s+'DESC';
-        s:=s+slineBreak
-      end;
+        s:=cmd+slinebreak+'order by '+s+slineBreak;
+
       ADataSet.Active:=False;
       (ADataSet as TSQLQuery).SQL.Text:=s;
+      (ADataSet as TSQLQuery).Params.Assign(OldParams);
+      OldParams.Free;
       ADataSet.Active:=True;
-
       Free;
     end;
-  end;
+
 end;
 
 initialization
