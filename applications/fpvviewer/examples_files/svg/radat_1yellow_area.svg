@@ -1,0 +1,57 @@
+<?xml version="1.0" standalone="no"?>
+<!-- Generator: OCAD Versio 10.4.12 -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd" [
+<!ENTITY stR "stroke-linejoin:round;stroke-linecap:round">
+<!ENTITY stB "stroke-linejoin:bevel">
+]>
+<svg id="mainMap" width="16.3845cm" height="9.3570cm" viewBox="0 0 163.8450 93.5700" style="fill:none;stroke-width:0;fill-rule:evenodd" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" >
+<desc>Map</desc>
+<g id="scaleTransform" transform="scale(1.50000000)">
+<g id="mainMapContent">
+<!-- map fill color -->
+<rect id="mapBg" x="-100%" y="-100%" width="200%" height="200%" fill="white" />
+<g id="nivel3">
+<clipPath id="Clip" fill="none" stroke="none">
+<rect x="0" y="0" width="109.2300" height="62.3800" fill="none" />
+</clipPath>
+<g clip-path="url(#Clip)" id="nivel4">
+<g opacity="1.00" id="nivel5.1">
+</g>
+<g opacity="1.00" id="nivel5.2">
+</g>
+<g opacity="1.00" id="nivel5.3">
+</g>
+<g opacity="1.00" id="nivel5.4">
+</g>
+<g opacity="1.00" id="nivel5.5">
+</g>
+<g opacity="1.00">
+</g>
+<g opacity="1.00">
+</g>
+<g opacity="1.00">
+</g>
+<g opacity="1.00"  id="nivel5.9">
+<g id="403.0 Avoin maasto 10" >
+<g stroke="rgb(255,221,154)">
+<g fill="rgb(255,221,154)" >
+<path 
+d="M5.23,16.88
+5.23,21.16 
+9.47,21.40 
+11.63,16.08 
+5.59,15.88 
+5.23,16.88 
+" />
+</g>
+</g>
+</g>
+</g>
+
+
+</g>
+</g>
+</g>
+</g>
+</svg>
