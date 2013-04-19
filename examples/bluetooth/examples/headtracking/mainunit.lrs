@@ -1,0 +1,8 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TForm1','FORMDATA',[
+  'TPF0'#6'TForm1'#5'Form1'#4'Left'#3'0'#1#6'Height'#3#154#2#3'Top'#3#232#0#5'W'
+  +'idth'#3#178#3#18'HorzScrollBar.Page'#3#177#3#18'VertScrollBar.Page'#3#153#2
+  +#7'Caption'#6'''VR Headtracking Demo mit der Wii Remote'#8'OnCreate'#7#10'Fo'
+  +'rmCreate'#9'OnDestroy'#7#11'FormDestroy'#10'LCLVersion'#6#6'0.9.25'#0#0
+]);

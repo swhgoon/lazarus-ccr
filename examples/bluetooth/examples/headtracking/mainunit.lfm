@@ -1,0 +1,12 @@
+object Form1: TForm1
+  Left = 304
+  Height = 666
+  Top = 232
+  Width = 946
+  HorzScrollBar.Page = 945
+  VertScrollBar.Page = 665
+  Caption = 'VR Headtracking Demo mit der Wii Remote'
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '0.9.25'
+end

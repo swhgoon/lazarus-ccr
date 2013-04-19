@@ -1,0 +1,29 @@
+object Form1: TForm1
+  Left = 304
+  Height = 363
+  Top = 232
+  Width = 401
+  HorzScrollBar.Page = 400
+  VertScrollBar.Page = 362
+  Caption = 'Wii Remote IR dots'
+  ClientHeight = 363
+  ClientWidth = 401
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '0.9.25'
+  object GroupBox1: TGroupBox
+    Height = 363
+    Width = 401
+    Align = alClient
+    Caption = 'Dots'
+    ClientHeight = 344
+    ClientWidth = 397
+    TabOrder = 0
+    object WorldPaintBox: TPaintBox
+      Height = 344
+      Width = 397
+      Align = alClient
+      OnPaint = WorldPaintBoxPaint
+    end
+  end
+end
