@@ -299,15 +299,6 @@ type
     procedure HandleEvents;
     procedure HandleRead;
   public
-    constructor Create;
-    destructor Destroy; override;
-    procedure SetLEDs(const AValue: integer);
-    function Connect: boolean;
-    procedure Disconnect;
-    procedure EnableHandshake;
-    function RealizeReportType: boolean;
-    procedure RealizeIR;
-    
     WiiMotes: TWiiMotes;
     ID: integer;
     Name: string;
@@ -332,6 +323,15 @@ type
     Accel: TAccelVector; // current accelerator state
     AccelCalibration: TAccelCalibration;
     Dots: array[0..3] of TWiiMoteDot;
+
+    constructor Create;
+    destructor Destroy; override;
+    procedure SetLEDs(const AValue: integer);
+    function Connect: boolean;
+    procedure Disconnect;
+    procedure EnableHandshake;
+    function RealizeReportType: boolean;
+    procedure RealizeIR;
   end;
   
   { TWiiMotes }
