@@ -5,6 +5,7 @@ Note: Lazarus Trunk required
 
 Version pre-1.1
 --------------------------------------------------
+2013-04-29 Fixed:  TJDBGridControl Focus issues
 2013-01-03 Added:  TJDbEnumCombo, like TDbComboBox but, uses itemindex instead of text
 2012-09-20 Added:  TJLabeledIntegerEdit and TJLabeledFloatEdit property CurrentValue
 2012-06-12 Fixed:  TJDbGridTimeCtrl, store time value

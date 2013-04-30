@@ -267,6 +267,7 @@ end;
 
 function TJDbGridStringCtrl.CanDefocus: boolean;
 begin
+  CellEditor.Visible := False;
   Result := True;
 end;
 
@@ -458,7 +459,9 @@ begin
   else
     Result := True;
   if not Result then
-    ShowMessage(Format(SInvalidDateTime, [CellEditor.Text]));
+    ShowMessage(Format(SInvalidDateTime, [CellEditor.Text]))
+  else
+    CellEditor.Visible := False;
 end;
 
 { TJDbGridTimeCtrl }
@@ -646,7 +649,9 @@ begin
   else
     Result := True;
   if not Result then
-    ShowMessage(Format(SInvalidTime, [CellEditor.Text]));
+    ShowMessage(Format(SInvalidTime, [CellEditor.Text]))
+  else
+    CellEditor.Visible := False;
 end;
 
 { TJDbGridDateCtrl }
@@ -835,7 +840,9 @@ begin
   else
     Result := True;
   if not Result then
-    ShowMessage(Format(SInvalidDate, [CellEditor.Text]));
+    ShowMessage(Format(SInvalidDate, [CellEditor.Text]))
+  else
+    CellEditor.Visible := False;
 end;
 
 { TJDbGridDoubleCtrl }
@@ -991,7 +998,9 @@ begin
   else
     Result := True;
   if not Result then
-    ShowMessage(Format(SInvalidNumber, [CellEditor.Text]));
+    ShowMessage(Format(SInvalidNumber, [CellEditor.Text]))
+  else
+    CellEditor.Visible := False;
 end;
 
 { TJDbGridIntegerCtrl }
@@ -1116,7 +1125,9 @@ begin
   else
     Result := True;
   if not Result then
-    ShowMessage(Format(SInvalidNumber, [CellEditor.Text]));
+    ShowMessage(Format(SInvalidNumber, [CellEditor.Text]))
+  else
+    CellEditor.Visible := False;
 end;
 
 end.
