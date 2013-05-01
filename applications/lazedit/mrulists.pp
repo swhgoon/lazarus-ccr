@@ -302,7 +302,6 @@ procedure TMruList.Add(Item: String; const DoNormalizeName: Boolean = False);
 //If Item is already in the list, then it gets moved to Index = 0
 var Index: Integer;
 begin
-  Item := Trim(Item);
   if (FMaxEntries <= 0) or (Item = '') then Exit;
   Item := ExpandFileName(Item);
   if DoNormalizeName then Item := GetFileNameOnDisk(Item);
