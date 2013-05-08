@@ -294,6 +294,7 @@ type
 
   TRxColumnFilter = class(TPersistent)
   private
+    FEnabled: boolean;
     FOwner: TRxColumn;
     FValue: string;
     FValueList: TStringList;
@@ -321,6 +322,7 @@ type
     property EmptyValue: string read FEmptyValue write FEmptyValue;
     property EmptyFont: TFont read FEmptyFont write FEmptyFont;
     property ItemIndex: integer read GetItemIndex write SetItemIndex;
+    property Enabled:boolean read FEnabled write FEnabled default true;
   end;
 
   { TRxColumnEditButton }
@@ -568,7 +570,7 @@ type
     procedure CleanDSEvent;
 
 
-    procedure UpdateRowsHeight;
+    function UpdateRowsHeight:integer;
     procedure ResetRowHeght;
 
     procedure DoClearInvalidTitle;
@@ -2388,19 +2390,21 @@ begin
   FSortingNow:=false;
 end;
 
-procedure TRxDBGrid.UpdateRowsHeight;
+function TRxDBGrid.UpdateRowsHeight: integer;
 var
-  i, J, H, H1:integer;
+  i, J, H, H1, H2:integer;
   B:boolean;
   F:TField;
   S:string;
   CurActiveRecord: Integer;
   R:TRxColumn;
 begin
+  Result:=0;
   if not (Assigned(DataLink) and DataLink.Active) then
     exit;
 
   CurActiveRecord:=DataLink.ActiveRecord;
+  H2:=0;
   for i:=GCache.VisibleGrid.Top to GCache.VisibleGrid.Bottom do
   begin
     DataLink.ActiveRecord:=i - FixedRows;
@@ -2426,8 +2430,12 @@ begin
     end;
 
     if i<RowCount then
+    begin
       RowHeights[i] := DefaultRowHeight * H;
-
+      H2:=H2 + RowHeights[i];
+      if H2<=ClientHeight  then
+        Inc(Result);
+    end;
   end;
   DataLink.ActiveRecord:=CurActiveRecord;
 end;
@@ -3170,7 +3178,7 @@ begin
       if (Cell.Y = 0) and (Cell.X >= Ord(dgIndicator in Options)) and (Rect.Top < Y) then
       begin
         C:=TRxColumn (Columns[Columns.RealIndex(Cell.x - 1)]);
-        if C.Filter.ValueList.Count > 0 then
+        if (C.Filter.Enabled) and (C.Filter.ValueList.Count > 0)  then
         begin
           FFilterListEditor.Style := csDropDownList;
           if C.Filter.DropDownRows>0 then
@@ -3558,10 +3566,10 @@ end;
 
 procedure TRxDBGrid.UpdateActive;
 begin
-  if FInProcessCalc > 0 then
-    exit;
+{  if FInProcessCalc > 0 then
+    exit;}
   inherited UpdateActive;
-  if FInProcessCalc < 0 then
+{  if FInProcessCalc < 0 then
   begin
     FInProcessCalc := 0;
     UpdateFooterRowOnUpdateActive;
@@ -3569,7 +3577,7 @@ begin
 {  else
   if FFooterOptions.Active and (FFooterOptions.RowCount > 0) then
     UpdateFooterRowOnUpdateActive;}
-
+}
  // UpdateRowsHeight;
 end;
 
@@ -3587,8 +3595,16 @@ begin
 end;
 
 function TRxDBGrid.GetBufferCount: integer;
+var
+  H:integer;
 begin
   Result := ClientHeight div DefaultRowHeight;
+  if rdgWordWrap in FOptionsRx then
+  begin
+    H:=UpdateRowsHeight;
+//    if H>0 then
+//      Result := H;
+  end;
   if dgTitles in Options then
   begin
     Dec(Result, RowHeights[0] div DefaultRowHeight);
@@ -4105,7 +4121,7 @@ begin
       for i := 0 to Columns.Count - 1 do
       begin
         C := TRxColumn(Columns[i]);
-        if (C.Field <> nil) and (C.Filter.ValueList.IndexOf(C.Field.DisplayText) < 0) then
+        if C.Filter.Enabled and (C.Field <> nil) and (C.Filter.ValueList.IndexOf(C.Field.DisplayText) < 0) then
           C.Filter.ValueList.Add(C.Field.DisplayText);
       end;
       DataSource.DataSet.Next;
@@ -5203,6 +5219,7 @@ begin
 
   FEmptyFont.Style := [fsItalic];
   FEmptyValue := sRxDBGridEmptiFilter;
+  FEnabled:=true;
 end;
 
 destructor TRxColumnFilter.Destroy;
