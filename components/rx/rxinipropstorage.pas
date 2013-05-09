@@ -29,56 +29,54 @@
   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 }
 
-unit RegisterRxTools;
+unit RxIniPropStorage;
 
 {$I rx.inc}
 
 interface
 
 uses
-  Classes, SysUtils, LResources, LazarusPackageIntf;
+  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, IniPropStorage;
 
-procedure Register;
+type
+
+  { TRxIniPropStorage }
+
+  TRxIniPropStorage = class(TIniPropStorage)
+  private
+    FSeparateFiles: boolean;
+  protected
+    function GetIniFileName: string; override;
+  public
+    { Public declarations }
+  published
+    property SeparateFiles:boolean read FSeparateFiles write FSeparateFiles;
+  end;
 
 implementation
-uses RxSystemServices, RxLogin, RxVersInfo, RxCloseFormValidator, RxIniPropStorage;
+uses rxapputils, LazUTF8, FileUtil;
 
-const
-  sRxToolsPage = 'RX Tools';
+{ TRxIniPropStorage }
 
-procedure RegisterRxSystemServices;
+function TRxIniPropStorage.GetIniFileName: string;
+var
+  S:string;
 begin
-  RegisterComponents(sRxToolsPage, [TRxSystemServices]);
-end;
-
-procedure RegisterRxLogin;
-begin
-  RegisterComponents(sRxToolsPage, [TRxLoginDialog]);
-end;
-
-procedure RegisterRxVersInfo;
-begin
-  RegisterComponents(sRxToolsPage, [TRxVersionInfo]);
-end;
-
-procedure RegisterCloseFormValidator;
-begin
-  RegisterComponents(sRxToolsPage,[TRxCloseFormValidator]);
-end;
-
-procedure RegisterRxIniPropStorage;
-begin
-  RegisterComponents(sRxToolsPage,[TRxIniPropStorage]);
-end;
-
-procedure Register;
-begin
-  RegisterUnit('RxLogin', @RegisterRxLogin);
-  RegisterUnit('RxVersInfo', @RegisterRxVersInfo);
-  RegisterUnit('RxSystemServices', @RegisterRxSystemServices);
-  RegisterUnit('RxCloseFormValidator', @RegisterCloseFormValidator);
-  RegisterUnit('RxIniPropStorage', @RegisterRxIniPropStorage);
+  if ExtractFileDir(IniFileName) <> '' then
+    Result:=IniFileName
+  else
+  begin
+    S:=GetDefaultIniName;
+    if IniFileName <> '' then
+      Result:=AppendPathDelim(ExtractFileDir(S)) + IniFileName
+    else
+    begin
+      if FSeparateFiles then
+        Result:=AppendPathDelim(ExtractFileDir(S)) + RootSection + '.cfg'
+      else
+        Result:=S;
+    end;
+  end;
 end;
 
 end.
-

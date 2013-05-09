@@ -1,6 +1,6 @@
 { rxFileUtils is part of RxFPC library
 
-  Copyright (C) 2005-2010 Lagunov Aleksey alexs@hotbox.ru and Lazarus team
+  Copyright (C) 2005-2013 Lagunov Aleksey alexs@hotbox.ru and Lazarus team
   original conception from rx library for Delphi (c)
 
   This library is free software; you can redistribute it and/or modify it
@@ -31,7 +31,7 @@
 
 unit rxFileUtils;
 
-{$mode objfpc}{$H+}
+{$I rx.inc}
 
 interface
 
@@ -42,6 +42,7 @@ function GetFileOwnerUser(const SearchDomain, FileName:String):String;
 procedure GetFileOwnerData(const SearchDomain, FileName:String;out UserName, DomainName:string);
 function NormalizeDirectoryName(const DirName:string):string;
 function GetUserName:string;
+
 implementation
 uses
 {$IFDEF WINDOWS}

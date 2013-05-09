@@ -2467,9 +2467,6 @@ var
   MLI:TMLCaptionItem;
   FTitle:TRxColumnTitle;
 begin
-{  CE:=-1;
-  CB:=Columns.Count;}
-
   for i:=0 to Columns.Count-1 do
   begin
     FTitle:=TRxColumnTitle(Columns[i].Title);
@@ -2478,32 +2475,11 @@ begin
       MLI:=FTitle.CaptionLine(j);
       if MLI.FInvalidDraw<0 then
       begin
-        InvalidateRow(0);
-{        CE:=Max(CE, i);
-        while Assigned(MLI.Prior) do
-          MLI:=MLI.Prior;
-        CB:=Min(MLI.Col.Index, CB);}
+        //InvalidateRow(0);
         exit;
       end;
     end;
   end;
-(*
-  if CE>=CB then
-  begin
-    DebugLn('------');
-    InvalidateRow(0);
-{    for i:=CE downto CB do
-    begin
-      DebugLn(['DoTestInvalidCaption', CE, ' ', CB, ' ', i]);
-      if i = 2 then
-      begin
-
-      end;
-
-      InvalidateCell(i, 0, true);
-    end;  }
-  end;
-*)
 end;
 
 

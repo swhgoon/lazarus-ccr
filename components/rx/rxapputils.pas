@@ -113,12 +113,9 @@ begin
   else
   begin
     Result := ExtractFileName(ChangeFileExt(Application.ExeName, '.ini'));
-{$IFNDEF WIN32}
     S:=UTF8ToSys(GetAppConfigDir(false));
-    if not DirectoryExists(S) then
-      mkdir(S);
+    ForceDirectoriesUTF8(S);
     Result:=S+Result;
-{$ENDIF}
   end;
 end;
 
