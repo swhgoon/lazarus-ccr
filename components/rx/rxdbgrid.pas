@@ -575,12 +575,14 @@ type
 
     procedure DoClearInvalidTitle;
     procedure DoDrawInvalidTitle;
+    procedure DoSetColEdtBtn;
   protected
     procedure CollumnSortListUpdate;
     procedure CollumnSortListClear;
     procedure CollumnSortListApply;
 
     function DatalinkActive: boolean;
+    procedure AdjustEditorBounds(NewCol,NewRow:Integer); override;
     procedure LinkActive(Value: Boolean); override;
 
     procedure DefaultDrawCellA(aCol, aRow: integer; aRect: TRect;
@@ -1278,15 +1280,13 @@ begin
   UpdateMask;
 end;
 
-{
+                    {
 procedure TRxDBGridDateEditor.SetBounds(aLeft, aTop, aWidth, aHeight: integer);
 begin
-  BeginUpdateBounds;
   Dec(aWidth, 25); //ButtonWidth);
   inherited SetBounds(aLeft, aTop, aWidth, aHeight);
-  EndUpdateBounds;
-end;
-}
+end;               }
+
 
 procedure TRxDBGridDateEditor.EditingDone;
 begin
@@ -1800,6 +1800,15 @@ function TRxDBGrid.DatalinkActive: boolean;
 begin
   Result := Assigned(DataSource) and Assigned(DataSource.DataSet) and
     DataSource.DataSet.Active;
+end;
+
+procedure TRxDBGrid.AdjustEditorBounds(NewCol, NewRow: Integer);
+begin
+  inherited AdjustEditorBounds(NewCol, NewRow);
+  if EditorMode then
+  begin
+    DoSetColEdtBtn;
+  end;
 end;
 
 procedure TRxDBGrid.TrackButton(X, Y: integer);
@@ -2477,6 +2486,50 @@ begin
       begin
         //InvalidateRow(0);
         exit;
+      end;
+    end;
+  end;
+end;
+
+procedure TRxDBGrid.DoSetColEdtBtn;
+var
+  R:TRxColumn;
+  i, w:integer;
+begin
+  R:=SelectedColumn as TRxColumn;
+
+  if Assigned(Editor) and Assigned(R) then
+  begin
+    W:=0;
+    for i:=0 to R.EditButtons.Count-1 do
+    begin
+      if R.EditButtons[i].Visible then
+        W:=W+R.EditButtons[i].Width;
+    end;
+
+    if W>0 then
+    begin
+      if Editor.Name = 'ButtonEditor' then
+      begin
+        Editor.Left:=Editor.Left - W;
+        W:=Editor.Width + Editor.Left;
+      end
+      else
+      begin
+        Editor.Width:=Editor.Width - W;
+        W:=Editor.Width + Editor.Left;
+      end;
+
+      for i:=0 to R.EditButtons.Count-1 do
+      if R.EditButtons[i].Visible then
+      begin
+        R.EditButtons[i].FButton.Parent:=Self;
+        R.EditButtons[i].FButton.Left:=W;
+        R.EditButtons[i].FButton.Top:=Editor.Top;
+        R.EditButtons[i].FButton.Height:=Editor.Height;
+        R.EditButtons[i].FButton.Visible:=true;
+
+        W:=W+R.EditButtons[i].FButton.Width;
       end;
     end;
   end;
@@ -4210,49 +4263,9 @@ begin
 end;
 
 procedure TRxDBGrid.DoEditorShow;
-var
-  R:TRxColumn;
-  i, w:integer;
 begin
   inherited DoEditorShow;
-
-  R:=SelectedColumn as TRxColumn;
-
-  if Assigned(Editor) and Assigned(R) then
-  begin
-    W:=0;
-    for i:=0 to R.EditButtons.Count-1 do
-    begin
-      if R.EditButtons[i].Visible then
-        W:=W+R.EditButtons[i].Width;
-    end;
-
-    if W>0 then
-    begin
-      if Editor.Name = 'ButtonEditor' then
-      begin
-        Editor.Left:=Editor.Left - W;
-        W:=Editor.Width + Editor.Left;
-      end
-      else
-      begin
-        Editor.Width:=Editor.Width - W;
-        W:=Editor.Width + Editor.Left;
-      end;
-
-      for i:=0 to R.EditButtons.Count-1 do
-      if R.EditButtons[i].Visible then
-      begin
-        R.EditButtons[i].FButton.Parent:=Self;
-        R.EditButtons[i].FButton.Left:=W;
-        R.EditButtons[i].FButton.Top:=Editor.Top;
-        R.EditButtons[i].FButton.Height:=Editor.Height;
-        R.EditButtons[i].FButton.Visible:=true;
-
-        W:=W+R.EditButtons[i].FButton.Width;
-      end;
-    end;
-  end;
+  DoSetColEdtBtn;
 end;
 
 procedure TRxDBGrid.GetOnCreateLookup;
