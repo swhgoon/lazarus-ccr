@@ -3719,7 +3719,10 @@ begin
       begin
         for I := 0 to AColList.Count - 1 do
         begin
-          S := TRxColumn(AColList[i]).Field.DisplayText;
+          if Assigned(TRxColumn(AColList[i]).Field) then
+            S := TRxColumn(AColList[i]).Field.DisplayText
+          else
+            S:='';
           with TRxColumn(AColList[i]) do
             if (KeyList.Count > 0) and (PickList.Count > 0) then
             begin
