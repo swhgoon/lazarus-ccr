@@ -167,7 +167,7 @@ type
 
   { TToolbarItems }
 
-  TToolbarItems = class(TCollection)
+  TToolbarItems = class(TOwnedCollection)
   private
     FToolPanel:TToolPanel;
     function GetByActionName(ActionName: string): TToolbarItem;
@@ -839,7 +839,7 @@ end;
 
 constructor TToolbarItems.Create(ToolPanel: TToolPanel);
 begin
-  inherited Create(TToolbarItem);
+  inherited Create(ToolPanel, TToolbarItem);
   FToolPanel:=ToolPanel;
 end;
 
