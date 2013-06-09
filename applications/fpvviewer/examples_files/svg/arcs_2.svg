@@ -1,0 +1,14 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"> 
+<svg viewBox = "0 0 1100 400" version = "1.1">
+    <g>
+      <path d="M 125,75 a100,50 0 0,0 100,50"
+        style="fill:none; stroke:red; stroke-width:6"/>
+      <path d="M 125,75 a100,50 0 0,1 100,50"
+        style="fill:none; stroke:blue; stroke-width:6"/>
+      <path d="M 125,75 a100,50 0 1,0 100,50"
+        style="fill:none; stroke:green; stroke-width:6"/>
+      <path d="M 125,75 a100,50 0 1,1 100,50"
+        style="fill:none; stroke:black; stroke-width:6"/>
+    </g>
+</svg>
