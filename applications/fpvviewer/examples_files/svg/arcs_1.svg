@@ -23,4 +23,12 @@
             sweep-flag=1
         </text>
     </g>
+  <path
+     style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="M 46.938776,46.938776 42.857143,271.42857"
+     id="path2838" />
+  <path
+     style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="m 283.67347,34.693878 428.57143,0"
+     id="path2840" />
 </svg>

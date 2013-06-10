@@ -87,6 +87,7 @@ var
   CanvasSize: TPoint;
 begin
   // First check the in input
+  if editFileName.FileName = '' then Exit; // silent exit in this simple case
   //if not CheckInput() then Exit;
 
   notebook.PageIndex := 0;
