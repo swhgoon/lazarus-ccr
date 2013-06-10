@@ -10,5 +10,9 @@
         style="fill:none; stroke:green; stroke-width:6"/>
       <path d="M 125,75 a100,50 0 1,1 100,50"
         style="fill:none; stroke:black; stroke-width:6"/>
+      <path d="M 125,70 L 125,80 M 120,75 L 130,75"
+        style="fill:none; stroke:grey; stroke-width:1"/>
+      <path d="M 225,120 L 225,130 M 220,125 L 230,125"
+        style="fill:none; stroke:grey; stroke-width:1"/>
     </g>
 </svg>
