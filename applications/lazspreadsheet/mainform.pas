@@ -9,7 +9,7 @@ uses
   StdCtrls, Grids, EditBtn, ExtCtrls, ComCtrls, fpspreadsheetchart,
   fpspreadsheetgrid, TAGraph, TASeries, TypInfo,
   // FPSpreadsheet and supported formats
-  fpspreadsheet, xlsbiff8, xlsbiff5, xlsbiff2, xlsxooxml, fpsopendocument
+  fpspreadsheet, fpsallformats
   ;
 
 type
