@@ -636,7 +636,7 @@ begin
     OldNotify := TStringList(FShortDaysOfWeek).OnChange;
     TStringList(FShortDaysOfWeek).OnChange := nil;
     for Ind := 1 to 7 do
-      FShortDaysOfWeek.Add(SysUtils.ShortDayNames[Ind]);
+      FShortDaysOfWeek.Add(DefaultFormatSettings.ShortDayNames[Ind]);
     TStringList(FShortDaysOfWeek).OnChange := OldNotify;
   end;
 end;
@@ -953,8 +953,8 @@ begin
   FMonthNames := TStringList.Create;
   if FMonthNames.Count = 0 then
   begin
-    for i := Low(LongMonthNames) to High(LongMonthNames) do
-      FMonthNames.Add(LongMonthNames[i]);
+    for i := Low(DefaultFormatSettings.LongMonthNames) to High(DefaultFormatSettings.LongMonthNames) do
+      FMonthNames.Add(DefaultFormatSettings.LongMonthNames[i]);
   end;
 
   BackPanel := TPanel.Create(Self);
@@ -1204,7 +1204,7 @@ var
   AYear, AMonth, ADay: Word;
 begin
   DecodeDate(FCalendar.CalendarDate, AYear, AMonth, ADay);
-  FTitleLabel.Caption := Format('%s, %d', [LongMonthNames[AMonth], AYear]);
+  FTitleLabel.Caption := Format('%s, %d', [DefaultFormatSettings.LongMonthNames[AMonth], AYear]);
 end;
 
 procedure TPopupCalendar.SetDate(const AValue: TDateTime);
@@ -1214,7 +1214,8 @@ end;
 
 procedure TPopupCalendar.SetMonthNames(const AValue: TStrings);
 begin
-  if AValue.Text <> FMonthNames.Text then begin
+  if AValue.Text <> FMonthNames.Text then
+  begin
     FMonthNames.Assign(AValue);
     CalendarChange(Self);
   end;
@@ -1558,7 +1559,7 @@ var
 begin
   if StrDate <> '' then begin
     try
-      DateValue := StrToDateFmt(ShortDateFormat, StrDate);
+      DateValue := StrToDateFmt(DefaultFormatSettings.ShortDateFormat, StrDate);
     except
       DateValue := Date;
     end;
@@ -1566,7 +1567,7 @@ begin
   else DateValue := Date;
   Result := SelectDate(DateValue, DlgCaption, AStartOfWeek, AWeekends,
     AWeekendColor, BtnHints);
-  if Result then StrDate := FormatDateTime(ShortDateFormat, DateValue);
+  if Result then StrDate := FormatDateTime(DefaultFormatSettings.ShortDateFormat, DateValue);
 end;
 
 { TRxCalendarGrid }

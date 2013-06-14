@@ -434,10 +434,8 @@ begin
   Result := False;
   Y := 0; M := 0; D := 0;
   DateOrder := GetDateOrder(DateFormat);
-{$IFDEF RX_D3}
-  if ShortDateFormat[1] = 'g' then { skip over prefix text }
+  if DefaultFormatSettings.ShortDateFormat[1] = 'g' then { skip over prefix text }
     ScanToNumber(S, Pos);
-{$ENDIF RX_D3}
   if not (ScanNumber(S, MaxInt, Pos, N1) and ScanChar(S, Pos, DateSeparator) and
     ScanNumber(S, MaxInt, Pos, N2)) then Exit;
   if ScanChar(S, Pos, DateSeparator) then begin

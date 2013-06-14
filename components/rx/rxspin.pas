@@ -692,8 +692,8 @@ var
 begin
   ValidChars := ['+', '-', '0'..'9'];
   if ValueType = vtFloat then begin
-    if Pos(DecimalSeparator, Text) = 0 then
-      ValidChars := ValidChars + [DecimalSeparator];
+    if Pos(DefaultFormatSettings.DecimalSeparator, Text) = 0 then
+      ValidChars := ValidChars + [DefaultFormatSettings.DecimalSeparator];
     if Pos('E', AnsiUpperCase(Text)) = 0 then
       ValidChars := ValidChars + ['e', 'E'];
   end

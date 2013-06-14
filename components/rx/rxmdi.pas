@@ -35,6 +35,7 @@ type
   TRxMDIButton = class(TSpeedButton)
   private
     FNavForm: TForm;
+    FActiveControl:TWinControl;
     FNavPanel:TRxMDITasks;
     FSaveClose:TCloseEvent;
     procedure SetRxMDIForm(AValue: TForm);
@@ -115,11 +116,14 @@ type
     procedure navCloseButtonClick(Sender: TObject);
     procedure SetRxMDICloseButton(AValue: TRxMDICloseButton);
     procedure SetTaskPanel(AValue: TRxMDITasks);
+    function MDIButtonByForm(AForm:TForm):TRxMDIButton;
+    procedure HideCurrentWindow;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Loaded; override;
   public
     constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
     procedure ShowWindow(F:TForm);
 
     procedure ChildWindowsAdd(F:TForm);
@@ -244,7 +248,7 @@ begin
     FCurrentChildWindow.Close;
 end;
 
-procedure TRxMDIPanel.SeTRxMDICloseButton(AValue: TRxMDICloseButton);
+procedure TRxMDIPanel.SetRxMDICloseButton(AValue: TRxMDICloseButton);
 begin
   if FCloseButton=AValue then Exit;
   if Assigned(FCloseButton) then
@@ -268,6 +272,36 @@ begin
   FTaskPanel:=AValue;
   if Assigned(FTaskPanel) then
     FTaskPanel.FMainPanel:=Self;
+end;
+
+function TRxMDIPanel.MDIButtonByForm(AForm: TForm): TRxMDIButton;
+var
+  i:integer;
+begin
+  Result:=nil;
+  if not Assigned(FTaskPanel) then
+    exit;
+  for i:=0 to FTaskPanel.ComponentCount -1 do
+  begin
+    if (FTaskPanel.Components[i] is TRxMDIButton) and (TRxMDIButton(FTaskPanel.Components[i]).NavForm = AForm) then
+    begin
+      Result:=TRxMDIButton(FTaskPanel.Components[i]);
+      exit;
+    end;
+  end;
+end;
+
+procedure TRxMDIPanel.HideCurrentWindow;
+var
+  MB:TRxMDIButton;
+begin
+  if Assigned(FCurrentChildWindow) and (FCurrentChildWindow.Visible) then
+  begin
+    MB:=MDIButtonByForm(FCurrentChildWindow);
+    if Assigned(MB) then
+      MB.FActiveControl:=Application.MainForm.ActiveControl;
+    FCurrentChildWindow.Hide;
+  end;
 end;
 
 procedure TRxMDIPanel.Notification(AComponent: TComponent; Operation: TOperation
@@ -295,6 +329,11 @@ begin
   BevelOuter:=bvLowered;
 end;
 
+destructor TRxMDIPanel.Destroy;
+begin
+  inherited Destroy;
+end;
+
 procedure TRxMDIPanel.ShowWindow(F: TForm);
 begin
   TaskPanel.ShowWindow(F);
@@ -304,6 +343,7 @@ procedure TRxMDIPanel.ChildWindowsAdd(F: TForm);
 var
   B:TRxMDIButton;
 begin
+  HideCurrentWindow;
   F.BorderStyle:=bsNone;
   F.Align:=alClient;
   F.Parent:=Self;
@@ -312,6 +352,7 @@ begin
   Application.MainForm.ActiveControl:=F;
 
   B:=TRxMDIButton.CreateButton(TaskPanel, F);
+
 end;
 
 procedure TRxMDIPanel.ChildWindowsCreate(var AForm; FC: TFormClass);
@@ -320,6 +361,7 @@ var
 begin
   if not Assigned(FForm) then
   begin
+    HideCurrentWindow;
     FForm:=FC.Create(Self);
     ChildWindowsAdd(FForm);
   end
@@ -568,29 +610,16 @@ begin
   if Assigned(FNavForm) then
   begin
     FSaveClose:=FNavForm.OnClose;
+    //FSaveDeactivate:=FNavForm.OnDeactivate;
     FNavForm.OnClose:=@FormClose;
+    //FNavForm.OnDeactivate:=@FormDeactivate;
+
     Caption:=' '+FNavForm.Caption+' ';
     DoCreateButtonImage;
 
     if Assigned(FNavPanel) then
       FNavPanel.FMainPanel.CurrentChildWindow:=NavForm;
   end;
-
-{  if NavForm is TfbmDBObjectEditorForm then
-  begin
-    B:=TBitmap.Create;
-    try
-      B.Width:=fbManagerMainForm.ImageList2.Width;
-      B.Height:=fbManagerMainForm.ImageList2.Height;
-      B.Canvas.Brush.Color:=Color;
-      B.Canvas.FillRect(0,0, B.Width, B.Height);
-      FImageIndex:=ord(TfbmDBObjectEditorForm(NavForm).DBObject.DBObjectKind) + 2;
-      fbManagerMainForm.ImageList2.Draw(B.Canvas, 0,0,FImageIndex);
-      Glyph.Assign(B);
-    finally
-      B.Free;
-    end;
-  end;}
 end;
 
 procedure TRxMDIButton.DoCreateMenuItems;
@@ -704,9 +733,13 @@ begin
   inherited Click;
   if Assigned(FNavForm) then
   begin
-    FNavForm.BringToFront;
+    FNavPanel.FMainPanel.HideCurrentWindow;
+    FNavForm.Show;
+    //FNavForm.BringToFront;
     FNavPanel.FMainPanel.CurrentChildWindow:=NavForm;
-    Application.MainForm.ActiveControl:=NavForm.ActiveControl;
+    //Application.MainForm.ActiveControl:=NavForm.ActiveControl;
+    if Assigned(FActiveControl) then
+      FActiveControl.SetFocus;
   end;
   Down:=true;
 end;

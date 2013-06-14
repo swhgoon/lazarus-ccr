@@ -64,7 +64,7 @@ type
 procedure TRxMemoryDataSortEngine.UpdateFooterRows(ADataSet: TDataSet;
   AGrid: TRxDBGrid);
 var
-  i, j:integer;
+  i:integer;
   Col:TRxColumn;
 
   DHL:THackDataLink;

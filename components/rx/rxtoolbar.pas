@@ -215,7 +215,6 @@ type
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
     procedure SetCustomizing(AValue:boolean);
-    procedure DoAutoSize; Override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure RequestAlign; override;
@@ -1084,36 +1083,6 @@ var
 begin
   for i:=0 to FToolbarItems.Count - 1 do
     FToolbarItems[i].FButton.SetDesign(AValue, FToolbarItems[i]);
-end;
-
-procedure TToolPanel.DoAutoSize;
-var
-  i, H:integer;
-  
-begin
-{
-  if not AutoSizeCanStart then exit;
-  if csDesigning in ComponentState then exit;
-
-  if Items.Count > 0 then
-  begin
-    try
-      H:=0;
-      for i:=0 to Items.Count-1 do
-        if Assigned(Items[i].FButton) and Items[i].FButton.HandleObjectShouldBeVisible then
-          H:=Max(H, Items[i].Height);
-      if H>0 then
-      begin
-        H:=H +BorderWidth * 2;
-        SetBoundsKeepBase(Left,Top,Width,H,true);
-        ReAlignToolBtn;
-      end;
-    finally
-    end
-//    Exclude(FControlFlags,cfAutoSizeNeeded);
-  end
-  else        }
-  inherited DoAutoSize;
 end;
 
 procedure TToolPanel.MouseUp(Button: TMouseButton; Shift: TShiftState; X,

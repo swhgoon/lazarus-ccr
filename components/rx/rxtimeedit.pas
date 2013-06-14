@@ -224,7 +224,7 @@ begin
   else
   if P < 6 then IncMin
   else IncSec;
-  Text:=Format('%2.2d'+ TimeSeparator +'%2.2d'+ TimeSeparator +'%2.2d', [H1, M2, S3]);
+  Text:=Format('%2.2d'+ DefaultFormatSettings.TimeSeparator +'%2.2d'+ DefaultFormatSettings.TimeSeparator +'%2.2d', [H1, M2, S3]);
   SetSelStart(P);
 end;
 
@@ -293,7 +293,7 @@ begin
   FButton.OnTopClick := @UpClick;
   FButton.OnBottomClick := @DownClick;
 
-  EditMask:='!#0'+TimeSeparator + '00'+TimeSeparator + '00;1;_';
+  EditMask:='!#0'+DefaultFormatSettings.TimeSeparator + '00'+DefaultFormatSettings.TimeSeparator + '00;1;_';
 end;
 
 destructor TCustomRxTimeEdit.Destroy;

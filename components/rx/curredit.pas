@@ -207,7 +207,7 @@ var
 begin
   Result := False;
   for I := 1 to Length(Value) do
-    if not (Value[I] in [DecimalSeparator, '-', '+', '0'..'9', 'e', 'E']) then
+    if not (Value[I] in [DefaultFormatSettings.DecimalSeparator, '-', '+', '0'..'9', 'e', 'E']) then
       Exit;
   Result := TextToFloat(StrPLCopy(Buffer, Value,
     SizeOf(Buffer) - 1), RetValue, fvExtended);
@@ -223,7 +223,7 @@ begin
   IsSign := (MaxSym > 0) and (S[1] in ['-', '+']);
   if IsSign then MinSym := 2
   else MinSym := 1;
-  I := Pos(DecimalSeparator, S);
+  I := Pos(DefaultFormatSettings.DecimalSeparator, S);
   if I > 0 then MaxSym := I - 1;
   I := Pos('E', AnsiUpperCase(S));
   if I > 0 then MaxSym := Min(I - 1, MaxSym);
@@ -234,7 +234,7 @@ begin
     Inc(Group);
     if (Group = 3) and Thousands and (I > MinSym) then begin
       Group := 0;
-      Result := ThousandSeparator + Result;
+      Result := DefaultFormatSettings.ThousandSeparator + Result;
     end;
   end;
   if IsSign then Result := S[1] + Result;
@@ -415,13 +415,13 @@ end;
 function TCustomNumEdit.TextToValText(const AValue: string): string;
 begin
   Result := Trim(AValue);
-  if DecimalSeparator <> ThousandSeparator then begin
+  if DefaultFormatSettings.DecimalSeparator <> DefaultFormatSettings.ThousandSeparator then begin
     Result := DelChars(Result, ThousandSeparator);
   end;
-  if (DecimalSeparator <> '.') and (ThousandSeparator <> '.') then
-    Result := StringReplace(Result, '.', DecimalSeparator, [rfReplaceAll]);
-  if (DecimalSeparator <> ',') and (ThousandSeparator <> ',') then
-    Result := StringReplace(Result, ',', DecimalSeparator, [rfReplaceAll]);
+  if (DefaultFormatSettings.DecimalSeparator <> '.') and (DefaultFormatSettings.ThousandSeparator <> '.') then
+    Result := StringReplace(Result, '.', DefaultFormatSettings.DecimalSeparator, [rfReplaceAll]);
+  if (DefaultFormatSettings.DecimalSeparator <> ',') and (DefaultFormatSettings.ThousandSeparator <> ',') then
+    Result := StringReplace(Result, ',', DefaultFormatSettings.DecimalSeparator, [rfReplaceAll]);
   if Result = '' then Result := '0'
   else if Result = '-' then Result := '-0';
 end;
@@ -623,8 +623,8 @@ begin
     THack(FPopup).KeyPress(Key);
     Key := #0;
   end;}
-  if Key in ['.', ','] - [ThousandSeparator] then
-    Key := DecimalSeparator;
+  if Key in ['.', ','] - [DefaultFormatSettings.ThousandSeparator] then
+    Key := DefaultFormatSettings.DecimalSeparator;
   inherited KeyPress(Key);
   if (Key in [#32..#255]) and not IsValidChar(Key) then
   begin
@@ -650,7 +650,7 @@ begin
   System.Delete(S, ASelStart + 1, SelStop - ASelStart);
   System.Insert(Key, S, ASelStart + 1);
   S := TextToValText(S);
-  DecPos := Pos(DecimalSeparator, S);
+  DecPos := Pos(DefaultFormatSettings.DecimalSeparator, S);
   if (DecPos > 0) then
   begin
     ASelStart := Pos('E', UpperCase(S));
@@ -661,7 +661,7 @@ begin
     if DecPos > Integer(FDecimalPlaces) then
       Exit;
 
-    if S[1] = DecimalSeparator then
+    if S[1] = DefaultFormatSettings.DecimalSeparator then
       s := '0' + s;
   end;
   Result := IsValidFloat(S, RetValue);
@@ -690,11 +690,11 @@ var
   I: Integer;
   C: Char;
 begin
-  Result := ',0.' + DupeString('0', CurrencyDecimals);
+  Result := ',0.' + DupeString('0', DefaultFormatSettings.CurrencyDecimals);
   CurrStr := '';
-  for I := 1 to Length(CurrencyString) do
+  for I := 1 to Length(DefaultFormatSettings.CurrencyString) do
   begin
-    C := CurrencyString[I];
+    C := DefaultFormatSettings.CurrencyString[I];
     if C in [',', '.'] then
     begin
       CurrStr := CurrStr + '''' + C + ''''
@@ -702,7 +702,7 @@ begin
     else CurrStr := CurrStr + C;
   end;
   if Length(CurrStr) > 0 then
-    case CurrencyFormat of
+    case DefaultFormatSettings.CurrencyFormat of
       0: Result := CurrStr + Result; { '$1' }
       1: Result := Result + CurrStr; { '1$' }
       2: Result := CurrStr + ' ' + Result; { '$ 1' }

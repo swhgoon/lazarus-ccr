@@ -244,8 +244,8 @@ procedure InvalidTime(Hour, Min, Sec: Word);
 var
   sTime: string[50];
 begin
-  sTime := IntToStr(Hour) + TimeSeparator + IntToStr(Min) +
-    TimeSeparator + IntToStr(Sec);
+  sTime := IntToStr(Hour) + DefaultFormatSettings.TimeSeparator + IntToStr(Min) +
+    DefaultFormatSettings.TimeSeparator + IntToStr(Sec);
   raise EConvertError.CreateFmt(SInvalidTime, [sTime]);
 end;
 
@@ -488,9 +488,9 @@ begin
     TimeStr := '88888';
     if FShowSeconds then TimeStr := TimeStr + '888';
     if FTwelveHour then begin
-      if Canvas.TextWidth(TimeAMString) > Canvas.TextWidth(TimePMString) then
-        TimeStr := TimeStr + ' ' + TimeAMString
-      else TimeStr := TimeStr + ' ' + TimePMString;
+      if Canvas.TextWidth(DefaultFormatSettings.TimeAMString) > Canvas.TextWidth(DefaultFormatSettings.TimePMString) then
+        TimeStr := TimeStr + ' ' + DefaultFormatSettings.TimeAMString
+      else TimeStr := TimeStr + ' ' + DefaultFormatSettings.TimePMString;
     end;
     SetNewFontSize(Canvas, TimeStr, H, W);
     Font := Canvas.Font;
