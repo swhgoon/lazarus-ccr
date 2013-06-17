@@ -12,7 +12,7 @@ uses
   JLabeledIntegerEdit, JLabeledFloatEdit, JLabeledCurrencyEdit, 
   JLabeledDateEdit, jdbgridutils, JLabeledTimeEdit, JDBLabeledTimeEdit, 
   JLabeledDateTimeEdit, JDBLabeledDateTimeEdit, jinputconsts, JDbEnumCombo, 
-  LazarusPackageIntf;
+  JDBImageBlob, LazarusPackageIntf;
 
 implementation
 
@@ -33,6 +33,7 @@ begin
   RegisterUnit('JLabeledDateTimeEdit', @JLabeledDateTimeEdit.Register);
   RegisterUnit('JDBLabeledDateTimeEdit', @JDBLabeledDateTimeEdit.Register);
   RegisterUnit('JDbEnumCombo', @JDbEnumCombo.Register);
+  RegisterUnit('JDBImageBlob', @JDBImageBlob.Register);
 end;
 
 initialization
