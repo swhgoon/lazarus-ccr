@@ -1,4 +1,4 @@
-{ JDBGridControl
+{ JDBImageBlob
 
   Copyright (C) 2013 Julio Jiménez Borreguero
   Contact: jujibo at gmail dot com
