@@ -1632,7 +1632,12 @@ end;
 
 procedure TDataSourceLink.FocusControl(Field: TFieldRef);
 begin
-  inherited FocusControl(Field);
+  if Assigned(Field) and (FDataControl.FDataField = Field^) then
+    if FDataControl.CanFocus then
+    begin
+      Field^ := nil;
+      FDataControl.SetFocus;
+    end;
 end;
 
 procedure TDataSourceLink.RecordChanged(Field: TField);
