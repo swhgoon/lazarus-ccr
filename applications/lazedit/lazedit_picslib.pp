@@ -4,7 +4,7 @@ unit LazEdit_PicsLib;
 
 interface
 
-uses SysUtils, Classes, Math;
+uses SysUtils, Classes, Math, LazUtf8Classes;
 
 type
   TImageFormat = (ifUnknown, ifBmp, ifPng, ifGif, ifJpg);
@@ -325,13 +325,13 @@ end;
 
 function GetImageSizeAndFormat(const Fn: String; out Width, Height: dword): TImageFormat;
 var
-  ImgStream: TFileStream;
+  ImgStream: TFileStreamUtf8;
   ImgFormat: TImageFormat;
 begin
   Width := 0;
   Height := 0;
   try
-    ImgStream := TFileStream.Create(Fn,fmOpenRead or fmShareDenyNone);
+    ImgStream := TFileStreamUtf8.Create(Fn,fmOpenRead or fmShareDenyNone);
     try
       ImgStream.Position := 0;
       ImgFormat := GetImageFormatAndDimensions(ImgStream, ExtToImageFormat(ExtractFileExt(Fn)), Width, Height);

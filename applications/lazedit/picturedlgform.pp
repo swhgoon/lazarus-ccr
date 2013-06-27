@@ -87,7 +87,7 @@ begin
     FInitialDir := ExtractFileDir(Fn);
     SrcEdit.Text := ExtractFileName(Fn);
     //GetImageSize uses system encoding
-    if GetImageSize(Utf8ToSys(Fn), W, H) then
+    if GetImageSize(Fn, W, H) then
     begin
       WidthEdit.Text := IntToStr(W);
       HeightEdit.Text := IntToStr(H);
