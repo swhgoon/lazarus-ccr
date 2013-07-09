@@ -39,6 +39,9 @@ uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, DB;
 
 type
+  TRxCloseFormValidator = class;
+
+  TValidateEvent = procedure(AOwner:TRxCloseFormValidator; AControl:TWinControl; var Validate:boolean) of object;
 
   { TValidateItem }
 
@@ -47,6 +50,7 @@ type
     FControl: TWinControl;
     FEnabled: boolean;
     FFieldCaption: string;
+    FOnValidate: TValidateEvent;
     procedure SetControl(AValue: TWinControl);
     procedure SetEnabled(AValue: boolean);
     procedure SetFieldCaption(AValue: string);
@@ -63,6 +67,7 @@ type
     property Control:TWinControl read FControl write SetControl;
     property Enabled:boolean read FEnabled write SetEnabled default true;
     property FieldCaption:string read FFieldCaption write SetFieldCaption;
+    property OnValidate:TValidateEvent read FOnValidate write FOnValidate;
   end;
 
   { TValidateItems }
@@ -72,7 +77,6 @@ type
     function GetItems(Index: Integer): TValidateItem;
     procedure SetItems(Index: Integer; AValue: TValidateItem);
   public
-    //constructor Create();
     property Items[Index: Integer]: TValidateItem read GetItems write SetItems; default;
   end;
 
@@ -237,29 +241,35 @@ var
 begin
   Result:=true;
   if not Assigned(FControl) then exit;
-  if FControl = AForm.ActiveControl then
-  begin
-    AForm.SelectNext(FControl, true, true);
-  end;
-  //Сначала проверим - вдруги это завязки на работу с БД
-  PI1:=GetPropInfo(Control, 'DataSource');
-  PI2:=GetPropInfo(Control, 'DataField');
-  if Assigned(PI1) and Assigned(PI2) then
-  begin
-     //Точно - БД
-     //Проверка выполняется если только указан источник данных и поле в нём
-     P:=GetObjectProp(Control, 'DataSource');
-     FiName:=GetPropValue(Control, 'DataField');
-     if Assigned(P) and (FiName<>'') then
-     begin
-       DS:=(P as TDataSource).DataSet;
-       if Assigned(DS) then
-         Result:=not DS.FieldByName(FiName).IsNull;
-     end;
-  end
+
+  if Assigned(FOnValidate) then
+    FOnValidate( TRxCloseFormValidator(TValidateItems(Collection).Owner), FControl, Result)
   else
-  if Control is TCustomEdit then
-    Result:=TCustomEdit(Control).Text<>'';
+  begin
+    if FControl = AForm.ActiveControl then
+    begin
+      AForm.SelectNext(FControl, true, true);
+    end;
+    //Сначала проверим - вдруги это завязки на работу с БД
+    PI1:=GetPropInfo(Control, 'DataSource');
+    PI2:=GetPropInfo(Control, 'DataField');
+    if Assigned(PI1) and Assigned(PI2) then
+    begin
+       //Точно - БД
+       //Проверка выполняется если только указан источник данных и поле в нём
+       P:=GetObjectProp(Control, 'DataSource');
+       FiName:=GetPropValue(Control, 'DataField');
+       if Assigned(P) and (FiName<>'') then
+       begin
+         DS:=(P as TDataSource).DataSet;
+         if Assigned(DS) then
+           Result:=not DS.FieldByName(FiName).IsNull;
+       end;
+    end
+    else
+    if Control is TCustomEdit then
+      Result:=TCustomEdit(Control).Text<>'';
+  end;
 end;
 
 function TValidateItem.ErrorMessage: string;
