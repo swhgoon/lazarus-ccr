@@ -146,7 +146,7 @@ begin
         AFolderList.Add(S+Rec.Name)
       else
       begin
-        if AnsiLowerCase(ExtractFileExt(Rec.Name))=AnsiLowerCase(FDefaultExt) then
+        if UTF8LowerCase(ExtractFileExt(Rec.Name))=UTF8LowerCase(FDefaultExt) then
           AFileList.Add(S+Rec.Name);
       end;
       R:=FindNextUTF8(Rec);

@@ -29,17 +29,20 @@
   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 }
 
+{$I rx.inc}
 
 unit rxdbgrid;
-
-{$I rx.inc}
 
 interface
 
 uses
-  Classes, SysUtils, LResources, LCLType, LCLIntf, Forms, Controls, Buttons,
+  Classes, SysUtils, LResources, LCLVersion, LCLType, LCLIntf, Forms, Controls, Buttons,
   Graphics, Dialogs, Grids, dbutils, DBGrids, DB, PropertyStorage, vclutils,
   LMessages, types, StdCtrls, Menus;
+
+{$if ((lcl_major = 1) and (lcl_minor = 1))}
+  {$DEFINE RX_USE_LCL_DEVEL}
+{$ENDIF}
 
 const
   CBadQuickSearchSymbols = [VK_UNKNOWN..VK_HELP] + [VK_LWIN..VK_SLEEP] +
@@ -617,7 +620,9 @@ type
     procedure UpdateActive; override;
     procedure UpdateData; override;
     procedure MoveSelection; override;
+{$IFDEF RX_USE_LCL_DEVEL}
     function  GetBufferCount: integer; override;
+{$ENDIF}
     procedure CMHintShow(var Message: TLMessage); message CM_HINTSHOW;
     procedure FFilterListEditorOnChange(Sender: TObject);
     procedure FFilterListEditorOnCloseUp(Sender: TObject);
@@ -3623,6 +3628,7 @@ begin
 //  UpdateRowsHeight;
 end;
 
+{$IFDEF RX_USE_LCL_DEVEL}
 function TRxDBGrid.GetBufferCount: integer;
 var
   H:integer;
@@ -3641,6 +3647,7 @@ begin
   if FFooterOptions.Active then
     Dec(Result, FFooterOptions.RowCount);
 end;
+{$ENDIF}
 
 procedure TRxDBGrid.CMHintShow(var Message: TLMessage);
 var

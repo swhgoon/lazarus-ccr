@@ -1520,9 +1520,11 @@ begin
   end;
   FLocateObject.DataSet := DataSet;
 
-
-  if FListActive and Assigned(FDataField) then UpdateKeyValue
-  else KeyValueChanged;
+  if not (csDestroying in ComponentState) then
+  begin
+    if FListActive and Assigned(FDataField) then UpdateKeyValue
+    else KeyValueChanged;
+  end;
 end;
 
 procedure TRxCustomDBLookupCombo.SetValue(const Value: string);
