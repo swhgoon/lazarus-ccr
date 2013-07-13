@@ -765,7 +765,7 @@ end ;
 
 procedure TTDINoteBook.CheckInterface ;
 begin
-  if ([csDesigning, csDestroying] * ComponentState <> []) then exit ;
+  if ([csDesigning, csDestroying, csFreeNotification] * ComponentState <> []) then exit ;
 
   Visible := (PageCount > 0);
 
@@ -881,6 +881,8 @@ end ;
 
 procedure TTDINoteBook.RestoreLastFocusedControl ;
 begin
+  if ([csDesigning, csDestroying, csFreeNotification] * ComponentState <> []) then exit ;
+
   FTimerRestoreLastControl.Enabled := True;
 end ;
 
@@ -1004,7 +1006,7 @@ Var
 begin
   Result := True;
 
-  if ([csDesigning, csDestroying] * ComponentState = []) then
+  if ([csDesigning, csDestroying, csFreeNotification] * ComponentState = []) then
   begin
     if Assigned( ActivePage ) then
     begin
@@ -1036,13 +1038,47 @@ begin
     {$if (lcl_major > 0) or (lcl_release > 30)}
       and (inherited CanChange)
     {$endif};
+
+  // Emulate FormInPage.OnDeactivate //
+  (*
+  if Result and (not FIsRemovingAPage) and
+     ([csDesigning, csDestroying, csFreeNotification] * ComponentState = []) then
+  begin
+    if (ActivePage is TTDIPage) then
+    begin
+      with TTDIPage(ActivePage) do
+      begin
+        if Assigned( FormInPage ) then
+          if ([csDesigning, csDestroying, csFreeNotification] * FormInPage.ComponentState = []) then
+            if Assigned( FormInPage.OnDeactivate ) then
+              if FormInPage.Visible then
+                FormInPage.OnDeactivate( Self );
+      end ;
+    end ;
+  end ;
+  *)
 end ;
 
 procedure TTDINoteBook.DoChange ;
 begin
   inherited DoChange;
 
-  if ([csDesigning, csDestroying] * ComponentState <> []) then exit ;
+  if ([csDesigning, csDestroying, csFreeNotification] * ComponentState <> []) then exit ;
+
+  // Emulate FormInPage.OnActivate //
+  (*
+  if (not FIsRemovingAPage) and (ActivePage is TTDIPage) then
+  begin
+    with TTDIPage(ActivePage) do
+    begin
+      if Assigned( FormInPage ) then
+        if ([csDesigning, csDestroying, csFreeNotification] * FormInPage.ComponentState = []) then
+          if Assigned( FormInPage.OnActivate ) then
+            if FormInPage.Visible then
+              FormInPage.OnActivate( Self );
+    end;
+  end ;
+  *)
 
   CheckInterface;
 
@@ -1062,7 +1098,7 @@ procedure TTDINoteBook.Loaded ;
 begin
   inherited Loaded ;
 
-  if ([csDesigning, csDestroying] * ComponentState <> []) then exit ;
+  if ([csDesigning, csDestroying, csFreeNotification] * ComponentState <> []) then exit ;
 
   if Assigned( FMainMenu ) then
      CreateTabsMenuItem;
@@ -1079,8 +1115,10 @@ begin
   FIsRemovingAPage := True;
   APage            := Pages[Index] ;
   try
-    if ([csDesigning, csDestroying] * ComponentState = []) then
+    if ([csDesigning, csDestroying, csFreeNotification] * ComponentState = []) then
+    begin
       if APage is TTDIPage then
+      begin
         with TTDIPage(APage) do
         begin
           if Assigned( FormInPage ) then
@@ -1089,6 +1127,8 @@ begin
             FormInPage.Close ;
           end ;
         end ;
+      end ;
+    end ;
 
     if CanRemovePage then
     begin
@@ -1171,7 +1211,7 @@ begin
      else if (AComponent = FMainMenu) then
        FMainMenu := nil
 
-     else if ([csDesigning, csDestroying] * ComponentState <> []) then
+     else if ([csDesigning, csDestroying, csFreeNotification] * ComponentState <> []) then
 
      else if (AComponent is TForm) then
        RemoveInvalidPages ;
@@ -1180,7 +1220,7 @@ end ;
 
 procedure TTDINoteBook.DrawBackgroundImage ;
 begin
-  if ([csDesigning, csDestroying] * ComponentState <> []) then exit ;
+  if ([csDesigning, csDestroying, csFreeNotification] * ComponentState <> []) then exit ;
 
   if not Assigned( FBackgroundImage ) then exit ;
 

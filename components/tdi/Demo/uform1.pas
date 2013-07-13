@@ -29,8 +29,10 @@ type
     procedure bCloseClick(Sender : TObject) ;
     procedure bHideClick(Sender : TObject) ;
     procedure Edit2Exit(Sender : TObject) ;
+    procedure FormActivate(Sender : TObject) ;
     procedure FormClose(Sender : TObject ; var CloseAction : TCloseAction) ;
     procedure FormCloseQuery(Sender : TObject ; var CanClose : boolean) ;
+    procedure FormDeactivate(Sender : TObject) ;
     procedure FormDestroy(Sender : TObject) ;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure tShowmeAgainTimer(Sender : TObject) ;
@@ -73,10 +75,15 @@ begin
   end ;
 end;
 
+procedure TForm1.FormActivate(Sender : TObject) ;
+begin
+  fMainForm.AddToLog( 'Form1.OnActivate' );
+end;
+
 procedure TForm1.FormClose(Sender : TObject ; var CloseAction : TCloseAction) ;
 begin
   CloseAction := caFree;
-  fMainForm.mEvents.Lines.Add( 'Form1.Close' );
+  fMainForm.AddToLog( 'Form1.OnClose' );
 end;
 
 procedure TForm1.FormCloseQuery(Sender : TObject ; var CanClose : boolean) ;
@@ -88,18 +95,23 @@ begin
     Edit2.Text := 'Ok, fixed';
   end ;
 
-  fMainForm.mEvents.Lines.Add( 'Form1.CloseQuery: '+BoolToStr(CanClose,'True','False') );
+  fMainForm.AddToLog( 'Form1.CloseQuery: '+BoolToStr(CanClose,'True','False') );
+end;
+
+procedure TForm1.FormDeactivate(Sender : TObject) ;
+begin
+  fMainForm.AddToLog( 'Form1.OnDeactivate' );
 end;
 
 procedure TForm1.FormDestroy(Sender : TObject) ;
 begin
-  fMainForm.mEvents.Lines.Add( 'Form1.Destroy' );
+  fMainForm.AddToLog( 'Form1.OnDestroy' );
 end;
 
 procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState
   );
 begin
-  fMainForm.mEvents.Lines.Add( 'Form1.KeyDown' );
+  fMainForm.AddToLog( 'Form1.OnKeyDown' );
 end;
 
 procedure TForm1.tShowmeAgainTimer(Sender : TObject) ;

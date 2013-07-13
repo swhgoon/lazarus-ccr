@@ -11,7 +11,6 @@ object fMainForm: TfMainForm
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
-  OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   LCLVersion = '1.1'
   object StatusBar1: TStatusBar
@@ -75,10 +74,10 @@ object fMainForm: TfMainForm
       object Label2: TLabel
         AnchorSideLeft.Control = tsFixed
         AnchorSideLeft.Side = asrCenter
-        Left = 163
-        Height = 31
+        Left = 164
+        Height = 30
         Top = 312
-        Width = 244
+        Width = 243
         Alignment = taCenter
         Caption = 'This is a Fixed Page, and cannot be closed.'#13#10'You can configure it on "FixedPages" Property'
         ParentColor = False
@@ -125,9 +124,9 @@ object fMainForm: TfMainForm
     end
     object Label1: TLabel
       Left = 22
-      Height = 16
+      Height = 15
       Top = 1
-      Width = 101
+      Width = 100
       Caption = 'BackgroundCorner'
       ParentColor = False
     end
@@ -146,9 +145,9 @@ object fMainForm: TfMainForm
     end
     object Label3: TLabel
       Left = 182
-      Height = 16
+      Height = 15
       Top = 1
-      Width = 59
+      Width = 58
       Caption = 'FixedPages'
       ParentColor = False
     end

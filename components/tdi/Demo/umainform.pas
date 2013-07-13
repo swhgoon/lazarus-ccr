@@ -42,7 +42,6 @@ type
     procedure FormClose(Sender : TObject ; var CloseAction : TCloseAction) ;
     procedure FormCloseQuery(Sender : TObject ; var CanClose : boolean) ;
     procedure FormCreate(Sender : TObject) ;
-    procedure FormDestroy(Sender : TObject) ;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure MenuItem3Click(Sender : TObject) ;
     procedure miExitClick(Sender : TObject) ;
@@ -59,6 +58,7 @@ type
 
   public
     { public declarations }
+    procedure AddToLog( AStr: String) ;
   end ;
 
 var
@@ -84,15 +84,10 @@ begin
   end;
 end;
 
-procedure TfMainForm.FormDestroy(Sender : TObject) ;
-begin
-  mEvents.Lines.Add('fMainForm.Destroy');
-end;
-
 procedure TfMainForm.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  mEvents.Lines.Add('fMainForm.FormKeyDown');
+  AddToLog('fMainForm.OnKeyDown');
 end;
 
 procedure TfMainForm.MenuItem3Click(Sender : TObject) ;
@@ -159,18 +154,18 @@ end;
 
 procedure TfMainForm.TDINoteBook1Change(Sender : TObject) ;
 begin
-  mEvents.Lines.Add('OnChange');
+  AddToLog('TDINoteBook1.OnChange');
 end;
 
 procedure TfMainForm.TDINoteBook1CloseTabClicked(Sender : TObject) ;
 begin
-  mEvents.Lines.Add( 'TDINoteBook1.OnCloseTabClicked' );
+  AddToLog( 'TDINoteBook1.OnCloseTabClicked' );
 end;
 
 procedure TfMainForm.TDINoteBook1MouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  mEvents.Lines.Add( 'TDINoteBook1.OnMouseDown' );
+  AddToLog( 'TDINoteBook1.OnMouseDown' );
 end;
 
 procedure TfMainForm.ShowNewControl(Sender : TObject) ;
@@ -185,7 +180,14 @@ begin
     ControlCaption := 'nil' ;
 
   StatusBar1.Panels[1].Text := ControlCaption;
-  mEvents.Lines.Add( 'New Control: '+ControlCaption );
+  AddToLog( 'Screen.OnActiveControlChange: '+ControlCaption );
+end ;
+
+procedure TfMainForm.AddToLog(AStr : String) ;
+begin
+  if ([csDesigning, csDestroying] * ComponentState <> []) then exit ;
+
+  mEvents.Lines.Add( AStr ) ;
 end ;
 
 end.
