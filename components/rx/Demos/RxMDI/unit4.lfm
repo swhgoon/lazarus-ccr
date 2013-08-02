@@ -57,4 +57,28 @@ object Form4: TForm4
     Caption = 'MDI form # ...'
     TabOrder = 0
   end
+  object Edit1: TEdit
+    Left = 47
+    Height = 25
+    Top = 84
+    Width = 80
+    TabOrder = 1
+    Text = 'Edit1'
+  end
+  object Edit2: TEdit
+    Left = 43
+    Height = 25
+    Top = 154
+    Width = 80
+    TabOrder = 2
+    Text = 'Edit2'
+  end
+  object Edit3: TEdit
+    Left = 45
+    Height = 25
+    Top = 215
+    Width = 80
+    TabOrder = 3
+    Text = 'Edit3'
+  end
 end

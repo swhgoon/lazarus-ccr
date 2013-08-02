@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, rxtoolbar, RxMDI, Forms, Controls, Graphics,
-  Dialogs, ActnList, Menus, ComCtrls;
+  Dialogs, ActnList, Menus, ComCtrls, ExtCtrls;
 
 type
 
@@ -30,11 +30,13 @@ type
     RxMDIPanel1: TRxMDIPanel;
     RxMDITasks1: TRxMDITasks;
     StatusBar1: TStatusBar;
+    Timer1: TTimer;
     ToolPanel1: TToolPanel;
     procedure Action1Execute(Sender: TObject);
     procedure Action2Execute(Sender: TObject);
     procedure Action3Execute(Sender: TObject);
     procedure sysCloseExecute(Sender: TObject);
+    procedure Timer1Timer(Sender: TObject);
   private
     { private declarations }
   public
@@ -55,6 +57,15 @@ uses Unit2, Unit3, Unit4;
 procedure TForm1.sysCloseExecute(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TForm1.Timer1Timer(Sender: TObject);
+begin
+  if Assigned(ActiveControl) then
+    StatusBar1.SimpleText:=ActiveControl.Caption
+  else
+    StatusBar1.SimpleText:='<NONE>'
+    ;
 end;
 
 procedure TForm1.Action1Execute(Sender: TObject);

@@ -5,13 +5,17 @@ unit Unit2;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls;
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
+  StdCtrls;
 
 type
 
   { TForm2 }
 
   TForm2 = class(TForm)
+    Edit1: TEdit;
+    Edit2: TEdit;
+    Edit3: TEdit;
     Panel1: TPanel;
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
   private
