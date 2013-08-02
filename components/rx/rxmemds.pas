@@ -264,7 +264,7 @@ type
 implementation
 
 
-uses CustApp, rxdconst, dbconst, Variants, math;
+uses CustApp, rxdconst, LazUTF8, dbconst, Variants, math;
 
 const
   ftBlobTypes = [ftBlob, ftMemo, ftGraphic, ftFmtMemo, ftParadoxOle,
@@ -296,9 +296,9 @@ begin
   case FieldType of
     ftString:
       if CaseInsensitive then
-        Result := AnsiCompareText(PChar(Data1), PChar(Data2))
+        Result := UTF8CompareText(PChar(Data1), PChar(Data2))
       else
-        Result := AnsiCompareStr(PChar(Data1), PChar(Data2));
+        Result := UTF8CompareStr(PChar(Data1), PChar(Data2));
     ftSmallint:
       if SmallInt(Data1^) > SmallInt(Data2^) then Result := 1
       else if SmallInt(Data1^) < SmallInt(Data2^) then Result := -1;
@@ -319,15 +319,15 @@ begin
       else if TDateTime(Data1^) < TDateTime(Data2^) then Result := -1;
     ftFixedChar:
       if CaseInsensitive then
-        Result := AnsiCompareText(PChar(Data1), PChar(Data2))
+        Result := UTF8CompareText(PChar(Data1), PChar(Data2))
       else
-        Result := AnsiCompareStr(PChar(Data1), PChar(Data2));
+        Result := UTF8CompareStr(PChar(Data1), PChar(Data2));
     ftWideString:
       if CaseInsensitive then
-        Result := AnsiCompareText(WideCharToString(PWideChar(Data1)),
+        Result := UTF8CompareText(WideCharToString(PWideChar(Data1)),
           WideCharToString(PWideChar(Data2)))
       else
-        Result := AnsiCompareStr(WideCharToString(PWideChar(Data1)),
+        Result := UTF8CompareStr(WideCharToString(PWideChar(Data1)),
           WideCharToString(PWideChar(Data2)));
     ftLargeint: 
       if Int64(Data1^) > Int64(Data2^) then Result := 1
@@ -335,7 +335,7 @@ begin
     ftVariant:
       Result := 0;
     ftGuid:
-      Result := AnsiCompareText(PChar(Data1), PChar(Data2));
+      Result := UTF8CompareText(PChar(Data1), PChar(Data2));
   end;
 end;
 
@@ -1384,9 +1384,9 @@ var
         Delete(S, Length(S1) + 1, MaxInt);
 
       if (loCaseInsensitive in Options) then
-        Result := AnsiCompareText(S, S1) = 0
+        Result := UTF8CompareText(S, S1) = 0
       else
-        Result := AnsiCompareStr(S, S1) = 0;
+        Result := UTF8CompareStr(S, S1) = 0;
     end
     else Result := (Field.Value = Value);
   end;
