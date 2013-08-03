@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, EditBtn,
   StdCtrls, Spin, ExtCtrls, ComCtrls, Grids, ColorBox, Math,
-  fpvv_drawer, fpimage, fpcanvas, coreconrec;
+  fpvv_drawer, fpimage, fpcanvas, coreconrec, fpvutils;
 
 type
 
@@ -20,6 +20,7 @@ type
     btnVisualize: TButton;
     Button1: TButton;
     Button2: TButton;
+    buttonViewDebugInfo: TButton;
     buttonRenderingTest: TButton;
     checkForceWhiteBackground: TCheckBox;
     comboEncoding: TComboBox;
@@ -30,7 +31,9 @@ type
     Label3: TLabel;
     Label4: TLabel;
     labelFileEncoding: TLabel;
+    memoDebug: TMemo;
     notebook: TNotebook;
+    pageDebug: TPage;
     pageViewer: TPage;
     pageTreeData: TPage;
     Panel1: TPanel;
@@ -45,6 +48,7 @@ type
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure buttonRenderingTestClick(Sender: TObject);
+    procedure buttonViewDebugInfoClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure spinAdjustXChange(Sender: TObject);
@@ -57,6 +61,7 @@ type
        WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
     procedure HandleDrawerPosChanged(Sender: TObject);
     procedure HandleDrawerRedraw(Sender: TObject);
+    procedure ViewerDebugOutCallback(AStr: string);
   public
     { public declarations }
     Drawer: TFPVVDrawer;
@@ -354,6 +359,11 @@ begin
   end;
 end;
 
+procedure TfrmFPVViewer.buttonViewDebugInfoClick(Sender: TObject);
+begin
+  notebook.PageIndex := 2;
+end;
+
 procedure TfrmFPVViewer.FormCreate(Sender: TObject);
 begin
   Drawer := TFPVVDrawer.Create(Self);
@@ -365,6 +375,8 @@ begin
   Drawer.OnMouseWheel := @HandleDrawerMouseWheel;
   Drawer.PosChangedCallback := @HandleDrawerPosChanged;
   Drawer.RedrawCallback := @HandleDrawerRedraw;
+
+  FPVUDebugOutCallback := @ViewerDebugOutCallback;
 end;
 
 procedure TfrmFPVViewer.FormDestroy(Sender: TObject);
@@ -429,6 +441,11 @@ end;
 procedure TfrmFPVViewer.HandleDrawerRedraw(Sender: TObject);
 begin
   btnVisualizeClick(Sender);
+end;
+
+procedure TfrmFPVViewer.ViewerDebugOutCallback(AStr: string);
+begin
+  memoDebug.Lines.Add(AStr);
 end;
 
 end.
