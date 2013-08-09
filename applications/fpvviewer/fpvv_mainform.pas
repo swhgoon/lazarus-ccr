@@ -127,10 +127,10 @@ begin
     Drawer.Drawing.Canvas.Brush.Color := clWhite;
     Drawer.Drawing.Canvas.Brush.Style := bsSolid;
     Drawer.Drawing.Canvas.FillRect(0, 0, Drawer.Drawing.Width, Drawer.Drawing.Height);
-    if checkForceWhiteBackground.Checked then Vec.GetPage(0).BackgroundColor := colWhite;
+    if checkForceWhiteBackground.Checked then Vec.GetPageAsVectorial(0).BackgroundColor := colWhite;
     if not checkForceWhiteBackground.Checked then
-      Vec.GetPage(0).DrawBackground(Drawer.Drawing.Canvas);
-    Vec.GetPage(0).Render(
+      Vec.GetPageAsVectorial(0).DrawBackground(Drawer.Drawing.Canvas);
+    Vec.GetPageAsVectorial(0).Render(
       Drawer.Drawing.Canvas,
       FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS + Drawer.PosX,
       Drawer.Drawing.Height - FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS + Drawer.PosY,
@@ -168,7 +168,7 @@ begin
 
   Vec := TvVectorialDocument.Create;
   Vec.ReadFromFile(editFileName.FileName);
-  lPage := Vec.GetPage(0);
+  lPage := Vec.GetPageAsVectorial(0);
   lRasterImage := TvRasterImage(lPage.GetEntity(0));
 
   // create dynamicaly the vectors and datafield
@@ -311,7 +311,7 @@ begin
 
     // Generate the positioning info
     for i := 0 to Vec.GetPageCount()-1 do
-      Vec.GetPage(i).PositionEntitySubparts(Canvas, 0, 0);
+      Vec.GetPageAsVectorial(i).PositionEntitySubparts(Canvas, 0, 0);
 
     TokensTreeView.Items.Clear;
     Vec.GenerateDebugTree(@FPVDebugAddItemProc);
