@@ -3980,6 +3980,9 @@ begin
   DoFillColList;
   InternalOptimizeColumnsWidth(ColList);
   ColList.Free;
+
+  if Assigned(OnColumnSized) then
+    OnColumnSized(Self);
 end;
 
 procedure TRxDBGrid.OptimizeColumnsWidthAll;
