@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, LResources, Controls, ExtCtrls, DB, DBCtrls, LMessages, LCLType, Dialogs,
-  SysUtils, jinputconsts;
+  SysUtils, jinputconsts, CalendarPopup, Calendar, Buttons;
 
 type
 
@@ -33,6 +33,14 @@ type
   private
     fFormat: string;
     FDataLink: TFieldDataLink;
+
+    FButton: TSpeedButton;
+    FButtonNeedsFocus: boolean;
+    function GetButtonWidth: integer;
+    procedure SetButtonWidth(AValue: integer);
+    procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
+    procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
+
 
     procedure DataChange(Sender: TObject);
     procedure UpdateData(Sender: TObject);
@@ -44,6 +52,7 @@ type
 
     function IsReadOnly: boolean;
 
+    function EditText: string;
     function getFormat: string;
     procedure setFormat(const AValue: string);
     procedure formatInput;
@@ -62,6 +71,15 @@ type
     function GetReadOnly: boolean; override;
     procedure SetReadOnly(Value: boolean); override;
 
+    procedure SetParent(AParent: TWinControl); override;
+    procedure DoPositionButton; virtual;
+    procedure CheckButtonVisible;
+    procedure CMVisibleChanged(var Msg: TLMessage); message CM_VISIBLECHANGED;
+    procedure CMEnabledChanged(var Msg: TLMessage); message CM_ENABLEDCHANGED;
+    procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
+    procedure ShowCalendar(Sender: TObject);
+    procedure CalendarPopupReturnDate(Sender: TObject; const ADate: TDateTime);
+
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -73,6 +91,9 @@ type
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property ReadOnly: boolean read GetReadOnly write SetReadOnly default False;
+
+    property Button: TSpeedButton read FButton;
+    property ButtonWidth: integer read GetButtonWidth write SetButtonWidth;
 
     // From TEdit
     property Action;
@@ -133,12 +154,34 @@ procedure Register;
 implementation
 
 uses
-  jcontrolutils;
+  jcontrolutils, dateutils;
 
 procedure Register;
 begin
   {$I jdblabeleddatetimeedit_icon.lrs}
   RegisterComponents('Data Controls', [TJDBLabeledDateTimeEdit]);
+end;
+
+function TJDBLabeledDateTimeEdit.GetButtonWidth: integer;
+begin
+  Result := FButton.Width;
+end;
+
+procedure TJDBLabeledDateTimeEdit.SetButtonWidth(AValue: integer);
+begin
+  FButton.Width := AValue;
+end;
+
+procedure TJDBLabeledDateTimeEdit.WMSetFocus(var Message: TLMSetFocus);
+begin
+  CheckButtonVisible;
+  inherited;
+end;
+
+procedure TJDBLabeledDateTimeEdit.WMKillFocus(var Message: TLMKillFocus);
+begin
+  CheckButtonVisible;
+  inherited;
 end;
 
 procedure TJDBLabeledDateTimeEdit.DataChange(Sender: TObject);
@@ -148,7 +191,7 @@ begin
     if not Focused then
       formatInput
     else
-      Caption := FDataLink.Field.AsString;
+      Caption := EditText;
   end
   else
     Text := '';
@@ -171,7 +214,7 @@ begin
     else
     begin
       ShowMessage(Format(SInvalidDateTime, [Caption]));
-      Caption := FDataLink.Field.AsString;
+      Caption := EditText;
       SelectAll;
       SetFocus;
     end;
@@ -208,6 +251,15 @@ begin
     Result := False;
 end;
 
+function TJDBLabeledDateTimeEdit.EditText: string;
+begin
+  if Field.IsNull then
+    Result := ''
+  else
+    Result := FormatDateTime(ShortDateFormat, FDataLink.Field.AsDateTime) +
+      ' ' + FormatDateTime(ShortTimeFormat, FDataLink.Field.AsDateTime);
+end;
+
 function TJDBLabeledDateTimeEdit.getFormat: string;
 begin
   Result := fFormat;
@@ -226,7 +278,7 @@ begin
     if (fFormat <> '') and (not FDataLink.Field.IsNull) then
       Caption := FormatDateTime(fFormat, FDataLink.Field.AsDateTime)
     else
-      Caption := FDataLink.Field.DisplayText
+      Caption := EditText
   else
     Caption := 'nil';
 end;
@@ -240,6 +292,85 @@ procedure TJDBLabeledDateTimeEdit.SetReadOnly(Value: boolean);
 begin
   inherited;
   FDataLink.ReadOnly := Value;
+end;
+
+procedure TJDBLabeledDateTimeEdit.SetParent(AParent: TWinControl);
+begin
+  inherited SetParent(AParent);
+  if FButton <> nil then
+  begin
+    DoPositionButton;
+    CheckButtonVisible;
+  end;
+end;
+
+procedure TJDBLabeledDateTimeEdit.DoPositionButton;
+begin
+  if FButton = nil then
+    exit;
+  FButton.Parent := Parent;
+  FButton.Visible := True;
+  if BiDiMode = bdLeftToRight then
+    FButton.AnchorToCompanion(akLeft, 0, Self)
+  else
+    FButton.AnchorToCompanion(akRight, 0, Self);
+end;
+
+procedure TJDBLabeledDateTimeEdit.CheckButtonVisible;
+begin
+  if Assigned(FButton) then
+    FButton.Visible := True;
+end;
+
+procedure TJDBLabeledDateTimeEdit.CMVisibleChanged(var Msg: TLMessage);
+begin
+  inherited CMVisibleChanged(Msg);
+  CheckButtonVisible;
+end;
+
+procedure TJDBLabeledDateTimeEdit.CMEnabledChanged(var Msg: TLMessage);
+begin
+  inherited CMEnabledChanged(Msg);
+  if (FButton <> nil) then
+    FButton.Enabled := True;
+end;
+
+procedure TJDBLabeledDateTimeEdit.CMBiDiModeChanged(var Message: TLMessage);
+begin
+  inherited;
+  DoPositionButton;
+end;
+
+procedure TJDBLabeledDateTimeEdit.ShowCalendar(Sender: TObject);
+var
+  PopupOrigin: TPoint;
+  ADate: TDateTime;
+begin
+  if (not Assigned(FDataLink.Field)) or IsReadOnly then
+    exit;
+  PopupOrigin := Self.ControlToScreen(Point(0, Self.Height));
+  if FDataLink.Field.IsNull then
+    ADate := now
+  else
+    ADate := FDataLink.Field.AsDateTime;
+  ShowCalendarPopup(PopupOrigin, ADate, [dsShowHeadings, dsShowDayNames],
+    @CalendarPopupReturnDate, nil);
+end;
+
+procedure TJDBLabeledDateTimeEdit.CalendarPopupReturnDate(Sender: TObject;
+  const ADate: TDateTime);
+var
+  bufdate: TDateTime;
+begin
+  if not (DataSource.State in [dsEdit, dsInsert]) then
+    DataSource.Edit;
+  if FDataLink.Field.IsNull then
+    bufdate := now
+  else
+    bufdate := FDataLink.Field.AsDateTime;
+  FDataLink.Field.AsDateTime :=
+    EncodeDateTime(YearOf(ADate), MonthOf(ADate), DayOf(ADate),
+    HourOf(bufdate), MinuteOf(bufdate), SecondOf(bufdate), MilliSecondOf(bufdate));
 end;
 
 procedure TJDBLabeledDateTimeEdit.SetDataField(const Value: string);
@@ -261,6 +392,8 @@ end;
 procedure TJDBLabeledDateTimeEdit.Loaded;
 begin
   inherited Loaded;
+  DoPositionButton;
+  CheckButtonVisible;
   if (csDesigning in ComponentState) then
     DataChange(Self);
 end;
@@ -269,6 +402,8 @@ procedure TJDBLabeledDateTimeEdit.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
+  if (AComponent = FButton) and (Operation = opRemove) then
+    FButton := nil;
   // clean up
   if (Operation = opRemove) then
   begin
@@ -288,6 +423,8 @@ end;
 procedure TJDBLabeledDateTimeEdit.KeyDown(var Key: word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
+  if (ssAlt in Shift) and (key = 40) then
+    ShowCalendar(Self);
   if Key = VK_ESCAPE then
   begin
     FDataLink.Reset;
@@ -306,6 +443,8 @@ end;
 
 procedure TJDBLabeledDateTimeEdit.KeyPress(var Key: char);
 begin
+  if (not Assigned(FDataLink.Field)) or IsReadOnly then
+    key := #0;
   if not (Key in ['0'..'9', #8, #9, '.', '-', '/', ',', ':', ' ']) then
     Key := #0
   else
@@ -317,7 +456,7 @@ end;
 procedure TJDBLabeledDateTimeEdit.DoEnter;
 begin
   if FDataLink.Field <> nil then
-    Caption := FDataLink.Field.AsString;
+    Caption := EditText;
   inherited DoEnter;
 end;
 
@@ -330,20 +469,32 @@ begin
   FDataLink.OnDataChange := @DataChange;
   FDataLink.OnUpdateData := @UpdateData;
   FDataLInk.OnActiveChange := @ActiveChange;
-  // Set default values
-  //fFormat := ShortDateFormat;
+
+  FButton := TSpeedButton.Create(self);
+  FButton.Height := Self.Height;
+  FButton.FreeNotification(Self);
+  CheckButtonVisible;
+  FButton.Cursor := crArrow;
+  FButton.Flat := False;
+
+  FButton.OnClick := @ShowCalendar;
+  FButton.ControlStyle := FButton.ControlStyle + [csNoDesignSelectable];
+  FButton.LoadGlyphFromLazarusResource('JCalendarIcon');
+  ControlStyle := ControlStyle - [csSetCaption];
 end;
 
 destructor TJDBLabeledDateTimeEdit.Destroy;
 begin
-  FDataLink.Free;
-  FDataLink := nil;
+  FreeAndNil(FDataLink);
+  FreeAndNil(FButton);
   inherited Destroy;
 end;
 
 procedure TJDBLabeledDateTimeEdit.EditingDone;
 begin
   inherited EditingDone;
+  if (not Assigned(FDataLink.Field)) or IsReadOnly then
+    exit;
   if DataSource.State in [dsEdit, dsInsert] then
     UpdateData(self)
   else
@@ -352,4 +503,3 @@ end;
 
 
 end.
-

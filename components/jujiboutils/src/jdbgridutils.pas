@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, SysUtils, Grids, Dialogs, LCLType, DBGrids, Controls, DB,
-  jcontrolutils, jinputconsts;
+  jcontrolutils, jinputconsts, CalendarPopup, Calendar, Buttons;
 
 type
 
@@ -58,12 +58,16 @@ type
     theValue: TDateTime;
     fFormat: string;
     function getFormat: string;
+    function EditText: string;
     procedure myEditEnter(Sender: TObject);
     procedure myEditOnEditingDone(Sender: TObject);
     procedure formatInput;
     procedure setFormat(const AValue: string);
     procedure OnKeyPress(Sender: TObject; var key: char);
     procedure OnKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
+  protected
+    procedure ShowCalendar(Sender: TObject);
+    procedure CalendarPopupReturnDate(Sender: TObject; const ADate: TDateTime);
   public
     CellEditor: TStringCellEditor;
     theGrid: TDBGrid;
@@ -116,6 +120,9 @@ type
     procedure setFormat(const AValue: string);
     procedure OnKeyPress(Sender: TObject; var key: char);
     procedure OnKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
+  protected
+    procedure ShowCalendar(Sender: TObject);
+    procedure CalendarPopupReturnDate(Sender: TObject; const ADate: TDateTime);
   public
     CellEditor: TStringCellEditor;
     theGrid: TDBGrid;
@@ -178,7 +185,7 @@ type
 implementation
 
 uses
-  Math;
+  Math, dateutils;
 
 { TJDbGridStringCtrl }
 
@@ -278,13 +285,22 @@ begin
   Result := fFormat;
 end;
 
+function TJDbGridDateTimeCtrl.EditText: string;
+begin
+  if Field.IsNull then
+    Result := ''
+  else
+    Result := FormatDateTime(ShortDateFormat, Field.AsDateTime) + ' ' +
+      FormatDateTime(ShortTimeFormat, Field.AsDateTime);
+end;
+
 procedure TJDbGridDateTimeCtrl.myEditEnter(Sender: TObject);
 begin
   Field := theGrid.SelectedField;
   if not Assigned(Field) then
     abort;
   CellEditor.BoundsRect := theGrid.SelectedFieldRect;
-  CellEditor.Text := Field.AsString;
+  CellEditor.Text := EditText;
   CellEditor.OnKeyPress := @OnKeyPress;  // Recuperamos el control :-p
   CellEditor.OnKeyDown := @OnKeyDown;
   theValue := Field.AsDateTime;
@@ -361,6 +377,11 @@ end;
 procedure TJDbGridDateTimeCtrl.OnKeyDown(Sender: TObject; var Key: word;
   Shift: TShiftState);
 begin
+  if (ssAlt in Shift) and (key = 40) then
+  begin
+    ShowCalendar(Self);
+    key := 0;
+  end;
   if Length(CellEditor.Caption) = 0 then
   begin
     if Field.Value <> Null then
@@ -415,6 +436,39 @@ begin
         updated := True;
       end;
     end;
+end;
+
+procedure TJDbGridDateTimeCtrl.ShowCalendar(Sender: TObject);
+var
+  PopupOrigin: TPoint;
+  ADate: TDateTime;
+begin
+  if (not Assigned(Field)) then
+    exit;
+  PopupOrigin := CellEditor.ControlToScreen(Point(0, CellEditor.Height));
+  if Field.IsNull then
+    ADate := now
+  else
+    ADate := Field.AsDateTime;
+  ShowCalendarPopup(PopupOrigin, ADate, [dsShowHeadings, dsShowDayNames],
+    @CalendarPopupReturnDate, nil);
+end;
+
+procedure TJDbGridDateTimeCtrl.CalendarPopupReturnDate(Sender: TObject;
+  const ADate: TDateTime);
+var
+  bufdate: TDateTime;
+begin
+  if not (Field.DataSet.State in [dsEdit, dsInsert]) then
+    Field.DataSet.Edit;
+  if Field.IsNull then
+    bufdate := now
+  else
+    bufdate := Field.AsDateTime;
+  Field.AsDateTime :=
+    EncodeDateTime(YearOf(ADate), MonthOf(ADate), DayOf(ADate),
+    HourOf(bufdate), MinuteOf(bufdate), SecondOf(bufdate), MilliSecondOf(bufdate));
+  CellEditor.Text := EditText;
 end;
 
 function TJDbGridDateTimeCtrl.isNull: boolean;
@@ -741,6 +795,11 @@ end;
 procedure TJDbGridDateCtrl.OnKeyDown(Sender: TObject; var Key: word;
   Shift: TShiftState);
 begin
+  if (ssAlt in Shift) and (key = 40) then
+  begin
+    ShowCalendar(Self);
+    key := 0;
+  end;
   if Length(CellEditor.Caption) = 0 then
   begin
     if Field.Value <> null then
@@ -795,6 +854,39 @@ begin
         updated := True;
       end;
     end;
+end;
+
+procedure TJDbGridDateCtrl.ShowCalendar(Sender: TObject);
+var
+  PopupOrigin: TPoint;
+  ADate: TDateTime;
+begin
+  if (not Assigned(Field)) then
+    exit;
+  PopupOrigin := CellEditor.ControlToScreen(Point(0, CellEditor.Height));
+  if Field.IsNull then
+    ADate := now
+  else
+    ADate := Field.AsDateTime;
+  ShowCalendarPopup(PopupOrigin, ADate, [dsShowHeadings, dsShowDayNames],
+    @CalendarPopupReturnDate, nil);
+end;
+
+procedure TJDbGridDateCtrl.CalendarPopupReturnDate(Sender: TObject;
+  const ADate: TDateTime);
+var
+  bufdate: TDateTime;
+begin
+  if not (Field.DataSet.State in [dsEdit, dsInsert]) then
+    Field.DataSet.Edit;
+  if Field.IsNull then
+    bufdate := now
+  else
+    bufdate := Field.AsDateTime;
+  Field.AsDateTime :=
+    EncodeDateTime(YearOf(ADate), MonthOf(ADate), DayOf(ADate),
+    HourOf(bufdate), MinuteOf(bufdate), SecondOf(bufdate), MilliSecondOf(bufdate));
+  CellEditor.Text := Field.AsString;
 end;
 
 

@@ -22,7 +22,8 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, ExtCtrls, Graphics,
-  Dialogs, jcontrolutils, jinputconsts;
+  Dialogs, Buttons, LMessages, jcontrolutils, jinputconsts, CalendarPopup,
+  Calendar;
 
 type
 
@@ -32,16 +33,33 @@ type
   private
     theValue: TDateTime;
     fFormat: string;
+    FButton: TSpeedButton;
+    FButtonNeedsFocus: Boolean;
+    function GetButtonWidth: Integer;
     function getFormat: string;
     function getValue: TDateTime;
     procedure formatInput;
+    procedure SetButtonWidth(AValue: Integer);
     procedure setFormat(const AValue: string);
     procedure setValue(const AValue: TDateTime);
+    procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
+    procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
   protected
     { Protected declarations }
     procedure DoEnter; override;
     procedure DoExit; override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: char); override;
+    procedure SetParent(AParent: TWinControl); override;
+    procedure DoPositionButton; virtual;
+    procedure CheckButtonVisible;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure CMVisibleChanged(var Msg: TLMessage); message CM_VISIBLECHANGED;
+    procedure CMEnabledChanged(var Msg: TLMessage); message CM_ENABLEDCHANGED;
+    procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
+    procedure Loaded; override;
+    procedure ShowCalendar(Sender: TObject);
+    procedure CalendarPopupReturnDate(Sender: TObject; const ADate: TDateTime);
   public
     { Public declarations }
     constructor Create(TheOwner: TComponent); override;
@@ -51,6 +69,8 @@ type
     function isNull: boolean;
     property DisplayFormat: string read getFormat write setFormat;
     property Value: TDateTime read getValue write setValue;
+    property Button: TSpeedButton read FButton;
+    property ButtonWidth : Integer read GetButtonWidth write SetButtonWidth;
 
     property Action;
     property Align;
@@ -117,6 +137,11 @@ begin
   Result := fFormat;
 end;
 
+function TJLabeledDateEdit.GetButtonWidth: Integer;
+begin
+  Result:= FButton.Width;
+end;
+
 function TJLabeledDateEdit.getValue: TDateTime;
 begin
   Result := theValue;
@@ -126,6 +151,11 @@ procedure TJLabeledDateEdit.formatInput;
 begin
   if theValue <> 0 then
     Text := FormatDateTime(DisplayFormat, theValue);
+end;
+
+procedure TJLabeledDateEdit.SetButtonWidth(AValue: Integer);
+begin
+  FButton.Width:=AValue;
 end;
 
 procedure TJLabeledDateEdit.setFormat(const AValue: string);
@@ -138,6 +168,18 @@ procedure TJLabeledDateEdit.setValue(const AValue: TDateTime);
 begin
   theValue := AValue;
   formatInput;
+end;
+
+procedure TJLabeledDateEdit.WMSetFocus(var Message: TLMSetFocus);
+begin
+  CheckButtonVisible;
+  inherited;
+end;
+
+procedure TJLabeledDateEdit.WMKillFocus(var Message: TLMKillFocus);
+begin
+  CheckButtonVisible;
+  inherited;
 end;
 
 procedure TJLabeledDateEdit.DoEnter;
@@ -167,11 +209,99 @@ begin
   formatInput;
 end;
 
+procedure TJLabeledDateEdit.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  inherited KeyDown(Key, Shift);
+  if (ssAlt in Shift) and (key = 40) then
+    ShowCalendar(Self);
+end;
+
 procedure TJLabeledDateEdit.KeyPress(var Key: char);
 begin
   if not (Key in ['0'..'9', #8, #9, '.', '-', '/']) then
     Key := #0;
   inherited KeyPress(Key);
+end;
+
+procedure TJLabeledDateEdit.SetParent(AParent: TWinControl);
+begin
+  inherited SetParent(AParent);
+  if FButton <> nil then
+  begin
+    DoPositionButton;
+    CheckButtonVisible;
+  end;
+end;
+
+procedure TJLabeledDateEdit.DoPositionButton;
+begin
+  if FButton = nil then exit;
+  FButton.Parent := Parent;
+  FButton.Visible:= True;
+  if BiDiMode = bdLeftToRight then
+    FButton.AnchorToCompanion(akLeft,0,Self)
+  else
+    FButton.AnchorToCompanion(akRight,0,Self);
+end;
+
+procedure TJLabeledDateEdit.CheckButtonVisible;
+begin
+  If Assigned(FButton) then
+    FButton.Visible:=True;
+end;
+
+procedure TJLabeledDateEdit.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (AComponent = FButton) and (Operation = opRemove) then
+    FButton := nil;
+end;
+
+procedure TJLabeledDateEdit.CMVisibleChanged(var Msg: TLMessage);
+begin
+  inherited CMVisibleChanged(Msg);
+  CheckButtonVisible;
+end;
+
+procedure TJLabeledDateEdit.CMEnabledChanged(var Msg: TLMessage);
+begin
+  inherited CMEnabledChanged(Msg);
+  if (FButton<>nil) then
+    FButton.Enabled:=True;
+end;
+
+procedure TJLabeledDateEdit.CMBiDiModeChanged(var Message: TLMessage);
+begin
+  inherited;
+  DoPositionButton;
+end;
+
+procedure TJLabeledDateEdit.Loaded;
+begin
+  inherited Loaded;
+  DoPositionButton;
+  CheckButtonVisible;
+end;
+
+procedure TJLabeledDateEdit.ShowCalendar(Sender: TObject);
+var
+  PopupOrigin: TPoint;
+  ADate: TDateTime;
+begin
+  PopupOrigin := Self.ControlToScreen(Point(0, Self.Height));
+  if isNull then
+    ADate := now
+  else
+    ADate:= Value;
+  ShowCalendarPopup(PopupOrigin, ADate, [dsShowHeadings, dsShowDayNames],
+                    @CalendarPopupReturnDate, nil);
+end;
+
+procedure TJLabeledDateEdit.CalendarPopupReturnDate(Sender: TObject;
+  const ADate: TDateTime);
+begin
+  Value:= ADate;
 end;
 
 constructor TJLabeledDateEdit.Create(TheOwner: TComponent);
@@ -180,11 +310,23 @@ begin
   Text := '';
   fFormat := ShortDateFormat;
   theValue := 0;
+  FButton := TSpeedButton.Create(self);
+  FButton.Height := Self.Height;
+  FButton.FreeNotification(Self);
+  CheckButtonVisible;
+  FButton.Cursor := crArrow;
+  FButton.Flat:= False;
+
+  FButton.OnClick := @ShowCalendar;
+  FButton.ControlStyle := FButton.ControlStyle + [csNoDesignSelectable];
+  FButton.LoadGlyphFromLazarusResource('JCalendarIcon');
+  ControlStyle := ControlStyle - [csSetCaption];
   formatInput;
 end;
 
 destructor TJLabeledDateEdit.Destroy;
 begin
+  FreeAndNil(FButton);
   inherited Destroy;
 end;
 
