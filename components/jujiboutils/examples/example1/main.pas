@@ -5,9 +5,9 @@ unit main;
 interface
 
 uses
-  Classes, SysUtils, DB, memds, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, DBCtrls, Buttons, jdblabeledcurrencyedit, jdblabeledintegeredit,
-  jdblabeleddateedit;
+  Classes, SysUtils, DB, BufDataset, FileUtil, Forms, Controls, Graphics,
+  Dialogs, StdCtrls, DBCtrls, Buttons, jdblabeledcurrencyedit,
+  jdblabeledintegeredit, jdblabeleddateedit;
 
 type
 
@@ -15,6 +15,7 @@ type
 
   TForm1 = class(TForm)
     BitBtn1: TBitBtn;
+    BufDataset1: TBufDataset;
     Datasource1: TDatasource;
     DBNavigator1: TDBNavigator;
     JDBLabeledCurrencyEdit1: TJDBLabeledCurrencyEdit;
@@ -24,7 +25,6 @@ type
     Label1: TLabel;
     Label4: TLabel;
     Label5: TLabel;
-    MemDataset1: TMemDataset;
     procedure FormCreate(Sender: TObject);
   private
     { private declarations }
@@ -45,17 +45,26 @@ procedure TForm1.FormCreate(Sender: TObject);
 var
   i: integer;
 begin
+  // Create BufDataset
+  with BufDataset1.FieldDefs do
+  begin
+    Add('ID', ftInteger, 0, False);
+    Add('DATE', ftDate, 0, False);
+    Add('TOTAL', ftCurrency, 0, False);
+    Add('ID2', ftInteger, 0, False);
+  end;
+  BufDataset1.CreateDataset;
   // populate the memDataset
   for i := 1 to 10 do
   begin
-    MemDataset1.Append;
-    MemDataset1.FieldByName('ID').AsInteger := i;
-    MemDataset1.FieldByName('DATE').AsDateTime := Now;
-    MemDataset1.FieldByName('ID2').AsInteger := i * i;
-    MemDataset1.FieldByName('TOTAL').AsFloat := i * i * i;
-    MemDataset1.Post;
+    BufDataset1.Append;
+    BufDataset1.FieldByName('ID').AsInteger := i;
+    BufDataset1.FieldByName('DATE').AsDateTime := Now;
+    BufDataset1.FieldByName('ID2').AsInteger := i * i;
+    BufDataset1.FieldByName('TOTAL').AsCurrency := i * i * i;
+    BufDataset1.Post;
   end;
-  MemDataset1.First;
+  BufDataset1.First;
 end;
 
 end.
