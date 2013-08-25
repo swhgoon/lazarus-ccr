@@ -1,5 +1,5 @@
 unit mandocking; 
-
+{$APPTYPE CONSOLE}
 {$mode objfpc}{$H+}
 
 interface
@@ -30,6 +30,7 @@ type
     FloatRect : TRect;
     FloatBrd  : TFormBorderStyle;
     DockSize  : TSize;
+    EverDocked : Boolean; // if "docking" has even been since start of IDE.
   end;
 
   { TManualDocker }
@@ -38,6 +39,7 @@ type
   private
     FCurrentSrcWin  : TWinControl;
   protected
+    procedure AdjustControlsOrder;
     function DoChangeDocking(DockingEnabled: Boolean): Boolean;
     procedure LoadState(cfg: TXMLConfig; var Astate: TDockState; const StateName: string);
     procedure SaveState(cfg: TXMLConfig; const Astate: TDockState; const StateName: string);
@@ -46,8 +48,10 @@ type
 
     procedure AllocControls(AParent: TWinControl);
     procedure DeallocControls;
-    procedure RealignControls;
+    procedure ReallocControls;
     procedure UpdateDockState(var astate: TDockState; wnd: TWinControl);
+    procedure DoPanelResize;
+    procedure PanelResize(Sender: TObject);
 
     procedure SourceWindowCreated(Sender: TObject);
     procedure SourceWindowDestroyed(Sender: TObject);
@@ -88,9 +92,28 @@ begin
   else Result := b;
 end;
 
+procedure TManualDocker.AdjustControlsOrder;
+var
+  bar : TControl;
+  i:Integer;
+begin
+  if not Assigned(FCurrentSrcWin) then Exit;
+  //HACK: the actual "bottom" controls are unknown!
+  bar:=nil;
+  for i:=0 to FCurrentSrcWin.ControlCount-1 do
+    if ((FCurrentSrcWin.Controls[i].Name='StatusBar') or (FCurrentSrcWin.Controls[i].ClassName='TStatusBar')) then begin
+      bar:=FCurrentSrcWin.Controls[i];
+      Break;
+    end;
+  split.Top:=bar.Top;
+  panel.Top:=split.Height+split.Top;
+  if Assigned(bar) then bar.Top:=panel.Top+panel.Height;
+end;
+
 function TManualDocker.DoChangeDocking(DockingEnabled:Boolean):Boolean;
 var
   i : Integer;
+  wnd : TSourceEditorWindowInterface;
 begin
   if DockingEnabled then begin
     Result:=False;
@@ -101,45 +124,46 @@ begin
     if not Assigned(panel) then
       AllocControls(SourceEditorManagerIntf.ActiveSourceWindow);
 
-    if panel.Parent <> SourceEditorManagerIntf.ActiveSourceWindow then begin
-      split.Parent:=SourceEditorManagerIntf.ActiveSourceWindow;
-      panel.Parent:=SourceEditorManagerIntf.ActiveSourceWindow;
+    if IDEMessagesWindow.Parent = nil then begin
+      MsgWnd.FloatRect := IDEMessagesWindow.BoundsRect;
+      MsgWnd.FloatBrd := IDEMessagesWindow.BorderStyle;
     end;
-
-    split.visible:=true;
     panel.visible:=true;
-    with IDEMessagesWindow do
-      if IDEMessagesWindow.Parent = nil then begin
-        MsgWnd.FloatRect := Bounds(Left, Top, Width, Height);
-        MsgWnd.FloatBrd := IDEMessagesWindow.BorderStyle;
-      end;
-    IDEMessagesWindow.Parent := panel;
-    IDEMessagesWindow.Align := alClient;
+    split.visible:=true;
+    panel.Height:=MsgWnd.DockSize.cy;
+    AdjustControlsOrder;
+
     IDEMessagesWindow.BorderStyle := bsNone;
+    IDEMessagesWindow.Parent := panel;
+
+    // LCL fails with "infinite resize loop", using manual size adjustement instead
+    panel.OnResize:=@PanelResize;
+    DoPanelResize;
+
     IDEMessagesWindow.TabStop := False;
+    { // this code has been used to keep the cursor back to the source code
+      // whenever IDE is focused back, instead of focusing a compiler message
     for i := 0 to IDEMessagesWindow.ControlCount - 1 do
       if IDEMessagesWindow.Controls[i] is TWinControl then
         TWinControl(IDEMessagesWindow.Controls[i]).TabStop := False;
-    panel.Height := MsgWnd.DockSize.cy;
+      }
     Result:=True;
-  end else begin
+    MsgWnd.EverDocked:=True;
+  end else if MsgWnd.EverDocked then begin
     if Assigned(panel) then begin
       panel.visible := False;
       UpdateDockState(MsgWnd, panel);
     end;
     if Assigned(split) then split.visible := False;
     IDEMessagesWindow.Parent := nil;
-    with MsgWnd do begin
-      IDEMessagesWindow.BoundsRect := SafeRect(FloatRect,
-        Max(30, IDEMessagesWindow.ClientWidth), Max(30, IDEMessagesWindow.ClientHeight));
-      IDEMessagesWindow.BorderStyle := FloatBrd;
-    end;
+    IDEMessagesWindow.BoundsRect := SafeRect(MsgWnd.FloatRect,
+      Max(30, IDEMessagesWindow.ClientWidth), Max(30, IDEMessagesWindow.ClientHeight));
+    IDEMessagesWindow.BorderStyle := MsgWnd.FloatBrd;
     IDEMessagesWindow.TabStop := true;
     IDEMessagesWindow.Show;
-
-    {undocking is always succesfull}
     Result:=True;
-  end;
+  end else
+    Result:=true;
 end;
 
 constructor TManualDocker.Create;
@@ -199,14 +223,15 @@ end;
 procedure TManualDocker.AllocControls(AParent: TWinControl);
 begin
   FCurrentSrcWin := AParent;
-  panel := TPanel.Create(AParent);
-  panel.Parent := AParent;
+
+  panel := TPanel.Create(FCurrentSrcWin);
   panel.BorderStyle := bsNone;
+  panel.Align:=alBottom;
+  FCurrentSrcWin.InsertControl(panel);
 
   split := TSplitter.Create(AParent);
-  split.Parent := AParent;
-
-  RealignControls;
+  split.Align:=alBottom;
+  FCurrentSrcWin.InsertControl(split);
 end;
 
 procedure TManualDocker.DeallocControls;
@@ -215,18 +240,26 @@ begin
   panel:=nil;
 end;
 
-procedure TManualDocker.RealignControls;
+procedure TManualDocker.ReallocControls;
 begin
-  panel.Align := alClient;
-  split.Align := alClient;
-  panel.Align := alBottom;
-  split.Align := alBottom;
+
 end;
 
 procedure TManualDocker.UpdateDockState(var astate: TDockState; wnd: TWinControl);
 begin
   astate.DockSize.cx := wnd.ClientWidth;
   astate.DockSize.cy := wnd.ClientHeight;
+end;
+
+procedure TManualDocker.DoPanelResize;
+begin
+  IDEMessagesWindow.BoundsRect:=panel.ClientRect;
+end;
+
+procedure TManualDocker.PanelResize(Sender: TObject);
+begin
+  if not Assigned(panel) or not Assigned(IDEMessagesWindow) or not MsgWnd.Docked then Exit;
+  DoPanelResize;
 end;
 
 procedure TManualDocker.SourceWindowCreated(Sender: TObject);
@@ -304,6 +337,7 @@ procedure Register;
 begin
   docker := TManualDocker.Create;
   cmd := RegisterIDEMenuCommand(itmViewMainWindows, 'makeMessagesDocked', mnuDockMsgWindow, @docker.OnCmdClick, nil, nil, '');
+  cmd.Checked:=docker.MsgWnd.Docked;
   LazarusIDE.AddHandlerOnProjectOpened(@docker.OnProjectOpen, False);
 end;
 
