@@ -615,6 +615,7 @@ var
   locSym : TPasElement;
   ok : Boolean;
   nd : TDOMNode;
+  locDoRelease : Boolean;
 begin
   if not FDerivationNode.HasChildNodes then begin
     raise EXsdInvalidTypeDefinitionException.CreateFmt(SERR_InvalidTypeDef_AttributeNotFound,[FTypeName]);
@@ -658,15 +659,17 @@ begin
     i := MaxInt;
   end;
   s := Copy(s,1,Pred(i));
+  locDoRelease := False;
   locSym := FSymbols.FindElement(s);
   if not Assigned(locSym) then begin
-    locSym := TPasUnresolvedTypeRef(FSymbols.CreateElement(TPasUnresolvedTypeRef,s,Self.Module.InterfaceSection,visDefault,'',0));
-    Self.Module.InterfaceSection.Declarations.Add(locSym);
-    Self.Module.InterfaceSection.Types.Add(locSym);
+    locSym := TPasUnresolvedTypeRef(FSymbols.CreateElement(TPasUnresolvedTypeRef,s,nil,visDefault,'',0));
+    locDoRelease := True;
   end;
   if not locSym.InheritsFrom(TPasType) then
     raise EXsdInvalidTypeDefinitionException.CreateFmt(SERR_InvalidArrayItemType,[FTypeName]);
   Result := FSymbols.CreateArray(AInternalName,locSym as TPasType,s_item,s_item,asScoped);
+  if locDoRelease then
+    locSym.Release();
   if AHasInternalName then
     FSymbols.RegisterExternalAlias(Result,ATypeName);
 end;
@@ -813,9 +816,7 @@ begin
         locBaseTypeInternalName := ExtractIdentifier(locBaseTypeLocalName);
         if IsReservedKeyWord(locBaseTypeInternalName) then
           locBaseTypeInternalName := '_' + locBaseTypeInternalName ;
-        FBaseType := TPasUnresolvedTypeRef(FSymbols.CreateElement(TPasUnresolvedTypeRef,locBaseTypeInternalName,Self.Module.InterfaceSection,visDefault,'',0));
-        Self.Module.InterfaceSection.Declarations.Add(FBaseType);
-        Self.Module.InterfaceSection.Types.Add(FBaseType);
+        FBaseType := TPasUnresolvedTypeRef(FSymbols.CreateElement(TPasUnresolvedTypeRef,locBaseTypeInternalName,nil,visDefault,'',0));
         if not AnsiSameText(locBaseTypeInternalName,locBaseTypeLocalName) then
           FSymbols.RegisterExternalAlias(FBaseType,locBaseTypeLocalName);
       end;
@@ -1241,6 +1242,7 @@ begin
             classDef.AncestorType := FSymbols.FindElementInModule('TBaseComplexRemotable',FSymbols.FindModule('base_service_intf') as TPasModule) as TPasType;
           end;
         end;
+        //if not classDef.AncestorType.InheritsFrom(TPasUnresolvedTypeRef) then
         classDef.AncestorType.AddRef();
         if Assigned(eltCrs) or Assigned(eltAttCrs) then begin
           isArrayDef := False;
@@ -1792,6 +1794,8 @@ var
   intrName : string;
   hasIntrnName : Boolean;
   tmpElement : TPasElement;
+  locBaseType : TPasType;
+  locBaseTypeInternalName : string;
 begin  // todo : implement TSimpleTypeParser.ParseOtherContent
   if IsStrEmpty(FBaseName) then
     raise EXsdInvalidTypeDefinitionException.CreateFmt(SERR_BaseTypeNotSpecfifiedForSimpleType,[FTypeName]);
@@ -1808,8 +1812,21 @@ begin  // todo : implement TSimpleTypeParser.ParseOtherContent
   Result := TPasTypeAliasType(FSymbols.CreateElement(TPasTypeAliasType,intrName,Self.Module.InterfaceSection,visDefault,'',0));
   if ( intrName <> FTypeName ) then
     FSymbols.RegisterExternalAlias(Result,FTypeName);
-  TPasTypeAliasType(Result).DestType := FindElementNS(FBaseNameSpace,FBaseName,nvtExpandValue) as TPasType;
-  TPasTypeAliasType(Result).DestType.AddRef();
+  tmpElement := FindElementNS(FBaseNameSpace,FBaseName,nvtExpandValue);
+  if (tmpElement <> nil) then begin
+    if not tmpElement.InheritsFrom(TPasType) then
+      raise EXsdInvalidTypeDefinitionException.CreateFmt(SERR_ExpectedTypeDefinition,[FBaseName]);
+    locBaseType := tmpElement as TPasType;
+    locBaseType.AddRef();
+  end else begin
+    locBaseTypeInternalName := ExtractIdentifier(FBaseName);
+    if IsReservedKeyWord(locBaseTypeInternalName) then
+      locBaseTypeInternalName := '_' + locBaseTypeInternalName;
+    locBaseType := TPasUnresolvedTypeRef(FSymbols.CreateElement(TPasUnresolvedTypeRef,locBaseTypeInternalName,nil,visDefault,'',0));
+    if not AnsiSameText(locBaseTypeInternalName,FBaseName) then
+      FSymbols.RegisterExternalAlias(locBaseType,FBaseName);
+  end;
+  TPasTypeAliasType(Result).DestType := locBaseType;
 end;
 
 class function TSimpleTypeParser.GetParserSupportedStyle(): string;

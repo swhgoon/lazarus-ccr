@@ -151,7 +151,7 @@ type
     const ANameSpace    : string;
           ADocument : TDOMDocument;
     const APreferedList : TStrings
-  ):string;
+  ):string;overload;
 
   function GetXsdTypeHandlerRegistry():IXsdTypeHandlerRegistry;
   function CreateElement(const ANodeName : DOMString; AParent : TDOMNode; ADoc : TDOMDocument):TDOMElement;{$IFDEF USE_INLINE}inline;{$ENDIF}
@@ -365,7 +365,7 @@ function FindAttributeByValueInNode(
   const AStartIndex      : Integer;
   const AStartingWith    : string;
   var   AFoundPosition   : Integer
-):boolean;
+):boolean;overload;
 var
   i,c : Integer;
   b : Boolean;
@@ -396,7 +396,7 @@ function FindAttributeByValueInNode(
   out   AResAtt          : string;
   const AStartIndex      : Integer = 0;
   const AStartingWith    : string = ''
-):boolean;
+):boolean;overload;
 var
   i,c : Integer;
   b : Boolean;
@@ -411,7 +411,7 @@ function GetNameSpaceShortName(
   const ANameSpace    : string;
         ADocument : TDOMDocument;
   const APreferedList : TStrings
-) : string;
+) : string;overload;
 var
   k : Integer;
 begin
@@ -435,7 +435,7 @@ function GetNameSpaceShortName(
   const ANameSpace    : string;
         ADocument : TDOMElement;
   const APreferedList : TStrings
-):string;
+):string;overload;
 var
   k : Integer;
 begin
