@@ -22,6 +22,7 @@ type
     JLabeledIntegerEdit1: TJLabeledIntegerEdit;
     JLabeledIntegerEdit2: TJLabeledIntegerEdit;
     Label1: TLabel;
+    procedure FormCreate(Sender: TObject);
   private
     { private declarations }
   public
@@ -34,6 +35,13 @@ var
 implementation
 
 {$R *.lfm}
+
+{ TForm1 }
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+
+end;
 
 end.
 

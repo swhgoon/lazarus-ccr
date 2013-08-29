@@ -1,18 +1,18 @@
 object Form1: TForm1
-  Left = 576
-  Height = 332
-  Top = 272
-  Width = 366
+  Left = 379
+  Height = 340
+  Top = 214
+  Width = 411
   Caption = 'Form1'
-  ClientHeight = 332
-  ClientWidth = 366
+  ClientHeight = 340
+  ClientWidth = 411
   OnCreate = FormCreate
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object Label1: TLabel
     Left = 13
-    Height = 18
+    Height = 17
     Top = 16
-    Width = 150
+    Width = 149
     Caption = 'Testing jujibo db controls'
     ParentColor = False
   end
@@ -35,9 +35,9 @@ object Form1: TForm1
     TabOrder = 4
   end
   object BitBtn1: TBitBtn
-    Left = 273
+    Left = 318
     Height = 30
-    Top = 289
+    Top = 297
     Width = 77
     Anchors = [akRight, akBottom]
     Caption = '&Cerrar'
@@ -46,7 +46,7 @@ object Form1: TForm1
     TabOrder = 5
   end
   object JDBLabeledCurrencyEdit1: TJDBLabeledCurrencyEdit
-    Left = 272
+    Left = 300
     Height = 27
     Top = 173
     Width = 80
@@ -59,9 +59,9 @@ object Form1: TForm1
     EditLabel.AnchorSideRight.Control = JDBLabeledCurrencyEdit1
     EditLabel.AnchorSideRight.Side = asrBottom
     EditLabel.AnchorSideBottom.Control = JDBLabeledCurrencyEdit1
-    EditLabel.Left = 272
-    EditLabel.Height = 18
-    EditLabel.Top = 152
+    EditLabel.Left = 300
+    EditLabel.Height = 17
+    EditLabel.Top = 153
     EditLabel.Width = 80
     EditLabel.Caption = 'Total'
     EditLabel.ParentColor = False
@@ -80,8 +80,8 @@ object Form1: TForm1
     EditLabel.AnchorSideRight.Side = asrBottom
     EditLabel.AnchorSideBottom.Control = JDBLabeledIntegerEdit1
     EditLabel.Left = 21
-    EditLabel.Height = 18
-    EditLabel.Top = 153
+    EditLabel.Height = 17
+    EditLabel.Top = 154
     EditLabel.Width = 80
     EditLabel.Caption = 'Id'
     EditLabel.ParentColor = False
@@ -94,20 +94,21 @@ object Form1: TForm1
     Width = 80
     DataField = 'DATE'
     DataSource = Datasource1
+    ButtonWidth = 23
     EditLabel.AnchorSideLeft.Control = JDBLabeledDateEdit1
     EditLabel.AnchorSideRight.Control = JDBLabeledDateEdit1
     EditLabel.AnchorSideRight.Side = asrBottom
     EditLabel.AnchorSideBottom.Control = JDBLabeledDateEdit1
     EditLabel.Left = 106
-    EditLabel.Height = 18
-    EditLabel.Top = 152
+    EditLabel.Height = 17
+    EditLabel.Top = 153
     EditLabel.Width = 80
     EditLabel.Caption = 'Date'
     EditLabel.ParentColor = False
     TabOrder = 1
   end
   object JDBLabeledIntegerEdit2: TJDBLabeledIntegerEdit
-    Left = 188
+    Left = 216
     Height = 27
     Top = 173
     Width = 80
@@ -118,9 +119,9 @@ object Form1: TForm1
     EditLabel.AnchorSideRight.Control = JDBLabeledIntegerEdit2
     EditLabel.AnchorSideRight.Side = asrBottom
     EditLabel.AnchorSideBottom.Control = JDBLabeledIntegerEdit2
-    EditLabel.Left = 188
-    EditLabel.Height = 18
-    EditLabel.Top = 152
+    EditLabel.Left = 216
+    EditLabel.Height = 17
+    EditLabel.Top = 153
     EditLabel.Width = 80
     EditLabel.Caption = 'Id2'
     EditLabel.ParentColor = False
