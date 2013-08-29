@@ -1,10 +1,12 @@
 JUJIBOUTILS
 -----------
 
-Note: Lazarus Trunk required
+Note: Lazarus > 1.0 required
 
-Version pre-1.1
+
+Version 2.0
 --------------------------------------------------
+2013-08-29 Released jujiboutils 2.0
 2013-08-29 Added:  TJLabel + TJButton example
 2013-08-28 Fixed:  A few bugs in design/runtime mode
 2013-08-25 Added:  New components: TJLabel, TJDBLabel, TJButton.

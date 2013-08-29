@@ -20,7 +20,7 @@
 different kinds of data, floats, dates, etc. while working with 
 db and non db controls."/>
     <License Value="LGPL with link exception. Read files license-jujiboutils and COPYING.LGPL"/>
-    <Version Major="1"/>
+    <Version Major="2"/>
     <Files Count="23">
       <Item1>
         <Filename Value="src/jcontrolutils.pas"/>
