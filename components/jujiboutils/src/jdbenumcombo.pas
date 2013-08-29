@@ -116,10 +116,13 @@ procedure Register;
 
 implementation
 
+uses
+  jdbutils;
+
 procedure Register;
 begin
   {$I jdbenumcombo_icon.lrs}
-  RegisterComponents('Data Controls', [TJDbEnumCombo]);
+  RegisterComponents('JujiboDB', [TJDbEnumCombo]);
 end;
 
 { TJDbEnumCombo }
@@ -173,7 +176,7 @@ begin
   if Assigned(DataLinkField) then
     ItemIndex := DataLinkField.AsInteger
   else
-    ItemIndex:= -1;
+    ItemIndex := -1;
 end;
 
 procedure TJDbEnumCombo.Notification(AComponent: TComponent; Operation: TOperation);
@@ -188,6 +191,8 @@ end;
 
 procedure TJDbEnumCombo.Change;
 begin
+  if not FieldIsEditable(Field) or ReadOnly then
+    exit;
   FDataLink.Edit;
   FDataLink.Modified;
   FDataLink.UpdateRecord;
@@ -196,12 +201,15 @@ end;
 
 procedure TJDbEnumCombo.DropDown;
 begin
-  FDataLink.Edit;
+  if not FieldIsEditable(Field) or ReadOnly then
+    abort;
   inherited DropDown;
 end;
 
 procedure TJDbEnumCombo.UpdateData(Sender: TObject);
 begin
+  if not FieldIsEditable(Field) or ReadOnly then
+    exit;
   FDataLink.Field.AsInteger := ItemIndex;
 end;
 
@@ -213,7 +221,7 @@ begin
   FDataLink.Control := Self;
   FDataLink.OnDataChange := @DataChange;
   FDataLink.OnUpdateData := @UpdateData;
-  Style:= csDropDownList;
+  Style := csDropDownList;
 end;
 
 destructor TJDbEnumCombo.Destroy;

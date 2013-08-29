@@ -134,12 +134,12 @@ procedure Register;
 implementation
 
 uses
-  Math;
+  Math, jdbutils;
 
 procedure Register;
 begin
   {$I jdblabeledfloatedit_icon.lrs}
-  RegisterComponents('Data Controls', [TJDBLabeledFloatEdit]);
+  RegisterComponents('JujiboDB', [TJDBLabeledFloatEdit]);
 end;
 
 
@@ -172,29 +172,29 @@ procedure TJDBLabeledFloatEdit.UpdateData(Sender: TObject);
 var
   theValue: double;
 begin
-    if FDataLink.Field <> nil then
+  if FDataLink.Field <> nil then
+  begin
+    if IsValidFloat(Text) then
     begin
-      if IsValidFloat(Text) then
-      begin
-        theValue := StrToFloat(Text);
-        if fDecimales > 0 then
-          theValue := ScaleTo(theValue, fDecimales);
-        Text := FloatToStr(theValue);
-        FDataLink.Field.Value := theValue;
-      end
-      else
-      begin
-        if FDataLink.Field <> nil then
-        begin
-          ShowMessage(Format(SInvalidNumber, [Caption]));
-          Caption := FloatToStr(FDataLink.Field.AsFloat);
-          SelectAll;
-          SetFocus;
-        end;
-      end;
+      theValue := StrToFloat(Text);
+      if fDecimales > 0 then
+        theValue := ScaleTo(theValue, fDecimales);
+      Text := FloatToStr(theValue);
+      FDataLink.Field.Value := theValue;
     end
     else
-      Text := '';
+    begin
+      if FDataLink.Field <> nil then
+      begin
+        ShowMessage(Format(SInvalidNumber, [Caption]));
+        Caption := FloatToStr(FDataLink.Field.AsFloat);
+        SelectAll;
+        SetFocus;
+      end;
+    end;
+  end
+  else
+    Text := '';
 end;
 
 procedure TJDBLabeledFloatEdit.FocusRequest(Sender: TObject);
@@ -338,6 +338,8 @@ end;
 
 procedure TJDBLabeledFloatEdit.KeyPress(var Key: char);
 begin
+  if not FieldIsEditable(Field) or not FDatalink.Edit then
+    Key := #0;
   if (Key in ['.', ',']) then
     Key := Decimalseparator;
   if (key = DecimalSeparator) and (Pos(key, Text) > 0) then
@@ -351,8 +353,10 @@ end;
 
 procedure TJDBLabeledFloatEdit.DoEnter;
 begin
+  if not FieldIsEditable(Field) or IsReadOnly then
+    exit;
   if FDataLink.Field <> nil then
-    Caption :=  FloatToStr(FDataLink.Field.AsFloat);  //FDataLink.Field.AsString;
+    Caption := FloatToStr(FDataLink.Field.AsFloat);  //FDataLink.Field.AsString;
   inherited DoEnter;
 end;
 
@@ -380,6 +384,8 @@ end;
 procedure TJDBLabeledFloatEdit.EditingDone;
 begin
   inherited EditingDone;
+  if not FieldIsEditable(Field) or IsReadOnly then
+    exit;
   if DataSource.State in [dsEdit, dsInsert] then
     UpdateData(self)
   else

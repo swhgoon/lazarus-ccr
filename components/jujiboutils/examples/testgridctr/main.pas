@@ -5,19 +5,18 @@ unit main;
 interface
 
 uses
-  Classes, SysUtils, db, BufDataset, FileUtil, Forms, Controls, Graphics,
-  Dialogs, DbCtrls, DBGrids, StdCtrls, JDBGridControl;
+  Classes, SysUtils, memds, db, FileUtil, Forms, Controls, Graphics, Dialogs,
+  DbCtrls, DBGrids, JDBGridControl;
 
 type
 
   { TForm1 }
 
   TForm1 = class(TForm)
-    BufDataset1: TBufDataset;
     Datasource1: TDatasource;
     DBNavigator1: TDBNavigator;
     JDBGridControl1: TJDBGridControl;
-    Label1: TLabel;
+    MemDataset1: TMemDataset;
     procedure FormCreate(Sender: TObject);
   private
     { private declarations }
@@ -38,24 +37,16 @@ procedure TForm1.FormCreate(Sender: TObject);
 var
   i: integer;
 begin
-  // Create BufDataset
-  with BufDataset1.FieldDefs do
-  begin
-    Add('ID', ftInteger, 0, False);
-    Add('DATE', ftDate, 0, False);
-    Add('QUANTITY', ftCurrency, 0, False);
-  end;
-  BufDataset1.CreateDataset;
-  // populate
+  // populate the memDataset
   for i := 1 to 10 do
   begin
-    BufDataset1.Append;
-    BufDataset1.FieldByName('ID').AsInteger := i;
-    BufDataset1.FieldByName('DATE').AsDateTime := Now;
-    BufDataset1.FieldByName('QUANTITY').AsFloat := i * i * i;
-    BufDataset1.Post;
+    MemDataset1.Append;
+    MemDataset1.FieldByName('ID').AsInteger := i;
+    MemDataset1.FieldByName('DATE').AsDateTime := Now;
+    MemDataset1.FieldByName('QUANTITY').AsFloat := i * i * i;
+    MemDataset1.Post;
   end;
-  BufDataset1.First;
+  MemDataset1.First;
 end;
 
 end.

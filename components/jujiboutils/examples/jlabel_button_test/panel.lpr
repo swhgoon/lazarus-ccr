@@ -1,13 +1,13 @@
-program testgridctr;
+program panel;
 
 {$mode objfpc}{$H+}
 
 uses
   {$IFDEF UNIX}{$IFDEF UseCThreads}
   cthreads,
-  {$ENDIF}clocale,{$ENDIF}
+  {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, memdslaz, main
+  Forms, principal
   { you can add units after this };
 
 {$R *.res}

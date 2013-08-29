@@ -127,7 +127,7 @@ implementation
 procedure Register;
 begin
   {$I jlabeleddateedit_icon.lrs}
-  RegisterComponents('Additional', [TJLabeledDateEdit]);
+  RegisterComponents('Jujibo', [TJLabeledDateEdit]);
 end;
 
 { TJLabeledDateEdit }
@@ -185,6 +185,8 @@ end;
 procedure TJLabeledDateEdit.DoEnter;
 begin
   inherited DoEnter;
+  if ReadOnly then
+    exit;
   if theValue <> 0 then
     Text := FormatDateTime(DisplayFormat, theValue)
   else
@@ -195,6 +197,8 @@ end;
 procedure TJLabeledDateEdit.DoExit;
 begin
   inherited DoExit;
+  if ReadOnly then
+    exit;
   Text := NormalizeDate(Text, theValue);
   if Length(Text) = 0 then
     theValue := 0

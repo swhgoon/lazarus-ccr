@@ -117,7 +117,7 @@ uses
 procedure Register;
 begin
   {$I jlabeledcurrencyedit_icon.lrs}
-  RegisterComponents('Additional', [TJLabeledCurrencyEdit]);
+  RegisterComponents('Jujibo', [TJLabeledCurrencyEdit]);
 end;
 
 { TJLabeledCurrencyEdit }
@@ -180,6 +180,8 @@ end;
 procedure TJLabeledCurrencyEdit.DoEnter;
 begin
   inherited DoEnter;
+  if ReadOnly then
+    exit;
   Text := FloatToStr(theValue);
   SelectAll;
 end;
@@ -187,6 +189,8 @@ end;
 procedure TJLabeledCurrencyEdit.DoExit;
 begin
   inherited DoExit;
+  if ReadOnly then
+    exit;
   if IsValidFloat(Text) then
     theValue := StrToCurr(Text)
   else
@@ -227,4 +231,3 @@ begin
 end;
 
 end.
-

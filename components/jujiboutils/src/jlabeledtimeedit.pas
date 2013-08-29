@@ -108,7 +108,7 @@ implementation
 procedure Register;
 begin
   {$I jlabeledtimeedit_icon.lrs}
-  RegisterComponents('Additional', [TJLabeledTimeEdit]);
+  RegisterComponents('Jujibo', [TJLabeledTimeEdit]);
 end;
 
 
@@ -146,6 +146,8 @@ end;
 procedure TJLabeledTimeEdit.DoEnter;
 begin
   inherited DoEnter;
+  if ReadOnly then
+    exit;
   if not hasValue then
     Text := ''
   else
@@ -156,6 +158,8 @@ end;
 procedure TJLabeledTimeEdit.DoExit;
 begin
   inherited DoExit;
+  if ReadOnly then
+    exit;
   Text := NormalizeTime(Text, theValue);
   if Length(Text) = 0 then
   begin

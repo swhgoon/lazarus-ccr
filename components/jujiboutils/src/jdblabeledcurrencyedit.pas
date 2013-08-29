@@ -134,12 +134,12 @@ procedure Register;
 implementation
 
 uses
-  Math;
+  Math, jdbutils;
 
 procedure Register;
 begin
   {$I lcurrencydbicon.lrs}
-  RegisterComponents('Data Controls', [TJDBLabeledCurrencyEdit]);
+  RegisterComponents('JujiboDB', [TJDBLabeledCurrencyEdit]);
 end;
 
 { TJDBLabeledCurrencyEdit }
@@ -339,6 +339,8 @@ end;
 
 procedure TJDBLabeledCurrencyEdit.KeyPress(var Key: char);
 begin
+  if not FieldIsEditable(Field) or not FDatalink.Edit then
+      Key := #0;
   if (Key in ['.', ',']) then
     Key := Decimalseparator;
   if (key = DecimalSeparator) and (Pos(key, Text) > 0) then
@@ -353,6 +355,8 @@ end;
 
 procedure TJDBLabeledCurrencyEdit.DoEnter;
 begin
+  if not FieldIsEditable(Field) or IsReadOnly then
+     exit;
   if FDataLink.Field <> nil then
     Caption := FDataLink.Field.AsString;
   inherited DoEnter;
@@ -382,6 +386,8 @@ end;
 procedure TJDBLabeledCurrencyEdit.EditingDone;
 begin
   inherited EditingDone;
+  if not FieldIsEditable(Field) or IsReadOnly then
+     exit;
   if DataSource.State in [dsEdit, dsInsert] then
     UpdateData(self)
   else

@@ -1,19 +1,17 @@
 object Form1: TForm1
   Left = 365
-  Height = 184
-  Hint = 'Try Alt+Down arrow key to show the calendar'
-  Top = 261
-  Width = 445
+  Height = 185
+  Top = 260
+  Width = 419
   Caption = 'Example'
-  ClientHeight = 184
-  ClientWidth = 445
-  ShowHint = True
-  LCLVersion = '1.1'
+  ClientHeight = 185
+  ClientWidth = 419
+  LCLVersion = '0.9.31'
   object Label1: TLabel
     Left = 8
-    Height = 17
+    Height = 18
     Top = 8
-    Width = 252
+    Width = 253
     Caption = 'Testing non DB-Aware Input Controls'
     Font.Height = 14
     Font.Style = [fsBold]
@@ -24,10 +22,10 @@ object Form1: TForm1
     Left = 24
     Height = 82
     Top = 40
-    Width = 400
+    Width = 375
     Caption = 'Labeled controls'
     ClientHeight = 63
-    ClientWidth = 396
+    ClientWidth = 371
     TabOrder = 0
     object JLabeledIntegerEdit1: TJLabeledIntegerEdit
       Left = 14
@@ -41,8 +39,8 @@ object Form1: TForm1
       EditLabel.AnchorSideRight.Side = asrBottom
       EditLabel.AnchorSideBottom.Control = JLabeledIntegerEdit1
       EditLabel.Left = 14
-      EditLabel.Height = 17
-      EditLabel.Top = 3
+      EditLabel.Height = 18
+      EditLabel.Top = 2
       EditLabel.Width = 80
       EditLabel.Caption = 'Integer'
       EditLabel.ParentColor = False
@@ -61,8 +59,8 @@ object Form1: TForm1
       EditLabel.AnchorSideRight.Side = asrBottom
       EditLabel.AnchorSideBottom.Control = JLabeledCurrencyEdit1
       EditLabel.Left = 102
-      EditLabel.Height = 17
-      EditLabel.Top = 3
+      EditLabel.Height = 18
+      EditLabel.Top = 2
       EditLabel.Width = 80
       EditLabel.Caption = 'Currency'
       EditLabel.ParentColor = False
@@ -71,28 +69,26 @@ object Form1: TForm1
     object JLabeledDateEdit1: TJLabeledDateEdit
       Left = 190
       Height = 27
-      Hint = 'Try Alt+Down Arrow key to show the calendar'
       Top = 22
       Width = 80
       DisplayFormat = 'dd/mm/yy'
       Value = 0
-      ButtonWidth = 23
       EditLabel.AnchorSideLeft.Control = JLabeledDateEdit1
       EditLabel.AnchorSideRight.Control = JLabeledDateEdit1
       EditLabel.AnchorSideRight.Side = asrBottom
       EditLabel.AnchorSideBottom.Control = JLabeledDateEdit1
       EditLabel.Left = 190
-      EditLabel.Height = 17
-      EditLabel.Top = 2
+      EditLabel.Height = 18
+      EditLabel.Top = 1
       EditLabel.Width = 80
       EditLabel.Caption = 'Date'
       EditLabel.ParentColor = False
       TabOrder = 2
     end
     object JLabeledFloatEdit1: TJLabeledFloatEdit
-      Left = 298
+      Left = 280
       Height = 27
-      Top = 22
+      Top = 23
       Width = 80
       DisplayFormat = '#,0.00'
       Decimals = 2
@@ -101,8 +97,8 @@ object Form1: TForm1
       EditLabel.AnchorSideRight.Control = JLabeledFloatEdit1
       EditLabel.AnchorSideRight.Side = asrBottom
       EditLabel.AnchorSideBottom.Control = JLabeledFloatEdit1
-      EditLabel.Left = 298
-      EditLabel.Height = 17
+      EditLabel.Left = 280
+      EditLabel.Height = 18
       EditLabel.Top = 2
       EditLabel.Width = 80
       EditLabel.Caption = 'Float'
@@ -111,9 +107,9 @@ object Form1: TForm1
     end
   end
   object BitBtn1: TBitBtn
-    Left = 334
+    Left = 308
     Height = 30
-    Top = 138
+    Top = 139
     Width = 91
     Anchors = [akRight, akBottom]
     Caption = '&Cerrar'

@@ -5,6 +5,9 @@ Note: Lazarus Trunk required
 
 Version pre-1.1
 --------------------------------------------------
+2013-08-29 Added:  TJLabel + TJButton example
+2013-08-28 Fixed:  A few bugs in design/runtime mode
+2013-08-25 Added:  New components: TJLabel, TJDBLabel, TJButton.
 2013-08-18 Added:  Calendar to Date/Date Time components and grid controls. Bug fixes
 2013-06-17 Added:  TJDBImageBlob. Display raw images from blob fields (read only)
 2013-04-29 Fixed:  TJDBGridControl Focus issues

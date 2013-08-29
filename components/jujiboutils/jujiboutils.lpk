@@ -21,7 +21,7 @@ different kinds of data, floats, dates, etc. while working with
 db and non db controls."/>
     <License Value="LGPL with link exception. Read files license-jujiboutils and COPYING.LGPL"/>
     <Version Major="1"/>
-    <Files Count="19">
+    <Files Count="23">
       <Item1>
         <Filename Value="src/jcontrolutils.pas"/>
         <UnitName Value="jcontrolutils"/>
@@ -114,6 +114,25 @@ db and non db controls."/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="JDBImageBlob"/>
       </Item19>
+      <Item20>
+        <Filename Value="src/jlabel.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="JLabel"/>
+      </Item20>
+      <Item21>
+        <Filename Value="src/jdblabel.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="JDbLabel"/>
+      </Item21>
+      <Item22>
+        <Filename Value="src/jbutton.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="JButton"/>
+      </Item22>
+      <Item23>
+        <Filename Value="src/jdbutils.pas"/>
+        <UnitName Value="jdbutils"/>
+      </Item23>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

@@ -112,7 +112,7 @@ implementation
 procedure Register;
 begin
   {$I jlabeledintegeredit_icon.lrs}
-  RegisterComponents('Additional', [TJLabeledIntegerEdit]);
+  RegisterComponents('Jujibo', [TJLabeledIntegerEdit]);
 end;
 
 { TJLabeledIntegerEdit }
@@ -160,6 +160,8 @@ end;
 procedure TJLabeledIntegerEdit.DoEnter;
 begin
   inherited DoEnter;
+  if ReadOnly then
+    exit;
   Text := IntToStr(theValue);
   SelectAll;
 end;
@@ -167,6 +169,8 @@ end;
 procedure TJLabeledIntegerEdit.DoExit;
 begin
   inherited DoExit;
+  if ReadOnly then
+    exit;
   if IsValidInteger(Text) then
     theValue := StrToInt(Text)
   else

@@ -93,7 +93,7 @@ implementation
 procedure Register;
 begin
   {$I jdbgridcontrol_icon.lrs}
-  RegisterComponents('Data Controls', [TJDBGridControl]);
+  RegisterComponents('JujiboDB', [TJDBGridControl]);
 end;
 
 function TJDBColumn.getDecimals: integer;

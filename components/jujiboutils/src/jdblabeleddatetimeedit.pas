@@ -154,12 +154,12 @@ procedure Register;
 implementation
 
 uses
-  jcontrolutils, dateutils;
+  jcontrolutils, dateutils, jdbutils;
 
 procedure Register;
 begin
   {$I jdblabeleddatetimeedit_icon.lrs}
-  RegisterComponents('Data Controls', [TJDBLabeledDateTimeEdit]);
+  RegisterComponents('JujiboDB', [TJDBLabeledDateTimeEdit]);
 end;
 
 function TJDBLabeledDateTimeEdit.GetButtonWidth: integer;
@@ -443,18 +443,19 @@ end;
 
 procedure TJDBLabeledDateTimeEdit.KeyPress(var Key: char);
 begin
+  if not FieldIsEditable(Field) or not FDatalink.Edit then
+    Key := #0;
   if (not Assigned(FDataLink.Field)) or IsReadOnly then
     key := #0;
   if not (Key in ['0'..'9', #8, #9, '.', '-', '/', ',', ':', ' ']) then
-    Key := #0
-  else
-  if not IsReadOnly then
-    FDatalink.Edit;
+    Key := #0;
   inherited KeyPress(Key);
 end;
 
 procedure TJDBLabeledDateTimeEdit.DoEnter;
 begin
+  if not FieldIsEditable(Field) or IsReadOnly then
+    exit;
   if FDataLink.Field <> nil then
     Caption := EditText;
   inherited DoEnter;
@@ -493,6 +494,8 @@ end;
 procedure TJDBLabeledDateTimeEdit.EditingDone;
 begin
   inherited EditingDone;
+  if not FieldIsEditable(Field) or IsReadOnly then
+    exit;
   if (not Assigned(FDataLink.Field)) or IsReadOnly then
     exit;
   if DataSource.State in [dsEdit, dsInsert] then

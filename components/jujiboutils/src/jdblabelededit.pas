@@ -121,10 +121,13 @@ procedure Register;
 
 implementation
 
+uses
+  jdbutils;
+
 procedure Register;
 begin
   {$I jdblabelededit_icon.lrs}
-  RegisterComponents('Data Controls', [TJDBLabeledEdit]);
+  RegisterComponents('JujiboDB', [TJDBLabeledEdit]);
 end;
 
 { TJDBLabeledEdit }
@@ -240,14 +243,15 @@ end;
 
 procedure TJDBLabeledEdit.KeyPress(var Key: char);
 begin
-  inherited KeyPress(Key);
-  if not IsReadOnly then
-    FDatalink.Edit;
+  if not FieldIsEditable(Field) or not FDatalink.Edit then
+    Key := #0;
   inherited KeyPress(Key);
 end;
 
 procedure TJDBLabeledEdit.DoEnter;
 begin
+  if not FieldIsEditable(Field) or IsReadOnly then
+    exit;
   if FDataLink.Field <> nil then
     Caption := FDataLink.Field.AsString;
   inherited DoEnter;
@@ -285,6 +289,8 @@ end;
 procedure TJDBLabeledEdit.EditingDone;
 begin
   inherited EditingDone;
+  if not FieldIsEditable(Field) or IsReadOnly then
+    exit;
   if DataSource.State in [dsEdit, dsInsert] then
     UpdateData(self);
 end;

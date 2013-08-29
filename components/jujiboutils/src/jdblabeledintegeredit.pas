@@ -129,10 +129,13 @@ procedure Register;
 
 implementation
 
+uses
+  jdbutils;
+
 procedure Register;
 begin
   {$I lintegerdbicon.lrs}
-  RegisterComponents('Data Controls', [TJDBLabeledIntegerEdit]);
+  RegisterComponents('JujiboDB', [TJDBLabeledIntegerEdit]);
 end;
 
 { TJDBLabeledIntegerEdit }
@@ -153,22 +156,22 @@ end;
 
 procedure TJDBLabeledIntegerEdit.UpdateData(Sender: TObject);
 begin
-    if FDataLink.Field <> nil then
+  if FDataLink.Field <> nil then
+  begin
+    if IsValidInteger(Caption) then
     begin
-      if IsValidInteger(Caption) then
-      begin
-        FDataLink.Field.Text := Text;
-      end
-      else
-      begin
-        ShowMessage(Format(SInvalidNumber, [Caption]));
-        Caption := FDataLink.Field.AsString;
-        SelectAll;
-        SetFocus;
-      end;
+      FDataLink.Field.Text := Text;
     end
     else
-      Text := '';
+    begin
+      ShowMessage(Format(SInvalidNumber, [Caption]));
+      Caption := FDataLink.Field.AsString;
+      SelectAll;
+      SetFocus;
+    end;
+  end
+  else
+    Text := '';
 end;
 
 procedure TJDBLabeledIntegerEdit.FocusRequest(Sender: TObject);
@@ -306,16 +309,17 @@ end;
 
 procedure TJDBLabeledIntegerEdit.KeyPress(var Key: char);
 begin
+  if not FieldIsEditable(Field) or not FDatalink.Edit then
+    Key := #0;
   if not (Key in ['0'..'9', #8, #9, '-']) then
-    Key := #0
-  else
-  if not IsReadOnly then
-    FDatalink.Edit;
+    Key := #0;
   inherited KeyPress(Key);
 end;
 
 procedure TJDBLabeledIntegerEdit.DoEnter;
 begin
+  if not FieldIsEditable(Field) or IsReadOnly then
+    exit;
   if FDataLink.Field <> nil then
     Caption := FDataLink.Field.AsString;
   inherited DoEnter;
@@ -342,6 +346,8 @@ end;
 procedure TJDBLabeledIntegerEdit.EditingDone;
 begin
   inherited EditingDone;
+  if not FieldIsEditable(Field) or IsReadOnly then
+    exit;
   if DataSource.State in [dsEdit, dsInsert] then
     UpdateData(self)
   else

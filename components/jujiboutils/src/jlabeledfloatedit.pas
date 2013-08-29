@@ -119,7 +119,7 @@ uses
 procedure Register;
 begin
   {$I jlabeledfloatedit_icon.lrs}
-  RegisterComponents('Additional', [TJLabeledFloatEdit]);
+  RegisterComponents('Jujibo', [TJLabeledFloatEdit]);
 end;
 
 function TJLabeledFloatEdit.getDecimals: integer;
@@ -139,7 +139,7 @@ end;
 
 function TJLabeledFloatEdit.getCurrentValue: double;
 begin
-  Result:= StrToFloatDef(Text, Value);
+  Result := StrToFloatDef(Text, Value);
 end;
 
 procedure TJLabeledFloatEdit.formatInput;
@@ -185,6 +185,8 @@ end;
 procedure TJLabeledFloatEdit.DoEnter;
 begin
   inherited DoEnter;
+  if ReadOnly then
+    exit;
   Text := FloatToStr(theValue);
   SelectAll;
 end;
@@ -192,6 +194,8 @@ end;
 procedure TJLabeledFloatEdit.DoExit;
 begin
   inherited DoExit;
+  if ReadOnly then
+    exit;
   if IsValidFloat(Text) then
     theValue := StrToCurr(Text)
   else
@@ -230,4 +234,3 @@ begin
 end;
 
 end.
-

@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, LResources, Controls, ExtCtrls, DB, DBCtrls, LMessages, LCLType, Dialogs,
-  SysUtils, jcontrolutils, jinputconsts;
+  SysUtils, jcontrolutils, jinputconsts, jdbutils;
 
 type
   TJDBLabeledTimeEdit = class(TCustomLabeledEdit)
@@ -109,7 +109,7 @@ implementation
 procedure Register;
 begin
   {$I jdblabeledtimeedit_icon.lrs}
-  RegisterComponents('Data Controls', [TJDBLabeledTimeEdit]);
+  RegisterComponents('JujiboDB', [TJDBLabeledTimeEdit]);
 end;
 
 procedure TJDBLabeledTimeEdit.DataChange(Sender: TObject);
@@ -279,16 +279,17 @@ end;
 
 procedure TJDBLabeledTimeEdit.KeyPress(var Key: char);
 begin
+  if not FieldIsEditable(Field) or not FDatalink.Edit then
+    Key := #0;
   if not (Key in ['0'..'9', #8, #9, ':']) then
-    Key := #0
-  else
-  if not IsReadOnly then
-    FDatalink.Edit;
+    Key := #0;
   inherited KeyPress(Key);
 end;
 
 procedure TJDBLabeledTimeEdit.DoEnter;
 begin
+  if not FieldIsEditable(Field) or IsReadOnly then
+    exit;
   if FDataLink.Field <> nil then
     Caption := FDataLink.Field.AsString;
   inherited DoEnter;
@@ -317,6 +318,8 @@ end;
 procedure TJDBLabeledTimeEdit.EditingDone;
 begin
   inherited EditingDone;
+  if not FieldIsEditable(Field) or IsReadOnly then
+    exit;
   if DataSource.State in [dsEdit, dsInsert] then
     UpdateData(self)
   else

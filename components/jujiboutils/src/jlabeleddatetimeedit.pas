@@ -134,7 +134,7 @@ uses
 procedure Register;
 begin
   {$I jlabeleddatetimeedit_icon.lrs}
-  RegisterComponents('Additional', [TJLabeledDateTimeEdit]);
+  RegisterComponents('Jujibo', [TJLabeledDateTimeEdit]);
 end;
 
 function TJLabeledDateTimeEdit.GetButtonWidth: integer;
@@ -190,6 +190,8 @@ end;
 procedure TJLabeledDateTimeEdit.DoEnter;
 begin
   inherited DoEnter;
+  if ReadOnly then
+    exit;
   if theValue <> 0 then
     Text := FormatDateTime(DisplayFormat, theValue)
   else
@@ -202,6 +204,8 @@ var
   bufText: string;
 begin
   inherited DoExit;
+  if ReadOnly then
+    exit;
   bufText := Text;
   Text := NormalizeDateTime(Text, theValue);
   if (Length(bufText) > 0) and (Length(Text) = 0) then
