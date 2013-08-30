@@ -1,12 +1,13 @@
 object Form1: TForm1
   Left = 365
   Height = 184
+  Hint = 'Try Alt+Down arrow key to show the calendar'
   Top = 261
-  Width = 444
+  Width = 445
   Caption = 'Example'
   ClientHeight = 184
-  ClientWidth = 444
-  OnCreate = FormCreate
+  ClientWidth = 445
+  ShowHint = True
   LCLVersion = '1.1'
   object Label1: TLabel
     Left = 8
@@ -70,6 +71,7 @@ object Form1: TForm1
     object JLabeledDateEdit1: TJLabeledDateEdit
       Left = 190
       Height = 27
+      Hint = 'Try Alt+Down Arrow key to show the calendar'
       Top = 22
       Width = 80
       DisplayFormat = 'dd/mm/yy'
@@ -88,7 +90,7 @@ object Form1: TForm1
       TabOrder = 2
     end
     object JLabeledFloatEdit1: TJLabeledFloatEdit
-      Left = 302
+      Left = 298
       Height = 27
       Top = 22
       Width = 80
@@ -99,7 +101,7 @@ object Form1: TForm1
       EditLabel.AnchorSideRight.Control = JLabeledFloatEdit1
       EditLabel.AnchorSideRight.Side = asrBottom
       EditLabel.AnchorSideBottom.Control = JLabeledFloatEdit1
-      EditLabel.Left = 302
+      EditLabel.Left = 298
       EditLabel.Height = 17
       EditLabel.Top = 2
       EditLabel.Width = 80
@@ -109,7 +111,7 @@ object Form1: TForm1
     end
   end
   object BitBtn1: TBitBtn
-    Left = 333
+    Left = 334
     Height = 30
     Top = 138
     Width = 91

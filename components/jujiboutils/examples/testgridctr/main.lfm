@@ -7,7 +7,7 @@ object Form1: TForm1
   ClientHeight = 347
   ClientWidth = 419
   OnCreate = FormCreate
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object DBNavigator1: TDBNavigator
     Left = 8
     Height = 25
@@ -29,57 +29,54 @@ object Form1: TForm1
   object JDBGridControl1: TJDBGridControl
     Left = 8
     Height = 192
-    Top = 112
+    Top = 96
     Width = 392
+    AlternateColor = clMoneyGreen
+    AutoFillColumns = True
     Color = clWindow
     Columns = <    
       item
         Title.Caption = 'ID'
-        Title.PrefixOption = poNone
+        Width = 121
         FieldName = 'ID'
+        Decimals = 0
+        MaxLength = 0
       end    
       item
         Title.Caption = 'DATE'
-        Title.PrefixOption = poNone
+        Width = 121
         FieldName = 'DATE'
+        DisplayFormat = 'dd/mm/yyyy'
+        Decimals = 0
+        MaxLength = 0
       end    
       item
         Title.Caption = 'QUANTITY'
-        Title.PrefixOption = poNone
-        Width = 150
+        Width = 121
         FieldName = 'QUANTITY'
         DisplayFormat = '#,0.00000€'
+        Decimals = 0
+        MaxLength = 0
       end>
     DataSource = Datasource1
     TabOrder = 1
   end
-  object MemDataset1: TMemDataset
-    Active = True
-    FieldDefs = <    
-      item
-        Name = 'ID'
-        DataType = ftInteger
-        Precision = 0
-        Size = 0
-      end    
-      item
-        Name = 'DATE'
-        DataType = ftDate
-        Precision = 0
-        Size = 0
-      end    
-      item
-        Name = 'QUANTITY'
-        DataType = ftFloat
-        Precision = 0
-        Size = 0
-      end>
-    left = 232
-    top = 8
+  object Label1: TLabel
+    Left = 13
+    Height = 17
+    Top = 296
+    Width = 391
+    Caption = 'Press Alt+Down arrow key while editing date to show the calendar'
+    ParentColor = False
   end
   object Datasource1: TDatasource
-    DataSet = MemDataset1
+    DataSet = BufDataset1
     left = 324
+    top = 7
+  end
+  object BufDataset1: TBufDataset
+    FieldDefs = <>
+    left = 232
     top = 7
   end
 end
