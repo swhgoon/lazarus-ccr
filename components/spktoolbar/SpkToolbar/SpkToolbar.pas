@@ -954,7 +954,7 @@ begin
   SetBufferInvalid;
 
   if not(FInternalUpdating or FUpdating) then
-     Repaint;
+     invalidate;
 
   inherited;
 end;

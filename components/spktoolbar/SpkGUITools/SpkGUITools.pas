@@ -1,4 +1,4 @@
-﻿﻿unit SpkGUITools;
+﻿unit SpkGUITools;
 
 {$mode ObjFpc}
 {$H+}
