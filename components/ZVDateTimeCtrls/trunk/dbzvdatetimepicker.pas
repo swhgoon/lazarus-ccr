@@ -108,6 +108,7 @@ type
     property UseDefaultSeparators;
     property Cascade;
     property AutoButtonSize;
+    property AutoAdvance;
   //events:
     property OnChange;
     property OnCheckBoxChange;

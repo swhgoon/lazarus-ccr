@@ -45,7 +45,7 @@ uses
   {$ifdef unix}
   clocale, // needed to initialize default locale settings on Linux.
   {$endif}
-  Classes, SysUtils, LCLProc, Controls, LCLType, Graphics, Math, StdCtrls,
+  Classes, SysUtils, Controls, LCLType, Graphics, Math, StdCtrls,
   Buttons, ExtCtrls, Forms, Calendar, ComCtrls, Types, LMessages
   {$ifdef LCLGtk2}, LCLVersion{$endif}
   ;
@@ -113,6 +113,7 @@ type
 
   TCustomZVDateTimePicker = class(TCustomControl)
   private
+    FAutoAdvance: Boolean;
     FAutoButtonSize: Boolean;
     FCascade: Boolean;
     FCenturyFrom, FEffectiveCenturyFrom: Word;
@@ -221,6 +222,7 @@ type
     procedure AdjustEffectiveDateDisplayOrder;
     procedure SelectDateTextPart(const DateTextPart: TDateTextPart);
     procedure SelectTimeTextPart(const TimeTextPart: TTimeTextPart);
+    procedure MoveSelectionLR(const ToLeft: Boolean);
     procedure DestroyCalendarForm;
     procedure DropDownCalendarForm;
     procedure UpdateShowArrowButton(NewDateMode: TDTDateMode;
@@ -330,7 +332,7 @@ type
              read GetShowCheckBox write SetShowCheckBox default False;
     property Checked: Boolean read GetChecked write SetChecked default True;
     property ArrowShape: TArrowShape
-        read FArrowShape write SetArrowShape default asModernSmaller;
+             read FArrowShape write SetArrowShape default asModernSmaller;
     property Kind: TDateTimeKind
              read FKind write SetKind;
     property DateSeparator: String
@@ -347,6 +349,8 @@ type
     property Cascade: Boolean read FCascade write FCascade default False;
     property AutoButtonSize: Boolean
              read FAutoButtonSize write SetAutoButtonSize default False;
+    property AutoAdvance: Boolean
+             read FAutoAdvance write FAutoAdvance default False;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -409,6 +413,7 @@ type
     property UseDefaultSeparators;
     property Cascade;
     property AutoButtonSize;
+    property AutoAdvance;
 // events:
     property OnChange;
     property OnCheckBoxChange;
@@ -1349,9 +1354,8 @@ begin
       FUserChangedText := False;
       S := Trim(GetSelectedText);
       if FSelectedTextPart = 8 then begin
-        S := UTF8UpperCase(UTF8Copy(S, 1, 1));
         W := GetHour;
-        if S = 'A' then begin
+        if upCase(S[1]) = 'A' then begin
           if W >= 12 then
             Dec(W, 12);
         end else begin
@@ -1663,9 +1667,53 @@ begin
     Result.x := Result.y;
 end;
 
-procedure TCustomZVDateTimePicker.KeyDown(var Key: Word; Shift: TShiftState);
+{ MoveSelectionLR
+ -----------------
+  Moves selection to left or to right. If parameter ToLeft is true, then the
+  selection moves to left, otherwise to right. }
+procedure TCustomZVDateTimePicker.MoveSelectionLR(const ToLeft: Boolean);
 var
   M, L, N: Integer;
+begin
+  UpdateIfUserChangedText;
+
+  if FKind in [dtkDate, dtkDateTime] then
+    M := 1
+  else
+    M := 4;
+
+  if FKind in [dtkTime, dtkDateTime] then begin
+    L := Ord(FTimeDisplay) + 5;
+    if FTimeFormat = tf12 then
+      N := 8
+    else
+      N := L;
+  end else begin
+    N := 3;
+    L := 3;
+  end;
+
+  if ToLeft then begin
+    if FSelectedTextPart = M then
+      FSelectedTextPart := N
+    else if (FSelectedTextPart = N) and (L < N) then
+      FSelectedTextPart := L
+    else
+      Dec(FSelectedTextPart);
+  end else begin
+    if FSelectedTextPart = N then
+      FSelectedTextPart := M
+    else if (FSelectedTextPart = L) and (L < N) then
+      FSelectedTextPart := N
+    else
+      Inc(FSelectedTextPart);
+  end;
+
+  Invalidate;
+end;
+
+procedure TCustomZVDateTimePicker.KeyDown(var Key: Word; Shift: TShiftState);
+var
   K: Word;
 begin
   Inc(FUserChanging);
@@ -1685,40 +1733,7 @@ begin
           begin
             K := Key;
             Key := 0;
-            UpdateIfUserChangedText;
-            if FKind in [dtkDate, dtkDateTime] then
-              M := 1
-            else
-              M := 4;
-
-            if FKind in [dtkTime, dtkDateTime] then begin
-              L := Ord(FTimeDisplay) + 5;
-              if FTimeFormat = tf12 then
-                N := 8
-              else
-                N := L;
-            end else begin
-              N := 3;
-              L := 3;
-            end;
-
-            if K = VK_LEFT then begin
-              if FSelectedTextPart = M then
-                FSelectedTextPart := N
-              else if (FSelectedTextPart = N) and (L < N) then
-                FSelectedTextPart := L
-              else
-                Dec(FSelectedTextPart);
-            end else begin
-              if FSelectedTextPart = N then
-                FSelectedTextPart := M
-              else if (FSelectedTextPart = L) and (L < N) then
-                FSelectedTextPart := N
-              else
-                Inc(FSelectedTextPart);
-            end;
-
-            Invalidate;
+            MoveSelectionLR(K = VK_LEFT);
           end;
         VK_UP:
           begin
@@ -1802,17 +1817,12 @@ begin
             N := 2;
 
           S := Trim(GetSelectedText);
-          if FUserChangedText and (UTF8Length(S) < N) then begin
-            S := S + Key;
-
-            if (not FLeadingZeros) and (FSelectedTextPart <= 4) then
-              while (UTF8Length(S) > 1) and (UTF8Copy(S, 1, 1) = '0') do
-                UTF8Delete(S, 1, 1);
-
-          end else
+          if FUserChangedText and (Length(S) < N) then
+            S := S + Key
+          else
             S := Key;
 
-          if (UTF8Length(S) >= N) then begin
+          if (Length(S) >= N) then begin
 
             L := StrToInt(S);
             if DTP <> dtpTime then begin
@@ -1822,18 +1832,15 @@ begin
                 dtpMonth: YMD.Month := L;
                 dtpYear: YMD.Year := L;
               end;
-              if not TryEncodeDate(YMD.Year, YMD.Month, YMD.Day, D) then
-                D := MinDate - 1;
 
-              if (D < MinDate) or (D > MaxDate) then begin
-                if N = 4 then begin
-                  UpdateDate;
-                  Finished := True;
-                end else
-                  S := Key;
-
+              if TryEncodeDate(YMD.Year, YMD.Month, YMD.Day, D)
+                        and (D >= MinDate) and (D <= MaxDate) then
+                ForceChange := True
+              else if N = 4 then begin
+                UpdateDate;
+                Finished := True;
               end else
-                ForceChange := True;
+                S := Key;
 
             end else begin
               if (TTP = ttpHour) and (FTimeFormat = tf12) then begin
@@ -1871,6 +1878,10 @@ begin
             else
               DateTime := SysUtils.Now;
 
+          if (not FLeadingZeros) and (FSelectedTextPart <= 4) then
+            while (Length(S) > 1) and (S[1] = '0') do
+              Delete(S, 1, 1);
+
           if FSelectedTextPart <= 3 then
             FTextPart[FSelectedTextPart] := S
           else
@@ -1878,9 +1889,12 @@ begin
 
           FUserChangedText := True;
 
-          if ForceChange then
-            UpdateIfUserChangedText
-          else
+          if ForceChange then begin
+            if FAutoAdvance then
+              MoveSelectionLR(False)
+            else
+              UpdateIfUserChangedText;
+          end else
             Invalidate;
 
         end;
@@ -2015,8 +2029,9 @@ begin
   RecalculateTextSizesIfNeeded;
   TextOrigin := GetTextOrigin;
 
-  // We must use TextOrigin's x + y (x is, of corse, left margin, but not right
-  // margin if check box is shown. Hower, y always equals right margin).
+  // We must use TextOrigin's x + y (x is, of course, left margin, but not right
+  // margin if check box is shown. However, y, which is top margin, always
+  // equals right margin).
   PreferredWidth := TextOrigin.x + TextOrigin.y;
 
   if Assigned(FUpDown) then
@@ -3392,6 +3407,7 @@ begin
   FDoNotArrangeControls := True;
   FCascade := False;
   FAutoButtonSize := False;
+  FAutoAdvance := False;
 
   AdjustEffectiveDateDisplayOrder;
 

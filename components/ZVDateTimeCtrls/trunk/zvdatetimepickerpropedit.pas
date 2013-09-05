@@ -244,6 +244,7 @@ begin
       DTP[I].LeadingZeros := CallerZVDateTimePicker.LeadingZeros;
       DTP[I].DateSeparator := CallerZVDateTimePicker.DateSeparator;
       DTP[I].TrailingSeparator := CallerZVDateTimePicker.TrailingSeparator;
+      DTP[I].AutoAdvance := CallerZVDateTimePicker.AutoAdvance;
     end;
     ZVDateTimePicker1.TextForNullDate := CallerZVDateTimePicker.TextForNullDate;
     ZVDateTimePicker1.TimeSeparator := CallerZVDateTimePicker.TimeSeparator;
