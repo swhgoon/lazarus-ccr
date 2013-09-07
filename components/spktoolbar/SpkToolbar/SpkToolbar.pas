@@ -516,7 +516,7 @@ begin
   Color := clSkyBlue;
 
   FDelayRunTimer := TTimer.Create(nil);
-  FDelayRunTimer.Interval := 128;
+  FDelayRunTimer.Interval := 36;
   FDelayRunTimer.Enabled := False;
   FDelayRunTimer.OnTimer := DelayRunTimer;
 end;
