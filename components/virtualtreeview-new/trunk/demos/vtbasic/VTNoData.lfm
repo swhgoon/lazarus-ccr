@@ -3,7 +3,7 @@ object frmVTNoData: TfrmVTNoData
   Height = 346
   Top = 154
   Width = 401
-  ActiveControl = Panel1
+  ActiveControl = VT
   Caption = 'Basic VT as a Tree    (no node data used)'
   ClientHeight = 346
   ClientWidth = 401
@@ -14,11 +14,9 @@ object frmVTNoData: TfrmVTNoData
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poDefaultPosOnly
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.27'
   object Panel1: TPanel
-    Left = 0
     Height = 346
-    Top = 0
     Width = 401
     Align = alClient
     BevelOuter = bvNone
@@ -33,10 +31,9 @@ object frmVTNoData: TfrmVTNoData
       Top = 7
       Width = 387
       Align = alClient
+      BorderStyle = bsSingle
       DefaultText = 'Node'
-      Header.AutoSizeIndex = 0
       Header.Columns = <>
-      Header.DefaultHeight = 17
       Header.Font.Height = -11
       Header.Font.Name = 'MS Shell Dlg 2'
       Header.MainColumn = -1
@@ -67,7 +64,7 @@ object frmVTNoData: TfrmVTNoData
         Left = 9
         Height = 14
         Top = 9
-        Width = 82
+        Width = 76
         Alignment = taCenter
         Caption = 'VT.TreeOptions'
         Font.Color = clRed
@@ -78,27 +75,27 @@ object frmVTNoData: TfrmVTNoData
       end
       object chkCheckBoxes: TCheckBox
         Left = 180
-        Height = 22
+        Height = 17
         Top = 7
-        Width = 93
+        Width = 81
         Caption = 'Check Boxes'
         OnClick = chkCheckBoxesClick
         TabOrder = 0
       end
       object chkFullExpand: TCheckBox
         Left = 100
-        Height = 22
+        Height = 17
         Top = 7
-        Width = 86
+        Width = 75
         Caption = 'Full Expand'
         OnClick = chkFullExpandClick
         TabOrder = 1
       end
       object chkShowLevel: TCheckBox
         Left = 271
-        Height = 22
+        Height = 17
         Top = 7
-        Width = 86
+        Width = 74
         Caption = 'Show Level'
         OnClick = chkShowLevelClick
         TabOrder = 2

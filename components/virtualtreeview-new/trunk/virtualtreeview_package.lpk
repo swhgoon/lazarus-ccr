@@ -2,7 +2,7 @@
 <CONFIG>
   <Package Version="3">
     <Name Value="virtualtreeview_package"/>
-    <Author Value="Mike Lischke (LCL Port: Luiz Américo)"/>
+    <Author Value="Mike Lischke (LCL Port: Luiz Americo)"/>
     <CompilerOptions>
       <Version Value="8"/>
       <SearchPaths>
@@ -16,9 +16,9 @@
     </CompilerOptions>
     <Description Value="Virtual Treeview is an advanced component originally created for Delphi
 "/>
-    <License Value=" Mozilla Public License 1.1 (MPL 1.1) or GNU Lesser General Public License
+    <License Value=" Moziall Public License 1.1 (MPL 1.1) or GNU Lesser General Public License
 "/>
-    <Version Major="4" Minor="8" Release="6"/>
+    <Version Major="4" Minor="5" Release="1"/>
     <Files Count="7">
       <Item1>
         <Filename Value="virtualtrees.lrs"/>
@@ -51,13 +51,16 @@
       </Item7>
     </Files>
     <Type Value="RunAndDesignTime"/>
-    <RequiredPkgs Count="2">
+    <RequiredPkgs Count="3">
       <Item1>
-        <PackageName Value="lclextensions_package"/>
+        <PackageName Value="multiloglaz"/>
       </Item1>
       <Item2>
-        <PackageName Value="LCL"/>
+        <PackageName Value="lclextensions_package"/>
       </Item2>
+      <Item3>
+        <PackageName Value="LCL"/>
+      </Item3>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)/"/>

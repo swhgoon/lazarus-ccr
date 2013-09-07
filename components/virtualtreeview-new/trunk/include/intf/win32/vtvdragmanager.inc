@@ -613,7 +613,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 function TVTDragManager.DragEnter(const DataObject: IDataObject; KeyState: LongWord; Pt: TPoint;
-  var Effect: PtrUInt): HResult;
+  var Effect: LongWord): HResult;
 
 begin
   FDataObject := DataObject;
