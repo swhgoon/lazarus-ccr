@@ -526,6 +526,7 @@ begin
   SetMetricsInvalid;
   SetBufferInvalid;
   invalidate;
+  FDelayRunTimer.Enabled := False;
 end;
 
 procedure TSpkToolbar.DefineProperties(Filer: TFiler);
