@@ -1,23 +1,24 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
+    <Version Value="9"/>
     <PathDelim Value="\"/>
-    <Version Value="7"/>
     <General>
       <Flags>
-        <AlwaysBuild Value="False"/>
         <LRSInOutputDirectory Value="False"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <TargetFileExt Value=".exe"/>
+      <UseXPManifest Value="True"/>
     </General>
     <VersionInfo>
-      <ProjectVersion Value=""/>
+      <StringTable ProductVersion=""/>
     </VersionInfo>
+    <BuildModes Count="1">
+      <Item1 Name="default" Default="True"/>
+    </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
-      <DestinationDirectory Value="$(TestDir)\publishedproject\"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
       <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
     </PublishOptions>
@@ -50,9 +51,9 @@
       </Unit0>
       <Unit1>
         <Filename Value="Main.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="frmMain"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Main"/>
       </Unit1>
@@ -63,17 +64,17 @@
       </Unit2>
       <Unit3>
         <Filename Value="VTNoData.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="frmVTNoData"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="VTNoData"/>
       </Unit3>
       <Unit4>
         <Filename Value="VTPropEdit.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="frmVTPropEdit"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="VTPropEdit"/>
       </Unit4>
@@ -84,32 +85,37 @@
       </Unit5>
       <Unit6>
         <Filename Value="ViewCode.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="frmViewCode"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
         <UnitName Value="ViewCode"/>
       </Unit6>
       <Unit7>
         <Filename Value="VTCheckList.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="frmVTCheckList"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="VTCheckList"/>
       </Unit7>
       <Unit8>
         <Filename Value="VTDBExample.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="frmVTDBExample"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="VTDBExample"/>
       </Unit8>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="8"/>
+    <Version Value="11"/>
     <PathDelim Value="\"/>
+    <Parsing>
+      <SyntaxOptions>
+        <UseAnsiStrings Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
     <Linking>
       <Options>
         <Win32>

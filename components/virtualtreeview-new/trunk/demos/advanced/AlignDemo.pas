@@ -11,7 +11,7 @@ interface
 
 uses
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, VirtualTrees, ComCtrls, ExtCtrls, Menus, LResources;
+  StdCtrls, ComCtrls, VirtualTrees,  ExtCtrls, Menus, LResources;
 
 type
   TAlignForm = class(TForm)

@@ -1,4 +1,4 @@
-program unicode;
+program vtvdragdrop;
 
 {$mode objfpc}{$H+}
 
@@ -7,13 +7,13 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms
-  { you can add units after this }, fMain;
-
+  Forms, fMain, virtualtreeview_package
+  { you can add units after this };
 
 {$R *.res}
 
 begin
+  RequireDerivedFormResource := True;
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);
   Application.Run;

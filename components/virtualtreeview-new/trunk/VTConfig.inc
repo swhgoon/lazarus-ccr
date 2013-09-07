@@ -30,9 +30,20 @@
 {$define EnableAlphaBlend}
 {.$define EnableAccessible}
 {$define ThemeSupport}
+{$if defined(LCLWin32) or defined(LCLWinCE)}
+  {$define LCLWin}
+{$endif}
 {.$define DEBUG_VTV}
+{$define USE_DELPHICOMPAT}
+//since
+{$if not defined(USE_DELPHICOMPAT) and not defined(LCLWin)}
+  {$define INCOMPLETE_WINAPI}
+{$endif}
 
 //under linux the performance is poor with threading enabled
 {$ifdef Windows}
   {$define EnableThreadSupport}
+{$endif}
+{$ifdef CPU64}
+  {$define PACKARRAYPASCAL}
 {$endif}

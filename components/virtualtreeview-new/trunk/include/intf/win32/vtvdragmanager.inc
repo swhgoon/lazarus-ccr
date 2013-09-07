@@ -481,7 +481,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TVTDataObject.SetData(const FormatEtc: TFormatEtc; {$ifdef VER2_0}var{$else}const{$endif} Medium: TStgMedium; DoRelease: BOOL): HResult;
+function TVTDataObject.SetData(const FormatEtc: TFormatEtc; const Medium: TStgMedium; DoRelease: BOOL): HResult;
 
 // Allows dynamic adding to the IDataObject during its existance. Most noteably it is used to implement
 // IDropSourceHelper and allows to set a special format for optimized moves during a shell transfer.
@@ -686,7 +686,11 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TVTDragManager.GiveFeedback(Effect: Integer): HResult;
+{$IF FPC_FULLVERSION < 020601}
+function TVTDragManager.GiveFeedback(Effect: Longint): HResult;
+{$ELSE}
+function TVTDragManager.GiveFeedback(Effect: LongWord): HResult;
+{$ENDIF}
 
 begin
   Result := DRAGDROP_S_USEDEFAULTCURSORS;
@@ -694,7 +698,11 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TVTDragManager.QueryContinueDrag(EscapePressed: BOOL; KeyState: Integer): HResult;
+{$IF FPC_FULLVERSION < 020601}
+function TVTDragManager.QueryContinueDrag(EscapePressed: BOOL; KeyState: Longint): HResult;
+{$ELSE}
+function TVTDragManager.QueryContinueDrag(EscapePressed: BOOL; KeyState: LongWord): HResult;
+{$ENDIF}
 
 var
   RButton,

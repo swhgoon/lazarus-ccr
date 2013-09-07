@@ -20,7 +20,7 @@ interface
 
    uses
       delphicompat, LCLIntf, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-      Dialogs, VirtualTrees, ExtCtrls, StdCtrls, LResources;
+      Dialogs, VirtualTrees, ExtCtrls, StdCtrls, LResources, LCLType;
 
    type
       TfrmVTNoData =
@@ -167,7 +167,9 @@ implementation
          'VariableNodeHeight',
          'FullRowDrag',
          'NodeHeightResize',
-         'NodeHeightDblClickResize'
+         'NodeHeightDblClickResize',
+         'EditOnClick',
+         'EditOnDblClick'
       );
 
       aPaintOpts : array[0..Ord(High(TVTPaintOption ))] of string[25] = 
@@ -191,7 +193,8 @@ implementation
          'UseBlendedSelection',     // Enable alpha blending for node selections.
          'StaticBackground',
          'ChildrenAbove',
-         'FixedIndent'
+         'FixedIndent',
+         'UseExplorerTheme'
       );
 
       aSelOpts : array[0..Ord(High(TVTSelectionOption))] of string[25] = 
@@ -268,8 +271,9 @@ implementation
    var
       r  : TRect;
    begin
+      {$ifdef LCLWin32}
+      //todo: enable when SPI_GETWORKAREA is implemented
       {get size of desktop}
-      {$ifdef Windows}
       SystemParametersInfo(SPI_GETWORKAREA, 0, @r, 0);
       Height := r.Bottom-Top;
       {$endif}

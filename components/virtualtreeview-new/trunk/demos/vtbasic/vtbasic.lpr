@@ -14,6 +14,8 @@ uses
   {$endif}
   ;
 
+{$R *.res}
+
 begin
   {$ifdef DEBUG_VTV}
   Logger.Channels.Add(TIPCChannel.Create);

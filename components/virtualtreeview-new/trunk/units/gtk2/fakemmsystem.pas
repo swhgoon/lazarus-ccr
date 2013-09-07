@@ -5,7 +5,7 @@ unit fakemmsystem;
 interface
 
 uses
-  Classes, SysUtils, Types;
+  Classes, SysUtils, Types, LCLIntf;
   
 function timeBeginPeriod(x1: DWord): DWord;
 
@@ -17,21 +17,17 @@ implementation
 
 function timeBeginPeriod(x1: DWord): DWord;
 begin
-
+  //
 end;
 
 function timeEndPeriod(x1: DWord): DWord;
 begin
-
+  //
 end;
 
 function timeGetTime: DWORD;
-var
-  ATime: TSystemTime;
 begin
-  //todo: properly implement
-  GetLocalTime(ATime);
-  Result := ATime.MilliSecond;
+  Result := GetTickCount;
 end;
 
 end.

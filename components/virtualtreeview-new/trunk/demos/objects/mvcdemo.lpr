@@ -10,6 +10,8 @@ uses
   Forms
   { add your units here }, MVCDemoMain, lclextensions_package;
 
+{$R *.res}
+
 begin
   Application.Initialize;
   Application.CreateForm(TfmMVCDemo, fmMVCDemo);
