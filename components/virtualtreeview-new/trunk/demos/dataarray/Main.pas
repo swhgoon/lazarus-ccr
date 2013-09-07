@@ -115,8 +115,7 @@ type
     procedure Button1Click(Sender: TObject);
     procedure MyTreeCompareNodes(Sender: TBaseVirtualTree; Node1,
       Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
-    procedure MyTreeHeaderClick(Sender: TVTHeader; Column: TColumnIndex;
-      Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure MyTreeHeaderClick(Sender: TVTHeader; HitInfo: TVTHeaderHitInfo);
     procedure btnDeleteClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure MyTreePaintText(Sender: TBaseVirtualTree;
@@ -240,8 +239,7 @@ begin
   end
 end;
 
-procedure TForm1.MyTreeHeaderClick(Sender: TVTHeader; Column: TColumnIndex;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TForm1.MyTreeHeaderClick(Sender: TVTHeader; HitInfo: TVTHeaderHitInfo);
 var
   Direction : TSortDirection;
 begin
@@ -251,26 +249,29 @@ begin
   // MyTree.Header.SortDirection and MyTree.Header.SortColumn
   // to get automatically Descending/Ascending sorting
   // by only clicking on header
-
-  if ssShift in Shift
-  then
-    Direction := sdDescending
-  else
-    Direction := sdAscending;
-
-  // Sort all columns except the second
-  if Column<>1 then
+  with HitInfo do
   begin
-    // Set direction image on the sorted column
-    MyTree.Header.SortColumn := Column;
+    if ssShift in Shift
+    then
+      Direction := sdDescending
+    else
+      Direction := sdAscending;
 
-    // Set the right direction image
-    MyTree.Header.SortDirection := Direction;
+    // Sort all columns except the second
+    if Column<>1 then
+    begin
+      // Set direction image on the sorted column
+      MyTree.Header.SortColumn := Column;
 
-    // Sorting process
-    MyTree.SortTree(Column, Direction);
-  end
+      // Set the right direction image
+      MyTree.Header.SortDirection := Direction;
+
+      // Sorting process
+      MyTree.SortTree(Column, Direction);
+    end;
+  end;
 end;
+
 
 procedure TForm1.btnDeleteClick(Sender: TObject);
 var

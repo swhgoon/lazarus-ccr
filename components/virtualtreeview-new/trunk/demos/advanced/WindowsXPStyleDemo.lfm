@@ -11,22 +11,22 @@ object WindowsXPForm: TWindowsXPForm
   Font.Height = -13
   Font.Name = 'Microsoft Sans Serif'
   OnCreate = FormCreate
-  LCLVersion = '0.9.29'
+  LCLVersion = '1.0.8.0'
   object Label1: TLabel
-    Left = 564
-    Height = 81
+    Left = -449
+    Height = 17
     Top = 40
-    Width = 273
+    Width = 1286
     Anchors = [akTop, akRight]
     Caption = 'This demo shows a tree with properties which make it look as in the new Windows XP style. Under Windows XP native theme APIs are used to paint the tree. On other system legacy code is used which simulates the look.'
     ParentColor = False
     WordWrap = True
   end
   object Label2: TLabel
-    Left = 565
-    Height = 81
+    Left = -291
+    Height = 17
     Top = 168
-    Width = 272
+    Width = 1128
     Anchors = [akTop, akRight]
     Caption = 'Note that the scrollbars are not drawn in the new style on non-XP systems.  It would be far off the goal of the tree to reimplement a full blown scrollbar handling, which would be required otherwise.'
     ParentColor = False
@@ -34,10 +34,10 @@ object WindowsXPForm: TWindowsXPForm
   end
   object Label4: TLabel
     Cursor = crHandPoint
-    Left = 565
-    Height = 97
+    Left = -617
+    Height = 17
     Top = 290
-    Width = 272
+    Width = 1454
     Anchors = [akTop, akRight]
     Caption = 'If you want to have an explorer treeview with real content then I recommend that you give Jim Kuenemann''s shell tools a try. His shell treeview (based on Virtual Treeview) is the most advanced you will find worldwide. Click here to open Yahoo Group.'
     Font.CharSet = ANSI_CHARSET
@@ -169,12 +169,12 @@ object WindowsXPForm: TWindowsXPForm
     object ToolButton15: TToolButton
       Left = 241
       Top = 2
-      Width = 8
+      Width = 10
       Caption = 'ToolButton15'
       Style = tbsSeparator
     end
     object ToolButton16: TToolButton
-      Left = 249
+      Left = 251
       Top = 2
       Caption = 'Click here to print the treeview.'
       ImageIndex = 24

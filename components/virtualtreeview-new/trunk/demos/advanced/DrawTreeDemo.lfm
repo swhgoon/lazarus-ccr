@@ -10,7 +10,7 @@ object DrawTreeForm: TDrawTreeForm
   Font.Height = -13
   Font.Name = 'Trebuchet MS'
   OnCreate = FormCreate
-  LCLVersion = '0.9.29'
+  LCLVersion = '1.0.8.0'
   object Label7: TLabel
     Left = 0
     Height = 61

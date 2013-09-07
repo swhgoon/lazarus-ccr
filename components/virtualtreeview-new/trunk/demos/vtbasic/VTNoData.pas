@@ -194,7 +194,9 @@ implementation
          'StaticBackground',
          'ChildrenAbove',
          'FixedIndent',
-         'UseExplorerTheme'
+         'UseExplorerTheme',
+         'HideTreeLinesIfThemed',
+         'ShowHiddenNodes'
       );
 
       aSelOpts : array[0..Ord(High(TVTSelectionOption))] of string[25] = 

@@ -57,6 +57,7 @@ interface
          procedure VTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
          var Text: String);
          procedure VTFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
+         procedure VTHeaderClick(Sender: TVTHeader; HitInfo: TVTHeaderHitInfo);
          procedure VTInitNode(Sender: TBaseVirtualTree; ParentNode, Node: PVirtualNode;
          var InitialStates: TVirtualNodeInitStates);
          procedure FormActivate(Sender: TObject);
@@ -67,8 +68,6 @@ interface
          procedure VTPaintText(Sender: TBaseVirtualTree;
          const TargetCanvas: TCanvas; Node: PVirtualNode;
          Column: TColumnIndex; TextType: TVSTTextType);
-         procedure VTHeaderClick(Sender: TVTHeader; Column: TColumnIndex;
-         Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
          procedure VTCompareNodes(Sender: TBaseVirtualTree; Node1,
          Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
          procedure VTGetNodeDataSize(Sender: TBaseVirtualTree; var NodeDataSize: Integer);
@@ -213,6 +212,22 @@ implementation
       Data.bnd.Free;
       Finalize( Data^ );
    end;
+
+  procedure TfrmVTDBExample.VTHeaderClick(Sender: TVTHeader;
+    HitInfo: TVTHeaderHitInfo);
+  begin
+    with HitInfo do
+    begin
+      if (VT.Header.SortColumn <> Column) then
+        VT.Header.SortColumn := Column
+      else if (VT.Header.SortDirection = sdAscending) then
+        VT.Header.SortDirection := sdDescending
+      else
+        VT.Header.SortDirection := sdAscending;
+
+      VT.SortTree( Column, VT.Header.SortDirection );
+    end;
+  end;
    
    procedure TfrmVTDBExample.VTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
         Column: TColumnIndex; TextType: TVSTTextType; var Text: String);
@@ -340,19 +355,6 @@ implementation
    procedure TfrmVTDBExample.chkShowIDsClick(Sender: TObject);
    begin
       VT.Refresh;
-   end;
-
-   procedure TfrmVTDBExample.VTHeaderClick(Sender: TVTHeader; Column: TColumnIndex;
-     Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-   begin
-       if (VT.Header.SortColumn <> Column) then
-         VT.Header.SortColumn := Column
-       else if (VT.Header.SortDirection = sdAscending) then 
-         VT.Header.SortDirection := sdDescending
-      else            
-         VT.Header.SortDirection := sdAscending;
-
-       VT.SortTree( Column, VT.Header.SortDirection );
    end;
 
    procedure TfrmVTDBExample.VTCompareNodes(Sender: TBaseVirtualTree; Node1,

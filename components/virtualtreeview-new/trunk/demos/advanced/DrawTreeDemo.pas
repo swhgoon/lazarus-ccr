@@ -24,6 +24,9 @@ uses
   VirtualTrees, StdCtrls,  shlobjext, LResources, FileUtil;
 
 type
+
+  { TDrawTreeForm }
+
   TDrawTreeForm = class(TForm)
     VDT1: TVirtualDrawTree;
     Label7: TLabel;
@@ -42,8 +45,7 @@ type
       var Ghosted: Boolean; var Index: Integer);
     procedure VDT1GetNodeWidth(Sender: TBaseVirtualTree; Canvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
       var NodeWidth: Integer);
-    procedure VDT1HeaderClick(Sender: TVTHeader; Column: TColumnIndex; Button: TMouseButton; Shift: TShiftState; X,
-      Y: Integer);
+    procedure VDT1HeaderClick(Sender: TVTHeader; HitInfo: TVTHeaderHitInfo);
     procedure VDT1InitChildren(Sender: TBaseVirtualTree; Node: PVirtualNode; var ChildCount: Cardinal);
     procedure VDT1InitNode(Sender: TBaseVirtualTree; ParentNode, Node: PVirtualNode;
       var InitialStates: TVirtualNodeInitStates);
@@ -514,6 +516,34 @@ begin
   end;
 end;
 
+procedure TDrawTreeForm.VDT1HeaderClick(Sender: TVTHeader;
+  HitInfo: TVTHeaderHitInfo);
+begin
+  with HitInfo do
+  if Button = mbLeft then
+  begin
+    with Sender do
+    begin
+      if Column <> MainColumn then
+        SortColumn := NoColumn
+      else
+      begin
+        if SortColumn = NoColumn then
+        begin
+          SortColumn := Column;
+          SortDirection := sdAscending;
+        end
+        else
+          if SortDirection = sdAscending then
+            SortDirection := sdDescending
+          else
+            SortDirection := sdAscending;
+        Treeview.SortTree(SortColumn, SortDirection, False);
+      end;
+    end;
+  end;
+end;
+
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TDrawTreeForm.VDT1InitChildren(Sender: TBaseVirtualTree; Node: PVirtualNode; var ChildCount: Cardinal);
@@ -673,37 +703,6 @@ begin
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
-
-procedure TDrawTreeForm.VDT1HeaderClick(Sender: TVTHeader; Column: TColumnIndex; Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
-
-// Click handler to switch the column on which will be sorted. Since we cannot sort image data sorting is actually
-// limited to the main column.
-
-begin
-  if Button = mbLeft then
-  begin
-    with Sender do
-    begin
-      if Column <> MainColumn then
-        SortColumn := NoColumn
-      else
-      begin
-        if SortColumn = NoColumn then
-        begin
-          SortColumn := Column;
-          SortDirection := sdAscending;
-        end
-        else
-          if SortDirection = sdAscending then
-            SortDirection := sdDescending
-          else
-            SortDirection := sdAscending;
-        Treeview.SortTree(SortColumn, SortDirection, False);
-      end;
-    end;
-  end;
-end;
 
 //----------------------------------------------------------------------------------------------------------------------
 

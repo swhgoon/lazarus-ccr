@@ -14,7 +14,7 @@ object frmVTNoData: TfrmVTNoData
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poDefaultPosOnly
-  LCLVersion = '0.9.29'
+  LCLVersion = '1.0.8.0'
   object Panel1: TPanel
     Left = 0
     Height = 346
@@ -67,7 +67,7 @@ object frmVTNoData: TfrmVTNoData
         Left = 9
         Height = 14
         Top = 9
-        Width = 82
+        Width = 76
         Alignment = taCenter
         Caption = 'VT.TreeOptions'
         Font.Color = clRed
@@ -78,27 +78,27 @@ object frmVTNoData: TfrmVTNoData
       end
       object chkCheckBoxes: TCheckBox
         Left = 180
-        Height = 22
+        Height = 19
         Top = 7
-        Width = 93
+        Width = 81
         Caption = 'Check Boxes'
         OnClick = chkCheckBoxesClick
         TabOrder = 0
       end
       object chkFullExpand: TCheckBox
         Left = 100
-        Height = 22
+        Height = 19
         Top = 7
-        Width = 86
+        Width = 75
         Caption = 'Full Expand'
         OnClick = chkFullExpandClick
         TabOrder = 1
       end
       object chkShowLevel: TCheckBox
         Left = 271
-        Height = 22
+        Height = 19
         Top = 7
-        Width = 86
+        Width = 74
         Caption = 'Show Level'
         OnClick = chkShowLevelClick
         TabOrder = 2

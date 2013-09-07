@@ -41,6 +41,7 @@ type
     procedure VST1BeforeCellPaint(Sender: TBaseVirtualTree;
       TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
       CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
+    procedure VST1HeaderClick(Sender: TVTHeader; HitInfo: TVTHeaderHitInfo);
     procedure VST1InitNode(Sender: TBaseVirtualTree; ParentNode,
       Node: PVirtualNode; var InitialStates: TVirtualNodeInitStates);
     procedure VST1GetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
@@ -51,8 +52,6 @@ type
       var Ghosted: Boolean; var ImageIndex: Integer);
     procedure VST1Checking(Sender: TBaseVirtualTree; Node: PVirtualNode;
       var NewState: TCheckState; var Allowed: Boolean);
-    procedure VST1HeaderClick(Sender: TVTHeader; Column: TColumnIndex;
-      Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure VST1CompareNodes(Sender: TBaseVirtualTree; Node1,
       Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
   private
@@ -148,6 +147,26 @@ begin
         TargetCanvas.Brush.Color := clLime;
       TargetCanvas.FillRect(CellRect);
     end;
+  end;
+end;
+
+procedure TForm1.VST1HeaderClick(Sender: TVTHeader; HitInfo: TVTHeaderHitInfo);
+begin
+  // Determinate sorting direction
+  if HitInfo.Button=mbLeft then
+  with Sender do
+  begin
+    if SortColumn <> HitInfo.Column then
+       SortColumn := HitInfo.Column
+    else begin
+      if SortDirection = sdAscending then
+        SortDirection := sdDescending
+      else
+        SortDirection := sdAscending
+    end;
+
+    // Initiate sorting
+    VST1.SortTree(HitInfo.Column, Sender.SortDirection, False);
   end;
 end;
 
@@ -259,28 +278,6 @@ begin
 
   caption:=s+' '+Data.Main;
   Allowed:=true
-end;
-
-procedure TForm1.VST1HeaderClick(Sender: TVTHeader; Column: TColumnIndex;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-
-  // Determinate sorting direction
-  if Button=mbLeft then
-  with Sender do
-  begin
-    if SortColumn <> Column then
-       SortColumn := Column
-    else begin
-      if SortDirection = sdAscending then
-        SortDirection := sdDescending
-      else
-        SortDirection := sdAscending
-    end;
-
-    // Initiate sorting
-    VST1.SortTree(Column, Sender.SortDirection, False);
-  end;
 end;
 
 procedure TForm1.VST1CompareNodes(Sender: TBaseVirtualTree; Node1,

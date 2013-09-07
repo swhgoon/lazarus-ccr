@@ -533,7 +533,8 @@ type
     vsClearing,          // A node's children are being deleted. Don't register structure change event.
     vsMultiline,         // Node text is wrapped at the cell boundaries instead of being shorted.
     vsHeightMeasured,    // Node height has been determined and does not need a recalculation.
-    vsToggling           // Set when a node is expanded/collapsed to prevent recursive calls.
+    vsToggling,          // Set when a node is expanded/collapsed to prevent recursive calls.
+    vsHidden             // Indicates that the node should not be painted (without effecting its children).
   );
   TVirtualNodeStates = set of TVirtualNodeState;
 
@@ -721,7 +722,9 @@ type
     toStaticBackground,        // Show simple static background instead of a tiled one.
     toChildrenAbove,           // Display child nodes above their parent.
     toFixedIndent,             // Draw the tree with a fixed indent.
-    toUseExplorerTheme         // Use the explorer theme if run under Windows Vista (or above).
+    toUseExplorerTheme,        // Use the explorer theme if run under Windows Vista (or above).
+    toHideTreeLinesIfThemed,   // Do not show tree lines if theming is used.
+    toShowHiddenNodes          // Draw nodes even if they are hidden.
   );
   TVTPaintOptions = set of TVTPaintOption;
 
@@ -901,6 +904,16 @@ type
     FirstChild,              // link to the node's first child...
     LastChild: PVirtualNode; // link to the node's last child...
     Data: record end;        // this is a placeholder, each node gets extra data determined by NodeDataSize
+  end;
+
+  // Structure used when info about a certain position in the header is needed.
+  TVTHeaderHitInfo = record
+    X,
+    Y: Integer;
+    Button: TMouseButton;
+    Shift: TShiftState;
+    Column: TColumnIndex;
+    HitPosition: TVTHeaderHitPositions;
   end;
 
   // Structure used when info about a certain position in the tree is needed.
@@ -1963,8 +1976,7 @@ type
   TVTSaveNodeEvent = procedure(Sender: TBaseVirtualTree; Node: PVirtualNode; Stream: TStream) of object;
 
   // header/column events
-  TVTHeaderClickEvent = procedure(Sender: TVTHeader; Column: TColumnIndex; Button: TMouseButton; Shift: TShiftState; X,
-    Y: Integer) of object;
+  TVTHeaderClickEvent = procedure(Sender: TVTHeader; HitInfo: TVTHeaderHitInfo) of object;
   TVTHeaderMouseEvent = procedure(Sender: TVTHeader; Button: TMouseButton; Shift: TShiftState; X, Y: Integer) of object;
   TVTHeaderMouseMoveEvent = procedure(Sender: TVTHeader; Shift: TShiftState; X, Y: Integer) of object;
   TVTBeforeHeaderHeightTrackingEvent = procedure(Sender: TVTHeader; Shift: TShiftState) of object;
@@ -2283,9 +2295,7 @@ type
     FOnAfterAutoFitColumns: TVTAfterAutoFitColumnsEvent;
     FOnBeforeAutoFitColumns: TVTBeforeAutoFitColumnsEvent;
     FOnBeforeAutoFitColumn: TVTBeforeAutoFitColumnEvent;
-    FOnHeaderClick,                              // mouse events for the header, just like those for a control
-    FOnHeaderImageClick,
-    FOnHeaderCheckBoxClick: TVTHeaderClickEvent;
+    FOnHeaderClick: TVTHeaderClickEvent;
     FOnHeaderDblClick: TVTHeaderClickEvent;
     FOnAfterHeaderHeightTracking: TVTAfterHeaderHeightTrackingEvent;
     FOnBeforeHeaderHeightTracking: TVTBeforeHeaderHeightTrackingEvent;
@@ -2391,6 +2401,7 @@ type
     function GetExpanded(Node: PVirtualNode): Boolean;
     function GetFullyVisible(Node: PVirtualNode): Boolean;
     function GetHasChildren(Node: PVirtualNode): Boolean;
+    function GetHidden(Node: PVirtualNode): Boolean;
     function GetMultiline(Node: PVirtualNode): Boolean;
     function GetNodeHeight(Node: PVirtualNode): Cardinal;
     function GetNodeParent(Node: PVirtualNode): PVirtualNode;
@@ -2445,6 +2456,7 @@ type
     procedure SetFullyVisible(Node: PVirtualNode; Value: Boolean);
     procedure SetHasChildren(Node: PVirtualNode; Value: Boolean);
     procedure SetHeader(const Value: TVTHeader);
+    procedure SetHidden(Node: PVirtualNode; Value: Boolean);
     procedure SetImages(const Value: TCustomImageList);
     procedure SetIndent(Value: Cardinal);
     procedure SetLineMode(const Value: TVTLineMode);
@@ -2623,10 +2635,8 @@ type
     function DoGetNodeWidth(Node: PVirtualNode; Column: TColumnIndex; Canvas: TCanvas = nil): Integer; virtual;
     function DoGetPopupMenu(Node: PVirtualNode; Column: TColumnIndex; const Position: TPoint): TPopupMenu; virtual;
     procedure DoGetUserClipboardFormats(var Formats: TFormatEtcArray); virtual;
-    procedure DoHeaderClick(Column: TColumnIndex; Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual;
-    procedure DoHeaderDblClick(Column: TColumnIndex; Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual;
-    procedure DoHeaderImageClick(Column: TColumnIndex; Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual;
-    procedure DoHeaderCheckBoxClick(Column: TColumnIndex; Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual;
+    procedure DoHeaderClick(HitInfo: TVTHeaderHitInfo); virtual;
+    procedure DoHeaderDblClick(HitInfo: TVTHeaderHitInfo); virtual;
     procedure DoHeaderDragged(Column: TColumnIndex; OldPosition: TColumnPosition); virtual;
     procedure DoHeaderDraggedOut(Column: TColumnIndex; const DropPosition: TPoint); virtual;
     function DoHeaderDragging(Column: TColumnIndex): Boolean; virtual;
@@ -2896,7 +2906,6 @@ type
     property OnGetPopupMenu: TVTPopupEvent read FOnGetPopupMenu write FOnGetPopupMenu;
     property OnGetUserClipboardFormats: TVTGetUserClipboardFormatsEvent read FOnGetUserClipboardFormats
       write FOnGetUserClipboardFormats;
-    property OnHeaderCheckBoxClick: TVTHeaderClickEvent read FOnHeaderCheckBoxClick write FOnHeaderCheckBoxClick;
     property OnHeaderClick: TVTHeaderClickEvent read FOnHeaderClick write FOnHeaderClick;
     property OnHeaderDblClick: TVTHeaderClickEvent read FOnHeaderDblClick write FOnHeaderDblClick;
     property OnHeaderDragged: TVTHeaderDraggedEvent read FOnHeaderDragged write FOnHeaderDragged;
@@ -2909,7 +2918,6 @@ type
       write FOnHeaderHeightTracking;
     property OnHeaderHeightDblClickResize: TVTHeaderHeightDblClickResizeEvent read FOnHeaderHeightDblClickResize
       write FOnHeaderHeightDblClickResize;
-    property OnHeaderImageClick: TVTHeaderClickEvent read FOnHeaderImageClick write FOnHeaderImageClick;
     property OnHeaderMouseDown: TVTHeaderMouseEvent read FOnHeaderMouseDown write FOnHeaderMouseDown;
     property OnHeaderMouseMove: TVTHeaderMouseMoveEvent read FOnHeaderMouseMove write FOnHeaderMouseMove;
     property OnHeaderMouseUp: TVTHeaderMouseEvent read FOnHeaderMouseUp write FOnHeaderMouseUp;
@@ -2990,20 +2998,24 @@ type
     function GetFirstLevel(NodeLevel: Cardinal): PVirtualNode;
     function GetFirstNoInit(ConsiderChildrenAbove: Boolean = False): PVirtualNode;
     function GetFirstSelected(ConsiderChildrenAbove: Boolean = False): PVirtualNode;
-    function GetFirstVisible(Node: PVirtualNode = nil; ConsiderChildrenAbove: Boolean = True): PVirtualNode;
-    function GetFirstVisibleChild(Node: PVirtualNode): PVirtualNode;
-    function GetFirstVisibleChildNoInit(Node: PVirtualNode): PVirtualNode;
-    function GetFirstVisibleNoInit(Node: PVirtualNode = nil; ConsiderChildrenAbove: Boolean = True): PVirtualNode;
+    function GetFirstVisible(Node: PVirtualNode = nil; ConsiderChildrenAbove: Boolean = True;
+      IncludeHidden: Boolean = False): PVirtualNode;
+    function GetFirstVisibleChild(Node: PVirtualNode; IncludeHidden: Boolean = False): PVirtualNode;
+    function GetFirstVisibleChildNoInit(Node: PVirtualNode; IncludeHidden: Boolean = False): PVirtualNode;
+    function GetFirstVisibleNoInit(Node: PVirtualNode = nil; ConsiderChildrenAbove: Boolean = True;
+      IncludeHidden: Boolean = False): PVirtualNode;
     procedure GetHitTestInfoAt(X, Y: Integer; Relative: Boolean; var HitInfo: THitInfo); virtual;
     function GetLast(Node: PVirtualNode = nil; ConsiderChildrenAbove: Boolean = False): PVirtualNode;
     function GetLastInitialized(Node: PVirtualNode = nil; ConsiderChildrenAbove: Boolean = False): PVirtualNode;
     function GetLastNoInit(Node: PVirtualNode = nil; ConsiderChildrenAbove: Boolean = False): PVirtualNode;
     function GetLastChild(Node: PVirtualNode): PVirtualNode;
     function GetLastChildNoInit(Node: PVirtualNode): PVirtualNode;
-    function GetLastVisible(Node: PVirtualNode = nil; ConsiderChildrenAbove: Boolean = True): PVirtualNode;
-    function GetLastVisibleChild(Node: PVirtualNode): PVirtualNode;
-    function GetLastVisibleChildNoInit(Node: PVirtualNode): PVirtualNode;
-    function GetLastVisibleNoInit(Node: PVirtualNode = nil; ConsiderChildrenAbove: Boolean = True): PVirtualNode;
+    function GetLastVisible(Node: PVirtualNode = nil; ConsiderChildrenAbove: Boolean = True;
+      IncludeHidden: Boolean = False): PVirtualNode;
+    function GetLastVisibleChild(Node: PVirtualNode; IncludeHidden: Boolean = False): PVirtualNode;
+    function GetLastVisibleChildNoInit(Node: PVirtualNode; IncludeHidden: Boolean = False): PVirtualNode;
+    function GetLastVisibleNoInit(Node: PVirtualNode = nil; ConsiderChildrenAbove: Boolean = True;
+      IncludeHidden: Boolean = False): PVirtualNode;
     function GetMaxColumnWidth(Column: TColumnIndex; UseSmartColumnWidth: Boolean = False): Integer;
     function GetNext(Node: PVirtualNode; ConsiderChildrenAbove: Boolean = False): PVirtualNode;
     function GetNextChecked(Node: PVirtualNode; State: TCheckState = csCheckedNormal;
@@ -3017,8 +3029,8 @@ type
     function GetNextSibling(Node: PVirtualNode): PVirtualNode;
     function GetNextVisible(Node: PVirtualNode; ConsiderChildrenAbove: Boolean = True): PVirtualNode;
     function GetNextVisibleNoInit(Node: PVirtualNode; ConsiderChildrenAbove: Boolean = True): PVirtualNode;
-    function GetNextVisibleSibling(Node: PVirtualNode): PVirtualNode;
-    function GetNextVisibleSiblingNoInit(Node: PVirtualNode): PVirtualNode;
+    function GetNextVisibleSibling(Node: PVirtualNode; IncludeHidden: Boolean = False): PVirtualNode;
+    function GetNextVisibleSiblingNoInit(Node: PVirtualNode; IncludeHidden: Boolean = False): PVirtualNode;
     function GetNodeAt(X, Y: Integer): PVirtualNode; overload;
     function GetNodeAt(X, Y: Integer; Relative: Boolean; var NodeTop: Integer): PVirtualNode; overload;
     function GetNodeData(Node: PVirtualNode): Pointer;
@@ -3035,14 +3047,14 @@ type
     function GetPreviousSibling(Node: PVirtualNode): PVirtualNode;
     function GetPreviousVisible(Node: PVirtualNode; ConsiderChildrenAbove: Boolean = True): PVirtualNode;
     function GetPreviousVisibleNoInit(Node: PVirtualNode; ConsiderChildrenAbove: Boolean = True): PVirtualNode;
-    function GetPreviousVisibleSibling(Node: PVirtualNode): PVirtualNode;
-    function GetPreviousVisibleSiblingNoInit(Node: PVirtualNode): PVirtualNode;
+    function GetPreviousVisibleSibling(Node: PVirtualNode; IncludeHidden: Boolean = False): PVirtualNode;
+    function GetPreviousVisibleSiblingNoInit(Node: PVirtualNode; IncludeHidden: Boolean = False): PVirtualNode;
     function GetSortedCutCopySet(Resolve: Boolean): TNodeArray;
     function GetSortedSelection(Resolve: Boolean): TNodeArray;
     procedure GetTextInfo(Node: PVirtualNode; Column: TColumnIndex; const AFont: TFont; var R: TRect;
       out Text: String); virtual;
     function GetTreeRect: TRect;
-    function GetVisibleParent(Node: PVirtualNode): PVirtualNode;
+    function GetVisibleParent(Node: PVirtualNode; IncludeHidden: Boolean = False): PVirtualNode;
     function HasAsParent(Node, PotentialParent: PVirtualNode): Boolean;
     function InsertNode(Node: PVirtualNode; Mode: TVTNodeAttachMode; UserData: Pointer = nil): PVirtualNode;
     procedure InvalidateChildren(Node: PVirtualNode; Recursive: Boolean);
@@ -3051,6 +3063,8 @@ type
     procedure InvalidateToBottom(Node: PVirtualNode);
     procedure InvertSelection(VisibleOnly: Boolean);
     function IsEditing: Boolean;
+    function IsEffectivelyHidden(Node: PVirtualNode): Boolean;
+    function IsEffectivelyVisible(Node: PVirtualNode): Boolean;
     function IsMouseSelecting: Boolean;
     function IterateSubtree(Node: PVirtualNode; Callback: TVTGetNodeProc; Data: Pointer; Filter: TVirtualNodeStates = [];
       DoInit: Boolean = False; ChildNodesOnly: Boolean = False): PVirtualNode;
@@ -3116,6 +3130,7 @@ type
     property HasChildren[Node: PVirtualNode]: Boolean read GetHasChildren write SetHasChildren;
     property HotNode: PVirtualNode read FCurrentHotNode;
     property IsDisabled[Node: PVirtualNode]: Boolean read GetDisabled write SetDisabled;
+    property IsHidden[Node: PVirtualNode]: Boolean read GetHidden write SetHidden;
     property IsVisible[Node: PVirtualNode]: Boolean read GetVisible write SetVisible;
     property MultiLine[Node: PVirtualNode]: Boolean read GetMultiline write SetMultiline;
     property NodeHeight[Node: PVirtualNode]: Cardinal read GetNodeHeight write SetNodeHeight;
@@ -3559,7 +3574,6 @@ type
     property OnGetNodeDataSize;
     property OnGetPopupMenu;
     property OnGetUserClipboardFormats;
-    property OnHeaderCheckBoxClick;
     property OnHeaderClick;
     property OnHeaderDblClick;
     property OnHeaderDragged;
@@ -3569,7 +3583,6 @@ type
     property OnHeaderDrawQueryElements;
     property OnHeaderHeightDblClickResize;
     property OnHeaderHeightTracking;
-    property OnHeaderImageClick;
     property OnHeaderMouseDown;
     property OnHeaderMouseMove;
     property OnHeaderMouseUp;
@@ -3805,7 +3818,6 @@ type
     property OnGetNodeWidth;
     property OnGetPopupMenu;
     property OnGetUserClipboardFormats;
-    property OnHeaderCheckBoxClick;
     property OnHeaderClick;
     property OnHeaderDblClick;
     property OnHeaderDragged;
@@ -3815,7 +3827,6 @@ type
     property OnHeaderDrawQueryElements;
     property OnHeaderHeightTracking;
     property OnHeaderHeightDblClickResize;
-    property OnHeaderImageClick;
     property OnHeaderMouseDown;
     property OnHeaderMouseMove;
     property OnHeaderMouseUp;
@@ -5420,6 +5431,7 @@ procedure TCustomVirtualTreeOptions.SetPaintOptions(const Value: TVTPaintOptions
 var
   ToBeSet,
   ToBeCleared: TVTPaintOptions;
+  Run: PVirtualNode;
 
 begin
   if FPaintOptions <> Value then
@@ -5442,20 +5454,43 @@ begin
         if not (csLoading in ComponentState) then
         begin
           {$ifdef ThemeSupport}
-            if (toThemeAware in ToBeSet + ToBeCleared) or (toUseExplorerTheme in ToBeSet + ToBeCleared) then
-            begin
-              if (toThemeAware in ToBeSet) and ThemeServices.ThemesEnabled then
-                DoStateChange([tsUseThemes])
-              else
-                if (toThemeAware in ToBeCleared) then
-                  DoStateChange([], [tsUseThemes]);
-
-              PrepareBitmaps(True, False);
-              RedrawWindow(Handle, nil, 0, RDW_INVALIDATE or RDW_VALIDATE or RDW_FRAME);
-            end
+          if (toThemeAware in ToBeSet + ToBeCleared) or (toUseExplorerTheme in ToBeSet + ToBeCleared) then
+          begin
+            if (toThemeAware in ToBeSet) and ThemeServices.ThemesEnabled then
+              DoStateChange([tsUseThemes])
             else
+              if (toThemeAware in ToBeCleared) then
+                DoStateChange([], [tsUseThemes]);
+
+            PrepareBitmaps(True, False);
+            RedrawWindow(Handle, nil, 0, RDW_INVALIDATE or RDW_VALIDATE or RDW_FRAME);
+          end
+          else
           {$endif ThemeSupport}
-          Invalidate;
+          if toShowHiddenNodes in ToBeSet + ToBeCleared then
+          begin
+            BeginUpdate;
+            InterruptValidation;
+            Run := GetFirst;
+            while Assigned(Run) do
+            begin
+              if vsHidden in Run.States then
+                if toShowHiddenNodes in ToBeSet then
+                begin
+                  Inc(FVisibleCount);
+                  AdjustTotalHeight(Run.Parent, Run.NodeHeight, True);
+                end
+                else
+                begin
+                  AdjustTotalHeight(Run.Parent, -Run.NodeHeight, True);
+                  Dec(FVisibleCount);
+                end;
+              Run := GetNext(Run);
+            end;
+            EndUpdate;
+          end
+          else
+            Invalidate;
         end;
       end;
   end;
@@ -7780,37 +7815,54 @@ procedure TVirtualTreeColumns.HandleClick(P: TPoint; Button: TMouseButton; Force
 // double click).
 
 var
+  HitInfo: TVTHeaderHitInfo;
   NewClickIndex: Integer;
-  Shift: TShiftState;
 
 begin
   // Convert vertical position to local coordinates.
   Inc(P.Y, FHeader.FHeight);
   NewClickIndex := ColumnFromPosition(P);
+  with HitInfo do
+  begin
+    X := P.X;
+    Y := P.Y;
+    Shift := FHeader.GetShiftState;
+    if DblClick then
+      Shift := Shift + [ssDouble];
+  end;
+  HitInfo.Button := Button;
+
   if (NewClickIndex > NoColumn) and (coAllowClick in Items[NewClickIndex].FOptions) and
     ((NewClickIndex = FDownIndex) or Force) then
   begin
     FClickIndex := NewClickIndex;
-    Shift := FHeader.GetShiftState;
-    if DblClick then
-      Shift := Shift + [ssDouble];
+    HitInfo.Column := NewClickIndex;
+    HitInfo.HitPosition := [hhiOnColumn];
+
     if Items[NewClickIndex].FHasImage and PtInRect(Items[NewClickIndex].FImageRect, P) then
     begin
+      Include(HitInfo.HitPosition, hhiOnIcon);
       if Items[NewClickIndex].CheckBox then
       begin
         FHeader.Treeview.UpdateColumnCheckState(Items[NewClickIndex]);
-        FHeader.Treeview.DoHeaderCheckBoxClick(NewClickIndex, Button, Shift, P.X, P.Y);
-      end
-      else
-        FHeader.Treeview.DoHeaderImageClick(NewClickIndex, Button, Shift, P.X, P.Y)
-    end
-    else
-      FHeader.Treeview.DoHeaderClick(NewClickIndex, Button, Shift, P.X, P.Y);
-    FHeader.Invalidate(Items[NewClickIndex]);
+        Include(HitInfo.HitPosition, hhiOnCheckbox);
+      end;
+    end;
   end
   else
+  begin
     FClickIndex := NoColumn;
+    HitInfo.Column := NoColumn;
+    HitInfo.HitPosition := [hhiNoWhere];
+  end;
 
+  if DblClick then
+    FHeader.Treeview.DoHeaderDblClick(HitInfo)
+  else
+    FHeader.Treeview.DoHeaderClick(HitInfo);
+
+  if not (hhiNoWhere in HitInfo.HitPosition) then
+    FHeader.Invalidate(Items[NewClickIndex]);
   if (FClickIndex > NoColumn) and (FClickIndex <> NewClickIndex) then
     FHeader.Invalidate(Items[FClickIndex]);
 end;
@@ -12497,7 +12549,7 @@ begin
     while Assigned(Child) do
     begin
       FixupTotalHeight(Child);
-      if vsVisible in Child.States then
+      if IsEffectivelyVisible(Child) then
         Inc(Node.TotalHeight, Child.TotalHeight);
       Child := Child.NextSibling;
     end;
@@ -12646,6 +12698,14 @@ begin
     Result := vsHasChildren in Node.States
   else
     Result := vsHasChildren in FRoot.States;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TBaseVirtualTree.GetHidden(Node: PVirtualNode): Boolean;
+
+begin
+  Result := vsHidden in Node.States;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -12933,7 +12993,7 @@ begin
   begin
     repeat
       Node := Node.NextSibling;
-      Result := vsVisible in Node.States;
+      Result := IsEffectivelyVisible(Node);
     until Result or (Node.NextSibling = nil);
   end;
 end;
@@ -12953,7 +13013,7 @@ begin
   begin
     repeat
       Node := Node.PrevSibling;
-      Result := vsVisible in Node.States;
+      Result := IsEffectivelyVisible(Node);
     until Result or (Node.PrevSibling = nil);
   end;
 end;
@@ -13053,7 +13113,7 @@ var
 begin
   // Find first visible child.
   Run := Parent.FirstChild;
-  while Assigned(Run) and not (vsVisible in Run.States) do
+  while Assigned(Run) and not IsEffectivelyVisible(Run) do
     Run := Run.NextSibling;
 
   Result := Assigned(Run) and (Run = Node);
@@ -13071,7 +13131,7 @@ var
 begin
   // Find last visible child.
   Run := Parent.LastChild;
-  while Assigned(Run) and not (vsVisible in Run.States) do
+  while Assigned(Run) and not IsEffectivelyVisible(Run) do
     Run := Run.PrevSibling;
 
   Result := Assigned(Run) and (Run = Node);
@@ -13711,7 +13771,7 @@ begin
           if vsExpanded in Node.States then
           begin
             AdjustTotalHeight(Node, NewHeight, True);
-            if FullyVisible[Node] then
+            if FullyVisible[Node] and not IsEffectivelyHidden(Node) then
               Inc(Integer(FVisibleCount), Count);
           end;
 
@@ -13936,6 +13996,66 @@ begin
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
+
+procedure TBaseVirtualTree.SetHidden(Node: PVirtualNode; Value: Boolean);
+
+// Sets the hidden flag of the given node according to Value.
+
+var
+  NeedUpdate: Boolean;
+
+begin
+  Assert(Assigned(Node) and (Node <> FRoot), 'Invalid parameter.');
+
+  if Value <> (vsHidden in Node.States) then
+  begin
+    InterruptValidation;
+    NeedUpdate := False;
+    if Value then
+    begin
+      Include(Node.States, vsHidden);
+      if (vsExpanded in Node.Parent.States) and not (toShowHiddenNodes in FOptions.FPaintOptions) then
+        AdjustTotalHeight(Node.Parent, -Integer(NodeHeight[Node]), True);
+      if VisiblePath[Node] then
+      begin
+        Dec(FVisibleCount);
+        NeedUpdate := True;
+      end;
+
+      if FUpdateCount = 0 then
+        DetermineHiddenChildrenFlag(Node.Parent)
+      else
+        Include(FStates, tsUpdateHiddenChildrenNeeded);
+    end
+    else
+    begin
+      Exclude(Node.States, vsHidden);
+      if (vsExpanded in Node.Parent.States) and not (toShowHiddenNodes in FOptions.FPaintOptions) then
+        AdjustTotalHeight(Node.Parent, Integer(NodeHeight[Node]), True);
+
+      if VisiblePath[Node] then
+      begin
+        Inc(FVisibleCount);
+        NeedUpdate := True;
+      end;
+
+      if vsVisible in Node.States then
+        // Update the hidden children flag of the parent.
+        // Since this node is now visible we simply have to remove the flag.
+        Exclude(Node.Parent.States, vsAllChildrenHidden);
+    end;
+
+    InvalidateCache;
+    if NeedUpdate and (FUpdateCount = 0) then
+    begin
+      ValidateCache;
+      UpdateScrollBars(True);
+      Invalidate;
+    end;
+  end;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
 procedure TBaseVirtualTree.SetImages(const Value: TCustomImageList);
 
 begin
@@ -14087,7 +14207,7 @@ begin
     UpdateEditBounds;
 
     // Stay away from touching the node cache while it is being validated.
-    if not (tsValidating in FStates) and FullyVisible[Node] then
+    if not (tsValidating in FStates) and FullyVisible[Node] and not IsEffectivelyHidden(Node) then
     begin
       InvalidateCache;
       if FUpdateCount = 0 then
@@ -14220,7 +14340,7 @@ begin
       if FSelectionCount = 0 then
         ResetRangeAnchor;
     end;
-    if FullyVisible[Node] then
+    if FullyVisible[Node] and not IsEffectivelyHidden(Node) then
       InvalidateNode(Node);
   end;
 end;
@@ -14324,7 +14444,7 @@ begin
   if Node.Align <> Value then
   begin
     Node.Align := Value;
-    if FullyVisible[Node] then
+    if FullyVisible[Node] and not IsEffectivelyHidden(Node) then
       InvalidateNode(Node);
   end;
 end;
@@ -17364,7 +17484,8 @@ begin
     Node := Node.FirstChild;
     while Assigned(Node) do
     begin
-      if vsVisible in Node.States then
+      if (vsVisible in Node.States) and (not (vsHidden in Node.States) or
+         (toShowHiddenNodes in FOptions.FPaintOptions)) then
         Inc(Result, CountVisibleChildren(Node) + 1);
       Node := Node.NextSibling;
     end;
@@ -17515,7 +17636,7 @@ begin
   begin
     // Iterate through all siblings and stop when one visible is found.
     Run := Node.FirstChild;
-    while Assigned(Run) do
+    while Assigned(Run) and not IsEffectivelyVisible(Run) do
       Run := Run.NextSibling;
     if Assigned(Run) then
       Exclude(Node.States, vsAllChildrenHidden)
@@ -18769,42 +18890,20 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.DoHeaderClick(Column: TColumnIndex; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TBaseVirtualTree.DoHeaderClick(HitInfo: TVTHeaderHitInfo);
 
 begin
   if Assigned(FOnHeaderClick) then
-    FOnHeaderClick(FHeader, Column, Button, Shift, X, Y);
+    FOnHeaderClick(FHeader, HitInfo);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.DoHeaderDblClick(Column: TColumnIndex; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TBaseVirtualTree.DoHeaderDblClick(HitInfo: TVTHeaderHitInfo);
 
 begin
   if Assigned(FOnHeaderDblClick) then
-    FOnHeaderDblClick(FHeader, Column, Button, Shift, X, Y);
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-procedure TBaseVirtualTree.DoHeaderImageClick(Column: TColumnIndex; Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
-
-begin
-  if Assigned(FOnHeaderImageClick) then
-    FOnHeaderImageClick(FHeader, Column, Button, Shift, X, Y)
-  else if Assigned(FOnHeaderClick) then
-    FOnHeaderClick(FHeader, Column, Button, Shift, X, Y)
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-procedure TBaseVirtualTree.DoHeaderCheckBoxClick(Column: TColumnIndex; Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
-
-begin
-  if Assigned(FOnHeaderCheckBoxClick) then
-    FOnHeaderCheckBoxClick(FHeader, Column, Button, Shift, X, Y);
+    FOnHeaderDblClick(FHeader, HitInfo);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -20677,7 +20776,7 @@ begin
               if not (vsInitialized in Run.States) then
                 Run := nil;
             isVisibleOnly:
-              if not FullyVisible[Run] then
+              if not FullyVisible[Run] or IsEffectivelyHidden(Run) then
                 Run := nil;
           end;
         end;
@@ -21313,7 +21412,7 @@ begin
   // Keep the current total height value of Node as it has already been applied
   // but might change in the load and fixup code. We have to adjust that afterwards.
   LastTotalHeight := Node.TotalHeight;
-  WasFullyVisible := FullyVisible[Node];
+  WasFullyVisible := FullyVisible[Node] and not IsEffectivelyHidden(Node);
 
   // Read in the new nodes.
   ReadNode(Stream, Version, Node);
@@ -21327,7 +21426,7 @@ begin
 
   // New nodes are always visible, so the visible node count has been increased already.
   // If Node is now invisible we have to take back this increment and don't need to add any visible child node.
-  if not FullyVisible[Node] then
+  if not FullyVisible[Node] or IsEffectivelyHidden(Node) then
   begin
     if WasFullyVisible then
       Dec(FVisibleCount);
@@ -21568,9 +21667,9 @@ begin
           AdjustTotalCount(Destination.Parent, Node.TotalCount, True);
 
           // Add the new node's height only if its parent is expanded.
-          if Destination.Parent.States * [vsExpanded, vsVisible] = [vsExpanded, vsVisible] then
+          if (vsExpanded in Destination.Parent.States) and IsEffectivelyVisible(Node) then
             AdjustTotalHeight(Destination.Parent, Node.TotalHeight, True);
-          if FullyVisible[Node] then
+          if FullyVisible[Node] and not IsEffectivelyHidden(Node) then
             Inc(FVisibleCount, CountVisibleChildren(Node) + 1);
         end;
       amInsertAfter:
@@ -21598,9 +21697,9 @@ begin
           AdjustTotalCount(Destination.Parent, Node.TotalCount, True);
 
           // Add the new node's height only if its parent is expanded.
-          if Destination.Parent.States * [vsExpanded, vsVisible] = [vsExpanded, vsVisible] then
+          if (vsExpanded in Destination.Parent.States) and IsEffectivelyVisible(Node) then
             AdjustTotalHeight(Destination.Parent, Node.TotalHeight, True);
-          if FullyVisible[Node] then
+          if FullyVisible[Node] and not IsEffectivelyHidden(Node) then
             Inc(FVisibleCount, CountVisibleChildren(Node) + 1);
         end;
       amAddChildFirst:
@@ -21634,9 +21733,9 @@ begin
           Include(Destination.States, vsHasChildren);
           AdjustTotalCount(Destination, Node.TotalCount, True);
           // Add the new node's height only if its parent is expanded.
-          if Destination.States * [vsExpanded, vsVisible] = [vsExpanded, vsVisible] then
+          if (vsExpanded in Destination.Parent.States) and IsEffectivelyVisible(Node) then
             AdjustTotalHeight(Destination, Node.TotalHeight, True);
-          if FullyVisible[Node] then
+          if FullyVisible[Node] and not IsEffectivelyHidden(Node) then
             Inc(FVisibleCount, CountVisibleChildren(Node) + 1);
         end;
       amAddChildLast:
@@ -21665,9 +21764,9 @@ begin
           Include(Destination.States, vsHasChildren);
           AdjustTotalCount(Destination, Node.TotalCount, True);
           // Add the new node's height only if its parent is expanded.
-          if Destination.States * [vsExpanded, vsVisible] = [vsExpanded, vsVisible] then
+          if (vsExpanded in Destination.Parent.States) and IsEffectivelyVisible(Node) then
             AdjustTotalHeight(Destination, Node.TotalHeight, True);
-          if FullyVisible[Node] then
+          if FullyVisible[Node] and not IsEffectivelyHidden(Node) then
             Inc(FVisibleCount, CountVisibleChildren(Node) + 1);
         end;
     else
@@ -21681,7 +21780,7 @@ begin
     if (Mode <> amNoWhere) and (Node.Parent <> FRoot) then
     begin
       // If we have added a visible node then simply remove the all-children-hidden flag.
-      if vsVisible in Node.States then
+      if IsEffectivelyVisible(Node) then
         Exclude(Node.Parent.States, vsAllChildrenHidden)
       else
         // If we have added an invisible node and this is the only child node then
@@ -21742,7 +21841,7 @@ begin
     Node.States := Node.States - [vsChecking];
     Parent := Node.Parent;
     Dec(Parent.ChildCount);
-    AdjustHeight := Parent.States * [vsExpanded, vsVisible] = [vsExpanded, vsVisible];
+    AdjustHeight := (vsExpanded in Parent.States) and IsEffectivelyVisible(Node);
     if Parent.ChildCount = 0 then
     begin
       Parent.States := Parent.States - [vsAllChildrenHidden, vsHasChildren];
@@ -24625,7 +24724,7 @@ begin
       Run := Node.LastChild;
       while Assigned(Run) do
       begin
-        if ParentVisible and (vsVisible in Run.States) then
+        if ParentVisible and IsEffectivelyVisible(Run) then
           Dec(FVisibleCount);
 
         Include(Run.States, vsDeleting);
@@ -25156,7 +25255,7 @@ begin
 
   // Check whether the node is visible (determine indentation level btw.).
   Temp := Node;
-  if not (vsVisible in Temp.States) then
+  if not IsEffectivelyVisible(Temp) then
     Exit;
   Indent := 0;
   while Temp <> FRoot do
@@ -25486,7 +25585,8 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TBaseVirtualTree.GetFirstVisible(Node: PVirtualNode = nil; ConsiderChildrenAbove: Boolean = True): PVirtualNode;
+function TBaseVirtualTree.GetFirstVisible(Node: PVirtualNode = nil; ConsiderChildrenAbove: Boolean = True;
+  IncludeHidden: Boolean = False): PVirtualNode;
 
 // Returns the first visible node in the tree while optionally considering toChildrenAbove.
 // If necessary nodes are initialized on demand.
@@ -25576,11 +25676,14 @@ begin
   end
   else
     Result := nil;
+
+  if Assigned(Result) and not IncludeHidden and IsEffectivelyHidden(Result) then
+    Result := GetNextVisible(Result);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TBaseVirtualTree.GetFirstVisibleChild(Node: PVirtualNode): PVirtualNode;
+function TBaseVirtualTree.GetFirstVisibleChild(Node: PVirtualNode; IncludeHidden: Boolean = False): PVirtualNode;
 
 // Returns the first visible child node of Node. If necessary nodes are initialized on demand.
 
@@ -25589,13 +25692,13 @@ begin
     Node := FRoot;
   Result := GetFirstChild(Node);
 
-  if Assigned(Result) and not (vsVisible in Result.States) then
-    Result := GetNextVisibleSibling(Result);
+  if Assigned(Result) and (not (vsVisible in Result.States) or (not IncludeHidden and IsEffectivelyHidden(Node))) then
+    Result := GetNextVisibleSibling(Result, IncludeHidden);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TBaseVirtualTree.GetFirstVisibleChildNoInit(Node: PVirtualNode): PVirtualNode;
+function TBaseVirtualTree.GetFirstVisibleChildNoInit(Node: PVirtualNode; IncludeHidden: Boolean = False): PVirtualNode;
 
 // Returns the first visible child node of Node.
 
@@ -25603,14 +25706,14 @@ begin
   if Node = nil then
     Node := FRoot;
   Result := Node.FirstChild;
-  if Assigned(Result) and not (vsVisible in Result.States) then
-    Result := GetNextVisibleSiblingNoInit(ResulT);
+  if Assigned(Result) and (not (vsVisible in Result.States) or (not IncludeHidden and IsEffectivelyHidden(Node))) then
+    Result := GetNextVisibleSiblingNoInit(Result, IncludeHidden);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
 function TBaseVirtualTree.GetFirstVisibleNoInit(Node: PVirtualNode = nil;
-  ConsiderChildrenAbove: Boolean = True): PVirtualNode;
+  ConsiderChildrenAbove: Boolean = True; IncludeHidden: Boolean = False): PVirtualNode;
 
 // Returns the first visible node in the tree or given subtree while optionally considering toChildrenAbove.
 // No initialization is performed.
@@ -25682,6 +25785,9 @@ begin
   end
   else
     Result := nil;
+
+  if Assigned(Result) and not IncludeHidden and IsEffectivelyHidden(Result) then
+    Result := GetNextVisibleNoInit(Result);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -25924,7 +26030,8 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TBaseVirtualTree.GetLastVisible(Node: PVirtualNode = nil; ConsiderChildrenAbove: Boolean = True): PVirtualNode;
+function TBaseVirtualTree.GetLastVisible(Node: PVirtualNode = nil; ConsiderChildrenAbove: Boolean = True;
+  IncludeHidden: Boolean = False): PVirtualNode;
 
 // Returns the very last visible node in the tree while optionally considering toChildrenAbove.
 // The nodes are intialized all the way down including the result node.
@@ -25933,13 +26040,13 @@ var
   Next: PVirtualNode;
 
 begin
-  Result := GetLastVisibleChild(Node);
+  Result := GetLastVisibleChild(Node, IncludeHidden);
   if not ConsiderChildrenAbove or not (toChildrenAbove in FOptions.FPaintOptions) then
     while Assigned(Result) do
     begin
       // Test if there is a next last visible child. If not keep the node from the last run.
       // Otherwise use the next last visible child.
-      Next := GetLastVisibleChild(Result);
+      Next := GetLastVisibleChild(Result, IncludeHidden);
       if Next = nil then
         Break;
       Result := Next;
@@ -25948,7 +26055,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TBaseVirtualTree.GetLastVisibleChild(Node: PVirtualNode): PVirtualNode;
+function TBaseVirtualTree.GetLastVisibleChild(Node: PVirtualNode; IncludeHidden: Boolean = False): PVirtualNode;
 
 // Determines the last visible child of the given node and initializes it if necessary.
 
@@ -25961,8 +26068,8 @@ begin
     else
       Result := nil;
 
-  if Assigned(Result) and not (vsVisible in Result.States) then
-    Result := GetPreviousVisibleSibling(Result);
+  if Assigned(Result) and (not (vsVisible in Result.States) or (not IncludeHidden and IsEffectivelyHidden(Node))) then
+    Result := GetPreviousVisibleSibling(Result, IncludeHidden);
 
   if Assigned(Result) and not (vsInitialized in Result.States) then
     InitNode(Result);
@@ -25970,7 +26077,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TBaseVirtualTree.GetLastVisibleChildNoInit(Node: PVirtualNode): PVirtualNode;
+function TBaseVirtualTree.GetLastVisibleChildNoInit(Node: PVirtualNode; IncludeHidden: Boolean = False): PVirtualNode;
 
 // Determines the last visible child of the given node without initialization.
 
@@ -25983,14 +26090,14 @@ begin
     else
       Result := nil;
 
-  if Assigned(Result) and not (vsVisible in Result.States) then
-    Result := GetPreviousVisibleSiblingNoInit(Result);
+  if Assigned(Result) and (not (vsVisible in Result.States) or (not IncludeHidden and IsEffectivelyHidden(Node))) then
+    Result := GetPreviousVisibleSiblingNoInit(Result, IncludeHidden);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
 function TBaseVirtualTree.GetLastVisibleNoInit(Node: PVirtualNode = nil;
-  ConsiderChildrenAbove: Boolean = True): PVirtualNode;
+  ConsiderChildrenAbove: Boolean = True; IncludeHidden: Boolean = False): PVirtualNode;
 
 // Returns the very last visible node in the tree while optionally considering toChildrenAbove.
 // No initialization is performed.
@@ -25999,13 +26106,13 @@ var
   Next: PVirtualNode;
 
 begin
-  Result := GetLastVisibleChildNoInit(Node);
+  Result := GetLastVisibleChildNoInit(Node, IncludeHidden);
   if not ConsiderChildrenAbove or not (toChildrenAbove in FOptions.FPaintOptions) then
     while Assigned(Result) do
     begin
       // Test if there is a next last visible child. If not keep the node from the last run.
       // Otherwise use the next last visible child.
-      Next := GetLastVisibleChildNoInit(Result);
+      Next := GetLastVisibleChildNoInit(Result, IncludeHidden);
       if Next = nil then
         Break;
       Result := Next;
@@ -26461,10 +26568,11 @@ begin
   begin
     Assert(Result <> FRoot, 'Node must not be the hidden root node.');
 
+    repeat
     // If the given node is not visible then look for a parent node which is visible, otherwise we will
     // likely go unnecessarily through a whole bunch of invisible nodes.
     if not FullyVisible[Result] then
-      Result := GetVisibleParent(Result);
+        Result := GetVisibleParent(Result, True);
 
     if ConsiderChildrenAbove and (toChildrenAbove in FOptions.FPaintOptions) then
     begin
@@ -26557,6 +26665,7 @@ begin
         until False;
       end;
     end;
+    until not Assigned(Result) or IsEffectivelyVisible(Result);
   end;
 end;
 
@@ -26576,6 +26685,7 @@ begin
   begin
     Assert(Result <> FRoot, 'Node must not be the hidden root node.');
 
+    repeat
     if ConsiderChildrenAbove and (toChildrenAbove in FOptions.FPaintOptions) then
     begin
       repeat
@@ -26617,7 +26727,7 @@ begin
       // If the given node is not visible then look for a parent node which is visible, otherwise we will
       // likely go unnecessarily through a whole bunch of invisible nodes.
       if not FullyVisible[Result] then
-        Result := GetVisibleParent(Result);
+          Result := GetVisibleParent(Result, True);
 
       // Child nodes are the first choice if possible.
       if (vsExpanded in Result.States) and Assigned(Result.FirstChild) then
@@ -26654,12 +26764,13 @@ begin
         until False;
       end;
     end;
+    until not Assigned(Result) or IsEffectivelyVisible(Result);
   end;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TBaseVirtualTree.GetNextVisibleSibling(Node: PVirtualNode): PVirtualNode;
+function TBaseVirtualTree.GetNextVisibleSibling(Node: PVirtualNode; IncludeHidden: Boolean = False): PVirtualNode;
 
 // Returns the next visible sibling after Node. Initialization is done implicitly.
 
@@ -26669,12 +26780,12 @@ begin
   Result := Node;
   repeat
     Result := GetNextSibling(Result);
-  until not Assigned(Result) or (vsVisible in Result.States);
+  until not Assigned(Result) or ((vsVisible in Result.States) and (IncludeHidden or not IsEffectivelyHidden(Result)));
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TBaseVirtualTree.GetNextVisibleSiblingNoInit(Node: PVirtualNode): PVirtualNode;
+function TBaseVirtualTree.GetNextVisibleSiblingNoInit(Node: PVirtualNode; IncludeHidden: Boolean = False): PVirtualNode;
 
 // Returns the next visible sibling after Node.
 
@@ -26684,7 +26795,7 @@ begin
   Result := Node;
   repeat
     Result := Result.NextSibling;
-  until not Assigned(Result) or (vsVisible in Result.States);
+  until not Assigned(Result) or ((vsVisible in Result.States) and (IncludeHidden or not IsEffectivelyHidden(Result)));
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -27084,7 +27195,7 @@ begin
       // child or the parent node (if there is no visible child) as result.
       if not FullyVisible[Result] then
       begin
-        Result := GetVisibleParent(Result);
+        Result := GetVisibleParent(Result, True);
         if Result = FRoot then
           Result := nil;
         Marker := GetLastVisible(Result, True);
@@ -27122,7 +27233,7 @@ begin
               repeat
                 Result := Result.Parent;
                 if Result <> FRoot then
-                  Marker := GetPreviousVisibleSibling(Result)
+                  Marker := GetPreviousVisibleSibling(Result, True)
                 else
                   Result := nil;
               until Assigned(Marker) or (Result = nil);
@@ -27146,7 +27257,7 @@ begin
               if vsVisible in Result.States then
               begin
                 // If there are visible child nodes then use the last one.
-                Marker := GetLastVisible(Result, True);
+                Marker := GetLastVisible(Result, True, True);
                 if Assigned(Marker) then
                   Result := Marker;
                 Break;
@@ -27166,7 +27277,7 @@ begin
         if Assigned(Result) and not (vsInitialized in Result.States) then
           InitNode(Result);
       end;
-    until not Assigned(Result) or (vsVisible in Result.States);
+    until not Assigned(Result) or IsEffectivelyVisible(Result);
   end;
 end;
 
@@ -27192,7 +27303,7 @@ begin
       // child or the parent node (if there is no visible child) as result.
       if not FullyVisible[Result] then
       begin
-        Result := GetVisibleParent(Result);
+        Result := GetVisibleParent(Result, True);
         if Result = FRoot then
           Result := nil;
         Marker := GetLastVisibleNoInit(Result, True);
@@ -27229,7 +27340,7 @@ begin
               repeat
                 Result := Result.Parent;
                 if Result <> FRoot then
-                  Marker := GetPreviousVisibleSiblingNoInit(Result)
+                  Marker := GetPreviousVisibleSiblingNoInit(Result, True)
                 else
                   Result := nil;
               until Assigned(Marker) or (Result = nil);
@@ -27249,7 +27360,7 @@ begin
               if vsVisible in Result.States then
               begin
                 // If there are visible child nodes then use the last one.
-                Marker := GetLastVisibleNoInit(Result, True);
+                Marker := GetLastVisibleNoInit(Result, True, True);
                 if Assigned(Marker) then
                   Result := Marker;
                 Break;
@@ -27266,13 +27377,13 @@ begin
           until False;
         end;
       end;
-    until not Assigned(Result) or (vsVisible in Result.States);
+    until not Assigned(Result) or IsEffectivelyVisible(Result);
   end;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TBaseVirtualTree.GetPreviousVisibleSibling(Node: PVirtualNode): PVirtualNode;
+function TBaseVirtualTree.GetPreviousVisibleSibling(Node: PVirtualNode; IncludeHidden: Boolean = False): PVirtualNode;
 
 // Returns the previous visible sibling before Node. Initialization is done implicitly.
 
@@ -27282,12 +27393,13 @@ begin
   Result := Node;
   repeat
     Result := GetPreviousSibling(Result);
-  until not Assigned(Result) or (vsVisible in Result.States);
+  until not Assigned(Result) or ((vsVisible in Result.States) and (IncludeHidden or not IsEffectivelyHidden(Result)));
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TBaseVirtualTree.GetPreviousVisibleSiblingNoInit(Node: PVirtualNode): PVirtualNode;
+function TBaseVirtualTree.GetPreviousVisibleSiblingNoInit(Node: PVirtualNode;
+  IncludeHidden: Boolean = False): PVirtualNode;
 
 // Returns the previous visible sibling before Node.
 
@@ -27297,7 +27409,7 @@ begin
   Result := Node;
   repeat
     Result := Result.PrevSibling;
-  until not Assigned(Result) or (vsVisible in Result.States);
+  until not Assigned(Result) or ((vsVisible in Result.States) and (IncludeHidden or not IsEffectivelyHidden(Result)));
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -27480,7 +27592,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TBaseVirtualTree.GetVisibleParent(Node: PVirtualNode): PVirtualNode;
+function TBaseVirtualTree.GetVisibleParent(Node: PVirtualNode; IncludeHidden: Boolean = False): PVirtualNode;
 
 // Returns the first (nearest) parent node of Node which is visible.
 // This method is one of the seldom cases where the hidden root node could be returned.
@@ -27490,7 +27602,7 @@ begin
   Assert(Node <> FRoot, 'Node must not be the hidden root node.');
 
   Result := Node.Parent;
-  while (Result <> FRoot) and not FullyVisible[Result] do
+  while (Result <> FRoot) and (not FullyVisible[Result] or (not IncludeHidden and IsEffectivelyHidden(Result))) do
     Result := Result.Parent;
 end;
 
@@ -27677,7 +27789,7 @@ begin
     if (Node = nil) or (Node = FRoot) then
       Invalidate
     else
-      if (vsInitialized in Node.States) and (vsVisible in Node.States) then
+      if (vsInitialized in Node.States) and IsEffectivelyVisible(Node) then
       begin
         R := GetDisplayRect(Node, -1, False);
         if R.Top < ClientHeight then
@@ -27753,6 +27865,27 @@ function TBaseVirtualTree.IsEditing: Boolean;
 
 begin
   Result := tsEditing in FStates;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TBaseVirtualTree.IsEffectivelyHidden(Node: PVirtualNode): Boolean;
+
+// Checks if a node will effectively be hidden as this depends on the nodes state and the paint options.
+
+begin
+  if Assigned(Node) then
+    Result := (vsHidden in Node.States) and not (toShowHiddenNodes in FOptions.FPaintOptions)
+  else
+    Result := False;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TBaseVirtualTree.IsEffectivelyVisible(Node: PVirtualNode): Boolean;
+
+begin
+  Result := (vsVisible in Node.States) and not IsEffectivelyHidden(Node);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -29867,7 +30000,7 @@ begin
             // Iterate through the child nodes without initializing them. We have to determine the entire height.
             Child := Node.FirstChild;
             repeat
-              if vsVisible in Child.States then
+              if IsEffectivelyVisible(Child) then
                 Inc(HeightDelta, Child.TotalHeight);
               Child := Child.NextSibling;
             until Child = nil;
