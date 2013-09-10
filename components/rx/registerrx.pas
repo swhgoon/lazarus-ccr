@@ -38,6 +38,9 @@ interface
 uses
   Classes, SysUtils, LResources, LazarusPackageIntf;
 
+const
+  RxCtrllPageName = 'RX Controls';
+
 procedure Register;
 
 implementation
@@ -114,106 +117,106 @@ end;
 {$IFDEF USE_TRxAppIcon}
 procedure RegisterRxAppIcon;
 begin
-  RegisterComponents('RX',[TRxAppIcon]);
+  RegisterComponents(RxCtrllPageName,[TRxAppIcon]);
 end;
 {$ENDIF}
 {$IFDEF USE_TRXXPManifest}
 procedure RegisterRxXPMan;
 begin
-  RegisterComponents('RX',[TRXXPManifest]);
+  RegisterComponents(RxCtrllPageName,[TRXXPManifest]);
 end;
 {$ENDIF}
 
 procedure RegisterPageMngr;
 begin
-  RegisterComponents('RX',[TPageManager]);
+  RegisterComponents(RxCtrllPageName,[TPageManager]);
 end;
 
 
 procedure RegisterDualList;
 begin
-  RegisterComponents('RX',[TDualListDialog]);
+  RegisterComponents(RxCtrllPageName,[TDualListDialog]);
 end;
 
 procedure RegisterCurrEdit;
 begin
-  RegisterComponents('RX',[TCurrencyEdit]);
+  RegisterComponents(RxCtrllPageName,[TCurrencyEdit]);
 end;
 
 procedure RegisterRXSwitch;
 begin
-  RegisterComponents('RX',[TRxSwitch]);
+  RegisterComponents(RxCtrllPageName,[TRxSwitch]);
 end;
 
 procedure RegisterRXDice;
 begin
-  RegisterComponents('RX',[TRxDice]);
+  RegisterComponents(RxCtrllPageName,[TRxDice]);
 end;
 
 procedure RegisterFolderLister;
 begin
-  RegisterComponents('RX',[TFolderLister]);
+  RegisterComponents(RxCtrllPageName,[TFolderLister]);
 end;
 
 procedure RegisterRxToolBar;
 begin
-  RegisterComponents('RX',[TToolPanel]);
+  RegisterComponents(RxCtrllPageName,[TToolPanel]);
 end;
 
 procedure RegisterRxCtrls;
 begin
-  RegisterComponents('RX',[TRxLabel, TSecretPanel, TRxSpeedButton, TRxRadioGroup]);
+  RegisterComponents(RxCtrllPageName,[TRxLabel, TSecretPanel, TRxSpeedButton, TRxRadioGroup]);
 end;
 
 
 procedure RegisterChartPanel;
 begin
-  RegisterComponents('RX',[TRxChart]);
+  RegisterComponents(RxCtrllPageName,[TRxChart]);
 end;
 
 procedure RegisterAutoPanel;
 begin
-  RegisterComponents('RX',[TAutoPanel]);
+  RegisterComponents(RxCtrllPageName,[TAutoPanel]);
 end;
 
 procedure RegisterPickDate;
 begin
-  RegisterComponents('RX',[TRxCalendarGrid]);
+  RegisterComponents(RxCtrllPageName,[TRxCalendarGrid]);
 end;
 
 procedure RegisterToolEdit;
 begin
-  RegisterComponents('RX',[TRxDateEdit]);
+  RegisterComponents(RxCtrllPageName,[TRxDateEdit]);
 end;
 
 procedure RegisterRxClock;
 begin
-  RegisterComponents('RX',[TRxClock]);
+  RegisterComponents(RxCtrllPageName,[TRxClock]);
 end;
 
 procedure RegisterRxSpin;
 begin
-  RegisterComponents('RX',[TRxSpinButton, TRxSpinEdit]);
+  RegisterComponents(RxCtrllPageName,[TRxSpinButton, TRxSpinEdit]);
 end;
 
 procedure RegisterRxTimeEdit;
 begin
-  RegisterComponents('RX',[TRxTimeEdit]);
+  RegisterComponents(RxCtrllPageName,[TRxTimeEdit]);
 end;
 
 procedure RegisterRxAboutDialog;
 begin
-  RegisterComponents('RX',[TRxAboutDialog]);
+  RegisterComponents(RxCtrllPageName,[TRxAboutDialog]);
 end;
 
 procedure RegisterRxViewsPanel;
 begin
-  RegisterComponents('RX',[TRxViewsPanel]);
+  RegisterComponents(RxCtrllPageName,[TRxViewsPanel]);
 end;
 
 procedure RegisterRxMDI;
 begin
-  RegisterComponents('RX',[TRxMDICloseButton, TRxMDIPanel, TRxMDITasks]);
+  RegisterComponents(RxCtrllPageName,[TRxMDICloseButton, TRxMDIPanel, TRxMDITasks]);
 end;
 
 procedure RegisterRxHistoryNavigator;

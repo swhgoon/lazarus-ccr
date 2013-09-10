@@ -143,6 +143,7 @@ type
 
 implementation
 uses LResources, vclutils, rxconst;
+//  LCLProc;
 
 
 { TRxMDICloseButton }
@@ -465,7 +466,16 @@ end;
 procedure TRxMDITasks.ChildWindowsShowLast;
 var
   CC:TControl;
+  i:integer;
 begin
+{
+  DebugLn(['FMainPanel.ControlCount =  ',  FMainPanel.ControlCount]);
+  for i:=0 to  FMainPanel.ControlCount-1 do
+    DebugLn(['FMainPanel.Controls[',i,'].Name =  ',  FMainPanel.Controls[i].Name]);
+}
+
+
+
   if (FMainPanel.ControlCount>1) then
   begin
     CC:=FMainPanel.Controls[FMainPanel.ControlCount-2];
@@ -481,6 +491,8 @@ procedure TRxMDITasks.DoCloseAll(AIgnoreBtn: TRxMDIButton);
 var
   i:integer;
 begin
+//  DebugLn('DoCloseAll');
+
   for i:=ComponentCount-1 downto 0 do
   begin
     if (Components[i] is TRxMDIButton) and (TRxMDIButton(Components[i]) <> AIgnoreBtn) then
@@ -660,6 +672,7 @@ procedure TRxMDIButton.DoCloseMenu(Sender: TObject);
 begin
   if Assigned(FNavForm) then
     FNavForm.Close;
+  Application.ProcessMessages;
 end;
 
 procedure TRxMDIButton.DoCloseAllMenu(Sender: TObject);
@@ -707,6 +720,7 @@ begin
   FNavPanel.ChildWindowsShowLast;
   FNavPanel.ShowHiddenBtnOnResize;
   CloseAction:=caFree;
+  Owner.RemoveComponent(Self);
   Free;
 end;
 
