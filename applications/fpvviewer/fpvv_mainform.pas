@@ -7,7 +7,10 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, EditBtn,
   StdCtrls, Spin, ExtCtrls, ComCtrls, Grids, ColorBox, Math,
-  fpvv_drawer, fpimage, fpcanvas, coreconrec, fpvutils;
+  Printers, PrintersDlgs, LCLIntf, LCLType,
+  fpvv_drawer, fpimage, fpcanvas, coreconrec, fpvutils,
+  fpvectorial, lasvectorialreader, svgvectorialwriter,
+  dxfvectorialreader, epsvectorialreader, fpvtocanvas, dxftokentotree;
 
 type
 
@@ -20,6 +23,8 @@ type
     btnVisualize: TButton;
     Button1: TButton;
     Button2: TButton;
+    buttonPrint: TButton;
+    buttonAdjust: TButton;
     buttonViewDebugInfo: TButton;
     buttonRenderingTest: TButton;
     checkForceWhiteBackground: TCheckBox;
@@ -47,6 +52,8 @@ type
     procedure btnViewDXFTokensClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure buttonAdjustClick(Sender: TObject);
+    procedure buttonPrintClick(Sender: TObject);
     procedure buttonRenderingTestClick(Sender: TObject);
     procedure buttonViewDebugInfoClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -55,6 +62,7 @@ type
     procedure spinAdjustYChange(Sender: TObject);
     procedure spinScaleChange(Sender: TObject);
   private
+    FVec: TvVectorialDocument;
     procedure MyContourLineDrawingProc(z,x1,y1,x2,y2: Double);
     function FPVDebugAddItemProc(AStr: string; AParent: Pointer): Pointer;
     procedure HandleDrawerMouseWheel(Sender: TObject; Shift: TShiftState;
@@ -62,6 +70,11 @@ type
     procedure HandleDrawerPosChanged(Sender: TObject);
     procedure HandleDrawerRedraw(Sender: TObject);
     procedure ViewerDebugOutCallback(AStr: string);
+    //
+    procedure Render_PrepareFile();
+    procedure Render_DoRender(ACanvasSizeX, ACanvasSizeY,
+      ADrawerPosX, ADrawerPosY: Integer; AScale: Double);
+    procedure Render_FreeFile();
   public
     { public declarations }
     Drawer: TFPVVDrawer;
@@ -71,12 +84,6 @@ var
   frmFPVViewer: TfrmFPVViewer;
 
 implementation
-
-uses
-  fpvectorial, lasvectorialreader, svgvectorialwriter,
-  dxfvectorialreader, epsvectorialreader,
-  fpvtocanvas,
-  dxftokentotree;
 
 {$R *.lfm}
 
@@ -320,6 +327,72 @@ begin
   end;
 end;
 
+procedure TfrmFPVViewer.buttonAdjustClick(Sender: TObject);
+const
+  FPVVIEWER_MAX_IMAGE_SIZE = 1000;
+  FPVVIEWER_MIN_IMAGE_SIZE = 100;
+  FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS = 100;
+var
+  CanvasSize: TPoint;
+begin
+  Render_PrepareFile();
+  try
+    // We need to be robust, because sometimes the document size won't be given
+    // also give up drawing everything if we need more then 4MB of RAM for the image
+    // and also give some space in the image to allow for negative coordinates
+    if FVec.Width * spinScale.Value > FPVVIEWER_MAX_IMAGE_SIZE then CanvasSize.X := FPVVIEWER_MAX_IMAGE_SIZE
+    else if FVec.Width < FPVVIEWER_MIN_IMAGE_SIZE then CanvasSize.X := Drawer.Width
+    else CanvasSize.X := Round(FVec.Width * spinScale.Value);
+    if CanvasSize.X < Drawer.Width then CanvasSize.X := Drawer.Width;
+
+    if FVec.Height * spinScale.Value > FPVVIEWER_MAX_IMAGE_SIZE then CanvasSize.Y := FPVVIEWER_MAX_IMAGE_SIZE
+    else  if FVec.Height < FPVVIEWER_MIN_IMAGE_SIZE then CanvasSize.Y := Drawer.Height
+    else CanvasSize.Y := Round(FVec.Height * spinScale.Value);
+    if CanvasSize.Y < Drawer.Height then CanvasSize.Y := Drawer.Height;
+
+    Render_DoRender(Drawer.Width, Drawer.Height, 4, 4, FVec.Width / Drawer.Width);
+  finally
+    Render_FreeFile();
+  end;
+end;
+
+procedure TfrmFPVViewer.buttonPrintClick(Sender: TObject);
+var
+  printDialog: TPrintDialog;
+  ScaleX, ScaleY: Double;
+  lRectSrc, lRectDest: TRect;
+begin
+  // Create a printer selection dialog
+  printDialog := TPrintDialog.Create(Self);
+
+  // Set up print dialog options
+  printDialog.Options := [];
+
+  // if the user has selected a printer (or default), then print!
+  if printDialog.Execute then
+  begin
+    // Generate the image
+    btnVisualizeClick(Sender);
+
+    // Start printing
+    Printer.BeginDoc;
+
+    // Draw the image
+    ScaleX := LCLIntf.GetDeviceCaps(Handle, logPixelsX) / PixelsPerInch; // Don't know why, but GetDeviceCaps is returning zero...
+    ScaleY := LCLIntf.GetDeviceCaps(Handle, logPixelsY) / PixelsPerInch;
+    lRectSrc := Bounds(0, 0, Drawer.Drawing.Width, Drawer.Drawing.Height);
+    lRectDest := Bounds(0, 0, Printer.PageWidth, Printer.PageHeight);
+    Printer.Canvas.StretchDraw(
+      lRectDest,
+      Drawer.Drawing);
+
+    // Finish printing
+    Printer.EndDoc;
+  end;
+
+  printDialog.Free;
+end;
+
 procedure TfrmFPVViewer.buttonRenderingTestClick(Sender: TObject);
 var
   VecDoc: TvVectorialDocument;
@@ -446,6 +519,56 @@ end;
 procedure TfrmFPVViewer.ViewerDebugOutCallback(AStr: string);
 begin
   memoDebug.Lines.Add(AStr);
+end;
+
+procedure TfrmFPVViewer.Render_PrepareFile;
+begin
+  // First check the in input
+  if editFileName.FileName = '' then Exit; // silent exit in this simple case
+  //if not CheckInput() then Exit;
+
+  notebook.PageIndex := 0;
+
+  FVec := TvVectorialDocument.Create;
+
+  // If we desire, force a encoding for the read operation
+  if comboEncoding.ItemIndex > 0 then
+    FVec.ForcedEncodingOnRead := comboEncoding.Text
+  else FVec.ForcedEncodingOnRead := '';
+
+  FVec.ReadFromFile(editFileName.FileName);
+end;
+
+procedure TfrmFPVViewer.Render_DoRender(ACanvasSizeX, ACanvasSizeY,
+  ADrawerPosX, ADrawerPosY: Integer; AScale: Double);
+const
+  FPVVIEWER_MAX_IMAGE_SIZE = 1000;
+  FPVVIEWER_MIN_IMAGE_SIZE = 100;
+  FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS = 100;
+begin
+  // Show document properties
+  labelFileEncoding.Caption := 'File encoding: ' + FVec.Encoding;
+
+  Drawer.Drawing.Width := ACanvasSizeX;
+  Drawer.Drawing.Height := ACanvasSizeY;
+  Drawer.Drawing.Canvas.Brush.Color := clWhite;
+  Drawer.Drawing.Canvas.Brush.Style := bsSolid;
+  Drawer.Drawing.Canvas.FillRect(0, 0, Drawer.Drawing.Width, Drawer.Drawing.Height);
+  if checkForceWhiteBackground.Checked then FVec.GetPageAsVectorial(0).BackgroundColor := colWhite;
+  if not checkForceWhiteBackground.Checked then
+    FVec.GetPageAsVectorial(0).DrawBackground(Drawer.Drawing.Canvas);
+  FVec.GetPageAsVectorial(0).Render(
+    Drawer.Drawing.Canvas,
+    FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS + ADrawerPosX,
+    Drawer.Drawing.Height - FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS + ADrawerPosY,
+    spinScale.Value,
+    -1 * spinScale.Value);
+  Drawer.Invalidate;
+end;
+
+procedure TfrmFPVViewer.Render_FreeFile;
+begin
+  FVec.Free;
 end;
 
 end.
