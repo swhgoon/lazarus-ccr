@@ -14,15 +14,18 @@ type
   { TformTestHttp }
 
   TformTestHttp = class(TForm)
-    buttonVideoHEADTest: TButton;
+    buttonHttpTest: TButton;
+    checkProxy: TCheckBox;
+    comboRequest: TComboBox;
     comboUserAgent: TComboBox;
     comboURL: TComboBox;
     editProxy: TEdit;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
+    Label4: TLabel;
     memoTestHttpDebug: TMemo;
-    procedure buttonVideoHEADTestClick(Sender: TObject);
+    procedure buttonHttpTestClick(Sender: TObject);
   private
     { private declarations }
   public
@@ -50,7 +53,7 @@ uses httpsend;
 
 { TformTestHttp }
 
-procedure TformTestHttp.buttonVideoHEADTestClick(Sender: TObject);
+procedure TformTestHttp.buttonHttpTestClick(Sender: TObject);
 var
   Client: THttpSend;
   ContentsList: TStringList;
@@ -61,26 +64,26 @@ begin
   Client := THttpSend.Create;
   ContentsList := TStringList.Create;
   try
+    // Preparation of headers and proxy
     Client.Headers.Add('Accept:	text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8');
     Client.Headers.Add('Accept-Language:	en-gb,en;q=0.5');
     //Client.Headers.Add('Accept-Encoding:	gzip,deflate');
     Client.Headers.Add('Accept-Charset:	utf-8;q=0.7,*;q=0.7'); // ISO-8859-1,
     Client.UserAgent := comboUserAgent.Text;
-    if editProxy.Text <> '' then
+    if checkProxy.Checked then
     begin
       Client.ProxyHost := editProxy.Text;
       Client.ProxyPort := '80';
     end;
 
-    Client.HttpMethod('GET', AURL);
-
-//    Client.Headers;
+    // Make the syncronous request via Synapse
+    Client.HttpMethod(comboRequest.Text, AURL);
 
     Client.Document.Position := 0;
     ContentsList.Clear();
     ContentsList.LoadFromStream(Client.Document);
     memoTestHttpDebug.Clear();
-    memoTestHttpDebug.Lines.Add(Format('Loading page: %s', [AURL]));
+    memoTestHttpDebug.Lines.Add(Format('Requesting HTTP %s to: %s', [comboRequest.Text, AURL]));
     memoTestHttpDebug.Lines.Add('');
     memoTestHttpDebug.Lines.Add('HTTP Headers:');
     memoTestHttpDebug.Lines.Add('');
