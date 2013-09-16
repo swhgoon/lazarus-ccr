@@ -1,0 +1,91 @@
+object formTestHttp: TformTestHttp
+  Left = 241
+  Height = 401
+  Top = 145
+  Width = 462
+  Caption = 'formTestHttp'
+  ClientHeight = 401
+  ClientWidth = 462
+  LCLVersion = '1.1'
+  object buttonVideoHEADTest: TButton
+    Left = 8
+    Height = 25
+    Top = 88
+    Width = 195
+    Caption = 'Test HTTP HEAD to Video'
+    OnClick = buttonVideoHEADTestClick
+    TabOrder = 0
+  end
+  object memoTestHttpDebug: TMemo
+    Left = 8
+    Height = 274
+    Top = 120
+    Width = 448
+    Lines.Strings = (
+      'memoTestHttpDebug'
+    )
+    ScrollBars = ssVertical
+    TabOrder = 1
+  end
+  object Label1: TLabel
+    Left = 10
+    Height = 15
+    Top = 11
+    Width = 24
+    Caption = 'URL:'
+    ParentColor = False
+  end
+  object comboURL: TComboBox
+    Left = 40
+    Height = 23
+    Top = 8
+    Width = 416
+    ItemHeight = 15
+    ItemIndex = 0
+    Items.Strings = (
+      'http://file31.content-video.ru/Volume18/mp4/2013/08/20/2013_08_20_RIAMERCEDESmix1_mwyitzcc.0il.mp4'
+    )
+    TabOrder = 2
+    Text = 'http://file31.content-video.ru/Volume18/mp4/2013/08/20/2013_08_20_RIAMERCEDESmix1_mwyitzcc.0il.mp4'
+  end
+  object Label2: TLabel
+    Left = 10
+    Height = 15
+    Top = 36
+    Width = 61
+    Caption = 'User Agent:'
+    ParentColor = False
+  end
+  object comboUserAgent: TComboBox
+    Left = 80
+    Height = 23
+    Top = 32
+    Width = 376
+    ItemHeight = 15
+    ItemIndex = 3
+    Items.Strings = (
+      'FPBrowser/1.0 (Mobile; U; en-GB)'
+      'Opera/9.80 (iPhone; Opera Mini/6.5.1.23995/27.1227; U; pt) Presto/2.8.119 Version/11.10'
+      'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.7.12) Gecko/20060101 Firefox/1.0.8'
+      'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.66 Safari/537.36'
+    )
+    TabOrder = 3
+    Text = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.66 Safari/537.36'
+  end
+  object Label3: TLabel
+    Left = 10
+    Height = 15
+    Top = 64
+    Width = 32
+    Caption = 'Proxy:'
+    ParentColor = False
+  end
+  object editProxy: TEdit
+    Left = 81
+    Height = 23
+    Top = 58
+    Width = 168
+    TabOrder = 4
+    Text = 'editProxy'
+  end
+end

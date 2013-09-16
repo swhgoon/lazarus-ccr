@@ -5,9 +5,12 @@ unit browsermodules;
 interface
 
 uses
-  Classes, SysUtils; 
+  Classes, SysUtils;
 
 type
+
+  TBrowserModuleUIElement = (bmueEnabledDisableMenu, bmueCommandsSubmenu);
+  TBrowserModuleUIElements = set of TBrowserModuleUIElement;
 
   { TBrowserModule }
 
@@ -16,7 +19,14 @@ type
     ShortDescription: string;
     Activated: Boolean;
     constructor Create; virtual;
+    //
+    function GetModuleUIElements(): TBrowserModuleUIElements; virtual;
+    // For active/disabled modules
     function HandleOnPageLoad(AInput: string; out AOutput: string): Boolean; virtual;
+    // For expansions
+    function GetCommandCount: Integer; virtual;
+    function GetCommandName(AID: Integer): string; virtual;
+    procedure ExecuteCommand(AID: Integer); virtual;
   end;
 
 procedure RegisterBrowserModule(AModule: TBrowserModule);
@@ -52,10 +62,30 @@ begin
 
 end;
 
+function TBrowserModule.GetModuleUIElements: TBrowserModuleUIElements;
+begin
+  Result := [bmueEnabledDisableMenu];
+end;
+
 function TBrowserModule.HandleOnPageLoad(AInput: string; out AOutput: string): Boolean;
 begin
   AOutput := '';
   Result := False;
+end;
+
+function TBrowserModule.GetCommandCount: Integer;
+begin
+  Result := 0;
+end;
+
+function TBrowserModule.GetCommandName(AID: Integer): string;
+begin
+  Result := '';
+end;
+
+procedure TBrowserModule.ExecuteCommand(AID: Integer);
+begin
+
 end;
 
 initialization

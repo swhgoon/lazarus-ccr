@@ -123,6 +123,7 @@ type
     procedure InitializeForm();
     procedure UpdateModulesMenu();
     procedure HandleModuleMenuItemClick(Sender: TObject);
+    procedure HandleModuleCommandMenuItemClick(Sender: TObject);
     function  GetCurrentPageLoader: TPageLoader;
     procedure HandlePageChanged(Sender: TObject);
   public
@@ -310,9 +311,10 @@ end;
 
 procedure TformBrowser.UpdateModulesMenu;
 var
-  lItem: TMenuItem;
+  lItem, lSubItem: TMenuItem;
   lModule: TBrowserModule;
-  i: Integer;
+  i, j: Integer;
+  lModuleUIElements: TBrowserModuleUIElements;
 begin
   // First remove any existing modules
   menuToolsModules.Clear;
@@ -320,12 +322,36 @@ begin
   // Now add all modules and their state
   for i := 0 to GetBrowserModuleCount() - 1 do
   begin
-    lModule := GetBrowserModule(0);
-    lItem := TMenuItem.Create(nil);
-    lItem.Caption := lModule.ShortDescription;
-    lItem.Checked := lModule.Activated;
-    lItem.OnClick := HandleModuleMenuItemClick;
-    menuToolsModules.Add(lItem);
+    lModule := GetBrowserModule(i);
+
+    lModuleUIElements := lModule.GetModuleUIElements();
+
+    // ----
+    if bmueEnabledDisableMenu in lModuleUIElements then
+    begin
+      lItem := TMenuItem.Create(nil);
+      lItem.Caption := lModule.ShortDescription;
+      lItem.Checked := lModule.Activated;
+      lItem.OnClick := HandleModuleMenuItemClick;
+      menuToolsModules.Add(lItem);
+    end;
+    // ----
+    if bmueCommandsSubmenu in lModuleUIElements then
+    begin
+      lItem := TMenuItem.Create(nil);
+      lItem.Caption := Format('Commands from module %s', [lModule.ShortDescription]);
+
+      for j := 0 to lModule.GetCommandCount()-1 do
+      begin
+        lSubItem := TMenuItem.Create(nil);
+        lSubItem.Caption := lModule.GetCommandName(j);
+        lSubItem.OnClick := HandleModuleCommandMenuItemClick;
+        lSubItem.Tag := PtrInt(lModule);
+        lItem.Add(lSubItem);
+      end;
+
+      menuToolsModules.Add(lItem);
+    end;
   end;
 end;
 
@@ -342,6 +368,18 @@ begin
   lModuleNum := lItem.Parent.IndexOf(lItem);
   lModule := GetBrowserModule(lModuleNum);
   lModule.Activated := lNewState;
+end;
+
+procedure TformBrowser.HandleModuleCommandMenuItemClick(Sender: TObject);
+var
+  lItem: TMenuItem;
+  lCommandNum: Integer;
+  lModule: TBrowserModule;
+begin
+  lItem := Sender as TMenuItem;
+  lModule := TBrowserModule(lItem.Tag);
+  lCommandNum := lItem.Parent.IndexOf(lItem);
+  lModule.ExecuteCommand(lCommandNum);
 end;
 
 function TformBrowser.GetCurrentPageLoader: TPageLoader;
@@ -920,13 +958,13 @@ begin
   Pt1 := Viewer.ScreenToClient(Pt);
   TitleStr := Viewer.TitleAttr;
   if (TitleStr = '') or not PtInRect(Viewer.ClientRect, Pt1)then
-    begin
+  begin
     OldTitle := '';
     CloseAll;
     Exit;
-    end;
+  end;
   if TitleStr <> OldTitle then
-    begin
+  begin
     TimerCount := 0;
     OldTitle := TitleStr;
     HintWindow.ReleaseHandle;
