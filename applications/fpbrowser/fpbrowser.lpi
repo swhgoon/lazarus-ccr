@@ -178,6 +178,7 @@
         <Filename Value="mod_testhttp.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="formTestHttp"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="mod_testhttp"/>
       </Unit14>
