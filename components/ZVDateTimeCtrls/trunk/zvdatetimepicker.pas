@@ -164,6 +164,7 @@ type
     FConfirmedDateTime: TDateTime;
     FNoEditingDone: Integer;
     FAllowDroppingCalendar: Boolean;
+    FChangeInRecursiveCall: Boolean;
 
     function AreSeparatorsStored: Boolean;
     function GetChecked: Boolean;
@@ -2377,9 +2378,6 @@ begin
 end;
 
 procedure TCustomZVDateTimePicker.UpdateDate;
-const
-  InRecursiveCall: Boolean = False;
-
 var
   W: Array[1..3] of Word;
   WT: Array[TTimeTextPart] of Word;
@@ -2397,9 +2395,9 @@ begin
       FDateTime := ComposeDateTime(FMinDate, FDateTime);
   end;
 
-  if not InRecursiveCall then begin // we'll skip the next part in
+  if not FChangeInRecursiveCall then begin // we'll skip the next part in
          // recursive calls which could be made through Change or UndoChanges
-    InRecursiveCall := True;
+    FChangeInRecursiveCall := True;
     try
       if FUserChanging > 0 then begin // this means that the change is caused by user interaction
         try
@@ -2411,7 +2409,7 @@ begin
       end else
         FConfirmedDateTime := FDateTime;
     finally
-      InRecursiveCall := False;
+      FChangeInRecursiveCall := False;
     end;
   end;
 
@@ -3332,6 +3330,7 @@ begin
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, cx, cy);
 
+  FChangeInRecursiveCall := False;
   FNoEditingDone := 0;
   FArrowShape := asModernSmaller;
   FAllowDroppingCalendar := True;
