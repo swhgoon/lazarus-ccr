@@ -333,24 +333,25 @@ const
   FPVVIEWER_MIN_IMAGE_SIZE = 100;
   FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS = 100;
 var
-  CanvasSize: TPoint;
+  lSpaceForNegCoords: TPoint;
+  lCurPage: TvPage;
+  lZoom: Double;
+  lCanvasWidth: Integer;
 begin
   Render_PrepareFile();
   try
-    // We need to be robust, because sometimes the document size won't be given
-    // also give up drawing everything if we need more then 4MB of RAM for the image
-    // and also give some space in the image to allow for negative coordinates
-    if FVec.Width * spinScale.Value > FPVVIEWER_MAX_IMAGE_SIZE then CanvasSize.X := FPVVIEWER_MAX_IMAGE_SIZE
-    else if FVec.Width < FPVVIEWER_MIN_IMAGE_SIZE then CanvasSize.X := Drawer.Width
-    else CanvasSize.X := Round(FVec.Width * spinScale.Value);
-    if CanvasSize.X < Drawer.Width then CanvasSize.X := Drawer.Width;
+    lCurPage := FVec.GetPage(0);
+    lCurPage.CalculateDocumentSize();
 
-    if FVec.Height * spinScale.Value > FPVVIEWER_MAX_IMAGE_SIZE then CanvasSize.Y := FPVVIEWER_MAX_IMAGE_SIZE
-    else  if FVec.Height < FPVVIEWER_MIN_IMAGE_SIZE then CanvasSize.Y := Drawer.Height
-    else CanvasSize.Y := Round(FVec.Height * spinScale.Value);
-    if CanvasSize.Y < Drawer.Height then CanvasSize.Y := Drawer.Height;
-
-    Render_DoRender(Drawer.Width, Drawer.Height, 4, 4, FVec.Width / Drawer.Width);
+    lCanvasWidth := Drawer.Width;
+    lZoom := (Drawer.Width / lCurPage.Width) * 0.8;
+    spinScale.Value := lZoom;
+    // Centralizes the image in the canvas
+    lSpaceForNegCoords.X := Round(lCurPage.MinX * -1 * lZoom + Drawer.Width * 0.1);
+    lSpaceForNegCoords.Y := Round(lCurPage.MinY * lZoom - Drawer.Height * 0.1);
+    spinAdjustX.Value := lSpaceForNegCoords.X - FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS;
+    spinAdjustY.Value := lSpaceForNegCoords.Y + FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS;
+    Render_DoRender(Drawer.Width, Drawer.Height, lSpaceForNegCoords.X, lSpaceForNegCoords.Y, lZoom);
   finally
     Render_FreeFile();
   end;
@@ -559,10 +560,10 @@ begin
     FVec.GetPageAsVectorial(0).DrawBackground(Drawer.Drawing.Canvas);
   FVec.GetPageAsVectorial(0).Render(
     Drawer.Drawing.Canvas,
-    FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS + ADrawerPosX,
-    Drawer.Drawing.Height - FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS + ADrawerPosY,
-    spinScale.Value,
-    -1 * spinScale.Value);
+    ADrawerPosX,
+    Drawer.Drawing.Height + ADrawerPosY,
+    AScale,
+    -1 * AScale);
   Drawer.Invalidate;
 end;
 

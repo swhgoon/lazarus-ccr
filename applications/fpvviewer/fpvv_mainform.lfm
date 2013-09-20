@@ -8,7 +8,7 @@ object frmFPVViewer: TfrmFPVViewer
   ClientWidth = 485
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '1.1'
+  LCLVersion = '1.3'
   object notebook: TNotebook
     Left = 0
     Height = 424
