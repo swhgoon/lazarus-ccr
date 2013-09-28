@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, db, FileUtil, LResources, Forms, Controls, Graphics,
-  Dialogs, StdCtrls, rxmemds, dbdateedit, curredit;
+  Dialogs, StdCtrls, rxmemds, dbdateedit, curredit, tooledit;
 
 type
 
@@ -21,6 +21,7 @@ type
     Label2: TLabel;
     rxData: TRxMemoryData;
     rxDataDOC_DATE: TDateField;
+    RxDateEdit1: TRxDateEdit;
     procedure Button1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
@@ -33,6 +34,8 @@ var
   Form1: TForm1; 
 
 implementation
+
+{$R *.lfm}
 
 { TForm1 }
 
@@ -48,9 +51,6 @@ procedure TForm1.Button1Click(Sender: TObject);
 begin
   CurrencyEdit1.Invalidate;
 end;
-
-initialization
-  {$I unit1.lrs}
 
 end.
 

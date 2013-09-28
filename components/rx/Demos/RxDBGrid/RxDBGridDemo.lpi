@@ -71,11 +71,10 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="RxDBGridMainUnit"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
         <TopLine Value="134"/>
-        <CursorPos X="1" Y="147"/>
+        <CursorPos X="1" Y="145"/>
         <UsageCount Value="95"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -103,10 +102,11 @@
       <Unit5>
         <Filename Value="../../rxdbgrid.pas"/>
         <UnitName Value="rxdbgrid"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="3958"/>
-        <CursorPos X="3" Y="3985"/>
+        <TopLine Value="3955"/>
+        <CursorPos X="19" Y="3985"/>
         <UsageCount Value="16"/>
         <Bookmarks Count="2">
           <Item0 X="1" Y="4281" ID="1"/>

@@ -220,6 +220,8 @@ implementation
 uses lclintf, LCLStrConsts, rxconst, rxstrutils, LResources, Forms, LCLProc,
   variants;
 
+{$R tooledit.res}
+
 type
   TPopupCalendarAccess = class(TPopupCalendar)
   end;
@@ -894,7 +896,9 @@ begin
   SetDate(DateValue);
 end;
 
+(*
 initialization
   {$I tooledit.lrs}
+*)
 end.
 

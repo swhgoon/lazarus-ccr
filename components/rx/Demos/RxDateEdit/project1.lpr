@@ -9,16 +9,13 @@ uses
   Interfaces, // this includes the LCL widgetset
   Forms,
   Unit1,
-  LResources,
   sysutils
   { you can add units after this };
-
-{$IFDEF WINDOWS}{$R project1.rc}{$ENDIF}
+{$R *.res}
 
 begin
-  {$I project1.lrs}
-  ShortDateFormat:='dd.mm.yyyy';
-  DateSeparator:='.';
+  DefaultFormatSettings.ShortDateFormat:='dd.mm.yyyy';
+  DefaultFormatSettings.DateSeparator:='.';
   Application.Initialize;
   Application.CreateForm(TForm1, Form1);
   Application.Run;
