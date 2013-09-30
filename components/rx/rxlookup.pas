@@ -1510,7 +1510,7 @@ begin
   FKeyField := nil;
   FDisplayField := nil;
   DataSet:=nil;
-  if FLookupDataLink.Active and (FLookupField <> '') then
+  if FLookupDataLink.Active and (FLookupField <> '') and (FFieldList.Count>FLookupDisplayIndex) and (FLookupDisplayIndex>=0) then
   begin
     CheckNotCircular;
     DataSet := FLookupDataLink.DataSet;
