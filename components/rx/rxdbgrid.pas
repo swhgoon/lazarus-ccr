@@ -3838,8 +3838,7 @@ var
   SaveBeforeScroll:TDataSetNotifyEvent;
   RCol:TRxColumn;
 begin
-  if (not (FFooterOptions.Active and DatalinkActive)) or (Columns.Count = 0) or
-     (DataSource.DataSet.RecordCount<=0) or (gsAddingAutoColumns in GridStatus)  then
+  if (not (FFooterOptions.Active and DatalinkActive)) or (Columns.Count = 0) or (gsAddingAutoColumns in GridStatus)  then
     Exit;
   //Дополнительно проверим - а стоит ли делать пробег по данным - есть ли агрегатные функции
   APresent := False;
@@ -3853,6 +3852,7 @@ begin
 
   if not APresent then
     exit;
+
 
   Inc(FInProcessCalc);
 
@@ -3898,6 +3898,12 @@ begin
   cnt:=0;
   for i := 0 to Columns.Count - 1 do
     TRxColumn(Columns[i]).Footer.ResetTestValue;
+
+  if (DataSource.DataSet.RecordCount<=0) then
+  begin
+    Dec(FInProcessCalc);
+    exit;
+  end;
 
   DHL:=THackDataLink(Datalink);
   DHS:=THackDataSet(DataSource.DataSet);
