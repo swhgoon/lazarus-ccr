@@ -1,0 +1,327 @@
+{
+  "executable":"fpc",
+  "version":"2.6.0",
+  "testkey":"-iV",
+  "testValue":"2.6.0",
+  "options": [
+   { "key":"-a",    "display":"The compiler doesn't delete the generated assembler file" }
+   ,{"key":"-al",   "display":"List sourcecode lines in assembler file", "masterkey":"-a"}
+   ,{"key":"-an",   "display":"List node info in assembler file", "masterkey":"-a" }
+   ,{"key":"-ar",   "display":"List register allocation/release info in assembler file", "masterkey":"-a"}
+   ,{"key":"-at",   "display":"List temp allocation/release info in assembler file", "masterkey":"-a"}
+   ,{"key":"-A%value%", "display":"Output format:",
+      "options": [
+         { "value": "default",              "display":"Use default assembler" }
+        ,{ "value": "as",                   "display":"Assemble using GNU AS" }
+        ,{ "value": "macho",                "display":"Mach-O (Darwin, Intel 32 bit) using internal writer" }
+        ,{ "value": "nasmcoff",             "display":"COFF (Go32v2) file using Nasm"  }
+        ,{ "value": "nasmelf",              "display":"ELF32 (Linux) file using Nasm" }
+        ,{ "value": "nasmwin32Win32",       "display":"object file using Nasm" }
+        ,{ "value": "nasmwdosxWin32/WDOSX", "display":"object file using Nasm" }
+        ,{ "value": "wasm",                 "display":"Obj file using Wasm (Watcom)" }
+        ,{ "value": "nasmobj",              "display":"Obj file using Nasm" }
+        ,{ "value": "masm",                 "display":"Obj file using Masm (Microsoft)" }
+        ,{ "value": "tasm",                 "display":"Obj file using Tasm (Borland)" }
+        ,{ "value": "elf",                  "display":"ELF (Linux) using internal writer" }
+        ,{ "value": "coff",                 "display":"COFF (Go32v2) using internal writer" }
+        ,{ "value": "pecoff",               "display":"PE-COFF (Win32) using internal writer" }
+      ]}
+    ,{ "key":"-b",  "display": "Generate browser info" }
+    ,{ "key":"-bl", "display": "Generate local symbol info" }
+    ,{ "key":"-B",  "display": "Build all modules" }
+    ,{ "key":"-C3", "display": "Turn on ieee error checking for constants" }
+    ,{ "key":"-Ca%value%", "display":"Select ABI, see fpc -i for possible values"
+       ,"options": [
+          {"value": "DEFAULT"}
+          ,{"value": "SYSV"}
+          ,{"value": "AIX"}
+          ,{"value": "EABI"}
+          ,{"value": "ARMEB"}
+        ]}
+    ,{ "key":"-Cb",          "display":"Generate big-endian code" }
+    ,{ "key":"-Cc%value%",   "display":"Set default calling convention.", "type":"string" }
+    ,{ "key":"-CD",          "display":"Create also dynamic library (not supported)" }
+    ,{ "key":"-Ce",          "display":"Compilation with emulated floating point opcodes" }
+    ,{ "key":"-Cf%value%",   "display":"Select fpu instruction set to use"
+       ,"options": [
+         {"value":"X87"}
+         ,{"value":"SSE"}
+         ,{"value":"SSE2"}
+         ,{"value":"SSE3"}
+       ]}
+    ,{ "key":"-CF%value%",   "display":"Minimal floating point constant precision"
+       ,"options": [
+         {"value":"default"}
+         ,{"value":"32"}
+         ,{"value":"64"}
+       ]}
+    ,{ "key":"-Cg",          "display":"Generate PIC code" }
+    ,{ "key":"-Ch%value%",   "display":"Bytes heap (between 1023 and 67107840)"
+       , "type":"bytesize"  }
+    ,{ "key":"-Ci",          "display":"IO-checking" }
+    ,{ "key":"-Cn",          "display":"Omit linking stage" }
+    ,{ "key":"-Co",          "display":"Check overflow of integer operations" }
+    ,{ "key":"-CO",          "display":"Check for possible overflow of integer operations" }
+    ,{ "key":"-Cp%value%",   "display":"Select instruction set"
+       ,"options": [
+         {"value":"386"}
+         ,{"value":"PENTIUM"}
+         ,{"value":"PENTIUM2"}
+         ,{"value":"PENTIUM3"}
+         ,{"value":"PENTIUM4"}
+         ,{"value":"PENTIUMM"}
+       ]}
+    ,{ "key":"-CPPACKSET=%value%", "display":"Packing of sets"
+       ,"options": [
+         {"value":"0"}
+         ,{"value":"1"}
+         ,{"value":"DEFAULT"}
+         ,{"value":"NORMAL"}
+         ,{"value":"2"}
+         ,{"value":"4"}
+         ,{"value":"8"}
+       ]}
+    ,{ "key":"-Cr",    "display":"Range checking" }
+    ,{ "key":"-CR",    "display":"Verify object method call validity" }
+    ,{ "key":"-Cs%value%", "display":"Set stack checking size", "type":"bytesize" }
+    ,{ "key":"-Ct",    "display":"Stack checking (for testing only, see manual)" }
+    ,{ "key":"-CX",    "display":"Create also smartlinked library" }
+    ,{ "key":"-d%value%", "display":"Defines the symbol <x>", "multiple":true, type:"string" }
+    ,{ "key":"-D", "display":"Generate a DEF file" }
+    ,{ "key":"-Dd%value%", "display":"Set description", "type":"string" }
+    ,{ "key":"-Dv%value%", "display":"Set DLL version", "type":"string" }
+    ,{ "key":"-e%value%", "display":"Set path to executable", "type":"filepath" }
+    ,{ "key":"-E",    "alias":"-E"  }
+    ,{ "key":"-fPIC", "alias":"-Cg" }
+
+    ,{ "key":"-Fa%value%", "display":"(for a program) load units <x> and [y] before uses is parsed", "type": "string", "multiple": true }
+    ,{ "key":"-Fc%value%", "display":"Set input codepage to <x>", type:"string"}
+    ,{ "key":"-FC%value%", "display":"Set RC compiler binary name to <x>", type:"string" }
+    ,{ "key":"-Fd", "display":"Disable the compiler's internal directory cache" }
+    ,{ "key":"-FD%value%", "display":"Set the directory where to search for compiler utilities", type:"dirpath", "multiple": true }
+    ,{ "key":"-Fe%value%", "display":"Redirect error output to <x>", type:"filepath" }
+    ,{ "key":"-Ff%value%", "display":"Add <x> to framework path", type:"string", "multiple": true 
+       ,"condition":"darwin" }
+    ,{ "key":"-FE%value%", "display":"Set exe/unit output path to <x>", type: "dirpath" }
+    ,{ "key":"-Fi%value%", "display":"Add <x> to include path", type: "dirpath", "multiple": true }
+    ,{ "key":"-Fl%value%", "display":"Add <x> to library path", type: "dirpath", "multiple": true }
+    ,{ "key":"-FL%value%", "display":"Use <x> as dynamic linker", type: "string" }
+    ,{ "key":"-Fm%value%", "display":"Load unicode conversion table from <x>.txt in the compiler dir", type: "filepath" }
+    ,{ "key":"-Fo%value%", "display":"Add <x> to object path", type: "dirpath", "multiple": true }
+    ,{ "key":"-Fr%value%", "display":"Load error message file <x>", type: "filepath" }
+    ,{ "key":"-FR%value%", "display":"Set resource (.res) linker to <x>", type: "filepath" }
+    ,{ "key":"-Fu%value%", "display":"Add <x> to unit path", type: "dirpath", "multiple": true }
+    ,{ "key":"-FU%value%", "display":"Set unit output path to <x>", type: "dirpath" }
+    ,{ "key":"-FW%value%", "display":"Store generated whole-program optimization feedback in <x>", type: "filepath" }
+    ,{ "key":"-Fw%value%", "display":"Load previously stored whole-program optimization feedback from <x>", type: "filepath" }
+
+    ,{ "key":"-g",  "display":"Generate debug information (default format for target)" }
+    ,{ "key":"-gc", "display":"Generate checks for pointers" }
+    ,{ "key":"-gh", "display":"Use heaptrace unit (for memory leak/corruption debugging)" }
+    ,{ "key":"-gl", "display":"Use line info unit (show more info with backtraces)" }
+    ,{ "key":"-godwarfsets", "display":"Enable DWARF 'set' type debug information (breaks gdb < 6.5)" }
+    ,{ "key":"-gostabsabsincludes", "display":"Store absolute/full include file paths in Stabs" }
+    ,{ "key":"-godwarfmethodclassprefix", "display":"Prefix method names in DWARF with class name" }
+    ,{ "key":"-gp", "display":"Preserve case in stabs symbol names" }
+    ,{ "key":"-gs", "display":"Generate Stabs debug information" }
+    ,{ "key":"-gt", "display":"Trash local variables (to detect uninitialized uses)" }
+    ,{ "key":"-gv", "display":"Generates programs traceable with Valgrind" }
+    ,{ "key":"-gw", "alias":"-gw2" }
+    ,{ "key":"-gw2", "display":"Generate DWARFv2 debug information" }
+    ,{ "key":"-gw3", "display":"Generate DWARFv3 debug information" }
+    ,{ "key":"-gw4", "display":"Generate DWARFv4 debug information (experimental)" }
+    ,{ "key":"-I%value%", "display":"Add <x> to include path", "type":"dirpath", "multiple":true }
+    ,{ "key":"-k%value%", "display":"Pass <x> to the linker", "type":"string", "multiple":true }
+    ,{ "key":"-M%value%", "display":"Set language mode to <x>"
+        ,"options": [
+           { "value":"fpc", "display":"Free Pascal dialect (default)" }
+          ,{ "value":"objfpc", "display":"FPC mode with Object Pascal support" }
+          ,{ "value":"delphi", "display":"Delphi 7 compatibility mode" }
+          ,{ "value":"tp", "display":"TP/BP 7.0 compatibility mode" }
+          ,{ "value":"macpas", "display":"Macintosh Pascal dialects compatibility mode" }
+        ]}
+    ,{ "key":"-n", "display":"Do not read the default config files" }
+    ,{ "key":"-N<x>", "display":"Node tree optimizations" }
+    ,{ "key":"-Nu", "display":"Unroll loops" }
+    ,{ "key":"-o%value%", "display":"Name of the executable produced"
+       ,"type" : "filename" }
+    ,{ "key":"-O%value%", "display":"Optimizations:"
+       ,"options": [
+          {  "value":"-", "display":"Disable optimizations" }
+          ,{ "value":"1", "display":"Level 1 optimizations (quick and debugger friendly)" }
+          ,{ "value":"2", "display":"Level 2 optimizations (-O1 + quick optimizations)" }
+          ,{ "value":"3", "display":"Level 3 optimizations (-O2 + slow optimizations)" }
+       ]
+     }
+    ,{ "key":"-OaPROC=%value%", "display":"Set the alignment for procedure entry points" }
+    ,{ "key":"-OaJUMP=%value%", "display":"Set the alignment for jump destination locations" }
+    ,{ "key":"-OaLOOP=%value%", "display":"Set alignment for loops (for, while, repeat)" }
+    ,{ "key":"-OaCONSTMIN=%value%", "display":"Minimum alignment for constants (both typed and untyped)" }
+    ,{ "key":"-OaCONSTMAX=%value%", "display":"Maximum alignment for constants (both typed and untyped)" }
+    ,{ "key":"-OaVARMIN=%value%", "display":"Minimum alignment for static and global variables" }
+    ,{ "key":"-OaVARMAX=%value%", "display":"Maximum alignment for static and global variables" }
+    ,{ "key":"-OaLOCALMIN=%value%", "display":"Minimum alignment for local variables" }
+    ,{ "key":"-OaLOCALMAX=%value%", "display":"Maximum alignment for local variables" }
+    ,{ "key":"-OaRECORDMIN=%value%", "display":"Minimum alignment for record fields" }
+    ,{ "key":"-OaRECORDMAX=%value%", "display":"Maximum alignment for record fields" }
+    ,{ "key":"-OoAll", "display":"Enable or disable whole program optimization" }
+    ,{ "key":"-OoDEVIRTCALLS", "display":"Enable or disable whole program optimization DEVIRTCALLS" }
+    ,{ "key":"-OoOPTVMTS", "display":"Enable or disable whole program optimization OPTVMTS" }
+    ,{ "key":"-OoSYMBOLLIVENESS", "display":"Enable or disable whole program optimization SYMBOLLIVENESS" }
+    ,{ "key":"-Op%value%", "display":"Set target cpu for optimizing"
+       ,"options":[
+         {"value":"REGVAR"}
+         ,{"value":"UNCERTAIN"}
+         ,{"value":"STACKFRAME"}
+         ,{"value":"PEEPHOLE"}
+         ,{"value":"ASMCSE"}
+         ,{"value":"LOOPUNROLL"}
+         ,{"value":"TAILREC"}
+         ,{"value":"CSE"}
+       ]}
+    ,{ "key":"-OW<x>", "display":"Generate whole-program optimization feedback for optimization <x>, see fpc -i for possible values" }
+    ,{ "key":"-Ow<x>", "display":"Perform whole-program optimization <x>, see fpc -i for possible values" }
+    ,{ "key":"-Os", "display":"Optimize for size rather than speed" }
+    ,{ "key":"-pg", "display":"Generate profile code for gprof (defines FPC_PROFILE)" }
+
+    ,{ "key":"-R%value%", "display":"Assembler reading style:"
+       ,"options":[
+         { "value":"default", "display":"Use default assembler for target" }
+        ,{ "value":"att", "display":"Read AT&T style assembler" }
+        ,{ "value":"intel", "display":"Read Intel style assembler" }
+       ]}
+
+    ,{ "key":"-S2", "display":"Same as -Mobjfpc", "alias":"" }
+    ,{ "key":"-Sd", "display":"Same as -Mdelphi", "alias":"" }
+    ,{ "key":"-So", "display":"Same as -Mtp", "alias":"" }
+    ,{ "key":"-Sc", "display":"Support operators like C (*=,+=,/= and -=)", "masterkey": "-S" }
+    ,{ "key":"-Sa", "display":"Turn on assertions" , "masterkey": "-S"}
+    ,{ "key":"-Se%value%", "display":"Compiler Compiler halts after the number of errors (default is 1)", "type":"int" }
+    ,{ "key":"-Sew", "display":"Compiler also halts after warnings", "type":"int" }
+    ,{ "key":"-Sen", "display":"Compiler also halts after notes", "type":"int" }
+    ,{ "key":"-Seh", "display":"Compiler also halts after hints", "type":"int" }
+    ,{ "key":"-Sg", "display":"Enable LABEL and GOTO (default in -Mtp and -Mdelphi)", "masterkey": "-S" }
+    ,{ "key":"-Sh", "display":"Use ansistrings by default instead of shortstrings", "masterkey": "-S" }
+    ,{ "key":"-Si", "display":"Turn on inlining of procedures/functions declared as \"inline\"","masterkey": "-S" }
+    ,{ "key":"-Sk", "display":"Load fpcylix unit","masterkey": "-S" }
+    ,{ "key":"-SI%value%", "display":"Set interface style"
+       ,"options": [
+        {  "value":"com", "display":"COM compatible interface (default)" }
+        ,{ "value":"corba", "display":"CORBA compatible interface" }
+        ]}
+    ,{ "key":"-Sm", "display":"Support macros like C (global)","masterkey": "-S" }
+    ,{ "key":"-Ss", "display":"Constructor name must be init (destructor must be done)","masterkey": "-S" }
+    ,{ "key":"-Sx", "display":"Enable exception keywords (default in Delphi/ObjFPC modes)","masterkey": "-S" }
+    ,{ "key":"-Sy", "display":"@<pointer> returns a typed pointer, same as $T+","masterkey": "-S" }
+
+    ,{ "key":"-s", "display":"Do not call assembler and linker" }
+    ,{ "key":"-sh", "display":"Generate script to link on host", "masterkey": "-s" }
+    ,{ "key":"-st", "display":"Generate script to link on target", "masterkey": "-s" }
+    ,{ "key":"-sr", "display":"Skip register allocation phase (use with -alr)", "masterkey": "-s" }
+
+    ,{ "key":"-T%value%", "display":"Target operating system:",
+      "options": [
+         { "value":"darwin",    "display":"Darwin/Mac OS X" }
+        ,{ "value":"emx",       "display":"OS/2 via EMX (including EMX/RSX extender)" }
+        ,{ "value":"freebsd",   "display":"FreeBSD" }
+        ,{ "value":"go32v2",    "display":"Version 2 of DJ Delorie DOS extender" }
+        ,{ "value":"iphonesim", "display":"iPhoneSimulator from iOS SDK 3.2+ (older versions: -Tdarwin)" }
+        ,{ "value":"linux",     "display":"Linux" }
+        ,{ "value":"netbsd",    "display":"NetBSD" }
+        ,{ "value":"netware",   "display":"Novell Netware Module (clib)" }
+        ,{ "value":"netwlibc",  "display":"Novell Netware Module (libc)" }
+        ,{ "value":"openbsd",   "display":"OpenBSD" }
+        ,{ "value":"os2",       "display":"OS/2 / eComStation" }
+        ,{ "value":"sunos",     "display":"SunOS/Solaris" }
+        ,{ "value":"symbian",   "display":"Symbian OS" }
+        ,{ "value":"solaris",   "display":"Solaris" }
+        ,{ "value":"watcom",    "display":"Watcom compatible DOS extender" }
+        ,{ "value":"wdosx",     "display":"WDOSX DOS extender" }
+        ,{ "value":"win32",     "display":"Windows 32 Bit" }
+        ,{ "value":"wince",     "display":"Windows CE" }
+      ]}
+    ,{ "key":"-P%value%", "display":"Target processor family:",
+      "options": [            
+         { "value":"arm",     "display":"arm"  }
+        ,{ "value":"i386",    "display":"i386" }
+        ,{ "value":"m68k",    "display":"m68k" }
+        ,{ "value":"powerpc", "display":"powerpc" }
+        ,{ "value":"sparc",   "display":"sparc"  }
+        ,{ "value":"x86_64",  "display":"x86_64" }
+        ,{ "value":"mipsel",  "display":"mipsel" }
+      ]}
+
+
+    ,{ "key":"-u%value%", "display":"Undefines the symbol", "multiple": true, "type": "string" }
+
+    ,{ "key":"-Un", "display":"Do not check where the unit name matches the file name" }
+    ,{ "key":"-Ur", "display":"Generate release unit files (never automatically recompiled)" }
+    ,{ "key":"-Us", "display":"Compile a system unit" }
+
+    ,{ "key":"-ve", "display":"Show errors (default)", "masterkey": "-v" }
+    ,{ "key":"-v0", "display":"Show nothing (except errors)", "masterkey": "-v" }
+    ,{ "key":"-vw", "display":"Show warnings", "masterkey": "-v" }
+    ,{ "key":"-vu", "display":"Show unit info", "masterkey": "-v" }
+    ,{ "key":"-vn", "display":"Show notes", "masterkey": "-v" }
+    ,{ "key":"-vt", "display":"Show tried/used files", "masterkey": "-v" }
+    ,{ "key":"-vh", "display":"Show hints", "masterkey": "-v" }
+    ,{ "key":"-vc", "display":"Show conditionals", "masterkey": "-v" }
+    ,{ "key":"-vi", "display":"Show general info", "masterkey": "-v" }
+    ,{ "key":"-vd", "display":"Show debug info", "masterkey": "-v" }
+    ,{ "key":"-vl", "display":"Show linenumbers", "masterkey": "-v" }
+    ,{ "key":"-vr", "display":"Rhide/GCC compatibility mode", "masterkey": "-v" }
+    ,{ "key":"-vs", "display":"Show time stamps", "masterkey": "-v" }
+    ,{ "key":"-vq", "display":"Show message numbers", "masterkey": "-v" }
+    ,{ "key":"-va", "display":"Show everything", "masterkey": "-v" }
+    ,{ "key":"-vx", "display":"Executable info", "masterkey": "-v" 
+       ,"condition":"win32" }
+    ,{ "key":"-vb", "display":"Write file names messages with full path", "masterkey": "-v" }
+    ,{ "key":"-vp", "display":"Write tree.log with parse tree", "masterkey": "-v" }
+    ,{ "key":"-vv", "display":"Write fpcdebug.txt with lots of debugging info", "masterkey": "-v" }
+
+    ,{ "key":"-WA", "display":"Specify native type application", "masterkey": "-W"
+       ,"condition":"win32" }
+    ,{ "key":"-Wb", "display":"Create a bundle instead of a library", "masterkey": "-W"
+       ,"condition":"darwin" }
+    ,{ "key":"-WB%value%", "display":"Set image base to ", "type":"bytesize" 
+       ,"condition":"symbian,win32"  }
+    ,{ "key":"-WC", "display":"Specify console type application ", "masterkey": "-W" 
+       ,"condition":"OS/2,win32"  }
+    ,{ "key":"-WD", "display":"Use DEFFILE to export functions of DLL or EXE", "masterkey": "-W" 
+       ,"condition":"OS/2,win32"  }
+    ,{ "key":"-We", "display":"Use external resources", "masterkey": "-W" 
+       ,"condition":"darwin" }
+    ,{ "key":"-WF", "display":"Specify full-screen type application", "masterkey": "-W" 
+       ,"condition":"OS/2"  }
+    ,{ "key":"-WG", "display":"Specify graphic type application", "masterkey": "-W" 
+       ,"condition":"OS/2,win32"  }
+    ,{ "key":"-Wi", "display":"Use internal resources", "masterkey": "-W" 
+       ,"condition":"darwin" }
+    ,{ "key":"-WI", "display":"Turn on/off the usage of import sections", "masterkey": "-W" 
+       ,"condition":"win32"  }
+    ,{ "key":"-WN", "display":"Do not generate relocation code, needed for debugging", "masterkey": "-W" 
+       ,"condition":"win32"  }
+    ,{ "key":"-WR", "display":"Generate relocation code", "masterkey": "-W"
+       ,"condition":"win32"  }
+    ,{ "key":"-WX", "display":"Enable executable stack", "masterkey": "-W" 
+       ,"condition":"linux" }
+    ,{ "key":"-Xc", "display":"Pass --shared/-dynamic to the linker", "masterkey": "-X"  
+       ,"condition":"beos,darwin,freebsd,linux" }
+    ,{ "key":"-Xd", "display":"Do not use standard library search path (needed for cross compile)", "masterkey": "-X" }
+    ,{ "key":"-Xe", "display":"Use external linker", "masterkey": "-X" }
+    ,{ "key":"-Xg", "display":"Create debuginfo in a separate file and add a debuglink section to executable", "masterkey": "-X" }
+    ,{ "key":"-XD", "display":"Try to link units dynamically", "masterkey": "-X" }
+    ,{ "key":"-Xi", "display":"Use internal linker", "masterkey": "-X" }
+    ,{ "key":"-Xm", "display":"Generate link map", "masterkey": "-X" }
+    ,{ "key":"-XM%value%", "display":"Set the name of the 'main' program routine (default is 'main')", "type":"string" }
+    ,{ "key":"-XP%value%", "display":"Prepend the binutils names with the prefix <x>", "type":"dirpath"  }
+    ,{ "key":"-Xr%value%", "display":"Set the linker's rlink-path", "type": "dirpath"
+       ,"condition":"beos,linux" }
+    ,{ "key":"-XR%value%", "display":"Prepend to all linker search paths", "type": "dirpath" 
+       ,"condition":"beos,darwin,freebsd,linux,solaris,macos"}
+    ,{ "key":"-Xs", "display":"Strip all symbols from executable", "masterkey": "-X" }
+    ,{ "key":"-XS", "display":"Try to link units statically (default, defines FPC_LINK_STATIC)", "masterkey": "-X" }
+    ,{ "key":"-Xt", "display":"Link with static libraries (-static is passed to linker)", "masterkey": "-X" }
+    ,{ "key":"-XX", "display":"Try to smartlink units (defines FPC_LINK_SMART)", "masterkey": "-X" }
+  ]
+}

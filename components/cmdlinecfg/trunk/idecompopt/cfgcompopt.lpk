@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <PathDelim Value="\"/>
+    <Name Value="cfgcompopt"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <OtherUnitFiles Value=".."/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CompilerMessages>
+          <MsgFileName Value=""/>
+        </CompilerMessages>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Files Count="13">
+      <Item1>
+        <Filename Value="optviewform.pas"/>
+        <UnitName Value="optviewform"/>
+      </Item1>
+      <Item2>
+        <Filename Value="..\cmdlinelclctrlsbox.pas"/>
+        <UnitName Value="cmdlinelclctrlsbox"/>
+      </Item2>
+      <Item3>
+        <Filename Value="..\cmdlinelclpropgrid.pas"/>
+        <UnitName Value="cmdlinelclpropgrid"/>
+      </Item3>
+      <Item4>
+        <Filename Value="..\cmdlinelclutils.pas"/>
+        <UnitName Value="cmdlinelclutils"/>
+      </Item4>
+      <Item5>
+        <Filename Value="..\cmdlinecfg.pas"/>
+        <UnitName Value="cmdlinecfg"/>
+      </Item5>
+      <Item6>
+        <Filename Value="..\cmdlinecfgjson.pas"/>
+        <UnitName Value="cmdlinecfgjson"/>
+      </Item6>
+      <Item7>
+        <Filename Value="..\cmdlinecfgparser.pas"/>
+        <UnitName Value="cmdlinecfgparser"/>
+      </Item7>
+      <Item8>
+        <Filename Value="..\cmdlinecfgui.pas"/>
+        <UnitName Value="cmdlinecfgui"/>
+      </Item8>
+      <Item9>
+        <Filename Value="..\cmdlinecfguijson.pas"/>
+        <UnitName Value="cmdlinecfguijson"/>
+      </Item9>
+      <Item10>
+        <Filename Value="..\cmdlinecfgutils.pas"/>
+        <UnitName Value="cmdlinecfgutils"/>
+      </Item10>
+      <Item11>
+        <Filename Value="..\cmdlinefpccond.pas"/>
+        <UnitName Value="cmdlinefpccond"/>
+      </Item11>
+      <Item12>
+        <Filename Value="cfgcompoptreg.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="cfgcompoptreg"/>
+      </Item12>
+      <Item13>
+        <Filename Value="optviewform.lfm"/>
+        <Type Value="LFM"/>
+      </Item13>
+    </Files>
+    <Type Value="DesignTime"/>
+    <RequiredPkgs Count="3">
+      <Item1>
+        <PackageName Value="IDEIntf"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="lcl"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="FCL"/>
+      </Item3>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
+  </Package>
+</CONFIG>

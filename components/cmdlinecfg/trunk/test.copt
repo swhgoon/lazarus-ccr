@@ -1,0 +1,28 @@
+{
+  "executable":"fpc",
+  "version":"2.6.0",
+  "testkey":"-iV",
+  "testValue":"2.6.0",
+  options: [
+    {
+      section:"execopt",
+      key:"Xm",
+      name:"generatelinkmap",
+      display:"Generate Link Map"
+    },
+    { 
+      section:"codegen",
+      key: "Cp%value%",
+      display: "Instruction set",
+      name: "instructionset",
+      options: [
+        { value: "80386", condition:"i386,x86_64" }
+        ,{ value: "PENTIUM", condition:"i386,x86_64"  }
+        ,{ value: "PENTIUM2", condition:"i386,x86_64"  }
+        ,{ value: "PENTIUM3", condition:"i386,x86_64"  }
+        ,{ value: "PENTIUM4", condition:"i386,x86_64"  }
+        ,{ value: "PENTIUMM", condition:"i386,x86_64"  }
+      ]
+    }
+  ]
+}

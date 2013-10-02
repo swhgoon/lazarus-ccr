@@ -1,0 +1,47 @@
+{
+  "paths": {
+    "display": "Paths",
+    "switches": ["-Fu","-Fi","-Fl","-FU","-o"]
+  },
+  "target": {
+    "display": "Config and Target",
+    "switches": ["-n"],
+    "platform": {
+       "display": "Target Platform",
+       "hint" : "groupbox",
+       "switches": ["-T","-P","-Op"]
+    },
+    "switches": ["-WG"]
+  },
+  "parsing": {
+    "display": "Parsing",
+    "switches": ["-M","-Sc","-Sa","-Sg","-Si","-Sm","-Ss","-St","-Sh","-R"]
+  },
+  "compiler": {
+    "display": "Compilation and Linking",
+    "switches": ["-O","-Os","-CX","-WR","-Ch","-Cs","-XX","-k"]
+  },
+  "debugging": {
+    "display": "Debugging",
+    "checks" : {
+      "display":"Checks and assertions",
+      "hint" : "groupbox",
+      "switches":["-Ci","-Cr","-Co","-Ct","-CR","-Sa"]
+    },
+    "switches": ["-g"],
+    "infos" : {
+      "display": "Info for GDB",
+      "hint" : "groupbox",
+      "switches": ["-WG", "-gl","-gv","-Xg"]
+    },
+    "otherdebug" :{
+      "display" : "Other debugging Info",
+      "hint" : "groupbox",
+      "switches":["-gh","-gt","-pg","-Xs"]
+    }
+  },
+  "verbosity": { 
+    "display": "Verbosity",
+    "switches": ["-ve","-vw", "-vn","-vh","-vi","-vp","-vc","-vx","-v0","-vd","-vu","-vt","-vl","-vb","-va","-l","-Se"]
+  }
+}
