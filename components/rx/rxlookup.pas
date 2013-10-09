@@ -1523,7 +1523,7 @@ begin
   if not (csDestroying in ComponentState) then
   begin
     if FListActive and Assigned(FDataField) then UpdateKeyValue
-    else KeyValueChanged;
+//    else KeyValueChanged;
   end;
 end;
 
