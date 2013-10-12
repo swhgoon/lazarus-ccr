@@ -88,8 +88,6 @@ type
     procedure }
   TDateDisplayOrder = (ddoDMY, ddoMDY, ddoYMD, ddoTryDefault);
 
-  TDateTextPart = (dtpDay, dtpMonth, dtpYear, dtpTime);
-
   TTimeDisplay = (tdHM,   // hour and minute
                   tdHMS,  // hour, minute and second
                   tdHMSMs // hour, minute, second and milisecond
@@ -102,7 +100,10 @@ type
   { TDateTimeKind determines if we should display date, time or both: }
   TDateTimeKind = (dtkDate, dtkTime, dtkDateTime);
 
-  TTimeTextPart = (ttpHour, ttpMinute, ttpSecond, ttpMiliSec, ttpAMPM);
+  TTextPart = 1..8;
+  TDateTimePart = (dtpDay, dtpMonth, dtpYear, dtpHour, dtpMinute,
+                                dtpSecond, dtpMiliSec, dtpAMPM);
+  TDateTimeParts = set of dtpDay..dtpMiliSec;
 
   TArrowShape = (asClassicSmaller, asClassicLarger, asModernSmaller,
                                            asModernLarger, asYetAnotherShape);
@@ -118,6 +119,8 @@ type
     FCascade: Boolean;
     FCenturyFrom, FEffectiveCenturyFrom: Word;
     FDateDisplayOrder: TDateDisplayOrder;
+    FHideDateTimeParts: TDateTimeParts;
+    FEffectiveHideDateTimeParts: set of TDateTimePart;
     FKind: TDateTimeKind;
     FLeadingZeros: Boolean;
     FNullInputAllowed: Boolean;
@@ -132,15 +135,16 @@ type
     FTrailingSeparator: Boolean;
     FUseDefaultSeparators: Boolean;
     FUserChangedText: Boolean;
+    FYearPos, FDayPos, FMonthPos: 1..3;
     FTextPart: array[1..3] of String;
-    FTimeText: array[TTimeTextPart] of String;
+    FTimeText: array[dtpHour..dtpAMPM] of String;
     FUserChanging: Integer;
     FDigitWidth: Integer;
     FTextHeight: Integer;
     FSeparatorWidth: Integer;
     FSepNoSpaceWidth: Integer;
     FTimeSeparatorWidth: Integer;
-    FSelectedTextPart: 1..8;
+    FSelectedTextPart: TTextPart;
     FRecalculatingTextSizesNeeded: Boolean;
     FJumpMinMax: Boolean;
     FAMPMWidth: Integer;
@@ -179,6 +183,7 @@ type
     procedure CheckTextEnabled;
     procedure SetDateDisplayOrder(const AValue: TDateDisplayOrder);
     procedure SetDateMode(const AValue: TDTDateMode);
+    procedure SetHideDateTimeParts(AValue: TDateTimeParts);
     procedure SetKind(const AValue: TDateTimeKind);
     procedure SetLeadingZeros(const AValue: Boolean);
     procedure SetNullInputAllowed(const AValue: Boolean);
@@ -221,8 +226,8 @@ type
     function GetSelectedText: String;
     procedure AdjustEffectiveCenturyFrom;
     procedure AdjustEffectiveDateDisplayOrder;
-    procedure SelectDateTextPart(const DateTextPart: TDateTextPart);
-    procedure SelectTimeTextPart(const TimeTextPart: TTimeTextPart);
+    procedure AdjustEffectiveHideDateTimeParts;
+    procedure SelectDateTimePart(const DateTimePart: TDateTimePart);
     procedure MoveSelectionLR(const ToLeft: Boolean);
     procedure DestroyCalendarForm;
     procedure DropDownCalendarForm;
@@ -246,8 +251,8 @@ type
     procedure ConfirmChanges; virtual;
     procedure UndoChanges; virtual;
 
-    function GetCurrentDateTextPart: TDateTextPart;
-    function GetCurrentTimeTextPart: TTimeTextPart;
+    function GetDateTimePartFromTextPart(TextPart: TTextPart): TDateTimePart;
+    function GetSelectedDateTimePart: TDateTimePart;
     procedure FontChanged(Sender: TObject); override;
     function GetTextOrigin: TPoint;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -352,6 +357,8 @@ type
              read FAutoButtonSize write SetAutoButtonSize default False;
     property AutoAdvance: Boolean
              read FAutoAdvance write FAutoAdvance default False;
+    property HideDateTimeParts: TDateTimeParts
+             read FHideDateTimeParts write SetHideDateTimeParts;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -415,6 +422,7 @@ type
     property Cascade;
     property AutoButtonSize;
     property AutoAdvance;
+    property HideDateTimeParts;
 // events:
     property OnChange;
     property OnCheckBoxChange;
@@ -468,15 +476,6 @@ function IsNullDate(DT: TDateTime): Boolean;
 begin
   Result := IsNan(DT) or IsInfinite(DT) or
             (DT > SysUtils.MaxDateTime) or (DT < SysUtils.MinDateTime);
-end;
-
-procedure Exchange(var W1, W2: Word);
-var
-  W: Word;
-begin
-  W := W1;
-  W1 := W2;
-  W2 := W;
 end;
 
 { TCustomZVDateTimePicker }
@@ -780,7 +779,7 @@ begin
       DTPicker.Invalidate;
 
     if DTPicker.FCalendarForm = nil then
-        DTPicker.FAllowDroppingCalendar := True;
+      DTPicker.FAllowDroppingCalendar := True;
 
   end;
 
@@ -801,7 +800,8 @@ begin
     FCheckBox.Enabled := Self.Enabled;
 end;
 
-procedure TCustomZVDateTimePicker.SetDateDisplayOrder(const AValue: TDateDisplayOrder);
+procedure TCustomZVDateTimePicker.SetDateDisplayOrder(
+  const AValue: TDateDisplayOrder);
 var
   PreviousEffectiveDDO: TDateDisplayOrder;
 begin
@@ -816,19 +816,24 @@ end;
 
 procedure TCustomZVDateTimePicker.SetDateMode(const AValue: TDTDateMode);
 begin
-  UpdateShowArrowButton(AValue, Kind);
   FDateMode := AValue;
+  UpdateShowArrowButton(AValue, FKind);
+end;
+
+procedure TCustomZVDateTimePicker.SetHideDateTimeParts(AValue: TDateTimeParts);
+begin
+  if FHideDateTimeParts <> AValue then begin
+    FHideDateTimeParts := AValue;
+    AdjustEffectiveHideDateTimeParts;
+  end;
 end;
 
 procedure TCustomZVDateTimePicker.SetKind(const AValue: TDateTimeKind);
 begin
   if FKind <> AValue then begin
-    UpdateShowArrowButton(FDateMode, AValue);
-
     FKind := AValue;
-    FRecalculatingTextSizesNeeded := True;
-
-    UpdateDate;
+    UpdateShowArrowButton(FDateMode, AValue);
+    AdjustEffectiveHideDateTimeParts;
   end;
 end;
 
@@ -1014,9 +1019,7 @@ procedure TCustomZVDateTimePicker.SetTimeDisplay(const AValue: TTimeDisplay);
 begin
   if FTimeDisplay <> AValue then begin
     FTimeDisplay:=AValue;
-    FRecalculatingTextSizesNeeded := True;
-
-    UpdateDate;
+    AdjustEffectiveHideDateTimeParts;
   end;
 end;
 
@@ -1024,9 +1027,7 @@ procedure TCustomZVDateTimePicker.SetTimeFormat(const AValue: TTimeFormat);
 begin
   if FTimeFormat <> AValue then begin
     FTimeFormat := AValue;
-    FRecalculatingTextSizesNeeded := True;
-
-    UpdateDate;
+    AdjustEffectiveHideDateTimeParts;
   end;
 end;
 
@@ -1087,6 +1088,8 @@ var
   C: Char;
   N: Integer;
   S: String;
+  I: TDateTimePart;
+  DateParts, TimeParts: Integer;
 begin
   if FRecalculatingTextSizesNeeded then begin
     FRecalculatingTextSizesNeeded := False;
@@ -1098,65 +1101,76 @@ begin
         FDigitWidth := N;
     end;
 
+    DateParts := 0;
+    FSepNoSpaceWidth := 0;
+    FSeparatorWidth := 0;
+    FDateWidth := 0;
+    S := '';
     if FKind in [dtkDate, dtkDateTime] then begin
 
-      FSeparatorWidth := Canvas.GetTextWidth(FDateSeparator);
-      FDateWidth := 8 * FDigitWidth + 2 * FSeparatorWidth;
+      for I := dtpDay to dtpYear do
+        if not (I in FEffectiveHideDateTimeParts) then begin
+          Inc(DateParts);
+          if I = dtpYear then begin
+            FDateWidth := FDateWidth + 4 * FDigitWidth;
 
-      if FTrailingSeparator then begin
-        FSepNoSpaceWidth := Canvas.GetTextWidth(TrimRight(FDateSeparator));
-        Inc(FDateWidth, FSepNoSpaceWidth);
-      end else
-        FSepNoSpaceWidth := 0;
+          end else
+            FDateWidth := FDateWidth + 2 * FDigitWidth;
 
-      S := FDateSeparator;
-    end else begin
-      if FSelectedTextPart < 4 then
-        FSelectedTextPart := 4;
+        end;
 
-      S := '';
-      FSeparatorWidth := 0;
-      FSepNoSpaceWidth := 0;
-      FDateWidth := 0;
-    end;
+      if DateParts > 0 then begin
+        if FTrailingSeparator then begin
+          FSepNoSpaceWidth := Canvas.GetTextWidth(TrimRight(FDateSeparator));
+          Inc(FDateWidth, FSepNoSpaceWidth);
+        end;
 
-    FAMPMWidth := 0;
-    if FKind in [dtkTime, dtkDateTime] then begin
-      S := S + FTimeSeparator;
+        if DateParts > 1 then begin
+          FSeparatorWidth := Canvas.GetTextWidth(FDateSeparator);
+          S := FDateSeparator;
 
-      FTimeSeparatorWidth := Canvas.GetTextWidth(FTimeSeparator);
-
-      case FTimeDisplay of
-        tdHM:
-          FTimeWidth := 4 * FDigitWidth + FTimeSeparatorWidth;
-        tdHMS:
-          FTimeWidth := 6 * FDigitWidth + 2 * FTimeSeparatorWidth;
-        tdHMSMs:
-          FTimeWidth := 9 * FDigitWidth + 3 * FTimeSeparatorWidth;
+          FDateWidth := FDateWidth + (DateParts - 1) * FSeparatorWidth;
+        end;
       end;
 
-      if FTimeFormat = tf12 then begin
+    end;
+
+    TimeParts := 0;
+    FTimeWidth := 0;
+    FAMPMWidth := 0;
+    FTimeSeparatorWidth := 0;
+    if FKind in [dtkTime, dtkDateTime] then begin
+
+      for I := dtpHour to dtpMiliSec do
+        if not (I in FEffectiveHideDateTimeParts) then begin
+          Inc(TimeParts);
+          if TimeParts > 1 then
+            Inc(FTimeWidth, FTimeSeparatorWidth);
+
+          if I = dtpMiliSec then
+            FTimeWidth := FTimeWidth + 3 * FDigitWidth
+          else
+            FTimeWidth := FTimeWidth + 2 * FDigitWidth;
+
+        end;
+
+      if TimeParts > 1 then begin
+        FTimeSeparatorWidth := Canvas.GetTextWidth(FTimeSeparator);
+        S := S + FTimeSeparator;
+        FTimeWidth := FTimeWidth + (TimeParts - 1) * FTimeSeparatorWidth;
+      end;
+
+      if not (dtpAMPM in FEffectiveHideDateTimeParts) then begin
         S := S + 'APM';
         FAMPMWidth := Max(Canvas.TextWidth('AM'), Canvas.TextWidth('PM'));
         FTimeWidth := FTimeWidth + FDigitWidth + FAMPMWidth;
       end;
 
-      if Ord(FTimeDisplay) + 5 < FSelectedTextPart then
-        if (FSelectedTextPart < 8) or (FTimeFormat = tf24) then
-          FSelectedTextPart := 4;
-
-    end else begin
-      if FSelectedTextPart > 3 then
-        FSelectedTextPart := 1;
-
-      FTimeSeparatorWidth := 0;
-      FTimeWidth := 0;
     end;
 
-    if FKind = dtkDateTime then
-      FTextWidth := FDateWidth + FTimeWidth + 2 * FDigitWidth
-    else
-      FTextWidth := FDateWidth + FTimeWidth;
+    FTextWidth := FDateWidth + FTimeWidth;
+    if (DateParts > 0) and (TimeParts > 0) then
+      FTextWidth := FTextWidth + 2 * FDigitWidth;
 
     FTextHeight := Canvas.GetTextHeight('0123456789' + S);
 
@@ -1354,6 +1368,7 @@ begin
     try
       FUserChangedText := False;
       S := Trim(GetSelectedText);
+
       if FSelectedTextPart = 8 then begin
         W := GetHour;
         if upCase(S[1]) = 'A' then begin
@@ -1368,7 +1383,7 @@ begin
       end else begin
 
         W := StrToInt(S);
-        case GetCurrentDateTextPart of
+        case GetSelectedDateTimePart of
           dtpYear:
             begin
               if Length(S) <= 2 then begin
@@ -1391,32 +1406,31 @@ begin
 
           dtpMonth:
             SetMonth(W);
-        else
-          case GetCurrentTimeTextPart of
-            ttpHour:
-              begin
-                if (FTimeFormat = tf12) then begin
-                  if GetHour < 12 then begin
-                    if W = 12 then
-                      SetHour(0)
-                    else
-                      SetHour(W);
-                  end else begin
-                    if W = 12 then
-                      SetHour(W)
-                    else
-                      SetHour(W + 12);
-                  end;
-                end else
-                  SetHour(W);
-              end;
-            ttpMinute:
-              SetMinute(W);
-            ttpSecond:
-              SetSecond(W);
-            ttpMiliSec:
-              SetMiliSec(W);
-          end;
+
+          dtpHour:
+            begin
+              if (FTimeFormat = tf12) then begin
+                if GetHour < 12 then begin
+                  if W = 12 then
+                    SetHour(0)
+                  else
+                    SetHour(W);
+                end else begin
+                  if W = 12 then
+                    SetHour(W)
+                  else
+                    SetHour(W + 12);
+                end;
+              end else
+                SetHour(W);
+            end;
+          dtpMinute:
+            SetMinute(W);
+          dtpSecond:
+            SetSecond(W);
+          dtpMiliSec:
+            SetMiliSec(W);
+
         end;
 
       end;
@@ -1431,7 +1445,7 @@ begin
   if FSelectedTextPart <= 3 then
     Result := FTextPart[FSelectedTextPart]
   else
-    Result := FTimeText[TTimeTextPart(FSelectedTextPart - 4)];
+    Result := FTimeText[TDateTimePart(FSelectedTextPart - 1)];
 end;
 
 procedure TCustomZVDateTimePicker.AdjustEffectiveCenturyFrom;
@@ -1474,7 +1488,7 @@ begin
 end;
 
 { AdjustEffectiveDateDisplayOrder procedure
- ----------------------------------
+ -------------------------------------------
   If date display order ddoTryDefault is set, then we will decide which
   display order to use according to ShortDateFormat global variable. This
   procedure tries to achieve that by searching through short date format string,
@@ -1528,59 +1542,93 @@ begin
   end else
     FEffectiveDateDisplayOrder := FDateDisplayOrder;
 
+  case FEffectiveDateDisplayOrder of
+    ddoDMY:
+      begin
+        FDayPos := 1;
+        FMonthPos := 2;
+        FYearPos := 3;
+      end;
+    ddoMDY:
+      begin
+        FDayPos := 2;
+        FMonthPos := 1;
+        FYearPos := 3;
+      end;
+    ddoYMD:
+      begin
+        FDayPos := 3;
+        FMonthPos := 2;
+        FYearPos := 1;
+      end;
+  end;
+
 end;
 
-procedure TCustomZVDateTimePicker.SelectDateTextPart(
-  const DateTextPart: TDateTextPart);
+procedure TCustomZVDateTimePicker.AdjustEffectiveHideDateTimeParts;
+var
+  I: TDateTimePart;
+  PreviousEffectiveHideDateTimeParts: set of TDateTimePart;
 begin
-  if FKind in [dtkDate, dtkDateTime] then begin
+  PreviousEffectiveHideDateTimeParts := FEffectiveHideDateTimeParts;
+  FEffectiveHideDateTimeParts := [];
 
-    case DateTextPart of
+  for I := Low(TDateTimeParts) to High(TDateTimeParts) do
+    if I in FHideDateTimeParts then
+      Include(FEffectiveHideDateTimeParts, I);
+
+  if FKind = dtkDate then
+    FEffectiveHideDateTimeParts := FEffectiveHideDateTimeParts +
+                       [dtpHour, dtpMinute, dtpSecond, dtpMiliSec, dtpAMPM]
+  else begin
+    if FTimeFormat = tf24 then
+      FEffectiveHideDateTimeParts := FEffectiveHideDateTimeParts + [dtpAMPM];
+
+    if FKind = dtkTime then
+      FEffectiveHideDateTimeParts := FEffectiveHideDateTimeParts +
+                            [dtpDay, dtpMonth, dtpYear];
+
+    case FTimeDisplay of
+      tdHM:
+        FEffectiveHideDateTimeParts := FEffectiveHideDateTimeParts +
+                            [dtpSecond, dtpMiliSec];
+      tdHMS:
+        FEffectiveHideDateTimeParts := FEffectiveHideDateTimeParts +
+                                        [dtpMiliSec];
+    end;
+
+  end;
+
+  if dtpHour in FEffectiveHideDateTimeParts then
+    Include(FEffectiveHideDateTimeParts, dtpAMPM);
+
+  if FEffectiveHideDateTimeParts <> PreviousEffectiveHideDateTimeParts then begin
+    if GetDateTimePartFromTextPart(FSelectedTextPart) in
+                     FEffectiveHideDateTimeParts then
+      MoveSelectionLR(False);
+
+    FRecalculatingTextSizesNeeded := True;
+    UpdateDate;
+  end;
+end;
+
+procedure TCustomZVDateTimePicker.SelectDateTimePart(
+  const DateTimePart: TDateTimePart);
+begin
+  if not (DateTimePart in FEffectiveHideDateTimeParts) then begin
+    case DateTimePart of
       dtpDay:
-        begin
-          case FEffectiveDateDisplayOrder of
-            ddoDMY: FSelectedTextPart := 1;
-            ddoMDY: FSelectedTextPart := 2;
-            ddoYMD: FSelectedTextPart := 3;
-          end;
-        end;
+        FSelectedTextPart := FDayPos;
       dtpMonth:
-        begin
-          if FEffectiveDateDisplayOrder = ddoMDY then
-            FSelectedTextPart := 1
-          else
-            FSelectedTextPart := 2;
-        end;
+        FSelectedTextPart := FMonthPos;
       dtpYear:
-        begin
-          if FEffectiveDateDisplayOrder = ddoYMD then
-            FSelectedTextPart := 1
-          else
-            FSelectedTextPart := 3;
-        end;
+        FSelectedTextPart := FYearPos;
+    else
+      FSelectedTextPart := 1 + Ord(DateTimePart);
     end;
 
     Invalidate;
   end;
-end;
-
-procedure TCustomZVDateTimePicker.SelectTimeTextPart(
-  const TimeTextPart: TTimeTextPart);
-var
-  B: Boolean;
-begin
-  if FKind in [dtkTime, dtkDateTime] then begin
-
-    if TimeTextPart = ttpAMPM then
-      B := FTimeFormat = tf12
-    else
-      B := Ord(FTimeDisplay) + 1 >= Ord(TimeTextPart);
-
-    if B then
-      FSelectedTextPart := 4 + Ord(TimeTextPart);
-
-  end;
-  Invalidate;
 end;
 
 procedure TCustomZVDateTimePicker.DestroyCalendarForm;
@@ -1610,43 +1658,34 @@ begin
   UpdateDate;
 end;
 
-{ GetCurrentDateTextPart function
- ----------------------------------
-  Returns part of Date which is currently selected.
-  If currently selected text part belongs to time, then this function returns
-  dtpTime and GetCurrentTimeTextPart function should be used to determine which
-  part of time is selected. }
-function TCustomZVDateTimePicker.GetCurrentDateTextPart: TDateTextPart;
+{ GetDateTimePartFromTextPart function
+ -----------------------------------------------
+  Returns part of date/time from the position (1-8). }
+function TCustomZVDateTimePicker.GetDateTimePartFromTextPart(
+  TextPart: TTextPart): TDateTimePart;
 begin
-  if FSelectedTextPart > 3 then
-    Result := dtpTime
-  else begin
-    case FSelectedTextPart of
-      1: Result := dtpDay;
-      2: Result := dtpMonth;
-      3: Result := dtpYear;
-    end;
+  Result := TDateTimePart(TextPart - 1);
 
-    case FEffectiveDateDisplayOrder of
-      ddoMDY: if Result = dtpDay then Result := dtpMonth
-              else if Result = dtpMonth then Result := dtpDay;
-      ddoYMD: if Result = dtpDay then Result := dtpYear
-              else if Result = dtpYear then Result := dtpDay;
-    end;
-
+  case FEffectiveDateDisplayOrder of
+    ddoMDY:
+      if Result = dtpDay then
+        Result := dtpMonth
+      else if Result = dtpMonth then
+        Result := dtpDay;
+    ddoYMD:
+      if Result = dtpDay then
+        Result := dtpYear
+      else if Result = dtpYear then
+        Result := dtpDay;
   end;
 end;
 
-{ GetCurrentTimeTextPart function
- ----------------------------------
-  Returns part of Time which is currently selected.
-  Used when GetCurrentDateTextPart returns dtpTime. }
-function TCustomZVDateTimePicker.GetCurrentTimeTextPart: TTimeTextPart;
+{ GetSelectedDateTimePart function
+ ---------------------------------
+  Returns part of date/time which is currently selected. }
+function TCustomZVDateTimePicker.GetSelectedDateTimePart: TDateTimePart;
 begin
-  if FSelectedTextPart > 4 then
-    Result := TTimeTextPart(FSelectedTextPart - 4)
-  else
-    Result := ttpHour;
+  Result := GetDateTimePartFromTextPart(FSelectedTextPart);
 end;
 
 procedure TCustomZVDateTimePicker.FontChanged(Sender: TObject);
@@ -1674,41 +1713,32 @@ end;
   selection moves to left, otherwise to right. }
 procedure TCustomZVDateTimePicker.MoveSelectionLR(const ToLeft: Boolean);
 var
-  M, L, N: Integer;
+  I: Integer;
 begin
   UpdateIfUserChangedText;
 
-  if FKind in [dtkDate, dtkDateTime] then
-    M := 1
-  else
-    M := 4;
+  if FSelectedTextPart < Low(TTextPart) then
+    FSelectedTextPart := Low(TTextPart);
 
-  if FKind in [dtkTime, dtkDateTime] then begin
-    L := Ord(FTimeDisplay) + 5;
-    if FTimeFormat = tf12 then
-      N := 8
-    else
-      N := L;
-  end else begin
-    N := 3;
-    L := 3;
-  end;
+  I := FSelectedTextPart;
+  repeat
+    if ToLeft then begin
+      if I <= Low(TTextPart) then
+        I := High(TTextPart)
+      else
+        Dec(I);
+    end else begin
+      if I >= High(TTextPart) then
+        I := Low(TTextPart)
+      else
+        Inc(I);
+    end;
 
-  if ToLeft then begin
-    if FSelectedTextPart = M then
-      FSelectedTextPart := N
-    else if (FSelectedTextPart = N) and (L < N) then
-      FSelectedTextPart := L
-    else
-      Dec(FSelectedTextPart);
-  end else begin
-    if FSelectedTextPart = N then
-      FSelectedTextPart := M
-    else if (FSelectedTextPart = L) and (L < N) then
-      FSelectedTextPart := N
-    else
-      Inc(FSelectedTextPart);
-  end;
+    if not (GetDateTimePartFromTextPart(I)
+                in FEffectiveHideDateTimeParts) then
+      FSelectedTextPart := I;
+
+  until I = FSelectedTextPart;
 
   Invalidate;
 end;
@@ -1774,8 +1804,7 @@ end;
 procedure TCustomZVDateTimePicker.KeyPress(var Key: char);
 var
   S: String;
-  DTP: TDateTextPart;
-  TTP: TTimeTextPart;
+  DTP: TDateTimePart;
   N, L: Integer;
   YMD: TYMD;
   HMSMs: THMSMs;
@@ -1803,18 +1832,13 @@ begin
 
         end else if Key in ['0'..'9'] then begin
 
-          TTP := ttpAMPM;
-          DTP := GetCurrentDateTextPart;
+          DTP := GetSelectedDateTimePart;
 
           if DTP = dtpYear then
             N := 4
-          else if DTP = dtpTime then begin
-            TTP := GetCurrentTimeTextPart;
-            if TTP = ttpMiliSec then
-              N := 3
-            else
-              N := 2;
-          end else
+          else if DTP = dtpMiliSec then
+            N := 3
+          else
             N := 2;
 
           S := Trim(GetSelectedText);
@@ -1826,7 +1850,7 @@ begin
           if (Length(S) >= N) then begin
 
             L := StrToInt(S);
-            if DTP <> dtpTime then begin
+            if DTP < dtpHour then begin
               YMD := GetYYYYMMDD(True);
               case DTP of
                 dtpDay: YMD.Day := L;
@@ -1844,7 +1868,7 @@ begin
                 S := Key;
 
             end else begin
-              if (TTP = ttpHour) and (FTimeFormat = tf12) then begin
+              if (DTP = dtpHour) and (FTimeFormat = tf12) then begin
                 if not (L in [1..12]) then
                   S := Key
                 else
@@ -1853,11 +1877,11 @@ begin
               end else begin
 
                 HMSMs := GetHMSMs(True);
-                case TTP of
-                  ttpHour: HMSMs.Hour := L;
-                  ttpMinute: HMSMs.Minute := L;
-                  ttpSecond: HMSMs.Second := L;
-                  ttpMiliSec: HMSMs.MiliSec := L;
+                case DTP of
+                  dtpHour: HMSMs.Hour := L;
+                  dtpMinute: HMSMs.Minute := L;
+                  dtpSecond: HMSMs.Second := L;
+                  dtpMiliSec: HMSMs.MiliSec := L;
                 end;
                 if not TryEncodeTime(HMSMs.Hour, HMSMs.Minute, HMSMs.Second,
                                              HMSMs.MiliSec, T) then
@@ -1886,7 +1910,7 @@ begin
           if FSelectedTextPart <= 3 then
             FTextPart[FSelectedTextPart] := S
           else
-            FTimeText[TTimeTextPart(FSelectedTextPart - 4)] := S;
+            FTimeText[TDateTimePart(FSelectedTextPart - 1)] := S;
 
           FUserChangedText := True;
 
@@ -1916,8 +1940,9 @@ end;
   Used in MouseDown and DoMouseWheel methods. }
 procedure TCustomZVDateTimePicker.SelectTextPartUnderMouse(XMouse: Integer);
 var
-  M, NX: Integer;
+  I, M, NX: Integer;
   InTime: Boolean;
+  DTP: TDateTimePart;
 begin
   UpdateIfUserChangedText;
   SetFocusIfPossible;
@@ -1925,63 +1950,72 @@ begin
   if Focused then begin
 // Calculating mouse position inside text
 //       in order to select date part under mouse cursor.
-    FSelectedTextPart := 8;
     NX := XMouse - GetTextOrigin.x;
 
-    if FKind = dtkDateTime then begin
-      if NX >= FDateWidth + FDigitWidth then begin
-        InTime := True;
-        NX := NX - FDateWidth - 2 * FDigitWidth;
+    InTime := False;
+    if FTimeWidth > 0 then begin
+      if FDateWidth > 0 then begin
+        if NX >= FDateWidth + FDigitWidth then begin
+          InTime := True;
+          NX := NX - FDateWidth - 2 * FDigitWidth;
+        end;
       end else
-        InTime := False;
-    end else
-      InTime := FKind = dtkTime;
+        InTime := True;
+    end;
 
     if InTime then begin
-      if (FTimeFormat = tf24) or
+      FSelectedTextPart := 8;
+
+      if (dtpAMPM in FEffectiveHideDateTimeParts) or
             (NX < FTimeWidth - FAMPMWidth - FDigitWidth div 2) then begin
-        M := 2 * FDigitWidth + FTimeSeparatorWidth div 2;
-        if M > NX then
-          FSelectedTextPart := 4
-        else begin
-          if FTimeDisplay = tdHM then
-            FSelectedTextPart := 5
-          else begin
-            M := M + FTimeSeparatorWidth + 2 * FDigitWidth;
-            if M > NX then
-              FSelectedTextPart := 5
-            else begin
-              if FTimeDisplay = tdHMS then
-                FSelectedTextPart := 6
-              else begin
-                M := M + FTimeSeparatorWidth + 2 * FDigitWidth;
-                if M > NX then
-                  FSelectedTextPart := 6
-                else
-                  FSelectedTextPart := 7;
-              end;
+        FSelectedTextPart := 7;
+        I := 4;
+        M := FTimeSeparatorWidth div 2;
+        while I <= 6 do begin
+          DTP := GetDateTimePartFromTextPart(I);
+          if not (DTP in FEffectiveHideDateTimeParts) then begin
+            Inc(M, 2 * FDigitWidth);
+            if M > NX then begin
+              FSelectedTextPart := I;
+              Break;
             end;
+
+            Inc(M, FTimeSeparatorWidth);
           end;
+          Inc(I);
         end;
       end;
 
-    end else begin
-      M := 2 * FDigitWidth;
-      if FEffectiveDateDisplayOrder = ddoYMD then
-        M := 2 * M;
-      Inc(M, FSeparatorWidth div 2);
+    end else if FDateWidth > 0 then begin
 
-      if M > NX then begin
-        FSelectedTextPart := 1;
-      end else begin
-        M := M + FSeparatorWidth + 2 * FDigitWidth;
-        if M > NX then begin
-          FSelectedTextPart := 2;
-        end else begin
-          FSelectedTextPart := 3
+      FSelectedTextPart := 3;
+      I := 1;
+      M := FSeparatorWidth div 2;
+      while I <= 2 do begin
+        if not(GetDateTimePartFromTextPart(I)
+                      in FEffectiveHideDateTimeParts) then begin
+          if I = FYearPos then
+            Inc(M, 4 * FDigitWidth)
+          else
+            Inc(M, 2 * FDigitWidth);
+
+          if M > NX then begin
+            FSelectedTextPart := I;
+            Break;
+          end;
+
+          Inc(M, FSeparatorWidth);
         end;
+
+        Inc(I);
       end;
+
     end;
+
+    if GetDateTimePartFromTextPart(FSelectedTextPart)
+                    in FEffectiveHideDateTimeParts then
+      MoveSelectionLR(True);
+
     Invalidate;
 //-------------------------------------------------------
   end;
@@ -2057,18 +2091,15 @@ begin
       SetDateTime(SysUtils.Now);
 
   end else begin
-    case GetCurrentDateTextPart of
+    case GetSelectedDateTimePart of
       dtpDay: IncreaseDay;
       dtpMonth: IncreaseMonth;
       dtpYear: IncreaseYear;
-    else
-      case GetCurrentTimeTextPart of
-        ttpHour: IncreaseHour;
-        ttpMinute: IncreaseMinute;
-        ttpSecond: IncreaseSecond;
-        ttpMiliSec: IncreaseMiliSec;
-        ttpAMPM: ChangeAMPM;
-      end;
+      dtpHour: IncreaseHour;
+      dtpMinute: IncreaseMinute;
+      dtpSecond: IncreaseSecond;
+      dtpMiliSec: IncreaseMiliSec;
+      dtpAMPM: ChangeAMPM;
     end;
   end;
 end;
@@ -2082,18 +2113,15 @@ begin
       SetDateTime(SysUtils.Now);
 
   end else begin
-    case GetCurrentDateTextPart of
+    case GetSelectedDateTimePart of
       dtpDay: DecreaseDay;
       dtpMonth: DecreaseMonth;
       dtpYear: DecreaseYear;
-    else
-      case GetCurrentTimeTextPart of
-        ttpHour: DecreaseHour;
-        ttpMinute: DecreaseMinute;
-        ttpSecond: DecreaseSecond;
-        ttpMiliSec: DecreaseMiliSec;
-        ttpAMPM: ChangeAMPM;
-      end;
+      dtpHour: DecreaseHour;
+      dtpMinute: DecreaseMinute;
+      dtpSecond: DecreaseSecond;
+      dtpMiliSec: DecreaseMiliSec;
+      dtpAMPM: ChangeAMPM;
     end;
   end;
 end;
@@ -2380,10 +2408,8 @@ end;
 procedure TCustomZVDateTimePicker.UpdateDate;
 var
   W: Array[1..3] of Word;
-  WT: Array[TTimeTextPart] of Word;
-  YearPos, I: Integer;
-  TTP, TTPEnd: TTimeTextPart;
-
+  WT: Array[dtpHour..dtpAMPM] of Word;
+  DTP: TDateTimePart;
 begin
   FUserChangedText := False;
 
@@ -2413,106 +2439,86 @@ begin
     end;
   end;
 
-  if FKind in [dtkTime, dtkDateTime] then begin
-    if DateIsNull then begin
-      FTimeText[ttpHour] := '99';
-      FTimeText[ttpMinute] := '99';
+  if DateIsNull then begin
+    if dtpYear in FEffectiveHideDateTimeParts then
+      FTextPart[FYearPos] := ''
+    else
+      FTextPart[FYearPos] := '0000';
 
-      FTimeText[ttpMiliSec] := '';
-      if FTimeDisplay >= tdHMS then begin
-        FTimeText[ttpSecond] := '99';
-        if FTimeDisplay >= tdHMSMs then
-          FTimeText[ttpMiliSec] := '999';
-      end else
-        FTimeText[ttpSecond] := '';
+    if dtpMonth in FEffectiveHideDateTimeParts then
+      FTextPart[FMonthPos] := ''
+    else
+      FTextPart[FMonthPos] := '00';
 
-      if FTimeFormat = tf12 then
-        FTimeText[ttpAMPM] := 'XX'
+    if dtpDay in FEffectiveHideDateTimeParts then
+      FTextPart[FDayPos] := ''
+    else
+      FTextPart[FDayPos] := '00';
+
+    for DTP := dtpHour to dtpAMPM do begin
+      if DTP in FEffectiveHideDateTimeParts then
+        FTimeText[DTP] := ''
+      else if DTP = dtpAMPM then
+        FTimeText[DTP] := 'XX'
+      else if DTP = dtpMiliSec then
+        FTimeText[DTP] := '999'
       else
-        FTimeText[ttpAMPM] := '';
-
-    end else begin
-      case FTimeDisplay of
-        tdHMSMs: TTPEnd := ttpMiliSec;
-        tdHMS: TTPEnd := ttpSecond;
-      else
-        TTPEnd := ttpMinute;
-      end;
-
-      DecodeTime(FDateTime, WT[ttpHour], WT[ttpMinute], WT[ttpSecond], WT[ttpMiliSec]);
-
-      if FTimeFormat = tf12 then begin
-        if WT[ttpHour] < 12 then begin
-          FTimeText[ttpAMPM] := 'AM';
-          if WT[ttpHour] = 0 then
-            WT[ttpHour] := 12;
-        end else begin
-          FTimeText[ttpAMPM] := 'PM';
-          if WT[ttpHour] > 12 then
-            Dec(WT[ttpHour], 12);
-        end;
-      end else
-        FTimeText[ttpAMPM] := '';
-
-      if FLeadingZeros then
-        FTimeText[ttpHour] := RightStr('0' + IntToStr(WT[ttpHour]), 2)
-      else
-        FTimeText[ttpHour] := IntToStr(WT[ttpHour]);
-
-      for TTP := ttpMinute to ttpMiliSec do begin
-        if TTP <= TTPEnd then begin
-          if TTP = ttpMiliSec then
-            FTimeText[TTP] := RightStr('00' + IntToStr(WT[TTP]), 3)
-          else
-            FTimeText[TTP] := RightStr('0' + IntToStr(WT[TTP]), 2);
-        end else
-          FTimeText[TTP] := '';
-      end;
-
+        FTimeText[DTP] := '99';
     end;
-  end else
-    for TTP := Low(TTimeTextPart) to High(TTimeTextPart) do
-      FTimeText[TTP] := '';
 
-  if FKind in [dtkDate, dtkDateTime] then begin
-    if DateIsNull then begin
-      if FEffectiveDateDisplayOrder = ddoYMD then begin
-        FTextPart[1] := '0000';
-        FTextPart[3] := '00';
+  end else begin
+    DecodeDate(FDateTime, W[3], W[2], W[1]);
+
+    if dtpYear in FEffectiveHideDateTimeParts then
+      FTextPart[FYearPos] := ''
+    else if FLeadingZeros then
+      FTextPart[FYearPos] := RightStr('000' + IntToStr(W[3]), 4)
+    else
+      FTextPart[FYearPos] := IntToStr(W[3]);
+
+    if dtpMonth in FEffectiveHideDateTimeParts then
+      FTextPart[FMonthPos] := ''
+    else if FLeadingZeros then
+      FTextPart[FMonthPos] := RightStr('0' + IntToStr(W[2]), 2)
+    else
+      FTextPart[FMonthPos] := IntToStr(W[2]);
+
+    if dtpDay in FEffectiveHideDateTimeParts then
+      FTextPart[FDayPos] := ''
+    else if FLeadingZeros then
+      FTextPart[FDayPos] := RightStr('0' + IntToStr(W[1]), 2)
+    else
+      FTextPart[FDayPos] := IntToStr(W[1]);
+
+    DecodeTime(FDateTime, WT[dtpHour], WT[dtpMinute], WT[dtpSecond], WT[dtpMiliSec]);
+
+    if dtpAMPM in FEffectiveHideDateTimeParts then
+      FTimeText[dtpAMPM] := ''
+    else begin
+      if WT[dtpHour] < 12 then begin
+        FTimeText[dtpAMPM] := 'AM';
+        if WT[dtpHour] = 0 then
+          WT[dtpHour] := 12;
       end else begin
-        FTextPart[1] := '00';
-        FTextPart[3] := '0000';
-      end;
-      FTextPart[2] := '00';
-
-    end else begin
-      DecodeDate(FDateTime, W[3], W[2], W[1]);
-      YearPos := 3;
-      case FEffectiveDateDisplayOrder of
-        ddoMDY:
-          Exchange(W[1], W[2]);
-
-        ddoYMD:
-          begin
-            Exchange(W[1], W[3]);
-            YearPos := 1;
-          end;
-      end;
-
-      for I := Low(FTextPart) to High(FTextPart) do begin
-        if I = YearPos then
-          FTextPart[I] := RightStr('000' + IntToStr(W[I]), 4)
-        else if FLeadingZeros then
-          FTextPart[I] := RightStr('0' + IntToStr(W[I]), 2)
-        else
-          FTextPart[I] := IntToStr(W[I]);
-
+        FTimeText[dtpAMPM] := 'PM';
+        if WT[dtpHour] > 12 then
+          Dec(WT[dtpHour], 12);
       end;
     end;
 
-  end else
-    for I := Low(FTextPart) to High(FTextPart) do
-      FTextPart[I] := '';
+    for DTP := dtpHour to dtpMiliSec do begin
+      if DTP in FEffectiveHideDateTimeParts then
+        FTimeText[DTP] := ''
+      else if (DTP = dtpHour) and (not FLeadingZeros) then
+        FTimeText[DTP] := IntToStr(WT[dtpHour])
+      else if DTP = dtpMiliSec then
+        FTimeText[DTP] := RightStr('00' + IntToStr(WT[DTP]), 3)
+      else
+        FTimeText[DTP] := RightStr('0' + IntToStr(WT[DTP]), 2);
+
+    end;
+
+  end;
 
   Invalidate;
 end;
@@ -2562,42 +2568,42 @@ end;
 
 procedure TCustomZVDateTimePicker.SelectDay;
 begin
-  SelectDateTextPart(dtpDay);
+  SelectDateTimePart(dtpDay);
 end;
 
 procedure TCustomZVDateTimePicker.SelectMonth;
 begin
-  SelectDateTextPart(dtpMonth);
+  SelectDateTimePart(dtpMonth);
 end;
 
 procedure TCustomZVDateTimePicker.SelectYear;
 begin
-  SelectDateTextPart(dtpYear);
+  SelectDateTimePart(dtpYear);
 end;
 
 procedure TCustomZVDateTimePicker.SelectHour;
 begin
-  SelectTimeTextPart(ttpHour);
+  SelectDateTimePart(dtpHour);
 end;
 
 procedure TCustomZVDateTimePicker.SelectMinute;
 begin
-  SelectTimeTextPart(ttpMinute);
+  SelectDateTimePart(dtpMinute);
 end;
 
 procedure TCustomZVDateTimePicker.SelectSecond;
 begin
-  SelectTimeTextPart(ttpSecond);
+  SelectDateTimePart(dtpSecond);
 end;
 
 procedure TCustomZVDateTimePicker.SelectMiliSec;
 begin
-  SelectTimeTextPart(ttpMiliSec);
+  SelectDateTimePart(dtpMiliSec);
 end;
 
 procedure TCustomZVDateTimePicker.SelectAMPM;
 begin
-  SelectTimeTextPart(ttpAMPM);
+  SelectDateTimePart(dtpAMPM);
 end;
 
 procedure TCustomZVDateTimePicker.SetEnabled(Value: Boolean);
@@ -2682,23 +2688,40 @@ end;
 
 procedure TCustomZVDateTimePicker.SelectDate;
 begin
-  if FSelectedTextPart > 3 then
-    SelectDay;
+  if (FSelectedTextPart > 3)
+          or (GetDateTimePartFromTextPart(FSelectedTextPart)
+                  in FEffectiveHideDateTimeParts) then
+    FSelectedTextPart := 1;
+
+  if GetDateTimePartFromTextPart(FSelectedTextPart)
+                  in FEffectiveHideDateTimeParts then
+    MoveSelectionLR(False)
+  else
+    Invalidate;
 end;
 
 procedure TCustomZVDateTimePicker.SelectTime;
 begin
-  if FSelectedTextPart < 4 then
-    SelectHour;
+  if (FSelectedTextPart < 4)
+          or (GetDateTimePartFromTextPart(FSelectedTextPart)
+                  in FEffectiveHideDateTimeParts) then
+    FSelectedTextPart := 4;
+
+  if GetDateTimePartFromTextPart(FSelectedTextPart)
+                  in FEffectiveHideDateTimeParts then
+    MoveSelectionLR(False)
+  else
+    Invalidate;
 end;
 
 procedure TCustomZVDateTimePicker.Paint;
 var
-  I, M, N, K: Integer;
+  I, M, N, K, L: Integer;
   DD: Array[1..8] of Integer;
   R: TRect;
   SelectStep: 0..8;
   TextStyle: TTextStyle;
+  DTP: TDateTimePart;
 
 begin
   if ClientRectNeedsInterfaceUpdate then // In Qt widgetset, this solves the
@@ -2757,51 +2780,58 @@ begin
       Canvas.Font.Color := clGrayText;
     end;
 
-    if FKind in [dtkDate, dtkDateTime] then begin
-      DD[2] := 2 * FDigitWidth;
-      if FEffectiveDateDisplayOrder = ddoYMD then begin
-        DD[1] := 4 * FDigitWidth;
-        DD[3] := 2 * FDigitWidth;
-      end else begin
-        DD[1] := 2 * FDigitWidth;
-        DD[3] := 4 * FDigitWidth;
-      end;
-      M := 1;
-    end else begin
+    if dtpYear in FEffectiveHideDateTimeParts then begin
+      DD[FYearPos] := 0;
       M := 4;
-      //for I := 1 to 3 do DD[I] := 0;
+      L := 0;
+    end else begin
+      DD[FYearPos] := 4 * FDigitWidth;
+      M := FYearPos;
+      L := FYearPos;
     end;
 
-    if FKind in [dtkTime, dtkDateTime] then begin
-      DD[4] := 2 * FDigitWidth;
-      DD[5] := 2 * FDigitWidth;
+    if dtpMonth in FEffectiveHideDateTimeParts then
+      DD[FMonthPos] := 0
+    else begin
+      DD[FMonthPos] := 2 * FDigitWidth;
+      if FMonthPos < M then
+        M := FMonthPos;
+      if FMonthPos > L then
+        L := FMonthPos;
+    end;
 
-      if FTimeDisplay = tdHMSMs then begin
-        DD[7] := 3 * FDigitWidth;
-        DD[6] := 2 * FDigitWidth;
-        K := 7;
+    if dtpDay in FEffectiveHideDateTimeParts then
+      DD[FDayPos] := 0
+    else begin
+      DD[FDayPos] := 2 * FDigitWidth;
+      if FDayPos < M then
+        M := FDayPos;
+      if FDayPos > L then
+        L := FDayPos;
+    end;
+
+    N := 3;
+    K := 3;
+    for DTP := dtpHour to dtpAMPM do begin
+      I := Ord(DTP) + 1;
+      if DTP in FEffectiveHideDateTimeParts then
+        DD[I] := 0
+      else if DTP = dtpAMPM then begin
+        DD[I] := FAMPMWidth;
+        N := I;
       end else begin
-        DD[7] := 0;
-        if FTimeDisplay = tdHM then begin
-          DD[6] := 0;
-          K := 5;
-        end else begin
-          DD[6] := 2 * FDigitWidth;
-          K := 6;
-        end;
+        if DTP = dtpMiliSec then
+          DD[I] := 3 * FDigitWidth
+        else
+          DD[I] := 2 * FDigitWidth;
+
+        if K < I then
+          K := I;
       end;
 
-      if FTimeFormat = tf12 then begin
-        N := 8;
-        DD[8] := FAMPMWidth;
-      end else begin
-        DD[8] := 0;
+      if N < K then
         N := K;
-      end;
 
-    end else begin
-      N := 3;
-      K := 3;
     end;
 
     for I := M to N do begin
@@ -2816,7 +2846,7 @@ begin
         if I <= 3 then
           Canvas.TextRect(R, R.Left, R.Top, FTextPart[I], TextStyle)
         else
-          Canvas.TextRect(R, R.Left, R.Top, FTimeText[TTimeTextPart(I - 4)], TextStyle);
+          Canvas.TextRect(R, R.Left, R.Top, FTimeText[TDateTimePart(I - 1)], TextStyle);
 
         R.Left := R.Right;
 
@@ -2826,10 +2856,10 @@ begin
           Canvas.Font.Color := Self.Font.Color;
         end;
 
-        if I < 3 then begin
+        if I < L then begin
           R.Right := R.Left + FSeparatorWidth;
           Canvas.TextRect(R, R.Left, R.Top, FDateSeparator, TextStyle);
-        end else if I > 3 then begin
+        end else if I > L then begin
           if I = K then begin
             R.Right := R.Left + FDigitWidth;
           end else if I < K then begin
@@ -2842,7 +2872,7 @@ begin
             Canvas.TextRect(R, R.Left, R.Top,
                                       TrimRight(FDateSeparator), TextStyle);
           end;
-          if FKind = dtkDateTime then
+          if FTimeWidth > 0 then
             R.Right := R.Right + 2 * FDigitWidth;
 
         end;
@@ -3323,7 +3353,7 @@ end;
 constructor TCustomZVDateTimePicker.Create(AOwner: TComponent);
 var
   I: Integer;
-  TTP: TTimeTextPart;
+  DTP: TDateTimePart;
 begin
   inherited Create(AOwner);
 
@@ -3368,12 +3398,13 @@ begin
   FTimeWidth := 0;
   FTextWidth := 0;
   FTextHeight := 0;
+  FHideDateTimeParts := [];
 
   for I := Low(FTextPart) to High(FTextPart) do
     FTextPart[I] := '';
 
-  for TTP := Low(TTimeTextPart) to High(TTimeTextPart) do
-    FTimeText[TTP] := '';
+  for DTP := dtpHour to dtpAMPM do
+    FTimeText[DTP] := '';
 
   FTimeDisplay := tdHMS;
   FTimeFormat := tf24;
@@ -3407,12 +3438,12 @@ begin
   FCascade := False;
   FAutoButtonSize := False;
   FAutoAdvance := False;
+  FEffectiveHideDateTimeParts := [];
 
   AdjustEffectiveDateDisplayOrder;
+  AdjustEffectiveHideDateTimeParts;
 
-  UpdateDate;
-
-  DateMode := dmComboBox;
+  SetDateMode(dmComboBox);
 end;
 
 destructor TCustomZVDateTimePicker.Destroy;

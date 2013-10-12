@@ -109,6 +109,7 @@ type
     property Cascade;
     property AutoButtonSize;
     property AutoAdvance;
+    property HideDateTimeParts;
   //events:
     property OnChange;
     property OnCheckBoxChange;
