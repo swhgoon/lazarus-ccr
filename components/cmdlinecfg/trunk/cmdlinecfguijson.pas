@@ -45,7 +45,7 @@ begin
     st:=TSectionIterator.Create;
     try
       st.lt:=lt;
-      st.sc:=lt.GetSection('');
+      st.sc:=lt.RootElement;
       core.Iterate( st.Iterate, st)
     finally
       st.Free;

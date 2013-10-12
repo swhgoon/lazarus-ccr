@@ -17,7 +17,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="13">
+    <Files Count="12">
       <Item1>
         <Filename Value="optviewform.pas"/>
         <UnitName Value="optviewform"/>
@@ -27,50 +27,46 @@
         <UnitName Value="cmdlinelclctrlsbox"/>
       </Item2>
       <Item3>
-        <Filename Value="..\cmdlinelclpropgrid.pas"/>
-        <UnitName Value="cmdlinelclpropgrid"/>
-      </Item3>
-      <Item4>
         <Filename Value="..\cmdlinelclutils.pas"/>
         <UnitName Value="cmdlinelclutils"/>
-      </Item4>
-      <Item5>
+      </Item3>
+      <Item4>
         <Filename Value="..\cmdlinecfg.pas"/>
         <UnitName Value="cmdlinecfg"/>
-      </Item5>
-      <Item6>
+      </Item4>
+      <Item5>
         <Filename Value="..\cmdlinecfgjson.pas"/>
         <UnitName Value="cmdlinecfgjson"/>
-      </Item6>
-      <Item7>
+      </Item5>
+      <Item6>
         <Filename Value="..\cmdlinecfgparser.pas"/>
         <UnitName Value="cmdlinecfgparser"/>
-      </Item7>
-      <Item8>
+      </Item6>
+      <Item7>
         <Filename Value="..\cmdlinecfgui.pas"/>
         <UnitName Value="cmdlinecfgui"/>
-      </Item8>
-      <Item9>
+      </Item7>
+      <Item8>
         <Filename Value="..\cmdlinecfguijson.pas"/>
         <UnitName Value="cmdlinecfguijson"/>
-      </Item9>
-      <Item10>
+      </Item8>
+      <Item9>
         <Filename Value="..\cmdlinecfgutils.pas"/>
         <UnitName Value="cmdlinecfgutils"/>
-      </Item10>
-      <Item11>
+      </Item9>
+      <Item10>
         <Filename Value="..\cmdlinefpccond.pas"/>
         <UnitName Value="cmdlinefpccond"/>
-      </Item11>
-      <Item12>
+      </Item10>
+      <Item11>
         <Filename Value="cfgcompoptreg.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="cfgcompoptreg"/>
-      </Item12>
-      <Item13>
+      </Item11>
+      <Item12>
         <Filename Value="optviewform.lfm"/>
         <Type Value="LFM"/>
-      </Item13>
+      </Item12>
     </Files>
     <Type Value="DesignTime"/>
     <RequiredPkgs Count="3">

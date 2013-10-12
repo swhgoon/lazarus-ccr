@@ -1,5 +1,32 @@
 Command Line Configuration
 
+== Source files ==
+
+cmdlinecfg.pas       - the core unit defining the primary class for configuration
+cmdlinecfgutils.pas  - utility functions 
+cmdlinecfgparser.pas - the unit for parsing input strings into command lines
+                       and mapping them to classes of cmdlinecfg.
+cmdlinecfgjson.pas   - the json format reader of command-line configurations
+  
+=== User Interface ===
+
+cmdlinecfgui.pas       - core unit for UI controller of command-line options
+cmdlinecfguijson.pas   - json read of UI controller info.
+cmdlinelclctrlsbox.pas - LCL-based consols list UI controller
+cmdlinelclpropgrid.pas - LCL-based propery grid UI controller
+cmdlinelclutils.pas    - the function contains a number of utility functions 
+                         for allocating LCL controls based on the information about command-line option
+
+=== Lazarus specific ===
+
+cmdlinelazcompopt.pas - Lazarus IDE specific file, that converts a set of cmdlinecfg classes
+                        to Lazarus project 
+=== Condition checks ===
+
+cmdlinefpccond.pas - the utility function for verification of FPC specific conditions (cpu/os)
+                     (doesn't depend on cmdlinecfg.pas)
+                     see "FPC Condition" below
+                     
 
 == JSON Storage ==
 
@@ -80,6 +107,8 @@ Example of JSON Storage:
   ]
 }
 
+
+
 == FPC Condition ==
 
 Free Pascal Compiler condition define for what target (CPU, CPU-OS) the option or value of an option 
@@ -98,4 +127,56 @@ If an option is available for multple platforms, each condition has to be comma 
   i386,x86_64,arm-linux
   
 
+== UI controller == 
 
+UI controller is an abstraction layer, that does the representation of the command-line utils to an user.
+
+The core class is: 
+
+TCmdLineUIControl
+  method 
+    procedure Init(cfg: TCmdLineCfg; layout: TCmdLineLayoutInfo; ASection: string); 
+          - method accepts the description of the command-line options
+            and optional layout information;
+            method must initialize (create) all necessary UI controls;
+            the place to initialize controls must be defined in the method constructor
+          * if layout information is passed, the controller should use it to represent the user interface
+          * if Asection is not an empty string and layout is passed, controller should 
+            initialize controls for this section only.
+            Futher operations for "SetValue" and "Serialize" should be limited 
+            to the command-line options, contained in the layout of the passed section.
+            if layout information is not passed, section should be ignored
+          * Since it's possible that a new command-line option is introduced
+            prior to update of the user interface information,
+            a layout information can specify switch "%%other" (name is case-insesitive)
+            where all switches should go, that don't have a specific location within the layout information.
+            if "%%other" switch is not introduced by the layout, these command-line options that are not part of the layout
+            must not be shown.
+            if multiple "%%other" switches are declared, the first met should be used
+            
+    procedure SetValues(list: TList); 
+          - method should initialized UI controls to the values passed in the list 
+            the list will contain objects TCmdLineOptionValue class.
+            the methods must not retain or free any of the objects
+    procedure Serialize(list: TList); 
+          - method should gather the values from the user interface
+            method should not check the existense of TCmdLineOptionValue in the passed list
+            instead it must only ADD serialized TCmdLineOptionValue values
+
+  events
+    OnValueChanged: TNotifyEvent - the event should be triggered every time a value is changed by a user;
+             the even must not be triggered during handling of SetValues method                   
+   
+
+
+The supplemental classes:
+
+TCmdLineLayoutInfo - the class contains a description of how to represent command-line utils.
+                     any implementation of TCmdLineUIControl must be able to work without 
+                     any TCmdLineLayoutInfo provided.
+    TLayoutSection - the description of a certain section of "command-line configurations".
+                     typically command-line options are grouped into sections
+
+=== GUI Hints ===
+
+hideempty - if the there're no command-line options to be displayed, the section should be hidden                    

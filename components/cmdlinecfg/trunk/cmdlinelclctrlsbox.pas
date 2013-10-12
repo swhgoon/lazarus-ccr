@@ -28,13 +28,15 @@ type
 
   TCmdLineScrollBoxControl = class(TCmdLineUIControl)
   private
-    fScrollBox  : TScrollBox;
     fCfg        : TCmdLineCfg;
     fControls   : TList;
     fOptToCtrl  : TFPHashObjectList;
+    fParent     : TWinControl;
+
+    fOtherMet   : Boolean;
   protected
     flayout: TCmdLineLayoutInfo;
-    fusedoptlist: TStringList;
+    fusedoptlist: TFPHashObjectList;
     procedure OnChange(Sender: TObject);
     procedure OnCndChange(Sender: TObject);
     procedure RevaluateConditions;
@@ -45,20 +47,12 @@ type
   public
     constructor Create(AParent: TWinControl);
     destructor Destroy; override;
-    procedure Init(cfg: TCmdLineCfg; layout: TCmdLineLayoutInfo); override;
+    procedure Init(cfg: TCmdLineCfg; layout: TCmdLineLayoutInfo; const ASection: string = ''); override;
     procedure SetValues(list: TList {of TCmdLineOptionValue}); override;
     procedure Serialize(list: TList {of TCmdLineOptionValue}); override;
   end;
 
-procedure ReleaseScrollBox(box: TCmdLineScrollBoxControl);
-
 implementation
-
-procedure ReleaseScrollBox(box: TCmdLineScrollBoxControl);
-begin
-  if not Assigned(box) then Exit;
-  box.fScrollBox.Free;
-end;
 
 { TControlInfo }
 
@@ -215,6 +209,7 @@ var
   k    : Integer;
   box  : TGroupBox;
   by   : integer;
+  opt  : TCmdLineCfgOption;
 begin
   if not Assigned(sct) then begin
     Result:=VOffset;
@@ -247,10 +242,15 @@ begin
         end else
           y:=AllocForSection(AParent, y, ls );
       end else begin
-        k:=fusedoptlist.IndexOf(ls.Name);
-        if (k>=0) then begin
-          l.Add( fusedoptlist.Objects[k] );
-          fusedoptlist.Delete(k);
+        if (AnsiLowerCase(ls.Name)='%%other') and not fOtherMet then begin
+          LayoutGetUnused( fCfg, flayout.RootElement, l );
+          fOtherMet := true;
+        end else begin
+          k := fusedoptlist.FindIndexOf(ls.Name);
+          if k>=0 then begin
+            l.Add( fusedoptlist.Items[k] );
+            fusedoptlist.Delete(k);
+          end;
         end;
       end;
     end;
@@ -275,10 +275,7 @@ end;
 constructor TCmdLineScrollBoxControl.Create(AParent: TWinControl);
 begin
   inherited Create;
-  fScrollBox := TScrollBox.Create(AParent);
-  fScrollBox.Align:=alClient;
-  fScrollBox.Parent:=AParent;
-  fScrollBox.VertScrollBar.Tracking:=true;
+  fParent:=AParent;
   fControls:=TList.Create;
   fOptToCtrl:=TFPHashObjectList.Create(true);
 end;
@@ -291,7 +288,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TCmdLineScrollBoxControl.Init(cfg: TCmdLineCfg; layout: TCmdLineLayoutInfo);
+procedure TCmdLineScrollBoxControl.Init(cfg: TCmdLineCfg; layout: TCmdLineLayoutInfo; const ASection: string = '');
 var
   i     : Integer;
   opt   : TCmdLineCfgOption;
@@ -299,6 +296,8 @@ var
   l     : TList;
   nm    : string;
   y     : Integer;
+  sct   : TLayoutSection;
+  sctnm : string;
 begin
   if not Assigned(cfg) then Exit;
   fCfg:=cfg;
@@ -306,26 +305,31 @@ begin
   list.CaseSensitive:=true; // must be case sensitive
   l:=TList.Create;
   fOptToCtrl.Clear;
-  fusedoptlist:=list;
+
+  fusedoptlist:=TFPHashObjectList.Create(false);
   flayout:=layout;
   try
-    y:=24;
+    y:=0;
     for i:=0 to cfg.Options.Count-1 do begin
       opt:=TCmdLineCfgOption(cfg.Options[i]);
       nm:=opt.Name;
       if nm='' then nm:=opt.Key;
       list.AddObject(nm, cfg.Options[i]);
+      fusedoptlist.Add(nm, cfg.Options[i]);
     end;
-
-    if Assigned(layout) then y:=AllocForSection(fScrollBox, y, layout.GetSection(''));
-    if Assigned(layout) then begin
-      y:=AllocHeaderLabel(fScrollBox, y, 'Other');
+    if not Assigned(layout) then begin
+      for i:=0 to list.Count-1 do l.Add(list.Objects[i]);
+      AllocControls(fParent, y, l);
+    end else begin
+      fOtherMet:=false;
+      sctnm:=ASection;
+      sct:=layout.RootElement;
+      if ASection<>'' then sct:=LayoutFindElement(sct, sctnm);
+      if Assigned(sct) then
+        y:=AllocForSection(fParent, y, sct, sctnm<>'');
     end;
-    l.Clear;
-    for i:=0 to list.Count-1 do
-      l.Add(list.Objects[i]);
-    AllocControls(fScrollBox, y, l);
   finally
+    fusedoptlist.Free;
     fusedoptlist:=nil;
     flayout:=nil;
     l.Free;
@@ -340,6 +344,7 @@ var
   i     : Integer;
   mlt   : TFPHashList;
   isPath : Boolean;
+  ci     : TControlInfo;
 const
   Delims : array [Boolean] of string = (' ', ';');
 begin
@@ -350,7 +355,9 @@ begin
     for i:=0 to list.Count-1 do begin
       vl:=TCmdLineOptionValue(list[i]);
       if not Assigned(vl.Option) then Continue;
-      ctrl:=TControlInfo(fOptToCtrl.Find(vl.Option.Name)).ctrl;
+      ci:=TControlInfo(fOptToCtrl.Find(vl.Option.Name));
+      if not Assigned(ci) then Continue;
+      ctrl:=ci.ctrl;
       if not Assigned(ctrl) then Continue;
       if ctrl is TComboBox then SetValueComboBox(vl.Option, vl.Value, TComboBoX(ctrl))
       else if ctrl is TCheckBox then SetValueCheckBox(vl.Option, vl.Value, TCheckBox(ctrl))

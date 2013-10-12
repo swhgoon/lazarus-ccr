@@ -44,4 +44,7 @@
     "display": "Verbosity",
     "switches": ["-ve","-vw", "-vn","-vh","-vi","-vp","-vc","-vx","-v0","-vd","-vu","-vt","-vl","-vb","-va","-l","-Se"]
   }
+  ,"other": {
+    "display": "Other", "switches": ["%%other"]
+  }
 }

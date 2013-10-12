@@ -7,10 +7,9 @@ unit cfgcompopt;
 interface
 
 uses
-  optviewform, cmdlinelclctrlsbox, cmdlinelclpropgrid, cmdlinelclutils, 
-  cmdlinecfg, cmdlinecfgjson, cmdlinecfgparser, cmdlinecfgui, 
-  cmdlinecfguijson, cmdlinecfgutils, cmdlinefpccond, cfgcompoptreg, 
-  LazarusPackageIntf;
+  optviewform, cmdlinelclctrlsbox, cmdlinelclutils, cmdlinecfg, 
+  cmdlinecfgjson, cmdlinecfgparser, cmdlinecfgui, cmdlinecfguijson, 
+  cmdlinecfgutils, cmdlinefpccond, cfgcompoptreg, LazarusPackageIntf;
 
 implementation
 

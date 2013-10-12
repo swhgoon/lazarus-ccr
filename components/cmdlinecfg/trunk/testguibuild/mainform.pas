@@ -5,8 +5,8 @@ unit mainform;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ValEdit,
-  StdCtrls, ExtCtrls
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs
+  ,StdCtrls, ExtCtrls
   ,cmdlinecfg , cmdlinelclctrlsbox, cmdlinecfgjson //, patheditor
   ,cmdlinecfgui, cmdlinecfguijson
   ,cmdlinecfgparser;
@@ -16,9 +16,8 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
+    ScrollBox1: TScrollBox;
     toOpt: TButton;
-    Edit1: TEdit;
-    Label1: TLabel;
     Memo1: TMemo;
     Panel1: TPanel;
     Splitter1: TSplitter;
@@ -30,6 +29,7 @@ type
     ctrl  : TCmdLineScrollBoxControl;
     cfg   : TCmdLineCfg;
     lt    : TCmdLineLayoutInfo;
+    sct   : string; // desired section
   public
     { public declarations }
     procedure OnValueChanged(Sender: TObject);
@@ -47,17 +47,36 @@ implementation
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   {cmdlinelclutils.ADirsDialogs:=DummyEditPaths;
-  cmdlinelclutils.AFilesDialogs:=DummyEditPaths;}
+  cmdlinelclutils.AFilesDialogs:=DummyEditPaths;
+}
 
-  ctrl:=TCmdLineScrollBoxControl.Create(Self);
+    {fScrollBox := TScrollBox.Create(AParent);
+  fScrollBox.Align:=alClient;
+  fScrollBox.Parent:=AParent;
+  fScrollBox.VertScrollBar.Tracking:=true;}
+
+  Memo1.Clear;
+  if ParamCount=0 then begin
+    Memo1.Lines.Add('Please pass the following information through the command-line: ');
+    Memo1.Lines.Add('  1. json file for command-lines');
+    Memo1.Lines.Add('  (optional) 2. layout information json file ');
+    Memo1.Lines.Add('  (optional) 3. name of the section that you would need to render');
+  end;
+
+  ctrl:=TCmdLineScrollBoxControl.Create(ScrollBox1);
   if ParamCount>0 then begin
     cfg:=TCmdLineCfg.Create;
     CmdLineCfgJSONReadFile(ParamStr(1), cfg);
     if ParamCOunt>1 then begin
       lt:=TCmdLineLayoutInfo.Create;
-      CmdLineUIJSONReadFile(PAramStr(2), lt);
+      CmdLineUIJSONReadFile(ParamStr(2), lt);
     end;
-    ctrl.Init(cfg, lt);
+    if ParamCount>2 then
+      sct:=ParamStr(3);
+    Self.Caption:=Paramstr(1);
+    if sct<>'' then Self.Caption:=Self.Caption+'.'+sct;
+    ctrl.Init(cfg, lt, sct);
+
     ctrl.OnValueChanged:=OnValueChanged;
   end;
 end;

@@ -1,0 +1,21 @@
+{
+  "executable":"sample",
+  "version":"1.0",
+  "testkey":"-iV",
+  "testValue":"1.0",
+  "options": [
+    {"key":"-a",  "display":"This is option A" }
+   ,{"key":"-b",  "display":"This option controls B"}
+   ,{"key":"-c",  "display":"C is controlled by this checkbox" }
+   ,{ "key":"-d%value%", "display":"This is drop down values - one of many"
+      ,"options": [
+        {"value": "1", "display":"One"}
+        ,{"value": "2", "display":"Two"}
+        ,{"value": "3", "display":"Three"}
+        ,{"value": "4", "display":"Four"}
+        ,{"value": "5", "display":"Five"}
+      ]
+    }
+   ,{"key":"-z",  "display":"Z is the last control not in sample.ui" }
+  ]
+}

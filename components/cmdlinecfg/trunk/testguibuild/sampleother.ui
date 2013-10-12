@@ -1,0 +1,15 @@
+{
+  "primary": {
+    "display": "Primary Part",
+    "switches": ["-a","-d"]
+  }
+  ,"secondary": {
+    "display": "Secondary Part",
+    "switches": ["-b","-c"]
+  }
+  ,"other": {
+    "display": "Other",
+    "hint": "hideempty",
+    "switches": ["%%other"]
+  }
+}
