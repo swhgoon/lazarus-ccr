@@ -254,7 +254,7 @@ type
     function GetDateTimePartFromTextPart(TextPart: TTextPart): TDateTimePart;
     function GetSelectedDateTimePart: TDateTimePart;
     procedure FontChanged(Sender: TObject); override;
-    function GetTextOrigin: TPoint;
+    function GetTextOrigin(IgnoreRightToLeft: Boolean = False): TPoint;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: char); override;
     procedure SelectTextPartUnderMouse(XMouse: Integer);
@@ -270,6 +270,7 @@ type
     procedure UTF8KeyPress(var UTF8Key: TUTF8Char); override;
     procedure CalculatePreferredSize(var PreferredWidth,
                   PreferredHeight: integer; WithThemeSpace: Boolean); override;
+    procedure SetBiDiMode(AValue: TBiDiMode); override;
 
     procedure IncreaseCurrentTextPart;
     procedure DecreaseCurrentTextPart;
@@ -423,6 +424,8 @@ type
     property AutoButtonSize;
     property AutoAdvance;
     property HideDateTimeParts;
+    property BiDiMode;
+    property ParentBiDiMode;
 // events:
     property OnChange;
     property OnCheckBoxChange;
@@ -563,7 +566,11 @@ begin
   H := Height;
   W := Width;
 
-  P := DTPicker.ControlToScreen(Point(0, DTPicker.Height));
+  if IsRightToLeft then
+    P := DTPicker.ControlToScreen(Point(DTPicker.Width - W, DTPicker.Height))
+  else
+    P := DTPicker.ControlToScreen(Point(0, DTPicker.Height));
+
   M := Screen.MonitorFromWindow(DTPicker.Handle);
 
   R := M.WorkareaRect;
@@ -711,6 +718,7 @@ begin
   FClosing := False;
 
   DTPicker := ADTPicker;
+  BiDiMode := DTPicker.BiDiMode;
   DTPickersParentForm := GetParentForm(DTPicker);
   if Assigned(DTPickersParentForm) then begin
     DTPickersParentForm.AddHandlerOnVisibleChanged(@VisibleOfParentChanged);
@@ -720,6 +728,7 @@ begin
   P := Point(0, 0);
 
   Cal := TCalendar.Create(nil);
+  Cal.ParentBiDiMode := True;
   Cal.AutoSize := True;
   Cal.GetPreferredSize(P.x, P.y);
 
@@ -977,6 +986,7 @@ begin
 
         FCheckBox.Parent := Self;
 
+        FCheckBox.OnChange := @CheckBoxChange;
       end else begin
         FCheckBox.OnChange := nil;
         FreeAndNil(FCheckBox);
@@ -1698,13 +1708,18 @@ end;
  ---------------
   Returns upper left corner of the rectangle where the text is written.
   Also used in calculating our preffered size. }
-function TCustomZVDateTimePicker.GetTextOrigin: TPoint;
+function TCustomZVDateTimePicker.GetTextOrigin(IgnoreRightToLeft: Boolean
+  ): TPoint;
 begin
   Result.y := BorderSpacing.InnerBorder + BorderWidth;
   if Assigned(FCheckBox) then
-    Result.x := Result.y + FCheckBox.BorderSpacing.Left + FCheckBox.Width
+    Result.x := Result.y + FCheckBox.BorderSpacing.Left
+             + FCheckBox.BorderSpacing.Right + FCheckBox.Width
   else
     Result.x := Result.y;
+
+  if (not IgnoreRightToLeft) and IsRightToLeft then
+    Result.x := ClientWidth - Result.x - FTextWidth;
 end;
 
 { MoveSelectionLR
@@ -2062,7 +2077,7 @@ var
 
 begin
   RecalculateTextSizesIfNeeded;
-  TextOrigin := GetTextOrigin;
+  TextOrigin := GetTextOrigin(True);
 
   // We must use TextOrigin's x + y (x is, of course, left margin, but not right
   // margin if check box is shown. However, y, which is top margin, always
@@ -2080,6 +2095,12 @@ begin
   PreferredWidth := PreferredWidth + M;
 
   PreferredHeight := 2 * TextOrigin.y + FTextHeight + M;
+end;
+
+procedure TCustomZVDateTimePicker.SetBiDiMode(AValue: TBiDiMode);
+begin
+  inherited SetBiDiMode(AValue);
+  ArrangeCtrls;
 end;
 
 procedure TCustomZVDateTimePicker.IncreaseCurrentTextPart;
@@ -2658,15 +2679,39 @@ begin
 end;
 
 procedure TCustomZVDateTimePicker.ArrangeCtrls;
+var
+  C: TControl;
 begin
   if not FDoNotArrangeControls then begin //Read the note above CreateWnd procedure.
     DisableAlign;
     try
       if GetShowCheckBox then begin
-        FCheckBox.Align := alLeft;
-        FCheckBox.BorderSpacing.Left := 2;
+        if IsRightToLeft then begin
+          FCheckBox.Align := alRight;
+          FCheckBox.BorderSpacing.Left := 0;
+          FCheckBox.BorderSpacing.Right := 2;
+        end else begin
+          FCheckBox.Align := alLeft;
+          FCheckBox.BorderSpacing.Left := 2;
+          FCheckBox.BorderSpacing.Right := 0;
+        end;
         FCheckBox.BringToFront;
-        FCheckBox.OnChange := @CheckBoxChange;
+      end;
+
+      if Assigned(FUpDown) then
+        C := FUpDown
+      else if Assigned(FArrowButton) then
+        C := FArrowButton
+      else
+        C := nil;
+
+      if Assigned(C) then begin
+        if IsRightToLeft then
+          C.Align := alLeft
+        else
+          C.Align := alRight;
+
+        C.BringToFront;
       end;
 
       CheckTextEnabled;
@@ -2754,12 +2799,19 @@ begin
   TextStyle.Layout := tlCenter;
   TextStyle.Wordbreak := False;
   TextStyle.Opaque := False;
+  TextStyle.RightToLeft := IsRightToLeft;
+
   if DateIsNull and (FTextForNullDate > '')
                        and (not (FTextEnabled and Focused)) then begin
 
-    R.Right := MaxInt;
-
-    TextStyle.Alignment := taLeftJustify;
+    if IsRightToLeft then begin
+      TextStyle.Alignment := taRightJustify;
+      R.Right := R.Left + FTextWidth;
+      R.Left := 0;
+    end else begin
+      TextStyle.Alignment := taLeftJustify;
+      R.Right := Width;
+    end;
 
     if FTextEnabled then
       Canvas.Font.Color := Font.Color
@@ -3273,8 +3325,6 @@ procedure TCustomZVDateTimePicker.UpdateShowArrowButton(
                                             [csNoFocus, csNoDesignSelectable];
       TDTSpeedButton(FArrowButton).DTPicker := Self;
       FArrowButton.SetBounds(0, 0, DefaultArrowButtonWidth, 1);
-      FArrowButton.Align := alRight;
-      FArrowButton.BringToFront;
 
       DrawArrowButtonGlyph;
 
@@ -3298,8 +3348,6 @@ procedure TCustomZVDateTimePicker.UpdateShowArrowButton(
       TDTUpDown(FUpDown).DTPicker := Self;
 
       FUpDown.SetBounds(0, 0, DefaultUpDownWidth, 1);
-      FUpDown.Align := alRight;
-      FUpDown.BringToFront;
 
       FUpDown.Parent := Self;
 
@@ -3321,13 +3369,18 @@ begin
 
     if (ReallyShowArrowButton <> Assigned(FArrowButton)) or
                        (Assigned(FArrowButton) = Assigned(FUpDown)) then begin
+      DisableAlign;
+      try
+        if ReallyShowArrowButton then
+          CreateArrowBtn
+        else
+          CreateUpDown;
 
-      if ReallyShowArrowButton then
-        CreateArrowBtn
-      else
-        CreateUpDown;
+        ArrangeCtrls;
 
-      ArrangeCtrls;
+      finally
+        EnableAlign;
+      end;
     end;
 
   end;

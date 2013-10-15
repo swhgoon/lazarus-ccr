@@ -211,10 +211,12 @@ var
   L, T, W, H: Integer;
   R: TRect;
   M: TMonitor;
+  AnchKindTrailing, AnchKindLeading: TAnchorKind;
 begin
   if Assigned(Caller) then begin
     CallerZVDateTimePicker := Caller;
     Prop := UpperCase(PropertyName);
+    BiDiMode := CallerZVDateTimePicker.BiDiMode;
 
     Modified := False;
     ZVDateTimePicker1.Kind := dtkDateTime;
@@ -251,17 +253,25 @@ begin
     ZVDateTimePicker1.TimeDisplay := tdHMSMs;
     ZVDateTimePicker1.TimeFormat := CallerZVDateTimePicker.TimeFormat;
 
+    if IsRightToLeft then begin
+      AnchKindLeading := akRight;
+      AnchKindTrailing := akLeft;
+    end else begin
+      AnchKindLeading := akLeft;
+      AnchKindTrailing := akRight;
+    end;
+
     ZVDateTimePickerMax.AnchorParallel(akTop, 20, Self);
-    ZVDateTimePickerMax.AnchorParallel(akRight, 20, Self);
+    ZVDateTimePickerMax.AnchorParallel(AnchKindTrailing, 20, Self);
     LabelMax.AnchorVerticalCenterTo(ZVDateTimePickerMax);
-    LabelMax.AnchorToNeighbour(akRight, 2, ZVDateTimePickerMax);
+    LabelMax.AnchorToNeighbour(AnchKindTrailing, 2, ZVDateTimePickerMax);
     ZVDateTimePickerMin.AnchorParallel(akTop, 20, Self);
-    ZVDateTimePickerMin.AnchorToNeighbour(akRight, 20, LabelMax);
-    LabelMin.AnchorToNeighbour(akRight, 2, ZVDateTimePickerMin);
+    ZVDateTimePickerMin.AnchorToNeighbour(AnchKindTrailing, 20, LabelMax);
+    LabelMin.AnchorToNeighbour(AnchKindTrailing, 2, ZVDateTimePickerMin);
     LabelMin.AnchorVerticalCenterTo(ZVDateTimePickerMin);
-    ZVDateTimePicker1.AnchorParallel(akLeft, 0, ZVDateTimePickerMin);
+    ZVDateTimePicker1.AnchorParallel(AnchKindLeading, 0, ZVDateTimePickerMin);
     ZVDateTimePicker1.AnchorToNeighbour(akTop, 20, ZVDateTimePickerMin);
-    Label1.AnchorToNeighbour(akRight, 2, ZVDateTimePicker1);
+    Label1.AnchorToNeighbour(AnchKindTrailing, 2, ZVDateTimePicker1);
     Label1.AnchorVerticalCenterTo(ZVDateTimePicker1);
     LabelNull.AnchorToNeighbour(akTop, 2, ZVDateTimePicker1);
     LabelNull.AnchorHorizontalCenterTo(ZVDateTimePicker1);

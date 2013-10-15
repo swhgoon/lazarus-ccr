@@ -110,6 +110,8 @@ type
     property AutoButtonSize;
     property AutoAdvance;
     property HideDateTimeParts;
+    property BiDiMode;
+    property ParentBiDiMode;
   //events:
     property OnChange;
     property OnCheckBoxChange;
