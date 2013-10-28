@@ -469,7 +469,7 @@ type
     FSortColumns: TRxDbGridColumnsSortList;
     FSortingNow:Boolean;
     FInProcessCalc: integer;
-//    FAllowedOperations: TRxDBGridAllowedOperations;
+    FAllowedOperations: TRxDBGridAllowedOperations;
     //
     FKeyStrokes: TRxDBGridKeyStrokes;
     FOnGetCellProps: TGetCellPropsEvent;
@@ -523,7 +523,6 @@ type
     FOldDataSetState:TDataSetState;
 
     procedure DoCreateJMenu;
-    function GetAllowedOperations: TRxDBGridAllowedOperations;
     function GetColumns: TRxDbGridColumns;
     function GetFooterColor: TColor;
     function GetFooterRowCount: integer;
@@ -534,7 +533,6 @@ type
     function GetSortOrder: TSortMarker;
     function GetTitleButtons: boolean;
     function IsColumnsStored: boolean;
-    procedure SetAllowedOperations(AValue: TRxDBGridAllowedOperations);
     procedure SetAutoSort(const AValue: boolean);
     procedure SetColumns(const AValue: TRxDbGridColumns);
     procedure SetFooterColor(const AValue: TColor);
@@ -714,7 +712,8 @@ type
       read GetPropertyStorage write SetPropertyStorage;
     property Version: integer read FVersion write FVersion default 0;
     property AllowedOperations: TRxDBGridAllowedOperations
-      read GetAllowedOperations write SetAllowedOperations default [aoInsert, aoUpdate, aoDelete, aoAppend]; deprecated;
+      read FAllowedOperations write FAllowedOperations default
+      [aoInsert, aoUpdate, aoDelete, aoAppend];
     property OptionsRx: TOptionsRx read FOptionsRx write SetOptionsRx;
     property FooterColor: TColor read GetFooterColor write SetFooterColor default clWindow; deprecated;
     property FooterRowCount: integer read GetFooterRowCount write SetFooterRowCount default 0; deprecated;
@@ -1697,22 +1696,6 @@ begin
   CreateMenuItem('A', sRxDBGridSelectAllRows, @OnSelectAllRows);
 end;
 
-function TRxDBGrid.GetAllowedOperations: TRxDBGridAllowedOperations;
-begin
-//  Result:=FAllowedOperations;
-  if dgDisableInsert in Options then
-    Result:=Result - [aoInsert, aoAppend]
-  else
-    Result:=Result + [aoInsert, aoAppend]
-    ;
-
-  if dgDisableDelete in Options then
-    Result:=Result - [aoDelete]
-  else
-    Result:=Result + [aoDelete]
-    ;
-end;
-
 function TRxDBGrid.GetPropertyStorage: TCustomPropertyStorage;
 begin
   Result := FPropertyStorageLink.Storage;
@@ -1742,20 +1725,6 @@ end;
 function TRxDBGrid.IsColumnsStored: boolean;
 begin
   Result := TRxDbGridColumns(TCustomDrawGrid(Self).Columns).Enabled;
-end;
-
-procedure TRxDBGrid.SetAllowedOperations(AValue: TRxDBGridAllowedOperations);
-begin
-//  FAllowedOperations:=AValue;
-  if [aoInsert, aoAppend] * AValue <> [aoInsert, aoAppend] then
-    Options:=Options - [dgDisableInsert]
-  else
-    Options:=Options + [dgDisableInsert];
-
-  if aoDelete in AValue then
-    Options:=Options - [dgDisableDelete]
-  else
-    Options:=Options + [dgDisableDelete]
 end;
 
 procedure TRxDBGrid.SetColumns(const AValue: TRxDbGridColumns);
@@ -3498,8 +3467,8 @@ begin
   if (Key in CCancelQuickSearchKeys) then
     if Length(QuickUTF8Search) > 0 then
       QuickUTF8Search := '';
-(*  case Key of
-{    VK_DELETE: if not (aoDelete in FAllowedOperations) then
+  case Key of
+    VK_DELETE: if not (aoDelete in FAllowedOperations) then
         exit;
     VK_INSERT: if not (aoInsert in FAllowedOperations) then
         exit;
@@ -3526,17 +3495,14 @@ begin
       begin
         FTmpReadOnly := ReadOnly;
         ReadOnly := True;
-        try
-          inherited KeyDown(Key, Shift);
-        finally
-          ReadOnly := FTmpReadOnly;
-        end;
+        inherited KeyDown(Key, Shift);
+        ReadOnly := FTmpReadOnly;
         exit;
-      end }
+      end
 {      else
         UpdateRowsHeight;
-    VK_UP:UpdateRowsHeight}
-  end; *)
+    VK_UP:UpdateRowsHeight};
+  end;
   inherited KeyDown(Key, Shift);
   if Key <> 0 then
   begin
@@ -4472,7 +4438,7 @@ begin
   FPropertyStorageLink.OnSave := @OnIniSave;
   FPropertyStorageLink.OnLoad := @OnIniLoad;
 
-//  FAllowedOperations := [aoInsert, aoUpdate, aoDelete, aoAppend];
+  FAllowedOperations := [aoInsert, aoUpdate, aoDelete, aoAppend];
 
   FFilterListEditor := TFilterListCellEditor.Create(nil);
   with FFilterListEditor do
