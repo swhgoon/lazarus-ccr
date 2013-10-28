@@ -1136,6 +1136,8 @@ end;
 { TRxDBGridDateEditor }
 
 procedure TRxDBGridDateEditor.Change;
+var
+  D:TDateTime;
 begin
   inherited Change;
   if Assigned(FGrid) and FGrid.DatalinkActive and not FGrid.EditorIsReadOnly then
@@ -1148,7 +1150,12 @@ begin
       FGrid.SelectedField.Clear;
 
     if FGrid <> nil then
-      FGrid.SetEditText(FCol, FRow, Text);
+    begin
+      if TryStrToDate(Text, D) then
+        FGrid.SetEditText(FCol, FRow, Text)
+      else
+        FGrid.SetEditText(FCol, FRow, '');
+    end;
   end;
 end;
 
