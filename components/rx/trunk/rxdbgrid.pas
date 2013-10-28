@@ -1699,7 +1699,7 @@ end;
 
 function TRxDBGrid.GetAllowedOperations: TRxDBGridAllowedOperations;
 begin
-//  Result:=FAllowedOperations;
+  Result:=[];
   if dgDisableInsert in Options then
     Result:=Result - [aoInsert, aoAppend]
   else
