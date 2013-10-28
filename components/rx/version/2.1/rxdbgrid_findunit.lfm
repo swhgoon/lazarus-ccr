@@ -1,0 +1,185 @@
+object rxDBGridFindForm: TrxDBGridFindForm
+  Left = 688
+  Height = 225
+  Top = 327
+  Width = 493
+  ActiveControl = Edit1
+  Caption = 'Find'
+  ClientHeight = 225
+  ClientWidth = 493
+  OnCreate = FormCreate
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object Label1: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideBottom.Control = Edit1
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 6
+    Width = 69
+    BorderSpacing.Around = 6
+    Caption = 'Text to find'
+    FocusControl = Edit1
+    ParentColor = False
+  end
+  object Label2: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Edit1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = ComboBox1
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 58
+    Width = 73
+    BorderSpacing.Around = 6
+    Caption = 'Find at filed'
+    ParentColor = False
+  end
+  object BtnFind: TButton
+    AnchorSideRight.Control = Button2
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 347
+    Height = 33
+    Top = 186
+    Width = 81
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Find more'
+    Default = True
+    OnClick = BtnFindClick
+    TabOrder = 2
+  end
+  object Button2: TButton
+    AnchorSideTop.Control = BtnFind
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 434
+    Height = 33
+    Top = 186
+    Width = 53
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Top = 8
+    BorderSpacing.Around = 6
+    BorderSpacing.InnerBorder = 4
+    Cancel = True
+    Caption = 'Close'
+    OnClick = Button2Click
+    TabOrder = 3
+  end
+  object Edit1: TEdit
+    AnchorSideLeft.Control = ComboBox1
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 18
+    Height = 25
+    Top = 27
+    Width = 469
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    TabOrder = 0
+  end
+  object ComboBox1: TComboBox
+    AnchorSideLeft.Control = Label2
+    AnchorSideTop.Control = Label2
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 12
+    Height = 27
+    Top = 79
+    Width = 475
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    ItemHeight = 0
+    Style = csDropDownList
+    TabOrder = 1
+  end
+  object RadioGroup1: TRadioGroup
+    AnchorSideLeft.Control = Panel1
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = ComboBox1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Panel1
+    AnchorSideBottom.Side = asrBottom
+    Left = 146
+    Height = 62
+    Top = 112
+    Width = 341
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoFill = True
+    AutoSize = True
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    Caption = 'Direction'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 3
+    ClientHeight = 45
+    ClientWidth = 337
+    Columns = 3
+    Items.Strings = (
+      'All'
+      'Forward'
+      'Backward'
+    )
+    TabOrder = 4
+  end
+  object Panel1: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ComboBox1
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 62
+    Top = 112
+    Width = 134
+    AutoSize = True
+    BorderSpacing.Around = 6
+    ClientHeight = 62
+    ClientWidth = 134
+    TabOrder = 5
+    object CheckBox2: TCheckBox
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = CheckBox1
+      AnchorSideTop.Side = asrBottom
+      Left = 7
+      Height = 21
+      Top = 34
+      Width = 88
+      BorderSpacing.Around = 6
+      Caption = 'Partial key'
+      TabOrder = 0
+    end
+    object CheckBox1: TCheckBox
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel1
+      Left = 7
+      Height = 21
+      Top = 7
+      Width = 120
+      BorderSpacing.Around = 6
+      Caption = 'Case sensetive'
+      TabOrder = 1
+    end
+  end
+end

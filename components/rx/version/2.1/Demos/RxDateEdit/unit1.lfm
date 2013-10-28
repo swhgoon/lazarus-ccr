@@ -1,0 +1,121 @@
+object Form1: TForm1
+  Left = 608
+  Height = 300
+  Top = 495
+  Width = 400
+  Caption = 'Form1'
+  ClientHeight = 300
+  ClientWidth = 400
+  OnCreate = FormCreate
+  LCLVersion = '1.3'
+  object Label1: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 15
+    Top = 6
+    Width = 43
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'Label1'
+    ParentColor = False
+  end
+  object Label2: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = DBDateEdit1
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 58
+    Width = 87
+    BorderSpacing.Around = 6
+    Caption = 'Currency edit'
+    ParentColor = False
+  end
+  object CurrencyEdit1: TCurrencyEdit
+    AnchorSideLeft.Control = Label2
+    AnchorSideTop.Control = Label2
+    AnchorSideTop.Side = asrBottom
+    Left = 12
+    Height = 25
+    Top = 79
+    Width = 148
+    Alignment = taCenter
+    BorderSpacing.Around = 6
+    MaxValue = 0
+    MinValue = 0
+    TabOrder = 0
+    Value = 0
+  end
+  object Button1: TButton
+    Left = 248
+    Height = 27
+    Top = 80
+    Width = 77
+    AutoSize = True
+    Caption = 'Invalidate'
+    OnClick = Button1Click
+    TabOrder = 1
+  end
+  object RxDateEdit1: TRxDateEdit
+    Left = 12
+    Height = 25
+    Top = 135
+    Width = 80
+    ButtonWidth = 23
+    CharCase = ecNormal
+    MaxLength = 10
+    NumGlyphs = 2
+    PopupColor = clWindow
+    TabOrder = 2
+    Text = '  .  .    '
+  end
+  object DBDateEdit1: TDBDateEdit
+    AnchorSideLeft.Control = Label1
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
+    Left = 12
+    Height = 25
+    Top = 27
+    Width = 139
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    ButtonWidth = 23
+    CharCase = ecNormal
+    Enabled = False
+    MaxLength = 10
+    NumGlyphs = 2
+    PopupColor = clWindow
+    TabOrder = 3
+    Text = '  .  .    '
+    DataField = 'DOC_DATE'
+    DataSource = dsData
+  end
+  object dsData: TDataSource
+    DataSet = rxData
+    left = 264
+    top = 21
+  end
+  object rxData: TRxMemoryData
+    FieldDefs = <    
+      item
+        Name = 'DOC_DATE'
+        DataType = ftDate
+        Precision = 0
+        Size = 0
+      end>
+    PacketRecords = 0
+    left = 304
+    top = 21
+    object rxDataDOC_DATE: TDateField
+      DisplayWidth = 10
+      FieldKind = fkData
+      FieldName = 'DOC_DATE'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+  end
+end

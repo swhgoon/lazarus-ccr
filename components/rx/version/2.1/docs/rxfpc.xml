@@ -1,0 +1,2900 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fpdoc-descriptions>
+  <package name="dcl_rx_fpc">
+    <short>Пакет времени разработки</short>
+    <descr>
+      <p>Данный пакет содержит в себе вспомогательные классы и утилиты, которые необходимы во время разработки программы.</p>
+      <p>Все эти данные не используются во время работы готовой программы, поэтому этот код не включается в финальные версии программ.</p>
+    </descr>
+  </package>
+  <package name="rxfpc">
+    <module name="rxdbgrid">
+      <element name="TRxDBGridSortEngine">
+        <short>Абстрактный класс сортировки данных</short>
+        <descr>Абстрактный класс сортировки данных в RXDBGrid.
+От этого класса необходимо создавать наследников, которые будут предоставлять функционал по сортировке данных в наборе данных, который подключен к RXDBGrid.</descr>
+      </element>
+      <element name="TRxDBGridSortEngine.Sort">
+        <short>Абстрактный метод сортировки по столбцу</short>
+        <descr>Этот метод необходимо перекрывать в наследнике для обеспечения функции сортировки данных при щелчке по столбцу в RxDBGrid-е</descr>
+      </element>
+      <element name="TRxDBGridSortEngine.SortList">
+        <short>Абстрактный метод сортировки по нескольким столбцам</short>
+        <descr>В RXDBGrid-е есть возможность сортировки по нескольким столбцам одновременно.
+Если набор данных имеет такую возможность, то данный метод необходимо переопределить и вписать в нём вызов сортировки по нескольким столбцам.</descr>
+      </element>
+      <element name="TRxColumnTitle">
+        <short>Этот класс представляет собой заголовок столбца в RXDbGrid</short>
+        <descr>
+          <b>TRxColumnTitle = class(TColumnTitle)</b>
+Этот класс наследует все основные свойства заголовка из DBGrid и добавялет инструменты по отображению многострочных заголовков</descr>
+      </element>
+      <element name="TRxColumnTitle.Create"/>
+      <element name="TRxColumnTitle.Destroy"/>
+      <element name="TRxColumnTitle.CaptionLinesCount"/>
+      <element name="TRxColumnTitle.CaptionLine"/>
+      <element name="TRxColumnTitle.Orientation"/>
+      <element name="TRxColumnTitle.Hint"/>
+      <element name="TRxColumnTitle.ShowHint"/>
+      <element name="TRxColumnFooter"/>
+      <element name="TRxColumnFooter.Create"/>
+      <element name="TRxColumnFooter.Owner"/>
+      <element name="TRxColumnFooter.Alignment"/>
+      <element name="TRxColumnFooter.Layout"/>
+      <element name="TRxColumnFooter.DisplayFormat"/>
+      <element name="TRxColumnFooter.FieldName"/>
+      <element name="TRxColumnFooter.Value">
+        <short>Текст, выводимый в последней строке списка</short>
+        <descr>При установленном занчении свойства 
+<link id="TRxColumnFooter.ValueType">ValueType</link> равным <link id="TFooterValueType">fvtStaticText</link>, в последней строки списка оторажается введённое здесь значение</descr>
+      </element>
+      <element name="TRxColumnFooter.ValueType">
+        <short>Определяем тип занчения, автоматически расчитываемого в итоговой строке</short>
+        <descr>
+          <link id="TFooterValueType">Определяем тип занчения</link>, автоматически расчитываемого в итоговой строке</descr>
+      </element>
+      <element name="TRxColumnFilter"/>
+      <element name="TRxColumnFilter.Create"/>
+      <element name="TRxColumnFilter.Destroy"/>
+      <element name="TRxColumnFilter.Value"/>
+      <element name="TRxColumnFilter.Font"/>
+      <element name="TRxColumnFilter.Alignment"/>
+      <element name="TRxColumnFilter.DropDownRows"/>
+      <element name="TRxColumnFilter.Color"/>
+      <element name="TRxColumnFilter.ValueList"/>
+      <element name="TRxColumnFilter.EmptyValue"/>
+      <element name="TRxColumnFilter.EmptyFont"/>
+      <element name="TRxColumnFilter.ItemIndex"/>
+      <element name="TRxDBGrid">
+        <short>Наследник от стандартного TDBGrid с дополнительными возможностями</short>
+        <descr>
+          <p>Компонента TRxDBGrid предназначена, как и стандартная компонента TDBGrid, для отображения данных таблиц БД или результатов запросов в табличной форме. Являясь наследником TDBGrid, компонента TRxDBGrid имеет все те же свойства и методы, и, кроме того, некоторые свойства, находящиеся у TDBGrid в секции protected, вынесены в секцию public. Это такие свойства, как Col, Row, LeftCol, Canvas. </p>
+          <p>Другие отличия от TDBGrid: </p>
+          <p>- BLOB-поля базы данных, такие как графические изображения, текстовые мемо-поля, другие BLOB'ы могут отображаться в таблице в виде пиктограмм при установленном в True значении свойства ShowGlyphs;  </p>
+          <p>- вы можете изменить цвет шрифта и фона любой ячейки таблицы (либо любой ее строки или столбца) в зависимости от значения поля или имени поля набора данных, определив обработчик события OnGetCellParams;  </p>
+          <p>- имеются методы SaveLayout и RestoreLayout для сохранения и восстановления порядка и ширин столбцов компоненты TRxDBGrid в INI или XML-файле. Вы можете также автоматически сохранять и восстанавливать эти параметры, присвоив значение свойству IniStorage.  </p>
+          <p>- заголовки колонок Grid-а могут быть с помощью свойства TitleButtons использованы как кнопки, например, для изменения порядка сортировки отображаемых данных.  </p>
+          <p>- вы можете зафиксировать несколько первых колонок в Grid-е с помощью свойства FixedCols. </p>
+        </descr>
+      </element>
+      <element name="TRxDBGrid.FilterRec"/>
+      <element name="TRxDBGrid.Create"/>
+      <element name="TRxDBGrid.Destroy"/>
+      <element name="TRxDBGrid.EditorByStyle"/>
+      <element name="TRxDBGrid.LayoutChanged"/>
+      <element name="TRxDBGrid.ShowFindDialog"/>
+      <element name="TRxDBGrid.ShowColumnsDialog"/>
+      <element name="TRxDBGrid.ColumnByFieldName"/>
+      <element name="TRxDBGrid.Canvas"/>
+      <element name="TRxDBGrid.DefaultTextStyle"/>
+      <element name="TRxDBGrid.EditorBorderStyle"/>
+      <element name="TRxDBGrid.EditorMode"/>
+      <element name="TRxDBGrid.ExtendedColSizing"/>
+      <element name="TRxDBGrid.FastEditing"/>
+      <element name="TRxDBGrid.FocusRectVisible"/>
+      <element name="TRxDBGrid.SelectedRows"/>
+      <element name="TRxDBGrid.CalcStatTotals"/>
+      <element name="TRxDBGrid.OptimizeColumnsWidth"/>
+      <element name="TRxDBGrid.OptimizeColumnsWidthAll"/>
+      <element name="TRxDBGrid.UpdateTitleHight"/>
+      <element name="TRxDBGrid.QuickUTF8Search"/>
+      <element name="TRxDBGrid.GetOnCreateLookup"/>
+      <element name="TRxDBGrid.GetOnDisplayLookup"/>
+      <element name="TRxDBGrid.AfterQuickSearch">
+        <short>Событие, возникающее до выполнения операции быстрого поиска данных в спике</short>
+        <descr>Событие, возникающее до выполнения операции быстрого поиска данных в спике</descr>
+        <seealso>
+          <link id="TRxQuickSearchNotifyEvent"/>
+        </seealso>
+      </element>
+      <element name="TRxDBGrid.BeforeQuickSearch">
+        <short>Событие, возникающее после выполнения операции быстрого поиска данных в спике</short>
+        <descr>Событие, возникающее после выполнения операции быстрого поиска данных в спике</descr>
+        <seealso>
+          <link id="TRxQuickSearchNotifyEvent"/>
+        </seealso>
+      </element>
+      <element name="TRxDBGrid.OnGetBtnParams">
+        <short>Данный тип описывает событие при отображении в списке заголовка колонки</short>
+        <descr>Данный <link id="TGetBtnParamsEvent">тип описывает событие</link> при отображении в списке заголовка колонки</descr>
+      </element>
+      <element name="TRxDBGrid.TitleButtons">
+        <short>property TitleButtons: Boolean;</short>
+        <descr>Свойство определяет, могут ли заголовки колонок в Grid-е быть использованы как кнопки. По умолчанию - False. 
+При установке свойства в значение True Вы можете обработать события OnTitleBtnClick для обработки нажатия на такую кнопку и OnCheckButton, OnGetBtnParams для установки свойств кнопок в заголовке.</descr>
+      </element>
+      <element name="TRxDBGrid.AutoSort"/>
+      <element name="TRxDBGrid.OnGetCellProps">
+        <short>Событие получения параметров ячейки в RxDBGrid-е</short>
+        <descr>
+          <p>Событие получения параметров ячейки в <link id="TRxDBGrid">RxDBGrid</link>-е</p>
+        </descr>
+        <seealso>
+          <link id="TGetCellPropsEvent"/>
+        </seealso>
+      </element>
+      <element name="TRxDBGrid.Columns"/>
+      <element name="TRxDBGrid.PropertyStorage">
+        <short>property IniStorage: TFormPlacement;</short>
+        <descr>
+          <p>Свойство позволяет автоматически сохранять специфические установки компоненты в INI-файле или (для 32-разрядной версии) в системном регистре при помощи компонент TFormPlacement или TFormStorage. </p>
+          <p>При задании значения свойству IniStorage (и непустом имени компоненты), некоторые ее настройки, которые не являются published-свойствами и не могут быть заданы для TFormStorage напрямую, будут сохраняться и восстанавливаться одновременни с другими значениями, заданными для соответствующей компоненты TFormPlacement (TFormStorage). </p>
+          <p>Для TSpeedbar - это расположение кнопок на панели и положение самой панели, для TMRUManager - список строк, для TRxDBGrid - ширины и положение полей в таблице и т.д. Все компоненты, имеющие свойство IniStorage, имеют также методы для сохранения и восстановления их настроек вручную, такие как Save/RestoreLayout и т.д.</p>
+        </descr>
+      </element>
+      <element name="TRxDBGrid.Version"/>
+      <element name="TRxDBGrid.AllowedOperations">
+        <short>Набор флагов, определяющие поведение при редактировании/добавлении или удалении данных в RxDBGrid</short>
+        <descr>Набор <link id="TRxDBGridAllowedOperation">флагов</link>флагов, определяющие поведение при редактировании/добавлении или удалении данных в RxDBGrid</descr>
+      </element>
+      <element name="TRxDBGrid.OptionsRx">
+        <short>Набор флагов, управляющих поведением RxDBGrid</short>
+        <descr>
+          <p>
+            <link id="TOptionRx">Набор флагов</link>, управлюящих поведением 
+  
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <link id="TRxDBGrid">RxDBGrid</link>-а.</p>
+        </descr>
+      </element>
+      <element name="TRxDBGrid.FooterColor"/>
+      <element name="TRxDBGrid.FooterRowCount"/>
+      <element name="TRxDBGrid.OnFiltred"/>
+      <element name="TRxDBGrid.Align"/>
+      <element name="TRxDBGrid.AlternateColor"/>
+      <element name="TRxDBGrid.Anchors"/>
+      <element name="TRxDBGrid.AutoAdvance"/>
+      <element name="TRxDBGrid.AutoFillColumns"/>
+      <element name="TRxDBGrid.AutoEdit"/>
+      <element name="TRxDBGrid.BiDiMode"/>
+      <element name="TRxDBGrid.BorderSpacing"/>
+      <element name="TRxDBGrid.BorderStyle"/>
+      <element name="TRxDBGrid.Color"/>
+      <element name="TRxDBGrid.BorderColor"/>
+      <element name="TRxDBGrid.FocusColor"/>
+      <element name="TRxDBGrid.FixedHotColor"/>
+      <element name="TRxDBGrid.SelectedColor"/>
+      <element name="TRxDBGrid.GridLineColor"/>
+      <element name="TRxDBGrid.GridLineStyle"/>
+      <element name="TRxDBGrid.Constraints"/>
+      <element name="TRxDBGrid.DataSource"/>
+      <element name="TRxDBGrid.DefaultDrawing"/>
+      <element name="TRxDBGrid.DefaultRowHeight"/>
+      <element name="TRxDBGrid.DragCursor"/>
+      <element name="TRxDBGrid.DragKind"/>
+      <element name="TRxDBGrid.DragMode"/>
+      <element name="TRxDBGrid.Enabled"/>
+      <element name="TRxDBGrid.FixedColor"/>
+      <element name="TRxDBGrid.FixedCols"/>
+      <element name="TRxDBGrid.Flat"/>
+      <element name="TRxDBGrid.Font"/>
+      <element name="TRxDBGrid.HeaderHotZones"/>
+      <element name="TRxDBGrid.HeaderPushZones"/>
+      <element name="TRxDBGrid.Options"/>
+      <element name="TRxDBGrid.OptionsExtra"/>
+      <element name="TRxDBGrid.ParentBiDiMode"/>
+      <element name="TRxDBGrid.ParentColor"/>
+      <element name="TRxDBGrid.ParentFont"/>
+      <element name="TRxDBGrid.ParentShowHint"/>
+      <element name="TRxDBGrid.PopupMenu"/>
+      <element name="TRxDBGrid.ReadOnly"/>
+      <element name="TRxDBGrid.Scrollbars"/>
+      <element name="TRxDBGrid.ShowHint"/>
+      <element name="TRxDBGrid.TabOrder"/>
+      <element name="TRxDBGrid.TabStop"/>
+      <element name="TRxDBGrid.TitleFont"/>
+      <element name="TRxDBGrid.TitleStyle"/>
+      <element name="TRxDBGrid.Visible"/>
+      <element name="TRxDBGrid.OnCellClick"/>
+      <element name="TRxDBGrid.OnColEnter"/>
+      <element name="TRxDBGrid.OnColExit"/>
+      <element name="TRxDBGrid.OnColumnMoved"/>
+      <element name="TRxDBGrid.OnColumnSized"/>
+      <element name="TRxDBGrid.OnDragDrop"/>
+      <element name="TRxDBGrid.OnDragOver"/>
+      <element name="TRxDBGrid.OnDrawColumnCell"/>
+      <element name="TRxDBGrid.OnDblClick"/>
+      <element name="TRxDBGrid.OnEditButtonClick"/>
+      <element name="TRxDBGrid.OnEndDock"/>
+      <element name="TRxDBGrid.OnEndDrag"/>
+      <element name="TRxDBGrid.OnEnter"/>
+      <element name="TRxDBGrid.OnExit"/>
+      <element name="TRxDBGrid.OnFieldEditMask"/>
+      <element name="TRxDBGrid.OnKeyDown"/>
+      <element name="TRxDBGrid.OnKeyPress"/>
+      <element name="TRxDBGrid.OnKeyUp"/>
+      <element name="TRxDBGrid.OnMouseDown"/>
+      <element name="TRxDBGrid.OnMouseMove"/>
+      <element name="TRxDBGrid.OnMouseUp"/>
+      <element name="TRxDBGrid.OnPrepareCanvas"/>
+      <element name="TRxDBGrid.OnSelectEditor"/>
+      <element name="TRxDBGrid.OnStartDock"/>
+      <element name="TRxDBGrid.OnStartDrag"/>
+      <element name="TRxDBGrid.OnTitleClick">
+        <descr>Событие происходит при нажатии пользователем на кнопку в заголовке колонки компоненты TRxDBGrid при установленном в True значении свойства TitleButtons. В обработчик события в качестве параметров передаются номер колонки ACol и поле Field, соответствующее данной колонке.</descr>
+      </element>
+      <element name="TRxDBGrid.OnUserCheckboxBitmap"/>
+      <element name="TRxDBGrid.OnUTF8KeyPress"/>
+      <element name="TRxDBGrid.OnCreateLookup"/>
+      <element name="TRxDBGrid.OnDisplayLookup"/>
+      <element name="TRxColumn">
+        <short>Этот клас представляет собой колонку в RxDBGrid</short>
+      </element>
+      <element name="TRxColumn.Create">
+        <short>Конструктор constructor TRxColumn.Create(ACollection: TCollection);</short>
+        <descr>Конструктор constructor <b>TRxColumn.Create(ACollection: TCollection);</b>
+Создаёт класс столбца и заполняет начальные значения</descr>
+      </element>
+      <element name="TRxColumn.Destroy"/>
+      <element name="TRxColumn.aOptimizeWidth"/>
+      <element name="TRxColumn.aFooter"/>
+      <element name="TRxColumn.aImageList"/>
+      <element name="TRxColumn.aKeyList"/>
+      <element name="TRxColumn.NotInKeyListIndex"/>
+      <element name="TRxColumn.aFilter"/>
+      <element name="TRxQuickSearchNotifyEvent">
+        <short>Тип описывает событие, возникающее во время операции быстрого поиска данных в спике</short>
+        <descr>Тип описывает событие, возникающее во время операции быстрого поиска данных в спике</descr>
+        <seealso>
+          <link id="TRxDBGrid.AfterQuickSearch"/>
+          <link id="TRxDBGrid.BeforeQuickSearch"/>
+        </seealso>
+      </element>
+      <element name="TSortMarker">
+        <short>Маркер направления сортировки</short>
+        <descr>
+          <p>Маркер направления сортировки.</p>
+          <p>Определяет отображение маркера сортировки в заголовке столбца RxDBGrid-а.</p>
+          <table>
+            <th>
+              <td>Параметр</td>
+              <td>Описание</td>
+            </th>
+            <tr>
+              <td>smNone</td>
+              <td>Не отображать маркер</td>
+            </tr>
+            <tr>
+              <td>smDown</td>
+              <td>Отображать маркер "Вниз" - прямая сортировка</td>
+            </tr>
+            <tr>
+              <td>smUp</td>
+              <td>Отображать маркер "Вверх" - обратная сортировка</td>
+            </tr>
+          </table>
+        </descr>
+        <seealso>
+          <link id="TGetBtnParamsEvent"/>
+          <link id="TRxDBGrid.OnGetBtnParams"/>
+        </seealso>
+      </element>
+      <element name="TGetBtnParamsEvent">
+        <short>Данный тип описывает событие при отображении в списке заголовка колонки</short>
+        <descr>
+          <p>Данный тип описывает событие при отображении в списке заголовка колонки</p>
+          <table>
+            <th>
+              <td>Параметр</td>
+              <td>Тип</td>
+              <td>Описание</td>
+            </th>
+            <tr>
+              <td>Sender: TObject</td>
+              <td>Вх.</td>
+              <td>Указывает на экземпляр объекта <link id="TRxDBGrid">RxDBGrid</link>
+              </td>
+            </tr>
+            <tr>
+              <td>Field: TField</td>
+              <td>Вх.</td>
+              <td>Определяет колонку, для которой необходимо определить параметры</td>
+            </tr>
+            <tr>
+              <td>AFont: TFont</td>
+              <td>Вх.</td>
+              <td>С помощью данного объекта можно указать параметры шрифта заголовка</td>
+            </tr>
+            <tr>
+              <td>Background: TColor</td>
+              <td>Вых.</td>
+              <td>Можно указать цвет фона заголовка колонки</td>
+            </tr>
+            <tr>
+              <td>SortMarker: TSortMarker</td>
+              <td>Вых.</td>
+              <td>Можно указать <link id="TSortMarker">тип маркера сортировки</link>
+              </td>
+            </tr>
+            <tr>
+              <td>IsDown: Boolean</td>
+              <td>Вх.</td>
+              <td>Определяет, был ли клик мышкой по данному заголовку</td>
+            </tr>
+          </table>
+        </descr>
+      </element>
+      <element name="TGetCellPropsEvent">
+        <short>Данный тип описывает событие получения параметров ячейки в RxDBGrid-е</short>
+        <descr>
+          <p>Данный тип описывает событие получения параметров ячейки в <link id="TRxDBGrid">RxDBGrid</link>-е</p>
+          <table>
+            <th>
+              <td>Параметр</td>
+              <td>Тип параметра</td>
+              <td>Описание</td>
+            </th>
+            <tr>
+              <td>Sender: TObject</td>
+              <td>вх.</td>
+              <td>Указывает на экземпляр объекта <link id="TRxDBGrid">RxDBGrid</link>
+              </td>
+            </tr>
+            <tr>
+              <td>Field: TField</td>
+              <td>вх.</td>
+              <td>Определяет колонку, для которой произошло событие</td>
+            </tr>
+            <tr>
+              <td>AFont: TFont</td>
+              <td>вх.</td>
+              <td>С помощью данного объекта можно указать параметры шрифта ячейки</td>
+            </tr>
+            <tr>
+              <td>Background: TColor</td>
+              <td>вых.</td>
+              <td>Можно указать цвет фона ячейки</td>
+            </tr>
+          </table>
+        </descr>
+        <seealso>
+          <link id="TRxDBGrid.OnGetCellProps"/>
+        </seealso>
+      </element>
+      <element name="TRxDBGridAllowedOperation">
+        <short>Параметры изменения данных в RxDBGrid</short>
+        <descr>
+          <p>Флаги, определяющие параметры изменения данных в <link id="TRxDBGrid">RxDBGrid</link>
+          </p>
+          <table>
+            <th>
+              <td>Параметр</td>
+              <td>Описание</td>
+            </th>
+            <tr>
+              <td>aoInsert</td>
+              <td>Доступна вставка строки данных в <link id="TRxDBGrid">RxDBGrid</link>
+              </td>
+            </tr>
+            <tr>
+              <td>aoUpdate</td>
+              <td>Доступна изменение данных в строке <link id="TRxDBGrid">RxDBGrid</link>
+              </td>
+            </tr>
+            <tr>
+              <td>aoDelete</td>
+              <td>Доступно удаление строки данных из <link id="TRxDBGrid">RxDBGrid</link>
+              </td>
+            </tr>
+            <tr>
+              <td>aoAppend</td>
+              <td>Доступно добавление строки данных в конец списка в <link id="TRxDBGrid">RxDBGrid</link>
+              </td>
+            </tr>
+          </table>
+        </descr>
+      </element>
+      <element name="TRxDBGridAllowedOperations">
+        <short>Набор флагов, определяющие поведение при редактировании/добавлении или удалении данных в RxDBGrid</short>
+        <descr>
+          <p>Набор <link id="TRxDBGridAllowedOperation">флагов</link>, определяющие поведение при редактировании/добавлении или удалении данных в 
+<link id="TRxDBGrid">RxDBGrid</link>
+          </p>
+        </descr>
+      </element>
+      <element name="TFooterValueType">
+        <short>Определяем тип занчения, автоматически расчитываемого в итоговой строке</short>
+        <descr>
+          <p>Определяем тип занчения, автоматически расчитываемого в итоговой строке</p>
+          <table>
+            <th>
+              <td>Параметр</td>
+              <td>Значение</td>
+            </th>
+            <tr>
+              <td>fvtNon</td>
+              <td>По умолчанию, ничего не отображаем</td>
+            </tr>
+            <tr>
+              <td>fvtSum</td>
+              <td>Отображается сумма по указанной колонке</td>
+            </tr>
+            <tr>
+              <td>fvtAvg</td>
+              <td>Расчитывается среднее значение по указанной колонке</td>
+            </tr>
+            <tr>
+              <td>fvtCount</td>
+              <td>Отображается общее количество строк в списке</td>
+            </tr>
+            <tr>
+              <td>fvtFieldValue</td>
+              <td>Отображается значение указанной колонки</td>
+            </tr>
+            <tr>
+              <td>fvtStaticText</td>
+              <td>Отображается текст из поля <link id="TRxColumnFooter.Value">Value</link>
+              </td>
+            </tr>
+            <tr>
+              <td>fvtMin</td>
+              <td>Отображается минимальное значние указанного в свойстве <link id="TRxColumnFooter.FieldName">FieldName</link>поля</td>
+            </tr>
+            <tr>
+              <td>fvtMax</td>
+              <td>Отображается максимальное значние указанного в свойстве <link id="TRxColumnFooter.FieldName">FieldName</link>поля</td>
+            </tr>
+            <tr>
+              <td>fvtRecNo</td>
+              <td>Отображается номер текущей записи из списка</td>
+            </tr>
+          </table>
+        </descr>
+        <seealso>
+          <link id="TRxColumnFooter.ValueType"/>
+          <link id="TRxColumnFooter.FieldName"/>
+        </seealso>
+      </element>
+      <element name="TOptionRx">
+        <short>Набор флагов, управляющих поведением RxDBGrid</short>
+        <descr>
+          <p>Набор флагов, управляющих поведением <link id="TRxDBGrid">RxDBGrid</link>
+          </p>
+          <table>
+            <th>
+              <td>Параметр</td>
+              <td>Описание</td>
+            </th>
+            <tr>
+              <td>rdgAllowColumnsForm</td>
+              <td>Разрешает вызов формы управления отображением и порядком расположения колонок в <link id="TRxDBGrid">RxDBGrid</link>-е</td>
+            </tr>
+            <tr>
+              <td>rdgAllowDialogFind</td>
+              <td>Разрешает вызов формы поиска данных в <link id="TRxDBGrid">RxDBGrid</link>-е</td>
+            </tr>
+            <tr>
+              <td>rdgHighlightFocusCol</td>
+              <td>Подсвечивать текущую колонку</td>
+            </tr>
+            <tr>
+              <td>rdgHighlightFocusRow</td>
+              <td>Подсвечивать текущую строку</td>
+            </tr>
+            <tr>
+              <td>rdgDblClickOptimizeColWidth</td>
+              <td>При двойном щелчке по разделителю между колонками в <link id="TRxDBGrid">RxDBGrid</link>-е  автоматически подбирать размер колонки по ширине отображаемых данных</td>
+            </tr>
+            <tr>
+              <td>rdgFooterRows</td>
+              <td>Отображать итоговую строку (подвал) спика</td>
+            </tr>
+            <tr>
+              <td>rdgXORColSizing</td>
+              <td>При изменении размера колонки отображать только будущую границу колонки, саму колонку при этом не менять. В противном случае при изменении размера ширина колонки меняется сразу. Параметр полезен для медленных компьютеров или терминального режима</td>
+            </tr>
+            <tr>
+              <td>rdgFilter</td>
+              <td>Разрешить локальную фильтрацию данных</td>
+            </tr>
+            <tr>
+              <td>rdgMultiTitleLines</td>
+              <td>Разрешить объединение заголовков колонок</td>
+            </tr>
+            <tr>
+              <td>rdgMrOkOnDblClik</td>
+              <td>При двойном щелчке мышки генерировать для формы-владельца грида событие mrOk - полезно при создании формы выбора из списка</td>
+            </tr>
+            <tr>
+              <td>rdgAllowQuickSearch</td>
+              <td>Разрешить быстрыый поиск в гриде - в этом режиме нажатие клавиш включет механизм встроенного поиска по текущей колонке, прямое редактирование в списке будет запрещено. </td>
+            </tr>
+            <tr>
+              <td>rdgAllowQuickFilter</td>
+              <td>Разрешить быструю фильтрацию в колонках - в заголовке списка будет доступна по нажатию клавиши <b>Ctrl+E</b> дополнительная строка, содержащая ComboBox-ы со значениями колонок. Аналогично сортировки в электронных таблицах.</td>
+            </tr>
+            <tr>
+              <td>rdgAllowFilterForm</td>
+              <td>Разрешает к использованию форму фильтрации  в <link id="TRxDBGrid">RxDBGrid</link>-е</td>
+            </tr>
+            <tr>
+              <td>rdgAllowSortForm</td>
+              <td>Разрешает к использованию формы сортировки данных в <link id="TRxDBGrid">RxDBGrid</link>-е</td>
+            </tr>
+            <tr>
+              <td>rdgAllowToolMenu</td>
+              <td>Включает отображение меню инструментов  в <link id="TRxDBGrid">RxDBGrid</link>-е. При активации данного параметра в верхнем левом углу грида отрисовывается специальный значок и при его нажатии мышкой выдаётся меню иснтрументов</td>
+            </tr>
+            <tr>
+              <td>rdgCaseInsensitiveSort</td>
+              <td>Параметр включает режим сортировки без учёта регистра символов в столбце  <link id="TRxDBGrid">RxDBGrid</link>-а</td>
+            </tr>
+          </table>
+        </descr>
+      </element>
+      <element name="TOptionsRx">
+        <short>Набор флагов, управлюящих поведением RxDBGrid-а</short>
+        <descr>
+          <p>
+            <link id="TOptionRx">Набор флагов</link>, управлюящих поведением 
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <link id="TRxDBGrid">RxDBGrid</link>-а.</p>
+        </descr>
+        <seealso>
+          <link id="TOptionRx"/>
+          <link id="TRxDBGrid.OptionsRx"/>
+        </seealso>
+      </element>
+      <element name="TRxSortEngineOption">
+        <short>Параметры сортировки данных</short>
+        <descr>
+          <p>Параметры сортировки данных</p>
+          <table>
+            <th>
+              <td>Параметр</td>
+              <td>Описание</td>
+            </th>
+            <tr>
+              <td>seoCaseInsensitiveSort</td>
+              <td>При сортировке данных не учитывать регистр</td>
+            </tr>
+          </table>
+        </descr>
+        <seealso>
+          <link id="TRxSortEngineOptions"/>
+          <link id="TRxDBGridSortEngine.Sort"/>
+        </seealso>
+      </element>
+      <element name="TRxSortEngineOptions">
+        <short>Парамерты сортировки</short>
+        <descr>Парамерты сортировки, набор <link id="TRxSortEngineOption">флагов</link>.</descr>
+        <seealso>
+          <link id="TRxDBGridSortEngine.Sort"/>
+        </seealso>
+      </element>
+      <element name="TRxDBGridSortEngineClass">
+        <short>Мета-класс сортировщика данных</short>
+        <descr>Мета-класс сортировщика данных, используется непосредственно при регистрации экземпляра класса (наследника от <link id="TRxDBGridSortEngine">TRxDBGridSortEngine</link>) сортировщика данных.</descr>
+        <seealso>
+          <link id="RegisterRxDBGridSortEngine"/>
+          <link id="TRxDBGridSortEngine"/>
+        </seealso>
+      </element>
+      <element name="TMLCaptionItem">
+        <short>Элемент многострочного заголовка</short>
+        <descr>Элемент многострочного заголовка</descr>
+      </element>
+      <element name="TRxDbGridColumns"/>
+      <element name="TRxDbGridColumns.Add"/>
+      <element name="TFilterListCellEditor"/>
+      <element name="TFilterListCellEditor.Show"/>
+      <element name="TFilterListCellEditor.Grid"/>
+      <element name="TFilterListCellEditor.Col"/>
+      <element name="TFilterListCellEditor.MouseFlag"/>
+      <element name="RegisterRxDBGridSortEngine">
+        <short>Регистрируем класс сортировщика в наборе данных</short>
+        <descr>
+          <p>RxDBGridSortEngineClass:TRxDBGridSortEngineClass - класс сортировщика</p>
+          <p>DataSetClass:TDataSetClass -</p>
+        </descr>
+      </element>
+      <element name="TCreateLookup">
+        <short>Тип описывает событие, возникающее в момент полчения данных в лукпный редактор значения ячейки</short>
+        <descr>Тип описывает событие, возникающее в момент полчения данных в лукпный редактор значения ячейки</descr>
+      </element>
+      <element name="TDisplayLookup">
+        <short>Тип описывает событие, возникающее в момент показа выпадающего списка лукапного редактора значения ячейки</short>
+        <descr>Тип описывает событие, возникающее в момент показа выпадающего списка лукапного редактора значения ячейки</descr>
+      </element>
+      <element name="TRxDBGrid.KeyStrokes">
+        <short>Определяет сочетания для вызова фукнций RxDBGrid</short>
+        <descr>Определяет сочетания для вызова фукнций RxDBGrid</descr>
+      </element>
+      <element name="TRxDBGridKeyStrokes">
+        <short>Список назначенных клавиш на команды в TRxDBGrid</short>
+      </element>
+      <element name="TRxDBGridKeyStrokes.Create"/>
+      <element name="TRxDBGridKeyStrokes.Add"/>
+      <element name="TRxDBGridKeyStrokes.AddE"/>
+      <element name="TRxDBGridKeyStrokes.ResetDefaults"/>
+      <element name="TRxDBGridKeyStrokes.FindRxCommand"/>
+      <element name="TRxDBGridKeyStrokes.FindRxKeyStrokes"/>
+      <element name="TRxDBGridKeyStrokes.Items">
+        <short>Список назначенных команд на сочетания клавишь</short>
+      </element>
+      <element name="TRxDBGridKeyStroke"/>
+      <element name="TRxDBGridKeyStroke.Command">
+        <short>Определяем команду</short>
+      </element>
+      <element name="TRxDBGridKeyStroke.ShortCut">
+        <short>Определят сочетание клавишь</short>
+      </element>
+      <element name="TRxDBGridKeyStroke.Enabled">
+        <short>Признак запрета данного сочетания клавишь</short>
+      </element>
+    </module>
+    <module name="rxctrls">
+      <element name="TRxLabel">
+        <descr>
+          <p>Компонента TRxLabel аналогична стандартной компоненте VCL TLabel, однако дополнительно позволяет придать тексту статического элемента управления (Label) 3-мерный вид, либо отобразить "тень" текста. </p>
+          <p>С помощью свойст ShadowPos, ShadowColor и ShadowSize вы можете задать расположение, цвет и толщину "тени" букв текста. Значения, заданные для этих свойств по умолчанию, создают "трехмерный" эффект изображения текста. </p>
+        </descr>
+      </element>
+      <element name="TRxLabel.Align"/>
+      <element name="TRxLabel.Alignment"/>
+      <element name="TRxLabel.Alignment"/>
+      <element name="TRxLabel.Alignment"/>
+      <element name="TRxLabel.Color"/>
+      <element name="TRxLabel.DragCursor"/>
+      <element name="TRxLabel.DragMode"/>
+      <element name="TRxLabel.Enabled"/>
+      <element name="TRxLabel.Constraints"/>
+      <element name="TRxLabel.DragKind"/>
+      <element name="TRxLabel.BiDiMode"/>
+      <element name="TRxLabel.ParentBiDiMode"/>
+      <element name="TRxLabel.BorderSpacing"/>
+      <element name="TRxLabel.Layout"/>
+      <element name="TRxLabel.ParentColor"/>
+      <element name="TRxLabel.ParentFont"/>
+      <element name="TRxLabel.ParentShowHint"/>
+      <element name="TRxLabel.PopupMenu"/>
+      <element name="TRxLabel.ShadowColor">
+        <descr>Свойство задает цвет "тени" букв текста статического элемента управления TRxLabel.</descr>
+      </element>
+      <element name="TRxLabel.ShadowSize">
+        <descr>Свойство задает толщину "тени" букв текста статического элемента управления TrxLabel.</descr>
+      </element>
+      <element name="TRxLabel.ShadowPos">
+        <descr>Свойство задает расположение "тени" букв текста статического элемента управления TrxLabel.</descr>
+      </element>
+      <element name="TRxLabel.ShowAccelChar"/>
+      <element name="TRxLabel.ShowFocus"/>
+      <element name="TRxLabel.ShowHint"/>
+      <element name="TRxLabel.Transparent"/>
+      <element name="TRxLabel.Visible"/>
+      <element name="TRxLabel.WordWrap"/>
+      <element name="TRxLabel.OnClick"/>
+      <element name="TRxLabel.OnDblClick"/>
+      <element name="TRxLabel.OnDragDrop"/>
+      <element name="TRxLabel.OnDragOver"/>
+      <element name="TRxLabel.OnEndDrag"/>
+      <element name="TRxLabel.OnMouseDown"/>
+      <element name="TRxLabel.OnMouseMove"/>
+      <element name="TRxLabel.OnMouseUp"/>
+      <element name="TRxLabel.OnMouseEnter">
+        <descr>Событие происходит, когда пользователь перемещает курсор мыши в область, находящуюся над элементом управления.</descr>
+      </element>
+      <element name="TRxLabel.OnMouseLeave">
+        <descr>Событие происходит, когда пользователь уводит курсор мыши из области, находящейся над элементом управления.</descr>
+      </element>
+      <element name="TRxLabel.OnStartDrag"/>
+      <element name="TRxLabel.OnContextPopup"/>
+      <element name="TRxLabel.OnEndDock"/>
+      <element name="TRxLabel.OnStartDock"/>
+      <element name="TSecretPanel">
+        <short>Компонента TSecretPanel предназначена, как и компонента TPanel, для помещения в форму "панелей", на которых могут быть размещены другие элементы управления.</short>
+        <descr>
+          <p>Компонента TSecretPanel предназначена, как и компонента TPanel, для помещения в форму "панелей", на которых могут быть размещены другие элементы управления. </p>
+          <p>В дополнение к свойствам и методам компоненты TPanel, TSecretPanel имеет возможность размещения "скрытого" текста и изображения, доступных для отображения при установленном в True значении свойства <link id="TSecretPanel.Active">Active</link>. Свойство Lines<link id="TSecretPanel.Lines">Lines</link> задает список строк текста, который будет "прокручиваться" в направлении снизу вверх или справа налево (в зависимости от значения свойства <link id="TSecretPanel.ScrollDirection">ScrollDirection</link>) в клиентской области компоненты TSecretPanel при установке <link id="TSecretPanel.Active">Active</link> = True. Если свойство <link id="TSecretPanel.Glyph">Glyph</link> ассоциировано с графическим изображением, то одновременно это изображение будет показано в области TSecretPanel, заданной свойством <link id="TSecretPanel.GlyphLayout">GlyphLayout</link>. По окончании прокрутки текста, если свойство <link id="TSecretPanel.Cycled">Cycled</link> = False, свойство <link id="TSecretPanel.Active">Active</link> автоматически установится в значение False, если же <link id="TSecretPanel.Cycled">Cycled</link> = True, прокрутка текста возобновится сначала. Вы можете также прервать прокрутку, вручную установив свойство <link id="TSecretPanel.Active">Active</link> в значение False. </p>
+          <p>Событие <link id="TSecretPanel.OnPaintClient">OnPaintClient</link> позволяет вам достигать всевозможных эффектов при отрисовке клиентской области панели как в активном состоянии (при прокрутке текста), так и в неактивном. </p>
+        </descr>
+      </element>
+      <element name="TSecretPanel.Create"/>
+      <element name="TSecretPanel.Destroy"/>
+      <element name="TSecretPanel.Play"/>
+      <element name="TSecretPanel.Stop"/>
+      <element name="TSecretPanel.Canvas"/>
+      <element name="TSecretPanel.AsyncDrawing">
+        <descr>
+          <p>Свойство определяет, как будет осуществляться перерисовка компоненты при "прокрутке" текста, т.е. когда свойство Active = True. </p>
+          <p>Если AsyncDrawing = False, то перерисовка синхронизируется с основным потоком приложения. Если AsyncDrawing = True (по умолчанию), то прокрутка текста и перерисовка осуществляется асинхронно, в отдельном потоке. </p>
+        </descr>
+      </element>
+      <element name="TSecretPanel.Active">
+        <descr>
+          <p>Свойство определяет состояние компоненты TSecretPanel. При установке значения этого свойства в True, все компоненты, размещенные на TSecretPanel (у которых свойство Parent указывает на этот объект), скрываются, отображается изображение, заданное свойством Glyph, и начинается автоматическая прокрутка текста, определенного свойством Lines. 
+</p>
+          <p>Если свойство Cycled = False, то при прокрутке всего текста свойство Active автоматически устанавливается в значение False. Вы можете также прервать прокрутку ранее, присвоив свойству Active значение False. </p>
+        </descr>
+      </element>
+      <element name="TSecretPanel.Alignment"/>
+      <element name="TSecretPanel.Cycled">
+        <descr>
+          <p>Свойство Cycled определяет поведение компоненты после прокрутки всего текста, заданного свойством Lines. Если Cycled = True, то прокрутка текста будет продолжена с начала, если же Cycled = False (по умолчанию), то после прокрутки всего текста свойство Active будет установлено в значение False. </p>
+        </descr>
+      </element>
+      <element name="TSecretPanel.Glyph"/>
+      <element name="TSecretPanel.GlyphLayout"/>
+      <element name="TSecretPanel.Interval">
+        <descr>Свойство определяет временной интервал (в милисекундах), с которым происходит смена изображений в компоненте. 
+Для TSecretPanel свойство определяет скорость "прокрутки" текста при значении свойства Active = True.</descr>
+      </element>
+      <element name="TSecretPanel.Lines">
+        <descr>Свойство задает набор текстовых строк, которые не отображаются компонентой TSecretPanel в нормальном ее состоянии, но могут быть "прокручены" (одновременно с отображением битового изображения, заданного свойством Glyph) при установке в True значения свойства Active.</descr>
+      </element>
+      <element name="TSecretPanel.ScrollDirection">
+        <descr>Свойство определяет направление прокрутки срок текста при значении Active=True. 
+Возможные значения свойства ScrollDirection: 
+• sdVertical - текст прокручивается снизу вверх. 
+• sdHorizontal - прокрутка текста осуществляется в направлении справа налево.</descr>
+      </element>
+      <element name="TSecretPanel.TextStyle">
+        <descr>Свойство задает стиль отображения текста при его прокрутке в компоненте TSecretPanel. При значении этого свойства, отличном от bvNone, текст выглядит либо "продавленным" (bvLowered), либо "выпуклым" (bvRaised).</descr>
+      </element>
+      <element name="TSecretPanel.Anchors"/>
+      <element name="TSecretPanel.Constraints"/>
+      <element name="TSecretPanel.DragKind"/>
+      <element name="TSecretPanel.BiDiMode"/>
+      <element name="TSecretPanel.ParentBiDiMode"/>
+      <element name="TSecretPanel.Align"/>
+      <element name="TSecretPanel.BevelInner"/>
+      <element name="TSecretPanel.BevelOuter"/>
+      <element name="TSecretPanel.BevelWidth"/>
+      <element name="TSecretPanel.BorderWidth"/>
+      <element name="TSecretPanel.BorderStyle"/>
+      <element name="TSecretPanel.DragCursor"/>
+      <element name="TSecretPanel.DragMode"/>
+      <element name="TSecretPanel.Color"/>
+      <element name="TSecretPanel.Font"/>
+      <element name="TSecretPanel.ParentColor"/>
+      <element name="TSecretPanel.ParentFont"/>
+      <element name="TSecretPanel.ParentShowHint"/>
+      <element name="TSecretPanel.PopupMenu"/>
+      <element name="TSecretPanel.ShowHint"/>
+      <element name="TSecretPanel.TabOrder"/>
+      <element name="TSecretPanel.TabStop"/>
+      <element name="TSecretPanel.Visible"/>
+      <element name="TSecretPanel.OnPaintClient">
+        <descr>
+          <p>Событие возникает при перерисовке панели как в активном состоянии (Active=True) при прокрутке текста, так и в неактивном. 
+Вы можете использовать это событие для создания всевозможных эффектов при отрисовке панели. </p>
+          <remark>Имейте в виду, что при наличии обработчика события OnPaintClient компонента TSecretPanel не отрисовывает область, заданную параметром Rect, следовательно, при написании обработчика этого события вы должны как минимум заполнить указанную область, например вызовом метода FillRect. </remark>
+        </descr>
+      </element>
+      <element name="TSecretPanel.OnStartPlay"/>
+      <element name="TSecretPanel.OnStopPlay"/>
+      <element name="TSecretPanel.OnClick"/>
+      <element name="TSecretPanel.OnDblClick"/>
+      <element name="TSecretPanel.OnDragDrop"/>
+      <element name="TSecretPanel.OnDragOver"/>
+      <element name="TSecretPanel.OnEndDrag"/>
+      <element name="TSecretPanel.OnEnter"/>
+      <element name="TSecretPanel.OnExit"/>
+      <element name="TSecretPanel.OnMouseDown"/>
+      <element name="TSecretPanel.OnMouseMove"/>
+      <element name="TSecretPanel.OnMouseUp"/>
+      <element name="TSecretPanel.OnStartDrag"/>
+      <element name="TSecretPanel.OnContextPopup"/>
+      <element name="TSecretPanel.OnEndDock"/>
+      <element name="TSecretPanel.OnStartDock"/>
+      <element name="TSecretPanel.OnResize"/>
+      <element name="TRxSpeedButton">
+        <descr>Компонента аналогична стандартной компоненте TSpeedButton, но имеет некоторые дополнительные возможности. 
+Она может быть прозрачной (свойство Transparent) и "всплывающей" (свойство Flat), что позволяет создавать кнопки, аналогичные используемым в панели инструментов Microsoft Internet Explorer 3.x. При установленном значении свойств GrayedInactive и Flat битовое изображение "неактивной" кнопки будет изменяться по сравнению с обычным вариантом. 
+
+При установке свойства AllowTimer в значение True, кнопка будет генерировать повторяющиеся события OnClick при нажатии на кнопку до тех пор, пока кнопка находится в нажатом состоянии. Вы можете регулировать интервал между событиями OnClick с помощью свойств InitPause и RepeatInterval. 
+Кроме того, Вы можете задать выпадающее меню (с помощью свойства DropDownMenu), которое будет появляться при нажатии на кнопку. 
+
+Остальные свойства и методы компоненты TRxSpeedButton те же, что и у TSpeedButton.</descr>
+      </element>
+      <element name="TRxSpeedButton.Create"/>
+      <element name="TRxSpeedButton.Destroy"/>
+      <element name="TRxSpeedButton.AllowTimer">
+        <descr>Когда свойство AllowTimer установлено в значение True, кнопка будет генерировать повторяющиеся события OnClick при нажатии на кнопку до тех пор, пока кнопка находится в нажатом состоянии. Вы можете регулировать интервал между событиями OnClick с помощью свойств InitRepeatPause и RepeatPause.</descr>
+      </element>
+      <element name="TRxSpeedButton.InitPause">
+        <descr>Свойство позволяет задать интервал (в миллисекундах) перед первым событием OnClick, вызывающемся при нажатии кнопки, если свойство AllowTimer установлено в значение True.</descr>
+      </element>
+      <element name="TRxSpeedButton.RepeatInterval">
+        <descr>Свойство позволяет задать интервал (в миллисекундах) между повторяющимися вызовами события OnClick, если кнопка нажата и свойство AllowTimer = True.</descr>
+      </element>
+      <element name="TScrollDirection">
+        <descr>Тип определяет возможные значения свойства ScrollDirection компоненты <link id="TSecretPanel">TSecretPanel</link>
+        </descr>
+      </element>
+      <element name="TPanelDrawEvent">
+        <descr>Тип определяет метод - обработчик события OnPaintClient компоненты TSecretPanel.</descr>
+      </element>
+      <element name="TGlyphLayout">
+        <descr>Тип TGlyphLayout задает возможные значения свойства GlyphLayout компоненты <link id="TSecretPanel">TSecretPanel</link>.</descr>
+      </element>
+      <element name="TShadowPosition">
+        <descr>Тип TShadowPosition задает возможные допустимые значения для свойства ShadowPos компоненты <link id="TRxLabel">TRxLabel</link>, задающего положение "тени" статического элемента управления.</descr>
+      </element>
+    </module>
+    <module name="curredit">
+      <element name="TCurrencyEdit">
+        <short>TCurrencyEdit Component</short>
+        <descr>
+          <p>Компонента служит для ввода и редактирования чисел и денежных сумм. TCurrencyEdit имеет те же свойства, что и ее предок TEdit, но позволяет дополнительно указать формат отображения числа и символы для обозначения вида валюты с помощью свойства <link id="TCurrencyEdit.DisplayFormat">DisplayFormat</link>, а также максимальное число символов после десятичной точки (при вводе данных) с помощью свойства <link id="TCurrencyEdit.DecimalPlaces">DecimalPlaces</link>. Свойство Value позволяет получить или установить численную величину отображаемого в компоненте значения.</p>
+          <p>Если свойство BeepOnError установлено в True, то при вводе в строку недопустимых символов раздается звуковой сигнал.</p>
+        </descr>
+      </element>
+      <element name="TCurrencyEdit.Create"/>
+      <element name="TCurrencyEdit.Destroy"/>
+      <element name="TCurrencyEdit.Clear"/>
+      <element name="TCurrencyEdit.AsInteger">
+        <descr>
+          <p>Свойство позволяет обратиться к значению <link id="TCurrencyEdit.Value">Value</link>, сохраненному в компоненте - редакторе для ввода чисел, как к целому числу. </p>
+        </descr>
+      </element>
+      <element name="TCurrencyEdit.DisplayText">
+        <descr>Свойство служит для доступа на чтение к форматированному в соответствии со значением <link id="TCurrencyEdit.DisplayFormat">DisplayFormat</link> представлению значения <link id="TCurrencyEdit.Value">Value</link>Value (совпадает с отображаемой строкой в компоненте, когда элемент редактирования не имеет фокуса ввода). В отличие от этого свойства, свойство Text всегда возвращает неформатированную строку.</descr>
+      </element>
+      <element name="TCurrencyEdit.Value">
+        <descr>Свойство позволяет установить (или получить) численную величину значения, отображаемого в строке ввода. В случае пустой строки возвращается значение 0.</descr>
+      </element>
+      <element name="TCurrencyEdit.Alignment"/>
+      <element name="TCurrencyEdit.AutoSelect">
+        <descr>Определяет факт автоматического выделения всего текста при попадании фокуса клавиатурного ввода в компонент</descr>
+      </element>
+      <element name="TCurrencyEdit.AutoSize">
+        <descr>Свойство определяет, будет ли размер автоматически изменяться размер шрифта</descr>
+      </element>
+      <element name="TCurrencyEdit.BeepOnError">
+        <descr>Если значение этого свойства установлено в True (по умолчанию False), то при ошибках ввода с клавиатуры (недопустимых символов и т.д.) раздается звуковой сигнал.</descr>
+      </element>
+      <element name="TCurrencyEdit.BorderStyle"/>
+      <element name="TCurrencyEdit.BorderSpacing"/>
+      <element name="TCurrencyEdit.CheckOnExit">
+        <descr>
+          <p>Свойство определяет, будет ли проверяться  допустимый диапазон числа в компонентах TCurrencyEdit при потере фокуса строкой редактирования. </p>
+          <p>Если CheckOnExit = True, то в случае ввода недопустимого значения происходит исключение (exception). </p>
+        </descr>
+      </element>
+      <element name="TCurrencyEdit.Color"/>
+      <element name="TCurrencyEdit.DecimalPlaces">
+        <descr>Свойство определяет максимально допустимое число десятичных знаков при вводе и изменении данных в строке редактирования компоненты TCurrencyEdit. Используется, когда строка имеет фокус ввода. При отображении значения в несфокусированной строке редактирования свойство не используется - применяется маска, заданная свойством <link id="TCurrencyEdit.DisplayFormat">DisplayFormat.</link>
+        </descr>
+      </element>
+      <element name="TCurrencyEdit.DisplayFormat">
+        <descr>Свойство задает формат отображения данных в компоненте TCurrencyEdit. При получении компонентой фокуса ввода форматирование данных отменяется и ввод происходит как в обычную строку ввода TEdit. При потере фокуса ввода данные форматируются согласно заданному формату.</descr>
+      </element>
+      <element name="TCurrencyEdit.DragCursor"/>
+      <element name="TCurrencyEdit.DragMode"/>
+      <element name="TCurrencyEdit.Enabled"/>
+      <element name="TCurrencyEdit.Font"/>
+      <element name="TCurrencyEdit.FormatOnEditing">
+        <descr>Свойство определяет, будет ли автоматически форматироваться значение в строке редактора непосредственно при редактировании. 
+Формат ввода определяется переменными DecimalSeparator и ThousandSeparator из модуля SysUtils.pas и свойством <link id="TCurrencyEdit.DecimalPlaces">DecimalPlaces</link>
+        </descr>
+      </element>
+      <element name="TCurrencyEdit.HideSelection"/>
+      <element name="TCurrencyEdit.Anchors"/>
+      <element name="TCurrencyEdit.BiDiMode"/>
+      <element name="TCurrencyEdit.Constraints"/>
+      <element name="TCurrencyEdit.DragKind"/>
+      <element name="TCurrencyEdit.MaxLength"/>
+      <element name="TCurrencyEdit.MaxValue">
+        <descr>Максимально допустимое значение свойства <link id="TCurrencyEdit.Value">Value</link>. Значение MaxValue ограничивает максимальную величину числа, которое можно ввести в строку ввода.</descr>
+      </element>
+      <element name="TCurrencyEdit.MinValue">
+        <descr>Минимально допустимое значение свойства <link id="TCurrencyEdit.Value">Value</link>. Значение MinValue ограничивает минимальную величину числа, которое можно ввести в строку ввода.</descr>
+      </element>
+      <element name="TCurrencyEdit.ParentColor"/>
+      <element name="TCurrencyEdit.ParentFont"/>
+      <element name="TCurrencyEdit.ParentShowHint"/>
+      <element name="TCurrencyEdit.PopupMenu"/>
+      <element name="TCurrencyEdit.ReadOnly"/>
+      <element name="TCurrencyEdit.ShowHint"/>
+      <element name="TCurrencyEdit.TabOrder"/>
+      <element name="TCurrencyEdit.TabStop"/>
+      <element name="TCurrencyEdit.Text"/>
+      <element name="TCurrencyEdit.Value"/>
+      <element name="TCurrencyEdit.Visible"/>
+      <element name="TCurrencyEdit.ZeroEmpty">
+        <descr>Если значение этого свойства равно True, то когда редактор имеет фокус ввода и значение <link id="TCurrencyEdit.Value">Value</link>Value = 0, в нем с качестве текста отображается пустая строка. Если ZeroEmpty = False, то в этом случае текст '0'.</descr>
+      </element>
+      <element name="TCurrencyEdit.OnChange"/>
+      <element name="TCurrencyEdit.OnClick"/>
+      <element name="TCurrencyEdit.OnDblClick"/>
+      <element name="TCurrencyEdit.OnDragDrop"/>
+      <element name="TCurrencyEdit.OnDragOver"/>
+      <element name="TCurrencyEdit.OnEndDrag"/>
+      <element name="TCurrencyEdit.OnEnter"/>
+      <element name="TCurrencyEdit.OnExit"/>
+      <element name="TCurrencyEdit.OnKeyDown"/>
+      <element name="TCurrencyEdit.OnKeyPress"/>
+      <element name="TCurrencyEdit.OnKeyUp"/>
+      <element name="TCurrencyEdit.OnMouseDown"/>
+      <element name="TCurrencyEdit.OnMouseMove"/>
+      <element name="TCurrencyEdit.OnMouseUp"/>
+      <element name="TCurrencyEdit.OnContextPopup"/>
+      <element name="TCurrencyEdit.OnStartDrag"/>
+      <element name="TCurrencyEdit.OnEndDock"/>
+      <element name="TCurrencyEdit.OnStartDock"/>
+      <short>CurrEdit Unit</short>
+      <descr>
+        <p>The <b>CurrEdit unit</b> contains the declarations for the certain components on the <b>RX Controls</b> page of the Component palette and their associated objects, types, and constants.
+When you add a component declared in this unit to a form, the unit is automatically added to the uses clause of that form's unit.</p>
+        <p>The following items are declared in the CurrEdit unit:</p>
+        <p>
+          <b>Components and objects</b>
+        </p>
+        <p>
+          <link id="TCurrencyEdit">TCurrencyEdit</link>
+        </p>
+        <p>To see a listing of items declared in this unit including their declarations, use the ObjectBrower.</p>
+      </descr>
+    </module>
+    <module name="rxlookup">
+      <element name="TRxLookupEdit">
+        <short>TRxLookupEdit Component</short>
+        <descr>
+          <p>Компонента TRxLookupEdit представляет собой редактор с возможностью как прямого ввода текста пользователем в строке редактирования, так и выбора текста из выпадающего списка, заполняемого значениями из базы данных. При открытом списке набор пользователем символов с клавиатуры приводит к позиционированию списка на ближайшую запись, совпадающую с введенным текстом. </p>
+          <p>Для заполнения выпадающего списка используются свойства LookupSource, LookupField, LookupDisplay и LookupDisplayIndex, аналогично списку компоненты TRxDBLookupCombo. </p>
+          <p>Введенное пользователем или выбранное из списка значение доступно через свойство Text. 
+Свойство LookupValue (read-only) позволяет получить значение ключевого поля из lookup-набора данных (заданного свойством LookupField), если пользвателем был сделан выбор из списка.</p>
+        </descr>
+      </element>
+      <element name="TRxLookupEdit.Create"/>
+      <element name="TRxLookupEdit.Destroy"/>
+      <element name="TRxLookupEdit.DropDownCount"/>
+      <element name="TRxLookupEdit.DropDownWidth"/>
+      <element name="TRxLookupEdit.LookupDisplay"/>
+      <element name="TRxLookupEdit.LookupDisplayIndex">
+        <descr>В случае, если свойство <link id="TRxLookupEdit.LookupDisplay">LookupDisplay</link> задает более одного поля для отображения в списке, значение свойства LookupDisplayIndex определяет номер поля, значение которого возвращается свойством DisplayValue.</descr>
+      </element>
+      <element name="TRxLookupEdit.LookupField"/>
+      <element name="TRxLookupEdit.LookupSource"/>
+      <element name="TRxLookupEdit.PopUpFormOptions"/>
+      <element name="TRxDBLookupCombo">
+        <short>TRxDBLookupCombo Component</short>
+        <descr>Unit
+RxLookup
+Description
+Компонента TRxDBLookupCombo почти полностью аналогична стандартной компоненте из VCL TDBLookupCombo и имеет те же самые свойства, методы и события. Однако по сравнению с TDBLookupCombo у этой компоненты есть некоторые дополнительные возможности и свойства. 
+TRxDBLookupCombo позволяет использовать в качестве LookupSource любой источник данных - как TTable, так и TQuery, при этом свойство LookupField не обязательно должно быть индексированным полем. 
+Компонента TRxDBLookupCombo также позволяет производить поиск нужного термина при наборе первых букв этого термина. 
+Например, у вас имеется таблица или результат запроса, седержащий поля CustNo и CustName. Тогда вы можете указать поле CustName как значение свойства LookupDisplay. Если пользователь вашего приложения наберет первые буквы нужной ему фамилии (находящейся в поле CustName), то если компонента TRxDBLookupCombo имеет фокус ввода, автоматически выпадет список доступных значений и выделенный элемент в списке установится в значение, первые буквы которого совпадают с введенными пользователем. 
+Если свойство IgnoreCase установлено в True, то при наборе пользователем первых букв термина регистр символов не учитывается. Надо иметь в виду, что при работе с русскоязычными значениями в полях БД не все драйвера поддерживают преобразование регистра символов. 
+Свойство IndexSwitch определяет, будет ли при необходимости производиться переключение индексов таблицы (если источником данных служит таблица, а не результат запроса). В случае использования больших SQL-таблиц переключение индексов может занять длительное время, поэтому в таких случаях свойство желательно устанавливать в значение False. 
+Свойтсво DisplayEmpty позволяет задать текстовую строку для отображения в строке TRxDBLookupCombo, когда не сделано никакого выбора. Вызов метода ResetField приводит к очистке содержимого компоненты, устоновке значения Value в пустую строку, и отображению значения DisplayEmpty. 
+В дополнение к событию OnDropDown, имеющемуся у TDBLookupCombo, компонента имеет событие OnCloseUp, вызываемое при закрытии выпадающего списка. Метод IsDropDown позволяет определить текущее состояние выпадающего списка выбора. Событие OnChange происходит при смене значения cвойства Value. 
+Компонента также позволяет задать изображения для рисования в левой части каждой строки списка, в зависимости от содержимого полей БД, с помощью события OnGetImage. 
+В остальном компонента TRxDBLookupCombo полностью аналогична компоненте TDBLookupCombo. 
+
+ВНИМАНИЕ 
+При присвоении значений свойству Value или DisplayValue компонент TRxDBLookupCombo или TRxDBLookupList безошибочное позиционирование на соответствующую запись в списке произойдет только в том случае, если соответствующее поле в подмножестве записей, заданном источником данных DataSource, имеет только уникальные неповторяющиеся значения. В противном случае Вы получите несколько "выбранных" элементов в списке (причем реально будет выбран только один самый первый), значения полей в которых равны заданному. Избегайте таких ситуаций! 
+
+При работе с некоторыми SQL-серверами БД установка свойств IndexSwitch или IgnoreCase в значение True может приводить к неожиданному поведению компоненты. В этом случае постарайтесь добиться "правильного" поведения за счет комбинирования разных значений свойств IgnoreCase и IndexSwitch.</descr>
+      </element>
+      <element name="TRxDBLookupCombo.PopupVisible"/>
+      <element name="TRxDBLookupCombo.Value"/>
+      <element name="TRxDBLookupCombo.KeyValue"/>
+      <element name="TRxDBLookupCombo.AutoSize"/>
+      <element name="TRxDBLookupCombo.Align"/>
+      <element name="TRxDBLookupCombo.Anchors"/>
+      <element name="TRxDBLookupCombo.BorderSpacing"/>
+      <element name="TRxDBLookupCombo.ButtonOnlyWhenFocused"/>
+      <element name="TRxDBLookupCombo.ButtonWidth"/>
+      <element name="TRxDBLookupCombo.Color"/>
+      <element name="TRxDBLookupCombo.DataField"/>
+      <element name="TRxDBLookupCombo.DataSource"/>
+      <element name="TRxDBLookupCombo.DirectInput"/>
+      <element name="TRxDBLookupCombo.DragCursor"/>
+      <element name="TRxDBLookupCombo.DragMode"/>
+      <element name="TRxDBLookupCombo.Enabled"/>
+      <element name="TRxDBLookupCombo.PopUpFormOptions"/>
+      <element name="TRxDBLookupCombo.Flat"/>
+      <element name="TRxDBLookupCombo.Font"/>
+      <element name="TRxDBLookupCombo.Glyph"/>
+      <element name="TRxDBLookupCombo.EmptyValue">
+        <short>property EmptyValue: string;</short>
+        <descr>Свойство задает значение, присвоение которого свойству Value будет восприниматься как присвоение "пустого" значения и приведет к очистке DataField. По умолчанию значение свойства есть пустая строка.</descr>
+      </element>
+      <element name="TRxDBLookupCombo.EmptyItemColor">
+        <short>property EmptyItemColor: TColor;</short>
+        <descr>Свойство задает значение цвета, которым будет рисоваться дополнительный нескролируемый элемент списка для "пустого" значения (т.е. которое совпадает с DisplayEmpty).</descr>
+      </element>
+      <element name="TRxDBLookupCombo.NumGlyphs"/>
+      <element name="TRxDBLookupCombo.OnButtonClick"/>
+      <element name="TRxDBLookupCombo.OnChange"/>
+      <element name="TRxDBLookupCombo.OnClick"/>
+      <element name="TRxDBLookupCombo.OnDblClick"/>
+      <element name="TRxDBLookupCombo.OnDragDrop"/>
+      <element name="TRxDBLookupCombo.OnDragOver"/>
+      <element name="TRxDBLookupCombo.OnEndDrag"/>
+      <element name="TRxDBLookupCombo.OnEnter"/>
+      <element name="TRxDBLookupCombo.OnExit"/>
+      <element name="TRxDBLookupCombo.OnKeyDown"/>
+      <element name="TRxDBLookupCombo.OnKeyPress"/>
+      <element name="TRxDBLookupCombo.OnKeyUp"/>
+      <element name="TRxDBLookupCombo.OnMouseDown"/>
+      <element name="TRxDBLookupCombo.OnMouseMove"/>
+      <element name="TRxDBLookupCombo.OnMouseUp"/>
+      <element name="TRxDBLookupCombo.OnStartDrag"/>
+      <element name="TRxDBLookupCombo.OnGetGridCellProps"/>
+      <element name="TRxDBLookupCombo.OnSelect"/>
+      <element name="TRxDBLookupCombo.ParentColor"/>
+      <element name="TRxDBLookupCombo.ParentFont"/>
+      <element name="TRxDBLookupCombo.ParentShowHint"/>
+      <element name="TRxDBLookupCombo.PopupMenu"/>
+      <element name="TRxDBLookupCombo.ReadOnly"/>
+      <element name="TRxDBLookupCombo.ShowHint"/>
+      <element name="TRxDBLookupCombo.TabOrder"/>
+      <element name="TRxDBLookupCombo.TabStop"/>
+      <element name="TRxDBLookupCombo.Visible"/>
+      <element name="TRxDBLookupCombo.DisplayAllFields"/>
+      <element name="TRxDBLookupCombo.DropDownCount"/>
+      <element name="TRxDBLookupCombo.DropDownWidth"/>
+      <element name="TRxDBLookupCombo.LookupDisplay"/>
+      <element name="TRxDBLookupCombo.LookupDisplayIndex"/>
+      <element name="TRxDBLookupCombo.LookupField"/>
+      <element name="TRxDBLookupCombo.LookupSource"/>
+      <element name="TRxDBLookupCombo.UnfindedValue"/>
+      <descr>
+        <p>The RxLookup unit contains the declarations for the certain components on the RX DBAware page of the Component palette and their associated objects, types, and constants.
+When you add a component declared in this unit to a form, the unit is automatically added to the uses clause of that form's unit.</p>
+      </descr>
+      <element name="TRxLookupEdit.OnClosePopup">
+        <descr>Событие возникает при закрытии PopUp окна выбора данных.</descr>
+      </element>
+      <element name="TRxDBLookupCombo.OnClosePopup">
+        <descr>Событие возникает при закрытии PopUp окна выбора данных.</descr>
+      </element>
+    </module>
+    <module name="dbdateedit">
+      <element name="TDBDateEdit">
+        <descr>Компонента TDBDateEdit - ориентированная на работу с базами данных компонента для редактирования даты. Установленное значение свойства Date становится новым значением поля в БД, если значение свойства ReadOnly компоненты TDBDateEdit - False. 
+TDBDateEdit является наследником TDateEdit и имеет все те же свойства и методы, и дополнительно имеет свойства, необходимые для работы с полями базы данных. 
+
+Компонента TDBDateEdit может быть применена к тем полям наборов данных, которые позволяют чтение и присвоение значений через свойство AsDateTime.</descr>
+      </element>
+      <element name="TDBDateEdit.Create"/>
+      <element name="TDBDateEdit.Destroy"/>
+      <element name="TDBDateEdit.DataField"/>
+      <element name="TDBDateEdit.DataSource"/>
+      <element name="TDBDateEdit.ReadOnly"/>
+      <element name="TDBDateEdit.DefaultToday">
+        <descr>Свойство DialogTitle задает заголовок диалогового окна, появляющегося при нажатии на кнопку компоненты TFilenameEdit (TOpenDialog) или TDateEdit, TDBDateEdit (диалог выбора даты).</descr>
+      </element>
+      <element name="TRxDBCalcEdit">
+        <descr>Компонента TRxDBCalcEdit - ориентированная на работу с базами данных компонента для редактирования чисел с возможностью импользования выпадающего калькулятора. Установленное значение свойства Value становится новым значением поля в БД, если значение свойства ReadOnly - False. 
+TRxDBCalcEdit является наследником TDBCalcEdit и имеет все те же свойства и методы, и дополнительно имеет свойства, необходимые для работы с полями базы данных. 
+Компонента TRxDBCalcEdit может быть применена к тем полям данных, которые позволяют чтение и присвоение значений через свойства AsFloat, AsInteger.</descr>
+      </element>
+      <element name="TRxDBCalcEdit.Create"/>
+      <element name="TRxDBCalcEdit.Destroy"/>
+      <element name="TRxDBCalcEdit.DataField"/>
+      <element name="TRxDBCalcEdit.DataSource"/>
+      <element name="TRxDBCalcEdit.ReadOnly"/>
+    </module>
+    <module name="folderlister">
+      <element name="TFolderLister">
+        <short>Класс по управлению списком файлов</short>
+        <descr>Даный класс предназначен для чтения списка файлов из указанного каталога и формирования по этому списку меню.
+Папка, для сканирования определяется свойством FileFolder
+Пункт меню, куда в качестве подменю будут добавлен список файлов - MenuItem</descr>
+      </element>
+      <element name="TFolderLister.Execute">
+        <short>Метод запускает процесс сканирования папки с файлами</short>
+      </element>
+      <element name="TFolderLister.Create"/>
+      <element name="TFolderLister.Destroy"/>
+      <element name="TFolderLister.Files">
+        <short>Свойство содержит в себе имена всех фалов, которые были обнаружены в указанной папке</short>
+        <descr>
+          <p>Свойство - массив, содержит в себе список всех файлов и каталогов, которые были обнаружены в указанной папке.</p>
+Кол-во элементов данного массива находится в свойстве 
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <b>Count</b>
+        </descr>
+        <seealso>
+          <link id="TFolderLister.FileFolder"/>
+          <link id="TFolderLister.Count"/>
+        </seealso>
+      </element>
+      <element name="TFolderLister.Count">
+        <short>Количество прочитанных файлов/каталогов</short>
+        <descr>
+          <p>Свойство содержит в себе кол-во прочитанных файлов</p>
+        </descr>
+        <seealso>
+          <link id="TFolderLister.Files"/>
+        </seealso>
+      </element>
+      <element name="TFolderLister.DefaultExt"/>
+      <element name="TFolderLister.FileFolder">
+        <short>Свойство FileFolder</short>
+        <descr>
+          <b>property FileFolder:string</b>
+          <p>Свойство FileFolder определяет каталог с файлами, который будет сканироваться при вызове метода <link id="TFolderLister.Execute">Execute</link> и по содержимому которого будет произведено заполнение массива Files</p>
+        </descr>
+        <seealso>
+          <link id="TFolderLister.Execute"/>
+        </seealso>
+      </element>
+      <element name="TFolderLister.OnExecuteItem">
+        <short>Свойство OnExecuteItem</short>
+        <descr>
+          <b>property OnExecuteItem:TNotifyEvent</b>
+          <p>Свойство OnExecuteItem вызывается при выборе пункта меню, которые было сформировано по элементам массива <link id="TFolderLister.Files">Files</link>
+          </p>
+        </descr>
+      </element>
+      <element name="TFolderLister.MenuItem">
+        <short>Свойство MenuItem</short>
+        <descr>
+          <b>property MenuItem:TMenuItem;</b>
+          <p>Данное свойство определяет место в меню, где будет добавлено в виде подменю содержимое каталога <link id="TFolderLister.FileFolder">FileFolder</link>
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFolderLister.Execute"/>
+        </seealso>
+      </element>
+    </module>
+    <module name="rxmemds">
+      <element name="TRxMemoryData"/>
+      <element name="TRxMemoryData.Create"/>
+      <element name="TRxMemoryData.Destroy"/>
+      <element name="TRxMemoryData.BookmarkValid"/>
+      <element name="TRxMemoryData.CompareBookmarks"/>
+      <element name="TRxMemoryData.CreateBlobStream"/>
+      <element name="TRxMemoryData.GetFieldData"/>
+      <element name="TRxMemoryData.GetCurrentRecord"/>
+      <element name="TRxMemoryData.IsSequenced"/>
+      <element name="TRxMemoryData.Locate"/>
+      <element name="TRxMemoryData.SortOnFields"/>
+      <element name="TRxMemoryData.EmptyTable"/>
+      <element name="TRxMemoryData.CloseOpen"/>
+      <element name="TRxMemoryData.CopyStructure"/>
+      <element name="TRxMemoryData.LoadFromDataSet"/>
+      <element name="TRxMemoryData.SaveToDataSet"/>
+      <element name="TRxMemoryData.AppendRecord"/>
+      <element name="TRxMemoryData.Capacity"/>
+      <element name="TRxMemoryData.Active"/>
+      <element name="TRxMemoryData.AutoCalcFields"/>
+      <element name="TRxMemoryData.Filtered"/>
+      <element name="TRxMemoryData.FieldDefs"/>
+      <element name="TRxMemoryData.BeforeOpen"/>
+      <element name="TRxMemoryData.AfterOpen"/>
+      <element name="TRxMemoryData.BeforeClose"/>
+      <element name="TRxMemoryData.AfterClose"/>
+      <element name="TRxMemoryData.BeforeInsert"/>
+      <element name="TRxMemoryData.AfterInsert"/>
+      <element name="TRxMemoryData.BeforeEdit"/>
+      <element name="TRxMemoryData.AfterEdit"/>
+      <element name="TRxMemoryData.BeforePost"/>
+      <element name="TRxMemoryData.AfterPost"/>
+      <element name="TRxMemoryData.BeforeCancel"/>
+      <element name="TRxMemoryData.AfterCancel"/>
+      <element name="TRxMemoryData.BeforeDelete"/>
+      <element name="TRxMemoryData.AfterDelete"/>
+      <element name="TRxMemoryData.BeforeScroll"/>
+      <element name="TRxMemoryData.AfterScroll"/>
+      <element name="TRxMemoryData.OnCalcFields"/>
+      <element name="TRxMemoryData.OnDeleteError"/>
+      <element name="TRxMemoryData.OnEditError"/>
+      <element name="TRxMemoryData.OnFilterRecord"/>
+      <element name="TRxMemoryData.OnFilterRecordEx"/>
+      <element name="TRxMemoryData.OnNewRecord"/>
+      <element name="TRxMemoryData.OnPostError"/>
+      <element name="TMemBlobStream"/>
+      <element name="TMemBlobStream.Create"/>
+      <element name="TMemBlobStream.Destroy"/>
+      <element name="TMemBlobStream.Read"/>
+      <element name="TMemBlobStream.Write"/>
+      <element name="TMemBlobStream.Seek"/>
+      <element name="TMemBlobStream.Truncate"/>
+      <element name="TMemoryRecord"/>
+      <element name="TMemoryRecord.Create"/>
+      <element name="TMemoryRecord.CreateEx"/>
+      <element name="TMemoryRecord.Destroy"/>
+      <element name="TMemoryRecord.MemoryData"/>
+      <element name="TMemoryRecord.ID"/>
+      <element name="TMemoryRecord.Index"/>
+      <element name="TMemoryRecord.Data"/>
+    </module>
+    <module name="tooledit">
+      <element name="TRxDateEdit"/>
+      <element name="TRxDateEdit.Create"/>
+      <element name="TRxDateEdit.Destroy"/>
+      <element name="TRxDateEdit.CheckValidDate"/>
+      <element name="TRxDateEdit.GetDateMask"/>
+      <element name="TRxDateEdit.UpdateMask"/>
+      <element name="TRxDateEdit.Date"/>
+      <element name="TRxDateEdit.Formatting"/>
+      <element name="TRxDateEdit.ValidDate"/>
+      <element name="TRxDateEdit.PopupVisible"/>
+      <element name="TRxDateEdit.Action"/>
+      <element name="TRxDateEdit.Align"/>
+      <element name="TRxDateEdit.Anchors"/>
+      <element name="TRxDateEdit.AutoSelect"/>
+      <element name="TRxDateEdit.AutoSize"/>
+      <element name="TRxDateEdit.BlanksChar"/>
+      <element name="TRxDateEdit.BorderSpacing"/>
+      <element name="TRxDateEdit.ButtonOnlyWhenFocused"/>
+      <element name="TRxDateEdit.ButtonWidth"/>
+      <element name="TRxDateEdit.CalendarStyle"/>
+      <element name="TRxDateEdit.CancelCaption"/>
+      <element name="TRxDateEdit.CharCase"/>
+      <element name="TRxDateEdit.Color"/>
+      <element name="TRxDateEdit.Constraints"/>
+      <element name="TRxDateEdit.DefaultToday"/>
+      <element name="TRxDateEdit.DialogTitle"/>
+      <element name="TRxDateEdit.DirectInput"/>
+      <element name="TRxDateEdit.DragMode"/>
+      <element name="TRxDateEdit.EchoMode"/>
+      <element name="TRxDateEdit.Enabled"/>
+      <element name="TRxDateEdit.Font"/>
+      <element name="TRxDateEdit.Glyph"/>
+      <element name="TRxDateEdit.MaxLength"/>
+      <element name="TRxDateEdit.NotInThisMonthColor"/>
+      <element name="TRxDateEdit.NumGlyphs"/>
+      <element name="TRxDateEdit.OKCaption"/>
+      <element name="TRxDateEdit.ParentFont"/>
+      <element name="TRxDateEdit.ParentShowHint"/>
+      <element name="TRxDateEdit.PasswordChar"/>
+      <element name="TRxDateEdit.PopupAlign"/>
+      <element name="TRxDateEdit.PopupColor"/>
+      <element name="TRxDateEdit.PopupMenu"/>
+      <element name="TRxDateEdit.ReadOnly"/>
+      <element name="TRxDateEdit.ShowHint"/>
+      <element name="TRxDateEdit.StartOfWeek"/>
+      <element name="TRxDateEdit.TabOrder"/>
+      <element name="TRxDateEdit.TabStop"/>
+      <element name="TRxDateEdit.Text"/>
+      <element name="TRxDateEdit.Visible"/>
+      <element name="TRxDateEdit.WeekendColor"/>
+      <element name="TRxDateEdit.Weekends"/>
+      <element name="TRxDateEdit.YearDigits"/>
+      <element name="TRxDateEdit.OnAcceptDate"/>
+      <element name="TRxDateEdit.OnChange"/>
+      <element name="TRxDateEdit.OnChangeBounds"/>
+      <element name="TRxDateEdit.OnClick"/>
+      <element name="TRxDateEdit.OnEditingDone"/>
+      <element name="TRxDateEdit.OnEnter"/>
+      <element name="TRxDateEdit.OnExit"/>
+      <element name="TRxDateEdit.OnKeyDown"/>
+      <element name="TRxDateEdit.OnKeyPress"/>
+      <element name="TRxDateEdit.OnKeyUp"/>
+      <element name="TRxDateEdit.OnMouseDown"/>
+      <element name="TRxDateEdit.OnMouseMove"/>
+      <element name="TRxDateEdit.OnMouseUp"/>
+      <element name="TRxDateEdit.OnResize"/>
+    </module>
+    <module name="duallist">
+      <element name="TDualListDialog">
+        <short>TDualListDialog Component</short>
+        <descr>Unit
+DualList
+Description
+Компонента делает доступным вашему приложению диалог с двумя списками, где элементы можно перемещать из одного списка в другой, а также менять порядок следования элементов внутри списка. 
+По сравнению с одноименной формой из Delphi Gallery, кроме оформления в виде компоненты, добавлены возможность Drag Drop, задания порядка внутри списка, интерфейсные улучшения. 
+Задайте исходное состояние списков в свойствах List1 и List2, вызовите диалог функцией Execute и считайте новый состав списков.</descr>
+      </element>
+      <element name="TDualListDialog.Create"/>
+      <element name="TDualListDialog.Destroy"/>
+      <element name="TDualListDialog.Execute">
+        <short>function Execute: Boolean;</short>
+        <descr>Вызов диалога с двумя списками, где можно поменять элементы местами внутри списка или перенести элементы из одного списка в другой.</descr>
+      </element>
+      <element name="TDualListDialog.Ctl3D"/>
+      <element name="TDualListDialog.Sorted"/>
+      <element name="TDualListDialog.Title"/>
+      <element name="TDualListDialog.Label1Caption"/>
+      <element name="TDualListDialog.Label2Caption"/>
+      <element name="TDualListDialog.OkBtnCaption"/>
+      <element name="TDualListDialog.CancelBtnCaption"/>
+      <element name="TDualListDialog.HelpBtnCaption"/>
+      <element name="TDualListDialog.HelpContext"/>
+      <element name="TDualListDialog.List1">
+        <short>property List1: TStrings;</short>
+        <descr>Список слева.</descr>
+      </element>
+      <element name="TDualListDialog.List2">
+        <short>property List2: TStrings;</short>
+        <descr>Список справа.</descr>
+      </element>
+      <element name="TDualListDialog.ShowHelp"/>
+    </module>
+    <module name="rxswitch">
+      <element name="TRxSwitch"/>
+      <element name="TRxSwitch.Create"/>
+      <element name="TRxSwitch.Destroy"/>
+      <element name="TRxSwitch.ToggleSwitch"/>
+      <element name="TRxSwitch.Align"/>
+      <element name="TRxSwitch.BorderStyle"/>
+      <element name="TRxSwitch.Caption"/>
+      <element name="TRxSwitch.Color"/>
+      <element name="TRxSwitch.Cursor"/>
+      <element name="TRxSwitch.DragMode"/>
+      <element name="TRxSwitch.DragCursor"/>
+      <element name="TRxSwitch.Enabled"/>
+      <element name="TRxSwitch.Font"/>
+      <element name="TRxSwitch.GlyphOff"/>
+      <element name="TRxSwitch.GlyphOn"/>
+      <element name="TRxSwitch.ParentColor"/>
+      <element name="TRxSwitch.ParentFont"/>
+      <element name="TRxSwitch.ParentShowHint"/>
+      <element name="TRxSwitch.PopupMenu"/>
+      <element name="TRxSwitch.ShowFocus"/>
+      <element name="TRxSwitch.ToggleKey"/>
+      <element name="TRxSwitch.ShowHint"/>
+      <element name="TRxSwitch.StateOn"/>
+      <element name="TRxSwitch.TabOrder"/>
+      <element name="TRxSwitch.TabStop"/>
+      <element name="TRxSwitch.TextPosition"/>
+      <element name="TRxSwitch.Anchors"/>
+      <element name="TRxSwitch.Constraints"/>
+      <element name="TRxSwitch.DragKind"/>
+      <element name="TRxSwitch.Visible"/>
+      <element name="TRxSwitch.OnClick"/>
+      <element name="TRxSwitch.OnDblClick"/>
+      <element name="TRxSwitch.OnEnter"/>
+      <element name="TRxSwitch.OnExit"/>
+      <element name="TRxSwitch.OnMouseMove"/>
+      <element name="TRxSwitch.OnMouseDown"/>
+      <element name="TRxSwitch.OnMouseUp"/>
+      <element name="TRxSwitch.OnKeyDown"/>
+      <element name="TRxSwitch.OnKeyUp"/>
+      <element name="TRxSwitch.OnKeyPress"/>
+      <element name="TRxSwitch.OnDragOver"/>
+      <element name="TRxSwitch.OnDragDrop"/>
+      <element name="TRxSwitch.OnEndDrag"/>
+      <element name="TRxSwitch.OnStartDrag"/>
+      <element name="TRxSwitch.OnContextPopup"/>
+      <element name="TRxSwitch.OnEndDock"/>
+      <element name="TRxSwitch.OnStartDock"/>
+      <element name="TRxSwitch.OnOn"/>
+      <element name="TRxSwitch.OnOff"/>
+    </module>
+    <module name="rxdice">
+      <element name="TRxDice">
+        <short>Компонента позволяющая вам использовать в формах изображения игральных костей в различных положениях.</short>
+        <descr>
+          <p>Компонента из числа "безделушек", позволяющая вам использовать в формах изображения игральных костей в различных положениях. </p>
+          <p>Текущее состояние компоненты (положение игральной кости) задается свойством <link id="TRxDice.Value">Value</link>, которое может изменяться от 1 до 6. Вы можете установить свойство <link id="TRxDice.Value">Value</link> в случайное значение, вызвав метод <link id="TRxDice.RandomValue">RandomValue</link>. Если вы установите свойство <link id="TRxDice.Rotate">Rotate</link> в значение True, изображение игральной кости начнет случайным образом "вращаться", изменяя значение <link id="TRxDice.Value">Value</link>, с частотой, задаваемой свойством <link id="TRxDice.Interval">Interval</link>. Остановить вращение можно, присвоив значение False свойству <printshort id="TRxDice.Rotate"/>. Если свойство <link id="TRxDice.AutoStopInterval">AutoStopInterval</link> отлично от 0, то по прошествии этого времени вращение будет остановлено автоматически. </p>
+          <p>При изменении значения Value происходит событие OnChange.</p>
+        </descr>
+      </element>
+      <element name="TRxDice.Create"/>
+      <element name="TRxDice.Destroy"/>
+      <element name="TRxDice.RandomValue">
+        <short>procedure RandomValue;</short>
+        <descr>Вызов метода RandomValue позволяет установить значение свойства Value компоненты TrxDice случайным образом (в диапазоне целых чисел от 1 до 6).</descr>
+      </element>
+      <element name="TRxDice.Align"/>
+      <element name="TRxDice.AutoSize"/>
+      <element name="TRxDice.AutoStopInterval">
+        <short>Свойство задает интервал (в мсек), по прошествии которого после установки свойства Rotate в значение True вращение игральной кости будет остановлено</short>
+        <descr>
+          <p>Свойство задает интервал (в мсек), по прошествии которого после установки свойства <link id="TRxDice.Rotate">Rotate</link> в значение True вращение игральной кости будет остановлено. </p>
+          <p>Если значение AutoStopInterval = 0, то вращение автоматически не останавливается и может быть прекращено присваиванием <link id="TRxDice.Rotate">Rotate</link> = False.</p>
+        </descr>
+      </element>
+      <element name="TRxDice.Color"/>
+      <element name="TRxDice.Cursor"/>
+      <element name="TRxDice.DragMode"/>
+      <element name="TRxDice.DragCursor"/>
+      <element name="TRxDice.Enabled"/>
+      <element name="TRxDice.Interval">
+        <short>Свойство определяет временной интервал (в милисекундах), с которым происходит смена изображений в компоненте.</short>
+        <descr>
+          <p>Свойство определяет временной интервал (в милисекундах), с которым происходит смена изображений в компоненте. </p>
+          <p>при <link id="TRxDice.Rotate">Rotate</link> = True это частота смены битовых изображений.</p>
+        </descr>
+        <seealso>
+          <link id="TRxDice.Rotate"/>
+        </seealso>
+      </element>
+      <element name="TRxDice.ParentColor"/>
+      <element name="TRxDice.ParentShowHint"/>
+      <element name="TRxDice.PopupMenu"/>
+      <element name="TRxDice.Rotate">
+        <short>property Rotate: Boolean;</short>
+        <descr>Если вы установите свойство Rotate в значение True, изображение игральной кости начнет случайным образом "вращаться", изменяя значение Value, с частотой, задаваемой свойством Interval. Остановить вращение можно, присвоив свойству Rotate значение False.</descr>
+      </element>
+      <element name="TRxDice.ShowFocus"/>
+      <element name="TRxDice.ShowHint"/>
+      <element name="TRxDice.Anchors"/>
+      <element name="TRxDice.Constraints"/>
+      <element name="TRxDice.DragKind"/>
+      <element name="TRxDice.TabOrder"/>
+      <element name="TRxDice.TabStop"/>
+      <element name="TRxDice.Value">
+        <short>property Value: TrxDiceValue;</short>
+        <descr>Свойство задает текущее состояние (положение игральной кости) для компоненты TRxDice.</descr>
+      </element>
+      <element name="TRxDice.Visible"/>
+      <element name="TRxDice.OnClick"/>
+      <element name="TRxDice.OnDblClick"/>
+      <element name="TRxDice.OnEnter"/>
+      <element name="TRxDice.OnExit"/>
+      <element name="TRxDice.OnMouseMove"/>
+      <element name="TRxDice.OnMouseDown"/>
+      <element name="TRxDice.OnMouseUp"/>
+      <element name="TRxDice.OnKeyDown"/>
+      <element name="TRxDice.OnKeyUp"/>
+      <element name="TRxDice.OnKeyPress"/>
+      <element name="TRxDice.OnDragOver"/>
+      <element name="TRxDice.OnDragDrop"/>
+      <element name="TRxDice.OnEndDrag"/>
+      <element name="TRxDice.OnStartDrag"/>
+      <element name="TRxDice.OnContextPopup"/>
+      <element name="TRxDice.OnChange"/>
+      <element name="TRxDice.OnStart"/>
+      <element name="TRxDice.OnStop"/>
+      <element name="TRxDice.OnEndDock"/>
+      <element name="TRxDice.OnStartDock"/>
+    </module>
+    <module name="rxdbcomb">
+      <element name="TRxDBComboBox"/>
+      <element name="TRxDBComboBox.Create"/>
+      <element name="TRxDBComboBox.Destroy"/>
+      <element name="TRxDBComboBox.ExecuteAction"/>
+      <element name="TRxDBComboBox.UpdateAction"/>
+      <element name="TRxDBComboBox.UseRightToLeftAlignment"/>
+      <element name="TRxDBComboBox.Field"/>
+      <element name="TRxDBComboBox.Items"/>
+      <element name="TRxDBComboBox.Text"/>
+      <element name="TRxDBComboBox.Anchors"/>
+      <element name="TRxDBComboBox.ArrowKeysTraverseList"/>
+      <element name="TRxDBComboBox.AutoDropDown"/>
+      <element name="TRxDBComboBox.AutoSize"/>
+      <element name="TRxDBComboBox.BorderSpacing"/>
+      <element name="TRxDBComboBox.Style"/>
+      <element name="TRxDBComboBox.Color"/>
+      <element name="TRxDBComboBox.DataField"/>
+      <element name="TRxDBComboBox.DataSource"/>
+      <element name="TRxDBComboBox.DragMode"/>
+      <element name="TRxDBComboBox.DragCursor"/>
+      <element name="TRxDBComboBox.DropDownCount"/>
+      <element name="TRxDBComboBox.Enabled"/>
+      <element name="TRxDBComboBox.EnableValues"/>
+      <element name="TRxDBComboBox.Font"/>
+      <element name="TRxDBComboBox.Constraints"/>
+      <element name="TRxDBComboBox.DragKind"/>
+      <element name="TRxDBComboBox.ItemHeight"/>
+      <element name="TRxDBComboBox.Items"/>
+      <element name="TRxDBComboBox.ItemWidth"/>
+      <element name="TRxDBComboBox.MaxLength"/>
+      <element name="TRxDBComboBox.ParentColor"/>
+      <element name="TRxDBComboBox.ParentFont"/>
+      <element name="TRxDBComboBox.ParentShowHint"/>
+      <element name="TRxDBComboBox.PopupMenu"/>
+      <element name="TRxDBComboBox.ReadOnly"/>
+      <element name="TRxDBComboBox.ShowHint"/>
+      <element name="TRxDBComboBox.Sorted"/>
+      <element name="TRxDBComboBox.TabOrder"/>
+      <element name="TRxDBComboBox.TabStop"/>
+      <element name="TRxDBComboBox.Values"/>
+      <element name="TRxDBComboBox.Visible"/>
+      <element name="TRxDBComboBox.OnChange"/>
+      <element name="TRxDBComboBox.OnClick"/>
+      <element name="TRxDBComboBox.OnDblClick"/>
+      <element name="TRxDBComboBox.OnDragDrop"/>
+      <element name="TRxDBComboBox.OnDragOver"/>
+      <element name="TRxDBComboBox.OnDrawItem"/>
+      <element name="TRxDBComboBox.OnDropDown"/>
+      <element name="TRxDBComboBox.OnEndDrag"/>
+      <element name="TRxDBComboBox.OnEnter"/>
+      <element name="TRxDBComboBox.OnExit"/>
+      <element name="TRxDBComboBox.OnKeyDown"/>
+      <element name="TRxDBComboBox.OnKeyPress"/>
+      <element name="TRxDBComboBox.OnKeyUp"/>
+      <element name="TRxDBComboBox.OnMeasureItem"/>
+      <element name="TRxDBComboBox.OnStartDrag"/>
+      <element name="TRxDBComboBox.OnContextPopup"/>
+      <element name="TRxDBComboBox.OnEndDock"/>
+      <element name="TRxDBComboBox.OnStartDock"/>
+    </module>
+    <module name="rxtoolbar">
+      <element name="TToolbarItem"/>
+      <element name="TToolbarItem.Create"/>
+      <element name="TToolbarItem.Destroy"/>
+      <element name="TToolbarItem.Action"/>
+      <element name="TToolbarItem.AutoSize"/>
+      <element name="TToolbarItem.Visible"/>
+      <element name="TToolbarItem.Left"/>
+      <element name="TToolbarItem.Height"/>
+      <element name="TToolbarItem.Top"/>
+      <element name="TToolbarItem.Width"/>
+      <element name="TToolbarItem.DropDownMenu"/>
+      <element name="TToolbarItem.ShowCaption">
+        <short>Отображать заголовок кнопки</short>
+        <descr>Отображать заголовок кнопки</descr>
+      </element>
+      <element name="TToolbarItem.GroupIndex"/>
+      <element name="TToolbarItem.Layout"/>
+      <element name="TToolbarItem.ButtonStyle"/>
+      <element name="TToolbarItem.Tag"/>
+      <element name="TToolPanel"/>
+      <element name="TToolPanel.Create"/>
+      <element name="TToolPanel.Destroy"/>
+      <element name="TToolPanel.Customize"/>
+      <element name="TToolPanel.Items"/>
+      <element name="TToolPanel.ImageList"/>
+      <element name="TToolPanel.ImageListSelected"/>
+      <element name="TToolPanel.PropertyStorage">
+        <descr>
+          <p>Свойство позволяет автоматически сохранять специфические установки компоненты в INI-файле или (для 32-разрядной версии) в системном регистре при помощи компонент TFormPlacement или TFormStorage. </p>
+          <p>При задании значения свойству IniStorage (и непустом имени компоненты), некоторые ее настройки, которые не являются published-свойствами и не могут быть заданы для TFormStorage напрямую, будут сохраняться и восстанавливаться одновременни с другими значениями, заданными для соответствующей компоненты TFormPlacement (TFormStorage). </p>
+          <p>Для TSpeedbar - это расположение кнопок на панели и положение самой панели, для TMRUManager - список строк, для TRxDBGrid - ширины и положение полей в таблице и т.д. Все компоненты, имеющие свойство IniStorage, имеют также методы для сохранения и восстановления их настроек вручную, такие как Save/RestoreLayout и т.д.</p>
+        </descr>
+      </element>
+      <element name="TToolPanel.BtnWidth"/>
+      <element name="TToolPanel.BtnHeight"/>
+      <element name="TToolPanel.ToolBarStyle"/>
+      <element name="TToolPanel.Options">
+        <descr>Свойство определяет поведение панели инструментов согласно типа 
+<link id="TToolPanelOption">TToolPanelOption</link>.</descr>
+      </element>
+      <element name="TToolPanel.Version"/>
+      <element name="TToolPanel.ButtonAllign">
+        <short>Выравнивание кнопок на панели инструментов</short>
+        <descr>Определяет выравнивание кнопок на панели инструментов</descr>
+        <seealso>
+          <link id="TToolButtonAllign"/>
+        </seealso>
+      </element>
+      <element name="TToolPanel.Align"/>
+      <element name="TToolPanel.Alignment"/>
+      <element name="TToolPanel.Anchors"/>
+      <element name="TToolPanel.AutoSize"/>
+      <element name="TToolPanel.BorderSpacing"/>
+      <element name="TToolPanel.BevelInner"/>
+      <element name="TToolPanel.BevelOuter"/>
+      <element name="TToolPanel.BevelWidth"/>
+      <element name="TToolPanel.BorderWidth"/>
+      <element name="TToolPanel.BorderStyle"/>
+      <element name="TToolPanel.ChildSizing"/>
+      <element name="TToolPanel.ClientHeight"/>
+      <element name="TToolPanel.ClientWidth"/>
+      <element name="TToolPanel.Color"/>
+      <element name="TToolPanel.Constraints"/>
+      <element name="TToolPanel.DragMode"/>
+      <element name="TToolPanel.Enabled"/>
+      <element name="TToolPanel.Font"/>
+      <element name="TToolPanel.FullRepaint"/>
+      <element name="TToolPanel.ParentColor"/>
+      <element name="TToolPanel.ParentFont"/>
+      <element name="TToolPanel.ParentShowHint"/>
+      <element name="TToolPanel.PopupMenu"/>
+      <element name="TToolPanel.ShowHint"/>
+      <element name="TToolPanel.TabOrder"/>
+      <element name="TToolPanel.TabStop"/>
+      <element name="TToolPanel.Visible"/>
+      <element name="TToolPanel.OnClick"/>
+      <element name="TToolPanel.OnDblClick"/>
+      <element name="TToolPanel.OnDragDrop"/>
+      <element name="TToolPanel.OnDragOver"/>
+      <element name="TToolPanel.OnEndDrag"/>
+      <element name="TToolPanel.OnEnter"/>
+      <element name="TToolPanel.OnExit"/>
+      <element name="TToolPanel.OnMouseDown"/>
+      <element name="TToolPanel.OnMouseMove"/>
+      <element name="TToolPanel.OnMouseUp"/>
+      <element name="TToolPanel.OnResize"/>
+      <element name="TToolPanel.OnStartDrag"/>
+      <element name="TToolbarButtonStyle">
+        <short>Стиль поведения кнопки на панели инструментов</short>
+        <descr>Стиль поведения кнопки на панели инструментов
+<table>
+            <th>
+              <td>Стиль</td>
+              <td>Описание</td>
+            </th>
+            <tr>
+              <td>tbrButton</td>
+              <td>Кнопка</td>
+            </tr>
+            <tr>
+              <td>tbrCheck</td>
+              <td>Чек-бокс</td>
+            </tr>
+            <tr>
+              <td>tbrDropDown</td>
+              <td>Выпадающее меню</td>
+            </tr>
+            <tr>
+              <td>tbrSeparator</td>
+              <td>Разделитель</td>
+            </tr>
+            <tr>
+              <td>tbrDivider</td>
+              <td>Разделитель с линией</td>
+            </tr>
+            <tr>
+              <td>tbrDropDownExtra</td>
+              <td>Кнопка с выпадающим меню</td>
+            </tr>
+          </table>
+        </descr>
+      </element>
+      <element name="TToolBarStyle">
+        <short>Стиль отображения на панели инструментов</short>
+        <descr>
+          <p>Стиль отображения на панели инструментов</p>
+          <table>
+            <th>
+              <td>Сталь</td>
+              <td>Описание</td>
+            </th>
+            <tr>
+              <td>tbsStandart</td>
+              <td>Отображение кнопок обёмными и квадратными (как было в Windows 95-2000)</td>
+            </tr>
+            <tr>
+              <td>tbsWindowsXP</td>
+              <td>Отображение "плоских" голубых кнопок (как в Windows XP)</td>
+            </tr>
+            <tr>
+              <td>tbsNative</td>
+              <td>При отображении кнопок используется внешний вид согласно текущей системной темы отрисовки элементов интерфейса</td>
+            </tr>
+          </table>
+        </descr>
+      </element>
+      <element name="TToolButtonAllign">
+        <short>Выравнивание кнопок на панели инструментов</short>
+        <descr>
+          <p>Выравнивание кнопок на панели инструментов</p>
+          <table>
+            <th>
+              <td>Выравнивание</td>
+              <td>Описание</td>
+            </th>
+            <tr>
+              <td>tbaNone</td>
+              <td>Нет автоматического выравнивания кнопок</td>
+            </tr>
+            <tr>
+              <td>tbaLeft</td>
+              <td>Выравнивани по левому краю</td>
+            </tr>
+            <tr>
+              <td>tbaRignt</td>
+              <td>Выравнивание по правому краю</td>
+            </tr>
+          </table>
+        </descr>
+        <seealso>
+          <link id="TToolPanel.ButtonAllign"/>
+        </seealso>
+      </element>
+      <element name="TToolPanelOption">
+        <descr>Параметры поведения панели инструментов
+
+<table>
+            <th>
+              <td>Элемент</td>
+              <td>Описание</td>
+            </th>
+            <tr>
+              <td>tpFlatBtns</td>
+              <td>Всплывающие кнопки</td>
+            </tr>
+            <tr>
+              <td>tpTransparentBtns</td>
+              <td>Прозрачные кнопки, актуально если сама панель инструментов отрисовывется не стандартно, например с фоновым рисунком</td>
+            </tr>
+            <tr>
+              <td>tpStretchBitmap</td>
+              <td>Растягивать изображения</td>
+            </tr>
+            <tr>
+              <td>tpCustomizable</td>
+              <td>Доступно во время работы приложения возможность настройки панели (скрывать или отображать кнопки)</td>
+            </tr>
+            <tr>
+              <td>tpGlyphPopup</td>
+              <td>При наведении указателя мышки изображения на кнопках будут "приподниматься"</td>
+            </tr>
+            <tr>
+              <td>tpCaptionPopup</td>
+              <td>При наведении указателя мышки текст на кнопках будет "приподниматься"</td>
+            </tr>
+          </table>
+        </descr>
+      </element>
+      <element name="TToolPanelOptions">
+        <descr>Комплексное тип, содержащий в себе множество элементов типа <link id="TToolPanelOption">TToolPanelOption</link>.</descr>
+      </element>
+      <element name="DefButtonWidth">
+        <short>Ширина кнопки по умолчанию</short>
+        <descr>Ширина кнопки по умолчанию</descr>
+        <seealso>
+          <link id="TToolbarItem.Width"/>
+          <link id="TToolPanel.BtnWidth"/>
+        </seealso>
+      </element>
+      <element name="DefButtonHeight">
+        <short>Высота кнопки по умолчанию</short>
+        <descr>Высота кнопки по умолчанию</descr>
+        <seealso>
+          <link id="TToolbarItem"/>
+          <link id="TToolPanel.BtnHeight"/>
+        </seealso>
+      </element>
+      <element name="DropDownExtraBtnWidth">
+        <short>Ширина вспомогательной кнопки по умолчанию</short>
+        <descr>Ширина вспомогательной кнопки по умолчанию</descr>
+        <seealso>
+          <link id="TToolbarItem.ButtonStyle"/>
+        </seealso>
+      </element>
+    </module>
+    <module name="rxlogin">
+      <element name="TRxLoginDialog"/>
+      <element name="TRxLoginDialog.Create"/>
+      <element name="TRxLoginDialog.Destroy"/>
+      <element name="TRxLoginDialog.Login"/>
+      <element name="TRxLoginDialog.TerminateApplication"/>
+      <element name="TRxLoginDialog.Lock"/>
+      <element name="TRxLoginDialog.LoggedUser"/>
+      <element name="TRxLoginDialog.Active"/>
+      <element name="TRxLoginDialog.AttemptNumber"/>
+      <element name="TRxLoginDialog.IniFileName"/>
+      <element name="TRxLoginDialog.DetailItems"/>
+      <element name="TRxLoginDialog.DetailItem"/>
+      <element name="TRxLoginDialog.MaxPasswordLen"/>
+      <element name="TRxLoginDialog.UpdateCaption"/>
+      <element name="TRxLoginDialog.UseRegistry"/>
+      <element name="TRxLoginDialog.ShowDetails"/>
+      <element name="TRxLoginDialog.LoginOptions"/>
+      <element name="TRxLoginDialog.StorageParams"/>
+      <element name="TRxLoginDialog.OnCheckUser"/>
+      <element name="TRxLoginDialog.AfterLogin"/>
+      <element name="TRxLoginDialog.BeforeLogin"/>
+      <element name="TRxLoginDialog.OnUnlockApp"/>
+      <element name="TRxLoginDialog.OnIconDblClick"/>
+    </module>
+    <module name="pickdate">
+      <element name="TRxCalendarGrid"/>
+      <element name="TRxCalendarGrid.Create"/>
+      <element name="TRxCalendarGrid.Destroy"/>
+      <element name="TRxCalendarGrid.NextMonth"/>
+      <element name="TRxCalendarGrid.NextYear"/>
+      <element name="TRxCalendarGrid.PrevMonth"/>
+      <element name="TRxCalendarGrid.PrevYear"/>
+      <element name="TRxCalendarGrid.UpdateCalendar"/>
+      <element name="TRxCalendarGrid.ShortDaysOfWeek"/>
+      <element name="TRxCalendarGrid.Align"/>
+      <element name="TRxCalendarGrid.Anchors"/>
+      <element name="TRxCalendarGrid.BorderColor"/>
+      <element name="TRxCalendarGrid.BorderSpacing"/>
+      <element name="TRxCalendarGrid.CalendarDate"/>
+      <element name="TRxCalendarGrid.Constraints"/>
+      <element name="TRxCalendarGrid.Day"/>
+      <element name="TRxCalendarGrid.Font"/>
+      <element name="TRxCalendarGrid.Hint"/>
+      <element name="TRxCalendarGrid.Month"/>
+      <element name="TRxCalendarGrid.NotInThisMonthColor"/>
+      <element name="TRxCalendarGrid.PopupMenu"/>
+      <element name="TRxCalendarGrid.ReadOnly"/>
+      <element name="TRxCalendarGrid.SelectedColor"/>
+      <element name="TRxCalendarGrid.ShortDaysOfWeek"/>
+      <element name="TRxCalendarGrid.StartOfWeek"/>
+      <element name="TRxCalendarGrid.TabStop"/>
+      <element name="TRxCalendarGrid.UseCurrentDate"/>
+      <element name="TRxCalendarGrid.Visible"/>
+      <element name="TRxCalendarGrid.WeekendColor"/>
+      <element name="TRxCalendarGrid.Weekends"/>
+      <element name="TRxCalendarGrid.Year"/>
+      <element name="TRxCalendarGrid.OnChange"/>
+      <element name="TRxCalendarGrid.OnClick"/>
+      <element name="TRxCalendarGrid.OnEnter"/>
+      <element name="TRxCalendarGrid.OnExit"/>
+      <element name="TRxCalendarGrid.OnKeyDown"/>
+      <element name="TRxCalendarGrid.OnKeyPress"/>
+      <element name="TRxCalendarGrid.OnKeyUp"/>
+      <element name="TRxCalendarGrid.OnMouseDown"/>
+      <element name="TRxCalendarGrid.OnMouseEnter"/>
+      <element name="TRxCalendarGrid.OnMouseLeave"/>
+      <element name="TRxCalendarGrid.OnMouseMove"/>
+      <element name="TRxCalendarGrid.OnMouseUp"/>
+      <element name="TRxCalendarGrid.OnResize"/>
+      <element name="TRxCalendarGrid.OnPrepareCanvas"/>
+    </module>
+    <module name="rxclock">
+      <element name="TRxClock">
+        <descr>Компонента позволяет отображать время суток в цифровом или аналоговом виде (вид отображения задается с помощью свойства ShowMode). 
+При цифровом отображении формат времени задается комбинацией значений свойств LeadingZero, TwelveHour и ShowSeconds. 
+Дополнительно имеется функция будильника. При установке значения AlarmEnabled в True, при наступлении времени суток, заданного свойствами AlarmHour, AlarmMinute и AlarmSecond, происходит событие OnAlarm, в обработчике которого вы можете произвести необходимые действия.</descr>
+      </element>
+      <element name="TRxClock.Create"/>
+      <element name="TRxClock.Destroy"/>
+      <element name="TRxClock.SetAlarmTime"/>
+      <element name="TRxClock.UpdateClock"/>
+      <element name="TRxClock.AlarmEnabled">
+        <short>property AlarmEnabled: Boolean;</short>
+        <descr>При установке значения AlarmEnabled в True, при наступлении времени суток, заданного свойствами AlarmHour, AlarmMinute и AlarmSecond, происходит событие OnAlarm, в обработчике которого вы можете произвести необходимые действия.</descr>
+      </element>
+      <element name="TRxClock.AlarmHour">
+        <short>property AlarmHour: Byte;</short>
+        <descr>Свойство задает (совместно со значениями AlarmMinute и AlarmSecond) время срабатывания "будильника", т.е. время, в которое произойдет событие OnAlarm при установке в True свойства AlarmEnabled.</descr>
+      </element>
+      <element name="TRxClock.AlarmMinute">
+        <short>property AlarmMinute: Byte;</short>
+        <descr>Свойство задает (совместно со значениями AlarmHour и AlarmSecond) время срабатывания "будильника", т.е. время, в которое произойдет событие OnAlarm при установке в True свойства AlarmEnabled.</descr>
+      </element>
+      <element name="TRxClock.AlarmSecond">
+        <short>property AlarmSecond: Byte;</short>
+        <descr>Свойство задает (совместно со значениями AlarmHour и AlarmMinute) время срабатывания "будильника", т.е. время, в которое произойдет событие OnAlarm при установке в True свойства AlarmEnabled.</descr>
+      </element>
+      <element name="TRxClock.AutoSize">
+        <short>AutoSize Property</short>
+        <descr>Свойство определяет, будет ли размер автоматически изменяться размер шрифта, которым отображается время в цифровом виде (значение ShowMode равно scDigital), при изменении размера элемента управления TRxClock.</descr>
+      </element>
+      <element name="TRxClock.BevelInner"/>
+      <element name="TRxClock.BevelOuter"/>
+      <element name="TRxClock.DotsColor"/>
+      <element name="TRxClock.ShowMode">
+        <short>property ShowMode: TShowClock;</short>
+        <descr>Свойство управляет режимом отображения времени в компоненте TRxClock. Значение scDigital задает цифровое отображение времени шрифтом, заданным свойством Font, значение scAnalog задает аналоговый вид часов. 
+При цифровом отображении времени формат времени задается комбинацией значений свойств LeadingZero, TwelveHour и ShowSeconds. 
+При аналоговом отображении свойство ShowSeconds определяет, будет ли показываться секундная стрелка, свойство DotsColor - цвет для точек, обозначающих часы.</descr>
+      </element>
+      <element name="TRxClock.ShowSeconds">
+        <short>property ShowSeconds: Boolean;</short>
+        <descr>Свойство задает, будут ли отображаться секунды при цифровом изображении часов (при значении свойства ShowMode = scDigital) или секундная стрелка - при аналоговом.</descr>
+      </element>
+      <element name="TRxClock.TwelveHour">
+        <short>property TwelveHour: Boolean;</short>
+        <descr>Свойство определяет, как будет форматироваться время, если задано цифровое отображение часов (свойство ShowMode = scDigital). При значении TwelveHour = False (по умолчанию) диапазон значений часов 0..23; при значении True часы принимают значения 1..12 и при форматировании времени используются значения глобальных переменных модуля SysUtils TimeAMString и TimePMString.</descr>
+      </element>
+      <element name="TRxClock.LeadingZero">
+        <short>property LeadingZero: Boolean;</short>
+        <descr>Свойство определяет, будут ли добавляться лидирующие нули при форматировании времени (только для значения часов), если задано цифровое отображение часов (свойство ShowMode = scDigital).</descr>
+      </element>
+      <element name="TRxClock.Align"/>
+      <element name="TRxClock.BevelWidth"/>
+      <element name="TRxClock.BorderWidth"/>
+      <element name="TRxClock.BorderStyle"/>
+      <element name="TRxClock.Anchors"/>
+      <element name="TRxClock.Constraints"/>
+      <element name="TRxClock.UseDockManager"/>
+      <element name="TRxClock.DockSite"/>
+      <element name="TRxClock.DragKind"/>
+      <element name="TRxClock.FullRepaint"/>
+      <element name="TRxClock.Color"/>
+      <element name="TRxClock.Cursor"/>
+      <element name="TRxClock.DragMode"/>
+      <element name="TRxClock.DragCursor"/>
+      <element name="TRxClock.Enabled"/>
+      <element name="TRxClock.Font"/>
+      <element name="TRxClock.ParentColor"/>
+      <element name="TRxClock.ParentFont"/>
+      <element name="TRxClock.ParentShowHint"/>
+      <element name="TRxClock.PopupMenu"/>
+      <element name="TRxClock.ShowHint"/>
+      <element name="TRxClock.Visible"/>
+      <element name="TRxClock.OnAlarm">
+        <short>property OnAlarm: TNotifyEvent;</short>
+        <descr>Событие OnAlarm происходит при наступлении времени суток, заданного свойствами AlarmHour, AlarmMinute и AlarmSecond, если свойство AlarmEnabled установлено в значение True.</descr>
+      </element>
+      <element name="TRxClock.OnGetTime"/>
+      <element name="TRxClock.OnClick"/>
+      <element name="TRxClock.OnDblClick"/>
+      <element name="TRxClock.OnMouseMove"/>
+      <element name="TRxClock.OnMouseDown"/>
+      <element name="TRxClock.OnMouseUp"/>
+      <element name="TRxClock.OnDragOver"/>
+      <element name="TRxClock.OnDragDrop"/>
+      <element name="TRxClock.OnEndDrag"/>
+      <element name="TRxClock.OnResize"/>
+      <element name="TRxClock.OnContextPopup"/>
+      <element name="TRxClock.OnStartDrag"/>
+      <element name="TRxClock.OnConstrainedResize"/>
+      <element name="TRxClock.OnDockDrop"/>
+      <element name="TRxClock.OnDockOver"/>
+      <element name="TRxClock.OnEndDock"/>
+    </module>
+    <module name="rxspin">
+      <element name="TRxSpinButton"/>
+      <element name="TRxSpinButton.Create"/>
+      <element name="TRxSpinButton.Destroy"/>
+      <element name="TRxSpinButton.Down"/>
+      <element name="TRxSpinButton.DragCursor"/>
+      <element name="TRxSpinButton.DragMode"/>
+      <element name="TRxSpinButton.Enabled"/>
+      <element name="TRxSpinButton.Visible"/>
+      <element name="TRxSpinButton.DownGlyph"/>
+      <element name="TRxSpinButton.UpGlyph"/>
+      <element name="TRxSpinButton.FocusControl"/>
+      <element name="TRxSpinButton.ShowHint"/>
+      <element name="TRxSpinButton.ParentShowHint"/>
+      <element name="TRxSpinButton.Anchors"/>
+      <element name="TRxSpinButton.Constraints"/>
+      <element name="TRxSpinButton.DragKind"/>
+      <element name="TRxSpinButton.OnBottomClick"/>
+      <element name="TRxSpinButton.OnTopClick"/>
+      <element name="TRxSpinButton.OnDragDrop"/>
+      <element name="TRxSpinButton.OnDragOver"/>
+      <element name="TRxSpinButton.OnEndDrag"/>
+      <element name="TRxSpinButton.OnEndDock"/>
+      <element name="TRxSpinButton.OnStartDock"/>
+      <element name="TRxSpinEdit"/>
+      <element name="TRxSpinEdit.Create"/>
+      <element name="TRxSpinEdit.Destroy"/>
+      <element name="TRxSpinEdit.AsInteger"/>
+      <element name="TRxSpinEdit.Text"/>
+      <element name="TRxSpinEdit.Alignment"/>
+      <element name="TRxSpinEdit.ArrowKeys"/>
+      <element name="TRxSpinEdit.Decimal"/>
+      <element name="TRxSpinEdit.EditorEnabled"/>
+      <element name="TRxSpinEdit.Increment"/>
+      <element name="TRxSpinEdit.MaxValue"/>
+      <element name="TRxSpinEdit.MinValue"/>
+      <element name="TRxSpinEdit.ValueType"/>
+      <element name="TRxSpinEdit.Value"/>
+      <element name="TRxSpinEdit.AutoSelect"/>
+      <element name="TRxSpinEdit.AutoSize"/>
+      <element name="TRxSpinEdit.BorderStyle"/>
+      <element name="TRxSpinEdit.Color"/>
+      <element name="TRxSpinEdit.DragCursor"/>
+      <element name="TRxSpinEdit.DragMode"/>
+      <element name="TRxSpinEdit.Enabled"/>
+      <element name="TRxSpinEdit.Font"/>
+      <element name="TRxSpinEdit.Anchors"/>
+      <element name="TRxSpinEdit.BiDiMode"/>
+      <element name="TRxSpinEdit.Constraints"/>
+      <element name="TRxSpinEdit.DragKind"/>
+      <element name="TRxSpinEdit.ParentBiDiMode"/>
+      <element name="TRxSpinEdit.MaxLength"/>
+      <element name="TRxSpinEdit.ParentColor"/>
+      <element name="TRxSpinEdit.ParentFont"/>
+      <element name="TRxSpinEdit.ParentShowHint"/>
+      <element name="TRxSpinEdit.PopupMenu"/>
+      <element name="TRxSpinEdit.ReadOnly"/>
+      <element name="TRxSpinEdit.ShowHint"/>
+      <element name="TRxSpinEdit.TabOrder"/>
+      <element name="TRxSpinEdit.TabStop"/>
+      <element name="TRxSpinEdit.Visible"/>
+      <element name="TRxSpinEdit.OnBottomClick"/>
+      <element name="TRxSpinEdit.OnTopClick"/>
+      <element name="TRxSpinEdit.OnChange"/>
+      <element name="TRxSpinEdit.OnClick"/>
+      <element name="TRxSpinEdit.OnDblClick"/>
+      <element name="TRxSpinEdit.OnDragDrop"/>
+      <element name="TRxSpinEdit.OnDragOver"/>
+      <element name="TRxSpinEdit.OnEndDrag"/>
+      <element name="TRxSpinEdit.OnEnter"/>
+      <element name="TRxSpinEdit.OnExit"/>
+      <element name="TRxSpinEdit.OnKeyDown"/>
+      <element name="TRxSpinEdit.OnKeyPress"/>
+      <element name="TRxSpinEdit.OnKeyUp"/>
+      <element name="TRxSpinEdit.OnMouseDown"/>
+      <element name="TRxSpinEdit.OnMouseMove"/>
+      <element name="TRxSpinEdit.OnMouseUp"/>
+      <element name="TRxSpinEdit.OnContextPopup"/>
+      <element name="TRxSpinEdit.OnMouseWheelDown"/>
+      <element name="TRxSpinEdit.OnMouseWheelUp"/>
+      <element name="TRxSpinEdit.OnEndDock"/>
+      <element name="TRxSpinEdit.OnStartDock"/>
+    </module>
+    <module name="RxDBSpinEdit">
+      <element name="TRxDBSpinEdit"/>
+      <element name="TRxDBSpinEdit.Field"/>
+      <element name="TRxDBSpinEdit.DataField"/>
+      <element name="TRxDBSpinEdit.DataSource"/>
+      <element name="TRxDBSpinEdit.ReadOnly"/>
+      <element name="TRxDBSpinEdit.Align"/>
+      <element name="TRxDBSpinEdit.Anchors"/>
+      <element name="TRxDBSpinEdit.AutoSelect"/>
+      <element name="TRxDBSpinEdit.AutoSize"/>
+      <element name="TRxDBSpinEdit.BorderSpacing"/>
+      <element name="TRxDBSpinEdit.Constraints"/>
+      <element name="TRxDBSpinEdit.DecimalPlaces"/>
+      <element name="TRxDBSpinEdit.Enabled"/>
+      <element name="TRxDBSpinEdit.Font"/>
+      <element name="TRxDBSpinEdit.Increment"/>
+      <element name="TRxDBSpinEdit.MaxValue"/>
+      <element name="TRxDBSpinEdit.MinValue"/>
+      <element name="TRxDBSpinEdit.OnChange"/>
+      <element name="TRxDBSpinEdit.OnChangeBounds"/>
+      <element name="TRxDBSpinEdit.OnClick"/>
+      <element name="TRxDBSpinEdit.OnEditingDone"/>
+      <element name="TRxDBSpinEdit.OnEnter"/>
+      <element name="TRxDBSpinEdit.OnExit"/>
+      <element name="TRxDBSpinEdit.OnKeyDown"/>
+      <element name="TRxDBSpinEdit.OnKeyPress"/>
+      <element name="TRxDBSpinEdit.OnKeyUp"/>
+      <element name="TRxDBSpinEdit.OnMouseDown"/>
+      <element name="TRxDBSpinEdit.OnMouseMove"/>
+      <element name="TRxDBSpinEdit.OnMouseUp"/>
+      <element name="TRxDBSpinEdit.OnResize"/>
+      <element name="TRxDBSpinEdit.OnUTF8KeyPress"/>
+      <element name="TRxDBSpinEdit.ParentFont"/>
+      <element name="TRxDBSpinEdit.ParentShowHint"/>
+      <element name="TRxDBSpinEdit.PopupMenu"/>
+      <element name="TRxDBSpinEdit.ShowHint"/>
+      <element name="TRxDBSpinEdit.TabStop"/>
+      <element name="TRxDBSpinEdit.TabOrder"/>
+      <element name="TRxDBSpinEdit.Value"/>
+      <element name="TRxDBSpinEdit.Visible"/>
+    </module>
+    <module name="RxTimeEdit">
+      <element name="TRxTimeEdit">
+        <short>Визуальный объект предназначен для редактирования времени</short>
+        <descr>Визуальный объект предназначен для редактирования времени</descr>
+      </element>
+      <element name="TRxTimeEdit.Create"/>
+      <element name="TRxTimeEdit.Destroy"/>
+      <element name="TRxTimeEdit.Time">
+        <short>Свойство содержит время, введённое в поле</short>
+        <descr>Свойство содержит время, введённое в поле</descr>
+      </element>
+      <element name="TRxTimeEdit.AutoSize"/>
+      <element name="TRxTimeEdit.AutoSelect"/>
+      <element name="TRxTimeEdit.Align"/>
+      <element name="TRxTimeEdit.Anchors"/>
+      <element name="TRxTimeEdit.BorderSpacing"/>
+      <element name="TRxTimeEdit.ButtonOnlyWhenFocused"/>
+      <element name="TRxTimeEdit.ButtonHint"/>
+      <element name="TRxTimeEdit.CharCase"/>
+      <element name="TRxTimeEdit.Color"/>
+      <element name="TRxTimeEdit.DragCursor"/>
+      <element name="TRxTimeEdit.DragMode"/>
+      <element name="TRxTimeEdit.EchoMode"/>
+      <element name="TRxTimeEdit.Enabled"/>
+      <element name="TRxTimeEdit.Font"/>
+      <element name="TRxTimeEdit.MaxLength"/>
+      <element name="TRxTimeEdit.OnButtonClick"/>
+      <element name="TRxTimeEdit.OnChange"/>
+      <element name="TRxTimeEdit.OnClick"/>
+      <element name="TRxTimeEdit.OnDblClick"/>
+      <element name="TRxTimeEdit.OnDragDrop"/>
+      <element name="TRxTimeEdit.OnDragOver"/>
+      <element name="TRxTimeEdit.OnEditingDone"/>
+      <element name="TRxTimeEdit.OnEndDrag"/>
+      <element name="TRxTimeEdit.OnEnter"/>
+      <element name="TRxTimeEdit.OnExit"/>
+      <element name="TRxTimeEdit.OnKeyDown"/>
+      <element name="TRxTimeEdit.OnKeyPress"/>
+      <element name="TRxTimeEdit.OnKeyUp"/>
+      <element name="TRxTimeEdit.OnMouseDown"/>
+      <element name="TRxTimeEdit.OnMouseMove"/>
+      <element name="TRxTimeEdit.OnMouseUp"/>
+      <element name="TRxTimeEdit.OnStartDrag"/>
+      <element name="TRxTimeEdit.OnUTF8KeyPress"/>
+      <element name="TRxTimeEdit.ParentColor"/>
+      <element name="TRxTimeEdit.ParentFont"/>
+      <element name="TRxTimeEdit.ParentShowHint"/>
+      <element name="TRxTimeEdit.PasswordChar"/>
+      <element name="TRxTimeEdit.PopupMenu"/>
+      <element name="TRxTimeEdit.ReadOnly"/>
+      <element name="TRxTimeEdit.ShowHint"/>
+      <element name="TRxTimeEdit.TabOrder"/>
+      <element name="TRxTimeEdit.TabStop"/>
+      <element name="TRxTimeEdit.Text">
+        <short>Текстовое представление введённого времени</short>
+      </element>
+      <element name="TRxTimeEdit.Visible"/>
+    </module>
+    <module name="RxDBTimeEdit">
+      <element name="TRxDBTimeEdit"/>
+      <element name="TRxDBTimeEdit.Create"/>
+      <element name="TRxDBTimeEdit.Destroy"/>
+      <element name="TRxDBTimeEdit.Field"/>
+      <element name="TRxDBTimeEdit.DataField"/>
+      <element name="TRxDBTimeEdit.DataSource"/>
+      <element name="TRxDBTimeEdit.ReadOnly"/>
+      <element name="TRxDBTimeEdit.AutoSize"/>
+      <element name="TRxDBTimeEdit.AutoSelect"/>
+      <element name="TRxDBTimeEdit.Align"/>
+      <element name="TRxDBTimeEdit.Anchors"/>
+      <element name="TRxDBTimeEdit.BorderSpacing"/>
+      <element name="TRxDBTimeEdit.ButtonOnlyWhenFocused"/>
+      <element name="TRxDBTimeEdit.ButtonHint"/>
+      <element name="TRxDBTimeEdit.CharCase"/>
+      <element name="TRxDBTimeEdit.Color"/>
+      <element name="TRxDBTimeEdit.DragCursor"/>
+      <element name="TRxDBTimeEdit.DragMode"/>
+      <element name="TRxDBTimeEdit.EchoMode"/>
+      <element name="TRxDBTimeEdit.Enabled"/>
+      <element name="TRxDBTimeEdit.Font"/>
+      <element name="TRxDBTimeEdit.MaxLength"/>
+      <element name="TRxDBTimeEdit.OnButtonClick"/>
+      <element name="TRxDBTimeEdit.OnChange"/>
+      <element name="TRxDBTimeEdit.OnClick"/>
+      <element name="TRxDBTimeEdit.OnDblClick"/>
+      <element name="TRxDBTimeEdit.OnDragDrop"/>
+      <element name="TRxDBTimeEdit.OnDragOver"/>
+      <element name="TRxDBTimeEdit.OnEditingDone"/>
+      <element name="TRxDBTimeEdit.OnEndDrag"/>
+      <element name="TRxDBTimeEdit.OnEnter"/>
+      <element name="TRxDBTimeEdit.OnExit"/>
+      <element name="TRxDBTimeEdit.OnKeyDown"/>
+      <element name="TRxDBTimeEdit.OnKeyPress"/>
+      <element name="TRxDBTimeEdit.OnKeyUp"/>
+      <element name="TRxDBTimeEdit.OnMouseDown"/>
+      <element name="TRxDBTimeEdit.OnMouseMove"/>
+      <element name="TRxDBTimeEdit.OnMouseUp"/>
+      <element name="TRxDBTimeEdit.OnStartDrag"/>
+      <element name="TRxDBTimeEdit.OnUTF8KeyPress"/>
+      <element name="TRxDBTimeEdit.ParentColor"/>
+      <element name="TRxDBTimeEdit.ParentFont"/>
+      <element name="TRxDBTimeEdit.ParentShowHint"/>
+      <element name="TRxDBTimeEdit.PasswordChar"/>
+      <element name="TRxDBTimeEdit.PopupMenu"/>
+      <element name="TRxDBTimeEdit.ShowHint"/>
+      <element name="TRxDBTimeEdit.TabOrder"/>
+      <element name="TRxDBTimeEdit.TabStop"/>
+      <element name="TRxDBTimeEdit.Visible"/>
+    </module>
+    <module name="RxDBCtrls">
+      <element name="TRxDBProgressBar"/>
+      <element name="TRxDBProgressBar.Create"/>
+      <element name="TRxDBProgressBar.Destroy"/>
+      <element name="TRxDBProgressBar.Field"/>
+      <element name="TRxDBProgressBar.DataField"/>
+      <element name="TRxDBProgressBar.DataSource"/>
+      <element name="TRxDBProgressBar.Align"/>
+      <element name="TRxDBProgressBar.Anchors"/>
+      <element name="TRxDBProgressBar.BorderSpacing"/>
+      <element name="TRxDBProgressBar.BorderWidth"/>
+      <element name="TRxDBProgressBar.Constraints"/>
+      <element name="TRxDBProgressBar.DragCursor"/>
+      <element name="TRxDBProgressBar.DragKind"/>
+      <element name="TRxDBProgressBar.DragMode"/>
+      <element name="TRxDBProgressBar.Enabled"/>
+      <element name="TRxDBProgressBar.Hint"/>
+      <element name="TRxDBProgressBar.Max"/>
+      <element name="TRxDBProgressBar.Min"/>
+      <element name="TRxDBProgressBar.OnContextPopup"/>
+      <element name="TRxDBProgressBar.OnDragDrop"/>
+      <element name="TRxDBProgressBar.OnDragOver"/>
+      <element name="TRxDBProgressBar.OnEndDrag"/>
+      <element name="TRxDBProgressBar.OnEnter"/>
+      <element name="TRxDBProgressBar.OnExit"/>
+      <element name="TRxDBProgressBar.OnMouseDown"/>
+      <element name="TRxDBProgressBar.OnMouseMove"/>
+      <element name="TRxDBProgressBar.OnMouseUp"/>
+      <element name="TRxDBProgressBar.OnStartDock"/>
+      <element name="TRxDBProgressBar.OnStartDrag"/>
+      <element name="TRxDBProgressBar.Orientation"/>
+      <element name="TRxDBProgressBar.ParentShowHint"/>
+      <element name="TRxDBProgressBar.PopupMenu"/>
+      <element name="TRxDBProgressBar.ShowHint"/>
+      <element name="TRxDBProgressBar.Smooth"/>
+      <element name="TRxDBProgressBar.Step"/>
+      <element name="TRxDBProgressBar.TabOrder"/>
+      <element name="TRxDBProgressBar.TabStop"/>
+      <element name="TRxDBProgressBar.Visible"/>
+      <element name="TRxDBProgressBar.BarShowText"/>
+      <element name="TRxDBTrackBar"/>
+      <element name="TRxDBTrackBar.Create"/>
+      <element name="TRxDBTrackBar.Destroy"/>
+      <element name="TRxDBTrackBar.Field"/>
+      <element name="TRxDBTrackBar.DataField"/>
+      <element name="TRxDBTrackBar.DataSource"/>
+      <element name="TRxDBTrackBar.ReadOnly"/>
+      <element name="TRxDBTrackBar.Align"/>
+      <element name="TRxDBTrackBar.Anchors"/>
+      <element name="TRxDBTrackBar.BorderSpacing"/>
+      <element name="TRxDBTrackBar.Constraints"/>
+      <element name="TRxDBTrackBar.DragCursor"/>
+      <element name="TRxDBTrackBar.DragMode"/>
+      <element name="TRxDBTrackBar.Enabled"/>
+      <element name="TRxDBTrackBar.Frequency"/>
+      <element name="TRxDBTrackBar.Hint"/>
+      <element name="TRxDBTrackBar.LineSize"/>
+      <element name="TRxDBTrackBar.Max"/>
+      <element name="TRxDBTrackBar.Min"/>
+      <element name="TRxDBTrackBar.OnChange"/>
+      <element name="TRxDBTrackBar.OnChangeBounds"/>
+      <element name="TRxDBTrackBar.OnClick"/>
+      <element name="TRxDBTrackBar.OnContextPopup"/>
+      <element name="TRxDBTrackBar.OnDragDrop"/>
+      <element name="TRxDBTrackBar.OnDragOver"/>
+      <element name="TRxDBTrackBar.OnEndDrag"/>
+      <element name="TRxDBTrackBar.OnEnter"/>
+      <element name="TRxDBTrackBar.OnExit"/>
+      <element name="TRxDBTrackBar.OnMouseDown"/>
+      <element name="TRxDBTrackBar.OnMouseEnter"/>
+      <element name="TRxDBTrackBar.OnMouseLeave"/>
+      <element name="TRxDBTrackBar.OnMouseMove"/>
+      <element name="TRxDBTrackBar.OnMouseUp"/>
+      <element name="TRxDBTrackBar.OnMouseWheel"/>
+      <element name="TRxDBTrackBar.OnMouseWheelDown"/>
+      <element name="TRxDBTrackBar.OnMouseWheelUp"/>
+      <element name="TRxDBTrackBar.OnKeyDown"/>
+      <element name="TRxDBTrackBar.OnKeyPress"/>
+      <element name="TRxDBTrackBar.OnKeyUp"/>
+      <element name="TRxDBTrackBar.OnResize"/>
+      <element name="TRxDBTrackBar.OnStartDrag"/>
+      <element name="TRxDBTrackBar.OnUTF8KeyPress"/>
+      <element name="TRxDBTrackBar.Orientation"/>
+      <element name="TRxDBTrackBar.PageSize"/>
+      <element name="TRxDBTrackBar.ParentShowHint"/>
+      <element name="TRxDBTrackBar.PopupMenu"/>
+      <element name="TRxDBTrackBar.ScalePos"/>
+      <element name="TRxDBTrackBar.ShowHint"/>
+      <element name="TRxDBTrackBar.TabOrder"/>
+      <element name="TRxDBTrackBar.TabStop"/>
+      <element name="TRxDBTrackBar.TickMarks"/>
+      <element name="TRxDBTrackBar.TickStyle"/>
+      <element name="TRxDBTrackBar.Visible"/>
+    </module>
+    <module name="dateutil">
+      <element name="CurrentYear">
+        <short>Возвращает текущий год</short>
+      </element>
+      <element name="IsLeapYear">
+        <short>Возвращает True если год високосный</short>
+      </element>
+      <element name="DaysPerMonth">
+        <short>Возвращает кол-во дней в месяце</short>
+      </element>
+      <element name="FirstDayOfPrevMonth">
+        <short>Возвращает первый день преведущего месяца</short>
+      </element>
+      <element name="LastDayOfPrevMonth">
+        <short>Возвращает последний день преведущего месяца</short>
+      </element>
+      <element name="ExtractDay">
+        <short>Возвращает день из даты</short>
+      </element>
+      <element name="ExtractMonth">
+        <short>Возвращает месяц из даты</short>
+      </element>
+      <element name="ExtractYear">
+        <short>Возвращает год из даты</short>
+      </element>
+      <element name="IncDate">
+        <short>Добавляет к дате заданное число дней\месяцев\лет</short>
+      </element>
+      <element name="IncDay">
+        <short>Добавляет к дате заданное число дней</short>
+      </element>
+      <element name="IncMonth">
+        <short>Добавляет к дате заданное число месяцев</short>
+      </element>
+      <element name="IncYear">
+        <short>Добавляет к дате заданное число лет</short>
+      </element>
+      <element name="ValidDate">
+        <short>Проверяет дату на правильность.</short>
+      </element>
+      <element name="DateDiff">
+        <short>Возвращает разницу между датами</short>
+      </element>
+      <element name="MonthsBetween">
+        <short>Возвращает разницу между датами в месяцах</short>
+      </element>
+      <element name="DaysInPeriod">
+        <short>Возвращает разницу между датами в месяцах</short>
+      </element>
+      <element name="DaysBetween">
+        <short>Возвращает разницу между датами в месяцах</short>
+      </element>
+      <element name="IncTime">
+        <short>Добавляет к дате заданное число часов\минут\секунд</short>
+      </element>
+      <element name="IncHour">
+        <short>Добавляет к дате заданное число часов</short>
+      </element>
+      <element name="IncMinute">
+        <short>Добавляет к дате заданное число минут</short>
+      </element>
+      <element name="IncSecond">
+        <short>Добавляет к дате заданное число секунд</short>
+      </element>
+      <element name="IncMSec">
+        <short>Добавляет к дате заданное число милисекунд</short>
+      </element>
+      <element name="CutTime">
+        <short>Округляет дату отрезая время</short>
+      </element>
+      <element name="TDateOrder">
+        <short>Порядок составление даты</short>
+      </element>
+      <element name="TDayOfWeekName">
+        <short>Дни недели</short>
+      </element>
+      <element name="NvlDate">
+        <short>Проверяет дату на нулевую </short>
+      </element>
+      <element name="DefDateMask">
+        <short>Возвращает маску даты по умолчанию</short>
+      </element>
+      <element name="GetDateOrder">
+        <short>Получить TDateOrder из заданного формата</short>
+      </element>
+      <element name="MonthFromName">
+        <short>Возвращает номер месяца по имени</short>
+      </element>
+      <element name="StrToDateDef">
+        <short>Переводит строку в дату, в случае ошибке возврощает заданую дату</short>
+      </element>
+      <element name="StrToDateFmt">
+        <short>Переводит строку в дату по заданному формату</short>
+      </element>
+      <element name="StrToDateFmtDef">
+        <short>Переводит строку в дату по формату, в случае ошибке возвращает заданную дату</short>
+      </element>
+      <element name="DefDateFormat">
+        <short>Возвращает формат даты по умолчанию</short>
+      </element>
+    </module>
+    <module name="rxFileUtils">
+      <element name="GetFileOwnerUser">
+        <short>Возвращает имя владельца файла</short>
+        <descr>
+          <p>function <b>GetFileOwnerUser</b>(const SearchDomain, FileName:<b>String</b>):<b>String</b>;
+</p>
+          <p>Функция возвращает имя пользователя операционной системы владельца указанного файла. </p>
+          <p>
+            <b>Входные параметры:</b>
+          </p>
+          <p>SearchDomain - Домен, в котором будет производится поиск оператора (пустой для текущего домена оператора).</p>
+          <p>FileName - Полное имя файла.</p>
+          <remark>В данный момент функция реализована только для windows.</remark>
+        </descr>
+        <seealso>
+          <link id="GetFileOwnerData"/>
+        </seealso>
+      </element>
+      <element name="GetFileOwnerData">
+        <short>Возвращает данные владельца файла</short>
+        <descr>
+          <p>
+            <b>procedure</b> GetFileOwnerData(
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <b>const</b> SearchDomain, FileName:
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <b>String</b>;
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <b>out</b> UserName, DomainName:
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <b>String</b>);
+</p>
+          <p>Процедура  возвращает имя и домен пользователя операционной системы владельца указанного файла. </p>
+          <p>
+            <b>Входные параметры:</b>
+          </p>
+          <p>- SearchDomain - Домен, в котором будет производится поиск оператора (пустой для текущего домена оператора).</p>
+          <p>- FileName - Полное имя файла.</p>
+          <p>
+            <b>Выходные параметры:</b>
+          </p>
+          <p>- UserName - Имя пльзователя.</p>
+          <p>- DomainName - Домен, в котором найден данный пользователь.</p>
+          <remark>В данный момент функция реализована только для windows.</remark>
+        </descr>
+        <seealso>
+          <link id="GetFileOwnerData"/>
+        </seealso>
+      </element>
+      <element name="NormalizeDirectoryName">
+        <short>Функция приводит к принятому в данной ОС виду все разделители каталогов.</short>
+        <descr>
+          <p>
+            <b>function</b> NormalizeDirectoryName(
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <b>const</b> DirName:
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <b>string</b>):
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <b>string</b>;</p>
+          <p>Функция проверяет все разделители каталогов в указанном имени файла/каталога и, если нужно, меняет их на значение константы<b>DirectorySeparator</b>.</p>
+        </descr>
+      </element>
+      <short>Содержит дополнительные утилиты работы с файлами и ОС</short>
+      <element name="GetUserName">
+        <short>Функция <b>GetUserName</b> возвращает имя оператора, залогиненго в системе</short>
+        <descr>
+          <p>
+            <b>function</b> GetUserName: 
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <b>string</b>;</p>
+          <p>Функция <b>GetUserName</b> возвращает имя оператора, залогиненго в системе</p>
+        </descr>
+      </element>
+    </module>
+    <module name="RxVersInfo">
+      <element name="TRxVersionInfo">
+        <short>Класс TRxVersionInfo предоставляет доступ к информации о версии программы</short>
+        <descr>
+          <p>Класс TRxVersionInfo предоставляет доступ к информации о версии программы. </p>
+          <p>После создания объекта этого класса вы можете получить доступ к информации из ресурса VERSIONINFO через свойства (только-для-чтения) объекта, если чтение ресурса из специфицированного файла окончилось успешно. Вы можете проверить результат чтения информации из файла по значению свойства <link id="TRxVersionInfo.Valid">Valid</link> - значение True соответствует успешному чтению данных. При изменении свойства, задающего имя исполняемого файла с ресурсом VERSIONINFO, происходит обновление данных объекта. Успешность обновления можно также проверить по значению свойства <link id="TRxVersionInfo.Valid">Valid</link>. 
+</p>
+          <p>Данный класс предоставляет информацию о наиболее часто используемых свойствах скомпилируемого исполняемого модуля. Фактически является надстройкой над пакетом fpc <b>fcl-res</b>
+          </p>
+        </descr>
+      </element>
+      <short>Модуль RxVersInfo содержит инструменты доступа к информации о версии программы</short>
+      <descr>Модуль RxVersInfo содержит инструменты доступа к информации о версии программы</descr>
+      <element name="TRxVersionInfo.LoadFromFile">
+        <short>procedure LoadFromFile(const AFileName:string);</short>
+        <descr>Процедура загружает данные о версии указанного исполняемого модуля</descr>
+      </element>
+      <element name="TRxVersionInfo.FileName">
+        <short>property FileName: string</short>
+        <descr>Свойство указываеет</descr>
+      </element>
+      <element name="TRxVersionInfo.Create">
+        <descr>Создаёт объект и загружает данные о версии программы вызовом метода <link id="TRxVersionInfo.LoadFromFile">LoadFromFile</link>
+        </descr>
+      </element>
+      <element name="TRxVersionInfo.Destroy"/>
+      <element name="TRxVersionInfo.Valid">
+        <short>
+          <b>property</b> Valid: Boolean;</short>
+        <descr>Свойство Valid (только-для-чтения) позволяет вам определить результат чтения данных с информацией о версии из специфицированного исполняемого файла. Значение True говорит о том, что чтение данных прошло успешно, в противном случае Valid = False.</descr>
+      </element>
+      <element name="TRxVersionInfo.FileLongVersion">
+        <descr>Свойство задает имя исполняемого файла (EXE или DLL), из которого считывается информация о версии. При изменении значения свойства FileName происходит чтение ресурса VERSIONINFO из указанного файла. Если чтение данных окончилось успешно, свойство <link id="TRxVersionInfo.Valid">Valid</link> (только чтение) устанавливается в значение True, иначе - в False.</descr>
+      </element>
+      <element name="TRxVersionInfo.ProductLongVersion"/>
+      <element name="TRxVersionInfo.Translation">
+        <descr>Значение свойства представляет собой указатель на массив идентификаторов языка (language) и набора символов (character-set), используемых при чтении данных из ресурса с информацией о версии.</descr>
+      </element>
+      <element name="TRxVersionInfo.VersionLanguage">
+        <descr>Идентификатор языка (language), используемого при чтении информации из ресурса.</descr>
+      </element>
+      <element name="TRxVersionInfo.VersionCharSet">
+        <descr>Идентификатор набора символов (character-set), используемого при чтении информации из ресурса</descr>
+      </element>
+      <element name="TRxVersionInfo.VersionNum">
+        <descr>Свойство определяет номер версии файла как длинное целое.</descr>
+      </element>
+      <element name="TRxVersionInfo.Comments">
+        <descr>Свойство позволяет получить строку из информации о версии, обозначенную как комментарий.</descr>
+      </element>
+      <element name="TRxVersionInfo.CompanyName">
+        <descr>Свойство для доступа к строке из иформации о версии, специфицирующей имя компании-производителя.</descr>
+      </element>
+      <element name="TRxVersionInfo.FileDescription">
+        <descr>Свойство для доступа к описанию исполнимого файла из информации о версии.</descr>
+      </element>
+      <element name="TRxVersionInfo.FileVersion">
+        <descr>Свойство для доступа к строке, содержащей номер версии файла, полученной из ресурса типа VERSIONINFO.</descr>
+      </element>
+      <element name="TRxVersionInfo.InternalName">
+        <descr>Свойство для доступа к строке, содержашей "внутреннее" имя файла, если оно присутствует в информации о версии. Это, например, может быть имя модуля, если файл является динамически загружаемой библиотекой (DLL).</descr>
+      </element>
+      <element name="TRxVersionInfo.LegalCopyright">
+        <descr>Свойство для доступа к строке из иформации о версии, специфицирующей авторские права.</descr>
+      </element>
+      <element name="TRxVersionInfo.LegalTrademarks">
+        <descr>Свойство для доступа к строке из иформации о версии, специфицирующей товарные знаки и зарегистрированные товарные знаки, применимые к файлу.</descr>
+      </element>
+      <element name="TRxVersionInfo.OriginalFilename">
+        <descr>Свойство для доступа к строке из иформации о версии, специфицирующей оригинальное (первоначальное) имя файла (не включая путь). Эта информация может понадобиться, если файл переименован пользователем.</descr>
+      </element>
+      <element name="TRxVersionInfo.ProductVersion">
+        <descr>Свойство для доступа к строке, содержащей номер версии продукта, полученной из ресурса типа VERSIONINFO, например "3.10" или "5.00.RC2".</descr>
+      </element>
+      <element name="TRxVersionInfo.ProductName">
+        <descr>Свойство для доступа к имени продукта из информации о версии. Распространение продукта обычно производится с этим именем.</descr>
+      </element>
+      <element name="TRxVersionInfo.SpecialBuild">
+        <descr>Свойство для доступа к строке из иформации о версии, содержащей частную (конфиденциальную) информацию о предварительной версии продукта. Как правило, в окончательных версиях исполняемых файлов такая информация отсутствует.</descr>
+      </element>
+      <element name="TRxVersionInfo.PrivateBuild">
+        <descr>Свойство для доступа к строке из иформации о версии, содержащей частную (конфиденциальную) информацию о предварительной версии продукта. Как правило, в окончательных версиях исполняемых файлов такая информация отсутствует.</descr>
+      </element>
+      <element name="TRxVersionInfo.Values">
+        <short>Values Property</short>
+        <descr>Свойство предоставляет доступ к любой текстовой информации из ресурса VERSIONINFO. Считываемая строка задается параметром Name.</descr>
+      </element>
+      <element name="TRxVersionInfo.VerFileDate"/>
+    </module>
+    <module name="RxAboutDialog">
+      <element name="TRxAboutDialogOption">
+        <short>Параметры отображени окна информации о программе</short>
+        <descr>
+          <p>Параметры отображени окна информации о программе</p>
+          <table>
+            <th>
+              <td>Значение</td>
+              <td>Описание</td>
+            </th>
+            <tr>
+              <td>radHelpButton</td>
+              <td>Отображать кнопку "Помощь"</td>
+            </tr>
+            <tr>
+              <td>radLicenseTab</td>
+              <td>Отображать закладку лицензии</td>
+            </tr>
+            <tr>
+              <td>radShowImageLogo</td>
+              <td>Отображать логотип на первой закладке</td>
+            </tr>
+          </table>
+        </descr>
+      </element>
+      <element name="TRxAboutDialogOptions">
+        <short>Параметры окна "О программе"</short>
+        <descr>
+          <p>Набор флагов, определяющий 
+<link id="TRxAboutDialogOption">параметры</link> отображения окна информации о программе</p>
+        </descr>
+        <seealso>
+          <link id="TRxAboutDialogOption"/>
+          <link id="TRxAboutDialog.Options"/>
+        </seealso>
+      </element>
+      <element name="TRxAboutDialog">
+        <descr>Компонента TRXAboutDialog предназначена для отображения информации о программе.</descr>
+      </element>
+      <element name="TRxAboutDialog.Create">
+        <short>Конструктор создаёт экземпляр класса</short>
+        <descr>Конструктор создаёт экземпляр класса</descr>
+      </element>
+      <element name="TRxAboutDialog.Destroy">
+        <short>Уничтожает экземпляр класса</short>
+        <descr>Уничтожает экземпляр класса</descr>
+      </element>
+      <element name="TRxAboutDialog.Execute">
+        <short>Метод отображет окно "О программе"</short>
+        <descr>Метод отображет окно "О программе"</descr>
+      </element>
+      <element name="TRxAboutDialog.Options">
+        <short>Параметры окна "О программе"</short>
+        <descr>
+          <p>Набор флагов, определяющий 
+<link id="TRxAboutDialogOption">параметры</link> отображения окна информации о программе</p>
+        </descr>
+        <seealso>
+          <link id="TRxAboutDialogOptions"/>
+        </seealso>
+      </element>
+      <element name="TRxAboutDialog.ApplicationTitle">
+        <short>Заголовок программы</short>
+        <descr>Заголовок программы, выводимый на первой странице она</descr>
+      </element>
+      <element name="TRxAboutDialog.LicenseFileName">
+        <descr>Файл лицензии</descr>
+      </element>
+      <element name="TRxAboutDialog.Caption">
+        <short>Заголовок окна</short>
+        <descr>Заголовок окна</descr>
+      </element>
+      <element name="TRxAboutDialog.Picture">
+        <short>Логотип, отображаемый в окне "О программе"</short>
+        <descr>Изображение логотипа</descr>
+      </element>
+    </module>
+    <module name="rxAboutFormUnit">
+      <element name="TrxAboutFormForm">
+        <short>Класс представляет собой форму "О программе"</short>
+        <descr>Класс представляет собой форму "О программе"</descr>
+      </element>
+      <element name="TrxAboutFormForm.LoadLicense">
+        <descr>Загружает на страницу "Лицензия" формы "О программе" файл лицензионного соглашения</descr>
+      </element>
+    </module>
+    <module name="rxdbgrid_findunit"/>
+    <module name="rxdbgrid_columsunit"/>
+    <module name="RxViewsPanel">
+      <topic name="TRxViewsPanelItem"/>
+      <element name="TRxViewsPanelItem">
+        <descr>Коллекция TRxViewsPanelItems содержит в себе элементы "Кнопки" для переключателя представлений</descr>
+      </element>
+      <element name="TRxViewsPanelItem.Create"/>
+      <element name="TRxViewsPanelItem.Destroy"/>
+      <element name="TRxViewsPanelItem.Action"/>
+      <element name="TRxViewsPanelItem.Visible"/>
+      <element name="TRxViewsPanelItem.Caption"/>
+      <element name="TRxViewsPanelItem.Tag"/>
+      <element name="TRxViewsPanelItem.ImageIndex"/>
+      <element name="TRxViewsPanelItems">
+        <short>Коллекция TRxViewsPanelItems содержит в себе элементы "Кнопки" для переключателя представлений</short>
+        <descr>Коллекция TRxViewsPanelItems содержит в себе элементы "Кнопки" для переключателя представлений</descr>
+      </element>
+      <element name="TRxViewsPanelItems.Create"/>
+      <element name="TRxViewsPanelItems.Items"/>
+      <element name="TRxViewsPanelItems.UpdateImages"/>
+      <element name="TRxViewsPanel">
+        <short>Класс TRxViewsPanel представляет собой визуальный компонент в стиле переключателя представления из MS Project или Gnome Planer.</short>
+        <descr>Класс TRxViewsPanel представляет собой визуальный компонент в стиле переключателя представления из MS Project или Gnome Planer.</descr>
+      </element>
+      <short>Модуль RxViewsPanel содержит визуальный компонент для переключения представлений</short>
+      <descr>Модуль RxViewsPanel содержит визуальный компонент для переключения представлений</descr>
+      <element name="TRxViewsPanel.Create">
+        <short>Создаёт экземпляр</short>
+      </element>
+      <element name="TRxViewsPanel.Destroy"/>
+      <element name="TRxViewsPanel.ButtonHeght">
+        <short>Свойство определяет высоту кнопки в панели</short>
+        <descr>Свойство определяет высоту кнопки в панели</descr>
+      </element>
+      <element name="TRxViewsPanel.Color">
+        <short>Цвет фона панели</short>
+        <descr>Цвет фона панели</descr>
+      </element>
+      <element name="TRxViewsPanel.Items"/>
+      <element name="TRxViewsPanel.ImageList">
+        <short>Указатель на изображения для кнопок</short>
+        <descr>Указатель на изображения для кнопок на панели.</descr>
+      </element>
+      <element name="TRxViewsPanel.OnSelectViewEvent"/>
+      <element name="TRxViewsPanel.ItemIndex"/>
+      <element name="TSelectViewEvent">
+        <short>Событие возникает при нажатии на кнопку переключения вида</short>
+        <descr>
+          <p>Событие возникает при нажатии на кнопку переключения вида. 
+</p>
+          <table>
+            <tr>
+              <td>ItemIndex</td>
+              <td>Порядковый номер кнопку</td>
+            </tr>
+            <tr>
+              <td>Item</td>
+              <td>указатель на кнопку</td>
+            </tr>
+          </table>
+        </descr>
+        <example file="/usr/local/share/lazarus/components/rxnew/Demos/RxViewsPanel/unit1.pas"/>
+      </element>
+    </module>
+    <module name="RxSystemServices">
+      <element name="TRxServiceType"/>
+      <element name="TRxServiceStatus"/>
+      <element name="TRxServiceState"/>
+      <element name="TRxServiceItem"/>
+      <element name="TRxSystemServices">
+        <short>Компонента получает состояние служб на указанном компьютере</short>
+      </element>
+      <element name="TRxSystemServices.Create"/>
+      <element name="TRxSystemServices.Destroy"/>
+      <element name="TRxSystemServices.Items">
+        <short>Массив содержит список служб, работающих в системе</short>
+      </element>
+      <element name="TRxSystemServices.ItemCount">
+        <short>Количество эелементов в массиве Items</short>
+      </element>
+      <element name="TRxSystemServices.ServerName">
+        <short>Имя компьютера, на котором опрашиваются службы</short>
+      </element>
+      <element name="TRxSystemServices.ServiceType">
+        <short>Фильтр отбора служб по типу (служба/драйвер)</short>
+      </element>
+      <element name="TRxSystemServices.ServiceStatus">
+        <short>Фильтр отбора служб по статусу работает/остановлена</short>
+      </element>
+      <short>Модуль содержит компоненту TRxSystemServices</short>
+      <descr>Модуль RxSystemServices предназначен для получения информации о состоянии работающих в системе служб (windows) / демонов (unix-like)
+Cодержит компоненту <link id="TRxSystemServices">TRxSystemServices</link>.</descr>
+    </module>
+  </package>
+</fpdoc-descriptions>

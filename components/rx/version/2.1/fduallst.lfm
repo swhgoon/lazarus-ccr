@@ -1,0 +1,175 @@
+object DualListForm: TDualListForm
+  Left = 451
+  Height = 344
+  Top = 264
+  Width = 552
+  ActiveControl = IncBtn
+  BorderIcons = []
+  Caption = 'DualListForm'
+  ClientHeight = 344
+  ClientWidth = 552
+  OnActivate = ListClick
+  OnShow = ListClick
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object SrcLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 18
+    Top = 6
+    Width = 50
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'Source'
+    ParentColor = False
+  end
+  object DstLabel: TLabel
+    AnchorSideLeft.Control = DstList
+    AnchorSideTop.Control = Owner
+    Left = 304
+    Height = 18
+    Top = 6
+    Width = 34
+    BorderSpacing.Top = 6
+    Caption = 'Dest'
+    ParentColor = False
+  end
+  object SrcList: TListBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = SrcLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = IncAllBtn
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 6
+    Height = 262
+    Top = 30
+    Width = 242
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    ItemHeight = 0
+    MultiSelect = True
+    OnClick = ListClick
+    OnDblClick = IncBtnClick
+    OnKeyDown = SrcListKeyDown
+    ParentShowHint = False
+    ShowHint = True
+    Sorted = True
+    TabOrder = 0
+    TopIndex = -1
+  end
+  object DstList: TListBox
+    AnchorSideLeft.Control = IncAllBtn
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = DstLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 304
+    Height = 262
+    Top = 30
+    Width = 242
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    ItemHeight = 0
+    MultiSelect = True
+    OnClick = ListClick
+    OnDblClick = ExclBtnClick
+    OnKeyDown = DstListKeyDown
+    ParentShowHint = False
+    ShowHint = True
+    Sorted = True
+    TabOrder = 5
+    TopIndex = -1
+  end
+  object IncBtn: TButton
+    AnchorSideLeft.Control = IncAllBtn
+    AnchorSideTop.Control = SrcList
+    AnchorSideRight.Control = IncAllBtn
+    AnchorSideRight.Side = asrBottom
+    Left = 254
+    Height = 37
+    Top = 36
+    Width = 44
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 6
+    BorderSpacing.InnerBorder = 4
+    Caption = '>'
+    Font.Color = clBlack
+    Font.Style = [fsBold]
+    OnClick = IncBtnClick
+    ParentFont = False
+    TabOrder = 1
+  end
+  object IncAllBtn: TButton
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Control = IncBtn
+    AnchorSideTop.Side = asrBottom
+    Left = 254
+    Height = 37
+    Top = 79
+    Width = 44
+    AutoSize = True
+    BorderSpacing.Top = 6
+    BorderSpacing.InnerBorder = 4
+    Caption = '>>'
+    Font.Color = clBlack
+    Font.Style = [fsBold]
+    OnClick = IncAllBtnClick
+    ParentFont = False
+    TabOrder = 2
+  end
+  object ExclBtn: TButton
+    AnchorSideLeft.Control = IncAllBtn
+    AnchorSideTop.Control = IncAllBtn
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = IncAllBtn
+    AnchorSideRight.Side = asrBottom
+    Left = 254
+    Height = 37
+    Top = 122
+    Width = 44
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 6
+    BorderSpacing.InnerBorder = 4
+    Caption = '<'
+    Font.Color = clBlack
+    Font.Style = [fsBold]
+    OnClick = ExclBtnClick
+    ParentFont = False
+    TabOrder = 3
+  end
+  object ExclAllBtn: TButton
+    AnchorSideLeft.Control = IncAllBtn
+    AnchorSideTop.Control = ExclBtn
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = IncAllBtn
+    AnchorSideRight.Side = asrBottom
+    Left = 254
+    Height = 37
+    Top = 165
+    Width = 44
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 6
+    BorderSpacing.InnerBorder = 4
+    Caption = '<<'
+    Font.Color = clBlack
+    Font.Style = [fsBold]
+    OnClick = ExclAllBtnClick
+    ParentFont = False
+    TabOrder = 4
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 40
+    Top = 298
+    Width = 540
+    TabOrder = 6
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+end

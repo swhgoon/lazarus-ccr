@@ -1,0 +1,440 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: rxdconst.sapptitlelabel
+msgid "Application \"%s\""
+msgstr "Програма \"%s\""
+
+#: rxdconst.sbrowsedata
+msgid "browse"
+msgstr "перегляд"
+
+#: rxdconst.scalcfieldsdata
+msgid "calc"
+msgstr "обчислення"
+
+#: rxdconst.scapturefilter
+msgid "Control locked by filter"
+msgstr "Елементи управління захоплені фільтром"
+
+#: rxdconst.schangepassword
+msgid "Change password"
+msgstr "Змінити пароль"
+
+#: rxdconst.scirculardatalink
+msgid "SCircularDataLink"
+msgstr "Перехресне посилання даних"
+
+#: rxdconst.sconfirmpasswordlabel
+msgid "&Confirm:"
+msgstr "&Підтвердження:"
+
+#: rxdconst.sconfirmsave
+msgid "Data changed. Save?"
+msgstr "Дані були змінені. Зберегти?"
+
+#: rxdconst.sdatabasename
+msgid "Database loocked: %s"
+msgstr "База даних блокована: %s"
+
+#: rxdconst.sdatasourcefixed
+msgid "SDataSourceFixed"
+msgstr ""
+
+#: rxdconst.sdbcomboboxfieldnotassigned
+msgid "%s:TDBComboBox - DataField not assigned"
+msgstr "%s:TDBComboBox - Не присвоєно властивість DataField"
+
+#: rxdconst.sdbexceptcaption
+msgid "Error in DB engine"
+msgstr "Помилка ядра БД"
+
+#: rxdconst.sdeletemultiplerecords
+msgid "Delete all selected records?"
+msgstr "Видалити всі виділені записи"
+
+#: rxdconst.sdeleterecordquestion
+msgid "Delete record?"
+msgstr "Видалити запис"
+
+#: rxdconst.seditdata
+msgid "editing"
+msgstr "Редагування"
+
+#: rxdconst.serrormsglabel
+msgid "Error message"
+msgstr "Повідомлення про помилку"
+
+#: rxdconst.sexprbadcompare
+msgid "Compare opertion need fielad and const"
+msgstr "Операції порівняння вимагають наявності поля і константи"
+
+#: rxdconst.sexprbadfield
+msgid "Field '%s' not used in filter expression"
+msgstr "Поле '%s' не може бути використане в виразі фільтрації"
+
+#: rxdconst.sexprbadnulltest
+msgid "NULL-values enabled in '=' и '<>'"
+msgstr "NULL-значення дозволені тільки у виразах '=' і '<>'"
+
+#: rxdconst.sexprexpected
+msgid "Error %s"
+msgstr "Очікували вираз, а зустріли %s"
+
+#: rxdconst.sexprincorrect
+msgid "Error in filter expression"
+msgstr "Помилка у виразі фільтра"
+
+#: rxdconst.sexprinvalidchar
+msgid "Error symbol in expression: '%s'"
+msgstr "Помилковий символ у виразі: '%s'"
+
+#: rxdconst.sexprnameerror
+msgid "Error in filed name"
+msgstr "Помилка в імені поля"
+
+#: rxdconst.sexprnorparen
+msgid "Error ')', error: %s"
+msgstr "Очікували ')', а зустріли: %s"
+
+#: rxdconst.sexprnotboolean
+msgid "Field '%s' is not boolean"
+msgstr "Поле '%s' не логічного типу"
+
+#: rxdconst.sexprstringerror
+msgid "Error in string const"
+msgstr "Помилка в строковій константі"
+
+#: rxdconst.sexprtermination
+msgid "Error in filter end"
+msgstr "Помилка в закінченні виразу фільтра"
+
+#: rxdconst.sfieldreadonly
+msgid "SFieldReadOnly %s"
+msgstr "Поле %s лише для читання"
+
+#: rxdconst.sfieldrequired
+msgid "Field '%s' must have a value"
+msgstr "Поле '%s' очікує значення"
+
+#: rxdconst.sfieldtypemismatch
+msgid "Type mismatch for field '%s', expecting: %s actual: %s"
+msgstr "Несоответсвие типов для поля '%s', необходимо: %s введено: %s"
+
+#: rxdconst.shintlabel
+msgid "Enter you user name and password"
+msgstr "Введіть ваші ім'я користувача та пароль"
+
+#: rxdconst.sinactivedata
+msgid "inactive"
+msgstr "бездіяльний"
+
+#: rxdconst.sinsertdata
+msgid "append"
+msgstr "вставка"
+
+#: rxdconst.sinvaliddate
+msgid "Invalid Date"
+msgstr "Помилкова дата"
+
+#: rxdconst.sinvalidfields
+msgid "No fields defined"
+msgstr "Немає оголошення полів"
+
+#: rxdconst.sinvalidusername
+msgid "User name or password not valid"
+msgstr "Помилка в імені користувача або паролі"
+
+#: rxdconst.slocaldatabase
+msgid "Unable complete this operation on local dataset"
+msgstr "Неможливо провести цю операцію з локальною базою даних"
+
+#: rxdconst.smemnorecords
+msgid "No data found"
+msgstr "Даних не знайдено"
+
+#: rxdconst.smore1
+msgid "&More >>"
+msgstr "&Більше >>"
+
+#: rxdconst.smore2
+msgid "&Less <<"
+msgstr "&Менше <<"
+
+#: rxdconst.snewpasswordlabel
+msgid "&New password:"
+msgstr "&Новий пароль:"
+
+#: rxdconst.snextbutton
+msgid "&Next"
+msgstr "&Далі"
+
+#: rxdconst.snotcapturefilter
+msgid "Control need locked by filter"
+msgstr "Елементи управління повинні бути захоплені фільтром"
+
+#: rxdconst.snotediting
+msgid "Dataset not in edit or insert mode"
+msgstr "Набір даних не в режимі редагування або вставки"
+
+#: rxdconst.soldpasswordlabel
+msgid "&Old password:"
+msgstr "&Старий пароль"
+
+#: rxdconst.spasswordchanged
+msgid "Password changed"
+msgstr "Пароль змінено"
+
+#: rxdconst.spasswordlabel
+msgid "&Password:"
+msgstr "&Пароль:"
+
+#: rxdconst.spasswordnotchanged
+msgid "Password not changed"
+msgstr "Пароль не змінено"
+
+#: rxdconst.spasswordsmismatch
+msgid "New password and confirmation not equal"
+msgstr "Новий пароль і підтвердження не співпадають"
+
+#: rxdconst.sprevbutton
+msgid "&Prior"
+msgstr "&Попередній"
+
+#: rxdconst.spropdefbylookup
+msgid "PropDefByLookup"
+msgstr ""
+
+#: rxdconst.sregistration
+msgid "Register"
+msgstr "Реєстрація"
+
+#: rxdconst.sretrylogin
+msgid "Retry to connect with database?"
+msgstr "Ви хочете повторити спробу з'єднання з базою даних?"
+
+#: rxdconst.srxascendign
+msgid "Ascendign"
+msgstr "По зростанню"
+
+#: rxdconst.srxborrowstructure
+msgid "Borrow structure..."
+msgstr "Огляд структури ..."
+
+#: rxdconst.srxcopyonlymetadata
+msgid "Copy only metadata"
+msgstr "Копіювати тільки метадані ..."
+
+#: rxdconst.srxdbgridemptifilter
+msgid "(Empty)"
+msgstr "(Немає)"
+
+#: rxdconst.srxdbgridfilter
+msgid "Filter data"
+msgstr "Фільтр даних"
+
+#: rxdconst.srxdbgridfilterclear
+msgctxt "rxdconst.srxdbgridfilterclear"
+msgid "Clear filter"
+msgstr "Очистити фільтр"
+
+#: rxdconst.srxdbgridfiltersimple
+msgid "Filter in table"
+msgstr "Фільтр в таблиці"
+
+#: rxdconst.srxdbgridfind
+msgctxt "rxdconst.srxdbgridfind"
+msgid "Find data"
+msgstr "Пошук даних"
+
+#: rxdconst.srxdbgridfindcaption
+msgctxt "rxdconst.srxdbgridfindcaption"
+msgid "Find data"
+msgstr "Пошук даних"
+
+#: rxdconst.srxdbgridfindcasesens
+msgid "Case sensetive"
+msgstr "Регістрозалежно"
+
+#: rxdconst.srxdbgridfinddirecion
+msgid "Direction"
+msgstr "Напрямок"
+
+#: rxdconst.srxdbgridfindonfield
+msgid "Find on field"
+msgstr "Шукати по полю"
+
+#: rxdconst.srxdbgridfindpartial
+msgid "Partial key"
+msgstr "Пошук по входженню"
+
+#: rxdconst.srxdbgridfindrangeall
+msgid "All"
+msgstr "Всі"
+
+#: rxdconst.srxdbgridfindrangeback
+msgid "Backward"
+msgstr "Назад"
+
+#: rxdconst.srxdbgridfindrangeforw
+msgid "Forward"
+msgstr "Вперед"
+
+#: rxdconst.srxdbgridfindtext
+msgid "Text to find"
+msgstr "Текст для пошуку"
+
+#: rxdconst.srxdbgridselcolcaption
+msgid "Grid columns"
+msgstr "Поля таблиці"
+
+#: rxdconst.srxdbgridselcolhint1
+msgid "Move selected column up"
+msgstr "Перемістити вибране поле вище"
+
+#: rxdconst.srxdbgridselcolhint2
+msgid "Move selected column down"
+msgstr "Перемістити вибране поле нижче"
+
+#: rxdconst.srxdbgridselectallrows
+msgid "Select all rows"
+msgstr "Виділити всі рядки"
+
+#: rxdconst.srxdbgridselectcolumns
+msgid "Select visible collumns"
+msgstr "Вибір стовпців для відображення"
+
+#: rxdconst.srxdbgridsortbycolumns
+msgid "Sort data for collumns"
+msgstr "Сортувати дані по колонках"
+
+#: rxdconst.srxdescending
+msgid "Descending"
+msgstr "За зменшенням"
+
+#: rxdconst.srxfilterformapply
+msgid "Apply"
+msgstr "Застосувати"
+
+#: rxdconst.srxfilterformcancel
+msgid "Cancel"
+msgstr "Скасувати"
+
+#: rxdconst.srxfilterformcaption
+msgid "Filter conditions"
+msgstr "Вираз фільтра"
+
+#: rxdconst.srxfilterformclear
+msgctxt "rxdconst.srxfilterformclear"
+msgid "Clear filter"
+msgstr "Очистити фільтр"
+
+#: rxdconst.srxfilterformcondition
+msgid "Condition :"
+msgstr "Вираз :"
+
+#: rxdconst.srxfilterformend
+msgid "end."
+msgstr "кінець."
+
+#: rxdconst.srxfilterformonfield
+msgid "On field :"
+msgstr "На поле :"
+
+#: rxdconst.srxfilterformoperaion
+msgid "Operation :"
+msgstr "Операція :"
+
+#: rxdconst.srxfilterformoperand
+msgid "Operand :"
+msgstr "Операнд :"
+
+#: rxdconst.srxfilterformselectexp
+msgid "Enter filter expression for data in table:"
+msgstr "Введіть вираз фільтрації даних в таблиці:"
+
+#: rxdconst.srxfindmore
+msgid "Find more"
+msgstr "Шукати далі"
+
+#: rxdconst.srxselectdatasetstruct
+msgid "Select dataset to copy to"
+msgstr "Виберіть таблицю для копіювання"
+
+#: rxdconst.srxsortbyformaddfield
+msgid "&Add field"
+msgstr "&Додати поле"
+
+#: rxdconst.srxsortbyformallfields
+msgid "&Fields in dataset:"
+msgstr "&Поля в таблиці"
+
+#: rxdconst.srxsortbyformcaption
+msgid "Sort on field"
+msgstr "Сортувати по полях"
+
+#: rxdconst.srxsortbyformcaseinsens
+msgid "&Case insensitive sort"
+msgstr "&Сортування без урахування регістра"
+
+#: rxdconst.srxsortbyformmovednfield
+msgid "&Down"
+msgstr "&Вниз"
+
+#: rxdconst.srxsortbyformmoveupfield
+msgid "&Up"
+msgstr "&Вгору"
+
+#: rxdconst.srxsortbyformremovefield
+msgid "&Remove"
+msgstr "&Видалити"
+
+#: rxdconst.srxsortbyformsortfields
+msgid "&Selected fields:"
+msgstr "&Вибрані поля"
+
+#: rxdconst.srxsortbyformsortorder
+msgid "Select f&ield for sort data:"
+msgstr "Вкажіть поля для сортування даних :"
+
+#: rxdconst.srxsoursedataset
+msgid "Sourse dataset"
+msgstr "Початкова таблиця"
+
+#: rxdconst.sservererrorlabel
+msgid "Server error"
+msgstr "Помилка сервера"
+
+#: rxdconst.ssetkeydata
+msgid "find"
+msgstr "Пошук"
+
+#: rxdconst.sunknownfieldtype
+msgid "SUnknownFieldType %s"
+msgstr "Не визначений тип даних для поля %s"
+
+#: rxdconst.sunknownxmldatasetformat
+msgid "Unknown XML Dataset format"
+msgstr "Не відомий формат XML даних"
+
+#: rxdconst.sunlockcaption
+msgid "Unloock"
+msgstr "Розблокувати"
+
+#: rxdconst.sunlockhint
+msgid "Enter you password"
+msgstr "Введіть ваш пароль"
+
+#: rxdconst.susernamelabel
+msgid "&User name:"
+msgstr "&Ім'я користувача"
+

@@ -1,0 +1,65 @@
+object SelectDataSetForm: TSelectDataSetForm
+  Left = 445
+  Height = 315
+  Top = 197
+  Width = 400
+  ActiveControl = CheckBox1
+  Caption = 'Select dataset to copy to'
+  ClientHeight = 315
+  ClientWidth = 400
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object Label1: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = CheckBox1
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 18
+    Top = 31
+    Width = 106
+    BorderSpacing.Around = 6
+    Caption = 'Sourse dataset'
+    FocusControl = DataSetList
+    ParentColor = False
+  end
+  object CheckBox1: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 19
+    Top = 6
+    Width = 156
+    BorderSpacing.Around = 6
+    Caption = 'Copy only metadata'
+    OnChange = CheckBox1Change
+    TabOrder = 0
+  end
+  object DataSetList: TListBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 6
+    Height = 208
+    Top = 55
+    Width = 388
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    ItemHeight = 0
+    OnDblClick = ListBox1DblClick
+    OnKeyPress = ListBox1KeyPress
+    TabOrder = 1
+    TopIndex = -1
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 40
+    Top = 269
+    Width = 388
+    TabOrder = 2
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+end

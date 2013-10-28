@@ -1,0 +1,19 @@
+{ Это - файл ресурсов, автоматически созданный lazarus }
+
+LazarusResources.Add('TAboutForm','FORMDATA',[
+  'TPF0'#10'TAboutForm'#9'AboutForm'#4'Left'#3#137#1#6'Height'#3#163#0#3'Top'#3
+  +#130#1#5'Width'#3#18#1#13'ActiveControl'#7#7'BitBtn1'#7'Caption'#6#8'About..'
+  +'.'#12'ClientHeight'#3#163#0#11'ClientWidth'#3#18#1#8'Position'#7#15'poDeskt'
+  +'opCenter'#10'LCLVersion'#6#6'0.9.27'#0#6'TLabel'#6'Label1'#4'Left'#2#8#6'He'
+  +'ight'#2#18#3'Top'#2#16#5'Width'#3#6#1#9'Alignment'#7#8'taCenter'#7'Anchors'
+  +#11#5'akTop'#6'akLeft'#7'akRight'#0#7'Caption'#6#27'FolderLister component d'
+  +'emo'#11'ParentColor'#8#0#0#6'TLabel'#6'Label2'#4'Left'#2#8#6'Height'#2#18#3
+  +'Top'#2'8'#5'Width'#3#5#1#9'Alignment'#7#8'taCenter'#7'Anchors'#11#5'akTop'#6
+  +'akLeft'#7'akRight'#0#7'Caption'#6#22'(c) 2005-2009 by Alexs'#11'ParentColor'
+  +#8#0#0#6'TLabel'#6'Label3'#4'Left'#2#8#6'Height'#2#18#3'Top'#2'T'#5'Width'#3
+  +#6#1#9'Alignment'#7#8'taCenter'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0
+  +#7'Caption'#6#17'alexs75@hotbox.ru'#11'ParentColor'#8#0#0#7'TBitBtn'#7'BitBt'
+  +'n1'#4'Left'#2'`'#6'Height'#2'"'#3'Top'#2'{'#5'Width'#2'8'#7'Anchors'#11#6'a'
+  +'kLeft'#8'akBottom'#0#8'AutoSize'#9#7'Caption'#6#5'&'#208#158#208#154#7'Defa'
+  +'ult'#9#4'Kind'#7#4'bkOK'#11'ModalResult'#2#1#8'TabOrder'#2#0#0#0#0
+]);

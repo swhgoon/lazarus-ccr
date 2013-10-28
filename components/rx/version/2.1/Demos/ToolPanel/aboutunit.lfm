@@ -1,0 +1,25 @@
+object AboutForm: TAboutForm
+  Left = 441
+  Height = 300
+  Top = 321
+  Width = 400
+  ActiveControl = BitBtn1
+  Caption = 'About...'
+  ClientHeight = 300
+  ClientWidth = 400
+  LCLVersion = '0.9.27'
+  object BitBtn1: TBitBtn
+    Left = 170
+    Height = 36
+    Top = 258
+    Width = 58
+    Anchors = [akBottom]
+    AutoSize = True
+    BorderSpacing.InnerBorder = 2
+    Caption = '&'
+    Default = True
+    Kind = bkOK
+    ModalResult = 1
+    TabOrder = 0
+  end
+end
