@@ -375,6 +375,9 @@ var
   i:integer;
   B:TRxMDIButton;
 begin
+  if (FCurrentChildWindow = F) and Assigned(FCloseButton) and FCloseButton.Enabled then
+    FCloseButton.FInfoLabel.Caption:=F.Caption;
+
   for i:=0 to TaskPanel.ComponentCount -1 do
   begin
     if TRxMDIButton(TaskPanel.Components[i]).NavForm = F then
