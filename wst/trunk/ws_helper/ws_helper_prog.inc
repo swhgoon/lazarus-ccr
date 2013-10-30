@@ -236,6 +236,17 @@ var
       if not found then
         WriteLn(Format('Unit not found : "%s".',[oldName]));
     end;
+    for k := 0 to Pred(mdlList.Count) do begin
+      mdl := TPasModule(mdlList[k]);
+      if mdl.InheritsFrom(TPasNativeModule) then
+        Continue;
+      newName := ExtractIdentifier(mdl.Name);
+      if (newName <> mdl.Name) then begin
+        oldName := mdl.Name;
+        mdl.Name := newName;
+        WriteLn(Format('Unit renamed, old name = "%s", new name = "%s".',[oldName,newName]));
+      end;
+    end;
   end;
   
   function ProcessFile():Boolean;
@@ -324,7 +335,7 @@ var
             srcMngr.CreateItem(ChangeFileExt(ExtractFileName(inFileName),'.xsd')).Write(strStream.DataString);
           end;
         end;
-        
+
         Result := True;
       except
         on E : Exception do begin
