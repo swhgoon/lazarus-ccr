@@ -45,8 +45,8 @@ uses
   {$ifdef unix}
   clocale, // needed to initialize default locale settings on Linux.
   {$endif}
-  Classes, SysUtils, Controls, LCLType, Graphics, Math, StdCtrls,
-  Buttons, ExtCtrls, Forms, Calendar, ComCtrls, Types, LMessages
+  Classes, SysUtils, Controls, LCLType, Graphics, Math, StdCtrls, Buttons,
+  ExtCtrls, Forms, ComCtrls, Types, LMessages, CalendarControlWrapper
   {$ifdef LCLGtk2}, LCLVersion{$endif}
   ;
 
@@ -72,6 +72,9 @@ const
       So, this will be the down limit:  }
   TheSmallestDate = TDateTime(-53780.0); // 1. okt. 1752.
 
+var
+  DefaultCalendarWrapperClass: TCalendarControlWrapperClass = nil;
+
 type
   TYMD = record
     Year, Month, Day: Word;
@@ -84,8 +87,8 @@ type
   { Used by DateDisplayOrder property to determine the order to display date
     parts -- d-m-y, m-d-y or y-m-d.
     When ddoTryDefault is set, the actual order is determined from
-    ShortDateFormat global variable -- see coments above AdjustDateDisplayOrder
-    procedure }
+    ShortDateFormat global variable -- see coments above
+    AdjustEffectiveHideDateTimeParts procedure }
   TDateDisplayOrder = (ddoDMY, ddoMDY, ddoYMD, ddoTryDefault);
 
   TTimeDisplay = (tdHM,   // hour and minute
@@ -103,7 +106,10 @@ type
   TTextPart = 1..8;
   TDateTimePart = (dtpDay, dtpMonth, dtpYear, dtpHour, dtpMinute,
                                 dtpSecond, dtpMiliSec, dtpAMPM);
-  TDateTimeParts = set of dtpDay..dtpMiliSec;
+  TDateTimeParts = set of dtpDay..dtpMiliSec; // without AMPM,
+           // because this set type is used for HideDateTimeParts property,
+           // where hiding of AMPM part is tied to hiding of hour (and, of
+           // course, it makes a difference only when TimeFormat is set to tf12)
 
   TArrowShape = (asClassicSmaller, asClassicLarger, asModernSmaller,
                                            asModernLarger, asYetAnotherShape);
@@ -116,6 +122,7 @@ type
   private
     FAutoAdvance: Boolean;
     FAutoButtonSize: Boolean;
+    FCalendarWrapperClass: TCalendarControlWrapperClass;
     FCascade: Boolean;
     FCenturyFrom, FEffectiveCenturyFrom: Word;
     FDateDisplayOrder: TDateDisplayOrder;
@@ -178,6 +185,7 @@ type
     function GetTime: TTime;
     procedure SetArrowShape(const AValue: TArrowShape);
     procedure SetAutoButtonSize(AValue: Boolean);
+    procedure SetCalendarWrapperClass(AValue: TCalendarControlWrapperClass);
     procedure SetCenturyFrom(const AValue: Word);
     procedure SetChecked(const AValue: Boolean);
     procedure CheckTextEnabled;
@@ -360,6 +368,8 @@ type
              read FAutoAdvance write FAutoAdvance default False;
     property HideDateTimeParts: TDateTimeParts
              read FHideDateTimeParts write SetHideDateTimeParts;
+    property CalendarWrapperClass: TCalendarControlWrapperClass
+             read FCalendarWrapperClass write SetCalendarWrapperClass;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -380,6 +390,7 @@ type
   TZVDateTimePicker = class(TCustomZVDateTimePicker)
   public
     property DateTime;
+    property CalendarWrapperClass;
   published
     property ArrowShape;
     property ShowCheckBox;
@@ -455,7 +466,8 @@ function IsNullDate(DT: TDateTime): Boolean;
 
 implementation
 
-uses DateUtils;
+uses
+  DateUtils, LCLCalendarWrapper;
 
 function NumberOfDaysInMonth(const Month, Year: Word): Word;
 begin
@@ -481,17 +493,6 @@ begin
             (DT > SysUtils.MaxDateTime) or (DT < SysUtils.MinDateTime);
 end;
 
-{ TCustomZVDateTimePicker }
-
-procedure TCustomZVDateTimePicker.SetChecked(const AValue: Boolean);
-begin
-  if Assigned(FCheckBox) then
-    FCheckBox.Checked := AValue;
-
-  CheckTextEnabled;
-  Invalidate;
-end;
-
 type
 
   { TDTCalendarForm }
@@ -499,7 +500,7 @@ type
   TDTCalendarForm = class(TForm)
   private
     DTPicker: TCustomZVDateTimePicker;
-    Cal: TCalendar;
+    Cal: TCalendarControlWrapper;
     Shape: TShape;
     RememberedCalendarFormOrigin: TPoint;
     FClosing: Boolean;
@@ -530,8 +531,6 @@ type
   published
   end;
 
-{ TDTCalendarForm }
-
 procedure TDTCalendarForm.SetClosingCalendarForm;
 begin
   if not FClosing then begin
@@ -546,8 +545,8 @@ end;
 procedure TDTCalendarForm.AdjustCalendarFormSize;
 begin
   if not FClosing then begin
-    ClientWidth := Cal.Width + 2;
-    ClientHeight := Cal.Height + 2;
+    ClientWidth := Cal.GetCalendarControl.Width + 2;
+    ClientHeight := Cal.GetCalendarControl.Height + 2;
 
     Shape.SetBounds(0, 0, ClientWidth, ClientHeight);
 
@@ -614,11 +613,11 @@ begin
           try
             if DTPicker.DateIsNull then begin
               // we'll set the time to 0.0 (midnight):
-              DTPicker.SetDateTime(Int(Cal.DateTime));
+              DTPicker.SetDateTime(Int(Cal.GetDate));
             end else if not EqualDateTime(Int(DTPicker.DateTime),
-                                          Int(Cal.DateTime)) then begin
+                                          Int(Cal.GetDate)) then begin
               // we'll change the date, but keep the time:
-              DTPicker.SetDateTime(ComposeDateTime(Cal.DateTime, DTPicker.DateTime));
+              DTPicker.SetDateTime(ComposeDateTime(Cal.GetDate, DTPicker.DateTime));
             end;
           finally
             Dec(DTPicker.FUserChanging);
@@ -658,7 +657,7 @@ end;
 procedure TDTCalendarForm.CalendarMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if Cal.HitTest(Point(X, Y)) in [cpDate, cpNoWhere] then
+  if Cal.AreCoordinatesOnDate(X, Y) then
     CloseCalendarForm(True);
 
 end;
@@ -707,10 +706,16 @@ begin
   inherited DoClose(CloseAction);
 end;
 
+type
+  { To be able to access TControl's protected members,
+    we derive our class TDTControl from TControl: }
+  TDTControl = class(TControl);
+
 constructor TDTCalendarForm.CreateNewDTCalendarForm(AOwner: TComponent;
   ADTPicker: TCustomZVDateTimePicker);
 var
   P: TPoint;
+  CalClass: TCalendarControlWrapperClass;
 begin
   inherited CreateNew(AOwner);
 
@@ -723,21 +728,28 @@ begin
   if Assigned(DTPickersParentForm) then begin
     DTPickersParentForm.AddHandlerOnVisibleChanged(@VisibleOfParentChanged);
     DTPickersParentForm.FreeNotification(Self);
-  end;
+    PopupParent := DTPickersParentForm;
+    PopupMode := pmExplicit;
+  end else
+    PopupMode := pmAuto;
 
   P := Point(0, 0);
 
-  Cal := TCalendar.Create(nil);
-  Cal.ParentBiDiMode := True;
-  Cal.AutoSize := True;
-  Cal.GetPreferredSize(P.x, P.y);
+  if ADTPicker.FCalendarWrapperClass = nil then begin
+    if DefaultCalendarWrapperClass = nil then
+      CalClass := TLCLCalendarWrapper
+    else
+      CalClass := DefaultCalendarWrapperClass;
+  end else
+    CalClass := ADTPicker.FCalendarWrapperClass;
 
-  Cal.Align := alNone;
+  Cal := CalClass.Create;
 
-  Cal.SetBounds(1, 1, P.x, P.y);
-  Cal.TabStop := True;
-
-  PopupMode := pmAuto;
+  Cal.GetCalendarControl.ParentBiDiMode := True;
+  Cal.GetCalendarControl.AutoSize := True;
+  Cal.GetCalendarControl.GetPreferredSize(P.x, P.y);
+  Cal.GetCalendarControl.Align := alNone;
+  Cal.GetCalendarControl.SetBounds(1, 1, P.x, P.y);
 
   SetBounds(-8000, -8000, P.x + 2, P.y + 2);
   RememberedCalendarFormOrigin := Point(-8000, -8000);
@@ -749,23 +761,27 @@ begin
   Shape.Brush.Style := bsClear;
 
   if DTPicker.DateIsNull then
-    Cal.DateTime := Max(DTPicker.MinDate, Min(SysUtils.Date, DTPicker.MaxDate))
+    Cal.SetDate(Max(DTPicker.MinDate, Min(SysUtils.Date, DTPicker.MaxDate)))
 
   else if DTPicker.DateTime < DTPicker.MinDate then // These "out of bounds" values
-    Cal.DateTime := DTPicker.MinDate      // can happen when DateTime was set with
+    Cal.SetDate(DTPicker.MinDate)      // can happen when DateTime was set with
   else if DTPicker.DateTime > DTPicker.MaxDate then // "SetDateTimeJumpMinMax" protected
-    Cal.DateTime := DTPicker.MaxDate      // procedure (used in TDBZVDateTimePicker control).
+    Cal.SetDate(DTPicker.MaxDate)      // procedure (used in TDBZVDateTimePicker control).
 
   else
-    Cal.DateTime := DTPicker.DateTime;
+    Cal.SetDate(DTPicker.Date);
 
-  Cal.Parent := Self;
+  Cal.GetCalendarControl.OnResize := @CalendarResize;
+  TDTControl(Cal.GetCalendarControl).OnMouseUp := @CalendarMouseUp;
+  if Cal.GetCalendarControl is TWinControl then begin
+    TWinControl(Cal.GetCalendarControl).OnKeyDown := @CalendarKeyDown;
+    TWinControl(Cal.GetCalendarControl).TabStop := True;
+    TWinControl(Cal.GetCalendarControl).SetFocus;
+  end;
+
   Shape.Parent := Self;
-
-  Cal.OnResize := @CalendarResize;
-  Cal.OnMouseUp := @CalendarMouseUp;
-  Cal.OnKeyDown := @CalendarKeyDown;
-
+  Cal.GetCalendarControl.Parent := Self;
+  Cal.GetCalendarControl.BringToFront;
 end;
 
 destructor TDTCalendarForm.Destroy;
@@ -775,9 +791,10 @@ begin
     DTPickersParentForm.RemoveAllHandlersOfObject(Self);
 
   if Assigned(Cal) then begin
-    Cal.OnResize := nil;
-    Cal.OnMouseUp := nil;
-    Cal.OnKeyDown := nil;
+    Cal.GetCalendarControl.OnResize := nil;
+    TDTControl(Cal.GetCalendarControl).OnMouseUp := nil;
+    if Cal.GetCalendarControl is TWinControl then
+      TWinControl(Cal.GetCalendarControl).OnKeyDown := nil;
     Cal.Free;
     Cal := nil;
   end;
@@ -793,6 +810,17 @@ begin
   end;
 
   inherited Destroy;
+end;
+
+{ TCustomZVDateTimePicker }
+
+procedure TCustomZVDateTimePicker.SetChecked(const AValue: Boolean);
+begin
+  if Assigned(FCheckBox) then
+    FCheckBox.Checked := AValue;
+
+  CheckTextEnabled;
+  Invalidate;
 end;
 
 procedure TCustomZVDateTimePicker.CheckTextEnabled;
@@ -1728,13 +1756,11 @@ end;
   selection moves to left, otherwise to right. }
 procedure TCustomZVDateTimePicker.MoveSelectionLR(const ToLeft: Boolean);
 var
-  I: Integer;
+  I, SafetyTextPart: TTextPart;
 begin
   UpdateIfUserChangedText;
 
-  if FSelectedTextPart < Low(TTextPart) then
-    FSelectedTextPart := Low(TTextPart);
-
+  SafetyTextPart := Low(TTextPart);
   I := FSelectedTextPart;
   repeat
     if ToLeft then begin
@@ -1753,7 +1779,11 @@ begin
                 in FEffectiveHideDateTimeParts) then
       FSelectedTextPart := I;
 
-  until I = FSelectedTextPart;
+    { Is it possible that all parts are hidden? Yes it is!
+      So we need to ensure that this doesn't loop forever.
+      When this insurance text part gets to high value, break }
+    Inc(SafetyTextPart);
+  until (I = FSelectedTextPart) or (SafetyTextPart >= High(TTextPart));
 
   Invalidate;
 end;
@@ -3096,6 +3126,13 @@ begin
   end;
 end;
 
+procedure TCustomZVDateTimePicker.SetCalendarWrapperClass(
+  AValue: TCalendarControlWrapperClass);
+begin
+  if FCalendarWrapperClass = AValue then Exit;
+  FCalendarWrapperClass := AValue;
+end;
+
 procedure TCustomZVDateTimePicker.SetCenturyFrom(const AValue: Word);
 begin
   if FCenturyFrom = AValue then Exit;
@@ -3495,6 +3532,7 @@ begin
 
   AdjustEffectiveDateDisplayOrder;
   AdjustEffectiveHideDateTimeParts;
+  FCalendarWrapperClass := nil;
 
   SetDateMode(dmComboBox);
 end;

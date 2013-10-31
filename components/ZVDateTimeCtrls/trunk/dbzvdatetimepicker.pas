@@ -62,6 +62,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Field: TField read GetField;
+    property CalendarWrapperClass;
   published
     { Published declarations }
     property DataField: string read GetDataField write SetDataField;
