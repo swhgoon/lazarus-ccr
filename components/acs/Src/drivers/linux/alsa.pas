@@ -69,6 +69,7 @@ uses
 
 const
   asoundlib_path = 'libasound.so*';
+  asoundlib_path_ = 'libasound.so';
 
 var
   AsoundlibLoaded : Boolean = False;
@@ -898,7 +899,9 @@ var
 initialization
 
   Path := FindLibs(asoundlib_path);
-  if Path <> '' then Libhandle := dlopen(@Path[1], RTLD_NOW or RTLD_GLOBAL);
+  if Path <> '' then Libhandle := dlopen(@Path, RTLD_NOW or RTLD_GLOBAL);
+  if Libhandle=nil then
+    Libhandle := dlopen(asoundlib_path_, RTLD_NOW or RTLD_GLOBAL);
   if Libhandle <> nil then
   begin
     AsoundlibLoaded := True;

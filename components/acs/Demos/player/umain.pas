@@ -142,7 +142,7 @@ begin
   FStopped := True;
   if (AudioOut1.Status <> tosIdle) then
     AudioOut1.Stop;
-  while (AudioOut1.Status <> tosIdle) do
+  while (AudioOut1.Status <> tosIdle) and (AudioOut1.Status <> tosUndefined) do
     Application.Processmessages;
 end;
 
