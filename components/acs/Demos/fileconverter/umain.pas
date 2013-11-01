@@ -10,9 +10,9 @@ uses
 
 type
 
-  { TForm1 }
+  { TfMain }
 
-  TForm1 = class(TForm)
+  TfMain = class(TForm)
     BitBtn1: TBitBtn;
     btStart: TBitBtn;
     cbOutput: TComboBox;
@@ -33,19 +33,19 @@ type
   end; 
 
 var
-  Form1: TForm1; 
+  fMain: TfMain;
 
 implementation
 
-{ TForm1 }
+{ TfMain }
 
-procedure TForm1.BitBtn1Click(Sender: TObject);
+procedure TfMain.BitBtn1Click(Sender: TObject);
 begin
   FileIn.Open;
   DirectoryEdit.Text := ExtractFileDir(FileIn.FileName);
 end;
 
-procedure TForm1.BitBtn2Click(Sender: TObject);
+procedure TfMain.BitBtn2Click(Sender: TObject);
 var
   newfilename : string;
 begin
@@ -66,20 +66,20 @@ begin
   FileOut.Run;
 end;
 
-procedure TForm1.FileOutDone(Sender: TComponent);
+procedure TfMain.FileOutDone(Sender: TComponent);
 begin
   btStart.Enabled := True;
   pbProgress.Position := 0;
 end;
 
-procedure TForm1.FileOutProgress(Sender: TComponent);
+procedure TfMain.FileOutProgress(Sender: TComponent);
 begin
   pbProgress.Position := round(FileOut.Progress);
   Update;
   Application.Processmessages;
 end;
 
-procedure TForm1.FormCreate(Sender: TObject);
+procedure TfMain.FormCreate(Sender: TObject);
 var
   i : Integer;
 begin
