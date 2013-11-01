@@ -65,7 +65,7 @@ unit alsa;
 interface
 
 uses
-  baseunix,ACS_Procs;
+  baseunix,ACS_Procs,ctypes,dl;
 
 const
   asoundlib_path = 'libasound.so*';
@@ -74,7 +74,44 @@ var
   AsoundlibLoaded : Boolean = False;
 
 type
-  Pint16_t = ^int16_t;
+   Puchar_t = ^uchar_t;
+   uchar_t = byte;
+
+   Pushort_t = ^ushort_t;
+   ushort_t = word;
+
+   Puint_t = ^uint_t;
+   uint_t = dword;
+
+   Pulong_t = ^ulong_t;
+   ulong_t = dword;
+
+   Pu_char = ^u_char;
+   u_char = byte;
+
+   Pu_short = ^u_short;
+   u_short = word;
+
+   Pu_int = ^u_int;
+   u_int = dword;
+
+   Pu_long = ^u_long;
+   u_long = dword;
+
+   Pcaddr_t = ^caddr_t;
+   caddr_t = char;
+
+   Pu_int8_t = ^u_int8_t;
+   u_int8_t = byte;
+
+   Pu_int16_t = ^u_int16_t;
+   u_int16_t = word;
+
+   Pu_int32_t = ^u_int32_t;
+   u_int32_t = dword;
+
+   int16_t = cint16;
+   Pint16_t = ^int16_t;
 
   {  PCM generic info container  }
      Psnd_pcm_info_t = pointer;

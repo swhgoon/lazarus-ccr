@@ -1,12 +1,13 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="3">
+  <Package Version="4">
     <Name Value="laz_acs"/>
+    <AddToProjectUsesSection Value="True"/>
     <CompilerOptions>
-      <Version Value="9"/>
+      <Version Value="11"/>
       <SearchPaths>
-        <IncludeFiles Value="../classes/linux/;../fileformats/linux/;../drivers/linux/"/>
-        <OtherUnitFiles Value="../classes/;../classes/linux/;../fileformats/;../fileformats/linux/;../fileformats/general/;../drivers/;../drivers/linux/"/>
+        <IncludeFiles Value="../classes/linux;../fileformats/linux;../drivers/linux"/>
+        <OtherUnitFiles Value="../classes;../classes/linux;../fileformats;../fileformats/linux;../fileformats/general;../drivers;../drivers/linux"/>
         <UnitOutputDirectory Value="lib"/>
       </SearchPaths>
       <Parsing>
@@ -23,7 +24,7 @@
     <Description Value="Audio Component Suite
 "/>
     <Version Major="2" Minor="4" Release="3" Build="21"/>
-    <Files Count="18">
+    <Files Count="19">
       <Item1>
         <Filename Value="../classes/acs_audio.pas"/>
         <UnitName Value="acs_audio"/>
@@ -98,6 +99,10 @@
         <Filename Value="../fileformats/acs_allformats.pas"/>
         <UnitName Value="acs_allformats"/>
       </Item18>
+      <Item19>
+        <Filename Value="../drivers/acs_alsaaudio.pas"/>
+        <UnitName Value="acs_alsaaudio"/>
+      </Item19>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

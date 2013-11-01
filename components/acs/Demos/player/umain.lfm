@@ -2,19 +2,21 @@ object fMain: TfMain
   Left = 271
   Height = 99
   Top = 150
-  Width = 204
+  Width = 201
   HorzScrollBar.Page = 203
   VertScrollBar.Page = 98
   ActiveControl = btOpen
   BorderStyle = bsToolWindow
   Caption = 'Audioplayer'
   ClientHeight = 99
-  ClientWidth = 204
+  ClientWidth = 201
   OnClose = FormClose
   OnCreate = FormCreate
+  LCLVersion = '1.3'
   object Panel1: TPanel
     Left = 4
     Height = 64
+    Top = 0
     Width = 192
     BevelOuter = bvLowered
     ClientHeight = 64
@@ -23,13 +25,13 @@ object fMain: TfMain
     TabOrder = 0
     object lTime: TLabel
       Left = 1
-      Height = 29
+      Height = 30
       Top = 24
-      Width = 108
-      AutoSize = False
+      Width = 112
       Caption = '00:00:00'
       Font.Height = -25
       ParentColor = False
+      ParentFont = False
     end
     object lFilename: TLabel
       Left = 1
@@ -40,35 +42,39 @@ object fMain: TfMain
       Caption = 'File:'
       Font.Height = -9
       ParentColor = False
+      ParentFont = False
       WordWrap = True
     end
     object lTime1: TLabel
       Left = 1
       Height = 12
       Top = 20
-      Width = 53
+      Width = 61
       Caption = 'Time remain'
       Font.Height = -9
       ParentColor = False
+      ParentFont = False
       OnClick = lTime1Click
     end
     object lTime2: TLabel
       Left = 116
       Height = 12
       Top = 20
-      Width = 14
+      Width = 16
       Caption = 'left'
       Font.Height = -9
       ParentColor = False
+      ParentFont = False
     end
     object lLeft: TLabel
       Left = 116
       Height = 15
       Top = 28
-      Width = 51
+      Width = 56
       Caption = '00:00:00'
       Font.Height = -12
       ParentColor = False
+      ParentFont = False
     end
     object Progress: TProgressBar
       Left = 1
@@ -78,6 +84,7 @@ object fMain: TfMain
       Align = alBottom
       Max = 1000
       Smooth = True
+      TabOrder = 0
     end
   end
   object btOpen: TBitBtn
@@ -132,7 +139,6 @@ object fMain: TfMain
       00000000000000000000
     }
     Layout = blGlyphTop
-    NumGlyphs = 0
     OnClick = OpenClick
     TabOrder = 1
   end
@@ -178,7 +184,6 @@ object fMain: TfMain
       D6FFCED6D6FFCED6D6FFCED6D6FFCED6D6FFCED6D6FFCED6D6FFCED6D6FFCED6
       D6FFCED6D6FFCED6D6FFCED6D6FFCED6D6FFCED6D6FFCED6D6FF
     }
-    NumGlyphs = 0
     OnClick = btRewClick
     TabOrder = 2
   end
@@ -225,7 +230,6 @@ object fMain: TfMain
       D6FFCED6D6FFCED6D6FFCED6D6FFCED6D6FFCED6D6FFCED6D6FF
     }
     Layout = blGlyphRight
-    NumGlyphs = 0
     OnClick = btFfwClick
     TabOrder = 3
   end
@@ -271,7 +275,6 @@ object fMain: TfMain
       D4FFC8D0D4FFC8D0D4FFC8D0D4FFC8D0D4FFC8D0D4FFC8D0D4FFC8D0D4FFC8D0
       D4FFC8D0D4FFC8D0D4FFC8D0D4FFC8D0D4FFC8D0D4FFC8D0D4FF
     }
-    NumGlyphs = 0
     OnClick = PlayClick
     TabOrder = 4
   end
@@ -317,7 +320,6 @@ object fMain: TfMain
       D6FFCED6D6FFCED6D6FFCED6D6FFCED6D6FFCED6D6FFCED6D6FFCED6D6FFCED6
       D6FFCED6D6FFCED6D6FFCED6D6FFCED6D6FFCED6D6FFCED6D6FF
     }
-    NumGlyphs = 0
     OnClick = StopClick
     TabOrder = 5
   end
@@ -363,7 +365,6 @@ object fMain: TfMain
       D6FFCED6D6FFCED6D6FFCED6D6FFCED6D6FFCED6D6FFCED6D6FFCED6D6FFCED6
       D6FFCED6D6FFCED6D6FFCED6D6FFCED6D6FFCED6D6FFCED6D6FF
     }
-    NumGlyphs = 0
     OnClick = Pauseclick
     TabOrder = 6
   end
@@ -397,7 +398,6 @@ object fMain: TfMain
       00000000000000000000000000FF000000FF000000FF000000FF000000000000
       0000
     }
-    NumGlyphs = 0
     OnClick = btPlaylistClick
     TabOrder = 7
   end
@@ -408,12 +408,13 @@ object fMain: TfMain
     Width = 22
     BorderSpacing.InnerBorder = 2
     Caption = 'Vis'
-    NumGlyphs = 0
     OnClick = btVizuClick
     TabOrder = 8
   end
   object FileIn1: TACSFileIn
     EndSample = -1
+    Loop = False
+    StartSample = 0
     left = 172
     top = 36
   end
@@ -425,11 +426,12 @@ object fMain: TfMain
     top = 36
   end
   object AudioOut1: TACSAudioOut
-    Buffersize = 100000
-    Driver = 'Wavemapper'
+    Buffersize = -1
+    Driver = 'No Driver'
     Device = 0
+    Volume = 0
     Input = SoundIndicator
-    Delay = 6
+    Delay = -1
     SuspendWhenIdle = True
     OnDone = AudioOut1Done
     OnThreadException = AudioOut1ThreadException

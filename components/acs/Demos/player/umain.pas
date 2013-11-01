@@ -14,13 +14,13 @@ uses
   ACS_Audio,ACS_File,ACS_Classes,ACS_Allformats, ExtCtrls, StdCtrls,
   ComCtrls,uPlaylist, ACS_Indicator,uvis
   //You must include Output drivers to not get an "No drier selected" exception
-  {$IFDEF MSWINDOWS}
+  {$IFDEF WINDOWS}
   ,ACS_DXAudio  //DirectSound Driver
   {$ELSE}
-  ,ACS_AlsaAudio //Alsa Driver
+  ,acs_alsaaudio //Alsa Driver
 //  ,ACS_AOLive    //AO Live Driver
   {$ENDIF}
-  ,ACS_StdAudio //Wavemapper Driver
+  ,acs_stdaudio //Wavemapper Driver
   ;
 
 type
