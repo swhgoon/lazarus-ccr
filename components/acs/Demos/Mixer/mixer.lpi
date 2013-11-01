@@ -39,7 +39,6 @@
         <Filename Value="mixer.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Mixer"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <WindowIndex Value="1"/>
         <TopLine Value="1"/>
@@ -52,10 +51,12 @@
         <IsPartOfProject Value="True"/>
         <ComponentName Value="fMixer"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="uMixer"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="1"/>
-        <TopLine Value="63"/>
+        <TopLine Value="1"/>
         <CursorPos X="14" Y="96"/>
         <UsageCount Value="88"/>
         <Loaded Value="True"/>
