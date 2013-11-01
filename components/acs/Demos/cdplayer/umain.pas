@@ -10,9 +10,9 @@ uses
 
 type
 
-  { TForm1 }
+  { TfMain }
 
-  TForm1 = class(TForm)
+  TfMain = class(TForm)
     AudioOut1: TACSAudioOut;
     CDIn1: TACSCDIn;
     btRew: TBitBtn;
@@ -48,13 +48,13 @@ type
   end;
 
 var
-  Form1: TForm1; 
+  fMain: TfMain;
 
 implementation
 
-{ TForm1 }
+{ TfMain }
 
-procedure TForm1.PlayClick(Sender: TObject);
+procedure TfMain.PlayClick(Sender: TObject);
 begin
   AudioOut1.Run;
   btPlay.Enabled := False;
@@ -64,7 +64,7 @@ begin
   btFfw.Enabled := False;
 end;
 
-procedure TForm1.AudioOut1Done(Sender: TComponent);
+procedure TfMain.AudioOut1Done(Sender: TComponent);
 begin
   btPlay.Enabled := True;
   btStop.Enabled := False;
@@ -74,27 +74,27 @@ begin
   PlayTimer.Enabled := false;
 end;
 
-procedure TForm1.AudioOut1Progress(Sender: TComponent);
+procedure TfMain.AudioOut1Progress(Sender: TComponent);
 begin
   PlayTimer.Enabled := True;
 end;
 
-procedure TForm1.AudioOut1ThreadException(Sender: TComponent; E: Exception);
+procedure TfMain.AudioOut1ThreadException(Sender: TComponent; E: Exception);
 begin
   ShowMessage(E.Message);
 end;
 
-procedure TForm1.StopClick(Sender: TObject);
+procedure TfMain.StopClick(Sender: TObject);
 begin
   AudioOut1.Stop;
 end;
 
-procedure TForm1.OpenClick(Sender: TObject);
+procedure TfMain.OpenClick(Sender: TObject);
 begin
   lTracksCount.Caption := Format('%.2d',[CDIn1.Trackscount]);
 end;
 
-procedure TForm1.Timer1Timer(Sender: TObject);
+procedure TfMain.Timer1Timer(Sender: TObject);
 var
   tmp : real;
 begin
@@ -105,7 +105,7 @@ begin
   Progress.Position := round((CDIn1.Position * 100) / CDIn1.Size);
 end;
 
-procedure TForm1.btFfwClick(Sender: TObject);
+procedure TfMain.btFfwClick(Sender: TObject);
 begin
   CDIn1.StartTrack := CDIn1.StartTrack+1;
   CDIn1.EndTrack := CDIn1.StartTrack+1;
@@ -118,7 +118,7 @@ begin
   lTime.Caption := '00:00:00';
 end;
 
-procedure TForm1.btRewClick(Sender: TObject);
+procedure TfMain.btRewClick(Sender: TObject);
 begin
   CDIn1.StartTrack := CDIn1.StartTrack-1;
   CDIn1.EndTrack := CDIn1.StartTrack+1;
@@ -131,7 +131,7 @@ begin
   lTime.Caption := '00:00:00';
 end;
 
-procedure TForm1.FormCreate(Sender: TObject);
+procedure TfMain.FormCreate(Sender: TObject);
 begin
   lTracksCount.Caption := Format('%.2d',[CDIn1.Trackscount]);
 end;
