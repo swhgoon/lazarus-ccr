@@ -10,9 +10,9 @@ uses
 
 type
 
-  { TForm1 }
+  { TfMain }
 
-  TForm1 = class(TForm)
+  TfMain = class(TForm)
     bOpen: TBitBtn;
     Mixer1: TACSMixer;
     AudioIn1: TACSAudioIn;
@@ -33,13 +33,13 @@ type
   end; 
 
 var
-  Form1: TForm1; 
+  fMain: TfMain;
 
 implementation
 
-{ TForm1 }
+{ TfMain }
 
-procedure TForm1.FormCreate(Sender: TObject);
+procedure TfMain.FormCreate(Sender: TObject);
 var
   i : Integer;
 begin
@@ -49,24 +49,24 @@ begin
   cbRecordSource.Text := Mixer1.ChannelName[Mixer1.RecordSource];
 end;
 
-procedure TForm1.bOpenClick(Sender: TObject);
+procedure TfMain.bOpenClick(Sender: TObject);
 begin
   FileOut1.Open;
   if FileExists(FileOut1.FileName) then
     FileOut1.FileMode := foAppend;
 end;
 
-procedure TForm1.bRecordClick(Sender: TObject);
+procedure TfMain.bRecordClick(Sender: TObject);
 begin
   FileOut1.Run;
 end;
 
-procedure TForm1.bStopClick(Sender: TObject);
+procedure TfMain.bStopClick(Sender: TObject);
 begin
   FileOut1.Stop;
 end;
 
-procedure TForm1.cbRecordSourceChange(Sender: TObject);
+procedure TfMain.cbRecordSourceChange(Sender: TObject);
 var
   i : Integer;
 begin
