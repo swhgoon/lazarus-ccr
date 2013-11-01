@@ -56,7 +56,6 @@ object fMixer: TfMixer
     end
   end
   object Mixer: TACSMixer
-    MixerName = 'ESS Technology ESS1988'
     top = 368
   end
   object Timer: TTimer
