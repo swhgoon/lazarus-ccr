@@ -65,7 +65,7 @@ unit alsa;
 interface
 
 uses
-  Libc,ACS_Procs;
+  baseunix,ACS_Procs;
 
 const
   asoundlib_path = 'libasound.so*';

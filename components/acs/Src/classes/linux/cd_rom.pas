@@ -40,7 +40,7 @@ unit cd_rom;
 interface
 
 uses
-  Libc;
+  baseunix,unix;
 
 type
   __U8 = Byte;
@@ -51,8 +51,8 @@ type
   *)
   PRequest_sense = ^request_sense;
 
-const
-  EDRIVE_CANT_DO_THIS = EOPNOTSUPP;
+//const
+//  EDRIVE_CANT_DO_THIS = EOPNOTSUPP;
 
  (*
   The CD-ROM IOCTL commands -- these should be supported by }

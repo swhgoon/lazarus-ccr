@@ -54,7 +54,7 @@ uses
   ACS_Procs,
 
   {$IFDEF LINUX}
-  Libc,
+  baseunix,dl,
   {$ENDIF}
   {$IFDEF WIN32}
   Windows,
@@ -149,8 +149,8 @@ var
 type
 
 {$IFDEF LINUX}
-  ov_open_t = function(f: PIOFILE;var vf: OGGVORBIS_FILE;initial: PChar;ibytes: LongInt): Integer; cdecl;
-  ov_test_t = function(f: PIOFILE;var vf: OGGVORBIS_FILE;initial: PChar;ibytes: LongInt): Integer; cdecl;
+  ov_open_t = function(f: Pointer;var vf: OGGVORBIS_FILE;initial: PChar;ibytes: LongInt): Integer; cdecl;
+  ov_test_t = function(f: Pointer;var vf: OGGVORBIS_FILE;initial: PChar;ibytes: LongInt): Integer; cdecl;
 {$ENDIF}
   ov_clear_t = function(var vf: OGGVORBIS_FILE): Integer; cdecl;
   ov_open_callbacks_t = function(datasource: Pointer;var vf: OGGVORBIS_FILE;initial: PChar;ibytes: LongInt; callbacks: OV_CALLBACKS): Integer; cdecl;

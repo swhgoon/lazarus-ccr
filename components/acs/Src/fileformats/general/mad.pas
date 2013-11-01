@@ -43,7 +43,7 @@ uses
 {$ENDIF}
 
 {$IFDEF LINUX}
-  Libc, ACS_Procs;
+  baseunix,dl, ACS_Procs;
 {$ENDIF}
 
 

@@ -90,7 +90,7 @@ uses
   {$IFDEF MSWINDOWS}
   ,Windows, MMSystem, akrip32
   {$ELSE}
-  ,Libc,cd_rom
+  ,baseunix,cd_rom
   {$ENDIF}
   ;
 

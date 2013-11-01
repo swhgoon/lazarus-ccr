@@ -44,7 +44,7 @@ unit libao;
 interface
 
 uses
-  Libc, ACS_Procs;
+  baseunix,dl, ACS_Procs;
 
 var
   LibaoLoaded : Boolean = False;
@@ -95,7 +95,7 @@ type
     _type : Integer;                // live output or file output?
     driver_id : Integer;
     funcs : PAOFunctions;
-    _file : PIOFile;                // File for output if this is a file driver
+    _file : Pointer;                // File for output if this is a file driver
     client_byte_format : Integer;
     machine_byte_format : Integer;
     driver_byte_format : Integer;

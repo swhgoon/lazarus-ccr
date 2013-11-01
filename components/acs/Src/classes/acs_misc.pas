@@ -59,7 +59,7 @@ interface
 uses
   Classes, SysUtils, ACS_Types, ACS_Classes, ACS_Strings
   {$IFDEF LINUX}
-  , libc, LibAO
+  ,baseunix, LibAO
   {$ENDIF};
 
 const

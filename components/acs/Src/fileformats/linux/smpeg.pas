@@ -59,7 +59,7 @@ interface
 uses
   SysUtils,ACS_Procs,Dialogs
   {$ifdef LINUX}
-  , Libc
+  , baseunix,dl
   {$else}
   , Windows
   {$endif}

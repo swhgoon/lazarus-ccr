@@ -19,17 +19,17 @@ reworked all buffers
     toc : cdrom_tochdr;
     frames1, frames2 : Integer;
   begin
-    ioctl(cd_fd, CDROMREADTOCHDR, @toc);
+    fpioctl(cd_fd, CDROMREADTOCHDR, @toc);
     Entry.cdte_format := CDROM_MSF;
     Entry.cdte_track := Track+toc.cdth_trk0-1;
-    ioctl(cd_fd, CDROMREADTOCENTRY, @Entry);
+    fpioctl(cd_fd, CDROMREADTOCENTRY, @Entry);
     frames1 := MSF2Frames(TACSCDMSF(Entry.cdte_addr.msf));
     if (Entry.cdte_adr_ctrl and CDROM_DATA_TRACK) <> 0 then
     Result.TrackType := ttData
     else Result.TrackType := ttAudio;
     if Entry.cdte_track < toc.cdth_trk1 then Inc(Entry.cdte_track)
     else Entry.cdte_track := CDROM_LEADOUT;
-    ioctl(cd_fd, CDROMREADTOCENTRY, @Entry);
+    fpioctl(cd_fd, CDROMREADTOCENTRY, @Entry);
     frames2 := MSF2Frames(TACSCDMSF(Entry.cdte_addr.msf));
     Frames2MSF(frames2-frames1, Result.TrackLength);
   end;
@@ -41,8 +41,10 @@ reworked all buffers
   var
     sci : cdrom_subchnl;
     res :Integer;
+    Data: Integer;
   begin
-    res := ioctl(cd_fd, CDROM_DRIVE_STATUS, CDSL_CURRENT);
+    Data := CDSL_CURRENT;
+    res := fpioctl(cd_fd, CDROM_DRIVE_STATUS, @Data);
     case res of
       CDS_TRAY_OPEN, CDS_NO_DISC, CDS_DRIVE_NOT_READY:
       begin
@@ -53,7 +55,7 @@ reworked all buffers
     (* Either the disc is ok or no information
      from the driver. Trying CDROMSUBCHNL.*)
     sci.cdsc_format := CDROM_MSF;
-    if ioctl(cd_fd, CDROMSUBCHNL, @sci) < 0 then
+    if fpioctl(cd_fd, CDROMSUBCHNL, @sci) < 0 then
     begin
       Result := cdsNotReady;
       Exit;
@@ -69,14 +71,16 @@ reworked all buffers
   function GetCDInfo(cd_fd : Integer) : TACSCDInfo;
   var
     res : Integer;
+    Data: Integer;
   begin
     Result := cdiUnknown;
-    res := ioctl(cd_fd, CDROM_DRIVE_STATUS, CDSL_CURRENT);
+    Data := CDSL_CURRENT;
+    res := fpioctl(cd_fd, CDROM_DRIVE_STATUS, @Data);
     case res of
       CDS_TRAY_OPEN, CDS_NO_DISC: Result := cdiNoDisc;
       CDS_DISC_OK :
       begin
-        res := ioctl(cd_fd, CDROM_DISC_STATUS, CDSL_CURRENT);
+        res := fpioctl(cd_fd, CDROM_DISC_STATUS, @Data);
         case res of
           CDS_AUDIO : Result := cdiDiscAudio;
           CDS_MIXED : Result := cdiDiscMixed;
@@ -92,9 +96,9 @@ reworked all buffers
       exit;
     if FOpened = 0 then
     begin
-      _cd_fd := open(PChar(DrivesPaths[FCurrentDrive]), O_RDONLY or O_NONBLOCK);
+      _cd_fd := fpopen(PChar(DrivesPaths[FCurrentDrive]), O_RDONLY or O_NONBLOCK);
       if _cd_fd < 0 then
-      raise EACSException.Create(strerror(errno));
+      raise EACSException.Create(IntToStr(errno));
     end;
     Inc(FOpened);
   end;
@@ -102,7 +106,7 @@ reworked all buffers
 
   procedure TACSCDIn.CloseCD;
   begin
-    if FOpened = 1 then __close(_cd_fd);
+    if FOpened = 1 then fpclose(_cd_fd);
     if FOpened > 0 then Dec(FOpened);
   end;
 
@@ -120,7 +124,7 @@ reworked all buffers
       exit;
     if Busy then raise EACSException.Create(strBusy);
     if Fopened = 0 then
-    _cd_fd := open(PChar(DrivesPaths[FCurrentDrive]), O_RDONLY or O_NONBLOCK);
+    _cd_fd := fpopen(PChar(DrivesPaths[FCurrentDrive]), O_RDONLY or O_NONBLOCK);
     if _cd_fd < 0 then
     begin
       Result := cdsNotReady;
@@ -139,7 +143,7 @@ reworked all buffers
     OpenCD;
     if GetStatus <> cdsNotReady then
     begin
-      ioctl(_cd_fd, CDROMREADTOCHDR, @toc);
+      fpioctl(_cd_fd, CDROMREADTOCHDR, @toc);
       Result := toc.cdth_trk1 - toc.cdth_trk0 + 1;
     end else Result := 0;
     CloseCD;
@@ -151,7 +155,7 @@ reworked all buffers
     OpenCD;
     if (vIndex in [1..GetNumTracks]) = False then
     begin
-      __close(_cd_fd);
+      fpclose(_cd_fd);
       FOpened := 0;
       raise EACSException.Create(strTrackOutofRange);
     end;
@@ -164,12 +168,12 @@ reworked all buffers
     entry : cdrom_tocentry;
     hdr : cdrom_tochdr;
   begin
-    ioctl(cd_fd, CDROMREADTOCHDR, @hdr);
+    fpioctl(cd_fd, CDROMREADTOCHDR, @hdr);
     entry.cdte_format := CDROM_MSF;
     entry.cdte_track := Track + hdr.cdth_trk0 - 1;
     if entry.cdte_track > hdr.cdth_trk1 then
     entry.cdte_track := CDROM_LEADOUT;
-    ioctl(cd_fd, CDROMREADTOCENTRY, @entry);
+    fpioctl(cd_fd, CDROMREADTOCENTRY, @entry);
     Result := TACSCDMSF(entry.cdte_addr.msf);
   end;
 
@@ -281,7 +285,7 @@ reworked all buffers
       cdaudio.addr_format := CDROM_MSF;
       cdaudio.addr.msf := cdrom_msf0(FCurPos);
       cdaudio.buf := Pointer(FBuffer);
-      ioctl(_cd_fd, CDROMREADAUDIO, @cdaudio);
+      fpioctl(_cd_fd, CDROMREADAUDIO, @cdaudio);
       BufEnd := cdaudio.nframes * CD_FRAMESIZE_RAW;
       StartFrame := MSF2Frames(FCurPos) + cdaudio.nframes;
       Frames2MSF(StartFrame, FCurPos);
@@ -295,17 +299,23 @@ reworked all buffers
   end;
 
   procedure TACSCDIn.Eject;
+  var
+    Data: Integer;
   begin
     if Busy then raise EACSException.Create(strBusy);
     OpenCD;
-    ioctl(_cd_fd, CDROMEJECT);
+    Data := 0;
+    fpioctl(_cd_fd, CDROMEJECT,@Data);
     CloseCD;
   end;
 
   procedure TACSCDIn.CloseTray;
+  var
+    Data: Integer;
   begin
     OpenCD;
-    ioctl(_cd_fd, CDROMCLOSETRAY);
+    Data := 0;
+    fpioctl(_cd_fd, CDROMCLOSETRAY,@Data);
     CloseCD;
   end;
   
@@ -315,35 +325,37 @@ reworked all buffers
     fname : String;
     sci : cdrom_subchnl;
     res :Integer;
+    Data: Integer;
   begin
     DrivesCount := 0;
+    Data := CDSL_CURRENT;
     for i := 0 to 3 do
     begin
       fname := '/dev/hd'+chr(ord('a')+i);
-      _cd_fd := open(PChar(fname), O_RDONLY or O_NONBLOCK);
+      _cd_fd := fpopen(PChar(fname), O_RDONLY or O_NONBLOCK);
       if _cd_fd >= 0 then
         begin
-          res := ioctl(_cd_fd, CDROM_DRIVE_STATUS, CDSL_CURRENT);
+          res := fpioctl(_cd_fd, CDROM_DRIVE_STATUS, @Data);
           case res of
           CDS_TRAY_OPEN, CDS_NO_DISC, CDS_DRIVE_NOT_READY:
              begin
                inc(DrivesCount);
                setlength(DrivesPaths,DrivesCount);
                DrivesPaths[DrivesCount-1] := fname;
-               __close(_cd_fd);
+               fpclose(_cd_fd);
                continue;
              end;
           end;
           (* Either the disc is ok or no information
           from the driver. Trying CDROMSUBCHNL.*)
           sci.cdsc_format := CDROM_MSF;
-          if ioctl(_cd_fd, CDROMSUBCHNL, @sci) >= 0 then
+          if fpioctl(_cd_fd, CDROMSUBCHNL, @sci) >= 0 then
             begin
                inc(DrivesCount);
                setlength(DrivesPaths,DrivesCount);
                DrivesPaths[DrivesCount-1] := fname;
             end;
-          __close(_cd_fd);
+          fpclose(_cd_fd);
         end;
     end;
   end;

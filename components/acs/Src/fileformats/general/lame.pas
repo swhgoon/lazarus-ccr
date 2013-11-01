@@ -43,7 +43,7 @@ uses
 {$ENDIF}
 
 {$IFDEF LINUX}
-  Libc;
+  baseunix,dl;
 {$ENDIF}
 
 const

@@ -42,7 +42,7 @@ uses
  ACS_Procs,
 
 {$IFDEF LINUX}
-  Libc;
+  baseunix,dl;
 {$ENDIF}
 
 {$IFDEF WIN32}

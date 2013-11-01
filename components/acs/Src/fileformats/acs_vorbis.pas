@@ -65,7 +65,7 @@ interface
 uses
   ACS_File,Classes, SysUtils, ACS_Classes, ogg, vorbiscodec, VorbisFile, VorbisEnc,ACS_Strings
 {$IFDEF LINUX}
-  ,libc;
+  ,baseunix;
 {$ENDIF}
 
 {$IFDEF WIN32}

@@ -229,6 +229,7 @@ implementation
 
   procedure SmallIntArrayToDouble(InData : PSmallInt; OutData : PDouble; DataSize : Integer);
   begin
+    {$IFDEF CPU32}
     asm
                 MOV EDX, DataSize;
                 SHL EDX, 3;
@@ -244,10 +245,12 @@ implementation
                 JMP @test;
       @out:     ;
     end;
+    {$ENDIF}
   end;
 
   procedure SmallIntArrayToComplex(InData : PSmallInt; OutData : PACSComplex; DataSize : Integer);
   begin
+    {$IFDEF CPU32}
     asm
                 MOV EDX, DataSize;
                 SHR EDX, 4;
@@ -263,10 +266,12 @@ implementation
                 JMP @test;
       @out:     ;
     end;
+    {$ENDIF}
   end;
 
   procedure MultDoubleArrays(Op1, Op2 : PDouble; DataSize : Integer);
   begin
+    {$IFDEF CPU32}
     asm
                 MOV EDX, DataSize;
                 SHL EDX, 3;
@@ -284,12 +289,14 @@ implementation
                 JMP @test;
       @out:     ;
     end;
+    {$ENDIF}
   end;
 
   procedure LgMagnitude(InData : PACSComplex; OutData : PDouble; DataSize, Shift : Integer);
   var
     LogBase  : Double;
   begin
+    {$IFDEF CPU32}
     asm
                 FLD1;
                 FLDL2T;
@@ -331,5 +338,6 @@ implementation
                 JMP @test;
       @out:     ;
     end;
+    {$ENDIF}
   end;
 end.

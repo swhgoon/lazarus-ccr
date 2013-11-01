@@ -132,9 +132,9 @@ var
       FFileName := Mixers[Num].Path;
       FMixerName := Mixers[Num].Name;
       setlength(FChannels,0);
-      _mix_fd := open(PChar(FFileName), O_RDONLY);
-      ioctl(_mix_fd, SOUND_MIXER_READ_DEVMASK, @DevMask);
-      __close(_mix_fd);
+      _mix_fd := fpopen(PChar(FFileName), O_RDONLY);
+      fpioctl(_mix_fd, SOUND_MIXER_READ_DEVMASK, @DevMask);
+      fpclose(_mix_fd);
       for i:=0 to 31 do
       begin
         if (DevMask and (1 shl i)) <> 0 then
@@ -155,9 +155,9 @@ var
     rs, pow,i : Integer;
   begin
     Result := -1;
-    _mix_fd := open(PChar(FFileName), O_RDONLY);
-    ioctl(_mix_fd, SOUND_MIXER_READ_RECSRC, @rs);
-    __close(_mix_fd);
+    _mix_fd := fpopen(PChar(FFileName), O_RDONLY);
+    fpioctl(_mix_fd, SOUND_MIXER_READ_RECSRC, @rs);
+    fpclose(_mix_fd);
     pow := 0;
     while rs <> 1 do
     begin
@@ -173,10 +173,10 @@ var
   var
     vol, chan : Integer;
   begin
-    _mix_fd := open(PChar(FFileName), O_RDONLY);
+    _mix_fd := fpopen(PChar(FFileName), O_RDONLY);
     chan := GetChannelMask(FChannels[vChannel], 2);
-    ioctl(_mix_fd, chan, @vol);
-    __close(_mix_fd);
+    fpioctl(_mix_fd, chan, @vol);
+    fpclose(_mix_fd);
     if vol > 255 then
     begin
       Result.Left := Lo(vol);
@@ -188,10 +188,10 @@ var
   var
     mask, chan : Integer;
   begin
-    _mix_fd := open(PChar(FFileName), O_RDONLY);
-    ioctl(_mix_fd, SOUND_MIXER_READ_STEREODEVS, @mask);
+    _mix_fd := fpopen(PChar(FFileName), O_RDONLY);
+    fpioctl(_mix_fd, SOUND_MIXER_READ_STEREODEVS, @mask);
     chan := GetChannelMask(FChannels[vChannel], 0);
-    __close(_mix_fd);
+    fpclose(_mix_fd);
     Result := (mask and (1 shl chan))<>0;
   end;
 
@@ -199,10 +199,10 @@ var
   var
     mask, chan : Integer;
   begin
-    _mix_fd := open(PChar(FFileName), O_RDONLY);
-    ioctl(_mix_fd, SOUND_MIXER_READ_RECMASK, @mask);
+    _mix_fd := fpopen(PChar(FFileName), O_RDONLY);
+    fpioctl(_mix_fd, SOUND_MIXER_READ_RECMASK, @mask);
     chan := GetChannelMask(FChannels[vChannel], 0);
-    __close(_mix_fd);
+    fpclose(_mix_fd);
     Result := (mask and (1 shl chan))<>0;
   end;
 
@@ -211,9 +211,9 @@ var
     chan : Integer;
   begin
     chan := 1 shl GetChannelMask(FChannels[vChannel], 0);
-    _mix_fd := open(PChar(FFileName), O_WRONLY);
-    ioctl(_mix_fd, SOUND_MIXER_WRITE_RECSRC, @chan);
-    __close(_mix_fd);
+    _mix_fd := fpopen(PChar(FFileName), O_WRONLY);
+    fpioctl(_mix_fd, SOUND_MIXER_WRITE_RECSRC, @chan);
+    fpclose(_mix_fd);
     if chan <> (1 shl GetChannelMask(FChannels[vChannel], 0)) then
     raise EACSException.Create(Format(strChannelnotRecordable,[vChannel]));
   end;
@@ -235,9 +235,9 @@ var
     if IsStereo(vChannel) then
     vol := vLevel.Left + (vLevel.Right shl 8)
     else vol := vLevel.Main;
-    _mix_fd := open(PChar(FFileName), O_WRONLY);
-    ioctl(_mix_fd, chan, @vol);
-    __close(_mix_fd);
+    _mix_fd := fpopen(PChar(FFileName), O_WRONLY);
+    fpioctl(_mix_fd, chan, @vol);
+    fpclose(_mix_fd);
   end;
 
   destructor TACSMixer.Destroy;
@@ -257,37 +257,37 @@ var
     begin
       fname := '/dev/mixer'+IntToStr(i-1);
       try
-        fd := open(PChar(fname), O_RDONLY);
+        fd := fpopen(PChar(fname), O_RDONLY);
       except
         Break;
       end;
       if fd = -1 then Break;
       DevMask := 0;
-      ioctl(fd, SOUND_MIXER_READ_DEVMASK, @DevMask);
+      fpioctl(fd, SOUND_MIXER_READ_DEVMASK, @DevMask);
       if DevMask <> 0 then
       begin
         Mixers[Result].Path := fname;
-        ioctl(fd, SOUND_MIXER_INFO, @mi);
+        fpioctl(fd, SOUND_MIXER_INFO, @mi);
         Mixers[Result].Name := String(mi.name);
         Inc(Result);
       end;
-      __close(fd);
+      fpclose(fd);
     end;
     fname := '/dev/mixer';
     try
-      fd := open(PChar(fname), O_RDONLY);
+      fd := fpopen(PChar(fname), O_RDONLY);
     except
       Exit;
     end;
     if fd = -1 then Exit;
-    ioctl(fd, SOUND_MIXER_READ_DEVMASK, @DevMask);
+    fpioctl(fd, SOUND_MIXER_READ_DEVMASK, @DevMask);
     if DevMask <> 0 then
     begin
       Mixers[Result].Path := fname;
-      ioctl(fd, SOUND_MIXER_INFO, @mi);
+      fpioctl(fd, SOUND_MIXER_INFO, @mi);
       Mixers[Result].Name := String(mi.name);
     end;
-    __close(fd);
+    fpclose(fd);
     Inc(Result);
   end;
 

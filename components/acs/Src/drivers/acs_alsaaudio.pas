@@ -52,7 +52,7 @@ unit acs_alsaaudio;
 interface
 
 uses
-  Classes, SysUtils, ACS_Types, ACS_Classes, libc, alsa, ACS_Strings,ACS_Audio;
+  Classes, SysUtils, ACS_Types, ACS_Classes, baseunix, alsa, ACS_Strings,ACS_Audio;
 
 const
   BUF_SIZE = $4000;

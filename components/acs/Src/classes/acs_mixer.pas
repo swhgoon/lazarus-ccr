@@ -84,7 +84,7 @@ uses
   ,MMSystem,Windows,Dialogs
   ,Math
   {$ELSE}
-  ,Soundcard, Libc
+  ,Soundcard, baseunix
   {$ENDIF}
   ;
 

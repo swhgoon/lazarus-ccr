@@ -53,7 +53,7 @@ uses
 
  ACS_File,Classes, SysUtils, ACS_Types, ACS_Classes, FLAC,
 {$IFDEF LINUX}
-  libc;
+  baseunix;
 {$ENDIF}
 
 {$IFDEF WIN32}
@@ -301,9 +301,9 @@ type
      STREAMINFO block format differs in different
      FLAC codec versions, so we are trying to be flexible here.
     *)
-    while LongWord(P^) = 0 do Inc(Integer(P), 4);
-    Inc(Integer(P), 4);
-    if LongWord(P^) = 0 then Inc(Integer(P), 4);
+    while LongWord(P^) = 0 do Inc(P, 4);
+    Inc(P, 4);
+    if LongWord(P^) = 0 then Inc(P, 4);
     FI := PFLACInfo(P);
     FLACIn := TFLACIn(client_data);
     FLACIn.FSR := FI.sample_rate;

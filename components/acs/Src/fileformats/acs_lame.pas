@@ -55,7 +55,7 @@ interface
 uses
   ACS_File,Classes, SysUtils, ACS_Classes, lame,
 {$IFDEF LINUX}
-  libc;
+  baseunix;
 {$ENDIF}
 
 {$IFDEF WIN32}

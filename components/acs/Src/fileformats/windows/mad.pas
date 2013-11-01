@@ -37,7 +37,7 @@ uses
 {$ENDIF}
 
 {$IFDEF LINUX}
-  Libc, ACS_Procs;
+  baseunix, ACS_Procs;
 {$ENDIF}
 
 
