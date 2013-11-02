@@ -110,7 +110,7 @@ const
 
   {$ifdef LINUX}
   LibsmpegPath = 'libsmpeg*.so*';
-  LibSDLPath = 'libSDL*.so*';
+  LibSDLPath = 'libSDL-*.so*';
   {$ELSE}
   LibsmpegPath = 'smpeg.dll';
   LibSDLPath = 'SDL.dll';
@@ -189,16 +189,14 @@ var
 begin
   {$ifdef LINUX}
   Path := FindLibs(LibSDLPath);
-  if Path <> '' then SDLhandle := dlopen(@Path[1], RTLD_NOW or RTLD_GLOBAL);
-//  SDLhandle := dlopen(LibSDLPath, RTLD_NOW{$IFDEF LINUX} or RTLD_GLOBAL{$ENDIF});
+  if Path <> '' then SDLhandle := dlopen(@Path, RTLD_NOW or RTLD_GLOBAL);
   if SDLhandle = nil then exit;
   SDL_Init := dlsym(SDLhandle, 'SDL_Init');
   SDL_Quit := dlsym(SDLhandle, 'SDL_Quit');
   SDL_Init(SDL_INIT_AUDIO);
 
   Path := FindLibs(LibsmpegPath);
-  if Path <> '' then Libhandle := dlopen(@Path[1], RTLD_NOW or RTLD_GLOBAL);
-//  Libhandle := dlopen(LibsmpegPath, RTLD_NOW{$IFDEF LINUX} or RTLD_GLOBAL{$ENDIF});
+  if Path <> '' then Libhandle := dlopen(@Path, RTLD_NOW or RTLD_GLOBAL);
   if Libhandle = nil then exit;
   if Libhandle <> nil then
   begin

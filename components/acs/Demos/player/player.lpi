@@ -35,17 +35,16 @@
         <PackageName Value="laz_acs"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="108">
+    <Units Count="112">
       <Unit0>
         <Filename Value="player.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="player"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="7" Y="5"/>
-        <UsageCount Value="64"/>
+        <UsageCount Value="65"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit0>
@@ -60,7 +59,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="11" Y="20"/>
-        <UsageCount Value="64"/>
+        <UsageCount Value="65"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
@@ -117,9 +116,13 @@
       <Unit9>
         <Filename Value="..\..\Src\fileformats\acs_allformats.pas"/>
         <UnitName Value="acs_allformats"/>
+        <EditorIndex Value="2"/>
+        <WindowIndex Value="0"/>
         <TopLine Value="1"/>
-        <CursorPos X="8" Y="8"/>
-        <UsageCount Value="17"/>
+        <CursorPos X="6" Y="13"/>
+        <UsageCount Value="18"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit9>
       <Unit10>
         <Filename Value="..\..\Src\fileformats\acs_dsaudio.pas"/>
@@ -222,7 +225,7 @@
         <UnitName Value="uPlaylist"/>
         <TopLine Value="17"/>
         <CursorPos X="8" Y="32"/>
-        <UsageCount Value="44"/>
+        <UsageCount Value="45"/>
       </Unit23>
       <Unit24>
         <Filename Value="..\..\..\..\lazarus\lcl\interfaces\win32\win32object.inc"/>
@@ -244,7 +247,7 @@
         <UnitName Value="uvis"/>
         <TopLine Value="58"/>
         <CursorPos X="34" Y="9"/>
-        <UsageCount Value="41"/>
+        <UsageCount Value="42"/>
       </Unit26>
       <Unit27>
         <Filename Value="..\..\Src\classes\ACS_Indicator.pas"/>
@@ -816,14 +819,178 @@
       <Unit107>
         <Filename Value="..\..\Src\classes\acs_procs.pas"/>
         <UnitName Value="acs_procs"/>
+        <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="28"/>
-        <CursorPos X="12" Y="46"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="82"/>
+        <CursorPos X="22" Y="105"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit107>
+      <Unit108>
+        <Filename Value="..\..\Src\fileformats\acs_mpeg.pas"/>
+        <UnitName Value="acs_mpeg"/>
+        <EditorIndex Value="4"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="118"/>
+        <CursorPos X="1" Y="141"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit108>
+      <Unit109>
+        <Filename Value="..\..\Src\fileformats\linux\smpeg.pas"/>
+        <UnitName Value="smpeg"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="5"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="188"/>
+        <CursorPos X="1" Y="193"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit109>
+      <Unit110>
+        <Filename Value="..\..\Src\fileformats\acs_flac.pas"/>
+        <UnitName Value="acs_flac"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="471"/>
+        <CursorPos X="26" Y="497"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit110>
+      <Unit111>
+        <Filename Value="..\..\Src\fileformats\general\flac.pas"/>
+        <UnitName Value="flac"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="482"/>
+        <CursorPos X="16" Y="498"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit111>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="30" HistoryIndex="29">
+      <Position1>
+        <Filename Value="..\..\Src\classes\acs_procs.pas"/>
+        <Caret Line="96" Column="1" TopLine="80"/>
+      </Position1>
+      <Position2>
+        <Filename Value="..\..\Src\classes\acs_procs.pas"/>
+        <Caret Line="95" Column="40" TopLine="80"/>
+      </Position2>
+      <Position3>
+        <Filename Value="..\..\Src\fileformats\linux\smpeg.pas"/>
+        <Caret Line="191" Column="1" TopLine="172"/>
+      </Position3>
+      <Position4>
+        <Filename Value="..\..\Src\classes\acs_procs.pas"/>
+        <Caret Line="87" Column="1" TopLine="80"/>
+      </Position4>
+      <Position5>
+        <Filename Value="..\..\Src\classes\acs_procs.pas"/>
+        <Caret Line="88" Column="1" TopLine="80"/>
+      </Position5>
+      <Position6>
+        <Filename Value="..\..\Src\classes\acs_procs.pas"/>
+        <Caret Line="89" Column="1" TopLine="80"/>
+      </Position6>
+      <Position7>
+        <Filename Value="..\..\Src\classes\acs_procs.pas"/>
+        <Caret Line="95" Column="1" TopLine="80"/>
+      </Position7>
+      <Position8>
+        <Filename Value="..\..\Src\classes\acs_procs.pas"/>
+        <Caret Line="96" Column="1" TopLine="80"/>
+      </Position8>
+      <Position9>
+        <Filename Value="..\..\Src\classes\acs_procs.pas"/>
+        <Caret Line="98" Column="1" TopLine="80"/>
+      </Position9>
+      <Position10>
+        <Filename Value="..\..\Src\classes\acs_procs.pas"/>
+        <Caret Line="99" Column="1" TopLine="80"/>
+      </Position10>
+      <Position11>
+        <Filename Value="..\..\Src\classes\acs_procs.pas"/>
+        <Caret Line="100" Column="1" TopLine="80"/>
+      </Position11>
+      <Position12>
+        <Filename Value="..\..\Src\classes\acs_procs.pas"/>
+        <Caret Line="110" Column="1" TopLine="82"/>
+      </Position12>
+      <Position13>
+        <Filename Value="..\..\Src\fileformats\linux\smpeg.pas"/>
+        <Caret Line="192" Column="1" TopLine="172"/>
+      </Position13>
+      <Position14>
+        <Filename Value="..\..\Src\fileformats\linux\smpeg.pas"/>
+        <Caret Line="194" Column="1" TopLine="172"/>
+      </Position14>
+      <Position15>
+        <Filename Value="..\..\Src\fileformats\linux\smpeg.pas"/>
+        <Caret Line="116" Column="21" TopLine="180"/>
+      </Position15>
+      <Position16>
+        <Filename Value="..\..\Src\fileformats\linux\smpeg.pas"/>
+        <Caret Line="191" Column="1" TopLine="180"/>
+      </Position16>
+      <Position17>
+        <Filename Value="..\..\Src\fileformats\linux\smpeg.pas"/>
+        <Caret Line="192" Column="1" TopLine="180"/>
+      </Position17>
+      <Position18>
+        <Filename Value="..\..\Src\fileformats\linux\smpeg.pas"/>
+        <Caret Line="194" Column="1" TopLine="176"/>
+      </Position18>
+      <Position19>
+        <Filename Value="..\..\Src\fileformats\linux\smpeg.pas"/>
+        <Caret Line="191" Column="1" TopLine="176"/>
+      </Position19>
+      <Position20>
+        <Filename Value="..\..\Src\classes\acs_procs.pas"/>
+        <Caret Line="87" Column="1" TopLine="80"/>
+      </Position20>
+      <Position21>
+        <Filename Value="..\..\Src\classes\acs_procs.pas"/>
+        <Caret Line="88" Column="1" TopLine="23"/>
+      </Position21>
+      <Position22>
+        <Filename Value="..\..\Src\fileformats\linux\smpeg.pas"/>
+        <Caret Line="191" Column="1" TopLine="176"/>
+      </Position22>
+      <Position23>
+        <Filename Value="..\..\Src\fileformats\linux\smpeg.pas"/>
+        <Caret Line="192" Column="1" TopLine="179"/>
+      </Position23>
+      <Position24>
+        <Filename Value="..\..\Src\fileformats\linux\smpeg.pas"/>
+        <Caret Line="191" Column="23" TopLine="179"/>
+      </Position24>
+      <Position25>
+        <Filename Value="..\..\Src\fileformats\acs_mpeg.pas"/>
+        <Caret Line="141" Column="1" TopLine="118"/>
+      </Position25>
+      <Position26>
+        <Filename Value="..\..\Src\fileformats\linux\smpeg.pas"/>
+        <Caret Line="189" Column="1" TopLine="172"/>
+      </Position26>
+      <Position27>
+        <Filename Value="..\..\Src\fileformats\linux\smpeg.pas"/>
+        <Caret Line="191" Column="1" TopLine="172"/>
+      </Position27>
+      <Position28>
+        <Filename Value="..\..\Src\fileformats\linux\smpeg.pas"/>
+        <Caret Line="192" Column="49" TopLine="178"/>
+      </Position28>
+      <Position29>
+        <Filename Value="..\..\Src\fileformats\acs_mpeg.pas"/>
+        <Caret Line="141" Column="1" TopLine="118"/>
+      </Position29>
+      <Position30>
+        <Filename Value="..\..\Src\fileformats\linux\smpeg.pas"/>
+        <Caret Line="192" Column="49" TopLine="178"/>
+      </Position30>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>

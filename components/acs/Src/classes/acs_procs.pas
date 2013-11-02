@@ -88,14 +88,21 @@ implementation
     Path := '/usr/lib/';
     if FindFirst(Path + Pattern, faAnyFile, SR) = 0 then
     begin
-      Result := SR.Name;
+      Result := Path+SR.Name;
+      FindClose(SR);
+      Exit;
+    end;
+    Path := '/usr/lib/x86_64-linux-gnu/';
+    if FindFirst(Path + Pattern, faAnyFile, SR) = 0 then
+    begin
+      Result := Path+SR.Name;
       FindClose(SR);
       Exit;
     end;
     Path := '/usr/local/lib/';
     if FindFirst(Path + Pattern, faAnyFile, SR) = 0 then
     begin
-      Result := SR.Name;
+      Result := Path+SR.Name;
       FindClose(SR);
       Exit;
     end;
