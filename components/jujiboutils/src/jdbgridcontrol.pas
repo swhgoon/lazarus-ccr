@@ -180,7 +180,7 @@ begin
           ftCurrency, ftFloat:
             Result :=
               doubleDbGridControl.Editor(Self, Columns[Column - 1].Decimals);
-          ftBCD:
+          ftBCD, ftFMTBCD:
             Result := doubleDbGridControl.Editor(Self, aField.Size);
           ftString:
             Result := stringDbGridControl.Editor(Self, Columns[Column - 1].MaxLength);
