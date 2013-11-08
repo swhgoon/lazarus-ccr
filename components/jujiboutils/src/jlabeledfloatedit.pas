@@ -34,6 +34,7 @@ type
     { Private declarations }
     theValue: double;
     fFormat: string;
+    fEFormat: string;
     fDecimals: integer;
     function getDecimals: integer;
     function getFormat: string;
@@ -58,6 +59,7 @@ type
   published
     { Published declarations }
     property DisplayFormat: string read getFormat write setFormat;
+    property EditFormat: string read fEFormat write fEFormat;
     property Decimals: integer read getDecimals write setDecimals;
     property Value: double read getValue write setValue;
 
@@ -187,7 +189,10 @@ begin
   inherited DoEnter;
   if ReadOnly then
     exit;
-  Text := FloatToStr(theValue);
+  if Length(EditFormat) > 0 then
+    Text := FormatFloat(EditFormat, theValue)
+  else
+    Text := FloatToStr(theValue);
   SelectAll;
 end;
 
@@ -223,6 +228,7 @@ constructor TJLabeledFloatEdit.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   Text := '';
+  fEFormat := '';
   fFormat := '#,0.00';
   fDecimals := 2;
   formatInput;

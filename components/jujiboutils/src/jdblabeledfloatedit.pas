@@ -33,6 +33,7 @@ type
   TJDBLabeledFloatEdit = class(TCustomLabeledEdit)
   private
     fFormat: string;
+    fEFormat: string;
     FDataLink: TFieldDataLink;
     fDecimales: integer;
 
@@ -77,6 +78,7 @@ type
 
   published
     property DisplayFormat: string read getFormat write setFormat;
+    property EditFormat: string read fEFormat write fEFormat;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property Decimals: integer read getDecimals write setDecimals;
@@ -150,6 +152,9 @@ begin
     if not Focused then
       formatInput
     else
+    if Length(EditFormat) > 0 then
+      Caption := FormatFloat(EditFormat, FDataLink.Field.AsFloat)
+    else
       Caption := FloatToStr(FDataLink.Field.AsFloat);
   end
   else
@@ -179,7 +184,10 @@ begin
       theValue := StrToFloat(Text);
       if fDecimales > 0 then
         theValue := ScaleTo(theValue, fDecimales);
-      Text := FloatToStr(theValue);
+      if Length(EditFormat) > 0 then
+        Caption := FormatFloat(EditFormat, theValue)
+      else
+        Caption := FloatToStr(theValue);
       FDataLink.Field.Value := theValue;
     end
     else
@@ -187,7 +195,10 @@ begin
       if FDataLink.Field <> nil then
       begin
         ShowMessage(Format(SInvalidNumber, [Caption]));
-        Caption := FloatToStr(FDataLink.Field.AsFloat);
+        if Length(EditFormat) > 0 then
+          Caption := FormatFloat(EditFormat, FDataLink.Field.AsFloat)
+        else
+          Caption := FloatToStr(FDataLink.Field.AsFloat);
         SelectAll;
         SetFocus;
       end;
@@ -356,7 +367,10 @@ begin
   if not FieldIsEditable(Field) or IsReadOnly then
     exit;
   if FDataLink.Field <> nil then
-    Caption := FloatToStr(FDataLink.Field.AsFloat);  //FDataLink.Field.AsString;
+    if Length(EditFormat) > 0 then
+      Caption := FormatFloat(EditFormat, FDataLink.Field.AsFloat)
+    else
+      Caption := FloatToStr(FDataLink.Field.AsFloat);  //FDataLink.Field.AsString;
   inherited DoEnter;
 end;
 
@@ -369,6 +383,7 @@ begin
   FDataLink.OnDataChange := @DataChange;
   FDataLink.OnUpdateData := @UpdateData;
   FDataLInk.OnActiveChange := @ActiveChange;
+  fEFormat:= '';
   // Set default values
   //fDecimales := 2;
   //fFormat := '0.00';
