@@ -197,7 +197,7 @@ begin
   if ReadOnly then
     exit;
   if IsValidFloat(Text) then
-    theValue := StrToCurr(Text)
+    theValue := StrToFloat(Text)
   else
   begin
     ShowMessage(Format(SInvalidNumber, [Text]));
