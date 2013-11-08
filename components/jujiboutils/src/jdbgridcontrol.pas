@@ -33,6 +33,7 @@ type
   private
     fDecimals: integer;
     fMaxLength: integer;
+    fEFormat: string;
     function getDecimals: integer;
     function getMaxLength: integer;
     procedure setDecimals(AValue: integer);
@@ -40,6 +41,7 @@ type
   published
     property Decimals: integer read getDecimals write setDecimals;
     property MaxLength: integer read getMaxLength write setMaxLength;
+    property EditFormat: string read fEFormat write fEFormat;
   end;
 
   { TJDBGridColumns }
@@ -179,9 +181,11 @@ begin
             Result := dateTimeDbGridControl.Editor(Self);
           ftCurrency, ftFloat:
             Result :=
-              doubleDbGridControl.Editor(Self, Columns[Column - 1].Decimals);
+              doubleDbGridControl.Editor(Self, Columns[Column - 1].Decimals,
+              Columns[Column - 1].EditFormat);
           ftBCD, ftFMTBCD:
-            Result := doubleDbGridControl.Editor(Self, aField.Size);
+            Result := doubleDbGridControl.Editor(Self, aField.Size,
+              Columns[Column - 1].EditFormat);
           ftString:
             Result := stringDbGridControl.Editor(Self, Columns[Column - 1].MaxLength);
         end;
@@ -235,4 +239,3 @@ begin
 end;
 
 end.
-

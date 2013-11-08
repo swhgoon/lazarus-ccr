@@ -163,6 +163,7 @@ type
     updated: boolean;
     theValue: double;
     fDecimals: integer;
+    fEFormat: string;
     function getDecimals: integer;
     procedure myEditOnEnter(Sender: TObject);
     procedure myEditOnEditingDone(Sender: TObject);
@@ -177,7 +178,8 @@ type
     property decimals: integer read getDecimals write setDecimals;
     constructor Create;
     destructor Destroy; override;
-    function Editor(aGrid: TDBGrid; aDecimals: integer = 2): TStringCellEditor;
+    function Editor(aGrid: TDBGrid; aDecimals: integer = 2;
+      aEFormat: string = ''): TStringCellEditor;
     function CanDefocus: boolean;
   end;
 
@@ -290,8 +292,8 @@ begin
   if Field.IsNull then
     Result := ''
   else
-    Result := FormatDateTime(ShortDateFormat, Field.AsDateTime) + ' ' +
-      FormatDateTime(ShortTimeFormat, Field.AsDateTime);
+    Result := FormatDateTime(ShortDateFormat, Field.AsDateTime) +
+      ' ' + FormatDateTime(ShortTimeFormat, Field.AsDateTime);
 end;
 
 procedure TJDbGridDateTimeCtrl.myEditEnter(Sender: TObject);
@@ -950,7 +952,10 @@ begin
   if not Assigned(Field) then
     Abort;
   CellEditor.BoundsRect := theGrid.SelectedFieldRect;
-  CellEditor.Text := Field.AsString;
+  if Length(fEFormat) > 0 then
+    CellEditor.Text := FormatFloat(fEFormat, Field.AsFloat)
+  else
+    CellEditor.Text := Field.AsString;
   CellEditor.OnKeyPress := @OnKeyPress;  // Recuperamos el control :-p
   CellEditor.OnKeyDown := @OnKeyDown;
   theValue := Field.AsFloat;
@@ -1075,10 +1080,11 @@ begin
   inherited Destroy;
 end;
 
-function TJDbGridDoubleCtrl.Editor(aGrid: TDBGrid;
-  aDecimals: integer): TStringCellEditor;
+function TJDbGridDoubleCtrl.Editor(aGrid: TDBGrid; aDecimals: integer;
+  aEFormat: string): TStringCellEditor;
 begin
   decimals := aDecimals;
+  fEFormat := aEFormat;
   theGrid := aGrid;
   Result := CellEditor;
 end;
