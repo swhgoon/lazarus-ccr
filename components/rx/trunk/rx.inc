@@ -54,9 +54,11 @@
 
 {$if FPC_FULLVERSION<20701}
   {$DEFINE NoAutomatedBookmark}
+  {$DEFINE RX_USE_LCL_DEVEL}
 {$endif}
 
 {$IFDEF NoAutomatedBookmark}
 {$ELSE}
 {$ENDIF}
 
+{.$DEFINE RxDBGridDepricatedProps}

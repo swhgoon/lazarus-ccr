@@ -40,9 +40,7 @@ uses
   Graphics, Dialogs, Grids, dbutils, DBGrids, DB, PropertyStorage, vclutils,
   LMessages, types, StdCtrls, Menus;
 
-{$if ((lcl_major = 1) and (lcl_minor = 1))}
-  {$DEFINE RX_USE_LCL_DEVEL}
-{$ENDIF}
+{//$if ((lcl_major = 1) and (lcl_minor = 1))}
 
 const
   CBadQuickSearchSymbols = [VK_UNKNOWN..VK_HELP] + [VK_LWIN..VK_SLEEP] +
@@ -70,8 +68,10 @@ type
   TGetCellPropsEvent = procedure(Sender: TObject; Field: TField;
     AFont: TFont; var Background: TColor) of object;
 
-  TRxDBGridAllowedOperation = (aoInsert, aoUpdate, aoDelete, aoAppend);
-  TRxDBGridAllowedOperations = set of TRxDBGridAllowedOperation;
+{$IFDEF RxDBGridDepricatedProps}
+  //TRxDBGridAllowedOperation = (aoInsert, aoUpdate, aoDelete, aoAppend);
+  //TRxDBGridAllowedOperations = set of TRxDBGridAllowedOperation;
+{$ENDIF}
 
   TRxColumnEditButtonStyle = (ebsDropDownRx, ebsEllipsisRx, ebsGlyphRx, ebsUpDownRx,
     ebsPlusRx, ebsMinusRx);
@@ -523,7 +523,7 @@ type
     FOldDataSetState:TDataSetState;
 
     procedure DoCreateJMenu;
-    function GetAllowedOperations: TRxDBGridAllowedOperations;
+    //function GetAllowedOperations: TRxDBGridAllowedOperations;
     function GetColumns: TRxDbGridColumns;
     function GetFooterColor: TColor;
     function GetFooterRowCount: integer;
@@ -534,7 +534,10 @@ type
     function GetSortOrder: TSortMarker;
     function GetTitleButtons: boolean;
     function IsColumnsStored: boolean;
+
+{$IFDEF RxDBGridDepricatedProps}
     procedure SetAllowedOperations(AValue: TRxDBGridAllowedOperations);
+{$ENDIF}
     procedure SetAutoSort(const AValue: boolean);
     procedure SetColumns(const AValue: TRxDbGridColumns);
     procedure SetFooterColor(const AValue: TColor);
@@ -713,8 +716,10 @@ type
     property PropertyStorage: TCustomPropertyStorage
       read GetPropertyStorage write SetPropertyStorage;
     property Version: integer read FVersion write FVersion default 0;
+    {$IFDEF RxDBGridDepricatedProps}
     property AllowedOperations: TRxDBGridAllowedOperations
       read GetAllowedOperations write SetAllowedOperations default [aoInsert, aoUpdate, aoDelete, aoAppend]; deprecated;
+    {$ENDIF}
     property OptionsRx: TOptionsRx read FOptionsRx write SetOptionsRx;
     property FooterColor: TColor read GetFooterColor write SetFooterColor default clWindow; deprecated;
     property FooterRowCount: integer read GetFooterRowCount write SetFooterRowCount default 0; deprecated;
@@ -1697,6 +1702,7 @@ begin
   CreateMenuItem('A', sRxDBGridSelectAllRows, @OnSelectAllRows);
 end;
 
+{$IFDEF RxDBGridDepricatedProps}
 function TRxDBGrid.GetAllowedOperations: TRxDBGridAllowedOperations;
 begin
   Result:=[];
@@ -1712,6 +1718,7 @@ begin
     Result:=Result + [aoDelete]
     ;
 end;
+{$ENDIF}
 
 function TRxDBGrid.GetPropertyStorage: TCustomPropertyStorage;
 begin
@@ -1744,6 +1751,7 @@ begin
   Result := TRxDbGridColumns(TCustomDrawGrid(Self).Columns).Enabled;
 end;
 
+{$IFDEF RxDBGridDepricatedProps}
 procedure TRxDBGrid.SetAllowedOperations(AValue: TRxDBGridAllowedOperations);
 begin
 //  FAllowedOperations:=AValue;
@@ -1757,6 +1765,7 @@ begin
   else
     Options:=Options + [dgDisableDelete]
 end;
+{$ENDIF}
 
 procedure TRxDBGrid.SetColumns(const AValue: TRxDbGridColumns);
 begin
@@ -5442,6 +5451,9 @@ begin
 end;
 
 initialization
+  {$IFNDEF RxDBGridDepricatedProps}
+  RegisterPropertyToSkip( TRxDBGrid, 'AllowedOperations', 'This property duplicated standart DBGrid.Options', '');
+  {$ENDIF}
 
   {$I rxdbgrid.lrs}
   //  {$I rx_markerdown.lrs}
