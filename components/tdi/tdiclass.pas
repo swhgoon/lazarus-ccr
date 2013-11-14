@@ -343,12 +343,18 @@ begin
 end ;
 
 procedure TTDIPage.CheckFormAlign ;
+Var
+  Maximize: Boolean ;
 begin
   if not Assigned(fsFormInPage) then exit ;
 
+  Maximize := not (( fsFormInPage.Constraints.MaxWidth <> 0 ) and (fsFormInPage.Width < Width)) ;
+  if Maximize then
+     Maximize := not (( fsFormInPage.Constraints.MaxHeight <> 0 ) and (fsFormInPage.Height < Height));
+
   { If Form has MaxConstrains and doesn't fill all the Screen, Centralize on
     TabSheet }
-  if (fsFormInPage.Width < Width) or (fsFormInPage.Height < Height) then
+  if not Maximize then
   begin
     fsFormInPage.Align := alNone;
 

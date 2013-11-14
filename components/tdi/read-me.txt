@@ -12,7 +12,7 @@ http://wiki.freepascal.org/tdi
     8 Installation
     9 How to Use
     10 Methods and Properties
-    11 Note
+    11 Changelog
 
 === 1 - About ===
 
@@ -57,6 +57,7 @@ http://www.opensource.org/licenses/lgpl-license.php
 - Allows customization of Labels and Images of the Menu Items Tabs
 - Allow to close Tabs with Mouse Middle Button
 - Allows Close All Tabs
+- Runs internal Form OnActivate, OnDeactivate when changing pages
 
 === 5 - Download ===
 
@@ -155,3 +156,18 @@ to explain the component
 
 * property FixedPages : Integer
   Number of initial Pages that cannot be closed.
+
+=== 11 - ChangeLog ===
+
+[+]: New feature
+[*]: Resource modified / improved
+[-]: Bug Fix (hopefully)
+
+13/07/2013
+[+] Added suport to runs Internal Form OnActivate and OnDeactivate when
+    changing Pages      (by: DSA)
+
+14/11/2013
+[-] Better detection for Form Constraint handling on Linux
+    (by: DSA and Galló Gábor)
+

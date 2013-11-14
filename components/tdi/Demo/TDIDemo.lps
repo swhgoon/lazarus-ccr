@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectSession>
     <PathDelim Value="\"/>
@@ -34,8 +34,8 @@
         <UnitName Value="uForm1"/>
         <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="96"/>
-        <CursorPos X="28" Y="104"/>
+        <TopLine Value="92"/>
+        <CursorPos X="1" Y="104"/>
         <UsageCount Value="209"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -49,9 +49,9 @@
         <UnitName Value="uForm2"/>
         <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="80"/>
-        <CursorPos X="18" Y="83"/>
-        <UsageCount Value="149"/>
+        <TopLine Value="26"/>
+        <CursorPos X="19" Y="86"/>
+        <UsageCount Value="151"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit3>
@@ -63,8 +63,8 @@
         <UnitName Value="uMainForm"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="170"/>
-        <CursorPos X="52" Y="185"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="191"/>
         <UsageCount Value="101"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -72,28 +72,27 @@
       <Unit5>
         <Filename Value="..\tdiclass.pas"/>
         <UnitName Value="TDIClass"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1066"/>
-        <CursorPos X="5" Y="1081"/>
+        <TopLine Value="345"/>
+        <CursorPos X="25" Y="350"/>
         <UsageCount Value="101"/>
         <Bookmarks Count="7">
-          <Item0 X="1" Y="346" ID="2"/>
-          <Item1 X="32" Y="691" ID="4"/>
+          <Item0 X="1" Y="348" ID="2"/>
+          <Item1 X="32" Y="697" ID="4"/>
           <Item2 X="3" Y="282" ID="6"/>
-          <Item3 X="3" Y="356" ID="5"/>
+          <Item3 X="3" Y="362" ID="5"/>
           <Item4 X="17" Y="311" ID="7"/>
-          <Item5 X="5" Y="1058" ID="1"/>
-          <Item6 X="40" Y="883" ID="3"/>
+          <Item5 X="5" Y="1064" ID="1"/>
+          <Item6 X="40" Y="889" ID="3"/>
         </Bookmarks>
         <Loaded Value="True"/>
       </Unit5>
       <Unit6>
         <Filename Value="C:\lazarus\lcl\include\customnotebook.inc"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="655"/>
-        <CursorPos X="11" Y="660"/>
+        <TopLine Value="961"/>
+        <CursorPos X="1" Y="971"/>
         <UsageCount Value="30"/>
       </Unit6>
       <Unit7>
@@ -159,7 +158,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1598"/>
         <CursorPos X="14" Y="1610"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="11"/>
         <Loaded Value="True"/>
       </Unit13>
       <Unit14>
@@ -653,10 +652,11 @@
       </Unit76>
       <Unit77>
         <Filename Value="..\read-me.txt"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="6"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="147"/>
-        <CursorPos X="34" Y="168"/>
+        <TopLine Value="150"/>
+        <CursorPos X="10" Y="170"/>
         <UsageCount Value="32"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="None"/>
@@ -714,40 +714,138 @@
     <General>
       <ActiveWindowIndexAtStart Value="0"/>
     </General>
-    <JumpHistory Count="2" HistoryIndex="1">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="..\tdiclass.pas"/>
-        <Caret Line="108" Column="23" TopLine="102"/>
+        <Caret Line="366" Column="1" TopLine="347"/>
       </Position1>
       <Position2>
         <Filename Value="..\tdiclass.pas"/>
-        <Caret Line="1054" Column="34" TopLine="1040"/>
+        <Caret Line="368" Column="1" TopLine="349"/>
       </Position2>
+      <Position3>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="373" Column="1" TopLine="362"/>
+      </Position3>
+      <Position4>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="351" Column="1" TopLine="339"/>
+      </Position4>
+      <Position5>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="352" Column="1" TopLine="339"/>
+      </Position5>
+      <Position6>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="357" Column="1" TopLine="345"/>
+      </Position6>
+      <Position7>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="359" Column="1" TopLine="345"/>
+      </Position7>
+      <Position8>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="361" Column="1" TopLine="345"/>
+      </Position8>
+      <Position9>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="363" Column="1" TopLine="345"/>
+      </Position9>
+      <Position10>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="366" Column="1" TopLine="347"/>
+      </Position10>
+      <Position11>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="351" Column="31" TopLine="345"/>
+      </Position11>
+      <Position12>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="357" Column="18" TopLine="345"/>
+      </Position12>
+      <Position13>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="351" Column="1" TopLine="345"/>
+      </Position13>
+      <Position14>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="352" Column="1" TopLine="345"/>
+      </Position14>
+      <Position15>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="357" Column="1" TopLine="345"/>
+      </Position15>
+      <Position16>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="359" Column="1" TopLine="345"/>
+      </Position16>
+      <Position17>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="361" Column="1" TopLine="345"/>
+      </Position17>
+      <Position18>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="363" Column="1" TopLine="345"/>
+      </Position18>
+      <Position19>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="351" Column="1" TopLine="345"/>
+      </Position19>
+      <Position20>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="352" Column="1" TopLine="345"/>
+      </Position20>
+      <Position21>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="357" Column="1" TopLine="345"/>
+      </Position21>
+      <Position22>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="359" Column="1" TopLine="345"/>
+      </Position22>
+      <Position23>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="361" Column="1" TopLine="345"/>
+      </Position23>
+      <Position24>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="351" Column="1" TopLine="345"/>
+      </Position24>
+      <Position25>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="352" Column="1" TopLine="345"/>
+      </Position25>
+      <Position26>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="353" Column="1" TopLine="345"/>
+      </Position26>
+      <Position27>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="357" Column="1" TopLine="345"/>
+      </Position27>
+      <Position28>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="372" Column="1" TopLine="361"/>
+      </Position28>
+      <Position29>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="351" Column="1" TopLine="345"/>
+      </Position29>
+      <Position30>
+        <Filename Value="..\tdiclass.pas"/>
+        <Caret Line="354" Column="26" TopLine="345"/>
+      </Position30>
     </JumpHistory>
   </ProjectSession>
   <Debugging>
-    <BreakPoints Count="3">
+    <BreakPoints Count="1">
       <Item1>
-        <Kind Value="bpkSource"/>
-        <WatchScope Value="wpsLocal"/>
-        <WatchKind Value="wpkWrite"/>
-        <Source Value="..\tdiclass.pas"/>
-        <Line Value="1070"/>
-      </Item1>
-      <Item2>
-        <Kind Value="bpkSource"/>
-        <WatchScope Value="wpsLocal"/>
-        <WatchKind Value="wpkWrite"/>
-        <Source Value="uform2.pas"/>
-        <Line Value="90"/>
-      </Item2>
-      <Item3>
         <Kind Value="bpkSource"/>
         <WatchScope Value="wpsLocal"/>
         <WatchKind Value="wpkWrite"/>
         <Source Value="uform1.pas"/>
         <Line Value="103"/>
-      </Item3>
+      </Item1>
     </BreakPoints>
   </Debugging>
   <EditorMacros Count="0"/>
