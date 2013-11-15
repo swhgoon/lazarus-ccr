@@ -46,7 +46,7 @@ uses
   clocale, // needed to initialize default locale settings on Linux.
   {$endif}
   Classes, SysUtils, Controls, LCLType, Graphics, Math, StdCtrls, Buttons,
-  ExtCtrls, Forms, ComCtrls, Types, LMessages, CalendarControlWrapper
+  ExtCtrls, Forms, ComCtrls, Types, LMessages, LCLProc, CalendarControlWrapper
   {$ifdef LCLGtk2}, LCLVersion{$endif}
   ;
 
@@ -130,11 +130,14 @@ type
     FEffectiveHideDateTimeParts: set of TDateTimePart;
     FKind: TDateTimeKind;
     FLeadingZeros: Boolean;
+    FMonthNames: String;
+    FMonthNamesArray: TMonthNameArray;
     FNullInputAllowed: Boolean;
     FDateTime: TDateTime;
     FDateSeparator: String;
     FReadOnly: Boolean;
     FMaxDate, FMinDate: TDate;
+    FShowMonthNames: Boolean;
     FTextForNullDate: String;
     FTimeSeparator: String;
     FTimeDisplay: TTimeDisplay;
@@ -151,6 +154,8 @@ type
     FSeparatorWidth: Integer;
     FSepNoSpaceWidth: Integer;
     FTimeSeparatorWidth: Integer;
+    FMonthWidth: Integer;
+    FNullMonthText: String;
     FSelectedTextPart: TTextPart;
     FRecalculatingTextSizesNeeded: Boolean;
     FJumpMinMax: Boolean;
@@ -194,6 +199,7 @@ type
     procedure SetHideDateTimeParts(AValue: TDateTimeParts);
     procedure SetKind(const AValue: TDateTimeKind);
     procedure SetLeadingZeros(const AValue: Boolean);
+    procedure SetMonthNames(AValue: String);
     procedure SetNullInputAllowed(const AValue: Boolean);
     procedure SetDate(const AValue: TDate);
     procedure SetDateTime(const AValue: TDateTime);
@@ -202,6 +208,7 @@ type
     procedure SetMinDate(const AValue: TDate);
     procedure SetReadOnly(const AValue: Boolean);
     procedure SetShowCheckBox(const AValue: Boolean);
+    procedure SetShowMonthNames(AValue: Boolean);
     procedure SetTextForNullDate(const AValue: String);
     procedure SetTime(const AValue: TTime);
     procedure SetTimeSeparator(const AValue: String);
@@ -370,6 +377,9 @@ type
              read FHideDateTimeParts write SetHideDateTimeParts;
     property CalendarWrapperClass: TCalendarControlWrapperClass
              read FCalendarWrapperClass write SetCalendarWrapperClass;
+    property MonthNames: String read FMonthNames write SetMonthNames;
+    property ShowMonthNames: Boolean
+             read FShowMonthNames write SetShowMonthNames default False;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -437,6 +447,8 @@ type
     property HideDateTimeParts;
     property BiDiMode;
     property ParentBiDiMode;
+    property MonthNames;
+    property ShowMonthNames;
 // events:
     property OnChange;
     property OnCheckBoxChange;
@@ -882,6 +894,58 @@ begin
   UpdateDate;
 end;
 
+procedure TCustomZVDateTimePicker.SetMonthNames(AValue: String);
+var
+  I, N, LenMNSep: Integer;
+  MonthNamesSeparator: String;
+
+begin
+  if FMonthNames <> AValue then begin
+    AValue := TrimRight(AValue);
+    FMonthNames := AValue;
+
+    if UpperCase(AValue) = 'SHORT' then
+      FMonthNamesArray := DefaultFormatSettings.ShortMonthNames
+    else begin
+      N := 0;
+      if Length(AValue) >= 24 then begin
+        MonthNamesSeparator := UTF8Copy(AValue, 1, 1);
+        LenMNSep := Length(MonthNamesSeparator);
+        if LenMNSep > 0 then begin
+          Delete(AValue, 1, LenMNSep);
+
+          while N < 12 do begin
+            I := Pos(MonthNamesSeparator, AValue);
+            if I <= 1 then begin
+              if (I = 0) and (N = 11) and (Length(AValue) > 0) then begin
+                Inc(N);
+                FMonthNamesArray[N] := AValue;
+              end;
+
+              Break;
+            end;
+
+            Inc(N);
+            Dec(I);
+            FMonthNamesArray[N] := Copy(AValue, 1, I);
+            Delete(AValue, 1, I + LenMNSep);
+          end;
+
+        end;
+      end;
+
+      if N < 12 then
+        FMonthNamesArray := DefaultFormatSettings.LongMonthNames;
+    end;
+
+    if FShowMonthNames and
+              not (dtpMonth in FEffectiveHideDateTimeParts) then begin
+      FRecalculatingTextSizesNeeded := True;
+      UpdateDate;
+    end;
+  end;
+end;
+
 procedure TCustomZVDateTimePicker.SetNullInputAllowed(const AValue: Boolean);
 begin
   FNullInputAllowed := AValue;
@@ -1028,6 +1092,17 @@ begin
   end;
 end;
 
+procedure TCustomZVDateTimePicker.SetShowMonthNames(AValue: Boolean);
+begin
+  if FShowMonthNames <> AValue then begin
+    FShowMonthNames := AValue;
+    if not (dtpMonth in FEffectiveHideDateTimeParts) then begin
+      FRecalculatingTextSizesNeeded := True;
+      UpdateDate;
+    end;
+  end;
+end;
+
 procedure TCustomZVDateTimePicker.SetTextForNullDate(const AValue: String);
 begin
   if FTextForNullDate = AValue then
@@ -1122,14 +1197,16 @@ end;
   The procedure is called internally when needed (when properties which
   influence the appearence change). }
 procedure TCustomZVDateTimePicker.RecalculateTextSizesIfNeeded;
+const
+  NullMonthChar = 'x';
 var
   C: Char;
-  N: Integer;
+  N, J: Integer;
   S: String;
   I: TDateTimePart;
   DateParts, TimeParts: Integer;
 begin
-  if FRecalculatingTextSizesNeeded then begin
+  if HandleAllocated and FRecalculatingTextSizesNeeded then begin
     FRecalculatingTextSizesNeeded := False;
 
     FDigitWidth := 0;
@@ -1142,7 +1219,9 @@ begin
     DateParts := 0;
     FSepNoSpaceWidth := 0;
     FSeparatorWidth := 0;
+    FMonthWidth := 0;
     FDateWidth := 0;
+    FNullMonthText := '';
     S := '';
     if FKind in [dtkDate, dtkDateTime] then begin
 
@@ -1151,7 +1230,24 @@ begin
           Inc(DateParts);
           if I = dtpYear then begin
             FDateWidth := FDateWidth + 4 * FDigitWidth;
+          end else if (I = dtpMonth) and FShowMonthNames then begin
+            FMonthWidth := FDigitWidth; // Minimal MonthWidth is DigitWidth.
+            for J := Low(TMonthNameArray) to High(TMonthNameArray) do begin
+              N := Canvas.GetTextWidth(FMonthNamesArray[J]);
+              if N > FMonthWidth then
+                FMonthWidth := N;
+            end;
 
+            N := Canvas.GetTextWidth(NullMonthChar);
+            if N > 0 then begin
+              N := FMonthWidth div N - 1;
+              if N > 1 then
+                FNullMonthText := StringOfChar(NullMonthChar, N);
+            end;
+            if N <= 1 then
+              FNullMonthText := NullMonthChar;
+
+            FDateWidth := FDateWidth + FMonthWidth;
           end else
             FDateWidth := FDateWidth + 2 * FDigitWidth;
 
@@ -1619,9 +1715,6 @@ begin
     FEffectiveHideDateTimeParts := FEffectiveHideDateTimeParts +
                        [dtpHour, dtpMinute, dtpSecond, dtpMiliSec, dtpAMPM]
   else begin
-    if FTimeFormat = tf24 then
-      FEffectiveHideDateTimeParts := FEffectiveHideDateTimeParts + [dtpAMPM];
-
     if FKind = dtkTime then
       FEffectiveHideDateTimeParts := FEffectiveHideDateTimeParts +
                             [dtpDay, dtpMonth, dtpYear];
@@ -1635,12 +1728,12 @@ begin
                                         [dtpMiliSec];
     end;
 
+    if (FTimeFormat = tf24) or (dtpHour in FEffectiveHideDateTimeParts) then
+      Include(FEffectiveHideDateTimeParts, dtpAMPM);
   end;
 
-  if dtpHour in FEffectiveHideDateTimeParts then
-    Include(FEffectiveHideDateTimeParts, dtpAMPM);
-
-  if FEffectiveHideDateTimeParts <> PreviousEffectiveHideDateTimeParts then begin
+  if FEffectiveHideDateTimeParts
+                          <> PreviousEffectiveHideDateTimeParts then begin
     if GetDateTimePartFromTextPart(FSelectedTextPart) in
                      FEffectiveHideDateTimeParts then
       MoveSelectionLR(False);
@@ -1784,8 +1877,6 @@ begin
       When this insurance text part gets to high value, break }
     Inc(SafetyTextPart);
   until (I = FSelectedTextPart) or (SafetyTextPart >= High(TTextPart));
-
-  Invalidate;
 end;
 
 procedure TCustomZVDateTimePicker.KeyDown(var Key: Word; Shift: TShiftState);
@@ -1810,6 +1901,7 @@ begin
             K := Key;
             Key := 0;
             MoveSelectionLR(K = VK_LEFT);
+            Invalidate;
           end;
         VK_UP:
           begin
@@ -1960,9 +2052,10 @@ begin
           FUserChangedText := True;
 
           if ForceChange then begin
-            if FAutoAdvance then
-              MoveSelectionLR(False)
-            else
+            if FAutoAdvance then begin
+              MoveSelectionLR(False);
+              Invalidate;
+            end else
               UpdateIfUserChangedText;
           end else
             Invalidate;
@@ -2041,6 +2134,8 @@ begin
                       in FEffectiveHideDateTimeParts) then begin
           if I = FYearPos then
             Inc(M, 4 * FDigitWidth)
+          else if (I = FMonthPos) and FShowMonthNames then
+            Inc(M, FMonthWidth)
           else
             Inc(M, 2 * FDigitWidth);
 
@@ -2462,116 +2557,120 @@ var
   WT: Array[dtpHour..dtpAMPM] of Word;
   DTP: TDateTimePart;
 begin
-  FUserChangedText := False;
+  if HandleAllocated then begin
+    FUserChangedText := False;
 
-  if not (DateIsNull or FJumpMinMax) then begin
-    if Int(FDateTime) > FMaxDate then
-      FDateTime := ComposeDateTime(FMaxDate, FDateTime);
+    if not (DateIsNull or FJumpMinMax) then begin
+      if Int(FDateTime) > FMaxDate then
+        FDateTime := ComposeDateTime(FMaxDate, FDateTime);
 
-    if FDateTime < FMinDate then
-      FDateTime := ComposeDateTime(FMinDate, FDateTime);
-  end;
-
-  if not FChangeInRecursiveCall then begin // we'll skip the next part in
-         // recursive calls which could be made through Change or UndoChanges
-    FChangeInRecursiveCall := True;
-    try
-      if FUserChanging > 0 then begin // this means that the change is caused by user interaction
-        try
-          Change;
-        except
-          UndoChanges;
-          raise;
-        end
-      end else
-        FConfirmedDateTime := FDateTime;
-    finally
-      FChangeInRecursiveCall := False;
-    end;
-  end;
-
-  if DateIsNull then begin
-    if dtpYear in FEffectiveHideDateTimeParts then
-      FTextPart[FYearPos] := ''
-    else
-      FTextPart[FYearPos] := '0000';
-
-    if dtpMonth in FEffectiveHideDateTimeParts then
-      FTextPart[FMonthPos] := ''
-    else
-      FTextPart[FMonthPos] := '00';
-
-    if dtpDay in FEffectiveHideDateTimeParts then
-      FTextPart[FDayPos] := ''
-    else
-      FTextPart[FDayPos] := '00';
-
-    for DTP := dtpHour to dtpAMPM do begin
-      if DTP in FEffectiveHideDateTimeParts then
-        FTimeText[DTP] := ''
-      else if DTP = dtpAMPM then
-        FTimeText[DTP] := 'XX'
-      else if DTP = dtpMiliSec then
-        FTimeText[DTP] := '999'
-      else
-        FTimeText[DTP] := '99';
+      if FDateTime < FMinDate then
+        FDateTime := ComposeDateTime(FMinDate, FDateTime);
     end;
 
-  end else begin
-    DecodeDate(FDateTime, W[3], W[2], W[1]);
-
-    if dtpYear in FEffectiveHideDateTimeParts then
-      FTextPart[FYearPos] := ''
-    else if FLeadingZeros then
-      FTextPart[FYearPos] := RightStr('000' + IntToStr(W[3]), 4)
-    else
-      FTextPart[FYearPos] := IntToStr(W[3]);
-
-    if dtpMonth in FEffectiveHideDateTimeParts then
-      FTextPart[FMonthPos] := ''
-    else if FLeadingZeros then
-      FTextPart[FMonthPos] := RightStr('0' + IntToStr(W[2]), 2)
-    else
-      FTextPart[FMonthPos] := IntToStr(W[2]);
-
-    if dtpDay in FEffectiveHideDateTimeParts then
-      FTextPart[FDayPos] := ''
-    else if FLeadingZeros then
-      FTextPart[FDayPos] := RightStr('0' + IntToStr(W[1]), 2)
-    else
-      FTextPart[FDayPos] := IntToStr(W[1]);
-
-    DecodeTime(FDateTime, WT[dtpHour], WT[dtpMinute], WT[dtpSecond], WT[dtpMiliSec]);
-
-    if dtpAMPM in FEffectiveHideDateTimeParts then
-      FTimeText[dtpAMPM] := ''
-    else begin
-      if WT[dtpHour] < 12 then begin
-        FTimeText[dtpAMPM] := 'AM';
-        if WT[dtpHour] = 0 then
-          WT[dtpHour] := 12;
-      end else begin
-        FTimeText[dtpAMPM] := 'PM';
-        if WT[dtpHour] > 12 then
-          Dec(WT[dtpHour], 12);
+    if not FChangeInRecursiveCall then begin // we'll skip the next part in
+           // recursive calls which could be made through Change or UndoChanges
+      FChangeInRecursiveCall := True;
+      try
+        if FUserChanging > 0 then begin // this means that the change is caused by user interaction
+          try
+            Change;
+          except
+            UndoChanges;
+            raise;
+          end
+        end else
+          FConfirmedDateTime := FDateTime;
+      finally
+        FChangeInRecursiveCall := False;
       end;
     end;
 
-    for DTP := dtpHour to dtpMiliSec do begin
-      if DTP in FEffectiveHideDateTimeParts then
-        FTimeText[DTP] := ''
-      else if (DTP = dtpHour) and (not FLeadingZeros) then
-        FTimeText[DTP] := IntToStr(WT[dtpHour])
-      else if DTP = dtpMiliSec then
-        FTimeText[DTP] := RightStr('00' + IntToStr(WT[DTP]), 3)
+    if DateIsNull then begin
+      if dtpYear in FEffectiveHideDateTimeParts then
+        FTextPart[FYearPos] := ''
       else
-        FTimeText[DTP] := RightStr('0' + IntToStr(WT[DTP]), 2);
+        FTextPart[FYearPos] := '0000';
+
+      if dtpMonth in FEffectiveHideDateTimeParts then
+        FTextPart[FMonthPos] := ''
+      else
+        FTextPart[FMonthPos] := '00';
+
+      if dtpDay in FEffectiveHideDateTimeParts then
+        FTextPart[FDayPos] := ''
+      else
+        FTextPart[FDayPos] := '00';
+
+      for DTP := dtpHour to dtpAMPM do begin
+        if DTP in FEffectiveHideDateTimeParts then
+          FTimeText[DTP] := ''
+        else if DTP = dtpAMPM then
+          FTimeText[DTP] := 'XX'
+        else if DTP = dtpMiliSec then
+          FTimeText[DTP] := '999'
+        else
+          FTimeText[DTP] := '99';
+      end;
+
+    end else begin
+      DecodeDate(FDateTime, W[3], W[2], W[1]);
+
+      if dtpYear in FEffectiveHideDateTimeParts then
+        FTextPart[FYearPos] := ''
+      else if FLeadingZeros then
+        FTextPart[FYearPos] := RightStr('000' + IntToStr(W[3]), 4)
+      else
+        FTextPart[FYearPos] := IntToStr(W[3]);
+
+      if dtpMonth in FEffectiveHideDateTimeParts then
+        FTextPart[FMonthPos] := ''
+      else if FShowMonthNames then
+        FTextPart[FMonthPos] := FMonthNamesArray[W[2]]
+      else if FLeadingZeros then
+        FTextPart[FMonthPos] := RightStr('0' + IntToStr(W[2]), 2)
+      else
+        FTextPart[FMonthPos] := IntToStr(W[2]);
+
+      if dtpDay in FEffectiveHideDateTimeParts then
+        FTextPart[FDayPos] := ''
+      else if FLeadingZeros then
+        FTextPart[FDayPos] := RightStr('0' + IntToStr(W[1]), 2)
+      else
+        FTextPart[FDayPos] := IntToStr(W[1]);
+
+      DecodeTime(FDateTime, WT[dtpHour], WT[dtpMinute], WT[dtpSecond], WT[dtpMiliSec]);
+
+      if dtpAMPM in FEffectiveHideDateTimeParts then
+        FTimeText[dtpAMPM] := ''
+      else begin
+        if WT[dtpHour] < 12 then begin
+          FTimeText[dtpAMPM] := 'AM';
+          if WT[dtpHour] = 0 then
+            WT[dtpHour] := 12;
+        end else begin
+          FTimeText[dtpAMPM] := 'PM';
+          if WT[dtpHour] > 12 then
+            Dec(WT[dtpHour], 12);
+        end;
+      end;
+
+      for DTP := dtpHour to dtpMiliSec do begin
+        if DTP in FEffectiveHideDateTimeParts then
+          FTimeText[DTP] := ''
+        else if (DTP = dtpHour) and (not FLeadingZeros) then
+          FTimeText[DTP] := IntToStr(WT[dtpHour])
+        else if DTP = dtpMiliSec then
+          FTimeText[DTP] := RightStr('00' + IntToStr(WT[DTP]), 3)
+        else
+          FTimeText[DTP] := RightStr('0' + IntToStr(WT[DTP]), 2);
+
+      end;
 
     end;
 
+    Invalidate;
   end;
-
-  Invalidate;
 end;
 
 procedure TCustomZVDateTimePicker.DoEnter;
@@ -2693,6 +2792,7 @@ begin
     Its purpose is to prevent control anchoring until this point. That's because
     on Linux Lazarus crashes when control is dropped on form in designer if
     particular anchoring code executes before CreateWnd has done its job. }
+    UpdateDate;
     FDoNotArrangeControls := False;
     ArrangeCtrls;
   end;
@@ -2770,9 +2870,9 @@ begin
 
   if GetDateTimePartFromTextPart(FSelectedTextPart)
                   in FEffectiveHideDateTimeParts then
-    MoveSelectionLR(False)
-  else
-    Invalidate;
+    MoveSelectionLR(False);
+
+  Invalidate;
 end;
 
 procedure TCustomZVDateTimePicker.SelectTime;
@@ -2784,9 +2884,9 @@ begin
 
   if GetDateTimePartFromTextPart(FSelectedTextPart)
                   in FEffectiveHideDateTimeParts then
-    MoveSelectionLR(False)
-  else
-    Invalidate;
+    MoveSelectionLR(False);
+
+  Invalidate;
 end;
 
 procedure TCustomZVDateTimePicker.Paint;
@@ -2797,6 +2897,7 @@ var
   SelectStep: 0..8;
   TextStyle: TTextStyle;
   DTP: TDateTimePart;
+  S: String;
 
 begin
   if ClientRectNeedsInterfaceUpdate then // In Qt widgetset, this solves the
@@ -2875,11 +2976,17 @@ begin
     if dtpMonth in FEffectiveHideDateTimeParts then
       DD[FMonthPos] := 0
     else begin
-      DD[FMonthPos] := 2 * FDigitWidth;
+      if FShowMonthNames then
+        DD[FMonthPos] := FMonthWidth
+      else
+        DD[FMonthPos] := 2 * FDigitWidth;
+
       if FMonthPos < M then
         M := FMonthPos;
+
       if FMonthPos > L then
         L := FMonthPos;
+
     end;
 
     if dtpDay in FEffectiveHideDateTimeParts then
@@ -2918,29 +3025,41 @@ begin
 
     for I := M to N do begin
       if DD[I] <> 0 then begin
-        if SelectStep = I then begin
+
+        R.Right := R.Left + DD[I];
+        if I <= 3 then begin
+          if (I = FMonthPos) and FShowMonthNames then begin
+            TextStyle.Alignment := taCenter;
+            if DateIsNull then
+              S := FNullMonthText
+            else
+              S := FTextPart[I];
+          end else
+            S := FTextPart[I];
+
+        end else
+          S := FTimeText[TDateTimePart(I - 1)];
+
+        if I = SelectStep then begin
           TextStyle.Opaque := True;
           Canvas.Brush.Color := clHighlight;
           Canvas.Font.Color := clHighlightText;
-        end;
 
-        R.Right := R.Left + DD[I];
-        if I <= 3 then
-          Canvas.TextRect(R, R.Left, R.Top, FTextPart[I], TextStyle)
-        else
-          Canvas.TextRect(R, R.Left, R.Top, FTimeText[TDateTimePart(I - 1)], TextStyle);
+          Canvas.TextRect(R, R.Left, R.Top, S, TextStyle);
 
-        R.Left := R.Right;
-
-        if SelectStep = I then begin
           TextStyle.Opaque := False;
           Canvas.Brush.Color := Color;
           Canvas.Font.Color := Self.Font.Color;
-        end;
+        end else
+          Canvas.TextRect(R, R.Left, R.Top, S, TextStyle);
+
+        TextStyle.Alignment := taRightJustify;
+        R.Left := R.Right;
 
         if I < L then begin
           R.Right := R.Left + FSeparatorWidth;
-          Canvas.TextRect(R, R.Left, R.Top, FDateSeparator, TextStyle);
+          if not ((I = FMonthPos) and FShowMonthNames) then
+            Canvas.TextRect(R, R.Left, R.Top, FDateSeparator, TextStyle);
         end else if I > L then begin
           if I = K then begin
             R.Right := R.Left + FDigitWidth;
@@ -3488,7 +3607,10 @@ begin
   FTimeWidth := 0;
   FTextWidth := 0;
   FTextHeight := 0;
+  FMonthWidth := 0;
   FHideDateTimeParts := [];
+  FShowMonthNames := False;
+  FNullMonthText := '';
 
   for I := Low(FTextPart) to High(FTextPart) do
     FTextPart[I] := '';
@@ -3528,12 +3650,13 @@ begin
   FCascade := False;
   FAutoButtonSize := False;
   FAutoAdvance := False;
+  FCalendarWrapperClass := nil;
   FEffectiveHideDateTimeParts := [];
 
   AdjustEffectiveDateDisplayOrder;
   AdjustEffectiveHideDateTimeParts;
-  FCalendarWrapperClass := nil;
 
+  SetMonthNames('Long');
   SetDateMode(dmComboBox);
 end;
 

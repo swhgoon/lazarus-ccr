@@ -113,6 +113,8 @@ type
     property HideDateTimeParts;
     property BiDiMode;
     property ParentBiDiMode;
+    property MonthNames;
+    property ShowMonthNames;
   //events:
     property OnChange;
     property OnCheckBoxChange;
