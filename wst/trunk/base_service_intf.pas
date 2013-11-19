@@ -264,6 +264,10 @@ type
   TBaseRemotable = class(TPersistent)
   Public
     constructor Create();virtual;
+    destructor Destroy();override;
+    // This will free objects and arrays properties and set them to nil.
+    procedure FreeObjectProperties();virtual;
+
     class procedure Save(
             AObject   : TBaseRemotable;
             AStore    : IFormatterBase;
@@ -547,8 +551,6 @@ type
       var   AName     : string;
       const ATypeInfo : PTypeInfo
     );override;
-    // This will free objects and arrays properties and set them to nil.
-    procedure FreeObjectProperties();virtual;
   end;
 
   TRemotableRecordEncoderClass = class of TRemotableRecordEncoder;
@@ -2038,6 +2040,17 @@ constructor TBaseRemotable.Create();
 begin
 end;
 
+destructor TBaseRemotable.Destroy();
+begin
+  FreeObjectProperties();
+  inherited Destroy();
+end;
+
+procedure TBaseRemotable.FreeObjectProperties();
+begin
+  //Derived classes should override this method to free their object(s) and array(s).
+end;
+
 function TBaseRemotable.Equal(const ACompareTo : TBaseRemotable) : Boolean;
 begin
   Result := ( Self = ACompareTo );
@@ -2577,11 +2590,6 @@ begin
   end;
 end;
 {$ENDIF USE_SERIALIZE}
-
-procedure TBaseComplexRemotable.FreeObjectProperties();
-begin
-  //Derived classes should override this method to free their object(s) and array(s).
-end;
 
 { TBaseObjectArrayRemotable }
 
