@@ -209,6 +209,23 @@ begin
     Result := ANode.NodeValue;
 end;
 
+function HasProp(AClass : TPasClassType; const AProp : string) : Boolean;
+var
+  i : Integer;
+  ml : TList2;
+  e : TPasElement;
+begin
+  Result := False;
+  ml := AClass.Members;
+  for i := 0 to ml.Count - 1 do begin
+    e := TPasElement(ml[i]);
+    if e.InheritsFrom(TPasProperty) and SameText(e.Name,AProp) then begin
+      Result := True;
+      Break;
+    end;
+  end;
+end;
+
 procedure CheckDuplicatedProperties(
   AClassList   : TList2;
   ASymbolTable : TwstPasTreeContainer
@@ -240,7 +257,7 @@ begin
         e := TPasElement(locItem.Members[k]);
         if not e.InheritsFrom(TPasProperty) then
           Continue;
-        if (TPasClassType(locAncestor).FindMember(TPasProperty,e.Name) <> nil) then begin
+        if HasProp(TPasClassType(locAncestor),e.Name) then begin
           locItem.Members.Delete(k);
           e.Release();
           Continue;
