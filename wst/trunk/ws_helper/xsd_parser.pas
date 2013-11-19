@@ -72,6 +72,7 @@ type
     procedure SetDocumentLocator(ALocator : IDocumentLocator);
     function GetSimpleOptions() : TParserOptions;
     procedure SetSimpleOptions(const AValue : TParserOptions);
+    procedure AddTypeToCheck(AType : TPasType);
 
     procedure AddIncludedDoc(ADocLocation : string);
     function IsIncludedDoc(ADocLocation : string) : Boolean;
@@ -110,6 +111,7 @@ type
     FOnMessage: TOnParserMessage;
     FDocumentLocator : IDocumentLocator;
     FSimpleOptions : TParserOptions;
+    FCheckedTypes : TList2;
     FImportParsed : Boolean;
     FXsdParsers : TStringList;
     FIncludeList : TStringList;
@@ -121,6 +123,7 @@ type
   private
     function FindNamedNode(AList : IObjectCursor; const AName : WideString; const AOrder : Integer = 0):TDOMNode;
     function GetParentContext() : IParserContext;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function HasParentContext() : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure Prepare(const AMustSucceed : Boolean);
     function FindElement(const AName: String) : TPasElement; overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
     function FindElement(const AName: String; const ANameKinds : TElementNameKinds) : TPasElement; overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
@@ -134,6 +137,7 @@ type
     procedure SetDocumentLocator(ALocator : IDocumentLocator);
     function GetSimpleOptions() : TParserOptions;
     procedure SetSimpleOptions(const AValue : TParserOptions);
+    procedure AddTypeToCheck(AType : TPasType);
     procedure AddIncludedDoc(ADocLocation : string);
     function IsIncludedDoc(ADocLocation : string) : Boolean;
 
@@ -185,6 +189,11 @@ type
     );
   end;
 
+  procedure CheckDuplicatedProperties(
+    AClassList   : TList2;
+    ASymbolTable : TwstPasTreeContainer
+  );
+
 implementation
 uses ws_parser_imp, dom_cursors, parserutils, xsd_consts, wst_consts
 {$IFDEF FPC}
@@ -199,6 +208,50 @@ begin
   else
     Result := ANode.NodeValue;
 end;
+
+procedure CheckDuplicatedProperties(
+  AClassList   : TList2;
+  ASymbolTable : TwstPasTreeContainer
+);
+var
+  i, k : Integer;
+  locItem : TPasClassType;
+  locAncestor : TPasType;
+  e : TPasElement;
+begin
+  for i := 0 to AClassList.Count-1 do begin
+    locItem := TPasClassType(AClassList[i]);
+    if (locItem.Members.Count = 0) then
+      Continue;
+    locAncestor := locItem.AncestorType;
+    while (locAncestor <> nil) do begin
+      if locAncestor.InheritsFrom(TPasUnresolvedTypeRef) then begin
+        e := ASymbolTable.FindElement(ASymbolTable.GetExternalName(locAncestor));
+        if (e = nil) or not(e.InheritsFrom(TPasType)) then
+          Break;
+        locAncestor := e as TPasType;
+      end;
+      if not locAncestor.InheritsFrom(TPasClassType) then
+        Break;
+      if (TPasClassType(locAncestor).Members.Count = 0) then
+        Break;
+      k := 0;
+      while (k < locItem.Members.Count) do begin
+        e := TPasElement(locItem.Members[k]);
+        if not e.InheritsFrom(TPasProperty) then
+          Continue;
+        if (TPasClassType(locAncestor).FindMember(TPasProperty,e.Name) <> nil) then begin
+          locItem.Members.Delete(k);
+          e.Release();
+          Continue;
+        end;
+        k := k + 1;
+      end;
+      locAncestor := TPasClassType(locAncestor).AncestorType;
+    end;
+  end;
+end;
+
 
 { TCustomXsdSchemaParser }
 
@@ -251,7 +304,8 @@ begin
   FParentContext := nil;
   FreeAndNil(FIncludeList);
   FreeList(FNameSpaceList);
-  FreeList(FXsdParsers); 
+  FreeList(FXsdParsers);
+  FCheckedTypes.Free();
   inherited;
 end;
 
@@ -530,6 +584,20 @@ begin
     FSimpleOptions := AValue;
 end;
 
+procedure TCustomXsdSchemaParser.AddTypeToCheck(AType: TPasType);
+begin
+  if (AType = nil) then
+    exit;
+  if HasParentContext() then begin
+    GetParentContext().AddTypeToCheck(AType);
+    exit;
+  end;
+  if (FCheckedTypes = nil) then
+    FCheckedTypes := TList2.Create();
+  if (FCheckedTypes.IndexOf(AType) = -1) then
+    FCheckedTypes.Add(AType);
+end;
+
 procedure TCustomXsdSchemaParser.AddIncludedDoc(ADocLocation : string);
 begin
   if (poParsingIncludeSchema in FSimpleOptions) then begin
@@ -570,6 +638,11 @@ end;
 function TCustomXsdSchemaParser.GetParentContext() : IParserContext;
 begin
   Result := IParserContext(FParentContext);
+end;
+
+function TCustomXsdSchemaParser.HasParentContext() : Boolean;
+begin
+  Result := (FParentContext <> nil);
 end;
 
 function TCustomXsdSchemaParser.GetSymbolTable() : TwstPasTreeContainer;
@@ -716,16 +789,18 @@ var
 
   function CreateTypeAlias(const ABase : TPasType): TPasType;
   var
-    hasInternameName : Boolean;
-    internameName : string;
+    hasInterName : Boolean;
+    baseName,internalName : string;
   begin
-    internameName := ExtractNameFromQName(AName);
-    hasInternameName := IsReservedKeyWord(internameName) or
-                           ( not IsValidIdent(internameName) );
-    if hasInternameName then begin
-      internameName := '_' + internameName;
+    baseName := ExtractNameFromQName(AName);
+    internalName := ExtractIdentifier(baseName);
+    hasInterName := IsReservedKeyWord(internalName) or
+                    ( not IsValidIdent(internalName) );
+    if hasInterName then begin
+      internalName := '_' + internalName;
     end;
-    Result := TPasType(SymbolTable.CreateElement(TPasAliasType,internameName,SymbolTable.CurrentModule.InterfaceSection,visDefault,'',0));
+    Result := TPasType(SymbolTable.CreateElement(TPasAliasType,internalName,SymbolTable.CurrentModule.InterfaceSection,visDefault,'',0));
+    SymbolTable.RegisterExternalAlias(Result,baseName);
     TPasAliasType(Result).DestType := ABase;
     ABase.AddRef();
   end;
@@ -733,17 +808,18 @@ var
   function CreateUnresolveType(): TPasType;
   var
     hasInternameName : Boolean;
-    internameName : string;
+    internameName, baseName : string;
   begin
-    internameName := ExtractNameFromQName(AName);
-    hasInternameName := IsReservedKeyWord(internameName) or
-                           ( not IsValidIdent(internameName) );
+    baseName := ExtractNameFromQName(AName);
+    internameName := ExtractIdentifier(baseName);
+    hasInternameName := IsReservedKeyWord(baseName) or
+                        (not IsValidIdent(internameName));
     if hasInternameName then begin
       internameName := '_' + internameName;
     end;
     Result := TPasUnresolvedTypeRef(SymbolTable.CreateElement(TPasUnresolvedTypeRef,internameName,SymbolTable.CurrentModule.InterfaceSection,visDefault,'',0));
-    if not AnsiSameText(internameName,AName) then
-      SymbolTable.RegisterExternalAlias(Result,AName);
+    if not AnsiSameText(internameName,baseName) then
+      SymbolTable.RegisterExternalAlias(Result,baseName);
   end;
 
 var
@@ -890,7 +966,8 @@ begin
                 //locParser.ParseTypes();
                 locModule := locContext.GetTargetModule();
                 if (locModule <> FModule) and (locUsesList.IndexOf(locModule) = -1) then begin
-                  s := ChangeFileExt(ExtractFileName(locFileName),'');  
+                  s := ChangeFileExt(ExtractFileName(locFileName),'');
+                  s := ExtractIdentifier(s);
                   i := 1;
                   locName := s;
                   while (FSymbols.FindModule(locName) <> nil) do begin
@@ -921,6 +998,7 @@ var
   typNode : TDOMNode;
 begin
   Prepare(True);
+  ParseImportDocuments();
   ParseIncludeDocuments();
   if Assigned(FChildCursor) then begin
     crsSchemaChild := FChildCursor.Clone() as IObjectCursor;
@@ -950,6 +1028,8 @@ begin
       end;
     end;
   end;
+  if (FCheckedTypes <> nil) and (FCheckedTypes.Count > 0) then
+    CheckDuplicatedProperties(FCheckedTypes,FSymbols);
 end;
 
 procedure TCustomXsdSchemaParser.Prepare(const AMustSucceed : Boolean);

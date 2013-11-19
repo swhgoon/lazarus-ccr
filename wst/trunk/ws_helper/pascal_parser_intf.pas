@@ -238,7 +238,15 @@ type
   function FindMember(AClass : TPasRecordType; const AName : string) : TPasElement ; overload;
   function GetElementCount(AList : TList2; AElementClass : TPTreeElement):Integer ;
   
-  function GetUltimeType(AType : TPasType) : TPasType;
+  function GetUltimeType(AType : TPasType) : TPasType;overload;
+  function GetUltimeType(
+    AType      : TPasType;
+    AContainer : TwstPasTreeContainer
+  ) : TPasType;overload;
+  function FindActualType(
+    AType      : TPasType;
+    AContainer : TwstPasTreeContainer
+  ) : TPasType;
   function MakeInternalSymbolNameFrom(const AName : string) : string ;
 
 
@@ -514,6 +522,31 @@ begin
   end;
 end;
 
+function GetUltimeType(
+  AType      : TPasType;
+  AContainer : TwstPasTreeContainer
+) : TPasType;
+var
+  e : TPasElement;
+begin
+  Result := AType;
+  if (Result <> nil) then begin
+    while True do begin
+      if Result.InheritsFrom(TPasUnresolvedTypeRef) then begin
+        e := AContainer.FindElement(AContainer.GetExternalName(Result));
+        if (e <> nil) and e.InheritsFrom(TPasType) then
+          Result := TPasType(e);
+      end;
+      if Result.InheritsFrom(TPasAliasType) and
+         (TPasAliasType(Result).DestType <> nil)
+      then
+        Result := TPasAliasType(Result).DestType
+      else
+        Break;
+    end;
+  end;
+end;
+
 function GetUltimeType(AType : TPasType) : TPasType;
 begin
   Result := AType;
@@ -523,6 +556,21 @@ begin
     do begin
       Result := TPasAliasType(Result).DestType;
     end;
+  end;
+end;
+
+function FindActualType(
+  AType      : TPasType;
+  AContainer : TwstPasTreeContainer
+) : TPasType;
+var
+  e : TPasElement;
+begin
+  Result := AType;
+  if Result.InheritsFrom(TPasUnresolvedTypeRef) then begin
+    e := AContainer.FindElement(AContainer.GetExternalName(Result));
+    if (e <> nil) and e.InheritsFrom(TPasType) then
+      Result := TPasType(e);
   end;
 end;
 
@@ -867,13 +915,25 @@ function TwstPasTreeContainer.FindModule(const AName: String): TPasModule;
 var
   i , c : Integer;
   mdl : TList2;
+  s : string;
 begin
   Result := nil;
+  s := ExtractIdentifier(AName);
   mdl := Package.Modules;
   c := mdl.Count;
-  for i := 0 to Pred(c) do begin
-    if SameName(TPasModule(mdl[i]),AName) then begin
-      Result := TPasModule(mdl[i]);
+  if (s = AName) then begin
+    for i := 0 to Pred(c) do begin
+      if SameName(TPasModule(mdl[i]),AName) then begin
+        Result := TPasModule(mdl[i]);
+        Break;
+      end;
+    end;
+  end else begin
+    for i := 0 to Pred(c) do begin
+      if (GetExternalName(TPasModule(mdl[i])) = AName) then begin
+        Result := TPasModule(mdl[i]);
+        Break;
+      end;
     end;
   end;
 end;

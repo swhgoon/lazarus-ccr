@@ -60,6 +60,7 @@ type
     FSchemaCursor : IObjectCursor;
     FOnMessage: TOnParserMessage;
     FSimpleOptions : TParserOptions;
+    FCheckedTypes : TList2;
     FIncludeList : TStringList;
   private
     procedure DoOnMessage(const AMsgType : TMessageType; const AMsg : string);
@@ -98,6 +99,7 @@ type
     procedure SetDocumentLocator(ALocator : IDocumentLocator);
     function GetSimpleOptions() : TParserOptions;
     procedure SetSimpleOptions(const AValue : TParserOptions);
+    procedure AddTypeToCheck(AType : TPasType);
     procedure AddIncludedDoc(ADocLocation : string);
     function IsIncludedDoc(ADocLocation : string) : Boolean;
   public
@@ -183,6 +185,7 @@ begin
   FXsdParsers.Sorted := True;
 
   FSymbols := ASymbols;
+  FCheckedTypes := TList2.Create();
 end;
 
 function TWsdlParser.CreateWsdlNameFilter(const AName: WideString): IObjectFilter;
@@ -206,6 +209,7 @@ destructor TWsdlParser.Destroy();
   end;
   
 begin
+  FCheckedTypes.Free();
   FreeAndNil(FIncludeList);
   FreeList(FXsdParsers);
   FreeList(FNameSpaceList);
@@ -313,6 +317,16 @@ procedure TWsdlParser.SetSimpleOptions(const AValue: TParserOptions);
 begin
   if ( AValue <> FSimpleOptions ) then
     FSimpleOptions := AValue;
+end;
+
+procedure TWsdlParser.AddTypeToCheck(AType: TPasType);
+begin
+  if (AType = nil) then
+    exit;
+  if (FCheckedTypes = nil) then
+    FCheckedTypes := TList2.Create();
+  if (FCheckedTypes.IndexOf(AType) = -1) then
+    FCheckedTypes.Add(AType);
 end;
 
 procedure TWsdlParser.AddIncludedDoc(ADocLocation : string);
@@ -462,6 +476,8 @@ begin
     SymbolTable.SetCurrentModule(FModule);
     ExtractNameSpace();
     FixUsesList();
+    if (FCheckedTypes.Count > 0) then
+      CheckDuplicatedProperties(FCheckedTypes,SymbolTable);
   finally
     FSymbols.DefaultSearchNameKinds := locOldNameKinds;
   end;

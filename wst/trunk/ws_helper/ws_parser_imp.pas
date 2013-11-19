@@ -1209,11 +1209,11 @@ begin
   internalName := ExtractIdentifier(ATypeName);
   hasInternalName := IsReservedKeyWord(internalName) or
                      ( not IsValidIdent(internalName) ) or
-                     ( FSymbols.FindElementInModule(internalName,Self.Module,[elkName]) <> nil ) or
-                     ( not AnsiSameText(internalName,ATypeName) );
+                     ( FSymbols.FindElementInModule(internalName,Self.Module,[elkName]) <> nil );
   if hasInternalName then begin
     internalName := Format('%s_Type',[internalName]);
   end;
+  hasInternalName := hasInternalName or not(AnsiSameText(internalName,ATypeName));
 
   if ( pthDeriveFromSoapArray in FHints ) or
      ( ( FDerivationMode = dmRestriction ) and FSymbols.SameName(FBaseType,s_array) )
@@ -1353,6 +1353,9 @@ begin
           FSymbols.FreeProperties(tmpClassDef);
           FreeAndNil(tmpClassDef);
         end;
+
+        if (FDerivationMode = dmRestriction) and Result.InheritsFrom(TPasClassType) then
+          Context.AddTypeToCheck(Result);
 
         if ( locAnyNode <> nil ) or ( locAnyAttNode <> nil ) then
           ProcessXsdAnyDeclarations(locAnyNode,locAnyAttNode,Result);
@@ -1807,7 +1810,7 @@ begin  // todo : implement TSimpleTypeParser.ParseOtherContent
     if ( tmpElement <> nil ) and ( not tmpElement.InheritsFrom(TPasUnresolvedTypeRef) ) then
       hasIntrnName := True;
   end;
-  if hasIntrnName then
+  if IsReservedKeyWord(intrName){hasIntrnName} then
     intrName := '_' + intrName;
   Result := TPasTypeAliasType(FSymbols.CreateElement(TPasTypeAliasType,intrName,Self.Module.InterfaceSection,visDefault,'',0));
   if ( intrName <> FTypeName ) then
