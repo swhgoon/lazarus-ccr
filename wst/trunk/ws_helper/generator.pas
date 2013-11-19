@@ -171,7 +171,7 @@ type
   private
     function GenerateIntfName(AIntf : TPasElement):string;
 
-    procedure GenerateUnitHeader();
+    procedure GenerateUnitHeader(const AIncludeTypeSection : Boolean);
     procedure GenerateUnitImplementationHeader();
     procedure GenerateUnitImplementationFooter();
 
@@ -2193,7 +2193,7 @@ begin
   Result := AIntf.Name;//ExtractserviceName(AIntf);
 end;
 
-procedure TInftGenerator.GenerateUnitHeader();
+procedure TInftGenerator.GenerateUnitHeader(const AIncludeTypeSection : Boolean);
 var
   s : string;  
 begin
@@ -2227,10 +2227,12 @@ begin
   Indent();WriteLn('sNAME_SPACE = %s;',[QuotedStr(SymbolTable.GetExternalName(FSymbolTable.CurrentModule))]);
   Indent();WriteLn('sUNIT_NAME = %s;',[QuotedStr(FSymbolTable.CurrentModule.Name)]);
   DecIndent();
-  
-  WriteLn('');
-  WriteLn('type');
-  WriteLn('');
+
+  if AIncludeTypeSection then begin
+    WriteLn('');
+    WriteLn('type');
+    WriteLn('');
+  end;
 end;
 
 procedure TInftGenerator.GenerateUnitImplementationHeader();
@@ -2434,7 +2436,7 @@ var
   procedure WritePropertyField(AProp : TPasProperty);
   begin
     Indent();
-    WriteLn('F%s : %s;',[AProp.Name,AProp.VarType.Name]);
+    WriteLn('F%s : %s;',[AProp.Name,FindActualType(AProp.VarType,SymbolTable).Name]);
   End;
 
   procedure WriteProperty(AProp : TPasProperty);
@@ -2608,7 +2610,7 @@ var
             if pte.InheritsFrom(TPasUnresolvedTypeRef) then
               pte := SymbolTable.FindElement(SymbolTable.GetExternalName(pte));
             pt := pte as TPasType;
-            pt := GetUltimeType(pt);
+            pt := GetUltimeType(pt,SymbolTable);
             if pt.InheritsFrom(TPasEnumType) then begin
               WriteLn('Result := True;');
             end else if pt.InheritsFrom(TPasNativeSimpleType) and
@@ -3073,7 +3075,37 @@ procedure TInftGenerator.InternalExecute();
       end;
     end;
   end;
-  
+
+  procedure SortAlias(AList : TList2);
+  var
+    k, ki : Integer;
+    locElt : TPasElement;
+    locItem : TPasAliasType;
+    locTarget : TPasType;
+  begin
+    for k := 0 to Pred(AList.Count) do begin
+      locItem := TPasAliasType(AList[k]);
+      locTarget := locItem.DestType;
+      if (locTarget = nil) then
+        Continue;
+      if locTarget.InheritsFrom(TPasUnresolvedTypeRef) then begin
+        locElt := SymbolTable.FindElement(SymbolTable.GetExternalName(locTarget));
+        if (locElt = nil) or not(locElt.InheritsFrom(TPasType)) then
+          Continue;
+        locTarget := locElt as TPasType;
+      end;
+      if not locTarget.InheritsFrom(TPasAliasType) then
+        Continue;
+      for ki := (k+1) to Pred(AList.Count) do begin
+        if (TPasType(AList[ki]) = locTarget) then begin
+          AList.Delete(ki);
+          AList.Insert(k,locTarget);
+          Break;
+        end;
+      end;
+    end;
+  end;
+
 var
   i,c, j, k : PtrInt;
   clssTyp : TPasClassType;
@@ -3091,10 +3123,10 @@ begin
   tmpList := nil;
   gnrClssLst := TObjectList.Create(False);
   try
-    GenerateUnitHeader();
-    GenerateUnitImplementationHeader();
     typeList := SymbolTable.CurrentModule.InterfaceSection.Declarations;
     c := Pred(typeList.Count);
+    GenerateUnitHeader(typeList.Count>0);
+    GenerateUnitImplementationHeader();
 
     SetCurrentStream(FDecStream);
     IncIndent();
@@ -3140,13 +3172,20 @@ begin
       for i := 0 to Pred(tmpList.Count) do begin
         GenerateRecord(TPasRecordType(tmpList[i]));
       end;
+      tmpList.Clear();
     end;
 
+    tmpList.Clear();
     for i := 0 to c do begin
       elt := TPasElement(typeList[i]);
-      if elt.InheritsFrom(TPasAliasType) then begin
-        GenerateTypeAlias(TPasAliasType(elt));
-      end;
+      if elt.InheritsFrom(TPasAliasType) then
+        tmpList.Add(elt);
+    end;
+    if (tmpList.Count > 0) then begin
+      SortAlias(tmpList);
+      for i := 0 to Pred(tmpList.Count) do
+        GenerateTypeAlias(TPasAliasType(tmpList[i]));
+      tmpList.Clear();
     end;
 
     objLst := TObjectList.Create();
