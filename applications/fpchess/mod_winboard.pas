@@ -18,7 +18,6 @@ type
     textEnginePatch : TStaticText;
     editEnginePatch : TEdit;
     EngineStringList: TStringList;
-    side            : boolean; //Side to move true=human.
   public
     constructor Create; override;
     procedure CreateUserInterface(); override;
@@ -27,6 +26,7 @@ type
     procedure FreeUserInterface(); override;
     procedure PrepareForGame(); override;
     procedure HandleOnMove(AFrom, ATo: TPoint); override;
+    procedure HandleOnTimer(); override;
   end;
 
 implementation
@@ -78,9 +78,16 @@ var
   CompMove: moveInCoord;
 begin
   moveStr:=vwinboardConn.coordToString(AFrom,ATo,vChessGame.PreviousMove.PieceMoved,vChessGame.PreviousMove.PieceEaten);
-
   vwinboardConn.tellMove(moveStr);
-  compMove:=vwinboardConn.engineMove;
+end;
+
+procedure TWinboardChessModule.HandleOnTimer;
+var
+  CompMove: moveInCoord;
+begin
+  CompMove[1]:=Point(1,1);
+  CompMove[2]:=Point(1,1);
+  CompMove:=vwinboardConn.engineMove;
   vChessGame.MovePiece(CompMove[1],CompMove[2]);
 end;
 
@@ -101,5 +108,5 @@ end;
 initialization
   RegisterChessModule(TWinboardChessModule.Create);
 finalization
-  vwinboardConn.stopEngine;
+  vwinboardConn.stopEngine(True);
 end.

@@ -11,15 +11,16 @@ unit winboardConn;
 interface
 
 uses
-  Classes, SysUtils, Forms, Process, StdCtrls, chessgame;
+  Classes, SysUtils, Forms, Process, StdCtrls, SorokinRegExpr, chessgame;
 
 type
   moveInCoord = array[1..2] of TPoint;
 
-  TwinboardConn = class
+  TWinboardConn = class
   public
     procedure startEngine(path : String);
-    procedure stopEngine;
+    procedure stopEngine(freeProcess : boolean);
+    destructor Destroy; override;
     procedure tellMove(move : String);
     function engineMove() : moveInCoord;
     function coordToString(AFrom, ATo : TPoint; pieceFrom, pieceTo : TChessTile) : String;
@@ -29,99 +30,85 @@ type
     function extractMove : string;
     function letterToNumber(num:String) : Integer;
     function numberToLetter(n : integer) : String;
-    procedure detectEngine(path : String);
+    //procedure detectEngine(path : String);
   end;
 
 var
   engineProcess : TProcess;
   outputText    : String;
-  vwinboardConn : TwinboardConn;
+  vwinboardConn : TWinboardConn;
   algebraicInput: boolean;
-  engineMoveComIndex : integer;
-  engineMoveCommand : array[1..4,1..2] of String;
+  engineRegExpression: TRegExpr;
 
 implementation
 
-procedure TwinboardConn.startEngine(path : String);
+destructor TWinboardConn.Destroy;
 begin
-  engineMoveCommand[1,1]:='gnuchess 5.07';
-  engineMoveCommand[1,2]:='My move is: ';
-  engineMoveCommand[2,1]:='phalanx';
-  engineMoveCommand[2,2]:='my move is ';
-  engineMoveCommand[3,1]:='gnuchess 5.08';
-  engineMoveCommand[3,2]:='move ';
-  engineMoveCommand[4,1]:='gnuchess 6.0.1';
-  engineMoveCommand[4,2]:='My move is : ';
+  stopEngine(True);
 
-  if engineProcess<>nil then
-    if engineProcess.Running then
-      stopEngine;
+  Inherited Destroy;
+end;
+
+procedure TWinboardConn.startEngine(path : String);
+var     extraCommands : String;
+begin
+  //stop engine if it is running
+  stopEngine(False);
+
+  //create TProcess and start the engine in xboard mode
   engineProcess:= TProcess.Create(nil);
+  engineRegExpression:= TRegExpr.Create;
   engineProcess.CommandLine := path;
 
   engineProcess.Options := engineProcess.Options + [poUsePipes];
   engineProcess.Execute;
-
-  detectEngine(path);
-end;
-
-procedure TwinboardConn.detectEngine(path : String);
-var engineOut : String;
-    extraCommand : String;
-begin
-  //crafty only show his moves in abbreviated algebraic notation, it's not in
-  //the array 'engineMoveCommand' because this is not implemented yet.
-  if pos(path,'crafty')<> 0 then algebraicInput:=true;
-  sleep(50); //just to guarantee that the engine has already tell his initial output
-  readFromPipe;
-  if pos('GNU Chess 5.07',outputText)>0 then
-    engineMoveComIndex:=1;
-  if pos('Phalanx',outputText)>0 then
-    engineMoveComIndex:=2;
-  if pos('GNU Chess 5.08',outputText)>0 then
-    engineMoveComIndex:=3;
-  if pos('GNU Chess 6.0.1',outputText)>0 then
-    engineMoveComIndex:=4;
-  extraCommand:='xboard'+#13+#10;
-  EngineProcess.Input.Write(extraCommand[1], length(extraCommand));
-  sleep(100);
+  extraCommands:='xboard'+#13+#10;
+  EngineProcess.Input.Write(extraCommands[1], length(extraCommands));
+  extraCommands:='level 60 0.5 3'+#13+#10;
+  EngineProcess.Input.Write(extraCommands[1], length(extraCommands));
   outputText:='';
+
 end;
 
-procedure TwinboardConn.stopEngine;
+procedure TWinboardConn.stopEngine(freeProcess : boolean);
 begin
   if engineProcess<>nil then
     if engineProcess.Running then
+    begin
+      engineProcess.Input.WriteAnsiString('quit'+#13+#10);
       engineProcess.Terminate(0);
-  engineProcess.free;
+    end;
+  if freeProcess then
+  begin
+    engineProcess.free;
+  end;
 end;
 
-procedure TwinboardConn.tellMove(move : String);
+procedure TWinboardConn.tellMove(move : String);
 begin
   move := move+#13+#10;
   EngineProcess.Input.Write(move[1], length(move));
 end;
 
 //return the engine move.
-function TwinboardConn.engineMove : moveInCoord;
+function TWinboardConn.engineMove : moveInCoord;
 var move  : String;
     points: moveInCoord;
 begin
-  sleep(500);
-  repeat
-    Application.processMessages;
-    readFromPipe;
-  until pos(engineMoveCommand[engineMoveComIndex][2],outputText)>0;
-  move := extractMove;
-  points := stringToCoord(move);
-  result:=points;
+  engineRegExpression.Expression:='(?m)^(My move|my move|move)( is|)(: | : | )';
+  readFromPipe;
+  if engineRegExpression.Exec(outputText) then
+  begin
+    move := extractMove;
+    points := stringToCoord(move);
+    result:=points;
+  end;
 end;
 
-function TwinboardConn.coordToString(AFrom, ATo : TPoint; pieceFrom, pieceTo : TChessTile) : String;
+function TWinboardConn.coordToString(AFrom, ATo : TPoint; pieceFrom, pieceTo : TChessTile) : String;
 var
   move : String;
 begin
-  //still need to verify castle an en passant
 
   move:= move + numberToLetter(AFrom.X);
   move:= move + intToStr(AFrom.Y);
@@ -132,7 +119,7 @@ begin
 
 end;
 
-function  TwinboardConn.numberToLetter(n : integer) : String;
+function  TWinboardConn.numberToLetter(n : integer) : String;
 begin
   case n of
     1 : result := 'a';
@@ -146,10 +133,9 @@ begin
   end;
 end;
 
-function TwinboardConn.stringToCoord(moveStr : String) : moveInCoord;
+function TWinboardConn.stringToCoord(moveStr : String) : moveInCoord;
 var move : moveInCoord;
 begin
-  //need to verify castle here
   if moveStr[1] in ['P','R','N','B','Q','K'] then
     Delete(moveStr,1,1);
   move[1].X:=letterToNumber(moveStr[1]);
@@ -163,7 +149,7 @@ begin
   result:=move;
 end;
 //Transform collum letter to number
-function TwinboardConn.letterToNumber(num:String) : Integer;
+function TWinboardConn.letterToNumber(num:String) : Integer;
 begin
   case num[1] of
     'a' : result:=1;
@@ -178,8 +164,9 @@ begin
   end;
 end;
 
-//read all the output text from the TProcess pipe
-procedure TwinboardConn.readFromPipe;
+//read all the output text from the TProcess pipe (basically copy/pasted from the
+//TProcess example)
+procedure TWinboardConn.readFromPipe;
 var
   NoMoreOutput: boolean;
 
@@ -211,22 +198,27 @@ begin
     until noMoreOutput;
 end;
 
-function TwinboardConn.extractMove : string;
-var move : String;
-    i,p  : integer;
+function TWinboardConn.extractMove : string;
+var
+    initialPos    : integer;
 begin
-  p := pos(engineMoveCommand[engineMoveComIndex][2],outputText);
+  //delete the text from the start of the engine output
+  engineRegExpression.Expression:='.*(My move|my move|move)( is|)(: | : | )';
+  engineRegExpression.Exec(outputText);
+  initialPos := pos(engineRegExpression.Match[0],outputText);
 
-  if p>=0 then
+  Delete(outputText,initialPos,Length(engineRegExpression.Match[0]));
+
+  //if there's text after the engine move, delete it too
+  engineRegExpression.Expression:=' .+';
+  if (engineRegExpression.Exec(outputText)) then
   begin
-    p := p+length(engineMoveCommand[engineMoveComIndex][2]);
-    while outputText[p]<>#10 do
-    begin
-      move:= move+outputText[p];
-      inc(p);
-    end;
+    initialPos := pos(engineRegExpression.Match[0],outputText);
+    Delete(outputText,initialPos,Length(engineRegExpression.Match[0]));
   end;
-  result:=move;
+
+  result:= outputText;
+
   outputText:='';
 end;
 
