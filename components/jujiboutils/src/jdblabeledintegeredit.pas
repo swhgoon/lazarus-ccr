@@ -34,6 +34,7 @@ type
   private
     fFormat: string;
     FDataLink: TFieldDataLink;
+    fNull: boolean;
 
     procedure DataChange(Sender: TObject);
     procedure UpdateData(Sender: TObject);
@@ -76,6 +77,7 @@ type
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property ReadOnly: boolean read GetReadOnly write SetReadOnly default False;
+    property AllowNull: boolean read fNull write fNull default False;
 
     property Action;
     property Align;
@@ -158,6 +160,9 @@ procedure TJDBLabeledIntegerEdit.UpdateData(Sender: TObject);
 begin
   if FDataLink.Field <> nil then
   begin
+    if fNull and (Length(Caption) = 0) then
+      FDataLink.Field.Value := Null
+    else
     if IsValidInteger(Caption) then
     begin
       FDataLink.Field.Text := Text;
@@ -218,6 +223,9 @@ procedure TJDBLabeledIntegerEdit.formatInput;
 begin
   if FDataLink.Field <> nil then
     //FDataLink.Field.DisplayText -> formatted  (tdbgridcolumns/persistent field DisplayFormat
+    if FDataLink.Field.IsNull then
+      Caption := ''
+    else
     if fFormat <> '' then
       Caption := FormatFloat(fFormat, FDataLink.Field.AsInteger)
     else
