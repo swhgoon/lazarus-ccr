@@ -905,7 +905,8 @@ begin
     FMonthNames := AValue;
 
     if UpperCase(AValue) = 'SHORT' then
-      FMonthNamesArray := DefaultFormatSettings.ShortMonthNames
+      for I := Low(TMonthNameArray) to High(TMonthNameArray) do
+        FMonthNamesArray[I] := AnsiToUtf8(DefaultFormatSettings.ShortMonthNames[I])
     else begin
       N := 0;
       if Length(AValue) >= 24 then begin
@@ -935,7 +936,8 @@ begin
       end;
 
       if N < 12 then
-        FMonthNamesArray := DefaultFormatSettings.LongMonthNames;
+        for I := Low(TMonthNameArray) to High(TMonthNameArray) do
+          FMonthNamesArray[I] := AnsiToUtf8(DefaultFormatSettings.LongMonthNames[I]);
     end;
 
     if FShowMonthNames and
