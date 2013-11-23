@@ -36,6 +36,7 @@ type
     fEFormat: string;
     FDataLink: TFieldDataLink;
     fDecimales: integer;
+    fNull: boolean;
 
     procedure DataChange(Sender: TObject);
     function getDecimals: integer;
@@ -83,6 +84,7 @@ type
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property Decimals: integer read getDecimals write setDecimals;
     property ReadOnly: boolean read GetReadOnly write SetReadOnly default False;
+    property AllowNull: boolean read fNull write fNull default False;
 
     property Action;
     property Align;
@@ -179,6 +181,9 @@ var
 begin
   if FDataLink.Field <> nil then
   begin
+    if fNull and (Length(Caption) = 0) then
+      FDataLink.Field.Value := Null
+    else
     if IsValidFloat(Text) then
     begin
       theValue := StrToFloat(Text);
@@ -252,6 +257,9 @@ procedure TJDBLabeledFloatEdit.formatInput;
 begin
   if FDataLink.Field <> nil then
     //FDataLink.Field.DisplayText -> formatted  (tdbgridcolumns/persistent field DisplayFormat
+    if FDataLink.Field.IsNull then
+      Caption := ''
+    else
     if fFormat <> '' then
       Caption := FormatFloat(fFormat, FDataLink.Field.AsFloat)
     else
@@ -383,7 +391,7 @@ begin
   FDataLink.OnDataChange := @DataChange;
   FDataLink.OnUpdateData := @UpdateData;
   FDataLInk.OnActiveChange := @ActiveChange;
-  fEFormat:= '';
+  fEFormat := '';
   // Set default values
   //fDecimales := 2;
   //fFormat := '0.00';

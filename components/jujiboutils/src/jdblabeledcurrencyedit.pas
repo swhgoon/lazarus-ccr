@@ -35,6 +35,7 @@ type
     fFormat: string;
     FDataLink: TFieldDataLink;
     fDecimales: integer;
+    fNull: boolean;
 
     procedure DataChange(Sender: TObject);
     function getDecimals: integer;
@@ -81,6 +82,7 @@ type
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property Decimals: integer read getDecimals write setDecimals;
     property ReadOnly: boolean read GetReadOnly write SetReadOnly default False;
+    property AllowNull: boolean read fNull write fNull default False;
 
     property Action;
     property Align;
@@ -175,6 +177,9 @@ var
 begin
   if FDataLink.Field <> nil then
   begin
+    if fNull and (Length(Caption) = 0) then
+      FDataLink.Field.Value := Null
+    else
     if IsValidCurrency(Text) then
     begin
       theValue := StrToCurr(Text);
@@ -242,6 +247,9 @@ procedure TJDBLabeledCurrencyEdit.formatInput;
 begin
   if FDataLink.Field <> nil then
     //FDataLink.Field.DisplayText -> formatted  (tdbgridcolumns/persistent field DisplayFormat
+    if FDataLink.Field.IsNull then
+      Caption := ''
+    else
     if fFormat <> '' then
       Caption := FormatFloat(fFormat, FDataLink.Field.AsCurrency)
     else
@@ -340,7 +348,7 @@ end;
 procedure TJDBLabeledCurrencyEdit.KeyPress(var Key: char);
 begin
   if not FieldIsEditable(Field) or not FDatalink.Edit then
-      Key := #0;
+    Key := #0;
   if (Key in ['.', ',']) then
     Key := Decimalseparator;
   if (key = DecimalSeparator) and (Pos(key, Text) > 0) then
@@ -356,7 +364,7 @@ end;
 procedure TJDBLabeledCurrencyEdit.DoEnter;
 begin
   if not FieldIsEditable(Field) or IsReadOnly then
-     exit;
+    exit;
   if FDataLink.Field <> nil then
     Caption := FDataLink.Field.AsString;
   inherited DoEnter;
@@ -387,7 +395,7 @@ procedure TJDBLabeledCurrencyEdit.EditingDone;
 begin
   inherited EditingDone;
   if not FieldIsEditable(Field) or IsReadOnly then
-     exit;
+    exit;
   if DataSource.State in [dsEdit, dsInsert] then
     UpdateData(self)
   else
