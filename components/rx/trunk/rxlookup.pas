@@ -1208,6 +1208,7 @@ begin
     NeedUpdateData;//We need to update DataField;
   end;
 
+  SetFocus;
   if (AResult) and (Assigned(FOnSelect)) then
     FOnSelect(Self);
 end;
