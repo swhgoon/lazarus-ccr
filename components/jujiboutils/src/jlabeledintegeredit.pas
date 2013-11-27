@@ -31,6 +31,7 @@ type
 
   TJLabeledIntegerEdit = class(TCustomLabeledEdit)
   private
+    fNull: boolean;
     { Private declarations }
     theValue: integer;
     fFormat: string;
@@ -50,11 +51,13 @@ type
     { Public declarations }
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    function isNull: boolean;
     property CurrentValue: integer read getCurrentValue;
   published
     { Published declarations }
     property DisplayFormat: string read getFormat write setFormat;
     property Value: integer read getValue write setValue;
+    property AllowNull: boolean read fNull write fNull default False;
 
     property Action;
     property Align;
@@ -154,7 +157,8 @@ end;
 
 procedure TJLabeledIntegerEdit.FormatInput;
 begin
-  Text := FormatFloat(fFormat, theValue);
+  if not fNull then
+    Text := FormatFloat(fFormat, theValue);
 end;
 
 procedure TJLabeledIntegerEdit.DoEnter;
@@ -162,7 +166,8 @@ begin
   inherited DoEnter;
   if ReadOnly then
     exit;
-  Text := IntToStr(theValue);
+   if not fNull then
+     Text := IntToStr(theValue);
   SelectAll;
 end;
 
@@ -171,6 +176,9 @@ begin
   inherited DoExit;
   if ReadOnly then
     exit;
+  if fNull and (Length(Caption) = 0) then
+    theValue:= Low(Integer)  // min integer value means null
+  else
   if IsValidInteger(Text) then
     theValue := StrToInt(Text)
   else
@@ -200,6 +208,11 @@ end;
 destructor TJLabeledIntegerEdit.Destroy;
 begin
   inherited Destroy;
+end;
+
+function TJLabeledIntegerEdit.isNull: boolean;
+begin
+  Result:= theValue = Low(Integer);
 end;
 
 end.
