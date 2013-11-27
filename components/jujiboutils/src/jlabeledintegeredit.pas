@@ -132,7 +132,7 @@ end;
 
 function TJLabeledIntegerEdit.getCurrentValue: integer;
 begin
-  Result:= StrToIntDef(Text, Value);
+  Result := StrToIntDef(Text, Value);
 end;
 
 procedure TJLabeledIntegerEdit.setFormat(const AValue: string);
@@ -157,7 +157,9 @@ end;
 
 procedure TJLabeledIntegerEdit.FormatInput;
 begin
-  if not fNull then
+  if fNull and (theValue = Low(integer)) then
+    Text := ''
+  else
     Text := FormatFloat(fFormat, theValue);
 end;
 
@@ -166,8 +168,8 @@ begin
   inherited DoEnter;
   if ReadOnly then
     exit;
-   if not fNull then
-     Text := IntToStr(theValue);
+  if not fNull then
+    Text := IntToStr(theValue);
   SelectAll;
 end;
 
@@ -177,7 +179,7 @@ begin
   if ReadOnly then
     exit;
   if fNull and (Length(Caption) = 0) then
-    theValue:= Low(Integer)  // min integer value means null
+    theValue := Low(integer)  // min integer value means null
   else
   if IsValidInteger(Text) then
     theValue := StrToInt(Text)
@@ -212,7 +214,7 @@ end;
 
 function TJLabeledIntegerEdit.isNull: boolean;
 begin
-  Result:= theValue = Low(Integer);
+  Result := theValue = Low(integer);
 end;
 
 end.
