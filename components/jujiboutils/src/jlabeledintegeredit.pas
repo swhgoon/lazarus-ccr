@@ -157,7 +157,7 @@ end;
 
 procedure TJLabeledIntegerEdit.FormatInput;
 begin
-  if fNull and (theValue = Low(integer)) then
+  if isNull then
     Text := ''
   else
     Text := FormatFloat(fFormat, theValue);
@@ -168,7 +168,7 @@ begin
   inherited DoEnter;
   if ReadOnly then
     exit;
-  if not fNull then
+  if not isNull then
     Text := IntToStr(theValue);
   SelectAll;
 end;
@@ -214,7 +214,7 @@ end;
 
 function TJLabeledIntegerEdit.isNull: boolean;
 begin
-  Result := theValue = Low(integer);
+  Result := fNull and (theValue = Low(integer));
 end;
 
 end.
