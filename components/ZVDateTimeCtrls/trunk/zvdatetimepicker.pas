@@ -1636,29 +1636,55 @@ end;
 procedure TCustomZVDateTimePicker.AdjustEffectiveDateDisplayOrder;
 var
   S: String;
-  I: Integer;
+  I, J, Le: Integer;
+  InQuoteChar: Char;
 begin
   if FDateDisplayOrder = ddoTryDefault then begin
     S := DefaultFormatSettings.ShortDateFormat;
     FEffectiveDateDisplayOrder := ddoTryDefault;
 
     repeat
+      InQuoteChar := Chr(0);
+      Le := Length(S);
 
-      for I := 1 to Length(S) do begin
-        case upCase(S[I]) of
-          'D': begin
-                 FEffectiveDateDisplayOrder := ddoDMY;
-                 Break;
-               end;
-          'M': begin
-                 FEffectiveDateDisplayOrder := ddoMDY;
-                 Break;
-               end;
-          'Y': begin
-                 FEffectiveDateDisplayOrder := ddoYMD;
-                 Break;
-               end;
-        end;
+      I := 0;
+      while I < Le do begin
+        Inc(I);
+        if InQuoteChar = Chr(0) then begin
+          case S[I] of
+            '''', '"':
+              InQuoteChar := S[I];
+            'D', 'd':
+              begin
+                { If 3 or more "d"-s are standing together, then it's day
+                  of week, but here we are interested in day of month.
+                  So, we have to see what is following:  }
+                J := I + 1;
+                while (J <= Le) and (upCase(S[J]) = 'D') do
+                  Inc(J);
+
+                if J <= I + 2 then begin
+                  FEffectiveDateDisplayOrder := ddoDMY;
+                  Break;
+                end;
+
+                I := J - 1;
+              end;
+            'M', 'm':
+              begin
+                FEffectiveDateDisplayOrder := ddoMDY;
+                Break;
+              end;
+            'Y', 'y':
+              begin
+                FEffectiveDateDisplayOrder := ddoYMD;
+                Break;
+              end;
+          end;
+        end else
+          if S[I] = InQuoteChar then
+            InQuoteChar := Chr(0);
+
       end;
 
       if FEffectiveDateDisplayOrder = ddoTryDefault then begin
