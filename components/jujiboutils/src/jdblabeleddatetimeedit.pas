@@ -502,6 +502,7 @@ begin
     UpdateData(self)
   else
     formatInput;
+  inherited EditingDone;
 end;
 
 

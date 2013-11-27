@@ -486,13 +486,13 @@ end;
 
 procedure TJDBLabeledDateEdit.EditingDone;
 begin
-  inherited EditingDone;
   if not FieldIsEditable(Field) or IsReadOnly then
     exit;
   if DataSource.State in [dsEdit, dsInsert] then
     UpdateData(self)
   else
     formatInput;
+  inherited EditingDone;
 end;
 
 end.
