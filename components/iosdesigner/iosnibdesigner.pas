@@ -56,6 +56,12 @@ type
   TNSObjectDesignerMediator = class(TDesignerMediator,IMyWidgetDesigner)
   private
     FMyForm: NSObject;
+  protected
+    // This method is available through IMyWidgetDesigner and is used to
+    // clear the MyForm variable when the form is destroyed. This is necessary
+    // because it could be that this mediator is destroyed somewhat later,
+    // which could lead into problems.
+    procedure ClearMyForm;
   public
     function UseRTTIForMethods(aComponent: TComponent): boolean; override;
     // needed by the lazarus form editor
@@ -366,9 +372,12 @@ var
   Mediator: TNSObjectDesignerMediator;
 begin
   Result:=inherited CreateMediator(TheOwner,aForm);
-  Mediator:=TNSObjectDesignerMediator(Result);
-  Mediator.FMyForm:=aForm as NSObject;
-  Mediator.FMyForm.Designer:=Mediator;
+  Mediator:=Result as TNSObjectDesignerMediator;
+  if assigned(result) and assigned(aForm) and (aForm is NSObject) then
+    begin
+    Mediator.FMyForm:=aForm as NSObject;
+    Mediator.FMyForm.Designer:=Mediator as IMyWidgetDesigner;
+    end;
 end;
 
 class function TNSObjectDesignerMediator.FormClass: TComponentClass;
@@ -391,6 +400,11 @@ procedure TNSObjectDesignerMediator.InvalidateRect(Sender: TObject; ARect: TRect
 begin
   if (LCLForm=nil) or (not LCLForm.HandleAllocated) then exit;
   LCLIntf.InvalidateRect(LCLForm.Handle,@ARect,Erase);
+end;
+
+procedure TNSObjectDesignerMediator.ClearMyForm;
+begin
+  FMyForm := nil;
 end;
 
 procedure TNSObjectDesignerMediator.SetBounds(AComponent: TComponent; NewBounds: TRect);

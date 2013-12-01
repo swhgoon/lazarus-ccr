@@ -124,7 +124,9 @@ const
 
 type
   IMyWidgetDesigner = interface(IUnknown)
+    ['{AB6C118F-9520-626A-ED24-378E04D03474}']
     procedure InvalidateRect(Sender: TObject; ARect: TRect; Erase: boolean);
+    procedure ClearMyForm;
     function CreateComponent(ParentComp: TComponent;
                              TypeClass: TComponentClass;
                              const AUnitName: shortstring;
@@ -1942,6 +1944,8 @@ end;
 destructor NSObject.Destroy;
 begin
   inherited Destroy;
+  if assigned(Designer) then
+    Designer.ClearMyForm;
   FNIBDocument.Free;
 end;
 
