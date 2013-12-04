@@ -107,6 +107,8 @@ procedure Register;
 
 implementation
 
+{$R iosdesigner.res}
+
 uses
   ObjInspStrConsts;
 
