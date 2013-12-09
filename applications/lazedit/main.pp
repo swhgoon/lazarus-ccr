@@ -1841,7 +1841,7 @@ begin
       case Res of
         mrNo: Cancel := False;
         mrCancel: Cancel := True;
-        mrOk: Cancel := (TryFileSave(Ed, Ed.FileName) <> IoSuccess);
+        mrYes: Cancel := (TryFileSave(Ed, Ed.FileName) <> IoSuccess);
       end;
     end;
   end;
