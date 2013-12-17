@@ -73,7 +73,9 @@ type
     bvProgressTintColor,
     bvTrackTintColor,
     bvProgressViewStyle,
-    bvEnabled);
+    bvEnabled,
+    bvSegments,
+    bvSelectedSegmentIndex);
 
   TXIBProperty = record
     APropertyName: string;
@@ -117,7 +119,9 @@ const
     (APropertyName: 'IBUIProgressTintColor' ; ADefaultValue: ''),
     (APropertyName: 'IBUITrackTintColor' ; ADefaultValue: ''),
     (APropertyName: 'IBUIProgressViewStyle' ; ADefaultValue: '0'),
-    (APropertyName: 'IBUIEnabled'    ; ADefaultValue: 'YES'));
+    (APropertyName: 'IBUIEnabled'    ; ADefaultValue: 'YES'),
+    (APropertyName: 'IBNumberOfSegments' ; ADefaultValue: '0'),
+    (APropertyName: 'IBSelectedSegmentIndex' ; ADefaultValue: ''));
 
   EventNames : array[1..1] of string = (
     'onTouchDown');
@@ -409,6 +413,40 @@ type
     class function GetIBClassName: string; override;
   end;
 
+  { UISegmentedControl }
+
+  UISegmentedControl = class(UIView, IFPObserver)
+  private
+    FCreatingSegments: boolean;
+    FSegments: TCollection;
+    function GetSegments: TCollection;
+  protected
+    Procedure FPOObservedChanged(ASender : TObject; Operation : TFPObservedOperation; Data : Pointer);
+  public
+    procedure InitializeDefaults; override;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure paint(ACanvas: TCanvas); override;
+    class function GetIBClassName: string; override;
+    property SegmentCount: integer index bvSegments read GetXIBInteger;
+  published
+    property Segments: TCollection read GetSegments;
+  end;
+
+  { TiOSSegmentedControlSegment }
+
+  TiOSSegmentedControlSegment = class(TCollectionItem)
+  private
+    FSegmentedControl: UISegmentedControl;
+    function GetEnabled: boolean;
+    function GetTitle: string;
+    procedure SetEnabled(AValue: boolean);
+    procedure SetTitle(AValue: string);
+  published
+    property Title: string read GetTitle write SetTitle;
+    property Enabled: boolean read GetEnabled write SetEnabled;
+  end;
+
   { UINavigationController }
 
   UINavigationController = class(UIViewController)
@@ -697,6 +735,190 @@ begin
       end;
     ANode := ANode.NextSibling;
     end;
+end;
+
+{ TiOSSegmentedControlSegment }
+
+function TiOSSegmentedControlSegment.GetTitle: string;
+var
+  ANode: TDOMNode;
+begin
+  result := '';
+  ANode := FindKeyNode(FSegmentedControl.XIBObjectElement, 'array', 'IBSegmentTitles');
+  if assigned(ANode) then
+    begin
+    ANode := ANode.ChildNodes.Item[ID];
+    if assigned(ANode) then
+      result := ANode.TextContent;
+    end
+end;
+
+function TiOSSegmentedControlSegment.GetEnabled: boolean;
+begin
+  result := FSegmentedControl.GetXIBInteger(bvSelectedSegmentIndex) = ID;
+end;
+
+procedure TiOSSegmentedControlSegment.SetEnabled(AValue: boolean);
+begin
+  if AValue then
+    FSegmentedControl.SetXIBInteger(bvSelectedSegmentIndex, ID);
+end;
+
+procedure TiOSSegmentedControlSegment.SetTitle(AValue: string);
+var
+  ANode: TDOMNode;
+begin
+  ANode := FindKeyNode(FSegmentedControl.XIBObjectElement, 'array', 'IBSegmentTitles');
+  ANode := ANode.ChildNodes.Item[ID];
+  ANode.TextContent := AValue;
+end;
+
+{ UISegmentedControl }
+
+function UISegmentedControl.GetSegments: TCollection;
+var
+  ANode: TDOMNode;
+  ASegment: TiOSSegmentedControlSegment;
+  i: integer;
+  SegCnt: integer;
+begin
+  SegCnt:=SegmentCount;
+  if FSegments.Count<>SegCnt then
+    begin
+    FCreatingSegments:=true;
+    for i := 0 to SegCnt-1 do
+      begin
+      ASegment := (FSegments.Add as TiOSSegmentedControlSegment);
+      ASegment.FSegmentedControl := self;
+      end;
+    FCreatingSegments:=false;;
+
+    {    if Assigned(XIBObjectElement) then
+      begin
+      ANode := FindKeyNode(XIBObjectElement, 'array', 'IBSegmentTitles');
+      if assigned(ANode) then
+        begin
+        ANode := ANode.FirstChild;
+        //i := 0;
+        while assigned(ANode) do
+          begin
+          ASegment := (FSegments.Add as TiOSSegmentedControlSegment);
+          //ASegment.Title:=ANode.TextContent;
+          ASegment.FSegmentedControl := self;
+          ANode := ANode.NextSibling;
+          //inc(i);
+          end;
+        end
+      end}
+    end;
+  result := FSegments;
+end;
+
+procedure UISegmentedControl.FPOObservedChanged(ASender: TObject; Operation: TFPObservedOperation; Data: Pointer);
+var
+  ANode: TDOMElement;
+  ASegment: TiOSSegmentedControlSegment;
+begin
+  if FCreatingSegments then
+    Exit;
+  if ASender=FSegments then
+    begin
+    case Operation of
+      ooAddItem :
+        begin
+        ASegment := TObject(Data) as TiOSSegmentedControlSegment;
+        ASegment.FSegmentedControl := self;
+        ANode := GetKeyNode(XIBObjectElement, 'array', 'IBSegmentTitles');
+        AddIBString(ANode, '', 'Segment '+IntToStr((ASegment).ID));
+        ANode := GetKeyNode(XIBObjectElement, 'array', 'IBSegmentWidths', 'NSMutableArray');
+        ANode := AddElement(ANode,'real');
+        ANode.AttribStrings['value']:='0.0';
+        ANode := GetKeyNode(XIBObjectElement, 'array', 'IBSegmentEnabledStates', 'NSMutableArray');
+        ANode := AddElement(ANode,'boolean');
+        ANode.AttribStrings['value']:='YES';
+        ANode := GetKeyNode(XIBObjectElement, 'array', 'IBSegmentContentOffsets', 'NSMutableArray');
+        AddIBString(ANode, '', '{0, 0}');
+        ANode := GetKeyNode(XIBObjectElement, 'array', 'IBSegmentImages', 'NSMutableArray');
+        AddIBObject(ANode, '', 'NSNull');
+        SetXIBInteger(bvSegments, FSegments.Count);
+        end;
+      ooDeleteItem:
+        begin
+        ASegment := TObject(Data) as TiOSSegmentedControlSegment;
+        ANode := GetKeyNode(XIBObjectElement, 'array', 'IBSegmentTitles');
+        ANode.RemoveChild(ANode.ChildNodes.Item[ASegment.ID]);
+        ANode := GetKeyNode(XIBObjectElement, 'array', 'IBSegmentWidths', 'NSMutableArray');
+        ANode.RemoveChild(ANode.ChildNodes.Item[ASegment.ID]);
+        ANode := GetKeyNode(XIBObjectElement, 'array', 'IBSegmentEnabledStates', 'NSMutableArray');
+        ANode.RemoveChild(ANode.ChildNodes.Item[ASegment.ID]);
+        ANode := GetKeyNode(XIBObjectElement, 'array', 'IBSegmentContentOffsets', 'NSMutableArray');
+        ANode.RemoveChild(ANode.ChildNodes.Item[ASegment.ID]);
+        ANode := GetKeyNode(XIBObjectElement, 'array', 'IBSegmentImages', 'NSMutableArray');
+        ANode.RemoveChild(ANode.ChildNodes.Item[ASegment.ID]);
+        SetXIBInteger(bvSegments, FSegments.Count);
+        end;
+    end; {case}
+    end;
+end;
+
+procedure UISegmentedControl.InitializeDefaults;
+begin
+  inherited;
+  Height:=44;;
+  FSegments.Add;
+  FSegments.Add;
+  (FSegments.Items[0] as TiOSSegmentedControlSegment).Enabled:=true;
+end;
+
+constructor UISegmentedControl.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FSegments := TCollection.Create(TiOSSegmentedControlSegment);
+  FSegments.FPOAttachObserver(self);
+  FAcceptChildsAtDesignTime := false;
+end;
+
+destructor UISegmentedControl.Destroy;
+begin
+  FSegments.Free;
+  inherited Destroy;
+end;
+
+procedure UISegmentedControl.paint(ACanvas: TCanvas);
+var
+  ARadius: integer;
+  ts: TTextStyle;
+  i: Integer;
+begin
+  inherited;
+  with ACanvas do
+    begin
+    brush.Color:=clWhite;
+    pen.Color:=clGray;
+    pen.Style := psSolid;
+
+    ARadius := min(self.Width,self.Height);
+    ARadius := min(ARadius, 22);
+
+    RoundRect(0,0,self.Width,self.Height,ARadius, ARadius);
+    Font.Color:=clBlack;
+    self.Font.ApplyToLCLFont(Font);
+    ts := ACanvas.TextStyle;
+    ts.Alignment:=taCenter;
+    ts.Layout:=tlCenter;
+
+    for i := 0 to FSegments.Count-1 do
+      begin
+      if i > 0 then
+        Line((self.Width div FSegments.Count)*i,0,(self.Width div FSegments.Count)*i,self.Height);
+      TextRect(Rect((self.Width div FSegments.Count)*i,0,(self.Width div FSegments.Count)*(i+1),Self.Height), 1, 1, (FSegments.Items[i] as TiOSSegmentedControlSegment).Title, ts);
+      end;
+    end;
+end;
+
+class function UISegmentedControl.GetIBClassName: string;
+begin
+  Result:='IBUISegmentedControl';
 end;
 
 

@@ -155,7 +155,7 @@ procedure Register;
 begin
   FormEditingHook.RegisterDesignerMediator(TNSObjectDesignerMediator);
   FormEditingHook.RegisterDesignerMediator(TUIResponderDesignerMediator);
-  RegisterComponents('iOS',[UIWindow,UINavigationController,UIButton,UILabel,UITextField,UITableView,UISearchBar,UIView,UIViewController, UIProgressView]);
+  RegisterComponents('iOS',[UIWindow,UINavigationController,UIButton,UILabel,UITextField,UITableView,UISearchBar,UIView,UIViewController, UIProgressView, UISegmentedControl]);
 
   GiOSEventHandlers := TiOSEventHandlers.Create;
 
@@ -178,6 +178,7 @@ begin
   SetFakeUnitname(UINavigationController);
   SetFakeUnitname(UIViewController);
   SetFakeUnitname(UIProgressView);
+  SetFakeUnitname(UISegmentedControl);
 end;
 
 { TiOSEventHandlers }
