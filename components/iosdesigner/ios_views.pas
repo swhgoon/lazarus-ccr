@@ -37,7 +37,8 @@ unit iOS_Views;
 interface
 
 uses
-  Classes, SysUtils, Math, types, DOM, XMLWrite, XMLRead, Graphics, strutils;
+  Classes, SysUtils, Math, types, DOM, XMLWrite, XMLRead, Graphics, strutils,
+  ComponentReg;
 
 type
   TXIBProperties = (
@@ -213,7 +214,7 @@ type
     procedure SetName(const NewName: TComponentName); override;
     // iOS
     procedure AddConnectionRecord(AnObjectDomElement: TDOMElement; AConnectionType, ALabel, AEventType: string);
-    class function GetIBClassName: string; virtual;
+    function GetIBClassName: string; virtual;
     function GetDesigner: IMyWidgetDesigner; virtual;
     function GetHeight: integer; virtual;
     function GetLeft: integer; virtual;
@@ -287,6 +288,19 @@ type
     property Height: integer read GetHeight write SetHeight;
   end;
 
+  { UIxcodePlaceholder }
+
+  UIxcodePlaceholder =  class(tiOSFakeComponent)
+  private
+    function GetXcodeClassName: string;
+    procedure SetXcodeClassName(AValue: string);
+  public
+    procedure paint(ACanvas: TCanvas); override;
+    function GetIBClassName: string; override;
+  published
+    property XcodeClassName: string read GetXcodeClassName write SetXcodeClassName;
+  end;
+
   { UIView }
 
   UIView = class(tiOSFakeComponent)
@@ -305,7 +319,7 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure InitializeDefaults; override;
     procedure paint(ACanvas: TCanvas); override;
-    class function GetIBClassName: string; override;
+    function GetIBClassName: string; override;
     property NSSuperview: UIView index bvSuperview read GetXIBObject write SetXIBObject;
     property NSNextResponder: UIView index bvNextResponder read GetXIBObject write SetXIBObject;
     property Flags: Int64 index bvFlags read GetXIBInt64 write SetXIBInt64;
@@ -345,7 +359,7 @@ type
     destructor Destroy; override;
     function GetDesigner: IMyWidgetDesigner; override;
     procedure InitializeDefaults; override;
-    class function GetIBClassName: string; override;
+    function GetIBClassName: string; override;
     property Designer: IMyWidgetDesigner read FDesigner write FDesigner;
     property NIBDocument: TXMLDocument read FNIBDocument;
     property XIBUsesObjectsForArrays: boolean read FXIBUsesObjectsForArrays;
@@ -372,7 +386,7 @@ type
     procedure InitializeDefaults; override;
     constructor Create(AOwner: TComponent); override;
     procedure paint(ACanvas: TCanvas); override;
-    class function GetIBClassName: string; override;
+    function GetIBClassName: string; override;
   published
     property StatusBar: TiOSFakeStatusBarStyle read GetStatusBar write SetStatusBar;
     property ResizesToFullScreen: boolean index bvFullScreen read GetXIBBoolean write SetXIBBoolean;
@@ -388,7 +402,7 @@ type
     procedure SetBounds(NewLeft, NewTop, NewWidth, NewHeight: integer); override;
   public
     constructor Create(AOwner: TComponent); override;
-    class function GetIBClassName: string; override;
+    function GetIBClassName: string; override;
   end;
 
   { UINavigationBar }
@@ -399,7 +413,7 @@ type
     procedure paint(ACanvas: TCanvas); override;
   public
     constructor Create(AOwner: TComponent); override;
-    class function GetIBClassName: string; override;
+    function GetIBClassName: string; override;
   end;
 
   { UINavigationItem }
@@ -410,7 +424,7 @@ type
     procedure SetBounds(NewLeft, NewTop, NewWidth, NewHeight: integer); override;
   public
     constructor Create(AOwner: TComponent); override;
-    class function GetIBClassName: string; override;
+    function GetIBClassName: string; override;
   end;
 
   { UISegmentedControl }
@@ -427,7 +441,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure paint(ACanvas: TCanvas); override;
-    class function GetIBClassName: string; override;
+    function GetIBClassName: string; override;
     property SegmentCount: integer index bvSegments read GetXIBInteger;
   published
     property Segments: TCollection read GetSegments;
@@ -456,7 +470,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure InitializeDefaultChildren; override;
-    class function GetIBClassName: string; override;
+    function GetIBClassName: string; override;
   published
   end;
 
@@ -480,7 +494,7 @@ type
   public
     procedure InitializeDefaults; override;
     constructor Create(AOwner: TComponent); override;
-    class function GetIBClassName: string; override;
+    function GetIBClassName: string; override;
     procedure paint(ACanvas: TCanvas); override;
 
     property NSNextKeyView: UIView read FNSNextKeyView write FNSNextKeyView;
@@ -504,7 +518,7 @@ type
     procedure SetTextAlignment(AValue: TiOSFakeAlignment);
   public
     constructor Create(AOwner: TComponent); override;
-    class function GetIBClassName: string; override;
+    function GetIBClassName: string; override;
     procedure paint(ACanvas: TCanvas); override;
   published
     property Lines: integer index bvLines read GetXIBInteger write SetXIBInteger;
@@ -525,7 +539,7 @@ type
     procedure SetTextAlignment(AValue: TiOSFakeAlignment);
   public
     constructor Create(AOwner: TComponent); override;
-    class function GetIBClassName: string; override;
+    function GetIBClassName: string; override;
     procedure paint(ACanvas: TCanvas); override;
   published
     property Placeholder: string index bvPlaceHolder read GetXIBString write SetXIBString;
@@ -547,7 +561,7 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure InitializeDefaults; override;
     procedure paint(ACanvas: TCanvas); override;
-    class function GetIBClassName: string; override;
+    function GetIBClassName: string; override;
   published
     property RowHeight: double index bvRowHeight read GetXIBFloat write SetXIBFloat;
     property SectionHeaderHeight: double index bvSectionHeaderHeigh read GetXIBFloat write SetXIBFloat;
@@ -571,7 +585,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure InitializeDefaults; override;
-    class function GetIBClassName: string; override;
+    function GetIBClassName: string; override;
   published
     property Caption;
     property Placeholder: string index bvPlaceHolder read GetXIBString write SetXIBString;
@@ -588,7 +602,7 @@ type
     procedure SetProgressViewStyle(AValue: TiOSFakeProgressViewStyle);
   public
     constructor Create(AOwner: TComponent); override;
-    class function GetIBClassName: string; override;
+    function GetIBClassName: string; override;
   published
     property progressViewStyle: TiOSFakeProgressViewStyle read GetProgressViewStyle write SetProgressViewStyle;
     property progress: double index bvProgress read GetXIBFloat write SetXIBFloat;
@@ -737,6 +751,41 @@ begin
     end;
 end;
 
+{ UIxcodePlaceholder }
+
+function UIxcodePlaceholder.GetXcodeClassName: string;
+begin
+  result := XIBObjectElement.AttribStrings['class'];
+end;
+
+procedure UIxcodePlaceholder.SetXcodeClassName(AValue: string);
+begin
+  if AValue<>GetXcodeClassName then
+    begin
+    if assigned(GetClass(AValue)) then
+      raise exception.create('Invalid class name for placeholder: class does exist.');
+    XIBObjectElement.AttribStrings['class'] := AValue;
+    end;
+end;
+
+procedure UIxcodePlaceholder.paint(ACanvas: TCanvas);
+begin
+  with ACanvas do
+    begin
+    Brush.Color:=clInactiveBorder;
+    Pen.Color:=clGradientInactiveCaption;
+    Brush.Style:=bsBDiagonal;
+    pen.Style:=psSolid;
+    // Background
+    Rectangle(0,0,self.Width,self.Height);
+    end;
+end;
+
+function UIxcodePlaceholder.GetIBClassName: string;
+begin
+  Result:=GetXcodeClassName;
+end;
+
 { TiOSSegmentedControlSegment }
 
 function TiOSSegmentedControlSegment.GetTitle: string;
@@ -771,6 +820,7 @@ begin
   ANode := FindKeyNode(FSegmentedControl.XIBObjectElement, 'array', 'IBSegmentTitles');
   ANode := ANode.ChildNodes.Item[ID];
   ANode.TextContent := AValue;
+  FSegmentedControl.Invalidate;
 end;
 
 { UISegmentedControl }
@@ -792,24 +842,6 @@ begin
       ASegment.FSegmentedControl := self;
       end;
     FCreatingSegments:=false;;
-
-    {    if Assigned(XIBObjectElement) then
-      begin
-      ANode := FindKeyNode(XIBObjectElement, 'array', 'IBSegmentTitles');
-      if assigned(ANode) then
-        begin
-        ANode := ANode.FirstChild;
-        //i := 0;
-        while assigned(ANode) do
-          begin
-          ASegment := (FSegments.Add as TiOSSegmentedControlSegment);
-          //ASegment.Title:=ANode.TextContent;
-          ASegment.FSegmentedControl := self;
-          ANode := ANode.NextSibling;
-          //inc(i);
-          end;
-        end
-      end}
     end;
   result := FSegments;
 end;
@@ -916,7 +948,7 @@ begin
     end;
 end;
 
-class function UISegmentedControl.GetIBClassName: string;
+function UISegmentedControl.GetIBClassName: string;
 begin
   Result:='IBUISegmentedControl';
 end;
@@ -1259,7 +1291,11 @@ begin
     CompName:=ObjectNode.TextContent;
 
   if copy(CompClassName,1,2)='IB' then
+    begin
     CompClassName:=copy(CompClassName,3,250);
+    if not assigned(IDEComponentPalette.FindComponent(CompClassName)) then
+      CompClassName := 'UIxcodePlaceholder';
+    end;
   FReadChilds := False;
   if ReadState=rsHasRootChilds then
     ReadState:=rsRootObjectProp
@@ -1615,7 +1651,7 @@ begin
   trackTintColor := clDefault;
 end;
 
-class function UIProgressView.GetIBClassName: string;
+function UIProgressView.GetIBClassName: string;
 begin
   Result:='IBUIProgressView';
 end;
@@ -1641,7 +1677,7 @@ begin
   Height:=44;
 end;
 
-class function UINavigationItem.GetIBClassName: string;
+function UINavigationItem.GetIBClassName: string;
 begin
   Result:='IBUINavigationItem';
 end;
@@ -1703,7 +1739,7 @@ begin
   FAcceptChildsAtDesignTime:=true;
 end;
 
-class function UIViewController.GetIBClassName: string;
+function UIViewController.GetIBClassName: string;
 begin
   Result:='IBUIViewController';
 end;
@@ -1736,7 +1772,7 @@ begin
   FAcceptChildsAtDesignTime:=false;
 end;
 
-class function UINavigationBar.GetIBClassName: string;
+function UINavigationBar.GetIBClassName: string;
 begin
   Result:='IBUINavigationBar';
 end;
@@ -1812,7 +1848,7 @@ begin
     end
 end;
 
-class function UINavigationController.GetIBClassName: string;
+function UINavigationController.GetIBClassName: string;
 begin
   Result:='IBUINavigationController';
 end;
@@ -1936,7 +1972,7 @@ begin
     end;
 end;
 
-class function UIWindow.GetIBClassName: string;
+function UIWindow.GetIBClassName: string;
 begin
   Result:='IBUIWindow';
 end;
@@ -2182,7 +2218,7 @@ begin
   FilesOwnerOutletName:='delegate';
 end;
 
-class function NSObject.GetIBClassName: string;
+function NSObject.GetIBClassName: string;
 begin
   Result:='IBUICustomObject';
 end;
@@ -3044,7 +3080,7 @@ begin
     AddIBInt(IBConnectionElement,'IBEventType',StrToInt64Def(AEventType,1));
 end;
 
-class function tiOSFakeComponent.GetIBClassName: string;
+function tiOSFakeComponent.GetIBClassName: string;
 begin
   result := '';
 end;
@@ -3370,7 +3406,7 @@ begin
   Opaque:=true;
 end;
 
-class function UISearchBar.GetIBClassName: string;
+function UISearchBar.GetIBClassName: string;
 begin
   Result:='IBUISearchBar';
 end;
@@ -3449,7 +3485,7 @@ begin
     end;
 end;
 
-class function UITableView.GetIBClassName: string;
+function UITableView.GetIBClassName: string;
 begin
   Result:='IBUITableView';
 end;
@@ -3481,7 +3517,7 @@ begin
   FAcceptChildsAtDesignTime:=false;
 end;
 
-class function UITextField.GetIBClassName: string;
+function UITextField.GetIBClassName: string;
 begin
   Result:='IBUITextField';
 end;
@@ -3669,7 +3705,7 @@ begin
   FAcceptChildsAtDesignTime:=false;
 end;
 
-class function UILabel.GetIBClassName: string;
+function UILabel.GetIBClassName: string;
 begin
   result := 'IBUILabel';
 end;
@@ -3919,7 +3955,7 @@ begin
     end;
 end;
 
-class function UIView.GetIBClassName: string;
+function UIView.GetIBClassName: string;
 begin
   result := 'IBUIView';
 end;
@@ -3962,7 +3998,7 @@ begin
   FAcceptChildsAtDesignTime:=false;
 end;
 
-class function UIButton.GetIBClassName: string;
+function UIButton.GetIBClassName: string;
 begin
   result := 'IBUIButton';
 end;
@@ -3971,7 +4007,7 @@ procedure UIButton.paint(ACanvas: TCanvas);
 var
   ARadius: integer;
 begin
-  inherited;
+  Inherited;
   with ACanvas do
     begin
     brush.Color:=clWhite;
