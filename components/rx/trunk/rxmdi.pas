@@ -755,7 +755,7 @@ begin
     //FNavForm.BringToFront;
     FNavPanel.FMainPanel.CurrentChildWindow:=NavForm;
     //Application.MainForm.ActiveControl:=NavForm.ActiveControl;
-    if Assigned(FActiveControl) then
+    if Assigned(FActiveControl) and FActiveControl.HandleObjectShouldBeVisible then
       FActiveControl.SetFocus;
   end;
   Down:=true;
