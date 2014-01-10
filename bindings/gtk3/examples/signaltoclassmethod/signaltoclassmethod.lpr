@@ -30,8 +30,6 @@ begin
   g_signal_connect_data(AGObject, PChar(ASignalName), TGCallback(AMethod.Code), AMethod.Data, nil, Flags);
 end;
 
-
-
 { TClassApp }
 
 procedure TClassApp.CreateWidgets;
@@ -62,6 +60,8 @@ begin
       + ' For Class: ' +  Self.ClassName +  ' at ' + IntTostr(Round(Event^.motion.x))
       + ':' + IntToStr(Round(Event^.motion.y));
   Win^.title:=PChar(Str);
+
+  Result := True;
 end;
 
 constructor TClassApp.Create;
@@ -97,7 +97,6 @@ begin
   mask := mask or GDK_POINTER_MOTION_MASK;
   gdk_window_set_events(Win^.window, mask);
 end;
-
 
 begin
   SetExceptionMask([exInvalidOp, exDenormalized, exZeroDivide, exOverflow, exUnderflow, exPrecision]);
