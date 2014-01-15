@@ -227,7 +227,7 @@ msgstr "Копировать только метаданные..."
 
 #: rxdconst.srxdbgridcopycellvalue
 msgid "Copy cell value"
-msgstr ""
+msgstr "Копировать значение ячейки"
 
 #: rxdconst.srxdbgridemptifilter
 msgid "(Empty)"

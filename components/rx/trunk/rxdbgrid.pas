@@ -155,6 +155,24 @@ type
     property Items[Index: integer]: TRxDBGridKeyStroke read GetItem write SetItem; default;
   end;
 
+  { TRxDBGridCollumnConstraint }
+
+  TRxDBGridCollumnConstraints = class(TPersistent)
+  private
+    FMaxWidth: integer;
+    FMinWidth: integer;
+    FOwner: TPersistent;
+    procedure SetMaxWidth(AValue: integer);
+    procedure SetMinWidth(AValue: integer);
+  protected
+    procedure AssignTo(Dest: TPersistent); override;
+  public
+    constructor Create(AOwner: TPersistent);
+  published
+    property MinWidth:integer read FMinWidth write SetMinWidth;
+    property MaxWidth:integer read FMaxWidth write SetMaxWidth;
+  end;
+
   { TRxDBGridFooterOptions }
 
   TRxDBGridFooterOptions = class(TPersistent)
@@ -387,6 +405,7 @@ type
     FDirectInput: boolean;
     FEditButtons: TRxColumnEditButtons;
     FFooter: TRxColumnFooter;
+    FConstraints:TRxDBGridCollumnConstraints;
     FFilter: TRxColumnFilter;
     FImageList: TImageList;
     FKeyList: TStrings;
@@ -395,8 +414,10 @@ type
     FSortOrder: TSortMarker;
     FSortPosition: integer;
     FWordWrap: boolean;
+    function GetConstraints: TRxDBGridCollumnConstraints;
     function GetFooter: TRxColumnFooter;
     function GetKeyList: TStrings;
+    procedure SetConstraints(AValue: TRxDBGridCollumnConstraints);
     procedure SetEditButtons(AValue: TRxColumnEditButtons);
     procedure SetFilter(const AValue: TRxColumnFilter);
     procedure SetFooter(const AValue: TRxColumnFooter);
@@ -406,6 +427,7 @@ type
     procedure SetWordWrap(AValue: boolean);
   protected
     function CreateTitle: TGridColumnTitle; override;
+    procedure ColumnChanged; override;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
@@ -414,6 +436,7 @@ type
     property SortPosition: integer read FSortPosition;
   published
     property Footer: TRxColumnFooter read GetFooter write SetFooter;
+    property Constraints:TRxDBGridCollumnConstraints read GetConstraints write SetConstraints;
     property ImageList: TImageList read FImageList write SetImageList;
     property KeyList: TStrings read GetKeyList write SetKeyList;
     property NotInKeyListIndex: integer read FNotInKeyListIndex
@@ -726,6 +749,7 @@ type
     property FooterRowCount: integer read GetFooterRowCount write SetFooterRowCount default 0; deprecated;
 
     property OnFiltred: TNotifyEvent read FOnFiltred write FOnFiltred;
+//    property Constraints:TRxDBGridCollumnConstraints read GetConstraints write SetConstraints;
 
     //from DBGrid
     property Align;
@@ -911,6 +935,37 @@ type
     //procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
     procedure EditingDone; override;
   end;
+
+{ TRxDBGridCollumnConstraint }
+
+procedure TRxDBGridCollumnConstraints.SetMaxWidth(AValue: integer);
+begin
+  if FMaxWidth=AValue then Exit;
+  FMaxWidth:=AValue;
+end;
+
+procedure TRxDBGridCollumnConstraints.SetMinWidth(AValue: integer);
+begin
+  if FMinWidth=AValue then Exit;
+  FMinWidth:=AValue;
+end;
+
+procedure TRxDBGridCollumnConstraints.AssignTo(Dest: TPersistent);
+begin
+  if Dest is TRxDBGridCollumnConstraints then
+  begin
+    TRxDBGridCollumnConstraints(Dest).FMinWidth:=FMinWidth;
+    TRxDBGridCollumnConstraints(Dest).FMaxWidth:=FMaxWidth;
+  end
+  else
+  inherited AssignTo(Dest);
+end;
+
+constructor TRxDBGridCollumnConstraints.Create(AOwner: TPersistent);
+begin
+  inherited Create;
+  FOwner:=AOwner;
+end;
 
 { TRxFilterItems }
 
@@ -4641,6 +4696,11 @@ begin
   Result := FKeyList;
 end;
 
+procedure TRxColumn.SetConstraints(AValue: TRxDBGridCollumnConstraints);
+begin
+  FConstraints.Assign(AValue);
+end;
+
 procedure TRxColumn.SetEditButtons(AValue: TRxColumnEditButtons);
 begin
   FEditButtons.Assign(AValue);
@@ -4654,6 +4714,11 @@ end;
 function TRxColumn.GetFooter: TRxColumnFooter;
 begin
   Result := FFooter;
+end;
+
+function TRxColumn.GetConstraints: TRxDBGridCollumnConstraints;
+begin
+  Result:=FConstraints;
 end;
 
 procedure TRxColumn.SetFooter(const AValue: TRxColumnFooter);
@@ -4701,10 +4766,18 @@ begin
   Result := TRxColumnTitle.Create(Self);
 end;
 
+procedure TRxColumn.ColumnChanged;
+begin
+  inherited ColumnChanged;
+  if Assigned(FConstraints) and (FConstraints.MinWidth <> 0) and (FConstraints.MinWidth > Width) then
+    Width:=FConstraints.MinWidth;
+end;
+
 constructor TRxColumn.Create(ACollection: TCollection);
 begin
   inherited Create(ACollection);
   FNotInKeyListIndex := -1;
+  FConstraints:=TRxDBGridCollumnConstraints.Create(Self);
   FFooter := TRxColumnFooter.Create(Self);
   FFilter := TRxColumnFilter.Create(Self);
   FDirectInput := true;
@@ -4721,6 +4794,7 @@ begin
   end;
   FreeAndNil(FFooter);
   FreeAndNil(FFilter);
+  FreeAndNil(FConstraints);
   inherited Destroy;
 end;
 

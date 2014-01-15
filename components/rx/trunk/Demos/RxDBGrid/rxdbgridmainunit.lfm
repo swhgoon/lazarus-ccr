@@ -27,6 +27,8 @@ object RxDBGridMainForm: TRxDBGridMainForm
         Title.ShowHint = True
         Width = 50
         FieldName = 'DEVELOPER_ID'
+        Constraints.MinWidth = 50
+        Constraints.MaxWidth = 0
         ImageList = ImageList1
         KeyList.Strings = (
           '1=0'
@@ -51,6 +53,8 @@ object RxDBGridMainForm: TRxDBGridMainForm
         Footer.Alignment = taRightJustify
         Footer.DisplayFormat = 'Count: %d'
         Footer.ValueType = fvtCount
+        Constraints.MinWidth = 0
+        Constraints.MaxWidth = 0
         Filter.Font.Style = [fsItalic]
         Filter.DropDownRows = 0
         Filter.Color = clLime
@@ -67,6 +71,8 @@ object RxDBGridMainForm: TRxDBGridMainForm
         Title.ShowHint = True
         Width = 136
         FieldName = 'Developer'
+        Constraints.MinWidth = 10
+        Constraints.MaxWidth = 0
         Filter.Font.Style = [fsItalic]
         Filter.DropDownRows = 0
         Filter.Color = clLime
@@ -83,6 +89,8 @@ object RxDBGridMainForm: TRxDBGridMainForm
         Title.ShowHint = True
         Width = 110
         FieldName = 'NAME'
+        Constraints.MinWidth = 0
+        Constraints.MaxWidth = 0
         Filter.Font.Style = [fsItalic]
         Filter.DropDownRows = 0
         Filter.Color = clLime
@@ -105,6 +113,8 @@ object RxDBGridMainForm: TRxDBGridMainForm
         Footer.DisplayFormat = '#,##0.00'
         Footer.FieldName = 'PRICE'
         Footer.ValueType = fvtSum
+        Constraints.MinWidth = 0
+        Constraints.MaxWidth = 0
         Filter.Font.Style = [fsItalic]
         Filter.DropDownRows = 0
         Filter.Color = clLime
@@ -134,6 +144,8 @@ object RxDBGridMainForm: TRxDBGridMainForm
         Title.ShowHint = True
         Width = 136
         FieldName = 'Date_Present'
+        Constraints.MinWidth = 0
+        Constraints.MaxWidth = 0
         Filter.Font.Style = [fsItalic]
         Filter.DropDownRows = 0
         Filter.EmptyValue = '(Нет)'
@@ -149,6 +161,8 @@ object RxDBGridMainForm: TRxDBGridMainForm
         Title.ShowHint = True
         Width = 141
         FieldName = 'DEVELOPER_ID'
+        Constraints.MinWidth = 0
+        Constraints.MaxWidth = 0
         Filter.Font.Style = [fsItalic]
         Filter.DropDownRows = 0
         Filter.EmptyValue = '(Нет)'
@@ -167,6 +181,8 @@ object RxDBGridMainForm: TRxDBGridMainForm
         Title.Caption = 'Rait'
         Title.Orientation = toHorizontal
         FieldName = 'RAIT'
+        Constraints.MinWidth = 0
+        Constraints.MaxWidth = 0
         Filter.Font.Style = [fsItalic]
         Filter.DropDownRows = 0
         Filter.EmptyValue = '(Нет)'
