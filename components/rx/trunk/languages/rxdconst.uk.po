@@ -234,6 +234,10 @@ msgstr "Огляд структури ..."
 msgid "Copy only metadata"
 msgstr "Копіювати тільки метадані ..."
 
+#: rxdconst.srxdbgridcopycellvalue
+msgid "Copy cell value"
+msgstr ""
+
 #: rxdconst.srxdbgridemptifilter
 msgid "(Empty)"
 msgstr "(Немає)"

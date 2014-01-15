@@ -107,7 +107,7 @@ type
   TRxDBGridCommand = (rxgcNone, rxgcShowFindDlg, rxgcShowColumnsDlg,
     rxgcShowFilterDlg, rxgcShowSortDlg, rxgcShowQuickFilter,
     rxgcHideQuickFilter, rxgcSelectAll, rxgcDeSelectAll, rxgcInvertSelection,
-    rxgcOptimizeColumnsWidth
+    rxgcOptimizeColumnsWidth, rxgcCopyCellValue
 
     );
 
@@ -649,6 +649,7 @@ type
     procedure OnSortBy(Sender: TObject);
     procedure OnChooseVisibleFields(Sender: TObject);
     procedure OnSelectAllRows(Sender: TObject);
+    procedure OnCopyCellValue(Sender: TObject);
     procedure Loaded; override;
     procedure UpdateFooterRowOnUpdateActive;
 
@@ -820,10 +821,10 @@ procedure RegisterRxDBGridSortEngine(RxDBGridSortEngineClass: TRxDBGridSortEngin
 implementation
 
 uses Math, rxdconst, rxstrutils, rxdbgrid_findunit, rxdbgrid_columsunit,
-  rxlookup, tooledit, LCLProc, rxfilterby, rxsortby, variants;
+  rxlookup, tooledit, LCLProc, Clipbrd, rxfilterby, rxsortby, variants;
 
 const
-  EditorCommandStrs: array[0..10] of TIdentMapEntry =
+  EditorCommandStrs: array[rxgcNone .. High(TRxDBGridCommand)] of TIdentMapEntry =
     (
     (Value: Ord(rxgcNone); Name: 'rxcgNone'),
     (Value: Ord(rxgcShowFindDlg); Name: 'rxgcShowFindDlg'),
@@ -835,7 +836,8 @@ const
     (Value: Ord(rxgcSelectAll); Name: 'rxgcSelectAll'),
     (Value: Ord(rxgcDeSelectAll); Name: 'rxgcDeSelectAll'),
     (Value: Ord(rxgcInvertSelection); Name: 'rxgcInvertSelection'),
-    (Value: Ord(rxgcOptimizeColumnsWidth); Name: 'rxgcOptimizeColumnsWidth')
+    (Value: Ord(rxgcOptimizeColumnsWidth); Name: 'rxgcOptimizeColumnsWidth'),
+    (Value: Ord(rxgcCopyCellValue); Name: 'rxgcCopyCellValue')
     );
 
 var
@@ -1700,6 +1702,7 @@ begin
   CreateMenuItem('C', sRxDBGridSortByColumns, @OnSortBy);
   CreateMenuItem('W', sRxDBGridSelectColumns, @OnChooseVisibleFields);
   CreateMenuItem('A', sRxDBGridSelectAllRows, @OnSelectAllRows);
+  CreateMenuItem(#0, sRxDBGridCopyCellValue, @OnCopyCellValue);
 end;
 
 {$IFDEF RxDBGridDepricatedProps}
@@ -3560,6 +3563,7 @@ begin
       rxgcDeSelectAll: DeSelectAllRows;
       rxgcInvertSelection:InvertSelection;
       rxgcOptimizeColumnsWidth:OptimizeColumnsWidthAll;
+      rxgcCopyCellValue:OnCopyCellValue(Self);
     else
       exit;
     end;
@@ -4295,6 +4299,19 @@ end;
 procedure TRxDBGrid.OnSelectAllRows(Sender: TObject);
 begin
   SelectAllRows;
+end;
+
+procedure TRxDBGrid.OnCopyCellValue(Sender: TObject);
+begin
+  if DatalinkActive and Assigned(SelectedField) then
+  begin
+    try
+      Clipboard.Open;
+      Clipboard.AsText:=SelectedField.DisplayText;
+    finally
+      Clipboard.Close;
+    end;
+  end;
 end;
 
 procedure TRxDBGrid.Loaded;
@@ -5350,23 +5367,16 @@ begin
   inherited SetItem(Index, AValue);
 end;
 
-{function TRxDBGridKeyStrokes.GetOwner: TPersistent;
-begin
-  Result:=FOwn;
-end;
-}
 procedure TRxDBGridKeyStrokes.Update(Item: TCollectionItem);
 begin
   inherited Update(Item);
-  if (UpdateCount = 0) and Assigned(Owner) and
-    Assigned(TRxDBGrid(Owner).FKeyStrokes) then
+  if (UpdateCount = 0) and Assigned(Owner) and Assigned(TRxDBGrid(Owner).FKeyStrokes) then
     TRxDBGrid(Owner).UpdateJMenuKeys;
 end;
 
 
 constructor TRxDBGridKeyStrokes.Create(AOwner: TPersistent);
 begin
-  //FOwn := AOwner;
   inherited Create(AOwner, TRxDBGridKeyStroke);
 end;
 
@@ -5414,6 +5424,7 @@ begin
   AddE(rxgcDeSelectAll, Menus.ShortCut(Ord('-'), [ssCtrl]));
   AddE(rxgcInvertSelection, Menus.ShortCut(Ord('*'), [ssCtrl]));
   AddE(rxgcOptimizeColumnsWidth, Menus.ShortCut(Ord('+'), [ssCtrl]));
+  AddE(rxgcCopyCellValue, Menus.ShortCut(Ord('C'), [ssCtrl]));
 end;
 
 function TRxDBGridKeyStrokes.FindRxCommand(AKey: word;
