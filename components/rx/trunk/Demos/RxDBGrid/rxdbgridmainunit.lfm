@@ -28,7 +28,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
         Width = 50
         FieldName = 'DEVELOPER_ID'
         Constraints.MinWidth = 50
-        Constraints.MaxWidth = 0
+        Constraints.MaxWidth = 150
         ImageList = ImageList1
         KeyList.Strings = (
           '1=0'

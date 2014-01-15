@@ -169,8 +169,8 @@ type
   public
     constructor Create(AOwner: TPersistent);
   published
-    property MinWidth:integer read FMinWidth write SetMinWidth;
-    property MaxWidth:integer read FMaxWidth write SetMaxWidth;
+    property MinWidth:integer read FMinWidth write SetMinWidth default 0;
+    property MaxWidth:integer read FMaxWidth write SetMaxWidth default 0;
   end;
 
   { TRxDBGridFooterOptions }
@@ -941,12 +941,14 @@ type
 procedure TRxDBGridCollumnConstraints.SetMaxWidth(AValue: integer);
 begin
   if FMaxWidth=AValue then Exit;
+  if (FMinWidth<>0) and (AValue<>0) and (AValue < FMinWidth) then exit;
   FMaxWidth:=AValue;
 end;
 
 procedure TRxDBGridCollumnConstraints.SetMinWidth(AValue: integer);
 begin
   if FMinWidth=AValue then Exit;
+  if (FMaxWidth<>0) and (AValue<>0) and (AValue > FMaxWidth) then exit;
   FMinWidth:=AValue;
 end;
 
@@ -4771,6 +4773,9 @@ begin
   inherited ColumnChanged;
   if Assigned(FConstraints) and (FConstraints.MinWidth <> 0) and (FConstraints.MinWidth > Width) then
     Width:=FConstraints.MinWidth;
+
+  if Assigned(FConstraints) and (FConstraints.MaxWidth <> 0) and (FConstraints.MaxWidth < Width) then
+    Width:=FConstraints.MaxWidth;
 end;
 
 constructor TRxColumn.Create(ACollection: TCollection);
