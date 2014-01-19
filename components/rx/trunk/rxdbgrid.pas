@@ -648,9 +648,7 @@ type
     procedure UpdateActive; override;
     procedure UpdateData; override;
     procedure MoveSelection; override;
-{$IFDEF RX_USE_LCL_DEVEL}
     function  GetBufferCount: integer; override;
-{$ENDIF}
     procedure CMHintShow(var Message: TLMessage); message CM_HINTSHOW;
     procedure FFilterListEditorOnChange(Sender: TObject);
     procedure FFilterListEditorOnCloseUp(Sender: TObject);
@@ -3144,12 +3142,15 @@ var
   TxS: TTextStyle;
 begin
   TotalWidth := GetClientRect.Right;
-  if ScrollBarIsVisible(SB_HORZ) then
+{
+if ScrollBarIsVisible(SB_HORZ) then
     TotalYOffs := GCache.ClientHeight - (GetSystemMetrics(SM_CYHSCROLL) + GetSystemMetrics(SM_SWSCROLLBARSPACING))
   else
     TotalYOffs := GCache.ClientHeight;
+  }
+  TotalYOffs := GCache.ClientHeight - (DefaultRowHeight * FFooterOptions.RowCount);
 
-  FooterRect := Rect(0, TotalYOffs, TotalWidth, TotalYOffs + DefaultRowHeight * FFooterOptions.RowCount + 2);
+  FooterRect := Rect(0, TotalYOffs, TotalWidth, TotalYOffs + DefaultRowHeight * FFooterOptions.RowCount);
 
   Background := Canvas.Brush.Color;
   Canvas.Brush.Color := Color;
@@ -3682,7 +3683,11 @@ end;
 procedure TRxDBGrid.CheckNewCachedSizes(var AGCache: TGridDataCache);
 begin
   if FFooterOptions.Active and (FooterOptions.RowCount > 0) then
-    Dec(AGCache.ClientHeight, DefaultRowHeight * FooterOptions.RowCount + 2);
+//    Dec(AGCache.ClientHeight, DefaultRowHeight * FooterOptions.RowCount);
+  begin
+      Dec(AGCache.ClientHeight, DefaultRowHeight * FooterOptions.RowCount);
+      Dec(AGCache.ScrollHeight, DefaultRowHeight * FooterOptions.RowCount);
+  end;
 end;
 
 procedure TRxDBGrid.ColRowMoved(IsColumn: boolean; FromIndex, ToIndex: integer);
@@ -3739,12 +3744,11 @@ begin
 //  UpdateRowsHeight;
 end;
 
-{$IFDEF RX_USE_LCL_DEVEL}
 function TRxDBGrid.GetBufferCount: integer;
 var
   H:integer;
 begin
-  Result := ClientHeight div DefaultRowHeight;
+{  Result := ClientHeight div DefaultRowHeight;
   if rdgWordWrap in FOptionsRx then
   begin
     H:=UpdateRowsHeight;
@@ -3756,9 +3760,14 @@ begin
     Dec(Result, RowHeights[0] div DefaultRowHeight);
   end;
   if FFooterOptions.Active then
-    Dec(Result, FFooterOptions.RowCount);
+    Dec(Result, FFooterOptions.RowCount);}
+  H:=ClientHeight - GCache.FixedHeight;
+  if FFooterOptions.Active then
+    H:=H - DefaultRowHeight * FFooterOptions.RowCount;
+
+  Result := H div DefaultRowHeight;
+//  result := (ClientHeight - GCache.FixedHeight - DefaultRowHeight) div DefaultRowHeight;
 end;
-{$ENDIF}
 
 procedure TRxDBGrid.CMHintShow(var Message: TLMessage);
 var
@@ -3875,8 +3884,8 @@ end;
 
 procedure TRxDBGrid.VisualChange;
 begin
-  inherited VisualChange;
   CalcTitle;
+  inherited VisualChange;
 
 {  if rdgWordWrap in FOptionsRx then
     UpdateRowsHeight;}
