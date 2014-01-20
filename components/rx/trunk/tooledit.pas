@@ -562,6 +562,7 @@ end;
 procedure TCustomRxDateEdit.PopupDropDown(DisableEdit: Boolean);
 var
   P: TPoint;
+  ABounds:TRect;
   Y: Integer;
 
 procedure DoTrySetDate;
@@ -591,9 +592,22 @@ begin
 
   if (FPopup <> nil) and not (ReadOnly {or FPopupVisible}) then
   begin
+
     P := Parent.ClientToScreen(Point(Left, Top));
+
+    ABounds := Screen.MonitorFromPoint(P).BoundsRect;
+
+{    if PopupOrigin.X + Width > ABounds.Right then
+      Left := ABounds.Right - Width
+    else
+      Left := PopupOrigin.X;
+    if PopupOrigin.Y + Height > ABounds.Bottom then
+      Top := ABounds.Bottom - Height
+    else
+      Top := PopupOrigin.Y;}
+
     Y := P.Y + Height;
-    if Y + FPopup.Height > Screen.Height then
+    if Y + FPopup.Height > ABounds.Right then
       Y := P.Y - FPopup.Height;
     case FPopupAlign of
       epaRight:
@@ -603,13 +617,13 @@ begin
         end;
       epaLeft:
         begin
-          if P.X + FPopup.Width > Screen.Width then
+          if P.X + FPopup.Width > ABounds.Right then
             Dec(P.X, FPopup.Width - Width);
         end;
     end;
     if P.X < 0 then P.X := 0
-    else if P.X + FPopup.Width > Screen.Width then
-      P.X := Screen.Width - FPopup.Width;
+    else if P.X + FPopup.Width > ABounds.Right then
+      P.X := ABounds.Right - FPopup.Width;
 
     DoTrySetDate;
 
