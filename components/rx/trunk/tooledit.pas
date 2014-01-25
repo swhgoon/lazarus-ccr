@@ -808,7 +808,15 @@ end;
 
 function TCustomRxDateEdit.GetDefaultGlyphName: String;
 begin
+  {$IFDEF LINUX}
   Result:='picDateEdit';
+  {$ELSE}
+  {$IFDEF WINDOWS}
+  Result:='picDateEdit';
+  {$ELSE}
+  Result:='';
+  {$ENDIF}
+  {$ENDIF}
 end;
 
 function TCustomRxDateEdit.CreatePopupForm: TPopupCalendar;
