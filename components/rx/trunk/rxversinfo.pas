@@ -109,13 +109,14 @@ type
 
 
 implementation
-uses FileUtil, resource, resreader, InterfaceBase, rxconst,
+uses FileUtil, resource, resreader, InterfaceBase, rxconst
 {$IFDEF WINDOWS}
-  winpeimagereader
+  , winpeimagereader
 {$ENDIF}
 {$IFDEF LINUX}
-  elfreader
+  , elfreader
 {$ENDIF}
+
   ;
 
 { TRxVersionInfo }
@@ -263,12 +264,17 @@ var
 begin
   FValues.Clear;
   FValid:=false;
+  Reader:=nil;
   {$IFDEF WINDOWS}
   Reader:=TWinPEImageResourceReader.Create;
   {$ENDIF}
   {$IFDEF LINUX}
   Reader:=TElfResourceReader.Create;
   {$ENDIF}
+
+  if Reader = nil then
+    exit;
+
   Res:=TResources.Create;
   V:=nil;
   try
