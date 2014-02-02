@@ -38,7 +38,7 @@ interface
 uses
   Classes, SysUtils, LResources, LCLVersion, LCLType, LCLIntf, Forms, Controls, Buttons,
   Graphics, Dialogs, Grids, dbutils, DBGrids, DB, PropertyStorage, vclutils,
-  LMessages, types, StdCtrls, Menus;
+  LMessages, types, StdCtrls, Menus, rxspin;
 
 {//$if ((lcl_major = 1) and (lcl_minor = 1))}
 
@@ -354,6 +354,8 @@ type
     FStyle: TRxColumnEditButtonStyle;
     FButton:TSpeedButton;
     FVisible: Boolean;
+    //
+    FSpinBtn:TRxSpinButton;
     function GetGlyph: TBitmap;
     function GetHint: String;
     function GetNumGlyphs: Integer;
@@ -366,6 +368,9 @@ type
     procedure SetStyle(AValue: TRxColumnEditButtonStyle);
     procedure SetVisible(AValue: Boolean);
     procedure SetWidth(AValue: Integer);
+
+    procedure DoBottomClick(Sender: TObject);
+    procedure DoTopClick(Sender: TObject);
   protected
     function GetDisplayName: string; override;
   public
@@ -678,6 +683,7 @@ type
     procedure DoEditorShow; override;
 
     procedure EraseBackground(DC: HDC); override;
+    property Editor;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1048,6 +1054,7 @@ end;
 procedure TRxColumnEditButton.SetHint(AValue: String);
 begin
   FButton.Hint:=AValue;
+  FSpinBtn.Hint:=AValue;
 end;
 
 procedure TRxColumnEditButton.SetNumGlyphs(AValue: Integer);
@@ -1068,14 +1075,85 @@ end;
 
 procedure TRxColumnEditButton.SetVisible(AValue: Boolean);
 begin
-  if FVisible=AValue then Exit;
+//  if FVisible=AValue then Exit;
   FVisible:=AValue;
-  FButton.Visible:=AValue;
+
+  if AValue then
+  begin
+    if Style = ebsUpDownRx then
+    begin
+      FSpinBtn.Visible:=AValue;
+      FButton.Visible:=false;
+    end
+    else
+    begin
+      FButton.Visible:=AValue;
+      FSpinBtn.Visible:=false;
+    end;
+  end
+  else
+  begin
+    FButton.Visible:=AValue;
+    FSpinBtn.Visible:=AValue;
+  end;
 end;
 
 procedure TRxColumnEditButton.SetWidth(AValue: Integer);
 begin
   FButton.Width:=AValue;
+  FSpinBtn.Width:=AValue;
+end;
+
+procedure TRxColumnEditButton.DoBottomClick(Sender: TObject);
+var
+  F:TField;
+  Col:TRxColumn;
+
+  msg: TGridMessage;
+begin
+  Col:=TRxColumnEditButtons(Collection).FOwner as TRxColumn;
+  F:=Col.Field;
+
+  if Assigned(F) and (F.DataType in NumericDataTypes) then
+  begin
+    if not (F.DataSet.State in dsEditModes) then
+      F.DataSet.Edit;
+    F.Value:=F.Value + 1;
+
+    Msg.LclMsg.msg:=GM_SETVALUE;
+    Msg.Grid:=Col.Grid;
+{    Msg.Col:=FCol;
+    Msg.Row:=FRow;}
+    Msg.Value:=F.DisplayText;
+    TRxDBGrid(Col.Grid).Editor.Dispatch(Msg);
+
+  end;
+end;
+
+procedure TRxColumnEditButton.DoTopClick(Sender: TObject);
+var
+  F:TField;
+  Col:TRxColumn;
+
+  msg: TGridMessage;
+begin
+  Col:=TRxColumnEditButtons(Collection).FOwner as TRxColumn;
+  F:=Col.Field;
+
+  if Assigned(F) and (F.DataType in NumericDataTypes) then
+  begin
+    if not (F.DataSet.State in dsEditModes) then
+      F.DataSet.Edit;
+    F.Value:=F.Value - 1;
+
+    Msg.LclMsg.msg:=GM_SETVALUE;
+    Msg.Grid:=Col.Grid;
+{    Msg.Col:=FCol;
+    Msg.Row:=FRow;}
+    Msg.Value:=F.DisplayText;
+    TRxDBGrid(Col.Grid).Editor.Dispatch(Msg);
+
+  end;
 end;
 
 function TRxColumnEditButton.GetDisplayName: string;
@@ -1091,6 +1169,10 @@ begin
   inherited Create(ACollection);
   FButton:=TSpeedButton.Create(nil);
   FButton.Glyph:=LoadLazResBitmapImage('rx_markerdown');
+  FSpinBtn:=TRxSpinButton.Create(nil);
+  FSpinBtn.OnBottomClick:=@DoBottomClick;
+  FSpinBtn.OnTopClick:=@DoTopClick;
+
   FVisible:=true;
   Width:=15;
 end;
@@ -1098,6 +1180,7 @@ end;
 destructor TRxColumnEditButton.Destroy;
 begin
   FreeAndNil(FButton);
+  FreeAndNil(FSpinBtn);
   inherited Destroy;
 end;
 
@@ -2606,6 +2689,7 @@ procedure TRxDBGrid.DoSetColEdtBtn;
 var
   R:TRxColumn;
   i, w:integer;
+  SB:TGraphicControl;
 begin
   R:=SelectedColumn as TRxColumn;
 
@@ -2634,13 +2718,27 @@ begin
       for i:=0 to R.EditButtons.Count-1 do
       if R.EditButtons[i].Visible then
       begin
+        if R.EditButtons[i].Style = ebsUpDownRx then
+        begin
+          SB:=R.EditButtons[i].FSpinBtn;
+          TRxSpinButton(SB).FocusControl:=Editor;
+        end
+        else
+          SB:=R.EditButtons[i].FButton;
+
+        SB.Parent:=Self;
+        SB.Left:=W;
+        SB.Top:=Editor.Top;
+        SB.Height:=Editor.Height;
+        SB.Visible:=true;
+{
         R.EditButtons[i].FButton.Parent:=Self;
         R.EditButtons[i].FButton.Left:=W;
         R.EditButtons[i].FButton.Top:=Editor.Top;
         R.EditButtons[i].FButton.Height:=Editor.Height;
-        R.EditButtons[i].FButton.Visible:=true;
-
-        W:=W+R.EditButtons[i].FButton.Width;
+        R.EditButtons[i].Visible:=true;
+}
+        W:=W+R.EditButtons[i].Width;
       end;
     end;
   end;
@@ -4412,7 +4510,13 @@ begin
 
   if Assigned(Editor) and Assigned(R) then
   for i:=0 to R.EditButtons.Count-1 do
-    R.EditButtons[i].FButton.Visible:=false;
+  begin
+//    R.EditButtons[i].Visible:=false;
+    if R.EditButtons[i].Style = ebsUpDownRx then
+      R.EditButtons[i].FSpinBtn.Visible:=false
+    else
+      R.EditButtons[i].FButton.Visible:=false;
+  end;
 end;
 
 procedure TRxDBGrid.DoEditorShow;

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -60,28 +60,26 @@
         <PackageName Value="LCL"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="11">
+    <Units Count="12">
       <Unit0>
         <Filename Value="PhoneBookDemo.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="PhoneBookDemo"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="3" Y="12"/>
         <UsageCount Value="27"/>
-        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="pbmainunit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="pbMainForm"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="pbMainUnit"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="59"/>
+        <TopLine Value="23"/>
         <CursorPos X="52" Y="23"/>
         <UsageCount Value="27"/>
         <Loaded Value="True"/>
@@ -108,12 +106,14 @@
         <Filename Value="pbeditdataunit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="pbEditDataForm"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="pbEditDataUnit"/>
-        <EditorIndex Value="2"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="15"/>
-        <CursorPos X="3" Y="15"/>
+        <TopLine Value="11"/>
+        <CursorPos X="3" Y="42"/>
         <UsageCount Value="25"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -122,8 +122,8 @@
         <Filename Value="../../rxcloseformvalidator.pas"/>
         <UnitName Value="RxCloseFormValidator"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="130"/>
-        <CursorPos X="3" Y="159"/>
+        <TopLine Value="195"/>
+        <CursorPos X="1" Y="211"/>
         <UsageCount Value="10"/>
       </Unit5>
       <Unit6>
@@ -165,116 +165,111 @@
         <CursorPos X="3" Y="113"/>
         <UsageCount Value="10"/>
       </Unit10>
+      <Unit11>
+        <Filename Value="/home/alexs/install/source/fpcsrc/rtl/objpas/classes/classesh.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="471"/>
+        <CursorPos X="1" Y="503"/>
+        <UsageCount Value="10"/>
+      </Unit11>
     </Units>
-    <JumpHistory Count="27" HistoryIndex="26">
+    <JumpHistory Count="24" HistoryIndex="23">
       <Position1>
         <Filename Value="pbmainunit.pas"/>
-        <Caret Line="81" Column="9" TopLine="49"/>
+        <Caret Line="82" Column="5" TopLine="55"/>
       </Position1>
       <Position2>
         <Filename Value="pbmainunit.pas"/>
-        <Caret Line="82" Column="9" TopLine="50"/>
+        <Caret Line="83" Column="26" TopLine="56"/>
       </Position2>
       <Position3>
         <Filename Value="pbmainunit.pas"/>
-        <Caret Line="83" Column="9" TopLine="51"/>
+        <Caret Line="84" Column="26" TopLine="57"/>
       </Position3>
       <Position4>
         <Filename Value="pbmainunit.pas"/>
-        <Caret Line="82" Column="9" TopLine="50"/>
+        <Caret Line="91" Column="26" TopLine="58"/>
       </Position4>
       <Position5>
         <Filename Value="pbmainunit.pas"/>
-        <Caret Line="81" Column="9" TopLine="49"/>
+        <Caret Line="95" Column="23" TopLine="65"/>
       </Position5>
       <Position6>
         <Filename Value="pbmainunit.pas"/>
-        <Caret Line="80" Column="9" TopLine="48"/>
+        <Caret Line="101" Column="13" TopLine="80"/>
       </Position6>
       <Position7>
         <Filename Value="pbmainunit.pas"/>
-        <Caret Line="87" Column="9" TopLine="51"/>
+        <Caret Line="101" Column="78" TopLine="80"/>
       </Position7>
       <Position8>
         <Filename Value="pbmainunit.pas"/>
-        <Caret Line="82" Column="5" TopLine="55"/>
+        <Caret Line="91" Column="29" TopLine="79"/>
       </Position8>
       <Position9>
-        <Filename Value="pbmainunit.pas"/>
-        <Caret Line="83" Column="26" TopLine="56"/>
+        <Filename Value="pbeditdataunit.pas"/>
+        <Caret Line="15" Column="3" TopLine="3"/>
       </Position9>
       <Position10>
         <Filename Value="pbmainunit.pas"/>
-        <Caret Line="84" Column="26" TopLine="57"/>
+        <Caret Line="101" Column="74" TopLine="79"/>
       </Position10>
       <Position11>
         <Filename Value="pbmainunit.pas"/>
-        <Caret Line="91" Column="26" TopLine="58"/>
+        <Caret Line="75" Column="15" TopLine="41"/>
       </Position11>
       <Position12>
         <Filename Value="pbmainunit.pas"/>
-        <Caret Line="95" Column="23" TopLine="65"/>
+        <Caret Line="74" Column="39" TopLine="40"/>
       </Position12>
       <Position13>
         <Filename Value="pbmainunit.pas"/>
-        <Caret Line="101" Column="13" TopLine="80"/>
+        <Caret Line="101" Column="72" TopLine="81"/>
       </Position13>
       <Position14>
         <Filename Value="pbmainunit.pas"/>
-        <Caret Line="101" Column="78" TopLine="80"/>
+        <Caret Line="106" Column="1" TopLine="81"/>
       </Position14>
       <Position15>
         <Filename Value="pbmainunit.pas"/>
-        <Caret Line="91" Column="29" TopLine="79"/>
+        <Caret Line="102" Column="1" TopLine="80"/>
       </Position15>
       <Position16>
-        <Filename Value="pbeditdataunit.pas"/>
-        <Caret Line="15" Column="3" TopLine="3"/>
+        <Filename Value="pbmainunit.pas"/>
+        <Caret Line="101" Column="1" TopLine="79"/>
       </Position16>
       <Position17>
         <Filename Value="pbmainunit.pas"/>
-        <Caret Line="101" Column="74" TopLine="79"/>
+        <Caret Line="103" Column="1" TopLine="81"/>
       </Position17>
       <Position18>
-        <Filename Value="pbmainunit.pas"/>
-        <Caret Line="75" Column="15" TopLine="41"/>
+        <Filename Value="pbeditdataunit.pas"/>
+        <Caret Line="15" Column="3" TopLine="3"/>
       </Position18>
       <Position19>
         <Filename Value="pbmainunit.pas"/>
-        <Caret Line="74" Column="39" TopLine="40"/>
+        <Caret Line="108" Column="13" TopLine="86"/>
       </Position19>
       <Position20>
         <Filename Value="pbmainunit.pas"/>
-        <Caret Line="101" Column="72" TopLine="81"/>
+        <Caret Line="36" Column="28" TopLine="18"/>
       </Position20>
       <Position21>
-        <Filename Value="pbmainunit.pas"/>
-        <Caret Line="106" Column="1" TopLine="81"/>
+        <Filename Value="pbeditdataunit.pas"/>
+        <Caret Line="15" Column="3" TopLine="11"/>
       </Position21>
       <Position22>
-        <Filename Value="pbmainunit.pas"/>
-        <Caret Line="102" Column="1" TopLine="80"/>
+        <Filename Value="pbeditdataunit.pas"/>
+        <Caret Line="54" Column="3" TopLine="23"/>
       </Position22>
       <Position23>
-        <Filename Value="pbmainunit.pas"/>
-        <Caret Line="101" Column="1" TopLine="79"/>
+        <Filename Value="pbeditdataunit.pas"/>
+        <Caret Line="52" Column="58" TopLine="1"/>
       </Position23>
       <Position24>
-        <Filename Value="pbmainunit.pas"/>
-        <Caret Line="103" Column="1" TopLine="81"/>
-      </Position24>
-      <Position25>
         <Filename Value="pbeditdataunit.pas"/>
-        <Caret Line="15" Column="3" TopLine="3"/>
-      </Position25>
-      <Position26>
-        <Filename Value="pbmainunit.pas"/>
-        <Caret Line="108" Column="13" TopLine="86"/>
-      </Position26>
-      <Position27>
-        <Filename Value="pbmainunit.pas"/>
-        <Caret Line="36" Column="28" TopLine="18"/>
-      </Position27>
+        <Caret Line="55" Column="58" TopLine="23"/>
+      </Position24>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
@@ -307,4 +302,5 @@
       </Item1>
     </Watches>
   </Debugging>
+  <EditorMacros Count="0"/>
 </CONFIG>
