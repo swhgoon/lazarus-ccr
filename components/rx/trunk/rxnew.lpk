@@ -23,10 +23,10 @@
     </CompilerOptions>
     <Description Value="Delphi VCL Extensions (RX) 
 Copyright (c) 1998 Master-Bank
-translate to Lazarus by alexs in 2005 - 2012
+translate to Lazarus by alexs in 2005 - 2014
 "/>
     <License Value="LGPL"/>
-    <Version Major="2" Minor="6" Release="1" Build="134"/>
+    <Version Major="2" Minor="6" Release="2" Build="136"/>
     <Files Count="68">
       <Item1>
         <Filename Value="autopanel.pas"/>

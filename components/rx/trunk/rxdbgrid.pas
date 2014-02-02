@@ -814,6 +814,7 @@ type
     property OnDrawColumnCell;
     property OnDblClick;
     property OnEditButtonClick;
+    property OnEditingDone;
     property OnEndDock;
     property OnEndDrag;
     property OnEnter;
