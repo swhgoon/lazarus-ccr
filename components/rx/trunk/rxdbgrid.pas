@@ -707,6 +707,7 @@ type
     procedure SelectAllRows;
     procedure DeSelectAllRows;
     procedure InvertSelection;
+    procedure CopyCellValue;
 
     property Canvas;
     property DefaultTextStyle;
@@ -1118,7 +1119,7 @@ begin
   begin
     if not (F.DataSet.State in dsEditModes) then
       F.DataSet.Edit;
-    F.Value:=F.Value + 1;
+    F.Value:=F.Value - 1;
 
     Msg.LclMsg.msg:=GM_SETVALUE;
     Msg.Grid:=Col.Grid;
@@ -1144,7 +1145,7 @@ begin
   begin
     if not (F.DataSet.State in dsEditModes) then
       F.DataSet.Edit;
-    F.Value:=F.Value - 1;
+    F.Value:=F.Value + 1;
 
     Msg.LclMsg.msg:=GM_SETVALUE;
     Msg.Grid:=Col.Grid;
@@ -4467,9 +4468,63 @@ begin
 end;
 
 procedure TRxDBGrid.OnCopyCellValue(Sender: TObject);
+var
+  P:TBookMark;
+  S:string;
+  i, k:integer;
 begin
-  if DatalinkActive and Assigned(SelectedField) then
+  if DatalinkActive then
   begin
+    if (dgMultiselect in Options) and (SelectedRows.Count>1) then
+    begin
+      S:='';
+      DataSource.DataSet.DisableControls;
+      {$IFDEF NoAutomatedBookmark}
+      P:=DataSource.DataSet.GetBookmark;
+      {$ELSE}
+      P:=DataSource.DataSet.Bookmark;
+      {$ENDIF}
+      try
+        DataSource.DataSet.First;
+        while not DataSource.DataSet.EOF do
+        begin
+          if S<>'' then
+            S:=S+LineEnding;
+          K:=0;
+          for i:=0 to Columns.Count-1 do
+          begin
+            if Assigned(Columns[i].Field) then
+            begin
+              if K<>0 then
+                S:=S+#9;
+              S:=S+Columns[i].Field.DisplayText;
+              inc(K);
+            end;
+          end;
+          DataSource.DataSet.Next;
+        end;
+      finally
+      {$IFDEF NoAutomatedBookmark}
+        DataSource.DataSet.GotoBookmark(P);
+        DataSource.DataSet.FreeBookmark(P);
+      {$ELSE}
+        DataSource.DataSet.Bookmark:=P;
+      {$ENDIF}
+        DataSource.DataSet.EnableControls;
+      end;
+      Invalidate;
+      if S<>'' then
+      begin
+        try
+          Clipboard.Open;
+          Clipboard.AsText:=S;
+        finally
+          Clipboard.Close;
+        end;
+      end;
+    end
+    else
+    if Assigned(SelectedField) then
     try
       Clipboard.Open;
       Clipboard.AsText:=SelectedField.DisplayText;
@@ -4631,6 +4686,11 @@ begin
     end;
     Invalidate;
   end;
+end;
+
+procedure TRxDBGrid.CopyCellValue;
+begin
+  OnCopyCellValue(Self);
 end;
 
 //!!!
