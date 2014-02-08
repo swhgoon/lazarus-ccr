@@ -222,6 +222,10 @@ msgstr "Реєстрація"
 msgid "Retry to connect with database?"
 msgstr "Ви хочете повторити спробу з'єднання з базою даних?"
 
+#: rxdconst.srxallfields
+msgid "All fields"
+msgstr ""
+
 #: rxdconst.srxascendign
 msgid "Ascendign"
 msgstr "По зростанню"
@@ -325,6 +329,18 @@ msgstr "Сортувати дані по колонках"
 msgid "Descending"
 msgstr "За зменшенням"
 
+#: rxdconst.srxfieldslookupdisplay
+msgid "Fields as LookupDisplay"
+msgstr ""
+
+#: rxdconst.srxfillfieldslookupdisp
+msgid "Fill fields in LookupDisplay property"
+msgstr ""
+
+#: rxdconst.srxfillsortfieldsdisp
+msgid "Fill fields in SortField property"
+msgstr ""
+
 #: rxdconst.srxfilterformapply
 msgid "Apply"
 msgstr "Застосувати"
@@ -409,6 +425,10 @@ msgstr "&Вибрані поля"
 #: rxdconst.srxsortbyformsortorder
 msgid "Select f&ield for sort data:"
 msgstr "Вкажіть поля для сортування даних :"
+
+#: rxdconst.srxsortfieldsdisplay
+msgid "Fields as SortField"
+msgstr ""
 
 #: rxdconst.srxsoursedataset
 msgid "Sourse dataset"

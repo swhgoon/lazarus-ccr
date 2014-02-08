@@ -209,7 +209,7 @@ type
     procedure UpdateFooterRows(ADataSet:TDataSet; AGrid:TRxDBGrid);virtual; abstract;
     function EnabledFooterRowsCalc:boolean;virtual;
   public
-    procedure Sort(Field: TField; ADataSet: TDataSet; Asc: boolean; SortOptions: TRxSortEngineOptions); virtual; abstract;
+    procedure Sort(FieldName: string; ADataSet: TDataSet; Asc: boolean; SortOptions: TRxSortEngineOptions); virtual; abstract;
     procedure SortList(ListField: string; ADataSet: TDataSet; Asc: array of boolean; SortOptions: TRxSortEngineOptions); virtual;
   end;
 
@@ -416,12 +416,14 @@ type
     FKeyList: TStrings;
     FNotInKeyListIndex: integer;
     FOnDrawColumnCell: TDrawColumnCellEvent;
+    FSortFields: string;
     FSortOrder: TSortMarker;
     FSortPosition: integer;
     FWordWrap: boolean;
     function GetConstraints: TRxDBGridCollumnConstraints;
     function GetFooter: TRxColumnFooter;
     function GetKeyList: TStrings;
+    function GetSortFields:string;
     procedure SetConstraints(AValue: TRxDBGridCollumnConstraints);
     procedure SetEditButtons(AValue: TRxColumnEditButtons);
     procedure SetFilter(const AValue: TRxColumnFilter);
@@ -440,6 +442,7 @@ type
     property SortOrder: TSortMarker read FSortOrder write FSortOrder;
     property SortPosition: integer read FSortPosition;
   published
+    property SortFields: string read FSortFields write FSortFields;
     property Footer: TRxColumnFooter read GetFooter write SetFooter;
     property Constraints:TRxDBGridCollumnConstraints read GetConstraints write SetConstraints;
     property ImageList: TImageList read FImageList write SetImageList;
@@ -1871,7 +1874,7 @@ end;
 function TRxDBGrid.GetSortField: string;
 begin
   if FSortColumns.Count > 0 then
-    Result:=FSortColumns[0].FieldName
+    Result:=FSortColumns[0].GetSortFields
   else
     Result:='';
 end;
@@ -2584,13 +2587,13 @@ begin
       Asc[i]:=FSortColumns[i].FSortOrder = smUp;
       if S<>'' then
           S:=S+';';
-      S:=S + FSortColumns[i].FieldName;
+      S:=S + FSortColumns[i].GetSortFields;
     end;
     { TODO : Необходимо добавить опцию регистронезависимого поиска }
     FSortEngine.SortList(S, DataSource.DataSet, Asc, SortEngineOptions);
   end
   else
-    FSortEngine.Sort(FSortColumns[0].Field, DataSource.DataSet, FSortColumns[0].FSortOrder = smUp, SortEngineOptions);
+    FSortEngine.Sort(FSortColumns[0].GetSortFields, DataSource.DataSet, FSortColumns[0].FSortOrder = smUp, SortEngineOptions);
   FSortingNow:=false;
 end;
 
@@ -4870,6 +4873,14 @@ begin
   if FKeyList = nil then
     FKeyList := TStringList.Create;
   Result := FKeyList;
+end;
+
+function TRxColumn.GetSortFields: string;
+begin
+  if FSortFields = '' then
+    Result:=FieldName
+  else
+    Result:=FSortFields;
 end;
 
 procedure TRxColumn.SetConstraints(AValue: TRxDBGridCollumnConstraints);

@@ -213,6 +213,10 @@ msgstr ""
 msgid "Retry to connect with database?"
 msgstr ""
 
+#: rxdconst.srxallfields
+msgid "All fields"
+msgstr ""
+
 #: rxdconst.srxascendign
 msgid "Ascendign"
 msgstr ""
@@ -316,6 +320,18 @@ msgstr ""
 msgid "Descending"
 msgstr ""
 
+#: rxdconst.srxfieldslookupdisplay
+msgid "Fields as LookupDisplay"
+msgstr ""
+
+#: rxdconst.srxfillfieldslookupdisp
+msgid "Fill fields in LookupDisplay property"
+msgstr ""
+
+#: rxdconst.srxfillsortfieldsdisp
+msgid "Fill fields in SortField property"
+msgstr ""
+
 #: rxdconst.srxfilterformapply
 msgid "Apply"
 msgstr ""
@@ -399,6 +415,10 @@ msgstr ""
 
 #: rxdconst.srxsortbyformsortorder
 msgid "Select f&ield for sort data:"
+msgstr ""
+
+#: rxdconst.srxsortfieldsdisplay
+msgid "Fields as SortField"
 msgstr ""
 
 #: rxdconst.srxsoursedataset

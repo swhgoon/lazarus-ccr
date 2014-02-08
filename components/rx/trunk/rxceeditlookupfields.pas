@@ -61,7 +61,7 @@ procedure RegisterCEEditLookupFields;
 implementation
 uses
   //
-  db, duallist, Forms, rxstrutils, TypInfo,
+  db, duallist, Forms, rxstrutils, TypInfo, rxdconst,
   //unit for edits
   rxlookup;
 
@@ -150,9 +150,9 @@ end;
 
 procedure DoSetCaptions;
 begin
-  DualListDialog1.Label1Caption:='All fields';
-  DualListDialog1.Label2Caption:='Fields is LookupDisplay';
-  DualListDialog1.Title:='Fill fields in LookupDisplay property';
+  DualListDialog1.Label1Caption:=sRxAllFields;
+  DualListDialog1.Label2Caption:=sRxFieldsLookupDisplay;
+  DualListDialog1.Title:=sRxFillFieldsLookupDisp;
 end;
 
 begin

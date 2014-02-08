@@ -16,7 +16,7 @@ type
     procedure UpdateFooterRows(ADataSet:TDataSet; AGrid:TRxDBGrid);override;
     function EnabledFooterRowsCalc:boolean;override;
   public
-    procedure Sort(Field:TField; ADataSet:TDataSet; Asc:boolean; SortOptions:TRxSortEngineOptions);override;
+    procedure Sort(FieldName: string; ADataSet:TDataSet; Asc:boolean; SortOptions:TRxSortEngineOptions);override;
     procedure SortList(ListField: string; ADataSet: TDataSet; Asc: array of boolean; SortOptions: TRxSortEngineOptions); override;
   end;
 
@@ -117,12 +117,13 @@ begin
   Result:=true;
 end;
 
-procedure TZeosDataSetSortEngine.Sort(Field:TField; ADataSet:TDataSet; Asc:boolean; SortOptions:TRxSortEngineOptions);
+procedure TZeosDataSetSortEngine.Sort(FieldName: string; ADataSet: TDataSet;
+  Asc: boolean; SortOptions: TRxSortEngineOptions);
 begin
   if not Assigned(ADataSet) then exit;
   if ADataSet is TZAbstractDataset then
   begin
-    TZAbstractDataset(ADataSet).SortedFields:=Field.FieldName;
+    TZAbstractDataset(ADataSet).SortedFields:=FieldName;
     if Asc then
       TZAbstractDataset(ADataSet).SortType:=stAscending
     else

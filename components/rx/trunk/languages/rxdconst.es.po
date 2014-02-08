@@ -213,6 +213,10 @@ msgstr "Registro"
 msgid "Retry to connect with database?"
 msgstr "Reintentar conectar con la base de dato?"
 
+#: rxdconst.srxallfields
+msgid "All fields"
+msgstr ""
+
 #: rxdconst.srxascendign
 msgid "Ascendign"
 msgstr "Ascendente"
@@ -316,6 +320,18 @@ msgstr "Ordenar por Columnas"
 msgid "Descending"
 msgstr "Descendente"
 
+#: rxdconst.srxfieldslookupdisplay
+msgid "Fields as LookupDisplay"
+msgstr ""
+
+#: rxdconst.srxfillfieldslookupdisp
+msgid "Fill fields in LookupDisplay property"
+msgstr ""
+
+#: rxdconst.srxfillsortfieldsdisp
+msgid "Fill fields in SortField property"
+msgstr ""
+
 #: rxdconst.srxfilterformapply
 msgid "Apply"
 msgstr "Aceptar"
@@ -402,6 +418,10 @@ msgstr "&Campos Disponibles :"
 #| msgid "Select field for sort data:"
 msgid "Select f&ield for sort data:"
 msgstr "Seleccionar Dirección de Ordenamiento :"
+
+#: rxdconst.srxsortfieldsdisplay
+msgid "Fields as SortField"
+msgstr ""
 
 #: rxdconst.srxsoursedataset
 msgid "Sourse dataset"

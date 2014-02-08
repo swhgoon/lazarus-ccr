@@ -597,15 +597,6 @@ begin
 
     ABounds := Screen.MonitorFromPoint(P).BoundsRect;
 
-{    if PopupOrigin.X + Width > ABounds.Right then
-      Left := ABounds.Right - Width
-    else
-      Left := PopupOrigin.X;
-    if PopupOrigin.Y + Height > ABounds.Bottom then
-      Top := ABounds.Bottom - Height
-    else
-      Top := PopupOrigin.Y;}
-
     Y := P.Y + Height;
     if Y + FPopup.Height > ABounds.Right then
       Y := P.Y - FPopup.Height;

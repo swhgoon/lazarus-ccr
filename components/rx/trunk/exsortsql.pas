@@ -43,7 +43,7 @@ type
 
   TSQLQuerySortEngine = class(TRxDBGridSortEngine)
   public
-    procedure Sort(Field:TField; ADataSet:TDataSet; Asc:boolean; SortOptions:TRxSortEngineOptions);override;
+    procedure Sort(FieldName: string; ADataSet:TDataSet; Asc:boolean; SortOptions:TRxSortEngineOptions);override;
     procedure SortList(ListField: string; ADataSet: TDataSet; Asc: array of boolean; SortOptions: TRxSortEngineOptions); override;
   end;
 
@@ -51,10 +51,10 @@ implementation
 uses SQLDB, synRegExpr, strUtils;
 
 
-procedure TSQLQuerySortEngine.Sort(Field: TField; ADataSet: TDataSet;
+procedure TSQLQuerySortEngine.Sort(FieldName: string; ADataSet: TDataSet;
   Asc: boolean; SortOptions: TRxSortEngineOptions);
 begin
-  SortList(Field.FieldName,ADataSet,Asc,SortOptions);
+  SortList(FieldName,ADataSet,Asc,SortOptions);
 end;
 
 procedure TSQLQuerySortEngine.SortList(ListField: string; ADataSet: TDataSet;

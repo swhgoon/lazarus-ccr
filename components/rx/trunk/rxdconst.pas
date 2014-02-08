@@ -92,6 +92,11 @@ resourcestring
   SCircularDataLink        = 'SCircularDataLink';
   sRxAscendign             = 'Ascendign';
   sRxDescending            = 'Descending';
+  sRxAllFields             = 'All fields';
+  sRxFieldsLookupDisplay   = 'Fields as LookupDisplay';
+  sRxFillFieldsLookupDisp  = 'Fill fields in LookupDisplay property';
+  sRxSortFieldsDisplay     = 'Fields as SortField';
+  sRxFillSortFieldsDisp    = 'Fill fields in SortField property';
 
 
   SDeleteRecordQuestion    = 'Delete record?';

@@ -49,70 +49,8 @@ uses
   curredit, rxswitch, rxdice, rxtoolbar, rxxpman, PageMngr, RxAppIcon,
   Dialogs, ComponentEditors, DBPropEdits, DB, rxctrls,
   RxCustomChartPanel, AutoPanel, pickdate, rxconst, tooledit, rxclock,
-  rxceEditLookupFields, rxpopupunit, rxspin, RxTimeEdit,
+  rxpopupunit, rxspin, RxTimeEdit,
   RxAboutDialog, RxViewsPanel, RxMDI;
-
-type
-
-
-  { TPopUpColumnFieldProperty }
-
-  TPopUpColumnFieldProperty = class(TFieldProperty)
-  public
-    procedure FillValues(const Values: TStringList); override;
-  end;
-
-{ TPopUpColumnFieldProperty }
-
-procedure TPopUpColumnFieldProperty.FillValues(const Values: TStringList);
-var
-  Column: TPopUpColumn;
-  DataSource: TDataSource;
-begin
-  Column:=TPopUpColumn(GetComponent(0));
-  if not (Column is TPopUpColumn) then exit;
-  DataSource := TPopUpFormColumns(Column.Collection).PopUpFormOptions.DataSource;
-  if Assigned(DataSource) and Assigned(DataSource.DataSet) then
-    DataSource.DataSet.GetFieldNames(Values);
-end;
-
-type
-
-  { THistoryButtonProperty }
-
-  THistoryButtonProperty = class(TStringPropertyEditor)
-  public
-    function  GetAttributes: TPropertyAttributes; override;
-    procedure GetValues(Proc: TGetStrProc); override;
-  end;
-
-
-
-{ THistoryButtonProperty }
-
-function THistoryButtonProperty.GetAttributes: TPropertyAttributes;
-begin
-  Result:= [paValueList, paSortList, paMultiSelect];
-end;
-
-procedure THistoryButtonProperty.GetValues(Proc: TGetStrProc);
-var
-  I: Integer;
-  Navigator:TRxHistoryNavigator;
-begin
-  Navigator:=TRxHistoryNavigator(GetComponent(0));
-  if Assigned(Navigator) then
-  begin
-    if Assigned(Navigator.ToolPanel) then
-    begin
-      for i:=0 to Navigator.ToolPanel.Items.Count - 1 do
-      begin
-        if Assigned(Navigator.ToolPanel.Items[i].Action) then
-          Proc(Navigator.ToolPanel.Items[i].Action.Name);
-      end;
-    end;
-  end;
-end;
 
 {$IFDEF USE_TRxAppIcon}
 procedure RegisterRxAppIcon;
@@ -252,14 +190,6 @@ begin
   RegisterUnit('RxViewsPanel', @RegisterRxViewsPanel);
   RegisterUnit('RxHistoryNavigator', @RegisterRxHistoryNavigator);
   RegisterUnit('RxMDI', @RegisterRxMDI);
-
-
-
-//
-  RegisterPropertyEditor(TypeInfo(string), TPopUpColumn, 'FieldName', TPopUpColumnFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TRxHistoryNavigator, 'BackBtn', THistoryButtonProperty);
-  RegisterPropertyEditor(TypeInfo(string), TRxHistoryNavigator, 'ForwardBtn', THistoryButtonProperty);
-  RegisterCEEditLookupFields;
 end;
 
 initialization
