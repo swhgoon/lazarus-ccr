@@ -37,7 +37,6 @@ type
     FNavForm: TForm;
     FActiveControl:TWinControl;
     FNavPanel:TRxMDITasks;
-    FSaveClose:TCloseEvent;
     procedure SetRxMDIForm(AValue: TForm);
     procedure DoCreateMenuItems;
 
@@ -213,7 +212,6 @@ begin
   if FInfoLabel<>nil then exit;
   FInfoLabel := TBoundLabel.Create(Self);
   FInfoLabel.ControlStyle := FInfoLabel.ControlStyle + [csNoDesignSelectable];
-  //FInfoLabel.FocusControl := Self;
 end;
 
 constructor TRxMDICloseButton.Create(AOwner: TComponent);
@@ -246,7 +244,10 @@ end;
 procedure TRxMDIPanel.navCloseButtonClick(Sender: TObject);
 begin
   if Assigned(FCurrentChildWindow) then
-    FCurrentChildWindow.Close;
+  begin
+    if not (csDestroying in FCurrentChildWindow.ComponentState) then
+      FCurrentChildWindow.Close
+  end;
 end;
 
 procedure TRxMDIPanel.SetRxMDICloseButton(AValue: TRxMDICloseButton);
@@ -471,36 +472,29 @@ var
   CC:TControl;
   i:integer;
 begin
-{
-  DebugLn(['FMainPanel.ControlCount =  ',  FMainPanel.ControlCount]);
-  for i:=0 to  FMainPanel.ControlCount-1 do
-    DebugLn(['FMainPanel.Controls[',i,'].Name =  ',  FMainPanel.Controls[i].Name]);
-}
-
-
-
-  if (FMainPanel.ControlCount>1) then
+  if (FMainPanel.ControlCount>1) and (not Application.Terminated) then
   begin
     CC:=FMainPanel.Controls[FMainPanel.ControlCount-2];
+
     if Assigned(CC) then
       ShowWindow(CC as TForm)
   end
   else
     FMainPanel.CurrentChildWindow:=nil;
-  Invalidate;
+//  Invalidate;
 end;
 
 procedure TRxMDITasks.DoCloseAll(AIgnoreBtn: TRxMDIButton);
 var
   i:integer;
 begin
-//  DebugLn('DoCloseAll');
-
   for i:=ComponentCount-1 downto 0 do
   begin
     if (Components[i] is TRxMDIButton) and (TRxMDIButton(Components[i]) <> AIgnoreBtn) then
       TRxMDIButton(Components[i]).DoCloseMenu(nil);
   end;
+  if Assigned(AIgnoreBtn) then
+    FMainPanel.CurrentChildWindow:=AIgnoreBtn.FNavForm;
 end;
 
 procedure TRxMDITasks.Paint;
@@ -624,10 +618,7 @@ begin
   FNavForm:=AValue;
   if Assigned(FNavForm) then
   begin
-    FSaveClose:=FNavForm.OnClose;
-    //FSaveDeactivate:=FNavForm.OnDeactivate;
-    FNavForm.OnClose:=@FormClose;
-    //FNavForm.OnDeactivate:=@FormDeactivate;
+    FNavForm.AddHandlerClose(@FormClose);
 
     Caption:=' '+FNavForm.Caption+' ';
     DoCreateButtonImage;
@@ -675,7 +666,7 @@ procedure TRxMDIButton.DoCloseMenu(Sender: TObject);
 begin
   if Assigned(FNavForm) then
     FNavForm.Close;
-  Application.ProcessMessages;
+//  Application.ProcessMessages;
 end;
 
 procedure TRxMDIButton.DoCloseAllMenu(Sender: TObject);
@@ -718,13 +709,12 @@ end;
 
 procedure TRxMDIButton.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
-  if Assigned(FSaveClose) then
-    FSaveClose(Sender, CloseAction);
   FNavPanel.ChildWindowsShowLast;
   FNavPanel.ShowHiddenBtnOnResize;
   CloseAction:=caFree;
   Owner.RemoveComponent(Self);
-  Free;
+  FNavPanel.FMainPanel.RemoveControl(Sender as TCustomForm);
+  Application.ReleaseComponent(Self);
 end;
 
 constructor TRxMDIButton.CreateButton(AOwner: TRxMDITasks; AForm: TForm);
@@ -752,9 +742,7 @@ begin
   begin
     FNavPanel.FMainPanel.HideCurrentWindow;
     FNavForm.Show;
-    //FNavForm.BringToFront;
     FNavPanel.FMainPanel.CurrentChildWindow:=NavForm;
-    //Application.MainForm.ActiveControl:=NavForm.ActiveControl;
     if Assigned(FActiveControl) and FActiveControl.HandleObjectShouldBeVisible then
       FActiveControl.SetFocus;
   end;

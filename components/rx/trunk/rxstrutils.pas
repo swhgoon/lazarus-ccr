@@ -44,9 +44,6 @@ interface
 uses SysUtils, Classes;
 
 type
-{$IFNDEF RX_D4}
-  TSysCharSet = set of Char;
-{$ENDIF}
   TCharSet = TSysCharSet;
 
 { ** Common string handling routines ** }
@@ -237,12 +234,9 @@ function RomanToInt(const S: string): Longint; deprecated; //use this function f
 procedure StrToStrings(const S:string; const List:TStrings; const Delims:Char);
 
 const
-//  CRLF = #13#10;
   DigitChars = ['0'..'9'];
-{$IFNDEF CBUILDER}
   Brackets = ['(',')','[',']','{','}'];
   StdWordDelims = [#0..' ',',','.',';','/','\',':','''','"','`'] + Brackets;
-{$ENDIF}
 
 implementation
 
