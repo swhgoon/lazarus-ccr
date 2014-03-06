@@ -217,10 +217,13 @@ function PaintComboEdit(Editor: TCustomMaskEdit; const AText: string;
 function EditorTextMargins(Editor: TCustomMaskEdit): TPoint;
 
 implementation
-uses lclintf, LCLStrConsts, rxconst, rxstrutils, LResources, Forms, LCLProc,
+uses lclintf, LCLStrConsts, rxconst, rxstrutils, LResources,
+  Forms, LCLProc,
   variants;
 
+{$IFNDEF RX_USE_LAZARUS_RESOURCE}
 {$R tooledit.res}
+{$ENDIF}
 
 type
   TPopupCalendarAccess = class(TPopupCalendar)
@@ -909,9 +912,10 @@ begin
   SetDate(DateValue);
 end;
 
-(*
+{$IFDEF RX_USE_LAZARUS_RESOURCE}
 initialization
   {$I tooledit.lrs}
-*)
+{$ENDIF}
+
 end.
 
