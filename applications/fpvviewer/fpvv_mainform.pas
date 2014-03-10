@@ -27,6 +27,7 @@ type
     buttonAdjust: TButton;
     buttonViewDebugInfo: TButton;
     buttonRenderingTest: TButton;
+    checkShowPage: TCheckBox;
     checkForceWhiteBackground: TCheckBox;
     comboEncoding: TComboBox;
     editFileName: TFileNameEdit;
@@ -97,6 +98,7 @@ const
 var
   Vec: TvVectorialDocument;
   CanvasSize: TPoint;
+  lCurPage: TvVectorialPage;
 begin
   // First check the in input
   if editFileName.FileName = '' then Exit; // silent exit in this simple case
@@ -137,6 +139,13 @@ begin
     if checkForceWhiteBackground.Checked then Vec.GetPageAsVectorial(0).BackgroundColor := colWhite;
     if not checkForceWhiteBackground.Checked then
       Vec.GetPageAsVectorial(0).DrawBackground(Drawer.Drawing.Canvas);
+    if checkShowPage.Checked then
+      Vec.GetPageAsVectorial(0).RenderPageBorder(
+        Drawer.Drawing.Canvas,
+        FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS + Drawer.PosX,
+        Drawer.Drawing.Height - FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS + Drawer.PosY,
+        spinScale.Value,
+        -1 * spinScale.Value);
     Vec.GetPageAsVectorial(0).Render(
       Drawer.Drawing.Canvas,
       FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS + Drawer.PosX,
@@ -306,6 +315,7 @@ procedure TfrmFPVViewer.Button2Click(Sender: TObject);
 var
   Vec: TvVectorialDocument;
   i: Integer;
+  lCurPage: TvVectorialPage;
 begin
   // First check the in input
   //if not CheckInput() then Exit;

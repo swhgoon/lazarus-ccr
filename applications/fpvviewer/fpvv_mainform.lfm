@@ -82,7 +82,7 @@ object frmFPVViewer: TfrmFPVViewer
     TabOrder = 1
     object editFileName: TFileNameEdit
       Left = 8
-      Height = 23
+      Height = 22
       Top = 8
       Width = 304
       DialogOptions = []
@@ -104,7 +104,7 @@ object frmFPVViewer: TfrmFPVViewer
     end
     object spinScale: TFloatSpinEdit
       Left = 72
-      Height = 23
+      Height = 16
       Top = 97
       Width = 168
       DecimalPlaces = 6
@@ -117,9 +117,9 @@ object frmFPVViewer: TfrmFPVViewer
     end
     object Label1: TLabel
       Left = 8
-      Height = 15
+      Height = 16
       Top = 97
-      Width = 46
+      Width = 55
       Caption = 'Scale by:'
       ParentColor = False
     end
@@ -161,15 +161,15 @@ object frmFPVViewer: TfrmFPVViewer
     end
     object Label2: TLabel
       Left = 8
-      Height = 15
+      Height = 16
       Top = 72
-      Width = 73
+      Width = 88
       Caption = 'Y adjustment:'
       ParentColor = False
     end
     object spinAdjustY: TSpinEdit
       Left = 80
-      Height = 23
+      Height = 16
       Top = 72
       Width = 72
       Increment = 100
@@ -180,7 +180,7 @@ object frmFPVViewer: TfrmFPVViewer
     end
     object spinAdjustX: TSpinEdit
       Left = 232
-      Height = 23
+      Height = 16
       Top = 72
       Width = 72
       Increment = 50
@@ -191,9 +191,9 @@ object frmFPVViewer: TfrmFPVViewer
     end
     object Label3: TLabel
       Left = 160
-      Height = 15
+      Height = 16
       Top = 72
-      Width = 73
+      Width = 88
       Caption = 'X adjustment:'
       ParentColor = False
     end
@@ -208,18 +208,18 @@ object frmFPVViewer: TfrmFPVViewer
     end
     object Label4: TLabel
       Left = 9
-      Height = 15
+      Height = 16
       Top = 126
-      Width = 128
+      Width = 153
       Caption = 'Force encoding on read:'
       ParentColor = False
     end
     object comboEncoding: TComboBox
       Left = 144
-      Height = 23
+      Height = 20
       Top = 126
       Width = 128
-      ItemHeight = 15
+      ItemHeight = 0
       ItemIndex = 0
       Items.Strings = (
         'Read from the file'
@@ -255,22 +255,22 @@ object frmFPVViewer: TfrmFPVViewer
     end
     object labelFileEncoding: TLabel
       Left = 278
-      Height = 15
+      Height = 16
       Top = 130
-      Width = 74
+      Width = 88
       Caption = 'File encoding:'
       ParentColor = False
     end
     object checkForceWhiteBackground: TCheckBox
       Left = 9
-      Height = 19
+      Height = 18
       Top = 152
-      Width = 153
+      Width = 178
       Caption = 'Force white background?'
       TabOrder = 11
     end
     object buttonViewDebugInfo: TButton
-      Left = 256
+      Left = 344
       Height = 17
       Top = 153
       Width = 131
@@ -295,6 +295,14 @@ object frmFPVViewer: TfrmFPVViewer
       Caption = 'Adjust'
       OnClick = buttonAdjustClick
       TabOrder = 14
+    end
+    object checkShowPage: TCheckBox
+      Left = 216
+      Height = 18
+      Top = 152
+      Width = 87
+      Caption = 'Show Page'
+      TabOrder = 15
     end
   end
 end
