@@ -2579,7 +2579,7 @@ var
 begin
   if (FSortColumns.Count = 0) then exit;
   FSortingNow:=true;
-  if FSortColumns.Count>1 then
+  if (FSortColumns.Count>1) or (Pos(';', FSortColumns[0].GetSortFields)>0) then
   begin
     SetLength(Asc, FSortColumns.Count);
     for i := 0 to FSortColumns.Count - 1 do

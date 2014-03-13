@@ -83,6 +83,8 @@ msgid "Field '%s' not used in filter expression"
 msgstr "Поле '%s' не може бути використане в виразі фільтрації"
 
 #: rxdconst.sexprbadnulltest
+#, fuzzy
+#| msgid "NULL-values enabled in '=' Ð¸ '<>'"
 msgid "NULL-values enabled in '=' и '<>'"
 msgstr "NULL-значення дозволені тільки у виразах '=' і '<>'"
 
