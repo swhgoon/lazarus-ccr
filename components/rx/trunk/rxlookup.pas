@@ -148,6 +148,8 @@ type
   { TRxCustomDBLookupCombo }
   TRxCustomDBLookupCombo = class (TCustomControl)
   private
+    //
+    FStopClick:boolean;
     //FDataLink:TFieldDataLink;
     FDataLink:TDataSourceLink;
     FDataFieldName: string;
@@ -256,7 +258,6 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure CMVisibleChanged(var Msg: TLMessage); message CM_VISIBLECHANGED;
     procedure CMEnabledChanged(var Msg: TLMessage); message CM_ENABLEDCHANGED;
-    procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     procedure Click; override;
     function RealGetText: TCaption; override;
     procedure RealSetText(const Value: TCaption); override;
@@ -1309,10 +1310,7 @@ procedure TRxCustomDBLookupCombo.SetParent(AParent: TWinControl);
 begin
   inherited SetParent(AParent);
   if FButton <> nil then
-  begin
-//    FButton.Parent := Parent;
     CheckButtonVisible;
-  end;
 end;
 
 procedure TRxCustomDBLookupCombo.DoSetBounds(ALeft, ATop, AWidth,
@@ -1345,15 +1343,13 @@ end;
 
 procedure TRxCustomDBLookupCombo.DoButtonClick(Sender: TObject);
 begin
-  if not FReadOnly then//We can do something if and only if that's not ReadOnly field...
-   Begin
+  if (not FReadOnly) and (not FStopClick) then//We can do something if and only if that's not ReadOnly field...
+  begin
     if Assigned(FOnButtonClick) then
-        FOnButtonClick(Self);
-{  if PopupVisible then
-    HideList
-  else}
+      FOnButtonClick(Self);
     ShowList;
-  End;
+  end;
+  FStopClick:=false;
 end;
 
 procedure TRxCustomDBLookupCombo.Loaded;
@@ -1383,19 +1379,12 @@ begin
     FButton.Enabled:=Enabled;
 end;
 
-procedure TRxCustomDBLookupCombo.MouseDown(Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-begin
- inherited MouseDown(Button,Shift, X, Y);
-{   If not Self.PopupVisible then
-     DoButtonClick(Self);}
-end;
-
 procedure TRxCustomDBLookupCombo.Click;
 begin
  inherited Click;
  If not Self.PopupVisible then
    DoButtonClick(Self);
+ FStopClick:=false;
 end;
 
 function TRxCustomDBLookupCombo.RealGetText: TCaption;
@@ -1559,6 +1548,7 @@ var
   ArrowBmp:TBitmap;
 begin
   inherited Create(AOwner);
+  FStopClick:=false;
   Width := 100;
   AutoSize:=true;
   FUnfindedValue:=rxufNone;
@@ -1568,7 +1558,6 @@ begin
   FPopUpFormOptions:=TPopUpFormOptions.Create(Self);
   //Lookup
   FLookupDataLink:=TLookupSourceLink.Create;
-//  FLookupDataLink.FDataControl:=Self;
   FLookupDataLink.FOnActiveChanged:=@ListLinkActiveChanged;
   FLookupDataLink.FOnLayoutChanged:=@ListLinkActiveChanged;
   FLookupDataLink.FOnDataSetChanged:=@LookupDataSetChanged;
@@ -1589,7 +1578,6 @@ begin
   FButton.ControlStyle := FButton.ControlStyle + [csNoDesignSelectable];
   FButton.Align:=alRight;
   FButton.BorderSpacing.Around:=2;
-  //FButton.TabStop:=true;
 
   ControlStyle := ControlStyle - [csSetCaption];
   FDirectInput := True;
@@ -1686,11 +1674,8 @@ end;
 procedure TRxDBLookupCombo.OnInternalClosePopup(AResult: boolean);
 begin
   inherited OnInternalClosePopup(AResult);
-//  SetFocus;
-{  if (Owner is TWinControl) then
-    TWinControl(Owner).Repaint
-  else
-    Parent.Repaint;}
+  if MouseEntered or FButton.MouseEntered then
+    FStopClick:=true;
 end;
 
 end.
