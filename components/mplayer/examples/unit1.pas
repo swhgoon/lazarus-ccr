@@ -72,6 +72,15 @@ begin
     MPlayerControl1.Filename:=CleanAndExpandFilename(ParamStrUTF8(1));
     StatusBar1.SimpleText:=MPlayerControl1.Filename;
   end;
+  {$IFDEF Linux}
+   MPlayerControl1.MPlayerPath:='';
+   MPlayerControl1.StartParam:='-vo x11 -zoom -fs';
+  {$else $IFDEF Windows}
+   // Download MPlayer generic for Windows and save under Programm Folder Directory
+   // http://sourceforge.net/projects/mplayer-win32/
+   MPlayerControl1.MPlayerPath:=extractfilepath(application.exename)+'MPlayer/mplayer.exe' ;
+   MPlayerControl1.StartParam:='-zoom -fs';
+  {$endif}
 end;
 
 initialization

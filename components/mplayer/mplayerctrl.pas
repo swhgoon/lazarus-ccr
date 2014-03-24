@@ -26,21 +26,30 @@
   You should have received a copy of the GNU Library General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+Changes:
+  2014-03-24  Changes for Microsoft Windows Compatibility and added Events
+              for Mouse Actions/ Michael Koecher aka six1
 }
 unit MPlayerCtrl;
 
 {$mode objfpc}{$H+}
 
-{$ifndef LCLgtk2}
-{$error this unit only supports LCL under gtk2}
+{$ifdef Linux}
+ {$ifndef LCLgtk2}
+ {$error this unit only supports LCL under gtk2}
+ {$endif}
 {$endif}
 
 interface
 
 uses
   Classes, SysUtils, Controls, WSLCLClasses, LCLProc, LCLType, InterfaceBase,
-  LResources, LMessages, Graphics, ExtCtrls, FileUtil, Process, UTF8Process,
-  X, gtk2int, gtk2, glib2, gdk2x, Gtk2WSControls, GTKProc, GtkDef;
+  LResources, LMessages, Graphics, ExtCtrls, FileUtil, Process, UTF8Process
+  {$ifdef Linux}
+  , gtk2int, gtk2, glib2, gdk2x, Gtk2WSControls, GTK2Proc, Gtk2Def
+  {$endif}
+  ;
 
 type
 
@@ -49,6 +58,7 @@ type
   TCustomMPlayerControl = class(TWinControl)
   private
     FFilename: string;
+    FStartParam:string;
     FLoop: integer;
     FMPlayerPath: string;
     FPaused: boolean;
@@ -61,6 +71,7 @@ type
     procedure SetMPlayerPath(const AValue: string);
     procedure SetPaused(const AValue: boolean);
     procedure SetVolume(const AValue: integer);
+    procedure SetStartParam(const AValue: string);
     procedure TimerEvent(Sender: TObject);
   protected
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
@@ -77,6 +88,7 @@ type
     procedure EraseBackground(DC: HDC); override;
   public
     property Filename: string read FFilename write SetFilename;
+    property StartParam: string read FStartParam write SetStartParam;
     property MPlayerPath: string read FMPlayerPath write SetMPlayerPath;
     property PlayerProcess: TProcessUTF8 read fPlayerProcess;
     property Paused: boolean read FPaused write SetPaused;
@@ -95,18 +107,23 @@ type
     property OnChangeBounds;
     property OnConstrainedResize;
     property OnResize;
+    property OnClick;
+    property OnMouseUp;
+    property OnMouseDown;
     property Visible;
     property Volume;
   end;
 
   { TWSMPlayerControl }
 
-  TWSMPlayerControl = class(TGtk2WSWinControl)
-  published
+  {$ifdef Linux}
+   TWSMPlayerControl = class(TGtk2WSWinControl)
+   published
     class function CreateHandle(const AWinControl: TWinControl;
                                 const AParams: TCreateParams): HWND; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
-  end;
+   end;
+  {$endif}
 
 procedure Register;
 
@@ -117,12 +134,26 @@ begin
   RegisterComponents('Multimedia',[TMPlayerControl]);
 end;
 
+
 { TCustomMPlayerControl }
 
 procedure TCustomMPlayerControl.TimerEvent(Sender: TObject);
+var
+   OutList, ErrList:TStringlist;
 begin
   if Running then begin
-
+    if fPlayerProcess.Output.NumBytesAvailable > 0 then begin
+      OutList:=TStringlist.create;
+      OutList.LoadFromStream(fPlayerProcess.Output);
+      OutList.free;
+    end;
+    if fPlayerProcess.Output.NumBytesAvailable > 0 then begin
+      ErrList:=TStringlist.create;
+      ErrList.LoadFromStream(fPlayerProcess.Stderr);
+      ErrList.free;
+    end;
+  end else begin
+    Stop;
   end;
 end;
 
@@ -152,6 +183,13 @@ procedure TCustomMPlayerControl.WMSize(var Message: TLMSize);
 begin
   if (Message.SizeType and Size_SourceIsInterface)>0 then
     DoOnResize;
+end;
+
+
+procedure TCustomMPlayerControl.SetStartParam(const AValue: string);
+begin
+  if FStartParam=AValue then exit;
+  FStartParam:=AValue;
 end;
 
 procedure TCustomMPlayerControl.SetFilename(const AValue: string);
@@ -213,6 +251,7 @@ destructor TCustomMPlayerControl.Destroy;
 begin
   Stop;
   FreeAndNil(FCanvas);
+  FreeAndNil(fTimer);
   inherited Destroy;
 end;
 
@@ -232,7 +271,7 @@ end;
 procedure TCustomMPlayerControl.Play;
 var
   ExePath: String;
-  CurWindowID: TXID;
+  CurWindowID: int64;//TXID;
 begin
   if (csDesigning in ComponentState) then exit;
 
@@ -243,27 +282,35 @@ begin
 
   if Playing then exit;
 
+  {$IFDEF Linux}
   if (not HandleAllocated) then exit;
   DebugLn(['TCustomMPlayerControl.Play ']);
+  {$endif}
 
   if fPlayerProcess<>nil then
-    raise Exception.Create('TCustomMPlayerControl.Play fPlayerProcess still exists');
+    FreeAndNil(fPlayerProcess);
+//    raise Exception.Create('TCustomMPlayerControl.Play fPlayerProcess still exists');
 
   ExePath:=MPlayerPath;
   if not FilenameIsAbsolute(ExePath) then
-    ExePath:=FindDefaultExecutablePath(ExePath);
+   ExePath:=FindDefaultExecutablePath(ExePath);
   if not FileExistsUTF8(ExePath) then
-    raise Exception.Create('mplayer not found');
+   raise Exception.Create('mplayer not found');
 
-  CurWindowID := GDK_WINDOW_XWINDOW(PGtkWidget(PtrUInt(Handle))^.window);
+  {$IFDEF Linux}
+   CurWindowID := GDK_WINDOW_XWINDOW(PGtkWidget(PtrUInt(Handle))^.window);
+  {$else}
+   CurWindowID := Handle;
+  {$ENDIF}
 
   fPlayerProcess:=TProcessUTF8.Create(Self);
   fPlayerProcess.Options:=fPlayerProcess.Options+[poUsePipes,poNoConsole];
-  fPlayerProcess.CommandLine:=ExePath+' -slave -quiet -wid '+IntToStr(CurWindowID)+' "'+Filename+'"';
+  fPlayerProcess.CommandLine:=ExePath+' -slave -quiet -wid '+IntToStr(CurWindowID)+' '+StartParam+' "'+Filename+'"';
   DebugLn(['TCustomMPlayerControl.Play ',fPlayerProcess.CommandLine]);
-  fPlayerProcess.Execute;
 
+  fPlayerProcess.Execute;
   fTimer.Enabled:=true;
+
 end;
 
 procedure TCustomMPlayerControl.Stop;
@@ -292,6 +339,7 @@ begin
   // everything is painted, so erasing the background is not needed
 end;
 
+{$ifdef Linux}
 function MPLayerWidgetDestroyCB(Widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 begin
   FreeWidgetInfo(Widget); // created in TWSMPlayerControl.CreateHandle
@@ -348,5 +396,11 @@ initialization
   RegisterWSComponent(TCustomMPlayerControl,TWSMPlayerControl);
   {$I mplayerctrl.lrs}
 
+{$else ifwindows}
+
+initialization
+  {$I mplayerctrl.lrs}
+
+{$endif}
 end.
 
