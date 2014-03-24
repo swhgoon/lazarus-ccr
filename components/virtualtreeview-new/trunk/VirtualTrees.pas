@@ -27,7 +27,13 @@ unit VirtualTrees;
 // (C) 1999-2001 digital publishing AG. All Rights Reserved.
 //----------------------------------------------------------------------------------------------------------------------
 //
+//  July 2009
+//   - Bug fix: TWorkerThread will no longer reference the tree after it has been destroyed (Mantis issue #384)
+//   - Improvement: removed support for Delphi versions older than Delphi 7
+//   - Improvement: removed local memory manager
 //  June 2009
+//   - Bug fix: TBaseVirtualTree.InternalConnectNode checked the expanded state of the wrong node if Mode was
+//              amAddChildFirst or amAddChildLast
 //   - Improvement: 'hidden nodes' are now called 'filtered nodes'
 //   - Improvement: converted line endings back to CR/LF
 //   - Improvement: new events TBaseVirtualTree.OnCanSplitterResizeNode and TBaseVirtualTree.OnCanSplitterResizeHeader
@@ -1150,7 +1156,6 @@ type
     vsText,
     vsOwnerDraw
   );
-
 
   TVTHeaderColumnLayout = (
     blGlyphLeft,
@@ -5100,19 +5105,7 @@ begin
       begin
         Terminate;
         WorkEvent.SetEvent;
-
-        //lcl: probably not necessary under fpc. Remove later
-        // The following work around is no longer necessary with Delphi 6 and up.
-        {$ifndef fpc}
-          // There is a problem when the thread is freed in the exit code of a DLL. This can happen when a tree is
-          // destroyed on unload of a DLL (e.g. control panel applet). In this case only the main thread will get
-          // CPU time, other threads will never awake again. The VCL however waits for a thread when freeing it
-          // which will result in a deadlock (the WaitFor call does not return because the thread does not get CPU time).
-          // If a thread is however suspended then the VCL does not wait and all is fine.
-          if IsLibrary then
-            Suspend;
-        {$endif}
-
+       
         WorkerThread.Free;
       end;
       WorkerThread := nil;
@@ -10234,7 +10227,7 @@ begin
         begin
           //todo: see a way to store the user defined cursor.
           IsHSplitterHit := IsInHeader and HSplitterHit;
-          IsVSplitterHit := InHeaderSplitterArea(P) and CanSplitterResize(P);
+          IsVSplitterHit := InHeaderSplitterArea(P) and Self.CanSplitterResize(P);
           
           if IsVSplitterHit or IsHSplitterHit then
           begin
@@ -21775,7 +21768,7 @@ begin
           Include(Destination.States, vsHasChildren);
           AdjustTotalCount(Destination, Node.TotalCount, True);
           // Add the new node's height only if its parent is expanded.
-          if (vsExpanded in Destination.Parent.States) and IsEffectivelyVisible[Node] then
+          if (vsExpanded in Destination.States) and IsEffectivelyVisible[Node] then
             AdjustTotalHeight(Destination, Node.TotalHeight, True);
           if FullyVisible[Node] and not IsEffectivelyFiltered[Node] then
             Inc(FVisibleCount, CountVisibleChildren(Node) + 1);
@@ -21806,7 +21799,7 @@ begin
           Include(Destination.States, vsHasChildren);
           AdjustTotalCount(Destination, Node.TotalCount, True);
           // Add the new node's height only if its parent is expanded.
-          if (vsExpanded in Destination.Parent.States) and IsEffectivelyVisible[Node] then
+          if (vsExpanded in Destination.States) and IsEffectivelyVisible[Node] then
             AdjustTotalHeight(Destination, Node.TotalHeight, True);
           if FullyVisible[Node] and not IsEffectivelyFiltered[Node] then
             Inc(FVisibleCount, CountVisibleChildren(Node) + 1);
@@ -27469,7 +27462,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 function TBaseVirtualTree.GetPreviousVisibleSiblingNoInit(Node: PVirtualNode;
-  IncludeHidden: Boolean = False): PVirtualNode;
+  IncludeFiltered: Boolean = False): PVirtualNode;
 
 // Returns the previous visible sibling before Node.
 
