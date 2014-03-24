@@ -27,6 +27,14 @@ unit VirtualTrees;
 // (C) 1999-2001 digital publishing AG. All Rights Reserved.
 //----------------------------------------------------------------------------------------------------------------------
 //
+//  September 2009
+//   - Bug fix: TCustomVirtualStringTree.DoTextMeasuring now makes use of the parameter Width of the
+//              OnMeasureTextWidth event
+//   - Bug fix: TBaseVirtualTree.DetermineLineImageAndSelectLevel will no longer access LineImage[-1]
+//   - Bug fix: clearing the columns now correctly reset TBaseVirtualTree.FFocusedColumn
+//   - Improvement: explorer style painting is now more close to the real explorer
+//   - Bug fix: TCustomVirtualStringTree.TContentToHTML.WriteStyle will no longer produce invalid CSS
+//   - Bug fix: the parameter DragEffect of TBaseVirtualTree.DragAndDrop is now var as it should be
 //  August 2009
 //   - Bug fix: TBaseVirtualTree.MoveTo now initializes the target node using the target tree
 //   - Bug fix: TBaseVirtualTree.FVisibleCount is now calculated correctly when using filtered nodes
@@ -1230,7 +1238,7 @@ type
     procedure SetWidth(Value: Integer);
   protected
     procedure ComputeHeaderLayout(DC: HDC; const Client: TRect; UseHeaderGlyph, UseSortGlyph: Boolean;
-      var HeaderGlyphPos, SortGlyphPos: TPoint; var TextBounds: TRect; DrawFormat: Cardinal;
+      var HeaderGlyphPos, SortGlyphPos: TPoint; var SortGlyphSize: TSize; var TextBounds: TRect; DrawFormat: Cardinal;
       CalculateTextRect: Boolean = False);
     procedure GetAbsoluteBounds(var Left, Right: Integer);
     function GetDisplayName: string; override;
@@ -1695,7 +1703,8 @@ type
     tsVCLDragPending,         // One-shot flag to avoid clearing the current selection on implicit mouse up for VCL drag.
     tsWheelPanning,           // Wheel mouse panning is active or soon will be.
     tsWheelScrolling,         // Wheel mouse scrolling is active or soon will be.
-    tsWindowCreating          // Set during window handle creation to avoid frequent unnecessary updates.
+    tsWindowCreating,         // Set during window handle creation to avoid frequent unnecessary updates.
+    tsUseExplorerTheme        // The tree runs under WinVista+ and is using the explorer theme
   );
 
   TChangeStates = set of (
@@ -2694,7 +2703,7 @@ type
     procedure DoUpdating(State: TVTUpdateState); virtual;
     function DoValidateCache: Boolean; virtual;
     procedure DragAndDrop(AllowedEffects: LongWord; DataObject: IDataObject;
-      DragEffect: LongWord); virtual;
+      var DragEffect: LongWord); virtual;
     procedure DragCanceled; override;
     function DragDrop(const DataObject: IDataObject; KeyState: LongWord; Pt: TPoint;
       var Effect: LongWord): HResult; reintroduce; virtual;
@@ -4059,6 +4068,11 @@ const
       FSB_ENCARTA_MODE
     );
   {$endif}
+
+  {$ifndef COMPILER_11_UP}
+    const
+      TVP_HOTGLYPH = 4;
+  {$endif COMPILER_11_UP}
 
   RTLFlag: array[Boolean] of Integer = (0, ETO_RTLREADING);
   AlignmentToDrawFlag: array[TAlignment] of Cardinal = (DT_LEFT, DT_RIGHT, DT_CENTER);
@@ -6742,7 +6756,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TVirtualTreeColumn.ComputeHeaderLayout(DC: HDC; const Client: TRect; UseHeaderGlyph, UseSortGlyph: Boolean;
-  var HeaderGlyphPos, SortGlyphPos: TPoint; var TextBounds: TRect; DrawFormat: Cardinal;
+  var HeaderGlyphPos, SortGlyphPos: TPoint; var SortGlyphSize: TSize; var TextBounds: TRect; DrawFormat: Cardinal;
   CalculateTextRect: Boolean = False);
 
 // The layout of a column header is determined by a lot of factors. This method takes them all into account and
@@ -6755,14 +6769,15 @@ var
   TextSize: TSize;
   TextPos,
   ClientSize,
-  HeaderGlyphSize,
-  SortGlyphSize: TPoint;
+  HeaderGlyphSize: TPoint;
   CurrentAlignment: TAlignment;
   MinLeft,
   MaxRight,
   TextSpacing: Integer;
   UseText: Boolean;
   R: TRect;
+  //todo
+  //Theme: HTHEME;
 
 begin
   UseText := Length(FText) > 0;
@@ -6787,12 +6802,27 @@ begin
       HeaderGlyphSize := Point(0, 0);
     if UseSortGlyph then
     begin
-      SortGlyphSize := Point(UtilityImages.Height, UtilityImages.Height);
+      if tsUseExplorerTheme in FHeader.Treeview.FStates then
+      begin
+        R := Rect(0, 0, 100, 100);
+        //Theme := OpenThemeData(FHeader.Treeview.Handle, 'HEADER');
+        //GetThemePartSize(Theme, DC, HP_HEADERSORTARROW, HSAS_SORTEDUP, @R, TS_TRUE, SortGlyphSize);
+        //CloseThemeData(Theme);
+      end
+      else
+      begin
+        SortGlyphSize.cx := UtilityImages.Width;
+        SortGlyphSize.cy := UtilityImages.Height;
+      end;
+
       // In any case, the sort glyph is vertically centered.
-      SortGlyphPos.Y := (ClientSize.Y - SortGlyphSize.Y) div 2;
+      SortGlyphPos.Y := (ClientSize.Y - SortGlyphSize.cy) div 2;
     end
     else
-      SortGlyphSize := Point(0, 0);
+    begin
+      SortGlyphSize.cx := 0;
+      SortGlyphSize.cy := 0;
+    end;
   end;
 
   if UseText then
@@ -6828,7 +6858,7 @@ begin
   if UseSortGlyph and not (UseText or UseHeaderGlyph) then
   begin
     // Center the sort glyph in the available area if nothing else is there.
-    SortGlyphPos := Point((ClientSize.X - SortGlyphSize.X) div 2, (ClientSize.Y - SortGlyphSize.Y) div 2);
+    SortGlyphPos := Point((ClientSize.X - SortGlyphSize.cx) div 2, (ClientSize.Y - SortGlyphSize.cy) div 2);
   end
   else
   begin
@@ -6866,7 +6896,7 @@ begin
           begin
             // In RTL context is the sort glyph placed on the left hand side.
             SortGlyphPos.X := MinLeft;
-            Inc(MinLeft, SortGlyphSize.X + FSpacing);
+            Inc(MinLeft, SortGlyphSize.cx + FSpacing);
           end;
           if Layout in [blGlyphTop, blGlyphBottom] then
           begin
@@ -6910,7 +6940,7 @@ begin
             HeaderGlyphPos.X := (ClientSize.X - HeaderGlyphSize.X) div 2;
             TextPos.X := (ClientSize.X - TextSize.cx) div 2;
             if UseSortGlyph then
-              Dec(TextPos.X, SortGlyphSize.X div 2);
+              Dec(TextPos.X, SortGlyphSize.cx div 2);
           end
           else
           begin
@@ -6945,7 +6975,7 @@ begin
             else
             begin
               // Sort glyph on the left hand side.
-              SortGlyphPos.X := MinLeft - FSpacing - SortGlyphSize.X;
+              SortGlyphPos.X := MinLeft - FSpacing - SortGlyphSize.cx;
             end;
         end;
     else
@@ -6954,7 +6984,7 @@ begin
       if UseSortGlyph and (FBidiMode = bdLeftToRight) then
       begin
         // In LTR context is the sort glyph placed on the right hand side.
-        Dec(MaxRight, SortGlyphSize.X);
+        Dec(MaxRight, SortGlyphSize.cx);
         SortGlyphPos.X := MaxRight;
         Dec(MaxRight, FSpacing);
       end;
@@ -6989,7 +7019,7 @@ begin
         end;
       end;
       if UseSortGlyph and (FBidiMode <> bdLeftToRight) then
-        SortGlyphPos.X := MaxRight - SortGlyphSize.X;
+        SortGlyphPos.X := MaxRight - SortGlyphSize.cx;
     end;
   end;
 
@@ -7005,8 +7035,8 @@ begin
     if FBidiMode = bdLeftToRight then
     begin
       // Sort glyph on the right hand side.
-      if SortGlyphPos.X + SortGlyphSize.X > MaxRight then
-        SortGlyphPos.X := MaxRight - SortGlyphSize.X;
+      if SortGlyphPos.X + SortGlyphSize.cx > MaxRight then
+        SortGlyphPos.X := MaxRight - SortGlyphSize.cx;
       MaxRight := SortGlyphPos.X - FSpacing;
     end;
 
@@ -7015,7 +7045,7 @@ begin
       SortGlyphPos.X := MinLeft;
     // Left border needs only adjustment if the sort glyph marks the left border.
     if FBidiMode <> bdLeftToRight then
-      MinLeft := SortGlyphPos.X + SortGlyphSize.X + FSpacing;
+      MinLeft := SortGlyphPos.X + SortGlyphSize.cx + FSpacing;
 
     // Finally transform sort glyph to its actual position.
     with SortGlyphPos do
@@ -8202,6 +8232,10 @@ begin
         FSortColumn := NoColumn;
       end;
 
+    with Header.Treeview do
+      if not (csLoading in ComponentState) then
+        FFocusedColumn := NoColumn;
+
     inherited Clear;
   finally
     FClearing := False;
@@ -8593,8 +8627,11 @@ var
   WrapCaption,
   AdvancedOwnerDraw: Boolean;
   {$ifdef ThemeSupport}
-    Details: TThemedElementDetails;
+  Details: TThemedElementDetails;
   {$endif ThemeSupport}
+  SortGlyphSize: TSize;
+  Glyph: TThemedHeader;
+  Pos: TRect;
 
   PaintInfo: THeaderPaintInfo;
   RequestedElements,
@@ -8826,7 +8863,7 @@ begin
               if UseRightToLeftReading then
                 DrawFormat := DrawFormat + DT_RTLREADING;
               ComputeHeaderLayout(Handle, PaintRectangle, ShowHeaderGlyph, ShowSortGlyph, GlyphPos, SortGlyphPos,
-                TextRectangle, DrawFormat);
+                SortGlyphSize, TextRectangle, DrawFormat);
 
               // Move glyph and text one pixel to the right and down to simulate a pressed button.
               if IsDownIndex then
@@ -8889,20 +8926,36 @@ begin
                 ColCaptionText := Text;
 
               if not (hpeText in ActualElements) and (Length(Text) > 0) then
-                DrawButtonText(Handle, ColCaptionText, TextRectangle, IsEnabled, IsHoverIndex and (hoHotTrack in FHeader.FOptions) and
-                not (tsUseThemes in FHeader.Treeview.FStates), DrawFormat, WrapCaption );
+                DrawButtonText(Handle, ColCaptionText, TextRectangle, IsEnabled,
+                  IsHoverIndex and (hoHotTrack in FHeader.FOptions) and not (tsUseThemes in FHeader.Treeview.FStates),
+                  DrawFormat, WrapCaption );
 
               // sort glyph
               if not (hpeSortGlyph in ActualElements) and ShowSortGlyph then
               begin
-                SortIndex := SortGlyphs[FHeader.FSortDirection, tsUseThemes in FHeader.Treeview.FStates];
-                {$ifdef USE_DELPHICOMPAT}
-                DirectMaskBlt(FHeaderBitmap.Canvas.Handle, SortGlyphPos.X, SortGlyphPos.Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
-                  SortIndex * UtilityImageSize, 0, UtilityImages.MaskHandle);
-                {$else}
-                StretchMaskBlt(FHeaderBitmap.Canvas.Handle, SortGlyphPos.X, SortGlyphPos.Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
-                  SortIndex * UtilityImageSize, 0, UtilityImageSize, UtilityImageSize, UtilityImages.MaskHandle,SortIndex * UtilityImageSize, 0, SRCCOPY);
-                {$endif}
+                if tsUseExplorerTheme in FHeader.Treeview.FStates then
+                begin
+                  Pos.TopLeft := SortGlyphPos;
+                  Pos.Right := Pos.Left + SortGlyphSize.cx;
+                  Pos.Bottom := Pos.Top + SortGlyphSize.cy;
+                  if FHeader.FSortDirection = sdAscending then
+                    Glyph := thHeaderSortArrowSortedUp
+                  else
+                    Glyph := thHeaderSortArrowSortedDown;
+                  Details := ThemeServices.GetElementDetails(Glyph);
+                  ThemeServices.DrawElement(Handle, Details, Pos, @Pos);
+                end
+                else
+                begin
+                  SortIndex := SortGlyphs[FHeader.FSortDirection, tsUseThemes in FHeader.Treeview.FStates];
+                  {$ifdef USE_DELPHICOMPAT}
+                  DirectMaskBlt(FHeaderBitmap.Canvas.Handle, SortGlyphPos.X, SortGlyphPos.Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
+                    SortIndex * UtilityImageSize, 0, UtilityImages.MaskHandle);
+                  {$else}
+                  StretchMaskBlt(FHeaderBitmap.Canvas.Handle, SortGlyphPos.X, SortGlyphPos.Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
+                    SortIndex * UtilityImageSize, 0, UtilityImageSize, UtilityImageSize, UtilityImages.MaskHandle,SortIndex * UtilityImageSize, 0, SRCCOPY);
+                  {$endif}
+                end;
               end;
 
               // Show an indication if this column is the current drop target in a header drag operation.
@@ -9878,6 +9931,7 @@ begin
             Result := 0;
           end;
       end;
+    end;
   end;
 end;
 
@@ -12217,7 +12271,7 @@ begin
 
           if (poDrawSelection in PaintOptions) and (toFullRowSelect in FOptions.FSelectionOptions) and
              (vsSelected in Node.States) and not (toUseBlendedSelection in FOptions.PaintOptions) and not
-             ((tsUseThemes in FStates) and (toUseExplorerTheme in FOptions.FPaintOptions) and IsWinVistaOrAbove) then
+             (tsUseExplorerTheme in FStates) then
           begin
             {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails, lcDrag], 'Draw the background of a selected node');{$endif}
             if toShowHorzGridLines in FOptions.PaintOptions then
@@ -12315,6 +12369,7 @@ function TBaseVirtualTree.DetermineLineImageAndSelectLevel(Node: PVirtualNode; o
 
 var
   X: Integer;
+  Indent: Integer;
   Run: PVirtualNode;
 
 begin
@@ -12336,6 +12391,7 @@ begin
 
   // Set initial size of line index array, this will automatically initialized all entries to ltNone.
   SetLength(LineImage, X);
+  Indent := X - 1;
 
   // Only use lines if requested.
   if toShowTreeLines in FOptions.FPaintOptions then
@@ -12424,6 +12480,9 @@ begin
       end;
     end;
   end;
+
+  if (tsUseExplorerTheme in FStates) and HasChildren[Node] and (Indent >= 0) then
+    LineImage[Indent] := ltNone;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -13372,13 +13431,9 @@ var
   Size: TSize;
   {$ifdef ThemeSupport}
     //Theme: HTHEME;
+  {$EndIf ThemeSupport}
     R: TRect;
  
-const
-  TVP_HOTGLYPH = 4;
-    
-  {$endif ThemeSupport}
-
   //--------------- local function --------------------------------------------
 
   procedure FillBitmap (ABitmap: TBitmap);
@@ -13442,7 +13497,7 @@ begin
       // box is always of odd size
       FillBitmap(FMinusBM);
       FillBitmap(FHotMinusBM);
-      if not (IsWinVistaOrAbove and (tsUseThemes in FStates) and (toUseExplorerTheme in FOptions.FPaintOptions)) then
+      if not (tsUseExplorerTheme in FStates) then
       begin
         if FButtonStyle = bsTriangle then
         begin
@@ -13478,7 +13533,7 @@ begin
     begin
       FillBitmap(FPlusBM);
       FillBitmap(FHotPlusBM);
-      if not (IsWinVistaOrAbove and (tsUseThemes in FStates) and (toUseExplorerTheme in FOptions.FPaintOptions)) then
+      if not (tsUseExplorerTheme in FStates) then
       begin
         if FButtonStyle = bsTriangle then
         begin
@@ -13522,7 +13577,7 @@ begin
         R := Rect(0, 0, Size.cx, Size.cy);
         DrawThemeBackground(Theme, FPlusBM.Canvas.Handle, TVP_GLYPH, GLPS_CLOSED, R, nil);
         DrawThemeBackground(Theme, FMinusBM.Canvas.Handle, TVP_GLYPH, GLPS_OPENED, R, nil);
-        if IsWinVistaOrAbove and (toUseExplorerTheme in FOptions.FPaintOptions) then
+        if tsUseExplorerTheme in FStates then
         begin
           DrawThemeBackground(Theme, FHotPlusBM.Canvas.Handle, TVP_HOTGLYPH, GLPS_CLOSED, R, nil);
           DrawThemeBackground(Theme, FHotMinusBM.Canvas.Handle, TVP_HOTGLYPH, GLPS_OPENED, R, nil);
@@ -19833,7 +19888,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TBaseVirtualTree.DragAndDrop(AllowedEffects: LongWord;
-  DataObject: IDataObject; DragEffect: LongWord);
+  DataObject: IDataObject; var DragEffect: LongWord);
 
 begin
   {$ifdef Windows}
@@ -20673,7 +20728,7 @@ begin
   CheckPositions := [hiOnItemLabel, hiOnItemCheckbox];
 
   // If running under Windows Vista using the explorer theme hitting the buttons makes the node hot, too.
-  if (IsWinVistaOrAbove and (tsUseThemes in FStates) and (toUseExplorerTheme in FOptions.FPaintOptions)) then
+  if tsUseExplorerTheme in FStates then
     Include(CheckPositions, hiOnItemButtonExact);
 
   if (CheckPositions * HitInfo.HitPositions = []) and not (toFullRowSelect in FOptions.FSelectionOptions) then
@@ -22768,6 +22823,10 @@ var
   Bitmap: TBitmap;
   XPos: Integer;
   IsHot: Boolean;
+  //Theme: HTHEME;
+  Glyph: Integer;
+  State: Integer;
+  Pos: TRect;
 
 begin
   IsHot := (toHotTrack in FOptions.FPaintOptions) and (FCurrentHotNode = Node) and FHotNodeButtonHit;
@@ -22793,6 +22852,18 @@ begin
   else
     XPos := R.Right - ButtonX - Bitmap.Width;
 
+  if tsUseExplorerTheme in FStates then
+  begin
+    Glyph := IfThen(IsHot, TVP_HOTGLYPH, TVP_GLYPH);
+    State := IfThen(vsExpanded in Node.States, GLPS_OPENED, GLPS_CLOSED);
+    Pos := Rect(XPos, R.Top + ButtonY, XPos + Bitmap.Width, R.Top + ButtonY + Bitmap.Height);
+    {
+    Theme := OpenThemeData(Handle, 'TREEVIEW');
+    DrawThemeBackground(Theme, Canvas.Handle, Glyph, State, Pos, nil);
+    CloseThemeData(Theme);
+    }
+  end
+  else
   // Need to draw this masked.
   Canvas.Draw(XPos, R.Top + ButtonY, Bitmap);
 end;
@@ -31218,8 +31289,7 @@ begin
 
     if (toHotTrack in FOptions.FPaintOptions) and (Node = FCurrentHotNode) then
     begin
-      if not IsWinVistaOrAbove or not (tsUseThemes in FStates) or
-         not (toUseExplorerTheme in FOptions.FPaintOptions) then
+      if not (tsUseExplorerTheme in FStates) then
         Canvas.Font.Style := Canvas.Font.Style + [fsUnderline];
       Canvas.Font.Color := FColors.HotColor;
     end;
@@ -31231,17 +31301,15 @@ begin
       begin
         if Node = FDropTargetNode then
         begin
-          if (FLastDropMode = dmOnNode) or (vsSelected in Node.States) and
-             (not IsWinVistaOrAbove or not (tsUseThemes in FStates) or
-              not (toUseExplorerTheme in FOptions.FPaintOptions)) then
+          if (FLastDropMode = dmOnNode) or (vsSelected in Node.States) and not
+             (tsUseExplorerTheme in FStates) then
             Canvas.Font.Color := clHighlightText;
         end
         else
           if vsSelected in Node.States then
           begin
-            if (Focused or (toPopupMode in FOptions.FPaintOptions)) and
-               (not IsWinVistaOrAbove or not (tsUseThemes in FStates) or
-                not (toUseExplorerTheme in FOptions.FPaintOptions)) then
+            if (Focused or (toPopupMode in FOptions.FPaintOptions)) and not
+               (tsUseExplorerTheme in FStates) then
               Canvas.Font.Color := clHighlightText;
           end;
       end;
@@ -32028,23 +32096,24 @@ var
 
   begin
     if Length(Name) = 0 then
-      Buffer.Add(' style="{font:')
+      Buffer.Add(' style="{')
     else
     begin
       Buffer.Add('.');
       Buffer.Add(Name);
-      Buffer.Add('{font:');
+      Buffer.Add('{');
     end;
-    if fsUnderline in Font.Style then
-      Buffer.Add(' underline');
-    if fsItalic in Font.Style then
-      Buffer.Add(' italic');
-    if fsBold in Font.Style then
-      Buffer.Add(' bold');
+
+    Buffer.Add(Format('font-family: ''%s''; ', [Font.Name]));
     if Font.Size < 0 then
-      Buffer.Add(Format(' %dpx "%s";', [Font.Height, Font.Name]))
+      Buffer.Add(Format('font-size: %dpx; ', [Font.Height]))
     else
-      Buffer.Add(Format(' %dpt "%s";', [Font.Size, Font.Name]));
+      Buffer.Add(Format('font-size: %dpt; ', [Font.Size]));
+
+    Buffer.Add(Format('font-style: %s; ', [IfThen(fsItalic in Font.Style, 'italic', 'normal')]));
+    Buffer.Add(Format('font-weight: %s; ', [IfThen(fsBold in Font.Style, 'bold', 'normal')]));
+    Buffer.Add(Format('text-decoration: %s; ', [IfThen(fsUnderline in Font.Style, 'underline', 'none')]));
+
     Buffer.Add('color:');
     WriteColorAsHex(Font.Color);
     Buffer.Add(';}');
