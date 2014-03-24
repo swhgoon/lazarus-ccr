@@ -28,6 +28,9 @@ unit VirtualTrees;
 //----------------------------------------------------------------------------------------------------------------------
 //
 //  July 2009
+//   - Bug fix: pressing CTRL + PgUp/PgDown no longer leads to an index-out-of-bounds exception if no columns are used
+//   - Bug fix: avoided race condition between TBaseVirtualTree.DeleteNode and the worker thread 
+//   - Bug fix: TBaseVirtualTree.ToggleNode could produce an overflow if range checking was enabled 
 //   - Bug fix: TWorkerThread will no longer reference the tree after it has been destroyed (Mantis issue #384)
 //   - Improvement: removed support for Delphi versions older than Delphi 7
 //   - Improvement: removed local memory manager
@@ -15812,55 +15815,115 @@ begin
               end;
             end;
           VK_PRIOR:
-            if ssCtrlOS in Shift then
-              SetOffsetY(FOffsetY + ClientHeight)
+            if Shift = [ssCtrl, ssShift] then
+              SetOffsetX(FOffsetX + ClientWidth)
             else
             begin
-              Offset := 0;
-              // If there's no focused node then just take the very first visible one.
-              if FFocusedNode = nil then
-                Node := GetFirstVisible(nil, True)
+              if [ssShift] = Shift then
+              begin
+                if FFocusedColumn <= NoColumn then
+                  NewColumn := FHeader.FColumns.GetFirstVisibleColumn
+                else
+                begin
+                  Offset := FHeader.FColumns.GetVisibleFixedWidth;
+                  NewColumn := FFocusedColumn;
+                  while True do
+                  begin
+                    TempColumn := FHeader.FColumns.GetPreviousVisibleColumn(NewColumn);
+                    NewWidth := FHeader.FColumns[NewColumn].Width;
+                    if (TempColumn <= NoColumn) or
+                       (Offset + NewWidth >= ClientWidth) or
+                       (coFixed in FHeader.FColumns[TempColumn].FOptions) then
+                      Break;
+                    NewColumn := TempColumn;
+                    Inc(Offset, NewWidth);
+                  end;
+                end;
+                SetFocusedColumn(NewColumn);
+              end
               else
               begin
-                // Go up as many nodes as comprise together a size of ClientHeight.
-                Node := FFocusedNode;
-                while True do
+                if ssCtrlOS in Shift then
+                  SetOffsetY(FOffsetY + ClientHeight)
+                else
                 begin
-                  Temp := GetPreviousVisible(Node, True);
-                  NewHeight := NodeHeight[Node];
-                  if (Temp = nil) or (Offset + NewHeight >= ClientHeight) then
-                    Break;
-                  Node := Temp;
-                  Inc(Offset, NodeHeight[Node]);
+                  Offset := 0;
+                  // If there's no focused node then just take the very first visible one.
+                  if FFocusedNode = nil then
+                    Node := GetFirstVisible(nil, True)
+                  else
+                  begin
+                    // Go up as many nodes as comprise together a size of ClientHeight.
+                    Node := FFocusedNode;
+                    while True do
+                    begin
+                      Temp := GetPreviousVisible(Node, True);
+                      NewHeight := NodeHeight[Node];
+                      if (Temp = nil) or (Offset + NewHeight >= ClientHeight) then
+                        Break;
+                      Node := Temp;
+                      Inc(Offset, NodeHeight[Node]);
+                    end;
+                  end;
+                  FocusedNode := Node;
                 end;
               end;
-              FocusedNode := Node;
             end;
           VK_NEXT:
-            if ssCtrlOS in Shift then
-              SetOffsetY(FOffsetY - ClientHeight)
+            if Shift = [ssCtrl, ssShift] then
+              SetOffsetX(FOffsetX - ClientWidth)
             else
             begin
-              Offset := 0;
-              // If there's no focused node then just take the very last one.
-              if FFocusedNode = nil then
-                Node := GetLastVisible(nil, True)
+              if [ssShift] = Shift then
+              begin
+                if FFocusedColumn <= NoColumn then
+                  NewColumn := FHeader.FColumns.GetFirstVisibleColumn
+                else
+                begin
+                  Offset := FHeader.FColumns.GetVisibleFixedWidth;
+                  NewColumn := FFocusedColumn;
+                  while True do
+                  begin
+                    TempColumn := FHeader.FColumns.GetNextVisibleColumn(NewColumn);
+                    NewWidth := FHeader.FColumns[NewColumn].Width;
+                    if (TempColumn <= NoColumn) or
+                       (Offset + NewWidth >= ClientWidth) or
+                       (coFixed in FHeader.FColumns[TempColumn].FOptions) then
+                      Break;
+                    NewColumn := TempColumn;
+                    Inc(Offset, NewWidth);
+                  end;
+                end;
+                SetFocusedColumn(NewColumn);
+              end
+              else
+            begin
+              if ssCtrlOS in Shift then
+                SetOffsetY(FOffsetY - ClientHeight)
               else
               begin
-                // Go up as many nodes as comprise together a size of ClientHeight.
-                Node := FFocusedNode;
-                while True do
+                Offset := 0;
+                // If there's no focused node then just take the very last one.
+                if FFocusedNode = nil then
+                  Node := GetLastVisible(nil, True)
+                else
                 begin
-                  Temp := GetNextVisible(Node, True);
-                  NewHeight := NodeHeight[Node];
-                  if (Temp = nil) or (Offset + NewHeight >= ClientHeight) then
-                    Break;
-                  Node := Temp;
-                  Inc(Offset, NewHeight);
+                  // Go up as many nodes as comprise together a size of ClientHeight.
+                  Node := FFocusedNode;
+                  while True do
+                  begin
+                    Temp := GetNextVisible(Node, True);
+                    NewHeight := NodeHeight[Node];
+                    if (Temp = nil) or (Offset + NewHeight >= ClientHeight) then
+                      Break;
+                    Node := Temp;
+                    Inc(Offset, NewHeight);
+                  end;
                 end;
+                FocusedNode := Node;
               end;
-              FocusedNode := Node;
             end;
+          end;
           VK_UP:
             begin
               // scrolling without selection change
@@ -24870,6 +24933,9 @@ begin
       DoStateChange([], [tsHint]);
     end;
 
+    if not ParentClearing then
+      InterruptValidation;
+
     DeleteChildren(Node);
     InternalDisconnectNode(Node, False, Reindex);
     DoFreeNode(Node);
@@ -29948,7 +30014,7 @@ begin
               // on the position of the node to be collapsed.
               R1 := GetDisplayRect(Node, NoColumn, False);
               Mode2 := tamNoScroll;
-              HeightDelta := -Node.TotalHeight + NodeHeight[Node];
+              HeightDelta := -Integer(Node.TotalHeight) + Integer(NodeHeight[Node]);
               if toChildrenAbove in FOptions.FPaintOptions then
               begin
                 PosHoldable := (FOffsetY + (Integer(Node.TotalHeight - NodeHeight[Node]))) <= 0;
