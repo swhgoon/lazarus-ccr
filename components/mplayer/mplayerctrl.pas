@@ -45,7 +45,8 @@ interface
 
 uses
   Classes, SysUtils, Controls, WSLCLClasses, LCLProc, LCLType, InterfaceBase,
-  LResources, LMessages, Graphics, ExtCtrls, FileUtil, Process, UTF8Process
+  LResources, LMessages, Graphics, ExtCtrls, FileUtil, Process, UTF8Process,
+  LazFileUtils
   {$ifdef Linux}
   , gtk2int, gtk2, glib2, gdk2x, Gtk2WSControls, GTK2Proc, Gtk2Def
   {$endif}
@@ -117,12 +118,12 @@ type
   { TWSMPlayerControl }
 
   {$ifdef Linux}
-   TWSMPlayerControl = class(TGtk2WSWinControl)
-   published
+  TWSMPlayerControl = class(TGtk2WSWinControl)
+  published
     class function CreateHandle(const AWinControl: TWinControl;
                                 const AParams: TCreateParams): HWND; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
-   end;
+  end;
   {$endif}
 
 procedure Register;
@@ -139,18 +140,24 @@ end;
 
 procedure TCustomMPlayerControl.TimerEvent(Sender: TObject);
 var
-   OutList, ErrList:TStringlist;
+  OutList, ErrList:TStringlist;
 begin
   if Running then begin
     if fPlayerProcess.Output.NumBytesAvailable > 0 then begin
       OutList:=TStringlist.create;
-      OutList.LoadFromStream(fPlayerProcess.Output);
-      OutList.free;
+      try
+        OutList.LoadFromStream(fPlayerProcess.Output);
+      finally
+        OutList.free;
+      end;
     end;
-    if fPlayerProcess.Output.NumBytesAvailable > 0 then begin
+    if fPlayerProcess.StdErr.NumBytesAvailable > 0 then begin
       ErrList:=TStringlist.create;
-      ErrList.LoadFromStream(fPlayerProcess.Stderr);
-      ErrList.free;
+      try
+        ErrList.LoadFromStream(fPlayerProcess.Stderr);
+      finally
+        ErrList.free;
+      end;
     end;
   end else begin
     Stop;
@@ -197,7 +204,7 @@ begin
   if FFilename=AValue then exit;
   FFilename:=AValue;
   if Running then
-    SendMPlayerCommand('loadfile ');
+    SendMPlayerCommand('loadfile '+StrToCmdLineParam(Filename));
 end;
 
 procedure TCustomMPlayerControl.SetLoop(const AValue: integer);
@@ -242,7 +249,7 @@ begin
     FCompStyle:=csNonLCL;
   SetInitialBounds(0, 0, 160, 90);
 
-  fMPlayerPath:='mplayer';
+  fMPlayerPath:='mplayer'+GetExeExt;
   fTimer:=TTimer.Create(Self);
   fTimer.OnTimer:=@TimerEvent;
 end;
@@ -271,7 +278,7 @@ end;
 procedure TCustomMPlayerControl.Play;
 var
   ExePath: String;
-  CurWindowID: int64;//TXID;
+  CurWindowID: PtrUInt;
 begin
   if (csDesigning in ComponentState) then exit;
 
@@ -291,26 +298,27 @@ begin
     FreeAndNil(fPlayerProcess);
 //    raise Exception.Create('TCustomMPlayerControl.Play fPlayerProcess still exists');
 
+  if MPlayerPath='' then
+    MPlayerPath:='mplayer'+GetExeExt;
   ExePath:=MPlayerPath;
   if not FilenameIsAbsolute(ExePath) then
-   ExePath:=FindDefaultExecutablePath(ExePath);
+    ExePath:=FindDefaultExecutablePath(ExePath);
   if not FileExistsUTF8(ExePath) then
-   raise Exception.Create('mplayer not found');
+    raise Exception.Create(MPlayerPath+' not found');
 
   {$IFDEF Linux}
-   CurWindowID := GDK_WINDOW_XWINDOW(PGtkWidget(PtrUInt(Handle))^.window);
+    CurWindowID := GDK_WINDOW_XWINDOW({%H-}PGtkWidget(PtrUInt(Handle))^.window);
   {$else}
-   CurWindowID := Handle;
+    CurWindowID := Handle;
   {$ENDIF}
 
   fPlayerProcess:=TProcessUTF8.Create(Self);
   fPlayerProcess.Options:=fPlayerProcess.Options+[poUsePipes,poNoConsole];
-  fPlayerProcess.CommandLine:=ExePath+' -slave -quiet -wid '+IntToStr(CurWindowID)+' '+StartParam+' "'+Filename+'"';
+  fPlayerProcess.CommandLine:=ExePath+' -slave -quiet -wid '+IntToStr(CurWindowID)+' '+StartParam+' '+StrToCmdLineParam(Filename);
   DebugLn(['TCustomMPlayerControl.Play ',fPlayerProcess.CommandLine]);
 
   fPlayerProcess.Execute;
   fTimer.Enabled:=true;
-
 end;
 
 procedure TCustomMPlayerControl.Stop;
@@ -340,7 +348,7 @@ begin
 end;
 
 {$ifdef Linux}
-function MPLayerWidgetDestroyCB(Widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function MPLayerWidgetDestroyCB(Widget: PGtkWidget; {%H-}data: gPointer): GBoolean; cdecl;
 begin
   FreeWidgetInfo(Widget); // created in TWSMPlayerControl.CreateHandle
   Result:=false;
@@ -364,7 +372,7 @@ begin
     WidgetInfo^.LCLObject := AWinControl;
     WidgetInfo^.Style := AParams.Style;
     WidgetInfo^.ExStyle := AParams.ExStyle;
-    WidgetInfo^.WndProc := PtrUInt(AParams.WindowClass.lpfnWndProc);
+    WidgetInfo^.WndProc := {%H-}PtrUInt(AParams.WindowClass.lpfnWndProc);
 
     // set allocation
     Allocation.X := AParams.X;
@@ -381,7 +389,7 @@ begin
       g_signal_connect(GPointer(NewWidget), 'destroy',
                        TGTKSignalFunc(@MPLayerWidgetDestroyCB), WidgetInfo);
     end;
-    Result:=HWND(PtrUInt(Pointer(NewWidget)));
+    Result:=HWND({%H-}PtrUInt(Pointer(NewWidget)));
     DebugLn(['TWSMPlayerControl.CreateHandle ',dbgs(NewWidget)]);
   end;
 end;
