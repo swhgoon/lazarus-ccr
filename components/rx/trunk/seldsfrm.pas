@@ -87,6 +87,8 @@ var
 implementation
 uses rxmemds, rxdconst;
 
+{$R *.lfm}
+
 function SelectDataSet(ADesigner: TComponentEditorDesigner; const ACaption: string;
   ExcludeDataSet: TDataSet): TDataSet;
 begin
@@ -285,9 +287,6 @@ function TMemDataSetEditor.GetVerbCount: Integer;
 begin
   Result:=DefaultEditor.GetVerbCount + 1;
 end;
-
-initialization
-  {$I seldsfrm.lrs}
 
 end.
 
