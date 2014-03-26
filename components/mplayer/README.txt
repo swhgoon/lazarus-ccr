@@ -3,7 +3,7 @@ Package mplayercontrollaz.lpk
 TMPlayerControl is a LCL control that embeds "mplayer" a movie player.
 
 Requirements:
-Only works under X/gtk2 and Winows.
+Only works under X/gtk2 and Windows.
 mplayer must be installed and in the PATH.
 
 Usage:
