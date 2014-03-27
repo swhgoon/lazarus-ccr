@@ -4044,7 +4044,7 @@ end;
 
 procedure TRxDBGrid.CalcStatTotals;
 var
-  //P: TBookmark;
+  P: TBookmark;
   //DS: TDataSet;
   i, cnt: integer;
   APresent: boolean;
@@ -4130,6 +4130,9 @@ begin
 
   DHL:=THackDataLink(Datalink);
   DHS:=THackDataSet(DataSource.DataSet);
+
+  P := DHS.GetBookMark;
+
   SaveState:=DHS.SetTempState(dsBrowse);
 
   SaveAfterScroll:=DHS.AfterScroll;
@@ -4176,6 +4179,9 @@ begin
 
   DHS.AfterScroll  := SaveAfterScroll;
   DHS.BeforeScroll := SaveBeforeScroll;
+
+  if DHS.CompareBookmarks(DHS.Bookmark, P)<>0 then
+    DHS.Bookmark:=P; //workaround for fix navigation problem
 
   Dec(FInProcessCalc);
   if FInProcessCalc < 0 then
