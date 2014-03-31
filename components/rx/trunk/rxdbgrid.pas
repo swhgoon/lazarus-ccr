@@ -4131,7 +4131,11 @@ begin
   DHL:=THackDataLink(Datalink);
   DHS:=THackDataSet(DataSource.DataSet);
 
-  P := DHS.GetBookMark;
+  {$IFDEF NoAutomatedBookmark}
+  P:=DataSource.DataSet.GetBookmark;
+  {$ELSE}
+  P := DHS.Bookmark;
+  {$ENDIF}
 
   SaveState:=DHS.SetTempState(dsBrowse);
 
@@ -4181,7 +4185,17 @@ begin
   DHS.BeforeScroll := SaveBeforeScroll;
 
   if DHS.CompareBookmarks(DHS.Bookmark, P)<>0 then
+  begin
+    {$IFDEF NoAutomatedBookmark}
+    DHS.GotoBookmark(P); //workaround for fix navigation problem
+    {$ELSE}
     DHS.Bookmark:=P; //workaround for fix navigation problem
+    {$ENDIF}
+  end;
+
+  {$IFDEF NoAutomatedBookmark}
+  DHS.FreeBookmark(P);
+  {$ENDIF}
 
   Dec(FInProcessCalc);
   if FInProcessCalc < 0 then
