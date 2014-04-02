@@ -4044,11 +4044,12 @@ end;
 
 procedure TRxDBGrid.CalcStatTotals;
 var
+  {$IFDEF NoAutomatedBookmark}
+  P_26: TBookmark;
+  {$ENDIF}
   P: TBookmark;
-  //DS: TDataSet;
   i, cnt: integer;
   APresent: boolean;
-  //SEA, SEB:TDataSetNotifyEvent;
 
   DHL:THackDataLink;
   DHS:THackDataSet;
@@ -4078,45 +4079,6 @@ begin
 
 
   Inc(FInProcessCalc);
-
-  (*
-  if Assigned(FSortEngine) and (FSortEngine.EnabledFooterRowsCalc) then
-  begin
-    for i := 0 to Columns.Count - 1 do
-      TRxColumn(Columns[i]).Footer.ResetTestValue;
-
-    FSortEngine.UpdateFooterRows(DataSource.DataSet, Self);
-
-    exit;
-  end;
-
-  DS := DataSource.DataSet;
-  ;
-  P := Ds.GetBookMark;
-  DS.DisableControls;
-  SEB:=DS.BeforeScroll;
-  SEA:=DS.AfterScroll;
-  DS.BeforeScroll:=nil;
-  DS.AfterScroll:=nil;
-  try
-    DS.First;
-    for i := 0 to Columns.Count - 1 do
-      TRxColumn(Columns[i]).Footer.ResetTestValue;
-
-    while not DS.EOF do
-    begin
-      for i := 0 to Columns.Count - 1 do
-        TRxColumn(Columns[i]).Footer.UpdateTestValue;
-      DS.Next;
-    end;
-  finally
-    DS.GotoBookmark(P);
-    DS.FreeBookmark(P);
-    DS.BeforeScroll:=SEB;
-    DS.AfterScroll:=SEA;
-    DS.EnableControls;
-  end;
-*)
 
   cnt:=0;
   for i := 0 to Columns.Count - 1 do
@@ -4184,18 +4146,17 @@ begin
   DHS.AfterScroll  := SaveAfterScroll;
   DHS.BeforeScroll := SaveBeforeScroll;
 
-  if DHS.CompareBookmarks(DHS.Bookmark, P)<>0 then
-  begin
-    {$IFDEF NoAutomatedBookmark}
-    DHS.GotoBookmark(P); //workaround for fix navigation problem
-    {$ELSE}
-    DHS.Bookmark:=P; //workaround for fix navigation problem
-    {$ENDIF}
-  end;
-
   {$IFDEF NoAutomatedBookmark}
+  P_26:=DHS.GetBookmark;
+  if DHS.CompareBookmarks(P_26, P)<>0 then
+    DHS.GotoBookmark(P); //workaround for fix navigation problem
   DHS.FreeBookmark(P);
+  DHS.FreeBookmark(P_26);
+  {$ELSE}
+  if DHS.CompareBookmarks(DHS.Bookmark, P)<>0 then
+    DHS.Bookmark:=P; //workaround for fix navigation problem
   {$ENDIF}
+
 
   Dec(FInProcessCalc);
   if FInProcessCalc < 0 then
