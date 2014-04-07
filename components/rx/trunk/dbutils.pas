@@ -395,15 +395,30 @@ var
   begin
     if Field.DataType = ftString then
     begin
-      S := Field.AsString;
-      S1:=Value;
-      if (loPartialKey in Options) then
+      if loCaseInsensitive in Options then
+      begin
+        S := UTF8UpperCase(Field.AsString);
+        S1:=UTF8UpperCase(Value);
+      end
+      else
+      begin
+        S := Field.AsString;
+        S1:=Value;
+      end;
+{      if (loPartialKey in Options) then
         Delete(S, Length(S1) + 1, MaxInt);
         
       if (loCaseInsensitive in Options) then
         Result := UTF8CompareText(S, S1) = 0
       else
+        Result := UTF8CompareStr(S, S1) = 0;}
+
+      if (loPartialKey in Options) then
+        Result := UTF8Pos(S1, S) > 0
+      else
+      begin
         Result := UTF8CompareStr(S, S1) = 0;
+      end;
     end
 //    else Result := false //(Field.Value = Value);
     else Result := (Field.Value = Value);
