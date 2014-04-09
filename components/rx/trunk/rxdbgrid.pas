@@ -3349,7 +3349,7 @@ end;
 procedure TRxDBGrid.DoTitleClick(ACol: longint; ACollumn: TRxColumn;
   Shift: TShiftState);
 begin
-  if FAutoSort and (FSortEngine <> nil) and (ACollumn.Field <> nil) then
+  if FAutoSort {and (FSortEngine <> nil)} and (ACollumn.Field <> nil) then
   begin
     if ssCtrl in Shift then
     begin
@@ -3386,7 +3386,8 @@ begin
     end;
 
     CollumnSortListUpdate;
-    CollumnSortListApply;
+    if (FSortEngine <> nil) then
+      CollumnSortListApply;
   end
   else
     HeaderClick(True, ACol);

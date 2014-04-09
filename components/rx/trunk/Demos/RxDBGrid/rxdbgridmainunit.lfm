@@ -227,42 +227,6 @@ object RxDBGridMainForm: TRxDBGridMainForm
             OnClick = TRxColumnEditButtons1Click
           end>
       end>
-    KeyStrokes = <    
-      item
-        Command = rxgcShowFindDlg
-        ShortCut = 57414
-        Enabled = True
-      end    
-      item
-        Command = rxgcShowColumnsDlg
-        ShortCut = 16471
-        Enabled = True
-      end    
-      item
-        Command = rxgcShowFilterDlg
-        ShortCut = 16468
-        Enabled = True
-      end    
-      item
-        Command = rxgcShowSortDlg
-        ShortCut = 16467
-        Enabled = True
-      end    
-      item
-        Command = rxgcShowQuickFilter
-        ShortCut = 16465
-        Enabled = True
-      end    
-      item
-        Command = rxgcHideQuickFilter
-        ShortCut = 16456
-        Enabled = True
-      end    
-      item
-        Command = rxgcCopyCellValue
-        ShortCut = 16451
-        Enabled = True
-      end>
     FooterOptions.Active = True
     FooterOptions.Color = clYellow
     FooterOptions.RowCount = 1
@@ -282,7 +246,6 @@ object RxDBGridMainForm: TRxDBGridMainForm
     Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgMultiselect, dgHeaderPushedLook]
     ParentColor = False
     PopupMenu = PopupMenu1
-    Scrollbars = ssVertical
     TabOrder = 0
     TitleStyle = tsNative
     UseXORFeatures = True
