@@ -52,6 +52,8 @@
 //
 {.$DEFINE DBDateEdit_OLD}
 
+{.$DEFINE OLD_EDITBUTTON}
+
 {$if FPC_FULLVERSION<20701}
   {$DEFINE NoAutomatedBookmark}
   {$DEFINE RX_USE_LCL_DEVEL}

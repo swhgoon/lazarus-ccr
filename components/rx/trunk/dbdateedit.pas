@@ -66,11 +66,16 @@ type
     procedure LMCut(var Message: TLMessage); message LM_CUT;
     procedure LMPaste(var Message: TLMessage); message LM_PASTE;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+{$IFDEF OLD_EDITBUTTON}
     procedure Change; override;
+    procedure DoButtonClick (Sender: TObject); override;
+{$ELSE}
+    procedure ButtonClick; override;
+    procedure EditChange; override;
+{$ENDIF}
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure EditingDone; override;
     Procedure RunDialog; virtual;
-    procedure DoButtonClick (Sender: TObject); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -104,7 +109,11 @@ type
     procedure LMCut(var Message: TLMessage); message LM_CUT;
     procedure LMPaste(var Message: TLMessage); message LM_PASTE;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+{$IFDEF OLD_EDITBUTTON}
     procedure Change; override;
+{$ELSE}
+    procedure EditChange; override;
+{$ENDIF}
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure EditingDone; override;
     Procedure RunDialog; override;
@@ -159,7 +168,7 @@ end;
 
 procedure TDBDateEdit.SetReadOnly(const AValue: Boolean);
 begin
-  inherited SetReadOnly(AValue);
+  inherited ReadOnly:=AValue;
   FDataLink.ReadOnly:=AValue;
 end;
 
@@ -207,11 +216,19 @@ begin
   end;
 end;
 
+{$IFDEF OLD_EDITBUTTON}
 procedure TDBDateEdit.Change;
+{$ELSE}
+procedure TDBDateEdit.EditChange;
+{$ENDIF}
 begin
   if Assigned(FDataLink) then
     FDataLink.Modified;
+{$IFDEF OLD_EDITBUTTON}
   inherited Change;
+{$ELSE}
+  inherited EditChange;
+{$ENDIF}
 end;
 
 procedure TDBDateEdit.Notification(AComponent: TComponent; Operation: TOperation
@@ -241,9 +258,17 @@ begin
     FDataLink.UpdateRecord;
 end;
 
+{$IFDEF OLD_EDITBUTTON}
 procedure TDBDateEdit.DoButtonClick(Sender: TObject);
+{$ELSE}
+procedure TDBDateEdit.ButtonClick;
+{$ENDIF}
 begin
+  {$IFDEF OLD_EDITBUTTON}
   inherited DoButtonClick(Sender);
+  {$ELSE}
+  inherited ButtonClick;
+  {$ENDIF}
   RunDialog;
 end;
 
@@ -429,10 +454,18 @@ begin
   end;
 end;
 
+{$IFDEF OLD_EDITBUTTON}
 procedure TRxDBCalcEdit.Change;
+{$ELSE}
+procedure TRxDBCalcEdit.EditChange;
+{$ENDIF}
 begin
   FDataLink.Modified;
+  {$IFDEF OLD_EDITBUTTON}
   inherited Change;
+  {$ELSE}
+  inherited EditChange;
+  {$ENDIF}
 end;
 
 procedure TRxDBCalcEdit.Notification(AComponent: TComponent;

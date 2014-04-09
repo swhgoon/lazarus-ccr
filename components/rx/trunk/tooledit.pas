@@ -106,10 +106,19 @@ type
     procedure HidePopup; virtual;
     procedure ShowPopup(AOrigin: TPoint); virtual;
     procedure ApplyDate(Value: TDateTime); virtual;
+{$IFDEF OLD_EDITBUTTON}
     procedure Change; override;
+{$ELSE}
+    procedure EditChange; override;
+{$ENDIF}
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
+{$IFDEF OLD_EDITBUTTON}
     procedure DoButtonClick (Sender: TObject); override;
+{$ELSE}
+    procedure ButtonClick; override;
+{$ENDIF}
+
     function GetDefaultGlyphName: String; override;
     function CreatePopupForm:TPopupCalendar;
 
@@ -532,15 +541,13 @@ end;
 procedure TCustomRxDateEdit.AcceptValue(const AValue: TDateTime);
 begin
   SetDate(AValue);
-//  UpdatePopupVisible;
   if Modified then
+{$IFDEF OLD_EDITBUTTON}
     inherited Change;
+{$ELSE}
+    inherited EditChange;
+{$ENDIF}
 end;
-
-{procedure TCustomRxDateEdit.SetPopupValue(const Value: Variant);
-begin
-
-end;}
 
 procedure TCustomRxDateEdit.UpdateFormat;
 begin
@@ -685,7 +692,7 @@ begin
   FAccept:=FPopup.ShowModal = mrOk;
   if CanFocus then SetFocus;
 
-  if FAccept and EditCanModify then
+  if FAccept {and EditCanModify} then
   begin
     D:=FPopup.Date;
     if AcceptPopup(D) then
@@ -708,9 +715,18 @@ begin
   SelectAll;
 end;
 
+{$IFDEF OLD_EDITBUTTON}
 procedure TCustomRxDateEdit.Change;
+{$ELSE}
+procedure TCustomRxDateEdit.EditChange;
+{$ENDIF}
 begin
-  if not FFormatting then inherited Change;
+  if not FFormatting then
+  {$IFDEF OLD_EDITBUTTON}
+  inherited Change;
+  {$ELSE}
+  inherited EditChange;
+  {$ENDIF}
 end;
 
 procedure TCustomRxDateEdit.KeyDown(var Key: Word; Shift: TShiftState);
@@ -766,26 +782,27 @@ begin
   inherited KeyPress(Key);
 end;
 
+{$IFDEF OLD_EDITBUTTON}
 procedure TCustomRxDateEdit.DoButtonClick(Sender: TObject);
+{$ELSE}
+procedure TCustomRxDateEdit.ButtonClick;
+{$ENDIF}
 var
   D: TDateTime;
   A: Boolean;
 begin
+  {$IFDEF OLD_EDITBUTTON}
   inherited DoButtonClick(Sender);
+  {$ELSE}
+  inherited ButtonClick;
+  {$ENDIF}
   if CalendarStyle <> csDialog then
-//  if FPopup <> nil then
-  begin
-{    if FPopupVisible then
-      PopupCloseUp(FPopup, True)
-    else}
-      PopupDropDown(True);
-  end
+    PopupDropDown(True)
   else
   if CalendarStyle = csDialog then
   begin
     D := Self.Date;
-    A := SelectDate(D, DialogTitle, FStartOfWeek, FWeekends,
-      FWeekendColor, FCalendarHints);
+    A := SelectDate(D, DialogTitle, FStartOfWeek, FWeekends, FWeekendColor, FCalendarHints);
     if CanFocus then SetFocus;
     if A then
     begin
@@ -793,8 +810,7 @@ begin
       if A then
       begin
         Self.Date := D;
-//        if FFocused then
-          inherited SelectAll;
+        inherited SelectAll;
       end;
     end;
   end;

@@ -620,6 +620,8 @@ type
     procedure CollumnSortListClear;
     procedure CollumnSortListApply;
 
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+
     function DatalinkActive: boolean;
     procedure AdjustEditorBounds(NewCol,NewRow:Integer); override;
     procedure LinkActive(Value: Boolean); override;
@@ -930,7 +932,11 @@ type
     FGrid: TRxDBGrid;
     FCol, FRow: integer;
   protected
+{$IFDEF OLD_EDITBUTTON}
     procedure Change; override;
+{$ELSE}
+    procedure EditChange; override;
+{$ENDIF}
     procedure KeyDown(var Key: word; Shift: TShiftState); override;
 
     procedure WndProc(var TheMessage: TLMessage); override;
@@ -1286,11 +1292,19 @@ end;
 
 { TRxDBGridDateEditor }
 
+{$IFDEF OLD_EDITBUTTON}
 procedure TRxDBGridDateEditor.Change;
+{$ELSE}
+procedure TRxDBGridDateEditor.EditChange;
+{$ENDIF}
 var
   D:TDateTime;
 begin
+  {$IFDEF OLD_EDITBUTTON}
   inherited Change;
+  {$ELSE}
+  inherited EditChange;
+  {$ENDIF}
   if Assigned(FGrid) and FGrid.DatalinkActive and not FGrid.EditorIsReadOnly then
   begin
     if not (FGrid.DataSource.DataSet.State in dsEditModes) then
@@ -2595,6 +2609,15 @@ begin
   else
     FSortEngine.Sort(FSortColumns[0].GetSortFields, DataSource.DataSet, FSortColumns[0].FSortOrder = smUp, SortEngineOptions);
   FSortingNow:=false;
+end;
+
+procedure TRxDBGrid.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Assigned(Datalink) and (AComponent = DataSource) and (Operation = opRemove) then
+  begin
+    ShowMessage('i');
+  end;
 end;
 
 function TRxDBGrid.UpdateRowsHeight: integer;

@@ -112,7 +112,11 @@ type
     procedure UpdateKeyValue;
   protected
     property PopUpFormOptions:TPopUpFormOptions read FPopUpFormOptions write SetPopUpFormOptions;
+{$IFDEF OLD_EDITBUTTON}
     procedure DoButtonClick (Sender: TObject); override;
+{$ELSE}
+    procedure ButtonClick; override;
+{$ENDIF}
     function GetDefaultGlyphName: String; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure InternalClosePopup(AResult:boolean);virtual;
@@ -528,9 +532,17 @@ begin
     Text:=FLookupDataLink.DataSet.FieldByName(S).AsString;
 end;
 
-procedure TRxCustomDBLookupEdit.DoButtonClick(Sender: TObject);
+{$IFDEF OLD_EDITBUTTON}
+procedure TRxCustomDBLookupEdit.DoButtonClick (Sender: TObject);
+{$ELSE}
+procedure TRxCustomDBLookupEdit.ButtonClick;
+{$ENDIF}
 begin
+{$IFDEF OLD_EDITBUTTON}
   inherited DoButtonClick(Sender);
+{$ELSE}
+  inherited ButtonClick;
+{$ENDIF}
   if PopupVisible then
     HideList
   else
