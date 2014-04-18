@@ -3373,10 +3373,21 @@ begin
     begin
       if (FSortColumns.Count>0) and (FSortColumns[0] = ACollumn) then
       begin
-        if FSortColumns[0].FSortOrder = smUp then
-          FSortColumns[0].FSortOrder := smDown
+        if Assigned(FSortEngine) then
+        begin
+          if FSortColumns[0].FSortOrder = smUp then
+            FSortColumns[0].FSortOrder := smDown
+          else
+            FSortColumns[0].FSortOrder := smUp;
+        end
         else
-          FSortColumns[0].FSortOrder := smUp;
+        begin
+          case ACollumn.FSortOrder of
+            smNone: ACollumn.FSortOrder := smUp;
+            smUp: ACollumn.FSortOrder := smDown;
+            smDown: ACollumn.FSortOrder := smNone;
+          end;
+        end;
       end
       else
       begin
@@ -3386,7 +3397,7 @@ begin
     end;
 
     CollumnSortListUpdate;
-    if (FSortEngine <> nil) then
+    if Assigned(FSortEngine) then
       CollumnSortListApply;
   end
   else
