@@ -5,20 +5,20 @@
     <Name Value="wst_indy"/>
     <Author Value="Inoussa Ouedraogo"/>
     <CompilerOptions>
-      <Version Value="8"/>
+      <Version Value="9"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <OtherUnitFiles Value="..\..\;$(LazarusDir)\others_package\indy-10.2.0.3\fpc\"/>
+        <OtherUnitFiles Value="..\..;$(LazarusDir)\others_package\indy-10.2.0.3\fpc"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Parsing>
         <SyntaxOptions>
           <CStyleOperator Value="False"/>
+          <UseAnsiStrings Value="False"/>
         </SyntaxOptions>
       </Parsing>
       <Other>
-        <CustomOptions Value="-dINDY_10
-"/>
+        <CustomOptions Value="-dINDY_10"/>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>

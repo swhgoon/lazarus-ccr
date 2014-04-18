@@ -5,15 +5,16 @@
     <Name Value="wst_core"/>
     <Author Value="Inoussa Ouedraogo"/>
     <CompilerOptions>
-      <Version Value="8"/>
+      <Version Value="9"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <OtherUnitFiles Value="..\..\"/>
+        <OtherUnitFiles Value="..\.."/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Parsing>
         <SyntaxOptions>
           <CStyleOperator Value="False"/>
+          <UseAnsiStrings Value="False"/>
         </SyntaxOptions>
       </Parsing>
       <Other>
@@ -26,7 +27,7 @@ Protocols are not included.
     <License Value="Modified LGPL
 "/>
     <Version Minor="6"/>
-    <Files Count="40">
+    <Files Count="42">
       <Item1>
         <Filename Value="..\..\xmlrpc_formatter.pas"/>
         <UnitName Value="xmlrpc_formatter"/>
@@ -187,6 +188,14 @@ Protocols are not included.
         <Filename Value="..\..\wst_types.pas"/>
         <UnitName Value="wst_types"/>
       </Item40>
+      <Item41>
+        <Filename Value="..\..\file_logger_extension.pas"/>
+        <UnitName Value="file_logger_extension"/>
+      </Item41>
+      <Item42>
+        <Filename Value="..\..\server_filter_extension.pas"/>
+        <UnitName Value="server_filter_extension"/>
+      </Item42>
     </Files>
     <RequiredPkgs Count="1">
       <Item1>
