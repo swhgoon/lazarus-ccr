@@ -1,7 +1,7 @@
 object fInterfaceEdit: TfInterfaceEdit
-  Left = 361
+  Left = 363
   Height = 564
-  Top = 293
+  Top = 268
   Width = 531
   HorzScrollBar.Page = 530
   VertScrollBar.Page = 563
@@ -12,7 +12,7 @@ object fInterfaceEdit: TfInterfaceEdit
   ClientWidth = 531
   OnCreate = FormCreate
   Position = poDesktopCenter
-  LCLVersion = '1.0.1.4'
+  LCLVersion = '1.0.11.0'
   object Panel1: TPanel
     Left = 0
     Height = 50

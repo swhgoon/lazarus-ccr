@@ -652,11 +652,22 @@ begin
 end;
 
 procedure TfWstTypeLibraryEdit.actUpdateObjectUpdate(Sender: TObject);
+var
+  ok : Boolean;
+  locItem : TPasElement;
 begin
-  TAction(Sender).Enabled :=
-    Assigned(trvSchema.Selected) and
-    Assigned(trvSchema.Selected.Data) and
-    HasEditor(TPasElement(trvSchema.Selected.Data),etUpdate);
+  ok := Assigned(trvSchema.Selected) and Assigned(trvSchema.Selected.Data);
+  if ok then begin
+    locItem := TPasElement(trvSchema.Selected.Data);
+    if locItem.InheritsFrom(TPasModule) and (locItem <> FSymbolTable.CurrentModule) then
+      ok := False
+    else
+      ok := ( not(locItem.InheritsFrom(TPasType)) or
+              (FindModule(TPasType(locItem)) = FSymbolTable.CurrentModule)
+            );
+    ok := ok and HasEditor(locItem,etUpdate);
+  end;
+  TAction(Sender).Enabled := ok;
 end;
 
 procedure TfWstTypeLibraryEdit.FDFind(Sender : TObject);
@@ -879,11 +890,19 @@ begin
 end;
 
 procedure TfWstTypeLibraryEdit.actCloneUpdate(Sender : TObject);
+var
+  ok : Boolean;
+  locItem : TPasElement;
 begin
-  TAction(Sender).Enabled :=
-    Assigned(trvSchema.Selected) and
-    Assigned(trvSchema.Selected.Data) and
-    HasEditor(TPasElement(trvSchema.Selected.Data),etClone);
+  ok := Assigned(trvSchema.Selected) and Assigned(trvSchema.Selected.Data);
+  if ok then begin
+    locItem := TPasElement(trvSchema.Selected.Data);
+    ok := ( not(locItem.InheritsFrom(TPasType)) or
+            (FindModule(TPasType(locItem)) = FSymbolTable.CurrentModule)
+          ) and
+          HasEditor(locItem,etClone);
+  end;
+  TAction(Sender).Enabled := ok;
 end;
 
 procedure TfWstTypeLibraryEdit.actCompoundCreateExecute(Sender: TObject);
@@ -919,11 +938,19 @@ begin
 end;
 
 procedure TfWstTypeLibraryEdit.actDeleteUpdate(Sender : TObject);
+var
+  ok : Boolean;
+  locItem : TPasElement;
 begin
-  TAction(Sender).Enabled :=
-    Assigned(trvSchema.Selected) and
-    Assigned(trvSchema.Selected.Data) and
-    HasEditor(TPasElement(trvSchema.Selected.Data),etDelete);
+  ok := Assigned(trvSchema.Selected) and Assigned(trvSchema.Selected.Data);
+  if ok then begin
+    locItem := TPasElement(trvSchema.Selected.Data);
+    ok := ( not(locItem.InheritsFrom(TPasType)) or
+            (FindModule(TPasType(locItem)) = FSymbolTable.CurrentModule)
+          ) and
+          HasEditor(locItem,etDelete);
+  end;
+  TAction(Sender).Enabled := ok;
 end;
 
 procedure TfWstTypeLibraryEdit.actEnumCreateExecute(Sender: TObject);

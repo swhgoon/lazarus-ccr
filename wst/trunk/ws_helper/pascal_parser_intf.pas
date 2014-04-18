@@ -236,6 +236,7 @@ type
   ) : TPasArgument;
   function FindMember(AClass : TPasClassType; const AName : string) : TPasElement ; overload;
   function FindMember(AClass : TPasRecordType; const AName : string) : TPasElement ; overload;
+  function FindModule(AType: TPasType) : TPasModule;
   function GetElementCount(AList : TList2; AElementClass : TPTreeElement):Integer ;
   
   function GetUltimeType(AType : TPasType) : TPasType;overload;
@@ -654,6 +655,18 @@ begin
   Result := nil;
   if ( AClass <> nil ) then begin
     Result := InternalFindMember(AClass.Members,AName);
+  end;
+end;
+
+function FindModule(AType: TPasType) : TPasModule;
+begin
+  if Assigned(AType) and
+     Assigned(AType.Parent{Section}) and
+     Assigned(AType.Parent.Parent{Module})
+  then begin
+    Result := AType.Parent.Parent as TPasModule;
+  end else begin
+    Result := nil;
   end;
 end;
 

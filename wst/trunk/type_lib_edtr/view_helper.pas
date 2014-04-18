@@ -959,11 +959,26 @@ function TPackagePainter.Paint(
 ):TTreeNode;
 var
   objPtr : ISymbolPainter;
+  i : Integer;
+  locImportedNode : TTreeNode;
+  locModule : TPasModule;
 begin
   Result := AParent;
   objPtr := FindPainter(AContainer.CurrentModule) ;
-  if Assigned(objPtr) then begin
+  if Assigned(objPtr) then
     objPtr.Paint(AContainer,AContainer.CurrentModule,Result);
+  if (AContainer.Package.Modules.Count > 1) then begin
+    locImportedNode := nil;
+    for i := 0 to AContainer.Package.Modules.Count - 1 do begin
+      locModule := TPasModule(AContainer.Package.Modules[i]);
+      if (locModule <> AContainer.CurrentModule) and
+         not(locModule.InheritsFrom(TPasNativeModule))
+      then begin
+        if (locImportedNode = nil) then
+          locImportedNode := AddChildNode(AParent,'Imported Schemas');
+        objPtr.Paint(AContainer,locModule,locImportedNode);
+      end;
+    end;
   end;
 end;
 
