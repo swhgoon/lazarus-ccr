@@ -118,6 +118,13 @@ begin
   Result := Copy(AQualifiedName,(sepPos + 1),Length(AQualifiedName));
 end;
 
+{$IFDEF HAS_FORMAT_SETTINGS}
+  {$IFDEF DELPHI}
+var
+  DefaultFormatSettings : TFormatSettings absolute FormatSettings;
+  {$DEFINE HAS_DEFAULT_FORMAT_SETTINGS}
+  {$ENDIF DELPHI}
+{$ENDIF HAS_FORMAT_SETTINGS}
 function TranslateDotToDecimalSeperator(const Value: string) : string;
 var
   i : PtrInt;
