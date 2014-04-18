@@ -230,9 +230,9 @@ uses lclintf, LCLStrConsts, rxconst, rxstrutils, LResources,
   Forms, LCLProc,
   variants;
 
-{$IFNDEF RX_USE_LAZARUS_RESOURCE}
-{$R tooledit.res}
-{$ENDIF}
+{.$IFNDEF RX_USE_LAZARUS_RESOURCE}
+{.$R tooledit.res}
+{.$ENDIF}
 
 type
   TPopupCalendarAccess = class(TPopupCalendar)

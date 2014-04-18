@@ -104,6 +104,10 @@ procedure OutOfResources;
 implementation
 uses LCLProc, LCLIntf, LCLType, LCLStrConsts;
 
+{$IFNDEF RX_USE_LAZARUS_RESOURCE}
+{$R rx_lcl.res}
+{$ENDIF}
+
 function WidthOf(R: TRect): Integer;
 begin
   Result := R.Right - R.Left;
@@ -600,10 +604,26 @@ end;
 {$ENDIF}
 
 function CreateArrowBitmap:TBitmap;
+var
+  C : TCustomBitmap;
 begin
+  {$IFNDEF RX_USE_LAZARUS_RESOURCE}
+  Result := TBitmap.Create;
+  try
+    try
+      C := TPortableNetworkGraphic.Create;
+      C.LoadFromResourceName(hInstance, 'rxbtn_downarrow');
+      Result.Assign(C);
+    finally
+      C.Free;
+    end;
+  except
+    Result.Free;
+    raise;
+  end;
+  {$ELSE}
   Result:=LoadLazResBitmapImage('rxbtn_downarrow')
-{  Result:=Graphics.TBitmap.Create;
-  Result.LoadFromLazarusResource('rxbtn_downarrow');}
+  {$ENDIF}
 end;
 
 //Code from DBGrid
@@ -650,10 +670,13 @@ begin
 end;
 
 initialization
+{$IFDEF RX_USE_LAZARUS_RESOURCE}
   LazarusResources.Add('rxbtn_downarrow','XPM',[
   '/* XPM */'#13#10'static char * btn_downarrow_xpm[] = {'#13#10'"5 3 2 1",'#13
   +#10'" '#9'c None",'#13#10'".'#9'c #000000",'#13#10'".....",'#13#10'" ... ",'
   +#13#10'"  .  "};'#13#10]);
+{$ENDIF}
+
 end.
 
 

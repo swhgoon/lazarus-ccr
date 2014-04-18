@@ -26,8 +26,8 @@ Copyright (c) 1998 Master-Bank
 translate to Lazarus by alexs in 2005 - 2014
 "/>
     <License Value="LGPL"/>
-    <Version Major="2" Minor="6" Release="4" Build="142"/>
-    <Files Count="67">
+    <Version Major="2" Minor="6" Release="5" Build="152"/>
+    <Files Count="68">
       <Item1>
         <Filename Value="autopanel.pas"/>
         <UnitName Value="AutoPanel"/>
@@ -299,6 +299,10 @@ translate to Lazarus by alexs in 2005 - 2014
         <Filename Value="rxinipropstorage.pas"/>
         <UnitName Value="RxIniPropStorage"/>
       </Item67>
+      <Item68>
+        <Filename Value="rx_lcl.res"/>
+        <Type Value="Binary"/>
+      </Item68>
     </Files>
     <LazDoc Paths="docs;\usr\local\share\lazarus\components\rxnew\docs"/>
     <i18n>

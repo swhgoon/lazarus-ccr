@@ -627,12 +627,7 @@ begin
   FLookupDataLink.FOnLayoutChanged:=@ListLinkActiveChanged;
   FLookupDataLink.FOnDataSetChanged:=@LookupDataSetChanged;
 
-
-//  FDropDownCount:=8;
   FFieldList:=TStringList.Create;
-  P:=CreateArrowBitmap;
-  Glyph.Assign(P);
-  P.Free;
   ButtonWidth:=15;
   FPopUpFormOptions:=TPopUpFormOptions.Create(Self);
 end;
