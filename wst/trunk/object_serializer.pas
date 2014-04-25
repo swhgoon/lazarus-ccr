@@ -1179,6 +1179,15 @@ var
 {$IFDEF WST_TKHELPER}
      ,( Simple : @ErrorFunc; Qualified : @ErrorFunc ;)  //tkHelper
 {$ENDIF WST_TKHELPER}
+{$IFDEF WST_TKFILE}
+     ,( Simple : @ErrorFunc; Qualified : @ErrorFunc ;)  //tkFile
+{$ENDIF WST_TKFILE}
+{$IFDEF WST_TKCLASSREF}
+     ,( Simple : @ErrorFunc; Qualified : @ErrorFunc ;)  //tkClassRef
+{$ENDIF WST_TKCLASSREF}
+{$IFDEF WST_TKPOINTER}
+     ,( Simple : @ErrorFunc; Qualified : @ErrorFunc ;)  //tkPointer
+{$ENDIF WST_TKPOINTER}
   );
 
   WriterInfoMap : array[TTypeKind] of TWriterInfo = (
@@ -1216,6 +1225,15 @@ var
 {$IFDEF WST_TKHELPER}
      ,( Simple : @ErrorProc; Qualified : @ErrorProc ;)  //tkHelper
 {$ENDIF WST_TKHELPER}
+{$IFDEF WST_TKFILE}
+     ,( Simple : @ErrorProc; Qualified : @ErrorProc ;)  //tkFile
+{$ENDIF WST_TKFILE}
+{$IFDEF WST_TKCLASSREF}
+     ,( Simple : @ErrorProc; Qualified : @ErrorProc ;)  //tkClassRef
+{$ENDIF WST_TKCLASSREF}
+{$IFDEF WST_TKPOINTER}
+     ,( Simple : @ErrorProc; Qualified : @ErrorProc ;)  //tkPointer
+{$ENDIF WST_TKPOINTER}
   );
 {$ENDIF FPC}
 
