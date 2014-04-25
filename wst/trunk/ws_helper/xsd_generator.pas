@@ -398,10 +398,9 @@ function FindAttributeByValueInNode(
   const AStartingWith    : string = ''
 ):boolean;overload;
 var
-  i,c : Integer;
-  b : Boolean;
   k : Integer;
 begin
+  k := 0;
   Result := FindAttributeByValueInNode(
               AAttValue,ANode,AResAtt,AStartIndex,AStartingWith,k
             );

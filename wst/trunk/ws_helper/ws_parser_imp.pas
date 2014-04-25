@@ -853,7 +853,7 @@ var
     var AMaxUnboundded : Boolean
   );
   var
-    locAttCursor, locPartCursor : IObjectCursor;
+    locPartCursor : IObjectCursor;
     locMin, locMax : Integer;
     locMaxOccurUnbounded : Boolean;
     locStrBuffer : string;
@@ -914,6 +914,7 @@ var
     locType := nil;
     locTypeName := '';
     locTypeHint := '';
+    locInternalEltName := '';
     locAttCursor := CreateAttributesCursor(AElement,cetRttiNode);
     locPartCursor := CreateCursorOn(locAttCursor.Clone() as IObjectCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_name)]),TDOMNodeRttiExposer));
     locPartCursor.Reset();
@@ -928,9 +929,9 @@ var
       locIsRefElement := True;
     end;
     locName := (locPartCursor.GetCurrent() as TDOMNodeRttiExposer).NodeValue;
-    if locIsRefElement then begin
+    if locIsRefElement then
       locName := ExtractNameFromQName(locName);
-    end;
+    locInternalEltName := ExtractIdentifier(locName);
     if IsStrEmpty(locName) then
       raise EXsdParserException.Create(SERR_InvalidElementDef_EmptyName);
     if locIsRefElement then begin
@@ -1113,12 +1114,14 @@ var
     end;
 
   var
-    locNode, locAnyNode, locAnyAttNode : TDOMNode;
+    locNode : TDOMNode;
     locNS, locLN : string;
     locEltCrs, locEltAttCrs : IObjectCursor;
     locBoundInfos : TOccurrenceRec;
   begin
+    FillChar(locBoundInfos,SizeOf(locBoundInfos),#0);
     if Assigned(AEltCrs) then begin
+      locEltAttCrs := nil;
       AEltCrs.Reset();
       while AEltCrs.MoveNext() do begin
         locNode := (AEltCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
@@ -1439,6 +1442,7 @@ var
       locName := ExtractNameFromQName(locName);
     if IsStrEmpty(locName) then
       raise EXsdInvalidDefinitionException.Create(SERR_InvalidAttributeDef_EmptyName);
+    locInternalEltName := ExtractIdentifier(locName);
 
     if locIsRefElement then begin
       locTypeName := locName;
@@ -1486,7 +1490,7 @@ var
       locStoreOptIdx := 1{optional by default!}; //0;
     end;
 
-    locInternalEltName := locName;
+    locInternalEltName := ExtractIdentifier(locName);
     locHasInternalName := IsReservedKeyWord(locInternalEltName);
     if locHasInternalName then
       locInternalEltName := Format('_%s',[locInternalEltName]);
