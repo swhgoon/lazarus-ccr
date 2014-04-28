@@ -47,8 +47,9 @@ unit ovctccbx;
 interface
 
 uses
+  SysUtils, Classes,
   {$IFNDEF LCL} Windows, Messages, {$ELSE} LclIntf, LMessages, LclType, MyMisc, {$ENDIF} 
-  SysUtils, Graphics, Classes, Controls, Forms, StdCtrls,
+  Graphics, Controls, Forms, StdCtrls,
   OvcMisc, OvcTCmmn, OvcTCell, OvcTCStr;
 
 type

@@ -1107,9 +1107,9 @@ end;
 
 procedure TOvcCustomVirtualListBox.LBSelItemRange(var Msg : TMessage);
 begin
-  if FMultiSelect and (Msg.wParamLo <= lHighIndex)
-     and (Msg.wParamHi <= lHighIndex) then begin
-    vlbSelectRangePrim(Msg.lParamLo, Msg.lParamHi, Msg.wParam > 0);
+  if FMultiSelect and (LoWord(Msg.WParam) <= lHighIndex)  //64
+     and (HiWord(Msg.WParam) <= lHighIndex) then begin  //64
+    vlbSelectRangePrim(LoWord(Msg.LParam), HiWord(Msg.LParam), Msg.wParam > 0);  //64
     Msg.Result := 0;
   end else
     Msg.Result := LB_ERR;

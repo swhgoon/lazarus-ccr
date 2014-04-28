@@ -47,11 +47,12 @@ unit MyMisc;
 
 interface
 
-uses 
+uses
+  SysUtils,
   {$IFDEF MSWINDOWS} Windows, {$ELSE} Types, {$ENDIF}
    LclIntf, LMessages, LclType, InterfaceBase,
   {$IFDEF LINUX} FileUtil, {$ENDIF}
-   GraphType, Graphics, Controls, SysUtils;
+   GraphType, Graphics, Controls;
 
 type
   TButtonStyle = (bsAutoDetect, bsWin31, bsNew);
@@ -72,10 +73,16 @@ type
   TWMSysKeyDown = TLMSysKeyDown;
   TWMMouseActivate = packed record
     Msg: Cardinal;
+{$ifdef cpu64}  //64
+    UnusedMsg: Cardinal;
+{$endif}
     TopLevel: HWND;
     HitTestCode: Word;
     MouseMsg: Word;
-    Result: Longint;
+{$ifdef cpu64}  //64
+    Unused: Longint;
+{$endif}
+    Result: LRESULT;  //64
     end;
   TWMMouseMove = TLMMouseMove;
   TWMPaste = TLMNoParams;
@@ -84,22 +91,29 @@ type
   TWMGetText = TLMGetText;
   TWMGetTextLength = TLMGetTextLength;
   TWMKillFocus = TLMKillFocus;
-  TWMSetCursor = packed record
-    Msg: Cardinal;
-    CursorWnd: HWND;
-    HitTest: Word;
-    MouseMsg: Word;
-    Result: Longint;
-    end;
+  TWMSetCursor = TLMSetCursor;  //64
+//  TWMSetCursor = packed record
+//    Msg: Cardinal;
+//    CursorWnd: HWND;
+//    HitTest: Word;
+//    MouseMsg: Word;
+//    Result: Longint;
+//    end;
   TWMSetFocus = TLMSetFocus;
   TWMGetDlgCode = TLMNoParams;
   TWMSize = TLMSize;
   TWMSetFont = packed record
     Msg: Cardinal;
+{$ifdef cpu64}  //64
+    UnusedMsg: Cardinal;
+{$endif}
     Font: HFONT;
     Redraw: WordBool;
     Unused: Word;
-    Result: Longint;
+{$ifdef cpu64}  //64
+    Unused2: Longint;
+{$endif}
+    Result: LRESULT;  //64
     end;
   TWMCommand = TLMCommand;
   TWMDrawItem = TLMDrawItems;
@@ -128,9 +142,12 @@ type
   TWMPaint = TLMPaint;
   TWMNCPaint = packed record
     Msg: Cardinal;
+{$ifdef cpu64}  //64
+    UnusedMsg: Cardinal;
+{$endif}
     RGN: HRGN;
-    Unused: Longint;
-    Result: Longint;
+    Unused: LPARAM;  //64
+    Result: LRESULT;  //64
     end;
   TWMHScroll = TLMHScroll;
   TWMVScroll = TLMVScroll;

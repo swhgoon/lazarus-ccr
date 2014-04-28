@@ -463,7 +463,7 @@ procedure TOvcCustomSimpleField.efEdit(var Msg : TMessage; Cmd : Word);
         end;
       ccMouse :
         if Len > 0 then begin
-          efHPos := efGetMousePos(SmallInt(Msg.lParamLo));
+          efHPos := efGetMousePos(SmallInt(LoWord(Msg.LParam)));  //64
           {drag highlight initially if shift key is being pressed}
           if (GetKeyState(vk_Shift) < 0) then begin
             SelExtended := True;
@@ -484,12 +484,12 @@ procedure TOvcCustomSimpleField.efEdit(var Msg : TMessage; Cmd : Word);
         end;
       ccMouseMove :
         if Len > 0 then begin
-          efHPos := efGetMousePos(SmallInt(Msg.lParamLo));
+          efHPos := efGetMousePos(SmallInt(LoWord(Msg.LParam)));  //64
           UpdateSel;
         end;
       ccDblClk :
         if Len > 0 then begin
-          efHPos := efGetMousePos(SmallInt(Msg.lParamLo));
+          efHPos := efGetMousePos(SmallInt(LoWord(Msg.LParam)));  //64
           WordLeftPrim;
           SaveHPos := efHPos;
           efSelStart := SaveHPos;
@@ -784,7 +784,7 @@ procedure TOvcCustomSimpleField.efEdit(var Msg : TMessage; Cmd : Word);
       ccExtendRight, ccExtendEnd, ccExtWordRight :
         efSelEnd := 1;
       ccMouseMove :
-        if efGetMousePos(SmallInt(Msg.lParamLo)) > 0 then
+        if efGetMousePos(SmallInt(LoWord(Msg.LParam))) > 0 then  //64
           efSelEnd := 1
         else
           efSelEnd := 0;

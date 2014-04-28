@@ -487,7 +487,7 @@ var
 begin
   Word((@Text)^) := SizeOf(Text);
   SetString(Result, Text, SendMessage(FlexEdit.Handle, EM_GETLINE, Index,
-    Longint(@Text)));
+    LPARAM(@Text)));  //64
 end;
 {=====}
 
@@ -500,7 +500,7 @@ begin
   begin
     SendMessage(FlexEdit.Handle, EM_SETSEL, SelStart, SelStart +
       SendMessage(FlexEdit.Handle, EM_LINELENGTH, SelStart, 0));
-    SendMessage(FlexEdit.Handle, EM_REPLACESEL, 0, Longint(PChar(S)));
+    SendMessage(FlexEdit.Handle, EM_REPLACESEL, 0, LPARAM(PChar(S)));  //64
   end;
 end;
 {=====}
@@ -525,7 +525,7 @@ begin
       Line := #13#10 + s;
     end;
     SendMessage(FlexEdit.Handle, EM_SETSEL, SelStart, SelStart);
-    SendMessage(FlexEdit.Handle, EM_REPLACESEL, 0, Longint(PChar(Line)));
+    SendMessage(FlexEdit.Handle, EM_REPLACESEL, 0, LPARAM(PChar(Line)));  //64
   end;
 end;
 {=====}
@@ -543,7 +543,7 @@ begin
     if SelEnd < 0 then SelEnd := SelStart +
       SendMessage(FlexEdit.Handle, EM_LINELENGTH, SelStart, 0);
     SendMessage(FlexEdit.Handle, EM_SETSEL, SelStart, SelEnd);
-    SendMessage(FlexEdit.Handle, EM_REPLACESEL, 0, Longint(Empty));
+    SendMessage(FlexEdit.Handle, EM_REPLACESEL, 0, LPARAM(Empty));  //64
   end;
 end;
 {=====}

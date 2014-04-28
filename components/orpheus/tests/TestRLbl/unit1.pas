@@ -26,11 +26,9 @@ implementation
 
 {$IFNDEF LCL}
 {$R *.dfm}
+{$ELSE}
+{$R *.lfm}
 {$ENDIF}
 
-initialization
-{$IFDEF LCL}
-{$I Unit1.lrs}  {Include form's resource file}
-{$ENDIF}
 
 end.

@@ -41,8 +41,9 @@ unit ovctcmmn;
 interface
 
 uses
+  SysUtils, Classes,
   {$IFNDEF LCL} Windows, Messages, {$ELSE} LclIntf, LMessages, LclType, MyMisc, {$ENDIF}
-  SysUtils, Graphics, Forms, StdCtrls, Classes, Controls,
+  Graphics, Forms, StdCtrls, Controls,
   OvcBase, OvcData, OvcExcpt;
 
 {---Enumeration types}

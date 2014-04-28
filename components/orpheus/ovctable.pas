@@ -46,8 +46,9 @@ unit ovctable;
 interface
 
 uses
+  SysUtils, Classes,
   {$IFNDEF LCL} Windows, Messages, {$ELSE} LclIntf, LMessages, LclType, MyMisc, {$ENDIF}
-  SysUtils, Graphics, Classes, Controls, Forms, StdCtrls,
+  Graphics, Controls, Forms, StdCtrls,
   Menus, Dialogs, OvcMisc, OvcData, OvcConst, OvcBase, OvcCmd, OvcTCmmn,
   OvcTCAry, OvcTSelL, OvcTCell, OvcTCHdr, OvcTGPns,
   OvcTbClr, OvcTbRws, OvcTbCls, OvcDrag;
@@ -5427,7 +5428,7 @@ procedure TOvcCustomTable.ctimQueryColor(var Msg : TMessage);
 {--------}
 procedure TOvcCustomTable.ctimQueryFont(var Msg : TMessage);
   begin
-    Msg.Result := longint(Font);
+    Msg.Result := LRESULT(Font);  //64
   end;
 {--------}
 procedure TOvcCustomTable.ctimQueryLockedCols(var Msg : TMessage);

@@ -41,9 +41,10 @@ unit ovcef;
 interface
 
 uses
+  SysUtils, Classes,
   {$IFNDEF LCL} Windows, Messages, {$ELSE} LclIntf, LMessages, Types, LclType, MyMisc, {$ENDIF} 
-  Classes, ClipBrd, Controls, Forms, Graphics, Menus,
-  SysUtils, {$IFDEF VERSION6} Variants, {$ENDIF}
+  ClipBrd, Controls, Forms, Graphics, Menus,
+  {$IFDEF VERSION6} Variants, {$ENDIF}
   OvcBase, OvcCaret, OvcColor, OvcConst, OvcCmd, OvcData, OvcExcpt,
   OvcIntl, OvcMisc, OvcStr, OvcUser, OvcDate, OvcBordr;
 
@@ -1738,7 +1739,7 @@ begin
 {$IFNDEF LCL}
   PostMessage(Controller.Handle, om_SetFocus, 0, LongInt(C));
 {$ELSE}
-  Controller.PostMessage(Controller.Handle, om_SetFocus, 0, LongInt(C));
+  Controller.PostMessage(Controller.Handle, om_SetFocus, 0, LPARAM(C));  //64
 {$ENDIF}
 end;
 
@@ -2814,12 +2815,12 @@ end;
 procedure TOvcBaseEntryField.EMSetSel(var Msg : TMessage);
 begin
   with Msg do begin
-    if lParamLo = $FFFF then
+    if LoWord(LParam) = $FFFF then  //64
       SetSelection(0, 0)
-    else if (lParamLo = 0) and (lParamHi = $FFFF) then
+    else if (LoWord(LParam) = 0) and (HiWord(LParam) = $FFFF) then  //64
       SetSelection(0, MaxEditLen)
-    else if lParamHi >= lParamLo then
-      SetSelection(lParamLo, lParamHi);
+    else if HiWord(LParam) >= LoWord(LParam) then  //64
+      SetSelection(LoWord(LParam), HiWord(LParam));  //64
   end;
   Invalidate;
 end;
@@ -4158,7 +4159,7 @@ var
   Buf : array[0..MaxEditLen] of AnsiChar;
 begin
   StrPCopy(Buf, Value);
-  Msg.lParam := LongInt(@Buf);
+  Msg.lParam := LPARAM(@Buf);  //64
   efPerformEdit(Msg, ccPaste);
 end;
 

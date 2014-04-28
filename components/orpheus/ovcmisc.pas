@@ -47,9 +47,10 @@ unit ovcmisc;
 interface
 
 uses
+  SysUtils, Classes,
   {$IFNDEF LCL} Windows, Messages, {$ELSE} LclIntf, LMessages, LclType, MyMisc, {$ENDIF} 
-  Buttons, Classes, Controls, ExtCtrls, Forms, Graphics,
-  SysUtils, {$IFNDEF LCL} Consts, {$ELSE} LclStrConsts, {$ENDIF} OvcData;
+  Buttons, Controls, ExtCtrls, Forms, Graphics,
+  {$IFNDEF LCL} Consts, {$ELSE} LclStrConsts, {$ENDIF} OvcData;
 
 { Hdc needs to be an Integer for BCB compatibility }
 {$IFDEF CBuilder}
@@ -658,7 +659,7 @@ type
 
 { - HWnd changed to TOvcHWnd for BCB Compatibility }
 function CheckTaskWindow(Window: TOvcHWnd{HWnd};
-  Data: Longint): WordBool; stdcall;
+  Data: PCheckTaskInfo): WordBool; stdcall;  //64
 begin
   Result := True;
   if PCheckTaskInfo(Data)^.FocusWnd = Window then begin
@@ -674,9 +675,9 @@ begin
   Info.FocusWnd := GetActiveWindow;
   Info.Found := False;
 {$IFNDEF DARWIN}
-  EnumThreadWindows(GetCurrentThreadID, @CheckTaskWindow, Longint(@Info));
+  EnumThreadWindows(GetCurrentThreadID, @CheckTaskWindow, LPARAM(@Info));  //64
 {$ELSE}
-  EnumThreadWindows(LongWord(GetCurrentThreadID), @CheckTaskWindow, Longint(@Info));
+  EnumThreadWindows(LongWord(GetCurrentThreadID), @CheckTaskWindow, LPARAM(@Info));  //64
 {$ENDIF}
   Result := Info.Found;
 end;

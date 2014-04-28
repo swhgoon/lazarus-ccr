@@ -58,6 +58,8 @@ implementation
 
 {$IFNDEF LCL}
 {$R *.dfm}  {Link Delphi form file}
+{$ELSE}
+{$R *.lfm}
 {$ENDIF}
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -146,10 +148,5 @@ begin
   OvcTable1.AllowRedraw := True;
 end;  {TForm1.OvcTCComboBox1Change}
 
-
-initialization
-{$IFDEF LCL}
-{$I unit1.lrs}  {Include form's Lazarus resource file}
-{$ENDIF}
 
 end.

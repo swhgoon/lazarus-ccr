@@ -227,7 +227,7 @@ begin
       if not Assigned(Pointer(GetWindowLong(FHookedControl.Handle, GWL_USERDATA))) then
         FreeMem(MethodPtr);  //SetWindowLong not implemented for widgetset
 {$ENDIF}
-      SetWindowLong(FHookedControl.Handle, GWL_WNDPROC, LongInt(NewWndProc));
+      SetWindowLong(FHookedControl.Handle, GWL_WNDPROC, LPARAM(NewWndProc));  //64
     end;
   end;
 end;
@@ -248,7 +248,7 @@ begin
       if Assigned(MethodPtr) then
         FreeMem(MethodPtr);
 {$ENDIF}    
-      SetWindowLong(FHookedControl.Handle, GWL_WNDPROC, LongInt(PrevWndProc));
+      SetWindowLong(FHookedControl.Handle, GWL_WNDPROC, LPARAM(PrevWndProc));  //64
       end;
   end;
   PrevWndProc := nil;

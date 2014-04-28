@@ -41,8 +41,9 @@ unit ovctcgly;
 interface
 
 uses
+  SysUtils, Classes,
   {$IFNDEF LCL} Windows, Messages, {$ELSE} LclIntf, LMessages, LclType, MyMisc, {$ENDIF}
-  SysUtils, Graphics, Classes, Controls,
+  Graphics, Controls,
   OvcTCmmn, OvcTCell, OvcTGRes, OvcTCBmp;
 
 type

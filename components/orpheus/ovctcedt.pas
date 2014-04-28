@@ -41,8 +41,9 @@ unit ovctcedt;
 interface
 
 uses
+  SysUtils, Classes,
   {$IFNDEF LCL} Windows, Messages, {$ELSE} LclIntf, LMessages, LclType, MyMisc, {$ENDIF}
-  SysUtils, Classes, Controls, Forms, StdCtrls,
+  Controls, Forms, StdCtrls,
   OvcTCmmn, OvcTCell, OvcTCStr,
   Graphics; { - for default color definition}
 

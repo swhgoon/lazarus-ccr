@@ -41,8 +41,9 @@ unit o32tcflx;
 interface
 
 uses
+  SysUtils, Classes,
   {$IFNDEF LCL} Windows, Messages, {$ELSE} LclIntf, LMessages, Types, LclType, MyMisc, {$ENDIF} 
-  SysUtils, Graphics, Classes, Controls, Forms, StdCtrls,
+  Graphics, Controls, Forms, StdCtrls,
   Menus, OvcTCmmn, OvcTCell,
   OvcTCStr, O32FlxEd, O32bordr, OvcEf, OvcCmd, O32VlOp1, O32Vldtr;
 

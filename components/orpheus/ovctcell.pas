@@ -41,8 +41,9 @@ unit ovctcell;
 interface
 
 uses
+  SysUtils, Classes,
   {$IFNDEF LCL} Windows, Messages, {$ELSE} LclIntf, LMessages, LclType, MyMisc, {$ENDIF}
-  SysUtils, Graphics, Classes, Controls,
+  Graphics, Controls,
   OvcTCmmn, OvcSpAry, OvcVer;
 
 type
@@ -237,7 +238,7 @@ type
       function CanStopEditing(SaveValue : boolean) : boolean; {for Orpheus 1.0 compatibility}
       function FilterTableKey(var Msg : TWMKey) : TOvcTblKeyNeeds; virtual;
       {.Z+}
-      procedure PostMessageToTable(Msg, wParam, lParam : longint);
+      procedure PostMessageToTable(Msg: UINT; wParam: WPARAM; lParam: LPARAM);  //64
       {.Z-}
       procedure SendKeyToTable(var Msg : TWMKey);
       procedure SaveEditedData(Data : pointer); virtual;
@@ -549,7 +550,7 @@ procedure TOvcBaseTableCell.tcPaint(TableCanvas : TCanvas;
       end;
   end;
 {--------}
-procedure TOvcBaseTableCell.PostMessageToTable(Msg, wParam, lParam : longint);
+procedure TOvcBaseTableCell.PostMessageToTable(Msg: UINT; wParam: WPARAM; lParam: LPARAM);  //64
   begin
     if Assigned(FTable) and FTable.HandleAllocated  then
       PostMessage(FTable.Handle, Msg, wParam, lParam)
@@ -710,7 +711,7 @@ procedure TOvcBaseTableCell.SetTable(T : TOvcTableAncestor);
       if (not Assigned(T)) or (T is TOvcTableAncestor) then
         begin
           if Assigned(FTable) and FTable.HandleAllocated then
-            SendMessage(FTable.Handle, ctim_RemoveCell, 0, longint(Self));
+            SendMessage(FTable.Handle, ctim_RemoveCell, 0, LPARAM(Self));  //64
           FTable := T;
           FOnCfgChanged := nil;
           FReferences := 0;

@@ -33,6 +33,8 @@ implementation
 
 {$IFNDEF LCL}
 {$R *.dfm}
+{$ELSE}
+{$R *.lfm}
 {$ENDIF}
 
 procedure TForm1.O32FlexEdit1UserValidation(Sender: TObject;
@@ -71,10 +73,5 @@ begin
   PostMessage(TO32FlexEdit(Sender).Handle, OM_VALIDATE, 0, 0);
 {$ENDIF}
 end;
-
-initialization
-{$IFDEF LCL}
-{$I unit1.lrs}  {Include form's resource file}
-{$ENDIF}
 
 end.

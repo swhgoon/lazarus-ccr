@@ -40,8 +40,9 @@ unit ovccmbx;
 interface
 
 uses
+  SysUtils, Classes,
   {$IFNDEF LCL} Windows, Messages, {$ELSE} LclIntf, LMessages, LclType, LResources, MyMisc, {$ENDIF}
-  SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
+  Graphics, Controls, Forms, StdCtrls,
   Buttons, OvcBase, OvcConst, OvcData, OvcMisc, OvcBordr {$IFNDEF LCL}, OvcTimer {$ENDIF};
 
 type
@@ -715,7 +716,7 @@ begin
     ItemIndex := SendMessage(Handle,
                              CB_FINDSTRINGEXACT,
                              FMRUList.Items.Count - 1,
-                             LongInt(SrchText));
+                             LPARAM(SrchText));  //64
   finally
     FreeMem(SrchText, L);
   end;
@@ -1001,7 +1002,7 @@ begin
           {this will search for the first matching item}
           Index := SendMessage(Handle, CB_FINDSTRING,
                                FMRUList.Items.Count - 1,
-                                 LongInt(SrchText));
+                                 LPARAM(SrchText));  //64
         finally
           FreeMem(SrchText, length(Text) + 1);
         end;
@@ -1374,7 +1375,7 @@ begin
       ItemIndex := SendMessage(Handle,
                                CB_FINDSTRINGEXACT,
                                0,
-                               LongInt(SrchText));
+                               LPARAM(SrchText));  //64
     finally
       FreeMem(SrchText, L);
     end;

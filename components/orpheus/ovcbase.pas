@@ -952,7 +952,7 @@ begin
   if Assigned(PF) then begin
     for I := 0 to Pred(PF.ComponentCount) do begin
       if PF.Components[I] = FControl then begin
-        SendMessage(FControl.Handle, OM_ASSIGNLABEL, 0, LongInt(Self));
+        SendMessage(FControl.Handle, OM_ASSIGNLABEL, 0, LPARAM(Self));  //64
         PostMessage(FControl.Handle, OM_RECORDLABELPOSITION, 0, 0);
         Break;
       end;
@@ -1503,7 +1503,7 @@ end;
 procedure TOvcController.DelayNotify(Sender : TObject; NotifyCode : Word);
 begin
   if Assigned(FOnDelayNotify) then
-    PostMessage(Handle, OM_DELAYNOTIFY, NotifyCode, LongInt(Sender));
+    PostMessage(Handle, OM_DELAYNOTIFY, NotifyCode, LPARAM(Sender));  //64
 end;
 
 destructor TOvcController.Destroy;
@@ -1555,7 +1555,7 @@ begin
   else
     H := 0;
 
-  PostMessage(Handle, OM_POSTEDIT, H, LongInt(Sender));
+  PostMessage(Handle, OM_POSTEDIT, H, LPARAM(Sender));  //64
 end;
 
 procedure TOvcController.DoOnPreEdit(Sender : TObject; LosingControl : TWinControl);
@@ -1567,7 +1567,7 @@ begin
   else
     H := 0;
 
-  PostMessage(Handle, OM_PREEDIT, H, LongInt(Sender));
+  PostMessage(Handle, OM_PREEDIT, H, LPARAM(Sender));  //64
 end;
 
 procedure TOvcController.DoOnTimerTrigger(Sender : TObject; Handle : Integer;
@@ -1682,7 +1682,7 @@ var
 
         {ask the controller to give the focus back to this field}
         if ChangeFocus and not ErrorPending then begin
-          PostMessage(Handle, OM_SETFOCUS, 0, LongInt(EF));
+          PostMessage(Handle, OM_SETFOCUS, 0, LPARAM(EF));  //64
           ErrorPending := True;
         end;
 
@@ -1743,7 +1743,7 @@ begin
 
         {ask the controller to give the focus back to this field}
         if not ErrorPending then begin
-          PostMessage(Handle, OM_SETFOCUS, 0, LongInt(EF));
+          PostMessage(Handle, OM_SETFOCUS, 0, LPARAM(EF));  //64
           ErrorPending := True;
         end;
 

@@ -41,8 +41,9 @@ unit ovctcbef;
 interface
 
 uses
+  SysUtils, Classes,
   {$IFNDEF LCL} Windows, {$ELSE} LclIntf, LclType, MyMisc, {$ENDIF}
-  SysUtils, Classes, Graphics, Controls, Forms,
+  Graphics, Controls, Forms,
   OvcBase, OvcCmd, OvcEF, OvcCaret, OvcTCmmn, OvcTCell, OvcTable, OvcTCStr;
 
 type

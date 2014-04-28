@@ -55,6 +55,8 @@ implementation
 
 {$IFNDEF LCL}
 {$R *.dfm}  {Link Delphi form file}
+{$ELSE}
+{$R *.lfm}
 {$ENDIF}
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -131,9 +133,5 @@ begin
     end;
 end;
 
-initialization
-{$IFDEF LCL}
-{$I unit1.lrs}  {Include form's Lazarus resource file}
-{$ENDIF}
 
 end.

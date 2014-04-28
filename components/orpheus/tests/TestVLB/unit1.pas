@@ -28,6 +28,8 @@ implementation
 
 {$IFNDEF LCL}
 {$R *.dfm}
+{$ELSE}
+{$R *.lfm}
 {$ENDIF}
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -62,9 +64,5 @@ begin
    'You double-clicked item ' + IntToStr(OvcVirtualListBox1.ItemIndex);
 end;
 
-initialization
-{$IFDEF LCL}
-{$I unit1.lrs}  {Include form's resource file}
-{$ENDIF}
 
 end.

@@ -41,8 +41,9 @@ unit ovctcbmp;
 interface
 
 uses
-  {$IFNDEF LCL} Windows, {$ELSE} LclIntf, MyMisc, {$ENDIF} 
-  SysUtils, Graphics, Classes, OvcTCmmn, OvcTCell;
+  SysUtils, Classes,
+  {$IFNDEF LCL} Windows, {$ELSE} LclIntf, LclType, MyMisc, {$ENDIF} 
+  Graphics, OvcTCmmn, OvcTCell;
 
 type
   TOvcTCBaseBitMap = class(TOvcBaseTableCell)
