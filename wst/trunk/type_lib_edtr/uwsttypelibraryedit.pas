@@ -131,6 +131,24 @@ type
     edtXSD : TSynEdit;
     SynPasSyn1: TSynPasSyn;
     SynXMLSyn1: TSynXMLSyn;
+    ToolBar1: TToolBar;
+    ToolButton1: TToolButton;
+    ToolButton10: TToolButton;
+    ToolButton11: TToolButton;
+    ToolButton12: TToolButton;
+    ToolButton13: TToolButton;
+    ToolButton14: TToolButton;
+    ToolButton15: TToolButton;
+    ToolButton16: TToolButton;
+    ToolButton17: TToolButton;
+    ToolButton2: TToolButton;
+    ToolButton3: TToolButton;
+    ToolButton4: TToolButton;
+    ToolButton5: TToolButton;
+    ToolButton6: TToolButton;
+    ToolButton7: TToolButton;
+    ToolButton8: TToolButton;
+    ToolButton9: TToolButton;
     tvDependency : TTreeView;
     tsDependencies : TTabSheet;
     tsXSD : TTabSheet;
@@ -714,11 +732,12 @@ begin
 end;
 
 procedure TfWstTypeLibraryEdit.FormShow(Sender: TObject);
-{$IFDEF WST_IDE}
 var
+{$IFDEF WST_IDE}
   prjFile : TLazProjectFile;
   locContent : TMemoryStream;
 {$ENDIF}
+  i : Integer;
 begin
 {$IFDEF WST_IDE}
   prjFile := GetCurrentProjectLibraryFile();
@@ -739,6 +758,12 @@ begin
   end;
 {$ENDIF}
   RenderSymbols();
+  for i := 0 to AL.ActionCount-1 do begin
+    if (AL.Actions[i] is TCustomAction) and
+       (TCustomAction(AL.Actions[i]).Hint = '')
+    then
+      TCustomAction(AL.Actions[i]).Hint := TCustomAction(AL.Actions[i]).Caption;
+  end;
 end;
 
 procedure TfWstTypeLibraryEdit.trvSchemaSelectionChanged(Sender : TObject);
