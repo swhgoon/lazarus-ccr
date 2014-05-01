@@ -4,7 +4,7 @@
    xmlns:tns="urn:base-library" 
    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
-   targetNamespace="urn:urn:base-library">
+   targetNamespace="urn:base-library">
 
   <types>
     <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:base-library">
