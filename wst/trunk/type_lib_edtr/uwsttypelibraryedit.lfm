@@ -1,7 +1,7 @@
 object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
   Left = 321
   Height = 644
-  Top = 211
+  Top = 186
   Width = 833
   AllowDropFiles = True
   Caption = '[Web Services Toolkit ] Type Library Editor'

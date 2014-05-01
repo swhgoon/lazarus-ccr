@@ -1,19 +1,18 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
+    <Version Value="9"/>
     <PathDelim Value="\"/>
-    <Version Value="7"/>
     <General>
       <Flags>
         <LRSInOutputDirectory Value="False"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <TargetFileExt Value=".exe"/>
     </General>
-    <VersionInfo>
-      <StringTable Comments="" CompanyName="" FileDescription="" FileVersion="0.0.0.0" InternalName="" LegalCopyright="" LegalTrademarks="" OriginalFilename="" ProductName="" ProductVersion="0.0.0.0"/>
-    </VersionInfo>
+    <BuildModes Count="1">
+      <Item1 Name="default" Default="True"/>
+    </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
@@ -88,6 +87,7 @@
         <Filename Value="ufpropedit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="fPropEdit"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="ufpropedit"/>
       </Unit8>
@@ -95,6 +95,7 @@
         <Filename Value="uinterfaceedit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="fInterfaceEdit"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uinterfaceedit"/>
       </Unit9>
@@ -102,6 +103,7 @@
         <Filename Value="udm.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="DM"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="DataModule"/>
         <UnitName Value="udm"/>
       </Unit10>
@@ -189,28 +191,25 @@
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="8"/>
+    <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
       <Filename Value="typ_lib_edtr"/>
     </Target>
     <SearchPaths>
-      <IncludeFiles Value="..\"/>
-      <OtherUnitFiles Value="..\;..\ws_helper\;..\wst_rtti_filter\"/>
+      <IncludeFiles Value=".."/>
+      <OtherUnitFiles Value="..;..\ws_helper;..\wst_rtti_filter"/>
       <UnitOutputDirectory Value="obj"/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>
         <IncludeAssertionCode Value="True"/>
-        <UseAnsiStrings Value="True"/>
       </SyntaxOptions>
     </Parsing>
     <Linking>
       <Debugging>
-        <UseLineInfoUnit Value="False"/>
-        <StripSymbols Value="True"/>
+        <DebugInfoType Value="dsStabs"/>
       </Debugging>
-      <LinkSmart Value="True"/>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>
@@ -221,8 +220,7 @@
       <CompilerMessages>
         <UseMsgFile Value="True"/>
       </CompilerMessages>
-      <CustomOptions Value="-dWST_HANDLE_DOC
-"/>
+      <CustomOptions Value="-dWST_HANDLE_DOC"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>

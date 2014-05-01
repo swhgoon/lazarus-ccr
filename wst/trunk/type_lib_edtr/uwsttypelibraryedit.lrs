@@ -2,7 +2,7 @@
 
 LazarusResources.Add('TfWstTypeLibraryEdit','FORMDATA',[
   'TPF0'#20'TfWstTypeLibraryEdit'#19'fWstTypeLibraryEdit'#4'Left'#3'A'#1#6'Heig'
-  +'ht'#3#132#2#3'Top'#3#211#0#5'Width'#3'A'#3#14'AllowDropFiles'#9#7'Caption'#6
+  +'ht'#3#132#2#3'Top'#3#186#0#5'Width'#3'A'#3#14'AllowDropFiles'#9#7'Caption'#6
   +'+[Web Services Toolkit ] Type Library Editor'#12'ClientHeight'#3'q'#2#11'Cl'
   +'ientWidth'#3'A'#3#4'Menu'#7#9'MainMenu1'#7'OnClose'#7#9'FormClose'#11'OnDro'
   +'pFiles'#7#13'FormDropFiles'#6'OnShow'#7#8'FormShow'#8'Position'#7#15'poDesk'
