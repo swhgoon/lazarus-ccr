@@ -6,11 +6,7 @@
       xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
       targetNamespace="uri:echo-service"
       xmlns:wst="urn:wst_base">
-  <types>
-    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" 
-                xmlns:tns="uri:echo-service" 
-                targetNamespace="uri:echo-service"/>
-  </types>
+  <types/>
   <message name="EchoWideString">
     <part name="AValue" type="xsd:string" wst:TypeHint="WideString"/>
   </message>
