@@ -438,8 +438,10 @@ procedure TWsdlParser.Execute(const AMode: TParserMode; const AModuleName: strin
     locModule : TPasModule;
     locIntfUsesList : TList2;
   begin
+    FSymbols.Properties.SetValue(FModule,sNS_COUNT,IntToStr(FXsdParsers.Count));
     locIntfUsesList := FModule.InterfaceSection.UsesList;
     for k := 0 to Pred(FXsdParsers.Count) do begin
+      FSymbols.Properties.SetValue(FModule,(sNS_ITEM+IntToStr(k+1)),FXsdParsers[k]);
       locPrs := (FXsdParsers.Objects[k] as TIntfObjectRef).Intf as IParserContext;
       locModule := locPrs.GetTargetModule();
       if (locModule <> nil) and (locModule <> FModule) and

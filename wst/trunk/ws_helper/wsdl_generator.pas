@@ -43,7 +43,7 @@ type
     FTypesNode : TDOMElement;
     FDefinitionsNode : TDOMElement;
   private
-    procedure GenerateTypes(ASymTable : TwstPasTreeContainer);
+    procedure GenerateTypes(ASymTable : TwstPasTreeContainer; AModule : TPasModule);
     procedure GenerateServiceMessages(
       ASymTable : TwstPasTreeContainer;
       AModule   : TPasModule;
@@ -143,21 +143,43 @@ end;
 
 { TWsdlGenerator }
 
-procedure TWsdlGenerator.GenerateTypes(ASymTable : TwstPasTreeContainer);
+procedure TWsdlGenerator.GenerateTypes(
+   ASymTable : TwstPasTreeContainer;
+   AModule   : TPasModule
+);
 var
-  i : PtrInt;
+  i, c : PtrInt;
   mdl : TPasModule;
   mdlLs : TList2;
   g : IGenerator;
+  nsList : TStringList;
+  s : string;
 begin
   mdlLs := ASymTable.Package.Modules;
   if ( mdlLs.Count > 0 ) then begin
-    g := TWsdlTypechemaGenerator.Create(Document) as IGenerator;
-    for i := 0 to Pred(mdlLs.Count) do begin
-      mdl := TPasModule(mdlLs[i]);
-      if not mdl.InheritsFrom(TPasNativeModule) then begin
+    nsList := TStringList.Create();
+    try
+      c := StrToIntDef(ASymTable.Properties.GetValue(AModule,sNS_COUNT),0);
+      if (c > 0) then begin
+        for i := 1 to c do begin
+          s := ASymTable.Properties.GetValue(AModule,sNS_ITEM+IntToStr(i));
+          nsList.Add(s);
+        end;
+      end;
+      g := TWsdlTypechemaGenerator.Create(Document) as IGenerator;
+      for i := 0 to Pred(mdlLs.Count) do begin
+        if (mdl <> AModule) then begin
+          mdl := TPasModule(mdlLs[i]);
+          if mdl.InheritsFrom(TPasNativeModule) then
+            Continue;
+          s := ASymTable.GetExternalName(mdl);
+          if (nsList.IndexOf(s) = -1) then
+            Continue;
+        end;
         g.Execute(ASymTable,mdl.Name);
       end;
+    finally
+      nsList.Free();
     end;
   end;
 end;
@@ -463,7 +485,7 @@ begin
     raise EWsdlGeneratorException.Create('Invalid symbol table.');
   Prepare(ASymTable,locMainModule);
 
-  GenerateTypes(ASymTable);
+  GenerateTypes(ASymTable,locMainModule);
   
   decList := locMainModule.InterfaceSection.Declarations;
   c := decList.Count;

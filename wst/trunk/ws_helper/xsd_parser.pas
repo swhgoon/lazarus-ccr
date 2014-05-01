@@ -994,6 +994,8 @@ begin
                   locModule.Name := locName;                    
                   locModule.AddRef();
                   locUsesList.Add(locModule);
+                  if (FSymbols.Properties.GetValue(locModule,sFILE_NAME) = '') then
+                    FSymbols.Properties.SetValue(locModule,sFILE_NAME,locFileName);
                 end;                          
               end;
             end else begin

@@ -30,6 +30,9 @@ const
     sARRAY_STYLE_EMBEDDED = 'ARRAY_STYLE_EMBEDDED';
   sARRAY_IS_COLLECTION = 'ARRAY_COLLECTION';
   sWST_PROP_STORE_PREFIX = 'wstHas_';
+  sFILE_NAME = 'FileName';
+  sNS_COUNT = 'NS_Count';
+  sNS_ITEM = 'NS_';
   
   sXSD_NS = 'http://www.w3.org/2001/XMLSchema';
 

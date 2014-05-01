@@ -89,6 +89,11 @@ type
     FOptions: TGeneratorOptions;
     FShortNames : TStrings;
   protected
+    procedure GenerateImports(
+            ASymTable  : TwstPasTreeContainer;
+            AModule    : TPasModule
+    );
+  protected
     function GetSchemaNode(ADocument : TDOMDocument) : TDOMNode;virtual;abstract;
     procedure SetPreferedShortNames(const ALongName, AShortName : string);
     function GetPreferedShortNames() : TStrings;
@@ -1335,6 +1340,7 @@ begin
   if ( mdl = nil ) then
     raise EXsdGeneratorException.CreateFmt('Unable to find module : "%s".',[AModuleName]);
   Prepare(ASymTable,mdl);
+  GenerateImports(ASymTable,mdl);
   gr := GetXsdTypeHandlerRegistry();
   typeList := mdl.InterfaceSection.Declarations;
   k := typeList.Count;
@@ -1395,6 +1401,40 @@ begin
   SetPreferedShortNames(s_xs,s_xs_short);
   SetPreferedShortNames(s_WST_base_namespace,s_WST);
   SetPreferedShortNames(s_wsdl,'wsdl');
+end;
+
+procedure TCustomXsdGenerator.GenerateImports(
+        ASymTable  : TwstPasTreeContainer;
+        AModule    : TPasModule
+);
+var
+  locUsesList : TList2;
+  locModule : TPasElement;
+  i : Integer;
+  locNS, locFileName, s : string;
+  locSchemaNode, resNode : TDOMElement;
+  locCurrentNS : string;
+begin
+  locUsesList := AModule.InterfaceSection.UsesList;
+  if (locUsesList.Count > 0) then begin
+    locCurrentNS := ASymTable.GetExternalName(AModule);
+    for i := 0 to Pred(locUsesList.Count) do begin
+      locModule := TPasElement(locUsesList[i]);
+      locNS := ASymTable.GetExternalName(locModule);
+      if SameText(locCurrentNS,locNS) then
+        Continue;
+      if locModule.InheritsFrom(TPasNativeModule) then
+        Continue;
+      locFileName := ASymTable.Properties.GetValue(locModule,sFILE_NAME);
+      if IsStrEmpty(locFileName) then
+        Continue;
+      locSchemaNode := GetSchemaNode(FDocument) as TDOMElement;
+      s := Format('%s:%s',[s_xs_short,s_import]);
+      resNode := CreateElement(s,locSchemaNode,FDocument);
+      resNode.SetAttribute(s_namespace,locNS);
+      resNode.SetAttribute(s_schemaLocation,locFileName);
+    end;
+  end;
 end;
 
 procedure TCustomXsdGenerator.SetPreferedShortNames(const ALongName, AShortName: string);
