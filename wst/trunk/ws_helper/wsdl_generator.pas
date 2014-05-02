@@ -168,8 +168,8 @@ begin
       end;
       g := TWsdlTypechemaGenerator.Create(Document) as IGenerator;
       for i := 0 to Pred(mdlLs.Count) do begin
+        mdl := TPasModule(mdlLs[i]);
         if (mdl <> AModule) then begin
-          mdl := TPasModule(mdlLs[i]);
           if mdl.InheritsFrom(TPasNativeModule) then
             Continue;
           s := ASymTable.GetExternalName(mdl);
