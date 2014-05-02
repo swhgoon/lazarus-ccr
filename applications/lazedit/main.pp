@@ -354,6 +354,7 @@ type
     procedure acLayoutSubExecute(Sender: TObject);
     procedure acLayoutSupExecute(Sender: TObject);
     procedure acLayoutUnderlineExecute(Sender: TObject);
+    procedure FindReplaceDialogClose(Sender: TObject);
 
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
@@ -1066,6 +1067,11 @@ end;
 procedure TLazEditMainForm.acLayoutUnderlineExecute(Sender: TObject);
 begin
   TryMarkSelection(underline_start, underline_end);
+end;
+
+procedure TLazEditMainForm.FindReplaceDialogClose(Sender: TObject);
+begin
+  Self.BringToFront;
 end;
 
 procedure TLazEditMainForm.acEditCopyExecute(Sender: TObject);

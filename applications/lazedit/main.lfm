@@ -14,7 +14,7 @@ object LazEditMainForm: TLazEditMainForm
   OnDestroy = FormDestroy
   OnDropFiles = FormDropFiles
   OnShow = FormShow
-  LCLVersion = '1.1'
+  LCLVersion = '1.3'
   object StatusBar: TStatusBar
     Left = 0
     Height = 23
@@ -1823,12 +1823,14 @@ object LazEditMainForm: TLazEditMainForm
     end
   end
   object FindDialog: TFindDialog
+    OnClose = FindReplaceDialogClose
     Options = [frDown, frHideEntireScope]
     OnFind = DoFind
     left = 280
     top = 336
   end
   object ReplaceDialog: TReplaceDialog
+    OnClose = FindReplaceDialogClose
     Options = [frDown, frReplace, frReplaceAll, frHideEntireScope]
     OnFind = DoFind
     OnReplace = DoReplace
