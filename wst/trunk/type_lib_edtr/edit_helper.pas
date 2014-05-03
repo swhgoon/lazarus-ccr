@@ -886,7 +886,7 @@ var
 begin
   if (AObject = nil) then
     exit;
-  if (AObject.RefCount > 1) then
+  if (AObject.RefCount > 0) then
     raise EWstEditException.CreateFmt(s_CantDeleteStillReferencedObject,[AObject.Name]);
   sct := ASymbolTable.CurrentModule.InterfaceSection;
   sct.Declarations.Extract(AObject);
