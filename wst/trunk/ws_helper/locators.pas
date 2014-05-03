@@ -23,9 +23,23 @@ uses
 {$IFDEF FPC}
   , DOM, wst_fpc_xml
 {$ENDIF FPC}
-  , xsd_parser;
+  ;
 
 type
+
+  IDocumentLocator = interface
+    ['{F063700B-C0ED-4C54-9A54-C97030E80BD4}']
+    function Find(
+      const ADocLocation : string;
+      out   ADoc : TXMLDocument
+    ) : Boolean;
+    function FindPath(ADocLocation : string) : string;
+
+    function GetBasePath() : string;
+    procedure SetBasePath(AValue : string);
+    function Clone() : IDocumentLocator;
+    function MakeRelavive(const AFileName : string) : string;
+  end;
 
   { TFileDocumentLocator }
 
@@ -45,6 +59,7 @@ type
     function GetBasePath() : string;
     procedure SetBasePath(AValue : string);
     function Clone() : IDocumentLocator;
+    function MakeRelavive(const AFileName : string) : string;
   public
     constructor Create(const ABasePath : string);virtual;
   end;
@@ -104,6 +119,11 @@ end;
 function TFileDocumentLocator.Clone() : IDocumentLocator; 
 begin
   Result := TFileDocumentLocatorClass(Self.ClassType).Create(FBasePath) as IDocumentLocator;
+end;
+
+function TFileDocumentLocator.MakeRelavive(const AFileName: string): string;
+begin
+  Result := ExtractRelativePath(GetBasePath(),AFileName);
 end;
 
 constructor TFileDocumentLocator.Create(const ABasePath: string);

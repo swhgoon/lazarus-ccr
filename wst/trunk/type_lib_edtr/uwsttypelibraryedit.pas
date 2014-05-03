@@ -42,6 +42,7 @@ type
     actArrayCreate : TAction;
     actEditSearch : TAction;
     actClone : TAction;
+    actAddXsdImport : TAction;
     actSaveXSD : TAction;
     actTreeSearch : TAction;
     actRecordCreate : TAction;
@@ -103,6 +104,7 @@ type
     MenuItem53 : TMenuItem;
     MenuItem54 : TMenuItem;
     MenuItem55 : TMenuItem;
+    MenuItem56 : TMenuItem;
     MenuItem6: TMenuItem;
     MenuItem7 : TMenuItem;
     MenuItem8: TMenuItem;
@@ -113,6 +115,7 @@ type
     MenuItem3: TMenuItem;
     MenuItem4: TMenuItem;
     OD: TOpenDialog;
+    odOpenXSD : TOpenDialog;
     PCInfos : TPageControl;
     PC: TPageControl;
     Panel1: TPanel;
@@ -141,6 +144,8 @@ type
     ToolButton15: TToolButton;
     ToolButton16: TToolButton;
     ToolButton17: TToolButton;
+    ToolButton18: TToolButton;
+    ToolButton19: TToolButton;
     ToolButton2: TToolButton;
     ToolButton3: TToolButton;
     ToolButton4: TToolButton;
@@ -161,6 +166,8 @@ type
     tsProxy: TTabSheet;
     trvSchema: TTreeView;
     procedure actAboutExecute(Sender: TObject);
+    procedure actAddXsdImportExecute(Sender : TObject);
+    procedure actAddXsdImportUpdate(Sender : TObject);
     procedure actArrayCreateExecute(Sender : TObject);
     procedure actCloneExecute(Sender : TObject);
     procedure actCloneUpdate(Sender : TObject);
@@ -207,6 +214,7 @@ type
     FFoundNode : TTreeNode;
     FDependencyList : TObjectList;
   private
+    procedure Handle_OnAppException(Sender : TObject; E : Exception);
     function FindCurrentEditor() : TSynEdit;
     function Search(const AText : string) : Boolean;
     function SearchInTree(const AText : string) : Boolean;
@@ -222,6 +230,7 @@ type
     procedure ShowDocumentation();
     procedure ShowSourceXSD();
     procedure ShowDependencies();
+    procedure AddXsdImport(const AFileName : string);
     procedure OpenFile(const AFileName : string; const AContent : TStream = nil);
     procedure SaveToFile(const AFileName : string);
     function PromptAndSave() : Boolean;
@@ -370,8 +379,9 @@ end;
 function ParseXsdFile(
   const AFileName : string;
         AContent  : TStream;
-  const ANotifier : TOnParserMessage
-):TwstPasTreeContainer;overload;
+  const ANotifier : TOnParserMessage;
+        ASymbols  : TwstPasTreeContainer
+) : TwstPasTreeContainer;overload;
 var
   locDoc : TXMLDocument;
   prsr : IXsdPaser;
@@ -387,7 +397,10 @@ begin
   prsr := nil;
   locDoc := ReadXMLFile(AContent);
   try
-    Result := TwstPasTreeContainer.Create();
+    if (ASymbols = nil) then
+      Result := TwstPasTreeContainer.Create()
+    else
+      Result := ASymbols;
     try
       prsr := TXsdParser.Create(locDoc,Result,'',ANotifier);
       locContext := prsr as IParserContext;
@@ -397,12 +410,22 @@ begin
       end;
       prsr.ParseTypes();
     except
-      FreeAndNil(Result);
+      if (ASymbols = nil) then
+        FreeAndNil(Result);
       raise;
     end;
   finally
     FreeAndNil(locDoc);
   end;
+end;
+
+function ParseXsdFile(
+  const AFileName : string;
+        AContent  : TStream;
+  const ANotifier : TOnParserMessage
+):TwstPasTreeContainer;overload;
+begin
+  Result := ParseXsdFile(AFileName,AContent,ANotifier,nil);
 end;
 
 function ParseXsdFile(
@@ -507,14 +530,21 @@ begin
   end;
 end;
 
-procedure GenerateWSDL_ToStream(ASymbol : TwstPasTreeContainer; ADest : TStream);
+procedure GenerateWSDL_ToStream(
+        ASymbol   : TwstPasTreeContainer;
+        ADest     : TStream;
+  const ADestPath : string
+);
 var
   g : IGenerator;
   doc : TXMLDocument;
+  locLocator : IDocumentLocator;
 begin
   doc := TXMLDocument.Create();
   try
     g := TWsdlGenerator.Create(doc);
+    locLocator := TFileDocumentLocator.Create(IncludeTrailingPathDelimiter(ADestPath));
+    g.SetDocumentLocator(locLocator);
     g.Execute(ASymbol,ASymbol.CurrentModule.Name);
     WriteXML(doc,ADest);
   finally
@@ -522,14 +552,21 @@ begin
   end;
 end;
 
-procedure GenerateXSD_ToStream(ASymbol : TwstPasTreeContainer; ADest : TStream);
+procedure GenerateXSD_ToStream(
+        ASymbol   : TwstPasTreeContainer;
+        ADest     : TStream;
+  const ADestPath : string
+);
 var
   g : IGenerator;
   doc : TXMLDocument;
+  locLocator : IDocumentLocator;
 begin
   doc := TXMLDocument.Create();
   try
     g := TXsdGenerator.Create(doc);
+    locLocator := TFileDocumentLocator.Create(IncludeLeadingPathDelimiter(ADestPath));
+    g.SetDocumentLocator(locLocator);
     g.Execute(ASymbol,ASymbol.CurrentModule.Name);
     WriteXML(doc,ADest);
   finally
@@ -773,6 +810,16 @@ begin
   ShowDependencies();
 end;
 
+procedure TfWstTypeLibraryEdit.Handle_OnAppException(
+  Sender: TObject; E: Exception
+);
+begin
+  if (E <> nil) and E.InheritsFrom(EWstEditException) then
+    MessageDlg(Self.Caption,E.Message,Dialogs.mtError,[mbOK],0)
+  else
+    Application.ShowException(E);
+end;
+
 function TfWstTypeLibraryEdit.FindCurrentEditor() : TSynEdit;
 var
   edt : TSynEdit;
@@ -873,6 +920,23 @@ begin
   finally
     fa.Release();
   end;
+end;
+
+procedure TfWstTypeLibraryEdit.actAddXsdImportExecute(Sender : TObject);
+begin
+{$IFNDEF WST_IDE}
+   odOpenXSD.InitialDir := DM.Options.ReadString(ClassName(),sLAST_PATH,odOpenXSD.InitialDir);
+{$ENDIF WST_IDE}
+  odOpenXSD.Title := 'Import a schema file ...';
+  if not odOpenXSD.Execute() then
+    exit;
+  AddXsdImport(odOpenXSD.FileName);
+end;
+
+procedure TfWstTypeLibraryEdit.actAddXsdImportUpdate(Sender : TObject);
+begin
+  TAction(Sender).Enabled := (FSymbolTable <> nil) and
+                             (FSymbolTable.CurrentModule <> nil);
 end;
 
 procedure TfWstTypeLibraryEdit.actArrayCreateExecute(Sender : TObject);
@@ -1148,7 +1212,7 @@ var
 begin
   mstrm := TMemoryStream.Create();
   try
-    GenerateWSDL_ToStream(FSymbolTable,mstrm);
+    GenerateWSDL_ToStream(FSymbolTable,mstrm,ExtractFilePath(FCurrentFileName));
     mstrm.Position := 0;
     srcWSDL.Lines.LoadFromStream(mstrm);
   finally
@@ -1214,6 +1278,36 @@ begin
   DrawDependencies(tvDependency,FDependencyList);
 end;
 
+procedure TfWstTypeLibraryEdit.AddXsdImport(const AFileName: string);
+var
+  i : Integer;
+  locModule, locNewModule : TPasModule;
+  locStream : TMemoryStream;
+begin
+  locStream := TMemoryStream.Create();
+  try
+    locStream.LoadFromFile(odOpenXSD.FileName);
+    locStream.Position := 0;
+    locModule := FSymbolTable.CurrentModule;
+    try
+      ParseXsdFile(AFileName,locStream,@ShowStatusMessage,FSymbolTable);
+      locNewModule := FSymbolTable.CurrentModule;
+    finally
+      FSymbolTable.SetCurrentModule(locModule);
+    end;
+  finally
+    locStream.Free();
+  end;
+  FSymbolTable.Properties.SetValue(locNewModule,sFILE_NAME,AFileName);
+
+  i := FSymbolTable.CurrentModule.InterfaceSection.UsesList.IndexOf(locNewModule);
+  if (i = -1) then begin
+    FSymbolTable.CurrentModule.InterfaceSection.UsesList.Add(locNewModule);
+    locNewModule.AddRef();
+  end;
+  RenderSymbols();
+end;
+
 procedure TfWstTypeLibraryEdit.OpenFile (const AFileName : string; const AContent : TStream);
 var
   tmpTable : TwstPasTreeContainer;
@@ -1264,9 +1358,9 @@ begin
   mstrm := TMemoryStream.Create();
   try
     if SameText('.xsd',ExtractFileExt(AFileName)) then
-      GenerateXSD_ToStream(FSymbolTable,mstrm)
+      GenerateXSD_ToStream(FSymbolTable,mstrm,ExtractFilePath(FCurrentFileName))
     else
-      GenerateWSDL_ToStream(FSymbolTable,mstrm);
+      GenerateWSDL_ToStream(FSymbolTable,mstrm,ExtractFilePath(FCurrentFileName));
     mstrm.SaveToFile(AFileName);
   finally
     FreeAndNil(mstrm);
@@ -1311,6 +1405,7 @@ begin
   inherited Create(AOwner);
   FSymbolTable := CreateSymbolTable(ExtractFileName(DEF_FILE_NAME));
   trvSchema.Images := DM.IM;
+  Application.OnException := @Handle_OnAppException;
 end;
 
 destructor TfWstTypeLibraryEdit.Destroy();

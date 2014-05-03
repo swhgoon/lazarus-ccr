@@ -18,7 +18,7 @@ interface
 uses
   Classes, SysUtils, TypInfo,
   {$IFNDEF FPC}xmldom, wst_delphi_xml{$ELSE}DOM, wst_fpc_xml{$ENDIF},
-  pastree, pascal_parser_intf;
+  pastree, pascal_parser_intf, locators;
   
 type
 
@@ -35,6 +35,8 @@ type
       ASymTable   : TwstPasTreeContainer;
       AModuleName : string
     );
+    function GetDocumentLocator() : IDocumentLocator;
+    procedure SetDocumentLocator(ALocator : IDocumentLocator);
   end;
 
   IXsdGenerator = interface(IGenerator)
@@ -88,6 +90,7 @@ type
     FDocument : TDOMDocument;
     FOptions: TGeneratorOptions;
     FShortNames : TStrings;
+    FDocumentLocator : IDocumentLocator;
   protected
     procedure GenerateImports(
             ASymTable  : TwstPasTreeContainer;
@@ -97,6 +100,8 @@ type
     function GetSchemaNode(ADocument : TDOMDocument) : TDOMNode;virtual;abstract;
     procedure SetPreferedShortNames(const ALongName, AShortName : string);
     function GetPreferedShortNames() : TStrings;
+    function GetDocumentLocator() : IDocumentLocator;
+    procedure SetDocumentLocator(ALocator : IDocumentLocator);
     procedure Execute(
       ASymTable   : TwstPasTreeContainer;
       AModuleName : string
@@ -1414,10 +1419,12 @@ var
   locNS, locFileName, s : string;
   locSchemaNode, resNode : TDOMElement;
   locCurrentNS : string;
+  locLocator : IDocumentLocator;
 begin
   locUsesList := AModule.InterfaceSection.UsesList;
   if (locUsesList.Count > 0) then begin
     locCurrentNS := ASymTable.GetExternalName(AModule);
+    locLocator := GetDocumentLocator();
     for i := 0 to Pred(locUsesList.Count) do begin
       locModule := TPasElement(locUsesList[i]);
       locNS := ASymTable.GetExternalName(locModule);
@@ -1428,6 +1435,8 @@ begin
       locFileName := ASymTable.Properties.GetValue(locModule,sFILE_NAME);
       if IsStrEmpty(locFileName) then
         Continue;
+      if (locLocator <> nil) then
+        locFileName := locLocator.MakeRelavive(locFileName);
       locSchemaNode := GetSchemaNode(FDocument) as TDOMElement;
       s := Format('%s:%s',[s_xs_short,s_import]);
       resNode := CreateElement(s,locSchemaNode,FDocument);
@@ -1445,6 +1454,16 @@ end;
 function TCustomXsdGenerator.GetPreferedShortNames() : TStrings;
 begin
   Result := FShortNames;
+end;
+
+function TCustomXsdGenerator.GetDocumentLocator: IDocumentLocator;
+begin
+  Result := FDocumentLocator;
+end;
+
+procedure TCustomXsdGenerator.SetDocumentLocator(ALocator: IDocumentLocator);
+begin
+  FDocumentLocator := ALocator;
 end;
 
 destructor TCustomXsdGenerator.Destroy();

@@ -22,6 +22,9 @@ uses
 
 type
 
+  EWstEditException = class(Exception)
+  end;
+
   TEditType = ( etCreate, etUpdate, etDelete, etClone );
   
   { TObjectUpdater }
@@ -81,6 +84,11 @@ type
     ALs : TStrings;
     ASymbol : TwstPasTreeContainer
   );
+
+resourcestring
+  s_CantDeleteMainModule = 'Can not delete the main module : "%s".';
+  s_CantDeleteStillReferencedObject = 'Can not delete a still referenced Object : "%s".';
+  s_NoHandlerFound = 'No handler found.';
 
 
 implementation
@@ -143,7 +151,7 @@ var
   h : TObjectUpdaterClass;
 begin
   if not UpdaterRegistryInst.FindHandler(AObject,etUpdate,h) then begin
-    raise Exception.Create('No handler found.');
+    raise EWstEditException.Create('No handler found.');
   end;
   Result := h.UpdateObject(AObject,ASymbolTable);
 end;
@@ -156,7 +164,7 @@ var
   h : TObjectUpdaterClass;
 begin
   if not UpdaterRegistryInst.FindHandler(AObject,etDelete,h) then begin
-    raise Exception.Create('No handler found.');
+    raise EWstEditException.Create('No handler found.');
   end;
   h.DeleteObject(AObject,ASymbolTable);
 end;
@@ -263,6 +271,10 @@ type
       var AObject : TPasElement;
           ASymbolTable : TwstPasTreeContainer
     ):Boolean;override;
+    class procedure DeleteObject(
+      AObject : TPasElement;
+      ASymbolTable : TwstPasTreeContainer
+    );override;
   end;
 
   { TBindingUpdater }
@@ -380,7 +392,8 @@ end;
 
 class function TModuleUpdater.CanHandle(AObject : TObject; const AEditAction : TEditType): Boolean;
 begin
-  Result := ( inherited CanHandle(AObject,AEditAction) ) and  AObject.InheritsFrom(TPasModule);
+  Result := (AObject <> nil) and (AEditAction <> etClone) and
+            AObject.InheritsFrom(TPasModule);
 end;
 
 class function TModuleUpdater.UpdateObject(
@@ -398,6 +411,95 @@ begin
     AObject := e;
   finally
     f.Release();
+  end;
+end;
+
+function IsDependentOn(AType : TPasType; AUnit : TPasModule) : Boolean;
+var
+  locElement : TPasElement;
+  locList : TList2;
+  i : Integer;
+  locVar : TPasVariable;
+begin
+  Result := False;
+  if (AType = nil) then
+    exit;
+  if AType.InheritsFrom(TPasEnumType) then
+    exit;
+  if (AType.Parent = AUnit.InterfaceSection) then
+    exit(True);
+  if AType.InheritsFrom(TPasAliasType) then begin
+    locElement := TPasAliasType(AType).DestType;
+    if (locElement <> nil) and IsDependentOn(TPasType(locElement),AUnit) then
+      exit(True);
+  end;
+
+  if AType.InheritsFrom(TPasClassType) then begin
+    locElement := TPasClassType(AType).AncestorType;
+    if (locElement <> nil) and IsDependentOn(TPasType(locElement),AUnit) then
+      exit(True);
+    locList := TPasClassType(AType).Members;
+    for i := 0 to locList.Count-1 do begin
+      locElement := TPasElement(locList[i]);
+      if locElement.InheritsFrom(TPasVariable) then begin
+        locVar := TPasVariable(locElement);
+        if (locVar.VarType <> nil) and IsDependentOn(locVar.VarType,AUnit) then
+          exit(True);
+      end;
+    end;
+    locList := TPasClassType(AType).ClassVars;
+    for i := 0 to locList.Count-1 do begin
+      locElement := TPasElement(locList[i]);
+      if locElement.InheritsFrom(TPasVariable) then begin
+        locVar := TPasVariable(locElement);
+        if (locVar.VarType <> nil) and IsDependentOn(locVar.VarType,AUnit) then
+          exit(True);
+      end;
+    end;
+  end;
+  if AType.InheritsFrom(TPasRecordType) then begin
+    locList := TPasClassType(AType).Members;
+    for i := 0 to locList.Count-1 do begin
+      locElement := TPasElement(locList[i]);
+      if locElement.InheritsFrom(TPasVariable) then begin
+        locVar := TPasVariable(locElement);
+        if (locVar.VarType <> nil) and IsDependentOn(locVar.VarType,AUnit) then
+          exit(True);
+      end;
+    end;
+  end;
+end;
+
+class procedure TModuleUpdater.DeleteObject(
+  AObject      : TPasElement;
+  ASymbolTable : TwstPasTreeContainer
+);
+var
+  locModule : TPasModule;
+  i : Integer;
+  locTypes : TList2;
+begin
+  locModule := AObject as TPasModule;
+  if (locModule = ASymbolTable.CurrentModule) then
+    raise EWstEditException.CreateFmt(s_CantDeleteMainModule,[locModule.Name]);
+  if (ASymbolTable.CurrentModule = nil) then
+    exit;
+  locTypes := ASymbolTable.CurrentModule.InterfaceSection.Types;
+  for i := 0 to locTypes.Count-1 do begin
+    if IsDependentOn(TPasType(locTypes[i]),locModule) then
+      raise EWstEditException.CreateFmt(s_CantDeleteStillReferencedObject,[locModule.Name]);
+  end;
+  if (locModule.RefCount > 0) and
+     (ASymbolTable.CurrentModule.InterfaceSection.UsesList.IndexOf(locModule) >= 0)
+  then begin
+    ASymbolTable.CurrentModule.InterfaceSection.UsesList.Extract(locModule);
+    locModule.Release();
+    if (locModule.RefCount = 0) and
+       (ASymbolTable.Package.Modules.IndexOf(locModule) >= 0)
+    then begin
+      ASymbolTable.Package.Modules.Extract(locModule);
+      locModule.Release();
+    end;
   end;
 end;
   
@@ -757,7 +859,9 @@ class function TObjectUpdater.CanHandle(
   const AEditAction : TEditType  
 ) : Boolean;
 begin
-  Result := Assigned(AObject) and ( AEditAction <> etClone );
+  Result :=
+    (Assigned(AObject) and (AEditAction <> etClone)) and
+    (not(AObject.InheritsFrom(TPasModule)) or (AEditAction = etUpdate));
 end;
 
 class procedure TObjectUpdater.DeleteObject (
@@ -767,13 +871,15 @@ class procedure TObjectUpdater.DeleteObject (
 var
   sct : TPasSection;
 begin
-  if ( AObject <> nil ) then begin
-    sct := ASymbolTable.CurrentModule.InterfaceSection;
-    sct.Declarations.Extract(AObject);
-    sct.Types.Extract(AObject);
-    sct.Classes.Extract(AObject);
-    AObject.Release();
-  end;
+  if (AObject = nil) then
+    exit;
+  if (AObject.RefCount > 1) then
+    raise EWstEditException.CreateFmt(s_CantDeleteStillReferencedObject,[AObject.Name]);
+  sct := ASymbolTable.CurrentModule.InterfaceSection;
+  sct.Declarations.Extract(AObject);
+  sct.Types.Extract(AObject);
+  sct.Classes.Extract(AObject);
+  AObject.Release();
 end;
 
 procedure InternalFillList(

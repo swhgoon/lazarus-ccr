@@ -18,7 +18,7 @@ uses
   Classes, SysUtils,
   {$IFNDEF FPC}xmldom, wst_delphi_xml{$ELSE}DOM{$ENDIF},
   cursor_intf, rtti_filters,
-  pastree, pascal_parser_intf, logger_intf;
+  pastree, pascal_parser_intf, logger_intf, locators;
 
 type
 
@@ -42,18 +42,7 @@ type
 
   TOnParserMessage = procedure (const AMsgType : TMessageType; const AMsg : string) of object;
 
-  IDocumentLocator = interface
-    ['{F063700B-C0ED-4C54-9A54-C97030E80BD4}']
-    function Find(
-      const ADocLocation : string;
-      out   ADoc : TXMLDocument
-    ) : Boolean;
-    function FindPath(ADocLocation : string) : string;
-    
-    function GetBasePath() : string;
-    procedure SetBasePath(AValue : string);
-    function Clone() : IDocumentLocator;
-  end;
+  IDocumentLocator = locators.IDocumentLocator;
 
   TParserOption = (
     poEnumAlwaysPrefix, // Always prefix enum item with the enum name

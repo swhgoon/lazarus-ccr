@@ -18,7 +18,7 @@ interface
 uses
   Classes, SysUtils, TypInfo,
   {$IFNDEF FPC}xmldom, wst_delphi_xml{$ELSE}DOM{$ENDIF},
-  pastree, pascal_parser_intf, xsd_generator;
+  pastree, pascal_parser_intf, xsd_generator, locators;
 
 type
 
@@ -42,6 +42,7 @@ type
     FDocument : TDOMDocument;
     FTypesNode : TDOMElement;
     FDefinitionsNode : TDOMElement;
+    FDocumentLocator : IDocumentLocator;
   private
     procedure GenerateTypes(ASymTable : TwstPasTreeContainer; AModule : TPasModule);
     procedure GenerateServiceMessages(
@@ -70,6 +71,8 @@ type
     );
   protected
     procedure Prepare(ASymTable : TwstPasTreeContainer; AModule : TPasModule);
+    function GetDocumentLocator() : IDocumentLocator;
+    procedure SetDocumentLocator(ALocator : IDocumentLocator);
     procedure Execute(
       ASymTable   : TwstPasTreeContainer;
       AModuleName : string
@@ -154,6 +157,7 @@ var
   g : IGenerator;
   nsList : TStringList;
   s : string;
+  locLocator : IDocumentLocator;
 begin
   mdlLs := ASymTable.Package.Modules;
   if ( mdlLs.Count > 0 ) then begin
@@ -167,6 +171,9 @@ begin
         end;
       end;
       g := TWsdlTypechemaGenerator.Create(Document) as IGenerator;
+      locLocator := GetDocumentLocator();
+      if (locLocator <> nil) then
+        g.SetDocumentLocator(locLocator);
       for i := 0 to Pred(mdlLs.Count) do begin
         mdl := TPasModule(mdlLs[i]);
         if (mdl <> AModule) then begin
@@ -467,6 +474,16 @@ begin
   FDefinitionsNode := CreateRootNode();
   FTypesNode := CreateTypesRootNode(FDefinitionsNode);
 
+end;
+
+function TWsdlGenerator.GetDocumentLocator : IDocumentLocator;
+begin
+  Result := FDocumentLocator;
+end;
+
+procedure TWsdlGenerator.SetDocumentLocator(ALocator : IDocumentLocator);
+begin
+  FDocumentLocator := ALocator;
 end;
 
 procedure TWsdlGenerator.Execute(ASymTable : TwstPasTreeContainer; AModuleName : string);

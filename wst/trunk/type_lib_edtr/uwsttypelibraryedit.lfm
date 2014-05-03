@@ -1,7 +1,7 @@
 object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
-  Left = 321
+  Left = 287
   Height = 644
-  Top = 186
+  Top = 261
   Width = 833
   AllowDropFiles = True
   Caption = '[Web Services Toolkit ] Type Library Editor'
@@ -3447,66 +3447,66 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
       Style = tbsDivider
     end
     object ToolButton4: TToolButton
-      Left = 98
+      Left = 126
       Top = 2
       Action = actEnumCreate
     end
     object ToolButton5: TToolButton
-      Left = 121
+      Left = 149
       Top = 2
       Action = actCompoundCreate
     end
     object ToolButton6: TToolButton
-      Left = 144
+      Left = 172
       Top = 2
       Action = actRecordCreate
     end
     object ToolButton7: TToolButton
-      Left = 167
+      Left = 195
       Top = 2
       Action = actArrayCreate
     end
     object ToolButton8: TToolButton
-      Left = 190
+      Left = 218
       Top = 2
       Action = actTypeALiasCreate
     end
     object ToolButton10: TToolButton
-      Left = 218
+      Left = 246
       Top = 2
       Action = actClone
     end
     object ToolButton11: TToolButton
-      Left = 213
+      Left = 241
       Top = 2
       Width = 5
       Caption = 'ToolButton11'
       Style = tbsDivider
     end
     object ToolButton9: TToolButton
-      Left = 241
+      Left = 269
       Top = 2
       Action = actUpdateObject
     end
     object ToolButton12: TToolButton
-      Left = 264
+      Left = 292
       Top = 2
       Action = actDelete
     end
     object ToolButton13: TToolButton
-      Left = 310
+      Left = 338
       Top = 2
       Width = 5
       Caption = 'ToolButton13'
       Style = tbsDivider
     end
     object ToolButton14: TToolButton
-      Left = 315
+      Left = 343
       Top = 2
       Action = actIntfCreate
     end
     object ToolButton15: TToolButton
-      Left = 287
+      Left = 315
       Top = 2
       Action = actRefreshView
     end
@@ -3519,6 +3519,18 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
       Left = 1
       Top = 2
       Action = actNewFile
+    end
+    object ToolButton18: TToolButton
+      Left = 98
+      Top = 2
+      Action = actAddXsdImport
+    end
+    object ToolButton19: TToolButton
+      Left = 121
+      Top = 2
+      Width = 5
+      Caption = 'ToolButton19'
+      Style = tbsDivider
     end
   end
   object MainMenu1: TMainMenu
@@ -3553,6 +3565,9 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
       object MenuItem53: TMenuItem
         Action = actSaveXSD
         OnClick = actSaveXSDExecute
+      end
+      object MenuItem56: TMenuItem
+        Action = actAddXsdImport
       end
       object MenuItem17: TMenuItem
         Caption = '-'
@@ -3767,6 +3782,12 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
       ImageIndex = 27
       OnExecute = actCloneExecute
       OnUpdate = actCloneUpdate
+    end
+    object actAddXsdImport: TAction
+      Caption = 'Add Schema Import'
+      ImageIndex = 2
+      OnExecute = actAddXsdImportExecute
+      OnUpdate = actAddXsdImportUpdate
     end
   end
   object OD: TOpenDialog
@@ -4741,5 +4762,13 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
     OnFind = FDFind
     left = 576
     top = 143
+  end
+  object odOpenXSD: TOpenDialog
+    Filter = 'XSD files ( *.xsd )|*.xsd'
+    FilterIndex = 0
+    InitialDir = '.\'
+    Options = [ofPathMustExist, ofFileMustExist, ofEnableSizing, ofViewDetail]
+    left = 416
+    top = 164
   end
 end
