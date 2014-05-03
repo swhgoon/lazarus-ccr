@@ -1,4 +1,15 @@
+{
+    This file is part of the Web Service Toolkit
+    Copyright (c) 2006-2014 by Inoussa OUEDRAOGO
 
+    This file is provide under modified LGPL licence
+    ( the files COPYING.modifiedLGPL and COPYING.LGPL).
+
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+}
 resourcestring
   sUSAGE = 'ws_helper [-uMODE] [-gOPTION] [-p] [-b] [-i] [-w] [-x] [-y] [-d] -[fSPECIFACTIONS] [-oPATH] [-aPATH] inputFilename' + sNEW_LINE +
            '  -u MODE Generate the pascal translation of the WSDL input file ' + sNEW_LINE +
@@ -21,7 +32,7 @@ resourcestring
            '        S  : the paser is case sensitive' + sNEW_LINE +
            '        I  : the paser is not case sensitive' + sNEW_LINE +
            '  -f  Specify unit(s) renaming option : oldName= NewName(;oldName= NewName)* ';
-  sCOPYRIGHT = 'ws_helper, Web Service Toolkit 0.6 Copyright (c) 2006, 2007, 2008, 2009, 2010,2011 by Inoussa OUEDRAOGO';
+  sCOPYRIGHT = 'ws_helper, Web Service Toolkit 0.6 Copyright (c) 2006-2014 by Inoussa OUEDRAOGO';
 
 
 type

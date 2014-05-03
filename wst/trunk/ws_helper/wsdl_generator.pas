@@ -1,6 +1,6 @@
 {
     This file is part of the Web Service Toolkit
-    Copyright (c) 2006 by Inoussa OUEDRAOGO
+    Copyright (c) 2006-2014 by Inoussa OUEDRAOGO
 
     This file is provide under modified LGPL licence
     ( the files COPYING.modifiedLGPL and COPYING.LGPL).
