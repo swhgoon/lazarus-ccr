@@ -418,8 +418,10 @@ function IsDependentOn(AType : TPasType; AUnit : TPasModule) : Boolean;
 var
   locElement : TPasElement;
   locList : TList2;
-  i : Integer;
+  i, k : Integer;
   locVar : TPasVariable;
+  locProcType : TPasProcedureType;
+  locArg : TPasArgument;
 begin
   Result := False;
   if (AType = nil) then
@@ -445,6 +447,17 @@ begin
         locVar := TPasVariable(locElement);
         if (locVar.VarType <> nil) and IsDependentOn(locVar.VarType,AUnit) then
           exit(True);
+      end else if locElement.InheritsFrom(TPasProcedure) then begin
+        locProcType := TPasProcedure(locElement).ProcType;
+        for k := 0 to locProcType.Args.Count-1 do begin
+          locArg := TPasArgument(locProcType.Args[k]);
+          if (locArg.ArgType <> nil) and IsDependentOn(locArg.ArgType,AUnit) then
+            exit(True);
+        end;
+        if locProcType.InheritsFrom(TPasFunctionType) then begin
+          if IsDependentOn(TPasFunctionType(locProcType).ResultEl.ResultType,AUnit) then
+            exit(True);
+        end;
       end;
     end;
     locList := TPasClassType(AType).ClassVars;
