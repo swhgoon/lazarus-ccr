@@ -10,12 +10,12 @@ object fAbout: TfAbout
   ClientHeight = 182
   ClientWidth = 299
   Position = poDesktopCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '1.2.2.0'
   object Label1: TLabel
     Left = 21
-    Height = 14
+    Height = 13
     Top = 24
-    Width = 261
+    Width = 260
     Caption = 'Web Services Toolkit for FPC/Lazarus && Delphi'
     Font.Style = [fsBold]
     ParentColor = False
@@ -23,20 +23,20 @@ object fAbout: TfAbout
   end
   object Label2: TLabel
     Left = 93
-    Height = 14
+    Height = 13
     Top = 64
-    Width = 108
+    Width = 107
     Caption = 'Type Library Editor'
     Font.Style = [fsBold, fsItalic]
     ParentColor = False
     ParentFont = False
   end
   object Label3: TLabel
-    Left = 16
-    Height = 14
+    Left = 35
+    Height = 13
     Top = 112
-    Width = 266
-    Caption = 'Copyright (c) 2007, 2008, 2009 Inoussa OUEDRAOGO.'
+    Width = 231
+    Caption = 'Copyright (c) 2007-2014 Inoussa OUEDRAOGO.'
     ParentColor = False
   end
   object Button1: TButton
