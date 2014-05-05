@@ -4166,7 +4166,8 @@ begin
         RCol.Footer.FCountRec:=Cnt; //( DHS.FieldByName(RCol.Footer.FieldName).Value);
   end;
 
-  DHS.RecNo := DHL.RecordCount + SavePos + 1;
+  DHS.RecNo := Min(DHL.RecordCount + SavePos + 1, DHS.RecNo);
+//  DHS.RecNo := SavePos;
 
   while not DHS.BOF do
   begin
