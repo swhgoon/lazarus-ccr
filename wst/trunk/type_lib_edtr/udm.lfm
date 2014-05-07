@@ -1,8 +1,8 @@
 object DM: TDM
   OldCreateOrder = False
   Height = 300
-  HorizontalOffset = 381
-  VerticalOffset = 208
+  HorizontalOffset = 382
+  VerticalOffset = 238
   Width = 400
   object IM: TImageList
     left = 208

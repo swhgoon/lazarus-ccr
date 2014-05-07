@@ -1,7 +1,7 @@
 object fInterfaceEdit: TfInterfaceEdit
-  Left = 363
+  Left = 283
   Height = 564
-  Top = 236
+  Top = 133
   Width = 531
   HorzScrollBar.Page = 530
   VertScrollBar.Page = 563
@@ -102,6 +102,7 @@ object fInterfaceEdit: TfInterfaceEdit
         Top = 450
         Width = 99
         Action = actNewMethod
+        Anchors = [akLeft, akBottom]
         BorderSpacing.InnerBorder = 4
         TabOrder = 2
       end
@@ -111,6 +112,7 @@ object fInterfaceEdit: TfInterfaceEdit
         Top = 450
         Width = 107
         Action = actUpdateOperation
+        Anchors = [akLeft, akBottom]
         BorderSpacing.InnerBorder = 4
         TabOrder = 3
       end
@@ -120,6 +122,7 @@ object fInterfaceEdit: TfInterfaceEdit
         Top = 450
         Width = 104
         Action = actDeleteOperation
+        Anchors = [akLeft, akBottom]
         BorderSpacing.InnerBorder = 4
         TabOrder = 4
       end
@@ -129,7 +132,7 @@ object fInterfaceEdit: TfInterfaceEdit
         Top = 450
         Width = 107
         Action = actBindingEdit
-        Anchors = [akTop, akRight]
+        Anchors = [akRight, akBottom]
         BorderSpacing.InnerBorder = 4
         TabOrder = 5
       end
