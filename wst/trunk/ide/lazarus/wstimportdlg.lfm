@@ -8,7 +8,7 @@ object formImport: TformImport
   Caption = 'WSDL Importer'
   ClientHeight = 553
   ClientWidth = 526
-  LCLVersion = '0.9.27'
+  LCLVersion = '1.2.2.0'
   object Panel2: TPanel
     Left = 0
     Height = 505
@@ -29,23 +29,23 @@ object formImport: TformImport
       TabOrder = 0
       object Label1: TLabel
         Left = 9
-        Height = 14
+        Height = 13
         Top = 4
-        Width = 186
+        Width = 185
         Caption = 'Web Services Description File ( WSDL )'
         ParentColor = False
       end
       object Label2: TLabel
         Left = 9
-        Height = 14
+        Height = 13
         Top = 69
-        Width = 81
+        Width = 80
         Caption = 'Output directory'
         ParentColor = False
       end
       object edtInputFile: TEdit
         Left = 9
-        Height = 23
+        Height = 21
         Top = 31
         Width = 380
         Anchors = [akTop, akLeft, akRight]
@@ -63,7 +63,7 @@ object formImport: TformImport
       end
       object edtOutputDir: TEdit
         Left = 9
-        Height = 23
+        Height = 21
         Top = 88
         Width = 380
         Anchors = [akTop, akLeft, akRight]
@@ -83,7 +83,7 @@ object formImport: TformImport
         Left = 9
         Height = 17
         Top = 128
-        Width = 181
+        Width = 183
         Caption = 'Add the generated files to project'
         TabOrder = 4
       end
@@ -123,7 +123,7 @@ object formImport: TformImport
         Left = 9
         Height = 17
         Top = 8
-        Width = 80
+        Width = 82
         Caption = 'Interface file'
         Checked = True
         OnClick = edtOptionIntfClick
@@ -134,7 +134,7 @@ object formImport: TformImport
         Left = 9
         Height = 17
         Top = 56
-        Width = 63
+        Width = 65
         Caption = 'Proxy file'
         Checked = True
         State = cbChecked
@@ -144,7 +144,7 @@ object formImport: TformImport
         Left = 294
         Height = 17
         Top = 8
-        Width = 103
+        Width = 105
         Caption = 'Service Binder file'
         TabOrder = 3
       end
@@ -152,7 +152,7 @@ object formImport: TformImport
         Left = 294
         Height = 17
         Top = 56
-        Width = 153
+        Width = 155
         Caption = 'Implementation Skeleton file'
         TabOrder = 4
       end
@@ -160,7 +160,7 @@ object formImport: TformImport
         Left = 30
         Height = 17
         Top = 32
-        Width = 88
+        Width = 90
         Caption = 'Parse all types'
         OnClick = edtOptionIntfALLClick
         TabOrder = 1
@@ -169,7 +169,7 @@ object formImport: TformImport
         Left = 9
         Height = 17
         Top = 90
-        Width = 290
+        Width = 292
         Anchors = [akLeft, akBottom]
         Caption = 'Generate easy access interface for wrapped parameters'
         TabOrder = 5
@@ -178,7 +178,7 @@ object formImport: TformImport
         Left = 9
         Height = 17
         Top = 121
-        Width = 202
+        Width = 204
         Anchors = [akLeft, akBottom]
         Caption = 'Generate documentation as comments'
         TabOrder = 6
@@ -187,7 +187,7 @@ object formImport: TformImport
         Left = 294
         Height = 17
         Top = 121
-        Width = 188
+        Width = 190
         Caption = 'Generate object array as Collection'
         TabOrder = 7
       end

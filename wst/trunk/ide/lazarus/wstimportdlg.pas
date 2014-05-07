@@ -69,9 +69,9 @@ var
   formImport: TformImport;
 
 implementation
-uses DOM, XMLRead, pastree, pascal_parser_intf, wsdl_parser, source_utils,
+uses DOM, XMLRead, wst_fpc_xml, pastree, pascal_parser_intf, wsdl_parser, source_utils,
      generator, metadata_generator, binary_streamer, wst_resources_utils
-     {$IFDEF WST_IDE},LazIDEIntf{$ENDIF};
+     {$IFDEF WST_IDE},LazIDEIntf{$ENDIF},locators,xsd_parser;
 
 type
   TSourceType = xgoInterface .. xgoBinder;
@@ -85,6 +85,7 @@ var
   locDoc : TXMLDocument;
   prsr : IParser;
   symName : string;
+  prsrCtx : IParserContext;
 begin
   Result := nil;
   if FileExists(AFileName) then begin
@@ -92,11 +93,13 @@ begin
     if ( symName[Length(symName)] = '.' ) then begin
       Delete(symName,Length(symName),1);
     end;
-    ReadXMLFile(locDoc,AFileName);
+    locDoc := ReadXMLFile(AFileName);
     try
       Result := TwstPasTreeContainer.Create();
       try
         prsr := TWsdlParser.Create(locDoc,Result,ANotifier);
+        prsrCtx := prsr as IParserContext;
+        prsrCtx.SetDocumentLocator(TFileDocumentLocator.Create(ExtractFilePath(ExpandFileName(AFileName))));
         prsr.Execute(pmAllTypes,symName);
       except
         FreeAndNil(Result);
@@ -299,7 +302,7 @@ begin
                  );
       ShowStatusMessage(mtInfo,'');
       {$IFDEF WST_IDE}
-      openFlags := [];
+      {openFlags := [ofRevert];
       if edtAddToProject.Checked then begin
         Include(openFlags,ofAddToProject);
       end;
@@ -313,7 +316,7 @@ begin
             trueOpenFlags := trueOpenFlags - [ofAddToProject];
         end;
         LazarusIDE.DoOpenEditorFile(destPath + srcItm.GetFileName(),-1,trueOpenFlags);
-      end;
+      end;}
       {$ENDIF}
     finally
       srcMgnr := nil;
