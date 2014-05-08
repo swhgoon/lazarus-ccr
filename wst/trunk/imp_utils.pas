@@ -260,6 +260,7 @@ begin
   Try
     lst.QuoteChar := #0;
     lst.Delimiter := PROP_LIST_DELIMITER;
+    lst.StrictDelimiter := True;
     lst.DelimitedText := APropsStr;
     for i := 0 to Pred(lst.Count) do
       SetProperty(lst.Names[i],lst.Values[lst.Names[i]]);
