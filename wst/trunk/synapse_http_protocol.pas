@@ -203,11 +203,30 @@ begin
 end;
 
 procedure THTTPTransport.DoSendAndReceive(ARequest, AResponse : TStream);
+var
+  s, s2 : string;
+  ans : AnsiString;
+  e : ETransportExecption;
 begin
   FConnection.Document.Clear();
   FConnection.Document.CopyFrom(ARequest,0);
-  if not FConnection.HTTPMethod('POST',FAddress) then
-    raise ETransportExecption.CreateFmt(SERR_FailedTransportRequest,[sTRANSPORT_NAME,FAddress]);
+  if not FConnection.HTTPMethod('POST',FAddress) then begin
+    s := sysutils.Format(SERR_FailedTransportRequest,[sTRANSPORT_NAME,FAddress]);
+    s := s+sysutils.Format('Result code: %d, message: "%s"',[FConnection.ResultCode,Fconnection.ResultString]);
+    s2 := '';
+    if (FConnection.Document.Size > 0) then begin
+      SetLength(ans,FConnection.Document.Size);
+      Move(FConnection.Document.Memory^,ans[1],FConnection.Document.Size);
+      try
+        s2 := ans;
+      except
+        s2 := '';
+      end;
+    end;
+    e := ETransportExecption.Create(s);
+    e.ExtendedErrorInfo := s2;
+    raise e;
+  end;
   AResponse.CopyFrom(FConnection.Document,0);
   FConnection.Document.Clear();
 end;

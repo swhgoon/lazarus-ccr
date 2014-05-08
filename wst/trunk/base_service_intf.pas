@@ -65,7 +65,14 @@ type
 
   EServiceException = class(Exception) end;
   EServiceExtensionException = class(Exception) end;
-  ETransportExecption = class(EServiceException) end;
+
+  ETransportExecption = class(EServiceException)
+  private
+    FExtendedErrorInfo : string;
+  public
+    property ExtendedErrorInfo : string
+        read FExtendedErrorInfo write FExtendedErrorInfo;
+  end;
 
   EBaseRemoteException = class(EServiceException)
   private
