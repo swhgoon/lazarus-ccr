@@ -50,6 +50,7 @@
         <IsPartOfProject Value="True"/>
         <ComponentName Value="fAbout"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="uabout"/>
       </Unit2>
       <Unit3>
@@ -154,6 +155,7 @@
         <Filename Value="ufrmsaveoption.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmSaveOptions"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="ufrmsaveoption"/>
       </Unit18>
