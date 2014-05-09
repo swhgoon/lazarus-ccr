@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<definitions name="wst_test" 
+   xmlns="http://schemas.xmlsoap.org/wsdl/" 
+   xmlns:tns="urn:wst-test"  
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+   targetNamespace="urn:wst-test">
+
+  <types>
+     <xsd:schema xmlns:n="urn:wst-test" 
+      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+      xmlns:tns="urn:wst-test" 
+      xmlns:wst="urn:wst_base"
+      targetNamespace="urn:wst-test">
+      
+        <xsd:complexType name="TComplexType" />
+        
+        <xsd:complexType name="TCollectionComplexType">
+    	    <xsd:sequence>
+    		    <xsd:element name="field" type="tns:TComplexType" minOccurs="0" maxOccurs="unbounded" wst:wst_collection="true"/>
+    	    </xsd:sequence>
+        </xsd:complexType>
+
+        <xsd:complexType name="TCollectionItemType">
+    	    <xsd:sequence>
+    		    <xsd:element name="Item" minOccurs="0" maxOccurs="unbounded" wst:wst_collection="true" >
+                <xsd:complexType>
+            	    <xsd:sequence>
+            		    <xsd:element name="intField" type="xsd:int" />
+                    <xsd:element name="strField" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+                    <xsd:element name="floatField" type="xsd:float" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="byteField" type="xsd:byte" maxOccurs="1"/>
+                    <xsd:element name="charField" type="xsd:char" minOccurs="1"/>
+                    <xsd:element name="longField" type="xsd:long" minOccurs="0"/>
+            	    </xsd:sequence>
+            	    <xsd:attribute name="strAtt" type="xsd:string"/>
+            	    <xsd:attribute name="intAtt" type="xsd:int"/>
+                </xsd:complexType>       
+            </xsd:element>    
+    	    </xsd:sequence>
+        </xsd:complexType>
+        
+</xsd:schema>
+  </types>
+  
+
+</definitions>

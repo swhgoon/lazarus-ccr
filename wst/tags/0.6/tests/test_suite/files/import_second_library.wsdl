@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<definitions name="import_second_library" 
+   xmlns="http://schemas.xmlsoap.org/wsdl/" 
+   xmlns:tns="urn:second-library" 
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+   targetNamespace="urn:second-library">
+
+  <types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:bx="urn:base-library" targetNamespace="urn:second-library">
+    
+        <xsd:import
+          namespace = "urn:base-library"
+          schemaLocation = "import_base_library.xsd"
+        />
+        
+        <xsd:complexType name="Second_Type">
+          <xsd:sequence>
+            <xsd:element name="SampleProperty" type="bx:SampleBase_Type"/>
+          </xsd:sequence>
+        </xsd:complexType>  
+    
+    </xsd:schema>
+  </types>
+  
+
+</definitions>

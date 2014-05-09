@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <xsd:schema xmlns:n="urn:include" 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  targetNamespace="urn:include">
+  
+    <xsd:include schemaLocation="include_cir1.xsd" />
+    
+    <xsd:complexType name="TClassSample">
+	    <xsd:sequence>
+		    <xsd:element name="FieldA" type="n:TypeA" />
+		    <xsd:element name="FieldB" type="n:TypeB" />
+	    </xsd:sequence>
+    </xsd:complexType>
+        
+</xsd:schema>

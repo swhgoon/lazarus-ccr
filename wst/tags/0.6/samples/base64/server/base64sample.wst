@@ -1,0 +1,7 @@
+  GetWSTResourceManager().AddResource('BASE64SAMPLE',
+    #0#0#0#20'WST_METADATA_0.2.2.0'#0#0#0#12'base64sample'#1#0#0#0#13'SampleServ'
+    +'ice'#1#0#0#0#16'DuplicateContent'#3#0#0#0#15'AInitialContent'#0#0#0#22'TBas'
+    +'e64StringRemotable'#0#0#0#0#0#0#0#1#0#0#0#12'ARepeatCount'#0#0#0#7'integer'#0
+    +#0#0#0#0#0#0#1#0#0#0#6'result'#0#0#0#22'TBase64StringRemotable'#0#0#0#0#0#0#0
+    +#3''
+  );

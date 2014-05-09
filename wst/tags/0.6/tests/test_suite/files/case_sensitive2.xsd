@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <xsd:schema xmlns:n="urn:wst-test" 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  targetNamespace="urn:wst-test">
+  
+    <xsd:simpleType name="SampleType">
+      <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+  
+    <xsd:simpleType name="SAMPLETYPE">
+      <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+   
+    <xsd:complexType name="TClassSampleType">
+	    <xsd:sequence>
+		    <xsd:element name="Field1" type="n:SampleType" />
+		    <xsd:element name="Field2" type="n:SAMPLETYPE" />
+	    </xsd:sequence>
+    </xsd:complexType>
+       
+</xsd:schema>

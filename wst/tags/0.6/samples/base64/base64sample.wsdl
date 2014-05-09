@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<definitions name="urn:base64sample" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="urn:base64sample" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="urn:base64sample">
+  <types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:base64sample" targetNamespace="urn:base64sample"/>
+  </types>
+  <message name="DuplicateContent">
+    <part name="AInitialContent" type="xsd:base64Binary"/>
+    <part name="ARepeatCount" type="xsd:int"/>
+  </message>
+  <message name="DuplicateContentResponse">
+    <part name="result" type="xsd:base64Binary"/>
+  </message>
+  <portType name="SampleService">
+    <document>
+      <GUID value="{6ACC9331-DD5B-48AA-92ED-F384D144EB1E}"/>
+    </document>
+    <operation name="DuplicateContent">
+      <input message="tns:DuplicateContent"/>
+      <output message="tns:DuplicateContentResponse"/>
+    </operation>
+  </portType>
+  <binding name="SampleServiceBinding" type="tns:SampleService">
+    <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="DuplicateContent">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" namespace="urn:base64sample"/>
+      </input>
+      <output>
+        <soap:body use="literal" namespace="urn:base64sample"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="SampleService">
+    <port name="SampleServicePort" binding="tns:SampleServiceBinding">
+      <soap:address location="http://127.0.0.1:8000/services/SampleService"/>
+    </port>
+  </service>
+</definitions>

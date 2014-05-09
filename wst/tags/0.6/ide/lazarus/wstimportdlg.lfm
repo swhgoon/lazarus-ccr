@@ -1,0 +1,258 @@
+object formImport: TformImport
+  Left = 574
+  Height = 553
+  Top = 133
+  Width = 526
+  ActiveControl = Button1
+  BorderStyle = bsSizeToolWin
+  Caption = 'WSDL Importer'
+  ClientHeight = 553
+  ClientWidth = 526
+  LCLVersion = '1.2.2.0'
+  object Panel2: TPanel
+    Left = 0
+    Height = 505
+    Top = 0
+    Width = 526
+    Align = alClient
+    ClientHeight = 505
+    ClientWidth = 526
+    TabOrder = 1
+    object GroupBox1: TGroupBox
+      Left = 8
+      Height = 168
+      Top = 8
+      Width = 506
+      Anchors = [akTop, akLeft, akRight]
+      ClientHeight = 150
+      ClientWidth = 502
+      TabOrder = 0
+      object Label1: TLabel
+        Left = 9
+        Height = 13
+        Top = 4
+        Width = 185
+        Caption = 'Web Services Description File ( WSDL )'
+        ParentColor = False
+      end
+      object Label2: TLabel
+        Left = 9
+        Height = 13
+        Top = 69
+        Width = 80
+        Caption = 'Output directory'
+        ParentColor = False
+      end
+      object edtInputFile: TEdit
+        Left = 9
+        Height = 21
+        Top = 31
+        Width = 380
+        Anchors = [akTop, akLeft, akRight]
+        TabOrder = 0
+      end
+      object Button2: TButton
+        Left = 407
+        Height = 25
+        Top = 31
+        Width = 40
+        Action = actOpenFile
+        Anchors = [akTop, akRight]
+        BorderSpacing.InnerBorder = 4
+        TabOrder = 1
+      end
+      object edtOutputDir: TEdit
+        Left = 9
+        Height = 21
+        Top = 88
+        Width = 380
+        Anchors = [akTop, akLeft, akRight]
+        TabOrder = 2
+      end
+      object Button3: TButton
+        Left = 407
+        Height = 25
+        Top = 88
+        Width = 40
+        Action = actOpenDir
+        Anchors = [akTop, akRight]
+        BorderSpacing.InnerBorder = 4
+        TabOrder = 3
+      end
+      object edtAddToProject: TCheckBox
+        Left = 9
+        Height = 17
+        Top = 128
+        Width = 183
+        Caption = 'Add the generated files to project'
+        TabOrder = 4
+      end
+    end
+    object GroupBox2: TGroupBox
+      Left = 8
+      Height = 129
+      Top = 368
+      Width = 506
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      Caption = '  Messages  '
+      ClientHeight = 111
+      ClientWidth = 502
+      TabOrder = 2
+      object mmoLog: TMemo
+        Left = 0
+        Height = 111
+        Top = 0
+        Width = 502
+        Align = alClient
+        ReadOnly = True
+        ScrollBars = ssBoth
+        TabOrder = 0
+      end
+    end
+    object GroupBox3: TGroupBox
+      Left = 8
+      Height = 168
+      Top = 184
+      Width = 506
+      Anchors = [akTop, akLeft, akRight]
+      Caption = '  Options  '
+      ClientHeight = 150
+      ClientWidth = 502
+      TabOrder = 1
+      object edtOptionIntf: TCheckBox
+        Left = 9
+        Height = 17
+        Top = 8
+        Width = 82
+        Caption = 'Interface file'
+        Checked = True
+        OnClick = edtOptionIntfClick
+        State = cbChecked
+        TabOrder = 0
+      end
+      object edtOptionProxy: TCheckBox
+        Left = 9
+        Height = 17
+        Top = 56
+        Width = 65
+        Caption = 'Proxy file'
+        Checked = True
+        State = cbChecked
+        TabOrder = 2
+      end
+      object edtOptionBinder: TCheckBox
+        Left = 294
+        Height = 17
+        Top = 8
+        Width = 105
+        Caption = 'Service Binder file'
+        TabOrder = 3
+      end
+      object edtOptionImp: TCheckBox
+        Left = 294
+        Height = 17
+        Top = 56
+        Width = 155
+        Caption = 'Implementation Skeleton file'
+        TabOrder = 4
+      end
+      object edtOptionIntfALL: TCheckBox
+        Left = 30
+        Height = 17
+        Top = 32
+        Width = 90
+        Caption = 'Parse all types'
+        OnClick = edtOptionIntfALLClick
+        TabOrder = 1
+      end
+      object edtOptionWrappedParams: TCheckBox
+        Left = 9
+        Height = 17
+        Top = 90
+        Width = 292
+        Anchors = [akLeft, akBottom]
+        Caption = 'Generate easy access interface for wrapped parameters'
+        TabOrder = 5
+      end
+      object edtDocAsComments: TCheckBox
+        Left = 9
+        Height = 17
+        Top = 121
+        Width = 204
+        Anchors = [akLeft, akBottom]
+        Caption = 'Generate documentation as comments'
+        TabOrder = 6
+      end
+      object edtGenCollection: TCheckBox
+        Left = 294
+        Height = 17
+        Top = 121
+        Width = 190
+        Caption = 'Generate object array as Collection'
+        TabOrder = 7
+      end
+    end
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 48
+    Top = 505
+    Width = 526
+    Align = alBottom
+    ClientHeight = 48
+    ClientWidth = 526
+    TabOrder = 0
+    object Button1: TButton
+      Left = 351
+      Height = 25
+      Top = 8
+      Width = 75
+      Action = actOK
+      Anchors = [akTop, akRight]
+      BorderSpacing.InnerBorder = 4
+      Default = True
+      TabOrder = 0
+    end
+    object Button4: TButton
+      Left = 439
+      Height = 25
+      Top = 8
+      Width = 75
+      Anchors = [akTop, akRight]
+      BorderSpacing.InnerBorder = 4
+      Cancel = True
+      Caption = 'Cancel'
+      ModalResult = 2
+      TabOrder = 1
+    end
+  end
+  object AL: TActionList
+    left = 104
+    top = 392
+    object actOK: TAction
+      Caption = 'OK'
+      OnExecute = actOKExecute
+      OnUpdate = actOKUpdate
+    end
+    object actOpenFile: TAction
+      Caption = '...'
+      OnExecute = actOpenFileExecute
+    end
+    object actOpenDir: TAction
+      Caption = '...'
+      OnExecute = actOpenDirExecute
+    end
+  end
+  object OD: TOpenDialog
+    Filter = 'WSDL Files ( *.wsdl )|*.wsdl'
+    FilterIndex = 0
+    Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
+    left = 272
+    top = 32
+  end
+  object SDD: TSelectDirectoryDialog
+    FilterIndex = 0
+    left = 224
+    top = 176
+  end
+end

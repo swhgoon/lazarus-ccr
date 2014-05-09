@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<definitions name="wst_test" 
+   xmlns="http://schemas.xmlsoap.org/wsdl/" 
+   xmlns:tns="library1" 
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+   targetNamespace="urn:wst-test">
+
+  <types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:wst-test">
+      
+        <xsd:attribute name="intAtt" type="xsd:int">
+        </xsd:attribute>
+        
+        <xsd:attribute name="strAtt" type="xsd:string"/>
+        
+          
+        <xsd:complexType name="TSampleClass">
+          <xsd:complexContent>
+            <xsd:attribute ref="n:intAtt" />
+            <xsd:attribute ref="n:strAtt" />
+          </xsd:complexContent>
+        </xsd:complexType>
+        
+        <xsd:complexType name="AttributedString">
+          <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+              <xsd:attribute ref="n:strAtt"/>
+            </xsd:extension>
+          </xsd:simpleContent>
+        </xsd:complexType>
+        
+    </xsd:schema>
+  </types>
+  
+
+</definitions>

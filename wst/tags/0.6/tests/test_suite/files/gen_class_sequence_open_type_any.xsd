@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<schema xmlns:tns="urn:wst-test" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:wst-test">
+  <xsd:complexType name="TComplexType">
+    <xsd:sequence>
+      <xsd:any maxOccurs="unbounded" minOccurs="0" processContents="lax"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="TComplexType2">
+    <xsd:sequence>
+      <xsd:element name="strField" type="xsd:string"/>
+      <xsd:any maxOccurs="unbounded" minOccurs="0" processContents="lax"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="TComplexTypeParent">
+    <xsd:sequence>
+      <xsd:element name="strFieldParent" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="TComplexTypeChild">
+    <xsd:extension base="tns:TComplexTypeParent">
+      <xsd:sequence>
+        <xsd:element name="strFieldChild" type="xsd:string"/>
+        <xsd:any maxOccurs="10" minOccurs="2" processContents="skip"/>
+      </xsd:sequence>
+    </xsd:extension>
+  </xsd:complexType>
+</schema>

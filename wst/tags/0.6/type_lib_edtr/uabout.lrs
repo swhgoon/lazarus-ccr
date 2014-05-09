@@ -1,0 +1,18 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TfAbout','FORMDATA',[
+  'TPF0'#7'TfAbout'#6'fAbout'#4'Left'#3#225#1#6'Height'#3#182#0#3'Top'#3#21#1#5
+  +'Width'#3'+'#1#13'ActiveControl'#7#7'Button1'#11'BorderIcons'#11#12'biSystem'
+  +'Menu'#0#11'BorderStyle'#7#8'bsDialog'#7'Caption'#6#5'About'#12'ClientHeight'
+  +#3#182#0#11'ClientWidth'#3'+'#1#8'Position'#7#15'poDesktopCenter'#10'LCLVers'
+  +'ion'#6#7'1.2.2.0'#0#6'TLabel'#6'Label1'#4'Left'#2#21#6'Height'#2#13#3'Top'#2
+  +#24#5'Width'#3#4#1#7'Caption'#6'.Web Services Toolkit for FPC/Lazarus && Del'
+  +'phi'#10'Font.Style'#11#6'fsBold'#0#11'ParentColor'#8#10'ParentFont'#8#0#0#6
+  +'TLabel'#6'Label2'#4'Left'#2']'#6'Height'#2#13#3'Top'#2'@'#5'Width'#2'k'#7'C'
+  +'aption'#6#19'Type Library Editor'#10'Font.Style'#11#6'fsBold'#8'fsItalic'#0
+  +#11'ParentColor'#8#10'ParentFont'#8#0#0#6'TLabel'#6'Label3'#4'Left'#2'#'#6'H'
+  +'eight'#2#13#3'Top'#2'p'#5'Width'#3#231#0#7'Caption'#6'*Copyright (c) 2007-2'
+  +'014 Inoussa OUEDRAOGO.'#11'ParentColor'#8#0#0#7'TButton'#7'Button1'#4'Left'
+  +#2'p'#6'Height'#2#25#3'Top'#3#142#0#5'Width'#2'K'#25'BorderSpacing.InnerBord'
+  +'er'#2#4#7'Caption'#6#2'OK'#11'ModalResult'#2#1#8'TabOrder'#2#0#0#0#0
+]);

@@ -1,0 +1,8 @@
+<schema targetNamespace="class_currency_property" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="class_currency_property" xmlns:wst="urn:wst_base">
+  <xsd:complexType name="TSampleClass">
+    <xsd:sequence>
+      <xsd:element name="elementProp" type="xsd:decimal" wst:TypeHint="Currency"/>
+    </xsd:sequence>
+    <xsd:attribute name="elementAtt" type="xsd:decimal" wst:TypeHint="Currency" use="required"/>
+  </xsd:complexType>
+</schema>

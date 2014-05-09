@@ -1,0 +1,58 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TfInterfaceEdit','FORMDATA',[
+  'TPF0'#15'TfInterfaceEdit'#14'fInterfaceEdit'#4'Left'#3#27#1#6'Height'#3'4'#2
+  +#3'Top'#3#133#0#5'Width'#3#19#2#18'HorzScrollBar.Page'#3#18#2#18'VertScrollB'
+  +'ar.Page'#3'3'#2#13'ActiveControl'#7#7'Button1'#11'BorderStyle'#7#13'bsSizeT'
+  +'oolWin'#7'Caption'#6#14'fInterfaceEdit'#12'ClientHeight'#3'4'#2#11'ClientWi'
+  +'dth'#3#19#2#8'OnCreate'#7#10'FormCreate'#8'Position'#7#15'poDesktopCenter'
+  +#10'LCLVersion'#6#7'1.2.2.0'#0#6'TPanel'#6'Panel1'#4'Left'#2#0#6'Height'#2'2'
+  +#3'Top'#3#2#2#5'Width'#3#19#2#5'Align'#7#8'alBottom'#12'ClientHeight'#2'2'#11
+  +'ClientWidth'#3#19#2#8'TabOrder'#2#0#0#7'TButton'#7'Button1'#4'Left'#3#180#1
+  +#6'Height'#2#25#3'Top'#2#10#5'Width'#2'K'#7'Anchors'#11#5'akTop'#7'akRight'#0
+  +#25'BorderSpacing.InnerBorder'#2#4#6'Cancel'#9#7'Caption'#6#6'Cancel'#11'Mod'
+  +'alResult'#2#2#8'TabOrder'#2#0#0#0#7'TButton'#7'Button2'#4'Left'#3'Z'#1#6'He'
+  +'ight'#2#25#3'Top'#2#10#5'Width'#2'K'#6'Action'#7#5'actOK'#7'Anchors'#11#5'a'
+  +'kTop'#7'akRight'#0#25'BorderSpacing.InnerBorder'#2#4#7'Default'#9#8'TabOrde'
+  +'r'#2#1#0#0#0#12'TPageControl'#2'PC'#4'Left'#2#0#6'Height'#3#2#2#3'Top'#2#0#5
+  +'Width'#3#19#2#10'ActivePage'#7#9'TabSheet1'#5'Align'#7#8'alClient'#8'TabInd'
+  +'ex'#2#0#8'TabOrder'#2#1#0#9'TTabSheet'#9'TabSheet1'#7'Caption'#6#20'Interfa'
+  +'ce definition'#12'ClientHeight'#3#232#1#11'ClientWidth'#3#11#2#0#6'TLabel'#6
+  +'Label1'#4'Left'#2#20#6'Height'#2#13#3'Top'#2#26#5'Width'#2#27#7'Caption'#6#4
+  +'Name'#11'ParentColor'#8#0#0#5'TEdit'#7'edtName'#4'Left'#2'<'#6'Height'#2#21
+  +#3'Top'#2#26#5'Width'#3#187#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8
+  +'TabOrder'#2#0#0#0#9'TGroupBox'#9'GroupBox1'#4'Left'#2#20#6'Height'#3'p'#1#3
+  +'Top'#2'J'#5'Width'#3#228#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'ak'
+  +'Bottom'#0#7'Caption'#6#11'  Methods  '#12'ClientHeight'#3'^'#1#11'ClientWid'
+  +'th'#3#224#1#8'TabOrder'#2#1#0#9'TTreeView'#10'trvMethods'#4'Left'#2#0#6'Hei'
+  +'ght'#3'^'#1#3'Top'#2#0#5'Width'#3#224#1#5'Align'#7#8'alClient'#17'DefaultIt'
+  +'emHeight'#2#16#9'PopupMenu'#7#10'PopupMenu1'#8'TabOrder'#2#0#0#0#0#7'TButto'
+  +'n'#7'Button3'#4'Left'#2#20#6'Height'#2#25#3'Top'#3#194#1#5'Width'#2'c'#6'Ac'
+  +'tion'#7#12'actNewMethod'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#25'BorderSpa'
+  +'cing.InnerBorder'#2#4#8'TabOrder'#2#2#0#0#7'TButton'#7'Button4'#4'Left'#3
+  +#132#0#6'Height'#2#25#3'Top'#3#194#1#5'Width'#2'k'#6'Action'#7#18'actUpdateO'
+  +'peration'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#25'BorderSpacing.InnerBorde'
+  +'r'#2#4#8'TabOrder'#2#3#0#0#7'TButton'#7'Button5'#4'Left'#3#252#0#6'Height'#2
+  +#25#3'Top'#3#194#1#5'Width'#2'h'#6'Action'#7#18'actDeleteOperation'#7'Anchor'
+  +'s'#11#6'akLeft'#8'akBottom'#0#25'BorderSpacing.InnerBorder'#2#4#8'TabOrder'
+  +#2#4#0#0#7'TButton'#7'Button6'#4'Left'#3#140#1#6'Height'#2#25#3'Top'#3#194#1
+  +#5'Width'#2'k'#6'Action'#7#14'actBindingEdit'#7'Anchors'#11#7'akRight'#8'akB'
+  +'ottom'#0#25'BorderSpacing.InnerBorder'#2#4#8'TabOrder'#2#5#0#0#0#0#11'TActi'
+  +'onList'#2'AL'#4'left'#3#130#0#3'top'#3#200#0#0#7'TAction'#5'actOK'#7'Captio'
+  +'n'#6#2'OK'#9'OnExecute'#7#12'actOKExecute'#8'OnUpdate'#7#11'actOKUpdate'#0#0
+  +#7'TAction'#12'actNewMethod'#7'Caption'#6#13'New operation'#9'OnExecute'#7#19
+  +'actNewMethodExecute'#0#0#7'TAction'#18'actUpdateOperation'#7'Caption'#6#14
+  +'Edit Operation'#9'OnExecute'#7#25'actUpdateOperationExecute'#8'OnUpdate'#7
+  +#24'actUpdateOperationUpdate'#0#0#7'TAction'#18'actDeleteOperation'#7'Captio'
+  +'n'#6#16'Delete Operation'#9'OnExecute'#7#25'actDeleteOperationExecute'#8'On'
+  +'Update'#7#24'actUpdateOperationUpdate'#0#0#7'TAction'#14'actBindingEdit'#7
+  +'Caption'#6#12'Edit Binding'#9'OnExecute'#7#21'actBindingEditExecute'#8'OnUp'
+  +'date'#7#20'actBindingEditUpdate'#0#0#0#10'TPopupMenu'#10'PopupMenu1'#4'left'
+  +#2'T'#3'top'#3#233#0#0#9'TMenuItem'#9'MenuItem1'#6'Action'#7#12'actNewMethod'
+  +#7'OnClick'#7#19'actNewMethodExecute'#0#0#9'TMenuItem'#9'MenuItem2'#6'Action'
+  +#7#18'actUpdateOperation'#7'OnClick'#7#25'actUpdateOperationExecute'#0#0#9'T'
+  +'MenuItem'#9'MenuItem3'#6'Action'#7#18'actDeleteOperation'#7'OnClick'#7#25'a'
+  +'ctDeleteOperationExecute'#0#0#9'TMenuItem'#9'MenuItem4'#7'Caption'#6#1'-'#0
+  +#0#9'TMenuItem'#9'MenuItem5'#6'Action'#7#14'actBindingEdit'#7'OnClick'#7#21
+  +'actBindingEditExecute'#0#0#0#0
+]);

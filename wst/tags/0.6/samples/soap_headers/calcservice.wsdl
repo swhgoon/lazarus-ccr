@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<definitions name="urn:calc-service" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="urn:calc-service" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="urn:calc-service">
+  <types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:calc-service" xmlns:wst="urn:wst_base" targetNamespace="urn:calc-service">
+      <xsd:complexType name="TLoginHeader" wst:wst_headerBlock="true">
+        <xsd:annotation>
+          <xsd:documentation>The TLoginHeader class is used by the client for its first invocation of the service.
+At the first response the server sends a TSessionHeader instance that contains a
+session token. The others time the client invokes the server the client have to
+send the session token using the TSessionHeader class.
+</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+          <xsd:element name="UserName" type="xsd:string"/>
+          <xsd:element name="Password" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="TSessionHeader" wst:wst_headerBlock="true">
+        <xsd:annotation>
+          <xsd:documentation>This header class is used by the client to send its session token to the server.
+</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+          <xsd:element name="SessionToken" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+  </types>
+  <message name="Add">
+    <part name="A" type="xsd:int"/>
+    <part name="B" type="xsd:int"/>
+  </message>
+  <message name="AddResponse">
+    <part name="result" type="xsd:int"/>
+  </message>
+  <message name="Substract">
+    <part name="A" type="xsd:int"/>
+    <part name="B" type="xsd:int"/>
+  </message>
+  <message name="SubstractResponse">
+    <part name="result" type="xsd:int"/>
+  </message>
+  <portType name="ICalcService">
+    <document>
+      <GUID value="{090EADB7-6B25-4F35-9419-2AF113D44BF8}"/>
+    </document>
+    <operation name="Add">
+      <input message="tns:Add"/>
+      <output message="tns:AddResponse"/>
+    </operation>
+    <operation name="Substract">
+      <input message="tns:Substract"/>
+      <output message="tns:SubstractResponse"/>
+    </operation>
+  </portType>
+  <binding name="ICalcServiceBinding" type="tns:ICalcService">
+    <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="Add">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" namespace="urn:calc-service"/>
+      </input>
+      <output>
+        <soap:body use="literal" namespace="urn:calc-service"/>
+      </output>
+    </operation>
+    <operation name="Substract">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" namespace="urn:calc-service"/>
+      </input>
+      <output>
+        <soap:body use="literal" namespace="urn:calc-service"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="ICalcService">
+    <port name="ICalcServicePort" binding="tns:ICalcServiceBinding">
+      <soap:address location="http://127.0.0.1:8000/services/ICalcService"/>
+    </port>
+  </service>
+</definitions>

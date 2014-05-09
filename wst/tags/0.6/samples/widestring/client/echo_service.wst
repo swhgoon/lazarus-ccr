@@ -1,0 +1,5 @@
+  GetWSTResourceManager().AddResource('ECHO_SERVICE',
+    #0#0#0#20'WST_METADATA_0.2.2.0'#0#0#0#12'echo_service'#1#0#0#0#12'IEchoServi'
+    +'ce'#1#0#0#0#14'EchoWideString'#2#0#0#0#6'AValue'#0#0#0#10'WideString'#0#0#0
+    +#0#0#0#0#1#0#0#0#6'Result'#0#0#0#10'WideString'#0#0#0#0#0#0#0#3''
+  );

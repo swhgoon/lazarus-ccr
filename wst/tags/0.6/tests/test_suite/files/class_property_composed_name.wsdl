@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<definitions name="wst_test" 
+   xmlns="http://schemas.xmlsoap.org/wsdl/" 
+   xmlns:tns="urn_sample" 
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+   targetNamespace="urn_sample"
+   xmlns:wst="urn:wst_base">
+
+  <types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn_sample">
+      <xsd:complexType name="TSampleClass">
+        <xsd:sequence>
+          <xsd:element name="one-prop" type="xsd:string" />
+        </xsd:sequence>
+        <xsd:attribute name="one-two-prop" type="xsd:string"/>
+      </xsd:complexType>        
+    </xsd:schema>
+  </types>
+  
+
+</definitions>

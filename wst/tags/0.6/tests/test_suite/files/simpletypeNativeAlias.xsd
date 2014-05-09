@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <xsd:schema xmlns:n="urn:wst-test" 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  xmlns:wst="urn:wst_base"
+  targetNamespace="urn:wst-test">
+  
+  <xsd:element name="AliasString" type="xsd:string"/>
+  <xsd:element name="AliasInt" type="xsd:int"/>
+  <xsd:element name="AliasWideString" type="xsd:string" wst:TypeHint="WideString"/>
+  
+ </xsd:schema>

@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<SOAP-ENV:Envelope xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Body>
+    <ns1:SampleProcResponse xmlns:ns1="SampleService" xmlns:ns2="NameSpace.A" xmlns:ns3="NameSpace.B" xmlns:ns4="NameSpace.C">
+      <ns2:a>
+        <ns2:Qualified_Val_Bool>true</ns2:Qualified_Val_Bool>
+        <ns2:Qualified_Val_Enum>steTwo</ns2:Qualified_Val_Enum>
+        <ns2:Qualified_Val_Integer>1210</ns2:Qualified_Val_Integer>
+        <ns2:Qualified_Val_Int64>123456</ns2:Qualified_Val_Int64>
+        <ns2:Qualified_Val_String>sample string.</ns2:Qualified_Val_String>
+      </ns2:a>
+      <ns3:b>
+        <ns2:Qualified_Val_Bool>true</ns2:Qualified_Val_Bool>
+        <ns2:Qualified_Val_Enum>steThree</ns2:Qualified_Val_Enum>
+        <ns2:Qualified_Val_Integer>456</ns2:Qualified_Val_Integer>
+        <ns2:Qualified_Val_Int64>78945</ns2:Qualified_Val_Int64>
+        <ns2:Qualified_Val_String>Sample string inherited from TNameSpaceA_Class.</ns2:Qualified_Val_String>
+        <ns3:Val_Bool>true</ns3:Val_Bool>
+        <ns3:Val_String>WST sample string, local to NameSpace.B</ns3:Val_String>
+      </ns3:b>
+      <ns4:c>
+        <ns4:Prop_String>This property should be in : NameSpace.C</ns4:Prop_String>
+        <ns2:Prop_A>
+          <ns2:Qualified_Val_Bool>false</ns2:Qualified_Val_Bool>
+          <ns2:Qualified_Val_Enum>steOne</ns2:Qualified_Val_Enum>
+          <ns2:Qualified_Val_Integer>0</ns2:Qualified_Val_Integer>
+          <ns2:Qualified_Val_Int64>0</ns2:Qualified_Val_Int64>
+          <ns2:Qualified_Val_String>This property should be in : NameSpace.A</ns2:Qualified_Val_String>
+        </ns2:Prop_A>
+        <ns3:Prop_B>
+          <ns2:Qualified_Val_Bool>false</ns2:Qualified_Val_Bool>
+          <ns2:Qualified_Val_Enum>steFour</ns2:Qualified_Val_Enum>
+          <ns2:Qualified_Val_Integer>789</ns2:Qualified_Val_Integer>
+          <ns2:Qualified_Val_Int64>64</ns2:Qualified_Val_Int64>
+          <ns2:Qualified_Val_String>This inherited property should be in : NameSpace.A</ns2:Qualified_Val_String>
+          <ns3:Val_Bool>true</ns3:Val_Bool>
+          <ns3:Val_String>local elemet. This property should be in : NameSpace.B</ns3:Val_String>
+        </ns3:Prop_B>
+      </ns4:c>
+    </ns1:SampleProcResponse>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

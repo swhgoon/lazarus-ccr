@@ -1,0 +1,1 @@
+ws_helper -uA -i -p -b -w -x -a"C:\Programmes\lazarus\wst\trunk\tests\files" "C:\Programmes\lazarus\utils\amazon\AWSECommerceService.wsdl" >test_amazon_res.txt

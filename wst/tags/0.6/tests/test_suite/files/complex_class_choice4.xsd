@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <xsd:schema xmlns:n="urn:wst-test" 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  targetNamespace="urn:wst-test">
+  
+    <xsd:complexType name="TSampleType1">
+      <xsd:sequence>
+  	    <xsd:choice>
+  		    <xsd:element name="intField" type="xsd:int" />
+          <xsd:element name="strField" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+  	    </xsd:choice>
+        <xsd:element name="intField1" type="xsd:int" />
+        <xsd:element name="dateField" type="xsd:date" />
+      </xsd:sequence>
+    </xsd:complexType>
+        
+</xsd:schema>

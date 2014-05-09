@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="9"/>
+    <PathDelim Value="\"/>
+    <General>
+      <Flags>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
+      <SessionStorage Value="InProjectDir"/>
+      <MainUnit Value="0"/>
+    </General>
+    <BuildModes Count="1">
+      <Item1 Name="default" Default="True"/>
+    </BuildModes>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="2">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="SynEdit"/>
+      </Item2>
+    </RequiredPackages>
+    <Units Count="24">
+      <Unit0>
+        <Filename Value="typ_lib_edtr.lpr"/>
+        <IsPartOfProject Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="uwsttypelibraryedit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fWstTypeLibraryEdit"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uwsttypelibraryedit"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="uabout.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fAbout"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uabout"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="ufenumedit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fEnumEdit"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ufEnumedit"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="view_helper.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="view_helper"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="..\ws_helper\source_utils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="source_utils"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="edit_helper.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="edit_helper"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="ufclassedit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fClassEdit"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ufclassedit"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="ufpropedit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fPropEdit"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ufpropedit"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="uinterfaceedit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fInterfaceEdit"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uinterfaceedit"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="udm.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="DM"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="DataModule"/>
+        <UnitName Value="udm"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="..\ws_helper\pascal_parser_intf.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="pascal_parser_intf"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="..\ws_helper\generator.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="generator"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="uprocedit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fProcEdit"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uprocedit"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="common_gui_utils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="common_gui_utils"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="uargedit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fArgEdit"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uargedit"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="umoduleedit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fModuleEdit"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="umoduleedit"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="ubindingedit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fBindingEdit"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ubindingedit"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="ufrmsaveoption.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmSaveOptions"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ufrmsaveoption"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="ufarrayedit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fArrayEdit"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ufarrayedit"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="uftypealiasedit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fTypeAliasEdit"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uftypealiasedit"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="ufrecordedit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fRecordEdit"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ufrecordedit"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="..\ws_helper\wsdl_generator.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wsdl_generator"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="..\ws_helper\xsd_parser.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="xsd_parser"/>
+      </Unit23>
+    </Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="11"/>
+    <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="typ_lib_edtr"/>
+    </Target>
+    <SearchPaths>
+      <IncludeFiles Value=".."/>
+      <OtherUnitFiles Value="..;..\ws_helper;..\wst_rtti_filter"/>
+      <UnitOutputDirectory Value="obj"/>
+    </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <IncludeAssertionCode Value="True"/>
+      </SyntaxOptions>
+    </Parsing>
+    <Linking>
+      <Debugging>
+        <DebugInfoType Value="dsStabs"/>
+      </Debugging>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
+      <CustomOptions Value="-dWST_HANDLE_DOC"/>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+</CONFIG>

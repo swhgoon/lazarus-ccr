@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <xsd:schema xmlns:n="urn:include" 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  targetNamespace="urn:include">
+  
+	<xsd:simpleType name="TypeB">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="tbThree">	</xsd:enumeration>
+			<xsd:enumeration value="tbFour">	</xsd:enumeration>
+		</xsd:restriction>
+	</xsd:simpleType>
+  
+ </xsd:schema>

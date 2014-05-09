@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<definitions name="runtime_generator" 
+       xmlns="http://schemas.xmlsoap.org/wsdl/" 
+       xmlns:tns="urn:sample-namespace" 
+       xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+       xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+       targetNamespace="urn:sample-namespace">
+  <types>
+    <xsd:schema 
+          xmlns="http://www.w3.org/2001/XMLSchema" 
+          xmlns:wst="urn:wst_base"
+          targetNamespace="urn:sample-namespace">
+      <xsd:complexType name="TLoginHeader" wst:wst_headerBlock="true">
+        <xsd:sequence>
+          <xsd:element name="Login" type="xsd:string" maxOccurs="1" minOccurs="1"/>
+          <xsd:element name="Password" type="xsd:string" maxOccurs="1" minOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+  </types>
+</definitions>

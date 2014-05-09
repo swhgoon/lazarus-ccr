@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<schema targetNamespace="class_properties_default" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="class_properties_default">
+	<xsd:complexType name="TClassSampleType">
+		<xsd:sequence>
+			<xsd:element name="intField" type="xsd:int" default="1210"/>
+			<xsd:element name="strField" type="xsd:string" default="azerty"/>
+			<xsd:element name="floatField" type="xsd:float" default="1234"/>
+		</xsd:sequence>
+		<xsd:attribute name="strAtt" type="xsd:string" default="attribute azerty" use="required"/>
+		<xsd:attribute name="intAtt" type="xsd:int" default="789" use="required"/>
+	</xsd:complexType>
+</schema>

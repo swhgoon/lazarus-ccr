@@ -1,0 +1,201 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="9"/>
+    <PathDelim Value="\"/>
+    <General>
+      <Flags>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
+      <SessionStorage Value="InProjectDir"/>
+      <MainUnit Value="0"/>
+    </General>
+    <VersionInfo>
+      <StringTable ProductVersion=""/>
+    </VersionInfo>
+    <BuildModes Count="1">
+      <Item1 Name="default" Default="True"/>
+    </BuildModes>
+    <PublishOptions>
+      <Version Value="2"/>
+      <DestinationDirectory Value="$(TestDir)\publishedproject\"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="3">
+      <Item1>
+        <PackageName Value="FCL"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="fpcunittestrunner"/>
+      </Item3>
+    </RequiredPackages>
+    <Units Count="24">
+      <Unit0>
+        <Filename Value="wst_test_suite_gui.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wst_test_suite_gui"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="test_support.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_support"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="test_utilities.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_utilities"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="testformatter_unit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="testformatter_unit"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="test_generators.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_generators"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="testmetadata_unit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="testmetadata_unit"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="test_parsers.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_parsers"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="test_basex_encode.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_basex_encode"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="test_json.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_json"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="test_suite_utils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_suite_utils"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="test_std_cursors.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_std_cursors"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="test_rtti_filter.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_rtti_filter"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="..\..\wst_rtti_filter\rtti_filters.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="rtti_filters"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="..\..\wst_rtti_filter\wst_cursors.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wst_cursors"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="test_wst_cursors.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_wst_cursors"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="test_registry.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_registry"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="test_soap_specific.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_soap_specific"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="test_generators_runtime.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_generators_runtime"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="test_date_utils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_date_utils"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="..\..\config_objects.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="config_objects"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="test_support_client.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_support_client"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="..\..\wst_consts.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wst_consts"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="wst_tests_defines.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="test_filter.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_filter"/>
+      </Unit23>
+    </Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="9"/>
+    <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="wst_test_suite_gui"/>
+    </Target>
+    <SearchPaths>
+      <IncludeFiles Value="..\.."/>
+      <OtherUnitFiles Value="..\..;..\..\ws_helper;..\..\wst_rtti_filter;..\..\fcl-json\src"/>
+      <UnitOutputDirectory Value="obj"/>
+    </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <CStyleOperator Value="False"/>
+        <UseAnsiStrings Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
+    <CodeGeneration>
+      <Checks>
+        <OverflowChecks Value="True"/>
+      </Checks>
+    </CodeGeneration>
+    <Linking>
+      <Debugging>
+        <GenerateDebugInfo Value="True"/>
+      </Debugging>
+      <LinkSmart Value="True"/>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+</CONFIG>

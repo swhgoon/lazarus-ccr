@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<definitions name="library1" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="urn:test" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="urn:test">
+  <types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:test" targetNamespace="urn:test"/>
+  </types>
+  <message name="test_proc">
+    <part name="AConstParam" type="xsd:string"/>
+  </message>
+  <message name="test_procResponse">
+    <part name="AOutParam" type="xsd:boolean"/>
+    <part name="AResParam" type="xsd:int"/>
+  </message>
+  <portType name="TestService">
+    <document>
+      <GUID value="{2E64ADA6-BF3F-4C88-89BF-17709416B11C}"/>
+    </document>
+    <operation name="test_proc">
+      <input message="tns:test_proc"/>
+      <output message="tns:test_procResponse"/>
+    </operation>
+  </portType>
+  <binding name="TestServiceBinding" type="tns:TestService">
+    <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="test_proc">
+      <soap:operation soapAction="http://wst.Sample/Soap/Action/"/>
+      <input>
+        <soap:body use="literal" namespace="library1"/>
+      </input>
+      <output>
+        <soap:body use="literal" namespace="library1"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="TestService">
+    <port name="TestServicePort" binding="tns:TestServiceBinding">
+      <soap:address location=""/>
+    </port>
+  </service>
+</definitions>

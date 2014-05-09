@@ -1,0 +1,1 @@
+ws_helper -u -i -p -b -a"C:\Programmes\lazarus\wst\trunk\tests\files" "C:\Programmes\lazarus\utils\googleapi\GoogleSearch.wsdl" >test_res_GoogleSearch.txt

@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="3">
+    <PathDelim Value="\"/>
+    <Name Value="wst_indy"/>
+    <Author Value="Inoussa Ouedraogo"/>
+    <CompilerOptions>
+      <Version Value="9"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <OtherUnitFiles Value="..\..;$(LazarusDir)\others_package\indy-10.2.0.3\fpc"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Parsing>
+        <SyntaxOptions>
+          <CStyleOperator Value="False"/>
+          <UseAnsiStrings Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
+      <Other>
+        <CustomOptions Value="-dINDY_10"/>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="WebServices Toolkit  Indy transport layer
+"/>
+    <License Value="Modified LGPL
+"/>
+    <Version Minor="6"/>
+    <Files Count="4">
+      <Item1>
+        <Filename Value="..\..\indy_http_protocol.pas"/>
+        <UnitName Value="indy_http_protocol"/>
+      </Item1>
+      <Item2>
+        <Filename Value="..\..\indy_http_server.pas"/>
+        <UnitName Value="indy_http_server"/>
+      </Item2>
+      <Item3>
+        <Filename Value="..\..\indy_tcp_protocol.pas"/>
+        <UnitName Value="indy_tcp_protocol"/>
+      </Item3>
+      <Item4>
+        <Filename Value="..\..\indy_tcp_server.pas"/>
+        <UnitName Value="indy_tcp_server"/>
+      </Item4>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="3">
+      <Item1>
+        <PackageName Value="indylaz"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="wst_core"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item3>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)\"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

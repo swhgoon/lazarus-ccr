@@ -1,0 +1,52 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TfrmSaveOptions','FORMDATA',[
+  'TPF0'#15'TfrmSaveOptions'#14'frmSaveOptions'#4'Left'#3#203#1#6'Height'#3'R'#1
+  +#3'Top'#3#17#1#5'Width'#3#146#1#13'ActiveControl'#7#12'edtInterface'#11'Bord'
+  +'erStyle'#7#13'bsSizeToolWin'#7'Caption'#6#23'Export file options ...'#12'Cl'
+  +'ientHeight'#3'R'#1#11'ClientWidth'#3#146#1#8'Position'#7#16'poMainFormCente'
+  +'r'#10'LCLVersion'#6#7'1.2.2.0'#0#6'TPanel'#6'Panel1'#4'Left'#2#0#6'Height'#2
+  +'2'#3'Top'#3' '#1#5'Width'#3#146#1#5'Align'#7#8'alBottom'#12'ClientHeight'#2
+  +'2'#11'ClientWidth'#3#146#1#8'TabOrder'#2#1#0#7'TButton'#7'Button1'#4'Left'#3
+  +'8'#1#6'Height'#2#25#3'Top'#2#14#5'Width'#2'K'#7'Anchors'#11#5'akTop'#7'akRi'
+  +'ght'#0#25'BorderSpacing.InnerBorder'#2#4#6'Cancel'#9#7'Caption'#6#6'Cancel'
+  +#11'ModalResult'#2#2#8'TabOrder'#2#0#0#0#7'TButton'#7'Button2'#4'Left'#3#224
+  +#0#6'Height'#2#25#3'Top'#2#14#5'Width'#2'K'#6'Action'#7#5'actOK'#7'Anchors'
+  +#11#5'akTop'#7'akRight'#0#25'BorderSpacing.InnerBorder'#2#4#7'Default'#9#8'T'
+  +'abOrder'#2#1#0#0#0#6'TPanel'#6'Panel2'#4'Left'#2#0#6'Height'#3' '#1#3'Top'#2
+  +#0#5'Width'#3#146#1#5'Align'#7#8'alClient'#12'ClientHeight'#3' '#1#11'Client'
+  +'Width'#3#146#1#8'TabOrder'#2#0#0#6'TLabel'#6'Label1'#4'Left'#2#16#6'Height'
+  +#2#13#3'Top'#2#16#5'Width'#2'P'#7'Caption'#6#16'Output directory'#11'ParentC'
+  +'olor'#8#0#0#9'TGroupBox'#9'GroupBox1'#4'Left'#2#16#6'Height'#2'h'#3'Top'#2
+  +'P'#5'Width'#3'q'#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0
+  +#7'Caption'#6#13'  File type  '#12'ClientHeight'#2'V'#11'ClientWidth'#3'm'#1
+  +#8'TabOrder'#2#2#0#9'TCheckBox'#12'edtInterface'#4'Left'#2#14#6'Height'#2#17
+  +#3'Top'#2#16#5'Width'#2'A'#7'Caption'#6#9'Interface'#8'TabOrder'#2#0#0#0#9'T'
+  +'CheckBox'#8'edtProxy'#4'Left'#2#14#6'Height'#2#17#3'Top'#2'5'#5'Width'#2'0'
+  +#7'Anchors'#11#6'akLeft'#8'akBottom'#0#7'Caption'#6#5'Proxy'#8'TabOrder'#2#2
+  +#0#0#9'TCheckBox'#17'edtImplementation'#4'Left'#3#230#0#6'Height'#2#17#3'Top'
+  +#2#14#5'Width'#2'^'#7'Anchors'#11#5'akTop'#7'akRight'#0#7'Caption'#6#14'Impl'
+  +'ementation'#8'TabOrder'#2#1#0#0#9'TCheckBox'#9'edtBinder'#4'Left'#3#230#0#6
+  +'Height'#2#17#3'Top'#2'5'#5'Width'#2'2'#7'Anchors'#11#7'akRight'#8'akBottom'
+  +#0#7'Caption'#6#6'Binder'#8'TabOrder'#2#3#0#0#0#5'TEdit'#12'edtOutputDir'#4
+  +'Left'#2#16#6'Height'#2#21#3'Top'#2'&'#5'Width'#3'P'#1#7'Anchors'#11#5'akTop'
+  +#6'akLeft'#7'akRight'#0#8'TabOrder'#2#0#0#0#7'TButton'#12'btnSelectDir'#4'Le'
+  +'ft'#3'j'#1#6'Height'#2#25#3'Top'#2'$'#5'Width'#2#25#7'Anchors'#11#5'akTop'#7
+  +'akRight'#0#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#3'...'#7'OnClick'
+  +#7#17'btnSelectDirClick'#8'TabOrder'#2#1#0#0#7'TButton'#12'btnSelectAll'#4'L'
+  +'eft'#2#16#6'Height'#2#25#3'Top'#3#249#0#5'Width'#2'd'#7'Anchors'#11#6'akLef'
+  +'t'#8'akBottom'#0#7'Caption'#6#10'Select All'#7'OnClick'#7#17'btnSelectAllCl'
+  +'ick'#8'TabOrder'#2#5#0#0#7'TButton'#14'btnUnselectAll'#4'Left'#3#0#1#6'Heig'
+  +'ht'#2#25#3'Top'#3#249#0#5'Width'#2'd'#7'Anchors'#11#7'akRight'#8'akBottom'#0
+  +#7'Caption'#6#12'Unselect All'#7'OnClick'#7#19'btnUnselectAllClick'#8'TabOrd'
+  +'er'#2#6#0#0#9'TCheckBox'#16'edtWrappedParams'#4'Left'#2#16#6'Height'#2#17#3
+  +'Top'#3#198#0#5'Width'#3'$'#1#7'Anchors'#11#6'akLeft'#8'akBottom'#0#7'Captio'
+  +'n'#6'5Generate easy access interface for wrapped parameters'#8'TabOrder'#2#3
+  +#0#0#9'TCheckBox'#16'edtDocAsComments'#4'Left'#2#16#6'Height'#2#17#3'Top'#3
+  +#224#0#5'Width'#3#204#0#7'Anchors'#11#6'akLeft'#8'akBottom'#0#7'Caption'#6'"'
+  +'Generate documentation as comments'#8'TabOrder'#2#4#0#0#0#11'TActionList'#2
+  +'AL'#4'left'#3#144#0#3'top'#3#128#0#0#7'TAction'#5'actOK'#7'Caption'#6#2'OK'
+  +#9'OnExecute'#7#12'actOKExecute'#8'OnUpdate'#7#11'actOKUpdate'#0#0#0#22'TSel'
+  +'ectDirectoryDialog'#2'SD'#11'FilterIndex'#2#0#4'left'#2'e'#3'top'#3#142#0#0
+  +#0#0
+]);

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<definitions name="import_base_library" 
+   xmlns="http://schemas.xmlsoap.org/wsdl/" 
+   xmlns:tns="urn:base-library" 
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+   targetNamespace="urn:base-library">
+
+  <types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:base-library">
+    
+        <xsd:complexType name="SampleBase_Type">
+          <xsd:sequence>
+            <xsd:element name="Name" type="xsd:string"/>
+            <xsd:element name="Identifier" type="xsd:int"/>
+          </xsd:sequence>
+        </xsd:complexType>    
+    
+    </xsd:schema>
+  </types>
+  
+
+</definitions>

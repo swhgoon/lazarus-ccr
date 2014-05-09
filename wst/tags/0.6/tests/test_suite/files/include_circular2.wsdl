@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<definitions name="import_second_library" 
+   xmlns="http://schemas.xmlsoap.org/wsdl/" 
+   xmlns:tns="urn:include-wsdl" 
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+   targetNamespace="urn:include-wsdl">
+
+  <types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:n="urn:include"  targetNamespace="urn:include">
+            
+  
+        <xsd:include schemaLocation="include_cir1.xsd" />
+        
+        <xsd:complexType name="TClassSample">
+          <xsd:sequence>
+            <xsd:element name="FieldA" type="n:TypeA" />
+            <xsd:element name="FieldB" type="n:TypeB" />
+          </xsd:sequence>
+        </xsd:complexType>
+        
+    </xsd:schema>
+  </types>
+  
+
+</definitions>

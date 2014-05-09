@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="9"/>
+    <PathDelim Value="\"/>
+    <General>
+      <Flags>
+        <MainUnitHasUsesSectionForAllUnits Value="False"/>
+        <MainUnitHasCreateFormStatements Value="False"/>
+        <MainUnitHasTitleStatement Value="False"/>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
+      <SessionStorage Value="InProjectDir"/>
+      <MainUnit Value="0"/>
+    </General>
+    <BuildModes Count="2">
+      <Item1 Name="default" Default="True"/>
+      <Item2 Name="debug">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="ws_helper"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value=".."/>
+            <OtherUnitFiles Value="..;..\wst_rtti_filter"/>
+            <UnitOutputDirectory Value="obj"/>
+          </SearchPaths>
+          <Parsing>
+            <SyntaxOptions>
+              <IncludeAssertionCode Value="True"/>
+            </SyntaxOptions>
+          </Parsing>
+          <CodeGeneration>
+            <Optimizations>
+              <OptimizationLevel Value="3"/>
+            </Optimizations>
+          </CodeGeneration>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsStabs"/>
+            </Debugging>
+          </Linking>
+          <Other>
+            <CompilerMessages>
+              <UseMsgFile Value="True"/>
+            </CompilerMessages>
+            <CustomOptions Value="-Xi
+-dWST_HANDLE_DOC"/>
+            <CompilerPath Value="$(CompPath)"/>
+          </Other>
+        </CompilerOptions>
+      </Item2>
+    </BuildModes>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <CommandLineParams Value="-p -gC -gEP -uA -a&quot;E:\tmp\x\pas&quot;  &quot;E:\tmp\x\wsdl\wholesale.wsdl&quot;"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="1">
+      <Item1>
+        <PackageName Value="FCL"/>
+      </Item1>
+    </RequiredPackages>
+    <Units Count="18">
+      <Unit0>
+        <Filename Value="ws_helper.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ws_helper"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="generator.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="generator"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="parserutils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="parserutils"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="source_utils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="source_utils"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="command_line_parser.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="command_line_parser"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="metadata_generator.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="metadata_generator"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="..\binary_streamer.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="binary_streamer"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="wst_resources_utils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wst_resources_utils"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="pascal_parser_intf.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="pascal_parser_intf"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="logger_intf.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="logger_intf"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="wsdl_generator.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wsdl_generator"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="ws_helper_prog.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="xsd_parser.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="xsd_parser"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="wsdl_parser.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wsdl_parser"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="ws_parser_imp.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ws_parser_imp"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="xsd_generator.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="xsd_generator"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="xsd_consts.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="xsd_consts"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="locators.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="locators"/>
+      </Unit17>
+    </Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="11"/>
+    <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="ws_helper"/>
+    </Target>
+    <SearchPaths>
+      <IncludeFiles Value=".."/>
+      <OtherUnitFiles Value="..;..\wst_rtti_filter"/>
+      <UnitOutputDirectory Value="obj"/>
+    </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <IncludeAssertionCode Value="True"/>
+      </SyntaxOptions>
+    </Parsing>
+    <CodeGeneration>
+      <Optimizations>
+        <OptimizationLevel Value="3"/>
+      </Optimizations>
+    </CodeGeneration>
+    <Linking>
+      <Debugging>
+        <StripSymbols Value="True"/>
+      </Debugging>
+      <LinkSmart Value="True"/>
+    </Linking>
+    <Other>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
+      <CustomOptions Value="-Xi
+-dWST_HANDLE_DOC"/>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+</CONFIG>

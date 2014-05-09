@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<SOAP-ENV:Envelope 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
+  xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
+  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Header xmlns:ns1="urn:simple-content-header.sample">
+    <ns1:TSampleSimpleContentHeaderBlock_A>sample header simple content value</ns1:TSampleSimpleContentHeaderBlock_A>
+    <ns1:TSampleSimpleContentHeaderBlock_B intAtt="1210" SOAP-ENV:mustUnderstand="1">another content</ns1:TSampleSimpleContentHeaderBlock_B>
+  </SOAP-ENV:Header>
+  <SOAP-ENV:Body>
+    <ns2:test_proc xmlns:ns2="TestService"/>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

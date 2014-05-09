@@ -1,0 +1,102 @@
+object fModuleEdit: TfModuleEdit
+  Left = 750
+  Height = 300
+  Top = 93
+  Width = 400
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 299
+  ActiveControl = Button1
+  BorderStyle = bsSizeToolWin
+  Caption = 'Module properties'
+  ClientHeight = 300
+  ClientWidth = 400
+  Position = poMainFormCenter
+  LCLVersion = '0.9.25'
+  object Panel1: TPanel
+    Height = 50
+    Top = 250
+    Width = 400
+    Align = alBottom
+    ClientHeight = 50
+    ClientWidth = 400
+    TabOrder = 0
+    object Button1: TButton
+      Left = 224
+      Height = 25
+      Top = 14
+      Width = 75
+      Action = actOK
+      BorderSpacing.InnerBorder = 4
+      Default = True
+      TabOrder = 0
+    end
+    object Button2: TButton
+      Left = 312
+      Height = 25
+      Top = 14
+      Width = 75
+      BorderSpacing.InnerBorder = 4
+      Cancel = True
+      Caption = 'Cancel'
+      ModalResult = 2
+      TabOrder = 1
+    end
+  end
+  object PageControl1: TPageControl
+    Height = 250
+    Width = 400
+    ActivePage = TabSheet1
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 1
+    object TabSheet1: TTabSheet
+      Caption = 'Module'
+      ClientHeight = 224
+      ClientWidth = 392
+      object Label1: TLabel
+        Left = 20
+        Height = 14
+        Top = 39
+        Width = 28
+        Caption = 'Name'
+        ParentColor = False
+      end
+      object Label2: TLabel
+        Left = 20
+        Height = 14
+        Top = 127
+        Width = 56
+        Caption = 'Namespace'
+        ParentColor = False
+      end
+      object edtName: TEdit
+        Left = 20
+        Height = 23
+        Top = 55
+        Width = 344
+        Anchors = [akTop, akLeft, akRight]
+        TabOrder = 0
+        Text = 'edtName'
+      end
+      object edtNamespace: TEdit
+        Left = 20
+        Height = 23
+        Top = 143
+        Width = 344
+        Anchors = [akTop, akLeft, akRight]
+        TabOrder = 1
+        Text = 'edtNamespace'
+      end
+    end
+  end
+  object AL: TActionList
+    left = 115
+    top = 126
+    object actOK: TAction
+      Caption = 'OK'
+      DisableIfNoHandler = True
+      OnExecute = actOKExecute
+      OnUpdate = actOKUpdate
+    end
+  end
+end

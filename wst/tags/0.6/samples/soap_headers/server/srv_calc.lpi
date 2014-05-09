@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="\"/>
+    <Version Value="6"/>
+    <General>
+      <Flags>
+        <MainUnitHasUsesSectionForAllUnits Value="False"/>
+        <MainUnitHasCreateFormStatements Value="False"/>
+        <MainUnitHasTitleStatement Value="False"/>
+      </Flags>
+      <SessionStorage Value="InProjectDir"/>
+      <MainUnit Value="0"/>
+      <IconPath Value="./"/>
+      <TargetFileExt Value=".exe"/>
+      <Title Value="Web Service Toolkit - &quot;CalcService&quot; Server sample"/>
+    </General>
+    <VersionInfo>
+      <ProjectVersion Value=""/>
+    </VersionInfo>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="1">
+      <Item1>
+        <PackageName Value="indylaz"/>
+      </Item1>
+    </RequiredPackages>
+    <Units Count="5">
+      <Unit0>
+        <Filename Value="srv_calc.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="srv_calc"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="calcservice_proxy.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="calcservice_proxy"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="calcservice.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="calcservice"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="calcservice_binder.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="calcservice_binder"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="calcservice_imp.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="calcservice_imp"/>
+      </Unit4>
+    </Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="5"/>
+    <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="srv_calc"/>
+    </Target>
+    <SearchPaths>
+      <IncludeFiles Value="..\..\..\"/>
+      <OtherUnitFiles Value="..\..\..\"/>
+      <UnitOutputDirectory Value="obj"/>
+    </SearchPaths>
+    <CodeGeneration>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
+    <Linking>
+      <Debugging>
+        <UseLineInfoUnit Value="False"/>
+        <StripSymbols Value="True"/>
+      </Debugging>
+      <LinkSmart Value="True"/>
+    </Linking>
+    <Other>
+      <CustomOptions Value="-dINDY_10
+"/>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+</CONFIG>

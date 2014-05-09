@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<schema xmlns:tns="class_headerblock_derived" xmlns:wst="urn:wst_base" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="class_headerblock_derived">
+  
+  <xsd:complexType name="TEmptyHeader" wst:wst_headerBlock="true" />
+  
+  <xsd:complexType name="TSampleHeader" wst:wst_headerBlock="true">
+    <xsd:sequence>
+      <xsd:element name="intField" type="xsd:int"/>
+      <xsd:element name="strField" type="xsd:string"/>
+      <xsd:element name="floatField" type="xsd:float"/>
+    </xsd:sequence>
+    <xsd:attribute use="required" name="strAtt" type="xsd:string"/>
+    <xsd:attribute use="required" name="intAtt" type="xsd:int"/>
+  </xsd:complexType>
+</schema>

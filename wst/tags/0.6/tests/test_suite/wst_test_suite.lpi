@@ -1,0 +1,274 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="9"/>
+    <PathDelim Value="\"/>
+    <General>
+      <Flags>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
+      <SessionStorage Value="InProjectDir"/>
+      <MainUnit Value="0"/>
+    </General>
+    <BuildModes Count="1">
+      <Item1 Name="default" Default="True"/>
+    </BuildModes>
+    <PublishOptions>
+      <Version Value="2"/>
+      <DestinationDirectory Value="$(TestDir)\publishedproject\"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <CommandLineParams Value="--suite=DataFilter"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <Units Count="42">
+      <Unit0>
+        <Filename Value="wst_test_suite.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wst_test_suite"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="testformatter_unit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="testformatter_unit"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="..\..\server_service_soap.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="server_service_soap"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="..\..\soap_formatter.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="soap_formatter"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="..\..\base_binary_formatter.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="base_binary_formatter"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="..\..\base_service_intf.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="base_service_intf"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="..\..\base_soap_formatter.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="base_soap_formatter"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="..\..\binary_formatter.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="binary_formatter"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="..\..\binary_streamer.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="binary_streamer"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="..\..\server_binary_formatter.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="server_binary_formatter"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="..\..\metadata_repository.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="metadata_repository"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="testmetadata_unit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="testmetadata_unit"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="..\..\ws_helper\metadata_generator.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="metadata_generator"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="..\..\metadata_wsdl.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="metadata_wsdl"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="..\..\server_service_intf.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="server_service_intf"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="..\..\base_xmlrpc_formatter.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="base_xmlrpc_formatter"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="..\..\wst_fpc_xml.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wst_fpc_xml"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="test_utilities.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_utilities"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="..\..\server_service_xmlrpc.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="server_service_xmlrpc"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="test_parsers.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_parsers"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="..\..\ws_helper\wsdl_generator.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wsdl_generator"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="..\..\ws_helper\xsd_generator.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="xsd_generator"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="..\..\ws_helper\xsd_consts.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="xsd_consts"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="..\..\ws_helper\wsdl_parser.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wsdl_parser"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="..\..\base_json_formatter.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="base_json_formatter"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="test_support.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_support"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="..\..\basex_encode.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="basex_encode"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="test_basex_encode.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_basex_encode"/>
+      </Unit27>
+      <Unit28>
+        <Filename Value="..\..\json_formatter.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="json_formatter"/>
+      </Unit28>
+      <Unit29>
+        <Filename Value="..\..\server_service_json.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="server_service_json"/>
+      </Unit29>
+      <Unit30>
+        <Filename Value="test_json.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_json"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="test_generators.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_generators"/>
+      </Unit31>
+      <Unit32>
+        <Filename Value="test_suite_utils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_suite_utils"/>
+      </Unit32>
+      <Unit33>
+        <Filename Value="test_std_cursors.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_std_cursors"/>
+      </Unit33>
+      <Unit34>
+        <Filename Value="test_rtti_filter.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_rtti_filter"/>
+      </Unit34>
+      <Unit35>
+        <Filename Value="test_wst_cursors.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_wst_cursors"/>
+      </Unit35>
+      <Unit36>
+        <Filename Value="test_generators_runtime.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_generators_runtime"/>
+      </Unit36>
+      <Unit37>
+        <Filename Value="test_soap_specific.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_soap_specific"/>
+      </Unit37>
+      <Unit38>
+        <Filename Value="test_date_utils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_date_utils"/>
+      </Unit38>
+      <Unit39>
+        <Filename Value="test_filter.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_filter"/>
+      </Unit39>
+      <Unit40>
+        <Filename Value="..\..\filter_intf.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="filter_intf"/>
+      </Unit40>
+      <Unit41>
+        <Filename Value="..\..\same_process_protocol.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="same_process_protocol"/>
+      </Unit41>
+    </Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="9"/>
+    <PathDelim Value="\"/>
+    <SearchPaths>
+      <IncludeFiles Value="..\.."/>
+      <Libraries Value="..\.."/>
+      <OtherUnitFiles Value="..\..;..\..\ws_helper;..\..\wst_rtti_filter;..\..\fcl-json\src"/>
+      <UnitOutputDirectory Value="obj"/>
+    </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <IncludeAssertionCode Value="True"/>
+      </SyntaxOptions>
+    </Parsing>
+    <CodeGeneration>
+      <Checks>
+        <OverflowChecks Value="True"/>
+      </Checks>
+    </CodeGeneration>
+    <Linking>
+      <Debugging>
+        <GenerateDebugInfo Value="True"/>
+      </Debugging>
+    </Linking>
+    <Other>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
+      <CustomOptions Value="-Xi"/>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+</CONFIG>

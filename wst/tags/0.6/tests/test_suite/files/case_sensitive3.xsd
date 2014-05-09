@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <xsd:schema xmlns:n="urn:wst-test" 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  xmlns:s="urn:wst-test"
+  targetNamespace="urn:wst-test3">
+  
+    <xsd:import
+      namespace = "urn:wst-test"
+      schemaLocation = "case_sensitive2.xsd"
+    />
+  
+    <xsd:simpleType name="TypeA">
+      <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+  
+    <xsd:simpleType name="TYPEA">
+      <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+   
+    <xsd:complexType name="CompoundType">
+	    <xsd:sequence>
+		    <xsd:element name="f1" type="s:SampleType" />
+		    <xsd:element name="f2" type="s:SAMPLETYPE" />
+        
+		    <xsd:element name="f3" type="n:TypeA" />
+		    <xsd:element name="f4" type="n:TYPEA" />
+	    </xsd:sequence>
+    </xsd:complexType>
+       
+</xsd:schema>

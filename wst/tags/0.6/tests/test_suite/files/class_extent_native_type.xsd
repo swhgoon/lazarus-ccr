@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<schema xmlns:tns="class_extent_native_type" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="class_extent_native_type">
+
+  <xsd:complexType name="TExtendString">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+        <xsd:attribute use="required" name="intAtt" type="xsd:int"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="TExtendBase64String">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:base64Binary">
+        <xsd:attribute use="required" name="strAtt" type="xsd:string"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  
+</schema>
