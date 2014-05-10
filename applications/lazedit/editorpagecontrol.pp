@@ -683,11 +683,12 @@ var
   Attr: LongInt;
 begin
   try
-    Attr := FileGetAttrUTF8(Utf8Fn);
+    {$ifdef windows}
     //TFileStreamUtf8.Create fails on hidden files on Windows,
     //because it uses FILE_ATTRIBUTE_NORMAL
     //see http://msdn.microsoft.com/en-us/library/windows/desktop/aa363858%28v=vs.85%29.aspx
-    {$ifdef windows}
+    Attr := FileGetAttrUTF8(Utf8Fn);
+    if (Attr = feInvalidHandle) then Attr := 0;
     if ((Attr and faHidden) = faHidden) then FileSetAttrUtf8(Utf8Fn, Attr and (not faHidden));
     {$endif}
     Lines.SaveToFile(Utf8Fn);
