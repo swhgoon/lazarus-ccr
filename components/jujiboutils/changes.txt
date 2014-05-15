@@ -3,6 +3,10 @@ JUJIBOUTILS
 
 Note: Lazarus > 1.0 required
 
+Current
+--------------------------------------------------
+2014-05-15 Fixed: Avoid updating wrong field/record because dataset scrolling
+
 
 Version 2.0
 --------------------------------------------------

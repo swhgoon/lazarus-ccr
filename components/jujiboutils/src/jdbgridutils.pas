@@ -36,6 +36,8 @@ type
     Field: TField;
     updated: boolean;
     fMaxLength: integer;
+    oldValue: String;
+    EditingFieldName: String;
     procedure myEditEnter(Sender: TObject);
     procedure myEditOnEditingDone(Sender: TObject);
     procedure OnKeyPress(Sender: TObject; var key: char);
@@ -57,6 +59,8 @@ type
     updated: boolean;
     theValue: TDateTime;
     fFormat: string;
+    oldValue: TDateTime;
+    EditingFieldName: String;
     function getFormat: string;
     function EditText: string;
     procedure myEditEnter(Sender: TObject);
@@ -87,6 +91,8 @@ type
     updated: boolean;
     theValue: TTime;
     fFormat: string;
+    oldValue: TTime;
+    EditingFieldName: String;
     function getFormat: string;
     procedure myEditEnter(Sender: TObject);
     procedure myEditOnEditingDone(Sender: TObject);
@@ -113,6 +119,8 @@ type
     updated: boolean;
     theValue: TDateTime;
     fFormat: string;
+    oldValue: TDateTime;
+    EditingFieldName: String;
     function getFormat: string;
     procedure myEditEnter(Sender: TObject);
     procedure myEditOnEditingDone(Sender: TObject);
@@ -141,6 +149,8 @@ type
     theValue: integer;
     updated: boolean;
     Field: TField;
+    oldValue: integer;
+    EditingFieldName: String;
     procedure myEditOnEnter(Sender: TObject);
     procedure OnKeyPress(Sender: TObject; var key: char);
     procedure OnKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
@@ -164,6 +174,8 @@ type
     theValue: double;
     fDecimals: integer;
     fEFormat: string;
+    oldValue: double;
+    EditingFieldName: String;
     function getDecimals: integer;
     procedure myEditOnEnter(Sender: TObject);
     procedure myEditOnEditingDone(Sender: TObject);
@@ -203,12 +215,16 @@ begin
   CellEditor.MaxLength := fMaxLength;
   updated := False;
   CellEditor.SelectAll;
+  oldValue:= Field.AsString;
+  EditingFieldName:= Field.FieldName;
 end;
 
 procedure TJDbGridStringCtrl.myEditOnEditingDone(Sender: TObject);
 begin
   if not Assigned(Field) or not Assigned(Field.Dataset) or not Field.DataSet.Active then
     exit;
+  if (oldValue <> Field.AsString) or (EditingFieldName <> Field.FieldName) then
+    exit; // avoid update wrong record/field because dataset scrolling
   if (not updated) then
   begin
     if CellEditor.Text <> Field.AsString then
@@ -307,6 +323,8 @@ begin
   CellEditor.OnKeyDown := @OnKeyDown;
   theValue := Field.AsDateTime;
   updated := False;
+  oldValue:= Field.AsDateTime;
+  EditingFieldName:= Field.FieldName;
   CellEditor.SelectAll;
 end;
 
@@ -314,8 +332,8 @@ procedure TJDbGridDateTimeCtrl.myEditOnEditingDone(Sender: TObject);
 begin
   if not Assigned(Field) or not Assigned(Field.Dataset) or not Field.DataSet.Active then
     exit;
-  if not Assigned(Field) or not Assigned(Field.Dataset) or not Field.DataSet.Active then
-    exit;
+  if (oldValue <> Field.AsDateTime) or (EditingFieldName <> Field.FieldName) then
+    exit; // avoid update wrong record/field because dataset scrolling
   if Length(CellEditor.Caption) = 0 then
   begin
     if Field.Value <> Null then
@@ -538,6 +556,8 @@ begin
   CellEditor.OnKeyDown := @OnKeyDown;
   theValue := Field.AsDateTime;
   updated := False;
+  oldValue:= Field.AsDateTime;
+  EditingFieldName:= Field.FieldName;
   CellEditor.SelectAll;
 end;
 
@@ -545,6 +565,8 @@ procedure TJDbGridTimeCtrl.myEditOnEditingDone(Sender: TObject);
 begin
   if not Assigned(Field) or not Assigned(Field.Dataset) or not Field.DataSet.Active then
     exit;
+  if (oldValue <> Field.AsDateTime) or (EditingFieldName <> Field.FieldName) then
+    exit; // avoid update wrong record/field because dataset scrolling
   if Length(CellEditor.Caption) = 0 then
   begin
     if Field.Value <> Null then
@@ -728,6 +750,8 @@ begin
   CellEditor.OnKeyDown := @OnKeyDown;
   theValue := Field.AsDateTime;
   updated := False;
+  oldValue:= Field.AsDateTime;
+  EditingFieldName:= Field.FieldName;
   CellEditor.SelectAll;
 end;
 
@@ -735,6 +759,8 @@ procedure TJDbGridDateCtrl.myEditOnEditingDone(Sender: TObject);
 begin
   if not Assigned(Field) or not Assigned(Field.Dataset) or not Field.DataSet.Active then
     exit;
+  if (oldValue <> Field.AsDateTime) or (EditingFieldName <> Field.FieldName) then
+    exit; // avoid update wrong record/field because dataset scrolling
   if Length(CellEditor.Caption) = 0 then
   begin
     if Field.Value <> Null then
@@ -960,6 +986,8 @@ begin
   CellEditor.OnKeyDown := @OnKeyDown;
   theValue := Field.AsFloat;
   updated := False;
+  oldValue:= Field.AsFloat;
+  EditingFieldName:= Field.FieldName;
   CellEditor.SelectAll;
 end;
 
@@ -967,6 +995,8 @@ procedure TJDbGridDoubleCtrl.myEditOnEditingDone(Sender: TObject);
 begin
   if not Assigned(Field) or not Assigned(Field.Dataset) or not Field.DataSet.Active then
     exit;
+  if (oldValue <> Field.AsFloat) or (EditingFieldName <> Field.FieldName) then
+    exit; // avoid update wrong record/field because dataset scrolling
   if IsValidFloat(CellEditor.Caption) then
   begin
     if (not updated) then
@@ -1111,6 +1141,8 @@ begin
   CellEditor.OnKeyPress := @OnKeyPress;  // Recuperamos el control :-p
   CellEditor.OnKeyDown := @OnKeyDown;
   theValue := Field.AsInteger;
+  oldValue:= Field.AsInteger;
+  EditingFieldName:= Field.FieldName;
   CellEditor.SelectAll;
   updated := False;
 end;
@@ -1164,6 +1196,8 @@ procedure TJDbGridIntegerCtrl.myEditOnEditingDone(Sender: TObject);
 begin
   if not Assigned(Field) or not Assigned(Field.Dataset) or not Field.DataSet.Active then
     exit;
+  if (oldValue <> Field.AsInteger) or (EditingFieldName <> Field.FieldName) then
+    exit; // avoid update wrong record/field because dataset scrolling
   if IsValidInteger(CellEditor.Caption) then
   begin
     if (not updated) then
