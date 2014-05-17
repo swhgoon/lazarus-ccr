@@ -287,13 +287,13 @@ const
    SPECIAL_SIMPLE_TYPES_COUNT = 5 {$IFDEF WST_UNICODESTRING} + 1 {$ENDIF WST_UNICODESTRING};
      SPECIAL_SIMPLE_TYPES : Array[0..Pred(SPECIAL_SIMPLE_TYPES_COUNT)] Of array[0..2] of string = (
           ('Currency', 'TComplexCurrencyContentRemotable', 'decimal'),
+{$IFDEF WST_UNICODESTRING}
+          ('UnicodeString', 'TComplexUnicodeStringContentRemotable', 'string'),
+{$ENDIF WST_UNICODESTRING}
           ('string', 'TComplexStringContentRemotable', 'string'),
           ('WideString', 'TComplexWideStringContentRemotable', 'string'),
           ('AnsiChar', 'TComplexAnsiCharContentRemotable', 'string'),
           ('WideChar', 'TComplexWideCharContentRemotable', 'string')
-{$IFDEF WST_UNICODESTRING}
-         ,('UnicodeString', 'TComplexUnicodeStringContentRemotable', 'string')
-{$ENDIF WST_UNICODESTRING}
      );
 
 procedure AddSystemSymbol(
