@@ -23,6 +23,13 @@ uses
 {$ENDIF}
   pastree, pascal_parser_intf, xsd_parser, wsdl_parser, test_suite_utils, wst_types;
 
+const
+  STRING_TYPE_NAME =
+    {$IFDEF WST_UNICODESTRING}
+        'UnicodeString';
+    {$ELSE WST_UNICODESTRING}
+        'string';
+    {$ENDIF WST_UNICODESTRING}
 type
 
   { TTest_CustomXsdParser }
@@ -787,7 +794,7 @@ begin
       CheckIs(elt,TPasClassType);
       clsType := elt as TPasClassType;
         CheckNotNull(clsType.AncestorType,'AncestorType is null');
-        CheckSame(tr.FindElementNS('TComplexStringContentRemotable',sXSD_NS),clsType.AncestorType,clsType.AncestorType.Name);
+        CheckSame(tr.FindElementNS('TComplexUnicodeStringContentRemotable',sXSD_NS),clsType.AncestorType,clsType.AncestorType.Name);
 
         prpLs.Clear();
         for i := 0 to Pred(clsType.Members.Count) do begin
@@ -2256,8 +2263,8 @@ begin
       CheckNotNull(elt,s_class_name);       
       CheckIs(elt,TPasClassType);
       clsType := elt as TPasClassType;
-      CheckProperty('one_prop','one-prop','string',ptField);
-      CheckProperty('one_two_prop','one-two-prop','string',ptAttribute);
+      CheckProperty('one_prop','one-prop',STRING_TYPE_NAME,ptField);
+      CheckProperty('one_two_prop','one-two-prop',STRING_TYPE_NAME,ptAttribute);
   finally
     tr.Free();
   end;   
@@ -2490,7 +2497,7 @@ begin
       CheckEquals(x_targetNamespace,tr.GetNameSpace(elt as TPasType));
       CheckIs(elt,TPasAliasType);
       CheckNotNull(TPasAliasType(elt).DestType,'Date.DestType');
-      CheckEquals('string',TPasAliasType(elt).DestType.Name);
+      CheckEquals(STRING_TYPE_NAME,TPasAliasType(elt).DestType.Name);
 
     elt := tr.FindElement('String');
       CheckNotNull(elt,'String');
@@ -2498,7 +2505,7 @@ begin
       CheckEquals(x_targetNamespace,tr.GetNameSpace(elt as TPasType));
       CheckIs(elt,TPasAliasType);
       CheckNotNull(TPasAliasType(elt).DestType,'String.DestType');
-      CheckEquals('string',TPasAliasType(elt).DestType.Name);
+      CheckEquals(STRING_TYPE_NAME,TPasAliasType(elt).DestType.Name);
 
     elt := tr.FindElement('Boolean');
       CheckNotNull(elt,'Boolean');
@@ -2506,7 +2513,7 @@ begin
       CheckEquals(x_targetNamespace,tr.GetNameSpace(elt as TPasType));
       CheckIs(elt,TPasAliasType);
       CheckNotNull(TPasAliasType(elt).DestType,'Boolean.DestType');
-      CheckEquals('string',TPasAliasType(elt).DestType.Name);
+      CheckEquals(STRING_TYPE_NAME,TPasAliasType(elt).DestType.Name);
 
     elt := tr.FindElement(x_complexType_SampleClassType);
       CheckNotNull(elt,x_complexType_SampleClassType);
@@ -2579,7 +2586,7 @@ begin
       CheckEquals(x_targetNamespace,tr.GetNameSpace(elt as TPasType));
       CheckIs(elt,TPasAliasType);
       CheckNotNull(TPasAliasType(elt).DestType,'SampleType.DestType');
-      CheckEquals('string',TPasAliasType(elt).DestType.Name);
+      CheckEquals(STRING_TYPE_NAME,TPasAliasType(elt).DestType.Name);
 
     elt := tr.FindElement('SAMPLETYPE');
       CheckNotNull(elt,'SAMPLETYPE');
@@ -2587,7 +2594,7 @@ begin
       CheckEquals(x_targetNamespace,tr.GetNameSpace(elt as TPasType));
       CheckIs(elt,TPasAliasType);
       CheckNotNull(TPasAliasType(elt).DestType,'SAMPLETYPE.DestType');
-      CheckEquals('string',TPasAliasType(elt).DestType.Name);
+      CheckEquals(STRING_TYPE_NAME,TPasAliasType(elt).DestType.Name);
 
     elt := tr.FindElement(x_complexType_SampleClassType);
       CheckNotNull(elt,x_complexType_SampleClassType);
@@ -2655,7 +2662,7 @@ begin
       CheckEquals('urn:wst-test',tr.GetNameSpace(elt as TPasType));
       CheckIs(elt,TPasAliasType);
       CheckNotNull(TPasAliasType(elt).DestType,'SampleType.DestType');
-      CheckEquals('string',TPasAliasType(elt).DestType.Name);
+      CheckEquals(STRING_TYPE_NAME,TPasAliasType(elt).DestType.Name);
 
     elt := tr.FindElement('SAMPLETYPE');
       CheckNotNull(elt,'SAMPLETYPE');
@@ -2663,7 +2670,7 @@ begin
       CheckEquals('urn:wst-test',tr.GetNameSpace(elt as TPasType));
       CheckIs(elt,TPasAliasType);
       CheckNotNull(TPasAliasType(elt).DestType,'SAMPLETYPE.DestType');
-      CheckEquals('string',TPasAliasType(elt).DestType.Name);
+      CheckEquals(STRING_TYPE_NAME,TPasAliasType(elt).DestType.Name);
 
     //-----------------------------------------
     mdl := tr.FindModule(CONST_NS);
@@ -2679,7 +2686,7 @@ begin
       CheckEquals(CONST_NS,tr.GetNameSpace(elt as TPasType));
       CheckIs(elt,TPasAliasType);
       CheckNotNull(TPasAliasType(elt).DestType,'TypeA.DestType');
-      CheckEquals('string',TPasAliasType(elt).DestType.Name);
+      CheckEquals(STRING_TYPE_NAME,TPasAliasType(elt).DestType.Name);
 
     elt := tr.FindElement('TYPEA');
       CheckNotNull(elt,'TYPEA');
@@ -2687,7 +2694,7 @@ begin
       CheckEquals(CONST_NS,tr.GetNameSpace(elt as TPasType));
       CheckIs(elt,TPasAliasType);
       CheckNotNull(TPasAliasType(elt).DestType,'TYPEA.DestType');
-      CheckEquals('string',TPasAliasType(elt).DestType.Name);
+      CheckEquals(STRING_TYPE_NAME,TPasAliasType(elt).DestType.Name);
 
     elt := tr.FindElement('CompoundType');
       CheckNotNull(elt,'CompoundType');
@@ -3192,7 +3199,7 @@ begin
     arg := TPasArgument(mthType.Args[0]);
       CheckNotNull(arg);
       CheckEquals(LowerCase('AConstParam'), LowerCase(arg.Name));
-      CheckEquals(LowerCase('string'), LowerCase(arg.ArgType.Name));
+      CheckEquals(LowerCase(STRING_TYPE_NAME), LowerCase(arg.ArgType.Name));
     arg := TPasArgument(mthType.Args[1]);
       CheckNotNull(arg);
       CheckEquals(LowerCase('AOutParam'), LowerCase(arg.Name));
@@ -3245,7 +3252,7 @@ begin
       arg := TPasArgument(mthType.Args[0]);
         CheckNotNull(arg);
         CheckEquals(LowerCase('AConstParam'), LowerCase(arg.Name));
-        CheckEquals(LowerCase('string'), LowerCase(arg.ArgType.Name));
+        CheckEquals(LowerCase(STRING_TYPE_NAME), LowerCase(arg.ArgType.Name));
       arg := TPasArgument(mthType.Args[1]);
         CheckNotNull(arg);
         CheckEquals(LowerCase('AOutParam'), LowerCase(arg.Name));
@@ -3258,7 +3265,7 @@ begin
       CheckIs(mthType,TPasFunctionType);
         res := TPasFunctionType(mthType).ResultEl;
         CheckNotNull(res, 'Result');
-        CheckEquals(LowerCase('string'), LowerCase(res.ResultType.Name));
+        CheckEquals(LowerCase(STRING_TYPE_NAME), LowerCase(res.ResultType.Name));
       CheckEquals(2, mthType.Args.Count, 'Parameter count');
       arg := TPasArgument(mthType.Args[0]);
         CheckNotNull(arg);
@@ -3281,7 +3288,7 @@ begin
       arg := TPasArgument(mthType.Args[0]);
         CheckNotNull(arg);
         CheckEquals(LowerCase('AConstParam'), LowerCase(arg.Name));
-        CheckEquals(LowerCase('string'), LowerCase(arg.ArgType.Name));
+        CheckEquals(LowerCase(STRING_TYPE_NAME), LowerCase(arg.ArgType.Name));
       arg := TPasArgument(mthType.Args[1]);
         CheckNotNull(arg);
         CheckEquals(LowerCase('AOutParam'), LowerCase(arg.Name));
@@ -3334,7 +3341,7 @@ begin
       arg := TPasArgument(mthType.Args[0]);
         CheckNotNull(arg);
         CheckEquals(LowerCase('AConstParam'), LowerCase(arg.Name));
-        CheckEquals(LowerCase('string'), LowerCase(arg.ArgType.Name));
+        CheckEquals(LowerCase(STRING_TYPE_NAME), LowerCase(arg.ArgType.Name));
       arg := TPasArgument(mthType.Args[1]);
         CheckNotNull(arg);
         CheckEquals(LowerCase('AOutParam'), LowerCase(arg.Name));
@@ -3347,7 +3354,7 @@ begin
       CheckIs(mthType,TPasFunctionType);
         res := TPasFunctionType(mthType).ResultEl;
         CheckNotNull(res, 'Result');
-        CheckEquals(LowerCase('string'), LowerCase(res.ResultType.Name));
+        CheckEquals(LowerCase(STRING_TYPE_NAME), LowerCase(res.ResultType.Name));
       CheckEquals(2, mthType.Args.Count, 'Parameter count');
       arg := TPasArgument(mthType.Args[0]);
         CheckNotNull(arg);
@@ -3370,7 +3377,7 @@ begin
       arg := TPasArgument(mthType.Args[0]);
         CheckNotNull(arg);
         CheckEquals(LowerCase('AConstParam'), LowerCase(arg.Name));
-        CheckEquals(LowerCase('string'), LowerCase(arg.ArgType.Name));
+        CheckEquals(LowerCase(STRING_TYPE_NAME), LowerCase(arg.ArgType.Name));
       arg := TPasArgument(mthType.Args[1]);
         CheckNotNull(arg);
         CheckEquals(LowerCase('AOutParam'), LowerCase(arg.Name));
@@ -3479,7 +3486,7 @@ begin
       arg := TPasArgument(mthType.Args[0]);
         CheckNotNull(arg);
         CheckEquals(LowerCase('AInParam'), LowerCase(arg.Name));
-        CheckEquals(LowerCase('string'), LowerCase(arg.ArgType.Name));
+        CheckEquals(LowerCase(STRING_TYPE_NAME), LowerCase(arg.ArgType.Name));
       arg := TPasArgument(mthType.Args[1]);
         CheckNotNull(arg);
         CheckEquals(LowerCase('AInOutParam'), LowerCase(arg.Name));
@@ -3498,7 +3505,7 @@ begin
       arg := TPasArgument(mthType.Args[0]);
         CheckNotNull(arg);
         CheckEquals(LowerCase('AInParam'), LowerCase(arg.Name));
-        CheckEquals(LowerCase('string'), LowerCase(arg.ArgType.Name));
+        CheckEquals(LowerCase(STRING_TYPE_NAME), LowerCase(arg.ArgType.Name));
       arg := TPasArgument(mthType.Args[1]);
         CheckNotNull(arg);
         CheckEquals(LowerCase('AInOutParam'), LowerCase(arg.Name));
@@ -3549,7 +3556,7 @@ begin
       arg := TPasArgument(mthType.Args[0]);
         CheckNotNull(arg);
         CheckEquals(LowerCase('AConstParam'), LowerCase(arg.Name));
-        CheckEquals(LowerCase('string'), LowerCase(arg.ArgType.Name));
+        CheckEquals(LowerCase(STRING_TYPE_NAME), LowerCase(arg.ArgType.Name));
         CheckEquals('argConst',GetEnumName(TypeInfo(TArgumentAccess),Ord(arg.Access)),'AConstParam');
       arg := TPasArgument(mthType.Args[1]);
         CheckNotNull(arg);
@@ -3663,7 +3670,7 @@ begin
         CheckEquals('one-two-param',tr.GetExternalName(arg),'Param External Name');
       res := TPasFunctionType(mthType).ResultEl;
         CheckNotNull(res, 'Result');
-        CheckEquals(LowerCase('string'), LowerCase(res.ResultType.Name));
+        CheckEquals(LowerCase(STRING_TYPE_NAME), LowerCase(res.ResultType.Name));
   finally
     tr.Free();
   end;

@@ -1,18 +1,12 @@
-<schema targetNamespace="urn:wst-test" 
-  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-  xmlns:tns="urn:wst-test"
-  xmlns:ns3="uri-4"
-  xmlns:ns4="uri-5"
-  >
-  
-	<xsd:complexType name="TClassSampleType">
-		<xsd:sequence>
-			<xsd:element name="intField" type="xsd:int" ns3:a="1210" ns3:b="ns4:xx"/>
-			<xsd:element name="strField" type="xsd:string" default="azerty" ns3:a="xsd:int"/>
-			<xsd:element name="floatField" type="xsd:float"/>
-		</xsd:sequence>
-		<xsd:attribute name="strAtt" type="xsd:string" default="attribute azerty" use="required" ns3:a="optional"/>
-		<xsd:attribute name="intAtt" type="xsd:int" use="required"/>
-	</xsd:complexType>
-  
+<?xml version="1.0" encoding="utf-8"?>
+<schema xmlns:ns3="uri-4" xmlns:ns4="uri-5" xmlns:tns="urn:wst-test" xmlns:wst="urn:wst_base" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:wst-test">
+  <xsd:complexType name="TClassSampleType">
+    <xsd:sequence>
+      <xsd:element name="intField" type="xsd:int" ns3:a="1210" ns3:b="ns4:xx"/>
+      <xsd:element name="strField" type="xsd:string" ns3:a="xsd:int" default="azerty" wst:TypeHint="UnicodeString"/>
+      <xsd:element name="floatField" type="xsd:float"/>
+    </xsd:sequence>
+    <xsd:attribute use="required" name="strAtt" type="xsd:string" ns3:a="optional" default="attribute azerty" wst:TypeHint="UnicodeString"/>
+    <xsd:attribute use="required" name="intAtt" type="xsd:int"/>
+  </xsd:complexType>
 </schema>

@@ -6,10 +6,10 @@
   <xsd:complexType name="TSampleHeader" wst:wst_headerBlock="true">
     <xsd:sequence>
       <xsd:element name="intField" type="xsd:int"/>
-      <xsd:element name="strField" type="xsd:string"/>
+      <xsd:element name="strField" type="xsd:string" wst:TypeHint="UnicodeString"/>
       <xsd:element name="floatField" type="xsd:float"/>
     </xsd:sequence>
-    <xsd:attribute use="required" name="strAtt" type="xsd:string"/>
+    <xsd:attribute use="required" name="strAtt" type="xsd:string" wst:TypeHint="UnicodeString"/>
     <xsd:attribute use="required" name="intAtt" type="xsd:int"/>
   </xsd:complexType>
 </schema>
