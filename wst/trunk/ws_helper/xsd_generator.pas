@@ -1259,7 +1259,7 @@ procedure TBaseArrayRemotable_TypeHandler.Generate(
         ADocument : TDOMDocument
 );
 
-  function GetNameSpaceShortName(const ANameSpace : string):string;overload;
+  function GetNameSpaceSN(const ANameSpace : string):string;overload;
   begin
     Result := GetNameSpaceShortName(ANameSpace,GetSchemaNode(ADocument),GetOwner().GetPreferedShortNames());
   end;
@@ -1282,7 +1282,7 @@ begin
     Exit;
   if Assigned(typItm) then begin
     unitExternalName := GetTypeNameSpace(AContainer,typItm);
-    GetNameSpaceShortName(unitExternalName);
+    GetNameSpaceSN(unitExternalName);
     defSchemaNode := GetSchemaNode(ADocument) as TDOMElement;
 
     s := Format('%s:%s',[s_xs_short,s_complexType]);
@@ -1308,7 +1308,7 @@ begin
         DeclareAttributeOf_WST(propNode,s_WST_collection,'true');
       end;
       if Assigned(propTypItm) then begin
-        prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,propTypItm));//  AContainer.GetExternalName(propTypItm.Parent.Parent));
+        prop_ns_shortName := GetNameSpaceSN(GetTypeNameSpace(AContainer,propTypItm));//  AContainer.GetExternalName(propTypItm.Parent.Parent));
         propNode.SetAttribute(s_type,Format('%s:%s',[prop_ns_shortName,AContainer.GetExternalName(propTypItm)]));
         if propTypItm.InheritsFrom(TPasNativeSpecialSimpleType) then begin
           if GetRegistry().FindHelper(propTypItm,typeHelper) then
