@@ -277,7 +277,7 @@ const
           ('Qword', 'TComplexInt64UContentRemotable', 'unsignedLong'),
           ('Single', 'TComplexFloatSingleContentRemotable', 'float'),
           ('Double', 'TComplexFloatDoubleContentRemotable', 'double'),
-          ('Extended', 'TComplexFloatExtendedContentRemotable', 'decimal')
+          ('Extended', 'TComplexFloatExtendedContentRemotable', 'double')
         );
    BOXED_TYPES_COUNT = 2;
      BOXED_TYPES : Array[0..Pred(BOXED_TYPES_COUNT)] Of array[0..2] of string = (

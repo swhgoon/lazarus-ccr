@@ -143,13 +143,19 @@ function wst_FormatFloat(
 var
   s, frmt : string;
   prcsn : Integer;
+  decimal : Boolean;
 {$IFNDEF HAS_FORMAT_SETTINGS}
   i : PtrInt;
 {$ENDIF HAS_FORMAT_SETTINGS}
 begin
+  decimal := False;
   case GetTypeData(ATypeInfo)^.FloatType Of
+    ftCurr      :
+      begin
+        decimal := True;
+        frmt := '##############0.####';//15.4
+      end;
     ftSingle,
-    ftCurr,
     ftComp      : prcsn := 7;
     ftDouble,
     ftExtended  :
@@ -163,7 +169,8 @@ begin
     else
       prcsn := 7;
   end;
-  frmt := '#.' + StringOfChar('#',prcsn) + 'E-0';
+  if not decimal then
+    frmt := '#.' + StringOfChar('#',prcsn) + 'E-0';
 {$IFDEF HAS_FORMAT_SETTINGS}
   s := FormatFloat(frmt,AData,wst_FormatSettings);
 {$ELSE}
