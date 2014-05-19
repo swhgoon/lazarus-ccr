@@ -36,8 +36,8 @@ type
     Field: TField;
     updated: boolean;
     fMaxLength: integer;
-    EditingFieldNo: LongInt;
-    EditingRecNo: LongInt;
+    EditingFieldNo: longint;
+    EditingRecNo: longint;
     procedure myEditEnter(Sender: TObject);
     procedure myEditOnEditingDone(Sender: TObject);
     procedure OnKeyPress(Sender: TObject; var key: char);
@@ -59,8 +59,8 @@ type
     updated: boolean;
     theValue: TDateTime;
     fFormat: string;
-    EditingFieldNo: LongInt;
-    EditingRecNo: LongInt;
+    EditingFieldNo: longint;
+    EditingRecNo: longint;
     function getFormat: string;
     function EditText: string;
     procedure myEditEnter(Sender: TObject);
@@ -91,8 +91,8 @@ type
     updated: boolean;
     theValue: TTime;
     fFormat: string;
-    EditingFieldNo: LongInt;
-    EditingRecNo: LongInt;
+    EditingFieldNo: longint;
+    EditingRecNo: longint;
     function getFormat: string;
     procedure myEditEnter(Sender: TObject);
     procedure myEditOnEditingDone(Sender: TObject);
@@ -119,8 +119,8 @@ type
     updated: boolean;
     theValue: TDateTime;
     fFormat: string;
-    EditingFieldNo: LongInt;
-    EditingRecNo: LongInt;
+    EditingFieldNo: longint;
+    EditingRecNo: longint;
     function getFormat: string;
     procedure myEditEnter(Sender: TObject);
     procedure myEditOnEditingDone(Sender: TObject);
@@ -149,8 +149,8 @@ type
     theValue: integer;
     updated: boolean;
     Field: TField;
-    EditingFieldNo: LongInt;
-    EditingRecNo: LongInt;
+    EditingFieldNo: longint;
+    EditingRecNo: longint;
     procedure myEditOnEnter(Sender: TObject);
     procedure OnKeyPress(Sender: TObject; var key: char);
     procedure OnKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
@@ -174,8 +174,8 @@ type
     theValue: double;
     fDecimals: integer;
     fEFormat: string;
-    EditingFieldNo: LongInt;
-    EditingRecNo: LongInt;
+    EditingFieldNo: longint;
+    EditingRecNo: longint;
     function getDecimals: integer;
     procedure myEditOnEnter(Sender: TObject);
     procedure myEditOnEditingDone(Sender: TObject);
@@ -215,8 +215,8 @@ begin
   CellEditor.MaxLength := fMaxLength;
   updated := False;
   CellEditor.SelectAll;
-  EditingFieldNo:= Field.FieldNo;
-  EditingRecNo:= Field.DataSet.RecNo;
+  EditingFieldNo := Field.FieldNo;
+  EditingRecNo := Field.DataSet.RecNo;
 end;
 
 procedure TJDbGridStringCtrl.myEditOnEditingDone(Sender: TObject);
@@ -292,7 +292,6 @@ end;
 
 function TJDbGridStringCtrl.CanDefocus: boolean;
 begin
-  CellEditor.Visible := False;
   Result := True;
 end;
 
@@ -324,8 +323,8 @@ begin
   theValue := Field.AsDateTime;
   updated := False;
   CellEditor.SelectAll;
-  EditingFieldNo:= Field.FieldNo;
-  EditingRecNo:= Field.DataSet.RecNo;
+  EditingFieldNo := Field.FieldNo;
+  EditingRecNo := Field.DataSet.RecNo;
 end;
 
 procedure TJDbGridDateTimeCtrl.myEditOnEditingDone(Sender: TObject);
@@ -521,21 +520,17 @@ end;
 
 function TJDbGridDateTimeCtrl.CanDefocus: boolean;
 begin
-  if not updated then
-    Result := True
-  else
-  if CellEditor.Focused and (Length(CellEditor.Text) = 0) then
-    Result := True
-  else
-  if CellEditor.Focused and not
-    (IsValidDateTimeString(NormalizeDateTime(CellEditor.Caption, theValue))) then
-    Result := False
-  else
-    Result := True;
+  Result := True;
+  if not CellEditor.Focused then
+    exit;
+  if (Length(CellEditor.Text) = 0) then
+    exit;
+  Result := IsValidDateTimeString(NormalizeDateTime(CellEditor.Caption, theValue));
   if not Result then
-    ShowMessage(Format(SInvalidDateTime, [CellEditor.Text]))
-  else
-    CellEditor.Visible := False;
+  begin
+    ShowMessage(Format(SInvalidDateTime, [CellEditor.Text]));
+    CellEditor.Text := EditText;
+  end;
 end;
 
 { TJDbGridTimeCtrl }
@@ -557,8 +552,8 @@ begin
   theValue := Field.AsDateTime;
   updated := False;
   CellEditor.SelectAll;
-  EditingFieldNo:= Field.FieldNo;
-  EditingRecNo:= Field.DataSet.RecNo;
+  EditingFieldNo := Field.FieldNo;
+  EditingRecNo := Field.DataSet.RecNo;
 end;
 
 procedure TJDbGridTimeCtrl.myEditOnEditingDone(Sender: TObject);
@@ -715,21 +710,17 @@ end;
 
 function TJDbGridTimeCtrl.CanDefocus: boolean;
 begin
-  if not updated then
-    Result := True
-  else
-  if CellEditor.Focused and (Length(CellEditor.Text) = 0) then
-    Result := True
-  else
-  if CellEditor.Focused and not
-    (IsValidTimeString(NormalizeTime(CellEditor.Caption, theValue))) then
-    Result := False
-  else
-    Result := True;
+  Result := True;
+  if not CellEditor.Focused then
+    exit;
+  if (Length(CellEditor.Text) = 0) then
+    exit;
+  Result := IsValidDateTimeString(NormalizeTime(CellEditor.Caption, theValue));
   if not Result then
-    ShowMessage(Format(SInvalidTime, [CellEditor.Text]))
-  else
-    CellEditor.Visible := False;
+  begin
+    ShowMessage(Format(SInvalidTime, [CellEditor.Text]));
+    CellEditor.Text := Field.AsString;
+  end;
 end;
 
 { TJDbGridDateCtrl }
@@ -751,8 +742,8 @@ begin
   theValue := Field.AsDateTime;
   updated := False;
   CellEditor.SelectAll;
-  EditingFieldNo:= Field.FieldNo;
-  EditingRecNo:= Field.DataSet.RecNo;
+  EditingFieldNo := Field.FieldNo;
+  EditingRecNo := Field.DataSet.RecNo;
 end;
 
 procedure TJDbGridDateCtrl.myEditOnEditingDone(Sender: TObject);
@@ -948,21 +939,17 @@ end;
 
 function TJDbGridDateCtrl.CanDefocus: boolean;
 begin
-  if not updated then
-    Result := True
-  else
-  if CellEditor.Focused and (Length(CellEditor.Text) = 0) then
-    Result := True
-  else
-  if CellEditor.Focused and not
-    (IsValidDateTimeString(NormalizeDateTime(CellEditor.Caption, theValue))) then
-    Result := False
-  else
-    Result := True;
+  Result := True;
+  if not CellEditor.Focused then
+    exit;
+  if (Length(CellEditor.Text) = 0) then
+    exit;
+  Result := IsValidDateTimeString(NormalizeDateTime(CellEditor.Caption, theValue));
   if not Result then
-    ShowMessage(Format(SInvalidDate, [CellEditor.Text]))
-  else
-    CellEditor.Visible := False;
+  begin
+    ShowMessage(Format(SInvalidDate, [CellEditor.Text]));
+    CellEditor.Text := Field.AsString;
+  end;
 end;
 
 { TJDbGridDoubleCtrl }
@@ -987,8 +974,8 @@ begin
   theValue := Field.AsFloat;
   updated := False;
   CellEditor.SelectAll;
-  EditingFieldNo:= Field.FieldNo;
-  EditingRecNo:= Field.DataSet.RecNo;
+  EditingFieldNo := Field.FieldNo;
+  EditingRecNo := Field.DataSet.RecNo;
 end;
 
 procedure TJDbGridDoubleCtrl.myEditOnEditingDone(Sender: TObject);
@@ -1091,7 +1078,11 @@ end;
 function TJDbGridDoubleCtrl.ScaleTo(const AValue: double;
   const NDecimals: integer): double;
 begin
-  Result := round(AValue * power(10, NDecimals)) / power(10, NDecimals);
+  // rounding halfup
+  if AValue > 0 then
+    Result := trunc(AValue * power(10, NDecimals) + 0.5) / power(10, NDecimals)
+  else
+    Result := trunc(AValue * power(10, NDecimals) - 0.5) / power(10, NDecimals);
 end;
 
 constructor TJDbGridDoubleCtrl.Create;
@@ -1121,14 +1112,18 @@ end;
 
 function TJDbGridDoubleCtrl.CanDefocus: boolean;
 begin
-  if CellEditor.Focused then
-    Result := IsValidFloat(CellEditor.Text)
-  else
-    Result := True;
+  Result := True;
+  if not CellEditor.Focused then
+    exit;
+  Result := IsValidFloat(CellEditor.Text);
   if not Result then
-    ShowMessage(Format(SInvalidNumber, [CellEditor.Text]))
+  begin
+    ShowMessage(Format(SInvalidNumber, [CellEditor.Text]));
+    if Length(fEFormat) > 0 then
+    CellEditor.Text := FormatFloat(fEFormat, Field.AsFloat)
   else
-    CellEditor.Visible := False;
+    CellEditor.Text := Field.AsString;
+  end;
 end;
 
 { TJDbGridIntegerCtrl }
@@ -1143,8 +1138,8 @@ begin
   theValue := Field.AsInteger;
   CellEditor.SelectAll;
   updated := False;
-  EditingFieldNo:= Field.FieldNo;
-  EditingRecNo:= Field.DataSet.RecNo;
+  EditingFieldNo := Field.FieldNo;
+  EditingRecNo := Field.DataSet.RecNo;
 end;
 
 procedure TJDbGridIntegerCtrl.OnKeyPress(Sender: TObject; var key: char);
@@ -1252,14 +1247,15 @@ end;
 
 function TJDbGridIntegerCtrl.CanDefocus: boolean;
 begin
-  if CellEditor.Focused then
-    Result := IsValidInteger(CellEditor.Text)
-  else
-    Result := True;
+  Result := True;
+  if not CellEditor.Focused then
+    exit;
+  Result := IsValidInteger(CellEditor.Text);
   if not Result then
-    ShowMessage(Format(SInvalidNumber, [CellEditor.Text]))
-  else
-    CellEditor.Visible := False;
+  begin
+    ShowMessage(Format(SInvalidNumber, [CellEditor.Text]));
+    CellEditor.Text := Field.AsString;
+  end;
 end;
 
 end.

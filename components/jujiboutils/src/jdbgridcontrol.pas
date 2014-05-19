@@ -189,6 +189,7 @@ begin
           ftString:
             Result := stringDbGridControl.Editor(Self, Columns[Column - 1].MaxLength);
         end;
+        Result.Visible := False;
       end;
     end;
   end;
@@ -203,12 +204,12 @@ end;
 procedure TJDBGridControl.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: integer);
 begin
-  if integerDbGridControl.CanDefocus and doubleDbGridControl.CanDefocus and
+  if not (integerDbGridControl.CanDefocus and doubleDbGridControl.CanDefocus and
     dateTimeDbGridControl.CanDefocus and stringDbGridControl.CanDefocus and
-    dateDbGridControl.CanDefocus and timeDbGridControl.CanDefocus then
-    inherited MouseDown(Button, Shift, X, Y)
+    dateDbGridControl.CanDefocus and timeDbGridControl.CanDefocus) then
+    abort
   else
-    abort;
+    inherited MouseDown(Button, Shift, X, Y);
 end;
 
 procedure TJDBGridControl.KeyDown(var Key: word; Shift: TShiftState);
