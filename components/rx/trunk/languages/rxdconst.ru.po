@@ -301,7 +301,7 @@ msgstr "Применить"
 
 #: rxdconst.srxdbgridselapplyhint
 msgid "Apply current columns setings"
-msgstr ""
+msgstr "Применить текущие параметры столбцов таблицы"
 
 #: rxdconst.srxdbgridselcolcaption
 msgid "Grid columns"
