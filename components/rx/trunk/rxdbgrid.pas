@@ -4083,7 +4083,7 @@ var
   P_26: TBookmark;
   {$ENDIF}
   P: TBookmark;
-  i, cnt: integer;
+  i, cnt, K: integer;
   APresent: boolean;
 
   DHL:THackDataLink;
@@ -4163,10 +4163,11 @@ begin
   begin
     RCol:=TRxColumn(Columns[i]);
     if RCol.Footer.ValueType = fvtCount then
-        RCol.Footer.FCountRec:=Cnt; //( DHS.FieldByName(RCol.Footer.FieldName).Value);
+        RCol.Footer.FCountRec:=Cnt;
   end;
 
-  DHS.RecNo := Min(DHL.RecordCount + SavePos + 1, DHS.RecNo);
+  DHS.RecNo := Min(DHL.RecordCount + SavePos - 1, DHS.RecNo);
+  K:=DHS.RecNo;
 //  DHS.RecNo := SavePos;
 
   while not DHS.BOF do

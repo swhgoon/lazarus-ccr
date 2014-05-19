@@ -121,6 +121,7 @@ var
   P:TBookMark;
   R:boolean;
 begin
+  { TODO -oalexs : Необходимо переделать поиск по колонке - искать всегда по строковому представлению. Иначе не ищет по дате-времени }
   if Edit1.Text<>'' then
   begin
     try

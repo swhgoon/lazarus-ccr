@@ -161,6 +161,8 @@ resourcestring
   sRxDbGridSelColCaption   = 'Grid columns';
   sRxDbGridSelColHint1     = 'Move selected column up';
   sRxDbGridSelColHint2     = 'Move selected column down';
+  sRxDbGridSelApplyCaption = 'Apply';
+  sRxDbGridSelApplyHint    = 'Apply current columns setings';
 
   //seldsfrm
   sRxBorrowStructure       = 'Borrow structure...';

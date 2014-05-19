@@ -292,6 +292,15 @@ msgstr ""
 msgid "Text to find"
 msgstr ""
 
+#: rxdconst.srxdbgridselapplycaption
+msgctxt "rxdconst.srxdbgridselapplycaption"
+msgid "Apply"
+msgstr ""
+
+#: rxdconst.srxdbgridselapplyhint
+msgid "Apply current columns setings"
+msgstr ""
+
 #: rxdconst.srxdbgridselcolcaption
 msgid "Grid columns"
 msgstr ""
@@ -333,6 +342,7 @@ msgid "Fill fields in SortField property"
 msgstr ""
 
 #: rxdconst.srxfilterformapply
+msgctxt "rxdconst.srxfilterformapply"
 msgid "Apply"
 msgstr ""
 

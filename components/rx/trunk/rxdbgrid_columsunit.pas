@@ -37,20 +37,24 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, CheckLst,
-  StdCtrls, Buttons, ButtonPanel, rxdbgrid;
+  StdCtrls, Buttons, ButtonPanel, Grids, rxdbgrid;
 
 type
 
   { TrxDBGridColumsForm }
 
   TrxDBGridColumsForm = class(TForm)
+    btnApply: TBitBtn;
     ButtonPanel1: TButtonPanel;
-    CheckListBox1: TCheckListBox;
-    SpeedButton1: TSpeedButton;
-    SpeedButton2: TSpeedButton;
+    sbUp: TSpeedButton;
+    sbDown: TSpeedButton;
+    StringGrid1: TStringGrid;
+    procedure btnApplyClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure SpeedButton1Click(Sender: TObject);
-    procedure SpeedButton2Click(Sender: TObject);
+    procedure sbUpClick(Sender: TObject);
+    procedure sbDownClick(Sender: TObject);
+    procedure StringGrid1ValidateEntry(sender: TObject; aCol, aRow: Integer;
+      const OldValue: string; var NewValue: String);
   private
     FGrid:TRxDBGrid;
     procedure SetGrid(AGrid:TRxDBGrid);
@@ -62,7 +66,7 @@ type
 
 procedure ShowRxDBGridColumsForm(Grid:TRxDBGrid);
 implementation
-uses rxdconst;
+uses rxdconst, math;
 
 {$R *.lfm}
 
@@ -84,49 +88,82 @@ end;
 
 procedure TrxDBGridColumsForm.FormCreate(Sender: TObject);
 begin
-  SpeedButton1.AnchorSideLeft.Control:=ButtonPanel1.HelpButton;
-  SpeedButton1.AnchorSideTop.Control:=ButtonPanel1.HelpButton;
-  SpeedButton1.AnchorSideBottom.Control:=ButtonPanel1.HelpButton;
+  sbUp.AnchorSideLeft.Control:=ButtonPanel1.HelpButton;
+  sbUp.AnchorSideTop.Control:=ButtonPanel1.HelpButton;
+  sbUp.AnchorSideBottom.Control:=ButtonPanel1.HelpButton;
+
+  btnApply.AnchorSideTop.Control:=ButtonPanel1.OKButton;
+  btnApply.AnchorSideBottom.Control:=ButtonPanel1.OKButton;
+
+  {$IFDEF UNIX}
+  btnApply.AnchorSideRight.Control:=ButtonPanel1.CancelButton;
+  {$ELSE}
+  btnApply.AnchorSideRight.Control:=ButtonPanel1.OKButton;
+  {$ENDIF}
 
   Caption:=sRxDbGridSelColCaption;
-  SpeedButton1.Hint:=sRxDbGridSelColHint1;
-  SpeedButton2.Hint:=sRxDbGridSelColHint2;
+  sbUp.Hint:=sRxDbGridSelColHint1;
+  sbDown.Hint:=sRxDbGridSelColHint2;
+
+  btnApply.Caption:=sRxDbGridSelApplyCaption;
+  btnApply.Hint:=sRxDbGridSelApplyHint;
 end;
 
-procedure TrxDBGridColumsForm.SpeedButton1Click(Sender: TObject);
-var
-  S:string;
-  i:integer;
+procedure TrxDBGridColumsForm.btnApplyClick(Sender: TObject);
 begin
-  if (CheckListBox1.Items.Count > 1) and (CheckListBox1.ItemIndex>-1) then
+  SetGridColumnsParams;
+end;
+
+procedure TrxDBGridColumsForm.sbUpClick(Sender: TObject);
+var
+  S, W, C:string;
+begin
+  if (StringGrid1.RowCount > 1) and (StringGrid1.Row > 1) then
   begin
-    if CheckListBox1.ItemIndex>0 then
-    begin
-      i:=CheckListBox1.ItemIndex-1;
-      S:=CheckListBox1.Items[CheckListBox1.ItemIndex];
-      CheckListBox1.Items[CheckListBox1.ItemIndex]:=CheckListBox1.Items[i];
-      CheckListBox1.Items[i]:=S;
-      CheckListBox1.ItemIndex:=i;
-    end;
+    C:=StringGrid1.Cells[0, StringGrid1.Row-1];
+    S:=StringGrid1.Cells[1, StringGrid1.Row-1];
+    W:=StringGrid1.Cells[2, StringGrid1.Row-1];
+
+    StringGrid1.Cells[0, StringGrid1.Row-1]:=StringGrid1.Cells[0, StringGrid1.Row];
+    StringGrid1.Cells[1, StringGrid1.Row-1]:=StringGrid1.Cells[1, StringGrid1.Row];
+    StringGrid1.Cells[2, StringGrid1.Row-1]:=StringGrid1.Cells[2, StringGrid1.Row];
+
+    StringGrid1.Cells[0, StringGrid1.Row]:=C;
+    StringGrid1.Cells[1, StringGrid1.Row]:=S;
+    StringGrid1.Cells[2, StringGrid1.Row]:=W;
+
+    StringGrid1.Row:=StringGrid1.Row-1;
   end;
 end;
 
-procedure TrxDBGridColumsForm.SpeedButton2Click(Sender: TObject);
+procedure TrxDBGridColumsForm.sbDownClick(Sender: TObject);
 var
-  S:string;
+  S, W, C:string;
   i:integer;
 begin
-  if (CheckListBox1.Items.Count > 1) and (CheckListBox1.ItemIndex>-1) then
+  if (StringGrid1.RowCount > 1) and (StringGrid1.Row < StringGrid1.RowCount - 1) then
   begin
-    if CheckListBox1.ItemIndex<CheckListBox1.Items.Count-1 then
-    begin
-      i:=CheckListBox1.ItemIndex+1;
-      S:=CheckListBox1.Items[CheckListBox1.ItemIndex];
-      CheckListBox1.Items[CheckListBox1.ItemIndex]:=CheckListBox1.Items[i];
-      CheckListBox1.Items[i]:=S;
-      CheckListBox1.ItemIndex:=i;
-    end;
+    C:=StringGrid1.Cells[0, StringGrid1.Row+1];
+    S:=StringGrid1.Cells[1, StringGrid1.Row+1];
+    W:=StringGrid1.Cells[2, StringGrid1.Row+1];
+
+    StringGrid1.Cells[0, StringGrid1.Row+1]:=StringGrid1.Cells[0, StringGrid1.Row];
+    StringGrid1.Cells[1, StringGrid1.Row+1]:=StringGrid1.Cells[1, StringGrid1.Row];
+    StringGrid1.Cells[2, StringGrid1.Row+1]:=StringGrid1.Cells[2, StringGrid1.Row];
+
+    StringGrid1.Cells[0, StringGrid1.Row]:=C;
+    StringGrid1.Cells[1, StringGrid1.Row]:=S;
+    StringGrid1.Cells[2, StringGrid1.Row]:=W;
+
+    StringGrid1.Row:=StringGrid1.Row+1;
   end;
+end;
+
+procedure TrxDBGridColumsForm.StringGrid1ValidateEntry(sender: TObject; aCol,
+  aRow: Integer; const OldValue: string; var NewValue: String);
+begin
+  if aCol = 2 then
+    NewValue:=IntToStr(Max(StrToIntDef(NewValue, StrToIntDef(OldValue, 0)), 0));
 end;
 
 procedure TrxDBGridColumsForm.SetGrid(AGrid: TRxDBGrid);
@@ -135,15 +172,18 @@ var
 begin
   if AGrid=FGrid then exit;
   FGrid:=AGrid;
-  CheckListBox1.Items.Clear;
   if Assigned(AGrid) then
   begin
+    StringGrid1.RowCount:=AGrid.Columns.Count+1;
     for i:=0 to AGrid.Columns.Count-1 do
     begin
-      CheckListBox1.Items.Add(AGrid.Columns[i].Title.Caption);
-      CheckListBox1.Checked[i]:=AGrid.Columns[i].Visible;
+      StringGrid1.Cells[0, i+1]:=BoolToStr(AGrid.Columns[i].Visible, '1', '0');
+      StringGrid1.Cells[1, i+1]:=AGrid.Columns[i].Title.Caption;
+      StringGrid1.Cells[2, i+1]:=IntToStr(AGrid.Columns[i].Width);
     end;
-  end;
+  end
+  else
+    StringGrid1.RowCount:=1;
 end;
 
 procedure TrxDBGridColumsForm.SetGridColumnsParams;
@@ -151,13 +191,14 @@ var
   i:integer;
   Col:TRxColumn;
 begin
-  for i:=0 to CheckListBox1.Items.Count-1 do
+  for i:=1 to StringGrid1.RowCount-1 do
   begin
-    Col:=FGrid.ColumnByCaption(CheckListBox1.Items[i]);
+    Col:=FGrid.ColumnByCaption(StringGrid1.Cells[1, i]);
     if Assigned(Col) then
     begin
-      Col.Visible:=CheckListBox1.Checked[i];
-      Col.Index:=i;
+      Col.Visible:=StringGrid1.Cells[0, i] = '1';
+      Col.Index:=i-1;
+      Col.Width:=StrToIntDef(StringGrid1.Cells[2, i], 65);
     end
   end;
 end;

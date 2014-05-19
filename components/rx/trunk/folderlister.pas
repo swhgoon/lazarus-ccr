@@ -123,16 +123,20 @@ procedure CreateSubItems;
 var
   i:integer;
   M:TMenuItem;
+  S:string;
 begin
   for i:=0 to AFolderList.Count-1 do
   begin
     M:=TMenuItem.Create(Application.MainForm);
-    M.Caption:=MenuItemStr(AFolderList[i]);
+    S:=AFolderList[i];
+    M.Caption:=MenuItemStr(S);
     MenuItem.Add(M);
     DoFind(AFolderList[i]+DirectorySeparator,M);
   end;
 end;
 
+var
+  SS:string;
 begin
   AFolderList:=TStringList.Create;
   AFolderList.Sorted:=true;
@@ -143,11 +147,17 @@ begin
     while R=0 do
     begin
       if ((Rec.Attr and faDirectory) <>0) and (Rec.Name<>'.') and (Rec.Name<>'..') then
-        AFolderList.Add(S+Rec.Name)
+      begin
+        SS:=S+Rec.Name;
+        AFolderList.Add(SS)
+      end
       else
       begin
         if UTF8LowerCase(ExtractFileExt(Rec.Name))=UTF8LowerCase(FDefaultExt) then
-          AFileList.Add(S+Rec.Name);
+        begin
+          SS:=S+Rec.Name;
+          AFileList.Add(SS);
+        end;
       end;
       R:=FindNextUTF8(Rec);
     end;
