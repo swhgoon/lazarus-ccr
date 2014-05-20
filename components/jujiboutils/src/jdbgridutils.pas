@@ -293,6 +293,7 @@ end;
 function TJDbGridStringCtrl.CanDefocus: boolean;
 begin
   Result := True;
+  myEditOnEditingDone(nil);
 end;
 
 { TJDbGridDateTimeCtrl }
@@ -530,7 +531,9 @@ begin
   begin
     ShowMessage(Format(SInvalidDateTime, [CellEditor.Text]));
     CellEditor.Text := EditText;
-  end;
+  end
+  else
+    myEditOnEditingDone(nil);
 end;
 
 { TJDbGridTimeCtrl }
@@ -720,7 +723,9 @@ begin
   begin
     ShowMessage(Format(SInvalidTime, [CellEditor.Text]));
     CellEditor.Text := Field.AsString;
-  end;
+  end
+  else
+    myEditOnEditingDone(nil);
 end;
 
 { TJDbGridDateCtrl }
@@ -949,7 +954,9 @@ begin
   begin
     ShowMessage(Format(SInvalidDate, [CellEditor.Text]));
     CellEditor.Text := Field.AsString;
-  end;
+  end
+  else
+    myEditOnEditingDone(nil);
 end;
 
 { TJDbGridDoubleCtrl }
@@ -1120,10 +1127,12 @@ begin
   begin
     ShowMessage(Format(SInvalidNumber, [CellEditor.Text]));
     if Length(fEFormat) > 0 then
-    CellEditor.Text := FormatFloat(fEFormat, Field.AsFloat)
+      CellEditor.Text := FormatFloat(fEFormat, Field.AsFloat)
+    else
+      CellEditor.Text := Field.AsString;
+  end
   else
-    CellEditor.Text := Field.AsString;
-  end;
+    myEditOnEditingDone(nil);
 end;
 
 { TJDbGridIntegerCtrl }
@@ -1255,7 +1264,9 @@ begin
   begin
     ShowMessage(Format(SInvalidNumber, [CellEditor.Text]));
     CellEditor.Text := Field.AsString;
-  end;
+  end
+  else
+    myEditOnEditingDone(nil);
 end;
 
 end.

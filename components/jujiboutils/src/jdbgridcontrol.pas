@@ -78,6 +78,8 @@ type
     property Columns: TJDBGridColumns read GetColumns write SetColumns;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: integer);
       override;
+    function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): boolean; override;
+    function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): boolean; override;
     procedure KeyDown(var Key: word; Shift: TShiftState); override;
   public
     { Public declarations }
@@ -204,12 +206,34 @@ end;
 procedure TJDBGridControl.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: integer);
 begin
+  if (Button = mbLeft) and not (integerDbGridControl.CanDefocus and
+    doubleDbGridControl.CanDefocus and dateTimeDbGridControl.CanDefocus and
+    stringDbGridControl.CanDefocus and dateDbGridControl.CanDefocus and
+    timeDbGridControl.CanDefocus) then
+    abort
+  else
+    inherited MouseDown(Button, Shift, X, Y);
+end;
+
+function TJDBGridControl.DoMouseWheelDown(Shift: TShiftState;
+  MousePos: TPoint): boolean;
+begin
   if not (integerDbGridControl.CanDefocus and doubleDbGridControl.CanDefocus and
     dateTimeDbGridControl.CanDefocus and stringDbGridControl.CanDefocus and
     dateDbGridControl.CanDefocus and timeDbGridControl.CanDefocus) then
     abort
   else
-    inherited MouseDown(Button, Shift, X, Y);
+    Result := inherited DoMouseWheelDown(Shift, MousePos);
+end;
+
+function TJDBGridControl.DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): boolean;
+begin
+  if not (integerDbGridControl.CanDefocus and doubleDbGridControl.CanDefocus and
+    dateTimeDbGridControl.CanDefocus and stringDbGridControl.CanDefocus and
+    dateDbGridControl.CanDefocus and timeDbGridControl.CanDefocus) then
+    abort
+  else
+    Result := inherited DoMouseWheelUp(Shift, MousePos);
 end;
 
 procedure TJDBGridControl.KeyDown(var Key: word; Shift: TShiftState);
