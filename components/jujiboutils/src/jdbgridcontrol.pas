@@ -191,7 +191,6 @@ begin
           ftString:
             Result := stringDbGridControl.Editor(Self, Columns[Column - 1].MaxLength);
         end;
-        Result.Visible := False;
       end;
     end;
   end;
