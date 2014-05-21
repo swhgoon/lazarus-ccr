@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, DB, Grids, DBGrids,
-  Dialogs, LCLType, jdbgridutils;
+  Dialogs, LCLType, LMessages, jdbgridutils;
 
 type
 
@@ -80,6 +80,7 @@ type
       override;
     function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): boolean; override;
     function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): boolean; override;
+    procedure WMVScroll(var Message: TLMVScroll); message LM_VScroll;
     procedure KeyDown(var Key: word; Shift: TShiftState); override;
   public
     { Public declarations }
@@ -205,10 +206,10 @@ end;
 procedure TJDBGridControl.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: integer);
 begin
-  if not (integerDbGridControl.CanDefocus and
-    doubleDbGridControl.CanDefocus and dateTimeDbGridControl.CanDefocus and
-    stringDbGridControl.CanDefocus and dateDbGridControl.CanDefocus and
-    timeDbGridControl.CanDefocus) then
+  if not (integerDbGridControl.CanDefocus and doubleDbGridControl.CanDefocus and
+    dateTimeDbGridControl.CanDefocus and stringDbGridControl.CanDefocus and
+    dateDbGridControl.CanDefocus and timeDbGridControl.CanDefocus) then
+
     abort
   else
     inherited MouseDown(Button, Shift, X, Y);
@@ -233,6 +234,16 @@ begin
     abort
   else
     Result := inherited DoMouseWheelUp(Shift, MousePos);
+end;
+
+procedure TJDBGridControl.WMVScroll(var Message: TLMVScroll);
+begin
+  if not (integerDbGridControl.CanDefocus and doubleDbGridControl.CanDefocus and
+    dateTimeDbGridControl.CanDefocus and stringDbGridControl.CanDefocus and
+    dateDbGridControl.CanDefocus and timeDbGridControl.CanDefocus) then
+    abort
+  else
+    inherited WMVScroll(Message);
 end;
 
 procedure TJDBGridControl.KeyDown(var Key: word; Shift: TShiftState);
