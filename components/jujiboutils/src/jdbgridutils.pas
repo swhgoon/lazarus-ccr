@@ -233,6 +233,7 @@ begin
       Field.DataSet.Edit;
       Field.AsString := CellEditor.Text;
       field.DataSet.EnableControls;
+      updated := True;
     end;
   end;
 end;
@@ -293,7 +294,11 @@ end;
 function TJDbGridStringCtrl.CanDefocus: boolean;
 begin
   Result := True;
-  myEditOnEditingDone(nil);
+  if not CellEditor.Focused then
+    exit;
+  if Result and Assigned(Field) and Assigned(Field.Dataset) and
+    (Field.DataSet.State in dsEditModes) then
+    myEditOnEditingDone(nil);
 end;
 
 { TJDbGridDateTimeCtrl }
@@ -361,6 +366,7 @@ begin
           Field.DataSet.Edit;
           Field.AsDateTime := theValue;
           Field.DataSet.EnableControls;
+          updated := True;
         end;
       end;
     end
@@ -531,8 +537,9 @@ begin
   begin
     ShowMessage(Format(SInvalidDateTime, [CellEditor.Text]));
     CellEditor.Text := EditText;
-  end
-  else
+  end;
+  if Result and Assigned(Field) and Assigned(Field.Dataset) and
+    (Field.DataSet.State in dsEditModes) then
     myEditOnEditingDone(nil);
 end;
 
@@ -592,6 +599,7 @@ begin
           Field.DataSet.Edit;
           Field.Text := NormalizeTime(CellEditor.Caption, Field.AsDateTime);
           Field.DataSet.EnableControls;
+          updated := True;
         end;
       end;
     end
@@ -723,8 +731,9 @@ begin
   begin
     ShowMessage(Format(SInvalidTime, [CellEditor.Text]));
     CellEditor.Text := Field.AsString;
-  end
-  else
+  end;
+  if Result and Assigned(Field) and Assigned(Field.Dataset) and
+    (Field.DataSet.State in dsEditModes) then
     myEditOnEditingDone(nil);
 end;
 
@@ -784,6 +793,7 @@ begin
           Field.DataSet.Edit;
           Field.AsDateTime := theValue;
           field.DataSet.EnableControls;
+          updated := True;
         end;
       end;
     end
@@ -954,8 +964,9 @@ begin
   begin
     ShowMessage(Format(SInvalidDate, [CellEditor.Text]));
     CellEditor.Text := Field.AsString;
-  end
-  else
+  end;
+  if Result and Assigned(Field) and Assigned(Field.Dataset) and
+    (Field.DataSet.State in dsEditModes) then
     myEditOnEditingDone(nil);
 end;
 
@@ -1004,6 +1015,7 @@ begin
           theValue := ScaleTo(theValue, fDecimals);
         Field.Value := theValue;
         Field.DataSet.EnableControls;
+        updated := True;
       end;
     end;
   end
@@ -1130,8 +1142,9 @@ begin
       CellEditor.Text := FormatFloat(fEFormat, Field.AsFloat)
     else
       CellEditor.Text := Field.AsString;
-  end
-  else
+  end;
+  if Result and Assigned(Field) and Assigned(Field.Dataset) and
+    (Field.DataSet.State in dsEditModes) then
     myEditOnEditingDone(nil);
 end;
 
@@ -1264,8 +1277,9 @@ begin
   begin
     ShowMessage(Format(SInvalidNumber, [CellEditor.Text]));
     CellEditor.Text := Field.AsString;
-  end
-  else
+  end;
+  if Result and Assigned(Field) and Assigned(Field.Dataset) and
+    (Field.DataSet.State in dsEditModes) then
     myEditOnEditingDone(nil);
 end;
 

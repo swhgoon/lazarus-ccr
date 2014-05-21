@@ -205,7 +205,7 @@ end;
 procedure TJDBGridControl.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: integer);
 begin
-  if (Button = mbLeft) and not (integerDbGridControl.CanDefocus and
+  if not (integerDbGridControl.CanDefocus and
     doubleDbGridControl.CanDefocus and dateTimeDbGridControl.CanDefocus and
     stringDbGridControl.CanDefocus and dateDbGridControl.CanDefocus and
     timeDbGridControl.CanDefocus) then
