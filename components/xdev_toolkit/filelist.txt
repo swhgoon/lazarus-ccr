@@ -1,0 +1,34 @@
+XDev Toolkit File List
+----------------------
+
+filelist.txt          This file.
+
+XDevStatus.html       Notes on installation, usage, etc.
+
+dfmtolfm.pas          Converts Delphi .dfm file to Lazarus .lfm file,
+                       with optional font substitution to prettify Mac app.
+dfmtolfm.ini          Configuration settings for dfmtolfm.
+
+makepasx.pas          Attempts to make Delphi form code file or project file
+                       cross-platform.
+
+makever.pas           Makes INI-style version file from Delphi .dof file.
+
+CvtHelp.pas           Converts WinHelp .rtf/.hpj files to HTML file for use
+                       with OS X and Linux.
+
+HelpUtil.pas          Isolates platform-specific help access for Lazarus LCL.
+
+ViewDoc.pas           Functions for viewing documents with a word processor.
+ViewWith.pas          Test program for ViewDoc unit.
+
+RtfDoc.pas            Class for creating an RTF document.
+TestRtfDoc.pas        Test program for RtfDoc unit.
+
+Mac-only files
+--------------
+create_app_mac.sh     Script file that creates an app bundle on OS X.
+
+CFHelpers.pas         Core Foundation framework-based string helper routines.
+PropListUtil.pas      Class for working with property list.
+PrefsUtil.pas         Class for working with application preferences.
