@@ -32,7 +32,12 @@
 <A name="Whats_New"></A><H3>What's New</H3>
 
 <UL>
-<LI><B>20110116 release:</B>
+<LI><B>2014-05-24 release:</B>
+<UL>
+  <LI>Updated these notes.
+</UL><P>
+
+<LI>2011-01-16 release:
 <UL>
 <LI>DfmToLfm now supports converting a Lazarus form file too, as a way
 to create more than one version of the same form, for example to conditionally
@@ -46,21 +51,21 @@ do this in a form's unit:
 {$ENDIF}
 </PRE>
 </UL>
-<LI>20101230 release:
+<LI>2010-12-30 release:
 <UL>
 <LI>Added -s switch to DfmToLfm (substitutes fonts).
 </UL>
-<LI>20101117 release:
+<LI>2010-11-17 release:
 <UL>
 <LI>Added files from "Making Your Lazarus App Mac-Friendly" article.
 <LI>Added -m switch to DfmToLfm (Mac prettifier).
 </UL>
-<LI>20080720 release:
+<LI>2008-07-20 release:
 <UL>
 <LI>Updated list of controls for DfmToLfm converter.
 <LI>Updated CvtHelp.pas help converter.
 </UL>
-<LI>20080301 release:
+<LI>2008-03-01 release:
 <UL>
 <LI>Expanded notes to help users who are new to Lazarus.
 <LI>Minor adjustments to converters to keep pace with latest Lazarus.
@@ -77,24 +82,19 @@ reports, suggestions and comments to:<P>
 
 &nbsp;&nbsp;MacPgmr (at) fastermac (dot) net<P>
 
-<I>Note:</I> You can also post to the Lazarus forum if you want your bug reports
-and suggestions to be seen by the entire Lazarus community.<P>
+You can download the XDev Toolkit files via Subversion. Change to the
+local directory where you want the files downloaded and enter:<P>
 
-The XDev Toolkit source code is here: <A HREF="http://web.me.com/macpgmr/XDev">http://web.me.com/macpgmr/XDev</A><P>   
+&nbsp;&nbsp;svn co https://svn.code.sf.net/p/lazarus-ccr/svn/components/xdev_toolkit .<P>
 
-You can also download the XDev Toolkit files via Subversion:<P>
-
-&nbsp;&nbsp;svn co https://lazarus-ccr.svn.sourceforge.net/svnroot/lazarus-ccr/components/xdev_toolkit [local dir]<P>
-
-Substitute your local directory where you want the files downloaded for "[local dir]".<P>
-
-All source code included in the XDev Toolkit is released under the Modified LGPL license.
+All source code included in the XDev Toolkit is released under a modified LGPL license
+(same as FPC RTL).
 
 <HR>
 <A name="Installation"></A><H3>Installation</H3>
 
 <OL>
-<LI>Unzip the source files into their own folder.<P>
+<LI>Check out the source files into their own folder.<P>
 <LI>Open a terminal window and change to this folder, then compile each utility and test program with FPC. 
 For example:<P>
 
@@ -159,7 +159,9 @@ which generally makes for a better look on Windows.<P>
 Important! Make sure your .dfm files are text files. If not, save them as text 
 files with Delphi before attempting to convert them.<P>
 
-<LI>Use the Lazarus LazRes utility to create a Lazarus resource file (.lrs)
+<LI><B>This step is no longer needed if you include a form file using {$R *.lfm}.</B><P>
+
+Use the Lazarus LazRes utility to create a Lazarus resource file (.lrs)
 from each form file (.lfm). Example:<P>
 &nbsp;&nbsp;lazres myform.lrs myform.lfm<P>
 Note: The lazres source code is located in the Lazarus tools folder. Open
@@ -369,7 +371,7 @@ also be able to output version information to a Lazarus .lpi file.<P>
 <A HREF="http://wiki.lazarus.freepascal.org/Deploying_Your_Application">http://wiki.lazarus.freepascal.org/Deploying_Your_Application</A><P>
 <P>
 <HR>
-Last updated: Jan 16, 2011
+Last updated: May 24, 2014
 <P>
 
 </BODY>
