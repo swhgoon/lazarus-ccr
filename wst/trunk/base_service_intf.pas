@@ -545,7 +545,6 @@ type
 
   TBaseComplexRemotable = class(TAbstractComplexRemotable)
   public
-    destructor Destroy();override;
     class procedure Save(
             AObject   : TBaseRemotable;
             AStore    : IFormatterBase;
@@ -2217,12 +2216,6 @@ end;
 function TSerializeOptions.IsAttributeField(const AField: string): Boolean;
 begin
   Result := ( FAttributeFieldList.IndexOf(AField) >= 0 );
-end;
-
-destructor TBaseComplexRemotable.Destroy();
-begin
-  FreeObjectProperties();
-  inherited Destroy();
 end;
 
 class procedure TBaseComplexRemotable.Save(
