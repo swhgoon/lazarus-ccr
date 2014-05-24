@@ -20,7 +20,12 @@ interface
 uses
   Classes, SysUtils,
   service_intf, imp_utils, base_service_intf, wst_types,
-  client_utils, IdHTTP, IdCookie;
+  client_utils, IdGlobal, IdHTTP, IdCookie;
+
+{$UNDEF COOKIE_NAME_FIRST}
+{$IF Declared(gsIdVersionMajor)}
+  {$DEFINE COOKIE_NAME_FIRST}
+{$IFEND}
 
 Const
   sTRANSPORT_NAME = 'HTTP';
@@ -263,8 +268,12 @@ end;
 function TIndyCookieManager.GetValue(const AName : string) : string; 
 var
   i : Integer;
-begin       
+begin
+{$IFDEF COOKIE_NAME_FIRST}
+  i := ReferencedObject.GetCookieIndex(AName,0);
+{$ELSE COOKIE_NAME_FIRST}
   i := ReferencedObject.GetCookieIndex(0,AName);
+{$ENDIF COOKIE_NAME_FIRST}
   if (i >= 0) then
     Result := ReferencedObject[i].Value
   else
@@ -279,15 +288,26 @@ begin
   ReferencedObject[AIndex].Value := AValue; 
 end;
 
+type
+  TLocalCookie =
+{$IFDEF COOKIE_NAME_FIRST}
+    TIdCookie;
+{$ELSE COOKIE_NAME_FIRST}
+    TIdNetscapeCookie;
+{$ENDIF COOKIE_NAME_FIRST}
 procedure TIndyCookieManager.SetValue(
-  const AName : string;  
+  const AName : string;
   const AValue : string
-); 
+);
 var
   i : Integer;
-  locItem : TIdNetscapeCookie;
+  locItem : TLocalCookie;
 begin
-  i := ReferencedObject.GetCookieIndex(0,AName);  
+{$IFDEF COOKIE_NAME_FIRST}
+  i := ReferencedObject.GetCookieIndex(AName,0);
+{$ELSE COOKIE_NAME_FIRST}
+  i := ReferencedObject.GetCookieIndex(0,AName);
+{$ENDIF COOKIE_NAME_FIRST}
   if (i >= 0) then begin
     ReferencedObject[i].Value := AValue;
   end else begin
