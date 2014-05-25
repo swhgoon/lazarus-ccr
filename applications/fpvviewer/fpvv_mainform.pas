@@ -139,6 +139,12 @@ begin
     if checkForceWhiteBackground.Checked then Vec.GetPageAsVectorial(0).BackgroundColor := colWhite;
     if not checkForceWhiteBackground.Checked then
       Vec.GetPageAsVectorial(0).DrawBackground(Drawer.Drawing.Canvas);
+    Vec.GetPageAsVectorial(0).Render(
+      Drawer.Drawing.Canvas,
+      FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS + Drawer.PosX,
+      Drawer.Drawing.Height - FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS + Drawer.PosY,
+      spinScale.Value,
+      -1 * spinScale.Value);
     if checkShowPage.Checked then
       Vec.GetPageAsVectorial(0).RenderPageBorder(
         Drawer.Drawing.Canvas,
@@ -146,12 +152,6 @@ begin
         Drawer.Drawing.Height - FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS + Drawer.PosY,
         spinScale.Value,
         -1 * spinScale.Value);
-    Vec.GetPageAsVectorial(0).Render(
-      Drawer.Drawing.Canvas,
-      FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS + Drawer.PosX,
-      Drawer.Drawing.Height - FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS + Drawer.PosY,
-      spinScale.Value,
-      -1 * spinScale.Value);
     Drawer.Invalidate;
   finally
     Vec.Free;
