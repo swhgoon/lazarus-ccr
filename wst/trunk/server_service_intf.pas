@@ -485,7 +485,7 @@ begin
   end;
   //Extract the base ContentType : type "/" subtype *( ";" parameter )
   j := Length(s);
-  for i := 0 to Pred(Length(s)) do begin
+  for i := 1 to Length(s) do begin
     if ( s[i] = ';' ) then begin
       j := ( i - 1 );
       Break;
