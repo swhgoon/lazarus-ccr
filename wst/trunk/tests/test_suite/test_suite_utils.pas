@@ -38,6 +38,10 @@ type
     procedure CheckEquals(expected, actual: QWord; msg: string = ''; const AStrict : Boolean = True); overload;
     procedure CheckEquals(expected, actual: Currency; msg: string = ''); overload;
 {$ENDIF FPC}
+{$IFDEF WST_DELPHI}
+    procedure CheckEquals(expected, actual: Word; msg: string = ''); overload;
+    procedure CheckEquals(expected, actual: Byte; msg: string = ''); overload;
+{$ENDIF WST_DELPHI}
   end;
 
   function CompareNodes(const A,B : TDOMNode) : Boolean;overload;
@@ -160,7 +164,7 @@ begin
     FailNotEquals(IntToStr(expected), IntToStr(actual), msg{$IFDEF WST_DELPHI}, CallerAddr{$ENDIF WST_DELPHI});
 end;
 
-procedure TWstBaseTest.CheckEquals(expected, actual : Currency; msg : string); 
+procedure TWstBaseTest.CheckEquals(expected, actual : Currency; msg : string);
 begin
   if (expected <> actual) then
     FailNotEquals(CurrToStr(expected), CurrToStr(actual), msg{$IFDEF WST_DELPHI}, CallerAddr{$ENDIF WST_DELPHI});
@@ -180,5 +184,18 @@ begin
   end;
 end;
 
+{$IFDEF WST_DELPHI}
+procedure TWstBaseTest.CheckEquals(expected, actual: Word; msg: string);
+begin
+  if (expected <> actual) then
+    FailNotEquals(IntToStr(expected), IntToStr(actual), msg, CallerAddr);
+end;
+
+procedure TWstBaseTest.CheckEquals(expected, actual: Byte; msg: string);
+begin
+  if (expected <> actual) then
+    FailNotEquals(IntToStr(expected), IntToStr(actual), msg,CallerAddr);
+end;
+{$ENDIF WST_DELPHI}
 
 end.

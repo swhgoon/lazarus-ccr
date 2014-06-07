@@ -633,7 +633,7 @@ type
   
   { TTestArray }
 
-  TTestArray= class(TTestCase)
+  TTestArray= class(TWstBaseTest)
   published
     procedure Test_StringArray();
     procedure Test_BooleanArray();

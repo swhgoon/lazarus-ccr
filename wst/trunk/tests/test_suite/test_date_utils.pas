@@ -20,13 +20,13 @@ uses
 {$ELSE}
   TestFrameWork,
 {$ENDIF}
-  date_utils;
+  test_suite_utils, date_utils;
 
 type
 
   { TTest_DateUtils }
 
-  TTest_DateUtils = class(TTestCase)
+  TTest_DateUtils = class(TWstBaseTest)
   protected
 {$IFDEF FPC}
     class procedure CheckEquals(expected, actual: TTimeRec; msg: string = ''); overload;

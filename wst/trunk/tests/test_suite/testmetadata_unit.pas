@@ -23,15 +23,14 @@ uses
 {$ELSE}
   TestFrameWork, xmldom, wst_delphi_xml,
 {$ENDIF}
-  metadata_generator, binary_streamer, metadata_repository, pastree,
-  pascal_parser_intf,
-  metadata_wsdl;
+  test_suite_utils, metadata_generator, binary_streamer, metadata_repository,
+  pastree, pascal_parser_intf, metadata_wsdl;
 
 type
 
   { TTestMetadata }
 
-  TTestMetadata= class(TTestCase)
+  TTestMetadata= class(TWstBaseTest)
   protected
     function CreateSymbolTable():TwstPasTreeContainer;
   published

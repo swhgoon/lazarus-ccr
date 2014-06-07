@@ -106,7 +106,7 @@ type
 
   { TTest_TBaseComplexRemotable }
 
-  TTest_TBaseComplexRemotable = class(TTestCase)
+  TTest_TBaseComplexRemotable = class(TWstBaseTest)
   protected
     procedure Compare(const a,b : TClass_A);overload;
     procedure Compare(const a,b : TClass_B);overload;
@@ -117,7 +117,7 @@ type
   
   { TTest_TBaseArrayRemotable }
 
-  TTest_TBaseArrayRemotable = class(TTestCase)
+  TTest_TBaseArrayRemotable = class(TWstBaseTest)
   protected
     class function CreateArray() : TBaseArrayRemotable;virtual;abstract;
     class function GetTypeInfo() : PTypeInfo;virtual;abstract;
@@ -298,7 +298,7 @@ type
   
   { TTest_TDateTimeRemotable }
 
-  TTest_TDateTimeRemotable = class(TTestCase)
+  TTest_TDateTimeRemotable = class(TWstBaseTest)
   published
     procedure FormatDate();
     procedure FormatDate_ZERO();
@@ -316,7 +316,7 @@ type
 
   { TTest_TDateTimeRemotable }
 
-  TTest_TDateRemotable = class(TTestCase)
+  TTest_TDateRemotable = class(TWstBaseTest)
   published
     procedure FormatDate();
     procedure FormatDate_ZERO();
@@ -355,7 +355,7 @@ type
 
   { TTest_TTimeRemotable }
 
-  TTest_TTimeRemotable = class(TTestCase)
+  TTest_TTimeRemotable = class(TWstBaseTest)
   protected
 {$IFDEF FPC}
     class procedure CheckEquals(expected, actual: TTimeRec; msg: string = ''); overload;
