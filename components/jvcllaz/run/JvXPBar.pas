@@ -732,14 +732,10 @@ end;
 
 function TJvXPBarItem.GetImages: TCustomImageList;
 begin
-  Result := nil;
-  if Assigned(FImageList) then
-    Result := FImageList
-  else
-  if Assigned(Action) and Assigned(TAction(Action).ActionList.Images) then
-    Result := TAction(Action).ActionList.Images
-  else
-  if Assigned(FWinXPBar.FImageList) then
+  Result := FImageList;
+  if (Result = nil) and Assigned(Action) then
+    Result := TAction(Action).ActionList.Images;
+  if Result = nil then
     Result := FWinXPBar.FImageList;
 end;
 
