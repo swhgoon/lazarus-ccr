@@ -553,6 +553,8 @@ type
     FQuickUTF8Search: string;
     FOldDataSetState:TDataSetState;
 
+    FOnSortChanged: TNotifyEvent;
+
     procedure DoCreateJMenu;
     //function GetAllowedOperations: TRxDBGridAllowedOperations;
     function GetColumns: TRxDbGridColumns;
@@ -714,6 +716,8 @@ type
     procedure InvertSelection;
     procedure CopyCellValue;
 
+    procedure SetSort(AFields: array of String; ASortMarkers: array of TSortMarker; PreformSort: Boolean = False);
+
     property Canvas;
     property DefaultTextStyle;
     property EditorBorderStyle;
@@ -760,6 +764,8 @@ type
 
     property OnFiltred: TNotifyEvent read FOnFiltred write FOnFiltred;
 //    property Constraints:TRxDBGridCollumnConstraints read GetConstraints write SetConstraints;
+
+    property OnSortChanged: TNotifyEvent read FOnSortChanged write FOnSortChanged;
 
     //from DBGrid
     property Align;
@@ -3399,6 +3405,12 @@ begin
     CollumnSortListUpdate;
     if Assigned(FSortEngine) then
       CollumnSortListApply;
+    if Assigned(FOnSortChanged) then
+    begin
+      FSortingNow := True;
+      FOnSortChanged(Self);
+      FSortingNow := False;
+    end;
   end
   else
     HeaderClick(True, ACol);
@@ -4467,6 +4479,12 @@ begin
           Exclude(FOptionsRx, rdgCaseInsensitiveSort);
 
         CollumnSortListApply;
+        if Assigned(FOnSortChanged) then
+        begin
+          FSortingNow := True;
+          FOnSortChanged(Self);
+          FSortingNow := False;
+        end;
       end;
 
     finally
@@ -4712,6 +4730,39 @@ end;
 procedure TRxDBGrid.CopyCellValue;
 begin
   OnCopyCellValue(Self);
+end;
+
+procedure TRxDBGrid.SetSort(AFields: array of String;
+  ASortMarkers: array of TSortMarker; PreformSort: Boolean);
+var
+  I: Integer;
+  C: TRxColumn;
+begin
+  CollumnSortListClear;
+  if (Length(AFields) > 0) and (Length(AFields) = Length(ASortMarkers)) then
+  begin
+    for I := 0 to Length(AFields) - 1 do
+    begin
+      C := ColumnByFieldName(AFields[I]);
+      if C <> nil then
+      begin
+        C.SortOrder := ASortMarkers[I];
+        C.FSortPosition := I;
+      end;
+    end;
+    CollumnSortListUpdate;
+  end;
+  if PreformSort then
+  begin
+    if Assigned(FSortEngine) then
+      CollumnSortListApply;
+    if Assigned(FOnSortChanged) then
+    begin
+      FSortingNow := True;
+      FOnSortChanged(Self);
+      FSortingNow := False;
+    end;
+  end;
 end;
 
 //!!!

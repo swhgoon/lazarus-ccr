@@ -74,7 +74,7 @@ msgid "Field '%s' not used in filter expression"
 msgstr ""
 
 #: rxdconst.sexprbadnulltest
-msgid "NULL-values enabled in '=' Ð¸ '<>'"
+msgid "NULL-values enabled in '=' и '<>'"
 msgstr ""
 
 #: rxdconst.sexprexpected
@@ -290,15 +290,6 @@ msgstr ""
 
 #: rxdconst.srxdbgridfindtext
 msgid "Text to find"
-msgstr ""
-
-#: rxdconst.srxdbgridselapplycaption
-msgctxt "rxdconst.srxdbgridselapplycaption"
-msgid "Apply"
-msgstr ""
-
-#: rxdconst.srxdbgridselapplyhint
-msgid "Apply current columns setings"
 msgstr ""
 
 #: rxdconst.srxdbgridselcolcaption
