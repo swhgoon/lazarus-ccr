@@ -19,7 +19,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls,
   ExtCtrls, Menus, ActnList, Contnrs,
-  pastree, pascal_parser_intf, logger_intf,
+  pastree, pascal_parser_intf, logger_intf, LCLVersion,
   SynHighlighterPas, SynEdit, StdCtrls, SynHighlighterXML
   {$IFDEF WST_IDE},ProjectIntf{$ENDIF};
 
@@ -199,8 +199,7 @@ type
     procedure FDFind(Sender : TObject);
     procedure FDShow(Sender : TObject);
     procedure FormClose (Sender : TObject; var CloseAction : TCloseAction );
-    procedure FormDropFiles(Sender : TObject; const FileNames : array of String
-      );
+    procedure FormDropFiles(Sender : TObject; const FileNames : array of String);
     procedure FormShow(Sender: TObject);
     procedure trvSchemaSelectionChanged(Sender : TObject);
   private
@@ -244,11 +243,11 @@ var
 
 implementation
 uses
-  view_helper, DOM, wst_fpc_xml, XMLWrite, //HeapTrc,
+  view_helper, DOM, wst_fpc_xml, XMLWrite,
   xsd_parser, wsdl_parser, source_utils, command_line_parser, generator, metadata_generator,
   binary_streamer, wst_resources_utils, xsd_generator, wsdl_generator,
   uabout, edit_helper, udm, ufrmsaveoption, pparser, SynEditTypes
-  {$IFDEF WST_IDE},LazIDEIntf,IDEMsgIntf{$ENDIF}
+  {$IFDEF WST_IDE},LazIDEIntf,IDEMsgIntf, IDEExternToolIntf{$ENDIF}
   , xsd_consts, parserutils, locators;
 
 {$IFDEF WST_IDE}
@@ -768,6 +767,26 @@ begin
   end;
 end;
 
+{$IFDEF WST_IDE}
+procedure ShowParsing(FileName: string);
+begin
+{$IF lcl_fullversion < 1030000}
+  IDEMessagesWindow.AddMsg(Format('Parsing %s...',[Filename]),ExtractFileDir(Filename),0);
+{$ELSE}
+  IDEMessagesWindow.AddCustomMessage(mluNote, 'Parsing ...', Filename);
+{$ENDIF}
+end;
+
+procedure ShowParsed(FileName: string);
+begin
+{$IF lcl_fullversion < 1030000}
+  IDEMessagesWindow.AddMsg(Format('File Parsed %s.',[Filename]),ExtractFileDir(Filename),0);
+{$ELSE}
+  IDEMessagesWindow.AddCustomMessage(mluNote, 'File Parsed.', Filename);
+{$ENDIF}
+end;
+{$ENDIF WST_IDE}
+
 procedure TfWstTypeLibraryEdit.FormShow(Sender: TObject);
 var
 {$IFDEF WST_IDE}
@@ -784,9 +803,9 @@ begin
       locContent.LoadFromFile(prjFile.FileName);
       if ( locContent.Size > 0 ) then begin
         locContent.Position := 0;
-        IDEMessagesWindow.AddMsg(Format('Parsing %s...',[prjFile.Filename]),ExtractFileDir(prjFile.Filename),0);
+        ShowParsing(prjFile.Filename);
         OpenFile(prjFile.Filename,locContent);
-        IDEMessagesWindow.AddMsg(Format('File Parsed %s.',[prjFile.Filename]),ExtractFileDir(prjFile.Filename),0);
+        ShowParsed(prjFile.Filename);
         FProjectLibrary := prjFile;
       end;
     finally
