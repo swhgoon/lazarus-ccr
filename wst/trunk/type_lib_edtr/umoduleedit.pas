@@ -61,6 +61,9 @@ var
   fModuleEdit: TfModuleEdit;
 
 implementation
+
+{$R *.lfm}
+
 uses parserutils;
 
 { TfModuleEdit }
@@ -103,9 +106,6 @@ procedure TfModuleEdit.actOKExecute(Sender: TObject);
 begin
   ModalResult := mrOK;
 end;
-
-initialization
-  {$I umoduleedit.lrs}
 
 end.
 

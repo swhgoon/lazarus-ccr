@@ -36,6 +36,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TDM }
 
 {$IFNDEF WST_IDE}
@@ -65,9 +67,6 @@ begin
 {$ENDIF WST_IDE}
   inherited Destroy();
 end;
-
-initialization
-  {$I udm.lrs}
 
 end.
 

@@ -62,6 +62,9 @@ var
   fBindingEdit: TfBindingEdit;
 
 implementation
+
+{$R *.lfm}
+
 uses parserutils;
 
 { TfBindingEdit }
@@ -112,9 +115,6 @@ begin
     SaveToObject();
   end;
 end;
-
-initialization
-  {$I ubindingedit.lrs}
 
 end.
 

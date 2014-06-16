@@ -70,6 +70,9 @@ var
   fArrayEdit : TfArrayEdit;
 
 implementation
+
+{$R *.lfm}
+
 uses
   parserutils, view_helper, xsd_consts;
 
@@ -243,9 +246,6 @@ begin
     end;
   end;
 end;
-
-initialization
-  {$I ufarrayedit.lrs}
 
 end.
 

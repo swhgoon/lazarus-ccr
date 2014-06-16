@@ -79,6 +79,9 @@ var
   fProcEdit: TfProcEdit;
 
 implementation
+
+{$R *.lfm}
+
 uses parserutils, common_gui_utils;
 
 { TfProcEdit }
@@ -349,9 +352,6 @@ begin
     end;
   end;
 end;
-
-initialization
-  {$I uprocedit.lrs}
 
 end.
 

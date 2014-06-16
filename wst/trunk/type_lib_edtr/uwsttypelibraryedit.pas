@@ -242,6 +242,9 @@ var
   fWstTypeLibraryEdit: TfWstTypeLibraryEdit;
 
 implementation
+
+{$R *.lfm}
+
 uses
   view_helper, DOM, wst_fpc_xml, XMLWrite,
   xsd_parser, wsdl_parser, source_utils, command_line_parser, generator, metadata_generator,
@@ -1436,10 +1439,8 @@ begin
   FreeAndNil(DM);
 end;
 
-initialization
+//initialization
   //SetHeapTraceOutput('heap_trace.txt');
-  
-  {$I uwsttypelibraryedit.lrs}
 
 end.
 

@@ -82,6 +82,9 @@ var
   fInterfaceEdit: TfInterfaceEdit;
 
 implementation
+
+{$R *.lfm}
+
 uses view_helper, parserutils, udm;
 
 { TfInterfaceEdit }
@@ -306,9 +309,6 @@ begin
     raise;
   end;
 end;
-
-initialization
-  {$I uinterfaceedit.lrs}
 
 end.
 

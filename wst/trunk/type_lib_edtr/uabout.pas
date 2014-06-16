@@ -22,17 +22,15 @@ uses
 
 type
 
-  { TfAbout }
-
   TfAbout = class(TForm)
     Button1: TButton;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end; 
 
 var
@@ -40,8 +38,7 @@ var
 
 implementation
 
-initialization
-  {$I uabout.lrs}
+{$R *.lfm}
 
 end.
 

@@ -40,13 +40,15 @@ type
   private
     procedure SelectAll(const ADoSelect : Boolean);
   public
-    { public declarations }
+
   end; 
 
 var
   frmSaveOptions : TfrmSaveOptions;
 
 implementation
+
+{$R *.lfm}
 
 { TfrmSaveOptions }
 
@@ -99,9 +101,6 @@ begin
   ForceDirectories(edtOutputDir.Text);
   ModalResult := mrOK;
 end;
-
-initialization
-  {$I ufrmsaveoption.lrs}
 
 end.
 

@@ -61,6 +61,9 @@ var
   fArgEdit: TfArgEdit;
 
 implementation
+
+{$R *.lfm}
+
 uses parserutils;
 
 { TfArgEdit }
@@ -151,9 +154,6 @@ begin
     AObject := FObject;
   end;
 end;
-
-initialization
-  {$I uargedit.lrs}
 
 end.
 

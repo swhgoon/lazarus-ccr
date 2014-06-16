@@ -70,6 +70,9 @@ var
   fTypeAliasEdit : TfTypeAliasEdit;
 
 implementation
+
+{$R *.lfm}
+
 uses parserutils, view_helper, xsd_consts;
 
 { TfTypeAliasEdit }
@@ -232,9 +235,6 @@ begin
     end;
   end;
 end;
-
-initialization
-  {$I uftypealiasedit.lrs}
 
 end.
 

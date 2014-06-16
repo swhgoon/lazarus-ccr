@@ -71,6 +71,9 @@ var
   function UpdateProperty(AProp : TPasVariable; ASymboltable : TwstPasTreeContainer):Boolean;
   
 implementation
+
+{$R *.lfm}
+
 uses parserutils;
 
 function CreateProperty(AClass : TPasType; ASymboltable : TwstPasTreeContainer):TPasVariable ;
@@ -257,9 +260,6 @@ begin
     end;
   end;
 end;
-
-initialization
-  {$I ufpropedit.lrs}
 
 end.
 

@@ -106,6 +106,9 @@ var
   fRecordEdit : TfRecordEdit;
 
 implementation
+
+{$R *.lfm}
+
 uses common_gui_utils, parserutils, ufpropedit, view_helper, xsd_consts;
 
 { TfRecordEdit }
@@ -372,9 +375,6 @@ begin
     end;
   end;
 end;
-
-initialization
-  {$I ufrecordedit.lrs}
 
 end.
 

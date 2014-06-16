@@ -118,6 +118,9 @@ var
   fClassEdit: TfClassEdit;
 
 implementation
+
+{$R *.lfm}
+
 uses
   parserutils, ufpropedit, common_gui_utils, xsd_consts;
 
@@ -535,9 +538,6 @@ begin
     end;
   end;
 end;
-
-initialization
-  {$I ufclassedit.lrs}
 
 end.
 

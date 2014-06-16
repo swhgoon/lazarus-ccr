@@ -78,6 +78,9 @@ var
   fEnumEdit: TfEnumEdit;
 
 implementation
+
+{$R *.lfm}
+
 uses parserutils, view_helper, xsd_consts;
 
 function ParseEnum(
@@ -247,9 +250,6 @@ begin
     end;
   end;
 end;
-
-initialization
-  {$I ufenumedit.lrs}
 
 end.
 
