@@ -7,8 +7,8 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms
-  { add your units here }, wstimportdlg, uform2;
+  Forms,
+  wstimportdlg, uform2;
 
 begin
   Application.Initialize;

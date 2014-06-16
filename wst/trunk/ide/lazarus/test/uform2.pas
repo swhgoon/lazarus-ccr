@@ -5,25 +5,26 @@ unit uform2;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons;
+  StdCtrls, Forms;
 
 type
-
-  { TForm2 }
 
   TForm2 = class(TForm)
     Button1: TButton;
     procedure Button1Click(Sender: TObject);
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end; 
 
 var
   Form2: TForm2;
 
 implementation
+
+{$R *.lfm}
+
 uses wstimportdlg;//, HeapTrc;
 
 { TForm2 }
@@ -40,9 +41,8 @@ begin
   end;
 end;
 
-initialization
+//initialization
   //SetHeapTraceOutput('heapTrace.txt');
-  {$I uform2.lrs}
 
 end.
 
