@@ -1,60 +1,68 @@
 object formImport: TformImport
   Left = 574
-  Height = 553
+  Height = 571
   Top = 133
-  Width = 526
+  Width = 598
   ActiveControl = Button1
   BorderStyle = bsSizeToolWin
   Caption = 'WSDL Importer'
-  ClientHeight = 553
-  ClientWidth = 526
-  LCLVersion = '1.2.2.0'
+  ClientHeight = 571
+  ClientWidth = 598
+  LCLVersion = '1.3'
   object Panel2: TPanel
     Left = 0
-    Height = 505
+    Height = 523
     Top = 0
-    Width = 526
+    Width = 598
     Align = alClient
-    ClientHeight = 505
-    ClientWidth = 526
+    ClientHeight = 523
+    ClientWidth = 598
     TabOrder = 1
     object GroupBox1: TGroupBox
       Left = 8
-      Height = 168
+      Height = 176
       Top = 8
-      Width = 506
+      Width = 578
       Anchors = [akTop, akLeft, akRight]
-      ClientHeight = 150
-      ClientWidth = 502
+      ClientHeight = 154
+      ClientWidth = 574
       TabOrder = 0
       object Label1: TLabel
         Left = 9
-        Height = 13
+        Height = 20
         Top = 4
-        Width = 185
+        Width = 257
         Caption = 'Web Services Description File ( WSDL )'
         ParentColor = False
       end
       object Label2: TLabel
+        AnchorSideTop.Control = edtInputFile
+        AnchorSideTop.Side = asrBottom
         Left = 9
-        Height = 13
-        Top = 69
-        Width = 80
+        Height = 20
+        Top = 60
+        Width = 109
+        BorderSpacing.Top = 6
         Caption = 'Output directory'
         ParentColor = False
       end
       object edtInputFile: TEdit
+        AnchorSideTop.Control = Label1
+        AnchorSideTop.Side = asrBottom
         Left = 9
-        Height = 21
-        Top = 31
-        Width = 380
+        Height = 28
+        Top = 26
+        Width = 452
         Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 2
         TabOrder = 0
       end
       object Button2: TButton
-        Left = 407
+        AnchorSideTop.Control = edtInputFile
+        AnchorSideTop.Side = asrCenter
+        Left = 479
         Height = 25
-        Top = 31
+        Top = 28
         Width = 40
         Action = actOpenFile
         Anchors = [akTop, akRight]
@@ -62,17 +70,22 @@ object formImport: TformImport
         TabOrder = 1
       end
       object edtOutputDir: TEdit
+        AnchorSideTop.Control = Label2
+        AnchorSideTop.Side = asrBottom
         Left = 9
-        Height = 21
-        Top = 88
-        Width = 380
+        Height = 28
+        Top = 82
+        Width = 452
         Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 2
         TabOrder = 2
       end
       object Button3: TButton
-        Left = 407
+        AnchorSideTop.Control = edtOutputDir
+        AnchorSideTop.Side = asrCenter
+        Left = 479
         Height = 25
-        Top = 88
+        Top = 84
         Width = 40
         Action = actOpenDir
         Anchors = [akTop, akRight]
@@ -80,50 +93,59 @@ object formImport: TformImport
         TabOrder = 3
       end
       object edtAddToProject: TCheckBox
+        AnchorSideTop.Control = edtOutputDir
+        AnchorSideTop.Side = asrBottom
         Left = 9
-        Height = 17
-        Top = 128
-        Width = 183
+        Height = 24
+        Top = 116
+        Width = 249
+        BorderSpacing.Top = 6
         Caption = 'Add the generated files to project'
         TabOrder = 4
       end
     end
-    object GroupBox2: TGroupBox
+    object GroupBox3: TGroupBox
+      AnchorSideTop.Control = GroupBox2
+      AnchorSideTop.Side = asrBottom
       Left = 8
-      Height = 129
-      Top = 368
-      Width = 506
+      Height = 157
+      Top = 358
+      Width = 578
       Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Top = 3
       Caption = '  Messages  '
-      ClientHeight = 111
-      ClientWidth = 502
-      TabOrder = 2
+      ClientHeight = 135
+      ClientWidth = 574
+      TabOrder = 1
       object mmoLog: TMemo
         Left = 0
-        Height = 111
+        Height = 135
         Top = 0
-        Width = 502
+        Width = 574
         Align = alClient
         ReadOnly = True
         ScrollBars = ssBoth
         TabOrder = 0
       end
     end
-    object GroupBox3: TGroupBox
+    object GroupBox2: TGroupBox
+      AnchorSideTop.Control = GroupBox1
+      AnchorSideTop.Side = asrBottom
       Left = 8
       Height = 168
-      Top = 184
-      Width = 506
+      Top = 187
+      Width = 578
       Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 3
       Caption = '  Options  '
-      ClientHeight = 150
-      ClientWidth = 502
-      TabOrder = 1
+      ClientHeight = 146
+      ClientWidth = 574
+      TabOrder = 2
       object edtOptionIntf: TCheckBox
         Left = 9
-        Height = 17
+        Height = 24
         Top = 8
-        Width = 82
+        Width = 107
         Caption = 'Interface file'
         Checked = True
         OnClick = edtOptionIntfClick
@@ -131,63 +153,78 @@ object formImport: TformImport
         TabOrder = 0
       end
       object edtOptionProxy: TCheckBox
-        Left = 9
-        Height = 17
-        Top = 56
-        Width = 65
+        AnchorSideTop.Control = edtOptionIntfALL
+        AnchorSideTop.Side = asrBottom
+        Left = 8
+        Height = 24
+        Top = 60
+        Width = 85
+        BorderSpacing.Top = 2
         Caption = 'Proxy file'
         Checked = True
         State = cbChecked
         TabOrder = 2
       end
       object edtOptionBinder: TCheckBox
-        Left = 294
-        Height = 17
+        AnchorSideTop.Control = edtOptionIntf
+        Left = 318
+        Height = 24
         Top = 8
-        Width = 105
+        Width = 143
         Caption = 'Service Binder file'
         TabOrder = 3
       end
       object edtOptionImp: TCheckBox
-        Left = 294
-        Height = 17
-        Top = 56
-        Width = 155
+        AnchorSideLeft.Control = edtOptionBinder
+        AnchorSideTop.Control = edtOptionProxy
+        Left = 318
+        Height = 24
+        Top = 60
+        Width = 216
         Caption = 'Implementation Skeleton file'
         TabOrder = 4
       end
       object edtOptionIntfALL: TCheckBox
+        AnchorSideTop.Control = edtOptionIntf
+        AnchorSideTop.Side = asrBottom
         Left = 30
-        Height = 17
-        Top = 32
-        Width = 90
+        Height = 24
+        Top = 34
+        Width = 118
+        BorderSpacing.Top = 2
         Caption = 'Parse all types'
         OnClick = edtOptionIntfALLClick
         TabOrder = 1
       end
       object edtOptionWrappedParams: TCheckBox
+        AnchorSideTop.Control = edtOptionProxy
+        AnchorSideTop.Side = asrBottom
         Left = 9
-        Height = 17
-        Top = 90
-        Width = 292
-        Anchors = [akLeft, akBottom]
+        Height = 24
+        Top = 86
+        Width = 390
+        BorderSpacing.Top = 2
         Caption = 'Generate easy access interface for wrapped parameters'
         TabOrder = 5
       end
       object edtDocAsComments: TCheckBox
+        AnchorSideTop.Control = edtOptionWrappedParams
+        AnchorSideTop.Side = asrBottom
         Left = 9
-        Height = 17
-        Top = 121
-        Width = 204
-        Anchors = [akLeft, akBottom]
+        Height = 24
+        Top = 112
+        Width = 280
+        BorderSpacing.Top = 2
         Caption = 'Generate documentation as comments'
         TabOrder = 6
       end
       object edtGenCollection: TCheckBox
-        Left = 294
-        Height = 17
-        Top = 121
-        Width = 190
+        AnchorSideLeft.Control = edtOptionImp
+        AnchorSideTop.Control = edtDocAsComments
+        Left = 318
+        Height = 24
+        Top = 112
+        Width = 256
         Caption = 'Generate object array as Collection'
         TabOrder = 7
       end
@@ -196,14 +233,14 @@ object formImport: TformImport
   object Panel1: TPanel
     Left = 0
     Height = 48
-    Top = 505
-    Width = 526
+    Top = 523
+    Width = 598
     Align = alBottom
     ClientHeight = 48
-    ClientWidth = 526
+    ClientWidth = 598
     TabOrder = 0
     object Button1: TButton
-      Left = 351
+      Left = 423
       Height = 25
       Top = 8
       Width = 75
@@ -214,7 +251,7 @@ object formImport: TformImport
       TabOrder = 0
     end
     object Button4: TButton
-      Left = 439
+      Left = 511
       Height = 25
       Top = 8
       Width = 75
