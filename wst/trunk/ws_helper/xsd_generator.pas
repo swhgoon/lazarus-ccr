@@ -943,17 +943,30 @@ procedure TClassTypeDefinition_TypeHandler.Generate(
   end;
 
 var
-  cplxNode, sqcNode, derivationNode, defSchemaNode : TDOMElement;
+  cplxNode, sqcNode, derivationNode, defSchemaNode, propNode : TDOMElement;
+
+  procedure DoTypeUsage(ItmType: TPasType);
+  var
+    typeHelper : IXsdSpecialTypeHelper;
+    names: TStrings;
+    ExtName, shortName, nameSpace : string;
+  begin
+    ExtName := AContainer.GetExternalName(ItmType);
+    nameSpace := GetTypeNameSpace(AContainer,ItmType);
+    names := GetOwner().GetPreferedShortNames();
+    shortName := GetNameSpaceShortName(nameSpace, GetSchemaNode(ADocument), names);
+    propNode.SetAttribute(s_type,Format('%s:%s',[shortName,ExtName]));
+    if ItmType.InheritsFrom(TPasNativeSpecialSimpleType) then
+      if GetRegistry().FindHelper(ItmType,typeHelper) then
+        typeHelper.HandleTypeUsage(propNode,defSchemaNode);
+  end;
 
   procedure ProcessProperty(const AProp : TPasProperty);
   var
     p : TPasProperty;
     s : string;
-    propNode : TDOMElement;
-    propTypItm, propItmUltimeType, arrayItemType : TPasType;
-    prop_ns_shortName : string;
+    propTypItm, propItmUltimeType : TPasType;
     isEmbeddedArray : Boolean;
-    typeHelper : IXsdSpecialTypeHelper;
   begin
     p := AProp;
     if AnsiSameText(sWST_PROP_STORE_PREFIX,Copy(p.StoredAccessorName,1,Length(sWST_PROP_STORE_PREFIX))) or 
@@ -978,29 +991,10 @@ var
         propItmUltimeType := GetUltimeType(propTypItm);
         isEmbeddedArray := propItmUltimeType.InheritsFrom(TPasArrayType) and
                            ( AContainer.GetArrayStyle(TPasArrayType(propItmUltimeType)) = asEmbeded );
-        if isEmbeddedArray then begin
-          s := AContainer.GetExternalName(TPasArrayType(propItmUltimeType).ElType);
-          arrayItemType := TPasArrayType(propItmUltimeType).ElType;
-          prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,arrayItemType),GetSchemaNode(ADocument),GetOwner().GetPreferedShortNames());
-          propNode.SetAttribute(s_type,Format('%s:%s',[prop_ns_shortName,s]));
-          if arrayItemType.InheritsFrom(TPasNativeSpecialSimpleType) then begin
-            if GetRegistry().FindHelper(arrayItemType,typeHelper) then
-              typeHelper.HandleTypeUsage(propNode,defSchemaNode);
-          end;
-        end else begin
-          s := AContainer.GetExternalName(propTypItm);
-          prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,propTypItm),GetSchemaNode(ADocument),GetOwner().GetPreferedShortNames());
-          propNode.SetAttribute(s_type,Format('%s:%s',[prop_ns_shortName,s]));
-          if propTypItm.InheritsFrom(TPasNativeSpecialSimpleType) then begin
-            if GetRegistry().FindHelper(propTypItm,typeHelper) then
-              typeHelper.HandleTypeUsage(propNode,defSchemaNode);
-          end;
-        end;
-        {propNode.SetAttribute(s_type,Format('%s:%s',[prop_ns_shortName,s]));
-        if propTypItm.InheritsFrom(TPasNativeSpecialSimpleType) then begin
-          if GetRegistry().FindHelper(propTypItm,typeHelper) then
-            typeHelper.HandleTypeUsage(propNode,defSchemaNode);
-        end; }
+        if isEmbeddedArray then
+          DoTypeUsage(TPasArrayType(propItmUltimeType).ElType)
+        else
+          DoTypeUsage(propTypItm);
         if ( Length(p.DefaultValue) > 0 ) then
           propNode.SetAttribute(s_default,p.DefaultValue);
         if AContainer.IsAttributeProperty(p) then begin
