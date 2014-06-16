@@ -46,9 +46,16 @@ uses
   clocale, // needed to initialize default locale settings on Linux.
   {$endif}
   Classes, SysUtils, Controls, LCLType, Graphics, Math, StdCtrls, Buttons,
-  ExtCtrls, Forms, ComCtrls, Types, LMessages, LazUTF8, CalendarControlWrapper;
+  ExtCtrls, Forms, ComCtrls, Types, LMessages, LazUTF8, CalendarControlWrapper,
+  LCLVersion;
 
 const
+{ With future Lazarus 1.4, use DateTimeCtrls package: }
+{$if lcl_fullversion >= 01040000}
+{$Hint From Lazarus version 1.4, package ZVDateTimeCtrls should be replaced by
+ package DateTimeCtrls, which is included in Lazarus distribution.}
+{$endif}
+
   { We will deal with the NullDate value the special way. It will be especially
     useful for dealing with null values from database. }
   NullDate = TDateTime(Math.MaxDouble);

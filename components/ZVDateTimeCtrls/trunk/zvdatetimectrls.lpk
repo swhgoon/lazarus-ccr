@@ -26,7 +26,7 @@
     </CompilerOptions>
     <Description Value="TZVDateTimePicker - the cross-platform control behaving much like VCL's TDateTimePicker. TDBZVDateTimePicker - the data-aware version of TZVDateTimePicker"/>
     <License Value="Modified LGPL"/>
-    <Version Major="1" Minor="4" Release="1"/>
+    <Version Major="1" Minor="5"/>
     <Files Count="7">
       <Item1>
         <Filename Value="zvdatetimepicker.pas"/>

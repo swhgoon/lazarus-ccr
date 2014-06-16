@@ -1,4 +1,4 @@
-﻿===================================================
+===================================================
 Version 1.0 -- 27. Feb. 2010.
 
 Initial release
@@ -66,3 +66,16 @@ These are main changes:
    In Qt ws, the client rect of the control was not calculated correctly. Fixed now.
    
    Plus many internal changes...
+
+===================================================
+
+Version 1.5 -- 16. June 2014.
+
+These are main changes:
+
+   New properties added: AutoAdvance, Cascade, AutoButtonSize, HideDateTimeParts, CalendarWrapperClass (public), ShowMonthNames, MonthNames.
+
+   Showing month names instead of numbers is possible now, with new properties ShowMonthNames and MonthNames.
+
+   Now possible to use some other calendar control instead of LCL's TCalendar, with CalendarWrapperClass property.
+
