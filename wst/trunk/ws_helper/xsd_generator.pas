@@ -971,9 +971,9 @@ var
       end;
       propNode.SetAttribute(s_name,AContainer.GetExternalName(p));
       propTypItm := p.VarType;
+      if Assigned(propTypItm) and propTypItm.InheritsFrom(TPasUnresolvedTypeRef) then
+        propTypItm := AContainer.FindElement(AContainer.GetExternalName(propTypItm)) as TPasType;
       if Assigned(propTypItm) then begin
-        if propTypItm.InheritsFrom(TPasUnresolvedTypeRef) then
-          propTypItm := AContainer.FindElement(AContainer.GetExternalName(propTypItm)) as TPasType;
         //prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,propTypItm),ADocument,GetOwner().GetPreferedShortNames());
         propItmUltimeType := GetUltimeType(propTypItm);
         isEmbeddedArray := propItmUltimeType.InheritsFrom(TPasArrayType) and
