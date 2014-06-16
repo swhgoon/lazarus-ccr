@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, Buttons, ActnList, logger_intf;
+  ExtCtrls, Buttons, ActnList, logger_intf {$IFDEF WST_IDE}, LCLVersion {$ENDIF};
 
 type
 
@@ -73,7 +73,7 @@ implementation
 
 uses DOM, XMLRead, wst_fpc_xml, pastree, pascal_parser_intf, wsdl_parser, source_utils,
      generator, metadata_generator, binary_streamer, wst_resources_utils
-     {$IFDEF WST_IDE},LazIDEIntf{$ENDIF},locators,xsd_parser;
+     {$IFDEF WST_IDE},LazIDEIntf, ProjectIntf {$ENDIF},locators,xsd_parser;
 
 type
   TSourceType = xgoInterface .. xgoBinder;
@@ -280,14 +280,13 @@ var
   tree : TwstPasTreeContainer;
   oldCursor : TCursor;
   srcMgnr : ISourceManager;
-  i : Integer;
   genOptions : TGenOptions;
   fileSet : TSourceTypes;
+  destPath : string;
   {$IFDEF WST_IDE}
-  j, c : Integer;
+  i, j, c : Integer;
   srcItm : ISourceStream;
   trueOpenFlags, openFlags : TOpenFlags;
-  destPath : string;
   {$ENDIF}
 begin
   oldCursor := Screen.Cursor;
@@ -297,28 +296,25 @@ begin
     try
       genOptions := GetOptions();
       fileSet := genOptions - [xgoWrappedParameter,xgoDocAsComments];
-      srcMgnr := GenerateSource(
-                   tree,fileSet,otFileSystem,IncludeTrailingPathDelimiter(edtOutputDir.Text),
-                   @ShowStatusMessage,
-                   genOptions
-                 );
+      destPath := IncludeTrailingPathDelimiter(edtOutputDir.Text);
+      srcMgnr := GenerateSource(tree, fileSet, otFileSystem, destPath,
+                                @ShowStatusMessage, genOptions);
       ShowStatusMessage(mtInfo,'');
       {$IFDEF WST_IDE}
-      {openFlags := [ofRevert];
+      {$IF lcl_fullversion >= 1030000}
+      openFlags := [ofRevert];
       if edtAddToProject.Checked then begin
-        Include(openFlags,ofAddToProject);
+        Include(openFlags, ofAddToProject);
       end;
-      destPath := IncludeTrailingPathDelimiter(edtOutputDir.Text);
       c := srcMgnr.GetCount();
       for i := 0 to Pred(c) do begin
         srcItm := srcMgnr.GetItem(i);
         trueOpenFlags := openFlags;
-        for j := 0 to Pred(LazarusIDE.ActiveProject.FileCount) do begin
-          if AnsiSameText(srcItm.GetFileName(),ExtractFileName(LazarusIDE.ActiveProject.Files[j].Filename)) then
-            trueOpenFlags := trueOpenFlags - [ofAddToProject];
-        end;
-        LazarusIDE.DoOpenEditorFile(destPath + srcItm.GetFileName(),-1,trueOpenFlags);
-      end;}
+        if Assigned( LazarusIDE.ActiveProject.FindFile(srcItm.GetFileName(), [pfsfOnlyProjectFiles]) ) then
+          Exclude(trueOpenFlags, ofAddToProject);
+        LazarusIDE.DoOpenEditorFile(destPath + srcItm.GetFileName(), -1, -1, trueOpenFlags);
+      end;
+      {$ENDIF}
       {$ENDIF}
     finally
       srcMgnr := nil;
