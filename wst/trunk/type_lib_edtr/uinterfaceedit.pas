@@ -151,6 +151,7 @@ begin
   trvMethods.BeginUpdate();
   try
     node.Free();
+    (locObj.Parent as TPasClassType).Members.Extract(locObj);
     locObj.Release();
   finally
     trvMethods.EndUpdate();
