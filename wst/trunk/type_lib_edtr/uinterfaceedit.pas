@@ -152,7 +152,6 @@ begin
   try
     node.Free();
     locObj.Release();
-    node.Free();
   finally
     trvMethods.EndUpdate();
   end;
