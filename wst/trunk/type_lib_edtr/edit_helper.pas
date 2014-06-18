@@ -249,6 +249,10 @@ type
       var AObject : TPasElement;
           ASymbolTable : TwstPasTreeContainer
     ):Boolean;override;
+    class procedure DeleteObject(
+      AObject : TPasElement;
+      ASymbolTable : TwstPasTreeContainer
+    );override;
   end;
 
   { TArgumentUpdater }
@@ -564,6 +568,22 @@ begin
   finally
     f.Release();
   end;
+end;
+
+class procedure TMethodUpdater.DeleteObject(
+  AObject      : TPasElement;
+  ASymbolTable : TwstPasTreeContainer
+);
+var
+  owner : TPasClassType;
+begin
+  if (AObject = nil) then
+    exit;
+  if (AObject.RefCount > 0) then
+    raise EWstEditException.CreateFmt(s_CantDeleteStillReferencedObject,[AObject.Name]);
+  owner := AObject.Parent as TPasClassType;
+  owner.Members.Extract(AObject);
+  AObject.Release();
 end;
 
 { TInterfaceUpdater }
