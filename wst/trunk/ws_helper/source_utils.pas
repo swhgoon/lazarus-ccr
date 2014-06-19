@@ -16,7 +16,7 @@ unit source_utils;
 interface
 
 uses
-  Classes, SysUtils; 
+  Classes, SysUtils {$IFDEF WST_IDE}, LazFileUtils {$ENDIF};
   
 Type
 
@@ -225,8 +225,14 @@ begin
 end;
 
 procedure TSourceStream.SaveToFile(const APath: string);
+var
+  s: string;
 begin
-  FStream.SaveToFile(IncludeTrailingPathDelimiter(APath) + GetFileName());
+  s := IncludeTrailingPathDelimiter(APath) + GetFileName();
+  FStream.SaveToFile(s);
+  {$IFDEF WST_IDE}
+  LazFileUtils.InvalidateFileStateCache(s);
+  {$ENDIF}
 end;
 
 procedure TSourceStream.Indent();

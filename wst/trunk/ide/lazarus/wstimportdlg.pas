@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, Buttons, ActnList, logger_intf {$IFDEF WST_IDE}, LCLVersion {$ENDIF};
+  ExtCtrls, Buttons, ActnList, logger_intf;
 
 type
 
@@ -284,9 +284,9 @@ var
   fileSet : TSourceTypes;
   destPath : string;
   {$IFDEF WST_IDE}
-  i, j, c : Integer;
+  i, c : Integer;
   srcItm : ISourceStream;
-  trueOpenFlags, openFlags : TOpenFlags;
+  openFlags : TOpenFlags;
   {$ENDIF}
 begin
   oldCursor := Screen.Cursor;
@@ -301,20 +301,14 @@ begin
                                 @ShowStatusMessage, genOptions);
       ShowStatusMessage(mtInfo,'');
       {$IFDEF WST_IDE}
-      {$IF lcl_fullversion >= 1030000}
-      openFlags := [ofRevert];
-      if edtAddToProject.Checked then begin
+      openFlags := []; // Could be [ofRevert] but works just fine without it.
+      if edtAddToProject.Checked then
         Include(openFlags, ofAddToProject);
-      end;
       c := srcMgnr.GetCount();
       for i := 0 to Pred(c) do begin
         srcItm := srcMgnr.GetItem(i);
-        trueOpenFlags := openFlags;
-        if Assigned( LazarusIDE.ActiveProject.FindFile(srcItm.GetFileName(), [pfsfOnlyProjectFiles]) ) then
-          Exclude(trueOpenFlags, ofAddToProject);
-        LazarusIDE.DoOpenEditorFile(destPath + srcItm.GetFileName(), -1, -1, trueOpenFlags);
+        LazarusIDE.DoOpenEditorFile(destPath + srcItm.GetFileName(), -1, -1, OpenFlags);
       end;
-      {$ENDIF}
       {$ENDIF}
     finally
       srcMgnr := nil;
