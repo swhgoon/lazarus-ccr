@@ -53,6 +53,12 @@ uses
   ;
 
 type
+TPlayerStatusEvent = procedure(var Msg: String) of Object;
+type
+TPlayerErrorEvent = procedure(var Msg: String) of Object;
+
+
+type
 
   { TCustomMPlayerControl }
 
@@ -63,10 +69,14 @@ type
     FLoop: integer;
     FMPlayerPath: string;
     FPaused: boolean;
+    FPlayerInfos:boolean;
     fPlayerProcess: TProcessUTF8;
     fTimer: TTimer;
     FVolume: integer;
     FCanvas: TCanvas;
+    FPlayerStatusEvent : TPlayerStatusEvent;
+    FPlayerErrorEvent : TPlayerErrorEvent;
+
     procedure SetFilename(const AValue: string);
     procedure SetLoop(const AValue: integer);
     procedure SetMPlayerPath(const AValue: string);
@@ -93,8 +103,12 @@ type
     property MPlayerPath: string read FMPlayerPath write SetMPlayerPath;
     property PlayerProcess: TProcessUTF8 read fPlayerProcess;
     property Paused: boolean read FPaused write SetPaused;
+    property PlayerInfos: boolean read FPlayerInfos write FPlayerInfos;
     property Loop: integer read FLoop write SetLoop; // -1 no, 0 forever, 1 once, 2 twice, ...
     property Volume: integer read FVolume write SetVolume;
+  published
+    property OnPlayerStatusEvent: TPlayerStatusEvent read FPlayerStatusEvent write FPlayerStatusEvent;
+    property OnPlayerErrorEvent: TPlayerErrorEvent read FPlayerErrorEvent write FPlayerErrorEvent;
   end;
 
   TMPlayerControl = class(TCustomMPlayerControl)
@@ -138,23 +152,38 @@ end;
 
 { TCustomMPlayerControl }
 
+
 procedure TCustomMPlayerControl.TimerEvent(Sender: TObject);
 var
   OutList, ErrList:TStringlist;
+  x:integer;
+  msg:string;
 begin
   if Running then begin
-    if fPlayerProcess.Output.NumBytesAvailable > 0 then begin
+    if (fPlayerProcess <> nil) and (fPlayerProcess.Output.NumBytesAvailable > 0) then begin
       OutList:=TStringlist.create;
       try
         OutList.LoadFromStream(fPlayerProcess.Output);
+        if Assigned(fPlayerStatusEvent) then begin
+          for x := 0 to OutList.Count -1 do begin
+            msg:=OutList[x];
+            fPlayerStatusEvent(msg);
+          end;
+        end;
       finally
         OutList.free;
       end;
     end;
-    if fPlayerProcess.StdErr.NumBytesAvailable > 0 then begin
+    if (fPlayerProcess <> nil) and (fPlayerProcess.StdErr.NumBytesAvailable > 0) then begin
       ErrList:=TStringlist.create;
       try
         ErrList.LoadFromStream(fPlayerProcess.Stderr);
+        if Assigned(fPlayerErrorEvent) then begin
+          for x := 0 to ErrList.Count -1 do begin
+            msg:=ErrList[x];
+            fPlayerErrorEvent(msg);
+          end;
+        end;
       finally
         ErrList.free;
       end;
@@ -251,6 +280,7 @@ begin
 
   fMPlayerPath:='mplayer'+GetExeExt;
   fTimer:=TTimer.Create(Self);
+  fTimer.Interval:=10;
   fTimer.OnTimer:=@TimerEvent;
 end;
 
@@ -314,7 +344,10 @@ begin
 
   fPlayerProcess:=TProcessUTF8.Create(Self);
   fPlayerProcess.Options:=fPlayerProcess.Options+[poUsePipes,poNoConsole];
-  fPlayerProcess.CommandLine:=ExePath+' -slave -quiet -wid '+IntToStr(CurWindowID)+' '+StartParam+' '+StrToCmdLineParam(Filename);
+  if FPlayerInfos then
+    fPlayerProcess.CommandLine:=ExePath+' -slave -noquiet -wid '+IntToStr(CurWindowID)+' '+StartParam+' '+StrToCmdLineParam(Filename)
+  else
+    fPlayerProcess.CommandLine:=ExePath+' -slave -quiet -wid '+IntToStr(CurWindowID)+' '+StartParam+' '+StrToCmdLineParam(Filename);
   DebugLn(['TCustomMPlayerControl.Play ',fPlayerProcess.CommandLine]);
 
   fPlayerProcess.Execute;
