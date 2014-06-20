@@ -289,6 +289,7 @@ begin
   end;
   try
     LoadFromObject();
+    ActiveControl := edtName;
     Result := ( ShowModal() = mrOK );
     if Result then begin
       SaveToObject();

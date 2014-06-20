@@ -1,14 +1,14 @@
 object fArgEdit: TfArgEdit
-  Left = 809
+  Left = 807
   Height = 393
-  Top = 203
+  Top = 178
   Width = 400
   BorderStyle = bsSizeToolWin
   Caption = 'fArgEdit'
   ClientHeight = 393
   ClientWidth = 400
   Position = poMainFormCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '1.2.2.0'
   object Panel1: TPanel
     Left = 0
     Height = 50
@@ -57,17 +57,17 @@ object fArgEdit: TfArgEdit
       ClientWidth = 392
       object Label1: TLabel
         Left = 20
-        Height = 14
+        Height = 13
         Top = 26
-        Width = 28
+        Width = 27
         Caption = 'Name'
         ParentColor = False
       end
       object Label2: TLabel
         Left = 20
-        Height = 14
+        Height = 13
         Top = 95
-        Width = 25
+        Width = 24
         Caption = 'Type'
         ParentColor = False
       end

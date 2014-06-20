@@ -252,6 +252,7 @@ begin
   FUpdateType := AUpdateType;
   FObject := AObject;
   LoadFromObject();
+  Self.ActiveControl := edtName;
   Result := ( ShowModal() = mrOK );
   if Result then begin
     SaveToObject();

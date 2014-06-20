@@ -1,7 +1,7 @@
 object fInterfaceEdit: TfInterfaceEdit
   Left = 283
   Height = 564
-  Top = 133
+  Top = 117
   Width = 531
   HorzScrollBar.Page = 530
   VertScrollBar.Page = 563

@@ -1,7 +1,7 @@
 object fPropEdit: TfPropEdit
-  Left = 486
+  Left = 485
   Height = 326
-  Top = 236
+  Top = 207
   Width = 324
   HorzScrollBar.Page = 323
   VertScrollBar.Page = 325
@@ -11,7 +11,7 @@ object fPropEdit: TfPropEdit
   ClientHeight = 326
   ClientWidth = 324
   Position = poDesktopCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.2.2.0'
   object Panel1: TPanel
     Left = 0
     Height = 50
@@ -60,17 +60,17 @@ object fPropEdit: TfPropEdit
       ClientWidth = 316
       object Label1: TLabel
         Left = 20
-        Height = 14
+        Height = 13
         Top = 24
-        Width = 28
+        Width = 27
         Caption = 'Name'
         ParentColor = False
       end
       object Label2: TLabel
         Left = 20
-        Height = 14
+        Height = 13
         Top = 98
-        Width = 25
+        Width = 24
         Caption = 'Type'
         ParentColor = False
       end
@@ -94,7 +94,7 @@ object fPropEdit: TfPropEdit
         Left = 20
         Height = 17
         Top = 170
-        Width = 106
+        Width = 108
         Caption = 'Attribute Property'
         TabOrder = 2
       end
@@ -102,7 +102,7 @@ object fPropEdit: TfPropEdit
         Left = 20
         Height = 17
         Top = 218
-        Width = 103
+        Width = 105
         Caption = 'Optional property'
         Font.Style = [fsItalic]
         ParentFont = False

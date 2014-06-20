@@ -238,6 +238,7 @@ begin
   FUpdateType := AUpdateType;
   FObject := AObject;
   LoadFromObject();
+  ActiveControl := edtName;
   Result := ( ShowModal() = mrOK );
   if Result or FApplied then begin
     SaveToObject();

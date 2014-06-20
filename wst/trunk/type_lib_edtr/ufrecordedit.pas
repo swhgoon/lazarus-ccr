@@ -354,6 +354,7 @@ begin
   end;
   try
     LoadFromObject();
+    ActiveControl := edtName;
     Result := FApplied or ( ShowModal() = mrOK );
     if Result then begin
       try
