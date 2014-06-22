@@ -2488,7 +2488,7 @@ type
     procedure TVMGetItemRect(var Message: TLMessage); message TVM_GETITEMRECT;
     procedure TVMGetNextItem(var Message: TLMessage); message TVM_GETNEXTITEM;
     {$endif}
-    procedure WMCancelMode(var Message: TLMNoParams); message LM_CANCELMODE;
+    procedure WMCancelMode(var Message: TLMessage); message LM_CANCELMODE;
     procedure WMChangeState(var Message: TLMessage); message WM_CHANGESTATE;
     procedure WMChar(var Message: TLMChar); message LM_CHAR;
     procedure WMContextMenu(var Message: TLMContextMenu); message LM_CONTEXTMENU;
@@ -15276,7 +15276,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.WMCancelMode(var Message: TLMNoParams);
+procedure TBaseVirtualTree.WMCancelMode(var Message: TLMessage);
 
 begin
   {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMCancelMode');{$endif}
@@ -15290,8 +15290,7 @@ begin
 
   DoStateChange([], [tsClearPending, tsEditPending, tsOLEDragPending, tsVCLDragPending, tsDrawSelecting,
     tsDrawSelPending, tsIncrementalSearching]);
-  //lcl does not has a inherited procedure
-  //inherited WMCancelMode(Message);
+  inherited WMCancelMode(Message);
   {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMCancelMode');{$endif}
 end;
 
