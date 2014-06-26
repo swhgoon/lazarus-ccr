@@ -40,6 +40,7 @@ uses
 
 const
   RxCtrllPageName = 'RX Controls';
+  RxToolsPageName = 'RX Tools';
 
 procedure Register;
 
@@ -49,7 +50,7 @@ uses
   curredit, rxswitch, rxdice, rxtoolbar, rxxpman, PageMngr, RxAppIcon,
   Dialogs, ComponentEditors, DBPropEdits, DB, rxctrls,
   RxCustomChartPanel, AutoPanel, pickdate, rxconst, tooledit, rxclock,
-  rxpopupunit, rxspin, RxTimeEdit,
+  rxpopupunit, rxspin, RxTimeEdit, rxDateRangeEditUnit,
   RxAboutDialog, RxViewsPanel, RxMDI;
 
 {$IFDEF USE_TRxAppIcon}
@@ -159,7 +160,12 @@ end;
 
 procedure RegisterRxHistoryNavigator;
 begin
-  RegisterComponents('RX Tools',[TRxHistoryNavigator]);
+  RegisterComponents(RxToolsPageName,[TRxHistoryNavigator]);
+end;
+
+procedure RegisterrxDateRangeEditUnit;
+begin
+  RegisterComponents(RxCtrllPageName,[TRxDateRangeEdit]);
 end;
 
 procedure Register;
@@ -190,6 +196,8 @@ begin
   RegisterUnit('RxViewsPanel', @RegisterRxViewsPanel);
   RegisterUnit('RxHistoryNavigator', @RegisterRxHistoryNavigator);
   RegisterUnit('RxMDI', @RegisterRxMDI);
+  RegisterUnit('rxDateRangeEditUnit', @RegisterrxDateRangeEditUnit);
+
 end;
 
 initialization

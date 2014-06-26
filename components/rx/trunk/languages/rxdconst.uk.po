@@ -84,8 +84,8 @@ msgstr "Поле '%s' не може бути використане в вира�
 
 #: rxdconst.sexprbadnulltest
 #, fuzzy
-#| msgid "NULL-values enabled in '=' Ð¸ '<>'"
-msgid "NULL-values enabled in '=' и '<>'"
+#| msgid "NULL-values enabled in '=' и '<>'"
+msgid "NULL-values enabled in '=' Ð¸ '<>'"
 msgstr "NULL-значення дозволені тільки у виразах '=' і '<>'"
 
 #: rxdconst.sexprexpected
@@ -302,6 +302,15 @@ msgstr "Вперед"
 #: rxdconst.srxdbgridfindtext
 msgid "Text to find"
 msgstr "Текст для пошуку"
+
+#: rxdconst.srxdbgridselapplycaption
+msgctxt "rxdconst.srxdbgridselapplycaption"
+msgid "Apply"
+msgstr "Застосувати"
+
+#: rxdconst.srxdbgridselapplyhint
+msgid "Apply current columns setings"
+msgstr ""
 
 #: rxdconst.srxdbgridselcolcaption
 msgid "Grid columns"

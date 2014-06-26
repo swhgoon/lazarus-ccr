@@ -345,6 +345,7 @@ procedure TRxMDIPanel.ChildWindowsAdd(F: TForm);
 var
   B:TRxMDIButton;
 begin
+  Assert(Assigned(TaskPanel), 'Нет связанной панели задач');
   HideCurrentWindow;
   F.BorderStyle:=bsNone;
   F.Align:=alClient;

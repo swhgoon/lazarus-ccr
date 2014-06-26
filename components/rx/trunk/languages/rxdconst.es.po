@@ -75,8 +75,8 @@ msgstr "Campo '%s' no usado en expresión de filtro"
 
 #: rxdconst.sexprbadnulltest
 #, fuzzy
-#| msgid "NULL-values enabled in '=' Ð¸ '<>'"
-msgid "NULL-values enabled in '=' и '<>'"
+#| msgid "NULL-values enabled in '=' и '<>'"
+msgid "NULL-values enabled in '=' Ð¸ '<>'"
 msgstr "Valor nulo habilitado en '=' y '<>'"
 
 #: rxdconst.sexprexpected
@@ -293,6 +293,15 @@ msgstr "Hacia Delante"
 #: rxdconst.srxdbgridfindtext
 msgid "Text to find"
 msgstr "Texto a Buscar"
+
+#: rxdconst.srxdbgridselapplycaption
+msgctxt "rxdconst.srxdbgridselapplycaption"
+msgid "Apply"
+msgstr "Aceptar"
+
+#: rxdconst.srxdbgridselapplyhint
+msgid "Apply current columns setings"
+msgstr ""
 
 #: rxdconst.srxdbgridselcolcaption
 msgid "Grid columns"

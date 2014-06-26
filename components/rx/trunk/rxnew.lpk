@@ -17,9 +17,6 @@
           <UseAnsiStrings Value="False"/>
         </SyntaxOptions>
       </Parsing>
-      <Other>
-        <CompilerPath Value="$(CompPath)"/>
-      </Other>
     </CompilerOptions>
     <Description Value="Delphi VCL Extensions (RX) 
 Copyright (c) 1998 Master-Bank
@@ -27,7 +24,7 @@ translate to Lazarus by alexs in 2005 - 2014
 "/>
     <License Value="LGPL"/>
     <Version Major="2" Minor="6" Release="5" Build="152"/>
-    <Files Count="68">
+    <Files Count="69">
       <Item1>
         <Filename Value="autopanel.pas"/>
         <UnitName Value="AutoPanel"/>
@@ -303,6 +300,10 @@ translate to Lazarus by alexs in 2005 - 2014
         <Filename Value="rx_lcl.res"/>
         <Type Value="Binary"/>
       </Item68>
+      <Item69>
+        <Filename Value="rxdaterangeeditunit.pas"/>
+        <UnitName Value="rxDateRangeEditUnit"/>
+      </Item69>
     </Files>
     <LazDoc Paths="docs;\usr\local\share\lazarus\components\rxnew\docs"/>
     <i18n>
