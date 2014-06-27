@@ -209,6 +209,7 @@ begin
   FEditYear:=TSpinEdit.Create(Self);
   FEditMonth:=TComboBox.Create(Self);
   FEditMonth.Style:=csDropDownList;
+  FEditMonth.DropDownCount:=12;
   FEditYear.Width:=70;
   FEditMonth.Width:=80;
 

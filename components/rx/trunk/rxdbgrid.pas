@@ -267,7 +267,6 @@ type
     procedure SetLayout(const AValue: TTextLayout);
     procedure SetValue(const AValue: string);
     procedure SetValueType(const AValue: TFooterValueType);
-    function DisplayText: string;
     function GetFieldValue: string;
     function GetRecordsCount: string;
     function GetRecNo: string;
@@ -284,6 +283,7 @@ type
     constructor Create(Owner: TRxColumn);
     property Owner: TRxColumn read FOwner;
     property NumericValue: double read FTestValue;
+    function DisplayText: string;
   published
     property Alignment: TAlignment read FAlignment write SetAlignment default
       taLeftJustify;
