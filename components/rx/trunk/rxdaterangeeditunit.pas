@@ -13,6 +13,7 @@ type
 
   TRxCustomDateRangeEdit = class(TCustomControl)
   private
+    FFlat: Boolean;
     FOnEditChange: TNotifyEvent;
     FOnEditClick: TNotifyEvent;
     FOnEditEnter: TNotifyEvent;
@@ -30,6 +31,7 @@ type
     function GetMonth: word;
     function GetPeriod: TDateTime;
     function GetYear: word;
+    procedure SetFlat(AValue: Boolean);
     procedure SetMonth(AValue: word);
     procedure SetPeriod(AValue: TDateTime);
     procedure SetYear(AValue: word);
@@ -48,6 +50,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    property Flat: Boolean read FFlat write SetFlat default False;
     property Year:word read GetYear write SetYear;
     property Month:word read GetMonth write SetMonth;
     property Period:TDateTime read GetPeriod write SetPeriod;
@@ -61,8 +64,30 @@ type
   TRxDateRangeEdit = class(TRxCustomDateRangeEdit)
   published
     property Autosize default True;
+    property Align;
+    property Anchors;
+    property BiDiMode;
+    property BorderSpacing;
+    property BorderStyle default bsNone;
+    property Constraints;
+    property Color;
+    property Cursor;
+    property Enabled;
+    property Flat;
     property Year;
     property Month;
+    property Hint;
+    property ParentBiDiMode;
+    property ParentColor;
+    property ParentFont;
+    property PopupMenu;
+//    property ReadOnly;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+//    property Text;
+    property Visible;
+
     property OnChange;
     property OnClick;
     property OnEnter;
@@ -118,6 +143,16 @@ end;
 function TRxCustomDateRangeEdit.GetYear: word;
 begin
   Result:=FEditYear.Value;
+end;
+
+procedure TRxCustomDateRangeEdit.SetFlat(AValue: Boolean);
+begin
+  if FFlat=AValue then Exit;
+  FFlat:=AValue;
+  FsbDecMonth.Flat:=FFlat;
+  FsbDecYear.Flat:=FFlat;
+  FsbIncMonth.Flat:=FFlat;
+  FsbIncYear.Flat:=FFlat;
 end;
 
 procedure TRxCustomDateRangeEdit.SetMonth(AValue: word);
