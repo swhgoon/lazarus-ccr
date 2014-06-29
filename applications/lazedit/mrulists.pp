@@ -253,7 +253,7 @@ begin
   Result := False;
   for i := 0 to FList.Count - 1 do
   begin
-    if CompareFileNames(FList.Strings[i], Value, True) = 0 then
+    if CompareFileNames(FList.Strings[i], Value) = 0 then
     begin
       Result := True;
       Index := i;
