@@ -91,11 +91,11 @@ msgstr "Указанный файл не исполняемый, не библи
 
 #: rxconst.sfirsthalfofyear
 msgid "First half of year"
-msgstr ""
+msgstr "Первое полугодие"
 
 #: rxconst.sfirstquarter
 msgid "First quarter"
-msgstr ""
+msgstr "Первый квартал"
 
 #: rxconst.sflatbuttons
 msgid "Flat buttons"
@@ -103,7 +103,7 @@ msgstr "Плавающие кнопки"
 
 #: rxconst.sfourthquarter
 msgid "Fourth quarter"
-msgstr ""
+msgstr "Четвёртый квартал"
 
 #: rxconst.sfpcversion
 msgid "FPC version : "
@@ -183,11 +183,11 @@ msgstr "Поле %s. Требуется значение"
 
 #: rxconst.ssecondhalfofyear
 msgid "Second half of year"
-msgstr ""
+msgstr "Второе полугодие"
 
 #: rxconst.ssecondquarter
 msgid "Second quarter"
-msgstr ""
+msgstr "Второй квартал"
 
 #: rxconst.sshowcaption
 msgid "Show caption"
@@ -207,7 +207,7 @@ msgstr "Целевая ОС : "
 
 #: rxconst.sthirdquarter
 msgid "Third quarter"
-msgstr ""
+msgstr "Третий квартал"
 
 #: rxconst.stocurdate
 msgid "Set current date"
