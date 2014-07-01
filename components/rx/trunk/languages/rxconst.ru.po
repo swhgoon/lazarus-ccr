@@ -89,9 +89,21 @@ msgstr "Элемент управления не найден в валидат�
 msgid "File specified is not an executable file, dynamic-link library, or icon file"
 msgstr "Указанный файл не исполняемый, не библиотека и не иконка"
 
+#: rxconst.sfirsthalfofyear
+msgid "First half of year"
+msgstr ""
+
+#: rxconst.sfirstquarter
+msgid "First quarter"
+msgstr ""
+
 #: rxconst.sflatbuttons
 msgid "Flat buttons"
 msgstr "Плавающие кнопки"
+
+#: rxconst.sfourthquarter
+msgid "Fourth quarter"
+msgstr ""
 
 #: rxconst.sfpcversion
 msgid "FPC version : "
@@ -169,6 +181,14 @@ msgstr "Графический интерфейс QT"
 msgid "Error. Expected value for filed %s."
 msgstr "Поле %s. Требуется значение"
 
+#: rxconst.ssecondhalfofyear
+msgid "Second half of year"
+msgstr ""
+
+#: rxconst.ssecondquarter
+msgid "Second quarter"
+msgstr ""
+
 #: rxconst.sshowcaption
 msgid "Show caption"
 msgstr "Отображать заголовок"
@@ -184,6 +204,10 @@ msgstr "Целевой процессор : "
 #: rxconst.stargetos
 msgid "Target OS : "
 msgstr "Целевая ОС : "
+
+#: rxconst.sthirdquarter
+msgid "Third quarter"
+msgstr ""
 
 #: rxconst.stocurdate
 msgid "Set current date"

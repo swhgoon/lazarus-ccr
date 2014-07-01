@@ -124,9 +124,17 @@ resourcestring
   sExptControlNotFound  = 'Control not found in validate %s.';
 
   { RxMDI }
-  sCloseWindows = 'Close window';
-  sCloseAllExceptThis = 'Close all except this';
-  sCloseAllWindows = 'Close all windows';
+  sCloseWindows         = 'Close window';
+  sCloseAllExceptThis   = 'Close all except this';
+  sCloseAllWindows      = 'Close all windows';
+
+  { TRxDateRangeEdit }
+  sFirstQuarter         = 'First quarter';
+  sSecondQuarter        = 'Second quarter';
+  sThirdQuarter         = 'Third quarter';
+  sFourthQuarter        = 'Fourth quarter';
+  sFirstHalfOfYear      = 'First half of year';
+  sSecondHalfOfYear     = 'Second half of year';
 
 implementation
 

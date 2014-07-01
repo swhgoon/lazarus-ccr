@@ -98,9 +98,21 @@ msgstr "Елемент управління не знайдений в валі�
 msgid "File specified is not an executable file, dynamic-link library, or icon file"
 msgstr "Вказаний файл не виконуваний, не бібліотека і не іконка"
 
+#: rxconst.sfirsthalfofyear
+msgid "First half of year"
+msgstr ""
+
+#: rxconst.sfirstquarter
+msgid "First quarter"
+msgstr ""
+
 #: rxconst.sflatbuttons
 msgid "Flat buttons"
 msgstr "Плаваючі кнопки"
+
+#: rxconst.sfourthquarter
+msgid "Fourth quarter"
+msgstr ""
 
 #: rxconst.sfpcversion
 msgid "FPC version : "
@@ -178,6 +190,14 @@ msgstr "Набір віджетів QT"
 msgid "Error. Expected value for filed %s."
 msgstr "Поле %s. Вимагається значення"
 
+#: rxconst.ssecondhalfofyear
+msgid "Second half of year"
+msgstr ""
+
+#: rxconst.ssecondquarter
+msgid "Second quarter"
+msgstr ""
+
 #: rxconst.sshowcaption
 msgid "Show caption"
 msgstr "Показати заголовок"
@@ -193,6 +213,10 @@ msgstr "Цільовий CPU : "
 #: rxconst.stargetos
 msgid "Target OS : "
 msgstr "Цільова OS : "
+
+#: rxconst.sthirdquarter
+msgid "Third quarter"
+msgstr ""
 
 #: rxconst.stocurdate
 msgid "Set current date"

@@ -47,10 +47,17 @@ procedure Register;
 implementation
 uses
   PropEdits, folderlister, duallist, RxHistoryNavigator,
-  curredit, rxswitch, rxdice, rxtoolbar, rxxpman, PageMngr, RxAppIcon,
-  Dialogs, ComponentEditors, DBPropEdits, DB, rxctrls,
-  RxCustomChartPanel, AutoPanel, pickdate, rxconst, tooledit, rxclock,
-  rxpopupunit, rxspin, RxTimeEdit, rxDateRangeEditUnit,
+  curredit, rxswitch, rxdice, rxtoolbar,
+  {$IFDEF USE_TRXXPManifest}
+  rxxpman,
+  {$ENDIF}
+  PageMngr,
+  {$IFDEF USE_TRxAppIcon}
+  RxAppIcon,
+  {$ENDIF}
+  Dialogs, ComponentEditors, DBPropEdits, rxctrls,
+  RxCustomChartPanel, AutoPanel, pickdate, tooledit, rxclock,
+  rxspin, RxTimeEdit, rxDateRangeEditUnit,
   RxAboutDialog, RxViewsPanel, RxMDI;
 
 {$IFDEF USE_TRxAppIcon}

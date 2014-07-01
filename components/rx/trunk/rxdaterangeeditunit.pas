@@ -8,6 +8,10 @@ uses
   Classes, SysUtils, types, Controls, Buttons, StdCtrls, Spin;
 
 type
+  TRxDateRangeEditOption = (reoMonth, reoQuarter, reoHalfYear);
+  TRxDateRangeEditOptions = set of TRxDateRangeEditOption;
+
+type
 
   { TRxCustomDateRangeEdit }
 
@@ -18,6 +22,7 @@ type
     FOnEditClick: TNotifyEvent;
     FOnEditEnter: TNotifyEvent;
     FOnEditExit: TNotifyEvent;
+    FOptions: TRxDateRangeEditOptions;
     FsbDecYear: TSpeedButton;
     FsbDecMonth: TSpeedButton;
     FsbIncYear: TSpeedButton;
@@ -28,12 +33,18 @@ type
     procedure DoIncYear(Sender: TObject);
     procedure DoDecMonth(Sender: TObject);
     procedure DoDecYear(Sender: TObject);
+    function GetHalfYear: word;
     function GetMonth: word;
     function GetPeriod: TDateTime;
+    function GetPeriodEnd: TDateTime;
+    function GetQuarter: word;
     function GetYear: word;
     procedure SetFlat(AValue: Boolean);
+    procedure SetHalfYear(AValue: word);
     procedure SetMonth(AValue: word);
+    procedure SetOptions(AValue: TRxDateRangeEditOptions);
     procedure SetPeriod(AValue: TDateTime);
+    procedure SetQuarter(AValue: word);
     procedure SetYear(AValue: word);
     procedure InternalOnEditChange(Sender: TObject);
     procedure InternalOnEditClick(Sender: TObject);
@@ -50,10 +61,15 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    property Quarter:word read GetQuarter write SetQuarter;
+    property HalfYear:word read GetHalfYear write SetHalfYear;
     property Flat: Boolean read FFlat write SetFlat default False;
     property Year:word read GetYear write SetYear;
     property Month:word read GetMonth write SetMonth;
     property Period:TDateTime read GetPeriod write SetPeriod;
+    property PeriodEnd:TDateTime read GetPeriodEnd;
+    property Options:TRxDateRangeEditOptions read FOptions write SetOptions default [reoMonth];
     property OnChange: TNotifyEvent read FOnEditChange write FOnEditChange;
     property OnClick: TNotifyEvent read FOnEditClick write FOnEditClick;
     property OnEnter: TNotifyEvent read FOnEditEnter write FOnEditEnter;
@@ -63,30 +79,29 @@ type
 type
   TRxDateRangeEdit = class(TRxCustomDateRangeEdit)
   published
-    property Autosize default True;
     property Align;
     property Anchors;
+    property Autosize default True;
     property BiDiMode;
     property BorderSpacing;
     property BorderStyle default bsNone;
-    property Constraints;
     property Color;
+    property Constraints;
     property Cursor;
     property Enabled;
     property Flat;
-    property Year;
-    property Month;
     property Hint;
+    property Month;
+    property Options;
     property ParentBiDiMode;
     property ParentColor;
     property ParentFont;
     property PopupMenu;
-//    property ReadOnly;
     property ShowHint;
     property TabOrder;
     property TabStop;
-//    property Text;
     property Visible;
+    property Year;
 
     property OnChange;
     property OnClick;
@@ -95,18 +110,51 @@ type
   end;
 
 implementation
+uses dateutil, rxconst;
 
 { TRxCustomDateRangeEdit }
 
 procedure TRxCustomDateRangeEdit.DoIncMonth(Sender: TObject);
+var
+  i:integer;
 begin
-  if FEditMonth.ItemIndex < 11 then
-    FEditMonth.ItemIndex := FEditMonth.ItemIndex + 1
-  else
+  if FEditMonth.ItemIndex>=0 then
   begin
+    i:=PtrInt(FEditMonth.Items.Objects[FEditMonth.ItemIndex]);
+
+    if I in [17, 18] then
+    begin
+      if i = 18 then
+      begin
+        i:=17;
+        Year:=Year + 1;
+      end
+      else
+        i:=18;
+    end
+    else
+    if i in [13..16] then
+    begin
+      inc(i);
+      if i> 16 then
+      begin
+        i:=13;
+        Year:=Year + 1;
+      end;
+    end
+    else
+    begin
+      inc(i);
+      if i > 12 then
+      begin
+        i:=1;
+        Year:=Year + 1;
+      end;
+    end;
+    FEditMonth.ItemIndex := i - 1;
+  end
+  else
     FEditMonth.ItemIndex := 0;
-    FEditYear.Value:=FEditYear.Value + 1;
-  end;
 end;
 
 procedure TRxCustomDateRangeEdit.DoIncYear(Sender: TObject);
@@ -115,14 +163,46 @@ begin
 end;
 
 procedure TRxCustomDateRangeEdit.DoDecMonth(Sender: TObject);
+var
+  i:integer;
 begin
-  if FEditMonth.ItemIndex > 0 then
-    FEditMonth.ItemIndex := FEditMonth.ItemIndex - 1
-  else
+  if FEditMonth.ItemIndex>=0 then
   begin
-    FEditMonth.ItemIndex := 11;
-    FEditYear.Value:=FEditYear.Value - 1;
-  end;
+    i:=PtrInt(FEditMonth.Items.Objects[FEditMonth.ItemIndex]);
+
+    if I in [17, 18] then
+    begin
+      if i = 18 then
+      begin
+        i:=17;
+        Year:=Year - 1;
+      end
+      else
+        i:=18;
+    end
+    else
+    if i in [13..16] then
+    begin
+      Dec(i);
+      if i> 13 then
+      begin
+        i:=16;
+        Year:=Year - 1;
+      end;
+    end
+    else
+    begin
+      Dec(i);
+      if i < 1 then
+      begin
+        i:=12;
+        Year:=Year - 1;
+      end;
+    end;
+    FEditMonth.ItemIndex := i - 1;
+  end
+  else
+    FEditMonth.ItemIndex := 0;
 end;
 
 procedure TRxCustomDateRangeEdit.DoDecYear(Sender: TObject);
@@ -130,14 +210,53 @@ begin
   FEditYear.Value:=FEditYear.Value - 1;
 end;
 
-function TRxCustomDateRangeEdit.GetMonth: word;
+function TRxCustomDateRangeEdit.GetHalfYear: word;
+var
+  i:integer;
 begin
-  Result:=FEditMonth.ItemIndex+1;
+  Result:=0;
+  if reoHalfYear in FOptions then
+  begin
+    i:=PtrInt(FEditMonth.Items.Objects[FEditMonth.ItemIndex]);
+    if i in [17..18] then
+      Result:=i - 16;
+  end
+end;
+
+function TRxCustomDateRangeEdit.GetMonth: word;
+var
+  i:integer;
+begin
+  Result:=0;
+  if (reoMonth in FOptions) or (FOptions = []) then
+  begin
+    i:=PtrInt(FEditMonth.Items.Objects[FEditMonth.ItemIndex]);
+    if i in [1..12] then
+      Result:=i;
+  end
 end;
 
 function TRxCustomDateRangeEdit.GetPeriod: TDateTime;
 begin
   Result:=EncodeDate(Year, Month, 1);
+end;
+
+function TRxCustomDateRangeEdit.GetPeriodEnd: TDateTime;
+begin
+  Result:=EncodeDate(Year, Month, DaysPerMonth(Year, Month));
+end;
+
+function TRxCustomDateRangeEdit.GetQuarter: word;
+var
+  i:integer;
+begin
+  Result:=0;
+  if reoQuarter in FOptions then
+  begin
+    i:=PtrInt(FEditMonth.Items.Objects[FEditMonth.ItemIndex]);
+    if i in [13..16] then
+      Result:=i - 12;
+  end
 end;
 
 function TRxCustomDateRangeEdit.GetYear: word;
@@ -155,10 +274,22 @@ begin
   FsbIncYear.Flat:=FFlat;
 end;
 
+procedure TRxCustomDateRangeEdit.SetHalfYear(AValue: word);
+begin
+
+end;
+
 procedure TRxCustomDateRangeEdit.SetMonth(AValue: word);
 begin
   if (AValue>0) and (AValue < 13) then
     FEditMonth.ItemIndex:=AValue-1;
+end;
+
+procedure TRxCustomDateRangeEdit.SetOptions(AValue: TRxDateRangeEditOptions);
+begin
+  if FOptions=AValue then Exit;
+  FOptions:=AValue;
+  FillMonthNames;
 end;
 
 procedure TRxCustomDateRangeEdit.SetPeriod(AValue: TDateTime);
@@ -168,6 +299,11 @@ begin
   DecodeDate(AValue, Y, M, D);
   FEditMonth.ItemIndex:=M-1;
   FEditYear.Value:=Y;
+end;
+
+procedure TRxCustomDateRangeEdit.SetQuarter(AValue: word);
+begin
+
 end;
 
 procedure TRxCustomDateRangeEdit.SetYear(AValue: word);
@@ -203,10 +339,40 @@ end;
 
 procedure TRxCustomDateRangeEdit.FillMonthNames;
 var
-  i: Integer;
+  i, k: Integer;
 begin
-  for i:=1 to 12 do
-    FEditMonth.Items.Add(DefaultFormatSettings.LongMonthNames[i]);
+  FEditMonth.Items.BeginUpdate;
+  FEditMonth.Items.Clear;
+  if (reoMonth in FOptions) or (FOptions = []) then
+  begin
+    for i:=1 to 12 do
+    begin
+      k:=FEditMonth.Items.Add(DefaultFormatSettings.LongMonthNames[i]);
+      FEditMonth.Items.Objects[K]:=TObject(Pointer(i));
+    end;
+  end;
+
+  if (reoQuarter in FOptions) or (FOptions = []) then
+  begin
+    k:=FEditMonth.Items.Add(sFirstQuarter);
+    FEditMonth.Items.Objects[K]:=TObject(Pointer(13));
+    k:=FEditMonth.Items.Add(sSecondQuarter);
+    FEditMonth.Items.Objects[K]:=TObject(Pointer(14));
+    k:=FEditMonth.Items.Add(sThirdQuarter);
+    FEditMonth.Items.Objects[K]:=TObject(Pointer(15));
+    k:=FEditMonth.Items.Add(sFourthQuarter);
+    FEditMonth.Items.Objects[K]:=TObject(Pointer(16));
+  end;
+
+  if (reoHalfYear in FOptions) or (FOptions = []) then
+  begin
+    k:=FEditMonth.Items.Add(sFirstHalfOfYear);
+    FEditMonth.Items.Objects[K]:=TObject(Pointer(17));
+    k:=FEditMonth.Items.Add(sSecondHalfOfYear);
+    FEditMonth.Items.Objects[K]:=TObject(Pointer(18));
+  end;
+  FEditMonth.ItemIndex:=0;
+  FEditMonth.Items.EndUpdate;
 end;
 
 procedure TRxCustomDateRangeEdit.SetAutoSize(AValue: Boolean);
@@ -241,12 +407,14 @@ end;
 constructor TRxCustomDateRangeEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FOptions:=[reoMonth];
+
   FEditYear:=TSpinEdit.Create(Self);
   FEditMonth:=TComboBox.Create(Self);
   FEditMonth.Style:=csDropDownList;
   FEditMonth.DropDownCount:=12;
   FEditYear.Width:=70;
-  FEditMonth.Width:=80;
+  FEditMonth.Width:=100;
 
   FsbDecYear:=TSpeedButton.Create(Self);
   FsbDecMonth:=TSpeedButton.Create(Self);
