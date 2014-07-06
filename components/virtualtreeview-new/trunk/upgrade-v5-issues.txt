@@ -4,4 +4,6 @@
 * Review TVirtualTreeHintWindow. LCL has better support than Delphi so, no need to much changes
 * Review PrepareBitmaps.FiilBitmaps
 * DoDragMsg
-* Evaluate the advantage to use SetCanvasOrigin instead of SetWindowOrgEx
+* Evaluate the advantage to use SetCanvasOrigin instead of SetWindowOrgEx. Define UseSetCanvasOrigin
+* See if issue with pf32Bit PixelFormat in PaintTree is still present
+* Check black background  in empty tree
