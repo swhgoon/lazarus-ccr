@@ -27,7 +27,29 @@ unit VirtualTrees;
 // (C) 1999-2001 digital publishing AG. All Rights Reserved.
 //----------------------------------------------------------------------------------------------------------------------
 //
+//  June 2010
+//   - Improvement: TVTHeader.AutoFitColumns is now declared virtual 
+//   - Bug fix: header captions were badly positioned text if Extra Large fonts have been activated in the Windows
+//              display options
+//  April 2010
+//   - Bug fix: Ctrl+Click on a node often cause a delayed update of the displayed selection due to a missing (or
+//              misplaced) call to Invalidate() in HandleClickSelection().
+//   - Bug fix: Shift+PgUp and Shift+PgDown now behave like a usual List(View) and select the node of the previous/
+//              next page. The behaviourly that was formerly assigned to these shortcuts is now triggeres when using
+//              Shift+Alt+PgUp / Shift+Alt+PgDown
+//  March 2010
+//   - Bug fix: TBaseVirtualTree.CMMouseLeave now checks if the header is assigned before working with it
+//   - Bug fix: TCustomVirtualTreeOptions.SetPaintOptions will now invalidate the node cache if toChildrenAbove is
+//              changed
+//   - Bug fix: TBaseVirtualTree.HandleMouseUp will no longer cause an AV if HitInfo.HitNode is not assigned and
+//              tsToggleFocusedSelection is set
+//   - Improvement: new properties TBaseVirtualTree.OnAddToSelection and TBaseVirtualTree.OnRemoveFromSelection
+//   - Bug fix: fixed a whole bunch of painting issues regarding drag & drop
+//   - Bug fix: fixed TBaseVirtualTree.DragFinished to generate a button up event in case of using OLE drag & drop
+//   - Bug fix: TBaseVirtualTree.DeleteChildren no longer fails if the given node is nil
 //  January 2010
+//   - Bug fix: Removed defaults from TVirtualTreeColumn.BiDiMode and TVirtualTreeColumn.Color
+//   - Bug fix: Clearing the columns while editing no longer raises an exception
 //   - Improvement: refactored handling of long running operations
 //   - Bug fix: TBaseVirtualTree.OnGetHelpContext now delivers the currently focused column instead of always 0
 //   - Improvement: the sort operation can now be canceled
@@ -1302,7 +1324,7 @@ type
     property Owner: TVirtualTreeColumns read GetOwner;
   published
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
-    property BiDiMode: TBiDiMode read FBiDiMode write SetBiDiMode stored IsBiDiModeStored default bdLeftToRight;
+    property BiDiMode: TBiDiMode read FBiDiMode write SetBiDiMode stored IsBiDiModeStored;
     property CaptionAlignment: TAlignment read GetCaptionAlignment write SetCaptionAlignment
       stored IsCaptionAlignmentStored default taLeftJustify;
     property CaptionText: String read FCaptionText stored False;
@@ -1589,7 +1611,7 @@ type
     function AllowFocus(ColumnIndex: TColumnIndex): Boolean;
     procedure Assign(Source: TPersistent); override;
     procedure AutoFitColumns(Animated: Boolean = True; SmartAutoFitType: TSmartAutoFitType = smaUseColumnOption;
-      RangeStartCol: Integer = NoColumn; RangeEndCol: Integer = NoColumn);
+      RangeStartCol: Integer = NoColumn; RangeEndCol: Integer = NoColumn); virtual;
     function InHeader(const P: TPoint): Boolean; virtual;
     function InHeaderSplitterArea(P: TPoint): Boolean; virtual;
     procedure Invalidate(Column: TVirtualTreeColumn; ExpandToBorder: Boolean = False);
@@ -2016,6 +2038,8 @@ type
   TVTFocusChangingEvent = procedure(Sender: TBaseVirtualTree; OldNode, NewNode: PVirtualNode; OldColumn,
     NewColumn: TColumnIndex; var Allowed: Boolean) of object;
   TVTFocusChangeEvent = procedure(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex) of object;
+  TVTAddToSelectionEvent = procedure(Sender: TBaseVirtualTree; Node: PVirtualNode) of object;
+  TVTRemoveFromSelectionEvent = procedure(Sender: TBaseVirtualTree; Node: PVirtualNode) of object;
   TVTGetImageEvent = procedure(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex;
     var Ghosted: Boolean; var ImageIndex: Integer) of object;
   TVTGetImageExEvent = procedure(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex;
@@ -2348,6 +2372,8 @@ type
     FOnFocusChanging: TVTFocusChangingEvent;     // called when the focus is about to go to a new node and/or column
                                                  // (can be cancelled)
     FOnFocusChanged: TVTFocusChangeEvent;        // called when the focus goes to a new node and/or column
+    FOnAddToSelection: TVTAddToSelectionEvent;           // called when a node is added to the selection
+    FOnRemoveFromSelection: TVTRemoveFromSelectionEvent; // called when a node is removed from the selection
     FOnGetPopupMenu: TVTPopupEvent;              // called when the popup for a node or the header needs to be shown
     FOnGetHelpContext: TVTHelpContextEvent;      // called when a node specific help theme should be called
     FOnCreateEditor: TVTCreateEditorEvent;       // called when a node goes into edit mode, this allows applications
@@ -2921,6 +2947,7 @@ type
     property TreeOptions: TCustomVirtualTreeOptions read FOptions write SetOptions;
     property WantTabs: Boolean read FWantTabs write FWantTabs default False;
 
+    property OnAddToSelection: TVTAddToSelectionEvent read FOnAddToSelection write FOnAddToSelection;
     property OnAdvancedHeaderDraw: TVTAdvancedHeaderPaintEvent read FOnAdvancedHeaderDraw write FOnAdvancedHeaderDraw;
     property OnAfterAutoFitColumn: TVTAfterAutoFitColumnEvent read FOnAfterAutoFitColumn write FOnAfterAutoFitColumn;
     property OnAfterAutoFitColumns: TVTAfterAutoFitColumnsEvent read FOnAfterAutoFitColumns write FOnAfterAutoFitColumns;
@@ -3026,6 +3053,7 @@ type
     property OnNodeMoved: TVTNodeMovedEvent read FOnNodeMoved write FOnNodeMoved;
     property OnNodeMoving: TVTNodeMovingEvent read FOnNodeMoving write FOnNodeMoving;
     property OnPaintBackground: TVTBackgroundPaintEvent read FOnPaintBackground write FOnPaintBackground;
+    property OnRemoveFromSelection: TVTRemoveFromSelectionEvent read FOnRemoveFromSelection write FOnRemoveFromSelection;
     property OnRenderOLEData: TVTRenderOLEDataEvent read FOnRenderOLEData write FOnRenderOLEData;
     property OnResetNode: TVTChangeEvent read FOnResetNode write FOnResetNode;
     property OnSaveNode: TVTSaveNodeEvent read FOnSaveNode write FOnSaveNode;
@@ -3594,6 +3622,7 @@ type
     property Visible;
     property WantTabs;
 
+    property OnAddToSelection;
     property OnAdvancedHeaderDraw;
     property OnAfterAutoFitColumn;
     property OnAfterAutoFitColumns;
@@ -3710,6 +3739,7 @@ type
     property OnNodeMoved;
     property OnNodeMoving;
     property OnPaintBackground;
+    property OnRemoveFromSelection;
     property OnRenderOLEData;
     property OnResetNode;
     property OnResize;
@@ -3846,6 +3876,7 @@ type
     property Visible;
     property WantTabs;
 
+    property OnAddToSelection;
     property OnAdvancedHeaderDraw;
     property OnAfterAutoFitColumn;
     property OnAfterAutoFitColumns;
@@ -3958,6 +3989,7 @@ type
     property OnNodeMoved;
     property OnNodeMoving;
     property OnPaintBackground;
+    property OnRemoveFromSelection;
     property OnRenderOLEData;
     property OnResetNode;
     property OnResize;
@@ -5602,6 +5634,15 @@ begin
             EndUpdate;
           end
           else
+              if toChildrenAbove in ToBeSet + ToBeCleared then
+              begin
+                InvalidateCache;
+                if FUpdateCount = 0 then
+                begin
+                  ValidateCache;
+                  Invalidate;
+                end;
+              end else
             Invalidate;
         end;
       end;
@@ -6399,6 +6440,7 @@ begin
     // then we don't need to check the various cached indices individually.
     if not FClearing then
     begin
+      Header.Treeview.CancelEditNode;
       IndexChanged(Index, -1);
 
       AdjustColumnIndex(FHoverIndex);
@@ -6956,10 +6998,8 @@ begin
       HeaderGlyphPos.Y := (ClientSize.Y - HeaderGlyphSize.Y) div 2;
       // If the text is taller than the given height, perform no vertical centration as this
       // would make the text even less readable.
-      if TextSize.cy >= ClientSize.Y then
-        TextPos.Y := 0
-      else
-        TextPos.Y := (ClientSize.Y - TextSize.cy) div 2;
+      //Using Max() fixes badly positioned text if Extra Large fonts have been activated in the Windows display options
+        TextPos.Y := Max(-5,(ClientSize.Y - TextSize.cy) div 2);
     end
     else
     begin
@@ -8312,6 +8352,8 @@ procedure TVirtualTreeColumns.Clear;
 begin
   FClearing := True;
   try
+    Header.Treeview.CancelEditNode;
+
     // Since we're freeing all columns, the following have to be true when we're done.
     FHoverIndex := NoColumn;
     FDownIndex := NoColumn;
@@ -13061,7 +13103,6 @@ begin
     if ssShift in Shift then
     begin
       SelectNodes(FRangeAnchor, NewNode, True);
-      Invalidate;
     end
     else
     begin
@@ -13077,6 +13118,7 @@ begin
         else
           AddToSelection(NewNode);
     end;
+    Invalidate;
   end
   else
     // Shift key down
@@ -15375,9 +15417,12 @@ begin
     FCurrentHotNode := nil;
   end;
 
+  if Assigned(Header) then
+  begin
   Header.FColumns.FDownIndex := NoColumn;
   Header.FColumns.FHoverIndex := NoColumn;
   Header.FColumns.FCheckBoxHit := False;
+  end;
 
   inherited CMMouseLeave(Message);
   {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'CMMouseLeave');{$endif}
@@ -16007,7 +16052,7 @@ begin
               SetOffsetX(FOffsetX + ClientWidth)
             else
             begin
-              if [ssShift] = Shift then
+              if [ssShift,ssAlt] = Shift then
               begin
                 if FFocusedColumn <= NoColumn then
                   NewColumn := FHeader.FColumns.GetFirstVisibleColumn
@@ -16062,7 +16107,7 @@ begin
               SetOffsetX(FOffsetX - ClientWidth)
             else
             begin
-              if [ssShift] = Shift then
+              if [ssShift,ssAlt] = Shift then
               begin
                 if FFocusedColumn <= NoColumn then
                   NewColumn := FHeader.FColumns.GetFirstVisibleColumn
@@ -20136,7 +20181,8 @@ begin
       begin
         FDropTargetNode := HitInfo.HitNode;
         R := GetDisplayRect(HitInfo.HitNode, FHeader.MainColumn, False);
-        if hiOnItemLabel in HitInfo.HitPositions then
+        if (hiOnItemLabel in HitInfo.HitPositions) or ((hiOnItem in HitInfo.HitPositions) and
+          ((toFullRowDrag in FOptions.FMiscOptions) or (toFullRowSelect in FOptions.FSelectionOptions)))then
           FLastDropMode := dmOnNode
         else
           if ((R.Top + R.Bottom) div 2) > Pt.Y then
@@ -20172,7 +20218,7 @@ var
 
 begin
   {$ifdef DEBUG_VTV}Logger.EnterMethod([lcDrag],'DragFinished');{$endif}
-  if [tsVCLDragPending, tsVCLDragging, tsVCLDragFinished] * FStates = [] then
+  if [tsOLEDragging, tsVCLDragPending, tsVCLDragging, tsVCLDragFinished] * FStates = [] then
     Exit;  
 
   DoStateChange([], [tsVCLDragPending, tsVCLDragging, tsUserDragObject, tsVCLDragFinished]);
@@ -20230,10 +20276,10 @@ var
   HitInfo: THitInfo;
   ImageHit: Boolean;
   LabelHit: Boolean;
+  ItemHit: Boolean;
   DragPos: TPoint;
   Tree: TBaseVirtualTree;
   LastNode: PVirtualNode;
-
   DeltaX,
   DeltaY: Integer;
   ScrollOptions: TScrollUpdateOptions;
@@ -20304,15 +20350,17 @@ begin
     GetHitTestInfoAt(Pt.X, Pt.Y, True, HitInfo);
     ImageHit := HitInfo.HitPositions * [hiOnNormalIcon, hiOnStateIcon] <> [];
     LabelHit := hiOnItemLabel in HitInfo.HitPositions;
+    ItemHit := ((hiOnItem in HitInfo.HitPositions) and ((toFullRowDrag in FOptions.FMiscOptions) or
+               (toFullRowSelect in FOptions.FSelectionOptions)));
     // In report mode only direct hits of the node captions/images in the main column are accepted as hits.
-    if (toReportMode in FOptions.FMiscOptions) and not ((LabelHit or ImageHit) and
-      (HitInfo.HitColumn = FHeader.MainColumn)) then
+    if (toReportMode in FOptions.FMiscOptions) and not (ItemHit or ((LabelHit or ImageHit) and
+      (HitInfo.HitColumn = FHeader.MainColumn))) then
       HitInfo.HitNode := nil;
 
     if Assigned(HitInfo.HitNode) then
     begin
       R := GetDisplayRect(HitInfo.HitNode, NoColumn, False);
-      if LabelHit or ImageHit or not (toShowDropmark in FOptions.FPaintOptions) then
+      if ItemHit or LabelHit or ImageHit or not (toShowDropmark in FOptions.FPaintOptions) then
         NewDropMode := dmOnNode
       else
         if ((R.Top + R.Bottom) div 2) > Pt.Y then
@@ -21604,7 +21652,7 @@ begin
         AddToSelection(FFocusedNode);
     end;
 
-    if (tsToggleFocusedSelection in FStates) and (HitInfo.HitNode = FFocusedNode) then
+    if (tsToggleFocusedSelection in FStates) and (HitInfo.HitNode = FFocusedNode) and Assigned(HitInfo.HitNode) then //Prevent AV when dereferencing HitInfo.HitNode below, see bug #100
     begin
       if vsSelected in HitInfo.HitNode.States then
         RemoveFromSelection(HitInfo.HitNode)
@@ -21856,7 +21904,11 @@ begin
   if ForceInsert then
   begin
     for I := 0 to NewLength - 1 do
+    begin
       Include(NewItems[I].States, vsSelected);
+      if Assigned(FOnAddToSelection) then
+        FOnAddToSelection(Self, NewItems[I]);
+    end;
   end
   else
   begin
@@ -21873,7 +21925,11 @@ begin
          (SiblingConstrained and (FRangeAnchor.Parent <> NewItems[I].Parent)) then
         Inc(PtrUInt(NewItems[I]))
       else
+      begin
         Include(NewItems[I].States, vsSelected);
+        if Assigned(FOnAddToSelection) then
+          FOnAddToSelection(Self, NewItems[I]);
+      end;
   end;
 
   I := PackArray(NewItems, NewLength);
@@ -21980,6 +22036,8 @@ begin
   begin
     Dec(FSelectionCount);
     Exclude(FSelection[FSelectionCount].States, vsSelected);
+    if Assigned(FOnRemoveFromSelection) then
+      FOnRemoveFromSelection(Self, FSelection[FSelectionCount]);
   end;
   ResetRangeAnchor;
   FSelection := nil;
@@ -22347,6 +22405,8 @@ begin
   begin
     Exclude(Node.States, vsSelected);
     Inc(PtrUInt(FSelection[Index]));
+    if Assigned(FOnRemoveFromSelection) then
+      FOnRemoveFromSelection(Self, Node);
   end;
 end;
 
@@ -23213,8 +23273,8 @@ var
   //---------------------------------------------------------------------------
 
   {$ifdef ThemeSupport}
-  //todo
-  {
+    //todo
+    {
     procedure DrawBackground(State: Integer);
     begin
       with PaintInfo do
@@ -23295,6 +23355,12 @@ begin
               (toFullRowSelect in FOptions.FSelectionOptions) then
               InnerRect := CellRect;
             if not IsRectEmpty(InnerRect) then
+              //todo
+              {
+              if tsUseExplorerTheme in FStates then
+                DrawBackground(TREIS_SELECTED)
+              else
+              }
               if MMXAvailable and (toUseBlendedSelection in FOptions.PaintOptions) then
                 AlphaBlendSelection(Brush.Color)
               else
@@ -25090,7 +25156,7 @@ var
   ParentVisible: Boolean;
 
 begin
-  if (Node.ChildCount > 0) and not (toReadOnly in FOptions.FMiscOptions) then
+  if Assigned(Node) and (Node.ChildCount > 0) and not (toReadOnly in FOptions.FMiscOptions) then
   begin
     Assert(not (tsIterating in FStates), 'Deleting nodes during tree iteration leads to invalid pointers.');
 
@@ -31541,8 +31607,10 @@ begin
     if (toHotTrack in FOptions.FPaintOptions) and (Node = FCurrentHotNode) then
     begin
       if not (tsUseExplorerTheme in FStates) then
+      begin
         Canvas.Font.Style := Canvas.Font.Style + [fsUnderline];
       Canvas.Font.Color := FColors.HotColor;
+    end;
     end;
 
     // Change the font color only if the node also is drawn in selected style.
@@ -31552,7 +31620,7 @@ begin
       begin
         if Node = FDropTargetNode then
         begin
-          if (FLastDropMode = dmOnNode) or (vsSelected in Node.States) and not
+          if ((FLastDropMode = dmOnNode) or (vsSelected in Node.States)) and not
              (tsUseExplorerTheme in FStates) then
             Canvas.Font.Color := clHighlightText;
         end
@@ -32319,7 +32387,7 @@ function TCustomVirtualStringTree.ContentToHTML(Source: TVSTTextSourceType; cons
 
 // Renders the current tree content (depending on Source) as HTML text encoded in UTF-8.
 // If Caption is not empty then it is used to create and fill the header for the table built here.
-// Based on ideas and code from Frank van den Bergh and Andreas Hörstemeier.
+// Based on ideas and code from Frank van den Bergh and Andreas H?rstemeier.
 
 type
   UCS2 = Word;
@@ -32742,7 +32810,7 @@ end;
 function TCustomVirtualStringTree.ContentToRTF(Source: TVSTTextSourceType): AnsiString;
 
 // Renders the current tree content (depending on Source) as RTF (rich text).
-// Based on ideas and code from Frank van den Bergh and Andreas Hörstemeier.
+// Based on ideas and code from Frank van den Bergh and Andreas H?rstemeier.
 
 var
   Fonts: TStringList;
