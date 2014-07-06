@@ -27,6 +27,24 @@ unit VirtualTrees;
 // (C) 1999-2001 digital publishing AG. All Rights Reserved.
 //----------------------------------------------------------------------------------------------------------------------
 //
+//  January 2010
+//   - Improvement: refactored handling of long running operations
+//   - Bug fix: TBaseVirtualTree.OnGetHelpContext now delivers the currently focused column instead of always 0
+//   - Improvement: the sort operation can now be canceled
+//   - Improvement: all BeginOperation/EndOperation pairs are now enclosed in try..finally blocks
+//   - Bug fix: the combination of toUseExplorerTheme and toFullRowSelect now also works correct when no columns are
+//              defined
+//  December 2009
+//   - Bug fix: TVTHeader.HandleMessage now correctly handles double click autosizing when the index differs from
+//              its position
+//  November 2009
+//   - Bug fix: TBaseVirtualTree.AdjustTotalHeight didn't change the height of invisible nodes which caused some trouble
+//              when making those nodes visible again
+//   - Improvement: a column is no longer painted 'down' if its check box was clicked
+//   - Bug fix: one can no longer toggle the check state of a column with the right mouse button
+//   - Bug fix: one can no longer toggle the check state of a node with the right mouse button
+//   - Bug fix: TCustomVirtualTreeOptions.SetPaintOptions no longer accidentally removed the the explorer theme
+//   - Bug fix: Fixed a potential Integer overflow in TBaseVirtualTree.CalculateVerticalAlignments
 //  October 2009
 //   - Bug fix: enabling checkbox support for a column is now possible without assigning a dummy imagelist  
 //   - Bug fix: checkboxes in the header are now correctly aligned
@@ -832,6 +850,15 @@ type
     emUnchecked   // export unchecked records only
   );
 
+  // Kinds of operations
+  TVTOperationKind = (
+    okAutoFitColumns,
+    okGetMaxColumnWidth,
+    okSortNode,
+    okSortTree
+  );
+  TVTOperationKinds = set of TVTOperationKind;
+
 const
   DefaultPaintOptions = [toShowButtons, toShowDropmark, toShowTreeLines, toShowRoot, toThemeAware, toUseBlendedImages];
   DefaultAnimationOptions = [];
@@ -1310,8 +1337,9 @@ type
     FHeaderBitmap: TBitmap;               // backbuffer for drawing
     FHoverIndex,                          // currently "hot" column
     FDownIndex,                           // Column on which a mouse button is held down.
-    FTrackIndex: TColumnIndex;            // Index of column which is currently being resized
-    FClickIndex: TColumnIndex;            // last clicked column
+    FTrackIndex: TColumnIndex;            // Index of column which is currently being resized.
+    FClickIndex: TColumnIndex;            // Index of the last clicked column.
+    FCheckBoxHit: Boolean;                // True if the last click was on a header checkbox.
     FPositionToIndex: TIndexArray;
     FDefaultWidth: Integer;               // the width columns are created with
     FNeedPositionsFix: Boolean;           // True if FixPositions must still be called after DFM loading or Bidi mode change.
@@ -2097,6 +2125,9 @@ type
  TVTIncrementalSearchEvent = procedure(Sender: TBaseVirtualTree; Node: PVirtualNode; const SearchText: String;
     var Result: Integer) of object;
 
+  // operations
+  TVTOperationEvent = procedure(Sender: TBaseVirtualTree; OperationKind: TVTOperationKind) of object;
+
   // miscellaneous
   TVTGetNodeDataSizeEvent = procedure(Sender: TBaseVirtualTree; var NodeDataSize: Integer) of object;
   TVTKeyActionEvent = procedure(Sender: TBaseVirtualTree; var CharCode: Word; var Shift: TShiftState;
@@ -2412,6 +2443,10 @@ type
     FOnCompareNodes: TVTCompareEvent;            // used during sort
     FOnIncrementalSearch: TVTIncrementalSearchEvent; // triggered on every key press (not key down)
 
+    // operations
+    FOnStartOperation: TVTOperationEvent;        // Called when an operation starts
+    FOnEndOperation: TVTOperationEvent;          // Called when an operation ends
+
     procedure AdjustCoordinatesByIndent(var PaintInfo: TVTPaintInfo; Indent: Integer);
     procedure AdjustImageBorder(ImageWidth, ImageHeight: Integer; BidiMode: TBidiMode; VAlign: Integer; var R: TRect;
       var ImageInfo: TVTImageInfo);
@@ -2596,7 +2631,6 @@ type
     procedure AdviseChangeEvent(StructureChange: Boolean; Node: PVirtualNode; Reason: TChangeReason); virtual;
     function AllocateInternalDataArea(Size: Cardinal): Cardinal; virtual;
     procedure Animate(Steps, Duration: Cardinal; Callback: TVTAnimationCallback; Data: Pointer); virtual;
-    procedure BeginOperation;
     function CalculateSelectionRect(X, Y: Integer): Boolean; virtual;
     function CanAutoScroll: Boolean; virtual;
     function CanShowDragImage: Boolean; virtual;
@@ -2662,6 +2696,7 @@ type
     procedure DoEdit; virtual;
     procedure DoEndDrag(Target: TObject; X, Y: Integer); override;
     function DoEndEdit: Boolean; virtual;
+    procedure DoEndOperation(OperationKind: TVTOperationKind); virtual;
     procedure DoExpanded(Node: PVirtualNode); virtual;
     function DoExpanding(Node: PVirtualNode): Boolean; virtual;
     procedure DoFocusChange(Node: PVirtualNode; Column: TColumnIndex); virtual;
@@ -2720,6 +2755,7 @@ type
     function DoSetOffsetXY(Value: TPoint; Options: TScrollUpdateOptions; ClipRect: PRect = nil): Boolean; virtual;
     procedure DoShowScrollbar(Bar: Integer; Show: Boolean); virtual;
     procedure DoStartDrag(var DragObject: TDragObject); override;
+    procedure DoStartOperation(OperationKind: TVTOperationKind); virtual;
     procedure DoStateChange(Enter: TVirtualTreeStates; Leave: TVirtualTreeStates = []); virtual;
     procedure DoStructureChange(Node: PVirtualNode; Reason: TChangeReason); virtual;
     procedure DoTimerScroll; virtual;
@@ -2737,8 +2773,8 @@ type
       var Effect: LongWord): HResult; reintroduce; virtual;
     procedure DrawDottedHLine(const PaintInfo: TVTPaintInfo; Left, Right, Top: Integer); virtual;
     procedure DrawDottedVLine(const PaintInfo: TVTPaintInfo; Top, Bottom, Left: Integer); virtual;
-    procedure EndOperation;
-    function FindNodeInSelection(P: PVirtualNode; out Index: Integer; LowBound, HighBound: Integer): Boolean; virtual;
+    procedure EndOperation(OperationKind: TVTOperationKind);
+    function FindNodeInSelection(P: PVirtualNode; var Index: Integer; LowBound, HighBound: Integer): Boolean; virtual;
     procedure FinishChunkHeader(Stream: TStream; StartPos, EndPos: Integer); virtual;
     procedure FontChanged(AFont: TObject); virtual;
     function GetBorderDimensions: TSize; virtual;
@@ -2807,6 +2843,7 @@ type
     procedure SelectNodes(StartNode, EndNode: PVirtualNode; AddOnly: Boolean); virtual;
     procedure SetFocusedNodeAndColumn(Node: PVirtualNode; Column: TColumnIndex); virtual;
     procedure SkipNode(Stream: TStream); virtual;
+    procedure StartOperation(OperationKind: TVTOperationKind);
     procedure StartWheelPanning(const Position: TPoint); virtual;
     procedure StopWheelPanning; virtual;
     procedure StructureChange(Node: PVirtualNode; Reason: TChangeReason); virtual;
@@ -2939,6 +2976,7 @@ type
     property OnEditCancelled: TVTEditCancelEvent read FOnEditCancelled write FOnEditCancelled;
     property OnEditing: TVTEditChangingEvent read FOnEditing write FOnEditing;
     property OnEdited: TVTEditChangeEvent read FOnEdited write FOnEdited;
+    property OnEndOperation: TVTOperationEvent read FOnEndOperation write FOnEndOperation;
     property OnExpanded: TVTChangeEvent read FOnExpanded write FOnExpanded;
     property OnExpanding: TVTChangingEvent read FOnExpanding write FOnExpanding;
     property OnFocusChanged: TVTFocusChangeEvent read FOnFocusChanged write FOnFocusChanged;
@@ -2994,6 +3032,7 @@ type
     property OnSaveTree: TVTSaveTreeEvent read FOnSaveTree write FOnSaveTree;
     property OnScroll: TVTScrollEvent read FOnScroll write FOnScroll;
     property OnShowScrollbar: TVTScrollbarShowEvent read FOnShowScrollbar write FOnShowScrollbar;
+    property OnStartOperation: TVTOperationEvent read FOnStartOperation write FOnStartOperation;
     property OnStateChange: TVTStateChangeEvent read FOnStateChange write FOnStateChange;
     property OnStructureChange: TVTStructureChangeEvent read FOnStructureChange write FOnStructureChange;
     property OnUpdating: TVTUpdatingEvent read FOnUpdating write FOnUpdating;
@@ -3192,6 +3231,7 @@ type
     property OffsetX: Integer read FOffsetX write SetOffsetX;
     property OffsetXY: TPoint read GetOffsetXY write SetOffsetXY;
     property OffsetY: Integer read FOffsetY write SetOffsetY;
+    property OperationCount: Cardinal read FOperationCount;
     property RootNode: PVirtualNode read FRoot;
     property SearchBuffer: String read FSearchBuffer;
     property Selected[Node: PVirtualNode]: Boolean read GetSelected write SetSelected;
@@ -3611,6 +3651,7 @@ type
     property OnEditing;
     property OnEndDock;
     property OnEndDrag;
+    property OnEndOperation;
     property OnEnter;
     property OnExit;
     property OnExpanded;
@@ -3679,6 +3720,7 @@ type
     property OnShowScrollbar;
     property OnStartDock;
     property OnStartDrag;
+    property OnStartOperation;
     property OnStateChange;
     property OnStructureChange;
     property OnUpdating;
@@ -3861,6 +3903,7 @@ type
     property OnEditing;
     property OnEndDock;
     property OnEndDrag;
+    property OnEndOperation;
     property OnEnter;
     property OnExit;
     property OnExpanded;
@@ -3924,6 +3967,7 @@ type
     property OnShowScrollbar;
     property OnStartDock;
     property OnStartDrag;
+    property OnStartOperation;
     property OnStateChange;
     property OnStructureChange;
     property OnUpdating;
@@ -5501,11 +5545,22 @@ begin
       begin
         {$ifdef ThemeSupport}
         //todo
-        //  if (tsUseThemes in FStates) or (toThemeAware in ToBeSet) then
-        //    if (toUseExplorerTheme in ToBeSet) and IsWinVistaOrAbove then
-        //      SetWindowTheme(Handle, 'explorer', nil)
-        //    else
-        //      SetWindowTheme(Handle, '', nil);
+        {
+        if IsWinVistaOrAbove and ((tsUseThemes in FStates) or
+           ((toThemeAware in ToBeSet) and ThemeServices.ThemesEnabled)) and
+           (toUseExplorerTheme in (ToBeSet + ToBeCleared)) then
+          if toUseExplorerTheme in ToBeSet then
+          begin
+            SetWindowTheme(Handle, 'explorer', nil);
+            DoStateChange([tsUseExplorerTheme]);
+          end
+          else
+            if toUseExplorerTheme in ToBeCleared then
+            begin
+              SetWindowTheme(Handle, '', nil);
+              DoStateChange([], [tsUseExplorerTheme]);
+            end;
+          }
         {$endif ThemeSupport}
 
         if not (csLoading in ComponentState) then
@@ -7567,6 +7622,7 @@ begin
     if FDownIndex > NoColumn then
       FHeader.Invalidate(Items[FDownIndex]);
     FDownIndex := Result;
+    FCheckBoxHit := Items[Result].FHasImage and PtInRect(Items[Result].FImageRect, P) and Items[Result].CheckBox;
     FHeader.Invalidate(Items[FDownIndex]);
   end;
 end;
@@ -7611,6 +7667,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 function TVirtualTreeColumns.CanSplitterResize(P: TPoint; Column: TColumnIndex): Boolean;
+
 begin
   Result := (Column > NoColumn) and ([coResizable, coVisible] * Items[Column].FOptions = [coResizable, coVisible]);
   DoCanSplitterResize(P, Column, Result);
@@ -7619,6 +7676,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TVirtualTreeColumns.DoCanSplitterResize(P: TPoint; Column: TColumnIndex; var Allowed: Boolean);
+
 begin
   if Assigned(FHeader.Treeview.FOnCanSplitterResizeColumn) then
     FHeader.Treeview.FOnCanSplitterResizeColumn(FHeader, P, Column, Allowed);
@@ -7920,6 +7978,7 @@ begin
       Include(HitInfo.HitPosition, hhiOnIcon);
       if Items[NewClickIndex].CheckBox then
       begin
+        if Button = mbLeft then
         FHeader.Treeview.UpdateColumnCheckState(Items[NewClickIndex]);
         Include(HitInfo.HitPosition, hhiOnCheckbox);
       end;
@@ -8258,6 +8317,7 @@ begin
     FDownIndex := NoColumn;
     FTrackIndex := NoColumn;
     FClickIndex := NoColumn;
+    FCheckBoxHit := False;
 
     with Header do
       if not (hsLoading in FStates) then
@@ -8814,7 +8874,7 @@ begin
             //Here we check if dragging and not draw as hover
             IsHoverIndex := (Integer(FPositionToIndex[I]) = FHoverIndex) and (hoHotTrack in FHeader.FOptions) and
               (coEnabled in FOptions) and not (hsDragging in FHeader.States);
-            IsDownIndex := Integer(FPositionToIndex[I]) = FDownIndex;
+            IsDownIndex := (Integer(FPositionToIndex[I]) = FDownIndex) and not FCheckBoxHit;
             if (coShowDropMark in FOptions) and (Integer(FPositionToIndex[I]) = FDropTarget) and
               (Integer(FPositionToIndex[I]) <> FDragIndex) then
             begin
@@ -10058,6 +10118,7 @@ begin
           FColumns.HandleClick(P, mbMiddle, True, False);
           FOwner.DoHeaderMouseUp(mbMiddle, GetShiftState, P.X, P.Y + Integer(FHeight));
           FColumns.FDownIndex := NoColumn;
+          FColumns.FCheckBoxHit := False;
         end;
       end;
     LM_LBUTTONDBLCLK,
@@ -10078,7 +10139,8 @@ begin
         begin
           // If the click was on a splitter then resize column to smallest width.
           if DoColumnWidthDblClickResize(FColumns.FTrackIndex, P, GetShiftState) then
-            AutoFitColumns(True, smaUseColumnOption, Columns.FTrackIndex, Columns.FTrackIndex);
+              AutoFitColumns(True, smaUseColumnOption, FColumns[FColumns.FTrackIndex].FPosition,
+                             FColumns[FColumns.FTrackIndex].FPosition);
           Message.Result := 0;
           Result := True;
         end
@@ -10184,6 +10246,7 @@ begin
             FOwner.DoHeaderMouseUp(mbRight, GetShiftState, P.X, P.Y + Integer(FHeight));
             FColumns.FDownIndex := NoColumn;
             FColumns.FTrackIndex := NoColumn;
+            FColumns.FCheckBoxHit := False;
 
             Menu := FPopupMenu;
             if not Assigned(Menu) then
@@ -10344,6 +10407,7 @@ begin
           FHoverIndex := NoColumn;
           FClickIndex := NoColumn;
           FDownIndex := NoColumn;
+          FCheckBoxHit := False;
         end;
         //Adjust Cursor
         if not (csDesigning in FOwner.ComponentState) and (FStates = []) then
@@ -10739,7 +10803,8 @@ begin
   if StartCol > EndCol then
     Exit; // nothing to do
 
-  TreeView.BeginOperation;
+  TreeView.StartOperation(okAutoFitColumns);
+  try
   if Assigned(TreeView.FOnBeforeAutoFitColumns) then
     TreeView.FOnBeforeAutoFitColumns(Self, SmartAutoFitType);
 
@@ -10748,7 +10813,10 @@ begin
 
   if Assigned(TreeView.FOnAfterAutoFitColumns) then
     TreeView.FOnAfterAutoFitColumns(Self);
-  Treeview.EndOperation;
+
+  finally
+    Treeview.EndOperation(okAutoFitColumns);
+  end;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -11698,7 +11766,7 @@ begin
     naFromTop:
       VAlign := Node.Align;
     naFromBottom:
-      VAlign := NodeHeight[Node] - Node.Align;
+      VAlign := Integer(NodeHeight[Node]) - Node.Align;
   else // naProportional
     // Consider button and line alignment, but make sure neither the image nor the button (whichever is taller)
     // go out of the entire node height (100% means bottom alignment to the node's bounds).
@@ -11714,7 +11782,7 @@ begin
       if toShowButtons in FOptions.FPaintOptions then
         VAlign := MulDiv((Integer(NodeHeight[Node]) - FPlusBM.Height), Node.Align, 100) + FPlusBM.Height div 2
       else
-        VAlign := MulDiv(Node.NodeHeight, Node.Align, 100);
+        VAlign := MulDiv(Integer(Node.NodeHeight), Node.Align, 100);
   end;
 
   VButtonAlign := VAlign - FPlusBM.Height div 2;
@@ -12536,7 +12604,7 @@ var
   TargetX: Integer;
 
 begin
-  HalfWidth := Integer(FIndent) div 2;
+  HalfWidth := Round(FIndent / 2);
   if Reverse then
     TargetX := 0
   else
@@ -15309,6 +15377,7 @@ begin
 
   Header.FColumns.FDownIndex := NoColumn;
   Header.FColumns.FHoverIndex := NoColumn;
+  Header.FColumns.FCheckBoxHit := False;
 
   inherited CMMouseLeave(Message);
   {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'CMMouseLeave');{$endif}
@@ -16381,7 +16450,7 @@ begin
                 Node := FFocusedNode;
                 // Traverse the tree structure up to the root.
                 repeat
-                  FOnGetHelpContext(Self, Node, 0, Context);
+                  FOnGetHelpContext(Self, Node, IfThen(FFocusedColumn > NoColumn, FFocusedColumn, 0), Context);
                   Node := Node.Parent;
                 until (Node = FRoot) or (Context <> 0);
               end;
@@ -17399,12 +17468,13 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.BeginOperation;
+procedure TBaseVirtualTree.StartOperation(OperationKind: TVTOperationKind);
 
 // Called to indicate that a long-running operation has been started.
 
 begin
   Inc(FOperationCount);
+  DoStartOperation(OperationKind);
   if FOperationCount = 1 then
     FOperationCanceled := False;
 end;
@@ -18828,6 +18898,15 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+procedure TBaseVirtualTree.DoEndOperation(OperationKind: TVTOperationKind);
+
+begin
+  if Assigned(FOnEndOperation) then
+    FOnEndOperation(Self, OperationKind);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
 procedure TBaseVirtualTree.DoExpanded(Node: PVirtualNode);
 
 begin
@@ -19645,6 +19724,15 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+procedure TBaseVirtualTree.DoStartOperation(OperationKind: TVTOperationKind);
+
+begin
+  if Assigned(FOnStartOperation) then
+    FOnStartOperation(Self, OperationKind);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
 procedure TBaseVirtualTree.DoStateChange(Enter: TVirtualTreeStates; Leave: TVirtualTreeStates = []);
 
 var
@@ -20385,18 +20473,19 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.EndOperation;
+procedure TBaseVirtualTree.EndOperation(OperationKind: TVTOperationKind);
 
 // Called to indicate that a long-running operation has finished.
 
 begin
   Assert(FOperationCount > 0, 'EndOperation must not be called when no operation in progress.');
   Dec(FOperationCount);
+  DoEndOperation(OperationKind);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TBaseVirtualTree.FindNodeInSelection(P: PVirtualNode; out Index: Integer; LowBound,
+function TBaseVirtualTree.FindNodeInSelection(P: PVirtualNode; var Index: Integer; LowBound,
   HighBound: Integer): Boolean;
 
 // Search routine to find a specific node in the selection array.
@@ -21153,7 +21242,7 @@ begin
       begin
         with HitInfo.HitNode^ do
           NewCheckState := DetermineNextCheckState(CheckType, CheckState);
-        if DoChecking(HitInfo.HitNode, NewCheckState) then
+          if (ssLeft in KeysToShiftState(Message.Keys)) and DoChecking(HitInfo.HitNode, NewCheckState) then
         begin
           DoStateChange([tsMouseCheckPending]);
           FCheckNode := HitInfo.HitNode;
@@ -21355,7 +21444,7 @@ begin
       begin
         with HitInfo.HitNode^ do
           NewCheckState := DetermineNextCheckState(CheckType, CheckState);
-        if DoChecking(HitInfo.HitNode, NewCheckState) then
+        if (ssLeft in KeysToShiftState(Message.Keys)) and DoChecking(HitInfo.HitNode, NewCheckState) then
         begin
           DoStateChange([tsMouseCheckPending]);
           FCheckNode := HitInfo.HitNode;
@@ -23143,15 +23232,13 @@ begin
   {$ifdef ThemeSupport}
     //todo
     {
-    if IsWinVistaOrAbove and (tsUseThemes in FStates) and (toUseExplorerTheme in FOptions.FPaintOptions) then
-    begin
-      RowRect := Rect(0, PaintInfo.CellRect.Top, FRangeX, PaintInfo.CellRect.Bottom);
-      if toShowVertGridLines in FOptions.PaintOptions then
-        Dec(RowRect.Right);
-      Theme := OpenThemeData(Handle, 'TREEVIEW');
-    end
-    else
-      Theme := 0;
+   if tsUseExplorerTheme in FStates then
+   begin
+     Theme := OpenThemeData(Handle, 'TREEVIEW');
+     RowRect := Rect(0, PaintInfo.CellRect.Top, Max(FRangeX, ClientWidth), PaintInfo.CellRect.Bottom);
+     if toShowVertGridLines in FOptions.PaintOptions then
+       Dec(RowRect.Right);
+   end;
     }
   {$endif ThemeSupport}
 
@@ -26482,7 +26569,8 @@ begin
   else
     Result := 0;
 
-  BeginOperation;
+  StartOperation(okGetMaxColumnWidth);
+  try
   if Assigned(FOnBeforeGetMaxColumnWidth) then
     FOnBeforeGetMaxColumnWidth(FHeader, Column, UseSmartColumnWidth);
 
@@ -26565,7 +26653,10 @@ begin
 
   if Assigned(FOnAfterGetMaxColumnWidth) then
     FOnAfterGetMaxColumnWidth(FHeader, Column, Result);
-  EndOperation;
+
+  finally
+    EndOperation(okGetMaxColumnWidth);
+  end;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -29872,13 +29963,18 @@ procedure TBaseVirtualTree.Sort(Node: PVirtualNode; Column: TColumnIndex; Direct
 
   var
     Dummy: TVirtualNode;
-
+    CompareResult: Integer;
   begin
     // This avoids checking for Result = nil in the loops.
     Result := @Dummy;
     while Assigned(A) and Assigned(B) do
     begin
-      if DoCompare(A, B, Column) <= 0 then
+      if OperationCanceled then
+        CompareResult := 0
+      else
+        CompareResult := DoCompare(A, B, Column);
+
+      if CompareResult <= 0 then
       begin
         Result.NextSibling := A;
         Result := A;
@@ -29909,13 +30005,19 @@ procedure TBaseVirtualTree.Sort(Node: PVirtualNode; Column: TColumnIndex; Direct
 
   var
     Dummy: TVirtualNode;
+    CompareResult: Integer;
 
   begin
     // this avoids checking for Result = nil in the loops
     Result := @Dummy;
     while Assigned(A) and Assigned(B) do
     begin
-      if DoCompare(A, B, Column) >= 0 then
+      if OperationCanceled then
+        CompareResult := 0
+      else
+        CompareResult := DoCompare(A, B, Column);
+
+      if CompareResult >= 0 then
       begin
         Result.NextSibling := A;
         Result := A;
@@ -30014,11 +30116,16 @@ begin
       // Child count might have changed.
       if Node.ChildCount > 1 then
       begin
+        StartOperation(okSortNode);
+        try
         // Sort the linked list, check direction flag only once.
         if Direction = sdAscending then
           Node.FirstChild := MergeSortAscending(Node.FirstChild, Node.ChildCount)
         else
           Node.FirstChild := MergeSortDescending(Node.FirstChild, Node.ChildCount);
+        finally
+          EndOperation(okSortNode);
+        end;
         // Consolidate the child list finally.
         Run := Node.FirstChild;
         Run.PrevSibling := nil;
@@ -30061,7 +30168,7 @@ procedure TBaseVirtualTree.SortTree(Column: TColumnIndex; Direction: TSortDirect
     Sort(Node, Column, Direction, DoInit);
 
     Run := Node.FirstChild;
-    while Assigned(Run) do
+    while Assigned(Run) and not FOperationCanceled do
     begin
       if DoInit and not (vsInitialized in Run.States) then
         InitNode(Run);
@@ -30079,7 +30186,14 @@ begin
   Inc(FUpdateCount);
   try
     if Column > InvalidColumn then
+    begin
+      StartOperation(okSortTree);
+      try
       DoSort(FRoot);
+      finally
+        EndOperation(okSortTree);
+      end; 
+    end;
     InvalidateCache;
   finally
     if FUpdateCount > 0 then
