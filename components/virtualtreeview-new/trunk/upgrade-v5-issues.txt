@@ -1,2 +1,7 @@
 * Use TImageList in checkbox support
 * Review ContentTo* methods
+* Review Thread support
+* Review TVirtualTreeHintWindow. LCL has better support than Delphi so, no need to much changes
+* Review PrepareBitmaps.FiilBitmaps
+* DoDragMsg
+* Evaluate the advantage to use SetCanvasOrigin instead of SetWindowOrgEx

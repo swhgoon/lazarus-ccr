@@ -27,13 +27,54 @@ unit VirtualTrees;
 // (C) 1999-2001 digital publishing AG. All Rights Reserved.
 //----------------------------------------------------------------------------------------------------------------------
 //
+//  April 2011
+//   - Bug fix: Reverted change of November 2010 (Creating the WorkerThread will no longer change System.IsMultiThread)
+//              it caused sporadic AVs during app start which disappeared after revering the change. This code can lead to a wrong value 
+//              of System.IsMultiThread which causes the memory manager to assume a single threaded application.
+//   - Bug fix: When advancing to the next item while in edit mode, we are now also calling CanEdit().
+//  February 2011
+//   - Bug fix: In case the LastStructureChangeNode is deleted before the StructureChange event is fired,
+//              the reference to the LastStructureChangeNode is cleared to avoid providing an invalid node
+//  January 2011
+//   - Improvement: RTF export now uses landscape paper format and smaller margins, so that more of the contents
+//                  fits on the page
+//   - Improvement: New Option hoHeaderClickAutoSort for TVTHeader.Options: Clicks on the header will make the
+//                    clicked column the SortColumn or toggle sort direction if it already was the sort column
+//   - Improvement: Pressing the tab key in edit mode advances to the next node in edit node, just like the
+//                  Windows 7 Explorer does it.
+//   - Bug fix: No longer auto-scrolling horizontally when the focused node changes if toFullRowSelect is turned on.
+//   - Bug fix: Fixed a clipping issue when drawing unbuffered
+//  December 2010
+//   - Improvement: TBaseVirtualTree.HandleMouseUp now checks CanEdit just in case toEditOnClick
+//   - Bug fix: TotalNodeHeights are now correctly adjusted when toggling toShowHiddenNodes
+//   - Bug fix: Fixed BCB compiler error due to re-defining IDropTargetHelper
+//   - Improvement: New TVTInternalPaintOption poUnbuffered to directly paint onto a given canvas (especially useful
+//                  when printing and/or scaling via world transformations)
+//   - Improvement: Refactored header painting to be more flexible (e.g. for printing)
+//   - Improvement: Made additional fields accessible via protected read-only properties for easier subclassing
+//  November 2010
+//   - Improvement: All calls to SetWindowOrgEx now respect the canvas' transformation
+//   - Improvement: TBaseVirtualTree.GetNodeHeight will no longer measure the node height, if the node is about
+//                  to be deleted
+//   - Improvement: Made TBaseVirtualTree.FRangeX and FRangeY accessible via read-only protected property
+//   - Improvement: Unified clipping handling
+//   - Improvement: Added new color setting "SelectionTextColor"
+//   - Improvement: Creating the WorkerThread will no longer change System.IsMultiThread
+//   - Bug fix: Fixed a potential integer overflow in TBaseVirtualTree.ToggleNode
+//   - Bug fix: TBaseVirtualTree.ToggleNode now measures the child node heights before summing them
+//   - Improvement: Made some private field of TVTHeader and TVirtualTreeColumns protected to make writing
+//                  derived classes easier
+//   - Improvement: Enclosed call to DoDragDrop in TBaseVirtualTree.CMDrag in a try..finally block
+//   - Improvement: The default inplace editor now resizes itself even when the tree is in grid mode
+//   - Bug fix: TBaseVirtualTree.PrepareBitmaps now checks the existance of the main column correctly
+//   - Bug fix: TBaseVirtualTree.UpdateEditBounds now checks wether the focused node is assigned
+//   - Improvement: TBaseVirtualTree.FHintData is now available to derived classes via the protected property HintData
 //  October 2010
-//   - Bug Fix: Now taking horizontal scroll position into account when drawing text of EmptyListMessage property
-//   - Bug Fix: Prevented potential "index out of bounds" exception in TVirtualTreeHintWindow.CalcHintRect
-//   - Bug Fix - Issue #187: Showing a dialog in OnChange or OnRemoveSelection event handlers can cause the VT to
+//   - Bug fix: Now taking horizontal scroll position into account when drawing text of EmptyListMessage property
+//   - Bug fix: Prevented potential "index out of bounds" exception in TVirtualTreeHintWindow.CalcHintRect
+//   - Bug fix - Issue #187: Showing a dialog in OnChange or OnRemoveSelection event handlers can cause the VT to
 //              enter mode for drawing selection rectangle.
 //   - Improvement: Made inherited event OnCanResize published for TVirtualStringTree for Delphi 2010 and later
-//
 //   - Improvement: TBaseVirtualTree.ToggleNode now tries to keep the visual position of the toggled node,
 //                  even when toChildrenAbove is set
 //  September 2010
@@ -63,7 +104,7 @@ unit VirtualTrees;
 //   - Bug fix: range select with no nodes will no longer result in an access violation
 //   - Bug fix: TBaseVirtualTree.SetVisible now correctly decrements the visible node count
 //   - Bug fix: TStringEditLink.BeginEdit now calls AutoAdjustSize to ensure a consistent size of the edit field
-//   - Improvement: TVTHeader.AutoFitColumns is now declared virtual 
+//   - Improvement: TVTHeader.AutoFitColumns is now declared virtual
 //   - Bug fix: header captions were badly positioned text if Extra Large fonts have been activated in the Windows
 //              display options
 //  May 2010
@@ -213,7 +254,7 @@ unit VirtualTrees;
 //              as the bitmap was not completely erased using previous size under certain conditions
 //   - Bug fix: fixed TBaseVirtualTree.GetPreviousLevel
 // January 2009
-//   - Bug fix: removed off-by-1 error in  TBaseVirtualTree.GetBottomNode
+//   - Bug fix: removed off-by-1 error in TBaseVirtualTree.GetBottomNode
 //   - Improvement: improved speed of TBaseVirtualTree.GetMaxColumnWidth when using UseSmartColumnWidth
 //   - Version is now 4.8.0
 // December 2008
@@ -262,9 +303,9 @@ unit VirtualTrees;
 //   - Improvement: modified all variants of TBaseVirtualTree.GetFirst and TBaseVirtualTree.GetLast to optionally
 //                  consider toChildrenAbove
 // October 2008
-//   - Bugfix: removed 'FVisibleCount := 0' from TBaseVirtualTree.Clear as this would lead to incorrect VisibleCount in
+//   - Bug fix: removed 'FVisibleCount := 0' from TBaseVirtualTree.Clear as this would lead to incorrect VisibleCount in
 //             read-only mode
-//   - Bugfix: fixed a condition in TBaseVirtualTree.ToggleCallback that could lead to artefacts
+//   - Bug fix: fixed a condition in TBaseVirtualTree.ToggleCallback that could lead to artefacts
 //   - Improvement: changed the implementation of TBaseVirtualTree.GetNext/GetPrevious so that no penalties occur if
 //                  toChildrenAbove is not set
 //   - Improvement: TBaseVirtualTree.ToggleNode will no longer leave nodes with state vsToggeling if an exception
@@ -332,7 +373,7 @@ unit VirtualTrees;
 //                  view)
 //   - Improvement: new parameters for TVTHeader.AutoFitColumns added: SmartAutoFitType, RangeStartCol and
 //                  RangeEndCol
-//   - Improvement: new parameters for events FOUnknownnAfterAutoFitColumns, FOnBeforeAutoFitColumns, FOnAfterGetMaxColumnWidth
+//   - Improvement: new parameters for events FOnAfterAutoFitColumns, FOnBeforeAutoFitColumns, FOnAfterGetMaxColumnWidth
 //                  and FOnBeforeGetMaxColumnWidth added
 //   - Version is now 4.6.0
 // May 2008
@@ -1286,6 +1327,11 @@ type
     blGlyphBottom
   );
 
+  TSortDirection = (
+    sdAscending,
+    sdDescending
+  );
+
   TVirtualTreeColumn = class(TCollectionItem)
   private
     FText,
@@ -1315,6 +1361,7 @@ type
     FCheckState: TCheckState;
     FImageRect: TRect;
     FHasImage: Boolean;
+    fDefaultSortDirection: TSortDirection;
     function GetCaptionAlignment: TAlignment;
     function GetLeft: Integer;
     function IsBiDiModeStored: Boolean;
@@ -1371,7 +1418,8 @@ type
     property CheckState: TCheckState read FCheckState write SetCheckState default csUncheckedNormal;
     property CheckBox: Boolean read FCheckBox write SetCheckBox default False;
     property Color: TColor read FColor write SetColor stored IsColorStored;
-    property Hint: String read FHint write FHint;
+    property DefaultSortDirection: TSortDirection read fDefaultSortDirection write fDefaultSortDirection default sdAscending;
+    property Hint: String read FHint write FHint stored False;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
     property Layout: TVTHeaderColumnLayout read FLayout write SetLayout default blGlyphLeft;
     property Margin: Integer read FMargin write SetMargin default 4;
@@ -1406,17 +1454,18 @@ type
     FNeedPositionsFix: Boolean;           // True if FixPositions must still be called after DFM loading or Bidi mode change.
     FClearing: Boolean;                   // True if columns are being deleted entirely.
 
-    // drag support
-    FDragIndex: TColumnIndex;             // index of column currently being dragged
-    FDropTarget: TColumnIndex;            // current target column (index) while dragging
-    FDropBefore: Boolean;                 // True if drop position is in the left half of a column, False for the right
-                                          // side to drop the dragged column to
     function GetCount: Integer;
     function GetItem(Index: TColumnIndex): TVirtualTreeColumn;
     function GetNewIndex(P: TPoint; var OldIndex: TColumnIndex): Boolean;
     procedure SetDefaultWidth(Value: Integer);
     procedure SetItem(Index: TColumnIndex; Value: TVirtualTreeColumn);
   protected
+    // drag support
+    FDragIndex: TColumnIndex;             // index of column currently being dragged
+    FDropTarget: TColumnIndex;            // current target column (index) while dragging
+    FDropBefore: Boolean;                 // True if drop position is in the left half of a column, False for the right
+                                          // side to drop the dragged column to
+
     procedure AdjustAutoSize(CurrentIndex: TColumnIndex; Force: Boolean = False);
     function AdjustDownColumn(P: TPoint): TColumnIndex;
     function AdjustHoverColumn(const P: TPoint): Boolean;
@@ -1462,7 +1511,9 @@ type
     function GetVisibleFixedWidth: Integer;
     function IsValidColumn(Column: TColumnIndex): Boolean;
     procedure LoadFromStream(const Stream: TStream; Version: Integer);
-    procedure PaintHeader(DC: HDC; const R: TRect; HOffset: Integer); virtual;
+    procedure PaintHeader(DC: HDC; const R: TRect; HOffset: Integer); overload; virtual;
+    procedure PaintHeader(TargetCanvas: TCanvas; R: TRect; const Target: TPoint;
+      RTLOffset: Integer = 0); overload; virtual;
     procedure SaveToStream(const Stream: TStream);
     function TotalWidth: Integer;
 
@@ -1525,7 +1576,9 @@ type
     hoFullRepaintOnResize,   // Fully invalidate the header (instead of subsequent columns only) when a column is resized.
     hoDisableAnimatedResize, // Disable animated resize for all columns.
     hoHeightResize,          // Allow resizing header height via mouse.
-    hoHeightDblClickResize   // Allow the header to resize itself to its default height.
+    hoHeightDblClickResize,  // Allow the header to resize itself to its default height.
+    hoHeaderClickAutoSort    // Clicks on the header will make the clicked column the SortColumn or toggle sort direction if
+                             // it already was the sort column
   );
   TVTHeaderOptions = set of TVTHeaderOption;
 
@@ -1543,11 +1596,6 @@ type
     hsNeedScaling              // the header needs to be scaled
   );
   THeaderStates = set of THeaderState;
-
-  TSortDirection = (
-    sdAscending,
-    sdDescending
-  );
 
   // describes the used column resize behaviour for AutoFitColumns
   TSmartAutoFitType = (
@@ -1575,8 +1623,6 @@ type
     FFont: TFont;
     FParentFont: Boolean;
     FOptions: TVTHeaderOptions;
-    FStates: THeaderStates;            // Used to keep track of internal states the header can enter.
-    FTrackPoint: TPoint;               // Client coordinate where the tracking started.
     FStyle: TVTHeaderStyle;            // button style
     FBackground: TColor;
     FAutoSizeIndex: TColumnIndex;
@@ -1590,8 +1636,6 @@ type
     FImageChangeLink: TChangeLink;     // connections to the image list to get notified about changes
     FSortColumn: TColumnIndex;
     FSortDirection: TSortDirection;
-    FTrackStart: TPoint;               // client coordinates of the tracking start point
-    FDragStart: TPoint;                // initial mouse drag position
     FDragImage: TVTDragImage;          // drag image management during header drag
     FLastWidth: Integer;               // Used to adjust spring columns. This is the width of all visible columns,
                                        // not the header rectangle.
@@ -1615,6 +1659,11 @@ type
     procedure SetSortDirection(const Value: TSortDirection);
     procedure SetStyle(Value: TVTHeaderStyle);
   protected
+    FStates: THeaderStates;            // Used to keep track of internal states the header can enter.
+    FDragStart: TPoint;                // initial mouse drag position
+    FTrackStart: TPoint;               // client coordinates of the tracking start point
+    FTrackPoint: TPoint;               // Client coordinate where the tracking started.
+    
     function CanSplitterResize(P: TPoint): Boolean;
     procedure ChangeScale(M, D: Integer); virtual;
     function DetermineSplitterIndex(const P: TPoint): Boolean; virtual;
@@ -1841,7 +1890,8 @@ type
     poDrawDropMark,     // draw drop mark if a node is currently the drop target
     poGridLines,        // draw grid lines if enabled
     poMainOnly,         // draw only the main column
-    poSelectedOnly      // draw only selected nodes
+    poSelectedOnly,     // draw only selected nodes
+    poUnbuffered        // draw directly onto the target canvas; especially useful when printing
   );
   TVTInternalPaintOptions = set of TVTInternalPaintOption;
 
@@ -1920,7 +1970,7 @@ type
   TVTColors = class(TPersistent)
   private
     FOwner: TBaseVirtualTree;
-    FColors: array[0..14] of TColor;
+    FColors: array[0..15] of TColor;
     function GetColor(const Index: Integer): TColor;
     procedure SetColor(const Index: Integer; const Value: TColor);
   public
@@ -1940,6 +1990,7 @@ type
     property HotColor: TColor index 8 read GetColor write SetColor default clWindowText;
     property SelectionRectangleBlendColor: TColor index 12 read GetColor write SetColor default clHighlight;
     property SelectionRectangleBorderColor: TColor index 13 read GetColor write SetColor default clHighlight;
+    property SelectionTextColor: TColor index 15 read GetColor write SetColor default clHighlightText;
     property TreeLineColor: TColor index 5 read GetColor write SetColor default clBtnShadow;
     property UnfocusedSelectionColor: TColor index 6 read GetColor write SetColor default clBtnFace;
     property UnfocusedSelectionBorderColor: TColor index 10 read GetColor write SetColor default clBtnFace;
@@ -2567,7 +2618,6 @@ type
     procedure InterruptValidation;
     function IsFirstVisibleChild(Parent, Node: PVirtualNode): Boolean;
     function IsLastVisibleChild(Parent, Node: PVirtualNode): Boolean;
-    procedure LimitPaintingToArea(Canvas: TCanvas; ClipRect: TRect; VisibleRegion: HRGN = 0);
     //lcl
     procedure LoadPanningCursors;
     function MakeNewNode: PVirtualNode;
@@ -2967,6 +3017,7 @@ type
     property Header: TVTHeader read FHeader write SetHeader;
     property HeaderRect: TRect read FHeaderRect;
     property HintMode: TVTHintMode read FHintMode write FHintMode default hmDefault;
+    property HintData: TVTHintData read FHintData write FHintData;
     property HotCursor: TCursor read FHotCursor write FHotCursor default crDefault;
     property Images: TCustomImageList read FImages write SetImages;
     property IncrementalSearch: TVTIncrementalSearch read FIncrementalSearch write SetSearchOption default isNone;
@@ -2976,12 +3027,19 @@ type
     property Indent: Cardinal read FIndent write SetIndent default 18;
     property LastClickPos: TPoint read FLastClickPos write FLastClickPos;
     property LastDropMode: TDropMode read FLastDropMode write FlastDropMode;
+    property LastHintRect: TRect read FLastHintRect write FLastHintRect;
     property LineMode: TVTLineMode read FLineMode write SetLineMode default lmNormal;
     property LineStyle: TVTLineStyle read FLineStyle write SetLineStyle default lsDotted;
     property Margin: Integer read FMargin write SetMargin default 4;
     property NodeAlignment: TVTNodeAlignment read FNodeAlignment write SetNodeAlignment default naProportional;
     property NodeDataSize: Integer read FNodeDataSize write SetNodeDataSize default -1;
     property OperationCanceled: Boolean read GetOperationCanceled;
+    property HotMinusBM: TBitmap read FHotMinusBM;
+    property HotPlusBM: TBitmap read FHotPlusBM;
+    property MinusBM: TBitmap read FMinusBM;
+    property PlusBM: TBitmap read FPlusBM;
+    property RangeX: Cardinal read FRangeX;
+    property RangeY: Cardinal read FRangeY;
     property RootNodeCount: Cardinal read GetRootNodeCount write SetRootNodeCount default 0;
     property ScrollBarOptions: TScrollBarOptions read FScrollBarOptions write SetScrollBarOptions;
     property SelectionBlendFactor: Byte read FSelectionBlendFactor write FSelectionBlendFactor default 128;
@@ -4990,9 +5048,10 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+procedure GetStringDrawRect(DC: HDC; const S: String; var Bounds: TRect; DrawFormat: Cardinal);
+
 // Calculates bounds of a drawing rectangle for the given string
 
-procedure GetStringDrawRect(DC: HDC; const S: String; var Bounds: TRect; DrawFormat: Cardinal);
 begin
   Bounds.Right := Bounds.Left + 1;
   Bounds.Bottom := Bounds.Top + 1;
@@ -5194,6 +5253,61 @@ end;
 {$endif}
 //----------------------------------------------------------------------------------------------------------------------
 
+procedure ClipCanvas(Canvas: TCanvas; ClipRect: TRect; VisibleRegion: HRGN = 0);
+
+// Clip a given canvas to ClipRect while transforming the given rect to device coordinates.
+
+var
+  ClipRegion: HRGN;
+
+begin
+  // Regions expect their coordinates in device coordinates, hence we have to transform the region rectangle.
+  LPtoDP(Canvas.Handle, ClipRect, 2);
+  ClipRegion := CreateRectRgnIndirect(ClipRect);
+  if VisibleRegion <> 0 then
+    CombineRgn(ClipRegion, ClipRegion, VisibleRegion, RGN_AND);
+  SelectClipRgn(Canvas.Handle, ClipRegion);
+  DeleteObject(ClipRegion);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+procedure SetCanvasOrigin(Canvas: TCanvas; X, Y: Integer);
+
+// Set the coordinate space origin of a given canvas.
+
+var
+  P: TPoint;
+
+begin
+  // Reset origin as otherwise we would accumulate the origin shifts when calling LPtoDP.
+  SetWindowOrgEx(Canvas.Handle, 0, 0, nil);
+
+  // The shifting is expected in physical points, so we have to transform them accordingly.
+  P := Point(X, Y);
+  LPtoDP(Canvas.Handle, P, 1);
+
+  // Do the shift.
+  SetWindowOrgEx(Canvas.Handle, P.X, P.Y, nil);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+procedure SetBrushOrigin(Canvas: TCanvas; X, Y: Integer);
+
+// Set the brush origin of a given canvas.
+
+var
+  P: TPoint;
+
+begin
+  P := Point(X, Y);
+  LPtoDP(Canvas.Handle, P, 1);
+  SetBrushOrgEx(Canvas.Handle, P.X, P.Y, nil);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
 procedure InitializeGlobalStructures;
 
 // initialization of stuff global to the unit
@@ -5260,9 +5374,8 @@ end;
 //----------------- TWorkerThread --------------------------------------------------------------------------------------
 
 procedure AddThreadReference;
-
 begin
-  if WorkerThread = nil then
+  if not Assigned(WorkerThread) then
   begin
     // Create an event used to trigger our worker thread when something is to do.
     WorkEvent := TEvent.Create(nil, False, False, '');
@@ -5439,7 +5552,7 @@ begin
   try
     Remove(Tree);
   finally
-    FWaiterList.UnlockList;
+    FWaiterList.UnlockList; // Seen several AVs in this line, was called from TWorkerThrea.Destroy. Joachim Marder.
   end;
   CancelValidation(Tree);
 end;
@@ -5641,17 +5754,15 @@ begin
         Run := GetFirstNoInit;
         while Assigned(Run) do
         begin
-          if (vsFiltered in Run.States) and FullyVisible[Run] then
+          if (vsFiltered in Run.States) then
+          begin
+            if FullyVisible[Run] then
+              Inc(FVisibleCount, IfThen(toShowFilteredNodes in ToBeSet, 1, 0));
             if toShowFilteredNodes in ToBeSet then
-            begin
-              Inc(FVisibleCount);
-              AdjustTotalHeight(Run, Run.NodeHeight, True);
-            end
+              AdjustTotalHeight(Run, Run.NodeHeight, True)
             else
-            begin
               AdjustTotalHeight(Run, -Run.NodeHeight, True);
-              Dec(FVisibleCount);
-            end;
+          end;
           Run := GetNextNoInit(Run);
         end;
         if HandleWasAllocated then
@@ -6340,7 +6451,7 @@ begin
       ClipRect.TopLeft := PaintTarget;
       ClipRect.Right := ClipRect.Left + R.Right - R.Left;
       ClipRect.Bottom := ClipRect.Top + R.Bottom - R.Top;
-      Tree.LimitPaintingToArea(Canvas, ClipRect, VisibleRegion);
+      ClipCanvas(Canvas, ClipRect, VisibleRegion);
       Tree.PaintTree(Canvas, R, PaintTarget, PaintOptions);
 
       if CaptureNCArea then
@@ -6349,11 +6460,19 @@ begin
         SelectClipRgn(Canvas.Handle, VisibleRegion);
         // Since WM_PRINT cannot be given a position where to draw we simply move the window origin and
         // get the same effect.
-        GetWindowRect(Tree.Handle, ClipRect);
+        GetWindowRect(Tree.Handle, ClipRect);     
+        {$ifdef UseSetCanvasOrigin}
+        SetCanvasOrigin(Canvas, DragRect.Left - ClipRect.Left, DragRect.Top - ClipRect.Top);
+        {$else}
         SetWindowOrgEx(Canvas.Handle, DragRect.Left - ClipRect.Left, DragRect.Top - ClipRect.Top, nil);
+        {$endif}
         //todo: see what todo here
         //Tree.Perform(WM_PRINT, Integer(Canvas.Handle), PRF_NONCLIENT);
+        {$ifdef UseSetCanvasOrigin}
+        SetCanvasOrigin(Canvas, 0, 0);
+        {$else}
         SetWindowOrgEx(Canvas.Handle, 0, 0, nil);
+        {$endif}
       end;
       SelectClipRgn(Canvas.Handle, 0);
 
@@ -6463,6 +6582,7 @@ begin
   FCheckState := csUncheckedNormal;
   FCheckBox := False;
   FHasImage := False;
+  fDefaultSortDirection := sdAscending;
 
   inherited Create(Collection);
 
@@ -8095,6 +8215,22 @@ begin
     HitInfo.HitPosition := [hhiNoWhere];
   end;
 
+  if (hoHeaderClickAutoSort in Header.Options) and (HitInfo.Button = mbLeft) and not DblClick and (HitInfo.Column >= 0) then begin
+    // handle automatic setting of SortColumn and toggling of the sort order
+    if HitInfo.Column<>Header.SortColumn then begin
+      // set sort column
+      Header.SortColumn := HitInfo.Column;
+      Header.SortDirection := Self[Header.SortColumn].DefaultSortDirection
+    end//if
+    else begin
+      // toggle sort direction
+      if Header.SortDirection = sdDescending then
+        Header.SortDirection := sdAscending
+      else
+        Header.SortDirection := sdDescending
+    end;//else
+  end;//if
+
   if DblClick then
     FHeader.Treeview.DoHeaderDblClick(HitInfo)
   else
@@ -8131,7 +8267,7 @@ begin
       begin
         // Index found. Move all higher entries one step down and remove the last entry.
         if I < Upper then
-          Move(FPositionToIndex[I + 1], FPositionToIndex[I], (Upper - I) * SizeOf(Integer));
+          Move(FPositionToIndex[I + 1], FPositionToIndex[I], (Upper - I) * SizeOf(TColumnIndex));
       end;
       // Decrease all indices, which are greater than the index to be deleted.
       if FPositionToIndex[I] > OldIndex then
@@ -8809,12 +8945,67 @@ begin
   // LCL port started with header stream version 6 so no need to do the check here
   Stream.ReadBuffer(FDefaultWidth, SizeOf(FDefaultWidth));
 end;
-
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TVirtualTreeColumns.PaintHeader(DC: HDC; const R: TRect; HOffset: Integer);
 
+// Backward compatible header paint method. This method takes care of visually moving floating columns
+
+var
+  VisibleFixedWidth: Integer;
+  RTLOffset: Integer;
+
+  procedure PaintFixedArea;
+  
+  begin
+    if VisibleFixedWidth > 0 then
+      PaintHeader(FHeaderBitmap.Canvas,
+        Rect(0, 0, Min(R.Right, VisibleFixedWidth), R.Bottom - R.Top),
+        Point(R.Left, R.Top), RTLOffset);
+  end;
+
+begin
+  // Adjust size of the header bitmap
+  with FHeader.Treeview.FHeaderRect do
+  begin
+    FHeaderBitmap.Width := Max(Right, R.Right - R.Left);
+    FHeaderBitmap.Height := Bottom;
+  end;
+
+  VisibleFixedWidth := GetVisibleFixedWidth;
+
+  // Consider right-to-left directionality.
+  if FHeader.TreeView.UseRightToLeftAlignment then
+    RTLOffset := FHeader.Treeview.ComputeRTLOffset
+  else
+    RTLOffset := 0;
+    
+  if RTLOffset = 0 then
+    PaintFixedArea;
+
+  // Paint the floating part of the header.
+  PaintHeader(FHeaderBitmap.Canvas,
+    Rect(VisibleFixedWidth - HOffset, 0, R.Right + VisibleFixedWidth - HOffset, R.Bottom - R.Top),
+    Point(R.Left + VisibleFixedWidth, R.Top), RTLOffset);
+
+  // In case of right-to-left directionality we paint the fixed part last.
+  if RTLOffset <> 0 then
+    PaintFixedArea;
+  
+  // Blit the result to target.
+  with R do
+    BitBlt(DC, Left, Top, Right - Left, Bottom - Top, FHeaderBitmap.Canvas.Handle, Left, Top, SRCCOPY);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+procedure TVirtualTreeColumns.PaintHeader(TargetCanvas: TCanvas; R: TRect; const Target: TPoint;
+  RTLOffset: Integer = 0);
+
 // Main paint method to draw the header.
+// This procedure will paint the a slice (given in R) out of HeaderRect into TargetCanvas starting at position Target.
+// This function does not offer the option to visually move floating columns due to scrolling. To accomplish this you
+// need to call this method twice.
 
 const
   SortGlyphs: array[TSortDirection, Boolean] of Integer = ( // ascending/descending, normal/XP style
@@ -8822,9 +9013,7 @@ const
   );
 
 var
-  I, Y,
-  SortIndex: Integer;
-  Run: TRect;
+  Run: TColumnIndex;
   RightBorderFlag,
   NormalButtonStyle,
   NormalButtonFlags,
@@ -8832,47 +9021,20 @@ var
   PressedButtonFlags,
   RaisedButtonStyle,
   RaisedButtonFlags: Cardinal;
-  DrawFormat: Cardinal;
   Images: TCustomImageList;
-  ButtonRgn: HRGN;
   OwnerDraw,
-  WrapCaption,
   AdvancedOwnerDraw: Boolean;
-  {$ifdef ThemeSupport}
-  Details: TThemedElementDetails;
-  {$endif ThemeSupport}
-  SortGlyphSize: TSize;
-  Glyph: TThemedHeader;
-  Pos: TRect;
-
   PaintInfo: THeaderPaintInfo;
   RequestedElements,
   ActualElements: THeaderPaintElements;
 
-  Temp: TRect;
-  ColCaptionText: String;
-  ColImageInfo: TVTImageInfo;
+  //--------------- local functions -------------------------------------------
 
-begin
-  ColImageInfo.Ghosted := False;
-  Run := FHeader.Treeview.FHeaderRect;
-  FHeaderBitmap.Width := Max(Run.Right, R.Right - R.Left);
-  FHeaderBitmap.Height := Run.Bottom;
-  OwnerDraw := (hoOwnerDraw in FHeader.FOptions) and Assigned(FHeader.Treeview.FOnHeaderDraw) and
-    not (csDesigning in FHeader.Treeview.ComponentState);
-  AdvancedOwnerDraw := (hoOwnerDraw in FHeader.FOptions) and Assigned(FHeader.Treeview.FOnAdvancedHeaderDraw) and
-    Assigned(FHeader.Treeview.FOnHeaderDrawQueryElements) and not (csDesigning in FHeader.Treeview.ComponentState);
-  // If both draw posibillities are specified then prefer the advanced way.
-  if AdvancedOwnerDraw then
-    OwnerDraw := False;
+  procedure PrepareButtonStyles;
 
-  FillChar(PaintInfo, SizeOf(PaintInfo),#0);
-  PaintInfo.TargetCanvas := FHeaderBitmap.Canvas;
+  // Prepare the button styles and flags for later usage.
 
-  with PaintInfo, TargetCanvas do
   begin
-    Font := FHeader.FFont;
-
     RaisedButtonStyle := 0;
     RaisedButtonFlags := 0;
     case FHeader.Style of
@@ -8901,317 +9063,351 @@ begin
         RaisedButtonFlags := BF_LEFT or BF_TOP or BF_BOTTOM or BF_MIDDLE or BF_ADJUST;
       end;
     end;
+  end;
 
-    // Use shortcut for the images.
-    Images := FHeader.FImages;
+  //---------------------------------------------------------------------------
 
-    // Erase background of the header.
-    // See if the application wants to do that on its own.
-    RequestedElements := [];
-    if AdvancedOwnerDraw then
-    begin
-      PaintInfo.PaintRectangle := R;
-      PaintInfo.Column := nil;
-      FHeader.Treeview.DoHeaderDrawQueryElements(PaintInfo, RequestedElements);
-    end;
+  procedure DrawBackground;
 
-    if hpeBackground in RequestedElements then
-    begin
-      FHeader.Treeview.DoAdvancedHeaderDraw(PaintInfo, [hpeBackground]);
-    end
-    else
-    begin
-      {$ifdef ThemeSupport}
+  // Draw the header background.
+
+  var
+    BackgroundRect: TRect;
+    Details: TThemedElementDetails;
+    
+  begin
+    BackgroundRect := Rect(Target.X, Target.Y, Target.X + R.Right - R.Left, Target.Y + FHeader.Height);
+
+    with TargetCanvas do
+      begin
+      if hpeBackground in RequestedElements then
+        FHeader.Treeview.DoAdvancedHeaderDraw(PaintInfo, [hpeBackground])
+      else
+      begin
         if tsUseThemes in FHeader.Treeview.FStates then
         begin
           Details := ThemeServices.GetElementDetails(thHeaderItemRightNormal);
-          ThemeServices.DrawElement(Handle, Details, R, @R);
+          ThemeServices.DrawElement(Handle, Details, BackgroundRect, @BackgroundRect);
         end
         else
-      {$endif ThemeSupport}
-        if FHeader.Style = hsXPStyle then
-          DrawXPButton(Handle, Run, False, False, False)
+          if FHeader.Style = hsXPStyle then
+            DrawXPButton(Handle, BackgroundRect, False, False, False)
+          else
+          begin
+            Brush.Color := FHeader.FBackground;
+            FillRect(BackgroundRect);
+          end;
+      end;
+    end;
+  end;
+
+  //---------------------------------------------------------------------------
+
+  procedure PaintColumnHeader(AColumn: TColumnIndex; ATargetRect: TRect);
+
+  // Draw a single column to TargetRect. The clipping rect needs to be set before
+  // this procedure is called.
+
+  var
+    Y: Integer;
+    SavedDC: Integer;
+    ColCaptionText: UnicodeString;
+    ColImageInfo: TVTImageInfo;
+    SortIndex: Integer;
+    SortGlyphSize: TSize;
+    Glyph: TThemedHeader;
+    Details: TThemedElementDetails;
+    WrapCaption: Boolean;
+    DrawFormat: Cardinal;
+    Pos: TRect;
+
+  begin
+    ColImageInfo.Ghosted := False;
+    PaintInfo.Column := Items[AColumn];
+    with PaintInfo, Column do
+    begin
+      //lclheader
+      //Under Delphi/VCL, unlike LCL, the hover index is not changed while dragging.
+      //Here we check if dragging and not draw as hover
+      IsHoverIndex := (AColumn = FHoverIndex) and (hoHotTrack in FHeader.FOptions) and
+        (coEnabled in FOptions) and not (hsDragging in FHeader.States);
+      IsDownIndex := (AColumn = FDownIndex) and not FCheckBoxHit;
+
+      if (coShowDropMark in FOptions) and (AColumn = FDropTarget) and (AColumn <> FDragIndex) then
+      begin
+        if FDropBefore then
+          DropMark := dmmLeft
+        else
+          DropMark := dmmRight;
+      end
+      else
+        DropMark := dmmNone;
+
+      IsEnabled := (coEnabled in FOptions) and (FHeader.Treeview.Enabled);
+      ShowHeaderGlyph := (hoShowImages in FHeader.FOptions) and ((Assigned(Images) and (FImageIndex > -1)) or FCheckBox);
+      ShowSortGlyph := (AColumn = FHeader.FSortColumn) and (hoShowSortGlyphs in FHeader.FOptions);
+      WrapCaption := coWrapCaption in FOptions;
+
+      PaintRectangle := ATargetRect;
+
+      // This path for text columns or advanced owner draw.
+      if (Style = vsText) or not OwnerDraw or AdvancedOwnerDraw then
+      begin
+        // See if the application wants to draw part of the header itself.
+        RequestedElements := [];
+        if AdvancedOwnerDraw then
+        begin
+          PaintInfo.Column := Items[AColumn];
+          FHeader.Treeview.DoHeaderDrawQueryElements(PaintInfo, RequestedElements);
+        end;
+
+        if ShowRightBorder or (AColumn < Count - 1) then
+          RightBorderFlag := BF_RIGHT
+        else
+          RightBorderFlag := 0;
+
+        if hpeBackground in RequestedElements then
+          FHeader.Treeview.DoAdvancedHeaderDraw(PaintInfo, [hpeBackground])
         else
         begin
-          Brush.Color := FHeader.FBackground;
-          FillRect(R);
+          if tsUseThemes in FHeader.Treeview.FStates then
+          begin
+            if IsDownIndex then
+              Details := ThemeServices.GetElementDetails(thHeaderItemPressed)
+            else
+              if IsHoverIndex then
+                Details := ThemeServices.GetElementDetails(thHeaderItemHot)
+              else
+                Details := ThemeServices.GetElementDetails(thHeaderItemNormal);
+            ThemeServices.DrawElement(TargetCanvas.Handle, Details, PaintRectangle, @PaintRectangle);
+          end
+          else
+          begin
+            if FHeader.Style = hsXPStyle then
+              DrawXPButton(TargetCanvas.Handle, PaintRectangle, RightBorderFlag <> 0, IsDownIndex, IsHoverIndex)
+            else
+              if IsDownIndex then
+                DrawEdge(TargetCanvas.Handle, PaintRectangle, PressedButtonStyle, PressedButtonFlags)
+              else
+                // Plates have the special case of raising on mouse over.
+                if (FHeader.Style = hsPlates) and IsHoverIndex and
+                  (coAllowClick in FOptions) and (coEnabled in FOptions) then
+                  DrawEdge(TargetCanvas.Handle, PaintRectangle, RaisedButtonStyle,
+                           RaisedButtonFlags or RightBorderFlag)
+                else
+                  DrawEdge(TargetCanvas.Handle, PaintRectangle, NormalButtonStyle,
+                           NormalButtonFlags or RightBorderFlag);
+          end;
         end;
+
+        PaintRectangle := ATargetRect;
+
+        // calculate text and glyph position
+        InflateRect(PaintRectangle, -2, -2);
+        DrawFormat := DT_TOP or DT_NOPREFIX;
+        case CaptionAlignment of
+          taLeftJustify  : DrawFormat := DrawFormat or DT_LEFT;
+          taRightJustify : DrawFormat := DrawFormat or DT_RIGHT;
+          taCenter       : DrawFormat := DrawFormat or DT_CENTER;
+        end;
+        if UseRightToLeftReading then
+          DrawFormat := DrawFormat + DT_RTLREADING;
+        ComputeHeaderLayout(TargetCanvas.Handle, PaintRectangle, ShowHeaderGlyph, ShowSortGlyph, GlyphPos,
+          SortGlyphPos, SortGlyphSize, TextRectangle, DrawFormat);
+
+        // Move glyph and text one pixel to the right and down to simulate a pressed button.
+        if IsDownIndex then
+        begin
+          OffsetRect(TextRectangle, 1, 1);
+          Inc(GlyphPos.X);
+          Inc(GlyphPos.Y);
+          Inc(SortGlyphPos.X);
+          Inc(SortGlyphPos.Y);
+        end;
+
+        // Advanced owner draw allows to paint elements, which would normally not be painted (because of space
+        // limitations, empty captions etc.).
+        ActualElements := RequestedElements * [hpeHeaderGlyph, hpeSortGlyph, hpeDropMark, hpeText];
+
+        // main glyph
+        FHasImage := False;
+        if not (hpeHeaderGlyph in ActualElements) and ShowHeaderGlyph and
+          (not ShowSortGlyph or (FBidiMode <> bdLeftToRight) or (GlyphPos.X + Images.Width <= SortGlyphPos.X) ) then
+        begin
+          if not FCheckBox then
+          begin
+            ColImageInfo.Images := Images;
+            Images.Draw(TargetCanvas, GlyphPos.X, GlyphPos.Y, FImageIndex, IsEnabled);
+          end
+          else
+          begin
+            with Header.Treeview do
+            begin
+              ColImageInfo.Images := GetCheckImageListFor(CheckImageKind);
+              ColImageInfo.Index := GetCheckImage(nil, FCheckType, FCheckState, IsEnabled);
+              ColImageInfo.XPos := GlyphPos.X;
+              ColImageInfo.YPos := GlyphPos.Y;
+              PaintCheckImage(TargetCanvas, ColImageInfo, False);
+            end;
+          end;
+
+          FHasImage := True;
+          with FImageRect do
+          begin
+            Left := GlyphPos.X;
+            Top := GlyphPos.Y;
+            Right := Left + ColImageInfo.Images.Width;
+            Bottom := Top + ColImageInfo.Images.Height;
+          end;
+        end;
+
+        // caption
+        if WrapCaption then
+          ColCaptionText := FCaptionText
+        else
+          ColCaptionText := Text;
+
+        if not (hpeText in ActualElements) and (Length(Text) > 0) then
+          DrawButtonText(TargetCanvas.Handle, ColCaptionText, TextRectangle, IsEnabled,
+                         IsHoverIndex and (hoHotTrack in FHeader.FOptions) and
+                         not (tsUseThemes in FHeader.Treeview.FStates), DrawFormat, WrapCaption);
+
+        // sort glyph
+        if not (hpeSortGlyph in ActualElements) and ShowSortGlyph then
+        begin
+          if tsUseExplorerTheme in FHeader.Treeview.FStates then
+          begin
+            Pos.TopLeft := SortGlyphPos;
+            Pos.Right := Pos.Left + SortGlyphSize.cx;
+            Pos.Bottom := Pos.Top + SortGlyphSize.cy;
+            if FHeader.FSortDirection = sdAscending then
+              Glyph := thHeaderSortArrowSortedUp
+            else
+              Glyph := thHeaderSortArrowSortedDown;
+            Details := ThemeServices.GetElementDetails(Glyph);
+            ThemeServices.DrawElement(TargetCanvas.Handle, Details, Pos, @Pos);
+          end
+          else
+          begin
+            SortIndex := SortGlyphs[FHeader.FSortDirection, tsUseThemes in FHeader.Treeview.FStates];
+            {$ifdef USE_DELPHICOMPAT}
+            DirectMaskBlt(FHeaderBitmap.Canvas.Handle, SortGlyphPos.X, SortGlyphPos.Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
+              SortIndex * UtilityImageSize, 0, UtilityImages.MaskHandle);
+            {$else}
+            StretchMaskBlt(FHeaderBitmap.Canvas.Handle, SortGlyphPos.X, SortGlyphPos.Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
+              SortIndex * UtilityImageSize, 0, UtilityImageSize, UtilityImageSize, UtilityImages.MaskHandle,SortIndex * UtilityImageSize, 0, SRCCOPY);
+            {$endif}
+          end;
+        end;
+
+        // Show an indication if this column is the current drop target in a header drag operation.
+        if not (hpeDropMark in ActualElements) and (DropMark <> dmmNone) then
+        begin
+          Y := (PaintRectangle.Top + PaintRectangle.Bottom - UtilityImages.Height) div 2;
+          if DropMark = dmmLeft then
+            {$ifdef USE_DELPHICOMPAT}
+            DirectMaskBlt(FHeaderBitmap.Canvas.Handle, PaintRectangle.Left, Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
+              0, 0, UtilityImages.MaskHandle)
+            {$else}
+            StretchMaskBlt(FHeaderBitmap.Canvas.Handle, PaintRectangle.Left, Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
+              0, 0, UtilityImageSize, UtilityImageSize, UtilityImages.MaskHandle, 0, 0, SRCCOPY)
+            {$endif}
+          else
+            {$ifdef USE_DELPHICOMPAT}
+            DirectMaskBlt(FHeaderBitmap.Canvas.Handle, PaintRectangle.Right - 16, Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
+              UtilityImageSize, 0, UtilityImages.MaskHandle);
+            {$else}
+            StretchMaskBlt(FHeaderBitmap.Canvas.Handle, PaintRectangle.Right - 16, Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
+              UtilityImageSize, 0, UtilityImageSize, UtilityImageSize, UtilityImages.MaskHandle, UtilityImageSize, 0, SRCCOPY);
+            {$endif}
+        end;
+
+        if ActualElements <> [] then
+        begin
+          SavedDC := SaveDC(TargetCanvas.Handle);
+          FHeader.Treeview.DoAdvancedHeaderDraw(PaintInfo, ActualElements);
+          RestoreDC(TargetCanvas.Handle, SavedDC);
+        end;
+      end
+      else // Let application draw the header.
+        FHeader.Treeview.DoHeaderDraw(TargetCanvas, Items[AColumn], PaintRectangle, IsHoverIndex, IsDownIndex,
+          DropMark);
+    end;
+  end;
+
+  //--------------- end local functions ---------------------------------------
+
+var
+  TargetRect: TRect;
+  MaxX: Integer;
+
+begin
+  if IsRectEmpty(R) then
+    Exit;
+
+  // If both draw posibillities are specified then prefer the advanced way.
+  AdvancedOwnerDraw := (hoOwnerDraw in FHeader.FOptions) and Assigned(FHeader.Treeview.FOnAdvancedHeaderDraw) and
+    Assigned(FHeader.Treeview.FOnHeaderDrawQueryElements) and not (csDesigning in FHeader.Treeview.ComponentState);
+  OwnerDraw := (hoOwnerDraw in FHeader.FOptions) and Assigned(FHeader.Treeview.FOnHeaderDraw) and
+    not (csDesigning in FHeader.Treeview.ComponentState) and not AdvancedOwnerDraw;
+
+  ZeroMemory(@PaintInfo, SizeOf(PaintInfo));
+  PaintInfo.TargetCanvas := TargetCanvas;
+
+  with PaintInfo, TargetCanvas do
+  begin
+    // Use shortcuts for the images and the font.
+    Images := FHeader.FImages;
+    Font := FHeader.FFont;
+
+    PrepareButtonStyles;
+
+    // At first, query the application which parts of the header it wants to draw on its own.
+    RequestedElements := [];
+    if AdvancedOwnerDraw then
+    begin
+      PaintRectangle := R;
+      Column := nil;
+      FHeader.Treeview.DoHeaderDrawQueryElements(PaintInfo, RequestedElements);
     end;
 
-    Run.Top := R.Top;
-    Run.Right := R.Left;
-    Run.Bottom := R.Bottom;
-    // Run.Left is set in the loop
+    // Draw the background.
+    DrawBackground;
 
-    // Consider right-to-left directionality.
-    with FHeader.Treeview do
-      if UseRightToLeftAlignment then
-        Inc(Run.Right, ComputeRTLOffset);
+    // Now that we have drawn the background, we apply the header's dimensions to R.
+    R := Rect(Max(R.Left, 0), Max(R.Top, 0), Min(R.Right, TotalWidth), Min(R.Bottom, Header.Height));
 
-    Temp := Run;
-    //todo_lcl_check
-    ShowRightBorder := (FHeader.Style = hsThickButtons) or not (hoAutoResize in FHeader.FOptions);// or
-      //(FHeader.Treeview.BevelKind = bkNone);
+    // Determine where to stop.
+    MaxX := Target.X + R.Right - R.Left;
+
+    // Determine the start column.
+    Run := ColumnFromPosition(Point(R.Left + RTLOffset, 0), False);
+    if Run <= NoColumn then
+      Exit;
+
+    TargetRect.Top    := Target.Y;
+    TargetRect.Bottom := Target.Y + R.Bottom - R.Top;
+    TargetRect.Left   := Target.X - R.Left + Items[Run].FLeft + RTLOffset;
+    // TargetRect.Right will be set in the loop
+
+    ShowRightBorder := (FHeader.Style = hsThickButtons) or not (hoAutoResize in FHeader.FOptions);
 
     // Now go for each button.
-    for I := 0 to Count - 1 do
+    while (Run > NoColumn) and (TargetRect.Left < MaxX) do
     begin
-      with Items[FPositionToIndex[I]] do
-        if coVisible in FOptions then
-        begin
-          if not (coFixed in FOptions) then
-          begin
-            Inc(Run.Right, HOffset);
-            HOffset := 0;
-          end;
+      TargetRect.Right := TargetRect.Left + Items[Run].FWidth;
 
-          Temp := Rect(Temp.Right, Run.Top, Max(Temp.Right, Run.Right + Width), Run.Bottom);
+      // create a clipping rect to limit painting to button area
+      ClipCanvas(TargetCanvas, Rect(Max(TargetRect.Left, Target.X), Target.Y + R.Top,
+                                    Min(TargetRect.Right, MaxX), TargetRect.Bottom));
 
-          Run.Left := Run.Right;
-          Inc(Run.Right, Width);
-          // Skip columns which are not visible at all.
-          if (Run.Right > R.Left) and (Run.Right > Temp.Left)  then
-          begin
-            // Stop painting if the rectangle is filled.
-            if Run.Left > R.Right then
-              Break;
+      PaintColumnHeader(Run, TargetRect);
 
-            // Create a clip region to avoid overpainting any other area which does not belong to this column.
-            if Temp.Right > R.Right then
-              Temp.Right := R.Right;
-            if Temp.Left < R.Left then
-              Temp.Left := R.Left;
-
-            ButtonRgn := CreateRectRgnIndirect(Temp);
-            SelectClipRgn(Handle, ButtonRgn);
-            DeleteObject(ButtonRgn);
-
-            //lclheader
-            //Under Delphi/VCL, unlike LCL, the hover index is not changed while dragging.
-            //Here we check if dragging and not draw as hover
-            IsHoverIndex := (Integer(FPositionToIndex[I]) = FHoverIndex) and (hoHotTrack in FHeader.FOptions) and
-              (coEnabled in FOptions) and not (hsDragging in FHeader.States);
-            IsDownIndex := (Integer(FPositionToIndex[I]) = FDownIndex) and not FCheckBoxHit;
-            if (coShowDropMark in FOptions) and (Integer(FPositionToIndex[I]) = FDropTarget) and
-              (Integer(FPositionToIndex[I]) <> FDragIndex) then
-            begin
-              if FDropBefore then
-                DropMark := dmmLeft
-              else
-                DropMark := dmmRight;
-            end
-            else
-              DropMark := dmmNone;
-            IsEnabled := (coEnabled in FOptions) and (FHeader.Treeview.Enabled);
-            ShowHeaderGlyph := (hoShowImages in FHeader.FOptions) and
-              ((Assigned(Images) and (FImageIndex > -1)) or FCheckBox);
-            ShowSortGlyph := (Integer(FPositionToIndex[I]) = FHeader.FSortColumn) and (hoShowSortGlyphs in FHeader.FOptions);
-            WrapCaption := coWrapCaption in FOptions;
-
-            PaintRectangle := Run;
-
-            // This path for text columns or advanced owner draw.
-            if (Style = vsText) or not OwnerDraw or AdvancedOwnerDraw then
-            begin
-              // See if the application wants to draw part of the header itself.
-              RequestedElements := [];
-              if AdvancedOwnerDraw then
-              begin
-                PaintInfo.Column := Items[FPositionToIndex[I]];
-                FHeader.Treeview.DoHeaderDrawQueryElements(PaintInfo, RequestedElements);
-              end;
-
-              if ShowRightBorder or (I < Count - 1) then
-                RightBorderFlag := BF_RIGHT
-              else
-                RightBorderFlag := 0;
-
-              if hpeBackground in RequestedElements then
-                FHeader.Treeview.DoAdvancedHeaderDraw(PaintInfo, [hpeBackground])
-              else
-              begin
-                // Draw button first before setting the clip region.
-                {$ifdef ThemeSupport}
-                  if tsUseThemes in FHeader.Treeview.FStates then
-                  begin
-                    if IsDownIndex then
-                      Details := ThemeServices.GetElementDetails(thHeaderItemPressed)
-                    else
-                      if IsHoverIndex then
-                        Details := ThemeServices.GetElementDetails(thHeaderItemHot)
-                      else
-                        Details := ThemeServices.GetElementDetails(thHeaderItemNormal);
-                    ThemeServices.DrawElement(Handle, Details, PaintRectangle, @PaintRectangle);
-                  end
-                  else
-                {$endif ThemeSupport}
-                begin
-                  if FHeader.Style = hsXPStyle then
-                    DrawXPButton(Handle, PaintRectangle, RightBorderFlag <> 0, IsDownIndex, IsHoverIndex)
-                  else
-                    if IsDownIndex then
-                      DrawEdge(Handle, PaintRectangle, PressedButtonStyle, PressedButtonFlags)
-                    else
-                      // Plates have the special case of raising on mouse over.
-                      if (FHeader.Style = hsPlates) and IsHoverIndex and
-                        (coAllowClick in FOptions) and (coEnabled in FOptions) then
-                        DrawEdge(Handle, PaintRectangle, RaisedButtonStyle, RaisedButtonFlags or RightBorderFlag)
-                      else
-                        DrawEdge(Handle, PaintRectangle, NormalButtonStyle, NormalButtonFlags or RightBorderFlag);
-                end;
-              end;
-            end;
-
-            PaintRectangle := Run;
-            if (Style = vsText) or not OwnerDraw or AdvancedOwnerDraw then
-            begin
-              // calculate text and glyph position
-              InflateRect(PaintRectangle, -2, -2);
-              DrawFormat := DT_TOP or DT_NOPREFIX;
-              case CaptionAlignment of
-                taLeftJustify  : DrawFormat := DrawFormat or DT_LEFT;
-                taRightJustify : DrawFormat := DrawFormat or DT_RIGHT;
-                taCenter       : DrawFormat := DrawFormat or DT_CENTER;
-              end;
-              if UseRightToLeftReading then
-                DrawFormat := DrawFormat + DT_RTLREADING;
-              ComputeHeaderLayout(Handle, PaintRectangle, ShowHeaderGlyph, ShowSortGlyph, GlyphPos, SortGlyphPos,
-                SortGlyphSize, TextRectangle, DrawFormat);
-
-              // Move glyph and text one pixel to the right and down to simulate a pressed button.
-              if IsDownIndex then
-              begin
-                OffsetRect(TextRectangle, 1, 1);
-                Inc(GlyphPos.X);
-                Inc(GlyphPos.Y);
-                Inc(SortGlyphPos.X);
-                Inc(SortGlyphPos.Y);
-              end;
-
-              // Advanced owner draw allows to paint elements, which would normally not be painted (because of space
-              // limitations, empty captions etc.).
-              ActualElements := RequestedElements * [hpeHeaderGlyph, hpeSortGlyph, hpeDropMark, hpeText];
-
-              // main glyph
-              FHasImage := False;
-              if not (hpeHeaderGlyph in ActualElements) and ShowHeaderGlyph and
-                (not ShowSortGlyph or (FBidiMode <> bdLeftToRight) or (GlyphPos.X + Images.Width <= SortGlyphPos.X) ) then
-              begin
-                if not FCheckBox then
-                begin
-                  ColImageInfo.Images := Images;
-                  Images.Draw(FHeaderBitmap.Canvas, GlyphPos.X, GlyphPos.Y, FImageIndex, IsEnabled);
-                end
-                else
-                begin
-                  with Header.Treeview do
-                  begin
-                    ColImageInfo.Images := GetCheckImageListFor(CheckImageKind);
-                    ColImageInfo.Index := GetCheckImage(nil, FCheckType, FCheckState, IsEnabled);
-                    ColImageInfo.XPos := GlyphPos.X;
-                    ColImageInfo.YPos := GlyphPos.Y;
-                    {$ifdef USE_DELPHICOMPAT}
-                    with FCheckImages do
-                      DirectMaskBlt(FHeaderBitmap.Canvas.Handle, GlyphPos.X, GlyphPos.Y,
-                        Height, Height, Canvas.Handle, ColImageInfo.Index * Height, 0, MaskHandle);
-                    {$else}
-                    with FCheckImages do
-                      StretchMaskBlt(FHeaderBitmap.Canvas.Handle, GlyphPos.X, GlyphPos.Y,
-                        Height, Height, Canvas.Handle, ColImageIndex * Height, 0,
-                        Height, Height, MaskHandle, ColImageInfo.Index * Height, 0, SRCCOPY);
-                    {$endif}
-                  end;
-                end;
-
-                FHasImage := True;
-                with FImageRect do
-                begin
-                  Left := GlyphPos.X;
-                  Top := GlyphPos.Y;
-                  Right := Left + ColImageInfo.Images.Width;
-                  Bottom := Top + ColImageInfo.Images.Height;
-                end;
-              end;
-
-              // caption
-              if WrapCaption then
-                ColCaptionText := FCaptionText
-              else
-                ColCaptionText := Text;
-
-              if not (hpeText in ActualElements) and (Length(Text) > 0) then
-                DrawButtonText(Handle, ColCaptionText, TextRectangle, IsEnabled,
-                  IsHoverIndex and (hoHotTrack in FHeader.FOptions) and not (tsUseThemes in FHeader.Treeview.FStates),
-                  DrawFormat, WrapCaption );
-
-              // sort glyph
-              if not (hpeSortGlyph in ActualElements) and ShowSortGlyph then
-              begin
-                if tsUseExplorerTheme in FHeader.Treeview.FStates then
-                begin
-                  Pos.TopLeft := SortGlyphPos;
-                  Pos.Right := Pos.Left + SortGlyphSize.cx;
-                  Pos.Bottom := Pos.Top + SortGlyphSize.cy;
-                  if FHeader.FSortDirection = sdAscending then
-                    Glyph := thHeaderSortArrowSortedUp
-                  else
-                    Glyph := thHeaderSortArrowSortedDown;
-                  Details := ThemeServices.GetElementDetails(Glyph);
-                  ThemeServices.DrawElement(Handle, Details, Pos, @Pos);
-                end
-                else
-                begin
-                  SortIndex := SortGlyphs[FHeader.FSortDirection, tsUseThemes in FHeader.Treeview.FStates];
-                  {$ifdef USE_DELPHICOMPAT}
-                  DirectMaskBlt(FHeaderBitmap.Canvas.Handle, SortGlyphPos.X, SortGlyphPos.Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
-                    SortIndex * UtilityImageSize, 0, UtilityImages.MaskHandle);
-                  {$else}
-                  StretchMaskBlt(FHeaderBitmap.Canvas.Handle, SortGlyphPos.X, SortGlyphPos.Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
-                    SortIndex * UtilityImageSize, 0, UtilityImageSize, UtilityImageSize, UtilityImages.MaskHandle,SortIndex * UtilityImageSize, 0, SRCCOPY);
-                  {$endif}
-                end;
-              end;
-
-              // Show an indication if this column is the current drop target in a header drag operation.
-              if not (hpeDropMark in ActualElements) and (DropMark <> dmmNone) then
-              begin
-                Y := (PaintRectangle.Top + PaintRectangle.Bottom - UtilityImages.Height) div 2;
-                if DropMark = dmmLeft then
-                  {$ifdef USE_DELPHICOMPAT}
-                  DirectMaskBlt(FHeaderBitmap.Canvas.Handle, PaintRectangle.Left, Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
-                    0, 0, UtilityImages.MaskHandle)
-                  {$else}
-                  StretchMaskBlt(FHeaderBitmap.Canvas.Handle, PaintRectangle.Left, Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
-                    0, 0, UtilityImageSize, UtilityImageSize, UtilityImages.MaskHandle, 0, 0, SRCCOPY)
-                  {$endif}
-                else
-                  {$ifdef USE_DELPHICOMPAT}
-                  DirectMaskBlt(FHeaderBitmap.Canvas.Handle, PaintRectangle.Right - 16, Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
-                    UtilityImageSize, 0, UtilityImages.MaskHandle);
-                  {$else}
-                  StretchMaskBlt(FHeaderBitmap.Canvas.Handle, PaintRectangle.Right - 16, Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
-                    UtilityImageSize, 0, UtilityImageSize, UtilityImageSize, UtilityImages.MaskHandle, UtilityImageSize, 0, SRCCOPY);
-                  {$endif}
-              end;
-
-              if ActualElements <> [] then
-              begin
-                SaveHandleState;
-                FHeader.Treeview.DoAdvancedHeaderDraw(PaintInfo, ActualElements);
-                RestoreHandleState;
-              end;
-            end
-            else // Let application draw the header.
-              FHeader.Treeview.DoHeaderDraw(FHeaderBitmap.Canvas, Items[FPositionToIndex[I]], PaintRectangle, IsHoverIndex,
-                IsDownIndex, DropMark);
-            SelectClipRgn(Handle, 0);
-          end;
-        end;
+      SelectClipRgn(Handle, 0);
+      
+      TargetRect.Left := TargetRect.Right;
+      Run := GetNextVisibleColumn(Run)
     end;
-
-    // Blit the result to target.
-    with R do
-      BitBlt(DC, Left, Top, Right - Left, Bottom - Top, Handle, Left, Top, SRCCOPY);
   end;
 end;
 
@@ -10607,10 +10803,10 @@ procedure TVTHeader.PrepareDrag(P, Start: TPoint);
 // Initializes dragging of the header, P is the current mouse postion and Start the initial mouse position.
 
 var
-  HeaderR: TRect;
   Image: TBitmap;
   ImagePos: TPoint;
   DragColumn: TVirtualTreeColumn;
+  RTLOffset: Integer;
 
 begin
   // Determine initial position of drag image (screen coordinates).
@@ -10618,18 +10814,6 @@ begin
   Start := Treeview.ScreenToClient(Start);
   FColumns.FDragIndex := FColumns.ColumnFromPosition(Start);
   DragColumn := FColumns[FColumns.FDragIndex];
-
-  HeaderR := Treeview.FHeaderRect;
-
-  // Set right border of the header rectangle to the maximum extent.
-  // Adjust top border too, it is already covered elsewhere.
-  HeaderR.Right := FColumns.TotalWidth;
-  HeaderR.Top := 0;
-
-  // Take out influence of border since we need a seamless drag image.
-  OffsetRect(HeaderR, -Treeview.BorderWidth, -Treeview.BorderWidth);
-  if Treeview.UseRightToLeftAlignment then
-    Dec(HeaderR.Left, Treeview.ComputeRTLOffset);
 
   Image := TBitmap.Create;
   with Image do
@@ -10643,11 +10827,12 @@ begin
     Canvas.Brush.Color := clBtnFace;
     Canvas.FillRect(Rect(0, 0, Width, Height));
 
-    // Now move the window origin of bitmap DC so that although the entire header is painted
-    // only the dragged column becomes visible.
-    SetWindowOrgEx(Canvas.Handle, DragColumn.FLeft, 0, nil);
-    FColumns.PaintHeader(Canvas.Handle, HeaderR, 0);
-    SetWindowOrgEx(Canvas.Handle, 0, 0, nil);
+    if TreeView.UseRightToLeftAlignment then
+      RTLOffset := Treeview.ComputeRTLOffset
+    else
+      RTLOffset := 0;
+    with DragColumn do
+      FColumns.PaintHeader(Canvas, Rect(FLeft, 0, FLeft + Width, Height), Point(-RTLOffset, 0), RTLOffset);
 
     if Treeview.UseRightToLeftAlignment then
       ImagePos := Treeview.ClientToScreen(Point(DragColumn.Left + Treeview.ComputeRTLOffset(True), 0))
@@ -11068,7 +11253,7 @@ begin
     Height := Dummy;
     ReadBuffer(Dummy, SizeOf(Dummy));
     FOptions := OldOptions;
-    Options := TVTHeaderOptions(Word(Dummy));
+    Options := TVTHeaderOptions(Dummy);
     // PopupMenu is neither saved nor restored
     ReadBuffer(Dummy, SizeOf(Dummy));
     Style := TVTHeaderStyle(Dummy);
@@ -11339,7 +11524,7 @@ begin
     WriteBuffer(Dummy, SizeOf(Dummy));
     Dummy := FHeight;
     WriteBuffer(Dummy, SizeOf(Dummy));
-    Dummy := Word(FOptions);
+    Dummy := Integer(FOptions);
     WriteBuffer(Dummy, SizeOf(Dummy));
     // PopupMenu is neither saved nor restored
     Dummy := Ord(FStyle);
@@ -11508,6 +11693,7 @@ begin
   FColors[12] := clHighlight;     // SelectionRectangleBlendColor
   FColors[13] := clHighlight;     // SelectionRectangleBorderColor
   FColors[14] := clBtnShadow;     // HeaderHotColor
+  FColors[15] := clHighlightText; // SelectionTextColor
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -11833,6 +12019,8 @@ begin
       Run := Run.Parent;
     until False;
   end;
+
+  UpdateVerticalRange;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -13031,7 +13219,7 @@ function TBaseVirtualTree.GetNodeHeight(Node: PVirtualNode): Cardinal;
 begin
   if Assigned(Node) and (Node <> FRoot) then
   begin
-    if toVariableNodeHeight in FOptions.FMiscOptions then
+    if (toVariableNodeHeight in FOptions.FMiscOptions) and not (vsDeleting in Node.States) then
     begin
       if not (vsInitialized in Node.States) then
         InitNode(Node);
@@ -13443,26 +13631,6 @@ begin
     Run := Run.PrevSibling;
 
   Result := Assigned(Run) and (Run = Node);
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-procedure TBaseVirtualTree.LimitPaintingToArea(Canvas: TCanvas; ClipRect: TRect; VisibleRegion: HRGN = 0);
-
-// Limits further painting onto the given canvas to the given rectangle.
-// VisibleRegion is an optional region which can be used to limit drawing further.
-
-var
-  ClipRegion: HRGN;
-
-begin
-  // Regions expect their coordinates in device coordinates, hence we have to transform the region rectangle.
-  LPtoDP(Canvas.Handle, ClipRect, 2);
-  ClipRegion := CreateRectRgnIndirect(ClipRect);
-  if VisibleRegion <> 0 then
-    CombineRgn(ClipRegion, ClipRegion, VisibleRegion, RGN_AND);
-  SelectClipRgn(Canvas.Handle, ClipRegion);
-  DeleteObject(ClipRegion);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -19139,7 +19307,7 @@ begin
       InvalidateNode(FFocusedNode);
       if (FUpdateCount = 0) and not (toDisableAutoscrollOnFocus in FOptions.FAutoOptions) then
         ScrollIntoView(FFocusedNode, (toCenterScrollIntoView in FOptions.SelectionOptions) and
-          (MouseButtonDown * FStates = []), True);
+          (MouseButtonDown * FStates = []), not (toFullRowSelect in FOptions.SelectionOptions) );
     end;
 
     // Reset range anchor if necessary.
@@ -19159,6 +19327,8 @@ begin
     FCurrentHotNode := nil;
   if Node = FDropTargetNode then
     FDropTargetNode := nil;
+  if Node = FLastStructureChangeNode then
+    FLastStructureChangeNode := nil;
   if Assigned(FOnFreeNode) and ([vsInitialized, vsInitialUserData] * Node.States <> []) then
     FOnFreeNode(Self, Node);
   FreeMem(Node);
@@ -20685,7 +20855,7 @@ var
 
 begin
   // seek back to the second entry in the chunk header
-  Stream.Position := StartPos + SizeOf(Integer);
+  Stream.Position := StartPos + SizeOf(Size);
   // determine size of chunk without the chunk header
   Size := EndPos - StartPos - SizeOf(TChunkHeader);
   // write the size...
@@ -21719,7 +21889,7 @@ begin
       if NewNode or NewColumn then
       begin
         ScrollIntoView(FFocusedNode, toCenterScrollIntoView in FOptions.SelectionOptions,
-                       not (toDisableAutoscrollOnFocus in FOptions.FAutoOptions));
+                       not (toDisableAutoscrollOnFocus in FOptions.FAutoOptions) and not (toFullRowSelect in FOptions.SelectionOptions));
         DoFocusChange(FFocusedNode, FFocusedColumn);
       end;
     end;
@@ -21793,7 +21963,7 @@ begin
     begin
       // Is the mouse still over the same node?
       if (HitInfo.HitNode = FFocusedNode) and (hiOnItem in HitInfo.HitPositions) and
-         CanEdit(FFocusedNode, HitInfo.HitColumn) and (toEditOnClick in FOptions.FMiscOptions) then
+         (toEditOnClick in FOptions.FMiscOptions) and CanEdit(FFocusedNode, HitInfo.HitColumn) then
       begin
         FEditColumn := FFocusedColumn;
         SetTimer(Handle, EditTimer, FEditDelay, nil);
@@ -24309,7 +24479,7 @@ var
   CurrentBidiMode: TBidiMode;
 
 begin
-  if tsEditing in FStates then
+  if (tsEditing in FStates) and Assigned(FFocusedNode) then
   begin
     if vsMultiline in FFocusedNode.States then
       R := GetDisplayRect(FFocusedNode, FEditColumn, True, False)
@@ -25695,7 +25865,7 @@ begin
         repeat
           if [vsHasChildren, vsExpanded] * Node.States = [vsHasChildren, vsExpanded] then
             ToggleNode(Node);
-          Node := GetPreviousNoInit(Node);
+          Node := GetPreviousNoInit(Node, True);
         until Node = Stop;
 
         // Collapse the start node too.
@@ -28903,7 +29073,8 @@ var
 
   R,                           // the area of an entire node in its local coordinate
   TargetRect,                  // the area of a node (part) in the target canvas
-  SelectionRect: TRect;        // ordered rectangle used for drawing the selection focus rect
+  SelectionRect,               // ordered rectangle used for drawing the selection focus rect
+  ClipRect: TRect;             // area to which the canvas will be clipped when painting a node's content
   NextColumn: TColumnIndex;
   BaseOffset: Integer;         // top position of the top node to draw given in absolute tree coordinates
   NodeBitmap: TBitmap;         // small buffer to draw flicker free
@@ -28911,6 +29082,10 @@ var
   MaximumBottom: Integer;      // maximum vertical target position
   SelectLevel: Integer;        // > 0 if current node is selected or child/grandchild etc. of a selected node
   FirstColumn: TColumnIndex;   // index of first column which is at least partially visible in the given window
+
+  SavedTargetDC: Integer;
+  PaintWidth: Integer;
+  CurrentNodeHeight: Integer;
 
 begin
   {$ifdef DEBUG_VTV}Logger.EnterMethod([lcPaint],'PaintTree');{$endif}
@@ -28931,22 +29106,46 @@ begin
     try
       DoBeforePaint(TargetCanvas);
 
-      // Create small bitmaps and initialize default values.
-      // The bitmaps are used to paint one node at a time and to draw the result to the target (e.g. screen) in one step,
-      // to prevent flickering.
-      NodeBitmap := TBitmap.Create;
-      // For alpha blending we need the 32 bit pixel format. For other targets there might be a need for a certain
-      // pixel format (e.g. printing).
-      if MMXAvailable and ((FDrawSelectionMode = smBlendedRectangle) or (tsUseThemes in FStates) or
-        (toUseBlendedSelection in FOptions.PaintOptions)) then
-        NodeBitmap.PixelFormat := pf32Bit
+      if poUnbuffered in PaintOptions then
+        SavedTargetDC := SaveDC(TargetCanvas.Handle)
       else
-        NodeBitmap.PixelFormat := PixelFormat;
+        SavedTargetDC := 0;
 
       // Prepare paint info structure and lock the back bitmap canvas to avoid that it gets freed on the way.
       FillChar(PaintInfo, SizeOf(PaintInfo), 0);
-      PaintInfo.Canvas := NodeBitmap.Canvas;
-      NodeBitmap.Canvas.Lock;
+
+      PaintWidth := Window.Right - Window.Left;
+
+      if not (poUnbuffered in PaintOptions) then
+      begin
+        // Create small bitmaps and initialize default values.
+        // The bitmaps are used to paint one node at a time and to draw the result to the target (e.g. screen) in one step,
+        // to prevent flickering.
+        NodeBitmap := TBitmap.Create;
+        // For alpha blending we need the 32 bit pixel format. For other targets there might be a need for a certain
+        // pixel format (e.g. printing).
+        if MMXAvailable and ((FDrawSelectionMode = smBlendedRectangle) or (tsUseThemes in FStates) or
+          (toUseBlendedSelection in FOptions.PaintOptions)) then
+          NodeBitmap.PixelFormat := pf32Bit
+        else
+          NodeBitmap.PixelFormat := PixelFormat;
+
+        NodeBitmap.Width := PaintWidth;
+
+        // Make sure the buffer bitmap and target bitmap use the same transformation mode.
+        {$ifndef Gtk}
+        SetMapMode(NodeBitmap.Canvas.Handle, GetMapMode(TargetCanvas.Handle));
+        {$endif}
+        PaintInfo.Canvas := NodeBitmap.Canvas;
+      end
+      else
+      begin
+        PaintInfo.Canvas := TargetCanvas;
+        NodeBitmap := nil;
+      end;
+
+      // Lock the canvas to avoid that it gets freed on the way.
+      PaintInfo.Canvas.Lock;
       try
         {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'FNewSelRect', FNewSelRect);{$endif}
         // Prepare the current selection rectangle once. The corner points are absolute tree coordinates.
@@ -28960,7 +29159,6 @@ begin
         // validation I cannot better determine the width, though. By using at least the control's width it is ensured
         // that the tree is fully displayed on screen.
         R := Rect(0, 0, Max(FRangeX, ClientWidth), 0);
-        NodeBitmap.Width := Window.Right - Window.Left;
 
         // For quick checks some intermediate variables are used.
         UseBackground := (toShowBackground in FOptions.FPaintOptions) and (FBackground.Graphic is TBitmap) and
@@ -29042,27 +29240,43 @@ begin
             // which are children of selected nodes.
             if (SelectLevel > 0) or not (poSelectedOnly in PaintOptions) then
             begin
-              // Adjust height of temporary node bitmap.
-              with NodeBitmap do
+              if not (poUnbuffered in PaintOptions) then
               begin
-                if Height <> PaintInfo.Node.NodeHeight then
+                // Adjust height of temporary node bitmap.
+                with NodeBitmap do
                 begin
-                  {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'Setting the Node Height');{$endif}
-                  Height := PaintInfo.Node.NodeHeight;
-                  // Make sure the buffer bitmap and target bitmap use the same transformation mode.
-                  {$ifndef Gtk}
-                  SetMapMode(Canvas.Handle, GetMapMode(TargetCanvas.Handle));
-                  {$endif}
-                  SetWindowOrgEx(Canvas.Handle, Window.Left, 0, nil);
-                  R.Bottom := PaintInfo.Node.NodeHeight;
+                  if Height <> PaintInfo.Node.NodeHeight then
+                  begin
+                    // Avoid that the VCL copies the bitmap while changing its height.                    
+                    Height := PaintInfo.Node.NodeHeight;
+                    {$ifdef UseSetCanvasOrigin}
+                    SetCanvasOrigin(Canvas, Window.Left, 0);
+                    {$else}
+                    SetWindowOrgEx(Canvas.Handle, Window.Left, 0, nil);
+                    {$endif}
+                  end;
                 end;
+              end
+              else
+              begin
                 // Set the origin of the canvas' brush. This depends on the node heights.
                 //todo: see if is necessary. According to docs is only necessary when HALFTONE is set
-                {$ifndef INCOMPLETE_WINAPI}
-                with PaintInfo do
-                  SetBrushOrgEx(Canvas.Handle, BrushOrigin.X, BrushOrigin.Y, nil);
+                {$ifdef UseSetCanvasOrigin}
+                SetCanvasOrigin(PaintInfo.Canvas, -TargetRect.Left + Window.Left, -TargetRect.Top);
+                {$else}
+                SetWindowOrgEx(PaintInfo.Canvas.Handle, -TargetRect.Left + Window.Left, -TargetRect.Top, nil);
                 {$endif}
+                ClipCanvas(PaintInfo.Canvas, Rect(TargetRect.Left, TargetRect.Top, TargetRect.Right,
+                                                  Min(TargetRect.Bottom, MaximumBottom)))
               end;
+
+              // Set the origin of the canvas' brush. This depends on the node heights.
+              with PaintInfo do
+                SetBrushOrigin(Canvas, BrushOrigin.X, BrushOrigin.Y);
+
+              CurrentNodeHeight := PaintInfo.Node.NodeHeight;
+              R.Bottom := CurrentNodeHeight;
+              
               CalculateVerticalAlignments(ShowImages, ShowStateImages, PaintInfo.Node, VAlign, ButtonY);
 
               // Let application decide whether the node should normally be drawn or by the application itself.
@@ -29177,7 +29391,17 @@ begin
                             AdjustCoordinatesByIndent(PaintInfo, IfThen(toFixedIndent in FOptions.FPaintOptions, 1, IndentSize));
 
                           if UseColumns then
-                            LimitPaintingToArea(Canvas, CellRect);
+                          begin
+                            ClipRect := CellRect;
+                            if poUnbuffered in PaintOptions then
+                            begin
+                              ClipRect.Left := Max(ClipRect.Left, Window.Left);
+                              ClipRect.Right := Min(ClipRect.Right, Window.Right);
+                              ClipRect.Top := Max(ClipRect.Top, Window.Top - (BaseOffset - CurrentNodeHeight));
+                              ClipRect.Bottom := ClipRect.Bottom - Max(TargetRect.Bottom - MaximumBottom, 0);
+                            end;
+                            ClipCanvas(Canvas, ClipRect);
+                          end;
 
                           // Paint the horizontal grid line.
                           if (poGridLines in PaintOptions) and (toShowHorzGridLines in FOptions.FPaintOptions) then
@@ -29220,12 +29444,14 @@ begin
                           end;
 
                           // Prepare background and focus rect for the current cell.
-                          PrepareCell(PaintInfo, Window.Left, NodeBitmap.Width);
+                          PrepareCell(PaintInfo, Window.Left, PaintWidth);
                           {$ifdef DEBUG_VTV}Logger.Watch([lcPaintDetails],'Brush.Color',PaintInfo.Canvas.Brush.Color);{$endif}
                           // Some parts are only drawn for the main column.
                           if IsMainColumn then
                           begin
-                            if toShowTreeLines in FOptions.FPaintOptions then
+                            if (toShowTreeLines in FOptions.FPaintOptions) and
+                               (not (toHideTreeLinesIfThemed in FOptions.FPaintOptions) or
+                                not (tsUseThemes in FStates)) then
                               PaintTreeLines(PaintInfo, VAlign, IfThen(toFixedIndent in FOptions.FPaintOptions, 1,
                                              IndentSize), LineImage);
                             // Show node button if allowed, if there child nodes and at least one of the child
@@ -29297,8 +29523,8 @@ begin
               begin
                 if DrawSelectionRect then
                 begin
-                  PaintSelectionRectangle(PaintInfo.Canvas, Window.Left, SelectionRect, Rect(0, 0, NodeBitmap.Width,
-                    NodeBitmap.Height));
+                  PaintSelectionRectangle(PaintInfo.Canvas, Window.Left, SelectionRect, Rect(0, 0, PaintWidth,
+                    CurrentNodeHeight));
                 end;
                 {$ifdef DEBUG_VTV}Logger.SendBitmap([lcPaintBitmap],'NodeBitmap ' + IntToStr(PaintInfo.Node^.Index), NodeBitmap);{$endif}
                 {$ifdef DEBUG_VTV}Logger.SendIf([lcPaintDetails, lcHeaderOffset],'TargetRect.Top < Target.Y '+ Logger.RectToStr(TargetRect)
@@ -29318,10 +29544,11 @@ begin
                 {$ifdef DEBUG_VTV}Logger.SendIf([lcPaintDetails],'YCorrect ' + IntToStr(YCorrect), YCorrect > 0);{$endif}
                 {$endif}
                 // Put the constructed node image onto the target canvas.
-                with TargetRect, NodeBitmap do
-                  BitBlt(TargetCanvas.Handle, Left,
-                    Top {$ifdef ManualClipNeeded} + YCorrect{$endif}, Width, Height, Canvas.Handle, Window.Left,
-                    {$ifdef ManualClipNeeded}YCorrect{$else}0{$endif}, SRCCOPY);
+                if not (poUnbuffered in PaintOptions) then
+                  with TargetRect, NodeBitmap do
+                    BitBlt(TargetCanvas.Handle, Left,
+                     Top {$ifdef ManualClipNeeded} + YCorrect{$endif}, Width, Height, Canvas.Handle, Window.Left,
+                     {$ifdef ManualClipNeeded}YCorrect{$else}0{$endif}, SRCCOPY);
               end;
             end;
 
@@ -29356,27 +29583,39 @@ begin
           TargetRect := Rect(0, 0, MaximumRight - Target.X, MaximumBottom - Target.Y);
           {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'NodeBitmap.Handle',NodeBitmap.Handle);{$endif}
 
-          NodeBitmap.PixelFormat := pf32Bit;
-          NodeBitmap.Width := TargetRect.Right - TargetRect.Left;
-          NodeBitmap.Height := TargetRect.Bottom - TargetRect.Top;
+          if not (poUnbuffered in PaintOptions) then
+          begin
+            // Avoid unnecessary copying of bitmap content. This will destroy the DC handle too.
+            NodeBitmap.Height := 0;
+            NodeBitmap.PixelFormat := pf32Bit;
+            NodeBitmap.Width := TargetRect.Right - TargetRect.Left;
+            NodeBitmap.Height := TargetRect.Bottom - TargetRect.Top;
+          end;
           // Make sure the buffer bitmap and target bitmap use the same transformation mode.
           {$ifndef Gtk}
-          SetMapMode(NodeBitmap.Canvas.Handle, GetMapMode(TargetCanvas.Handle));
+          // Call back application/descendants whether they want to erase this area.
+          {$ifdef UseSetCanvasOrigin}
+          SetCanvasOrigin(PaintInfo.Canvas, Target.X, 0);
+          {$else}
+          SetWindowOrgEx(PaintInfo.Canvas.Handle, Target.X, 0, nil);
+          {$endif}
           {$endif}
           {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'NodeBitmap.Handle after changing height to background',NodeBitmap.Handle);{$endif}
           {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'TargetRect',TargetRect);{$endif}
           {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'NodeBitmap Width: %d Height: %d',[NodeBitmap.Width,NodeBitmap.Height]);{$endif}
-          // Call back application/descendants whether they want to erase this area.
-          SetWindowOrgEx(NodeBitmap.Canvas.Handle, Target.X, 0, nil);
-          if not DoPaintBackground(NodeBitmap.Canvas, TargetRect) then
+          if not DoPaintBackground(PaintInfo.Canvas, TargetRect) then
           begin
             if UseBackground then
             begin
-              SetWindowOrgEx(NodeBitmap.Canvas.Handle, 0, 0, nil);
+              {$ifdef UseSetCanvasOrigin}
+              SetCanvasOrigin(PaintInfo.Canvas, 0, 0);
+              {$else}
+              SetWindowOrgEx(PaintInfo.Canvas.Handle, 0, 0, nil);
+              {$endif}
               if toStaticBackground in TreeOptions.PaintOptions then
-                StaticBackground(FBackground.Bitmap, NodeBitmap.Canvas, Target, TargetRect)
+                StaticBackground(FBackground.Bitmap, PaintInfo.Canvas, Target, TargetRect)
               else
-                TileBackground(FBackground.Bitmap, NodeBitmap.Canvas, Target, TargetRect);
+                TileBackground(FBackground.Bitmap, PaintInfo.Canvas, Target, TargetRect);
             end
             else
             begin
@@ -29406,7 +29645,7 @@ begin
                     R.Right := R.Left +  Items[FirstColumn].FWidth;
                   end;
 
-                  NodeBitmap.Canvas.Font.Color := FColors.GridLineColor;
+                  PaintInfo.Canvas.Font.Color := FColors.GridLineColor;
                   while (FirstColumn <> InvalidColumn) and (R.Left < TargetRect.Right + Target.X) do
                   begin
                     if (poGridLines in PaintOptions) and
@@ -29419,11 +29658,11 @@ begin
                     end;
 
                     if not (coParentColor in Items[FirstColumn].FOptions) then
-                      NodeBitmap.Canvas.Brush.Color := Items[FirstColumn].FColor
+                      PaintInfo.Canvas.Brush.Color := Items[FirstColumn].FColor
                     else
-                      NodeBitmap.Canvas.Brush.Color := Brush.Color;
+                      PaintInfo.Canvas.Brush.Color := Color;
 
-                    NodeBitmap.Canvas.FillRect(R);
+                    PaintInfo.Canvas.FillRect(R);
                     FirstColumn := GetNextVisibleColumn(FirstColumn);
                     if FirstColumn <> InvalidColumn then
                     begin
@@ -29442,24 +29681,36 @@ begin
                        (toFullVertGridLines in FOptions.FPaintOptions) and (toShowVertGridLines in FOptions.FPaintOptions) and
                        (not (hoAutoResize in FHeader.FOptions)) then
                       Inc(R.Left);
-                    NodeBitmap.Canvas.Brush.Color := Brush.Color;
-                    NodeBitmap.Canvas.FillRect(R);
+                    PaintInfo.Canvas.Brush.Color := Color;
+                    PaintInfo.Canvas.FillRect(R);
                   end;
                 end;
-                SetWindowOrgEx(NodeBitmap.Canvas.Handle, 0, 0, nil);
+                {$ifdef UseSetCanvasOrigin}
+                SetCanvasOrigin(PaintInfo.Canvas, 0, 0);
+                {$else}
+                SetWindowOrgEx(PaintInfo.Canvas.Handle, 0, 0, nil);
+                {$endif}
               end
               else
               begin
                 {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'ErasingBackGround');{$endif}
                 {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'TargetRect',TargetRect);{$endif}
                 // No columns nor bitmap background. Simply erase it with the tree color.
-                SetWindowOrgEx(NodeBitmap.Canvas.Handle, 0, 0, nil);
-                NodeBitmap.Canvas.Brush.Color := Brush.Color;
-                NodeBitmap.Canvas.FillRect(TargetRect);
+                {$ifdef UseSetCanvasOrigin}
+                SetCanvasOrigin(PaintInfo.Canvas, 0, 0);
+                {$else}
+                SetWindowOrgEx(PaintInfo.Canvas.Handle, 0, 0, nil);
+                {$endif}
+                PaintInfo.Canvas.Brush.Color := Color;
+                PaintInfo.Canvas.FillRect(TargetRect);
               end;
             end;
           end;
-          SetWindowOrgEx(NodeBitmap.Canvas.Handle, 0, 0, nil);
+          {$ifdef UseSetCanvasOrigin}
+          SetCanvasOrigin(PaintInfo.Canvas, 0, 0);
+          {$else}
+          SetWindowOrgEx(PaintInfo.Canvas.Handle, 0, 0, nil);
+          {$endif}
           {$ifdef DEBUG_VTV}Logger.Watch([lcPaintDetails],'DrawSelectionRect',DrawSelectionRect);{$endif}
           if DrawSelectionRect then
           begin
@@ -29469,27 +29720,34 @@ begin
             OffsetRect(R, -Target.X + BaseOffset - Window.Left, -Target.Y + FOffsetY);
             //todo: see if is necessary
             {$ifndef INCOMPLETE_WINAPI}
-            SetBrushOrgEx(NodeBitmap.Canvas.Handle, 0, Target.X and 1, nil);
+            SetBrushOrigin(PaintInfo.Canvas, 0, Target.X and 1);
             {$endif}
-            PaintSelectionRectangle(NodeBitmap.Canvas, 0, R, TargetRect);
+            PaintSelectionRectangle(PaintInfo.Canvas, 0, R, TargetRect);
           end;
           {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'NodeBitmap.Canvas.Height',NodeBitmap.Canvas.Height);{$endif}
           {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'NodeBitmap.Canvas.ClipRect',NodeBitmap.Canvas.ClipRect);{$endif}
           {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'Target',Target);{$endif}
           {$ifdef DEBUG_VTV}Logger.SendBitmap([lcPaintBitmap],'BackGroundBitmap',NodeBitmap);{$endif}
-          with Target, NodeBitmap do
-            BitBlt(TargetCanvas.Handle, X, Y, Width, Height, Canvas.Handle, 0, 0, SRCCOPY);
+          if not (poUnBuffered in PaintOptions) then
+            with Target, NodeBitmap do
+              BitBlt(TargetCanvas.Handle, X, Y, Width, Height, Canvas.Handle, 0, 0, SRCCOPY);
         end;
       finally
-        NodeBitmap.Canvas.Unlock;
-        NodeBitmap.Free;
+        PaintInfo.Canvas.Unlock;
+        if poUnbuffered in PaintOptions then
+          RestoreDC(TargetCanvas.Handle, SavedTargetDC)
+        else
+          NodeBitmap.Free;
       end;
-      if (Self.ChildCount[nil]=0) and (FEmptyListMessage<>'') then begin
+      
+      if (ChildCount[nil] = 0) and (FEmptyListMessage <> '') then
+      begin
         // output a message if no items are to display
         Canvas.Font := Self.Font;
         SetBkMode(TargetCanvas.Handle, TRANSPARENT);
-        TextOut(TargetCanvas.Handle, 2 - Window.Left, 2 - Window.Top, PAnsiChar(FEmptyListMessage), Length(FEmptyListMessage));
-      end;//if
+        TextOut(TargetCanvas.Handle, 2 - Window.Left, 2 - Window.Top, PAnsiChar(FEmptyListMessage),
+          Length(FEmptyListMessage));
+      end;
 
       DoAfterPaint(TargetCanvas);
     finally
@@ -30506,7 +30764,7 @@ begin
               Mode2 := tamNoScroll;
               if toChildrenAbove in FOptions.FPaintOptions then
               begin
-                PosHoldable := (FOffsetY + (Integer(Node.TotalHeight - NodeHeight[Node]))) <= 0;
+                PosHoldable := (FOffsetY + (Integer(Node.TotalHeight) - Integer(NodeHeight[Node]))) <= 0;
                 NodeInView := R1.Top < ClientHeight;
 
                 StepsR1 := 0;
@@ -30598,8 +30856,13 @@ begin
             // Iterate through the child nodes without initializing them. We have to determine the entire height.
             Child := Node.FirstChild;
             repeat
-              if IsEffectivelyVisible[Child] then
+              if vsVisible in Child.States then
+              begin
+                // Ensure the item height is measured
+                MeasureItemHeight(Canvas, Child);
+
                 Inc(HeightDelta, Child.TotalHeight);
+              end;
               Child := Child.NextSibling;
             until Child = nil;
 
@@ -31215,7 +31478,6 @@ procedure TVTEdit.CNCommand(var Message: TLMCommand);
 
 begin
   if Assigned(FLink) and Assigned(FLink.FTree) and (Message.NotifyCode = EN_UPDATE) and
-    not (toGridExtensions in FLink.FTree.FOptions.FMiscOptions) and
     not (vsMultiline in FLink.FNode.States) then
     // Instead directly calling AutoAdjustSize it is necessary on Win9x/Me to decouple this notification message
     // and eventual resizing. Hence we use a message to accomplish that.
@@ -31282,13 +31544,13 @@ var
   Shift: TShiftState;
   EndEdit: Boolean;
   Tree: TBaseVirtualTree;
-
+  NextNode: PVirtualNode;
 begin
+  Tree := FLink.FTree;
   case Message.CharCode of
     VK_ESCAPE:
       begin
-        Tree := FLink.FTree;
-        FLink.FTree.DoCancelEdit;
+        Tree.DoCancelEdit;
         Tree.SetFocus;
       end;
     VK_RETURN:
@@ -31299,7 +31561,7 @@ begin
           // If a multiline node is being edited the finish editing only if Ctrl+Enter was pressed,
           // otherwise allow to insert line breaks into the text.
           Shift := KeyDataToShiftState(Message.KeyData);
-          EndEdit := ssCtrlOS in Shift;
+          EndEdit := ssCtrl in Shift;
         end;
         if EndEdit then
         begin
@@ -31320,6 +31582,17 @@ begin
         if not (vsMultiline in FLink.FNode.States) then
           Message.CharCode := VK_RIGHT;
         inherited;
+      end;
+    VK_TAB:
+      begin
+        if Tree.IsEditing then begin
+          Tree.InvalidateNode(FLink.FNode);
+          NextNode := Tree.GetNextVisible(FLink.FNode, True);
+          Tree.EndEditNode;
+          Tree.FocusedNode := NextNode;
+          if Tree.CanEdit(Tree.FocusedNode, Tree.FocusedColumn) then
+            Tree.DoEdit;
+        end;
       end;
   else
     inherited;
@@ -31740,8 +32013,8 @@ begin
       if not (tsUseExplorerTheme in FStates) then
       begin
         Canvas.Font.Style := Canvas.Font.Style + [fsUnderline];
-      Canvas.Font.Color := FColors.HotColor;
-    end;
+        Canvas.Font.Color := FColors.HotColor;
+      end;
     end;
 
     // Change the font color only if the node also is drawn in selected style.
@@ -31753,14 +32026,14 @@ begin
         begin
           if ((FLastDropMode = dmOnNode) or (vsSelected in Node.States)) and not
              (tsUseExplorerTheme in FStates) then
-            Canvas.Font.Color := clHighlightText;
+            Canvas.Font.Color := FColors.SelectionTextColor;
         end
         else
           if vsSelected in Node.States then
           begin
             if (Focused or (toPopupMode in FOptions.FPaintOptions)) and not
                (tsUseExplorerTheme in FStates) then
-              Canvas.Font.Color := clHighlightText;
+              Canvas.Font.Color := FColors.SelectionTextColor;
           end;
       end;
     end;
@@ -31876,8 +32149,8 @@ begin
     begin
       if Node = FDropTargetNode then
       begin
-        if (FLastDropMode = dmOnNode) or (vsSelected in Node.States)then
-          Canvas.Font.Color := clHighlightText
+        if (FLastDropMode = dmOnNode) or (vsSelected in Node.States) then
+          Canvas.Font.Color := FColors.SelectionTextColor
         else
           Canvas.Font.Color := Font.Color;
       end
@@ -31885,7 +32158,7 @@ begin
         if vsSelected in Node.States then
         begin
           if Focused or (toPopupMode in FOptions.FPaintOptions) then
-            Canvas.Font.Color := clHighlightText
+            Canvas.Font.Color := FColors.SelectionTextColor
           else
             Canvas.Font.Color := Font.Color;
         end;
@@ -33078,6 +33351,7 @@ var
   Index: Integer;
   Alignment: TAlignment;
   BidiMode: TBidiMode;
+  LocaleBuffer: Array [0..1] of Char;
 
 begin
   Buffer := TBufferedUTF8String.Create;
@@ -33141,6 +33415,8 @@ begin
         if BidiMode <> bdLeftToRight then
           ChangeBidiModeAlignment(Alignment);
         case Alignment of
+          taLeftJustify:
+            Buffer.Add('\ql');
           taRightJustify:
             Buffer.Add('\qr');
           taCenter:
@@ -33258,7 +33534,12 @@ begin
       S := S + Format('\red%d\green%d\blue%d;', [J and $FF, (J shr 8) and $FF, (J shr 16) and $FF]);
     end;
     S := S + '}';
-
+    if (GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_IMEASURE, @LocaleBuffer, Length(LocaleBuffer)) <> 0) and (LocaleBuffer[0] = '0'{metric}) then
+      S := S + '\paperw16840\paperh11907'// This sets A4 landscape format
+    else
+      S := S + '\paperw15840\paperh12240';//[JAM:marder]  This sets US Letter landscape format
+    // Make sure a small margin is used so that a lot of the table fits on a paper. This defines a margin of 0.5"
+    S := S + '\margl720\margr720\margt720\margb720';
     Result := S + Buffer.AsAnsiString + '}';
     Fonts.Free;
     Colors.Free;
