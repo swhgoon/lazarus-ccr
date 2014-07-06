@@ -1,0 +1,2 @@
+* Use TImageList in checkbox support
+* Review ContentTo* methods
