@@ -126,7 +126,7 @@ object rxDBGridColumsForm: TrxDBGridColumsForm
     end
     object btnApply: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 150
+      Left = -63
       Height = 30
       Top = 0
       Width = 71
@@ -151,19 +151,15 @@ object rxDBGridColumsForm: TrxDBGridColumsForm
     Columns = <    
       item
         ButtonStyle = cbsCheckboxColumn
-        ReadOnly = False
         SizePriority = 0
         Title.Alignment = taCenter
         Title.Caption = '...'
-        Title.MultiLine = False
         Width = 30
       end    
       item
-        Alignment = taLeftJustify
         ButtonStyle = cbsNone
         ReadOnly = True
         Title.Caption = 'Caption'
-        Title.MultiLine = False
         Width = 377
       end    
       item
@@ -171,7 +167,6 @@ object rxDBGridColumsForm: TrxDBGridColumsForm
         SizePriority = 0
         Title.Alignment = taCenter
         Title.Caption = 'Width'
-        Title.MultiLine = False
         Width = 60
       end>
     FixedCols = 0

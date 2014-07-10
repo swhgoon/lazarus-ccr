@@ -791,6 +791,9 @@ type
     property DataSource;
     property DefaultDrawing;
     property DefaultRowHeight; // stored IsDefaultRowHeightStored;
+
+    property DefaultColWidth;
+
     property DragCursor;
     property DragKind;
     property DragMode;

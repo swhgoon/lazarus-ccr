@@ -179,7 +179,10 @@ begin
     begin
       StringGrid1.Cells[0, i+1]:=BoolToStr(AGrid.Columns[i].Visible, '1', '0');
       StringGrid1.Cells[1, i+1]:=AGrid.Columns[i].Title.Caption;
-      StringGrid1.Cells[2, i+1]:=IntToStr(AGrid.Columns[i].Width);
+      if AGrid.Columns[i].Width = 0 then
+        StringGrid1.Cells[2, i+1]:=IntToStr(AGrid.DefaultColWidth)
+      else
+        StringGrid1.Cells[2, i+1]:=IntToStr(AGrid.Columns[i].Width);
     end;
   end
   else
