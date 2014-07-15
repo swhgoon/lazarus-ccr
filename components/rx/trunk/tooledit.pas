@@ -608,7 +608,7 @@ begin
     ABounds := Screen.MonitorFromPoint(P).BoundsRect;
 
     Y := P.Y + Height;
-    if Y + FPopup.Height > ABounds.Right then
+    if Y + FPopup.Height > ABounds.Bottom then
       Y := P.Y - FPopup.Height;
     case FPopupAlign of
       epaRight:
