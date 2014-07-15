@@ -1,50 +1,53 @@
 object frmMain: TfrmMain
-  Left = 463
+  Left = 486
   Height = 569
-  Top = 88
-  Width = 1248
+  Top = 222
+  Width = 1252
   ActiveControl = memResults
   Caption = 'frmMain'
   ClientHeight = 569
-  ClientWidth = 1248
+  ClientWidth = 1252
   OnCreate = FormCreate
+  OnMouseWheel = FormMouseWheel
   LCLVersion = '1.2.4.0'
   object pnlVideo: TPanel
-    Left = 640
+    Left = 642
     Height = 504
     Top = 42
-    Width = 608
+    Width = 610
     Align = alClient
     BevelOuter = bvNone
     ClientHeight = 504
-    ClientWidth = 608
+    ClientWidth = 610
     TabOrder = 0
     object MPlayerControl1: TMPlayerControl
       Left = 0
       Height = 477
       Top = 0
-      Width = 584
+      Width = 586
       Align = alClient
       Loop = 0
+      OnMouseWheel = MPlayerControl1MouseWheel
       Volume = 0
       OnFeedback = OnFeedback
       OnError = OnError
       OnPlaying = OnPlaying
       OnPlay = OnPlay
       OnStop = OnStop
+      OnGrabImage = OnGrabImage
     end
     object pnlTrackbar: TPanel
       Left = 0
       Height = 27
       Top = 477
-      Width = 608
+      Width = 610
       Align = alBottom
       BevelOuter = bvNone
       ClientHeight = 27
-      ClientWidth = 608
+      ClientWidth = 610
       TabOrder = 1
       object pnlPos: TPanel
-        Left = 502
+        Left = 504
         Height = 27
         Top = 0
         Width = 106
@@ -66,7 +69,7 @@ object frmMain: TfrmMain
         Left = 0
         Height = 27
         Top = 0
-        Width = 502
+        Width = 504
         Frequency = 5
         OnChange = TrackBarPlayingChange
         Position = 0
@@ -80,14 +83,14 @@ object frmMain: TfrmMain
     end
     object TrackBarVolume: TTrackBar
       AnchorSideLeft.Control = MPlayerControl1
-      Left = 584
+      Left = 586
       Height = 477
       Top = 0
       Width = 24
       Max = 25
       OnChange = TrackBarVolumeChange
       Orientation = trVertical
-      Position = 10
+      Position = 0
       Reversed = True
       ScalePos = trBottom
       TickMarks = tmBoth
@@ -101,17 +104,17 @@ object frmMain: TfrmMain
     Left = 0
     Height = 504
     Top = 42
-    Width = 635
+    Width = 637
     Align = alLeft
     BevelOuter = bvNone
     ClientHeight = 504
-    ClientWidth = 635
+    ClientWidth = 637
     TabOrder = 1
     object memResults: TMemo
       Left = 0
-      Height = 472
-      Top = 32
-      Width = 635
+      Height = 458
+      Top = 46
+      Width = 637
       Align = alClient
       Color = clBlack
       Font.Color = clInfoBk
@@ -125,150 +128,74 @@ object frmMain: TfrmMain
     end
     object pnlCommands: TPanel
       Left = 0
-      Height = 32
+      Height = 46
       Top = 0
-      Width = 635
+      Width = 637
       Align = alTop
       BevelOuter = bvNone
-      ClientHeight = 32
-      ClientWidth = 635
+      ClientHeight = 46
+      ClientWidth = 637
       TabOrder = 1
       object cboCommand: TComboBox
-        Left = 12
+        Left = 272
         Height = 23
-        Top = 5
-        Width = 524
+        Top = 20
+        Width = 266
         Anchors = [akTop, akLeft, akRight]
         DropDownCount = 15
         ItemHeight = 15
-        ItemIndex = 0
         Items.Strings = (
-          'get_audio_bitrate'
-          'get_audio_codec'
-          'get_audio_samples'
-          'get_file_name'
-          'get_meta_comment'
-          'get_time_length'
-          'get_time_pos'
-          'get_video_bitrate'
-          'get_video_codec'
-          'get_video_resolution'
-          'mute '
-          'stop'
-          'osd [level]'
-          'osd_show_progression'
-          'osd_show_text <string> [duration] [level]'
-          'exit'
-          'frame_step'
-          'seek <seconds_From_Start> 2'
-          'seek <percent> 1'
-          'screenshot 0'
-          'speed_mult <value>'
-          'get_property <property>'
-          'set_property <property> <value>'
-          'Available properties:'
           ''
-          'name               type      min     max     get set step comment'
-          '================================================================='
           ''
-          'osdlevel           int       0       3       X   X   X    as -osdlevel'
-          'speed              float     0.01    100     X   X   X    as -speed'
-          'loop               int       -1              X   X   X    as -loop'
-          'pause              flag      0       1       X            1 if paused, use with pausing_keep_force'
-          'filename           string                    X            file playing w/o path'
-          'path               string                    X            file playing'
-          'demuxer            string                    X            demuxer used'
-          'stream_pos         pos       0               X   X        position in stream'
-          'stream_start       pos       0               X            start pos in stream'
-          'stream_end         pos       0               X            end pos in stream'
-          'stream_length      pos       0               X            (end - start)'
-          'stream_time_pos    time      0               X            present position in stream (in seconds)'
-          'titles             int                       X            number of titles'
-          'chapter            int       0               X   X   X    select chapter'
-          'chapters           int                       X            number of chapters'
-          'angle              int       0               X   X   X    select angle'
-          'length             time                      X            length of file in seconds'
-          'percent_pos        int       0       100     X   X   X    position in percent'
-          'time_pos           time      0               X   X   X    position in seconds'
-          'metadata           str list                  X            list of metadata key/value'
-          'metadata/*         string                    X            metadata values'
-          'volume             float     0       100     X   X   X    change volume'
-          'balance            float     -1      1       X   X   X    change audio balance'
-          'mute               flag      0       1       X   X   X'
-          'audio_delay        float     -100    100     X   X   X'
-          'audio_format       int                       X'
-          'audio_codec        string                    X'
-          'audio_bitrate      int                       X'
-          'samplerate         int                       X'
-          'channels           int                       X'
-          'switch_audio       int       -2      255     X   X   X    select audio stream'
-          'switch_angle       int       -2      255     X   X   X    select DVD angle'
-          'switch_title       int       -2      255     X   X   X    select DVD title'
-          'capturing          flag      0       1       X   X   X    dump primary stream if enabled'
-          'fullscreen         flag      0       1       X   X   X'
-          'deinterlace        flag      0       1       X   X   X'
-          'ontop              flag      0       1       X   X   X'
-          'rootwin            flag      0       1       X   X   X'
-          'border             flag      0       1       X   X   X'
-          'framedropping      int       0       2       X   X   X    1 = soft, 2 = hard'
-          'gamma              int       -100    100     X   X   X'
-          'brightness         int       -100    100     X   X   X'
-          'contrast           int       -100    100     X   X   X'
-          'saturation         int       -100    100     X   X   X'
-          'hue                int       -100    100     X   X   X'
-          'panscan            float     0       1       X   X   X'
-          'vsync              flag      0       1       X   X   X'
-          'video_format       int                       X'
-          'video_codec        string                    X'
-          'video_bitrate      int                       X'
-          'width              int                       X            "display" width'
-          'height             int                       X            "display" height'
-          'fps                float                     X'
-          'aspect             float                     X'
-          'switch_video       int       -2      255     X   X   X    select video stream'
-          'switch_program     int       -1      65535   X   X   X    (see TAB default keybinding)'
-          'sub                int       -1              X   X   X    select subtitle stream'
-          'sub_source         int       -1      2       X   X   X    select subtitle source'
-          'sub_file           int       -1              X   X   X    select file subtitles'
-          'sub_vob            int       -1              X   X   X    select VOBsubs'
-          'sub_demux          int       -1              X   X   X    select subs from demux'
-          'sub_delay          float                     X   X   X'
-          'sub_pos            int       0       100     X   X   X    subtitle position'
-          'sub_alignment      int       0       2       X   X   X    subtitle alignment'
-          'sub_visibility     flag      0       1       X   X   X    show/hide subtitles'
-          'sub_forced_only    flag      0       1       X   X   X'
-          'sub_scale          float     0       100     X   X   X    subtitles font size'
-          'tv_brightness      int       -100    100     X   X   X'
-          'tv_contrast        int       -100    100     X   X   X'
-          'tv_saturation      int       -100    100     X   X   X'
-          'tv_hue             int       -100    100     X   X   X'
-          'teletext_page      int       0       799     X   X   X'
-          'teletext_subpage   int       0       64      X   X   X'
-          'teletext_mode      flag      0       1       X   X   X    0 - off, 1 - on'
-          'teletext_format    int       0       3       X   X   X    0 - opaque,'
-          '                                                          1 - transparent,'
-          '                                                          2 - opaque inverted,'
-          '                                                          3 - transparency inverted,'
-          'teletext_half_page int       0       2       X   X   X    0 - off, 1 - top half,'
-          '                                                          2- bottom half'
         )
         TabOrder = 0
-        Text = 'get_audio_bitrate'
+        Text = '-help'
       end
       object btnRunCommand: TButton
-        Left = 544
+        Left = 546
         Height = 25
-        Top = 4
+        Top = 20
         Width = 91
         Anchors = [akTop, akRight]
         Caption = 'Run Command'
         OnClick = btnRunCommandClick
         TabOrder = 1
       end
+      object lblStartParams: TLabel
+        Left = 6
+        Height = 15
+        Top = 3
+        Width = 215
+        Caption = 'Start Params (passed to mplayer on Play)'
+        ParentColor = False
+      end
+      object cboStartParams: TComboBox
+        Left = 6
+        Height = 23
+        Top = 20
+        Width = 215
+        ItemHeight = 15
+        ItemIndex = 1
+        Items.Strings = (
+          '-vo gl_nosw'
+          '-vo direct3d'
+          '-vf snapshot'
+        )
+        TabOrder = 2
+        Text = '-vo direct3d'
+      end
+      object lblCommand: TLabel
+        Left = 272
+        Height = 15
+        Top = 3
+        Width = 324
+        Caption = 'Slave Command (if playing) / mplayer Params (if not playing)'
+        ParentColor = False
+      end
     end
   end
   object Splitter1: TSplitter
-    Left = 635
+    Left = 637
     Height = 504
     Top = 42
     Width = 5
@@ -277,7 +204,7 @@ object frmMain: TfrmMain
     Left = 0
     Height = 42
     Top = 0
-    Width = 1248
+    Width = 1252
     AutoSize = True
     ButtonHeight = 40
     Caption = 'tbMain'
@@ -302,6 +229,7 @@ object frmMain: TfrmMain
       Left = 40
       Top = 2
       Caption = 'Play'
+      Enabled = False
       ImageIndex = 1
       OnClick = btnPlayClick
     end
@@ -341,6 +269,7 @@ object frmMain: TfrmMain
       Caption = 'Fast Forward'
       Enabled = False
       ImageIndex = 5
+      OnClick = btnFWDClick
     end
     object ToolButton9: TToolButton
       Left = 435
@@ -355,6 +284,7 @@ object frmMain: TfrmMain
       Caption = 'Grab Frame'
       Enabled = False
       ImageIndex = 6
+      OnClick = btnFrameGrabClick
     end
     object btnNudgeBack: TToolButton
       Left = 273
@@ -362,6 +292,7 @@ object frmMain: TfrmMain
       Caption = 'Nudge Back'
       Enabled = False
       ImageIndex = 7
+      OnClick = btnNudgeBackClick
     end
     object btnNudgeForward: TToolButton
       Left = 345
@@ -369,6 +300,7 @@ object frmMain: TfrmMain
       Caption = 'Nudge Forward'
       Enabled = False
       ImageIndex = 8
+      OnClick = btnNudgeForwardClick
     end
     object ToolButton4: TToolButton
       Left = 268
@@ -382,16 +314,18 @@ object frmMain: TfrmMain
     Left = 0
     Height = 23
     Top = 546
-    Width = 1248
+    Width = 1252
     Panels = <>
   end
   object OpenDialog1: TOpenDialog
-    left = 32
-    top = 56
+    Filter = 'All Video|*.wmv;*.asf;*.avi;*.mpg;*.mpeg;*.divx;*.mp4;*.pkt|Microsoft Video|*.wmv;*.asf|Other Video|*.avi;*.mpg;*.mpeg;*.divx;*.mp4|NetMC Video|*.pkt|Text Files|*.txt|Microsoft Audio|*.wma|All Files|*.*'
+    FilterIndex = 0
+    left = 40
+    top = 88
   end
   object ilTools: TImageList
     left = 280
-    top = 72
+    top = 88
     Bitmap = {
       4C69090000001000000010000000EBBA78CFEBBA78FFEBBA78FFEBBA78FFEBBA
       78FFEBBA78FFEBBA78FFEBBA78FFEBBA78FFEBBA78FFEBBA78FFEBBA78FFEBBA
@@ -683,5 +617,12 @@ object frmMain: TfrmMain
       FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
       FF00FFFFFF00FFFFFF00FFFFFF00
     }
+  end
+  object dlgFindmplayer: TOpenDialog
+    Title = 'Locate mplayer.exe'
+    Filter = 'mplayer.exe|mplayer.exe'
+    Options = [ofPathMustExist, ofFileMustExist, ofEnableSizing]
+    left = 175
+    top = 183
   end
 end
