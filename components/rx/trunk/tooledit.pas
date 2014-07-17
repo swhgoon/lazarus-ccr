@@ -113,6 +113,9 @@ type
 {$ENDIF}
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
+
+    procedure EditKeyDown(var Key: word; Shift: TShiftState); override;
+    procedure EditKeyPress( var Key: char); override;
 {$IFDEF OLD_EDITBUTTON}
     procedure DoButtonClick (Sender: TObject); override;
 {$ELSE}
@@ -780,6 +783,58 @@ begin
     end;
   end;
   inherited KeyPress(Key);
+end;
+
+procedure TCustomRxDateEdit.EditKeyDown(var Key: word; Shift: TShiftState);
+begin
+  if (Key in [VK_PRIOR, VK_NEXT, VK_LEFT, VK_UP, VK_RIGHT, VK_DOWN,
+    VK_ADD, VK_SUBTRACT]) and
+    PopupVisible then
+  begin
+    TPopupCalendarAccess(FPopup).KeyDown(Key, Shift);
+    Key := 0;
+  end
+  else
+  if (Shift = []) and DirectInput then
+  begin
+    case Key of
+      VK_ADD:
+        begin
+          ApplyDate(NvlDate(Date, Now) + 1);
+          Key := 0;
+        end;
+      VK_SUBTRACT:
+        begin
+          ApplyDate(NvlDate(Date, Now) - 1);
+          Key := 0;
+        end;
+    end;
+  end;
+  inherited EditKeyDown(Key, Shift);
+end;
+
+procedure TCustomRxDateEdit.EditKeyPress(var Key: char);
+begin
+  if (Key in ['T', 't', '+', '-']) and PopupVisible then
+  begin
+    Key := #0;
+  end
+  else
+  if DirectInput then
+  begin
+    case Key of
+      'T', 't':
+        begin
+          ApplyDate(Trunc(Now));
+          Key := #0;
+        end;
+      '+', '-':
+        begin
+          Key := #0;
+        end;
+    end;
+  end;
+  inherited EditKeyPress(Key);
 end;
 
 {$IFDEF OLD_EDITBUTTON}
