@@ -152,9 +152,11 @@ type
 
   TPopUpFormOptions = class(TPersistent)
   private
+    FAlternateColor: TColor;
     FAutoFillColumns: boolean;
     FAutoSort: boolean;
     FBorderStyle: TBorderStyle;
+    FColor: TColor;
     FColumns: TPopUpFormColumns;
     FDataSource: TDataSource;
     FDropDownCount: integer;
@@ -166,6 +168,7 @@ type
     FTitleStyle: TTitleStyle;
     FOwner:TPersistent;
     function GetColumns: TPopUpFormColumns;
+    function IsAltColorStored: Boolean;
     procedure SetAutoFillColumns(const AValue: boolean);
     procedure SetAutoSort(const AValue: boolean);
     procedure SetColumns(const AValue: TPopUpFormColumns);
@@ -176,13 +179,16 @@ type
     procedure SetTitleButtons(const AValue: boolean);
     procedure SetTitleStyle(const AValue: TTitleStyle);
   protected
-    function  GetOwner: TPersistent; dynamic;
+    function GetOwner: TPersistent; dynamic;
   public
     constructor Create(AOwner:TPersistent);
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     property DataSource:TDataSource read FDataSource write FDataSource;
   published
+    property AlternateColor: TColor read FAlternateColor write FAlternateColor stored IsAltColorStored;
+    property Color: TColor read FColor write FColor default {$ifdef UseCLDefault}clDefault{$else}clWindow{$endif};
+
     property AutoFillColumns:boolean read FAutoFillColumns write SetAutoFillColumns default false;
     property AutoSort:boolean read FAutoSort write SetAutoSort default false;
     property BorderStyle: TBorderStyle read FBorderStyle write FBorderStyle default bsNone;
@@ -550,6 +556,9 @@ begin
     FRowCount:=10 + ord(dgTitles in FGrid.Options)
   else
     FRowCount:=FPopUpFormOptions.DropDownCount + 2 + ord(dgTitles in FGrid.Options);
+
+  FGrid.Color:=FPopUpFormOptions.Color;
+  FGrid.AlternateColor:=FPopUpFormOptions.AlternateColor;
 end;
 
 destructor TPopUpForm.Destroy;
@@ -569,6 +578,11 @@ end;
 function TPopUpFormOptions.GetColumns: TPopUpFormColumns;
 begin
   Result:=FColumns;
+end;
+
+function TPopUpFormOptions.IsAltColorStored: Boolean;
+begin
+  Result := FAlternateColor <> FColor;
 end;
 
 procedure TPopUpFormOptions.SetAutoFillColumns(const AValue: boolean);
@@ -637,6 +651,8 @@ begin
   FBorderStyle:=bsNone;
   FColumns:=TPopUpFormColumns.Create(AOwner);
   FColumns.FPopUpFormOptions:=Self;
+  FColor:={$ifdef UseCLDefault}clDefault{$else}clWindow{$endif};
+  FAlternateColor:=FColor;
 end;
 
 destructor TPopUpFormOptions.Destroy;
@@ -657,6 +673,8 @@ begin
     FTitleButtons:=TPopUpFormOptions(Source).FTitleButtons;
     FTitleStyle:=TPopUpFormOptions(Source).FTitleStyle;
     FBorderStyle:=TPopUpFormOptions(Source).FBorderStyle;
+    FColor:=TPopUpFormOptions(Source).FColor;
+    FAlternateColor:=TPopUpFormOptions(Source).FAlternateColor;
   end
   else
     inherited Assign(Source);
