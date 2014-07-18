@@ -1033,8 +1033,21 @@ procedure TToolPanel.SetToolBarStyle(const AValue: TToolBarStyle);
 begin
   if FToolBarStyle=AValue then exit;
   FToolBarStyle:=AValue;
+{
+  if FToolBarStyle = tbsNative then
+    BorderWidth:=1
+  else
+    BorderWidth:=4;
+}
   if FToolBarStyle = tbsWindowsXP then
+  begin
+    BorderWidth:=4;
     SetOptions(FOptions + [tpFlatBtns]);
+  end
+  else
+  begin
+    BorderWidth:=1
+  end;
   Invalidate;
 end;
 
@@ -1172,7 +1185,7 @@ begin
   if not (csLoading in ComponentState) then
   begin
     if Assigned(FImageList) then
-      aHeight:=FImageList.Height+8  + BorderWidth * 2
+      aHeight:=FImageList.Height+8  + Max(BorderWidth, 4) * 2
     else
       aHeight:=FDefButtonHeight + BorderWidth * 2;
   end;

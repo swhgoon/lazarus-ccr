@@ -15,6 +15,7 @@ type
   TMainForm = class(TForm)
     actExit: TAction;
     actSysMenu: TAction;
+    BitBtn1: TBitBtn;
     MenuItem10: TMenuItem;
     MenuItem11: TMenuItem;
     MenuItem12: TMenuItem;
@@ -22,6 +23,7 @@ type
     MenuItem6: TMenuItem;
     MenuItem7: TMenuItem;
     PopupMenu2: TPopupMenu;
+    SpeedButton1: TSpeedButton;
     sysAbout: TAction;
     actNew: TAction;
     actNext: TAction;
@@ -37,7 +39,6 @@ type
     MenuItem8: TMenuItem;
     MenuItem9: TMenuItem;
     PopupMenu1: TPopupMenu;
-    SpeedButton2: TSpeedButton;
     ToolPanel1: TToolPanel;
     XMLPropStorage1: TXMLPropStorage;
     procedure Action1Execute(Sender: TObject);
@@ -56,6 +57,8 @@ var
 
 implementation
 uses AboutUnit;
+
+{$R *.lfm}
 
 { TMainForm }
 
@@ -81,9 +84,6 @@ begin
   AboutForm.ShowModal;
   AboutForm.Free;
 end;
-
-initialization
-  {$I unit1.lrs}
 
 end.
 

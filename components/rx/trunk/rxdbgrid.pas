@@ -4402,6 +4402,7 @@ procedure TRxDBGrid.OnFilter(Sender: TObject);
 var
   C: TRxColumn;
   i: integer;
+  FBS, FAS:TDataSetNotifyEvent;
 begin
   BeginUpdate;
   OptionsRx := OptionsRx + [rdgFilter];
@@ -4419,6 +4420,10 @@ begin
   begin
     DataSource.DataSet.DisableControls;
     DataSource.DataSet.Filtered := True;
+    FBS:=DataSource.DataSet.BeforeScroll;
+    FAS:=DataSource.DataSet.AfterScroll;
+    DataSource.DataSet.BeforeScroll:=nil;
+    DataSource.DataSet.AfterScroll:=nil;
     DataSource.DataSet.First;
     while not DataSource.DataSet.EOF do
     begin
@@ -4431,6 +4436,8 @@ begin
       DataSource.DataSet.Next;
     end;
     DataSource.DataSet.First;
+    DataSource.DataSet.BeforeScroll:=FBS;
+    DataSource.DataSet.AfterScroll:=FAS;
     DataSource.DataSet.EnableControls;
   end;
 
