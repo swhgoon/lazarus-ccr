@@ -1134,6 +1134,7 @@ begin
     B.UpdateLeftAfterLoad;
     B.FButton.Align:=BtnAl2Align[FButtonAllign];
   end;
+  SetCustomizing(false);
   //ReAlignToolBtn;
 end;
 
