@@ -27,421 +27,7 @@ unit VirtualTrees;
 // (C) 1999-2001 digital publishing AG. All Rights Reserved.
 //----------------------------------------------------------------------------------------------------------------------
 //
-//  September 2011
-//   - The property EmptyListMessage may now contain linebreaks in Delphi 2009 and higher, the text in now printed in dark gray.
-//   - Support for flat scroll bars has been removed.
-//   - Global variables InWin2k and IsWinXP, enum member hsXPStyle, function DrawXPButton() and support for Windows 2000 has been removed.
-//   - Global variable IsWinNT and support for Windows 9x has been removed.
-//   - Improvement: Added support for Delphi XE2 and 64Bit compiler.
-//   - Support for Delphi 5/6 and C++ Builder 5/6 has been dropped.
-//  August 2011
-//   - Improvement: Minor code improvements
-//  April 2011
-//   - Bug fix: Reverted change of November 2010 (Creating the WorkerThread will no longer change System.IsMultiThread)
-//              it caused sporadic AVs during app start which disappeared after revering the change. This code can lead to a wrong value 
-//              of System.IsMultiThread which causes the memory manager to assume a single threaded application.
-//   - Bug fix: When advancing to the next item while in edit mode, we are now also calling CanEdit().
-//  February 2011
-//   - Bug fix: In case the LastStructureChangeNode is deleted before the StructureChange event is fired,
-//              the reference to the LastStructureChangeNode is cleared to avoid providing an invalid node
-//  January 2011
-//   - Improvement: RTF export now uses landscape paper format and smaller margins, so that more of the contents
-//                  fits on the page
-//   - Improvement: New Option hoHeaderClickAutoSort for TVTHeader.Options: Clicks on the header will make the
-//                    clicked column the SortColumn or toggle sort direction if it already was the sort column
-//   - Improvement: Pressing the tab key in edit mode advances to the next node in edit node, just like the
-//                  Windows 7 Explorer does it.
-//   - Bug fix: No longer auto-scrolling horizontally when the focused node changes if toFullRowSelect is turned on.
-//   - Bug fix: Fixed a clipping issue when drawing unbuffered
-//  December 2010
-//   - Improvement: TBaseVirtualTree.HandleMouseUp now checks CanEdit just in case toEditOnClick
-//   - Bug fix: TotalNodeHeights are now correctly adjusted when toggling toShowHiddenNodes
-//   - Bug fix: Fixed BCB compiler error due to re-defining IDropTargetHelper
-//   - Improvement: New TVTInternalPaintOption poUnbuffered to directly paint onto a given canvas (especially useful
-//                  when printing and/or scaling via world transformations)
-//   - Improvement: Refactored header painting to be more flexible (e.g. for printing)
-//   - Improvement: Made additional fields accessible via protected read-only properties for easier subclassing
-//  November 2010
-//   - Improvement: All calls to SetWindowOrgEx now respect the canvas' transformation
-//   - Improvement: TBaseVirtualTree.GetNodeHeight will no longer measure the node height, if the node is about
-//                  to be deleted
-//   - Improvement: Made TBaseVirtualTree.FRangeX and FRangeY accessible via read-only protected property
-//   - Improvement: Unified clipping handling
-//   - Improvement: Added new color setting "SelectionTextColor"
-//   - Improvement: Creating the WorkerThread will no longer change System.IsMultiThread
-//   - Bug fix: Fixed a potential integer overflow in TBaseVirtualTree.ToggleNode
-//   - Bug fix: TBaseVirtualTree.ToggleNode now measures the child node heights before summing them
-//   - Improvement: Made some private field of TVTHeader and TVirtualTreeColumns protected to make writing
-//                  derived classes easier
-//   - Improvement: Enclosed call to DoDragDrop in TBaseVirtualTree.CMDrag in a try..finally block
-//   - Improvement: The default inplace editor now resizes itself even when the tree is in grid mode
-//   - Bug fix: TBaseVirtualTree.PrepareBitmaps now checks the existance of the main column correctly
-//   - Bug fix: TBaseVirtualTree.UpdateEditBounds now checks wether the focused node is assigned
-//   - Improvement: TBaseVirtualTree.FHintData is now available to derived classes via the protected property HintData
-//  October 2010
-//   - Bug fix: Now taking horizontal scroll position into account when drawing text of EmptyListMessage property
-//   - Bug fix: Prevented potential "index out of bounds" exception in TVirtualTreeHintWindow.CalcHintRect
-//   - Bug fix - Issue #187: Showing a dialog in OnChange or OnRemoveSelection event handlers can cause the VT to
-//              enter mode for drawing selection rectangle.
-//   - Improvement: Made inherited event OnCanResize published for TVirtualStringTree for Delphi 2010 and later
-//   - Improvement: TBaseVirtualTree.ToggleNode now tries to keep the visual position of the toggled node,
-//                  even when toChildrenAbove is set
-//  September 2010
-//   - Improvement: Added additional check regarding the tree reference to TVirtualTreeHintWindow.AnimationCallback
-//   - Improvement: Made TBaseVirtualTree.AdjustImageBorder protected and virtual
-//   - Improvement: TVirtualTreeColumns now observes if the focused column is removed
-//   - Improvement: Made compatible with Delphi XE (Thanks to Roman Kassebaum)
-//  August 2010
-//   - Improvement: TCustomVirtualStringTree.DoTextMeasuring now returns TSize
-//   - Improvement: Renamed TVTMeasureTextWidthEvent to TVTMeasureTextEvent and introduced new
-//                  event TCustomVirtualStringTree.OnMeasureTextHeight
-//   - Improvement: Made TBaseVirtualTree.GetMaxColumnWidth virtual
-//   - Bug fix: TBaseVirtualTree.OnRemoveFromSelection is now triggered by TBaseVirtualTree.RemoveFromSelection
-//              as intended
-//  July 2010
-//   - Bug fix: Toggling toShowFilteredNodes will now update the node counts in the tree even if its handle has not
-//              been allocated so far
-//   - Bug fix: TBaseVirtualTree.FindNodeInSelection should now work correctly with nodes above the 2gb boundary
-//   - Bug fix: Nodes that are about to be deleted are now removed from TBaseVirtualTree.FDragSelection
-//   - Bug fix: Changed TBaseVirtualTree.WMKeyDown to correctly handle special keys in Unicode based Delphi versions
-//   - Bug fix: Changed declaration of TBaseVirtualTree.EmptyListMessage to UnicodeString
-//   - Improvement: Added new property TBaseVirtualTree.EmptyListMessage. If this property is not empty, the assigned
-//                  text will be displayed if there are no nodes to display, similar to the Windows XP file search.
-//   - Improvement: Added tstChecked to TVSTTextSourceType enumeration and support for the new flag to 
-//                  GetRenderStartValues(). So you can export only checked nodes.
-//  June 2010
-//   - Bug fix: range select with no nodes will no longer result in an access violation
-//   - Bug fix: TBaseVirtualTree.SetVisible now correctly decrements the visible node count
-//   - Bug fix: TStringEditLink.BeginEdit now calls AutoAdjustSize to ensure a consistent size of the edit field
-//   - Improvement: TVTHeader.AutoFitColumns is now declared virtual
-//   - Bug fix: header captions were badly positioned text if Extra Large fonts have been activated in the Windows
-//              display options
-//  May 2010
-//   - Improvement: TBaseVirtualTree.PaintTree is now declared virtual
-//   - Bug fix: corrected calculations regarding tree height and visible count when using filtered nodes
-//  April 2010
-//   - Bug fix: Changed TBaseVirtualTree.SetChildCount and TBaseVirtualTree.InitNode to correctly handle filtered nodes
-//   - Bug fix: Ctrl+Click on a node often cause a delayed update of the displayed selection due to a missing (or
-//              misplaced) call to Invalidate() in HandleClickSelection().
-//   - Bug fix: Shift+PgUp and Shift+PgDown now behave like a usual List(View) and select the node of the previous/
-//              next page. The behaviourly that was formerly assigned to these shortcuts is now triggeres when using
-//              Shift+Alt+PgUp / Shift+Alt+PgDown
-//  March 2010
-//   - Bug fix: TBaseVirtualTree.CMMouseLeave now checks if the header is assigned before working with it
-//   - Bug fix: TCustomVirtualTreeOptions.SetPaintOptions will now invalidate the node cache if toChildrenAbove is
-//              changed
-//   - Bug fix: TBaseVirtualTree.HandleMouseUp will no longer cause an AV if HitInfo.HitNode is not assigned and
-//              tsToggleFocusedSelection is set
-//   - Improvement: new properties TBaseVirtualTree.OnAddToSelection and TBaseVirtualTree.OnRemoveFromSelection
-//   - Bug fix: fixed a whole bunch of painting issues regarding drag & drop
-//   - Bug fix: fixed TBaseVirtualTree.DragFinished to generate a button up event in case of using OLE drag & drop
-//   - Bug fix: TBaseVirtualTree.DeleteChildren no longer fails if the given node is nil
-//  January 2010
-//   - Bug fix: Removed defaults from TVirtualTreeColumn.BiDiMode and TVirtualTreeColumn.Color
-//   - Bug fix: Clearing the columns while editing no longer raises an exception
-//   - Improvement: refactored handling of long running operations
-//   - Bug fix: TBaseVirtualTree.OnGetHelpContext now delivers the currently focused column instead of always 0
-//   - Improvement: the sort operation can now be canceled
-//   - Improvement: all BeginOperation/EndOperation pairs are now enclosed in try..finally blocks
-//   - Bug fix: the combination of toUseExplorerTheme and toFullRowSelect now also works correct when no columns are
-//              defined
-//  December 2009
-//   - Bug fix: TVTHeader.HandleMessage now correctly handles double click autosizing when the index differs from
-//              its position
-//  November 2009
-//   - Bug fix: TBaseVirtualTree.AdjustTotalHeight didn't change the height of invisible nodes which caused some trouble
-//              when making those nodes visible again
-//   - Improvement: a column is no longer painted 'down' if its check box was clicked
-//   - Bug fix: one can no longer toggle the check state of a column with the right mouse button
-//   - Bug fix: one can no longer toggle the check state of a node with the right mouse button
-//   - Bug fix: TCustomVirtualTreeOptions.SetPaintOptions no longer accidentally removed the the explorer theme
-//   - Bug fix: Fixed a potential Integer overflow in TBaseVirtualTree.CalculateVerticalAlignments
-//  October 2009
-//   - Bug fix: enabling checkbox support for a column is now possible without assigning a dummy imagelist  
-//   - Bug fix: checkboxes in the header are now correctly aligned
-//   - Improvement: changed TBaseVirtualTree.PaintCheckImage to be usable by TVirtualTreeColumns.PaintHeader to be
-//                  able to paint themed header checkboxes
-//   - Bug fix: TBaseVirtualTree.GetCheckImage now correctly handles cases when Node is nil and ImgCheckType is either
-//              ctTriStateCheckBox or ctNone
-//   - Bug fix: TBaseVirtualTree.HasImage now implicitly initializes the given node if needed to avoid requesting the
-//              imageindex for nodes that are not initialized
-//   - Bug fix: fixed possible AV when setting toExplorerTheme with no columns defined
-//   - Improvement: new events TBaseVirtualTree.OnSaveTree and TBaseVirtualTree.OnLoadTree
-//  September 2009
-//   - Bug fix: TBaseVirtualTree.OnColumnClick will no longer be triggered twice
-//   - Improvement: new TVirtualNodeInitState ivsReInit to indicate that a node is about to be re-initialized
-//   - Bug fix: TCustomVirtualStringTree.DoTextMeasuring now makes use of the parameter Width of the
-//              OnMeasureTextWidth event
-//   - Bug fix: TBaseVirtualTree.DetermineLineImageAndSelectLevel will no longer access LineImage[-1]
-//   - Bug fix: clearing the columns now correctly reset TBaseVirtualTree.FFocusedColumn
-//   - Improvement: explorer style painting is now more close to the real explorer
-//   - Bug fix: TCustomVirtualStringTree.TContentToHTML.WriteStyle will no longer produce invalid CSS
-//   - Bug fix: the parameter DragEffect of TBaseVirtualTree.DragAndDrop is now var as it should be
-//  August 2009
-//   - Bug fix: TBaseVirtualTree.MoveTo now initializes the target node using the target tree
-//   - Bug fix: TBaseVirtualTree.FVisibleCount is now calculated correctly when using filtered nodes
-//   - Improvement: introduced new initial node state ivsFiltered
-//  July 2009
-//   - Improvement: modified TVTHeader.HandleHeaderMouseMove to make resizing the autosize column with the
-//                  mouse possible
-//   - Improvement: modified TBaseVirtualTree.DoCreateEditor so that applications can now return NIL in OnCreateEditor
-//                  to use the standard editor of the tree
-//   - Bug fix: pressing CTRL + PgUp/PgDown no longer leads to an index-out-of-bounds exception if no columns are used
-//   - Bug fix: avoided race condition between TBaseVirtualTree.DeleteNode and the worker thread 
-//   - Bug fix: TBaseVirtualTree.ToggleNode could produce an overflow if range checking was enabled 
-//   - Bug fix: TWorkerThread will no longer reference the tree after it has been destroyed (Mantis issue #384)
-//   - Improvement: removed support for Delphi versions older than Delphi 7
-//   - Improvement: removed local memory manager
-//  June 2009
-//   - Bug fix: TBaseVirtualTree.InternalConnectNode checked the expanded state of the wrong node if Mode was
-//              amAddChildFirst or amAddChildLast
-//   - Improvement: 'hidden nodes' are now called 'filtered nodes'
-//   - Improvement: converted line endings back to CR/LF
-//   - Improvement: new events TBaseVirtualTree.OnCanSplitterResizeNode and TBaseVirtualTree.OnCanSplitterResizeHeader
-//   - Improvement: made TVirtualTreeColumns.DoCanSplitterResize virtual
-//   - Improvement: made some methods of TVirtualTreeHintWindow protected to make subclassing easier
-//   - Bug fix: fixed some issues concerning the vista theme handling
-//   - Improvement: unified source code indentation
-//  May 2009
-//   - Improvement: new TVTMiscOption toEditOnClick, toEditOnDblClick to control if editing can be started with a single
-//                  click or a double click
-//   - Bug fix: the internal pointers of TBufferedAnsiString are now PAnsiChar to work correctly with Delphi 2009
-//  April 2009
-//   - Bug fix: TBaseVirtualTree.GetVisibleParent no longer returns the given node in case it is fully visible
-//   - Improvement: fixed a potential issue in TVirtualTreeColumns.TotalWidth in case it is called before
-//                  FPositionToIndex is initialized
-//   - Bug fix: TBaseVirtualTree.CollectSelectedNodesLTR and TBaseVirtualTree.CollectSelectedNodesRTL handle straight
-//              vertical selection rectangles no longer as empty
-//   - Bug fix: TCheckImageKind.ckSystemDefault now works as intended
-//   - Improvement: made the following methods of TBaseVirtualTree virtual: PrepareCell, AddChild, BeginUpdate,
-//                  EndUpdate and SortTree
-//   - Improvement: made TBaseVirtualTree.PrepareCell protected
-//   - Improvement: moved some members of TVTEdit and TStringEditLink from private to protected
-//   - Improvement: re-designed header click handling
-//   - Improvement: new TVTPaintOption toShowHiddenNodes to globally ignore the hidden state of nodes
-//   - Improvement: individual nodes can now be hidden without affecting their children
-//   - Improvement: re-designed Explorer theme drawing
-//   - Bug fix: corrected allocation problems in TBufferedAnsiString and TWideBufferedString
-//  March 2009
-//   - Bug fix: fixed an issue in TVirtualTreeColumns.HandleClick that could lead to a case where no header click event
-//              is triggered
-//   - Bug fix: fixed an issue in TBaseVirtualTree.HandleHotTrack that could lead to an endless loop under certain
-//              conditions
-//   - Improvement: removed unused variables in TVirtualTreeColumn.ComputeHeaderLayout
-//   - Bug fix: corrected TBaseVirtualTree.GetVisibleParent
-//   - Improvement: extended hot node tracking to track the hot column too
-//   - Improvement: new THitPosition hiOnItemButtonExact used to draw hot buttons when using Windows Vista's Explorer
-//                  theme
-//   - Improvement: new TVTPaintOption toHideTreeLinesIfThemed to consider toShowTreeLines only if running unthemed
-//   - Improvement: new TVTPaintOption toUseExplorerTheme to draw the tree like Windows Vista's Explorer treeview
-//  February 2009
-//   - Bug fix: reverted the implementation of DrawTextW back to the one prior to 4.8.1 as the line end detection
-//              lead to a compiler warning under Delphi 2009
-//   - Bug fix: corrected implementation of GetStringDrawRect to match its declaration (UnicodeString vs WideString)
-//   - Bug fix: the node focus will no longer change if a TVTMiscOption.toGridExtensions is set and one clicks right of
-//              (or left of, if right-to-left reading) the last column
-//   - Bug fix: fixed an issue with TVTHeader.Assign that could lead to an access violation if the header is created at
-//              runtime
-//   - Bug fix: one can no longer change a node's height with the right mouse button even if toNodeHeightResize and
-//              toRightClickSelect are set
-//   - Improvement: TVTAutoOption.toDisableAutoScrollOnFocus now works for nodes too
-//   - Improvement: new property TBaseVirtualTree.SelectionLocked to disable changing the selection
-//   - Improvement: made the dual-scroll effect in TBaseVirtualTree.ToggleNode much smoother
-//   - Bug fix: removed off-by-1 errors in TBaseVirtualTree.ToggleNode
-//   - Bug fix: added a check for FUpdateCount to TBaseVirtualTree.SetUpdateState as otherwise every call to
-//              TBaseVirtualTree.DoBeforeCellPaint to get the cell content margin within an Begin/EndUpdate-block would
-//              re-enable painting
-//   - Bug fix: TVTHeader.HandleMessage could provide a wrong column index to OnBeforeColumnWidthTracking in some cases
-//   - Improvement: new properties TBaseVirtualTree.OnBeforeAutoFitColumn, TBaseVirtualTree.OnAfterAutoFitColumn
-//   - Improvement: new procedures TBaseVirtualTree.CancelOperation, TBaseVirtualTree.BeginOperation,
-//                  TBaseVirtualTree.EndOperation and new property TBaseVirtualTree.OperationCanceled to enable the
-//                  application to stop (possibly) long-running operations
-//   - Improvement: integrated changes from Andreas Hausladen
-//   - Improvement: integrated changes from Dmitry Zegebart where applicable
-//   - Bug fix: removed off-by-1 error in TBaseVirtualTree.GetDisplayRect
-//   - Bug fix: changed the size of the buffer used in TBaseVirtualTree.PaintTree to paint the area below the last node
-//              as the bitmap was not completely erased using previous size under certain conditions
-//   - Bug fix: fixed TBaseVirtualTree.GetPreviousLevel
-// January 2009
-//   - Bug fix: removed off-by-1 error in TBaseVirtualTree.GetBottomNode
-//   - Improvement: improved speed of TBaseVirtualTree.GetMaxColumnWidth when using UseSmartColumnWidth
-//   - Version is now 4.8.0
-// December 2008
-//   - Bug fix: modified TBaseVirtualTree.UpdateHorizontalScrollbar and TBaseVirtualTree.UpdateVerticalScrollbar to
-//              recalculate the tree's dimensions even if an update is in progress
-//   - Improvement: renamed TVTHeaderState hsTracking and hsTrackPending to hsColumnWidthTracking and
-//                  hsColumnWidthTrackPending
-//   - Improvement: modified TBaseVirtualTree.GetFirstVisible and TBaseVirtualTree.GetFirstVisibleNoInit to optionally
-//                  take a node to specify where to start
-//   - Improvement: modified TVTAfterGetMaxColumnWidthEvent to make the result of TBaseVirtualTree.GetMaxColumnWidth
-//                  changable
-//   - Bug fix: corrected TBaseVirtualTree.GetMaxColumnWidth to consider toFixedIndent and no longer take nodes into
-//              account that are just above or below the visible area
-//   - Improvement: new property TVirtualTreeColumns.DefaultWidth
-//   - Improvement: new property TVTHeader.FixedAreaConstraints (new class TVTFixedAreaConstraints) to limit the
-//                  fixed area (header, fixed columns) to a percentage of the client area
-// November 2008
-//   - Improvement: new cursor added: crVertSplit used for height tracking
-//   - Improvement: changed type of TVTHeader.Height from Cardinal to Integer to make boundary checks easier
-//   - Improvement: new properties TVTHeader.MinHeight and TVTHeader.MaxHeight
-//   - Improvement: new VirtualTreeStates tsNodeHeightTracking and tsNodeHeightTrackPending
-//   - Improvement: new HeaderStates hsHeightTracking and hsHeightTrackPending
-//   - Improvement: new TVTMiscOption toNodeHeightResize to allow changing node heights via mouse
-//   - Improvement: new TVTHeaderOption hoHeightResize to allow changing header height via mouse
-//   - Improvement: new properties TBaseVirtualTree.OnHeaderHeightTracking, TBaseVirtualTree.OnHeaderDblClickResize,
-//                  TBaseVirtualTree.OnColumnWidthTracking, TBaseVirtualTree.OnColumnWidthDblClickResize,
-//                  TBaseVirtualTree.OnNodeHeightTracking, TBaseVirtualTree.OnNodeHeightDblClickResize
-//   - Improvement: new function TVTHeader.ResizeColumns to resize multiple columns at once
-//   - Improvement: TVTHeader.DetermineSplitterIndex is no longer influenced by non-resizable columns
-//   - Bug fix: TBaseVirtualTree.ToggleNode now uses DoStateChange to modify FStates
-//   - Bug fix: TBaseVirtualTree.DoBeforeCellPaint now saves the update rect if CellPaintMode is cpmGetContentMargin
-//              and restores it afterwards
-//   - Improvement: modified TBaseVirtualTree.CmMouseWheel to handle mice with wheel delta < 120 correctly
-//   - Improvement: modified TVTHeader.LoadFromStream and WriteToStream to save ParentFont
-//   - Improvement: TVTHeader.Font is now only stored by Delphi if ParentFont is False (Mantis issue #217)
-//   - Bug fix: corrected TVTHeader.Create to set TVTHeader.FOptions correctly to the default value (Mantis issue #333)
-//   - Improvement: new TVTAnimationOption toAdvancedAnimatedToggle to scroll the node to be toggled animatedly instead
-//                  of just scroll its child nodes animatedly
-//   - Improvement: added VirtualTreeState tsToggling to eliminate artefacts caused by TBaseVirtualTree.DoSetOffsetXY
-//                  while toggling
-//   - Bug fix: corrected button handling when toFixedIndent is set
-//   - Improvement: redesigned TBaseVirtualTree.ToggleNode to harmonize the visual toggle behaviour independent of
-//                  toChildrenAbove
-//   - Improvement: made TBaseVirtualTree.CanEdit public
-//   - Improvement: added parameter ConsiderChildrenAbove to TGetNextNodeProc
-//   - Improvement: modified all variants of TBaseVirtualTree.GetFirst and TBaseVirtualTree.GetLast to optionally
-//                  consider toChildrenAbove
-// October 2008
-//   - Bug fix: removed 'FVisibleCount := 0' from TBaseVirtualTree.Clear as this would lead to incorrect VisibleCount in
-//             read-only mode
-//   - Bug fix: fixed a condition in TBaseVirtualTree.ToggleCallback that could lead to artefacts
-//   - Improvement: changed the implementation of TBaseVirtualTree.GetNext/GetPrevious so that no penalties occur if
-//                  toChildrenAbove is not set
-//   - Improvement: TBaseVirtualTree.ToggleNode will no longer leave nodes with state vsToggeling if an exception
-//                  occurs
-//   - Improvement: improved behaviour of TBaseVirtualTree.ToggleNode in case toChildrenAbove is set
-//   - Bug fix: corrected TBaseVirtualTree.ScrollIntoView to behave as expected when no fixed columns exist
-//   - Bug fix: extended TBaseVirtualTree.InitializeLineImageAndSelectLevel to eliminate artifacts while scrolling with
-//              toChildrenAbove set
-//   - Bug fix: corrected CompareNodePositions to consider toChildrenAbove
-//   - Bug fix: corrected ToggleNode to scroll correctly if toChildrenAbove and toAnimatedToggle are set
-//   - Improvement: new TVTPaintOption toFixedIndent to draw the tree with a fixed ident (instead of node level
-//                  dependent indents)
-//   - Improvement: new TVTPaintOption toChildrenAbove to draw children nodes above their parent
-// August 2008
-//   - Improvement: redesigned and overloaded TBaseVirtualTree.ScrollIntoView in order to use vertical scrolling
-//                  separately
-//   - Improvement: optimized TBaseVirtualTree.ScrollIntoView for horizontal scrolling
-//   - Improvement: in TBaseVirtualTree.WMKeyDown column navigation for VK_PRIOR and VK_NEXT is now handled in same way
-//                  as row navigation
-//   - Improvement: new TVTHeaderOption hoDisableAnimatedResize to disable animated resize for all columns
-//   - Improvement: new TVTColumnOption coDisableAnimatedResize to disable animated resize for a specific column
-//   - Improvement: in TBaseVirtualTree.UpdateHorizontalScrollBar and TBaseVirtualTree.UpdateVerticalScrollBar scrollbar
-//                  updates now avoided for tsUpdating in FStates
-// July 2008
-//   - Improvement: in TBaseVirtualTree.WMHScroll the horizontal page scrolling now considers fixed columns
-//   - Improvement: in TBaseVirtualTree.ScrollIntoView the case of FFocusedColumn being invalid is considered
-//   - Improvement: in TBaseVirtualTree.HandleMouseDown DoFocusNode is not called if node focus did not change
-//   - Improvement: in TBaseVirtualTree.SetFocusedColumn the focused node will only be invalidate if it was actually
-//                  scrolled into view
-//   - Improvement: new TVTColumnOption coAllowFocus to affect column focus behaviour
-//   - Improvement: new function TVTHeader.AllowFocus to check wether a column can be focused
-//   - Improvement: in TBaseVirtualTree.SetFocusedColumn the old colunm and the new column are both invalidated
-//   - Improvement: merged latest changes from Jim into current code base.
-// June 2008
-//   - Improvement: new property TVirtualTreeColumns.Count
-//   - Bug fix: in TVirtualTreeColumns.AnimatedResize the column is validated (to avoid "List index out of bounds")
-//   - Improvement: the content retangle of the cell can be modified via the OnBeforeCellPaint event, the cell paint
-//                  mode indicates wether OnBeforeCellPaint is called for painting the cell or just for getting the
-//                  cell content margin
-//   - Improvement: new functions added: TBaseVirtualTree.DoGetCellContentMargins,
-//                  TCustomVirtualDrawTree.DoGetCellContentMargin
-//   - Improvement: new property: TCustomVirtualDrawTree.OnGetCellContentMargin
-//   - Improvement: in TBaseVirtualTree.GetMaxColumnWidth the cell content margin is considered
-//   - Improvement: in TBaseVirtualTree.CMHintShow the cell content margin is considered for singleline tooltips
-//   - Improvement: new function added: TVTHeader.DoGetPopupMenu (to query the application via TreeView.FOnGetPopupMenu
-//                  for a column specific header popup menu)
-//   - Improvement: new property added: TBaseVirtualTree.OnCanSplitterResizeColumn,
-//                  new function added: TVirtualTreeColumns.GetScrollWidth
-//   - Improvement: horizontal page scrolling now uses the average column width (of all visible, non-fixed columns) as
-//                  scroll amount
-//   - Improvement: procedure TBaseVirtualTree.CMMouseWheel redesigned
-//   - Bug fix: TVTHeader.DetermineSplitterIndex works correctly even when using fixed columns
-//   - Bug fix: on right-to-left BiDiMode TVirtualTreeColumns.PaintHeader respects (left) scroll bar correctly
-//   - Bug fix: for multiline tooltips also the column width is checked to determine the tooltip is needed or
-//              unnecessary
-//   - Improvement: the result value of GetUseSmartColumnWidth is initialized correctly
-//   - Improvement: added hoFullRepaintOnResize to TVTHeaderOption to enable full header repainting (instead of
-//                  repainting all subsequent columns only) on resizing a column
-//   - Bug fix: horizontal page scrolling via mouse wheel now works correctly, i.e. in TBaseVirtualTree.CMMouseWheel
-//              ScrollCount includes GetVisibleFixedWidth and FIndent
-//   - Improvement: new TVTColumnOption coSmartResize to avoid contradicting the virtual paradigm
-//   - Improvement: horizontal scrolling via mouse wheel can be forced by holding the shift key
-//   - Improvement: new parameter for function TBaseVirtualTree.GetMaxColumnWidth added: UseSmartColumnWidth (to
-//                  avoid contradicting the virtual paradigm, i.e. leave nodes out of consideration which are not in
-//                  view)
-//   - Improvement: new parameters for TVTHeader.AutoFitColumns added: SmartAutoFitType, RangeStartCol and
-//                  RangeEndCol
-//   - Improvement: new parameters for events FOnAfterAutoFitColumns, FOnBeforeAutoFitColumns, FOnAfterGetMaxColumnWidth
-//                  and FOnBeforeGetMaxColumnWidth added
-//   - Version is now 4.6.0
-// May 2008
-//   - Improvement: new properties: FOnAfterAutoFitColumns, FOnBeforeAutoFitColumns, FOnAfterGetMaxColumnWidth and
-//                  FOnBeforeGetMaxColumnWidth
-//   - Bug fix: FDropTargetNode is considered in TBaseVirtualTree.DoFreeNode
-// August 2007
-//   - for accessibility, added an OnGetImageText event that can be used to give accessible text to images used in nodes.
-//   - Implemented an ImageText property used by the VTAccessibility unit to retrieve text for a given node and its column.
-//   - Switched loading of accessibility libraries to dynamic from static to avoid problems in Win95
-// June 2007
-//   - Bug fix: Fixed a problem with potentially large amount of nodes (larger than 2 billion) in
-//              TBaseVirtualTree.SetChildCount.
-//   - Bug fix: remove hint if any in case the tree loses the focus.
-//   - Improvement: TVirtualTreeColumns.HandleClick is now virtual, introduced TVTHeader.DoSetSortColumn.
-//   - Bug fix: compiler error due to old variable reference when enabling flat scrollbars.
-// May 2007
-//   - Improvement: new functions: GetPreviousSelected, GetPreviousChecked, GetCheckedCount,
-//     GetPreviousCutCopy, GetCutCopyCount, GetFirstLeaf, GetNextLeaf,
-//     GetPreviousLeaf, GetFirstLevel, GetNextLevel, GetPreviousLevel
-//   - Improvement: new properties: CheckedCount, CutCopyCount
-//   - Improvement: DoFocusChanging for finding a valid column (TBaseVirtualTree.WMKeyDown)
-// March 2007
-//   - Improvement: adjusted accessibility implementation to compile with pre-BDS IDEs.
-//   - If a column is not visible, MultiColumnAccessibility now will not include it.
-// January 2007
-//   - Improvement: added code donation from Marco Zehe (with help from Sebastian Modersohn) which implements the
-//                  MS accessibility interface for Virtual Treeview.
-// December 2006
-//   - Improvement: bidi mode implementation finished (toAutoBidiColumnOrdering introduced)
-//   - Change: right-to-left flag removed from shorten string methods/events (not necessary)
-//   - Version is now 4.5.0
-// November 2006
-//   - Bug fix: Total height is wrong on reading from stream
-// September 2006
-//   - Bug fix: Mantis issue #326
-// July 2006
-//  - Change: value for crHeaderSplit cursor conflicts with other resource IDs, so I changed it.
-//  - Published OnStartDrag in VirtualDrawTree.
-// April 2006
-//   - Bug fix: check for MMX availabiltiy is missing in some places before calling MMX code
-//   - Bug fix: flag for VCL dragging was removed too late causing all kind of problems with mouse up code in VCL drag mode.
-//   - Bug fix: If the past mode in ProcessOLEData is amInsertAfter then nodes where inserted in the wrong order.
-// March 2006
-//   - Bug fix: total count and total height is wrong after loading from stream
-//   - Bug fix: variable node height computation
-//   - Bug fix: FLastChangedNode was not reset in DoFreeNode
-// February 2006
-//   - Improvement: GetFirstChecked now also has a default value for its state parameter.
-//   - Improvement: avoid potential reentrancy problems in paint code by checking for the paint state there.
-// January 2006
-//   - Bug fix: disabled images are now drawn like enabled ones (with respect to position, indices etc.).
-//   - Improvement: New property BottomSpace, allows to specify an additional area below the last node in the tree.
-//   - Bug fix: VT.EndUpdate did not invalidate the cache so the cache was never used again after that.
-//   - Improvement: tree states for double clicks (left, middle, right).
-// December 2005
-//   - Bug fix: check for column index for auto setting main column if the current one is deleted.
-//
-// For full document history see help file.
+// For a list of recent changes please see file CHANGES.TXT
 //
 // Credits for their valuable assistance and code donations go to:
 //   Freddy Ertl, Marian Aldenh?vel, Thomas Bogenrieder, Jim Kuenemann, Werner Lehmann, Jens Treichler,
@@ -1600,14 +1186,14 @@ type
   );
   THeaderStates = set of THeaderState;
 
-  // describes the used column resize behaviour for AutoFitColumns
+
   TSmartAutoFitType = (
     smaAllColumns,      // consider nodes in view only for all columns
     smaNoColumn,        // consider nodes in view only for no column
     smaUseColumnOption  // use coSmartResize of the corresponding column
-  );
+  );  // describes the used column resize behaviour for AutoFitColumns
 
-  // desribes what made a structure change event happen
+
   TChangeReason = (
     crIgnore,       // used as placeholder
     crAccumulated,  // used for delayed changes
@@ -1616,7 +1202,7 @@ type
     crNodeAdded,    // a node has been added
     crNodeCopied,   // a node has been duplicated
     crNodeMoved     // a node has been moved to a new place
-  );
+  ); // describes what made a structure change event happen
 
   TVTHeader = class(TPersistent)
   private
@@ -2629,7 +2215,6 @@ type
       const NewRect: TRect): Boolean;
     procedure ClearNodeBackground(const PaintInfo: TVTPaintInfo; UseBackground, Floating: Boolean; R: TRect);
     function CompareNodePositions(Node1, Node2: PVirtualNode; ConsiderChildrenAbove: Boolean = False): Integer;
-    function DetermineLineImageAndSelectLevel(Node: PVirtualNode; out LineImage: TLineImage): Integer;
     procedure DrawLineImage(const PaintInfo: TVTPaintInfo; X, Y, H, VAlign: Integer; Style: TVTLineType; Reverse: Boolean);
     function FindInPositionCache(Node: PVirtualNode; var CurrentPos: Cardinal): PVirtualNode; overload;
     function FindInPositionCache(Position: Cardinal; var CurrentPos: Cardinal): PVirtualNode; overload;
@@ -2695,6 +2280,7 @@ type
     procedure SetCustomCheckImages(const Value: TBitmap);
     procedure SetDefaultNodeHeight(Value: Cardinal);
     procedure SetDisabled(Node: PVirtualNode; Value: Boolean);
+    procedure SetEmptyListMessage(const Value: String);
     procedure SetExpanded(Node: PVirtualNode; Value: Boolean);
     procedure SetFocusedColumn(Value: TColumnIndex);
     procedure SetFocusedNode(Value: PVirtualNode);
@@ -2791,7 +2377,6 @@ type
     {$endif ThemeSupport}
     procedure WMVScroll(var Message: TLMVScroll); message LM_VSCROLL;
   protected
-    procedure SetEmptyListMessage(const Value: String);
     procedure AddToSelection(Node: PVirtualNode); overload; virtual;
     procedure AddToSelection(const NewItems: TNodeArray; NewLength: Integer; ForceInsert: Boolean = False); overload; virtual;
     procedure AdjustImageBorder(Images: TCustomImageList; BidiMode: TBidiMode; VAlign: Integer; var R: TRect;
@@ -2820,10 +2405,12 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure DestroyHandle; override;
+    function DetermineDropMode(const P: TPoint; var HitInfo: THitInfo; var NodeRect: TRect): TDropMode; virtual;
     procedure DetermineHiddenChildrenFlag(Node: PVirtualNode); virtual;
     procedure DetermineHiddenChildrenFlagAllNodes; virtual;
     procedure DetermineHitPositionLTR(var HitInfo: THitInfo; Offset, Right: Integer; Alignment: TAlignment); virtual;
     procedure DetermineHitPositionRTL(var HitInfo: THitInfo; Offset, Right: Integer; Alignment: TAlignment); virtual;
+    function DetermineLineImageAndSelectLevel(Node: PVirtualNode; var LineImage: TLineImage): Integer; virtual;
     function DetermineNextCheckState(CheckType: TCheckType; CheckState: TCheckState): TCheckState; virtual;
     function DetermineScrollDirections(X, Y: Integer): TScrollDirections; virtual;
     procedure DoAdvancedHeaderDraw(var PaintInfo: THeaderPaintInfo; const Elements: THeaderPaintElements); virtual;
@@ -3068,6 +2655,7 @@ type
       default smDottedRectangle;
     property EditColumn: TColumnIndex read FEditColumn write FEditColumn;
     property EditDelay: Cardinal read FEditDelay write FEditDelay default 1000;
+    property EffectiveOffsetX: Integer read FEffectiveOffsetX;
     property Header: TVTHeader read FHeader write SetHeader;
     property HeaderRect: TRect read FHeaderRect;
     property HintMode: TVTHintMode read FHintMode write FHintMode default hmDefault;
@@ -4293,6 +3881,70 @@ var
   );
 
 type
+  TElementEdge = (
+    eeRaisedOuter
+  );
+
+  TElementEdges = set of TElementEdge;
+
+  TElementEdgeFlag = (
+    efRect
+  );
+
+  TElementEdgeFlags = set of TElementEdgeFlag;
+  //lcl: StyleServices is not implemented in LCL. If there's no plan to support it. Remove references here
+  // For compatibility with Delphi XE and earlier, prevents deprecated warnings in Delphi XE2 and higher
+  StyleServices = class
+    class function Enabled: Boolean;
+    class function DrawEdge(DC: HDC; Details: TThemedElementDetails; const R: TRect;
+      Edges: TElementEdges; Flags: TElementEdgeFlags; ContentRect: PRect = nil): Boolean;
+    class function DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect = nil): Boolean;
+    class function GetElementDetails(Detail: TThemedHeader): TThemedElementDetails; overload;
+    class function GetElementDetails(Detail: TThemedToolTip): TThemedElementDetails; overload;
+    class function GetElementDetails(Detail: TThemedWindow): TThemedElementDetails; overload;
+    class procedure PaintBorder(Control: TWinControl; EraseLRCorner: Boolean);
+  end;
+
+  class function StyleServices.Enabled: Boolean;
+  begin
+    Result := ThemeServices.ThemesEnabled;
+  end;
+
+  class function StyleServices.DrawEdge(DC: HDC; Details: TThemedElementDetails; const R: TRect;
+    Edges: TElementEdges; Flags: TElementEdgeFlags; ContentRect: PRect = nil): Boolean;
+  begin
+    Assert((Edges = [eeRaisedOuter]) and (Flags = [efRect]));
+    ThemeServices.DrawEdge(DC, Details, R, BDR_RAISEDOUTER, BF_RECT);
+    Result := Enabled;
+  end;
+
+  class function StyleServices.DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect = nil): Boolean;
+  begin
+    ThemeServices.DrawElement(DC, Details, R, ClipRect);
+    Result := Enabled;
+  end;
+
+  class function StyleServices.GetElementDetails(Detail: TThemedHeader): TThemedElementDetails;
+  begin
+    Result := ThemeServices.GetElementDetails(Detail);
+  end;
+
+  class function StyleServices.GetElementDetails(Detail: TThemedToolTip): TThemedElementDetails;
+  begin
+    Result := ThemeServices.GetElementDetails(Detail);
+  end;
+
+  class function StyleServices.GetElementDetails(Detail: TThemedWindow): TThemedElementDetails;
+  begin
+    Result := ThemeServices.GetElementDetails(Detail);
+  end;
+
+  class procedure StyleServices.PaintBorder(Control: TWinControl; EraseLRCorner: Boolean);
+  begin
+    ThemeServices.PaintBorder(Control, EraseLRCorner);
+  end;
+
+type
   // protection against TRect record method that cause problems with with-statements
   TWithSafeRect = record
     case Integer of
@@ -4681,9 +4333,9 @@ var
     (ID: CF_ENHMETAFILE; Description: 'Enhanced metafile image'), // Do not localize
     (ID: CF_HDROP; Description: 'File name(s)'), // Do not localize
     (ID: CF_LOCALE; Description: 'Locale descriptor') // Do not localize
-    {$ifdef COMPILER_16_UP}
+    {
     ,(ID: CF_DIBV5; Description: 'DIB image V5') // Do not localize
-    {$endif COMPILER_16_UP}
+    }
   );
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -5831,7 +5483,12 @@ begin
           if (vsFiltered in Run.States) then
           begin
             if FullyVisible[Run] then
-              Inc(FVisibleCount, IfThen(toShowFilteredNodes in ToBeSet, 1, 0));
+            begin
+              if toShowFilteredNodes in ToBeSet then
+                Inc(FVisibleCount)
+              else
+                Dec(FVisibleCount);
+            end;
             if toShowFilteredNodes in ToBeSet then
               AdjustTotalHeight(Run, Run.NodeHeight, True)
             else
@@ -5849,7 +5506,7 @@ begin
         //todo
         {
         if IsWinVistaOrAbove and ((tsUseThemes in FStates) or
-           ((toThemeAware in ToBeSet) and ThemeServices.ThemesEnabled)) and
+           ((toThemeAware in ToBeSet) and StyleServices.Enabled)) and
            (toUseExplorerTheme in (ToBeSet + ToBeCleared)) then
           if toUseExplorerTheme in ToBeSet then
           begin
@@ -5870,7 +5527,7 @@ begin
           {$ifdef ThemeSupport}
           if (toThemeAware in ToBeSet + ToBeCleared) or (toUseExplorerTheme in ToBeSet + ToBeCleared) then
           begin
-            if (toThemeAware in ToBeSet) and ThemeServices.ThemesEnabled then
+            if (toThemeAware in ToBeSet) and StyleServices.Enabled then
               DoStateChange([tsUseThemes])
             else
               if (toThemeAware in ToBeCleared) then
@@ -9130,8 +8787,8 @@ var
       begin
         if tsUseThemes in FHeader.Treeview.FStates then
         begin
-          Details := ThemeServices.GetElementDetails(thHeaderItemRightNormal);
-          ThemeServices.DrawElement(Handle, Details, BackgroundRect, @BackgroundRect);
+          Details := StyleServices.GetElementDetails(thHeaderItemRightNormal);
+          StyleServices.DrawElement(Handle, Details, BackgroundRect, @BackgroundRect);
         end
         else begin
           Brush.Color := FHeader.FBackground;
@@ -9213,13 +8870,13 @@ var
           if tsUseThemes in FHeader.Treeview.FStates then
           begin
             if IsDownIndex then
-              Details := ThemeServices.GetElementDetails(thHeaderItemPressed)
+              Details := StyleServices.GetElementDetails(thHeaderItemPressed)
             else
               if IsHoverIndex then
-                Details := ThemeServices.GetElementDetails(thHeaderItemHot)
+                Details := StyleServices.GetElementDetails(thHeaderItemHot)
               else
-                Details := ThemeServices.GetElementDetails(thHeaderItemNormal);
-            ThemeServices.DrawElement(TargetCanvas.Handle, Details, PaintRectangle, @PaintRectangle);
+                Details := StyleServices.GetElementDetails(thHeaderItemNormal);
+            StyleServices.DrawElement(TargetCanvas.Handle, Details, PaintRectangle, @PaintRectangle);
           end
           else
           begin
@@ -9321,8 +8978,8 @@ var
               Glyph := thHeaderSortArrowSortedUp
             else
               Glyph := thHeaderSortArrowSortedDown;
-            Details := ThemeServices.GetElementDetails(Glyph);
-            ThemeServices.DrawElement(TargetCanvas.Handle, Details, Pos, @Pos);
+            Details := StyleServices.GetElementDetails(Glyph);
+            StyleServices.DrawElement(TargetCanvas.Handle, Details, Pos, @Pos);
           end
           else
           begin
@@ -12771,132 +12428,6 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TBaseVirtualTree.DetermineLineImageAndSelectLevel(Node: PVirtualNode; out LineImage: TLineImage): Integer;
-
-// This method is used during paint cycles and initializes an array of line type IDs. These IDs are used to paint
-// the tree lines in front of the given node.
-// Additionally an initial count of selected parents is determined and returned which is used for specific painting.
-
-var
-  X: Integer;
-  Indent: Integer;
-  Run: PVirtualNode;
-
-begin
-  Result := 0;
-  if toShowRoot in FOptions.FPaintOptions then
-    X := 1
-  else
-    X := 0;
-  Run := Node;
-  // Determine indentation level of top node.
-  while Run.Parent <> FRoot do
-  begin
-    Inc(X);
-    Run := Run.Parent;
-    // Count selected nodes (FRoot is never selected).
-    if vsSelected in Run.States then
-      Inc(Result);
-  end;
-
-  // Set initial size of line index array, this will automatically initialized all entries to ltNone.
-  SetLength(LineImage, X);
-  Indent := X - 1;
-
-  // Only use lines if requested.
-  if toShowTreeLines in FOptions.FPaintOptions then
-  begin
-    if toChildrenAbove in FOptions.FPaintOptions then
-    begin
-      Dec(X);
-      if not HasVisiblePreviousSibling(Node) then
-      begin
-        if (Node.Parent <> FRoot) or HasVisibleNextSibling(Node) then
-          LineImage[X] := ltBottomRight
-        else
-          LineImage[X] := ltRight;
-      end
-      else if (Node.Parent = FRoot) and (not HasVisibleNextSibling(Node)) then
-        LineImage[X] := ltTopRight
-      else
-        LineImage[X] := ltTopDownRight;
-
-      // Now go up to the root to determine the rest.
-      Run := Node.Parent;
-      while Run <> FRoot do
-      begin
-        Dec(X);
-        if HasVisiblePreviousSibling(Run) then
-          LineImage[X] := ltTopDown;
-
-        Run := Run.Parent;
-      end;
-    end
-    else
-    begin
-      // Start over parent traversal if necessary.
-      Run := Node;
-
-      if Run.Parent <> FRoot then
-      begin
-        // The very last image (the one immediately before the item label) is different.
-        if HasVisibleNextSibling(Run) then
-          LineImage[X - 1] := ltTopDownRight
-        else
-          LineImage[X - 1] := ltTopRight;
-        Run := Run.Parent;
-
-        // Now go up all parents.
-        repeat
-          if Run.Parent = FRoot then
-            Break;
-          Dec(X);
-          if HasVisibleNextSibling(Run) then
-            LineImage[X - 1] := ltTopDown
-          else
-            LineImage[X - 1] := ltNone;
-          Run := Run.Parent;
-        until False;
-      end;
-
-      // Prepare root level. Run points at this stage to a top level node.
-      if (toShowRoot in FOptions.FPaintOptions) and (toShowTreeLines in FOptions.FPaintOptions) then
-      begin
-        // Is the top node a root node?
-        if Run = Node then
-        begin
-          // First child gets the bottom-right bitmap if it isn't also the only child.
-          if IsFirstVisibleChild(FRoot, Run) then
-            // Is it the only child?
-            if IsLastVisibleChild(FRoot, Run) then
-              LineImage[0] := ltRight
-            else
-              LineImage[0] := ltBottomRight
-          else
-            // real last child
-            if IsLastVisibleChild(FRoot, Run) then
-              LineImage[0] := ltTopRight
-            else
-              LineImage[0] := ltTopDownRight;
-        end
-        else
-        begin
-          // No, top node is not a top level node. So we need different painting.
-          if HasVisibleNextSibling(Run) then
-            LineImage[0] := ltTopDown
-          else
-            LineImage[0] := ltNone;
-        end;
-      end;
-    end;
-  end;
-
-  if (tsUseExplorerTheme in FStates) and HasChildren[Node] and (Indent >= 0) then
-    LineImage[Indent] := ltNone;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
 procedure TBaseVirtualTree.DrawLineImage(const PaintInfo: TVTPaintInfo; X, Y, H, VAlign: Integer; Style: TVTLineType;
   Reverse: Boolean);
 
@@ -13381,7 +12912,7 @@ begin
         else
           AddToSelection(NewNode);
     end;
-    Update;//Invalidate didn't update owner drawn selections
+    Invalidate();
   end
   else
     // Shift key down
@@ -14398,6 +13929,8 @@ begin
     Invalidate;
   end;
 end;
+
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TBaseVirtualTree.SetExpanded(Node: PVirtualNode; Value: Boolean);
 
@@ -17117,7 +16650,7 @@ begin
   end;
   {$ifdef ThemeSupport}
     if tsUseThemes in FStates then
-      ThemeServices.PaintBorder(Self, False);
+      StyleServices.PaintBorder(Self, False);
   {$endif ThemeSupport}
   {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMNCPaint');{$endif}
 end;
@@ -17348,16 +16881,16 @@ end;
 {$ifdef ThemeSupport}
 {$ifdef Windows}
 //todo
-  procedure TBaseVirtualTree.WMThemeChanged(var Message: TLMessage);
+procedure TBaseVirtualTree.WMThemeChanged(var Message: TLMessage);
 
-  begin
-    inherited;
-    ThemeServices.UpdateThemes;
-    if ThemeServices.ThemesEnabled and (toThemeAware in TreeOptions.PaintOptions) then
-      DoStateChange([tsUseThemes])
-    else
-      DoStateChange([], [tsUseThemes]);
-    RedrawWindow(Handle, nil, 0, RDW_INVALIDATE or RDW_VALIDATE or RDW_FRAME);
+begin
+  inherited;
+
+  if StyleServices.Enabled and (toThemeAware in TreeOptions.PaintOptions) then
+    DoStateChange([tsUseThemes])
+  else
+    DoStateChange([], [tsUseThemes]);
+  RedrawWindow(Handle, nil, 0, RDW_INVALIDATE or RDW_VALIDATE or RDW_FRAME);
   end;
 {$endif}
 {$endif ThemeSupport}
@@ -17991,14 +17524,16 @@ begin
   begin
     DoCheckClick(Node, NewCheckState);
     // Recursively adjust parent of parent.
-    with Node^ do
-    begin
-      if not (vsInitialized in Parent.States) then
-        InitNode(Parent);
-      if ([vsChecking, vsDisabled] * Parent.States = []) and (Parent <> FRoot) and
-        (Parent.CheckType = ctTriStateCheckBox) then
-        Result := CheckParentCheckState(Node, NewCheckState);
-    end;
+    // This is already done in the function DoCheckClick() called in the above line
+    // We revent unnecessary upward recursion by commenting this code.
+    //    with Node^ do
+    //    begin
+    //      if not (vsInitialized in Parent.States) then
+    //        InitNode(Parent);
+    //      if ([vsChecking, vsDisabled] * Parent.States = []) and (Parent <> FRoot) and
+    //        (Parent.CheckType = ctTriStateCheckBox) then
+    //        Result := CheckParentCheckState(Node, NewCheckState);
+    //    end;
   end;
 end;
 
@@ -18161,7 +17696,7 @@ begin
   DoStateChange([], [tsWindowCreating]);
 
   {$ifdef ThemeSupport}
-    if ThemeServices.ThemesEnabled and (toThemeAware in TreeOptions.PaintOptions) then
+    if StyleServices.Enabled and (toThemeAware in TreeOptions.PaintOptions) then
     begin
       DoStateChange([tsUseThemes]);
       //todo
@@ -18218,6 +17753,40 @@ begin
   CancelEditNode;
   inherited;
   {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'DestroyHandle');{$endif}
+end;
+//----------------------------------------------------------------------------------------------------------------------
+
+function TBaseVirtualTree.DetermineDropMode(const P: TPoint; var HitInfo: THitInfo; var NodeRect: TRect): TDropMode;
+
+// Determine the DropMode.
+
+var
+  ImageHit: Boolean;
+  LabelHit: Boolean;
+  ItemHit: Boolean;
+
+begin
+  ImageHit := HitInfo.HitPositions * [hiOnNormalIcon, hiOnStateIcon] <> [];
+  LabelHit := hiOnItemLabel in HitInfo.HitPositions;
+  ItemHit := ((hiOnItem in HitInfo.HitPositions) and ((toFullRowDrag in FOptions.FMiscOptions) or
+             (toFullRowSelect in FOptions.FSelectionOptions)));
+  // In report mode only direct hits of the node captions/images in the main column are accepted as hits.
+  if (toReportMode in FOptions.FMiscOptions) and not (ItemHit or ((LabelHit or ImageHit) and
+    (HitInfo.HitColumn = FHeader.MainColumn))) then
+    HitInfo.HitNode := nil;
+
+  if Assigned(HitInfo.HitNode) then
+  begin
+    if ItemHit or LabelHit or ImageHit or not (toShowDropmark in FOptions.FPaintOptions) then
+      Result := dmOnNode
+    else
+      if ((NodeRect.Top + NodeRect.Bottom) div 2) > P.Y then
+        Result := dmAbove
+      else
+        Result := dmBelow;
+  end
+  else
+    Result := dmNowhere;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -18302,7 +17871,7 @@ begin
   end;
   end;
 
-  if Offset < Indent then
+  if Offset < (Indent + Margin{See issue #259}) then
   begin
     // Position is to the left of calculated indentation which can only happen for the main column.
     // Check whether it corresponds to a button/checkbox.
@@ -18544,6 +18113,137 @@ begin
       end;
     end;
   end;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TBaseVirtualTree.DetermineLineImageAndSelectLevel(Node: PVirtualNode; var LineImage: TLineImage): Integer;
+
+// This method is used during paint cycles and initializes an array of line type IDs. These IDs are used to paint
+// the tree lines in front of the given node.
+// Additionally an initial count of selected parents is determined and returned which is used for specific painting.
+
+var
+  X: Integer;
+  Indent: Integer;
+  Run: PVirtualNode;
+
+begin
+  Result := 0;
+  if toShowRoot in FOptions.FPaintOptions then
+    X := 1
+  else
+    X := 0;
+  Run := Node;
+  // Determine indentation level of top node.
+  while Run.Parent <> FRoot do
+  begin
+    Inc(X);
+    Run := Run.Parent;
+    // Count selected nodes (FRoot is never selected).
+    if vsSelected in Run.States then
+      Inc(Result);
+  end;
+
+  // Set initial size of line index array, this will automatically initialized all entries to ltNone.
+  SetLength(LineImage, X);
+  Indent := X - 1;
+
+  // Only use lines if requested.
+  if (toShowTreeLines in FOptions.FPaintOptions) and
+     (not (toHideTreeLinesIfThemed in FOptions.FPaintOptions) or not (tsUseThemes in FStates)) then
+  begin
+    if toChildrenAbove in FOptions.FPaintOptions then
+    begin
+      Dec(X);
+      if not HasVisiblePreviousSibling(Node) then
+      begin
+        if (Node.Parent <> FRoot) or HasVisibleNextSibling(Node) then
+          LineImage[X] := ltBottomRight
+        else
+          LineImage[X] := ltRight;
+      end
+      else
+        if (Node.Parent = FRoot) and (not HasVisibleNextSibling(Node)) then
+          LineImage[X] := ltTopRight
+        else
+          LineImage[X] := ltTopDownRight;
+
+      // Now go up to the root to determine the rest.
+      Run := Node.Parent;
+      while Run <> FRoot do
+      begin
+        Dec(X);
+        if HasVisiblePreviousSibling(Run) then
+          LineImage[X] := ltTopDown
+        else
+          LineImage[X] := ltNone;
+
+        Run := Run.Parent;
+      end;
+    end
+    else
+    begin
+      // Start over parent traversal if necessary.
+      Run := Node;
+
+      if Run.Parent <> FRoot then
+      begin
+        // The very last image (the one immediately before the item label) is different.
+        if HasVisibleNextSibling(Run) then
+          LineImage[X - 1] := ltTopDownRight
+        else
+          LineImage[X - 1] := ltTopRight;
+        Run := Run.Parent;
+
+        // Now go up all parents.
+        repeat
+          if Run.Parent = FRoot then
+            Break;
+          Dec(X);
+          if HasVisibleNextSibling(Run) then
+            LineImage[X - 1] := ltTopDown
+          else
+            LineImage[X - 1] := ltNone;
+          Run := Run.Parent;
+        until False;
+      end;
+
+      // Prepare root level. Run points at this stage to a top level node.
+      if (toShowRoot in FOptions.FPaintOptions) and ((toShowTreeLines in FOptions.FPaintOptions) and
+         (not (toHideTreeLinesIfThemed in FOptions.FPaintOptions) or not (tsUseThemes in FStates))) then
+      begin
+        // Is the top node a root node?
+        if Run = Node then
+        begin
+          // First child gets the bottom-right bitmap if it isn't also the only child.
+          if IsFirstVisibleChild(FRoot, Run) then
+            // Is it the only child?
+            if IsLastVisibleChild(FRoot, Run) then
+              LineImage[0] := ltRight
+            else
+              LineImage[0] := ltBottomRight
+          else
+            // real last child
+            if IsLastVisibleChild(FRoot, Run) then
+              LineImage[0] := ltTopRight
+            else
+              LineImage[0] := ltTopDownRight;
+        end
+        else
+        begin
+          // No, top node is not a top level node. So we need different painting.
+          if HasVisibleNextSibling(Run) then
+            LineImage[0] := ltTopDown
+          else
+            LineImage[0] := ltNone;
+        end;
+      end;
+    end;
+  end;
+
+  if (tsUseExplorerTheme in FStates) and HasChildren[Node] and (Indent >= 0) then
+    LineImage[Indent] := ltNone;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -20571,9 +20271,6 @@ var
   OldR, R: TRect;
   NewDropMode: TDropMode;
   HitInfo: THitInfo;
-  ImageHit: Boolean;
-  LabelHit: Boolean;
-  ItemHit: Boolean;
   DragPos: TPoint;
   Tree: TBaseVirtualTree;
   LastNode: PVirtualNode;
@@ -20645,31 +20342,12 @@ begin
     if tsRightButtonDown in FStates then
       Include(Shift, ssRight);
     GetHitTestInfoAt(Pt.X, Pt.Y, True, HitInfo);
-    ImageHit := HitInfo.HitPositions * [hiOnNormalIcon, hiOnStateIcon] <> [];
-    LabelHit := hiOnItemLabel in HitInfo.HitPositions;
-    ItemHit := ((hiOnItem in HitInfo.HitPositions) and ((toFullRowDrag in FOptions.FMiscOptions) or
-               (toFullRowSelect in FOptions.FSelectionOptions)));
-    // In report mode only direct hits of the node captions/images in the main column are accepted as hits.
-    if (toReportMode in FOptions.FMiscOptions) and not (ItemHit or ((LabelHit or ImageHit) and
-      (HitInfo.HitColumn = FHeader.MainColumn))) then
-      HitInfo.HitNode := nil;
 
     if Assigned(HitInfo.HitNode) then
-    begin
-      R := GetDisplayRect(HitInfo.HitNode, NoColumn, False);
-      if ItemHit or LabelHit or ImageHit or not (toShowDropmark in FOptions.FPaintOptions) then
-        NewDropMode := dmOnNode
-      else
-        if ((R.Top + R.Bottom) div 2) > Pt.Y then
-          NewDropMode := dmAbove
-        else
-          NewDropMode := dmBelow;
-    end
+      R := GetDisplayRect(HitInfo.HitNode, NoColumn, False)
     else
-    begin
-      NewDropMode := dmNowhere;
       R := Rect(0, 0, 0, 0);
-    end;
+    NewDropMode := DetermineDropMode(Pt, HitInfo, R);
 
     if Assigned(Tree) then
       DragImageWillMove := Tree.FDragImage.WillMove(DragPos)
@@ -23595,10 +23273,12 @@ begin
   {$ifdef ThemeSupport}
     //todo
     {
-   if tsUseExplorerTheme in FStates then
-   begin
-     Theme := OpenThemeData(Handle, 'TREEVIEW');
-     RowRect := Rect(0, PaintInfo.CellRect.Top, Max(FRangeX, ClientWidth), PaintInfo.CellRect.Bottom);
+  if tsUseExplorerTheme in FStates then
+  begin
+    Theme := OpenThemeData(Application.Handle, 'Explorer::TreeView');
+    RowRect := Rect(0, PaintInfo.CellRect.Top, FRangeX, PaintInfo.CellRect.Bottom);
+    if (Header.Columns.Count = 0) and (toFullRowSelect in TreeOptions.SelectionOptions) then
+      RowRect.Right := ClientWidth;
      if toShowVertGridLines in FOptions.PaintOptions then
        Dec(RowRect.Right);
    end;
@@ -25892,11 +25572,11 @@ begin
           if [vsHasChildren, vsExpanded] * Node.States = [vsHasChildren, vsExpanded] then
             ToggleNode(Node);
           Node := GetPreviousNoInit(Node, True);
-        until Node = Stop;
+        until (Node = Stop) or not Assigned(Node);
 
         // Collapse the start node too.
-        if Assigned(Node) and ([vsHasChildren, vsExpanded] * Node.States = [vsHasChildren, vsExpanded]) then
-          ToggleNode(Node);
+        if Assigned(Stop) and ([vsHasChildren, vsExpanded] * Stop.States = [vsHasChildren, vsExpanded]) then
+          ToggleNode(Stop);
       end;
     finally
       EndUpdate;
@@ -30851,7 +30531,8 @@ procedure TBaseVirtualTree.ToggleNode(Node: PVirtualNode);
 // Changes a node's expand state to the opposite state.
 
 var
-  Child: PVirtualNode;
+  Child,
+  FirstVisible: PVirtualNode;
   HeightDelta,
   StepsR1,
   StepsR2,
@@ -30971,7 +30652,7 @@ begin
                     Mode1 := tamScrollDown;
                     R1.Bottom := R1.Top;
                     R1.Top := 0;
-                    StepsR1 := Min(R1.Bottom - R1.Top + 1, Node.TotalHeight - NodeHeight[Node]);
+                    StepsR1 := Min(R1.Bottom - R1.Top + 1, Integer(Node.TotalHeight) - Integer(NodeHeight[Node]));
                   end
                   else
                   begin
@@ -31232,10 +30913,14 @@ begin
                   if (PosHoldable and ChildrenInView and NodeInView) or not
                      (toAutoScrollOnExpand in FOptions.FAutoOptions) then
                     SetOffsetY(FOffsetY - Integer(HeightDelta))
-                  else if TotalFit and NodeInView then
-                    SetOffsetY(FOffsetY - GetDisplayRect(GetFirstVisible(Node, True), NoColumn, False).Top)
                   else
-                    BottomNode := Node;
+                    if TotalFit and NodeInView then
+                    begin
+                      FirstVisible := GetFirstVisible(Node, True);
+                      if Assigned(FirstVisible) then // otherwise there is no visible child at all
+                        SetOffsetY(FOffsetY - GetDisplayRect(FirstVisible, NoColumn, False).Top)
+                    end else
+                      BottomNode := Node;
                 end
                 else
                 begin
@@ -31751,6 +31436,13 @@ begin
           Tree.FocusedNode := NextNode;
           if Tree.CanEdit(Tree.FocusedNode, Tree.FocusedColumn) then
             Tree.DoEdit;
+        end;
+      end;
+    Ord('A'):
+      begin
+        if Tree.IsEditing and (ssCtrl in KeyDataToShiftState(Message.KeyData) {KeyboardStateToShiftState}) then begin
+          Self.SelectAll();
+          Message.CharCode := 0;
         end;
       end;
   else
