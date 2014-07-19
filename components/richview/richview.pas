@@ -50,6 +50,7 @@ type
      Center: Boolean;
      imgNo: Integer; { for rvsJump# used as jump id }
      gr: TPersistent;
+     DataPtr: Pointer;
   end;
   {------------------------------------------------------------------}
   TCPInfo = class
@@ -1319,7 +1320,7 @@ begin
         TImageList(li.gr).DrawingStyle := dsSelected;
      end;
      TImageList(li.gr).Draw(canv, dli.Left-xshift, dli.Top-yshift, li.imgNo);
-     TImageList(li.gr).DrawingStyle := dsNormal;
+     TImageList(li.gr).DrawingStyle := ImgList.dsNormal;
      continue;
    end;
    if no = -2 then continue; { check point }
