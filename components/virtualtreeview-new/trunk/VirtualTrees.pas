@@ -537,7 +537,8 @@ type
     toNodeHeightResize,         // Allows changing a node's height via mouse.
     toNodeHeightDblClickResize, // Allows to reset a node's height to FDefaultNodeHeight via a double click.
     toEditOnClick,              // Editing mode can be entered with a single click
-    toEditOnDblClick            // Editing mode can be entered with a double click
+    toEditOnDblClick,           // Editing mode can be entered with a double click
+    toReverseFullExpandHotKey   // Used to define Ctrl+'+' instead of Ctrl+Shift+'+' for full expand (and similar for collapsing)
   );
   TVTMiscOptions = set of TVTMiscOption;
 
@@ -1575,10 +1576,16 @@ type
     FColors: array[0..15] of TColor;
     function GetColor(const Index: Integer): TColor;
     procedure SetColor(const Index: Integer; const Value: TColor);
+    function GetBackgroundColor: TColor;
+    function GetHeaderFontColor: TColor;
+    function GetNodeFontColor: TColor;
   public
     constructor Create(AOwner: TBaseVirtualTree);
 
     procedure Assign(Source: TPersistent); override;
+    property BackGroundColor: TColor read GetBackgroundColor;
+    property HeaderFontColor: TColor read  GetHeaderFontColor;
+    property NodeFontColor: TColor read GetNodeFontColor;
   published
     property BorderColor: TColor index 7 read GetColor write SetColor default clBtnFace;
     property DisabledColor: TColor index 0 read GetColor write SetColor default clBtnShadow;
@@ -1908,6 +1915,109 @@ type
     function GetNext(Node: PVirtualNode): PVirtualNode;
   end;
 
+
+  // XE2 VCL Style
+  // TODO:  Compilerversion  Ein/Ausschalten < Ist Eingeschaltet >
+{$ifdef VCLStyleSupport}
+  TVclStyleScrollBarsHook = class(TMouseTrackControlStyleHook)strict private type
+{$REGION 'TVclStyleScrollBarWindow'}
+    TVclStyleScrollBarWindow = class(TWinControl)strict private FScrollBarWindowOwner: TVclStyleScrollBarsHook;
+  FScrollBarVertical: Boolean;
+  FScrollBarVisible: Boolean;
+  FScrollBarEnabled: Boolean;
+  procedure WMNCHitTest(var Msg: TWMNCHitTest);
+  message WM_NCHITTEST;
+  procedure WMEraseBkgnd(var Msg: TMessage);
+  message WM_ERASEBKGND;
+  procedure WMPaint(var Msg: TWMPaint);
+  message WM_PAINT;
+strict protected
+  procedure CreateParams(var Params: TCreateParams);
+  override;
+public
+  constructor Create(AOwner: TComponent);
+  override;
+  property ScrollBarWindowOwner: TVclStyleScrollBarsHook read FScrollBarWindowOwner write FScrollBarWindowOwner;
+  property ScrollBarVertical: Boolean read FScrollBarVertical write FScrollBarVertical;
+  property ScrollBarVisible: Boolean read FScrollBarVisible write FScrollBarVisible;
+  property ScrollBarEnabled: Boolean read FScrollBarEnabled write FScrollBarEnabled;
+  end;
+{$ENDREGION}
+private
+  FHorzScrollBarDownButtonRect: TRect;
+  FHorzScrollBarDownButtonState: TThemedScrollBar;
+  FHorzScrollBarRect: TRect;
+  FHorzScrollBarSliderState: TThemedScrollBar;
+  FHorzScrollBarSliderTrackRect: TRect;
+  FHorzScrollBarUpButtonRect: TRect;
+  FHorzScrollBarUpButtonState: TThemedScrollBar;
+  FHorzScrollBarWindow: TVclStyleScrollBarWindow;
+  FLeftMouseButtonDown: Boolean;
+  FPrevScrollPos: Integer;
+  FScrollPos: Single;
+  FVertScrollBarDownButtonRect: TRect;
+  FVertScrollBarDownButtonState: TThemedScrollBar;
+  FVertScrollBarRect: TRect;
+  FVertScrollBarSliderState: TThemedScrollBar;
+  FVertScrollBarSliderTrackRect: TRect;
+  FVertScrollBarUpButtonRect: TRect;
+  FVertScrollBarUpButtonState: TThemedScrollBar;
+  FVertScrollBarWindow: TVclStyleScrollBarWindow;
+
+  procedure WMKeyDown(var Msg: TMessage);
+  message WM_KEYDOWN;
+  procedure WMKeyUp(var Msg: TMessage);
+  message WM_KEYUP;
+  procedure WMLButtonDown(var Msg: TWMMouse);
+  message WM_LBUTTONDOWN;
+  procedure WMLButtonUp(var Msg: TWMMouse);
+  message WM_LBUTTONUP;
+  procedure WMNCLButtonDown(var Msg: TWMMouse);
+  message WM_NCLBUTTONDOWN;
+  procedure WMNCMouseMove(var Msg: TWMMouse);
+  message WM_NCMOUSEMOVE;
+  procedure WMNCLButtonUp(var Msg: TWMMouse);
+  message WM_NCLBUTTONUP;
+  procedure WMNCPaint(var Msg: TMessage);
+  message WM_NCPAINT;
+  procedure WMMouseMove(var Msg: TWMMouse);
+  message WM_MOUSEMOVE;
+  procedure WMMouseWheel(var Msg: TMessage);
+  message WM_MOUSEWHEEL;
+  procedure WMVScroll(var Msg: TMessage);
+  message WM_VSCROLL;
+  procedure WMHScroll(var Msg: TMessage);
+  message WM_HSCROLL;
+  procedure WMCaptureChanged(var Msg: TMessage);
+  message WM_CAPTURECHANGED;
+  procedure WMNCLButtonDblClk(var Msg: TWMMouse);
+  message WM_NCLBUTTONDBLCLK;
+  procedure WMSize(var Msg: TMessage);
+  message WM_SIZE;
+protected
+  procedure CalcScrollBarsRect;
+  virtual;
+  procedure DrawHorzScrollBar(DC: HDC);
+  virtual;
+  procedure DrawVertScrollBar(DC: HDC);
+  virtual;
+  function GetHorzScrollBarSliderRect: TRect;
+  function GetVertScrollBarSliderRect: TRect;
+  procedure MouseLeave;
+  override;
+  procedure PaintScrollBars;
+  virtual;
+  function PointInTreeHeader(const P: TPoint): Boolean;
+  procedure UpdateScrollBarWindow;
+public
+  constructor Create(AControl: TWinControl);
+  override;
+  destructor Destroy;
+  override;
+  end;
+{$ifend}
+
+
   // ----- TBaseVirtualTree
   TBaseVirtualTree = class(TCustomControl)
   private
@@ -2214,6 +2324,17 @@ type
     // operations
     FOnStartOperation: TVTOperationEvent;        // Called when an operation starts
     FOnEndOperation: TVTOperationEvent;          // Called when an operation ends
+
+    FVclStyleAvailable: Boolean;
+
+    // TODO:  Compilerversion Ein/Ausschalten < Ist Eingeschaltet >
+    {$ifdef VCLStyleSupport}
+    FSavedBevelKind: TBevelKind;
+    FSavedBorderWidth: Integer;
+    FSetOrRestoreBevelKindAndBevelWidth: Boolean;
+    procedure CMStyleChanged(var Message: TMessage); message CM_STYLECHANGED;
+    procedure CMBorderChanged(var Message: TMessage); message CM_BORDERCHANGED;
+    {$ifend}
 
     procedure AdjustCoordinatesByIndent(var PaintInfo: TVTPaintInfo; Indent: Integer);
     procedure AdjustTotalCount(Node: PVirtualNode; Value: Integer; relative: Boolean = False);
@@ -2640,6 +2761,15 @@ type
     procedure WndProc(var Message: TLMessage); override;
     procedure WriteChunks(Stream: TStream; Node: PVirtualNode); virtual;
     procedure WriteNode(Stream: TStream; Node: PVirtualNode); virtual;
+
+
+
+    {$ifdef VCLStyleSupport}
+    function VclStyleServicesAvailable: Boolean;
+    procedure VclStyleChanged;
+    property VclStyleAvailable: Boolean read FVclStyleAvailable;
+    {$ifend}
+
 
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property AnimationDuration: Cardinal read FAnimationDuration write SetAnimationDuration default 200;
@@ -5531,8 +5661,8 @@ begin
       begin
         if IsWinVistaOrAbove and ((tsUseThemes in FStates) or
            ((toThemeAware in ToBeSet) and StyleServices.Enabled)) and
-           (toUseExplorerTheme in (ToBeSet + ToBeCleared)) then
-          if toUseExplorerTheme in ToBeSet then
+           (toUseExplorerTheme in (ToBeSet + ToBeCleared)) and not FVclStyleAvailable then
+          if (toUseExplorerTheme in ToBeSet) then
           begin
             SetWindowTheme('explorer');
             DoStateChange([tsUseExplorerTheme]);
@@ -5546,13 +5676,13 @@ begin
 
         if not (csLoading in ComponentState) then
         begin
-          if (toThemeAware in ToBeSet + ToBeCleared) or (toUseExplorerTheme in ToBeSet + ToBeCleared) then
+          if ((toThemeAware in ToBeSet + ToBeCleared) or (toUseExplorerTheme in ToBeSet + ToBeCleared) or FVclStyleAvailable) then
           begin
-            if (toThemeAware in ToBeSet) and StyleServices.Enabled then
+            if ((toThemeAware in ToBeSet) and StyleServices.Enabled) or FVclStyleAvailable then
               DoStateChange([tsUseThemes])
             else
               if (toThemeAware in ToBeCleared) then
-                DoStateChange([], [tsUseThemes]);
+              DoStateChange([], [tsUseThemes]);
 
             PrepareBitmaps(True, False);
             RedrawWindow(Handle, nil, 0, RDW_INVALIDATE or RDW_VALIDATE or RDW_FRAME);
@@ -7817,6 +7947,12 @@ begin
 
   SetBkMode(DC, TRANSPARENT);
   if not Enabled then
+    if FHeader.Treeview.FVclStyleAvailable then
+    begin
+      SetTextColor(DC, ColorToRGB(FHeader.Treeview.FColors.HeaderFontColor));
+      Windows.DrawTextW(DC, PWideChar(Caption), Length(Caption), Bounds, DrawFormat);
+    end
+    else
   begin
     OffsetRect(Bounds, 1, 1);
     SetTextColor(DC, ColorToRGB(clBtnHighlight));
@@ -7830,7 +7966,7 @@ begin
     if Hot then
       SetTextColor(DC, ColorToRGB(FHeader.Treeview.FColors.HeaderHotColor))
     else
-      SetTextColor(DC, ColorToRGB(FHeader.FFont.Color));
+      SetTextColor(DC, ColorToRGB(FHeader.Treeview.FColors.HeaderFontColor));
     DrawText(DC, PChar(Caption), Length(Caption), Bounds, DrawFormat);
   end;
 end;
@@ -8811,8 +8947,10 @@ var
 
     with TargetCanvas do
       begin
-      if hpeBackground in RequestedElements then
-        FHeader.Treeview.DoAdvancedHeaderDraw(PaintInfo, [hpeBackground])
+      if hpeBackground in RequestedElements then begin
+        PaintInfo.PaintRectangle := BackgroundRect;
+        FHeader.Treeview.DoAdvancedHeaderDraw(PaintInfo, [hpeBackground]);
+      end  
       else
       begin
         if tsUseThemes in FHeader.Treeview.FStates then
@@ -8821,7 +8959,7 @@ var
           StyleServices.DrawElement(Handle, Details, BackgroundRect, @BackgroundRect);
         end
         else begin
-          Brush.Color := FHeader.FBackground;
+          Brush.Color :=  FHeader.FBackground;
           FillRect(BackgroundRect);
         end;
       end;
@@ -8847,7 +8985,7 @@ var
     WrapCaption: Boolean;
     DrawFormat: Cardinal;
     Pos: TRect;
-
+    DrawHot: Boolean;
   begin
     ColImageInfo.Ghosted := False;
     PaintInfo.Column := Items[AColumn];
@@ -8990,11 +9128,12 @@ var
           ColCaptionText := FCaptionText
         else
           ColCaptionText := Text;
-
-        if not (hpeText in ActualElements) and (Length(Text) > 0) then
-          DrawButtonText(TargetCanvas.Handle, ColCaptionText, TextRectangle, IsEnabled,
-                         IsHoverIndex and (hoHotTrack in FHeader.FOptions) and
-                         not (tsUseThemes in FHeader.Treeview.FStates), DrawFormat, WrapCaption);
+          if IsHoverIndex and FHeader.Treeview.FVclStyleAvailable then
+            DrawHot := True
+          else
+            DrawHot := (IsHoverIndex and (hoHotTrack in FHeader.FOptions) and not(tsUseThemes in FHeader.Treeview.FStates));
+          if not(hpeText in ActualElements) and (Length(Text) > 0) then
+            DrawButtonText(TargetCanvas.Handle, ColCaptionText, TextRectangle, IsEnabled, DrawHot, DrawFormat, WrapCaption);
 
         // sort glyph
         if not (hpeSortGlyph in ActualElements) and ShowSortGlyph then
@@ -11406,10 +11545,91 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+function TVTColors.GetBackgroundColor: TColor;
+begin
+// XE2 VCL Style
+// TODO:  Compilerversion Ein/Ausschalten < Ist Eingeschaltet >
+  {$ifdef VCLStyleSupport}
+  if FOwner.FVclStyleAvailable then
+    Result := StyleServices.GetStyleColor(scTreeView)
+  else
+{$IFEND}
+    Result := FOwner.Brush.Color;
+end;
+
 function TVTColors.GetColor(const Index: Integer): TColor;
 
 begin
+  // TODO:  Compilerversion On/Off < On >
+  {$ifdef VCLStyleSupport}
+  if FOwner.FVclStyleAvailable then
+  begin
+    case Index of
+      0:
+        StyleServices.GetElementColor(StyleServices.GetElementDetails(ttItemDisabled), ecTextColor, Result); // DisabledColor
+      1:
+        Result := StyleServices.GetSystemColor(clHighlight); // DropMarkColor
+      2:
+        Result := StyleServices.GetSystemColor(clHighlight); // DropTargetColor
+      3:
+        Result := StyleServices.GetSystemColor(clHighlight); // FocusedSelectionColor
+      4:
+        Result := StyleServices.GetSystemColor(clBtnFace); // GridLineColor
+      5:
+        StyleServices.GetElementColor(StyleServices.GetElementDetails(ttBranch), ecBorderColor, Result); // TreeLineColor
+      6:
+        Result := StyleServices.GetSystemColor(clHighlight); // UnfocusedSelectionColor
+      7:
+        Result := StyleServices.GetSystemColor(clBtnFace); // BorderColor
+      8:
+        if not StyleServices.GetElementColor(StyleServices.GetElementDetails(ttItemHot), ecTextColor, Result) or
+          (Result <> clWindowText) then
+          Result := NodeFontColor; // HotColor
+      9:
+        StyleServices.GetElementColor(StyleServices.GetElementDetails(ttItemSelected), ecFillColor, Result);
+      // FocusedSelectionBorderColor
+      10:
+        Result := StyleServices.GetSystemColor(clHighlight); // UnfocusedSelectionBorderColor
+      11:
+        Result := StyleServices.GetSystemColor(clBtnFace); // DropTargetBorderColor
+      12:
+        Result := StyleServices.GetSystemColor(clHighlight); // SelectionRectangleBlendColor
+      13:
+        Result := StyleServices.GetSystemColor(clHighlight); // SelectionRectangleBorderColor
+      14:
+        StyleServices.GetElementColor(StyleServices.GetElementDetails(thHeaderItemNormal), ecTextColor, Result); // HeaderHotColor
+      15:
+        if not StyleServices.GetElementColor(StyleServices.GetElementDetails(ttItemSelected), ecTextColor, Result) or
+          (Result <> clWindowText) then
+          Result := NodeFontColor; // SelectionTextColor
+    end;
+  end
+  else
+{$IFEND}
   Result := FColors[Index];
+end;
+
+function TVTColors.GetHeaderFontColor: TColor;
+begin
+// XE2 VCL Style
+// TODO:  Compilerversion Ein/Ausschalten < Ist Eingeschaltet >
+  {$ifdef VCLStyleSupport}
+  if FOwner.FVclStyleAvailable then
+    StyleServices.GetElementColor(StyleServices.GetElementDetails(thHeaderItemNormal), ecTextColor, Result)
+  else
+{$IFEND}
+    Result := FOwner.FHeader.Font.Color;
+end;
+
+function TVTColors.GetNodeFontColor: TColor;
+begin
+// TODO:  Compilerversion On/Off < On >
+  {$ifdef VCLStyleSupport}
+  if FOwner.FVclStyleAvailable then
+    StyleServices.GetElementColor(StyleServices.GetElementDetails(ttItemNormal), ecTextColor, Result)
+  else
+{$IFEND}
+    Result := FOwner.Font.Color;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -11589,6 +11809,13 @@ begin
   AddThreadReference;
   {$endif}
 
+  FVclStyleAvailable := False;
+  // XE2+ VCL Style
+  {$ifdef VCLStyleSupport}
+  FSetOrRestoreBevelKindAndBevelWidth := False;
+  FSavedBevelKind := bkNone;
+  FSavedBorderWidth := 0;
+  {$ifend}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -12329,10 +12556,11 @@ var
 
 begin
   {$ifdef DEBUG_VTV}Logger.EnterMethod([lcPaintDetails],'ClearNodeBackground');{$endif}
+  BackColor := FColors.BackGroundColor;
   with PaintInfo do
   begin
     EraseAction := eaDefault;
-    BackColor := Brush.Color;
+
     if Floating then
     begin
       Offset := Point(-FEffectiveOffsetX, R.Top);
@@ -12367,7 +12595,7 @@ begin
           //clear the node background
           //note there's a bug in original VTV that can lead to wrong node paint
           //so, here the node is always cleared even if is selected
-          Brush.Color := Self.Brush.Color;
+          Brush.Color := BackColor;
           FillRect(R);
           {$ifdef DEBUG_VTV}Logger.SendColor([lcPaintDetails],'Clearing a node background - Brush.Color', Brush.Color);{$endif}
           {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'Clearing Rectangle (R)', R);{$endif}
@@ -12392,6 +12620,15 @@ begin
 
             with TWithSafeRect(R) do
               RoundRect(Left, Top, Right, Bottom, FSelectionCurveRadius, FSelectionCurveRadius);
+          end
+          else
+          begin
+            //lcl
+            //see note above
+            {
+            Brush.Color := BackColor;
+            FillRect(R);
+            }
           end;
         end;
       end;
@@ -13397,28 +13634,21 @@ var
   begin
     with ABitmap, Canvas do
     begin
-      ABitmap.Width := Size.cx;
-      ABitmap.Height := Size.cy;
+      ABitmap.SetSize(Size.cx, Size.cy);
 
-      {$Ifdef ThemeSupport}
-        if IsWinVistaOrAbove and (tsUseThemes in FStates) and (toUseExplorerTheme in FOptions.FPaintOptions) then
-        begin
-        if (FHeader.FMainColumn >= 0) and not (coParentColor in FHeader.FColumns[FHeader.FMainColumn].FOptions) then
-            Brush.Color := FHeader.FColumns[FHeader.FMainColumn].Color
-          else
-            Brush.Color := Self.Brush.Color;
-        end
+      if IsWinVistaOrAbove and (tsUseThemes in FStates) and (toUseExplorerTheme in FOptions.FPaintOptions) or FVclStyleAvailable then
+      begin
+        if (FHeader.MainColumn > NoColumn) and not (coParentColor in FHeader.FColumns[FHeader.MainColumn].Options) then
+          Brush.Color := FHeader.FColumns[FHeader.MainColumn].Color
         else
-        begin
-      {$EndIf ThemeSupport}
-          MaskHandle := 0;
-          Transparent := True;
-          TransparentColor := clFuchsia;
-          Brush.Color := clFuchsia;
-      {$Ifdef ThemeSupport}
-        end;
-      {$EndIf ThemeSupport}
-      
+          Brush.Color :=  FColors.BackGroundColor;
+      end
+      else
+        Brush.Color := clFuchsia;
+      MaskHandle := 0;
+      Transparent := True;
+      TransparentColor := Brush.Color;
+
       FillRect(Rect(0, 0, ABitmap.Width, ABitmap.Height));
     end;
   end;
@@ -13448,39 +13678,43 @@ begin
 
   if NeedButtons then
   begin
-    with FMinusBM, Canvas do
-    begin
+     with FMinusBM, Canvas do
+     begin
       // box is always of odd size
       FillBitmap(FMinusBM);
       FillBitmap(FHotMinusBM);
-      if not (tsUseExplorerTheme in FStates) then
+      // Weil die selbstgezeichneten Bitmaps sehen im Vcl Style scheiße aus
+      if not FVclStyleAvailable then
       begin
-        if FButtonStyle = bsTriangle then
+        if not(tsUseExplorerTheme in FStates) then
         begin
-          Brush.Color := clBlack;
-          Pen.Color := clBlack;
-          Polygon([Point(0, 2), Point(8, 2), Point(4, 6)]);
-        end
-        else
-        begin
-          // Button style is rectangular. Now ButtonFillMode determines how to fill the interior.
-          if FButtonFillMode in [fmTreeColor, fmWindowColor, fmTransparent] then
+          if FButtonStyle = bsTriangle then
           begin
-            case FButtonFillMode of
-              fmTreeColor:
-                Brush.Color := Self.Brush.Color;
-              fmWindowColor:
-                Brush.Color := clWindow;
-            end;
-            Pen.Color := FColors.TreeLineColor;
-            Rectangle(0, 0, Width, Height);
-            Pen.Color := Self.Font.Color;
-            MoveTo(2, Width div 2);
-            LineTo(Width - 2 , Width div 2);
+            Brush.Color := clBlack;
+            Pen.Color := clBlack;
+            Polygon([Point(0, 2), Point(8, 2), Point(4, 6)]);
           end
           else
-            FMinusBM.LoadFromLazarusResource('VT_XPBUTTONMINUS');
-          FHotMinusBM.Canvas.Draw(0, 0, FMinusBM);
+          begin
+            // Button style is rectangular. Now ButtonFillMode determines how to fill the interior.
+            if FButtonFillMode in [fmTreeColor, fmWindowColor, fmTransparent] then
+            begin
+              case FButtonFillMode of
+                fmTreeColor:
+                  Brush.Color := FColors.BackGroundColor;
+                fmWindowColor:
+                  Brush.Color := clWindow;
+              end;
+              Pen.Color := FColors.TreeLineColor;
+              Rectangle(0, 0, Width, Height);
+              Pen.Color := FColors.NodeFontColor;
+              MoveTo(2, Width div 2);
+              LineTo(Width - 2, Width div 2);
+            end
+            else
+              FMinusBM.LoadFromLazarusResource('VT_XPBUTTONMINUS');
+            FHotMinusBM.Canvas.Draw(0, 0, FMinusBM);
+          end;
         end;
       end;
     end;
@@ -13489,37 +13723,40 @@ begin
     begin
       FillBitmap(FPlusBM);
       FillBitmap(FHotPlusBM);
-      if not (tsUseExplorerTheme in FStates) then
+      if not FVclStyleAvailable then
       begin
-        if FButtonStyle = bsTriangle then
+        if not(tsUseExplorerTheme in FStates) then
         begin
-          Brush.Color := clBlack;
-          Pen.Color := clBlack;
-          Polygon([Point(2, 0), Point(6, 4), Point(2, 8)]);
-        end
-        else
-        begin
-          // Button style is rectangular. Now ButtonFillMode determines how to fill the interior.
-          if FButtonFillMode in [fmTreeColor, fmWindowColor, fmTransparent] then
+          if FButtonStyle = bsTriangle then
           begin
-            case FButtonFillMode of
-              fmTreeColor:
-                Brush.Color := Self.Brush.Color;
-              fmWindowColor:
-                Brush.Color := clWindow;
-            end;
-
-            Pen.Color := FColors.TreeLineColor;
-            Rectangle(0, 0, Width, Height);
-            Pen.Color := Self.Font.Color;
-            MoveTo(2, Width div 2);
-            LineTo(Width - 2 , Width div 2);
-            MoveTo(Width div 2, 2);
-            LineTo(Width div 2, Width - 2);
+            Brush.Color := clBlack;
+            Pen.Color := clBlack;
+            Polygon([Point(2, 0), Point(6, 4), Point(2, 8)]);
           end
           else
-            FPlusBM.LoadFromLazarusResource('VT_XPBUTTONPLUS');
-          FHotPlusBM.Canvas.Draw(0, 0, FPlusBM);
+          begin
+            // Button style is rectangular. Now ButtonFillMode determines how to fill the interior.
+            if FButtonFillMode in [fmTreeColor, fmWindowColor, fmTransparent] then
+            begin
+              case FButtonFillMode of
+                fmTreeColor:
+                  Brush.Color := FColors.BackGroundColor;
+                fmWindowColor:
+                  Brush.Color := clWindow;
+              end;
+
+              Pen.Color := FColors.TreeLineColor;
+              Rectangle(0, 0, Width, Height);
+              Pen.Color := FColors.NodeFontColor;
+              MoveTo(2, Width div 2);
+              LineTo(Width - 2, Width div 2);
+              MoveTo(Width div 2, 2);
+              LineTo(Width div 2, Width - 2);
+            end
+            else
+              FPlusBM.LoadFromLazarusResource('VT_XPBUTTONPLUS');
+            FHotPlusBM.Canvas.Draw(0, 0, FPlusBM);
+          end;
         end;
       end;
     end;
@@ -14748,7 +14985,10 @@ var
           FillRect(DC, Run, Brush)
         else
         begin
-          LocalBrush := CreateSolidBrush(ColorToRGB(Items[Column].Color));
+          if FVclStyleAvailable then
+            LocalBrush := CreateSolidBrush(ColorToRGB(FColors.BackGroundColor))
+          else
+            LocalBrush := CreateSolidBrush(ColorToRGB(Items[Column].Color));
           FillRect(DC, Run, LocalBrush);
           DeleteObject(LocalBrush);
         end;
@@ -14865,6 +15105,29 @@ begin
   FHeader.Invalidate(nil);
   {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'FEffectiveOffsetX after CMBidiModeChanged',FEffectiveOffsetX);{$endif}
 end;
+
+// TODO:  Compilerversion Ein/Ausschalten < Ist Eingeschaltet >
+ {$ifdef VCLStyleSupport}
+procedure TBaseVirtualTree.CMBorderChanged(var Message: TMessage);
+begin
+  inherited;
+  // For XE2+ themes
+  if not FSetOrRestoreBevelKindAndBevelWidth then
+  begin
+    FSavedBevelKind := BevelKind;
+    FSavedBorderWidth := BorderWidth;
+  end;
+end;
+{$IFEND}
+
+// TODO:  Compilerversion Ein/Ausschalten < Ist Eingeschaltet >
+ {$ifdef VCLStyleSupport}
+procedure TBaseVirtualTree.CMStyleChanged(var Message: TMessage);
+begin
+  VclStyleChanged;
+  RecreateWnd;
+end;
+{$ifend}
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -15012,7 +15275,8 @@ var
   IsFocusedOrEditing: Boolean;
   ParentForm: TCustomForm;
   BottomRightCellContentMargin: TPoint;
-  LineBreakStyle: TVTTooltipLineBreakStyle;
+  DummyLineBreakStyle: TVTTooltipLineBreakStyle;
+
 begin
   with Message do
   begin
@@ -15190,20 +15454,20 @@ begin
         // from the node or from the DefaultHint
         if ShowOwnHint and (Result = 0) then
         begin
-          LineBreakStyle := hlbDefault;
+          DummyLineBreakStyle := hlbDefault;
           FLastHintRect := CursorRect;
           if Length(FHintData.DefaultHint) > 0 then
             HintStr := FHintData.DefaultHint
           else
             if FHintMode = hmToolTip then
-              HintStr := DoGetNodeToolTip(HitInfo.HitNode, HitInfo.HitColumn, LineBreakStyle)
+              HintStr := DoGetNodeToolTip(HitInfo.HitNode, HitInfo.HitColumn, DummyLineBreakStyle)
             else
-              HintStr := DoGetNodeHint(HitInfo.HitNode, HitInfo.HitColumn, LineBreakStyle);
+              HintStr := DoGetNodeHint(HitInfo.HitNode, HitInfo.HitColumn, DummyLineBreakStyle);
           // Determine actual line break style depending on what was returned by the methods and what's in the node.
-          if (LineBreakStyle = hlbDefault) and Assigned(HitInfo.HitNode)
+          if (DummyLineBreakStyle = hlbDefault) and Assigned(HitInfo.HitNode)
             and (vsMultiline in HitInfo.HitNode.States) then
-            LineBreakStyle := hlbForceMultiLine;
-          if LineBreakStyle = hlbForceMultiLine then
+            DummyLineBreakStyle := hlbForceMultiLine;
+          if DummyLineBreakStyle = hlbForceMultiLine then
           begin
             // NodeRect is already calculated for ToolTip
             if FHintMode <> hmTooltip then
@@ -16255,7 +16519,7 @@ begin
             if not (tsIncrementalSearching in FStates) then
             begin
               if ssCtrlOS in Shift then
-                if {$ifdef ReverseFullExpandHotKey} not {$endif ReverseFullExpandHotKey} (ssShift in Shift) then
+                if not (toReverseFullExpandHotKey in TreeOptions.MiscOptions) and (ssShift in Shift) then
                   FullExpand
                 else
                   FHeader.AutoFitColumns
@@ -16269,7 +16533,7 @@ begin
             if not (tsIncrementalSearching in FStates) then
             begin
               if ssCtrlOS in Shift then
-                if {$ifdef ReverseFullExpandHotKey} not {$endif ReverseFullExpandHotKey} (ssShift in Shift) then
+                if not (toReverseFullExpandHotKey in TreeOptions.MiscOptions) and (ssShift in Shift) then
                   FullCollapse
                 else
                   FHeader.RestoreColumns
@@ -17752,16 +18016,17 @@ begin
   {$ifdef DEBUG_VTV}Logger.Send([lcInfo],'Handle (CreateWnd)',Handle);{$endif}
   DoStateChange([], [tsWindowCreating]);
 
-  if StyleServices.Enabled and (toThemeAware in TreeOptions.PaintOptions) then
+  if (StyleServices.Enabled and (toThemeAware in TreeOptions.PaintOptions)) or FVclStyleAvailable then
   begin
     DoStateChange([tsUseThemes]);
-    if (toUseExplorerTheme in FOptions.FPaintOptions) and IsWinVistaOrAbove then
-    begin
-      DoStateChange([tsUseExplorerTheme]);
-      SetWindowTheme('explorer');
-    end
-    else
-      DoStateChange([], [tsUseExplorerTheme]);
+    if not FVclStyleAvailable then
+      if (toUseExplorerTheme in FOptions.FPaintOptions) and IsWinVistaOrAbove then
+      begin
+        DoStateChange([tsUseExplorerTheme]);
+         SetWindowTheme('explorer');
+      end
+      else
+        DoStateChange([], [tsUseExplorerTheme]);
   end
   else
     DoStateChange([], [tsUseThemes, tsUseExplorerTheme]);
@@ -20550,7 +20815,7 @@ var
 begin
   with PaintInfo, Canvas do
   begin
-    Brush.Color := Self.Brush.Color;
+    Brush.Color := FColors.BackGroundColor;
     R := Rect(Min(Left, Right), Top, Max(Left, Right) + 1, Top + 1);
     LCLIntf.FillRect(Handle, R, FDottedBrush);
   end;
@@ -20568,7 +20833,7 @@ var
 begin
   with PaintInfo, Canvas do
   begin
-    Brush.Color := Self.Brush.Color;
+    Brush.Color := FColors.BackGroundColor;
     R := Rect(Left, Min(Top, Bottom), Left + 1, Max(Top, Bottom) + 1);
     LCLIntf.FillRect(Handle, R, FDottedBrush);
   end;
@@ -21730,12 +21995,18 @@ begin
     if tsMouseCheckPending in FStates then
     begin
       DoStateChange([], [tsMouseCheckPending]);
-      // Is the mouse still over the same node?
-      if (HitInfo.HitNode = FCheckNode) and (hiOnItem in HitInfo.HitPositions) then
-        DoCheckClick(FCheckNode, FPendingCheckState)
-      else
-        FCheckNode.CheckState := UnpressedState[FCheckNode.CheckState];
-      InvalidateNode(FCheckNode);
+     //  Need check for nil, issue #285
+     //  because when mouse down on checkbox but not yet released
+     //  and in this time list starts to rebuild by timer
+     //  after this when mouse release  FCheckNode equal nil
+     if Assigned (FCheckNode) then begin
+       // Is the mouse still over the same node?
+       if (HitInfo.HitNode = FCheckNode) and (hiOnItem in HitInfo.HitPositions) then
+          DoCheckClick(FCheckNode, FPendingCheckState)
+        else
+          FCheckNode.CheckState := UnpressedState[FCheckNode.CheckState];
+        InvalidateNode(FCheckNode);
+      end;
       FCheckNode := nil;
     end;
 
@@ -22514,7 +22785,12 @@ var
 
 begin
   inherited;
-
+  // TODO: Hinzugefügt - TBaseVirtualTree.Loaded
+  {$ifdef VCLStyleSupport}
+    FSavedBorderWidth := BevelWidth;
+    FSavedBevelKind := BevelKind;
+    VclStyleChanged;
+  {$IFEND}
   // If a root node count has been set during load of the tree then update its child structure now
   // as this hasn't been done yet in this case.
   if (tsNeedRootCountUpdate in FStates) and (FRoot.ChildCount > 0) then
@@ -23065,7 +23341,7 @@ begin
 
     with ImageInfo[ImageInfoIndex] do
     begin
-      if (vsSelected in Node.States) and not (Ghosted or CutNode) then
+       if (vsSelected in Node.States) and not(Ghosted or CutNode) then
       begin
         if PaintFocused or (toPopupMode in FOptions.FPaintOptions) then
           Images.BlendColor := FColors.FocusedSelectionColor
@@ -23369,11 +23645,14 @@ begin
   begin
     // Fill cell background if its color differs from tree background.
     with FHeader.FColumns do
-      if poColumnColor in PaintOptions then
-      begin
+    if poColumnColor in PaintOptions then
+    begin
+      if (FVclStyleAvailable or (FVclStyleAvailable and not (coParentColor in FHeader.FColumns[Column].FOptions))) then
+        Brush.Color := FColors.BackGroundColor
+      else
         Brush.Color := Items[Column].Color;
-        FillRect(CellRect);
-      end;
+      FillRect(CellRect);
+     end;
 
     // Let the application customize the cell background and the content rectangle.
     DoBeforeCellPaint(Canvas, Node, Column, cpmPaint, CellRect, ContentRect);
@@ -23439,8 +23718,8 @@ begin
         else
           if vsSelected in Node.States then
           begin
-            if Focused or (toPopupMode in FOptions.FPaintOptions) then
-            begin
+             if Focused or (toPopupMode in FOptions.FPaintOptions) then
+             begin
               Brush.Color := FColors.FocusedSelectionColor;
               Pen.Color := FColors.FocusedSelectionBorderColor;
             end
@@ -23448,7 +23727,7 @@ begin
             begin
               Brush.Color := FColors.UnfocusedSelectionColor;
               Pen.Color := FColors.UnfocusedSelectionBorderColor;
-            end;
+          end;
 
             if (toGridExtensions in FOptions.FMiscOptions) or (toFullRowSelect in FOptions.FSelectionOptions) then
               InnerRect := CellRect;
@@ -24424,6 +24703,34 @@ begin
   if Assigned(FOnGetNodeDataSize) then
     FOnGetNodeDataSize(Self, Size);
 end;
+
+{$ifdef VCLStyleSupport}
+procedure TBaseVirtualTree.VclStyleChanged;
+begin
+   FSetOrRestoreBevelKindAndBevelWidth := True;
+  FVclStyleAvailable := VclStyleServicesAvailable;
+  if not FVclStyleAvailable then
+  begin
+    if FSavedBevelKind <> BevelKind then
+      BevelKind := FSavedBevelKind;
+    if FSavedBorderWidth <> BorderWidth then
+      BorderWidth := FSavedBorderWidth;
+  end
+  else
+  begin
+    if BevelKind <> bkNone then
+      BevelKind := bkNone;
+    if BorderWidth <> 0 then
+      BorderWidth := 0;
+  end;
+  FSetOrRestoreBevelKindAndBevelWidth := False;
+end;
+
+function TBaseVirtualTree.VclStyleServicesAvailable: Boolean;
+begin
+   Result := StyleServices.Enabled and StyleServices.Available and not StyleServices.IsSystemStyle;
+end;
+{$ifend}
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -29643,11 +29950,7 @@ begin
                         Dec(R.Right);
                       end;
 
-                      if not (coParentColor in Items[FirstColumn].FOptions) then
-                        PaintInfo.Canvas.Brush.Color := Items[FirstColumn].FColor
-                      else
-                        PaintInfo.Canvas.Brush.Color := Color;
-
+                      PaintInfo.Canvas.Brush.Color := FColors.BackGroundColor;
                       PaintInfo.Canvas.FillRect(R);
                     end;
                     FirstColumn := GetNextVisibleColumn(FirstColumn);
@@ -29663,7 +29966,7 @@ begin
                        (toFullVertGridLines in FOptions.FPaintOptions) and (toShowVertGridLines in FOptions.FPaintOptions) and
                        (not (hoAutoResize in FHeader.FOptions)) then
                       Inc(R.Left);
-                    PaintInfo.Canvas.Brush.Color := Color;
+                    PaintInfo.Canvas.Brush.Color := FColors.BackGroundColor;
                     PaintInfo.Canvas.FillRect(R);
                   end;
                 end;
@@ -29683,7 +29986,7 @@ begin
                 {$else}
                 SetWindowOrgEx(PaintInfo.Canvas.Handle, 0, 0, nil);
                 {$endif}
-                PaintInfo.Canvas.Brush.Color := Color;
+                PaintInfo.Canvas.Brush.Color := FColors.BackGroundColor;
                 PaintInfo.Canvas.FillRect(TargetRect);
               end;
             end;
@@ -29834,7 +30137,7 @@ begin
       Height := TreeRect.Bottom - TreeRect.Top;
       // Erase the entire image with the color key value, for the case not everything
       // in the image is covered by the tree image.
-      Canvas.Brush.Color := Brush.Color;
+      Canvas.Brush.Color := FColors.BackGroundColor;
       Canvas.FillRect(Rect(0, 0, Width, Height));
 
       PaintOptions := [poDrawSelection, poSelectedOnly];
@@ -29847,7 +30150,7 @@ begin
       ImagePos := ClientToScreen(TreeRect.TopLeft);
       HotSpot := ClientToScreen(HotSpot);
 
-      FDragImage.ColorKey := Brush.Color;
+      FDragImage.ColorKey := FColors.BackGroundColor;
       FDragImage.PrepareDrag(Image, ImagePos, HotSpot, DataObject);
     finally
       Image.Free;
@@ -29918,7 +30221,7 @@ begin
       ImgRect.Right := Image.Width;
 
       // Force the background to white color during the rendering.
-      SaveColor := Color;
+      SaveColor := FColors.BackGroundColor;
       Color := clWhite;
       // Print header if it is visible.
       if (hoVisible in FHeader.Options) and PrintHeader then
@@ -30601,7 +30904,7 @@ procedure TBaseVirtualTree.SortTree(Column: TColumnIndex; Direction: TSortDirect
     begin
       if DoInit and not (vsInitialized in Run.States) then
         InitNode(Run);
-      if (vsInitialized in Run.States) and Expanded[Node] then // There is no need to sort collapsed branches
+      if (vsInitialized in Run.States) and Expanded[Run] then // There is no need to sort collapsed branches
         DoSort(Run);
       Run := Run.NextSibling;
     end;
@@ -30674,7 +30977,7 @@ var
       Window := Handle;
       DC := GetDC(Handle);
       //lcl: setting Color to Brush seems not necessary
-      //Self.Brush.Color := Color;
+      //Self.Brush.Color := FColors.BackGroundColor;;
       Brush := Self.Brush.Reference.Handle;
 
       if (Mode1 <> tamNoScroll) and (Mode2 <> tamNoScroll) then
@@ -31981,6 +32284,11 @@ begin
   begin
     // Set default font values first.
     Canvas.Font := Font;
+    // TODO: Added - procedure TCustomVirtualStringTree.InitializeTextProperties
+    if Enabled then // Es werden sonst nur die Farben verwendet von Font die an  Canvas.Font übergeben wurden
+       Canvas.Font.Color :=  FColors.NodeFontColor
+    else
+      Canvas.Font.Color := FColors.DisabledColor;
 
     if (toHotTrack in FOptions.FPaintOptions) and (Node = FCurrentHotNode) then
     begin
@@ -32007,7 +32315,7 @@ begin
           begin
             if (Focused or (toPopupMode in FOptions.FPaintOptions)) and not
                (tsUseExplorerTheme in FStates) then
-              Canvas.Font.Color := FColors.SelectionTextColor;
+            Canvas.Font.Color := FColors.SelectionTextColor;
           end;
       end;
     end;
@@ -32131,15 +32439,15 @@ begin
         if (FLastDropMode = dmOnNode) or (vsSelected in Node.States) then
           Canvas.Font.Color := FColors.SelectionTextColor
         else
-          Canvas.Font.Color := Font.Color;
+          Canvas.Font.Color := FColors.NodeFontColor;
       end
       else
         if vsSelected in Node.States then
         begin
           if Focused or (toPopupMode in FOptions.FPaintOptions) then
-            Canvas.Font.Color := FColors.SelectionTextColor
+          Canvas.Font.Color := FColors.SelectionTextColor
           else
-            Canvas.Font.Color := Font.Color;
+            Canvas.Font.Color := FColors.NodeFontColor;
         end;
     end;
 
@@ -34026,6 +34334,935 @@ begin
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
+
+
+// XE2 VCL Style
+// TODO:  Compilerversion Ein/Ausschalten < Ist Eingeschaltet >
+{$ifdef VCLStyleSupport}
+
+{ TVclStyleScrollBarsHook }
+
+procedure TVclStyleScrollBarsHook.CalcScrollBarsRect;
+var
+  P: TPoint;
+  BorderValue: TSize;
+  BarInfo: TScrollBarInfo;
+  I: Integer;
+
+  procedure CalcVerticalRects;
+  begin
+    BarInfo.cbSize := SizeOf(BarInfo);
+    GetScrollBarInfo(Handle, Integer(OBJID_VSCROLL), BarInfo);
+    FVertScrollBarWindow.Visible := not(STATE_SYSTEM_INVISIBLE and BarInfo.rgstate[0] <> 0);
+    FVertScrollBarWindow.Enabled := not(STATE_SYSTEM_UNAVAILABLE and BarInfo.rgstate[0] <> 0);
+    if FVertScrollBarWindow.Visible then
+    begin
+      // ScrollBar Rect
+      P := BarInfo.rcScrollBar.TopLeft;
+      ScreenToClient(Handle, P);
+      FVertScrollBarRect.TopLeft := P;
+      P := BarInfo.rcScrollBar.BottomRight;
+      ScreenToClient(Handle, P);
+      FVertScrollBarRect.BottomRight := P;
+      OffsetRect(FVertScrollBarRect, BorderValue.cx, BorderValue.cy);
+
+      I := GetSystemMetrics(SM_CYVTHUMB);
+      // Down Button
+      FVertScrollBarDownButtonRect := FVertScrollBarRect;
+      FVertScrollBarDownButtonRect.Top := FVertScrollBarDownButtonRect.Bottom - I;
+
+      // UP Button
+      FVertScrollBarUpButtonRect := FVertScrollBarRect;
+      FVertScrollBarUpButtonRect.Bottom := FVertScrollBarUpButtonRect.Top + I;
+
+      FVertScrollBarSliderTrackRect := FVertScrollBarRect;
+      Inc(FVertScrollBarSliderTrackRect.Top, I);
+      Dec(FVertScrollBarSliderTrackRect.Bottom, I);
+    end;
+  end;
+
+  procedure CalcHorizontalRects;
+  begin
+    BarInfo.cbSize := SizeOf(BarInfo);
+    GetScrollBarInfo(Handle, Integer(OBJID_HSCROLL), BarInfo);
+    FHorzScrollBarWindow.Visible := not(STATE_SYSTEM_INVISIBLE and BarInfo.rgstate[0] <> 0);
+    FHorzScrollBarWindow.Enabled := not(STATE_SYSTEM_UNAVAILABLE and BarInfo.rgstate[0] <> 0);
+    if FHorzScrollBarWindow.Visible then
+    begin
+      // ScrollBar Rect
+      P := BarInfo.rcScrollBar.TopLeft;
+      ScreenToClient(Handle, P);
+      FHorzScrollBarRect.TopLeft := P;
+      P := BarInfo.rcScrollBar.BottomRight;
+      ScreenToClient(Handle, P);
+      FHorzScrollBarRect.BottomRight := P;
+      OffsetRect(FHorzScrollBarRect, BorderValue.cx, BorderValue.cy);
+
+      I := GetSystemMetrics(SM_CXHTHUMB);
+      // Down Button
+      FHorzScrollBarDownButtonRect := FHorzScrollBarRect;
+      FHorzScrollBarDownButtonRect.Left := FHorzScrollBarDownButtonRect.Right - I;
+
+      // UP Button
+      FHorzScrollBarUpButtonRect := FHorzScrollBarRect;
+      FHorzScrollBarUpButtonRect.Right := FHorzScrollBarUpButtonRect.Left + I;
+
+      FHorzScrollBarSliderTrackRect := FHorzScrollBarRect;
+      Inc(FHorzScrollBarSliderTrackRect.Left, I);
+      Dec(FHorzScrollBarSliderTrackRect.Right, I);
+    end;
+  end;
+
+begin
+  BorderValue.cx := 0;
+  BorderValue.cy := 0;
+  if HasBorder then
+    if HasClientEdge then
+    begin
+      BorderValue.cx := GetSystemMetrics(SM_CXEDGE);
+      BorderValue.cy := GetSystemMetrics(SM_CYEDGE);
+    end;
+  CalcVerticalRects;
+  CalcHorizontalRects;
+
+end;
+
+constructor TVclStyleScrollBarsHook.Create(AControl: TWinControl);
+begin
+  inherited;
+  FVertScrollBarWindow := TVclStyleScrollBarWindow.CreateParented(GetParent(Control.Handle));
+  FVertScrollBarWindow.ScrollBarWindowOwner := Self;
+  FVertScrollBarWindow.ScrollBarVertical := True;
+
+  FHorzScrollBarWindow := TVclStyleScrollBarWindow.CreateParented(GetParent(Control.Handle));
+  FHorzScrollBarWindow.ScrollBarWindowOwner := Self;
+
+  FVertScrollBarSliderState := tsThumbBtnVertNormal;
+  FVertScrollBarUpButtonState := tsArrowBtnUpNormal;
+  FVertScrollBarDownButtonState := tsArrowBtnDownNormal;
+  FHorzScrollBarSliderState := tsThumbBtnHorzNormal;
+  FHorzScrollBarUpButtonState := tsArrowBtnLeftNormal;
+  FHorzScrollBarDownButtonState := tsArrowBtnRightNormal;
+end;
+
+destructor TVclStyleScrollBarsHook.Destroy;
+begin
+  FVertScrollBarWindow.ScrollBarWindowOwner := nil;
+  FreeAndNil(FVertScrollBarWindow);
+  FHorzScrollBarWindow.ScrollBarWindowOwner := nil;
+  FreeAndNil(FHorzScrollBarWindow);
+  inherited;
+end;
+
+procedure TVclStyleScrollBarsHook.DrawHorzScrollBar(DC: HDC);
+var
+  B: TBitmap;
+  Details: TThemedElementDetails;
+  R: TRect;
+begin
+  if ((Handle = 0) or (DC = 0)) then
+    Exit;
+  if FHorzScrollBarWindow.Visible and StyleServices.Available then
+  begin
+    B := TBitmap.Create;
+    try
+      B.Width := FHorzScrollBarRect.Width;
+      B.Height := FHorzScrollBarRect.Height;
+      MoveWindowOrg(B.Canvas.Handle, -FHorzScrollBarRect.Left, -FHorzScrollBarRect.Top);
+      R := FHorzScrollBarRect;
+      R.Left := FHorzScrollBarUpButtonRect.Right;
+      R.Right := FHorzScrollBarDownButtonRect.Left;
+
+      Details := StyleServices.GetElementDetails(tsUpperTrackHorzNormal);
+      StyleServices.DrawElement(B.Canvas.Handle, Details, R);
+
+      if FHorzScrollBarWindow.Enabled then
+        Details := StyleServices.GetElementDetails(FHorzScrollBarSliderState);
+      StyleServices.DrawElement(B.Canvas.Handle, Details, GetHorzScrollBarSliderRect);
+
+      if FHorzScrollBarWindow.Enabled then
+        Details := StyleServices.GetElementDetails(FHorzScrollBarUpButtonState)
+      else
+        Details := StyleServices.GetElementDetails(tsArrowBtnLeftDisabled);
+      StyleServices.DrawElement(B.Canvas.Handle, Details, FHorzScrollBarUpButtonRect);
+
+      if FHorzScrollBarWindow.Enabled then
+        Details := StyleServices.GetElementDetails(FHorzScrollBarDownButtonState)
+      else
+        Details := StyleServices.GetElementDetails(tsArrowBtnRightDisabled);
+      StyleServices.DrawElement(B.Canvas.Handle, Details, FHorzScrollBarDownButtonRect);
+
+      MoveWindowOrg(B.Canvas.Handle, FHorzScrollBarRect.Left, FHorzScrollBarRect.Top);
+      with FHorzScrollBarRect do
+        BitBlt(DC, Left, Top, B.Width, B.Height, B.Canvas.Handle, 0, 0, SRCCOPY);
+    finally
+      B.Free;
+    end;
+  end;
+end;
+
+procedure TVclStyleScrollBarsHook.DrawVertScrollBar(DC: HDC);
+var
+  B: TBitmap;
+  Details: TThemedElementDetails;
+  R: TRect;
+begin
+  if ((Handle = 0) or (DC = 0)) then
+    Exit;
+  if FVertScrollBarWindow.Visible and StyleServices.Available then
+  begin
+    B := TBitmap.Create;
+    try
+      B.Width := FVertScrollBarRect.Width;
+      B.Height := FVertScrollBarWindow.Height;
+      MoveWindowOrg(B.Canvas.Handle, -FVertScrollBarRect.Left, -FVertScrollBarRect.Top);
+      R := FVertScrollBarRect;
+      R.Bottom := B.Height + FVertScrollBarRect.Top;
+      Details := StyleServices.GetElementDetails(tsUpperTrackVertNormal);
+      StyleServices.DrawElement(B.Canvas.Handle, Details, R);
+      R.Top := FVertScrollBarUpButtonRect.Bottom;
+      R.Bottom := FVertScrollBarDownButtonRect.Top;
+
+      Details := StyleServices.GetElementDetails(tsUpperTrackVertNormal);
+      StyleServices.DrawElement(B.Canvas.Handle, Details, R);
+
+      if FVertScrollBarWindow.Enabled then
+        Details := StyleServices.GetElementDetails(FVertScrollBarSliderState);
+      StyleServices.DrawElement(B.Canvas.Handle, Details, GetVertScrollBarSliderRect);
+
+      if FVertScrollBarWindow.Enabled then
+        Details := StyleServices.GetElementDetails(FVertScrollBarUpButtonState)
+      else
+        Details := StyleServices.GetElementDetails(tsArrowBtnUpDisabled);
+      StyleServices.DrawElement(B.Canvas.Handle, Details, FVertScrollBarUpButtonRect);
+
+      if FVertScrollBarWindow.Enabled then
+        Details := StyleServices.GetElementDetails(FVertScrollBarDownButtonState)
+      else
+        Details := StyleServices.GetElementDetails(tsArrowBtnDownDisabled);
+      StyleServices.DrawElement(B.Canvas.Handle, Details, FVertScrollBarDownButtonRect);
+
+      MoveWindowOrg(B.Canvas.Handle, FVertScrollBarRect.Left, FVertScrollBarRect.Top);
+      with FVertScrollBarRect do
+        BitBlt(DC, Left, Top, B.Width, B.Height, B.Canvas.Handle, 0, 0, SRCCOPY);
+    finally
+      B.Free;
+    end;
+  end;
+end;
+
+function TVclStyleScrollBarsHook.GetHorzScrollBarSliderRect: TRect;
+var
+  P: TPoint;
+  BarInfo: TScrollBarInfo;
+begin
+  if FHorzScrollBarWindow.Visible and FHorzScrollBarWindow.Enabled then
+  begin
+    BarInfo.cbSize := SizeOf(BarInfo);
+    GetScrollBarInfo(Handle, Integer(OBJID_HSCROLL), BarInfo);
+    P := BarInfo.rcScrollBar.TopLeft;
+    ScreenToClient(Handle, P);
+    Result.TopLeft := P;
+    P := BarInfo.rcScrollBar.BottomRight;
+    ScreenToClient(Handle, P);
+    Result.BottomRight := P;
+    Result.Left := BarInfo.xyThumbTop;
+    Result.Right := BarInfo.xyThumbBottom;
+    if HasBorder then
+      if HasClientEdge then
+        OffsetRect(Result, 2, 2)
+      else
+        OffsetRect(Result, 1, 1);
+  end;
+end;
+
+function TVclStyleScrollBarsHook.GetVertScrollBarSliderRect: TRect;
+var
+  P: TPoint;
+  BarInfo: TScrollBarInfo;
+begin
+  if FVertScrollBarWindow.Visible and FVertScrollBarWindow.Enabled then
+  begin
+    BarInfo.cbSize := SizeOf(BarInfo);
+    GetScrollBarInfo(Handle, Integer(OBJID_VSCROLL), BarInfo);
+    P := BarInfo.rcScrollBar.TopLeft;
+    ScreenToClient(Handle, P);
+    Result.TopLeft := P;
+    P := BarInfo.rcScrollBar.BottomRight;
+    ScreenToClient(Handle, P);
+    Result.BottomRight := P;
+    Result.Top := BarInfo.xyThumbTop;
+    Result.Bottom := BarInfo.xyThumbBottom;
+    if HasBorder then
+      if HasClientEdge then
+        OffsetRect(Result, 2, 2)
+      else
+        OffsetRect(Result, 1, 1);
+  end;
+end;
+
+procedure TVclStyleScrollBarsHook.MouseLeave;
+begin
+   inherited;
+  if FVertScrollBarSliderState = tsThumbBtnVertHot then
+    FVertScrollBarSliderState := tsThumbBtnVertNormal;
+
+  if FHorzScrollBarSliderState = tsThumbBtnHorzHot then
+    FHorzScrollBarSliderState := tsThumbBtnHorzNormal;
+
+  if FVertScrollBarUpButtonState = tsArrowBtnUpHot then
+    FVertScrollBarUpButtonState := tsArrowBtnUpNormal;
+
+  if FVertScrollBarDownButtonState = tsArrowBtnDownHot then
+    FVertScrollBarDownButtonState := tsArrowBtnDownNormal;
+
+  if FHorzScrollBarUpButtonState = tsArrowBtnLeftHot then
+    FHorzScrollBarUpButtonState := tsArrowBtnLeftNormal;
+
+  if FHorzScrollBarDownButtonState = tsArrowBtnRightHot then
+    FHorzScrollBarDownButtonState := tsArrowBtnRightNormal;
+
+  PaintScrollBars;
+end;
+
+procedure TVclStyleScrollBarsHook.PaintScrollBars;
+begin
+  FVertScrollBarWindow.Repaint;
+  FHorzScrollBarWindow.Repaint;
+end;
+
+function TVclStyleScrollBarsHook.PointInTreeHeader(const P: TPoint): Boolean;
+begin
+  Result := TBaseVirtualTree(Control).FHeader.InHeader(P);
+end;
+
+procedure TVclStyleScrollBarsHook.UpdateScrollBarWindow;
+var
+  R: TRect;
+  Owner: TBaseVirtualTree;
+  HeaderHeight: Integer;
+  BorderWidth: Integer;
+begin
+  Owner := TBaseVirtualTree(Control);
+  if (hoVisible in Owner.Header.Options) then
+    HeaderHeight := Owner.FHeader.Height
+  else
+    HeaderHeight := 0;
+  BorderWidth := 0;
+  // VertScrollBarWindow
+  if FVertScrollBarWindow.Visible then
+  begin
+    R := FVertScrollBarRect;
+    if Control.BidiMode = bdRightToLeft then
+    begin
+      OffsetRect(R, -R.Left, 0);
+      if HasBorder then
+        OffsetRect(R, GetSystemMetrics(SM_CXEDGE), 0);
+    end;
+    if HasBorder then
+      BorderWidth := GetSystemMetrics(SM_CYEDGE) * 2;
+    ShowWindow(FVertScrollBarWindow.Handle, SW_SHOW);
+    SetWindowPos(FVertScrollBarWindow.Handle, HWND_TOP, Control.Left + R.Left, Control.Top + R.Top + HeaderHeight, R.Right - R.Left,
+      Control.Height - HeaderHeight  - BorderWidth, SWP_SHOWWINDOW);
+  end
+  else
+    ShowWindow(FVertScrollBarWindow.Handle, SW_HIDE);
+
+  // HorzScrollBarWindow
+  if FHorzScrollBarWindow.Visible then
+  begin
+    R := FHorzScrollBarRect;
+    if Control.BidiMode = bdRightToLeft then
+      OffsetRect(R, FVertScrollBarRect.Width, 0);
+    ShowWindow(FHorzScrollBarWindow.Handle, SW_SHOW);
+    SetWindowPos(FHorzScrollBarWindow.Handle, HWND_TOP, Control.Left + R.Left, Control.Top + R.Top + HeaderHeight, R.Right - R.Left,
+      R.Bottom - R.Top, SWP_SHOWWINDOW);
+  end
+  else
+    ShowWindow(FHorzScrollBarWindow.Handle, SW_HIDE);
+end;
+
+procedure TVclStyleScrollBarsHook.WMCaptureChanged(var Msg: TMessage);
+begin
+   if FVertScrollBarWindow.Visible and FVertScrollBarWindow.Enabled then
+  begin
+    if FVertScrollBarUpButtonState = tsArrowBtnUpPressed then
+    begin
+      FVertScrollBarUpButtonState := tsArrowBtnUpNormal;
+      PaintScrollBars;
+    end;
+
+    if FVertScrollBarDownButtonState = tsArrowBtnDownPressed then
+    begin
+      FVertScrollBarDownButtonState := tsArrowBtnDownNormal;
+      PaintScrollBars;
+    end;
+  end;
+
+  if FHorzScrollBarWindow.Visible and FHorzScrollBarWindow.Enabled then
+  begin
+    if FHorzScrollBarUpButtonState = tsArrowBtnLeftPressed then
+    begin
+      FHorzScrollBarUpButtonState := tsArrowBtnLeftNormal;
+      PaintScrollBars;
+    end;
+
+    if FHorzScrollBarDownButtonState = tsArrowBtnRightPressed then
+    begin
+      FHorzScrollBarDownButtonState := tsArrowBtnRightNormal;
+      PaintScrollBars;
+    end;
+  end;
+
+  CallDefaultProc(TMessage(Msg));
+  Handled := True;
+end;
+
+procedure TVclStyleScrollBarsHook.WMHScroll(var Msg: TMessage);
+begin
+  CallDefaultProc(TMessage(Msg));
+  PaintScrollBars;
+  Handled := True;
+end;
+
+procedure TVclStyleScrollBarsHook.WMKeyDown(var Msg: TMessage);
+begin
+  CallDefaultProc(TMessage(Msg));
+  PaintScrollBars;
+  Handled := True;
+end;
+
+procedure TVclStyleScrollBarsHook.WMKeyUp(var Msg: TMessage);
+begin
+  CallDefaultProc(TMessage(Msg));
+  PaintScrollBars;
+  Handled := True;
+end;
+
+procedure TVclStyleScrollBarsHook.WMLButtonDown(var Msg: TWMMouse);
+begin
+  CallDefaultProc(TMessage(Msg));
+  PaintScrollBars;
+  Handled := True;
+end;
+
+procedure TVclStyleScrollBarsHook.WMLButtonUp(var Msg: TWMMouse);
+var
+  P: TPoint;
+begin
+  P := Point(Msg.XPos, Msg.YPos);
+  ScreenToClient(Handle, P);
+  if not PointInTreeHeader(P) then
+  begin
+    if FVertScrollBarWindow.Visible then
+    begin
+      if FVertScrollBarSliderState = tsThumbBtnVertPressed then
+      begin
+        PostMessage(Handle, WM_VSCROLL, Integer(SmallPoint(SB_ENDSCROLL, 0)), 0);
+        FLeftMouseButtonDown := False;
+        FVertScrollBarSliderState := tsThumbBtnVertNormal;
+        PaintScrollBars;
+        Handled := True;
+        ReleaseCapture;
+        Exit;
+      end;
+
+      if FVertScrollBarUpButtonState = tsArrowBtnUpPressed then
+        FVertScrollBarUpButtonState := tsArrowBtnUpNormal;
+
+      if FVertScrollBarDownButtonState = tsArrowBtnDownPressed then
+        FVertScrollBarDownButtonState := tsArrowBtnDownNormal;
+    end;
+
+    if FHorzScrollBarWindow.Visible then
+    begin
+      if FHorzScrollBarSliderState = tsThumbBtnHorzPressed then
+      begin
+        PostMessage(Handle, WM_HSCROLL, Integer(SmallPoint(SB_ENDSCROLL, 0)), 0);
+        FLeftMouseButtonDown := False;
+        FHorzScrollBarSliderState := tsThumbBtnHorzNormal;
+        PaintScrollBars;
+        Handled := True;
+        ReleaseCapture;
+        Exit;
+      end;
+
+      if FHorzScrollBarUpButtonState = tsArrowBtnLeftPressed then
+        FHorzScrollBarUpButtonState := tsArrowBtnLeftNormal;
+
+      if FHorzScrollBarDownButtonState = tsArrowBtnRightPressed then
+        FHorzScrollBarDownButtonState := tsArrowBtnRightNormal;
+    end;
+    PaintScrollBars;
+  end;
+  FLeftMouseButtonDown := False;
+end;
+
+procedure TVclStyleScrollBarsHook.WMMouseMove(var Msg: TWMMouse);
+var
+  SF: TScrollInfo;
+begin
+  inherited;
+  if FVertScrollBarSliderState = tsThumbBtnVertPressed then
+  begin
+    SF.fMask := SIF_ALL;
+    SF.cbSize := SizeOf(SF);
+    GetScrollInfo(Handle, SB_VERT, SF);
+    if SF.nPos <> Round(FScrollPos) then
+      FScrollPos := SF.nPos;
+
+    FScrollPos := FScrollPos + (SF.nMax - SF.nMin) * ((Mouse.CursorPos.Y - FPrevScrollPos) / FVertScrollBarSliderTrackRect.Height);
+    if FScrollPos < SF.nMin then
+      FScrollPos := SF.nMin;
+    if FScrollPos > SF.nMax then
+      FScrollPos := SF.nMax;
+    if SF.nPage <> 0 then
+      if Round(FScrollPos) > SF.nMax - Integer(SF.nPage) + 1 then
+        FScrollPos := SF.nMax - Integer(SF.nPage) + 1;
+    FPrevScrollPos := Mouse.CursorPos.Y;
+    SF.nPos := Round(FScrollPos);
+
+    SetScrollInfo(Handle, SB_VERT, SF, False);
+    PostMessage(Handle, WM_VSCROLL, Integer(SmallPoint(SB_THUMBPOSITION, Round(FScrollPos))), 0);
+
+    PaintScrollBars;
+    Handled := True;
+    Exit;
+  end;
+
+  if FHorzScrollBarSliderState = tsThumbBtnHorzPressed then
+  begin
+    SF.fMask := SIF_ALL;
+    SF.cbSize := SizeOf(SF);
+    GetScrollInfo(Handle, SB_HORZ, SF);
+    if SF.nPos <> Round(FScrollPos) then
+      FScrollPos := SF.nPos;
+
+    FScrollPos := FScrollPos + (SF.nMax - SF.nMin) * ((Mouse.CursorPos.X - FPrevScrollPos) / FHorzScrollBarSliderTrackRect.Width);
+    if FScrollPos < SF.nMin then
+      FScrollPos := SF.nMin;
+    if FScrollPos > SF.nMax then
+      FScrollPos := SF.nMax;
+    if SF.nPage <> 0 then
+      if Round(FScrollPos) > SF.nMax - Integer(SF.nPage) + 1 then
+        FScrollPos := SF.nMax - Integer(SF.nPage) + 1;
+    FPrevScrollPos := Mouse.CursorPos.X;
+    SF.nPos := Round(FScrollPos);
+
+    SetScrollInfo(Handle, SB_HORZ, SF, False);
+    PostMessage(Handle, WM_HSCROLL, Integer(SmallPoint(SB_THUMBPOSITION, Round(FScrollPos))), 0);
+
+    PaintScrollBars;
+    Handled := True;
+    Exit;
+  end;
+
+  if (FHorzScrollBarSliderState <> tsThumbBtnHorzPressed) and (FHorzScrollBarSliderState = tsThumbBtnHorzHot) then
+  begin
+    FHorzScrollBarSliderState := tsThumbBtnHorzNormal;
+    PaintScrollBars;
+  end;
+
+  if (FVertScrollBarSliderState <> tsThumbBtnVertPressed) and (FVertScrollBarSliderState = tsThumbBtnVertHot) then
+  begin
+    FVertScrollBarSliderState := tsThumbBtnVertNormal;
+    PaintScrollBars;
+  end;
+
+  if (FHorzScrollBarUpButtonState <> tsArrowBtnLeftPressed) and (FHorzScrollBarUpButtonState = tsArrowBtnLeftHot) then
+  begin
+    FHorzScrollBarUpButtonState := tsArrowBtnLeftNormal;
+    PaintScrollBars;
+  end;
+
+  if (FHorzScrollBarDownButtonState <> tsArrowBtnRightPressed) and (FHorzScrollBarDownButtonState = tsArrowBtnRightHot) then
+  begin
+    FHorzScrollBarDownButtonState := tsArrowBtnRightNormal;
+    PaintScrollBars;
+  end;
+
+  if (FVertScrollBarUpButtonState <> tsArrowBtnUpPressed) and (FVertScrollBarUpButtonState = tsArrowBtnUpHot) then
+  begin
+    FVertScrollBarUpButtonState := tsArrowBtnUpNormal;
+    PaintScrollBars;
+  end;
+
+  if (FVertScrollBarDownButtonState <> tsArrowBtnDownPressed) and (FVertScrollBarDownButtonState = tsArrowBtnDownHot) then
+  begin
+    FVertScrollBarDownButtonState := tsArrowBtnDownNormal;
+    PaintScrollBars;
+  end;
+
+  CallDefaultProc(TMessage(Msg));
+  if FLeftMouseButtonDown then
+    PaintScrollBars;
+  Handled := True;
+end;
+
+procedure TVclStyleScrollBarsHook.WMMouseWheel(var Msg: TMessage);
+begin
+   CallDefaultProc(TMessage(Msg));
+  PaintScrollBars;
+  Handled := True;
+end;
+
+procedure TVclStyleScrollBarsHook.WMNCLButtonDblClk(var Msg: TWMMouse);
+begin
+  WMNCLButtonDown(Msg);
+end;
+
+procedure TVclStyleScrollBarsHook.WMNCLButtonDown(var Msg: TWMMouse);
+var
+  P: TPoint;
+  SF: TScrollInfo;
+begin
+  P := Point(Msg.XPos, Msg.YPos);
+  ScreenToClient(Handle, P);
+
+  if HasBorder then
+    if HasClientEdge then
+    begin
+      P.X := P.X + 2;
+      P.Y := P.Y + 2;
+    end
+    else
+    begin
+      P.X := P.X + 1;
+      P.Y := P.Y + 1;
+    end;
+
+  if not PointInTreeHeader(P) then
+  begin
+    if FVertScrollBarWindow.Visible then
+    begin
+      if PtInRect(GetVertScrollBarSliderRect, P) then
+      begin
+        FLeftMouseButtonDown := True;
+        SF.fMask := SIF_ALL;
+        SF.cbSize := SizeOf(SF);
+        GetScrollInfo(Handle, SB_VERT, SF);
+        // FListPos := SF.nPos;
+        FScrollPos := SF.nPos;
+        FPrevScrollPos := Mouse.CursorPos.Y;
+        FVertScrollBarSliderState := tsThumbBtnVertPressed;
+        PaintScrollBars;
+        SetCapture(Handle);
+        Handled := True;
+        Exit;
+      end;
+
+      if FVertScrollBarWindow.Enabled then
+      begin
+        if PtInRect(FVertScrollBarDownButtonRect, P) then
+          FVertScrollBarDownButtonState := tsArrowBtnDownPressed;
+        if PtInRect(FVertScrollBarUpButtonRect, P) then
+          FVertScrollBarUpButtonState := tsArrowBtnUpPressed;
+      end;
+    end;
+
+    if FHorzScrollBarWindow.Visible then
+    begin
+      if PtInRect(GetHorzScrollBarSliderRect, P) then
+      begin
+        FLeftMouseButtonDown := True;
+        SF.fMask := SIF_ALL;
+        SF.cbSize := SizeOf(SF);
+        GetScrollInfo(Handle, SB_HORZ, SF);
+        // FListPos := SF.nPos;
+        FScrollPos := SF.nPos;
+        FPrevScrollPos := Mouse.CursorPos.X;
+        FHorzScrollBarSliderState := tsThumbBtnHorzPressed;
+        PaintScrollBars;
+        SetCapture(Handle);
+        Handled := True;
+        Exit;
+      end;
+
+      if FHorzScrollBarWindow.Enabled then
+      begin
+        if PtInRect(FHorzScrollBarDownButtonRect, P) then
+          FHorzScrollBarDownButtonState := tsArrowBtnRightPressed;
+        if PtInRect(FHorzScrollBarUpButtonRect, P) then
+          FHorzScrollBarUpButtonState := tsArrowBtnLeftPressed;
+      end;
+    end;
+    FLeftMouseButtonDown := True;
+    PaintScrollBars;
+  end;
+end;
+
+procedure TVclStyleScrollBarsHook.WMNCLButtonUp(var Msg: TWMMouse);
+var
+  P: TPoint;
+  B: Boolean;
+begin
+  P := Point(Msg.XPos, Msg.YPos);
+  ScreenToClient(Handle, P);
+
+  if HasBorder then
+    if HasClientEdge then
+    begin
+      P.X := P.X + 2;
+      P.Y := P.Y + 2;
+    end
+    else
+    begin
+      P.X := P.X + 1;
+      P.Y := P.Y + 1;
+    end;
+
+  B := PointInTreeHeader(P);
+
+  if not B then
+  begin
+    if FVertScrollBarWindow.Visible then
+      if FVertScrollBarWindow.Enabled then
+      begin
+        if FVertScrollBarSliderState = tsThumbBtnVertPressed then
+        begin
+          FLeftMouseButtonDown := False;
+          FVertScrollBarSliderState := tsThumbBtnVertNormal;
+          PaintScrollBars;
+          Handled := True;
+          Exit;
+        end;
+
+        if PtInRect(FVertScrollBarDownButtonRect, P) then
+          FVertScrollBarDownButtonState := tsArrowBtnDownHot
+        else
+          FVertScrollBarDownButtonState := tsArrowBtnDownNormal;
+
+        if PtInRect(FVertScrollBarUpButtonRect, P) then
+          FVertScrollBarUpButtonState := tsArrowBtnUpHot
+        else
+          FVertScrollBarUpButtonState := tsArrowBtnUpNormal;
+      end;
+
+    if FHorzScrollBarWindow.Visible then
+      if FHorzScrollBarWindow.Enabled then
+      begin
+        if FHorzScrollBarSliderState = tsThumbBtnHorzPressed then
+        begin
+          FLeftMouseButtonDown := False;
+          FHorzScrollBarSliderState := tsThumbBtnHorzNormal;
+          PaintScrollBars;
+          Handled := True;
+          Exit;
+        end;
+
+        if PtInRect(FHorzScrollBarDownButtonRect, P) then
+          FHorzScrollBarDownButtonState := tsArrowBtnRightHot
+        else
+          FHorzScrollBarDownButtonState := tsArrowBtnRightNormal;
+
+        if PtInRect(FHorzScrollBarUpButtonRect, P) then
+          FHorzScrollBarUpButtonState := tsArrowBtnLeftHot
+        else
+          FHorzScrollBarUpButtonState := tsArrowBtnLeftNormal;
+      end;
+
+  end;
+  CallDefaultProc(TMessage(Msg));
+  if not B and (FHorzScrollBarWindow.Visible) or (FVertScrollBarWindow.Visible) then
+    PaintScrollBars;
+  Handled := True;
+end;
+
+procedure TVclStyleScrollBarsHook.WMNCMouseMove(var Msg: TWMMouse);
+var
+  P: TPoint;
+  MustUpdateScroll: Boolean;
+  B: Boolean;
+begin
+  inherited;
+  P := Point(Msg.XPos, Msg.YPos);
+  ScreenToClient(Handle, P);
+
+  if PointInTreeHeader(P) then
+  begin
+    CallDefaultProc(TMessage(Msg));
+    PaintScrollBars;
+    Handled := True;
+    Exit;
+  end;
+
+  if HasBorder then
+    if HasClientEdge then
+    begin
+      P.X := P.X + 2;
+      P.Y := P.Y + 2;
+    end
+    else
+    begin
+      P.X := P.X + 1;
+      P.Y := P.Y + 1;
+    end;
+
+  MustUpdateScroll := False;
+  if FVertScrollBarWindow.Enabled then
+  begin
+    B := PtInRect(GetVertScrollBarSliderRect, P);
+    if B and (FVertScrollBarSliderState = tsThumbBtnVertNormal) then
+    begin
+      FVertScrollBarSliderState := tsThumbBtnVertHot;
+      MustUpdateScroll := True;
+    end
+    else if not B and (FVertScrollBarSliderState = tsThumbBtnVertHot) then
+    begin
+      FVertScrollBarSliderState := tsThumbBtnVertNormal;
+      MustUpdateScroll := True;
+    end;
+
+    B := PtInRect(FVertScrollBarDownButtonRect, P);
+    if B and (FVertScrollBarDownButtonState = tsArrowBtnDownNormal) then
+    begin
+      FVertScrollBarDownButtonState := tsArrowBtnDownHot;
+      MustUpdateScroll := True;
+    end
+    else if not B and (FVertScrollBarDownButtonState = tsArrowBtnDownHot) then
+    begin
+      FVertScrollBarDownButtonState := tsArrowBtnDownNormal;
+      MustUpdateScroll := True;
+    end;
+    B := PtInRect(FVertScrollBarUpButtonRect, P);
+    if B and (FVertScrollBarUpButtonState = tsArrowBtnUpNormal) then
+    begin
+      FVertScrollBarUpButtonState := tsArrowBtnUpHot;
+      MustUpdateScroll := True;
+    end
+    else if not B and (FVertScrollBarUpButtonState = tsArrowBtnUpHot) then
+    begin
+      FVertScrollBarUpButtonState := tsArrowBtnUpNormal;
+      MustUpdateScroll := True;
+    end;
+  end;
+
+  if FHorzScrollBarWindow.Enabled then
+  begin
+    B := PtInRect(GetHorzScrollBarSliderRect, P);
+    if B and (FHorzScrollBarSliderState = tsThumbBtnHorzNormal) then
+    begin
+      FHorzScrollBarSliderState := tsThumbBtnHorzHot;
+      MustUpdateScroll := True;
+    end
+    else if not B and (FHorzScrollBarSliderState = tsThumbBtnHorzHot) then
+    begin
+      FHorzScrollBarSliderState := tsThumbBtnHorzNormal;
+      MustUpdateScroll := True;
+    end;
+
+    B := PtInRect(FHorzScrollBarDownButtonRect, P);
+    if B and (FHorzScrollBarDownButtonState = tsArrowBtnRightNormal) then
+    begin
+      FHorzScrollBarDownButtonState := tsArrowBtnRightHot;
+      MustUpdateScroll := True;
+    end
+    else if not B and (FHorzScrollBarDownButtonState = tsArrowBtnRightHot) then
+    begin
+      FHorzScrollBarDownButtonState := tsArrowBtnRightNormal;
+      MustUpdateScroll := True;
+    end;
+
+    B := PtInRect(FHorzScrollBarUpButtonRect, P);
+    if B and (FHorzScrollBarUpButtonState = tsArrowBtnLeftNormal) then
+    begin
+      FHorzScrollBarUpButtonState := tsArrowBtnLeftHot;
+      MustUpdateScroll := True;
+    end
+    else if not B and (FHorzScrollBarUpButtonState = tsArrowBtnLeftHot) then
+    begin
+      FHorzScrollBarUpButtonState := tsArrowBtnLeftNormal;
+      MustUpdateScroll := True;
+    end;
+  end;
+
+  if MustUpdateScroll then
+    PaintScrollBars;
+end;
+
+procedure TVclStyleScrollBarsHook.WMNCPaint(var Msg: TMessage);
+begin
+  CalcScrollBarsRect;
+  UpdateScrollBarWindow;
+ //  PaintScrollBars;
+//  Handled := True;
+end;
+
+procedure TVclStyleScrollBarsHook.WMSize(var Msg: TMessage);
+begin
+  CallDefaultProc(TMessage(Msg));
+  CalcScrollBarsRect;
+  UpdateScrollBarWindow;
+  PaintScrollBars;
+  Handled := True;
+end;
+
+procedure TVclStyleScrollBarsHook.WMVScroll(var Msg: TMessage);
+begin
+  CallDefaultProc(TMessage(Msg));
+  PaintScrollBars;
+  Handled := True;
+end;
+
+{ TVclStyleScrollBarsHook.TVclStyleScrollBarWindow }
+
+constructor TVclStyleScrollBarsHook.TVclStyleScrollBarWindow.Create(AOwner: TComponent);
+begin
+  inherited;
+  ControlStyle := ControlStyle + [csOverrideStylePaint];
+  FScrollBarWindowOwner := nil;
+  FScrollBarVertical := False;
+  FScrollBarVisible := False;
+  FScrollBarEnabled := False;
+end;
+
+procedure TVclStyleScrollBarsHook.TVclStyleScrollBarWindow.CreateParams(var Params: TCreateParams);
+begin
+  inherited;
+  Params.Style := Params.Style or WS_CHILDWINDOW or WS_CLIPCHILDREN or WS_CLIPSIBLINGS;
+  Params.ExStyle := Params.ExStyle or WS_EX_NOPARENTNOTIFY;
+end;
+
+procedure TVclStyleScrollBarsHook.TVclStyleScrollBarWindow.WMEraseBkgnd(var Msg: TMessage);
+begin
+   Msg.Result := 1;
+end;
+
+procedure TVclStyleScrollBarsHook.TVclStyleScrollBarWindow.WMNCHitTest(var Msg: TWMNCHitTest);
+begin
+   Msg.Result := HTTRANSPARENT;
+end;
+
+procedure TVclStyleScrollBarsHook.TVclStyleScrollBarWindow.WMPaint(var Msg: TWMPaint);
+var
+  PS: TPaintStruct;
+  DC: HDC;
+begin
+  BeginPaint(Handle, PS);
+  try
+    if FScrollBarWindowOwner <> nil then
+    begin
+      DC := GetWindowDC(Handle);
+      try
+        if FScrollBarVertical then
+        begin
+          MoveWindowOrg(DC, -FScrollBarWindowOwner.FVertScrollBarRect.Left, -FScrollBarWindowOwner.FVertScrollBarRect.Top);
+          FScrollBarWindowOwner.DrawVertScrollBar(DC);
+        end
+        else
+        begin
+          MoveWindowOrg(DC, -FScrollBarWindowOwner.FHorzScrollBarRect.Left, -FScrollBarWindowOwner.FHorzScrollBarRect.Top);
+          FScrollBarWindowOwner.DrawHorzScrollBar(DC);
+        end;
+      finally
+        ReleaseDC(Handle, DC);
+      end;
+    end;
+  finally
+    EndPaint(Handle, PS);
+  end;
+end;
+{$ifend}
 
 initialization
   {$I virtualtrees.lrs}

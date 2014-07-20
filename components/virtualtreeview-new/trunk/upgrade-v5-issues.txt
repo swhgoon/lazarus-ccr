@@ -11,3 +11,5 @@
 * Review DoDragMsg/CMDrag
 * Add CHANGES.TXT file 
 * Review KeyUnicode -> unnecessary?
+* review FDottedBrush life cycle
+* Reverted changes is FillBitmap. See if will work as is
