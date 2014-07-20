@@ -21,19 +21,19 @@ object fRecordEdit: TfRecordEdit
     OnChange = PCChange
     object TabSheet1: TTabSheet
       Caption = 'Record Type'
-      ClientHeight = 466
+      ClientHeight = 464
       ClientWidth = 551
       object Label1: TLabel
         Left = 20
-        Height = 13
+        Height = 15
         Top = 34
-        Width = 27
+        Width = 32
         Caption = 'Name'
         ParentColor = False
       end
       object edtName: TEdit
         Left = 76
-        Height = 21
+        Height = 23
         Top = 34
         Width = 451
         Anchors = [akTop, akLeft, akRight]
@@ -41,17 +41,17 @@ object fRecordEdit: TfRecordEdit
       end
       object GroupBox1: TGroupBox
         Left = 20
-        Height = 320
+        Height = 318
         Top = 82
         Width = 507
         Anchors = [akTop, akLeft, akRight, akBottom]
         Caption = '  Fields  '
-        ClientHeight = 302
+        ClientHeight = 300
         ClientWidth = 503
         TabOrder = 1
         object edtFields: TListView
           Left = 0
-          Height = 302
+          Height = 300
           Top = 0
           Width = 503
           Align = alClient
@@ -70,6 +70,7 @@ object fRecordEdit: TfRecordEdit
             end>
           HideSelection = False
           PopupMenu = PopupMenu1
+          ReadOnly = True
           RowSelect = True
           TabOrder = 0
           ViewStyle = vsReport
@@ -78,7 +79,7 @@ object fRecordEdit: TfRecordEdit
       object Button3: TButton
         Left = 20
         Height = 25
-        Top = 418
+        Top = 416
         Width = 100
         Action = actPropAdd
         Anchors = [akLeft, akBottom]
@@ -88,7 +89,7 @@ object fRecordEdit: TfRecordEdit
       object Button4: TButton
         Left = 132
         Height = 25
-        Top = 418
+        Top = 416
         Width = 100
         Action = actPropEdit
         Anchors = [akLeft, akBottom]
@@ -98,7 +99,7 @@ object fRecordEdit: TfRecordEdit
       object Button5: TButton
         Left = 244
         Height = 25
-        Top = 418
+        Top = 416
         Width = 100
         Action = actPropDelete
         Anchors = [akLeft, akBottom]
@@ -108,7 +109,7 @@ object fRecordEdit: TfRecordEdit
       object Button7: TButton
         Left = 383
         Height = 25
-        Top = 418
+        Top = 416
         Width = 70
         Action = actMoveUp
         Anchors = [akRight, akBottom]
@@ -118,7 +119,7 @@ object fRecordEdit: TfRecordEdit
       object Button8: TButton
         Left = 458
         Height = 25
-        Top = 418
+        Top = 416
         Width = 70
         Action = actMoveDown
         Anchors = [akRight, akBottom]

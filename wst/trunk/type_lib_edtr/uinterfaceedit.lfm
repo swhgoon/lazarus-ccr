@@ -57,19 +57,19 @@ object fInterfaceEdit: TfInterfaceEdit
     TabOrder = 1
     object TabSheet1: TTabSheet
       Caption = 'Interface definition'
-      ClientHeight = 488
+      ClientHeight = 486
       ClientWidth = 523
       object Label1: TLabel
         Left = 20
-        Height = 13
+        Height = 15
         Top = 26
-        Width = 27
+        Width = 32
         Caption = 'Name'
         ParentColor = False
       end
       object edtName: TEdit
         Left = 60
-        Height = 21
+        Height = 23
         Top = 26
         Width = 443
         Anchors = [akTop, akLeft, akRight]
@@ -77,29 +77,31 @@ object fInterfaceEdit: TfInterfaceEdit
       end
       object GroupBox1: TGroupBox
         Left = 20
-        Height = 368
+        Height = 366
         Top = 74
         Width = 484
         Anchors = [akTop, akLeft, akRight, akBottom]
         Caption = '  Methods  '
-        ClientHeight = 350
+        ClientHeight = 348
         ClientWidth = 480
         TabOrder = 1
         object trvMethods: TTreeView
           Left = 0
-          Height = 350
+          Height = 348
           Top = 0
           Width = 480
           Align = alClient
-          DefaultItemHeight = 16
+          DefaultItemHeight = 18
           PopupMenu = PopupMenu1
+          ReadOnly = True
           TabOrder = 0
+          Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
         end
       end
       object Button3: TButton
         Left = 20
         Height = 25
-        Top = 450
+        Top = 448
         Width = 99
         Action = actNewMethod
         Anchors = [akLeft, akBottom]
@@ -109,7 +111,7 @@ object fInterfaceEdit: TfInterfaceEdit
       object Button4: TButton
         Left = 132
         Height = 25
-        Top = 450
+        Top = 448
         Width = 107
         Action = actUpdateOperation
         Anchors = [akLeft, akBottom]
@@ -119,7 +121,7 @@ object fInterfaceEdit: TfInterfaceEdit
       object Button5: TButton
         Left = 252
         Height = 25
-        Top = 450
+        Top = 448
         Width = 104
         Action = actDeleteOperation
         Anchors = [akLeft, akBottom]
@@ -129,7 +131,7 @@ object fInterfaceEdit: TfInterfaceEdit
       object Button6: TButton
         Left = 396
         Height = 25
-        Top = 450
+        Top = 448
         Width = 107
         Action = actBindingEdit
         Anchors = [akRight, akBottom]

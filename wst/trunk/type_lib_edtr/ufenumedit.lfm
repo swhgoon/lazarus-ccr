@@ -8,7 +8,7 @@ object fEnumEdit: TfEnumEdit
   Caption = 'fEnumEdit'
   ClientHeight = 368
   ClientWidth = 400
-  Position = poMainFormCenter
+  Position = poDesktopCenter
   LCLVersion = '1.2.2.0'
   object PC: TPageControl
     Left = 0
@@ -22,19 +22,19 @@ object fEnumEdit: TfEnumEdit
     OnChange = PCChange
     object TabSheet1: TTabSheet
       Caption = 'Enumeration'
-      ClientHeight = 292
+      ClientHeight = 290
       ClientWidth = 392
       object Label1: TLabel
         Left = 4
-        Height = 13
+        Height = 15
         Top = 18
-        Width = 27
+        Width = 32
         Caption = 'Name'
         ParentColor = False
       end
       object edtName: TEdit
         Left = 68
-        Height = 21
+        Height = 23
         Top = 18
         Width = 312
         Anchors = [akTop, akLeft, akRight]
@@ -42,17 +42,17 @@ object fEnumEdit: TfEnumEdit
       end
       object GroupBox1: TGroupBox
         Left = 4
-        Height = 231
+        Height = 229
         Top = 51
         Width = 377
         Anchors = [akTop, akLeft, akRight, akBottom]
         Caption = '  Items  '
-        ClientHeight = 213
+        ClientHeight = 211
         ClientWidth = 373
         TabOrder = 1
         object edtItems: TMemo
           Left = 0
-          Height = 213
+          Height = 211
           Top = 0
           Width = 373
           Align = alClient

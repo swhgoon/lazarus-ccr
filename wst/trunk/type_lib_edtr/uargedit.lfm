@@ -7,7 +7,7 @@ object fArgEdit: TfArgEdit
   Caption = 'fArgEdit'
   ClientHeight = 393
   ClientWidth = 400
-  Position = poMainFormCenter
+  Position = poDesktopCenter
   LCLVersion = '1.2.2.0'
   object Panel1: TPanel
     Left = 0
@@ -53,27 +53,27 @@ object fArgEdit: TfArgEdit
     TabOrder = 1
     object TabSheet1: TTabSheet
       Caption = 'Argument'
-      ClientHeight = 317
+      ClientHeight = 315
       ClientWidth = 392
       object Label1: TLabel
         Left = 20
-        Height = 13
+        Height = 15
         Top = 26
-        Width = 27
+        Width = 32
         Caption = 'Name'
         ParentColor = False
       end
       object Label2: TLabel
         Left = 20
-        Height = 13
+        Height = 15
         Top = 95
-        Width = 24
+        Width = 26
         Caption = 'Type'
         ParentColor = False
       end
       object edtName: TEdit
         Left = 20
-        Height = 21
+        Height = 23
         Top = 47
         Width = 352
         Anchors = [akTop, akLeft, akRight]
@@ -82,17 +82,17 @@ object fArgEdit: TfArgEdit
       end
       object edtType: TComboBox
         Left = 20
-        Height = 21
+        Height = 23
         Top = 114
         Width = 352
         Anchors = [akTop, akLeft, akRight]
-        ItemHeight = 13
+        ItemHeight = 15
         Style = csDropDownList
         TabOrder = 1
       end
       object edtModifier: TRadioGroup
         Left = 20
-        Height = 133
+        Height = 131
         Top = 157
         Width = 352
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -106,7 +106,7 @@ object fArgEdit: TfArgEdit
         ChildSizing.ShrinkVertical = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 2
-        ClientHeight = 115
+        ClientHeight = 113
         ClientWidth = 348
         Columns = 2
         Items.Strings = (

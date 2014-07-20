@@ -7,7 +7,7 @@ object fProcEdit: TfProcEdit
   Caption = 'fProcEdit'
   ClientHeight = 543
   ClientWidth = 522
-  Position = poMainFormCenter
+  Position = poDesktopCenter
   LCLVersion = '1.2.2.0'
   object PageControl1: TPageControl
     Left = 0
@@ -20,38 +20,38 @@ object fProcEdit: TfProcEdit
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = '&Operation'
-      ClientHeight = 467
+      ClientHeight = 465
       ClientWidth = 514
       object Label1: TLabel
         Left = 12
-        Height = 13
+        Height = 15
         Top = 26
-        Width = 27
+        Width = 32
         Caption = 'Name'
         ParentColor = False
       end
       object edtName: TEdit
-        Left = 112
-        Height = 21
+        Left = 144
+        Height = 23
         Top = 26
-        Width = 388
+        Width = 356
         Anchors = [akTop, akLeft, akRight]
         TabOrder = 0
         Text = 'edtName'
       end
       object GroupBox1: TGroupBox
         Left = 11
-        Height = 304
+        Height = 302
         Top = 114
         Width = 489
         Anchors = [akTop, akLeft, akRight, akBottom]
         Caption = '  Parametters  '
-        ClientHeight = 286
+        ClientHeight = 284
         ClientWidth = 485
         TabOrder = 3
         object edtParams: TListView
           Left = 0
-          Height = 286
+          Height = 284
           Top = 0
           Width = 485
           Align = alClient
@@ -70,6 +70,7 @@ object fProcEdit: TfProcEdit
             end          
             item
             end>
+          ReadOnly = True
           RowSelect = True
           TabOrder = 0
           ViewStyle = vsReport
@@ -77,28 +78,28 @@ object fProcEdit: TfProcEdit
       end
       object edtFunction: TCheckBox
         Left = 12
-        Height = 17
+        Height = 19
         Top = 74
-        Width = 99
+        Width = 107
         Caption = 'Function returns'
         OnClick = edtFunctionClick
         OnEditingDone = edtFunctionEditingDone
         TabOrder = 1
       end
       object edtResultType: TComboBox
-        Left = 112
-        Height = 21
+        Left = 144
+        Height = 23
         Top = 74
-        Width = 388
+        Width = 356
         Anchors = [akTop, akLeft, akRight]
-        ItemHeight = 13
+        ItemHeight = 15
         Style = csDropDownList
         TabOrder = 2
       end
       object Button3: TButton
         Left = 12
         Height = 25
-        Top = 429
+        Top = 427
         Width = 108
         Action = actNewArg
         Anchors = [akLeft, akBottom]
@@ -108,7 +109,7 @@ object fProcEdit: TfProcEdit
       object Button4: TButton
         Left = 132
         Height = 25
-        Top = 429
+        Top = 427
         Width = 108
         Action = actUpdateArgument
         Anchors = [akLeft, akBottom]
@@ -118,7 +119,7 @@ object fProcEdit: TfProcEdit
       object Button5: TButton
         Left = 248
         Height = 25
-        Top = 429
+        Top = 427
         Width = 108
         Action = actDeleteArgument
         Anchors = [akLeft, akBottom]

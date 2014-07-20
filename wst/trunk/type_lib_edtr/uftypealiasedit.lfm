@@ -8,7 +8,7 @@ object fTypeAliasEdit: TfTypeAliasEdit
   Caption = 'fTypeAliasEdit'
   ClientHeight = 300
   ClientWidth = 400
-  Position = poScreenCenter
+  Position = poDesktopCenter
   LCLVersion = '1.2.2.0'
   object Panel1: TPanel
     Left = 0
@@ -64,27 +64,27 @@ object fTypeAliasEdit: TfTypeAliasEdit
     OnChange = PCChange
     object TabSheet1: TTabSheet
       Caption = 'Type Alias'
-      ClientHeight = 224
+      ClientHeight = 222
       ClientWidth = 392
       object Label1: TLabel
         Left = 20
-        Height = 13
+        Height = 15
         Top = 26
-        Width = 27
+        Width = 32
         Caption = 'Name'
         ParentColor = False
       end
       object Label2: TLabel
         Left = 20
-        Height = 13
+        Height = 15
         Top = 114
-        Width = 50
+        Width = 53
         Caption = 'Base Type'
         ParentColor = False
       end
       object edtName: TEdit
         Left = 20
-        Height = 21
+        Height = 23
         Top = 42
         Width = 344
         Anchors = [akTop, akLeft, akRight]
@@ -92,11 +92,11 @@ object fTypeAliasEdit: TfTypeAliasEdit
       end
       object edtBaseType: TComboBox
         Left = 20
-        Height = 21
+        Height = 23
         Top = 130
         Width = 344
         Anchors = [akTop, akLeft, akRight]
-        ItemHeight = 13
+        ItemHeight = 15
         Style = csDropDownList
         TabOrder = 1
       end

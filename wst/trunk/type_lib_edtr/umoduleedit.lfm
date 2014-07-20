@@ -10,9 +10,10 @@ object fModuleEdit: TfModuleEdit
   Caption = 'Module properties'
   ClientHeight = 300
   ClientWidth = 400
-  Position = poMainFormCenter
-  LCLVersion = '0.9.25'
+  Position = poDesktopCenter
+  LCLVersion = '1.2.2.0'
   object Panel1: TPanel
+    Left = 0
     Height = 50
     Top = 250
     Width = 400
@@ -43,7 +44,9 @@ object fModuleEdit: TfModuleEdit
     end
   end
   object PageControl1: TPageControl
+    Left = 0
     Height = 250
+    Top = 0
     Width = 400
     ActivePage = TabSheet1
     Align = alClient
@@ -51,21 +54,21 @@ object fModuleEdit: TfModuleEdit
     TabOrder = 1
     object TabSheet1: TTabSheet
       Caption = 'Module'
-      ClientHeight = 224
+      ClientHeight = 222
       ClientWidth = 392
       object Label1: TLabel
         Left = 20
-        Height = 14
+        Height = 15
         Top = 39
-        Width = 28
+        Width = 32
         Caption = 'Name'
         ParentColor = False
       end
       object Label2: TLabel
         Left = 20
-        Height = 14
+        Height = 15
         Top = 127
-        Width = 56
+        Width = 62
         Caption = 'Namespace'
         ParentColor = False
       end
@@ -94,7 +97,6 @@ object fModuleEdit: TfModuleEdit
     top = 126
     object actOK: TAction
       Caption = 'OK'
-      DisableIfNoHandler = True
       OnExecute = actOKExecute
       OnUpdate = actOKUpdate
     end
