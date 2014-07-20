@@ -29,3 +29,6 @@ In your component's Constructor Create() set some, all or none of the following 
   AboutBoxLicenseType (string e.g. 'GPL', ModifiedGPL' etc)
 
 You will have to recompile and reinstall your component to see the results.
+
+=========
+June 2014
