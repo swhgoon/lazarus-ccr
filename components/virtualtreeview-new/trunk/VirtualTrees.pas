@@ -2700,7 +2700,7 @@ type
     property OnAfterColumnExport : TVTColumnExportEvent read FOnAfterColumnExport write FOnAfterColumnExport;
     property OnAfterColumnWidthTracking: TVTAfterColumnWidthTrackingEvent read FOnAfterColumnWidthTracking write FOnAfterColumnWidthTracking;
     property OnAfterGetMaxColumnWidth: TVTAfterGetMaxColumnWidthEvent read FOnAfterGetMaxColumnWidth write FOnAfterGetMaxColumnWidth;
-    property OnAfterHeaderExport: TVTTreeExportEvent read FOnBeforeHeaderExport write FOnBeforeHeaderExport;
+    property OnAfterHeaderExport: TVTTreeExportEvent read FOnAfterHeaderExport write FOnAfterHeaderExport;
     property OnAfterHeaderHeightTracking: TVTAfterHeaderHeightTrackingEvent read FOnAfterHeaderHeightTracking
       write FOnAfterHeaderHeightTracking;
     property OnAfterItemErase: TVTAfterItemEraseEvent read FOnAfterItemErase write FOnAfterItemErase;
@@ -2897,6 +2897,7 @@ type
     function GetNextNoInit(Node: PVirtualNode; ConsiderChildrenAbove: Boolean = False): PVirtualNode;
     function GetNextSelected(Node: PVirtualNode; ConsiderChildrenAbove: Boolean = False): PVirtualNode;
     function GetNextSibling(Node: PVirtualNode): PVirtualNode;
+    function GetNextSiblingNoInit(Node: PVirtualNode): PVirtualNode;
     function GetNextVisible(Node: PVirtualNode; ConsiderChildrenAbove: Boolean = True): PVirtualNode;
     function GetNextVisibleNoInit(Node: PVirtualNode; ConsiderChildrenAbove: Boolean = True): PVirtualNode;
     function GetNextVisibleSibling(Node: PVirtualNode; IncludeFiltered: Boolean = False): PVirtualNode;
@@ -2915,6 +2916,7 @@ type
     function GetPreviousNoInit(Node: PVirtualNode; ConsiderChildrenAbove: Boolean = False): PVirtualNode;
     function GetPreviousSelected(Node: PVirtualNode; ConsiderChildrenAbove: Boolean = False): PVirtualNode;
     function GetPreviousSibling(Node: PVirtualNode): PVirtualNode;
+    function GetPreviousSiblingNoInit(Node: PVirtualNode): PVirtualNode;
     function GetPreviousVisible(Node: PVirtualNode; ConsiderChildrenAbove: Boolean = True): PVirtualNode;
     function GetPreviousVisibleNoInit(Node: PVirtualNode; ConsiderChildrenAbove: Boolean = True): PVirtualNode;
     function GetPreviousVisibleSibling(Node: PVirtualNode; IncludeFiltered: Boolean = False): PVirtualNode;
@@ -3902,6 +3904,7 @@ type
     class function GetElementDetails(Detail: TThemedHeader): TThemedElementDetails; overload;
     class function GetElementDetails(Detail: TThemedToolTip): TThemedElementDetails; overload;
     class function GetElementDetails(Detail: TThemedWindow): TThemedElementDetails; overload;
+    class function GetElementDetails(Detail: TThemedButton): TThemedElementDetails; overload;
     class procedure PaintBorder(Control: TWinControl; EraseLRCorner: Boolean);
   end;
 
@@ -3935,6 +3938,11 @@ type
   end;
 
   class function StyleServices.GetElementDetails(Detail: TThemedWindow): TThemedElementDetails;
+  begin
+    Result := ThemeServices.GetElementDetails(Detail);
+  end;
+
+  class function StyleServices.GetElementDetails(Detail: TThemedButton): TThemedElementDetails;
   begin
     Result := ThemeServices.GetElementDetails(Detail);
   end;
@@ -17871,7 +17879,7 @@ begin
   end;
   end;
 
-  if Offset < (Indent + Margin{See issue #259}) then
+  if (MainColumnHit and (Offset < (Indent + Margin{See issue #259}))) then
   begin
     // Position is to the left of calculated indentation which can only happen for the main column.
     // Check whether it corresponds to a button/checkbox.
@@ -25099,15 +25107,10 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TBaseVirtualTree.CutToClipBoard;
-
-var
-  DataObject: IDataObject;
-
 begin
   if (FSelectionCount > 0) and not (toReadOnly in FOptions.FMiscOptions) then
   begin
-    DataObject := TVTDataObject.Create(Self, True) as IDataObject;
-    if OleSetClipBoard(DataObject) = S_OK then
+    if OleSetClipBoard(TVTDataObject.Create(Self, True)) = S_OK then
     begin
       MarkCutCopyNodes;
       DoStateChange([tsCutPending], [tsCopyPending]);
@@ -26078,7 +26081,7 @@ begin
               InitNode(Result);
           end;
 
-          // If there a no visible siblings take the parent.
+          // If there are no visible siblings take the parent.
           if not (vsVisible in Result.States) then
           begin
             Result := Result.Parent;
@@ -26496,23 +26499,21 @@ function TBaseVirtualTree.GetLastVisible(Node: PVirtualNode = nil; ConsiderChild
   IncludeFiltered: Boolean = False): PVirtualNode;
 
 // Returns the very last visible node in the tree while optionally considering toChildrenAbove.
-// The nodes are intialized all the way down including the result node.
+// The nodes are intialized all the way up including the result node.
 
 var
-  Next: PVirtualNode;
+  Run: PVirtualNode;
 
 begin
-  Result := GetLastVisibleChild(Node, IncludeFiltered);
-  if not ConsiderChildrenAbove or not (toChildrenAbove in FOptions.FPaintOptions) then
-    while Assigned(Result) do
-    begin
-      // Test if there is a next last visible child. If not keep the node from the last run.
-      // Otherwise use the next last visible child.
-      Next := GetLastVisibleChild(Result, IncludeFiltered);
-      if Next = nil then
-        Break;
-      Result := Next;
-    end;
+  Result := GetLastVisibleNoInit(Node, ConsiderChildrenAbove);
+
+  Run := Result;
+  while Assigned(Run) and (Run <> Node)  and (Run <> RootNode) do
+  begin
+    if not (vsInitialized in Run.States) then
+      InitNode(Run);
+    Run := Run.Parent;
+  end;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -26566,21 +26567,18 @@ function TBaseVirtualTree.GetLastVisibleNoInit(Node: PVirtualNode = nil;
 // Returns the very last visible node in the tree while optionally considering toChildrenAbove.
 // No initialization is performed.
 
-var
-  Next: PVirtualNode;
-
 begin
-  Result := GetLastVisibleChildNoInit(Node, IncludeFiltered);
-  if not ConsiderChildrenAbove or not (toChildrenAbove in FOptions.FPaintOptions) then
-    while Assigned(Result) do
-    begin
-      // Test if there is a next last visible child. If not keep the node from the last run.
-      // Otherwise use the next last visible child.
-      Next := GetLastVisibleChildNoInit(Result, IncludeFiltered);
-      if Next = nil then
-        Break;
-      Result := Next;
-    end;
+  Result := GetLastNoInit(Node, ConsiderChildrenAbove);
+  while Assigned(Result) and (Result <> Node) do
+  begin
+    if FullyVisible[Result] and
+       (IncludeFiltered or not IsEffectivelyFiltered[Result]) then
+      Break;
+    Result := GetPreviousNoInit(Result, ConsiderChildrenAbove);
+  end;
+
+  if (Result = Node) then // i.e. there is no visible node
+    Result := nil;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -27024,6 +27022,20 @@ begin
     Result := Result.NextSibling;
     if Assigned(Result) and not (vsInitialized in Result.States) then
       InitNode(Result);
+  end;
+end;
+
+function TBaseVirtualTree.GetNextSiblingNoInit(Node: PVirtualNode): PVirtualNode;
+
+// Returns the next sibling of Node.
+
+begin
+  Result := Node;
+  if Assigned(Result) then
+  begin
+    Assert(Result <> FRoot, 'Node must not be the hidden root node.');
+
+    Result := Result.NextSibling;
   end;
 end;
 
@@ -27637,7 +27649,7 @@ end;
 
 function TBaseVirtualTree.GetPreviousSibling(Node: PVirtualNode): PVirtualNode;
 
-// Get next sibling of Node, initialize it if necessary.
+// Returns the previous sibling of Node and initializes it if necessary.
 
 begin
   Result := Node;
@@ -27648,6 +27660,20 @@ begin
     Result := Result.PrevSibling;
     if Assigned(Result) and not (vsInitialized in Result.States) then
       InitNode(Result);
+  end;
+end;
+
+function TBaseVirtualTree.GetPreviousSiblingNoInit(Node: PVirtualNode): PVirtualNode;
+
+// Returns the previous sibling of Node
+
+begin
+  Result := Node;
+  if Assigned(Result) then
+  begin
+    Assert(Result <> FRoot, 'Node must not be the hidden root node.');
+
+    Result := Result.PrevSibling;
   end;
 end;
 
@@ -29650,19 +29676,17 @@ begin
   begin
     if OleGetClipboard(Data) <> S_OK then
       ShowError(SClipboardFailed, hcTFClipboardFailed)
-    else
-    try
+    else begin
       // Try to get the source tree of the operation to optimize the operation.
       Source := GetTreeFromDataObject(Data);
       Result := ProcessOLEData(Source, Data, FFocusedNode, FDefaultPasteMode, Assigned(Source) and
         (tsCutPending in Source.FStates));
-      if Assigned(Source) then
+      if Assigned(Source) then begin
         if Source <> Self then
           Source.FinishCutOrCopy
         else
           DoStateChange([], [tsCutPending]);
-    finally
-      Data := nil;
+      end;    
     end;
   end;
 end;
@@ -30484,13 +30508,13 @@ procedure TBaseVirtualTree.SortTree(Column: TColumnIndex; Direction: TSortDirect
 
   begin
     Sort(Node, Column, Direction, DoInit);
-
+    // Recurse to next level
     Run := Node.FirstChild;
     while Assigned(Run) and not FOperationCanceled do
     begin
       if DoInit and not (vsInitialized in Run.States) then
         InitNode(Run);
-      if vsInitialized in Run.States then
+      if (vsInitialized in Run.States) and Expanded[Node] then // There is no need to sort collapsed branches
         DoSort(Run);
       Run := Run.NextSibling;
     end;
@@ -31463,7 +31487,7 @@ var
   LastFont: THandle;
 
 begin
-  if not (vsMultiline in FLink.FNode.States) then
+  if not (vsMultiline in FLink.FNode.States) and not (toGridExtensions in FLink.FTree.FOptions.FMiscOptions{see issue #252}) then
   begin
     DC := GetDC(Handle);
     LastFont := SelectObject(DC, Font.Reference.Handle);

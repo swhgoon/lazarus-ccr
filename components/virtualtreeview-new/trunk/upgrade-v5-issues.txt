@@ -10,3 +10,4 @@
 * Review ASM procedures
 * Review DoDragMsg/CMDrag
 * Add CHANGES.TXT file 
+* Review KeyUnicode -> unnecessary?
