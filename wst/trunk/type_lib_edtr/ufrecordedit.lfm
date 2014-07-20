@@ -74,6 +74,7 @@ object fRecordEdit: TfRecordEdit
           RowSelect = True
           TabOrder = 0
           ViewStyle = vsReport
+          OnDblClick = edtFieldsDblClick
         end
       end
       object Button3: TButton

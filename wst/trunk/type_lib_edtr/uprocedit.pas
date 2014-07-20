@@ -55,6 +55,7 @@ type
     procedure actUpdateArgumentUpdate(Sender: TObject);
     procedure edtFunctionClick(Sender: TObject);
     procedure edtFunctionEditingDone(Sender: TObject);
+    procedure edtParamsDblClick(Sender : TObject);
   private
     FUpdateType : TEditType;
     FObject : TPasProcedure;
@@ -174,6 +175,15 @@ end;
 procedure TfProcEdit.edtFunctionEditingDone(Sender: TObject);
 begin
   edtResultType.Enabled := edtFunction.Checked;
+end;
+
+procedure TfProcEdit.edtParamsDblClick(Sender : TObject);
+begin
+  if actUpdateArgument.Enabled then begin
+    actUpdateArgument.Execute();
+  end else if actNewArg.Enabled then begin
+    actNewArg.Execute();
+  end;
 end;
 
 procedure TfProcEdit.PrepareResultCombo();

@@ -95,6 +95,7 @@ object fInterfaceEdit: TfInterfaceEdit
           PopupMenu = PopupMenu1
           ReadOnly = True
           TabOrder = 0
+          OnDblClick = trvMethodsDblClick
           Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
         end
       end

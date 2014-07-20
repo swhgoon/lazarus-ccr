@@ -60,6 +60,7 @@ type
     procedure actUpdateOperationExecute(Sender: TObject);
     procedure actUpdateOperationUpdate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure trvMethodsDblClick(Sender : TObject);
   private
     FUpdateType : TEditType;
     FObject : TPasClassType;
@@ -123,6 +124,15 @@ end;
 procedure TfInterfaceEdit.FormCreate(Sender: TObject);
 begin
   trvMethods.Images := DM.IM;
+end;
+
+procedure TfInterfaceEdit.trvMethodsDblClick(Sender : TObject);
+begin
+  if actUpdateOperation.Enabled then begin
+    actUpdateOperation.Execute();
+  end else if actNewMethod.Enabled then begin
+    actNewMethod.Execute();
+  end;
 end;
 
 procedure TfInterfaceEdit.actOKExecute(Sender: TObject);

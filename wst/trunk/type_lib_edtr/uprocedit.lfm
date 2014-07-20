@@ -74,6 +74,7 @@ object fProcEdit: TfProcEdit
           RowSelect = True
           TabOrder = 0
           ViewStyle = vsReport
+          OnDblClick = edtParamsDblClick
         end
       end
       object edtFunction: TCheckBox

@@ -75,6 +75,7 @@ type
     procedure actPropDeleteExecute(Sender : TObject);
     procedure actPropEditExecute(Sender : TObject);
     procedure actPropEditUpdate(Sender : TObject);
+    procedure edtFieldsDblClick(Sender : TObject);
     procedure PCChange(Sender : TObject);
   private
     FUpdateType : TEditType;
@@ -158,6 +159,15 @@ end;
 procedure TfRecordEdit.actPropEditUpdate(Sender : TObject);
 begin
   TAction(Sender).Enabled := Assigned(edtFields.ItemFocused);
+end;
+
+procedure TfRecordEdit.edtFieldsDblClick(Sender : TObject);
+begin
+  if actPropEdit.Enabled then begin
+    actPropEdit.Execute();
+  end else if actPropAdd.Enabled then begin
+    actPropAdd.Execute();
+  end;
 end;
 
 procedure TfRecordEdit.PCChange(Sender : TObject);
