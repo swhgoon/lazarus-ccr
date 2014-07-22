@@ -23,7 +23,7 @@ uses
 {$ENDIF}
   TypInfo,
   base_service_intf, server_service_intf,
-  library_imp_utils, parserutils;
+  library_imp_utils, parserutils, imp_utils;
 
 type
 
@@ -135,6 +135,9 @@ type
   TTest_Procs = class(TTestCase)
   published
     procedure test_GetToken();
+{$IFNDEF WST_HAS_STRICT_DELIMITER}
+    procedure test_SetListData();
+{$ENDIF WST_HAS_STRICT_DELIMITER}
   end;
 
 implementation
@@ -922,6 +925,27 @@ begin
   do_tests('##');
   do_tests('#<#');
 end;
+
+{$IFNDEF WST_HAS_STRICT_DELIMITER}
+procedure TTest_Procs.test_SetListData();
+var
+  ls : TStringList;
+begin
+  ls := TStringList.Create();
+  try
+    SetListData(ls,'item1=azerty;item2=http: 123;item3=a b c');
+    CheckEquals(3,ls.Count,'Items count');
+    CheckEquals('item1',ls.Names[0]);
+      CheckEquals('azerty',ls.ValueFromIndex[0]);
+    CheckEquals('item2',ls.Names[1]);
+      CheckEquals('http: 123',ls.ValueFromIndex[1]);
+    CheckEquals('item3',ls.Names[2]);
+      CheckEquals('a b c',ls.ValueFromIndex[2]);
+  finally
+    ls.Free();
+  end;
+end;
+{$ENDIF WST_HAS_STRICT_DELIMITER}
 
 initialization
   ListToRelease := TInterfaceList.Create();

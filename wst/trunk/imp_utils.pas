@@ -63,7 +63,10 @@ Type
   function LoadBufferFromFile(const AFileName : string) : TByteDynArray;
   function LoadBufferFromStream(AStream : TStream) : TByteDynArray;
 
-  
+{$IFNDEF WST_HAS_STRICT_DELIMITER}
+  procedure SetListData(AList : TStringList; const AText : string);
+{$ENDIF WST_HAS_STRICT_DELIMITER}
+
 implementation
 
 function IsStrEmpty(Const AStr:String):Boolean;
@@ -256,6 +259,33 @@ begin
   end;
 end;
 
+{$IFNDEF WST_HAS_STRICT_DELIMITER}
+procedure SetListData(AList : TStringList; const AText : string);
+var
+  i, oldPos, c : Integer;
+  s : string;
+begin
+  c := Length(AText);
+  oldPos := 1;
+  s := '';
+  i := 1;
+  while (i <= c) do begin
+    if (AText[i] = PROP_LIST_DELIMITER) then begin
+      s := Copy(AText,oldPos,(i-oldPos));
+      if (s <> '') then
+        AList.Add(s);
+      oldPos := i+1;
+    end;
+    i := i+1;
+  end;
+  if (i > oldPos) then begin                      
+    s := Copy(AText,oldPos,(i-oldPos));
+    if (s <> '') then
+      AList.Add(s);
+  end;
+end;
+{$ENDIF WST_HAS_STRICT_DELIMITER}
+
 procedure TPublishedPropertyManager.SetProperties(const APropsStr: string);
 var
   lst : TStringList;
@@ -265,10 +295,14 @@ begin
     Exit;
   lst := TStringList.Create();
   Try
+{$IFDEF WST_HAS_STRICT_DELIMITER}
     lst.QuoteChar := #0;
     lst.Delimiter := PROP_LIST_DELIMITER;
     lst.StrictDelimiter := True;
     lst.DelimitedText := APropsStr;
+{$ELSE WST_HAS_STRICT_DELIMITER}
+    SetListData(lst,APropsStr);
+{$ENDIF WST_HAS_STRICT_DELIMITER}
     for i := 0 to Pred(lst.Count) do
       SetProperty(lst.Names[i],lst.Values[lst.Names[i]]);
   Finally
