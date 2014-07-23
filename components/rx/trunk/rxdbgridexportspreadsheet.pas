@@ -51,6 +51,8 @@ procedure Register;
 implementation
 uses fpsallformats, LCLType, math, LazUTF8, rxdconst;
 
+{$R rxdbgridexportspreadsheet.res}
+
 procedure Register;
 begin
   RegisterComponents('RX DBAware',[TRxDBGridExportSpreadSheet]);
