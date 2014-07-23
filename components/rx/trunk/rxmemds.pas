@@ -1661,7 +1661,7 @@ end;
 procedure TRxMemoryData.SortOnFieldsEx(const FieldNames: string;
   CaseInsensitive: Boolean; Asc: array of boolean);
 begin
-
+  { TODO -oalexs : Необходимо написать сортировку по массиву }
 end;
 
 procedure TRxMemoryData.Sort;

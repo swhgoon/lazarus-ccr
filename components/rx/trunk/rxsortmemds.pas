@@ -127,7 +127,8 @@ procedure TRxMemoryDataSortEngine.SortList(ListField: string;
   ADataSet: TDataSet; Asc: array of boolean; SortOptions: TRxSortEngineOptions);
 begin
   if Assigned(ADataSet) then
-    (ADataSet as TRxMemoryData).SortOnFieldsEx(ListField, seoCaseInsensitiveSort in SortOptions, Asc);
+//    (ADataSet as TRxMemoryData).SortOnFieldsEx(ListField, seoCaseInsensitiveSort in SortOptions, Asc);
+    (ADataSet as TRxMemoryData).SortOnFields(ListField, seoCaseInsensitiveSort in SortOptions, Asc[0]);
 end;
 
 initialization
