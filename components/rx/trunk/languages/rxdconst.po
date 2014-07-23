@@ -443,6 +443,10 @@ msgstr ""
 msgid "find"
 msgstr ""
 
+#: rxdconst.stoolsexportspeadsheet
+msgid "Export to speadsheet"
+msgstr ""
+
 #: rxdconst.sunknownfieldtype
 msgid "SUnknownFieldType %s"
 msgstr ""

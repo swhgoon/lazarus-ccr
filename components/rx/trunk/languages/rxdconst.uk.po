@@ -454,6 +454,10 @@ msgstr "Помилка сервера"
 msgid "find"
 msgstr "Пошук"
 
+#: rxdconst.stoolsexportspeadsheet
+msgid "Export to speadsheet"
+msgstr ""
+
 #: rxdconst.sunknownfieldtype
 msgid "SUnknownFieldType %s"
 msgstr "Не визначений тип даних для поля %s"

@@ -447,6 +447,10 @@ msgstr "Error del Servidor"
 msgid "find"
 msgstr "buscar"
 
+#: rxdconst.stoolsexportspeadsheet
+msgid "Export to speadsheet"
+msgstr ""
+
 #: rxdconst.sunknownfieldtype
 msgid "SUnknownFieldType %s"
 msgstr "STipoCampoDesconocido %s"

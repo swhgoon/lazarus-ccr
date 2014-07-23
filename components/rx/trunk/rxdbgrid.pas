@@ -54,6 +54,7 @@ type
   //forward declarations
   TRxDBGrid = class;
   TRxColumn = class;
+  TRxDBGridAbstractTools = class;
 
 
   TRxQuickSearchNotifyEvent = procedure(Sender: TObject; Field: TField;
@@ -617,6 +618,8 @@ type
     procedure DoClearInvalidTitle;
     procedure DoDrawInvalidTitle;
     procedure DoSetColEdtBtn;
+    procedure AddTools(ATools:TRxDBGridAbstractTools);
+    procedure RemoveTools(ATools:TRxDBGridAbstractTools);
   protected
     procedure CollumnSortListUpdate;
     procedure CollumnSortListClear;
@@ -859,6 +862,28 @@ type
     property OnDisplayLookup: TDisplayLookup read F_DisplayLookup write F_DisplayLookup;
   end;
 
+  { TRxDBGridAbstractTools }
+
+  TRxDBGridAbstractTools = class(TComponent)
+  private
+    FOnAfterExecute: TNotifyEvent;
+    FOnBeforeExecute: TNotifyEvent;
+    procedure ExecTools(Sender:TObject);
+  protected
+    FRxDBGrid: TRxDBGrid;
+    FCaption:string;
+    procedure SetRxDBGrid(AValue: TRxDBGrid);
+    function DoExecTools:boolean; virtual;
+  public
+    constructor Create(AOwner: TComponent); override;
+    function Execute:boolean;
+  published
+    property RxDBGrid:TRxDBGrid read FRxDBGrid write SetRxDBGrid;
+    property Caption:string read FCaption write FCaption;
+    property OnBeforeExecute:TNotifyEvent read FOnBeforeExecute write FOnBeforeExecute;
+    property OnAfterExecute:TNotifyEvent read FOnAfterExecute write FOnAfterExecute;
+  end;
+
 procedure RegisterRxDBGridSortEngine(RxDBGridSortEngineClass: TRxDBGridSortEngineClass;
   DataSetClassName: string);
 
@@ -959,6 +984,44 @@ type
     //procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
     procedure EditingDone; override;
   end;
+
+{ TRxDBGridAbstractTools }
+
+procedure TRxDBGridAbstractTools.SetRxDBGrid(AValue: TRxDBGrid);
+begin
+  if FRxDBGrid=AValue then Exit;
+  if Assigned(FRxDBGrid) then
+    FRxDBGrid.RemoveTools(Self);
+  FRxDBGrid:=AValue;
+  if Assigned(FRxDBGrid) then
+    FRxDBGrid.AddTools(Self);
+end;
+
+function TRxDBGridAbstractTools.DoExecTools: boolean;
+begin
+  //
+end;
+
+procedure TRxDBGridAbstractTools.ExecTools(Sender: TObject);
+begin
+  Execute;
+end;
+
+constructor TRxDBGridAbstractTools.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FCaption:=Name;
+end;
+
+function TRxDBGridAbstractTools.Execute: boolean;
+begin
+  if Assigned(FOnBeforeExecute) then
+    FOnBeforeExecute(Self);
+  Result:=DoExecTools;
+  if Assigned(FOnAfterExecute) then
+    FOnAfterExecute(Self);
+end;
+
 
 { TRxDBGridCollumnConstraint }
 
@@ -2626,7 +2689,10 @@ begin
   if Assigned(Datalink) and (AComponent = DataSource) and (Operation = opRemove) then
   begin
     ShowMessage('i');
-  end;
+  end
+  else
+  if (Operation = opRemove) and (AComponent is TRxDBGridAbstractTools) then
+    RemoveTools(TRxDBGridAbstractTools(AComponent));
 end;
 
 function TRxDBGrid.UpdateRowsHeight: integer;
@@ -2778,6 +2844,37 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TRxDBGrid.AddTools(ATools: TRxDBGridAbstractTools);
+var
+  i:integer;
+  R: TMenuItem;
+begin
+  for i:=8 to F_PopupMenu.Items.Count - 1 do
+    if F_PopupMenu.Items[i].Tag = IntPtr(ATools) then
+      exit;
+
+  R := TMenuItem.Create(F_PopupMenu);
+  F_PopupMenu.Items.Add(R);
+  R.Caption := ATools.FCaption;
+  R.OnClick := @(ATools.ExecTools);
+  R.Tag:=IntPtr(ATools);
+end;
+
+procedure TRxDBGrid.RemoveTools(ATools: TRxDBGridAbstractTools);
+var
+  i:integer;
+  R: TMenuItem;
+begin
+  for i:=8 to F_PopupMenu.Items.Count - 1 do
+    if F_PopupMenu.Items[i].Tag = IntPtr(ATools) then
+    begin
+      R:=F_PopupMenu.Items[i];
+      F_PopupMenu.Items.Delete(i);
+      R.Free;
+      exit;
+    end;
 end;
 
 

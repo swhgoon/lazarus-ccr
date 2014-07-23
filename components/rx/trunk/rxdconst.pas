@@ -172,6 +172,8 @@ resourcestring
 
   sUnknownXMLDatasetFormat = 'Unknown XML Dataset format';
 
+  sToolsExportSpeadSheet   = 'Export to speadsheet';
+
 const
   { The following strings should not be localized }
   sAction       = '.Action';
@@ -191,6 +193,7 @@ const
   sIndex        = '.Index';
   sSortMarker   = '.SortMarker';
   sSortField    = '.SortField';
+
 
 implementation
 

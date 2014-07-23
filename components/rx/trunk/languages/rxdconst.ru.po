@@ -217,7 +217,7 @@ msgstr "Вы хотите повторить попытку соединения
 
 #: rxdconst.srxallfields
 msgid "All fields"
-msgstr ""
+msgstr "Все поля"
 
 #: rxdconst.srxascendign
 msgid "Ascendign"
@@ -333,15 +333,15 @@ msgstr "По убыванию"
 
 #: rxdconst.srxfieldslookupdisplay
 msgid "Fields as LookupDisplay"
-msgstr ""
+msgstr "Поля в свойстве LookupDisplay"
 
 #: rxdconst.srxfillfieldslookupdisp
 msgid "Fill fields in LookupDisplay property"
-msgstr ""
+msgstr "Заполните список для поля LookupDisplay"
 
 #: rxdconst.srxfillsortfieldsdisp
 msgid "Fill fields in SortField property"
-msgstr ""
+msgstr "Заполните список для поля SortField"
 
 #: rxdconst.srxfilterformapply
 msgctxt "rxdconst.srxfilterformapply"
@@ -444,6 +444,10 @@ msgstr "Ошибка сервера"
 #: rxdconst.ssetkeydata
 msgid "find"
 msgstr "поиск"
+
+#: rxdconst.stoolsexportspeadsheet
+msgid "Export to speadsheet"
+msgstr "Экспорт в электронную таблицу"
 
 #: rxdconst.sunknownfieldtype
 msgid "SUnknownFieldType %s"
