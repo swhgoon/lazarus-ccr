@@ -85,7 +85,7 @@ type
 procedure Register;
 
 implementation
-uses fpsallformats, LCLType, Forms, math, LazUTF8, rxdconst, Controls,
+uses fpsallformats, LCLType, Forms, math, LazUTF8, rxdconst, Controls, LCLIntf,
   RxDBGridExportSpreadSheet_ParamsUnit;
 
 {$R rxdbgridexportspreadsheet.res}
@@ -288,6 +288,9 @@ begin
     FDataSet.Bookmark:=P;
     FDataSet.EnableControls;
   end;
+
+  if Result then
+    OpenDocument(FileName);
 end;
 
 function TRxDBGridExportSpreadSheet.DoSetupTools: boolean;
