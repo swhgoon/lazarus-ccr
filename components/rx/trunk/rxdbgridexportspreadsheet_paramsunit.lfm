@@ -1,10 +1,10 @@
 object RxDBGridExportSpreadSheet_ParamsForm: TRxDBGridExportSpreadSheet_ParamsForm
   Left = 732
-  Height = 266
+  Height = 267
   Top = 338
   Width = 548
   Caption = 'Export params'
-  ClientHeight = 266
+  ClientHeight = 267
   ClientWidth = 548
   OnCreate = FormCreate
   Position = poScreenCenter
@@ -56,11 +56,11 @@ object RxDBGridExportSpreadSheet_ParamsForm: TRxDBGridExportSpreadSheet_ParamsFo
   end
   object Label3: TLabel
     AnchorSideLeft.Control = Label4
-    AnchorSideTop.Control = Label2
+    AnchorSideTop.Control = cbOverwriteExisting
     AnchorSideTop.Side = asrBottom
     Left = 280
     Height = 21
-    Top = 97
+    Top = 126
     Width = 71
     BorderSpacing.Around = 6
     Caption = 'Page name'
@@ -72,30 +72,29 @@ object RxDBGridExportSpreadSheet_ParamsForm: TRxDBGridExportSpreadSheet_ParamsFo
     AnchorSideTop.Side = asrBottom
     Left = 286
     Height = 31
-    Top = 124
+    Top = 153
     Width = 160
     BorderSpacing.Around = 6
     TabOrder = 1
   end
-  object CheckBox1: TCheckBox
+  object cbExportColumnFooter: TCheckBox
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = Label2
+    AnchorSideTop.Control = cbExportColumnHeader
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 23
-    Top = 97
+    Top = 155
     Width = 161
     BorderSpacing.Around = 6
     Caption = 'Export column footer'
     TabOrder = 2
   end
-  object CheckBox2: TCheckBox
+  object cbOpenAfterExport: TCheckBox
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = CheckBox1
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 23
-    Top = 126
+    Top = 97
     Width = 140
     BorderSpacing.Around = 6
     Caption = 'Open after export'
@@ -104,7 +103,7 @@ object RxDBGridExportSpreadSheet_ParamsForm: TRxDBGridExportSpreadSheet_ParamsFo
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 41
-    Top = 219
+    Top = 220
     Width = 536
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -117,21 +116,21 @@ object RxDBGridExportSpreadSheet_ParamsForm: TRxDBGridExportSpreadSheet_ParamsFo
     TabOrder = 4
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
-  object CheckBox3: TCheckBox
+  object cbExportColumnHeader: TCheckBox
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = CheckBox2
+    AnchorSideTop.Control = cbOpenAfterExport
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 23
-    Top = 155
+    Top = 126
     Width = 165
     BorderSpacing.Around = 6
     Caption = 'Export column header'
     TabOrder = 5
   end
-  object CheckBox4: TCheckBox
+  object cbExportCellColors: TCheckBox
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = CheckBox3
+    AnchorSideTop.Control = cbExportColumnFooter
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 23
@@ -150,5 +149,17 @@ object RxDBGridExportSpreadSheet_ParamsForm: TRxDBGridExportSpreadSheet_ParamsFo
     Top = 0
     Width = 1
     ParentColor = False
+  end
+  object cbOverwriteExisting: TCheckBox
+    AnchorSideLeft.Control = Label4
+    AnchorSideTop.Control = Label2
+    AnchorSideTop.Side = asrBottom
+    Left = 280
+    Height = 23
+    Top = 97
+    Width = 166
+    BorderSpacing.Around = 6
+    Caption = 'Overwrite existing file'
+    TabOrder = 7
   end
 end

@@ -1,4 +1,4 @@
-{ vclutils unit
+{ RxDBGridExportSpreadSheet unit
 
   Copyright (C) 2005-2013 Lagunov Aleksey alexs@yandex.ru
   original conception from rx library for Delphi (c)
@@ -51,9 +51,12 @@ type
 
   { TRxDBGridExportSpeadSheet }
 
+  { TRxDBGridExportSpreadSheet }
+
   TRxDBGridExportSpreadSheet = class(TRxDBGridAbstractTools)
   private
     FFileName: string;
+    FOpenAfterExport: boolean;
     FOptions: TRxDBGridExportSpreadSheetOptions;
     FPageName: string;
   protected
@@ -69,18 +72,21 @@ type
     procedure DoExportFooter;
     procedure DoExportColWidth;
     function DoExecTools:boolean;override;
+    function DoSetupTools:boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
     property FileName:string read FFileName write FFileName;
     property PageName:string read FPageName write FPageName;
     property Options:TRxDBGridExportSpreadSheetOptions read FOptions write FOptions;
+    property OpenAfterExport:boolean read FOpenAfterExport write FOpenAfterExport default false;
   end;
 
 procedure Register;
 
 implementation
-uses fpsallformats, LCLType, math, LazUTF8, rxdconst;
+uses fpsallformats, LCLType, Forms, math, LazUTF8, rxdconst, Controls,
+  RxDBGridExportSpreadSheet_ParamsUnit;
 
 {$R rxdbgridexportspreadsheet.res}
 
@@ -246,6 +252,7 @@ constructor TRxDBGridExportSpreadSheet.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FCaption:=sToolsExportSpeadSheet;
+  FOpenAfterExport:=false;
 end;
 
 function TRxDBGridExportSpreadSheet.DoExecTools: boolean;
@@ -281,6 +288,39 @@ begin
     FDataSet.Bookmark:=P;
     FDataSet.EnableControls;
   end;
+end;
+
+function TRxDBGridExportSpreadSheet.DoSetupTools: boolean;
+var
+  F:TRxDBGridExportSpreadSheet_ParamsForm;
+begin
+  F:=TRxDBGridExportSpreadSheet_ParamsForm.Create(Application);
+  F.FileNameEdit1.FileName:=FFileName;
+  F.cbOpenAfterExport.Checked:=FOpenAfterExport;
+  F.cbExportColumnFooter.Checked:=ressExportFooter in FOptions;
+  F.cbExportColumnHeader.Checked:=ressExportTitle in FOptions;
+  F.cbExportCellColors.Checked:=ressExportColors in FOptions;
+  F.cbOverwriteExisting.Checked:=ressOverwriteExisting in FOptions;
+  F.edtPageName.Text:=FPageName;
+
+  Result:=F.ShowModal = mrOk;
+  if Result then
+  begin
+    FOpenAfterExport:=F.cbOpenAfterExport.Checked;
+    FFileName:=F.FileNameEdit1.FileName;
+    FPageName:=F.edtPageName.Text;
+
+    FOptions:=[];
+    if F.cbExportColumnFooter.Checked then
+      FOptions :=FOptions + [ressExportFooter];
+    if F.cbExportColumnHeader.Checked then
+      FOptions :=FOptions + [ressExportTitle];
+    if F.cbExportCellColors.Checked then
+      FOptions :=FOptions + [ressExportColors];
+    if F.cbOverwriteExisting.Checked then
+      FOptions :=FOptions + [ressOverwriteExisting];
+  end;
+  F.Free;
 end;
 
 end.

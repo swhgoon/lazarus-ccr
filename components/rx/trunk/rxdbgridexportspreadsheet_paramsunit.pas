@@ -1,4 +1,4 @@
-{ vclutils unit
+{ RxDBGridExportSpreadSheet_ParamsUnit unit
 
   Copyright (C) 2005-2013 Lagunov Aleksey alexs@yandex.ru
   original conception from rx library for Delphi (c)
@@ -45,10 +45,11 @@ type
 
   TRxDBGridExportSpreadSheet_ParamsForm = class(TForm)
     ButtonPanel1: TButtonPanel;
-    CheckBox1: TCheckBox;
-    CheckBox2: TCheckBox;
-    CheckBox3: TCheckBox;
-    CheckBox4: TCheckBox;
+    cbExportColumnFooter: TCheckBox;
+    cbOpenAfterExport: TCheckBox;
+    cbExportColumnHeader: TCheckBox;
+    cbExportCellColors: TCheckBox;
+    cbOverwriteExisting: TCheckBox;
     edtPageName: TEdit;
     FileNameEdit1: TFileNameEdit;
     Label1: TLabel;
@@ -61,9 +62,6 @@ type
   public
     { public declarations }
   end;
-
-var
-  RxDBGridExportSpreadSheet_ParamsForm: TRxDBGridExportSpreadSheet_ParamsForm;
 
 implementation
 

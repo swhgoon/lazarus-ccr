@@ -868,18 +868,21 @@ type
   private
     FOnAfterExecute: TNotifyEvent;
     FOnBeforeExecute: TNotifyEvent;
+    FShowSetupForm: boolean;
     procedure ExecTools(Sender:TObject);
   protected
     FRxDBGrid: TRxDBGrid;
     FCaption:string;
     procedure SetRxDBGrid(AValue: TRxDBGrid);
     function DoExecTools:boolean; virtual;
+    function DoSetupTools:boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     function Execute:boolean;
   published
     property RxDBGrid:TRxDBGrid read FRxDBGrid write SetRxDBGrid;
     property Caption:string read FCaption write FCaption;
+    property ShowSetupForm:boolean read FShowSetupForm write FShowSetupForm default false;
     property OnBeforeExecute:TNotifyEvent read FOnBeforeExecute write FOnBeforeExecute;
     property OnAfterExecute:TNotifyEvent read FOnAfterExecute write FOnAfterExecute;
   end;
@@ -1002,6 +1005,11 @@ begin
   //
 end;
 
+function TRxDBGridAbstractTools.DoSetupTools: boolean;
+begin
+  Result:=true;
+end;
+
 procedure TRxDBGridAbstractTools.ExecTools(Sender: TObject);
 begin
   Execute;
@@ -1011,13 +1019,21 @@ constructor TRxDBGridAbstractTools.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FCaption:=Name;
+  FShowSetupForm:=false;
 end;
 
 function TRxDBGridAbstractTools.Execute: boolean;
 begin
+  Result:=false;
   if Assigned(FOnBeforeExecute) then
     FOnBeforeExecute(Self);
-  Result:=DoExecTools;
+
+  if FShowSetupForm then
+    Result:=DoSetupTools;
+
+  if Result then
+    Result:=DoExecTools;
+
   if Assigned(FOnAfterExecute) then
     FOnAfterExecute(Self);
 end;
