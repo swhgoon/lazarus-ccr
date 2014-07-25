@@ -1,6 +1,6 @@
-{ rxxpman unit
+{ vclutils unit
 
-  Copyright (C) 2005-2010 Lagunov Aleksey alexs@yandex.ru and Lazarus team
+  Copyright (C) 2005-2013 Lagunov Aleksey alexs@yandex.ru
   original conception from rx library for Delphi (c)
 
   This library is free software; you can redistribute it and/or modify it
@@ -29,31 +29,52 @@
   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 }
 
-unit rxxpman;
+unit RxDBGridExportSpreadSheet_ParamsUnit;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs;
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  EditBtn, ButtonPanel;
 
 type
-  TRXXPManifest = class(TComponent)
+
+  { TRxDBGridExportSpreadSheet_ParamsForm }
+
+  TRxDBGridExportSpreadSheet_ParamsForm = class(TForm)
+    ButtonPanel1: TButtonPanel;
+    CheckBox1: TCheckBox;
+    CheckBox2: TCheckBox;
+    CheckBox3: TCheckBox;
+    CheckBox4: TCheckBox;
+    edtPageName: TEdit;
+    FileNameEdit1: TFileNameEdit;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
+    procedure FormCreate(Sender: TObject);
   private
-    { Private declarations }
-  protected
-    { Protected declarations }
+    { private declarations }
   public
-    { Public declarations }
-  published
-    { Published declarations }
+    { public declarations }
   end;
+
+var
+  RxDBGridExportSpreadSheet_ParamsForm: TRxDBGridExportSpreadSheet_ParamsForm;
 
 implementation
 
-{$IFDEF WIN32}
-{.$R WindowsXP.RES}
-{$ENDIF}
+{$R *.lfm}
+
+{ TRxDBGridExportSpreadSheet_ParamsForm }
+
+procedure TRxDBGridExportSpreadSheet_ParamsForm.FormCreate(Sender: TObject);
+begin
+  //
+end;
 
 end.
+

@@ -9,12 +9,20 @@
       </SearchPaths>
     </CompilerOptions>
     <Version Minor="1" Release="1" Build="1"/>
-    <Files Count="1">
+    <Files Count="3">
       <Item1>
         <Filename Value="rxdbgridexportspreadsheet.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="RxDBGridExportSpreadSheet"/>
       </Item1>
+      <Item2>
+        <Filename Value="rxdbgridexportspreadsheet_paramsunit.lfm"/>
+        <Type Value="LFM"/>
+      </Item2>
+      <Item3>
+        <Filename Value="rxdbgridexportspreadsheet_paramsunit.pas"/>
+        <UnitName Value="RxDBGridExportSpreadSheet_ParamsUnit"/>
+      </Item3>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">

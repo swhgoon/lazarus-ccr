@@ -7,7 +7,8 @@ unit rxdbgrid_export_spreadsheet;
 interface
 
 uses
-  RxDBGridExportSpreadSheet, LazarusPackageIntf;
+  RxDBGridExportSpreadSheet, RxDBGridExportSpreadSheet_ParamsUnit, 
+  LazarusPackageIntf;
 
 implementation
 
