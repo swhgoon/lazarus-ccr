@@ -69,6 +69,9 @@ type
   TGetCellPropsEvent = procedure(Sender: TObject; Field: TField;
     AFont: TFont; var Background: TColor) of object;
 
+//Freeman35 added
+  TOnRxCalcFooterValues = procedure(Sender: TObject; Column: TRxColumn; var AValue : Variant) of object;
+
 {$IFDEF RxDBGridDepricatedProps}
   //TRxDBGridAllowedOperation = (aoInsert, aoUpdate, aoDelete, aoAppend);
   //TRxDBGridAllowedOperations = set of TRxDBGridAllowedOperation;
@@ -514,6 +517,7 @@ type
 
     FOnGetBtnParams: TGetBtnParamsEvent;
     FOnFiltred: TNotifyEvent;
+    FOnRxCalcFooterValues :TOnRxCalcFooterValues;
     //auto sort support
 
     FMarkerUp   : TBitmap;
@@ -859,6 +863,7 @@ type
     property OnStartDock;
     property OnStartDrag;
     property OnTitleClick;
+    property OnRxCalcFooterValues: TOnRxCalcFooterValues read FOnRxCalcFooterValues write FOnRxCalcFooterValues;
     property OnUserCheckboxBitmap;
     property OnUTF8KeyPress;
 
@@ -4228,10 +4233,26 @@ var
   SaveAfterScroll:TDataSetNotifyEvent;
   SaveBeforeScroll:TDataSetNotifyEvent;
   RCol:TRxColumn;
+  AValue:Variant;
 begin
   if (not (FFooterOptions.Active and DatalinkActive)) or (Columns.Count = 0) or (gsAddingAutoColumns in GridStatus)  then
     Exit;
   //Дополнительно проверим - а стоит ли делать пробег по данным - есть ли агрегатные функции
+  if Assigned(OnRxCalcFooterValues)then
+  begin
+    Inc(FInProcessCalc);
+    for i := 0 to Columns.Count - 1 do
+    begin
+      RCol := TRxColumn(Columns[i]);
+      RCol.Footer.ResetTestValue;
+      AValue:=Null;
+      OnRxCalcFooterValues(Self, RCol, AValue);
+      if AValue<>null then RCol.Footer.FTestValue := AValue;
+    end;
+    Dec(FInProcessCalc);
+    Exit;
+  end;
+
   APresent := False;
   for i := 0 to Columns.Count - 1 do
   begin
