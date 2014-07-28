@@ -74,7 +74,7 @@ msgid "Field '%s' not used in filter expression"
 msgstr ""
 
 #: rxdconst.sexprbadnulltest
-msgid "NULL-values enabled in '=' Ð¸ '<>'"
+msgid "NULL-values enabled in '=' и '<>'"
 msgstr ""
 
 #: rxdconst.sexprexpected

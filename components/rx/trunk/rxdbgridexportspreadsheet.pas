@@ -31,7 +31,7 @@
 
 unit RxDBGridExportSpreadSheet;
 
-{$mode objfpc}{$H+}
+{$I rx.inc}
 
 interface
 
@@ -264,7 +264,11 @@ begin
     exit;
   FDataSet:=FRxDBGrid.DataSource.DataSet;
   FDataSet.DisableControls;
+  {$IFDEF NoAutomatedBookmark}
+  P:=FDataSet.GetBookmark;
+  {$ELSE}
   P:=FDataSet.Bookmark;
+  {$ENDIF}
 
   FWorkbook := TsWorkbook.Create;
   FWorksheet := FWorkbook.AddWorksheet(FPageName);
@@ -285,7 +289,12 @@ begin
     Result:=true;
   finally
     FWorkbook.Free;
+    {$IFDEF NoAutomatedBookmark}
+    FDataSet.GotoBookmark(P);
+    FDataSet.FreeBookmark(P);
+    {$ELSE}
     FDataSet.Bookmark:=P;
+    {$ENDIF}
     FDataSet.EnableControls;
   end;
 
