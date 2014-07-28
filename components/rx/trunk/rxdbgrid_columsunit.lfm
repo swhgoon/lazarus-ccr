@@ -126,7 +126,7 @@ object rxDBGridColumsForm: TrxDBGridColumsForm
     end
     object btnApply: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = -63
+      Left = -205
       Height = 30
       Top = 0
       Width = 71
@@ -173,6 +173,7 @@ object rxDBGridColumsForm: TrxDBGridColumsForm
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goEditing, goRowSelect, goRowHighlight]
     TabOrder = 1
     TitleStyle = tsNative
+    OnClick = StringGrid1Click
     OnValidateEntry = StringGrid1ValidateEntry
     ColWidths = (
       30

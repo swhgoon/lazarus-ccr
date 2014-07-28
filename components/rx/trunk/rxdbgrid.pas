@@ -74,6 +74,9 @@ type
   //TRxDBGridAllowedOperations = set of TRxDBGridAllowedOperation;
 {$ENDIF}
 
+  TRxColumnOption = (coCustomizeVisible, coCustomizeWidth);
+  TRxColumnOptions = set of TRxColumnOption;
+
   TRxColumnEditButtonStyle = (ebsDropDownRx, ebsEllipsisRx, ebsGlyphRx, ebsUpDownRx,
     ebsPlusRx, ebsMinusRx);
 
@@ -417,6 +420,7 @@ type
     FKeyList: TStrings;
     FNotInKeyListIndex: integer;
     FOnDrawColumnCell: TDrawColumnCellEvent;
+    FOptions: TRxColumnOptions;
     FSortFields: string;
     FSortOrder: TSortMarker;
     FSortPosition: integer;
@@ -443,18 +447,18 @@ type
     property SortOrder: TSortMarker read FSortOrder write FSortOrder;
     property SortPosition: integer read FSortPosition;
   published
-    property SortFields: string read FSortFields write FSortFields;
-    property Footer: TRxColumnFooter read GetFooter write SetFooter;
     property Constraints:TRxDBGridCollumnConstraints read GetConstraints write SetConstraints;
-    property ImageList: TImageList read FImageList write SetImageList;
-    property KeyList: TStrings read GetKeyList write SetKeyList;
-    property NotInKeyListIndex: integer read FNotInKeyListIndex
-      write SetNotInKeyListIndex default -1;
-    property Filter: TRxColumnFilter read FFilter write SetFilter;
     property DirectInput : boolean read FDirectInput write FDirectInput default true;
     property EditButtons:TRxColumnEditButtons read FEditButtons write SetEditButtons;
-    property OnDrawColumnCell: TDrawColumnCellEvent read FOnDrawColumnCell write FOnDrawColumnCell;
+    property Filter: TRxColumnFilter read FFilter write SetFilter;
+    property Footer: TRxColumnFooter read GetFooter write SetFooter;
+    property ImageList: TImageList read FImageList write SetImageList;
+    property KeyList: TStrings read GetKeyList write SetKeyList;
+    property NotInKeyListIndex: integer read FNotInKeyListIndex write SetNotInKeyListIndex default -1;
+    property Options:TRxColumnOptions read FOptions write FOptions default [coCustomizeVisible, coCustomizeWidth];
+    property SortFields: string read FSortFields write FSortFields;
     property WordWrap:boolean read FWordWrap write SetWordWrap default false;
+    property OnDrawColumnCell: TDrawColumnCellEvent read FOnDrawColumnCell write FOnDrawColumnCell;
   end;
 
   { TRxDbGridColumns }
@@ -5164,6 +5168,7 @@ begin
   FFilter := TRxColumnFilter.Create(Self);
   FDirectInput := true;
   FEditButtons:=TRxColumnEditButtons.Create(Self);
+  FOptions:=[coCustomizeVisible, coCustomizeWidth];
 end;
 
 destructor TRxColumn.Destroy;

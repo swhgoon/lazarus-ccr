@@ -53,6 +53,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure sbUpClick(Sender: TObject);
     procedure sbDownClick(Sender: TObject);
+    procedure StringGrid1Click(Sender: TObject);
     procedure StringGrid1ValidateEntry(sender: TObject; aCol, aRow: Integer;
       const OldValue: string; var NewValue: String);
   private
@@ -159,6 +160,21 @@ begin
   end;
 end;
 
+procedure TrxDBGridColumsForm.StringGrid1Click(Sender: TObject);
+var
+  i:integer;
+  C:TRxColumn;
+begin
+  i:=StringGrid1.Row;
+
+  C:=FGrid.ColumnByCaption(StringGrid1.Cells[1, i]);
+  if coCustomizeVisible in C.Options then
+    StringGrid1.Options:=StringGrid1.Options + [goEditing]
+  else
+    StringGrid1.Options:=StringGrid1.Options - [goEditing]
+  ;
+end;
+
 procedure TrxDBGridColumsForm.StringGrid1ValidateEntry(sender: TObject; aCol,
   aRow: Integer; const OldValue: string; var NewValue: String);
 begin
@@ -169,20 +185,24 @@ end;
 procedure TrxDBGridColumsForm.SetGrid(AGrid: TRxDBGrid);
 var
   i:integer;
+  C:TRxColumn;
 begin
   if AGrid=FGrid then exit;
   FGrid:=AGrid;
   if Assigned(AGrid) then
   begin
-    StringGrid1.RowCount:=AGrid.Columns.Count+1;
+    StringGrid1.RowCount:=AGrid.Columns.Count + 1;
+
     for i:=0 to AGrid.Columns.Count-1 do
     begin
-      StringGrid1.Cells[0, i+1]:=BoolToStr(AGrid.Columns[i].Visible, '1', '0');
-      StringGrid1.Cells[1, i+1]:=AGrid.Columns[i].Title.Caption;
-      if AGrid.Columns[i].Width = 0 then
-        StringGrid1.Cells[2, i+1]:=IntToStr(AGrid.DefaultColWidth)
+      C:=AGrid.Columns[i] as TRxColumn;
+
+      StringGrid1.Cells[0, i + 1]:=BoolToStr(C.Visible, '1', '0');
+      StringGrid1.Cells[1, i + 1]:=C.Title.Caption;
+      if C.Width = 0 then
+        StringGrid1.Cells[2, i + 1]:=IntToStr(AGrid.DefaultColWidth)
       else
-        StringGrid1.Cells[2, i+1]:=IntToStr(AGrid.Columns[i].Width);
+        StringGrid1.Cells[2, i + 1]:=IntToStr(C.Width);
     end;
   end
   else
