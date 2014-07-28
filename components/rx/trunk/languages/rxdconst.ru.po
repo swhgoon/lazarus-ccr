@@ -75,8 +75,8 @@ msgstr "Поле '%s' не может быть использовано в вы�
 
 #: rxdconst.sexprbadnulltest
 #, fuzzy
-#| msgid "NULL-values enabled in '=' Ð¸ '<>'"
-msgid "NULL-values enabled in '=' и '<>'"
+#| msgid "NULL-values enabled in '=' и '<>'"
+msgid "NULL-values enabled in '=' Ð¸ '<>'"
 msgstr "NULL-значения разрешены только в выражениях '=' и '<>'"
 
 #: rxdconst.sexprexpected
