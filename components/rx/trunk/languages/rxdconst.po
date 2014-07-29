@@ -65,6 +65,22 @@ msgstr ""
 msgid "Error message"
 msgstr ""
 
+#: rxdconst.sexportcellcolors
+msgid "Export cell colors"
+msgstr ""
+
+#: rxdconst.sexportcolumnfooter
+msgid "Export column footer"
+msgstr ""
+
+#: rxdconst.sexportcolumnheader
+msgid "Export column header"
+msgstr ""
+
+#: rxdconst.sexportfilename
+msgid "Export file name"
+msgstr ""
+
 #: rxdconst.sexprbadcompare
 msgid "Compare opertion need fielad and const"
 msgstr ""
@@ -179,6 +195,18 @@ msgstr ""
 
 #: rxdconst.soldpasswordlabel
 msgid "&Old password:"
+msgstr ""
+
+#: rxdconst.sopenafterexport
+msgid "Open after export"
+msgstr ""
+
+#: rxdconst.soverwriteexisting
+msgid "Overwrite existing"
+msgstr ""
+
+#: rxdconst.spagename
+msgid "Page name"
 msgstr ""
 
 #: rxdconst.spasswordchanged

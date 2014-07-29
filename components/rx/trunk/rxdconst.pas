@@ -173,6 +173,14 @@ resourcestring
   sUnknownXMLDatasetFormat = 'Unknown XML Dataset format';
 
   sToolsExportSpeadSheet   = 'Export to speadsheet';
+  sExportFileName          = 'Export file name';
+  sOpenAfterExport         = 'Open after export';
+  sPageName                = 'Page name';
+  sExportColumnHeader      = 'Export column header';
+  sExportColumnFooter      = 'Export column footer';
+  sExportCellColors        = 'Export cell colors';
+  sOverwriteExisting       = 'Overwrite existing';
+
 
 const
   { The following strings should not be localized }

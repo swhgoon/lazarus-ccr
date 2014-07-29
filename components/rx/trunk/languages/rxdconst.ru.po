@@ -65,6 +65,22 @@ msgstr "редактирование"
 msgid "Error message"
 msgstr "Сообщение об ошибке"
 
+#: rxdconst.sexportcellcolors
+msgid "Export cell colors"
+msgstr "Экспорт цвета ячеек"
+
+#: rxdconst.sexportcolumnfooter
+msgid "Export column footer"
+msgstr "Экспорт итогов по столбцам"
+
+#: rxdconst.sexportcolumnheader
+msgid "Export column header"
+msgstr "Экспорт заголовков столбцов"
+
+#: rxdconst.sexportfilename
+msgid "Export file name"
+msgstr "Имя файла для выгрузки"
+
 #: rxdconst.sexprbadcompare
 msgid "Compare opertion need fielad and const"
 msgstr "Операции сравнения требуют наличия поля и константы"
@@ -182,6 +198,18 @@ msgstr "Набор данных не в режиме редактировани�
 #: rxdconst.soldpasswordlabel
 msgid "&Old password:"
 msgstr "&Старый пароль"
+
+#: rxdconst.sopenafterexport
+msgid "Open after export"
+msgstr "Открыть после экспорта"
+
+#: rxdconst.soverwriteexisting
+msgid "Overwrite existing"
+msgstr "Перезаписать существующее"
+
+#: rxdconst.spagename
+msgid "Page name"
+msgstr "Название страницы"
 
 #: rxdconst.spasswordchanged
 msgid "Password changed"
@@ -301,7 +329,7 @@ msgstr "Применить"
 
 #: rxdconst.srxdbgridselapplyhint
 msgid "Apply current columns setings"
-msgstr ""
+msgstr "Сохранить текущие настройки колонок"
 
 #: rxdconst.srxdbgridselcolcaption
 msgid "Grid columns"

@@ -74,6 +74,22 @@ msgstr "Редагування"
 msgid "Error message"
 msgstr "Повідомлення про помилку"
 
+#: rxdconst.sexportcellcolors
+msgid "Export cell colors"
+msgstr ""
+
+#: rxdconst.sexportcolumnfooter
+msgid "Export column footer"
+msgstr ""
+
+#: rxdconst.sexportcolumnheader
+msgid "Export column header"
+msgstr ""
+
+#: rxdconst.sexportfilename
+msgid "Export file name"
+msgstr ""
+
 #: rxdconst.sexprbadcompare
 msgid "Compare opertion need fielad and const"
 msgstr "Операції порівняння вимагають наявності поля і константи"
@@ -191,6 +207,18 @@ msgstr "Набір даних не в режимі редагування або
 #: rxdconst.soldpasswordlabel
 msgid "&Old password:"
 msgstr "&Старий пароль"
+
+#: rxdconst.sopenafterexport
+msgid "Open after export"
+msgstr ""
+
+#: rxdconst.soverwriteexisting
+msgid "Overwrite existing"
+msgstr ""
+
+#: rxdconst.spagename
+msgid "Page name"
+msgstr ""
 
 #: rxdconst.spasswordchanged
 msgid "Password changed"

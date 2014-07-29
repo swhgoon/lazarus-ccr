@@ -63,6 +63,7 @@ type
   end;
 
 implementation
+uses rxdconst;
 
 {$R *.lfm}
 
@@ -70,7 +71,13 @@ implementation
 
 procedure TRxDBGridExportSpreadSheet_ParamsForm.FormCreate(Sender: TObject);
 begin
-  //
+  Label1.Caption:=sExportFileName;
+  Label3.Caption:=sPageName;
+  cbOpenAfterExport.Caption:=sOpenAfterExport;
+  cbExportColumnHeader.Caption:=sExportColumnHeader;
+  cbExportColumnFooter.Caption:=sExportColumnFooter;
+  cbExportCellColors.Caption:=sExportCellColors;
+  cbOverwriteExisting.Caption:=sOverwriteExisting;
 end;
 
 end.
