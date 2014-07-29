@@ -185,7 +185,10 @@ begin
 end;
 procedure TAboutbox.SetDialogTitle(Const AValue:String);
 begin
-     fDialogTitle:=rs_About + ' ' + Avalue;
+  if AnsiContainsText(fDialogTitle, rs_About) then
+    fDialogTitle := AValue
+  else
+    fDialogTitle := rs_About + ' ' + Avalue;
 end;
 
 procedure TAboutbox.ShowDialog;
