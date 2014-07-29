@@ -224,8 +224,42 @@ begin
 end;
 
 procedure TRxDBGridExportSpreadSheet.DoExportFooter;
+var
+  i : Integer;
+  C : TRxColumn;
+  CT : TRxColumnTitle;
+  CC : TColor;
+  scColor : TsColor;
 begin
+  CC:=FRxDBGrid.FooterOptions.Color;
+  FCurCol:=0;
+  for i:=0 to FRxDBGrid.Columns.Count - 1 do
+  begin
+    C:=FRxDBGrid.Columns[i] as TRxColumn;
+    CT:=C.Title as TRxColumnTitle;
+    if C.Visible then
+    begin
+      if (C.Footer.ValueType <> fvtNon) then
+      begin
+        FWorksheet.WriteUTF8Text(FCurRow, FCurCol, C.Footer.DisplayText);
+        if (CC and SYS_COLOR_BASE) = 0  then
+        begin
+  //        CC:=clWhite;
+          scColor:=FWorkbook.AddColorToPalette(CC);
+          FWorksheet.WriteBackgroundColor(FCurRow,FCurCol, scColor);
+        end;
 
+        FWorksheet.WriteBorders(FCurRow,FCurCol, [cbNorth, cbWest, cbEast, cbSouth]);
+        FWorksheet.WriteBorderColor(FCurRow,FCurCol, cbNorth, scColorBlack);
+        FWorksheet.WriteBorderColor(FCurRow,FCurCol, cbWest, scColorBlack);
+        FWorksheet.WriteBorderColor(FCurRow,FCurCol, cbEast, scColorBlack);
+        FWorksheet.WriteBorderColor(FCurRow,FCurCol, cbSouth, scColorBlack);
+
+        FWorksheet.WriteHorAlignment(FCurRow, FCurCol, ssAligns[C.Footer.Alignment]);
+      end;
+      inc(FCurCol);
+    end;
+  end;
 end;
 
 procedure TRxDBGridExportSpreadSheet.DoExportColWidth;
