@@ -370,7 +370,7 @@ end;
 procedure TfrmFPVViewer.buttonPrintClick(Sender: TObject);
 var
   printDialog: TPrintDialog;
-  ScaleX, ScaleY: Double;
+  ScaleX, ScaleY, lScale: Double;
   lRectSrc, lRectDest: TRect;
 begin
   // Create a printer selection dialog
@@ -389,10 +389,20 @@ begin
     Printer.BeginDoc;
 
     // Draw the image
+    {$IFDEF OLD_PRINT_CODE}
     ScaleX := LCLIntf.GetDeviceCaps(Handle, logPixelsX) / PixelsPerInch; // Don't know why, but GetDeviceCaps is returning zero...
     ScaleY := LCLIntf.GetDeviceCaps(Handle, logPixelsY) / PixelsPerInch;
     lRectSrc := Bounds(0, 0, Drawer.Drawing.Width, Drawer.Drawing.Height);
     lRectDest := Bounds(0, 0, Printer.PageWidth, Printer.PageHeight);
+    {$ELSE}
+    ScaleX := Printer.PageWidth / Drawer.Drawing.Width;
+    ScaleY := Printer.PageHeight / Drawer.Drawing.Height;
+    lScale := Min(ScaleX, ScaleY);
+    lRectSrc := Bounds(0, 0, Drawer.Drawing.Width, Drawer.Drawing.Height);
+    lRectDest := Bounds(0, 0,
+      Round(Drawer.Drawing.Width * lScale),
+      Round(Drawer.Drawing.Height * lScale));
+    {$ENDIF}
     Printer.Canvas.StretchDraw(
       lRectDest,
       Drawer.Drawing);
