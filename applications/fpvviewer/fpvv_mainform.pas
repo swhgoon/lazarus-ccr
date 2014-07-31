@@ -99,6 +99,7 @@ var
   Vec: TvVectorialDocument;
   CanvasSize: TPoint;
   lCurPage: TvVectorialPage;
+  lPage: TvPage;
 begin
   // First check the in input
   if editFileName.FileName = '' then Exit; // silent exit in this simple case
@@ -136,17 +137,20 @@ begin
     Drawer.Drawing.Canvas.Brush.Color := clWhite;
     Drawer.Drawing.Canvas.Brush.Style := bsSolid;
     Drawer.Drawing.Canvas.FillRect(0, 0, Drawer.Drawing.Width, Drawer.Drawing.Height);
-    if checkForceWhiteBackground.Checked then Vec.GetPageAsVectorial(0).BackgroundColor := colWhite;
+    lPage := Vec.GetPage(0);
+    if lPage = nil then
+      Exception.Create('The document has no pages');
+    if checkForceWhiteBackground.Checked then lPage.BackgroundColor := colWhite;
     if not checkForceWhiteBackground.Checked then
-      Vec.GetPageAsVectorial(0).DrawBackground(Drawer.Drawing.Canvas);
-    Vec.GetPageAsVectorial(0).Render(
+      lPage.DrawBackground(Drawer.Drawing.Canvas);
+    lPage.Render(
       Drawer.Drawing.Canvas,
       FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS + Drawer.PosX,
       Drawer.Drawing.Height - FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS + Drawer.PosY,
       spinScale.Value,
       -1 * spinScale.Value);
     if checkShowPage.Checked then
-      Vec.GetPageAsVectorial(0).RenderPageBorder(
+      lPage.RenderPageBorder(
         Drawer.Drawing.Canvas,
         FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS + Drawer.PosX,
         Drawer.Drawing.Height - FPVVIEWER_SPACE_FOR_NEGATIVE_COORDS + Drawer.PosY,
