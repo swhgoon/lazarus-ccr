@@ -3,8 +3,6 @@ unit VirtualTrees;
 {$mode delphi}{$H+}
 {$packset 1}
 
-// Version 5.1.2
-//
 // The contents of this file are subject to the Mozilla Public License
 // Version 1.1 (the "License"); you may not use this file except in compliance
 // with the License. You may obtain a copy of the License at http://www.mozilla.org/MPL/
@@ -105,7 +103,7 @@ const
 
   VTMajorVersion = 5;
   VTMinorVersion = 1;
-  VTReleaseVersion = 2;
+  VTReleaseVersion = 4;
   VTTreeStreamVersion = 2;
   VTHeaderStreamVersion = 6;    // The header needs an own stream version to indicate changes only relevant to the header.
 
@@ -271,7 +269,7 @@ type
     vsHasChildren,       // Indicates the presence of child nodes without actually setting them.
     vsVisible,           // Indicate whether the node is visible or not (independant of the expand states of its parents).
     vsSelected,          // Set if the node is in the current selection.
-    vsInitialUserData,   // Set if (via AddChild or InsertNode) initial user data has been set which requires OnFreeNode.
+    vsOnFreeNodeCallRequired,   // Set if user data has been set which requires OnFreeNode.
     vsAllChildrenHidden, // Set if vsHasChildren is set and no child node has the vsVisible flag set.
     vsClearing,          // A node's children are being deleted. Don't register structure change event.
     vsMultiline,         // Node text is wrapped at the cell boundaries instead of being shorted.
@@ -2328,6 +2326,7 @@ type
     FSetOrRestoreBevelKindAndBevelWidth: Boolean;
     procedure CMStyleChanged(var Message: TMessage); message CM_STYLECHANGED;
     procedure CMBorderChanged(var Message: TMessage); message CM_BORDERCHANGED;
+    procedure CMParentDoubleBufferedChange(var Message: TMessage); message CM_PARENTDOUBLEBUFFEREDCHANGED;
     {$ifend}
 
     procedure AdjustCoordinatesByIndent(var PaintInfo: TVTPaintInfo; Indent: Integer);
@@ -2506,6 +2505,8 @@ type
     {$endif ThemeSupport}
     procedure WMVScroll(var Message: TLMVScroll); message LM_VSCROLL;
     function GetRangeX: Cardinal;
+    function GetDoubleBuffered: Boolean;
+    procedure SetDoubleBuffered(const Value: Boolean);
   protected
     procedure AddToSelection(Node: PVirtualNode); overload; virtual;
     procedure AddToSelection(const NewItems: TNodeArray; NewLength: Integer; ForceInsert: Boolean = False); overload; virtual;
@@ -2954,6 +2955,10 @@ type
     property OnUpdating: TVTUpdatingEvent read FOnUpdating write FOnUpdating;
   public
     constructor Create(AOwner: TComponent); override;
+    {$ifdef VCLStyleSupport}
+    class constructor Create;
+    class destructor Destroy;
+    {$ifend}
     destructor Destroy; override;
 
     function AbsoluteIndex(Node: PVirtualNode): Cardinal;
@@ -3184,6 +3189,7 @@ type
     property VisibleCount: Cardinal read FVisibleCount;
     property VisiblePath[Node: PVirtualNode]: Boolean read GetVisiblePath write SetVisiblePath;
     property UpdateCount: Cardinal read FUpdateCount;
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered default True;
   end;
 
 
@@ -3507,6 +3513,7 @@ type
     property DragWidth;
     property DrawSelectionMode;
     property EditDelay;
+    property EmptyListMessage;
     property Enabled;
     property Font;
     property Header;
@@ -8002,7 +8009,7 @@ var
 
 begin
   Result := InvalidColumn;
-  if Relative and (P.X > Header.Columns.GetVisibleFixedWidth) then
+  if Relative and (P.X >= Header.Columns.GetVisibleFixedWidth) then
     ColumnLeft := -FHeader.Treeview.FEffectiveOffsetX
   else
     ColumnLeft := 0;
@@ -11779,7 +11786,7 @@ begin
   FHeader := GetHeaderClass.Create(Self);
 
   // we have an own double buffer handling
-  DoubleBuffered := False;
+  inherited DoubleBuffered := False;
 
   FCheckImageKind := ckSystemDefault;
 
@@ -12282,10 +12289,12 @@ begin
 
       // Simple selection allows to draw the selection rectangle anywhere. No intersection with node captions is
       // required. Only top and bottom bounds of the rectangle matter.
-      if SimpleSelection then
+      if SimpleSelection or (toFullRowSelect in FOptions.FSelectionOptions) then
       begin
-        IsInOldRect := (NextTop > OldRect.Top) and (CurrentTop < OldRect.Bottom);
-        IsInNewRect := (NextTop > NewRect.Top) and (CurrentTop < NewRect.Bottom);
+        IsInOldRect := (NextTop > OldRect.Top) and (CurrentTop < OldRect.Bottom) and
+          ((FHeader.Columns.Count = 0) or (FHeader.Columns.TotalWidth > OldRect.Left)) and (NodeLeft < OldRect.Right);
+        IsInNewRect := (NextTop > NewRect.Top) and (CurrentTop < NewRect.Bottom) and
+          ((FHeader.Columns.Count = 0) or (FHeader.Columns.TotalWidth > NewRect.Left)) and (NodeLeft < NewRect.Right);
       end
       else
       begin
@@ -14219,6 +14228,20 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+procedure TBaseVirtualTree.SetDoubleBuffered(const Value: Boolean);
+begin
+  // empty by intention, we do our own buffering
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TBaseVirtualTree.GetDoubleBuffered: Boolean;
+begin
+  Result := True; // we do our own buffering
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
 procedure TBaseVirtualTree.SetEmptyListMessage(const Value: String);
 
 begin
@@ -15144,15 +15167,18 @@ begin
     FSavedBorderWidth := BorderWidth;
   end;
 end;
-{$IFEND}
 
-// TODO:  Compilerversion Ein/Ausschalten < Ist Eingeschaltet >
- {$ifdef VCLStyleSupport}
 procedure TBaseVirtualTree.CMStyleChanged(var Message: TMessage);
 begin
   VclStyleChanged;
   RecreateWnd;
 end;
+
+procedure TBaseVirtualTree.CMParentDoubleBufferedChange(var Message: TMessage);
+begin
+  // empty by intention, we do our own buffering
+end;
+
 {$ifend}
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -17808,7 +17834,7 @@ begin
       DoScale := True;
     if DoScale then
     begin
-      FDefaultNodeHeight := MulDiv(FDefaultNodeHeight, M, D);
+      SetDefaultNodeHeight(MulDiv(FDefaultNodeHeight, M, D));
       FHeader.ChangeScale(M, D);
     end;
   end;
@@ -17995,6 +18021,11 @@ end;
 class constructor TBaseVirtualTree.Create;
 begin
   TCustomStyleEngine.RegisterStyleHook(TBaseVirtualTree, TVclStyleScrollBarsHook);
+end;
+
+class destructor TBaseVirtualTree.Destroy;
+begin
+  TCustomStyleEngine.UnRegisterStyleHook(TBaseVirtualTree,  TVclStyleScrollBarsHook);
 end;
 {$ifend}
 
@@ -19398,7 +19429,7 @@ begin
     FDropTargetNode := nil;
   if Node = FLastStructureChangeNode then
     FLastStructureChangeNode := nil;
-  if Assigned(FOnFreeNode) and ([vsInitialized, vsInitialUserData] * Node.States <> []) then
+  if Assigned(FOnFreeNode) and ([vsInitialized, vsOnFreeNodeCallRequired] * Node.States <> []) then
     FOnFreeNode(Self, Node);
   FreeMem(Node);
 end;
@@ -21297,7 +21328,8 @@ begin
   if tsUseExplorerTheme in FStates then
     Include(CheckPositions, hiOnItemButtonExact);
 
-  if (CheckPositions * HitInfo.HitPositions = []) and not (toFullRowSelect in FOptions.FSelectionOptions) then
+  if (CheckPositions * HitInfo.HitPositions = []) and
+    (not (toFullRowSelect in FOptions.FSelectionOptions) or (hiNowhere in HitInfo.HitPositions)) then
     HitInfo.HitNode := nil;
   if (HitInfo.HitNode <> FCurrentHotNode) or (HitInfo.HitColumn <> FCurrentHotColumn) then
   begin
@@ -21794,18 +21826,10 @@ begin
     MultiSelect := toMultiSelect in FOptions.FSelectionOptions;
     ShiftEmpty := ShiftState = [];
     NodeSelected := IsAnyHit and (vsSelected in HitInfo.HitNode.States);
-    if MultiSelect then
-    begin
-      // If MultiSelect is selected we will start a full row drag only in case a label was hit,
-      // otherwise a multi selection will start.
-      FullRowDrag := (toFullRowDrag in FOptions.FMiscOptions) and IsCellHit and
-          not (hiNowhere in HitInfo.HitPositions) and
-          (NodeSelected or (hiOnItemLabel in HitInfo.HitPositions) or (hiOnNormalIcon in HitInfo.HitPositions))
-    end
-    else // No MultiSelect, hence we can start a drag anywhere in the row.
-      FullRowDrag := toFullRowDrag in FOptions.FMiscOptions;
-
-    IsHeightTracking := (Message.Msg = LM_LBUTTONDOWN) and
+    FullRowDrag := (toFullRowDrag in FOptions.FMiscOptions) and IsCellHit and
+      not (hiNowhere in HitInfo.HitPositions) and
+      (NodeSelected or (hiOnItemLabel in HitInfo.HitPositions) or (hiOnNormalIcon in HitInfo.HitPositions));
+    IsHeightTracking := (Message.Msg = WM_LBUTTONDOWN) and
                         (hiOnItem in HitInfo.HitPositions) and
                         ([hiUpperSplitter, hiLowerSplitter] * HitInfo.HitPositions <> []);
 
@@ -21815,7 +21839,7 @@ begin
 
     // Query the application to learn if dragging may start now (if set to dmManual).
     if Assigned(HitInfo.HitNode) and not AutoDrag and (DragMode = dmManual) then
-      AutoDrag := DoBeforeDrag(HitInfo.HitNode, Column) and (not IsCellHit or FullRowDrag);
+      AutoDrag := DoBeforeDrag(HitInfo.HitNode, Column) and (IsAnyHit or FullRowDrag);
 
     // handle node height tracking
     if IsHeightTracking then
@@ -21907,7 +21931,7 @@ begin
       // selection, but without a change event if it is the only selected node.
       // The same applies if the Alt key is pressed, which allows to start drawing the selection rectangle also
       // on node captions and images. Here the previous selection state does not matter, though.
-      if NodeSelected or (AltPressed and Assigned(HitInfo.HitNode) and (HitInfo.HitColumn = FHeader.MainColumn)) then
+      if NodeSelected or (AltPressed and Assigned(HitInfo.HitNode) and (HitInfo.HitColumn = FHeader.MainColumn)) and not (hiNowhere in HitInfo.HitPositions) then
       begin
         NeedChange := FSelectionCount > 1;
         InternalClearSelection;
@@ -21932,7 +21956,7 @@ begin
     begin
       // The original code here was moved up to fix issue #187.
       // In order not to break the semantics of this procedure, we are leaving these if statements here
-      if not IsCellHit then
+      if not IsCellHit or (hiNowhere in HitInfo.HitPositions) then
         Exit;
     end;
 
@@ -23115,7 +23139,7 @@ begin
     IntersectClipRect(DC, RC.Left, RC.Top, RC.Right, RC.Bottom);
 
     // Determine inner rectangle to exclude (RC corresponds then to the client area).
-    InflateRect(RC, -BorderWidth, -BorderWidth);
+    InflateRect(RC, -Integer(BorderWidth), -Integer(BorderWidth));
 
     // Remove the inner rectangle.
     ExcludeClipRect(DC, RC.Left, RC.Top, RC.Right, RC.Bottom);
@@ -24846,7 +24870,7 @@ begin
       Body.ChildCount := ChildCount;
       Body.NodeHeight := NodeHeight;
       // Some states are only temporary so take them out as they make no sense at the new location.
-      Body.States := States - [vsChecking, vsCutOrCopy, vsDeleting, vsInitialUserData, vsHeightMeasured];
+      Body.States := States - [vsChecking, vsCutOrCopy, vsDeleting, vsOnFreeNodeCallRequired, vsHeightMeasured];
       Body.Align := Align;
       Body.CheckState := CheckState;
       Body.CheckType := CheckType;
@@ -24989,7 +25013,7 @@ begin
       begin
         NodeData := Pointer(PByte(@Result.Data) + FTotalInternalDataSize);
         NodeData^ := UserData;
-        Include(Result.States, vsInitialUserData);
+        Include(Result.States, vsOnFreeNodeCallRequired);
       end
       else
         ShowError(SCannotSetUserData, hcTFCannotSetUserData);
@@ -26716,6 +26740,14 @@ begin
     if Y > Max(FRangeY, inherited GetClientRect.Bottom) then
       Include(HitInfo.HitPositions, hiBelow);
 
+  // Convert position into absolute coordinate if necessary.
+  if Relative then
+  begin
+    if X >= Header.Columns.GetVisibleFixedWidth then
+      Inc(X, FEffectiveOffsetX);
+    Inc(Y, -FOffsetY);
+  end;
+
   // If the point is in the tree area then check the nodes.
   if HitInfo.HitPositions = [] then
   begin
@@ -27754,9 +27786,8 @@ begin
   if (FNodeDataSize <= 0) or (Node = nil) or (Node = FRoot) then
     Result := nil
   else begin
-    if ([vsInitialized, vsInitialUserData] * Node.States = []) then
-      InitNode(Node);
     Result := PByte(@Node.Data) + FTotalInternalDataSize;
+    Include(Node.States, vsOnFreeNodeCallRequired); // We now need to call OnFreeNode, see bug #323
   end;
 end;
 
@@ -28767,7 +28798,7 @@ begin
       begin
         NodeData := Pointer(PByte(@Result.Data) + FTotalInternalDataSize);
         NodeData^ := UserData;
-        Include(Result.States, vsInitialUserData);
+        Include(Result.States, vsOnFreeNodeCallRequired);
       end
       else
         ShowError(SCannotSetUserData, hcTFCannotSetUserData);
