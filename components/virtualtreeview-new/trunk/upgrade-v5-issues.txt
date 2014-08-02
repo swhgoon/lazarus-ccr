@@ -14,3 +14,4 @@
 * review FDottedBrush life cycle
 * Reverted changes is FillBitmap. See if will work as is
 * See if will keep TVTHintKind
+* Review thread support
