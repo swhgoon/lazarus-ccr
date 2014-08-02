@@ -103,7 +103,7 @@ const
 
   VTMajorVersion = 5;
   VTMinorVersion = 2;
-  VTReleaseVersion = 0;
+  VTReleaseVersion = 1;
   VTTreeStreamVersion = 2;
   VTHeaderStreamVersion = 6;    // The header needs an own stream version to indicate changes only relevant to the header.
 
@@ -559,7 +559,7 @@ type
 const
   DefaultPaintOptions = [toShowButtons, toShowDropmark, toShowTreeLines, toShowRoot, toThemeAware, toUseBlendedImages];
   DefaultAnimationOptions = [];
-  DefaultAutoOptions = [toAutoDropExpand, toAutoTristateTracking, toAutoScrollOnExpand, toAutoDeleteMovedNodes];
+  DefaultAutoOptions = [toAutoDropExpand, toAutoTristateTracking, toAutoScrollOnExpand, toAutoDeleteMovedNodes, toAutoChangeScale, toAutoSort];
   DefaultSelectionOptions = [];
   DefaultMiscOptions = [toAcceptOLEDrop, toFullRepaintOnResize, toInitOnSave, toToggleOnDblClick, toWheelPanning,
     toEditOnClick];
@@ -2692,6 +2692,7 @@ type
     procedure DrawDottedHLine(const PaintInfo: TVTPaintInfo; Left, Right, Top: Integer); virtual;
     procedure DrawDottedVLine(const PaintInfo: TVTPaintInfo; Top, Bottom, Left: Integer); virtual;
     procedure EndOperation(OperationKind: TVTOperationKind);
+    procedure EnsureNodeFocused(); virtual;
     function FindNodeInSelection(P: PVirtualNode; var Index: Integer; LowBound, HighBound: Integer): Boolean; virtual;
     procedure FinishChunkHeader(Stream: TStream; StartPos, EndPos: Integer); virtual;
     procedure FontChanged(AFont: TObject); virtual;
@@ -5288,7 +5289,6 @@ begin
   if NeedToUnitialize then
     OleUninitialize;
 
-  {$ifdef VCLStyleSupport}TCustomStyleEngine.UnRegisterStyleHook(TBaseVirtualTree,  TVclStyleScrollBarsHook);{$ifend}
 end;
 
 //----------------- TWorkerThread --------------------------------------------------------------------------------------
@@ -16783,6 +16783,8 @@ begin
         InvalidateNode(FCheckNode);
         FCheckNode := nil;
       end;
+     VK_TAB:
+       EnsureNodeFocused(); // Always select a node if the control gets the focus via TAB key, #237
   end;
   {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMKeyUp');{$endif}
 end;
@@ -19361,10 +19363,6 @@ end;
 procedure TBaseVirtualTree.DoEnter();
 begin
   inherited;
-  // Always select a node if the control gets the focus, #237
-  if FocusedNode = nil then begin
-    FocusedNode := Self.GetFirstVisible();
-  end;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -20976,6 +20974,14 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+procedure TBaseVirtualTree.EnsureNodeFocused();
+begin
+  if FocusedNode = nil then
+    FocusedNode := Self.GetFirstVisible();
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
 function TBaseVirtualTree.FindNodeInSelection(P: PVirtualNode; var Index: Integer; LowBound,
   HighBound: Integer): Boolean;
 
@@ -21326,6 +21332,7 @@ begin
     if WithCheck and (Node.CheckType <> ctNone) then
       Inc(NodeLeft, CheckOffset);
     CurrentWidth := DoGetNodeWidth(Node, NoColumn);
+    Inc(CurrentWidth, DoGetNodeExtraWidth(Node, NoColumn));
     if Integer(Result) < (NodeLeft + CurrentWidth) then
       Result := NodeLeft + CurrentWidth;
     Inc(TopPosition, NodeHeight[Node]);
@@ -31510,7 +31517,7 @@ begin
           if Node.ChildCount > 0 then
           begin
             UpdateRanges;
-
+            UpdateScrollbars(True);
             if [tsPainting, tsExpanding] * FStates = [] then
             begin
               if (vsExpanded in Node.States) and ((toAutoScrollOnExpand in FOptions.FAutoOptions) or
@@ -31553,7 +31560,7 @@ begin
               end;
             end;
 
-            UpdateScrollbars(True);
+            //UpdateScrollbars(True); Moved up
 
             // Check for automatically scrolled tree.
             if NeedFullInvalidate then
