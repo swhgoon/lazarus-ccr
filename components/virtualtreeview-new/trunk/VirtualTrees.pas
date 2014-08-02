@@ -3,7 +3,7 @@ unit VirtualTrees;
 {$mode delphi}{$H+}
 {$packset 1}
 
-// Version 5.0.1
+// Version 5.1.2
 //
 // The contents of this file are subject to the Mozilla Public License
 // Version 1.1 (the "License"); you may not use this file except in compliance
@@ -104,8 +104,8 @@ const
   {$endif}
 
   VTMajorVersion = 5;
-  VTMinorVersion = 0;
-  VTReleaseVersion = 1;
+  VTMinorVersion = 1;
+  VTReleaseVersion = 2;
   VTTreeStreamVersion = 2;
   VTHeaderStreamVersion = 6;    // The header needs an own stream version to indicate changes only relevant to the header.
 
@@ -2505,6 +2505,7 @@ type
     {$endif}
     {$endif ThemeSupport}
     procedure WMVScroll(var Message: TLMVScroll); message LM_VSCROLL;
+    function GetRangeX: Cardinal;
   protected
     procedure AddToSelection(Node: PVirtualNode); overload; virtual;
     procedure AddToSelection(const NewItems: TNodeArray; NewLength: Integer; ForceInsert: Boolean = False); overload; virtual;
@@ -2819,7 +2820,7 @@ type
     property HotPlusBM: TBitmap read FHotPlusBM;
     property MinusBM: TBitmap read FMinusBM;
     property PlusBM: TBitmap read FPlusBM;
-    property RangeX: Cardinal read FRangeX;
+    property RangeX: Cardinal read GetRangeX;// Returns the width of the virtual tree in pixels, (not ClientWidth). If there are columns it returns the total width of all of them; otherwise it returns the maximum of the all the line's data widths.
     property RangeY: Cardinal read FRangeY;
     property RootNodeCount: Cardinal read GetRootNodeCount write SetRootNodeCount default 0;
     property ScrollBarOptions: TScrollBarOptions read FScrollBarOptions write SetScrollBarOptions;
@@ -3457,6 +3458,7 @@ type
     function GetOptionsClass: TTreeOptionsClass; override;
   public
     property Canvas;
+    property RangeX;
   published
     {$ifdef EnableAccessible}
     property AccessibleName;
@@ -6756,7 +6758,7 @@ begin
   if not (coUseCaptionAlignment in FOptions) or (FCaptionAlignment <> Value) then
   begin
     FCaptionAlignment := Value;
-    Exclude(FOptions, coUseCaptionAlignment);
+    Include(FOptions, coUseCaptionAlignment);
     // Setting the alignment affects also the tree, hence invalidate it too.
     Owner.Header.Invalidate(Self);
   end;
@@ -7013,6 +7015,7 @@ begin
   if FText <> Value then
   begin
     FText := Value;
+    FCaptionText := '';
     Changed(False);
   end;
 end;
@@ -8080,7 +8083,7 @@ begin
     HitInfo.HitPosition := [hhiNoWhere];
   end;
 
-  if (hoHeaderClickAutoSort in Header.Options) and (HitInfo.Button = mbLeft) and not DblClick and (HitInfo.Column >= 0) then begin
+  if (hoHeaderClickAutoSort in Header.Options) and (HitInfo.Button = mbLeft) and not DblClick and not (hhiOnCheckbox in HitInfo.HitPosition) and (HitInfo.Column >= 0) then begin
     // handle automatic setting of SortColumn and toggling of the sort order
     if HitInfo.Column<>Header.SortColumn then begin
       // set sort column
@@ -9743,7 +9746,7 @@ begin
   begin
     FSortDirection := Value;
     Invalidate(nil);
-    if (toAutoSort in Treeview.FOptions.FAutoOptions) and (Treeview.FUpdateCount = 0) then
+    if ((toAutoSort in Treeview.FOptions.FAutoOptions) or (hoHeaderClickAutoSort in Options)) and (Treeview.FUpdateCount = 0) then
       Treeview.SortTree(FSortColumn, FSortDirection, True);
   end;
 end;
@@ -10015,7 +10018,7 @@ begin
     FSortColumn := Value;
     if FSortColumn > NoColumn then
       Invalidate(Columns[FSortColumn]);
-    if (toAutoSort in Treeview.FOptions.FAutoOptions) and (Treeview.FUpdateCount = 0) then
+    if ((toAutoSort in Treeview.FOptions.FAutoOptions) or (hoHeaderClickAutoSort in Options)) and (Treeview.FUpdateCount = 0) then
       Treeview.SortTree(FSortColumn, FSortDirection, True);
   end;
 end;
@@ -13096,6 +13099,11 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+function TBaseVirtualTree.GetRangeX: Cardinal;
+begin
+  Result := Max(0, FRangeX);
+end;
+
 function TBaseVirtualTree.GetRootNodeCount: Cardinal;
 
 begin
@@ -14000,7 +14008,8 @@ begin
   if (Node.CheckType <> Value) and not (toReadOnly in FOptions.FMiscOptions) then
   begin
     Node.CheckType := Value;
-    Node.CheckState := csUncheckedNormal;
+    if (Value <> ctTriStateCheckBox) and (Node.CheckState in [csMixedNormal, csMixedPressed]) then
+      Node.CheckState := csUncheckedNormal;// reset check state if it doesn't fit the new check type
     // For check boxes with tri-state check box parents we have to initialize differently.
     if (toAutoTriStateTracking in FOptions.FAutoOptions) and (Value in [ctCheckBox, ctTriStateCheckBox]) and
       (Node.Parent <> FRoot) then
@@ -22104,14 +22113,11 @@ begin
   begin
     Count := Node.ChildCount;
     DoInitChildren(Node, Count);
+    if Count = Node.ChildCount then
+      exit;// value has not chnaged, so nothing to do
+    SetChildCount(Node, Count);
     if Count = 0 then
-    begin
-      // Remove any child node which is already there.
-      DeleteChildren(Node);
       Exclude(Node.States, vsHasChildren);
-    end
-    else
-      SetChildCount(Node, Count);
   end;
 end;
 
@@ -27745,11 +27751,13 @@ function TBaseVirtualTree.GetNodeData(Node: PVirtualNode): Pointer;
 
 begin
   Assert(FNodeDataSize > 0, 'NodeDataSize not initialized.');
-
   if (FNodeDataSize <= 0) or (Node = nil) or (Node = FRoot) then
     Result := nil
-  else
+  else begin
+    if ([vsInitialized, vsInitialUserData] * Node.States = []) then
+      InitNode(Node);
     Result := PByte(@Node.Data) + FTotalInternalDataSize;
+  end;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
