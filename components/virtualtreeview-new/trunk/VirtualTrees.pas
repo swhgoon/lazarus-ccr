@@ -10566,6 +10566,7 @@ begin
               P := Treeview.ClientToScreen(Point(XPos, YPos));
               Menu.Popup(P.X, P.Y);
               HandleMessage := True;
+              Message.Result := 1;
             end;
           end;
         end;

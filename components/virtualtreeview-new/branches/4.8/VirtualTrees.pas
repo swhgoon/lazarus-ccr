@@ -10007,6 +10007,7 @@ begin
               Menu.PopupComponent := Treeview;
               P := Treeview.ClientToScreen(Point(XPos, YPos));
               Menu.Popup(P.X, P.Y);
+              Message.Result := 1;
               HandleMessage := True;
             end;
           end;
