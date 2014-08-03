@@ -1,9 +1,9 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
     <Name Value="virtualtreeview_package"/>
     <AddToProjectUsesSection Value="True"/>
-    <Author Value="Mike Lischke (LCL Port: Luiz Américo)"/>
+    <Author Value="Mike Lischke (LCL Port: Luiz AmÃ©rico)"/>
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
@@ -20,11 +20,11 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Description Value="Virtual Treeview is an advanced component originally created for Delphi
+    <Description Value="Virtual Treeview is an advanced TreeView component
 "/>
     <License Value=" Mozilla Public License 1.1 (MPL 1.1) or GNU Lesser General Public License
 "/>
-    <Version Major="4" Minor="8" Release="7" Build="3"/>
+    <Version Major="5" Minor="3" Release="2" Build="1"/>
     <Files Count="7">
       <Item1>
         <Filename Value="virtualtrees.lrs"/>
@@ -73,5 +73,8 @@
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
   </Package>
 </CONFIG>

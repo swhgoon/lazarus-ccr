@@ -45,7 +45,7 @@ unit VirtualTrees;
 // CLX:
 //   Dmitri Dmitrienko (initial developer)
 // Source repository:
-//   Subversion (server), TortoiseSVN (client tools), Fisheye (Web interface)
+//   https://code.google.com/p/virtual-treeview/source/
 // Accessability implementation:
 //   Marco Zehe (with help from Sebastian Modersohn)
 // LCL Port:
@@ -103,7 +103,7 @@ const
 
   VTMajorVersion = 5;
   VTMinorVersion = 3;
-  VTReleaseVersion = 0;
+  VTReleaseVersion = 2;
   VTTreeStreamVersion = 2;
   VTHeaderStreamVersion = 6;    // The header needs an own stream version to indicate changes only relevant to the header.
 
@@ -678,6 +678,7 @@ type
     HitNode: PVirtualNode;
     HitPositions: THitPositions;
     HitColumn: TColumnIndex;
+    HitPoint: TPoint;
   end;
 
   // auto scroll directions
@@ -990,7 +991,6 @@ type
     procedure SetPosition(Value: TColumnPosition);
     procedure SetSpacing(Value: Integer);
     procedure SetStyle(Value: TVirtualTreeColumnStyle);
-   procedure SetText(const Value: String);
     procedure SetWidth(Value: Integer);
   protected
     procedure ComputeHeaderLayout(DC: HDC; const Client: TRect; UseHeaderGlyph, UseSortGlyph: Boolean;
@@ -998,6 +998,8 @@ type
       CalculateTextRect: Boolean = False);
     procedure GetAbsoluteBounds(var Left, Right: Integer);
     function GetDisplayName: string; override;
+    function GetText: String; virtual; // [IPK]
+    procedure SetText(const Value: String); virtual; // [IPK] private to protected & virtual
     function GetOwner: TVirtualTreeColumns; reintroduce;
     property HasImage: Boolean read fHasImage;
     property ImageRect: TRect read fImageRect;
@@ -1039,7 +1041,7 @@ type
     property Spacing: Integer read FSpacing write SetSpacing default 3;
     property Style: TVirtualTreeColumnStyle read FStyle write SetStyle default vsText;
     property Tag: NativeInt read FTag write FTag default 0;
-    property Text: String read FText write SetText;
+    property Text: String read GetText write SetText;
     property Width: Integer read FWidth write SetWidth default 50;
   end;
 
@@ -1582,7 +1584,7 @@ type
   TVTColors = class(TPersistent)
   private
     FOwner: TBaseVirtualTree;
-    FColors: array[0..15] of TColor;
+    FColors: array[0..16] of TColor; // [IPK] 15 -> 16
     function GetColor(const Index: Integer): TColor;
     procedure SetColor(const Index: Integer; const Value: TColor);
     function GetBackgroundColor: TColor;
@@ -1610,6 +1612,7 @@ type
     property SelectionRectangleBorderColor: TColor index 13 read GetColor write SetColor default clHighlight;
     property SelectionTextColor: TColor index 15 read GetColor write SetColor default clHighlightText;
     property TreeLineColor: TColor index 5 read GetColor write SetColor default clBtnShadow;
+    property UnfocusedColor: TColor index 16 read GetColor write SetColor default clBtnFace; // [IPK] Added
     property UnfocusedSelectionColor: TColor index 6 read GetColor write SetColor default clBtnFace;
     property UnfocusedSelectionBorderColor: TColor index 10 read GetColor write SetColor default clBtnFace;
   end;
@@ -2091,7 +2094,6 @@ type
     FStateChangeLink,
     FCustomCheckChangeLink: TChangeLink;         // connections to the image lists
     FOldFontChange: TNotifyEvent;                // helper method pointer for tracking font changes in the off screen buffer
-    FFontChanged: Boolean;                       // flag for keeping informed about font changes in the off screen buffer
     FColors: TVTColors;                          // class comprising all customizable colors in the tree
     FButtonStyle: TVTButtonStyle;                // style of the tree buttons
     FButtonFillMode: TVTButtonFillMode;          // for rectangular tree buttons only: how to fill them
@@ -2516,6 +2518,7 @@ type
     procedure SetDoubleBuffered(const Value: Boolean);
     procedure ChangeTreeStatesAsync(EnterStates, LeaveStates: TChangeStates);
   protected
+    FFontChanged: Boolean;                       // flag for keeping informed about font changes in the off screen buffer   // [IPK] - private to protected
     procedure AutoScale(); virtual;
     procedure AddToSelection(Node: PVirtualNode); overload; virtual;
     procedure AddToSelection(const NewItems: TNodeArray; NewLength: Integer; ForceInsert: Boolean = False); overload; virtual;
@@ -3113,7 +3116,7 @@ type
       DoInit: Boolean = False; ChildNodesOnly: Boolean = False): PVirtualNode;
     procedure LoadFromFile(const FileName: TFileName); virtual;
     procedure LoadFromStream(Stream: TStream); virtual;
-    procedure MeasureItemHeight(const Canvas: TCanvas; Node: PVirtualNode);
+    procedure MeasureItemHeight(const Canvas: TCanvas; Node: PVirtualNode); virtual;
     procedure MoveTo(Source, Target: PVirtualNode; Mode: TVTNodeAttachMode; ChildrenOnly: Boolean); overload;
     procedure MoveTo(Node: PVirtualNode; Tree: TBaseVirtualTree; Mode: TVTNodeAttachMode;
       ChildrenOnly: Boolean); overload;
@@ -3301,7 +3304,6 @@ type
   TStringEditLink = class(TInterfacedObject, IVTEditLink)
   private
     FEdit: TVTEdit;                  // A normal custom edit control.
-    procedure SetEdit(const Value: TVTEdit);
   protected
     FTree: TCustomVirtualStringTree; // A back reference to the tree calling.
     FNode: PVirtualNode;             // The node to be edited.
@@ -3309,9 +3311,12 @@ type
     FAlignment: TAlignment;
     FTextBounds: TRect;              // Smallest rectangle around the text.
     FStopping: Boolean;              // Set to True when the edit link requests stopping the edit action.
+    procedure SetEdit(const Value: TVTEdit); // Setter for the FEdit member;
   public
     constructor Create; virtual;
     destructor Destroy; override;
+    property Node  : PVirtualNode read FNode; // [IPK] Make FNode accessible
+    property Column: TColumnIndex read FColumn; // [IPK] Make Column(Index) accessible 
 
     function BeginEdit: Boolean; virtual; stdcall;
     function CancelEdit: Boolean; virtual; stdcall;
@@ -3406,9 +3411,6 @@ type
     function GetOptions: TCustomStringTreeOptions;
     function GetStaticText(Node: PVirtualNode; Column: TColumnIndex): String;
     function GetText(Node: PVirtualNode; Column: TColumnIndex): String;
-    procedure InitializeTextProperties(var PaintInfo: TVTPaintInfo);
-    procedure PaintNormalText(var PaintInfo: TVTPaintInfo; TextOutFlags: Integer; Text: String);
-    procedure PaintStaticText(const PaintInfo: TVTPaintInfo; TextOutFlags: Integer; const Text: String);
     procedure SetDefaultText(const Value: String);
     procedure SetOptions(const Value: TCustomStringTreeOptions);
     procedure SetText(Node: PVirtualNode; Column: TColumnIndex; const Value: String);
@@ -3416,6 +3418,9 @@ type
     procedure GetDataFromGrid(const AStrings : TStringList; const IncludeHeading : Boolean=True);
   protected
     fPreviouslySelected: TStringList;
+    procedure InitializeTextProperties(var PaintInfo: TVTPaintInfo); // [IPK] - private to protected
+    procedure PaintNormalText(var PaintInfo: TVTPaintInfo; TextOutFlags: Integer; Text: String); virtual; // [IPK] - private to protected
+    procedure PaintStaticText(const PaintInfo: TVTPaintInfo; TextOutFlags: Integer; const Text: String); virtual; // [IPK] - private to protected
     procedure AdjustPaintCellRect(var PaintInfo: TVTPaintInfo; out NextNonEmpty: TColumnIndex); override;
     function CanExportNode(Node: PVirtualNode): Boolean;
     function CalculateStaticTextWidth(Canvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; const Text: String): Integer; virtual;
@@ -3993,6 +3998,8 @@ function TreeFromNode(Node: PVirtualNode): TBaseVirtualTree;
 procedure GetStringDrawRect(DC: HDC; const S: String; var Bounds: TRect; DrawFormat: Cardinal);
 function WrapString(DC: HDC; const S: String; const Bounds: TRect; RTL: Boolean;
   DrawFormat: Cardinal): String;
+
+procedure ShowError(const Msg: String; HelpContext: Integer);  // [IPK] Surface this to interface
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -4626,7 +4633,7 @@ end;
 
 //----------------- utility functions ----------------------------------------------------------------------------------
 
-procedure ShowError(Msg: String; HelpContext: Integer);
+procedure ShowError(const Msg: String; HelpContext: Integer);
 
 begin
   raise EVirtualTreeError.CreateHelp(Msg, HelpContext);
@@ -7578,6 +7585,15 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+// [IPK]
+function TVirtualTreeColumn.GetText: String;
+
+begin
+  Result := FText;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
 procedure TVirtualTreeColumn.LoadFromStream(const Stream: TStream; Version: Integer);
 
 var
@@ -8333,7 +8349,7 @@ procedure TVirtualTreeColumns.UpdatePositions(Force: Boolean = False);
 
 var
   I, RunningPos: Integer;
-  
+
 begin
   if not FNeedPositionsFix and (Force or (UpdateCount = 0)) then
   begin
@@ -8346,6 +8362,7 @@ begin
         if coVisible in FOptions then
           Inc(RunningPos, FWidth);
       end;
+    FHeader.Treeview.UpdateHorizontalScrollBar(false);
   end;
 end;
 
@@ -8517,7 +8534,7 @@ begin
   if (P.X >= 0) and (P.Y >= 0) and (P.Y <= FHeader.TreeView.Height) then
     with FHeader, Treeview do
     begin
-      if Relative and (P.X > GetVisibleFixedWidth) then
+      if Relative and (P.X >= GetVisibleFixedWidth) then
         Sum := -FEffectiveOffsetX
       else
         Sum := 0;
@@ -11659,6 +11676,7 @@ begin
   FColors[13] := clHighlight;     // SelectionRectangleBorderColor
   FColors[14] := clBtnShadow;     // HeaderHotColor
   FColors[15] := clHighlightText; // SelectionTextColor
+  FColors[16] := clMedGray;       // UnfocusedColor  [IPK]
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -13518,7 +13536,6 @@ begin
     States := [vsInitialized, vsExpanded, vsHasChildren, vsVisible];
     TotalHeight := FDefaultNodeHeight;
     TotalCount := 1;
-    TotalHeight := FDefaultNodeHeight;
     NodeHeight := FDefaultNodeHeight;
     Align := 50;
   end;
@@ -14135,7 +14152,7 @@ var
   Child: PVirtualNode;
   Count: Integer;
   NewHeight: Integer;
-
+  lNodeHeight: Integer;
 begin
   if not (toReadOnly in FOptions.FMiscOptions) then
   begin
@@ -14182,8 +14199,11 @@ begin
             Dec(Remaining);
             Inc(Index);
 
-            // The actual node height will later be computed once it is clear
-            // whether this node has a variable node height or not.
+            if (toVariableNodeHeight in FOptions.FMiscOptions) then begin
+              lNodeHeight := Child.NodeHeight;
+              DoMeasureItem(Canvas, Node, lNodeHeight); //
+              Child.NodeHeight := lNodeHeight;
+            end;
             Inc(NewHeight, Child.NodeHeight);
           end;
 
@@ -16786,7 +16806,9 @@ begin
                   Offset := ClientWidth;
               end;
               DoPopupMenu(FFocusedNode, FFocusedColumn, Point(R.Left + Offset div 2, (R.Top + R.Bottom) div 2));
-            end;
+            end
+            else
+              DoPopupMenu(nil, FFocusedColumn, Point(-1, -1));
           Ord('a'), Ord('A'):
             if ssCtrlOS in Shift then
               SelectAll(True)
@@ -21981,259 +22003,266 @@ begin
   if (tsEditing in FStates) then
     DoEndEdit;
 
-    // Focus change. Don't use the SetFocus method as this does not work for MDI windows.
-    if not Focused and CanFocus then
-    begin
-      LCLIntf.SetFocus(Handle);
-      // Repeat the hit test as an OnExit event might got triggered that could modify the tree.
-      GetHitTestInfoAt(Message.XPos, Message.YPos, True, HitInfo);
-    end;
-
-    // Keep clicked column in case the application needs it.
-    FHeader.FColumns.FClickIndex := HitInfo.HitColumn;
-
-    // Change column only if we have hit the node label.
-    if (hiOnItemLabel in HitInfo.HitPositions) or
-      (toFullRowSelect in FOptions.FSelectionOptions) or
-      (toGridExtensions in FOptions.FMiscOptions) then
-    begin
-      NewColumn := FFocusedColumn <> HitInfo.HitColumn;
-      if toExtendedFocus in FOptions.FSelectionOptions then
-        Column := HitInfo.HitColumn
-      else
-        Column := FHeader.MainColumn;
-    end
-    else
-    begin
-      NewColumn := False;
-      Column := FFocusedColumn;
-    end;
-
-    if NewColumn and
-       (not FHeader.AllowFocus(Column)) then
-    begin
-      NewColumn := False;
-      Column := FFocusedColumn;
-    end;
-
-    NewNode := FFocusedNode <> HitInfo.HitNode;
-
-    // Translate keys and filter out shift and control key.
-    ShiftState := KeysToShiftState(Message.Keys) * [ssShift, ssCtrlOS, ssAlt];
-    if ssAlt in ShiftState then
-    begin
-      AltPressed := True;
-      // Remove the Alt key from the shift state. It is not meaningful there.
-      Exclude(ShiftState, ssAlt);
-    end
-    else
-      AltPressed := False;
-
-    // Various combinations determine what states the tree enters now.
-    // We initialize shorthand variables to avoid the following expressions getting too large
-    // and to avoid repeative expensive checks.
-    IsLabelHit := not AltPressed and not (toSimpleDrawSelection in FOptions.FSelectionOptions) and
-             ((hiOnItemLabel in HitInfo.HitPositions) or (hiOnNormalIcon in HitInfo.HitPositions));
-    IsCellHit := not AltPressed and not IsLabelHit and Assigned(HitInfo.HitNode) and
-      ([hiOnItemButton, hiOnItemCheckBox] * HitInfo.HitPositions = []) and
-      ((toFullRowSelect in FOptions.FSelectionOptions) or
-      ((toGridExtensions in FOptions.FMiscOptions) and (HitInfo.HitColumn > NoColumn)));
-    IsAnyHit := IsLabelHit or IsCellHit;
-    MultiSelect := toMultiSelect in FOptions.FSelectionOptions;
-    ShiftEmpty := ShiftState = [];
-    NodeSelected := IsAnyHit and (vsSelected in HitInfo.HitNode.States);
-    if MultiSelect then
-    begin
-      // If MultiSelect is selected we will start a full row drag only in case a label was hit,
-      // otherwise a multi selection will start.
-      FullRowDrag := (toFullRowDrag in FOptions.FMiscOptions) and IsCellHit and
-          not (hiNowhere in HitInfo.HitPositions) and
-          (NodeSelected or (hiOnItemLabel in HitInfo.HitPositions) or (hiOnNormalIcon in HitInfo.HitPositions))
-    end
-    else // No MultiSelect, hence we can start a drag anywhere in the row.
-      FullRowDrag := toFullRowDrag in FOptions.FMiscOptions;
-
-    IsHeightTracking := (Message.Msg = WM_LBUTTONDOWN) and
-                        (hiOnItem in HitInfo.HitPositions) and
-                        ([hiUpperSplitter, hiLowerSplitter] * HitInfo.HitPositions <> []);
-
-    // Dragging might be started in the inherited handler manually (which is discouraged for stability reasons)
-    // the test for manual mode is done below (after the focused node is set).
-    AutoDrag := ((DragMode = dmAutomatic) or Dragging) and (not IsCellHit or FullRowDrag);
-
-    // Query the application to learn if dragging may start now (if set to dmManual).
-    if Assigned(HitInfo.HitNode) and not AutoDrag and (DragMode = dmManual) then
-      AutoDrag := DoBeforeDrag(HitInfo.HitNode, Column) and (FullRowDrag or IsLabelHit);
-
-    // handle node height tracking
-    if IsHeightTracking then
-    begin
-      if hiUpperSplitter in HitInfo.HitPositions then
-        FHeightTrackNode := GetPreviousVisible(HitInfo.HitNode, True)
-      else
-        FHeightTrackNode := HitInfo.HitNode;
-
-      if CanSplitterResizeNode(Point(Message.XPos, Message.YPos), FHeightTrackNode, HitInfo.HitColumn) then
-      begin
-        FHeightTrackColumn := HitInfo.HitColumn;
-        NodeRect := GetDisplayRect(FHeightTrackNode, FHeightTrackColumn, False);
-        FHeightTrackPoint := Point(NodeRect.Left, NodeRect.Top);
-        DoStateChange([tsNodeHeightTrackPending]);
-        Exit;
-      end;
-    end;
-
-    // handle button clicks
-    if (hiOnItemButton in HitInfo.HitPositions) and (vsHasChildren in HitInfo.HitNode.States) then
-    begin
-      ToggleNode(HitInfo.HitNode);
-      Exit;
-    end;
-
-    // check event
-    if hiOnItemCheckBox in HitInfo.HitPositions then
-    begin
-      if (FStates * [tsMouseCheckPending, tsKeyCheckPending] = []) and not (vsDisabled in HitInfo.HitNode.States) then
-      begin
-        with HitInfo.HitNode^ do
-          NewCheckState := DetermineNextCheckState(CheckType, CheckState);
-        if (ssLeft in KeysToShiftState(Message.Keys)) and DoChecking(HitInfo.HitNode, NewCheckState) then
-        begin
-          DoStateChange([tsMouseCheckPending]);
-          FCheckNode := HitInfo.HitNode;
-          FPendingCheckState := NewCheckState;
-          FCheckNode.CheckState := PressedState[FCheckNode.CheckState];
-          InvalidateNode(HitInfo.HitNode);
-        end;
-      end;
-      Exit;
-    end;
-
-    // Keep this node's level in case we need it for constraint selection.
-    if (FRoot.ChildCount > 0) and ShiftEmpty or (FSelectionCount = 0) then
-      if Assigned(HitInfo.HitNode) then
-        FLastSelectionLevel := GetNodeLevel(HitInfo.HitNode)
-      else
-        FLastSelectionLevel := GetNodeLevel(GetLastVisibleNoInit(nil, True));
-
-    // pending clearance
-    if MultiSelect and ShiftEmpty and not (hiOnItemCheckbox in HitInfo.HitPositions) and IsAnyHit and AutoDrag and
-      NodeSelected and not FSelectionLocked then
-      DoStateChange([tsClearPending]);
-
-    // immediate clearance
-    // Determine for the right mouse button if there is a popup menu. In this case and if drag'n drop is pending
-    // the current selection has to stay as it is.
-    with HitInfo, Message do
-      CanClear := not AutoDrag and
-        (not (tsRightButtonDown in FStates) or not HasPopupMenu(HitNode, HitColumn, Point(XPos, YPos)));
-
-    // User starts a selection with a selection rectangle.
-    if not (toDisableDrawSelection in FOptions.FSelectionOptions) and not (IsLabelHit or FullRowDrag) and MultiSelect then
-    begin
-      SetCapture(Handle);
-      DoStateChange([tsDrawSelPending]);
-      FDrawSelShiftState := ShiftState;
-      FNewSelRect := Rect(Message.XPos + FEffectiveOffsetX, Message.YPos - FOffsetY, Message.XPos + FEffectiveOffsetX,
-        Message.YPos - FOffsetY);
-      //lclheader
-      if hoVisible in FHeader.Options then
-        OffsetRect(FNewSelRect, 0, -FHeader.Height);
-      {$ifdef DEBUG_VTV}Logger.Send([lcSelection],'FNewSelRect', FNewSelRect);{$endif}
-      FLastSelRect := Rect(0, 0, 0, 0);
-    end;
-
-    //lcl
-    FocusCanChange := DoFocusChanging(FFocusedNode, HitInfo.HitNode, FFocusedColumn, Column);
-
-    if not FSelectionLocked and FocusCanChange and ((not (IsAnyHit or FullRowDrag) and MultiSelect and ShiftEmpty) or
-      (IsAnyHit and (not NodeSelected or (NodeSelected and CanClear)) and (ShiftEmpty or not MultiSelect))) then
-    begin
-      Assert(not (tsClearPending in FStates), 'Pending and direct clearance are mutual exclusive!');
-
-      // If the currently hit node was already selected then we have to reselect it again after clearing the current
-      // selection, but without a change event if it is the only selected node.
-      // The same applies if the Alt key is pressed, which allows to start drawing the selection rectangle also
-      // on node captions and images. Here the previous selection state does not matter, though.
-      if NodeSelected or (AltPressed and Assigned(HitInfo.HitNode) and (HitInfo.HitColumn = FHeader.MainColumn)) and not (hiNowhere in HitInfo.HitPositions) then
-      begin
-        NeedChange := FSelectionCount > 1;
-        InternalClearSelection;
-        InternalAddToSelection(HitInfo.HitNode, True);
-        if NeedChange then
-        begin
-          Invalidate;
-          Change(nil);
-        end;
-      end
-      else
-        ClearSelection;
-    end;
-
-    // pending node edit
-    if Focused and
-      ((hiOnItemLabel in HitInfo.HitPositions) or ((toGridExtensions in FOptions.FMiscOptions) and
-      (hiOnItem in HitInfo.HitPositions))) and NodeSelected and not NewColumn and ShiftEmpty then
-    begin
-      DoStateChange([tsEditPending]);
-    end;
-
-    if not (toDisableDrawSelection in FOptions.FSelectionOptions) and not (IsLabelHit or FullRowDrag) and MultiSelect then
-    begin
-      // The original code here was moved up to fix issue #187.
-      // In order not to break the semantics of this procedure, we are leaving these if statements here
-      if not IsCellHit or (hiNowhere in HitInfo.HitPositions) then
-        Exit;
-    end;
-
-    // Keep current mouse position.
-    FLastClickPos := Point(Message.XPos, Message.YPos);
-
-    // Handle selection and node focus change.
-    if (IsLabelHit or IsCellHit) and
-       DoFocusChanging(FFocusedNode, HitInfo.HitNode, FFocusedColumn, Column) then
-    begin
-      if NewColumn then
-      begin
-        InvalidateColumn(FFocusedColumn);
-        InvalidateColumn(Column);
-        FFocusedColumn := Column;
-      end;
-      if DragKind = dkDock then
-      begin
-        KillTimer(Handle, ScrollTimer);
-        DoStateChange([], [tsScrollPending, tsScrolling]);
-      end;
-      // Get the currently focused node to make multiple multi-selection blocks possible.
-      LastFocused := FFocusedNode;
-      if NewNode then
-        DoFocusNode(HitInfo.HitNode, False);
-
-      if MultiSelect and not ShiftEmpty then
-        HandleClickSelection(LastFocused, HitInfo.HitNode, ShiftState, AutoDrag)
-      else
-      begin
-        if ShiftEmpty then
-          FRangeAnchor := HitInfo.HitNode;
-
-        // If the hit node is not yet selected then do it now.
-        if not NodeSelected then
-          AddToSelection(HitInfo.HitNode);
-      end;
-
-      if NewNode or NewColumn then
-      begin
-        ScrollIntoView(FFocusedNode, toCenterScrollIntoView in FOptions.SelectionOptions,
-                       not (toDisableAutoscrollOnFocus in FOptions.FAutoOptions) and not (toFullRowSelect in FOptions.SelectionOptions));
-        DoFocusChange(FFocusedNode, FFocusedColumn);
-      end;
-    end;
-
-    // Drag'n drop initiation
-    // If we lost focus in the interim the button states would be cleared in WM_KILLFOCUS.
-    if AutoDrag and IsAnyHit and (FStates * [tsLeftButtonDown, tsRightButtonDown, tsMiddleButtonDown] <> []) then
-      BeginDrag(False);
+  // Focus change. Don't use the SetFocus method as this does not work for MDI windows.
+  if not Focused and CanFocus then
+  begin
+    LCLIntf.SetFocus(Handle);
+    // Repeat the hit test as an OnExit event might got triggered that could modify the tree.
+    GetHitTestInfoAt(Message.XPos, Message.YPos, True, HitInfo);
   end;
+
+  // Keep clicked column in case the application needs it.
+  FHeader.FColumns.FClickIndex := HitInfo.HitColumn;
+
+  // Change column only if we have hit the node label.
+  if (hiOnItemLabel in HitInfo.HitPositions) or
+    (toFullRowSelect in FOptions.FSelectionOptions) or
+    (toGridExtensions in FOptions.FMiscOptions) then
+  begin
+    NewColumn := FFocusedColumn <> HitInfo.HitColumn;
+    if toExtendedFocus in FOptions.FSelectionOptions then
+      Column := HitInfo.HitColumn
+    else
+      Column := FHeader.MainColumn;
+  end
+  else
+  begin
+    NewColumn := False;
+    Column := FFocusedColumn;
+  end;
+
+  if NewColumn and not FHeader.AllowFocus(Column) then
+  begin
+    NewColumn := False;
+    Column := FFocusedColumn;
+  end;
+
+  NewNode := FFocusedNode <> HitInfo.HitNode;
+
+  // Translate keys and filter out shift and control key.
+  ShiftState := KeysToShiftState(Message.Keys) * [ssShift, ssCtrlOS, ssAlt];
+  if ssAlt in ShiftState then
+  begin
+    AltPressed := True;
+    // Remove the Alt key from the shift state. It is not meaningful there.
+    Exclude(ShiftState, ssAlt);
+  end
+  else
+    AltPressed := False;
+
+  // Various combinations determine what states the tree enters now.
+  // We initialize shorthand variables to avoid the following expressions getting too large
+  // and to avoid repeative expensive checks.
+  IsLabelHit := not AltPressed and not (toSimpleDrawSelection in FOptions.FSelectionOptions) and
+    ((hiOnItemLabel in HitInfo.HitPositions) or (hiOnNormalIcon in HitInfo.HitPositions));
+
+  IsCellHit := not AltPressed and not IsLabelHit and Assigned(HitInfo.HitNode) and
+    ([hiOnItemButton, hiOnItemCheckBox] * HitInfo.HitPositions = []) and
+    ((toFullRowSelect in FOptions.FSelectionOptions) or
+    ((toGridExtensions in FOptions.FMiscOptions) and (HitInfo.HitColumn > NoColumn)));
+
+  IsAnyHit := IsLabelHit or IsCellHit;
+  MultiSelect := toMultiSelect in FOptions.FSelectionOptions;
+  ShiftEmpty := ShiftState = [];
+  NodeSelected := IsAnyHit and (vsSelected in HitInfo.HitNode.States);
+
+  // Determine the Drag behavior.
+  if MultiSelect and not (toDisableDrawSelection in FOptions.FSelectionOptions) then
+  begin
+    // We have MultiSelect and want to draw a selection rectangle.
+    // We will start a full row drag only in case a label was hit,
+    // otherwise a multi selection will start.
+    FullRowDrag := (toFullRowDrag in FOptions.FMiscOptions) and IsCellHit and
+        not (hiNowhere in HitInfo.HitPositions) and
+        (NodeSelected or (hiOnItemLabel in HitInfo.HitPositions) or (hiOnNormalIcon in HitInfo.HitPositions))
+  end
+  else // No MultiSelect, hence we can start a drag anywhere in the row.
+    FullRowDrag := toFullRowDrag in FOptions.FMiscOptions;
+
+  IsHeightTracking := (Message.Msg = WM_LBUTTONDOWN) and
+                      (hiOnItem in HitInfo.HitPositions) and
+                      ([hiUpperSplitter, hiLowerSplitter] * HitInfo.HitPositions <> []);
+
+  // Dragging might be started in the inherited handler manually (which is discouraged for stability reasons)
+  // the test for manual mode is done below (after the focused node is set).
+  AutoDrag := ((DragMode = dmAutomatic) or Dragging) and (not IsCellHit or FullRowDrag);
+
+  // Query the application to learn if dragging may start now (if set to dmManual).
+  if Assigned(HitInfo.HitNode) and not AutoDrag and (DragMode = dmManual) then
+    AutoDrag := DoBeforeDrag(HitInfo.HitNode, Column) and (FullRowDrag or IsLabelHit);
+
+  // handle node height tracking
+  if IsHeightTracking then
+  begin
+    if hiUpperSplitter in HitInfo.HitPositions then
+      FHeightTrackNode := GetPreviousVisible(HitInfo.HitNode, True)
+    else
+      FHeightTrackNode := HitInfo.HitNode;
+
+    if CanSplitterResizeNode(Point(Message.XPos, Message.YPos), FHeightTrackNode, HitInfo.HitColumn) then
+    begin
+      FHeightTrackColumn := HitInfo.HitColumn;
+      NodeRect := GetDisplayRect(FHeightTrackNode, FHeightTrackColumn, False);
+      FHeightTrackPoint := Point(NodeRect.Left, NodeRect.Top);
+      DoStateChange([tsNodeHeightTrackPending]);
+      Exit;
+    end;
+  end;
+
+  // handle button clicks
+  if (hiOnItemButton in HitInfo.HitPositions) and (vsHasChildren in HitInfo.HitNode.States) then
+  begin
+    ToggleNode(HitInfo.HitNode);
+    Exit;
+  end;
+
+  // check event
+  if hiOnItemCheckBox in HitInfo.HitPositions then
+  begin
+    if (FStates * [tsMouseCheckPending, tsKeyCheckPending] = []) and not (vsDisabled in HitInfo.HitNode.States) then
+    begin
+      with HitInfo.HitNode^ do
+        NewCheckState := DetermineNextCheckState(CheckType, CheckState);
+      if (ssLeft in KeysToShiftState(Message.Keys)) and DoChecking(HitInfo.HitNode, NewCheckState) then
+      begin
+        DoStateChange([tsMouseCheckPending]);
+        FCheckNode := HitInfo.HitNode;
+        FPendingCheckState := NewCheckState;
+        FCheckNode.CheckState := PressedState[FCheckNode.CheckState];
+        InvalidateNode(HitInfo.HitNode);
+      end;
+    end;
+    Exit;
+  end;
+
+  // Keep this node's level in case we need it for constraint selection.
+  if (FRoot.ChildCount > 0) and ShiftEmpty or (FSelectionCount = 0) then
+    if Assigned(HitInfo.HitNode) then
+      FLastSelectionLevel := GetNodeLevel(HitInfo.HitNode)
+    else
+      FLastSelectionLevel := GetNodeLevel(GetLastVisibleNoInit(nil, True));
+
+  // pending clearance
+  if MultiSelect and ShiftEmpty and not (hiOnItemCheckbox in HitInfo.HitPositions) and IsAnyHit and AutoDrag and
+    NodeSelected and not FSelectionLocked then
+    DoStateChange([tsClearPending]);
+
+  // immediate clearance
+  // Determine for the right mouse button if there is a popup menu. In this case and if drag'n drop is pending
+  // the current selection has to stay as it is.
+  with HitInfo, Message do
+    CanClear := not AutoDrag and
+      (not (tsRightButtonDown in FStates) or not HasPopupMenu(HitNode, HitColumn, Point(XPos, YPos)));
+
+  // User starts a selection with a selection rectangle.
+  if not (toDisableDrawSelection in FOptions.FSelectionOptions) and not (IsLabelHit or FullRowDrag) and MultiSelect then
+  begin
+    SetCapture(Handle);
+    DoStateChange([tsDrawSelPending]);
+    FDrawSelShiftState := ShiftState;
+    FNewSelRect := Rect(Message.XPos + FEffectiveOffsetX, Message.YPos - FOffsetY, Message.XPos + FEffectiveOffsetX,
+      Message.YPos - FOffsetY);
+    //lclheader
+    if hoVisible in FHeader.Options then
+      OffsetRect(FNewSelRect, 0, -FHeader.Height);
+    {$ifdef DEBUG_VTV}Logger.Send([lcSelection],'FNewSelRect', FNewSelRect);{$endif}
+    FLastSelRect := Rect(0, 0, 0, 0);
+  end;
+
+  //lcl
+  FocusCanChange := DoFocusChanging(FFocusedNode, HitInfo.HitNode, FFocusedColumn, Column);
+
+  if not FSelectionLocked and FocusCanChange and ((not (IsAnyHit or FullRowDrag) and MultiSelect and ShiftEmpty) or
+    (IsAnyHit and (not NodeSelected or (NodeSelected and CanClear)) and (ShiftEmpty or not MultiSelect))) then
+  begin
+    Assert(not (tsClearPending in FStates), 'Pending and direct clearance are mutual exclusive!');
+
+    // If the currently hit node was already selected then we have to reselect it again after clearing the current
+    // selection, but without a change event if it is the only selected node.
+    // The same applies if the Alt key is pressed, which allows to start drawing the selection rectangle also
+    // on node captions and images. Here the previous selection state does not matter, though.
+    if NodeSelected or (AltPressed and Assigned(HitInfo.HitNode) and (HitInfo.HitColumn = FHeader.MainColumn)) and not (hiNowhere in HitInfo.HitPositions) then
+    begin
+      NeedChange := FSelectionCount > 1;
+      InternalClearSelection;
+      InternalAddToSelection(HitInfo.HitNode, True);
+      if NeedChange then
+      begin
+        Invalidate;
+        Change(nil);
+      end;
+    end
+    else
+      ClearSelection;
+  end;
+
+  // pending node edit
+  if Focused and
+    ((hiOnItemLabel in HitInfo.HitPositions) or ((toGridExtensions in FOptions.FMiscOptions) and
+    (hiOnItem in HitInfo.HitPositions))) and NodeSelected and not NewColumn and ShiftEmpty then
+  begin
+    DoStateChange([tsEditPending]);
+  end;
+
+  if not (toDisableDrawSelection in FOptions.FSelectionOptions)
+    and not (IsLabelHit or FullRowDrag) and MultiSelect then
+  begin
+    // The original code here was moved up to fix issue #187.
+    // In order not to break the semantics of this procedure, we are leaving these if statements here
+    if not IsCellHit or (hiNowhere in HitInfo.HitPositions) then
+      Exit;
+  end;
+
+  // Keep current mouse position.
+  FLastClickPos := Point(Message.XPos, Message.YPos);
+
+  // Handle selection and node focus change.
+  if (IsLabelHit or IsCellHit) and
+     DoFocusChanging(FFocusedNode, HitInfo.HitNode, FFocusedColumn, Column) then
+  begin
+    if NewColumn then
+    begin
+      InvalidateColumn(FFocusedColumn);
+      InvalidateColumn(Column);
+      FFocusedColumn := Column;
+    end;
+    if DragKind = dkDock then
+    begin
+      KillTimer(Handle, ScrollTimer);
+      DoStateChange([], [tsScrollPending, tsScrolling]);
+    end;
+    // Get the currently focused node to make multiple multi-selection blocks possible.
+    LastFocused := FFocusedNode;
+    if NewNode then
+      DoFocusNode(HitInfo.HitNode, False);
+
+    if MultiSelect and not ShiftEmpty then
+      HandleClickSelection(LastFocused, HitInfo.HitNode, ShiftState, AutoDrag)
+    else
+    begin
+      if ShiftEmpty then
+        FRangeAnchor := HitInfo.HitNode;
+
+      // If the hit node is not yet selected then do it now.
+      if not NodeSelected then
+        AddToSelection(HitInfo.HitNode);
+    end;
+
+    if NewNode or NewColumn then
+    begin
+      ScrollIntoView(FFocusedNode, toCenterScrollIntoView in FOptions.SelectionOptions,
+        not (toDisableAutoscrollOnFocus in FOptions.FAutoOptions)
+        and not (toFullRowSelect in FOptions.SelectionOptions));
+
+      DoFocusChange(FFocusedNode, FFocusedColumn);
+    end;
+  end;
+
+  // Drag'n drop initiation
+  // If we lost focus in the interim the button states would be cleared in WM_KILLFOCUS.
+  if AutoDrag and IsAnyHit and (FStates * [tsLeftButtonDown, tsRightButtonDown, tsMiddleButtonDown] <> []) then
+    BeginDrag(False);
+end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -27038,6 +27067,8 @@ begin
       Inc(X, FEffectiveOffsetX);
     Inc(Y, -FOffsetY);
   end;
+  HitInfo.HitPoint.X := X;
+  HitInfo.HitPoint.Y := Y;
 
   // If the point is in the tree area then check the nodes.
   if HitInfo.HitPositions = [] then
@@ -31051,7 +31082,8 @@ begin
   begin
     if ColumnRight > ClientWidth then
       NewOffset := FEffectiveOffsetX + (ColumnRight - ClientWidth)
-    else if ColumnLeft < Header.Columns.GetVisibleFixedWidth then
+    else if (ColumnLeft < Header.Columns.GetVisibleFixedWidth) and
+            (ColumnRight > Header.Columns.GetVisibleFixedWidth) then
       NewOffset := FEffectiveOffsetX - (Header.Columns.GetVisibleFixedWidth - ColumnLeft);
     if NewOffset <> FEffectiveOffsetX then
     begin
@@ -32393,7 +32425,8 @@ end;
 destructor TStringEditLink.Destroy;
 
 begin
-  FEdit.Release;
+  if Assigned(fEdit) then
+    FEdit.Release;
   inherited;
 end;
 
@@ -32482,6 +32515,12 @@ begin
   Result := Tree is TCustomVirtualStringTree;
   if Result then
   begin
+    if not Assigned(fEdit) then begin
+      FEdit := TVTEdit.Create(Self);
+      FEdit.Visible := False;
+      FEdit.BorderStyle := bsSingle;
+      FEdit.AutoSize := False;
+    end;
     FTree := Tree as TCustomVirtualStringTree;
     FNode := Node;
     FColumn := Column;

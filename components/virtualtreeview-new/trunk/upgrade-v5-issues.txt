@@ -15,4 +15,4 @@
 * Reverted changes is FillBitmap. See if will work as is
 * See if will keep TVTHintKind
 * Review thread support
-* Test design-time header feature. Look for code in WMSetCursor (does not exist in LCL)
+* Test design-time header feature. Look for code in WMSetCursor (does not exist in LCL port)
