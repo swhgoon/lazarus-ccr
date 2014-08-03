@@ -102,8 +102,8 @@ const
   {$endif}
 
   VTMajorVersion = 5;
-  VTMinorVersion = 2;
-  VTReleaseVersion = 2;
+  VTMinorVersion = 3;
+  VTReleaseVersion = 0;
   VTTreeStreamVersion = 2;
   VTHeaderStreamVersion = 6;    // The header needs an own stream version to indicate changes only relevant to the header.
 
@@ -950,7 +950,7 @@ type
     FMargin,
     FSpacing: Integer;
     FOptions: TVTColumnOptions;
-    FTag: Integer;
+    FTag: NativeInt;
     FAlignment: TAlignment;
     FCaptionAlignment: TAlignment;     // Alignment of the caption.
     FLastWidth: Integer;
@@ -1033,7 +1033,7 @@ type
     property Position: TColumnPosition read FPosition write SetPosition;
     property Spacing: Integer read FSpacing write SetSpacing default 3;
     property Style: TVirtualTreeColumnStyle read FStyle write SetStyle default vsText;
-    property Tag: Integer read FTag write FTag default 0;
+    property Tag: NativeInt read FTag write FTag default 0;
     property Text: String read FText write SetText;
     property Width: Integer read FWidth write SetWidth default 50;
   end;
@@ -5430,6 +5430,7 @@ begin
           if csUseCache in EnterStates then
             Include(LeaveStates, csValidationNeeded);
           ChangeTreeStates(EnterStates, LeaveStates);
+          Synchronize(FCurrentTree.UpdateEditBounds);
           FCurrentTree := nil;
         end;
       end;
@@ -7437,7 +7438,7 @@ begin
     if Layout = blGlyphLeft then
       MinLeft := HeaderGlyphPos.X + HeaderGlyphSize.X + FSpacing;
     if FCheckBox and (Owner.Header.MainColumn = Self.Index) then
-      Dec(HeaderGlyphPos.X, 2 + 2 * Integer(toShowRoot in Owner.FHeader.Treeview.TreeOptions.FPaintOptions))
+      Dec(HeaderGlyphPos.X, 2)
     else
       if Owner.Header.MainColumn <> Self.Index then
         Dec(HeaderGlyphPos.X, 2);
@@ -10431,17 +10432,18 @@ begin
     // to handle WM_LBUTTONDOWN here, too.
     LM_LBUTTONDOWN:
       begin
-        if csDesigning in Treeview.ComponentState then
-          Exit;
 
         Application.CancelHint;
 
-        // make sure no auto scrolling is active...
-        KillTimer(Treeview.Handle, ScrollTimer);
-        Treeview.DoStateChange([], [tsScrollPending, tsScrolling]);
-        // ... pending editing is cancelled (actual editing remains active)
-        KillTimer(Treeview.Handle, EditTimer);
-        Treeview.DoStateChange([], [tsEditPending]);
+        if not (csDesigning in Treeview.ComponentState) then
+        begin
+          // make sure no auto scrolling is active...
+          KillTimer(Treeview.Handle, ScrollTimer);
+          Treeview.DoStateChange([], [tsScrollPending, tsScrolling]);
+          // ... pending editing is cancelled (actual editing remains active)
+          KillTimer(Treeview.Handle, EditTimer);
+          Treeview.DoStateChange([], [tsEditPending]);
+        end;
 
         with TLMLButtonDown(Message) do
         begin
@@ -10453,7 +10455,11 @@ begin
         end;
 
         IsInHeader := InHeader(P);
-        IsVSplitterHit := InHeaderSplitterArea(P) and CanSplitterResize(P);
+        // in design-time header columns are always resizable
+        if (csDesigning in Treeview.ComponentState) then
+          IsVSplitterHit := InHeaderSplitterArea(P)
+        else
+          IsVSplitterHit := InHeaderSplitterArea(P) and CanSplitterResize(P);
         IsHSplitterHit := HSplitterHit;
 
         if IsVSplitterHit or IsHSplitterHit then
@@ -10462,12 +10468,14 @@ begin
           FColumns.FHoverIndex := NoColumn;
           if IsVSplitterHit then
           begin
-            DoBeforeHeightTracking(GetShiftState);
+            if not (csDesigning in Treeview.ComponentState) then
+              DoBeforeHeightTracking(GetShiftState);
             Include(FStates, hsHeightTrackPending)
           end
           else
           begin
-            DoBeforeColumnWidthTracking(FColumns.FTrackIndex, GetShiftState);
+            if not (csDesigning in Treeview.ComponentState) then
+              DoBeforeColumnWidthTracking(FColumns.FTrackIndex, GetShiftState);
             Include(FStates, hsColumnWidthTrackPending);
           end;
 
@@ -10478,7 +10486,9 @@ begin
         else if IsInHeader then
           begin
             HitIndex := Columns.AdjustDownColumn(P);
-            if (hoDrag in FOptions) and (HitIndex > NoColumn) and (coDraggable in FColumns[HitIndex].FOptions) then
+            // in design-time header columns are always draggable
+            if ((csDesigning in Treeview.ComponentState) and (HitIndex > NoColumn)) or
+               ((hoDrag in FOptions) and (HitIndex > NoColumn) and (coDraggable in FColumns[HitIndex].FOptions)) then
             begin
               // Show potential drag operation.
               // Disabled columns do not start a drag operation because they can't be clicked.
@@ -10490,7 +10500,7 @@ begin
           end;
 
         // This is a good opportunity to notify the application.
-        if IsInHeader then
+        if not (csDesigning in Treeview.ComponentState) and IsInHeader then
           FOwner.DoHeaderMouseDown(mbLeft, GetShiftState, P.X, P.Y + Integer(FHeight));
         end;
     LM_RBUTTONDOWN:
@@ -10679,11 +10689,16 @@ begin
           FCheckBoxHit := False;
         end;
         //Adjust Cursor
-        if not (csDesigning in FOwner.ComponentState) and (FStates = []) then
+        // Feature: design-time header
+        if (FStates = []) then
         begin
           //todo: see a way to store the user defined cursor.
-          IsHSplitterHit := IsInHeader and HSplitterHit;
-          IsVSplitterHit := InHeaderSplitterArea(P) and Self.CanSplitterResize(P);
+          IsHSplitterHit := HSplitterHit;
+          // in design-time header columns are always resizable
+          if (csDesigning in Treeview.ComponentState) then
+            IsVSplitterHit := InHeaderSplitterArea(P)
+          else
+            IsVSplitterHit := InHeaderSplitterArea(P) and FHeader.CanSplitterResize(P);
           
           if IsVSplitterHit or IsHSplitterHit then
           begin
@@ -16613,8 +16628,9 @@ begin
           end;
         end;
 
-        // According to http://www.it-faq.pl/mskb/99/337.HTM there is a problem with ToASCII when used in conjunction
-        // with dead chars. The article recommends to call ToASCII twice to restore a deleted flag in the key message
+        // According to https://web.archive.org/web/20041129085958/http://www.it-faq.pl/mskb/99/337.HTM
+        // there is a problem with ToASCII when used in conjunction with dead chars.
+        // The article recommends to call ToASCII twice to restore a deleted flag in the key message
         // structure under certain circumstances. It turned out it is best to always call ToASCII twice.
         ToASCII(Message.CharCode, (Message.KeyData shr 16) and 7, KeyState, @Buffer, 0);
         {$endif}
@@ -17003,7 +17019,7 @@ procedure TBaseVirtualTree.WMNCHitTest(var Message: TWMNCHitTest);
 begin
   {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMNCHitTest');{$endif}
   inherited WMNCHitTest(Message);
-  if not (csDesigning in ComponentState) and (hoVisible in FHeader.FOptions) and
+  if (hoVisible in FHeader.FOptions) and
     FHeader.InHeader(ScreenToClient(SmallPointToPoint(Message.Pos))) then
     Message.Result := HTBORDER;
   {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMNCHitTest');{$endif}
@@ -24725,6 +24741,10 @@ var
 begin
   if (tsEditing in FStates) and Assigned(FFocusedNode) then
   begin
+    if (GetCurrentThreadId <> MainThreadID) then begin
+      // UpdateEditBounds() will be called at the end of the thread
+      Exit;
+    end;
     if vsMultiline in FFocusedNode.States then
       R := GetDisplayRect(FFocusedNode, FEditColumn, True, False)
     else
@@ -24752,6 +24772,7 @@ begin
     end;
     if toShowHorzGridLines in TreeOptions.PaintOptions then
       Dec(R.Bottom);
+    R.Bottom := R.Top + Max(R.Bottom - R.Top, FEditLink.GetBounds.Bottom - FEditLink.GetBounds.Top); // Ensure to never decrease the size of the currently active edit control. Helps to prevent issue #159
     FEditLink.SetBounds(R);
   end;
 end;
@@ -31973,8 +31994,10 @@ begin
   if Assigned(FLink) and Assigned(FLink.FTree) and (Message.NotifyCode = EN_UPDATE) and
     not (vsMultiline in FLink.FNode.States) then
     // Instead directly calling AutoAdjustSize it is necessary on Win9x/Me to decouple this notification message
-    // and eventual resizing. Hence we use a message to accomplish that.   
-  AutoAdjustSize;
+    // and eventual resizing. Hence we use a message to accomplish that.
+    AutoAdjustSize()
+  else
+    Inherited;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -32117,10 +32140,11 @@ begin
       // Read needed space for the current text.
       GetTextExtentPoint32(DC, PChar(Text), Length(Text), Size);
       Inc(Size.cx, 2 * FLink.FTree.FTextMargin);
-
+      Inc(Size.cy, 2 * FLink.FTree.FTextMargin);
+      Height := Max(Size.cy, Height - 2 * GetSystemMetrics(SM_CYBORDER)); // Ensure a minimum height so that the edit field's content and cursor are displayed correctly.
       // Repaint associated node if the edit becomes smaller.
       if Size.cx < Width then
-        FLink.FTree.InvalidateNode(FLink.FNode);
+        FLink.FTree.Invalidate();
 
       if FLink.FAlignment = taRightJustify then
         FLink.SetBounds(Rect(Left + Width - Size.cx, Top, Left + Width, Top + Height))
@@ -32353,7 +32377,7 @@ begin
     InflateRect(R, -FTree.FTextMargin + lOffset, lOffset);
     if not (vsMultiline in FNode.States) then
       OffsetRect(R, 0, FTextBounds.Top - FEdit.Top);
-
+    R.Top := Max(-1, R.Top); // A value smaller than -1 will prevent the edit cursor from being shown by Windows, see issue #159
     SendMessage(FEdit.Handle, EM_SETRECTNP, 0, LPARAM(@R));
   end;
 end;
