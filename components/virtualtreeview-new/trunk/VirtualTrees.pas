@@ -1276,6 +1276,7 @@ type
     FTrackPoint: TPoint;               // Client coordinate where the tracking started.
     
     function CanSplitterResize(P: TPoint): Boolean;
+    function CanWriteColumns: Boolean; virtual;
     procedure ChangeScale(M, D: Integer); virtual;
     function DetermineSplitterIndex(const P: TPoint): Boolean; virtual;
     procedure DoAfterAutoFitColumn(Column: TColumnIndex); virtual;
@@ -1461,6 +1462,7 @@ type
     tsUserDragObject,         // Signals that the application created an own drag object in OnStartDrag.
     tsUseThemes,              // The tree runs under WinXP+, is theme aware and themes are enabled.
     tsValidating,             // The tree's node caches are currently validated.
+    tsPreviouslySelectedLocked,// The member fPreviouslySelected should not be changed
     tsValidationNeeded,       // Something in the structure of the tree has changed. The cache needs validation.
     tsVCLDragging,            // VCL drag'n drop in progress.
     tsVCLDragPending,         // One-shot flag to avoid clearing the current selection on implicit mouse up for VCL drag.
@@ -2514,6 +2516,7 @@ type
     procedure SetDoubleBuffered(const Value: Boolean);
     procedure ChangeTreeStatesAsync(EnterStates, LeaveStates: TChangeStates);
   protected
+    procedure AutoScale(); virtual;
     procedure AddToSelection(Node: PVirtualNode); overload; virtual;
     procedure AddToSelection(const NewItems: TNodeArray; NewLength: Integer; ForceInsert: Boolean = False); overload; virtual;
     procedure AdjustImageBorder(Images: TCustomImageList; BidiMode: TBidiMode; VAlign: Integer; var R: TRect;
@@ -2682,7 +2685,7 @@ type
     function DragOver(Source: TObject; KeyState: LongWord; DragState: TDragState; Pt: TPoint;
       var Effect: LongWord): HResult; reintroduce; virtual;
     procedure DrawDottedHLine(const PaintInfo: TVTPaintInfo; Left, Right, Top: Integer); virtual;
-    procedure DrawDottedVLine(const PaintInfo: TVTPaintInfo; Top, Bottom, Left: Integer); virtual;
+    procedure DrawDottedVLine(const PaintInfo: TVTPaintInfo; Top, Bottom, Left: Integer; UseSelectedBkColor: Boolean = False); virtual;
     procedure EndOperation(OperationKind: TVTOperationKind);
     procedure EnsureNodeFocused(); virtual;
     function FindNodeInSelection(P: PVirtualNode; var Index: Integer; LowBound, HighBound: Integer): Boolean; virtual;
@@ -3105,6 +3108,7 @@ type
     procedure InvertSelection(VisibleOnly: Boolean);
     function IsEditing: Boolean;
     function IsMouseSelecting: Boolean;
+    function IsEmpty: Boolean;
     function IterateSubtree(Node: PVirtualNode; Callback: TVTGetNodeProc; Data: Pointer; Filter: TVirtualNodeStates = [];
       DoInit: Boolean = False; ChildNodesOnly: Boolean = False): PVirtualNode;
     procedure LoadFromFile(const FileName: TFileName); virtual;
@@ -3476,7 +3480,8 @@ type
     function InvalidateNode(Node: PVirtualNode): TRect; override;
     function Path(Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; Delimiter: Char): String;
     procedure ReinitNode(Node: PVirtualNode; Recursive: Boolean); override;
-    procedure Clear(); override;
+    procedure AddToSelection(Node: PVirtualNode); override;
+    procedure RemoveFromSelection(Node: PVirtualNode); override;
     function SaveToCSVFile(const FileNameWithPath : TFileName; const IncludeHeading : Boolean) : Boolean;
     property ImageText[Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex]: String read GetImageText;
     property StaticText[Node: PVirtualNode; Column: TColumnIndex]: String read GetStaticText;
@@ -5380,6 +5385,7 @@ procedure TWorkerThread.Execute;
 var
   EnterStates,
   LeaveStates: TChangeStates;
+  lCurrentTree: TBaseVirtualTree;
 
 begin
   while not Terminated do
@@ -5416,9 +5422,10 @@ begin
 
         finally
           LeaveStates := [csValidating, csStopValidation];
-          FCurrentTree.ChangeTreeStatesAsync(EnterStates, LeaveStates);
-          Synchronize(FCurrentTree.UpdateEditBounds);
-          FCurrentTree := nil;
+          fCurrentTree.ChangeTreeStatesAsync(EnterStates, LeaveStates);
+          lCurrentTree := FCurrentTree; // Save reference in a local variable for later use
+          fCurrentTree := nil; //Clear variable to prevent deadlock in CancelValidation. See #434
+          Synchronize(lCurrentTree.UpdateEditBounds);
         end;
       end;
     end;
@@ -9831,14 +9838,28 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TVTHeader.ChangeScale(M, D: Integer);
+function TVTHeader.CanWriteColumns: Boolean;
 
+// descendants may override this to optionally prevent column writing (e.g. if they are build dynamically).
+
+begin
+  Result := True;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+procedure TVTHeader.ChangeScale(M, D: Integer);
+var
+  i: Integer;
 begin
   // This method is only executed if toAutoChangeScale is set
   if not ParentFont then
     FFont.Size := MulDiv(FFont.Size, M, D);
   Self.Height := MulDiv(fHeight, M, D);
-  //TODO: We should consider also scaling column width here
+  // Scale the columns widths too
+  for i := 0 to FColumns.Count - 1 do begin
+    Self.FColumns[i].Width := MulDiv(Self.FColumns[i].Width, M, D)
+  end;//for i
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -12132,136 +12153,145 @@ begin
   if Result then
   begin
     Include(States, vsChecking);
-    if not (vsInitialized in States) then
-      InitNode(Node);
+    try
+      if not (vsInitialized in States) then
+        InitNode(Node)
+      else if CheckState = Value then begin
+        // Value didn't change and node was initialized, so nothing to do
+        Result := False;
+        exit;
+      end;//if
 
-    // Indicate that we are going to propagate check states up and down the hierarchy.
-    if FCheckPropagationCount = 0 then // WL, 05.02.2004: Do not enter tsCheckPropagation more than once
-      DoStateChange([tsCheckPropagation]);
-    Inc(FCheckPropagationCount); // WL, 05.02.2004
-    // Do actions which are associated with the given check state.
-    case CheckType of
-      // Check state change with additional consequences for check states of the children.
-      ctTriStateCheckBox:
-        begin
-          // Propagate state down to the children.
-          if toAutoTristateTracking in FOptions.FAutoOptions then
-            case Value of
-              csUncheckedNormal:
-                if Node.ChildCount > 0 then
-                begin
-                  Run := FirstChild;
-                  CheckedCount := 0;
-                  MixedCheckCount := 0;
-                  UncheckedCount := 0;
-                  while Assigned(Run) do
-                  begin
-                    if Run.CheckType in [ctCheckBox, ctTriStateCheckBox] then
-                    begin
-                      SetCheckState(Run, csUncheckedNormal);
-                      // Check if the new child state was set successfully, otherwise we have to adjust the
-                      // node's new check state accordingly.
-                      case Run.CheckState of
-                        csCheckedNormal:
-                          Inc(CheckedCount);
-                        csMixedNormal:
-                          Inc(MixedCheckCount);
-                        csUncheckedNormal:
-                          Inc(UncheckedCount);
-                      end;
-                    end;
-                    Run := Run.NextSibling;
-                  end;
-
-                  // If there is still a mixed state child node checkbox then this node must be mixed checked too.
-                  if MixedCheckCount > 0 then
-                    Value := csMixedNormal
-                  else
-                    // If nodes are normally checked child nodes then the unchecked count determines what
-                    // to set for the node itself.
-                    if CheckedCount > 0 then
-                      if UncheckedCount > 0 then
-                        Value := csMixedNormal
-                      else
-                        Value := csCheckedNormal;
-                end;
-              csCheckedNormal:
-                if Node.ChildCount > 0 then
-                begin
-                  Run := FirstChild;
-                  CheckedCount := 0;
-                  MixedCheckCount := 0;
-                  UncheckedCount := 0;
-                  while Assigned(Run) do
-                  begin
-                    if Run.CheckType in [ctCheckBox, ctTriStateCheckBox] then
-                    begin
-                      SetCheckState(Run, csCheckedNormal);
-                      // Check if the new child state was set successfully, otherwise we have to adjust the
-                      // node's new check state accordingly.
-                      case Run.CheckState of
-                        csCheckedNormal:
-                          Inc(CheckedCount);
-                        csMixedNormal:
-                          Inc(MixedCheckCount);
-                        csUncheckedNormal:
-                          Inc(UncheckedCount);
-                      end;
-                    end;
-                    Run := Run.NextSibling;
-                  end;
-
-                  // If there is still a mixed state child node checkbox then this node must be mixed checked too.
-                  if MixedCheckCount > 0 then
-                    Value := csMixedNormal
-                  else
-                    // If nodes are normally checked child nodes then the unchecked count determines what
-                    // to set for the node itself.
-                    if CheckedCount > 0 then
-                      if UncheckedCount > 0 then
-                        Value := csMixedNormal
-                      else
-                        Value := csCheckedNormal;
-                end;
-            end;
-        end;
-      // radio button check state change
-      ctRadioButton:
-        if Value = csCheckedNormal then
-        begin
-          // Make sure only this node is checked.
-          Run := Parent.FirstChild;
-          while Assigned(Run) do
+      // Indicate that we are going to propagate check states up and down the hierarchy.
+      if FCheckPropagationCount = 0 then // WL, 05.02.2004: Do not enter tsCheckPropagation more than once
+        DoStateChange([tsCheckPropagation]);
+      Inc(FCheckPropagationCount); // WL, 05.02.2004
+      // Do actions which are associated with the given check state.
+      case CheckType of
+        // Check state change with additional consequences for check states of the children.
+        ctTriStateCheckBox:
           begin
-            if Run.CheckType = ctRadioButton then
-              Run.CheckState := csUncheckedNormal;
-            Run := Run.NextSibling;
+            // Propagate state down to the children.
+            if toAutoTristateTracking in FOptions.FAutoOptions then
+              case Value of
+                csUncheckedNormal:
+                  if Node.ChildCount > 0 then
+                  begin
+                    Run := FirstChild;
+                    CheckedCount := 0;
+                    MixedCheckCount := 0;
+                    UncheckedCount := 0;
+                    while Assigned(Run) do
+                    begin
+                      if Run.CheckType in [ctCheckBox, ctTriStateCheckBox] then
+                      begin
+                        SetCheckState(Run, csUncheckedNormal);
+                        // Check if the new child state was set successfully, otherwise we have to adjust the
+                        // node's new check state accordingly.
+                        case Run.CheckState of
+                          csCheckedNormal:
+                            Inc(CheckedCount);
+                          csMixedNormal:
+                            Inc(MixedCheckCount);
+                          csUncheckedNormal:
+                            Inc(UncheckedCount);
+                        end;
+                      end;
+                      Run := Run.NextSibling;
+                    end;
+
+                    // If there is still a mixed state child node checkbox then this node must be mixed checked too.
+                    if MixedCheckCount > 0 then
+                      Value := csMixedNormal
+                    else
+                      // If nodes are normally checked child nodes then the unchecked count determines what
+                      // to set for the node itself.
+                      if CheckedCount > 0 then
+                        if UncheckedCount > 0 then
+                          Value := csMixedNormal
+                        else
+                          Value := csCheckedNormal;
+                  end;
+                csCheckedNormal:
+                  if Node.ChildCount > 0 then
+                  begin
+                    Run := FirstChild;
+                    CheckedCount := 0;
+                    MixedCheckCount := 0;
+                    UncheckedCount := 0;
+                    while Assigned(Run) do
+                    begin
+                      if Run.CheckType in [ctCheckBox, ctTriStateCheckBox] then
+                      begin
+                        SetCheckState(Run, csCheckedNormal);
+                        // Check if the new child state was set successfully, otherwise we have to adjust the
+                        // node's new check state accordingly.
+                        case Run.CheckState of
+                          csCheckedNormal:
+                            Inc(CheckedCount);
+                          csMixedNormal:
+                            Inc(MixedCheckCount);
+                          csUncheckedNormal:
+                            Inc(UncheckedCount);
+                        end;
+                      end;
+                      Run := Run.NextSibling;
+                    end;
+
+                    // If there is still a mixed state child node checkbox then this node must be mixed checked too.
+                    if MixedCheckCount > 0 then
+                      Value := csMixedNormal
+                    else
+                      // If nodes are normally checked child nodes then the unchecked count determines what
+                      // to set for the node itself.
+                      if CheckedCount > 0 then
+                        if UncheckedCount > 0 then
+                          Value := csMixedNormal
+                        else
+                          Value := csCheckedNormal;
+                  end;
+              end;
           end;
-          Invalidate;
-        end;
+        // radio button check state change
+        ctRadioButton:
+          if Value = csCheckedNormal then
+          begin
+            Value := csCheckedNormal;
+            // Make sure only this node is checked.
+            Run := Parent.FirstChild;
+            while Assigned(Run) do
+            begin
+              if Run.CheckType = ctRadioButton then
+                Run.CheckState := csUncheckedNormal;
+              Run := Run.NextSibling;
+            end;
+            Invalidate;
+          end;
+      end;
+
+      if Result then
+        CheckState := Value // Set new check state
+      else
+        CheckState := UnpressedState[CheckState]; // Reset dynamic check state.
+
+      // Propagate state up to the parent.
+      if not (vsInitialized in Parent.States) then
+        InitNode(Parent);
+      if (toAutoTristateTracking in FOptions.FAutoOptions) and ([vsChecking, vsDisabled] * Parent.States = []) and
+        (CheckType in [ctCheckBox, ctTriStateCheckBox]) and (Parent <> FRoot) and
+        (Parent.CheckType = ctTriStateCheckBox) then
+        Result := CheckParentCheckState(Node, Value)
+      else
+        Result := True;
+
+      InvalidateNode(Node);
+
+      Dec(FCheckPropagationCount); // WL, 05.02.2004
+      if FCheckPropagationCount = 0 then // WL, 05.02.2004: Allow state change event after all check operations finished
+        DoStateChange([], [tsCheckPropagation]);
+    finally
+      Exclude(States, vsChecking);
     end;
-
-    if Result then
-      CheckState := Value // Set new check state
-    else
-      CheckState := UnpressedState[CheckState]; // Reset dynamic check state.
-
-    // Propagate state up to the parent.
-    if not (vsInitialized in Parent.States) then
-      InitNode(Parent);
-    if (toAutoTristateTracking in FOptions.FAutoOptions) and ([vsChecking, vsDisabled] * Parent.States = []) and
-      (CheckType in [ctCheckBox, ctTriStateCheckBox]) and (Parent <> FRoot) and
-      (Parent.CheckType = ctTriStateCheckBox) then
-      Result := CheckParentCheckState(Node, Value)
-    else
-      Result := True;
-
-    InvalidateNode(Node);
-    Exclude(States, vsChecking);
-
-    Dec(FCheckPropagationCount); // WL, 05.02.2004
-    if FCheckPropagationCount = 0 then // WL, 05.02.2004: Allow state change event after all check operations finished
-      DoStateChange([], [tsCheckPropagation]);
   end;
 end;
 
@@ -12689,7 +12719,11 @@ begin
           begin
             {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails, lcDrag], 'Draw the background of a selected node');{$endif}
             if toShowHorzGridLines in FOptions.PaintOptions then
+            begin
+              Brush.Color := BackColor;
+              FillRect(Rect(R.Left, R.Bottom - 1, R.Right, R.Bottom));
               Dec(R.Bottom);
+            end;
             if Focused or (toPopupMode in FOptions.FPaintOptions) then
             begin
               Brush.Color := FColors.FocusedSelectionColor;
@@ -15349,9 +15383,14 @@ var
 
 begin
   inherited;
+  AutoScale();
 
   if not (csLoading in ComponentState) then
+  begin
     PrepareBitmaps(True, False);
+    if HandleAllocated then
+      Invalidate;
+  end;
 
   HeaderMessage.Msg := CM_PARENTFONTCHANGED;
   HeaderMessage.WParam := 0;
@@ -18142,6 +18181,7 @@ begin
   else
     DoStateChange([], [tsUseThemes, tsUseExplorerTheme]);
 
+  AutoScale();
   // Because of the special recursion and update stopper when creating the window (or resizing it)
   // we have to manually trigger the auto size calculation here.
   if hsNeedScaling in FHeader.FStates then
@@ -21010,7 +21050,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.DrawDottedVLine(const PaintInfo: TVTPaintInfo; Top, Bottom, Left: Integer);
+procedure TBaseVirtualTree.DrawDottedVLine(const PaintInfo: TVTPaintInfo; Top, Bottom, Left: Integer; UseSelectedBkColor: Boolean = False);
 
 // Draws a vertical line with alternating pixels (this style is not supported for pens under Win9x).
 
@@ -21020,6 +21060,13 @@ var
 begin
   with PaintInfo, Canvas do
   begin
+    if UseSelectedBkColor then begin
+      if Focused or (toPopupMode in FOptions.FPaintOptions) then
+        Brush.Color := FColors.FocusedSelectionColor
+      else
+        Brush.Color := FColors.UnfocusedSelectionColor;
+    end
+    else
     Brush.Color := FColors.BackGroundColor;
     R := Rect(Left, Min(Top, Bottom), Left + 1, Max(Top, Bottom) + 1);
     LCLIntf.FillRect(Handle, R, FDottedBrush);
@@ -21127,6 +21174,7 @@ begin
   FFontChanged := True;
   if Assigned(FOldFontChange) then
     FOldFontChange(AFont);
+  //if not (tsPainting in TreeStates) then AutoScale();
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -21350,6 +21398,13 @@ begin
     else
       ImageInfo[InfoIndex].Images := DefaultImages;
   end;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TBaseVirtualTree.IsEmpty: Boolean;
+begin
+  Result := (Self.ChildCount[nil] = 0);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -23636,41 +23691,41 @@ var
 begin
   IsHot := (toHotTrack in FOptions.FPaintOptions) and (FCurrentHotNode = Node) and FHotNodeButtonHit;
 
-  if vsExpanded in Node.States then
-  begin
-    if IsHot then
-      Bitmap := FHotMinusBM
-    else
-      Bitmap := FMinusBM;
-  end
-  else
-  begin
-    if IsHot then
-      Bitmap := FHotPlusBM
-    else
-      Bitmap := FPlusBM;
-  end;
-
   // Draw the node's plus/minus button according to the directionality.
   if BidiMode = bdLeftToRight then
     XPos := R.Left + ButtonX
   else
-    XPos := R.Right - ButtonX - Bitmap.Width;
+    XPos := R.Right - ButtonX - FPlusBM.Width;
 
   if tsUseExplorerTheme in FStates then
   begin
     Glyph := IfThen(IsHot, TVP_HOTGLYPH, TVP_GLYPH);
     State := IfThen(vsExpanded in Node.States, GLPS_OPENED, GLPS_CLOSED);
-    Pos := Rect(XPos, R.Top + ButtonY, XPos + Bitmap.Width, R.Top + ButtonY + Bitmap.Height);
+    Pos := Rect(XPos, R.Top + ButtonY, XPos + FPlusBM.Width, R.Top + ButtonY + FPlusBM.Height);
     {
     Theme := OpenThemeData(Handle, 'TREEVIEW');
     DrawThemeBackground(Theme, Canvas.Handle, Glyph, State, Pos, nil);
     CloseThemeData(Theme);
     }
   end
-  else
-  // Need to draw this masked.
-  Canvas.Draw(XPos, R.Top + ButtonY, Bitmap);
+  else begin
+    if vsExpanded in Node.States then
+    begin
+      if IsHot then
+        Bitmap := FHotMinusBM
+      else
+        Bitmap := FMinusBM;
+    end
+    else
+    begin
+      if IsHot then
+        Bitmap := FHotPlusBM
+      else
+        Bitmap := FPlusBM;
+    end;
+    // Need to draw this masked.
+    Canvas.Draw(XPos, R.Top + ButtonY, Bitmap);
+  end;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -25376,6 +25431,21 @@ begin
     end
     else
       inherited;
+end;
+
+procedure TBaseVirtualTree.AutoScale();
+
+// If toAutoChangeScale is set, this method ensures that the defaulz node height is set corectly.
+
+var
+  lTextHeight: Cardinal;
+begin
+  if (toAutoChangeScale in TreeOptions.AutoOptions) then begin
+    Canvas.Font.Assign(Self.Font);
+    lTextHeight := Canvas.TextHeight('Tg');
+    if (lTextHeight > Self.DefaultNodeHeight) then
+      Self.DefaultNodeHeight := lTextHeight;
+  end;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -29678,6 +29748,7 @@ var
   SavedTargetDC: Integer;
   PaintWidth: Integer;
   CurrentNodeHeight: Integer;
+  lUseSelectedBkColor: Boolean; // determines if the dotted grid lines need to be painted in selection color of background color
 
 begin
   {$ifdef DEBUG_VTV}Logger.EnterMethod([lcPaint],'PaintTree');{$endif}
@@ -30029,9 +30100,11 @@ begin
                               if (BidiMode = bdLeftToRight) or not ColumnIsEmpty(Node, Column) then
                               begin
                                 Canvas.Font.Color := FColors.GridLineColor;
-                                DrawDottedVLine(PaintInfo, CellRect.Top, CellRect.Bottom, CellRect.Right - 1);
-                              end;
-                              Dec(CellRect.Right);
+                                lUseSelectedBkColor := (poDrawSelection in PaintOptions) and (toFullRowSelect in FOptions.FSelectionOptions) and
+                                                      (vsSelected in Node.States) and not (toUseBlendedSelection in FOptions.PaintOptions) and not
+                                                      (tsUseExplorerTheme in FStates);
+                                DrawDottedVLine(PaintInfo, CellRect.Top, CellRect.Bottom, CellRect.Right - 1, lUseSelectedBkColor);
+                              end;                              Dec(CellRect.Right);
                               Dec(ContentRect.Right);
                             end;
                           end;
@@ -32244,7 +32317,7 @@ begin
       GetTextExtentPoint32(DC, PChar(Text), Length(Text), Size);
       Inc(Size.cx, 2 * FLink.FTree.FTextMargin);
       Inc(Size.cy, 2 * FLink.FTree.FTextMargin);
-      Height := Max(Size.cy, Height - 2 * GetSystemMetrics(SM_CYBORDER)); // Ensure a minimum height so that the edit field's content and cursor are displayed correctly.
+      Height := Max(Size.cy, Height); // Ensure a minimum height so that the edit field's content and cursor are displayed correctly. See #159
       // Repaint associated node if the edit becomes smaller.
       if Size.cx < Width then
         FLink.FTree.Invalidate();
@@ -32481,6 +32554,7 @@ begin
     if not (vsMultiline in FNode.States) then
       OffsetRect(R, 0, FTextBounds.Top - FEdit.Top);
     R.Top := Max(-1, R.Top); // A value smaller than -1 will prevent the edit cursor from being shown by Windows, see issue #159
+    R.Left := Max(-1, R.Left);
     SendMessage(FEdit.Handle, EM_SETRECTNP, 0, LPARAM(@R));
   end;
 end;
@@ -32935,12 +33009,17 @@ var
 begin
   Result := Inherited AddChild(Parent, UserData);
   // Restore the prviously restored node if the caption of this node is knwon and no other node was selected
-  if (toRestoreSelection in TreeOptions.SelectionOptions) and Assigned(fPreviouslySelected) and (Self.GetFirstSelected=nil) and Assigned(OnGetText) then begin
+  if (toRestoreSelection in TreeOptions.SelectionOptions) and Assigned(fPreviouslySelected) and Assigned(OnGetText) then begin
     // See if this was the previously selected node and restore it in this case
     Self.OnGetText(Self, Result, 0, ttNormal, NewNodeText);
     if fPreviouslySelected.IndexOf(NewNodeText) >= 0 then begin
       // Select this node and make sure that the parent node is expanded
-      Self.Selected[Result] := True;
+      Include(fStates, tsPreviouslySelectedLocked);
+      try
+        Self.Selected[Result] := True;
+      finally
+        Exclude(fStates, tsPreviouslySelectedLocked);
+      end;
       // if a there is a selected node now, then make sure that it is visible
       if Self.GetFirstSelected <> nil then
         Self.ScrollIntoView(Self.GetFirstSelected, True);
@@ -33912,32 +33991,46 @@ begin
   end;
 end;
 
-procedure TCustomVirtualStringTree.Clear();
+procedure TCustomVirtualStringTree.AddToSelection(Node: PVirtualNode);
 var
-  lSelectedNode: PVirtualNode;
   lSelectedNodeCaption: String;
 begin
-  if (toRestoreSelection in TreeOptions.SelectionOptions) and Assigned(Self.OnGetText) and not (csDestroying in ComponentState) then begin
+  inherited;
+  if (toRestoreSelection in TreeOptions.SelectionOptions) and Assigned(Self.OnGetText) and Self.Selected[Node] and not (tsPreviouslySelectedLocked in fStates) then begin
     if not Assigned(fPreviouslySelected) then begin
       fPreviouslySelected := TStringList.Create();
       fPreviouslySelected.Duplicates := dupIgnore;
+      fPreviouslySelected.Sorted := True; //Improves performance, required to use Find()
       fPreviouslySelected.CaseSensitive := False;
-    end
-    else
+    end;
+    if Self.SelectedCount = 1 then
       fPreviouslySelected.Clear();
-    lSelectedNode := Self.GetFirstSelected();
-    while Assigned(lSelectedNode) do begin
-      Self.OnGetText(Self, lSelectedNode, 0, ttNormal, lSelectedNodeCaption);
-      fPreviouslySelected.Add(lSelectedNodeCaption);
-      lSelectedNode := Self.GetNextSelected(lSelectedNode);
-    end;//while
+    Self.OnGetText(Self, Node, 0, ttNormal, lSelectedNodeCaption);
+    fPreviouslySelected.Add(lSelectedNodeCaption);
   end;//if
-  inherited;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TCustomVirtualStringTree.ContentToRTF(Source: TVSTTextSourceType): AnsiString;
+procedure TCustomVirtualStringTree.RemoveFromSelection(Node: PVirtualNode);
+var
+  lSelectedNodeCaption: String;
+  lIndex: Integer;
+begin
+  inherited;
+  if (toRestoreSelection in TreeOptions.SelectionOptions) and Assigned(fPreviouslySelected) and not Self.Selected[Node] then begin
+    if Self.SelectedCount = 0 then
+      fPreviouslySelected.Clear()
+    else begin
+      Self.OnGetText(Self, Node, 0, ttNormal, lSelectedNodeCaption);
+      if fPreviouslySelected.Find(lSelectedNodeCaption, lIndex) then
+        fPreviouslySelected.Delete(lIndex);
+    end;//else
+  end;//if
+end;
+//----------------------------------------------------------------------------------------------------------------------
+
+function TCustomVirtualStringTree.ContentToRTF(Source: TVSTTextSourceType): String;
 
 // Renders the current tree content (depending on Source) as RTF (rich text).
 // Based on ideas and code from Frank van den Bergh and Andreas Hörstemeier.
@@ -34972,7 +35065,9 @@ begin
         OffsetRect(Result, 2, 2)
       else
         OffsetRect(Result, 1, 1);
-  end;
+  end
+  else
+    Result := Rect(0, 0, 0, 0);
 end;
 
 function TVclStyleScrollBarsHook.GetVertScrollBarSliderRect: TRect;
@@ -34997,7 +35092,9 @@ begin
         OffsetRect(Result, 2, 2)
       else
         OffsetRect(Result, 1, 1);
-  end;
+  end
+  else
+    Result := Rect(0, 0, 0, 0);
 end;
 
 procedure TVclStyleScrollBarsHook.MouseLeave;
