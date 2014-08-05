@@ -93,6 +93,8 @@ implementation
 
 uses math;
 
+{$R rxdbgridprintgrid.res}
+
 procedure Register;
 begin
   RegisterComponents('RX DBAware',[TRxDBGridPrint]);
