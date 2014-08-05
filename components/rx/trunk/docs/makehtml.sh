@@ -29,5 +29,6 @@ fpdoc --package=rxfpc --format=html --index-colcount=4 --hide-protected \
   --input=../rxaboutformunit.pas --descr=rxfpc.xml \
   --input=../rxaboutdialog.pas --descr=rxfpc.xml \
   --input=../dateutil.pas --descr=rxfpc.xml \
-  --input=../rxfileutils.pas --descr=rxfpc.xml 
-  
+  --input=../rxfileutils.pas --descr=rxfpc.xml \
+  --input=../rxdbgridexportspreadsheet_paramsunit.pas --descr=rxfpc.xml \
+  --input=../rxdbgridexportspreadsheet.pas --descr=rxfpc.xml 

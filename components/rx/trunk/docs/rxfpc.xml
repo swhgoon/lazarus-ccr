@@ -165,6 +165,9 @@
             
             
             
+            
+            
+            
             <link id="TRxDBGrid">RxDBGrid</link>-а.</p>
         </descr>
       </element>
@@ -558,6 +561,9 @@
         <descr>
           <p>
             <link id="TOptionRx">Набор флагов</link>, управлюящих поведением 
+            
+            
+            
             
             
             
@@ -1129,6 +1135,9 @@ TRxDBCalcEdit является наследником TDBCalcEdit и имеет 
         <descr>
           <p>Свойство - массив, содержит в себе список всех файлов и каталогов, которые были обнаружены в указанной папке.</p>
 Кол-во элементов данного массива находится в свойстве 
+          
+          
+          
           
           
           
@@ -2441,7 +2450,13 @@ Description
             
             
             
+            
+            
+            
             <b>const</b> SearchDomain, FileName:
+            
+            
+            
             
             
             
@@ -2489,7 +2504,13 @@ Description
             
             
             
+            
+            
+            
             <b>out</b> UserName, DomainName:
+            
+            
+            
             
             
             
@@ -2554,7 +2575,13 @@ Description
             
             
             
+            
+            
+            
             <b>const</b> DirName:
+            
+            
+            
             
             
             
@@ -2590,6 +2617,9 @@ Description
             
             
             
+            
+            
+            
             <b>string</b>;</p>
           <p>Функция проверяет все разделители каталогов в указанном имени файла/каталога и, если нужно, меняет их на значение константы<b>DirectorySeparator</b>.</p>
         </descr>
@@ -2600,6 +2630,9 @@ Description
         <descr>
           <p>
             <b>function</b> GetUserName: 
+            
+            
+            
             
             
             
@@ -2895,6 +2928,36 @@ Description
       <short>Модуль содержит компоненту TRxSystemServices</short>
       <descr>Модуль RxSystemServices предназначен для получения информации о состоянии работающих в системе служб (windows) / демонов (unix-like)
 Cодержит компоненту <link id="TRxSystemServices">TRxSystemServices</link>.</descr>
+    </module>
+  </package>
+  <package name="rxdbgrid_export_spreadsheet">
+    <module name="rxdbgridexportspreadsheet">
+      <topic name="TRxDBGridExportSpreadSheetOption"/>
+      <element name="TRxDBGridExportSpreadSheetOption">
+        <short>Параметры экспорта в электрунную таблицу</short>
+      </element>
+      <element name="TRxDBGridExportSpreadSheetOptions">
+        <short>Параметры экспорта в электрунную таблицу</short>
+      </element>
+      <element name="TRxDBGridExportSpreadSheet"/>
+      <element name="TRxDBGridExportSpreadSheet.Create"/>
+      <element name="TRxDBGridExportSpreadSheet.FileName"/>
+      <element name="TRxDBGridExportSpreadSheet.PageName"/>
+      <element name="TRxDBGridExportSpreadSheet.OpenAfterExport"/>
+      <short>Модуль rxdbgridexportspreadsheet содержит класс для экспорта данных из TRxDBGrid в электронную таблицу</short>
+      <descr>Модуль rxdbgridexportspreadsheet содержит класс для экспорта данных из TRxDBGrid в электронную таблицу</descr>
+      <element name="TRxDBGridExportSpreadSheet.Options">
+        <short>Параметры экспорта в электрунную таблицу</short>
+        <seealso>
+          <link id=""/>
+        </seealso>
+      </element>
+    </module>
+    <module name="rxdbgridexportspreadsheet_paramsunit">
+      <topic name="TRxDBGridExportSpreadSheet_ParamsForm"/>
+      <element name="TRxDBGridExportSpreadSheet_ParamsForm"/>
+      <short>Модуль rxdbgridexportspreadsheet_paramsunit содержит окно формы параметров экспорта данных из TRxDBGrid в электронную таблицу</short>
+      <descr>Модуль rxdbgridexportspreadsheet_paramsunit содержит окно формы параметров экспорта данных из TRxDBGrid в электронную таблицу</descr>
     </module>
   </package>
 </fpdoc-descriptions>

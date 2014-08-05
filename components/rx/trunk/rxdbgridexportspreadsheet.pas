@@ -49,8 +49,6 @@ type
 
 type
 
-  { TRxDBGridExportSpeadSheet }
-
   { TRxDBGridExportSpreadSheet }
 
   TRxDBGridExportSpreadSheet = class(TRxDBGridAbstractTools)

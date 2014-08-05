@@ -2,13 +2,15 @@
 <CONFIG>
   <Package Version="4">
     <Name Value="rxdbgrid_export_spreadsheet"/>
+    <Author Value="Lagunov Aleksey"/>
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
-    <Version Minor="1" Release="1" Build="1"/>
+    <License Value="LGPL"/>
+    <Version Minor="9" Build="2"/>
     <Files Count="3">
       <Item1>
         <Filename Value="rxdbgridexportspreadsheet.pas"/>

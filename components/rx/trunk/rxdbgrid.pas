@@ -1,6 +1,6 @@
 { rxdbgrid unit
 
-  Copyright (C) 2005-2010 Lagunov Aleksey alexs@yandex.ru and Lazarus team
+  Copyright (C) 2005-2014 Lagunov Aleksey alexs@yandex.ru and Lazarus team
   original conception from rx library for Delphi (c)
 
   This library is free software; you can redistribute it and/or modify it
@@ -1033,7 +1033,7 @@ end;
 
 function TRxDBGridAbstractTools.Execute: boolean;
 begin
-  Result:=false;
+  Result:=true;
   if Assigned(FOnBeforeExecute) then
     FOnBeforeExecute(Self);
 
