@@ -463,10 +463,12 @@ begin
 
   RxDBGridPrintGrid_SetupForm.Edit1.Text:=FReportTitle;
   RxDBGridPrintGrid_SetupForm.RadioGroup1.ItemIndex:=ord(FOrientation);
-  RxDBGridPrintGrid_SetupForm.SpinEdit1.Value:=FPageMargin.Left;
-  RxDBGridPrintGrid_SetupForm.SpinEdit2.Value:=FPageMargin.Top;
+
+  RxDBGridPrintGrid_SetupForm.SpinEdit2.Value:=FPageMargin.Left;
+  RxDBGridPrintGrid_SetupForm.SpinEdit1.Value:=FPageMargin.Top;
   RxDBGridPrintGrid_SetupForm.SpinEdit3.Value:=FPageMargin.Right;
   RxDBGridPrintGrid_SetupForm.SpinEdit4.Value:=FPageMargin.Bottom;
+
   RxDBGridPrintGrid_SetupForm.CheckBox1.Checked:=FShowColumnHeaderOnAllPage;
 
   RxDBGridPrintGrid_SetupForm.CheckGroup1.Checked[0]:=rxpoShowTitle in FOptions;
@@ -480,8 +482,9 @@ begin
   begin
     FReportTitle                    := RxDBGridPrintGrid_SetupForm.Edit1.Text;
     FOrientation                    := TPrinterOrientation(RxDBGridPrintGrid_SetupForm.RadioGroup1.ItemIndex);
-    FPageMargin.Left                := RxDBGridPrintGrid_SetupForm.SpinEdit1.Value;
-    FPageMargin.Top                 := RxDBGridPrintGrid_SetupForm.SpinEdit2.Value;
+
+    FPageMargin.Left                := RxDBGridPrintGrid_SetupForm.SpinEdit2.Value;
+    FPageMargin.Top                 := RxDBGridPrintGrid_SetupForm.SpinEdit1.Value;
     FPageMargin.Right               := RxDBGridPrintGrid_SetupForm.SpinEdit3.Value;
     FPageMargin.Bottom              := RxDBGridPrintGrid_SetupForm.SpinEdit4.Value;
 
