@@ -7,7 +7,7 @@ msgstr "Программа \"%s\""
 
 #: rxdconst.sbottomcaption
 msgid "Bottom"
-msgstr ""
+msgstr "Низ"
 
 #: rxdconst.sbrowsedata
 msgid "browse"
@@ -169,11 +169,11 @@ msgstr "Ошибка в имени пользователя или пароле"
 
 #: rxdconst.slandscape
 msgid "Landscape"
-msgstr ""
+msgstr "Аольбом"
 
 #: rxdconst.sleftcaption
 msgid "Left"
-msgstr ""
+msgstr "Левая"
 
 #: rxdconst.slocaldatabase
 msgid "Unable complete this operation on local dataset"
@@ -217,7 +217,7 @@ msgstr "Открыть после экспорта"
 
 #: rxdconst.sorientation
 msgid "Orientation"
-msgstr ""
+msgstr "Ориентация"
 
 #: rxdconst.soverwriteexisting
 msgid "Overwrite existing"
@@ -225,7 +225,7 @@ msgstr "Перезаписать существующее"
 
 #: rxdconst.spagemargins
 msgid "Page margins"
-msgstr ""
+msgstr "Отступы на странице"
 
 #: rxdconst.spagename
 msgid "Page name"
@@ -249,7 +249,7 @@ msgstr "Новый пароль и подтверждение не совпад�
 
 #: rxdconst.sportrait
 msgid "Portrait"
-msgstr ""
+msgstr "Портрет"
 
 #: rxdconst.sprevbutton
 msgid "&Prior"
@@ -257,11 +257,11 @@ msgstr "&Превыдущие"
 
 #: rxdconst.sprintgrid
 msgid "Print grid"
-msgstr ""
+msgstr "Печать списка"
 
 #: rxdconst.sprintoptions
 msgid "Print options"
-msgstr ""
+msgstr "Параметры печати"
 
 #: rxdconst.spropdefbylookup
 msgid "PropDefByLookup"
@@ -273,7 +273,7 @@ msgstr "Регистрация"
 
 #: rxdconst.sreporttitle
 msgid "Report title"
-msgstr ""
+msgstr "Заголовок отчёта"
 
 #: rxdconst.sretrylogin
 msgid "Retry to connect with database?"
@@ -281,7 +281,7 @@ msgstr "Вы хотите повторить попытку соединения
 
 #: rxdconst.srightcaption
 msgid "Right"
-msgstr ""
+msgstr "Справа"
 
 #: rxdconst.srxallfields
 msgid "All fields"
@@ -515,27 +515,27 @@ msgstr "поиск"
 
 #: rxdconst.sshowcolumnheaderonallpage
 msgid "Show column header on all page"
-msgstr ""
+msgstr "Отображать заголовки колонок на всех страницах"
 
 #: rxdconst.sshowfooter
 msgid "Show footer"
-msgstr ""
+msgstr "Отображать итоги"
 
 #: rxdconst.sshowfootercolor
 msgid "Show footer color"
-msgstr ""
+msgstr "Итоги в цвете"
 
 #: rxdconst.sshowgridcolor
 msgid "Show grid color"
-msgstr ""
+msgstr "Список в цвете"
 
 #: rxdconst.sshowreporttitle
 msgid "Show report title"
-msgstr ""
+msgstr "Отображать заголово отчёта"
 
 #: rxdconst.sshowtitle
 msgid "Show column title"
-msgstr ""
+msgstr "Отображать заголовки колонок"
 
 #: rxdconst.stoolsexportspeadsheet
 msgid "Export to speadsheet"
@@ -543,7 +543,7 @@ msgstr "Экспорт в электронную таблицу"
 
 #: rxdconst.stopcaption
 msgid "Top"
-msgstr ""
+msgstr "Сверху"
 
 #: rxdconst.sunknownfieldtype
 msgid "SUnknownFieldType %s"

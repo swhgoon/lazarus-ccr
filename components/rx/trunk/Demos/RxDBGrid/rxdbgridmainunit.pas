@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, rxmemds,
-  DB, rxdbgrid, RxAboutDialog, ExtCtrls, Buttons, Menus, ActnList, StdCtrls,
+  DB, rxdbgrid, RxAboutDialog, RxIniPropStorage, RxDBGridPrintGrid,
+  RxDBGridExportSpreadSheet, ExtCtrls, Buttons, Menus, ActnList, StdCtrls,
   DBGrids, XMLPropStorage, types;
 
 type
@@ -21,6 +22,9 @@ type
     MenuItem8: TMenuItem;
     MenuItem9: TMenuItem;
     RxAboutDialog1: TRxAboutDialog;
+    RxDBGridExportSpreadSheet1: TRxDBGridExportSpreadSheet;
+    RxDBGridPrint1: TRxDBGridPrint;
+    RxIniPropStorage1: TRxIniPropStorage;
     RxMemoryData1RAIT: TStringField;
     SpeedButton1: TSpeedButton;
     sysExit: TAction;
@@ -62,7 +66,6 @@ type
     RxMemoryData2: TRxMemoryData;
     RxMemoryData2DEVELOPER_ID1: TLongintField;
     RxMemoryData2DEVELOPER_NAME1: TStringField;
-    XMLPropStorage1: TXMLPropStorage;
     procedure actCalcTotalExecute(Sender: TObject);
     procedure actOptimizeColumnsWidthAllExecute(Sender: TObject);
     procedure actOptimizeWidthCol1Execute(Sender: TObject);

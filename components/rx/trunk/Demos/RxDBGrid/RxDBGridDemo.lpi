@@ -11,7 +11,6 @@
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
       <Icon Value="0"/>
-      <ActiveWindowIndexAtStart Value="0"/>
     </General>
     <VersionInfo>
       <UseVersionInfo Value="True"/>
@@ -37,30 +36,33 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="4">
+    <RequiredPackages Count="6">
       <Item1>
-        <PackageName Value="IDEIntf"/>
-        <MinVersion Major="1" Valid="True"/>
+        <PackageName Value="rxdbgrid_export_spreadsheet"/>
       </Item1>
       <Item2>
-        <PackageName Value="FCL"/>
-        <MinVersion Major="1" Valid="True"/>
+        <PackageName Value="rxdbgrid_print"/>
       </Item2>
       <Item3>
-        <PackageName Value="LCL"/>
+        <PackageName Value="IDEIntf"/>
+        <MinVersion Major="1" Valid="True"/>
       </Item3>
       <Item4>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item4>
+      <Item5>
+        <PackageName Value="LCL"/>
+      </Item5>
+      <Item6>
         <PackageName Value="rxnew"/>
         <MinVersion Major="1" Release="18" Build="56" Valid="True"/>
-      </Item4>
+      </Item6>
     </RequiredPackages>
     <Units Count="103">
       <Unit0>
         <Filename Value="RxDBGridDemo.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="RxDBGridDemo"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
         <CursorPos X="9" Y="16"/>
         <UsageCount Value="99"/>
       </Unit0>
@@ -71,17 +73,15 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="RxDBGridMainUnit"/>
-        <EditorIndex Value="0"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="62"/>
-        <CursorPos X="15" Y="76"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="66"/>
+        <CursorPos X="15" Y="79"/>
         <UsageCount Value="99"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="../../../fpcsrc/fcl/db/db.pp"/>
-        <UnitName Value="db"/>
         <TopLine Value="1112"/>
         <CursorPos X="17" Y="1116"/>
         <UsageCount Value="5"/>
@@ -94,50 +94,43 @@
       </Unit3>
       <Unit4>
         <Filename Value="../../rxmemds.pas"/>
-        <UnitName Value="rxmemds"/>
         <TopLine Value="337"/>
-        <CursorPos X="1" Y="356"/>
+        <CursorPos Y="356"/>
         <UsageCount Value="5"/>
       </Unit4>
       <Unit5>
         <Filename Value="../../rxdbgrid.pas"/>
         <UnitName Value="rxdbgrid"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="3742"/>
-        <CursorPos X="1" Y="3763"/>
+        <CursorPos Y="3763"/>
         <UsageCount Value="17"/>
         <Bookmarks Count="2">
-          <Item0 X="1" Y="2564" ID="2"/>
-          <Item1 X="1" Y="3763" ID="1"/>
+          <Item0 Y="2564" ID="2"/>
+          <Item1 Y="3763" ID="1"/>
         </Bookmarks>
         <Loaded Value="True"/>
       </Unit5>
       <Unit6>
         <Filename Value="../../../lcl/lresources.pp"/>
-        <UnitName Value="LResources"/>
         <TopLine Value="2626"/>
-        <CursorPos X="1" Y="2644"/>
+        <CursorPos Y="2644"/>
         <UsageCount Value="5"/>
       </Unit6>
       <Unit7>
         <Filename Value="../../../lcl/grids.pas"/>
-        <UnitName Value="Grids"/>
         <TopLine Value="385"/>
         <CursorPos X="33" Y="394"/>
         <UsageCount Value="6"/>
       </Unit7>
       <Unit8>
         <Filename Value="../../../lcl/dbgrids.pas"/>
-        <UnitName Value="DBGrids"/>
         <TopLine Value="187"/>
         <CursorPos X="30" Y="199"/>
         <UsageCount Value="6"/>
       </Unit8>
       <Unit9>
         <Filename Value="../../rxpopupunit.pas"/>
-        <UnitName Value="rxpopupunit"/>
         <TopLine Value="246"/>
         <CursorPos X="15" Y="249"/>
         <UsageCount Value="6"/>
@@ -145,46 +138,41 @@
       <Unit10>
         <Filename Value="../../../lcl/include/wincontrol.inc"/>
         <TopLine Value="7217"/>
-        <CursorPos X="1" Y="7236"/>
+        <CursorPos Y="7236"/>
         <UsageCount Value="5"/>
       </Unit10>
       <Unit11>
         <Filename Value="../../../lcl/include/control.inc"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
         <UsageCount Value="5"/>
       </Unit11>
       <Unit12>
         <Filename Value="../../../lcl/lclmessageglue.pas"/>
-        <UnitName Value="LCLMessageGlue"/>
         <TopLine Value="92"/>
         <CursorPos X="46" Y="96"/>
         <UsageCount Value="5"/>
       </Unit12>
       <Unit13>
         <Filename Value="../../../lcl/controls.pp"/>
-        <UnitName Value="Controls"/>
         <TopLine Value="1779"/>
         <CursorPos X="60" Y="1798"/>
         <UsageCount Value="5"/>
       </Unit13>
       <Unit14>
         <Filename Value="../../../install/2/rxdbgrid.diff"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="21"/>
+        <CursorPos Y="21"/>
         <UsageCount Value="5"/>
         <DefaultSyntaxHighlighter Value="Diff"/>
       </Unit14>
       <Unit15>
         <Filename Value="../../../lcl/interfaces/gtk/gtkdevicecontext.inc"/>
         <TopLine Value="626"/>
-        <CursorPos X="1" Y="644"/>
+        <CursorPos Y="644"/>
         <UsageCount Value="5"/>
       </Unit15>
       <Unit16>
         <Filename Value="../../../lcl/interfaces/gtk2/gtk2winapi.inc"/>
         <TopLine Value="559"/>
-        <CursorPos X="1" Y="577"/>
+        <CursorPos Y="577"/>
         <UsageCount Value="5"/>
       </Unit16>
       <Unit17>
@@ -192,16 +180,12 @@
         <ComponentName Value="rxDBGridColumsForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="rxdbgrid_columsunit"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="103"/>
         <CursorPos X="55" Y="103"/>
         <UsageCount Value="11"/>
       </Unit17>
       <Unit18>
         <Filename Value="../../rxdconst.pas"/>
-        <UnitName Value="rxdconst"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="144"/>
         <CursorPos X="21" Y="165"/>
         <UsageCount Value="11"/>
@@ -214,42 +198,35 @@
       </Unit19>
       <Unit20>
         <Filename Value="../../backup/rxdbgrid.pas"/>
-        <UnitName Value="rxdbgrid"/>
         <TopLine Value="1207"/>
-        <CursorPos X="1" Y="1227"/>
+        <CursorPos Y="1227"/>
         <UsageCount Value="5"/>
       </Unit20>
       <Unit21>
         <Filename Value="../../rxaboutdialog.pas"/>
-        <UnitName Value="RxAboutDialog"/>
         <TopLine Value="10"/>
         <CursorPos X="73" Y="30"/>
         <UsageCount Value="6"/>
       </Unit21>
       <Unit22>
         <Filename Value="../../registerrx.pas"/>
-        <UnitName Value="registerrx"/>
         <TopLine Value="174"/>
         <CursorPos X="18" Y="201"/>
         <UsageCount Value="6"/>
       </Unit22>
       <Unit23>
         <Filename Value="../../../ideintf/idewindowintf.pas"/>
-        <UnitName Value="IDEWindowIntf"/>
         <TopLine Value="31"/>
-        <CursorPos X="1" Y="1"/>
         <UsageCount Value="5"/>
       </Unit23>
       <Unit24>
         <Filename Value="../../../lcl/extdlgs.pas"/>
-        <UnitName Value="ExtDlgs"/>
         <TopLine Value="105"/>
         <CursorPos X="35" Y="122"/>
         <UsageCount Value="5"/>
       </Unit24>
       <Unit25>
         <Filename Value="../../../lcl/dialogs.pp"/>
-        <UnitName Value="Dialogs"/>
         <TopLine Value="62"/>
         <CursorPos X="21" Y="79"/>
         <UsageCount Value="5"/>
@@ -262,7 +239,6 @@
       </Unit26>
       <Unit27>
         <Filename Value="../../../lcl/widgetset/wsdialogs.pp"/>
-        <UnitName Value="WSDialogs"/>
         <TopLine Value="132"/>
         <CursorPos X="3" Y="136"/>
         <UsageCount Value="5"/>
@@ -271,28 +247,24 @@
         <Filename Value="../../rxaboutformunit.pas"/>
         <ComponentName Value="rxAboutFormForm"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="rxAboutFormUnit"/>
         <TopLine Value="41"/>
         <CursorPos X="26" Y="55"/>
         <UsageCount Value="6"/>
       </Unit28>
       <Unit29>
         <Filename Value="../../rxversinfo.pas"/>
-        <UnitName Value="RxVersInfo"/>
         <TopLine Value="72"/>
         <CursorPos X="49" Y="105"/>
         <UsageCount Value="5"/>
       </Unit29>
       <Unit30>
         <Filename Value="../../../lcl/buttonpanel.pas"/>
-        <UnitName Value="ButtonPanel"/>
         <TopLine Value="11"/>
         <CursorPos X="6" Y="15"/>
         <UsageCount Value="6"/>
       </Unit30>
       <Unit31>
         <Filename Value="../../../lcl/extctrls.pp"/>
-        <UnitName Value="ExtCtrls"/>
         <TopLine Value="604"/>
         <CursorPos X="15" Y="607"/>
         <UsageCount Value="6"/>
@@ -305,7 +277,6 @@
       </Unit32>
       <Unit33>
         <Filename Value="../../../install/fpcsrc/rtl/objpas/classes/classesh.inc"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="426"/>
         <CursorPos X="17" Y="448"/>
         <UsageCount Value="13"/>
@@ -315,21 +286,17 @@
         <ComponentName Value="smsSendAboutForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="smsSendAboutUnit"/>
         <TopLine Value="28"/>
-        <CursorPos X="1" Y="57"/>
+        <CursorPos Y="57"/>
         <UsageCount Value="6"/>
       </Unit34>
       <Unit35>
         <Filename Value="../../../smsprog/sms_shared/smsabstarctconstunit.pas"/>
-        <UnitName Value="smsAbstarctConstUnit"/>
-        <TopLine Value="1"/>
         <CursorPos X="42" Y="11"/>
         <UsageCount Value="6"/>
       </Unit35>
       <Unit36>
         <Filename Value="../../rxconst.pas"/>
-        <UnitName Value="rxconst"/>
         <TopLine Value="34"/>
         <CursorPos X="3" Y="51"/>
         <UsageCount Value="6"/>
@@ -339,7 +306,6 @@
         <ComponentName Value="smssendParamsForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="smssendParamsUnit"/>
         <TopLine Value="49"/>
         <CursorPos X="34" Y="60"/>
         <UsageCount Value="6"/>
@@ -349,50 +315,40 @@
         <ComponentName Value="smsSendDemoMainForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="smsSendDemoMainUnit"/>
         <TopLine Value="41"/>
         <CursorPos X="105" Y="29"/>
         <UsageCount Value="6"/>
       </Unit38>
       <Unit39>
         <Filename Value="../../../rxnet/demo/send_demo/send_demo.lpr"/>
-        <UnitName Value="send_demo"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
         <UsageCount Value="6"/>
       </Unit39>
       <Unit40>
         <Filename Value="../../../doceditor/lazdeopts.pp"/>
-        <UnitName Value="LazDEOpts"/>
         <TopLine Value="43"/>
-        <CursorPos X="1" Y="56"/>
+        <CursorPos Y="56"/>
         <UsageCount Value="6"/>
       </Unit40>
       <Unit41>
         <Filename Value="../../rxfileutils.pas"/>
-        <UnitName Value="rxFileUtils"/>
         <TopLine Value="18"/>
         <CursorPos X="33" Y="42"/>
         <UsageCount Value="6"/>
       </Unit41>
       <Unit42>
         <Filename Value="../../registerrxdb.pas"/>
-        <UnitName Value="RegisterRxDB"/>
         <TopLine Value="2"/>
         <CursorPos X="20" Y="17"/>
         <UsageCount Value="6"/>
       </Unit42>
       <Unit43>
         <Filename Value="../../../ideintf/dbpropedits.pas"/>
-        <UnitName Value="DBPropEdits"/>
         <TopLine Value="13"/>
         <CursorPos X="6" Y="19"/>
         <UsageCount Value="6"/>
       </Unit43>
       <Unit44>
         <Filename Value="../../../ideintf/propedits.pp"/>
-        <UnitName Value="PropEdits"/>
-        <TopLine Value="1"/>
         <CursorPos X="6" Y="26"/>
         <UsageCount Value="6"/>
       </Unit44>
@@ -401,61 +357,47 @@
         <ComponentName Value="rxDBGridFindForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="rxdbgrid_findunit"/>
         <TopLine Value="78"/>
-        <CursorPos X="1" Y="94"/>
+        <CursorPos Y="94"/>
         <UsageCount Value="6"/>
       </Unit45>
       <Unit46>
         <Filename Value="../../rxtoolbar.pas"/>
-        <UnitName Value="rxtoolbar"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
         <CursorPos X="52" Y="26"/>
         <UsageCount Value="8"/>
       </Unit46>
       <Unit47>
         <Filename Value="../../../synedit/synedit.pp"/>
-        <UnitName Value="SynEdit"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="5699"/>
-        <CursorPos X="1" Y="5702"/>
+        <CursorPos Y="5702"/>
         <UsageCount Value="13"/>
       </Unit47>
       <Unit48>
         <Filename Value="../../../synedit/syneditkeycmds.pp"/>
-        <UnitName Value="SynEditKeyCmds"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="750"/>
         <CursorPos X="3" Y="752"/>
         <UsageCount Value="9"/>
       </Unit48>
       <Unit49>
         <Filename Value="../../../install/fpcsrc/rtl/objpas/classes/classes.inc"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="429"/>
         <CursorPos X="33" Y="447"/>
         <UsageCount Value="6"/>
       </Unit49>
       <Unit50>
         <Filename Value="../../../lcl/actnlist.pas"/>
-        <UnitName Value="ActnList"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="206"/>
         <CursorPos X="33" Y="224"/>
         <UsageCount Value="6"/>
       </Unit50>
       <Unit51>
         <Filename Value="../../../lcl/lclproc.pas"/>
-        <UnitName Value="LCLProc"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="1154"/>
         <CursorPos X="10" Y="1165"/>
         <UsageCount Value="6"/>
       </Unit51>
       <Unit52>
         <Filename Value="rxdbgridmainunit.lfm"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="133"/>
         <CursorPos X="5" Y="103"/>
         <UsageCount Value="7"/>
@@ -463,54 +405,42 @@
       </Unit52>
       <Unit53>
         <Filename Value="../../../install/fpcsrc/rtl/objpas/classes/collect.inc"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="286"/>
-        <CursorPos X="1" Y="288"/>
+        <CursorPos Y="288"/>
         <UsageCount Value="12"/>
       </Unit53>
       <Unit54>
         <Filename Value="../../../wine/1/1/rx.diff"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="9"/>
+        <CursorPos Y="9"/>
         <UsageCount Value="7"/>
         <DefaultSyntaxHighlighter Value="Diff"/>
       </Unit54>
       <Unit55>
         <Filename Value="../../../install/fpcsrc/packages/fcl-db/src/base/db.pas"/>
-        <UnitName Value="db"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="541"/>
-        <CursorPos X="1" Y="569"/>
+        <CursorPos Y="569"/>
         <UsageCount Value="7"/>
       </Unit55>
       <Unit56>
         <Filename Value="../../../lcl/include/canvas.inc"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="1116"/>
-        <CursorPos X="1" Y="1132"/>
+        <CursorPos Y="1132"/>
         <UsageCount Value="8"/>
       </Unit56>
       <Unit57>
         <Filename Value="../../exsortsql.pas"/>
-        <UnitName Value="exsortsql"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="69"/>
         <CursorPos X="49" Y="3"/>
         <UsageCount Value="7"/>
       </Unit57>
       <Unit58>
         <Filename Value="../../../../lcl/dbgrids.pas"/>
-        <UnitName Value="DBGrids"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="216"/>
         <CursorPos X="3" Y="216"/>
         <UsageCount Value="19"/>
       </Unit58>
       <Unit59>
         <Filename Value="../../../../lcl/grids.pas"/>
-        <UnitName Value="Grids"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="11283"/>
         <CursorPos X="45" Y="11304"/>
         <UsageCount Value="22"/>
@@ -520,62 +450,49 @@
       </Unit59>
       <Unit60>
         <Filename Value="../../../../../../install/fpcsrc/rtl/objpas/classes/classesh.inc"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="1554"/>
         <CursorPos X="38" Y="1569"/>
         <UsageCount Value="7"/>
       </Unit60>
       <Unit61>
         <Filename Value="../../../../lcl/buttons.pp"/>
-        <UnitName Value="Buttons"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="333"/>
         <CursorPos X="3" Y="360"/>
         <UsageCount Value="7"/>
       </Unit61>
       <Unit62>
         <Filename Value="../../../../../../install/fpcsrc/packages/fcl-db/src/base/db.pas"/>
-        <UnitName Value="db"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="1588"/>
         <CursorPos X="15" Y="1609"/>
         <UsageCount Value="7"/>
       </Unit62>
       <Unit63>
         <Filename Value="../../vclutils.pas"/>
-        <UnitName Value="vclutils"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="35"/>
+        <CursorPos Y="35"/>
         <UsageCount Value="9"/>
       </Unit63>
       <Unit64>
         <Filename Value="../../../../lcl/include/canvas.inc"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="1317"/>
-        <CursorPos X="1" Y="1338"/>
+        <CursorPos Y="1338"/>
         <UsageCount Value="7"/>
       </Unit64>
       <Unit65>
         <Filename Value="../../../../lcl/graphics.pp"/>
-        <UnitName Value="Graphics"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="93"/>
         <CursorPos X="3" Y="99"/>
         <UsageCount Value="8"/>
       </Unit65>
       <Unit66>
         <Filename Value="../../../../lcl/include/lclintf.inc"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="132"/>
-        <CursorPos X="1" Y="155"/>
+        <CursorPos Y="155"/>
         <UsageCount Value="7"/>
       </Unit66>
       <Unit67>
         <Filename Value="../../../../lcl/interfaces/gtk2/gtk2lclintf.inc"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="167"/>
-        <CursorPos X="1" Y="190"/>
+        <CursorPos Y="190"/>
         <UsageCount Value="7"/>
       </Unit67>
       <Unit68>
@@ -583,8 +500,6 @@
         <ComponentName Value="rxSortByForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="rxsortby"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="50"/>
         <CursorPos X="14" Y="65"/>
         <UsageCount Value="9"/>
@@ -594,260 +509,207 @@
         <ComponentName Value="rxFilterByForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="rxfilterby"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="315"/>
-        <CursorPos X="1" Y="350"/>
+        <CursorPos Y="350"/>
         <UsageCount Value="7"/>
       </Unit69>
       <Unit70>
         <Filename Value="../../../../../../install/source/fpcsrc/rtl/objpas/classes/classesh.inc"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="72"/>
         <CursorPos X="30" Y="95"/>
         <UsageCount Value="11"/>
       </Unit70>
       <Unit71>
         <Filename Value="../../../../../../install/source/fpcsrc/rtl/objpas/classes/stringl.inc"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="593"/>
         <CursorPos X="3" Y="598"/>
         <UsageCount Value="7"/>
       </Unit71>
       <Unit72>
         <Filename Value="../../rxstrutils.pas"/>
-        <UnitName Value="rxstrutils"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="140"/>
         <CursorPos X="23" Y="168"/>
         <UsageCount Value="7"/>
       </Unit72>
       <Unit73>
         <Filename Value="../../rxlookup.pas"/>
-        <UnitName Value="rxlookup"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="1176"/>
         <CursorPos X="3" Y="1196"/>
         <UsageCount Value="14"/>
       </Unit73>
       <Unit74>
         <Filename Value="../../../../../../install/source/fpcsrc/packages/fcl-db/src/base/db.pas"/>
-        <UnitName Value="db"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="1776"/>
         <CursorPos X="14" Y="1796"/>
         <UsageCount Value="14"/>
       </Unit74>
       <Unit75>
         <Filename Value="../../../../../../install/source/fpcsrc/rtl/objpas/classes/collect.inc"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="397"/>
         <CursorPos X="3" Y="399"/>
         <UsageCount Value="11"/>
       </Unit75>
       <Unit76>
         <Filename Value="../../../../../../install/source/fpcsrc/rtl/objpas/classes/lists.inc"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="131"/>
         <CursorPos X="3" Y="133"/>
         <UsageCount Value="11"/>
       </Unit76>
       <Unit77>
         <Filename Value="../../rxsortmemds.pas"/>
-        <UnitName Value="rxsortmemds"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="16"/>
-        <CursorPos X="1" Y="1"/>
         <UsageCount Value="8"/>
       </Unit77>
       <Unit78>
         <Filename Value="../../../../lcl/controls.pp"/>
-        <UnitName Value="Controls"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="2126"/>
         <CursorPos X="15" Y="2146"/>
         <UsageCount Value="11"/>
       </Unit78>
       <Unit79>
         <Filename Value="../../../../lcl/stdctrls.pp"/>
-        <UnitName Value="StdCtrls"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="233"/>
         <CursorPos X="3" Y="254"/>
         <UsageCount Value="9"/>
       </Unit79>
       <Unit80>
         <Filename Value="../../../../lcl/lcltype.pp"/>
-        <UnitName Value="LCLType"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="439"/>
         <CursorPos X="3" Y="433"/>
         <UsageCount Value="10"/>
       </Unit80>
       <Unit81>
         <Filename Value="../../../../lcl/include/customcontrol.inc"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="70"/>
         <CursorPos X="3" Y="79"/>
         <UsageCount Value="9"/>
       </Unit81>
       <Unit82>
         <Filename Value="../../../../lcl/include/wincontrol.inc"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="7862"/>
         <CursorPos X="3" Y="7901"/>
         <UsageCount Value="11"/>
       </Unit82>
       <Unit83>
         <Filename Value="../../../../../../install/source/fpcsrc/rtl/objpas/types.pp"/>
-        <UnitName Value="types"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="70"/>
         <CursorPos X="16" Y="91"/>
         <UsageCount Value="10"/>
       </Unit83>
       <Unit84>
         <Filename Value="../../../../lcl/include/control.inc"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="3955"/>
-        <CursorPos X="1" Y="3977"/>
+        <CursorPos Y="3977"/>
         <UsageCount Value="10"/>
       </Unit84>
       <Unit85>
         <Filename Value="../../../../lcl/include/scrollingwincontrol.inc"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="65"/>
-        <CursorPos X="1" Y="87"/>
+        <CursorPos Y="87"/>
         <UsageCount Value="10"/>
       </Unit85>
       <Unit86>
         <Filename Value="../../../../lcl/include/customform.inc"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="732"/>
-        <CursorPos X="1" Y="761"/>
+        <CursorPos Y="761"/>
         <UsageCount Value="10"/>
       </Unit86>
       <Unit87>
         <Filename Value="../../../../lcl/editbtn.pas"/>
-        <UnitName Value="EditBtn"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="648"/>
-        <CursorPos X="1" Y="670"/>
+        <CursorPos Y="670"/>
         <UsageCount Value="10"/>
       </Unit87>
       <Unit88>
         <Filename Value="../../../../lcl/include/winapi.inc"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="596"/>
-        <CursorPos X="1" Y="618"/>
+        <CursorPos Y="618"/>
         <UsageCount Value="10"/>
       </Unit88>
       <Unit89>
         <Filename Value="../../../../lcl/lclintf.pas"/>
-        <UnitName Value="LCLIntf"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="63"/>
         <CursorPos X="39" Y="49"/>
         <UsageCount Value="10"/>
       </Unit89>
       <Unit90>
         <Filename Value="../../../../lcl/include/lclintfh.inc"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="130"/>
-        <CursorPos X="1" Y="130"/>
+        <CursorPos Y="130"/>
         <UsageCount Value="10"/>
       </Unit90>
       <Unit91>
         <Filename Value="../../../../lcl/lmessages.pp"/>
-        <UnitName Value="LMessages"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="241"/>
-        <CursorPos X="1" Y="256"/>
+        <CursorPos Y="256"/>
         <UsageCount Value="11"/>
       </Unit91>
       <Unit92>
         <Filename Value="../../../../lcl/forms.pp"/>
-        <UnitName Value="Forms"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="248"/>
         <CursorPos X="16" Y="285"/>
         <UsageCount Value="11"/>
       </Unit92>
       <Unit93>
         <Filename Value="../../../../lcl/include/customframe.inc"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="184"/>
         <CursorPos X="3" Y="186"/>
         <UsageCount Value="10"/>
       </Unit93>
       <Unit94>
         <Filename Value="../../../../lcl/lclversion.pas"/>
-        <UnitName Value="LCLVersion"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
         <UsageCount Value="11"/>
       </Unit94>
       <Unit95>
         <Filename Value="../../rx.inc"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="42"/>
-        <CursorPos X="1" Y="63"/>
+        <CursorPos Y="63"/>
         <UsageCount Value="10"/>
       </Unit95>
       <Unit96>
         <Filename Value="../../../../../../install/source/fpcsrc/rtl/objpas/classes/classes.inc"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="846"/>
         <CursorPos X="3" Y="851"/>
         <UsageCount Value="10"/>
       </Unit96>
       <Unit97>
         <Filename Value="../../../../lcl/clipbrd.pp"/>
-        <UnitName Value="Clipbrd"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="176"/>
         <CursorPos X="15" Y="190"/>
         <UsageCount Value="10"/>
       </Unit97>
       <Unit98>
         <Filename Value="../../../../lcl/include/clipbrd.inc"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="178"/>
         <CursorPos X="3" Y="180"/>
         <UsageCount Value="10"/>
       </Unit98>
       <Unit99>
         <Filename Value="../../../../../../install/source/fpcsrc/rtl/inc/objpash.inc"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="178"/>
         <CursorPos X="23" Y="193"/>
         <UsageCount Value="10"/>
       </Unit99>
       <Unit100>
         <Filename Value="../../../../lcl/buttonpanel.pas"/>
-        <UnitName Value="ButtonPanel"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="339"/>
-        <CursorPos X="1" Y="349"/>
+        <CursorPos Y="349"/>
         <UsageCount Value="11"/>
       </Unit100>
       <Unit101>
         <Filename Value="/home/alexs/install/source/fpcsrc/rtl/objpas/classes/classesh.inc"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="468"/>
         <CursorPos X="15" Y="489"/>
         <UsageCount Value="10"/>
       </Unit101>
       <Unit102>
         <Filename Value="/home/alexs/install/source/fpcsrc/rtl/objpas/classes/collect.inc"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="41"/>
         <CursorPos X="2" Y="44"/>
         <UsageCount Value="10"/>
       </Unit102>
     </Units>
-    <JumpHistory Count="8" HistoryIndex="7">
+    <JumpHistory Count="14" HistoryIndex="13">
       <Position1>
         <Filename Value="../../rxdbgrid.pas"/>
         <Caret Line="867" Column="35" TopLine="845"/>
@@ -870,7 +732,7 @@
       </Position5>
       <Position6>
         <Filename Value="../../rxdbgrid.pas"/>
-        <Caret Line="5712" Column="1" TopLine="5677"/>
+        <Caret Line="5712" TopLine="5677"/>
       </Position6>
       <Position7>
         <Filename Value="../../rxdbgrid.pas"/>
@@ -880,6 +742,30 @@
         <Filename Value="../../rxdbgrid.pas"/>
         <Caret Line="875" Column="63" TopLine="854"/>
       </Position8>
+      <Position9>
+        <Filename Value="rxdbgridmainunit.pas"/>
+        <Caret Line="76" Column="15" TopLine="62"/>
+      </Position9>
+      <Position10>
+        <Filename Value="rxdbgridmainunit.pas"/>
+        <Caret Line="75" Column="15" TopLine="62"/>
+      </Position10>
+      <Position11>
+        <Filename Value="rxdbgridmainunit.pas"/>
+        <Caret Line="76" Column="15" TopLine="63"/>
+      </Position11>
+      <Position12>
+        <Filename Value="rxdbgridmainunit.pas"/>
+        <Caret Line="77" Column="15" TopLine="64"/>
+      </Position12>
+      <Position13>
+        <Filename Value="rxdbgridmainunit.pas"/>
+        <Caret Line="79" Column="15" TopLine="66"/>
+      </Position13>
+      <Position14>
+        <Filename Value="rxdbgridmainunit.pas"/>
+        <Caret Line="78" Column="15" TopLine="65"/>
+      </Position14>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
@@ -903,9 +789,6 @@
         </Win32>
       </Options>
     </Linking>
-    <Other>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
   <Debugging>
     <Watches Count="5">
@@ -934,5 +817,4 @@
       </Item2>
     </Exceptions>
   </Debugging>
-  <EditorMacros Count="0"/>
 </CONFIG>
