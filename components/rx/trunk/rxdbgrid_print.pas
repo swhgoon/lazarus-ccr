@@ -7,7 +7,7 @@ unit rxdbgrid_print;
 interface
 
 uses
-  RxDBGridPrintGrid, LazarusPackageIntf;
+  RxDBGridPrintGrid, RxDBGridPrintGrid_SetupUnit, LazarusPackageIntf;
 
 implementation
 

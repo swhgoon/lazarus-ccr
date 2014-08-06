@@ -1,4 +1,4 @@
-{ rxdbgrid unit
+{ RxDBGridPrintGrid unit
 
   Copyright (C) 2005-2014 Lagunov Aleksey alexs@yandex.ru and Lazarus team
   original conception from rx library for Delphi (c)
@@ -30,7 +30,7 @@
 }
 unit RxDBGridPrintGrid;
 
-{$mode objfpc}{$H+}
+{$I rx.inc}
 
 interface
 
@@ -39,8 +39,15 @@ uses
   Graphics, Printers;
 
 type
-  TRxDBGridPrintOption = (rxpoShowTitle, rxpoShowFooter, rxpoShowFooterColor);
+  TRxDBGridPrintOption =
+    (rxpoShowTitle,
+     rxpoShowFooter,
+     rxpoShowGridColor,
+     rxpoShowFooterColor,
+     rxpoShowReportTitle
+     );
   TRxDBGridPrintOptions = set of TRxDBGridPrintOption;
+
 
   { TRxColInfo }
 
@@ -52,17 +59,39 @@ type
     destructor Destroy; override;
   end;
 
+  { TRxPageMargin }
+
+  TRxPageMargin = class(TPersistent)
+  private
+    FBottom: integer;
+    FLeft: integer;
+    FRight: integer;
+    FTop: integer;
+  protected
+    procedure AssignTo(Dest: TPersistent); override;
+  public
+    constructor Create;
+  published
+    property Left:integer read FLeft write FLeft default 20;
+    property Top:integer read FTop write FTop default 20;
+    property Right:integer read FRight write FRight default 20;
+    property Bottom:integer read FBottom write FBottom default 20;
+  end;
+
   { TRxDBGridPrint }
 
   TRxDBGridPrint = class(TRxDBGridAbstractTools)
   private
     FOptions: TRxDBGridPrintOptions;
     FOrientation: TPrinterOrientation;
+    FPageMargin: TRxPageMargin;
     FReport : TfrReport;
     FReportDataSet : TfrDBDataSet;
     FColumnDataSet : TfrUserDataSet;
     FDataSet : TDataset;
     FPage : TfrPage;
+    FReportTitle: string;
+    FShowColumnHeaderOnAllPage: boolean;
 
     FShowProgress : Boolean;
     FTitleRowCount : integer;
@@ -70,14 +99,17 @@ type
 
     FYPos: Integer;
     FXPos: Integer;
+    procedure DoShowReportTitle;
     procedure DoCreateReport;
     procedure DoSetupColumns;
-    procedure DoShowTitle;
+    procedure DoShowColumnsTitle;
     procedure DoShowFooter;
     procedure OnPrintColumn(ColNo: Integer; var Width: Integer);
     procedure OnEnterRect(Memo: TStringList; View: TfrView);
+    procedure SetPageMargin(AValue: TRxPageMargin);
   protected
     function DoExecTools:boolean;override;
+    function DoSetupTools:boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -86,18 +118,45 @@ type
     property Orientation: TPrinterOrientation read FOrientation write FOrientation default poPortrait;
     property Options:TRxDBGridPrintOptions read FOptions write FOptions;
     property ShowProgress : Boolean read FShowProgress write FShowProgress default false;
+    property PageMargin:TRxPageMargin read FPageMargin write SetPageMargin;
+    property ReportTitle:string read FReportTitle write FReportTitle;
+    property ShowColumnHeaderOnAllPage:boolean read FShowColumnHeaderOnAllPage write FShowColumnHeaderOnAllPage default false;
   end;
 
 procedure Register;
 implementation
 
-uses math;
+uses math, RxDBGridPrintGrid_SetupUnit, Forms, Controls, rxdconst;
 
 {$R rxdbgridprintgrid.res}
 
 procedure Register;
 begin
   RegisterComponents('RX DBAware',[TRxDBGridPrint]);
+end;
+
+{ TRxPageMargin }
+
+procedure TRxPageMargin.AssignTo(Dest: TPersistent);
+begin
+  if (Dest is TRxPageMargin) then
+  begin
+    TRxPageMargin(Dest).FBottom:=FBottom;
+    TRxPageMargin(Dest).FLeft:=FLeft;
+    TRxPageMargin(Dest).FRight:=FRight;
+    TRxPageMargin(Dest).FTop:=FTop;
+  end
+  else
+    inherited AssignTo(Dest);
+end;
+
+constructor TRxPageMargin.Create;
+begin
+  inherited Create;
+  FBottom:=20;
+  FLeft:=20;
+  FRight:=20;
+  FTop:=20;
 end;
 
 { TRxColInfo }
@@ -117,6 +176,31 @@ end;
 
 { TRxDBGridPrint }
 
+procedure TRxDBGridPrint.DoShowReportTitle;
+var
+  FBand: TfrBandView;
+  FView: TfrMemoView;
+begin
+  if rxpoShowReportTitle in FOptions then
+  begin
+    FBand := TfrBandView(frCreateObject(gtBand, '', FPage));
+    FBand.SetBounds(10, 20, 1000, 25);
+    FBand.BandType := btReportTitle;
+    FPage.Objects.Add(FBand);
+
+    FView := frCreateObject(gtMemo, '', FPage) as TfrMemoView;
+    FView.SetBounds(20, 20, FPage.PrnInfo.PgW - 40, 25);
+    FView.Alignment:=taCenter;
+    FView.Font.Size:=12;
+//    FView.Font.Assign(FTitleFont);
+    FView.Memo.Add(FReportTitle);
+
+    FPage.Objects.Add(FView);
+
+    Inc(FYPos, 22)
+  end;
+end;
+
 procedure TRxDBGridPrint.DoCreateReport;
 var
   FBand: TfrBandView;
@@ -127,10 +211,17 @@ begin
   FPage := FReport.Pages[FReport.Pages.Count-1];
   FPage.ChangePaper(FPage.pgSize, FPage.Width, FPage.Height, FOrientation);
 
-  FYPos:=0;
-  FXPos:=20;
+  FPage.Margins.Top:=FPageMargin.Top;
+  FPage.Margins.Left:=FPageMargin.Left;
+  FPage.Margins.Bottom:=FPageMargin.Bottom;
+  FPage.Margins.Right:=FPageMargin.Right;
 
-  DoShowTitle;
+  FYPos:=FPageMargin.Top;
+  FXPos:=FPageMargin.Left;
+
+  DoShowReportTitle;
+
+  DoShowColumnsTitle;
 
   FBand := TfrBandView(frCreateObject(gtBand, '', FPage));
   FBand.BandType := btMasterData;
@@ -184,7 +275,7 @@ begin
   end;
 end;
 
-procedure TRxDBGridPrint.DoShowTitle;
+procedure TRxDBGridPrint.DoShowColumnsTitle;
 var
   FBand: TfrBandView;
   FView: TfrMemoView;
@@ -193,10 +284,9 @@ begin
   FBand := TfrBandView(frCreateObject(gtBand, '', FPage));
   FBand.BandType := btMasterHeader;
 
-{!!
-  if self.fShowHdOnAllPage then
-    FBand.Flags:=FBand.Flags+flBandRepeatHeader;
-}
+  if FShowColumnHeaderOnAllPage then
+    FBand.Flags:=FBand.Flags + flBandRepeatHeader;
+
   FBand.SetBounds(FXPos, FYPos, 1000, 20 * FTitleRowCount);
   FBand.Flags:=FBand.Flags or flStretched;
   FPage.Objects.Add(FBand);
@@ -227,18 +317,16 @@ begin
   FBand := TfrBandView(frCreateObject(gtBand, '', FPage));
   FBand.BandType := btMasterFooter;
 
-{!!
-  if self.fShowHdOnAllPage then
-    FBand.Flags:=FBand.Flags+flBandRepeatHeader;
-}
   FBand.SetBounds(FXPos, FYPos, 1000, 20);
   FBand.Flags:=FBand.Flags or flStretched;
   FPage.Objects.Add(FBand);
 
   FView := frCreateObject(gtMemo, '', FPage) as TfrMemoView;
   FView.SetBounds(FXPos, FYPos, 20, 20);
-  FView.Alignment:=taCenter;
-  FView.FillColor := RxDBGrid.FooterOptions.Color;
+
+  if rxpoShowFooterColor in FOptions then
+    FView.FillColor := RxDBGrid.FooterOptions.Color;
+
 //  FView.Font.Assign(FTitleFont);
   FView.Font.Size:=12;
   FView.Frames:=frAllFrames;
@@ -257,10 +345,11 @@ end;
 
 procedure TRxDBGridPrint.OnEnterRect(Memo: TStringList; View: TfrView);
 var
-  C: TRxColumn;
   i, k: Integer;
   F:TRxColInfo;
   S: String;
+  C:TColor;
+  J: Integer;
 begin
   i := FColumnDataset.RecNo;
 
@@ -274,10 +363,25 @@ begin
       S:=Memo[0];
       if (S='[Cell]') and Assigned(F.Col.Field) then
       begin
-        Memo[0] := F.Col.Field.DisplayText;
+        if rxpoShowGridColor in FOptions then
+        begin
+          C:=F.Col.Color;
+          if Assigned(RxDBGrid.OnGetCellProps) then
+            RxDBGrid.OnGetCellProps(RxDBGrid, F.Col.Field, TfrMemoView(View).Font, C);
+          TfrMemoView(View).FillColor:=C;
+        end;
+
+        S:=F.Col.Field.DisplayText;
+        if Assigned(F.Col) and (F.Col.KeyList.Count > 0) and (F.Col.PickList.Count > 0) then
+        begin
+          J := F.Col.KeyList.IndexOf(S);
+          if (J >= 0) and (J < F.Col.PickList.Count) then
+            S := F.Col.PickList[j];
+        end;
+
+        Memo[0] := S;
         TfrMemoView(View).Alignment:=F.Col.Alignment;
-      end
-      else
+      end                                            else
       if Copy(S, 1, 7) = 'Header_' then
       begin
         TfrMemoView(View).Alignment:=F.Col.Title.Alignment;
@@ -306,6 +410,11 @@ begin
     end;
 
   end;
+end;
+
+procedure TRxDBGridPrint.SetPageMargin(AValue: TRxPageMargin);
+begin
+  FPageMargin.Assign(AValue);
 end;
 
 function TRxDBGridPrint.DoExecTools: boolean;
@@ -346,20 +455,79 @@ begin
   end;
 end;
 
+function TRxDBGridPrint.DoSetupTools: boolean;
+var
+  RxDBGridPrintGrid_SetupForm: TRxDBGridPrintGrid_SetupForm;
+begin
+  RxDBGridPrintGrid_SetupForm:=TRxDBGridPrintGrid_SetupForm.Create(Application);
+
+  RxDBGridPrintGrid_SetupForm.Edit1.Text:=FReportTitle;
+  RxDBGridPrintGrid_SetupForm.RadioGroup1.ItemIndex:=ord(FOrientation);
+  RxDBGridPrintGrid_SetupForm.SpinEdit1.Value:=FPageMargin.Left;
+  RxDBGridPrintGrid_SetupForm.SpinEdit2.Value:=FPageMargin.Top;
+  RxDBGridPrintGrid_SetupForm.SpinEdit3.Value:=FPageMargin.Right;
+  RxDBGridPrintGrid_SetupForm.SpinEdit4.Value:=FPageMargin.Bottom;
+  RxDBGridPrintGrid_SetupForm.CheckBox1.Checked:=FShowColumnHeaderOnAllPage;
+
+  RxDBGridPrintGrid_SetupForm.CheckGroup1.Checked[0]:=rxpoShowTitle in FOptions;
+  RxDBGridPrintGrid_SetupForm.CheckGroup1.Checked[1]:=rxpoShowFooter in FOptions;
+  RxDBGridPrintGrid_SetupForm.CheckGroup1.Checked[2]:=rxpoShowFooterColor in FOptions;
+  RxDBGridPrintGrid_SetupForm.CheckGroup1.Checked[3]:=rxpoShowGridColor in FOptions;
+  RxDBGridPrintGrid_SetupForm.CheckGroup1.Checked[4]:=rxpoShowReportTitle in FOptions;
+
+  Result:=RxDBGridPrintGrid_SetupForm.ShowModal = mrOk;
+  if Result then
+  begin
+    FReportTitle                    := RxDBGridPrintGrid_SetupForm.Edit1.Text;
+    FOrientation                    := TPrinterOrientation(RxDBGridPrintGrid_SetupForm.RadioGroup1.ItemIndex);
+    FPageMargin.Left                := RxDBGridPrintGrid_SetupForm.SpinEdit1.Value;
+    FPageMargin.Top                 := RxDBGridPrintGrid_SetupForm.SpinEdit2.Value;
+    FPageMargin.Right               := RxDBGridPrintGrid_SetupForm.SpinEdit3.Value;
+    FPageMargin.Bottom              := RxDBGridPrintGrid_SetupForm.SpinEdit4.Value;
+
+    FOptions:=[];
+    if RxDBGridPrintGrid_SetupForm.CheckGroup1.Checked[0] then
+      FOptions:=FOptions + [rxpoShowTitle];
+
+    if RxDBGridPrintGrid_SetupForm.CheckGroup1.Checked[1] then
+      FOptions:=FOptions + [rxpoShowFooter];
+
+    if RxDBGridPrintGrid_SetupForm.CheckGroup1.Checked[2] then
+      FOptions:=FOptions + [rxpoShowFooterColor];
+
+    if RxDBGridPrintGrid_SetupForm.CheckGroup1.Checked[3] then
+      FOptions:=FOptions + [rxpoShowGridColor];
+
+    if RxDBGridPrintGrid_SetupForm.CheckGroup1.Checked[4] then
+      FOptions:=FOptions + [rxpoShowReportTitle];
+
+    FShowColumnHeaderOnAllPage:=RxDBGridPrintGrid_SetupForm.CheckBox1.Checked;
+  end;
+  RxDBGridPrintGrid_SetupForm.Free;
+end;
+
 constructor TRxDBGridPrint.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FCaption:='Print grid';
+  FPageMargin:=TRxPageMargin.Create;
+
+  FCaption:=sPrintGrid;
   FShowProgress:=false;
   FRxColInfoList:=TObjectList.Create(true);
   FOrientation:=poPortrait;
   ShowSetupForm:=false;
-  FOptions:=[rxpoShowTitle, rxpoShowFooter, rxpoShowFooterColor];
+  FOptions:=[rxpoShowTitle,
+     rxpoShowFooter,
+     rxpoShowGridColor,
+     rxpoShowFooterColor,
+     rxpoShowReportTitle];
+  FShowColumnHeaderOnAllPage:=false;
 end;
 
 destructor TRxDBGridPrint.Destroy;
 begin
   FreeAndNil(FRxColInfoList);
+  FreeAndNil(FPageMargin);
   inherited Destroy;
 end;
 
@@ -369,4 +537,9 @@ begin
 end;
 
 end.
+
+{ DONE -oalexs : Необходимо настраивать отступы в печатной форме}
+{ DONE -oalexs : Необходимо настроить отображение раскраски ячеек }
+{ DONE -oalexs : Необходимо правильно выгружать лукапные значение KeyList/PickList }
+{ TODO -oalexs : Необходимо реализовать настройку шрифтов }
 

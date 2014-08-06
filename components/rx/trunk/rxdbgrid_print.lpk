@@ -5,15 +5,19 @@
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
-    <Files Count="1">
+    <Files Count="2">
       <Item1>
         <Filename Value="rxdbgridprintgrid.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="RxDBGridPrintGrid"/>
       </Item1>
+      <Item2>
+        <Filename Value="rxdbgridprintgrid_setupunit.pas"/>
+        <UnitName Value="rxdbgridprintgrid_setupunit"/>
+      </Item2>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">

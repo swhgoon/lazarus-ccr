@@ -5,6 +5,10 @@ msgstr "Content-Type: text/plain; charset=UTF-8"
 msgid "Application \"%s\""
 msgstr ""
 
+#: rxdconst.sbottomcaption
+msgid "Bottom"
+msgstr ""
+
 #: rxdconst.sbrowsedata
 msgid "browse"
 msgstr ""
@@ -161,6 +165,14 @@ msgstr ""
 msgid "User name or password not valid"
 msgstr ""
 
+#: rxdconst.slandscape
+msgid "Landscape"
+msgstr ""
+
+#: rxdconst.sleftcaption
+msgid "Left"
+msgstr ""
+
 #: rxdconst.slocaldatabase
 msgid "Unable complete this operation on local dataset"
 msgstr ""
@@ -201,8 +213,16 @@ msgstr ""
 msgid "Open after export"
 msgstr ""
 
+#: rxdconst.sorientation
+msgid "Orientation"
+msgstr ""
+
 #: rxdconst.soverwriteexisting
 msgid "Overwrite existing"
+msgstr ""
+
+#: rxdconst.spagemargins
+msgid "Page margins"
 msgstr ""
 
 #: rxdconst.spagename
@@ -225,8 +245,20 @@ msgstr ""
 msgid "New password and confirmation not equal"
 msgstr ""
 
+#: rxdconst.sportrait
+msgid "Portrait"
+msgstr ""
+
 #: rxdconst.sprevbutton
 msgid "&Prior"
+msgstr ""
+
+#: rxdconst.sprintgrid
+msgid "Print grid"
+msgstr ""
+
+#: rxdconst.sprintoptions
+msgid "Print options"
 msgstr ""
 
 #: rxdconst.spropdefbylookup
@@ -237,8 +269,16 @@ msgstr ""
 msgid "Register"
 msgstr ""
 
+#: rxdconst.sreporttitle
+msgid "Report title"
+msgstr ""
+
 #: rxdconst.sretrylogin
 msgid "Retry to connect with database?"
+msgstr ""
+
+#: rxdconst.srightcaption
+msgid "Right"
 msgstr ""
 
 #: rxdconst.srxallfields
@@ -471,8 +511,36 @@ msgstr ""
 msgid "find"
 msgstr ""
 
+#: rxdconst.sshowcolumnheaderonallpage
+msgid "Show column header on all page"
+msgstr ""
+
+#: rxdconst.sshowfooter
+msgid "Show footer"
+msgstr ""
+
+#: rxdconst.sshowfootercolor
+msgid "Show footer color"
+msgstr ""
+
+#: rxdconst.sshowgridcolor
+msgid "Show grid color"
+msgstr ""
+
+#: rxdconst.sshowreporttitle
+msgid "Show report title"
+msgstr ""
+
+#: rxdconst.sshowtitle
+msgid "Show column title"
+msgstr ""
+
 #: rxdconst.stoolsexportspeadsheet
 msgid "Export to speadsheet"
+msgstr ""
+
+#: rxdconst.stopcaption
+msgid "Top"
 msgstr ""
 
 #: rxdconst.sunknownfieldtype

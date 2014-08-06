@@ -172,14 +172,33 @@ resourcestring
 
   sUnknownXMLDatasetFormat = 'Unknown XML Dataset format';
 
-  sToolsExportSpeadSheet   = 'Export to speadsheet';
-  sExportFileName          = 'Export file name';
-  sOpenAfterExport         = 'Open after export';
-  sPageName                = 'Page name';
-  sExportColumnHeader      = 'Export column header';
-  sExportColumnFooter      = 'Export column footer';
-  sExportCellColors        = 'Export cell colors';
-  sOverwriteExisting       = 'Overwrite existing';
+  sToolsExportSpeadSheet     = 'Export to speadsheet';
+  sExportFileName            = 'Export file name';
+  sOpenAfterExport           = 'Open after export';
+  sPageName                  = 'Page name';
+  sExportColumnHeader        = 'Export column header';
+  sExportColumnFooter        = 'Export column footer';
+  sExportCellColors          = 'Export cell colors';
+  sOverwriteExisting         = 'Overwrite existing';
+  sShowColumnHeaderOnAllPage = 'Show column header on all page';
+  sPageMargins               = 'Page margins';
+  sLeftCaption               = 'Left';
+  sTopCaption                = 'Top';
+  sRightCaption              = 'Right';
+  sBottomCaption             = 'Bottom';
+  sReportTitle               = 'Report title';
+  sOrientation               = 'Orientation';
+  sPortrait                  = 'Portrait';
+  sLandscape                 = 'Landscape';
+  sPrintOptions              = 'Print options';
+
+  sShowTitle                 = 'Show column title';
+  sShowFooter                = 'Show footer';
+  sShowFooterColor           = 'Show footer color';
+  sShowGridColor             = 'Show grid color';
+  sShowReportTitle           = 'Show report title';
+  sPrintGrid                 = 'Print grid';
+
 
 
 const

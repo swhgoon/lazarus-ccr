@@ -5,6 +5,10 @@ msgstr "Content-Type: text/plain; charset=UTF-8"
 msgid "Application \"%s\""
 msgstr "Aplicación \"%s\""
 
+#: rxdconst.sbottomcaption
+msgid "Bottom"
+msgstr ""
+
 #: rxdconst.sbrowsedata
 msgid "browse"
 msgstr "vista"
@@ -163,6 +167,14 @@ msgstr "No hay campos definido"
 msgid "User name or password not valid"
 msgstr "Nombre de usuario o clave no es valido"
 
+#: rxdconst.slandscape
+msgid "Landscape"
+msgstr ""
+
+#: rxdconst.sleftcaption
+msgid "Left"
+msgstr ""
+
 #: rxdconst.slocaldatabase
 msgid "Unable complete this operation on local dataset"
 msgstr "No se puede completar esta operación en el conjunto de datos local"
@@ -203,8 +215,16 @@ msgstr "&Anterior clave:"
 msgid "Open after export"
 msgstr ""
 
+#: rxdconst.sorientation
+msgid "Orientation"
+msgstr ""
+
 #: rxdconst.soverwriteexisting
 msgid "Overwrite existing"
+msgstr ""
+
+#: rxdconst.spagemargins
+msgid "Page margins"
 msgstr ""
 
 #: rxdconst.spagename
@@ -227,9 +247,21 @@ msgstr "Clave no cambio"
 msgid "New password and confirmation not equal"
 msgstr "Nueva clave y confirmacion no son iguales"
 
+#: rxdconst.sportrait
+msgid "Portrait"
+msgstr ""
+
 #: rxdconst.sprevbutton
 msgid "&Prior"
 msgstr "&Anterior"
+
+#: rxdconst.sprintgrid
+msgid "Print grid"
+msgstr ""
+
+#: rxdconst.sprintoptions
+msgid "Print options"
+msgstr ""
 
 #: rxdconst.spropdefbylookup
 msgid "PropDefByLookup"
@@ -239,9 +271,17 @@ msgstr "PropDefByLookup"
 msgid "Register"
 msgstr "Registro"
 
+#: rxdconst.sreporttitle
+msgid "Report title"
+msgstr ""
+
 #: rxdconst.sretrylogin
 msgid "Retry to connect with database?"
 msgstr "Reintentar conectar con la base de dato?"
+
+#: rxdconst.srightcaption
+msgid "Right"
+msgstr ""
 
 #: rxdconst.srxallfields
 msgid "All fields"
@@ -475,8 +515,36 @@ msgstr "Error del Servidor"
 msgid "find"
 msgstr "buscar"
 
+#: rxdconst.sshowcolumnheaderonallpage
+msgid "Show column header on all page"
+msgstr ""
+
+#: rxdconst.sshowfooter
+msgid "Show footer"
+msgstr ""
+
+#: rxdconst.sshowfootercolor
+msgid "Show footer color"
+msgstr ""
+
+#: rxdconst.sshowgridcolor
+msgid "Show grid color"
+msgstr ""
+
+#: rxdconst.sshowreporttitle
+msgid "Show report title"
+msgstr ""
+
+#: rxdconst.sshowtitle
+msgid "Show column title"
+msgstr ""
+
 #: rxdconst.stoolsexportspeadsheet
 msgid "Export to speadsheet"
+msgstr ""
+
+#: rxdconst.stopcaption
+msgid "Top"
 msgstr ""
 
 #: rxdconst.sunknownfieldtype
