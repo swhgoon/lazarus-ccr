@@ -186,7 +186,11 @@ var
   CT : TRxColumnTitle;
   CC : TColor;
   scColor : TsColor;
+  F:TFont;
+  S: String;
+  J: Integer;
 begin
+  F:=TFont.Create;
   FDataSet.First;
   while not FDataSet.EOF do
   begin
@@ -197,13 +201,26 @@ begin
       CT:=C.Title as TRxColumnTitle;
       if C.Visible then
       begin
-        FWorksheet.WriteUTF8Text(FCurRow, FCurCol, C.Field.DisplayText);
-        CC:=C.Color;
-        if (CC and SYS_COLOR_BASE) = 0  then
+
+        S:=C.Field.DisplayText;
+        if (C.KeyList.Count > 0) and (C.PickList.Count > 0) then
         begin
-//          CC:=clWhite;
-          scColor:=FWorkbook.AddColorToPalette(CC);
-          FWorksheet.WriteBackgroundColor(FCurRow,FCurCol, scColor);
+          J := C.KeyList.IndexOf(S);
+          if (J >= 0) and (J < C.PickList.Count) then
+            S := C.PickList[j];
+        end;
+        FWorksheet.WriteUTF8Text(FCurRow, FCurCol, S);
+
+        if ressExportColors in FOptions then
+        begin
+          CC:=C.Color;
+          if Assigned(RxDBGrid.OnGetCellProps) then
+            RxDBGrid.OnGetCellProps(RxDBGrid, C.Field, F, CC);
+          if (CC and SYS_COLOR_BASE) = 0  then
+          begin
+            scColor:=FWorkbook.AddColorToPalette(CC);
+            FWorksheet.WriteBackgroundColor(FCurRow,FCurCol, scColor);
+          end;
         end;
 
         FWorksheet.WriteBorders(FCurRow,FCurCol, [cbNorth, cbWest, cbEast, cbSouth]);
@@ -219,6 +236,7 @@ begin
     inc(FCurRow);
     FDataSet.Next;
   end;
+  F.Free
 end;
 
 procedure TRxDBGridExportSpreadSheet.DoExportFooter;
@@ -237,15 +255,15 @@ begin
     CT:=C.Title as TRxColumnTitle;
     if C.Visible then
     begin
+      if (CC and SYS_COLOR_BASE) = 0  then
+      begin
+        scColor:=FWorkbook.AddColorToPalette(CC);
+        FWorksheet.WriteBackgroundColor(FCurRow,FCurCol, scColor);
+      end;
+
       if (C.Footer.ValueType <> fvtNon) then
       begin
         FWorksheet.WriteUTF8Text(FCurRow, FCurCol, C.Footer.DisplayText);
-        if (CC and SYS_COLOR_BASE) = 0  then
-        begin
-  //        CC:=clWhite;
-          scColor:=FWorkbook.AddColorToPalette(CC);
-          FWorksheet.WriteBackgroundColor(FCurRow,FCurCol, scColor);
-        end;
 
         FWorksheet.WriteBorders(FCurRow,FCurCol, [cbNorth, cbWest, cbEast, cbSouth]);
         FWorksheet.WriteBorderColor(FCurRow,FCurCol, cbNorth, scColorBlack);

@@ -73,9 +73,8 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="RxDBGridMainUnit"/>
-        <IsVisibleTab Value="True"/>
-        <TopLine Value="66"/>
-        <CursorPos X="15" Y="79"/>
+        <TopLine Value="78"/>
+        <CursorPos Y="80"/>
         <UsageCount Value="99"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -101,6 +100,7 @@
       <Unit5>
         <Filename Value="../../rxdbgrid.pas"/>
         <UnitName Value="rxdbgrid"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <TopLine Value="3742"/>
         <CursorPos Y="3763"/>
@@ -709,7 +709,7 @@
         <UsageCount Value="10"/>
       </Unit102>
     </Units>
-    <JumpHistory Count="14" HistoryIndex="13">
+    <JumpHistory Count="16" HistoryIndex="15">
       <Position1>
         <Filename Value="../../rxdbgrid.pas"/>
         <Caret Line="867" Column="35" TopLine="845"/>
@@ -766,6 +766,14 @@
         <Filename Value="rxdbgridmainunit.pas"/>
         <Caret Line="78" Column="15" TopLine="65"/>
       </Position14>
+      <Position15>
+        <Filename Value="rxdbgridmainunit.pas"/>
+        <Caret Line="79" Column="15" TopLine="66"/>
+      </Position15>
+      <Position16>
+        <Filename Value="rxdbgridmainunit.pas"/>
+        <Caret Line="161" Column="62" TopLine="158"/>
+      </Position16>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>

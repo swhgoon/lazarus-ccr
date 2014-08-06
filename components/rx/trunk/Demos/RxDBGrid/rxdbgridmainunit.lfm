@@ -9,6 +9,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
   ClientWidth = 1187
   Menu = MainMenu1
   OnCreate = FormCreate
+  SessionProperties = 'RxDBGridExportSpreadSheet1.FileName;RxDBGridExportSpreadSheet1.OpenAfterExport;RxDBGridExportSpreadSheet1.Options;RxDBGridExportSpreadSheet1.PageName;RxDBGridPrint1.Options;RxDBGridPrint1.Orientation;RxDBGridPrint1.PageMargin;RxDBGridPrint1.ReportTitle;RxDBGridPrint1.ShowColumnHeaderOnAllPage'
   ShowHint = True
   LCLVersion = '1.3'
   object RxDBGrid1: TRxDBGrid
@@ -18,6 +19,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
     Width = 1187
     TitleButtons = True
     AutoSort = True
+    OnGetCellProps = RxDBGrid1GetCellProps
     Columns = <    
       item
         Title.Alignment = taCenter
@@ -43,6 +45,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
         )
       end    
       item
+        Color = clSkyBlue
         Title.Alignment = taCenter
         Title.Caption = 'Code - ID'
         Title.Orientation = toVertical90
@@ -1343,6 +1346,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
     RxDBGrid = RxDBGrid1
     Caption = 'Export data'
     ShowSetupForm = True
+    FileName = 'RxDBGridDemo.ods'
     PageName = 'RxDBGrid demo'
     Options = [ressExportTitle, ressExportColors, ressExportFooter, ressOverwriteExisting]
     left = 504

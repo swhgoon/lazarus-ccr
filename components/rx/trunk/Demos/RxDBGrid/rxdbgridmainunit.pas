@@ -78,6 +78,8 @@ type
     procedure FormCreate(Sender: TObject);
     procedure hlpAboutExecute(Sender: TObject);
     procedure RxDBGrid1Filtred(Sender: TObject);
+    procedure RxDBGrid1GetCellProps(Sender: TObject; Field: TField;
+      AFont: TFont; var Background: TColor);
     procedure showColumnsDialogExecute(Sender: TObject);
     procedure showFindDialogExecute(Sender: TObject);
     procedure sysExitExecute(Sender: TObject);
@@ -138,9 +140,6 @@ begin
   RxMemoryData1.AppendRecord([16, 'Гарант', 480, 'Гарант', EncodeDate(2007, 2, 1), 3]);
 
   RxMemoryData1.First;
-//  RxDBGrid1.CalcStatTotals; //fix error in GotoBookmark
-
-
 end;
 
 procedure TRxDBGridMainForm.hlpAboutExecute(Sender: TObject);
@@ -151,6 +150,13 @@ end;
 procedure TRxDBGridMainForm.RxDBGrid1Filtred(Sender: TObject);
 begin
   RxMemoryData1.First;
+end;
+
+procedure TRxDBGridMainForm.RxDBGrid1GetCellProps(Sender: TObject;
+  Field: TField; AFont: TFont; var Background: TColor);
+begin
+  if (Field = RxMemoryData1PRICE1) and (RxMemoryData1PRICE1.AsFloat>99) then
+    Background:=clRed;
 end;
 
 
