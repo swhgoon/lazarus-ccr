@@ -99,8 +99,9 @@ type
 
     FYPos: Integer;
     FXPos: Integer;
-    procedure DoShowReportTitle;
     procedure DoCreateReport;
+
+    procedure DoShowReportTitle;
     procedure DoSetupColumns;
     procedure DoShowColumnsTitle;
     procedure DoShowFooter;
@@ -181,24 +182,21 @@ var
   FBand: TfrBandView;
   FView: TfrMemoView;
 begin
-  if rxpoShowReportTitle in FOptions then
-  begin
-    FBand := TfrBandView(frCreateObject(gtBand, '', FPage));
-    FBand.SetBounds(10, 20, 1000, 25);
-    FBand.BandType := btReportTitle;
-    FPage.Objects.Add(FBand);
+  FBand := TfrBandView(frCreateObject(gtBand, '', FPage));
+  FBand.SetBounds(10, FYPos, 1000, 25);
+  FBand.BandType := btReportTitle;
+  FPage.Objects.Add(FBand);
 
-    FView := frCreateObject(gtMemo, '', FPage) as TfrMemoView;
-    FView.SetBounds(20, 20, FPage.PrnInfo.PgW - 40, 25);
-    FView.Alignment:=taCenter;
-    FView.Font.Size:=12;
+  FView := frCreateObject(gtMemo, '', FPage) as TfrMemoView;
+  FView.SetBounds(FXPos, FYPos, FPage.PrnInfo.PgW - 40, 25);
+  FView.Alignment:=taCenter;
+  FView.Font.Size:=12;
 //    FView.Font.Assign(FTitleFont);
-    FView.Memo.Add(FReportTitle);
+  FView.Memo.Add(FReportTitle);
 
-    FPage.Objects.Add(FView);
+  FPage.Objects.Add(FView);
 
-    Inc(FYPos, 22)
-  end;
+  Inc(FYPos, 27)
 end;
 
 procedure TRxDBGridPrint.DoCreateReport;
@@ -219,9 +217,11 @@ begin
   FYPos:=FPageMargin.Top;
   FXPos:=FPageMargin.Left;
 
-  DoShowReportTitle;
+  if rxpoShowReportTitle in FOptions then
+    DoShowReportTitle;
 
-  DoShowColumnsTitle;
+  if rxpoShowTitle in FOptions then
+    DoShowColumnsTitle;
 
   FBand := TfrBandView(frCreateObject(gtBand, '', FPage));
   FBand.BandType := btMasterData;
@@ -258,7 +258,7 @@ var
   i: Integer;
   j: Integer;
 begin
-  FTitleRowCount:=0;
+  FTitleRowCount:=1;
   FRxColInfoList.Clear;
   for i:=0 to RxDBGrid.Columns.Count-1 do
   begin
@@ -283,13 +283,11 @@ var
 begin
   FBand := TfrBandView(frCreateObject(gtBand, '', FPage));
   FBand.BandType := btMasterHeader;
-
-  if FShowColumnHeaderOnAllPage then
-    FBand.Flags:=FBand.Flags + flBandRepeatHeader;
-
-  FBand.SetBounds(FXPos, FYPos, 1000, 20 * FTitleRowCount);
+  FBand.SetBounds(0, FYPos, 1000, 20 * FTitleRowCount);
   FBand.Flags:=FBand.Flags or flStretched;
   FPage.Objects.Add(FBand);
+  if FShowColumnHeaderOnAllPage then
+    FBand.Flags:=FBand.Flags + flBandRepeatHeader;
 
   for i:=0 to FTitleRowCount-1 do
   begin
@@ -388,6 +386,7 @@ begin
         K:=StrToIntDef(Copy(S, 8, Length(S)), 0);
         if TRxColumnTitle(F.Col.Title).CaptionLinesCount = 0 then
         begin
+          S:=TRxColumnTitle(F.Col.Title).Caption;
           if K = 0 then
             Memo[0] := TRxColumnTitle(F.Col.Title).Caption
           else
