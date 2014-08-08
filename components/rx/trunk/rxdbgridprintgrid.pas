@@ -419,10 +419,14 @@ end;
 function TRxDBGridPrint.DoExecTools: boolean;
 var
   C:integer;
+  SaveDesign: TfrReportDesigner;
 begin
   Result:=false;
   if (RxDBGrid = nil) or (RxDBGrid.DataSource = nil) or (RxDBGrid.DataSource.Dataset = nil) then
     Exit;
+
+  SaveDesign:=frDesigner;
+  frDesigner:=nil;
 
   FDataSet := RxDBGrid.Datasource.Dataset;
   FReport:=TfrReport.Create(Self);
@@ -451,6 +455,7 @@ begin
     FreeAndNil(FColumnDataSet);
     FreeAndNil(FReportDataSet);
     FreeAndNil(FReport);
+    frDesigner:=SaveDesign;
   end;
 end;
 
