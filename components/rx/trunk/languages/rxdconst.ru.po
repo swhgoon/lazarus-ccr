@@ -7,7 +7,7 @@ msgstr "Программа \"%s\""
 
 #: rxdconst.sbottomcaption
 msgid "Bottom"
-msgstr "Низ"
+msgstr "Снизу"
 
 #: rxdconst.sbrowsedata
 msgid "browse"
@@ -173,7 +173,7 @@ msgstr "Аольбом"
 
 #: rxdconst.sleftcaption
 msgid "Left"
-msgstr "Левая"
+msgstr "Слева"
 
 #: rxdconst.slocaldatabase
 msgid "Unable complete this operation on local dataset"
@@ -531,7 +531,7 @@ msgstr "Список в цвете"
 
 #: rxdconst.sshowreporttitle
 msgid "Show report title"
-msgstr "Отображать заголово отчёта"
+msgstr "Отображать заголовок отчёта"
 
 #: rxdconst.sshowtitle
 msgid "Show column title"
