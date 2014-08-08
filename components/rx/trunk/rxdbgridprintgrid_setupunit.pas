@@ -83,6 +83,7 @@ begin
   CheckGroup1.Items[2]:=sShowFooterColor;
   CheckGroup1.Items[3]:=sShowGridColor;
   CheckGroup1.Items[4]:=sShowReportTitle;
+  CheckGroup1.Items[5]:=sHideZeroValues;
 
 
   GroupBox1.Caption:=sPageMargins;

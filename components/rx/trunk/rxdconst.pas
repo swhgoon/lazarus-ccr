@@ -41,7 +41,7 @@ resourcestring
   SLocalDatabase         = 'Unable complete this operation on local dataset';
   SRetryLogin            = 'Retry to connect with database?';
   SExprNotBoolean        = 'Field ''%s'' is not boolean';
-  SExprBadNullTest       = 'NULL-values enabled in ''='' и ''<>''';
+  SExprBadNullTest       = 'NULL-values enabled in ''='' and ''<>''';
   SExprBadField          = 'Field ''%s'' not used in filter expression';
   SCaptureFilter         = 'Control locked by filter';
   SNotCaptureFilter      = 'Control need locked by filter';
@@ -198,6 +198,8 @@ resourcestring
   sShowGridColor             = 'Show grid color';
   sShowReportTitle           = 'Show report title';
   sPrintGrid                 = 'Print grid';
+  sHideZeroValues            = 'Hide zero values';
+
 
 
 

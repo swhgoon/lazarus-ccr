@@ -94,7 +94,7 @@ msgid "Field '%s' not used in filter expression"
 msgstr ""
 
 #: rxdconst.sexprbadnulltest
-msgid "NULL-values enabled in '=' Ð¸ '<>'"
+msgid "NULL-values enabled in '=' and '<>'"
 msgstr ""
 
 #: rxdconst.sexprexpected
@@ -139,6 +139,10 @@ msgstr ""
 
 #: rxdconst.sfieldtypemismatch
 msgid "Type mismatch for field '%s', expecting: %s actual: %s"
+msgstr ""
+
+#: rxdconst.shidezerovalues
+msgid "Hide zero values"
 msgstr ""
 
 #: rxdconst.shintlabel

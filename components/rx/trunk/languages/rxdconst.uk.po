@@ -104,8 +104,8 @@ msgstr "Поле '%s' не може бути використане в вира�
 
 #: rxdconst.sexprbadnulltest
 #, fuzzy
-#| msgid "NULL-values enabled in '=' и '<>'"
-msgid "NULL-values enabled in '=' Ð¸ '<>'"
+#| msgid "NULL-values enabled in '=' Ð¸ '<>'"
+msgid "NULL-values enabled in '=' and '<>'"
 msgstr "NULL-значення дозволені тільки у виразах '=' і '<>'"
 
 #: rxdconst.sexprexpected
@@ -151,6 +151,10 @@ msgstr "Поле '%s' очікує значення"
 #: rxdconst.sfieldtypemismatch
 msgid "Type mismatch for field '%s', expecting: %s actual: %s"
 msgstr "Несоответсвие типов для поля '%s', необходимо: %s введено: %s"
+
+#: rxdconst.shidezerovalues
+msgid "Hide zero values"
+msgstr ""
 
 #: rxdconst.shintlabel
 msgid "Enter you user name and password"

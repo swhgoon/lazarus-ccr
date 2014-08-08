@@ -94,9 +94,7 @@ msgid "Field '%s' not used in filter expression"
 msgstr "Поле '%s' не может быть использовано в выражении фильтрации"
 
 #: rxdconst.sexprbadnulltest
-#, fuzzy
-#| msgid "NULL-values enabled in '=' и '<>'"
-msgid "NULL-values enabled in '=' Ð¸ '<>'"
+msgid "NULL-values enabled in '=' and '<>'"
 msgstr "NULL-значения разрешены только в выражениях '=' и '<>'"
 
 #: rxdconst.sexprexpected
@@ -142,6 +140,10 @@ msgstr "Поле '%s' ожидает значение"
 #: rxdconst.sfieldtypemismatch
 msgid "Type mismatch for field '%s', expecting: %s actual: %s"
 msgstr "Несоответсвие типов для поля '%s', необходимо: %s введено: %s"
+
+#: rxdconst.shidezerovalues
+msgid "Hide zero values"
+msgstr "Скрывать нулевые значения"
 
 #: rxdconst.shintlabel
 msgid "Enter you user name and password"

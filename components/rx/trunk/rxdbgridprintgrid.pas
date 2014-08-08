@@ -44,7 +44,8 @@ type
      rxpoShowFooter,
      rxpoShowGridColor,
      rxpoShowFooterColor,
-     rxpoShowReportTitle
+     rxpoShowReportTitle,
+     rxpoHideZeroValues
      );
   TRxDBGridPrintOptions = set of TRxDBGridPrintOption;
 
@@ -375,7 +376,11 @@ begin
           J := F.Col.KeyList.IndexOf(S);
           if (J >= 0) and (J < F.Col.PickList.Count) then
             S := F.Col.PickList[j];
-        end;
+        end
+        else
+        if (rxpoHideZeroValues in FOptions) and Assigned(F.Col.Field) and (F.Col.Field.DataType in [ftSmallint, ftInteger, ftWord,
+               ftFloat, ftCurrency, ftLargeint]) and (F.Col.Field.AsFloat = 0) then
+          S:='';
 
         Memo[0] := S;
         TfrMemoView(View).Alignment:=F.Col.Alignment;
@@ -480,6 +485,7 @@ begin
   RxDBGridPrintGrid_SetupForm.CheckGroup1.Checked[2]:=rxpoShowFooterColor in FOptions;
   RxDBGridPrintGrid_SetupForm.CheckGroup1.Checked[3]:=rxpoShowGridColor in FOptions;
   RxDBGridPrintGrid_SetupForm.CheckGroup1.Checked[4]:=rxpoShowReportTitle in FOptions;
+  RxDBGridPrintGrid_SetupForm.CheckGroup1.Checked[5]:=rxpoHideZeroValues in FOptions;
 
   Result:=RxDBGridPrintGrid_SetupForm.ShowModal = mrOk;
   if Result then
@@ -507,6 +513,9 @@ begin
 
     if RxDBGridPrintGrid_SetupForm.CheckGroup1.Checked[4] then
       FOptions:=FOptions + [rxpoShowReportTitle];
+
+    if RxDBGridPrintGrid_SetupForm.CheckGroup1.Checked[5] then
+      FOptions:=FOptions + [rxpoHideZeroValues];
 
     FShowColumnHeaderOnAllPage:=RxDBGridPrintGrid_SetupForm.CheckBox1.Checked;
   end;

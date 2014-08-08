@@ -1,10 +1,10 @@
 object RxDBGridPrintGrid_SetupForm: TRxDBGridPrintGrid_SetupForm
   Left = 720
-  Height = 317
+  Height = 344
   Top = 303
   Width = 468
   Caption = 'Print grid setup'
-  ClientHeight = 317
+  ClientHeight = 344
   ClientWidth = 468
   OnCreate = FormCreate
   Position = poScreenCenter
@@ -16,7 +16,7 @@ object RxDBGridPrintGrid_SetupForm: TRxDBGridPrintGrid_SetupForm
     AnchorSideBottom.Control = CheckGroup1
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 150
+    Height = 173
     Top = 6
     Width = 294
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -24,7 +24,7 @@ object RxDBGridPrintGrid_SetupForm: TRxDBGridPrintGrid_SetupForm
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     Caption = 'Page margins'
-    ClientHeight = 127
+    ClientHeight = 150
     ClientWidth = 290
     TabOrder = 0
     object Label1: TLabel
@@ -147,7 +147,7 @@ object RxDBGridPrintGrid_SetupForm: TRxDBGridPrintGrid_SetupForm
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 41
-    Top = 270
+    Top = 297
     Width = 456
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -165,7 +165,7 @@ object RxDBGridPrintGrid_SetupForm: TRxDBGridPrintGrid_SetupForm
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 306
-    Height = 150
+    Height = 173
     Top = 6
     Width = 156
     Anchors = [akTop, akRight]
@@ -181,7 +181,7 @@ object RxDBGridPrintGrid_SetupForm: TRxDBGridPrintGrid_SetupForm
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 127
+    ClientHeight = 150
     ClientWidth = 152
     Items.Strings = (
       'Show title'
@@ -189,10 +189,11 @@ object RxDBGridPrintGrid_SetupForm: TRxDBGridPrintGrid_SetupForm
       'Show footer color'
       'Show grid color'
       'Show report title'
+      'Hide zero values'
     )
     TabOrder = 2
     Data = {
-      050000000202020202
+      06000000020202020202
     }
   end
   object RadioGroup1: TRadioGroup
@@ -201,7 +202,7 @@ object RxDBGridPrintGrid_SetupForm: TRxDBGridPrintGrid_SetupForm
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 69
-    Top = 162
+    Top = 185
     Width = 106
     AutoFill = True
     AutoSize = True
@@ -229,7 +230,7 @@ object RxDBGridPrintGrid_SetupForm: TRxDBGridPrintGrid_SetupForm
     AnchorSideTop.Side = asrBottom
     Left = 118
     Height = 21
-    Top = 162
+    Top = 185
     Width = 75
     BorderSpacing.Around = 6
     Caption = 'Report title'
@@ -243,7 +244,7 @@ object RxDBGridPrintGrid_SetupForm: TRxDBGridPrintGrid_SetupForm
     AnchorSideRight.Side = asrBottom
     Left = 124
     Height = 31
-    Top = 189
+    Top = 212
     Width = 338
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
@@ -255,7 +256,7 @@ object RxDBGridPrintGrid_SetupForm: TRxDBGridPrintGrid_SetupForm
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 23
-    Top = 237
+    Top = 260
     Width = 233
     BorderSpacing.Around = 6
     Caption = 'Show column header on all page'
