@@ -1411,7 +1411,7 @@ begin
       if ( prjFile = nil ) then begin
         dlgRes := MessageDlg(Self.Caption,'Add this type library to the current project ?',mtConfirmation,mbYesNo,0);
         if ( dlgRes = mrYes ) then begin
-          LazarusIDE.DoOpenEditorFile(FCurrentFileName,-1,[ofAddToProject]);
+          LazarusIDE.DoOpenEditorFile(FCurrentFileName,-1,-1,[ofAddToProject]);
         end;
       end;
     end;
