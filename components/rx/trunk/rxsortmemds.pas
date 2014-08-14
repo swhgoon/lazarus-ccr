@@ -92,7 +92,7 @@ begin
     begin
       Col:=TRxColumn(AGrid.Columns[i]);
       if THackRxColumnFooter(Col.Footer).ValueType in [fvtSum, fvtAvg, fvtMax, fvtMin] then
-        THackRxColumnFooter(Col.Footer).UpdateTestValueFromVar( ADataSet.FieldByName(Col.Footer.FieldName).Value);
+//        THackRxColumnFooter(Col.Footer).UpdateTestValueFromVar( ADataSet.FieldByName(Col.Footer.FieldName).Value);
     end;
 
     ADataSet.Next;

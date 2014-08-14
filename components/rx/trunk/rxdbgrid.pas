@@ -264,6 +264,7 @@ type
     FAlignment: TAlignment;
     FDisplayFormat: string;
     FFieldName: string;
+    FField:TField;
     FValue: string;
     FValueType: TFooterValueType;
     FTestValue: double;
@@ -4234,6 +4235,8 @@ var
   SaveBeforeScroll:TDataSetNotifyEvent;
   RCol:TRxColumn;
   AValue:Variant;
+
+  FCList:TFPList;
 begin
   if (not (FFooterOptions.Active and DatalinkActive)) or (Columns.Count = 0) or (gsAddingAutoColumns in GridStatus)  then
     Exit;
@@ -4298,30 +4301,44 @@ begin
   DHL.ActiveRecord:=0;
   SavePos:=DHS.RecNo;
 
+  FCList:=TFPList.Create;
+  for i:=0 to Columns.Count-1 do
+  begin
+    RCol:=TRxColumn(Columns[i]);
+    if (RCol.Footer.ValueType in [fvtSum, fvtAvg, fvtMax, fvtMin]) and RCol.Visible then
+    begin
+      FCList.Add(RCol);
+      RCol.Footer.FField:=DHS.FieldByName(RCol.Footer.FieldName);
+    end;
+  end;
 
   DHS.First;
   while not DHS.EOF do
   begin
-    for i:=0 to Columns.Count-1 do
+    for i:=0 to FCList.Count-1 do
     begin
-      RCol:=TRxColumn(Columns[i]);
-      if RCol.Footer.ValueType in [fvtSum, fvtAvg, fvtMax, fvtMin] then
-          RCol.Footer.UpdateTestValueFromVar( DHS.FieldByName(RCol.Footer.FieldName).Value);
+      RCol:=TRxColumn(FCList[i]);
+      if RCol.FFooter.FValueType in [fvtSum, fvtAvg, fvtMax, fvtMin] then
+        RCol.FFooter.UpdateTestValueFromVar( RCol.FFooter.FField.AsFloat)
     end;
     inc(cnt);
     DHS.Next;
   end;
 
+  FCList.Free;
+
   for i:=0 to Columns.Count-1 do
   begin
     RCol:=TRxColumn(Columns[i]);
     if RCol.Footer.ValueType = fvtCount then
-        RCol.Footer.FCountRec:=Cnt;
+        RCol.FFooter.FCountRec:=Cnt
+    else
+    if RCol.Footer.ValueType = fvtAvg then
+      RCol.FFooter.FTestValue:=RCol.FFooter.FTestValue / Cnt;
   end;
 
   DHS.RecNo := Min(DHL.RecordCount + SavePos - 1, DHS.RecNo);
   K:=DHS.RecNo;
-//  DHS.RecNo := SavePos;
 
   while not DHS.BOF do
   begin
@@ -4329,6 +4346,9 @@ begin
       break;
     DHS.Prior;
   end;
+
+  for i:=0 to Columns.Count-1 do
+    TRxColumn(Columns[i]).Footer.FField:=nil;
 
   DHL.ActiveRecord:=SaveActiveRecord;
   DHS.RestoreState(SaveState);
@@ -5650,15 +5670,12 @@ begin
 end;
 
 procedure TRxColumnFooter.UpdateTestValueFromVar(AValue: Variant);
-var
-  F: TField;
 begin
-  if ValueType in [fvtSum, fvtAvg, fvtMax, fvtMin] then
+  if FValueType in [fvtSum, fvtAvg, fvtMax, fvtMin] then
   begin
-    F := TRxDBGrid(FOwner.Grid).DataSource.DataSet.FindField(FFieldName);
-    if (not VarIsEmpty(AValue)) and (AValue <> null) and Assigned(F) then
+    if (not VarIsEmpty(AValue)) and (AValue <> null) and Assigned(FField) then
     begin
-      if F.DataType in [ftDate, ftTime, ftDateTime, ftTimeStamp] then
+      if FField.DataType in [ftDate, ftTime, ftDateTime, ftTimeStamp] then
       begin
         case FValueType of
           fvtMax: FTestValue := Max(FTestValue, AValue);
@@ -5668,8 +5685,8 @@ begin
       else
       begin
         case FValueType of
-          fvtSum: FTestValue := FTestValue + AValue;
-          //        fvtAvg:
+          fvtSum,
+          fvtAvg: FTestValue := FTestValue + AValue;
           fvtMax: FTestValue := Max(FTestValue, AValue);
           fvtMin: FTestValue := Min(FTestValue, AValue);
         end;
