@@ -113,8 +113,8 @@ begin
   else
   begin
     Result := ExtractFileName(ChangeFileExt(Application.ExeName, '.ini'));
-    S:=UTF8ToSys(GetAppConfigDir(false));
-    ForceDirectoriesUTF8(S);
+    S:=GetAppConfigDir(false);
+    ForceDirectory(S);
     Result:=S+Result;
   end;
 end;
