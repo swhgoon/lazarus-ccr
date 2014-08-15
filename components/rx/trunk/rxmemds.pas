@@ -91,8 +91,8 @@ type
     procedure SetOnFilterRecordEx(const AValue: TFilterRecordEvent);
     procedure Sort;
     function CalcRecordSize: Integer;
-    function FindFieldData(Buffer: Pointer; Field: TField): Pointer;overload;
-    function FindFieldData(Buffer: Pointer; FieldNo:Integer): Pointer;overload;
+//    function FindFieldData(Buffer: Pointer; Field: TField): Pointer;overload;
+    function FindFieldData(Buffer: Pointer; FieldNo:Integer): Pointer; //overload;
     function GetMemoryRecord(Index: Integer): TMemoryRecord;
     function GetCapacity: Integer;
     function RecordFilter: Boolean;
@@ -612,14 +612,17 @@ begin
   end;
 end;
 
+{
 function TRxMemoryData.FindFieldData(Buffer: Pointer; Field: TField): Pointer;
 var
   Index: Integer;
 begin
   Index := FieldDefs.IndexOf(Field.FieldName);
+  if Index <> Field.FieldNo - 1 then
+    raise exception.Create('Index <> Field.FieldNo - 1');
   Result:=FindFieldData(Buffer, Index);
 end;
-
+}
 function TRxMemoryData.FindFieldData(Buffer: Pointer; FieldNo: Integer): Pointer;
 begin
   Result := nil;
@@ -873,7 +876,8 @@ begin
   if Field.FieldNo > 0 then
 {$ENDIF}
   begin
-    Data := FindFieldData(RecBuf, Field);
+    Data := FindFieldData(RecBuf, Field.FieldNo-1);
+//    Data := FindFieldData(RecBuf, Field);
     if Data <> nil then begin
       Result := Boolean(Data[0]);
       Inc(Data);
@@ -888,6 +892,7 @@ begin
         else
           Move(Data^, Buffer^, CalcFieldLen(Field.DataType, Field.Size));
     end;
+    Result := true;
   end
   else
   begin
@@ -923,7 +928,8 @@ begin
       Validate(Buffer);
       if FieldKind <> fkInternalCalc then
       begin
-        Data := FindFieldData(RecBuf, Field);
+//        Data := FindFieldData(RecBuf, Field);
+        Data := FindFieldData(RecBuf, Field.FieldNo-1);
         if Data <> nil then
         begin
           if DataType = ftVariant then
@@ -1188,7 +1194,8 @@ begin
     if (Fields[I].FieldKind in fkStoredFields) and
       (Fields[I].DataType = ftAutoInc) then
     begin
-      Data := FindFieldData(Buffer, Fields[I]);
+//      Data := FindFieldData(Buffer, Fields[I]);
+      Data := FindFieldData(Buffer, Fields[I].FieldNo-1);
       if Data <> nil then begin
         Boolean(Data[0]) := True;
         Inc(Data);
@@ -1332,7 +1339,8 @@ var
   Item:TMemoryRecord;
 begin
   Item:=Records[SrcRecNo];
-  Data1 := FindFieldData(Item.Data, AField);
+//  Data1 := FindFieldData(Item.Data, AField);
+  Data1 := FindFieldData(Item.Data, AField.FieldNo-1);
   Inc(Data1);  //Skip null flag
 
   case AField.DataType of
@@ -1731,14 +1739,21 @@ var
   I: Integer;
 begin
   Result := 0;
-  if FIndexList <> nil then begin
-    for I := 0 to FIndexList.Count - 1 do begin
+  if FIndexList <> nil then
+  begin
+    for I := 0 to FIndexList.Count - 1 do
+    begin
       F := TField(FIndexList[I]);
-      Data1 := FindFieldData(Item1.Data, F);
-      if Data1 <> nil then begin
-        Data2 := FindFieldData(Item2.Data, F);
-        if Data2 <> nil then begin
-          if Boolean(Data1[0]) and Boolean(Data2[0]) then begin
+//      Data1 := FindFieldData(Item1.Data, F);
+      Data1 := FindFieldData(Item1.Data, F.FieldNo-1);
+      if Data1 <> nil then
+      begin
+//        Data2 := FindFieldData(Item2.Data, F);
+        Data2 := FindFieldData(Item2.Data, F.FieldNo-1);
+        if Data2 <> nil then
+        begin
+          if Boolean(Data1[0]) and Boolean(Data2[0]) then
+          begin
             Inc(Data1);
             Inc(Data2);
             Result := CompareFields(Data1, Data2, F.DataType,

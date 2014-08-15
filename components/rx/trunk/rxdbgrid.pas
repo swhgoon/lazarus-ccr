@@ -4223,6 +4223,7 @@ var
   P: TBookmark;
   i, cnt, K: integer;
   APresent: boolean;
+  BB:Double;
 
   DHL:THackDataLink;
   DHS:THackDataSet;
@@ -4319,7 +4320,9 @@ begin
     begin
       RCol:=TRxColumn(FCList[i]);
       if RCol.FFooter.FValueType in [fvtSum, fvtAvg, fvtMax, fvtMin] then
-        RCol.FFooter.UpdateTestValueFromVar( RCol.FFooter.FField.AsFloat)
+        RCol.FFooter.UpdateTestValueFromVar( RCol.FFooter.FField.AsVariant)
+//        BB:=RCol.FFooter.FField.AsFloat;
+//        RCol.FFooter.UpdateTestValueFromVar( RCol.FFooter.FField.AsFloat)
     end;
     inc(cnt);
     DHS.Next;
@@ -5488,7 +5491,7 @@ begin
   FTestValue := 0;
   FCountRec:=0;
 
-  if (ValueType = fvtMin) and (TRxDBGrid(
+  if (ValueType in [fvtMin, fvtMax]) and (TRxDBGrid(
     FOwner.Grid).DataSource.DataSet.RecordCount <> 0) then
   begin
     F := TRxDBGrid(FOwner.Grid).DataSource.DataSet.FieldByName(FFieldName);
