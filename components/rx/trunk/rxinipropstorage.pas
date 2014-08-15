@@ -77,6 +77,7 @@ begin
         Result:=S;
     end;
   end;
+  Result:=UTF8ToSys(Result);
 end;
 
 end.
