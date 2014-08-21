@@ -155,7 +155,9 @@ end;
 procedure TJLabeledDateTimeEdit.formatInput;
 begin
   if theValue <> 0 then
-    Text := FormatDateTime(DisplayFormat, theValue);
+    Text := FormatDateTime(DisplayFormat, theValue)
+  else
+    Text := '';
 end;
 
 procedure TJLabeledDateTimeEdit.SetButtonWidth(AValue: integer);
