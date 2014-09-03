@@ -94,6 +94,7 @@ CONST
 procedure Register;
 begin
   RegisterComponents('System',[TLongTimer]);
+  {$I longtimer_icon.lrs}
 end;
 constructor TLongTimer.Create(TheOwner: TComponent);
 Var sz:String;
