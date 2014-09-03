@@ -7,8 +7,9 @@ Copy the files aboutcomponentunit.pas and license.lrs to your component director
 2 ) In the pas file rename the Unit to match (1)
 3 ) Open the renamed pas file and do Search/Replace to change all instances of "TAboutComponent" to TAbout<yourcomponentname>
 4 ) In the line TAboutComponent = Class(TComponent), change the ancestor to your component's ancestor (if it's not TComponent)
-5 ) Add the edited pas file to your component's package
+5 ) Add the edited aboutcomponentunit.pas file to your component's package
 6 ) In your component's class declaration, change it's ancestor to TAbout<yourcomponentname> (from step 3)
+7 ) Add the edited aboutcomponentunit to the uses list in the implementation section of your component .pas file
 7 ) Compile, install and see the new clickable 'About' property in your component!
 
 Configuring the About property dialog

@@ -36,7 +36,7 @@ const
 
 type
   TLicenseType = (abNone, abGPL, abLGPL, abMIT, abModifiedGPL, abProprietry);
-
+  tAboutBox=Class; // Forward declaration
   // Do Search/Replace to change all instances of TAboutComonent
   // to TAbout<yourcomponentname>
   TAboutComponent = class(TComponent)
