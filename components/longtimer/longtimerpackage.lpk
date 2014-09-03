@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <PathDelim Value="\"/>
+    <Name Value="longtimerpackage"/>
+    <Author Value="minesadorada@charcodelvalle.com"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CompilerMessages>
+          <MsgFileName Value=""/>
+        </CompilerMessages>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="TLongTimer is a descendant of TIdleTimer that samples every 30minutes when idle.
+It is intended for TTrayIcon applications.  DailyHour is a 24-hour clock (16 = 4pm) and MonthlyDate  is best &lt; 29 "/>
+    <License Value="LGPLv2"/>
+    <Version Release="1"/>
+    <Files Count="2">
+      <Item1>
+        <Filename Value="ulongtimer.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="uLongTimer"/>
+      </Item1>
+      <Item2>
+        <Filename Value="aboutlongtimerunit.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="AboutLongTimerunit"/>
+      </Item2>
+    </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="lang_longtimer"/>
+      <EnableI18NForLFM Value="True"/>
+    </i18n>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="1">
+      <Item1>
+        <PackageName Value="IDEIntf"/>
+      </Item1>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
