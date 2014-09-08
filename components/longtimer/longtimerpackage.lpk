@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <CONFIG>
   <Package Version="4">
     <PathDelim Value="\"/>
@@ -19,8 +19,8 @@
     </CompilerOptions>
     <Description Value="TLongTimer is a descendant of TIdleTimer that samples every 30minutes when idle.
 It is intended for TTrayIcon applications.  DailyHour is a 24-hour clock (16 = 4pm) and MonthlyDate  is best &lt; 29 "/>
-    <License Value="LGPLv2"/>
-    <Version Release="1"/>
+    <License Value="LGPL"/>
+    <Version Release="2"/>
     <Files Count="2">
       <Item1>
         <Filename Value="ulongtimer.pas"/>
@@ -35,7 +35,7 @@ It is intended for TTrayIcon applications.  DailyHour is a 24-hour clock (16 = 4
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
-      <OutDir Value="lang_longtimer"/>
+      <OutDir Value="locale"/>
       <EnableI18NForLFM Value="True"/>
     </i18n>
     <Type Value="RunAndDesignTime"/>

@@ -31,7 +31,9 @@ type
     procedure cmb_Daily24HourChange(Sender: TObject);
     procedure cmb_IntervalTypeChange(Sender: TObject);
     procedure cmb_weekordateChange(Sender: TObject);
+    procedure crp_SetTimerClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure LongTimer1Sample(Sender: TObject);
     procedure LongTimer1StartTimer(Sender: TObject);
     procedure LongTimer1StopTimer(Sender: TObject);
     procedure LongTimer1Timer(Sender: TObject);
@@ -55,7 +57,7 @@ implementation
 procedure Tmainform.LongTimer1Timer(Sender: TObject);
 begin
   // memo_ReportTimerEvent.Lines.Add('LastFired at ' + FormatDateTime('hh:nn:ss', LongTimer1.LastFired));
-  memo_ReportTimerEvent.Lines.Add('Fired at ' + FormatDateTime('hh:nn:ss', Now));
+  memo_ReportTimerEvent.Lines.Add('Timer fired at ' + FormatDateTime('hh:nn:ss dd-mm-yyyy', Now));
 end;
 
 procedure Tmainform.FormCreate(Sender: TObject);
@@ -81,15 +83,19 @@ begin
   cmb_SampleInterval.ItemIndex:=2;
 end;
 
+procedure Tmainform.LongTimer1Sample(Sender: TObject);
+begin
+  memo_ReportTimerEvent.Lines.Add('Sampled at ' + FormatDateTime('hh:nn:ss',Now));
+end;
+
 procedure Tmainform.LongTimer1StartTimer(Sender: TObject);
 begin
-//    memo_ReportTimerEvent.Lines.Add('Timer running');
+  Self.Caption:='Timer was started at ' + FormatDateTime('dd/mm/yyyy hh:nn:ss',Now);
 end;
 
 procedure Tmainform.LongTimer1StopTimer(Sender: TObject);
 begin
-//    memo_ReportTimerEvent.Lines.Add('Timer stopped');
-
+  Self.Caption:=Application.Title;
 end;
 
 procedure Tmainform.cmd_StopTimerClick(Sender: TObject);
@@ -114,7 +120,7 @@ procedure Tmainform.cmb_Daily24HourChange(Sender: TObject);
 begin
   LongTimer1.Daily24Hour:=cmb_Daily24Hour.ItemIndex;
 end;
-procedure Tmainform.PopulateWeekOrDate(Const i:Integer);
+procedure Tmainform.PopulateWeekOrDate(const i: Integer);
 // 0=Weekly, 1=Monthly
 Var iMonthDay:Integer;
 
@@ -170,5 +176,10 @@ begin
   end;
 end;
 
-end.
+procedure Tmainform.crp_SetTimerClick(Sender: TObject);
+begin
 
+end;
+
+end.
+

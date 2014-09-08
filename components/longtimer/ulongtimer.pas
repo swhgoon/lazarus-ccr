@@ -44,18 +44,22 @@ type
    fTday:TDay;
    fHourDone,fDayDone,fDateDone:Boolean;
    fSampleInterval:TSampleInterval;
+   fVersion:String;
+   fOnSample:TNotifyEvent;
+    Procedure SetDay(aDay:TDay);
+    Procedure SetDailyHour(aHour:Word);
+    Procedure SetMonthlyDate(ADate:Word);
+    procedure SetSampleInterval(ASampleInterval:TSampleInterval);
   protected
     { Protected declarations }
    procedure DoOnIdle(Sender: TObject; var Done: Boolean); override;
    procedure DoOnIdleEnd(Sender: TObject); override;
    procedure DoOnTimer;override;
-   Procedure SetDay(aDay:TDay);
-   Procedure SetDailyHour(aHour:Word);
-   Procedure SetMonthlyDate(ADate:Word);
-   procedure SetSampleInterval(ASampleInterval:TSampleInterval);
   public
     { Public declarations }
     constructor Create(TheOwner: TComponent); override;
+    // Until the first Timer event, this will be the component's creation time
+    Property LastFired:TDateTime read fLastFiredDateTime;
   published
     { Published declarations }
     // Default=false
@@ -80,10 +84,12 @@ type
     Property Daily24Hour:Word read fHour write SetDailyHour;
     // You can also set the Hour as well as the Weekday
     Property WeeklyDay:TDay read fTDay write SetDay;
-    // You can also set the hour as well as the date
+    // You can also set the Hour as well as the date
     property MonthlyDate:Word read fDate write SetMonthlyDate default 1;
-    // Until the first Timer event, this will be the component's creation time
-    Property LastFired:TDateTime read fLastFiredDateTime;
+    // Version string of this component
+    property Version:String read fVersion;
+    // Fired every time LongTimer samples
+    Property OnSample:TNotifyEvent read fOnSample write fOnSample;
   end;
 
 procedure Register;
@@ -91,6 +97,12 @@ procedure Register;
 implementation
 CONST
   C_OneMinute = 60000;
+  C_Version='0.0.2';
+(*
+  V0.0.1: Initial commit
+  V0.0.2: Added OnSample event
+  V0.0.3: ??
+*)
 procedure Register;
 begin
   RegisterComponents('System',[TLongTimer]);
@@ -127,10 +139,14 @@ begin
   fDateDone:=False;
   fCurrentDateTime:=Now;
   fLastFiredDateTime:=Now;
+
+  // Set defaults for properties
   fDate:=1;
   fSampleInterval:=lt3Every10Minutes;
   Interval:=10 * C_OneMinute;
   fIntervalType:=lt1Daily;
+
+  fVersion:=C_Version;
 end;
 procedure TLongTimer.DoOnIdle(Sender: TObject; var Done: Boolean);
 begin
@@ -155,6 +171,7 @@ begin
    DecodeTime(fCurrentDateTime,cH,cMi,cS,cmS);
    cDay:=DayOfTheMonth(fCurrentDateTime);
 
+   // Split LastFired date into parts
    DecodeDate(fLastFiredDateTime,lY,lM,lD);
    DecodeTime(fLastFiredDateTime,lH,lMi,lS,lmS);
    lDay:=DayOfTheMonth(fLastFiredDateTime);
@@ -177,6 +194,8 @@ begin
        fHourDone:=FALSE;
        end;
 
+   // Fire the OnSample event?
+   If Assigned(fOnSample) then fOnSample(Self);
 
    // Only proceed further at specified interval in specified hour - else exit
    If (fIntervalType = lt1Daily) and ((fHourDone = TRUE) OR (cH <> fHour)) then Exit;
@@ -224,6 +243,7 @@ begin
        fHourDone := TRUE;
      end;
 end;
+
 procedure TLongTimer.SetSampleInterval(ASampleInterval:TSampleInterval);
 Var TimerEnabled:Boolean;
 Begin
@@ -262,6 +282,7 @@ begin
   DaySunday    = 7;
 }
 end;
+
 Procedure TLongTimer.SetDailyHour(aHour:Word);
 Var TimerEnabled:Boolean;
 begin
@@ -286,4 +307,4 @@ begin
    Enabled:=TimerEnabled;
 end;
 
-end.
+end.

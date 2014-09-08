@@ -1,7 +1,7 @@
 object mainform: Tmainform
-  Left = 1162
+  Left = 1050
   Height = 264
-  Top = 272
+  Top = 186
   Width = 437
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
@@ -59,6 +59,7 @@ object mainform: Tmainform
     ClientHeight = 158
     ClientWidth = 180
     TabOrder = 4
+    OnClick = crp_SetTimerClick
     object Label1: TLabel
       Left = 16
       Height = 15
@@ -146,13 +147,28 @@ object mainform: Tmainform
     end
   end
   object LongTimer1: TLongTimer
+    About.Description.Strings = (
+      'LongTimer is a descendent of TIdleTimer'#13#10'and shares its properties and methods.'#13#10#13#10'Additional properties affect when the'#13#10'OnTimer event is fired.'#13#10#13#10'With LongTimer, the OnTimer event'#13#10'will be fired only ONCE - every time'#13#10'the interval that you set is reached.'
+    )
+    About.Title = 'About TLongTimer Component'
+    About.Height = 380
+    About.Width = 320
+    About.Font.Color = clNavy
+    About.Font.Height = -13
+    About.BackGroundColor = clWindow
+    About.Version = '0.0.1'
+    About.Authorname = 'Gordon Bamber'
+    About.Organisation = 'Public Domain'
+    About.AuthorEmail = 'minesadorada@charcodelvalle.com'
+    About.ComponentName = 'TLongTimer'
+    About.LicenseType = abLGPL
     Enabled = False
     OnTimer = LongTimer1Timer
     OnStartTimer = LongTimer1StartTimer
     OnStopTimer = LongTimer1StopTimer
-    IntervalType = lt3Monthly
-    Daily24Hour = 10
+    Daily24Hour = 0
     WeeklyDay = lt3Wednesday
+    OnSample = LongTimer1Sample
     left = 8
     top = 8
   end
