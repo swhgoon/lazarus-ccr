@@ -5246,7 +5246,11 @@ begin
 
   // For the drag image a fast MMX blend routine is used. We have to make sure MMX is available.
   MMXAvailable := HasMMX;
+  {$ifdef Windows}
   IsWinVistaOrAbove := (Win32MajorVersion >= 6);
+  {$else}
+  IsWinVistaOrAbove := False;
+  {$endif}
 
   {$ifdef EnableOLE}
   // Initialize OLE subsystem for drag'n drop and clipboard operations.
@@ -8010,7 +8014,11 @@ begin
     if FHeader.Treeview.VclStyleEnabled then
     begin
       SetTextColor(DC, ColorToRGB(FHeader.Treeview.FColors.HeaderFontColor));
+      {$ifdef Windows}
       Windows.DrawTextW(DC, PWideChar(Caption), Length(Caption), Bounds, DrawFormat);
+      {$else}
+      LCLIntf.DrawText(DC, PChar(Caption), Length(Caption), Bounds, DrawFormat);
+      {$endif}
     end
     else
   begin
