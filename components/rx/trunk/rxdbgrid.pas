@@ -864,7 +864,9 @@ type
     property OnTitleClick;
     property OnRxCalcFooterValues: TOnRxCalcFooterValues read FOnRxCalcFooterValues write FOnRxCalcFooterValues;
     property OnUserCheckboxBitmap;
+    property OnUserCheckboxState;
     property OnUTF8KeyPress;
+
 
     property OnCreateLookup: TCreateLookup read F_CreateLookup write F_CreateLookup;
     property OnDisplayLookup: TDisplayLookup read F_DisplayLookup write F_DisplayLookup;
