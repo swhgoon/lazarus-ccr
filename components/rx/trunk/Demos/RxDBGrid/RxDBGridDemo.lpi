@@ -59,7 +59,7 @@
         <MinVersion Major="1" Release="18" Build="56" Valid="True"/>
       </Item6>
     </RequiredPackages>
-    <Units Count="103">
+    <Units Count="104">
       <Unit0>
         <Filename Value="RxDBGridDemo.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -73,8 +73,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="RxDBGridMainUnit"/>
-        <TopLine Value="78"/>
-        <CursorPos Y="80"/>
+        <CursorPos X="3" Y="10"/>
         <UsageCount Value="99"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -100,14 +99,13 @@
       <Unit5>
         <Filename Value="../../rxdbgrid.pas"/>
         <UnitName Value="rxdbgrid"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="1"/>
-        <TopLine Value="3742"/>
-        <CursorPos Y="3763"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="66"/>
+        <CursorPos Y="90"/>
         <UsageCount Value="17"/>
         <Bookmarks Count="2">
-          <Item0 Y="2564" ID="2"/>
-          <Item1 Y="3763" ID="1"/>
+          <Item0 Y="2562" ID="2"/>
+          <Item1 Y="3761" ID="1"/>
         </Bookmarks>
         <Loaded Value="True"/>
       </Unit5>
@@ -708,8 +706,18 @@
         <CursorPos X="2" Y="44"/>
         <UsageCount Value="10"/>
       </Unit102>
+      <Unit103>
+        <Filename Value="../../rxdbgridexportspreadsheet.pas"/>
+        <UnitName Value="RxDBGridExportSpreadSheet"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="185"/>
+        <CursorPos X="2" Y="208"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit103>
     </Units>
-    <JumpHistory Count="16" HistoryIndex="15">
+    <JumpHistory Count="19" HistoryIndex="18">
       <Position1>
         <Filename Value="../../rxdbgrid.pas"/>
         <Caret Line="867" Column="35" TopLine="845"/>
@@ -774,6 +782,18 @@
         <Filename Value="rxdbgridmainunit.pas"/>
         <Caret Line="161" Column="62" TopLine="158"/>
       </Position16>
+      <Position17>
+        <Filename Value="../../rxdbgrid.pas"/>
+        <Caret Line="3753" Column="6" TopLine="3743"/>
+      </Position17>
+      <Position18>
+        <Filename Value="rxdbgridmainunit.pas"/>
+        <Caret Line="80" TopLine="78"/>
+      </Position18>
+      <Position19>
+        <Filename Value="rxdbgridmainunit.pas"/>
+        <Caret Line="100" Column="50" TopLine="84"/>
+      </Position19>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>

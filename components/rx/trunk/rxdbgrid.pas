@@ -36,11 +36,9 @@ unit rxdbgrid;
 interface
 
 uses
-  Classes, SysUtils, LResources, LCLVersion, LCLType, LCLIntf, Forms, Controls, Buttons,
+  Classes, SysUtils, LResources, LCLType, LCLIntf, Forms, Controls, Buttons,
   Graphics, Dialogs, Grids, dbutils, DBGrids, DB, PropertyStorage, vclutils,
   LMessages, types, StdCtrls, Menus, rxspin;
-
-{//$if ((lcl_major = 1) and (lcl_minor = 1))}
 
 const
   CBadQuickSearchSymbols = [VK_UNKNOWN..VK_HELP] + [VK_LWIN..VK_SLEEP] +

@@ -107,6 +107,7 @@ var
   scColor : TsColor;
   CB:TsCellBorders;
   FMaxTitleHeight : integer;
+  P: TMLCaptionItem;
 begin
   FCurCol:=0;
   FMaxTitleHeight:=1;
@@ -142,6 +143,7 @@ begin
           else
             CB:=CB - [cbEast];
 
+
           FWorksheet.WriteBorderColor(FCurRow + k ,FCurCol, cbSouth, scColorBlack);
 
           FWorksheet.WriteBorders(FCurRow + k, FCurCol, CB);
@@ -149,6 +151,20 @@ begin
           FWorksheet.WriteHorAlignment(FCurRow + k, FCurCol, ssAligns[C.Title.Alignment]);
 
           FWorksheet.WriteUTF8Text(FCurRow + k, FCurCol, CT.CaptionLine(k).Caption);
+
+          if Assigned(CT.CaptionLine(k).Next) and not Assigned(CT.CaptionLine(k).Prior) then
+          begin
+            //Merge title cell
+            P:=CT.CaptionLine(k);
+            CC:=FCurCol;
+            while Assigned(P.Next) do
+            begin
+              Inc(CC);
+              P:=P.Next;
+            end;
+            if CC<>FCurCol then
+              FWorksheet.MergeCells(FCurRow, FCurCol, FCurRow, CC);
+          end;
         end;
       end
       else
@@ -176,6 +192,20 @@ begin
     end;
   end;
 
+{
+  if FMaxTitleHeight > 1 then
+  begin
+    for i:=0 to FRxDBGrid.Columns.Count-1 do
+    begin
+      C:=FRxDBGrid.Columns[i] as TRxColumn;
+      CT:=C.Title as TRxColumnTitle;
+      if CT.CaptionLinesCount < FMaxTitleHeight then
+      begin
+        FWorksheet.MergeCells( FCurRow + CT.CaptionLinesCount, I, FCurRow + FMaxTitleHeight - 1, I);
+      end;
+    end;
+  end;
+}
   inc(FCurRow, FMaxTitleHeight);
 end;
 
