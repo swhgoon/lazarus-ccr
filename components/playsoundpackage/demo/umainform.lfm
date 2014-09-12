@@ -1,0 +1,62 @@
+object mainform: Tmainform
+  Left = 415
+  Height = 129
+  Top = 305
+  Width = 241
+  BorderIcons = [biSystemMenu]
+  Caption = 'mainform'
+  ClientHeight = 129
+  ClientWidth = 241
+  DefaultMonitor = dmPrimary
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object cmd_Async: TButton
+    Left = 16
+    Height = 25
+    Top = 16
+    Width = 75
+    Caption = 'Play Async'
+    OnClick = cmd_AsyncClick
+    TabOrder = 0
+  end
+  object BitBtn1: TBitBtn
+    Left = 152
+    Height = 30
+    Top = 88
+    Width = 75
+    DefaultCaption = True
+    Kind = bkClose
+    ModalResult = 11
+    TabOrder = 1
+  end
+  object cmd_Sync: TButton
+    Left = 152
+    Height = 25
+    Top = 16
+    Width = 75
+    Caption = 'Play Sync'
+    OnClick = cmd_SyncClick
+    TabOrder = 2
+  end
+  object playsound1: Tplaysound
+    About.Description.Strings = (
+      'Plays WAVE sounds in Windows or Linux'
+    )
+    About.Title = 'About PlaySound'
+    About.Height = 400
+    About.Width = 400
+    About.Font.Color = clNavy
+    About.Font.Height = -13
+    About.BackGroundColor = clCream
+    About.Version = '0.0.1'
+    About.Authorname = 'Gordon Bamber'
+    About.Organisation = 'Public Domain'
+    About.AuthorEmail = 'minesadorada@charcodelvalle.com'
+    About.ComponentName = 'PlaySound'
+    About.LicenseType = abLGPL
+    SoundFile = '/home/gordon/development/lazarus/'
+    left = 91
+    top = 53
+  end
+end
