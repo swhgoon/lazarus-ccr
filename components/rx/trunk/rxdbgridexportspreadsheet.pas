@@ -192,7 +192,7 @@ begin
     end;
   end;
 
-{
+
   if FMaxTitleHeight > 1 then
   begin
     for i:=0 to FRxDBGrid.Columns.Count-1 do
@@ -205,7 +205,7 @@ begin
       end;
     end;
   end;
-}
+
   inc(FCurRow, FMaxTitleHeight);
 end;
 

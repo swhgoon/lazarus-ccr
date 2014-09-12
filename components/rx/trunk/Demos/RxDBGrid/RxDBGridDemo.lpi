@@ -99,7 +99,6 @@
       <Unit5>
         <Filename Value="../../rxdbgrid.pas"/>
         <UnitName Value="rxdbgrid"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
         <TopLine Value="843"/>
         <CursorPos X="23" Y="867"/>
@@ -713,9 +712,10 @@
       <Unit103>
         <Filename Value="../../rxdbgridexportspreadsheet.pas"/>
         <UnitName Value="RxDBGridExportSpreadSheet"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <TopLine Value="185"/>
-        <CursorPos X="2" Y="208"/>
+        <CursorPos Y="208"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
       </Unit103>

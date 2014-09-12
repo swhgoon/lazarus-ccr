@@ -14,10 +14,6 @@ msgstr ""
 msgid "Application \"%s\""
 msgstr "Програма \"%s\""
 
-#: rxdconst.sbottomcaption
-msgid "Bottom"
-msgstr ""
-
 #: rxdconst.sbrowsedata
 msgid "browse"
 msgstr "перегляд"
@@ -78,22 +74,6 @@ msgstr "Редагування"
 msgid "Error message"
 msgstr "Повідомлення про помилку"
 
-#: rxdconst.sexportcellcolors
-msgid "Export cell colors"
-msgstr ""
-
-#: rxdconst.sexportcolumnfooter
-msgid "Export column footer"
-msgstr ""
-
-#: rxdconst.sexportcolumnheader
-msgid "Export column header"
-msgstr ""
-
-#: rxdconst.sexportfilename
-msgid "Export file name"
-msgstr ""
-
 #: rxdconst.sexprbadcompare
 msgid "Compare opertion need fielad and const"
 msgstr "Операції порівняння вимагають наявності поля і константи"
@@ -104,8 +84,8 @@ msgstr "Поле '%s' не може бути використане в вира�
 
 #: rxdconst.sexprbadnulltest
 #, fuzzy
-#| msgid "NULL-values enabled in '=' Ð¸ '<>'"
-msgid "NULL-values enabled in '=' and '<>'"
+#| msgid "NULL-values enabled in '=' and '<>'"
+msgid "NULL-values enabled in '=' и '<>'"
 msgstr "NULL-значення дозволені тільки у виразах '=' і '<>'"
 
 #: rxdconst.sexprexpected
@@ -152,10 +132,6 @@ msgstr "Поле '%s' очікує значення"
 msgid "Type mismatch for field '%s', expecting: %s actual: %s"
 msgstr "Несоответсвие типов для поля '%s', необходимо: %s введено: %s"
 
-#: rxdconst.shidezerovalues
-msgid "Hide zero values"
-msgstr ""
-
 #: rxdconst.shintlabel
 msgid "Enter you user name and password"
 msgstr "Введіть ваші ім'я користувача та пароль"
@@ -179,14 +155,6 @@ msgstr "Немає оголошення полів"
 #: rxdconst.sinvalidusername
 msgid "User name or password not valid"
 msgstr "Помилка в імені користувача або паролі"
-
-#: rxdconst.slandscape
-msgid "Landscape"
-msgstr ""
-
-#: rxdconst.sleftcaption
-msgid "Left"
-msgstr ""
 
 #: rxdconst.slocaldatabase
 msgid "Unable complete this operation on local dataset"
@@ -224,26 +192,6 @@ msgstr "Набір даних не в режимі редагування або
 msgid "&Old password:"
 msgstr "&Старий пароль"
 
-#: rxdconst.sopenafterexport
-msgid "Open after export"
-msgstr ""
-
-#: rxdconst.sorientation
-msgid "Orientation"
-msgstr ""
-
-#: rxdconst.soverwriteexisting
-msgid "Overwrite existing"
-msgstr ""
-
-#: rxdconst.spagemargins
-msgid "Page margins"
-msgstr ""
-
-#: rxdconst.spagename
-msgid "Page name"
-msgstr ""
-
 #: rxdconst.spasswordchanged
 msgid "Password changed"
 msgstr "Пароль змінено"
@@ -260,21 +208,9 @@ msgstr "Пароль не змінено"
 msgid "New password and confirmation not equal"
 msgstr "Новий пароль і підтвердження не співпадають"
 
-#: rxdconst.sportrait
-msgid "Portrait"
-msgstr ""
-
 #: rxdconst.sprevbutton
 msgid "&Prior"
 msgstr "&Попередній"
-
-#: rxdconst.sprintgrid
-msgid "Print grid"
-msgstr ""
-
-#: rxdconst.sprintoptions
-msgid "Print options"
-msgstr ""
 
 #: rxdconst.spropdefbylookup
 msgid "PropDefByLookup"
@@ -284,17 +220,9 @@ msgstr ""
 msgid "Register"
 msgstr "Реєстрація"
 
-#: rxdconst.sreporttitle
-msgid "Report title"
-msgstr ""
-
 #: rxdconst.sretrylogin
 msgid "Retry to connect with database?"
 msgstr "Ви хочете повторити спробу з'єднання з базою даних?"
-
-#: rxdconst.srightcaption
-msgid "Right"
-msgstr ""
 
 #: rxdconst.srxallfields
 msgid "All fields"
@@ -375,15 +303,6 @@ msgstr "Вперед"
 msgid "Text to find"
 msgstr "Текст для пошуку"
 
-#: rxdconst.srxdbgridselapplycaption
-msgctxt "rxdconst.srxdbgridselapplycaption"
-msgid "Apply"
-msgstr "Застосувати"
-
-#: rxdconst.srxdbgridselapplyhint
-msgid "Apply current columns setings"
-msgstr ""
-
 #: rxdconst.srxdbgridselcolcaption
 msgid "Grid columns"
 msgstr "Поля таблиці"
@@ -425,6 +344,7 @@ msgid "Fill fields in SortField property"
 msgstr ""
 
 #: rxdconst.srxfilterformapply
+#, fuzzy
 msgctxt "rxdconst.srxfilterformapply"
 msgid "Apply"
 msgstr "Застосувати"
@@ -525,38 +445,6 @@ msgstr "Помилка сервера"
 #: rxdconst.ssetkeydata
 msgid "find"
 msgstr "Пошук"
-
-#: rxdconst.sshowcolumnheaderonallpage
-msgid "Show column header on all page"
-msgstr ""
-
-#: rxdconst.sshowfooter
-msgid "Show footer"
-msgstr ""
-
-#: rxdconst.sshowfootercolor
-msgid "Show footer color"
-msgstr ""
-
-#: rxdconst.sshowgridcolor
-msgid "Show grid color"
-msgstr ""
-
-#: rxdconst.sshowreporttitle
-msgid "Show report title"
-msgstr ""
-
-#: rxdconst.sshowtitle
-msgid "Show column title"
-msgstr ""
-
-#: rxdconst.stoolsexportspeadsheet
-msgid "Export to speadsheet"
-msgstr ""
-
-#: rxdconst.stopcaption
-msgid "Top"
-msgstr ""
 
 #: rxdconst.sunknownfieldtype
 msgid "SUnknownFieldType %s"

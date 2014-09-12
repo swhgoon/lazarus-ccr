@@ -27,7 +27,6 @@ type
     RxMemoryData1PRICE: TCurrencyField;
     procedure Button1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure RxDBGridExportSpreadSheet1AfterExecute(Sender: TObject);
     procedure RxDBGridExportSpreadSheet1BeforeExecute(Sender: TObject);
   private
     { private declarations }
@@ -63,12 +62,6 @@ begin
   RxMemoryData1.Open;
 
   FileNameEdit1.Text:='test1.ods';
-end;
-
-procedure TForm1.RxDBGridExportSpreadSheet1AfterExecute(Sender: TObject);
-begin
-  if CheckBox1.Checked then
-    OpenDocument(FileNameEdit1.FileName);
 end;
 
 procedure TForm1.RxDBGridExportSpreadSheet1BeforeExecute(Sender: TObject);

@@ -89,21 +89,9 @@ msgstr ""
 msgid "File specified is not an executable file, dynamic-link library, or icon file"
 msgstr "Fichero especificado no es un fichero ejecutable, vinculo dinamico, o fichero de icono"
 
-#: rxconst.sfirsthalfofyear
-msgid "First half of year"
-msgstr ""
-
-#: rxconst.sfirstquarter
-msgid "First quarter"
-msgstr ""
-
 #: rxconst.sflatbuttons
 msgid "Flat buttons"
 msgstr "Botones planos"
-
-#: rxconst.sfourthquarter
-msgid "Fourth quarter"
-msgstr ""
 
 #: rxconst.sfpcversion
 msgid "FPC version : "
@@ -181,14 +169,6 @@ msgstr ""
 msgid "Error. Expected value for filed %s."
 msgstr ""
 
-#: rxconst.ssecondhalfofyear
-msgid "Second half of year"
-msgstr ""
-
-#: rxconst.ssecondquarter
-msgid "Second quarter"
-msgstr ""
-
 #: rxconst.sshowcaption
 msgid "Show caption"
 msgstr "Mostrar titulo"
@@ -203,10 +183,6 @@ msgstr ""
 
 #: rxconst.stargetos
 msgid "Target OS : "
-msgstr ""
-
-#: rxconst.sthirdquarter
-msgid "Third quarter"
 msgstr ""
 
 #: rxconst.stocurdate

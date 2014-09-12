@@ -5,10 +5,6 @@ msgstr "Content-Type: text/plain; charset=UTF-8"
 msgid "Application \"%s\""
 msgstr "Aplicación \"%s\""
 
-#: rxdconst.sbottomcaption
-msgid "Bottom"
-msgstr ""
-
 #: rxdconst.sbrowsedata
 msgid "browse"
 msgstr "vista"
@@ -69,22 +65,6 @@ msgstr "editando"
 msgid "Error message"
 msgstr "Mensaje de error"
 
-#: rxdconst.sexportcellcolors
-msgid "Export cell colors"
-msgstr ""
-
-#: rxdconst.sexportcolumnfooter
-msgid "Export column footer"
-msgstr ""
-
-#: rxdconst.sexportcolumnheader
-msgid "Export column header"
-msgstr ""
-
-#: rxdconst.sexportfilename
-msgid "Export file name"
-msgstr ""
-
 #: rxdconst.sexprbadcompare
 msgid "Compare opertion need fielad and const"
 msgstr "Comparación operacion necesita fielad y const"
@@ -95,8 +75,8 @@ msgstr "Campo '%s' no usado en expresión de filtro"
 
 #: rxdconst.sexprbadnulltest
 #, fuzzy
-#| msgid "NULL-values enabled in '=' Ð¸ '<>'"
-msgid "NULL-values enabled in '=' and '<>'"
+#| msgid "NULL-values enabled in '=' and '<>'"
+msgid "NULL-values enabled in '=' и '<>'"
 msgstr "Valor nulo habilitado en '=' y '<>'"
 
 #: rxdconst.sexprexpected
@@ -143,10 +123,6 @@ msgstr "Campo '%s' debe tener un valor"
 msgid "Type mismatch for field '%s', expecting: %s actual: %s"
 msgstr "Tipo no corresponde para el campo '%s', se esperaba: %s actual: %s"
 
-#: rxdconst.shidezerovalues
-msgid "Hide zero values"
-msgstr ""
-
 #: rxdconst.shintlabel
 msgid "Enter you user name and password"
 msgstr "Entre su nombre de usuario y clave"
@@ -170,14 +146,6 @@ msgstr "No hay campos definido"
 #: rxdconst.sinvalidusername
 msgid "User name or password not valid"
 msgstr "Nombre de usuario o clave no es valido"
-
-#: rxdconst.slandscape
-msgid "Landscape"
-msgstr ""
-
-#: rxdconst.sleftcaption
-msgid "Left"
-msgstr ""
 
 #: rxdconst.slocaldatabase
 msgid "Unable complete this operation on local dataset"
@@ -215,26 +183,6 @@ msgstr "Conjunto de Datos no esta en modo de edición o inserción"
 msgid "&Old password:"
 msgstr "&Anterior clave:"
 
-#: rxdconst.sopenafterexport
-msgid "Open after export"
-msgstr ""
-
-#: rxdconst.sorientation
-msgid "Orientation"
-msgstr ""
-
-#: rxdconst.soverwriteexisting
-msgid "Overwrite existing"
-msgstr ""
-
-#: rxdconst.spagemargins
-msgid "Page margins"
-msgstr ""
-
-#: rxdconst.spagename
-msgid "Page name"
-msgstr ""
-
 #: rxdconst.spasswordchanged
 msgid "Password changed"
 msgstr "Clave cambiada"
@@ -251,21 +199,9 @@ msgstr "Clave no cambio"
 msgid "New password and confirmation not equal"
 msgstr "Nueva clave y confirmacion no son iguales"
 
-#: rxdconst.sportrait
-msgid "Portrait"
-msgstr ""
-
 #: rxdconst.sprevbutton
 msgid "&Prior"
 msgstr "&Anterior"
-
-#: rxdconst.sprintgrid
-msgid "Print grid"
-msgstr ""
-
-#: rxdconst.sprintoptions
-msgid "Print options"
-msgstr ""
 
 #: rxdconst.spropdefbylookup
 msgid "PropDefByLookup"
@@ -275,17 +211,9 @@ msgstr "PropDefByLookup"
 msgid "Register"
 msgstr "Registro"
 
-#: rxdconst.sreporttitle
-msgid "Report title"
-msgstr ""
-
 #: rxdconst.sretrylogin
 msgid "Retry to connect with database?"
 msgstr "Reintentar conectar con la base de dato?"
-
-#: rxdconst.srightcaption
-msgid "Right"
-msgstr ""
 
 #: rxdconst.srxallfields
 msgid "All fields"
@@ -366,15 +294,6 @@ msgstr "Hacia Delante"
 msgid "Text to find"
 msgstr "Texto a Buscar"
 
-#: rxdconst.srxdbgridselapplycaption
-msgctxt "rxdconst.srxdbgridselapplycaption"
-msgid "Apply"
-msgstr "Aceptar"
-
-#: rxdconst.srxdbgridselapplyhint
-msgid "Apply current columns setings"
-msgstr ""
-
 #: rxdconst.srxdbgridselcolcaption
 msgid "Grid columns"
 msgstr "Columnas de la Tabla"
@@ -416,6 +335,7 @@ msgid "Fill fields in SortField property"
 msgstr ""
 
 #: rxdconst.srxfilterformapply
+#, fuzzy
 msgctxt "rxdconst.srxfilterformapply"
 msgid "Apply"
 msgstr "Aceptar"
@@ -518,38 +438,6 @@ msgstr "Error del Servidor"
 #: rxdconst.ssetkeydata
 msgid "find"
 msgstr "buscar"
-
-#: rxdconst.sshowcolumnheaderonallpage
-msgid "Show column header on all page"
-msgstr ""
-
-#: rxdconst.sshowfooter
-msgid "Show footer"
-msgstr ""
-
-#: rxdconst.sshowfootercolor
-msgid "Show footer color"
-msgstr ""
-
-#: rxdconst.sshowgridcolor
-msgid "Show grid color"
-msgstr ""
-
-#: rxdconst.sshowreporttitle
-msgid "Show report title"
-msgstr ""
-
-#: rxdconst.sshowtitle
-msgid "Show column title"
-msgstr ""
-
-#: rxdconst.stoolsexportspeadsheet
-msgid "Export to speadsheet"
-msgstr ""
-
-#: rxdconst.stopcaption
-msgid "Top"
-msgstr ""
 
 #: rxdconst.sunknownfieldtype
 msgid "SUnknownFieldType %s"
