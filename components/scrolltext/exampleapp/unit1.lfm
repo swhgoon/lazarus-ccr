@@ -8,7 +8,7 @@ object Form1: TForm1
   ClientHeight = 363
   ClientWidth = 552
   Position = poDesktopCenter
-  LCLVersion = '1.2.2.0'
+  LCLVersion = '1.2.4.0'
   object ScrollingText1: TScrollingText
     Left = 0
     Height = 363
@@ -17,7 +17,7 @@ object Form1: TForm1
     About.Description.Strings = (
       'Component that shows a scrolling window.'#13#10'Use Lines property to set text and Active=True'#13#10'to use the component'
     )
-    About.Title = 'About About ScrollingText component'
+    About.Title = 'About About About ScrollingText component'
     About.Height = 280
     About.Width = 400
     About.Font.Color = clNavy
@@ -55,6 +55,7 @@ object Form1: TForm1
       'June 2014'
     )
     Font.Height = -13
+    TextSource = stResource
   end
   object BitBtn1: TBitBtn
     Left = 239

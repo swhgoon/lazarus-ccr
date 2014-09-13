@@ -4,7 +4,7 @@
     <PathDelim Value="\"/>
     <Version Value="9"/>
     <BuildModes Active="Default"/>
-    <Units Count="12">
+    <Units Count="13">
       <Unit0>
         <Filename Value="project1.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -66,31 +66,26 @@
       <Unit6>
         <Filename Value="..\..\aboutdialog\aboutboxunit.pas"/>
         <UnitName Value="AboutboxUnit"/>
-        <EditorIndex Value="4"/>
         <WindowIndex Value="0"/>
         <TopLine Value="269"/>
         <CursorPos X="39" Y="292"/>
         <UsageCount Value="12"/>
-        <Loaded Value="True"/>
       </Unit6>
       <Unit7>
         <Filename Value="..\..\..\lcl\lresources.pp"/>
         <UnitName Value="LResources"/>
-        <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
         <TopLine Value="439"/>
         <CursorPos X="35" Y="466"/>
         <UsageCount Value="12"/>
-        <Loaded Value="True"/>
       </Unit7>
       <Unit8>
         <Filename Value="..\scrollingtext.pas"/>
         <UnitName Value="ScrollingText"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
         <TopLine Value="112"/>
-        <CursorPos X="49" Y="129"/>
+        <CursorPos X="45" Y="139"/>
         <UsageCount Value="12"/>
         <Loaded Value="True"/>
       </Unit8>
@@ -118,11 +113,22 @@
         <CursorPos X="1" Y="1"/>
         <UsageCount Value="10"/>
       </Unit11>
+      <Unit12>
+        <Filename Value="..\..\multithreadprocs\mtprocs.pas"/>
+        <UnitName Value="MTProcs"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="3"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="163"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit12>
     </Units>
     <General>
       <ActiveWindowIndexAtStart Value="0"/>
     </General>
-    <JumpHistory Count="11" HistoryIndex="10">
+    <JumpHistory Count="10" HistoryIndex="9">
       <Position1>
         <Filename Value="unit1.pas"/>
         <Caret Line="33" Column="16" TopLine="1"/>
@@ -136,37 +142,33 @@
         <Caret Line="28" Column="32" TopLine="1"/>
       </Position3>
       <Position4>
-        <Filename Value="..\..\..\lcl\lresources.pp"/>
-        <Caret Line="2" Column="16" TopLine="1"/>
+        <Filename Value="..\scrollingtext.pas"/>
+        <Caret Line="166" Column="68" TopLine="140"/>
       </Position4>
       <Position5>
         <Filename Value="..\scrollingtext.pas"/>
-        <Caret Line="166" Column="68" TopLine="140"/>
+        <Caret Line="167" Column="1" TopLine="146"/>
       </Position5>
       <Position6>
         <Filename Value="..\scrollingtext.pas"/>
-        <Caret Line="167" Column="1" TopLine="146"/>
+        <Caret Line="162" Column="65" TopLine="146"/>
       </Position6>
       <Position7>
         <Filename Value="..\scrollingtext.pas"/>
-        <Caret Line="162" Column="65" TopLine="146"/>
+        <Caret Line="166" Column="40" TopLine="146"/>
       </Position7>
       <Position8>
         <Filename Value="..\scrollingtext.pas"/>
-        <Caret Line="166" Column="40" TopLine="146"/>
+        <Caret Line="156" Column="92" TopLine="146"/>
       </Position8>
       <Position9>
         <Filename Value="..\scrollingtext.pas"/>
-        <Caret Line="156" Column="92" TopLine="146"/>
+        <Caret Line="167" Column="1" TopLine="147"/>
       </Position9>
       <Position10>
         <Filename Value="..\scrollingtext.pas"/>
-        <Caret Line="167" Column="1" TopLine="147"/>
-      </Position10>
-      <Position11>
-        <Filename Value="..\scrollingtext.pas"/>
         <Caret Line="132" Column="1" TopLine="104"/>
-      </Position11>
+      </Position10>
     </JumpHistory>
   </ProjectSession>
   <EditorMacros Count="0"/>

@@ -6,65 +6,69 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs
-  ,FileUtil{$IFDEF WINDOWS},mmsystem{$ELSE},asyncprocess,process{$ENDIF},aboutplaysound;
+  , FileUtil{$IFDEF WINDOWS}, mmsystem{$ELSE}, asyncprocess, process{$ENDIF}, aboutplaysound;
 
 type
-  TPlayStyle = (psAsync,psSync);
+  TPlayStyle = (psAsync, psSync);
+
   Tplaysound = class(TAboutPlaySound)
   private
     { Private declarations }
     {$IFDEF LINUX}
-    SoundPlayerAsyncProcess:Tasyncprocess;
-    SoundPlayerSyncProcess:Tprocess;
+    SoundPlayerAsyncProcess: Tasyncprocess;
+    SoundPlayerSyncProcess: Tprocess;
     {$ENDIF}
-    fPathToSoundFile:String;
-    fPlayStyle:TPlayStyle;
+    fPathToSoundFile: string;
+    fPlayStyle: TPlayStyle;
   protected
     { Protected declarations }
-    procedure PlaySound(Const szSoundFilename:String); virtual;
+    procedure PlaySound(const szSoundFilename: string); virtual;
   public
     { Public declarations }
-    Constructor Create(AOwner: TComponent); override;
-    Destructor Destroy; reintroduce;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; reintroduce;
     procedure Execute;
   published
     { Published declarations }
-    Property SoundFile:String read fPathToSoundFile write fPathToSoundFile;
-    Property PlayStyle:TPlayStyle read fPlayStyle write fPlayStyle default psASync;
+    property SoundFile: string read fPathToSoundFile write fPathToSoundFile;
+    property PlayStyle: TPlayStyle read fPlayStyle write fPlayStyle default psASync;
   end;
 
 procedure Register;
 
 implementation
+
 {$IFDEF LINUX}
-CONST // Defined in mmsystem
-  SND_SYNC=0;
-  SND_ASYNC=1;
-  SND_NODEFAULT=2;
+const // Defined in mmsystem
+  SND_SYNC = 0;
+  SND_ASYNC = 1;
+  SND_NODEFAULT = 2;
 {$ENDIF}
 resourcestring
   C_UnableToPlay = 'Unable to play ';
-Constructor Tplaysound.Create(AOwner: TComponent);
+
+constructor Tplaysound.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  fPlayStyle:=psASync;
-  fPathToSoundFile:=ProgramDirectory;
+  fPlayStyle := psASync;
+  fPathToSoundFile := ProgramDirectory;
 
   // About Dialog properties
-  AboutBoxComponentName:='PlaySound';
-  AboutBoxWidth:=400;
-  AboutBoxHeight:=400;
-  AboutBoxBackgroundColor:=clCream;
+  AboutBoxComponentName := 'PlaySound';
+  AboutBoxWidth := 400;
+  AboutBoxHeight := 400;
+  AboutBoxBackgroundColor := clCream;
   //AboutBoxFontName (string)
   //AboutBoxFontSize (integer)
-  AboutBoxVersion:='0.0.1';
-  AboutBoxAuthorname:='Gordon Bamber';
-  AboutBoxOrganisation:='Public Domain';
-  AboutBoxAuthorEmail:='minesadorada@charcodelvalle.com';
-  AboutBoxLicenseType:='LGPL';
-  AboutBoxDescription:='Plays WAVE sounds in Windows or Linux';
+  AboutBoxVersion := '0.0.2';
+  AboutBoxAuthorname := 'Gordon Bamber';
+  AboutBoxOrganisation := 'Public Domain';
+  AboutBoxAuthorEmail := 'minesadorada@charcodelvalle.com';
+  AboutBoxLicenseType := 'LGPL';
+  AboutBoxDescription := 'Plays WAVE sounds in Windows or Linux';
 end;
-Destructor Tplaysound.Destroy;
+
+destructor Tplaysound.Destroy;
 begin
   {$IFDEF LINUX}
   FreeAndNil(SoundPlayerSyncProcess);
@@ -72,75 +76,120 @@ begin
   {$ENDIF}
   inherited;
 end;
+
 procedure Tplaysound.Execute;
 begin
-  If Not FileExistsUTF8(fPathToSoundFile) then Exit;
+  if not FileExistsUTF8(fPathToSoundFile) then
+    Exit;
   PlaySound(fPathToSoundFile);
 end;
 
-procedure Tplaysound.PlaySound(Const szSoundFilename:String);
-Var
-  flags:Word;
-  linuxplaycommand:String;
+procedure Tplaysound.PlaySound(const szSoundFilename: string);
+var
+  flags: word;
+  szNonWindowsPlayCommand: string;
 begin
-linuxplaycommand:='';
+  szNonWindowsPlayCommand := '';
 {$IFDEF WINDOWS}
-        If fPlayStyle = psASync then flags:=SND_ASYNC OR SND_NODEFAULT
-        else flags:=SND_SYNC OR SND_NODEFAULT;
-        TRY
-        sndPlaySound(PChar(szSoundFilename),flags);
-        except
-          ShowMessage(C_UnableToPlay + szSoundFilename);
-        end;
+  if fPlayStyle = psASync then
+    flags := SND_ASYNC or SND_NODEFAULT
+  else
+    flags := SND_SYNC or SND_NODEFAULT;
+  try
+    sndPlaySound(PChar(szSoundFilename), flags);
+  except
+    ShowMessage(C_UnableToPlay + szSoundFilename);
+  end;
 {$ELSE}
-       // How to play in Linux? Use generic Linux commands
-       // Use asyncprocess to play sound as SND_ASYNC
-
-// Try play
-If (FindDefaultExecutablePath('play') <> '') then linuxplaycommand:='play';
-// Try aplay
-If (linuxplaycommand='') then
-   If (FindDefaultExecutablePath('aplay') <> '') Then linuxplaycommand:='aplay';
-// Try paplay
-If (linuxplaycommand='') then
-   If (FindDefaultExecutablePath('paplay') <> '') Then linuxplaycommand:='paplay';
-// proceed if we managed to find a valid command
-If (linuxplaycommand <> '') then
-BEGIN
-       If fPlayStyle = psASync then
-       begin
-            If SoundPlayerAsyncProcess=Nil then SoundPlayerAsyncProcess:=Tasyncprocess.Create(Nil);
-            SoundPlayerAsyncProcess.CurrentDirectory:=ExtractFileDir(szSoundFilename);
-            SoundPlayerAsyncProcess.Executable:=FindDefaultExecutablePath(linuxplaycommand);
-            SoundPlayerAsyncProcess.Parameters.Clear;
-            SoundPlayerAsyncProcess.Parameters.Add(szSoundFilename);
-            TRY
-            SoundPlayerAsyncProcess.Execute;
-            except
-              ShowMessage('Playstyle=paASync: ' + C_UnableToPlay + szSoundFilename);
-            end;
-       end
-       else
-       begin
-           If SoundPlayerSyncProcess=Nil then SoundPlayerSyncProcess:=Tprocess.Create(Nil);
-           SoundPlayerSyncProcess.CurrentDirectory:=ExtractFileDir(szSoundFilename);
-           SoundPlayerSyncProcess.Executable:=FindDefaultExecutablePath(linuxplaycommand);
-           SoundPlayersyncProcess.Parameters.Clear;
-           SoundPlayerSyncProcess.Parameters.Add(szSoundFilename);
-           TRY
-           SoundPlayerSyncProcess.Execute;
-           SoundPlayersyncProcess.WaitOnExit;
-           except
-             ShowMessage('Playstyle=paSyncSync: ' + C_UnableToPlay + szSoundFilename);
-           end;
-       end;
-END;
+  // How to play in Linux? Use generic Linux commands
+  // Use asyncprocess to play sound as SND_ASYNC
+  // Try play
+  if (FindDefaultExecutablePath('play') <> '') then
+    szNonWindowsPlayCommand := 'play';
+  // Try aplay
+  if (szNonWindowsPlayCommand = '') then
+    if (FindDefaultExecutablePath('aplay') <> '') then
+      szNonWindowsPlayCommand := 'aplay -q ';
+  // Try paplay
+  if (szNonWindowsPlayCommand = '') then
+    if (FindDefaultExecutablePath('paplay') <> '') then
+      szNonWindowsPlayCommand := 'paplay';
+  // Try mplayer
+  if (szNonWindowsPlayCommand = '') then
+    if (FindDefaultExecutablePath('mplayer') <> '') then
+      szNonWindowsPlayCommand := 'mplayer -really-quiet ';
+  // Try CMus
+  if (szNonWindowsPlayCommand = '') then
+    if (FindDefaultExecutablePath('CMus') <> '') then
+      szNonWindowsPlayCommand := 'CMus ';
+  // Try pacat
+  if (szNonWindowsPlayCommand = '') then
+    if (FindDefaultExecutablePath('pacat') <> '') then
+      szNonWindowsPlayCommand := 'pacat -p ';
+  // Try ffplay
+  if (szNonWindowsPlayCommand = '') then
+    if (FindDefaultExecutablePath('ffplay') <> '') then
+      szNonWindowsPlayCommand := 'ffplay -autoexit -nodisp ';
+  // Try cvlc
+  if (szNonWindowsPlayCommand = '') then
+    if (FindDefaultExecutablePath('cvlc') <> '') then
+      szNonWindowsPlayCommand := 'cvlc -q --play-and-exit ';
+  // Try canberra-gtk-play
+  if (szNonWindowsPlayCommand = '') then
+    if (FindDefaultExecutablePath('canberra-gtk-play') <> '') then
+      szNonWindowsPlayCommand := 'canberra-gtk-play -c never -f ';
+  // Try Macintosh command?
+  if (szNonWindowsPlayCommand = '') then
+    if (FindDefaultExecutablePath('afplay') <> '') then
+      szNonWindowsPlayCommand := 'afplay';
+  // proceed if we managed to find a valid command
+  if (szNonWindowsPlayCommand <> '') then
+  begin
+    if fPlayStyle = psASync then
+    begin
+      if SoundPlayerAsyncProcess = nil then
+        SoundPlayerAsyncProcess := Tasyncprocess.Create(nil);
+      SoundPlayerAsyncProcess.CurrentDirectory := ExtractFileDir(szSoundFilename);
+      SoundPlayerAsyncProcess.Executable :=
+        FindDefaultExecutablePath(szNonWindowsPlayCommand);
+      SoundPlayerAsyncProcess.Parameters.Clear;
+      SoundPlayerAsyncProcess.Parameters.Add(szSoundFilename);
+      try
+        SoundPlayerAsyncProcess.Execute;
+      except
+        On E: Exception do
+          E.CreateFmt('Playstyle=paASync: ' + C_UnableToPlay +
+            '%s Message:%s', [szSoundFilename, E.Message]);
+      end;
+    end
+    else
+    begin
+      if SoundPlayerSyncProcess = nil then
+        SoundPlayerSyncProcess := Tprocess.Create(nil);
+      SoundPlayerSyncProcess.CurrentDirectory := ExtractFileDir(szSoundFilename);
+      SoundPlayerSyncProcess.Executable :=
+        FindDefaultExecutablePath(szNonWindowsPlayCommand);
+      SoundPlayersyncProcess.Parameters.Clear;
+      SoundPlayerSyncProcess.Parameters.Add(szSoundFilename);
+      try
+        SoundPlayerSyncProcess.Execute;
+        SoundPlayersyncProcess.WaitOnExit;
+      except
+        On E: Exception do
+          E.CreateFmt('Playstyle=paSync: ' + C_UnableToPlay +
+            '%s Message:%s', [szSoundFilename, E.Message]);
+      end;
+    end;
+  end
+  else
+    raise Exception.CreateFmt('The play command %s does not work on your system',
+      [szNonWindowsPlayCommand]);
 {$ENDIF}
 end;
 
 procedure Register;
 begin
-  RegisterComponents('LazControls',[Tplaysound]);
+  RegisterComponents('LazControls', [Tplaysound]);
   {$I playsound_icon.lrs}
 end;
 
