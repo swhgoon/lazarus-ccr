@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -31,17 +31,20 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="3">
+    <RequiredPackages Count="4">
       <Item1>
-        <PackageName Value="poweredby"/>
+        <PackageName Value="RunTimeTypeInfoControls"/>
       </Item1>
       <Item2>
-        <PackageName Value="playwavepackage"/>
-        <MaxVersion Release="1"/>
+        <PackageName Value="poweredby"/>
       </Item2>
       <Item3>
-        <PackageName Value="LCL"/>
+        <PackageName Value="playwavepackage"/>
+        <MaxVersion Release="1"/>
       </Item3>
+      <Item4>
+        <PackageName Value="LCL"/>
+      </Item4>
     </RequiredPackages>
     <Units Count="2">
       <Unit0>

@@ -1,29 +1,29 @@
 object mainform: Tmainform
   Left = 415
-  Height = 129
+  Height = 257
   Top = 305
-  Width = 241
+  Width = 352
   BorderIcons = [biSystemMenu]
   Caption = 'mainform'
-  ClientHeight = 129
-  ClientWidth = 241
+  ClientHeight = 257
+  ClientWidth = 352
   DefaultMonitor = dmPrimary
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.2.4.0'
   object cmd_Async: TButton
-    Left = 16
+    Left = 264
     Height = 25
-    Top = 16
+    Top = 180
     Width = 75
     Caption = 'Play Async'
     OnClick = cmd_AsyncClick
     TabOrder = 0
   end
   object BitBtn1: TBitBtn
-    Left = 152
+    Left = 264
     Height = 30
-    Top = 88
+    Top = 216
     Width = 75
     DefaultCaption = True
     Kind = bkClose
@@ -31,19 +31,31 @@ object mainform: Tmainform
     TabOrder = 1
   end
   object cmd_Sync: TButton
-    Left = 152
+    Left = 264
     Height = 25
-    Top = 16
+    Top = 148
     Width = 75
     Caption = 'Play Sync'
     OnClick = cmd_SyncClick
     TabOrder = 2
   end
+  object TIPropertyGrid1: TTIPropertyGrid
+    Left = 4
+    Height = 238
+    Top = 8
+    Width = 252
+    DefaultValueFont.Color = clWindowText
+    Filter = [tkInteger, tkChar, tkEnumeration, tkFloat, tkSet, tkMethod, tkSString, tkLString, tkAString, tkWString, tkVariant, tkArray, tkRecord, tkInterface, tkClass, tkObject, tkWChar, tkBool, tkInt64, tkQWord, tkDynArray, tkInterfaceRaw, tkProcVar, tkUString, tkUChar, tkHelper]
+    Indent = 16
+    NameFont.Color = clWindowText
+    TIObject = playsound1
+    ValueFont.Color = clMaroon
+  end
   object playsound1: Tplaysound
     About.Description.Strings = (
       'Plays WAVE sounds in Windows or Linux'
     )
-    About.Title = 'About PlaySound'
+    About.Title = 'About About PlaySound'
     About.Height = 400
     About.Width = 400
     About.Font.Color = clNavy
@@ -56,7 +68,8 @@ object mainform: Tmainform
     About.ComponentName = 'PlaySound'
     About.LicenseType = abLGPL
     SoundFile = '/home/gordon/development/lazarus/'
-    left = 91
-    top = 53
+    PlayCommand = 'sndPlaySnd'
+    left = 4
+    top = 8
   end
 end

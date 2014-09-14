@@ -14,10 +14,11 @@ type
   Tplaysound = class(TAboutPlaySound)
   private
     { Private declarations }
-    {$IFDEF LINUX}
+    {$IFNDEF WINDOWS}
     SoundPlayerAsyncProcess: Tasyncprocess;
     SoundPlayerSyncProcess: Tprocess;
     {$ENDIF}
+    fPlayCommand:String;
     fPathToSoundFile: string;
     fPlayStyle: TPlayStyle;
   protected
@@ -32,13 +33,14 @@ type
     { Published declarations }
     property SoundFile: string read fPathToSoundFile write fPathToSoundFile;
     property PlayStyle: TPlayStyle read fPlayStyle write fPlayStyle default psASync;
+    Property PlayCommand:String read fPlayCommand write fPlayCommand;
   end;
 
 procedure Register;
 
 implementation
 
-{$IFDEF LINUX}
+{$IFNDEF WINDOWS}
 const // Defined in mmsystem
   SND_SYNC = 0;
   SND_ASYNC = 1;
@@ -47,12 +49,65 @@ const // Defined in mmsystem
 resourcestring
   C_UnableToPlay = 'Unable to play ';
 
+function GetNonWindowsPlayCommand:String;
+Var szNonWindowsPlayCommand: string;
+begin
+  szNonWindowsPlayCommand:='';
+  {$IFNDEF WINDOWS}
+  // Try play
+  if (FindDefaultExecutablePath('play') <> '') then
+    szNonWindowsPlayCommand := 'play';
+  // Try aplay
+  if (szNonWindowsPlayCommand = '') then
+    if (FindDefaultExecutablePath('aplay') <> '') then
+      szNonWindowsPlayCommand := 'aplay -q';
+  // Try paplay
+  if (szNonWindowsPlayCommand = '') then
+    if (FindDefaultExecutablePath('paplay') <> '') then
+      szNonWindowsPlayCommand := 'paplay';
+  // Try mplayer
+  if (szNonWindowsPlayCommand = '') then
+    if (FindDefaultExecutablePath('mplayer') <> '') then
+      szNonWindowsPlayCommand := 'mplayer -really-quiet';
+  // Try CMus
+  if (szNonWindowsPlayCommand = '') then
+    if (FindDefaultExecutablePath('CMus') <> '') then
+      szNonWindowsPlayCommand := 'CMus';
+  // Try pacat
+  if (szNonWindowsPlayCommand = '') then
+    if (FindDefaultExecutablePath('pacat') <> '') then
+      szNonWindowsPlayCommand := 'pacat -p';
+  // Try ffplay
+  if (szNonWindowsPlayCommand = '') then
+    if (FindDefaultExecutablePath('ffplay') <> '') then
+      szNonWindowsPlayCommand := 'ffplay -autoexit -nodisp';
+  // Try cvlc
+  if (szNonWindowsPlayCommand = '') then
+    if (FindDefaultExecutablePath('cvlc') <> '') then
+      szNonWindowsPlayCommand := 'cvlc -q --play-and-exit';
+  // Try canberra-gtk-play
+  if (szNonWindowsPlayCommand = '') then
+    if (FindDefaultExecutablePath('canberra-gtk-play') <> '') then
+      szNonWindowsPlayCommand := 'canberra-gtk-play -c never -f';
+  // Try Macintosh command?
+  if (szNonWindowsPlayCommand = '') then
+    if (FindDefaultExecutablePath('afplay') <> '') then
+      szNonWindowsPlayCommand := 'afplay';
+  {$ENDIF}
+  Result:=szNonWindowsPlayCommand;
+end;
+
+
 constructor Tplaysound.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   fPlayStyle := psASync;
   fPathToSoundFile := ProgramDirectory;
-
+  {$IFDEF WINDOWS}
+  fPlayCommand:='sndPlaySnd';
+  {$ELSE}
+  fPlayCommand:=GetNonWindowsPlayCommand;
+  {$ENDIF}
   // About Dialog properties
   AboutBoxComponentName := 'PlaySound';
   AboutBoxWidth := 400;
@@ -60,7 +115,7 @@ begin
   AboutBoxBackgroundColor := clCream;
   //AboutBoxFontName (string)
   //AboutBoxFontSize (integer)
-  AboutBoxVersion := '0.0.2';
+  AboutBoxVersion := '0.0.3';
   AboutBoxAuthorname := 'Gordon Bamber';
   AboutBoxOrganisation := 'Public Domain';
   AboutBoxAuthorEmail := 'minesadorada@charcodelvalle.com';
@@ -70,7 +125,7 @@ end;
 
 destructor Tplaysound.Destroy;
 begin
-  {$IFDEF LINUX}
+  {$IFNDEF WINDOWS}
   FreeAndNil(SoundPlayerSyncProcess);
   FreeAndNil(SoundPlayerAsyncProcess);
   {$ENDIF}
@@ -87,9 +142,7 @@ end;
 procedure Tplaysound.PlaySound(const szSoundFilename: string);
 var
   flags: word;
-  szNonWindowsPlayCommand: string;
 begin
-  szNonWindowsPlayCommand := '';
 {$IFDEF WINDOWS}
   if fPlayStyle = psASync then
     flags := SND_ASYNC or SND_NODEFAULT
@@ -103,47 +156,8 @@ begin
 {$ELSE}
   // How to play in Linux? Use generic Linux commands
   // Use asyncprocess to play sound as SND_ASYNC
-  // Try play
-  if (FindDefaultExecutablePath('play') <> '') then
-    szNonWindowsPlayCommand := 'play';
-  // Try aplay
-  if (szNonWindowsPlayCommand = '') then
-    if (FindDefaultExecutablePath('aplay') <> '') then
-      szNonWindowsPlayCommand := 'aplay -q ';
-  // Try paplay
-  if (szNonWindowsPlayCommand = '') then
-    if (FindDefaultExecutablePath('paplay') <> '') then
-      szNonWindowsPlayCommand := 'paplay';
-  // Try mplayer
-  if (szNonWindowsPlayCommand = '') then
-    if (FindDefaultExecutablePath('mplayer') <> '') then
-      szNonWindowsPlayCommand := 'mplayer -really-quiet ';
-  // Try CMus
-  if (szNonWindowsPlayCommand = '') then
-    if (FindDefaultExecutablePath('CMus') <> '') then
-      szNonWindowsPlayCommand := 'CMus ';
-  // Try pacat
-  if (szNonWindowsPlayCommand = '') then
-    if (FindDefaultExecutablePath('pacat') <> '') then
-      szNonWindowsPlayCommand := 'pacat -p ';
-  // Try ffplay
-  if (szNonWindowsPlayCommand = '') then
-    if (FindDefaultExecutablePath('ffplay') <> '') then
-      szNonWindowsPlayCommand := 'ffplay -autoexit -nodisp ';
-  // Try cvlc
-  if (szNonWindowsPlayCommand = '') then
-    if (FindDefaultExecutablePath('cvlc') <> '') then
-      szNonWindowsPlayCommand := 'cvlc -q --play-and-exit ';
-  // Try canberra-gtk-play
-  if (szNonWindowsPlayCommand = '') then
-    if (FindDefaultExecutablePath('canberra-gtk-play') <> '') then
-      szNonWindowsPlayCommand := 'canberra-gtk-play -c never -f ';
-  // Try Macintosh command?
-  if (szNonWindowsPlayCommand = '') then
-    if (FindDefaultExecutablePath('afplay') <> '') then
-      szNonWindowsPlayCommand := 'afplay';
   // proceed if we managed to find a valid command
-  if (szNonWindowsPlayCommand <> '') then
+  if (fNonWindowsPlayCommand <> '') then
   begin
     if fPlayStyle = psASync then
     begin
@@ -151,7 +165,7 @@ begin
         SoundPlayerAsyncProcess := Tasyncprocess.Create(nil);
       SoundPlayerAsyncProcess.CurrentDirectory := ExtractFileDir(szSoundFilename);
       SoundPlayerAsyncProcess.Executable :=
-        FindDefaultExecutablePath(szNonWindowsPlayCommand);
+        FindDefaultExecutablePath(fNonWindowsPlayCommand);
       SoundPlayerAsyncProcess.Parameters.Clear;
       SoundPlayerAsyncProcess.Parameters.Add(szSoundFilename);
       try
@@ -168,7 +182,7 @@ begin
         SoundPlayerSyncProcess := Tprocess.Create(nil);
       SoundPlayerSyncProcess.CurrentDirectory := ExtractFileDir(szSoundFilename);
       SoundPlayerSyncProcess.Executable :=
-        FindDefaultExecutablePath(szNonWindowsPlayCommand);
+        FindDefaultExecutablePath(fNonWindowsPlayCommand);
       SoundPlayersyncProcess.Parameters.Clear;
       SoundPlayerSyncProcess.Parameters.Add(szSoundFilename);
       try
@@ -183,7 +197,7 @@ begin
   end
   else
     raise Exception.CreateFmt('The play command %s does not work on your system',
-      [szNonWindowsPlayCommand]);
+      [fNonWindowsPlayCommand]);
 {$ENDIF}
 end;
 

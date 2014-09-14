@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
     <Name Value="playwavepackage"/>
@@ -22,7 +22,7 @@
     </CompilerOptions>
     <Description Value="Simple component to play wave files under Windows or Linux"/>
     <License Value="LGPLv2"/>
-    <Version Release="1"/>
+    <Version Release="3"/>
     <Files Count="2">
       <Item1>
         <Filename Value="uplaysound.pas"/>

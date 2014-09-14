@@ -5,7 +5,7 @@ unit umainform;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, RTTIGrids, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, uplaysound;
 
 type
@@ -17,6 +17,7 @@ type
     cmd_Async: TButton;
     cmd_Sync: TButton;
     playsound1: Tplaysound;
+    TIPropertyGrid1: TTIPropertyGrid;
     procedure cmd_AsyncClick(Sender: TObject);
     procedure cmd_SyncClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
