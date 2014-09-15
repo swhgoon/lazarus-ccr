@@ -5,6 +5,10 @@ msgstr "Content-Type: text/plain; charset=UTF-8"
 msgid "Application \"%s\""
 msgstr "Программа \"%s\""
 
+#: rxdconst.sbottomcaption
+msgid "Bottom"
+msgstr ""
+
 #: rxdconst.sbrowsedata
 msgid "browse"
 msgstr "просмотр"
@@ -65,6 +69,22 @@ msgstr "редактирование"
 msgid "Error message"
 msgstr "Сообщение об ошибке"
 
+#: rxdconst.sexportcellcolors
+msgid "Export cell colors"
+msgstr ""
+
+#: rxdconst.sexportcolumnfooter
+msgid "Export column footer"
+msgstr ""
+
+#: rxdconst.sexportcolumnheader
+msgid "Export column header"
+msgstr ""
+
+#: rxdconst.sexportfilename
+msgid "Export file name"
+msgstr ""
+
 #: rxdconst.sexprbadcompare
 msgid "Compare opertion need fielad and const"
 msgstr "Операции сравнения требуют наличия поля и константы"
@@ -75,8 +95,8 @@ msgstr "Поле '%s' не может быть использовано в вы�
 
 #: rxdconst.sexprbadnulltest
 #, fuzzy
-#| msgid "NULL-values enabled in '=' and '<>'"
-msgid "NULL-values enabled in '=' и '<>'"
+#| msgid "NULL-values enabled in '=' и '<>'"
+msgid "NULL-values enabled in '=' and '<>'"
 msgstr "NULL-значения разрешены только в выражениях '=' и '<>'"
 
 #: rxdconst.sexprexpected
@@ -123,6 +143,10 @@ msgstr "Поле '%s' ожидает значение"
 msgid "Type mismatch for field '%s', expecting: %s actual: %s"
 msgstr "Несоответсвие типов для поля '%s', необходимо: %s введено: %s"
 
+#: rxdconst.shidezerovalues
+msgid "Hide zero values"
+msgstr ""
+
 #: rxdconst.shintlabel
 msgid "Enter you user name and password"
 msgstr "Введите ваше имя и пароль"
@@ -146,6 +170,14 @@ msgstr "Нет объявления полей"
 #: rxdconst.sinvalidusername
 msgid "User name or password not valid"
 msgstr "Ошибка в имени пользователя или пароле"
+
+#: rxdconst.slandscape
+msgid "Landscape"
+msgstr ""
+
+#: rxdconst.sleftcaption
+msgid "Left"
+msgstr ""
 
 #: rxdconst.slocaldatabase
 msgid "Unable complete this operation on local dataset"
@@ -183,6 +215,26 @@ msgstr "Набор данных не в режиме редактировани�
 msgid "&Old password:"
 msgstr "&Старый пароль"
 
+#: rxdconst.sopenafterexport
+msgid "Open after export"
+msgstr ""
+
+#: rxdconst.sorientation
+msgid "Orientation"
+msgstr ""
+
+#: rxdconst.soverwriteexisting
+msgid "Overwrite existing"
+msgstr ""
+
+#: rxdconst.spagemargins
+msgid "Page margins"
+msgstr ""
+
+#: rxdconst.spagename
+msgid "Page name"
+msgstr ""
+
 #: rxdconst.spasswordchanged
 msgid "Password changed"
 msgstr "Пароль изменён"
@@ -199,9 +251,21 @@ msgstr "Пароль не изменён"
 msgid "New password and confirmation not equal"
 msgstr "Новый пароль и подтверждение не совпадают"
 
+#: rxdconst.sportrait
+msgid "Portrait"
+msgstr ""
+
 #: rxdconst.sprevbutton
 msgid "&Prior"
 msgstr "&Превыдущие"
+
+#: rxdconst.sprintgrid
+msgid "Print grid"
+msgstr ""
+
+#: rxdconst.sprintoptions
+msgid "Print options"
+msgstr ""
 
 #: rxdconst.spropdefbylookup
 msgid "PropDefByLookup"
@@ -211,9 +275,17 @@ msgstr ""
 msgid "Register"
 msgstr "Регистрация"
 
+#: rxdconst.sreporttitle
+msgid "Report title"
+msgstr ""
+
 #: rxdconst.sretrylogin
 msgid "Retry to connect with database?"
 msgstr "Вы хотите повторить попытку соединения с базой данных?"
+
+#: rxdconst.srightcaption
+msgid "Right"
+msgstr ""
 
 #: rxdconst.srxallfields
 msgid "All fields"
@@ -293,6 +365,16 @@ msgstr "Вперёд"
 #: rxdconst.srxdbgridfindtext
 msgid "Text to find"
 msgstr "Текст для поиска"
+
+#: rxdconst.srxdbgridselapplycaption
+#, fuzzy
+msgctxt "rxdconst.srxdbgridselapplycaption"
+msgid "Apply"
+msgstr "Применить"
+
+#: rxdconst.srxdbgridselapplyhint
+msgid "Apply current columns setings"
+msgstr ""
 
 #: rxdconst.srxdbgridselcolcaption
 msgid "Grid columns"
@@ -436,6 +518,38 @@ msgstr "Ошибка сервера"
 #: rxdconst.ssetkeydata
 msgid "find"
 msgstr "поиск"
+
+#: rxdconst.sshowcolumnheaderonallpage
+msgid "Show column header on all page"
+msgstr ""
+
+#: rxdconst.sshowfooter
+msgid "Show footer"
+msgstr ""
+
+#: rxdconst.sshowfootercolor
+msgid "Show footer color"
+msgstr ""
+
+#: rxdconst.sshowgridcolor
+msgid "Show grid color"
+msgstr ""
+
+#: rxdconst.sshowreporttitle
+msgid "Show report title"
+msgstr ""
+
+#: rxdconst.sshowtitle
+msgid "Show column title"
+msgstr ""
+
+#: rxdconst.stoolsexportspeadsheet
+msgid "Export to speadsheet"
+msgstr ""
+
+#: rxdconst.stopcaption
+msgid "Top"
+msgstr ""
 
 #: rxdconst.sunknownfieldtype
 msgid "SUnknownFieldType %s"

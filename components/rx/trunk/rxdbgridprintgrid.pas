@@ -186,7 +186,7 @@ begin
   FBand := TfrBandView(frCreateObject(gtBand, '', FPage));
   FBand.SetBounds(10, FYPos, 1000, 25);
   FBand.BandType := btReportTitle;
-  FPage.Objects.Add(FBand);
+//  FPage.Objects.Add(FBand);
 
   FView := frCreateObject(gtMemo, '', FPage) as TfrMemoView;
   FView.SetBounds(FXPos, FYPos, FPage.PrnInfo.PgW - 40, 25);
@@ -195,7 +195,7 @@ begin
 //    FView.Font.Assign(FTitleFont);
   FView.Memo.Add(FReportTitle);
 
-  FPage.Objects.Add(FView);
+//  FPage.Objects.Add(FView);
 
   Inc(FYPos, 27)
 end;
@@ -229,13 +229,13 @@ begin
   FBand.Dataset := FReportDataSet.Name;
   FBand.SetBounds(0, FYPos, 1000, 18);
   FBand.Flags:=FBand.Flags or flStretched;
-  FPage.Objects.Add(FBand);
+//  FPage.Objects.Add(FBand);
 
   FBand := TfrBandView(frCreateObject(gtBand, '', FPage));
   FBand.BandType := btCrossData;
   FBand.Dataset := FColumnDataSet.Name;
   FBand.SetBounds(FXPos, 0, 20, 1000);
-  FPage.Objects.Add(FBand);
+//  FPage.Objects.Add(FBand);
 
   FView := frCreateObject(gtMemo, '', FPage) as TfrMemoView;
   FView.SetBounds(FXPos, FYPos, 20, 18);
@@ -245,7 +245,7 @@ begin
 //  FView.Font.Assign(FFont);
   FView.Frames:=frAllFrames;
   FView.Layout:=tlTop;
-  FPage.Objects.Add(FView);
+//  FPage.Objects.Add(FView);
 
   FYPos := FYPos + 22;
 
@@ -286,7 +286,7 @@ begin
   FBand.BandType := btMasterHeader;
   FBand.SetBounds(0, FYPos, 1000, 20 * FTitleRowCount);
   FBand.Flags:=FBand.Flags or flStretched;
-  FPage.Objects.Add(FBand);
+//  FPage.Objects.Add(FBand);
   if FShowColumnHeaderOnAllPage then
     FBand.Flags:=FBand.Flags + flBandRepeatHeader;
 
@@ -301,7 +301,7 @@ begin
     FView.Frames:=frAllFrames;
     FView.Layout:=tlTop;
     FView.Memo.Add(Format('Header_%d', [i]));
-    FPage.Objects.Add(FView);
+//    FPage.Objects.Add(FView);
     FYPos:=FYPos + 20
   end;
   FYPos := FYPos + 2;
@@ -318,7 +318,7 @@ begin
 
   FBand.SetBounds(FXPos, FYPos, 1000, 20);
   FBand.Flags:=FBand.Flags or flStretched;
-  FPage.Objects.Add(FBand);
+//  FPage.Objects.Add(FBand);
 
   FView := frCreateObject(gtMemo, '', FPage) as TfrMemoView;
   FView.SetBounds(FXPos, FYPos, 20, 20);
@@ -331,7 +331,7 @@ begin
   FView.Frames:=frAllFrames;
   FView.Layout:=tlTop;
   FView.Memo.Add(Format('Footer', [i]));
-  FPage.Objects.Add(FView);
+//  FPage.Objects.Add(FView);
 
   FYPos := FYPos + 22;
 end;

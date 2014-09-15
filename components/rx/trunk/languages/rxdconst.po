@@ -5,6 +5,10 @@ msgstr "Content-Type: text/plain; charset=UTF-8"
 msgid "Application \"%s\""
 msgstr ""
 
+#: rxdconst.sbottomcaption
+msgid "Bottom"
+msgstr ""
+
 #: rxdconst.sbrowsedata
 msgid "browse"
 msgstr ""
@@ -65,6 +69,22 @@ msgstr ""
 msgid "Error message"
 msgstr ""
 
+#: rxdconst.sexportcellcolors
+msgid "Export cell colors"
+msgstr ""
+
+#: rxdconst.sexportcolumnfooter
+msgid "Export column footer"
+msgstr ""
+
+#: rxdconst.sexportcolumnheader
+msgid "Export column header"
+msgstr ""
+
+#: rxdconst.sexportfilename
+msgid "Export file name"
+msgstr ""
+
 #: rxdconst.sexprbadcompare
 msgid "Compare opertion need fielad and const"
 msgstr ""
@@ -74,7 +94,7 @@ msgid "Field '%s' not used in filter expression"
 msgstr ""
 
 #: rxdconst.sexprbadnulltest
-msgid "NULL-values enabled in '=' и '<>'"
+msgid "NULL-values enabled in '=' and '<>'"
 msgstr ""
 
 #: rxdconst.sexprexpected
@@ -121,6 +141,10 @@ msgstr ""
 msgid "Type mismatch for field '%s', expecting: %s actual: %s"
 msgstr ""
 
+#: rxdconst.shidezerovalues
+msgid "Hide zero values"
+msgstr ""
+
 #: rxdconst.shintlabel
 msgid "Enter you user name and password"
 msgstr ""
@@ -143,6 +167,14 @@ msgstr ""
 
 #: rxdconst.sinvalidusername
 msgid "User name or password not valid"
+msgstr ""
+
+#: rxdconst.slandscape
+msgid "Landscape"
+msgstr ""
+
+#: rxdconst.sleftcaption
+msgid "Left"
 msgstr ""
 
 #: rxdconst.slocaldatabase
@@ -181,6 +213,26 @@ msgstr ""
 msgid "&Old password:"
 msgstr ""
 
+#: rxdconst.sopenafterexport
+msgid "Open after export"
+msgstr ""
+
+#: rxdconst.sorientation
+msgid "Orientation"
+msgstr ""
+
+#: rxdconst.soverwriteexisting
+msgid "Overwrite existing"
+msgstr ""
+
+#: rxdconst.spagemargins
+msgid "Page margins"
+msgstr ""
+
+#: rxdconst.spagename
+msgid "Page name"
+msgstr ""
+
 #: rxdconst.spasswordchanged
 msgid "Password changed"
 msgstr ""
@@ -197,8 +249,20 @@ msgstr ""
 msgid "New password and confirmation not equal"
 msgstr ""
 
+#: rxdconst.sportrait
+msgid "Portrait"
+msgstr ""
+
 #: rxdconst.sprevbutton
 msgid "&Prior"
+msgstr ""
+
+#: rxdconst.sprintgrid
+msgid "Print grid"
+msgstr ""
+
+#: rxdconst.sprintoptions
+msgid "Print options"
 msgstr ""
 
 #: rxdconst.spropdefbylookup
@@ -209,8 +273,16 @@ msgstr ""
 msgid "Register"
 msgstr ""
 
+#: rxdconst.sreporttitle
+msgid "Report title"
+msgstr ""
+
 #: rxdconst.sretrylogin
 msgid "Retry to connect with database?"
+msgstr ""
+
+#: rxdconst.srightcaption
+msgid "Right"
 msgstr ""
 
 #: rxdconst.srxallfields
@@ -290,6 +362,15 @@ msgstr ""
 
 #: rxdconst.srxdbgridfindtext
 msgid "Text to find"
+msgstr ""
+
+#: rxdconst.srxdbgridselapplycaption
+msgctxt "rxdconst.srxdbgridselapplycaption"
+msgid "Apply"
+msgstr ""
+
+#: rxdconst.srxdbgridselapplyhint
+msgid "Apply current columns setings"
 msgstr ""
 
 #: rxdconst.srxdbgridselcolcaption
@@ -432,6 +513,38 @@ msgstr ""
 
 #: rxdconst.ssetkeydata
 msgid "find"
+msgstr ""
+
+#: rxdconst.sshowcolumnheaderonallpage
+msgid "Show column header on all page"
+msgstr ""
+
+#: rxdconst.sshowfooter
+msgid "Show footer"
+msgstr ""
+
+#: rxdconst.sshowfootercolor
+msgid "Show footer color"
+msgstr ""
+
+#: rxdconst.sshowgridcolor
+msgid "Show grid color"
+msgstr ""
+
+#: rxdconst.sshowreporttitle
+msgid "Show report title"
+msgstr ""
+
+#: rxdconst.sshowtitle
+msgid "Show column title"
+msgstr ""
+
+#: rxdconst.stoolsexportspeadsheet
+msgid "Export to speadsheet"
+msgstr ""
+
+#: rxdconst.stopcaption
+msgid "Top"
 msgstr ""
 
 #: rxdconst.sunknownfieldtype
