@@ -902,7 +902,7 @@ procedure RegisterRxDBGridSortEngine(RxDBGridSortEngineClass: TRxDBGridSortEngin
 
 implementation
 
-uses Math, rxdconst, rxstrutils, rxdbgrid_findunit, rxdbgrid_columsunit,
+uses Math, rxdconst, rxstrutils, strutils, rxdbgrid_findunit, rxdbgrid_columsunit,
   rxlookup, tooledit, LCLProc, Clipbrd, rxfilterby, rxsortby, variants;
 
 const
@@ -2167,7 +2167,7 @@ begin
     exit;
   tmpCanvas := GetWorkingCanvas(Canvas);
   try
-    H := 1;
+//    H := 1;
     ClearMLCaptionPointers;
     for i := 0 to Columns.Count - 1 do
     begin
@@ -2178,8 +2178,7 @@ begin
         if Assigned(rxTit) then
         begin
           if rxTit.Orientation in [toVertical270, toVertical90] then
-            H := Max((tmpCanvas.TextWidth(Columns[i].Title.Caption) +
-              tmpCanvas.TextWidth('W')*2) div DefaultRowHeight, H)
+//            H := Max((tmpCanvas.TextWidth(Columns[i].Title.Caption) + tmpCanvas.TextWidth('W')*2) div DefaultRowHeight, H)
           else
           begin
             rxColNext := nil;
@@ -2190,11 +2189,11 @@ begin
               rxTitleNext := TRxColumnTitle(rxColNext.Title);
             end;
 
-            W := Max(rxCol.Width - 6, 1);
+//            W := Max(rxCol.Width - 6, 1);
             if rxTit.CaptionLinesCount > 0 then
             begin
-              H2 := 0;
-              H1 := 0;
+//              H2 := 0;
+//              H1 := 0;
               for j := 0 to rxTit.CaptionLinesCount - 1 do
               begin
                 MLRec1 := rxTit.CaptionLine(j);
@@ -2214,7 +2213,7 @@ begin
 
                 MLRec1.Width := tmpCanvas.TextWidth(MLRec1.Caption) + 2;
 
-                if W > MLRec1.Width then
+{                if W > MLRec1.Width then
                   H2 := 1
                 else
                   H2 := MLRec1.Width div W + 1;
@@ -2222,16 +2221,16 @@ begin
                 if H2 > WordCount(MLRec1.Caption, [' ']) then
                   H2 := WordCount(MLRec1.Caption, [' ']);
 
-                H1 := H1 + H2;
+                H1 := H1 + H2;}
               end;
             end
-            else
+{            else
             begin
               H1 := Max((tmpCanvas.TextWidth(rxTit.Caption) + 2) div W + 1, H);
               if H1 > WordCount(rxTit.Caption, [' ']) then
                 H1 := WordCount(rxTit.Caption, [' ']);
             end;
-            H := Max(H1, H);
+            H := Max(H1, H); }
           end;
 
           for j := 0 to rxTit.CaptionLinesCount - 1 do
@@ -2246,12 +2245,14 @@ begin
     end;
 
     //Тут расчёт высоты заголовка каждой колонки - надо обработать слитые заголовки
+
     H := 1;
     for i := 0 to Columns.Count - 1 do
     begin
       rxCol := TRxColumn(Columns[i]);
       rxTit := TRxColumnTitle(rxCol.Title);
       H1 := 0;
+      W := Max(rxCol.Width - 6, 1);
       //Не забудем про вертикальную ориентацию
       if Assigned(rxCol) and rxCol.Visible and Assigned(rxTit) then
       begin
@@ -2260,35 +2261,45 @@ begin
             tmpCanvas.TextWidth('W')) div DefaultRowHeight, H)
         else
         begin
-          if rxTit.CaptionLinesCount > H then
-            H := rxTit.CaptionLinesCount;
-          for j := 0 to rxTit.CaptionLinesCount - 1 do
+          if rxTit.CaptionLinesCount = 0 then
           begin
-            MLRec1 := rxTit.CaptionLine(j);
-            S := MLRec1.Caption;
-            if not Assigned(MLRec1.Prior) then
+            H1 := Max((tmpCanvas.TextWidth(rxTit.Caption) + 2) div W + 1, H);
+            if H1 > WordCount(rxTit.Caption, [' ']) then
+              H1 := WordCount(rxTit.Caption, [' ']);
+          end
+          else
+          begin
+            if rxTit.CaptionLinesCount > H then
+              H := rxTit.CaptionLinesCount;
+            for j := 0 to rxTit.CaptionLinesCount - 1 do
             begin
-              W := rxCol.Width;
-              P := MLRec1.Next;
-              while Assigned(P) do
+              MLRec1 := rxTit.CaptionLine(j);
+              S := MLRec1.Caption;
+              if not Assigned(MLRec1.Prior) then
               begin
-                Inc(W, P.Col.Width);
-                P := P.Next;
-              end;
-              W1 := tmpCanvas.TextWidth(MLRec1.Caption) + 2;
-              if W1 > W then
-                MLRec1.Hegth := Min(W1 div Max(W, 1) + 1, UTF8Length(MLRec1.Caption))
-              else
-                MLRec1.Hegth := 1;
+                W := rxCol.Width;
+                P := MLRec1.Next;
+                while Assigned(P) do
+                begin
+                  Inc(W, P.Col.Width);
+                  P := P.Next;
+                end;
+                W1 := tmpCanvas.TextWidth(MLRec1.Caption) + 2;
+                if W1 > W then
+                  MLRec1.Hegth := Min(W1 div Max(W, 1) + 1, UTF8Length(MLRec1.Caption))
+                else
+                  MLRec1.Hegth := 1;
 
-              P := MLRec1.Next;
-              while Assigned(P) do
-              begin
-                P.Hegth := MLRec1.Hegth;
-                P := P.Next;
+                P := MLRec1.Next;
+                while Assigned(P) do
+                begin
+                  P.Hegth := MLRec1.Hegth;
+                  P := P.Next;
+                end;
               end;
+              H1 := H1 + MLRec1.Hegth;
             end;
-            H1 := H1 + MLRec1.Hegth;
+
           end;
         end;
       end;

@@ -456,7 +456,7 @@ begin
       M := N1; D := N2;
     end;
   end;
-  ScanChar(S, Pos, DateSeparator);
+  ScanChar(S, Pos, DefaultFormatSettings.DateSeparator);
   ScanBlanks(S, Pos);
 (*
 {$IFDEF RX_D3}
@@ -481,9 +481,9 @@ function MonthFromName(const S: string; MaxLen: Byte): Byte;
 begin
   if Length(S) > 0 then
     for Result := 1 to 12 do begin
-      if (Length(LongMonthNames[Result]) > 0) and
+      if (Length(DefaultFormatSettings.LongMonthNames[Result]) > 0) and
         (AnsiCompareText(Copy(S, 1, MaxLen),
-        Copy(LongMonthNames[Result], 1, MaxLen)) = 0) then Exit;
+        Copy(DefaultFormatSettings.LongMonthNames[Result], 1, MaxLen)) = 0) then Exit;
     end;
   Result := 0;
 end;
@@ -559,7 +559,7 @@ end;
 
 function StrToDateDef(const S: string; Default: TDateTime): TDateTime;
 begin
-  if not InternalStrToDate(ShortDateFormat, S, Result) then
+  if not InternalStrToDate(DefaultFormatSettings.ShortDateFormat, S, Result) then
     Result := Trunc(Default);
 end;
 
@@ -572,14 +572,14 @@ end;
 function DefDateFormat(FourDigitYear: Boolean): string;
 begin
   if FourDigitYear then begin
-    case GetDateOrder(ShortDateFormat) of
+    case GetDateOrder(DefaultFormatSettings.ShortDateFormat) of
       doMDY: Result := 'MM/DD/YYYY';
       doDMY: Result := 'DD/MM/YYYY';
       doYMD: Result := 'YYYY/MM/DD';
     end;
   end
   else begin
-    case GetDateOrder(ShortDateFormat) of
+    case GetDateOrder(DefaultFormatSettings.ShortDateFormat) of
       doMDY: Result := 'MM/DD/YY';
       doDMY: Result := 'DD/MM/YY';
       doYMD: Result := 'YY/MM/DD';
@@ -590,13 +590,13 @@ end;
 function DefDateMask(BlanksChar: Char; FourDigitYear: Boolean): string;
 begin
   if FourDigitYear then begin
-    case GetDateOrder(ShortDateFormat) of
+    case GetDateOrder(DefaultFormatSettings.ShortDateFormat) of
       doMDY, doDMY: Result := '!99/99/9999;1;';
       doYMD: Result := '!9999/99/99;1;';
     end;
   end
   else begin
-    case GetDateOrder(ShortDateFormat) of
+    case GetDateOrder(DefaultFormatSettings.ShortDateFormat) of
       doMDY, doDMY: Result := '!99/99/99;1;';
       doYMD: Result := '!99/99/99;1;';
     end;
@@ -638,7 +638,7 @@ end;
 {$IFNDEF USE_FOUR_DIGIT_YEAR}
 function FourDigitYear: Boolean;
 begin
-  Result := Pos('YYYY', AnsiUpperCase(ShortDateFormat)) > 0;
+  Result := Pos('YYYY', AnsiUpperCase(DefaultFormatSettings.ShortDateFormat)) > 0;
 end;
 {$ENDIF}
 
