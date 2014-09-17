@@ -710,7 +710,11 @@ end;
 
 procedure TRxMDIButton.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
-  FNavPanel.ChildWindowsShowLast;
+  if (not Assigned(FNavPanel)) or (not Assigned(FNavPanel.FMainPanel)) then
+    exit;
+
+  if FNavPanel.FMainPanel.FCurrentChildWindow = Sender then
+    FNavPanel.ChildWindowsShowLast;
   FNavPanel.ShowHiddenBtnOnResize;
   CloseAction:=caFree;
   Owner.RemoveComponent(Self);
