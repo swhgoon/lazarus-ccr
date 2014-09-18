@@ -628,6 +628,9 @@ type
     procedure AddTools(ATools:TRxDBGridAbstractTools);
     procedure RemoveTools(ATools:TRxDBGridAbstractTools);
   protected
+    //procedure UpdateHorzScrollBar(const aVisible: boolean; const aRange,aPage,aPos: Integer); override;
+    //procedure UpdateVertScrollbar(const aVisible: boolean; const aRange,aPage,aPos: Integer); override;
+
     procedure CollumnSortListUpdate;
     procedure CollumnSortListClear;
     procedure CollumnSortListApply;
@@ -664,7 +667,7 @@ type
     procedure DrawCellBitmap(RxColumn: TRxColumn; aRect: TRect;
       aState: TGridDrawState; AImageIndex: integer); virtual;
     procedure SetEditText(ACol, ARow: longint; const Value: string); override;
-    procedure CheckNewCachedSizes(var AGCache: TGridDataCache); override;
+    //procedure CheckNewCachedSizes(var AGCache: TGridDataCache); override;
     procedure ColRowMoved(IsColumn: boolean; FromIndex, ToIndex: integer); override;
     procedure Paint; override;
     procedure UpdateActive; override;
@@ -2914,6 +2917,19 @@ begin
     end;
 end;
 
+{
+procedure TRxDBGrid.UpdateHorzScrollBar(const aVisible: boolean; const aRange,
+  aPage, aPos: Integer);
+begin
+  inherited UpdateHorzScrollBar(aVisible, aRange, aPage, aPos);
+end;
+
+procedure TRxDBGrid.UpdateVertScrollbar(const aVisible: boolean; const aRange,
+  aPage, aPos: Integer);
+begin
+  inherited UpdateVertScrollbar(aVisible, aRange, aPage, aPos);
+end;
+}
 
 procedure TRxDBGrid.DefaultDrawCellA(aCol, aRow: integer; aRect: TRect;
   aState: TGridDrawState);
@@ -3410,7 +3426,8 @@ var
   ClipArea: Trect;
   TxS: TTextStyle;
 begin
-  TotalWidth := GetClientRect.Right;
+//  TotalWidth := GetClientRect.Right;
+  TotalWidth := GCache.ClientWidth;
 {
 if ScrollBarIsVisible(SB_HORZ) then
     TotalYOffs := GCache.ClientHeight - (GetSystemMetrics(SM_CYHSCROLL) + GetSystemMetrics(SM_SWSCROLLBARSPACING))
@@ -3425,8 +3442,11 @@ if ScrollBarIsVisible(SB_HORZ) then
   Canvas.Brush.Color := Color;
   Canvas.FillRect(FooterRect);
 
+//  WriteLn(Format('FooterRect.Left=%d, FooterRect.Top=%d, FooterRect.Right=%d, FooterRect.Bottom=%d', [FooterRect.Left, FooterRect.Top, FooterRect.Right, FooterRect.Bottom]));
+
+
   R.Top := TotalYOffs;
-  R.Bottom := TotalYOffs + DefaultRowHeight * FFooterOptions.RowCount + 2;
+  R.Bottom := TotalYOffs + DefaultRowHeight * FFooterOptions.RowCount;
 
   Canvas.Brush.Color := FFooterOptions.FColor;
   if (Columns.Count > 0) then
@@ -3478,15 +3498,11 @@ if ScrollBarIsVisible(SB_HORZ) then
         DrawCellGrid(i, 0, R, [gdFixed]);
 
       if ((R.Left < ClipArea.Right) and (R.Right > ClipArea.Left)) then
-      begin
-//        DrawCell(i, 0, R, [gdFixed]);
-
-//        PrepareCanvas(i, 0, [gdFixed]);
         DefaultDrawTitle(i, 0, getTitleRect(R), [gdFixed]);
-      end;
     end;
   end;
   Canvas.Brush.Color := Background;
+
 end;
 
 procedure TRxDBGrid.DoTitleClick(ACol: longint; ACollumn: TRxColumn;
@@ -3967,15 +3983,17 @@ begin
   inherited SetEditText(ACol, ARow, S);
 end;
 
+{
+try to fix set scrollbar style
 procedure TRxDBGrid.CheckNewCachedSizes(var AGCache: TGridDataCache);
 begin
   if FFooterOptions.Active and (FooterOptions.RowCount > 0) then
-//    Dec(AGCache.ClientHeight, DefaultRowHeight * FooterOptions.RowCount);
   begin
       Dec(AGCache.ClientHeight, DefaultRowHeight * FooterOptions.RowCount);
       Dec(AGCache.ScrollHeight, DefaultRowHeight * FooterOptions.RowCount);
   end;
 end;
+}
 
 procedure TRxDBGrid.ColRowMoved(IsColumn: boolean; FromIndex, ToIndex: integer);
 begin
@@ -3985,10 +4003,19 @@ begin
 end;
 
 procedure TRxDBGrid.Paint;
+var
+  P:TPoint;
 begin
   Inc(FInProcessCalc);
   if rdgWordWrap in FOptionsRx then
     UpdateRowsHeight;
+
+  if FFooterOptions.Active and (FFooterOptions.RowCount > 0) then
+  begin
+    P:=GCache.MaxClientXY;
+    with GCache do
+      MaxClientXY.Y:=MaxClientXY.Y - (DefaultRowHeight * FFooterOptions.RowCount + 2);
+  end;
 
   DoClearInvalidTitle;
 
@@ -3997,7 +4024,11 @@ begin
   DoDrawInvalidTitle;
 
   if FFooterOptions.Active and (FFooterOptions.RowCount > 0) then
+  begin
+    with GCache do
+      MaxClientXY:=P;
     DrawFooterRows;
+  end;
   Dec(FInProcessCalc);
 end;
 
@@ -4173,9 +4204,6 @@ procedure TRxDBGrid.VisualChange;
 begin
   CalcTitle;
   inherited VisualChange;
-
-{  if rdgWordWrap in FOptionsRx then
-    UpdateRowsHeight;}
 end;
 
 procedure TRxDBGrid.EditorWidthChanged(aCol, aWidth: Integer);
