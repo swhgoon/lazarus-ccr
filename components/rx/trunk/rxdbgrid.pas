@@ -4120,8 +4120,13 @@ begin
       Value := FFilterListEditor.Text;
   end;
 
-  DataSource.DataSet.Refresh;
+//  DataSource.DataSet.Refresh;
+  DataSource.DataSet.DisableControls;
+  DataSource.DataSet.Filtered:=false;
+  DataSource.DataSet.Filtered:=true;
+//  DataSource.DataSet.First;
   CalcStatTotals;
+  DataSource.DataSet.EnableControls;
 
   if Assigned(FOnFiltred) then
     FOnFiltred(Self);
