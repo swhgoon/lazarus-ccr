@@ -332,7 +332,10 @@ begin
 
     // Generate the positioning info
     for i := 0 to Vec.GetPageCount()-1 do
-      Vec.GetPageAsVectorial(i).PositionEntitySubparts(Canvas, 0, 0);
+    begin
+      if Vec.GetPageAsVectorial(i) <> nil then
+        Vec.GetPageAsVectorial(i).PositionEntitySubparts(Canvas, 0, 0);
+    end;
 
     TokensTreeView.Items.Clear;
     Vec.GenerateDebugTree(@FPVDebugAddItemProc);
