@@ -532,7 +532,7 @@ begin
     exit;
   if (Length(CellEditor.Text) = 0) then
     exit;
-  Result := IsValidDateTimeString(NormalizeDateTime(CellEditor.Caption, theValue));
+  Result := IsValidDateTimeString(NormalizeDateTime(CellEditor.Text, theValue));
   if not Result then
   begin
     ShowMessage(Format(SInvalidDateTime, [CellEditor.Text]));
@@ -726,7 +726,7 @@ begin
     exit;
   if (Length(CellEditor.Text) = 0) then
     exit;
-  Result := IsValidDateTimeString(NormalizeTime(CellEditor.Caption, theValue));
+  Result := IsValidTimeString(NormalizeTime(CellEditor.Caption, theValue));
   if not Result then
   begin
     ShowMessage(Format(SInvalidTime, [CellEditor.Text]));
@@ -959,7 +959,7 @@ begin
     exit;
   if (Length(CellEditor.Text) = 0) then
     exit;
-  Result := IsValidDateTimeString(NormalizeDateTime(CellEditor.Caption, theValue));
+  Result := IsValidDateString(NormalizeDate(CellEditor.Text, theValue));
   if not Result then
   begin
     ShowMessage(Format(SInvalidDate, [CellEditor.Text]));
