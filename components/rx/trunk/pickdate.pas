@@ -162,6 +162,9 @@ type
     property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
     property OnResize;
     property OnPrepareCanvas;
   end;

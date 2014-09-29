@@ -219,6 +219,9 @@ type
     Property OnMouseDown;
     Property OnMouseMove;
     property OnMouseUp;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
     property OnResize;
   end;
   

@@ -273,6 +273,9 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
     property OnResize;
     property OnStartDrag;
   end;
@@ -559,8 +562,8 @@ begin
     if ((FLastDrawFlagsA and DFCS_FLAT) <> 0) and ((FLastDrawFlagsA and DFCS_PUSHED) = 0)
       and (tpGlyphPopup in TToolbarItems(FOwnerItem.Collection).FToolPanel.Options) and FFullPush then
     begin
-      FImageList.Draw(Canvas, Offset.X, Offset.Y, TCustomAction(Action).ImageIndex, false);
-//      FImageList.Draw(Canvas, Offset.X, Offset.Y, TCustomAction(Action).ImageIndex, gdeDisabled);
+//      FImageList.Draw(Canvas, Offset.X, Offset.Y, TCustomAction(Action).ImageIndex, false);
+      FImageList.Draw(Canvas, Offset.X, Offset.Y, TCustomAction(Action).ImageIndex, gdeShadowed);
       Dec(Offset.X, 2);
       Dec(Offset.Y, 2);
     end;

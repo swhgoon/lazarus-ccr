@@ -157,6 +157,9 @@ type
     property OnMouseMove;
     property OnMouseDown;
     property OnMouseUp;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
     property OnDragOver;
     property OnDragDrop;
     property OnEndDrag;

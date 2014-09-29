@@ -139,6 +139,9 @@ type
     property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
     property OnStartDrag;
     property OnSelect;
     property OnUTF8KeyPress;

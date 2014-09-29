@@ -109,6 +109,9 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
     property OnStartDrag;
     property OnUTF8KeyPress;
     property ParentColor;

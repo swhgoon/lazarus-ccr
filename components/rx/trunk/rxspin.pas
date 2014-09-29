@@ -198,13 +198,11 @@ type
     property DragMode;
     property Enabled;
     property Font;
-//{$IFDEF RX_D4}
     property Anchors;
     property BiDiMode;
     property Constraints;
     property DragKind;
     property ParentBiDiMode;
-//{$ENDIF}
     property MaxLength;
     property ParentColor;
 //    property ParentCtl3D;
@@ -232,12 +230,10 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-//{$IFDEF RX_D5}
-    property OnContextPopup;
-//{$ENDIF}
-//{$IFDEF RX_D4}
+    property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
+    property OnContextPopup;
     property OnEndDock;
     property OnStartDock;
 //{$ENDIF}

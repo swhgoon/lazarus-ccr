@@ -107,6 +107,9 @@ type
     property OnClick;
     property OnEnter;
     property OnExit;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
   end;
 
 implementation
