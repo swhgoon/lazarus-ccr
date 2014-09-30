@@ -1,6 +1,6 @@
 { curredit unit
 
-  Copyright (C) 2005-2010 Lagunov Aleksey alexs@yandex.ru and Lazarus team
+  Copyright (C) 2005-2014 Lagunov Aleksey alexs@yandex.ru and Lazarus team
   original conception from rx library for Delphi (c)
 
   This library is free software; you can redistribute it and/or modify it
@@ -36,8 +36,8 @@ unit curredit;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, {StdCtrls,}
-  LMessages, MaskEdit;
+  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, LMessages,
+  MaskEdit;
 
 type
 
@@ -45,13 +45,12 @@ type
 
   TCustomNumEdit = class(TCustomMaskEdit)
   private
-    FCanvas: TControlCanvas;
-    FAlignment: TAlignment;
+    FFocusedDisplay: boolean;
     FBeepOnError: Boolean;
     FCheckOnExit: Boolean;
     FDecimalPlaces: Cardinal;
     FDisplayFormat: string;
-    FFormatOnEditing: Boolean;
+//    FFormatOnEditing: Boolean;
     FFormatting: Boolean;
     FMaxValue: Extended;
     FMinValue: Extended;
@@ -61,13 +60,11 @@ type
     function GetAsInteger: Longint;
     function GetText: string;
     function GetValue: Extended;
-    function IsFormatStored: boolean;
-    procedure SetAlignment(const AValue: TAlignment);
     procedure SetAsInteger(const AValue: Longint);
     procedure SetBeepOnError(const AValue: Boolean);
     procedure SetDecimalPlaces(const AValue: Cardinal);
     procedure SetDisplayFormat(const AValue: string);
-    procedure SetFormatOnEditing(const AValue: Boolean);
+//    procedure SetFormatOnEditing(const AValue: Boolean);
     procedure SetMaxValue(const AValue: Extended);
     procedure SetMinValue(const AValue: Extended);
     procedure SetText(const AValue: string);
@@ -75,24 +72,27 @@ type
     procedure SetZeroEmpty(const AValue: Boolean);
     function TextToValText(const AValue: string): string;
     function CheckValue(NewValue: Extended; RaiseOnError: Boolean): Extended;
-    procedure SetFocused(Value: Boolean);
+//    procedure SetFocused(Value: Boolean);
   protected
     //messages
-    procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
+{    procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
     procedure CMEnter(var Message: TLMEnter); message LM_ENTER;
-    procedure WMExit(var Message: TLMExit); message LM_EXIT;
-    procedure CMFontChanged(var Message: TLMessage); message CM_FONTCHANGED;
-    procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
+    procedure WMExit(var Message: TLMExit); message LM_EXIT; }
+
+    procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
+    procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
+
+//    procedure CMFontChanged(var Message: TLMessage); message CM_FONTCHANGED;
+//    procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
     procedure WMPaste(var Message: TLMessage); message LM_PASTE;
-    procedure GetSel(var ASelStart: Integer; var SelStop: Integer);
-    procedure DoEnter; override;
-    procedure DoExit; override;
+//    procedure GetSel(var ASelStart: Integer; var SelStop: Integer);
+{    procedure DoEnter; override;
+    procedure DoExit; override;}
 //    procedure AcceptValue(const Value: Variant); override;
 
-    procedure Change; override;
-    procedure ReformatEditText; dynamic;
+//    procedure Change; override;
+//    procedure ReformatEditText; dynamic;
     procedure DataChanged; virtual;
-    function DefaultDisplayFormat: string; virtual;
     procedure KeyPress(var Key: Char); override;
     function IsValidChar(Key: Char): Boolean; virtual;
     function FormatDisplayText(Value: Extended): string;
@@ -100,24 +100,21 @@ type
     procedure Reset; override;
     procedure CheckRange;
     procedure UpdateData;
-    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Formatting: Boolean read FFormatting;
     property BeepOnError: Boolean read FBeepOnError write SetBeepOnError
       default True;
     property CheckOnExit: Boolean read FCheckOnExit write FCheckOnExit default False;
     property DecimalPlaces: Cardinal read FDecimalPlaces write SetDecimalPlaces
       default 2;
-    property DisplayFormat: string read FDisplayFormat write SetDisplayFormat stored IsFormatStored;
+    property DisplayFormat: string read FDisplayFormat write SetDisplayFormat;
     property MaxValue: Extended read FMaxValue write SetMaxValue;
     property MinValue: Extended read FMinValue write SetMinValue;
-    property FormatOnEditing: Boolean read FFormatOnEditing
-      write SetFormatOnEditing default False;
+//    property FormatOnEditing: Boolean read FFormatOnEditing write SetFormatOnEditing default False;
     property Text: string read GetText write SetText stored False;
     property MaxLength default 0;
     property ZeroEmpty: Boolean read FZeroEmpty write SetZeroEmpty default True;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     procedure Clear;
     property AsInteger: Longint read GetAsInteger write SetAsInteger;
     property DisplayText: string read GetDisplayText;
@@ -130,9 +127,7 @@ type
 
   TCurrencyEdit = class(TCustomNumEdit)
   protected
-    function DefaultDisplayFormat: string; override;
   public
-    constructor Create(AOwner: TComponent); override;
   published
     property Alignment;
     property AutoSelect;
@@ -148,7 +143,7 @@ type
     property DragMode;
     property Enabled;
     property Font;
-    property FormatOnEditing;
+//    property FormatOnEditing;
     property HideSelection;
     property Anchors;
     property BiDiMode;
@@ -201,7 +196,7 @@ type
   end;
 
 implementation
-uses {rxstrutils, } strutils, Math, tooledit, rxconst;
+uses strutils, Math, tooledit, rxconst;
 
 function IsValidFloat(const Value: string; var RetValue: Extended): Boolean;
 var
@@ -279,32 +274,17 @@ begin
   ControlStyle := ControlStyle - [csSetCaption];
   MaxLength := 0;
   FBeepOnError := True;
-  FAlignment := taRightJustify;
-  FDisplayFormat := DefaultDisplayFormat;
   FDecimalPlaces := 2;
   FZeroEmpty := True;
   inherited Text := '';
-  inherited Alignment := taLeftJustify;
-//  FDefNumGlyphs := 2;
-  { forces update }
+  Alignment := taRightJustify;
   DataChanged;
   ControlState := ControlState + [csCreating];
 end;
 
-destructor TCustomNumEdit.Destroy;
-begin
-  FCanvas.Free;
-{  if FPopup <> nil then begin
-    TPopupWindow(FPopup).OnCloseUp := nil;
-    FPopup.Free;
-    FPopup := nil;
-  end;}
-  inherited Destroy;
-end;
-
 function TCustomNumEdit.GetText: string;
 begin
-  Result := inherited Text;
+  Result := FloatToStr(FValue);
 end;
 
 function TCustomNumEdit.GetValue: Extended;
@@ -316,18 +296,6 @@ begin
       FValue := FMinValue;
     end;
   Result := FValue;
-end;
-
-function TCustomNumEdit.IsFormatStored: boolean;
-begin
-  Result := (DisplayFormat <> DefaultDisplayFormat);
-end;
-
-procedure TCustomNumEdit.SetAlignment(const AValue: TAlignment);
-begin
-  if FAlignment=AValue then exit;
-  FAlignment:=AValue;
-  Invalidate;
 end;
 
 procedure TCustomNumEdit.SetAsInteger(const AValue: Longint);
@@ -353,18 +321,14 @@ procedure TCustomNumEdit.SetDisplayFormat(const AValue: string);
 begin
   if FDisplayFormat=AValue then exit;
   FDisplayFormat:=AValue;
-  Invalidate;
   DataChanged;
 end;
 
+{
 procedure TCustomNumEdit.SetFormatOnEditing(const AValue: Boolean);
 begin
   if FFormatOnEditing=AValue then exit;
   FFormatOnEditing:=AValue;
-  if FFormatOnEditing then
-//    FAlignment := AValue
-  else
-    FAlignment := taLeftJustify;
   if FFormatOnEditing and FFocused then
     ReformatEditText
   else
@@ -374,7 +338,7 @@ begin
     DataChanged;
   end;
 end;
-
+}
 procedure TCustomNumEdit.SetMaxValue(const AValue: Extended);
 begin
   if FMaxValue=AValue then exit;
@@ -451,7 +415,7 @@ begin
         [DecimalPlaces, FMinValue, DecimalPlaces, FMaxValue]);
   end;
 end;
-
+{
 procedure TCustomNumEdit.SetFocused(Value: Boolean);
 begin
   if FFocused <> Value then
@@ -466,7 +430,31 @@ begin
     end;
   end;
 end;
+}
+procedure TCustomNumEdit.WMSetFocus(var Message: TLMSetFocus);
+begin
+  inherited WMSetFocus(Message);
+  // some widgetsets do not notify clipboard actions properly. Put at edit state at entry
+  if FFocusedDisplay then
+    exit;
+  FFocusedDisplay := true;
+  Reset;
+{  if WidgetSet.GetLCLCapability(lcReceivesLMClearCutCopyPasteReliably) = LCL_CAPABILITY_YES then
+    FDataLink.Reset
+  else
+    FDataLink.Edit;}
+end;
 
+procedure TCustomNumEdit.WMKillFocus(var Message: TLMKillFocus);
+begin
+  inherited WMKillFocus(Message);
+  FFocusedDisplay := False;
+  UpdateData;
+  if not Focused then
+      DisableMask(GetDisplayText);
+end;
+
+{
 procedure TCustomNumEdit.CMEnabledChanged(var Message: TLMessage);
 begin
   inherited;
@@ -509,10 +497,10 @@ begin
   S := GetDisplayText;
 //  if not FFocused then
 //  else
-  if not PaintComboEdit(Self, S, FAlignment, FFocused {and not PopupVisible}, FCanvas, Message) then
-      inherited WMPaint(Message);
+//  if not PaintComboEdit(Self, S, FAlignment, FFocused {and not PopupVisible}, FCanvas, Message) then
+  inherited WMPaint(Message);
 end;
-
+}
 procedure TCustomNumEdit.WMPaste(var Message: TLMessage);
 var
   S: string;
@@ -528,12 +516,13 @@ begin
 //    if BeepOnError then MessageBeep(0);
   end;
 end;
-
+{
 procedure TCustomNumEdit.GetSel(var ASelStart: Integer; var SelStop: Integer);
 begin
   ASelStart:=SelStart;
   SelStop:=SelStart + SelLength;
 end;
+
 
 procedure TCustomNumEdit.DoEnter;
 begin
@@ -559,10 +548,10 @@ begin
   Invalidate;
 end;
 
-{procedure TCustomNumEdit.AcceptValue(const Value: Variant);
+procedure TCustomNumEdit.AcceptValue(const Value: Variant);
 begin
   inherited AcceptValue(Value);
-end;}
+end;
 
 procedure TCustomNumEdit.Change;
 begin
@@ -598,34 +587,17 @@ begin
     FFormatting := False;
   end;
 end;
-
+}
 procedure TCustomNumEdit.DataChanged;
-var
-  EditFormat: string;
 begin
-  EditFormat := '0';
-  if FDecimalPlaces > 0 then
-    EditFormat := EditFormat + '.' + DupeString('#', FDecimalPlaces);
-  if (FValue = 0.0) and FZeroEmpty then
-    EditText := ''
+  if FFocusedDisplay then
+    RestoreMask(GetText)
   else
-    EditText := FormatFloat(EditFormat, FValue);
-end;
-
-function TCustomNumEdit.DefaultDisplayFormat: string;
-begin
-  Result := ',0.##';
+    DisableMask(GetDisplayText)
 end;
 
 procedure TCustomNumEdit.KeyPress(var Key: Char);
 begin
-{  if PopupVisible and (UpCase(Key) in ['0'..'9', DecimalSeparator, '.', ',',
-    '+', '-', '*', '/', '_', '=', 'C', 'R', 'Q', '%', #8, #13] -
-    [ThousandSeparator]) then
-  begin
-    THack(FPopup).KeyPress(Key);
-    Key := #0;
-  end;}
   if Key in ['.', ','] - [DefaultFormatSettings.ThousandSeparator] then
     Key := DefaultFormatSettings.DecimalSeparator;
   inherited KeyPress(Key);
@@ -635,7 +607,8 @@ begin
     Key := #0;
   end
   else
-  if Key = #27 then begin
+  if Key = #27 then
+  begin
     Reset;
     Key := #0;
   end;
@@ -673,11 +646,16 @@ begin
 end;
 
 function TCustomNumEdit.FormatDisplayText(Value: Extended): string;
+var
+  Digits : integer;
 begin
   if DisplayFormat <> '' then
-    Result := FormatFloat(DisplayFormat, Value)
+    Result:=FormatFloat(DisplayFormat, Value)
   else
-    Result := FloatToStr(Value);
+  begin
+    Digits := DefaultFormatSettings.CurrencyDecimals;
+    Result:=FloatToStrF(Value, ffCurrency, DecimalPlaces, Digits);
+  end;
 end;
 
 procedure TCustomNumEdit.Clear;
@@ -685,44 +663,6 @@ begin
 
 end;
 
-{ TCurrencyEdit }
-
-function TCurrencyEdit.DefaultDisplayFormat: string;
-var
-  CurrStr: string;
-  I: Integer;
-  C: Char;
-begin
-  Result := ',0.' + DupeString('0', DefaultFormatSettings.CurrencyDecimals);
-  CurrStr := '';
-  for I := 1 to Length(DefaultFormatSettings.CurrencyString) do
-  begin
-    C := DefaultFormatSettings.CurrencyString[I];
-    if C in [',', '.'] then
-    begin
-      CurrStr := CurrStr + '''' + C + ''''
-    end
-    else CurrStr := CurrStr + C;
-  end;
-  if Length(CurrStr) > 0 then
-    case DefaultFormatSettings.CurrencyFormat of
-      0: Result := CurrStr + Result; { '$1' }
-      1: Result := Result + CurrStr; { '1$' }
-      2: Result := CurrStr + ' ' + Result; { '$ 1' }
-      3: Result := Result + ' ' + CurrStr; { '1 $' }
-    end;
-  Result := Format('%s;-%s', [Result, Result]);
-end;
-
-constructor TCurrencyEdit.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  ControlState := ControlState + [csCreating];
-  try
-//    ButtonWidth := 0;
-  finally
-    ControlState := ControlState - [csCreating];
-  end;
-end;
-
+initialization
+  RegisterPropertyToSkip( TCustomNumEdit, 'FormatOnEditing', 'This property depricated', '');
 end.
