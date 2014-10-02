@@ -114,12 +114,12 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
 
-    procedure EditKeyDown(var Key: word; Shift: TShiftState); override;
-    procedure EditKeyPress( var Key: char); override;
 {$IFDEF OLD_EDITBUTTON}
     procedure DoButtonClick (Sender: TObject); override;
 {$ELSE}
     procedure ButtonClick; override;
+    procedure EditKeyDown(var Key: word; Shift: TShiftState); override;
+    procedure EditKeyPress( var Key: char); override;
 {$ENDIF}
 
     function GetDefaultGlyphName: String; override;
@@ -788,6 +788,7 @@ begin
   inherited KeyPress(Key);
 end;
 
+{$IFNDEF OLD_EDITBUTTON}
 procedure TCustomRxDateEdit.EditKeyDown(var Key: word; Shift: TShiftState);
 begin
   if (Key in [VK_PRIOR, VK_NEXT, VK_LEFT, VK_UP, VK_RIGHT, VK_DOWN,
@@ -839,6 +840,7 @@ begin
   end;
   inherited EditKeyPress(Key);
 end;
+{$ENDIF}
 
 {$IFDEF OLD_EDITBUTTON}
 procedure TCustomRxDateEdit.DoButtonClick(Sender: TObject);
