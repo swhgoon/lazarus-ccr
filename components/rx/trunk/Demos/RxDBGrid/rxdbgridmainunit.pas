@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, rxmemds,
   DB, rxdbgrid, RxAboutDialog, RxIniPropStorage, RxDBGridPrintGrid,
   RxDBGridExportSpreadSheet, ExtCtrls, Buttons, Menus, ActnList, StdCtrls,
-  DBGrids, XMLPropStorage, types;
+  DBGrids, types;
 
 type
 

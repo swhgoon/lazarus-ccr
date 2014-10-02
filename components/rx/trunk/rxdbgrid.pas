@@ -257,19 +257,25 @@ type
 
   TRxColumnFooter = class(TPersistent)
   private
+    FIsDefaultFont: boolean;
     FLayout: TTextLayout;
     FOwner: TRxColumn;
     FAlignment: TAlignment;
     FDisplayFormat: string;
     FFieldName: string;
     FField:TField;
+    FFont: TFont;
     FValue: string;
     FValueType: TFooterValueType;
     FTestValue: double;
     FCountRec:integer;
+    procedure FontChanged(Sender: TObject);
+    function GetFont: TFont;
+    function IsFontStored: Boolean;
     procedure SetAlignment(const AValue: TAlignment);
     procedure SetDisplayFormat(const AValue: string);
     procedure SetFieldName(const AValue: string);
+    procedure SetFont(AValue: TFont);
     procedure SetLayout(const AValue: TTextLayout);
     procedure SetValue(const AValue: string);
     procedure SetValueType(const AValue: TFooterValueType);
@@ -285,11 +291,14 @@ type
     function ErrorTestValue: boolean;
   protected
     procedure UpdateTestValueFromVar(AValue:Variant);
+    property  IsDefaultFont: boolean read FIsDefaultFont;
   public
     constructor Create(Owner: TRxColumn);
+    destructor Destroy; override;
     property Owner: TRxColumn read FOwner;
     property NumericValue: double read FTestValue;
     function DisplayText: string;
+    procedure FillDefaultFont;
   published
     property Alignment: TAlignment read FAlignment write SetAlignment default
       taLeftJustify;
@@ -297,8 +306,8 @@ type
     property DisplayFormat: string read FDisplayFormat write SetDisplayFormat;
     property FieldName: string read FFieldName write SetFieldName;
     property Value: string read FValue write SetValue;
-    property ValueType: TFooterValueType
-      read FValueType write SetValueType default fvtNon;
+    property ValueType: TFooterValueType read FValueType write SetValueType default fvtNon;
+    property Font: TFont read GetFont write SetFont stored IsFontStored;
   end;
 
 
@@ -3482,6 +3491,10 @@ if ScrollBarIsVisible(SB_HORZ) then
         TxS.Alignment := C.Footer.Alignment;
         TxS.Layout := C.Footer.Layout;
         Canvas.TextStyle := TxS;
+        if not C.Footer.IsDefaultFont then
+          Canvas.Font:=C.Footer.Font
+        else
+          Canvas.Font:=Font;
         DrawCellText(i, 0, R, [], C.Footer.DisplayText);
       end;
     end;
@@ -5399,12 +5412,34 @@ begin
   FOwner.ColumnChanged;
 end;
 
+procedure TRxColumnFooter.FontChanged(Sender: TObject);
+begin
+  FisDefaultFont := False;
+  FOwner.ColumnChanged;
+end;
+
+function TRxColumnFooter.GetFont: TFont;
+begin
+  result := FFont;
+end;
+
+function TRxColumnFooter.IsFontStored: Boolean;
+begin
+  result := not FisDefaultFont;
+end;
+
 procedure TRxColumnFooter.SetFieldName(const AValue: string);
 begin
   if FFieldName = AValue then
     exit;
   FFieldName := AValue;
   FOwner.ColumnChanged;
+end;
+
+procedure TRxColumnFooter.SetFont(AValue: TFont);
+begin
+  if not FFont.IsEqual(AValue) then
+    FFont.Assign(AValue);
 end;
 
 procedure TRxColumnFooter.SetLayout(const AValue: TTextLayout);
@@ -5438,6 +5473,18 @@ begin
     fvtRecNo: Result := GetRecNo;
     else
       Result := '';
+  end;
+end;
+
+procedure TRxColumnFooter.FillDefaultFont;
+var
+  AGrid: TCustomGrid;
+begin
+  AGrid := FOwner.Grid;
+  if (AGrid<>nil) then
+  begin
+    FFont.Assign(AGrid.Font);
+    FIsDefaultFont := True;
   end;
 end;
 
@@ -5752,6 +5799,16 @@ begin
   FOwner := Owner;
   FTestValue := 0;
   FLayout := tlCenter;
+
+  FFont := TFont.Create;
+  FillDefaultFont;
+  FFont.OnChange := @FontChanged;
+end;
+
+destructor TRxColumnFooter.Destroy;
+begin
+  FreeThenNil(FFont);
+  inherited Destroy;
 end;
 
 { TFilterListCellEditor }
