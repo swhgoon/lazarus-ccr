@@ -264,7 +264,7 @@ type
 implementation
 
 
-uses CustApp, rxdconst, LazUTF8, dbconst, Variants, math;
+uses CustApp, rxdconst, LazUTF8, dbutils, dbconst, Variants, math;
 
 const
   ftBlobTypes = [ftBlob, ftMemo, ftGraphic, ftFmtMemo, ftParadoxOle,
@@ -1515,6 +1515,7 @@ begin
   CheckDataTypes(FieldDefs);
   CreateFields;
 end;
+(*
 procedure AssignRecord(Source, Dest: TDataSet; ByName: Boolean);
 var
   I: Integer;
@@ -1544,7 +1545,7 @@ begin
     end;
   end;
 end;
-
+*)
 function TRxMemoryData.LoadFromDataSet(Source: TDataSet; ARecordCount: Integer;
   Mode: TLoadMode): Integer;
 var
