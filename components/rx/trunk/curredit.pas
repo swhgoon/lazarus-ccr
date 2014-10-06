@@ -289,12 +289,14 @@ end;
 
 function TCustomNumEdit.GetValue: Extended;
 begin
-  if not (csDesigning in ComponentState) then
+  if (not (csDesigning in ComponentState)) and FFocusedDisplay then
+  begin
     try
       UpdateData;
     except
       FValue := FMinValue;
     end;
+  end;
   Result := FValue;
 end;
 
