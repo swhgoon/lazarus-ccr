@@ -305,9 +305,10 @@ begin
   begin
     if TForm(Sender).ModalResult = mrOk then
     begin
-     CanClose:=CheckCloseForm;
      if CanClose and Assigned(FOnCloseQuery) then
        FOnCloseQuery(Sender, CanClose);
+     if CanClose then
+       CanClose:=CheckCloseForm;
     end;
   end;
 end;
