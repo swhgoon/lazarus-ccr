@@ -58,6 +58,7 @@ type
     FFocused: Boolean;
     FZeroEmpty: Boolean;
     function GetAsInteger: Longint;
+    function GetIsNull: boolean;
     function GetText: string;
     function GetValue: Extended;
     procedure SetAsInteger(const AValue: Longint);
@@ -119,6 +120,7 @@ type
     property AsInteger: Longint read GetAsInteger write SetAsInteger;
     property DisplayText: string read GetDisplayText;
     property Value: Extended read GetValue write SetValue;
+    property IsNull:boolean read GetIsNull;
   published
     { Published declarations }
   end;
@@ -245,9 +247,14 @@ begin
   Result := Trunc(Value);
 end;
 
+function TCustomNumEdit.GetIsNull: boolean;
+begin
+  Result:=false;
+end;
+
 function TCustomNumEdit.GetDisplayText: string;
 begin
-  Result := FormatDisplayText(FValue);
+  Result := FormatDisplayText(Value);
 end;
 
 procedure TCustomNumEdit.Reset;
