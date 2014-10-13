@@ -114,7 +114,6 @@ type
     /// <summary>Pomocnicza bitmapa przekazywana na ¿yczenie elementom
     /// toolbara</summary>
     FTemporary: TBitmap;
-    FDelayRunTimer: TTimer;
 
     /// <summary>Tablica rectów "uchwytów" zak³adek</summary>
     FTabRects: array of T2DIntRect;
@@ -152,7 +151,6 @@ type
     FOnTabChanging: TSpkTabChangingEvent;
     FOnTabChanged: TNotifyEvent;
 
-    procedure DelayRunTimer(Sender: TObject);
   protected
     /// <summary>Instancja obiektu wygl¹du, przechowuj¹cego kolory i czcionki
     /// u¿ywane podczas renderowania komponentu</summary>
@@ -514,19 +512,6 @@ begin
 
   FTabIndex := -1;
   Color := clSkyBlue;
-
-  FDelayRunTimer := TTimer.Create(nil);
-  FDelayRunTimer.Interval := 36;
-  FDelayRunTimer.Enabled := False;
-  FDelayRunTimer.OnTimer := DelayRunTimer;
-end;
-
-procedure TSpkToolbar.DelayRunTimer(Sender: TObject);
-begin
-  SetMetricsInvalid;
-  SetBufferInvalid;
-  invalidate;
-  FDelayRunTimer.Enabled := False;
 end;
 
 procedure TSpkToolbar.DefineProperties(Filer: TFiler);
@@ -548,8 +533,6 @@ begin
   FBuffer.Free;
 
   FToolbarDispatch.Free;
-
-  FDelayRunTimer.Free;
 
   inherited Destroy;
 end;
@@ -1005,8 +988,8 @@ procedure TSpkToolbar.DoOnResize;
 begin
   inherited Height := TOOLBAR_HEIGHT;
 
-  FDelayRunTimer.Enabled := False;
-  FDelayRunTimer.Enabled := True;
+  SetMetricsInvalid;
+  SetBufferInvalid;
 
   if not (FInternalUpdating or FUpdating) then
     invalidate;
