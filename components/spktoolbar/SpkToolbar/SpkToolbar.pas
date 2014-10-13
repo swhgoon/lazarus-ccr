@@ -1657,6 +1657,8 @@ begin
   if FMetricsValid then
     exit;
 
+  FBuffer.Free;
+  FBuffer := TBitmap.Create;
   FBuffer.SetSize(self.Width, self.Height);
 
   // *** Zak³adki ***
