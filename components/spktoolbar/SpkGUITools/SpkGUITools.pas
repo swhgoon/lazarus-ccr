@@ -387,7 +387,7 @@ end;
 implementation
 
 uses
-  LCLIntf, IntfGraphics, Math, Themes;
+ types, LCLIntf, IntfGraphics, Math, Themes;
 
 { TSpkGUITools }
 
@@ -2909,16 +2909,21 @@ const
 var
   R: TRect;
   w: Integer;
+  sz: TSize;
   te: TThemedElementDetails;
 begin
-  w := GetSystemMetrics(SM_CYMENUCHECK);
-  R := Bounds(x, y, w, w);
   if ThemeServices.ThemesEnabled then begin
     te := ThemeServices.GetElementDetails(THEMED_FLAGS[AStyle, AState, ACheckboxState]);
+    sz := ThemeServices.GetDetailSize(te);
+    R := Bounds(x, y, sz.cx, sz.cy);
+    InflateRect(R, 1, 1);
     ThemeServices.DrawElement(ACanvas.Handle, te, R);
-  end else
+  end else begin
+    w := GetSystemMetrics(SM_CYMENUCHECK);
+    R := Bounds(x, y, w, w);
     DrawFrameControl(
       ACanvas.Handle, R, DFC_BUTTON, UNTHEMED_FLAGS[AStyle, AState]);
+  end;
 end;
 
 end.

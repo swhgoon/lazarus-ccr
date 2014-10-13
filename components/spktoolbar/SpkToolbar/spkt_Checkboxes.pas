@@ -79,7 +79,7 @@ type
 implementation
 
 uses
-  LCLType, LCLIntf, Math,
+  LCLType, LCLIntf, Math, Themes,
   SpkGraphTools, spkt_Const, spkt_Tools, spkt_Pane;
 
 
@@ -228,6 +228,7 @@ var
   FontColor: TColor;
   x, y: Integer;
   h: Integer;
+  te: TThemedElementDetails;
 begin
   if FToolbarDispatch = nil then
     exit;
@@ -296,12 +297,16 @@ begin
   end;
 
   // Checkbox
-  h := GetSystemMetrics(SM_CYMENUCHECK);
+  if ThemeServices.ThemesEnabled then begin
+    te := ThemeServices.GetElementDetails(tbCheckboxCheckedNormal);
+    h := ThemeServices.GetDetailSize(te).cy;
+  end else
+    h := GetSystemMetrics(SM_CYMENUCHECK);
   if (FGroupBehaviour in [gbContinuesGroup, gbEndsGroup]) then
     x := FButtonRect.Left + SMALLBUTTON_HALF_BORDER_WIDTH + SMALLBUTTON_PADDING
   else
     x := FButtonRect.Left + SMALLBUTTON_BORDER_WIDTH + SMALLBUTTON_PADDING;
-  y := FButtonRect.top + (FButtonRect.height - h) div 2;
+  y := FButtonRect.Top + (FButtonRect.Height - h) div 2;
 
   TGUITools.DrawCheckbox(
     ABuffer.Canvas,
