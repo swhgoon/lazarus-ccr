@@ -48,6 +48,8 @@ type TSpkBaseButton = class;
       function IsVisibleLinked: Boolean; override;
      end;
 
+     { TSpkBaseButton }
+
      TSpkBaseButton = class abstract(TSpkBaseItem)
      private
        FMouseHoverElement : TSpkMouseButtonElement;
@@ -96,6 +98,7 @@ type TSpkBaseButton = class;
 
      public
        constructor Create(AOwner : TComponent); override;
+       destructor Destroy; override;
 
        procedure MouseLeave; override;
        procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -293,6 +296,12 @@ begin
   {$ENDIF}
   FMouseHoverElement:=beNone;
   FMouseActiveElement:=beNone;
+end;
+
+destructor TSpkBaseButton.Destroy;
+begin
+  FreeAndNil(FActionLink);
+  inherited Destroy;
 end;
 
 procedure TSpkBaseButton.Click;
@@ -648,14 +657,14 @@ end;
 procedure TSpkBaseButton.SetAction(const Value: TBasicAction);
 begin
   if Value = nil then
-     begin
-     FActionLink.Free;
-     FActionLink := nil;
-     end
+  begin
+    FActionLink.Free;
+    FActionLink := nil;
+  end
   else
-     begin
-     if FActionLink = nil then
-        FActionLink := TSpkButtonActionLink.Create(self);
+  begin
+    if FActionLink = nil then
+      FActionLink := TSpkButtonActionLink.Create(self);
     FActionLink.Action := Value;
     FActionLink.OnChange := DoActionChange;
     ActionChange(Value, csLoading in Value.ComponentState);
