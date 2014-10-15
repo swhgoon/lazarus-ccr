@@ -1,7 +1,9 @@
 unit SpkToolbar;
 
 {$mode delphi}
-{.$Define EnhancedRecordSupport}
+
+{.$DEFINE EnhancedRecordSupport}
+{.$DEFINE DELAYRUNTIMER}
 
 (*******************************************************************************
 *                                                                              *
@@ -12,31 +14,6 @@ unit SpkToolbar;
 *             prawa autorskiego!                                               *
 *                                                                              *
 *******************************************************************************)
-
-{
-changes by Werner Pamler --> version 0.2 (c) 2012:
-* add TSpkCheckbox and TSpkRadiobutton (unit spkt_Checkboxes.pas)
-* apply ImageIndex when assigning an action
-* add property editor for image index
-  - use specialized ImageIndexPropertyEditor to link to the imagelist
-  - assign default values to ImageIndex properties
-  - use types TImageIndex instead of integer
-* make sure that properties (caption, imageindex etc) are updated when the
-  action changes
-* Fixed button state to change immediately after mouse-up from pressed to hover
-* Found bug in ComponentEditor form causing "Class not found" error: added tabs,
-  panes, or items were nameless. Assigning a name by FDesigner.UniqueName fixed
-  the issue.
-* Duplicate components after Cut & Paste because missing destruction of
-  components after deletion from internal list
-* Naming issue of components added by designer (counter starting at 2, not 1) fixed
-* Change default color of the SpkToolbar to clSkyBlue
-* add component icon
-* Add events for OnClick (Tab), and OnTabChanging and OnTabChange (Toolbar)
-
-- Still open: units of the added controls are not added to uses clause automatically
-  Note: add some other component to form and the missing units are added!
-}
 
 interface
 
@@ -114,6 +91,9 @@ type
     /// <summary>Pomocnicza bitmapa przekazywana na ¿yczenie elementom
     /// toolbara</summary>
     FTemporary: TBitmap;
+   {$IFDEF DELAYRUNTIMER}
+    FDelayRunTimer: TTimer;
+   {$ENDIF}
 
     /// <summary>Tablica rectów "uchwytów" zak³adek</summary>
     FTabRects: array of T2DIntRect;
@@ -150,6 +130,10 @@ type
 
     FOnTabChanging: TSpkTabChangingEvent;
     FOnTabChanged: TNotifyEvent;
+
+   {$IFDEF DELAYRUNTIMER}
+    procedure DelayRunTimer(Sender: TObject);
+   {$ENDIF}
 
   protected
     /// <summary>Instancja obiektu wygl¹du, przechowuj¹cego kolory i czcionki
@@ -377,7 +361,7 @@ type
 implementation
 
 uses
-  LCLIntf;
+  LCLIntf, Themes;
 
 { TSpkToolbarDispatch }
 
@@ -512,7 +496,24 @@ begin
 
   FTabIndex := -1;
   Color := clSkyBlue;
+
+ {$IFDEF DELAYRUNTIMER}
+  FDelayRunTimer := TTimer.Create(nil);
+  FDelayRunTimer.Interval := 36;
+  FDelayRunTimer.Enabled := False;
+  FDelayRunTimer.OnTimer := DelayRunTimer
+ {$ENDIF}
 end;
+
+{$IFDEF DELAYRUNTIMER}
+procedure TSpkToolbar.DelayRunTimer(Sender: TObject);
+begin
+  SetMetricsInvalid;
+  SetBufferInvalid;
+  invalidate;
+  FDelayRunTimer.Enabled := False;
+end;
+{$ENDIF}
 
 procedure TSpkToolbar.DefineProperties(Filer: TFiler);
 begin
@@ -533,6 +534,10 @@ begin
   FBuffer.Free;
 
   FToolbarDispatch.Free;
+
+ {$IFDEF DELAYRUNTIMER}
+  FDelayRunTimer.Free;
+ {$ENDIF}
 
   inherited Destroy;
 end;
@@ -969,7 +974,6 @@ begin
 end;
 
 procedure TSpkToolbar.Paint;
-
 begin
   // Jeœli trwa proces przebudowy (wewnêtrznej lub u¿ytkownika), walidacja metryk
   // i bufora nie jest przeprowadzana, jednak bufor jest rysowany w takiej
@@ -988,8 +992,13 @@ procedure TSpkToolbar.DoOnResize;
 begin
   inherited Height := TOOLBAR_HEIGHT;
 
+ {$IFDEF DELAYRUNTIMER}
+  FDelayRunTimer.Enabled := False;
+  FDelayRunTimer.Enabled := True;
+ {$ELSE}
   SetMetricsInvalid;
   SetBufferInvalid;
+ {$ENDIF}
 
   if not (FInternalUpdating or FUpdating) then
     invalidate;
@@ -1000,9 +1009,10 @@ end;
 procedure TSpkToolbar.EraseBackground(DC: HDC);
 begin
   // The correct implementation is doing nothing
-  //inherited;   // wp: this does call FillRect!
-  // "inherited" removed to fix issue #"0025047: spktoolbar blinking than using
-  // standart windows theme or using manifest file is off"
+  if ThemeServices.ThemesEnabled then
+    inherited;   // wp: this calls FillRect!
+  // "inherited" removed in case of no themes to fix issue #0025047 (flickering
+  // when using standard windows theme or when manifest file is off)
 end;
 
 procedure TSpkToolbar.SetBufferInvalid;
