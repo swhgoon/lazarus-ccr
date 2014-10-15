@@ -1000,7 +1000,9 @@ end;
 procedure TSpkToolbar.EraseBackground(DC: HDC);
 begin
   // The correct implementation is doing nothing
-  inherited;
+  //inherited;   // wp: this does call FillRect!
+  // "inherited" removed to fix issue #"0025047: spktoolbar blinking than using
+  // standart windows theme or using manifest file is off"
 end;
 
 procedure TSpkToolbar.SetBufferInvalid;
