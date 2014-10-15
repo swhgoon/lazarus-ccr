@@ -75,7 +75,7 @@ type
   //TRxDBGridAllowedOperations = set of TRxDBGridAllowedOperation;
 {$ENDIF}
 
-  TRxColumnOption = (coCustomizeVisible, coCustomizeWidth);
+  TRxColumnOption = (coCustomizeVisible, coCustomizeWidth, coFixDecimalSeparator);
   TRxColumnOptions = set of TRxColumnOption;
 
   TRxColumnEditButtonStyle = (ebsDropDownRx, ebsEllipsisRx, ebsGlyphRx, ebsUpDownRx,
@@ -666,17 +666,16 @@ type
 
     procedure DoTitleClick(ACol: longint; ACollumn: TRxColumn; Shift: TShiftState); virtual;
     procedure MouseMove(Shift: TShiftState; X, Y: integer); override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
     procedure KeyDown(var Key: word; Shift: TShiftState); override;
+    procedure KeyPress(var Key: char); override;
     procedure UTF8KeyPress(var UTF8Key: TUTF8Char); override;
     function CreateColumns: TGridColumns; override;
     procedure DrawCellBitmap(RxColumn: TRxColumn; aRect: TRect;
       aState: TGridDrawState; AImageIndex: integer); virtual;
     procedure SetEditText(ACol, ARow: longint; const Value: string); override;
-    //procedure CheckNewCachedSizes(var AGCache: TGridDataCache); override;
+
     procedure ColRowMoved(IsColumn: boolean; FromIndex, ToIndex: integer); override;
     procedure Paint; override;
     procedure UpdateActive; override;
@@ -694,8 +693,7 @@ type
     procedure SetQuickUTF8Search(AValue: string);
     procedure BeforeDel(DataSet: TDataSet);
     procedure BeforePo(DataSet: TDataSet);
-    procedure ErrorDel(DataSet: TDataSet; E: EDatabaseError;
-      var DataAction: TDataAction);
+    procedure ErrorDel(DataSet: TDataSet; E: EDatabaseError; var DataAction: TDataAction);
     procedure ErrorPo(DataSet: TDataSet; E: EDatabaseError; var DataAction: TDataAction);
     procedure OnFind(Sender: TObject);
     procedure OnFilterBy(Sender: TObject);
@@ -3946,6 +3944,15 @@ begin
     end;
     Key := 0;
   end;
+end;
+
+procedure TRxDBGrid.KeyPress(var Key: char);
+begin
+  inherited KeyPress(Key);
+  if Assigned(SelectedColumn) and Assigned(SelectedColumn.Field) and (SelectedColumn.Field.DataType in [ftFloat, ftCurrency]) and
+     (coFixDecimalSeparator in TRxColumn(SelectedColumn).Options) then
+    if (Key in [',', '.']) then
+      Key:=DefaultFormatSettings.DecimalSeparator
 end;
 
 function TRxDBGrid.CreateColumns: TGridColumns;
