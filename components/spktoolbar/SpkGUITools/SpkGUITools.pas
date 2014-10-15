@@ -1445,203 +1445,212 @@ end;
 
 class procedure TGUITools.DrawAARoundCorner(ABitmap: TBitmap; Point: T2DIntVector;
   Radius: integer; CornerPos: TCornerPos; Color: TColor);
-
-var CornerRect : T2DIntRect;
-    Center : T2DIntVector;
-    Line : PByte;
-    Ptr : PByte;
-    colorR, colorG, colorB : byte;
-    x, y : integer;
-    RadiusDist : double;
-    OrgCornerRect: T2DIntRect;
-    BitmapRect: T2DIntRect;
-    DestImg: TLazIntfImage;
-
+var
+  CornerRect: T2DIntRect;
+  Center: T2DIntVector;
+  Line: PByte;
+  Ptr: PByte;
+  colorR, colorG, colorB: byte;
+  x, y: integer;
+  RadiusDist: double;
+  OrgCornerRect: T2DIntRect;
+  BitmapRect: T2DIntRect;
+  cr, cg, cb: Byte;
 begin
-if ABitmap.PixelFormat<>pf24bit then
-   raise exception.create('TSpkGUITools.DrawAARoundCorner: Bitmapa musi byæ w trybie 24-bitowym!');
+  if ABitmap.PixelFormat <> pf24bit then
+    raise Exception.Create('TSpkGUITools.DrawAARoundCorner: Bitmapa musi byæ w trybie 24-bitowym!');
 
-// Sprawdzamy poprawnoœæ
-if Radius<1 then
-   exit;
-if (ABitmap.width=0) or (ABitmap.height=0) then
-   exit;
+  // Sprawdzamy poprawnoœæ
+  if Radius < 1 then
+    exit;
+  if (ABitmap.Width=0) or (ABitmap.Height=0) then
+    exit;
 
-{$IFDEF EnhancedRecordSupport}
-// �?ród³owy rect...
-OrgCornerRect:=T2DIntRect.create(Point.x,
-                                 Point.y,
-                                 Point.x + radius - 1,
-                                 Point.y + radius - 1);
+  {$IFDEF EnhancedRecordSupport}
+  // �?ród³owy rect...
+  OrgCornerRect := T2DIntRect.Create(Point.x,
+                                     Point.y,
+                                     Point.x + radius - 1,
+                                     Point.y + radius - 1);
 
-// ...przycinamy do rozmiarów bitmapy
-BitmapRect:=T2DIntRect.create(0, 0, ABitmap.width-1, ABitmap.height-1);
-{$ELSE}
-// �?ród³owy rect...
-OrgCornerRect.create(Point.x,
-                                 Point.y,
-                                 Point.x + radius - 1,
-                                 Point.y + radius - 1);
+  // ...przycinamy do rozmiarów bitmapy
+  BitmapRect := T2DIntRect.Create(0, 0, ABitmap.Width-1, ABitmap.Height-1);
+  {$ELSE}
+  // �?ród³owy rect...
+  OrgCornerRect.Create(Point.x,
+                       Point.y,
+                       Point.x + radius - 1,
+                       Point.y + radius - 1);
 
-// ...przycinamy do rozmiarów bitmapy
-BitmapRect.create(0, 0, ABitmap.width-1, ABitmap.height-1);
-{$ENDIF}
+  // ...przycinamy do rozmiarów bitmapy
+  BitmapRect.Create(0, 0, ABitmap.Width-1, ABitmap.Height-1);
+  {$ENDIF}
 
-if not(BitmapRect.intersectsWith(OrgCornerRect, CornerRect)) then
-   exit;
+  if not BitmapRect.intersectsWith(OrgCornerRect, CornerRect) then
+    exit;
 
-// Jeœli nie ma czego rysowaæ, wychodzimy
-if (CornerRect.left>CornerRect.right) or (CornerRect.top>CornerRect.bottom) then
-   exit;
+  // Jeœli nie ma czego rysowaæ, wychodzimy
+  if (CornerRect.Left > CornerRect.Right) or (CornerRect.Top > CornerRect.Bottom) then
+    exit;
 
-// Szukamy œrodka ³uku - zale¿nie od rodzaju naro¿nika
-{$IFDEF EnhancedRecordSupport}
-case CornerPos of
-     cpLeftTop: Center:=T2DIntVector.create(Point.x + radius - 1, Point.y + Radius - 1);
-     cpRightTop: Center:=T2DIntVector.create(Point.x, Point.y + Radius - 1);
-     cpLeftBottom: Center:=T2DIntVector.Create(Point.x + radius - 1, Point.y);
-     cpRightBottom: Center:=T2DIntVector.Create(Point.x, Point.y);
-end;
-{$ELSE}
-case CornerPos of
-     cpLeftTop: Center.create(Point.x + radius - 1, Point.y + Radius - 1);
-     cpRightTop: Center.create(Point.x, Point.y + Radius - 1);
-     cpLeftBottom: Center.Create(Point.x + radius - 1, Point.y);
-     cpRightBottom: Center.Create(Point.x, Point.y);
-end;
-{$ENDIF}
+  // Szukamy œrodka ³uku - zale¿nie od rodzaju naro¿nika
+  {$IFDEF EnhancedRecordSupport}
+  case CornerPos of
+    cpLeftTop:
+      Center := T2DIntVector.Create(Point.x + radius - 1, Point.y + Radius - 1);
+    cpRightTop:
+      Center := T2DIntVector.Create(Point.x, Point.y + Radius - 1);
+    cpLeftBottom:
+      Center := T2DIntVector.Create(Point.x + radius - 1, Point.y);
+    cpRightBottom:
+      Center := T2DIntVector.Create(Point.x, Point.y);
+  end;
+  {$ELSE}
+  case CornerPos of
+    cpLeftTop:
+      Center.Create(Point.x + radius - 1, Point.y + Radius - 1);
+    cpRightTop:
+      Center.Create(Point.x, Point.y + Radius - 1);
+    cpLeftBottom:
+      Center.Create(Point.x + radius - 1, Point.y);
+    cpRightBottom:
+      Center.Create(Point.x, Point.y);
+  end;
+  {$ENDIF}
 
-Color:=ColorToRGB(Color);
+  Color := ColorToRGB(Color);
 
-colorR:=GetRValue(Color);
-colorG:=GetGValue(Color);
-ColorB:=GetBValue(Color);
-DestImg := ABitmap.CreateIntfImage;
-for y := CornerRect.top to CornerRect.bottom do
+  colorR := GetRValue(Color);
+  colorG := GetGValue(Color);
+  colorB := GetBValue(Color);
+
+  for y := CornerRect.Top to CornerRect.Bottom do
+  begin
+    for x := CornerRect.Left to CornerRect.Right do
     begin
-    Line:=DestImg.GetDataLineStart(y);
-    for x := CornerRect.left to CornerRect.right do
-        begin
-        {$IFDEF EnhancedRecordSupport}
-        RadiusDist:=1 - abs((Radius - 1) - Center.DistanceTo(T2DIntVector.create(x, y)));
-        {$ELSE}
-        RadiusDist:=1 - abs((Radius - 1) - Center.DistanceTo(x, y));
-        {$ENDIF}
-        if RadiusDist>0 then
-           begin
-           Ptr:=pointer(PtrInt(Line) + 3*x);
-           Ptr^:=round(Ptr^ + (ColorB - Ptr^) * RadiusDist); inc(Ptr);
-           Ptr^:=round(Ptr^ + (ColorG - Ptr^) * RadiusDist); inc(Ptr);
-           Ptr^:=round(Ptr^ + (ColorR - Ptr^) * RadiusDist);
-           end;
-        end;
+      {$IFDEF EnhancedRecordSupport}
+      RadiusDist := 1 - abs((Radius - 1) - Center.DistanceTo(T2DIntVector.create(x, y)));
+      {$ELSE}
+      RadiusDist := 1 - abs((Radius - 1) - Center.DistanceTo(x, y));
+      {$ENDIF}
+      if RadiusDist > 0 then
+      begin
+        RedGreenBlue(ColorToRGB(ABitmap.Canvas.Pixels[x,y]), cr, cg, cb);
+        cb := round(cb + (ColorB - cb) * RadiusDist);
+        cg := round(cg + (ColorG - cg) * RadiusDist);
+        cr := round(cr + (ColorR - cr) * RadiusDist);
+        ABitmap.Canvas.Pixels[x,y] := RGBToColor(cr,cg,cb);
+      end;
     end;
-ABitmap.LoadFromIntfImage(DestImg);
-DestImg.Destroy;
+  end;
 end;
 
 class procedure TGUITools.DrawAARoundCorner(ABitmap: TBitmap;
   Point: T2DIntVector; Radius: integer; CornerPos: TCornerPos; Color: TColor;
   ClipRect: T2DIntRect);
-
-var CornerRect : T2DIntRect;
-    Center : T2DIntVector;
-    Line : PByte;
-    Ptr : PByte;
-    colorR, colorG, colorB : byte;
-    x, y : integer;
-    RadiusDist : double;
-    OrgCornerRect: T2DIntRect;
-    UnClippedCornerRect : T2DIntRect;
-    BitmapRect: T2DIntRect;
-    DestImg: TLazIntfImage;
-
+var
+  CornerRect: T2DIntRect;
+  Center: T2DIntVector;
+  Line: PByte;
+  Ptr: PByte;
+  colorR, colorG, colorB: byte;
+  x, y: integer;
+  RadiusDist: double;
+  OrgCornerRect: T2DIntRect;
+  UnClippedCornerRect : T2DIntRect;
+  BitmapRect: T2DIntRect;
+  cr,cb,cg: byte;
 begin
-if ABitmap.PixelFormat<>pf24bit then
-   raise exception.create('TSpkGUITools.DrawAARoundCorner: Bitmapa musi byæ w trybie 24-bitowym!');
+  if ABitmap.PixelFormat<>pf24bit then
+    raise exception.create('TSpkGUITools.DrawAARoundCorner: Bitmapa musi byæ w trybie 24-bitowym!');
 
-// Sprawdzamy poprawnoœæ
-if Radius<1 then
-   exit;
-if (ABitmap.width=0) or (ABitmap.height=0) then
-   exit;
+  // Sprawdzamy poprawnoœæ
+  if Radius < 1 then
+    exit;
+  if (ABitmap.Width=0) or (ABitmap.Height=0) then
+    exit;
 
-{$IFDEF EnhancedRecordSupport}
-// �?ród³owy rect...
-OrgCornerRect:=T2DIntRect.create(Point.x,
-                                 Point.y,
-                                 Point.x + radius - 1,
-                                 Point.y + radius - 1);
+  {$IFDEF EnhancedRecordSupport}
+  // �?ród³owy rect...
+  OrgCornerRect:=T2DIntRect.create(Point.x,
+                                   Point.y,
+                                   Point.x + radius - 1,
+                                   Point.y + radius - 1);
 
-// ...przycinamy do rozmiarów bitmapy
-BitmapRect:=T2DIntRect.create(0, 0, ABitmap.width-1, ABitmap.height-1);
-{$ELSE}
-// �?ród³owy rect...
-OrgCornerRect.create(Point.x,
-                                 Point.y,
-                                 Point.x + radius - 1,
-                                 Point.y + radius - 1);
+  // ...przycinamy do rozmiarów bitmapy
+  BitmapRect := T2DIntRect.create(0, 0, ABitmap.Width-1, ABitmap.Height-1);
+  {$ELSE}
+  // �?ród³owy rect...
+  OrgCornerRect.Create(Point.x,
+                       Point.y,
+                       Point.x + radius - 1,
+                       Point.y + radius - 1);
 
-// ...przycinamy do rozmiarów bitmapy
-BitmapRect.create(0, 0, ABitmap.width-1, ABitmap.height-1);
-{$ENDIF}
+  // ...przycinamy do rozmiarów bitmapy
+  BitmapRect.Create(0, 0, ABitmap.Width-1, ABitmap.Height-1);
+  {$ENDIF}
 
-if not(BitmapRect.intersectsWith(OrgCornerRect, UnClippedCornerRect)) then
-   exit;
+  if not BitmapRect.IntersectsWith(OrgCornerRect, UnClippedCornerRect) then
+    exit;
 
-// ClipRect
-if not(UnClippedCornerRect.IntersectsWith(ClipRect, CornerRect)) then
-   exit;
+  // ClipRect
+  if not UnClippedCornerRect.IntersectsWith(ClipRect, CornerRect) then
+    exit;
 
-// Jeœli nie ma czego rysowaæ, wychodzimy
-if (CornerRect.left>CornerRect.right) or (CornerRect.top>CornerRect.bottom) then
-   exit;
+  // Jeœli nie ma czego rysowaæ, wychodzimy
+  if (CornerRect.Left > CornerRect.Right) or (CornerRect.Top > CornerRect.Bottom) then
+    exit;
 
-// Szukamy œrodka ³uku - zale¿nie od rodzaju naro¿nika
-{$IFDEF EnhancedRecordSupport}
-case CornerPos of
-     cpLeftTop: Center:=T2DIntVector.create(Point.x + radius - 1, Point.y + Radius - 1);
-     cpRightTop: Center:=T2DIntVector.create(Point.x, Point.y + Radius - 1);
-     cpLeftBottom: Center:=T2DIntVector.Create(Point.x + radius - 1, Point.y);
-     cpRightBottom: Center:=T2DIntVector.Create(Point.x, Point.y);
-end;
-{$ELSE}
-case CornerPos of
-     cpLeftTop: Center.create(Point.x + radius - 1, Point.y + Radius - 1);
-     cpRightTop: Center.create(Point.x, Point.y + Radius - 1);
-     cpLeftBottom: Center.Create(Point.x + radius - 1, Point.y);
-     cpRightBottom: Center.Create(Point.x, Point.y);
-end;
-{$ENDIF}
+  // Szukamy œrodka ³uku - zale¿nie od rodzaju naro¿nika
+  {$IFDEF EnhancedRecordSupport}
+  case CornerPos of
+    cpLeftTop:
+      Center := T2DIntVector.Create(Point.x + radius - 1, Point.y + Radius - 1);
+    cpRightTop:
+      Center := T2DIntVector.Create(Point.x, Point.y + Radius - 1);
+    cpLeftBottom:
+      Center := T2DIntVector.Create(Point.x + radius - 1, Point.y);
+    cpRightBottom:
+      Center := T2DIntVector.Create(Point.x, Point.y);
+  end;
+  {$ELSE}
+  case CornerPos of
+    cpLeftTop:
+      Center.Create(Point.x + radius - 1, Point.y + Radius - 1);
+    cpRightTop:
+      Center.Create(Point.x, Point.y + Radius - 1);
+    cpLeftBottom:
+      Center.Create(Point.x + radius - 1, Point.y);
+    cpRightBottom:
+      Center.Create(Point.x, Point.y);
+  end;
+  {$ENDIF}
 
-Color:=ColorToRGB(Color);
+  Color := ColorToRGB(Color);
 
-colorR:=GetRValue(Color);
-colorG:=GetGValue(Color);
-ColorB:=GetBValue(Color);
+  colorR := GetRValue(Color);
+  colorG := GetGValue(Color);
+  colorB := GetBValue(Color);
 
-DestImg := ABitmap.CreateIntfImage;
-for y := CornerRect.top to CornerRect.bottom do
+  for y := CornerRect.Top to CornerRect.Bottom do
+  begin
+    for x := CornerRect.Left to CornerRect.Right do
     begin
-    Line:=DestImg.GetDataLineStart(y);
-    for x := CornerRect.left to CornerRect.right do
-        begin
-        {$IFDEF EnhancedRecordSupport}
-        RadiusDist:=1 - abs((Radius - 1) - Center.DistanceTo(T2DIntVector.create(x, y)));
-        {$ELSE}
-        RadiusDist:=1 - abs((Radius - 1) - Center.DistanceTo(x, y));
-        {$ENDIF}
-        if RadiusDist>0 then
-           begin
-           Ptr:=pointer(PtrInt(Line) + 3*x);
-           Ptr^:=round(Ptr^ + (ColorB - Ptr^) * RadiusDist); inc(Ptr);
-           Ptr^:=round(Ptr^ + (ColorG - Ptr^) * RadiusDist); inc(Ptr);
-           Ptr^:=round(Ptr^ + (ColorR - Ptr^) * RadiusDist);
-           end;
-        end;
+      {$IFDEF EnhancedRecordSupport}
+      RadiusDist := 1 - abs((Radius - 1) - Center.DistanceTo(T2DIntVector.create(x, y)));
+      {$ELSE}
+      RadiusDist := 1 - abs((Radius - 1) - Center.DistanceTo(x, y));
+      {$ENDIF}
+      if RadiusDist > 0 then
+      begin
+        RedGreenBlue(ColorToRGB(ABitmap.Canvas.Pixels[x,y]), cr, cg, cb);
+        cb := round(cb + (ColorB - cb) * RadiusDist);
+        cg := round(cg + (ColorG - cg) * RadiusDist);
+        cr := round(cr + (ColorR - cr) * RadiusDist);
+        ABitmap.Canvas.Pixels[x,y] := RGBToColor(cr,cg,cb);
+      end;
     end;
-ABitmap.LoadFromIntfImage(DestImg);
-DestImg.Destroy;
+  end;
 end;
 
 class procedure TGUITools.DrawAARoundCorner(ACanvas: TCanvas;
