@@ -12,307 +12,360 @@ uses
 const
   NUM_ZERO = 0.00000001;
 
+
 (*******************************************************************************
 *                                                                              *
-*                              Proste struktury                                *
+*                              Simple structure                                *
 *                                                                              *
 *******************************************************************************)
 
 type
-  // WskaŸnik do tablicy TRGBTriple
+  // Pointer to an array of TRGBTriple
   PRGBTripleArray = ^TRGBTripleArray;
-  // Tablica TRGBTriple (u¿ywana podczas operacji ze ScanLine)
+  // Array of TRGBTriple records
   TRGBTripleArray = array[word] of TRGBTriple;
 
   THSLTriple = record
-               H, S, L : extended;
-               end;
+    H, S, L: extended;
+  end;
 
-  // Rodzaj gradientu
+  // Gradient types
   TGradientType = (gtVertical, gtHorizontal);
-  // Rodzaj linii gradientowej (miejsce rozmycia)
+  // Line gradient types
   TGradientLineShade = (lsShadeStart, lsShadeEnds, lsShadeCenter, lsShadeEnd);
-  // Rodzaj linii gradientowej (wypuk³oœæ)
+  // Line gradient types (3D)
   TGradient3dLine = (glRaised, glLowered);
+
 
 (*******************************************************************************
 *                                                                              *
-*                              Klasy narzêdziowe                               *
+*                               Utility classes                                *
 *                                                                              *
 *******************************************************************************)
 
   TColorTools = class
   public
-    class function Darken(kolor : TColor; percentage : byte) : TColor;
-    class function Brighten(kolor : TColor; percentage : byte) : TColor;
-    class function Shade(kol1,kol2 : TColor; percentage : byte) : TColor; overload;
-    class function Shade(kol1,kol2 : TColor; Step : extended) : TColor; overload;
-    class function AddColors(c1, c2 : TColor) : TColor;
-    class function MultiplyColors(c1, c2 : TColor) : TColor;
-    class function MultiplyColor(color : TColor; scalar : integer) : TColor; overload;
-    class function MultiplyColor(color : TColor; scalar : extended) : TColor; overload;
-    class function percent(min, pos, max : integer) : byte;
-    class function RGB2HSL(ARGB : TRGBTriple) : THSLTriple;
-    class function HSL2RGB(AHSL : THSLTriple) : TRGBTriple;
-    class function RgbTripleToColor(ARgbTriple : TRGBTriple) : TColor;
-    class function ColorToRgbTriple(AColor : TColor) : TRGBTriple;
-    class function ColorToGrayscale(AColor : TColor) : TColor;
+    class function Darken(AColor: TColor; APercentage: byte): TColor;
+    class function Brighten(AColor: TColor; APercentage: byte): TColor;
+    class function Shade(AColor1, AColor2: TColor; APercentage: byte): TColor; overload;
+    class function Shade(AColor1, AColor2: TColor; AStep: extended): TColor; overload;
+    class function AddColors(AColor1, AColor2: TColor): TColor;
+    class function MultiplyColors(AColor1, AColor2: TColor): TColor;
+    class function MultiplyColor(AColor: TColor; AScalar: integer): TColor; overload;
+    class function MultiplyColor(AColor: TColor; AScalar: extended): TColor; overload;
+    class function percent(AMin, APos, AMax: integer): byte;
+    class function RGB2HSL(ARGB: TRGBTriple): THSLTriple;
+    class function HSL2RGB(AHSL: THSLTriple): TRGBTriple;
+    class function RgbTripleToColor(ARgbTriple: TRGBTriple): TColor;
+    class function ColorToRgbTriple(AColor: TColor): TRGBTriple;
+    class function ColorToGrayscale(AColor: TColor): TColor;
   end;
 
   TGradientTools = class
   public
-    class procedure HGradient(canvas : TCanvas; cStart,cEnd : TColor; rect : T2DIntRect); overload;
-    class procedure HGradient(canvas : TCanvas; cStart,cEnd : TColor; p1, p2 : TPoint); overload;
-    class procedure HGradient(canvas : TCanvas; cStart,cEnd : TColor; x1,y1,x2,y2 : integer); overload;
+    class procedure HGradient(ACanvas: TCanvas; cStart,cEnd: TColor; ARect: T2DIntRect); overload;
+    class procedure HGradient(ACanvas: TCanvas; cStart,cEnd: TColor; p1, p2: TPoint); overload;
+    class procedure HGradient(ACanvas: TCanvas; cStart,cEnd: TColor; x1,y1,x2,y2: integer); overload;
 
-    class procedure VGradient(canvas : TCanvas; cStart,cEnd : TColor; rect : T2DIntRect); overload;
-    class procedure VGradient(canvas : TCanvas; cStart,cEnd : TColor; p1, p2 : TPoint); overload;
-    class procedure VGradient(canvas : TCanvas; cStart,cEnd : TColor; x1,y1,x2,y2 : integer); overload;
+    class procedure VGradient(ACanvas: TCanvas; cStart,cEnd: TColor; ARect: T2DIntRect); overload;
+    class procedure VGradient(ACanvas: TCanvas; cStart,cEnd: TColor; p1, p2: TPoint); overload;
+    class procedure VGradient(ACanvas: TCanvas; cStart,cEnd: TColor; x1,y1,x2,y2: integer); overload;
 
-    class procedure Gradient(canvas : TCanvas; cStart,cEnd : TColor; rect : T2DIntRect; GradientType : TGradientType); overload;
-    class procedure Gradient(canvas : TCanvas; cStart,cEnd : TColor; p1, p2 : TPoint; GradientType : TGradientType); overload;
-    class procedure Gradient(canvas : TCanvas; cStart,cEnd : TColor; x1,y1,x2,y2 : integer; GradientType : TGradientType); overload;
+    class procedure Gradient(ACanvas: TCanvas; cStart,cEnd: TColor; ARect: T2DIntRect; AGradientType : TGradientType); overload;
+    class procedure Gradient(ACanvas: TCanvas; cStart,cEnd: TColor; p1, p2: TPoint; AGradientType : TGradientType); overload;
+    class procedure Gradient(ACanvas: TCanvas; cStart,cEnd: TColor; x1,y1,x2,y2: integer; AGradientType : TGradientType); overload;
 
-    class procedure HGradientLine(canvas : TCanvas; cBase, cShade : TColor; x1, x2 , y : integer; ShadeMode : TGradientLineShade);
-    class procedure VGradientLine(canvas : TCanvas; cBase, cShade : TColor; x, y1 , y2 : integer; ShadeMode : TGradientLineShade);
+    class procedure HGradientLine(ACanvas: TCanvas; cBase, cShade: TColor; x1, x2, y: integer; ShadeMode: TGradientLineShade);
+    class procedure VGradientLine(ACanvas: TCanvas; cBase, cShade: TColor; x, y1, y2: integer; ShadeMode: TGradientLineShade);
 
-    class procedure HGradient3dLine(canvas : TCanvas; x1,x2,y : integer; ShadeMode : TGradientLineShade; A3dKind : TGradient3dLine = glLowered);
-    class procedure VGradient3dLine(canvas : TCanvas; x,y1,y2 : integer; ShadeMode : TGradientLineShade; A3dKind : TGradient3dLine = glLowered);
+    class procedure HGradient3dLine(ACanvas: TCanvas; x1,x2,y: integer; ShadeMode: TGradientLineShade; A3dKind: TGradient3dLine = glLowered);
+    class procedure VGradient3dLine(ACanvas: TCanvas; x,y1,y2: integer; ShadeMode: TGradientLineShade; A3dKind: TGradient3dLine = glLowered);
   end;
 
   TTextTools = class
   public
-    class procedure OutlinedText(Canvas : TCanvas; x, y : integer; const text : string);
+    class procedure OutlinedText(ACanvas: TCanvas; x, y: integer; const AText: string);
   end;
 
 implementation
 
+type
+  TRgbColor = packed record
+    R,G,B,A: Byte;
+  end;
+
+
 { TColorTools }
 
-class function TColorTools.Darken(kolor : TColor; percentage : byte) : TColor;
-
-var r,g,b : byte;
-
+class function TColorTools.Darken(AColor: TColor; APercentage: byte): TColor;
+var
+  c: TRGBColor;
+  f: extended;
 begin
-r:=round(GetRValue(ColorToRGB(kolor))*(100-percentage)/100);
-g:=round(GetGValue(ColorToRGB(kolor))*(100-percentage)/100);
-b:=round(GetBValue(ColorToRGB(kolor))*(100-percentage)/100);
-result:=rgb(r,g,b);
+  c := TRGBColor(ColorToRGB(AColor));
+  f := (100 - APercentage) / 100;
+  result := rgb(
+    round(c.R * f),
+    round(c.G * f),
+    round(c.B * f)
+  );
 end;
 
-class function TColorTools.Brighten(kolor : TColor; percentage : byte) : TColor;
-
-var r,g,b : byte;
-
+class function TColorTools.Brighten(AColor: TColor; APercentage: byte): TColor;
+var
+  c: TRgbColor;
+  p: Extended;
 begin
-r:=round(GetRValue(ColorToRGB(kolor))+( (255-GetRValue(ColorToRGB(kolor)))*(percentage/100) ));
-g:=round(GetGValue(ColorToRGB(kolor))+( (255-GetGValue(ColorToRGB(kolor)))*(percentage/100) ));
-b:=round(GetBValue(ColorToRGB(kolor))+( (255-GetBValue(ColorToRGB(kolor)))*(percentage/100) ));
-result:=rgb(r,g,b);
+  c := TRgbColor(ColorToRGB(AColor));
+  p := APercentage/100;
+  result := rgb(
+    round(c.R + (255-c.R)*p),
+    round(c.G + (255-c.G)*p),
+    round(c.B + (255-c.B)*p)
+  );
 end;
 
-class function TColorTools.Shade(kol1,kol2 : TColor; percentage : byte) : TColor;
-
-var r,g,b : byte;
-
+class function TColorTools.Shade(AColor1, AColor2: TColor;
+  APercentage: byte): TColor;
+var
+  c1, c2: TRgbColor;
+  Step: Extended;  // percentage as floating point number
 begin
-r:=round(GetRValue(ColorToRGB(kol1))+( (GetRValue(ColorToRGB(kol2))-GetRValue(ColorToRGB(kol1)))*(percentage/100) ));
-g:=round(GetGValue(ColorToRGB(kol1))+( (GetGValue(ColorToRGB(kol2))-GetGValue(ColorToRGB(kol1)))*(percentage/100) ));
-b:=round(GetBValue(ColorToRGB(kol1))+( (GetBValue(ColorToRGB(kol2))-GetBValue(ColorToRGB(kol1)))*(percentage/100) ));
-result:=rgb(r,g,b);
+  c1 := TRGBColor(ColorToRGB(AColor1));
+  c2 := TRGBColor(ColorToRGB(AColor2));
+  Step := APercentage / 100;
+  result := rgb(
+    round(c1.R + (c2.R - c1.R) * Step),
+    round(c1.G + (c2.G - c1.G) * Step),
+    round(c1.B + (c2.B - c1.B) * Step)
+  );
 end;
 
-class function TColorTools.Shade(kol1,kol2 : TColor; Step : extended) : TColor;
-
-var r,g,b : byte;
-
+class function TColorTools.Shade(AColor1, AColor2: TColor; AStep: extended): TColor;
+var
+  c1, c2: TRgbColor;
 begin
-r:=round(GetRValue(ColorToRGB(kol1))+( (GetRValue(ColorToRGB(kol2))-GetRValue(ColorToRGB(kol1)))*(Step) ));
-g:=round(GetGValue(ColorToRGB(kol1))+( (GetGValue(ColorToRGB(kol2))-GetGValue(ColorToRGB(kol1)))*(Step) ));
-b:=round(GetBValue(ColorToRGB(kol1))+( (GetBValue(ColorToRGB(kol2))-GetBValue(ColorToRGB(kol1)))*(Step) ));
-result:=rgb(r,g,b);
+  c1 := TRgbColor(ColorToRGB(AColor1));
+  c2 := TRgbColor(ColorToRGB(AColor2));
+  result := rgb(
+    round(c1.R + (c2.R - c1.R) * AStep),
+    round(c1.G + (c2.G - c1.G) * AStep),
+    round(c1.B + (c2.B - c1.B) * AStep)
+  );
 end;
 
-class function TColorTools.AddColors(c1, c2 : TColor) : TColor;
-
+class function TColorTools.AddColors(AColor1, AColor2: TColor): TColor;
+var
+  c1, c2: TRgbColor;
 begin
-result:=rgb(max( 0,min( 255,GetRValue(c1)+GetRValue(c2) ) ),
-            max( 0,min( 255,GetGValue(c1)+GetGValue(c2) ) ),
-            max( 0,min( 255,GetBValue(c1)+GetBValue(c2) ) ));
+  c1 := TRgbColor(ColorToRGB(AColor1));
+  c2 := TRgbColor(ColorToRGB(AColor2));
+  result := rgb(
+    max(0, min(255, c1.R + c2.R)),
+    max(0, min(255, c1.G + c2.G)),
+    max(0, min(255, c1.B + c2.B))
+  );
 end;
 
-class function TColorTools.MultiplyColors(c1, c2 : TColor) : TColor;
-
+class function TColorTools.MultiplyColors(AColor1, AColor2: TColor): TColor;
+var
+  c1, c2: TRgbColor;
 begin
-result:=rgb(max( 0,min( 255,GetRValue(c1)*GetRValue(c2) ) ),
-            max( 0,min( 255,GetGValue(c1)*GetGValue(c2) ) ),
-            max( 0,min( 255,GetBValue(c1)*GetBValue(c2) ) ));
+  c1 := TRgbColor(ColorToRGB(AColor1));
+  c2 := TRgbColor(ColorToRGB(AColor2));
+  result := rgb(
+    max(0, min(255, c1.R * c2.R)),
+    max(0, min(255, c1.G * c2.G)),
+    max(0, min(255, c1.B * c2.B))
+  );
 end;
 
-class function TColorTools.MultiplyColor(color : TColor; scalar : integer) : TColor;
-
+class function TColorTools.MultiplyColor(AColor: TColor; AScalar: integer): TColor;
+var
+  c: TRgbColor;
 begin
-result:=rgb(max( 0,min( 255,GetRValue(color)*scalar ) ),
-            max( 0,min( 255,GetGValue(color)*scalar ) ),
-            max( 0,min( 255,GetBValue(color)*scalar ) ));
+  c := TRgbColor(ColorToRGB(AColor));
+  result := rgb(
+    max(0, min(255, c.R * AScalar)),
+    max(0, min(255, c.G * AScalar)),
+    max(0, min(255, c.B * AScalar))
+  );
 end;
 
-class function TColorTools.MultiplyColor(color : TColor; scalar : extended) : TColor;
-
+class function TColorTools.MultiplyColor(AColor: TColor; AScalar: extended): TColor;
+var
+  c: TRgbColor;
 begin
-result:=rgb(max( 0,min( 255,round(GetRValue(color)*scalar) ) ),
-            max( 0,min( 255,round(GetGValue(color)*scalar) ) ),
-            max( 0,min( 255,round(GetBValue(color)*scalar) ) ));
+  c := TRgbColor(ColorToRGB(AColor));
+  result := rgb(
+    max(0, min(255, round(c.R * AScalar))),
+    max(0, min(255, round(c.G * AScalar))),
+    max(0, min(255, round(c.B * AScalar)))
+  );
 end;
 
-class function TColorTools.Percent(min, pos, max : integer) : byte;
-
+class function TColorTools.Percent(AMin, APos, AMax: integer): byte;
 begin
-if max=min then result:=max else
-   result:=round((pos-min)*100/(max-min));
+  if AMax = AMin then
+    result := AMax    // wp: is this correct? Shouldn't this be a value between a and 100?
+  else
+    result := round((APos - AMin) * 100 / (AMax - AMin));
 end;
 
-{.$MESSAGE WARN 'Porównywanie liczb rzeczywistych? Trzeba poprawiæ'}
-class function TColorTools.RGB2HSL(ARGB : TRGBTriple) : THSLTriple;
-
-var RGBmin, RGBmax : extended;
-    R, G, B : extended;
-    H, S, L : extended;
-
+{.$MESSAGE WARN 'Comparing real numbers? This has to be corrected.'}
+class function TColorTools.RGB2HSL(ARGB: TRGBTriple): THSLTriple;
+var
+  RGBmin, RGBmax, RGBrange: extended;
+  R, G, B: extended;
+  H, S, L: extended;
 begin
-R:=ARGB.rgbtRed/255;
-G:=ARGB.rgbtGreen/255;
-B:=ARGB.rgbtBlue/255;
+  R := ARGB.rgbtRed/255;
+  G := ARGB.rgbtGreen/255;
+  B := ARGB.rgbtBlue/255;
 
-RGBmin:=min(R,min(G,B));
-RGBmax:=max(R,min(G,B));
+  RGBmin := min(R, min(G, B));
+  RGBmax := max(R, min(G, B));
+  RGBrange := RGBmax - RGBmin;
 
-H:=0;
-if RGBmax=RGBmin then
-   begin
-   // H jest nieoznaczone, ale przyjmijmy zero dla sensownoœci obliczeñ
-   H:=0;
-   end else
-if (R=RGBmax) and (G>=B) then
-   begin
-   H:=(pi/3)*((G-B)/(RGBmax-RGBmin))+0;
-   end else
-if (R=RGBmax) and (G<B) then
-   begin
-   H:=(pi/3)*((G-B)/(RGBmax-RGBmin))+(2*pi);
-   end else
-if (G=RGBmax) then
-   begin
-   H:=(pi/3)*((B-R)/(RGBmax-RGBmin))+(2*pi/3);
-   end else
-if (B=RGBmax) then
-   begin
-   H:=(pi/3)*((R-G)/(RGBmax-RGBmin))+(4*pi/3);
-   end;
+  H := 0;
+  if RGBmax = RGBmin then
+    H := 0
+  else
+  if (R = RGBmax) and (G >= B) then
+    H := pi/3 * (G-B) / RGBrange + 0
+  else
+  if (R = RGBmax) and (G < B) then
+    H := pi/3 * (G-B) / RGBrange + 2*pi
+  else
+  if (G = RGBmax) then
+    H := pi/3 * (B-R) / RGBrange + 2*pi/3
+  else
+  if (B = RGBmax) then
+    H := pi/3 * (R-G) / RGBrange + 4*pi/3;
 
-L:=(RGBmax+RGBmin)/2;
+  L := RGBrange / 2;
 
-S:=0;
-if (L<NUM_ZERO) or (rgbMin=rgbMax) then
-   begin
-   S:=0;
-   end else
-if (L<=0.5) then
-   begin
-   S:=((RGBmax-RGBmin)/(2*L));
-   end else
-if (L>0.5) then
-   begin
-   S:=((RGBmax-RGBmin)/(2-2*L));
-   end;
+  S:=0;
+  if (L < NUM_ZERO) or (rgbMin = rgbMax) then
+    S := 0
+  else
+  if (L <= 0.5) then
+    S := RGBrange / (2*L)
+  else
+  if (L > 0.5) then
+    S := RGBrange / (2-2*L);
 
-result.H:=H/(2*pi);
-result.S:=S;
-result.L:=L;
+  result.H := H / (2*pi);
+  result.S := S;
+  result.L := L;
 end;
 
-class function TColorTools.HSL2RGB(AHSL : THSLTriple) : TRGBTriple;
+class function TColorTools.HSL2RGB(AHSL: THSLTriple): TRGBTriple;
+var
+  R, G, B: extended;
+  TR, TG, TB: extended;
+  Q, P: extended;
 
-var R, G, B : extended;
-    TR, TG, TB : extended;
-    Q, P : extended;
-
-  function ProcessColor(Tc : extended) : extended;
-
+  function ProcessColor(c: extended): extended;
   begin
-  if (Tc<(1/6)) then
-     result:=P+((Q-P)*6.0*Tc) else
-  if (Tc<(1/2)) then
-     result:=Q else
-  if (Tc<(2/3)) then
-     result:=P+((Q-P)*((2/3)-Tc)*6.0) else
-     result:=P;
+    if (c < 1/6) then
+      result := P + (Q - P) * 6.0 * c
+    else
+    if (c < 1/2) then
+      result := Q
+    else
+    if (c < 2/3) then
+      result := P + (Q - P) * (2/3 - c) * 6.0
+    else
+      result := P;
   end;
 
 begin
-if AHSL.S<NUM_ZERO then
-   begin
-   R:=AHSL.L;
-   G:=AHSL.L;
-   B:=AHSL.L;
-   end else
-       begin
-       if (AHSL.L<0.5) then
-          Q:=AHSL.L*(AHSL.S+1.0) else
-          Q:=AHSL.L+AHSL.S-(AHSL.L*AHSL.S);
+  if AHSL.S < NUM_ZERO then
+  begin
+    R := AHSL.L;
+    G := AHSL.L;
+    B := AHSL.L;
+  end else
+  begin
+    if (AHSL.L < 0.5) then
+      Q := AHSL.L * (AHSL.S + 1.0)
+    else
+      Q := AHSL.L + AHSL.S - AHSL.L*AHSL.S;
 
-       P:=2.0*AHSL.L-Q;
+    P := 2.0*AHSL.L - Q;
 
-       TR:=AHSL.H+(1/3);
-       TG:=AHSL.H;
-       TB:=AHSL.H-(1/3);
+    TR := AHSL.H + 1/3;
+    TG := AHSL.H;
+    TB := AHSL.H - 1/3;
 
-       if (TR<0) then TR:=TR+1 else
-          if (TR>1) then TR:=TR-1;
+    if (TR < 0) then
+      TR := TR + 1
+    else
+    if (TR > 1) then
+      TR := TR - 1;
 
-       if (TG<0) then TG:=TG+1 else
-          if (TG>1) then TG:=TG-1;
+    if (TG < 0) then
+      TG := TG + 1
+    else
+    if (TG > 1) then
+      TG := TG - 1;
 
-       if (TB<0) then TB:=TB+1 else
-          if (TB>1) then TB:=TB-1;
+    if (TB < 0) then
+      TB := TB + 1
+    else
+    if (TB > 1) then
+      TB := TB - 1;
 
-       R:=ProcessColor(TR);
-       G:=ProcessColor(TG);
-       B:=ProcessColor(TB);
-       end;
+    R := ProcessColor(TR);
+    G := ProcessColor(TG);
+    B := ProcessColor(TB);
+  end;
 
-result.rgbtRed:=round(255*R);
-result.rgbtGreen:=round(255*G);
-result.rgbtBlue:=round(255*B);
+  result.rgbtRed   := round(255*R);
+  result.rgbtGreen := round(255*G);
+  result.rgbtBlue  := round(255*B);
 end;
 
-class function TColorTools.RgbTripleToColor(ARgbTriple : TRGBTriple) : TColor;
-
+class function TColorTools.RgbTripleToColor(ARgbTriple: TRGBTriple) : TColor;
 begin
-result:=rgb(ARgbTriple.rgbtRed,ARgbTriple.rgbtGreen,ARgbTriple.rgbtBlue);
+  result := rgb(
+    ARgbTriple.rgbtRed,
+    ARgbTriple.rgbtGreen,
+    ARgbTriple.rgbtBlue
+  );
 end;
 
 class function TColorTools.ColorToGrayscale(AColor: TColor): TColor;
-
-var avg : byte;
-
+var
+  c: TRgbColor;
+  avg : byte;
 begin
-avg:=(GetRValue(Acolor) + GetGValue(AColor) + GetBValue(AColor)) div 3;
-result:=rgb(avg,avg,avg);
+  c := TRgbColor(ColorToRGB(AColor));
+  avg := (c.R + c.G + c.B) div 3;
+  result := rgb(avg, avg, avg);
 end;
 
-class function TColorTools.ColorToRgbTriple(AColor : TColor) : TRGBTriple;
-
+class function TColorTools.ColorToRgbTriple(AColor: TColor): TRGBTriple;
+var
+  c: TRgbColor;
 begin
-result.rgbtRed:=GetRValue(AColor);
-result.rgbtGreen:=GetGValue(AColor);
-result.rgbtBlue:=GetBValue(AColor);
+  c := TRgbColor(ColorToRGB(AColor));
+  result.rgbtRed   := c.R;
+  result.rgbtGreen := c.G;
+  result.rgbtBlue  := c.B;
 end;
+
 
 { TGradientTools }
 
-class procedure TGradientTools.HGradient(canvas : TCanvas; cStart,cEnd : TColor; rect : T2DIntRect);
+class procedure TGradientTools.HGradient(ACanvas: TCanvas; cStart, cEnd: TColor;
+  ARect: T2DIntRect);
+begin
+  ACanvas.GradientFill(ARect.ForWinAPI,cStart, cEnd, gdHorizontal);
+end;
 
+{  -- old version ...
 var vert : array[0..1] of TRIVERTEX;
     gRect : GRADIENTRECT;
     Col1,Col2 : TColor;
@@ -343,20 +396,27 @@ with vert[1] do
 gRect.UpperLeft:=0;
 gRect.LowerRight:=1;
 GradientFill(canvas.Handle,@vert,2,@gRect,1,GRADIENT_FILL_RECT_H);
-end;
+end;   }
 
-class procedure TGradientTools.HGradient(canvas : TCanvas; cStart,cEnd : TColor; p1, p2 : TPoint);
-
+class procedure TGradientTools.HGradient(ACanvas: TCanvas; cStart, cEnd: TColor;
+  p1, p2: TPoint);
 begin
-HGradient(canvas,cstart,cend,rect(p1.x,p1.y,p2.x,p2.y));
+  HGradient(ACanvas, cStart, cEnd, rect(p1.x,p1.y,p2.x,p2.y));
 end;
 
-class procedure TGradientTools.HGradient(canvas : TCanvas; cStart,cEnd : TColor; x1,y1,x2,y2 : integer);
-
+class procedure TGradientTools.HGradient(ACanvas: TCanvas; cStart, cEnd: TColor;
+  x1,y1,x2,y2: integer);
 begin
-HGradient(canvas,cstart,cend,rect(x1,y1,x2,y2));
+  HGradient(ACanvas, cStart, cEnd, rect(x1,y1,x2,y2));
 end;
 
+class procedure TGradientTools.VGradient(ACanvas: TCanvas; cStart, cEnd: TColor;
+  ARect: T2DIntRect);
+begin
+  ACanvas.GradientFill(ARect.ForWinAPI, cStart, cEnd, gdVertical);
+end;
+
+{  --- old version...
 class procedure TGradientTools.VGradient(canvas : TCanvas; cStart,cEnd : TColor; rect : T2DIntRect);
 
 var vert : array[0..1] of TRIVERTEX;
@@ -389,148 +449,164 @@ with vert[1] do
 gRect.UpperLeft:=0;
 gRect.LowerRight:=1;
 GradientFill(canvas.Handle,@vert,2,@gRect,1,GRADIENT_FILL_RECT_V);
-end;
+end;           }
 
-class procedure TGradientTools.VGradient(canvas : TCanvas; cStart,cEnd : TColor; p1, p2 : TPoint);
-
+class procedure TGradientTools.VGradient(ACanvas: TCanvas; cStart, cEnd: TColor;
+  p1, p2: TPoint);
 begin
-VGradient(canvas,cstart,cend,rect(p1.x,p1.y,p2.x,p2.y));
+  VGradient(ACanvas, cStart, cEnd, rect(p1.x,p1.y,p2.x,p2.y));
 end;
 
-class procedure TGradientTools.VGradient(canvas : TCanvas; cStart,cEnd : TColor; x1,y1,x2,y2 : integer); 
-
+class procedure TGradientTools.VGradient(ACanvas: TCanvas; cStart, cEnd: TColor;
+  x1,y1,x2,y2: integer);
 begin
-VGradient(canvas,cstart,cend,rect(x1,y1,x2,y2));
+  VGradient(ACanvas, cStart, cEnd, rect(x1,y1,x2,y2));
 end;
 
-class procedure TGradientTools.Gradient(canvas : TCanvas; cStart,cEnd : TColor; rect : T2DIntRect; GradientType : TGradientType);
-
+class procedure TGradientTools.Gradient(ACanvas: TCanvas; cStart, cEnd: TColor;
+  ARect: T2DIntRect; AGradientType: TGradientType);
 begin
-if GradientType=gtVertical then VGradient(canvas, cStart, cEnd, rect) else
-   HGradient(canvas, cStart, cEnd, rect);
+  if AGradientType = gtVertical then
+    VGradient(ACanvas, cStart, cEnd, ARect)
+  else
+    HGradient(ACanvas, cStart, cEnd, ARect);
 end;
 
-class procedure TGradientTools.Gradient(canvas : TCanvas; cStart,cEnd : TColor; p1, p2 : TPoint; GradientType : TGradientType);
-
+class procedure TGradientTools.Gradient(ACanvas: TCanvas; cStart, cEnd: TColor;
+  p1, p2: TPoint; AGradientType: TGradientType);
 begin
-if GradientType=gtVertical then VGradient(canvas, cStart, cEnd, p1, p2) else
-   HGradient(canvas, cStart, cEnd, p1, p2);
+  if AGradientType = gtVertical then
+    VGradient(ACanvas, cStart, cEnd, p1, p2)
+  else
+    HGradient(ACanvas, cStart, cEnd, p1, p2);
 end;
 
-class procedure TGradientTools.Gradient(canvas : TCanvas; cStart,cEnd : TColor; x1,y1,x2,y2 : integer; GradientType : TGradientType);
-
+class procedure TGradientTools.Gradient(ACanvas: TCanvas; cStart, cEnd: TColor;
+  x1,y1,x2,y2: integer; AGradientType: TGradientType);
 begin
-if GradientType=gtVertical then VGradient(canvas, cStart, cEnd, x1, y1, x2, y2) else
-   HGradient(canvas, cStart, cEnd, x1, y1, x2, y2);
+  if AGradientType = gtVertical then
+    VGradient(ACanvas, cStart, cEnd, x1, y1, x2, y2)
+  else
+    HGradient(ACanvas, cStart, cEnd, x1, y1, x2, y2);
 end;
 
-class procedure TGradientTools.HGradientLine(canvas : TCanvas; cBase, cShade : TColor; x1, x2 , y : integer; ShadeMode : TGradientLineShade);
-
-var i : integer;
-
+class procedure TGradientTools.HGradientLine(ACanvas: TCanvas;
+  cBase, cShade: TColor; x1, x2, y: integer; ShadeMode: TGradientLineShade);
+var
+  i: integer;
 begin
-if x1=x2 then exit;
-if x1>x2 then
-   begin
-   i:=x1;
-   x1:=x2;
-   x2:=i;
-   end;
-case ShadeMode of
-     lsShadeStart : HGradient(canvas,cShade,cBase,rect(x1,y,x2,y+1));
-     lsShadeEnds : begin
-                   i:=(x1+x2) div 2;
-                   HGradient(canvas,cShade,cBase,rect(x1,y,i,y+1));
-                   HGradient(canvas,cBase,cShade,rect(i,y,x2,y+1));
-                   end;
-     lsShadeCenter : begin
-                     i:=(x1+x2) div 2;
-                     HGradient(canvas,cBase,cShade,rect(x1,y,i,y+1));
-                     HGradient(canvas,cShade,cBase,rect(i,y,x2,y+1));
-                     end;
-     lsShadeEnd : HGradient(canvas,cBase,cShade,rect(x1,y,x2,y+1));
+  if x1 = x2 then
+    exit;
+  if x1 > x2 then
+  begin
+    i := x1;
+    x1 := x2;
+    x2 := i;
+  end;
+  case ShadeMode of
+    lsShadeStart:
+      HGradient(ACanvas, cShade, cBase, rect(x1,y,x2,y+1));
+    lsShadeEnds:
+      begin
+        i := (x1 + x2) div 2;
+        HGradient(ACanvas, cShade, cBase, rect(x1,y,i,y+1));
+        HGradient(ACanvas, cBase, cShade, rect(i,y,x2,y+1));
+      end;
+    lsShadeCenter:
+      begin
+        i := (x1 + x2) div 2;
+        HGradient(ACanvas, cBase, cShade, rect(x1,y,i,y+1));
+        HGradient(ACanvas, cShade, cBase, rect(i,y,x2,y+1));
+      end;
+    lsShadeEnd:
+      HGradient(ACanvas,cBase,cShade,rect(x1,y,x2,y+1));
+  end;
 end;
-end;
 
-class procedure TGradientTools.VGradientLine(canvas : TCanvas; cBase, cShade : TColor; x, y1 , y2 : integer; ShadeMode : TGradientLineShade);
-
-var i : integer;
-
+class procedure TGradientTools.VGradientLine(ACanvas: TCanvas;
+  cBase, cShade: TColor; x, y1, y2: integer; ShadeMode: TGradientLineShade);
+var
+  i : integer;
 begin
-if y1=y2 then exit;
-if y1>y2 then
-   begin
-   i:=y1;
-   y1:=y2;
-   y2:=i;
-   end;
-case ShadeMode of
-     lsShadeStart : VGradient(canvas,cShade,cBase,rect(x,y1,x+1,y2));
-     lsShadeEnds : begin
-                   i:=(y1+y2) div 2;
-                   VGradient(canvas,cShade,cBase,rect(x,y1,x+1,i));
-                   VGradient(canvas,cBase,cShade,rect(x,i,x+1,y2));
-                   end;
-     lsShadeCenter : begin
-                     i:=(y1+y2) div 2;
-                     VGradient(canvas,cBase,cShade,rect(x,y1,x+1,i));
-                     VGradient(canvas,cShade,cBase,rect(x,i,x+1,y2));
-                     end;
-     lsShadeEnd : VGradient(canvas,cBase,cShade,rect(x,y1,x+1,y2));
-end;
+  if y1 = y2 then
+    exit;
+  if y1 > y2 then
+  begin
+    i := y1;
+    y1 := y2;
+    y2 := i;
+  end;
+  case ShadeMode of
+    lsShadeStart:
+      VGradient(ACanvas, cShade, cBase, rect(x,y1,x+1,y2));
+    lsShadeEnds:
+      begin
+        i := (y1 + y2) div 2;
+        VGradient(ACanvas, cShade, cBase, rect(x,y1,x+1,i));
+        VGradient(ACanvas, cBase, cShade, rect(x,i,x+1,y2));
+      end;
+    lsShadeCenter:
+      begin
+        i := (y1 + y2) div 2;
+        VGradient(ACanvas, cBase, cShade, rect(x,y1,x+1,i));
+        VGradient(ACanvas, cShade, cBase, rect(x,i,x+1,y2));
+      end;
+    lsShadeEnd:
+      VGradient(ACanvas, cBase, cShade, rect(x,y1,x+1,y2));
+  end;
 end;
 
-class procedure TGradientTools.HGradient3dLine(canvas : TCanvas; x1,x2,y : integer; ShadeMode : TGradientLineShade; A3dKind : TGradient3dLine = glLowered);
-
+class procedure TGradientTools.HGradient3dLine(ACanvas: TCanvas; x1,x2,y: integer;
+  ShadeMode: TGradientLineShade; A3dKind: TGradient3dLine = glLowered);
 begin
-if A3dKind = glRaised then
-   begin
-   HGradientLine(canvas,clBtnHighlight,clBtnFace,x1,x2,y,ShadeMode);
-   HGradientLine(canvas,clBtnShadow,clBtnFace,x1,x2,y+1,ShadeMode);
-   end else
-       begin
-       HGradientLine(canvas,clBtnShadow,clBtnFace,x1,x2,y,ShadeMode);
-       HGradientLine(canvas,clBtnHighlight,clBtnFace,x1,x2,y+1,ShadeMode);
-       end;
+  if A3dKind = glRaised then
+  begin
+    HGradientLine(ACanvas, clBtnHighlight, clBtnFace, x1,x2,y, ShadeMode);
+    HGradientLine(ACanvas, clBtnShadow, clBtnFace, x1,x2,y+1, ShadeMode);
+  end else
+  begin
+    HGradientLine(ACanvas, clBtnShadow, clBtnFace, x1,x2,y, ShadeMode);
+    HGradientLine(ACanvas, clBtnHighlight, clBtnFace, x1,x2,y+1, ShadeMode);
+  end;
 end;
 
-class procedure TGradientTools.VGradient3dLine(canvas : TCanvas; x,y1,y2 : integer; ShadeMode : TGradientLineShade; A3dKind : TGradient3dLine = glLowered);
-
+class procedure TGradientTools.VGradient3dLine(ACanvas: TCanvas; x,y1,y2: integer;
+  ShadeMode: TGradientLineShade; A3dKind: TGradient3dLine = glLowered);
 begin
-if A3dKind = glLowered then
-   begin
-   VGradientLine(canvas,clBtnFace,clBtnHighlight,x,y1,y2,ShadeMode);
-   VGradientLine(canvas,clBtnFace,clBtnShadow,x+1,y1,y2,ShadeMode);
-   end else
-       begin
-       VGradientLine(canvas,clBtnFace,clBtnShadow,x,y1,y2,ShadeMode);
-       VGradientLine(canvas,clBtnFace,clBtnHighlight,x+1,y1,y2,ShadeMode);
-       end;
+  if A3dKind = glLowered then
+  begin
+    VGradientLine(ACanvas, clBtnFace, clBtnHighlight, x,y1,y2, ShadeMode);
+    VGradientLine(ACanvas, clBtnFace, clBtnShadow, x+1,y1,y2, ShadeMode);
+  end else
+  begin
+    VGradientLine(ACanvas, clBtnFace, clBtnShadow, x,y1,y2, ShadeMode);
+    VGradientLine(ACanvas, clBtnFace, clBtnHighlight, x+1,y1,y2, ShadeMode);
+  end;
 end;
+
 
 { TTextTools }
 
-class procedure TTextTools.OutlinedText(Canvas : TCanvas; x, y : integer; const text : string);
-
-var TmpColor : TColor;
-    TmpBrushStyle : TBrushStyle;
-
+class procedure TTextTools.OutlinedText(ACanvas: TCanvas; x, y: integer; const AText: string);
+var
+  TmpColor: TColor;
+  TmpBrushStyle: TBrushStyle;
 begin
-TmpColor:=Canvas.Font.color;
-TmpBrushStyle:=Canvas.Brush.style;
+  TmpColor := ACanvas.Font.Color;
+  TmpBrushStyle := ACanvas.Brush.Style;
 
-Canvas.brush.style:=bsClear;
+  ACanvas.Brush.Style := bsClear;
 
-Canvas.font.color:=clBlack;
-Canvas.TextOut(x-1,y,text);
-Canvas.TextOut(x+1,y,text);
-Canvas.TextOut(x,y-1,text);
-Canvas.TextOut(x,y+1,text);
+  ACanvas.Font.Color := clBlack;
+  ACanvas.TextOut(x-1, y,   AText);
+  ACanvas.TextOut(x+1, y,   AText);
+  ACanvas.TextOut(x,   y-1, AText);
+  ACanvas.TextOut(x,   y+1, AText);
 
-Canvas.font.color:=TmpColor;
-Canvas.TextOut(x,y,text);
+  ACanvas.Font.Color := TmpColor;
+  ACanvas.TextOut(x, y, AText);
 
-Canvas.Brush.Style:=TmpBrushStyle;
+  ACanvas.Brush.Style := TmpBrushStyle;
 end;
 
 end.
