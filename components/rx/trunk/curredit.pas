@@ -291,7 +291,10 @@ end;
 
 function TCustomNumEdit.GetText: string;
 begin
-  Result := FloatToStr(FValue);
+  if (FValue = 0) and FZeroEmpty then
+    Result:=''
+  else
+    Result := FloatToStr(FValue);
 end;
 
 function TCustomNumEdit.GetValue: Extended;
@@ -448,10 +451,6 @@ begin
     exit;
   FFocusedDisplay := true;
   Reset;
-{  if WidgetSet.GetLCLCapability(lcReceivesLMClearCutCopyPasteReliably) = LCL_CAPABILITY_YES then
-    FDataLink.Reset
-  else
-    FDataLink.Edit;}
 end;
 
 procedure TCustomNumEdit.WMKillFocus(var Message: TLMKillFocus);
