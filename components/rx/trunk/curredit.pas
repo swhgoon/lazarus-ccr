@@ -657,6 +657,9 @@ function TCustomNumEdit.FormatDisplayText(Value: Extended): string;
 var
   Digits : integer;
 begin
+  if FZeroEmpty and (Value = 0) then
+    Result:=''
+  else
   if DisplayFormat <> '' then
     Result:=FormatFloat(DisplayFormat, Value)
   else
