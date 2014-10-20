@@ -1,4 +1,5 @@
 unit uLongTimer;
+
 { TlongTimer
 
   Based on TIdleTimer component
@@ -29,37 +30,39 @@ unit uLongTimer;
 interface
 
 uses
-  Classes, SysUtils, LResources, ExtCtrls,DateUtils,Dialogs,AboutLongTimerunit;
+  Classes, SysUtils, LResources, ExtCtrls, DateUtils, Dialogs, AboutLongTimerunit;
 
 type
-  TIntervalType = (lt1Daily,lt2Weekly,lt3Monthly);
-  TSampleInterval = (lt1Everyminute,lt2Every5minutes,lt3Every10Minutes,lt4Every30Minutes,lt5Every45Minutes);
-  TDay = (lt1Monday,lt2Tuesday,lt3Wednesday,lt4Thursday,lt5Friday,lt6Saturday,lt7Sunday);
+  TIntervalType = (lt1Daily, lt2Weekly, lt3Monthly);
+  TSampleInterval = (lt1Everyminute, lt2Every5minutes, lt3Every10Minutes,
+    lt4Every30Minutes, lt5Every45Minutes);
+  TDay = (lt1Monday, lt2Tuesday, lt3Wednesday, lt4Thursday, lt5Friday, lt6Saturday, lt7Sunday);
+
   TLongTimer = class(TAboutLongTimer)
   private
     { Private declarations }
-   fCurrentDateTime,fLastFiredDateTime:TDateTime;
-   fIntervalType:TIntervalType;
-   fHour,fDay,fDate:Word;
-   fTday:TDay;
-   fHourDone,fDayDone,fDateDone:Boolean;
-   fSampleInterval:TSampleInterval;
-   fVersion:String;
-   fOnSample:TNotifyEvent;
-    Procedure SetDay(aDay:TDay);
-    Procedure SetDailyHour(aHour:Word);
-    Procedure SetMonthlyDate(ADate:Word);
-    procedure SetSampleInterval(ASampleInterval:TSampleInterval);
+    fCurrentDateTime, fLastFiredDateTime: TDateTime;
+    fIntervalType: TIntervalType;
+    fHour, fDay, fDate: word;
+    fTday: TDay;
+    fHourDone, fDayDone, fDateDone: boolean;
+    fSampleInterval: TSampleInterval;
+    fVersion: string;
+    fOnSample: TNotifyEvent;
+    procedure SetDay(aDay: TDay);
+    procedure SetDailyHour(aHour: word);
+    procedure SetMonthlyDate(ADate: word);
+    procedure SetSampleInterval(ASampleInterval: TSampleInterval);
   protected
     { Protected declarations }
-   procedure DoOnIdle(Sender: TObject; var Done: Boolean); override;
-   procedure DoOnIdleEnd(Sender: TObject); override;
-   procedure DoOnTimer;override;
+    procedure DoOnIdle(Sender: TObject; var Done: boolean); override;
+    procedure DoOnIdleEnd(Sender: TObject); override;
+    procedure DoOnTimer; override;
   public
     { Public declarations }
     constructor Create(TheOwner: TComponent); override;
     // Until the first Timer event, this will be the component's creation time
-    Property LastFired:TDateTime read fLastFiredDateTime;
+    property LastFired: TDateTime read fLastFiredDateTime;
   published
     { Published declarations }
     // Default=false
@@ -77,27 +80,31 @@ type
     // Same as TIdleTimer
     property OnStopTimer;
     // If Weekly or Monthly you can also set the Daily24Hour property
-    property IntervalType:TIntervalType read fIntervalType write fIntervalType default lt1Daily;
+    property IntervalType: TIntervalType
+      read fIntervalType write fIntervalType default lt1Daily;
     // Smaller = more accurate, larger = less CPU time
-    property SampleInterval:TSampleInterval read fSampleInterval write SetSampleInterval default lt3Every10Minutes;
+    property SampleInterval: TSampleInterval read fSampleInterval
+      write SetSampleInterval default lt3Every10Minutes;
     // 0=Midnight, 4=4am, 16=4pm etc.
-    Property Daily24Hour:Word read fHour write SetDailyHour;
+    property Daily24Hour: word read fHour write SetDailyHour;
     // You can also set the Hour as well as the Weekday
-    Property WeeklyDay:TDay read fTDay write SetDay;
+    property WeeklyDay: TDay read fTDay write SetDay;
     // You can also set the Hour as well as the date
-    property MonthlyDate:Word read fDate write SetMonthlyDate default 1;
+    property MonthlyDate: word read fDate write SetMonthlyDate default 1;
     // Version string of this component
-    property Version:String read fVersion;
+    property Version: string read fVersion;
     // Fired every time LongTimer samples
-    Property OnSample:TNotifyEvent read fOnSample write fOnSample;
+    property OnSample: TNotifyEvent read fOnSample write fOnSample;
   end;
 
 procedure Register;
 
 implementation
-CONST
+
+const
   C_OneMinute = 60000;
-  C_Version='0.0.2';
+  C_Version = '0.0.2';
+
 (*
   V0.0.1: Initial commit
   V0.0.2: Added OnSample event
@@ -105,172 +112,181 @@ CONST
 *)
 procedure Register;
 begin
-  RegisterComponents('System',[TLongTimer]);
+  RegisterComponents('System', [TLongTimer]);
   {$I longtimer_icon.lrs}
 end;
+
 constructor TLongTimer.Create(TheOwner: TComponent);
-Var sz:String;
+var
+  sz: string;
 begin
   inherited;
   // Set About dialog properties
-  AboutBoxComponentName:='TLongTimer';
-  AboutBoxTitle:='TLongTimer Component';
+  AboutBoxComponentName := 'TLongTimer';
+  AboutBoxTitle := 'TLongTimer Component';
   // AboutBoxWidth (integer)
-  AboutBoxHeight:=380;
-  sz:='LongTimer is a descendent of TIdleTimer' + LineEnding;
-  sz+='and shares its properties and methods.' + LineEnding + LineEnding;
-  sz+='Additional properties affect when the' + LineEnding;
-  sz+='OnTimer event is fired.' + LineEnding + LineEnding;
-  sz+='With LongTimer, the OnTimer event' + LineEnding;
-  sz+='will be fired only ONCE - every time' + LineEnding;
-  sz+='the interval that you set is reached.';
-  AboutBoxDescription:=sz;
+  AboutBoxHeight := 380;
+  sz := 'LongTimer is a descendent of TIdleTimer' + LineEnding;
+  sz += 'and shares its properties and methods.' + LineEnding + LineEnding;
+  sz += 'Additional properties affect when the' + LineEnding;
+  sz += 'OnTimer event is fired.' + LineEnding + LineEnding;
+  sz += 'With LongTimer, the OnTimer event' + LineEnding;
+  sz += 'will be fired only ONCE - every time' + LineEnding;
+  sz += 'the interval that you set is reached.';
+  AboutBoxDescription := sz;
   // AboutBoxBackgroundColor (TColor, like clWhite)
   // AboutBoxFontName (string)
   // AboutBoxFontSize (integer)
-  AboutBoxVersion:='0.0.1';
-  AboutBoxAuthorname:='Gordon Bamber';
+  AboutBoxVersion := '0.0.1';
+  AboutBoxAuthorname := 'Gordon Bamber';
   // AboutBoxOrganisation (string)
-  AboutBoxAuthorEmail:='minesadorada@charcodelvalle.com';
-  AboutBoxLicenseType:='LGPL';// (string e.g. 'GPL', ModifiedGPL' etc
+  AboutBoxAuthorEmail := 'minesadorada@charcodelvalle.com';
+  AboutBoxLicenseType := 'LGPL';// (string e.g. 'GPL', ModifiedGPL' etc
 
-  fHourDone:=false;
-  fDayDone:=False;
-  fDateDone:=False;
-  fCurrentDateTime:=Now;
-  fLastFiredDateTime:=Now;
+  fHourDone := False;
+  fDayDone := False;
+  fDateDone := False;
+  fCurrentDateTime := Now;
+  fLastFiredDateTime := Now;
 
   // Set defaults for properties
-  fDate:=1;
-  fSampleInterval:=lt3Every10Minutes;
-  Interval:=10 * C_OneMinute;
-  fIntervalType:=lt1Daily;
+  fDate := 1;
+  fSampleInterval := lt3Every10Minutes;
+  Interval := 10 * C_OneMinute;
+  fIntervalType := lt1Daily;
 
-  fVersion:=C_Version;
+  fVersion := C_Version;
 end;
-procedure TLongTimer.DoOnIdle(Sender: TObject; var Done: Boolean);
+
+procedure TLongTimer.DoOnIdle(Sender: TObject; var Done: boolean);
 begin
-   // Do nothing special here
-   inherited;
+  // Do nothing special here
+  inherited;
 end;
+
 procedure TLongTimer.DoOnIdleEnd(Sender: TObject);
 begin
-   // Do nothing special here
-   inherited;
+  // Do nothing special here
+  inherited;
 end;
+
 procedure TLongTimer.DoOnTimer;
 // Only allow this event to fire ONCE if datetime matches the interval set
-Var
-  cDay,cD,cM,cY,cH,cMi,cS,cms:Word;
-  lDay,lD,lM,lY,lH,lMi,lS,lms:Word;
-  fTempDate:Word;
+var
+  cDay, cD, cM, cY, cH, cMi, cS, cms: word;
+  lDay, lD, lM, lY, lH, lMi, lS, lms: word;
+  fTempDate: word;
 begin
-   // Split Current date into parts
-   fCurrentDateTime:=Now;
-   DecodeDate(fCurrentDateTime,cY,cM,cD);
-   DecodeTime(fCurrentDateTime,cH,cMi,cS,cmS);
-   cDay:=DayOfTheMonth(fCurrentDateTime);
+  // Split Current date into parts
+  fCurrentDateTime := Now;
+  DecodeDate(fCurrentDateTime, cY, cM, cD);
+  DecodeTime(fCurrentDateTime, cH, cMi, cS, cmS);
+  cDay := DayOfTheMonth(fCurrentDateTime);
 
-   // Split LastFired date into parts
-   DecodeDate(fLastFiredDateTime,lY,lM,lD);
-   DecodeTime(fLastFiredDateTime,lH,lMi,lS,lmS);
-   lDay:=DayOfTheMonth(fLastFiredDateTime);
+  // Split LastFired date into parts
+  DecodeDate(fLastFiredDateTime, lY, lM, lD);
+  DecodeTime(fLastFiredDateTime, lH, lMi, lS, lmS);
+  lDay := DayOfTheMonth(fLastFiredDateTime);
 
-   // New hour?
-   If (fIntervalType = lt1Daily) then
-     If (cH <> lH) then fHourDone:=FALSE;
-   // New Day?
-   If (fIntervalType = lt2Weekly) then
-     If (cDay <> lDay) then
-       begin
-       fDayDone:=FALSE;
-       fHourDone:=FALSE;
-       end;
-   // New Date?
-   If (fIntervalType = lt3Monthly) then
-     If (cD <> lD) then
-       begin
-       fDateDone:=FALSE;
-       fHourDone:=FALSE;
-       end;
+  // New hour?
+  if (fIntervalType = lt1Daily) then
+    if (cH <> lH) then
+      fHourDone := False;
+  // New Day?
+  if (fIntervalType = lt2Weekly) then
+    if (cDay <> lDay) then
+      begin
+      fDayDone := False;
+      fHourDone := False;
+      end;
+  // New Date?
+  if (fIntervalType = lt3Monthly) then
+    if (cD <> lD) then
+      begin
+      fDateDone := False;
+      fHourDone := False;
+      end;
 
-   // Fire the OnSample event?
-   If Assigned(fOnSample) then fOnSample(Self);
+  // Fire the OnSample event?
+  if Assigned(fOnSample) then
+    fOnSample(Self);
 
-   // Only proceed further at specified interval in specified hour - else exit
-   If (fIntervalType = lt1Daily) and ((fHourDone = TRUE) OR (cH <> fHour)) then Exit;
-   If (fIntervalType = lt2Weekly) and ((fDayDone = TRUE) OR (cH <> fHour)) then Exit;
-   If (fIntervalType = lt3Monthly) and ((fDateDone = TRUE)  OR (cH <> fHour)) then Exit;
+  // Only proceed further at specified interval in specified hour - else exit
+  if (fIntervalType = lt1Daily) and ((fHourDone = True) or (cH <> fHour)) then
+    Exit;
+  if (fIntervalType = lt2Weekly) and ((fDayDone = True) or (cH <> fHour)) then
+    Exit;
+  if (fIntervalType = lt3Monthly) and ((fDateDone = True) or (cH <> fHour)) then
+    Exit;
 
-   // Fire the OnTimer event for the user
-   inherited; // Do whatever the user wants done
-   fLastFiredDateTime:=Now;// Record the DateTime the OnTimer was fired
+  // Fire the OnTimer event for the user
+  inherited; // Do whatever the user wants done
+  fLastFiredDateTime := Now;// Record the DateTime the OnTimer was fired
 
-   // Now make sure it doesn't fire more than once when resampled
+  // Now make sure it doesn't fire more than once when resampled
 
-   // Deal with Months where fDate has been set to an invalid date
-   // (i.e. 31st February)
-   // Simply temporarily decrement the fDate until it is valid
-   fTempDate:=fDate;
-   If (fIntervalType = lt3Monthly) then
-      While NOT IsValidDate(cY,cM,fTempDate) do Dec(fTempDate);
+  // Deal with Months where fDate has been set to an invalid date
+  // (i.e. 31st February)
+  // Simply temporarily decrement the fDate until it is valid
+  fTempDate := fDate;
+  if (fIntervalType = lt3Monthly) then
+    while not IsValidDate(cY, cM, fTempDate) do
+      Dec(fTempDate);
 
-   // If ltDaily, then fDayDone and fDateDone are always FALSE
-   If (fIntervalType = lt1Daily) and (cH = fHour) then
-     begin
-     fHourDone := TRUE;
-     end;
-
-   // If ltWeekly, then fHourDone and fDateDone are always FALSE
-   // Set only if on Correct Weekday and at specified hour
-   If (fIntervalType = lt2Weekly)
-   and ((cDay = fDay)
-   and (ch = fHour))
-   then
-   begin
-     fDayDone := TRUE;
-     fHourDone := TRUE;
-   end;
-
-   // If ltMonthly, then fDayDone and fHourDone are always FALSE
-   // Set only if Correct day of month and at specified hour
-   If (fIntervalType = lt3Monthly) and
-   ((cD = fTempDate)
-   and (ch = fHour))
-   then
-     begin
-       fDateDone := TRUE;
-       fHourDone := TRUE;
-     end;
-end;
-
-procedure TLongTimer.SetSampleInterval(ASampleInterval:TSampleInterval);
-Var TimerEnabled:Boolean;
-Begin
-    If ASampleInterval = fSampleInterval then exit;
-    // Temporarily disable running timer?
-    TimerEnabled:=Enabled;
-    Enabled:=False;
-    Case ASampleInterval of
-       lt1Everyminute:Interval:=C_OneMinute;
-       lt2Every5minutes:Interval:=5 * C_OneMinute;
-       lt3Every10Minutes:Interval:=10 * C_OneMinute;
-       lt4Every30Minutes:Interval:=30 * C_OneMinute;
-       lt5Every45Minutes:Interval:=45 * C_OneMinute;
+  // If ltDaily, then fDayDone and fDateDone are always FALSE
+  if (fIntervalType = lt1Daily) and (cH = fHour) then
+    begin
+    fHourDone := True;
     end;
-    Enabled:=TimerEnabled;
+
+  // If ltWeekly, then fHourDone and fDateDone are always FALSE
+  // Set only if on Correct Weekday and at specified hour
+  if (fIntervalType = lt2Weekly) and ((cDay = fDay) and (ch = fHour)) then
+    begin
+    fDayDone := True;
+    fHourDone := True;
+    end;
+
+  // If ltMonthly, then fDayDone and fHourDone are always FALSE
+  // Set only if Correct day of month and at specified hour
+  if (fIntervalType = lt3Monthly) and ((cD = fTempDate) and (ch = fHour)) then
+    begin
+    fDateDone := True;
+    fHourDone := True;
+    end;
 end;
 
-Procedure TLongTimer.SetDay(aDay:TDay);
-Var TimerEnabled:Boolean;
+procedure TLongTimer.SetSampleInterval(ASampleInterval: TSampleInterval);
+var
+  TimerEnabled: boolean;
 begin
-   If ADay = fTDay then Exit;
-   // Temporarily disable running timer?
-   TimerEnabled:=Enabled;
-   Enabled:=False;
-   fTDay:=aDay;
-   fDay:=Ord(aDay)+1;
-   Enabled:=TimerEnabled;
+  if ASampleInterval = fSampleInterval then
+    exit;
+  // Temporarily disable running timer?
+  TimerEnabled := Enabled;
+  Enabled := False;
+  case ASampleInterval of
+    lt1Everyminute: Interval := C_OneMinute;
+    lt2Every5minutes: Interval := 5 * C_OneMinute;
+    lt3Every10Minutes: Interval := 10 * C_OneMinute;
+    lt4Every30Minutes: Interval := 30 * C_OneMinute;
+    lt5Every45Minutes: Interval := 45 * C_OneMinute;
+    end;
+  Enabled := TimerEnabled;
+end;
+
+procedure TLongTimer.SetDay(aDay: TDay);
+var
+  TimerEnabled: boolean;
+begin
+  if ADay = fTDay then
+    Exit;
+  // Temporarily disable running timer?
+  TimerEnabled := Enabled;
+  Enabled := False;
+  fTDay := aDay;
+  fDay := Ord(aDay) + 1;
+  Enabled := TimerEnabled;
  {
   // ISO day numbers.
   DayMonday    = 1;
@@ -283,28 +299,34 @@ begin
 }
 end;
 
-Procedure TLongTimer.SetDailyHour(aHour:Word);
-Var TimerEnabled:Boolean;
+procedure TLongTimer.SetDailyHour(aHour: word);
+var
+  TimerEnabled: boolean;
 begin
-  If fHour=aHour then Exit;
+  if fHour = aHour then
+    Exit;
   // Temporarily disable running timer?
-  TimerEnabled:=Enabled;
-  Enabled:=False;
-  If (aHour >= 0) AND (aHour <=24) then fHour:=aHour;
-  Enabled:=TimerEnabled;
+  TimerEnabled := Enabled;
+  Enabled := False;
+  if (aHour >= 0) and (aHour <= 24) then
+    fHour := aHour;
+  Enabled := TimerEnabled;
 end;
 
-Procedure TLongTimer.SetMonthlyDate(ADate:Word);
-Var TimerEnabled:Boolean;
+procedure TLongTimer.SetMonthlyDate(ADate: word);
+var
+  TimerEnabled: boolean;
 begin
-   If ADate=fDate then Exit;
-   // Temporarily disable running timer?
-   TimerEnabled:=Enabled;
-   Enabled:=False;
-   If (fDate > 0) and (fDate < 32) then fDate:=ADate;
-   // Invalid dates like 31st Feb are dealt with in DoOnTimer
-   // e.g. 31 stands for the last day in any month (inc Feb in a Leap Year)
-   Enabled:=TimerEnabled;
+  if ADate = fDate then
+    Exit;
+  // Temporarily disable running timer?
+  TimerEnabled := Enabled;
+  Enabled := False;
+  if (fDate > 0) and (fDate < 32) then
+    fDate := ADate;
+  // Invalid dates like 31st Feb are dealt with in DoOnTimer
+  // e.g. 31 stands for the last day in any month (inc Feb in a Leap Year)
+  Enabled := TimerEnabled;
 end;
 
 end.
