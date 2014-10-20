@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <CONFIG>
   <Package Version="4">
     <Name Value="playwavepackage"/>
@@ -51,6 +51,7 @@
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
+      <DestinationDirectory Value="/home/gordon/Lazarusprojects/playsoundpackage/published"/>
     </PublishOptions>
   </Package>
 </CONFIG>

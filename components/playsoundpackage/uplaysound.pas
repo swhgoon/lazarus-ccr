@@ -28,12 +28,16 @@ type
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; reintroduce;
+    // This is the default method
     procedure Execute;
   published
     { Published declarations }
+    // This is normally set at runtime
     property SoundFile: string read fPathToSoundFile write fPathToSoundFile;
+    // Default is Async
     property PlayStyle: TPlayStyle read fPlayStyle write fPlayStyle default psASync;
-    Property PlayCommand:String read fPlayCommand write fPlayCommand;
+    // This is automatically determined when the component loads
+    property PlayCommand:String read fPlayCommand write fPlayCommand;
   end;
 
 procedure Register;
@@ -53,7 +57,6 @@ function GetNonWindowsPlayCommand:String;
 Var szNonWindowsPlayCommand: string;
 begin
   szNonWindowsPlayCommand:='';
-  {$IFNDEF WINDOWS}
   // Try play
   if (FindDefaultExecutablePath('play') <> '') then
     szNonWindowsPlayCommand := 'play';
@@ -93,7 +96,6 @@ begin
   if (szNonWindowsPlayCommand = '') then
     if (FindDefaultExecutablePath('afplay') <> '') then
       szNonWindowsPlayCommand := 'afplay';
-  {$ENDIF}
   Result:=szNonWindowsPlayCommand;
 end;
 
@@ -106,7 +108,7 @@ begin
   {$IFDEF WINDOWS}
   fPlayCommand:='sndPlaySnd';
   {$ELSE}
-  fPlayCommand:=GetNonWindowsPlayCommand;
+  fPlayCommand:=GetNonWindowsPlayCommand; // Linux, Mac etc.
   {$ENDIF}
   // About Dialog properties
   AboutBoxComponentName := 'PlaySound';
@@ -157,7 +159,7 @@ begin
   // How to play in Linux? Use generic Linux commands
   // Use asyncprocess to play sound as SND_ASYNC
   // proceed if we managed to find a valid command
-  if (fNonWindowsPlayCommand <> '') then
+  if (fPlayCommand <> '') then
   begin
     if fPlayStyle = psASync then
     begin
@@ -165,7 +167,7 @@ begin
         SoundPlayerAsyncProcess := Tasyncprocess.Create(nil);
       SoundPlayerAsyncProcess.CurrentDirectory := ExtractFileDir(szSoundFilename);
       SoundPlayerAsyncProcess.Executable :=
-        FindDefaultExecutablePath(fNonWindowsPlayCommand);
+        FindDefaultExecutablePath(fPlayCommand);
       SoundPlayerAsyncProcess.Parameters.Clear;
       SoundPlayerAsyncProcess.Parameters.Add(szSoundFilename);
       try
@@ -182,7 +184,7 @@ begin
         SoundPlayerSyncProcess := Tprocess.Create(nil);
       SoundPlayerSyncProcess.CurrentDirectory := ExtractFileDir(szSoundFilename);
       SoundPlayerSyncProcess.Executable :=
-        FindDefaultExecutablePath(fNonWindowsPlayCommand);
+        FindDefaultExecutablePath(fPlayCommand);
       SoundPlayersyncProcess.Parameters.Clear;
       SoundPlayerSyncProcess.Parameters.Add(szSoundFilename);
       try
@@ -197,7 +199,7 @@ begin
   end
   else
     raise Exception.CreateFmt('The play command %s does not work on your system',
-      [fNonWindowsPlayCommand]);
+      [fPlayCommand]);
 {$ENDIF}
 end;
 
@@ -207,4 +209,4 @@ begin
   {$I playsound_icon.lrs}
 end;
 
-end.
+end.
