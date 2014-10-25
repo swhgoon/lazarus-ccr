@@ -8,10 +8,10 @@ Its main characteristics are:
 * Random read/write access to CSV fields based on object model (TCSVDocument class). This requires preloading CSV file content into memory but allows to edit any field at any moment.
 * Serial access (field-by-field) parsing of CSV files using TCSVParser class. It helps to read CSV file content directly without preloading the whole file into memory.
 * Field-by-field building of CSV files using TCSVBuilder class. This helps to write CSV content directly to file and thus avoid using in-memory buffer. Implemented in version 0.4 and above.
-* CSV implementation is compatible with such of OpenOffice Calc / MS Office Excel, that means CSV files saved from Calc/Excel can be edited using CsvDocument library and vice versa.
-* Both UTF-8 encoding and windows-xxx codepages can be used with CsvDocument library. The library uses ''string'' type for all string operations and will not do any encoding conversion for you. Keep in mind though that Excel does not support CSV files in UTF-8.
+* CSV implementation is compatible with that of OpenOffice Calc / MS Office Excel. This means CSV files saved from Calc/Excel can be edited using CsvDocument library and vice versa.
+* Both UTF-8 encoding and Windows-xxx codepages can be used with the CsvDocument library. The library uses ''string'' type for all string operations and will not do any encoding conversion for you. Keep in mind though that Excel does not support CSV files in UTF-8.
 * Support for line breaks embedded into CSV fields. It was one of the reasons to reinvent the wheel. OO Calc supports this feature as well, but MS Excel does not.
-* StringGrid-like field access with TCsvDocument.Cells[ACol, ARow]. Field access is safe, that means when you try to access non-existing field you do not get "Index out of bounds" exception, but get an empty string result. To distingush between empty and non-existing fields there are methods and properties like HasRow/HasCell and RowCount/ColCount.
+* StringGrid-like field access with TCsvDocument.Cells[ACol, ARow]. Field access is safe: i.e. when you try to access non-existing field you do not get "Index out of bounds" exception, but get an empty string result. To distingush between empty and non-existing fields there are methods and properties like HasRow/HasCell and RowCount/ColCount.
 * Support for search in single row/column using IndexOfRow(AString, ACol) / IndexOfCol(AString, ARow). Implemented in version 0.3 and above.
 * No additional limits on field length, number of rows/fields, etc. other than performance, memory usage, ''string'' type limit of 2 Gb and signed 32 bit integer value limit.
 * Compliance with RFC 4180 (http://tools.ietf.org/html/rfc4180#section-2) using default settings, as of version 0.4 and above.
@@ -22,11 +22,13 @@ Vladimir Zhirov
 
 === Contributors ===
 Luiz Americo Pereira Camara
+
 Mattias Gaertner
+
 Reinier Olislagers
 
 === License ===
-[http://svn.freepascal.org/svn/lazarus/trunk/COPYING.modifiedLGPL Modified] [http://svn.freepascal.org/svn/lazarus/trunk/COPYING.LGPL LGPL] (same as FPC RTL and Lazarus LCL).
+[http://svn.freepascal.org/svn/lazarus/trunk/COPYING.modifiedLGPL.txt Modified] [http://svn.freepascal.org/svn/lazarus/trunk/COPYING.LGPL.txt LGPL] (same as FPC RTL and Lazarus LCL).
 
 === Dependencies ===
 The library is a single Pascal source file that only depends on FPC RTL and FCL.
@@ -58,9 +60,11 @@ The library is a single Pascal source file that only depends on FPC RTL and FCL.
 * fixed minor annoyances in demo application.
 * included optimized ChangeLineEndings function by Mattias Gaertner.
 * speed optimizations, demo improvements and Lazarus package by Luiz Americo Pereira Camara.
-==== Version 0.5 (2012-09-20) ====
-* fixes in demo application (updating view after loading csv document, separate project files for Lazarus 0.9.30)
-* implemented TCSVParser.MaxColCount property (patch by Reinier Olislagers)
+==== Version 0.5 (2014-10-25) ====
+* fixed bug in TrimEmptyCells method, it was removing empty cells in the middle of a row (patch by Reinier Olislagers)
+* implemented MaxColCount property: the maximum number of columns found parsing a CSV file (patch by Reinier Olislagers)
+* commented procedures/functions/properties (based on patch by Reinier Olislagers)
+* fixes in demo application (updating view after loading CSV document, separate project files for Lazarus 0.9.30)
 
 === Status ===
 Beta
@@ -68,13 +72,14 @@ Beta
 === Download ===
 The latest release is available at Lazarus-CCR:
 
-http://sourceforge.net/projects/lazarus-ccr/files/CsvDocument/CsvDocument%200.4/csvdocument-0.4.zip/download
+http://sourceforge.net/projects/lazarus-ccr/files/CsvDocument/CsvDocument%200.5/csvdocument-0.5.zip/download
 
 The download contains the library, demo application and test suite.
 
 You can get development version from Lazarus-CCR svn repository:
-
-  svn co https://lazarus-ccr.svn.sourceforge.net/svnroot/lazarus-ccr/components/csvdocument csvdocument
+<syntaxhighlight lang="bash">
+  svn co svn://svn.code.sf.net/p/lazarus-ccr/svn/components/csvdocument csvdocument
+</syntaxhighlight>
 
 === Installation and usage ===
 
@@ -94,3 +99,5 @@ Alternatively:
 Please send bug reports and patches to the e-mail you find in the unit source code.
 
 [[Category:Components]]
+[[Category:Data import and export]]
+[[Category:Lazarus-CCR]]

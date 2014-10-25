@@ -22,11 +22,13 @@
 
 === Участники, внесшие вклад в развитие библитеки ===
 Luiz Américo Pereira Câmara
+
 Mattias Gärtner
+
 Reinier Olislagers
 
 === Лицензия ===
-[http://svn.freepascal.org/svn/lazarus/trunk/COPYING.modifiedLGPL Modified] [http://svn.freepascal.org/svn/lazarus/trunk/COPYING.LGPL LGPL] (та же, что у FPC RTL и Lazarus LCL).
+[http://svn.freepascal.org/svn/lazarus/trunk/COPYING.modifiedLGPL.txt Modified] [http://svn.freepascal.org/svn/lazarus/trunk/COPYING.LGPL.txt LGPL] (та же, что у FPC RTL и Lazarus LCL).
 
 === Зависимости ===
 Библиотека представляет собой один файл с исходным кодом и зависит только от FPC RTL и FCL.
@@ -59,8 +61,10 @@ Reinier Olislagers
 * включен оптимизированный вариант функции ChangeLineEndings, созданный Mattias Gärtner.
 * оптимизации по скорости, улучшения в demo-приложении и пакет для Lazarus от Luiz Américo Pereira Câmara.
 ==== Версия 0.5 (20.09.2012) ====
+* исправлена ошибка в методе TrimEmptyCells, метод удалял пустые ячейки не только в конце, но и в середине строки (патч от Reinier Olislagers)
+* добавлено свойство TCSVParser.MaxColCount: максимальное число столбцов, определяемое в процессе чтения CSV-файла (патч от Reinier Olislagers)
+* добавлены комментарии к процедурам, функциям и свойствам (на основе патча от Reinier Olislagers)
 * исправления в demo-приложении (обновление интерфейса после загрузки документа, отдельные файлы проекта для Lazarus 0.9.30)
-* добавлено свойство TCSVParser.MaxColCount (патч от Reinier Olislagers)
 
 === Статус ===
 Beta
@@ -68,13 +72,15 @@ Beta
 === Загрузка ===
 Новый выпуск библиотеки можно загрузить с Lazarus-CCR:
 
-http://sourceforge.net/projects/lazarus-ccr/files/CsvDocument/CsvDocument%200.4/csvdocument-0.4.zip/download
+http://sourceforge.net/projects/lazarus-ccr/files/CsvDocument/CsvDocument%200.5/csvdocument-0.5.zip/download
 
 Архив содержит саму библиотеку, демонстрационное приложение и набор тестов.
 
 Разрабатываемую версию можно получить из svn-репозитория Lazarus-CCR:
 
-  svn co https://lazarus-ccr.svn.sourceforge.net/svnroot/lazarus-ccr/components/csvdocument csvdocument
+<syntaxhighlight lang="bash">
+  svn co svn://svn.code.sf.net/p/lazarus-ccr/svn/components/csvdocument csvdocument
+</syntaxhighlight>
 
 === Установка и использование ===
 
@@ -94,3 +100,5 @@ http://sourceforge.net/projects/lazarus-ccr/files/CsvDocument/CsvDocument%200.4/
 Просьба отправлять сообщения об ошибках и патчи по адресу, указанному в исходном коде библиотеки.
 
 [[Category:Components]]
+[[Category:Data import and export]]
+[[Category:Lazarus-CCR]]
