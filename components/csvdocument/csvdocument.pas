@@ -720,8 +720,14 @@ var
 begin
   MaxCol := FCells.Count - 1;
   for I := MaxCol downto 0 do
-    if (TCSVCell(FCells[I]).Value = '') and (FCells.Count > 1) then
-      FCells.Delete(I);
+  begin
+    if (TCSVCell(FCells[I]).Value = '') then
+    begin
+      if (FCells.Count > 1) then
+        FCells.Delete(I);
+    end else
+      break; // We hit the first non-empty cell so stop
+  end;
 end;
 
 procedure TCSVRow.SetValuesLineEnding(const ALineEnding: String);
