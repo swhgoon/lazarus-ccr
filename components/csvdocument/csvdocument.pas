@@ -1,8 +1,8 @@
 {
   CSV Parser, Builder and Document classes.
-  Version 0.5 2012-09-20
+  Version 0.5 2014-10-25
 
-  Copyright (C) 2010-2012 Vladimir Zhirov <vvzh.home@gmail.com>
+  Copyright (C) 2010-2014 Vladimir Zhirov <vvzh.home@gmail.com>
 
   Contributors:
     Luiz Americo Pereira Camara
