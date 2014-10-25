@@ -70,14 +70,20 @@ Reinier Olislagers
 Beta
 
 === Загрузка ===
-Новый выпуск библиотеки можно загрузить с Lazarus-CCR:
+Новый выпуск библиотеки можно загрузить с Bitbucket:
 
-http://sourceforge.net/projects/lazarus-ccr/files/CsvDocument/CsvDocument%200.5/csvdocument-0.5.zip/download
+https://bitbucket.org/vvzh/csvdocument/downloads/csvdocument-0.5.zip
 
 Архив содержит саму библиотеку, демонстрационное приложение и набор тестов.
 
-Разрабатываемую версию можно получить из svn-репозитория Lazarus-CCR:
+Разрабатываемую версию можно получить:
 
+* Из Mercurial-репозитория на Bitbucket:
+<syntaxhighlight lang="bash">
+  hg clone https://bitbucket.org/vvzh/csvdocument csvdocument
+</syntaxhighlight>
+
+* Из Subversion-репозитория Lazarus-CCR:
 <syntaxhighlight lang="bash">
   svn co svn://svn.code.sf.net/p/lazarus-ccr/svn/components/csvdocument csvdocument
 </syntaxhighlight>

@@ -70,13 +70,20 @@ The library is a single Pascal source file that only depends on FPC RTL and FCL.
 Beta
 
 === Download ===
-The latest release is available at Lazarus-CCR:
+The latest release is available at Bitbucket:
 
-http://sourceforge.net/projects/lazarus-ccr/files/CsvDocument/CsvDocument%200.5/csvdocument-0.5.zip/download
+https://bitbucket.org/vvzh/csvdocument/downloads/csvdocument-0.5.zip
 
 The download contains the library, demo application and test suite.
 
-You can get development version from Lazarus-CCR svn repository:
+You can get development version from:
+
+* Bitbucket Mercurial repository
+<syntaxhighlight lang="bash">
+  hg clone https://bitbucket.org/vvzh/csvdocument csvdocument
+</syntaxhighlight>
+
+* Lazarus-CCR Subversion repository:
 <syntaxhighlight lang="bash">
   svn co svn://svn.code.sf.net/p/lazarus-ccr/svn/components/csvdocument csvdocument
 </syntaxhighlight>
